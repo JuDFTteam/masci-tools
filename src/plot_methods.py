@@ -53,8 +53,8 @@ tick_params_g = {'size' : 4.0, 'width' : 1.0, 'labelsize' : ticklabelsize_g, 'le
 # legend properties
 
 # save all plots?
-save_plots_g = False# True
-save_format_g = 'pdf'
+save_plots_g = True#False# True
+save_format_g = 'png'#'pdf'
 tightlayout_g = False
 ##############
 
@@ -313,7 +313,7 @@ def plot_lattice_constant(Total_energy, scaling, fit_y, relative = True, ref_con
 
 
 
-def plot_relatxation_results():
+def plot_relaxation_results():
     """
     Plot from the result node of a relaxation workflow, 
     All forces of every atom type versus relaxation cycle.
@@ -337,7 +337,7 @@ def plot_dos(path_to_dosfile, only_total=False, saveas=r'dos_plot', title=r'Dens
     #totaldos = np.zeros(nData, "d")
 
     #read data from file
-    datafile = 'DOS.1'
+    datafile = path_to_dosfile#'DOS.1'
     data = np.loadtxt(datafile,skiprows = 0)
 
     energy = data[..., 0]
@@ -397,6 +397,7 @@ def plot_bands(path_to_bands_file, kpath, title='Bandstructure', plotlabel ='ban
     params: kpath: dict: {r"$\Gamma$": 0.00000, r"$H$" : 1.04590, r"$N$" : 1.78546, r"$P$": 2.30841, r"$\Gamma$" : 3.21419, r"$N$" 3.95375 }
 
     """
+    
     xpos = kpath.values()
     xNames = kpath.keys()
     data = np.loadtxt(path_to_bands_file,skiprows = 0)
