@@ -146,8 +146,9 @@ def plot_fleur_eos_wc(node):
     def parabola(x, a, b, c):
         return a*x**2 + b*x + c
     
-    fit_y = [parabola(scale2, fit[0], fit[1], fit[2]) for scale2 in scaling]
-    plot_lattice_constant(Total_energy, scaling, fit_y)
+    fit_y = []
+    #fit_y = [parabola(scale2, fit[0], fit[1], fit[2]) for scale2 in scaling]
+    plot_lattice_constant(Total_energy, scaling)#, fit_y)
 
 def plot_fleur_band_wc(node):
     """
@@ -159,8 +160,8 @@ def plot_fleur_band_wc(node):
     output_d = node.get_dict()
     path_to_bands_file = output_d.get('bandfile', None)
     print(path_to_bands_file)
-    kpath = output_d.get('kpath', {r"$\Gamma$": 0.00000, r"$H$" : 1.04590, 
-        r"$N$" : 1.78546, r"$P$": 2.30841, r"$\Gamma1$" : 3.21419, r"$N1$" : 3.95375} )
+    kpath = output_d.get('kpath', {})#r"$\Gamma$": 0.00000, r"$H$" : 1.04590, 
+    #    r"$N$" : 1.78546, r"$P$": 2.30841, r"$\Gamma1$" : 3.21419, r"$N1$" : 3.95375} )
     
     if path_to_bands_file:
         plot_bands(path_to_bands_file, kpath)

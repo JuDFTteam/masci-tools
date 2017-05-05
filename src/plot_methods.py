@@ -235,7 +235,7 @@ def plot_convergence_results(distance, total_energy, iteration, saveas1='t_energ
 
 
 
-def plot_lattice_constant(Total_energy, scaling, fit_y, relative = True, ref_const = None, multi = False, plotlables = [r'simulation data', r'fit results'], title = r'Total Energy vs lattice constant', saveas = 'Lattice_constant'):
+def plot_lattice_constant(Total_energy, scaling, fit_y=None, relative = True, ref_const = None, multi = False, plotlables = [r'simulation data', r'fit results'], title = r'Total Energy vs lattice constant', saveas = 'Lattice_constant'):
     """
     Plot a lattice constant versus Total energy
     Plot also the fit.
@@ -285,14 +285,15 @@ def plot_lattice_constant(Total_energy, scaling, fit_y, relative = True, ref_con
             print i
             p1 = pp.plot(scale, Total_energy[i], 'o-', label = plotlables[2*i],
                          linewidth = linewidth_g, markersize = markersize_g)
-            p2 = pp.plot(scale, fit_y[i], 's-', label = plotlables[2*i+1],
-                         linewidth = linewidth_g, markersize = markersize_g)
+            if fit_y:
+                p2 = pp.plot(scale, fit_y[i], 's-', label = plotlables[2*i+1],
+                             linewidth = linewidth_g, markersize = markersize_g)
     else:
         p1 = pp.plot(scaling, Total_energy, 'o-', label = plotlables[0],
                       linewidth = linewidth_g, markersize = markersize_g)
-
-        p2 = pp.plot(scaling, fit_y, r'-', label = plotlables[1],
-                     linewidth = linewidth_g, markersize = markersize_g)
+        if fit_y:
+            p2 = pp.plot(scaling, fit_y, r'-', label = plotlables[1],
+                         linewidth = linewidth_g, markersize = markersize_g)
     
     pp.legend(bbox_to_anchor=(0.85, 1), loc=2, borderaxespad=0., fancybox=True)
     pp.legend(loc='best', borderaxespad=0., fancybox=True) #, framealpha=0.5) #loc='upper right')
