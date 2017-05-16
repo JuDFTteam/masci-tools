@@ -98,7 +98,7 @@ def set_plot_defaults(title_fontsize = 16,
 ###########################
 
 
-def single_scatterplot(ydata, xdata, xlabel, ylabel, title, plotlabel ='scatterplot', linetyp='o-', limits=[None, None], saveas ='scatterplot', color = 'k'):
+def single_scatterplot(ydata, xdata, xlabel, ylabel, title, plotlabel ='scatterplot', linetyp='o-', limits=[None, None], saveas ='scatterplot', color = 'k', scale = [None, None]):
     """
     Create a standard scatter plot (this should be flexible enough) to do all the
     basic plots.
@@ -123,6 +123,14 @@ def single_scatterplot(ydata, xdata, xlabel, ylabel, title, plotlabel ='scatterp
     ax.yaxis.get_major_formatter().set_useOffset(False)
     p1 = pp.plot(xdata, ydata, linetyp, label = plotlabel, color = color,
                  linewidth = linewidth_g, markersize = markersize_g)
+    if scale:
+        if scale[0]:
+            ax.set_xscale(scale[0])
+        elif scale[1]:
+            ax.set_yscale(scale[1])
+        else:
+            pass
+        
     if limits:
         if limits[0]:
             xmin = limits[0][0]
@@ -195,7 +203,6 @@ def multiple_scatterplots(ydata, xdata, xlabel, ylabel, title, plot_labels, line
     else:
         pp.show()
 
-
 def default_histogram():
     """
     Create a standard looking histogram
@@ -230,8 +237,8 @@ def plot_convergence_results(distance, total_energy, iteration, saveas1='t_energ
     title1 = r'Total energy over scf-Iterations'
     title2 = r'Distance over scf-Iterations'
 
-    single_scatterplot(total_energy, iteration, xlabel, ylabel1, title1, plotlabel='total energy', saveas=saveas1)
-    single_scatterplot(distance, iteration, xlabel, ylabel2, title2, plotlabel='distance', saveas=saveas2)
+    single_scatterplot(total_energy, iteration, xlabel, ylabel1, title1, plotlabel='total energy', saveas=saveas1, scale=[None, 'log'])
+    single_scatterplot(distance, iteration, xlabel, ylabel2, title2, plotlabel='distance', saveas=saveas2, scale=[None, 'log'])
 
 
 
