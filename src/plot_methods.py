@@ -232,12 +232,19 @@ def plot_convergence_results(distance, total_energy, iteration, saveas1='t_energ
     and plot the distance of the density versus iterations.
     """
     xlabel = r'Iteration'
-    ylabel1 = r'Total energy [eV]'
+    ylabel1 = r'Total energy difference [Htr]'
     ylabel2 = r'Distance [me/bohr^3]'
-    title1 = r'Total energy over scf-Iterations'
+    title1 = r'Total energy difference over scf-Iterations'
     title2 = r'Distance over scf-Iterations'
-
-    single_scatterplot(total_energy, iteration, xlabel, ylabel1, title1, plotlabel='total energy', saveas=saveas1, scale=[None, 'log'])
+    
+    # since we make a log plot of the total_energy make sure to plot the absolute total energy
+    total_energy_abs_diff = []
+    for en0, en1 in zip(total_energy[:-1], total_energy[1:]):
+        total_energy_abs_diff.append(abs(en1-en0))
+    #saveas3 ='t_energy_convergence2'
+    
+    single_scatterplot(total_energy_abs_diff, iteration[1:], xlabel, ylabel1, title1, plotlabel='delta total energy', saveas=saveas1, scale=[None, 'log'])
+    #single_scatterplot(total_energy, iteration, xlabel, ylabel1, title1, plotlabel='total energy', saveas=saveas3)
     single_scatterplot(distance, iteration, xlabel, ylabel2, title2, plotlabel='distance', saveas=saveas2, scale=[None, 'log'])
 
 
