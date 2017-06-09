@@ -2,7 +2,7 @@
 
 #copy plugin files from aiida_fleur into your aiida version
 
-aiida_repo=/usr/users/iff_th1/broeder/aiida/aiida/aiida
+aiida_repo=/home/broeder/aiida/github/aiida_core/aiida
 aiida_plotmethods=${PWD}/src
 #'.'
 

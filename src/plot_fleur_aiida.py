@@ -36,7 +36,7 @@ from pprint import pprint
 RemoteData = DataFactory('remote')
 StructureData = DataFactory('structure')
 ParameterData = DataFactory('parameter')
-FleurInpData = DataFactory('fleurinp')
+FleurInpData = DataFactory('fleur.fleurinp')
 
 
 
