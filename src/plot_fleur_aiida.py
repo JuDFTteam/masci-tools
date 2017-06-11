@@ -63,14 +63,14 @@ def plot_fleur(node, show_dict = False):
             #print keys
             for key in keys:
                 if 'output_' in key:
-                    if 'wf' in key:
+                    if 'wc' in key:
                         node = output_dict.get(key)# we only visualize last output node
         if isinstance(node, ParameterData):
             #print('parameter')
             p_dict = node.get_dict()
             workflow_name = p_dict.get('workflow_name', None)
             
-            if workflow_name == 'fleur_convergence':
+            if workflow_name == 'fleur_scf_wc':
                 plot_fleur_scf_wc(node)
             elif workflow_name == 'fleur_eos_wc':
                 plot_fleur_eos_wc(node)
