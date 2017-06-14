@@ -1,9 +1,0 @@
-
-
-
-# for support of the xml files and parsers
-
-matplotlib
-numpy
-
-#gnuplot
