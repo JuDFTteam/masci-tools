@@ -22,7 +22,8 @@ if __name__ == '__main__':
             'Topic :: Scientific/Engineering :: Physics'
         ],
         keywords='material science plots fitting visualization aiida aiida-fleur flapw',
-        packages=['src', 'tests'],
+        packages=find_packages(),
+        #['src', 'tests'],
         include_package_data=True,
         
         install_requires=[
