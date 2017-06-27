@@ -103,7 +103,7 @@ def plot_fleur_scf_wc(node):
     This methods takes an AiiDA output parameter node from a scf workchain and
     plots number of iteration over distance and total energy
     """
-    from plot_methods.plot_methods import plot_convergence_results
+    from plot_methods import plot_convergence_results
 
     #scf_wf = load_node(6513)
     output_d = node.get_dict()
@@ -120,7 +120,7 @@ def plot_fleur_dos_wc(node):
     This methods takes an AiiDA output parameter node from a density of states
     workchain and plots a simple density of states
     """
-    from plot_methods.plot_methods import plot_dos
+    from plot_methods import plot_dos
     
     output_d = node.get_dict()
     path_to_dosfile = output_d.get('dosfile', None)
@@ -135,7 +135,7 @@ def plot_fleur_eos_wc(node):
     This methods takes an AiiDA output parameter node from a density of states
     workchain and plots a simple density of states
     """
-    from plot_methods.plot_methods import plot_lattice_constant
+    from plot_methods import plot_lattice_constant
     
     outpara = node.get_dict()
     Total_energy = outpara.get('total_energy')
@@ -155,7 +155,7 @@ def plot_fleur_band_wc(node):
     This methods takes an AiiDA output parameter node from a band structure
     workchain and plots a simple band structure
     """
-    from plot_methods.plot_methods import plot_bands
+    from plot_methods import plot_bands
     
     output_d = node.get_dict()
     path_to_bands_file = output_d.get('bandfile', None)
@@ -174,6 +174,6 @@ def plot_fleur_relax_wc(node):
     workchain and plots some information about atom movements and forces
     """
     pass
-    #from plot_methods.plot_methods import plot_relaxation_results
+    #from plot_methods import plot_relaxation_results
     
     #plot_relaxation_results
