@@ -53,7 +53,7 @@ tick_params_g = {'size' : 4.0, 'width' : 1.0, 'labelsize' : ticklabelsize_g, 'le
 # legend properties
 
 # save all plots?
-save_plots_g = True#False# True
+save_plots_g = False# True
 save_format_g = 'png'#'pdf'
 tightlayout_g = False
 ##############
@@ -68,7 +68,7 @@ def set_plot_defaults(title_fontsize = 16,
                                      'labelsize' : ticklabelsize_g,
                                      'length' : 5},
                       save_plots = False, #True,
-                      save_format = 'pdf'):
+                      save_format = 'pdf', **kwargs):
     """
     Try to use this to set some global default values.
     
@@ -98,7 +98,9 @@ def set_plot_defaults(title_fontsize = 16,
 ###########################
 
 
-def single_scatterplot(ydata, xdata, xlabel, ylabel, title, plotlabel ='scatterplot', linetyp='o-', limits=[None, None], saveas ='scatterplot', color = 'k', scale = [None, None]):
+def single_scatterplot(ydata, xdata, xlabel, ylabel, title, plotlabel ='scatterplot', 
+                       linetyp='o-', limits=[None, None], saveas ='scatterplot', 
+                       color = 'k', scale = [None, None]):
     """
     Create a standard scatter plot (this should be flexible enough) to do all the
     basic plots.
@@ -149,7 +151,10 @@ def single_scatterplot(ydata, xdata, xlabel, ylabel, title, plotlabel ='scatterp
         pp.show()
 
 
-def multiple_scatterplots(ydata, xdata, xlabel, ylabel, title, plot_labels, linetyp='o-', legend=True, saveas ='mscatterplot', limits=[None, None]):
+def multiple_scatterplots(ydata, xdata, xlabel, ylabel, title, plot_labels, 
+                          linetyp='o-', legend=True, 
+                          legend_option = {},
+                          saveas ='mscatterplot', limits=[None, None]):
     """
     Create a standard scatter plot (this should be flexible enough) to do all the
     basic plots.
@@ -195,7 +200,16 @@ def multiple_scatterplots(ydata, xdata, xlabel, ylabel, title, plot_labels, line
             pp.ylim(ymin, ymax)
     #TODO legend
     if legend:
-        pass
+        #{anchor, title, fontsize, linewith, borderaxespad}
+        # defaults 'anchor' : (0.75, 0.97), 'title' : 'Legend', 'fontsize' : 17, 'linewith' : 1.5, 'borderaxespad' : }, 
+        legends_defaults = {'bbox_to_anchor' : (0.75, 0.97), 'title' : 'Legend', 'fontsize' : 17, 'linewidth' : 1.5, 'borderaxespad' : 0 , 'loc' : 2, 'fancybox' : True} 
+        loptions = legends_defaults.copy()
+        loptions.update(legend_option)
+        linewidth = loptions.pop('linewidth', 1.5)
+        title_font_size = loptions.pop('title_font_size', 17)
+        leg = pp.legend(**loptions)#bbox_to_anchor=loptions['anchor'],loc=loptions['loc'], title=legend_title, borderaxespad=0., fancybox=True)
+        leg.get_frame().set_linewidth(linewidth)
+        leg.get_title().set_fontsize(title_font_size) #legend 'Title' fontsize
     if save_plots_g:
         savefilename = '{}.{}'.format(saveas, save_format_g)
         print 'save plot to: {}'.format(savefilename)
@@ -247,6 +261,35 @@ def plot_convergence_results(distance, total_energy, iteration, saveas1='t_energ
     #single_scatterplot(total_energy, iteration, xlabel, ylabel1, title1, plotlabel='total energy', saveas=saveas3)
     single_scatterplot(distance, iteration, xlabel, ylabel2, title2, plotlabel='distance', saveas=saveas2, scale=[None, 'log'])
 
+def plot_convergence_results_m(distances, total_energies, iterations, saveas1='t_energy_convergence', saveas2='distance_convergence'):
+    """
+    Plot the total energy versus the scf iteration
+    and plot the distance of the density versus iterations.
+    """
+    xlabel = r'Iteration'
+    ylabel1 = r'Total energy difference [Htr]'
+    ylabel2 = r'Distance [me/bohr^3]'
+    title1 = r'Total energy difference over scf-Iterations'
+    title2 = r'Distance over scf-Iterations'
+    
+    iterations1 = []
+    plot_labels1 = []
+    plot_labels2 = []
+
+    # since we make a log plot of the total_energy make sure to plot the absolute total energy
+    total_energy_abs_diffs = []    
+    for i, total_energy in enumerate(total_energies): 
+        iterations1.append(iterations[i][1:])
+        total_energy_abs_diff = []
+        for en0, en1 in zip(total_energy[:-1], total_energy[1:]):
+            total_energy_abs_diff.append(abs(en1-en0))
+        total_energy_abs_diffs.append(total_energy_abs_diff)
+        plot_labels1.append('delta total energy {}'.format(i))
+        plot_labels2.append('distance {}'.format(i))
+    #saveas3 ='t_energy_convergence2'
+    
+    multiple_scatterplots(total_energy_abs_diffs, iterations1, xlabel, ylabel1, title1, plot_labels1, saveas=saveas1, scale=[None, 'log'])
+    multiple_scatterplots(distances, iterations, xlabel, ylabel2, title2, plot_labels2, saveas=saveas2, scale=[None, 'log'])
 
 
 def plot_lattice_constant(Total_energy, scaling, fit_y=None, relative = True, ref_const = None, multi = False, plotlables = [r'simulation data', r'fit results'], title = r'Total Energy vs lattice constant', saveas = 'Lattice_constant'):
@@ -478,5 +521,267 @@ def plot_bands_and_dos():
     """
     pass
 
+
+def plot_corelevels(coreleveldict, compound=''):
+    """
+    Ploting function to visualize corelevels and corelevel shifts
+    """
+
+    for elem, corelevel_dict in coreleveldict.iteritems():
+        # one plot for each element
+        plot_one_element_corelv(corelevel_dict, elem, compound=compound)
+        
+def plot_one_element_corelv(corelevel_dict, element, compound=''):
+    """
+    This routine creates a plot which visualizes all the binding energies of one 
+    element (and currenlty one corelevel) for different atomtypes.
+    
+    i.e
+    
+    corelevels = {'W' : {'4f7/2' : [123, 123.3, 123.4 ,123.1], 
+                     '4f5/2' : [103, 103.3, 103.4, 103.1]}, 
+              'Be' : {'1s': [118, 118.2, 118.4, 118.1, 118.3]}}
+    """
+    corelevels_names = []
+    xdata_all = []
+    ydata_all = []
+        
+    for corelevel, corelevel_list in corelevel_dict.iteritems():
+        #print corelevel
+        n_atom = len(corelevel_list)
+        x_axis = list(range(0,n_atom,1))
+        y_axis = corelevel_list
+        xdata_all.append(x_axis)
+        ydata_all.append(y_axis)
+        corelevels_names.append(corelevel)
+    
+    elem = element        
+    xdata = xdata_all[0]
+    ydata = ydata_all[0]
+    xlabel = '{} atomtype'.format(elem)
+    ylabel = 'energy in eV'
+    title = 'Element: {} from {} cl {}'.format(elem, compound, corelevels_names)
+    #plotlabel ='corelevel shifts'
+    #linetyp='o-'
+    xmin = xdata[0] - 0.5
+    xmax = xdata[-1] + 0.5
+    ymin = min(ydata)-1
+    ymax = max(ydata)+1
+    #limits=[(xmin, xmax), (ymin, ymax)], 
+    saveas ='scatterplot'
+    #color = 'k'
+    scale = [None, None]
+    font = {'family': 'serif',
+            'color':  'darkred',
+            'weight': 'normal',
+            'size': 16,
+            }
+    
+    
+    fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
+    ax = fig.add_subplot(111)
+    for axis in ['top','bottom','left','right']:
+        ax.spines[axis].set_linewidth(axis_linewidth_g)
+    ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
+    ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
+    ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
+    ax.yaxis.set_tick_params(size = tick_params_g.get('size', 4.0),
+                             width = tick_params_g.get('width', 1.0),
+                             labelsize = tick_params_g.get('labelsize', 14),
+                             length = tick_params_g.get('length', 5))
+    ax.xaxis.set_tick_params(size = tick_params_g.get('size', 4.0),
+                             width = tick_params_g.get('width', 1.0),
+                             labelsize = tick_params_g.get('labelsize', 14),
+                             length = tick_params_g.get('length', 5))
+    ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
+    ax.yaxis.get_major_formatter().set_useOffset(False)
+
+    for j,y in enumerate(ydata_all):
+        for i,x in enumerate(xdata):
+            lenx = xmax-xmin
+            length = 0.5/lenx
+            offset = 0.5/lenx
+            xminline = x/lenx + offset - length/2
+            xmaxline = x/lenx + offset + length/2
+            pp.axhline(y=y[i], xmin=xminline, xmax=xmaxline, linewidth=2, color='k')
+            text = r'{}'.format(y[i])
+            pp.text(x-0.25, y[i]+0.3, text, fontdict=font)
+        
+        
+    if scale:
+        if scale[0]:
+            ax.set_xscale(scale[0])
+        elif scale[1]:
+            ax.set_yscale(scale[1])
+        else:
+            pass
+
+    pp.xlim(xmin, xmax)
+    pp.ylim(ymin, ymax)
+    if save_plots_g:
+        savefilename = '{}.{}'.format(saveas, save_format_g)
+        print 'save plot to: {}'.format(savefilename)
+        pp.savefig(savefilename, format=save_format_g, transparent=True)
+    else:
+        pp.show()            
+
+
+def plot_corelevel_spectra(coreleveldict, natom_typesdict, compound = ''):
+    """
+    Ploting function of corelevel in the form of a spectrum
+    """
+    xdata_all = []
+    ydata_all = []
+    ydata_spec = []
+    xdata_spec = []
+    
+    for elem, corelevel_dict in coreleveldict.iteritems():
+        natom = natom_typesdict.get(elem, 0)
+        print natom
+        for corelevel_name, corelevel_list in corelevel_dict.iteritems():
+            for i,corelevel in enumerate(corelevel_list):
+                xdata_all.append(corelevel)
+                ydata_all.append(natom[i])
+              
+    xmin = min(xdata_all) - 2#0.5
+    xmax = max(xdata_all)+ 2#0.5
+    
+    xdata_spec = np.array(np.arange(xmin,xmax, 0.1))
+    ydata_spec = np.zeros(len(xdata_spec), dtype=float)                
+    for i,xpoint in enumerate(xdata_all):
+        gaus_f = gaussian(xdata_spec, xpoint, 0.6, 1.0)
+        #gaus_f = lorentzian(xdata_spec, xpoint, 0.6, 100.0)
+        ydata_spec = ydata_spec + ydata_all[i]*gaus_f
+        
+    xdata = xdata_all
+    ydata = ydata_all
+    ymax2 = max(ydata_spec)+1
+
+    xlabel = 'Binding energy [eV]'
+    ylabel = 'Intensity [arb] (natoms)'
+    title = 'Spectrum of {}'.format(compound)
+    plotlabel ='corelevel shifts'
+    linetyp = 'o'
+    linetyp1 = '-'
+    linewidth_g1 = 1
+
+
+
+    ymin = -0.3
+    ymax = max(ydata)+1
+
+
+    #limits=[(xmin, xmax), (ymin, ymax)], 
+    saveas ='scatterplot'
+    color = 'k'
+    scale = [None, None]
+    
+    
+    fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
+    ax = fig.add_subplot(111)
+    for axis in ['top','bottom','left','right']:
+        ax.spines[axis].set_linewidth(axis_linewidth_g)
+    ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
+    ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
+    ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
+    ax.yaxis.set_tick_params(size = tick_params_g.get('size', 4.0),
+                             width = tick_params_g.get('width', 1.0),
+                             labelsize = tick_params_g.get('labelsize', 14),
+                             length = tick_params_g.get('length', 5))
+    ax.xaxis.set_tick_params(size = tick_params_g.get('size', 4.0),
+                             width = tick_params_g.get('width', 1.0),
+                             labelsize = tick_params_g.get('labelsize', 14),
+                             length = tick_params_g.get('length', 5))
+    ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
+    ax.yaxis.get_major_formatter().set_useOffset(False)
+    p1 = pp.plot(xdata_all, ydata_all, linetyp, label = plotlabel, color = color,
+                 linewidth = linewidth_g, markersize = markersize_g)
+  
+        
+    if scale:
+        if scale[0]:
+            ax.set_xscale(scale[0])
+        elif scale[1]:
+            ax.set_yscale(scale[1])
+        else:
+            pass
+        
+    pp.xlim(xmin, xmax)
+    pp.ylim(ymin, ymax)
+    if save_plots_g:
+        savefilename = '{}.{}'.format(saveas, save_format_g)
+        print 'save plot to: {}'.format(savefilename)
+        pp.savefig(savefilename, format=save_format_g, transparent=True)
+    else:
+        pp.show()
+    
+    
+    
+    fig1 = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
+    ax1 = fig1.add_subplot(111)
+    for axis in ['top','bottom','left','right']:
+        ax1.spines[axis].set_linewidth(axis_linewidth_g)
+    ax1.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
+    ax1.set_xlabel(xlabel, fontsize=labelfonstsize_g)
+    ax1.set_ylabel(ylabel, fontsize=labelfonstsize_g)
+    ax1.yaxis.set_tick_params(size = tick_params_g.get('size', 4.0),
+                             width = tick_params_g.get('width', 1.0),
+                             labelsize = tick_params_g.get('labelsize', 14),
+                             length = tick_params_g.get('length', 5))
+    ax1.xaxis.set_tick_params(size = tick_params_g.get('size', 4.0),
+                             width = tick_params_g.get('width', 1.0),
+                             labelsize = tick_params_g.get('labelsize', 14),
+                             length = tick_params_g.get('length', 5))
+    ax1.yaxis.get_major_formatter().set_powerlimits((0, 3))
+    ax1.yaxis.get_major_formatter().set_useOffset(False)
+    
+    p11 = pp.plot(xdata_spec, ydata_spec, linetyp1, label = plotlabel, color = color,
+                 linewidth = linewidth_g1, markersize = markersize_g)  
+    if scale:
+        if scale[0]:
+            ax1.set_xscale(scale[0])
+        elif scale[1]:
+            ax1.set_yscale(scale[1])
+        else:
+            pass
+        
+    pp.xlim(xmin, xmax)
+    pp.ylim(ymin, ymax2)
+    if save_plots_g:
+        savefilename = '{}.{}'.format(saveas, save_format_g)
+        print 'save plot to: {}'.format(savefilename)
+        pp.savefig(savefilename, format=save_format_g, transparent=True)
+    else:
+        pp.show()            
+
+
+def gaussian(x,E,F,m):
+    """
+    Gives back a gaussian
+    E is mean energy
+    x are the values
+    F is the area, derivation ?
+    m is ?
+    """
+    gaus = []
+    for point in x:
+        gp = np.exp(-2*np.log(2)*(1-m/100.)*((point-E)/F)**2)
+        #print(gp)
+        gaus.append(gp)
+    return np.array(gaus)
+
+def lorentzian(x,E,F,m):
+    """
+    Gives back a loretzian
+    E is mean energy
+    x are the values
+    F is the area, derivation, FWTH?
+    m is ?
+    """
+    lorentz = []
+    for point in x:
+        lp = 1./(1+4*(m/100.)*((point-E)/F)**2)
+        lorentz.append(lp)
+    return np.array(lorentz)
 
 
