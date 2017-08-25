@@ -154,7 +154,7 @@ def single_scatterplot(ydata, xdata, xlabel, ylabel, title, plotlabel ='scatterp
 def multiple_scatterplots(ydata, xdata, xlabel, ylabel, title, plot_labels, 
                           linetyp='o-', legend=True, 
                           legend_option = {},
-                          saveas ='mscatterplot', limits=[None, None]):
+                          saveas ='mscatterplot', limits=[None, None], scale = [None, None]):
     """
     Create a standard scatter plot (this should be flexible enough) to do all the
     basic plots.
@@ -188,7 +188,14 @@ def multiple_scatterplots(ydata, xdata, xlabel, ylabel, title, plot_labels,
     for i, data in enumerate(ydata):
         p1 = pp.plot(xdata[i], data, linetyp, label = plot_labels[i],
                      linewidth = linewidth_g, markersize = markersize_g)
-
+    if scale:
+        if scale[0]:
+            ax.set_xscale(scale[0])
+        elif scale[1]:
+            ax.set_yscale(scale[1])
+        else:
+            pass
+    
     if limits:
         if limits[0]:
             xmin = limits[0][0]
@@ -339,7 +346,7 @@ def plot_lattice_constant(Total_energy, scaling, fit_y=None, relative = True, re
         # TODO test if dim of total_e = dim of scaling, dim plot lables...
         # or parse on scaling?
         for i, scale in enumerate(scaling):
-            print i
+            #print i
             p1 = pp.plot(scale, Total_energy[i], 'o-', label = plotlables[2*i],
                          linewidth = linewidth_g, markersize = markersize_g)
             if fit_y:

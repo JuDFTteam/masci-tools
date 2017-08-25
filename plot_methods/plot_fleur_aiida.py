@@ -87,7 +87,7 @@ def plot_fleur(*args, **kwargs):
             # try plot together
             plot_fleur_mn(arg, save=save)                           
         else:
-            print(arg)
+            #print(arg)
             # plot alone
             plot_fleur_sn(arg, show_dict=show_dict, save=save)
             
@@ -196,8 +196,10 @@ def plot_fleur_mn(nodelist, save=False):
                 p_dict = node.get_dict()
                 workflow_name = p_dict.get('workflow_name', None)
                 cur_list = all_nodes.get(workflow_name, [])
-                cur_list.append(node)                
-                '''                
+                cur_list.append(node)  
+                all_nodes[workflow_name] = cur_list
+                
+                '''
                 if workflow_name == 'fleur_scf_wc':
                     cur_list = all_nodes.get(workflow_name, [])
                     cur_list.append(node)                    
@@ -241,27 +243,38 @@ def plot_fleur_mn(nodelist, save=False):
 ## general plot routine  ##
 ###########################
 
-def plot_fleur_scf_wc(node):
+def plot_fleur_scf_wc(nodes):
     """
     This methods takes an AiiDA output parameter node or a list from a scf workchain and
     plots number of iteration over distance and total energy
     """
     from plot_methods import plot_convergence_results, plot_convergence_results_m
     
-    if isinstance(node, list):
-        if len(node) >= 2:
-            return # TODO
+    if isinstance(nodes, list):
+        if len(nodes) >= 2:
+            #return # TODO
+            pass
         else:
-            node=node[0]
+            nodes=[nodes[0]]
     #scf_wf = load_node(6513)
-    output_d = node.get_dict()
-    Total_energy = output_d.get('total_energy_all')
-    distance_all = output_d.get('distance_charge_all')
-    iteration_total = output_d.get('iterations_total')
-    iteration = []
-    for i in range(1, len(Total_energy)+1):
-        iteration.append(iteration_total - len(Total_energy) + i)
-    plot_convergence_results(distance_all, Total_energy, iteration)
+
+    iterations = []
+    distance_all_n = []
+    total_energy_n =[]
+    
+    for node in nodes:
+        iteration = []
+        output_d = node.get_dict()
+        total_energy = output_d.get('total_energy_all')
+        distance_all = output_d.get('distance_charge_all')
+        iteration_total = output_d.get('iterations_total')        
+        for i in range(1, len(total_energy)+1):
+            iteration.append(iteration_total - len(total_energy) + i)
+        iterations.append(iteration)
+        distance_all_n.append(distance_all)
+        total_energy_n.append(total_energy)
+    #plot_convergence_results(distance_all, total_energy, iteration)
+    plot_convergence_results_m(distance_all_n, total_energy_n, iterations)
 
 def plot_fleur_dos_wc(node):
     """
