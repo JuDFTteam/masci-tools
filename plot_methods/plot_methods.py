@@ -209,14 +209,14 @@ def multiple_scatterplots(ydata, xdata, xlabel, ylabel, title, plot_labels,
     if legend:
         #{anchor, title, fontsize, linewith, borderaxespad}
         # defaults 'anchor' : (0.75, 0.97), 'title' : 'Legend', 'fontsize' : 17, 'linewith' : 1.5, 'borderaxespad' : }, 
-        legends_defaults = {'bbox_to_anchor' : (0.75, 0.97), 'title' : 'Legend', 'fontsize' : 17, 'linewidth' : 1.5, 'borderaxespad' : 0 , 'loc' : 2, 'fancybox' : True} 
+        legends_defaults = {'bbox_to_anchor' : (0.70, 0.97), 'fontsize' : 12, 'linewidth' : 1.5, 'borderaxespad' : 0 , 'loc' : 2, 'fancybox' : True} #'title' : 'Legend',
         loptions = legends_defaults.copy()
         loptions.update(legend_option)
         linewidth = loptions.pop('linewidth', 1.5)
-        title_font_size = loptions.pop('title_font_size', 17)
+        #title_font_size = loptions.pop('title_font_size', 15)
         leg = pp.legend(**loptions)#bbox_to_anchor=loptions['anchor'],loc=loptions['loc'], title=legend_title, borderaxespad=0., fancybox=True)
         leg.get_frame().set_linewidth(linewidth)
-        leg.get_title().set_fontsize(title_font_size) #legend 'Title' fontsize
+        #leg.get_title().set_fontsize(title_font_size) #legend 'Title' fontsize
     if save_plots_g:
         savefilename = '{}.{}'.format(saveas, save_format_g)
         print 'save plot to: {}'.format(savefilename)
@@ -268,7 +268,7 @@ def plot_convergence_results(distance, total_energy, iteration, saveas1='t_energ
     #single_scatterplot(total_energy, iteration, xlabel, ylabel1, title1, plotlabel='total energy', saveas=saveas3)
     single_scatterplot(distance, iteration, xlabel, ylabel2, title2, plotlabel='distance', saveas=saveas2, scale=[None, 'log'])
 
-def plot_convergence_results_m(distances, total_energies, iterations, saveas1='t_energy_convergence', saveas2='distance_convergence'):
+def plot_convergence_results_m(distances, total_energies, iterations, plot_labels=[], saveas1='t_energy_convergence', saveas2='distance_convergence'):
     """
     Plot the total energy versus the scf iteration
     and plot the distance of the density versus iterations.
@@ -294,7 +294,9 @@ def plot_convergence_results_m(distances, total_energies, iterations, saveas1='t
         plot_labels1.append('delta total energy {}'.format(i))
         plot_labels2.append('distance {}'.format(i))
     #saveas3 ='t_energy_convergence2'
-    
+    if plot_labels:
+        plot_labels1 = plot_labels
+        plot_labels2 = plot_labels
     multiple_scatterplots(total_energy_abs_diffs, iterations1, xlabel, ylabel1, title1, plot_labels1, saveas=saveas1, scale=[None, 'log'])
     multiple_scatterplots(distances, iterations, xlabel, ylabel2, title2, plot_labels2, saveas=saveas2, scale=[None, 'log'])
 
@@ -365,7 +367,7 @@ def plot_lattice_constant(Total_energy, scaling, fit_y=None, relative = True, re
     #lg.get_frame().set_linewidth(2.0)
     #lg.get_title().set_fontsize('16') #legend 'Title' fontsize
 
-    print save_plots_g
+    #print save_plots_g
     if save_plots_g:
         # TODO override or not, better title?
         savefilename = '{}.{}'.format(saveas, save_format_g)
@@ -633,6 +635,211 @@ def plot_one_element_corelv(corelevel_dict, element, compound=''):
         pp.show()            
 
 
+def plot_corelevel_spectra(coreleveldict, natom_typesdict, compound = '', fwhm_g=0.6, fwhm_l=0.1, energy_grid=0.2, peakfunction='voigt', linetyp_spec='o-'):
+    """
+    Ploting function of corelevel in the form of a spectrum
+    
+    Args:
+        coreleveldict: dict of corelevels with a list of corelevel energy of atomstypes 
+        # (The given corelevel accounts for a weight (number of electrons for full occupied corelevel) in the plot.)
+        natom_typesdict: dict with number of atom types for each entry
+    Kwargs:
+        compound (string): something for labeling
+        fwhm (float): full width half maximum of peaks (gaus, lorentz or voigt_profile)
+        energy_grid (float): energy resolution
+        linetyp_spec : linetype for spectrum
+        peakfunction (string): what the peakfunction should be {'voigt', 'pseudo-voigt', 'lorentz', 'gaus'}
+        
+    example:
+    coreleveldict = {u'Be': {'1s1/2' : [-1.0220669053033051, -0.3185614920138805, 
+                                        -0.7924091040092139]}}
+    n_atom_types_Be12Ti = {'Be' : [4,4,4]}
+    """
+    xdata_all = []
+    ydata_all = []
+    ydata_spec = []
+    xdata_spec = []
+    energy_grid = energy_grid # eV
+    for elem, corelevel_dict in coreleveldict.iteritems():
+        # one plot for each element
+        #print elem
+        #print corelevel_dict
+        natom = natom_typesdict.get(elem, 0)
+        print natom
+        for corelevel_name, corelevel_list in corelevel_dict.iteritems():
+            # get number of electron if fully occ:
+            nelectrons = 1
+            if 's' in corelevel_name:
+                nelectrons = 2
+            else:
+                max_state_occ_spin = {'1/2' : 2, '3/2' : 4, '5/2' : 6, '7/2' : 8}
+                # check if spin in name
+                for key, val in max_state_occ_spin.iteritems():
+                    if key in corelevel_name:
+                        nelectrons = val
+            for i,corelevel in enumerate(corelevel_list):
+                xdata_all.append(corelevel)
+                ydata_all.append(natom[i]*nelectrons)
+              
+    xmin = min(xdata_all) - 2 #0.5
+    xmax = max(xdata_all)+ 2   #0.5
+    
+    # xdata_spec = np.array(np.arange(xmax,xmin, -energy_grid))
+    xdata_spec = np.array(np.arange(xmin, xmax, energy_grid))
+    ydata_spec = np.zeros(len(xdata_spec), dtype=float)
+    for i,xpoint in enumerate(xdata_all):
+        if peakfunction== 'gaus':
+            data_f = np.array(gaussian(xdata_spec, fwhm_g, xpoint))#, 1.0))
+        elif peakfunction== 'voigt':
+             data_f = np.array(voigt_profile(xdata_spec, fwhm_g, fwhm_l, xpoint))# different fwhn for g und l       
+        elif peakfunction== 'pseudo-voigt':
+            data_f = np.array(pseudo_voigt_profile(xdata_spec, fwhm_g, fwhm_l, xpoint))
+        elif peakfunction== 'lorentz':
+            data_f = np.array(lorentzian(xdata_spec, fwhm_l, xpoint))
+        else:
+            print('given peakfunction type not known')
+            data_f = []
+            return
+
+        #gaus_f = lorentzian(xdata_spec, xpoint, 0.6, 100.0)
+        ydata_spec = ydata_spec + ydata_all[i]*data_f
+        
+    xdata = xdata_all
+    ydata = ydata_all
+    ymax2 = max(ydata_spec)+1
+
+
+    print len(xdata), len(ydata)
+    xlabel = 'Binding energy [eV]'
+    ylabel = 'Intensity [arb] (natoms*nelectrons)'
+    title = 'Spectrum of {}'.format(compound)
+    plotlabel ='corelevel shifts'
+    linetyp = 'o'
+    linetyp1 = linetyp_spec#'-'
+    linewidth_g1 = 2
+
+
+    ymin = -0.3
+    ymax = max(ydata)+1
+
+
+    limits=[(xmin, xmax), (ymin, ymax)], 
+    saveas ='XPS_theo_{}_{}'.format(fwhm_g, compound)
+    saveas1 ='XPS_theo_2_{}_{}'.format(fwhm_g, compound)
+    color = 'k'
+    scale = [None, None]
+    font = {'family': 'serif',
+            'color':  'darkred',
+            'weight': 'normal',
+            'size': 16,
+            }
+    
+    
+    fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
+    ax = fig.add_subplot(111)
+    for axis in ['top','bottom','left','right']:
+        ax.spines[axis].set_linewidth(axis_linewidth_g)
+    ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
+    ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
+    ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
+    ax.yaxis.set_tick_params(size = tick_params_g.get('size', 4.0),
+                             width = tick_params_g.get('width', 1.0),
+                             labelsize = tick_params_g.get('labelsize', 14),
+                             length = tick_params_g.get('length', 5))
+    ax.xaxis.set_tick_params(size = tick_params_g.get('size', 4.0),
+                             width = tick_params_g.get('width', 1.0),
+                             labelsize = tick_params_g.get('labelsize', 14),
+                             length = tick_params_g.get('length', 5))
+    ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
+    ax.yaxis.get_major_formatter().set_useOffset(False)
+    p1 = pp.plot(xdata_all, ydata_all, linetyp, label = plotlabel, color = color,
+                 linewidth = linewidth_g, markersize = markersize_g)
+    '''
+    for j,y in enumerate(ydata_all):
+        for i,x in enumerate(xdata):
+            lenx = xmax-xmin
+            length = 0.5/lenx
+            offset = 0.5/lenx
+            xminline = x/lenx + offset - length/2
+            xmaxline = x/lenx + offset + length/2
+            plt.axhline(y=y[i], xmin=xminline, xmax=xmaxline, linewidth=2, color='k')
+            text = r'{}'.format(y[i])
+            plt.text(x-0.25, y[i]+0.3, text, fontdict=font)
+    '''    
+        
+    if scale:
+        if scale[0]:
+            ax.set_xscale(scale[0])
+        elif scale[1]:
+            ax.set_yscale(scale[1])
+        else:
+            pass
+        
+    #if limits:
+    #    if limits[0]:
+    #        xmin = limits[0][0]
+    #        xmax = limits[0][1]
+    #        pp.xlim(xmin, xmax)
+    #    if limits[1]:
+    #        ymin = limits[1][0]
+    #        ymax = limits[1][1]
+    #        pp.ylim(ymin, ymax)
+    #pp.xlim(xmin, xmax)
+    pp.ylim(ymin, ymax)
+    #flip x axes
+    pp.xlim(xmax, xmin)
+    #pp.ylim(ymax, ymin)    
+    
+    if save_plots_g:
+        savefilename = '{}.{}'.format(saveas, save_format_g)
+        print 'save plot to: {}'.format(savefilename)
+        pp.savefig(savefilename, format=save_format_g, transparent=True)
+    else:
+        pp.show()
+    
+    
+    
+    fig1 = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
+    ax1 = fig1.add_subplot(111)
+    for axis in ['top','bottom','left','right']:
+        ax1.spines[axis].set_linewidth(axis_linewidth_g)
+    ax1.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
+    ax1.set_xlabel(xlabel, fontsize=labelfonstsize_g)
+    ax1.set_ylabel(ylabel, fontsize=labelfonstsize_g)
+    ax1.yaxis.set_tick_params(size = tick_params_g.get('size', 4.0),
+                             width = tick_params_g.get('width', 1.0),
+                             labelsize = tick_params_g.get('labelsize', 14),
+                             length = tick_params_g.get('length', 5))
+    ax1.xaxis.set_tick_params(size = tick_params_g.get('size', 4.0),
+                             width = tick_params_g.get('width', 1.0),
+                             labelsize = tick_params_g.get('labelsize', 14),
+                             length = tick_params_g.get('length', 5))
+    ax1.yaxis.get_major_formatter().set_powerlimits((0, 3))
+    ax1.yaxis.get_major_formatter().set_useOffset(False)
+    
+    p11 = pp.plot(xdata_spec, ydata_spec, linetyp1, label = plotlabel, color = color,
+                 linewidth = linewidth_g1, markersize = markersize_g)  
+    if scale:
+        if scale[0]:
+            ax1.set_xscale(scale[0])
+        elif scale[1]:
+            ax1.set_yscale(scale[1])
+        else:
+            pass
+        
+    #pp.xlim(xmin, xmax)
+    pp.ylim(ymin, ymax2)
+    #flip x axes
+    pp.xlim(xmax, xmin)
+    #pp.ylim(ymax2, ymin)
+    if save_plots_g:
+        savefilename = '{}.{}'.format(saveas1, save_format_g)
+        print 'save plot to: {}'.format(savefilename)
+        pp.savefig(savefilename, format=save_format_g, transparent=True)
+    else:
+        pp.show()            
+
+'''
 def plot_corelevel_spectra(coreleveldict, natom_typesdict, compound = ''):
     """
     Ploting function of corelevel in the form of a spectrum
@@ -790,5 +997,128 @@ def lorentzian(x,E,F,m):
         lp = 1./(1+4*(m/100.)*((point-E)/F)**2)
         lorentz.append(lp)
     return np.array(lorentz)
+'''
+'''
 
+def gaussian(x,E,F,m):
+    """
+    Gives back a gaussian
+    E is mean energy
+    x are the values
+    F is the area, derivation ?
+    m is ?
+    """
+    gaus = []
+    for i in range(len(x)):
+        gp = np.exp(-2*np.log(2)*(1-m/100.)*((x[i]-E)/F)**2)
+        #print(gp)
+        gaus.append(gp)
+    #return np.array(gaus)
+    return gaus
 
+def lorentzian(x,E,F,m):
+    """
+    Gives back a loretzian
+    E is mean energy
+    x are the values
+    F is the area, derivation, FWTH?
+    m is ?
+    """
+    lorentz = []
+    for i in range(len(x)):
+        lp = 1./(1+4*(m/100.)*((x[i]-E)/F)**2)
+        lorentz.append(lp)
+    #return np.array(lorentz)
+    return lorentz
+
+def pseudo_voigt_profile(x,E,F,m,mu):
+    """
+    Linear combination of gaussian and loretzian instead of convolution
+    """
+    # TODO currently the varialble in gaus and lorentz might not be the same..
+    pseudo_voigt = []
+    if not (mu <=1):
+        print('mu has to be smaller than 1.')
+        return []
+    gaus = gaussian(x,E,F,m)
+    lorentz = lorentzian(x,E,F,m)
+    pseudo_voigt = mu * gaus  + (1-mu)*lorentz
+    return np.array(pseudo_voigt)
+
+def voigt_profile(x,E,F,m):
+    """
+    Diskrete Convolution of a gaussian and loretzian.
+    v(t) = sum of (g(x)*l(x-t))
+    # Still buggy
+    """
+    voigt = []
+    x2 = x
+    #lor = np.array(lorentzian(x,E,F,m))
+    #gaus = np.array(gaussian(x,E,F,m))
+    for point in x:
+        v_t = 0#
+        for point2 in x2:
+            point2a = [point2]
+            #print point2
+            point2_ta =  [point - point2]
+            print point2_ta
+            v_t = v_t + gaussian(point2a,E,F,m)[0]*lorentzian(point2_ta,E,F,m)[0]
+        voigt.append(v_t)
+    print(voigt)
+    return np.array(voigt)
+'''  
+    
+
+def gaussian(x, fwhm, mu):
+    """ 
+    Returns Gaussian line shape at x with FWHM fwhm and mean mu 
+    
+    """
+    
+    #hwhm = fwhm/2.0
+    sigma = fwhm / (2 * np.sqrt(2 * np.log(2)))
+    #return np.sqrt(np.log(2) / np.pi) / hwhm\
+    #                         * np.exp(-((x-mu) / hwhm)**2 * np.log(2))
+    return np.exp(-(x-mu)**2 / (2*(sigma**2))) / (np.sqrt(2 * np.pi) * sigma)
+
+def lorentzian(x, fwhm, mu):
+    """ 
+    Returns a Lorentzian line shape at x with FWHM fwhm and mean mu 
+    """
+    hwhm = fwhm/2.0
+    return hwhm / np.pi / ((x-mu)**2 + hwhm**2)
+
+def voigt_profile(x, fwhm_g, fwhm_l, mu):
+    """
+    Return the Voigt line shape at x with Lorentzian component FWHM fwhm_l
+    and Gaussian component FWHM fwhm_g and mean mu. 
+    There is no closed form for the Voigt profile, 
+    but it is related to the real part of the Faddeeva function (wofz),
+    which is used here.
+
+    """
+    from scipy.special import wofz
+
+    hwhm_l = fwhm_l/2.0
+    sigma = fwhm_g / (2 * np.sqrt(2 * np.log(2)))
+    # complex 1j
+    return np.real(wofz(((x-mu) + 1j*hwhm_l)/sigma/np.sqrt(2))) / sigma\
+                                                           /np.sqrt(2*np.pi)
+
+def pseudo_voigt_profile(x, fwhm_g, fwhm_l, mu, mix=0.5):
+    """
+    Linear combination of gaussian and loretzian instead of convolution
+    Args:
+       x: array of floats
+       fwhm_g: FWHM of gaussian
+       fwhm_l: FWHM of Lorentzian
+       mu: Mean
+       mix: ratio of gaus to lorentz, mix* gaus, (1-mix)*Lorentz
+    """
+    #pseudo_voigt = []
+    if not (mix <=1):
+        print('mix has to be smaller than 1.')
+        return []
+    gaus = gaussian(x, fwhm_g, mu)
+    lorentz = lorentzian(x, fwhm_l, mu)
+    return mix * gaus  + (1-mix)*lorentz

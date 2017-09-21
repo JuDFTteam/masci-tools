@@ -106,41 +106,23 @@ def plot_fleur_sn(node, show_dict=False, save=False):
     
     if isinstance(node, Node):
         if isinstance(node, WorkCalculation):
-            #print('workcalc')
             output_dict = node.get_outputs_dict()
             keys = output_dict.keys()
-            #print keys
             for key in keys:
                 if 'output_' in key:
                     if 'wc' in key:
                         node = output_dict.get(key)# we only visualize last output node
         if isinstance(node, ParameterData):
-            #print('parameter')
             p_dict = node.get_dict()
             workflow_name = p_dict.get('workflow_name', None)
             try:
                 plotf = functions_dict[workflow_name]
             except KeyError:
-                pass            
+                print('Sorry, I do not know how to visualize this workflow: {}, node {}. Please implement me in plot_fleur_aiida!'.format(workflow_name, node))            
                 if show_dict:
                     pprint(p_dict)
                 return
             plotf(node)
-            '''
-            if workflow_name == 'fleur_scf_wc':
-                plot_fleur_scf_wc(node)
-            elif workflow_name == 'fleur_eos_wc':
-                plot_fleur_eos_wc(node)
-            elif workflow_name == 'fleur_dos_wc':
-                plot_fleur_dos_wc(node)
-            elif workflow_name == 'fleur_band_wc':
-                plot_fleur_band_wc(node)
-            else:
-                pprint(p_dict)
-                show_dict = False # do not print twice
-            if show_dict:
-                pprint(p_dict)
-            '''
         else:
             print('I do not know how to visualize this node: {}, type {}'.format(node, type(node)))
     else:
@@ -173,7 +155,7 @@ def plot_fleur_mn(nodelist, save=False):
         print('The nodelist provided: {}, type {} is not a list. I abort'.format(nodelist, type(nodelist)))
         return None
     
-    
+    node_labels = []
     for node in nodelist:
         # first find out what we have then how to visualize
         if isinstance(node, int):#pk
@@ -182,60 +164,33 @@ def plot_fleur_mn(nodelist, save=False):
             node = load_node(node) #try
             
         if isinstance(node, Node):
+            node_labels.append(node.label)
             if isinstance(node, WorkCalculation):
-                #print('workcalc')
                 output_dict = node.get_outputs_dict()
                 keys = output_dict.keys()
-                #print keys
                 for key in keys:
                     if 'output_' in key:
                         if 'wc' in key:
                             node = output_dict.get(key)# we only visualize last output node
             if isinstance(node, ParameterData):
-                #print('parameter')
                 p_dict = node.get_dict()
                 workflow_name = p_dict.get('workflow_name', None)
                 cur_list = all_nodes.get(workflow_name, [])
                 cur_list.append(node)  
                 all_nodes[workflow_name] = cur_list
-                
-                '''
-                if workflow_name == 'fleur_scf_wc':
-                    cur_list = all_nodes.get(workflow_name, [])
-                    cur_list.append(node)                    
-                    #plot_fleur_scf_wc(node)
-                elif workflow_name == 'fleur_eos_wc':
-                    cur_list = all_nodes.get(workflow_name, [])
-                    cur_list.append(node)                    
-                    #plot_fleur_eos_wc(node)
-                elif workflow_name == 'fleur_dos_wc':
-                    cur_list = all_nodes.get(workflow_name, [])
-                    cur_list.append(node)                  
-                    #plot_fleur_dos_wc(node)
-                elif workflow_name == 'fleur_band_wc':
-                    cur_list = all_nodes.get(workflow_name, [])
-                    cur_list.append(node)                    
-                    #plot_fleur_band_wc(node)
-                else:
-                    pprint(p_dict)
-                    show_dict = False # do not print twice
-                
-                if show_dict:
-                    pprint(p_dict)
-                '''
             else:
                 print('I do not know how to visualize this node: {}, type {} from the nodelist {}'.format(node, type(node), nodelist))
         else:
             print('The node provided: {} of type {} in the nodelist {} is not an AiiDA object'.format(node, type(node), nodelist))    
   
-    print(all_nodes)
+    #print(all_nodes)
     for node_key, nodelist in all_nodes.iteritems():
         try:
             plotf = functions_dict[node_key]
         except KeyError:
-            pass
+            print('Sorry, I do not know how to visualize these nodes (multiplot): {} {}'.format(node_key, nodelist))            
             continue
-        plot_res = plotf(nodelist)
+        plot_res = plotf(nodelist, labels=node_labels)
 
 
 
@@ -243,7 +198,7 @@ def plot_fleur_mn(nodelist, save=False):
 ## general plot routine  ##
 ###########################
 
-def plot_fleur_scf_wc(nodes):
+def plot_fleur_scf_wc(nodes, labels=[]):
     """
     This methods takes an AiiDA output parameter node or a list from a scf workchain and
     plots number of iteration over distance and total energy
@@ -274,9 +229,12 @@ def plot_fleur_scf_wc(nodes):
         distance_all_n.append(distance_all)
         total_energy_n.append(total_energy)
     #plot_convergence_results(distance_all, total_energy, iteration)
-    plot_convergence_results_m(distance_all_n, total_energy_n, iterations)
+    if labels:
+        plot_convergence_results_m(distance_all_n, total_energy_n, iterations, plot_labels=labels)        
+    else:
+        plot_convergence_results_m(distance_all_n, total_energy_n, iterations)
 
-def plot_fleur_dos_wc(node):
+def plot_fleur_dos_wc(node, labels=[]):
     """
     This methods takes an AiiDA output parameter node from a density of states
     workchain and plots a simple density of states
@@ -297,7 +255,7 @@ def plot_fleur_dos_wc(node):
     else:
         print('Could not retrieve dos file path from output node')
         
-def plot_fleur_eos_wc(node):
+def plot_fleur_eos_wc(node, labels=[]):
     """
     This methods takes an AiiDA output parameter node from a density of states
     workchain and plots a simple density of states
@@ -324,7 +282,7 @@ def plot_fleur_eos_wc(node):
     #fit_y = [parabola(scale2, fit[0], fit[1], fit[2]) for scale2 in scaling]
     plot_lattice_constant(Total_energy, scaling)#, fit_y)
 
-def plot_fleur_band_wc(node):
+def plot_fleur_band_wc(node, labels=[]):
     """
     This methods takes an AiiDA output parameter node from a band structure
     workchain and plots a simple band structure
@@ -348,7 +306,7 @@ def plot_fleur_band_wc(node):
     else:
         print('Could not retrieve dos file path from output node')    
 
-def plot_fleur_relax_wc(node):
+def plot_fleur_relax_wc(node, labels=[]):
     """
     This methods takes an AiiDA output parameter node from a relaxation
     workchain and plots some information about atom movements and forces
@@ -358,11 +316,29 @@ def plot_fleur_relax_wc(node):
     
     #plot_relaxation_results
 
+def plot_fleur_corehole_wc(nodes, labels=[]):
+    """
+    This methods takes AiiDA output parameter nodes from a corehole
+    workchain and plots some information about Binding energies
+    """    
+    pass
+
+def plot_fleur_initial_cls_wc(nodes, labels=[]):
+    """
+    This methods takes AiiDA output parameter nodes from a initial_cls 
+    workchain and plots some information about corelevel shifts.
+    (Spectra)
+    """     
+    
+    
+    pass
 
 functions_dict = {
         'fleur_scf_wc' : plot_fleur_scf_wc,
         'fleur_eos_wc' : plot_fleur_eos_wc,
         'fleur_dos_wc' : plot_fleur_dos_wc,
         'fleur_band_wc' : plot_fleur_band_wc,
+        'fleur_corehole_wc' : plot_fleur_corehole_wc,
+        'fleur_initial_cls_wc' : plot_fleur_initial_cls_wc
 
     }
