@@ -349,6 +349,7 @@ def plot_spectra(wc_nodes, title='', factors=[], energy_range=[100, 120], fwhm_g
     :param wc_nodes: 
     :prints : Warnings a
     :return corelevelshifts: it returns the results it plots
+    # TODO if several compounds are plottet together all references energies have to be extracted, not only the last ones...
     """
     from aiida.orm import DataFactory, Node, load_node
     from aiida.orm.calculation.work import WorkCalculation
@@ -382,7 +383,8 @@ def plot_spectra(wc_nodes, title='', factors=[], energy_range=[100, 120], fwhm_g
         wc_nodes = [wc_nodes]
     bindingenergies_all = {}
     natomtypes_dict_all = {}
-    compound_info = {}
+    bindingenergies_ref_all = {}
+    compound_info = []
     for ncount, node in enumerate(wc_nodes): # each node is the wc_node or result node/uuid/pk for a compound
         if isinstance(node, int):#pk
             node = load_node(node)
@@ -424,7 +426,7 @@ def plot_spectra(wc_nodes, title='', factors=[], energy_range=[100, 120], fwhm_g
                     outdict = output.get_outputs_dict()
                     outscf_para = outdict.get('output_scf_wc_para', None)
                     if outscf_para:
-                        total_energy, fermi_energies, bandgaps, all_atomtypes, all_corelevels = extract_results([output])
+                        total_energy, fermi_energies, bandgaps, all_atomtypes, all_corelevels, log = extract_results([output])
                         break # we only use the first one (main compound per default) # TODO always the case? 
         else: # use only information from output nodes/Database, do not use any files
             all_atomtypes = wres_dict.get('atomtypes', {})         
@@ -433,6 +435,7 @@ def plot_spectra(wc_nodes, title='', factors=[], energy_range=[100, 120], fwhm_g
         #pprint(all_atomtypes)
         
         compound_label = all_atomtypes.keys()[0]
+        compound_info.append(compound_label)
         print('Material: {}'.format(compound_label))
         # Now we need to convert/build the right format for plot_corelevel_spectra        
         # For each atomtype in compound, get full coresetup, number of atoms
@@ -496,7 +499,7 @@ def plot_spectra(wc_nodes, title='', factors=[], energy_range=[100, 120], fwhm_g
         # optional mark the experiemntal references
         bindingenergies_all = dict_merger(bindingenergies_all, bindingenergies)
         natomtypes_dict_all = dict_merger(natomtypes_dict_all, natomtypes_dict)
-        
+        bindingenergies_ref_all = dict_merger(bindingenergies_ref_all, bindingenergies_ref)
         #compound_info[compound_label] = compound_info_dict#len(natomtypes_dict)
         # compound info : { 'Be': [BeTi, BeTi, Be12Ti, Be12Ti, Be12Ti], 'Ti' : [BeTi, Be12Ti]}
         # might work, because of dict merger
@@ -504,13 +507,13 @@ def plot_spectra(wc_nodes, title='', factors=[], energy_range=[100, 120], fwhm_g
     #pprint(natomtypes_dict_all)
     pprint(bindingenergies_all)
     # plot the results        
-    plot_corelevel_spectra(bindingenergies_all, natomtypes_dict_all, exp_references=bindingenergies_ref, #compound_info=compound_info, 
+    [xdata_spec, ydata_spec, ydata_single_all , xdata_all, ydata_all, xdatalabel] = plot_corelevel_spectra(bindingenergies_all, natomtypes_dict_all, exp_references=bindingenergies_ref_all, #compound_info=compound_info, 
                            energy_range=energy_range, title=title, fwhm_g=fwhm_g, fwhm_l=fwhm_l, 
-                           energy_grid=energy_grid, linetyp_spec=linetyp_spec, **kwargs)
+                           energy_grid=energy_grid, peakfunction=peakfunction, linetyp_spec=linetyp_spec, **kwargs)
 
-
+    bindingenergies_ref_all_compressed = clear_dict_empty_lists(bindingenergies_ref_all)
         
-    return natomtypes_dict, bindingenergies, bindingenergies_ref
+    return natomtypes_dict_all, bindingenergies_all, bindingenergies_ref_all_compressed, xdata_spec, ydata_spec, ydata_single_all , xdata_all, ydata_all, compound_info, xdatalabel
 
 
 functions_dict = {
@@ -522,3 +525,26 @@ functions_dict = {
         'fleur_initial_cls_wc' : plot_fleur_initial_cls_wc
 
     }
+    
+def clear_dict_empty_lists(to_clear_dict):
+    '''
+    Removes entries from a nested dictionary which are empty lists.
+    
+    param to_clear_dict dict: python dictionary which should be 'compressed'
+    return new_dict dict: compressed python dict version of to_clear_dict
+    
+    Hints: rekursive
+    '''
+    new_dict = {}
+    if not to_clear_dict:
+        return new_dict
+
+    if not isinstance(to_clear_dict, dict):
+        return to_clear_dict
+
+    for key, value in to_clear_dict.iteritems():
+        if value:
+            new_value = clear_dict_empty_lists(value)
+            if new_value:
+                new_dict[key] = new_value
+    return new_dict

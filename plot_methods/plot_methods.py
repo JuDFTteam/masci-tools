@@ -12,7 +12,7 @@ or files are ploted, parse a dict or filepath.
 """
 # TODO but allow to optional parse information for saving and title,
 #  (that user can put pks or structure formulas in there)
-
+# Write/export data to file for all methods
 __copyright__ = (u"Copyright (c), 2016, Forschungszentrum Jülich GmbH, "
                  "IAS-1/PGI-1, Germany. All rights reserved.")
 __license__ = "MIT license, see LICENSE.txt file"
@@ -57,6 +57,11 @@ legend_g = False
 save_plots_g = False# True
 save_format_g = 'png'#'pdf'
 tightlayout_g = False
+
+
+# write data to file
+save_raw_plot_data_g = False
+raw_plot_data_format_g = 'txt'
 ##############
 
 
@@ -71,7 +76,11 @@ def set_plot_defaults(title_fontsize = 16,
                                      'length' : 5},
                       figsize = (8, 6),
                       save_plots = False, #True,
-                      save_format = 'pdf', legend=True, **kwargs):
+                      save_format = 'pdf', 
+                      legend=True, 
+                      save_raw_plot_data=False,
+                      raw_plot_data_format='txt',
+                      **kwargs):
     """
     Try to use this to set some global default values.
     
@@ -79,6 +88,7 @@ def set_plot_defaults(title_fontsize = 16,
     """
     global linewidth_g, markersize_g, labelfonstsize_g, title_fontsize_g, axis_linewidth_g
     global ticklabelsize_g, tick_params_g, save_plots_g, save_format_g, legend_g, figsize_g
+    global raw_plot_data_format_g, save_raw_plot_data_g
     
     title_fontsize_g = title_fontsize
     # plot properties
@@ -98,7 +108,10 @@ def set_plot_defaults(title_fontsize = 16,
     
     legend_g = legend
     figsize_g = figsize
-
+    
+    #save/export data
+    save_raw_plot_data_g = save_raw_plot_data
+    raw_plot_data_format_g = raw_plot_data_format
 
 ###########################
 ## general plot routines ##
@@ -648,10 +661,8 @@ def plot_one_element_corelv(corelevel_dict, element, compound=''):
         pp.show()            
 
 
-def plot_corelevel_spectra(coreleveldict, natom_typesdict, exp_references={}, show_single=True, show_ref=True, energy_range=[None, None], title = '', fwhm_g=0.6, fwhm_l=0.1, energy_grid=0.2, peakfunction='voigt', linetyp_spec='o-'):
+def plot_corelevel_spectra(coreleveldict, natom_typesdict, exp_references={}, scale_to=-1, show_single=True, show_ref=True, energy_range=[None, None], title = '', fwhm_g=0.6, fwhm_l=0.1, energy_grid=0.2, peakfunction='voigt', linetyp_spec='o-'):
     #show_compound=True, , compound_info={} compound_info dict: dict that can be used to specify what component should be shown together     compound_info = {'Be12Ti' : {'Be' : 4, 'Ti' : 1}, 'BeTi' : {'Be' : 1, 'Ti' : 1}}
-
-
     """
     Ploting function of corelevel in the form of a spectrum.
     
@@ -664,6 +675,7 @@ def plot_corelevel_spectra(coreleveldict, natom_typesdict, exp_references={}, sh
     Kwargs:
         exp_references: dict with experimental refereces, will be ploted as vertical lines
         show_single (bool): plot all single peaks. 
+        scale_to float: the maximum 'intensity' will be scaled to this value (useful for experimental comparisons)
         title (string): something for labeling
         fwhm (float): full width half maximum of peaks (gaus, lorentz or voigt_profile)
         energy_grid (float): energy resolution
@@ -679,6 +691,7 @@ def plot_corelevel_spectra(coreleveldict, natom_typesdict, exp_references={}, sh
     ydata_all = []
     ydata_spec = []
     xdata_spec = []
+    xdatalabel = []
     energy_grid = energy_grid # eV
     #count = 0
     #compound_info_new = compound_info
@@ -698,6 +711,7 @@ def plot_corelevel_spectra(coreleveldict, natom_typesdict, exp_references={}, sh
                     if key in corelevel_name:
                         nelectrons = val
             for i,corelevel in enumerate(corelevel_list):
+                xdatalabel.append(elem + ' ' + corelevel_name)
                 xdata_all.append(corelevel)
                 ydata_all.append(natom[i]*nelectrons)
                 #count = count + 1
@@ -744,6 +758,16 @@ def plot_corelevel_spectra(coreleveldict, natom_typesdict, exp_references={}, sh
         ydata_spec = ydata_spec + ydata_all[i]*data_f
         ydata_single_all.append(ydata_all[i]*data_f)
     
+    # we scale after and not before, because the max intensity is not neccesary 
+    # the number of electrons.
+    if scale_to > 0.0:
+        y_valmax = max(ydata_spec)
+        scalingfactor = scale_to/y_valmax
+        ydata_spec = ydata_spec * scalingfactor
+        ydata_single_all_new = []
+        for ydata_single in ydata_single_all:
+            ydata_single_all_new.append(ydata_single * scalingfactor)
+        ydata_single_all = ydata_single_all_new
     '''
     # TODO this is bad... a redesign might be good, maybe input change...
     ydata_compound = []
@@ -769,7 +793,7 @@ def plot_corelevel_spectra(coreleveldict, natom_typesdict, exp_references={}, sh
     plotlabel ='corelevel shifts'
     linetyp = 'o'
     linetyp1 = linetyp_spec#'-'
-    linewidth_g1 = 2
+    linewidth_g1 = linewidth_g
 
 
     ymin = -0.3
@@ -805,14 +829,14 @@ def plot_corelevel_spectra(coreleveldict, natom_typesdict, exp_references={}, sh
                              length = tick_params_g.get('length', 5))
     ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
     ax.yaxis.get_major_formatter().set_useOffset(False)
-    p1 = pp.plot(xdata_all, ydata_all, linetyp, label = plotlabel, color = color,
-                 linewidth = linewidth_g, markersize = markersize_g)
+    p1 = pp.plot(xdata_all, ydata_all, linetyp, label=plotlabel, color=color,
+                 linewidth=linewidth_g, markersize= markersize_g)
     
     if show_ref and exp_references:
         for elm,ref_list_dict in exp_references.iteritems():
             for state,ref_list in ref_list_dict.iteritems():
                 for ref in ref_list:                
-                    pp.axvline(ymin=0, ymax=0.1, x=ref, linewidth=2, color='k')
+                    pp.axvline(ymin=0, ymax=0.1, x=ref, linewidth=linewidth_g, color='k')
     '''
     for j,y in enumerate(ydata_all):
         for i,x in enumerate(xdata):
@@ -871,6 +895,7 @@ def plot_corelevel_spectra(coreleveldict, natom_typesdict, exp_references={}, sh
                  
     if show_single:
         for single_peek in ydata_single_all:
+            #xdatalabel
             pp.plot(xdata_spec, single_peek, '-', label=plotlabel, #color = color,
                  linewidth=linewidth_g1, markersize = markersize_g)
                  
@@ -903,7 +928,10 @@ def plot_corelevel_spectra(coreleveldict, natom_typesdict, exp_references={}, sh
         print 'save plot to: {}'.format(savefilename)
         pp.savefig(savefilename, format=save_format_g, transparent=True)
     else:
-        pp.show()            
+        pp.show()   
+
+    # for plotting or file writting
+    return [xdata_spec, ydata_spec, ydata_single_all, xdata_all, ydata_all, xdatalabel]
 
 '''
 def plot_corelevel_spectra(coreleveldict, natom_typesdict, compound = ''):
