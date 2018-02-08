@@ -23,6 +23,7 @@ import re
 import os
 import numpy as np
 import matplotlib.pyplot as pp
+import matplotlib.mlab as mlab
 
 ############
 # GLOBAL MODULE VARIABLES setting properties
@@ -58,7 +59,7 @@ save_plots_g = False# True
 save_format_g = 'png'#'pdf'
 tightlayout_g = False
 
-
+show_g = True
 # write data to file
 save_raw_plot_data_g = False
 raw_plot_data_format_g = 'txt'
@@ -80,6 +81,7 @@ def set_plot_defaults(title_fontsize = 16,
                       legend=True, 
                       save_raw_plot_data=False,
                       raw_plot_data_format='txt',
+                      show = True,
                       **kwargs):
     """
     Try to use this to set some global default values.
@@ -88,7 +90,7 @@ def set_plot_defaults(title_fontsize = 16,
     """
     global linewidth_g, markersize_g, labelfonstsize_g, title_fontsize_g, axis_linewidth_g
     global ticklabelsize_g, tick_params_g, save_plots_g, save_format_g, legend_g, figsize_g
-    global raw_plot_data_format_g, save_raw_plot_data_g
+    global raw_plot_data_format_g, save_raw_plot_data_g, show_g
     
     title_fontsize_g = title_fontsize
     # plot properties
@@ -112,6 +114,8 @@ def set_plot_defaults(title_fontsize = 16,
     #save/export data
     save_raw_plot_data_g = save_raw_plot_data
     raw_plot_data_format_g = raw_plot_data_format
+    
+    show_g = show
 
 ###########################
 ## general plot routines ##
@@ -120,14 +124,16 @@ def set_plot_defaults(title_fontsize = 16,
 
 def single_scatterplot(ydata, xdata, xlabel, ylabel, title, plotlabel ='scatterplot', 
                        linetyp='o-', limits=[None, None], saveas ='scatterplot', 
-                       color = 'k', scale = [None, None]):
+                       color = 'k', scale = [None, None], axis=None):
     """
     Create a standard scatter plot (this should be flexible enough) to do all the
     basic plots.
     """
-
-    fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
-    ax = fig.add_subplot(111)
+    if axis:
+        ax = axis
+    else:
+        fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
+        ax = fig.add_subplot(111)
     for axis in ['top','bottom','left','right']:
         ax.spines[axis].set_linewidth(axis_linewidth_g)
     ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
@@ -144,7 +150,7 @@ def single_scatterplot(ydata, xdata, xlabel, ylabel, title, plotlabel ='scatterp
     #ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
     #ax.yaxis.get_major_formatter().set_useOffset(False)
     #ax.xaxis.set_major_formatter(DateFormatter("%b %y"))
-    p1 = pp.plot(xdata, ydata, linetyp, label = plotlabel, color = color,
+    p1 = ax.plot(xdata, ydata, linetyp, label = plotlabel, color = color,
                  linewidth = linewidth_g, markersize = markersize_g)
     if scale:
         if scale[0]:
@@ -158,24 +164,28 @@ def single_scatterplot(ydata, xdata, xlabel, ylabel, title, plotlabel ='scatterp
         if limits[0]:
             xmin = limits[0][0]
             xmax = limits[0][1]
-            pp.xlim(xmin, xmax)
+            ax.set_xlim(xmin, xmax)
         if limits[1]:
             ymin = limits[1][0]
             ymax = limits[1][1]
-            pp.ylim(ymin, ymax)
-
+            ax.set_ylim(ymin, ymax)
+            
     if save_plots_g:
         savefilename = '{}.{}'.format(saveas, save_format_g)
         print 'save plot to: {}'.format(savefilename)
         pp.savefig(savefilename, format=save_format_g, transparent=True)
-    else:
+    elif show_g:
         pp.show()
+    else:
+        pass
+    return ax
 
 
 def multiple_scatterplots(ydata, xdata, xlabel, ylabel, title, plot_labels, 
                           linetyp='o-', legend=legend_g, 
-                          legend_option = {},
-                          saveas ='mscatterplot', limits=[None, None], scale = [None, None]):
+                          legend_option={},
+                          saveas='mscatterplot', limits=[None, None], scale=[None, None],
+                          axis=None):
     """
     Create a standard scatter plot (this should be flexible enough) to do all the
     basic plots.
@@ -187,9 +197,11 @@ def multiple_scatterplots(ydata, xdata, xlabel, ylabel, title, plot_labels,
 
     # TODO allow plotlabels to have different dimension
     pl =[]
-
-    fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
-    ax = fig.add_subplot(111)
+    if axis:
+        ax = axis
+    else:
+        fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
+        ax = fig.add_subplot(111)
     for axis in ['top','bottom','left','right']:
         ax.spines[axis].set_linewidth(axis_linewidth_g)
     ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
@@ -207,7 +219,7 @@ def multiple_scatterplots(ydata, xdata, xlabel, ylabel, title, plot_labels,
     ax.yaxis.get_major_formatter().set_useOffset(False)
 
     for i, data in enumerate(ydata):
-        p1 = pp.plot(xdata[i], data, linetyp, label = plot_labels[i],
+        p1 = ax.plot(xdata[i], data, linetyp, label = plot_labels[i],
                      linewidth = linewidth_g, markersize = markersize_g)
     if scale:
         if scale[0]:
@@ -221,11 +233,12 @@ def multiple_scatterplots(ydata, xdata, xlabel, ylabel, title, plot_labels,
         if limits[0]:
             xmin = limits[0][0]
             xmax = limits[0][1]
-            pp.xlim(xmin, xmax)
+            ax.set_xlim(xmin, xmax)
         if limits[1]:
             ymin = limits[1][0]
             ymax = limits[1][1]
-            pp.ylim(ymin, ymax)
+            ax.set_ylim(ymin, ymax)
+            
     #TODO legend
     if legend:
         print legend
@@ -243,14 +256,172 @@ def multiple_scatterplots(ydata, xdata, xlabel, ylabel, title, plot_labels,
         savefilename = '{}.{}'.format(saveas, save_format_g)
         print 'save plot to: {}'.format(savefilename)
         pp.savefig(savefilename, format=save_format_g, transparent=True)
-    else:
+    elif show_g:
         pp.show()
+    else:
+        pass
+    return ax
 
-def default_histogram():
+
+def waterfall_plot(xdata, ydata, zdata, xlabel, ylabel,  zlabel, title, plot_labels, 
+                          linetyp='o-', legend=legend_g, 
+                          legend_option = {},
+                          saveas ='mscatterplot', limits=[None, None], scale = [None, None]):
+    """
+    Create a standard waterfall plot (this should be flexible enough) to do all the
+    basic plots.
+    """
+    from mpl_toolkits.mplot3d.axes3d import Axes3D    
+    
+    nplots = len(ydata)
+    if not (nplots==len(xdata)): # todo check dimention not len, without moving to special datatype.
+        print 'ydata and xdata must have the same dimension'
+        return
+    if not (nplots==len(zdata)): # todo check dimention not len, without moving to special datatype.
+        print 'ydata and zdata must have the same dimension'
+        return
+
+    # TODO allow plotlabels to have different dimension
+    pl =[]
+
+    fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
+    ax = fig.add_subplot(111, projection='3d')
+    for axis in ['top','bottom','left','right']:
+        ax.spines[axis].set_linewidth(axis_linewidth_g)
+    ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
+    ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
+    ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
+    ax.yaxis.set_tick_params(size = tick_params_g.get('size', 4.0),
+                             width = tick_params_g.get('width', 1.0),
+                             labelsize = tick_params_g.get('labelsize', 14),
+                             length = tick_params_g.get('length', 5))
+    ax.xaxis.set_tick_params(size = tick_params_g.get('size', 4.0),
+                             width = tick_params_g.get('width', 1.0),
+                             labelsize = tick_params_g.get('labelsize', 14),
+                             length = tick_params_g.get('length', 5))
+    ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
+    ax.yaxis.get_major_formatter().set_useOffset(False)
+
+    for i, data in enumerate(ydata):
+        p1 = ax.plot3D(xdata[i], data, zdata[i], linetyp, label = plot_labels[i],
+                     linewidth = linewidth_g, markersize = markersize_g)
+    if scale:
+        if scale[0]:
+            ax.set_xscale(scale[0])
+        elif scale[1]:
+            ax.set_yscale(scale[1])
+        else:
+            pass
+    
+    if limits:
+        if limits[0]:
+            xmin = limits[0][0]
+            xmax = limits[0][1]
+            ax.set_xlim(xmin, xmax)
+        if limits[1]:
+            ymin = limits[1][0]
+            ymax = limits[1][1]
+            ax.set_ylim(ymin, ymax)
+
+    #TODO legend
+    if legend:
+        print legend
+        #{anchor, title, fontsize, linewith, borderaxespad}
+        # defaults 'anchor' : (0.75, 0.97), 'title' : 'Legend', 'fontsize' : 17, 'linewith' : 1.5, 'borderaxespad' : }, 
+        legends_defaults = {'bbox_to_anchor' : (0.70, 0.97), 'fontsize' : 12, 'linewidth' : 1.5, 'borderaxespad' : 0 , 'loc' : 2, 'fancybox' : True} #'title' : 'Legend',
+        loptions = legends_defaults.copy()
+        loptions.update(legend_option)
+        linewidth = loptions.pop('linewidth', 1.5)
+        #title_font_size = loptions.pop('title_font_size', 15)
+        leg = pp.legend(**loptions)#bbox_to_anchor=loptions['anchor'],loc=loptions['loc'], title=legend_title, borderaxespad=0., fancybox=True)
+        leg.get_frame().set_linewidth(linewidth)
+        #leg.get_title().set_fontsize(title_font_size) #legend 'Title' fontsize
+    if save_plots_g:
+        savefilename = '{}.{}'.format(saveas, save_format_g)
+        print 'save plot to: {}'.format(savefilename)
+        pp.savefig(savefilename, format=save_format_g, transparent=True)
+    elif show_g:
+        pp.show()
+    else:
+        pass
+
+
+def multiplot_moved(ydata, xdata, xlabel, ylabel, title, plot_labels, scale_move=1.0, 
+                          linetyp='o-', legend=legend_g, 
+                          legend_option={},
+                          saveas='mscatterplot', limits=[None, None], scale=[None, None]):
+    """
+    Plots all the scater plots above each other. It adds an arbitray offset to the ydata to do this and
+    calls multi scatter plot. Therefore you might not want to show the yaxis ticks
+    """
+    
+    ydatanew = []
+    
+    ymax = 0
+    for data in ydata:
+        ydatanew.append(np.array(data) + ymax)
+        ymax = ymax + max(data)*scale_move
+    
+    multiple_scatterplots(ydatanew, xdata, xlabel, ylabel, title, plot_labels, 
+                          linetyp=linetyp, legend=legend, 
+                          legend_option=legend_option,
+                          saveas=saveas, limits=limits, scale=scale)
+
+
+def default_histogram(xdata, bins=None, range=None, density=None, weights=None, 
+                      cumulative=False, bottom=None, histtype='bar', align='mid', 
+                      orientation='vertical', rwidth=None, log=False, color=None, 
+                      label=None, stacked=False, normed=None, data=None, axis=None, 
+                      title='hist', xlabel='bins', ylabel='counts', **kwargs):
     """
     Create a standard looking histogram
     """
-    pass
+    
+    if axis:
+        ax = axis
+    else:
+        fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
+        ax = fig.add_subplot(111)
+    
+    for axis in ['top','bottom','left','right']:
+        ax.spines[axis].set_linewidth(axis_linewidth_g)
+    ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
+    ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
+    ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
+    ax.yaxis.set_tick_params(size = tick_params_g.get('size', 4.0),
+                             width = tick_params_g.get('width', 1.0),
+                             labelsize = tick_params_g.get('labelsize', 14),
+                             length = tick_params_g.get('length', 5))
+    ax.xaxis.set_tick_params(size = tick_params_g.get('size', 4.0),
+                             width = tick_params_g.get('width', 1.0),
+                             labelsize = tick_params_g.get('labelsize', 14),
+                             length = tick_params_g.get('length', 5))
+    ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
+    ax.yaxis.get_major_formatter().set_useOffset(False)
+    
+    
+    #matplotlib.pyplot.hist(x, bins=None, range=None, density=None, weights=None, cumulative=False, bottom=None, histtype='bar', align='mid', orientation='vertical', rwidth=None, log=False, color=None, label=None, stacked=False, normed=None, hold=None, data=None, **kwargs)
+    n, bins, patches = ax.hist(xdata, bins=bins, range=range, density=density, 
+                               weights=weights, cumulative=cumulative,
+            bottom=bottom, histtype=histtype, align=align, orientation=orientation, 
+            rwidth=rwidth, log=log, color=color, label=label, stacked=stacked, 
+            normed=normed, data=data, **kwargs)
+
+    if normed:
+        mu = np.mean(xdata)
+        sigma = np.std(xdata)
+        y = mlab.normpdf(bins, mu, sigma)
+        if orientation=='horizontal':
+            b = ax.plot(y, bins, '--')
+       
+        else:
+            b = ax.plot(bins, y, '--')
+
+    if show_g:
+        pp.show()
+    else:
+        pass
+
 
 
 def multiaxis_scatterplot():
@@ -268,6 +439,27 @@ def surface_plot():
 ###########################
 ## special plot routines ##
 ###########################
+
+def plot_residuen(xdata, fitdata, realdata, errors=None, xlabel = r'Energy [eV]', ylabel = r'cts/s [arb]', title = r'Residuen', hist=True):
+    """
+    Calculates and Plots the residuen for given xdata fit results and the real data.
+    
+    If hist=True also the normed residual distribution is ploted with a normal distribution.
+    """
+    global show_g
+    
+    show_g = False
+    ydata = realdata-fitdata
+    #TODO single scatter error plot....
+    fig = pp.figure(num=None, figsize=(figsize_g[0]*2, figsize_g[1]), dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
+    ax2 = pp.subplot2grid((1, 2), (0, 0))
+    ax3 = pp.subplot2grid((1, 2), (0, 1))#, sharex = ax2, sharey = ax2)
+    a = single_scatterplot(ydata, xdata, xlabel, ylabel, title, axis=ax2)
+    
+    if hist:
+        default_histogram(ydata, bins=20, axis=ax3, orientation='horizontal', title='Residuen distribution', normed=1)
+    show_g = True
+    return ydata
 
 def plot_convergence_results(distance, total_energy, iteration, saveas1='t_energy_convergence', saveas2='distance_convergence'):
     """
@@ -812,6 +1004,10 @@ def plot_corelevel_spectra(coreleveldict, natom_typesdict, exp_references={}, sc
             }
     
     ##### PLOT 1, plot raw datapoints
+    
+    if not show_g:
+        return [xdata_spec, ydata_spec, ydata_single_all, xdata_all, ydata_all, xdatalabel]    
+    
     fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
     ax = fig.add_subplot(111)
     for axis in ['top','bottom','left','right']:
@@ -889,7 +1085,8 @@ def plot_corelevel_spectra(coreleveldict, natom_typesdict, exp_references={}, sc
                              length = tick_params_g.get('length', 5))
     ax1.yaxis.get_major_formatter().set_powerlimits((0, 3))
     ax1.yaxis.get_major_formatter().set_useOffset(False)
-    
+
+        
     p11 = pp.plot(xdata_spec, ydata_spec, linetyp1, label=plotlabel, color=color,
                  linewidth=linewidth_g1, markersize=markersize_g)
                  
