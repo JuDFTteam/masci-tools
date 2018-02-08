@@ -344,7 +344,7 @@ def plot_spectra(wc_nodes, title='', factors=[], energy_range=[100, 120], fwhm_g
     For older result node versions it gets parses the out.xml file again.
     It converts the core-level shifts to Bindingenergies with all the given experimental Bindingenergies ('exp_bindingenergies') from the NIST database.
     Then it plots the data with 'plot_corelevel_spectra'
-    Comment: For now only inital shift nodes, TODO: Final state Binding energies
+    Comment: For now only initial shift nodes, TODO: Final state Binding energies
     
     :param wc_nodes: 
     :prints : Warnings a
@@ -396,14 +396,20 @@ def plot_spectra(wc_nodes, title='', factors=[], energy_range=[100, 120], fwhm_g
             
         if isinstance(node, WorkCalculation):
             wc_node = node
-            node = node.get_outputs_dict()['output_inital_cls_wc_para']
+            try:
+                node = node.get_outputs_dict()['output_initial_cls_wc_para']
+            except KeyError:# old wc had a tipo
+                node = node.get_outputs_dict()['output_inital_cls_wc_para']
+            
             # try if fail continue, print warning
         if not isinstance(node, ParameterData):
             print('the node {} is not a result node of an initial_cls workchain'.format(node))
             continue
         else:
-            inputsnodes = node.get_inputs_dict()
-            wc_node = inputsnodes.get('output_inital_cls_wc_para', None)
+            inputsnodes = node.get_inputs_dict()            
+            wc_node = inputsnodes.get('output_initial_cls_wc_para', None)
+            if not wc_node: # old wc version
+                wc_node = inputsnodes.get('output_inital_cls_wc_para', None)
             if not wc_node:
                 break
         
@@ -455,11 +461,15 @@ def plot_spectra(wc_nodes, title='', factors=[], energy_range=[100, 120], fwhm_g
             coreconfig_full = get_spin_econfig(convert_fleur_config_to_econfig(coreconfig_short))
             natoms = atomtype.get('natoms')
             natomtypes_dict[elem] = natomtypes_dict.get(elem, [])
-            multiplier = factors[ncount:ncount+1]
-            if multiplier:
-                multiplier = multiplier[0]
+            multiplier_list = list(factors[ncount:ncount+1]) # one element, but does not fail.
+            # list convertion because np.array behaves different then list in [0.0] case
+            #print('multiplier_list: {}'.format(multiplier_list))
+            #print(type(multiplier_list))
+            if multiplier_list:
+                multiplier = multiplier_list[0]
             else:
-                multiplier = 1
+                multiplier = 1.0
+            #print('multiplier: {}'.format(multiplier))
             natomtypes_dict[elem].append(natoms*multiplier)
             coreconfig_full_list[elem] = coreconfig_full_list.get(elem, [])
             coreconfig_full_list[elem].append(coreconfig_full.split())
