@@ -7,10 +7,10 @@ from setuptools import setup, find_packages
 
 if __name__ == '__main__':
     setup(
-        name='plot_methods',
-        version='0.1.0b',
-        description='Wrapers of matplotlib functionality to visualalize common material science data. Plus wrapers of visualisation for aiida-fleur workflow nodes',
-        url='https://bitbucket.org/broeder-j/plot_methods/',
+        name='masci_tools',
+        version='0.2.0b',
+        description='Tools for Materials science. Vis contains wrapers of matplotlib functionality to visualalize common material science data. Plus wrapers of visualisation for aiida-fleur workflow nodes',
+        url='https://github.com/JuDFTteam/masci-tools',
         author='Jens Broeder',
         author_email='j.broeder@fz-juelich.de',
         license='MIT License, see LICENSE.txt file.',
@@ -21,7 +21,7 @@ if __name__ == '__main__':
             'Programming Language :: Python :: 2.7',
             'Topic :: Scientific/Engineering :: Physics'
         ],
-        keywords='material science plots fitting visualization aiida aiida-fleur flapw',
+        keywords='material science plots fitting visualization aiida dft all-electron',
         packages=find_packages(),
         #['src', 'tests'],
         include_package_data=True,

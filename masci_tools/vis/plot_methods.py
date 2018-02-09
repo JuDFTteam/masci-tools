@@ -29,6 +29,7 @@ import matplotlib.mlab as mlab
 # GLOBAL MODULE VARIABLES setting properties
 # maintain this and set method for them
 # convention they are the property ending with '_g'
+# TODO: There is prob a better way to do this, 
 
 # figure properties
 title_fontsize_g = 16
@@ -123,8 +124,8 @@ def set_plot_defaults(title_fontsize = 16,
 
 
 def single_scatterplot(ydata, xdata, xlabel, ylabel, title, plotlabel ='scatterplot', 
-                       linetyp='o-', limits=[None, None], saveas ='scatterplot', 
-                       color = 'k', scale = [None, None], axis=None):
+                       linestyle='-', marker='o', limits=[None, None], saveas ='scatterplot', 
+                       color='k', scale=[None, None], axis=None, xerr=None, yerr=None, **kwargs):
     """
     Create a standard scatter plot (this should be flexible enough) to do all the
     basic plots.
@@ -150,8 +151,18 @@ def single_scatterplot(ydata, xdata, xlabel, ylabel, title, plotlabel ='scatterp
     #ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
     #ax.yaxis.get_major_formatter().set_useOffset(False)
     #ax.xaxis.set_major_formatter(DateFormatter("%b %y"))
-    p1 = ax.plot(xdata, ydata, linetyp, label = plotlabel, color = color,
-                 linewidth = linewidth_g, markersize = markersize_g)
+    #if yerr or xerr:
+    #    p1 = ax.errorbar(xdata, ydata, linetyp, label=plotlabel, color=color,
+    #                 linewidth=linewidth_g, markersize=markersize_g, yerr=yerr, xerr=xerr)
+    #else:
+    #    p1 = ax.plot(xdata, ydata, linetyp, label=plotlabel, color=color,
+    #                 linewidth=linewidth_g, markersize=markersize_g)
+    # TODO customizable error bars fmt='o', ecolor='g', capthick=2, ...
+    # there the if is prob better...
+    p1 = ax.errorbar(xdata, ydata, linestyle=linestyle, label=plotlabel, color=color,
+                     linewidth=linewidth_g, marker=marker, markersize=markersize_g,
+                     yerr=yerr, xerr=xerr, **kwargs)                 
+    
     if scale:
         if scale[0]:
             ax.set_xscale(scale[0])
@@ -182,10 +193,10 @@ def single_scatterplot(ydata, xdata, xlabel, ylabel, title, plotlabel ='scatterp
 
 
 def multiple_scatterplots(ydata, xdata, xlabel, ylabel, title, plot_labels, 
-                          linetyp='o-', legend=legend_g, 
-                          legend_option={},
-                          saveas='mscatterplot', limits=[None, None], scale=[None, None],
-                          axis=None):
+                          linestyle='-', marker='o', legend=legend_g, 
+                          legend_option={}, saveas='mscatterplot', 
+                          limits=[None, None], scale=[None, None],
+                          axis=None, xerr=None, yerr=None, **kwargs):
     """
     Create a standard scatter plot (this should be flexible enough) to do all the
     basic plots.
@@ -200,7 +211,8 @@ def multiple_scatterplots(ydata, xdata, xlabel, ylabel, title, plot_labels,
     if axis:
         ax = axis
     else:
-        fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
+        fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g,
+                        facecolor=facecolor_g, edgecolor=edgecolor_g)
         ax = fig.add_subplot(111)
     for axis in ['top','bottom','left','right']:
         ax.spines[axis].set_linewidth(axis_linewidth_g)
@@ -217,10 +229,30 @@ def multiple_scatterplots(ydata, xdata, xlabel, ylabel, title, plot_labels,
                              length = tick_params_g.get('length', 5))
     ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
     ax.yaxis.get_major_formatter().set_useOffset(False)
-
+    
+    # TODO good checks for input and setting of internals before plotting
+    # allow all arguments as value then use for all or as lists with the righ length.
     for i, data in enumerate(ydata):
-        p1 = ax.plot(xdata[i], data, linetyp, label = plot_labels[i],
-                     linewidth = linewidth_g, markersize = markersize_g)
+        
+        if isinstance(yerr, list):
+            try:
+                yerrt = yerr[i]
+            except KeyError:
+                yerrt = yerr[0]
+        else:
+            yerrt = yerr
+        
+        if isinstance(xerr, list):
+            try:
+                xerrt = xerr[i]
+            except KeyError:
+                xerrt = xerr[0]
+        else:
+            xerrt = xerr
+                                    
+        p1 = ax.errorbar(xdata[i], data, linestyle=linestyle, label=plot_labels[i],
+                         linewidth=linewidth_g, marker=marker, markersize=markersize_g, 
+                         yerr=yerrt, xerr=xerrt, **kwargs) 
     if scale:
         if scale[0]:
             ax.set_xscale(scale[0])
@@ -239,12 +271,14 @@ def multiple_scatterplots(ydata, xdata, xlabel, ylabel, title, plot_labels,
             ymax = limits[1][1]
             ax.set_ylim(ymin, ymax)
             
-    #TODO legend
+    #TODO nice legend
     if legend:
         print legend
         #{anchor, title, fontsize, linewith, borderaxespad}
         # defaults 'anchor' : (0.75, 0.97), 'title' : 'Legend', 'fontsize' : 17, 'linewith' : 1.5, 'borderaxespad' : }, 
-        legends_defaults = {'bbox_to_anchor' : (0.70, 0.97), 'fontsize' : 12, 'linewidth' : 1.5, 'borderaxespad' : 0 , 'loc' : 2, 'fancybox' : True} #'title' : 'Legend',
+        legends_defaults = {'bbox_to_anchor' : (0.70, 0.97), 'fontsize' : 12, 
+                            'linewidth' : 1.5, 'borderaxespad' : 0 , 'loc' : 2, 
+                            'fancybox' : True} #'title' : 'Legend',
         loptions = legends_defaults.copy()
         loptions.update(legend_option)
         linewidth = loptions.pop('linewidth', 1.5)
