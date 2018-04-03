@@ -13,7 +13,7 @@ or files are ploted, parse a dict or filepath.
 # TODO but allow to optional parse information for saving and title,
 #  (that user can put pks or structure formulas in there)
 # Write/export data to file for all methods
-__copyright__ = (u"Copyright (c), 2016, Forschungszentrum Jülich GmbH, "
+__copyright__ = (u"Copyright (c), 2016-2018, Forschungszentrum Jülich GmbH, "
                  "IAS-1/PGI-1, Germany. All rights reserved.")
 __license__ = "MIT license, see LICENSE.txt file"
 __version__ = "0.27"
@@ -25,11 +25,15 @@ import numpy as np
 import matplotlib.pyplot as pp
 import matplotlib.mlab as mlab
 
-############
-# GLOBAL MODULE VARIABLES setting properties
+
+###############################################################################
+################ GLOBAL MODULE VARIABLES setting properties ###################
+###############################################################################
+
 # maintain this and set method for them
 # convention they are the property ending with '_g'
-# TODO: There is prob a better way to do this, 
+# TODO: There is prob a better way to do this, gff go with classes,
+# currenlty things blow up a bit...
 
 # figure properties
 title_fontsize_g = 16
@@ -41,6 +45,8 @@ edgecolor_g = 'k'
 # axis properties
 alpha_g = 1
 axis_linewidth_g = 1.5
+use_axis_fromatter_g = True
+
 # plot properties
 linewidth_g = 2.0
 markersize_g = 4.0
@@ -83,6 +89,7 @@ def set_plot_defaults(title_fontsize = 16,
                       save_raw_plot_data=False,
                       raw_plot_data_format='txt',
                       show = True,
+                      use_axis_fromatter=True,
                       **kwargs):
     """
     Try to use this to set some global default values.
@@ -91,15 +98,20 @@ def set_plot_defaults(title_fontsize = 16,
     """
     global linewidth_g, markersize_g, labelfonstsize_g, title_fontsize_g, axis_linewidth_g
     global ticklabelsize_g, tick_params_g, save_plots_g, save_format_g, legend_g, figsize_g
-    global raw_plot_data_format_g, save_raw_plot_data_g, show_g
+    global raw_plot_data_format_g, save_raw_plot_data_g, show_g, use_axis_fromatter_g
     
     title_fontsize_g = title_fontsize
+    
     # plot properties
     linewidth_g = linewidth
     markersize_g = markersize
     axis_linewidth_g = axis_linewidth
+    use_axis_fromatter_g = use_axis_fromatter
+    
+    
     # x, y label
     labelfonstsize_g = labelfonstsize
+    
     # ticks
     ticklabelsize_g = ticklabelsize
     tick_params_g.update(tick_params)
@@ -116,11 +128,16 @@ def set_plot_defaults(title_fontsize = 16,
     save_raw_plot_data_g = save_raw_plot_data
     raw_plot_data_format_g = raw_plot_data_format
     
+    # TODO generalilze
+    # for kwarg in kwargs:
+    # set_global(val)
+    
     show_g = show
 
-###########################
-## general plot routines ##
-###########################
+
+###############################################################################
+########################## general plot routines ##############################
+###############################################################################
 
 
 def single_scatterplot(ydata, xdata, xlabel, ylabel, title, plotlabel ='scatterplot', 
@@ -148,8 +165,9 @@ def single_scatterplot(ydata, xdata, xlabel, ylabel, title, plotlabel ='scatterp
                              width = tick_params_g.get('width', 1.0),
                              labelsize = tick_params_g.get('labelsize', 14),
                              length = tick_params_g.get('length', 5))
-    #ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
-    #ax.yaxis.get_major_formatter().set_useOffset(False)
+    if use_axis_fromatter_g:
+        ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
+        ax.yaxis.get_major_formatter().set_useOffset(False)
     #ax.xaxis.set_major_formatter(DateFormatter("%b %y"))
     #if yerr or xerr:
     #    p1 = ax.errorbar(xdata, ydata, linetyp, label=plotlabel, color=color,
@@ -196,7 +214,7 @@ def multiple_scatterplots(ydata, xdata, xlabel, ylabel, title, plot_labels,
                           linestyle='-', marker='o', legend=legend_g, 
                           legend_option={}, saveas='mscatterplot', 
                           limits=[None, None], scale=[None, None],
-                          axis=None, xerr=None, yerr=None, **kwargs):
+                          axis=None, xerr=None, yerr=None, colors=[], linewidth=[], **kwargs):
     """
     Create a standard scatter plot (this should be flexible enough) to do all the
     basic plots.
@@ -227,8 +245,9 @@ def multiple_scatterplots(ydata, xdata, xlabel, ylabel, title, plot_labels,
                              width = tick_params_g.get('width', 1.0),
                              labelsize = tick_params_g.get('labelsize', 14),
                              length = tick_params_g.get('length', 5))
-    ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
-    ax.yaxis.get_major_formatter().set_useOffset(False)
+    if use_axis_fromatter_g:
+        ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
+        ax.yaxis.get_major_formatter().set_useOffset(False)
     
     # TODO good checks for input and setting of internals before plotting
     # allow all arguments as value then use for all or as lists with the righ length.
@@ -249,10 +268,28 @@ def multiple_scatterplots(ydata, xdata, xlabel, ylabel, title, plot_labels,
                 xerrt = xerr[0]
         else:
             xerrt = xerr
-                                    
-        p1 = ax.errorbar(xdata[i], data, linestyle=linestyle, label=plot_labels[i],
-                         linewidth=linewidth_g, marker=marker, markersize=markersize_g, 
-                         yerr=yerrt, xerr=xerrt, **kwargs) 
+        if colors:
+            color = colors[i]
+        else:
+            color = None
+        if not linewidth:
+            linewidth_p = linewidth_g
+        else:
+            linewidth_p = linewidth[i]
+        
+        if isinstance(linestyle, list):
+            linestyle_t = linestyle[i]
+        else:
+            linestyle_t = linestyle
+            
+        if isinstance(marker, list):
+            marker_t = marker[i]
+        else:
+            marker_t = marker          
+            
+        p1 = ax.errorbar(xdata[i], data, linestyle=linestyle_t, label=plot_labels[i],
+                         linewidth=linewidth_p, marker=marker_t, markersize=markersize_g, 
+                         yerr=yerrt, xerr=xerrt, color=color, **kwargs) 
     if scale:
         if scale[0]:
             ax.set_xscale(scale[0])
@@ -273,17 +310,17 @@ def multiple_scatterplots(ydata, xdata, xlabel, ylabel, title, plot_labels,
             
     #TODO nice legend
     if legend:
-        print legend
+        #print legend
         #{anchor, title, fontsize, linewith, borderaxespad}
         # defaults 'anchor' : (0.75, 0.97), 'title' : 'Legend', 'fontsize' : 17, 'linewith' : 1.5, 'borderaxespad' : }, 
-        legends_defaults = {'bbox_to_anchor' : (0.70, 0.97), 'fontsize' : 12, 
-                            'linewidth' : 1.5, 'borderaxespad' : 0 , 'loc' : 2, 
+        legends_defaults = {'bbox_to_anchor' : (0.65, 0.97), 'fontsize' : 16, 
+                            'linewidth' : 3.0, 'borderaxespad' : 0 , 'loc' : 2, 
                             'fancybox' : True} #'title' : 'Legend',
         loptions = legends_defaults.copy()
         loptions.update(legend_option)
         linewidth = loptions.pop('linewidth', 1.5)
         #title_font_size = loptions.pop('title_font_size', 15)
-        leg = pp.legend(**loptions)#bbox_to_anchor=loptions['anchor'],loc=loptions['loc'], title=legend_title, borderaxespad=0., fancybox=True)
+        leg = ax.legend(**loptions)#bbox_to_anchor=loptions['anchor'],loc=loptions['loc'], title=legend_title, borderaxespad=0., fancybox=True)
         leg.get_frame().set_linewidth(linewidth)
         #leg.get_title().set_fontsize(title_font_size) #legend 'Title' fontsize
     if save_plots_g:
@@ -359,7 +396,7 @@ def waterfall_plot(xdata, ydata, zdata, xlabel, ylabel,  zlabel, title, plot_lab
 
     #TODO legend
     if legend:
-        print legend
+        #print legend
         #{anchor, title, fontsize, linewith, borderaxespad}
         # defaults 'anchor' : (0.75, 0.97), 'title' : 'Legend', 'fontsize' : 17, 'linewith' : 1.5, 'borderaxespad' : }, 
         legends_defaults = {'bbox_to_anchor' : (0.70, 0.97), 'fontsize' : 12, 'linewidth' : 1.5, 'borderaxespad' : 0 , 'loc' : 2, 'fancybox' : True} #'title' : 'Legend',
@@ -381,7 +418,7 @@ def waterfall_plot(xdata, ydata, zdata, xlabel, ylabel,  zlabel, title, plot_lab
 
 
 def multiplot_moved(ydata, xdata, xlabel, ylabel, title, plot_labels, scale_move=1.0, 
-                          linetyp='o-', legend=legend_g, 
+                          linestyle='-', marker='o', legend=legend_g, 
                           legend_option={},
                           saveas='mscatterplot', limits=[None, None], scale=[None, None]):
     """
@@ -397,7 +434,7 @@ def multiplot_moved(ydata, xdata, xlabel, ylabel, title, plot_labels, scale_move
         ymax = ymax + max(data)*scale_move
     
     multiple_scatterplots(ydatanew, xdata, xlabel, ylabel, title, plot_labels, 
-                          linetyp=linetyp, legend=legend, 
+                          linestyle=linestyle, marker=marker, legend=legend, 
                           legend_option=legend_option,
                           saveas=saveas, limits=limits, scale=scale)
 
@@ -470,10 +507,76 @@ def surface_plot():
     """
     pass
 
-###########################
-## special plot routines ##
-###########################
+###############################################################################
+########################## special plot routines ##############################
+###############################################################################
 
+
+def plot_convex_hull2d(hull, title='Convex Hull',  xlabel='x atoms %', ylabel='Formation energy [eV/atom]',
+                       linestyle='-', marker='o', legend=legend_g, 
+                       legend_option={}, saveas='convex_hull', 
+                       limits=[None, None], scale=[None, None], axis=None, color='k',
+                       linewidth=linewidth_g, markersize=markersize_g, **kwargs):
+    """
+    Plot method for a 2d convex hull diagramm
+    
+    :param hull: scipy.spatial.ConvexHull
+    """
+    #TODO: the upper lines, part of the hull should not be connected/plottet 
+    if axis:
+        ax = axis
+    else:
+        fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
+        ax = fig.add_subplot(111)
+    
+    for axis in ['top','bottom','left','right']:
+        ax.spines[axis].set_linewidth(axis_linewidth_g)
+    ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
+    ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
+    ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
+    ax.yaxis.set_tick_params(size = tick_params_g.get('size', 4.0),
+                             width = tick_params_g.get('width', 1.0),
+                             labelsize = tick_params_g.get('labelsize', 14),
+                             length = tick_params_g.get('length', 5))
+    ax.xaxis.set_tick_params(size = tick_params_g.get('size', 4.0),
+                             width = tick_params_g.get('width', 1.0),
+                             labelsize = tick_params_g.get('labelsize', 14),
+                             length = tick_params_g.get('length', 5))
+    #ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
+    ax.yaxis.get_major_formatter().set_useOffset(False)
+    
+    points = hull.points
+    
+    a = ax.plot(points[:,0], points[:,1], marker=marker, markersize=markersize,
+                linestyle='', **kwargs)
+    for simplex in hull.simplices:
+         # TODO leave out some lines, the ones about [0,0 -1,0]
+         ax.plot(points[simplex, 0], points[simplex, 1], linestyle=linestyle,
+                 color=color, linewidth=linewidth, **kwargs)
+
+
+    if limits:
+        if limits[0]:
+            xmin = limits[0][0]
+            xmax = limits[0][1]
+            ax.set_xlim(xmin, xmax)
+        if limits[1]:
+            ymin = limits[1][0]
+            ymax = limits[1][1]
+            ax.set_ylim(ymin, ymax)
+    #ax1.set_ylim(-0.5, 0.5)
+    #plt.plot(points[hull.vertices[0],0], points[hull.vertices[0],1], 'r--', lw=2)
+    #plt.plot(points[hull.vertices[2:],0], points[hull.vertices[2:],1], 'r--', lw=2) 
+    if save_plots_g:
+        savefilename = '{}.{}'.format(saveas, save_format_g)
+        print 'save plot to: {}'.format(savefilename)
+        pp.savefig(savefilename, format=save_format_g, transparent=True)
+    elif show_g:
+        pp.show()
+    else:
+        pass
+    return ax
+    
 def plot_residuen(xdata, fitdata, realdata, errors=None, xlabel = r'Energy [eV]', ylabel = r'cts/s [arb]', title = r'Residuen', hist=True):
     """
     Calculates and Plots the residuen for given xdata fit results and the real data.
@@ -495,6 +598,7 @@ def plot_residuen(xdata, fitdata, realdata, errors=None, xlabel = r'Energy [eV]'
     show_g = True
     return ydata
 
+
 def plot_convergence_results(distance, total_energy, iteration, saveas1='t_energy_convergence', saveas2='distance_convergence'):
     """
     Plot the total energy versus the scf iteration
@@ -515,6 +619,7 @@ def plot_convergence_results(distance, total_energy, iteration, saveas1='t_energ
     single_scatterplot(total_energy_abs_diff, iteration[1:], xlabel, ylabel1, title1, plotlabel='delta total energy', saveas=saveas1, scale=[None, 'log'])
     #single_scatterplot(total_energy, iteration, xlabel, ylabel1, title1, plotlabel='total energy', saveas=saveas3)
     single_scatterplot(distance, iteration, xlabel, ylabel2, title2, plotlabel='distance', saveas=saveas2, scale=[None, 'log'])
+
 
 def plot_convergence_results_m(distances, total_energies, iterations, plot_labels=[], saveas1='t_energy_convergence', saveas2='distance_convergence'):
     """
@@ -550,7 +655,7 @@ def plot_convergence_results_m(distances, total_energies, iterations, plot_label
     multiple_scatterplots(distances, iterations, xlabel, ylabel2, title2, plot_labels2, saveas=saveas2, scale=[None, 'log'])
 
 
-def plot_lattice_constant(Total_energy, scaling, fit_y=None, relative=True, ref_const=None, multi=False, plotlables = [r'simulation data', r'fit results'], title = r'Equation of states', saveas = 'Lattice_constant'):
+def plot_lattice_constant(Total_energy, scaling, fit_y=None, relative=True, ref_const=None, multi=False, plotlables=[r'simulation data', r'fit results'], title=r'Equation of states', saveas='Lattice_constant'):
     """
     Plot a lattice constant versus Total energy
     Plot also the fit.
@@ -567,7 +672,7 @@ def plot_lattice_constant(Total_energy, scaling, fit_y=None, relative=True, ref_
 
     """
     # TODO: make box which shows fit results. (fit resuls have to be past)
-    # TODO: multiple plots in one
+    # TODO: multiple plots in one use mulit_scatter_plot for this...
 
     #print markersize_g
     if relative:
@@ -598,19 +703,21 @@ def plot_lattice_constant(Total_energy, scaling, fit_y=None, relative=True, ref_
     if multi:
         # TODO test if dim of total_e = dim of scaling, dim plot lables...
         # or parse on scaling?
+        ax.set_ylabel(r'Total energy norm[0] [eV]', fontsize=labelfonstsize_g)
+
         for i, scale in enumerate(scaling):
             #print i
-            p1 = pp.plot(scale, Total_energy[i], 'o-', label = plotlables[2*i],
-                         linewidth = linewidth_g, markersize = markersize_g)
+            p1 = pp.plot(scale, Total_energy[i], 'o-', label=plotlables[2*i],
+                         linewidth=linewidth_g, markersize=markersize_g)
             if fit_y:
-                p2 = pp.plot(scale, fit_y[i], 's-', label = plotlables[2*i+1],
-                             linewidth = linewidth_g, markersize = markersize_g)
+                p2 = pp.plot(scale, fit_y[i], 's-', label=plotlables[2*i+1],
+                             linewidth=linewidth_g, markersize=markersize_g)
     else:
-        p1 = pp.plot(scaling, Total_energy, 'o-', label = plotlables[0],
-                      linewidth = linewidth_g, markersize = markersize_g)
+        p1 = pp.plot(scaling, Total_energy, 'o-', label=plotlables[0],
+                      linewidth=linewidth_g, markersize=markersize_g)
         if fit_y:
-            p2 = pp.plot(scaling, fit_y, r'-', label = plotlables[1],
-                         linewidth = linewidth_g, markersize = markersize_g)
+            p2 = pp.plot(scaling, fit_y, r'-', label=plotlables[1],
+                         linewidth=linewidth_g, markersize=markersize_g)
     if legend_g:
         pp.legend(bbox_to_anchor=(0.85, 1), loc=2, borderaxespad=0., fancybox=True)
         pp.legend(loc='best', borderaxespad=0., fancybox=True) #, framealpha=0.5) #loc='upper right')
@@ -643,7 +750,7 @@ def plot_relaxation_results():
     pass
 
 
-def plot_dos(path_to_dosfile, only_total=False, saveas=r'dos_plot', title=r'Density of states', linetyp='-', legend=legend_g, limits=[None, None]):
+def plot_dos(path_to_dosfile, only_total=False, saveas=r'dos_plot', title=r'Density of states', linestyle='-', marker=None, legend=legend_g, limits=[None, None]):
     """
     Plot the total density of states from a FLEUR DOS.1 file
     
@@ -670,9 +777,9 @@ def plot_dos(path_to_dosfile, only_total=False, saveas=r'dos_plot', title=r'Dens
     ylabel = r'DOS [eV$^{-1}$]'
 
     if only_total:
-        single_scatterplot(totaldos, energy, xlabel, ylabel, title, plotlabel='total dos', linetyp=linetyp, limits=limits, saveas=saveas)
+        single_scatterplot(totaldos, energy, xlabel, ylabel, title, plotlabel='total dos', linestyle=linestyle, marker=marker, limits=limits, saveas=saveas)
     else:
-        multiple_scatterplots(doses, energies, xlabel, ylabel, title, plot_labels=['Total', 'Interstitial', 'Muffin-Tin'], linetyp=linetyp, legend=legend, limits=limits, saveas=saveas)
+        multiple_scatterplots(doses, energies, xlabel, ylabel, title, plot_labels=['Total', 'Interstitial', 'Muffin-Tin'], linestyle=linestyle, marker=marker, legend=legend, limits=limits, saveas=saveas)
 
 
 def plot_dos_total_atom_resolved():
@@ -887,31 +994,13 @@ def plot_one_element_corelv(corelevel_dict, element, compound=''):
         pp.show()            
 
 
-def plot_corelevel_spectra(coreleveldict, natom_typesdict, exp_references={}, scale_to=-1, show_single=True, show_ref=True, energy_range=[None, None], title = '', fwhm_g=0.6, fwhm_l=0.1, energy_grid=0.2, peakfunction='voigt', linetyp_spec='o-'):
-    #show_compound=True, , compound_info={} compound_info dict: dict that can be used to specify what component should be shown together     compound_info = {'Be12Ti' : {'Be' : 4, 'Ti' : 1}, 'BeTi' : {'Be' : 1, 'Ti' : 1}}
+def construct_corelevel_spectrum(coreleveldict, natom_typesdict, exp_references={}, scale_to=-1, fwhm_g=0.6, fwhm_l=0.1, energy_range=[None, None], energy_grid=0.2, peakfunction='voigt'):
     """
-    Ploting function of corelevel in the form of a spectrum.
+    Constructrs a corelevel spectrum from a given corelevel dict
     
-    Convention: Binding energies are positiv!
+    :params:
     
-    Args:
-        coreleveldict: dict of corelevels with a list of corelevel energy of atomstypes 
-        # (The given corelevel accounts for a weight (number of electrons for full occupied corelevel) in the plot.)
-        natom_typesdict: dict with number of atom types for each entry
-    Kwargs:
-        exp_references: dict with experimental refereces, will be ploted as vertical lines
-        show_single (bool): plot all single peaks. 
-        scale_to float: the maximum 'intensity' will be scaled to this value (useful for experimental comparisons)
-        title (string): something for labeling
-        fwhm (float): full width half maximum of peaks (gaus, lorentz or voigt_profile)
-        energy_grid (float): energy resolution
-        linetyp_spec : linetype for spectrum
-        peakfunction (string): what the peakfunction should be {'voigt', 'pseudo-voigt', 'lorentz', 'gaus'}
-    example:
-    
-    coreleveldict = {u'Be': {'1s1/2' : [-1.0220669053033051, -0.3185614920138805, 
-                                        -0.7924091040092139]}}
-    n_atom_types_Be12Ti = {'Be' : [4,4,4]}
+    :returns: list: [xdata_spec, ydata_spec, ydata_single_all, xdata_all, ydata_all, xdatalabel]
     """
     xdata_all = []
     ydata_all = []
@@ -956,6 +1045,113 @@ def plot_corelevel_spectra(coreleveldict, natom_typesdict, exp_references={}, sc
              '''
 
     xmin = min(xdata_all) - 2 #0.5
+    xmax = max(xdata_all) + 2   #0.5
+    if energy_range[0]:
+        xmin = energy_range[0]
+    if energy_range[1]:
+        xmax = energy_range[1]
+    # xdata_spec = np.array(np.arange(xmax,xmin, -energy_grid))
+    xdata_spec = np.array(np.arange(xmin, xmax, energy_grid))
+    ydata_spec = np.zeros(len(xdata_spec), dtype=float)
+    ydata_single_all = []
+
+    for i,xpoint in enumerate(xdata_all):
+        if peakfunction== 'gaus':
+            data_f = np.array(gaussian(xdata_spec, fwhm_g, xpoint))#, 1.0))
+        elif peakfunction== 'voigt':
+            data_f = np.array(voigt_profile(xdata_spec, fwhm_g, fwhm_l, xpoint))# different fwhn for g und l       
+        elif peakfunction== 'pseudo-voigt':
+            data_f = np.array(pseudo_voigt_profile(xdata_spec, fwhm_g, fwhm_l, xpoint))
+        elif peakfunction== 'lorentz':
+            data_f = np.array(lorentzian(xdata_spec, fwhm_l, xpoint))
+        else:
+            print('given peakfunction type not known')
+            data_f = []
+            return
+
+        #gaus_f = lorentzian(xdata_spec, xpoint, 0.6, 100.0)
+        ydata_spec = ydata_spec + ydata_all[i]*data_f
+        ydata_single_all.append(ydata_all[i]*data_f)
+    
+    # we scale after and not before, because the max intensity is not neccesary 
+    # the number of electrons.
+    if scale_to > 0.0:
+        y_valmax = max(ydata_spec)
+        scalingfactor = scale_to/y_valmax
+        ydata_spec = ydata_spec * scalingfactor
+        ydata_single_all_new = []
+        for ydata_single in ydata_single_all:
+            ydata_single_all_new.append(ydata_single * scalingfactor)
+        ydata_single_all = ydata_single_all_new    
+    
+    return [xdata_spec, ydata_spec, ydata_single_all, xdata_all, ydata_all, xdatalabel]    
+
+
+def plot_corelevel_spectra(coreleveldict, natom_typesdict, exp_references={}, scale_to=-1, show_single=True, show_ref=True, energy_range=[None, None], title = '', fwhm_g=0.6, fwhm_l=0.1, energy_grid=0.2, peakfunction='voigt', linetyp_spec='o-', limits=[None, None]):
+    #show_compound=True, , compound_info={} compound_info dict: dict that can be used to specify what component should be shown together     compound_info = {'Be12Ti' : {'Be' : 4, 'Ti' : 1}, 'BeTi' : {'Be' : 1, 'Ti' : 1}}
+    """
+    Ploting function of corelevel in the form of a spectrum.
+    
+    Convention: Binding energies are positiv!
+    
+    Args:
+        coreleveldict: dict of corelevels with a list of corelevel energy of atomstypes 
+        # (The given corelevel accounts for a weight (number of electrons for full occupied corelevel) in the plot.)
+        natom_typesdict: dict with number of atom types for each entry
+    Kwargs:
+        exp_references: dict with experimental refereces, will be ploted as vertical lines
+        show_single (bool): plot all single peaks. 
+        scale_to float: the maximum 'intensity' will be scaled to this value (useful for experimental comparisons)
+        title (string): something for labeling
+        fwhm (float): full width half maximum of peaks (gaus, lorentz or voigt_profile)
+        energy_grid (float): energy resolution
+        linetyp_spec : linetype for spectrum
+        peakfunction (string): what the peakfunction should be {'voigt', 'pseudo-voigt', 'lorentz', 'gaus'}
+    example:
+    
+    coreleveldict = {u'Be': {'1s1/2' : [-1.0220669053033051, -0.3185614920138805, 
+                                        -0.7924091040092139]}}
+    n_atom_types_Be12Ti = {'Be' : [4,4,4]}
+    # TODO feature to make singles of different compounds a different color
+    """
+    [xdata_spec, ydata_spec, ydata_single_all, xdata_all, ydata_all, xdatalabel] = construct_corelevel_spectrum(
+                                 coreleveldict, natom_typesdict, 
+                                 exp_references=exp_references, scale_to=scale_to,
+                                 fwhm_g=fwhm_g, fwhm_l=fwhm_l, energy_range=energy_range, 
+                                 energy_grid=energy_grid, peakfunction=peakfunction)
+
+    '''
+    xdata_all = []
+    ydata_all = []
+    ydata_spec = []
+    xdata_spec = []
+    xdatalabel = []
+    energy_grid = energy_grid # eV
+    #count = 0
+    #compound_info_new = compound_info
+    
+    for elem, corelevel_dict in coreleveldict.iteritems():
+        natom = natom_typesdict.get(elem, 0)
+        #elem_count = 0
+        for corelevel_name, corelevel_list in corelevel_dict.iteritems():
+            # get number of electron if fully occ:
+            nelectrons = 1
+            if 's' in corelevel_name:
+                nelectrons = 2
+            else:
+                max_state_occ_spin = {'1/2' : 2, '3/2' : 4, '5/2' : 6, '7/2' : 8}
+                # check if spin in name
+                for key, val in max_state_occ_spin.iteritems():
+                    if key in corelevel_name:
+                        nelectrons = val
+            for i,corelevel in enumerate(corelevel_list):
+                xdatalabel.append(elem + ' ' + corelevel_name)
+                xdata_all.append(corelevel)
+                ydata_all.append(natom[i]*nelectrons)
+                #count = count + 1
+                #elem_count = elem_count + 1
+ 
+    xmin = min(xdata_all) - 2 #0.5
     xmax = max(xdata_all)+ 2   #0.5
     if energy_range[0]:
         xmin = energy_range[0]
@@ -965,7 +1161,7 @@ def plot_corelevel_spectra(coreleveldict, natom_typesdict, exp_references={}, sc
     xdata_spec = np.array(np.arange(xmin, xmax, energy_grid))
     ydata_spec = np.zeros(len(xdata_spec), dtype=float)
     ydata_single_all = []
-    
+
     for i,xpoint in enumerate(xdata_all):
         if peakfunction== 'gaus':
             data_f = np.array(gaussian(xdata_spec, fwhm_g, xpoint))#, 1.0))
@@ -994,6 +1190,7 @@ def plot_corelevel_spectra(coreleveldict, natom_typesdict, exp_references={}, sc
         for ydata_single in ydata_single_all:
             ydata_single_all_new.append(ydata_single * scalingfactor)
         ydata_single_all = ydata_single_all_new
+    '''    
     '''
     # TODO this is bad... a redesign might be good, maybe input change...
     ydata_compound = []
@@ -1006,11 +1203,17 @@ def plot_corelevel_spectra(coreleveldict, natom_typesdict, exp_references={}, sc
                 for data in ydata_single_all[value[0]:value[1]]:
                     sumdata = sumdata + data
                 ydata_compound.append(sumdata)
-    '''            
+    '''  
+    xmin = min(xdata_all) - 2 #0.5
+    xmax = max(xdata_all) + 2   #0.5
+    if energy_range[0]:
+        xmin = energy_range[0]
+    if energy_range[1]:
+        xmax = energy_range[1]
+             
     xdata = xdata_all
     ydata = ydata_all
     ymax2 = max(ydata_spec)+1
-
 
     #print len(xdata), len(ydata)
     xlabel = 'Binding energy [eV]'
@@ -1026,7 +1229,6 @@ def plot_corelevel_spectra(coreleveldict, natom_typesdict, exp_references={}, sc
     ymax = max(ydata)+1
 
 
-    limits=[(xmin, xmax), (ymin, ymax)], 
     saveas ='XPS_theo_{}_{}'.format(fwhm_g, title)
     saveas1 ='XPS_theo_2_{}_{}'.format(fwhm_g, title)
     color = 'k'
@@ -1059,7 +1261,7 @@ def plot_corelevel_spectra(coreleveldict, natom_typesdict, exp_references={}, sc
                              length = tick_params_g.get('length', 5))
     ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
     ax.yaxis.get_major_formatter().set_useOffset(False)
-    p1 = pp.plot(xdata_all, ydata_all, linetyp, label=plotlabel, color=color,
+    p1 = ax.plot(xdata_all, ydata_all, linetyp, label=plotlabel, color=color,
                  linewidth=linewidth_g, markersize= markersize_g)
     
     if show_ref and exp_references:
@@ -1087,11 +1289,18 @@ def plot_corelevel_spectra(coreleveldict, natom_typesdict, exp_references={}, sc
             ax.set_yscale(scale[1])
         else:
             pass
-        
-    pp.ylim(ymin, ymax)
-    #flip x axes
-    pp.xlim(xmax, xmin)
     
+    if limits:
+        if limits[0]:
+            xmin = limits[0][0]
+            xmax = limits[0][1]
+        if limits[1]:
+            ymin = limits[1][0]
+            ymax = limits[1][1]
+    
+    ax.set_xlim(xmax, xmin)    #flip x axes    
+    ax.set_ylim(ymin, ymax)        
+
     if save_plots_g:
         savefilename = '{}.{}'.format(saveas, save_format_g)
         print 'save plot to: {}'.format(savefilename)
@@ -1121,13 +1330,13 @@ def plot_corelevel_spectra(coreleveldict, natom_typesdict, exp_references={}, sc
     ax1.yaxis.get_major_formatter().set_useOffset(False)
 
         
-    p11 = pp.plot(xdata_spec, ydata_spec, linetyp1, label=plotlabel, color=color,
+    p11 = ax1.plot(xdata_spec, ydata_spec, linetyp1, label=plotlabel, color=color,
                  linewidth=linewidth_g1, markersize=markersize_g)
                  
     if show_single:
         for single_peek in ydata_single_all:
             #xdatalabel
-            pp.plot(xdata_spec, single_peek, '-', label=plotlabel, #color = color,
+            pp.plot(xdata_spec, single_peek, '-', label=plotlabel, color='g',
                  linewidth=linewidth_g1, markersize = markersize_g)
                  
     if show_ref and exp_references:
@@ -1149,11 +1358,17 @@ def plot_corelevel_spectra(coreleveldict, natom_typesdict, exp_references={}, sc
             ax1.set_yscale(scale[1])
         else:
             pass
-        
-    pp.ylim(ymin, ymax2)
-    #flip x axes
-    pp.xlim(xmax, xmin)
-
+    if limits:
+        if limits[0]:
+            xmin = limits[0][0]
+            xmax = limits[0][1]
+        if limits[1]:
+            ymin = limits[1][0]
+            ymax2 = limits[1][1]
+            
+    ax1.set_xlim(xmax, xmin)    #flip x axes    
+    ax1.set_ylim(ymin, ymax2)
+    
     if save_plots_g:
         savefilename = '{}.{}'.format(saveas1, save_format_g)
         print 'save plot to: {}'.format(savefilename)
@@ -1429,6 +1644,35 @@ def voigt_profile(x, fwhm_g, fwhm_l, mu):
     # complex 1j
     return np.real(wofz(((x-mu) + 1j*hwhm_l)/sigma/np.sqrt(2))) / sigma\
                                                            /np.sqrt(2*np.pi)
+                                                           
+def CDF_voigt_profile(x, fwhm_g, fwhm_l, mu):
+    """
+    Cumulative distribution function of a voigt profile
+    implementation of formula found here: https://en.wikipedia.org/wiki/Voigt_profile
+    # TODO: is there an other way then to calc 2F2?
+    # or is there an other way to calc the integral of wofz directly, or use
+    different error functions.
+    """
+    from scipy.special import erf
+    pass
+    
+    return None
+
+def hyp2f2(a,b,z):
+    """
+    Calculation of the 2F2() hypergeometric function, 
+    since it is not part of scipy
+    with the identity 2. from here:
+    https://en.wikipedia.org/wiki/Generalized_hypergeometric_function
+    a, b,z array like inputs
+    TODO: not clear to me how to do this... the identity is only useful
+    if we mange the adjust the arguments in a way that we can use them...
+    also maybe go for the special case we need first: 1,1,3/2;2;-z2
+    """
+    from scipy.special import hyp0f1
+    
+    pass
+    return none
 
 def pseudo_voigt_profile(x, fwhm_g, fwhm_l, mu, mix=0.5):
     """
