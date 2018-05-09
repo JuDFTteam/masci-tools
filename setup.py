@@ -15,7 +15,7 @@ if __name__ == '__main__':
         author_email='j.broeder@fz-juelich.de',
         license='MIT License, see LICENSE.txt file.',
         classifiers=[
-            'Development Status :: 2 - Beta',
+            'Development Status :: 4 - Beta',
             'Intended Audience :: Science/Research',
             'License :: OSI Approved :: MIT License',
             'Programming Language :: Python :: 2.7',
