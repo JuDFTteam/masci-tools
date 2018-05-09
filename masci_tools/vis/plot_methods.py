@@ -1,5 +1,15 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+###############################################################################
+# Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
+#                All rights reserved.                                         #
+# This file is part of the Masci-tools package.                               #
+# (Material science tools)                                                    #
+#                                                                             #
+# The code is hosted on GitHub at https://github.com/judftteam/masci-tools    #
+# For further information on the license, see the LICENSE.txt file            #
+# For further information please visit http://www.flapw.de or                 #
+#                                                                             #
+###############################################################################
 
 """
 In this module are plot routines collected to create default plots out of certain
@@ -13,11 +23,6 @@ or files are ploted, parse a dict or filepath.
 # TODO but allow to optional parse information for saving and title,
 #  (that user can put pks or structure formulas in there)
 # Write/export data to file for all methods
-__copyright__ = (u"Copyright (c), 2016-2018, Forschungszentrum Jülich GmbH, "
-                 "IAS-1/PGI-1, Germany. All rights reserved.")
-__license__ = "MIT license, see LICENSE.txt file"
-__version__ = "0.27"
-__contributors__ = "Jens Broeder"
 
 import re
 import os
@@ -55,8 +60,10 @@ markersize_g = 4.0
 labelfonstsize_g = 15
 
 # ticks
-ticklabelsize_g = 14
-tick_params_g = {'size' : 4.0, 'width' : 1.0, 'labelsize' : ticklabelsize_g, 'length' : 5}
+ticklabelsizex_g = 14
+ticklabelsizey_g = 14
+tick_paramsx_g = {'size' : 4.0, 'width' : 1.0, 'labelsize' : ticklabelsizex_g, 'length' : 5}
+tick_paramsy_g = {'size' : 4.0, 'width' : 1.0, 'labelsize' : ticklabelsizey_g, 'length' : 5}
 
 # legend properties
 legend_g = False
@@ -79,8 +86,11 @@ def set_plot_defaults(title_fontsize = 16,
                       labelfonstsize = 15,
                       ticklabelsize = 14,
                       axis_linewidth = 2.0,
-                      tick_params = {'size' : 4.0, 'width' : 1.0,
-                                     'labelsize' : ticklabelsize_g,
+                      tick_paramsx = {'size' : 4.0, 'width' : 1.0,
+                                     'labelsize' : ticklabelsizex_g,
+                                     'length' : 5},
+                      tick_paramsy = {'size' : 4.0, 'width' : 1.0,
+                                     'labelsize' : ticklabelsizey_g,
                                      'length' : 5},
                       figsize = (8, 6),
                       save_plots = False, #True,
@@ -97,7 +107,7 @@ def set_plot_defaults(title_fontsize = 16,
     Set some evironment variable with or global variables.
     """
     global linewidth_g, markersize_g, labelfonstsize_g, title_fontsize_g, axis_linewidth_g
-    global ticklabelsize_g, tick_params_g, save_plots_g, save_format_g, legend_g, figsize_g
+    global ticklabelsize_g, tick_paramsx_g, tick_paramsy_g, save_plots_g, save_format_g, legend_g, figsize_g
     global raw_plot_data_format_g, save_raw_plot_data_g, show_g, use_axis_fromatter_g
     
     title_fontsize_g = title_fontsize
@@ -114,7 +124,8 @@ def set_plot_defaults(title_fontsize = 16,
     
     # ticks
     ticklabelsize_g = ticklabelsize
-    tick_params_g.update(tick_params)
+    tick_paramsx_g.update(tick_paramsx)
+    tick_paramsy_g.update(tick_paramsy)
 
     # save all plots?
     save_plots_g = save_plots
@@ -157,14 +168,14 @@ def single_scatterplot(ydata, xdata, xlabel, ylabel, title, plotlabel ='scatterp
     ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
     ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
     ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
-    ax.yaxis.set_tick_params(size = tick_params_g.get('size', 4.0),
-                             width = tick_params_g.get('width', 1.0),
-                             labelsize = tick_params_g.get('labelsize', 14),
-                             length = tick_params_g.get('length', 5))
-    ax.xaxis.set_tick_params(size = tick_params_g.get('size', 4.0),
-                             width = tick_params_g.get('width', 1.0),
-                             labelsize = tick_params_g.get('labelsize', 14),
-                             length = tick_params_g.get('length', 5))
+    ax.yaxis.set_tick_params(size = tick_paramsy_g.get('size', 4.0),
+                             width = tick_paramsy_g.get('width', 1.0),
+                             labelsize = tick_paramsy_g.get('labelsize', 14),
+                             length = tick_paramsy_g.get('length', 5))
+    ax.xaxis.set_tick_params(size = tick_paramsx_g.get('size', 4.0),
+                             width = tick_paramsx_g.get('width', 1.0),
+                             labelsize = tick_paramsx_g.get('labelsize', 14),
+                             length = tick_paramsx_g.get('length', 5))
     if use_axis_fromatter_g:
         ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
         ax.yaxis.get_major_formatter().set_useOffset(False)
@@ -211,10 +222,10 @@ def single_scatterplot(ydata, xdata, xlabel, ylabel, title, plotlabel ='scatterp
 
 
 def multiple_scatterplots(ydata, xdata, xlabel, ylabel, title, plot_labels, 
-                          linestyle='-', marker='o', legend=legend_g, 
+                          linestyle='-', marker='o', markersize=markersize_g, legend=legend_g, 
                           legend_option={}, saveas='mscatterplot', 
                           limits=[None, None], scale=[None, None],
-                          axis=None, xerr=None, yerr=None, colors=[], linewidth=[], **kwargs):
+                          axis=None, xerr=None, yerr=None, colors=[], linewidth=[], xticks=[], **kwargs):
     """
     Create a standard scatter plot (this should be flexible enough) to do all the
     basic plots.
@@ -237,14 +248,16 @@ def multiple_scatterplots(ydata, xdata, xlabel, ylabel, title, plot_labels,
     ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
     ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
     ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
-    ax.yaxis.set_tick_params(size = tick_params_g.get('size', 4.0),
-                             width = tick_params_g.get('width', 1.0),
-                             labelsize = tick_params_g.get('labelsize', 14),
-                             length = tick_params_g.get('length', 5))
-    ax.xaxis.set_tick_params(size = tick_params_g.get('size', 4.0),
-                             width = tick_params_g.get('width', 1.0),
-                             labelsize = tick_params_g.get('labelsize', 14),
-                             length = tick_params_g.get('length', 5))
+    ax.yaxis.set_tick_params(size = tick_paramsy_g.get('size', 4.0),
+                             width = tick_paramsy_g.get('width', 1.0),
+                             labelsize = tick_paramsy_g.get('labelsize', 14),
+                             length = tick_paramsy_g.get('length', 5))
+    ax.xaxis.set_tick_params(size = tick_paramsx_g.get('size', 4.0),
+                             width = tick_paramsx_g.get('width', 1.0),
+                             labelsize = tick_paramsx_g.get('labelsize', 14),
+                             length = tick_paramsx_g.get('length', 5))
+    if len(xticks)!=0:
+        ax.xaxis.set_ticks(xticks[0],xticks[1])
     if use_axis_fromatter_g:
         ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
         ax.yaxis.get_major_formatter().set_useOffset(False)
@@ -285,10 +298,15 @@ def multiple_scatterplots(ydata, xdata, xlabel, ylabel, title, plot_labels,
         if isinstance(marker, list):
             marker_t = marker[i]
         else:
-            marker_t = marker          
+            marker_t = marker
+        
+        if isinstance(markersize, list):
+            markersize_t = markersize[i]
+        else:
+            markersize_t = markersize_g 
             
         p1 = ax.errorbar(xdata[i], data, linestyle=linestyle_t, label=plot_labels[i],
-                         linewidth=linewidth_p, marker=marker_t, markersize=markersize_g, 
+                         linewidth=linewidth_p, marker=marker_t, markersize=markersize_t, 
                          yerr=yerrt, xerr=xerrt, color=color, **kwargs) 
     if scale:
         if scale[0]:
@@ -362,14 +380,15 @@ def waterfall_plot(xdata, ydata, zdata, xlabel, ylabel,  zlabel, title, plot_lab
     ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
     ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
     ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
-    ax.yaxis.set_tick_params(size = tick_params_g.get('size', 4.0),
-                             width = tick_params_g.get('width', 1.0),
-                             labelsize = tick_params_g.get('labelsize', 14),
-                             length = tick_params_g.get('length', 5))
-    ax.xaxis.set_tick_params(size = tick_params_g.get('size', 4.0),
-                             width = tick_params_g.get('width', 1.0),
-                             labelsize = tick_params_g.get('labelsize', 14),
-                             length = tick_params_g.get('length', 5))
+    ax.yaxis.set_tick_params(size = tick_paramsy_g.get('size', 4.0),
+                             width = tick_paramsy_g.get('width', 1.0),
+                             labelsize = tick_paramsy_g.get('labelsize', 14),
+                             length = tick_paramsy_g.get('length', 5))
+    ax.xaxis.set_tick_params(size = tick_paramsx_g.get('size', 4.0),
+                             width = tick_paramsx_g.get('width', 1.0),
+                             labelsize = tick_paramsx_g.get('labelsize', 14),
+                             length = tick_paramsx_g.get('length', 5))
+
     ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
     ax.yaxis.get_major_formatter().set_useOffset(False)
 
@@ -433,12 +452,13 @@ def multiplot_moved(ydata, xdata, xlabel, ylabel, title, plot_labels, scale_move
         ydatanew.append(np.array(data) + ymax)
         ymax = ymax + max(data)*scale_move
     
-    multiple_scatterplots(ydatanew, xdata, xlabel, ylabel, title, plot_labels, 
+    ax = multiple_scatterplots(ydatanew, xdata, xlabel, ylabel, title, plot_labels, 
                           linestyle=linestyle, marker=marker, legend=legend, 
                           legend_option=legend_option,
                           saveas=saveas, limits=limits, scale=scale)
 
-
+    return ax
+   
 def default_histogram(xdata, bins=None, range=None, density=None, weights=None, 
                       cumulative=False, bottom=None, histtype='bar', align='mid', 
                       orientation='vertical', rwidth=None, log=False, color=None, 
@@ -459,14 +479,14 @@ def default_histogram(xdata, bins=None, range=None, density=None, weights=None,
     ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
     ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
     ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
-    ax.yaxis.set_tick_params(size = tick_params_g.get('size', 4.0),
-                             width = tick_params_g.get('width', 1.0),
-                             labelsize = tick_params_g.get('labelsize', 14),
-                             length = tick_params_g.get('length', 5))
-    ax.xaxis.set_tick_params(size = tick_params_g.get('size', 4.0),
-                             width = tick_params_g.get('width', 1.0),
-                             labelsize = tick_params_g.get('labelsize', 14),
-                             length = tick_params_g.get('length', 5))
+    ax.yaxis.set_tick_params(size = tick_paramsy_g.get('size', 4.0),
+                             width = tick_paramsy_g.get('width', 1.0),
+                             labelsize = tick_paramsy_g.get('labelsize', 14),
+                             length = tick_paramsy_g.get('length', 5))
+    ax.xaxis.set_tick_params(size = tick_paramsx_g.get('size', 4.0),
+                             width = tick_paramsx_g.get('width', 1.0),
+                             labelsize = tick_paramsx_g.get('labelsize', 14),
+                             length = tick_paramsx_g.get('length', 5))
     ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
     ax.yaxis.get_major_formatter().set_useOffset(False)
     
@@ -512,11 +532,11 @@ def surface_plot():
 ###############################################################################
 
 
-def plot_convex_hull2d(hull, title='Convex Hull',  xlabel='x atoms %', ylabel='Formation energy [eV/atom]',
+def plot_convex_hull2d(hull, title='Convex Hull',  xlabel='Atomic Procentage', ylabel='Formation energy / atom [eV]',
                        linestyle='-', marker='o', legend=legend_g, 
                        legend_option={}, saveas='convex_hull', 
-                       limits=[None, None], scale=[None, None], axis=None, color='k',
-                       linewidth=linewidth_g, markersize=markersize_g, **kwargs):
+                       limits=[None, None], scale=[None, None], axis=None, color='k', color_line='k',
+                       linewidth=linewidth_g, markersize=markersize_g, marker_hull='o', markersize_hull=markersize_g, **kwargs):
     """
     Plot method for a 2d convex hull diagramm
     
@@ -534,26 +554,27 @@ def plot_convex_hull2d(hull, title='Convex Hull',  xlabel='x atoms %', ylabel='F
     ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
     ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
     ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
-    ax.yaxis.set_tick_params(size = tick_params_g.get('size', 4.0),
-                             width = tick_params_g.get('width', 1.0),
-                             labelsize = tick_params_g.get('labelsize', 14),
-                             length = tick_params_g.get('length', 5))
-    ax.xaxis.set_tick_params(size = tick_params_g.get('size', 4.0),
-                             width = tick_params_g.get('width', 1.0),
-                             labelsize = tick_params_g.get('labelsize', 14),
-                             length = tick_params_g.get('length', 5))
+    ax.yaxis.set_tick_params(size = tick_paramsy_g.get('size', 4.0),
+                             width = tick_paramsy_g.get('width', 1.0),
+                             labelsize = tick_paramsy_g.get('labelsize', 14),
+                             length = tick_paramsy_g.get('length', 5))
+    ax.xaxis.set_tick_params(size = tick_paramsx_g.get('size', 4.0),
+                             width = tick_paramsx_g.get('width', 1.0),
+                             labelsize = tick_paramsx_g.get('labelsize', 14),
+                             length = tick_paramsx_g.get('length', 5))
     #ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
     ax.yaxis.get_major_formatter().set_useOffset(False)
     
     points = hull.points
     
     a = ax.plot(points[:,0], points[:,1], marker=marker, markersize=markersize,
-                linestyle='', **kwargs)
+                linestyle='', color=color, **kwargs)
     for simplex in hull.simplices:
          # TODO leave out some lines, the ones about [0,0 -1,0]
          ax.plot(points[simplex, 0], points[simplex, 1], linestyle=linestyle,
-                 color=color, linewidth=linewidth, **kwargs)
-
+                 color=color_line, linewidth=linewidth, markersize=markersize, **kwargs)
+         ax.plot(points[simplex, 0], points[simplex, 1], linestyle='',
+                 color=color, markersize=markersize_hull, marker=marker_hull, **kwargs)
 
     if limits:
         if limits[0]:
@@ -690,14 +711,14 @@ def plot_lattice_constant(Total_energy, scaling, fit_y=None, relative=True, ref_
     ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
     ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
     ax.set_ylabel(r'Total energy [eV]', fontsize=labelfonstsize_g)
-    ax.yaxis.set_tick_params(size = tick_params_g.get('size', 4.0),
-                             width = tick_params_g.get('width', 1.0),
-                             labelsize = tick_params_g.get('labelsize', 14),
-                             length = tick_params_g.get('length', 5))
-    ax.xaxis.set_tick_params(size = tick_params_g.get('size', 4.0),
-                             width = tick_params_g.get('width', 1.0),
-                             labelsize = tick_params_g.get('labelsize', 14),
-                             length = tick_params_g.get('length', 5))
+    ax.yaxis.set_tick_params(size = tick_paramsy_g.get('size', 4.0),
+                             width = tick_paramsy_g.get('width', 1.0),
+                             labelsize = tick_paramsy_g.get('labelsize', 14),
+                             length = tick_paramsy_g.get('length', 5))
+    ax.xaxis.set_tick_params(size = tick_paramsx_g.get('size', 4.0),
+                             width = tick_paramsx_g.get('width', 1.0),
+                             labelsize = tick_paramsx_g.get('labelsize', 14),
+                             length = tick_paramsx_g.get('length', 5))
     ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
     ax.yaxis.get_major_formatter().set_useOffset(False)
     if multi:
@@ -844,14 +865,14 @@ def plot_bands(path_to_bands_file, kpath, title='Bandstructure', plotlabel ='ban
     ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
     ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
     ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
-    ax.yaxis.set_tick_params(size = tick_params_g.get('size', 4.0),
-                             width = tick_params_g.get('width', 1.0),
-                             labelsize = tick_params_g.get('labelsize', 14),
-                             length = tick_params_g.get('length', 5))
-    ax.xaxis.set_tick_params(size = tick_params_g.get('size', 4.0),
-                             width = tick_params_g.get('width', 1.0),
-                             labelsize = tick_params_g.get('labelsize', 14),
-                             length = tick_params_g.get('length', 5))
+    ax.yaxis.set_tick_params(size = tick_paramsy_g.get('size', 4.0),
+                             width = tick_paramsy_g.get('width', 1.0),
+                             labelsize = tick_paramsy_g.get('labelsize', 14),
+                             length = tick_paramsy_g.get('length', 5))
+    ax.xaxis.set_tick_params(size = tick_paramsx_g.get('size', 4.0),
+                             width = tick_paramsx_g.get('width', 1.0),
+                             labelsize = tick_paramsx_g.get('labelsize', 14),
+                             length = tick_paramsx_g.get('length', 5))
     ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
     ax.yaxis.get_major_formatter().set_useOffset(False)
     p1 = pp.plot(xdata, ydata, linetyp, label = plotlabel, color = color,
@@ -953,14 +974,14 @@ def plot_one_element_corelv(corelevel_dict, element, compound=''):
     ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
     ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
     ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
-    ax.yaxis.set_tick_params(size = tick_params_g.get('size', 4.0),
-                             width = tick_params_g.get('width', 1.0),
-                             labelsize = tick_params_g.get('labelsize', 14),
-                             length = tick_params_g.get('length', 5))
-    ax.xaxis.set_tick_params(size = tick_params_g.get('size', 4.0),
-                             width = tick_params_g.get('width', 1.0),
-                             labelsize = tick_params_g.get('labelsize', 14),
-                             length = tick_params_g.get('length', 5))
+    ax.yaxis.set_tick_params(size = tick_paramsy_g.get('size', 4.0),
+                             width = tick_paramsy_g.get('width', 1.0),
+                             labelsize = tick_paramsy_g.get('labelsize', 14),
+                             length = tick_paramsy_g.get('length', 5))
+    ax.xaxis.set_tick_params(size = tick_paramsx_g.get('size', 4.0),
+                             width = tick_paramsx_g.get('width', 1.0),
+                             labelsize = tick_paramsx_g.get('labelsize', 14),
+                             length = tick_paramsx_g.get('length', 5))
     ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
     ax.yaxis.get_major_formatter().set_useOffset(False)
 
@@ -1251,14 +1272,14 @@ def plot_corelevel_spectra(coreleveldict, natom_typesdict, exp_references={}, sc
     ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
     ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
     ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
-    ax.yaxis.set_tick_params(size = tick_params_g.get('size', 4.0),
-                             width = tick_params_g.get('width', 1.0),
-                             labelsize = tick_params_g.get('labelsize', 14),
-                             length = tick_params_g.get('length', 5))
-    ax.xaxis.set_tick_params(size = tick_params_g.get('size', 4.0),
-                             width = tick_params_g.get('width', 1.0),
-                             labelsize = tick_params_g.get('labelsize', 14),
-                             length = tick_params_g.get('length', 5))
+    ax.yaxis.set_tick_params(size = tick_paramsy_g.get('size', 4.0),
+                             width = tick_paramsy_g.get('width', 1.0),
+                             labelsize = tick_paramsy_g.get('labelsize', 14),
+                             length = tick_paramsy_g.get('length', 5))
+    ax.xaxis.set_tick_params(size = tick_paramsx_g.get('size', 4.0),
+                             width = tick_paramsx_g.get('width', 1.0),
+                             labelsize = tick_paramsx_g.get('labelsize', 14),
+                             length = tick_paramsx_g.get('length', 5))
     ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
     ax.yaxis.get_major_formatter().set_useOffset(False)
     p1 = ax.plot(xdata_all, ydata_all, linetyp, label=plotlabel, color=color,
@@ -1318,14 +1339,14 @@ def plot_corelevel_spectra(coreleveldict, natom_typesdict, exp_references={}, sc
     ax1.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
     ax1.set_xlabel(xlabel, fontsize=labelfonstsize_g)
     ax1.set_ylabel(ylabel, fontsize=labelfonstsize_g)
-    ax1.yaxis.set_tick_params(size = tick_params_g.get('size', 4.0),
-                             width = tick_params_g.get('width', 1.0),
-                             labelsize = tick_params_g.get('labelsize', 14),
-                             length = tick_params_g.get('length', 5))
-    ax1.xaxis.set_tick_params(size = tick_params_g.get('size', 4.0),
-                             width = tick_params_g.get('width', 1.0),
-                             labelsize = tick_params_g.get('labelsize', 14),
-                             length = tick_params_g.get('length', 5))
+    ax1.yaxis.set_tick_params(size = tick_paramsy_g.get('size', 4.0),
+                             width = tick_paramsy_g.get('width', 1.0),
+                             labelsize = tick_paramsy_g.get('labelsize', 14),
+                             length = tick_paramsy_g.get('length', 5))
+    ax1.xaxis.set_tick_params(size = tick_paramsx_g.get('size', 4.0),
+                             width = tick_paramsx_g.get('width', 1.0),
+                             labelsize = tick_paramsx_g.get('labelsize', 14),
+                             length = tick_paramsx_g.get('length', 5))
     ax1.yaxis.get_major_formatter().set_powerlimits((0, 3))
     ax1.yaxis.get_major_formatter().set_useOffset(False)
 
