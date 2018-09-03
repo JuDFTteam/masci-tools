@@ -12,15 +12,30 @@
 ###############################################################################
 
 """
-Here are all plot varaiables/constants,
-
+IO routines for hdf
 """
-#TODO: ggf write a plotter class
 
 
-class Ploter():
-    pass
-    def set_defaults():
-        pass
+def read_hdf(filepath):
+    """
+    Reads in an hdf file and returns its context in a nested dictionary
     
+    !Only works for files with unique group and dataset names
+    """
+    import h5py
     
+    datasets = {}
+    group_attrs = {}
+    groups = []
+    file_hdf = h5py.File(filepath, 'r')
+    groups = file_hdf.keys()
+    
+    for key, val in file_hdf.iteritems():
+        for k, v in val.iteritems():
+            datasets[k] = v.value
+        attr = val.attrs
+        for ke, val in attr.iteritems():
+            group_attrs[ke] = val
+    file_hdf.close()
+    
+    return datasets, groups, group_attrs

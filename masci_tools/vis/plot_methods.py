@@ -30,6 +30,7 @@ import numpy as np
 import matplotlib.pyplot as pp
 import matplotlib.mlab as mlab
 
+from masci_tools.vis import * # import all global variables
 
 ###############################################################################
 ################ GLOBAL MODULE VARIABLES setting properties ###################
@@ -146,6 +147,8 @@ def set_plot_defaults(title_fontsize = 16,
     show_g = show
 
 
+
+
 ###############################################################################
 ########################## general plot routines ##############################
 ###############################################################################
@@ -221,7 +224,7 @@ def single_scatterplot(ydata, xdata, xlabel, ylabel, title, plotlabel ='scatterp
     return ax
 
 
-def multiple_scatterplots(ydata, xdata, xlabel, ylabel, title, plot_labels,
+def multiple_scatterplots(ydata, xdata, xlabel, ylabel, title, plot_labels=None,
                           linestyle='-', marker='o', markersize=markersize_g, legend=legend_g,
                           legend_option={}, saveas='mscatterplot',
                           limits=[None, None], scale=[None, None],
@@ -257,7 +260,8 @@ def multiple_scatterplots(ydata, xdata, xlabel, ylabel, title, plot_labels,
                              labelsize = tick_paramsx_g.get('labelsize', 14),
                              length = tick_paramsx_g.get('length', 5))
     if len(xticks)!=0:
-        ax.xaxis.set_ticks(xticks[0],xticks[1])
+        ax.xaxis.set_ticks(xticks[0])
+        ax.xaxis.set_ticklabels(xticks[1])
     if use_axis_fromatter_g:
         ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
         ax.yaxis.get_major_formatter().set_useOffset(False)
@@ -304,8 +308,13 @@ def multiple_scatterplots(ydata, xdata, xlabel, ylabel, title, plot_labels,
             markersize_t = markersize[i]
         else:
             markersize_t = markersize_g
-
-        p1 = ax.errorbar(xdata[i], data, linestyle=linestyle_t, label=plot_labels[i],
+        
+        if plot_labels is None:
+            plot_label = ''
+        else:
+            plot_label = plot_labels[i]
+            
+        p1 = ax.errorbar(xdata[i], data, linestyle=linestyle_t, label=plot_label,
                          linewidth=linewidth_p, marker=marker_t, markersize=markersize_t,
                          yerr=yerrt, xerr=xerrt, color=color, **kwargs)
     if scale:
@@ -349,6 +358,7 @@ def multiple_scatterplots(ydata, xdata, xlabel, ylabel, title, plot_labels,
         pp.show()
     else:
         pass
+    
     return ax
 
 
@@ -513,7 +523,7 @@ def default_histogram(xdata, bins=None, range=None, density=None, weights=None,
     else:
         pass
 
-
+    return ax
 
 def multiaxis_scatterplot():
     """
@@ -1641,3 +1651,114 @@ def pseudo_voigt_profile(x, fwhm_g, fwhm_l, mu, mix=0.5):
     gaus = gaussian(x, fwhm_g, mu)
     lorentz = lorentzian(x, fwhm_l, mu)
     return mix * gaus  + (1-mix)*lorentz
+
+    
+
+
+def plot_bands2(xs,ys,ss,axis=None, linestyle='-',markersize_scaling=20,**kwargs):
+    """
+    """
+    
+    ax = multi_scatter_plot(x,y,markersize_band)
+
+    if linestyle is not None:   
+        for j, data in enumerate(ys):
+            for i, entry in enumerate(data[1:]):
+                ynew = [data[i], entry]
+                xnew = [x[j][i], x[j][i+1]]
+                linewidth = np.sqrt(markersize_scaling*(ss[j][i] + ss[j][i+1])/4.0)
+                ax.plot(xnew,ynew, linestyle=linestyle, markersize=0.0, linewidth=linewidth, color='k', markeredgewidth=0.0)
+
+                
+def plot_fleur_bands(filename, limits=[None,[-15, 15]]):
+    """
+    plot a fleur bandstructure
+    """
+    
+    from masci_tools.vis.plot_methods import multiple_scatterplots
+    
+    
+    xcoord, bands, xlabels, band_character, band_char_label, kts, wghts, rcell, cell, pos, atomn, spp = read_fleur_banddos_hdf(filename) 
+    
+    tllike = [band_character[0].transpose()]
+    if len(tllike)==2:
+        tllike.append(band_character[1].transpose())
+        
+    
+    markersize_scaling = 10.0
+    markersize_atomindependent = []#np.array([])
+    markersize_like_s = []
+    
+    # TODO there has to be a better way to do this, ... and faster with np.arrays
+    for s, tllike_s in enumerate(tllike):
+        markersize_like = []
+        for n, llike in enumerate(tllike_s):
+            markersize = []#np.array([])
+            for i, atomtype in enumerate(llike):
+                markersize_band = []#np.array([])
+                for j, band in enumerate(atomtype):
+                    markersize_temp = []#np.array([])
+                    for m, kpoint in enumerate(band):
+                    #total = 0
+                    #print kpoint
+                    #for spin in kpoint:
+                    #    total = total + spin
+                        markersize_temp.append((kpoint*markersize_scaling)**2)# scatter needs size squared
+                    markersize_band.append(markersize_temp)   
+                markersize.append(markersize_band)
+                # always make the last one the total of all atomtypes
+            markersize_like.append(markersize)
+        markersize_like_s.append(markersize_like_s)
+        
+    xticks = [[],[]]
+    for label, pos in xlabels:
+        if label == 'Gamma':
+            label = u'$\Gamma$'
+        xticks[1].append(label)
+        xticks[0].append(pos)
+
+    x = [xcoord for i in bands]
+    y = bands[0]
+    y2 = bands[1]
+    
+    limits[0] = [min(xcoord), max(xcoord)]
+
+    for i, marker_likes in enumerate(markersize_like): 
+        ax = multi_scatter_plot(x,y,marker_likes[0], ylabel=u'Energy [eV]', title='{}'.format(i), 
+                                xticks=xticks, limits=limits, saveas='bandstru_{}'.format(i))
+        for label, pos in xlabels:
+            ax.axvline(ymin=0, ymax=1, x=pos, #1.0/10.93, 
+                       linewidth=1.0, linestyle='-', color='k')
+        #ax.hxvline(xmin==0, xmax=1.0, linestyle='-', color='g')
+    
+        saveas='bandstruc_{}'.format(i)
+        if save_plots_g:
+            savefilename = '{}.{}'.format(saveas, save_format_g)
+            print('save plot to: {}'.format(savefilename))
+            pp.savefig(savefilename, format=save_format_g, transparent=True)
+
+
+           
+    ax1 = multiple_scatterplots(y,x,ylabel=u'Energy [eV]', xlabel='', title='', plot_labels=None,
+                                xticks=xticks, limits=limits, saveas='bandstructure', marker=None)
+    #print ax1
+    for label, pos in xlabels:
+        ax1.axvline(ymin=0, ymax=1, x=pos, #1.0/10.93, 
+                   linewidth=1.0, linestyle='-', color='k')
+
+    ax2 = multiple_scatterplots(y2,x,ylabel=u'Energy [eV]', xlabel='', title='', plot_labels=None,
+                                xticks=xticks, limits=limits, saveas='bandstructure', marker=None)
+    #print ax1
+    for label, pos in xlabels:
+        ax2.axvline(ymin=0, ymax=1, x=pos, #1.0/10.93, 
+                   linewidth=1.0, linestyle='-', color='k')
+     
+
+
+    #saveas='bandstructure'
+    #if save_plots_g:
+    #    savefilename = '{}.{}'.format(saveas, save_format_g)
+    #    print('save plot to: {}'.format(savefilename))
+    #    pp.savefig(savefilename, format=save_format_g, transparent=True)
+    
+    return ax1

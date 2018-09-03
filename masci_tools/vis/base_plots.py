@@ -12,15 +12,5 @@
 ###############################################################################
 
 """
-Here are all plot varaiables/constants,
-
+Basic plots that wrap matplotlib plots
 """
-#TODO: ggf write a plotter class
-
-
-class Ploter():
-    pass
-    def set_defaults():
-        pass
-    
-    

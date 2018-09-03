@@ -10,6 +10,7 @@ pymatgen
 ase
 lxml
 matplotlib
+h5py
 
 It should not depend on aiida_core!
 

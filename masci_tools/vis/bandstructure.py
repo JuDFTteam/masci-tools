@@ -12,15 +12,6 @@
 ###############################################################################
 
 """
-Here are all plot varaiables/constants,
-
+Here you find some routines to visualize electronic bandstructures in certain ways 
 """
-#TODO: ggf write a plotter class
 
-
-class Ploter():
-    pass
-    def set_defaults():
-        pass
-    
-    
