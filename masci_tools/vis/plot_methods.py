@@ -363,6 +363,96 @@ def multiple_scatterplots(ydata, xdata, xlabel, ylabel, title, plot_labels=None,
     return ax
 
 
+def multi_scatter_plot(xdata, ydata, sdata, xlabel='', ylabel='', title='', plot_labels=[],
+                          marker='o', legend=legend_g,
+                          legend_option={}, saveas='mscatterplot',
+                          limits=[None, None], scale=[None, None],
+                          axis=None, colors=[], xticks=[], **kwargs):
+    """
+    xdata : list or array
+    ydata : list or array
+    sdata: marker size list or array 
+    Info: x, y and s data must have the same dimensions.
+    ...
+    """
+    
+    
+    nplots = len(ydata)
+    if not (nplots==len(xdata)): # todo check dimention not len, without moving to special datatype.
+        print('ydata and xdata must have the same dimension')
+        return
+
+    # TODO allow plotlabels to have different dimension
+    pl =[]
+    if axis:
+        ax = axis
+    else:
+        fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g,
+                        facecolor=facecolor_g, edgecolor=edgecolor_g)
+        ax = fig.add_subplot(111)
+    for axis in ['top','bottom','left','right']:
+        ax.spines[axis].set_linewidth(axis_linewidth_g)
+    ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
+    ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
+    ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
+    ax.yaxis.set_tick_params(size = tick_paramsy_g.get('size', 4.0),
+                             width = tick_paramsy_g.get('width', 1.0),
+                             labelsize = tick_paramsy_g.get('labelsize', 14),
+                             length = tick_paramsy_g.get('length', 5))
+    ax.xaxis.set_tick_params(size = tick_paramsx_g.get('size', 4.0),
+                             width = tick_paramsx_g.get('width', 1.0),
+                             labelsize = tick_paramsx_g.get('labelsize', 14),
+                             length = tick_paramsx_g.get('length', 5))
+    if len(xticks)!=0:
+        ax.xaxis.set_ticks(xticks[0])
+        ax.xaxis.set_ticklabels(xticks[1])
+    if use_axis_fromatter_g:
+        ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
+        ax.yaxis.get_major_formatter().set_useOffset(False)
+
+
+    if limits:
+        if limits[0]:
+            xmin = limits[0][0]
+            xmax = limits[0][1]
+            ax.set_xlim(xmin, xmax)
+        if limits[1]:
+            ymin = limits[1][0]
+            ymax = limits[1][1]
+            ax.set_ylim(ymin, ymax)
+
+    for i, y in enumerate(ydata):
+        if sdata[i] is not None:
+            s = sdata[i]
+        else:
+            s = 1.0 # maybe list with one or marker size
+        ax.scatter(xdata[i],y=y,s=s, color='k')
+    
+
+    #TODO nice legend
+    if legend:
+        #print legend
+        #{anchor, title, fontsize, linewith, borderaxespad}
+        # defaults 'anchor' : (0.75, 0.97), 'title' : 'Legend', 'fontsize' : 17, 'linewith' : 1.5, 'borderaxespad' : },
+        legends_defaults = {'bbox_to_anchor' : (0.65, 0.97), 'fontsize' : 16,
+                            'linewidth' : 3.0, 'borderaxespad' : 0 , 'loc' : 2,
+                            'fancybox' : True} #'title' : 'Legend',
+        loptions = legends_defaults.copy()
+        loptions.update(legend_option)
+        linewidth = loptions.pop('linewidth', 1.5)
+        #title_font_size = loptions.pop('title_font_size', 15)
+        leg = ax.legend(**loptions)#bbox_to_anchor=loptions['anchor'],loc=loptions['loc'], title=legend_title, borderaxespad=0., fancybox=True)
+        leg.get_frame().set_linewidth(linewidth)
+        #leg.get_title().set_fontsize(title_font_size) #legend 'Title' fontsize
+    if save_plots_g:
+        savefilename = '{}.{}'.format(saveas, save_format_g)
+        print('save plot to: {}'.format(savefilename))
+        pp.savefig(savefilename, format=save_format_g, transparent=True)        
+            
+    
+    return ax
+    
+    
 def waterfall_plot(xdata, ydata, zdata, xlabel, ylabel,  zlabel, title, plot_labels,
                           linetyp='o-', legend=legend_g,
                           legend_option = {},
