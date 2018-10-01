@@ -29,7 +29,8 @@ import os
 import numpy as np
 import matplotlib.pyplot as pp
 import matplotlib.mlab as mlab
-
+from matplotlib.patches import Rectangle
+from cycler import cycler
 from masci_tools.vis import * # import all global variables
 
 ###############################################################################
@@ -469,6 +470,93 @@ def multiplot_moved(ydata, xdata, xlabel, ylabel, title, plot_labels, scale_move
 
     return ax
 
+def histogram(xdata, bins=None, range=None, density=None, weights=None,
+                      cumulative=False, bottom=None, histtype='bar', align='mid',
+                      orientation='vertical', rwidth=None, log=False, color=None,
+                      label=None, stacked=False, normed=None, data=None, axis=None,
+                      title='hist', xlabel='bins', ylabel='counts', limits=[None, None], legend=legend_g,
+                      legend_option={}, saveas='histogram', **kwargs):
+    """
+    Create a standard looking histogram
+    """
+
+    if axis:
+        ax = axis
+    else:
+        fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
+        ax = fig.add_subplot(111)
+
+    for axis in ['top','bottom','left','right']:
+        ax.spines[axis].set_linewidth(axis_linewidth_g)
+    ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
+    ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
+    ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
+    ax.yaxis.set_tick_params(size = tick_paramsy_g.get('size', 4.0),
+                             width = tick_paramsy_g.get('width', 1.0),
+                             labelsize = tick_paramsy_g.get('labelsize', 14),
+                             length = tick_paramsy_g.get('length', 5))
+    ax.xaxis.set_tick_params(size = tick_paramsx_g.get('size', 4.0),
+                             width = tick_paramsx_g.get('width', 1.0),
+                             labelsize = tick_paramsx_g.get('labelsize', 14),
+                             length = tick_paramsx_g.get('length', 5))
+    ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
+    ax.yaxis.get_major_formatter().set_useOffset(False)
+
+
+    #matplotlib.pyplot.hist(x, bins=None, range=None, density=None, weights=None, cumulative=False, bottom=None, histtype='bar', align='mid', orientation='vertical', rwidth=None, log=False, color=None, label=None, stacked=False, normed=None, hold=None, data=None, **kwargs)
+    n, bins, patches = ax.hist(xdata, bins=bins, range=range, density=density,
+                               weights=weights, cumulative=cumulative,
+            bottom=bottom, histtype=histtype, align=align, orientation=orientation,
+            rwidth=rwidth, log=log, color=color, label=label, stacked=stacked,
+            normed=normed, data=data, **kwargs)
+    
+    
+    if limits:
+        if limits[0]:
+            xmin = limits[0][0]
+            xmax = limits[0][1]
+            ax.set_xlim(xmin, xmax)
+        if limits[1]:
+            ymin = limits[1][0]
+            ymax = limits[1][1]
+            ax.set_ylim(ymin, ymax)
+
+    if normed:
+        mu = np.mean(xdata)
+        sigma = np.std(xdata)
+        y = mlab.normpdf(bins, mu, sigma)
+        if orientation=='horizontal':
+            b = ax.plot(y, bins, '--')
+        else:
+            b = ax.plot(bins, y, '--')
+              
+    #TODO legend
+    if legend:
+        #print legend
+        #{anchor, title, fontsize, linewith, borderaxespad}
+        # defaults 'anchor' : (0.75, 0.97), 'title' : 'Legend', 'fontsize' : 17, 'linewith' : 1.5, 'borderaxespad' : },
+        legends_defaults = {'bbox_to_anchor' : (0.70, 0.97), 'fontsize' : 12, 'borderaxespad' : 0 , 'loc' : 2, 'fancybox' : True} #'linewidth' : 1.5,, 'title' : 'Legend',
+        loptions = legends_defaults.copy()
+        loptions.update(legend_option)
+        linewidth = loptions.pop('linewidth', 1.5)
+        #title_font_size = loptions.pop('title_font_size', 15)
+        leg = ax.legend(**loptions)#bbox_to_anchor=loptions['anchor'],loc=loptions['loc'], title=legend_title, borderaxespad=0., fancybox=True)
+        leg.get_frame().set_linewidth(linewidth)
+        #leg.get_title().set_fontsize(title_font_size) #legend 'Title' fontsize
+ 
+    if save_plots_g:
+        savefilename = '{}.{}'.format(saveas, save_format_g)
+        print('save plot to: {}'.format(savefilename))
+        pp.savefig(savefilename, format=save_format_g, transparent=True)
+
+    if show_g:
+        pp.show()
+    else:
+        pass
+
+    return ax
+    
+# todo remove default histogramm, replace it in all code by histogramm
 def default_histogram(xdata, bins=None, range=None, density=None, weights=None,
                       cumulative=False, bottom=None, histtype='bar', align='mid',
                       orientation='vertical', rwidth=None, log=False, color=None,
