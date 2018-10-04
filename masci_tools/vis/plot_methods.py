@@ -52,7 +52,7 @@ edgecolor_g = 'k'
 # axis properties
 alpha_g = 1
 axis_linewidth_g = 1.5
-use_axis_fromatter_g = True
+use_axis_fromatter_g = False
 
 # plot properties
 linewidth_g = 2.0
@@ -157,7 +157,7 @@ def set_plot_defaults(title_fontsize = 16,
 
 def single_scatterplot(ydata, xdata, xlabel, ylabel, title, plotlabel ='scatterplot',
                        linestyle='-', marker='o', limits=[None, None], saveas ='scatterplot',
-                       color='k', scale=[None, None], axis=None, xerr=None, yerr=None, **kwargs):
+                       color='k', scale=[None, None], axis=None, xerr=None, yerr=None, markersize=markersize_g, **kwargs):
     """
     Create a standard scatter plot (this should be flexible enough) to do all the
     basic plots.
@@ -183,6 +183,8 @@ def single_scatterplot(ydata, xdata, xlabel, ylabel, title, plotlabel ='scatterp
     if use_axis_fromatter_g:
         ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
         ax.yaxis.get_major_formatter().set_useOffset(False)
+        ax.xaxis.get_major_formatter().set_powerlimits((0, 3))
+        ax.xaxis.get_major_formatter().set_useOffset(False)
     #ax.xaxis.set_major_formatter(DateFormatter("%b %y"))
     #if yerr or xerr:
     #    p1 = ax.errorbar(xdata, ydata, linetyp, label=plotlabel, color=color,
@@ -193,16 +195,15 @@ def single_scatterplot(ydata, xdata, xlabel, ylabel, title, plotlabel ='scatterp
     # TODO customizable error bars fmt='o', ecolor='g', capthick=2, ...
     # there the if is prob better...
     p1 = ax.errorbar(xdata, ydata, linestyle=linestyle, label=plotlabel, color=color,
-                     linewidth=linewidth_g, marker=marker, markersize=markersize_g,
+                     linewidth=linewidth_g, marker=marker, markersize=markersize,
                      yerr=yerr, xerr=xerr, **kwargs)
 
     if scale:
         if scale[0]:
             ax.set_xscale(scale[0])
-        elif scale[1]:
+        if scale[1]:
             ax.set_yscale(scale[1])
-        else:
-            pass
+
 
     if limits:
         if limits[0]:
@@ -266,7 +267,8 @@ def multiple_scatterplots(ydata, xdata, xlabel, ylabel, title, plot_labels=None,
     if use_axis_fromatter_g:
         ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
         ax.yaxis.get_major_formatter().set_useOffset(False)
-
+        ax.xaxis.get_major_formatter().set_powerlimits((0, 3))
+        ax.xaxis.get_major_formatter().set_useOffset(False)
     # TODO good checks for input and setting of internals before plotting
     # allow all arguments as value then use for all or as lists with the righ length.
     for i, data in enumerate(ydata):
@@ -321,10 +323,9 @@ def multiple_scatterplots(ydata, xdata, xlabel, ylabel, title, plot_labels=None,
     if scale:
         if scale[0]:
             ax.set_xscale(scale[0])
-        elif scale[1]:
+        if scale[1]:
             ax.set_yscale(scale[1])
-        else:
-            pass
+
 
     if limits:
         if limits[0]:
@@ -367,7 +368,8 @@ def multi_scatter_plot(xdata, ydata, sdata, xlabel='', ylabel='', title='', plot
                           marker='o', legend=legend_g,
                           legend_option={}, saveas='mscatterplot',
                           limits=[None, None], scale=[None, None],
-                          axis=None, colors=[], xticks=[], **kwargs):
+                          axis=None, color=[], xticks=[], alpha=1.0, label=None,
+                          **kwargs):
     """
     xdata : list or array
     ydata : list or array
@@ -409,8 +411,15 @@ def multi_scatter_plot(xdata, ydata, sdata, xlabel='', ylabel='', title='', plot
     if use_axis_fromatter_g:
         ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
         ax.yaxis.get_major_formatter().set_useOffset(False)
-
-
+        ax.xaxis.get_major_formatter().set_powerlimits((0, 3))
+        ax.xaxis.get_major_formatter().set_useOffset(False)
+    
+    if scale:
+        if scale[1]:
+            ax.set_yscale(scale[0])
+        if scale[0]:
+            ax.set_xscale(scale[1])
+        
     if limits:
         if limits[0]:
             xmin = limits[0][0]
@@ -426,7 +435,18 @@ def multi_scatter_plot(xdata, ydata, sdata, xlabel='', ylabel='', title='', plot
             s = sdata[i]
         else:
             s = 1.0 # maybe list with one or marker size
-        ax.scatter(xdata[i],y=y,s=s, color='k')
+        if not color:
+            if isinstance(y, list):
+                color1= ['k' for i in y]
+            else:
+                color1 = ['k']
+        else:
+            color1 = color[i]
+        if isinstance(marker, list):
+            marker1 = marker[i]
+        else:
+            marker1 = marker
+        ax.scatter(xdata[i],y=y,s=s,c=color1, alpha=alpha, marker=marker1, label=label)
     
 
     #TODO nice legend
@@ -494,15 +514,14 @@ def waterfall_plot(xdata, ydata, zdata, xlabel, ylabel,  zlabel, title, plot_lab
     ax.yaxis.get_major_formatter().set_useOffset(False)
 
     for i, data in enumerate(ydata):
-        p1 = ax.plot3D(xdata[i], data, zdata[i], linetyp, label = plot_labels[i],
+        p1 = ax.plot3D(xdata[i], data, zdata[i], linetyp, label=plot_labels[i],
                      linewidth = linewidth_g, markersize = markersize_g)
     if scale:
         if scale[0]:
             ax.set_xscale(scale[0])
-        elif scale[1]:
+        if scale[1]:
             ax.set_yscale(scale[1])
-        else:
-            pass
+
 
     if limits:
         if limits[0]:
@@ -565,7 +584,7 @@ def histogram(xdata, bins=None, range=None, density=None, weights=None,
                       orientation='vertical', rwidth=None, log=False, color=None,
                       label=None, stacked=False, normed=None, data=None, axis=None,
                       title='hist', xlabel='bins', ylabel='counts', limits=[None, None], legend=legend_g,
-                      legend_option={}, saveas='histogram', **kwargs):
+                      legend_option={}, saveas='histogram', return_hist_output=False, **kwargs):
     """
     Create a standard looking histogram
     """
@@ -589,8 +608,13 @@ def histogram(xdata, bins=None, range=None, density=None, weights=None,
                              width = tick_paramsx_g.get('width', 1.0),
                              labelsize = tick_paramsx_g.get('labelsize', 14),
                              length = tick_paramsx_g.get('length', 5))
-    ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
-    ax.yaxis.get_major_formatter().set_useOffset(False)
+                             
+    if use_axis_fromatter_g:
+        if not log:
+            ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
+            ax.xaxis.get_major_formatter().set_powerlimits((0, 3))
+        ax.yaxis.get_major_formatter().set_useOffset(False)
+        ax.xaxis.get_major_formatter().set_useOffset(False)
 
 
     #matplotlib.pyplot.hist(x, bins=None, range=None, density=None, weights=None, cumulative=False, bottom=None, histtype='bar', align='mid', orientation='vertical', rwidth=None, log=False, color=None, label=None, stacked=False, normed=None, hold=None, data=None, **kwargs)
@@ -643,8 +667,11 @@ def histogram(xdata, bins=None, range=None, density=None, weights=None,
         pp.show()
     else:
         pass
-
-    return ax
+    
+    if return_hist_output:
+        return ax, n, bins, patches
+    else:
+        return ax
     
 # todo remove default histogramm, replace it in all code by histogramm
 def default_histogram(xdata, bins=None, range=None, density=None, weights=None,
