@@ -56,7 +56,7 @@ def read_fleur_banddos_hdf(filepath):
      u'version': array([1], dtype=int32)}
     """
     import numpy as np
-    from masci_tools.util.io_hdf5 import read_hdf
+    from masci_tools.io.io_hdf5 import read_hdf
     
     xcoord, bands, xlabels, band_character, band_char_label = [],[],[],[],[]
     
