@@ -84,5 +84,5 @@ def zoom_in(ax, atm, pos, zoom_range=10):
      """
      center = pos[atm-1]
      print 'zoom in to atom', atm, ':', center
-     change_zoom(ax, zoom_range, center):
+     change_zoom(ax, zoom_range, center)
 
