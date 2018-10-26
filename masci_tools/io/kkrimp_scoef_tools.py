@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+#use print('message') instead of print 'message' in python 2.7 as well:
+from __future__ import print_function
+
 """
 Tools for the create scoef functions of the impurity caluclation.
 Provides functionality to write an scoef file 
@@ -14,8 +17,6 @@ __contributors__ = (u"Philipp Rüßmann",
 
 ####################################################################################
 
-#use print('message') instead of print 'message' in python 2.7 as well:
-from __future__ import print_function
 import numpy as np
 
 def get_structure_data(structure):

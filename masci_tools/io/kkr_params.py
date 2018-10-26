@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+#use print('message') instead of print 'message' in python 2.7 as well:
+from __future__ import print_function
+
 """
 In this module you find the kkrparams class that helps defining the KKR input parameters
 Also some defaults for the parameters are defined.
@@ -22,11 +25,6 @@ __kkr_default_params__ = {"LMAX": 3,          # lmax-cutoff
                           "GMAX": 100.,       # Madelung sum reciprocal-space cutoff
                           "RCLUSTZ": 2.3      # size of screening cluster (in alat units)
                           }
-
-
-
-#use print('message') instead of print 'message' in python 2.7 as well:
-from __future__ import print_function
 
 
 class kkrparams(object):

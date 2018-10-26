@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function
+
 """
 Everything that is needed to parse the output of a voronoi calculation.
 """
@@ -12,7 +14,6 @@ __contributors__ = (u"Philipp Rüßmann")
 
 ####################################################################################
 
-from __future__ import print_function
 import sys
 from masci_tools.io.common_functions import (get_corestates_from_potential, get_highest_core_state, search_string, 
                                              get_version_info, get_Ry2eV, get_ef_from_potfile)
