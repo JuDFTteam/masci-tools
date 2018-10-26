@@ -3,11 +3,11 @@
 from __future__ import print_function
 import sys
 
-from aiida_kkr.tools.common_functions import (get_corestates_from_potential, 
-                                              get_highest_core_state, search_string, 
-                                              get_version_info, get_Ry2eV, 
-                                              get_ef_from_potfile)
-from aiida_kkr.tools.kkrparser_functions import get_core_states
+from masci_tools.io.common_functions import (get_corestates_from_potential, 
+                                                     get_highest_core_state, search_string, 
+                                                     get_version_info, get_Ry2eV, 
+                                                     get_ef_from_potfile)
+from masci_tools.io.parsers.kkrparser_functions import get_core_states
 
 
 # redefine raw_input for python 3/2.7 compatilbility

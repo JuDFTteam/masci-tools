@@ -190,7 +190,7 @@ class kkrimp_parser_functions():
             * 'epts', list of complex valued energy points
             * 'weights', list of complex valued weights for energy integration
         """
-        from aiida_kkr.tools.common_functions import search_string
+        from masci_tools.io.common_functions import search_string
         from numpy import array
         f = open(out_log)
         tmptxt = f.readlines()
@@ -218,7 +218,7 @@ class kkrimp_parser_functions():
         :returns: niter (int), nitermax (int), converged (bool), nmax_reached (bool), mixinfo (dict)
         :note: mixinfo contains information on mixing scheme and mixing factor used in the calculation
         """
-        from aiida_kkr.tools.common_functions import search_string
+        from masci_tools.io.common_functions import search_string
         f = open(file)
         tmptxt = f.readlines()
         f.close()
@@ -266,7 +266,7 @@ class kkrimp_parser_functions():
         :param file: absolute path to out_log.000.txt of KKRimp calculation
         :returns: True(False) if SOC solver is (not) used
         """
-        from aiida_kkr.tools.common_functions import search_string
+        from masci_tools.io.common_functions import search_string
         f = open(file)
         tmptxt = f.readlines()
         f.close()
@@ -285,7 +285,7 @@ class kkrimp_parser_functions():
         :param file: file that is parsed to find number of atoms
         :returns: natom (int), number of atoms in impurity cluster
         """
-        from aiida_kkr.tools.common_functions import search_string
+        from masci_tools.io.common_functions import search_string
         f = open(file)
         tmptxt = f.readlines()
         f.close()
@@ -310,7 +310,7 @@ class kkrimp_parser_functions():
         :param outfile: timing file of the KKRimp run
         :returns: res (dict) timings in seconds, averaged over iterations
         """
-        from aiida_kkr.tools.common_functions import search_string
+        from masci_tools.io.common_functions import search_string
         f = open(outfile)
         tmptxt = f.readlines()
         f.close()
@@ -348,7 +348,7 @@ class kkrimp_parser_functions():
         :param file: file that is parsed
         :returns: 1 if calculation is paramagnetic, 2 otherwise
         """
-        from aiida_kkr.tools.common_functions import search_string
+        from masci_tools.io.common_functions import search_string
         f = open(file)
         tmptxt = f.readlines()
         f.close()
@@ -398,7 +398,7 @@ class kkrimp_parser_functions():
         :param file: file that is parsed
         :returns: Etot (list), values of the total energy in Ry for all iterations
         """
-        from aiida_kkr.tools.common_functions import search_string
+        from masci_tools.io.common_functions import search_string
         f = open(file)
         tmptxt = f.readlines()
         f.close()
@@ -447,8 +447,8 @@ class kkrimp_parser_functions():
             * 'out_spinmoms', the output spin moments file
             * 'out_orbmoms', the output orbital moments file
         """
-        from aiida_kkr.tools.kkrparser_functions import get_rms, find_warnings, get_charges_per_atom, get_core_states
-        from aiida_kkr.tools.common_functions import get_version_info, get_Ry2eV
+        from masci_tools.io.parsers.kkrparser_functions import get_rms, find_warnings, get_charges_per_atom, get_core_states
+        from masci_tools.io.common_functions import get_version_info, get_Ry2eV
         
         Ry2eV = get_Ry2eV()
         msg_list = []
@@ -679,7 +679,7 @@ def get_structure_data(structure):
     
     #import packages
     from aiida.common.constants import elements as PeriodicTableElements
-    from aiida_kkr.tools.common_functions import get_Ang2aBohr, get_alat_from_bravais
+    from masci_tools.io.common_functions import get_Ang2aBohr, get_alat_from_bravais
     import numpy as np
     
     #list of globally used constants
@@ -793,7 +793,7 @@ def rotate_onto_z(structure, structure_array, vector):
     :return: rotated system, now the 'orient'-axis is aligned with the z-axis
     """    
     
-    from aiida_kkr.tools.common_functions import vec_to_angles
+    from masci_tools.io.common_functions import vec_to_angles
     import math
     import numpy as np
     
@@ -851,7 +851,7 @@ def find_neighbors(structure, structure_array, i, radius, clust_shape='spherical
     """
     
     #import packages
-    from aiida_kkr.tools.common_functions import get_Ang2aBohr, get_alat_from_bravais
+    from masci_tools.io.common_functions import get_Ang2aBohr, get_alat_from_bravais
     import numpy as np
     import math
     

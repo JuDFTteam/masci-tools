@@ -809,7 +809,7 @@ class kkrparams(object):
         :note: converts '<RBLEFT>', '<RBRIGHT>', 'ZPERIODL', and 'ZPERIODR' automatically to Ang. units!
         """
         from numpy import shape, array
-        from aiida_kkr.tools.common_functions import get_aBohr2Ang
+        from masci_tools.io.common_functions import get_aBohr2Ang
         
         # some print statements with debug info
         debug = False

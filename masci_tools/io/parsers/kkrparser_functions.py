@@ -12,8 +12,8 @@ parser file where parse_kkr_outputfile is called
 """
 
 
-from common_functions import (search_string, get_version_info, get_Ry2eV, angles_to_vec,
-                              get_corestates_from_potential, get_highest_core_state)
+from masci_tools.io.common_functions import (search_string, get_version_info, get_Ry2eV, angles_to_vec,
+                                                     get_corestates_from_potential, get_highest_core_state)
 
 
 def parse_array_float(outfile, searchstring, splitinfo, replacepair=None):

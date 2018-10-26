@@ -23,10 +23,8 @@ Then creates a simple matplotlib image to show the shapefunctions using the 'plo
 
 from numpy import array, shape
 from sys import argv
-from masci_tools.io.kkr_read_shapfun_info import read_shapefun
-from masci_tools.vis.kkr_plot_shapfun import plot_shapefun#, change_zoom, zoom_in
-#from kkr_read_shapefun_info import read_shapefun
-#from kkr_plot_shapefun import plot_shapefun, change_zoom, zoom_in
+from masci_tools.io.kkr_read_shapefun_info import read_shapefun
+from masci_tools.vis.kkr_plot_shapefun import plot_shapefun#, change_zoom, zoom_in
 from matplotlib.pyplot import show
 
 

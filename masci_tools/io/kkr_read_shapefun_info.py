@@ -23,7 +23,7 @@ def read_shapefun(path='.'):
   :returns pos: positions of the centers of the shapefunctions
   :returns out: dictionary of the vertices of the shapefunctions
   """
-  from common_functions import search_string
+  from masci_tools.io.parsers.common_functions import search_string
   from numpy import array
 
   path += '/'
