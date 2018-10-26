@@ -1,15 +1,16 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
+
 """
-Created on Thu Dec  7 10:09:51 2017
-
-@author: ruess
-
-Note:
 Here I collect all functions needed to parse the output of a KKR calculation. 
 These functions do not need aiida and are therefore separated from the actual 
 parser file where parse_kkr_outputfile is called
-"""
+""" 
+
+__copyright__ = (u"Copyright (c), 2017, Forschungszentrum Jülich GmbH,"
+                 "IAS-1/PGI-1, Germany. All rights reserved.")
+__license__ = "MIT license, see LICENSE.txt file"
+__contributors__ = u"Philipp Rüßmann"
 
 
 from masci_tools.io.common_functions import (search_string, get_version_info, get_Ry2eV, angles_to_vec,

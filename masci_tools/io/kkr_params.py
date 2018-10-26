@@ -1,23 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
 """
 In this module you find the kkrparams class that helps defining the KKR input parameters
-Also some defaults for the parameters are defined
-"""
-#use print('message') instead of print 'message' in python 2.7 as well:
-from __future__ import print_function
-# redefine raw_input for python 3/2.7 compatilbility
-from sys import version_info
-if version_info[0] >= 3:
-    def raw_input(msg):
-        return input(msg)
-    
+Also some defaults for the parameters are defined.
+""" 
 
 __copyright__ = (u"Copyright (c), 2017, Forschungszentrum Jülich GmbH,"
                  "IAS-1/PGI-1, Germany. All rights reserved.")
 __license__ = "MIT license, see LICENSE.txt file"
 __version__ = "0.5"
 __contributors__ = u"Philipp Rüßmann"
+
 
 # This defines the default parameters for KKR used in the aiida plugin:
 __kkr_default_params__ = {"LMAX": 3,          # lmax-cutoff
@@ -29,6 +23,10 @@ __kkr_default_params__ = {"LMAX": 3,          # lmax-cutoff
                           "RCLUSTZ": 2.3      # size of screening cluster (in alat units)
                           }
 
+
+
+#use print('message') instead of print 'message' in python 2.7 as well:
+from __future__ import print_function
 
 
 class kkrparams(object):

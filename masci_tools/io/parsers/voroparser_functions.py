@@ -1,20 +1,22 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+"""
+Everything that is needed to parse the output of a voronoi calculation.
+"""
+         
+__copyright__ = (u"Copyright (c), 2018, Forschungszentrum Jülich GmbH,"
+                 "IAS-1/PGI-1, Germany. All rights reserved.")
+__license__ = "MIT license, see LICENSE.txt file"
+__contributors__ = (u"Philipp Rüßmann")
+
+####################################################################################
 
 from __future__ import print_function
 import sys
-
-from masci_tools.io.common_functions import (get_corestates_from_potential, 
-                                                     get_highest_core_state, search_string, 
-                                                     get_version_info, get_Ry2eV, 
-                                                     get_ef_from_potfile)
+from masci_tools.io.common_functions import (get_corestates_from_potential, get_highest_core_state, search_string, 
+                                             get_version_info, get_Ry2eV, get_ef_from_potfile)
 from masci_tools.io.parsers.kkrparser_functions import get_core_states
-
-
-# redefine raw_input for python 3/2.7 compatilbility
-if sys.version_info[0] >= 3:
-    def raw_input(msg):
-        return input(msg)
-
 
 
 def get_valence_min(outfile='out_voronoi'):
