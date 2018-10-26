@@ -14,7 +14,8 @@
 """
 Io routines for band structure files
 """
-
+ry_to_ev = 13.6056917253
+hartree_to_ev = ry_to_ev * 2.
 
 def read_fleur_banddos_hdf(filepath):
     """

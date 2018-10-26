@@ -1878,10 +1878,15 @@ def plot_bands2(xs,ys,ss,axis=None, linestyle='-',markersize_scaling=20,**kwargs
 def plot_fleur_bands(filename, limits=[None,[-15, 15]]):
     """
     plot a fleur bandstructure
+    
+    # TODO: performance has to be increased.
+    Maybe allow to specify a procentage of the kpoints to read in and plot.
+    Therefore enable a partially read in of the dos_band.hdf
     """
     
     from masci_tools.vis.plot_methods import multiple_scatterplots
-    
+    from masci_tools.io.io_fleur_bands import read_fleur_banddos_hdf
+
     
     xcoord, bands, xlabels, band_character, band_char_label, kts, wghts, rcell, cell, pos, atomn, spp = read_fleur_banddos_hdf(filename) 
     
@@ -1921,10 +1926,15 @@ def plot_fleur_bands(filename, limits=[None,[-15, 15]]):
             label = u'$\Gamma$'
         xticks[1].append(label)
         xticks[0].append(pos)
-
-    x = [xcoord for i in bands]
+    
+    # TODO spin is not treated right yet
+    x = [xcoord for i in bands[0]]
     y = bands[0]
-    y2 = bands[1]
+    y2 = None
+    if len(bands) == 2:
+        y2 = bands[1]
+        print(len(y2))
+    print(len(x), len(y))
     
     limits[0] = [min(xcoord), max(xcoord)]
 
@@ -1950,13 +1960,14 @@ def plot_fleur_bands(filename, limits=[None,[-15, 15]]):
     for label, pos in xlabels:
         ax1.axvline(ymin=0, ymax=1, x=pos, #1.0/10.93, 
                    linewidth=1.0, linestyle='-', color='k')
-
-    ax2 = multiple_scatterplots(y2,x,ylabel=u'Energy [eV]', xlabel='', title='', plot_labels=None,
-                                xticks=xticks, limits=limits, saveas='bandstructure', marker=None)
-    #print ax1
-    for label, pos in xlabels:
-        ax2.axvline(ymin=0, ymax=1, x=pos, #1.0/10.93, 
-                   linewidth=1.0, linestyle='-', color='k')
+    
+    if y2:
+        ax2 = multiple_scatterplots(y2,x,ylabel=u'Energy [eV]', xlabel='', title='', plot_labels=None,
+                                    xticks=xticks, limits=limits, saveas='bandstructure', marker=None)
+        #print ax1
+        for label, pos in xlabels:
+            ax2.axvline(ymin=0, ymax=1, x=pos, #1.0/10.93, 
+                       linewidth=1.0, linestyle='-', color='k')
      
 
 
