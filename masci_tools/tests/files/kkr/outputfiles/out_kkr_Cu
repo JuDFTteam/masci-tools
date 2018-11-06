@@ -1,0 +1,270 @@
+ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ !!! Most output written to output.myrank.txt files !!!
+ !!! please check these files as well               !!!
+ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+*******************************************************************************
+          Screened Korringa-Kohn-Rostoker Electronic Structure Code
+                           for Bulk and Interfaces
+          Juelich-Munich 2001 - 2016
+
+ Code version: v2.2-22-g4f8f5ff
+ Compile options: openmp-mac
+-O2 -r8 -module ./OBJ -sox -traceback
+-mkl -Wl,-stack_size,0x40000000,-stack_addr,0xf0000000
+
+ serial number for files:kkrjm_v2.2-22-g4f8f5ff_openmp-mac_20171110154302
+*******************************************************************************
+
+ Number of OpenMP threads used:    1
+
+*******************************************************************************
+
+ Calling MADELUNG3D
+ Exited MADELUNG3D
+ ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ +++            SCF ITERATIONS START                +++
+ ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+started on 2017/11/10 at 15:43: 2
+               Ne         
+          TOT 11.31106305
+      ITERATION   1 charge neutrality in unit cell =     0.311063
+                new E FERMI   0.3592410000  DOS(E_F) =     4.400278
+      ITERATION   1 average rms-error : v+ + v- =  2.5994D-01
+TOTAL ENERGY in ryd. :            -3304.95944325
+
+Iteration finished on 2017/11/10 at 15:43: 2
+               Ne         
+          TOT 11.09886261
+      ITERATION   2 charge neutrality in unit cell =     0.098863
+                new E FERMI   0.3461565216  DOS(E_F) =     7.555717
+      ITERATION   2 average rms-error : v+ + v- =  2.2834D-01
+TOTAL ENERGY in ryd. :            -3304.92140018
+
+Iteration finished on 2017/11/10 at 15:43: 2
+               Ne         
+          TOT 10.99344462
+      ITERATION   3 charge neutrality in unit cell =    -0.006555
+                new E FERMI   0.3468013500  DOS(E_F) =    10.166084
+      ITERATION   3 average rms-error : v+ + v- =  2.2617D-01
+TOTAL ENERGY in ryd. :            -3304.92019209
+
+Iteration finished on 2017/11/10 at 15:43: 2
+               Ne         
+          TOT 10.96788685
+      ITERATION   4 charge neutrality in unit cell =    -0.032113
+                new E FERMI   0.3497774303  DOS(E_F) =    10.790419
+      ITERATION   4 average rms-error : v+ + v- =  2.2243D-01
+TOTAL ENERGY in ryd. :            -3304.92212018
+
+Iteration finished on 2017/11/10 at 15:43: 2
+               Ne         
+          TOT 10.96237786
+      ITERATION   5 charge neutrality in unit cell =    -0.037622
+                new E FERMI   0.3531926948  DOS(E_F) =    11.015880
+      ITERATION   5 average rms-error : v+ + v- =  2.1833D-01
+TOTAL ENERGY in ryd. :            -3304.92441361
+
+Iteration finished on 2017/11/10 at 15:43: 3
+               Ne         
+          TOT 10.96142249
+      ITERATION   6 charge neutrality in unit cell =    -0.038578
+                new E FERMI   0.3566531171  DOS(E_F) =    11.148209
+      ITERATION   6 average rms-error : v+ + v- =  2.1425D-01
+TOTAL ENERGY in ryd. :            -3304.92661303
+
+Iteration finished on 2017/11/10 at 15:43: 3
+               Ne         
+          TOT 10.96170226
+      ITERATION   7 charge neutrality in unit cell =    -0.038298
+                new E FERMI   0.3600570343  DOS(E_F) =    11.251078
+      ITERATION   7 average rms-error : v+ + v- =  2.1028D-01
+TOTAL ENERGY in ryd. :            -3304.92864546
+
+Iteration finished on 2017/11/10 at 15:43: 3
+               Ne         
+          TOT 10.96232636
+      ITERATION   8 charge neutrality in unit cell =    -0.037674
+                new E FERMI   0.3633786948  DOS(E_F) =    11.341811
+      ITERATION   8 average rms-error : v+ + v- =  2.0644D-01
+TOTAL ENERGY in ryd. :            -3304.93050498
+
+Iteration finished on 2017/11/10 at 15:43: 3
+               Ne         
+          TOT 10.96304067
+      ITERATION   9 charge neutrality in unit cell =    -0.036959
+                new E FERMI   0.3666135133  DOS(E_F) =    11.425472
+      ITERATION   9 average rms-error : v+ + v- =  2.0274D-01
+TOTAL ENERGY in ryd. :            -3304.93220105
+
+Iteration finished on 2017/11/10 at 15:43: 3
+               Ne         
+          TOT 10.96377191
+      ITERATION  10 charge neutrality in unit cell =    -0.036228
+                new E FERMI   0.3697627833  DOS(E_F) =    11.503646
+      ITERATION  10 average rms-error : v+ + v- =  1.9916D-01
+TOTAL ENERGY in ryd. :            -3304.93374658
+
+Iteration finished on 2017/11/10 at 15:43: 3
+               Ne         
+          TOT 10.96449915
+      ITERATION  11 charge neutrality in unit cell =    -0.035501
+                new E FERMI   0.3728293004  DOS(E_F) =    11.576929
+      ITERATION  11 average rms-error : v+ + v- =  1.9571D-01
+TOTAL ENERGY in ryd. :            -3304.93515436
+
+Iteration finished on 2017/11/10 at 15:43: 3
+               Ne         
+          TOT 10.96521663
+      ITERATION  12 charge neutrality in unit cell =    -0.034783
+                new E FERMI   0.3758161113  DOS(E_F) =    11.645655
+      ITERATION  12 average rms-error : v+ + v- =  1.9237D-01
+TOTAL ENERGY in ryd. :            -3304.93643656
+
+Iteration finished on 2017/11/10 at 15:43: 3
+               Ne         
+          TOT 10.96592294
+      ITERATION  13 charge neutrality in unit cell =    -0.034077
+                new E FERMI   0.3787261689  DOS(E_F) =    11.710097
+      ITERATION  13 average rms-error : v+ + v- =  1.8914D-01
+TOTAL ENERGY in ryd. :            -3304.93760445
+
+Iteration finished on 2017/11/10 at 15:43: 3
+               Ne         
+          TOT 10.96661781
+      ITERATION  14 charge neutrality in unit cell =    -0.033382
+                new E FERMI   0.3815622542  DOS(E_F) =    11.770517
+      ITERATION  14 average rms-error : v+ + v- =  1.8602D-01
+TOTAL ENERGY in ryd. :            -3304.93866839
+
+Iteration finished on 2017/11/10 at 15:43: 4
+               Ne         
+          TOT 10.96730114
+      ITERATION  15 charge neutrality in unit cell =    -0.032699
+                new E FERMI   0.3843269770  DOS(E_F) =    11.827175
+      ITERATION  15 average rms-error : v+ + v- =  1.8300D-01
+TOTAL ENERGY in ryd. :            -3304.93963786
+
+Iteration finished on 2017/11/10 at 15:43: 4
+               Ne         
+          TOT 10.96797277
+      ITERATION  16 charge neutrality in unit cell =    -0.032027
+                new E FERMI   0.3870227981  DOS(E_F) =    11.880325
+      ITERATION  16 average rms-error : v+ + v- =  1.8008D-01
+TOTAL ENERGY in ryd. :            -3304.94052152
+
+Iteration finished on 2017/11/10 at 15:43: 4
+               Ne         
+          TOT 10.96863244
+      ITERATION  17 charge neutrality in unit cell =    -0.031368
+                new E FERMI   0.3896520529  DOS(E_F) =    11.930209
+      ITERATION  17 average rms-error : v+ + v- =  1.7724D-01
+TOTAL ENERGY in ryd. :            -3304.94132723
+
+Iteration finished on 2017/11/10 at 15:43: 4
+               Ne         
+          TOT 10.96927980
+      ITERATION  18 charge neutrality in unit cell =    -0.030720
+                new E FERMI   0.3922169730  DOS(E_F) =    11.977058
+      ITERATION  18 average rms-error : v+ + v- =  1.7450D-01
+TOTAL ENERGY in ryd. :            -3304.94206215
+
+Iteration finished on 2017/11/10 at 15:43: 4
+               Ne         
+          TOT 10.96991448
+      ITERATION  19 charge neutrality in unit cell =    -0.030086
+                new E FERMI   0.3947197020  DOS(E_F) =    12.021085
+      ITERATION  19 average rms-error : v+ + v- =  1.7183D-01
+TOTAL ENERGY in ryd. :            -3304.94273278
+
+Iteration finished on 2017/11/10 at 15:43: 4
+               Ne         
+          TOT 10.97053611
+      ITERATION  20 charge neutrality in unit cell =    -0.029464
+                new E FERMI   0.3971623078  DOS(E_F) =    12.062484
+      ITERATION  20 average rms-error : v+ + v- =  1.6925D-01
+TOTAL ENERGY in ryd. :            -3304.94334500
+
+Iteration finished on 2017/11/10 at 15:43: 4
+               Ne         
+          TOT 10.97114434
+      ITERATION  21 charge neutrality in unit cell =    -0.028856
+                new E FERMI   0.3995467904  DOS(E_F) =    12.101436
+      ITERATION  21 average rms-error : v+ + v- =  1.6674D-01
+TOTAL ENERGY in ryd. :            -3304.94390415
+
+Iteration finished on 2017/11/10 at 15:43: 4
+               Ne         
+          TOT 10.97173889
+      ITERATION  22 charge neutrality in unit cell =    -0.028261
+                new E FERMI   0.4018750877  DOS(E_F) =    12.138102
+      ITERATION  22 average rms-error : v+ + v- =  1.6430D-01
+TOTAL ENERGY in ryd. :            -3304.94441506
+
+Iteration finished on 2017/11/10 at 15:43: 4
+               Ne         
+          TOT 10.97231954
+      ITERATION  23 charge neutrality in unit cell =    -0.027680
+                new E FERMI   0.4041490787  DOS(E_F) =    12.172632
+      ITERATION  23 average rms-error : v+ + v- =  1.6192D-01
+TOTAL ENERGY in ryd. :            -3304.94488212
+
+Iteration finished on 2017/11/10 at 15:43: 5
+               Ne         
+          TOT 10.97288615
+      ITERATION  24 charge neutrality in unit cell =    -0.027114
+                new E FERMI   0.4063705859  DOS(E_F) =    12.205160
+      ITERATION  24 average rms-error : v+ + v- =  1.5961D-01
+TOTAL ENERGY in ryd. :            -3304.94530929
+
+Iteration finished on 2017/11/10 at 15:43: 5
+               Ne         
+          TOT 10.97343862
+      ITERATION  25 charge neutrality in unit cell =    -0.026561
+                new E FERMI   0.4085413769  DOS(E_F) =    12.235806
+      ITERATION  25 average rms-error : v+ + v- =  1.5737D-01
+TOTAL ENERGY in ryd. :            -3304.94570018
+
+Iteration finished on 2017/11/10 at 15:43: 5
+               Ne         
+          TOT 10.97397695
+      ITERATION  26 charge neutrality in unit cell =    -0.026023
+                new E FERMI   0.4106631649  DOS(E_F) =    12.264682
+      ITERATION  26 average rms-error : v+ + v- =  1.5518D-01
+TOTAL ENERGY in ryd. :            -3304.94605806
+
+Iteration finished on 2017/11/10 at 15:43: 5
+               Ne         
+          TOT 10.97450116
+      ITERATION  27 charge neutrality in unit cell =    -0.025499
+                new E FERMI   0.4127376098  DOS(E_F) =    12.291887
+      ITERATION  27 average rms-error : v+ + v- =  1.5304D-01
+TOTAL ENERGY in ryd. :            -3304.94638588
+
+Iteration finished on 2017/11/10 at 15:43: 5
+               Ne         
+          TOT 10.97501135
+      ITERATION  28 charge neutrality in unit cell =    -0.024989
+                new E FERMI   0.4147663184  DOS(E_F) =    12.317515
+      ITERATION  28 average rms-error : v+ + v- =  1.5096D-01
+TOTAL ENERGY in ryd. :            -3304.94668632
+
+Iteration finished on 2017/11/10 at 15:43: 5
+               Ne         
+          TOT 10.97550767
+      ITERATION  29 charge neutrality in unit cell =    -0.024492
+                new E FERMI   0.4167508451  DOS(E_F) =    12.341650
+      ITERATION  29 average rms-error : v+ + v- =  1.4894D-01
+TOTAL ENERGY in ryd. :            -3304.94696184
+
+Iteration finished on 2017/11/10 at 15:43: 5
+               Ne         
+          TOT 10.97599029
+      ITERATION  30 charge neutrality in unit cell =    -0.024010
+                new E FERMI   0.4186926922  DOS(E_F) =    12.364368
+      ITERATION  30 average rms-error : v+ + v- =  1.4696D-01
+TOTAL ENERGY in ryd. :            -3304.94721464
+
+            ++++++ NUMBER OF SCF STEPS EXHAUSTED ++++++
+*******************************************************************************
+Iteration finished on 2017/11/10 at 15:43: 5

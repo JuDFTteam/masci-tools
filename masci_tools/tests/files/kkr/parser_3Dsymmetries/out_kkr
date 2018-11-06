@@ -1,0 +1,41 @@
+ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ !!! Most output written to output.myrank.txt files !!!
+ !!! please check these files as well               !!!
+ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+*******************************************************************************
+          Screened Korringa-Kohn-Rostoker Electronic Structure Code
+                           for Bulk and Interfaces
+          Juelich-Munich 2001 - 2016
+
+ Code version: v2.2-23-g4a095c6
+ Compile options: openmp-mac
+-O2 -r8 -module ./OBJ -sox -traceback
+-mkl -Wl,-stack_size,0x40000000,-stack_addr,0xf0000000
+
+ serial number for files:kkrjm_v2.2-23-g4a095c6_openmp-mac_20180105092029
+*******************************************************************************
+
+ Number of OpenMP threads used:    1
+
+*******************************************************************************
+
+ ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ +++            SCF ITERATIONS START                +++
+ ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+started on 2018/ 1/ 5 at  9:20:29
+               Ne spin dn  Ne spin up    m_spin 
+          TOT  5.02490287  5.02490287    0.0000
+          TOT  5.02490287  5.02490287    0.0000
+          TOT  5.02490287  5.02490287    0.0000
+          TOT  5.02490287  5.02490287    0.0000
+      ITERATION   1 charge neutrality in unit cell =  -147.800777
+                    TOTAL mag. moment in unit cell =     0.000000
+                new E FERMI   0.1535770000  DOS(E_F) =     7.537613
+      ITERATION   1 average rms-error : v+ + v- =  1.8830D+01
+                                        v+ - v- =  0.0000D+00
+TOTAL ENERGY in ryd. :           -27548.13340937
+
+            ++++++ NUMBER OF SCF STEPS EXHAUSTED ++++++
+*******************************************************************************
+Iteration finished on 2018/ 1/ 5 at  9:21:30

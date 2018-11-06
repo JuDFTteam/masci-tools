@@ -1,0 +1,50 @@
+# serial: kkrjm_v2.2-62-g7801b9a_mpi_20180115094957
+ main0                                       0.519700000000000     
+ MPI 1                                       0.489300000000000     
+ main1a - tbref                               35.3441000000000     
+ main1a                                       35.5188000000000     
+ main1b - calctref13                         3.000000000000000E-002
+ main1b_inversion                            7.320000000000000E-002
+ main1b - kloopz                             0.372200000000000     
+ main1b                                      0.549900000000000     
+ main1c - rhoval                             1.290000000000000E-002
+ main1c - communication                      0.199800000000000     
+ main1c - serial part                        1.820000000000000E-002
+ main1c                                      0.530400000000000     
+ main2                                        1.14340000000000     
+ MPI 2                                       0.300600000000000     
+ Time in Iteration                            38.0434000000000     
+ main1a - tbref                               35.3608000000000     
+ main1a                                       35.4521000000000     
+ main1b - calctref13                         3.030000000000000E-002
+ main1b_inversion                            7.290000000000001E-002
+ main1b - kloopz                             0.371600000000000     
+ main1b                                      0.549500000000000     
+ main1c - rhoval                             1.280000000000000E-002
+ main1c - communication                      0.203800000000000     
+ main1c - serial part                        2.140000000000000E-002
+ main1c                                      0.534900000000000     
+ main2                                        1.10710000000000     
+ MPI 2                                       0.300700000000000     
+ Time in Iteration                            37.9446000000000     
+ main1a - tbref                               35.3075000000000     
+ main1a                                       35.3320000000000     
+ main1b - calctref13                         3.000000000000000E-002
+ main1b_inversion                            7.320000000000000E-002
+ main1b - kloopz                             0.369800000000000     
+ main1b                                      0.548500000000000     
+ main1c - rhoval                             1.280000000000000E-002
+ main1c - communication                      0.199700000000000     
+ main1c - serial part                        2.730000000000000E-002
+ main1c                                      0.541700000000000     
+ main2                                       0.989300000000000     
+ MPI 2                                       0.299300000000000     
+ Time in Iteration                            37.7111000000000     
+ main1a - tbref                               35.3177000000000     
+ main1a                                       35.4066000000000     
+ main1b - calctref13                         6.909999999999999E-002
+ main1b_inversion                            0.504500000000000     
+ main1b - kloopz                             0.915400000000000     
+ main1b                                       1.09230000000000     
+ main1c - rhoval                             7.720000000000000E-002
+ main1c - communication                      0.199100000000000     

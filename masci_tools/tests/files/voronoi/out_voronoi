@@ -1,0 +1,551 @@
+##########################################
+This is the Voronoi program
+Code version: v1.0-6-gf0c2ac3
+Compile options:serial-O2 -r8 -traceback -i8-mkl -Wl,-stack_size,0x40000000,-stack_addr,0xf0000000
+serial number for files:voro_v1.0-6-gf0c2ac3_serial_20171207092915
+##########################################
+
+**********************************************************
+*         SCREENED KKR POTENTIAL PREPARATION  UTILITY    *
+*                                                        *
+**********************************************************
+ Begin Structure
+ Surface geometry
+ readinput: CARTESIAN= T
+ NAEZ=                     6
+*** SLAB - INTERFACE CALCULATION ***
+
+Number of LEFT  Host Layers :    10 with     1 basis
+Number of RIGHT Host Layers :    10 with     1 basis
+Left  side periodicity :    0.00000   0.70711  -0.70711
+Right side periodicity :    0.00000  -0.70711   0.70711
+    Geommetry used : 
+ ATOM       TX          TY          TZ 
+--------------- Left  Host -------------- 
+   10    0.000000    7.778177   -7.071070
+    9    0.000000    7.071070   -6.363963
+    8    0.000000    6.363963   -5.656856
+    7    0.000000    5.656856   -4.949749
+    6    0.000000    4.949749   -4.242642
+    5    0.000000    4.242642   -3.535535
+    4    0.000000    3.535535   -2.828428
+    3    0.000000    2.828428   -2.121321
+    2    0.000000    2.121321   -1.414214
+    1    0.000000    1.414214   -0.707107
+---------------   S L A B  -------------- 
+    1    0.000000    0.707107    0.000000
+    2    0.000000    0.000000    0.707107
+    3    0.000000    0.707107    1.414214
+    4    0.000000    0.000000    2.121320
+    5    0.000000    0.707107    2.828427
+    6    0.000000    0.000000    3.535534
+--------------- Right Host -------------- 
+    1    0.000000   -0.707107    4.242641
+    2    0.000000   -1.414214    4.949748
+    3    0.000000   -2.121321    5.656855
+    4    0.000000   -2.828428    6.363962
+    5    0.000000   -3.535535    7.071069
+    6    0.000000   -4.242642    7.778176
+    7    0.000000   -4.949749    8.485283
+    8    0.000000   -5.656856    9.192390
+    9    0.000000   -6.363963    9.899497
+   10    0.000000   -7.071070   10.606604
+ Begin define volume weights
+ End Define volume weights
+ End Structure
+ Parameters Used for the cluster calculation
+ Clusters inside spheres with radius R =    1.50000000000000     
+ RBASIS
+     0.00000000     0.70710700     0.00000000     1
+     0.00000000     0.00000000     0.70710700     2
+     0.00000000     0.70710700     1.41421400     3
+     0.00000000     0.00000000     2.12132000     4
+     0.00000000     0.70710700     2.82842700     5
+     0.00000000     0.00000000     3.53553400     6
+ 
+     0.00000000     1.41421400    -0.70710700     7     0
+     0.00000000    -0.70710700     4.24264100     8     0
+ NATYP not found, setting NATYP=NAEZ.
+NAEZ=    6 ; NATYP=    6 ; NSPIN= 2
+ NATYP 
+   6
+   Z lmx     KFG cls pot ntc  MTFAC irns   MT Size
+---+---------------------------------------------------------------------------
+  0.   0    0000   0   0   0  0.0000   0  0.1000E+11  1.0000
+  0.   0    0000   0   0   0  0.0000   0  0.1000E+11  1.0000
+ 26.   0    0000   0   0   0  0.0000   0  0.1000E+11  1.0000
+ 26.   0    0000   0   0   0  0.0000   0  0.1000E+11  1.0000
+  0.   0    0000   0   0   0  0.0000   0  0.1000E+11  1.0000
+  0.   0    0000   0   0   0  0.0000   0  0.1000E+11  1.0000
+---+---+-------+---+---+---+-------+---+---------------------------------------
+---+---------------------------------------------------------------------------
+
+
+                    full potential calculation - cut off of non spherical potential
+ >
+
+                               representive atom no.  1 irns :    0 irnsd : 1399
+                               representive atom no.  2 irns :    0 irnsd : 1399
+                               representive atom no.  3 irns :    0 irnsd : 1399
+                               representive atom no.  4 irns :    0 irnsd : 1399
+                               representive atom no.  5 irns :    0 irnsd : 1399
+                               representive atom no.  6 irns :    0 irnsd : 1399
+---+--------------+--------------+--------------+------------------------------
+ KAOEZ 
+   1   2   3   4   5   6
+    NCLS    NREF   
+       0       0
+-------------------------------------------------------------------------------
+ TEST OPTIONS:
+         //        //        //        //        //        //        //        
+         //        //        //        //        //        //        //        
+
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+ EXECUTION OPTIONS:
+ NEWSOSOL//        //        //        //        //        //        //        
+-------------------------------------------------------------------------------
+ I12="                                        "
+ I13="                                        "
+ I19="                                        "
+-------+-------+-------+-------------------------------------------------------
+  >>>>>>>>> RINPUT99 EXITS NOW <<<<<<<<<< 
+ True basis vectors (not normalized):
+    5.42351400    0.00000000    0.00000000
+    2.71175700    3.83500471    0.00000000
+    0.00000000    0.00000000    0.00000000
+ Reciprocal lattice vectors, in units 2pi/a:
+    1.00000000   -0.70710656    0.00000000
+    0.00000000    1.41421312    0.00000000
+    0.00000000    0.00000000    0.00000000
+ >>> RRGEN: generation of real space mesh rr(nr)
+ r        :     13.32
+ r**2     :    177.50
+ n1,n2,n3 :   12   12    0
+   542 real space vectors created.
+ position of atoms in unit cell :
+--------------- Left  Host -------------- 
+   10    0.000000    7.778177   -7.071070    1
+    9    0.000000    7.071070   -6.363963    1
+    8    0.000000    6.363963   -5.656856    1
+    7    0.000000    5.656856   -4.949749    1
+    6    0.000000    4.949749   -4.242642    1
+    5    0.000000    4.242642   -3.535535    1
+    4    0.000000    3.535535   -2.828428    1
+    3    0.000000    2.828428   -2.121321    1
+    2    0.000000    2.121321   -1.414214    1
+    1    0.000000    1.414214   -0.707107    1
+---------------   S L A B  -------------- 
+    1    0.000000    0.707107    0.000000    1
+    2    0.000000    0.000000    0.707107    2
+    3    0.000000    0.707107    1.414214    3
+    4    0.000000    0.000000    2.121320    4
+    5    0.000000    0.707107    2.828427    5
+    6    0.000000    0.000000    3.535534    6
+--------------- Right Host -------------- 
+    1    0.000000   -0.707107    4.242641    1
+    2    0.000000   -1.414214    4.949748    1
+    3    0.000000   -2.121321    5.656855    1
+    4    0.000000   -2.828428    6.363962    1
+    5    0.000000   -3.535535    7.071069    1
+    6    0.000000   -4.242642    7.778176    1
+    7    0.000000   -4.949749    8.485283    1
+    8    0.000000   -5.656856    9.192390    1
+    9    0.000000   -6.363963    9.899497    1
+   10    0.000000   -7.071070   10.606604    1
+ >>> CLSGEN99: generation of cluster coordinates
+ RCUT =    1.50000000000000       RCUTXY =    1.50000000000000     
+ Spherical Clusters are created
+ clsgen_voronoi: Max. cluster size found:                     27
+ clsgen_voronoi: Max. cluster size found:                     27
+ clsgen_voronoi: Max. cluster size found:                     27
+ clsgen_voronoi: Max. cluster size found:                     27
+ clsgen_voronoi: Max. cluster size found:                     27
+ clsgen_voronoi: Max. cluster size found:                     27
+ clsgen_voronoi: Max. cluster size found:                     27
+ clsgen_voronoi: Max. cluster size found:                     27
+clsgen_voronoi: Cluster No.    1 sites:   27
+    1    1    0  0.0000  0.0000  0.0000  0.0000
+    1   -7    0 -0.5000  0.0000 -0.7071  0.8660
+    1   -7    5  0.5000  0.0000 -0.7071  0.8660
+    1    1    3 -0.5000 -0.7071  0.0000  0.8660
+    1    1    1  0.5000 -0.7071  0.0000  0.8660
+    1    1    2 -0.5000  0.7071  0.0000  0.8660
+    1    1    4  0.5000  0.7071  0.0000  0.8660
+    1    2    0 -0.5000  0.0000  0.7071  0.8660
+    1    2    5  0.5000  0.0000  0.7071  0.8660
+    1   -7    1  0.0000 -0.7071 -0.7071  1.0000
+    1   -7    4  0.0000  0.7071 -0.7071  1.0000
+    1    1    6 -1.0000  0.0000  0.0000  1.0000
+    1    1    5  1.0000  0.0000  0.0000  1.0000
+    1    2    1  0.0000 -0.7071  0.7071  1.0000
+    1    2    4  0.0000  0.7071  0.7071  1.0000
+    1   -7    1  0.0000  0.0000 -1.4142  1.4142
+    1   -7    3 -1.0000 -0.7071 -0.7071  1.4142
+    1   -7   12  1.0000 -0.7071 -0.7071  1.4142
+    1   -7    2 -1.0000  0.7071 -0.7071  1.4142
+    1   -7    9  1.0000  0.7071 -0.7071  1.4142
+    1    1    8  0.0000 -1.4142  0.0000  1.4142
+    1    1    7  0.0000  1.4142  0.0000  1.4142
+    1    2    3 -1.0000 -0.7071  0.7071  1.4142
+    1    2   12  1.0000 -0.7071  0.7071  1.4142
+    1    2    2 -1.0000  0.7071  0.7071  1.4142
+    1    2    9  1.0000  0.7071  0.7071  1.4142
+    1    3    0  0.0000  0.0000  1.4142  1.4142
+ Clusters from clsgen_voronoi:
+CLSGEN_VORONOI: Atom    1 Rmthlf 0.4330128 cluster    1 Sites   27
+CLSGEN_VORONOI: Atom    2 Rmthlf 0.4330128 cluster    1 Sites   27
+CLSGEN_VORONOI: Atom    3 Rmthlf 0.4330124 cluster    1 Sites   27
+CLSGEN_VORONOI: Atom    4 Rmthlf 0.4330124 cluster    1 Sites   27
+CLSGEN_VORONOI: Atom    5 Rmthlf 0.4330128 cluster    1 Sites   27
+CLSGEN_VORONOI: Atom    6 Rmthlf 0.4330128 cluster    1 Sites   27
+ Clusters from clsgen_tb in outer region, left:
+CLSGEN_VORONOI: Atom    7 Rmthlf 0.4330128 cluster    1 Sites   27
+ Clusters from clsgen_tb in outer region, right:
+CLSGEN_VORONOI: Atom    8 Rmthlf 0.4330128 cluster    1 Sites   27
+  Sub clsgen_voronoi  exiting <<<<<<<<<<<<<
+ Preparing neighbours of Site:                     1
+ Number of considered neighbours is:                   100
+ Max. neighbour distance is:   1.41421400000000     
+ Entering VORONOI12 for atom=                     1
+  Polyhedron properties 
+  Number of faces :                     14
+ The Volume is :   0.500000309449000     
+Voronoi subroutine: RMT=  0.43301279E+00; ROUT=  0.55901713E+00; RATIO=       77.46 %
+ Preparing neighbours of Site:                     2
+ Number of considered neighbours is:                   100
+ Max. neighbour distance is:   1.41421400000000     
+ Entering VORONOI12 for atom=                     2
+  Polyhedron properties 
+  Number of faces :                     14
+ The Volume is :   0.500000309449000     
+Voronoi subroutine: RMT=  0.43301279E+00; ROUT=  0.55901713E+00; RATIO=       77.46 %
+ Preparing neighbours of Site:                     3
+ Number of considered neighbours is:                   100
+ Max. neighbour distance is:   1.41421400000000     
+ Entering VORONOI12 for atom=                     3
+  Polyhedron properties 
+  Number of faces :                     14
+ The Volume is :   0.500000309449000     
+Voronoi subroutine: RMT=  0.43301279E+00; ROUT=  0.55901713E+00; RATIO=       77.46 %
+ Preparing neighbours of Site:                     4
+ Number of considered neighbours is:                   100
+ Max. neighbour distance is:   1.41421400000000     
+ Entering VORONOI12 for atom=                     4
+  Polyhedron properties 
+  Number of faces :                     14
+ The Volume is :   0.500000309449000     
+Voronoi subroutine: RMT=  0.43301279E+00; ROUT=  0.55901713E+00; RATIO=       77.46 %
+ Preparing neighbours of Site:                     5
+ Number of considered neighbours is:                   100
+ Max. neighbour distance is:   1.41421400000000     
+ Entering VORONOI12 for atom=                     5
+  Polyhedron properties 
+  Number of faces :                     14
+ The Volume is :   0.500000309449000     
+Voronoi subroutine: RMT=  0.43301279E+00; ROUT=  0.55901713E+00; RATIO=       77.46 %
+ Preparing neighbours of Site:                     6
+ Number of considered neighbours is:                   100
+ Max. neighbour distance is:   1.41421400000000     
+ Entering VORONOI12 for atom=                     6
+  Polyhedron properties 
+  Number of faces :                     14
+ The Volume is :   0.500000309449000     
+Voronoi subroutine: RMT=  0.43301279E+00; ROUT=  0.55901713E+00; RATIO=       77.46 %
+ Found                      1  inequivalent cells.
+ Found                      1  inequivalent shapes.
+%    Atom     1  cellref     1 shaperef     1  idshape     1
+%    Atom     2  cellref     1 shaperef     1  idshape     1
+%    Atom     3  cellref     1 shaperef     1  idshape     1
+%    Atom     4  cellref     1 shaperef     1  idshape     1
+%    Atom     5  cellref     1 shaperef     1  idshape     1
+%    Atom     6  cellref     1 shaperef     1  idshape     1
+ Constructing shape                     1  with rep. atom                     1
+No. of panels by sub FINDPANELS for shape:    1:    4
+      0.4330127912224414      0.5000000000000000      0.5303302226483245      0.5590171327647299
+ Suggested number of points before muffintinization:                    68
+ Calculating Shape:                     1
+
+--------------------------------------------------
+I             SUITABLE RADIAL MESH               I
+I             ********************               I
+I   IPAN       FROM       TO             POINTS  I
+I                                                I
+I      1  0.4330127912224414E+00  0.5000000000000000E+00        63   I
+I      2  0.5000000000000000E+00  0.5303302226483245E+00        32   I
+I      3  0.5303302226483245E+00  0.5590171327647299E+00        30   I
+--------------------------------------------------
+Faces for polyhedron......      14
+Volume ....(alat^3).......    0.50000031
+ASA Sphere (a.u.).........    2.67038976
+MT  Sphere (a.u.).........    2.34845094
+ MTRADIUS,RMTCL   2.34845093537399        2.34845093537399     
+ RMT OF SHAPE                     1  REDUCED TO    2.32496642602025     
+
+Your shape function will be updated 
+to match to the smaller Muffin Tin sphere.
+New RMT (a.u.)............    2.32496643
+Percentage Change ........    1.00
+ rmt  =    2.32496642602025     
+ rmax =    3.03183724578937     
+ Shapes construction finished.
+ <<<<<<<<<<<<<<<<<<<<<<--->>>>>>>>>>>>>>>>>>>>>
+ meshn                   135
+ Writing out shape                     1
+ *******************************************
+  Analyzing lattice finised ...     
+  Number of SITES..............                     6
+  Number of CLUSTERS ..........                     1
+  Number of CELLS..............                     1
+  Number of SHAPES.............                     1
+  Number of constructed shapes.                     1
+Shape...   1 has cluster..   1 extra shift..  0.0000  0.0000  0.0000 for atom..   1
+Shape...   1 has cluster..   1 extra shift..  0.0000  0.0000  0.0000 for atom..   2
+Shape...   1 has cluster..   1 extra shift..  0.0000  0.0000  0.0000 for atom..   3
+Shape...   1 has cluster..   1 extra shift..  0.0000  0.0000  0.0000 for atom..   4
+Shape...   1 has cluster..   1 extra shift..  0.0000  0.0000  0.0000 for atom..   5
+Shape...   1 has cluster..   1 extra shift..  0.0000  0.0000  0.0000 for atom..   6
+  ****** Volume for each atom ******
+  RMAX is the maximum radius of the shape,  RMT is updated
+ Atom ..    1 Volume(alat^3)  :   0.50000031   RMT :  2.32497   RMAX :  3.03184
+ Atom ..    2 Volume(alat^3)  :   0.50000031   RMT :  2.32497   RMAX :  3.03184
+ Atom ..    3 Volume(alat^3)  :   0.50000031   RMT :  2.32497   RMAX :  3.03184
+ Atom ..    4 Volume(alat^3)  :   0.50000031   RMT :  2.32497   RMAX :  3.03184
+ Atom ..    5 Volume(alat^3)  :   0.50000031   RMT :  2.32497   RMAX :  3.03184
+ Atom ..    6 Volume(alat^3)  :   0.50000031   RMT :  2.32497   RMAX :  3.03184
+
+Total volume (alat^3)    ...      3.00000186
+Total Volume (a.u.^3)   ....    478.59022070
+
+Bravais cross prod.(alat^3):      0.70710700
+ 
+ +++++++++++ Note about volumes +++++++++++++++++
+  Volume is probably different if you are in 2d mode 
+  In case of 3d mode and volume inconsistency 
+  try increasing the cluster atoms by changing 
+  RCLUSTZ and RCLUSTXY  in the inputcard
+ ++++++++++++++++++++++++++++++++++++++++
+ 
+ 
+ Preparing potentials ................. 
+  No potential file specified I will use jellium potentials
+  Full  Potential Output 
+ MESHN_ALL(IDSHAPE(IAT))                     1                     1
+                   135
+ MESHN_ALL(IDSHAPE(IAT))                     2                     1
+                   135
+ MESHN_ALL(IDSHAPE(IAT))                     3                     1
+                   135
+ MESHN_ALL(IDSHAPE(IAT))                     4                     1
+                   135
+ MESHN_ALL(IDSHAPE(IAT))                     5                     1
+                   135
+ MESHN_ALL(IDSHAPE(IAT))                     6                     1
+                   135
+  ****  JELLSTART POTENTIALS **** 
+ From atom No.                     1 to atom No.                     6
+Generating potential for atom     1 at site     1 with shape     1  
+ Using database ....: ElementDataBase/Vac0.pot  
+ *************************************
+    Potential Interpolation Program   
+    Using the Jellium Database v1.0   
+ *************************************
+Jellium Fermi Energy :   0.40924 Ry
+Potential Atomic Number :   0.00
+Number of Core   States :   0
+All other states are above :  0.0000 Ry in Energy
+ **********************************************
+ Jellium Potential Read In                   1501  points
+ Using database ....: ElementDataBase/Vac0.pot  
+ *************************************
+    Potential Interpolation Program   
+    Using the Jellium Database v1.0   
+ *************************************
+Jellium Fermi Energy :   0.40924 Ry
+Potential Atomic Number :   0.00
+Number of Core   States :   0
+All other states are above :  0.0000 Ry in Energy
+ **********************************************
+ Jellium Potential Read In                   1501  points
+Generating potential for atom     2 at site     2 with shape     1  
+ Using database ....: ElementDataBase/Vac0.pot  
+ *************************************
+    Potential Interpolation Program   
+    Using the Jellium Database v1.0   
+ *************************************
+Jellium Fermi Energy :   0.40924 Ry
+Potential Atomic Number :   0.00
+Number of Core   States :   0
+All other states are above :  0.0000 Ry in Energy
+ **********************************************
+ Jellium Potential Read In                   1501  points
+ Using database ....: ElementDataBase/Vac0.pot  
+ *************************************
+    Potential Interpolation Program   
+    Using the Jellium Database v1.0   
+ *************************************
+Jellium Fermi Energy :   0.40924 Ry
+Potential Atomic Number :   0.00
+Number of Core   States :   0
+All other states are above :  0.0000 Ry in Energy
+ **********************************************
+ Jellium Potential Read In                   1501  points
+Generating potential for atom     3 at site     3 with shape     1  
+ Using database ....: ElementDataBase/Fe26.pot  
+ *************************************
+    Potential Interpolation Program   
+    Using the Jellium Database v1.0   
+ *************************************
+Jellium Fermi Energy :   0.40924 Ry
+Potential Atomic Number :  26.00
+Number of Core   States :   5
+All other states are above : -0.4000 Ry in Energy
+ **********************************************
+ Jellium Potential Read In                   1501  points
+ Using database ....: ElementDataBase/Fe26.pots2
+ *************************************
+    Potential Interpolation Program   
+    Using the Jellium Database v1.0   
+ *************************************
+Jellium Fermi Energy :   0.40924 Ry
+Potential Atomic Number :  26.00
+Number of Core   States :   5
+All other states are above : -0.4000 Ry in Energy
+ **********************************************
+ Jellium Potential Read In                   1501  points
+Generating potential for atom     4 at site     4 with shape     1  
+ Using database ....: ElementDataBase/Fe26.pot  
+ *************************************
+    Potential Interpolation Program   
+    Using the Jellium Database v1.0   
+ *************************************
+Jellium Fermi Energy :   0.40924 Ry
+Potential Atomic Number :  26.00
+Number of Core   States :   5
+All other states are above : -0.4000 Ry in Energy
+ **********************************************
+ Jellium Potential Read In                   1501  points
+ Using database ....: ElementDataBase/Fe26.pots2
+ *************************************
+    Potential Interpolation Program   
+    Using the Jellium Database v1.0   
+ *************************************
+Jellium Fermi Energy :   0.40924 Ry
+Potential Atomic Number :  26.00
+Number of Core   States :   5
+All other states are above : -0.4000 Ry in Energy
+ **********************************************
+ Jellium Potential Read In                   1501  points
+Generating potential for atom     5 at site     5 with shape     1  
+ Using database ....: ElementDataBase/Vac0.pot  
+ *************************************
+    Potential Interpolation Program   
+    Using the Jellium Database v1.0   
+ *************************************
+Jellium Fermi Energy :   0.40924 Ry
+Potential Atomic Number :   0.00
+Number of Core   States :   0
+All other states are above :  0.0000 Ry in Energy
+ **********************************************
+ Jellium Potential Read In                   1501  points
+ Using database ....: ElementDataBase/Vac0.pot  
+ *************************************
+    Potential Interpolation Program   
+    Using the Jellium Database v1.0   
+ *************************************
+Jellium Fermi Energy :   0.40924 Ry
+Potential Atomic Number :   0.00
+Number of Core   States :   0
+All other states are above :  0.0000 Ry in Energy
+ **********************************************
+ Jellium Potential Read In                   1501  points
+Generating potential for atom     6 at site     6 with shape     1  
+ Using database ....: ElementDataBase/Vac0.pot  
+ *************************************
+    Potential Interpolation Program   
+    Using the Jellium Database v1.0   
+ *************************************
+Jellium Fermi Energy :   0.40924 Ry
+Potential Atomic Number :   0.00
+Number of Core   States :   0
+All other states are above :  0.0000 Ry in Energy
+ **********************************************
+ Jellium Potential Read In                   1501  points
+ Using database ....: ElementDataBase/Vac0.pot  
+ *************************************
+    Potential Interpolation Program   
+    Using the Jellium Database v1.0   
+ *************************************
+Jellium Fermi Energy :   0.40924 Ry
+Potential Atomic Number :   0.00
+Number of Core   States :   0
+All other states are above :  0.0000 Ry in Energy
+ **********************************************
+ Jellium Potential Read In                   1501  points
+ >>> CLSGEN_TB: generation of cluster coordinates
+ RCUT =    1.50000000000000       RCUTXY =    1.50000000000000     
+ Spherical Clusters are created
+ clsgen_tb: cluster size of site:                     1 :                    27
+ clsgen_tb: Touching RMT of site:                     1 :
+  0.433012791222441     
+ clsgen_tb: cluster size of site:                     2 :                    27
+ clsgen_tb: Touching RMT of site:                     2 :
+  0.433012791222441     
+ clsgen_tb: cluster size of site:                     3 :                    27
+ clsgen_tb: Touching RMT of site:                     3 :
+  0.433012382974205     
+ clsgen_tb: cluster size of site:                     4 :                    27
+ clsgen_tb: Touching RMT of site:                     4 :
+  0.433012382974205     
+ clsgen_tb: cluster size of site:                     5 :                    27
+ clsgen_tb: Touching RMT of site:                     5 :
+  0.433012791222441     
+ clsgen_tb: cluster size of site:                     6 :                    27
+ clsgen_tb: Touching RMT of site:                     6 :
+  0.433012791222441     
+ clsgen_tb: cluster size of site:                     7 :                    27
+ clsgen_tb: Touching RMT of site:                     7 :
+  0.433012791222441     
+ clsgen_tb: cluster size of site:                     8 :                    27
+ clsgen_tb: Touching RMT of site:                     8 :
+  0.433012791222441     
+clsgen_voronoi: Cluster No.    1 sites:   27
+    1    1    0  0.0000  0.0000  0.0000  0.0000
+    1   -7    0 -0.5000  0.0000 -0.7071  0.8660
+    1   -7    5  0.5000  0.0000 -0.7071  0.8660
+    1    1    3 -0.5000 -0.7071  0.0000  0.8660
+    1    1    1  0.5000 -0.7071  0.0000  0.8660
+    1    1    2 -0.5000  0.7071  0.0000  0.8660
+    1    1    4  0.5000  0.7071  0.0000  0.8660
+    1    2    0 -0.5000  0.0000  0.7071  0.8660
+    1    2    5  0.5000  0.0000  0.7071  0.8660
+    1   -7    1  0.0000 -0.7071 -0.7071  1.0000
+    1   -7    4  0.0000  0.7071 -0.7071  1.0000
+    1    1    6 -1.0000  0.0000  0.0000  1.0000
+    1    1    5  1.0000  0.0000  0.0000  1.0000
+    1    2    1  0.0000 -0.7071  0.7071  1.0000
+    1    2    4  0.0000  0.7071  0.7071  1.0000
+    1   -7    1  0.0000  0.0000 -1.4142  1.4142
+    1   -7    3 -1.0000 -0.7071 -0.7071  1.4142
+    1   -7   12  1.0000 -0.7071 -0.7071  1.4142
+    1   -7    2 -1.0000  0.7071 -0.7071  1.4142
+    1   -7    9  1.0000  0.7071 -0.7071  1.4142
+    1    1    8  0.0000 -1.4142  0.0000  1.4142
+    1    1    7  0.0000  1.4142  0.0000  1.4142
+    1    2    3 -1.0000 -0.7071  0.7071  1.4142
+    1    2   12  1.0000 -0.7071  0.7071  1.4142
+    1    2    2 -1.0000  0.7071  0.7071  1.4142
+    1    2    9  1.0000  0.7071  0.7071  1.4142
+    1    3    0  0.0000  0.0000  1.4142  1.4142
+ Clusters from clsgen_tb:
+CLSGEN_TB: Atom    1 Refpot    1 Rmtref 2.3166000 TB-cluster    1 Sites   27
+CLSGEN_TB: Atom    2 Refpot    1 Rmtref 2.3166000 TB-cluster    1 Sites   27
+CLSGEN_TB: Atom    3 Refpot    1 Rmtref 2.3166000 TB-cluster    1 Sites   27
+CLSGEN_TB: Atom    4 Refpot    1 Rmtref 2.3166000 TB-cluster    1 Sites   27
+CLSGEN_TB: Atom    5 Refpot    1 Rmtref 2.3166000 TB-cluster    1 Sites   27
+CLSGEN_TB: Atom    6 Refpot    1 Rmtref 2.3166000 TB-cluster    1 Sites   27
+ Clusters from clsgen_tb in outer region, left:
+CLSGEN_TB: Atom    7 Refpot    1 Rmtref 2.3166000 TB-cluster    1 Sites   27
+ Clusters from clsgen_tb in outer region, right:
+CLSGEN_TB: Atom    8 Refpot    1 Rmtref 2.3166000 TB-cluster    1 Sites   27
+  Sub clsgen_tb  exiting <<<<<<<<<<<<<

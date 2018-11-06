@@ -1,0 +1,133 @@
+ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ !!! Most output written to output.myrank.txt files !!!
+ !!! please check these files as well               !!!
+ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+*******************************************************************************
+          Screened Korringa-Kohn-Rostoker Electronic Structure Code
+                           for Bulk and Interfaces
+          Juelich-Munich 2001 - 2016
+
+ Code version: v2.2-62-g7801b9a
+ Compile options: mpi
+-O2 -r8 -module ./OBJ -sox -traceback
+-L/usr/local/intel/mkl/lib/intel64 -lmkl_intel_lp64 -lmkl_sequential -lmkl_core
+
+ serial number for files:kkrjm_v2.2-62-g7801b9a_mpi_20180115094957
+*******************************************************************************
+
+ Number of MPI ranks used:   12
+
+*******************************************************************************
+
+ WARNING: HFIELD>0.0 found, set KHFIELD to 1
+ Calling MADELUNG2D
+ Exited MADELUNG2D
+ ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ +++            SCF ITERATIONS START                +++
+ ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+started on 2018/ 1/15 at  9:49:58
+               Ne         
+          TOT  0.00006643
+          TOT  0.00525539
+          TOT  0.31524343
+          TOT 10.60468059
+          TOT 10.68839751
+          TOT 10.69315902
+          TOT 10.68761190
+          TOT 10.73626239
+          TOT 10.77184423
+          TOT 10.76170124
+          TOT 10.75428783
+          TOT 10.75524588
+          TOT 10.75599366
+          TOT 10.78461556
+          TOT 10.27021876
+          TOT  4.53562300
+          TOT  0.13647101
+          TOT  0.00250364
+          TOT  0.00001179
+          TOT -0.00005136
+      ITERATION   1 charge neutrality in unit cell =     4.259142
+                new E FERMI   0.3733797194  DOS(E_F) =     5.938357
+      ITERATION   1 average rms-error : v+ + v- =  6.2735D+01
+TOTAL ENERGY in ryd. :          -444116.42166978
+
+Iteration finished on 2018/ 1/15 at  9:50:36
+               Ne         
+          TOT  0.00000137
+          TOT  0.00000175
+          TOT  0.00000012
+          TOT -0.00001383
+          TOT -0.00001728
+          TOT -0.00001970
+          TOT -0.00001808
+          TOT  0.00016686
+          TOT  0.02005175
+          TOT  0.84246680
+          TOT  9.38150714
+          TOT 11.01763643
+          TOT  3.27121061
+          TOT  3.41402184
+          TOT  2.96914095
+          TOT  3.73836570
+          TOT  4.44212859
+          TOT  4.98373019
+          TOT  5.24368650
+          TOT  5.41213857
+      ITERATION   2 charge neutrality in unit cell =   -74.263814
+                new E FERMI   0.4072958582  DOS(E_F) =     3.053907
+      ITERATION   2 average rms-error : v+ + v- =  5.4479D+02
+TOTAL ENERGY in ryd. :          -441015.03677031
+
+Iteration finished on 2018/ 1/15 at  9:51:14
+               Ne         
+          TOT  0.00000752
+          TOT  0.00015945
+          TOT  0.24466806
+          TOT  3.26082150
+          TOT  1.61513765
+          TOT  2.29394910
+          TOT  2.50999906
+          TOT  2.56955630
+          TOT  2.15999668
+          TOT  2.44655804
+          TOT  3.06585904
+          TOT  0.21686760
+          TOT  2.70712224
+          TOT  0.00045153
+          TOT  0.00000981
+          TOT  0.00000462
+          TOT  0.00000538
+          TOT  0.00001100
+          TOT  0.00000704
+          TOT  0.00000918
+      ITERATION   3 charge neutrality in unit cell =          NaN
+                new E FERMI   0.3572958582  DOS(E_F) =     4.577112
+      ITERATION   3 average rms-error : v+ + v- =         NaN
+TOTAL ENERGY in ryd. :                       NaN
+
+Iteration finished on 2018/ 1/15 at  9:51:51
+               Ne         
+          TOT         NaN
+          TOT         NaN
+          TOT         NaN
+          TOT         NaN
+          TOT         NaN
+          TOT         NaN
+          TOT         NaN
+          TOT         NaN
+          TOT         NaN
+          TOT         NaN
+          TOT         NaN
+          TOT         NaN
+          TOT         NaN
+          TOT         NaN
+          TOT         NaN
+          TOT         NaN
+          TOT         NaN
+          TOT         NaN
+          TOT         NaN
+          TOT         NaN
+ *** int: stop after  40 iterations
+APPLICATION TERMINATED WITH THE EXIT STRING: Hangup (signal 1)

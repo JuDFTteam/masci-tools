@@ -1,0 +1,159 @@
+# serial: kkrjm_v2.2_mpi-rwth_20170912160859
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 20, #of points= 20
+Task 1 treats points 21 to 40, #of points= 20
+Task 2 treats points 41 to 60, #of points= 20
+Task 3 treats points 61 to 80, #of points= 20
+ ==========================================
+ atom:            1  NSRA:           2
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 1, #of points= 1
+Task 1 treats points 2 to 2, #of points= 1
+Task 2 treats points 3 to 3, #of points= 1
+Task 3 treats points 4 to 4, #of points= 1
+Task 4 treats points 5 to 5, #of points= 1
+Task 5 treats points 6 to 6, #of points= 1
+Task 6 treats points 7 to 7, #of points= 1
+Task 7 treats points 8 to 8, #of points= 1
+Task 8 treats points 9 to 9, #of points= 1
+Task 9 treats points 10 to 10, #of points= 1
+Task 10 treats points 11 to 11, #of points= 1
+Task 11 treats points 12 to 12, #of points= 1
+Task 12 treats points 13 to 13, #of points= 1
+Task 13 treats points 14 to 14, #of points= 1
+Task 14 treats points 15 to 15, #of points= 1
+Task 15 treats points 16 to 16, #of points= 1
+Task 16 treats points 17 to 17, #of points= 1
+Task 17 treats points 18 to 18, #of points= 1
+Task 18 treats points 19 to 19, #of points= 1
+Task 19 treats points 20 to 20, #of points= 1
+Task 20 treats points 21 to 21, #of points= 1
+Task 21 treats points 22 to 22, #of points= 1
+Task 22 treats points 23 to 23, #of points= 1
+Task 23 treats points 24 to 24, #of points= 1
+Task 24 treats points 25 to 25, #of points= 1
+Task 25 treats points 26 to 26, #of points= 1
+Task 26 treats points 27 to 27, #of points= 1
+Task 27 treats points 28 to 28, #of points= 1
+Task 28 treats points 29 to 29, #of points= 1
+Task 29 treats points 30 to 30, #of points= 1
+Task 30 treats points 31 to 31, #of points= 1
+Task 31 treats points 32 to 32, #of points= 1
+Task 32 treats points 33 to 33, #of points= 1
+Task 33 treats points 34 to 34, #of points= 1
+Task 34 treats points 35 to 35, #of points= 1
+Task 35 treats points 36 to 36, #of points= 1
+Task 36 treats points 37 to 37, #of points= 1
+Task 37 treats points 38 to 38, #of points= 1
+Task 38 treats points 39 to 39, #of points= 1
+Task 39 treats points 40 to 40, #of points= 1
+Task 40 treats points 41 to 41, #of points= 1
+Task 41 treats points 42 to 42, #of points= 1
+Task 42 treats points 43 to 43, #of points= 1
+Task 43 treats points 44 to 44, #of points= 1
+Task 44 treats points 45 to 45, #of points= 1
+Task 45 treats points 46 to 46, #of points= 1
+Task 46 treats points 47 to 47, #of points= 1
+Task 47 treats points 48 to 48, #of points= 1
+Task 48 treats points 49 to 49, #of points= 1
+Task 49 treats points 50 to 50, #of points= 1
+Task 50 treats points 51 to 51, #of points= 1
+Task 51 treats points 52 to 52, #of points= 1
+Task 52 treats points 53 to 53, #of points= 1
+Task 53 treats points 54 to 54, #of points= 1
+Task 54 treats points 55 to 55, #of points= 1
+Task 55 treats points 56 to 56, #of points= 1
+Task 56 treats points 57 to 57, #of points= 1
+Task 57 treats points 58 to 58, #of points= 1
+Task 58 treats points 59 to 59, #of points= 1
+Task 59 treats points 60 to 60, #of points= 1
+ ==========================================
+ energy:           1  (-1.20000500000000,3.352849020736792E-003)
+ energy:           1  (-1.19999500000000,3.352849020736792E-003)
+ atom:            2  NSRA:           2
+ energy:           1  (-1.20000500000000,3.352849020736792E-003)
+ energy:           1  (-1.19999500000000,3.352849020736792E-003)
+ atom:            3  NSRA:           2
+ energy:           1  (-1.20000500000000,3.352849020736792E-003)
+ energy:           1  (-1.19999500000000,3.352849020736792E-003)
+ atom:            4  NSRA:           2
+ energy:           1  (-1.20000500000000,3.352849020736792E-003)
+ energy:           1  (-1.19999500000000,3.352849020736792E-003)
+ atom:            5  NSRA:           2
+ energy:           1  (-1.20000500000000,3.352849020736792E-003)
+ energy:           1  (-1.19999500000000,3.352849020736792E-003)
+ atom:            6  NSRA:           2
+ energy:           1  (-1.20000500000000,3.352849020736792E-003)
+ energy:           1  (-1.19999500000000,3.352849020736792E-003)
+ atom:            7  NSRA:           2
+ energy:           1  (-1.20000500000000,3.352849020736792E-003)
+ energy:           1  (-1.19999500000000,3.352849020736792E-003)
+ atom:            8  NSRA:           2
+ energy:           1  (-1.20000500000000,3.352849020736792E-003)
+ energy:           1  (-1.19999500000000,3.352849020736792E-003)
+ atom:            9  NSRA:           2
+ energy:           1  (-1.20000500000000,3.352849020736792E-003)
+ energy:           1  (-1.19999500000000,3.352849020736792E-003)
+ atom:           10  NSRA:           2
+ energy:           1  (-1.20000500000000,3.352849020736792E-003)
+ energy:           1  (-1.19999500000000,3.352849020736792E-003)
+ atom:           11  NSRA:           2
+ energy:           1  (-1.20000500000000,3.352849020736792E-003)
+ energy:           1  (-1.19999500000000,3.352849020736792E-003)
+ atom:           12  NSRA:           2
+ energy:           1  (-1.20000500000000,3.352849020736792E-003)
+ energy:           1  (-1.19999500000000,3.352849020736792E-003)
+ atom:           13  NSRA:           2
+ energy:           1  (-1.20000500000000,3.352849020736792E-003)
+ energy:           1  (-1.19999500000000,3.352849020736792E-003)
+ atom:           14  NSRA:           2
+ energy:           1  (-1.20000500000000,3.352849020736792E-003)
+ energy:           1  (-1.19999500000000,3.352849020736792E-003)
+ atom:           15  NSRA:           2
+ energy:           1  (-1.20000500000000,3.352849020736792E-003)
+ energy:           1  (-1.19999500000000,3.352849020736792E-003)
+ atom:           16  NSRA:           2
+ energy:           1  (-1.20000500000000,3.352849020736792E-003)
+ energy:           1  (-1.19999500000000,3.352849020736792E-003)
+ atom:           17  NSRA:           2
+ energy:           1  (-1.20000500000000,3.352849020736792E-003)
+ energy:           1  (-1.19999500000000,3.352849020736792E-003)
+ atom:           18  NSRA:           2
+ energy:           1  (-1.20000500000000,3.352849020736792E-003)
+ energy:           1  (-1.19999500000000,3.352849020736792E-003)
+ atom:           19  NSRA:           2
+ energy:           1  (-1.20000500000000,3.352849020736792E-003)
+ energy:           1  (-1.19999500000000,3.352849020736792E-003)
+ atom:           20  NSRA:           2
+ energy:           1  (-1.20000500000000,3.352849020736792E-003)
+ energy:           1  (-1.19999500000000,3.352849020736792E-003)
+           0 start tbref e-loop
+TBREF: GREF for energy:    1   -1.20000000    0.00335285
+ tbref NCLS loop:          10           4
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 3, #of points= 3
+Task 1 treats points 4 to 6, #of points= 3
+Task 2 treats points 7 to 8, #of points= 2
+Task 3 treats points 9 to 10, #of points= 2
+ ==========================================
+===============================================================================
+                              < KKR1a finished >
+===============================================================================
+
+
+===============================================================================
+      Inversion algorithm used : BANDED MATRIX (slab)               
+===============================================================================
+
+ ************ IE =   1 ENERGY =  -1.200000   0.003353 KMESH =   4
+ kkrmat k loop:         196           4
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 49, #of points= 49
+Task 1 treats points 50 to 98, #of points= 49
+Task 2 treats points 99 to 147, #of points= 49
+Task 3 treats points 148 to 196, #of points= 49
+ ==========================================
+===============================================================================
+                              < KKR1b finished >
+===============================================================================
+
