@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+#use print('message') instead of print 'message' in python 2.7 as well:
+from __future__ import print_function
+
 """
 Tools for the impurity caluclation plugin and its workflows
 """
@@ -13,8 +16,6 @@ __contributors__ = (u"Philipp Rüßmann",
                     u"Fabian Bertoldo")
 
 
-#use print('message') instead of print 'message' in python 2.7 as well:
-from __future__ import print_function
 
 
 class modify_potential():

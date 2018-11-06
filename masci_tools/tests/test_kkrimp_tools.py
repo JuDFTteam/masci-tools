@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 #import pytest
-from aiida_kkr.tools.tools_kkrimp import modify_potential, kkrimp_parser_functions
+from masci_tools.io.parsers.kkrimp_parser_functions import modify_potential, kkrimp_parser_functions
     
 
 class Test_modify_potential():

@@ -4,12 +4,12 @@
 """
 
 import pytest
-from aiida_kkr.tools.common_functions import (interpolate_dos, get_alat_from_bravais, 
-                                              search_string, angles_to_vec, 
-                                              vec_to_angles, get_version_info, 
-                                              get_corestates_from_potential, 
-                                              get_highest_core_state,
-                                              get_ef_from_potfile)
+from masci_tools.io.common_functions import (interpolate_dos, get_alat_from_bravais, 
+                                             search_string, angles_to_vec, 
+                                             vec_to_angles, get_version_info, 
+                                             get_corestates_from_potential, 
+                                             get_highest_core_state,
+                                             get_ef_from_potfile)
 
 
 class Test_common_functions():

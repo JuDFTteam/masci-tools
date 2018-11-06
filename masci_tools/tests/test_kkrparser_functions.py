@@ -4,7 +4,7 @@
 """
 
 import pytest
-from aiida_kkr.tools.kkrparser_functions import parse_kkr_outputfile, check_error_category
+from masci_tools.io.parsers.kkrparser_functions import parse_kkr_outputfile, check_error_category
 
 
 class Test_kkr_parser_functions():

@@ -7,7 +7,7 @@ Created on Wed Nov 15 16:43:31 2017
 """
 
 import pytest
-from aiida_kkr.tools.kkr_params import kkrparams
+from masci_tools.io.kkr_params import kkrparams
     
         
 # helper functions
@@ -292,7 +292,7 @@ class Test_fill_inputfile():
     def test_set_rmtcore(self):
         #test rmtcore
         from numpy import array
-        from aiida_kkr.tools.common_functions import search_string
+        from masci_tools.io.common_functions import search_string
         
         para_dict = dict([(u'INS', 0),
             (u'RCLUSTZ', 1.69),
@@ -365,7 +365,7 @@ class Test_read_inputfile():
         
     def test_read_slab(self):
         from numpy import array
-        from aiida_kkr.tools.common_functions import get_Ang2aBohr
+        from masci_tools.io.common_functions import get_Ang2aBohr
         p = kkrparams(params_type='kkr')
         
         # automatically read keywords from inpucard
@@ -422,7 +422,7 @@ class Test_other():
         p = kkrparams()
         p.set_multiple_values(RMAX=1, GMAX=1, NSPIN=1, RBASIS=[0,0,0], LMAX=2, RCLUSTZ=1.2, NAEZ=1, ZATOM=[0], BRAVAIS=[[1,0,0],[0,1,0],[0,0,1]], ALATBASIS=1, FILES=['','shapenew'])
         p.fill_keywords_to_inputfile()
-        from aiida_kkr.tools.common_functions import search_string
+        from masci_tools.io.common_functions import search_string
         txt = open('inputcard').readlines()
         itmp = search_string('FILES', txt)
         potname = txt[itmp+2].split()[0]
@@ -444,6 +444,6 @@ class Test_other():
         
     def test_get_KKRcalc_parameter_defaults(self):
         d = kkrparams.get_KKRcalc_parameter_defaults()
-        from aiida_kkr.tools.kkr_params import __kkr_default_params__
+        from masci_tools.io.kkr_params import __kkr_default_params__
         d0 = __kkr_default_params__
         assert d[0]==d0

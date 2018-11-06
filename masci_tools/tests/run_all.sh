@@ -1,4 +1,2 @@
 #!/usr/bin/env sh
-pytest -v
-
-#--cov-report=term-missing --cov=masci-tools
+pytest --cov-report=term-missing --cov=..

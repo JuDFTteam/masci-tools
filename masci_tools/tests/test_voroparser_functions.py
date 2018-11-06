@@ -4,7 +4,7 @@
 """
 
 import pytest
-from aiida_kkr.tools.voroparser_functions import parse_voronoi_output
+from masci_tools.io.parsers.voroparser_functions import parse_voronoi_output
     
 class Test_voronoi_parser_functions():
     """
