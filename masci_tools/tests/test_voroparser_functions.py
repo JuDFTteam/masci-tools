@@ -32,6 +32,8 @@ class Test_voronoi_parser_functions():
         out_dict = {'parser_version': 'some_version_number'}
         success, msg_list, out_dict = parse_voronoi_output(out_dict, outfile, potfile, atominfo, radii, inputfile)
         out_dict['parser_warnings'] = msg_list
+        print outfile, potfile, atominfo, radii, inputfile
+        print success, msg_list, out_dict
         assert success
         return out_dict
         assert out_dict == dref
@@ -125,12 +127,3 @@ class Test_voronoi_parser_functions():
         assert out_dict == dref2
         assert msg_list == ['Error parsing output of voronoi: radii.dat Info']
         return out_dict
-    
-
-"""
-t = Test_voronoi_parser_functions()
-t.test_complete_voro_output()
-t.test_missing_atominfo()
-t.test_missing_inputfile()
-t.test_missing_radii()
-"""
