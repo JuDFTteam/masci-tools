@@ -1,0 +1,21 @@
+dist: trusty
+#sudo: required
+language: python
+
+python: 2.7
+
+notifications:
+  slack:
+    on_success: never
+
+cache: pip
+
+install:
+    - pip install -U pip wheel setuptools
+    - pip install -e git+https://github.com/JuDFTteam/masci-tools
+
+script: 
+    - cd masci_tools/tests/ && ./run_all.sh
+
+git:
+  depth: 3

@@ -49,6 +49,7 @@ nosetests.xml
 coverage.xml
 *,cover
 .hypothesis/
+masci_tools/tests/{config.cfg,input*}
 
 # Translations
 *.mo

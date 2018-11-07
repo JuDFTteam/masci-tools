@@ -1,0 +1,24 @@
+#!/bin/bash
+
+#BSUB -J Sb2Te3_6QL_scf
+#BSUB -a openmpi
+#BSUB -P jara0078
+#BSUB -M 4060
+#BSUB -n 240
+##BSUB -x 
+#BSUB -R "select[hpcwork]"
+#BSUB -W 24:00
+#BSUB -u p.ruessmann@fz-juelich.de
+#BSUB -N
+
+module switch openmpi intelmpi
+
+# OMP environment variable:
+export OMP_NUM_THREADS=1 
+# correct stack size to avoid segmentation fault error when entering omp parallel region
+export OMP_STACKSIZE=2g
+ulimit -s unlimited
+
+
+# Do work:
+mpirun -np 240 ./kkr.x > out
