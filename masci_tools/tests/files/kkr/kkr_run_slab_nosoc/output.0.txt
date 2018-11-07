@@ -1,0 +1,444 @@
+# serial: kkrjm_v2.2-22-g4f8f5ff_openmp_20171208160428
+
+*******************************************************************************
+          Screened Korringa-Kohn-Rostoker Electronic Structure Code
+                           for Bulk and Interfaces
+          Juelich-Munich 2001 - 2016
+
+ Code version: v2.2-22-g4f8f5ff
+ Compile options: openmp
+-O2 -r8 -module ./OBJ -sox -traceback -openmp
+-L/usr/local/intel/mkl/lib/intel64 -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -liomp5
+
+ serial number for files: kkrjm_v2.2-22-g4f8f5ff_openmp_20171208160428
+*******************************************************************************
+
+ Number of OpenMP threads used:   10
+
+*******************************************************************************
+
+         ABASIS         BBASIS         CBASIS
+     1.00000000     1.00000000     1.00000000
+--------------+--------------+--------------+----------------------------------
+          ALAT =      5.42351400
+*** SLAB - INTERFACE CALCULATION ***
+
+ Number of embedded atoms NEMB=NLBASIS + NRBASIS=           2
+Number of LEFT  Host Layers :    10 with     1 basis
+Number of RIGHT Host Layers :    10 with     1 basis
+Left  side periodicity :    0.00000   0.70711  -0.70711
+Right side periodicity :    0.00000  -0.70711   0.70711
+    Geommetry used : 
+ ATOM       TX          TY          TZ 
+--------------- Left  Host -------------- 
+   10    0.00000000    7.77817459   -7.07106781    0
+    9    0.00000000    7.07106781   -6.36396103    0
+    8    0.00000000    6.36396103   -5.65685425    0
+    7    0.00000000    5.65685425   -4.94974747    0
+    6    0.00000000    4.94974747   -4.24264069    0
+    5    0.00000000    4.24264069   -3.53553391    0
+    4    0.00000000    3.53553391   -2.82842712    0
+    3    0.00000000    2.82842712   -2.12132034    0
+    2    0.00000000    2.12132034   -1.41421356    0
+    1    0.00000000    1.41421356   -0.70710678    0
+---------------   S L A B  -------------- 
+    1    0.00000000    0.70710678    0.00000000
+    2    0.00000000    0.00000000    0.70710678
+    3    0.00000000    0.70710678    1.41421356
+    4    0.00000000    0.00000000    2.12132034
+    5    0.00000000    0.70710678    2.82842712
+    6    0.00000000    0.00000000    3.53553391
+--------------- Right Host -------------- 
+    1    0.00000000   -0.70710678    4.24264069    0
+    2    0.00000000   -1.41421356    4.94974747    0
+    3    0.00000000   -2.12132034    5.65685425    0
+    4    0.00000000   -2.82842712    6.36396103    0
+    5    0.00000000   -3.53553391    7.07106781    0
+    6    0.00000000   -4.24264069    7.77817459    0
+    7    0.00000000   -4.94974747    8.48528137    0
+    8    0.00000000   -5.65685425    9.19238816    0
+    9    0.00000000   -6.36396103    9.89949494    0
+   10    0.00000000   -7.07106781   10.60660172    0
+ NSPIN 
+   2
+---+---------------------------------------------------------------------------
+ Cell information <SHAPE>:
+ WARNING: HFIELD>0.0 found, set KHFIELD to 1
+ INIPOL
+   0   0   0   0   0   0
+---+---+---+---+---+---+---+---+---+---+---------------------------------------
+---+---------------------------------------------------------------------------
+   INTERVX   INTERVY   INTERVZ
+        10        10        10
+---------+---------+---------+-------------------------------------------------
+ Parameters used for the cluster calculation
+ Clusters inside spheres with radius R =    1.50000000000000     
+---+---------------------------------------------------------------------------
+ RBASIS
+SITE                BASIS VECTORS                 THETA   PHI CPA OCC KAOEZ
+---+--------------+--------------+--------------+------------------------------
+   1     0.00000000     0.70710678     0.00000000   0.0   0.0   0   1  1
+   2     0.00000000     0.00000000     0.70710678   0.0   0.0   0   1  2
+   3     0.00000000     0.70710678     1.41421356   0.0   0.0   0   1  3
+   4     0.00000000     0.00000000     2.12132034   0.0   0.0   0   1  4
+   5     0.00000000     0.70710678     2.82842712   0.0   0.0   0   1  5
+   6     0.00000000     0.00000000     3.53553391   0.0   0.0   0   1  6
+ ATOMINFOC or ATOMINFO:
+ NATYP 
+   6
+   Z lmx     KFG cls pot ntc  MTFAC irns SITE  CONC
+---+---------------------------------------------------------------------------
+  0.   0    0000   1   0   1  0.0000  -1    1  1.00000
+  0.   0    0000   1   0   1  0.0000  -1    2  1.00000
+ 26.   0    0000   1   0   1  0.0000  -1    3  1.00000
+ 26.   0    0000   1   0   1  0.0000  -1    4  1.00000
+  0.   0    0000   1   0   1  0.0000  -1    5  1.00000
+  0.   0    0000   1   0   1  0.0000  -1    6  1.00000
+---+---+-------+---+---+---+-------+---+---------------------------------------
+---+---------------------------------------------------------------------------
+ NSTEPS
+  10
+---+---------------------------------------------------------------------------
+ I12="                                        "
+ I13="potential                               "
+ I40="                                        "
+ I19="shapefun                                "
+ I25="scoef                                   "
+ lmax
+   2
+---+---------------------------------------------------------------------------
+          EMIN        EMAX        TK
+   -0.600000    1.000000  800.000000
+-----------+-----------+-----------+-------------------------------------------
+   NPOL  NPNT1  NPNT2  NPNT3
+      7      3     32      3
+------+------+------+------+---------------------------------------------------
+------+------+------+----------------------------------------------------------
+  IFILE    IPE ISHIFT ESHIFT
+     13      1      0    0.000000
+------+------+------+-----------+----------------------------------------------
+ KSHAPE    IRM    INS   ICST INSREF
+      2    900      1      2      0
+------+------+------+------+------+--------------------------------------------
+   KCOR  KVREL    KWS   KHYP KHFIELD   KXC
+      2      1      2      0      1      2
+------+------+------+------+------+------+-------------------------------------
+    KTE   KPRE   KEFG  KVMAD 
+      1      1      0      0
+------+------+------+------+------+--------------------------------------------
+   IMIX    IGF    ICC
+      0      0      0
+------+------+------+------+---------------------------------------------------
+ ITDBRY
+     40
+------+------------------------------------------------------------------------
+      STRMIX        FCM       QBOUND
+    0.010000   20.000000    0.000000
+-----------+-----------+-----------+-------------------------------------------
+      BRYMIX
+    0.010000
+-----------+-------------------------------------------------------------------
+ external magnetic hfield     :         0.0200
+ VCONST                       :       0.000000
+ mixing factor used           :       0.010000
+ convergence quality required :       1.00D-07
+ make use of CPA algorithm    :             NO
+
+                                 check of dimension-data consistency
+                                 -----------------------------------
+                                        lmax   : (     2,     2)
+                                        natyp  : (     6,     6)
+                                        irm    : (   900,   900)
+                                        nspin  : (     2,     2)
+
+
+
+                    full potential calculation - cut off of non spherical potential
+ >
+
+                               representive atom no.  1 irns :   -1 irnsd :  800
+                               representive atom no.  2 irns :   -1 irnsd :  800
+                               representive atom no.  3 irns :   -1 irnsd :  800
+                               representive atom no.  4 irns :   -1 irnsd :  800
+                               representive atom no.  5 irns :   -1 irnsd :  800
+                               representive atom no.  6 irns :   -1 irnsd :  800
+
+
+ ********** external magnetic field applied hfield= 0.02000
+                        spin polarized calculation
+                      s.r.a. calculation                        
+                      core relaxation nonsra                    
+                      exact cell treatment (shape correction)   
+                      Vosko,Wilk,Nusair      exchange-correlation potential
+                      non spherical input potential for cluster 
+                      using  2-th. born approximation 
+ *******************************************************************************
+ IXIPOL
+   0   0   0   0   0   0
+---+---+---+---+---+---+---+---+---+---+---------------------------------------
+    NAEZ    NEMB  
+       6       2
+-------+-------+-------+-------------------------------------------------------
+    NCLS    NREF   NINEQ
+       1       0       6
+-------+-------+-------+-------------------------------------------------------
+---+---+---+---+---+---+---+---+---+---+---------------------------------------
+ 
+     0.00000000     1.41421356    -0.70710678     7     0
+     0.00000000    -0.70710678     4.24264069     8     0
+-------+-------+-------+-------+-------+-------+-------+-----------------------
+-------------------------------------------------------------------------------
+ EXECUTION OPTIONS:
+         //        //        //        //        //        //        //        
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+ TEST OPTIONS:
+         //        //        //        //        //        //        //        
+         //        //        //        //        //        //        //        
+
+-------------------------------------------------------------------------------
+ < MEMWFSAVE >, use default:           0
+ < UNITMEMWFSAVE >, use default:           2 
+ (MB) (max memory= MEMWFSAVE*1024**UNITMEMWFSAVE)
+-------------------------------------------------------------------------------
+ KMROT
+       0
+-------+-------+-------+-------------------------------------------------------
+  >>>>>>>>> RINPUT13 EXITS NOW <<<<<<<<<< 
+===============================================================================
+                       LATTIX99: surface geometry mode
+===============================================================================
+ 
+     Lattice constants :  ALAT =  5.42351400     2*PI/ALAT =  1.15850818
+
+     Direct lattice cell vectors :
+
+         normalised (ALAT)                     a.u.
+         ----------------------                ----------------------
+     a_1:  1.000000  0.000000                    5.423514  0.000000
+     a_2:  0.500000  0.707107                    2.711757  3.835004
+         ----------------------                ----------------------
+ 
+     Unit cell volume :  V =    0.70710678 (ALAT**2) =    20.79919532 (a.u.**2)
+
+     Reciprocal lattice cell vectors :
+
+         normalised (2*PI/ALAT)                1/a.u.
+         ----------------------                ----------------------
+     b_1:  1.000000 -0.707107                    1.158508 -0.819189
+     b_2:  0.000000  1.414214                    0.000000  1.638378
+         ----------------------                ----------------------
+ 
+     < RRGEN > : generation of real space mesh RR(NR)
+
+          Radius R        :        8.822886 (ALAT    units)
+                 R**2     :       77.843311 (ALAT**2 units)
+          mesh divisions  :          9   10
+          vectors created :             303
+ 
+===============================================================================
+                       SCALEVEC: scale site coordinates
+                                 bring all to CARTESIAN system
+===============================================================================
+ 
+     Site coordinates will not be scaled
+ CARTESIAN coordinates
+                                          ---> No transformation required
+              ---------------------------------------------
+                    Positions of ALL generated sites 
+                  in CARTESIAN coordinates (ALAT units)
+              ---------------------------------------------
+               IQ       x           y           z       IT
+               **************** Left  Host ***************
+                10    0.000000    7.778175   -7.071068  1
+                 9    0.000000    7.071068   -6.363961  1
+                 8    0.000000    6.363961   -5.656854  1
+                 7    0.000000    5.656854   -4.949747  1
+                 6    0.000000    4.949747   -4.242641  1
+                 5    0.000000    4.242641   -3.535534  1
+                 4    0.000000    3.535534   -2.828427  1
+                 3    0.000000    2.828427   -2.121320  1
+                 2    0.000000    2.121320   -1.414214  1
+                 1    0.000000    1.414214   -0.707107  1
+               ****************   S L A B  ***************
+                 1    0.000000    0.707107    0.000000  1
+                 2    0.000000    0.000000    0.707107  2
+                 3    0.000000    0.707107    1.414214  3
+                 4    0.000000    0.000000    2.121320  4
+                 5    0.000000    0.707107    2.828427  5
+                 6    0.000000    0.000000    3.535534  6
+               **************** Right Host ***************
+                 1    0.000000   -0.707107    4.242641  1
+                 2    0.000000   -1.414214    4.949747  1
+                 3    0.000000   -2.121320    5.656854  1
+                 4    0.000000   -2.828427    6.363961  1
+                 5    0.000000   -3.535534    7.071068  1
+                 6    0.000000   -4.242641    7.778175  1
+                 7    0.000000   -4.949747    8.485281  1
+                 8    0.000000   -5.656854    9.192388  1
+                 9    0.000000   -6.363961    9.899495  1
+                10    0.000000   -7.071068   10.606602  1
+              ---------------------------------------------
+
+ >>> CLSGEN_TB: generation of cluster coordinates
+ RCUT =    1.50000000000000       RCUTXY =    1.50000000000000     
+ Spherical Clusters are created
+ clsgen_tb: cluster size of site:           1 :          27
+ clsgen_tb: Touching RMT of site:           1 :  0.433012701892219     
+ clsgen_tb: cluster size of site:           2 :          27
+ clsgen_tb: Touching RMT of site:           2 :  0.433012701892219     
+ clsgen_tb: cluster size of site:           3 :          27
+ clsgen_tb: Touching RMT of site:           3 :  0.433012701892219     
+ clsgen_tb: cluster size of site:           4 :          27
+ clsgen_tb: Touching RMT of site:           4 :  0.433012701892219     
+ clsgen_tb: cluster size of site:           5 :          27
+ clsgen_tb: Touching RMT of site:           5 :  0.433012701892219     
+ clsgen_tb: cluster size of site:           6 :          27
+ clsgen_tb: Touching RMT of site:           6 :  0.433012701892219     
+ clsgen_tb: cluster size of site:           7 :          27
+ clsgen_tb: Touching RMT of site:           7 :  0.433012701892219     
+ clsgen_tb: cluster size of site:           8 :          27
+ clsgen_tb: Touching RMT of site:           8 :  0.433012701892219     
+ Clusters from clsgen_tb:
+CLSGEN_TB: Atom    1 Refpot    1 Rmtref 2.3200000 Vref 8.0000000 TB-cluster    1 Sites   27
+CLSGEN_TB: Atom    2 Refpot    1 Rmtref 2.3200000 Vref 8.0000000 TB-cluster    1 Sites   27
+CLSGEN_TB: Atom    3 Refpot    1 Rmtref 2.3200000 Vref 8.0000000 TB-cluster    1 Sites   27
+CLSGEN_TB: Atom    4 Refpot    1 Rmtref 2.3200000 Vref 8.0000000 TB-cluster    1 Sites   27
+CLSGEN_TB: Atom    5 Refpot    1 Rmtref 2.3200000 Vref 8.0000000 TB-cluster    1 Sites   27
+CLSGEN_TB: Atom    6 Refpot    1 Rmtref 2.3200000 Vref 8.0000000 TB-cluster    1 Sites   27
+ Clusters from clsgen_tb in outer region, left:
+CLSGEN_TB: Atom    7 Refpot    1 Rmtref 2.3200000 Vref 8.0000000 TB-cluster    1 Sites   27
+ Clusters from clsgen_tb in outer region, right:
+CLSGEN_TB: Atom    8 Refpot    1 Rmtref 2.3200000 Vref 8.0000000 TB-cluster    1 Sites   27
+ Coupling matrix:
+   1 111000
+   2 111100
+   3 111110
+   4 011111
+   5 001111
+   6 000111
+ CLSGEN_TB: Number of layers in a principal layer: NPRINC=           2
+  Sub clsgen_tb  exiting <<<<<<<<<<<<<
+ Dimension and Input Data CHECK
+ NPRINCD  NLAYER
+       1       6
+-------+-------+---------------------------------------------------------------
+   ncell :            1           6
+   nfun  :           14         900
+ <#Vac0 POTENTIAL SPIN DOWN            exc: von Barth,Hedin         #serial: voro_v
+ <#Vac0 POTENTIAL SPIN UP              exc: von Barth,Hedin         #serial: voro_v
+ <#Vac0 POTENTIAL SPIN DOWN            exc: von Barth,Hedin         #serial: voro_v
+ <#Vac0 POTENTIAL SPIN UP              exc: von Barth,Hedin         #serial: voro_v
+ <#Fe26 POTENTIAL SPIN DOWN            exc: von Barth,Hedin         #serial: voro_v
+ <#Fe26 POTENTIAL SPIN UP              exc: von Barth,Hedin         #serial: voro_v
+ <#Fe26 POTENTIAL SPIN DOWN            exc: von Barth,Hedin         #serial: voro_v
+ <#Fe26 POTENTIAL SPIN UP              exc: von Barth,Hedin         #serial: voro_v
+ <#Vac0 POTENTIAL SPIN DOWN            exc: von Barth,Hedin         #serial: voro_v
+ <#Vac0 POTENTIAL SPIN UP              exc: von Barth,Hedin         #serial: voro_v
+ <#Vac0 POTENTIAL SPIN DOWN            exc: von Barth,Hedin         #serial: voro_v
+ <#Vac0 POTENTIAL SPIN UP              exc: von Barth,Hedin         #serial: voro_v
+Doing calculation with potential: MD5 (potential) = fc3519c57914f22378e65319b1da4e39
+Doing calculation with shapefun: MD5 (shapefun) = 679471da0a3f0c9c666912ee788668a7
+ SHIFTING OF THE POTENTIALS OF ATOM           1 spin           1  BY
+  0.000000000000000E+000 RY.
+ SHIFTING OF THE POTENTIALS OF ATOM           1 spin           2  BY
+  0.000000000000000E+000 RY.
+ SHIFTING OF THE POTENTIALS OF ATOM           2 spin           1  BY
+  0.000000000000000E+000 RY.
+ SHIFTING OF THE POTENTIALS OF ATOM           2 spin           2  BY
+  0.000000000000000E+000 RY.
+ SHIFTING OF THE POTENTIALS OF ATOM           3 spin           1  BY
+  0.000000000000000E+000 RY.
+ SHIFTING OF THE POTENTIALS OF ATOM           3 spin           2  BY
+  0.000000000000000E+000 RY.
+ SHIFTING OF THE POTENTIALS OF ATOM           4 spin           1  BY
+  0.000000000000000E+000 RY.
+ SHIFTING OF THE POTENTIALS OF ATOM           4 spin           2  BY
+  0.000000000000000E+000 RY.
+ SHIFTING OF THE POTENTIALS OF ATOM           5 spin           1  BY
+  0.000000000000000E+000 RY.
+ SHIFTING OF THE POTENTIALS OF ATOM           5 spin           2  BY
+  0.000000000000000E+000 RY.
+ SHIFTING OF THE POTENTIALS OF ATOM           6 spin           1  BY
+  0.000000000000000E+000 RY.
+ SHIFTING OF THE POTENTIALS OF ATOM           6 spin           2  BY
+  0.000000000000000E+000 RY.
+ 
+===============================================================================
+                    EPATHTB: generates a complex E contour
+===============================================================================
+ 
+     E min =    -0.600000 (Ry)        Fermi energy =     0.409241 (Ry)
+     E max =     0.409241 (Ry)        Temperature  =   800.000000 (K )
+     --------------------------------------------------------------
+     GF integration rectangular contour ( ImE > 0 )
+     Number of energy points :  45             poles = 7
+                       contour: N1 = 3, N2 =  32, N3 = 3
+ 
+ >>> SHAPE : IMAXSH( 335),NGSHD : 60000
+===============================================================================
+                  MADELUNG3D: setting bulk Madelung coefficients
+===============================================================================
+ 
+     < LATTICE3D > : generating direct/reciprocal lattice vectors
+
+          R max = 37.96460 (a.u.)
+          G max = 11.98485 (1/a.u.)
+
+                         vectors  shells  max. R 
+                         ------------------------------
+          Direct  lattice    425      74   37.96460
+          Recipr. lattice  16167    1496   11.98427
+                         ------------------------------
+
+     < STRMAT > : calculating lattice sums
+
+===============================================================================
+               BZKINT0: finding symmetry, setting BZ integration
+===============================================================================
+
+     < FINDGROUP > : Finding symmetry operations
+
+        ------------------------------------------------------------
+        3D symmetries found for this lattice:  4
+        ------------------------------------------------------------
+        E           C2z         IC2x        IC2y      
+        ------------------------------------------------------------
+
+     < BZKMESH > : creating k-mesh, write to file kpoints
+
+        number of different k-meshes : 4
+        the direct lattice  4 symmetries will be used
+
+        -----------------------------------
+        k-mesh NofKs N kx N ky N kz vol BZ
+        -----------------------------------
+             1   310   10   10   10  0.2857
+             2   112    7    7    7  0.2857
+             3    45    5    5    5  0.2857
+             4    12    3    3    3  0.2857
+        -----------------------------------
+
+     <SYMTAUMAT> : rotation matrices acting on t/G/tau
+
+        ---------------------------------------------------------
+        ISYM            INV          Euler angles      Unitarity
+        ---------------------------------------------------------
+         1   E           0   0.00000   0.00000   0.00000   T
+         2   C2z         0 180.00000   0.00000   0.00000   T
+         3   IC2x        1 180.00000 180.00000   0.00000   T
+         4   IC2y        1   0.00000 180.00000   0.00000   T
+        ---------------------------------------------------------
+
+     < GFSHELLS > : setting up indices of the GF blocks
+
+        Different shells for GF calculation :   6
+
+     < GFMASK > : set KKR matrix inversion algorithm
+
+        INVERSION algorithm used : BANDED MATRIX (slab)               
+
+===============================================================================
+                               < KKR0 finished >
+===============================================================================
+

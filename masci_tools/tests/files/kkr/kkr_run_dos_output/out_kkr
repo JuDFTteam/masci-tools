@@ -1,0 +1,39 @@
+ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ !!! Most output written to output.myrank.txt files !!!
+ !!! please check these files as well               !!!
+ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+*******************************************************************************
+          Screened Korringa-Kohn-Rostoker Electronic Structure Code
+                           for Bulk and Interfaces
+          Juelich-Munich 2001 - 2016
+
+ Code version: v2.2-22-g4f8f5ff
+ Compile options: openmp-mac
+-O2 -r8 -module ./OBJ -sox -traceback
+-mkl -Wl,-stack_size,0x40000000,-stack_addr,0xf0000000
+
+ serial number for files:kkrjm_v2.2-22-g4f8f5ff_openmp-mac_20171214102522
+*******************************************************************************
+
+ Number of OpenMP threads used:    1
+
+*******************************************************************************
+
+ ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ +++            SCF ITERATIONS START                +++
+ ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+started on 2017/12/14 at 10:25:22
+               Ne         
+          TOT 12.63761960
+          TOT 12.63761960
+          TOT 12.63761960
+          TOT 12.63761960
+      ITERATION   1 charge neutrality in unit cell =  -137.449522
+                new E FERMI   1.0500000000  DOS(E_F) =     3.672746
+      ITERATION   1 average rms-error : v+ + v- =  1.2977D+01
+TOTAL ENERGY in ryd. :           -28679.93406508
+
+            ++++++ NUMBER OF SCF STEPS EXHAUSTED ++++++
+*******************************************************************************
+Iteration finished on 2017/12/14 at 10:25:27

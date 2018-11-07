@@ -1,0 +1,181 @@
+ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ !!! Most output written to output.myrank.txt files !!!
+ !!! please check these files as well               !!!
+ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+*******************************************************************************
+          Screened Korringa-Kohn-Rostoker Electronic Structure Code
+                           for Bulk and Interfaces
+          Juelich-Munich 2001 - 2016
+
+ Code version: v2.2-22-g4f8f5ff
+ Compile options: openmp
+-O2 -r8 -module ./OBJ -sox -traceback -openmp
+-L/usr/local/intel/mkl/lib/intel64 -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -liomp5
+
+ serial number for files:kkrjm_v2.2-22-g4f8f5ff_openmp_20171208160428
+*******************************************************************************
+
+ Number of OpenMP threads used:   10
+
+*******************************************************************************
+
+ WARNING: HFIELD>0.0 found, set KHFIELD to 1
+ Calling MADELUNG3D
+ Exited MADELUNG3D
+ ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ +++            SCF ITERATIONS START                +++
+ ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+started on 2017/12/ 8 at 16: 4:29
+               Ne spin dn  Ne spin up    m_spin 
+          TOT  0.00085719  0.00085719    0.0000
+          TOT  0.07083404  0.07083404    0.0000
+          TOT  2.70282621  2.70282623    0.0000
+          TOT  2.70282621  2.70282623    0.0000
+          TOT  0.07083404  0.07083404    0.0000
+          TOT  0.00085719  0.00085719    0.0000
+      ITERATION   1 charge neutrality in unit cell =    -4.901930
+                    TOTAL mag. moment in unit cell =     0.000000
+                new E FERMI   0.4592410000  DOS(E_F) =    10.260433
+      ITERATION   1 average rms-error : v+ + v- =  2.3414D+00
+                                        v+ - v- =  2.5400D-06
+TOTAL ENERGY in ryd. :            -5079.95660683
+
+Iteration finished on 2017/12/ 8 at 16: 4:47
+               Ne spin dn  Ne spin up    m_spin 
+          TOT  0.00161481  0.00161481    0.0000
+          TOT  0.10174348  0.10174348    0.0000
+          TOT  3.75259307  3.75259307   -0.0000
+          TOT  3.75259307  3.75259307   -0.0000
+          TOT  0.10174348  0.10174348    0.0000
+          TOT  0.00161481  0.00161481    0.0000
+      ITERATION   2 charge neutrality in unit cell =    -0.576195
+                    TOTAL mag. moment in unit cell =     0.000000
+                new E FERMI   0.4654901812  DOS(E_F) =    15.367202
+      ITERATION   2 average rms-error : v+ + v- =  2.3344D-01
+                                        v+ - v- =  2.0320D-06
+TOTAL ENERGY in ryd. :            -5081.86561480
+
+Iteration finished on 2017/12/ 8 at 16: 5: 3
+               Ne spin dn  Ne spin up    m_spin 
+          TOT  0.00172454  0.00172454    0.0000
+          TOT  0.10481985  0.10481985    0.0000
+          TOT  3.81765498  3.81765497   -0.0000
+          TOT  3.81765498  3.81765497   -0.0000
+          TOT  0.10481985  0.10481985    0.0000
+          TOT  0.00172454  0.00172454    0.0000
+      ITERATION   3 charge neutrality in unit cell =    -0.303203
+                    TOTAL mag. moment in unit cell =    -0.000000
+                new E FERMI   0.4687657284  DOS(E_F) =    15.427578
+      ITERATION   3 average rms-error : v+ + v- =  2.3332D-01
+                                        v+ - v- =  1.6256D-06
+TOTAL ENERGY in ryd. :            -5081.87192003
+
+Iteration finished on 2017/12/ 8 at 16: 5:20
+               Ne spin dn  Ne spin up    m_spin 
+          TOT  0.00176489  0.00176489    0.0000
+          TOT  0.10619405  0.10619405    0.0000
+          TOT  3.79962923  3.79962921   -0.0000
+          TOT  3.79962923  3.79962921   -0.0000
+          TOT  0.10619405  0.10619405    0.0000
+          TOT  0.00176489  0.00176489    0.0000
+      ITERATION   4 charge neutrality in unit cell =    -0.369647
+                    TOTAL mag. moment in unit cell =    -0.000000
+                new E FERMI   0.4727827710  DOS(E_F) =    15.336628
+      ITERATION   4 average rms-error : v+ + v- =  2.3460D-01
+                                        v+ - v- =  1.3005D-06
+TOTAL ENERGY in ryd. :            -5081.88104897
+
+Iteration finished on 2017/12/ 8 at 16: 5:37
+               Ne spin dn  Ne spin up    m_spin 
+          TOT  0.00182141  0.00182141    0.0000
+          TOT  0.10797400  0.10797401    0.0000
+          TOT  3.80767868  3.80767864   -0.0000
+          TOT  3.80767868  3.80767864   -0.0000
+          TOT  0.10797400  0.10797401    0.0000
+          TOT  0.00182141  0.00182141    0.0000
+      ITERATION   5 charge neutrality in unit cell =    -0.330104
+                    TOTAL mag. moment in unit cell =    -0.000000
+                new E FERMI   0.4763801340  DOS(E_F) =    15.293781
+      ITERATION   5 average rms-error : v+ + v- =  2.3535D-01
+                                        v+ - v- =  1.0404D-06
+TOTAL ENERGY in ryd. :            -5081.88827002
+
+Iteration finished on 2017/12/ 8 at 16: 5:54
+               Ne spin dn  Ne spin up    m_spin 
+          TOT  0.00186715  0.00186715    0.0000
+          TOT  0.10951080  0.10951080    0.0000
+          TOT  3.80752927  3.80752922   -0.0000
+          TOT  3.80752927  3.80752922   -0.0000
+          TOT  0.10951080  0.10951080    0.0000
+          TOT  0.00186715  0.00186715    0.0000
+      ITERATION   6 charge neutrality in unit cell =    -0.324371
+                    TOTAL mag. moment in unit cell =    -0.000000
+                new E FERMI   0.4799276602  DOS(E_F) =    15.239316
+      ITERATION   6 average rms-error : v+ + v- =  2.3618D-01
+                                        v+ - v- =  8.3232D-07
+TOTAL ENERGY in ryd. :            -5081.89505638
+
+Iteration finished on 2017/12/ 8 at 16: 6:11
+               Ne spin dn  Ne spin up    m_spin 
+          TOT  0.00191054  0.00191054    0.0000
+          TOT  0.11100901  0.11100901    0.0000
+          TOT  3.80975506  3.80975500   -0.0000
+          TOT  3.80975506  3.80975500   -0.0000
+          TOT  0.11100901  0.11100901    0.0000
+          TOT  0.00191054  0.00191054    0.0000
+      ITERATION   7 charge neutrality in unit cell =    -0.309302
+                    TOTAL mag. moment in unit cell =    -0.000000
+                new E FERMI   0.4833209134  DOS(E_F) =    15.191993
+      ITERATION   7 average rms-error : v+ + v- =  2.3686D-01
+                                        v+ - v- =  6.6585D-07
+TOTAL ENERGY in ryd. :            -5081.90107597
+
+Iteration finished on 2017/12/ 8 at 16: 6:28
+               Ne spin dn  Ne spin up    m_spin 
+          TOT  0.00194909  0.00194909    0.0000
+          TOT  0.11241061  0.11241061    0.0000
+          TOT  3.81113800  3.81113792   -0.0000
+          TOT  3.81113800  3.81113792   -0.0000
+          TOT  0.11241061  0.11241061    0.0000
+          TOT  0.00194909  0.00194909    0.0000
+      ITERATION   8 charge neutrality in unit cell =    -0.298009
+                    TOTAL mag. moment in unit cell =    -0.000000
+                new E FERMI   0.4866002281  DOS(E_F) =    15.145917
+      ITERATION   8 average rms-error : v+ + v- =  2.3745D-01
+                                        v+ - v- =  5.3268D-07
+TOTAL ENERGY in ryd. :            -5081.90651978
+
+Iteration finished on 2017/12/ 8 at 16: 6:45
+               Ne spin dn  Ne spin up    m_spin 
+          TOT  0.00198368  0.00198368    0.0000
+          TOT  0.11373749  0.11373749    0.0000
+          TOT  3.81266015  3.81266006   -0.0000
+          TOT  3.81266015  3.81266006   -0.0000
+          TOT  0.11373749  0.11373749    0.0000
+          TOT  0.00198368  0.00198368    0.0000
+      ITERATION   9 charge neutrality in unit cell =    -0.286475
+                    TOTAL mag. moment in unit cell =    -0.000000
+                new E FERMI   0.4897616294  DOS(E_F) =    15.102739
+      ITERATION   9 average rms-error : v+ + v- =  2.3792D-01
+                                        v+ - v- =  4.2615D-07
+TOTAL ENERGY in ryd. :            -5081.91141803
+
+Iteration finished on 2017/12/ 8 at 16: 7: 2
+               Ne spin dn  Ne spin up    m_spin 
+          TOT  0.00201421  0.00201421    0.0000
+          TOT  0.11498764  0.11498764    0.0000
+          TOT  3.81403721  3.81403710   -0.0000
+          TOT  3.81403721  3.81403710   -0.0000
+          TOT  0.11498764  0.11498764    0.0000
+          TOT  0.00201421  0.00201421    0.0000
+      ITERATION  10 charge neutrality in unit cell =    -0.275844
+                    TOTAL mag. moment in unit cell =    -0.000000
+                new E FERMI   0.4928139832  DOS(E_F) =    15.061817
+      ITERATION  10 average rms-error : v+ + v- =  2.3827D-01
+                                        v+ - v- =  3.4092D-07
+TOTAL ENERGY in ryd. :            -5081.91583836
+
+            ++++++ NUMBER OF SCF STEPS EXHAUSTED ++++++
+*******************************************************************************
+Iteration finished on 2017/12/ 8 at 16: 7:19

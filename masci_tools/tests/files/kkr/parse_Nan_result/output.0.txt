@@ -1,0 +1,587 @@
+# serial: kkrjm_v2.2-62-g7801b9a_mpi_20180115094957
+
+*******************************************************************************
+          Screened Korringa-Kohn-Rostoker Electronic Structure Code
+                           for Bulk and Interfaces
+          Juelich-Munich 2001 - 2016
+
+ Code version: v2.2-62-g7801b9a
+ Compile options: mpi
+-O2 -r8 -module ./OBJ -sox -traceback
+-L/usr/local/intel/mkl/lib/intel64 -lmkl_intel_lp64 -lmkl_sequential -lmkl_core
+
+ serial number for files: kkrjm_v2.2-62-g7801b9a_mpi_20180115094957
+*******************************************************************************
+
+ Number of MPI ranks used:   12
+
+*******************************************************************************
+
+         ABASIS         BBASIS         CBASIS
+     1.00000000     1.00000000     1.00000000
+--------------+--------------+--------------+----------------------------------
+          ALAT =      5.23968900
+*** SLAB - INTERFACE CALCULATION ***
+
+ Number of embedded atoms NEMB=NLBASIS + NRBASIS=           2
+Number of LEFT  Host Layers :    10 with     1 basis
+Number of RIGHT Host Layers :    10 with     1 basis
+Left  side periodicity :    0.50000   0.50000  -0.70711
+Right side periodicity :    0.50000   0.50000   0.70711
+    Geommetry used : 
+ ATOM       TX          TY          TZ 
+--------------- Left  Host -------------- 
+   10    4.50000000    4.50000000   -9.19238816    0
+    9    4.00000000    4.00000000   -8.48528137    0
+    8    3.50000000    3.50000000   -7.77817459    0
+    7    3.00000000    3.00000000   -7.07106781    0
+    6    2.50000000    2.50000000   -6.36396103    0
+    5    2.00000000    2.00000000   -5.65685425    0
+    4    1.50000000    1.50000000   -4.94974747    0
+    3    1.00000000    1.00000000   -4.24264069    0
+    2    0.50000000    0.50000000   -3.53553391    0
+    1    0.00000000    0.00000000   -2.82842712    0
+---------------   S L A B  -------------- 
+    1    0.50000000    0.50000000   -2.12132034
+    2    0.00000000    0.00000000   -1.41421356
+    3    0.50000000    0.50000000   -0.70710678
+    4    0.00000000    0.00000000    0.00000000
+    5    0.50000000    0.50000000    0.70710678
+    6    0.00000000    0.00000000    1.41421356
+    7    0.50000000    0.50000000    2.12132034
+    8    0.00000000    0.00000000    2.82842712
+    9    0.50000000    0.50000000    3.56867800
+   10    0.00000000    0.00000000    4.30563800
+   11    0.50000000    0.50000000    5.03976600
+   12    0.00000000    0.00000000    5.77198300
+   13    0.50000000    0.50000000    6.50602700
+   14    0.00000000    0.00000000    7.24284000
+   15    0.50000000    0.50000000    8.00278800
+   16    0.00000000    0.00000000    8.59817900
+   17    0.50000000    0.50000000    9.19357000
+   18    0.00000000    0.00000000    9.95351700
+   19    0.50000000    0.50000000   10.69033000
+   20    0.00000000    0.00000000   11.42437500
+--------------- Right Host -------------- 
+    1    0.50000000    0.50000000   12.15659100    0
+    2    1.00000000    1.00000000   12.86369778    0
+    3    1.50000000    1.50000000   13.57080456    0
+    4    2.00000000    2.00000000   14.27791134    0
+    5    2.50000000    2.50000000   14.98501812    0
+    6    3.00000000    3.00000000   15.69212491    0
+    7    3.50000000    3.50000000   16.39923169    0
+    8    4.00000000    4.00000000   17.10633847    0
+    9    4.50000000    4.50000000   17.81344525    0
+   10    5.00000000    5.00000000   18.52055203    0
+ NSPIN 
+   1
+---+---------------------------------------------------------------------------
+ Cell information <SHAPE>:
+ WARNING: HFIELD>0.0 found, set KHFIELD to 1
+ INIPOL
+   0   0   0   0   0   0   0   0   0   0
+   0   0   0   0   0   1   0   0   0   0
+---+---+---+---+---+---+---+---+---+---+---------------------------------------
+---+---------------------------------------------------------------------------
+   INTERVX   INTERVY   INTERVZ
+        10        10        10
+---------+---------+---------+-------------------------------------------------
+ Parameters used for the cluster calculation
+ Clusters inside spheres with radius R =    2.87300000000000     
+---+---------------------------------------------------------------------------
+ RBASIS
+SITE                BASIS VECTORS                 THETA   PHI CPA OCC KAOEZ
+---+--------------+--------------+--------------+------------------------------
+   1     0.50000000     0.50000000    -2.12132034   0.0   0.0   0   1  1
+   2     0.00000000     0.00000000    -1.41421356   0.0   0.0   0   1  2
+   3     0.50000000     0.50000000    -0.70710678   0.0   0.0   0   1  3
+   4     0.00000000     0.00000000     0.00000000   0.0   0.0   0   1  4
+   5     0.50000000     0.50000000     0.70710678   0.0   0.0   0   1  5
+   6     0.00000000     0.00000000     1.41421356   0.0   0.0   0   1  6
+   7     0.50000000     0.50000000     2.12132034   0.0   0.0   0   1  7
+   8     0.00000000     0.00000000     2.82842712   0.0   0.0   0   1  8
+   9     0.50000000     0.50000000     3.56867800   0.0   0.0   0   1  9
+  10     0.00000000     0.00000000     4.30563800   0.0   0.0   0   1 10
+  11     0.50000000     0.50000000     5.03976600   0.0   0.0   0   1 11
+  12     0.00000000     0.00000000     5.77198300   0.0   0.0   0   1 12
+  13     0.50000000     0.50000000     6.50602700   0.0   0.0   0   1 13
+  14     0.00000000     0.00000000     7.24284000   0.0   0.0   0   1 14
+  15     0.50000000     0.50000000     8.00278800   0.0   0.0   0   1 15
+  16     0.00000000     0.00000000     8.59817900   0.0   0.0   0   1 16
+  17     0.50000000     0.50000000     9.19357000   0.0   0.0   0   1 17
+  18     0.00000000     0.00000000     9.95351700   0.0   0.0   0   1 18
+  19     0.50000000     0.50000000    10.69033000   0.0   0.0   0   1 19
+  20     0.00000000     0.00000000    11.42437500   0.0   0.0   0   1 20
+ ATOMINFOC or ATOMINFO:
+ NATYP 
+  20
+   Z lmx     KFG cls pot ntc  MTFAC irns SITE  CONC
+---+---------------------------------------------------------------------------
+  0.   0    0000   1   0   1  0.0000  -1    1  1.00000
+  0.   0    0000   1   0   2  0.0000  -1    2  1.00000
+  0.   0    0000   1   0   3  0.0000  -1    3  1.00000
+ 78.   0    0000   1   0   3  0.0000  -1    4  1.00000
+ 78.   0    0000   1   0   3  0.0000  -1    5  1.00000
+ 78.   0    0000   1   0   1  0.0000  -1    6  1.00000
+ 78.   0    0000   1   0   2  0.0000  -1    7  1.00000
+ 78.   0    0000   1   0   4  0.0000  -1    8  1.00000
+ 78.   0    0000   1   0   5  0.0000  -1    9  1.00000
+ 78.   0    0000   1   0   6  0.0000  -1   10  1.00000
+ 78.   0    0000   1   0   7  0.0000  -1   11  1.00000
+ 78.   0    0000   1   0   8  0.0000  -1   12  1.00000
+ 78.   0    0000   1   0   9  0.0000  -1   13  1.00000
+ 78.   0    0000   1   0  10  0.0000  -1   14  1.00000
+ 78.   0    0000   1   0  11  0.0000  -1   15  1.00000
+ 27.   0    0000   1   0  12  0.0000  -1   16  1.00000
+  0.   0    0000   1   0  13  0.0000  -1   17  1.00000
+  0.   0    0000   1   0  14  0.0000  -1   18  1.00000
+  0.   0    0000   1   0  15  0.0000  -1   19  1.00000
+  0.   0    0000   1   0  16  0.0000  -1   20  1.00000
+---+---+-------+---+---+---+-------+---+---------------------------------------
+---+---------------------------------------------------------------------------
+ NSTEPS
+  50
+---+---------------------------------------------------------------------------
+ I12="                                        "
+ I13="potential                               "
+ I40="                                        "
+ I19="shapefun                                "
+ I25="scoef                                   "
+ lmax
+   2
+---+---------------------------------------------------------------------------
+          EMIN        EMAX        TK
+   -0.500000    1.000000 1400.000000
+-----------+-----------+-----------+-------------------------------------------
+   NPOL  NPNT1  NPNT2  NPNT3
+      7      3     11      3
+------+------+------+------+---------------------------------------------------
+------+------+------+----------------------------------------------------------
+  IFILE    IPE ISHIFT ESHIFT
+     13      1      0    0.000000
+------+------+------+-----------+----------------------------------------------
+ KSHAPE    IRM    INS   ICST INSREF
+      0    900      0      2      0
+------+------+------+------+------+--------------------------------------------
+   KCOR  KVREL    KWS   KHYP KHFIELD   KXC
+      2      1      2      0      1      2
+------+------+------+------+------+------+-------------------------------------
+    KTE   KPRE   KEFG  KVMAD 
+      1      1      0      0
+------+------+------+------+------+--------------------------------------------
+   IMIX    IGF    ICC
+      0      0      0
+------+------+------+------+---------------------------------------------------
+ ITDBRY
+     40
+------+------------------------------------------------------------------------
+      STRMIX        FCM       QBOUND
+    0.030000   20.000000    0.008000
+-----------+-----------+-----------+-------------------------------------------
+      BRYMIX
+    0.050000
+-----------+-------------------------------------------------------------------
+ external magnetic hfield     :         0.0200
+ VCONST                       :       0.000000
+ mixing factor used           :       0.030000
+ convergence quality required :       8.00D-03
+ make use of CPA algorithm    :             NO
+
+                                 check of dimension-data consistency
+                                 -----------------------------------
+                                        lmax   : (     2,     2)
+                                        natyp  : (    20,    20)
+                                        irm    : (   900,   900)
+                                        nspin  : (     1,     2)
+
+
+
+ ********** external magnetic field applied hfield= 0.02000
+                    non-spin polarized calculation
+                      s.r.a. calculation                        
+                      core relaxation nonsra                    
+                      calculation with full ws-potential
+                      Vosko,Wilk,Nusair      exchange-correlation potential
+ *******************************************************************************
+ IXIPOL
+   0   0   0   0   0   0   0   0   0   0
+   0   0   0   0   0   0   0   0   0   0
+---+---+---+---+---+---+---+---+---+---+---------------------------------------
+    NAEZ    NEMB  
+      20       2
+-------+-------+-------+-------------------------------------------------------
+    NCLS    NREF   NINEQ
+       1       0      20
+-------+-------+-------+-------------------------------------------------------
+---+---+---+---+---+---+---+---+---+---+---------------------------------------
+ 
+     0.00000000     0.00000000    -2.82842712    21     0
+     0.50000000     0.50000000    12.15659100    22     0
+-------+-------+-------+-------+-------+-------+-------+-----------------------
+-------------------------------------------------------------------------------
+ EXECUTION OPTIONS:
+ ewald2d //        //        //        //        //        //        //        
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+ TEST OPTIONS:
+         //        //        //        //        //        //        //        
+         //        //        //        //        //        //        //        
+
+-------------------------------------------------------------------------------
+ < MEMWFSAVE >, use default:           0
+ < UNITMEMWFSAVE >, use default:           2 
+ (MB) (max memory= MEMWFSAVE*1024**UNITMEMWFSAVE)
+-------------------------------------------------------------------------------
+ KMROT
+       0
+-------+-------+-------+-------------------------------------------------------
+  >>>>>>>>> RINPUT13 EXITS NOW <<<<<<<<<< 
+===============================================================================
+                       LATTIX99: surface geometry mode
+===============================================================================
+ 
+     Lattice constants :  ALAT =  5.23968900     2*PI/ALAT =  1.19915234
+
+     Direct lattice cell vectors :
+
+         normalised (ALAT)                     a.u.
+         ----------------------                ----------------------
+     a_1:  1.000000  0.000000                    5.239689  0.000000
+     a_2:  0.000000  1.000000                    0.000000  5.239689
+         ----------------------                ----------------------
+ 
+     Unit cell volume :  V =    1.00000000 (ALAT**2) =    27.45434082 (a.u.**2)
+
+     Reciprocal lattice cell vectors :
+
+         normalised (2*PI/ALAT)                1/a.u.
+         ----------------------                ----------------------
+     b_1:  1.000000  0.000000                    1.199152  0.000000
+     b_2:  0.000000  1.000000                    0.000000  1.199152
+         ----------------------                ----------------------
+ 
+     < RRGEN > : generation of real space mesh RR(NR)
+
+          Radius R        :        8.914224 (ALAT    units)
+                 R**2     :       79.463382 (ALAT**2 units)
+          mesh divisions  :          9    9
+          vectors created :             241
+ 
+===============================================================================
+                       SCALEVEC: scale site coordinates
+                                 bring all to CARTESIAN system
+===============================================================================
+ 
+     Site coordinates will not be scaled
+ CARTESIAN coordinates
+                                          ---> No transformation required
+              ---------------------------------------------
+                    Positions of ALL generated sites 
+                  in CARTESIAN coordinates (ALAT units)
+              ---------------------------------------------
+               IQ       x           y           z       IT
+               **************** Left  Host ***************
+                10    4.500000    4.500000   -9.192388  1
+                 9    4.000000    4.000000   -8.485281  1
+                 8    3.500000    3.500000   -7.778175  1
+                 7    3.000000    3.000000   -7.071068  1
+                 6    2.500000    2.500000   -6.363961  1
+                 5    2.000000    2.000000   -5.656854  1
+                 4    1.500000    1.500000   -4.949747  1
+                 3    1.000000    1.000000   -4.242641  1
+                 2    0.500000    0.500000   -3.535534  1
+                 1    0.000000    0.000000   -2.828427  1
+               ****************   S L A B  ***************
+                 1    0.500000    0.500000   -2.121320  1
+                 2    0.000000    0.000000   -1.414214  2
+                 3    0.500000    0.500000   -0.707107  3
+                 4    0.000000    0.000000    0.000000  4
+                 5    0.500000    0.500000    0.707107  5
+                 6    0.000000    0.000000    1.414214  6
+                 7    0.500000    0.500000    2.121320  7
+                 8    0.000000    0.000000    2.828427  8
+                 9    0.500000    0.500000    3.568678  9
+                10    0.000000    0.000000    4.305638 10
+                11    0.500000    0.500000    5.039766 11
+                12    0.000000    0.000000    5.771983 12
+                13    0.500000    0.500000    6.506027 13
+                14    0.000000    0.000000    7.242840 14
+                15    0.500000    0.500000    8.002788 15
+                16    0.000000    0.000000    8.598179 16
+                17    0.500000    0.500000    9.193570 17
+                18    0.000000    0.000000    9.953517 18
+                19    0.500000    0.500000   10.690330 19
+                20    0.000000    0.000000   11.424375 20
+               **************** Right Host ***************
+                 1    0.500000    0.500000   12.156591  1
+                 2    1.000000    1.000000   12.863698  1
+                 3    1.500000    1.500000   13.570805  1
+                 4    2.000000    2.000000   14.277911  1
+                 5    2.500000    2.500000   14.985018  1
+                 6    3.000000    3.000000   15.692125  1
+                 7    3.500000    3.500000   16.399232  1
+                 8    4.000000    4.000000   17.106338  1
+                 9    4.500000    4.500000   17.813445  1
+                10    5.000000    5.000000   18.520552  1
+              ---------------------------------------------
+
+ >>> CLSGEN_TB: generation of cluster coordinates
+ RCUT =    2.87300000000000       RCUTXY =    2.87300000000000     
+ Spherical Clusters are created
+ clsgen_tb: cluster size of site:           1 :         141
+ clsgen_tb: Touching RMT of site:           1 :  0.500000000000000     
+ clsgen_tb: cluster size of site:           2 :         141
+ clsgen_tb: Touching RMT of site:           2 :  0.500000000000000     
+ clsgen_tb: cluster size of site:           3 :         141
+ clsgen_tb: Touching RMT of site:           3 :  0.500000000000000     
+ clsgen_tb: cluster size of site:           4 :         141
+ clsgen_tb: Touching RMT of site:           4 :  0.500000000000000     
+ clsgen_tb: cluster size of site:           5 :         141
+ clsgen_tb: Touching RMT of site:           5 :  0.500000000000000     
+ clsgen_tb: cluster size of site:           6 :         140
+ clsgen_tb: Touching RMT of site:           6 :  0.500000000000000     
+ clsgen_tb: cluster size of site:           7 :         140
+ clsgen_tb: Touching RMT of site:           7 :  0.500000000000000     
+ clsgen_tb: cluster size of site:           8 :         140
+ clsgen_tb: Touching RMT of site:           8 :  0.500000000000000     
+ clsgen_tb: cluster size of site:           9 :         140
+ clsgen_tb: Touching RMT of site:           9 :  0.500000000000000     
+ clsgen_tb: cluster size of site:          10 :         139
+ clsgen_tb: Touching RMT of site:          10 :  0.500000000000000     
+ clsgen_tb: cluster size of site:          11 :         139
+ clsgen_tb: Touching RMT of site:          11 :  0.500000000000000     
+ clsgen_tb: cluster size of site:          12 :         140
+ clsgen_tb: Touching RMT of site:          12 :  0.500000000000000     
+ clsgen_tb: cluster size of site:          13 :         144
+ clsgen_tb: Touching RMT of site:          13 :  0.500000000000000     
+ clsgen_tb: cluster size of site:          14 :         140
+ clsgen_tb: Touching RMT of site:          14 :  0.500000000000000     
+ clsgen_tb: cluster size of site:          15 :         144
+ clsgen_tb: Touching RMT of site:          15 :  0.462193261223322     
+ clsgen_tb: cluster size of site:          16 :         141
+ clsgen_tb: Touching RMT of site:          16 :  0.462193261223322     
+ clsgen_tb: cluster size of site:          17 :         144
+ clsgen_tb: Touching RMT of site:          17 :  0.462193261223322     
+ clsgen_tb: cluster size of site:          18 :         140
+ clsgen_tb: Touching RMT of site:          18 :  0.500000000000000     
+ clsgen_tb: cluster size of site:          19 :         144
+ clsgen_tb: Touching RMT of site:          19 :  0.500000000000000     
+ clsgen_tb: cluster size of site:          20 :         141
+ clsgen_tb: Touching RMT of site:          20 :  0.500000000000000     
+ clsgen_tb: cluster size of site:          21 :         141
+ clsgen_tb: Touching RMT of site:          21 :  0.500000000000000     
+ clsgen_tb: cluster size of site:          22 :         140
+ clsgen_tb: Touching RMT of site:          22 :  0.500000000000000     
+ Clusters from clsgen_tb:
+CLSGEN_TB: Atom    1 Refpot    1 Rmtref 2.5900000 Vref 8.0000000 TB-cluster    1 Sites  141
+CLSGEN_TB: Atom    2 Refpot    1 Rmtref 2.5900000 Vref 8.0000000 TB-cluster    1 Sites  141
+CLSGEN_TB: Atom    3 Refpot    1 Rmtref 2.5900000 Vref 8.0000000 TB-cluster    1 Sites  141
+CLSGEN_TB: Atom    4 Refpot    1 Rmtref 2.5900000 Vref 8.0000000 TB-cluster    1 Sites  141
+CLSGEN_TB: Atom    5 Refpot    1 Rmtref 2.5900000 Vref 8.0000000 TB-cluster    2 Sites  141
+CLSGEN_TB: Atom    6 Refpot    1 Rmtref 2.5900000 Vref 8.0000000 TB-cluster    3 Sites  140
+CLSGEN_TB: Atom    7 Refpot    1 Rmtref 2.5900000 Vref 8.0000000 TB-cluster    4 Sites  140
+CLSGEN_TB: Atom    8 Refpot    1 Rmtref 2.5900000 Vref 8.0000000 TB-cluster    5 Sites  140
+CLSGEN_TB: Atom    9 Refpot    1 Rmtref 2.5900000 Vref 8.0000000 TB-cluster    6 Sites  140
+CLSGEN_TB: Atom   10 Refpot    1 Rmtref 2.5900000 Vref 8.0000000 TB-cluster    7 Sites  139
+CLSGEN_TB: Atom   11 Refpot    1 Rmtref 2.5900000 Vref 8.0000000 TB-cluster    8 Sites  139
+CLSGEN_TB: Atom   12 Refpot    1 Rmtref 2.5900000 Vref 8.0000000 TB-cluster    9 Sites  140
+CLSGEN_TB: Atom   13 Refpot    1 Rmtref 2.5900000 Vref 8.0000000 TB-cluster   10 Sites  144
+CLSGEN_TB: Atom   14 Refpot    1 Rmtref 2.5900000 Vref 8.0000000 TB-cluster   11 Sites  140
+CLSGEN_TB: Atom   15 Refpot    2 Rmtref 2.3900000 Vref 8.0000000 TB-cluster   12 Sites  144
+CLSGEN_TB: Atom   16 Refpot    2 Rmtref 2.3900000 Vref 8.0000000 TB-cluster   13 Sites  141
+CLSGEN_TB: Atom   17 Refpot    2 Rmtref 2.3900000 Vref 8.0000000 TB-cluster   14 Sites  144
+CLSGEN_TB: Atom   18 Refpot    1 Rmtref 2.5900000 Vref 8.0000000 TB-cluster   15 Sites  140
+CLSGEN_TB: Atom   19 Refpot    1 Rmtref 2.5900000 Vref 8.0000000 TB-cluster   16 Sites  144
+CLSGEN_TB: Atom   20 Refpot    1 Rmtref 2.5900000 Vref 8.0000000 TB-cluster   17 Sites  141
+ Clusters from clsgen_tb in outer region, left:
+CLSGEN_TB: Atom   21 Refpot    1 Rmtref 2.5900000 Vref 8.0000000 TB-cluster    1 Sites  141
+ Clusters from clsgen_tb in outer region, right:
+CLSGEN_TB: Atom   22 Refpot    1 Rmtref 2.5900000 Vref 8.0000000 TB-cluster   18 Sites  140
+ Coupling matrix:
+   1 11111000000000000000
+   2 11111100000000000000
+   3 11111110000000000000
+   4 11111111000000000000
+   5 11111111100000000000
+   6 01111111100000000000
+   7 00111111110000000000
+   8 00011111111000000000
+   9 00001111111100000000
+  10 00000011111110000000
+  11 00000001111111000000
+  12 00000000111111110000
+  13 00000000011111111000
+  14 00000000001111111100
+  15 00000000000111111110
+  16 00000000000111111111
+  17 00000000000011111111
+  18 00000000000001111111
+  19 00000000000000111111
+  20 00000000000000011111
+ CLSGEN_TB: Number of layers in a principal layer: NPRINC=           4
+  Sub clsgen_tb  exiting <<<<<<<<<<<<<
+ Dimension and Input Data CHECK
+ NPRINCD  NLAYER
+       5       4
+-------+-------+---------------------------------------------------------------
+ < Vac0 POTENTIAL                      exc: von Barth,Hedin         #serial: voro_v
+ < Vac0 POTENTIAL                      exc: von Barth,Hedin         #serial: voro_v
+ < Vac0 POTENTIAL                      exc: von Barth,Hedin         #serial: voro_v
+ < Pt78 POTENTIAL                      exc: von Barth,Hedin         #serial: voro_v
+ < Pt78 POTENTIAL                      exc: von Barth,Hedin         #serial: voro_v
+ < Pt78 POTENTIAL                      exc: von Barth,Hedin         #serial: voro_v
+ < Pt78 POTENTIAL                      exc: von Barth,Hedin         #serial: voro_v
+ < Pt78 POTENTIAL                      exc: von Barth,Hedin         #serial: voro_v
+ < Pt78 POTENTIAL                      exc: von Barth,Hedin         #serial: voro_v
+ < Pt78 POTENTIAL                      exc: von Barth,Hedin         #serial: voro_v
+ < Pt78 POTENTIAL                      exc: von Barth,Hedin         #serial: voro_v
+ < Pt78 POTENTIAL                      exc: von Barth,Hedin         #serial: voro_v
+ < Pt78 POTENTIAL                      exc: von Barth,Hedin         #serial: voro_v
+ < Pt78 POTENTIAL                      exc: von Barth,Hedin         #serial: voro_v
+ < Pt78 POTENTIAL                      exc: von Barth,Hedin         #serial: voro_v
+ < Co27 POTENTIAL                      exc: von Barth,Hedin         #serial: voro_v
+ < Vac0 POTENTIAL                      exc: von Barth,Hedin         #serial: voro_v
+ < Vac0 POTENTIAL                      exc: von Barth,Hedin         #serial: voro_v
+ < Vac0 POTENTIAL                      exc: von Barth,Hedin         #serial: voro_v
+ < Vac0 POTENTIAL                      exc: von Barth,Hedin         #serial: voro_v
+Doing calculation with potential: MD5 (potential) = 0967fa44566181dc0194140b4f7b2f33
+ SHIFTING OF THE POTENTIALS OF ATOM           1 spin           1  BY
+  0.000000000000000E+000 RY.
+ SHIFTING OF THE POTENTIALS OF ATOM           2 spin           1  BY
+  0.000000000000000E+000 RY.
+ SHIFTING OF THE POTENTIALS OF ATOM           3 spin           1  BY
+  0.000000000000000E+000 RY.
+ SHIFTING OF THE POTENTIALS OF ATOM           4 spin           1  BY
+  0.000000000000000E+000 RY.
+ SHIFTING OF THE POTENTIALS OF ATOM           5 spin           1  BY
+  0.000000000000000E+000 RY.
+ SHIFTING OF THE POTENTIALS OF ATOM           6 spin           1  BY
+  0.000000000000000E+000 RY.
+ SHIFTING OF THE POTENTIALS OF ATOM           7 spin           1  BY
+  0.000000000000000E+000 RY.
+ SHIFTING OF THE POTENTIALS OF ATOM           8 spin           1  BY
+  0.000000000000000E+000 RY.
+ SHIFTING OF THE POTENTIALS OF ATOM           9 spin           1  BY
+  0.000000000000000E+000 RY.
+ SHIFTING OF THE POTENTIALS OF ATOM          10 spin           1  BY
+  0.000000000000000E+000 RY.
+ SHIFTING OF THE POTENTIALS OF ATOM          11 spin           1  BY
+  0.000000000000000E+000 RY.
+ SHIFTING OF THE POTENTIALS OF ATOM          12 spin           1  BY
+  0.000000000000000E+000 RY.
+ SHIFTING OF THE POTENTIALS OF ATOM          13 spin           1  BY
+  0.000000000000000E+000 RY.
+ SHIFTING OF THE POTENTIALS OF ATOM          14 spin           1  BY
+  0.000000000000000E+000 RY.
+ SHIFTING OF THE POTENTIALS OF ATOM          15 spin           1  BY
+  0.000000000000000E+000 RY.
+ SHIFTING OF THE POTENTIALS OF ATOM          16 spin           1  BY
+  2.000000000000000E-002 RY.
+ SHIFTING OF THE POTENTIALS OF ATOM          17 spin           1  BY
+  0.000000000000000E+000 RY.
+ SHIFTING OF THE POTENTIALS OF ATOM          18 spin           1  BY
+  0.000000000000000E+000 RY.
+ SHIFTING OF THE POTENTIALS OF ATOM          19 spin           1  BY
+  0.000000000000000E+000 RY.
+ SHIFTING OF THE POTENTIALS OF ATOM          20 spin           1  BY
+  0.000000000000000E+000 RY.
+ 
+===============================================================================
+                    EPATHTB: generates a complex E contour
+===============================================================================
+ 
+     E min =    -0.500000 (Ry)        Fermi energy =     0.409241 (Ry)
+     E max =     0.409241 (Ry)        Temperature  =  1400.000000 (K )
+     --------------------------------------------------------------
+     GF integration rectangular contour ( ImE > 0 )
+     Number of energy points :  24             poles = 7
+                       contour: N1 = 3, N2 =  11, N3 = 3
+ 
+===============================================================================
+                  MADELUNG2D: setting 2D Madelung coefficients
+===============================================================================
+ 
+     < LATTICE2D > : generating direct/reciprocal lattice vectors
+
+          R max =  36.67782 (a.u.)
+          G max =  12.40532 (1/a.u.)
+
+ Real space...
+...sorting      149 vectors...
+ ...done.
+ Reciprocal space...
+...sorting      341 vectors...
+ ...done.
+                         vectors  shells  max. R 
+                         ------------------------------
+          Direct  lattice    149      24   36.67782
+          Recipr. lattice    341      47   12.34603
+                         ------------------------------
+
+     < EWALD2D > : calculating 2D-lattice sums inside the slab
+
+===============================================================================
+               BZKINT0: finding symmetry, setting BZ integration
+===============================================================================
+
+     < FINDGROUP > : Finding symmetry operations
+
+        ------------------------------------------------------------
+        surface symmetries found for this lattice:  8
+        ------------------------------------------------------------
+        E           C2z         C4z         C4z-1       IC2x      
+        IC2y        IC2a        IC2b      
+        ------------------------------------------------------------
+
+     < BZKMESH > : creating k-mesh, write to file kpoints
+
+        number of different k-meshes : 4
+        the direct lattice  8 symmetries will be used
+
+        -----------------------------------
+        k-mesh NofKs N kx N ky N kz vol BZ
+        -----------------------------------
+             1    21   10   10    1  1.0000
+             2    10    7    7    1  1.0000
+             3     6    5    5    1  1.0000
+             4     3    3    3    1  1.0000
+        -----------------------------------
+
+     <SYMTAUMAT> : rotation matrices acting on t/G/tau
+
+        ---------------------------------------------------------
+        ISYM            INV          Euler angles      Unitarity
+        ---------------------------------------------------------
+         1   E           0   0.00000   0.00000   0.00000   T
+         2   C2z         0 180.00000   0.00000   0.00000   T
+         3   C4z         0  90.00000   0.00000   0.00000   T
+         4   C4z-1       0 -90.00000   0.00000   0.00000   T
+         5   IC2x        1 180.00000 180.00000   0.00000   T
+         6   IC2y        1   0.00000 180.00000   0.00000   T
+         7   IC2a        1 -90.00000 180.00000   0.00000   T
+         8   IC2b        1  90.00000 180.00000   0.00000   T
+        ---------------------------------------------------------
+
+     < GFSHELLS > : setting up indices of the GF blocks
+
+        Different shells for GF calculation :  20
+
+     < GFMASK > : set KKR matrix inversion algorithm
+
+        INVERSION algorithm used : BANDED MATRIX (slab)               
+
+===============================================================================
+                               < KKR0 finished >
+===============================================================================
+
+ create_newcomms_group_ie input:          12           1          12
+==================================================
+    MPI parallelization: use   12 ranks
+    create processor array of size (nat x ne)  12 x   1
+                N_E
+         <--------------->
+       ^ ( | | | | | | | )
+       | ( | | | | | | | )
+  N_at | ( | | | | | | | )
+       | ( | | | | | | | )
+       v ( | | | | | | | )

@@ -1,0 +1,1178 @@
+# serial: kkrjm_v2.2-62-g7801b9a_mpi_20180115094957
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 2, #of points= 2
+Task 1 treats points 3 to 4, #of points= 2
+Task 2 treats points 5 to 6, #of points= 2
+Task 3 treats points 7 to 8, #of points= 2
+Task 4 treats points 9 to 10, #of points= 2
+Task 5 treats points 11 to 12, #of points= 2
+Task 6 treats points 13 to 14, #of points= 2
+Task 7 treats points 15 to 16, #of points= 2
+Task 8 treats points 17 to 17, #of points= 1
+Task 9 treats points 18 to 18, #of points= 1
+Task 10 treats points 19 to 19, #of points= 1
+Task 11 treats points 20 to 20, #of points= 1
+ ==========================================
+ atom:            1
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 24, #of points= 24
+ ==========================================
+ CALCTMAT: IE=           1  ATOM:           1
+ energy:           1  (-0.500000000000000,4.395324614552068E-002)
+ CALCTMAT: IE=           2  ATOM:           1
+ energy:           2  (-0.500000000000000,0.194998210530480)
+ CALCTMAT: IE=           3  ATOM:           1
+ energy:           3  (-0.500000000000000,0.346043174915440)
+ CALCTMAT: IE=           4  ATOM:           1
+ energy:           4  (-0.493563496761321,0.389996421060960)
+ CALCTMAT: IE=           5  ATOM:           1
+ energy:           5  (-0.466611063882173,0.389996421060960)
+ CALCTMAT: IE=           6  ATOM:           1
+ energy:           6  (-0.420221844766120,0.389996421060960)
+ CALCTMAT: IE=           7  ATOM:           1
+ energy:           7  (-0.357825055404513,0.389996421060960)
+ CALCTMAT: IE=           8  ATOM:           1
+ energy:           8  (-0.284046942353410,0.389996421060960)
+ CALCTMAT: IE=           9  ATOM:           1
+ energy:           9  (-0.204358909898172,0.389996421060960)
+ CALCTMAT: IE=          10  ATOM:           1
+ energy:          10  (-0.124670877442934,0.389996421060960)
+ CALCTMAT: IE=          11  ATOM:           1
+ energy:          11  (-5.089276439183116E-002,0.389996421060960)
+ CALCTMAT: IE=          12  ATOM:           1
+ energy:          12  (1.150402496977554E-002,0.389996421060960)
+ CALCTMAT: IE=          13  ATOM:           1
+ energy:          13  (5.789324408582880E-002,0.389996421060960)
+ CALCTMAT: IE=          14  ATOM:           1
+ energy:          14  (8.484567696497625E-002,0.389996421060960)
+ CALCTMAT: IE=          15  ATOM:           1
+ energy:          15  (0.122436321678514,0.389996421060960)
+ CALCTMAT: IE=          16  ATOM:           1
+ energy:          16  (0.229296402440545,0.389996421060960)
+ CALCTMAT: IE=          17  ATOM:           1
+ energy:          17  (0.333833934774899,0.389996421060960)
+ CALCTMAT: IE=          18  ATOM:           1
+ energy:          18  (0.357295858203656,0.362139533842320)
+ CALCTMAT: IE=          19  ATOM:           1
+ energy:          19  (0.357295858203656,0.306425759405040)
+ CALCTMAT: IE=          20  ATOM:           1
+ energy:          20  (0.357295858203656,0.250711984967760)
+ CALCTMAT: IE=          21  ATOM:           1
+ energy:          21  (0.357295858203656,0.194998210530480)
+ CALCTMAT: IE=          22  ATOM:           1
+ energy:          22  (0.357295858203656,0.139284436093200)
+ CALCTMAT: IE=          23  ATOM:           1
+ energy:          23  (0.357295858203656,8.357066165592009E-002)
+ CALCTMAT: IE=          24  ATOM:           1
+ energy:          24  (0.357295858203656,2.785688721864003E-002)
+ atom:            2
+ CALCTMAT: IE=           1  ATOM:           2
+ energy:           1  (-0.500000000000000,4.395324614552068E-002)
+ CALCTMAT: IE=           2  ATOM:           2
+ energy:           2  (-0.500000000000000,0.194998210530480)
+ CALCTMAT: IE=           3  ATOM:           2
+ energy:           3  (-0.500000000000000,0.346043174915440)
+ CALCTMAT: IE=           4  ATOM:           2
+ energy:           4  (-0.493563496761321,0.389996421060960)
+ CALCTMAT: IE=           5  ATOM:           2
+ energy:           5  (-0.466611063882173,0.389996421060960)
+ CALCTMAT: IE=           6  ATOM:           2
+ energy:           6  (-0.420221844766120,0.389996421060960)
+ CALCTMAT: IE=           7  ATOM:           2
+ energy:           7  (-0.357825055404513,0.389996421060960)
+ CALCTMAT: IE=           8  ATOM:           2
+ energy:           8  (-0.284046942353410,0.389996421060960)
+ CALCTMAT: IE=           9  ATOM:           2
+ energy:           9  (-0.204358909898172,0.389996421060960)
+ CALCTMAT: IE=          10  ATOM:           2
+ energy:          10  (-0.124670877442934,0.389996421060960)
+ CALCTMAT: IE=          11  ATOM:           2
+ energy:          11  (-5.089276439183116E-002,0.389996421060960)
+ CALCTMAT: IE=          12  ATOM:           2
+ energy:          12  (1.150402496977554E-002,0.389996421060960)
+ CALCTMAT: IE=          13  ATOM:           2
+ energy:          13  (5.789324408582880E-002,0.389996421060960)
+ CALCTMAT: IE=          14  ATOM:           2
+ energy:          14  (8.484567696497625E-002,0.389996421060960)
+ CALCTMAT: IE=          15  ATOM:           2
+ energy:          15  (0.122436321678514,0.389996421060960)
+ CALCTMAT: IE=          16  ATOM:           2
+ energy:          16  (0.229296402440545,0.389996421060960)
+ CALCTMAT: IE=          17  ATOM:           2
+ energy:          17  (0.333833934774899,0.389996421060960)
+ CALCTMAT: IE=          18  ATOM:           2
+ energy:          18  (0.357295858203656,0.362139533842320)
+ CALCTMAT: IE=          19  ATOM:           2
+ energy:          19  (0.357295858203656,0.306425759405040)
+ CALCTMAT: IE=          20  ATOM:           2
+ energy:          20  (0.357295858203656,0.250711984967760)
+ CALCTMAT: IE=          21  ATOM:           2
+ energy:          21  (0.357295858203656,0.194998210530480)
+ CALCTMAT: IE=          22  ATOM:           2
+ energy:          22  (0.357295858203656,0.139284436093200)
+ CALCTMAT: IE=          23  ATOM:           2
+ energy:          23  (0.357295858203656,8.357066165592009E-002)
+ CALCTMAT: IE=          24  ATOM:           2
+ energy:          24  (0.357295858203656,2.785688721864003E-002)
+           0 start tbref e-loop
+TBREF: GREF for energy:    1   -0.50000000    0.04395325
+ tbref NCLS loop:          17          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 2, #of points= 2
+Task 1 treats points 3 to 4, #of points= 2
+Task 2 treats points 5 to 6, #of points= 2
+Task 3 treats points 7 to 8, #of points= 2
+Task 4 treats points 9 to 10, #of points= 2
+Task 5 treats points 11 to 11, #of points= 1
+Task 6 treats points 12 to 12, #of points= 1
+Task 7 treats points 13 to 13, #of points= 1
+Task 8 treats points 14 to 14, #of points= 1
+Task 9 treats points 15 to 15, #of points= 1
+Task 10 treats points 16 to 16, #of points= 1
+Task 11 treats points 17 to 17, #of points= 1
+ ==========================================
+TBREF: GREF for energy:    2   -0.50000000    0.19499821
+ tbref NCLS loop:          17          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 2, #of points= 2
+Task 1 treats points 3 to 4, #of points= 2
+Task 2 treats points 5 to 6, #of points= 2
+Task 3 treats points 7 to 8, #of points= 2
+Task 4 treats points 9 to 10, #of points= 2
+Task 5 treats points 11 to 11, #of points= 1
+Task 6 treats points 12 to 12, #of points= 1
+Task 7 treats points 13 to 13, #of points= 1
+Task 8 treats points 14 to 14, #of points= 1
+Task 9 treats points 15 to 15, #of points= 1
+Task 10 treats points 16 to 16, #of points= 1
+Task 11 treats points 17 to 17, #of points= 1
+ ==========================================
+TBREF: GREF for energy:    3   -0.50000000    0.34604317
+ tbref NCLS loop:          17          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 2, #of points= 2
+Task 1 treats points 3 to 4, #of points= 2
+Task 2 treats points 5 to 6, #of points= 2
+Task 3 treats points 7 to 8, #of points= 2
+Task 4 treats points 9 to 10, #of points= 2
+Task 5 treats points 11 to 11, #of points= 1
+Task 6 treats points 12 to 12, #of points= 1
+Task 7 treats points 13 to 13, #of points= 1
+Task 8 treats points 14 to 14, #of points= 1
+Task 9 treats points 15 to 15, #of points= 1
+Task 10 treats points 16 to 16, #of points= 1
+Task 11 treats points 17 to 17, #of points= 1
+ ==========================================
+TBREF: GREF for energy:    4   -0.49356350    0.38999642
+ tbref NCLS loop:          17          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 2, #of points= 2
+Task 1 treats points 3 to 4, #of points= 2
+Task 2 treats points 5 to 6, #of points= 2
+Task 3 treats points 7 to 8, #of points= 2
+Task 4 treats points 9 to 10, #of points= 2
+Task 5 treats points 11 to 11, #of points= 1
+Task 6 treats points 12 to 12, #of points= 1
+Task 7 treats points 13 to 13, #of points= 1
+Task 8 treats points 14 to 14, #of points= 1
+Task 9 treats points 15 to 15, #of points= 1
+Task 10 treats points 16 to 16, #of points= 1
+Task 11 treats points 17 to 17, #of points= 1
+ ==========================================
+TBREF: GREF for energy:    5   -0.46661106    0.38999642
+ tbref NCLS loop:          17          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 2, #of points= 2
+Task 1 treats points 3 to 4, #of points= 2
+Task 2 treats points 5 to 6, #of points= 2
+Task 3 treats points 7 to 8, #of points= 2
+Task 4 treats points 9 to 10, #of points= 2
+Task 5 treats points 11 to 11, #of points= 1
+Task 6 treats points 12 to 12, #of points= 1
+Task 7 treats points 13 to 13, #of points= 1
+Task 8 treats points 14 to 14, #of points= 1
+Task 9 treats points 15 to 15, #of points= 1
+Task 10 treats points 16 to 16, #of points= 1
+Task 11 treats points 17 to 17, #of points= 1
+ ==========================================
+TBREF: GREF for energy:    6   -0.42022184    0.38999642
+ tbref NCLS loop:          17          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 2, #of points= 2
+Task 1 treats points 3 to 4, #of points= 2
+Task 2 treats points 5 to 6, #of points= 2
+Task 3 treats points 7 to 8, #of points= 2
+Task 4 treats points 9 to 10, #of points= 2
+Task 5 treats points 11 to 11, #of points= 1
+Task 6 treats points 12 to 12, #of points= 1
+Task 7 treats points 13 to 13, #of points= 1
+Task 8 treats points 14 to 14, #of points= 1
+Task 9 treats points 15 to 15, #of points= 1
+Task 10 treats points 16 to 16, #of points= 1
+Task 11 treats points 17 to 17, #of points= 1
+ ==========================================
+TBREF: GREF for energy:    7   -0.35782506    0.38999642
+ tbref NCLS loop:          17          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 2, #of points= 2
+Task 1 treats points 3 to 4, #of points= 2
+Task 2 treats points 5 to 6, #of points= 2
+Task 3 treats points 7 to 8, #of points= 2
+Task 4 treats points 9 to 10, #of points= 2
+Task 5 treats points 11 to 11, #of points= 1
+Task 6 treats points 12 to 12, #of points= 1
+Task 7 treats points 13 to 13, #of points= 1
+Task 8 treats points 14 to 14, #of points= 1
+Task 9 treats points 15 to 15, #of points= 1
+Task 10 treats points 16 to 16, #of points= 1
+Task 11 treats points 17 to 17, #of points= 1
+ ==========================================
+TBREF: GREF for energy:    8   -0.28404694    0.38999642
+ tbref NCLS loop:          17          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 2, #of points= 2
+Task 1 treats points 3 to 4, #of points= 2
+Task 2 treats points 5 to 6, #of points= 2
+Task 3 treats points 7 to 8, #of points= 2
+Task 4 treats points 9 to 10, #of points= 2
+Task 5 treats points 11 to 11, #of points= 1
+Task 6 treats points 12 to 12, #of points= 1
+Task 7 treats points 13 to 13, #of points= 1
+Task 8 treats points 14 to 14, #of points= 1
+Task 9 treats points 15 to 15, #of points= 1
+Task 10 treats points 16 to 16, #of points= 1
+Task 11 treats points 17 to 17, #of points= 1
+ ==========================================
+TBREF: GREF for energy:    9   -0.20435891    0.38999642
+ tbref NCLS loop:          17          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 2, #of points= 2
+Task 1 treats points 3 to 4, #of points= 2
+Task 2 treats points 5 to 6, #of points= 2
+Task 3 treats points 7 to 8, #of points= 2
+Task 4 treats points 9 to 10, #of points= 2
+Task 5 treats points 11 to 11, #of points= 1
+Task 6 treats points 12 to 12, #of points= 1
+Task 7 treats points 13 to 13, #of points= 1
+Task 8 treats points 14 to 14, #of points= 1
+Task 9 treats points 15 to 15, #of points= 1
+Task 10 treats points 16 to 16, #of points= 1
+Task 11 treats points 17 to 17, #of points= 1
+ ==========================================
+TBREF: GREF for energy:   10   -0.12467088    0.38999642
+ tbref NCLS loop:          17          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 2, #of points= 2
+Task 1 treats points 3 to 4, #of points= 2
+Task 2 treats points 5 to 6, #of points= 2
+Task 3 treats points 7 to 8, #of points= 2
+Task 4 treats points 9 to 10, #of points= 2
+Task 5 treats points 11 to 11, #of points= 1
+Task 6 treats points 12 to 12, #of points= 1
+Task 7 treats points 13 to 13, #of points= 1
+Task 8 treats points 14 to 14, #of points= 1
+Task 9 treats points 15 to 15, #of points= 1
+Task 10 treats points 16 to 16, #of points= 1
+Task 11 treats points 17 to 17, #of points= 1
+ ==========================================
+TBREF: GREF for energy:   11   -0.05089276    0.38999642
+ tbref NCLS loop:          17          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 2, #of points= 2
+Task 1 treats points 3 to 4, #of points= 2
+Task 2 treats points 5 to 6, #of points= 2
+Task 3 treats points 7 to 8, #of points= 2
+Task 4 treats points 9 to 10, #of points= 2
+Task 5 treats points 11 to 11, #of points= 1
+Task 6 treats points 12 to 12, #of points= 1
+Task 7 treats points 13 to 13, #of points= 1
+Task 8 treats points 14 to 14, #of points= 1
+Task 9 treats points 15 to 15, #of points= 1
+Task 10 treats points 16 to 16, #of points= 1
+Task 11 treats points 17 to 17, #of points= 1
+ ==========================================
+TBREF: GREF for energy:   12    0.01150402    0.38999642
+ tbref NCLS loop:          17          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 2, #of points= 2
+Task 1 treats points 3 to 4, #of points= 2
+Task 2 treats points 5 to 6, #of points= 2
+Task 3 treats points 7 to 8, #of points= 2
+Task 4 treats points 9 to 10, #of points= 2
+Task 5 treats points 11 to 11, #of points= 1
+Task 6 treats points 12 to 12, #of points= 1
+Task 7 treats points 13 to 13, #of points= 1
+Task 8 treats points 14 to 14, #of points= 1
+Task 9 treats points 15 to 15, #of points= 1
+Task 10 treats points 16 to 16, #of points= 1
+Task 11 treats points 17 to 17, #of points= 1
+ ==========================================
+TBREF: GREF for energy:   13    0.05789324    0.38999642
+ tbref NCLS loop:          17          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 2, #of points= 2
+Task 1 treats points 3 to 4, #of points= 2
+Task 2 treats points 5 to 6, #of points= 2
+Task 3 treats points 7 to 8, #of points= 2
+Task 4 treats points 9 to 10, #of points= 2
+Task 5 treats points 11 to 11, #of points= 1
+Task 6 treats points 12 to 12, #of points= 1
+Task 7 treats points 13 to 13, #of points= 1
+Task 8 treats points 14 to 14, #of points= 1
+Task 9 treats points 15 to 15, #of points= 1
+Task 10 treats points 16 to 16, #of points= 1
+Task 11 treats points 17 to 17, #of points= 1
+ ==========================================
+TBREF: GREF for energy:   14    0.08484568    0.38999642
+ tbref NCLS loop:          17          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 2, #of points= 2
+Task 1 treats points 3 to 4, #of points= 2
+Task 2 treats points 5 to 6, #of points= 2
+Task 3 treats points 7 to 8, #of points= 2
+Task 4 treats points 9 to 10, #of points= 2
+Task 5 treats points 11 to 11, #of points= 1
+Task 6 treats points 12 to 12, #of points= 1
+Task 7 treats points 13 to 13, #of points= 1
+Task 8 treats points 14 to 14, #of points= 1
+Task 9 treats points 15 to 15, #of points= 1
+Task 10 treats points 16 to 16, #of points= 1
+Task 11 treats points 17 to 17, #of points= 1
+ ==========================================
+TBREF: GREF for energy:   15    0.12243632    0.38999642
+ tbref NCLS loop:          17          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 2, #of points= 2
+Task 1 treats points 3 to 4, #of points= 2
+Task 2 treats points 5 to 6, #of points= 2
+Task 3 treats points 7 to 8, #of points= 2
+Task 4 treats points 9 to 10, #of points= 2
+Task 5 treats points 11 to 11, #of points= 1
+Task 6 treats points 12 to 12, #of points= 1
+Task 7 treats points 13 to 13, #of points= 1
+Task 8 treats points 14 to 14, #of points= 1
+Task 9 treats points 15 to 15, #of points= 1
+Task 10 treats points 16 to 16, #of points= 1
+Task 11 treats points 17 to 17, #of points= 1
+ ==========================================
+TBREF: GREF for energy:   16    0.22929640    0.38999642
+ tbref NCLS loop:          17          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 2, #of points= 2
+Task 1 treats points 3 to 4, #of points= 2
+Task 2 treats points 5 to 6, #of points= 2
+Task 3 treats points 7 to 8, #of points= 2
+Task 4 treats points 9 to 10, #of points= 2
+Task 5 treats points 11 to 11, #of points= 1
+Task 6 treats points 12 to 12, #of points= 1
+Task 7 treats points 13 to 13, #of points= 1
+Task 8 treats points 14 to 14, #of points= 1
+Task 9 treats points 15 to 15, #of points= 1
+Task 10 treats points 16 to 16, #of points= 1
+Task 11 treats points 17 to 17, #of points= 1
+ ==========================================
+TBREF: GREF for energy:   17    0.33383393    0.38999642
+ tbref NCLS loop:          17          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 2, #of points= 2
+Task 1 treats points 3 to 4, #of points= 2
+Task 2 treats points 5 to 6, #of points= 2
+Task 3 treats points 7 to 8, #of points= 2
+Task 4 treats points 9 to 10, #of points= 2
+Task 5 treats points 11 to 11, #of points= 1
+Task 6 treats points 12 to 12, #of points= 1
+Task 7 treats points 13 to 13, #of points= 1
+Task 8 treats points 14 to 14, #of points= 1
+Task 9 treats points 15 to 15, #of points= 1
+Task 10 treats points 16 to 16, #of points= 1
+Task 11 treats points 17 to 17, #of points= 1
+ ==========================================
+TBREF: GREF for energy:   18    0.35729586    0.36213953
+ tbref NCLS loop:          17          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 2, #of points= 2
+Task 1 treats points 3 to 4, #of points= 2
+Task 2 treats points 5 to 6, #of points= 2
+Task 3 treats points 7 to 8, #of points= 2
+Task 4 treats points 9 to 10, #of points= 2
+Task 5 treats points 11 to 11, #of points= 1
+Task 6 treats points 12 to 12, #of points= 1
+Task 7 treats points 13 to 13, #of points= 1
+Task 8 treats points 14 to 14, #of points= 1
+Task 9 treats points 15 to 15, #of points= 1
+Task 10 treats points 16 to 16, #of points= 1
+Task 11 treats points 17 to 17, #of points= 1
+ ==========================================
+TBREF: GREF for energy:   19    0.35729586    0.30642576
+ tbref NCLS loop:          17          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 2, #of points= 2
+Task 1 treats points 3 to 4, #of points= 2
+Task 2 treats points 5 to 6, #of points= 2
+Task 3 treats points 7 to 8, #of points= 2
+Task 4 treats points 9 to 10, #of points= 2
+Task 5 treats points 11 to 11, #of points= 1
+Task 6 treats points 12 to 12, #of points= 1
+Task 7 treats points 13 to 13, #of points= 1
+Task 8 treats points 14 to 14, #of points= 1
+Task 9 treats points 15 to 15, #of points= 1
+Task 10 treats points 16 to 16, #of points= 1
+Task 11 treats points 17 to 17, #of points= 1
+ ==========================================
+TBREF: GREF for energy:   20    0.35729586    0.25071198
+ tbref NCLS loop:          17          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 2, #of points= 2
+Task 1 treats points 3 to 4, #of points= 2
+Task 2 treats points 5 to 6, #of points= 2
+Task 3 treats points 7 to 8, #of points= 2
+Task 4 treats points 9 to 10, #of points= 2
+Task 5 treats points 11 to 11, #of points= 1
+Task 6 treats points 12 to 12, #of points= 1
+Task 7 treats points 13 to 13, #of points= 1
+Task 8 treats points 14 to 14, #of points= 1
+Task 9 treats points 15 to 15, #of points= 1
+Task 10 treats points 16 to 16, #of points= 1
+Task 11 treats points 17 to 17, #of points= 1
+ ==========================================
+TBREF: GREF for energy:   21    0.35729586    0.19499821
+ tbref NCLS loop:          17          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 2, #of points= 2
+Task 1 treats points 3 to 4, #of points= 2
+Task 2 treats points 5 to 6, #of points= 2
+Task 3 treats points 7 to 8, #of points= 2
+Task 4 treats points 9 to 10, #of points= 2
+Task 5 treats points 11 to 11, #of points= 1
+Task 6 treats points 12 to 12, #of points= 1
+Task 7 treats points 13 to 13, #of points= 1
+Task 8 treats points 14 to 14, #of points= 1
+Task 9 treats points 15 to 15, #of points= 1
+Task 10 treats points 16 to 16, #of points= 1
+Task 11 treats points 17 to 17, #of points= 1
+ ==========================================
+TBREF: GREF for energy:   22    0.35729586    0.13928444
+ tbref NCLS loop:          17          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 2, #of points= 2
+Task 1 treats points 3 to 4, #of points= 2
+Task 2 treats points 5 to 6, #of points= 2
+Task 3 treats points 7 to 8, #of points= 2
+Task 4 treats points 9 to 10, #of points= 2
+Task 5 treats points 11 to 11, #of points= 1
+Task 6 treats points 12 to 12, #of points= 1
+Task 7 treats points 13 to 13, #of points= 1
+Task 8 treats points 14 to 14, #of points= 1
+Task 9 treats points 15 to 15, #of points= 1
+Task 10 treats points 16 to 16, #of points= 1
+Task 11 treats points 17 to 17, #of points= 1
+ ==========================================
+TBREF: GREF for energy:   23    0.35729586    0.08357066
+ tbref NCLS loop:          17          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 2, #of points= 2
+Task 1 treats points 3 to 4, #of points= 2
+Task 2 treats points 5 to 6, #of points= 2
+Task 3 treats points 7 to 8, #of points= 2
+Task 4 treats points 9 to 10, #of points= 2
+Task 5 treats points 11 to 11, #of points= 1
+Task 6 treats points 12 to 12, #of points= 1
+Task 7 treats points 13 to 13, #of points= 1
+Task 8 treats points 14 to 14, #of points= 1
+Task 9 treats points 15 to 15, #of points= 1
+Task 10 treats points 16 to 16, #of points= 1
+Task 11 treats points 17 to 17, #of points= 1
+ ==========================================
+TBREF: GREF for energy:   24    0.35729586    0.02785689
+ tbref NCLS loop:          17          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 2, #of points= 2
+Task 1 treats points 3 to 4, #of points= 2
+Task 2 treats points 5 to 6, #of points= 2
+Task 3 treats points 7 to 8, #of points= 2
+Task 4 treats points 9 to 10, #of points= 2
+Task 5 treats points 11 to 11, #of points= 1
+Task 6 treats points 12 to 12, #of points= 1
+Task 7 treats points 13 to 13, #of points= 1
+Task 8 treats points 14 to 14, #of points= 1
+Task 9 treats points 15 to 15, #of points= 1
+Task 10 treats points 16 to 16, #of points= 1
+Task 11 treats points 17 to 17, #of points= 1
+ ==========================================
+===============================================================================
+                              < KKR1a finished >
+===============================================================================
+
+
+===============================================================================
+      Inversion algorithm used : BANDED MATRIX (slab)               
+===============================================================================
+
+ ************ IE =   1 ENERGY =  -0.500000   0.043953 KMESH =   4
+ kkrmat k loop:           3          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 1, #of points= 1
+Task 1 treats points 2 to 2, #of points= 1
+Task 2 treats points 3 to 3, #of points= 1
+Task 3 treats points 4 to 3, #of points= 0
+Task 4 treats points 4 to 3, #of points= 0
+Task 5 treats points 4 to 3, #of points= 0
+Task 6 treats points 4 to 3, #of points= 0
+Task 7 treats points 4 to 3, #of points= 0
+Task 8 treats points 4 to 3, #of points= 0
+Task 9 treats points 4 to 3, #of points= 0
+Task 10 treats points 4 to 3, #of points= 0
+Task 11 treats points 4 to 3, #of points= 0
+ ==========================================
+Loop over points:|  0%     | 20%     | 40%     | 60%     | 80%     | 100%
+                 || 
+ ************ IE =   2 ENERGY =  -0.500000   0.194998 KMESH =   3
+ kkrmat k loop:           6          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 1, #of points= 1
+Task 1 treats points 2 to 2, #of points= 1
+Task 2 treats points 3 to 3, #of points= 1
+Task 3 treats points 4 to 4, #of points= 1
+Task 4 treats points 5 to 5, #of points= 1
+Task 5 treats points 6 to 6, #of points= 1
+Task 6 treats points 7 to 6, #of points= 0
+Task 7 treats points 7 to 6, #of points= 0
+Task 8 treats points 7 to 6, #of points= 0
+Task 9 treats points 7 to 6, #of points= 0
+Task 10 treats points 7 to 6, #of points= 0
+Task 11 treats points 7 to 6, #of points= 0
+ ==========================================
+Loop over points:|  0%     | 20%     | 40%     | 60%     | 80%     | 100%
+                 || 
+ ************ IE =   3 ENERGY =  -0.500000   0.346043 KMESH =   4
+ kkrmat k loop:           3          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 1, #of points= 1
+Task 1 treats points 2 to 2, #of points= 1
+Task 2 treats points 3 to 3, #of points= 1
+Task 3 treats points 4 to 3, #of points= 0
+Task 4 treats points 4 to 3, #of points= 0
+Task 5 treats points 4 to 3, #of points= 0
+Task 6 treats points 4 to 3, #of points= 0
+Task 7 treats points 4 to 3, #of points= 0
+Task 8 treats points 4 to 3, #of points= 0
+Task 9 treats points 4 to 3, #of points= 0
+Task 10 treats points 4 to 3, #of points= 0
+Task 11 treats points 4 to 3, #of points= 0
+ ==========================================
+Loop over points:|  0%     | 20%     | 40%     | 60%     | 80%     | 100%
+                 || 
+ ************ IE =   4 ENERGY =  -0.493563   0.389996 KMESH =   4
+ kkrmat k loop:           3          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 1, #of points= 1
+Task 1 treats points 2 to 2, #of points= 1
+Task 2 treats points 3 to 3, #of points= 1
+Task 3 treats points 4 to 3, #of points= 0
+Task 4 treats points 4 to 3, #of points= 0
+Task 5 treats points 4 to 3, #of points= 0
+Task 6 treats points 4 to 3, #of points= 0
+Task 7 treats points 4 to 3, #of points= 0
+Task 8 treats points 4 to 3, #of points= 0
+Task 9 treats points 4 to 3, #of points= 0
+Task 10 treats points 4 to 3, #of points= 0
+Task 11 treats points 4 to 3, #of points= 0
+ ==========================================
+Loop over points:|  0%     | 20%     | 40%     | 60%     | 80%     | 100%
+                 || 
+ ************ IE =   5 ENERGY =  -0.466611   0.389996 KMESH =   4
+ kkrmat k loop:           3          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 1, #of points= 1
+Task 1 treats points 2 to 2, #of points= 1
+Task 2 treats points 3 to 3, #of points= 1
+Task 3 treats points 4 to 3, #of points= 0
+Task 4 treats points 4 to 3, #of points= 0
+Task 5 treats points 4 to 3, #of points= 0
+Task 6 treats points 4 to 3, #of points= 0
+Task 7 treats points 4 to 3, #of points= 0
+Task 8 treats points 4 to 3, #of points= 0
+Task 9 treats points 4 to 3, #of points= 0
+Task 10 treats points 4 to 3, #of points= 0
+Task 11 treats points 4 to 3, #of points= 0
+ ==========================================
+Loop over points:|  0%     | 20%     | 40%     | 60%     | 80%     | 100%
+                 || 
+ ************ IE =   6 ENERGY =  -0.420222   0.389996 KMESH =   4
+ kkrmat k loop:           3          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 1, #of points= 1
+Task 1 treats points 2 to 2, #of points= 1
+Task 2 treats points 3 to 3, #of points= 1
+Task 3 treats points 4 to 3, #of points= 0
+Task 4 treats points 4 to 3, #of points= 0
+Task 5 treats points 4 to 3, #of points= 0
+Task 6 treats points 4 to 3, #of points= 0
+Task 7 treats points 4 to 3, #of points= 0
+Task 8 treats points 4 to 3, #of points= 0
+Task 9 treats points 4 to 3, #of points= 0
+Task 10 treats points 4 to 3, #of points= 0
+Task 11 treats points 4 to 3, #of points= 0
+ ==========================================
+Loop over points:|  0%     | 20%     | 40%     | 60%     | 80%     | 100%
+                 || 
+ ************ IE =   7 ENERGY =  -0.357825   0.389996 KMESH =   4
+ kkrmat k loop:           3          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 1, #of points= 1
+Task 1 treats points 2 to 2, #of points= 1
+Task 2 treats points 3 to 3, #of points= 1
+Task 3 treats points 4 to 3, #of points= 0
+Task 4 treats points 4 to 3, #of points= 0
+Task 5 treats points 4 to 3, #of points= 0
+Task 6 treats points 4 to 3, #of points= 0
+Task 7 treats points 4 to 3, #of points= 0
+Task 8 treats points 4 to 3, #of points= 0
+Task 9 treats points 4 to 3, #of points= 0
+Task 10 treats points 4 to 3, #of points= 0
+Task 11 treats points 4 to 3, #of points= 0
+ ==========================================
+Loop over points:|  0%     | 20%     | 40%     | 60%     | 80%     | 100%
+                 || 
+ ************ IE =   8 ENERGY =  -0.284047   0.389996 KMESH =   4
+ kkrmat k loop:           3          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 1, #of points= 1
+Task 1 treats points 2 to 2, #of points= 1
+Task 2 treats points 3 to 3, #of points= 1
+Task 3 treats points 4 to 3, #of points= 0
+Task 4 treats points 4 to 3, #of points= 0
+Task 5 treats points 4 to 3, #of points= 0
+Task 6 treats points 4 to 3, #of points= 0
+Task 7 treats points 4 to 3, #of points= 0
+Task 8 treats points 4 to 3, #of points= 0
+Task 9 treats points 4 to 3, #of points= 0
+Task 10 treats points 4 to 3, #of points= 0
+Task 11 treats points 4 to 3, #of points= 0
+ ==========================================
+Loop over points:|  0%     | 20%     | 40%     | 60%     | 80%     | 100%
+                 || 
+ ************ IE =   9 ENERGY =  -0.204359   0.389996 KMESH =   4
+ kkrmat k loop:           3          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 1, #of points= 1
+Task 1 treats points 2 to 2, #of points= 1
+Task 2 treats points 3 to 3, #of points= 1
+Task 3 treats points 4 to 3, #of points= 0
+Task 4 treats points 4 to 3, #of points= 0
+Task 5 treats points 4 to 3, #of points= 0
+Task 6 treats points 4 to 3, #of points= 0
+Task 7 treats points 4 to 3, #of points= 0
+Task 8 treats points 4 to 3, #of points= 0
+Task 9 treats points 4 to 3, #of points= 0
+Task 10 treats points 4 to 3, #of points= 0
+Task 11 treats points 4 to 3, #of points= 0
+ ==========================================
+Loop over points:|  0%     | 20%     | 40%     | 60%     | 80%     | 100%
+                 || 
+ ************ IE =  10 ENERGY =  -0.124671   0.389996 KMESH =   4
+ kkrmat k loop:           3          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 1, #of points= 1
+Task 1 treats points 2 to 2, #of points= 1
+Task 2 treats points 3 to 3, #of points= 1
+Task 3 treats points 4 to 3, #of points= 0
+Task 4 treats points 4 to 3, #of points= 0
+Task 5 treats points 4 to 3, #of points= 0
+Task 6 treats points 4 to 3, #of points= 0
+Task 7 treats points 4 to 3, #of points= 0
+Task 8 treats points 4 to 3, #of points= 0
+Task 9 treats points 4 to 3, #of points= 0
+Task 10 treats points 4 to 3, #of points= 0
+Task 11 treats points 4 to 3, #of points= 0
+ ==========================================
+Loop over points:|  0%     | 20%     | 40%     | 60%     | 80%     | 100%
+                 || 
+ ************ IE =  11 ENERGY =  -0.050893   0.389996 KMESH =   4
+ kkrmat k loop:           3          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 1, #of points= 1
+Task 1 treats points 2 to 2, #of points= 1
+Task 2 treats points 3 to 3, #of points= 1
+Task 3 treats points 4 to 3, #of points= 0
+Task 4 treats points 4 to 3, #of points= 0
+Task 5 treats points 4 to 3, #of points= 0
+Task 6 treats points 4 to 3, #of points= 0
+Task 7 treats points 4 to 3, #of points= 0
+Task 8 treats points 4 to 3, #of points= 0
+Task 9 treats points 4 to 3, #of points= 0
+Task 10 treats points 4 to 3, #of points= 0
+Task 11 treats points 4 to 3, #of points= 0
+ ==========================================
+Loop over points:|  0%     | 20%     | 40%     | 60%     | 80%     | 100%
+                 || 
+ ************ IE =  12 ENERGY =   0.011504   0.389996 KMESH =   4
+ kkrmat k loop:           3          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 1, #of points= 1
+Task 1 treats points 2 to 2, #of points= 1
+Task 2 treats points 3 to 3, #of points= 1
+Task 3 treats points 4 to 3, #of points= 0
+Task 4 treats points 4 to 3, #of points= 0
+Task 5 treats points 4 to 3, #of points= 0
+Task 6 treats points 4 to 3, #of points= 0
+Task 7 treats points 4 to 3, #of points= 0
+Task 8 treats points 4 to 3, #of points= 0
+Task 9 treats points 4 to 3, #of points= 0
+Task 10 treats points 4 to 3, #of points= 0
+Task 11 treats points 4 to 3, #of points= 0
+ ==========================================
+Loop over points:|  0%     | 20%     | 40%     | 60%     | 80%     | 100%
+                 || 
+ ************ IE =  13 ENERGY =   0.057893   0.389996 KMESH =   4
+ kkrmat k loop:           3          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 1, #of points= 1
+Task 1 treats points 2 to 2, #of points= 1
+Task 2 treats points 3 to 3, #of points= 1
+Task 3 treats points 4 to 3, #of points= 0
+Task 4 treats points 4 to 3, #of points= 0
+Task 5 treats points 4 to 3, #of points= 0
+Task 6 treats points 4 to 3, #of points= 0
+Task 7 treats points 4 to 3, #of points= 0
+Task 8 treats points 4 to 3, #of points= 0
+Task 9 treats points 4 to 3, #of points= 0
+Task 10 treats points 4 to 3, #of points= 0
+Task 11 treats points 4 to 3, #of points= 0
+ ==========================================
+Loop over points:|  0%     | 20%     | 40%     | 60%     | 80%     | 100%
+                 || 
+ ************ IE =  14 ENERGY =   0.084846   0.389996 KMESH =   4
+ kkrmat k loop:           3          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 1, #of points= 1
+Task 1 treats points 2 to 2, #of points= 1
+Task 2 treats points 3 to 3, #of points= 1
+Task 3 treats points 4 to 3, #of points= 0
+Task 4 treats points 4 to 3, #of points= 0
+Task 5 treats points 4 to 3, #of points= 0
+Task 6 treats points 4 to 3, #of points= 0
+Task 7 treats points 4 to 3, #of points= 0
+Task 8 treats points 4 to 3, #of points= 0
+Task 9 treats points 4 to 3, #of points= 0
+Task 10 treats points 4 to 3, #of points= 0
+Task 11 treats points 4 to 3, #of points= 0
+ ==========================================
+Loop over points:|  0%     | 20%     | 40%     | 60%     | 80%     | 100%
+                 || 
+ ************ IE =  15 ENERGY =   0.122436   0.389996 KMESH =   4
+ kkrmat k loop:           3          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 1, #of points= 1
+Task 1 treats points 2 to 2, #of points= 1
+Task 2 treats points 3 to 3, #of points= 1
+Task 3 treats points 4 to 3, #of points= 0
+Task 4 treats points 4 to 3, #of points= 0
+Task 5 treats points 4 to 3, #of points= 0
+Task 6 treats points 4 to 3, #of points= 0
+Task 7 treats points 4 to 3, #of points= 0
+Task 8 treats points 4 to 3, #of points= 0
+Task 9 treats points 4 to 3, #of points= 0
+Task 10 treats points 4 to 3, #of points= 0
+Task 11 treats points 4 to 3, #of points= 0
+ ==========================================
+Loop over points:|  0%     | 20%     | 40%     | 60%     | 80%     | 100%
+                 || 
+ ************ IE =  16 ENERGY =   0.229296   0.389996 KMESH =   4
+ kkrmat k loop:           3          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 1, #of points= 1
+Task 1 treats points 2 to 2, #of points= 1
+Task 2 treats points 3 to 3, #of points= 1
+Task 3 treats points 4 to 3, #of points= 0
+Task 4 treats points 4 to 3, #of points= 0
+Task 5 treats points 4 to 3, #of points= 0
+Task 6 treats points 4 to 3, #of points= 0
+Task 7 treats points 4 to 3, #of points= 0
+Task 8 treats points 4 to 3, #of points= 0
+Task 9 treats points 4 to 3, #of points= 0
+Task 10 treats points 4 to 3, #of points= 0
+Task 11 treats points 4 to 3, #of points= 0
+ ==========================================
+Loop over points:|  0%     | 20%     | 40%     | 60%     | 80%     | 100%
+                 || 
+ ************ IE =  17 ENERGY =   0.333834   0.389996 KMESH =   4
+ kkrmat k loop:           3          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 1, #of points= 1
+Task 1 treats points 2 to 2, #of points= 1
+Task 2 treats points 3 to 3, #of points= 1
+Task 3 treats points 4 to 3, #of points= 0
+Task 4 treats points 4 to 3, #of points= 0
+Task 5 treats points 4 to 3, #of points= 0
+Task 6 treats points 4 to 3, #of points= 0
+Task 7 treats points 4 to 3, #of points= 0
+Task 8 treats points 4 to 3, #of points= 0
+Task 9 treats points 4 to 3, #of points= 0
+Task 10 treats points 4 to 3, #of points= 0
+Task 11 treats points 4 to 3, #of points= 0
+ ==========================================
+Loop over points:|  0%     | 20%     | 40%     | 60%     | 80%     | 100%
+                 || 
+ ************ IE =  18 ENERGY =   0.357296   0.362140 KMESH =   4
+ kkrmat k loop:           3          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 1, #of points= 1
+Task 1 treats points 2 to 2, #of points= 1
+Task 2 treats points 3 to 3, #of points= 1
+Task 3 treats points 4 to 3, #of points= 0
+Task 4 treats points 4 to 3, #of points= 0
+Task 5 treats points 4 to 3, #of points= 0
+Task 6 treats points 4 to 3, #of points= 0
+Task 7 treats points 4 to 3, #of points= 0
+Task 8 treats points 4 to 3, #of points= 0
+Task 9 treats points 4 to 3, #of points= 0
+Task 10 treats points 4 to 3, #of points= 0
+Task 11 treats points 4 to 3, #of points= 0
+ ==========================================
+Loop over points:|  0%     | 20%     | 40%     | 60%     | 80%     | 100%
+                 || 
+ ************ IE =  19 ENERGY =   0.357296   0.306426 KMESH =   4
+ kkrmat k loop:           3          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 1, #of points= 1
+Task 1 treats points 2 to 2, #of points= 1
+Task 2 treats points 3 to 3, #of points= 1
+Task 3 treats points 4 to 3, #of points= 0
+Task 4 treats points 4 to 3, #of points= 0
+Task 5 treats points 4 to 3, #of points= 0
+Task 6 treats points 4 to 3, #of points= 0
+Task 7 treats points 4 to 3, #of points= 0
+Task 8 treats points 4 to 3, #of points= 0
+Task 9 treats points 4 to 3, #of points= 0
+Task 10 treats points 4 to 3, #of points= 0
+Task 11 treats points 4 to 3, #of points= 0
+ ==========================================
+Loop over points:|  0%     | 20%     | 40%     | 60%     | 80%     | 100%
+                 || 
+ ************ IE =  20 ENERGY =   0.357296   0.250712 KMESH =   4
+ kkrmat k loop:           3          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 1, #of points= 1
+Task 1 treats points 2 to 2, #of points= 1
+Task 2 treats points 3 to 3, #of points= 1
+Task 3 treats points 4 to 3, #of points= 0
+Task 4 treats points 4 to 3, #of points= 0
+Task 5 treats points 4 to 3, #of points= 0
+Task 6 treats points 4 to 3, #of points= 0
+Task 7 treats points 4 to 3, #of points= 0
+Task 8 treats points 4 to 3, #of points= 0
+Task 9 treats points 4 to 3, #of points= 0
+Task 10 treats points 4 to 3, #of points= 0
+Task 11 treats points 4 to 3, #of points= 0
+ ==========================================
+Loop over points:|  0%     | 20%     | 40%     | 60%     | 80%     | 100%
+                 || 
+ ************ IE =  21 ENERGY =   0.357296   0.194998 KMESH =   3
+ kkrmat k loop:           6          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 1, #of points= 1
+Task 1 treats points 2 to 2, #of points= 1
+Task 2 treats points 3 to 3, #of points= 1
+Task 3 treats points 4 to 4, #of points= 1
+Task 4 treats points 5 to 5, #of points= 1
+Task 5 treats points 6 to 6, #of points= 1
+Task 6 treats points 7 to 6, #of points= 0
+Task 7 treats points 7 to 6, #of points= 0
+Task 8 treats points 7 to 6, #of points= 0
+Task 9 treats points 7 to 6, #of points= 0
+Task 10 treats points 7 to 6, #of points= 0
+Task 11 treats points 7 to 6, #of points= 0
+ ==========================================
+Loop over points:|  0%     | 20%     | 40%     | 60%     | 80%     | 100%
+                 || 
+ ************ IE =  22 ENERGY =   0.357296   0.139284 KMESH =   3
+ kkrmat k loop:           6          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 1, #of points= 1
+Task 1 treats points 2 to 2, #of points= 1
+Task 2 treats points 3 to 3, #of points= 1
+Task 3 treats points 4 to 4, #of points= 1
+Task 4 treats points 5 to 5, #of points= 1
+Task 5 treats points 6 to 6, #of points= 1
+Task 6 treats points 7 to 6, #of points= 0
+Task 7 treats points 7 to 6, #of points= 0
+Task 8 treats points 7 to 6, #of points= 0
+Task 9 treats points 7 to 6, #of points= 0
+Task 10 treats points 7 to 6, #of points= 0
+Task 11 treats points 7 to 6, #of points= 0
+ ==========================================
+Loop over points:|  0%     | 20%     | 40%     | 60%     | 80%     | 100%
+                 || 
+ ************ IE =  23 ENERGY =   0.357296   0.083571 KMESH =   2
+ kkrmat k loop:          10          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 1, #of points= 1
+Task 1 treats points 2 to 2, #of points= 1
+Task 2 treats points 3 to 3, #of points= 1
+Task 3 treats points 4 to 4, #of points= 1
+Task 4 treats points 5 to 5, #of points= 1
+Task 5 treats points 6 to 6, #of points= 1
+Task 6 treats points 7 to 7, #of points= 1
+Task 7 treats points 8 to 8, #of points= 1
+Task 8 treats points 9 to 9, #of points= 1
+Task 9 treats points 10 to 10, #of points= 1
+Task 10 treats points 11 to 10, #of points= 0
+Task 11 treats points 11 to 10, #of points= 0
+ ==========================================
+Loop over points:|  0%     | 20%     | 40%     | 60%     | 80%     | 100%
+                 || 
+ ************ IE =  24 ENERGY =   0.357296   0.027857 KMESH =   1
+ kkrmat k loop:          21          12
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 2, #of points= 2
+Task 1 treats points 3 to 4, #of points= 2
+Task 2 treats points 5 to 6, #of points= 2
+Task 3 treats points 7 to 8, #of points= 2
+Task 4 treats points 9 to 10, #of points= 2
+Task 5 treats points 11 to 12, #of points= 2
+Task 6 treats points 13 to 14, #of points= 2
+Task 7 treats points 15 to 16, #of points= 2
+Task 8 treats points 17 to 18, #of points= 2
+Task 9 treats points 19 to 19, #of points= 1
+Task 10 treats points 20 to 20, #of points= 1
+Task 11 treats points 21 to 21, #of points= 1
+ ==========================================
+Loop over points:|  0%     | 20%     | 40%     | 60%     | 80%     | 100%
+                 ||| 
+===============================================================================
+                              < KKR1b finished >
+===============================================================================
+
+ ==== DISTRIBUTION OF POINTS ON TASKS: ====
+Task 0 treats points 1 to 2, #of points= 2
+Task 1 treats points 3 to 4, #of points= 2
+Task 2 treats points 5 to 6, #of points= 2
+Task 3 treats points 7 to 8, #of points= 2
+Task 4 treats points 9 to 10, #of points= 2
+Task 5 treats points 11 to 12, #of points= 2
+Task 6 treats points 13 to 14, #of points= 2
+Task 7 treats points 15 to 16, #of points= 2
+Task 8 treats points 17 to 17, #of points= 1
+Task 9 treats points 18 to 18, #of points= 1
+Task 10 treats points 19 to 19, #of points= 1
+Task 11 treats points 20 to 20, #of points= 1
+ ==========================================
+ atom           1
+ energy           1 (-0.500000000000000,4.395324614552068E-002)
+ energy           2 (-0.500000000000000,0.194998210530480)
+ energy           3 (-0.500000000000000,0.346043174915440)
+ energy           4 (-0.493563496761321,0.389996421060960)
+ energy           5 (-0.466611063882173,0.389996421060960)
+ energy           6 (-0.420221844766120,0.389996421060960)
+ energy           7 (-0.357825055404513,0.389996421060960)
+ energy           8 (-0.284046942353410,0.389996421060960)
+ energy           9 (-0.204358909898172,0.389996421060960)
+ energy          10 (-0.124670877442934,0.389996421060960)
+ energy          11 (-5.089276439183116E-002,0.389996421060960)
+ energy          12 (1.150402496977554E-002,0.389996421060960)
+ energy          13 (5.789324408582880E-002,0.389996421060960)
+ energy          14 (8.484567696497625E-002,0.389996421060960)
+ energy          15 (0.122436321678514,0.389996421060960)
+ energy          16 (0.229296402440545,0.389996421060960)
+ energy          17 (0.333833934774899,0.389996421060960)
+ energy          18 (0.357295858203656,0.362139533842320)
+ energy          19 (0.357295858203656,0.306425759405040)
+ energy          20 (0.357295858203656,0.250711984967760)
+ energy          21 (0.357295858203656,0.194998210530480)
+ energy          22 (0.357295858203656,0.139284436093200)
+ energy          23 (0.357295858203656,8.357066165592009E-002)
+ energy          24 (0.357295858203656,2.785688721864003E-002)
+ atom           2
+ energy           1 (-0.500000000000000,4.395324614552068E-002)
+ energy           2 (-0.500000000000000,0.194998210530480)
+ energy           3 (-0.500000000000000,0.346043174915440)
+ energy           4 (-0.493563496761321,0.389996421060960)
+ energy           5 (-0.466611063882173,0.389996421060960)
+ energy           6 (-0.420221844766120,0.389996421060960)
+ energy           7 (-0.357825055404513,0.389996421060960)
+ energy           8 (-0.284046942353410,0.389996421060960)
+ energy           9 (-0.204358909898172,0.389996421060960)
+ energy          10 (-0.124670877442934,0.389996421060960)
+ energy          11 (-5.089276439183116E-002,0.389996421060960)
+ energy          12 (1.150402496977554E-002,0.389996421060960)
+ energy          13 (5.789324408582880E-002,0.389996421060960)
+ energy          14 (8.484567696497625E-002,0.389996421060960)
+ energy          15 (0.122436321678514,0.389996421060960)
+ energy          16 (0.229296402440545,0.389996421060960)
+ energy          17 (0.333833934774899,0.389996421060960)
+ energy          18 (0.357295858203656,0.362139533842320)
+ energy          19 (0.357295858203656,0.306425759405040)
+ energy          20 (0.357295858203656,0.250711984967760)
+ energy          21 (0.357295858203656,0.194998210530480)
+ energy          22 (0.357295858203656,0.139284436093200)
+ energy          23 (0.357295858203656,8.357066165592009E-002)
+ energy          24 (0.357295858203656,2.785688721864003E-002)
+ 
+############################################
+        l-decomposed valence charges
+############################################
+ 
+   ATOM        Ne         
+   ========================== 
+      1   s =         NaN
+          p =         NaN
+          d =         NaN
+          ns   0.00000000
+          ------------------- 
+          TOT         NaN
+   ========================== 
+      2   s =         NaN
+          p =         NaN
+          d =         NaN
+          ns   0.00000000
+          ------------------- 
+          TOT         NaN
+   ========================== 
+      3   s =         NaN
+          p =         NaN
+          d =         NaN
+          ns   0.00000000
+          ------------------- 
+          TOT         NaN
+   ========================== 
+      4   s =         NaN
+          p =         NaN
+          d =         NaN
+          ns   0.00000000
+          ------------------- 
+          TOT         NaN
+   ========================== 
+      5   s =         NaN
+          p =         NaN
+          d =         NaN
+          ns   0.00000000
+          ------------------- 
+          TOT         NaN
+   ========================== 
+      6   s =         NaN
+          p =         NaN
+          d =         NaN
+          ns   0.00000000
+          ------------------- 
+          TOT         NaN
+   ========================== 
+      7   s =         NaN
+          p =         NaN
+          d =         NaN
+          ns   0.00000000
+          ------------------- 
+          TOT         NaN
+   ========================== 
+      8   s =         NaN
+          p =         NaN
+          d =         NaN
+          ns   0.00000000
+          ------------------- 
+          TOT         NaN
+   ========================== 
+      9   s =         NaN
+          p =         NaN
+          d =         NaN
+          ns   0.00000000
+          ------------------- 
+          TOT         NaN
+   ========================== 
+     10   s =         NaN
+          p =         NaN
+          d =         NaN
+          ns   0.00000000
+          ------------------- 
+          TOT         NaN
+   ========================== 
+     11   s =         NaN
+          p =         NaN
+          d =         NaN
+          ns   0.00000000
+          ------------------- 
+          TOT         NaN
+   ========================== 
+     12   s =         NaN
+          p =         NaN
+          d =         NaN
+          ns   0.00000000
+          ------------------- 
+          TOT         NaN
+   ========================== 
+     13   s =         NaN
+          p =         NaN
+          d =         NaN
+          ns   0.00000000
+          ------------------- 
+          TOT         NaN
+   ========================== 
+     14   s =         NaN
+          p =         NaN
+          d =         NaN
+          ns   0.00000000
+          ------------------- 
+          TOT         NaN
+   ========================== 
+     15   s =         NaN
+          p =         NaN
+          d =         NaN
+          ns   0.00000000
+          ------------------- 
+          TOT         NaN
+   ========================== 
+     16   s =         NaN
+          p =         NaN
+          d =         NaN
+          ns   0.00000000
+          ------------------- 
+          TOT         NaN
+   ========================== 
+     17   s =         NaN
+          p =         NaN
+          d =         NaN
+          ns   0.00000000
+          ------------------- 
+          TOT         NaN
+   ========================== 
+     18   s =         NaN
+          p =         NaN
+          d =         NaN
+          ns   0.00000000
+          ------------------- 
+          TOT         NaN
+   ========================== 
+     19   s =         NaN
+          p =         NaN
+          d =         NaN
+          ns   0.00000000
+          ------------------- 
+          TOT         NaN
+   ========================== 
+     20   s =         NaN
+          p =         NaN
+          d =         NaN
+          ns   0.00000000
+          ------------------- 
+          TOT         NaN
+ 
+############################################
+ 
+ Sum of valence charges of atoms (local summation) NaN                    
+ 
+##############################################################################
+                                 CORE  STATES
+##############################################################################
+    nuclear charge    0.000000         core charge =     0.000000
+    nuclear charge    0.000000         core charge =     0.000000
+    nuclear charge    0.000000         core charge =     0.000000
+ 30  0 349 345  4.99999960D+01  4.99999980D+01  5.00000000D+01
+ 31  0 349 345  4.99999980D+01  4.99999990D+01  5.00000000D+01
+ 32  0 349 345  4.99999990D+01  4.99999995D+01  5.00000000D+01
+ 33  0 349 345  4.99999995D+01  4.99999998D+01  5.00000000D+01
+ 34  0 349 345  4.99999998D+01  4.99999999D+01  5.00000000D+01
+ 35  0 349 345  4.99999999D+01  4.99999999D+01  5.00000000D+01
+ 36  0 349 345  4.99999999D+01  5.00000000D+01  5.00000000D+01
+ 37  0 349 345  5.00000000D+01  5.00000000D+01  5.00000000D+01
+ 38  0 349 345  5.00000000D+01  5.00000000D+01  5.00000000D+01
+ 39  0 349 345  5.00000000D+01  5.00000000D+01  5.00000000D+01
+ 40  0 349 345  5.00000000D+01  5.00000000D+01  5.00000000D+01

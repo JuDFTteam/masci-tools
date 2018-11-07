@@ -1,0 +1,225 @@
+# serial: kkrjm_v2.2_mpi-rwth_20170912160859
+ main0                                        7.93680000305176     
+ MPI 1                                        1.87290000915527     
+ main1a - tbref                               1.40100002288818     
+ main1a                                       129.527206420898     
+ main1b - calctref13                          284.149810791016     
+ main1b_inversion                             259.027900576591     
+ main1b - kloopz                              284.144407275366     
+ main1b                                       284.159606933594     
+ main1c - rhovalnew                           136.151599645615     
+ main1c - serial part                         4.48729991912842     
+ main1c                                       2134.88232421875     
+ main2                                        5.85900020599365     
+ MPI 2                                        1.38590002059937     
+ Time in Iteration                            2555.81469726562     
+ main1a - tbref                               1.41209995746613     
+ main1a                                       129.051605224609     
+ main1b - calctref13                          283.665810449216     
+ main1b_inversion                             257.932900309563     
+ main1b - kloopz                              283.661197119131     
+ main1b                                       283.672210693359     
+ main1c - rhovalnew                           135.777399897575     
+ main1c - serial part                         2.70530009269714     
+ main1c                                       2131.52954101562     
+ main2                                        5.87979984283447     
+ MPI 2                                        1.38049995899200     
+ Time in Iteration                            2551.51416015625     
+ main1a - tbref                               1.40769994258881     
+ main1a                                       128.797607421875     
+ main1b - calctref13                          282.926788330078     
+ main1b_inversion                             257.635899543762     
+ main1b - kloopz                              282.922100341821     
+ main1b                                       282.933685302734     
+ main1c - rhovalnew                           135.624000489712     
+ main1c - serial part                         1.71969997882843     
+ main1c                                       2129.84130859375     
+ main2                                        5.86810016632080     
+ MPI 2                                        1.37989997863770     
+ Time in Iteration                            2548.82104492188     
+ main1a - tbref                               1.43579995632172     
+ main1a                                       129.643493652344     
+ main1b - calctref13                          282.823494775388     
+ main1b_inversion                             258.055000901222     
+ main1b - kloopz                              282.818789892568     
+ main1b                                       282.830108642578     
+ main1c - rhovalnew                           136.292199850082     
+ main1c - serial part                         1.48640000820160     
+ main1c                                       2128.78613281250     
+ main2                                        5.75040006637573     
+ MPI 2                                        1.37989997863770     
+ Time in Iteration                            2548.39062500000     
+ main1a - tbref                               1.44529998302460     
+ main1a                                       129.749404907227     
+ main1b - calctref13                          281.709289550781     
+ main1b_inversion                             257.176299512386     
+ main1b - kloopz                              281.704693115258     
+ main1b                                       281.716094970703     
+ main1c - rhovalnew                           138.115899696946     
+ main1c - serial part                         2.27169990539551     
+ main1c                                       2132.12231445312     
+ main2                                        5.84350013732910     
+ MPI 2                                        1.38199996948242     
+ Time in Iteration                            2550.81396484375     
+ main1a - tbref                               1.42920005321503     
+ main1a                                       129.060897827148     
+ main1b - calctref13                          282.558288574219     
+ main1b_inversion                             257.866499900818     
+ main1b - kloopz                              282.553500585927     
+ main1b                                       282.564910888672     
+ main1c - rhovalnew                           135.810500860214     
+ main1c - serial part                         2.19390010833740     
+ main1c                                       2131.29248046875     
+ main2                                        5.85739994049072     
+ MPI 2                                        1.38619995117188     
+ Time in Iteration                            2550.16259765625     
+ main1a - tbref                               1.39170002937317     
+ main1a                                       128.496398925781     
+ main1b - calctref13                          282.168304443359     
+ main1b_inversion                             257.856399893761     
+ main1b - kloopz                              282.163608007802     
+ main1b                                       282.174896240234     
+ main1c - rhovalnew                           136.900299787521     
+ main1c - serial part                         3.19180011749268     
+ main1c                                       2132.12329101562     
+ main2                                        5.90049982070923     
+ MPI 2                                        1.38080000877380     
+ Time in Iteration                            2550.07666015625     
+ main1a - tbref                               1.45809996128082     
+ main1a                                       130.127807617188     
+ main1b - calctref13                          282.098388671875     
+ main1b_inversion                             257.693500876427     
+ main1b - kloopz                              282.093700683617     
+ main1b                                       282.105194091797     
+ main1c - rhovalnew                           136.871900320053     
+ main1c - serial part                         3.79699993133545     
+ main1c                                       2133.43554687500     
+ main2                                        5.92899990081787     
+ MPI 2                                        1.37909996509552     
+ Time in Iteration                            2552.97729492188     
+ main1a - tbref                               1.44729995727539     
+ main1a                                       129.847503662109     
+ main1b - calctref13                          283.071807861328     
+ main1b_inversion                             258.604398965836     
+ main1b - kloopz                              283.067089355492     
+ main1b                                       283.078613281250     
+ main1c - rhovalnew                           136.298500463367     
+ main1c - serial part                         2.79220008850098     
+ main1c                                       2130.03979492188     
+ main2                                        5.88880014419556     
+ MPI 2                                        1.37530004978180     
+ Time in Iteration                            2550.23046875000     
+ main1a - tbref                               1.44910001754761     
+ main1a                                       129.905593872070     
+ main1b - calctref13                          283.056984765622     
+ main1b_inversion                             258.589400768280     
+ main1b - kloopz                              283.052288330102     
+ main1b                                       283.063690185547     
+ main1c - rhovalnew                           137.063799381256     
+ main1c - serial part                         2.41120004653931     
+ main1c                                       2127.51757812500     
+ main2                                        5.96180009841919     
+ MPI 2                                        1.38460004329681     
+ Time in Iteration                            2547.83349609375     
+ main1a - tbref                               1.42999994754791     
+ main1a                                       128.957901000977     
+ main1b - calctref13                          282.896514892578     
+ main1b_inversion                             258.075598716736     
+ main1b - kloopz                              282.891910009756     
+ main1b                                       282.903198242188     
+ main1c - rhovalnew                           136.579999685287     
+ main1c - serial part                         2.83470010757446     
+ main1c                                       2130.84936523438     
+ main2                                        6.01789999008179     
+ MPI 2                                        1.43799996376038     
+ Time in Iteration                            2550.16674804688     
+ main1a - tbref                               1.44219994544983     
+ main1a                                       129.707107543945     
+ main1b - calctref13                          281.252602441404     
+ main1b_inversion                             257.056699275970     
+ main1b - kloopz                              281.247897558584     
+ main1b                                       281.259307861328     
+ main1c - rhovalnew                           136.722700119019     
+ main1c - serial part                         2.09249997138977     
+ main1c                                       2130.35131835938     
+ main2                                        5.97200012207031     
+ MPI 2                                        1.45560002326965     
+ Time in Iteration                            2548.74560546875     
+ main1a - tbref                               1.42890000343323     
+ main1a                                       128.919906616211     
+ main1b - calctref13                          281.657592773438     
+ main1b_inversion                             256.836000323296     
+ main1b - kloopz                              281.652896337881     
+ main1b                                       281.664215087891     
+ main1c - rhovalnew                           139.399899959564     
+ main1c - serial part                         3.64330005645752     
+ main1c                                       2135.78833007812     
+ main2                                        6.00769996643066     
+ MPI 2                                        1.53219997882843     
+ Time in Iteration                            2553.91284179688     
+ main1a - tbref                               1.39450001716614     
+ main1a                                       127.888099670410     
+ main1b - calctref13                          282.088714599609     
+ main1b_inversion                             257.405699253082     
+ main1b - kloopz                              282.083987646474     
+ main1b                                       282.095214843750     
+ main1c - rhovalnew                           136.088500261307     
+ main1c - serial part                         2.12360000610352     
+ main1c                                       2130.44750976562     
+ main2                                        5.99510002136230     
+ MPI 2                                        1.38209998607635     
+ Time in Iteration                            2547.80859375000     
+ main1a - tbref                               1.40439999103546     
+ main1a                                       127.944801330566     
+ main1b - calctref13                          281.858306884766     
+ main1b_inversion                             257.111899614334     
+ main1b - kloopz                              281.853610449209     
+ main1b                                       281.864807128906     
+ main1c - rhovalnew                           137.127099752426     
+ main1c - serial part                         4.38549995422363     
+ main1c                                       2133.58349609375     
+ main2                                        6.04360008239746     
+ MPI 2                                        1.38450002670288     
+ Time in Iteration                            2550.82202148438     
+ main1a - tbref                               1.40789997577667     
+ main1a                                       128.038894653320     
+ main1b - calctref13                          282.691009521484     
+ main1b_inversion                             257.348600149155     
+ main1b - kloopz                              282.686291015649     
+ main1b                                       282.698608398438     
+ main1c - rhovalnew                           136.488600254059     
+ main1c - serial part                         2.14030003547668     
+ main1c                                       2129.63452148438     
+ main2                                        6.08360004425049     
+ MPI 2                                        1.40729999542236     
+ Time in Iteration                            2547.86352539062     
+ main1a - tbref                               1.40050005912781     
+ main1a                                       127.892898559570     
+ main1b - calctref13                          282.239510400388     
+ main1b_inversion                             256.852897644043     
+ main1b - kloopz                              282.234805517568     
+ main1b                                       282.246795654297     
+ main1c - rhovalnew                           137.196399927139     
+ main1c - serial part                         2.26839995384216     
+ main1c                                       2131.64111328125     
+ main2                                        6.09590005874634     
+ MPI 2                                        1.38469994068146     
+ Time in Iteration                            2549.26245117188     
+ main1a - tbref                               1.40269994735718     
+ main1a                                       127.940498352051     
+ main1b - calctref13                          285.695190429688     
+ main1b_inversion                             261.020401954651     
+ main1b - kloopz                              285.690585546865     
+ main1b                                       285.701995849609     
+ main1c - rhovalnew                           136.629199266434     
+ main1c - serial part                         2.75329995155334     
+ main1c                                       2128.66674804688     
+ main2                                        6.10589981079102     
+ MPI 2                                        1.39069998264313     
+ Time in Iteration                            2549.80615234375     
+ main1a - tbref                               1.40160000324249     
+ main1a                                       127.936798095703     
+ main1b - calctref13                          282.120491845701     
+ main1b_inversion                             257.133400440216     
+ main1b - kloopz                              282.115886962914     
+ main1b                                       282.127105712891     
