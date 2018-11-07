@@ -5,7 +5,7 @@
 
 import pytest
 from masci_tools.io.parsers.voroparser_functions import parse_voronoi_output
-    
+
 class Test_voronoi_parser_functions():
     """
     Tests for the voronoi parser functions
@@ -126,4 +126,11 @@ class Test_voronoi_parser_functions():
         assert msg_list == ['Error parsing output of voronoi: radii.dat Info']
         return out_dict
     
-    
+
+"""
+t = Test_voronoi_parser_functions()
+t.test_complete_voro_output()
+t.test_missing_atominfo()
+t.test_missing_inputfile()
+t.test_missing_radii()
+"""
