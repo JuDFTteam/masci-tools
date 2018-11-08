@@ -15,6 +15,7 @@ install:
     - pip install -e .
 
 script: 
+    - pip freeze
     - cd masci_tools/tests/ && ./run_all.sh
 
 git:
