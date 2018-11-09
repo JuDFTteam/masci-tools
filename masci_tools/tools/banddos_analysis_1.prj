@@ -1,0 +1,80 @@
+<deployment-project plugin="plugin.apptool" plugin-version="1.0">
+  <configuration build-checksum="3965855344" file="C:\Users\Stefan\Dropbox\Fleur\banddos_auswertung\banddos_analysis_1.prj" location="C:\Users\Stefan\Dropbox\Fleur\banddos_auswertung" name="banddos_analysis_1" target="target.mlapps" target-name="Package App">
+    <param.appname>banddos_analysis_1</param.appname>
+    <param.authnamewatermark>Stefan Rost</param.authnamewatermark>
+    <param.email>s.rost@fz-juelich.de</param.email>
+    <param.company>Forschungszentrum Jülich, RWTH</param.company>
+    <param.icon />
+    <param.icons />
+    <param.summary>Display the FLEUR banddos.hdf file</param.summary>
+    <param.description />
+    <param.screenshot>${PROJECT_ROOT}\pic_2.PNG</param.screenshot>
+    <param.version>1.0</param.version>
+    <param.products.name />
+    <param.products.id />
+    <param.products.version />
+    <param.platforms />
+    <param.output>C:\Users\Stefan\Dropbox\Fleur\banddos_auswertung</param.output>
+    <param.guid>7fbd329d-b51b-41c5-8ab1-864f1e6cf21e</param.guid>
+    <unset>
+      <param.icon />
+      <param.icons />
+      <param.description />
+      <param.version />
+      <param.products.name />
+      <param.products.id />
+      <param.products.version />
+      <param.platforms />
+      <param.output />
+    </unset>
+    <fileset.main>
+      <file>${PROJECT_ROOT}\banddos_analysis_1.mlapp</file>
+    </fileset.main>
+    <fileset.depfun>
+      <file>${PROJECT_ROOT}\matlabfrag.m</file>
+      <file>${PROJECT_ROOT}\mlf2pdf.m</file>
+      <file>${PROJECT_ROOT}\molecule3D.m</file>
+      <file>${PROJECT_ROOT}\plotting.m</file>
+      <file>${PROJECT_ROOT}\saving_pdf.m</file>
+      <file>${PROJECT_ROOT}\saving_txt.m</file>
+    </fileset.depfun>
+    <fileset.resources />
+    <fileset.package />
+    <build-deliverables>
+      <file location="C:\Users\Stefan\Dropbox\Fleur" name="banddos_auswertung" optional="false">C:\Users\Stefan\Dropbox\Fleur\banddos_auswertung</file>
+    </build-deliverables>
+    <workflow />
+    <matlab>
+      <root>C:\Program Files\MATLAB\R2018b</root>
+      <toolboxes>
+        <toolbox name="matlabcoder" />
+        <toolbox name="embeddedcoder" />
+      </toolboxes>
+      <toolbox>
+        <matlabcoder>
+          <enabled>true</enabled>
+        </matlabcoder>
+      </toolbox>
+      <toolbox>
+        <embeddedcoder>
+          <enabled>true</enabled>
+        </embeddedcoder>
+      </toolbox>
+    </matlab>
+    <platform>
+      <unix>false</unix>
+      <mac>false</mac>
+      <windows>true</windows>
+      <win2k>false</win2k>
+      <winxp>false</winxp>
+      <vista>false</vista>
+      <linux>false</linux>
+      <solaris>false</solaris>
+      <osver>10.0</osver>
+      <os32>false</os32>
+      <os64>true</os64>
+      <arch>win64</arch>
+      <matlab>true</matlab>
+    </platform>
+  </configuration>
+</deployment-project>
