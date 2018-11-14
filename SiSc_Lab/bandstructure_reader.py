@@ -10,14 +10,23 @@ import numpy as np
 from matplotlib import pyplot as plt
 import h5py
 
-filename = 'banddos.hdf'
+filename = 'banddos_Co.hdf'
 f = h5py.File(filename, 'r')
 
 Eigenvalues = f["/eigenvalues/eigenvalues"]
 kpts = f["/kpts/coordinates"]
 special_points = f["/kpts/specialPointIndices"]
+fermi_energy = f["/general"]
+weights = f["/kpts/weights"]
+atoms_coords = f["/atoms/positions"]
+atom_group = f["/atoms/equivAtomsGroup"]
 
-weights = f["/bandUnfolding/weights"]
+
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+# Plot the values
+for i in range(len(atoms_coords[:].T[0])):
+    ax.scatter(atoms_coords[:].T[0][i], atoms_coords[:].T[1][i], atoms_coords[:].T[2][i], c="blue")
 
 def E_i(i):
     return Eigenvalues[0].T[i]
@@ -42,6 +51,7 @@ for i in range(Number_Bands):
 for i in range(len(special_points)):
     index = special_points[i]
     plt.vlines(k_dist[index-1], -0.25, 0.4)
+#plt.ylim(-1.85, -1.82)
 
 plt.savefig("bandstruckture.png", dpi=2000)
 
