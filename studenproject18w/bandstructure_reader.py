@@ -3,6 +3,22 @@
 """
 Created on Wed Nov 14 17:00:10 2018
 
+SiScLab 2018 Project 8
+Task 1: Plot band structure from Fleur HDF5 files.
+
+- TODO for Week01:
+ - Model (ie, what the code is doing):
+   - Fermi energy for offset: y scale 
+   - y-axis scaling: convert to Hartree
+   - OPTIONAL: weights: look into Stefan's code
+   - don't do TOO much in Week001
+ - Code Cleanup:
+   - refactoring (classes, naming, minimal doc)
+ - Modularize:
+   - perhaps: make installable as python package / module
+ - Ideas for later:
+   - plot 3D path for kspace
+
 @author: christianpartmann
 """
 
