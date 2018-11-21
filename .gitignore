@@ -138,3 +138,9 @@ Temporary Items
 
 # End of https://www.gitignore.io/api/python,linux,macos
 
+
+##  20181121 added by JW:
+# Jetbrains PyCharm Project folder
+.idea/
+# HDF5 input files for testing
+.hdf
