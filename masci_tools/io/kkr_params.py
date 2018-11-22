@@ -12,7 +12,7 @@ Also some defaults for the parameters are defined.
 __copyright__ = (u"Copyright (c), 2017, Forschungszentrum Jülich GmbH,"
                  "IAS-1/PGI-1, Germany. All rights reserved.")
 __license__ = "MIT license, see LICENSE.txt file"
-__version__ = "0.5"
+__version__ = "0.6"
 __contributors__ = u"Philipp Rüßmann"
 
 
@@ -421,7 +421,12 @@ class kkrparams(object):
                                 ('RUNOPT', [None, '%s%s%s%s%s%s%s%s', False, 'Running and test options: 8-character keywords in a row without spaces between them']),
                                 ('TESTOPT', [None, '%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s', False, 'Running and test options: optional 8-character keywords in a row without spaces between them plus a secod row of the same.']),
                                 #file names
-                                ('FILES', [None, '%s', False, 'Name of potential and shapefun file (list of two strings, empty string will set back to default of the one file that is supposed to be changed)'])
+                                ('FILES', [None, '%s', False, 'Name of potential and shapefun file (list of two strings, empty string will set back to default of the one file that is supposed to be changed)']),
+                                # special options
+                                ('JIJRAD', [None, '%f', False, 'Radius in alat which defines the cutoff for calcultion of Jij pairs']),
+                                ('JIJRADXY', [None, '%f', False, 'use a cylindical cluster in which Jij pairs are searched for']),
+                                ('JIJSITEI', [None, '%i', False, 'allow for the selection of specific sites in i in the unit cell, which should be considered in the calculation (default: all sites)']),
+                                ('JIJSITEJ', [None, '%i', False, 'allow for the selection of specific sites in j in the unit cell, which should be considered in the calculation (default: all sites)'])
                                 ])
 
         for key in kwargs:
