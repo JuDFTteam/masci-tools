@@ -11,6 +11,7 @@ __copyright__ = (u"Copyright (c), 2018, Forschungszentrum Jülich GmbH,"
                  "IAS-1/PGI-1, Germany. All rights reserved.")
 __license__ = "MIT license, see LICENSE.txt file"
 __contributors__ = (u"Philipp Rüßmann")
+__version__ = 1.0
 
 ####################################################################################
 

@@ -14,6 +14,7 @@ __copyright__ = (u"Copyright (c), 2018, Forschungszentrum Jülich GmbH,"
 __license__ = "MIT license, see LICENSE.txt file"
 __contributors__ = (u"Philipp Rüßmann", 
                     u"Fabian Bertoldo")
+__version__ = 0.1
 
 ####################################################################################
 

@@ -12,7 +12,7 @@ Also some defaults for the parameters are defined.
 __copyright__ = (u"Copyright (c), 2017, Forschungszentrum Jülich GmbH,"
                  "IAS-1/PGI-1, Germany. All rights reserved.")
 __license__ = "MIT license, see LICENSE.txt file"
-__version__ = "0.6"
+__version__ = "1.0"
 __contributors__ = u"Philipp Rüßmann"
 
 
