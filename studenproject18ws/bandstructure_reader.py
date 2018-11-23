@@ -3,9 +3,6 @@
 """
 Created on Wed Nov 14 17:00:10 2018
 
-SiScLab 2018 Project 8
-Week1, Task 1: Plot band structure from Fleur HDF5 files.
-
 @author: christianpartmann
 """
 
@@ -14,9 +11,9 @@ import numpy as np
 from matplotlib import pyplot as plt
 import h5py
 
-filename = 'banddos_4x4'
-#filename = 'banddos' #.hdf'
-
+#filename = 'banddos_4x4'
+#filename = 'banddos'
+filename = 'banddos_Co'
 f = h5py.File(filename+str('.hdf'), 'r')
 
 # E_n sampled at discrete k values stored in "kpts"
@@ -34,11 +31,24 @@ special_points = f["/kpts/specialPointIndices"]
 # what is this weight good for? <----------------------------------------------
 weights1 = f["/kpts/weights"]
 
+band_unfolding = f["/general"].attrs['bandUnfolding'][0]
+
 # weight for each E_n(k)
-weights2 = f["/bandUnfolding/weights"]
+if(band_unfolding == True):
+    weights2 = f["/bandUnfolding/weights"]
 
-fermi_energy = f["/general"]
+# fermi_energy of the system
+fermi_energy = f["/general"].attrs['lastFermiEnergy'][0]
 
+#jsym,ksym ?? shape: (1*num_kpts_*num_bands)
+jsym = f["/eigenvalues/jsym"][0]
+ksym = f["/eigenvalues/ksym"][0]
+
+# shape: number of bands per k_pt
+numFoundEigenvals = f["/eigenvalues/numFoundEigenvals"]
+
+rec_cell = f["/cell/reciprocalCell"][:]
+bravais = f["/cell/bravaisMatrix"][:]
 
 #%%
 # =============================================================================
@@ -104,7 +114,7 @@ def create_k_spacing():
 
 # Returns E(k) for the i-th Band
 def E_i(i):
-    return Eigenvalues[0].T[i]
+    return Eigenvalues[1].T[i]
 
 # Returns weight for the i-th Band
 def weight_for_band_i(i):
@@ -118,15 +128,20 @@ def llikecharge_for_band_n(i, j, n):
     return (llikecharge[0][:].T[i][j][n])
 
 
-def plot_bands_with_weight(Number_Bands_plotted):
+def plot_bands_with_weight(Number_Bands_plotted, weight = True):
     fig = plt.figure()
     ax1 = fig.add_subplot(111)
     max_E = max(E_i(0))
     min_E = min(E_i(0))
     
+    ax1.hlines(fermi_energy, 0, max(k_dist))
+    
     for n in range(Number_Bands_plotted):
         #ax1.scatter(k_dist, E_i(n), marker='.', c='b', s=weight_for_band_i(n))
-        ax1.scatter(k_dist, E_i(n), marker='o', c='b', s=3*weight_for_band_i(n), lw=0)
+        if(weight == True):
+            ax1.scatter(k_dist, E_i(n), marker='o', c='b', s=3*weight_for_band_i(n), lw=0)
+        else:
+            ax1.scatter(k_dist, E_i(n), marker='o', c='b', s=0.1, lw=0)
         if(max_E < max(E_i(n))):
             max_E = max(E_i(n))
         if(min_E > min(E_i(n))):
@@ -140,12 +155,18 @@ def plot_bands_with_weight(Number_Bands_plotted):
         
     plt.xlabel("k")
     plt.ylabel("E(k)")
-    plt.savefig("output/"+filename+"_bandstructure_weight.png", dpi=2000)
+    if(weight == True):
+        plt.savefig("output/"+filename+"_bandstructure_weight.png", dpi=2000)
+    else:
+        plt.savefig("output/"+filename+"_bandstructure_noweight.png", dpi=2000)    
 
 
 k_dist = create_k_spacing()
 Number_Bands_plotted = Eigenvalues.shape[2] #5
-plot_bands_with_weight(Number_Bands_plotted)
+if(band_unfolding == True):
+    plot_bands_with_weight(Number_Bands_plotted)
+
+plot_bands_with_weight(Number_Bands_plotted, weight = False)
 #plot_bands_with_weight(1)
     
 
