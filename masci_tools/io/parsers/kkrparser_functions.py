@@ -11,6 +11,7 @@ __copyright__ = (u"Copyright (c), 2017, Forschungszentrum Jülich GmbH,"
                  "IAS-1/PGI-1, Germany. All rights reserved.")
 __license__ = "MIT license, see LICENSE.txt file"
 __contributors__ = u"Philipp Rüßmann"
+__version__ = "1.0"
 
 
 from masci_tools.io.common_functions import (search_string, get_version_info, get_Ry2eV, angles_to_vec,
@@ -461,7 +462,7 @@ def get_lattice_vectors(outfile_0init):
     return vecs, rvecs
 
     
-def parse_kkr_outputfile(out_dict, outfile, outfile_0init, outfile_000, timing_file, potfile_out, nonco_out_file, outfile_2='output.2.txt'):
+def parse_kkr_outputfile(out_dict, outfile, outfile_0init, outfile_000, timing_file, potfile_out, nonco_out_file, outfile_2='output.2.txt', skip_readin=False):
     """
     Parser method for the kkr outfile. It returns a dictionary with results
     """
@@ -482,42 +483,6 @@ def parse_kkr_outputfile(out_dict, outfile, outfile_0init, outfile_000, timing_f
     except:
         msg = "Error parsing output of KKR: Version Info"
         msg_list.append(msg)
-    
-    tmp_dict = {} # used to group convergence info (rms, rms per atom, charge neutrality)
-    # also initialize convegence_group where all info stored for all iterations is kept
-    out_dict['convergence_group'] = tmp_dict
-    try:
-        result, result_atoms_last = get_rms(outfile, outfile_000)
-        tmp_dict['rms'] = result[-1]
-        tmp_dict['rms_all_iterations'] = result
-        tmp_dict['rms_per_atom'] = result_atoms_last
-        tmp_dict['rms_unit'] = 'unitless'
-        out_dict['convergence_group'] = tmp_dict
-    except:
-        msg = "Error parsing output of KKR: rms-error"
-        msg_list.append(msg)
-    
-    try:
-        result = get_neutr(outfile)
-        tmp_dict['charge_neutrality'] = result[-1]
-        out_dict['convergence_group']['charge_neutrality_all_iterations'] = result
-        tmp_dict['charge_neutrality_unit'] = 'electrons'
-        out_dict['convergence_group'] = tmp_dict
-    except:
-        msg = "Error parsing output of KKR: charge neutrality"
-        msg_list.append(msg)
-       
-    tmp_dict = {} # used to group magnetism info (spin and orbital moments)
-    try:
-        result = get_magtot(outfile)
-        if len(result)>0:
-            tmp_dict['total_spin_moment'] = result[-1]
-            out_dict['convergence_group']['total_spin_moment_all_iterations'] = result
-            tmp_dict['total_spin_moment_unit'] = 'mu_Bohr'
-            out_dict['magnetism_group'] = tmp_dict
-    except:
-        msg = "Error parsing output of KKR: total magnetic moment"
-        msg_list.append(msg)
         
     try:
         nspin = get_nspin(outfile_0init)
@@ -529,79 +494,7 @@ def parse_kkr_outputfile(out_dict, outfile, outfile_0init, outfile_000, timing_f
     except:
         msg = "Error parsing output of KKR: nspin/natom"
         msg_list.append(msg)
-    
-    try:
-        if nspin>1:
-            if not newsosol:
-                #reset automatically to None to turn off reading of nonco angles file
-                nonco_out_file = None
-            
-            result, vec, angles = get_spinmom_per_atom(outfile, natom, nonco_out_file)
-            if len(result)>0:
-                tmp_dict['spin_moment_per_atom'] = result[-1,:]
-                if newsosol:
-                    tmp_dict['spin_moment_vector_per_atom'] = vec[:]
-                    tmp_dict['spin_moment_angles_per_atom'] = angles[:]
-                    tmp_dict['spin_moment_angles_per_atom_unit'] = 'degree'
-                out_dict['convergence_group']['spin_moment_per_atom_all_iterations'] = result[:,:]
-                tmp_dict['spin_moment_unit'] = 'mu_Bohr'
-                out_dict['magnetism_group'] = tmp_dict
-    except:
-        msg = "Error parsing output of KKR: spin moment per atom"
-        msg_list.append(msg)
-    
-    # add orbital moments to magnetis group in parser output
-    try:
-        if nspin>1 and newsosol:
-            #TODO orbital moment full vectors
-            # so far the KKR code writes only the component of the orbital moment 
-            # parallel to the spin moment, thus vec and angles are returned empty 
-            # by construction. This might change in the future 
-            #result, vec, angles = get_orbmom(outfile, natom, nonco_angles_orbmom)
-            # so for now return only result= array containing all iterations, all atoms, orbital moment parallel to spin quantization axis
-            result = get_orbmom(outfile, natom)
-            if len(result)>0:
-                tmp_dict['total_orbital_moment'] = sum(result[-1,:])
-                tmp_dict['orbital_moment_per_atom'] = result[-1,:]
-                #tmp_dict['orbital_moment_vector_per_atom'] = vec[-1,:]
-                #tmp_dict['orbital_moment_angles_per_atom'] = angles[-1,:]
-                out_dict['convergence_group']['orbital_moment_per_atom_all_iterations'] = result[:,:]
-                tmp_dict['orbital_moment_unit'] = 'mu_Bohr'
-                #tmp_dict['orbital_moment_angles_per_atom_unit'] = 'degree'
-                out_dict['magnetism_group'] = tmp_dict
-    except:
-        msg = "Error parsing output of KKR: orbital moment"
-        msg_list.append(msg)
-
-    try:
-        result = get_EF(outfile)
-        out_dict['fermi_energy'] = result[-1]
-        out_dict['fermi_energy_units'] = 'Ry'
-        out_dict['convergence_group']['fermi_energy_all_iterations'] = result
-        out_dict['convergence_group']['fermi_energy_all_iterations_units'] = 'Ry'
-    except:
-        msg = "Error parsing output of KKR: EF"
-        msg_list.append(msg)
-
-    try:
-        result = get_DOS_EF(outfile)
-        out_dict['dos_at_fermi_energy'] = result[-1]
-        out_dict['convergence_group']['dos_at_fermi_energy_all_iterations'] = result
-    except:
-        msg = "Error parsing output of KKR: DOS@EF"
-        msg_list.append(msg)
-
-    try:
-        result = get_Etot(outfile)
-        out_dict['energy'] = result[-1]*Ry2eV
-        out_dict['energy_unit'] = 'eV'
-        out_dict['total_energy_Ry'] = result[-1]
-        out_dict['total_energy_Ry_unit'] = 'Rydberg'
-        out_dict['convergence_group']['total_energy_Ry_all_iterations'] = result
-    except:
-        msg = "Error parsing output of KKR: total energy"
-        msg_list.append(msg)
-
+        
     try:
         result = find_warnings(outfile)
         tmp_dict = {}
@@ -618,30 +511,6 @@ def parse_kkr_outputfile(out_dict, outfile, outfile_0init, outfile_000, timing_f
         out_dict['timings_unit'] = 'seconds'
     except:
         msg = "Error parsing output of KKR: timings"
-        msg_list.append(msg)
-    
-    try:
-        result = get_single_particle_energies(outfile_000)
-        out_dict['single_particle_energies'] = result*Ry2eV
-        out_dict['single_particle_energies_unit'] = 'eV'
-    except:
-        msg = "Error parsing output of KKR: single particle energies"
-        msg_list.append(msg)
-    
-    try:
-        result_WS, result_tot, result_C = get_charges_per_atom(outfile_000)
-        niter = len(out_dict['convergence_group']['rms_all_iterations'])
-        natyp = int(len(result_tot)/niter)
-        out_dict['total_charge_per_atom'] = result_tot[-natyp:]
-        out_dict['charge_core_states_per_atom'] = result_C[-natyp:]
-        # this check deals with the DOS case where output is slightly different
-        if len(result_WS) == len(result_C):
-            out_dict['charge_valence_states_per_atom'] = result_WS[-natyp:]-result_C[-natyp:]
-        out_dict['total_charge_per_atom_unit'] = 'electron charge'
-        out_dict['charge_core_states_per_atom_unit'] = 'electron charge'
-        out_dict['charge_valence_states_per_atom_unit'] = 'electron charge'
-    except:
-        msg = "Error parsing output of KKR: charges"
         msg_list.append(msg)
     
     try:
@@ -683,25 +552,6 @@ def parse_kkr_outputfile(out_dict, outfile, outfile_0init, outfile_000, timing_f
         out_dict['two_pi_over_alat_internal_unit'] = '1/a_Bohr'
     except:
         msg = "Error parsing output of KKR: alat, 2*pi/alat"
-        msg_list.append(msg)
-        
-    try:
-        try:
-            niter, nitermax, converged, nmax_reached, mixinfo = get_scfinfo(outfile_0init, outfile_000, outfile)
-        except IndexError:
-            niter, nitermax, converged, nmax_reached, mixinfo = get_scfinfo(outfile_0init, outfile_2, outfile)
-        out_dict['convergence_group']['number_of_iterations'] = niter
-        out_dict['convergence_group']['number_of_iterations_max'] = nitermax
-        out_dict['convergence_group']['calculation_converged'] = converged
-        out_dict['convergence_group']['nsteps_exhausted'] = nmax_reached
-        out_dict['convergence_group']['imix'] = mixinfo[0]
-        out_dict['convergence_group']['strmix'] = mixinfo[1]
-        out_dict['convergence_group']['qbound'] = mixinfo[2]
-        out_dict['convergence_group']['fcm'] = mixinfo[3]
-        out_dict['convergence_group']['idtbry'] = mixinfo[4]
-        out_dict['convergence_group']['brymix'] = mixinfo[5]
-    except:
-        msg = "Error parsing output of KKR: scfinfo"
         msg_list.append(msg)
     
     try:
@@ -753,7 +603,159 @@ def parse_kkr_outputfile(out_dict, outfile, outfile_0init, outfile_000, timing_f
     except:
         msg = "Error parsing output of KKR: lattice vectors (direct/reciprocal)"
         msg_list.append(msg)
-            
+        
+    # this is skipped for qdos run for example
+    if not skip_readin:
+        tmp_dict = {} # used to group convergence info (rms, rms per atom, charge neutrality)
+        # also initialize convegence_group where all info stored for all iterations is kept
+        out_dict['convergence_group'] = tmp_dict
+        try:
+            result, result_atoms_last = get_rms(outfile, outfile_000)
+            tmp_dict['rms'] = result[-1]
+            tmp_dict['rms_all_iterations'] = result
+            tmp_dict['rms_per_atom'] = result_atoms_last
+            tmp_dict['rms_unit'] = 'unitless'
+            out_dict['convergence_group'] = tmp_dict
+        except:
+            msg = "Error parsing output of KKR: rms-error"
+            msg_list.append(msg)
+        
+        try:
+            result = get_neutr(outfile)
+            tmp_dict['charge_neutrality'] = result[-1]
+            out_dict['convergence_group']['charge_neutrality_all_iterations'] = result
+            tmp_dict['charge_neutrality_unit'] = 'electrons'
+            out_dict['convergence_group'] = tmp_dict
+        except:
+            msg = "Error parsing output of KKR: charge neutrality"
+            msg_list.append(msg)
+           
+        tmp_dict = {} # used to group magnetism info (spin and orbital moments)
+        try:
+            result = get_magtot(outfile)
+            if len(result)>0:
+                tmp_dict['total_spin_moment'] = result[-1]
+                out_dict['convergence_group']['total_spin_moment_all_iterations'] = result
+                tmp_dict['total_spin_moment_unit'] = 'mu_Bohr'
+                out_dict['magnetism_group'] = tmp_dict
+        except:
+            msg = "Error parsing output of KKR: total magnetic moment"
+            msg_list.append(msg)
+    
+        try:
+            if nspin>1:
+                if not newsosol:
+                    #reset automatically to None to turn off reading of nonco angles file
+                    nonco_out_file = None
+                
+                result, vec, angles = get_spinmom_per_atom(outfile, natom, nonco_out_file)
+                if len(result)>0:
+                    tmp_dict['spin_moment_per_atom'] = result[-1,:]
+                    if newsosol:
+                        tmp_dict['spin_moment_vector_per_atom'] = vec[:]
+                        tmp_dict['spin_moment_angles_per_atom'] = angles[:]
+                        tmp_dict['spin_moment_angles_per_atom_unit'] = 'degree'
+                    out_dict['convergence_group']['spin_moment_per_atom_all_iterations'] = result[:,:]
+                    tmp_dict['spin_moment_unit'] = 'mu_Bohr'
+                    out_dict['magnetism_group'] = tmp_dict
+        except:
+            msg = "Error parsing output of KKR: spin moment per atom"
+            msg_list.append(msg)
+    
+        # add orbital moments to magnetis group in parser output
+        try:
+            if nspin>1 and newsosol:
+                #TODO orbital moment full vectors
+                # so far the KKR code writes only the component of the orbital moment 
+                # parallel to the spin moment, thus vec and angles are returned empty 
+                # by construction. This might change in the future 
+                #result, vec, angles = get_orbmom(outfile, natom, nonco_angles_orbmom)
+                # so for now return only result= array containing all iterations, all atoms, orbital moment parallel to spin quantization axis
+                result = get_orbmom(outfile, natom)
+                if len(result)>0:
+                    tmp_dict['total_orbital_moment'] = sum(result[-1,:])
+                    tmp_dict['orbital_moment_per_atom'] = result[-1,:]
+                    #tmp_dict['orbital_moment_vector_per_atom'] = vec[-1,:]
+                    #tmp_dict['orbital_moment_angles_per_atom'] = angles[-1,:]
+                    out_dict['convergence_group']['orbital_moment_per_atom_all_iterations'] = result[:,:]
+                    tmp_dict['orbital_moment_unit'] = 'mu_Bohr'
+                    #tmp_dict['orbital_moment_angles_per_atom_unit'] = 'degree'
+                    out_dict['magnetism_group'] = tmp_dict
+        except:
+            msg = "Error parsing output of KKR: orbital moment"
+            msg_list.append(msg)
+
+        try:
+            result = get_EF(outfile)
+            out_dict['fermi_energy'] = result[-1]
+            out_dict['fermi_energy_units'] = 'Ry'
+            out_dict['convergence_group']['fermi_energy_all_iterations'] = result
+            out_dict['convergence_group']['fermi_energy_all_iterations_units'] = 'Ry'
+        except:
+            msg = "Error parsing output of KKR: EF"
+            msg_list.append(msg)
+    
+        try:
+            result = get_DOS_EF(outfile)
+            out_dict['dos_at_fermi_energy'] = result[-1]
+            out_dict['convergence_group']['dos_at_fermi_energy_all_iterations'] = result
+        except:
+            msg = "Error parsing output of KKR: DOS@EF"
+            msg_list.append(msg)
+    
+        try:
+            result = get_Etot(outfile)
+            out_dict['energy'] = result[-1]*Ry2eV
+            out_dict['energy_unit'] = 'eV'
+            out_dict['total_energy_Ry'] = result[-1]
+            out_dict['total_energy_Ry_unit'] = 'Rydberg'
+            out_dict['convergence_group']['total_energy_Ry_all_iterations'] = result
+        except:
+            msg = "Error parsing output of KKR: total energy"
+            msg_list.append(msg)
+    
+        try:
+            result = get_single_particle_energies(outfile_000)
+            out_dict['single_particle_energies'] = result*Ry2eV
+            out_dict['single_particle_energies_unit'] = 'eV'
+        except:
+            msg = "Error parsing output of KKR: single particle energies"
+            msg_list.append(msg)
+        
+        try:
+            result_WS, result_tot, result_C = get_charges_per_atom(outfile_000)
+            niter = len(out_dict['convergence_group']['rms_all_iterations'])
+            natyp = int(len(result_tot)/niter)
+            out_dict['total_charge_per_atom'] = result_tot[-natyp:]
+            out_dict['charge_core_states_per_atom'] = result_C[-natyp:]
+            # this check deals with the DOS case where output is slightly different
+            if len(result_WS) == len(result_C):
+                out_dict['charge_valence_states_per_atom'] = result_WS[-natyp:]-result_C[-natyp:]
+            out_dict['total_charge_per_atom_unit'] = 'electron charge'
+            out_dict['charge_core_states_per_atom_unit'] = 'electron charge'
+            out_dict['charge_valence_states_per_atom_unit'] = 'electron charge'
+        except:
+            msg = "Error parsing output of KKR: charges"
+            msg_list.append(msg)
+        
+        try:
+            try:
+                niter, nitermax, converged, nmax_reached, mixinfo = get_scfinfo(outfile_0init, outfile_000, outfile)
+            except IndexError:
+                niter, nitermax, converged, nmax_reached, mixinfo = get_scfinfo(outfile_0init, outfile_2, outfile)
+            out_dict['convergence_group']['number_of_iterations'] = niter
+            out_dict['convergence_group']['number_of_iterations_max'] = nitermax
+            out_dict['convergence_group']['calculation_converged'] = converged
+            out_dict['convergence_group']['nsteps_exhausted'] = nmax_reached
+            out_dict['convergence_group']['imix'] = mixinfo[0]
+            out_dict['convergence_group']['strmix'] = mixinfo[1]
+            out_dict['convergence_group']['qbound'] = mixinfo[2]
+            out_dict['convergence_group']['fcm'] = mixinfo[3]
+            out_dict['convergence_group']['idtbry'] = mixinfo[4]
+            out_dict['convergence_group']['brymix'] = mixinfo[5]
+        except:
+            msg = "Error parsing output of KKR: scfinfo"
+            msg_list.append(msg)            
         
     #convert arrays to lists
     from numpy import ndarray
