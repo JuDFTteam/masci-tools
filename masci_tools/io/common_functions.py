@@ -5,6 +5,13 @@ Here commonly used functions that do not need aiida-stuff (i.e. can be tested
 without a database) are collected.
 """
 
+__copyright__ = (u"Copyright (c), 2018, Forschungszentrum Jülich GmbH,"
+                 "IAS-1/PGI-1, Germany. All rights reserved.")
+__license__ = "MIT license, see LICENSE.txt file"
+__contributors__ = (u"Philipp Rüßmann")
+__version__ = 1.0
+
+####################################################################################
 
 #helper functions used in calculation, parser etc.
 def get_alat_from_bravais(bravais, is3D=True):

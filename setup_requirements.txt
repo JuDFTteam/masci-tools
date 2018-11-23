@@ -5,3 +5,4 @@ numpy
 h5py
 #gnuplot
 pytest-cov
+scipy

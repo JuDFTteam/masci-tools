@@ -51,8 +51,7 @@ class Test_kkrimp_parser_functions():
     """ Tests for the KKRimp parser functions. """
     
     def test_parse_outfiles_full(self):
-        path = '../files/kkrimp_parser/test1/'
-        path = '/Users/ruess/sourcecodes/aiida/repositories/repository-ruess_test/repository/node/5e/cb/721a-bd7c-4abf-b41f-ab0f701f1408/path/'
+        path = './files/kkrimp_parser/test2/'
         files = {}
         files['outfile'] = path+'out_kkrimp'
         files['out_log'] = path+'out_log.000.txt'

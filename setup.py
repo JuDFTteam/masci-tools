@@ -30,5 +30,7 @@ if __name__ == '__main__':
             'numpy',
             'matplotlib',
             'h5py',
+            'pytest-cov',
+            'scipy',
         ],
     )
