@@ -140,8 +140,8 @@ Temporary Items
 
 
 ##  20181121 added by JW:
-# code run outputs folder (plots)
-output/
+# data (input and output files, e.g. hdf, csv, plots, ...)
+data/
 # HDF5 input files for testing
 *.hdf
 # Jetbrains PyCharm Project folder
