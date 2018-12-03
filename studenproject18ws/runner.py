@@ -10,7 +10,9 @@ def main():
     # filename = 'banddos_4x4.hdf'
     filename = 'banddos.hdf'
     # filename = 'banddos_Co.hdf'
-    filepath = os.path.join("input", filename)
+
+    filepath = ['data','input', filename]
+    filepath = os.path.join(*filepath)
     data = Reader(filepath)
 
     with data as h5file:

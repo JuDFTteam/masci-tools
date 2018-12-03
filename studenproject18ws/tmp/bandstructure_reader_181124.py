@@ -14,10 +14,11 @@ from collections import Counter
 
 bohr_constant = 0.52
 
+filepath = '../data/input/'
 #filename = 'banddos_4x4'
 filename = 'banddos'
 #filename = 'banddos_Co'
-f = h5py.File(filename+str('.hdf'), 'r')
+f = h5py.File(filepath+filename+str('.hdf'), 'r')
 
 
 Eigenvalues = f["/eigenvalues/eigenvalues"]
@@ -84,7 +85,7 @@ def plot_atoms_with_colors():
 
     plt.xlabel("x")
     plt.ylabel("y")
-    plt.savefig("output/"+filename+"_3d_visualization_color.png", dpi = 500)
+    plt.savefig("../data/output/"+filename+"_3d_visualization_color.png", dpi = 500)
 
 plot_atoms_with_colors()
 

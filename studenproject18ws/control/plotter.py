@@ -65,9 +65,9 @@ class Plotter(object):
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d')
         # Plot the values
-        for i in range(len(self.data.atoms_coords[:].T[0])):
-            ax.scatter(self.data.atoms_coords[:].T[0][i], self.data.atoms_coords[:].T[1][i],
-                       self.data.atoms_coords[:].T[2][i], c="blue")
+        for i in range(len(self.data.atoms_coords_int[:].T[0])):
+            ax.scatter(self.data.atoms_coords_int[:].T[0][i], self.data.atoms_coords_int[:].T[1][i],
+                       self.data.atoms_coords_int[:].T[2][i], c="blue")
         plt.xlabel("x")
         plt.ylabel("y")
         plt.savefig(os.path.join(self._output_dir, self.data.filename + "_3d_visualization_nocolor.png"), dpi=500)
@@ -86,9 +86,9 @@ class Plotter(object):
 
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d')
-        for i in range(len(self.data.atoms_coords[:].T[0])):
-            ax.scatter(self.data.atoms_coords[:].T[0][i], self.data.atoms_coords[:].T[1][i],
-                       self.data.atoms_coords[:].T[2][i], c=colorbar[
+        for i in range(len(self.data.atoms_coords_int[:].T[0])):
+            ax.scatter(self.data.atoms_coords_int[:].T[0][i], self.data.atoms_coords_int[:].T[1][i],
+                       self.data.atoms_coords_int[:].T[2][i], c=colorbar[
                     self.data.atom_group[i]])
 
         plt.xlabel("x")
