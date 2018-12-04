@@ -70,9 +70,22 @@ import numpy as np
 import h5py
 from h5py._hl.dataset import Dataset
 from collections import namedtuple
+from enum import Enum
 
 import studenproject18ws.model.constants as constants
 from studenproject18ws.model.exceptions import Hdf5_DatasetNotFoundError
+
+class ExtractType(Enum):
+    FromDict = 1
+    FromFile = 2
+
+class CoordinateSystemType(Enum):
+    Internal = 1
+    Physical = 2
+
+class LatticeType(Enum):
+    Bravais = 1 # real space
+    Reciprocal = 2
 
 
 class Transform(object):
@@ -81,17 +94,18 @@ class Transform(object):
     Functions to transform raw h5py Datasets. 
     """
     DEPENDENCIES = {
-        'to_physical_x': ['bravaisMatrix'],
-        'to_physical_k': ['reciprocalCell']
+        'coordinates': ['bravaisMatrix', 'reciprocalCell'],
     }
 
-    def __init__(self):
+    def __init__(self, extract_type=ExtractType.FromDict):
         """
 
         :type bravais: Dataset
         """
-        self.rec_cell = None
-        self.bravais = None
+        self.extract_type = extract_type
+        self.reciprocal_cell = None
+        self.bravais_matrix = None
+        self.k_dist = None
 
     def _check_dependency(self, name, dataset):
         for dependent_names in self.DEPENDENCIES.values():
@@ -102,7 +116,7 @@ class Transform(object):
         self._check_dependency(name, dataset)
         return dataset
 
-    def value(self, name, dataset):
+    def to_ndarray(self, name, dataset):
         self._check_dependency(name, dataset)
         return dataset[:]
 
@@ -112,15 +126,31 @@ class Transform(object):
 
     def to_physical_x(self, name, dataset):
         self._check_dependency(name, dataset)
-        return np.dot(dataset, self.bravais)
+        return np.dot(dataset, self.bravais_matrix)
 
     def to_physical_k(self, name, dataset):
         self._check_dependency(name, dataset)
-        return np.dot(dataset, self.rec_cell)
+        return np.dot(dataset, self.reciprocal_cell)
 
     def scale_with_constant(self, name, dataset, constant_name):
         self._check_dependency(name, dataset)
         return dataset * getattr(constants, constant_name)
+
+    # def coordinates(self, name, dataset, orig_lattice_type_name, orig_coordsys_type_name=CoordinateSystemType.Internal.name):
+    #     self._check_dependency(name, dataset)
+    #     if orig_coordsys_type == CoordinateSystemType.Internal: # to Physical
+    #         if orig_lattice_type == LatticeType.Bravais:
+    #             return np.dot(dataset, self.bravais_matrix)
+    #         else:
+    #             return np.dot(dataset, self.reciprocal_cell)
+    #     elif orig_coordsys_type == CoordinateSystemType.Physical: # to Internal
+    #         return dataset #TODO: transform physical to internal coordinates
+
+    def k_special_points(self, name, dataset):
+        k_special_pt = np.zeros(len(dataset[:]))
+        for i in range(len(dataset[:])):
+            k_special_pt[i] = self.k_dist[dataset[i] - 1]
+        return k_special_pt
 
 
 class ReaderGeneric(object):
@@ -189,6 +219,9 @@ class ReaderGeneric(object):
 
         # TODO: check dict format
 
+        # remove entries whose key is an empty string
+        h5extract = {key: val for key, val in h5extract.items() if key}
+
         data_attr_names = list(h5extract.keys())
 
         # get h5 datasets
@@ -238,25 +271,47 @@ class ReaderGeneric(object):
         data = Data(*dsets)
         return data
 
-#%% definitions
+
+# %% definitions
 
 h5extract = {
     "bravaisMatrix": {
         "h5path": "/cell/bravaisMatrix",
-        "transforms": ["value", ["scale_with_constant", "bohr_radius"]]
+        "description": f"Coordinate transformation internal to physical for atoms",
+        "transforms": [Transform.to_ndarray.__name__,
+                       [Transform.scale_with_constant.__name__, "bohr_radius"]
+                       ]
     },
     "reciprocalCell": {
         "h5path": "/cell/reciprocalCell",
-        "transforms": ["value"]
+        "description": f"Coordinate transformation internal to physical for k_points",
+        "transforms": [Transform.to_ndarray.__name__]
     },
     "eigenvalues": {
         "h5path": "/eigenvalues/eigenvalues",
-        "transforms": ["id"]
+        "description": f"'E_n sampled at discrete k values stored in 'kpts'",
+        "transforms": [Transform.id.__name__]
     },
     "llikecharge": {
         "h5path": "/eigenvalues/lLikeCharge",
-        "transforms": ["id"]
-    }
+        "description": f"Something related to the projection on s,p,d,f,... orbitals...",
+        "transforms": [Transform.id.__name__]
+    },
+    # "k_points": {
+    #     "h5path": "/kpts/coordinates",
+    #     "description": f"3d coordinates of the path along which E_n(kx, ky, kz) is sampled",
+    #     "": [Transform.id.__name__]
+    # },
+    # "k_special_points": {
+    #     "h5path": "/kpts/specialPointIndices",
+    #     "description": f"k-values of the high symmetry points",
+    #     "": [Transform.k_special_points.__name__]
+    # },
+    "": {  # template entry
+        "h5path": "",
+        "description": f"",
+        "": [Transform.id.__name__]
+    },
 }
 
 # filename = 'banddos_4x4.hdf'
@@ -272,4 +327,4 @@ with reader as h5file:
     data = reader.read(h5extract)
     print("success")
 
-#%% example code
+# %% example code
