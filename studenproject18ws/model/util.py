@@ -2,7 +2,7 @@ import scipy.constants as constants
 import __future__
 
 
-def constant(keywords):
+def constant(keywords, printAlternatives=True):
     assert (isinstance(keywords, str))
 
     # prepare the query
@@ -51,7 +51,7 @@ def constant(keywords):
         for q in keywords:
             #             print(f"\titem {item}\t, query {q}")
             try:
-                index = str.index(item, q)
+                index = str.index(item.lower(), q.lower())
                 not_one_match = False
                 match_inds.append(index)
             except ValueError:
@@ -141,16 +141,33 @@ def constant(keywords):
                     min_el_inds.append(i)
 
             const_keys_res = [const_keys[ind] for ind in min_el_inds]
+            const_vals_res = [const_vals[ind] for ind in
+                              min_el_inds]  # int, float, or a tuple (val, unit str, uncertainty)
+            # print(f"const_keys_res: {const_keys_res}")
+
+            alternatives = f"Chosen from available alternatives: {const_keys_res}." if len(const_keys_res) > 1 else ""
 
             if (len(min_el_inds) > 1):
-                raise LookupError(f"Ambiguous result: more than one match for query {keywords}. "
-                                  f"Try a more specific query, e.g. more existing keywords, in desired order. "
-                                  f"Result matches were: {const_keys_res}."
-                                  )
+                # choose the one with the closest length to the query length
+                len_query = len(' '.join(word for word in keywords))
+                len_keys = [abs(len(key) - len_query) for key in const_keys_res]
+                min_len = min(len_keys)
+                min_keys_inds = [ind for ind, item in enumerate(len_keys) if min_len == item]
+                # print(f"len_keys: {len_keys}, min_keys_inds: {min_keys_inds}")
+                const_keys_res = [const_keys_res[ind] for ind in min_keys_inds]
+                const_vals_res = [const_vals_res[ind] for ind in min_keys_inds]
+
+                if (len(min_keys_inds) > 1):
+                    raise LookupError(f"Ambiguous result: more than one match for query {keywords}. "
+                                      f"Try a more specific query, e.g. more existing keywords, in desired order. "
+                                      f"Result matches were: {const_keys_res}."
+                                      )
 
             const_key = const_keys_res[0]
-            const_val = [const_vals[ind] for ind in min_el_inds][
-                0]  # int, float, or a tuple (val, unit str, uncertainty)
+            const_val = const_vals_res[0]
+
+            if printAlternatives and alternatives:
+                print(f"Function constant(keywords={keywords}): selected constant '{const_key}'.\n" + alternatives)
 
             result = None
             if isinstance(const_val, tuple):
@@ -164,7 +181,23 @@ def constant(keywords):
 ##################################################################
 # %% Testing
 tau_el_mass_ratio = constant("tau electron ratio")
-el_tau_mass_ratio = constant("electron-tau ratio")
 print(tau_el_mass_ratio)
+el_tau_mass_ratio = constant("electron-tau ratio")
 print(el_tau_mass_ratio)
+bohr_rad = constant("bohr atom radius")
+print(bohr_rad)
+light_speed = constant("light of-speed")
+light_speed = constant("speed light")
+print(light_speed)
+
+# Output:
+# ('tau-electron mass ratio', 3477.15, '', 0.31)
+# ('electron-tau mass ratio', 0.000287592, '', 2.6e-08)
+# ('Bohr radius', 5.2917721067e-11, 'm', 1.2e-20)
+# Function constant(keywords=['light', 'of', 'speed']): selected constant 'speed_of_light'.
+# Chosen from available alternatives: ['speed_of_light', 'speed of light in vacuum'].
+# Function constant(keywords=['speed', 'light']): selected constant 'speed_of_light'.
+# Chosen from available alternatives: ['speed_of_light', 'speed of light in vacuum'].
+# ('speed_of_light', 299792458.0)
+
 # constant("electron tau ratio")
