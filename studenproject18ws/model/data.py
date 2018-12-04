@@ -72,8 +72,9 @@ from h5py._hl.dataset import Dataset
 from collections import namedtuple
 from enum import Enum
 
-import studenproject18ws.model.constants as constants
+import studenproject18ws.model.util as util
 from studenproject18ws.model.exceptions import Hdf5_DatasetNotFoundError
+
 
 class ExtractType(Enum):
     FromDict = 1
@@ -134,7 +135,8 @@ class Transform(object):
 
     def scale_with_constant(self, name, dataset, constant_name):
         self._check_dependency(name, dataset)
-        return dataset * getattr(constants, constant_name)
+        # return dataset * getattr(constants, constant_name)
+        return dataset * util.constant(constant_name)[1]
 
     # def coordinates(self, name, dataset, orig_lattice_type_name, orig_coordsys_type_name=CoordinateSystemType.Internal.name):
     #     self._check_dependency(name, dataset)

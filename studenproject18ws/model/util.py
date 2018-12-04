@@ -3,6 +3,49 @@ import __future__
 
 
 def constant(keywords, printAlternatives=True):
+    """Semi-intelligent scipy.constants finder.
+
+    Notes
+    =====
+    Recognized keywords separators: whitespace, comma, dash, (semi)colon.
+    Order of keywords influences result (closest match).
+
+    Raises
+    ======
+      LookupError
+         If no match or ambiguous matches
+
+    Examples
+    ========
+    >>> tau_el_mass_ratio = constant("tau electron ratio")
+    >>> print(tau_el_mass_ratio)
+    ('tau-electron mass ratio', 3477.15, '', 0.31)
+    >>> el_tau_mass_ratio = constant("ratio electron-tau")
+    >>> print(el_tau_mass_ratio)
+    ('electron-tau mass ratio', 0.000287592, '', 2.6e-08)
+    >>> bohr_rad = constant("bohr atom radius")
+    >>> bohr_rad = constant("bohr radius") # same result
+    >>> print(bohr_rad)
+    ('Bohr radius', 5.2917721067e-11, 'm', 1.2e-20)
+    >>> light_speed = constant("light of-speed")
+    Function constant(keywords=['light', 'of', 'speed']): selected constant 'speed_of_light'.
+    Chosen from available alternatives: ['speed_of_light', 'speed of light in vacuum'].
+    >>> light_speed = constant("speed light") # same result
+    Function constant(keywords=['speed', 'light']): selected constant 'speed_of_light'.
+    Chosen from available alternatives: ['speed_of_light', 'speed of light in vacuum'].
+    >>> print(light_speed)
+    ('speed_of_light', 299792458.0)
+
+    TODO
+    ====
+       "pi" is not found, instead finds 'Planck constant over 2 pi'.
+       Cleanup code. Perhaps change return to namedtuple.
+
+    :param keywords: one or more keywords
+    :type keywords: string
+    :param printAlternatives: if more than match
+    :return: tuple (name,value) or (name,value,unit,uncertainty) if physical constant
+    """
     assert (isinstance(keywords, str))
 
     # prepare the query
@@ -182,7 +225,7 @@ def constant(keywords, printAlternatives=True):
 # %% Testing
 tau_el_mass_ratio = constant("tau electron ratio")
 print(tau_el_mass_ratio)
-el_tau_mass_ratio = constant("electron-tau ratio")
+el_tau_mass_ratio = constant("ratio electron-tau")
 print(el_tau_mass_ratio)
 bohr_rad = constant("bohr atom radius")
 bohr_rad = constant("bohr radius") # same result

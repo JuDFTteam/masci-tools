@@ -18,9 +18,8 @@ import os
 import h5py
 import numpy as np
 
-import studenproject18ws.model.constants as constants
+import studenproject18ws.model.util as util
 from studenproject18ws.model.exceptions import *
-
 
 
 class Reader(object):
@@ -112,7 +111,7 @@ class Reader(object):
 
         self.rec_cell = self._dataset("/cell/reciprocalCell")[:]
         "TODO DOCSTRING"
-        self.bravais = self._dataset("/cell/bravaisMatrix")[:] * constants.bohr_radius
+        self.bravais = self._dataset("/cell/bravaisMatrix")[:] * util.constant("bohr radius")
         "TODO DOCSTRING"
 
         atoms_coords_int = self._dataset("/atoms/positions")
@@ -125,7 +124,6 @@ class Reader(object):
         self.kpts = self._internal_to_physical_k(kpts_int)
         "3d coordinates of the path along which E_n(kx, ky, kz) is sampled"
         self.k_dist = self._create_k_spacing()
-
 
     def _internal_to_physical_x(self, x_int):
         """bla
