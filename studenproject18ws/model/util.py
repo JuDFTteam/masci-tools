@@ -64,7 +64,7 @@ def constant(keywords):
     #             match_indss.append(match_inds)
 
     if not match_indss:
-        raise LookupError(f"Not found any matches for query {queries}.")
+        raise LookupError(f"Not found any matches for query {keywords}.")
     else:
 
         # now we got a list of lists. for each item of the original list,
@@ -109,7 +109,7 @@ def constant(keywords):
         #         print(match_indss_mask)
 
         if not any(matches_countss):
-            raise LookupError(f"Not found any matches for query {queries}.")
+            raise LookupError(f"Not found any matches for query {keywords}.")
         else:
 
             min_el_inds = []
@@ -143,7 +143,7 @@ def constant(keywords):
             const_keys_res = [const_keys[ind] for ind in min_el_inds]
 
             if (len(min_el_inds) > 1):
-                raise LookupError(f"Ambiguous result: more than one match for query {queries}. "
+                raise LookupError(f"Ambiguous result: more than one match for query {keywords}. "
                                   f"Try a more specific query, e.g. more existing keywords, in desired order. "
                                   f"Result matches were: {const_keys_res}."
                                   )
@@ -164,5 +164,7 @@ def constant(keywords):
 ##################################################################
 # %% Testing
 tau_el_mass_ratio = constant("tau electron ratio")
+el_tau_mass_ratio = constant("electron-tau ratio")
 print(tau_el_mass_ratio)
+print(el_tau_mass_ratio)
 # constant("electron tau ratio")
