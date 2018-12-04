@@ -133,10 +133,12 @@ class Transform(object):
         self._check_dependency(name, dataset)
         return np.dot(dataset, self.reciprocal_cell)
 
-    def scale_with_constant(self, name, dataset, constant_name):
+    def scale_with_constant(self, name, dataset, constant_name, constant_unit=1):
         self._check_dependency(name, dataset)
-        # return dataset * getattr(constants, constant_name)
-        return dataset * util.constant(constant_name)[1]
+        scalar = util.constant(constant_name).value
+        if (isinstance(constant_unit, str)):
+            scalar /= util.constant(constant_unit).value
+        return dataset * scalar
 
     # def coordinates(self, name, dataset, orig_lattice_type_name, orig_coordsys_type_name=CoordinateSystemType.Internal.name):
     #     self._check_dependency(name, dataset)
@@ -281,7 +283,7 @@ h5extract = {
         "h5path": "/cell/bravaisMatrix",
         "description": f"Coordinate transformation internal to physical for atoms",
         "transforms": [Transform.to_ndarray.__name__,
-                       [Transform.scale_with_constant.__name__, "bohr_radius"]
+                       [Transform.scale_with_constant.__name__, "bohr_radius", "angstrom"]
                        ]
     },
     "reciprocalCell": {

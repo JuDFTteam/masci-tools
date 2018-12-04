@@ -111,7 +111,8 @@ class Reader(object):
 
         self.rec_cell = self._dataset("/cell/reciprocalCell")[:]
         "TODO DOCSTRING"
-        self.bravais = self._dataset("/cell/bravaisMatrix")[:] * util.constant("bohr radius")
+        self.bravais = self._dataset("/cell/bravaisMatrix")[:] * \
+                       (util.constant("bohr radius").value / util.constant("angstrom").value)
         "TODO DOCSTRING"
 
         atoms_coords_int = self._dataset("/atoms/positions")
