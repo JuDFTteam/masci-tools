@@ -185,9 +185,10 @@ print(tau_el_mass_ratio)
 el_tau_mass_ratio = constant("electron-tau ratio")
 print(el_tau_mass_ratio)
 bohr_rad = constant("bohr atom radius")
+bohr_rad = constant("bohr radius") # same result
 print(bohr_rad)
 light_speed = constant("light of-speed")
-light_speed = constant("speed light")
+light_speed = constant("speed light") # same result
 print(light_speed)
 
 # Output:
