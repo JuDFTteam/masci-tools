@@ -9,7 +9,7 @@ def constant(keywords, printAlternatives=True):
 
     Notes
     =====
-    Recognized keywords separators: whitespace, comma, dash, (semi)colon.
+    Recognized keywords separators: whitespace, comma, (under)score, (semi)colon.
     Order of keywords influences result (closest match).
 
     Raises
@@ -247,23 +247,3 @@ def constant(keywords, printAlternatives=True):
 
     return result
 
-
-angstrom = constant("Angstrom")
-print(angstrom)
-
-pi = constant("pi")
-print(pi)
-
-tau_el_mass_ratio = constant("tau electron ratio")
-print(tau_el_mass_ratio)
-
-el_tau_mass_ratio = constant("ratio electron-tau")
-print(el_tau_mass_ratio)
-
-bohr_rad = constant("bohr atom radius")
-bohr_rad = constant("bohr radius")  # same result
-print(bohr_rad)
-
-light_speed = constant("light of-speed")
-light_speed = constant("speed light")  # same result
-print(light_speed)
