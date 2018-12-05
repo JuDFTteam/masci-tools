@@ -19,7 +19,6 @@ def constant(keywords, printAlternatives=True):
 
     Examples
     ========
-
     >>> angstrom = constant("Angstrom")
     >>> print(angstrom)
     Constant(name='angstrom', value=1e-10)
@@ -28,27 +27,26 @@ def constant(keywords, printAlternatives=True):
     Constant(name='pi', value=3.141592653589793)
     >>> tau_el_mass_ratio = constant("tau electron ratio")
     >>> print(tau_el_mass_ratio)
-    ('tau-electron mass ratio', 3477.15, '', 0.31)
-    >>> el_tau_mass_ratio = constant("ratio electron-tau") # order does matter to a degree
-    >>> el_tau_mass_ratio = constant("electron tau mass") # same result
+    Constant(name='tau-electron mass ratio', value=3477.15, unit='', uncertainty=0.31)
+    >>> el_tau_mass_ratio = constant("ratio electron-tau")  # order does matter to a degree
+    >>> el_tau_mass_ratio = constant("electron tau mass")  # same result
     >>> print(el_tau_mass_ratio)
-    ('electron-tau mass ratio', 0.000287592, '', 2.6e-08)
+    Constant(name='electron-tau mass ratio', value=0.000287592, unit='', uncertainty=2.6e-08)
     >>> bohr_rad = constant("bohr atom radius")
-    >>> bohr_rad = constant("bohr radius") # same result
+    >>> bohr_rad = constant("bohr radius")  # same result
     >>> print(bohr_rad)
-    ('Bohr radius', 5.2917721067e-11, 'm', 1.2e-20)
+    Constant(name='Bohr radius', value=5.2917721067e-11, unit='m', uncertainty=1.2e-20)
     >>> light_speed = constant("light of-speed")
     Function constant(keywords=['light', 'of', 'speed']): selected constant 'speed_of_light'.
     Chosen from available alternatives: ['speed_of_light', 'speed of light in vacuum'].
-    >>> light_speed = constant("speed light") # same result
+    >>> light_speed = constant("speed light")  # same result
     Function constant(keywords=['speed', 'light']): selected constant 'speed_of_light'.
     Chosen from available alternatives: ['speed_of_light', 'speed of light in vacuum'].
     >>> print(light_speed)
-    ('speed_of_light', 299792458.0)
+    Constant(name='speed_of_light', value=299792458.0)
 
     TODO
     ====
-       "pi" is not found, instead finds 'Planck constant over 2 pi'.
        Cleanup code.
 
     :param keywords: one or more keywords
@@ -92,7 +90,6 @@ def constant(keywords, printAlternatives=True):
         const_key = const_keys[ind]
         const_val = const_vals[ind]
     else:
-
 
         # now search:
         # first try a simple approach. If that returns [], then do it incrementally.
@@ -211,7 +208,8 @@ def constant(keywords, printAlternatives=True):
                                   min_el_inds]  # int, float, or a tuple (val, unit str, uncertainty)
                 # print(f"const_keys_res: {const_keys_res}")
 
-                alternatives = f"Chosen from available alternatives: {const_keys_res}." if len(const_keys_res) > 1 else ""
+                alternatives = f"Chosen from available alternatives: {const_keys_res}." if len(
+                    const_keys_res) > 1 else ""
 
                 if (len(min_el_inds) > 1):
                     # choose the one with the closest length to the query length
@@ -246,4 +244,3 @@ def constant(keywords, printAlternatives=True):
         # result = const_key, const_val
 
     return result
-

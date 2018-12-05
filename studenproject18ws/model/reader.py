@@ -1,14 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 
-This module contains the HDF5 file reader class for the script hdf2mic.py.
-
-Author: Johannes Wasmer, Copyright Access e.V., 2018
-
-ChangeLog:
-21-Feb-2018: Ralph Altenfeld
-  group_angles:
-    rotation of orientations to the MICRESS axis system
+To be removed. See data.py instead.
 
 """
 
@@ -18,10 +11,12 @@ import os
 import h5py
 import numpy as np
 
+import deprecated # pip install deprecated
+
 import studenproject18ws.model.util as util
 from studenproject18ws.model.exceptions import *
 
-
+@deprecated
 class Reader(object):
     """HDF5 input file reader for band structure plot
 

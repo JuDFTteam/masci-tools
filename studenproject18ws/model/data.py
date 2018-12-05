@@ -405,7 +405,7 @@ class ReaderGeneric(object):
 # %% definitions
 
 h5extract = {
-    "atoms_position": { 
+    "atoms_position": {
         "h5path": "/atoms/positions",
         "description": f"Atom coordinates",
         "transforms": [[Transform.coordinates.__name__, LatticeType.Bravais.name]]
@@ -415,13 +415,13 @@ h5extract = {
         "description": f"Atoms group",
         "transforms": [Transform.id.__name__]
     },
-    "bandUnfolding": { 
+    "bandUnfolding": {
         "h5path": "/general",
         "description": f"unfolding True/False",
         "transforms": [[Transform.attribute.__name__, 'bandUnfolding'],
                        [Transform.slicer.__name__, '[0]']]
     },
-    "bandUnfolding_weights": { 
+    "bandUnfolding_weights": {
         "h5path": "/bandUnfolding/weights",
         "description": f"weight for each E_n(k). Is None if no bandUnfolding.",
         "transforms": [Transform.id.__name__]
@@ -437,7 +437,7 @@ h5extract = {
         "description": f"'E_n sampled at discrete k values stored in 'kpts'",
         "transforms": [Transform.id.__name__]
     },
-    "fermi_energy": { 
+    "fermi_energy": {
         "h5path": "/general",
         "description": f"fermi_energy of the system",
         "transforms": [[Transform.attribute.__name__, 'lastFermiEnergy'],
@@ -458,7 +458,7 @@ h5extract = {
         "description": f"high symmetry points k-values",
         "transforms": [Transform.k_special_points.__name__]
     },
-    "k_special_point_labels": { 
+    "k_special_point_labels": {
         "h5path": "/kpts/specialPointLabels",
         "description": f"high symmetry points labels",
         "transforms": [Transform.id.__name__]
@@ -473,22 +473,22 @@ h5extract = {
         "description": f"Coordinate transformation internal to physical for k_points",
         "transforms": [Transform.move_to_memory.__name__]
     },
-    "unused_k_weights": { 
+    "unused_k_weights": {
         "h5path": "/kpts/weights",
         "description": f"unused",
         "transforms": [Transform.id.__name__]
     },
-    "unused_jsym": { 
+    "unused_jsym": {
         "h5path": "/eigenvalues/jsym",
         "description": f"unused",
         "transforms": [[Transform.slicer.__name__, "[0]"]]
     },
-    "unused_ksym": { 
+    "unused_ksym": {
         "h5path": "/eigenvalues/ksym",
         "description": f"unused",
         "transforms": [[Transform.slicer.__name__, "[0]"]]
     },
-    "unused_numFoundEigenvalues": { 
+    "unused_numFoundEigenvalues": {
         "h5path": "/eigenvalues/numFoundEigenvals",
         "description": f"unused",
         "transforms": [Transform.id.__name__]
