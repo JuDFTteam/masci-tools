@@ -58,9 +58,10 @@ class Transform(object):
       For that have to implement a switchher, could perhaps also be done
       with a decorator.
     """
-    DEPENDENCIES = { # function dependent on : datasets (dependeees)
+    DEPENDENCIES = {  # function dependent on : datasets (dependeees)
         'coordinates': ['bravaisMatrix', 'reciprocalCell'],
-        'k_distance': ['reciprocalCell']
+        'k_distance': ['reciprocalCell'],
+        'k_special_points': ['k_distances']
     }
 
     def __init__(self, extract_type=ExtractType.FromDict):
@@ -73,6 +74,7 @@ class Transform(object):
         self.reciprocalCell = None
         self.bravaisMatrix = None
         self.k_points = None
+        self.k_distances = None
 
     def _update_dependees(self, name, dataset):
         for dependee_names in self.DEPENDENCIES.values():
@@ -83,7 +85,7 @@ class Transform(object):
         self._update_dependees(name, dataset)
         return dataset
 
-    def to_memory(self, name, dataset):
+    def move_to_memory(self, name, dataset):
         """Copies the in-file dataset to an in-memory numpy ndarray.
 
         In general some sources say it's better and faster to copy HDF5 datasets
@@ -92,16 +94,47 @@ class Transform(object):
         It is imperative if the file is opened inside a context manager (a 'with' statement),
         and the dataset will be used outside of that context ('with' statement).
 
+        Note
+        ====
+        This is equivalent to calling slice function with arg '[:]'.
+
         :param name:
         :type dataset: Dataset
-        :return:
+        :return: ndarray
         """
         transformed = dataset[:]
         self._update_dependees(name, transformed)
         return transformed
 
-    def first(self, name, dataset):
+    def first_element(self, name, dataset):
         transformed = dataset[0]
+        # self._update_dependees(name, transformed)
+        return transformed
+
+    def slicer(self, name, dataset, slice_arg):
+        """Slice dataset .
+
+        Note: h5py Dataset supports only a subset of numpy ndarray slicing.
+
+        :param name:
+        :type dataset: Dataset or ndarray
+        :param slice_arg: examples: "[0]", "[2::2]", and so on
+        :return:
+        """
+        transformed = eval("dataset" + slice_arg)
+        self._update_dependees(name, transformed)
+        return transformed
+
+    def attribute(self, name, dataset, attribute):
+        """
+
+        :param name:
+        :type dataset: Dataset
+        :param attribute:
+        :return:
+        """
+        pass
+        transformed = dataset.attrs[attribute]
         self._update_dependees(name, transformed)
         return transformed
 
@@ -187,7 +220,7 @@ class Transform(object):
     def k_special_points(self, name, dataset):
         transformed = np.zeros(len(dataset[:]))
         for i in range(len(dataset[:])):
-            transformed[i] = self.k_dist[dataset[i] - 1]
+            transformed[i] = self.k_distances[dataset[i] - 1]
 
         self._update_dependees(name, transformed)
         return transformed
@@ -263,11 +296,12 @@ class ReaderGeneric(object):
         # remove entries whose key is an empty string
         h5extract = {key: val for key, val in h5extract.items() if key}
 
-        dataset_names = list(h5extract.keys()) # not equal to HDF5 Dataset names (last part of h5path)!
+        dataset_names = list(h5extract.keys())  # not equal to HDF5 Dataset names (last part of h5path)!
 
         # get h5 datasets
         h5paths = [item['h5path'] for item in list(h5extract.values())]
         datasets = list(map(lambda h5path: self._dataset(h5path), h5paths))
+        print("Loaded datasets.")
 
         # get Transform function names and/or arguments
         transforms = [item['transforms'] for item in list(h5extract.values())]
@@ -278,10 +312,10 @@ class ReaderGeneric(object):
         # are going to be used. That means those, whose respective Transform functions are actually
         # going to be called.
         transform_names_set = set(
-            [item for sublist in                                       # flattens list of lists
+            [item for sublist in  # flattens list of lists
              [[tf[0] if isinstance(tf, list) else tf for tf in tfsub]  # get tf name, discard tf arg names
-              for tfsub in transforms]                                 # for each dataset's list of transforms
-             for item in sublist]                                      # flattens list of list
+              for tfsub in transforms]  # for each dataset's list of transforms
+             for item in sublist]  # flattens list of list
         )
         dataset_names_set = set(dataset_names)
         differences = {}
@@ -301,22 +335,23 @@ class ReaderGeneric(object):
         transformed = set()
         i = 0
         i_noncyclic = 0
-        while (len(transformed) < len(datasets) and (i_noncyclic < 20) ):
-            print(f"i = {i}, data_name = '{dataset_names[i]}', h5path = '{h5paths[i]}',"
-                  f" transform = {transforms[i]}")
+        print("Transforming datasets:")
+        while (len(transformed) < len(datasets) and (i_noncyclic < 20)):
+            print(f"i = {i}, dataset = '{dataset_names[i]}', h5path = '{h5paths[i]}',"
+                  f" transform = '{transforms[i]}':")
             if (dataset_names[i] in transformed):
-                print(f"i = {i} is already transformed {transformed}, continue.")
+                print(f"\tdataset '{dataset_names[i]}'' is already transformed, continue.")
             else:
-                difference = [] # list of dependee datasets for transformations
+                difference = []  # list of dependee datasets for transformations
                 print("\tcheck dependencies:")
                 for transform in transforms[i]:
                     # extract transform function names list (in case one of them has args and this is list)
                     transform_name = transform[0] if isinstance(transform, list) else transform
-                    print(f"\t\tfor transform_function: {transform_name}")
+                    print(f"\t\tfor transform_function: '{transform_name}'")
                     if (transform_name in Transform.DEPENDENCIES.keys()):
                         # now have to check: is the dependency resolved?
                         # I.e. are all dependee-datasets already transformed.
-                        dependees = Transform.DEPENDENCIES[transform_name] # list
+                        dependees = Transform.DEPENDENCIES[transform_name]  # list
                         if set(dependees).issubset(transformed):
                             pass
                         else:
@@ -324,7 +359,7 @@ class ReaderGeneric(object):
                             print(f"\tis dependent on untransformed datasets {difference}, try next dataset first")
                             break
                 if (not difference):
-                    print("\tnot dependent or all dep.s satisfied, transform:")
+                    print("\tnot dependent or all dependencies satisfied, transform:")
                     for transform in transforms[i]:
                         transform_name = transform
                         transform_args = [dataset_names[i], datasets[i]]
@@ -332,10 +367,10 @@ class ReaderGeneric(object):
                             transform_name = transform[0]
                             transform_args.extend(transform[1:])
                         transform_function = getattr(self.transformer, transform_name)
-                        print(f"\t\ttransform_function: {transform_name}, transform_args: {transform_args}")
+                        print(f"\t\ttransform_function: '{transform_name}', transform_args: '{transform_args}'")
                         datasets[i] = transform_function(*transform_args)
                         transformed.add(dataset_names[i])
-                    print(f"\ttransformed dataset {dataset_names[i]}")
+                    print(f"\ttransformed dataset '{dataset_names[i]}'.")
             i = (i + 1) % len(datasets)
             i_noncyclic += 1
 
@@ -349,18 +384,6 @@ class ReaderGeneric(object):
 # %% definitions
 
 h5extract = {
-    "bravaisMatrix": {
-        "h5path": "/cell/bravaisMatrix",
-        "description": f"Coordinate transformation internal to physical for atoms",
-        "transforms": [Transform.to_memory.__name__,
-                       [Transform.scale_with_constant.__name__, "bohr radius", "angstrom"]
-                       ]
-    },
-    "reciprocalCell": {
-        "h5path": "/cell/reciprocalCell",
-        "description": f"Coordinate transformation internal to physical for k_points",
-        "transforms": [Transform.to_memory.__name__]
-    },
     "eigenvalues": {
         "h5path": "/eigenvalues/eigenvalues",
         "description": f"'E_n sampled at discrete k values stored in 'kpts'",
@@ -386,11 +409,34 @@ h5extract = {
                        f"",
         "transforms": [Transform.k_distance.__name__]
     },
-    # "k_special_points": {
-    #     "h5path": "/kpts/specialPointIndices",
-    #     "description": f"k-values of the high symmetry points",
-    #     "": [Transform.k_special_points.__name__]
-    # },
+    "k_special_points": {
+        "h5path": "/kpts/specialPointIndices",
+        "description": f"high symmetry points k-values",
+        "transforms": [Transform.k_special_points.__name__]
+    },
+    "k_special_point_labels": {  # template entry
+        "h5path": "/kpts/specialPointLabels",
+        "description": f"high symmetry points labels",
+        "transforms": [Transform.id.__name__]
+    },
+    "fermi_energy": {  # template entry
+        "h5path": "/general",
+        "description": f"fermi_energy of the system",
+        "transforms": [[Transform.attribute.__name__, 'lastFermiEnergy'],
+                       [Transform.slicer.__name__, '[0]']]
+    },
+    "bravaisMatrix": {
+        "h5path": "/cell/bravaisMatrix",
+        "description": f"Coordinate transformation internal to physical for atoms",
+        "transforms": [Transform.move_to_memory.__name__,
+                       [Transform.scale_with_constant.__name__, "bohr radius", "angstrom"]
+                       ]
+    },
+    "reciprocalCell": {
+        "h5path": "/cell/reciprocalCell",
+        "description": f"Coordinate transformation internal to physical for k_points",
+        "transforms": [Transform.move_to_memory.__name__]
+    },
     "": {  # template entry
         "h5path": "",
         "description": f"",
