@@ -82,6 +82,12 @@ class Transform(object):
                 setattr(self, name, dataset)
 
     def id(self, name, dataset):
+        """Identity transformation, default.
+
+        :param name: of the dataset
+        :type dataset: Dataset or ndarray
+        :return: dataset
+        """
         self._update_dependees(name, dataset)
         return dataset
 
@@ -126,15 +132,27 @@ class Transform(object):
         return transformed
 
     def attribute(self, name, dataset, attribute):
-        """
+        """Extracts a specified attribute's value.
 
         :param name:
         :type dataset: Dataset
-        :param attribute:
+        :param attribute: attribute name
         :return:
         """
-        pass
         transformed = dataset.attrs[attribute]
+        self._update_dependees(name, transformed)
+        return transformed
+
+    def attributes(self, name, dataset):
+        """Extracts attributes of a dataset as a dict.
+
+        :param name:
+        :type dataset: Dataset
+        :return: attributes dict
+        """
+        transformed = {}
+        for key, value in dataset.attrs.items():
+            transformed[key] = value
         self._update_dependees(name, transformed)
         return transformed
 
@@ -163,10 +181,10 @@ class Transform(object):
         :param name: name of the dataset
         :param dataset:
         :type dataset: Dataset or ndarray
-        :param lattice: from -> to
-        :type lattice: LatticeType name, so a str
-        :param from_coordsys: from ->to
-        :type from_coordsys: CoordinateSystemType name, so a str
+        :param lattice: Bravais or Reciprocal
+        :type lattice: LatticeType name, a str
+        :param from_coordsys: the 'from' in 'from -> to'
+        :type from_coordsys: CoordinateSystemType name, a str
         :return:
         """
         transformed = None
@@ -257,18 +275,20 @@ class ReaderGeneric(object):
         # exception handling goes here
         self._f.close()
 
-    def _dataset(self, h5path, safe=False):
+    def _dataset(self, h5path, silent=False):
         """
 
         Parameters
         ----------
         h5path : str
             HDF5 group path in file.
+        silent : bool
+            If no dataset at h5path: True: return None, False: raise error
 
         Returns
         -------
         Dataset
-            h5py.Dataset
+            h5py.Dataset or None
 
         Raises
         ------
@@ -276,7 +296,7 @@ class ReaderGeneric(object):
             if file has no such Dataset
         """
         if h5path == '/' or h5path == '':
-            if safe:
+            if silent:
                 return None
             else:
                 pass
@@ -284,7 +304,7 @@ class ReaderGeneric(object):
         dset = self._f.get(h5path)
         if dset is not None:
             return dset
-        elif not safe:
+        elif not silent:
             raise Hdf5_DatasetNotFoundError('ERROR: HDF5 input file {} has no Dataset at {}. Aborting.'
                                             .format(self._f.filename, h5path))
         return None
@@ -300,7 +320,7 @@ class ReaderGeneric(object):
 
         # get h5 datasets
         h5paths = [item['h5path'] for item in list(h5extract.values())]
-        datasets = list(map(lambda h5path: self._dataset(h5path), h5paths))
+        datasets = list(map(lambda h5path: self._dataset(h5path, silent=True), h5paths))
         print("Loaded datasets.")
 
         # get Transform function names and/or arguments
@@ -334,11 +354,13 @@ class ReaderGeneric(object):
         # do the latter ones until all dependencies are satisifed.
         transformed = set()
         i = 0
-        i_noncyclic = 0
         print("Transforming datasets:")
-        while (len(transformed) < len(datasets) and (i_noncyclic < 20)):
+        while (len(transformed) < len(datasets)):
             print(f"i = {i}, dataset = '{dataset_names[i]}', h5path = '{h5paths[i]}',"
                   f" transform = '{transforms[i]}':")
+            if (datasets[i] is None):
+                print(f"\tdataset '{dataset_names[i]}' does not exist, pass.")
+                transformed.add(dataset_names[i])
             if (dataset_names[i] in transformed):
                 print(f"\tdataset '{dataset_names[i]}'' is already transformed, continue.")
             else:
@@ -372,7 +394,6 @@ class ReaderGeneric(object):
                         transformed.add(dataset_names[i])
                     print(f"\ttransformed dataset '{dataset_names[i]}'.")
             i = (i + 1) % len(datasets)
-            i_noncyclic += 1
 
         # creaet namedtyple type, values will be the transformed datasets
         Data = namedtuple('Data', dataset_names)
@@ -384,20 +405,43 @@ class ReaderGeneric(object):
 # %% definitions
 
 h5extract = {
+    "atoms_position": { 
+        "h5path": "/atoms/positions",
+        "description": f"Atom coordinates",
+        "transforms": [[Transform.coordinates.__name__, LatticeType.Bravais.name]]
+    },
+    "atoms_group": {
+        "h5path": "/atoms/equivAtomsGroup",
+        "description": f"Atoms group",
+        "transforms": [Transform.id.__name__]
+    },
+    "bandUnfolding": { 
+        "h5path": "/general",
+        "description": f"unfolding True/False",
+        "transforms": [[Transform.attribute.__name__, 'bandUnfolding'],
+                       [Transform.slicer.__name__, '[0]']]
+    },
+    "bandUnfolding_weights": { 
+        "h5path": "/bandUnfolding/weights",
+        "description": f"weight for each E_n(k). Is None if no bandUnfolding.",
+        "transforms": [Transform.id.__name__]
+    },
+    "bravaisMatrix": {
+        "h5path": "/cell/bravaisMatrix",
+        "description": f"Coordinate transformation internal to physical for atoms",
+        "transforms": [Transform.move_to_memory.__name__,
+                       [Transform.scale_with_constant.__name__, "bohr radius", "angstrom"]]
+    },
     "eigenvalues": {
         "h5path": "/eigenvalues/eigenvalues",
         "description": f"'E_n sampled at discrete k values stored in 'kpts'",
         "transforms": [Transform.id.__name__]
     },
-    "llikecharge": {
-        "h5path": "/eigenvalues/lLikeCharge",
-        "description": f"Something related to the projection on s,p,d,f,... orbitals...",
-        "transforms": [Transform.id.__name__]
-    },
-    "atoms_position": {  # template entry
-        "h5path": "/atoms/positions",
-        "description": f"Atom coordinates",
-        "transforms": [[Transform.coordinates.__name__, LatticeType.Bravais.name]]
+    "fermi_energy": { 
+        "h5path": "/general",
+        "description": f"fermi_energy of the system",
+        "transforms": [[Transform.attribute.__name__, 'lastFermiEnergy'],
+                       [Transform.slicer.__name__, '[0]']]
     },
     "k_distances": {
         "h5path": "/kpts/coordinates",
@@ -414,39 +458,51 @@ h5extract = {
         "description": f"high symmetry points k-values",
         "transforms": [Transform.k_special_points.__name__]
     },
-    "k_special_point_labels": {  # template entry
+    "k_special_point_labels": { 
         "h5path": "/kpts/specialPointLabels",
         "description": f"high symmetry points labels",
         "transforms": [Transform.id.__name__]
     },
-    "fermi_energy": {  # template entry
-        "h5path": "/general",
-        "description": f"fermi_energy of the system",
-        "transforms": [[Transform.attribute.__name__, 'lastFermiEnergy'],
-                       [Transform.slicer.__name__, '[0]']]
-    },
-    "bravaisMatrix": {
-        "h5path": "/cell/bravaisMatrix",
-        "description": f"Coordinate transformation internal to physical for atoms",
-        "transforms": [Transform.move_to_memory.__name__,
-                       [Transform.scale_with_constant.__name__, "bohr radius", "angstrom"]
-                       ]
+    "llikecharge": {
+        "h5path": "/eigenvalues/lLikeCharge",
+        "description": f"Something related to the projection on s,p,d,f,... orbitals...",
+        "transforms": [Transform.id.__name__]
     },
     "reciprocalCell": {
         "h5path": "/cell/reciprocalCell",
         "description": f"Coordinate transformation internal to physical for k_points",
         "transforms": [Transform.move_to_memory.__name__]
     },
+    "unused_k_weights": { 
+        "h5path": "/kpts/weights",
+        "description": f"unused",
+        "transforms": [Transform.id.__name__]
+    },
+    "unused_jsym": { 
+        "h5path": "/eigenvalues/jsym",
+        "description": f"unused",
+        "transforms": [[Transform.slicer.__name__, "[0]"]]
+    },
+    "unused_ksym": { 
+        "h5path": "/eigenvalues/ksym",
+        "description": f"unused",
+        "transforms": [[Transform.slicer.__name__, "[0]"]]
+    },
+    "unused_numFoundEigenvalues": { 
+        "h5path": "/eigenvalues/numFoundEigenvals",
+        "description": f"unused",
+        "transforms": [Transform.id.__name__]
+    },
     "": {  # template entry
         "h5path": "",
         "description": f"",
-        "": [Transform.id.__name__]
+        "transforms": [Transform.id.__name__]
     },
 }
 
 # filename = 'banddos_4x4.hdf'
-filename = 'banddos.hdf'
-# filename = 'banddos_Co.hdf'
+# filename = 'banddos.hdf'
+filename = 'banddos_Co.hdf'
 
 filepath = ['..', 'data', 'input', filename]
 filepath = os.path.join(*filepath)
