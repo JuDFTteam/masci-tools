@@ -27,11 +27,21 @@ from studenproject18ws.hdf.transform import Transform, TransformBands
 
 
 class Extractor(object):
-    """
+    """Generic Reader class for HDF5 files following the Extract-Transform-Load (ETL) approach.
+
+    Idea: reader receives:
+    - A h5 file
+    - An 'Extract Config': a dict with one enttry per h5 dataset
+    - An Transform class: holding functions to be applied to the datasets
+    Return a data object that holds all transformed datasets as attributes.
+
+    Benefits:
+    - clearly defined Extract Configs for different application cases, reuse infrastructure
+    - reusable (base class) and extendable (derived class) Transform functions
 
     Examples
     --------
-    Extract a band structure.
+    Extract a band structure. (tested with doctest: passed)
 
     >>> from studenproject18ws.hdf.config import Extract
     >>> from studenproject18ws.hdf.transform import TransformBands
@@ -63,13 +73,22 @@ class Extractor(object):
 
     Notes
     -----
-    Idea: reader receives:
-    - a h5 file
-    - a dict with h5py groups as keys and values:
-      - a Transform function to apply
-      - a list or tuple of Transform functions to apply sequentially
-      - a dict with values Transform functions as keys and values:
-        - arguments for the respective transform functions
+
+
+    TODO
+    ====
+    - For return type, use a Metaclass instead of namedtuple. That way, could reuse input extract dict
+      for the output's attributes, AND add functions to the new class for further processing, like weight
+      functions needed for the bands plotting. These could also be stored per application base. If that
+      could be achieved, the ETL terminology would have to be shifted: current 'Transform' functions would
+      be relabeled 'Extract' functions, and the further-processing functions would become the new 'Transform'
+      functions. Right now, those have to live decoupled from this module, which I think is worse.
+      Example from [1]: Foo = type('Foo',(FooBase,),{'some_attr': 100,'some_func': func})
+
+    References
+    ----------
+        .. [1] Real Python. Python Metaclasses.
+           URL: https://realpython.com/python-metaclasses/#defining-a-class-dynamically
     """
 
     def __init__(self, filepath):
