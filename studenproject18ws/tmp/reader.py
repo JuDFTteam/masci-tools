@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 
-To be removed. See data.py instead.
+To be removed. See extract.py instead.
 
 """
 
@@ -13,8 +13,8 @@ import numpy as np
 
 import deprecated # pip install deprecated
 
-import studenproject18ws.model.util as util
-from studenproject18ws.model.exceptions import *
+import studenproject18ws.hdf.util as util
+from studenproject18ws.hdf.exceptions import *
 
 @deprecated
 class Reader(object):

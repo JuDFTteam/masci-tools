@@ -1,7 +1,6 @@
 import os
 from matplotlib import pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-from studenproject18ws.model.reader import Reader
+from studenproject18ws.tmp.reader import Reader
 
 
 class Plotter(object):

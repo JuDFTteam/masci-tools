@@ -1,3 +1,6 @@
+"""Holds utility functions for the HDF Extractor module.
+
+"""
 from collections import namedtuple
 
 import scipy.constants as constants

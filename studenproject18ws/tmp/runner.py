@@ -1,6 +1,6 @@
 import os
 
-from studenproject18ws.model.reader import Reader
+from studenproject18ws.tmp.reader import Reader
 from studenproject18ws.control.plotter import Plotter
 
 
