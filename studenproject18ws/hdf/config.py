@@ -1,9 +1,8 @@
 """Holds the Extract Configs (dictionaries) for different applications for the HDF Extractor class.
 
 """
-from enum import Enum
 
-from studenproject18ws.hdf.transform import TransformBands, LatticeType
+from studenproject18ws.hdf.transform import Transform, TransformBands, LatticeType
 
 class Extract:
     """
@@ -30,8 +29,8 @@ class Extract:
         "bandUnfolding": {
             "h5path": "/general",
             "description": f"unfolding True/False",
-            "transforms": [[TransformBands.attribute, 'bandUnfolding'],
-                           [TransformBands.slicer, '[0]']]
+            "transforms": [[Transform.attribute, 'bandUnfolding'],
+                           [Transform.slicer, '[0]']]
         },
         "bandUnfolding_weights": {
             "h5path": "/bandUnfolding/weights",
@@ -40,8 +39,8 @@ class Extract:
         "bravaisMatrix": {
             "h5path": "/cell/bravaisMatrix",
             "description": f"Coordinate transformation internal to physical for atoms",
-            "transforms": [TransformBands.move_to_memory,
-                           [TransformBands.scale_with_constant, "bohr radius", "angstrom"]]
+            "transforms": [Transform.move_to_memory,
+                           [Transform.scale_with_constant, "bohr radius", "angstrom"]]
         },
         "eigenvalues": {
             "h5path": "/eigenvalues/eigenvalues",
@@ -50,8 +49,8 @@ class Extract:
         "fermi_energy": {
             "h5path": "/general",
             "description": f"fermi_energy of the system",
-            "transforms": [[TransformBands.attribute, 'lastFermiEnergy'],
-                           [TransformBands.slicer, '[0]']]
+            "transforms": [[Transform.attribute, 'lastFermiEnergy'],
+                           [Transform.slicer, '[0]']]
         },
         "k_distances": {
             "h5path": "/kpts/coordinates",
@@ -79,18 +78,18 @@ class Extract:
         "reciprocalCell": {
             "h5path": "/cell/reciprocalCell",
             "description": f"Coordinate transformation internal to physical for k_points",
-            "transforms": [TransformBands.move_to_memory]
+            "transforms": [Transform.move_to_memory]
         },
         "unused_k_weights": {
             "h5path": "/kpts/weights",
         },
         "unused_jsym": {
             "h5path": "/eigenvalues/jsym",
-            "transforms": [[TransformBands.slicer, "[0]"]]
+            "transforms": [[Transform.slicer, "[0]"]]
         },
         "unused_ksym": {
             "h5path": "/eigenvalues/ksym",
-            "transforms": [[TransformBands.slicer, "[0]"]]
+            "transforms": [[Transform.slicer, "[0]"]]
         },
         "unused_numFoundEigenvalues": {
             "h5path": "/eigenvalues/numFoundEigenvals",
@@ -98,7 +97,7 @@ class Extract:
         "": {  # template entry
             "h5path": "",
             "description": f"",
-            "transforms": [TransformBands.id]
+            "transforms": [Transform.id]
         },
     }
     """For Bandstructure Plots"""
@@ -121,7 +120,7 @@ class Extract:
                            f"the following elements it's arguments. "
                            f"The following 'transforms' value are equivalent to 'transforms' being absent:"
                            f"[Transforms.id], ['id'], Transforms.id, 'id', TransDerivedClass.id, ...",
-            "transforms": [TransformBands.id]
+            "transforms": [Transform.id]
         }
     }
     """Template for defining a new Extract Config."""
