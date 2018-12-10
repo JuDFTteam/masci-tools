@@ -1,8 +1,10 @@
 """Holds the Extract Configs (dictionaries) for different applications for the HDF Extractor class.
 
 """
+import studenproject18ws.hdf.load as load
+from studenproject18ws.hdf.load import *
+from studenproject18ws.hdf.transform import *
 
-from studenproject18ws.hdf.transform import Transform, TransformBands, LatticeType
 
 class Extract:
     """
@@ -16,89 +18,98 @@ class Extract:
     """
 
     Bands = {
-        "atoms_position": {
-            "h5path": "/atoms/positions",
-            "description": f"Atom coordinates per atom",
-            "transforms": [[TransformBands.coordinates, LatticeType.Bravais]]
-            # equivalent: [["coordinates", "bravais"]]
-        },
-        "atoms_group": {
-            "h5path": "/atoms/equivAtomsGroup",
-            "description": f"Atoms symmetry group per atom",
-        },
-        "bandUnfolding": {
-            "h5path": "/general",
-            "description": f"unfolding True/False",
-            "transforms": [[Transform.attribute, 'bandUnfolding'],
-                           [Transform.slicer, '[0]']]
-        },
-        "bandUnfolding_weights": {
-            "h5path": "/bandUnfolding/weights",
-            "description": f"weight for each E_n(k). Is None if no bandUnfolding.",
-        },
-        "bravaisMatrix": {
-            "h5path": "/cell/bravaisMatrix",
-            "description": f"Coordinate transformation internal to physical for atoms",
-            "transforms": [Transform.move_to_memory,
-                           [Transform.scale_with_constant, "bohr radius", "angstrom"]]
-        },
-        "eigenvalues": {
-            "h5path": "/eigenvalues/eigenvalues",
-            "description": f"'E_n sampled at discrete k values stored in 'kpts'",
-        },
-        "fermi_energy": {
-            "h5path": "/general",
-            "description": f"fermi_energy of the system",
-            "transforms": [[Transform.attribute, 'lastFermiEnergy'],
-                           [Transform.slicer, '[0]']]
-        },
-        "k_distances": {
-            "h5path": "/kpts/coordinates",
-            "description": f"k spacing along the path in the Brillouin zone. "
-                           f"(Note: k_points are currently not stored, but available after"
-                           f"transform via transformer.k_points. k_points are 3d coordinates "
-                           f"of the path along which E_n(kx, ky, kz) is sampled. See k_distance"
-                           f"function if this should be changed.)"
-                           f"",
-            "transforms": [TransformBands.k_distance]
-        },
-        "k_special_points": {
-            "h5path": "/kpts/specialPointIndices",
-            "description": f"high symmetry points k-values",
-            "transforms": [TransformBands.k_special_points]
-        },
-        "k_special_point_labels": {
-            "h5path": "/kpts/specialPointLabels",
-            "description": f"high symmetry points labels",
-        },
-        "llikecharge": {
-            "h5path": "/eigenvalues/lLikeCharge",
-            "description": f"Something related to the projection on s,p,d,f,... orbitals...",
-        },
-        "reciprocalCell": {
-            "h5path": "/cell/reciprocalCell",
-            "description": f"Coordinate transformation internal to physical for k_points",
-            "transforms": [Transform.move_to_memory]
-        },
-        "unused_k_weights": {
-            "h5path": "/kpts/weights",
-        },
-        "unused_jsym": {
-            "h5path": "/eigenvalues/jsym",
-            "transforms": [[Transform.slicer, "[0]"]]
-        },
-        "unused_ksym": {
-            "h5path": "/eigenvalues/ksym",
-            "transforms": [[Transform.slicer, "[0]"]]
-        },
-        "unused_numFoundEigenvalues": {
-            "h5path": "/eigenvalues/numFoundEigenvals",
-        },
-        "": {  # template entry
-            "h5path": "",
-            "description": f"",
-            "transforms": [Transform.id]
-        },
+        "data_classes_functions": [
+            load.DataBands
+        ],
+        "datasets": {
+            "atoms_position": {
+                "h5path": "/atoms/positions",
+                "description": f"Atom coordinates per atom",
+                "transforms": [[TransformBands.coordinates, LatticeType.Bravais]]
+                # equivalent: [["TransformBands.coordinates", "bravais"]]
+            },
+            "atoms_group": {
+                "h5path": "/atoms/equivAtomsGroup",
+                "description": f"Atoms symmetry group per atom",
+            },
+            "bandUnfolding": {
+                "h5path": "/general",
+                "description": f"unfolding True/False",
+                "transforms": [[Transform.attribute, 'bandUnfolding'],
+                               [TransformBands.slicer, '[0]']]
+            },
+            "bandUnfolding_weights": {
+                "h5path": "/bandUnfolding/weights",
+                "description": f"weight for each E_n(k). Is None if no bandUnfolding.",
+            },
+            "bravaisMatrix": {
+                "h5path": "/cell/bravaisMatrix",
+                "description": f"Coordinate transformation internal to physical for atoms",
+                "transforms": ['Transform.move_to_memory',
+                               [Transform.scale_with_constant, "bohr radius", "angstrom"]]
+            },
+            "eigenvalues": {
+                "h5path": "/eigenvalues/eigenvalues",
+                "description": f"'E_n sampled at discrete k values stored in 'kpts'",
+            },
+            "fermi_energy": {
+                "h5path": "/general",
+                "description": f"fermi_energy of the system",
+                "transforms": [[Transform.attribute, 'lastFermiEnergy'],
+                               [Transform.slicer, '[0]']]
+            },
+            "k_distances": {
+                "h5path": "/kpts/coordinates",
+                "description": f"k spacing along the path in the Brillouin zone. "
+                               f"(Note: k_points are currently not stored, but available after"
+                               f"transform via transformer.k_points. k_points are 3d coordinates "
+                               f"of the path along which E_n(kx, ky, kz) is sampled. See k_distance"
+                               f"function if this should be changed.)"
+                               f"",
+                "transforms": [TransformBands.k_distance]
+            },
+            "k_points": {
+                "h5path": "/kpts/coordinates",
+                "description": "bla",
+            },
+            "k_special_points": {
+                "h5path": "/kpts/specialPointIndices",
+                "description": f"high symmetry points k-values",
+                "transforms": [TransformBands.k_special_points]
+            },
+            "k_special_point_labels": {
+                "h5path": "/kpts/specialPointLabels",
+                "description": f"high symmetry points labels",
+            },
+            "llikecharge": {
+                "h5path": "/eigenvalues/lLikeCharge",
+                "description": f"Something related to the projection on s,p,d,f,... orbitals...",
+            },
+            "reciprocalCell": {
+                "h5path": "/cell/reciprocalCell",
+                "description": f"Coordinate transformation internal to physical for k_points",
+                "transforms": [Transform.move_to_memory]
+            },
+            "unused_k_weights": {
+                "h5path": "/kpts/weights",
+            },
+            "unused_jsym": {
+                "h5path": "/eigenvalues/jsym",
+                "transforms": [[Transform.slicer, "[0]"]]
+            },
+            "unused_ksym": {
+                "h5path": "/eigenvalues/ksym",
+                "transforms": [[Transform.slicer, "[0]"]]
+            },
+            "unused_numFoundEigenvalues": {
+                "h5path": "/eigenvalues/numFoundEigenvals",
+            },
+            "": {  # template entry
+                "h5path": "",
+                "description": f"",
+                "transforms": [Transform.id]
+            },
+        }
     }
     """For Bandstructure Plots"""
 
@@ -124,5 +135,3 @@ class Extract:
         }
     }
     """Template for defining a new Extract Config."""
-
-

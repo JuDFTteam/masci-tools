@@ -28,16 +28,25 @@ class Transform(object):
     ====
     - Perhaps could be made nicer, more expressive with Python decorators.
     """
-    DEPENDENCIES = {}  # syntax: key = function (depends on) : value = list of datasets (dependeees)
+    DEPENDENCIES = {
+        'TransformBands.coordinates': ['bravaisMatrix', 'reciprocalCell'],
+        'TransformBands.k_distance': ['reciprocalCell', 'k_points'],
+        'TransformBands.k_special_points': ['k_distances']
+    }
     """Syntax: key = function (depends on) : value = list of datasets (dependees).
        Transform base clas has no functions that are dependend on extracted datasets.   
     """
+
 
     def __init__(self):
         """
         """
         # dependee datasets
-        pass
+        # dependee datasets for Band Transforms
+        self.reciprocalCell = None
+        self.bravaisMatrix = None
+        self.k_points = None
+        self.k_distances = None
 
     def _update_dependees(self, name, dataset):
         for dependee_names in self.DEPENDENCIES.values():
@@ -102,7 +111,7 @@ class Transform(object):
 
     def first_element(self, name, dataset):
         transformed = dataset[0]
-        # self._update_dependees(name, transformed)
+        self._update_dependees(name, transformed)
         return transformed
 
     def slicer(self, name, dataset, slice_arg):
@@ -142,21 +151,8 @@ class Transform(object):
 class TransformBands(Transform):
     """
     """
-    DEPENDENCIES = {
-        'coordinates': ['bravaisMatrix', 'reciprocalCell'],
-        'k_distance': ['reciprocalCell'],
-        'k_special_points': ['k_distances']
-    }
-    """Syntax: key = function (depends on) : value = list of datasets (dependees)."""
-
     def __init__(self):
         Transform.__init__(self)
-
-        # dependee datasets for Band Transforms
-        self.reciprocalCell = None
-        self.bravaisMatrix = None
-        self.k_points = None
-        self.k_distances = None
 
     def coordinates(self, name, dataset, lattice, from_coordsys=CoordinateSystemType.Internal.name):
         """Coordinate transforation
