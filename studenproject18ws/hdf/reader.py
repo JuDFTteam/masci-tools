@@ -544,6 +544,7 @@ if __name__ == '__main__':
         # Inside the with statement (context manager),
         # all data attributes that are type h5py Dataset are available (in-file access)
         # When the statement is left,the HDF5 file gets closed and the datasets are closed.
+        #
         # Use data outside the with-statement (in-memory access: all HDF5 datasets converted to numpy ndarrays):
         data.move_datasets_to_memory()
     # Left HDF5 file with statement: file and all open hdf5 Datasets are now closed.
