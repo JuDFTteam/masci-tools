@@ -1,8 +1,9 @@
 import os
 from matplotlib import pyplot as plt
 from studenproject18ws.tmp.reader import Reader
+import deprecated # pip install deprecated
 
-
+@deprecated
 class Plotter(object):
 
     def __init__(self, data):

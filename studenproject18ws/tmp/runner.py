@@ -1,9 +1,12 @@
 import os
 
+import deprecated  # pip install deprecated
+
+from studenproject18ws.tmp.plotter import Plotter
 from studenproject18ws.tmp.reader import Reader
-from studenproject18ws.control.plotter import Plotter
 
 
+@deprecated
 def main():
     print("Hiiiiiiiiiiiiiiiiiiiii hdf!!!")
 

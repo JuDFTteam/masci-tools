@@ -1,4 +1,4 @@
-"""Holds the Transform classes for different applications for the HDF Extractor class.
+"""Holds the Transform classes for different applications for the HDF file Reader module.
 
 """
 from enum import Enum
@@ -19,14 +19,21 @@ class LatticeType(Enum):
 
 
 class Transform(object):
-    """Base class for Transform functions for HDF Dataset Extract-Transforms.
+    """Base class for Transform functions for HDF file Reader Extract-Transform-Load pipeline.
 
-    This base class holds transform functions useful in all application cases.
-    For application-specifid transforms, a derived class should be used or declared.
+    This base class holds transform functions useful for all HDF file data extraction application cases.
+    For application-specifid transforms, only classes derived from this base should be used or declared.
+
+    Note: if new classes or methods are added, adopt funtion body from existing cases: arguments name, dataset
+    are obligatory. Before return transformed dataset, call the base method for updating dependees.
+
+    Note: if a new method introduces new interdependencies between datasets, the DEPENDENCIES dictionary in the
+    base class has to be adjusted.
 
     TODO
     ====
     - Perhaps could be made nicer, more expressive with Python decorators.
+    - code could be smart enought to construct DEPENDENCIES list by itself before transformation. Would be safer.
     """
     DEPENDENCIES = {
         'TransformBands.coordinates': ['bravaisMatrix', 'reciprocalCell'],
@@ -36,7 +43,6 @@ class Transform(object):
     """Syntax: key = function (depends on) : value = list of datasets (dependees).
        Transform base clas has no functions that are dependend on extracted datasets.   
     """
-
 
     def __init__(self):
         """
@@ -151,6 +157,7 @@ class Transform(object):
 class TransformBands(Transform):
     """
     """
+
     def __init__(self):
         Transform.__init__(self)
 

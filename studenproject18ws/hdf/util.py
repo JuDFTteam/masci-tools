@@ -1,10 +1,28 @@
-"""Holds utility functions for the HDF Extractor module.
+"""Holds utility functions for the HDF file Reader module.
 
 """
+import __future__
+import inspect
 from collections import namedtuple
 
 import scipy.constants as constants
-import __future__
+
+
+def get_class(method):
+    """py3-compatible version of getting a method's type.
+    :return:
+    """
+    if inspect.ismethod(method):
+        for cls in inspect.getmro(method.__self__.__class__):
+            if cls.__dict__.get(method.__name__) is method:
+                return cls
+        method = method.__func__  # fallback to __qualname__ parsing
+    if inspect.isfunction(method):
+        cls = getattr(inspect.getmodule(method),
+                      method.__qualname__.split('.<locals>', 1)[0].rsplit('.', 1)[0])
+        if isinstance(cls, type):
+            return cls
+    return getattr(method, '__objclass__', None)  # handle special descriptor objects
 
 
 def constant(keywords, printAlternatives=True):

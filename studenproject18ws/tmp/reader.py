@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 
-To be removed. See extract.py instead.
+To be removed. See reader.py instead.
 
 """
 

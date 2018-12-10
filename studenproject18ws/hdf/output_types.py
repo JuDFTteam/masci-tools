@@ -1,6 +1,8 @@
+"""Holds composable output data types (plug-in functions) for the HDF file Reader module."""
 import inspect
-import numpy as np
 from collections import Counter
+
+import numpy as np
 from h5py._hl.dataset import Dataset as h5py_Dataset
 
 EXCEPTIONS = [inspect, np, Counter, h5py_Dataset]
@@ -10,7 +12,30 @@ The ones mentioned here are passed over."""
 
 
 class Data(object):
+    """Base class for dynamically composable output types for HDF file Reader Extract-Transform-Load pipeline.
+
+    This base class serves as common base for all application-specific data output classes. It this base class
+    is used as data output type in a recipe, the resulting object will only have dataset attributes and no
+    methods.
+
+    For application-specifid transforms, only classes derived from this base should be used or declared.
+
+    Note: As mentioned in the recipes module, a recipe can compose a new data output type dynamically from
+    any combination of classes and functions found in this module, for example, for mixing application cases.
+
+    Note: When defining the __init__ method in a new derived data output class, attributes may be declared,
+    and even transformed dataset attributes coming may be accessed. But the latter must take place inside
+    a try-except AttributeError region, otherwise the readout will crash. Reason: for checking stuff, the
+    reader teomporarily instantiates the data output classes without arguments at one time, so the
+    transformed dataset  attributes are missing in that instant. When the reader instantiates again at the end,
+    they will be present and the access will work.
+    """
+
     def __init__(self, **kwds):
+        """
+        :param kwds: entry point for all transformed dataset attributes and additional data output methods
+                     specified in recipe and created in reader.
+        """
         self.__dict__.update(kwds)
 
     def move_datasets_to_memory(self):
@@ -72,10 +97,8 @@ class DataBands(Data):
         else:
             return self.weights(characters, groups, spin)
 
-
-
 # # For demonstraction purposes:
-# # Add Rhubarb.rhubarb, Machiavelli.rhubarb to config BandStructure data_classes_functions and see what happens
+# # Add Rhubarb.rhubarb, Machiavelli.rhubarb to recipe BandStructure data_classes_functions and see what happens
 # class Rhubarb(object):
 #     def rhubarb(self):
 #         print("rhubarb! rhubarb!")

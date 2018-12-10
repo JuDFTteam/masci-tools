@@ -232,7 +232,7 @@ latex_documents = [
 # on_rtd is whether we are on readthedocs.org, this line of code grabbed
 # from docs.readthedocs.org
 # NOTE: it is needed to have these lines before load_dbenv()
-on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+on_rtd = os.environ.read('READTHEDOCS', None) == 'True'
 
 # Following 3 lines avoid the need of importing load_dbenv() for compiling the
 # documentation -> works also without verdi install

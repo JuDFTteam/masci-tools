@@ -1,99 +1,117 @@
 # -*- coding: utf-8 -*-
-"""Holds the main class of this module, the Extractor, a generic HDF file reader. See it's docstring.
+"""Holds the main class of this package, the Reader, a generic HDF file reader. See it's docstring.
 
 Notes
 =====
-Benefit of all this:
-- together, the Extractor, Extract Configs and Transform classes become a utility that can  be reused
+Why 'generic'?:
+- together, the Reader, recipes, transforms and data output_types become a utility that can  be reused
   for any kind of hdf5 file readout (extraction-transform-load). For different applications, a new
-  extract config (a dict) can be added or passed in to the extractor. Same goes for the Transform class
-  that holds the transform functions: if needed, derive a new one.
-- benefit of the namedtupple as data output over directly using the dict: autompletion, refactoring
-  works (in an IDE), no input clutter.
+  recipe (a dict) can be added or passed in to the reader. Same goes for the Transform class
+  that holds the transform functions: if needed, derive a new one. Finally, this applies to the data output_types
+  as well. In the recipe, different transforms and data_types can be composed together down to individual functions.
 """
 import copy
 import functools
-import inspect
 import logging
 import ntpath
 import os
 import sys
-from enum import Enum
 from collections import OrderedDict
 
 import h5py
 from h5py._hl.dataset import Dataset
 
-from studenproject18ws.hdf.config import Extract
+import studenproject18ws.hdf.output_types as load
 from studenproject18ws.hdf.exceptions import Hdf5_DatasetNotFoundError
-import studenproject18ws.hdf.load as load
-from studenproject18ws.hdf.load import *
-from studenproject18ws.hdf.transform import *
+from studenproject18ws.hdf.input_transforms import *
+from studenproject18ws.hdf.output_types import *
+from studenproject18ws.hdf.recipes import Recipes
+from studenproject18ws.hdf.util import get_class
 
 
-class Extractor(object):
+class Reader(object):
     """Generic Reader class for HDF5 files following the Extract-Transform-Load (ETL) approach.
 
-    Idea: reader receives:
+    Idea: reading consists of an Extract-Transform-Load pipeiline:
     - A h5 file
-    - An 'Extract Config': a dict with one enttry per h5 dataset
-    - An Transform class: holding functions to be applied to the datasets
-    Return a data object that holds all transformed datasets as attributes.
+    - An 'recipe': a dict with one enttry per h5 dataset (extract), and respective transforms to be applied
+    - A dynamically composed data output type (also from recipe) adding application-appropriate load functions
+      for the transformed data
 
     Benefits:
-    - clearly defined Extract Configs for different application cases, reuse infrastructure
-    - reusable (base class) and extendable (derived class) Transform functions
+    - clearly defined recipes for different application cases, reuse infrastructure
+    - reusable (base class) and extendable (derived class) Transform and Data output functions
 
     Examples
     --------
     Extract a band structure. (tested with doctest: passed)
 
-    >>> from studenproject18ws.hdf.config import Extract
-    >>> from studenproject18ws.hdf.transform import TransformBands
-    >>> from studenproject18ws.hdf.extract import Extractor
+    >>> from studenproject18ws.hdf.reader import Reader
+    >>> # from studenproject18ws.hdf.input_transforms import *
+    >>> # from studenproject18ws.hdf.output_types import *
+    >>> from studenproject18ws.hdf.recipes import Recipes
     >>>
     >>> # filename = 'banddos_4x4.hdf'
-    >>> # filename = 'banddos.hdf'
-    >>> filename = 'banddos_Co.hdf'
+    >>> filename = 'banddos.hdf'
+    >>> # filename = 'banddos_Co.hdf'
     >>>
     >>> filepath = ['..', 'data', 'input', filename]
     >>> filepath = os.path.join(*filepath)
     >>>
     >>> data = None
-    >>> extractor = Extractor(filepath=filepath)
+    >>> extractor = Reader(filepath=filepath)
     >>> with extractor as h5file:
-    ...    data = extractor.get(extract=Extract.Bands)
+    ...    data = extractor.read(recipe=Recipes.Bands, logging_level=logging.DEBUG)
     ...    #
     ...    # Note:
     ...    # Inside the with statement (context manager),
-    ...    # all HDF5 datasets are available. When the statement is left,
-    ...    # the HDF5 file gets closed and the datasets are closed.
-    ...    # Should they be left available, apply Transform.to_memory to them.
-    ...    #
-    ...    print(len(data.k_distances))
-    500
-    >>> # Left HDF5 file with statement: file and all open datasets are now closed.
-    >>> print(len(extractor.transformer.k_points))
-    500
+    ...    # all data attributes that are type h5py Dataset are available (in-file access)
+    ...    # When the statement is left,the HDF5 file gets closed and the datasets are closed.
+    ...    # Use data outside the with-statement (in-memory access: all HDF5 datasets converted to numpy ndarrays):
+    ...    data.move_datasets_to_memory()
+    >>> # Left HDF5 file with statement: file and all open hdf5 Datasets are now closed.
+    >>> all_characters = [0, 1, 2, 3]
+    >>> all_groups = range(max(data.atom_group_keys))
+    >>> all_bands = range(data.eigenvalues.shape[2])
+    >>> print(data.weights(all_characters, all_groups, spin=0))
+    [[1. 1. 1. ... 1. 1. 1.]
+     [1. 1. 1. ... 1. 1. 1.]
+     [1. 1. 1. ... 1. 1. 1.]
+     ...
+     [1. 1. 1. ... 1. 1. 1.]
+     [1. 1. 1. ... 1. 1. 1.]
+     [1. 1. 1. ... 1. 1. 1.]]
+    >>> print(data.combined_weight(all_characters, all_groups, spin=0))
+    [[1.02563320e-04 1.02539474e-04 1.02334674e-04 ... 9.98615488e-01
+      9.98615218e-01 9.98615130e-01]
+     [9.28678932e-03 9.27972918e-03 9.25730311e-03 ... 2.06476353e-03
+      2.06361799e-03 2.06377071e-03]
+     [2.36276550e-04 1.59727723e-04 1.64773226e-04 ... 1.09496802e-04
+      1.09665857e-04 1.09951239e-04]
+     ...
+     [5.27420215e-03 5.02214705e-03 5.04945794e-03 ... 1.63076318e-02
+      1.56406153e-02 1.57077815e-02]
+     [4.65125917e-03 5.05986855e-03 5.00874190e-03 ... 1.54697380e-02
+      1.57696323e-02 1.51730030e-02]
+     [4.36694493e-03 4.19527092e-03 4.16755489e-03 ... 1.56926337e-02
+      1.52161762e-02 1.54703402e-02]]
+
 
     Notes
     -----
-
+    - For return type, used the most simple metaclass definition as shown here [1].
 
     TODO
     ====
-    - For return type, use a Metaclass instead of namedtuple. That way, could reuse input extract dict
-      for the output's attributes, AND add functions to the new class for further processing, like weight
-      functions needed for the bands plotting. These could also be stored per application base. If that
-      could be achieved, the ETL terminology would have to be shifted: current 'Transform' functions would
-      be relabeled 'Extract' functions, and the further-processing functions would become the new 'Transform'
-      functions. Right now, those have to live decoupled from this module, which I think is worse.
-      Example from [1]: Foo = type('Foo',(FooBase,),{'some_attr': 100,'some_func': func})
+    - Cleanup code.
+    - Much stuff could probably be written simpler, e.g. by using itertools, functools or toolz package [2].
 
     References
     ----------
         .. [1] Real Python. Python Metaclasses.
            URL: https://realpython.com/python-metaclasses/#defining-a-class-dynamically
+        .. [2] codementor. Functional(-ish) iteration with toolz.
+           URL: https://www.codementor.io/c4f3a0ce/functional-ish-iteration-with-toolz-kxujpzets
     """
 
     def __init__(self, filepath):
@@ -151,7 +169,7 @@ class Extractor(object):
         return None
 
     def _str_to_type(self, type_name):
-        """Returns type represeneted in string.
+        """Returns type represented in string.
 
         Type must be loaded in current module.
         Example: A defined locally. "A.foo" will return fct A.foo. "A" will return class A.
@@ -163,39 +181,23 @@ class Extractor(object):
             pass
         return a_type
 
-    def _get_class(self, method):
-        """py3-compatible version of getting a method's type.
-        :return:
-        """
-        if inspect.ismethod(method):
-            for cls in inspect.getmro(method.__self__.__class__):
-                if cls.__dict__.get(method.__name__) is method:
-                    return cls
-            method = method.__func__  # fallback to __qualname__ parsing
-        if inspect.isfunction(method):
-            cls = getattr(inspect.getmodule(method),
-                          method.__qualname__.split('.<locals>', 1)[0].rsplit('.', 1)[0])
-            if isinstance(cls, type):
-                return cls
-        return getattr(method, '__objclass__', None)  # handle special descriptor objects
-
-    def get(self, config: dict, logging_level=logging.WARN):
+    def read(self, recipe: dict, logging_level=logging.WARN):
         """Extracts datasets from HDF5 file, transforms them and puts all into a namedtuple.
 
-        :param config: dict conforming to the prescribed format
-        :type config: dict
+        :param recipe: dict conforming to the prescribed format
+        :type recipe: dict
         :param logging_level: tell function how much info to print. Default: only warnings and errors.
-        :return: dynamic Data class with transformed datasets as attributes and methods specified in config
+        :return: dynamic Data class with transformed datasets as attributes and methods specified in recipe
         """
         logging.basicConfig(level=logging_level)
 
-        extract = config['datasets']
-        data_classes_functions_specified = config['data_classes_functions']
+        extract = recipe['datasets']
+        output_types_recipe = recipe['output_types']  # used at the end after transform
+
+        # #################################### EXTRACT #######################################################
+        # ####################################################################################################
 
         # extract data output classes and functions. Will be needed at the end.
-
-
-
 
         # remove entries whose key is an empty string
         extract = {key: val for key, val in extract.items() if key}
@@ -206,6 +208,9 @@ class Extractor(object):
         h5paths = [item['h5path'] for item in list(extract.values())]
         datasets = list(map(lambda h5path: self._dataset(h5path, strict=True), h5paths))
         logging.info("Loaded datasets.")
+
+        # #################################### TRANSFORM #######################################################
+        # ################################### Preparation ######################################################
 
         # # get Transform function names and/or arguments
         # # But some prep work is needed. A transform entry is optional. Since I put everything from
@@ -267,20 +272,19 @@ class Extractor(object):
 
                     transforms_func[i][j] = tf_func
                     transforms_str[i][j] = tf_func_name
-                # tf_func_name is of form "packageX.moduleY.TransformZ.foo". Split off last part and create instance
-                # tf_func = self._str_to_type(tf_func_name)
-                tf_cls = self._get_class(tf_func)
+
+                tf_cls = get_class(tf_func)
                 if not tf_cls:
-                    msg = f"Preprocessing of config failed: config specifies transform function '{tf_func_name}'. " \
+                    msg = f"Preprocessing of recipe failed: recipe specifies transform function '{tf_func_name}'. " \
                           f"The class specified has no such method, or the proper class cannot be inferred."
                     logging.error(msg)
                     raise AttributeError(msg)
                 # tf_cls_name = ".".join(tf_func_name.split(".")[:-1]) # does not work
                 tf_cls_name = tf_cls.__name__  # works
 
-
                 # needed for call to getattr below, and addition to transforms_str:
-                if "." in tf_func_name: # and probably .startswith(tf_cls_name)
+                # tf_func_name could be of form "TransformZ.foo". Split off last part and create instance
+                if "." in tf_func_name:  # and probably .startswith(tf_cls_name)
                     tf_func_name = tf_func_name.split(".")[1]
                 if isinstance(tf_unit, list):
                     transforms_str[i][j][0] = ".".join([tf_cls_name, tf_func_name])
@@ -300,17 +304,15 @@ class Extractor(object):
         transforms_base_cls = Transform  # hard-coded. Could instead use a common feature to find arbitrary base, like attribute DEPENDENCIES.
         for cls, instance in transforms_class_instances.items():
             if transforms_base_cls not in inspect.getmro(cls):
-                msg = f"The hdf extract config contains transform functions whose class is not derived from " \
+                msg = f"The hdf recipe contains transform functions whose class is not derived from " \
                       f"the Transform base class {transforms_base_cls}."
                 logging.error(msg)
                 raise TypeError(msg)
         if transforms_base_cls not in transforms_class_instances:
             transforms_class_instances[transforms_base_cls] = transforms_base_cls()
         self.transformer = transforms_class_instances[transforms_base_cls]
-        print(f"transforms_base_class: {transforms_base_cls}")
-        debug_break_point = 42
 
-        # TODO: pre-check: is there is a transform dependency that cannot be satisfied?
+        # pre-check: is there is a transform dependency that cannot be satisfied?
         # this is the case if there is a dependee dataset that's not in the list of read-in datasets.
         # But the check must not include all dependencies listed in Transform, but only those that
         # are going to be used. That means those, whose respective Transform functions are actually
@@ -344,6 +346,9 @@ class Extractor(object):
             logging.error(msg)
             raise ValueError(msg)
 
+        # #################################### TRANSFORM #######################################################
+        # ###################################  Execution #######################################################
+
         # new approach: assume that there may transform functions from many different classes involved.
         # in hat case i cannot just check against one classe's DEPENDENCIES anymore.
         # instead, must
@@ -363,9 +368,6 @@ class Extractor(object):
             if (dataset_names[i] in transformed):
                 logging.debug(f"\tdataset '{dataset_names[i]}'' is already transformed, continue.")
             else:
-                if (dataset_names[i] == 'bravaisMatrix'):
-                    debug_break_point = 42
-                    print(f"{dataset_names[i]}:\n {datasets[i][:]}")
                 difference = []  # list of dependee datasets for transformations
                 logging.debug("\tcheck dependencies:")
                 for j, transform_str in enumerate(transforms_str[i]):
@@ -400,7 +402,7 @@ class Extractor(object):
                             transform_args.extend(args_additional)
                         # transform_func = getattr(self.transformer, transform_name)
 
-                        tf_cls = self._get_class(transform_func)
+                        tf_cls = get_class(transform_func)
                         tf_cls_name = tf_cls.__name__  # works
                         assert (tf_cls_name == transform_name.split(".")[0])
                         transform_func = getattr(transforms_class_instances[tf_cls], transform_name.split(".")[1])
@@ -418,62 +420,21 @@ class Extractor(object):
                                     dependee_other = getattr(transforms_class_instances[cls], dependee_name)
                                     if dependee_other is None:
                                         setattr(transforms_class_instances[cls], dependee_name, dependee)
-                        debug_break_point = 42
-                        # for cls, instance in transforms_class_instances:
-
-                        # update dependees
 
                         transformed.add(dataset_names[i])
                     logging.debug(f"\ttransformed dataset '{dataset_names[i]}'.")
             i = (i + 1) % len(datasets)
         logging.info("transformed datasets.")
 
-        # # creaet namedtyple type, values will be the transformed datasets
-        # Data = namedtuple('Data', dataset_names)
-        # logging.debug(f"dsets: len = {len(datasets)}, attr_names = {dataset_names}")
-        # data = Data(*datasets)
-        # return data
+        # ####################################    LOAD    #######################################################
+        # ################################### Preparation #######################################################
 
-        # # datasets_dict = dict.fromkeys(extract.keys(), '')
-        # datasets_dict = {}
-        # for i, dataset_name in enumerate(dataset_names):
-        #     datasets_dict[dataset_name] = datasets[i]
-        # # add load functions
-        # data_fct = load.count_atom_groups
-        # datasets_dict[data_fct.__name__] = data_fct
-        # Data = type(
-        #     'Data',
-        #     (),
-        #     datasets_dict
-        # )
-        # data = Data()
-        # return data
-
-        # # datasets_dict = dict.fromkeys(extract.keys(), '')
-        # data_attributes = {}
-        # for i, dataset_name in enumerate(dataset_names):
-        #     data_attributes[dataset_name] = datasets[i]
-        # # add load functions
-        # # data_fct = DataBands.count_atom_groups2
-        # # data_attributes[data_fct.__name__] = data_fct
-        #
-        # DataDerived = type(
-        #     data_type.__name__,
-        #     (Data,), # could get base class from data_type if more general approach needed
-        #     data_attributes
-        # )
-        # data = DataDerived()
-        # return data
-
-        # datasets_dict = dict.fromkeys(extract.keys(), '')
         data_attributes = {}
         for i, dataset_name in enumerate(dataset_names):
             data_attributes[dataset_name] = datasets[i]
 
         data_type = None
-        data_classes_functions_specified
         data_cls_avail = dict([(name, cls) for name, cls in load.__dict__.items() if isinstance(cls, type)])
-        print(data_cls_avail)
 
         # gather all available data classes and methods
         data_cls_instances = {}
@@ -484,10 +445,8 @@ class Extractor(object):
                 data_cls_instances[cls_name] = cls_instance
                 methods_list = inspect.getmembers(cls_instance, predicate=inspect.ismethod)
 
-
                 # data_cls_instances[cls_name] = cls
                 # methods_list = inspect.getmembers(cls, predicate=inspect.ismethod)
-
 
                 data_methods[cls_name] = {}
                 for meth_name, meth in methods_list:
@@ -500,41 +459,36 @@ class Extractor(object):
         # If there are other available classes specified, all of their methods will be added to data_attributes
         found_classes = OrderedDict()
         found_functions = OrderedDict()
-        for type_or_name in data_classes_functions_specified:
+        for type_or_name in output_types_recipe:
             type_name = type_or_name if isinstance(type_or_name, str) else type_or_name.__name__
             type_only = self._str_to_type(type_or_name) if isinstance(type_or_name, str) else type_or_name
-            print(f"type_name {type_name}, type_only {type_only}")
             found = False
             # is it a class?
             if type_name in data_cls_instances.keys():
                 found_classes[type_name] = data_cls_instances[type_name]
                 found = True
-            else: # is it a method?
-                type_class = self._get_class(type_only)
+            else:  # is it a method?
+                type_class = get_class(type_only)
                 type_class_name = type_class.__name__
-                print(f"type class {type_class}")
                 if data_methods.get(type_class_name):
                     methods = data_methods[type_class_name]
                     type_name = type_name.split(".")[1] if "." in type_name else type_name
                     if type_name in methods.keys():
                         if type_name in found_functions.keys():
-                            raise AttributeError(f"The name of method '{type_name}' from class '{type_class_name}' specified in "
-                                                 f"the config for data output class is already in use by another method of "
-                                                 f"another specified data class. Resolve name conflict first.")
+                            raise AttributeError(
+                                f"The name of method '{type_name}' from class '{type_class_name}' specified in "
+                                f"the recipe for data output class is already in use by another method of "
+                                f"another specified data class. Resolve name conflict first.")
                         else:
                             found_functions[type_name] = methods[type_name]
                             found = True
-                #
-                # for cls_name, methods in data_methods.items():
-                #     if type_name in methods.keys():
-                #         print(f"methods[type_name] = {methods[type_name]}")
-                #         if type_only_instance == methods[type_name]:
-                #             found_functions[type_name] = methods[type_name]
-                #             found = True
-                #             break
+
             if not found:
-                raise TypeError(f"The data type '{type_name}' specified in config is not a valid "
+                raise TypeError(f"The data type '{type_name}' specified in recipe is not a valid "
                                 f"data class or one of their methods.")
+
+        # ####################################    LOAD    #######################################################
+        # ###################################  Execution  #######################################################
 
         # now set thee first found class as data_type, and add all stuff to the data_attributes
         first = True
@@ -546,7 +500,7 @@ class Extractor(object):
                 for meth_name, meth in data_methods[cls_name].items():
                     if data_attributes.get(meth_name) is not None:
                         raise AttributeError(f"The name of method '{meth_name}' from class '{cls_name}' specified in "
-                                             f"the config for data output class is already in use as attribute for "
+                                             f"the recipe for data output class is already in use as attribute for "
                                              f"a dataset or by another method of another specified data class. "
                                              f"Resolve name conflict first.")
                     else:
@@ -554,7 +508,7 @@ class Extractor(object):
         for meth_name, meth in found_functions.items():
             if data_attributes.get(meth_name) is not None:
                 raise AttributeError(f"The name of method '{meth_name}' from class '{cls_name}' specified in "
-                                     f"the config for data output class is already in use as attribute for "
+                                     f"the recipe for data output class is already in use as attribute for "
                                      f"a dataset or by another method of another specified data class. "
                                      f"Resolve name conflict first.")
             else:
@@ -564,7 +518,7 @@ class Extractor(object):
         data_type_member_names_list = [pair[0] for pair in inspect.getmembers(data_type)]
         intersection = set(data_attributes.keys()).intersection(set(data_type_member_names_list))
         if intersection:
-            logging.warning(f"The following datasets or data type functions specified in the config will "
+            logging.warning(f"The following datasets or data type functions specified in the recipe will "
                             f"be overwritten by the primary data type '{data_type.__name__}' members: "
                             f"{intersection}.")
 
@@ -573,9 +527,10 @@ class Extractor(object):
 
 
 if __name__ == '__main__':
-    # from studenproject18ws.hdf.config import Extract
-    # from studenproject18ws.hdf.transform import TransformBands
-    # from studenproject18ws.hdf.extract import Extractor
+    # from studenproject18ws.hdf.reader import Reader
+    # # from studenproject18ws.hdf.input_transforms import *
+    # # from studenproject18ws.hdf.output_types import *
+    # from studenproject18ws.hdf.recipes import Recipes
 
     # filename = 'banddos_4x4.hdf'
     filename = 'banddos.hdf'
@@ -585,22 +540,16 @@ if __name__ == '__main__':
     filepath = os.path.join(*filepath)
 
     data = None
-    extractor = Extractor(filepath=filepath)
+    extractor = Reader(filepath=filepath)
     with extractor as h5file:
-        data = extractor.get(config=Extract.Bands, logging_level=logging.DEBUG)
-        print("hi")
+        data = extractor.read(recipe=Recipes.Bands, logging_level=logging.DEBUG)
         #
         # Note:
         # Inside the with statement (context manager),
-        # all HDF5 datasets are available. When the statement is left,
-        # the HDF5 file gets closed and the datasets are closed.
-        # Should they be left available, apply Transform.to_memory to them.
-        #
-        print(len(data.k_distances))
-        print(len(data.k_points))
-        print(data.bravaisMatrix)
+        # all data attributes that are type h5py Dataset are available (in-file access)
+        # When the statement is left,the HDF5 file gets closed and the datasets are closed.
+        # Use data outside the with-statement (in-memory access: all HDF5 datasets converted to numpy ndarrays):
         data.move_datasets_to_memory()
-
     # Left HDF5 file with statement: file and all open hdf5 Datasets are now closed.
     all_characters = [0, 1, 2, 3]
     all_groups = range(max(data.atom_group_keys))
