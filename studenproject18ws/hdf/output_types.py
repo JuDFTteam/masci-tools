@@ -2,10 +2,11 @@
 import inspect
 from collections import Counter
 
+import matplotlib.pyplot as plt
 import numpy as np
 from h5py._hl.dataset import Dataset as h5py_Dataset
 
-EXCEPTIONS = [inspect, np, Counter, h5py_Dataset]
+EXCEPTIONS = [inspect, Counter, plt, np, h5py_Dataset]
 """Mandatory: include all imported types here to avoid malfunction.
 Reason: this package uses introspection on all types found in this module.
 The ones mentioned here are passed over."""
@@ -96,6 +97,27 @@ class DataBands(Data):
             return self.weights(characters, groups, spin) * self.bandUnfolding_weights[spin].T[:]
         else:
             return self.weights(characters, groups, spin)
+
+    def new_plotfunction_weights(self, bands, characters, groups, spin):
+
+        weight_k_n = self.combined_weight(characters, groups, spin)
+
+        fig = plt.figure()
+        ax1 = fig.add_subplot(111)
+
+        for n in bands:
+            weight_k_n[n]
+            ax1.scatter(self.k_distances, self.E_i(n, spin), marker='o', c='b', s=2 * weight_k_n[n], lw=0)
+
+        plt.xticks(self.k_special_points, self.k_special_point_labels)
+
+        """
+        for i in range(len(special_points)):
+            index = special_points[i]
+            plt.vlines(k_dist[index-1], -0.2, 0.4)
+        """
+        plt.xlim(0, max(self.k_distances))
+        return plt
 
 # # For demonstraction purposes:
 # # Add Rhubarb.rhubarb, Machiavelli.rhubarb to recipe BandStructure data_classes_functions and see what happens

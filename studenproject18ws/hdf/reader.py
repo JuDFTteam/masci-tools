@@ -47,8 +47,6 @@ class Reader(object):
     Extract a band structure. (tested with doctest: passed)
 
     >>> from studenproject18ws.hdf.reader import Reader
-    >>> # from studenproject18ws.hdf.input_transforms import *
-    >>> # from studenproject18ws.hdf.output_types import *
     >>> from studenproject18ws.hdf.recipes import Recipes
     >>>
     >>> # filename = 'banddos_4x4.hdf'
@@ -528,8 +526,6 @@ class Reader(object):
 
 if __name__ == '__main__':
     # from studenproject18ws.hdf.reader import Reader
-    # # from studenproject18ws.hdf.input_transforms import *
-    # # from studenproject18ws.hdf.output_types import *
     # from studenproject18ws.hdf.recipes import Recipes
 
     # filename = 'banddos_4x4.hdf'
@@ -556,3 +552,5 @@ if __name__ == '__main__':
     all_bands = range(data.eigenvalues.shape[2])
     print(data.weights(all_characters, all_groups, spin=0))
     print(data.combined_weight(all_characters, all_groups, spin=0))
+    plt = data.new_plotfunction_weights(all_bands, all_characters, all_groups, spin=0)
+    plt.show()
