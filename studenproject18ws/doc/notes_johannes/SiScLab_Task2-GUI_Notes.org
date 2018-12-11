@@ -25,32 +25,76 @@ newest is first
 * [[file:SiScLab_Notes.org][Master File]]
 * <2018-12-11 Di> - <2018-12-12 Mi> Phase 3 - Building minimal Jupyter Dashboard
 * <2018-12-11 Di> - <2018-12-11 Di> Phase 2 - Researching Python Web GUIs
+** Overview of AiiDAlab (=Jupyter) - based Visualization Tools & Resources
+- AiiDAlab ([[https://aiidalab.materialscloud.org/hub/login][aiidalab official]], [[https://github.com/aiidalab][aiidalab github]]) is a Jupyter server ([[https://github.com/jupyterhub/jupyterhub][JupyterHub]])
+  accessible on materialscloud.org via login. So apps developed for it can use
+  [[http://jupyter.org/widgets][Jupyter Widgets]] and be used by any aiidalab user anywhere. The problem of
+  finding a solution that works in Jupyter *and can be deployed as standalone
+  web-app* (see next section) is thus not eliminated, but can be ignored for the
+  initial phase at least. I think long-term the possibilities PyViz is offering
+  (see next section) should be at least tried out.
+- For complementary Jupyter solutions not used in AiiDalab stack so far, see
+  also section [[*Jupyter Widgets][Jupyter Widgets]] below.
+- 
 
-** Overview of Open Source Python Visualization Tools
+** Overview of Open Source Python Browser Visualization Tools & Resources
+- This overview is written with the emphasis of finding a solution that can be
+  deployed in a Jupyter environment *as well as* a standalone web-app independent
+  of Jupyter, like the [[https://www.materialscloud.org/work/tools/options][materialscloud tools]].
+  #+BEGIN_QUOTE
+   [[https://ipywidgets.readthedocs.io/en/stable/][ipywidgets]]-based libraries (ipyleaflet, pythreejs, ipyvolume, bqplot) are
+   *difficult to deploy as public-facing apps because the Jupyter server allows
+   arbitrary code execution*.
+  #+END_QUOTE
+  Though there are workarounds for this like [[https://mybinder.org/v2/gh/jupyter-widgets/tutorial/master][mybinder.org]].
 *** My personal summary
+- *If non-public-only use: use Jupyter Widgets*. *If public use (standalon
+  web-app), no Jupyter intended: use Dash*. /Those options are mutually
+  exclusive/. *The middle-ground best long-term option /would/ be using [[http://pyviz.org/][Pyviz]]*,
+  because it's qdifferent from the former two, it's deployable for Jupyter *and*
+  as standalone web-app. *But*, PyViz has downsides for the intended application
+  (minimal unmaintained 3D support, no Flask deployment yet), so it's out again.
+  The last alternative is to do it like materialscloud and build an own solution
+  only based on Flask, [[https://github.com/giovannipizzi/seekpath#online-service-tool][see example]]. Again, for that just could use Dash: /Dash
+  uses a Flask server, so you can deploy Dash apps in the same way that you
+  would deploy Flask apps/. But then we lose the Jupyter support again.
 - For running a web-based GUI (=dashboard) with (interactive) plot
   visualization, there are basically four platforms to choose from: Jupyter,
   Plotly, or Bokeh, or a custom Flask+JavaScript solution (like [[https://www.materialscloud.org/infrastructure][materialscloud
-  infrastructure]], [[https://github.com/giovannipizzi/seekpath#online-service-tool][example code]]). Jupyter is not a viable solution for web
+  infrastructure]]). Jupyter is not a viable solution for web
   publication (like materialscloud tools), so basically two solutions for web
   publication remain: bokeh, or dask+flask (plotly) server. All other tools
   mentioned here support use in Jupyter notebooks, except maybe Dash. All other
   interactive tools mentioned here apart from dash/plotly use bokeh or custom
   solution for independent web publication.
-- *So if non-public-only use: use Jupyter Widgets*. *If public-use intended: use
-  Dash*. Those are mutually exclusive. *The middle-ground best long-term option
-  is using [[http://pyviz.org/][Pyviz]]* (primarily Bokeh, but intent is on tool-independence). Or do
-  it like materialscloud and build an own solution for
 - [[http://jupyter.org/widgets][Jupyter Widgets]]
   + mature
   - no standalone web apps (dashboards) possible, except through [[https://mybinder.org/v2/gh/jupyter-widgets/tutorial/master][binder]]
 - [[http://pyviz.org/][Pyviz]]: [[https://panel.pyviz.org/][Panel]], [[http://holoviews.org/][Holoviews]]
   - very young project
-  + ambitious goal: independence of actual plotting tools. dashboards, run
-    on any platform (jupyter, bokeh, mpl, plotly). declarative approach for
-    plotting, decouples describing visualization from actual visualization tool.
-  - support currently only jupyter and bokeh though, the plotly support lacks
-    volunteers/doc.
+  + ambitious goal: independence of actual plotting tools, or even web-based
+    visualization (for example for run on HPC cluster, see [[https://www.youtube.com/watch?v=aZ1G_Q7ovmc&t=13m50s][pyviz scipy2018
+    workshop]]). dashboards, run on any platform (jupyter, bokeh, mpl, plotly).
+    declarative approach, e.g. quote from [[http://pyviz.org/tutorial/12_Parameters_and_Widgets.html][panel tutorial]]:
+    #+BEGIN_QUOTE
+    Panel provides layout and two-way communication between Python and
+    browser-based widgets, either in a Jupyter Notebook or in a separate widely
+    shareable deployment. In this way it's similar to ipywidgets in a Jupyter
+    notebook or Plotly Dash on a standalone server, but allows you to develop in
+    Jupyter and deploy separately because the same code works in both contexts
+    (unlike for ipywidgets or Dash).
+    #+END_QUOTE
+    [[https://github.com/pyviz/panel/issues/2][Panel: supported plotting libraries]]
+  - support currently only jupyter and bokeh though, plotly as backend support
+    lacks volunteers/doc. support for deployment in flask is only on the
+    [[http://pyviz.org/Roadmap.html][roadmap]].
+  - *no 3D*. [[http://pyviz.org/Roadmap.html][roadmap]] mentions that simple scatter and surface 3d plots are
+    possible using plotly backend. works on my browser, see example [[http://holoviews.org/reference/elements/plotly/Scatter3D.html][Scatter3D]],
+    but warns there that plotly backend is not really supported. Seems
+    application-focused on data science, geo services, not scivis. If SciVis
+    stuff should be built, the PyViz guys more or less say, 'use Bokeh. We built
+    HoloViews with Bokeh'. Sources: [[http://pyviz.org/FAQ.html][pyviz FAQ]], youtube [[https://www.youtube.com/watch?v=aZ1G_Q7ovmc&t=13m50s][pyviz scipy2018 workshop]],
+    [[https://www.youtube.com/watch?v=DGLi-UWReM8&t=3m47s][pyviz scipy2018 talk]].
 - [[https://github.com/bokeh/bokeh][Bokeh]] 
   - development: powerful but complicated, needs time
   - needs JavaScript knowledge
@@ -66,7 +110,7 @@ newest is first
   dashboard, web, browser-based, notebook
 - in 2018, all libs have publication-quality publishing/export options
 
-- *full interactive HTML5 with dashboard, widgets. all in active development 2018. all support 3D.*
+- *full interactive HTML5 with dashboard, widgets. all in active development 2018. all support 3D except PyViz.*
 | Name             | age | description       | server         | Jupyter | Impression                         | developers |
 |------------------+-----+-------------------+----------------+---------+------------------------------------+------------|
 | [[http://pyviz.org/][pyviz]]: [[https://panel.pyviz.org/][Panel]]     |   1 | dashboards        | bokeh (plotly) | +       | cool, but mainly bokeh support     |         10 |
@@ -97,6 +141,7 @@ Legend:
 - [[https://www.anaconda.com/blog/developer-blog/python-data-visualization-2018-why-so-many-libraries/][Anaconda Blog: Python Data Visualization 2018: Part 1]], [[https://www.anaconda.com/blog/developer-blog/python-data-visualization-moving-toward-convergence/][Part 2]]
   - date: 2018
   - best overview
+  - *Note: Opiniated: Author is creator of PyViz*
   - User interface:
     - Standalone web-based dashboards and apps
       - Dash: Plotly, Dash
@@ -105,6 +150,18 @@ Legend:
       - Jupyter: ipywidgets, ipyleaflet, pythreejs, ipyvolume, bqplot, Jupyter Dashboard
         - Note: difficult to deploy as public-facing apps because the Jupyter
           server allows arbitrary code execution: tool lock-in
+    #+BEGIN_QUOTE
+    Standalone web-based dashboards and apps: Plotly graphs can be used in
+    separate deployable apps with [[https://plot.ly/products/dash/][Dash]], and Bokeh, HoloViews, and GeoViews can
+    be deployed using [[https://bokeh.pydata.org/en/latest/docs/user_guide/server.html][Bokeh Server]]. Most of the other InfoVis libraries can be
+    deployed as dashboards using the new Panel library, including at least
+    Matplotlib, Altair, Plotly, Datashader, hvPlot, Seaborn, plotnine, and yt.
+    However, despite their web-based interactivity, the [[https://ipywidgets.readthedocs.io/en/stable/][ipywidgets]]-based
+    libraries (ipyleaflet, pythreejs, ipyvolume, bqplot) are *difficult to
+    deploy as public-facing apps because the Jupyter server allows arbitrary
+    code execution* (but see the defunct Jupyter dashboards project and
+    flask-ipywidgets for potential solutions).
+    #+END_QUOTE
   - Widget/app support:
     #+BEGIN_QUOTE
     Previous mechanisms for providing widgets and support for apps and
@@ -120,6 +177,8 @@ Legend:
     separate server
     #+END_QUOTE
   - 
+- [[https://www.youtube.com/playlist?list=PLYx7XA2nY5Gd-tNhm79CNMe_qvi35PgUR][SciPy2018 Youtube Playlist]]
+  - search 'visual': either jupyter or pyviz
 - [[https://blog.sicara.com/bokeh-dash-best-dashboard-framework-python-shiny-alternative-c5b576375f7f][Medium: Bokeh vs Dash — Which is the Best Dashboard Framework for Python?]]
   - date: 2018
   - result: Dash wins
@@ -149,10 +208,6 @@ Legend:
   - compares: seaborn, ggplot, bokeh, pygal, plotly
   - the gist: didn't care for interactive, web. excel user
 
-
-
-
-
 ** Jupyter Widgets
 
 *** Resources
@@ -165,8 +220,11 @@ Legend:
 |          |                                             |
 
 *** Helper libs packages extensions
-| Jupyter Dashboard |                                      |
-| Binder            | online publication of notebook repos |
+| Name                     | Description                                                  | Developers |
+|--------------------------+--------------------------------------------------------------+------------|
+| [[https://github.com/jupyter/dashboards][Jupyter Dashboards]]       | Jupyter Dashboards (=GUI) Layout Extension                   |         17 |
+| [[https://mybinder.org/v2/gh/jupyter-widgets/tutorial/master][mybinder.org]] / [[https://github.com/jupyterhub/binderhub][BinderHub]] | Workaround for Jupyter standalone web-app deployment problem |         32 |
+| [[https://github.com/dunovank/jupyter-themes][jupyter-themes]]           | color themes                                                 |            |
 ** Bokeh
 *** Resources
 
