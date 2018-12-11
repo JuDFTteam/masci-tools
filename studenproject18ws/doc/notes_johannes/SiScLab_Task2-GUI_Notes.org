@@ -25,6 +25,13 @@ newest is first
 * [[file:SiScLab_Notes.org][Master File]]
 * <2018-12-11 Di> - <2018-12-12 Mi> Phase 3 - Building minimal Jupyter Dashboard
 * <2018-12-11 Di> - <2018-12-11 Di> Phase 2 - Researching Python Web GUIs
+#+NAME: fig:figure name
+#+CAPTION: The Python Visualization Landscape 2017 [[https://github.com/rougier/python-visualization-landscape][source]]
+#+ATTR_ORG: :width 800/200/250/300/400/500
+#+ATTR_LATEX: :width 2.0in
+#+ATTR_HTML: :width 800/200/250/300/400/500px
+[[file:img/landscape.png]]
+
 ** Overview of AiiDAlab (=Jupyter) - based Visualization Tools & Resources
 - AiiDAlab ([[https://aiidalab.materialscloud.org/hub/login][aiidalab official]], [[https://github.com/aiidalab][aiidalab github]]) is a Jupyter server ([[https://github.com/jupyterhub/jupyterhub][JupyterHub]])
   accessible on materialscloud.org via login. So apps developed for it can use
@@ -35,7 +42,6 @@ newest is first
   (see next section) should be at least tried out.
 - For complementary Jupyter solutions not used in AiiDalab stack so far, see
   also section [[*Jupyter Widgets][Jupyter Widgets]] below.
-- 
 
 ** Overview of Open Source Python Browser Visualization Tools & Resources
 - This overview is written with the emphasis of finding a solution that can be
