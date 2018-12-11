@@ -21,21 +21,13 @@
 #+LATEX_COMPILER: pdflatex
 #+DATE: \today
 
+newest is first
 * [[file:SiScLab_Notes.org][Master File]]
-* <2018-12-01 Sa> - <2018-12-10 Mo> Phase 1 - Building the model
-The idea after [[file:SiScLab_Meetings_Notes.org::*<2018-11-21%20Wed>%20Meeting%20Ju2][<2018-11-21 Wed> Meeting Ju2]] was: Praneeth writes a Desktop GUI,
-I a webbrowser GUI. I wanted to make sure that we/I rewrite the working code by
-Christian into a common model-controller that can handle these two different
-views (MVC). I started on <2018-12-01 Sa> on that. I got the idea to build a
-*generic HDF reader* as model. It provides an extendable extract, transform and
-load pipeline to build data types from a HDF file using recipes, and based on
-Python introspection. It thought it'd take me 2-3 days, but it grew in
-complexity and took until <2018-12-10 Mo>.
-
+* <2018-12-11 Di> - <2018-12-12 Mi> Phase 3 - Building minimal Jupyter Dashboard
 * <2018-12-11 Di> - <2018-12-11 Di> Phase 2 - Researching Python Web GUIs
 
 ** Overview of Open Source Python Visualization Tools
-*** My overall summary notes
+*** My personal summary
 - For running a web-based GUI (=dashboard) with (interactive) plot
   visualization, there are basically four platforms to choose from: Jupyter,
   Plotly, or Bokeh, or a custom Flask+JavaScript solution (like [[https://www.materialscloud.org/infrastructure][materialscloud
@@ -190,6 +182,17 @@ Legend:
 | [[http://pymatgen.org/][pymatgen]] | robust, open-source Python library for materials analysis |
 | [[http://atztogo.github.io/spglib/][spglib]]   | finding and handling crystal symmetries written in C      |
 |          |                                                           |
-* <2018-12-11 Di> - <2018-12-12 Mi> Phase 3 - Building minimal Jupyter Dashboard
+* <2018-12-01 Sa> - <2018-12-10 Mo> Phase 1 - Building the model
+The idea after [[file:SiScLab_Meetings_Notes.org::*<2018-11-21%20Wed>%20Meeting%20Ju2][<2018-11-21 Wed> Meeting Ju2]] was: Praneeth writes a Desktop GUI,
+I a webbrowser GUI. I wanted to make sure that we/I rewrite the working code by
+Christian into a common model-controller that can handle these two different
+views (MVC). I started on <2018-12-01 Sa> on that. I got the idea to build a
+*generic HDF reader* as model. It provides an extendable extract, transform and
+load pipeline to build data types from a HDF file using recipes, and based on
+Python introspection. It thought it'd take me 2-3 days, but it grew in
+complexity and took until <2018-12-10 Mo>.
+
+
+
 
 
