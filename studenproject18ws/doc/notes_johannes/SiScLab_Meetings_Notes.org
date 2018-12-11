@@ -1,0 +1,67 @@
+#+OPTIONS: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline author:t
+#+OPTIONS: broken-links:nil c:nil creator:nil d:(not "LOGBOOK") date:t e:t
+#+OPTIONS: email:nil f:t inline:t num:t p:nil pri:nil prop:nil stat:t tags:t
+#+OPTIONS: tasks:t tex:t timestamp:t title:t toc:t todo:t |:t
+#+TITLE: SiScLab_Meetings_Notes
+#+DATE: <2018-11-12 Mon>
+#+AUTHOR: Johannes Wasmer
+#+EMAIL: johannes@joe-9470m
+#+LANGUAGE: en
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+#+CREATOR: Emacs 25.2.2 (Org mode 9.1.13)
+
+#+LATEX_CLASS: article
+#+LATEX_CLASS_OPTIONS:
+#+LATEX_HEADER:
+#+LATEX_HEADER_EXTRA:
+#+DESCRIPTION:
+#+KEYWORDS:
+#+SUBTITLE:
+#+LATEX_COMPILER: pdflatex
+#+DATE: \today
+
+[[file:SiScLab_Notes.org][Master File]]
+* <2018-11-21 Wed> Meeting Ju2
+** backup comment messsage from my commit
+#+BEGIN_EXAMPLE
+SiScLab 2018 Project 8
+Task 1: Plot band structure from Fleur HDF5 files.
+
+- TODO for Week01:
+ - Model (ie, what the code is doing):
+   - Fermi energy for offset: y scale 
+   - y-axis scaling: convert to Hartree
+   - OPTIONAL: weights: look into Stefan's code
+   - don't do TOO much in Week001
+ - Code Cleanup:
+   - refactoring (classes, naming, minimal doc)
+ - Modularize:
+   - perhaps: make installable as python package / module
+ - Ideas for later:
+   - plot 3D path for kspace
+#+END_EXAMPLE
+* <2018-11-14 Wed> Meeting Task1 SuperC
+** DONE Stuff
+   CLOSED: [2018-11-14 Wed 19:21]
+** TODO Stuff
+   - TODO for Week01:
+     - Model (ie, what the code is doing):
+       - Fermi energy for offset: y scale 
+       - y-axis scaling: convert to Hartree
+       - OPTIONAL: weights: look into Stefan's code
+       - don't do TOO much in Week001
+     - Code Cleanup:
+       - refactoring (classes, naming, minimal doc)
+     - Modularize:
+       - perhaps: make installable as python package / module
+     - Ideas for later:
+       - plot 3D path for kspace
+
+** Ideas for later
+
+
+#  LocalWords:  Hartree kspace SuperC
+* <2018-11-12 Mon> First Meeting Ju1 all
+  - Present: DW, JB, SR, Georg/Gregor?, Matthias; PK, CP, JW.
+  - see handwritten notes

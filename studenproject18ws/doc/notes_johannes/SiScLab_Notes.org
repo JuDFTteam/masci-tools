@@ -1,0 +1,31 @@
+#+OPTIONS: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline author:t
+#+OPTIONS: broken-links:nil c:nil creator:nil d:(not "LOGBOOK") date:t e:t
+#+OPTIONS: email:nil f:t inline:t num:t p:nil pri:nil prop:nil stat:t tags:t
+#+OPTIONS: tasks:t tex:t timestamp:t title:t toc:t todo:t |:t
+#+TITLE: SiScLab_Notes
+#+DATE: <2018-11-11 Sun>
+#+AUTHOR: Johannes Wasmer
+#+EMAIL: johannes@joe-9470m
+#+LANGUAGE: en
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+#+CREATOR: Emacs 25.2.2 (Org mode 9.1.13)
+
+#+LATEX_CLASS: article
+#+LATEX_CLASS_OPTIONS:
+#+LATEX_HEADER:
+#+LATEX_HEADER_EXTRA:
+#+DESCRIPTION:
+#+KEYWORDS:
+#+SUBTITLE:
+#+LATEX_COMPILER: pdflatex
+#+DATE: \today
+
+
+* [[file:SiScLab_Meetings_Notes.org][Meetings]]
+* Tasks
+** [[file:SiScLab_Task1-PlotBanddos_Notes.org][Task 1 - Plot Banddos]]
+** [[file:SiScLab_Task2-GUI_Notes.org][Task2 - GUI]]
+* Tools Install & Setup
+** [[file:SiScLab_Git_Notes.org][Git Notes]]
+** [[file:SiScLab_AiiDa_Installation_Notes.org][AiiDa Installation Notes]]

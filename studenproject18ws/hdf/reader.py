@@ -34,13 +34,13 @@ class Reader(object):
 
     Idea: reading consists of an Extract-Transform-Load pipeiline:
     - A h5 file
-    - An 'recipe': a dict with one enttry per h5 dataset (extract), and respective transforms to be applied
-    - A dynamically composed data output type (also from recipe) adding application-appropriate load functions
-      for the transformed data
+    - An 'recipe': a dict with one entry per h5 dataset (extract), and respective transforms to be applied
+    - A dynamically composed data output type (specified in recipe) adding application-appropriate functions
+      for the transformed data (load)
 
     Benefits:
     - clearly defined recipes for different application cases, reuse infrastructure
-    - reusable (base class) and extendable (derived class) Transform and Data output functions
+    - reusable (base class), extendable (derived class) Transform and Data output functions, composable output class
 
     Examples
     --------

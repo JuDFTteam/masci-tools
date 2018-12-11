@@ -1,0 +1,125 @@
+#+OPTIONS: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline author:t
+#+OPTIONS: broken-links:nil c:nil creator:nil d:(not "LOGBOOK") date:t e:t
+#+OPTIONS: email:nil f:t inline:t num:t p:nil pri:nil prop:nil stat:t tags:t
+#+OPTIONS: tasks:t tex:t timestamp:t title:t toc:t todo:t |:t
+#+TITLE: SiScLab_Git_Notes
+#+DATE: <2018-11-14 Wed>
+#+AUTHOR: Johannes Wasmer
+#+EMAIL: johannes@joe-9470m
+#+LANGUAGE: en
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+#+CREATOR: Emacs 25.2.2 (Org mode 9.1.13)
+
+#+LATEX_CLASS: article
+#+LATEX_CLASS_OPTIONS:
+#+LATEX_HEADER:
+#+LATEX_HEADER_EXTRA:
+#+DESCRIPTION:
+#+KEYWORDS:
+#+SUBTITLE:
+#+LATEX_COMPILER: pdflatex
+#+DATE: \today
+
+
+* [[file:SiScLab_Notes.org][Master File]]
+Working with GitHub repo [[https://github.com/JuDFTteam/masci-tools][JuDFTteam/masci-tools]]
+
+** Replace everything in =studentproject18ws= with =studentproject18ws-modularization=, delete latter
+- used resources: [[https://www.nickang.com/replace-git-branch-code/][How to completely replace one branch’s code and git history with another]]
+
+#+BEGIN_SRC shell
+# Rename master to old-master, staging to master
+git checkout studentproject18ws
+git pull origin studentproject18ws
+git branch -m old-studentproject18ws
+git checkout studentproject18ws-modularization 
+git branch -m studentproject18ws
+git push origin studentproject18ws -f
+
+# Force push staging (now master) into remote master
+git branch -m studentproject18ws-modularization
+
+# # Change branch names back to original
+git checkout old-studentproject18ws 
+git branch -m studentproject18ws
+
+# Sync local master with remote master
+git fetch --all
+git reset --hard origin/studentproject18ws
+
+# merge (not necessary: they are identical now)
+git merge studentproject18ws-modularization 
+
+# delete the modularization branch on remote, then local
+git push --delete origin studentproject18ws-modularization 
+git branch -d studentproject18ws-modularization 
+
+# small change, commit message
+git add -A
+git commit -m "NOTE: replaced this branch with studentproject18ws-modularization, deleted latter one"
+git push origin studentproject18ws 
+#+END_SRC
+
+
+
+** DONE Create new branch and move stuff from =develop= there
+   CLOSED: [2018-11-15 Thu 23:30]
+#+BEGIN_SRC shell
+# Purpose of this:
+# We worked in remote branch origin/develop and added some stuff X.
+# But we SHOULD have created a new branch where we would have added X.
+# So now create a new branch, and delete X from the other branch.
+# Okay let's start.
+# Create new branch out of existing branch, locally.
+# If it doesn't work, try git fetch first.
+git checkout -b studentproject18ws origin/develop
+# check that we're now on that new local branch
+git branch -av
+# change something, check that git now has something to push
+git status
+# ok, add All changes and commit to local repo
+git add -A .
+git commit -m "renamed sisclab -> studentproject18w, added TODO list"
+# now push the new local branch to the remote repo
+git push origin studentproject18ws
+# look at the commit history
+git log
+# okay, now go back to remote branch develop, and delete the stuff X there.
+git checkout develop
+git branch -av
+git status
+git add -A
+git commit -m "deleted studentprojecht18ws stuff from branch develop (moved to branch studentproject18ws)"
+git push
+git status
+git branch -av
+# All done, now go back to our 'working' branch.
+git checkout studentproject18ws
+git branch -av
+#+END_SRC
+
+Now to push, use =git push= or if that fails(???) =git push origin
+studentproject18ws=.
+
+** DONE Clone repo and switch to remote branch =develop=
+   CLOSED: [2018-11-14 Wed 16:01]
+#+BEGIN_SRC shell
+# cd to directory where local repo should reside
+cd /home/johannes/Desktop/Studium/Kurse_RWTH/SiScLab/18W/repos/masci-tools
+# clone
+git clone https://github.com/JuDFTteam/masci-tools.git
+cd masci-tools/
+# switch to remote branch develop
+git fetch
+git checkout develop
+# check that we're now on the correct remote branch:
+git branch -av
+#+END_SRC
+
+#+RESULTS:
+| *                      | develop | 42b6d83       | added       | bonddos.hdf | plot | tool |     0 | could | be    | moved | to  | new    | folder |
+| master                 | 6afe02d | Add           | pytest-cov  | dependency  |      |      |       |       |       |       |     |        |        |
+| remotes/origin/HEAD    | ->      | origin/master |             |             |      |      |       |       |       |       |     |        |        |
+| remotes/origin/develop | 42b6d83 | added         | bonddos.hdf | plot        | tool |    0 | could | be    | moved | to    | new | folder |        |
+| remotes/origin/master  | 6afe02d | Add           | pytest-cov  | dependency  |      |      |       |       |       |       |     |        |        |
