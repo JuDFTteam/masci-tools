@@ -114,6 +114,7 @@ Enabling notebook extension jupyter_dashboards/notebook/main...
 Enabling notebook extension jupyter-threejs/extension...
       - Validating: OK
 #+END_EXAMPLE
-
+Did simple ipywidgets tutorial from youtube, [[https://www.youtube.com/watch?v=SN0Bflf14C4][interactive matplotlib sine wave
+plot with sliders]].
 
 
