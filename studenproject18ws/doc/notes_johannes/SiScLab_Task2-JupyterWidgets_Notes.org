@@ -65,9 +65,11 @@ conda install --channel conda-forge appmode
 
 ** What I did
 #+BEGIN_SRC shell
-conda install --channel conda-forge ipywidgets appmode ipyvolume jupyter_dashboards jupyterthemes
+  source activate masci-tools (mascitools) conda install --channel conda-forge
+  ipywidgets appmode ipyvolume jupyter_dashboards jupyterthemes
+  jupyter_highlight_selected_word jupyter_nbextensions_configurator
 #+END_SRC
-Output:
+Output (incomplete, in reality installed in several steps):
 #+BEGIN_EXAMPLE
 The following NEW packages will be INSTALLED:
 

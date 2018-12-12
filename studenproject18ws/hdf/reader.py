@@ -556,7 +556,12 @@ if __name__ == '__main__':
     all_characters = [0, 1, 2, 3]
     all_groups = range(max(data.atom_group_keys))
     all_bands = range(data.eigenvalues.shape[2])
+
     print(data.weights(all_characters, all_groups, spin=0))
     print(data.combined_weight(all_characters, all_groups, spin=0))
     plt = data.new_plotfunction_weights(all_bands, all_characters, all_groups, spin=0)
     plt.show()
+
+    # all_characters = ('s', 'p', 'd', 'f')
+    # all_groups = (1, 2, 3, 4, 5)
+    # plt = data.new_plotfunction_weights(all_bands, all_characters, all_groups, spin=0)

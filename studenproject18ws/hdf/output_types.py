@@ -99,6 +99,14 @@ class DataBands(Data):
             return self.weights(characters, groups, spin)
 
     def new_plotfunction_weights(self, bands, characters, groups, spin):
+        """
+
+        :param bands:
+        :param characters:
+        :param groups:
+        :param spin:
+        :return:
+        """
 
         weight_k_n = self.combined_weight(characters, groups, spin)
 

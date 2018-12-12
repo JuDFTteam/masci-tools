@@ -252,18 +252,23 @@ Legend:
 |          |                                                                  |
 
 ** Helper libs packages extensions
-|       | Name                     | Description                                                              | Developers | D | A |
-|-------+--------------------------+--------------------------------------------------------------------------+------------+---+---|
-| alive | [[https://github.com/jupyter/dashboards][Jupyter Dashboards]]       | Jupyter Dashboards (=GUI) Layout Extension                               |         17 | X | X |
-|       | [[https://github.com/oschuett/appmode][appmode]]                  | turns notebooks into web applications (used in AiiDAlab)                 |          3 | X | X |
-|       | [[https://mybinder.org/v2/gh/jupyter-widgets/tutorial/master][mybinder.org]] / [[https://github.com/jupyterhub/binderhub][BinderHub]] | Workaround for Jupyter standalone web-app deployment problem             |         32 | X |   |
-|       | [[https://github.com/dunovank/jupyter-themes][jupyter-themes]]           | color themes                                                             |         24 |   | X |
-|-------+--------------------------+--------------------------------------------------------------------------+------------+---+---|
-| limbo | [[https://github.com/jupyter-attic/dashboards_server][Dashboards_server]]        | Server that runs and renders Jupyter notebooks as interactive dashboards |         11 | X | X |
-|       | [[https://github.com/maartenbreddels/flask-ipywidgets][flask-ipywidgets]]         | Use ipywidget in your Flask webserver                                    |          2 | X |   |
+|            | Name                      | Description                                                              | Developers | D | A |
+|------------+---------------------------+--------------------------------------------------------------------------+------------+---+---|
+| alive      | [[https://github.com/jupyter/dashboards][Jupyter Dashboards]]        | *buggy* Jupyter Dashboards (=GUI) Layout Extension                       |         17 | X | X |
+|            | [[https://github.com/oschuett/appmode][appmode]]                   | *works* turns notebooks into web applications (used in AiiDAlab)         |          3 | X | X |
+|            | [[https://mybinder.org/v2/gh/jupyter-widgets/tutorial/master][mybinder.org]] / [[https://github.com/jupyterhub/binderhub][BinderHub]]  | Workaround for Jupyter standalone web-app deployment problem             |         32 | X |   |
+|            | [[https://github.com/dunovank/jupyter-themes][jupyter-themes]]            | color themes                                                             |         24 |   | X |
+|------------+---------------------------+--------------------------------------------------------------------------+------------+---+---|
+|            | [[https://github.com/Jupyter-contrib/jupyter_nbextensions_configurator][nbextensions Configurator]] |                                                                          |            |   |   |
+| extensions | [[https://github.com/jcb91/jupyter_highlight_selected_word][highlight_selected_word]]   | does what it says, like in many IDEs                                     |            |   |   |
+|            | [[https://github.com/KwatME/clean_ipynb][clean_ipynb]]               | reformat code in Jupyter (beta)                                          |          1 |   |   |
+|------------+---------------------------+--------------------------------------------------------------------------+------------+---+---|
+| in limbo   | [[https://github.com/jupyter-attic/dashboards_server][Dashboards_server]]         | Server that runs and renders Jupyter notebooks as interactive dashboards |         11 | X | X |
+|            | [[https://github.com/maartenbreddels/flask-ipywidgets][flask-ipywidgets]]          | Use ipywidget in your Flask webserver                                    |          2 | X |   |
 Legend:
-- A = Appearance
-- D = Deployment
+- A = App Appearance
+- D = App Deployment
+- U = Developer utility
 
 * Bokeh
 ** Resources
