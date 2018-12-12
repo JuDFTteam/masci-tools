@@ -65,11 +65,19 @@ conda install --channel conda-forge appmode
 
 ** What I did
 #+BEGIN_SRC shell
-  source activate masci-tools (mascitools) conda install --channel conda-forge
-  ipywidgets appmode ipyvolume jupyter_dashboards jupyterthemes
-  jupyter_highlight_selected_word jupyter_nbextensions_configurator
+# essential stuff
+source activate masci-tools (mascitools)
+
+conda install --channel conda-forge ipywidgets appmode ipyvolume jupyter_dashboards
+
+# appmode worked, dashboards buggy
+
+# optional: some helpful extensions
+conda install --channel conda-forgejupyterthemes jupyter_highlight_selected_word jupyter_nbextensions_configurator
 #+END_SRC
+
 Output (incomplete, in reality installed in several steps):
+:output:
 #+BEGIN_EXAMPLE
 The following NEW packages will be INSTALLED:
 
@@ -116,7 +124,42 @@ Enabling notebook extension jupyter_dashboards/notebook/main...
 Enabling notebook extension jupyter-threejs/extension...
       - Validating: OK
 #+END_EXAMPLE
+:END:
+
 Did simple ipywidgets tutorial from youtube, [[https://www.youtube.com/watch?v=SN0Bflf14C4][interactive matplotlib sine wave
 plot with sliders]].
 
+
+** More installations for [[https://github.com/jupyter-widgets/tutorial][Jupyter Widgets Tutorial]]
+#+BEGIN_SRC shell
+
+# Install widgets from conda-forge
+conda install -c conda-forge bqplot ipyvolume ipyleaflet pythreejs ipyevents
+
+# Install one more package from a different channel
+# Not done for now, this is 'Python Interface to World Wide Telescope',
+# probably only needed for some example
+# conda install -c wwt pywwt
+#+END_SRC
+
+Check install says some packages need to be upgraded. But actually my versions
+are newer. so let it be.
+#+BEGIN_SRC shell
+cd jupyter-widgets_official-tutorial/
+source active masci-tools
+(masci-tools) python install_check.py
+# Please upgrade ipywidgets to version 7.2 by running:...
+# Please upgrade notebook to version 5.5 by running: ...
+# Please create custom kernel with:  ipython kernel install --name widgets-tutorial --display-name widgets-tutorial --sys-prefix
+(masci-tools) conda list -n masci-tools | grep ipywidgets
+ipywidgets                7.4.2                      py_0    conda-forge
+(masci-tools) conda list -n masci-tools | grep notebook
+notebook                  5.7.2                    py36_0
+#+END_SRC
+
+Okay, but I can do that: create custom kernel.
+#+BEGIN_SRC shell
+(masci-tools) ipython kernel install --name widgets-tutorial --display-name widgets-tutorial --sys-prefix
+# Installed kernelspec widgets-tutorial in /home/johannes/anaconda3/envs/masci-tools/share/jupyter/kernels/widgets-tutorial
+#+END_SRC
 
