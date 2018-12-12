@@ -1,0 +1,119 @@
+#+OPTIONS: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline author:t
+#+OPTIONS: broken-links:nil c:nil creator:nil d:(not "LOGBOOK") date:t e:t
+#+OPTIONS: email:nil f:t inline:t num:t p:nil pri:nil prop:nil stat:t tags:t
+#+OPTIONS: tasks:t tex:t timestamp:t title:t toc:t todo:t |:t
+#+TITLE: SiScLab_Task2-JupyterWidgets_Notes
+#+DATE: <2018-12-12 Mi>
+#+AUTHOR: Johannes Wasmer
+#+EMAIL: johannes@joe-9470m
+#+LANGUAGE: en
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+#+CREATOR: Emacs 25.2.2 (Org mode 9.1.13)
+
+#+OPTIONS: html-link-use-abs-url:nil html-postamble:auto html-preamble:t
+#+OPTIONS: html-scripts:t html-style:t html5-fancy:nil tex:t
+#+HTML_DOCTYPE: xhtml-strict
+#+HTML_CONTAINER: div
+#+DESCRIPTION:
+#+KEYWORDS:
+#+HTML_LINK_HOME:
+#+HTML_LINK_UP:
+#+HTML_MATHJAX:
+#+HTML_HEAD:
+#+HTML_HEAD_EXTRA:
+#+SUBTITLE:
+#+INFOJS_OPT:
+#+CREATOR: <a href="https://www.gnu.org/software/emacs/">Emacs</a> 25.2.2 (<a href="https://orgmode.org">Org</a> mode 9.1.13)
+#+LATEX_HEADER:
+
+newest is first
+* [[file:SiScLab_Notes.org][Master File]]
+* Replicating Stefan's Matlab Tool in Jupyter
+
+* Installing stuff
+** Instructions
+- Jupyter Widgets:
+minimal from [[https://ipywidgets.readthedocs.io/en/stable/user_install.html][readthedocs]]:
+#+BEGIN_SRC shell
+source activate masci-tools
+conda install --channel conda-forge ipywidgets
+#+END_SRC
+or full from [[https://github.com/jupyter-widgets/tutorial][tutorial]]:
+#+BEGIN_SRC shell
+source activate masci-tools
+conda create -n widgets-tutorial -c conda-forge python=3.6 pip notebook=5.5 numpy scikit-image scipy pandas=0.23 requests
+conda activate widgets-tutorial
+# Install widgets from conda-forge
+conda install -c conda-forge ipywidgets=7.2 bqplot ipyvolume ipyleaflet pythreejs ipyevents
+# Install one more package from a different channel
+conda install -c wwt pywwt
+# Create a kernel for this environment
+ipython kernel install --name widgets-tutorial --display-name widgets-tutorial --sys-prefix
+# The remaining steps are necessary only if using JupyterLab:
+# Install JupyterLab
+conda install -c conda-forge jupyterlab nodejs=9.11
+# Enable JupyterLab extensions, which may take several minutes
+jupyter labextension install @jupyter-widgets/jupyterlab-manager bqplot ipyvolume jupyter-threejs jupyter-leaflet
+#+END_SRC
+- [[https://github.com/aiidalab/aiidalab-appmode][aiidalab-appmode]]:
+#+BEGIN_SRC shell
+source activate masci-tools
+conda install --channel conda-forge appmode
+#+END_SRC
+- [[https://github.com/jupyter/dashboards][Jupyter Dashboards]]
+
+** What I did
+#+BEGIN_SRC shell
+conda install --channel conda-forge ipywidgets appmode ipyvolume jupyter_dashboards jupyterthemes
+#+END_SRC
+Output:
+#+BEGIN_EXAMPLE
+The following NEW packages will be INSTALLED:
+
+    appmode:            0.4.0-py36_1001        conda-forge
+    cloudpickle:        0.6.1-py_0             conda-forge
+    cryptography-vectors: 2.3.1-py36_1000      conda-forge
+    cytoolz:            0.9.0.1-py36h470a237_1 conda-forge
+    dask-core:          1.0.0-py_0             conda-forge
+    imageio:            2.4.1-py36_1000        conda-forge
+    ipydatawidgets:     4.0.0-py_0             conda-forge
+    ipyscales:          0.3.0-py_0             conda-forge
+    ipyvolume:          0.5.1-py36_1001        conda-forge
+    ipywebrtc:          0.4.3-py36_1000        conda-forge
+    jupyter_dashboards: 0.7.0-py36_1000        conda-forge
+    jupyterthemes:      0.20.0-py_0            conda-forge
+    lesscpy:            0.13.0-py_1            conda-forge
+    libtiff:            4.0.9-he6b73bb_1       conda-forge
+    networkx:           2.2-py_1               conda-forge
+    olefile:            0.46-py_0              conda-forge
+    pillow:             5.3.0-py36h34e0f95_0              
+    ply:                3.11-py_1              conda-forge
+    pythreejs:          2.0.2-py36_1000        conda-forge
+    pywavelets:         1.0.1-py36h7eb728f_0   conda-forge
+    scikit-image:       0.14.1-py36hfc679d8_1  conda-forge
+    toolz:              0.9.0-py_1             conda-forge
+    traittypes:         0.2.1-py_1             conda-forge
+
+The following packages will be UPDATED:
+
+    ca-certificates:      2018.03.07-0                     --> 2018.11.29-ha4d7672_0 conda-forge
+    certifi:              2018.10.15-py36_0                --> 2018.11.29-py36_1000  conda-forge
+    ipywidgets:           7.4.2-py36_0                     --> 7.4.2-py_0            conda-forge
+
+
+[...]
+    To initialize this nbextension in the browser every time the notebook (or other app) loads:
+    
+          jupyter nbextension enable jupyter_dashboards --py --sys-prefix
+    
+Enabling notebook extension jupyter_dashboards/notebook/main...
+      - Validating: OK
+- 
+/ + /home/johannes/anaconda3/envs/masci-tools/bin/jupyter-nbextension enable pythreejs --py --sys-prefix
+Enabling notebook extension jupyter-threejs/extension...
+      - Validating: OK
+#+END_EXAMPLE
+
+
+

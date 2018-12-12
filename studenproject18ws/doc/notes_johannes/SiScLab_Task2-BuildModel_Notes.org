@@ -1,0 +1,42 @@
+#+OPTIONS: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline author:t
+#+OPTIONS: broken-links:nil c:nil creator:nil d:(not "LOGBOOK") date:t e:t
+#+OPTIONS: email:nil f:t inline:t num:t p:nil pri:nil prop:nil stat:t tags:t
+#+OPTIONS: tasks:t tex:t timestamp:t title:t toc:t todo:t |:t
+#+TITLE: SiScLab_Task2-BuildModel_Notes
+#+DATE: <2018-12-12 Mi>
+#+AUTHOR: Johannes Wasmer
+#+EMAIL: johannes@joe-9470m
+#+LANGUAGE: en
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+#+CREATOR: Emacs 25.2.2 (Org mode 9.1.13)
+
+#+OPTIONS: html-link-use-abs-url:nil html-postamble:auto html-preamble:t
+#+OPTIONS: html-scripts:t html-style:t html5-fancy:nil tex:t
+#+HTML_DOCTYPE: xhtml-strict
+#+HTML_CONTAINER: div
+#+DESCRIPTION:
+#+KEYWORDS:
+#+HTML_LINK_HOME:
+#+HTML_LINK_UP:
+#+HTML_MATHJAX:
+#+HTML_HEAD:
+#+HTML_HEAD_EXTRA:
+#+SUBTITLE:
+#+INFOJS_OPT:
+#+CREATOR: <a href="https://www.gnu.org/software/emacs/">Emacs</a> 25.2.2 (<a href="https://orgmode.org">Org</a> mode 9.1.13)
+#+LATEX_HEADER:
+
+
+* [[file:SiScLab_Notes.org][Master File]]
+
+* DONE Build generic HDF Reader
+  CLOSED: [2018-12-10 Mo 15:00]
+The idea after [[file:SiScLab_Meetings_Notes.org::*<2018-11-21%20Wed>%20Meeting%20Ju2][<2018-11-21 Wed> Meeting Ju2]] was: Praneeth writes a Desktop GUI,
+I a webbrowser GUI. I wanted to make sure that we/I rewrite the working code by
+Christian into a common model-controller that can handle these two different
+views (MVC). I started on <2018-12-01 Sa> on that. I got the idea to build a
+*generic HDF reader* as model. It provides an extendable extract, transform and
+load pipeline to build data types from a HDF file using recipes, and based on
+Python introspection. It thought it'd take me 2-3 days, but it grew in
+complexity and took until <2018-12-10 Mo>.
