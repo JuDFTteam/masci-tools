@@ -24,15 +24,96 @@
 newest is first
 * [[file:SiScLab_Notes.org][Master File]]
 * <2018-12-11 Di> - <2018-12-12 Mi> Phase 3 - Building minimal Jupyter Dashboard
+** Installing stuff
+*** Instructions
+- Jupyter Widgets:
+minimal from [[https://ipywidgets.readthedocs.io/en/stable/user_install.html][readthedocs]]:
+#+BEGIN_SRC shell
+source activate masci-tools
+conda install --channel conda-forge ipywidgets
+#+END_SRC
+or full from [[https://github.com/jupyter-widgets/tutorial][tutorial]]:
+#+BEGIN_SRC shell
+source activate masci-tools
+conda create -n widgets-tutorial -c conda-forge python=3.6 pip notebook=5.5 numpy scikit-image scipy pandas=0.23 requests
+conda activate widgets-tutorial
+# Install widgets from conda-forge
+conda install -c conda-forge ipywidgets=7.2 bqplot ipyvolume ipyleaflet pythreejs ipyevents
+# Install one more package from a different channel
+conda install -c wwt pywwt
+# Create a kernel for this environment
+ipython kernel install --name widgets-tutorial --display-name widgets-tutorial --sys-prefix
+# The remaining steps are necessary only if using JupyterLab:
+# Install JupyterLab
+conda install -c conda-forge jupyterlab nodejs=9.11
+# Enable JupyterLab extensions, which may take several minutes
+jupyter labextension install @jupyter-widgets/jupyterlab-manager bqplot ipyvolume jupyter-threejs jupyter-leaflet
+#+END_SRC
+- [[https://github.com/aiidalab/aiidalab-appmode][aiidalab-appmode]]:
+#+BEGIN_SRC shell
+source activate masci-tools
+conda install --channel conda-forge appmode
+#+END_SRC
+- [[https://github.com/jupyter/dashboards][Jupyter Dashboards]]
+
+*** What I did
+#+BEGIN_SRC shell
+conda install --channel conda-forge ipywidgets appmode ipyvolume jupyter_dashboards
+#+END_SRC
+Output:
+#+BEGIN_EXAMPLE
+The following NEW packages will be INSTALLED:
+
+    appmode:            0.4.0-py36_1001        conda-forge
+    cloudpickle:        0.6.1-py_0             conda-forge
+    cryptography-vectors: 2.3.1-py36_1000      conda-forge
+    cytoolz:            0.9.0.1-py36h470a237_1 conda-forge
+    dask-core:          1.0.0-py_0             conda-forge
+    imageio:            2.4.1-py36_1000        conda-forge
+    ipydatawidgets:     4.0.0-py_0             conda-forge
+    ipyscales:          0.3.0-py_0             conda-forge
+    ipyvolume:          0.5.1-py36_1001        conda-forge
+    ipywebrtc:          0.4.3-py36_1000        conda-forge
+    jupyter_dashboards: 0.7.0-py36_1000        conda-forge
+    libtiff:            4.0.9-he6b73bb_1       conda-forge
+    networkx:           2.2-py_1               conda-forge
+    olefile:            0.46-py_0              conda-forge
+    pillow:             5.3.0-py36h34e0f95_0              
+    pythreejs:          2.0.2-py36_1000        conda-forge
+    pywavelets:         1.0.1-py36h7eb728f_0   conda-forge
+    scikit-image:       0.14.1-py36hfc679d8_1  conda-forge
+    toolz:              0.9.0-py_1             conda-forge
+    traittypes:         0.2.1-py_1             conda-forge
+
+The following packages will be UPDATED:
+
+    ca-certificates:      2018.03.07-0                     --> 2018.11.29-ha4d7672_0 conda-forge
+    certifi:              2018.10.15-py36_0                --> 2018.11.29-py36_1000  conda-forge
+    ipywidgets:           7.4.2-py36_0                     --> 7.4.2-py_0            conda-forge
+
+
+[...]
+    To initialize this nbextension in the browser every time the notebook (or other app) loads:
+    
+          jupyter nbextension enable jupyter_dashboards --py --sys-prefix
+    
+Enabling notebook extension jupyter_dashboards/notebook/main...
+      - Validating: OK
+- 
+/ + /home/johannes/anaconda3/envs/masci-tools/bin/jupyter-nbextension enable pythreejs --py --sys-prefix
+Enabling notebook extension jupyter-threejs/extension...
+      - Validating: OK
+#+END_EXAMPLE
+** 
 * <2018-12-11 Di> - <2018-12-11 Di> Phase 2 - Researching Python Web GUIs
 #+NAME: fig:figure name
-#+CAPTION: The Python Visualization Landscape 2017 [[https://github.com/rougier/python-visualization-landscape][source]]
+#+CAPTION: The Python Visualization Landscape 2017
 #+ATTR_ORG: :width 800/200/250/300/400/500
 #+ATTR_LATEX: :width 2.0in
 #+ATTR_HTML: :width 800/200/250/300/400/500px
 [[file:img/landscape.png]]
-
-** Overview of AiiDAlab (=Jupyter) - based Visualization Tools & Resources
+The Python Visualization Landscape 2017. [[https://github.com/rougier/python-visualization-landscape][source (clickable html graph)]].
+** Overview of AiiDAlab (=JupyterHub) - based Visualization Tools & Resources
 - AiiDAlab ([[https://aiidalab.materialscloud.org/hub/login][aiidalab official]], [[https://github.com/aiidalab][aiidalab github]]) is a Jupyter server ([[https://github.com/jupyterhub/jupyterhub][JupyterHub]])
   accessible on materialscloud.org via login. So apps developed for it can use
   [[http://jupyter.org/widgets][Jupyter Widgets]] and be used by any aiidalab user anywhere. The problem of
@@ -40,8 +121,22 @@ newest is first
   web-app* (see next section) is thus not eliminated, but can be ignored for the
   initial phase at least. I think long-term the possibilities PyViz is offering
   (see next section) should be at least tried out.
-- For complementary Jupyter solutions not used in AiiDalab stack so far, see
+*** [[https://github.com/aiidalab][AiiDAlab Tools]] / Resources for building AiiDAlab Apps
+- For complementary Jupyter resources not used in AiiDAlab stack so far, see
   also section [[*Jupyter Widgets][Jupyter Widgets]] below.
+
+|                   | Name                     | Description                                    |
+|-------------------+--------------------------+------------------------------------------------|
+| AiiDAlab          | [[https://github.com/aiidalab/aiidalab-widgets-base][aiidalab-idgets-base]]     | AiiDA widgets for AiiDA Lab applications       |
+| (Jupyter)         | [[https://github.com/aiidalab/aiidalab-appmode][aiidalab-appmode]]         | turns notebooks into web applications          |
+|                   | [[https://www.youtube.com/playlist?list=PL19kfLn4sO_8O_yQTL6KK0nC2adrrLqmi][Jupyter @ materialscloud]] | youtube playlist showing AiidaLab app creation |
+|                   | [[https://github.com/aiidalab/aiidalab-registry][aiidalab-registry]]        | app registry to install apps                   |
+|-------------------+--------------------------+------------------------------------------------|
+| materialscloud    | [[https://github.com/aiidalab/aiidalab-app-cutter][aiidalab-app-cutter]]      | Cookie cutter recipe Materials Cloud apps      |
+| tools (standalone | [[https://github.com/giovannipizzi/seekpath#online-service-tool][seekpath]]                 | example app code including deployment          |
+| web-apps)         |                          |                                                |
+|-------------------+--------------------------+------------------------------------------------|
+|                   | [[https://aiida-core.readthedocs.io/en/stable/developer_guide/index.html][AiiDA developer doc]]      | ONLY AiiDA, nothing on AiiDAlab                |
 
 ** Overview of Open Source Python Browser Visualization Tools & Resources
 - This overview is written with the emphasis of finding a solution that can be
@@ -217,20 +312,32 @@ Legend:
 ** Jupyter Widgets
 
 *** Resources
-| official | http://jupyter.org/widgets                  |
-|          | https://github.com/jupyter-widgets          |
-|          | https://github.com/jupyter-widgets/tutorial |
-|          | [[https://mybinder.org/v2/gh/jupyter-widgets/tutorial/master][run above tutorial online in binder]]         |
-|          | [[https://ipywidgets.readthedocs.io/en/stable/][ipywidgets @ readthedocs]]                    |
-|----------+---------------------------------------------|
-|          |                                             |
+| official | http://jupyter.org/widgets                                       |
+|          | https://github.com/jupyter-widgets                               |
+|          | https://github.com/jupyter-widgets/tutorial                      |
+|          | [[https://mybinder.org/v2/gh/jupyter-widgets/tutorial/master][run above tutorial online in binder]]                              |
+|          | [[https://ipywidgets.readthedocs.io/en/stable/][ipywidgets @ readthedocs]]                                         |
+|----------+------------------------------------------------------------------|
+|       2D | [[https://github.com/bloomberg/bqplot][bqplot]] interactive 2D viz                                        |
+|----------+------------------------------------------------------------------|
+|       3D | [[https://github.com/jupyter-widgets/pythreejs][pythreejs]] general purpose 3D visualization (overkill for SciVis) |
+|          | [[https://github.com/maartenbreddels/ipyvolume][ipyvolume]] subset for SciVis: 3D plotting ([[https://www.quora.com/What-is-the-difference-between-ipyvolume-and-pythreejs][source]])                |
+|          |                                                                  |
 
 *** Helper libs packages extensions
-| Name                     | Description                                                  | Developers |
-|--------------------------+--------------------------------------------------------------+------------|
-| [[https://github.com/jupyter/dashboards][Jupyter Dashboards]]       | Jupyter Dashboards (=GUI) Layout Extension                   |         17 |
-| [[https://mybinder.org/v2/gh/jupyter-widgets/tutorial/master][mybinder.org]] / [[https://github.com/jupyterhub/binderhub][BinderHub]] | Workaround for Jupyter standalone web-app deployment problem |         32 |
-| [[https://github.com/dunovank/jupyter-themes][jupyter-themes]]           | color themes                                                 |            |
+|       | Name                     | Description                                                              | Developers | D | A |
+|-------+--------------------------+--------------------------------------------------------------------------+------------+---+---|
+| alive | [[https://github.com/jupyter/dashboards][Jupyter Dashboards]]       | Jupyter Dashboards (=GUI) Layout Extension                               |         17 | X | X |
+|       | [[https://github.com/oschuett/appmode][appmode]]                  | turns notebooks into web applications (used in AiiDAlab)                 |          3 | X | X |
+|       | [[https://mybinder.org/v2/gh/jupyter-widgets/tutorial/master][mybinder.org]] / [[https://github.com/jupyterhub/binderhub][BinderHub]] | Workaround for Jupyter standalone web-app deployment problem             |         32 | X |   |
+|       | [[https://github.com/dunovank/jupyter-themes][jupyter-themes]]           | color themes                                                             |         24 |   | X |
+|-------+--------------------------+--------------------------------------------------------------------------+------------+---+---|
+| limbo | [[https://github.com/jupyter-attic/dashboards_server][Dashboards_server]]        | Server that runs and renders Jupyter notebooks as interactive dashboards |         11 | X | X |
+|       | [[https://github.com/maartenbreddels/flask-ipywidgets][flask-ipywidgets]]         | Use ipywidget in your Flask webserver                                    |          2 | X |   |
+Legend:
+- A = Appearance
+- D = Deployment
+
 ** Bokeh
 *** Resources
 

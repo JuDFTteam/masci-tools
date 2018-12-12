@@ -4,11 +4,16 @@
 Notes
 =====
 Why 'generic'?:
+
 - together, the Reader, recipes, transforms and data output_types become a utility that can  be reused
   for any kind of hdf5 file readout (extraction-transform-load). For different applications, a new
   recipe (a dict) can be added or passed in to the reader. Same goes for the Transform class
   that holds the transform functions: if needed, derive a new one. Finally, this applies to the data output_types
   as well. In the recipe, different transforms and data_types can be composed together down to individual functions.
+
+- Recipes are dictionaries and work with type references to classes and functions as well as string references.
+  Thus they can be de/serialized (JSON files) for working with for integration with other tools, e.g. a scripted
+  workflow, format conversions, or for a GUI app.
 """
 import copy
 import functools
