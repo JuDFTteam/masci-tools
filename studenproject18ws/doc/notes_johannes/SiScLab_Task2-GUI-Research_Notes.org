@@ -40,6 +40,15 @@
 The Python Visualization Landscape 2017. [[https://github.com/rougier/python-visualization-landscape][source (clickable html graph)]].
 
 * [[file:SiScLab_Notes.org][Master File]]
+* Updates while working on code
+- Worked a bit with (Jupyter Widgets) ipywidgets+matplotlib. Noted that this
+  approach enables limited plot interactivity: you can rescale the plot and
+  change parameters, but get no in-plot tooltips (which datapoint on mouse
+  hover-over), or selections. This could be done with doing the plot not with
+  matplotlib, but one of (bqplot, hvPlot/Holoviews, plotly, Bokeh). What I'm
+  saying is: I can build a dashboard in Jupyter with appmode, and I can use
+  different tools for different plots. I don't have to use Jupyter Widgets for
+  everything.
 * Overview of AiiDAlab (=JupyterHub) - based Visualization Tools & Resources
 - AiiDAlab ([[https://aiidalab.materialscloud.org/hub/login][aiidalab official]], [[https://github.com/aiidalab][aiidalab github]]) is a Jupyter server ([[https://github.com/jupyterhub/jupyterhub][JupyterHub]])
   accessible on materialscloud.org via login. So apps developed for it can use

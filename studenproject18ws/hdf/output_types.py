@@ -1,6 +1,7 @@
 """Holds composable output data types (plug-in functions) for the HDF file Reader module."""
 import inspect
 from collections import Counter
+import deprecated
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -63,9 +64,18 @@ class DataBands(Data):
         try:
             self.atoms_per_group_dict = Counter(self.atoms_group)
             self.atom_group_keys = self.atoms_per_group_dict.keys()
-            self.atoms_per_group = np.zeros(max(self.atom_group_keys))
-            for i in range(max(self.atom_group_keys)):
-                self.atoms_per_group[i] = self.atoms_per_group_dict[i]
+
+            # JW: CP 181124 code
+            # self.atoms_per_group = np.zeros(max(self.atom_group_keys))
+            # for i in range(max(self.atom_group_keys)):
+            #     self.atoms_per_group[i] = self.atoms_per_group_dict[i]
+
+            # JW: CP 181212 code
+            (self.num_spin, self.num_k, self.num_e,
+             self.num_groups, self.num_char) = self.llikecharge.shape
+            self.atoms_per_group = np.zeros(self.num_groups)
+            for i in range(self.num_groups):
+                self.atoms_per_group[i] = np.count_nonzero(np.array(self.atoms_group)==i)
 
         except AttributeError:
             pass
@@ -76,7 +86,15 @@ class DataBands(Data):
     def E_i(self, i, spin=0):
         return self.eigenvalues[spin].T[i]
 
+    @deprecated
     def weights(self, characters, groups, spin):
+        """
+        deprecated: christian's code version 181124
+        :param characters:
+        :param groups:
+        :param spin:
+        :return:
+        """
         weights_reduced = np.zeros((self.eigenvalues.shape[2], len(self.k_points)))
         weights_norm = np.zeros((self.eigenvalues.shape[2], len(self.k_points)))
 
@@ -92,11 +110,104 @@ class DataBands(Data):
 
         return weights_reduced / weights_norm
 
+    @deprecated
     def combined_weight(self, characters, groups, spin):
+        """
+        deprecated: christian's code version 181124
+        :param characters:
+        :param groups:
+        :param spin:
+        :return:
+        """
         if (self.bandUnfolding == True):
             return self.weights(characters, groups, spin) * self.bandUnfolding_weights[spin].T[:]
         else:
             return self.weights(characters, groups, spin)
+
+    def get_data(self, mask_bands, mask_characters, mask_groups, mask_spin):
+        """
+        current: christian's code version 181212
+
+        :param mask_bands:
+        :param mask_characters:
+        :param mask_groups:
+        :param mask_spin:
+        :return:
+        """
+        # filter arrays in bands and spin:
+        llc = self.llikecharge[mask_spin, :, :, :, :]
+        llc = llc[:, :, mask_bands, :, :]
+        # reduce the arrays in Character, Spin, Group
+        # llc_red = llc[SPIN_FILTER, :, :, :, :]
+        llc_red = llc[:, :, :, mask_groups, :]
+        llc_red = llc_red[:, :, :, :, mask_characters]
+        # llc_red = llc_red[:, :, BAND_FILTER, :, :]
+        atoms_per_group_red = self.atoms_per_group[mask_groups]
+
+        # compute normalized weights with tensor product
+        llc_redG = np.tensordot(llc_red, atoms_per_group_red, axes=([3], [0]))
+        llc_redGC = np.sum(llc_redG, axis=3)
+        llc_norm_temp = np.tensordot(llc, self.atoms_per_group, axes=([3], [0]))
+        llc_norm = np.sum(llc_norm_temp, axis=3)
+        llc_normalized = llc_redGC / llc_norm
+
+        # consider unfolding weight
+        if self.bandUnfolding:
+            unfold_weight = self.bandUnfolding_weights
+            unfold_weight = unfold_weight[mask_spin, :, :]
+            unfold_weight = unfold_weight[:, :, mask_bands]
+            llc_normalized = llc_normalized * unfold_weight
+
+        return llc_normalized
+
+    def create_mask_spin(self, which_spin):
+        mask_spin = np.zeros(self.num_spin).astype(bool)
+        mask_spin[which_spin] = True
+        return mask_spin
+
+    def create_mask_characters(self,which_characters=[0,1,2,3]):
+        CHARACTER_FILTER = np.zeros(4).astype(bool)
+        CHARACTER_FILTER[which_characters] = True
+        return CHARACTER_FILTER
+
+    def create_group_filter(self,which_groups=[]):
+        if not which_groups:
+            which_groups=range(self.num_groups)
+        GROUP_FILTER = np.zeros(self.num_groups).astype(bool)
+        GROUP_FILTER[which_groups] = True
+        return GROUP_FILTER
+
+    def create_band_filter(self,which_bands=[]):
+        if not which_bands:
+            which_bands = range(self.num_e)
+        BAND_FILTER = np.zeros(self.num_e).astype(bool)
+        BAND_FILTER[which_bands] = True
+        return BAND_FILTER
+
+    def reshape_data(self, mask_bands, mask_characters, mask_groups, spin):
+        """
+        current: christian's code version 181212
+
+        :param mask_bands:
+        :param mask_characters:
+        :param mask_groups:
+        :param spin:
+        :return:
+        """
+        mask_spin = self.create_mask_spin(spin)
+        total_weight = self.get_data(mask_bands, mask_characters, mask_groups, mask_spin)
+
+        # only select the requested spin and bands
+        evs = self.eigenvalues[spin, :, mask_bands]
+
+        # to speed up scatter plot, unfold data in one dimension
+        (Nk, Ne) = evs.T.shape
+
+        evs_resh = np.reshape(evs, Nk * Ne)
+        weight_resh = np.reshape(total_weight[0].T, Nk * Ne)
+        k_resh = np.tile(self.k_distances, Ne)
+        return (k_resh, evs_resh, weight_resh)
+
 
     def new_plotfunction_weights(self, bands, characters, groups, spin):
         """
