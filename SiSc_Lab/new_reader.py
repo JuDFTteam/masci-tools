@@ -217,6 +217,30 @@ plt.hlines(0, 0, max(k), lw = 0.1)
 plt.savefig("dos_groups_012_4_3.png", dpi=2000)
 """
 
+def plot_two_characters(color, ax1, f, llc, evs, k, spin, CHARACTER_FILTER, GROUP_FILTER, BAND_FILTER, UNFOLD_WEIGHT, 
+                        unfoldong_weight_exponent, alpha = 1):
+    
+    characters = np.array(range(4))[CHARACTER_FILTER]
+    if(len(characters) != 2):
+        print("error")
+        
+    (k_resh, evs_resh, weight_resh) = reshape_data(f, llc, evs, k, spin, create_character_filter([characters[0]]), GROUP_FILTER, BAND_FILTER, UNFOLD_WEIGHT=band_unfolding, unfoldong_weight_exponent = 1)
+    (k_resh2, evs_resh2, weight_resh2) = reshape_data(f, llc, evs, k, spin, create_character_filter([characters[1]]), GROUP_FILTER, BAND_FILTER, UNFOLD_WEIGHT=band_unfolding, unfoldong_weight_exponent = 1)
+    #print(k_resh-k_resh2)
+    #print(evs_resh-evs_resh2)
+    rel = weight_resh/(weight_resh+weight_resh2)*20
+    #ax1.scatter(k_resh, (evs_resh-fermi_energy)*hartree_in_ev, marker='o', c="g", s = 5 * weight_resh, lw=0, alpha = alpha)
+    #ax1.scatter(k_resh2, (evs_resh-fermi_energy)*hartree_in_ev, marker='o', c="r", s = 5 * weight_resh2, lw=0, alpha = alpha)
+    cm = plt.cm.RdBu #get_cmap('RdYlBu')
+    ax1.scatter(k_resh2, (evs_resh-fermi_energy)*hartree_in_ev, marker='o', c=rel, s = 5 * weight_resh2, lw=0, alpha = alpha,cmap=cm)
+
+fig = plt.figure()
+alpha = 1
+ax4 = fig.add_subplot(111)
+plot_two_characters("blue", ax4, f, llc, evs, k, 0, create_character_filter([0,1]), create_group_filter(), create_band_filter(),
+     band_unfolding, 1., alpha)
+
+plt.savefig("2characters.png", dpi=2000)
 
 fig = plt.figure()
 ax3 = fig.add_subplot(111)
@@ -238,7 +262,7 @@ plt.xticks(k_special_pt, label)
 plt.ylabel("E(k) [eV]")
 plt.xlim(0, max(k))
 plt.hlines(0, 0, max(k), lw = 0.1)
-plt.savefig("sphjjhjhin.png", dpi=2000)
+#plt.savefig("sphjjhjhin.png", dpi=2000)
 
 
 #plt.xlabel("k")
