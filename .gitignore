@@ -136,5 +136,13 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+
+Data/
+*.hdf
+*.png 
+*.pdf
+
+
+
 # End of https://www.gitignore.io/api/python,linux,macos
 
