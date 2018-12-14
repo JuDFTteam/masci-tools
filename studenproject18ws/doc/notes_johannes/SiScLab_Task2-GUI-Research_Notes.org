@@ -39,8 +39,18 @@
 [[file:img/landscape.png]]
 The Python Visualization Landscape 2017. [[https://github.com/rougier/python-visualization-landscape][source (clickable html graph)]].
 
+- top items: newest is first, below: newest is last (default).
 * [[file:SiScLab_Notes.org][Master File]]
-* Updates while working on code
+* Update Log while working on code
+- here: newest is first
+
+- just discovered again that [[*JupyterLab][JupyterLab]] is now stable, works with all major
+  Jupyter Widgets and many extensions by now, and is the eventual natural
+  replacement for Jupyter Notebooks, just like Python3 is the eventual natural
+  replacement for Python2. Will try to get things working in JupyterLab now,
+  because it solves a lot of the problems people dislike about Jupyter
+  Notebooks, mainly the interface.
+
 - Worked a bit with (Jupyter Widgets) ipywidgets+matplotlib. Noted that this
   approach enables limited plot interactivity: you can rescale the plot and
   change parameters, but get no in-plot tooltips (which datapoint on mouse
@@ -83,18 +93,21 @@ The Python Visualization Landscape 2017. [[https://github.com/rougier/python-vis
    *difficult to deploy as public-facing apps because the Jupyter server allows
    arbitrary code execution*.
   #+END_QUOTE
-  Though there are workarounds for this like [[https://mybinder.org/v2/gh/jupyter-widgets/tutorial/master][mybinder.org]].
+  Though there are workarounds for this like [[https://mybinder.org/v2/gh/jupyter-widgets/tutorial/master][mybinder.org]]. Also, [[*JupyterLab][JupyterLab]]
+  seems to have solved many of the Jupyter Notebook shortcomings as of
+  late 2018.
 ** My personal summary
-- *If non-public-only use: use Jupyter Widgets*. *If public use (standalon
-  web-app), no Jupyter intended: use Dash*. /Those options are mutually
-  exclusive/. *The middle-ground best long-term option /would/ be using [[http://pyviz.org/][Pyviz]]*,
-  because it's qdifferent from the former two, it's deployable for Jupyter *and*
-  as standalone web-app. *But*, PyViz has downsides for the intended application
-  (minimal unmaintained 3D support, no Flask deployment yet), so it's out again.
-  The last alternative is to do it like materialscloud and build an own solution
-  only based on Flask, [[https://github.com/giovannipizzi/seekpath#online-service-tool][see example]]. Again, for that just could use Dash: /Dash
-  uses a Flask server, so you can deploy Dash apps in the same way that you
-  would deploy Flask apps/. But then we lose the Jupyter support again.
+- *If non-public-only use: use Jupyter Widgets +in Jupyter Notebook+ /in
+  JupyterLab/ . *If public use (standalon web-app), no Jupyter intended: use
+  Dash*. /Those options are mutually exclusive/. *The middle-ground best
+  long-term option /would/ be using [[http://pyviz.org/][Pyviz]]*, because it's different from the
+  former two, it's deployable for Jupyter *and* as standalone web-app. *But*,
+  PyViz has downsides for the intended application (minimal unmaintained 3D
+  support, no Flask deployment yet), so it's out again. The last alternative is
+  to do it like materialscloud and build an own solution only based on Flask,
+  [[https://github.com/giovannipizzi/seekpath#online-service-tool][see example]]. Again, for that just could use Dash: /Dash uses a Flask server,
+  so you can deploy Dash apps in the same way that you would deploy Flask apps/.
+  But then we lose the Jupyter support again.
 - For running a web-based GUI (=dashboard) with (interactive) plot
   visualization, there are basically four platforms to choose from: Jupyter,
   Plotly, or Bokeh, or a custom Flask+JavaScript solution (like [[https://www.materialscloud.org/infrastructure][materialscloud
@@ -245,20 +258,66 @@ Legend:
   - compares: seaborn, ggplot, bokeh, pygal, plotly
   - the gist: didn't care for interactive, web. excel user
 
+* JupyterLab
+** Resources
+*** Intro
+- read [[https://jupyterlab.readthedocs.io/en/stable/getting_started/overview.html][JupyterLab Doc / Overview]]
+- watch [[https://www.youtube.com/watch?v=ctOM-Gza04Y&t=549s][(video) 10min JupyterLab Overview Jun2018]]
+- [[https://www.youtube.com/watch?v=NSiPeoDpwuI][(video) 40min JupyterLab Overview Nov2018]]
+*** How to install stuff
+- (Taken from [[https://jupyterlab.readthedocs.io/en/stable/user/extensions.html][JupyterLab Doc - Extensions]]) In general, most stuff for Jupyter
+  Notebooks now also works in JupyterLab. If ~conda~ (Anaconda) is used instead
+  of ~pip~ for Python envs, then only a one-liner has to be added for installing
+  packages. Initially, nodejs has to be installed once:
+  #+BEGIN_SRC shell
+  conda install -c conda-forge nodejs # with conda
+  brew install node # with homebrew macOS
+  #+END_SRC
+  Then, when installing a widget/extension, the following line has to be added
+  to enable it in jupyterlab (the ~@version~ is optional):
+  #+BEGIN_SRC shell
+  jupyter labextension install my-extension
+  jupyter labextension install my-extension@1.2.3 # to install a specific version
+  #+END_SRC
+  =my-extension= is normally an npm package, but can be a local dir, a local or
+  online tarball.
+  - List installed extentions:
+  #+BEGIN_SRC shell
+  jupyter labextension list
+  #+END_SRC
+  Extensions can be uninstalled, disabled, enabled, and so on. Read the doc.
+*** Resources Table
+  
+
+| official | [[https://jupyterlab.readthedocs.io/en/stable/index.html][JupyterLab Doc]] |
+|          |                |
+** Helper libs packages extensions
+|----------+------------------------------+-------------------------------------------------|
+| official | [[https://jupyterlab.readthedocs.io/en/stable/user/extensions.html][JupyterLab Doc - Extensions]]  | Must-read to understand install procedure       |
+|----------+------------------------------+-------------------------------------------------|
+|          | [[https://github.com/markusschanta/awesome-jupyter][awesome-jupyter]]              | A curated list of awesome Jupyter projects      |
+| lists    | [[https://github.com/mauhai/awesome-jupyterlab][awesome-jupyterlab]]           | A curated list of awesome JupyterLab extensions |
+|          | [[https://github.com/topics/jupyterlab-extension][GitHub #jupyterlab-extension]] | hashtag                                         |
+|----------+------------------------------+-------------------------------------------------|
+|          | [[https://github.com/plotly/jupyterlab-chart-editor][chart editor by plotly]]       | [[https://www.youtube.com/watch?v=zR7G2tNVo1Q][(video) 30min showcase Nov2018]]                  |
+|          |                              |                                                 |
 * Jupyter Widgets
 
 ** Resources
-| official | http://jupyter.org/widgets                                       |
-|          | https://github.com/jupyter-widgets                               |
-|          | https://github.com/jupyter-widgets/tutorial                      |
-|          | [[https://mybinder.org/v2/gh/jupyter-widgets/tutorial/master][run above tutorial online in binder]]                              |
-|          | [[https://ipywidgets.readthedocs.io/en/stable/][ipywidgets @ readthedocs]]                                         |
-|----------+------------------------------------------------------------------|
-|       2D | [[https://github.com/bloomberg/bqplot][bqplot]] interactive 2D viz                                        |
-|----------+------------------------------------------------------------------|
-|       3D | [[https://github.com/jupyter-widgets/pythreejs][pythreejs]] general purpose 3D visualization (overkill for SciVis) |
-|          | [[https://github.com/maartenbreddels/ipyvolume][ipyvolume]] subset for SciVis: 3D plotting ([[https://www.quora.com/What-is-the-difference-between-ipyvolume-and-pythreejs][source]])                |
-|          |                                                                  |
+| official | http://jupyter.org/widgets                                        |
+|          | https://github.com/jupyter-widgets                                |
+|          | https://github.com/jupyter-widgets/tutorial                       |
+|          | [[https://mybinder.org/v2/gh/jupyter-widgets/tutorial/master][run above tutorial online in binder]]                               |
+|          | [[https://ipywidgets.readthedocs.io/en/stable/][ipywidgets @ readthedocs]]                                          |
+|          |                                                                   |
+|----------+-------------------------------------------------------------------|
+|    lists | [[https://github.com/markusschanta/awesome-jupyter][awesome-jupyter]] A curated list of awesome Jupyter projects        |
+|----------+-------------------------------------------------------------------|
+|       2D | [[https://github.com/bloomberg/bqplot][bqplot]] interactive 2D viz                                         |
+|----------+-------------------------------------------------------------------|
+|       3D | [[https://github.com/jupyter-widgets/pythreejs][pythreejs]] general purpose 3D visualization (overkill for SciVis)  |
+|          | [[https://github.com/maartenbreddels/ipyvolume][ipyvolume]] subset for SciVis: 3D plotting ([[https://www.quora.com/What-is-the-difference-between-ipyvolume-and-pythreejs][source]])                 |
+|          |                                                                   |
 
 ** Helper libs packages extensions
 |            | Name                      | Description                                                              | Developers | D | A |

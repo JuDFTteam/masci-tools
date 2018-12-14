@@ -62,9 +62,9 @@ class Reader(object):
     >>> filepath = os.path.join(*filepath)
     >>>
     >>> data = None
-    >>> extractor = Reader(filepath=filepath)
-    >>> with extractor as h5file:
-    ...    data = extractor.read(recipe=Recipes.Bands, logging_level=logging.DEBUG)
+    >>> reader = Reader(filepath=filepath)
+    >>> with reader as h5file:
+    ...    data = reader.read(recipe=Recipes.Bands, logging_level=logging.DEBUG)
     ...    #
     ...    # Note:
     ...    # Inside the with statement (context manager),

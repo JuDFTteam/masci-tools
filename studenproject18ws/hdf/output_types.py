@@ -1,7 +1,6 @@
 """Holds composable output data types (plug-in functions) for the HDF file Reader module."""
 import inspect
 from collections import Counter
-import deprecated
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -86,7 +85,6 @@ class DataBands(Data):
     def E_i(self, i, spin=0):
         return self.eigenvalues[spin].T[i]
 
-    @deprecated
     def weights(self, characters, groups, spin):
         """
         deprecated: christian's code version 181124
@@ -110,7 +108,6 @@ class DataBands(Data):
 
         return weights_reduced / weights_norm
 
-    @deprecated
     def combined_weight(self, characters, groups, spin):
         """
         deprecated: christian's code version 181124
