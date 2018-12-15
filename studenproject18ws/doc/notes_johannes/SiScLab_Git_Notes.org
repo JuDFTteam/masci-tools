@@ -21,9 +21,28 @@
 #+LATEX_COMPILER: pdflatex
 #+DATE: \today
 
-
+- top-level items: newest is first
 * [[file:SiScLab_Notes.org][Master File]]
 Working with GitHub repo [[https://github.com/JuDFTteam/masci-tools][JuDFTteam/masci-tools]]
+** Merge branches
+- Resources: [[http://rogerdudler.github.io/git-guide/][simple git]], [[https://stackoverflow.com/a/2003515][delete branch local and remote]], ( [[https://www.jetbrains.com/help/pycharm/apply-changes-from-one-branch-to-another.html][pycharm > apply
+  changes from one branch to another]] )
+
+#+BEGIN_SRC shell
+  git checkout target-branch
+  git merge branch-to-integrate-changes-from
+  # resolve conflicts if any, for example with:
+  # kdiff3, is smarter than, meld, or pycharm (shows conflicting files as red > git > resolve conflicts)
+  #
+  # all conflicts resolved, commit message (pycharm does this automatically if merge was applied there)
+  git commit -m "merge from <- branch-to-integrate-changes-from"
+  git push origin target-branch
+  #
+  # if one branch is now unneeded (i.e. new feature integrated),
+  # then delete it on remote then local.
+  git push --delete origin branch-to-integrate-changes-from
+  git branch -d branch-to-integrate-changes-from
+#+END_SRC
 
 ** Replace everything in =studentproject18ws= with =studentproject18ws-modularization=, delete latter
 - used resources: [[https://www.nickang.com/replace-git-branch-code/][How to completely replace one branch’s code and git history with another]]
