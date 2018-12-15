@@ -164,9 +164,17 @@ Okay, but I can do that: create custom kernel.
 #+END_SRC
 
 ** Note on using Conda, Notebook, PyCharm together for the project
-- for me, using the studentprojecht18ws code in notebook only works if i start
-  the notebook from the PyCharm project using the Project conda env, how to see
-  [[https://www.jetbrains.com/help/pycharm/using-ipython-notebook-with-product.html][here]].
+- for me, importing the studentproject18ws code in notebook only works if i
+  start the notebook from the PyCharm project using the Project conda env, how
+  to see [[https://www.jetbrains.com/help/pycharm/using-ipython-notebook-with-product.html][here]]. For the project, I use a separate conda environment called
+  =masci-tools= where all python and jupyter dependencies are installed. PyCharm
+  then runs this command in the terminal to start the notebook:
+  #+BEGIN_SRC shell
+    /home/johannes/anaconda3/envs/masci-tools/bin/python
+    /home/johannes/anaconda3/envs/masci-tools/bin/jupyter-notebook --no-browser --ip
+    127.0.0.1 --port 8888 --port-retries=0
+  #+END_SRC
+  It outputs a clickable URL.
 - Tip:
   #+BEGIN_SRC shell
   conda install nb_conda

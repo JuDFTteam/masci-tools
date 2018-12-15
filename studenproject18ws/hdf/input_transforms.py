@@ -185,7 +185,7 @@ class TransformBands(Transform):
             if lt == LatticeType.Bravais:
                 transformed = np.dot(dataset, self.bravaisMatrix)
             else:
-                transformed = np.dot(dataset, self.reciprocalCell)
+                transformed = np.dot(dataset, self.reciprocalCell.T)
         elif from_cs == CoordinateSystemType.Physical:  # to Internal
             raise NotImplementedError  # TODO
 

@@ -73,31 +73,7 @@ class Reader(object):
     ...    # Use data outside the with-statement (in-memory access: all HDF5 datasets converted to numpy ndarrays):
     ...    data.move_datasets_to_memory()
     >>> # Left HDF5 file with statement: file and all open hdf5 Datasets are now closed.
-    >>> all_characters = [0, 1, 2, 3]
-    >>> all_groups = range(max(data.atom_group_keys))
-    >>> all_bands = range(data.eigenvalues.shape[2])
-    >>> print(data.weights(all_characters, all_groups, spin=0))
-    [[1. 1. 1. ... 1. 1. 1.]
-     [1. 1. 1. ... 1. 1. 1.]
-     [1. 1. 1. ... 1. 1. 1.]
-     ...
-     [1. 1. 1. ... 1. 1. 1.]
-     [1. 1. 1. ... 1. 1. 1.]
-     [1. 1. 1. ... 1. 1. 1.]]
-    >>> print(data.combined_weight(all_characters, all_groups, spin=0))
-    [[1.02563320e-04 1.02539474e-04 1.02334674e-04 ... 9.98615488e-01
-      9.98615218e-01 9.98615130e-01]
-     [9.28678932e-03 9.27972918e-03 9.25730311e-03 ... 2.06476353e-03
-      2.06361799e-03 2.06377071e-03]
-     [2.36276550e-04 1.59727723e-04 1.64773226e-04 ... 1.09496802e-04
-      1.09665857e-04 1.09951239e-04]
-     ...
-     [5.27420215e-03 5.02214705e-03 5.04945794e-03 ... 1.63076318e-02
-      1.56406153e-02 1.57077815e-02]
-     [4.65125917e-03 5.05986855e-03 5.00874190e-03 ... 1.54697380e-02
-      1.57696323e-02 1.51730030e-02]
-     [4.36694493e-03 4.19527092e-03 4.16755489e-03 ... 1.56926337e-02
-      1.52161762e-02 1.54703402e-02]]
+
 
 
     Notes
@@ -528,8 +504,11 @@ class Reader(object):
         data = data_type(**data_attributes)
         return data
 
+def example_read():
+    """
+    Can be used as a template for implementing plotting in a GUI.
 
-if __name__ == '__main__':
+    """
     # from studenproject18ws.hdf.reader import Reader
     # from studenproject18ws.hdf.recipes import Recipes
 
@@ -541,9 +520,9 @@ if __name__ == '__main__':
     filepath = os.path.join(*filepath)
 
     data = None
-    extractor = Reader(filepath=filepath)
-    with extractor as h5file:
-        data = extractor.read(recipe=Recipes.Bands, logging_level=logging.DEBUG)
+    reader = Reader(filepath=filepath)
+    with reader as h5file:
+        data = reader.read(recipe=Recipes.Bands, logging_level=logging.DEBUG)
         #
         # Note:
         # Inside the with statement (context manager),
@@ -553,15 +532,61 @@ if __name__ == '__main__':
         # Use data outside the with-statement (in-memory access: all HDF5 datasets converted to numpy ndarrays):
         data.move_datasets_to_memory()
     # Left HDF5 file with statement: file and all open hdf5 Datasets are now closed.
-    all_characters = [0, 1, 2, 3]
-    all_groups = range(max(data.atom_group_keys))
-    all_bands = range(data.eigenvalues.shape[2])
+    return data
 
-    print(data.weights(all_characters, all_groups, spin=0))
-    print(data.combined_weight(all_characters, all_groups, spin=0))
-    plt = data.new_plotfunction_weights(all_bands, all_characters, all_groups, spin=0)
+def simulate_gui(data):
+
+    # simulate plotting in a GUI, code version 181214
+    sel = data.simulate_gui_selection()
+    alpha = 0.5
+
+    fig = plt.figure()
+    ax1 = fig.add_subplot(111)
+
+    data.simulate_plot_setup()
+    data.simulate_plot(sel.mask_bands, [True, False, False, False],
+                       sel.mask_groups, sel.spin, unfolding_weight_exponent=1,
+                       ax=ax1, color="red", alpha=alpha)
+    data.simulate_plot(sel.mask_bands, [False, True, False, False],
+                       sel.mask_groups, sel.spin, unfolding_weight_exponent=1,
+                       ax=ax1, color="blue", alpha=alpha)
+    data.simulate_plot(sel.mask_bands, [True, False, True, False],
+                       sel.mask_groups, sel.spin, unfolding_weight_exponent=1,
+                       ax=ax1, color="green", alpha=alpha)
+    data.simulate_plot(sel.mask_bands, [True, False, False, True],
+                       sel.mask_groups, sel.spin, unfolding_weight_exponent=1,
+                       ax=ax1, color="yellow", alpha=alpha)
+    plt.title("Plot 1")
     plt.show()
 
-    # all_characters = ('s', 'p', 'd', 'f')
-    # all_groups = (1, 2, 3, 4, 5)
-    # plt = data.new_plotfunction_weights(all_bands, all_characters, all_groups, spin=0)
+    ######################################################
+
+    fig = plt.figure()
+    ax4 = fig.add_subplot(111)
+    alpha = 1
+    data.simulate_plot_setup()
+    data.simulate_plot_two_characters(sel.mask_bands, [True, True, False, False],
+                                      sel.mask_groups, sel.spin,
+                                      unfolding_weight_exponent=0.6,
+                                      ax=ax4, alpha=alpha)
+    plt.title("Plot 2: characters s,p selected")
+    plt.show()
+
+    # simulate invalid plot attempt: other than two characters selected
+    fig = plt.figure()
+    ax3 = fig.add_subplot(111)
+    alpha = 0.2
+    data.simulate_plot_two_characters(sel.mask_bands, [True, True, True, True],
+                                      sel.mask_groups, sel.spin,
+                                      unfolding_weight_exponent=1,
+                                      ax=ax3, alpha=alpha)
+
+
+
+
+
+
+
+if __name__ == '__main__':
+    data = example_read()
+    simulate_gui(data)

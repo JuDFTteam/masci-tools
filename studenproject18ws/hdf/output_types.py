@@ -1,12 +1,12 @@
 """Holds composable output data types (plug-in functions) for the HDF file Reader module."""
 import inspect
-from collections import Counter
+from collections import Counter, namedtuple
 
 import matplotlib.pyplot as plt
 import numpy as np
 from h5py._hl.dataset import Dataset as h5py_Dataset
 
-EXCEPTIONS = [inspect, Counter, plt, np, h5py_Dataset]
+EXCEPTIONS = [inspect, Counter, namedtuple, plt, np, h5py_Dataset]
 """Mandatory: include all imported types here to avoid malfunction.
 Reason: this package uses introspection on all types found in this module.
 The ones mentioned here are passed over."""
@@ -60,6 +60,7 @@ class Data(object):
 class DataBands(Data):
     def __init__(self, **kwds):
         Data.__init__(self, **kwds)
+        self.HARTREE_EV = 27.2114
         try:
             self.atoms_per_group_dict = Counter(self.atoms_group)
             self.atom_group_keys = self.atoms_per_group_dict.keys()
@@ -74,61 +75,20 @@ class DataBands(Data):
              self.num_groups, self.num_char) = self.llikecharge.shape
             self.atoms_per_group = np.zeros(self.num_groups)
             for i in range(self.num_groups):
-                self.atoms_per_group[i] = np.count_nonzero(np.array(self.atoms_group)==i)
+                self.atoms_per_group[i] = np.count_nonzero(np.array(self.atoms_group) == i)
 
         except AttributeError:
             pass
 
-    def count_atom_groups(self):
-        return max(self.atoms_group[:])
-
-    def E_i(self, i, spin=0):
-        return self.eigenvalues[spin].T[i]
-
-    def weights(self, characters, groups, spin):
+    def _get_data(self, mask_bands, mask_characters, mask_groups, mask_spin, unfolding_weight_exponent=1):
         """
-        deprecated: christian's code version 181124
-        :param characters:
-        :param groups:
-        :param spin:
-        :return:
-        """
-        weights_reduced = np.zeros((self.eigenvalues.shape[2], len(self.k_points)))
-        weights_norm = np.zeros((self.eigenvalues.shape[2], len(self.k_points)))
+        processes the data to obtain the weights: this is the function with most significant runtime!
+        Each argument is a bool list reflecting the user selection.
 
-        # this can surely be improved with matrix product method and sum
-        # second loop for normalization is even partially redundant...
-        for group in groups:
-            for character in characters:
-                weights_reduced += self.atoms_per_group_dict[group] * self.llikecharge[spin][:].T[character][group][:]
-
-        for group in range(max(self.atom_group_keys)):
-            for character in range(4):
-                weights_norm += self.atoms_per_group[group] * self.llikecharge[spin][:].T[character][group][:]
-
-        return weights_reduced / weights_norm
-
-    def combined_weight(self, characters, groups, spin):
-        """
-        deprecated: christian's code version 181124
-        :param characters:
-        :param groups:
-        :param spin:
-        :return:
-        """
-        if (self.bandUnfolding == True):
-            return self.weights(characters, groups, spin) * self.bandUnfolding_weights[spin].T[:]
-        else:
-            return self.weights(characters, groups, spin)
-
-    def get_data(self, mask_bands, mask_characters, mask_groups, mask_spin):
-        """
-        current: christian's code version 181212
-
-        :param mask_bands:
-        :param mask_characters:
-        :param mask_groups:
-        :param mask_spin:
+        :param mask_bands: bool list for selected bands
+        :param mask_characters: bool list for [s,p,d,f]
+        :param mask_groups: bool list for selected atom groups
+        :param mask_spin: bool list for selected spins [-1/2,1/2]
         :return:
         """
         # filter arrays in bands and spin:
@@ -153,37 +113,17 @@ class DataBands(Data):
             unfold_weight = self.bandUnfolding_weights
             unfold_weight = unfold_weight[mask_spin, :, :]
             unfold_weight = unfold_weight[:, :, mask_bands]
+            unfold_weight = unfold_weight ** unfolding_weight_exponent
             llc_normalized = llc_normalized * unfold_weight
 
         return llc_normalized
 
-    def create_mask_spin(self, which_spin):
-        mask_spin = np.zeros(self.num_spin).astype(bool)
-        mask_spin[which_spin] = True
-        return mask_spin
-
-    def create_mask_characters(self,which_characters=[0,1,2,3]):
-        CHARACTER_FILTER = np.zeros(4).astype(bool)
-        CHARACTER_FILTER[which_characters] = True
-        return CHARACTER_FILTER
-
-    def create_group_filter(self,which_groups=[]):
-        if not which_groups:
-            which_groups=range(self.num_groups)
-        GROUP_FILTER = np.zeros(self.num_groups).astype(bool)
-        GROUP_FILTER[which_groups] = True
-        return GROUP_FILTER
-
-    def create_band_filter(self,which_bands=[]):
-        if not which_bands:
-            which_bands = range(self.num_e)
-        BAND_FILTER = np.zeros(self.num_e).astype(bool)
-        BAND_FILTER[which_bands] = True
-        return BAND_FILTER
-
-    def reshape_data(self, mask_bands, mask_characters, mask_groups, spin):
+    def reshape_data(self, mask_bands, mask_characters, mask_groups, spin, unfolding_weight_exponent):
         """
-        current: christian's code version 181212
+        Reshapes the 2-dimensional field of weights into a 1d array to speed up plotting
+        --> avoids to call the scatter plot for every band
+
+        christian's code version 181214
 
         :param mask_bands:
         :param mask_characters:
@@ -191,8 +131,8 @@ class DataBands(Data):
         :param spin:
         :return:
         """
-        mask_spin = self.create_mask_spin(spin)
-        total_weight = self.get_data(mask_bands, mask_characters, mask_groups, mask_spin)
+        mask_spin = self._mask_spin(spin)
+        total_weight = self._get_data(mask_bands, mask_characters, mask_groups, mask_spin, unfolding_weight_exponent)
 
         # only select the requested spin and bands
         evs = self.eigenvalues[spin, :, mask_bands]
@@ -205,37 +145,165 @@ class DataBands(Data):
         k_resh = np.tile(self.k_distances, Ne)
         return (k_resh, evs_resh, weight_resh)
 
+    def _mask_spin(self, which_spin):
+        """
+        In original code, helper to simulate gui selection.  (called 'filter' there)
+        :param which_spin:
+        :return:
+        """
+        mask_spin = np.zeros(self.num_spin).astype(bool)
+        mask_spin[which_spin] = True
+        return mask_spin
 
-    def new_plotfunction_weights(self, bands, characters, groups, spin):
+    def _mask_characters(self, which_characters=[0, 1, 2, 3]):
+        """
+        In original code, helper to simulate gui selection.  (called 'filter' there)
+        :param which_characters:
+        :return:
+        """
+        CHARACTER_FILTER = np.zeros(4).astype(bool)
+        CHARACTER_FILTER[which_characters] = True
+        return CHARACTER_FILTER
+
+    def _mask_groups(self, which_groups=[]):
+        """
+        In original code, helper to simulate gui selection.  (called 'filter' there)
+        :param which_groups:
+        :return:
+        """
+        if not which_groups:
+            which_groups = range(self.num_groups)
+        GROUP_FILTER = np.zeros(self.num_groups).astype(bool)
+        GROUP_FILTER[which_groups] = True
+        return GROUP_FILTER
+
+    def _mask_bands(self, which_bands=[]):
+        """
+        In original code, helper to simulate gui selection. (called 'filter' there)
+        :param which_bands:
+        :return:
+        """
+        if not which_bands:
+            which_bands = range(self.num_e)
+        BAND_FILTER = np.zeros(self.num_e).astype(bool)
+        BAND_FILTER[which_bands] = True
+        return BAND_FILTER
+
+    def simulate_gui_selection(self):
+        """
+        For testing plotting without gui.
+        :return:
+        """
+        spin = 0
+        mask_spin = self._mask_spin(spin)
+        mask_bands = self._mask_bands()
+        mask_characters = self._mask_characters()
+        mask_groups = self._mask_groups()
+
+        Selection = namedtuple('Selection', ['spin',
+                                             'mask_spin', 'mask_bands',
+                                             'mask_characters', 'mask_groups'])
+        return Selection(spin,
+                         mask_spin, mask_bands,
+                         mask_characters, mask_groups)
+
+    def simulate_plot_setup(self):
         """
 
-        :param bands:
-        :param characters:
-        :param groups:
+        christian's code version 181214
+
+        In original code, called  'configure' and called every time after plot method has been switched. See there.
+
+        Note
+        ====
+        For interactive plotting, this config may have to be packaged differently.
+
+        :return:
+        """
+        label = []
+        for i in range(len(self.k_special_point_labels)):
+            label += str(self.k_special_point_labels[i])[2]
+
+        plt.xticks(self.k_special_points, label)
+        plt.ylabel("E(k) [eV]")
+        plt.xlim(0, max(self.k_distances))
+        plt.hlines(0, 0, max(self.k_distances), lw=0.1)
+
+    def simulate_plot(self, mask_bands, mask_characters, mask_groups, spin, unfolding_weight_exponent, ax, color,
+                      alpha=1):
+        """Plot regular.
+
+        Static plot method as template for interactive plot function in GUI.
+
+        christian's code version 181214
+
+        :param mask_bands:
+        :param mask_characters:
+        :param mask_groups:
         :param spin:
+        :param unfolding_weight_exponent:
+        :param ax:
+        :param color:
+        :param alpha:
+        :return:
+        """
+        (k_r, E_r, W_r) = self.reshape_data(mask_bands, mask_characters, mask_groups, spin, unfolding_weight_exponent)
+        # just plot points with minimal size of t
+        speed_up = True
+        if (speed_up == True):
+            t = 1e-4
+            k_r = k_r[W_r > t]
+            E_r = E_r[W_r > t]
+            W_r = W_r[W_r > t]
+        ax.scatter(k_r, (E_r - self.fermi_energy) * self.HARTREE_EV,
+                   marker='o', c=color, s=5 * W_r, lw=0, alpha=alpha)
+
+    def simulate_plot_two_characters(self, mask_bands, mask_characters, mask_groups, spin, unfolding_weight_exponent,
+                                     ax, alpha=1):
+        """Plot with exactly 2 selected band characters mapped to colormap.
+
+        Static plot method as template for interactive plot function in GUI.
+        Note: right now, selection (s,p) = [True,True,False,False] is hardcoded!
+
+        christian's code version 181214
+
+        Notes
+        =====
+        The conversion mask_characters -> characters -> self.mask_characters() looks a bit stringe.
+        Probably could be done simpler with a list comprehension.
+
+        :param mask_bands:
+        :param mask_characters:
+        :param mask_groups:
+        :param spin:
+        :param ax:
+        :param alpha:
         :return:
         """
 
-        weight_k_n = self.combined_weight(characters, groups, spin)
+        characters = np.array(range(4))[mask_characters]
+        if (len(characters) != 2):
+            print("plot_two_characters: tried to plot with other than 2 characters selected. not allowed!")
 
-        fig = plt.figure()
-        ax1 = fig.add_subplot(111)
+        (k_resh, evs_resh, weight_resh) = self \
+            .reshape_data(mask_bands, mask_characters=self._mask_characters([characters[0]]),
+                          mask_groups=mask_groups, spin=spin, unfolding_weight_exponent=1)
 
-        for n in bands:
-            weight_k_n[n]
-            ax1.scatter(self.k_distances, self.E_i(n, spin), marker='o', c='b', s=2 * weight_k_n[n], lw=0)
+        (k_resh2, evs_resh2, weight_resh2) = self \
+            .reshape_data(mask_bands, mask_characters=self._mask_characters([characters[1]]),
+                          mask_groups=mask_groups, spin=spin, unfolding_weight_exponent=1)
 
-        plt.xticks(self.k_special_points, self.k_special_point_labels)
+        rel = weight_resh / (weight_resh + weight_resh2) * 20
+        # ax1.scatter(k_resh, (evs_resh-fermi_energy)*hartree_in_ev, marker='o', c="g", s = 5 * weight_resh, lw=0, alpha = alpha)
+        # ax1.scatter(k_resh2, (evs_resh-fermi_energy)*hartree_in_ev, marker='o', c="r", s = 5 * weight_resh2, lw=0, alpha = alpha)
+        cm = plt.cm.winter  # get_cmap('RdYlBu')
+        ax.scatter(k_resh2, (evs_resh - self.fermi_energy) * self.HARTREE_EV, marker='o', c=rel, s=5 * weight_resh2,
+                   lw=0,
+                   alpha=alpha, cmap=cm)
 
-        """
-        for i in range(len(special_points)):
-            index = special_points[i]
-            plt.vlines(k_dist[index-1], -0.2, 0.4)
-        """
-        plt.xlim(0, max(self.k_distances))
-        return plt
-
-# # For demonstraction purposes:
+# #
+# # For demonstraction purposes of how Recipes work:
+# #
 # # Add Rhubarb.rhubarb, Machiavelli.rhubarb to recipe BandStructure data_classes_functions and see what happens
 # class Rhubarb(object):
 #     def rhubarb(self):
