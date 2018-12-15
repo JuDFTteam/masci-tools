@@ -146,3 +146,8 @@ data/
 *.hdf
 # Jetbrains PyCharm Project folder
 .idea/
+# images, plots
+.png
+.jpg
+.pdf
+.gif
