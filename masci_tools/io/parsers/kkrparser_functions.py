@@ -11,7 +11,7 @@ __copyright__ = (u"Copyright (c), 2017, Forschungszentrum Jülich GmbH,"
                  "IAS-1/PGI-1, Germany. All rights reserved.")
 __license__ = "MIT license, see LICENSE.txt file"
 __contributors__ = u"Philipp Rüßmann"
-__version__ = "1.0"
+__version__ = "1.1"
 
 
 from masci_tools.io.common_functions import (search_string, get_version_info, get_Ry2eV, angles_to_vec,
@@ -472,7 +472,7 @@ def parse_kkr_outputfile(out_dict, outfile, outfile_0init, outfile_000, timing_f
     
     # collection of parsing error messages
     msg_list = []
-        
+
     try:
         code_version, compile_options, serial_number = get_version_info(outfile)
         tmp_dict = {}
@@ -530,18 +530,6 @@ def parse_kkr_outputfile(out_dict, outfile, outfile_0init, outfile_000, timing_f
             doscalc = True
     except:
         msg = "Error parsing output of KKR: energy contour"
-        msg_list.append(msg)
-    
-    try:
-        ncore, emax, lmax, descr_max = get_core_states(potfile_out)
-        tmp_dict = {}
-        tmp_dict['number_of_core_states_per_atom'] = ncore
-        tmp_dict['energy_highest_lying_core_state_per_atom'] = emax
-        tmp_dict['energy_highest_lying_core_state_per_atom_unit'] = 'Rydberg'
-        tmp_dict['descr_highest_lying_core_state_per_atom'] = descr_max
-        out_dict['core_states_group'] = tmp_dict
-    except:
-        msg = "Error parsing output of KKR: core_states"
         msg_list.append(msg)
         
     try:
@@ -606,6 +594,18 @@ def parse_kkr_outputfile(out_dict, outfile, outfile_0init, outfile_000, timing_f
         
     # this is skipped for qdos run for example
     if not skip_readin:
+        try:
+            ncore, emax, lmax, descr_max = get_core_states(potfile_out)
+            tmp_dict = {}
+            tmp_dict['number_of_core_states_per_atom'] = ncore
+            tmp_dict['energy_highest_lying_core_state_per_atom'] = emax
+            tmp_dict['energy_highest_lying_core_state_per_atom_unit'] = 'Rydberg'
+            tmp_dict['descr_highest_lying_core_state_per_atom'] = descr_max
+            out_dict['core_states_group'] = tmp_dict
+        except:
+            msg = "Error parsing output of KKR: core_states"
+            msg_list.append(msg)
+    
         tmp_dict = {} # used to group convergence info (rms, rms per atom, charge neutrality)
         # also initialize convegence_group where all info stored for all iterations is kept
         out_dict['convergence_group'] = tmp_dict
