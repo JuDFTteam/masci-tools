@@ -4,11 +4,11 @@ def dispersionplot(p0='./', totonly=True, s=20, ls_ef= ':', lw_ef=1, units='eV_r
                    color='', reload_data=False, clrbar=True, logscale=True, nosave=False, atoms=[], 
                    ratios=False, atoms2=[], noscale=False, newfig=False, cmap=None, alpha=1.0, 
                    qcomponent=-2, clims=[], xscale=1., raster=True, atoms3=[], alpha_reverse=False, 
-                   return_data=False, xshift=0, yshift=0, plotmode='pcolor'):
+                   return_data=False, xshift=0, yshift=0, plotmode='pcolor', ptitle=None):
     """ plotting routine for qdos files - dispersion (E vs. q) """
     # import dependencies
     from numpy import loadtxt, load, save, log, abs, sum, sort, pi, shape, array
-    from matplotlib.pyplot import figure, plot, axvline, scatter, axhline, xlabel, ylabel, ion, title, colorbar, pcolormesh, cm
+    from matplotlib.pyplot import figure, plot, axvline, scatter, axhline, xlabel, ylabel, title, colorbar, pcolormesh, cm
     from os import listdir, getcwd
     from os.path import isdir, getctime
     from time import ctime
@@ -17,8 +17,6 @@ def dispersionplot(p0='./', totonly=True, s=20, ls_ef= ':', lw_ef=1, units='eV_r
     if cmap==None:
        cmap = cm.viridis
     if newfig: figure()
-
-    ion()
 
     # read in data
     if p0[-1]<>'/': p0+='/'
@@ -158,8 +156,10 @@ def dispersionplot(p0='./', totonly=True, s=20, ls_ef= ':', lw_ef=1, units='eV_r
     ylabel(ylab)
 
     # print path to title
-    if totonly:
+    if totonly and ptitle is None:
        title(getcwd())
+    else:
+       title(ptitle)
 
     if return_data:
        data = abs(sum(d[:,5:], axis=1))
