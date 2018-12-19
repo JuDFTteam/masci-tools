@@ -553,7 +553,7 @@ def simulate_gui(data):
     data.simulate_plot(sel.mask_bands, [True, False, True, False],
                        sel.mask_groups, sel.spin, unfolding_weight_exponent=1,
                        ax=ax1, color="green", alpha=alpha)
-    data.simulate_plot(sel.mask_bands, [True, False, False, True],
+    data.simulate_plot(sel.mask_bands, [False, False, False, True],
                        sel.mask_groups, sel.spin, unfolding_weight_exponent=1,
                        ax=ax1, color="yellow", alpha=alpha)
     plt.title("Plot 1")
