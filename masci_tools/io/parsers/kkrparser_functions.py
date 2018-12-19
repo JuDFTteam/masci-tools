@@ -93,7 +93,6 @@ def find_warnings(outfile):
 
 
 def extract_timings(outfile):
-    from numpy import array
     f = open(outfile)
     tmptxt = f.readlines()
     f.close()
@@ -117,9 +116,7 @@ def extract_timings(outfile):
                 tmpvals.append(tmpval)
         if len(tmpvals)>0:
             res.append(tmpvals)
-    #print(res)
-    res = array(res[0])
-    #print(dict(res))
+    res = res[0]
     return dict(res)
 
 
