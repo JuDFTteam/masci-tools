@@ -12,7 +12,7 @@ Also some defaults for the parameters are defined.
 __copyright__ = (u"Copyright (c), 2017, Forschungszentrum Jülich GmbH,"
                  "IAS-1/PGI-1, Germany. All rights reserved.")
 __license__ = "MIT license, see LICENSE.txt file"
-__version__ = "1.0"
+__version__ = "1.1"
 __contributors__ = u"Philipp Rüßmann"
 
 
@@ -881,20 +881,7 @@ class kkrparams(object):
                     if valtxt is not None:
                         # first deal with run and testopts (needs to spearate keys)
                         if key=='RUNOPT' or key=='TESTOPT':
-                            if type(valtxt) != list:
-                                valtxt = [valtxt]
-                            valtxt_tmp = []
-                            for itmp in valtxt:
-                                if len(itmp)>8:
-                                    Nsplitoff = int(len(itmp)/8)
-                                    for ii in range(Nsplitoff):
-                                        itmp_splitoff = itmp[ii*8:(ii+1)*8]
-                                        valtxt_tmp.append(itmp_splitoff)
-                                    itmp_splitoff = itmp[Nsplitoff*8:]
-                                    valtxt_tmp.append(itmp_splitoff)
-                                else:
-                                    valtxt_tmp.append(itmp)
-                            valtxt =valtxt_tmp
+                            valtxt = self.split_kkr_options(valtxt)
                         # then continue with valtxt
                         if type(valtxt)==list:
                             tmp = []
@@ -1182,5 +1169,25 @@ class kkrparams(object):
 
         return default_keywords
     
-    
-    
+    @classmethod
+    def split_kkr_options(self, valtxt):
+        """
+        Split keywords after fixed length of 8
+        :param valtxt: list of strings or single string
+        :returns: List of keywords of maximal length 8
+        """
+        if type(valtxt) != list:
+            valtxt = [valtxt]
+        valtxt_tmp = []
+        for itmp in valtxt:
+            if len(itmp)>8:
+                Nsplitoff = int(len(itmp)/8)
+                for ii in range(Nsplitoff):
+                    itmp_splitoff = itmp[ii*8:(ii+1)*8]
+                    valtxt_tmp.append(itmp_splitoff)
+                itmp_splitoff = itmp[Nsplitoff*8:]
+                valtxt_tmp.append(itmp_splitoff)
+            else:
+                valtxt_tmp.append(itmp)
+        valtxt =valtxt_tmp
+        return valtxt
