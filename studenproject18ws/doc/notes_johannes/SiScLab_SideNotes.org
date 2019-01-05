@@ -1,0 +1,81 @@
+# In Emacs org-mode: before exporting, comment this out START
+;; Local Variables:
+;; ispell-check-comments: exclusive
+;; ispell-local-dictionary: "english"
+;; End:
+# In Emacs org-mode: before exporting, comment this out FINISH
+
+# Org-mode Export LaTeX Customization Notes:
+# - Interpret 'bla_bla' as LaTeX Math bla subscript bla: #+OPTIONS ^:t. Interpret literally bla_bla: ^:nil.
+# - org export: turn off heading -> section numbering: #+OPTIONS: num:nil
+# - org export: change list numbering to alphabetical, sources:
+#   - https://orgmode.org/manual/Plain-lists-in-LaTeX-export.html
+#   - https://tex.stackexchange.com/a/129960
+#   - must be inserted before each list:
+#     #+ATTR_LATEX: :environment enumerate
+#     #+ATTR_LATEX: :options [label=\alph*)]
+# - allow org to recognize alphabetical lists a)...: M-x customize-variable org-list-allow-alphabetical
+
+
+# -----------------------
+# General Export Options:
+#+OPTIONS: ^:nil ':nil *:t -:t ::t <:t H:3 \n:nil arch:headline 
+#+OPTIONS: broken-links:nil c:nil creator:nil d:(not "LOGBOOK") date:t e:t
+#+OPTIONS: email:nil f:t inline:t p:nil pri:nil prop:nil stat:t tags:t
+#+OPTIONS: tasks:t tex:t timestamp:t title:t todo:t |:t
+
+#+OPTIONS: author:nil
+#+OPTIONS: num:nil # disable export latex section numbering for org headings
+#+OPTIONS: toc:nil # no table of contents (doesn't work if num:nil)
+
+#+TITLE: SiScLab_SideNotes
+#+DATE: <2019-01-05 Sat>
+#+AUTHOR: Johannes Wasmer
+# #+EMAIL: johannes.wasmer@gmail.com
+#+LANGUAGE: de
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+#+CREATOR: Emacs 25.2.2 (Org mode 9.1.13)
+
+# ---------------------
+# LaTeX Export Options:
+#+LATEX_CLASS: article
+#+LATEX_CLASS_OPTIONS:
+#+LATEX_HEADER: \usepackage[english]{babel}
+#+LATEX_HEADER: \usepackage[top=0.5in,bottom=0.5in,left=1in,right=1in,includeheadfoot]{geometry} % wider page; load BEFORE fancyhdr
+#+LATEX_HEADER: \usepackage[inline]{enumitem} % for customization of itemize, enumerate envs
+#+LATEX_HEADER: \usepackage{color}
+#+LATEX_HEADER:
+#+LATEX_HEADER_EXTRA:
+#+DESCRIPTION:
+#+KEYWORDS:
+#+SUBTITLE: Side Notes to be sorted later on
+#+LATEX_COMPILER: pdflatex
+#+DATE: \today
+
+- top items: newest is first
+* [[file:SiScLab_Notes.org][Master File]]
+
+* Project Presentation - Jupyter Notebook as interactive Slides
+- [[https://github.com/damianavila/RISE][RISE]]: use notebook as interactive presentation slides, [[https://www.youtube.com/watch?v=8Jktm-Imt-I&t=852s][example use (youtube)]].
+- Probably a good idea to use that for the presentation, as Naumann wrote:
+  #+BEGIN_QUOTE
+  You should prepare a suitable slide deck and possibly a short demo of your
+  software.
+  #+END_QUOTE
+* Transparent Color Overlay: other options to simple additive
+- Gimp (and Photoshop) have multiple options for how colors of overlayed
+  transparent images (alpha < 1) may be combined, instead of simple additive
+  overlay. The respective Gimp manual page [[https://docs.gimp.org/2.10/da/gimp-concepts-layer-modes.html][Gimp Layer Modes]] lists all the modes'
+  formulas along with example images. Perhaps this might be useful to implement
+  for the banddos plot? Perhpas matplotlib or another Plot tool even might have
+  such a functionality.
+  
+* Use AiiDA band and kpoints datastructures
+- AiiDa has defined datatypes ~KPointsData~ and ~BandsData~ ([[https://aiida-core.readthedocs.io/en/latest/datatypes/index.html#kpointsdata][doc]], [[https://github.com/aiidateam/aiida_core/tree/develop/aiida/orm/data/array][code]]).
+  [[https://github.com/giovannipizzi/seekpath][seekpath]] ([[https://seekpath.readthedocs.io/en/latest/maindoc.html][doc]]) is integrated to allow e.g. [[https://aiida-core.readthedocs.io/en/latest/datatypes/kpoints.html][automatic computation of k-point
+  paths]]. This is e.g. used in =jbroeder='s [[https://aiida-fleur.readthedocs.io/en/develop/][AiiDa Fleur Plugin]], resp. in it's
+  [[https://aiida-fleur.readthedocs.io/en/develop/user_guide/workflows/dos_band_wc.html][dos/band workflow]] ([[https://github.com/broeder-j/aiida-fleur/blob/develop/aiida_fleur/workflows/band2.py][code]], [[https://aiida-fleur.readthedocs.io/en/develop/user_guide/workflows/dos_band_wc.html#plot-fleur-visualization][band plot example]] from =band_dos.hdf= file). Perhaps
+  it would make sense to A) adjust our code to read from hdf into these
+  datastructures directly and then use them, or to B) supply a converter from
+  our data structure to the AiiDA one for interoperability?
