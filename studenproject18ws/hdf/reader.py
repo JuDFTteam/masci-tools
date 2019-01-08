@@ -512,8 +512,8 @@ def example_read():
     # from studenproject18ws.hdf.reader import Reader
     # from studenproject18ws.hdf.recipes import Recipes
 
-    # filename = 'banddos_4x4.hdf'
-    filename = 'banddos.hdf'
+    filename = 'banddos_4x4.hdf'
+    # filename = 'banddos.hdf'
     # filename = 'banddos_Co.hdf'
 
     filepath = ['..', 'data', 'input', filename]
@@ -571,6 +571,17 @@ def simulate_gui(data):
     #                                   sel.mask_groups, sel.spin,
     #                                   unfolding_weight_exponent=1,
     #                                   ax=ax3, alpha=alpha)
+
+    ######################################################
+
+    fig = plt.figure()
+    ax4 = fig.add_subplot(111)
+    select_band = 256 # valid for banddos_4x4.hdf only!
+    spin = 0
+    data.simulate_plot_groupVelocity(select_band, spin, ax=ax4)
+    plt.legend()
+    plt.title(f"dE/dk for band {select_band}")
+    plt.show()
 
 if __name__ == '__main__':
     data = example_read()

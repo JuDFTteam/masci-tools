@@ -44,11 +44,11 @@ Working with GitHub repo [[https://github.com/JuDFTteam/masci-tools][JuDFTteam/m
   git branch -d branch-to-integrate-changes-from
 #+END_SRC
 
-** Replace everything in =studentproject18ws= with =studentproject18ws-modularization=, delete latter
+** Replace everything in =studentproject18ws= with =studentproject18ws-modularization=, delete the latter
 - used resources: [[https://www.nickang.com/replace-git-branch-code/][How to completely replace one branch’s code and git history with another]]
 
 #+BEGIN_SRC shell
-# Rename master to old-master, staging to master
+# Rename mybranch to old-mybranch, staging to mybranch
 git checkout studentproject18ws
 git pull origin studentproject18ws
 git branch -m old-studentproject18ws

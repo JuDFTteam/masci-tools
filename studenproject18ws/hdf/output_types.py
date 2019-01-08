@@ -328,6 +328,36 @@ class DataBands(Data):
                    lw=0,
                    alpha=alpha, cmap=cm)
 
+    def simulate_plot_dos(self):
+        """
+        This is placeholder function.
+        Though CP has added code 180109 for plotting the DOS,
+        this is for txt DOS example file.
+        The plot function here though will expect the DOS info
+        to lie in the same hdf file the bandstructure has been
+        read from.
+        Until that is implemented, the GUI will not have a DOS plot.
+        :return:
+        """
+        pass
+
+    def simulate_plot_groupVelocity(self, select_band, spin, ax):
+        """
+
+        :param select_band: index of user-selected band
+        :param spin: 0 or 1
+        :param ax: of plot
+        :return:
+        """
+        k = self.k_distances
+        E_iso = self.eigenvalues[spin].T[select_band]
+        ax.plot(k, E_iso, label="E_iso")
+
+        dE = np.zeros(len(E_iso)-2)
+        E_iso = np.sin(k)**2
+        dE = (E_iso[2:] - E_iso[0:-2]) / (k[2:] - k[:-2])
+        ax.plot(k[1:-1], dE, label="dE/dk")
+
 # #
 # # For demonstraction purposes of how Recipes work:
 # #

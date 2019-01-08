@@ -11,6 +11,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 import h5py
 import time
+import os
 
 bohr_constant = 0.52
 hartree_in_ev = 27.2114
@@ -18,12 +19,15 @@ hartree_in_ev = 27.2114
 times = []
 times += [time.time()]
 
-#filename = 'banddos_2spin'
-filename = 'banddos_4x4'
-#filename = 'banddos'
-#filename = 'banddos_Co'
+#filename = 'banddos_2spin.hdf'
+filename = 'banddos_4x4.hdf'
+#filename = 'banddos.hdf'
+#filename = 'banddos_Co.hdf'
 
-f = h5py.File("Data/"+filename+str('.hdf'), 'r')
+filepath = ['..', 'data', 'input', filename]
+filepath = os.path.join(*filepath)
+
+f = h5py.File(filepath, 'r')
 
 evs = np.array(f["/eigenvalues/eigenvalues"])
 llc =  np.array(f["/eigenvalues/lLikeCharge"])
@@ -222,7 +226,10 @@ def plot_two_characters(color, ax1, f, llc, evs, k, spin, CHARACTER_FILTER, GROU
 """
 DOS Plots...
 """
-dos_data = np.genfromtxt("Data/DOS.1").T
+filename_dos = "DOS.1"
+filepath_dos = ['..', 'data', 'input', filename_dos]
+filepath_dos = os.path.join(*filepath_dos)
+dos_data = np.genfromtxt(filepath_dos).T
 energy_dos = dos_data[0]
 totdos = dos_data[1]
 interst = dos_data[2]
@@ -240,7 +247,9 @@ ax_dos.plot(vac1, energy_dos)
 ax_dos.plot(vac2, energy_dos)
 
 ax_dos.plot((sum(weights_atomgrps_dos)+interst), energy_dos)
-
+plt.title(f"DOS Plot for file {filename_dos}, (unknown hdf)")
+plt.show()
+plt.clf()
 
 
 times += [time.time()]
@@ -333,18 +342,22 @@ for i in liste:
 plt.figure()
 E_iso1 = e_diff.T[256]
 E_iso2 = e_diff.T[257]
-plt.plot(k_diff, E_iso1)
-plt.plot(k_diff, E_iso2)
+plt.plot(k_diff, E_iso1, label="E_iso1")
+plt.plot(k_diff, E_iso2, label="E_iso2")
 #plt.ylim(0.55, 0.61)
 deriv_E1 = np.zeros(len(E_iso1)-2)
 deriv_E2 = np.zeros(len(E_iso2)-2)
 E_iso1 = np.sin(k_diff)**2
 deriv_E1 = (E_iso1[2:] - E_iso1[0:-2])/(k_diff[2:] - k_diff[:-2])
 deriv_E2 = (E_iso2[2:] - E_iso2[0:-2])/(k_diff[2:] - k_diff[:-2])
-plt.plot(k_diff[1:-1], deriv_E1)
-plt.plot(k_diff[1:-1], deriv_E2)
+plt.plot(k_diff[1:-1], deriv_E1, label="dE/dk 1")
+plt.plot(k_diff[1:-1], deriv_E2, label="dE/dk 2")
 #plt.xticks(k_special_pt, label)
 plt.ylabel("E(k) [eV]")
 plt.xlim(0, max(k))
+plt.title(f"Group velocity plot for file {filename}")
+plt.legend()
+plt.show()
+plt.clf()
 
 
