@@ -18,6 +18,7 @@ hartree_in_ev = 27.2114
 times = []
 times += [time.time()]
 
+#filename = 'banddos_2spin'
 filename = 'banddos_4x4'
 #filename = 'banddos'
 #filename = 'banddos_Co'
@@ -144,9 +145,18 @@ def reshape_data(f, llc, evs, k, spin, CHARACTER_FILTER, GROUP_FILTER, BAND_FILT
     k_resh = np.tile(k, Ne)
     return (k_resh, evs_resh, weight_resh)
 
+
+"""
+Updated: g is now replaced by r'$\Gamma$'
+"""
 label = []
 for i in range(len(special_points_label)):
-    label += str(special_points_label[i])[2]
+    if(special_points_label[i] == 'g'): 
+        label += [r'$\Gamma$']
+    else:
+        label += str(special_points_label[i])#[2]
+    
+
 
 def plot(color, ax1, f, llc, evs, k, spin, CHARACTER_FILTER, GROUP_FILTER, BAND_FILTER, UNFOLD_WEIGHT, unfoldong_weight_exponent, alpha = 1):
     (k_r, E_r, W_r) = reshape_data(f, llc, evs, k, spin, CHARACTER_FILTER, GROUP_FILTER, BAND_FILTER, UNFOLD_WEIGHT, unfoldong_weight_exponent)
@@ -166,10 +176,72 @@ def configure_plot(filename = False):
     plt.ylabel("E(k) [eV]")
     plt.xlim(0, max(k))
     plt.hlines(0, 0, max(k), lw = 0.1)
-    #if(isinstance(filename, str)):
-        #plt.savefig(filename+str(".png"), dpi=1000)
+    if(isinstance(filename, str)):
+        plt.savefig(filename+str(".png"), dpi=1000)
     return 0
         
+def plot_two_characters(color, ax1, f, llc, evs, k, spin, CHARACTER_FILTER, GROUP_FILTER, BAND_FILTER, UNFOLD_WEIGHT, 
+                        unfoldong_weight_exponent, alpha = 1):
+    
+    characters = np.array(range(4))[CHARACTER_FILTER]
+    if(len(characters) != 2):
+        print("error")
+        
+    (k_resh, evs_resh, weight_resh) = reshape_data(f, llc, evs, k, spin, create_character_filter([characters[0]]), GROUP_FILTER, BAND_FILTER, UNFOLD_WEIGHT=band_unfolding, unfoldong_weight_exponent = 1)
+    (k_resh2, evs_resh2, weight_resh2) = reshape_data(f, llc, evs, k, spin, create_character_filter([characters[1]]), GROUP_FILTER, BAND_FILTER, UNFOLD_WEIGHT=band_unfolding, unfoldong_weight_exponent = 1)
+
+    rel = weight_resh/(weight_resh+weight_resh2)*20
+    tot_weight = weight_resh + weight_resh2
+    #ax1.scatter(k_resh, (evs_resh-fermi_energy)*hartree_in_ev, marker='o', c="g", s = 5 * weight_resh, lw=0, alpha = alpha)
+    #ax1.scatter(k_resh2, (evs_resh-fermi_energy)*hartree_in_ev, marker='o', c="r", s = 5 * weight_resh2, lw=0, alpha = alpha)
+    #print(len(tot_weight))
+    #print(len(k_resh2))
+    #print(len(rel))
+    #print(len(evs_resh))
+    
+    # dont change order inside if statement...
+    speed_up = True
+    if(speed_up == True):
+        t = 1e-4
+        k_resh2 = k_resh2[tot_weight>t]
+        evs_resh = evs_resh[tot_weight>t]
+        rel = rel[tot_weight>t]
+        tot_weight = tot_weight[tot_weight>t]
+    
+    #print(len(tot_weight))
+    #print(len(k_resh2))
+    #print(len(rel))
+    #print(len(evs_resh))
+    
+    #cm = plt.cm.get_cmap('RdYlBu')
+    cm = plt.cm.plasma
+    ax1.scatter(k_resh2, (evs_resh-fermi_energy)*hartree_in_ev, marker='o', c=rel, s = 5 * tot_weight, lw=0, alpha = alpha,cmap=cm)
+
+
+"""
+DOS Plots...
+"""
+dos_data = np.genfromtxt("Data/DOS.1").T
+energy_dos = dos_data[0]
+totdos = dos_data[1]
+interst = dos_data[2]
+vac1 = dos_data[3]
+vac2 = dos_data[4]
+weights_atomgrps_dos = dos_data[5:]
+
+fig = plt.figure()
+ax_dos = fig.add_subplot(111)
+ax_dos.plot(totdos, energy_dos)
+ax_dos.plot(interst, energy_dos)
+
+#constant 0
+ax_dos.plot(vac1, energy_dos)
+ax_dos.plot(vac2, energy_dos)
+
+ax_dos.plot((sum(weights_atomgrps_dos)+interst), energy_dos)
+
+
+
 times += [time.time()]
 
 spin = 0
@@ -180,6 +252,7 @@ GROUP_FILTER = create_group_filter()
 UNFOLD_WEIGHT = band_unfolding
 BAND_FILTER = create_band_filter()
 
+"""
 fig = plt.figure()
 ax1 = fig.add_subplot(111)
 alpha = 0.5
@@ -192,6 +265,8 @@ plot("green", ax1, f, llc, evs, k, 0, create_character_filter([2]), create_group
 plot("yellow", ax1, f, llc, evs, k, 0, create_character_filter([3]), create_group_filter(), create_band_filter(),
      band_unfolding, 1, alpha)
 configure_plot("all_chars")
+"""
+
 
 """
 # for dos_file
@@ -206,43 +281,69 @@ plot("green", ax2, f, llc, evs, k, 0, create_character_filter([0,1,2,3]), create
 configure_plot()
 """
 
-def plot_two_characters(color, ax1, f, llc, evs, k, spin, CHARACTER_FILTER, GROUP_FILTER, BAND_FILTER, UNFOLD_WEIGHT, 
-                        unfoldong_weight_exponent, alpha = 1):
-    
-    characters = np.array(range(4))[CHARACTER_FILTER]
-    if(len(characters) != 2):
-        print("error")
-        
-    (k_resh, evs_resh, weight_resh) = reshape_data(f, llc, evs, k, spin, create_character_filter([characters[0]]), GROUP_FILTER, BAND_FILTER, UNFOLD_WEIGHT=band_unfolding, unfoldong_weight_exponent = 1)
-    (k_resh2, evs_resh2, weight_resh2) = reshape_data(f, llc, evs, k, spin, create_character_filter([characters[1]]), GROUP_FILTER, BAND_FILTER, UNFOLD_WEIGHT=band_unfolding, unfoldong_weight_exponent = 1)
-
-    rel = weight_resh/(weight_resh+weight_resh2)*20
-    #ax1.scatter(k_resh, (evs_resh-fermi_energy)*hartree_in_ev, marker='o', c="g", s = 5 * weight_resh, lw=0, alpha = alpha)
-    #ax1.scatter(k_resh2, (evs_resh-fermi_energy)*hartree_in_ev, marker='o', c="r", s = 5 * weight_resh2, lw=0, alpha = alpha)
-    cm = plt.cm.winter #get_cmap('RdYlBu')
-    ax1.scatter(k_resh2, (evs_resh-fermi_energy)*hartree_in_ev, marker='o', c=rel, s = 5 * weight_resh2, lw=0, alpha = alpha,cmap=cm)
-
+"""
 fig = plt.figure()
 alpha = 1
 ax4 = fig.add_subplot(111)
-plot_two_characters("blue", ax4, f, llc, evs, k, 0, create_character_filter([0,1]), create_group_filter(), create_band_filter(),
-     band_unfolding, 0.6, alpha)
+plot_two_characters("blue", ax4, f, llc, evs, k, 0, create_character_filter([0,1]), create_group_filter(), create_band_filter(), band_unfolding, 0.6, alpha)
 configure_plot("2characters")
+"""
 
-
+"""
 fig = plt.figure()
 ax3 = fig.add_subplot(111)
 alpha = 0.2
-plot("blue", ax3, f, llc, evs, k, 0, create_character_filter([0,1,2,3]), create_group_filter(), create_band_filter(),
-     band_unfolding, 1., alpha)
+plot("blue", ax3, f, llc, evs, k, 0, create_character_filter([0,1,2,3]), create_group_filter(),
+     create_band_filter(), band_unfolding, 1., alpha)
+"""
+
 """
 #for Co file
 plot("red", ax3, f, llc, evs, k, 1, create_character_filter([0,1,2,3]), create_group_filter(), create_band_filter(),
      band_unfolding, 1, alpha)
-
 """
-configure_plot()
+
+#plt.ylim(-34.8, -35)
+#configure_plot()
 
 times += [time.time()]
 times = np.array(times)-times[0]
 print(times)
+
+
+# Differentiation part...
+k_diff = k
+e_diff = evs[0]
+(Ne, Nk) = e_diff.T.shape
+"""
+e_diff_resh = np.reshape(e_diff.T, Nk*Ne)
+k_diff_resh = np.tile(k_diff, Ne)
+plt.figure()
+plt.scatter(k_diff_resh, e_diff_resh, s = 0.01)
+plt.savefig("sdfkj.png", dpi=2000)
+"""
+
+"""
+liste = range(255,259)
+for i in liste:
+    plt.scatter(k_diff, e_diff.T[i], s = 0.5, lw = 0)
+"""
+
+plt.figure()
+E_iso1 = e_diff.T[256]
+E_iso2 = e_diff.T[257]
+plt.plot(k_diff, E_iso1)
+plt.plot(k_diff, E_iso2)
+#plt.ylim(0.55, 0.61)
+deriv_E1 = np.zeros(len(E_iso1)-2)
+deriv_E2 = np.zeros(len(E_iso2)-2)
+E_iso1 = np.sin(k_diff)**2
+deriv_E1 = (E_iso1[2:] - E_iso1[0:-2])/(k_diff[2:] - k_diff[:-2])
+deriv_E2 = (E_iso2[2:] - E_iso2[0:-2])/(k_diff[2:] - k_diff[:-2])
+plt.plot(k_diff[1:-1], deriv_E1)
+plt.plot(k_diff[1:-1], deriv_E2)
+#plt.xticks(k_special_pt, label)
+plt.ylabel("E(k) [eV]")
+plt.xlim(0, max(k))
+
+
