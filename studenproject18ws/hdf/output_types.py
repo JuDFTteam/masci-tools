@@ -210,7 +210,7 @@ class DataBands(Data):
     def simulate_plot_setup(self):
         """
 
-        christian's code version 181214
+        christian's code version 190108
 
         In original code, called  'configure' and called every time after plot method has been switched. See there.
 
@@ -220,11 +220,15 @@ class DataBands(Data):
 
         :return:
         """
-        label = []
-        for i in range(len(self.k_special_point_labels)):
-            label += str(self.k_special_point_labels[i])[2]
+        labels = []
+        for label in self.k_special_point_labels:
+            label = label.decode("utf-8")
+            if (label == "g"):
+                labels += ["$\Gamma$"]
+            else:
+                labels += str(label)
 
-        plt.xticks(self.k_special_points, label)
+        plt.xticks(self.k_special_points, labels)
         plt.ylabel("E(k) [eV]")
         plt.xlim(0, max(self.k_distances))
         plt.hlines(0, 0, max(self.k_distances), lw=0.1)
@@ -265,7 +269,7 @@ class DataBands(Data):
         Static plot method as template for interactive plot function in GUI.
         Note: right now, selection (s,p) = [True,True,False,False] is hardcoded!
 
-        christian's code version 181214
+        christian's code version 190108
 
         Notes
         =====
@@ -293,11 +297,34 @@ class DataBands(Data):
             .reshape_data(mask_bands, mask_characters=self._mask_characters([characters[1]]),
                           mask_groups=mask_groups, spin=spin, unfolding_weight_exponent=1)
 
+        # print(f"non-zero elements in divisor array: {np.count_nonzero(weight_resh+weight_resh2)} of {weight_resh.size} elements.")
         rel = weight_resh / (weight_resh + weight_resh2) * 20
+        tot_weight = weight_resh + weight_resh2
         # ax1.scatter(k_resh, (evs_resh-fermi_energy)*hartree_in_ev, marker='o', c="g", s = 5 * weight_resh, lw=0, alpha = alpha)
         # ax1.scatter(k_resh2, (evs_resh-fermi_energy)*hartree_in_ev, marker='o', c="r", s = 5 * weight_resh2, lw=0, alpha = alpha)
-        cm = plt.cm.winter  # get_cmap('RdYlBu')
-        ax.scatter(k_resh2, (evs_resh - self.fermi_energy) * self.HARTREE_EV, marker='o', c=rel, s=5 * weight_resh2,
+        # print(len(tot_weight))
+        # print(len(k_resh2))
+        # print(len(rel))
+        # print(len(evs_resh))
+
+        # dont change order inside if statement...
+        speed_up = True
+        if (speed_up == True):
+            t = 1e-4
+            k_resh2 = k_resh2[tot_weight > t]
+            evs_resh = evs_resh[tot_weight > t]
+            rel = rel[tot_weight > t]
+            tot_weight = tot_weight[tot_weight > t]
+
+        # print(len(tot_weight))
+        # print(len(k_resh2))
+        # print(len(rel))
+        # print(len(evs_resh))
+
+        # cm = plt.cm.get_cmap('RdYlBu')
+        # cm = plt.cm.winter
+        cm = plt.cm.plasma
+        ax.scatter(k_resh2, (evs_resh - self.fermi_energy) * self.HARTREE_EV, marker='o', c=rel, s=5 * tot_weight,
                    lw=0,
                    alpha=alpha, cmap=cm)
 

@@ -544,18 +544,9 @@ def simulate_gui(data):
     ax1 = fig.add_subplot(111)
 
     data.simulate_plot_setup()
-    data.simulate_plot(sel.mask_bands, [True, False, False, False],
-                       sel.mask_groups, sel.spin, unfolding_weight_exponent=1,
-                       ax=ax1, color="red", alpha=alpha)
-    data.simulate_plot(sel.mask_bands, [False, True, False, False],
+    data.simulate_plot(sel.mask_bands, sel.mask_characters,
                        sel.mask_groups, sel.spin, unfolding_weight_exponent=1,
                        ax=ax1, color="blue", alpha=alpha)
-    data.simulate_plot(sel.mask_bands, [True, False, True, False],
-                       sel.mask_groups, sel.spin, unfolding_weight_exponent=1,
-                       ax=ax1, color="green", alpha=alpha)
-    data.simulate_plot(sel.mask_bands, [False, False, False, True],
-                       sel.mask_groups, sel.spin, unfolding_weight_exponent=1,
-                       ax=ax1, color="yellow", alpha=alpha)
     plt.title("Plot 1")
     plt.show()
 
@@ -572,20 +563,14 @@ def simulate_gui(data):
     plt.title("Plot 2: characters s,p selected")
     plt.show()
 
-    # simulate invalid plot attempt: other than two characters selected
-    fig = plt.figure()
-    ax3 = fig.add_subplot(111)
-    alpha = 0.2
-    data.simulate_plot_two_characters(sel.mask_bands, [True, True, True, True],
-                                      sel.mask_groups, sel.spin,
-                                      unfolding_weight_exponent=1,
-                                      ax=ax3, alpha=alpha)
-
-
-
-
-
-
+    # # simulate invalid plot attempt: other than two characters selected
+    # fig = plt.figure()
+    # ax3 = fig.add_subplot(111)
+    # alpha = 0.2
+    # data.simulate_plot_two_characters(sel.mask_bands, [True, True, True, True],
+    #                                   sel.mask_groups, sel.spin,
+    #                                   unfolding_weight_exponent=1,
+    #                                   ax=ax3, alpha=alpha)
 
 if __name__ == '__main__':
     data = example_read()
