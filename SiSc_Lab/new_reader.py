@@ -95,7 +95,7 @@ processes the data to obtain the weights:
 this is the function with most significant runtime!
 
 """
-def get_data(f, llc, SPIN_FILTER, CHARACTER_FILTER, GROUP_FILTER, BAND_FILTER, UNFOLD_WEIGHT=band_unfolding, unfoldong_weight_exponent = 1):
+def get_data(f, llc, SPIN_FILTER, CHARACTER_FILTER, GROUP_FILTER, BAND_FILTER, UNFOLD_WEIGHT=band_unfolding, unfoldong_weight_exponent = 1, ignore_atroms_per_group = False):
     ATOMS_PER_GROUP = np.zeros(NUM_GROUPS)
     for i in range(NUM_GROUPS):
         ATOMS_PER_GROUP[i] = np.count_nonzero(np.array(atom_group)==i)
@@ -109,6 +109,11 @@ def get_data(f, llc, SPIN_FILTER, CHARACTER_FILTER, GROUP_FILTER, BAND_FILTER, U
     llc_red = llc_red[:, :, :, :, CHARACTER_FILTER]
     #llc_red = llc_red[:, :, BAND_FILTER, :, :]
     ATOMS_PER_GROUP_red = ATOMS_PER_GROUP[GROUP_FILTER]
+    
+    # ignores that there are not necessarily equally many atoms in each atom group
+    if(ignore_atroms_per_group == True):
+        ATOMS_PER_GROUP_red[:] = 1
+        ATOMS_PER_GROUP[:] = 1
     
     # compute normalized weights with tensor product
     llc_redG = np.tensordot(llc_red, ATOMS_PER_GROUP_red, axes=([3],[0]))
@@ -131,9 +136,9 @@ def get_data(f, llc, SPIN_FILTER, CHARACTER_FILTER, GROUP_FILTER, BAND_FILTER, U
 reshapes the 2 dimensional field of weights into a 1d array to speed up plotting
 --> avoids to call the scatter plot for every band
 """
-def reshape_data(f, llc, evs, k, spin, CHARACTER_FILTER, GROUP_FILTER, BAND_FILTER, UNFOLD_WEIGHT=band_unfolding, unfoldong_weight_exponent = 1):
+def reshape_data(f, llc, evs, k, spin, CHARACTER_FILTER, GROUP_FILTER, BAND_FILTER, UNFOLD_WEIGHT=band_unfolding, unfoldong_weight_exponent = 1, ignore_atroms_per_group = False):
     SPIN_FILTER = create_spin_filter(spin)
-    total_weight = get_data(f, llc, SPIN_FILTER, CHARACTER_FILTER, GROUP_FILTER, BAND_FILTER, UNFOLD_WEIGHT, unfoldong_weight_exponent)
+    total_weight = get_data(f, llc, SPIN_FILTER, CHARACTER_FILTER, GROUP_FILTER, BAND_FILTER, UNFOLD_WEIGHT, unfoldong_weight_exponent, ignore_atroms_per_group)
     # only select the requested spin and bands
     evs = evs[spin, :, BAND_FILTER]
 
@@ -158,8 +163,8 @@ for i in range(len(special_points_label)):
     
 
 
-def plot(color, ax1, f, llc, evs, k, spin, CHARACTER_FILTER, GROUP_FILTER, BAND_FILTER, UNFOLD_WEIGHT, unfoldong_weight_exponent, alpha = 1):
-    (k_r, E_r, W_r) = reshape_data(f, llc, evs, k, spin, CHARACTER_FILTER, GROUP_FILTER, BAND_FILTER, UNFOLD_WEIGHT, unfoldong_weight_exponent)
+def plot(color, ax1, f, llc, evs, k, spin, CHARACTER_FILTER, GROUP_FILTER, BAND_FILTER, UNFOLD_WEIGHT, unfoldong_weight_exponent, alpha = 1, ignore_atroms_per_group = False):
+    (k_r, E_r, W_r) = reshape_data(f, llc, evs, k, spin, CHARACTER_FILTER, GROUP_FILTER, BAND_FILTER, UNFOLD_WEIGHT, unfoldong_weight_exponent, ignore_atroms_per_group)
     #just plot points with minimal size of t
     speed_up = True
     if(speed_up == True):
@@ -181,14 +186,15 @@ def configure_plot(filename = False):
     return 0
         
 def plot_two_characters(color, ax1, f, llc, evs, k, spin, CHARACTER_FILTER, GROUP_FILTER, BAND_FILTER, UNFOLD_WEIGHT, 
-                        unfoldong_weight_exponent, alpha = 1):
+                        unfoldong_weight_exponent, alpha = 1, ignore_atroms_per_group = False):
     
     characters = np.array(range(4))[CHARACTER_FILTER]
     if(len(characters) != 2):
         print("error")
-        
-    (k_resh, evs_resh, weight_resh) = reshape_data(f, llc, evs, k, spin, create_character_filter([characters[0]]), GROUP_FILTER, BAND_FILTER, UNFOLD_WEIGHT=band_unfolding, unfoldong_weight_exponent = 1)
-    (k_resh2, evs_resh2, weight_resh2) = reshape_data(f, llc, evs, k, spin, create_character_filter([characters[1]]), GROUP_FILTER, BAND_FILTER, UNFOLD_WEIGHT=band_unfolding, unfoldong_weight_exponent = 1)
+
+# here is something wrong...
+    (k_resh, evs_resh, weight_resh) = reshape_data(f, llc, evs, k, spin, create_character_filter([characters[0]]), GROUP_FILTER, BAND_FILTER, UNFOLD_WEIGHT=UNFOLD_WEIGHT, unfoldong_weight_exponent = unfoldong_weight_exponent, ignore_atroms_per_group = ignore_atroms_per_group)
+    (k_resh2, evs_resh2, weight_resh2) = reshape_data(f, llc, evs, k, spin, create_character_filter([characters[1]]), GROUP_FILTER, BAND_FILTER, UNFOLD_WEIGHT=UNFOLD_WEIGHT, unfoldong_weight_exponent = unfoldong_weight_exponent, ignore_atroms_per_group = ignore_atroms_per_group)
 
     rel = weight_resh/(weight_resh+weight_resh2)*20
     tot_weight = weight_resh + weight_resh2
@@ -285,7 +291,7 @@ configure_plot()
 fig = plt.figure()
 alpha = 1
 ax4 = fig.add_subplot(111)
-plot_two_characters("blue", ax4, f, llc, evs, k, 0, create_character_filter([0,1]), create_group_filter(), create_band_filter(), band_unfolding, 0.6, alpha)
+plot_two_characters("blue", ax4, f, llc, evs, k, 0, create_character_filter([0,1]), create_group_filter(), create_band_filter(), band_unfolding, 0.6, alpha, False)
 configure_plot("2characters")
 """
 
@@ -294,7 +300,7 @@ fig = plt.figure()
 ax3 = fig.add_subplot(111)
 alpha = 0.2
 plot("blue", ax3, f, llc, evs, k, 0, create_character_filter([0,1,2,3]), create_group_filter(),
-     create_band_filter(), band_unfolding, 1., alpha)
+     create_band_filter(), band_unfolding, 1., alpha, ignore_atroms_per_group = True)
 """
 
 """
@@ -332,18 +338,32 @@ for i in liste:
 plt.figure()
 E_iso1 = e_diff.T[256]
 E_iso2 = e_diff.T[257]
-plt.plot(k_diff, E_iso1)
-plt.plot(k_diff, E_iso2)
+plt.scatter(k_diff, E_iso1, s = 1, lw = 0)
+plt.scatter(k_diff, E_iso2, s = 1, lw = 0)
 #plt.ylim(0.55, 0.61)
 deriv_E1 = np.zeros(len(E_iso1)-2)
 deriv_E2 = np.zeros(len(E_iso2)-2)
-E_iso1 = np.sin(k_diff)**2
+#E_iso1 = np.sin(k_diff)
 deriv_E1 = (E_iso1[2:] - E_iso1[0:-2])/(k_diff[2:] - k_diff[:-2])
 deriv_E2 = (E_iso2[2:] - E_iso2[0:-2])/(k_diff[2:] - k_diff[:-2])
-plt.plot(k_diff[1:-1], deriv_E1)
-plt.plot(k_diff[1:-1], deriv_E2)
+k_ddiff = k_diff[1:-1]
+plt.plot(k_ddiff, deriv_E1)
+plt.plot(k_ddiff, deriv_E2)
 #plt.xticks(k_special_pt, label)
 plt.ylabel("E(k) [eV]")
 plt.xlim(0, max(k))
 
+ddE1 = (deriv_E1[2:] - deriv_E1[0:-2])/(k_ddiff[2:] - k_ddiff[:-2])
+plt.scatter(k_ddiff[1:-1], 1./ddE1, s = 1, lw = 0)
+plt.ylim(-2.5,2.5)
+"""
+ax = np.diff(E_iso1)
+ax2 = np.diff(E_iso2)
+ay = np.diff(k)
+aZ = ax/ay
+
+#plt.plot(k[0:-1], aZ)
+#plt.plot(k[0:-1], ax2/ay)
+"""
+plt.savefig("gjhsdf.png", dpi=2000)
 
