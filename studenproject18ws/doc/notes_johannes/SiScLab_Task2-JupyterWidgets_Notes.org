@@ -212,5 +212,6 @@ Okay, but I can do that: create custom kernel.
 - installed ipyvolume for jupyterlab:
   #+BEGIN_SRC shell
   # install ipyvolumen through conda-forge
+  conda install -c conda-forge ipyvolume
   jupyter labextension install ipyvolume
   #+END_SRC

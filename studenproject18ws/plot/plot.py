@@ -57,6 +57,7 @@ class Matplot(object):
         color = "blue"
         (k_r, E_r, W_r) = self.data.reshape_data(mask_bands, mask_characters, mask_groups, spin,
                                                  unfolding_weight_exponent, ignore_atoms_per_group)
+
         # just plot points with minimal size of t
         speed_up = True
         if (speed_up == True):
@@ -175,3 +176,13 @@ class Matplot(object):
         # E_iso = np.sin(k) ** 2
         dE = (E_iso[2:] - E_iso[0:-2]) / (k[2:] - k[:-2])
         ax.plot(k[1:-1], dE, label="dE/dk")
+
+
+class IpyVolumePlot(object):
+    def __init__(self, data: Data):
+        """
+        Sets up plot axis according to data.
+
+        :param data:
+        """
+        self.data = data

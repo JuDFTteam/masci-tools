@@ -7,10 +7,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 from h5py._hl.dataset import Dataset as h5py_Dataset
 
-EXCEPTIONS = [inspect, Counter, namedtuple, plt, np, h5py_Dataset]
+EXCEPTIONS = [inspect, copy, Counter, namedtuple, plt, np, h5py_Dataset]
 """Mandatory: include all imported types here to avoid malfunction.
 Reason: this package uses introspection on all types found in this module.
-The ones mentioned here are passed over."""
+The ones mentioned here will be passed over."""
 
 
 class Data(object):
@@ -39,6 +39,12 @@ class Data(object):
                      specified in recipe and created in reader.
         """
         self.__dict__.update(kwds)
+
+        # for get_data(), buffer llc_normalized, unfold_weight, unfold_w_exponent, call_count. info see there.
+        self.buffer_llc_normalized = None
+        self.buffer_unfold_weight = None
+        self.buffer_unfolding_weight_exponent = []
+        self.buffer_call_count = 0
 
     def move_datasets_to_memory(self):
         """Converts all attributes of type h5py Dataset (in-file) to numpy ndarray (in-memory).
@@ -83,6 +89,41 @@ class DataBands(Data):
 
     def _get_data(self, mask_bands, mask_characters, mask_groups, mask_spin, unfolding_weight_exponent=1,
                   ignore_atoms_per_group=False):
+
+        # DEVNOTE:
+        # this is a wrapper function for get_data_and_weight. If only the exponent changes,
+        # don't recumpute but just rescale buffered data.
+        # Why is the exponent buffered in a growing list?
+        # Turns out that this function is called twice on every user selection change, not once.
+        # So buffering a single value, or comparing old and new value (via widget observe) does not work.
+        # Instead, have to compare against the second last exponent, cause the last exp. is alwazs the same as
+        # the current one.
+        # TODO: find out why this function is called twice on any user selection change and correct that.
+
+        # print(f"call_count: {self.buffer_call_count}")
+        # print(f"unfolding_weigh_exp: {unfolding_weight_exponent}")
+        # print(f"buffered unfolding_weigh_exp: {self.buffer_unfolding_weight_exponent}")
+
+        if (len(self.buffer_unfolding_weight_exponent) > 50):
+            self.buffer_unfolding_weight_exponent = []
+
+        if (self.buffer_llc_normalized is None) or \
+                ((len(self.buffer_unfolding_weight_exponent) > 1) and (unfolding_weight_exponent == self.buffer_unfolding_weight_exponent[-2])):
+            llc_normalized, unfold_weight = self._get_data_and_weight(mask_bands, mask_characters, mask_groups, mask_spin, unfolding_weight_exponent,
+                  ignore_atoms_per_group)
+            self.buffer_llc_normalized = llc_normalized
+            self.buffer_unfold_weight = unfold_weight
+            # print("recomputing llc_normalized data")
+        else:
+            pass
+            # print("using buffered llc_normalized data")
+
+        self.buffer_unfolding_weight_exponent.append(unfolding_weight_exponent)
+        self.buffer_call_count += 1
+        return self.buffer_llc_normalized * (self.buffer_unfold_weight ** unfolding_weight_exponent)
+
+    def _get_data_and_weight(self, mask_bands, mask_characters, mask_groups, mask_spin, unfolding_weight_exponent=1,
+                  ignore_atoms_per_group=False):
         """
         processes the data to obtain the weights: this is the function with most significant runtime!
         Each argument is a bool list reflecting the user selection.
@@ -122,10 +163,10 @@ class DataBands(Data):
             unfold_weight = self.bandUnfolding_weights
             unfold_weight = unfold_weight[mask_spin, :, :]
             unfold_weight = unfold_weight[:, :, mask_bands]
-            unfold_weight = unfold_weight ** unfolding_weight_exponent
-            llc_normalized = llc_normalized * unfold_weight
+            # unfold_weight = unfold_weight ** unfolding_weight_exponent
+            # llc_normalized = llc_normalized * unfold_weight
 
-        return llc_normalized
+        return llc_normalized, unfold_weight
 
     def reshape_data(self, mask_bands, mask_characters, mask_groups, spin, unfolding_weight_exponent,
                      ignore_atoms_per_group=False):

@@ -81,11 +81,16 @@ def plot_atoms_with_colors():
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
     for i in range(len(atoms_coords[:].T[0])):
-        ax.scatter(atoms_coords[:].T[0][i], atoms_coords[:].T[1][i], atoms_coords[:].T[2][i], c=colorbar[atom_group[i]])
+        x = atoms_coords[:].T[0][i]
+        y = atoms_coords[:].T[1][i]
+        z = atoms_coords[:].T[2][i]
+        ax.scatter(x, y, z, c=colorbar[atom_group[i]])
 
     plt.xlabel("x")
     plt.ylabel("y")
-    plt.savefig("../data/output/"+filename+"_3d_visualization_color.png", dpi = 500)
+    # plt.savefig("../data/output/"+filename+"_3d_visualization_color.png", dpi = 500)
+    plt.show()
+
 
 plot_atoms_with_colors()
 
