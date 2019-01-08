@@ -32,6 +32,7 @@ from studenproject18ws.hdf.input_transforms import *
 from studenproject18ws.hdf.output_types import *
 from studenproject18ws.hdf.recipes import Recipes
 from studenproject18ws.hdf.util import get_class
+from studenproject18ws.plot.plot import Matplot
 
 
 class Reader(object):
@@ -538,15 +539,15 @@ def simulate_gui(data):
 
     # simulate plotting in a GUI, code version 181214
     sel = data.simulate_gui_selection()
-    alpha = 0.5
+    bandploter = Matplot(data)
+    alpha = 1.0
 
     fig = plt.figure()
     ax1 = fig.add_subplot(111)
 
-    data.simulate_plot_setup()
-    data.simulate_plot(sel.mask_bands, sel.mask_characters,
-                       sel.mask_groups, sel.spin, unfolding_weight_exponent=1,
-                       ax=ax1, color="blue", alpha=alpha)
+    bandploter.bands(sel.mask_bands, sel.mask_characters,
+                     sel.mask_groups, sel.spin, unfolding_weight_exponent=1,
+                     ax=ax1, alpha=alpha)
     plt.title("Plot 1")
     plt.show()
 
@@ -555,11 +556,11 @@ def simulate_gui(data):
     fig = plt.figure()
     ax4 = fig.add_subplot(111)
     alpha = 1
-    data.simulate_plot_setup()
-    data.simulate_plot_two_characters(sel.mask_bands, [True, True, False, False],
-                                      sel.mask_groups, sel.spin,
-                                      unfolding_weight_exponent=0.6,
-                                      ax=ax4, alpha=alpha)
+
+    bandploter.bands_two_characters(sel.mask_bands, [True, True, False, False],
+                                    sel.mask_groups, sel.spin,
+                                    unfolding_weight_exponent=0.6,
+                                    ax=ax4, alpha=alpha)
     plt.title("Plot 2: characters s,p selected")
     plt.show()
 
@@ -578,7 +579,7 @@ def simulate_gui(data):
     ax4 = fig.add_subplot(111)
     select_band = 256 # valid for banddos_4x4.hdf only!
     spin = 0
-    data.simulate_plot_groupVelocity(select_band, spin, ax=ax4)
+    bandploter.groupVelocity(select_band, spin, ax=ax4)
     plt.legend()
     plt.title(f"dE/dk for band {select_band}")
     plt.show()
