@@ -35,13 +35,15 @@ class Matplot(object):
         plt.xlim(0, max(self.data.k_distances))
         plt.hlines(0, 0, max(self.data.k_distances), lw=0.1)
 
-    def bands(self, mask_bands, mask_characters, mask_groups, spin, unfolding_weight_exponent, ax, alpha=1):
+    def bands(self, mask_bands, mask_characters, mask_groups, spin, unfolding_weight_exponent, ax, alpha=1,
+              ignore_atoms_per_group=False):
         """Plot regular.
 
         Static plot method as template for interactive plot function in GUI.
 
         christian's code version 181214
 
+        :param ignore_atoms_per_group:
         :param mask_bands:
         :param mask_characters:
         :param mask_groups:
@@ -54,7 +56,7 @@ class Matplot(object):
         """
         color = "blue"
         (k_r, E_r, W_r) = self.data.reshape_data(mask_bands, mask_characters, mask_groups, spin,
-                                                 unfolding_weight_exponent)
+                                                 unfolding_weight_exponent, ignore_atoms_per_group)
         # just plot points with minimal size of t
         speed_up = True
         if (speed_up == True):
@@ -66,7 +68,7 @@ class Matplot(object):
                    marker='o', c=color, s=5 * W_r, lw=0, alpha=alpha)
 
     def bands_two_characters(self, mask_bands, mask_characters, mask_groups, spin, unfolding_weight_exponent, ax,
-                             alpha=1):
+                             alpha=1, ignore_atoms_per_group=False):
         """Plot with exactly 2 selected band characters mapped to colormap.
 
         Static plot method as template for interactive plot function in GUI.
@@ -79,6 +81,7 @@ class Matplot(object):
         The conversion mask_characters -> characters -> self.mask_characters() looks a bit strange.
         Probably could be done simpler with a list comprehension.
 
+        :param ignore_atoms_per_group:
         :param mask_bands:
         :param mask_characters:
         :param mask_groups:
@@ -96,11 +99,11 @@ class Matplot(object):
 
         (k_resh, evs_resh, weight_resh) = self.data \
             .reshape_data(mask_bands, self.data._mask_characters([characters[0]]),
-                          mask_groups, spin, unfolding_weight_exponent)
+                          mask_groups, spin, unfolding_weight_exponent, ignore_atoms_per_group)
 
         (k_resh2, evs_resh2, weight_resh2) = self.data \
             .reshape_data(mask_bands, self.data._mask_characters([characters[1]]),
-                          mask_groups, spin, unfolding_weight_exponent)
+                          mask_groups, spin, unfolding_weight_exponent, ignore_atoms_per_group)
 
         # print(f"non-zero elements in divisor array: {np.count_nonzero(weight_resh+weight_resh2)} of {weight_resh.size} elements.")
         rel = weight_resh / (weight_resh + weight_resh2) * 20
@@ -169,6 +172,6 @@ class Matplot(object):
         ax.plot(k, E_iso, label="E_iso")
 
         dE = np.zeros(len(E_iso) - 2)
-        E_iso = np.sin(k) ** 2
+        # E_iso = np.sin(k) ** 2
         dE = (E_iso[2:] - E_iso[0:-2]) / (k[2:] - k[:-2])
         ax.plot(k[1:-1], dE, label="dE/dk")

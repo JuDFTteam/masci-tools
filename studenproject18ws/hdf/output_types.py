@@ -1,5 +1,6 @@
 """Holds composable output data types (plug-in functions) for the HDF file Reader module."""
 import inspect
+import copy
 from collections import Counter, namedtuple
 
 import matplotlib.pyplot as plt
@@ -80,11 +81,13 @@ class DataBands(Data):
         except AttributeError:
             pass
 
-    def _get_data(self, mask_bands, mask_characters, mask_groups, mask_spin, unfolding_weight_exponent=1):
+    def _get_data(self, mask_bands, mask_characters, mask_groups, mask_spin, unfolding_weight_exponent=1,
+                  ignore_atoms_per_group=False):
         """
         processes the data to obtain the weights: this is the function with most significant runtime!
         Each argument is a bool list reflecting the user selection.
 
+        :param ignore_atoms_per_group:
         :param mask_bands: bool list for selected bands
         :param mask_characters: bool list for [s,p,d,f]
         :param mask_groups: bool list for selected atom groups
@@ -100,11 +103,17 @@ class DataBands(Data):
         llc_red = llc_red[:, :, :, :, mask_characters]
         # llc_red = llc_red[:, :, BAND_FILTER, :, :]
         atoms_per_group_red = self.atoms_per_group[mask_groups]
+        atoms_per_group_copy = copy.deepcopy(self.atoms_per_group)
+
+        # ignores that there are not necessarily equally many atoms in each atom group
+        if ignore_atoms_per_group:
+            atoms_per_group_red[:] = 1
+            atoms_per_group_copy[:] = 1
 
         # compute normalized weights with tensor product
         llc_redG = np.tensordot(llc_red, atoms_per_group_red, axes=([3], [0]))
         llc_redGC = np.sum(llc_redG, axis=3)
-        llc_norm_temp = np.tensordot(llc, self.atoms_per_group, axes=([3], [0]))
+        llc_norm_temp = np.tensordot(llc, atoms_per_group_copy, axes=([3], [0]))
         llc_norm = np.sum(llc_norm_temp, axis=3)
         llc_normalized = llc_redGC / llc_norm
 
@@ -118,13 +127,15 @@ class DataBands(Data):
 
         return llc_normalized
 
-    def reshape_data(self, mask_bands, mask_characters, mask_groups, spin, unfolding_weight_exponent):
+    def reshape_data(self, mask_bands, mask_characters, mask_groups, spin, unfolding_weight_exponent,
+                     ignore_atoms_per_group=False):
         """
         Reshapes the 2-dimensional field of weights into a 1d array to speed up plotting
         --> avoids to call the scatter plot for every band
 
         christian's code version 181214
 
+        :param ignore_atoms_per_group:
         :param mask_bands:
         :param mask_characters:
         :param mask_groups:
@@ -132,7 +143,7 @@ class DataBands(Data):
         :return:
         """
         mask_spin = self._mask_spin(spin)
-        total_weight = self._get_data(mask_bands, mask_characters, mask_groups, mask_spin, unfolding_weight_exponent)
+        total_weight = self._get_data(mask_bands, mask_characters, mask_groups, mask_spin, unfolding_weight_exponent, ignore_atoms_per_group)
 
         # only select the requested spin and bands
         evs = self.eigenvalues[spin, :, mask_bands]

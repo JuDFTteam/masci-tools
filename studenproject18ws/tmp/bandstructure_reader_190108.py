@@ -333,11 +333,13 @@ plt.scatter(k_diff_resh, e_diff_resh, s = 0.01)
 plt.savefig("sdfkj.png", dpi=2000)
 """
 
-"""
-liste = range(255,259)
+
+liste = range(255,260)
 for i in liste:
     plt.scatter(k_diff, e_diff.T[i], s = 0.5, lw = 0)
-"""
+plt.show()
+plt.clf()
+
 
 plt.figure()
 E_iso1 = e_diff.T[256]

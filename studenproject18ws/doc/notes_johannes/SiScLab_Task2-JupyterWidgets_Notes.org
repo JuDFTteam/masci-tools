@@ -32,6 +32,7 @@ top-level items: newest is first
 * Replicating Stefan's Matlab Tool in Jupyter
 
 * Installing stuff
+items: newest is last
 ** Instructions
 - Jupyter Widgets:
 minimal from [[https://ipywidgets.readthedocs.io/en/stable/user_install.html][readthedocs]]:
@@ -183,3 +184,33 @@ Okay, but I can do that: create custom kernel.
   kernels on the fly. this might be important when an important of a package u
   just installed doesn't work in the noteboook. might be that u think u are in
   an env but actually the notebook uses the base python.
+** making matplotlib work in jupyterlab
+- Followed installation instructions for ~conda~ from [[https://github.com/matplotlib/jupyter-matplotlib][jupyter-matplotlib]] (the
+  order is important; otherwise steps downstream have to be repeated):
+  #+BEGIN_SRC shell
+  source activate masci-tools
+  conda install -c conda-forge ipympl
+  # If using the Notebook
+  conda install -c conda-forge widgetsnbextension
+  # If using JupyterLab
+  conda install nodejs
+  jupyter labextension install @jupyter-widgets/jupyterlab-manager
+  jupyter labextension install jupyter-matplotlib
+  #+END_SRC
+- very important: for the matplot to work and interact with widgets:
+  #+BEGIN_SRC python
+  # if run from jupyter notebook
+  %matplotlib widget
+  # if run from jupyter lab
+  %matpltoblib nbagg
+  #+END_SRC
+  Those two are mutually inclusive. Seems that even if one is commented out is
+  not ignored, but im not sure about that. In any case it helps in notebook AND
+  lab to reload the cell with this and the cell where the plot function lives.
+  may happen that in the first load, the plot will be empty, and in the second
+  it will show something.
+- installed ipyvolume for jupyterlab:
+  #+BEGIN_SRC shell
+  # install ipyvolumen through conda-forge
+  jupyter labextension install ipyvolume
+  #+END_SRC
