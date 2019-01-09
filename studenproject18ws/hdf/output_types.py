@@ -68,9 +68,21 @@ class DataBands(Data):
     def __init__(self, **kwds):
         Data.__init__(self, **kwds)
         self.HARTREE_EV = 27.2114
+
+        # this has to be in a try-except block cause don't know
+        # if attributes have already been assigned
         try:
             self.atoms_per_group_dict = Counter(self.atoms_group)
-            self.atom_group_keys = self.atoms_per_group_dict.keys()
+            self.atoms_group_keys = self.atoms_per_group_dict.keys()
+
+            # wrong:
+            # self.atoms_per_group = np.zeros(self.num_groups)
+            # for i in range(self.num_groups):
+            #     self.atoms_per_group[i] = np.count_nonzero(np.array(self.atoms_group) == i)
+            # correct, but wrong type (list):
+            # self.atoms_per_group = list(self.atoms_per_group_dict.values())
+            # correct:
+            self.atoms_per_group = np.fromiter(self.atoms_per_group_dict.values(), dtype=float)
 
             # JW: CP 181124 code
             # self.atoms_per_group = np.zeros(max(self.atom_group_keys))
@@ -80,9 +92,6 @@ class DataBands(Data):
             # JW: CP 181212 code
             (self.num_spin, self.num_k, self.num_e,
              self.num_groups, self.num_char) = self.llikecharge.shape
-            self.atoms_per_group = np.zeros(self.num_groups)
-            for i in range(self.num_groups):
-                self.atoms_per_group[i] = np.count_nonzero(np.array(self.atoms_group) == i)
 
         except AttributeError:
             pass

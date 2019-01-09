@@ -33,3 +33,4 @@
 ** [[file:SiScLab_Git_Notes.org][Git Notes]]
 ** [[file:SiScLab_AiiDa_Installation_Notes.org][AiiDa Installation Notes]]
 * [[file:SiScLab_SideNotes.org][Side Notes]] (ideas, thoughts to sort)
+* [[file:SiScLab_Scratch_Notes.org][Scratch Book]]

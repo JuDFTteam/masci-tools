@@ -513,9 +513,10 @@ def example_read():
     # from studenproject18ws.hdf.reader import Reader
     # from studenproject18ws.hdf.recipes import Recipes
 
-    filename = 'banddos_4x4.hdf'
-    # filename = 'banddos.hdf'
+    filename = 'banddos.hdf'
     # filename = 'banddos_Co.hdf'
+    # filename = 'banddos_4x4.hdf'
+    # filename = 'banddos_2spin.hdf'
 
     filepath = ['..', 'data', 'input', filename]
     filepath = os.path.join(*filepath)

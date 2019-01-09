@@ -384,6 +384,7 @@ Legend:
  |         | [[https://mybinder.org/v2/gh/jupyter-widgets/tutorial/master][run above tutorial online in binder]]                              |
  |         | [[https://ipywidgets.readthedocs.io/en/stable/][ipywidgets @ readthedocs]]                                         |
  |         | [[https://ipywidgets.readthedocs.io/en/stable/examples/Widget%2520Styling.html#][ipywidgets > layout (useful for building compact dashboards)]]     |
+ |         | [[https://www.blog.pythonlibrary.org/tag/jupyter/][pythonlibrary.org #jupyter]] (tricks on widgets, debugging, etc.)                            |
  |---------+------------------------------------------------------------------|
  | plot 2D | [[https://github.com/bloomberg/bqplot][bqplot]] interactive 2D viz: reompl. of D3 in jupyter              |
  |---------+------------------------------------------------------------------|
