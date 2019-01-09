@@ -547,7 +547,8 @@ def simulate_gui(data):
     ax1 = fig.add_subplot(111)
 
     bandploter.bands(sel.mask_bands, sel.mask_characters, sel.mask_groups, sel.spin, unfolding_weight_exponent=1,
-                     ax=ax1, alpha=alpha, ignore_atoms_per_group=ignore_atoms_per_group)
+                     ax=ax1, alpha=alpha, ignore_atoms_per_group=ignore_atoms_per_group,
+                     marker_size=10)
     plt.title("Plot 1")
     plt.show()
 
@@ -560,7 +561,8 @@ def simulate_gui(data):
 
     bandploter.bands_two_characters(sel.mask_bands, [True, True, False, False], sel.mask_groups, sel.spin,
                                     unfolding_weight_exponent=0.6, ax=ax4, alpha=alpha,
-                                    ignore_atoms_per_group=ignore_atoms_per_group)
+                                    ignore_atoms_per_group=ignore_atoms_per_group,
+                                    marker_size=1)
     plt.title("Plot 2: characters s,p selected")
     plt.show()
 

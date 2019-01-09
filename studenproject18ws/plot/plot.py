@@ -36,13 +36,14 @@ class Matplot(object):
         plt.hlines(0, 0, max(self.data.k_distances), lw=0.1)
 
     def bands(self, mask_bands, mask_characters, mask_groups, spin, unfolding_weight_exponent, ax, alpha=1,
-              ignore_atoms_per_group=False):
+              ignore_atoms_per_group=False, marker_size=1):
         """Plot regular.
 
         Static plot method as template for interactive plot function in GUI.
 
         christian's code version 181214
 
+        :param marker_size:
         :param ignore_atoms_per_group:
         :param mask_bands:
         :param mask_characters:
@@ -60,16 +61,17 @@ class Matplot(object):
 
         # just plot points with minimal size of t
         speed_up = True
-        if (speed_up == True):
+        if speed_up:
             t = 1e-4
             k_r = k_r[W_r > t]
             E_r = E_r[W_r > t]
             W_r = W_r[W_r > t]
+        W_r *= marker_size
         ax.scatter(k_r, (E_r - self.data.fermi_energy) * self.data.HARTREE_EV,
                    marker='o', c=color, s=5 * W_r, lw=0, alpha=alpha)
 
     def bands_two_characters(self, mask_bands, mask_characters, mask_groups, spin, unfolding_weight_exponent, ax,
-                             alpha=1, ignore_atoms_per_group=False):
+                             alpha=1, ignore_atoms_per_group=False, marker_size=1):
         """Plot with exactly 2 selected band characters mapped to colormap.
 
         Static plot method as template for interactive plot function in GUI.
@@ -82,6 +84,7 @@ class Matplot(object):
         The conversion mask_characters -> characters -> self.mask_characters() looks a bit strange.
         Probably could be done simpler with a list comprehension.
 
+        :param marker_size:
         :param ignore_atoms_per_group:
         :param mask_bands:
         :param mask_characters:
@@ -118,12 +121,13 @@ class Matplot(object):
 
         # dont change order inside if statement...
         speed_up = True
-        if (speed_up == True):
+        if speed_up:
             t = 1e-4
             k_resh2 = k_resh2[tot_weight > t]
             evs_resh = evs_resh[tot_weight > t]
             rel = rel[tot_weight > t]
             tot_weight = tot_weight[tot_weight > t]
+        tot_weight *= marker_size
 
         # print(len(tot_weight))
         # print(len(k_resh2))
@@ -133,10 +137,8 @@ class Matplot(object):
         # cm = plt.cm.get_cmap('RdYlBu')
         # cm = plt.cm.winter
         cm = plt.cm.plasma
-        ax.scatter(k_resh2, (evs_resh - self.data.fermi_energy) * self.data.HARTREE_EV, marker='o', c=rel,
-                   s=5 * tot_weight,
-                   lw=0,
-                   alpha=alpha, cmap=cm)
+        ax.scatter(k_resh2, (evs_resh - self.data.fermi_energy) * self.data.HARTREE_EV,
+                   marker='o', c=rel, s=5 * tot_weight, lw=0, alpha=alpha, cmap=cm)
 
     def dos(self):
         """Placeholder function.
