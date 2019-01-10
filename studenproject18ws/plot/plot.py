@@ -35,6 +35,20 @@ class Matplot(object):
         plt.xlim(0, max(self.data.k_distances))
         plt.hlines(0, 0, max(self.data.k_distances), lw=0.1)
 
+    def setup(self, plt):
+        labels = []
+        for label in self.data.k_special_point_labels:
+            label = label.decode("utf-8")
+            if (label == "g"):
+                labels += ["$\Gamma$"]
+            else:
+                labels += str(label)
+
+        plt.xticks(self.data.k_special_points, labels)
+        plt.ylabel("E(k) [eV]")
+        plt.xlim(0, max(self.data.k_distances))
+        plt.hlines(0, 0, max(self.data.k_distances), lw=0.1)
+
     def bands(self, mask_bands, mask_characters, mask_groups, spin, unfolding_weight_exponent, ax, alpha=1,
               ignore_atoms_per_group=False, marker_size=1):
         """Plot regular.

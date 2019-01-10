@@ -22,6 +22,9 @@
 #+DATE: \today
 
 [[file:SiScLab_Notes.org][Master File]]
+* <2019-01-09 Wed> MeetingJu3
+- [[https://en.wikipedia.org/wiki/Effective_mass_(solid-state_physics)][effective mass]]:
+  - "For the purposes of calculating conductivity as in the Drude model, via the harmonic mean"
 * <2018-11-21 Wed> Meeting Ju2
 ** backup comment messsage from my commit
 #+BEGIN_EXAMPLE

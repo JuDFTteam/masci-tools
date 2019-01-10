@@ -29,9 +29,7 @@
 
 top-level items: newest is first
 * [[file:SiScLab_Notes.org][Master File]]
-* Replicating Stefan's Matlab Tool in Jupyter
-
-* Installing stuff
+* Installing stuff for Notebook and JupyterLab
 items: newest is last
 ** Instructions
 - Jupyter Widgets:
@@ -63,20 +61,29 @@ source activate masci-tools
 conda install --channel conda-forge appmode
 #+END_SRC
 - [[https://github.com/jupyter/dashboards][Jupyter Dashboards]]
+  - Tried it, was buggy. Use appmode. For development, JupyterLab doesn't need
+    an extension for this: just right-click on the output > create view, and
+    drag the new tab to the desired place. For deployment in aiidalab or with
+    mybinder.org, will still need the appmode though.
 
-** What I did
+** What I (JW) did
 #+BEGIN_SRC shell
-# essential stuff
-source activate masci-tools (mascitools)
+  # essential stuff
+  source activate masci-tools
 
-conda install --channel conda-forge ipywidgets appmode ipyvolume jupyter_dashboards
+  (mascitools) conda install --channel conda-forge ipywidgets appmode ipyvolume jupyter_dashboards
+  # appmode worked, dashboards buggy
 
-# appmode worked, dashboards buggy
-
-# optional: some helpful extensions
-conda install --channel conda-forgejupyterthemes jupyter_highlight_selected_word jupyter_nbextensions_configurator
+  # optional: some helpful notebook extensions
+  conda install --channel conda-forgejupyterthemes jupyter_highlight_selected_word jupyter_nbextensions_configurator
+  conda install nb_conda
+  # This tool enriches the notebook: u see available evnironments and can change
+  # kernels on the fly. this might be important when an important of a package u
+  # just installed doesn't work in the noteboook. might be that u think u are in
+  # an env but actually the notebook uses the base python. UPDATE: I saw a better
+  # alternative to nb_conda somewhere, but forgot it's name.
 #+END_SRC
-
+  
 Output (incomplete, in reality installed in several steps):
 :output:
 #+BEGIN_EXAMPLE
@@ -130,7 +137,6 @@ Enabling notebook extension jupyter-threejs/extension...
 Did simple ipywidgets tutorial from youtube, [[https://www.youtube.com/watch?v=SN0Bflf14C4][interactive matplotlib sine wave
 plot with sliders]].
 
-
 ** More installations for [[https://github.com/jupyter-widgets/tutorial][Jupyter Widgets Tutorial]]
 #+BEGIN_SRC shell
 
@@ -164,27 +170,8 @@ Okay, but I can do that: create custom kernel.
 # Installed kernelspec widgets-tutorial in /home/johannes/anaconda3/envs/masci-tools/share/jupyter/kernels/widgets-tutorial
 #+END_SRC
 
-** Note on using Conda, Notebook, PyCharm together for the project
-- for me, importing the studentproject18ws code in notebook only works if i
-  start the notebook from the PyCharm project using the Project conda env, how
-  to see [[https://www.jetbrains.com/help/pycharm/using-ipython-notebook-with-product.html][here]]. For the project, I use a separate conda environment called
-  =masci-tools= where all python and jupyter dependencies are installed. PyCharm
-  then runs this command in the terminal to start the notebook:
-  #+BEGIN_SRC shell
-    /home/johannes/anaconda3/envs/masci-tools/bin/python
-    /home/johannes/anaconda3/envs/masci-tools/bin/jupyter-notebook --no-browser --ip
-    127.0.0.1 --port 8888 --port-retries=0
-  #+END_SRC
-  It outputs a clickable URL.
-- Tip:
-  #+BEGIN_SRC shell
-  conda install nb_conda
-  #+END_SRC
-  This tool enriches the notebook: u see available evnironments and can change
-  kernels on the fly. this might be important when an important of a package u
-  just installed doesn't work in the noteboook. might be that u think u are in
-  an env but actually the notebook uses the base python.
-** making matplotlib work in jupyterlab
+** Installing & using modules in JupyterLab
+*** matplotlib
 - Followed installation instructions for ~conda~ from [[https://github.com/matplotlib/jupyter-matplotlib][jupyter-matplotlib]] (the
   order is important; otherwise steps downstream have to be repeated):
   #+BEGIN_SRC shell
@@ -209,9 +196,78 @@ Okay, but I can do that: create custom kernel.
   lab to reload the cell with this and the cell where the plot function lives.
   may happen that in the first load, the plot will be empty, and in the second
   it will show something.
+*** ipyvolume
 - installed ipyvolume for jupyterlab:
   #+BEGIN_SRC shell
   # install ipyvolumen through conda-forge
   conda install -c conda-forge ipyvolume
   jupyter labextension install ipyvolume
   #+END_SRC
+* Working with Notebook or JupyterLab
+** Not advisable: How PyCharm starts Jupyter Notebook
+- [[https://www.jetbrains.com/help/pycharm/using-ipython-notebook-with-product.html][PyCharm Guide > Jupyter Notebook]] explains how to best start the Notebook
+  server from an opened PyCharm project. Advantage: using project modules works
+  out of the box. Disadvantages: Notebooks created by PyCharm often get invalid
+  (run > all cells if the warning occurs, then it goes away). PyCharm often
+  complains that changes in the notebook opened in the browser conflict with the
+  notebook opened in pycharm.
+- for me, importing the studentproject18ws code in notebook only works if i
+  start the notebook from the PyCharm project using the Project conda env, how
+  to see [[https://www.jetbrains.com/help/pycharm/using-ipython-notebook-with-product.html][here]]. For the project, I use a separate conda environment called
+  =masci-tools= where all python and jupyter dependencies are installed. PyCharm
+  then runs this command in the terminal to start the notebook:
+  #+BEGIN_SRC shell
+    /home/johannes/anaconda3/envs/masci-tools/bin/python
+    /home/johannes/anaconda3/envs/masci-tools/bin/jupyter-notebook --no-browser --ip
+    127.0.0.1 --port 8888 --port-retries=0
+  #+END_SRC
+  It outputs a clickable URL.
+** How to start Notebook/JupyterLab and import your project modules
+The best way I find is to do it like this (using conda env ~masci-tools~ to
+which all Python and Jupyter dependencies have been installed).
+#+BEGIN_SRC shell
+  cd myprojectpath
+  source activate masci-tools
+  # ----------------
+  # optional: check:
+  # - if the env's jupyter is used: 'which jupyter-notebook', 'which jupyter-lab'.
+  # - if all needed jupyter deps are installed: 'conda list'
+  # ----------------
+  # All okay? Start lab (or juypter-notebook)
+  (masci-tools) jupyter-lab
+#+END_SRC
+
+Now, the lab/notebook's home dir will be ~myprojectpath~. But you won't be able
+to import modules from your project (if it's not installed to the env's python
+via pip). In order to do that, enter this in the first notebook cell. Adjust the
+folder names / absolute path if needed.
+#+BEGIN_SRC python
+  # Setup project path
+  # ------------------
+  # IMPORTANT: we need to import stuff from masci-tools folder.
+  # Since masci-tools is not installed as a module (yet), the notebook kernel
+  # needs to be started in the masci-tools folder.
+  # If that has not happened for some reason, then need to add the masci-tools
+  # manually to the sys path.
+  import os
+  import sys
+
+  cwd = os.getcwd()
+  path_mtools = cwd
+  dirname_mtools = "masci-tools"
+  # first try if we can get away without needing an absolute path
+  if dirname_mtools in path_mtools:
+      while os.path.basename(path_mtools) != dirname_mtools:
+          path_mtools = os.path.split(path_mtools)[0]
+  else:
+      # okay, try with an absolute path
+      path_mtools = "/home/johannes/Desktop/Studium/Kurse_RWTH/SiScLab/18W/repos/masci-tools"
+      if not os.path.isdir(path_mtools):
+          raise IOError(f"Could not find path to masci-tools. Please specify absolute path.")
+
+  # found masci-tools. add to syspath (for imports) and chdir.
+  if path_mtools not in sys.path:
+      # add only once
+      sys.path.append(path_mtools)
+  # Now you can import stuff from your development project.
+#+END_SRC
