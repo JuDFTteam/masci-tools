@@ -70,20 +70,44 @@ Jupyter dashboard (GUI) up to the project presentation on <2019-01-25 Fri>.
 - because need know ylim before first plotting to set slider range, cannot get
   it from ~plt~ or ~ax~. Instead, added fct ~get_data_ylim~ to ~plot.py~
   classes.
+* Widget: ignore_atoms_per_group
+takes weight away in tensor product or sth.
 * TODO Widget: spin selection
 * TODO File Chooser
 ** HDF file chooser
 ** DOS file chooser
 * TODO Dashboard Layout
+** DONE Replace =@interact= with =interactive=
+   CLOSED: [2019-01-16 Wed 00:26]
+- [[https://stackoverflow.com/a/48349991][Nice example: put widgets including plot into a layout container]]
+- got a dashboard layout working for the control widgets with the plot above.
+  see notebook banddos07. Produced with trial and error. It IS plotting, but it
+  is approximately 100x times slower than the version with =@interact= in
+  banddos05.
+- WHY? Probably because I use ~plt.show()~ now. or perhaps because bandddos07 is
+  so full with redundant layout definitions. perhaps try to isolate the working
+  code in a new banddos08, and try with that.
+
+- I don't know how i can get a plot to show with control widgets that are in a
+  layout (dashboard) instead of just rendered one after the other as in
+  banddos05. this is impossible! i must overlook something.
 ** TODO Simple Layout: Bandplot Widgets in a =HBox=
 ** TODO Advanced Layout: Dashboard
 * BandDOS Plot Layout Integration
+** Linked selection widgets (masks):
+*** interstitial (new, DOS-specific)
+*** groups
+*** spin (1-2 DOS files, switch data)
 ** DONE Basic Implementation
    CLOSED: [2019-01-09 Wed]
 ** TODO Fig arrangement
 ** TODO Interactive DOS plot de/activation based on [[*DOS file chooser][DOS file chooser]]
-** TODO Export: Plot Title Widget
-** (Idea: Export: Code to produce plot)
+* TODO Plot File Export
+** TODO export tex
+** TODO Plot Title Widget
+* Compare2Characters: add colorbar
+- help: see [[https://matplotlib.org/api/_as_gen/matplotlib.pyplot.colorbar.html][here]]
+
 * TODO AtomsGroup plot
 ** DONE Highlight Selected AtomsGroups 
    CLOSED: [2019-01-09 Wed]
