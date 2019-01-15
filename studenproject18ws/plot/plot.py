@@ -13,7 +13,26 @@ import matplotlib.pyplot as plt
 from studenproject18ws.hdf.output_types import *
 
 
-class Bandplot_matplotlib(object):
+class Plot(object):
+    """
+    Base class for all Plot classes.
+    """
+
+    def __init__(self, data: Data):
+        """
+        :param data:
+        """
+        self.data = data
+
+    def get_data_ylim(self):
+        """
+        Useful for getting info on the maximum ylim before plotting, e.g. to set ylim to a GUI control.
+        :return:
+        """
+        raise NotImplementedError
+
+
+class Bandplot_matplotlib(Plot):
     """
     Class for rendering interactive matplotlib plots of the band data in a GUI frontend.
     Examples: Jupyter Notebook or Lab, Tkinter, PyQt, ...
@@ -55,13 +74,9 @@ class Bandplot_matplotlib(object):
     ...    plot(ax, selection)
 
     """
-    def __init__(self, data: Data):
-        """
-        Sets up plot axis according to data.
 
-        :param data:
-        """
-        self.data = data
+    def __init__(self, data: DataBands):
+        Plot.__init__(self, data)
 
         # self.setup(plt)
         # # Not sure if this has any effect:
@@ -69,6 +84,17 @@ class Bandplot_matplotlib(object):
         # # doesn't have to be repeated on any update. But at least in Jupyter
         # # this does not work. So unless this is indeed helpful in other frontends,
         # # it can be removed. Commenting it out for the time being.
+
+    def get_data_ylim(self):
+        sel = self.data.simulate_gui_selection()
+
+        (k_r, E_r, W_r) = self.data.reshape_data(sel.mask_bands, sel.mask_characters, sel.mask_groups, sel.spin,
+                                                 unfolding_weight_exponent=1, ignore_atoms_per_group=False)
+
+        ymin = np.min(((E_r - self.data.fermi_energy) * self.data.HARTREE_EV))
+        ymax = np.max(((E_r - self.data.fermi_energy) * self.data.HARTREE_EV))
+
+        return (ymin, ymax)
 
     def setup(self, plt):
         """
@@ -238,11 +264,6 @@ class Bandplot_matplotlib(object):
         ax.plot(k[1:-1], dE, label="dE/dk")
 
 
-class IpyVolumePlot(object):
+class AtomsGroupPlot_Ipyvolume(Plot):
     def __init__(self, data: Data):
-        """
-        Sets up plot axis according to data.
-
-        :param data:
-        """
-        self.data = data
+        raise NotImplementedError

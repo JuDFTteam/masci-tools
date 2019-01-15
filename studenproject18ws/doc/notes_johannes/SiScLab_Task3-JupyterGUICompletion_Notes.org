@@ -65,7 +65,11 @@ Jupyter dashboard (GUI) up to the project presentation on <2019-01-25 Fri>.
   function ~update_plot~
 - DONE: wrote documentation with example on correct usage. removed from
   ~__init__~ method.
-* TODO Widget: y-axis range
+* DONE Widget: y-axis range
+  CLOSED: [2019-01-15 Tue 19:14]
+- because need know ylim before first plotting to set slider range, cannot get
+  it from ~plt~ or ~ax~. Instead, added fct ~get_data_ylim~ to ~plot.py~
+  classes.
 * TODO Widget: spin selection
 * TODO File Chooser
 ** HDF file chooser
@@ -88,5 +92,64 @@ Jupyter dashboard (GUI) up to the project presentation on <2019-01-25 Fri>.
 ** TODO Plot: Coloring by Element, plus switcher
 * TODO Sodium.hdf: 
 ** TODO if not present: hide unfolding_weight selection widget
-** TODO Reproduce band sel error
-- sth like: 'cannot reshape array from 399x to 1996' (was factor 2)
+** TODO Reproduce band selection error
+
+- error: =ValueError: cannot reshape array of size 1996 into shape (2495,)=
+- error: =ValueError: cannot reshape array of size 1996 into shape (3992,)=
+- =(3992,)= is the shape of each of ~(k_r, E_r, W_r) = data.reshape_data()~
+:error_output_jupyter:
+#+BEGIN_EXAMPLE
+---------------------------------------------------------------------------
+ValueError                                Traceback (most recent call last)
+~/anaconda3/envs/masci-tools/lib/python3.6/site-packages/ipywidgets/widgets/interaction.py in update(self, *args)
+    249                     value = widget.get_interact_value()
+    250                     self.kwargs[widget._kwarg] = value
+--> 251                 self.result = self.f(**self.kwargs)
+    252                 show_inline_matplotlib_plots()
+    253                 if self.auto_display and self.result is not None:
+
+<ipython-input-15-d7b15281026e> in update_plot(bands, characters, groups, unfolding_weight_exponent, marker_size, compare_characters, ylim)
+     33 
+     34     plot(mask_bands, mask_characters, mask_groups, spin, 
+---> 35          unfolding_weight_exponent, compare_characters, ax, ignore_atoms_per_group, marker_size)
+     36 
+     37 #     if is_initial_plot:
+
+<ipython-input-6-be4fe14fc992> in plot(mask_bands, mask_characters, mask_groups, spin, unfolding_weight_exponent, isCharacterPlot, ax, ignore_atoms_per_group, marker_size)
+      9     else:
+     10         bandplotter.bands(mask_bands, mask_characters, mask_groups, spin, unfolding_weight_exponent, 
+---> 11                           ax, alpha, ignore_atoms_per_group, marker_size)
+     12 
+
+~/Desktop/Studium/Kurse_RWTH/SiScLab/18W/repos/masci-tools/studenproject18ws/plot/plot.py in bands(self, mask_bands, mask_characters, mask_groups, spin, unfolding_weight_exponent, ax, alpha, ignore_atoms_per_group, marker_size)
+    116         color = "blue"
+    117         (k_r, E_r, W_r) = self.data.reshape_data(mask_bands, mask_characters, mask_groups, spin,
+--> 118                                                  unfolding_weight_exponent, ignore_atoms_per_group)
+    119 
+    120         # just plot points with minimal size of t
+
+~/Desktop/Studium/Kurse_RWTH/SiScLab/18W/repos/masci-tools/studenproject18ws/hdf/output_types.py in reshape_data(self, mask_bands, mask_characters, mask_groups, spin, unfolding_weight_exponent, ignore_atoms_per_group)
+    204 
+    205         evs_resh = np.reshape(evs, Nk * Ne)
+--> 206         weight_resh = np.reshape(total_weight[0].T, Nk * Ne)
+    207         k_resh = np.tile(self.k_distances, Ne)
+    208         return (k_resh, evs_resh, weight_resh)
+
+~/anaconda3/envs/masci-tools/lib/python3.6/site-packages/numpy/core/fromnumeric.py in reshape(a, newshape, order)
+    277            [5, 6]])
+    278     """
+--> 279     return _wrapfunc(a, 'reshape', newshape, order=order)
+    280 
+    281 
+
+~/anaconda3/envs/masci-tools/lib/python3.6/site-packages/numpy/core/fromnumeric.py in _wrapfunc(obj, method, *args, **kwds)
+     49 def _wrapfunc(obj, method, *args, **kwds):
+     50     try:
+---> 51         return getattr(obj, method)(*args, **kwds)
+     52 
+     53     # An AttributeError occurs if the object does not have
+
+ValueError: cannot reshape array of size 1996 into shape (2495,)
+#+END_EXAMPLE
+:END:
+
