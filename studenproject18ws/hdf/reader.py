@@ -515,8 +515,9 @@ def example_read():
 
     # filename = 'banddos.hdf'
     # filename = 'banddos_Co.hdf'
-    filename = 'banddos_4x4.hdf'
+    # filename = 'banddos_4x4.hdf'
     # filename = 'banddos_2spin.hdf'
+    filename = 'banddos_sodium.hdf'
 
     filepath = ['..', 'data', 'input', filename]
     filepath = os.path.join(*filepath)

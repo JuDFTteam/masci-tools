@@ -168,6 +168,7 @@ class DataBands(Data):
         llc_normalized = llc_redGC / llc_norm
 
         # consider unfolding weight
+        unfold_weight = np.ones_like(llc_normalized)
         if self.bandUnfolding:
             unfold_weight = self.bandUnfolding_weights
             unfold_weight = unfold_weight[mask_spin, :, :]

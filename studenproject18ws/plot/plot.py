@@ -26,8 +26,9 @@ class Bandplot_matplotlib(object):
     >>> from studenproject18ws.hdf.recipes import Recipes
     >>> from studenproject18ws.plot.plot import Bandplot_matplotlib as Bandplot
     >>>
+    >>> filepath = "path/to/my.hdf"
     >>> data = None
-    >>> reader = Reader(filepath=filepath)
+    >>> reader = Reader(filepath)
     >>> with reader as h5file:
     ...    data = reader.read(recipe=Recipes.Bands)
     ...    data.move_datasets_to_memory()

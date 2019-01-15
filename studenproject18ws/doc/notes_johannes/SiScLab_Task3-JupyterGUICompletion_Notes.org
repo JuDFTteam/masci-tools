@@ -58,13 +58,35 @@ This is a list of unfinished subtasks for the completion of the project's
 Jupyter dashboard (GUI) up to the project presentation on <2019-01-25 Fri>.
 
 * [[file:SiScLab_Notes.org::*%5B%5Bfile:SiScLab_Task3-JupyterGUICompletion_Notes.org%5D%5BPhase%204%20-%20Jupyter%20GUI%20Completion%5D%5D][Master File]]
-* DONE ~setup_plot~ as ~Matplot.__init__~ does not work
+* DONE =plot.py=: ~setup_plot~ problem
   CLOSED: [2019-01-15 Tue 16:25]
 - labels don't get set on plot
 - only works if the ~setup_plot~ stuff is called inside the Jupyter ~@interact~
   function ~update_plot~
 - DONE: wrote documentation with example on correct usage. removed from
   ~__init__~ method.
-* 
-
-
+* TODO Widget: y-axis range
+* TODO Widget: spin selection
+* TODO File Chooser
+** HDF file chooser
+** DOS file chooser
+* TODO Dashboard Layout
+** TODO Simple Layout: Bandplot Widgets in a =HBox=
+** TODO Advanced Layout: Dashboard
+* BandDOS Plot Layout Integration
+** DONE Basic Implementation
+   CLOSED: [2019-01-09 Wed]
+** TODO Fig arrangement
+** TODO Interactive DOS plot de/activation based on [[*DOS file chooser][DOS file chooser]]
+** TODO Export: Plot Title Widget
+** (Idea: Export: Code to produce plot)
+* TODO AtomsGroup plot
+** DONE Highlight Selected AtomsGroups 
+   CLOSED: [2019-01-09 Wed]
+** TODO AtomsGroup Selection Widget: ElementName labels
+** TODO Plot: Coloring by AtomsGroup
+** TODO Plot: Coloring by Element, plus switcher
+* TODO Sodium.hdf: 
+** TODO if not present: hide unfolding_weight selection widget
+** TODO Reproduce band sel error
+- sth like: 'cannot reshape array from 399x to 1996' (was factor 2)
