@@ -271,3 +271,15 @@ folder names / absolute path if needed.
       sys.path.append(path_mtools)
   # Now you can import stuff from your development project.
 #+END_SRC
+* Side-Note: Desktop frontends for Jupyter
+- Jupyter Notebooks don't have to be used in the browser. There are attempts to
+  use them in desktop apps, so you get a spyder-like feel, but better.
+- tried out:
+  - Atom Editor > Hydrogen extension
+    - very cool. but couldn't figure out how to switch to a different conda
+      environment. ~source activate myenv && cd myproject && atom .~ as
+      suggested somewhere didn't work. so abandones for now.
+  - Nteract.io
+    - wasn't impressed
+  - nteract_on_jupyter
+    - not tried out yet

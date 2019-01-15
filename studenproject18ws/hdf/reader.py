@@ -32,7 +32,7 @@ from studenproject18ws.hdf.input_transforms import *
 from studenproject18ws.hdf.output_types import *
 from studenproject18ws.hdf.recipes import Recipes
 from studenproject18ws.hdf.util import get_class
-from studenproject18ws.plot.plot import Matplot
+from studenproject18ws.plot.plot import Bandplot_matplotlib
 
 
 class Reader(object):
@@ -540,7 +540,7 @@ def simulate_gui(data):
 
     # simulate plotting in a GUI, code version 181214
     sel = data.simulate_gui_selection()
-    bandploter = Matplot(data)
+    bandploter = Bandplot_matplotlib(data)
     alpha = 1.0
     ignore_atoms_per_group = False
 

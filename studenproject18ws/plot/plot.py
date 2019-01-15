@@ -13,7 +13,47 @@ import matplotlib.pyplot as plt
 from studenproject18ws.hdf.output_types import *
 
 
-class Matplot(object):
+class Bandplot_matplotlib(object):
+    """
+    Class for rendering interactive matplotlib plots of the band data in a GUI frontend.
+    Examples: Jupyter Notebook or Lab, Tkinter, PyQt, ...
+
+    Examples
+    --------
+
+    >>> import matplotlib.pyplot as plt
+    >>> from studenproject18ws.hdf.reader import Reader
+    >>> from studenproject18ws.hdf.recipes import Recipes
+    >>> from studenproject18ws.plot.plot import Bandplot_matplotlib as Bandplot
+    >>>
+    >>> data = None
+    >>> reader = Reader(filepath=filepath)
+    >>> with reader as h5file:
+    ...    data = reader.read(recipe=Recipes.Bands)
+    ...    data.move_datasets_to_memory()
+    >>>
+    >>> bandplotter = Bandplot(data)
+    >>>
+    >>> # Hre. define plot(selection) function that calls bandplotter plot functions with data selections
+    >>> def plot(ax, selection):
+    ...    # call bandplotter plot methods. the actual plt plot methods are then called on ax
+    ...    return
+    >>>
+    >>> # separate plt into fig and ax for easier handling
+    >>> fig, ax = plt.subplots(1, figsize=(10,6))
+    >>>
+    >>> # A dummy example function that is called very time the plot is to be updated
+    >>> def update_plot():
+    ...
+    ...    # this has to be here: update plot figure labels
+    ...    ax.clear()
+    ...    bandplotter.setup(plt)
+    ...
+    ...    selection = None
+    ...    # accumulate user selection and call bandplotter
+    ...    plot(ax, selection)
+
+    """
     def __init__(self, data: Data):
         """
         Sets up plot axis according to data.
@@ -22,20 +62,23 @@ class Matplot(object):
         """
         self.data = data
 
-        labels = []
-        for label in self.data.k_special_point_labels:
-            label = label.decode("utf-8")
-            if (label == "g"):
-                labels += ["$\Gamma$"]
-            else:
-                labels += str(label)
-
-        plt.xticks(self.data.k_special_points, labels)
-        plt.ylabel("E(k) [eV]")
-        plt.xlim(0, max(self.data.k_distances))
-        plt.hlines(0, 0, max(self.data.k_distances), lw=0.1)
+        # self.setup(plt)
+        # # Not sure if this has any effect:
+        # # The idea was to put this in the init method so teh setup step
+        # # doesn't have to be repeated on any update. But at least in Jupyter
+        # # this does not work. So unless this is indeed helpful in other frontends,
+        # # it can be removed. Commenting it out for the time being.
 
     def setup(self, plt):
+        """
+        Call this function every time the interactive plot is about to be updated in the GUI.
+
+        It repaints the labels on the figure.
+
+
+        :param plt:
+        :return:
+        """
         labels = []
         for label in self.data.k_special_point_labels:
             label = label.decode("utf-8")

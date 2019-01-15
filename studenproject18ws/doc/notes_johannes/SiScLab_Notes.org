@@ -25,10 +25,13 @@
 * [[file:SiScLab_Meetings_Notes.org][Meetings]]
 * Tasks
 ** November: [[file:SiScLab_Task1-PlotBanddos_Notes.org][Task 1 - Plot Banddos]]
-** December: Task 2 - GUI
+** December: Task 2 - GUI 
 *** [[file:SiScLab_Task2-BuildModel_Notes.org][Phase 1 - Building the model]]
 *** [[file:SiScLab_Task2-BuildABrowser-BasedDashboard.org][Phase 2 - Guide: Build a Browser-based Dashboard in Python]]
-*** [[file:SiScLab_Task2-JupyterWidgets_Notes.org][Phase 3 - Building minimal Jupyter Dashboard]]
+*** [[file:SiScLab_Task2-JupyterWidgets_Notes.org][Phase 3 - Setting up & Using Jupyter]]
+** January: Task 3 - Completion
+*** TODO [[file:SiScLab_Task3-JupyterGUICompletion_Notes.org][Phase 4 - Jupyter GUI Completion]]
+*** TODO [[file:SiScLab_Task3-Presentation_Notes.org][Phase 5 - Presentation]]
 * Tools Install & Setup
 ** [[file:SiScLab_Git_Notes.org][Git Notes]]
 ** [[file:SiScLab_AiiDa_Installation_Notes.org][AiiDa Installation Notes]]
