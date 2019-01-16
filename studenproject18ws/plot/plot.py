@@ -119,7 +119,38 @@ class Bandplot_matplotlib(Plot):
         plt.xlim(0, max(self.data.k_distances))
         plt.hlines(0, 0, max(self.data.k_distances), lw=0.1)
 
-    def bands(self, mask_bands, mask_characters, mask_groups, spin, unfolding_weight_exponent, ax, alpha=1,
+    def plot(self, mask_bands, mask_characters, mask_groups, spins,
+             unfolding_weight_exponent, compare_characters,
+             ax, ignore_atoms_per_group, marker_size=1):
+        """
+        Top-level method for the bandDOS plot. Calls appropriate subplot methods based on user selection.
+
+        :param mask_bands: list of bool
+        :param mask_characters: list of bool
+        :param mask_groups: list of bool
+        :param spins: list of int. either [0] or [0,1]
+        :param unfolding_weight_exponent: dloat
+        :param compare_characters: bool
+        :param ax: pyplot ax
+        :param ignore_atoms_per_group: bool
+        :param marker_size: float
+        :return:
+        """
+        alpha = 1
+        if compare_characters:
+            self.bands_two_characters(mask_bands, mask_characters, mask_groups, spins[0],
+                                      unfolding_weight_exponent,
+                                      ax, alpha, ignore_atoms_per_group, marker_size)
+        else:
+            alpha = 1 if (len(spins) == 1) else 0.5
+            colors = ['blue', 'red']
+            for (spin, color) in zip(spins, colors):
+                self.bands(mask_bands, mask_characters, mask_groups, spin,
+                           unfolding_weight_exponent,
+                           ax, color, alpha, ignore_atoms_per_group, marker_size)
+
+    def bands(self, mask_bands, mask_characters, mask_groups, spin,
+              unfolding_weight_exponent, ax, color, alpha=1,
               ignore_atoms_per_group=False, marker_size=1):
         """Plot regular.
 
@@ -139,7 +170,6 @@ class Bandplot_matplotlib(Plot):
         :param alpha:
         :return:
         """
-        color = "blue"
         (k_r, E_r, W_r) = self.data.reshape_data(mask_bands, mask_characters, mask_groups, spin,
                                                  unfolding_weight_exponent, ignore_atoms_per_group)
 

@@ -514,10 +514,10 @@ def example_read():
     # from studenproject18ws.hdf.recipes import Recipes
 
     # filename = 'banddos.hdf'
-    # filename = 'banddos_Co.hdf'
-    filename = 'banddos_4x4.hdf'
-    # filename = 'banddos_2spin.hdf'
+    filename = 'Co/banddos_Co.hdf'
+    # filename = 'banddos_4x4.hdf'
     # filename = 'banddos_sodium.hdf'
+    # filename = os.path.join('MoSe2', 'banddos_2spin.hdf')
 
     filepath = ['..', 'data', 'input', filename]
     filepath = os.path.join(*filepath)
@@ -548,9 +548,10 @@ def simulate_gui(data):
     fig = plt.figure()
     ax1 = fig.add_subplot(111)
 
-    bandploter.bands(sel.mask_bands, sel.mask_characters, sel.mask_groups, sel.spin, unfolding_weight_exponent=1,
-                     ax=ax1, alpha=alpha, ignore_atoms_per_group=ignore_atoms_per_group,
-                     marker_size=10)
+    bandploter.bands(sel.mask_bands, sel.mask_characters, sel.mask_groups, sel.spin,
+                     unfolding_weight_exponent=1,
+                     ax=ax1, alpha=alpha, color='blue',
+                     ignore_atoms_per_group=ignore_atoms_per_group, marker_size=10)
     plt.title("Plot 1")
     plt.show()
 
