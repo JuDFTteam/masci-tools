@@ -535,3 +535,6 @@ Legend:
     - [[https://www.youtube.com/watch?v=cMXKE0nB8k4&index=22&list=PLYx7XA2nY5GfdAFycPLBdUDOUtdQIVoMf&t=0s][Interactive Data Visualization with HoloViews & Bokeh | SciPy 2017 Tutorial]]
     - [[https://www.youtube.com/watch?v=sea2K4AuPOk&index=4&list=PLYx7XA2nY5GfdAFycPLBdUDOUtdQIVoMf&t=0s][Dash - A New Framework for Building User Interfaces for Technical Computing | SciPy 2017]]
     - [[https://www.youtube.com/watch?v=oXT7rBNkAZ8&index=12&list=PLYx7XA2nY5GfdAFycPLBdUDOUtdQIVoMf&t=0s][Python and Tableau Building an Interactive and Beautiful Data Visualization with TabPy | SciPy 2017]]
+
+
+
