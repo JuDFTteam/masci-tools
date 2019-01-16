@@ -184,18 +184,6 @@ Okay, but I can do that: create custom kernel.
   jupyter labextension install @jupyter-widgets/jupyterlab-manager
   jupyter labextension install jupyter-matplotlib
   #+END_SRC
-- very important: for the matplot to work and interact with widgets:
-  #+BEGIN_SRC python
-  # if run from jupyter notebook
-  %matplotlib widget
-  # if run from jupyter lab
-  %matpltoblib nbagg
-  #+END_SRC
-  Those two are mutually inclusive. Seems that even if one is commented out is
-  not ignored, but im not sure about that. In any case it helps in notebook AND
-  lab to reload the cell with this and the cell where the plot function lives.
-  may happen that in the first load, the plot will be empty, and in the second
-  it will show something.
 *** ipyvolume
 - installed ipyvolume for jupyterlab:
   #+BEGIN_SRC shell
@@ -206,7 +194,21 @@ Okay, but I can do that: create custom kernel.
 *** PyViz Panel
 - [[https://panel.pyviz.org/][installation guide]]
 - [[https://github.com/pyviz/panel/issues/159][example: pyviz panel + matplotlib in jupyter]]
-* Working with Notebook or JupyterLab
+* Working with Jupyter Notebook or JupyterLab
+** Using interactive matplotlib plots
+- See [[https://matplotlib.org/tutorials/introductory/usage.html#what-is-interactive-mode][matplotlib > interactive mode]] for basics
+- See [[https://matplotlib.org/tutorials/introductory/usage.html#backends][matlplotlib > backends]] for a list of supported backends
+- See [[https://ipython.readthedocs.io/en/stable/interactive/magics.html][ipython > magics]] for how to set the backend in a notebook. Have to write
+  ~%matplotlib BACKEND~, ~BACKEND~ is the appropriate gui name backend for where
+  the IPython cell is run.
+  | ~BACKEND~ | Description                              | tested: works in        |
+  |-----------+------------------------------------------+-------------------------|
+  | ~widget~  | [[https://github.com/matplotlib/jupyter-matplotlib][jupyter-matplotlib]] or ~ipympl~ for short | jupyterlab, notebook    |
+  | ~nbagg~   |                                          | notebook, not lab       |
+  |-----------+------------------------------------------+-------------------------|
+  | ~inline~  | often mentioned online for notebooks     | untested                |
+  | ~ipympl~  | the same as ~widget~?                    | untested                |
+  |-----------+------------------------------------------+-------------------------|
 ** Not advisable: How PyCharm starts Jupyter Notebook
 - [[https://www.jetbrains.com/help/pycharm/using-ipython-notebook-with-product.html][PyCharm Guide > Jupyter Notebook]] explains how to best start the Notebook
   server from an opened PyCharm project. Advantage: using project modules works
@@ -271,6 +273,39 @@ folder names / absolute path if needed.
       # add only once
       sys.path.append(path_mtools)
   # Now you can import stuff from your development project.
+#+END_SRC
+* Unsorted: general problems & solutions
+** Is it possible to put a matplotlib plot inside an ipywidgets container?
+Yes, in an =Output= widget. Even in interactive mode. Tested.
+#+BEGIN_SRC python
+# Testet in jupyterlab:
+# works with backend inline, but not interactive then 
+# works with backend widget, is interactive then (reload if outside of tab)
+%matplotlib widget
+import matplotlib.pyplot as plt
+import pandas as pd
+import ipywidgets as widgets
+import numpy as np
+
+out1 = widgets.Output()
+out2 = widgets.Output()
+data1 = pd.DataFrame(np.random.normal(size = 50))
+data2 = pd.DataFrame(np.random.normal(size = 100))
+
+tab = widgets.Tab(children = [out1, out2])
+tab.set_title(0, 'First')
+tab.set_title(1, 'Second')
+display(tab)
+
+with out1:
+    fig1, axes1 = plt.subplots()
+    data1.hist(ax = axes1)
+    plt.show(fig1)
+
+with out2:
+    fig2, axes2 = plt.subplots()
+    data2.hist(ax = axes2)
+    plt.show(fig2)
 #+END_SRC
 * Side-Note: Desktop frontends for Jupyter
 - Jupyter Notebooks don't have to be used in the browser. There are attempts to

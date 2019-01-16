@@ -367,14 +367,19 @@ Legend:
 
 * Tools Resources
 ** matploblib
-*** Cheatsheets / Soution Galleries / Helpful articles"
+*** Cheatsheets / Soution Galleries / Helpful stuff
  | 2018 | [[https://towardsdatascience.com/all-your-matplotlib-questions-answered-420dd95cb4ff][twd - Matplotlib Guide For People In A Hurry]] |
  | 2018 | [[https://python-graph-gallery.com/matplotlib/][python-graph-gallery - matplotlib]]            |
  |      |                                              |
  - Notes:
    - twd = https://towardsdatascience.com
+*** Using matplotlib interactive mode
+- See [[https://matplotlib.org/tutorials/introductory/usage.html#what-is-interactive-mode][matplotlib > interactive mode]] for basics
+- See [[https://matplotlib.org/tutorials/introductory/usage.html#backends][matlplotlib > backends]] for a list of supported backends
+- See [[file:SiScLab_Task2-JupyterWidgets_Notes.org::*Using%20interactive%20matplotlib%20plots][Using interactive matplotlib plots]] for info on usage in IPython / Jupyter
 *** Helper libs packages extensions
- | [[https://tonysyu.github.io/raw_content/matplotlib-style-gallery/gallery.html][matplotlib styles]] | predefined loadable styles for easier setup better output |
+ | [[https://tonysyu.github.io/raw_content/matplotlib-style-gallery/gallery.html][matplotlib styles]] | predefined loadable styles for easier setup better output           |
+ | seaborn           | can be used as an overlay to ~plt~ with ~sns.set()~, prettier plots |
 
 ** Jupyter (General)
 *** Resources

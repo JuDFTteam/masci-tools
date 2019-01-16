@@ -73,7 +73,8 @@ Jupyter dashboard (GUI) up to the project presentation on <2019-01-25 Fri>.
 * DONE Widget: ignore_atoms_per_group
   CLOSED: [2019-01-16 Wed 13:58]
 takes weight away in tensor product or sth.
-* TODO Widget: spin selection
+* DONE Widget: spin selection
+  CLOSED: [2019-01-16 Wed 16:28]
 * TODO Widget: File Chooser
 ** HDF file chooser
 ** DOS file chooser
@@ -105,25 +106,61 @@ see above.
 ** DONE Advanced Layout: Dashboard
    CLOSED: [2019-01-16 Wed 13:11]
 see above.
-** TODO Cleanup dashboard layout code.
-later.
+** TODO Cleanup dashboard layout code
 ** TODO Integrate newer widgets from this list
 *** TODO [[*Widget: ignore_atoms_per_group][Widget: ignore_atoms_per_group]]
 *** TODO [[*Widget: spin selection][Widget: spin selection]]
 *** TODO [[*Widget: File Chooser][Widget: File Chooser]]
+** TODO Try out if putting mpl figure inside a widget is helpful
+- see [[file:SiScLab_Task2-JupyterWidgets_Notes.org::*Is%20it%20possible%20to%20put%20a%20matplotlib%20plot%20inside%20an%20ipywidgets%20container?][Is it possible to put a matplotlib plot inside an ipywidgets container?]]
+** TODO Try out if matplotlib can be replaced with other 2D plotter
+In descending priority:
+- bqplot (cause good integration with ipywidgets)
+- mpld3 (only works in notebook not lab for now)
+- holoviews (e.g. together with PyViz Panel)
+- bokeh (probably have to use bokeh widgets then)
+- plotly
+** TODO Try out if ipywidgets can be replaced with other widgets lib
+In descending priority:
+- PyViz Panel + Param (Param is a dataviz definer and independent of particular
+  frontend. *In particular, it is supported by Tkinter*. So could even use
+  common code base for the definition of the GUI.
 * BandDOS Plot Layout Integration
-** Linked selection widgets (masks):
-*** interstitial (new, DOS-specific)
-*** groups
-*** spin (1-2 DOS files, switch data)
-** DONE Basic Implementation
+** DONE Proof-of-concept Implementation
    CLOSED: [2019-01-09 Wed]
-** TODO Fig arrangement
-** TODO Interactive DOS plot de/activation based on [[*DOS file chooser][DOS file chooser]]
+- see =banddos06=. just side-by-side matplotlib plot without any formatting or
+  widget linking or axis alignment
+** TODO Nice matplotlib formatting of both side-by-side plots
+** TODO Interactive DOS plot de-/activation based on [[*DOS file chooser][DOS file chooser]]
+** Widgets (masks) linking to DOS plot:
+*** TODO NEW: interstitial (DOS-specific)
+*** link: =select_groups=
+*** link: =select_spins= (1 or 2 DOS files, switch data for plot)
 * TODO Plot File Export
-** TODO export tex
-** TODO Plot Title Widget
-* Compare2Characters: add colorbar
+** TODO export =tex= file with plot selections
+- Idea for easy implementation:
+  #+BEGIN_SRC python
+  export_settings =
+     """
+     File: {},
+     Bands: {},
+     ...,
+     Date: {}
+     """
+
+  def export_create_settings_output():
+     export_settings.format(
+        filename,
+        select_bands.value,
+        # ...
+     )
+  #+END_SRC
+  Then just export that string, in Tkinter e.g. as a file, in Jupyter e.g.
+  inside an ipywidgets =Output= widget.
+** TODO Widget: Plot Title
+** TODO Matplotlib output format PDF
+- see [[https://ipython.readthedocs.io/en/stable/interactive/magics.html][ipython magics -> %matplotlib]] -> =set_matplotlib_formats=
+* TODO Compare2Characters: add colorbar
 - help: see [[https://matplotlib.org/api/_as_gen/matplotlib.pyplot.colorbar.html][here]]
 
 * TODO AtomsGroup plot
