@@ -70,10 +70,11 @@ Jupyter dashboard (GUI) up to the project presentation on <2019-01-25 Fri>.
 - because need know ylim before first plotting to set slider range, cannot get
   it from ~plt~ or ~ax~. Instead, added fct ~get_data_ylim~ to ~plot.py~
   classes.
-* Widget: ignore_atoms_per_group
+* DONE Widget: ignore_atoms_per_group
+  CLOSED: [2019-01-16 Wed 13:58]
 takes weight away in tensor product or sth.
 * TODO Widget: spin selection
-* TODO File Chooser
+* TODO Widget: File Chooser
 ** HDF file chooser
 ** DOS file chooser
 * TODO Dashboard Layout
@@ -91,9 +92,25 @@ takes weight away in tensor product or sth.
   as banddos05. 
 ** Find some resources on jupyter-widgets dashboarding
 - found:  [[https://github.com/JuanCab/AstroInteractives][JuanCab/AstroInteractives]] 
-
-** TODO Simple Layout: Bandplot Widgets in a =HBox=
-** TODO Advanced Layout: Dashboard
+- side notes: 
+  - don't forget: just learned that pyviz panel -> param works both with tkinter
+    and jupyter. would be nice to rebase whole code on that.
+  - would LIKE to try out better alternatives to matplotlib (bqplot, holoviews,
+    bokeh, pyplot). but no time...
+  - don't forget: just learned about new deployment options like voila, see
+    guide
+** DONE Simple Layout: Bandplot Widgets in a =HBox=
+   CLOSED: [2019-01-16 Wed 13:11]
+see above.
+** DONE Advanced Layout: Dashboard
+   CLOSED: [2019-01-16 Wed 13:11]
+see above.
+** TODO Cleanup dashboard layout code.
+later.
+** TODO Integrate newer widgets from this list
+*** TODO [[*Widget: ignore_atoms_per_group][Widget: ignore_atoms_per_group]]
+*** TODO [[*Widget: spin selection][Widget: spin selection]]
+*** TODO [[*Widget: File Chooser][Widget: File Chooser]]
 * BandDOS Plot Layout Integration
 ** Linked selection widgets (masks):
 *** interstitial (new, DOS-specific)
