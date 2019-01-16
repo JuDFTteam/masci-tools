@@ -118,6 +118,7 @@
   - 4) [[https://plot.ly/python/widget-app/][example]]. see Plotly below.
   - 5) Bokeh widget functionality can be implemented using [[https://bokeh.pydata.org/en/latest/docs/user_guide/interaction/widgets.html][pure Javascript
     callbacks]]. google 'bokeh standalone' for more info.
+* Tool Selection II: Deployment Options
 - Once the choice of Widget tool has been made, before reviewing the Plot tools
   selection this allows, it makes sense to first review the *deployment options*
   this allows.
@@ -133,6 +134,8 @@
       may be slow. Perhaps file I/O may be problematic?
     - For *the example applicaton*:  this would mean deploying the dashboard as
       an [[https://www.materialscloud.org/work/menu][AiidaLab app]]. See below.
+    - Other options late 2018: [[https://github.com/QuantStack/voila][voila]], [[https://github.com/minrk/thebelab][thebelab]] from [[https://github.com/pyviz/panel/issues/159][jupyter-widgets dashboarding
+      discussion]]
     - docker / [[https://www.sylabs.io/docs/][singularity]] image (singularity became [[https://www.hpcwire.com/2018-hpcwire-awards-readers-editors-choice/15/][very popular in 2018]],
       perhaps too complex for deploying a simple dashboard).
   - Bokeh: see Plot tools discussion below.
@@ -143,7 +146,6 @@
       a [[https://www.materialscloud.org/work/menu][materialscloud.org tool]]. See below.
     - static SciVis Plots (e.g. matplotlib, seaborn etc) can be very simply
       deployed as a standalone Flask app: [[https://towardsdatascience.com/python-plotting-api-expose-your-scientific-python-plots-through-a-flask-api-31ec7555c4a8][instructions]].
-
 * (Tool Selection for the Example Application: AiiDaLab Tools)
 - AiiDAlab ([[https://aiidalab.materialscloud.org/hub/login][aiidalab official]], [[https://github.com/aiidalab][aiidalab github]]) is a Jupyter server ([[https://github.com/jupyterhub/jupyterhub][JupyterHub]])
   accessible on materialscloud.org via login. So apps developed for it can use
@@ -169,7 +171,7 @@
 |-------------------+--------------------------+------------------------------------------------|
 |                   | [[https://aiida-core.readthedocs.io/en/stable/developer_guide/index.html][AiiDA developer doc]]      | ONLY AiiDA, nothing on AiiDAlab                |
 
-* Tool Selection II: Plot Libraries
+* Tool Selection III: Plot Libraries
 #+NAME: fig:figure name
 #+CAPTION: The Python Visualization Landscape 2017
 #+ATTR_ORG: :width 800/200/250/300/400/500
@@ -186,9 +188,9 @@ The Python Visualization Landscape 2017. [[https://github.com/rougier/python-vis
    *difficult to deploy as public-facing apps because the Jupyter server allows
    arbitrary code execution*.
   #+END_QUOTE
-  Though there are workarounds for this like [[https://mybinder.org/v2/gh/jupyter-widgets/tutorial/master][mybinder.org]]. Also, [[*JupyterLab][JupyterLab]]
-  seems to have solved many of the Jupyter Notebook shortcomings as of
-  late 2018.
+  Though there are workarounds for this like [[https://mybinder.org/v2/gh/jupyter-widgets/tutorial/master][mybinder.org]] (and others, see
+  above). Also, [[*JupyterLab][JupyterLab]] seems to have solved many of the Jupyter Notebook
+  shortcomings as of late 2018.
 ** My personal summary
 - *If non-public-only use: use Jupyter Widgets +in Jupyter Notebook+ /in
   JupyterLab/ . *If public use (standalon web-app), no Jupyter intended: use
@@ -216,7 +218,8 @@ The Python Visualization Landscape 2017. [[https://github.com/rougier/python-vis
   solution for independent web publication.
 - [[http://jupyter.org/widgets][Jupyter Widgets]]
   + mature
-  - no standalone web apps (dashboards) possible, except e.g. through [[https://mybinder.org/v2/gh/jupyter-widgets/tutorial/master][binder]]
+  - no standalone web apps (dashboards) possible, except e.g. through [[https://mybinder.org/v2/gh/jupyter-widgets/tutorial/master][binder]] (or
+    others, see above)
   - Note: Jupyter Widgets is the umbrella term for Jupyter tools including the
     base Widgets package, and extension Plots packages.
 - [[http://pyviz.org/][Pyviz]]: [[https://panel.pyviz.org/][Panel]], [[http://holoviews.org/][Holoviews]]
@@ -377,6 +380,8 @@ Legend:
 *** Resources
 *** Extension packages
  | lists   | [[https://github.com/markusschanta/awesome-jupyter][awesome-jupyter]] A curated list of awesome Jupyter projects       |
+** Jupyter Widgets
+*** Resources
  |---------+------------------------------------------------------------------|
  | widgets | http://jupyter.org/widgets                                       |
  |         | https://github.com/jupyter-widgets                               |
@@ -396,13 +401,21 @@ Legend:
   - big advantage: even plots are widgets. so e.g. plots can have powerful
     interactions, like one plot interaction can be interaction input to another
     plot (example [[https://mybinder.org/v2/gh/bloomberg/bqplot/stable?filepath=examples/Index.ipynb][here]]).
+*** Dashboarding Examples, Discussions
+| [[https://github.com/JuanCab/AstroInteractives][JuanCab/AstroInteractives]]                | stellar layout examples of jupyter dashboards using ipywidgets |
+| [[https://github.com/jupyter-widgets/ipywidgets/issues/2018][jupyter-widgets discussion: dashboarding]] | many useful links and insights                                 |
+|                                          |                                                                |
+
 ** Jupyter Notebook (NB)
 *** Resources
 *** Extension packages: Dashboards
  |          | Name               | Description                                                              | Developers |
  |----------+--------------------+--------------------------------------------------------------------------+------------|
- | alive    | [[https://github.com/jupyter/dashboards][Jupyter Dashboards]] | *buggy* Jupyter Dashboards (=GUI) Layout Extension                       |         17 |
  |          | [[https://github.com/oschuett/appmode][appmode]]            | *works* turns notebooks into web applications (used in AiiDAlab)         |          3 |
+ |----------+--------------------+--------------------------------------------------------------------------+------------|
+ | alive    | [[https://github.com/jupyter/dashboards][Jupyter Dashboards]] | *buggy* Jupyter Dashboards (=GUI) Layout Extension                       |         17 |
+ |          |                    | [[https://annefou.github.io/jupyter_dashboards/][software carpentry - jupyter dashboards tutorial incl. deployment]]        |            |
+ |          |                    | [[https://jupyter-dashboards-layout.readthedocs.io/en/latest/using.html][dashboards doc - creating dashboard layouts]]                              |            |
  |----------+--------------------+--------------------------------------------------------------------------+------------|
  | in limbo | [[https://github.com/jupyter-attic/dashboards_server][Dashboards_server]]  | Server that runs and renders Jupyter notebooks as interactive dashboards |         11 |
  |          | [[https://github.com/maartenbreddels/flask-ipywidgets][flask-ipywidgets]]   | Use ipywidget in your Flask webserver                                    |          2 |
@@ -477,6 +490,10 @@ Legend:
  |----------+------------------------------+-------------------------------------------------|
  |          | [[https://github.com/plotly/jupyterlab-chart-editor][chart editor by plotly]]       | [[https://www.youtube.com/watch?v=zR7G2tNVo1Q][(video) 30min showcase Nov2018]]                  |
  |          |                              |                                                 |
+** PyViz
+- [[http://pyviz.org/tutorial/A2_Dashboard_Workflow.html][Tutorial: Dashboard Workflow]]
+- [[http://panel.pyviz.org/user_guide/index.html][Panel Guide]]
+- Note: Panel works also with matplotlib!
 ** Bokeh
 *** Resources
 

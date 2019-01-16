@@ -87,10 +87,11 @@ takes weight away in tensor product or sth.
 - WHY? Probably because I use ~plt.show()~ now. or perhaps because bandddos07 is
   so full with redundant layout definitions. perhaps try to isolate the working
   code in a new banddos08, and try with that.
+- UPDATE: restarted jupyter-lab. Now the dashboard version banddos07 is as fast
+  as banddos05. 
+** Find some resources on jupyter-widgets dashboarding
+- found:  [[https://github.com/JuanCab/AstroInteractives][JuanCab/AstroInteractives]] 
 
-- I don't know how i can get a plot to show with control widgets that are in a
-  layout (dashboard) instead of just rendered one after the other as in
-  banddos05. this is impossible! i must overlook something.
 ** TODO Simple Layout: Bandplot Widgets in a =HBox=
 ** TODO Advanced Layout: Dashboard
 * BandDOS Plot Layout Integration

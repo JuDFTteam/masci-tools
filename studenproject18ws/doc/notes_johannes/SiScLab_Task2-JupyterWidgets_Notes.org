@@ -203,6 +203,9 @@ Okay, but I can do that: create custom kernel.
   conda install -c conda-forge ipyvolume
   jupyter labextension install ipyvolume
   #+END_SRC
+*** PyViz Panel
+- [[https://panel.pyviz.org/][installation guide]]
+- [[https://github.com/pyviz/panel/issues/159][example: pyviz panel + matplotlib in jupyter]]
 * Working with Notebook or JupyterLab
 ** Not advisable: How PyCharm starts Jupyter Notebook
 - [[https://www.jetbrains.com/help/pycharm/using-ipython-notebook-with-product.html][PyCharm Guide > Jupyter Notebook]] explains how to best start the Notebook
@@ -216,11 +219,9 @@ Okay, but I can do that: create custom kernel.
   to see [[https://www.jetbrains.com/help/pycharm/using-ipython-notebook-with-product.html][here]]. For the project, I use a separate conda environment called
   =masci-tools= where all python and jupyter dependencies are installed. PyCharm
   then runs this command in the terminal to start the notebook:
-  #+BEGIN_SRC shell
-    /home/johannes/anaconda3/envs/masci-tools/bin/python
-    /home/johannes/anaconda3/envs/masci-tools/bin/jupyter-notebook --no-browser --ip
-    127.0.0.1 --port 8888 --port-retries=0
-  #+END_SRC
+#+BEGIN_SRC shell
+/home/johannes/anaconda3/envs/masci-tools/bin/python /home/johannes/anaconda3/envs/masci-tools/bin/jupyter-notebook --no-browser --ip 127.0.0.1 --port 8888 --port-retries=0
+#+END_SRC
   It outputs a clickable URL.
 ** How to start Notebook/JupyterLab and import your project modules
 The best way I find is to do it like this (using conda env ~masci-tools~ to
