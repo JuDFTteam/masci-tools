@@ -220,6 +220,7 @@ class Bandplot_matplotlib(Plot):
             .reshape_data(mask_bands, self.data._mask_characters([characters[0]]),
                           mask_groups, spin, unfolding_weight_exponent, ignore_atoms_per_group)
 
+
         (k_resh2, evs_resh2, weight_resh2) = self.data \
             .reshape_data(mask_bands, self.data._mask_characters([characters[1]]),
                           mask_groups, spin, unfolding_weight_exponent, ignore_atoms_per_group)

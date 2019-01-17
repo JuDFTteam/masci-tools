@@ -592,6 +592,7 @@ def simulate_gui(data):
     plt.title(f"dE/dk for band {select_band}")
     plt.show()
 
+
 if __name__ == '__main__':
     data = example_read()
     simulate_gui(data)
