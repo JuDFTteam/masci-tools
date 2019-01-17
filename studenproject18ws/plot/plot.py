@@ -258,7 +258,7 @@ class Bandplot_matplotlib(Plot):
     def plot_dos(self, filepath_dos,
                  mask_groups, mask_characters,
                  select_groups, interstitial, all_characters,
-                 ax):
+                 ax, fix_xlim=True):
         """Placeholder function.
 
         Notes:
@@ -278,8 +278,9 @@ class Bandplot_matplotlib(Plot):
         (E, dos, dos_lim) = get_dos(filepath_dos, self.data,
                 mask_groups, mask_characters,
                 select_groups, interstitial, all_characters)
-        ylim = (np.min(dos_lim), np.max(dos_lim))
-        ax.set_xlim(ylim)
+        if fix_xlim:
+            ylim = (np.min(dos_lim), np.max(dos_lim))
+            ax.set_xlim(ylim)
         ax.plot(dos, E)
 
 
