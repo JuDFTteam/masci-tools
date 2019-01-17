@@ -255,7 +255,10 @@ class Bandplot_matplotlib(Plot):
         ax.scatter(k_resh2, (evs_resh - self.data.fermi_energy) * self.data.HARTREE_EV,
                    marker='o', c=rel, s=5 * tot_weight, lw=0, alpha=alpha, cmap=cm)
 
-    def dos(self):
+    def dos(self, filepath_dos,
+            mask_groups, mask_characters,
+            select_groups, interstitial, all_characters,
+            ax):
         """Placeholder function.
 
         Notes:
@@ -271,7 +274,14 @@ class Bandplot_matplotlib(Plot):
         TODO This is a different matplot than the bandstructure matplot! How to handle that?
         :return:
         """
-        pass
+
+        (dos, E) = get_dos(filepath_dos, self.data,
+                mask_groups, mask_characters,
+                select_groups, interstitial, all_characters)
+        ax.plot(dos, E)
+
+
+
 
     def groupVelocity(self, select_band, spin, ax):
         """Plot group velocity of single band, no checking.
