@@ -513,11 +513,14 @@ def example_read():
     # from studenproject18ws.hdf.reader import Reader
     # from studenproject18ws.hdf.recipes import Recipes
 
+    # # NO DOS file:
     # filename = 'banddos.hdf'
-    filename = 'Co/banddos_Co.hdf'
     # filename = 'banddos_4x4.hdf'
     # filename = 'banddos_sodium.hdf'
+    # # 1 DOS file:
     # filename = os.path.join('MoSe2', 'banddos_2spin.hdf')
+    # # 2 DOS files:
+    filename = os.path.join('Co', 'banddos_Co.hdf')
 
     filepath = ['..', 'data', 'input', filename]
     filepath = os.path.join(*filepath)
