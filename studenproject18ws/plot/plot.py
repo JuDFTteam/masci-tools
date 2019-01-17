@@ -142,12 +142,12 @@ class Bandplot_matplotlib(Plot):
                                       unfolding_weight_exponent,
                                       ax, alpha, ignore_atoms_per_group, marker_size)
         else:
-            alpha = 1 if (len(spins) == 1) else 0.5
+            alphas = {0: 1, 1: 1} if (len(spins) ==1) else {0: 1, 1: 0.5}
             colors = {0: 'blue', 1: 'red'}
             for spin in spins:
                 self.bands(mask_bands, mask_characters, mask_groups, spin,
                            unfolding_weight_exponent,
-                           ax, colors[spin], alpha, ignore_atoms_per_group, marker_size)
+                           ax, colors[spin], alphas[spin], ignore_atoms_per_group, marker_size)
 
     def bands(self, mask_bands, mask_characters, mask_groups, spin,
               unfolding_weight_exponent, ax, color, alpha=1,

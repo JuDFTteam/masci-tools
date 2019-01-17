@@ -307,6 +307,7 @@ with out2:
     data2.hist(ax = axes2)
     plt.show(fig2)
 #+END_SRC
+Side note: there is a [[https://github.com/jupyter-widgets/ipywidgets/issues/378][unsolved request]] for a dedicated mpl ipywidget.
 * Side-Note: Desktop frontends for Jupyter
 - Jupyter Notebooks don't have to be used in the browser. There are attempts to
   use them in desktop apps, so you get a spyder-like feel, but better.
