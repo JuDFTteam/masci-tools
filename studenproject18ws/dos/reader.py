@@ -15,6 +15,7 @@ def get_dos(filepath_dos, data_bands: DataBands, mask_groups, mask_characters, s
     dos_data = np.genfromtxt(filepath_dos).T
     skip = num_char + 1
     E = dos_data[0]
+    dos_lim = dos_data[1] # tot dos sum
     dos = np.zeros(len(dos_data[0]))
 
     # # Simulate user selection: all groups, all characters selected
@@ -36,4 +37,4 @@ def get_dos(filepath_dos, data_bands: DataBands, mask_groups, mask_characters, s
     if interstitial:
         dos += dos_data[2]
 
-    return (E, dos)
+    return (E, dos, dos_lim)

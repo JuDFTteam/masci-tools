@@ -86,7 +86,7 @@ class Bandplot_matplotlib(Plot):
         # # this does not work. So unless this is indeed helpful in other frontends,
         # # it can be removed. Commenting it out for the time being.
 
-    def get_data_ylim(self):
+    def get_band_data_ylim(self):
         sel = self.data.simulate_gui_selection()
 
         (k_r, E_r, W_r) = self.data.reshape_data(sel.mask_bands, sel.mask_characters, sel.mask_groups, sel.spin,
@@ -120,9 +120,9 @@ class Bandplot_matplotlib(Plot):
         plt.xlim(0, max(self.data.k_distances))
         plt.hlines(0, 0, max(self.data.k_distances), lw=0.1)
 
-    def plot(self, mask_bands, mask_characters, mask_groups, spins,
-             unfolding_weight_exponent, compare_characters,
-             ax, ignore_atoms_per_group, marker_size=1):
+    def plot_bands(self, mask_bands, mask_characters, mask_groups, spins,
+                   unfolding_weight_exponent, compare_characters,
+                   ax, ignore_atoms_per_group, marker_size=1):
         """
         Top-level method for the bandDOS plot. Calls appropriate subplot methods based on user selection.
 
@@ -139,20 +139,20 @@ class Bandplot_matplotlib(Plot):
         """
         alpha = 1
         if compare_characters:
-            self.bands_two_characters(mask_bands, mask_characters, mask_groups, spins[0],
-                                      unfolding_weight_exponent,
-                                      ax, alpha, ignore_atoms_per_group, marker_size)
+            self.plot_bands_compare_two_characters(mask_bands, mask_characters, mask_groups, spins[0],
+                                                   unfolding_weight_exponent,
+                                                   ax, alpha, ignore_atoms_per_group, marker_size)
         else:
             alphas = {0: 1, 1: 1} if (len(spins) ==1) else {0: 1, 1: 0.5}
             colors = {0: 'blue', 1: 'red'}
             for spin in spins:
-                self.bands(mask_bands, mask_characters, mask_groups, spin,
-                           unfolding_weight_exponent,
-                           ax, colors[spin], alphas[spin], ignore_atoms_per_group, marker_size)
+                self.plot_bands_normal(mask_bands, mask_characters, mask_groups, spin,
+                                       unfolding_weight_exponent,
+                                       ax, colors[spin], alphas[spin], ignore_atoms_per_group, marker_size)
 
-    def bands(self, mask_bands, mask_characters, mask_groups, spin,
-              unfolding_weight_exponent, ax, color, alpha=1,
-              ignore_atoms_per_group=False, marker_size=1):
+    def plot_bands_normal(self, mask_bands, mask_characters, mask_groups, spin,
+                          unfolding_weight_exponent, ax, color, alpha=1,
+                          ignore_atoms_per_group=False, marker_size=1):
         """Plot regular.
 
         Static plot method as template for interactive plot function in GUI.
@@ -185,8 +185,8 @@ class Bandplot_matplotlib(Plot):
         ax.scatter(k_r, (E_r - self.data.fermi_energy) * self.data.HARTREE_EV,
                    marker='o', c=color, s=5 * W_r, lw=0, alpha=alpha)
 
-    def bands_two_characters(self, mask_bands, mask_characters, mask_groups, spin, unfolding_weight_exponent, ax,
-                             alpha=1, ignore_atoms_per_group=False, marker_size=1):
+    def plot_bands_compare_two_characters(self, mask_bands, mask_characters, mask_groups, spin, unfolding_weight_exponent, ax,
+                                          alpha=1, ignore_atoms_per_group=False, marker_size=1):
         """Plot with exactly 2 selected band characters mapped to colormap.
 
         Static plot method as template for interactive plot function in GUI.
@@ -255,10 +255,10 @@ class Bandplot_matplotlib(Plot):
         ax.scatter(k_resh2, (evs_resh - self.data.fermi_energy) * self.data.HARTREE_EV,
                    marker='o', c=rel, s=5 * tot_weight, lw=0, alpha=alpha, cmap=cm)
 
-    def dos(self, filepath_dos,
-            mask_groups, mask_characters,
-            select_groups, interstitial, all_characters,
-            ax):
+    def plot_dos(self, filepath_dos,
+                 mask_groups, mask_characters,
+                 select_groups, interstitial, all_characters,
+                 ax):
         """Placeholder function.
 
         Notes:
@@ -275,9 +275,11 @@ class Bandplot_matplotlib(Plot):
         :return:
         """
 
-        (E, dos) = get_dos(filepath_dos, self.data,
+        (E, dos, dos_lim) = get_dos(filepath_dos, self.data,
                 mask_groups, mask_characters,
                 select_groups, interstitial, all_characters)
+        ylim = (np.min(dos_lim), np.max(dos_lim))
+        ax.set_xlim(ylim)
         ax.plot(dos, E)
 
 
