@@ -11,6 +11,9 @@ import numpy as np
 from matplotlib import pyplot as plt
 import h5py
 import time
+from collections import Counter
+
+#np.set_printoptions(threshold=np.nan)
 
 bohr_constant = 0.52
 hartree_in_ev = 27.2114
@@ -19,9 +22,10 @@ times = []
 times += [time.time()]
 
 #filename = 'banddos_2spin'
-filename = 'banddos_4x4'
+#filename = 'banddos_4x4'
+#filename = 'banddos_sodium'
 #filename = 'banddos'
-#filename = 'banddos_Co'
+filename = 'banddos_Co'
 
 f = h5py.File("Data/"+filename+str('.hdf'), 'r')
 
@@ -42,6 +46,7 @@ convert from internal to physical units
 """
 def k_phys(f):
     kpts_int = f["/kpts/coordinates"]
+    #print(np.array(kpts_int).shape)
     rec_cell = f["/cell/reciprocalCell"][:]
     phys_k = np.dot(kpts_int, rec_cell.T)
 
@@ -96,10 +101,13 @@ this is the function with most significant runtime!
 
 """
 def get_data(f, llc, SPIN_FILTER, CHARACTER_FILTER, GROUP_FILTER, BAND_FILTER, UNFOLD_WEIGHT=band_unfolding, unfoldong_weight_exponent = 1, ignore_atroms_per_group = False):
-    ATOMS_PER_GROUP = np.zeros(NUM_GROUPS)
-    for i in range(NUM_GROUPS):
-        ATOMS_PER_GROUP[i] = np.count_nonzero(np.array(atom_group)==i)
+    #ATOMS_PER_GROUP = np.zeros(NUM_GROUPS)
+    #f#or i in range(NUM_GROUPS):
     
+    atoms_per_group_dict = Counter(atom_group)
+    #atoms_group_keys = atoms_per_group_dict.keys()
+    ATOMS_PER_GROUP = np.fromiter(atoms_per_group_dict.values(), dtype = float)
+    print(ATOMS_PER_GROUP)
     # filter arrays in bands and spin:
     llc = llc[SPIN_FILTER, :, :, :, :]
     llc = llc[:, :, BAND_FILTER, :, :]
@@ -120,6 +128,9 @@ def get_data(f, llc, SPIN_FILTER, CHARACTER_FILTER, GROUP_FILTER, BAND_FILTER, U
     llc_redGC = np.sum(llc_redG, axis = 3)
     llc_norm_temp = np.tensordot(llc, ATOMS_PER_GROUP, axes=([3],[0]))
     llc_norm = np.sum(llc_norm_temp, axis = 3)
+    print(llc_norm)
+    print(llc_redGC.shape)
+    print(ATOMS_PER_GROUP)
     llc_normalized = llc_redGC/llc_norm
     
     # consider unfolding weight
@@ -127,9 +138,12 @@ def get_data(f, llc, SPIN_FILTER, CHARACTER_FILTER, GROUP_FILTER, BAND_FILTER, U
         unfold_weight = np.array(f["/bandUnfolding/weights"])
         unfold_weight = unfold_weight[SPIN_FILTER, :, :]
         unfold_weight = unfold_weight[:, :, BAND_FILTER]
+        print(unfold_weight.shape)
+        print(unfoldong_weight_exponent)
         unfold_weight = unfold_weight**unfoldong_weight_exponent
+        #unfold_weight[0] = unfold_weight[0]**unfoldong_weight_exponent
+        #print(unfold_weight.shape)
         llc_normalized = llc_normalized * unfold_weight
-    
     return llc_normalized
 
 """
@@ -141,7 +155,6 @@ def reshape_data(f, llc, evs, k, spin, CHARACTER_FILTER, GROUP_FILTER, BAND_FILT
     total_weight = get_data(f, llc, SPIN_FILTER, CHARACTER_FILTER, GROUP_FILTER, BAND_FILTER, UNFOLD_WEIGHT, unfoldong_weight_exponent, ignore_atroms_per_group)
     # only select the requested spin and bands
     evs = evs[spin, :, BAND_FILTER]
-
     # to speed up scatter plot, unfold data in one dimension
     (Nk, Ne) = evs.T.shape
 
@@ -155,20 +168,24 @@ def reshape_data(f, llc, evs, k, spin, CHARACTER_FILTER, GROUP_FILTER, BAND_FILT
 Updated: g is now replaced by r'$\Gamma$'
 """
 label = []
+print("label")
+print(len(special_points_label))
 for i in range(len(special_points_label)):
     if(special_points_label[i] == 'g'): 
         label += [r'$\Gamma$']
     else:
-        label += str(special_points_label[i])#[2]
+        label += str(special_points_label[i])[2]
     
 
 
 def plot(color, ax1, f, llc, evs, k, spin, CHARACTER_FILTER, GROUP_FILTER, BAND_FILTER, UNFOLD_WEIGHT, unfoldong_weight_exponent, alpha = 1, ignore_atroms_per_group = False):
     (k_r, E_r, W_r) = reshape_data(f, llc, evs, k, spin, CHARACTER_FILTER, GROUP_FILTER, BAND_FILTER, UNFOLD_WEIGHT, unfoldong_weight_exponent, ignore_atroms_per_group)
     #just plot points with minimal size of t
-    speed_up = True
+    #W_r = factor * W_r
+    speed_up = False
     if(speed_up == True):
         t = 1e-4
+        #print(W_r.shape)
         k_r = k_r[W_r>t]
         E_r = E_r[W_r>t]
         W_r = W_r[W_r>t]
@@ -192,11 +209,11 @@ def plot_two_characters(color, ax1, f, llc, evs, k, spin, CHARACTER_FILTER, GROU
     if(len(characters) != 2):
         print("error")
 
-# here is something wrong...
+
     (k_resh, evs_resh, weight_resh) = reshape_data(f, llc, evs, k, spin, create_character_filter([characters[0]]), GROUP_FILTER, BAND_FILTER, UNFOLD_WEIGHT=UNFOLD_WEIGHT, unfoldong_weight_exponent = unfoldong_weight_exponent, ignore_atroms_per_group = ignore_atroms_per_group)
     (k_resh2, evs_resh2, weight_resh2) = reshape_data(f, llc, evs, k, spin, create_character_filter([characters[1]]), GROUP_FILTER, BAND_FILTER, UNFOLD_WEIGHT=UNFOLD_WEIGHT, unfoldong_weight_exponent = unfoldong_weight_exponent, ignore_atroms_per_group = ignore_atroms_per_group)
 
-    rel = weight_resh/(weight_resh+weight_resh2)*20
+    rel = weight_resh/(weight_resh+weight_resh2+1e-20)*20
     tot_weight = weight_resh + weight_resh2
     #ax1.scatter(k_resh, (evs_resh-fermi_energy)*hartree_in_ev, marker='o', c="g", s = 5 * weight_resh, lw=0, alpha = alpha)
     #ax1.scatter(k_resh2, (evs_resh-fermi_energy)*hartree_in_ev, marker='o', c="r", s = 5 * weight_resh2, lw=0, alpha = alpha)
@@ -227,26 +244,113 @@ def plot_two_characters(color, ax1, f, llc, evs, k, spin, CHARACTER_FILTER, GROU
 """
 DOS Plots...
 """
-dos_data = np.genfromtxt("Data/DOS.1").T
+
+# if one or more atom groups should be selected: select_groups = True
+# if intersticial is required: interstitial = True
+# if all characters should be summed: all_characters = True
+# GROUP_FILTER selects atomgroups
+# CHARACTER_FILTER selects characters
+def get_dos(select_groups, interstitial, all_characters, GROUP_FILTER = create_group_filter(range(NUM_GROUPS)), CHARACTER_FILTER= create_character_filter(range(4))):
+    dos_data = np.genfromtxt("Data/DOS_Co.2").T
+    skip = 5
+    E = dos_data[0]
+    dos = np.zeros(len(dos_data[0]))
+    
+    if(select_groups == True):
+        Number_Atom_Groups = max(np.array(atom_group))
+        
+        if(Number_Atom_Groups != len(GROUP_FILTER)):
+            print("something wrong with get_dos")
+        
+        atoms_per_group_dict = Counter(atom_group)
+        #atoms_group_keys = atoms_per_group_dict.keys()
+        ATOMS_PER_GROUP = np.fromiter(atoms_per_group_dict.values(), dtype = float)
+        """
+        print(ATOMS_PER_GROUP)
+        print(GROUP_FILTER)
+        print("nA")
+        print(Number_Atom_Groups)
+        """
+        for i in range(len(GROUP_FILTER)):
+            if(GROUP_FILTER[i] != 0):
+                if(all_characters == True):
+                    dos += dos_data[skip + i] * ATOMS_PER_GROUP[i]
+
+                if((CHARACTER_FILTER[0] == True) & (all_characters != True)):
+                    print("hier")
+                    dos += dos_data[skip + i + Number_Atom_Groups] * ATOMS_PER_GROUP[i]
+                if((CHARACTER_FILTER[1] == True) & (all_characters != True)):
+                    #print("hier")
+                    dos += dos_data[skip + i + Number_Atom_Groups*2] * ATOMS_PER_GROUP[i]
+                
+                if((CHARACTER_FILTER[2] == True) & (all_characters != True)):
+                    dos += dos_data[skip + i + Number_Atom_Groups*3] * ATOMS_PER_GROUP[i]
+                
+                if((CHARACTER_FILTER[3] == True) & (all_characters != True)):
+                    print("hier")
+                    dos += dos_data[skip + i + Number_Atom_Groups*4] * ATOMS_PER_GROUP[i]
+        
+    if (interstitial == True):
+            dos += dos_data[2]
+    
+    return (E,dos)
+
+dos_data = np.genfromtxt("Data/DOS_Co.2").T
 energy_dos = dos_data[0]
 totdos = dos_data[1]
 interst = dos_data[2]
 vac1 = dos_data[3]
 vac2 = dos_data[4]
-weights_atomgrps_dos = dos_data[5:]
-
+weights_atomgrps_dos = dos_data[5:5+NUM_GROUPS]
+"""
 fig = plt.figure()
 ax_dos = fig.add_subplot(111)
-ax_dos.plot(totdos, energy_dos)
-ax_dos.plot(interst, energy_dos)
+ax_dos.plot(totdos, (energy_dos), label = "TOT")
+ax_dos.plot(interst, (energy_dos), label ="int")
 
 #constant 0
-ax_dos.plot(vac1, energy_dos)
-ax_dos.plot(vac2, energy_dos)
+ax_dos.plot(vac1, (energy_dos))
+ax_dos.plot(vac2, (energy_dos))
 
-ax_dos.plot((sum(weights_atomgrps_dos)+interst), energy_dos)
+ax_dos.plot((sum(weights_atomgrps_dos)+interst), (energy_dos) , label="sum")
+
+plt.figure()
+"""
+
+(E1,dos1) = get_dos(False, True, True)
+(E2,dos2) = get_dos(True, True, True)
+(E3,dos3) = get_dos(True, False, True, create_group_filter(range(NUM_GROUPS)))
+
+plt.figure(figsize=(7,7))
+plt.plot(dos1, E1, label = "int")
+plt.plot(dos2, E2, label = "sum")
+plt.plot(dos3, E3, label = "groups")
+#plt.plot(dos3+dos1, E3)
+
+plt.plot(totdos, E3, "--", label = "tot-sum")
+plt.legend()
+
+plt.figure()
+
+#def get_dos(select_groups, interstitial, all_characters, GROUP_FILTER
+(E1,dos1) = get_dos(True, False, True, [True, True], CHARACTER_FILTER = create_character_filter(range(4)))
+(E2,dos2) = get_dos(True, False, True, [True, True], CHARACTER_FILTER = create_character_filter(range(1)))
+(E3,dos3) = get_dos(False, True, True)#, create_group_filter(range(NUM_GROUPS-1)))
+
+plt.plot(dos1, E1, label = "sum characters")
+plt.plot(dos2, E2, label = "sum true")
+plt.plot(dos1+dos3, E3, label = "all")
+plt.plot(totdos, E3, "--", label = "tot")
+#plt.plot(dos3, E3, label = "groups")
+#plt.plot(dos3+dos1, E3)
 
 
+
+
+#plt.plot(totdos-dos2, E3, "--", label = "tot-sum")
+plt.legend()
+
+plt.figure()
 
 times += [time.time()]
 
@@ -296,11 +400,12 @@ configure_plot("2characters")
 """
 
 """
+band_unfolding=0
 fig = plt.figure()
 ax3 = fig.add_subplot(111)
-alpha = 0.2
+alpha = 1#0.2
 plot("blue", ax3, f, llc, evs, k, 0, create_character_filter([0,1,2,3]), create_group_filter(),
-     create_band_filter(), band_unfolding, 1., alpha, ignore_atroms_per_group = True)
+     create_band_filter(), band_unfolding, 0.52, alpha, ignore_atroms_per_group = False)
 """
 
 """
@@ -334,7 +439,7 @@ liste = range(255,259)
 for i in liste:
     plt.scatter(k_diff, e_diff.T[i], s = 0.5, lw = 0)
 """
-
+"""
 plt.figure()
 E_iso1 = e_diff.T[256]
 E_iso2 = e_diff.T[257]
@@ -354,8 +459,17 @@ plt.ylabel("E(k) [eV]")
 plt.xlim(0, max(k))
 
 ddE1 = (deriv_E1[2:] - deriv_E1[0:-2])/(k_ddiff[2:] - k_ddiff[:-2])
-plt.scatter(k_ddiff[1:-1], 1./ddE1, s = 1, lw = 0)
+ddE2 = (deriv_E2[2:] - deriv_E2[0:-2])/(k_ddiff[2:] - k_ddiff[:-2])
+plt.scatter(k_ddiff[1:-1], 1./ddE1, s = 4, lw = 0)
+plt.scatter(k_ddiff[1:-1], 1./ddE2, s = 4, lw = 0)
 plt.ylim(-2.5,2.5)
+plt.xticks(k_special_pt, label)
+plt.savefig("derivatives.png", dpi=2000)
+
+"""
+
+
+
 """
 ax = np.diff(E_iso1)
 ax2 = np.diff(E_iso2)
@@ -365,5 +479,81 @@ aZ = ax/ay
 #plt.plot(k[0:-1], aZ)
 #plt.plot(k[0:-1], ax2/ay)
 """
-plt.savefig("gjhsdf.png", dpi=2000)
+#plt.savefig("gjhsdf.png", dpi=2000)
+"""
+unfold_weight = np.array(f["/bandUnfolding/weights"])
+unfold_weight = unfold_weight**1"""
+"""
+Es = evs[0].T[2]
+ks = k
+#Es = k**2
+kpts_int = np.array(f["/kpts/coordinates"])
 
+index_of_high_sym = special_points[:]-1
+
+masses = np.zeros((10))
+index = np.zeros((10))
+m_label = []
+
+
+i = 0
+j = 0
+while (i < len(masses)):
+    if(j >= len(index_of_high_sym)):
+        break
+    if(index_of_high_sym[j] > 0):
+        E = Es[index_of_high_sym[j]]
+        Em = Es[index_of_high_sym[j]-1]
+        dk = k[index_of_high_sym[j]]
+        dkm = k[index_of_high_sym[j]-1]
+        
+        masses[i] = 2*(Em-E)/(dk-dkm)**2
+        print(index_of_high_sym[j])
+        index[i] = index_of_high_sym[j]
+        i += 1
+        m_label += [str(label[j])+"->"+str(label[j-1])]
+        
+    if(index_of_high_sym[j] < len(ks)-1):
+        E = Es[index_of_high_sym[j]]
+        Ep = Es[index_of_high_sym[j]+1]
+        dk = k[index_of_high_sym[j]]
+        dkp = k[index_of_high_sym[j]+1]
+        masses[i] = 2*(Ep-E)/(dkp-dk)**2
+        print(index_of_high_sym[j])
+        index[i] = index_of_high_sym[j]
+        m_label += [str(label[j])+"->"+str(label[j+1])]
+        i += 1
+    j += 1
+
+for i in range(len(m_label)):
+    m_label[i] = [r"$m_{%s}$"%(m_label[i])]
+
+print(1./masses)
+
+
+
+plt.figure(figsize=(8,8))
+plt.plot(k, Es.T-fermi_energy)
+
+
+array = Es-fermi_energy
+positiv = 0
+intersections = []
+for i in range(len(k)-1):
+    if((array[i] < 0) & (array[i+1] > 0)):
+        intersections += [i]
+    if((array[i] > 0) & (array[i+1] < 0)):
+        intersections += [i]
+    
+fermivel = []
+for i in intersections:
+    fermivel += [(Es[i+1]-Es[i])/(k[i+1]-k[i])]
+  """  
+
+
+plt.xticks(k_special_pt, label)
+#plt.ylim(-0.1, 0.4)
+#plt.ylim(0.125, 0.2)
+#plt.xlim(0.72, 0.8)
+#plt.xlim(0, 3)
+#plt.ylim(-2, -1.93)
