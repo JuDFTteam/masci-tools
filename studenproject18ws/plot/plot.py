@@ -275,7 +275,7 @@ class Bandplot_matplotlib(Plot):
         :return:
         """
 
-        (dos, E) = get_dos(filepath_dos, self.data,
+        (E, dos) = get_dos(filepath_dos, self.data,
                 mask_groups, mask_characters,
                 select_groups, interstitial, all_characters)
         ax.plot(dos, E)
