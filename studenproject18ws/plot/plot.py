@@ -11,6 +11,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from studenproject18ws.hdf.output_types import *
+from studenproject18ws.dos.reader import get_dos
 
 
 class Plot(object):
