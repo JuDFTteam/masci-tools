@@ -516,11 +516,11 @@ def example_read():
     # # NO DOS file:
     # filename = 'banddos.hdf'
     # filename = 'banddos_4x4.hdf'
-    # filename = 'banddos_sodium.hdf'
+    filename = 'banddos_sodium.hdf'
     # # 1 DOS file:
     # filename = os.path.join('MoSe2', 'banddos_2spin.hdf')
     # # 2 DOS files:
-    filename = os.path.join('Co', 'banddos_Co.hdf')
+    # filename = os.path.join('Co', 'banddos_Co.hdf')
 
     filepath = ['..', 'data', 'input', filename]
     filepath = os.path.join(*filepath)
@@ -551,10 +551,12 @@ def simulate_gui(data):
     fig = plt.figure()
     ax1 = fig.add_subplot(111)
 
-    bandploter.plot_bands_normal(sel.mask_bands, sel.mask_characters, sel.mask_groups, sel.spin,
-                                 unfolding_weight_exponent=1,
-                                 ax=ax1, alpha=alpha, color='blue',
-                                 ignore_atoms_per_group=ignore_atoms_per_group, marker_size=10)
+    bandploter.setup(plt)
+    bandploter.plot_bands(sel.mask_bands, sel.mask_characters, sel.mask_groups, [0], 0.1, False, ax1, False, 1)
+    # bandploter.plot_bands_normal(sel.mask_bands, sel.mask_characters, sel.mask_groups, sel.spin,
+    #                              unfolding_weight_exponent=1,
+    #                              ax=ax1, alpha=alpha, color='blue',
+    #                              ignore_atoms_per_group=ignore_atoms_per_group, marker_size=1)
     plt.title("Plot 1")
     plt.show()
 
@@ -583,16 +585,31 @@ def simulate_gui(data):
 
     ######################################################
 
-    fig = plt.figure()
-    ax4 = fig.add_subplot(111)
-    select_band = 256 # valid for banddos_4x4.hdf only!
-    spin = 0
-    bandploter.groupVelocity(select_band, spin, ax=ax4)
-    plt.legend()
-    plt.title(f"dE/dk for band {select_band}")
-    plt.show()
+    # fig = plt.figure()
+    # ax4 = fig.add_subplot(111)
+    # select_band = 256 # valid for banddos_4x4.hdf only!
+    # spin = 0
+    # bandploter.groupVelocity(select_band, spin, ax=ax4)
+    # plt.legend()
+    # plt.title(f"dE/dk for band {select_band}")
+    # plt.show()
+
+
+def simulate_tkinter_error(data : DataBands):
+    sel = data.simulate_gui_selection([0], [0,1,2,3,4,5,6], [0,1,2,3], [0])
+
+    fig_scale = 0.65
+    fig_ratio = [10, 6]
+    fig, ax = plt.subplots(1, figsize=[fig_scale * el for el in fig_ratio])
+    plt.suptitle(f"tkinter error test")
+
+    bandploter = Bandplot_matplotlib(data)
+    bandploter.setup(plt)
+
+    bandploter.plot_bands(sel.mask_bands, sel.mask_characters, sel.mask_groups, [0], 0.0, False, ax, False, 1)
 
 
 if __name__ == '__main__':
     data = example_read()
-    simulate_gui(data)
+    # simulate_gui(data)
+    simulate_tkinter_error(data)

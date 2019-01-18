@@ -131,6 +131,109 @@ In descending priority:
 - see =banddos06=. just side-by-side matplotlib plot without any formatting or
   widget linking or axis alignment
 ** TODO Nice matplotlib formatting of both side-by-side plots
+gridspec
+** Fix ~get_dos~: pre-check if all =spdf= are present
+- Co and MoSe2 DOS file examples both have only =spd= characters, so not a full
+  set =spdf= set.
+- The DOS file reader ~get_dos~ must pre-check that and in case should insert
+  missing zero columns. otherwise the plotting will throw errors due to index
+  out of bounds access.
+- First need to get a bit of data.
+#+BEGIN_SRC python
+# find out: DOS file column numbers, vs. band file number of groups and characters
+from collections import namedtuple
+
+Info = namedtuple('Info', ['DOS_columns', 'band_groups', 'band_characters'])
+Infos = {'mose' : None, 'co1' : None, 'co2' : None}
+dosdata = {
+    'mose' : ['..', 'data', 'input', 'MoSe2', "DOS.1"],
+    'co1': ['..', 'data', 'input', 'Co', "DOS.1"],
+    'co2': ['..', 'data', 'input', 'Co', "DOS.2"]
+}
+for k,v in dosdata.items():
+    dosdata[k] = os.path.join(*v)
+    dosdata[k] = np.genfromtxt(dosdata[k]).T
+    print(f"{k} columns x rows: {dosdata[k].shape}")
+
+# # with pandas instead numpy:
+# import pandas as pd
+# df = pd.read_csv(test_dospath, sep='\s+')
+# header = df.columns[1:] if (df.columns[0].startswith('#')) else df.columns
+# df = pd.read_csv(test_dospath, sep='\s+', comment='#', header=None).T
+
+banddata_paths = {
+    'mose' : ['..', 'data', 'input', 'MoSe2', "banddos_2spin.hdf"],
+    'co': ['..', 'data', 'input', 'Co', "banddos_Co.hdf"],
+}
+banddata = {}
+for k,v in banddata_paths.items():
+    banddata_paths[k] = os.path.join(*v)
+    reader = Reader(banddata_paths[k])
+    with reader as h5file:
+        banddata[k] = reader.read(recipe=Recipes.Bands)
+        banddata[k].move_datasets_to_memory()
+    print(f"banddata {k}: num_groups {banddata[k].num_groups}")
+    print(f"banddata {k}: num_chars {banddata[k].num_char}")
+    
+
+
+Infos['mose'] = Info(
+    DOS_columns=dosdata['mose'].shape[0], 
+    band_groups=banddata['mose'].num_groups, 
+    band_characters=banddata['mose'].num_char)
+Infos['co1'] = Info(
+    DOS_columns=dosdata['co1'].shape[0], 
+    band_groups=banddata['co'].num_groups, 
+    band_characters=banddata['co'].num_char)
+Infos['co2'] = Info(
+    DOS_columns=dosdata['co2'].shape[0], 
+    band_groups=banddata['co'].num_groups, 
+    band_characters=banddata['co'].num_char)
+
+print(f"MoSe2: num_groups * 5 + 5 = {Infos['mose'].band_groups} * 5 + 5 = {Infos['mose'].band_groups * 5 + 5}")
+print(f"MoSe2: DOS_columns {Infos['mose'].DOS_columns}")
+print(f"Co   : num_groups * 5 + 5 = {Infos['co1'].band_groups} * 5 + 5 = {Infos['co1'].band_groups * 5 + 5}")
+print(f"Co   : DOS_columns {Infos['co1'].DOS_columns}")
+#+END_SRC
+
+Output:
+#+BEGIN_EXAMPLE
+mose columns x rows: (95, 1302)
+co1 columns x rows: (15, 1301)
+co2 columns x rows: (15, 1301)
+banddata mose: num_groups 18
+banddata mose: num_chars 4
+banddata co: num_groups 2
+banddata co: num_chars 4
+MoSe2: num_groups * 5 + 5 = 18 * 5 + 5 = 95
+MoSe2: DOS_columns 95
+Co   : num_groups * 5 + 5 = 2 * 5 + 5 = 15
+Co   : DOS_columns 15
+But MoSe2 and Co DOS files both do only have spd and not spdf set of characters
+#+END_EXAMPLE
+
+Column selection examples for DOS file Co (2 atom groups, 15 columns), all atom groups selected:
+| all_characters | character | columns selected |
+|----------------+-----------+------------------|
+| X              | -         | [5,6]            |
+| -              | s         | [8,9]            |
+| -              | p         | [10,11]          |
+| -              | d         | [12,13]          |
+| -              | f         | [14,15]          |
+So column 7 is never selected.
+
+Column selection examples for DOS file MoSe2 (18 atom groups, 95 columns), all atom groups selected:
+| all_characters | character | columns selected                                                         |
+|----------------+-----------+--------------------------------------------------------------------------|
+| X              | -         | [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22]      |
+| -              | s         | [24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41] |
+| -              | p         | [42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59] |
+| -              | d         | [60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77] |
+| -              | f         | [78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95] |
+So column 23 is never selected.
+
+
+
 ** TODO Interactive DOS plot de-/activation based on [[*DOS file chooser][DOS file chooser]]
 ** Widgets (masks) linking to DOS plot:
 *** TODO NEW: interstitial (DOS-specific)

@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 
 from studenproject18ws.hdf.output_types import *
 from studenproject18ws.dos.reader import get_dos
-
+from masci_tools.vis.plot_methods import single_scatterplot, multiple_scatterplots
 
 class Plot(object):
     """
@@ -137,6 +137,7 @@ class Bandplot_matplotlib(Plot):
         :param marker_size: float
         :return:
         """
+
         alpha = 1
         if compare_characters:
             self.plot_bands_compare_two_characters(mask_bands, mask_characters, mask_groups, spins[0],
@@ -277,15 +278,47 @@ class Bandplot_matplotlib(Plot):
         """
 
         (E, dos, dos_lim) = get_dos(filepath_dos, self.data,
-                mask_groups, mask_characters,
-                select_groups, interstitial, all_characters)
+                                    mask_groups, mask_characters,
+                                    select_groups, interstitial, all_characters)
+
         if fix_xlim:
-            ylim = (np.min(dos_lim), np.max(dos_lim))
-            ax.set_xlim(ylim)
+            ax.set_xlim(dos_lim)
         ax.plot(dos, E)
 
+    def plot_dos_masci(self, path_to_dosfile, only_total=False, saveas=r'dos_plot', title=r'Density of states', linestyle='-',
+                 marker=None, legend=False, limits=[None, None], ax=None):
+        """
+        Plot the total density of states from a FLEUR DOS.1 file
 
+        params:
+        """
+        doses = []
+        energies = []
+        # dosmt_total = np.zeros(nData, "d")
+        # totaldos = np.zeros(nData, "d")
 
+        # read data from file
+        datafile = path_to_dosfile  # 'DOS.1'
+        data = np.loadtxt(datafile, skiprows=0)
+
+        energy = data[..., 0]
+        totaldos = data[:, 1]
+        interstitialdos = data[:, 2]
+        dosmt_total = totaldos - interstitialdos
+
+        doses = [totaldos, interstitialdos, dosmt_total]
+        energies = [energy, energy, energy]
+        # xlabel = r'E - E$_F$ [eV]'
+        ylabel = r'Energy [eV]'
+        xlabel = r'DOS [eV$^{-1}$]'
+
+        if only_total:
+            single_scatterplot(energy, totaldos, xlabel, ylabel, title, plotlabel='total dos', linestyle=linestyle,
+                               marker=marker, limits=limits, saveas=saveas, axis=ax)
+        else:
+            multiple_scatterplots(energies, doses, xlabel, ylabel, title,
+                                  plot_labels=['Total', 'Interstitial', 'Muffin-Tin'], linestyle=linestyle,
+                                  marker=marker, legend=legend, limits=limits, saveas=saveas, axis=ax)
 
     def groupVelocity(self, select_band, spin, ax):
         """Plot group velocity of single band, no checking.

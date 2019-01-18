@@ -131,8 +131,8 @@ class DataBands(Data):
         self.buffer_call_count += 1
         return self.buffer_llc_normalized * (self.buffer_unfold_weight ** unfolding_weight_exponent)
 
-    def _get_data_and_weight(self, mask_bands, mask_characters, mask_groups, mask_spin, unfolding_weight_exponent=1,
-                  ignore_atoms_per_group=False):
+    def _get_data_and_weight(self, mask_bands, mask_characters, mask_groups, mask_spin,
+                             unfolding_weight_exponent=1, ignore_atoms_per_group=False):
         """
         processes the data to obtain the weights: this is the function with most significant runtime!
         Each argument is a bool list reflecting the user selection.
@@ -194,7 +194,8 @@ class DataBands(Data):
         :return:
         """
         mask_spin = self._mask_spin(spin)
-        total_weight = self._get_data(mask_bands, mask_characters, mask_groups, mask_spin, unfolding_weight_exponent, ignore_atoms_per_group)
+        total_weight = self._get_data(mask_bands, mask_characters, mask_groups, mask_spin,
+                                      unfolding_weight_exponent, ignore_atoms_per_group)
 
         # only select the requested spin and bands
         evs = self.eigenvalues[spin, :, mask_bands]
@@ -203,7 +204,9 @@ class DataBands(Data):
         (Nk, Ne) = evs.T.shape
 
         evs_resh = np.reshape(evs, Nk * Ne)
-        weight_resh = np.reshape(total_weight[0].T, Nk * Ne)
+
+        # weight_resh = np.reshape(total_weight[0].T, Nk * Ne)
+        weight_resh = total_weight[0].T.flatten()
         k_resh = np.tile(self.k_distances, Ne)
         return (k_resh, evs_resh, weight_resh)
 
@@ -251,16 +254,16 @@ class DataBands(Data):
         BAND_FILTER[which_bands] = True
         return BAND_FILTER
 
-    def simulate_gui_selection(self):
+    def simulate_gui_selection(self, which_spin=[], which_bands=[], which_characters=[], which_groups=[]):
         """
         For testing plotting without gui.
         :return:
         """
-        spin = 0
-        mask_spin = self._mask_spin(spin)
-        mask_bands = self._mask_bands()
-        mask_characters = self._mask_characters()
-        mask_groups = self._mask_groups()
+        spin=0
+        mask_spin = self._mask_spin(which_spin=which_spin)
+        mask_bands = self._mask_bands(which_bands=which_bands)
+        mask_characters = self._mask_characters(which_characters=which_characters)
+        mask_groups = self._mask_groups(which_groups=which_groups)
 
         Selection = namedtuple('Selection', ['spin',
                                              'mask_spin', 'mask_bands',
