@@ -130,9 +130,11 @@ In descending priority:
    CLOSED: [2019-01-09 Wed]
 - see =banddos06=. just side-by-side matplotlib plot without any formatting or
   widget linking or axis alignment
-** TODO Nice matplotlib formatting of both side-by-side plots
+** DONE Nice matplotlib formatting of both side-by-side plots
+   CLOSED: [2019-01-18 Fri 19:59]
 gridspec
-** Fix ~get_dos~: pre-check if all =spdf= are present
+** DONE Fix ~get_dos~: pre-check if all =spdf= are present
+   CLOSED: [2019-01-18 Fri 19:59]
 - Co and MoSe2 DOS file examples both have only =spd= characters, so not a full
   set =spdf= set.
 - The DOS file reader ~get_dos~ must pre-check that and in case should insert
@@ -232,13 +234,25 @@ Column selection examples for DOS file MoSe2 (18 atom groups, 95 columns), all a
 | -              | f         | [78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95] |
 So column 23 is never selected.
 
-
+- Amending the initial problem statement.
+- It seems that spdf are all present at least in the available DOS files.
+- The problem seems more that the indexing based on character selection is off.
+- It seems that the offset should be lowered by one.
+- However, that was the previous state, and it was wrong.
+- The comparison between band and DOS plot showed that without the offset by
+  one, both plots didn't match up, when different characters were selected.
+  Rather it seemed that DOS character plots got switched (many bands low dos,
+  next character few bands high dos).
+- So kept code the way it is now, but prevented index error by returning zero
+  when the last+1 DOS column is accessed. This is a bad hack.
 
 ** TODO Interactive DOS plot de-/activation based on [[*DOS file chooser][DOS file chooser]]
-** Widgets (masks) linking to DOS plot:
-*** TODO NEW: interstitial (DOS-specific)
-*** link: =select_groups=
-*** link: =select_spins= (1 or 2 DOS files, switch data for plot)
+** TODO Widgets (masks) linking to DOS plot:
+*** DONE NEW: interstitial (DOS-specific)
+    CLOSED: [2019-01-18 Fri 20:00]
+*** DONE link: =select_groups=
+    CLOSED: [2019-01-18 Fri 20:00]
+*** TODO link: =select_spins= (1 or 2 DOS files, switch data for plot)
 * TODO Plot File Export
 ** TODO export =tex= file with plot selections
 - Idea for easy implementation:
