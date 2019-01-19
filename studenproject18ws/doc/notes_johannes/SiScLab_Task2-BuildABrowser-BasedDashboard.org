@@ -483,8 +483,8 @@ Legend:
 **** Resources Table
   
 
- | official | [[https://jupyterlab.readthedocs.io/en/stable/index.html][JupyterLab Doc]] |
- |          |                |
+ | official      | [[https://jupyterlab.readthedocs.io/en/stable/index.html][JupyterLab Doc]]                                |
+ | best practice | [[https://florianwilhelm.info/2018/11/working_efficiently_with_jupyter_lab/][FWilhelm: Working effectively with JupyterLab]] |
 *** Helper libs packages extensions
  |----------+------------------------------+-------------------------------------------------|
  | official | [[https://jupyterlab.readthedocs.io/en/stable/user/extensions.html][JupyterLab Doc - Extensions]]  | Must-read to understand install procedure       |
