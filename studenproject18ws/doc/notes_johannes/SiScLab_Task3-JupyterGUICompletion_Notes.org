@@ -76,8 +76,11 @@ takes weight away in tensor product or sth.
 * DONE Widget: spin selection
   CLOSED: [2019-01-16 Wed 16:28]
 * TODO Widget: File Chooser
+** Review Jupyter File chooser solutions
+see [[file:../../jupyter/Example_FileChoosers.ipynb][dedicated notebook]]
 ** HDF file chooser
 ** DOS file chooser
+
 * TODO Dashboard Layout
 ** DONE Replace =@interact= with =interactive=
    CLOSED: [2019-01-16 Wed 00:26]
@@ -140,7 +143,8 @@ gridspec
 - The DOS file reader ~get_dos~ must pre-check that and in case should insert
   missing zero columns. otherwise the plotting will throw errors due to index
   out of bounds access.
-- First need to get a bit of data.
+- First need to get a bit of data on the DOS file format.
+:source_code:
 #+BEGIN_SRC python
 # find out: DOS file column numbers, vs. band file number of groups and characters
 from collections import namedtuple
@@ -197,6 +201,7 @@ print(f"MoSe2: DOS_columns {Infos['mose'].DOS_columns}")
 print(f"Co   : num_groups * 5 + 5 = {Infos['co1'].band_groups} * 5 + 5 = {Infos['co1'].band_groups * 5 + 5}")
 print(f"Co   : DOS_columns {Infos['co1'].DOS_columns}")
 #+END_SRC
+:END:
 
 Output:
 #+BEGIN_EXAMPLE
@@ -215,50 +220,57 @@ But MoSe2 and Co DOS files both do only have spd and not spdf set of characters
 #+END_EXAMPLE
 
 Column selection examples for DOS file Co (2 atom groups, 15 columns), all atom groups selected:
-| all_characters | character | columns selected | [a,b] in code                                          |
-|----------------+-----------+------------------+--------------------------------------------------------|
-| X              | -         | [5,6]            | [num_col_section1, a+ (num_groups-1)]                  |
-| -              | s         | [8,9]            | [num_col_section1 + 1 + num_group*1, a+(num_groups-1)] |
-| -              | p         | [10,11]          | [num_col_section1 + 1 + num_group*2, a+(num_groups-1)] |
-| -              | d         | [12,13]          | *3                                                     |
-| -              | f         | [14,15]          | *4                                                     |
+| all_characters | character | columns selected |
+|----------------+-----------+------------------|
+| X              | -         | [5,6]            |
+| -              | s         | [8,9]            |
+| -              | p         | [10,11]          |
+| -              | d         | [12,13]          |
+| -              | f         | [14,15]          |
 So column 7 is never selected.
 
 Column selection examples for DOS file MoSe2 (18 atom groups, 95 columns), all atom groups selected:
-| all_characters | character | columns selected                                                         | [a,b]    |
-|----------------+-----------+--------------------------------------------------------------------------+----------|
-| X              | -         | [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22]      | as above |
-| -              | s         | [24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41] |          |
-| -              | p         | [42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59] |          |
-| -              | d         | [60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77] |          |
-| -              | f         | [78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95] |          |
+| all_characters | character | columns selected                                                         |
+|----------------+-----------+--------------------------------------------------------------------------|
+| X              | -         | [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22]      |
+| -              | s         | [24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41] |
+| -              | p         | [42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59] |
+| -              | d         | [60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77] |
+| -              | f         | [78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95] |
 So column 23 is never selected.
 
 - Amending the initial problem statement.
 - It seems that spdf are all present at least in the available DOS files.
 - The problem seems more that the indexing based on character selection is off.
-- It seems that the offset should be lowered by one.
-- However, that was the previous state, and it was wrong.
-- The comparison between band and DOS plot showed that without the offset by
-  one, both plots didn't match up, when different characters were selected.
-  Rather it seemed that DOS character plots got switched (many bands low dos,
-  next character few bands high dos).
-- So kept code the way it is now, but prevented index error by returning zero
-  when the last+1 DOS column is accessed. This is a bad hack.
 
-Check:
-A: num_cols_section1 + (igroup + 1) + (num_groups * (ichar + 1))
-is equal to 
-B: (num_cols_section1 + 1) + ((ichar+1) * num_groups) + igroup
-Insert constants for example num_groups = 2:
-A: 6 + igroup + (2 * (ichar+1))
-B: 6 + ((ichar+1) * 2) + igroup
-Yes, A == B.
+- Changed ~get_dos()~ so as to be more readable and mention the problem clearly. From there:
+#+BEGIN_SRC python
+# the DOS file format has three sections:
+# - 5 columns: E, dos_tot, interstitial, vac1, vac2;
+# - num_groups columns: dos for all characters per atoms group,
+# - 4 * num_groups columns: (dos per atoms group) per character.
+#   - so section3 has 4 subsections each of length num_groups.
 
+bad_hack_offset = 1
+dos += col(index['section3'][char][group] + bad_hack_offset) * atoms_per_group[group]
+# Note 1:
+# Introduced bad_hack_offset of 1 cause when comparing bandplot to DOS plot,
+# they seem to match only if this offset is added.
+# But if the DOS file format above is correct, the consequences are:
+# - DOS of (character 0 (s of spdf), group 0) is never accessed.
+# - DOS of (last character (f), last group) is out-of-bounds, so returns zero.
+# - all other DOS are shifted:
+#    - DOS of (char x, group y+1) is reassigned to (char x, group y)
+#    - DOS of (char x+1,  group 0) is reassigned to (char x, last group)
+# This can't be correct.
+#
+# Note 2:
+# For the summed DOS plot size (all groups, all characters), the following holds:
+# section3 with bad_hack_offset < section2 < section3 without bad_hack_offset.
+#+END_SRC
 
+** TODO Integrate banddos plot into dashboard
 
-** DONE Integrate banddos plot into dashboard
-- 
 ** TODO Interactive DOS plot de-/activation based on [[*DOS file chooser][DOS file chooser]]
 ** TODO Widgets (masks) linking to DOS plot:
 *** DONE NEW: interstitial (DOS-specific)
