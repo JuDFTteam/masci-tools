@@ -1,39 +1,19 @@
 # -*- coding: utf-8 -*-
-"""Holds classes for plots of the self.data.
-
-Each class is for a different type of plot utility. For instance, matploblib plots
-are gathered in the class Matplot.
-
+"""Holds classes for plots using matplotlib.
 """
 
 import logging
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib import gridspec
 
-from studenproject18ws.hdf.output_types import *
+from studenproject18ws.plot.base import *
 from studenproject18ws.dos.reader import get_dos
 from masci_tools.vis.plot_methods import single_scatterplot, multiple_scatterplots
 
-class Plot(object):
-    """
-    Base class for all Plot classes.
-    """
-
-    def __init__(self, data: Data):
-        """
-        :param data:
-        """
-        self.data = data
-
-    def get_data_ylim(self):
-        """
-        Useful for getting info on the maximum ylim before plotting, e.g. to set ylim to a GUI control.
-        :return:
-        """
-        raise NotImplementedError
 
 
-class Bandplot_matplotlib(Plot):
+class Bandplot(Plot):
     """
     Class for rendering interactive matplotlib plots of the band data in a GUI frontend.
     Examples: Jupyter Notebook or Lab, Tkinter, PyQt, ...
@@ -44,7 +24,7 @@ class Bandplot_matplotlib(Plot):
     >>> import matplotlib.pyplot as plt
     >>> from studenproject18ws.hdf.reader import Reader
     >>> from studenproject18ws.hdf.recipes import Recipes
-    >>> from studenproject18ws.plot.plot import Bandplot_matplotlib as Bandplot
+    >>> from studenproject18ws.plot.matplot import Bandplot as Bandplot
     >>>
     >>> filepath = "path/to/my.hdf"
     >>> data = None
@@ -97,7 +77,7 @@ class Bandplot_matplotlib(Plot):
 
         return (ymin, ymax)
 
-    def setup(self, plt):
+    def setup_band_labels(self, plt):
         """
         Call this function every time the interactive plot is about to be updated in the GUI.
 
@@ -140,20 +120,19 @@ class Bandplot_matplotlib(Plot):
 
         alpha = 1
         if compare_characters:
-            self.plot_bands_compare_two_characters(mask_bands, mask_characters, mask_groups, spins[0],
-                                                   unfolding_weight_exponent,
-                                                   ax, alpha, ignore_atoms_per_group, marker_size)
+            self._plot_bands_compare_two_characters(mask_bands, mask_characters, mask_groups, spins[0],
+                                                    unfolding_weight_exponent,
+                                                    ax, alpha, ignore_atoms_per_group, marker_size)
         else:
-            alphas = {0: 1, 1: 1} if (len(spins) ==1) else {0: 1, 1: 0.5}
-            colors = {0: 'blue', 1: 'red'}
+            (alphas, colors) = self.get_alphas_colors_for_spin_overlay(spins)
             for spin in spins:
-                self.plot_bands_normal(mask_bands, mask_characters, mask_groups, spin,
-                                       unfolding_weight_exponent,
-                                       ax, colors[spin], alphas[spin], ignore_atoms_per_group, marker_size)
+                self._plot_bands_normal(mask_bands, mask_characters, mask_groups, spin,
+                                        unfolding_weight_exponent,
+                                        ax, colors[spin], alphas[spin], ignore_atoms_per_group, marker_size)
 
-    def plot_bands_normal(self, mask_bands, mask_characters, mask_groups, spin,
-                          unfolding_weight_exponent, ax, color, alpha=1,
-                          ignore_atoms_per_group=False, marker_size=1):
+    def _plot_bands_normal(self, mask_bands, mask_characters, mask_groups, spin,
+                           unfolding_weight_exponent, ax, color, alpha=1,
+                           ignore_atoms_per_group=False, marker_size=1):
         """Plot regular.
 
         Static plot method as template for interactive plot function in GUI.
@@ -186,8 +165,8 @@ class Bandplot_matplotlib(Plot):
         ax.scatter(k_r, (E_r - self.data.fermi_energy) * self.data.HARTREE_EV,
                    marker='o', c=color, s=5 * W_r, lw=0, alpha=alpha)
 
-    def plot_bands_compare_two_characters(self, mask_bands, mask_characters, mask_groups, spin, unfolding_weight_exponent, ax,
-                                          alpha=1, ignore_atoms_per_group=False, marker_size=1):
+    def _plot_bands_compare_two_characters(self, mask_bands, mask_characters, mask_groups, spin, unfolding_weight_exponent, ax,
+                                           alpha=1, ignore_atoms_per_group=False, marker_size=1):
         """Plot with exactly 2 selected band characters mapped to colormap.
 
         Static plot method as template for interactive plot function in GUI.
@@ -257,70 +236,7 @@ class Bandplot_matplotlib(Plot):
         ax.scatter(k_resh2, (evs_resh - self.data.fermi_energy) * self.data.HARTREE_EV,
                    marker='o', c=rel, s=5 * tot_weight, lw=0, alpha=alpha, cmap=cm)
 
-    def plot_dos(self, filepath_dos,
-                 mask_groups, mask_characters,
-                 select_groups, interstitial, all_characters,
-                 ax, fix_xlim=True):
-        """Placeholder function.
-
-        Notes:
-        =====
-        This is placeholder function.
-        Though CP has added code 180109 for plotting the DOS,
-        this is for txt DOS example file.
-        The plot function here though will expect the DOS info
-        to lie in the same hdf file the bandstructure has been
-        read from.
-        Until that is implemented, the GUI will not have a DOS plot.
-
-        TODO This is a different matplot than the bandstructure matplot! How to handle that?
-        :return:
-        """
-
-        (E, dos, dos_lim) = get_dos(filepath_dos, self.data,
-                                    mask_groups, mask_characters,
-                                    select_groups, interstitial, all_characters)
-
-        if fix_xlim:
-            ax.set_xlim(dos_lim)
-        ax.plot(dos, E)
-
-    def plot_dos_masci(self, path_to_dosfile, only_total=False, saveas=r'dos_plot', title=r'Density of states', linestyle='-',
-                 marker=None, legend=False, limits=[None, None], ax=None):
-        """
-        Plot the total density of states from a FLEUR DOS.1 file
-
-        params:
-        """
-        doses = []
-        energies = []
-        # dosmt_total = np.zeros(nData, "d")
-        # totaldos = np.zeros(nData, "d")
-
-        # read data from file
-        datafile = path_to_dosfile  # 'DOS.1'
-        data = np.loadtxt(datafile, skiprows=0)
-
-        energy = data[..., 0]
-        totaldos = data[:, 1]
-        interstitialdos = data[:, 2]
-        dosmt_total = totaldos - interstitialdos
-
-        doses = [totaldos, interstitialdos, dosmt_total]
-        energies = [energy, energy, energy]
-        # xlabel = r'E - E$_F$ [eV]'
-        ylabel = r'Energy [eV]'
-        xlabel = r'DOS [eV$^{-1}$]'
-
-        if only_total:
-            single_scatterplot(energy, totaldos, xlabel, ylabel, title, plotlabel='total dos', linestyle=linestyle,
-                               marker=marker, limits=limits, saveas=saveas, axis=ax)
-        else:
-            multiple_scatterplots(energies, doses, xlabel, ylabel, title,
-                                  plot_labels=['Total', 'Interstitial', 'Muffin-Tin'], linestyle=linestyle,
-                                  marker=marker, legend=legend, limits=limits, saveas=saveas, axis=ax)
-
-    def groupVelocity(self, select_band, spin, ax):
+    def plot_groupVelocity(self, select_band, spin, ax):
         """Plot group velocity of single band, no checking.
 
         Notes
@@ -342,6 +258,129 @@ class Bandplot_matplotlib(Plot):
         ax.plot(k[1:-1], dE, label="dE/dk")
 
 
-class AtomsGroupPlot_Ipyvolume(Plot):
-    def __init__(self, data: Data):
-        raise NotImplementedError
+class DOSPlot(Plot):
+    def __init__(self, data: DataBands, filepaths_dos : list):
+        Plot.__init__(self, data)
+        self.filepaths_dos = filepaths_dos
+
+    def plot_dos(self, spins,
+                 mask_groups, mask_characters,
+                 select_groups, interstitial, all_characters,
+                 ax, fix_xlim=True):
+        """Placeholder function.
+
+        Notes:
+        =====
+        This is placeholder function.
+        Though CP has added code 180109 for plotting the DOS,
+        this is for txt DOS example file.
+        The plot function here though will expect the DOS info
+        to lie in the same hdf file the bandstructure has been
+        read from.
+        Until that is implemented, the GUI will not have a DOS plot.
+
+        TODO This is a different matplot than the bandstructure matplot! How to handle that?
+        :return:
+        """
+        (alphas, colors) = self.get_alphas_colors_for_spin_overlay(spins, PlotDataType.DOS)
+        dos_lims = [None, None]
+        for spin in spins:
+            (E, dos, dos_lims[spin]) = get_dos(self.filepaths_dos[spin], self.data,
+                                        mask_groups, mask_characters,
+                                        select_groups, interstitial, all_characters)
+
+            ax.plot(dos, E, color=colors[spin], alpha=alphas[spin])
+
+
+        if fix_xlim:
+            # spins is either [0], [1], or [0,1]
+            # if [0,1], get the lowest and largest xlim of both tuples
+            dos_lim = dos_lims[0] #
+            if (len(spin) == 2):
+                dos_lim[0] = min(dos_lims[0][0], dos_lims[1][0])
+                dos_lim[1] = max(dos_lims[0][1], dos_lims[1][1])
+            ax.set_xlim(dos_lim)
+
+
+    def plot_dos_masci(self, spins, only_total=False, saveas=r'dos_plot', title=r'Density of states', linestyle='-',
+                 marker=None, legend=False, limits=[None, None], ax=None):
+        """
+        Plot the total density of states from a FLEUR DOS.1 file
+
+        Notes
+        -----
+        Adapated from masci_tools.vis.plot_methods.
+        TODO: adapt colors so that both DOS plots for different spins can be distinguised if more than one spin
+        is supplied.
+
+        params:
+        """
+        for spin in spins:
+            doses = []
+            energies = []
+            # dosmt_total = np.zeros(nData, "d")
+            # totaldos = np.zeros(nData, "d")
+
+            # read data from file
+            datafile = self.filepaths_dos[spin]  # 'DOS.1'
+            data = np.loadtxt(datafile, skiprows=0)
+
+            energy = data[..., 0]
+            totaldos = data[:, 1]
+            interstitialdos = data[:, 2]
+            dosmt_total = totaldos - interstitialdos
+
+            doses = [totaldos, interstitialdos, dosmt_total]
+            energies = [energy, energy, energy]
+            # xlabel = r'E - E$_F$ [eV]'
+            ylabel = r'Energy [eV]'
+            xlabel = r'DOS [eV$^{-1}$]'
+
+            if only_total:
+                single_scatterplot(energy, totaldos, xlabel, ylabel, title, plotlabel='total dos', linestyle=linestyle,
+                                   marker=marker, limits=limits, saveas=saveas, axis=ax)
+            else:
+                multiple_scatterplots(energies, doses, xlabel, ylabel, title,
+                                      plot_labels=['Total', 'Interstitial', 'Muffin-Tin'], linestyle=linestyle,
+                                      marker=marker, legend=legend, limits=limits, saveas=saveas, axis=ax)
+
+
+
+class BandDOSPlot(Bandplot, DOSPlot):
+    def __init__(self, data: DataBands, filepaths_dos : list):
+        Bandplot.__init__(self, data)
+        DOSPlot.__init__(self, data, filepaths_dos)
+
+    def setup_banddos(self, plt):
+        fig_scale = 0.65
+        fig_ratio = [12, 6]
+        figsize = [fig_scale * el for el in fig_ratio]
+
+        fig = plt.figure(figsize=figsize)
+        # order: first add dos plot, then band plot.
+        # otherwise labels (.setup() below) will be set on dos instead band plot.
+        gs_dos = gridspec.GridSpec(1, 2)
+        ax_dos = fig.add_subplot(gs_dos[0, 1])
+        gs = gridspec.GridSpec(1, 2)
+        ax_bands = fig.add_subplot(gs[0, 0], sharey=ax_dos)
+        gs.update(wspace=0, left=0.1, right=1.4)
+        gs_dos.update(left=0.6, right=0.9, wspace=0)
+        plt.setp(ax_dos.get_yticklabels(), visible=False)
+        # gs.tight_layout(fig, rect=[0, 0, 1, 0.97])
+
+        return (fig, ax_bands, ax_dos)
+
+    def plot_bandDOS(self, mask_bands, mask_characters, mask_groups, spins,
+                   unfolding_weight_exponent, compare_characters,
+                   ax_bands, ignore_atoms_per_group, marker_size,
+                     dos_select_groups, dos_interstitial, dos_all_characters,
+                     ax_dos, dos_fix_xlim=True):
+        self.plot_bands(mask_bands, mask_characters, mask_groups, spins,
+                        unfolding_weight_exponent, compare_characters, ax_bands,
+                        ignore_atoms_per_group, marker_size)
+        self.plot_dos(spins, mask_groups, mask_characters,
+                      dos_select_groups, dos_interstitial, dos_all_characters,
+                      ax_dos, dos_fix_xlim)
+
+
+
