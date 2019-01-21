@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 #matlplotlib.use("TkAgg")
 from studenproject18ws.hdf.reader import Reader
 from studenproject18ws.hdf.recipes import Recipes
-from studenproject18ws.plot.matplot import Bandplot
+from studenproject18ws.plot.matplot import BandPlot
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_pdf import PdfPages
@@ -178,7 +178,7 @@ class SiscLab:
         with self.extractor as h5file:
             self.data = self.extractor.read(recipe=Recipes.Bands)
             self.data.move_datasets_to_memory()
-        self.bandplotter = Bandplot(self.data)
+        self.bandplotter = BandPlot(self.data)
         self.NumAtomGroups.set(self.data.num_groups)
         '''
         self.AtomGroup.set('all')  # set the default option

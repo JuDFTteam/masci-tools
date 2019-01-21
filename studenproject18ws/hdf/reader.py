@@ -32,7 +32,7 @@ from studenproject18ws.hdf.input_transforms import *
 from studenproject18ws.hdf.output_types import *
 from studenproject18ws.hdf.recipes import Recipes
 from studenproject18ws.hdf.util import get_class
-from studenproject18ws.plot.matplot import Bandplot
+from studenproject18ws.plot.matplot import BandPlot
 
 
 class Reader(object):
@@ -544,7 +544,7 @@ def simulate_gui(data):
 
     # simulate plotting in a GUI, code version 181214
     sel = data.simulate_gui_selection()
-    bandploter = Bandplot(data)
+    bandploter = BandPlot(data)
     alpha = 1.0
     ignore_atoms_per_group = False
 
@@ -603,7 +603,7 @@ def simulate_tkinter_error(data : DataBands):
     fig, ax = plt.subplots(1, figsize=[fig_scale * el for el in fig_ratio])
     plt.suptitle(f"tkinter error test")
 
-    bandploter = Bandplot(data)
+    bandploter = BandPlot(data)
     bandploter.setup(plt)
 
     bandploter.plot_bands(sel.mask_bands, sel.mask_characters, sel.mask_groups, [0], 0.0, False, ax, False, 1)

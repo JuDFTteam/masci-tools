@@ -4,6 +4,7 @@
 
 import logging
 import numpy as np
+
 import matplotlib.pyplot as plt
 from matplotlib import gridspec
 
@@ -13,18 +14,27 @@ from masci_tools.vis.plot_methods import single_scatterplot, multiple_scatterplo
 
 
 
-class Bandplot(Plot):
+class AbstractMatplot(ABC):
+    def __init__(self, plt):
+        self.plt = plt
+
+    @abstractmethod
+    def setup_figure(self, fig_ratio=[10,6], fig_scale=0.65):
+        pass
+
+
+class BandPlot(AbstractBandPlot, AbstractMatplot):
     """
     Class for rendering interactive matplotlib plots of the band data in a GUI frontend.
     Examples: Jupyter Notebook or Lab, Tkinter, PyQt, ...
-
+2
     Examples
     --------
 
     >>> import matplotlib.pyplot as plt
     >>> from studenproject18ws.hdf.reader import Reader
     >>> from studenproject18ws.hdf.recipes import Recipes
-    >>> from studenproject18ws.plot.matplot import Bandplot as Bandplot
+    >>> from studenproject18ws.plot.matplot import BandPlot as Bandplot
     >>>
     >>> filepath = "path/to/my.hdf"
     >>> data = None
@@ -33,7 +43,7 @@ class Bandplot(Plot):
     ...    data = reader.read(recipe=Recipes.Bands)
     ...    data.move_datasets_to_memory()
     >>>
-    >>> bandplotter = Bandplot(data)
+    >>> bandplotter = BandPlot(data)
     >>>
     >>> # Hre. define plot(selection) function that calls bandplotter plot functions with data selections
     >>> def plot(ax, selection):
@@ -56,28 +66,16 @@ class Bandplot(Plot):
 
     """
 
-    def __init__(self, data: DataBands):
-        Plot.__init__(self, data)
+    def __init__(self, plt, data: DataBands):
+        AbstractBandPlot.__init__(self, data)
+        AbstractMatplot.__init__(self, plt)
 
-        # self.setup(plt)
-        # # Not sure if this has any effect:
-        # # The idea was to put this in the init method so teh setup step
-        # # doesn't have to be repeated on any update. But at least in Jupyter
-        # # this does not work. So unless this is indeed helpful in other frontends,
-        # # it can be removed. Commenting it out for the time being.
+    def setup_figure(self, fig_ratio=[10,6], fig_scale=0.65):
+        (self.fig, self.ax_bands) = self.plt.subplots(1, figsize=[fig_scale * el for el in fig_ratio])
+        self.plt.suptitle(f"BandStructure of {filename}")
+        return (self.fig, self.ax_bands)
 
-    def get_band_data_ylim(self):
-        sel = self.data.simulate_gui_selection()
-
-        (k_r, E_r, W_r) = self.data.reshape_data(sel.mask_bands, sel.mask_characters, sel.mask_groups, sel.spin,
-                                                 unfolding_weight_exponent=1, ignore_atoms_per_group=False)
-
-        ymin = np.min(((E_r - self.data.fermi_energy) * self.data.HARTREE_EV))
-        ymax = np.max(((E_r - self.data.fermi_energy) * self.data.HARTREE_EV))
-
-        return (ymin, ymax)
-
-    def setup_band_labels(self, plt):
+    def setup_band_labels(self):
         """
         Call this function every time the interactive plot is about to be updated in the GUI.
 
@@ -95,14 +93,25 @@ class Bandplot(Plot):
             else:
                 labels += str(label)
 
-        plt.xticks(self.data.k_special_points, labels)
-        plt.ylabel("E(k) [eV]")
-        plt.xlim(0, max(self.data.k_distances))
-        plt.hlines(0, 0, max(self.data.k_distances), lw=0.1)
+        self.plt.xticks(self.data.k_special_points, labels)
+        self.plt.ylabel("E(k) [eV]")
+        self.plt.xlim(0, max(self.data.k_distances))
+        self.plt.hlines(0, 0, max(self.data.k_distances), lw=0.1)
+
+    def get_data_ylim(self):
+        sel = self.data.simulate_gui_selection()
+
+        (k_r, E_r, W_r) = self.data.reshape_data(sel.mask_bands, sel.mask_characters, sel.mask_groups, sel.spin,
+                                                 unfolding_weight_exponent=1, ignore_atoms_per_group=False)
+
+        ymin = np.min(((E_r - self.data.fermi_energy) * self.data.HARTREE_EV))
+        ymax = np.max(((E_r - self.data.fermi_energy) * self.data.HARTREE_EV))
+
+        return (ymin, ymax)
 
     def plot_bands(self, mask_bands, mask_characters, mask_groups, spins,
                    unfolding_weight_exponent, compare_characters,
-                   ax, ignore_atoms_per_group, marker_size=1):
+                   ignore_atoms_per_group, marker_size=1, ylim=None):
         """
         Top-level method for the bandDOS plot. Calls appropriate subplot methods based on user selection.
 
@@ -122,17 +131,18 @@ class Bandplot(Plot):
         if compare_characters:
             self._plot_bands_compare_two_characters(mask_bands, mask_characters, mask_groups, spins[0],
                                                     unfolding_weight_exponent,
-                                                    ax, alpha, ignore_atoms_per_group, marker_size)
+                                                    alpha, ignore_atoms_per_group, marker_size, ylim)
         else:
             (alphas, colors) = self.get_alphas_colors_for_spin_overlay(spins)
             for spin in spins:
                 self._plot_bands_normal(mask_bands, mask_characters, mask_groups, spin,
                                         unfolding_weight_exponent,
-                                        ax, colors[spin], alphas[spin], ignore_atoms_per_group, marker_size)
+                                        colors[spin], alphas[spin], ignore_atoms_per_group,
+                                        marker_size, ylim)
 
     def _plot_bands_normal(self, mask_bands, mask_characters, mask_groups, spin,
-                           unfolding_weight_exponent, ax, color, alpha=1,
-                           ignore_atoms_per_group=False, marker_size=1):
+                           unfolding_weight_exponent, color, alpha=1,
+                           ignore_atoms_per_group=False, marker_size=1, ylim=None):
         """Plot regular.
 
         Static plot method as template for interactive plot function in GUI.
@@ -151,6 +161,8 @@ class Bandplot(Plot):
         :param alpha:
         :return:
         """
+        self.setup_band_labels()
+
         (k_r, E_r, W_r) = self.data.reshape_data(mask_bands, mask_characters, mask_groups, spin,
                                                  unfolding_weight_exponent, ignore_atoms_per_group)
 
@@ -162,11 +174,11 @@ class Bandplot(Plot):
             E_r = E_r[W_r > t]
             W_r = W_r[W_r > t]
         W_r *= marker_size
-        ax.scatter(k_r, (E_r - self.data.fermi_energy) * self.data.HARTREE_EV,
+        self.ax_bands.scatter(k_r, (E_r - self.data.fermi_energy) * self.data.HARTREE_EV,
                    marker='o', c=color, s=5 * W_r, lw=0, alpha=alpha)
 
-    def _plot_bands_compare_two_characters(self, mask_bands, mask_characters, mask_groups, spin, unfolding_weight_exponent, ax,
-                                           alpha=1, ignore_atoms_per_group=False, marker_size=1):
+    def _plot_bands_compare_two_characters(self, mask_bands, mask_characters, mask_groups, spin, unfolding_weight_exponent,
+                                           alpha=1, ignore_atoms_per_group=False, marker_size=1, ylim=None):
         """Plot with exactly 2 selected band characters mapped to colormap.
 
         Static plot method as template for interactive plot function in GUI.
@@ -189,11 +201,12 @@ class Bandplot(Plot):
         :param alpha:
         :return:
         """
+        self.setup_band_labels()
 
         characters = np.array(range(4))[mask_characters]
         if (len(characters) != 2):
             print("plot_two_characters: tried to plot with other than 2 characters selected. not allowed!")
-            ax.scatter([0], [0])
+            self.ax_bands.scatter([0], [0])
             return
 
         (k_resh, evs_resh, weight_resh) = self.data \
@@ -233,10 +246,10 @@ class Bandplot(Plot):
         # cm = plt.cm.get_cmap('RdYlBu')
         # cm = plt.cm.winter
         cm = plt.cm.plasma
-        ax.scatter(k_resh2, (evs_resh - self.data.fermi_energy) * self.data.HARTREE_EV,
+        self.ax_bands.scatter(k_resh2, (evs_resh - self.data.fermi_energy) * self.data.HARTREE_EV,
                    marker='o', c=rel, s=5 * tot_weight, lw=0, alpha=alpha, cmap=cm)
 
-    def plot_groupVelocity(self, select_band, spin, ax):
+    def plot_groupVelocity(self, select_band, spin):
         """Plot group velocity of single band, no checking.
 
         Notes
@@ -250,23 +263,47 @@ class Bandplot(Plot):
         """
         k = self.data.k_distances
         E_iso = self.data.eigenvalues[spin].T[select_band]
-        ax.plot(k, E_iso, label="E_iso")
+        self.ax_bands.plot(k, E_iso, label="E_iso")
 
         dE = np.zeros(len(E_iso) - 2)
         # E_iso = np.sin(k) ** 2
         dE = (E_iso[2:] - E_iso[0:-2]) / (k[2:] - k[:-2])
-        ax.plot(k[1:-1], dE, label="dE/dk")
+        self.ax_bands.plot(k[1:-1], dE, label="dE/dk")
 
 
-class DOSPlot(Plot):
-    def __init__(self, data: DataBands, filepaths_dos : list):
-        Plot.__init__(self, data)
-        self.filepaths_dos = filepaths_dos
+class DOSPlot(AbstractDOSPlot, AbstractMatplot):
+    def __init__(self, plt, data: DataBands, filepaths_dos : list):
+        AbstractDOSPlot.__init__(self, data, filepaths_dos)
+        AbstractMatplot.__init__(self, plt)
+
+    def setup_figure(self, fig_ratio=[10,6], fig_scale=0.65):
+        (self.fig, self.ax_dos) = self.plt.subplots(1, figsize=[fig_scale * el for el in fig_ratio])
+        self.plt.suptitle(f"BandStructure of {filename}")
+        return (self.fig, self.ax_dos)
+
+    def get_data_ylim(self):
+        if (PlotDataType.Bands in self.types
+        or PlotDataType.DOS_HDF in self.types):
+            try:
+                sel = self.data.simulate_gui_selection()
+
+                (k_r, E_r, W_r) = self.data.reshape_data(sel.mask_bands, sel.mask_characters, sel.mask_groups, sel.spin,
+                                                         unfolding_weight_exponent=1, ignore_atoms_per_group=False)
+
+                ymin = np.min(((E_r - self.data.fermi_energy) * self.data.HARTREE_EV))
+                ymax = np.max(((E_r - self.data.fermi_energy) * self.data.HARTREE_EV))
+
+                return (ymin, ymax)
+            except BaseException:
+                pass
+        elif (PlotDataType.DOS_CSV in self.types):
+            raise NotImplementedError("TODO: implement get ylim (i.e. E_lim) from DOS CSV file")
+            # TODO
 
     def plot_dos(self, spins,
                  mask_groups, mask_characters,
                  select_groups, interstitial, all_characters,
-                 ax, fix_xlim=True):
+                 fix_xlim=True, ylim=None):
         """Placeholder function.
 
         Notes:
@@ -282,28 +319,41 @@ class DOSPlot(Plot):
         TODO This is a different matplot than the bandstructure matplot! How to handle that?
         :return:
         """
-        (alphas, colors) = self.get_alphas_colors_for_spin_overlay(spins, PlotDataType.DOS)
+        (alphas, colors) = self\
+            .get_alphas_colors_for_spin_overlay(spins, [PlotDataType.DOS_CSV, PlotDataType.DOS_HDF])
+
         dos_lims = [None, None]
-        for spin in spins:
-            (E, dos, dos_lims[spin]) = get_dos(self.filepaths_dos[spin], self.data,
-                                        mask_groups, mask_characters,
-                                        select_groups, interstitial, all_characters)
 
-            ax.plot(dos, E, color=colors[spin], alpha=alphas[spin])
+        if (PlotDataType.DOS_CSV in self.types):
+            for spin in spins:
 
+                (E, dos, dos_lims[spin]) = get_dos(self.filepaths_dos[spin], self.data,
+                                            mask_groups, mask_characters,
+                                            select_groups, interstitial, all_characters)
 
-        if fix_xlim:
-            # spins is either [0], [1], or [0,1]
-            # if [0,1], get the lowest and largest xlim of both tuples
-            dos_lim = dos_lims[0] #
-            if (len(spin) == 2):
-                dos_lim[0] = min(dos_lims[0][0], dos_lims[1][0])
-                dos_lim[1] = max(dos_lims[0][1], dos_lims[1][1])
-            ax.set_xlim(dos_lim)
+                self.ax_dos.plot(dos, E, color=colors[spin], alpha=alphas[spin])
+
+            # if ylim:
+            #     self.ax_dos.set_ylim(ylim)
+
+            if fix_xlim:
+                # spins is either [0], [1], or [0,1]
+                # if [0,1], get the lowest and largest xlim of both tuples
+                dos_lim = []
+                if (len(spins) == 1):
+                    dos_lim = dos_lims[spins[0]]  #
+                if (len(spins) == 2):
+                    dos_lim.append(min(dos_lims[0][0], dos_lims[1][0]))
+                    dos_lim.append(max(dos_lims[0][1], dos_lims[1][1]))
+                dos_lim = tuple(dos_lim)
+                self.ax_dos.set_xlim(dos_lim)
+
+        elif (PlotDataType.DOS_HDF in self.types):
+            raise NotImplementedError("plot DOS from HDF data: not implemented.")
 
 
     def plot_dos_masci(self, spins, only_total=False, saveas=r'dos_plot', title=r'Density of states', linestyle='-',
-                 marker=None, legend=False, limits=[None, None], ax=None):
+                 marker=None, legend=False, limits=[None, None], ylim=None):
         """
         Plot the total density of states from a FLEUR DOS.1 file
 
@@ -315,72 +365,94 @@ class DOSPlot(Plot):
 
         params:
         """
-        for spin in spins:
-            doses = []
-            energies = []
-            # dosmt_total = np.zeros(nData, "d")
-            # totaldos = np.zeros(nData, "d")
+        if (PlotDataType.DOS_CSV in self.types):
+            for spin in spins:
+                doses = []
+                energies = []
+                # dosmt_total = np.zeros(nData, "d")
+                # totaldos = np.zeros(nData, "d")
 
-            # read data from file
-            datafile = self.filepaths_dos[spin]  # 'DOS.1'
-            data = np.loadtxt(datafile, skiprows=0)
+                # read data from file
+                datafile = self.filepaths_dos[spin]  # 'DOS.1'
+                data = np.loadtxt(datafile, skiprows=0)
 
-            energy = data[..., 0]
-            totaldos = data[:, 1]
-            interstitialdos = data[:, 2]
-            dosmt_total = totaldos - interstitialdos
+                energy = data[..., 0]
+                totaldos = data[:, 1]
+                interstitialdos = data[:, 2]
+                dosmt_total = totaldos - interstitialdos
 
-            doses = [totaldos, interstitialdos, dosmt_total]
-            energies = [energy, energy, energy]
-            # xlabel = r'E - E$_F$ [eV]'
-            ylabel = r'Energy [eV]'
-            xlabel = r'DOS [eV$^{-1}$]'
+                doses = [totaldos, interstitialdos, dosmt_total]
+                energies = [energy, energy, energy]
+                # xlabel = r'E - E$_F$ [eV]'
+                ylabel = r'Energy [eV]'
+                xlabel = r'DOS [eV$^{-1}$]'
 
-            if only_total:
-                single_scatterplot(energy, totaldos, xlabel, ylabel, title, plotlabel='total dos', linestyle=linestyle,
-                                   marker=marker, limits=limits, saveas=saveas, axis=ax)
-            else:
-                multiple_scatterplots(energies, doses, xlabel, ylabel, title,
-                                      plot_labels=['Total', 'Interstitial', 'Muffin-Tin'], linestyle=linestyle,
-                                      marker=marker, legend=legend, limits=limits, saveas=saveas, axis=ax)
+                if only_total:
+                    single_scatterplot(energy, totaldos, xlabel, ylabel, title, plotlabel='total dos', linestyle=linestyle,
+                                       marker=marker, limits=limits, saveas=saveas, axis=self.ax_dos)
+                else:
+                    multiple_scatterplots(energies, doses, xlabel, ylabel, title,
+                                          plot_labels=['Total', 'Interstitial', 'Muffin-Tin'], linestyle=linestyle,
+                                          marker=marker, legend=legend, limits=limits, saveas=saveas, axis=self.ax_dos)
+        elif (PlotDataType.DOS_HDF in self.types):
+            raise NotImplementedError("plot DOS from HDF data: not implemented.")
 
 
 
-class BandDOSPlot(Bandplot, DOSPlot):
-    def __init__(self, data: DataBands, filepaths_dos : list):
-        Bandplot.__init__(self, data)
-        DOSPlot.__init__(self, data, filepaths_dos)
+class BandDOSPlot(AbstractBandDOSPlot, BandPlot, DOSPlot):
+    def __init__(self, plt, data: DataBands, filepaths_dos : list):
 
-    def setup_banddos(self, plt):
-        fig_scale = 0.65
-        fig_ratio = [12, 6]
+        BandPlot.__init__(self, plt, data)
+        DOSPlot.__init__(self, plt, data, filepaths_dos)
+        AbstractBandDOSPlot.__init__(self, data, filepaths_dos)
+
+
+    def setup_figure(self, fig_ratio=[12,6], fig_scale=0.65):
         figsize = [fig_scale * el for el in fig_ratio]
-
-        fig = plt.figure(figsize=figsize)
+        self.fig = self.plt.figure(figsize=figsize)
         # order: first add dos plot, then band plot.
         # otherwise labels (.setup() below) will be set on dos instead band plot.
-        gs_dos = gridspec.GridSpec(1, 2)
-        ax_dos = fig.add_subplot(gs_dos[0, 1])
-        gs = gridspec.GridSpec(1, 2)
-        ax_bands = fig.add_subplot(gs[0, 0], sharey=ax_dos)
-        gs.update(wspace=0, left=0.1, right=1.4)
-        gs_dos.update(left=0.6, right=0.9, wspace=0)
-        plt.setp(ax_dos.get_yticklabels(), visible=False)
+        self.gs_dos = gridspec.GridSpec(1, 2)
+        self.ax_dos = self.fig.add_subplot(self.gs_dos[0, 1])
+        self.gs_bands = gridspec.GridSpec(1, 2)
+        self.ax_bands = self.fig.add_subplot(self.gs_bands[0, 0], sharey=self.ax_dos)
+        self.gs_bands.update(wspace=0, left=0.1, right=1.4)
+        self.gs_dos.update(left=0.6, right=0.9, wspace=0)
+        self.plt.setp(self.ax_dos.get_yticklabels(), visible=False)
         # gs.tight_layout(fig, rect=[0, 0, 1, 0.97])
+        return (self.fig, self.ax_bands, self.ax_dos)
 
-        return (fig, ax_bands, ax_dos)
+    def get_data_ylim(self):
+        sel = self.data.simulate_gui_selection()
+
+        (k_r, E_r, W_r) = self.data.reshape_data(sel.mask_bands, sel.mask_characters, sel.mask_groups, sel.spin,
+                                                 unfolding_weight_exponent=1, ignore_atoms_per_group=False)
+
+        ymin = np.min(((E_r - self.data.fermi_energy) * self.data.HARTREE_EV))
+        ymax = np.max(((E_r - self.data.fermi_energy) * self.data.HARTREE_EV))
+
+        return (ymin, ymax)
 
     def plot_bandDOS(self, mask_bands, mask_characters, mask_groups, spins,
                    unfolding_weight_exponent, compare_characters,
-                   ax_bands, ignore_atoms_per_group, marker_size,
+                    ignore_atoms_per_group, marker_size,
                      dos_select_groups, dos_interstitial, dos_all_characters,
-                     ax_dos, dos_fix_xlim=True):
+                     dos_fix_xlim=True, ylim=None):
+
+        self.ax_bands.clear()
+        self.ax_dos.clear()
+        self.ax_dos.set_ylim(ylim)
+
+        (mask_bands, mask_characters, mask_groups) = self.icdv\
+            .convert_selections(mask_bands, mask_characters, mask_groups)
+
         self.plot_bands(mask_bands, mask_characters, mask_groups, spins,
-                        unfolding_weight_exponent, compare_characters, ax_bands,
-                        ignore_atoms_per_group, marker_size)
+                        unfolding_weight_exponent, compare_characters,
+                        ignore_atoms_per_group, marker_size, ylim=None)
+
         self.plot_dos(spins, mask_groups, mask_characters,
                       dos_select_groups, dos_interstitial, dos_all_characters,
-                      ax_dos, dos_fix_xlim)
+                      dos_fix_xlim, ylim=ylim)
 
 
 
