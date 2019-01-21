@@ -71,7 +71,7 @@ class BandPlot(AbstractBandPlot, AbstractMatplot):
 
     def setup_figure(self, fig_ratio=[10, 6], fig_scale=0.65):
         (self.fig, self.ax_bands) = self.plt.subplots(1, figsize=[fig_scale * el for el in fig_ratio])
-        self.plt.suptitle(f"BandStructure of {filename}")
+        # self.plt.suptitle(f"BandStructure of {filename}")
         return (self.fig, self.ax_bands)
 
     def setup_band_labels(self):
@@ -108,15 +108,15 @@ class BandPlot(AbstractBandPlot, AbstractMatplot):
 
         return (ymin, ymax)
 
-    def plot_bands(self, bands, characters, groups, spins,
+    def plot_bands(self, mask_bands, mask_characters, mask_groups, spins,
                    unfolding_weight_exponent, compare_characters,
                    ignore_atoms_per_group, marker_size=1, ylim=None):
         """
         Top-level method for the bandDOS plot. Calls appropriate subplot methods based on user selection.
 
-        :param bands: list of bool
-        :param characters: list of bool
-        :param groups: list of bool
+        :param mask_bands: list of bool
+        :param mask_characters: list of bool
+        :param mask_groups: list of bool
         :param spins: list of int. either [0] or [0,1]
         :param unfolding_weight_exponent: dloat
         :param compare_characters: bool
@@ -125,16 +125,17 @@ class BandPlot(AbstractBandPlot, AbstractMatplot):
         :param marker_size: float
         :return:
         """
-
+        if ylim:
+            self.ax_bands.set_ylim(ylim)
         alpha = 1
         if compare_characters:
-            self._plot_bands_compare_two_characters(bands, characters, groups, spins[0],
+            self._plot_bands_compare_two_characters(mask_bands, mask_characters, mask_groups, spins[0],
                                                     unfolding_weight_exponent,
                                                     alpha, ignore_atoms_per_group, marker_size, ylim)
         else:
             (alphas, colors) = self.get_alphas_colors_for_spin_overlay(spins)
             for spin in spins:
-                self._plot_bands_normal(bands, characters, groups, spin,
+                self._plot_bands_normal(mask_bands, mask_characters, mask_groups, spin,
                                         unfolding_weight_exponent,
                                         colors[spin], alphas[spin], ignore_atoms_per_group,
                                         marker_size, ylim)
@@ -277,7 +278,7 @@ class DOSPlot(AbstractDOSPlot, AbstractMatplot):
 
     def setup_figure(self, fig_ratio=[10, 6], fig_scale=0.65):
         (self.fig, self.ax_dos) = self.plt.subplots(1, figsize=[fig_scale * el for el in fig_ratio])
-        self.plt.suptitle(f"BandStructure of {filename}")
+        # self.plt.suptitle(f"BandStructure of {filename}")
         return (self.fig, self.ax_dos)
 
     def get_data_ylim(self):
@@ -404,19 +405,25 @@ class BandDOSPlot(AbstractBandDOSPlot, BandPlot, DOSPlot):
         AbstractBandDOSPlot.__init__(self, data, filepaths_dos)
 
     def setup_figure(self, fig_ratio=[12, 6], fig_scale=0.65):
-        figsize = [fig_scale * el for el in fig_ratio]
-        self.fig = self.plt.figure(figsize=figsize)
-        # order: first add dos plot, then band plot.
-        # otherwise labels (.setup() below) will be set on dos instead band plot.
-        self.gs_dos = gridspec.GridSpec(1, 2)
-        self.ax_dos = self.fig.add_subplot(self.gs_dos[0, 1])
-        self.gs_bands = gridspec.GridSpec(1, 2)
-        self.ax_bands = self.fig.add_subplot(self.gs_bands[0, 0], sharey=self.ax_dos)
-        self.gs_bands.update(wspace=0, left=0.1, right=1.4)
-        self.gs_dos.update(left=0.6, right=0.9, wspace=0)
-        self.plt.setp(self.ax_dos.get_yticklabels(), visible=False)
-        # gs.tight_layout(fig, rect=[0, 0, 1, 0.97])
-        return (self.fig, self.ax_bands, self.ax_dos)
+        if self.filepaths_dos:
+            figsize = [fig_scale * el for el in fig_ratio]
+            self.fig = self.plt.figure(figsize=figsize)
+            # order: first add dos plot, then band plot.
+            # otherwise labels (.setup() below) will be set on dos instead band plot.
+            self.gs_dos = gridspec.GridSpec(1, 2)
+            self.ax_dos = self.fig.add_subplot(self.gs_dos[0, 1])
+            self.gs_bands = gridspec.GridSpec(1, 2)
+            self.ax_bands = self.fig.add_subplot(self.gs_bands[0, 0], sharey=self.ax_dos)
+            self.gs_bands.update(wspace=0, left=0.1, right=1.4)
+            self.gs_dos.update(left=0.6, right=0.9, wspace=0)
+            self.plt.setp(self.ax_dos.get_yticklabels(), visible=False)
+            # gs.tight_layout(fig, rect=[0, 0, 1, 0.97])
+            return (self.fig, self.ax_bands, self.ax_dos)
+        else:
+            (self.fig, self.ax_bands) = self.plt.subplots(1, figsize=[fig_scale * el for el in fig_ratio])
+            # self.plt.suptitle(f"BandStructure of {filename}")
+            self.ax_dos = None
+            return (self.fig, self.ax_bands, self.ax_dos)
 
     def get_data_ylim(self):
         sel = self.data.simulate_gui_selection()
@@ -435,14 +442,23 @@ class BandDOSPlot(AbstractBandDOSPlot, BandPlot, DOSPlot):
                      dos_select_groups, dos_interstitial, dos_all_characters,
                      dos_fix_xlim=True, ylim=None):
         self.ax_bands.clear()
-        self.ax_dos.clear()
-        self.ax_dos.set_ylim(ylim)
 
-        self.plot_bands(mask_bands, mask_characters, mask_groups, spins,
-                        unfolding_weight_exponent, compare_characters,
-                        ignore_atoms_per_group, marker_size, ylim=None)
+        if self.filepaths_dos:
+            self.ax_dos.clear()
+            self.ax_dos.set_ylim(ylim)
+        else:
+            pass
+            # self.ax_bands.set_ylim(ylim)
 
+        if self.filepaths_dos:
+            self.plot_bands(mask_bands, mask_characters, mask_groups, spins,
+                            unfolding_weight_exponent, compare_characters,
+                            ignore_atoms_per_group, marker_size, ylim=None)
 
-        self.plot_dos(spins, mask_groups, mask_characters,
-                      dos_select_groups, dos_interstitial, dos_all_characters,
-                      dos_fix_xlim, ylim=ylim)
+            self.plot_dos(spins, mask_groups, mask_characters,
+                          dos_select_groups, dos_interstitial, dos_all_characters,
+                          dos_fix_xlim, ylim=ylim)
+        else:
+            self.plot_bands(mask_bands, mask_characters, mask_groups, spins,
+                            unfolding_weight_exponent, compare_characters,
+                            ignore_atoms_per_group, marker_size, ylim=ylim)
