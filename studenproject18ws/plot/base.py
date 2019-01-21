@@ -63,6 +63,26 @@ class AbstractBandPlot(AbstractPlot):
 
         self.icdv = BandDataDisplayValues(self)
 
+    @abstractmethod
+    def setup_band_labels(self):
+        pass
+
+    @abstractmethod
+    def plot_bands(self):
+        pass
+
+    @abstractmethod
+    def _plot_bands_normal(self):
+        pass
+
+    @abstractmethod
+    def _plot_bands_compare_two_characters(self):
+        pass
+
+    @abstractmethod
+    def plot_groupVelocity(self):
+        pass
+
 class AbstractDOSPlot(AbstractPlot):
     def __init__(self, data: Data, filepaths_dos: list):
         AbstractPlot.__init__(self, data)
@@ -74,12 +94,19 @@ class AbstractDOSPlot(AbstractPlot):
 
         self.icdv = DOSDataDisplayValues(self)
 
+    @abstractmethod
+    def plot_dos(self):
+        pass
+
 class AbstractBandDOSPlot(AbstractBandPlot, AbstractDOSPlot):
     def __init__(self, data: DataBands, filepaths_dos: list):
         AbstractBandPlot.__init__(self, data)
         AbstractDOSPlot.__init__(self, data, filepaths_dos)
 
         self.icdv = BandDOSDataDisplayValues(self)
+
+    def plot_bandDOS(self):
+        pass
 
 
 ##########################################################################
