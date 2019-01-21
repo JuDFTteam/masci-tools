@@ -139,7 +139,7 @@ class BandPlot(AbstractBandPlot, AbstractMatplot):
                                         colors[spin], alphas[spin], ignore_atoms_per_group,
                                         marker_size, ylim)
 
-    def _plot_bands_normal(self, bands, characters, groups, spin,
+    def _plot_bands_normal(self, mask_bands, mask_characters, mask_groups, spin,
                            unfolding_weight_exponent, color, alpha=1,
                            ignore_atoms_per_group=False, marker_size=1, ylim=None):
         """Plot regular.
@@ -150,9 +150,9 @@ class BandPlot(AbstractBandPlot, AbstractMatplot):
 
         :param marker_size:
         :param ignore_atoms_per_group:
-        :param bands:
-        :param characters:
-        :param groups:
+        :param mask_bands:
+        :param mask_characters:
+        :param mask_groups:
         :param spin:
         :param unfolding_weight_exponent:
         :param ax:
@@ -161,9 +161,6 @@ class BandPlot(AbstractBandPlot, AbstractMatplot):
         :return:
         """
         self.setup_band_labels()
-
-        (mask_bands, mask_characters, mask_groups) = self.icdv \
-            .convert_selections(bands, characters, groups)
 
         (k_r, E_r, W_r) = self.data.reshape_data(mask_bands, mask_characters, mask_groups, spin,
                                                  unfolding_weight_exponent, ignore_atoms_per_group)
@@ -179,7 +176,7 @@ class BandPlot(AbstractBandPlot, AbstractMatplot):
         self.ax_bands.scatter(k_r, (E_r - self.data.fermi_energy) * self.data.HARTREE_EV,
                               marker='o', c=color, s=5 * W_r, lw=0, alpha=alpha)
 
-    def _plot_bands_compare_two_characters(self, bands, characters, groups, spin,
+    def _plot_bands_compare_two_characters(self, mask_bands, mask_characters, mask_groups, spin,
                                            unfolding_weight_exponent,
                                            alpha=1, ignore_atoms_per_group=False, marker_size=1, ylim=None):
         """Plot with exactly 2 selected band characters mapped to colormap.
@@ -196,18 +193,15 @@ class BandPlot(AbstractBandPlot, AbstractMatplot):
 
         :param marker_size:
         :param ignore_atoms_per_group:
-        :param bands:
-        :param characters:
-        :param groups:
+        :param mask_bands:
+        :param mask_characters:
+        :param mask_groups:
         :param spin:
         :param ax:
         :param alpha:
         :return:
         """
         self.setup_band_labels()
-
-        (mask_bands, mask_characters, mask_groups) = self.icdv \
-            .convert_selections(bands, characters, groups)
 
         characters = np.array(range(4))[mask_characters]
         if (len(characters) != 2):
@@ -435,7 +429,7 @@ class BandDOSPlot(AbstractBandDOSPlot, BandPlot, DOSPlot):
 
         return (ymin, ymax)
 
-    def plot_bandDOS(self, bands, characters, groups, spins,
+    def plot_bandDOS(self, mask_bands, mask_characters, mask_groups, spins,
                      unfolding_weight_exponent, compare_characters,
                      ignore_atoms_per_group, marker_size,
                      dos_select_groups, dos_interstitial, dos_all_characters,
@@ -444,12 +438,10 @@ class BandDOSPlot(AbstractBandDOSPlot, BandPlot, DOSPlot):
         self.ax_dos.clear()
         self.ax_dos.set_ylim(ylim)
 
-        self.plot_bands(bands, characters, groups, spins,
+        self.plot_bands(mask_bands, mask_characters, mask_groups, spins,
                         unfolding_weight_exponent, compare_characters,
                         ignore_atoms_per_group, marker_size, ylim=None)
 
-        (mask_bands, mask_characters, mask_groups) = self.icdv \
-            .convert_selections(bands, characters, groups)
 
         self.plot_dos(spins, mask_groups, mask_characters,
                       dos_select_groups, dos_interstitial, dos_all_characters,
