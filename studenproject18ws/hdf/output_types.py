@@ -13,7 +13,9 @@ Reason: this package uses introspection on all types found in this module.
 The ones mentioned here will be passed over."""
 
 
-class Data(object):
+
+
+class FleurData(object):
     """Base class for dynamically composable output types for HDF file Reader Extract-Transform-Load pipeline.
 
     This base class serves as common base for all application-specific data output classes. It this base class
@@ -64,9 +66,9 @@ class Data(object):
                 setattr(self, attr_name, attr[:])
 
 
-class DataBands(Data):
+class FleurBandData(FleurData):
     def __init__(self, **kwds):
-        Data.__init__(self, **kwds)
+        FleurData.__init__(self, **kwds)
         self.HARTREE_EV = 27.2114
 
         # this has to be in a try-except block cause don't know

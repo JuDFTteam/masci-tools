@@ -26,7 +26,7 @@ class AbstractPlot(ABC):
     Base class for all Plot classes.
     """
 
-    def __init__(self, data: Data):
+    def __init__(self, data: FleurData):
         """
         :param data:
 
@@ -57,7 +57,7 @@ class AbstractPlot(ABC):
         return (alphas, colors)
 
 class AbstractBandPlot(AbstractPlot):
-    def __init__(self, data: DataBands):
+    def __init__(self, data: FleurBandData):
         AbstractPlot.__init__(self, data)
         self.types.update([PlotDataType.Bands])
 
@@ -84,7 +84,7 @@ class AbstractBandPlot(AbstractPlot):
         pass
 
 class AbstractDOSPlot(AbstractPlot):
-    def __init__(self, data: Data, filepaths_dos: list):
+    def __init__(self, data: FleurData, filepaths_dos: list):
         AbstractPlot.__init__(self, data)
         self.filepaths_dos = filepaths_dos
         if filepaths_dos:
@@ -99,7 +99,7 @@ class AbstractDOSPlot(AbstractPlot):
         pass
 
 class AbstractBandDOSPlot(AbstractBandPlot, AbstractDOSPlot):
-    def __init__(self, data: DataBands, filepaths_dos: list):
+    def __init__(self, data: FleurBandData, filepaths_dos: list):
         AbstractBandPlot.__init__(self, data)
         AbstractDOSPlot.__init__(self, data, filepaths_dos)
 

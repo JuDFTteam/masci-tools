@@ -13,13 +13,12 @@ from studenproject18ws.dos.reader import get_dos
 from masci_tools.vis.plot_methods import single_scatterplot, multiple_scatterplots
 
 
-
 class AbstractMatplot(ABC):
     def __init__(self, plt):
         self.plt = plt
 
     @abstractmethod
-    def setup_figure(self, fig_ratio=[10,6], fig_scale=0.65):
+    def setup_figure(self, fig_ratio=[10, 6], fig_scale=0.65):
         pass
 
 
@@ -66,11 +65,11 @@ class BandPlot(AbstractBandPlot, AbstractMatplot):
 
     """
 
-    def __init__(self, plt, data: DataBands):
+    def __init__(self, plt, data: FleurBandData):
         AbstractBandPlot.__init__(self, data)
         AbstractMatplot.__init__(self, plt)
 
-    def setup_figure(self, fig_ratio=[10,6], fig_scale=0.65):
+    def setup_figure(self, fig_ratio=[10, 6], fig_scale=0.65):
         (self.fig, self.ax_bands) = self.plt.subplots(1, figsize=[fig_scale * el for el in fig_ratio])
         self.plt.suptitle(f"BandStructure of {filename}")
         return (self.fig, self.ax_bands)
@@ -109,15 +108,15 @@ class BandPlot(AbstractBandPlot, AbstractMatplot):
 
         return (ymin, ymax)
 
-    def plot_bands(self, mask_bands, mask_characters, mask_groups, spins,
+    def plot_bands(self, bands, characters, groups, spins,
                    unfolding_weight_exponent, compare_characters,
                    ignore_atoms_per_group, marker_size=1, ylim=None):
         """
         Top-level method for the bandDOS plot. Calls appropriate subplot methods based on user selection.
 
-        :param mask_bands: list of bool
-        :param mask_characters: list of bool
-        :param mask_groups: list of bool
+        :param bands: list of bool
+        :param characters: list of bool
+        :param groups: list of bool
         :param spins: list of int. either [0] or [0,1]
         :param unfolding_weight_exponent: dloat
         :param compare_characters: bool
@@ -129,18 +128,18 @@ class BandPlot(AbstractBandPlot, AbstractMatplot):
 
         alpha = 1
         if compare_characters:
-            self._plot_bands_compare_two_characters(mask_bands, mask_characters, mask_groups, spins[0],
+            self._plot_bands_compare_two_characters(bands, characters, groups, spins[0],
                                                     unfolding_weight_exponent,
                                                     alpha, ignore_atoms_per_group, marker_size, ylim)
         else:
             (alphas, colors) = self.get_alphas_colors_for_spin_overlay(spins)
             for spin in spins:
-                self._plot_bands_normal(mask_bands, mask_characters, mask_groups, spin,
+                self._plot_bands_normal(bands, characters, groups, spin,
                                         unfolding_weight_exponent,
                                         colors[spin], alphas[spin], ignore_atoms_per_group,
                                         marker_size, ylim)
 
-    def _plot_bands_normal(self, mask_bands, mask_characters, mask_groups, spin,
+    def _plot_bands_normal(self, bands, characters, groups, spin,
                            unfolding_weight_exponent, color, alpha=1,
                            ignore_atoms_per_group=False, marker_size=1, ylim=None):
         """Plot regular.
@@ -151,9 +150,9 @@ class BandPlot(AbstractBandPlot, AbstractMatplot):
 
         :param marker_size:
         :param ignore_atoms_per_group:
-        :param mask_bands:
-        :param mask_characters:
-        :param mask_groups:
+        :param bands:
+        :param characters:
+        :param groups:
         :param spin:
         :param unfolding_weight_exponent:
         :param ax:
@@ -162,6 +161,9 @@ class BandPlot(AbstractBandPlot, AbstractMatplot):
         :return:
         """
         self.setup_band_labels()
+
+        (mask_bands, mask_characters, mask_groups) = self.icdv \
+            .convert_selections(bands, characters, groups)
 
         (k_r, E_r, W_r) = self.data.reshape_data(mask_bands, mask_characters, mask_groups, spin,
                                                  unfolding_weight_exponent, ignore_atoms_per_group)
@@ -175,9 +177,10 @@ class BandPlot(AbstractBandPlot, AbstractMatplot):
             W_r = W_r[W_r > t]
         W_r *= marker_size
         self.ax_bands.scatter(k_r, (E_r - self.data.fermi_energy) * self.data.HARTREE_EV,
-                   marker='o', c=color, s=5 * W_r, lw=0, alpha=alpha)
+                              marker='o', c=color, s=5 * W_r, lw=0, alpha=alpha)
 
-    def _plot_bands_compare_two_characters(self, mask_bands, mask_characters, mask_groups, spin, unfolding_weight_exponent,
+    def _plot_bands_compare_two_characters(self, bands, characters, groups, spin,
+                                           unfolding_weight_exponent,
                                            alpha=1, ignore_atoms_per_group=False, marker_size=1, ylim=None):
         """Plot with exactly 2 selected band characters mapped to colormap.
 
@@ -193,15 +196,18 @@ class BandPlot(AbstractBandPlot, AbstractMatplot):
 
         :param marker_size:
         :param ignore_atoms_per_group:
-        :param mask_bands:
-        :param mask_characters:
-        :param mask_groups:
+        :param bands:
+        :param characters:
+        :param groups:
         :param spin:
         :param ax:
         :param alpha:
         :return:
         """
         self.setup_band_labels()
+
+        (mask_bands, mask_characters, mask_groups) = self.icdv \
+            .convert_selections(bands, characters, groups)
 
         characters = np.array(range(4))[mask_characters]
         if (len(characters) != 2):
@@ -212,7 +218,6 @@ class BandPlot(AbstractBandPlot, AbstractMatplot):
         (k_resh, evs_resh, weight_resh) = self.data \
             .reshape_data(mask_bands, self.data._mask_characters([characters[0]]),
                           mask_groups, spin, unfolding_weight_exponent, ignore_atoms_per_group)
-
 
         (k_resh2, evs_resh2, weight_resh2) = self.data \
             .reshape_data(mask_bands, self.data._mask_characters([characters[1]]),
@@ -247,7 +252,7 @@ class BandPlot(AbstractBandPlot, AbstractMatplot):
         # cm = plt.cm.winter
         cm = plt.cm.plasma
         self.ax_bands.scatter(k_resh2, (evs_resh - self.data.fermi_energy) * self.data.HARTREE_EV,
-                   marker='o', c=rel, s=5 * tot_weight, lw=0, alpha=alpha, cmap=cm)
+                              marker='o', c=rel, s=5 * tot_weight, lw=0, alpha=alpha, cmap=cm)
 
     def plot_groupVelocity(self, select_band, spin):
         """Plot group velocity of single band, no checking.
@@ -272,18 +277,18 @@ class BandPlot(AbstractBandPlot, AbstractMatplot):
 
 
 class DOSPlot(AbstractDOSPlot, AbstractMatplot):
-    def __init__(self, plt, data: DataBands, filepaths_dos : list):
+    def __init__(self, plt, data: FleurBandData, filepaths_dos: list):
         AbstractDOSPlot.__init__(self, data, filepaths_dos)
         AbstractMatplot.__init__(self, plt)
 
-    def setup_figure(self, fig_ratio=[10,6], fig_scale=0.65):
+    def setup_figure(self, fig_ratio=[10, 6], fig_scale=0.65):
         (self.fig, self.ax_dos) = self.plt.subplots(1, figsize=[fig_scale * el for el in fig_ratio])
         self.plt.suptitle(f"BandStructure of {filename}")
         return (self.fig, self.ax_dos)
 
     def get_data_ylim(self):
         if (PlotDataType.Bands in self.types
-        or PlotDataType.DOS_HDF in self.types):
+                or PlotDataType.DOS_HDF in self.types):
             try:
                 sel = self.data.simulate_gui_selection()
 
@@ -319,17 +324,17 @@ class DOSPlot(AbstractDOSPlot, AbstractMatplot):
         TODO This is a different matplot than the bandstructure matplot! How to handle that?
         :return:
         """
-        (alphas, colors) = self\
+
+        (alphas, colors) = self \
             .get_alphas_colors_for_spin_overlay(spins, [PlotDataType.DOS_CSV, PlotDataType.DOS_HDF])
 
         dos_lims = [None, None]
 
         if (PlotDataType.DOS_CSV in self.types):
             for spin in spins:
-
                 (E, dos, dos_lims[spin]) = get_dos(self.filepaths_dos[spin], self.data,
-                                            mask_groups, mask_characters,
-                                            select_groups, interstitial, all_characters)
+                                                   mask_groups, mask_characters,
+                                                   select_groups, interstitial, all_characters)
 
                 self.ax_dos.plot(dos, E, color=colors[spin], alpha=alphas[spin])
 
@@ -351,9 +356,8 @@ class DOSPlot(AbstractDOSPlot, AbstractMatplot):
         elif (PlotDataType.DOS_HDF in self.types):
             raise NotImplementedError("plot DOS from HDF data: not implemented.")
 
-
     def plot_dos_masci(self, spins, only_total=False, saveas=r'dos_plot', title=r'Density of states', linestyle='-',
-                 marker=None, legend=False, limits=[None, None], ylim=None):
+                       marker=None, legend=False, limits=[None, None], ylim=None):
         """
         Plot the total density of states from a FLEUR DOS.1 file
 
@@ -388,7 +392,8 @@ class DOSPlot(AbstractDOSPlot, AbstractMatplot):
                 xlabel = r'DOS [eV$^{-1}$]'
 
                 if only_total:
-                    single_scatterplot(energy, totaldos, xlabel, ylabel, title, plotlabel='total dos', linestyle=linestyle,
+                    single_scatterplot(energy, totaldos, xlabel, ylabel, title, plotlabel='total dos',
+                                       linestyle=linestyle,
                                        marker=marker, limits=limits, saveas=saveas, axis=self.ax_dos)
                 else:
                     multiple_scatterplots(energies, doses, xlabel, ylabel, title,
@@ -398,16 +403,13 @@ class DOSPlot(AbstractDOSPlot, AbstractMatplot):
             raise NotImplementedError("plot DOS from HDF data: not implemented.")
 
 
-
 class BandDOSPlot(AbstractBandDOSPlot, BandPlot, DOSPlot):
-    def __init__(self, plt, data: DataBands, filepaths_dos : list):
-
+    def __init__(self, plt, data: FleurBandData, filepaths_dos: list):
         BandPlot.__init__(self, plt, data)
         DOSPlot.__init__(self, plt, data, filepaths_dos)
         AbstractBandDOSPlot.__init__(self, data, filepaths_dos)
 
-
-    def setup_figure(self, fig_ratio=[12,6], fig_scale=0.65):
+    def setup_figure(self, fig_ratio=[12, 6], fig_scale=0.65):
         figsize = [fig_scale * el for el in fig_ratio]
         self.fig = self.plt.figure(figsize=figsize)
         # order: first add dos plot, then band plot.
@@ -434,25 +436,21 @@ class BandDOSPlot(AbstractBandDOSPlot, BandPlot, DOSPlot):
         return (ymin, ymax)
 
     def plot_bandDOS(self, bands, characters, groups, spins,
-                   unfolding_weight_exponent, compare_characters,
-                    ignore_atoms_per_group, marker_size,
+                     unfolding_weight_exponent, compare_characters,
+                     ignore_atoms_per_group, marker_size,
                      dos_select_groups, dos_interstitial, dos_all_characters,
                      dos_fix_xlim=True, ylim=None):
-
         self.ax_bands.clear()
         self.ax_dos.clear()
         self.ax_dos.set_ylim(ylim)
 
-        (mask_bands, mask_characters, mask_groups) = self.icdv\
-            .convert_selections(bands, characters, groups)
-
-        self.plot_bands(mask_bands, mask_characters, mask_groups, spins,
+        self.plot_bands(bands, characters, groups, spins,
                         unfolding_weight_exponent, compare_characters,
                         ignore_atoms_per_group, marker_size, ylim=None)
+
+        (mask_bands, mask_characters, mask_groups) = self.icdv \
+            .convert_selections(bands, characters, groups)
 
         self.plot_dos(spins, mask_groups, mask_characters,
                       dos_select_groups, dos_interstitial, dos_all_characters,
                       dos_fix_xlim, ylim=ylim)
-
-
-

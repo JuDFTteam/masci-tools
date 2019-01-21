@@ -56,7 +56,7 @@ class Recipes:
     """
     Template = {
         "output_types": [
-            Data
+            FleurData
         ],
         "datasets": {
             "": {  # example entry: empty key "" will be ignored
@@ -70,7 +70,7 @@ class Recipes:
 
     Bands = {
         "output_types": [
-            load.DataBands
+            load.FleurBandData
         ],
         "datasets": {
             "atoms_position": {

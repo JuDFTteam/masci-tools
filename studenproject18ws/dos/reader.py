@@ -2,7 +2,7 @@ from collections import Counter
 
 import numpy as np
 
-from studenproject18ws.hdf.output_types import DataBands
+from studenproject18ws.hdf.output_types import FleurBandData
 
 
 def get_dos_num_groups_characters(filepath_dos):
@@ -49,7 +49,7 @@ def get_dos_num_groups_characters(filepath_dos):
         return (None, None)
 
 
-def get_dos(filepath_dos, data_bands: DataBands, mask_groups, mask_characters,
+def get_dos(filepath_dos, data_bands: FleurBandData, mask_groups, mask_characters,
             select_groups, interstitial, all_characters):
     """
 
