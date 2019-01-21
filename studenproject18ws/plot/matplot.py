@@ -433,7 +433,7 @@ class BandDOSPlot(AbstractBandDOSPlot, BandPlot, DOSPlot):
 
         return (ymin, ymax)
 
-    def plot_bandDOS(self, mask_bands, mask_characters, mask_groups, spins,
+    def plot_bandDOS(self, bands, characters, groups, spins,
                    unfolding_weight_exponent, compare_characters,
                     ignore_atoms_per_group, marker_size,
                      dos_select_groups, dos_interstitial, dos_all_characters,
@@ -444,7 +444,7 @@ class BandDOSPlot(AbstractBandDOSPlot, BandPlot, DOSPlot):
         self.ax_dos.set_ylim(ylim)
 
         (mask_bands, mask_characters, mask_groups) = self.icdv\
-            .convert_selections(mask_bands, mask_characters, mask_groups)
+            .convert_selections(bands, characters, groups)
 
         self.plot_bands(mask_bands, mask_characters, mask_groups, spins,
                         unfolding_weight_exponent, compare_characters,
