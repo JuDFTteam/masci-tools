@@ -76,11 +76,10 @@ takes weight away in tensor product or sth.
 * DONE Widget: spin selection
   CLOSED: [2019-01-16 Wed 16:28]
 * TODO Widget: File Chooser
-** Review Jupyter File chooser solutions
+** DONE Review Jupyter File chooser solutions
+   CLOSED: [2019-01-21 Mon 21:28]
 see [[file:../../jupyter/Example_FileChoosers.ipynb][dedicated notebook]]
-** HDF file chooser
-** DOS file chooser
-
+** TODO Integrate into working solution
 * TODO Dashboard Layout
 ** DONE Replace =@interact= with =interactive=
    CLOSED: [2019-01-16 Wed 00:26]
@@ -114,16 +113,16 @@ see above.
 *** TODO [[*Widget: ignore_atoms_per_group][Widget: ignore_atoms_per_group]]
 *** TODO [[*Widget: spin selection][Widget: spin selection]]
 *** TODO [[*Widget: File Chooser][Widget: File Chooser]]
-** TODO Try out if putting mpl figure inside a widget is helpful
+** TODO [#C] Try out if putting mpl figure inside a widget is helpful
 - see [[file:SiScLab_Task2-JupyterWidgets_Notes.org::*Is%20it%20possible%20to%20put%20a%20matplotlib%20plot%20inside%20an%20ipywidgets%20container?][Is it possible to put a matplotlib plot inside an ipywidgets container?]]
-** TODO Try out if matplotlib can be replaced with other 2D plotter
+** TODO [#C] Try out if matplotlib can be replaced with other 2D plotter
 In descending priority:
 - bqplot (cause good integration with ipywidgets)
 - mpld3 (only works in notebook not lab for now)
 - holoviews (e.g. together with PyViz Panel)
 - bokeh (probably have to use bokeh widgets then)
 - plotly
-** TODO Try out if ipywidgets can be replaced with other widgets lib
+** TODO [#C] Try out if ipywidgets can be replaced with other widgets lib
 In descending priority:
 - PyViz Panel + Param (Param is a dataviz definer and independent of particular
   frontend. *In particular, it is supported by Tkinter*. So could even use
@@ -269,15 +268,23 @@ dos += col(index['section3'][char][group] + bad_hack_offset) * atoms_per_group[g
 # section3 with bad_hack_offset < section2 < section3 without bad_hack_offset.
 #+END_SRC
 
-** TODO Integrate banddos plot into dashboard
-
+** DONE Integrate banddos plot into dashboard
+   CLOSED: [2019-01-21 Mon 21:29]
 ** TODO Interactive DOS plot de-/activation based on [[*DOS file chooser][DOS file chooser]]
-** TODO Widgets (masks) linking to DOS plot:
+** DONE Widgets (masks) linking to DOS plot:
+   CLOSED: [2019-01-21 Mon 21:30]
 *** DONE NEW: interstitial (DOS-specific)
     CLOSED: [2019-01-18 Fri 20:00]
 *** DONE link: =select_groups=
     CLOSED: [2019-01-18 Fri 20:00]
-*** TODO link: =select_spins= (1 or 2 DOS files, switch data for plot)
+*** DONE link: =select_spins= (1 or 2 DOS files, switch data for plot)
+    CLOSED: [2019-01-21 Mon 21:30]
+* DONE Abstractify Plotter classes into Tools and Applications using ABC
+  CLOSED: [2019-01-21 Mon 21:31]
+- intent: one base of abstract application plots to implement for different plotting libraries like matplotlib
+- composability of application plot types, like band+DOS -> bandDOS plot
+- hide away as much logic inside the plot class as possible while still being
+  general enough to be usable by every frontend (tk, jupyter, ...)
 * TODO Plot File Export
 ** TODO export =tex= file with plot selections
 - Idea for easy implementation:
@@ -308,12 +315,19 @@ dos += col(index['section3'][char][group] + bad_hack_offset) * atoms_per_group[g
 * TODO AtomsGroup plot
 ** DONE Highlight Selected AtomsGroups 
    CLOSED: [2019-01-09 Wed]
-** TODO AtomsGroup Selection Widget: ElementName labels
+** DONE AtomsGroup Selection Widget: ElementName labels
+   CLOSED: [2019-01-21 Mon 21:33]
 ** TODO Plot: Coloring by AtomsGroup
 ** TODO Plot: Coloring by Element, plus switcher
-* TODO Sodium.hdf: 
+* TODO Other stuff 
 ** TODO if not present: hide unfolding_weight selection widget
-** TODO Reproduce band selection error
+** TODO Sodium.hdf: Reproduce band selection error
+
+Happened once in Python around development stage of notebook banddos05. Couldn't
+reproduce so far. But in Praneeth's Tk it happens all the time, sometimes yes,
+sometimes no, regardless of file. It happens there when an odd select_bands min
+and max value are selected. Couldn't reproduce that programmatically (in
+hdf/reader) either.
 
 - error: =ValueError: cannot reshape array of size 1996 into shape (2495,)=
 - error: =ValueError: cannot reshape array of size 1996 into shape (3992,)=
