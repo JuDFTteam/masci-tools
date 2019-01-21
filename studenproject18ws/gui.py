@@ -176,7 +176,7 @@ class SiscLab:
         self.filepath = os.path.join(*self.filepath)
         self.extractor = Reader(filepath=self.filepath)
         with self.extractor as h5file:
-            self.data = self.extractor.read(recipe=Recipes.Bands)
+            self.data = self.extractor.read(recipe=Recipes.FleurBands)
             self.data.move_datasets_to_memory()
         self.bandplotter = BandPlot(self.data)
         self.NumAtomGroups.set(self.data.num_groups)

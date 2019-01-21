@@ -2,8 +2,8 @@
 
 """
 from enum import Enum
-
 import numpy as np
+import periodictable
 
 from studenproject18ws.hdf import util as util
 
@@ -153,6 +153,13 @@ class Transform(object):
         self._update_dependees(name, transformed)
         return transformed
 
+    def periodic_elements(self, name, dataset):
+        transformed = dataset
+
+        transformed = [periodictable.elements[atomic_number] for atomic_number in dataset]
+
+        self._update_dependees(name, transformed)
+        return transformed
 
 class TransformBands(Transform):
     """

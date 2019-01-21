@@ -320,3 +320,5 @@ Side note: there is a [[https://github.com/jupyter-widgets/ipywidgets/issues/378
     - wasn't impressed
   - nteract_on_jupyter
     - not tried out yet
+* TODO SORT: More module dependencies
+- periodictable

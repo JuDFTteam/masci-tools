@@ -5,10 +5,12 @@ divided into inheriting submodules, one per plotting tool (matplotlib, and so on
 from abc import ABC, abstractmethod
 from collections import namedtuple
 from enum import Enum
+import periodictable
 import logging
 
 from studenproject18ws.hdf.output_types import *
 from studenproject18ws.dos.reader import get_dos_num_groups_characters
+
 
 ##########################################################################
 #####################Section 1: Abstract Plot base classes ###############
@@ -20,6 +22,7 @@ class PlotDataType(Enum):
     Bands = 1
     DOS_CSV = 2
     DOS_HDF = 3
+
 
 class AbstractPlot(ABC):
     """
@@ -48,13 +51,14 @@ class AbstractPlot(ABC):
         """
         pass
 
-    def get_alphas_colors_for_spin_overlay(self, spins, plotDataTypes = []):
+    def get_alphas_colors_for_spin_overlay(self, spins, plotDataTypes=[]):
         alphas = {0: 1, 1: 1} if (len(spins) == 1) else {0: 0.7, 1: 0.4}
         if any(typ in self.types for typ in plotDataTypes):
             # DOS: only two lines. loooks odd if spin1 DOS is half-transparent
             alphas = {0: 1, 1: 1}
         colors = {0: 'blue', 1: 'red'}
         return (alphas, colors)
+
 
 class AbstractBandPlot(AbstractPlot):
     def __init__(self, data: FleurBandData):
@@ -83,6 +87,7 @@ class AbstractBandPlot(AbstractPlot):
     def plot_groupVelocity(self):
         pass
 
+
 class AbstractDOSPlot(AbstractPlot):
     def __init__(self, data: FleurData, filepaths_dos: list):
         AbstractPlot.__init__(self, data)
@@ -97,6 +102,7 @@ class AbstractDOSPlot(AbstractPlot):
     @abstractmethod
     def plot_dos(self):
         pass
+
 
 class AbstractBandDOSPlot(AbstractBandPlot, AbstractDOSPlot):
     def __init__(self, data: FleurBandData, filepaths_dos: list):
@@ -135,6 +141,11 @@ class DOSDataDisplayValues(InteractiveControlDisplayValues):
             if (PlotDataType.Bands in plotter.types
                     or PlotDataType.DOS_HDF in plotter.types):
                 self.groups = plotter.data.atoms_group_keys
+                if (not hasattr(self, 'group_labels')):
+                    self.group_labels = [f"{g:<3} {e.symbol:<3}: {int(n):<3}" for g, e, n
+                                         in zip(plotter.data.atoms_group_keys,
+                                                plotter.data.atoms_elements,
+                                                plotter.data.atoms_per_group)]
             elif (PlotDataType.DOS_CSV in plotter.types):
                 (num_groups, num_chars) = get_dos_num_groups_characters(plotter.filepaths_dos[0])
                 if (num_groups, num_chars) == (None, None):
@@ -142,6 +153,9 @@ class DOSDataDisplayValues(InteractiveControlDisplayValues):
                                  f"from DOS CSV file {plotter.filepaths_dos[0]}.")
                 self.characters = self.characters[:num_chars]
                 self.groups = dict.fromkeys(range(1, num_groups + 1)).keys()
+                if (not hasattr(self, 'group_labels')):
+                    self.group_labels = [f"{int(g)}" for g in
+                                         self.groups]  # TODO could likewise use periodictable here!
 
     def convert_selections(self, characters=[], groups=[]):
         # convert arguments to the expected format for code 181124
@@ -170,19 +184,23 @@ class BandDataDisplayValues(InteractiveControlDisplayValues):
             self.characters = ['s', 'p', 'd', 'f']
         if not hasattr(self, 'groups'):
             self.groups = plotter.data.atoms_group_keys
-
+        if not hasattr(self, 'group_labels'):
+            self.group_labels = [f"{g:<3} {e.symbol:<3}: {int(n):<3}" for g, e, n
+                                 in zip(plotter.data.atoms_group_keys,
+                                        plotter.data.atoms_elements,
+                                        plotter.data.atoms_per_group)]
         SliderSelection = namedtuple('SliderSelection', ['label', 'min', 'max', 'step', 'initial'])
         if not hasattr(self, 'bands'):
             bands = [band for band in range(plotter.data.eigenvalues.shape[2])]
             self.bands = bands
             self.bands_slider = SliderSelection(label="Bands",
-                                         min=bands[0]+1,
-                                         max=bands[-1]+1,
-                                         step=1,
-                                         initial=[bands[0]+1, bands[-1]+1])
+                                                min=bands[0] + 1,
+                                                max=bands[-1] + 1,
+                                                step=1,
+                                                initial=[bands[0] + 1, bands[-1] + 1])
 
         if not hasattr(self, 'spins'):
-                self.spins = [spin for spin in range(plotter.data.num_spin)]
+            self.spins = [spin for spin in range(plotter.data.num_spin)]
         if not hasattr(self, 'ylim'):
             ylim = plotter.get_data_ylim()
             self.ylim = SliderSelection(label="y range",

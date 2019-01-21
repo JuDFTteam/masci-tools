@@ -68,11 +68,16 @@ class Recipes:
     }
     """Template recipe for writing new recipes."""
 
-    Bands = {
+    FleurBands = {
         "output_types": [
-            load.FleurBandData
+            FleurBandData
         ],
         "datasets": {
+            "atoms_elements":{
+              "h5path": "/atoms/atomicNumbers",
+                "description": f"Atomic numbers",
+                "transforms": [Transform.periodic_elements]
+            },
             "atoms_position": {
                 "h5path": "/atoms/positions",
                 "description": f"Atom coordinates per atom",

@@ -528,7 +528,7 @@ def example_read():
     data = None
     reader = Reader(filepath=filepath)
     with reader as h5file:
-        data = reader.read(recipe=Recipes.Bands, logging_level=logging.DEBUG)
+        data = reader.read(recipe=Recipes.FleurBands, logging_level=logging.DEBUG)
         #
         # Note:
         # Inside the with statement (context manager),
