@@ -5,7 +5,7 @@ from enum import Enum
 import numpy as np
 import periodictable
 
-from studenproject18ws.hdf import util as util
+from studentproject18w.hdf import util as util
 
 
 class CoordinateSystemType(Enum):

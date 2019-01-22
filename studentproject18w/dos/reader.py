@@ -2,7 +2,7 @@ from collections import Counter
 
 import numpy as np
 
-from studenproject18ws.hdf.output_types import FleurBandData
+from studentproject18w.hdf.output_types import FleurBandData
 
 
 def get_dos_num_groups_characters(filepath_dos):

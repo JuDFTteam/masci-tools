@@ -8,8 +8,8 @@ from enum import Enum
 import periodictable
 import logging
 
-from studenproject18ws.hdf.output_types import *
-from studenproject18ws.dos.reader import get_dos_num_groups_characters
+from studentproject18w.hdf.output_types import *
+from studentproject18w.dos.reader import get_dos_num_groups_characters
 
 
 ##########################################################################

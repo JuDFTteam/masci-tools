@@ -85,7 +85,6 @@ If =jupyter_nbextensions_configurator= is installed:
   #+END_SRC
 - Find RISE and enable it if it's not installed.
 
-
 *** Other extension like ToC visible in slideshow
 If =jupyter_nbextensions_configurator= is installed:
 - Start jupyter-notebook
@@ -95,3 +94,10 @@ If =jupyter_nbextensions_configurator= is installed:
   Add:      http://localhost:8795/nbextensions
   #+END_SRC
 - Disable the offending extension.
+*** Enable scrolling in tall slides
+- default is =scroll:false=
+- enable it by searching for above in =main.js= and replace with =scroll:true=,
+  and restart notebook. tall slide should now have scrollbar.
+- possible =main.js= locations:
+  - =youranaconda3/envs/your_env/share/jupyter/nbextensions/rise/main.js=
+  - for more possibilities, see respective [[https://github.com/damianavila/RISE/issues/185][github issue]].

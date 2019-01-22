@@ -1,9 +1,9 @@
 """Holds the recipes (dictionaries) for different applications for the HDF file Reader module.
 
 """
-import studenproject18ws.hdf.output_types as load
-from studenproject18ws.hdf.output_types import *
-from studenproject18ws.hdf.input_transforms import *
+import studentproject18w.hdf.output_types as load
+from studentproject18w.hdf.output_types import *
+from studentproject18w.hdf.input_transforms import *
 
 
 class Recipes:

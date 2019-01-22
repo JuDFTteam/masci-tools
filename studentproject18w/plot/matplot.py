@@ -8,8 +8,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import gridspec
 
-from studenproject18ws.plot.base import *
-from studenproject18ws.dos.reader import get_dos
+from studentproject18w.plot.base import *
+from studentproject18w.dos.reader import get_dos
 from masci_tools.vis.plot_methods import single_scatterplot, multiple_scatterplots
 
 
@@ -31,9 +31,9 @@ class BandPlot(AbstractBandPlot, AbstractMatplot):
     --------
 
     >>> import matplotlib.pyplot as plt
-    >>> from studenproject18ws.hdf.reader import Reader
-    >>> from studenproject18ws.hdf.recipes import Recipes
-    >>> from studenproject18ws.plot.matplot import BandPlot as Bandplot
+    >>> from studentproject18w.hdf.reader import Reader
+    >>> from studentproject18w.hdf.recipes import Recipes
+    >>> from studentproject18w.plot.matplot import BandPlot as Bandplot
     >>>
     >>> filepath = "path/to/my.hdf"
     >>> data = None

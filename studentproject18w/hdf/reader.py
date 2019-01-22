@@ -26,13 +26,13 @@ from collections import OrderedDict
 import h5py
 from h5py._hl.dataset import Dataset
 
-import studenproject18ws.hdf.output_types as load
-from studenproject18ws.hdf.exceptions import Hdf5_DatasetNotFoundError
-from studenproject18ws.hdf.input_transforms import *
-from studenproject18ws.hdf.output_types import *
-from studenproject18ws.hdf.recipes import Recipes
-from studenproject18ws.hdf.util import get_class
-from studenproject18ws.plot.matplot import BandPlot
+import studentproject18w.hdf.output_types as load
+from studentproject18w.hdf.exceptions import Hdf5_DatasetNotFoundError
+from studentproject18w.hdf.input_transforms import *
+from studentproject18w.hdf.output_types import *
+from studentproject18w.hdf.recipes import Recipes
+from studentproject18w.hdf.util import get_class
+from studentproject18w.plot.matplot import BandPlot
 
 
 class Reader(object):
@@ -52,8 +52,8 @@ class Reader(object):
     --------
     Extract a band structure. (tested with doctest: passed)
 
-    >>> from studenproject18ws.hdf.reader import Reader
-    >>> from studenproject18ws.hdf.recipes import Recipes
+    >>> from studentproject18w.hdf.reader import Reader
+    >>> from studentproject18w.hdf.recipes import Recipes
     >>>
     >>> # filename = 'banddos_4x4.hdf'
     >>> filename = 'banddos.hdf'
@@ -510,8 +510,8 @@ def example_read():
     Can be used as a template for implementing plotting in a GUI.
 
     """
-    # from studenproject18ws.hdf.reader import Reader
-    # from studenproject18ws.hdf.recipes import Recipes
+    # from studentproject18w.hdf.reader import Reader
+    # from studentproject18w.hdf.recipes import Recipes
 
     # # NO DOS file:
     # filename = 'banddos.hdf'

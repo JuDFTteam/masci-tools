@@ -5,9 +5,9 @@ from tkinter import ttk
 import numpy as np
 import matplotlib.pyplot as plt
 #matlplotlib.use("TkAgg")
-from studenproject18ws.hdf.reader import Reader
-from studenproject18ws.hdf.recipes import Recipes
-from studenproject18ws.plot.matplot import BandPlot
+from studentproject18w.hdf.reader import Reader
+from studentproject18w.hdf.recipes import Recipes
+from studentproject18w.plot.matplot import BandPlot
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_pdf import PdfPages
