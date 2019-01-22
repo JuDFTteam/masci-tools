@@ -57,13 +57,28 @@
 
 * RISE Installation & Usage
 
-Using conda.
+I
 #+BEGIN_SRC shell
 source activate myenv
 # optional: conda install nb_conda
 conda install --c conda-forge rise jupyter_contrib_nbextensions
 cd myproject
-jupyter-notebook
+jupyter-notebook .
+# if it doesn't set home to myproject, try this:
+# /home/you/anaconda3/envs/myenv/bin/python /home/you/anaconda3/envs/myenv/bin/jupyter-notebook .
+#+END_SRC
+
+Alternatively: install ALL project dependencies:
+#+BEGIN_SRC shell
+source activate myenv
+# conda startup is really slow, so installing all in one step saves time!
+# optional: conda install nb_conda
+conda install -c conda-forge rise jupyter_contrib_nbextensions ipywidgets ipympl widgetsnbextension ipyvolume appmode bqplot periodictable
+conda install -c anaconda tk
+cd myproject
+jupyter-notebook .
+# if it doesn't set home to myproject, try this:
+# /home/you/anaconda3/envs/myenv/bin/python /home/you/anaconda3/envs/myenv/bin/jupyter-notebook .
 #+END_SRC
 
 ** Troubleshooting

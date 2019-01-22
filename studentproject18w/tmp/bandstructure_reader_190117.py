@@ -320,7 +320,7 @@ def get_dos(select_groups, interstitial, all_characters,
 
                 if ((CHARACTER_FILTER[0] == True) & (all_characters != True)):
                     print("hier")
-                    dos += dos_data[skip + i + Number_Atom_Groups] * ATOMS_PER_GROUP[i]
+                    dos += dos_data[skip + (i+1) + Number_Atom_Groups] * ATOMS_PER_GROUP[i]
                 if ((CHARACTER_FILTER[1] == True) & (all_characters != True)):
                     # print("hier")
                     dos += dos_data[skip + i + Number_Atom_Groups * 2] * ATOMS_PER_GROUP[i]

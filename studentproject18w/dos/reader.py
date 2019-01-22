@@ -49,7 +49,7 @@ def get_dos_num_groups_characters(filepath_dos):
         return (None, None)
 
 
-def get_dos(filepath_dos, data_bands: FleurBandData, mask_groups, mask_characters,
+def get_dos2(filepath_dos, data_bands: FleurBandData, mask_groups, mask_characters,
             select_groups, interstitial, all_characters):
     """
 
@@ -101,6 +101,7 @@ def get_dos(filepath_dos, data_bands: FleurBandData, mask_groups, mask_character
                       for g in range(c * num_groups, (c + 1) * num_groups)]
                      for c in range(num_chars)]
     }
+
 
     # define method for column access
     col_indices_accessed = []
@@ -162,5 +163,47 @@ def get_dos(filepath_dos, data_bands: FleurBandData, mask_groups, mask_character
     #     f"num_groups {num_groups}, "
     #     f"atoms_per_group {atoms_per_group}, "
     #     f"accessed dos columns (0,1,2 are E,tot_dos,interstitial and always accessed):\n{col_indices_accessed}")
+
+    return (E, dos, dos_lim)
+
+
+def get_dos(filepath_dos, data_bands: FleurBandData, mask_groups, mask_characters,
+            select_groups, interstitial, all_characters):
+    
+    dos_data = np.genfromtxt(filepath_dos).T
+    num_cols = dos_data.shape[0]
+    
+    num_groups = data_bands.num_groups
+    atoms_per_group = data_bands.atoms_per_group
+    num_chars = data_bands.num_char
+    
+    dos_tot = dos_data[1]
+    dos_lim = (np.min(dos_tot), np.max(dos_tot))
+    dos_interstitial = dos_data[2]
+    E = dos_data[0]
+    
+    skip =5
+
+    dos = np.zeros(len(dos_data[0]))
+    for i in range(len(mask_groups)):
+        if (mask_groups[i] != 0):
+            if (all_characters == True):
+                dos += dos_data[skip + i] * atoms_per_group[i]
+
+            # for s orbital
+            if ((mask_characters[0] == True) & (all_characters != True)):
+                dos += dos_data[skip + num_groups + 4 * i] * atoms_per_group[i]
+                # dos += dos_data[skip + num_groups + i*num_groups + 0] * atoms_per_group[i]
+
+            if ((mask_characters[1] == True) & (all_characters != True)):
+                # print("hier")
+                dos += dos_data[skip + num_groups + 4 * i + 1] * atoms_per_group[i]
+
+            if ((mask_characters[2] == True) & (all_characters != True)):
+                dos += dos_data[skip + num_groups + 4 * i + 2] * atoms_per_group[i]
+
+            if ((mask_characters[3] == True) & (all_characters != True)):
+                # print("hier")
+                dos += dos_data[skip + num_groups + 4 * i + 3] * atoms_per_group[i]
 
     return (E, dos, dos_lim)

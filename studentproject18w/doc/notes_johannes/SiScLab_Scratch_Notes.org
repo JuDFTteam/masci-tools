@@ -138,3 +138,24 @@ self.atoms_group_keys = self.atoms_per_group_dict.keys()
 # correct:
 self.atoms_per_group = np.fromiter(self.atoms_per_group_dict.values(), dtype=float)
 #+END_SRC
+
+
+* tmp RISE -> beamer port
+
+- Solid state physics: electronic structure computation
+  - $\rightarrow$ Fleur: electronic structure of crystals using DFT
+  - huge amount of data
+  - physics not accessible unless structured / analysed / visualized
+  
+
+The goal of the project was to implement a complete data analysis pipeline for this application:
+- preprocessing $\rightarrow$ data exploration $\rightarrow$ visualization
+
+
+Requirements:
+- plug & play together with Fleur
+- fast computation time
+- code modularization
+- intuitive usage
+- high-quality export features
+
