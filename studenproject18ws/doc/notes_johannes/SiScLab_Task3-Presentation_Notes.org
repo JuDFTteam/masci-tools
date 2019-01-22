@@ -55,5 +55,43 @@
 
 * [[file:SiScLab_Notes.org::*%5B%5Bfile:SiScLab_Task3-Presentation_Notes.org%5D%5BPhase%205%20-%20Presentation%5D%5D][Master File]]
 
+* RISE Installation & Usage
+
+Using conda.
+#+BEGIN_SRC shell
+source activate myenv
+# optional: conda install nb_conda
+conda install --c conda-forge rise jupyter_contrib_nbextensions
+cd myproject
+jupyter-notebook
+#+END_SRC
+
+** Troubleshooting
+*** No 'start slideshow' button in notebook menu
+RISE is probably not installed.
+
+If =nb_conda= is installed:
+- Start jupyter-notebook
+- Switch to tab 'Conda'.
+- Search for extension rise and install into running env =myenv=.
+- restart if necessary.
+
+If =jupyter_nbextensions_configurator= is installed:
+- Start jupyter-notebook
+- Then in browser, add the following to the base URL.
+  #+BEGIN_SRC 
+  Base URL: http://localhost:8795
+  Add:      http://localhost:8795/nbextensions
+  #+END_SRC
+- Find RISE and enable it if it's not installed.
 
 
+*** Other extension like ToC visible in slideshow
+If =jupyter_nbextensions_configurator= is installed:
+- Start jupyter-notebook
+- Then in browser, add the following to the base URL.
+  #+BEGIN_SRC 
+  Base URL: http://localhost:8795
+  Add:      http://localhost:8795/nbextensions
+  #+END_SRC
+- Disable the offending extension.
