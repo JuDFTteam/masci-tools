@@ -33,6 +33,7 @@
 *** TODO [[file:SiScLab_Task3-JupyterGUICompletion_Notes.org][Phase 4 - Jupyter GUI Completion]]
 *** TODO [[file:SiScLab_Task3-Presentation_Notes.org][Phase 5 - Presentation]]
 **** [[file:SiScLab_Task3-Presentation_scratch.md][markdown scratch file]]
+**** [[file:~/Desktop/Studium/Kurse_RWTH/SiScLab/18W/repos/masci-tools/studentproject18w/doc/scratch.tex][latex scratch file]]
 * Tools Install & Setup
 ** [[file:SiScLab_Git_Notes.org][Git Notes]]
 ** [[file:SiScLab_AiiDa_Installation_Notes.org][AiiDa Installation Notes]]

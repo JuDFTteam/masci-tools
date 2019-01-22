@@ -159,3 +159,11 @@ Requirements:
 - intuitive usage
 - high-quality export features
 
+What is *in* the data?
+- Crystal Structure & Reciprocal 
+- Bands
+- Atom Groups
+- Chracters
+- Muffin Tin
+- DFT
+- Density of States

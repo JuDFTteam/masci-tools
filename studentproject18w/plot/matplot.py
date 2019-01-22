@@ -92,7 +92,11 @@ class BandPlot(AbstractBandPlot, AbstractMatplot):
             else:
                 labels += str(label)
 
-        self.plt.xticks(self.data.k_special_points, labels)
+        if hasattr(self, 'filepaths_dos') and self.filepaths_dos:
+            self.plt.xticks(self.data.k_special_points[:-1], labels[:-1])
+        else:
+            self.plt.xticks(self.data.k_special_points, labels)
+
         self.plt.ylabel("E(k) [eV]")
         self.plt.xlim(0, max(self.data.k_distances))
         self.plt.hlines(0, 0, max(self.data.k_distances), lw=0.1)
@@ -350,6 +354,8 @@ class DOSPlot(AbstractDOSPlot, AbstractMatplot):
 
         elif (PlotDataType.DOS_HDF in self.types):
             raise NotImplementedError("plot DOS from HDF data: not implemented.")
+
+        self.ax_dos.set_xlabel(r'DOS [eV$^{-1}$]')
 
     def plot_dos_masci(self, spins, only_total=False, saveas=r'dos_plot', title=r'Density of states', linestyle='-',
                        marker=None, legend=False, limits=[None, None], ylim=None):
