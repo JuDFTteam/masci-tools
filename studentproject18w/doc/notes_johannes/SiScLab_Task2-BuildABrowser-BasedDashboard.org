@@ -493,6 +493,7 @@ Legend:
  | lists    | [[https://github.com/mauhai/awesome-jupyterlab][awesome-jupyterlab]]           | A curated list of awesome JupyterLab extensions |
  |          | [[https://github.com/topics/jupyterlab-extension][GitHub #jupyterlab-extension]] | hashtag                                         |
  |----------+------------------------------+-------------------------------------------------|
+ |          | [[https://github.com/QuantStack/jupyterlab-drawio][diagram editor by quantstack]] |                                                 |
  |          | [[https://github.com/plotly/jupyterlab-chart-editor][chart editor by plotly]]       | [[https://www.youtube.com/watch?v=zR7G2tNVo1Q][(video) 30min showcase Nov2018]]                  |
  |          |                              |                                                 |
 ** PyViz
