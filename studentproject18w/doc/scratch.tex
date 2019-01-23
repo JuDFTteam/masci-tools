@@ -14,6 +14,13 @@
 \setbeamertemplate{navigation symbols}{}
 
 \usepackage{beamerthemeshadow}
+
+
+\usepackage{amsmath}
+
+
+
+
 \begin{document}
 \title{SiScLab Project 8}  
 \author{Katta, Partmann, Wasmer}
@@ -26,17 +33,57 @@
 \section{Implementation}
 \label{sec:implementation}
 
-
 \begin{frame}\frametitle{Module Design}
     TODO \texttt{hdf} preprocessor as self-contained module built for extension
+    
     TODO \texttt{plot} visualization common to all frontends
-    TODO \texttt{tk, jupyter} 2 interactive frontends 
+    
+    TODO \texttt{tk, jupyter} 2 interactive frontends (deployment)
 \end{frame}
 
+\subsection{Preprocessor}
+\label{sec:preprocessor}
 
+\begin{frame}
+    \frametitle{Preprocessor Module}
+    HDF is a hierarchical format for scientific data.
 
+    TODO Image \texttt{hdf} Flow Diagram
+
+    \begin{itemize}
+    \item modular output types
+    \item dependency resolution
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Preprocessing}
+
+    TODO explain main part \texttt{get\_data}.
+    
+    \begin{displaymath}
+        \tilde{W}^{\text{eff}}_{skn} = \frac{\sum\limits_{\substack{g \in \text{groups} \\ c \in \text{characters}}} L_{skngc} G_g}{\sum\limits_{\substack{g \in \text{all groups} \\ c \in \text{all characters}}} L_{skngc} G_g}
+    \end{displaymath}
+
+    TODO explain optimizations (this may need 2 slides):
+    \begin{itemize}
+    \item reshaping
+    \item weight filter
+    \item tensor?
+    \item buffering
+    \end{itemize}
+\end{frame}
+
+\subsection{Interactive Visualization}
+\label{sec:visualization}
+
+\newcommand{\theimage}{\includegraphics[width=1.1\linewidth]{img/pycharm_uml/matplot.png}}% Shorthand
 \begin{frame}\frametitle{Visualization Module}
-    \includegraphics[scale=0.4]{img/pycharm_uml/matplot.png}
+    \begin{itemize}
+    \item Abstract interfaces for different viz. libs and applications
+    \item \texttt{InteractiveControlDisplay} as frontend contracts 
+    \end{itemize}    
+    \centerline{\theimage}
 \end{frame}
 
 \subsection{Desktop Frontend}
@@ -53,14 +100,9 @@
     TODO Selection Process from Notes 
 \end{frame}
 
-\begin{frame}\frametitle{Web Frontend}
+\begin{frame}\frametitle{}
     TODO Selection Process Choices from Notes 
 \end{frame}
-
-
-
-
-
 \end{document}
 
 
