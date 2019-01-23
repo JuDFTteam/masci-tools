@@ -142,10 +142,21 @@ class DOSDataDisplayValues(InteractiveControlDisplayValues):
                     or PlotDataType.DOS_HDF in plotter.types):
                 self.groups = plotter.data.atoms_group_keys
                 if (not hasattr(self, 'group_labels')):
-                    self.group_labels = [f"{g:<3} {e.symbol:<3}: {int(n):<3}" for g, e, n
-                                         in zip(plotter.data.atoms_group_keys,
-                                                plotter.data.atoms_elements,
-                                                plotter.data.atoms_per_group)]
+                    #old: wrong
+                    # self.group_labels = [f"{g:<3} {e.symbol:<3}: {int(n):<3}" for g, e, n
+                    #                      in zip(plotter.data.atoms_group_keys,
+                    #                             plotter.data.atoms_elements,
+                    #                             plotter.data.atoms_per_group)]
+
+                    #new: corect
+                    group_labels = []
+                    for g in plotter.data.atoms_group_keys:
+                        index = plotter.data.atoms_group.tolist().index(g)
+                        e = plotter.data.atoms_elements[index]
+                        n = plotter.data.atoms_per_group[g - 1]
+                        label = f"{g:<3} {e.symbol:<3}: {int(n):<3}"
+                        group_labels.append(label)
+                    self.group_labels = group_labels
             elif (PlotDataType.DOS_CSV in plotter.types):
                 (num_groups, num_chars) = get_dos_num_groups_characters(plotter.filepaths_dos[0])
                 if (num_groups, num_chars) == (None, None):

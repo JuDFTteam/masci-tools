@@ -48,26 +48,26 @@
   \endgroup
 }
 \newcommand{\theimage}{\includegraphics[width=0.8\linewidth]{img/module_design.png}}% Shorthand
-\begin{frame}\frametitle{Module Design}
+\begin{frame}\frametitle{Module Design Goals}
     \begin{columns}
-        \begin{column}{.5\textwidth}
+        \begin{column}{.4\textwidth}
             \centerline{\theimage}
         \end{column}
-        
-        \begin{column}{.5\textwidth}
-            \vspace{-2em}
-            \begin{itemize}
+        \begin{column}{.6\textwidth}
+            Multifunctionality:
+            \begin{itemize}            
             \item automated workflows like in \aiida{}
             \item manual data analysis with Python
             \end{itemize}
             \hdashrule{\textwidth}{1pt}{1pt}
             \begin{itemize}
-            \item one code for all
+            \item no boiler code!
+            % \vspace{0.5em}
             \end{itemize}
             \hdashrule{\textwidth}{1pt}{1pt}
             \begin{itemize}
-            \item for Desktop \faDesktop{}
-            \item for Web \faGlobe{} like in \aiidalab{}
+            \item Desktop \faDesktop{}
+            \item Web \faServer{} \faArrowRight{} \faGlobe{} like in \aiidalab{}
             \end{itemize}
         \end{column}
     \end{columns}
@@ -96,10 +96,9 @@
 
             Module uses type introspection to enable features:
             \begin{itemize}
-            \item modular output types
-            \item dependency resolution
+            \item modular output types for application domain (e.g. viz)                
+            \item dependency resolution                
             \end{itemize}
-
         \end{column}
     \end{columns}
 \end{frame}
@@ -117,14 +116,15 @@
 \subsection{Interactive Visualization}
 \label{sec:visualization}
 
-\begin{frame}
-    \frametitle{Data Selection}
-    \(l\)-like charge density: \(n_{\nu,l}^\mu(\mathbf{k}) = \int_{MT^\mu} |\psi_{\nu,l}^\mu(\mathbf{k,r})| d^3r :\approx L_{skngc}\) 
-
+\begin{frame}    
     The main compute-intensive routine:
     \begin{align*}
-      W^{\text{eff}}_{s,\mathbf{k},\nu} = \left( \frac{\sum\limits_{\substack{g \in \text{groups} \\ c \in \text{characters}}} L_{s,\mathbf{k},\nu,g,c} G_g}{\sum\limits_{\substack{g \in \text{all groups} \\ c \in \text{all characters}}} L_{s,\mathbf{k},\nu,g,c} G_g} \right) \left(W_{s,\mathbf{k},\nu}^{\text{unf}}\right)^\alpha
+      W^{\text{eff}}_{s,\mathbf{k},\nu} = \left( \frac{\sum\limits_{\substack{g \in \text{groups} \\ c \in \text{characters}}} n_{s,\mathbf{k},\nu,g,l} G_g}{\sum\limits_{\substack{g \in \text{all groups} \\ c \in \text{all characters}}} n_{s,\mathbf{k},\nu,g,l} G_g} \right) \left(W_{s,\mathbf{k},\nu}^{\text{unf}}\right)^\alpha
     \end{align*}
+    \vspace{3em}
+
+        \frametitle{Data Selection for Viz}
+    Theory: \(l\)-like charge density: \(n_{\nu,l}^\mu(\mathbf{k}) = \int_{MT^\mu} |\psi_{\nu,l}^\mu(\mathbf{k,r})|^2 d^3r :\approx n_{s,\mathbf{k},\nu,g,l}\)     
 \end{frame}
 % Slide notes:
 % - Reference: Bluegel FLAPW https://www.fz-juelich.de/SharedDocs/Downloads/PGI/PGI-1/DE/SB_NIC_pdf.pdf?__blob=publicationFile
@@ -138,14 +138,26 @@
 % - get_data method
 
 \begin{frame}
-    \frametitle{Optimization}
+    \frametitle{Faster rendering}
+    % ballpark calculation: spins 2, k 500, bands 400, groups 20, chars 4
+    Typically, \(\sim 10^7\) data points are accessed.
+    \vspace{2em}
+
+%run demos/demo_banddos_Co.ipynb
+%run demos/demo_banddos_MoSe2.ipynb
+%run demos/demo_bands_Diamond.ipynb
+%run demos/demo_bands_Na.ipynb
+%run demos/demo_bands_SiC.ipynb
+
+    
+    Optimizations:
     \begin{itemize}
-    \item reshaping \((\mathbf{k},\nu) \rightarrow (\mathbf{k} \cdot \nu\)
+    \item reshaping \((\mathbf{k},\nu) \rightarrow (\mathbf{k} \cdot \nu)\)
     \item weight filter \(t\): \(W^{\text{eff}}_{s,\mathbf{k},\nu} > t\)
-    \item TODO ??? \texttt{np.tensor} ???
+    \item using optimized \texttt{numpy} functions for tensor product 
     \item buffering on selection change
     \end{itemize}
-    TODO Result: speedup of about ???factor??? 
+    TODO \faArrowRight{} Result: speedup of about ???factor??? 
 \end{frame}
 
 \renewcommand{\theimage}{\includegraphics[width=1.1\linewidth]{img/pycharm_uml/matplot.png}}% Shorthand
