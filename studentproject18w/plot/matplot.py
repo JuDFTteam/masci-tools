@@ -468,3 +468,31 @@ class BandDOSPlot(AbstractBandDOSPlot, BandPlot, DOSPlot):
             self.plot_bands(mask_bands, mask_characters, mask_groups, spins,
                             unfolding_weight_exponent, compare_characters,
                             ignore_atoms_per_group, marker_size, ylim=ylim)
+
+    def plot_bandDOS2(self, mask_bands, mask_characters, mask_groups, spins,
+                     unfolding_weight_exponent, compare_characters,
+                     ignore_atoms_per_group, marker_size,
+                     dos_select_groups, dos_interstitial, dos_all_characters, ax,
+                     dos_fix_xlim=True, ylim=None):
+        self.ax_bands = ax;
+        self.ax_bands.clear()
+
+        if self.filepaths_dos:
+            self.ax_dos.clear()
+            self.ax_dos.set_ylim(ylim)
+        else:
+            pass
+            # self.ax_bands.set_ylim(ylim)
+
+        if self.filepaths_dos:
+            self.plot_bands(mask_bands, mask_characters, mask_groups, spins,
+                            unfolding_weight_exponent, compare_characters,
+                            ignore_atoms_per_group, marker_size, ylim=None)
+
+            self.plot_dos(spins, mask_groups, mask_characters,
+                          dos_select_groups, dos_interstitial, dos_all_characters,
+                          dos_fix_xlim, ylim=ylim)
+        else:
+            self.plot_bands(mask_bands, mask_characters, mask_groups, spins,
+                            unfolding_weight_exponent, compare_characters,
+                            ignore_atoms_per_group, marker_size, ylim=ylim)

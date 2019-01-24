@@ -1,0 +1,8 @@
+\beamer@sectionintoc {1}{Introduction}{2}{0}{1}
+\beamer@sectionintoc {2}{Physics of the Datasets}{6}{0}{2}
+\beamer@sectionintoc {3}{Implementation}{9}{0}{3}
+\beamer@subsectionintoc {3}{1}{Preprocessor}{12}{0}{3}
+\beamer@subsectionintoc {3}{2}{Interactive Visualization}{29}{0}{3}
+\beamer@subsectionintoc {3}{3}{Desktop Frontend}{32}{0}{3}
+\beamer@subsectionintoc {3}{4}{Web Frontend}{33}{0}{3}
+\beamer@sectionintoc {4}{Applications}{43}{0}{4}
