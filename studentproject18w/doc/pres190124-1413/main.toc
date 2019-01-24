@@ -1,0 +1,5 @@
+\beamer@sectionintoc {1}{Implementation}{2}{0}{1}
+\beamer@subsectionintoc {1}{1}{Preprocessor}{5}{0}{1}
+\beamer@subsectionintoc {1}{2}{Interactive Visualization}{22}{0}{1}
+\beamer@subsectionintoc {1}{3}{Desktop Frontend}{25}{0}{1}
+\beamer@subsectionintoc {1}{4}{Web Frontend}{26}{0}{1}

@@ -1,69 +1,5 @@
-% scratch tex file for trying out stuff for presentation.
-
-% This text is proprietary.
-% It's a part of presentation made by myself.
-% It may not used commercial.
-% The noncommercial use such as private and study is free
-% May 2007
-% Author: Sascha Frank 
-% University Freiburg 
-% www.informatik.uni-freiburg.de/~frank/
-%
-%
-\documentclass{beamer}
-\setbeamertemplate{navigation symbols}{}
-\usepackage{beamerthemeshadow}
-
-
-% JW: packages:
-\usepackage{amsmath}
-\usepackage{graphicx}
-\usepackage{fontawesome}
-\usepackage{dashrule}
-% \usepackage[my options...]{xcolor}:
-% NOTE: xcolor is already loaded by beamer.
-% When it's loaded with options, compilation will fail.
-% If needed, instead before documentclass{beamer} write this:
-% PassOptionsToPackage{my options...}{color}.
-\usepackage{hyperref}
-\hypersetup{
-    colorlinks,
-    linkcolor={red!50!black},
-    citecolor={blue!50!black},
-    urlcolor={blue!80!black}
-}
-
-% JW: beamer config (can be changed locally)
-\setbeamercovered{transparent} % show items in unspecified slides as gray
-
-
-
-
-
-\begin{document}
-\title{SiScLab Project 8}  
-\author{Katta, Partmann, Wasmer}
-\date{\today} 
-
-% \begin{frame}
-% \titlepage
-% \end{frame}
-
-
-\section{Introduction}
-\label{sec:introduction}
-
-\begin{frame}\frametitle{Requirements}
-\begin{itemize}
-\item process Fleur output files
-\item fast computation
-\item code: modularization, easy maintainability
-\item frontend: no installation required, intuitive usage
-\item plots: publication-quality export
-\end{itemize}
-\end{frame}
-
-
+%% It is just an empty TeX file.
+%% Write your code here.
 
 \section{Implementation}
 \label{sec:implementation}
@@ -104,16 +40,16 @@
 \begin{frame}\frametitle{Preprocessor Module}
     \begin{columns}
         \begin{column}{.5\textwidth}
-            \visible<4->{\centerline{\theimage}}            
+            \visible<2->{\centerline{\theimage}}            
         \end{column}
 
         \begin{column}{.5\textwidth}
             \visible<1->{Input: Fleur calculation results stored in Hierarchical Data Format
             (HDF).}
 
-            \visible<2->{Module uses \emph{type introspection} to enable features:}
+            \visible<3->{Module uses \emph{type introspection} to enable features:}
             \begin{itemize}
-            \item<3-> modular output types for application domain (e.g. viz)                
+            \item<4-> modular output types for application domain (e.g. viz)                
             \item<5-> dependency resolution                
             \end{itemize}
         \end{column}
@@ -239,7 +175,7 @@
             - Standalone\footnote{Excluded: writing from scratch using Flask} & (\logoBinder{}, \logoDocker{})\footnote{workaround. See also: \href{https://github.com/oschuett/appmode}{appmode}, \href{https://github.com/QuantStack/voila}{voila}, \href{https://github.com/minrk/thebelab}{thebelab}} & \logoBokeh{} & \logoBokeh{} & \logoPlotly{} plotly \\\hline}
             \visible<3->{III. \textbf{Plots}\footnote{interactive only}  & & & & \\
             - 2D & \logoMatplotlib{} mpl, bqplot, ... & \logoHvplot{} hvplot, \logoBokeh{} & \logoBokeh{} & \logoPlotly{}\\
-            - 3D & ipyvolume & \faClose{} & \logoBokeh{} & \logoPlotly{}}
+            - 3D & ipyvolume & \faClose{} & \logoBokeh{} & \logoPlotly{}\\\hline}
           \end{tabular}
         }
     \end{table}
@@ -257,27 +193,5 @@
 
 
 
+% 
 
-
-\section{Conclusion}
-\label{sec:conclusion}
-
-\begin{frame}
-    \frametitle{}
-
-    \begin{itemize}
-    \item extend to magnetic results like viz of spin spirals
-    \item integrate into AiiDa workflow suite
-    \end{itemize}
-    
-\end{frame}
-
-
-\end{document}
-
-
-
-%%% Local Variables:
-%%% mode: latex
-%%% TeX-master: t
-%%% End:

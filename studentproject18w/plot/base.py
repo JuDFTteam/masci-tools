@@ -214,7 +214,7 @@ class BandDataDisplayValues(InteractiveControlDisplayValues):
             self.spins = [spin for spin in range(plotter.data.num_spin)]
         if not hasattr(self, 'ylim'):
             ylim = plotter.get_data_ylim()
-            self.ylim = SliderSelection(label="y range",
+            self.ylim = SliderSelection(label="$E$ Range",
                                         min=ylim[0],
                                         max=ylim[1],
                                         step=(ylim[1] - ylim[0]) / 100,
@@ -222,7 +222,7 @@ class BandDataDisplayValues(InteractiveControlDisplayValues):
         if not hasattr(self, 'exponent'):
             self.exponent = SliderSelection("Unfolding", 0.0, 4.0, 0.01, 1.0)
         if not hasattr(self, 'marker_size'):
-            self.marker_size = SliderSelection("Marker Size", 0.0, 10.0, 0.01, 1.0)
+            self.marker_size = SliderSelection("Dot Size", 0.0, 10.0, 0.01, 1.0)
 
     def convert_selections(self, bands=[], characters=[], groups=[]):
         # convert arguments to the expected format for code 181124

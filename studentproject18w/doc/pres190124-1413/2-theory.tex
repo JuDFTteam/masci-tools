@@ -1,0 +1,42 @@
+%% It is just an empty TeX file.
+%% Write your code here.
+
+\section{Theory}
+
+
+\begin{frame}\frametitle{What is \textbf{in} the data?}
+\begin{itemize}
+
+\item Fleur solves the Schrödinger equation for electrons in crystals
+\item \(\rightarrow\) approximate solutions applying Density Functional Theory (Kohn – Sham equation)
+
+\item Output includes:
+\item Bandstructure $E_n(k)$:
+\begin{itemize}
+    \item Eigenenergies of (Bloch-) Eigenfunctions of the Hamiltonian for each (crystal-) momentum $k$
+    \item Disperion relation: Encodes, which energies (Bloch-) electrons in the solid are allowed to have
+    \item e.g. allows distinction between conductor and semiconductor
+    \item Sampled along a 1d Path between high symmetry points in 3d reciprocal space 
+\end{itemize}
+
+\item (Picture fcc real/reciprocal: idea: Schrödinger eqn solved in reciprocal space --> because of translation symmetry...)
+
+\item Bandstructure D(E):
+\begin{itemize}
+    \item encodes, how many states are allowed within an Energy intervall
+\end{itemize}
+
+\end{frame}
+\begin{frame}
+    \begin{itemize}
+
+
+\item Interesting for Physicist: Where do the contributions to E(k) and D(E) come from?
+
+\item Data contains projection of the Eigenfunctions on Basis functions of the DFT calculation belonging to different atomgroups and atomic orbitals (s, p, d, f) in the unit cell
+\item User might be interested in any superposition of them (e.g. to locate states in real space)
+\item Information stored in form of weights for all Atom Groups and localized atomic orbitals s, p, d, f
+    \end{itemize}
+
+\end{itemize}
+\end{frame}
