@@ -139,15 +139,33 @@ Temporary Items
 # End of https://www.gitignore.io/api/python,linux,macos
 
 
-##  20181121 added by JW:
-# data (input and output files, e.g. hdf, csv, plots, ...)
+# # #  20181121 added by JW for branch studentproject18ws:
+# # data folder (input and output files, e.g. hdf, csv, plots, ...):
 data/
-# HDF5 input files for testing
+# # HDF5 and DOS input files for testing:
 *.hdf
-# Jetbrains PyCharm Project folder
+*.DOS\d
+# # Jetbrains PyCharm Project folder:
 .idea/
-# images, plots
-.png
-.jpg
-.pdf
-.gif
+# # images, plots: do not exclude for now due to
+# # studentproject18ws report and presentation:
+# .png
+# .jpg
+# .pdf
+# .gif
+# # LaTeX compilation files:
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.log
+*.out
+*.run.xml
+*.toc
+*.synctex.gz
+*.fdb_latexmk
+# # LaTeX Beamer
+*.snm
+*.vrb
+*.nav
+
