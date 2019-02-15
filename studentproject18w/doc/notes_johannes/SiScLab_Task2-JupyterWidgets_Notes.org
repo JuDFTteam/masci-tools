@@ -83,56 +83,6 @@ conda install --channel conda-forge appmode
   # an env but actually the notebook uses the base python. UPDATE: I saw a better
   # alternative to nb_conda somewhere, but forgot it's name.
 #+END_SRC
-  
-Output (incomplete, in reality installed in several steps):
-:output:
-#+BEGIN_EXAMPLE
-The following NEW packages will be INSTALLED:
-
-    appmode:            0.4.0-py36_1001        conda-forge
-    cloudpickle:        0.6.1-py_0             conda-forge
-    cryptography-vectors: 2.3.1-py36_1000      conda-forge
-    cytoolz:            0.9.0.1-py36h470a237_1 conda-forge
-    dask-core:          1.0.0-py_0             conda-forge
-    imageio:            2.4.1-py36_1000        conda-forge
-    ipydatawidgets:     4.0.0-py_0             conda-forge
-    ipyscales:          0.3.0-py_0             conda-forge
-    ipyvolume:          0.5.1-py36_1001        conda-forge
-    ipywebrtc:          0.4.3-py36_1000        conda-forge
-    jupyter_dashboards: 0.7.0-py36_1000        conda-forge
-    jupyterthemes:      0.20.0-py_0            conda-forge
-    lesscpy:            0.13.0-py_1            conda-forge
-    libtiff:            4.0.9-he6b73bb_1       conda-forge
-    networkx:           2.2-py_1               conda-forge
-    olefile:            0.46-py_0              conda-forge
-    pillow:             5.3.0-py36h34e0f95_0              
-    ply:                3.11-py_1              conda-forge
-    pythreejs:          2.0.2-py36_1000        conda-forge
-    pywavelets:         1.0.1-py36h7eb728f_0   conda-forge
-    scikit-image:       0.14.1-py36hfc679d8_1  conda-forge
-    toolz:              0.9.0-py_1             conda-forge
-    traittypes:         0.2.1-py_1             conda-forge
-
-The following packages will be UPDATED:
-
-    ca-certificates:      2018.03.07-0                     --> 2018.11.29-ha4d7672_0 conda-forge
-    certifi:              2018.10.15-py36_0                --> 2018.11.29-py36_1000  conda-forge
-    ipywidgets:           7.4.2-py36_0                     --> 7.4.2-py_0            conda-forge
-
-
-[...]
-    To initialize this nbextension in the browser every time the notebook (or other app) loads:
-    
-          jupyter nbextension enable jupyter_dashboards --py --sys-prefix
-    
-Enabling notebook extension jupyter_dashboards/notebook/main...
-      - Validating: OK
-- 
-/ + /home/johannes/anaconda3/envs/masci-tools/bin/jupyter-nbextension enable pythreejs --py --sys-prefix
-Enabling notebook extension jupyter-threejs/extension...
-      - Validating: OK
-#+END_EXAMPLE
-:END:
 
 Did simple ipywidgets tutorial from youtube, [[https://www.youtube.com/watch?v=SN0Bflf14C4][interactive matplotlib sine wave
 plot with sliders]].

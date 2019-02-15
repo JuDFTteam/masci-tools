@@ -416,7 +416,7 @@ Legend:
 *** Extension packages: Dashboards
  |          | Name               | Description                                                              | Developers |
  |----------+--------------------+--------------------------------------------------------------------------+------------|
- |          | [[https://github.com/oschuett/appmode][appmojde]]           | *works* turns notebooks into web applications (used in AiiDAlab)         |          3 |
+ |          | [[https://github.com/oschuett/appmode][appmode]]            | *works* turns notebooks into web applications (used in AiiDAlab)         |          3 |
  |----------+--------------------+--------------------------------------------------------------------------+------------|
  | alive    | [[https://github.com/jupyter/dashboards][Jupyter Dashboards]] | *buggy* Jupyter Dashboards (=GUI) Layout Extension                       |         17 |
  |          |                    | [[https://annefou.github.io/jupyter_dashboards/][software carpentry - jupyter dashboards tutorial incl. deployment]]        |            |

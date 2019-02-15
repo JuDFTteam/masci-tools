@@ -1,0 +1,62 @@
+% A LaTeX (non-official) template for ISAE projects reports
+% Copyright (C) 2014 Damien Roque
+% Version: 0.2
+% Author: Damien Roque <damien.roque_AT_isae.fr>
+
+% Template adapted for English reports by:
+% Johannes Wasmer (JW)
+
+\documentclass[a4paper,12pt]{book}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\input{config-packages}
+\input{config-commands}
+
+\parskip=5pt
+% \sloppy
+
+\begin{document}
+
+\input{title}
+\input{abstract}                % adapted template
+\frontmatter
+\input{acknowledgments}
+
+\clearpage
+\tableofcontents
+\clearpage
+\listoffigures
+\clearpage
+\input{abbreviations}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%% Content of the report and references %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+\mainmatter
+\pagestyle{fancy}
+
+\cleardoublepage
+\include{template1-intro}
+\include{template2-chapter}
+\include{template3-chapter}
+\include{template4-conclusion}
+
+\appendix
+
+% % Original template (biblatex):
+% \bibliographystyle{authoryear-fr}
+% \bibliographystyle{authoryear}
+% \bibliography{references}
+
+% Adapted template (biber):
+\printbibliography
+
+% \input{abstract}                % original template
+
+\end{document}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

@@ -57,7 +57,7 @@
 
 * RISE Installation & Usage
 
-I
+
 #+BEGIN_SRC shell
 source activate myenv
 # optional: conda install nb_conda

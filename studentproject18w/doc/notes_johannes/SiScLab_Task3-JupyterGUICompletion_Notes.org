@@ -109,9 +109,9 @@ see above.
    CLOSED: [2019-01-16 Wed 13:11]
 see above.
 ** TODO Cleanup dashboard layout code
-** TODO Integrate newer widgets from this list
-*** TODO [[*Widget: ignore_atoms_per_group][Widget: ignore_atoms_per_group]]
-*** TODO [[*Widget: spin selection][Widget: spin selection]]
+** DONE Integrate newer widgets from this list
+*** DONE [[*Widget: ignore_atoms_per_group][Widget: ignore_atoms_per_group]]
+*** DONE [[*Widget: spin selection][Widget: spin selection]]
 *** TODO [[*Widget: File Chooser][Widget: File Chooser]]
 ** TODO [#C] Try out if putting mpl figure inside a widget is helpful
 - see [[file:SiScLab_Task2-JupyterWidgets_Notes.org::*Is%20it%20possible%20to%20put%20a%20matplotlib%20plot%20inside%20an%20ipywidgets%20container?][Is it possible to put a matplotlib plot inside an ipywidgets container?]]
@@ -321,7 +321,10 @@ dos += col(index['section3'][char][group] + bad_hack_offset) * atoms_per_group[g
 ** TODO Plot: Coloring by Element, plus switcher
 * TODO Other stuff 
 ** TODO if not present: hide unfolding_weight selection widget
-** TODO Sodium.hdf: Reproduce band selection error
+** DONE Sodium.hdf: Reproduce band selection error
+*** DONE Jupyter Frontend
+Update: This bug hasn't been occurred for ~2 weeks in the latest versions, so
+probably removed.
 
 Happened once in Python around development stage of notebook banddos05. Couldn't
 reproduce so far. But in Praneeth's Tk it happens all the time, sometimes yes,
@@ -388,3 +391,5 @@ ValueError: cannot reshape array of size 1996 into shape (2495,)
 #+END_EXAMPLE
 :END:
 
+*** DONE Tkinter
+Praneeth said <2019-01-24 Do> the bug does not occur anymore in Tkinter as well.
