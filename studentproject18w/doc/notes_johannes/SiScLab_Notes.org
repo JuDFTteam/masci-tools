@@ -35,8 +35,10 @@
 **** [[file:SiScLab_Task3-Presentation_scratch.md][markdown scratch file]]
 **** [[file:~/Desktop/Studium/Kurse_RWTH/SiScLab/18W/repos/masci-tools/studentproject18w/doc/scratch.tex][latex scratch file]]
 ** February: Task 4 - Beta Version & Report
-*** Phase 6 - Report
+*** Phase 6 - Report & Finishing Touches
 **** [[file:~/Desktop/Studium/Kurse_RWTH/SiScLab/18W/repos/masci-tools/studentproject18w/doc/report/report.tex][report.tex main file]]
+*** Phase 7 - Code-Übergabe
+**** 
 * Tools Install & Setup
 ** [[file:SiScLab_Git_Notes.org][Git Notes]]
 ** [[file:SiScLab_AiiDa_Installation_Notes.org][AiiDa Installation Notes]]

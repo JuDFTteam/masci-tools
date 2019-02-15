@@ -1,0 +1,17 @@
+name: masci-stupro
+channels:
+  - conda-forge
+  - anaconda
+dependencies:
+  - jupyter
+  - notebook
+  - jupyter_contrib_nbextensions
+  - nodejs
+  - jupyterlab
+  - ipywidgets
+  - ipympl
+  - widgetsnbextension
+  - ipyvolume
+  - appmode
+  - periodictable
+  - tk
