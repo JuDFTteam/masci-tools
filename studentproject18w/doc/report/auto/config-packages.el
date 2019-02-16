@@ -2,13 +2,13 @@
  "config-packages"
  (lambda ()
    (TeX-add-to-alist 'LaTeX-provided-package-options
-                     '(("babel" "english") ("biblatex" "backend=biber" "style=alphabetic" "citestyle=authoryear") ("hyperref" "pdftex") ("acronym" "footnote")))
-   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "path")
-   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "url")
-   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "nolinkurl")
-   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperbaseurl")
-   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperimage")
+                     '(("babel" "english") ("biblatex" "backend=biber" "autolang=hyphen" "style=alphabetic" "citestyle=alphabetic" "giveninits=false") ("hyperref" "pdftex") ("acronym" "footnote")))
    (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperref")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperimage")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperbaseurl")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "nolinkurl")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "url")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "path")
    (add-to-list 'LaTeX-verbatim-macros-with-delims-local "path")
    (TeX-run-style-hooks
     "babel"

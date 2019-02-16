@@ -10,9 +10,16 @@
 
 
 \usepackage[                    % adapted template: use biber
-backend=biber,                  % instead of biblatex
-style=alphabetic,
-citestyle=authoryear
+backend=biber,      % Biber and biblatex
+autolang=hyphen,                % Separating hyphens acc.
+                                % to babel-set language
+style=alphabetic,               % Ref-style similar to
+                                % alpha.bst: XXX00
+citestyle=alphabetic,           % multiple titles of one
+                                % author cited like XXX00a,
+                                % XXX00b, ...
+giveninits=false                % surnames do not get
+                                % abbreviated
 ]{biblatex}
 \addbibresource{references.bib} %Imports bibliography file
 

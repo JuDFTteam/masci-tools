@@ -76,9 +76,38 @@ takes weight away in tensor product or sth.
 * DONE Widget: spin selection
   CLOSED: [2019-01-16 Wed 16:28]
 * TODO Widget: File Chooser
-** DONE Review Jupyter File chooser solutions
-   CLOSED: [2019-01-21 Mon 21:28]
-see [[file:../../jupyter/Example_FileChoosers.ipynb][dedicated notebook]]
+** TODO Review Jupyter File chooser solutions
+see [[file:../../jupyter/Example_FileChoosers.ipynb][dedicated notebook]].
+
+Update <2019-02-15 Fri>:
+- found [[https://github.com/peteut/ipython-file-upload][ipython-file-upload]] widget used in [[https://github.com/aiidalab/aiidalab-widgets-base/blob/master/aiidalab_widgets_base/structures.py][aiidalab-widgets]] (example see
+  aiidalab or quantum mobile virtual machine). Perhaps this is better! (could be
+  not working with jupyterlab, but no matter)
+
+install_log:
+#+BEGIN_SRC shell
+source activate masci-tools
+pip install fileupload
+jupyter nbextension install fileupload --user --py
+jupyter nbextension enable fileupload --user --py
+#+END_SRC
+
+:install_log_fileupload:
+#+BEGIN_EXAMPLE
+Installing /home/johannes/anaconda3/envs/masci-tools/lib/python3.6/site-packages/fileupload/static -> fileupload
+Making directory: /home/johannes/.local/share/jupyter/nbextensions/fileupload/
+Copying: /home/johannes/anaconda3/envs/masci-tools/lib/python3.6/site-packages/fileupload/static/extension.js -> /home/johannes/.local/share/jupyter/nbextensions/fileupload/extension.js
+Copying: /home/johannes/anaconda3/envs/masci-tools/lib/python3.6/site-packages/fileupload/static/widget.js -> /home/johannes/.local/share/jupyter/nbextensions/fileupload/widget.js
+Making directory: /home/johannes/.local/share/jupyter/nbextensions/fileupload/fileupload
+Copying: /home/johannes/anaconda3/envs/masci-tools/lib/python3.6/site-packages/fileupload/static/fileupload/widget.js -> /home/johannes/.local/share/jupyter/nbextensions/fileupload/fileupload/widget.js
+- Validating: OK
+
+    To initialize this nbextension in the browser every time the notebook (or other app) loads:
+    
+          jupyter nbextension enable fileupload --user --py
+#+END_EXAMPLE
+:END:
+
 ** TODO Integrate into working solution
 * TODO Dashboard Layout
 ** DONE Replace =@interact= with =interactive=

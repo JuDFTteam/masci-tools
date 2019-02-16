@@ -53,6 +53,7 @@
 #+LATEX_COMPILER: pdflatex
 #+DATE: \today
 
+* [[file:SiScLab_Notes.org::*%5B%5Bfile:SiScLab_Task4_Deployment.org%5D%5BPhase%207%20-%20Deployment%5D%5D][Master File]]
 * Project Deliverables Overview
   The project deploys three packages for developers, the lower one depends on
   the upper one. *Note: [[https://github.com/JuDFTteam/masci-tools][masci-tools]] itself is already published via PyPi*.
@@ -79,3 +80,11 @@ Guides:
 - Probably using [[https://www.pyinstaller.org/][Pyinstaller]] (via [[https://stackoverflow.com/a/2937][StackOverflow]] <  [[https://www.google.com/search?client=ubuntu&channel=fs&q=deploy+tkinter+application&ie=utf-8&oe=utf-8][search 'deploy tkinter application']])
 * Jupyter Dashboard Deployment
 - first see [[file:SiScLab_Task2-BuildABrowser-BasedDashboard.org][Guide: Build a Python Web Dashboard]]
+Options:
+| mybinder.org |                                                                   |
+| aiidalab     | first develop on quantum mobile, if it works, add to app registry |
+| [[https://github.com/QuantStack/voila][voila]]        | see below                                                         |
+** aiidalab
+** voila
+- tried it out: works out of the box. renders as html page. 
+- for single 
