@@ -3,6 +3,7 @@ channels:
   - conda-forge
   - anaconda
 dependencies:
+  - h5py
   - jupyter
   - notebook
   - jupyter_contrib_nbextensions

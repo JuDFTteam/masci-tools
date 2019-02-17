@@ -22,7 +22,7 @@
 #+DATE: \today
 
 * [[file:SiScLab_Notes.org][Master File]]
-* PyPi Install of [[https://pypi.org/project/aiidalab/][aiidalab]]
+* <2019-02-15 Fri> PyPi Install of [[https://pypi.org/project/aiidalab/][aiidalab]]
 
 #+BEGIN_SRC shell
 # create a conda env for trying out aiidalab
