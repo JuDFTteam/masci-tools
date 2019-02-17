@@ -142,11 +142,11 @@ Temporary Items
 # # #  20181121 added by JW for branch studentproject18ws:
 # # data folder (input and output files, e.g. hdf, csv, plots, ...):
 data/
-# # HDF5 and DOS input files for testing:
-*.hdf
-*.DOS\d
-# # Jetbrains PyCharm Project folder:
-.idea/
+# # HDF5 and DOS input files
+# # (temporarily commented out for testing
+# # web dashboard on mybinder.org):
+# *.hdf
+# *.DOS\d
 # # images, plots: do not exclude for now due to
 # # studentproject18ws report and presentation:
 # .png
@@ -169,4 +169,7 @@ data/
 *.vrb
 *.nav
 # # Emacs Files
+*.el
+# # Jetbrains PyCharm Project folder:
+.idea/
 
