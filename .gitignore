@@ -168,4 +168,5 @@ data/
 *.snm
 *.vrb
 *.nav
+# # Emacs Files
 

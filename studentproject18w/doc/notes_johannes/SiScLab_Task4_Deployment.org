@@ -85,6 +85,21 @@ Options:
 | aiidalab     | first develop on quantum mobile, if it works, add to app registry |
 | [[https://github.com/QuantStack/voila][voila]]        | see below                                                         |
 ** aiidalab
-** voila
+- see [[file:SiScLab_AiiDa_Installation_Notes.org::*<2019-02-15%20Fri>%20PyPi%20Install%20of%20%5B%5Bhttps://pypi.org/project/aiidalab/%5D%5Baiidalab%5D%5D][<2019-02-15 Fri> PyPi Install of aiidalab]] first
+- the idea here is to eventually register my jupyter dashboard as an aiidalab
+  app and host it on [[https://aiidalab.materialscloud.org/hub/login][aiidalab@materialscloud.org]]. That way, anyone with an
+  account there can access it and no need to setup a server yourself. But first
+  have to get the dashboard working as an aiidalab app.
+- okay, options for trying to getting my jupyter dashboard running on aiidalab:
+  - register on [[https://aiidalab.materialscloud.org/hub/login][aiidalab@materialscloud.org]]. not needed for now:
+  - get it working in the aiidalab in my local [[https://www.materialscloud.org/work/quantum-mobile][quantum mobile virtual machine]],
+    see [[file:SiScLab_AiiDa_Installation_Notes.org][AiiDa Installation Notes]] first. Problem: very slow. So first try:
+  - use my PyPi AiidaLab installation. See also in the install notes.
+
+The problem with that is: aiidalab requires Python 2, yet the whole project ist
+written in Python 3. Have to convert it back to Python 2 first. Use the tool
+=3to2= for that ([[https://pypi.org/project/3to2/#history][PyPI 3to2]], [[https://anaconda.org/Cantera/3to2][conda 3to2]], [[https://stackoverflow.com/questions/34168019/how-to-use-3to2][SO How to use 3to2]]).
+
+** [[https://github.com/QuantStack/voila][voila]]
 - tried it out: works out of the box. renders as html page. 
 - for single 
