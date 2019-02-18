@@ -5,27 +5,29 @@
 
 As per the requirements expounded upon in the introduction, the deliverable of
 the project should be a finished software product. The software is written in
-Python so as to integrate easily with the research groups ongoing software
-projects around the Fleur code \cite{fleur}, chiefly \texttt{masci-tools}
-\cite{masci-tools}, AiiDA \cite{aiida}. The clients split into frontend users
-and code developers. In order to accommodate this, the product is organized into
-three unidirectionally dependent subpackages or -modules, see Figure
-\ref{fig:modules}.
+Python so as to integrate easily with the research group's ongoing software
+projects around the Fleur code \cite{fleur}. These are chiefly the group's
+materials science tool collection \texttt{masci-tools} \cite{masci-tools} ,
+where also this project's code is hosted, and the 'Automated Interactive
+Infrastructure and Database for Computational Science' (AiiDA) \cite{aiida}. The
+product clients split into frontend users and code developers. In order to
+accommodate this, the product is organized into three unidirectionally dependent
+subpackages or -modules, see Figure \ref{fig:modules}.
 
 An important design consideration was to account for unknown use cases. This has
-been realized in each submodule by decoupling of \textbf{interface} and
+been realized in each submodule by the decoupling of \textbf{interface} and
 \textbf{implementation}. The interfaces do not rely on any specific input file
 format, visualization method or package, unlike the implementations for a
-specific task or \emph{application}. The application in the scope of this
-project are the band structure and density of states visualization, and for
-these, this project provides a few implementations.
+specific task or \textbf{application}. The word 'application' in this section
+denotes the band structure and density of states visualization, and for these,
+implementations are provided.
 
 This design choice was also one reason why the product does not reuse any of the
 \texttt{masci-tools} routines which partly solve quite similar problems, but
-seemed to be to specialized in an initial code review. For these developers, one
-added value of the project product could be to inspire the integration in a
-common interface, where the current abstraction level could only be a starting
-point.
+seemed to be too specialized in an cursory code review. For these developers,
+one added value of the project product could be to inspire the hopefully easy
+integration into a common interface, where the current abstraction level could
+serve as a starting point.
 
 \begin{figure}[htb!]
     \centering
@@ -34,26 +36,27 @@ point.
     \label{fig:modules}
 \end{figure}
 
-\section{Preprocessor Module}
+\section{HDF Preprocessor Module}
 \label{sec:preprocessor-module}
 
 \subsection{Interface}
 \label{sec:preprocessor-interface}
 
 This is the 'backend' of the tool. It is basically a file reader for the input
-data, the Fleur simulation output. The formats are the Hierarchical Data Format
-(HDF) \cite{hdf} for the band structure, and a Fleur-specific simple
-comma-separated values (CSV) format for the density of states (DOS).
+data, for example a Fleur simulation output. Supported formats are the
+Hierarchical Data Format (HDF) \cite{hdf} for the band structure, and a simple
+Fleur-specific comma-separated values (CSV) format for the density of states
+(DOS).
 
 The HDF format is basically a binary flexible container for all kinds of common
 binary and text file formats, each of which constitutes a \texttt{Dataset}
 inside the HDF file. The format supports metadata annotation and high-throughput
 input/output (I/O). As a consequence, it is considered by some developers in
-some application domains which rely on numerical simulation codes to be one
+some application domains relying on numerical simulation codes, to be one
 possible base for the establishment of common domain-specific rich data exchange
 standards in order to increase code interoperability. These developers are in
 the process of extending their codes' I/O capabilities towards that end.
-However, HDF's flexibility comes at the cost of a relatively complex Application
+However, HDF's flexibility comes at the price of a relatively complex Application
 Programming Interface (API) as the keyhole for all operations.
 
 The preprocessor module tries to hide that complexity by offering the
@@ -64,28 +67,30 @@ application \texttt{Recipe} is a dictionary that aims to describe a complete
 dataset from HDF, the 'transform' a sequence of once-through functions applied
 to the the dataset, and the 'load' the aggregation of all transformed datasets
 into one runtime object that has all the methods for operations on the data that
-are going to be used later in the intended application.
+are going to be used later on in the intended application.
 
 The 'transform' and 'output' type methods are defined in hierarchical
 \texttt{Transform} and \texttt{Output\_Type} classes, which sort them from
-hierarchically from general to application-specific applicability. This
-structure is built using Python's \texttt{AbstractBaseClass} (\texttt{ABC})
-interface. The advantages of recipes are:
+general to application-specific applicability. This structure is built using
+Python's \texttt{AbstractBaseClass} (\texttt{ABC}) interface. The advantages of
+the 'Recipes approach' are:
 \begin{itemize}
-\item All ETL processes are collected in a simple list in one place, not in
-    code. In it, datasets can be thematically or alphabetically sorted.
+\item All ETL processes for one application are collected in one simple list
+    (the recipe), not locked in different code locations with conflicting
+    contexts. In this list, entries can be sorted in any manner, e.g.
+    alphabetical for perusal.
 \item Recipes are de/serializable (can be read from and saved to disk) and thus be
-    code-created.
+    created and manipulated by code.
 \item The ETL processes declared in this way can be easily reused across
     applications. A recipe can combine different output types into a new type.
 \end{itemize}
 
 The feature that enables this flexibility is \textbf{type introspection}: the
-preprocessor processes the recipe datasets in the order of the mutual
-dependencies found in the transform and output methods. When all transformed
-datasets have been added to the object, all specified output types are searched
-and all their methods and attributes added. Thus the output object's type is
-only ever defined at runtime.  
+preprocessor processes the datasets listed in the recipe in the order of their
+mutual dependencies as found in the used transform and output methods. When all
+transformed datasets have been added to the object, all specified output types
+are searched and all their methods and attributes added. Thus the output
+object's type is defined at runtime, when the preprocessing is finished.
 
 \begin{figure}[htb!]
     \centering
