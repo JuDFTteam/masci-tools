@@ -72,8 +72,8 @@ are going to be used later on in the intended application.
 The 'transform' and 'output' type methods are defined in hierarchical
 \texttt{Transform} and \texttt{Output\_Type} classes, which sort them from
 general to application-specific applicability. This structure is built using
-Python's \texttt{AbstractBaseClass} (\texttt{ABC}) interface. The advantages of
-the 'Recipes approach' are:
+Python's \texttt{AbstractBaseClass} (\texttt{ABC}) interface and multiple
+inheritance. The advantages of the 'Recipes approach' are:
 \begin{itemize}
 \item All ETL processes for one application are collected in one simple list
     (the recipe), not locked in different code locations with conflicting
@@ -102,24 +102,48 @@ object's type is defined at runtime, when the preprocessing is finished.
 \subsection{Implementation for Band Structure Visualization}
 \label{sec:preprocessor-implementation}
 
+\begin{align}
+  W^{\text{eff}}_{s,k,\nu} = \left( \frac{\sum\limits_{\substack{g \in \text{groups} \\ l \in \text{characters}}} n_{s,k,\nu,g,l} N_g}{\sum\limits_{\substack{g \in \text{all groups} \\ l \in \text{all characters}}} n_{s,k,\nu,g,l} N_g} \right) \left(W_{s,k,\nu}^{\text{unf}}\right)^\alpha
+\end{align}
+
+\(W^{\text{eff}}_{s,k,\nu}\) is the effective weight. The indices denote: \(s\)
+spin, \(k\) point on \(k\)-path, \(\nu\) band, \(g\) group, \(l\) character.
+\(n_{s,k,\nu,g,l}\) is the state-specific \(l\)-like charge. \(N_g\) denotes the
+number of atoms in a group. \(W_{s,k,\nu}^{\text{unf}}\) is the unfolding weight
+and \(\alpha\) it's exponent.
+
+
 \textbf{TODO} describe how bandstructure data is preprocessed for visualization
-including user selections
+including user selections AND optimizations
 
 \section{Visualization Module \& Graphical Frontends}
 \label{sec:visualization-module}
 
 \textbf{TODO} Frontends: combine into one subsection when finished. usage will
-be in in user manual next section.
+be in user manual next section.
 
 \subsection{Interface}
 \label{sec:visualization-interface}
 
-\textbf{TODO} describe (short!)
+The Python visualization landscape \cite{python-visualization} abounds with a
+plethora of plotting libraries for different application contexts and technology
+stacks. The project's visualization module tries to account for that by
+decoupling library use and modularizing applications. This structure again is
+built using Python's \texttt{AbstractBaseClass} (\texttt{ABC}) interface and
+multiple inheritance. Each application is represented by an abstract base class
+that contains the common plotting method signatures. Each plotting library is
+represented by an abstract base class that contains library-specifics. An
+implementation inherits both from one or more application- and a library-base
+class. See Fig. \ref{fig:visualization-module} for clarification. Thus switching
+the library in a frontend should require minimal adjustment, and a new
+application can be build using existing ones.
 
 \begin{figure}[htb!]
     \centering
-    \includegraphics[width=0.8\linewidth]{img/pycharm_uml/matplot.png}
-    \caption{Visualization Module Design}
+    \includegraphics[width=1.0\linewidth]{img/pycharm_uml/matplot.png}
+    \caption{Visualization Module Design: Example Structure for two applications
+    \texttt{BandPlot} and \texttt{DOSPlot}, and two plotting libraries
+    \texttt{matplotlib} and \texttt{bqplot}.}
     \label{fig:visualization-module}
 \end{figure}
 
