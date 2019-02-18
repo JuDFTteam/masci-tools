@@ -99,6 +99,16 @@ object's type is defined at runtime, when the preprocessing is finished.
     \label{fig:preprocessor}
 \end{figure}
 
+\lstinputlisting[
+language=python,
+style=code,
+linerange=101-106
+captionpos=t,
+caption={Recipe \texttt{FleurBands} excerpt: dataset \texttt{BravaisMatrix}},
+label=recipe
+]{listings/recipes.py}
+
+
 \subsection{Implementation for Band Structure Visualization}
 \label{sec:preprocessor-implementation}
 
@@ -116,27 +126,32 @@ and \(\alpha\) it's exponent.
 \textbf{TODO} describe how bandstructure data is preprocessed for visualization
 including user selections AND optimizations
 
-\section{Visualization Module \& Graphical Frontends}
+\section{Visualization Module \& Interactive Graphical Frontends}
 \label{sec:visualization-module}
 
 \textbf{TODO} Frontends: combine into one subsection when finished. usage will
 be in user manual next section.
 
-\subsection{Interface}
+\subsection{Visualization Module Interface}
 \label{sec:visualization-interface}
 
 The Python visualization landscape \cite{python-visualization} abounds with a
 plethora of plotting libraries for different application contexts and technology
-stacks. The project's visualization module tries to account for that by
-decoupling library use and modularizing applications. This structure again is
-built using Python's \texttt{AbstractBaseClass} (\texttt{ABC}) interface and
-multiple inheritance. Each application is represented by an abstract base class
-that contains the common plotting method signatures. Each plotting library is
-represented by an abstract base class that contains library-specifics. An
-implementation inherits both from one or more application- and a library-base
-class. See Fig. \ref{fig:visualization-module} for clarification. Thus switching
-the library in a frontend should require minimal adjustment, and a new
-application can be build using existing ones.
+stacks. Thus the project's visualization module first design objective is to
+account for that by decoupling library use and modularizing applications. This
+structure again is built using Python's \texttt{AbstractBaseClass}
+(\texttt{ABC}) interface and multiple inheritance. Each application is
+represented by an abstract base class that contains the common plotting method
+signatures. Each plotting library is represented by an abstract base class that
+contains library-specifics. An implementation inherits both from one or more
+application- and a library-base class. See Fig. \ref{fig:visualization-module}
+for clarification. Thus switching the library in a frontend should require
+minimal adjustment, and a new application can be build using existing ones. The
+second design objective is for the plotting methods to to hide all interactions
+with the actual plotting library used under the hood, while the method
+parameters only relates to the preprocessed data being plotted. Thus different
+frontend implementations only need call one identical method for one plot and
+receive the identical visualization with identical behavior.
 
 \begin{figure}[htb!]
     \centering

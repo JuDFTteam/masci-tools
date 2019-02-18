@@ -108,6 +108,26 @@ giveninits=false                % surnames do not get
   urlcolor={blue!80!black}
 }
 
+%==== Listings =========================================================
+\usepackage{listings}           % for visualizing sourcecode file inserts
+
+\lstset{rangeprefix=/*\ ,
+	rangesuffix=\ */,
+	includerangemarker=false}
+
+%% Usage examples:
+%% \lstinputlisting[language=java,style=code,linerange=525-537]{listings/File.java}
+%% 
+%% \lstinputlisting[
+%% language=xml,
+%% style=code,
+%% linerange=32-47,
+%% captionpos=t,
+%% caption={XML Summary Report, oberste Ebene},
+%% label=reportxml1
+%% ]{listings/file.xml}
+%================================================================================
+
 
 
 %%% Local Variables:
