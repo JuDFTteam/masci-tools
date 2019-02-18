@@ -135,23 +135,26 @@ be in user manual next section.
 \subsection{Visualization Module Interface}
 \label{sec:visualization-interface}
 
-The Python visualization landscape \cite{python-visualization} abounds with a
-plethora of plotting libraries for different application contexts and technology
-stacks. Thus the project's visualization module first design objective is to
-account for that by decoupling library use and modularizing applications. This
-structure again is built using Python's \texttt{AbstractBaseClass}
-(\texttt{ABC}) interface and multiple inheritance. Each application is
-represented by an abstract base class that contains the common plotting method
-signatures. Each plotting library is represented by an abstract base class that
-contains library-specifics. An implementation inherits both from one or more
-application- and a library-base class. See Fig. \ref{fig:visualization-module}
-for clarification. Thus switching the library in a frontend should require
-minimal adjustment, and a new application can be build using existing ones. The
-second design objective is for the plotting methods to to hide all interactions
-with the actual plotting library used under the hood, while the method
-parameters only relates to the preprocessed data being plotted. Thus different
-frontend implementations only need call one identical method for one plot and
-receive the identical visualization with identical behavior.
+The Python visualization landscape abounds with a rapidly evolving plethora of
+plotting libraries for different application contexts and technology stacks
+\cite{python-visualization}. Thus the project's visualization module first
+design objective was to account for that by decoupling from library use, and
+modularizing applications. This structure again is built using Python's
+\texttt{AbstractBaseClass} (\texttt{ABC}) interface and multiple inheritance.
+Each application is represented by an abstract base class that contains the
+common plotting method signatures. Each plotting library is represented by an
+abstract base class that contains library-specifics. An implementation inherits
+both from one library base class and one or more application base classes. See
+Fig. \ref{fig:visualization-module} for an impression. Thus switching the
+library in a frontend should require minimal adjustment, and a new application
+can be build using existing ones.
+
+The second design objective was for the plotting methods to to hide all
+interactions with the actual plotting library used under the hood, while the
+method arguments only relate to the preprocessed data being plotted. Thus
+different frontend implementations only all call one common method for one
+specific plot and receive the identical visualization with identical interactive
+behavior.
 
 \begin{figure}[htb!]
     \centering
@@ -168,7 +171,7 @@ receive the identical visualization with identical behavior.
 \subsection{Web Frontend Implementation}
 \label{sec:web-frontend}
 
-\textbf{TODO} describe tool selection process, refer to \cite{jw-notes}.
+bla \cite{jw-notes}.
 
 
 
