@@ -37,6 +37,9 @@ point.
 \section{Preprocessor Module}
 \label{sec:preprocessor-module}
 
+\subsection{Interface}
+\label{sec:preprocessor-interface}
+
 This is the 'backend' of the tool. It is basically a file reader for the input
 data, the Fleur simulation output. The formats are the Hierarchical Data Format
 (HDF) \cite{hdf} for the band structure, and a Fleur-specific simple
@@ -91,18 +94,37 @@ only ever defined at runtime.
     \label{fig:preprocessor}
 \end{figure}
 
-\section{Visualization Module}
+\subsection{Implementation for Band Structure Visualization}
+\label{sec:preprocessor-implementation}
+
+\textbf{TODO} describe how bandstructure data is preprocessed for visualization
+including user selections
+
+\section{Visualization Module \& Graphical Frontends}
 \label{sec:visualization-module}
 
-\section{Frontend Modules}
-\label{sec:frontend-modules}
+\textbf{TODO} Frontends: combine into one subsection when finished. usage will
+be in in user manual next section.
 
-\subsection{Desktop Frontend}
+\subsection{Interface}
+\label{sec:visualization-interface}
+
+\textbf{TODO} describe (short!)
+
+\begin{figure}[htb!]
+    \centering
+    \includegraphics[width=0.8\linewidth]{img/pycharm_uml/matplot.png}
+    \caption{Visualization Module Design}
+    \label{fig:visualization-module}
+\end{figure}
+
+\subsection{Desktop Frontend Implementation}
 \label{sec:desktop-frontend}
 
-\subsection{Web Frontend}
+\subsection{Web Frontend Implementation}
 \label{sec:web-frontend}
 
+\textbf{TODO} describe tool selection process, refer to \cite{jw-notes}.
 
 
 

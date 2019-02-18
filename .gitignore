@@ -158,6 +158,7 @@ data/
 *.bbl
 *.bcf
 *.blg
+*.lof
 *.log
 *.out
 *.run.xml
