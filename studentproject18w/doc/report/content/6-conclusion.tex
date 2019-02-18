@@ -7,12 +7,17 @@
 
 
 \textbf{TODO} Module design:
-- preprocessor module:
-- desktop frontends:
-  - PyViz Param \cite{pyviz-param} makes it possible to decouple the formal
-  description of a particular GUI from the GUI library used. This would serve to
-  separate interface and implementation like it is done in the preprocessor and
-  visualization submodules. 
+\begin{itemize}
+\item Preprocessor module: dataset dependencies for new recipes have to be
+    explicitly stated. This could also be automatically resolved by type inspection.
+\item Frontends:
+    \begin{itemize}
+    \item PyViz Param \cite{pyviz-param} makes it possible to decouple the
+        formal description of a particular GUI from the GUI library used. This
+        would serve to separate interface and implementation like it is done in
+        the preprocessor and visualization submodules.
+    \end{itemize}
+\end{itemize}
 
 
 %%% Local Variables:

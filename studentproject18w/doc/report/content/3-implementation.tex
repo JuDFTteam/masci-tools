@@ -10,7 +10,7 @@ projects around the Fleur code \cite{fleur}. These are chiefly the group's
 materials science tool collection \texttt{masci-tools} \cite{masci-tools} ,
 where also this project's code is hosted, and the 'Automated Interactive
 Infrastructure and Database for Computational Science' (AiiDA) \cite{aiida}. The
-product clients split into frontend users and code developers. In order to
+product stakeholders split into frontend users and code developers. In order to
 accommodate this, the product is organized into three unidirectionally dependent
 subpackages or -modules, see Figure \ref{fig:modules}.
 
@@ -137,7 +137,7 @@ be in user manual next section.
 
 The Python visualization landscape abounds with a rapidly evolving plethora of
 plotting libraries for different application contexts and technology stacks
-\cite{python-visualization}. Thus the project's visualization module first
+\cite{python-viz-landscape}. Thus the project's visualization module first
 design objective was to account for that by decoupling from library use, and
 modularizing applications. This structure again is built using Python's
 \texttt{AbstractBaseClass} (\texttt{ABC}) interface and multiple inheritance.
@@ -171,7 +171,52 @@ behavior.
 \subsection{Web Frontend Implementation}
 \label{sec:web-frontend}
 
-bla \cite{jw-notes}.
+As Web Frontends increasingly replace traditional Desktop Frontends in the
+modern software environment \cite{web-vs-desktop}, so Python-based Frontends and
+visualizations are increasingly moving towards the browser. There, GUIs with
+interactive visualizations are often called \textbf{Dashboards}. In the project
+context, a survey was undertaken in order to choose the most suitable technology
+stack. The full survey is documented in \cite{jw-notes}. Additional requirements
+imposed alongside those in the introduction where that the solution
+
+\begin{enumerate}
+\item relies solely on Open-Source-Software (OSS) with licensing suitable for
+    academic use, has a stable release cycle, developer base and documentation,
+\item provides graphical control elements (widgets) that interact with plotting
+    libraries,
+\item ideally works like any web service, i.e. only a modern web browser is
+    required to use it,
+\item requires only Python and no Web Development knowledge like e.g. Javascript,
+    with respect to the product stakeholders.    
+\end{enumerate}
+
+The last point implies a client-server model where the app is hosted by a remote
+service. This model requires a communication framework and protocol between the
+Python interpreter running on the server and the JavaScript interpreter running
+in the client browser. As per criterion 2, unlike a generic Python web framework
+like e.g. \href{http://flask.pocoo.org/}{Flask}, it should take care of that
+communication by itself. Four major frameworks were identified which fulfill the
+first three requirements: \href{https://jupyter.org/}{Project Jupyter},
+\href{http://pyviz.org/}{PyViz},
+\href{https://bokeh.pydata.org/en/latest/}{Bokeh}, and
+\href{https://plot.ly/products/dash/}{Dash by Plotly}. The last two only
+partially fulfilled the last requirement, so they were discarded.
+
+Jupyter on the other hand only partially fulfills the third requirement: a
+Jupyter app cannot, by itself, be used outside a live Jupyter environment
+\cite{python-viz-2018}:
+
+\begin{quote}
+    [...] ``However, despite their web-based interactivity, the ipywidgets-based
+    libraries (ipyleaflet, pythreejs, ipyvolume, bqplot) are difficult to deploy
+    as public-facing apps because the Jupyter protocol allows arbitrary code
+    execution'' [...].
+\end{quote}
+
+
+
+
+
 
 
 
