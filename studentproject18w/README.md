@@ -18,7 +18,9 @@ pip install -r requirements_pip.txt # to install the requirements in the current
 
 # Try out experimental Frontends
 ## Web - Jupyter
-Under `frontend/jupyter/demo`, there is a demo notebook.
+Try it out on [Binder](https://mybinder.org/v2/gh/JuDFTteam/masci-tools/studentproject18ws)!
+
+Under `studentproject18ws/frontend/jupyter/demo`, there is a demo notebook.
 ### If using Jupyter Notebook
 If using Windows, omit keyword `source`.
 ```bash
