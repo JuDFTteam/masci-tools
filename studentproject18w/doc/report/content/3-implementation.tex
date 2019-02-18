@@ -120,7 +120,7 @@ label=recipe
 spin, \(k\) point on \(k\)-path, \(\nu\) band, \(g\) group, \(l\) character.
 \(n_{s,k,\nu,g,l}\) is the state-specific \(l\)-like charge. \(N_g\) denotes the
 number of atoms in a group. \(W_{s,k,\nu}^{\text{unf}}\) is the unfolding weight
-and \(\alpha\) it's exponent.
+and \(\alpha\) its exponent.
 
 
 \textbf{TODO} describe how bandstructure data is preprocessed for visualization
@@ -132,7 +132,7 @@ including user selections AND optimizations
 \textbf{TODO} Frontends: combine into one subsection when finished. usage will
 be in user manual next section.
 
-\subsection{Visualization Module Interface}
+\subsection{Visualization Module}
 \label{sec:visualization-interface}
 
 The Python visualization landscape abounds with a rapidly evolving plethora of
@@ -165,10 +165,10 @@ behavior.
     \label{fig:visualization-module}
 \end{figure}
 
-\subsection{Desktop Frontend Implementation}
+\subsection{Desktop Frontend}
 \label{sec:desktop-frontend}
 
-\subsection{Web Frontend Implementation}
+\subsection{Web Frontend}
 \label{sec:web-frontend}
 
 As Web Frontends increasingly replace traditional Desktop Frontends in the
@@ -177,17 +177,22 @@ visualizations are increasingly moving towards the browser. There, GUIs with
 interactive visualizations are often called \textbf{Dashboards}. In the project
 context, a survey was undertaken in order to choose the most suitable technology
 stack. The full survey is documented in \cite{jw-notes}. Additional requirements
-imposed alongside those in the introduction where that the solution
+imposed alongside those in the introduction where that the solution sports the
+following features:
 
 \begin{enumerate}
-\item relies solely on Open-Source-Software (OSS) with licensing suitable for
-    academic use, has a stable release cycle, developer base and documentation,
-\item provides graphical control elements (widgets) that interact with plotting
-    libraries,
-\item ideally works like any web service, i.e. only a modern web browser is
-    required to use it,
-\item requires only Python and no Web Development knowledge like e.g. Javascript,
-    with respect to the product stakeholders.    
+\item \textbf{openness}: relies solely on Open-Source-Software (OSS) with
+    licensing suitable for academic use, has a stable release cycle, developer
+    base and documentation,
+\item \textbf{dashboarding}: graphical control elements (widgets) that interact
+    with InfoVis\footnote{InfoVis libraries: visualizations of information in
+      arbitrary spaces, not necessarily the three-dimensional physical world.
+      Example: matplotlib. SciVis libraries: visualizing physically situated
+      data. Example: VTK \cite{python-viz-2018}.} plotting libraries,
+\item \textbf{deployment}: ideally works like any web service, i.e. only a
+    modern web browser is required to use it,
+\item \textbf{maintenance}: requires only Python and no Web Development
+    knowledge like e.g. Javascript, with respect to the product stakeholders.
 \end{enumerate}
 
 The last point implies a client-server model where the app is hosted by a remote
@@ -200,10 +205,17 @@ first three requirements: \href{https://jupyter.org/}{Project Jupyter},
 \href{http://pyviz.org/}{PyViz},
 \href{https://bokeh.pydata.org/en/latest/}{Bokeh}, and
 \href{https://plot.ly/products/dash/}{Dash by Plotly}. The last two only
-partially fulfilled the last requirement, so they were discarded.
+partially fulfilled the last requirement, so they were discarded. PyViz is the
+newest contender. Its expressed goal is to untangle the Python visualization
+jungle by providing one high-level API that ties together all major Python
+InfoVis libraries and data formats, including dashboarding. That ambitious goal
+comes at the price of sacrificing support for 3D plotting \cite{pyviz-faq} which
+was needed in this project for the atoms plot. So it had to be discarded.
 
-Jupyter on the other hand only partially fulfills the third requirement: a
-Jupyter app cannot, by itself, be used outside a live Jupyter environment
+That left Jupyter. By now, its widget library \texttt{ipywidgets} is integrated
+to work with a wide variety of popular plotting libraries. However, Jupyter only
+partially fulfills the third requirement -- a Jupyter notebook (app) cannot, by
+itself, be published (deployed) for use outside a live Jupyter environment
 \cite{python-viz-2018}:
 
 \begin{quote}
@@ -213,12 +225,14 @@ Jupyter app cannot, by itself, be used outside a live Jupyter environment
     execution'' [...].
 \end{quote}
 
-
-
-
-
-
-
+To avoid requiring users to setup a working Jupyter environment on their
+machine, the go-to solution for this problem is hosting a
+\href{https://jupyter.org/hub}{JupyterHub} multi-user server. This still
+requires users to register an account. Fortunately though, the intended users
+are contributors to the AiiDA project, and so should have access to the
+JupyterHub-based \href{ https://aiidalab.materialscloud.org/}{AiiDaLab} service
+where the app can be registered. Details on this and hosting solution
+alternatives are discussed in the developer Section \vref{sec:developer-manual}. 
 
 
 %%% Local Variables:
