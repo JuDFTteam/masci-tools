@@ -1,26 +1,55 @@
-This is work in progress.
 
-# Installation
-## With conda (recommended)
+SiScLab 2018 Student Project **Analysis Tool for Materials Design**
+
+Authors: [Johannes Wasmer](https://github.com/Irratzo), [Christian Partmann](https://github.com/ChristianPartmann), and [Praneeth Katta](https://github.com/PraneethKatta).
+
+# Overview
+This subfolder `studentproject18ws` is currently a largely independent side-project accompanying the main module `masci-tools`. It was created in a student project, and consists of three submodules:
+  * preprocessor: a HDF reader interface, and one implementation for Fleur band structure simulation output
+  * visualization: a plotting interface, and one implementation for Fleur bandstructure+DOS plots
+  * frontends: a Desktop GUI and a Web Dashboard (Tk and Jupyter) for interactive Fleur bandDOS plots.
+  
+
+![](./readme/web_frontend.png)
+
+# For Frontend Users
+The Desktop GUI executable can be received from the developers on request. Otherwise, it can be built using [PyInstaller](https://www.pyinstaller.org/) from this repo.
+
+The Web Frontend is a Jupyter Dashboard. You can try it out on Binder **TODO add binder link**. You can run it locally by creating a project environment (see below) and then run the notebook **TODO: add notebook path**. If you have an [AiiDaLab account](https://aiidalab.materialscloud.org/hub/login): the dashboard is planned to be published as an app there.
+
+# For Developers
+
+Though `masci-tools` is availabe via PyPI, there is currently no plan to integrate `studentproject18ws`. If you want to use it in your code, clone the repo, use it in an IDE, or append the path to your `sys.path`:
+
+``` python
+import sys
+if path_repo not in sys.path:
+    sys.path.append(path_repo)
+    
+# now import works
+from studentproject18w.hdf.reader import Reader
+# ...
+```
+
+## Create project virtual environment
+### With conda (recommended)
 - [Install Anaconda (3 recommended)](https://www.anaconda.com/download)
 - Install the environment `masci-stupro` with the necessary and recommended dependencies:
 ```bash
 conda create -f environment.yml
+source activate masci-stupro
 ```
-## With pip (untested)
+### With virtualenv (untested)
 ```bash
-git clone <repo>
-cd <repo>/studentproject18ws
-pip install venv # to create your environment
-source venv/bin/activate # to enter the virtual environment
-pip install -r requirements_pip.txt # to install the requirements in the current environment
+virtualenv masci-stupro
+source masci-stupro/bin/activate
+pip install -r requirements_pip.txt # install requirements
 ```
 
-# Try out experimental Frontends
-## Web - Jupyter
-Try it out on [Binder](https://mybinder.org/v2/gh/JuDFTteam/masci-tools/studentproject18ws)!
+## Try out Web Frontend locally
 
 Under `studentproject18ws/frontend/jupyter/demo`, there is a demo notebook.
+
 ### If using Jupyter Notebook
 If using Windows, omit keyword `source`.
 ```bash
@@ -38,12 +67,6 @@ jupyter labextension install @jupyter-widgets/jupyterlab-manager jupyter-matplot
 cd mypath/masci-tools/studentproject18ws/
 jupyter-lab
 ```
-### Note on committing Jupyter Notebooks
-If changes to a notebook shall be committed, best clear all output cells before.
-## Desktop - Tkinter
-The only guaranteed way right now to get the Desktop GUI running, is by using the `masci-tools` folder to create a 
-project in an IDE (e.g. PyCharm), and then run the file `studentproject18ws/frontend/tkinter/gui.py`.
-
 
 
 

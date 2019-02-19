@@ -2,11 +2,13 @@
 \chapter{Manuals}
 \label{cha:manuals}
 
-\section{User Manual}
+\section{Frontends User Manual}
 \label{sec:user-manual}
 
 \subsection{System Requirements \& Installation}
 \label{sec:system-requirements}
+
+The Desktop Frontend is distributed as an executable file. 
 
 \subsection{Input Data Formats}
 \label{sec:input-data-formats}
@@ -28,6 +30,31 @@ displays as well.
 
 \section{Developer Manual}
 \label{sec:developer-manual}
+
+At the time of this report, the package is written in Python 3. It is hosted on
+the \texttt{masci-tools} repository \cite{masci-tools} under the branch
+\href{https://github.com/JuDFTteam/masci-tools/tree/studentproject18ws}{\texttt{studentproject18ws}}.
+All of the project code resides in the folders \texttt{binder} (for the Web
+Frontend; see below) and \texttt{studentproject18w} (all code and
+documentation). The \texttt{README.md} contains the same installation
+instructions listed here.
+
+\subsection{Creating the project virtual environment}
+\label{sec:creat-proj-virt}
+
+\begin{lstlisting}[language=bash, style=code]
+    # if using conda (recommended)
+    conda create -f environment.yml
+    source activate 
+
+    # if using pip (untested)
+    
+\end{lstlisting}
+
+\subsection{Creating Desktop Frontend Executables}
+\label{sec:creat-deskt-front}
+
+
 
 \subsection{Extending the Preprocessor}
 \label{sec:extend-prepr}

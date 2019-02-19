@@ -2,7 +2,31 @@
 \chapter{Introduction}
 \label{chap:intro}
 
+\subsection{Problem Statement}
+Solid State physics deals with the study of large scale properties of solid materials resulting from the atomic scale properties. A solid state physicist can get to know the atomic scale properties from the experiments conducted on the material. One such experiment is DFT(Density Functional theory). This method or experiment is computational Quantum mechanical modelling method to investigate the electronic structure of many body systems of an atom or molecule. Electron density, Inter molecular forces, charge transfer excitations, calculation of band gap are few extractions from DFT  simulations. 
 
+Fleur is one such DFT simulation which is made by physicist at Juelich Forchungzentrum and most importantly its an open source and anyone can access it and use it. Like any other simulation, DFT simulation also outputs a lot of data so that a solid state physicist can understand and determine the properties of a cell structure of a molecule and from there any physical properties of the material can be determined thereafter. Fleur can be run by digitally specifying the cell structure of a molecule and so can be run to any material and such outputs.
+
+Generally it is used to find/simulate properties of solids with impurities in cell structure. Fluer outputs the data of DFT simulation. It gives the data of ground state and excited state properties of solids. These data which are raw are generally not accessible directly and have to be processed through steps for the solid state physicist to understand the raw data extracted from Fleur DFT simulation. This becomes the major problem and which is dealt in this project. The goal of this project was to implement a complete data analysis pipeline for this application. The steps include preprocessing followed by data exploration and visualization.
+
+\subsection{Motivation and Requirements}
+
+An API which solves the physicist's problem of understanding the simulation data which transforms raw data to useful data such that it is process and visualizes. This API has to process the output files from fleur directly so that it is easier for physicists to get the data processed without external effort. Having said this, modularization and easy maintainability of code also matters since the simulation output keeps varying over the time with the development of simulation code and more data getting collected from simulation.
+
+This API shouldn't only be solving the physicist's problem but also should be fast enough in terms of computation. As known, using of computer code to get outputs and may cause confusions. So an front end GUI is needed such that a physicist can use the GUI to output the processed data. As this is used for research purpose and the features such as plots, images and other should be of high quality so that there is no uncertainty of the results.
+
+\subsection{Steps}
+
+As a project, step by step procedure has completed to complete the task of processing and visualization.
+\begin{itemize}
+\item Understanding the problem: Firstly the theory of DFT simulation, Fleur code, band plots, density plots, file format of data and other necessary theory needed are learnt and understanding about the problem.
+\item Pre Processing: Once problem is clearly understood, first step of project comes to preprocessing the data. Reading the data, sorting the data and storing it sorted which can be used in further stages of implementation.
+\item Exploring the data: From the raw data, not just band plots but many features can be extracted from the raw simulation data. Finding out through exploring the data and trying to understand and extract those features.
+\item Visualization: The data which is preprocesed and extracted need to be visualized into plots such that any user with solid state physics background can understand it by a glance.
+\item Front End: A GUI is developed so that its easier in future for any physicist to just run the GUI and get the plots instead of going through whole code.
+\item Results and lookup: Getting to know the features extracted, studying it, reporting the same.
+
+\end{itemize}
 %%% Local Variables:
 %%% mode: latex
 %%% TeX-master: "../"

@@ -2,7 +2,16 @@ name: masci-stupro
 channels:
   - conda-forge
   - anaconda
+  - auto
 dependencies:
+  - pip
+  - future
+  - logging
+  - scipy
+  - numpy
+  - h5py
+  - matplotlib
+  - pytest-cov
   - jupyter
   - notebook
   - jupyter_contrib_nbextensions
@@ -15,3 +24,7 @@ dependencies:
   - appmode
   - periodictable
   - tk
+  - voila
+  - pip:
+    - deprecated
+    - fileupload      
