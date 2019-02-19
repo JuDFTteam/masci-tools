@@ -6,7 +6,7 @@ To illustrate the use of the graphical user interface, two different physical
 applications are shown in the desktop and the web frontend, respectively. From
 the physics point of view, the example in the desktop version focuses more on the
 density of states and the visualization of spin contributions, while the dataset
-in web frontend focuses on the band structure $E(k)$ and the visualization
+in web frontend focuses on the band structure $E(\mathbf{k})$ and the visualization
 of defect states in supercells.
 
 \section{Web Frontend: $\textrm{MoSe}_2$ Crystal}
@@ -55,28 +55,28 @@ Since the Brillouin zone of the supercell is smaller than the Brillouin zone of 
 
 % bänder isonlieren schwierig....fleur update--> label der E eigenvlas
 
-%$m^{*}$ and $v_{G}(\vec{k})$
+%$m^{*}$ and $v_{G}(\mathbf{k})$
 \section{Derived physical Quantities: Differentiation}
 The kind of datasets handled in the scope of the project did not lend themselves
 readily to applications of automatic differentiation techniques. Nevertheless,
 it is possible to derive meaningful physical quantities from the band structure
 using numerical differentiation techniques.
 
-The effective mass $m^{*}$ represents the mass, that an electron appears to have due to the inter-atomic forces in the crystal. At every $\vec{k}_0$, where $E(\vec{k})$ has a local extremum, $E(\vec{k})$ can be expanded in a Taylor series with a vanishing first order term $E(k) = E_0 + \frac{\partial E(\vec{k})}{\partial \vec{k}} \cdot (\vec{k}-\vec{k}_0)^2$. Comparing this to the dispersion relation of a free electron $E(\vec{k})_{free} = \frac{\hbar^2 \vec{k}^2}{2 m_e}$ motivates the general definition 
+The effective mass $m^{*}$ represents the mass, that an electron appears to have due to the inter-atomic forces in the crystal. At every $\mathbf{k}_0$, where $E(\mathbf{k})$ has a local extremum, $E(\mathbf{k})$ can be expanded in a Taylor series with a vanishing first order term $E(\mathbf{k}) = E_0 + \frac{\partial E(\mathbf{k})}{\partial \mathbf{k}} \cdot (\mathbf{k}-\mathbf{k}_0)^2$. Comparing this to the dispersion relation of a free electron $E(\mathbf{k})_{free} = \frac{\hbar^2 \mathbf{k}^2}{2 m_e}$ motivates the general definition 
 
 \begin{equation}
-    m^{*}_{k_i,k_j} = \hbar^2  \left(\frac{\partial^2E(\vec{k})}{\partial k_i \partial k_j}\right)^{-1}
+    m^{*}_{k_i,k_j} = \hbar^2  \left(\frac{\partial^2E(\mathbf{k})}{\partial k_i \partial k_j}\right)^{-1}
 \end{equation}
 
-Since $\frac{\partial^2E(k)}{\partial \vec{k}_i \partial \vec{k}_j}$ depends on the direction of the partial derivatives, $m^{*}_{k_i,k_j}$ is a tensor. Because the band structure files only contain a discrete sampled path in the Brillouin zone, only the derivatives that correspond to the direction from one high-symmetry point to the next can be computed. We are only interested in the diagonal terms of $m^{*}\big|_{i,j}$.
+Since $\frac{\partial^2E(\mathbf{k})}{\partial \mathbf{k}_i \partial \mathbf{k}_j}$ depends on the direction of the partial derivatives, $m^{*}_{k_i,k_j}$ is a tensor. Because the band structure files only contain a discrete sampled path in the Brillouin zone, only the derivatives that correspond to the direction from one high-symmetry point to the next can be computed. We are only interested in the diagonal terms of $m^{*}\big|_{i,j}$.
 
 %maybe something about the directional dependency --> m is tensor...
 
 
-A second potentially interesting quantity is the group velocity $v_{G}(\vec{k})$ associated to each band. The group velocity $v_{G}(\vec{k})$ at the Fermi energy $E = E_F$ is called Fermi velocity.
+A second potentially interesting quantity is the group velocity $v_{G}(\mathbf{k})$ associated to each band. The group velocity $v_{G}(\mathbf{k})$ at the Fermi energy $E = E_F$ is called Fermi velocity.
 
 \begin{equation}
-    v_{G}(\vec{k})_{k_i} = \frac{1}{\hbar}\frac{\partial E(\vec{k})}{\partial \vec{k_i}}
+    v_{G}(\mathbf{k})_{k_i} = \frac{1}{\hbar}\frac{\partial E(\mathbf{k})}{\partial \mathbf{k_i}}
 \end{equation}
 
 
@@ -102,7 +102,7 @@ The comparison between the FFT and a first-order central difference approximatio
     \label{num_diff}
 \end{figure}
 
-When using more points, the difference between both approximation schemes is not significant. It is interesting to note, that the FFT method does not work anymore in the limit of extremely many points. In this case the derivative is dominated by Gibbs oscillations. These are most likely caused by small discontinuities in $E(k)$, due to basis changes inside the DFT computation.
+When using more points, the difference between both approximation schemes is not significant. It is interesting to note, that the FFT method does not work anymore in the limit of extremely many points. In this case the derivative is dominated by Gibbs oscillations. These are most likely caused by small discontinuities in $E(\mathbf{k})$, due to basis changes inside the DFT computation.
 
 At the current state the question remains to be answered weather the computation of $m^{*}$ and $v_g$ is useful. The number of bands, which the computation can be applied to is extremely limited. Since the bands in the data files are not labeled according to their corresponding eigenfunction but sorted by value, there are discontinuities at each point, where two bands intersect. This problem might be solved in the future. 
 
@@ -119,10 +119,10 @@ At the current state the question remains to be answered weather the computation
 
 
  %   \item Effective mass, that an electon in a crystal appears to have compared to a free %electron (due to interactions in the solid)
-%    $m^{*} = \hbar^2  \left(\frac{\partial^2E(k)}{\partial k^2}\right)^{-1}$
+%    $m^{*} = \hbar^2  \left(\frac{\partial^2E(\mathbf{k})}{\partial k^2}\right)^{-1}$
 %    \
 %    \item Group velocity:
-%    $v_{G}(\vec{k}) = \frac{1}{\hbar}\frac{\partial E(\vec{k})}{\partial \vec{k}}$%
+%    $v_{G}(\mathbf{k}) = \frac{1}{\hbar}\frac{\partial E(\mathbf{k})}{\partial \mathbf{k}}$%
 %
 %    
 %    \item Problem: sparse k-Point mesh, but periodic band structure

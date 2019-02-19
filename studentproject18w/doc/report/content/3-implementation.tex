@@ -122,8 +122,8 @@ All three plots are controlled by one set of widgets for varying the parameters.
 In the current implementation, the data for the first two plots come from a HDF
 file, while the data for DOS plot come from CSV files.
 
-The band structure plot is a scatter plot and plots discrete \(E(\vec{k})\) data
-from the simulation. It first needs the \(k\)-path (where \(|\vec{k}|=k\)) for
+The band structure plot is a scatter plot and plots discrete \(E(\mathbf{k})\) data
+from the simulation. It first needs the \(k\)-path (where \(|\mathbf{k}|=k\)) for
 the horizontal axis. The preprocessor, having received the recipe
 \texttt{FleurBands}, computes it from the \(k\)-points in the HDF in a
 transform. Next, the plot needs the eigenergies for every point on the
