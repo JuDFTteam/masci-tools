@@ -112,17 +112,43 @@ label=recipe
 \subsection{Implementation for Band Structure Visualization}
 \label{sec:preprocessor-implementation}
 
+\textbf{TODO} describe how bandstructure data is preprocessed for visualization
+including user selections AND optimizations
+
+The frontend has to draw three kinds of plots: a 3D atom plot of the unit cell
+or supercell, and a combined band structure and DOS plot sharing the same
+vertical energy axis. If no DOS data is present, the DOS plot will be omitted.
+All three plots are controlled by one set of widgets for varying the parameters.
+In the current implementation, the data for the first two plots come from a HDF
+file, while the data for DOS plot come from CSV files.
+
+The band structure plot is a scatter plot and plots discrete \(E(k)\) data from
+the simulation. It first needs the \(k\)-path for the horizontal axis. The
+preprocessor, having received the recipe \texttt{FleurBands}, computes it from
+the \(k\)-points in the HDF in a transform. Next, the plot needs the eigenergies
+for every point on the \(k\)-path, labeled by the band index \(\nu\), and its
+associated \(l\)-like charge \(n_{s,k,\nu,g,l}\). It is fivedimensional, and
+represents the contribution of spin \(s\), point \(k\) point on \(k\)-path, band
+\(\nu\), atom group \(g\), and character or orbital \(l\) (here: only s,p,d,f)
+to the specific eigenergy. In order to visualize this, resolves the processed
+data into the like-named output type \texttt{FleurBands}. This type has a data
+filter method. The respective \texttt{BandPlot} type calls this filter with a
+user selection of subsets of all \(s,k,nu,g,l\). The method then computes the
+according \textbf{effective weight} shown in Equation \ref{eq:effective-weight}.
+This is used for the dot size of each \(E(k)\) in the plot. Before rendering,
+the plotter normalizes the energies to the Fermi Energy. 
+
 \begin{align}
   W^{\text{eff}}_{s,k,\nu} = \left( \frac{\sum\limits_{\substack{g \in \text{groups} \\ l \in \text{characters}}} n_{s,k,\nu,g,l} N_g}{\sum\limits_{\substack{g \in \text{all groups} \\ l \in \text{all characters}}} n_{s,k,\nu,g,l} N_g} \right) \left(W_{s,k,\nu}^{\text{unf}}\right)^\alpha
+\label{eq:effective-weight}
 \end{align}
 
-\(W^{\text{eff}}_{s,k,\nu}\) is the effective weight. The indices denote: \(s\)
-spin, \(k\) point on \(k\)-path, \(\nu\) band, \(g\) group, \(l\) character.
-\(n_{s,k,\nu,g,l}\) is the state-specific \(l\)-like charge. \(N_g\) denotes the
-number of atoms in a group. \(W_{s,k,\nu}^{\text{unf}}\) is the unfolding weight
-and \(\alpha\) its exponent.
-
-Calculations can be done with a crystal unit cell (UC) or a super cell  
+\(N_g\) denotes the number of atoms in a group. \(W_{s,k,\nu}^{\text{unf}}\) is
+the unfolding weight and \(\alpha\) its exponent. The effect of unfolding is
+illustrated in Figure \ref{fig:unfolding} for a toy example of a monatomic
+chain, with a two-atom supercell representing \(\alpha=0\) and a one-atom unit
+cell representing \(\alpha=1\). A use-case is discussed in the Application
+Chapter \ref{chap:applications}.
 
 \begin{figure}[htb!]
     \centering
@@ -133,10 +159,6 @@ Calculations can be done with a crystal unit cell (UC) or a super cell
 \end{figure}
 
 
-
-
-\textbf{TODO} describe how bandstructure data is preprocessed for visualization
-including user selections AND optimizations
 
 \section{Visualization Module \& Interactive Graphical Frontends}
 \label{sec:visualization-module}
