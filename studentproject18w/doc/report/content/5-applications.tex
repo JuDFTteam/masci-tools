@@ -11,12 +11,22 @@ of defect states in supercells.
 
 \section{Web Frontend: $\textrm{MoSe}_2$ Crystal}
 
+\begin{wrapfigure}{r}{0.4\textwidth} % placed up here cause below would appear
+                                % in next section. and in PDF appears next to
+                                % matching text.
+    \centering
+    \includegraphics[width=0.38\textwidth]{christian/screen4_atomplot_defect.png}
+    \caption[Atom Plot of a $\textrm{MoSe}_2$ monolayer]{Atom Plot of a $MoSe_2$ monolayer with the defect atom selected in
+      the web frontend}
+    \label{fig:modules}
+\end{wrapfigure}
+
 Figure \ref{example1} shows the visualization of a band structure calculation of a 3 dimensional Molybdenum diselenide ($\textrm{MoSe}_2$ bulk) crystal using the default settings of the GUI. Even with the default settings the band structure plots clearly indicate, that $\textrm{MoSe}_2$ is a semiconductor, since there are no states at the Fermi level. Because the minimum of the conduction band is located at an other $k$ as the maximum of the valence band, the plot shows that $\textrm{MoSe}_2$ has an indirect band gap. This indicates that for the transition with the smallest energy difference between valence and the conduction band, both, energy and momentum have to change.
 
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.7\linewidth]{christian/screen1.png}
-    \caption{Bandstructure of a $\textrm{MoSe}_2$ crystal using the default settings of the web frontend}
+    \caption[Bandstructure of a $\textrm{MoSe}_2$ crystal]{Bandstructure of a $\textrm{MoSe}_2$ crystal using the default settings of the web frontend}
     \label{example1}
 \end{figure}
 
@@ -25,7 +35,7 @@ In contrast to the 3 dimensional extended $\textrm{MoSe}_2$ crystal, a $\textrm{
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.7\linewidth]{christian/screen2.png}
-    \caption{Bandstructure of a $\textrm{MoSe}_2$ monolayer using the default settings of the web frontend}
+    \caption[Bandstructure of a $\textrm{MoSe}_2$ monolayer]{Bandstructure of a $\textrm{MoSe}_2$ monolayer using the default settings of the web frontend}
     \label{example2}
 \end{figure}
 
@@ -38,6 +48,7 @@ Since the Brillouin zone of the supercell is smaller than the Brillouin zone of 
     \caption{Bandstructure of a $MoSe_2$ monolayer without unfolding weights}
     \label{example3}
 \end{figure}
+
 
 \section{Desktop Frontend: $\textrm{Co}$ Crystal}
 

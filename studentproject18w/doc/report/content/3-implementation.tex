@@ -150,8 +150,8 @@ be in user manual next section.
 The Python visualization landscape abounds with a rapidly evolving plethora of
 plotting libraries for different application contexts and technology stacks
 \cite{python-viz-landscape}. Thus the project's visualization module first
-design objective was to account for that by decoupling from library use, and
-modularizing applications. This structure again is built using Python's
+design objective was to account for that by decoupling from specific library
+use, and modularizing applications. This structure again is built using Python's
 \texttt{AbstractBaseClass} (\texttt{ABC}) interface and multiple inheritance.
 Each application is represented by an abstract base class that contains the
 common plotting method signatures. Each plotting library is represented by an
@@ -188,8 +188,8 @@ modern software environment \cite{web-vs-desktop}, so Python-based Frontends and
 visualizations are increasingly moving towards the browser. There, GUIs with
 interactive visualizations are often called \textbf{Dashboards}. In the project
 context, a survey was undertaken in order to choose the most suitable technology
-stack. The full survey is documented in \cite{jw-notes}. The requirements on top
-of those in the introduction that were as follows: 
+stack. The full survey is documented in \cite{jw-notes}. The requirements for
+the solution stack, added to those in the introduction, were as follows:
 
 \begin{enumerate}
 \item \textbf{openness}: relies solely on Open-Source-Software (OSS) with
@@ -207,14 +207,14 @@ of those in the introduction that were as follows:
     knowledge like e.g. Javascript, with respect to the product stakeholders.
 \end{enumerate}
 
-The last point implies a client-server model where the app is hosted by a remote
-service. This model requires a communication framework and protocol between the
-Python interpreter running on the server and the JavaScript interpreter running
-in the client browser. As per criterion 2, unlike a generic Python web framework
-like e.g. \href{http://flask.pocoo.org/}{Flask}, it should take care of that
-communication by itself. Four major frameworks were identified which fulfill the
-first three requirements: \href{https://jupyter.org/}{Project Jupyter},
-\href{http://pyviz.org/}{PyViz},
+The last point implies a client-server model where the dashboard app is hosted
+by a remote service. This model requires a communication framework and protocol
+between the Python interpreter running on the server and the JavaScript
+interpreter running in the client browser. As per requirement number two, unlike
+a generic Python web framework like e.g. \href{http://flask.pocoo.org/}{Flask},
+the framework should take care of that communication by itself. Four major
+frameworks were identified which fulfill the first three requirements:
+\href{https://jupyter.org/}{Project Jupyter}, \href{http://pyviz.org/}{PyViz},
 \href{https://bokeh.pydata.org/en/latest/}{Bokeh}, and
 \href{https://plot.ly/products/dash/}{Dash by Plotly}. The last two only
 partially fulfilled the last requirement, so they were discarded. PyViz is the
@@ -222,14 +222,14 @@ newest contender among the four. Its expressed goal is to untangle the Python
 visualization jungle by providing one high-level API that ties together all
 major Python InfoVis libraries and data formats, including dashboarding. That
 ambitious goal comes at the price of sacrificing support for 3D plotting
-\cite{pyviz-faq} which was needed in this project for the atoms plot. So it had
-to be discarded.
+\cite{pyviz-faq}, which was needed in this project for the atoms plot. So PyViz
+had to be discarded.
 
-That left Jupyter. By now, its widget library \texttt{ipywidgets} is integrated
-to work with a wide variety of popular plotting libraries. However, Jupyter only
-partially fulfills the third requirement -- a Jupyter notebook (app) cannot, by
-itself, be published (deployed) for use outside a live Jupyter environment
-\cite{python-viz-2018}:
+That left Project Jupyter. By now, it's widget library \texttt{ipywidgets} is
+integrated to work with a wide variety of popular plotting libraries. However,
+Jupyter only partially fulfills the third requirement -- a Jupyter notebook
+(app) cannot, by itself, be published (deployed) as a stand-alone website
+outside a live Jupyter environment \cite{python-viz-2018}:
 
 \begin{quote}
     [...] ``However, despite their web-based interactivity, the ipywidgets-based
@@ -239,13 +239,14 @@ itself, be published (deployed) for use outside a live Jupyter environment
 \end{quote}
 
 To avoid requiring users to setup a working Jupyter environment on their
-machine, the go-to solution for this problem is hosting a
+machine, the go-to solution for this problem is to setup a
 \href{https://jupyter.org/hub}{JupyterHub} multi-user server. This still
-requires users to register an account. Fortunately though, the intended users
-are contributors to the AiiDA project, and so should have access to the
+requires users to register an account there. Fortunately though, the intended
+users are contributors to the AiiDA project, and so should have access to the
 JupyterHub-based \href{ https://aiidalab.materialscloud.org/}{AiiDaLab} service
-where the app can be registered. Details on this procedure and alternative hosting solutions
-can be found in the developer Section \vref{sec:developer-manual}. 
+where the app can be registered. Details on this procedure and alternative
+hosting solutions can be found in the developer Section
+\vref{sec:developer-manual}.
 
 
 %%% Local Variables:
