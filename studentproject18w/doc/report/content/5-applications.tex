@@ -11,14 +11,33 @@ of defect states in supercells.
 
 \section{Web Frontend: $\textrm{MoSe}_2$ Crystal}
 
-Figure \textbf{TODO} shows the visualization of a band structure calculation of a 3 dimensional Molybdenum diselenide ($\textrm{MoSe}_2$ bulk) crystal using the default settings of the GUI. Even with the default settings the band structure plots clearly indicate, that $MoSe_2$ is a semiconductor, since there are no states at the Fermi level. Because the minimum of the conduction band is located at an other $k$ as the maximum of the valence band, the plot shows that $\textrm{MoSe}_2$ has an indirect band gap. This indicates that for the transition with the smallest energy difference between valence and the conduction band, both, energy and momentum have to change.
+Figure \ref{example1} shows the visualization of a band structure calculation of a 3 dimensional Molybdenum diselenide ($\textrm{MoSe}_2$ bulk) crystal using the default settings of the GUI. Even with the default settings the band structure plots clearly indicate, that $\textrm{MoSe}_2$ is a semiconductor, since there are no states at the Fermi level. Because the minimum of the conduction band is located at an other $k$ as the maximum of the valence band, the plot shows that $\textrm{MoSe}_2$ has an indirect band gap. This indicates that for the transition with the smallest energy difference between valence and the conduction band, both, energy and momentum have to change.
 
-In contrast to the 3 dimensional extended $MoSe_2$ crystal, a $MoSe_2$ monolayer (see Fig. \textbf{TODO}) has a direct band gap but is still a semiconductor. Furthermore, the $\textrm{MoSe}_2$ monolayer has a defect atom in every 9th unit cell and the DFT computation is therefore done in a $3 \times 3$ supercell to restore periodicity. This is the reason for the much greater number of states in the band structure plot. 
+\begin{figure}[htb!]
+    \centering
+    \includegraphics[width=0.7\linewidth]{christian/screen1.png}
+    \caption{Bandstructure of a $\textrm{MoSe}_2$ crystal using the default settings of the web frontend}
+    \label{example1}
+\end{figure}
 
-Since the Brillouin zone of the supercell is smaller than the Brillouin zone of the same crystal without the defect, the supercell Brillouin zone is unfolded to the same size as the Brillouin zone of the unperturbed lattice. To account for the fact that the defect is only present in every 9th cell and its relative importance for the spectrum is therefore degraded, an unfolding weight is introduced to visualize the relative importance of bands in the unfolded Brillouin zone. By default, the unfolding weight is used by our visualization tool, but it can gradually be turned off in order to highlight the impact of defect states. This is shown in figure \textbf{TODO}. To even better visualize the defect state, it would also be possible to select the atom group belonging the defect atoms only. In this example, the analysis with reduced band unfolding shows, that there are many more direct band gaps origination from the defect state.
+In contrast to the 3 dimensional extended $\textrm{MoSe}_2$ crystal, a $\textrm{MoSe}_2$ monolayer (see Fig. \ref{example2}) has a direct band gap but is still a semiconductor. Furthermore, the $\textrm{MoSe}_2$ monolayer has a defect atom in every 9th unit cell and the DFT computation is therefore done in a $3 \times 3$ supercell to restore periodicity. This is the reason for the much greater number of states in the band structure plot. 
+
+\begin{figure}[htb!]
+    \centering
+    \includegraphics[width=0.7\linewidth]{christian/screen2.png}
+    \caption{Bandstructure of a $\textrm{MoSe}_2$ monolayer using the default settings of the web frontend}
+    \label{example2}
+\end{figure}
+
+Since the Brillouin zone of the supercell is smaller than the Brillouin zone of the same crystal without the defect, the supercell Brillouin zone is unfolded to the same size as the Brillouin zone of the unperturbed lattice. To account for the fact that the defect is only present in every 9th cell and its relative importance for the spectrum is therefore degraded, an unfolding weight is introduced to visualize the relative importance of bands in the unfolded Brillouin zone. By default, the unfolding weight is used by our visualization tool, but it can gradually be turned off in order to highlight the impact of defect states. This is shown in figure \ref{example3}. To even better visualize the defect state, it would also be possible to select the atom group belonging the defect atoms only. In this example, the analysis with reduced band unfolding shows, that there are many more direct band gaps origination from the defect state.
 
 
-
+\begin{figure}[htb!]
+    \centering
+    \includegraphics[width=0.7\linewidth]{christian/screen3.png}
+    \caption{Bandstructure of a $MoSe_2$ monolayer without unfolding weights}
+    \label{example3}
+\end{figure}
 
 \section{Desktop Frontend: $\textrm{Co}$ Crystal}
 
@@ -38,7 +57,7 @@ The effective mass $m^{*}$ represents the mass, that an electron appears to have
     m^{*}_{k_i,k_j} = \hbar^2  \left(\frac{\partial^2E(\vec{k})}{\partial k_i \partial k_j}\right)^{-1}
 \end{equation}
 
-Since $\frac{\partial^2E(k)}{\partial \vec{k}_i \partial \vec{k}_j}$ depends on the direction of the partial derivatives, $m^{*}\big|_{i,j}$ is a tensor. Because the band structure files only contain a discrete sampled path in the Brillouin zone, only the derivatives that correspond to the direction from one high-symmetry point to the next can be computed. We are only interested in the diagonal terms of $m^{*}\big|_{i,j}$.
+Since $\frac{\partial^2E(k)}{\partial \vec{k}_i \partial \vec{k}_j}$ depends on the direction of the partial derivatives, $m^{*}_{k_i,k_j}$ is a tensor. Because the band structure files only contain a discrete sampled path in the Brillouin zone, only the derivatives that correspond to the direction from one high-symmetry point to the next can be computed. We are only interested in the diagonal terms of $m^{*}\big|_{i,j}$.
 
 %maybe something about the directional dependency --> m is tensor...
 
@@ -46,7 +65,7 @@ Since $\frac{\partial^2E(k)}{\partial \vec{k}_i \partial \vec{k}_j}$ depends on 
 A second potentially interesting quantity is the group velocity $v_{G}(\vec{k})$ associated to each band. The group velocity $v_{G}(\vec{k})$ at the Fermi energy $E = E_F$ is called Fermi velocity.
 
 \begin{equation}
-    v_{G}(\vec{k})\big|_i = \frac{1}{\hbar}\frac{\partial E(\vec{k})}{\partial \vec{k_i}}
+    v_{G}(\vec{k})_{k_i} = \frac{1}{\hbar}\frac{\partial E(\vec{k})}{\partial \vec{k_i}}
 \end{equation}
 
 
@@ -62,7 +81,15 @@ In Fourier space, spatial derivatives transform into multiplications, which can 
  
 To test the FFT differentiation method, a band was selected that did not have intersections with other bands within the interval between two high symmetry points and a stationary point at the high symmetry points. Then a resolution study was done to investigate the impact of the number of points within the interval.
 
-The comparison between the FFT and a first-order central difference approximation of the second derivative (FD) is shown in Fig. \textbf{TODO}, where different k-mesh resolutions are compared to a derivative that is almost fully converged. The comparison indicates that for small N, the error of the FFT method is significantly smaller than the error of the FD derivative. This is especially striking in the vicinity of the high symmetry points, where the error of the differentiation is required to be small in order to get good approximations for $m^{*}$, which is only meaningful close to the high symmetry points.
+The comparison between the FFT and a first-order central difference approximation of the second derivative (FD) is shown in Fig. \ref{num_diff}, where different k-mesh resolutions are compared to a derivative that is almost fully converged. The comparison indicates that for small N, the error of the FFT method is significantly smaller than the error of the FD derivative. This is especially striking in the vicinity of the high symmetry points, where the error of the differentiation is required to be small in order to get good approximations for $m^{*}$, which is only meaningful close to the high symmetry points.
+
+
+\begin{figure}[htb!]
+    \centering
+    \includegraphics[width=0.7\linewidth]{christian/diff_compare.png}
+    \caption{Comparison between FFT differentiation method and central finite difference method}
+    \label{num_diff}
+\end{figure}
 
 When using more points, the difference between both approximation schemes is not significant. It is interesting to note, that the FFT method does not work anymore in the limit of extremely many points. In this case the derivative is dominated by Gibbs oscillations. These are most likely caused by small discontinuities in $E(k)$, due to basis changes inside the DFT computation.
 

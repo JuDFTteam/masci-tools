@@ -29,12 +29,12 @@ one added value of the project product could be to inspire the hopefully easy
 integration into a common interface, where the current abstraction level could
 serve as a starting point.
 
-\begin{figure}[htb!]
+\begin{wrapfigure}{r}{0.4\textwidth}
     \centering
-    \includegraphics[width=0.3\linewidth]{img/module_design.png}
+    \includegraphics[width=0.38\textwidth]{img/module_design.png}
     \caption{Module Design}
     \label{fig:modules}
-\end{figure}
+\end{wrapfigure}
 
 \section{HDF Preprocessor Module}
 \label{sec:preprocessor-module}
@@ -94,7 +94,7 @@ object's type is defined at runtime, when the preprocessing is finished.
 
 \begin{figure}[htb!]
     \centering
-    \includegraphics[width=0.6\linewidth]{img/reader_flowchart4.png}
+    \includegraphics[width=0.6\textwidth]{img/reader_flowchart4.png}
     \caption{The preprocessor module.}
     \label{fig:preprocessor}
 \end{figure}
@@ -122,6 +122,8 @@ spin, \(k\) point on \(k\)-path, \(\nu\) band, \(g\) group, \(l\) character.
 number of atoms in a group. \(W_{s,k,\nu}^{\text{unf}}\) is the unfolding weight
 and \(\alpha\) its exponent.
 
+Calculations can be done with a crystal unit cell (UC) or a super cell  
+
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.6\linewidth]{fig/unfolding.png}
@@ -129,6 +131,8 @@ and \(\alpha\) its exponent.
       chain \cite{hoffmann1987chemistry}.}
     \label{fig:unfolding}
 \end{figure}
+
+
 
 
 \textbf{TODO} describe how bandstructure data is preprocessed for visualization

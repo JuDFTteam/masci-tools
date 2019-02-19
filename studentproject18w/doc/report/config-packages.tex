@@ -26,7 +26,7 @@ giveninits=false                % surnames do not get
 \usepackage{a4wide}
 \usepackage{graphicx}
 \graphicspath{{./fig/}{./img/}}
-\usepackage{subfig}
+% \usepackage{subfig}             %JW: commented out cause using subcaption below!
 \usepackage{tikz}
 \usetikzlibrary{shapes,arrows}
 \usepackage{pgfplots}
@@ -94,12 +94,11 @@ giveninits=false                % surnames do not get
 \usepackage[footnote]{acronym}
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%% CONFIG JOHANNES %%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%% CONFIG JOHANNES JW %%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\usepackage{fontawesome}
-\usepackage{dashrule}
+%% References =================================================
 \usepackage{hyperref}
 \hypersetup{
   colorlinks,
@@ -107,9 +106,14 @@ giveninits=false                % surnames do not get
   citecolor={blue!50!black},
   urlcolor={blue!80!black}
 }
-\usepackage{varioref}
+\usepackage{varioref}           % for \vref
 
-%==== Listings =========================================================
+%% Figures ===================================================
+\usepackage{caption}
+\usepackage{subcaption}         % for \begin{subfigure}
+\usepackage{wrapfig}            % for \begin{wrapfigure}
+
+%% Listings ==================================================
 \usepackage{listings}           % for visualizing sourcecode file inserts
 
 \lstset{rangeprefix=/*\ ,
@@ -127,7 +131,12 @@ giveninits=false                % surnames do not get
 %% caption={XML Summary Report, oberste Ebene},
 %% label=reportxml1
 %% ]{listings/file.xml}
-%================================================================================
+%% =========================================================
+
+%% Unused ==================================================
+% \usepackage{fontawesome}        % Glyphs & icons
+% \usepackage{dashrule}           % dashed lines
+
 
 
 
