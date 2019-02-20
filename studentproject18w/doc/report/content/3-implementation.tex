@@ -12,7 +12,7 @@ where also this project's code is hosted, and the 'Automated Interactive
 Infrastructure and Database for Computational Science' (AiiDA) \cite{aiida}. The
 product stakeholders split into frontend users and code developers. In order to
 accommodate this, the product is organized into three unidirectionally dependent
-subpackages or -modules, see Figure \ref{fig:modules}.
+subpackages or -modules, see Figure \ref{fig:submodules}.
 
 An important design consideration was to account for unknown use cases. This has
 been realized in each submodule by the decoupling of \textbf{interface} and
@@ -29,12 +29,41 @@ one added value of the project product could be to inspire the hopefully easy
 integration into a common interface, where the current abstraction level could
 serve as a starting point.
 
-\begin{wrapfigure}{r}{0.4\textwidth}
+%% Bad: jumbles up text
+% \begin{wrapfigure}{r}{0.3\textwidth}
+%     \centering
+% \end{wrapfigure}
+
+%% bad: too near to page side margins
+% \begin{figure}[htb!]
+%     \centering
+%     \begin{subfigure}{.5\textwidth}
+%         \centering
+%         \includegraphics[width=0.5\textwidth]{img/module_design.png}
+%         \caption{Submodules}
+%         \label{fig:submodules}
+
+%     \end{subfigure}% %this '%' is needed for side-by-side figure!
+%     \begin{subfigure}{.7\textwidth}
+%         \centering
+%         \includegraphics[width=0.7\textwidth]{img/reader_flowchart4.png}
+%         \caption{Preprocessor}
+%         \label{fig:preprocessor}
+%     \end{subfigure}
+%     \caption{Module Design.}
+%     \label{fig:module-design}
+% \end{figure}
+
+
+\begin{figure}[htb!]
+    % Fixed length
     \centering
-    \includegraphics[width=0.38\textwidth]{img/module_design.png}
-    \caption{Module Design}
-    \label{fig:modules}
-\end{wrapfigure}
+    \subcaptionbox{Submodules\label{fig:submodules}}{\includegraphics[width=1.6in]{img/module_design.png}}\hspace{5em}%
+    \subcaptionbox{Preprocessor\label{fig:preprocessor}}{\includegraphics[width=0.5\textwidth]{img/reader_flowchart4.png}}
+    \caption{Module Design.}
+    \label{fig:module-design}
+\end{figure}
+
 
 \section{HDF Preprocessor Module}
 \label{sec:preprocessor-module}
@@ -92,21 +121,21 @@ transformed datasets have been added to the object, all specified output types
 are searched and all their methods and attributes added. Thus the output
 object's type is defined at runtime, when the preprocessing is finished.
 
-\begin{figure}[htb!]
-    \centering
-    \includegraphics[width=0.6\textwidth]{img/reader_flowchart4.png}
-    \caption{The preprocessor module.}
-    \label{fig:preprocessor}
-\end{figure}
+% \begin{figure}[htb!]
+%     \centering
+%     \includegraphics[width=0.6\textwidth]{img/reader_flowchart4.png}
+%     \caption{The preprocessor module.}
+%     \label{fig:preprocessor}
+% \end{figure}
 
-\lstinputlisting[
-language=python,
-style=code,
-linerange=101-106
-captionpos=t,
-caption={Recipe \texttt{FleurBands} excerpt: dataset \texttt{BravaisMatrix}},
-label=recipe
-]{listings/recipes.py}
+% \lstinputlisting[
+% language=python,
+% style=code,
+% linerange=101-106
+% captionpos=t,
+% caption={Recipe \texttt{FleurBands} excerpt: dataset \texttt{BravaisMatrix}},
+% label=recipe
+% ]{listings/recipes.py}
 
 
 \subsection{Implementation for Band Structure Visualization}
