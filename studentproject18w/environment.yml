@@ -2,6 +2,7 @@ name: masci-stupro
 channels:
   - conda-forge
   - anaconda
+  - auto
 dependencies:
   - python=3.6.7
   - pip
