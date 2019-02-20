@@ -18,7 +18,24 @@ class AbstractMatplot(ABC):
         self.plt = plt
 
     @abstractmethod
-    def setup_figure(self, fig_ratio=[10, 6], fig_scale=0.65):
+    def setup_figure(self, fig_ratio=[10, 6], fig_scale=0.65, set_title=False, fig_title=""):
+        """
+        .
+
+        Matplotlib Implementation
+        ==========================
+        Call this before setting up the plot. Returns (fig, ax1, ax2, ...) depending on number
+        of subplots of specific plot type.
+
+        IMPORTANT: in a Jupyter notebook where the matplotlib backend is 'widget', the fig_title
+        is the title of the widget window, not the plot. Set that outside with plt.title().
+
+        :param fig_ratio: list: figure [width, height]
+        :param fig_scale: number: figure size
+        :param set_title: Bool: set figure title
+        :param fig_title: str: figure title
+        :return:
+        """
         pass
 
 
@@ -69,7 +86,7 @@ class BandPlot(AbstractBandPlot, AbstractMatplot):
         AbstractBandPlot.__init__(self, data)
         AbstractMatplot.__init__(self, plt)
 
-    def setup_figure(self, fig_ratio=[10, 6], fig_scale=0.65):
+    def setup_figure(self, fig_ratio=[10, 6], fig_scale=0.65, set_title=False, fig_title=""):
         (self.fig, self.ax_bands) = self.plt.subplots(1, figsize=[fig_scale * el for el in fig_ratio])
         # self.plt.suptitle(f"BandStructure of {filename}")
         return (self.fig, self.ax_bands)
@@ -211,7 +228,7 @@ class DOSPlot(AbstractDOSPlot, AbstractMatplot):
         AbstractDOSPlot.__init__(self, data, filepaths_dos)
         AbstractMatplot.__init__(self, plt)
 
-    def setup_figure(self, fig_ratio=[10, 6], fig_scale=0.65):
+    def setup_figure(self, fig_ratio=[10, 6], fig_scale=0.65, set_title=False, fig_title=""):
         (self.fig, self.ax_dos) = self.plt.subplots(1, figsize=[fig_scale * el for el in fig_ratio])
         # self.plt.suptitle(f"BandStructure of {filename}")
         return (self.fig, self.ax_dos)
@@ -326,10 +343,13 @@ class BandDOSPlot(AbstractBandDOSPlot, BandPlot, DOSPlot):
         DOSPlot.__init__(self, plt, data, filepaths_dos)
         AbstractBandDOSPlot.__init__(self, data, filepaths_dos)
 
-    def setup_figure(self, fig_ratio=[12, 6], fig_scale=0.65, fig_title=""):
+    def setup_figure(self, fig_ratio=[12, 6], fig_scale=0.65, set_title=False, fig_title=""):
         if self.filepaths_dos:
             figsize = [fig_scale * el for el in fig_ratio]
-            self.fig = self.plt.figure(figsize=figsize, num=fig_title)
+            if set_title:
+                self.fig = self.plt.figure(figsize=figsize, num=fig_title)
+            else:
+                self.fig = self.plt.figure(figsize=figsize)
             # order: first add dos plot, then band plot.
             # otherwise labels (.setup() below) will be set on dos instead band plot.
             self.gs_dos = gridspec.GridSpec(1, 2)
