@@ -4,6 +4,37 @@ SiScLab 2018 Student Project **Analysis Tool for Materials Design**. Written in 
 
 Authors: [Johannes Wasmer](https://github.com/Irratzo), [Christian Partmann](https://github.com/ChristianPartmann), and [Praneeth Katta](https://github.com/PraneethKatta).
 
+<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
+**Table of Contents**
+
+- [Overview](#overview)
+- [For Frontend Users](#for-frontend-users)
+    - [General Remarks](#general-remarks)
+        - [File Input](#file-input)
+    - [Desktop Frontend](#desktop-frontend)
+        - [Installation](#installation)
+        - [Usage](#usage)
+        - [Troubleshooting](#troubleshooting)
+    - [Web Frontend](#web-frontend)
+        - [Access](#access)
+        - [Usage](#usage-1)
+- [For Developers](#for-developers)
+    - [Installation](#installation-1)
+        - [Create project virtual environment](#create-project-virtual-environment)
+    - [Programmatic use](#programmatic-use)
+    - [Try out Web Frontend locally](#try-out-web-frontend-locally)
+        - [If using Jupyter Notebook](#if-using-jupyter-notebook)
+        - [If using Jupyter Lab](#if-using-jupyter-lab)
+    - [Frontend Deployment](#frontend-deployment)
+        - [Desktop Frontend](#desktop-frontend-1)
+        - [Web Frontend](#web-frontend-1)
+    - [Exending the code](#exending-the-code)
+        - [Use Case: HDF with DOS data included](#use-case-hdf-with-dos-data-included)
+        - [Extending the Visualization (Plots)](#extending-the-visualization-plots)
+
+<!-- markdown-toc end -->
+
+
 # Overview
 This subfolder `studentproject18ws` is currently a largely independent side-project accompanying the main module `masci-tools`. It was created in a student project, and consists of three submodules:
 
