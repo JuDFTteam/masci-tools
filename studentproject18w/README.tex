@@ -121,11 +121,11 @@ of three submodules:
 \begin{itemize}
 \tightlist
 \item
-  preprocessor: a HDF reader interface, and one implementation for Fleur
-  band structure simulation output
+  preprocessor: a HDF reader interface, and one implementation for
+  \href{http://www.judft.de}{Fleur} band structure simulation output
 \item
-  visualization: a plotting interface, and one implementation for Fleur
-  bandstructure+DOS plots
+  visualization: a plotting interface, and one implementation for
+  \href{http://www.judft.de}{Fleur} bandstructure+DOS plots
 \item
   frontends: a Desktop GUI and a Web Dashboard (Tk and Jupyter) for
   interactive Fleur bandDOS plots.
@@ -143,20 +143,159 @@ project \href{./doc/report.pdf}{report} and
 
 \section{For Frontend Users}\label{for-frontend-users}
 
-The Desktop GUI executable can be received from the developers on
-request. Otherwise, it can be built using
-\href{https://www.pyinstaller.org/}{PyInstaller} from this repo.
+\subsection{General Remarks}\label{general-remarks}
 
-The Web Frontend is a Jupyter Dashboard. It is in experimental phase (no
+These remarks apply to all frontends.
+
+Though the Desktop and Web Frontend are functionally identical, there
+might be small differences in how the controls are used and how they are
+labeled.
+
+\subsubsection{File Input}\label{file-input}
+
+The frontends currently expects band structure data in the HDF output
+format of \href{http://www.judft.de}{Fleur}. The density of states data
+is expected to be in the CSV output format of
+\href{http://www.judft.de}{Fleur}, one file per spin. If no density of
+states files are supplied, the frontend will just draw a band structure
+plot (BandPlot) and omit the adjoined density of states plot (DOSPlot).
+Thus, in the following BandDOSPlot stands for both kinds of plot. The
+Web Frontend will only show controls for data that is present in the
+input (e.g., DOS and spin controls).
+
+\subsection{Desktop Frontend}\label{desktop-frontend}
+
+\subsubsection{Installation}\label{installation}
+
+A windows executable file (.exe) is made by packing all the required
+packages into the file. Any modern PC running on windows can run the
+frontend without any installation process and there is no prerequisite
+to execute this executable file. PC need not have python or other
+packages installed.
+
+For executables for other operating systems, please contact the
+developers.
+
+\subsubsection{Usage}\label{usage}
+
+Desktop based front end GUI is easy to use. By just running the .exe
+file provided will open the software with the packages involved to run
+the software. There are three tabs/windows in the software. In the first
+tab, absolute paths to the input data files must be entered in this
+order: HDF and (optional) DOS file for spin 0 and 1.
+
+Controls for all plots:
+
+\begin{itemize}
+\tightlist
+\item
+  Atom Groups: draw the BandDOSPlot only for the selected symmetry
+  groups.
+\item
+  Character: select one or more band Characters (orbitals)
+  `S',`P',`D',`F'.
+\item
+  Spin: select any one spin or both spins.
+\item
+  Marker size: Default marker size of 1.0 is selected. How ever, user
+  have a choice to increase the marker size of the dots (eigenenergies)
+  plotted in the BandPlot.
+\item
+  Ymin, Ymax: This control is used to limit the range energy range of
+  the BandDOSPlot.
+\item
+  BandMin, BandMax: This control is used to limit the band range of the
+  BandDOSPlot.
+\item
+  Update, SaveButton: Update the BandDOSplot to the newly selected data
+  by user. Save the the plot as a PDF on disk.
+\item
+  Exponential weight: The unfolding exponent for supercell calculations
+  (see \href{./doc/report.pdf}{report}). Value 0.0 means no unfolding.
+  If the calculation is done with a unit cell, this control has no
+  effect.
+\item
+  Compare 2Characters: When a user wants to compare 2 characters, this
+  button makes the BandPlot show the influence of each character to each
+  eigenergy using a sequential (2** colormap. The control is disabled if
+  other than two characters are selected.
+\item
+  Ignore Atom group: This button allows an option to ignore the atom
+  groups.
+\end{itemize}
+
+Controls for the DOSPlot only:
+
+\begin{itemize}
+\tightlist
+\item
+  Select groups: include selected atom groups in the DOS
+\item
+  Interstitial: include the interstitial in the DOS
+\item
+  All characters: include all characters in the DOS regardless of
+  character selection. In the DOS CSV file, different input data is used
+  (a summed column).
+\end{itemize}
+
+After the Update button is clicked, a BandPlot or BandDOS plot is
+produced in Tab 2. A 3D atomic plot is produced in Tab 3.
+
+\subsubsection{Troubleshooting}\label{troubleshooting}
+
+If the BandPlot is not visible:
+
+\begin{itemize}
+\tightlist
+\item
+  Check if the three input files (if any) are belonging to the same
+  Fleur calculation and selected appropriately.
+\item
+  Check if at least one Atom Group, one Character, one Spin is selected.
+\item
+  Check if Ymin is less than Ymax and similarly BandMin is less than
+  BandMax such that software is able to plot.
+\end{itemize}
+
+Click on Update once again. If problem persists, restarting of the
+software would be last attempt for making it work. Please open an issue
+or contact the developers if the problem persists.
+
+\subsection{Web Frontend}\label{web-frontend}
+
+\subsubsection{Access}\label{access}
+
+The Web Frontend is a Jupyter Dashboard. It is in experimental state (no
 fileupload yet). You can try it out
 \href{https://mybinder.org/v2/gh/JuDFTteam/masci-tools/studentproject18ws?filepath=studentproject18w\%2Ffrontend\%2Fjupyter\%2Fdemo\%2Fbinder_demo.ipynb}{here
 on Binder}. You can run it locally (see developer section). If you have
-an \href{https://aiidalab.materialscloud.org/hub/login}{AiiDaLab
-account}: the dashboard is planned to be published as an app there.
+an {[}AiiDaLab
+account{]}(https://aiidalab.materialscloud.org/hub/login**: the
+dashboard is planned to be published as an app there.
+
+\subsubsection{Usage}\label{usage-1}
+
+Using the Dashboard should be self-explanatory to the domain user. Some
+tips:
+
+\begin{itemize}
+\tightlist
+\item
+  unlike the Desktop frontend, plot updates are instantaneous.
+\item
+  multi-selection boxes: use ctrl or shift to select multiple items.
+\item
+  slider values can also be typed into the adjoining text box.
+\item
+  should the app ever appear to get stuck, a reload/rerun will do the
+  trick.
+\item
+  unlike the Desktop Frontend, empty selections are impossible.
+\end{itemize}
 
 \section{For Developers}\label{for-developers}
 
-\subsection{Installation}\label{installation}
+\subsection{Installation}\label{installation-1}
 
 Though \texttt{masci-tools} is availabe via PyPI, there is currently no
 plan to integrate \texttt{studentproject18ws}. If you want to use it in
@@ -203,9 +342,11 @@ With virtualenv (untested):
 \subsection{Programmatic use}\label{programmatic-use}
 
 In this example, a Fleur HDF file is preprocessed using the Recipe
-\texttt{FleurBands}. The resulting output \texttt{data} is then passed
-to a plotter, alongside some DOS CSV files for a bandstructure plot
-using \texttt{matplotlib} as backend library.
+\texttt{FleurBands}. The resulting output \texttt{data} with the
+extracted and transformed HDF datasets and attached load methods
+(Extract-Transform-Load) is then passed to a plotter, alongside some DOS
+CSV files for a bandstructure plot using \texttt{matplotlib} as backend
+library.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -229,7 +370,7 @@ using \texttt{matplotlib} as backend library.
 
 \NormalTok{plotter }\OperatorTok{=}\NormalTok{ BandDOSPlot(plt, data, filepaths_dos)}
 \NormalTok{(fig, ax_bands, ax_dos) }\OperatorTok{=}\NormalTok{ plter.setup_figure(fig_ratio}\OperatorTok{=}\NormalTok{[}\DecValTok{12}\NormalTok{,}\DecValTok{6}\NormalTok{], fig_scale}\OperatorTok{=}\DecValTok{1}\NormalTok{, fig_title}\OperatorTok{=}\StringTok{"BandDOS"}\NormalTok{)}
-\NormalTok{data_selection }\OperatorTok{=}\NormalTok{ make_selection()}
+\NormalTok{data_selection }\OperatorTok{=}\NormalTok{ some_selection_process()}
 \NormalTok{plotter.plot_bandDOS(}\OperatorTok{*}\NormalTok{data_selection)}
 \NormalTok{plt.show()}
 \end{Highlighting}
@@ -259,10 +400,28 @@ If using Windows, omit keyword \texttt{source}.
 \subsubsection{If using Jupyter Lab}\label{if-using-jupyter-lab}
 
 Additional installation step needed:
-`\texttt{bash\ source\ activate\ masci-stupro\ jupyter\ labextension\ install\ @jupyter-widgets/jupyterlab-manager\ jupyter-matplotlib\ ipyvolume\ cd\ mypath/masci-tools/studentproject18ws/\ jupyter-lab}**
 
-\subsection{To-do list for publishing the Web
-Frontend}\label{to-do-list-for-publishing-the-web-frontend}
+\begin{Shaded}
+\begin{Highlighting}[]
+\BuiltInTok{source}\NormalTok{ activate masci-stupro}
+\ExtensionTok{jupyter}\NormalTok{ labextension install @jupyter-widgets/jupyterlab-manager jupyter-matplotlib ipyvolume}
+\BuiltInTok{cd}\NormalTok{ mypath/masci-tools/studentproject18ws/}
+\ExtensionTok{jupyter-lab}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{Frontend Deployment}\label{frontend-deployment}
+
+\subsubsection{Desktop Frontend}\label{desktop-frontend-1}
+
+To create executables for different operating systems, use
+\href{https://www.pyinstaller.org/}{PyInstaller}. The target file is
+\texttt{frontend/tkinter/gui.py}.
+
+\subsubsection{Web Frontend}\label{web-frontend-1}
+
+The Web Frontend is currently a single Jupyter Notebook. In order to
+publish it as a usable standalone app, additional work has to be done.
 
 \begin{itemize}
 \tightlist
@@ -292,8 +451,8 @@ Frontend}\label{to-do-list-for-publishing-the-web-frontend}
   \tightlist
   \item
     The project code is in Python3, but aiidalab requires Python2. So
-    the code has to first be backported by hand using the
-    \texttt{future} package. If this takes too long, maybe try the tool
+    the code has to first be backported by hand using the `future**
+    package. If this takes too long, maybe try the tool
     \href{https://pypi.org/project/3to2/}{3to2}.
   \item
     Use the simplest app in the registry,
@@ -315,5 +474,76 @@ Note: other publishing options besides Binder and AiiDALab are listed
 \href{https://github.com/markusschanta/awesome-jupyter}{here}. For
 instance, \href{http://colab.research.google.com/}{Google Colaboratory}
 is a free Notebook hosting service that allows file upload.
+
+\subsection{Exending the code}\label{exending-the-code}
+
+\subsubsection{Use Case: HDF with DOS data
+included}\label{use-case-hdf-with-dos-data-included}
+
+The Fleur output HDF format is expected to change and incorporate more
+data. In turn, this project's code has to be extended as well. The
+procedure is outlined for a an example use case: the incorporation of
+DOS data into the band structure HDF (thus eliminating the need for
+separate DOS CSV files). The instructions show how to extend the
+preprocessor, the visualization and frontend submodules to that
+scenarion.
+
+\begin{itemize}
+\tightlist
+\item
+  Add a new output type to \texttt{hdf/output\_types}, say
+  \texttt{FleurBandDOS}. Let it inherit from output type
+  \texttt{FleurBands}. If you want an output type just for the DOS as
+  well, add a type \texttt{FleurDOS} and let \texttt{FleurBandDOS}
+  inherit it.
+\item
+  Add a new recipe to \texttt{hdf/recipes} e.g. \texttt{FleurBandDOS}.
+  Copy unchanged things from recipe \texttt{FleurBands}.
+\item
+  If needed, add new transforms to \texttt{hdf/input\_transforms}.
+  Adhere to the transform function standard there. If there are mutual
+  dependencies, add them to the list in the top of the file.
+\item
+  Add a DOS data selection method to the output type
+  \texttt{FleurBands}. The \texttt{DOSPlot} in \texttt{plot/base} types
+  will need those to plot the DOS plot. Simply adapt from the function
+  in \texttt{dos/reader} for the DOS CSV files, adopt the identical
+  signature.
+\item
+  In the \texttt{DOSPlot} types in submodule \texttt{plot}, add a switch
+  to the constructor that can distinguish the three cases (bands,
+  bands+CSV DOS, bands+HDF DOS). Use the switch in the \texttt{plotDOS}
+  methods, and for the case bands+HDF DOS, call your new
+  \texttt{FleurBandDOS} function.
+\end{itemize}
+
+\subsubsection{Extending the Visualization
+(Plots)}\label{extending-the-visualization-plots}
+
+\begin{itemize}
+\tightlist
+\item
+  In addition to the inheritance scheme based on Python
+  \texttt{AbstractBaseClass} (ABC) detailed in the
+  \href{./doc/report.pdf}{report}, the \texttt{Plot} types in
+  \texttt{plot} have an additional facility that helps to keep the
+  appearance of different Frontends synchronized: each type has an
+  attribute \texttt{icdv} of type
+  \texttt{InteractiveControlDisplayValues}. This is an ABC with the same
+  inheritance as the application Plot types. For every plot control
+  argument that an application type's Plot type exposes in it's methods'
+  signatures, this attribute describes the parameters of the
+  accompanying control widget in the Frontend text label, default
+  values, value ranges, and so on. In the current code, only the Web
+  Frontend uses this facility, so the labels in the Desktop Frontend
+  differ slightly.\\
+\item
+  It is worth pointing out that unlike other languages, Python does not
+  enforce implemented abstract methods to have the same method
+  signature. However, when a new implementation for a different plotting
+  library/backend is added, it is recommended to adopt the
+  \texttt{abstractmethod} signature. That way, changing the backend in a
+  use case only requires to change the import.
+\end{itemize}
 
 \end{document}

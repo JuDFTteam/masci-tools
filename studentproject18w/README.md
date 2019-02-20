@@ -46,7 +46,7 @@ For executables for other operating systems, please contact the developers.
 
 ### Usage
 
-Desktop based front end GUI is easy to use. By just running the .exe file provided will open the software with the packages involved to run the software. There are three tabs/windows in the software. In the first tab, input data from the external files are chosen. 
+Desktop based front end GUI is easy to use. By just running the .exe file provided will open the software with the packages involved to run the software. There are three tabs/windows in the software. In the first tab, absolute paths to the input data files must be entered in this order: HDF and (optional) DOS file for spin '0' and '1'.  
 
 Controls for all plots: 
 
@@ -58,34 +58,44 @@ Controls for all plots:
     the BandPlot.
   * Ymin, Ymax: This control is used to limit the range energy range of the BandDOSPlot.
   * BandMin, BandMax: This control is used to limit the band range of the BandDOSPlot.
-  * Update, SaveButton: Update the BandDOSplot to the newly selected data by user. Save the the plot as a PDF on disk.
+  * Update, SaveButton: Update the BandDOSPlot to the newly selected data by user. Save the the plot as a PDF on disk.
   * Exponential weight: The unfolding exponent for supercell calculations (see [report](./doc/report.pdf)). Value 0.0 means no unfolding. If the calculation is done with a unit cell, this control has no effect.
-  * Compare 2Characters: When a user wants to compare 2 characters, this button makes the BandPlot show the influence of each character to each eigenergy using a sequential (2** colormap. The control is disabled if other than two characters are selected.
+  * Compare 2Characters: When a user wants to compare 2 characters, this button makes the BandPlot show the influence of each character to each eigenergy using a sequential (2) colormap. The control is disabled if other than two characters are selected.
   * Ignore Atom group: This button allows an option to ignore the atom groups.
   
 Controls for the DOSPlot only:
 
-  * Select groups: 
-  * Interstitial: include the interstitial in the density of states
-  * All characters: This button is used to get the data of all characters combined from the data file.
+  * Select groups: include selected atom groups in the DOS
+  * Interstitial: include the interstitial in the DOS
+  * All characters: include all characters in the DOS regardless of character selection. In the DOS CSV file, different input data is used (a summed column).
 
+After the Update button is clicked, a BandPlot or BandDOS plot is produced in Tab 2. A 3D atomic plot is produced in Tab 3. 
 
+### Troubleshooting
 
-The above explains the input to be given by user in Tab 1. After Update button is clicked, a BandPlot or BandDOS plot can be observed in Tab 2 and 3D atomic plot can be seen in Tab 3. Atleast one Atom Group, one Character, one Spin have to be selected. Ymin should be lessthan Ymax and similarly BandMin should be lessthan BandMax.
+If the BandPlot is not visible:
+
+  * Check if the three input files (if any) are belonging to the same Fleur calculation and selected appropriately.
+  * Check if at least one Atom Group, one Character, one Spin is selected.
+  * Check if Ymin is less than Ymax and similarly BandMin is less than BandMax such that software is able to plot.
+
+Click on Update once again. If problem persists, restarting of the software would be last attempt for making it work. Please open an issue or contact the developers if the problem persists.
 
 ## Web Frontend
 
 ### Access
 
-The Web Frontend is a Jupyter Dashboard. It is in experimental state (no fileupload yet). You can try it out [here on Binder](https://mybinder.org/v2/gh/JuDFTteam/masci-tools/studentproject18ws?filepath=studentproject18w%2Ffrontend%2Fjupyter%2Fdemo%2Fbinder_demo.ipynb). You can run it locally (see developer section). If you have an [AiiDaLab account](https://aiidalab.materialscloud.org/hub/login): the dashboard is planned to be published as an app there.
+The Web Frontend is a Jupyter Dashboard. It is in experimental state (no fileupload yet). You can try it out [here on Binder](https://mybinder.org/v2/gh/JuDFTteam/masci-tools/studentproject18ws?filepath=studentproject18w%2Ffrontend%2Fjupyter%2Fdemo%2Fbinder_demo.ipynb). You can run it locally (see developer section). If you have an [AiiDaLab account](https://aiidalab.materialscloud.org/hub/login**: the dashboard is planned to be published as an app there.
 
 ### Usage
 
 Using the Dashboard should be self-explanatory to the domain user. Some tips:
 
+   * unlike the Desktop frontend, plot updates are instantaneous.
    * multi-selection boxes: use ctrl or shift to select multiple items. 
-   * slider values can also be typed into the adjoining text box.   
+   * slider values can also be typed into the adjoining text box.
    * should the app ever appear to get stuck, a reload/rerun will do the trick.
+   * unlike the Desktop Frontend, empty selections are impossible.
 
 # For Developers
 
@@ -227,7 +237,18 @@ that scenarion.
 
 ### Extending the Visualization (Plots)
 
-   * The inheritance scheme is based on Python `AbstractBaseClass`. It is
-     helpful to note that unlike other languages, Python does not enforce
-     implemented abstract methods to have the same method signature. However, it
-     is recommended to keep 
+   * In addition to the inheritance scheme based on Python `AbstractBaseClass`
+     (ABC) detailed in the [report](./doc/report.pdf), the `Plot` types in
+     `plot` have an additional facility that helps to keep the appearance of
+     different Frontends synchronized: each type has an attribute `icdv` of type
+     `InteractiveControlDisplayValues`. This is an ABC with the same inheritance
+     as the application Plot types. For every plot control argument that an
+     application type's Plot type exposes in it's methods' signatures, this
+     attribute describes the parameters of the accompanying control widget in
+     the Frontend text label, default values, value ranges, and so on. In the current code, only the Web Frontend uses this facility, so the labels in the Desktop Frontend differ slightly.  
+   * It is worth pointing out that unlike other languages, Python does not
+     enforce implemented abstract methods to have the same method signature.
+     However, when a new implementation for a different plotting library/backend
+     is added, it is recommended to adopt the `abstractmethod` signature. That
+     way, changing the backend in a use case only requires to change the import.
+   
