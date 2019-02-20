@@ -52,9 +52,7 @@ pip install -r requirements_pip.txt # install requirements
 
 ## Try out Web Frontend locally
 
-The demo notebook is `studentproject18w/frontend/jupyter/demo/demo.ipynb`
-
-Under `studentproject18ws/frontend/jupyter/demo`, there is a demo notebook.
+The demo notebook with the Dashboard is `studentproject18w/frontend/jupyter/demo/demo.ipynb`.
 
 ### If using Jupyter Notebook
 If using Windows, omit keyword `source`.
@@ -74,6 +72,9 @@ cd mypath/masci-tools/studentproject18ws/
 jupyter-lab
 ```
 
+## To-do list for publishing the Web Frontend
+
+  * bla
 
 
 
