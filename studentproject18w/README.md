@@ -1,3 +1,4 @@
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/JuDFTteam/masci-tools/studentproject18ws?filepath=studentproject18w%2Ffrontend%2Fjupyter%2Fdemo%2Fbinder_demo.ipynb)
 
 SiScLab 2018 Student Project **Analysis Tool for Materials Design**. Written in Python3.
 
@@ -85,7 +86,7 @@ Click on Update once again. If problem persists, restarting of the software woul
 
 ### Access
 
-The Web Frontend is a Jupyter Dashboard. It is in experimental state (no fileupload yet). You can try it out [here on Binder](https://mybinder.org/v2/gh/JuDFTteam/masci-tools/studentproject18ws?filepath=studentproject18w%2Ffrontend%2Fjupyter%2Fdemo%2Fbinder_demo.ipynb). You can run it locally (see developer section). If you have an [AiiDaLab account](https://aiidalab.materialscloud.org/hub/login**: the dashboard is planned to be published as an app there.
+The Web Frontend is a Jupyter Dashboard. It is in experimental state (no fileupload yet). You can try it out here on [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/JuDFTteam/masci-tools/studentproject18ws?filepath=studentproject18w%2Ffrontend%2Fjupyter%2Fdemo%2Fbinder_demo.ipynb). You can run it locally (see developer section). If you have an [AiiDaLab account](https://aiidalab.materialscloud.org/hub/login**: the dashboard is planned to be published as an app there.
 
 ### Usage
 

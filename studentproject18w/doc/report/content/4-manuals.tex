@@ -12,14 +12,19 @@ chapter is a \TeX{}-ified version of that \texttt{README.md}.
 
 \vspace{3em}
 \hdashrule{\textwidth}{2pt}{2pt}
-%% BEGIN TEXIFIED MANUAL ========================================
+%% BEGIN TEXIFIED README ========================================
 %%
-%% JW: manual changes necessary to the TeX-ified version:
+%% Command to TeXify README.md from masci-tools/studentproject18ws:
+%% pandoc -s README.md -o README.tex
+%%
+%% Manual changes needed after TeXification:
+%% - remove badges on top (binder badge, ...)
+%% - 'try it out here on': convert to ordinary link without binder badge image
 %% - figure -> figure*
-%% - texttt{long} -> path{long}
+%% - texttt{long} -> path{long} (enables linebreak)
 %% - replace code sections 'Tok' with lstlisting:
 %%   \begin{lstlisting}[language=python, style=code]
-%%   \end{lstlisting}
+%% \end{lstlisting}
 %%
 
 SiScLab 2018 Student Project \textbf{Analysis Tool for Materials
