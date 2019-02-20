@@ -1,3 +1,38 @@
+# # # Fourth attempt failed:
+# # # Error (local conda): logging and voila were in conflict.
+# # # Try without logging (is base python anyway). And voila is not really needed.
+# name: masci-stupro
+# channels:
+#   - conda-forge
+#   - anaconda
+#   - auto
+# dependencies:
+#   - python=3.6.7
+#   - pip
+#   - future
+#   - scipy
+#   - numpy
+#   - h5py
+#   - matplotlib
+#   - pytest-cov
+#   - jupyter
+#   - notebook
+#   - jupyter_contrib_nbextensions
+#   - nodejs
+#   - jupyterlab
+#   - ipywidgets
+#   - ipympl
+#   - widgetsnbextension
+#   - ipyvolume
+#   - appmode
+#   - periodictable
+#   - tk
+#   - voila
+#   - pip:
+#     - deprecated
+#     - fileupload
+
+
 # # Third attempt: full output of conda env export.
 # # This list includes libraries not even used in the studentproject18ws,
 # # only installed for experiments.
