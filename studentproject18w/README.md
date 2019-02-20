@@ -16,9 +16,11 @@ A more thorough description and example use cases can be found in the project [r
 # For Frontend Users
 The Desktop GUI executable can be received from the developers on request. Otherwise, it can be built using [PyInstaller](https://www.pyinstaller.org/) from this repo.
 
-The Web Frontend is a Jupyter Dashboard. You can try it out on binder **TODO add link*** . You can run it locally by creating a project environment (see below) and then run the notebook **TODO: add notebook path**. If you have an [AiiDaLab account](https://aiidalab.materialscloud.org/hub/login): the dashboard is planned to be published as an app there.
+The Web Frontend is a Jupyter Dashboard. It is in experimental phase (no fileupload yet). You can try it out [here on Binder](https://mybinder.org/v2/gh/JuDFTteam/masci-tools/studentproject18ws?filepath=studentproject18w%2Ffrontend%2Fjupyter%2Fdemo%2Fbinder_demo.ipynb). You can run it locally (see developer section). If you have an [AiiDaLab account](https://aiidalab.materialscloud.org/hub/login): the dashboard is planned to be published as an app there.
 
 # For Developers
+
+## Installation
 
 Though `masci-tools` is availabe via PyPI, there is currently no plan to integrate `studentproject18ws`. If you want to use it in your code, clone the repo, use it in an IDE, or append the path to your `sys.path`:
 
@@ -32,15 +34,16 @@ from studentproject18w.hdf.reader import Reader
 # ...
 ```
 
-## Create project virtual environment
-### With conda (recommended)
+### Create project virtual environment
+
+With conda (recommended):
 - [Install Anaconda (3 recommended)](https://www.anaconda.com/download)
 - Install the environment `masci-stupro` with the necessary and recommended dependencies:
 ```bash
 conda create -f environment.yml
 source activate masci-stupro
 ```
-### With virtualenv (untested)
+With virtualenv (untested):
 ```bash
 virtualenv masci-stupro
 source masci-stupro/bin/activate
@@ -48,6 +51,8 @@ pip install -r requirements_pip.txt # install requirements
 ```
 
 ## Try out Web Frontend locally
+
+The demo notebook is `studentproject18w/frontend/jupyter/demo/demo.ipynb`
 
 Under `studentproject18ws/frontend/jupyter/demo`, there is a demo notebook.
 

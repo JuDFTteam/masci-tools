@@ -1,30 +1,58 @@
 name: masci-stupro
 channels:
   - conda-forge
-  - anaconda
-  - auto
+  - defaults
 dependencies:
-  - pip
-  - future
-  - logging
-  - scipy
-  - numpy
-  - h5py
-  - matplotlib
-  - pytest-cov
-  - jupyter
-  - notebook
-  - jupyter_contrib_nbextensions
-  - nodejs
-  - jupyterlab
-  - ipywidgets
-  - ipympl
-  - widgetsnbextension
-  - ipyvolume
-  - appmode
-  - periodictable
-  - tk
-  - voila
+  - appmode=0.4.0=py36_1001
+  - ipympl=0.2.1=py36_1000
+  - ipyvolume=0.5.1=py36_1001
+  - ipywidgets=7.4.2=py_0
+  - jupyter_contrib_nbextensions=0.5.0=py36_1000
+  - jupyterlab=0.35.4=py36_0
+  - convert=5.4.1=0
+  - nodejs=10.12.0=hfc679d8_0
+  - periodictable=1.5.0=py_1
+  - voila=0.0.8=py_0
+  - h5py=2.8.0=py36h989c5e5_3
+  - matplotlib=2.2.2=py36hb69df0a_2
+  - nb_conda=2.2.1=py36_0
+  - notebook=5.7.2=py36_0
+  - numpy=1.15.4=py36h1d66e8a_0
+  - pip=18.1=py36_0
+  - python=3.6.7=h0371630_0
+  - rise=5.4.1=py36_1000
+  - scipy=1.1.0=py36hfa4b5c9_1
+  - widgetsnbextension=3.4.2=py36_0
   - pip:
-    - deprecated
-    - fileupload      
+    - deprecated==1.2.4
+    - fileupload==0.1.5
+
+
+# # First attempt, without version numbers or Python version.
+# # Fails: doesn't work with mybinder.org.
+# # Error: %matplotlib widget KeyError: doesn't find backend 'widget'.
+# # Probably cause installs Python2.7.
+#   - pip
+#   - future
+#   - logging
+#   - scipy
+#   - numpy
+#   - h5py
+#   - matplotlib
+#   - pytest-cov
+#   - jupyter
+#   - notebook
+#   - jupyter_contrib_nbextensions
+#   - nodejs
+#   - jupyterlab
+#   - ipywidgets
+#   - ipympl
+#   - widgetsnbextension
+#   - ipyvolume
+#   - appmode
+#   - periodictable
+#   - tk
+#   - voila
+#   - pip:
+#     - deprecated
+#     - fileupload
