@@ -410,10 +410,10 @@ class BandDOSPlot(AbstractBandDOSPlot, BandPlot, DOSPlot):
         DOSPlot.__init__(self, plt, data, filepaths_dos)
         AbstractBandDOSPlot.__init__(self, data, filepaths_dos)
 
-    def setup_figure(self, fig_ratio=[12, 6], fig_scale=0.65):
+    def setup_figure(self, fig_ratio=[12, 6], fig_scale=0.65, fig_title=""):
         if self.filepaths_dos:
             figsize = [fig_scale * el for el in fig_ratio]
-            self.fig = self.plt.figure(figsize=figsize)
+            self.fig = self.plt.figure(figsize=figsize, num=fig_title)
             # order: first add dos plot, then band plot.
             # otherwise labels (.setup() below) will be set on dos instead band plot.
             self.gs_dos = gridspec.GridSpec(1, 2)

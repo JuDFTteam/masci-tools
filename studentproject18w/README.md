@@ -8,14 +8,15 @@ This subfolder `studentproject18ws` is currently a largely independent side-proj
   * preprocessor: a HDF reader interface, and one implementation for Fleur band structure simulation output
   * visualization: a plotting interface, and one implementation for Fleur bandstructure+DOS plots
   * frontends: a Desktop GUI and a Web Dashboard (Tk and Jupyter) for interactive Fleur bandDOS plots.
-  
+
+A more thorough description and example use cases can be found in the project [report](./readme/web_frontend.png) and [presentation](./readme/web_frontend.png). 
 
 ![](./readme/web_frontend.png)
 
 # For Frontend Users
 The Desktop GUI executable can be received from the developers on request. Otherwise, it can be built using [PyInstaller](https://www.pyinstaller.org/) from this repo.
 
-The Web Frontend is a Jupyter Dashboard. You can try it out on Binder **TODO add binder link**. You can run it locally by creating a project environment (see below) and then run the notebook **TODO: add notebook path**. If you have an [AiiDaLab account](https://aiidalab.materialscloud.org/hub/login): the dashboard is planned to be published as an app there.
+The Web Frontend is a Jupyter Dashboard. You can try it out on binder **TODO add link*** . You can run it locally by creating a project environment (see below) and then run the notebook **TODO: add notebook path**. If you have an [AiiDaLab account](https://aiidalab.materialscloud.org/hub/login): the dashboard is planned to be published as an app there.
 
 # For Developers
 
