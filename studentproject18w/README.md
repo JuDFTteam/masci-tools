@@ -102,18 +102,6 @@ Using the Dashboard should be self-explanatory to the domain user. Some tips:
 
 ## Installation
 
-Though `masci-tools` is availabe via PyPI, there is currently no plan to integrate `studentproject18ws`. If you want to use it in your code, clone the repo, use it in an IDE, or append the path to your `sys.path`:
-
-``` python
-import sys
-if path_repo not in sys.path:
-    sys.path.append(path_repo)
-    
-# now import works
-from studentproject18w.hdf.reader import Reader
-# ...
-```
-
 ### Create project virtual environment
 
 With conda (recommended):
@@ -131,6 +119,18 @@ pip install -r requirements_pip.txt # install requirements
 ```
 
 ## Programmatic use
+
+Though `masci-tools` is availabe via PyPI, there is currently no plan to integrate `studentproject18ws`. If you want to use it in your code, clone the repo, use it in an IDE, or append the path to your `sys.path`:
+
+``` python
+import sys
+if path_repo not in sys.path:
+    sys.path.append(path_repo)
+    
+# now import works
+from studentproject18w.hdf.reader import Reader
+# ...
+```
 
 In this example, a Fleur HDF file is preprocessed using the Recipe `FleurBands`. The resulting output `data` with the extracted and transformed HDF datasets and attached load methods (Extract-Transform-Load) is then passed to a plotter, alongside some DOS CSV files for a bandstructure plot using `matplotlib` as backend library.
 
