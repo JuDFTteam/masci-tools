@@ -66,7 +66,11 @@ class Transform(object):
         :type dataset: Dataset or ndarray
         :return: dataset
         """
-        self._update_dependees(name, dataset)
+        transformed = None
+
+        transformed = dataset
+
+        self._update_dependees(name, transformed)
         return dataset
 
     def attribute(self, name, dataset, attribute):
@@ -77,7 +81,10 @@ class Transform(object):
         :param attribute: attribute name
         :return:
         """
+        transformed = None
+
         transformed = dataset.attrs[attribute]
+
         self._update_dependees(name, transformed)
         return transformed
 
@@ -88,9 +95,12 @@ class Transform(object):
         :type dataset: Dataset
         :return: attributes dict
         """
+        transformed = None
+
         transformed = {}
         for key, value in dataset.attrs.items():
             transformed[key] = value
+
         self._update_dependees(name, transformed)
         return transformed
 
@@ -111,12 +121,18 @@ class Transform(object):
         :type dataset: Dataset
         :return: ndarray
         """
+        transformed = None
+
         transformed = dataset[:]
+
         self._update_dependees(name, transformed)
         return transformed
 
     def first_element(self, name, dataset):
+        transformed = None
+
         transformed = dataset[0]
+
         self._update_dependees(name, transformed)
         return transformed
 
@@ -130,7 +146,10 @@ class Transform(object):
         :param slice_arg: examples: "[0]", "[2::2]", and so on
         :return:
         """
+        transformed = None
+
         transformed = eval("dataset" + slice_arg)
+
         self._update_dependees(name, transformed)
         return transformed
 
@@ -217,6 +236,7 @@ class TransformBands(Transform):
         :return:
         """
         transformed = None
+
         self.k_points = self.coordinates(name, dataset, LatticeType.Reciprocal.name)
 
         kx = self.k_points[:].T[0]
@@ -232,6 +252,8 @@ class TransformBands(Transform):
         return transformed
 
     def k_special_points(self, name, dataset):
+        transformed = None
+
         transformed = np.zeros(len(dataset[:]))
         for i in range(len(dataset[:])):
             transformed[i] = self.k_distances[dataset[i] - 1]

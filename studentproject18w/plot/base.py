@@ -69,22 +69,103 @@ class AbstractBandPlot(AbstractPlot):
 
     @abstractmethod
     def setup_band_labels(self):
+        """
+        .
+
+        Matplot Implementation
+        ======================
+        Call this function every time the interactive plot is about to be updated in the GUI.
+
+        It repaints the labels on the figure.
+
+        :return:
+        """
         pass
 
     @abstractmethod
-    def plot_bands(self):
+    def plot_bands(self, mask_bands, mask_characters, mask_groups, spins,
+                   unfolding_weight_exponent, compare_characters,
+                   ignore_atoms_per_group, marker_size=1, ylim=None):
+        """
+        Top-level method for the bandDOS plot. Calls appropriate subplot methods based on user selection.
+
+        :param mask_bands: list of bool
+        :param mask_characters: list of bool
+        :param mask_groups: list of bool
+        :param spins: list of int. either [0] or [0,1]
+        :param unfolding_weight_exponent: dloat
+        :param compare_characters: bool
+        :param ax: pyplot ax
+        :param ignore_atoms_per_group: bool
+        :param marker_size: float
+        :return:
+        """
         pass
 
     @abstractmethod
-    def _plot_bands_normal(self):
+    def _plot_bands_normal(self, mask_bands, mask_characters, mask_groups, spin,
+                           unfolding_weight_exponent, color, alpha=1,
+                           ignore_atoms_per_group=False, marker_size=1, ylim=None):
+        """Plot regular.
+
+        Static plot method as template for interactive plot function in GUI.
+
+        christian's code version 181214
+
+        :param marker_size:
+        :param ignore_atoms_per_group:
+        :param mask_bands:
+        :param mask_characters:
+        :param mask_groups:
+        :param spin:
+        :param unfolding_weight_exponent:
+        :param ax:
+        :param color:
+        :param alpha:
+        :return:
+        """
         pass
 
     @abstractmethod
-    def _plot_bands_compare_two_characters(self):
+    def _plot_bands_compare_two_characters(self, mask_bands, mask_characters, mask_groups, spin,
+                                           unfolding_weight_exponent,
+                                           alpha=1, ignore_atoms_per_group=False, marker_size=1, ylim=None):
+        """Plot with exactly 2 selected band characters mapped to colormap.
+
+        Static plot method as template for interactive plot function in GUI.
+        Note: right now, selection (s,p) = [True,True,False,False] is hardcoded!
+
+        christian's code version 190108
+
+        Notes
+        =====
+        The conversion mask_characters -> characters -> self.mask_characters() looks a bit strange.
+        Probably could be done simpler with a list comprehension.
+
+        :param marker_size:
+        :param ignore_atoms_per_group:
+        :param mask_bands:
+        :param mask_characters:
+        :param mask_groups:
+        :param spin:
+        :param ax:
+        :param alpha:
+        :return:
+        """
         pass
 
     @abstractmethod
-    def plot_groupVelocity(self):
+    def plot_groupVelocity(self, select_band, spin):
+        """Plot group velocity of single band, no checking.
+
+        Notes
+        =====
+
+        :param select_band: index of user-selected band
+        :param spin: 0 or 1
+        :param ax: of plot
+        :return:
+        """
         pass
 
 
@@ -100,7 +181,24 @@ class AbstractDOSPlot(AbstractPlot):
         self.icdv = DOSDataDisplayValues(self)
 
     @abstractmethod
-    def plot_dos(self):
+    def plot_dos(self, spins,
+                 mask_groups, mask_characters,
+                 select_groups, interstitial, all_characters,
+                 fix_xlim=True, ylim=None):
+        """Placeholder function.
+
+        Notes:
+        =====
+        This is placeholder function.
+        Though CP has added code 180109 for plotting the DOS,
+        this is for txt DOS example file.
+        The plot function here though will expect the DOS info
+        to lie in the same hdf file the bandstructure has been
+        read from.
+        Until that is implemented, the GUI will not have a DOS plot.
+
+        :return:
+        """
         pass
 
 
@@ -111,7 +209,12 @@ class AbstractBandDOSPlot(AbstractBandPlot, AbstractDOSPlot):
 
         self.icdv = BandDOSDataDisplayValues(self)
 
-    def plot_bandDOS(self):
+    @abstractmethod
+    def plot_bandDOS(self, mask_bands, mask_characters, mask_groups, spins,
+                     unfolding_weight_exponent, compare_characters,
+                     ignore_atoms_per_group, marker_size,
+                     dos_select_groups, dos_interstitial, dos_all_characters,
+                     dos_fix_xlim=True, ylim=None):
         pass
 
 
