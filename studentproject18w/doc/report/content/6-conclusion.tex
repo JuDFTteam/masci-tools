@@ -2,24 +2,63 @@
 \chapter{Conclusion}
 \label{chap:conclusion}
 
-\section{Outlook}
-\label{sec:outlook}
+%% JW: proofread modification v1 of PK Original ========================================
 \begin{itemize}
-    \item A package to developed to visualize DFT data in an appropriate way. The data is read, extracted and visualized using the package.
-    \item An API and GUI are developed which are easy to use, easy to get the visualization output and visually appealing.
-    \item The API is used and studies data to external physical feature such as effective mass ($m\*$), Fermi Velocity($v_{fermi}$) using numerical differentiation techniques which is helpful in analyzing materials characteristics.
-    \item Fluer output data are now easily accesible to non-experts since processing and visualization done by this API.
-    \item Integrating of API and GUI into AiiDA workflow makes it easier for anyone to access this and understand the simulation much faster.
+    \item A software package was developed to visualize DFT data in an appropriate way. The data is read, extracted and visualized using the package.
+    \item An API and GUI was developed which are easy to use, easy to get the
+        visualization output. The visualization is physically correct and visually appealing.
+    \item Additional studies of physical features are performed to derive the
+        effective mass ($m\*$) and Fermi velocity($v_{fermi}$), using numerical
+        differentiation techniques, which is helpful in analyzing materials
+        characteristics.
+    \item The Fleur output data are now easily accesible to non-experts since
+        processing and visualization is done by the software.
+    \item The possibility of integration of the backend into AiiDA workflows and
+        the Web GUI into AiiDA Lab makes it easier for anyone to access simulation results and understand the simulation much faster.
     \item Features extracted through the simulation data can also be saved for further research and analysis.
-    \item A directly executable GUI which makes it easier to use in any computer just by copying the GUI.
+    \item A directly executable Desktop GUI which makes it easier to use in any computer just by copying the GUI.
 \end{itemize}
 
-\textbf{TODO} Module design:
+% % %% PK Original ========================================
+% \begin{itemize}
+%     \item A package to developed to visualize DFT data in an appropriate way. The data is read, extracted and visualized using the package.
+%     \item An API and GUI are developed which are easy to use, easy to get the visualization output and visually appealing.
+%     \item The API is used and studies data to external physical feature such as effective mass ($m\*$), Fermi Velocity($v_{fermi}$) using numerical differentiation techniques which is helpful in analyzing materials characteristics.
+%     \item Fluer output data are now easily accesible to non-experts since processing and visualization done by this API.
+%     \item Integrating of API and GUI into AiiDA workflow makes it easier for anyone to access this and understand the simulation much faster.
+%     \item Features extracted through the simulation data can also be saved for further research and analysis.
+%     \item A directly executable GUI which makes it easier to use in any computer just by copying the GUI.
+% \end{itemize}
+
+
+\section{Outlook}
+\label{sec:outlook}
+
 \begin{itemize}
-\item Preprocessor module: dataset dependencies for new recipes have to be
-    explicitly stated. This could also be automatically resolved by type inspection.
-\item Frontends:
+\item Preprocessor submodule:
     \begin{itemize}
+    \item Dataset dependencies for new recipes have to be explicitly stated.
+        This could also be automatically resolved by type inspection.
+    \item The data selection method of the output type \texttt{FleurBands} could
+        be optimized even more by replacing \textit{all} numerical operations
+        with \texttt{numpy} routines.
+    \item In the context of general workflows, the preprocessor recipes could be
+        written to serve as glue between different simulation programs. An
+        example might be the conversion of a converged Fleur DFT calculation as
+        a reference mean-field system input for
+        \href{https://spex.readthedocs.io/en/master/spex_and_fleur.html#old-fleur}{Spex},
+        another DFT code in the Jülich FLAPW code family that uses the GW
+        approximation.
+    \end{itemize}
+\item Visualization module and Frontends:
+    \begin{itemize}
+    \item The fact that the Web Frontend is only in experimental stage and not
+        yet publishable as a standalone app is a drawback. However it is hoped,
+        that the instructions for that in the developer section of the manual
+        \vref{for-developers} will help to realize that milestone more easily. 
+    \item The other open issues mentionend in the developer section can be addressed to improve the user
+        experience and the performance, yet they do not compromise the frontend
+        usage significantly.
     \item PyViz Param \cite{pyviz-param} makes it possible to decouple the
         formal description of a particular GUI from the GUI library used. This
         would serve to separate interface and implementation like it is done in

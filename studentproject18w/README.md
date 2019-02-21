@@ -306,8 +306,6 @@ that scenario.
    
 ## Open Issues
 
-   * The `FleurBands` data selection method could be optimized even more by
-     replacing *all* numerical operations with `numpy` routines.
    * Running the Frontends in a debugger or with a counter reveals: on a plot
      selection change or update, the plot seems to be redrawn not once but
      several times. The cause could not be found so far.
