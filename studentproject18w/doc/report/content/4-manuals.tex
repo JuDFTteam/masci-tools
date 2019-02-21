@@ -13,22 +13,22 @@ chapter is a \TeX{}-ified version of that \texttt{README.md}.
 \vspace{3em}
 \hdashrule{\textwidth}{2pt}{2pt}
 %% BEGIN TEXIFIED README ========================================
-%%
+%% 
 %% Command to TeXify README.md from masci-tools/studentproject18ws:
 %% pandoc -s README.md -o README.tex
-%%
+%% 
 %% Manual changes needed after TeXification:
 %% - remove badges on top (binder badge, ...)
 %% - 'try it out here on': convert to ordinary link without binder badge image
 %% - figure -> figure*
 %% - texttt{long} -> path{long} (enables linebreak)
 %% - replace code sections 'Tok' with lstlisting:
-%%   \begin{lstlisting}[language=python, style=code]
+%% \begin{lstlisting}[language=python, style=code]
 %% \end{lstlisting}
-%%
+%% 
 
 SiScLab 2018 Student Project \textbf{Analysis Tool for Materials
-Design}. Written in Python3.
+  Design}. Written in Python3.
 
 Authors: \href{https://github.com/Irratzo}{Johannes Wasmer},
 \href{https://github.com/ChristianPartmann}{Christian Partmann}, and
@@ -42,16 +42,16 @@ independent side-project accompanying the main module
 of three submodules:
 
 \begin{itemize}
-\tightlist
+    \tightlist
 \item
-  preprocessor: a HDF reader interface, and one implementation for
-  \href{http://www.judft.de}{Fleur} band structure simulation output
+    preprocessor: a HDF reader interface, and one implementation for
+    \href{http://www.judft.de}{Fleur} band structure simulation output
 \item
-  visualization: a plotting interface, and one implementation for
-  \href{http://www.judft.de}{Fleur} bandstructure+DOS plots
+    visualization: a plotting interface, and one implementation for
+    \href{http://www.judft.de}{Fleur} bandstructure+DOS plots
 \item
-  frontends: a Desktop GUI and a Web Dashboard (Tk and Jupyter) for
-  interactive Fleur bandDOS plots.
+    frontends: a Desktop GUI and a Web Dashboard (Tk and Jupyter) for
+    interactive Fleur bandDOS plots.
 \end{itemize}
 
 A more thorough description and example use cases can be found in the
@@ -59,9 +59,9 @@ project \href{./doc/report.pdf}{report} and
 \href{./doc/presentation.pdf}{presentation}.
 
 \begin{figure*}
-\centering
-\includegraphics{./readme/web_frontend.png}
-\caption{}
+    \centering
+    \includegraphics{./readme/web_frontend.png}
+    \caption{}
 \end{figure*}
 
 \section{For Frontend Users}\label{for-frontend-users}
@@ -110,55 +110,55 @@ order: HDF and (optional) DOS file for spin `0' and `1'.
 Controls for all plots:
 
 \begin{itemize}
-\tightlist
+    \tightlist
 \item
-  Atom Groups: draw the BandDOSPlot only for the selected symmetry
-  groups.
+    \textbf{Atom Groups}: draw the BandDOSPlot only for the selected symmetry
+    groups.
 \item
-  Character: select one or more band Characters (orbitals)
-  `S',`P',`D',`F'.
+    \textbf{Character}: select one or more band Characters (orbitals)
+    `S',`P',`D',`F'.
 \item
-  Spin: select any one spin or both spins.
+    \textbf{Spin}: select any one spin or both spins.
 \item
-  Marker size: Default marker size of 1.0 is selected. How ever, user
-  have a choice to increase the marker size of the dots (eigenenergies)
-  plotted in the BandPlot.
+    \textbf{Marker size}: Default marker size of 1.0 is selected. How ever, user
+    have a choice to increase the marker size of the dots (eigenenergies)
+    plotted in the BandPlot.
 \item
-  Ymin, Ymax: This control is used to limit the range energy range of
-  the BandDOSPlot.
+    \textbf{Ymin, Ymax}: This control is used to limit the range energy range of
+    the BandDOSPlot.
 \item
-  BandMin, BandMax: This control is used to limit the band range of the
-  BandDOSPlot.
+    \textbf{BandMin, BandMax}: This control is used to limit the band range of the
+    BandDOSPlot.
 \item
-  Update, SaveButton: Update the BandDOSPlot to the newly selected data
-  by user. Save the the plot as a PDF on disk.
+    \textbf{Update, SaveButton}: Update the BandDOSPlot to the newly selected data
+    by user. Save the the plot as a PDF on disk.
 \item
-  Exponential weight: The unfolding exponent for supercell calculations
-  (see \href{./doc/report.pdf}{report}). Value 0.0 means no unfolding.
-  If the calculation is done with a unit cell, this control has no
-  effect.
+    \textbf{Exponential weight}: The unfolding exponent for supercell calculations
+    (see \href{./doc/report.pdf}{report}). Value 0.0 means no unfolding.
+    If the calculation is done with a unit cell, this control has no
+    effect.
 \item
-  Compare 2Characters: When a user wants to compare 2 characters, this
-  button makes the BandPlot show the influence of each character to each
-  eigenergy using a sequential (2) colormap. The control is disabled if
-  other than two characters are selected.
+    \textbf{Compare 2Characters}: When a user wants to compare 2 characters, this
+    button makes the BandPlot show the influence of each character to each
+    eigenergy using a sequential (2) colormap. The control is disabled if
+    other than two characters are selected.
 \item
-  Ignore Atom group: This button allows an option to ignore the atom
-  groups.
+    \textbf{Ignore Atom group}: This button allows an option to ignore the atom
+    groups.
 \end{itemize}
 
 Controls for the DOSPlot only:
 
 \begin{itemize}
-\tightlist
+    \tightlist
 \item
-  Select groups: include selected atom groups in the DOS
+    \textbf{Select groups}: include selected atom groups in the DOS
 \item
-  Interstitial: include the interstitial in the DOS
+    \textbf{Interstitial}: include the interstitial in the DOS
 \item
-  All characters: include all characters in the DOS regardless of
-  character selection. In the DOS CSV file, different input data is used
-  (a summed column).
+    \textbf{All characters}: include all characters in the DOS regardless of
+    character selection. In the DOS CSV file, different input data is used
+    (a summed column).
 \end{itemize}
 
 After the Update button is clicked, a BandPlot or BandDOS plot is
@@ -169,20 +169,27 @@ produced in Tab 2. A 3D atomic plot is produced in Tab 3.
 If the BandPlot is not visible:
 
 \begin{itemize}
-\tightlist
+    \tightlist
 \item
-  Check if the three input files (if any) are belonging to the same
-  Fleur calculation and selected appropriately.
+    Click update two to three times.
 \item
-  Check if at least one Atom Group, one Character, one Spin is selected.
+    Check if the three input files (if any) are belonging to the same
+    Fleur calculation and selected appropriately.
 \item
-  Check if Ymin is less than Ymax and similarly BandMin is less than
-  BandMax such that software is able to plot.
+    Check if at least one Atom Group, one Character, one Spin is selected.
+\item
+    Check if Ymin is less than Ymax and similarly BandMin is less than
+    BandMax such that software is able to plot.
 \end{itemize}
 
-Click on Update once again. If problem persists, restarting of the
-software would be last attempt for making it work. Please open an issue
-or contact the developers if the problem persists.
+If the DOSPlot is not visible:
+\begin{itemize}
+    \tightlist
+\item Make sure either Select Groups or Interstitial is selected.
+\end{itemize}
+
+If the problem persists, try restarting the GUI. If that fails, please open an
+issue or contact the developers.
 
 \subsection{Web Frontend}\label{web-frontend}
 
@@ -201,18 +208,13 @@ Using the Dashboard should be self-explanatory to the domain user. Some
 tips:
 
 \begin{itemize}
-\tightlist
-\item
-  unlike the Desktop frontend, plot updates are instantaneous.
-\item
-  multi-selection boxes: use ctrl or shift to select multiple items.
-\item
-  slider values can also be typed into the adjoining text box.
-\item
-  should the app ever appear to get stuck, a reload/rerun will do the
-  trick.
-\item
-  unlike the Desktop Frontend, empty selections are impossible.
+    \tightlist
+\item if the plot window is not on startup or gets stuck, reload/rerun once.
+\item unlike the Desktop frontend, plot updates are instantaneous.
+\item unlike the Desktop Frontend, empty selections are impossible.   
+\item multi-selection boxes: use ctrl or shift to select multiple items. 
+\item slider values can also be typed into the adjoining text box.
+\item try out the zoom and pan tools below the plot, they're useful.
 \end{itemize}
 
 \section{For Developers}\label{for-developers}
@@ -220,11 +222,11 @@ tips:
 \subsection{Installation}\label{installation-1}
 
 \subsubsection{Create project virtual
-environment}\label{create-project-virtual-environment}
+  environment}\label{create-project-virtual-environment}
 
 With conda (recommended): -
 \href{https://www.anaconda.com/download}{Install Anaconda (3
-recommended)} - Install the environment \texttt{masci-stupro} with the
+  recommended)} - Install the environment \texttt{masci-stupro} with the
 necessary and recommended dependencies:
 
 \begin{lstlisting}[language=bash, style=code]
@@ -291,13 +293,13 @@ plt.show()
 \end{lstlisting}
 
 \subsection{Try out Web Frontend
-locally}\label{try-out-web-frontend-locally}
+  locally}\label{try-out-web-frontend-locally}
 
 The demo notebook with the Dashboard is
 \path{studentproject18w/frontend/jupyter/demo/demo.ipynb}.
 
 \subsubsection{If using Jupyter
-Notebook}\label{if-using-jupyter-notebook}
+  Notebook}\label{if-using-jupyter-notebook}
 
 If using Windows, omit keyword \texttt{source}.
 
@@ -334,50 +336,50 @@ The Web Frontend is currently a single Jupyter Notebook. In order to
 publish it as a usable standalone app, additional work has to be done.
 
 \begin{itemize}
-\tightlist
+    \tightlist
 \item
-  (recommended: create \texttt{frontend/jupyter/Dashboard.py} widget and
-  put code of
-  \href{./frontend/jupyter/demo/demo_backend.ipynb}{demo\_back.ipynb}
-  notebook inside it. Use
-  \href{https://github.com/aiidalab/aiidalab-widgets-base/blob/master/aiidalab_widgets_base/structures.py}{aiidalab-widgets-base
-  \textgreater{} StructureUploadWidget} as a template. Create
-  \texttt{frontend/jupyter/Dashboard.ipynb} notebook. Use
-  \href{https://github.com/aiidalab/aiidalab-widgets-base/blob/master/structures.ipynb}{StructureUploadWidget
-  Demo Notebook} as a template.)
+    (recommended: create \texttt{frontend/jupyter/Dashboard.py} widget and
+    put code of
+    \href{./frontend/jupyter/demo/demo_backend.ipynb}{demo\_back.ipynb}
+    notebook inside it. Use
+    \href{https://github.com/aiidalab/aiidalab-widgets-base/blob/master/aiidalab_widgets_base/structures.py}{aiidalab-widgets-base
+      \textgreater{} StructureUploadWidget} as a template. Create
+    \texttt{frontend/jupyter/Dashboard.ipynb} notebook. Use
+    \href{https://github.com/aiidalab/aiidalab-widgets-base/blob/master/structures.ipynb}{StructureUploadWidget
+      Demo Notebook} as a template.)
 \item
-  Add \href{https://pypi.org/project/fileupload/}{fileupload} to widget
-  (again, like in StructureUploadWidget. See
-  \href{./frontend/jupyter/demo/binder_fileupload_test.ipynb}{binder\_fileupload\_test.ipynb}
-  notebook for a demo that works with binder.)
+    Add \href{https://pypi.org/project/fileupload/}{fileupload} to widget
+    (again, like in StructureUploadWidget. See
+    \href{./frontend/jupyter/demo/binder_fileupload_test.ipynb}{binder\_fileupload\_test.ipynb}
+    notebook for a demo that works with binder.)
 \item
-  Now the Web Frontend should work on Binder.
+    Now the Web Frontend should work on Binder.
 \item
-  For publishing the app on AiiDA Lab, the app has to be registered in
-  the
-  \href{https://github.com/aiidalab/aiidalab-registry}{aiidalab-registry}.
+    For publishing the app on AiiDA Lab, the app has to be registered in
+    the
+    \href{https://github.com/aiidalab/aiidalab-registry}{aiidalab-registry}.
 
-  \begin{itemize}
-  \tightlist
-  \item
-    The project code is in Python3, but aiidalab requires Python2. So
-    the code has to first be backported by hand using the \texttt{future}
-    package. If this takes too long, maybe try the tool
-    \href{https://pypi.org/project/3to2/}{3to2}.
-  \item
-    Use the simplest app in the registry,
-    \href{https://github.com/aiidalab/aiidalab-units}{aiidalab-units} as
-    a template. Adapt code.
-  \item
-    Try it out first in the
-    \href{https://www.materialscloud.org/work/quantum-mobile}{Quantum
-    Mobile Virtual Machine}, which has aiidalab installed and
-    configured. Else try it in a virtual environment with
-    \href{https://pypi.org/project/aiidalab/}{aiidalab} installed from
-    PyPI.
-  \item
-    Register the app.
-  \end{itemize}
+    \begin{itemize}
+        \tightlist
+    \item
+        The project code is in Python3, but aiidalab requires Python2. So
+        the code has to first be backported by hand using the \texttt{future}
+        package. If this takes too long, maybe try the tool
+        \href{https://pypi.org/project/3to2/}{3to2}.
+    \item
+        Use the simplest app in the registry,
+        \href{https://github.com/aiidalab/aiidalab-units}{aiidalab-units} as
+        a template. Adapt code.
+    \item
+        Try it out first in the
+        \href{https://www.materialscloud.org/work/quantum-mobile}{Quantum
+          Mobile Virtual Machine}, which has aiidalab installed and
+        configured. Else try it in a virtual environment with
+        \href{https://pypi.org/project/aiidalab/}{aiidalab} installed from
+        PyPI.
+    \item
+        Register the app.
+    \end{itemize}
 \end{itemize}
 
 Note: other publishing options besides Binder and AiiDALab are listed
@@ -385,10 +387,10 @@ Note: other publishing options besides Binder and AiiDALab are listed
 instance, \href{http://colab.research.google.com/}{Google Colaboratory}
 is a free Notebook hosting service that allows file upload.
 
-\subsection{Exending the code}\label{exending-the-code}
+\subsection{Extending the code}\label{extending-the-code}
 
 \subsubsection{Use Case: HDF with DOS data
-included}\label{use-case-hdf-with-dos-data-included}
+  included}\label{use-case-hdf-with-dos-data-included}
 
 The Fleur output HDF format is expected to change and incorporate more
 data. In turn, this project's code has to be extended as well. The
@@ -399,64 +401,75 @@ preprocessor, the visualization and frontend submodules to that
 scenarion.
 
 \begin{itemize}
-\tightlist
+    \tightlist
 \item
-  Add a new output type to \texttt{hdf/output\_types}, say
-  \texttt{FleurBandDOS}. Let it inherit from output type
-  \texttt{FleurBands}. If you want an output type just for the DOS as
-  well, add a type \texttt{FleurDOS} and let \texttt{FleurBandDOS}
-  inherit it.
+    Add a new output type to \texttt{hdf/output\_types}, say
+    \texttt{FleurBandDOS}. Let it inherit from output type
+    \texttt{FleurBands}. If you want an output type just for the DOS as
+    well, add a type \texttt{FleurDOS} and let \texttt{FleurBandDOS}
+    inherit it.
 \item
-  Add a new recipe to \texttt{hdf/recipes} e.g. \texttt{FleurBandDOS}.
-  Copy unchanged things from recipe \texttt{FleurBands}.
+    Add a new recipe to \texttt{hdf/recipes} e.g. \texttt{FleurBandDOS}.
+    Copy unchanged things from recipe \texttt{FleurBands}.
 \item
-  If needed, add new transforms to \texttt{hdf/input\_transforms}.
-  Adhere to the transform function standard there. If there are mutual
-  dependencies, add them to the list in the top of the file.
+    If needed, add new transforms to \texttt{hdf/input\_transforms}.
+    Adhere to the transform function standard there. If there are mutual
+    dependencies, add them to the list in the top of the file.
 \item
-  Add a DOS data selection method to the output type
-  \texttt{FleurBands}. The \texttt{DOSPlot} in \texttt{plot/base} types
-  will need those to plot the DOS plot. Simply adapt from the function
-  in \texttt{dos/reader} for the DOS CSV files, adopt the identical
-  signature.
+    Add a DOS data selection method to the output type
+    \texttt{FleurBands}. The \texttt{DOSPlot} in \texttt{plot/base} types
+    will need those to plot the DOS plot. Simply adapt from the function
+    in \texttt{dos/reader} for the DOS CSV files, adopt the identical
+    signature.
 \item
-  In the \texttt{DOSPlot} types in submodule \texttt{plot}, add a switch
-  to the constructor that can distinguish the three cases (bands,
-  bands+CSV DOS, bands+HDF DOS). Use the switch in the \texttt{plotDOS}
-  methods, and for the case bands+HDF DOS, call your new
-  \texttt{FleurBandDOS} function.
+    In the \texttt{DOSPlot} types in submodule \texttt{plot}, add a switch
+    to the constructor that can distinguish the three cases (bands,
+    bands+CSV DOS, bands+HDF DOS). Use the switch in the \texttt{plotDOS}
+    methods, and for the case bands+HDF DOS, call your new
+    \texttt{FleurBandDOS} function.
 \end{itemize}
 
 \subsubsection{Extending the Visualization
-(Plots)}\label{extending-the-visualization-plots}
+  (Plots)}\label{extending-the-visualization-plots}
 
 \begin{itemize}
-\tightlist
+    \tightlist
 \item
-  In addition to the inheritance scheme based on Python
-  \texttt{AbstractBaseClass} (ABC) detailed in the
-  \href{./doc/report.pdf}{report}, the \texttt{Plot} types in
-  \texttt{plot} have an additional facility that helps to keep the
-  appearance of different Frontends synchronized: each type has an
-  attribute \texttt{icdv} of type
-  \texttt{InteractiveControlDisplayValues}. This is an ABC with the same
-  inheritance as the application Plot types. For every plot control
-  argument that an application type's Plot type exposes in it's methods'
-  signatures, this attribute describes the parameters of the
-  accompanying control widget in the Frontend text label, default
-  values, value ranges, and so on. In the current code, only the Web
-  Frontend uses this facility, so the labels in the Desktop Frontend
-  differ slightly.\\
+    In addition to the inheritance scheme based on Python
+    \texttt{AbstractBaseClass} (ABC) detailed in the
+    \href{./doc/report.pdf}{report}, the \texttt{Plot} types in
+    \texttt{plot} have an additional facility that helps to keep the
+    appearance of different Frontends synchronized: each type has an
+    attribute \texttt{icdv} of type
+    \texttt{InteractiveControlDisplayValues}. This is an ABC with the same
+    inheritance as the application Plot types. For every plot control
+    argument that an application type's Plot type exposes in it's methods'
+    signatures, this attribute describes the parameters of the
+    accompanying control widget in the Frontend text label, default
+    values, value ranges, and so on. In the current code, only the Web
+    Frontend uses this facility, so the labels in the Desktop Frontend
+    differ slightly.\\
 \item
-  It is worth pointing out that unlike other languages, Python does not
-  enforce implemented abstract methods to have the same method
-  signature. However, when a new implementation for a different plotting
-  library/backend is added, it is recommended to adopt the
-  \texttt{abstractmethod} signature. That way, changing the backend in a
-  use case only requires to change the import.
+    It is worth pointing out that unlike other languages, Python does not
+    enforce implemented abstract methods to have the same method
+    signature. However, when a new implementation for a different plotting
+    library/backend is added, it is recommended to adopt the
+    \texttt{abstractmethod} signature. That way, changing the backend in a
+    use case only requires to change the import.
 \end{itemize}
 
+\subsection{Open Issues}
+\label{sec:open-issues}
 
+\begin{itemize}
+\item The\texttt{FleurBands} data selection method could be optimized even more by
+    replacing \textit{all} numerical operations with\texttt{numpy} routines.
+\item Running the Frontends in a debugger or with a counter reveals: on a plot
+    selection changes, the plot seems to be redrawn not once but several times.
+    The cause could not be found so far.
+\item In the Desktop Frontend, the Update Button has to be clicked several times.
+\item In the Web Frontend, on startup, the plot is only visible after two loads/cell runs.   
+\end{itemize}
 
 
 %% FINISH TEXIFIED MANUAL ========================================
@@ -511,12 +524,12 @@ scenarion.
 % \label{sec:creat-proj-virt}
 
 % \begin{lstlisting}[language=bash, style=code]
-%     # if using conda (recommended)
-%     conda create -f environment.yml
-%     source activate 
+% # if using conda (recommended)
+% conda create -f environment.yml
+% source activate 
 
-%     # if using pip (untested)
-    
+% # if using pip (untested)
+
 % \end{lstlisting}
 
 % \subsection{Creating Desktop Frontend Executables}

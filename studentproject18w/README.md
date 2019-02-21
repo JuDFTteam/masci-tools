@@ -82,24 +82,24 @@ Desktop based front end GUI is easy to use. By just running the .exe file provid
 
 Controls for all plots: 
 
-  * Atom Groups: draw the BandDOSPlot only for the selected symmetry groups.
-  * Character: select one or more band Characters (orbitals) 'S','P','D','F'.
-  * Spin: select any one spin or both spins.
-  * Marker size: Default marker size of 1.0 is selected. How ever, user have a
+  * **Atom Groups**: draw the BandDOSPlot only for the selected symmetry groups.
+  * **Character**: select one or more band Characters (orbitals) 'S','P','D','F'.
+  * **Spin**: select any one spin or both spins.
+  * **Marker size**: Default marker size of 1.0 is selected. How ever, user have a
     choice to increase the marker size of the dots (eigenenergies) plotted in
     the BandPlot.
-  * Ymin, Ymax: This control is used to limit the range energy range of the BandDOSPlot.
-  * BandMin, BandMax: This control is used to limit the band range of the BandDOSPlot.
-  * Update, SaveButton: Update the BandDOSPlot to the newly selected data by user. Save the the plot as a PDF on disk.
-  * Exponential weight: The unfolding exponent for supercell calculations (see [report](./doc/report.pdf)). Value 0.0 means no unfolding. If the calculation is done with a unit cell, this control has no effect.
-  * Compare 2Characters: When a user wants to compare 2 characters, this button makes the BandPlot show the influence of each character to each eigenergy using a sequential (2) colormap. The control is disabled if other than two characters are selected.
-  * Ignore Atom group: This button allows an option to ignore the atom groups.
+  * **Ymin, Ymax**: This control is used to limit the range energy range of the BandDOSPlot.
+  * **BandMin, BandMax**: This control is used to limit the band range of the BandDOSPlot.
+  * **Update, SaveButton**: Update the BandDOSPlot to the newly selected data by user. Save the the plot as a PDF on disk.
+  * **Exponential weight**: The unfolding exponent for supercell calculations (see [report](./doc/report.pdf)). Value 0.0 means no unfolding. If the calculation is done with a unit cell, this control has no effect.
+  * **Compare 2Characters**: When a user wants to compare 2 characters, this button makes the BandPlot show the influence of each character to each eigenergy using a sequential (2) colormap. The control is disabled if other than two characters are selected.
+  * **Ignore Atom group**: This button allows an option to ignore the atom groups.
   
 Controls for the DOSPlot only:
 
-  * Select groups: include selected atom groups in the DOS
-  * Interstitial: include the interstitial in the DOS
-  * All characters: include all characters in the DOS regardless of character selection. In the DOS CSV file, different input data is used (a summed column).
+  * **Select groups**: include selected atom groups in the DOS
+  * **Interstitial**: include the interstitial in the DOS
+  * **All characters**: include all characters in the DOS regardless of character selection. In the DOS CSV file, different input data is used (a summed column**.
 
 After the Update button is clicked, a BandPlot or BandDOS plot is produced in Tab 2. A 3D atomic plot is produced in Tab 3. 
 
@@ -107,27 +107,33 @@ After the Update button is clicked, a BandPlot or BandDOS plot is produced in Ta
 
 If the BandPlot is not visible:
 
+  * Click update two to three times.
   * Check if the three input files (if any) are belonging to the same Fleur calculation and selected appropriately.
   * Check if at least one Atom Group, one Character, one Spin is selected.
   * Check if Ymin is less than Ymax and similarly BandMin is less than BandMax such that software is able to plot.
+  
+If the DOSPlot is not visible:
 
-Click on Update once again. If problem persists, restarting of the software would be last attempt for making it work. Please open an issue or contact the developers if the problem persists.
+  * Make sure either Select Groups or Interstitial is selected.
+
+If the problem persists, try restarting the GUI. If that fails, please open an issue or contact the developers.
 
 ## Web Frontend
 
 ### Access
 
-The Web Frontend is a Jupyter Dashboard. It is in experimental state (no fileupload yet). You can try it out on Binder [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/JuDFTteam/masci-tools/studentproject18ws?filepath=studentproject18w%2Ffrontend%2Fjupyter%2Fdemo%2Fbinder_demo.ipynb). You can run it locally (see developer section). If you have an [AiiDaLab account](https://aiidalab.materialscloud.org/hub/login): the dashboard is planned to be published as an app there.
+The Web Frontend is a Jupyter Dashboard. It is in experimental state (no fileupload yet). You can try it out on Binder [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/JuDFTteam/masci-tools/studentproject18ws?filepath=studentproject18w%2Ffrontend%2Fjupyter%2Fdemo%2Fbinder_demo.ipynb). You can run it locally (see developer section). If you have an [AiiDaLab account](https://aiidalab.materialscloud.org/hub/login**: the dashboard is planned to be published as an app there.
 
 ### Usage
 
 Using the Dashboard should be self-explanatory to the domain user. Some tips:
 
+   * if the plot window is not on startup or gets stuck, reload/rerun once.
    * unlike the Desktop frontend, plot updates are instantaneous.
+   * unlike the Desktop Frontend, empty selections are impossible.   
    * multi-selection boxes: use ctrl or shift to select multiple items. 
    * slider values can also be typed into the adjoining text box.
-   * should the app ever appear to get stuck, a reload/rerun will do the trick.
-   * unlike the Desktop Frontend, empty selections are impossible.
+   * try out the zoom and pan tools below the plot, they're useful.
 
 # For Developers
 
@@ -239,7 +245,7 @@ as a usable standalone app, additional work has to be done.
 Note: other publishing options besides Binder and AiiDALab are listed [here](https://github.com/markusschanta/awesome-jupyter). For instance, [Google Colaboratory](http://colab.research.google.com/) is a free Notebook hosting service that allows file upload.
 
 
-## Exending the code
+## Extending the code
 
 ### Use Case: HDF with DOS data included
 
@@ -284,3 +290,12 @@ that scenarion.
      is added, it is recommended to adopt the `abstractmethod` signature. That
      way, changing the backend in a use case only requires to change the import.
    
+## Open Issues
+
+   * The `FleurBands` data selection method could be optimized even more by
+     replacing *all* numerical operations with `numpy` routines.
+   * Running the Frontends in a debugger or with a counter reveals: on a plot
+     selection changes, the plot seems to be redrawn not once but several times.
+     The cause could not be found so far.
+   * In the Desktop Frontend, the Update Button has to be clicked several times.
+   * In the Web Frontend, on startup, the plot is only visible after two loads/cell runs.   
