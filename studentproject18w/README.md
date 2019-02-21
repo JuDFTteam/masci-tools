@@ -172,10 +172,10 @@ from studentproject18w.hdf.reader import Reader
 In this example, a Fleur HDF file is preprocessed using the Recipe `FleurBands`. The resulting output `data` with the extracted and transformed HDF datasets and attached load methods (Extract-Transform-Load) is then passed to a plotter, alongside some DOS CSV files for a bandstructure plot using `matplotlib` as backend library.
 
 ``` python
-import matplotlib.pyplot as plt
 from studentproject18w.hdf.reader import Reader
 from studentproject18w.hdf.recipes import Recipes
 from studentproject18w.plot.matplot import BandDOSPlot
+import matplotlib.pyplot as plt
 
 data = None
 reader = Reader(filepath=filepath_hdf)
@@ -184,14 +184,17 @@ with reader as h5file:
     #
     # Note:
     # Inside the with statement (context manager),
-    # all data attributes that are type h5py Dataset are available (in-file access)
-    # When the statement is left,the HDF5 file gets closed and the datasets are closed.
+    # all data attributes that are type h5py Dataset are available
+    # (on-disk access). When the statement is left, the HDF5 file 
+    # gets closed and the datasets are closed.
     #
-    # Use data outside the with-statement (in-memory access: all HDF5 datasets converted to numpy ndarrays):
+    # Use data outside the with-statement (in-memory access: all 
+    # HDF5 datasets converted to numpy ndarrays):
     data.move_datasets_to_memory()
 
 plotter = BandDOSPlot(plt, data, filepaths_dos)
-(fig, ax_bands, ax_dos) = plter.setup_figure(fig_ratio=[12,6], fig_scale=1, fig_title="BandDOS")
+(fig, ax_bands, ax_dos) = plter.setup_figure()
+
 data_selection = some_selection_process()
 plotter.plot_bandDOS(*data_selection)
 plt.show()
