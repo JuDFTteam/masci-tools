@@ -2,31 +2,99 @@
 \chapter{Introduction}
 \label{chap:intro}
 
-\subsection{Problem Statement}
-Solid State physics deals with the study of large scale properties of solid materials resulting from the atomic scale properties. A solid state physicist can get to know the atomic scale properties from the experiments conducted on the material. Another way to elucidate physical properties is numerical simulation by means of Density Function Theory (DFT). This method is computational Quantum mechanical modeling method to investigate the electronic structure of many body systems of an atom or molecule. Electron density, Intermolecular forces, charge transfer excitations, calculation of band gap among others are properties that are made amenable by DFT  simulations. 
+\section{Problem Statement}
+\label{sec:problem-statement}
 
-Fleur is one such DFT simulation which is developed by physicists at Juelich Forchungzentrum and most importantly its an open source and anyone can access it and use it. Like any other simulation, DFT simulation also outputs a lot of data for a solid state physicist to understand and determine the properties of a cell structure of a molecule through which physical properties of the material can be determined. Fleur is run specifying the cell structure of a molecule and so can be used on any molecule's cell structure and obtain the characteristics of same.
+%% JW: proofread modification v1 of PK Original ======================================== 
+Solid-state physics deals with the study of large-scale properties of solid materials resulting from the atomic scale properties. A solid state physicist can deduce atomic scale properties from the experiments conducted on the material. Another way to elucidate physical properties is numerical simulation by means of Density Function Theory (DFT). This is a computational quantum mechanical modeling method for investigating the electronic structure of many-body systems. Some example properties that are made amenable via DFT simulations include the electron density, charge transfer excitations, a material's band gap or the intermolecular forces in a molecule.
 
-Generally it is used to find/simulate properties of solids with impurities in cell structure. Fluer outputs the data of DFT simulation. It gives the data of ground state and excited state properties of solids. These data which are raw are generally not accessible directly and have to be processed through steps for any solid state physicist to understand the raw data extracted from Fleur DFT simulation. This becomes the major problem and which is dealt in this project. The goal of this project was to implement a complete data analysis pipeline for this application. The steps include preprocessing followed by data exploration and visualization.
+Fleur is a freely available full potential linearized augmented planewave (FLAPW) code that is based on DFT\cite{fleur}. It is developed by physicists at the Forschungzentrum Jülich. Like any other kind of numerical simulation, DFT simulations produce a lot of data. It is not a trivial task for a solid-state physicist to understand and determine the electronic strucure of a material, and through that understand and determine the physical properties. Fleur is run specifying the crystal structure of a material and so can be used on any type of crystal cell, to obtain the characteristics of same. Often it is used to simulate and find properties of solids with impurities in the cell structure.
 
-\subsection{Motivation and Requirements}
+Fleur outputs the data of the DFT simulation. It gives the data of ground state and excited state properties of solids. These data are raw and are generally not accessible directly. They have to be processed in several steps for any solid-state physicist to understand. This becomes a major problem which is addressed in this project. The goal of this project was to implement a complete data analysis pipeline for this application. The steps include preprocessing followed by data exploration through visualization.
 
-An API which solves the physicist's problem of understanding the simulation data which transforms raw data to useful data such that it is process and visualizes. This API has to process the output files from fleur directly so that it is easier for physicists to get the data processed without external effort. Having said this, modularization and easy maintainability of code also matters since the format and structure of simulation results keeps varying over the time with the development of simulation code and more data may be collected from simulation.
 
-This API shouldn't only be solving the physicist's problem but also should be fast enough in terms of computation. As known, using of computer code to get outputs and may cause confusions in using it as computer code and there is always chance of altering the code while using it. So a front end GUI is needed such that a physicist can use the GUI to input the parameters and to output the processed data. As this is used for research purpose and the features such as plots, images and other should be of high quality and resolution such that there is no uncertainty of the results.
+% %% PK Original ========================================
+% Solid State physics deals with the study of large scale properties of solid materials resulting from the atomic scale properties. A solid state physicist can get to know the atomic scale properties from the experiments conducted on the material. Another way to elucidate physical properties is numerical simulation by means of Density Function Theory (DFT). This method is computational Quantum mechanical modeling method to investigate the electronic structure of many body systems of an atom or molecule. Electron density, Intermolecular forces, charge transfer excitations, calculation of band gap among others are properties that are made amenable by DFT simulations.
 
-\subsection{Steps}
+% Fleur is one such DFT simulation which is developed by physicists at Juelich Forchungzentrum and most importantly its an open source and anyone can access it and use it. Like any other simulation, DFT simulation also outputs a lot of data for a solid state physicist to understand and determine the properties of a cell structure of a molecule through which physical properties of the material can be determined. Fleur is run specifying the cell structure of a molecule and so can be used on any molecule's cell structure and obtain the characteristics of same.
 
-As a project, step by step procedure has completed to complete the task of processing and visualization.
+% Generally it is used to find/simulate properties of solids with impurities in cell structure. Fluer outputs the data of DFT simulation. It gives the data of ground state and excited state properties of solids. These data which are raw are generally not accessible directly and have to be processed through steps for any solid state physicist to understand the raw data extracted from Fleur DFT simulation. This becomes the major problem and which is dealt in this project. The goal of this project was to implement a complete data analysis pipeline for this application. The steps include preprocessing followed by data exploration and visualization.
+
+
+\section{Motivation and Requirements}
+\label{sec:motiv-requ}
+
+%% JW: proofread modification v1 of PK Original ========================================
+One project goal was a software library or `backend' with which solves the
+physicist's problem of understanding the simulation data. The backend transforms
+raw data to useful data such that it is processed and can be visualized. This
+backend has to process the output files from Fleur directly so that it is easier
+for physicists to get the data processed without manual effort. Having said
+this, modularization and easy maintainability of the code also matters since the
+format and structure of simulation results keeps varying over time with the
+development of the simulation code, when more and more data may be collected
+from the simulation.
+
+This backend should not only be solving the physicist's problem but also should
+be fast enough in terms of computation. A problem that may arise when only
+offering a library with an application programming interface though is that
+potential domain expert users may not use it because they lack the specific
+programming knowledge or time to learn it. So a graphical user interface (GUI)
+or `frontend' is needed such that a physicist can use the GUI to input the
+parameters and to present the data in a visual manner. As this is used for
+research purposes, the produced plots and images should be of high quality and
+resolution such that they can be shared with others.
+
+% %% PK Original ========================================
+% An API which solves the physicist's problem of understanding the simulation data which transforms raw data to useful data such that it is process and visualizes. This API has to process the output files from fleur directly so that it is easier for physicists to get the data processed without external effort. Having said this, modularization and easy maintainability of code also matters since the format and structure of simulation results keeps varying over the time with the development of simulation code and more data may be collected from simulation.
+
+% This API shouldn't only be solving the physicist's problem but also should be fast enough in terms of computation. As known, using of computer code to get outputs and may cause confusions in using it as computer code and there is always chance of altering the code while using it. So a front end GUI is needed such that a physicist can use the GUI to input the parameters and to output the processed data. As this is used for research purpose and the features such as plots, images and other should be of high quality and resolution such that there is no uncertainty of the results.
+
+
+\section{Project Steps}
+\label{sec:steps}
+
+%% JW: proofread modification v1 of PK Original
+%% ========================================
+The project was organized into several steps with the supervisors.
 \begin{itemize}
-\item Understanding the problem: Firstly the theory of DFT simulation, Fleur code, band plots, density plots, file format of data and other necessary theory needed are learnt and problem of the project to process the data in different steps is understood.
-\item Pre-Processing: Once problem is clearly understood, first step of project comes to preprocessing the data. Reading the data, sorting the data and storing it sorted which can be used in further stages of implementation.
-\item Exploring the data: From the raw data, not just band plots but many features can be extracted. Finding out the features through exploring the data and trying to understand and extract those features is done.
-\item Visualization: The data which is pre-processed and extracted need to be visualized into plots such that any user with solid state physics background can understand it with an observation.
-\item Front End: A GUI is developed so that its easier in future for any physicist to just run the GUI and get the plots and other visualization instead going through hassle of code and letting a chance of code being disturbed unintentionally
-\item Results and lookup: Getting to know the features extracted, studying it, reporting the same.
-
+\item Understanding the problem: the theory and practice of DFT simulation, band
+    theory including density of states, the output file formats produced by
+    Fleur, and other necessary theory needed are learnt and the requirement of
+    the problem to process the data in different steps is understood.
+\item Pre-Processing: Once the problem is clearly understood, the first step of
+    the project comes to preprocessing the data. Reading the data, transforming
+    the data and aggregating it which so that it can be used in further stages of
+    the implementation.
+\item Exploring the data: From the raw data, not just band plots but other 
+    features as well can be extracted. Finding out the features through exploring the
+    data and trying to understand and extract those features is accomplished.
+\item Visualization: The data which is pre-processed and extracted need to be
+    visualized into plots such that any user with a solid-state physics background
+    can understand it.
+\item Frontend: A GUI is developed so that it is easier in future for any
+    physicist to just run the GUI and get the plots and other visualization
+    instead going through hassle of manual coding.
+\item Results and lookup: Getting to know the features extracted, studying it,
+    reporting the same.
 \end{itemize}
+
+
+% %% PK Original ========================================
+% The project steps by step procedure has completed to complete the task of processing and visualization.
+% \begin{itemize}
+% \item Understanding the problem: Firstly the theory of DFT simulation, Fleur code, band plots, density plots, file format of data and other necessary theory needed are learnt and problem of the project to process the data in different steps is understood.
+% \item Pre-Processing: Once problem is clearly understood, first step of project comes to preprocessing the data. Reading the data, sorting the data and storing it sorted which can be used in further stages of implementation.
+% \item Exploring the data: From the raw data, not just band plots but many features can be extracted. Finding out the features through exploring the data and trying to understand and extract those features is done.
+% \item Visualization: The data which is pre-processed and extracted need to be visualized into plots such that any user with solid state physics background can understand it with an observation.
+% \item Front End: A GUI is developed so that its easier in future for any physicist to just run the GUI and get the plots and other visualization instead going through hassle of code and letting a chance of code being disturbed unintentionally
+% \item Results and lookup: Getting to know the features extracted, studying it,
+%     reporting the same.
+% \end{itemize}
+
+
+
+
 %%% Local Variables:
 %%% mode: latex
 %%% TeX-master: "../"
