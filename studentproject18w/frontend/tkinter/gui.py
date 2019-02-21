@@ -208,19 +208,19 @@ class SiscLab:
             self.Band[3] = True
 
     def SelectFile(self):
-        self.path = askopenfilename(initialdir="C:/Users/",
+        self.path = askopenfilename(initialdir="",
                                filetypes=( ("All Files", "*.*"), ("Text File", "*.txt")),
                                title="Choose a HDF file."
                                )
         self.FileName.set(self.path)
     def SelectFileDOS1(self):
-        self.path1 = askopenfilename(initialdir="C:/Users/",
+        self.path1 = askopenfilename(initialdir="",
                                filetypes=( ("All Files", "*.*"), ("Text File", "*.txt")),
                                title="Choose a DOS1 file."
                                )
         self.FileNameDOS1.set(self.path1)
     def SelectFileDOS2(self):
-        self.path2 = askopenfilename(initialdir="C:/Users/",
+        self.path2 = askopenfilename(initialdir="",
                                filetypes=(("All Files", "*.*"),("Text File", "*.txt")),
                                title="Choose a DOS2 file."
                                )
