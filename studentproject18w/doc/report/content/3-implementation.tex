@@ -88,9 +88,9 @@ the process of extending their codes' I/O capabilities towards that end.
 However, HDF's flexibility comes at the price of a relatively complex
 Application Programming Interface (API) as the keyhole for all operations.
 
-The preprocessor module tries to hide that complexity by introducing the concept
-of \texttt{Recipes}, see Figure \ref{fig:preprocessor}. A specific application
-\texttt{Recipe} is a dictionary that aims to describe a complete
+The preprocessor module serves as a wrapper around that API by introducing the
+concept of \texttt{Recipes}, see Figure \ref{fig:preprocessor}. A specific
+application \texttt{Recipe} is a dictionary that aims to describe a complete
 \href{https://en.wikipedia.org/wiki/Extract,_transform,_load}{Extract-Transform-Load}
 (ETL) pipeline for one specific application of the original data. The `extract'
 is the reading of a dataset from HDF, the `transform' a sequence of once-through
