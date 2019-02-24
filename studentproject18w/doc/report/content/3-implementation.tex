@@ -11,8 +11,8 @@ materials science tool collection \texttt{masci-tools} \cite{masci-tools} ,
 where also this project's code is hosted, and the 'Automated Interactive
 Infrastructure and Database for Computational Science' (AiiDA) \cite{aiida}. The
 product stakeholders split into frontend users and code developers. In order to
-accommodate this, the product is organized into three unidirectionally dependent
-subpackages or -modules, see Figure \ref{fig:submodules}.
+accommodate this, the product is organized into three subpackages or -modules,
+see Figure \ref{fig:submodules}.
 
 An important design consideration was to account for unknown use cases. This has
 been realized in each submodule by the decoupling of \textbf{interface} and
@@ -24,10 +24,9 @@ applications, implementations are provided.
 
 This design choice was also one reason why the product does not reuse any of the
 \texttt{masci-tools} routines which partly solve quite similar problems, but
-seemed to be too specialized in a cursory code review. For these developers,
-one added value of the project product could be to inspire the hopefully easy
-integration into a common interface, where the current abstraction level could
-serve as a starting point.
+seemed to be too specialized in a cursory code review. The project code aims to
+offer a more general framework into which some of these routines could be
+integrated.
 
 %% Bad: jumbles up text
 % \begin{wrapfigure}{r}{0.3\textwidth}
@@ -60,7 +59,8 @@ serve as a starting point.
     \centering
     \subcaptionbox{Submodules\label{fig:submodules}}{\includegraphics[width=1.6in]{img/module_design.png}}\hspace{5em}%
     \subcaptionbox{Preprocessor\label{fig:preprocessor}}{\includegraphics[width=0.5\textwidth]{img/reader_flowchart4.png}}
-    \caption{Module Design.}
+    \caption[Module Design.]{Module Design. \textbf{a)}: The arrows indicate
+      dependency in a), and dataflow in b).}
     \label{fig:module-design}
 \end{figure}
 
@@ -80,13 +80,13 @@ Fleur-specific comma-separated values (CSV) format for the density of states
 The HDF format is a flexible binary container for all kinds of common binary and
 text file formats. Each file which constitutes a \texttt{Dataset} inside the HDF
 file. The format supports metadata annotation and high-throughput input/output
-(I/O). As a consequence, it is considered by some developers in some application
-domains that rely on numerical simulation codes, to be one possible base for the
-establishment of common domain-specific rich data exchange standards in order to
-increase code interoperability. These developers are in the process of extending
-their codes' I/O capabilities towards that end. However, HDF's flexibility comes
-at the price of a relatively complex Application Programming Interface (API) as
-the keyhole for all operations.
+(I/O). As a consequence, it is considered by developers in some application
+domains that rely on numerical simulation codes, to arguably be one possible
+base for the establishment of common domain-specific rich data exchange
+standards in order to increase code interoperability. These developers are in
+the process of extending their codes' I/O capabilities towards that end.
+However, HDF's flexibility comes at the price of a relatively complex
+Application Programming Interface (API) as the keyhole for all operations.
 
 The preprocessor module tries to hide that complexity by introducing the concept
 of \texttt{Recipes}, see Figure \ref{fig:preprocessor}. A specific application
@@ -159,8 +159,8 @@ data from the simulation. Firstly, the plotter needs the \(k\)-path (where
 the recipe \texttt{FleurBands}, computes it from the \(k\)-points in the HDF in
 a transform. Secondly, the plotter needs the eigenergies for every point on the
 \(k\)-path, labeled by the band index \(\nu\), and its associated \(l\)-like
-charge \(n_{s,k,\nu,g,l}\). This dataset is fivedimensional, and represents the
-contribution of spin \(s\), point \(k\) point on \(k\)-path, band index \(\nu\),
+charge \(n_{s,k,\nu,g,l}\). This dataset is five-dimensional, and represents the
+contribution of spin \(s\), \(k\)-point, band index \(\nu\),
 atom group \(g\), and character or orbital \(l\) (here: only s,p,d,f) to the
 specific eigenergy. So plotting must involve a dimension reduction. The
 preprocessor resolves the processed data into the like-named output type
@@ -177,12 +177,13 @@ normalizes the energies to the Fermi Level.
 \end{align}
 
 \(N_g\) denotes the number of atoms in a group. \(W_{s,k,\nu}^{\text{unf}}\) is
-the unfolding weight and \(\alpha\) its exponent. In the frontends, the latter
-is also a user control. The effect of unfolding is illustrated in Figure
-\ref{fig:unfolding} for a toy example of a monatomic chain, with a two-atom
-supercell of size \(a'\) representing \(\alpha=0\) and a one-atom unit cell of
-size \(a\) representing \(\alpha=1\). A use-case is discussed in the Application
-Chapter \ref{chap:applications}.
+the unfolding weight, if the simulation was done with a supercell, and
+\(\alpha\) its exponent. In the frontends, the latter is also a user control.
+The effect of unfolding is illustrated in Figure \ref{fig:unfolding} for a toy
+example of a monatomic chain, with a two-atom supercell of size \(a'\)
+representing \(\alpha=0\) and a one-atom unit cell of size \(a\) representing
+\(\alpha=1\). A use-case is discussed in the Application Chapter
+\ref{chap:applications}.
 
 \begin{figure}[htb!]
     \centering
@@ -239,7 +240,7 @@ and receive the identical visualization with identical interactive behavior.
     \centering
     \includegraphics[width=1.0\linewidth]{img/pycharm_uml/matplot.png}
     \caption[Visualization Module Design]{Visualization Module Design: Example
-      Structure for two applications \texttt{BandPlot} and \texttt{DOSPlot}, and
+      inheritance for two applications \texttt{BandPlot} and \texttt{DOSPlot}, and
       two plotting libraries \texttt{matplotlib} and \texttt{bqplot}.}
     \label{fig:visualization-module}
 \end{figure}
@@ -247,38 +248,38 @@ and receive the identical visualization with identical interactive behavior.
 \subsection{Desktop Frontend}
 \label{sec:desktop-frontend}
 
-A Desktop Frontend is always a helping hand for the physicists to just execute
+A desktop frontend is always a helping hand for the physicists to just execute
 it on the computer when one wants to go through the plots of the raw data that
 is already in the computer.
 
 Since the reading of HDF files and preprocessing of the data is done using
-Python, it is decided that it would be better to use Python for frontend
+Python, it is decided that it would be best to also use Python for frontend
 development. Considering various packages for frontend in python such as PyQt,
-Tkinter and other libraries available for Desktop GUIs, Tkinter is selected, as
+Tkinter and other libraries available for desktop GUIs, Tkinter is selected, as
 it is bundled with Python and thus meets the requirement of easy maintainability
 best. It is a package where every button can be designed and can be assigned to
 a function. GUI types like \texttt{Label}, \texttt{Button},
 \texttt{CheckButton}, \texttt{ListBox}, \texttt{Canvas} for plots, \texttt{Tab}
-for viewing each plot in different tab have been used to make a simple Desktop
-front end. It is simple to use with limited options for what the end-user, the
-solid-state physicist, needs. It is also easy to convert the Desktop frontend
+for viewing each plot in different tab have been used to make a simple desktop
+frontend. It is simple to use with limited options for what the end-user, the
+solid-state physicist, needs. It is also easy to convert the desktop frontend
 code into a executable software and run in any system without any installation.
 
 \subsection{Web Frontend}
 \label{sec:web-frontend}
 
-As Web Frontends continue to replace traditional Desktop Frontends in many
-application domains \cite{web-vs-desktop}, so Python-based Frontends and
+As web frontends continue to replace traditional desktop frontends in many
+application domains \cite{web-vs-desktop}, so Python-based frontends and
 visualizations are increasingly moving towards the browser, too. There, GUIs
 with interactive visualizations are often called \textbf{Dashboards}. For this
 project, a survey was undertaken to find the most suitable technology stack for
-a Web Frontend. The full survey is documented in \cite{jw-notes}. The
+a web frontend. The full survey is documented in \cite{jw-notes}. The
 requirements for the solution, on top of those stated in the introduction, were
 defined as follows: The solution...
 
 \begin{enumerate}
 \item \textbf{openness}: relies solely on Open-Source-Software (OSS) with
-    licensing suitable for academic use, sports a stable release cycle, developer
+    licensing suitable for academic use, has a stable release cycle, developer
     base and documentation,
 \item \textbf{dashboarding}: features graphical control elements (widgets) that
     interact with InfoVis\footnote{InfoVis libraries: visualizations of
@@ -306,11 +307,11 @@ partially fulfilled the requirement no. 4, so they were discarded. PyViz is the
 newest contender among these four. Its expressed goal is to untangle the Python
 visualization jungle by providing one high-level API that ties together all
 major Python InfoVis libraries and data formats, including support for
-dashboarding. That ambitious goal comes at the price of sacrificing support for
+dashboarding. This ambitious goal comes at the price of sacrificing support for
 3D plotting \cite{pyviz-faq}, which was needed in this project for the atoms
 plot. So PyViz had to be discarded.
 
-That left Project Jupyter. By now, a wide variety of popular plotting libraries
+This left Project Jupyter. By now, a wide variety of popular plotting libraries
 have made their tools capable of working with Jupyter's widget library
 \texttt{ipywidgets}. However, Jupyter only partially fulfills requirement no. 3
 -- a Jupyter notebook (app) cannot, by itself, be published (deployed) as a
@@ -339,4 +340,4 @@ found in the developer section of the manual \vref{for-developers}.
 %%% TeX-master: "../report"
 %%% End:
 
-%  LocalWords:  subpackages submodule
+%  LocalWords:  subpackages submodule frontend frontends backend
