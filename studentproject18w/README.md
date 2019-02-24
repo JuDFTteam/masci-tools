@@ -21,7 +21,7 @@ Authors: [Johannes Wasmer](https://github.com/Irratzo), [Christian Partmann](htt
 - [For Developers](#for-developers)
     - [Installation](#installation)
     - [Programmatic use](#programmatic-use)
-    - [Try out the Web Frontend locally](#try-out-the-web-frontend-locally)
+    - [Try Out the Web Frontend Locally](#try-out-the-web-frontend-locally)
         - [If using Jupyter Notebook](#if-using-jupyter-notebook)
         - [If using Jupyter Lab](#if-using-jupyter-lab)
     - [Frontend Deployment](#frontend-deployment)
@@ -39,8 +39,8 @@ Authors: [Johannes Wasmer](https://github.com/Irratzo), [Christian Partmann](htt
 This subfolder `studentproject18ws` is currently a largely independent side-project accompanying the main module `masci-tools`. It was created in a student project at [FZJ PGI-1](http://www.fz-juelich.de/pgi/pgi-1/EN/Home/home_node.html), and consists of three submodules:
 
   * preprocessor: a general [HDF5](https://www.hdfgroup.org/solutions/hdf5/) reader interface, and one implementation for band structure simulation output of the DFT code [Fleur](http://www.judft.de)
-  * visualization: a plotting interface, and one implementation for [Fleur](http://www.judft.de) bandstructure+DOS plots
-  * frontends: a Desktop GUI and a Web Dashboard (Tk and Jupyter) for interactive Fleur bandDOS plots.
+  * visualization: a plotting interface, and one implementation for [Fleur](http://www.judft.de) band structure and density of states (DOS) plots
+  * frontends: a desktop GUI and web dashboard (Tk and Jupyter) for interactive Fleur band-DOS plots.
 
 A more thorough description and example use cases can be found in the project [report](./doc/report.pdf) and [presentation](./doc/presentation.pdf). 
 
@@ -52,18 +52,17 @@ A more thorough description and example use cases can be found in the project [r
 
 These remarks apply to all frontends.
 
-Though the Desktop and Web Frontend are functionally identical, there might be small differences in how the controls are used and how they are labeled.  
+Though the desktop and web frontend are functionally identical, there might be small differences in how the controls are used and how they are labeled.  
 
 ### File Input
 
 The frontends currently expects band structure data in the HDF output format of
-[Fleur](http://www.judft.de). The density of states data is expected to be in
-the CSV output format of [Fleur](http://www.judft.de), one file per spin. If no
-density of states files are supplied, the frontend will just draw a band
-structure plot (BandPlot) and omit the adjoined density of states plot
-(DOSPlot). Thus, in the following BandDOSPlot stands for both kinds of plot. The
-Web Frontend will only show controls for data that is present in the input
-(e.g., DOS and spin controls).
+[Fleur](http://www.judft.de). The DOS data is expected to be in the CSV output
+format of [Fleur](http://www.judft.de), one file per spin. If no DOS files are
+supplied, the frontend will just draw a band structure plot and omit the
+adjoined DOS plot. Thus, in the following band-DOS plot stands for both kinds of
+plot. The web frontend will only show controls for data that is present in the
+input (e.g., DOS and spin controls).
 
 ## Desktop Frontend
 
@@ -77,44 +76,49 @@ The executable for Windows (or other operating systems) can be obtained from the
 
 ### Usage
 
-The Desktop-based GUI is easy to use. Running the .exe file will open up the
+The desktop-based GUI is easy to use. Running the .exe file will open up the
 frontend with all packages loaded. The GUI consists of three tab windows. In the
 first tab window, absolute paths to the input data files must be entered in this
 order: HDF and (optional) DOS file for spin `0' and `1'. Tab 2 shows the
-BandDOSPlot, and Tab 3 the 3D atoms plot. After loading the files, the controls
+band-DOS plot, and Tab 3 the 3D atoms plot. After loading the files, the controls
 must be initialized. Finally, clicking the 'Update' button produces the plots.
 
-Controls for all plots: 
+Controls for all three plots: 
 
-  * **Atom Groups**: draw the BandDOSPlot only for the selected symmetry groups.
-  * **Character**: select one or more band Characters (orbitals) 'S','P','D','F'.
-  * **Spin**: select any one spin or both spins.
-  * **Marker size**: Default marker size of 1.0 is selected. How ever, user have a
-    choice to increase the marker size of the dots (eigenenergies) plotted in
-    the BandPlot.
-  * **Ymin, Ymax**: This control is used to limit the range energy range of the BandDOSPlot.
-  * **BandMin, BandMax**: This control is used to limit the band range of the BandDOSPlot.
-  * **Update, SaveButton**: Update the BandDOSPlot to the newly selected data by user. Save the the plot as a PDF on disk.
-  * **Exponential weight**: The unfolding exponent for supercell calculations (see [report](./doc/report.pdf)). Value 0.0 means no unfolding. If the calculation is done with a unit cell, this control has no effect.
-  * **Compare 2Characters**: When a user wants to compare 2 characters, this button makes the BandPlot show the influence of each character to each eigenergy using a sequential (2) colormap. The control is disabled if other than two characters are selected.
-  * **Ignore Atom group**: This button allows an option to ignore the atom groups.
+  * **Update, SaveButton**: redraw the plots with the new selection / save the the plot as a PDF.
+  * **Atom Groups**: redraw only for the selected symmetry groups.
   
-Controls for the DOSPlot only:
+Controls for the band and DOS plots:
+
+  * **Ymin, Ymax**: limit the energy range.
+  * **BandMin, BandMax**: limit the band range.
+  * **Character**: likewise for the characters (orbitals) 'S','P','D','F'.
+  * **Spin**: draw bands and DOS for one or both spins.
+  
+Controls for the band plot only:
+
+  * **Marker Size**: set the marker size of the dots (eigenenergies).
+  * **Exponential weight**: The unfolding exponent for supercell calculations (see [report](./doc/report.pdf)). Value 0.0 means no unfolding. If the calculation is done with a unit cell, this control has no effect.
+  * **Compare 2 Characters**: show the respective contribution of the two selected characters to each eigenergy using a sequential (2) colormap. Disabled if other than two characters are selected.
+  * **Ignore Atom Group**: set the contribution of each group to be equal
+    instead of to the number of atoms per group.
+    
+Controls for the DOS plot only:
 
   * **Select groups**: include selected atom groups in the DOS
   * **Interstitial**: include the interstitial in the DOS
-  * **All characters**: include all characters in the DOS regardless of character selection. In the DOS CSV file, different input data is used (a summed column**.
+  * **All characters**: include all characters in the DOS regardless of character selection. In the DOS CSV file, different input data is used (a summed column).
 
 ### Troubleshooting
 
-If the BandPlot is not visible:
+If the band plot is not visible:
 
   * Click update two to three times.
   * Check if the three input files (if any) are belonging to the same Fleur calculation and selected appropriately.
   * Check if at least one Atom Group, one Character, one Spin is selected.
   * Check if Ymin is less than Ymax and similarly BandMin is less than BandMax such that software is able to plot.
   
-If the DOSPlot is not visible:
+If the DOS plot is not visible:
 
   * Make sure either Select Groups or Interstitial is selected.
 
@@ -124,7 +128,7 @@ If the problem persists, try restarting the GUI. If that fails, please open an i
 
 ### Access
 
-The Web Frontend is a Jupyter Dashboard. It is in experimental state (no fileupload yet). You can try it out on Binder [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/JuDFTteam/masci-tools/studentproject18ws?filepath=studentproject18w%2Ffrontend%2Fjupyter%2Fdemo%2Fbinder_demo.ipynb). You can also run it locally (see developer section). If you have an [AiiDaLab account](https://aiidalab.materialscloud.org/hub/login**: the dashboard is planned to be published as an app there.
+The web frontend is a Jupyter dashboard. It is in experimental state (no fileupload yet). You can try it out on Binder [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/JuDFTteam/masci-tools/studentproject18ws?filepath=studentproject18w%2Ffrontend%2Fjupyter%2Fdemo%2Fbinder_demo.ipynb). You can also run it locally (see developer section). If you have an [AiiDaLab account](https://aiidalab.materialscloud.org/hub/login**: the dashboard is planned to be published as an app there.
 
 ### Usage
 
@@ -203,9 +207,9 @@ plotter.plot_bandDOS(*data_selection)
 plt.show()
 ```
 
-## Try out the Web Frontend locally
+## Try Out the Web Frontend Locally
 
-The demo notebook with the Dashboard is `studentproject18w/frontend/jupyter/demo/demo.ipynb`.
+The demo notebook with the dashboard is `studentproject18w/frontend/jupyter/demo/demo.ipynb`.
 
 ### If using Jupyter Notebook
 On Windows, omit keyword `source`.
@@ -243,12 +247,12 @@ pyinstaller --onefile frontend/tkinter/gui.py
 
 ### Web Frontend
 
-The Web Frontend is currently a single Jupyter Notebook. In order to publish it
+The web frontend is currently a single Jupyter notebook. In order to publish it
 as a usable standalone app, additional work has to be done.
 
-  * Create `frontend/jupyter/Dashboard.py` and put code of [demo_backend.ipynb](./frontend/jupyter/demo/demo_backend.ipynb) notebook inside it. This will become the widget. Use [aiidalab-widgets-base > StructureUploadWidget](https://github.com/aiidalab/aiidalab-widgets-base/blob/master/aiidalab_widgets_base/structures.py) as a template. Create `frontend/jupyter/Dashboard.ipynb` notebook. This will become the app. Use [StructureUploadWidget Demo Notebook](https://github.com/aiidalab/aiidalab-widgets-base/blob/master/structures.ipynb) as a template.
+  * Create `frontend/jupyter/Dashboard.py` and put code of [demo_backend.ipynb](./frontend/jupyter/demo/demo_backend.ipynb) notebook inside it. This will become the widget. Use [aiidalab-widgets-base > StructureUploadWidget](https://github.com/aiidalab/aiidalab-widgets-base/blob/master/aiidalab_widgets_base/structures.py) as a template. Create `frontend/jupyter/Dashboard.ipynb` notebook. This will become the app. Use [StructureUploadWidget demo notebook](https://github.com/aiidalab/aiidalab-widgets-base/blob/master/structures.ipynb) as a template.
   * Add [fileupload](https://pypi.org/project/fileupload/) buttons (for HDF, DOS) to widget (again, like in StructureUploadWidget. See [binder_fileupload_test.ipynb](./frontend/jupyter/demo/binder_fileupload_test.ipynb) notebook for a demo that works with binder.)
-  * Now the Web Frontend should work on Binder.
+  * Now the web frontend should work on Binder.
   * For publishing the app on [AiiDA Lab](https://aiidalab.materialscloud.org/hub/login**: the dashboard is planned to be published as an app there.), it has to be registered in the [aiidalab-registry](https://github.com/aiidalab/aiidalab-registry).
     * Create a skeleton using the [aiidalab-app-cutter](https://github.com/aiidalab/aiidalab-app-cutter).
     * The project code is in Python3, but aiidalab requires Python2. So the code has to first be backported by hand using the `future` package. If this takes too long, maybe try the tool [3to2](https://pypi.org/project/3to2/).
@@ -256,7 +260,7 @@ as a usable standalone app, additional work has to be done.
     * Try it out first in the [Quantum Mobile Virtual Machine](https://www.materialscloud.org/work/quantum-mobile), which has aiidalab installed and configured. Else try it in a virtual environment with [aiidalab](https://pypi.org/project/aiidalab/) installed from PyPI.
     * Register the app.
     
-Note: other publishing options besides Binder and AiiDALab are listed [here](https://github.com/markusschanta/awesome-jupyter). For instance, [Google Colaboratory](http://colab.research.google.com/) is a free Notebook hosting service that allows environment creation and file upload.
+Note: other publishing options besides Binder and AiiDALab are listed [here](https://github.com/markusschanta/awesome-jupyter). For instance, [Google Colaboratory](http://colab.research.google.com/) is a free notebook hosting service that allows environment creation and file upload.
 
 
 ## Extending the code
@@ -292,12 +296,12 @@ that scenario.
    * In addition to the inheritance scheme based on Python `AbstractBaseClass`
      (ABC) detailed in the [report](./doc/report.pdf), the `Plot` types in
      `plot` have an additional facility that helps to keep the appearance of
-     different Frontends synchronized: each type has an attribute `icdv` of type
+     different frontends synchronized: each type has an attribute `icdv` of type
      `InteractiveControlDisplayValues`. This is an ABC with the same inheritance
      as the application Plot types. For every plot control argument that an
      application type's Plot type exposes in it's methods' signatures, this
      attribute describes the parameters of the accompanying control widget in
-     the Frontend (text label, default values, value ranges, and so on). In the current code, only the Web Frontend uses this facility, so the labels in the Desktop Frontend differ slightly.  
+     the frontend (text label, default values, value ranges, and so on). In the current code, only the web frontend uses this facility, so the labels in the desktop frontend differ slightly.  
    * It is worth pointing out that unlike other languages, Python does not
      enforce implemented abstract methods to have the same method signature.
      However, when a new implementation for a different plotting library/backend
@@ -306,8 +310,8 @@ that scenario.
    
 ## Open Issues
 
-   * Running the Frontends in a debugger or with a counter reveals: on a plot
+   * Running the frontends in a debugger or with a counter reveals: on a plot
      selection change or update, the plot seems to be redrawn not once but
      several times. The cause could not be found so far.
-   * In the Desktop Frontend, the Update Button has to be clicked several times.
-   * In the Web Frontend, on startup, the plot is only visible after two loads/cell runs.   
+   * In the desktop frontend, the update button has to be clicked several times.
+   * In the web frontend, on startup, the plot is only visible after two loads/cell runs.   
