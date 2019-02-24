@@ -128,7 +128,7 @@ If the problem persists, try restarting the GUI. If that fails, please open an i
 
 ### Access
 
-The web frontend is a Jupyter dashboard. It is in experimental state (no fileupload yet). You can try it out on Binder [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/JuDFTteam/masci-tools/studentproject18ws?filepath=studentproject18w%2Ffrontend%2Fjupyter%2Fdemo%2Fbinder_demo.ipynb). You can also run it locally (see developer section). If you have an [AiiDaLab account](https://aiidalab.materialscloud.org/hub/login**: the dashboard is planned to be published as an app there.
+The web frontend is a Jupyter dashboard. It is in experimental state (no fileupload yet). You can try it out on Binder [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/JuDFTteam/masci-tools/studentproject18ws?filepath=studentproject18w%2Ffrontend%2Fjupyter%2Fdemo%2Fbinder_demo.ipynb). You can also run it locally (see developer section). If you have an [AiiDaLab account](https://aiidalab.materialscloud.org/hub/login): the dashboard is planned to be published as an app there.
 
 ### Usage
 
@@ -253,7 +253,7 @@ as a usable standalone app, additional work has to be done.
   * Create `frontend/jupyter/Dashboard.py` and put code of [demo_backend.ipynb](./frontend/jupyter/demo/demo_backend.ipynb) notebook inside it. This will become the widget. Use [aiidalab-widgets-base > StructureUploadWidget](https://github.com/aiidalab/aiidalab-widgets-base/blob/master/aiidalab_widgets_base/structures.py) as a template. Create `frontend/jupyter/Dashboard.ipynb` notebook. This will become the app. Use [StructureUploadWidget demo notebook](https://github.com/aiidalab/aiidalab-widgets-base/blob/master/structures.ipynb) as a template.
   * Add [fileupload](https://pypi.org/project/fileupload/) buttons (for HDF, DOS) to widget (again, like in StructureUploadWidget. See [binder_fileupload_test.ipynb](./frontend/jupyter/demo/binder_fileupload_test.ipynb) notebook for a demo that works with binder.)
   * Now the web frontend should work on Binder.
-  * For publishing the app on [AiiDA Lab](https://aiidalab.materialscloud.org/hub/login**: the dashboard is planned to be published as an app there.), it has to be registered in the [aiidalab-registry](https://github.com/aiidalab/aiidalab-registry).
+  * For publishing the app on [AiiDA Lab](https://aiidalab.materialscloud.org/hub/login): the dashboard is planned to be published as an app there.), it has to be registered in the [aiidalab-registry](https://github.com/aiidalab/aiidalab-registry).
     * Create a skeleton using the [aiidalab-app-cutter](https://github.com/aiidalab/aiidalab-app-cutter).
     * The project code is in Python3, but aiidalab requires Python2. So the code has to first be backported by hand using the `future` package. If this takes too long, maybe try the tool [3to2](https://pypi.org/project/3to2/).
     * Use the simplest app in the registry, [aiidalab-units](https://github.com/aiidalab/aiidalab-units) as a template. Adapt code.
