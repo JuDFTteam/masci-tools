@@ -72,7 +72,7 @@ A windows executable file (.exe) is made by packing all the required packages
 into the file. Any modern PC running on windows can run the frontend without any
 installation process. You don't need Python or specific packages installed.
 
-The executable for Windows (or other operating systems) can be obtained from the developers upon request.
+The executable for Windows can be downloaded [here](https://rwth-aachen.sciebo.de/s/CP2dJ9M9KPDakN2). Executables for other operating systems may be requested from the developers.
 
 ### Usage
 
