@@ -128,7 +128,7 @@ If the problem persists, try restarting the GUI. If that fails, please open an i
 
 ### Access
 
-The web frontend is a Jupyter dashboard. It is in experimental state (no fileupload yet). You can try it out on Binder [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/JuDFTteam/masci-tools/studentproject18ws?filepath=studentproject18w%2Ffrontend%2Fjupyter%2Fdemo%2Fbinder_demo.ipynb). You can also run it locally (see developer section). If you have an [AiiDaLab account](https://aiidalab.materialscloud.org/hub/login): the dashboard is planned to be published as an app there.
+The web frontend is a Jupyter dashboard. It is in experimental state (no fileupload yet). You can try it out on Binder [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/JuDFTteam/masci-tools/studentproject18ws?filepath=studentproject18w%2Ffrontend%2Fjupyter%2Fdemo%2Fbinder_demo.ipynb). You can also run it locally (see developer section). If you have an [AiiDA Lab account](https://aiidalab.materialscloud.org/hub/login): the dashboard is planned to be published as an app there.
 
 ### Usage
 
@@ -260,7 +260,7 @@ as a usable standalone app, additional work has to be done.
     * Try it out first in the [Quantum Mobile Virtual Machine](https://www.materialscloud.org/work/quantum-mobile), which has aiidalab installed and configured. Else try it in a virtual environment with [aiidalab](https://pypi.org/project/aiidalab/) installed from PyPI.
     * Register the app.
     
-Note: other publishing options besides Binder and AiiDALab are listed [here](https://github.com/markusschanta/awesome-jupyter). For instance, [Google Colaboratory](http://colab.research.google.com/) is a free notebook hosting service that allows environment creation and file upload.
+Note: other publishing options besides Binder and AiiDA Lab are listed [here](https://github.com/markusschanta/awesome-jupyter). For instance, [Google Colaboratory](http://colab.research.google.com/) is a free notebook hosting service that allows environment creation and file upload.
 
 
 ## Extending the code

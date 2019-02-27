@@ -10,6 +10,7 @@ in web frontend focuses on the band structure $E(\mathbf{k})$ and the visualizat
 of defect states in supercells.
 
 \section{Web Frontend: $\textrm{MoSe}_2$ Crystal}
+\label{appl_frontend}
 
 \begin{wrapfigure}{r}{0.4\textwidth} % placed up here cause below would appear
                                 % in next section. and in PDF appears next to
@@ -21,12 +22,12 @@ of defect states in supercells.
     \label{fig:modules}
 \end{wrapfigure}
 
-Figure \ref{example1} shows the visualization of a band structure calculation of a three-dimensional Molybdenum diselenide ($\textrm{MoSe}_2$ bulk) crystal using the default settings of the GUI. Even with the default settings the band structure plots clearly indicate, that $\textrm{MoSe}_2$ is a semiconductor, since there are no states at the Fermi level. Because the minimum of the conduction band is located at another $k$ as the maximum of the valence band, the plot shows that $\textrm{MoSe}_2$ has an indirect band gap. This indicates that for the transition with the smallest energy difference between valence and the conduction band, both energy and momentum have to change.
+Figure \ref{example1} shows the visualization of a band structure calculation of a three-dimensional Molybdenum diselenide ($\textrm{MoSe}_2$ bulk) crystal using the default settings of the GUI. Even with the default settings the band structure plots clearly indicate, that $\textrm{MoSe}_2$ is a semiconductor since there are no states at the Fermi level. Because the minimum of the conduction band is located at another $k$ as the maximum of the valence band, the plot shows that $\textrm{MoSe}_2$ has an indirect band gap. This indicates that for the transition with the smallest energy difference between valence and the conduction band, energy and momentum have to change.
 
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=1.0\linewidth]{img/gui_web_mose2_crystal.png}
-    \caption[Bandstructure of a $\textrm{MoSe}_2$ crystal]{Bandstructure of a $\textrm{MoSe}_2$ crystal using the default settings of the web frontend}
+    \caption[Band structure of a $\textrm{MoSe}_2$ crystal]{Band structure of a $\textrm{MoSe}_2$ crystal using the default settings of the web frontend}
     \label{example1}
 \end{figure}
 
@@ -35,7 +36,7 @@ In contrast to the three-dimensional extended $\textrm{MoSe}_2$ crystal, a $\tex
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=1.0\linewidth]{img/gui_web_mose2_monolayer_unfold-1.png}
-    \caption[Bandstructure of a $\textrm{MoSe}_2$ monolayer]{Bandstructure of a $\textrm{MoSe}_2$ monolayer using the default settings of the web frontend}
+    \caption[Band structure of a $\textrm{MoSe}_2$ monolayer]{Band structure of a $\textrm{MoSe}_2$ monolayer using the default settings of the web frontend}
     \label{example2}
 \end{figure}
 
@@ -45,33 +46,20 @@ Since the Brillouin zone of the supercell is smaller than the Brillouin zone of 
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=1.0\linewidth]{img/gui_web_mose2_monolayer_unfold-0.png}
-    \caption{Bandstructure of a $\textrm{MoSe}_2$ monolayer without unfolding weights}
+    \caption{Band structure of a $\textrm{MoSe}_2$ monolayer without unfolding weights}
     \label{example3}
 \end{figure}
 
 
 \section{Desktop Frontend: $\textrm{Co}$ Crystal}
 
-%% JW: proofread modification v1 of PK Original ========================================
+%% CP: proofread modification v1 of PK Original ========================================
 Figure \ref{example4} shows the visualization of a band structure calculation of
-a three-dimensional $\textrm{Co}$ crystal with the selection: both spins, one
-atom group (since there are only two, and each contains one $\textrm{Co}$ atom)
-with all characters and all bands, and unfolding exponent being at $0.0$ (the
-unfolding exponent has no effect here since the simulation is not done with a
-supercell). We can see in the figure that the bands for both spins intersect
-with the Fermi energy level. This means that many electrons excite to the
-valence band which is a characteristic of a conductor. Hence the $\textrm{Co}$
-crystal can be considered as a conductor material.
+a three-dimensional $\textrm{Co}$ crystal with the Desktop frontend. As described in the previous chapters, the possible selections in the Desktop frontend are the same as in the Web frontend and the same \texttt{matplotlib} functions are used to generate the plot, therefore the result looks very similar to the plots in chapter \ref{appl_frontend}. Since Cobalt is a ferromagnet, it is interesting to investigate the spin dependence of the bands and the density of states. Therefore, for \ref{example4} the default settings of the GUI were modified to show both spins. As there are no defect atoms involved in this example, there is no need to perform a supercell calculation. Therefore, we do not have an unfolding weight here. 
 
-One more physical property of the $\textrm{Co}$ crystal can be determined by
-considering and reading the density of states (DOS) files and plotting the
-density of states along with the band plots. In the figure \ref{example4}, on
-the right one can see the density of states for both of the spins. If the area
-covered under the density curve is considered, it is clear that below the Fermi
-level, electrons of one spin covers more area than for the other spin in the
-density of states plot. This means there are more electrons with positive spin
-under the Fermi level. This is the character exhibited by a ferromagnetic
-substance, so it can be considered and concluded that this $\textrm{Co}$ crystal is a ferromagnet.
+A quick look at \ref{example4} shows that there are several bands that intersect with the Fermi level. This indicates that in contrast to the $\textrm{MoSe}_2$ example, electrons can be easily excited in the conduction band without a band gap, which makes $\textrm{Co}$ is a conductor.
+
+The density of states plotted next to the band structure plot encrypts the available number of states for each spin at energy E. Since the system always minimizes its energy, only states up to the Fermi level are occupied. Counting the number of occupied states for both spins shows an excess of blue spins over the red spins. This indicates, that the $\textrm{Co}$ crystal has a net magnetic dipole moment, that contributes to the magnetic properties of Cobalt. This supports the well-known fact that Cobalt is a ferromagnetic material.
 
 These are two properties which were deduced by observing the band-DOS plot, but
 depending on the material and band-DOS plot many properties can be extracted and
@@ -80,8 +68,8 @@ derived.
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.7\linewidth]{fig/image1.png}
-    \caption[Bandstructure of a $\textrm{Co}$ ]{Bandstructure of a $\textrm{Co}$
-      in the desktop frontend. The plot settings are described in the text.}
+    \caption[Band structure of a $\textrm{Co}$ crystal]{Band structure of a $\textrm{Co}$
+      crystal in the desktop frontend. The density of states indicates a net magnetic moment in the crysal}
     \label{example4}
 \end{figure}
 
@@ -98,12 +86,14 @@ derived.
 % \begin{figure}[htb!]
 %     \centering
 %     \includegraphics[width=0.7\linewidth]{fig/image1.png}
-%     \caption[Bandstructure of a $\textrm{Co}$ ]{Bandstructure of a $\textrm{Co}$ using the above settings of the Desktop frontend}
+%     \caption[Band structure of a $\textrm{Co}$ ]{Band structure of a $\textrm{Co}$ using the above settings of the Desktop frontend}
 %     \label{example4}
 % \end{figure}
 
 
+
 \section{Derived physical Quantities: Differentiation}
+\label{sec:deriv-phys-quant}
 % bänder isonlieren schwierig....fleur update--> label der E eigenvlas
 
 %$m^{*}$ and $v_{G}(\mathbf{k})$
@@ -120,7 +110,7 @@ The effective mass $m^{*}$ represents the mass, that an electron appears to have
     m^{*}_{k_i,k_j} = \hbar^2  \left(\frac{\partial^2E(\mathbf{k})}{\partial k_i \partial k_j}\right)^{-1}
 \end{equation}
 
-Since $\frac{\partial^2E(\mathbf{k})}{\partial \mathbf{k}_i \partial \mathbf{k}_j}$ depends on the direction of the partial derivatives, $m^{*}_{k_i,k_j}$ is a tensor. Because the band structure files only contain a discrete sampled path in the Brillouin zone, only the derivatives that correspond to the direction from one high-symmetry point to the next can be computed. We are only interested in the diagonal terms of $m^{*}\big|_{i,j}$.
+Since $\frac{\partial^2E(\mathbf{k})}{\partial \mathbf{k}_i \partial \mathbf{k}_j}$ depends on the direction of the partial derivatives, $m^{*}_{k_i,k_j}$ is a tensor. Because the band structure files only contain a discretely sampled path in the Brillouin zone, only the derivatives that correspond to the direction from one high-symmetry point to the next can be computed. We are only interested in the diagonal terms of $m^{*}\big|_{i,j}$.
 
 %maybe something about the directional dependency --> m is tensor...
 
@@ -134,7 +124,7 @@ A second potentially interesting quantity is the group velocity $v_{G}(\mathbf{k
 
 \subsection{Differentiation}
 
-Since the k-mesh in DFT calculations is potentially very sparse, low order finite difference schemes are not expected to work well. Alternatively, one way to exploit all data points efficiently is to use fast Fourier transform methods, which are equivalent to the derivation of a truncated Fourier series. This method is expected be well-suited for the problem since the graph of the band structure $(k, E(|k|))$ with $k \in \{-\Gamma,..., H,..., \Gamma\}$ is periodic, where $\Gamma$ and $H$ are arbitrary representatives of the high symmetry points. This periodicity in the reciprocal space is a direct consequence of the periodicity of the crystal.
+Since the k-mesh in DFT calculations is potentially very sparse, low order finite difference schemes are not expected to work well. Alternatively, one way to exploit all data points efficiently is to use fast Fourier transform methods, which are equivalent to the derivation of a truncated Fourier series. This method is expected to be well-suited for the problem since the graph of the band structure $(k, E(|k|))$ with $k \in \left[-\Gamma, H, \Gamma \right) $ is periodic, where $\Gamma$ and $H$ are arbitrary representatives of the high symmetry points. This periodicity in the reciprocal space is a direct consequence of the periodicity of the crystal.
 
 In Fourier space, spatial derivatives transform into multiplications, which can easily be shown by partial integration.
 
@@ -142,8 +132,8 @@ In Fourier space, spatial derivatives transform into multiplications, which can 
     f^{(n)}(x) = \mathcal{F}^{-1}\left((ik)^n\mathcal{F}(f(x))\right)
 \end{equation}
  
-To test the FFT differentiation method, a band was selected that did not have intersections with other bands within the interval between two high symmetry points and a stationary point at the high symmetry points. Then a resolution study was done to investigate the impact of the number of points within the interval.
-
+To test the FFT differentiation method, a band was selected that did not have intersections with other bands within the interval between two high symmetry points. Then a resolution study was done to investigate the impact of the number of points within the interval.
+% and a stationary point at the high symmetry points
 The comparison between the FFT and a first-order central difference approximation of the second derivative (FD) is shown in Fig. \ref{num_diff}, where different k-mesh resolutions are compared to a derivative that is almost fully converged. The comparison indicates that for small N, the error of the FFT method is significantly smaller than the error of the FD derivative. This is especially striking in the vicinity of the high symmetry points, where the error of the differentiation is required to be small in order to get good approximations for $m^{*}$, which is only meaningful close to the high symmetry points.
 
 
@@ -154,9 +144,9 @@ The comparison between the FFT and a first-order central difference approximatio
     \label{num_diff}
 \end{figure}
 
-When using more points, the difference between both approximation schemes is not significant. It is interesting to note, that the FFT method does not work anymore in the limit of extremely many points. In this case the derivative is dominated by Gibbs oscillations. These are most likely caused by small discontinuities in $E(\mathbf{k})$, due to basis changes inside the DFT computation.
+When using more points, the difference between both approximation schemes is not significant. It is interesting to note, that the FFT method does not work anymore in the limit of extremely many points. In this case, the derivative is dominated by Gibbs oscillations. These are most likely caused by small discontinuities in $E(\mathbf{k})$, due to the different basis size at each k point in the DFT computation.
 
-At the current state the question remains to be answered weather the computation of $m^{*}$ and $v_g$ is useful. The number of bands, which the computation can be applied to is extremely limited. Since the bands in the data files are not labeled according to their corresponding eigenfunction but sorted by value, there are discontinuities at each point, where two bands intersect. This problem might be solved in the future. 
+At the current state, the question remains to be answered whether the computation of $m^{*}$ and $v_g$ is useful. The number of bands, which the computation can be applied to is extremely limited. Since the bands in the data files are not labeled according to their corresponding eigenfunction but sorted by value, there are discontinuities at each point, where two bands intersect. This problem might be solved in the future. 
 
 
 
