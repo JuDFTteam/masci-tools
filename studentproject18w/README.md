@@ -200,7 +200,7 @@ with reader as h5file:
     data.move_datasets_to_memory()
 
 plotter = BandDOSPlot(plt, data, filepaths_dos)
-(fig, ax_bands, ax_dos) = plter.setup_figure()
+(fig, ax_bands, ax_dos) = plotter.setup_figure()
 
 data_selection = some_selection_process()
 plotter.plot_bandDOS(*data_selection)
