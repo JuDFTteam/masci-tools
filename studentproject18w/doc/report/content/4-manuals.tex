@@ -10,7 +10,7 @@ frontend demo) and \texttt{studentproject18w} (all code and documentation). The
 \texttt{README.md} in the latter folder serves as the manual. Therefore, the
 remaining part of this chapter is a \TeX{}-ified version of that
 \texttt{README.md}, commit
-\href{https://github.com/JuDFTteam/masci-tools/tree/b671271835aaaf36c9b7f1f227e81f1398251d1a/studentproject18w}{\texttt{b671271835aaaf36c9b7f1f227e81f1398251d1a}}.
+\href{https://github.com/JuDFTteam/masci-tools/tree/df92930aced0dd496a29ee8cac0c67a6140dadfb/studentproject18w}{\texttt{df92930aced0dd496a29ee8cac0c67a6140dadfb}}.
 
 \vspace{3em}
 \hdashrule{\textwidth}{2pt}{2pt}
@@ -104,42 +104,42 @@ The desktop-based GUI is easy to use. Running the .exe file will open up the
 frontend with all packages loaded. The GUI consists of three tab windows. In the
 first tab window, absolute paths to the input data files must be entered in this
 order: HDF and (optional) DOS file for spin `0' and `1'. Tab 2 shows the
-band-DOS plot, and Tab 3 the 3D atoms plot. After loading the files, the controls
+band-DOS plot, and Tab 3 shows the 3D atoms plot. After loading the files, the controls
 must be initialized. Finally, clicking the 'Update' button produces the plots.
 
 
 Controls for all three plots: 
 
 \begin{itemize}\tightlist
-\item \textbf{Update, SaveButton}: redraw the plots with the new selection / save the the plot as a PDF.
-\item \textbf{Atom Groups}: redraw only for the selected symmetry groups.
+\item \textbf{Update, SaveButton}: Redraw the plots with the new selection / save the the plot as a PDF.
+\item \textbf{Atom Groups}: Redraw only for the selected symmetry groups.
 \end{itemize}
 
 Controls for the band and DOS plots:
 
 \begin{itemize}\tightlist
-\item \textbf{Ymin, Ymax}: limit the energy range.
-\item \textbf{BandMin, BandMax}: limit the band range.
-\item \textbf{Character}: likewise for the characters (orbitals) 'S','P','D','F'.
-\item \textbf{Spin}: draw bands and DOS for one or both spins.
+\item \textbf{Ymin, Ymax}: Limit the energy range.
+\item \textbf{BandMin, BandMax}: Limit the band range.
+\item \textbf{Character}: Likewise for the characters (orbitals) 'S','P','D','F'.
+\item \textbf{Spin}: Draw bands and DOS for one or both spins.
 \end{itemize}
 
 Controls for the band plot only:
 
 \begin{itemize}\tightlist
-\item \textbf{Marker Size}: set the marker size of the dots (eigenenergies).
-\item \textbf{Exponential weight}: The unfolding exponent for supercell calculations (see \href{./doc/report.pdf}{report}). Value 0.0 means no unfolding. If the calculation is done with a unit cell, this control has no effect.
-\item \textbf{Compare 2 Characters}: show the respective contribution of the two selected characters to each eigenergy using a sequential (2) colormap. Disabled if other than two characters are selected.
-\item \textbf{Ignore Atom Group}: set the contribution of each group to be equal
-    instead of to the number of atoms per group.
+\item \textbf{Marker Size}: Set the marker size of the dots (eigenenergies).
+\item \textbf{Exponential weight}: The unfolding exponent for supercell calculations (see \href{./doc/report.pdf}{report}). Value 0.0 means no unfolding weight. If the calculation is done with a unit cell, this control has no effect.
+\item \textbf{Compare 2 Characters}: Show the respective contribution of the two selected characters to each eigenergy using a sequential (2) colormap. Disabled if other than two characters are selected.
+\item \textbf{Ignore Atom Group}: Set the contribution of each group to be equal
+    instead of to the number of atoms per group. Helpful to investigate defect states.
 \end{itemize}
 
 Controls for the DOS plot only:
 
 \begin{itemize}\tightlist
-\item \textbf{Select groups}: include selected atom groups in the DOS
-\item \textbf{Interstitial}: include the interstitial in the DOS
-\item \textbf{All characters}: include all characters in the DOS regardless of character selection. In the DOS CSV file, different input data is used (a summed column).
+\item \textbf{Select groups}: Include the selected atom groups in the DOS.
+\item \textbf{Interstitial}: Include the contribution from interstitial region in the DOS.
+\item \textbf{All characters}: Include all characters in the DOS regardless of character selection. In the DOS CSV file, different input data is used (a summed column).
 \end{itemize}
 
 \subsubsection{Troubleshooting}\label{troubleshooting}

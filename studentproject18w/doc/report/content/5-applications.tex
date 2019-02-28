@@ -27,7 +27,7 @@ Figure \ref{example1} shows the visualization of a band structure calculation of
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=1.0\linewidth]{img/gui_web_mose2_crystal.png}
-    \caption[Band structure of a $\textrm{MoSe}_2$ crystal]{Band structure of a $\textrm{MoSe}_2$ crystal using the default settings of the web frontend}
+    \caption[Band structure of a $\textrm{MoSe}_2$ crystal]{Band structure of a $\textrm{MoSe}_2$ crystal using the default settings of the web frontend. An indirect bandgap is visible.}
     \label{example1}
 \end{figure}
 
@@ -36,7 +36,7 @@ In contrast to the three-dimensional extended $\textrm{MoSe}_2$ crystal, a $\tex
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=1.0\linewidth]{img/gui_web_mose2_monolayer_unfold-1.png}
-    \caption[Band structure of a $\textrm{MoSe}_2$ monolayer]{Band structure of a $\textrm{MoSe}_2$ monolayer using the default settings of the web frontend}
+    \caption[Band structure of a $\textrm{MoSe}_2$ monolayer]{Band structure of a $\textrm{MoSe}_2$ monolayer using the default settings of the web frontend. Direct bandgaps are visible}
     \label{example2}
 \end{figure}
 
@@ -92,7 +92,8 @@ derived.
 
 
 
-\section{Derived physical Quantities: Differentiation}
+
+\section{Derived physical Quantities: Effective Mass}
 \label{sec:deriv-phys-quant}
 % bänder isonlieren schwierig....fleur update--> label der E eigenvlas
 
@@ -104,13 +105,13 @@ readily to applications of automatic differentiation techniques. Nevertheless,
 it is possible to derive meaningful physical quantities from the band structure
 using numerical differentiation techniques.
 
-The effective mass $m^{*}$ represents the mass, that an electron appears to have due to the inter-atomic forces in the crystal. At every $\mathbf{k}_0$, where $E(\mathbf{k})$ has a local extremum, $E(\mathbf{k})$ can be expanded in a Taylor series with a vanishing first order term $E(\mathbf{k}) = E_0 + \frac{\partial E(\mathbf{k})}{\partial \mathbf{k}} \cdot (\mathbf{k}-\mathbf{k}_0)^2$. Comparing this to the dispersion relation of a free electron $E(\mathbf{k})_{free} = \frac{\hbar^2 \mathbf{k}^2}{2 m_e}$ motivates the general definition 
+The effective mass $m^{*}$ represents the mass, that an electron appears to have due to the inter-atomic forces in the crystal. At every $\mathbf{k}_0$, where $E(\mathbf{k})$ has a local extremum, $E(\mathbf{k})$ can be expanded in a Taylor series with a vanishing first order term $E(\mathbf{k}) = E_0 + \frac{1}{2} \frac{\partial E(\mathbf{k})}{\partial \mathbf{k}} \cdot (\mathbf{k}-\mathbf{k}_0)^2 + \mathcal{O}(\mathbf{k}-\mathbf{k}_0)^3$. Comparing this to the dispersion relation of a free electron $E(\mathbf{k})_{free} = \frac{\hbar^2 \mathbf{k}^2}{2 m_e}$ motivates the general definition 
 
 \begin{equation}
     m^{*}_{k_i,k_j} = \hbar^2  \left(\frac{\partial^2E(\mathbf{k})}{\partial k_i \partial k_j}\right)^{-1}
 \end{equation}
 
-Since $\frac{\partial^2E(\mathbf{k})}{\partial \mathbf{k}_i \partial \mathbf{k}_j}$ depends on the direction of the partial derivatives, $m^{*}_{k_i,k_j}$ is a tensor. Because the band structure files only contain a discretely sampled path in the Brillouin zone, only the derivatives that correspond to the direction from one high-symmetry point to the next can be computed. We are only interested in the diagonal terms of $m^{*}\big|_{i,j}$.
+Since $\frac{\partial^2E(\mathbf{k})}{\partial k_i \partial k_j}$ depends on the direction of the partial derivatives, $m^{*}_{k_i,k_j}$ is a tensor. Because the band structure files only contain a discretely sampled path in the Brillouin zone, only the derivatives that correspond to the direction from one high-symmetry point to the next can be computed. We are only interested in the diagonal terms of $m^{*}_{k_i,k_j}$.
 
 %maybe something about the directional dependency --> m is tensor...
 

@@ -78,14 +78,14 @@ Fleur-specific comma-separated values (CSV) format for the density of states
 (DOS).
 
 The HDF format is a flexible binary container for all kinds of common binary and
-text file formats. Each file which constitutes a \texttt{Dataset} inside the HDF
-file. The format supports metadata annotation and high-throughput input/output
-(I/O). As a consequence, it is considered by developers in some application
-domains that rely on numerical simulation codes, to arguably be one possible
-base for the establishment of common domain-specific rich data exchange
-standards in order to increase code interoperability. These developers are in
-the process of extending their codes' I/O capabilities towards that end.
-However, HDF's flexibility comes at the price of a relatively complex
+text file formats. Each set of values or file of such a type constitutes a named
+\texttt{Dataset} inside the HDF file. The format supports metadata annotation
+and high-throughput input/output (I/O). As a consequence, it is considered by
+developers in some application domains that rely on numerical simulation codes,
+to arguably be one possible base for the establishment of common domain-specific
+rich data exchange standards in order to increase code interoperability. These
+developers are in the process of extending their codes' I/O capabilities towards
+that end. However, HDF's flexibility comes at the price of a relatively complex
 Application Programming Interface (API) as the keyhole for all operations.
 
 The preprocessor module serves as a wrapper around that API by introducing the
@@ -248,22 +248,22 @@ and receive the identical visualization with identical interactive behavior.
 \subsection{Desktop Frontend}
 \label{sec:desktop-frontend}
 
-A desktop frontend is always a helping hand for the physicists to just execute
-it on the computer when one wants to go through the plots of the raw data that
-is already in the computer.
+The obvious advantage of a desktop-based GUI over a web-based tool obviously is
+that, as opposed to a web-based GUI that is probably hosted on a remote machine,
+input files that are stored locally do not have to be uploaded. 
 
 Since the reading of HDF files and preprocessing of the data is done using
-Python, it is decided that it would be best to also use Python for frontend
-development. Considering various packages for frontend in python such as PyQt,
-Tkinter and other libraries available for desktop GUIs, Tkinter is selected, as
+Python, it was decided that it would be best to also use Python for frontend
+development. Considering various packages for frontend in Python such as PyQt,
+Tkinter and other libraries available for desktop GUIs, Tkinter was selected, as
 it is bundled with Python and thus meets the requirement of easy maintainability
 best. It is a package where every button can be designed and can be assigned to
 a function. GUI types like \texttt{Label}, \texttt{Button},
 \texttt{CheckButton}, \texttt{ListBox}, \texttt{Canvas} for plots, \texttt{Tab}
 for viewing each plot in different tab have been used to make a simple desktop
-frontend. It is simple to use with limited options for what the end-user, the
-solid-state physicist, needs. It is also easy to convert the desktop frontend
-code into a executable software and run in any system without any installation.
+frontend. It is simple to use with limited options for what the end-user needs.
+It is also easy to convert the desktop frontend code into a executable software
+and run in any system without any installation.
 
 \subsection{Web Frontend}
 \label{sec:web-frontend}
