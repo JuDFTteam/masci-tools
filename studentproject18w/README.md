@@ -79,35 +79,35 @@ The executable for Windows can be downloaded [here](https://rwth-aachen.sciebo.d
 The desktop-based GUI is easy to use. Running the .exe file will open up the
 frontend with all packages loaded. The GUI consists of three tab windows. In the
 first tab window, absolute paths to the input data files must be entered in this
-order: HDF and (optional) DOS file for spin `0' and `1'. Tab 2 shows the
-band-DOS plot, and Tab 3 the 3D atoms plot. After loading the files, the controls
+order: HDF and (optional) DOS file for spin '0' and '1'. Tab 2 shows the
+band-DOS plot, and Tab 3 shows the 3D atoms plot. After loading the files, the controls
 must be initialized. Finally, clicking the 'Update' button produces the plots.
 
 Controls for all three plots: 
 
-  * **Update, SaveButton**: redraw the plots with the new selection / save the the plot as a PDF.
-  * **Atom Groups**: redraw only for the selected symmetry groups.
+  * **Update, SaveButton**: Redraw the plots with the new selection / save the the plot as a PDF.
+  * **Atom Groups**: Redraw only for the selected symmetry groups.
   
 Controls for the band and DOS plots:
 
-  * **Ymin, Ymax**: limit the energy range.
-  * **BandMin, BandMax**: limit the band range.
-  * **Character**: likewise for the characters (orbitals) 'S','P','D','F'.
-  * **Spin**: draw bands and DOS for one or both spins.
+  * **Ymin, Ymax**: Limit the energy range.
+  * **BandMin, BandMax**: Limit the band range.
+  * **Character**: Likewise for the characters (orbitals) 'S','P','D','F'.
+  * **Spin**: Draw bands and DOS for one or both spins.
   
 Controls for the band plot only:
 
-  * **Marker Size**: set the marker size of the dots (eigenenergies).
-  * **Exponential weight**: The unfolding exponent for supercell calculations (see [report](./doc/report.pdf)). Value 0.0 means no unfolding. If the calculation is done with a unit cell, this control has no effect.
-  * **Compare 2 Characters**: show the respective contribution of the two selected characters to each eigenergy using a sequential (2) colormap. Disabled if other than two characters are selected.
-  * **Ignore Atom Group**: set the contribution of each group to be equal
-    instead of to the number of atoms per group.
+  * **Marker Size**: Set the marker size of the dots (eigenenergies).
+  * **Exponential weight**: The unfolding exponent for supercell calculations (see [report](./doc/report.pdf)). Value 0.0 means no unfolding weight. If the calculation is done with a unit cell, this control has no effect.
+  * **Compare 2 Characters**: Show the respective contribution of the two selected characters to each eigenergy using a sequential (2) colormap. Disabled if other than two characters are selected.
+  * **Ignore Atom Group**: Set the contribution of each group to be equal
+    instead of to the number of atoms per group. Helpful to investigate defect states.
     
 Controls for the DOS plot only:
 
-  * **Select groups**: include selected atom groups in the DOS
-  * **Interstitial**: include the interstitial in the DOS
-  * **All characters**: include all characters in the DOS regardless of character selection. In the DOS CSV file, different input data is used (a summed column).
+  * **Select groups**: Include the selected atom groups in the DOS.
+  * **Interstitial**: Include contribution from interstitial region in the DOS.
+  * **All characters**: Include all characters in the DOS regardless of character selection. In the DOS CSV file, different input data is used (a summed column).
 
 ### Troubleshooting
 
