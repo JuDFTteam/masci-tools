@@ -12,7 +12,7 @@ Also some defaults for the parameters are defined.
 __copyright__ = (u"Copyright (c), 2017, Forschungszentrum Jülich GmbH,"
                  "IAS-1/PGI-1, Germany. All rights reserved.")
 __license__ = "MIT license, see LICENSE.txt file"
-__version__ = "1.1"
+__version__ = "1.2"
 __contributors__ = u"Philipp Rüßmann"
 
 
@@ -1132,7 +1132,7 @@ class kkrparams(object):
                                 # chemistry
                                 ('NSPIN', [None, '%i', False, 'Chemistry, Atom types: Number of spin directions in potential. Values 1 or 2']),
                                 ('KVREL', [None, '%i', False, 'Chemistry, Atom types: Relativistic treatment of valence electrons. Takes values 0 (Schroedinger), 1 (Scalar relativistic), 2 (Dirac ; works only in ASA mode)']),
-                                ('XC', [None, '%s', False, 'Chemistry, Exchange-correlation: Type of exchange correlation potential. Takes values 0 (LDA, Moruzzi-Janak-Williams), 1 (LDA, von Barth-Hedin), 2 (LDA, Vosko-Wilk-Nussair), 3 (GGA, Perdew-Wang 91), 4 (GGA, PBE), 5 (GGA, PBEsol)']),
+                                ('XC', [None, '%i', False, 'Chemistry, Exchange-correlation: Type of exchange correlation potential. Takes values 0 (LDA, Moruzzi-Janak-Williams), 1 (LDA, von Barth-Hedin), 2 (LDA, Vosko-Wilk-Nussair), 3 (GGA, Perdew-Wang 91), 4 (GGA, PBE), 5 (GGA, PBEsol)']),
                                 # external fields
                                 ('HFIELD', [None, '%f %i', False, 'External fields: Value of an external magnetic field in the first iteration. Works only with LINIPOL, XINIPOL']),
                                 # accuracy
