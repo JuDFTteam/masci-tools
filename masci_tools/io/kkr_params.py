@@ -433,6 +433,7 @@ class kkrparams(object):
             key2 = key
             if key not in default_keywords.keys():
                 key2 = '<'+key+'>'
+            val = kwargs[key]
             if self.__params_type=='kkrimp':
                 if key=='KEXCORE':
                     key2 = 'XC'
@@ -446,7 +447,22 @@ class kkrparams(object):
                     key2 = 'TESTFLAG'
                 if key=='NSTEPS':
                     key2 = 'SCFSTEPS'
-            default_keywords[key2][0] = kwargs[key]
+            # workaround to fix inconsistency of XC input between host and impurity code
+            if self.__params_type == 'kkrimp' and key2 == 'XC' and type(val)==int:
+                if val==0:
+                    val = 'LDA-MJW'
+                if val==1:
+                    val = 'LDA-vBH'
+                if val==2:
+                    val = 'LDA-VWN'
+                if val==3:
+                    val = 'GGA-PW91'
+                if val==4:
+                    val = 'GGA-PBE'
+                if val==5:
+                    val = 'GGA-PBEsol'
+                kwargs[key] = val
+            default_keywords[key2][0] = val
 
         return default_keywords
 
@@ -681,7 +697,6 @@ class kkrparams(object):
         for key in keyfmts.keys():
             keyfmts[key] = keyfmts[key].replace('%f', '%21.14f')
 
-
         # write all set keys to file
         tmpl = ''
         for key in sorted_keylist:
@@ -690,6 +705,23 @@ class kkrparams(object):
                 if (not key in self.__listargs.keys()) and (not key in self.__special_formatting):
                     tmpfmt = (keyfmts[key]).replace('%l', '%s')
                     try:
+                        if self.__params_type == 'kkrimp' and key == 'XC':
+                            # workaround to fix inconsistency of XC input between host and impurity code
+                            val = keywords[key]
+                            if type(val)==int:
+                                if val==0:
+                                    val = 'LDA-MJW'
+                                if val==1:
+                                    val = 'LDA-vBH'
+                                if val==2:
+                                    val = 'LDA-VWN'
+                                if val==3:
+                                    val = 'GGA-PW91'
+                                if val==4:
+                                    val = 'GGA-PBE'
+                                if val==5:
+                                    val = 'GGA-PBEsol'
+                            keywords[key] = val
                         repltxt = tmpfmt%(keywords[key])
                     except:
                         #print(key, tmpfmt, keywords[key])
@@ -1132,7 +1164,7 @@ class kkrparams(object):
                                 # chemistry
                                 ('NSPIN', [None, '%i', False, 'Chemistry, Atom types: Number of spin directions in potential. Values 1 or 2']),
                                 ('KVREL', [None, '%i', False, 'Chemistry, Atom types: Relativistic treatment of valence electrons. Takes values 0 (Schroedinger), 1 (Scalar relativistic), 2 (Dirac ; works only in ASA mode)']),
-                                ('XC', [None, '%i', False, 'Chemistry, Exchange-correlation: Type of exchange correlation potential. Takes values 0 (LDA, Moruzzi-Janak-Williams), 1 (LDA, von Barth-Hedin), 2 (LDA, Vosko-Wilk-Nussair), 3 (GGA, Perdew-Wang 91), 4 (GGA, PBE), 5 (GGA, PBEsol)']),
+                                ('XC', [None, '%s', False, 'Chemistry, Exchange-correlation: Type of exchange correlation potential. Takes values 0 (LDA, Moruzzi-Janak-Williams), 1 (LDA, von Barth-Hedin), 2 (LDA, Vosko-Wilk-Nussair), 3 (GGA, Perdew-Wang 91), 4 (GGA, PBE), 5 (GGA, PBEsol)']),
                                 # external fields
                                 ('HFIELD', [None, '%f %i', False, 'External fields: Value of an external magnetic field in the first iteration. Works only with LINIPOL, XINIPOL']),
                                 # accuracy
