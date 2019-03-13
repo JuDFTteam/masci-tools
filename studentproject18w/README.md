@@ -1,0 +1,317 @@
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/JuDFTteam/masci-tools/studentproject18ws?filepath=studentproject18w%2Ffrontend%2Fjupyter%2Fdemo%2Fbinder_demo.ipynb)
+
+[SiScLab 2018](https://www.aices.rwth-aachen.de/en/academics/masters-program-simulation-sciences) Student Project **Analysis Tool for Materials Design**. Written in Python3.
+
+Authors: [Johannes Wasmer](https://github.com/Irratzo), [Christian Partmann](https://github.com/ChristianPartmann), and [Praneeth Katta](https://github.com/PraneethKatta).
+
+<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
+**Table of Contents**
+
+- [Overview](#overview)
+- [For Frontend Users](#for-frontend-users)
+    - [General Remarks](#general-remarks)
+        - [File Input](#file-input)
+    - [Desktop Frontend](#desktop-frontend)
+        - [Access](#access)
+        - [Usage](#usage)
+        - [Troubleshooting](#troubleshooting)
+    - [Web Frontend](#web-frontend)
+        - [Access](#access-1)
+        - [Usage](#usage-1)
+- [For Developers](#for-developers)
+    - [Installation](#installation)
+    - [Programmatic use](#programmatic-use)
+    - [Try Out the Web Frontend Locally](#try-out-the-web-frontend-locally)
+        - [If using Jupyter Notebook](#if-using-jupyter-notebook)
+        - [If using Jupyter Lab](#if-using-jupyter-lab)
+    - [Frontend Deployment](#frontend-deployment)
+        - [Desktop Frontend](#desktop-frontend-1)
+        - [Web Frontend](#web-frontend-1)
+    - [Extending the code](#extending-the-code)
+        - [Use Case: HDF format that includes DOS data](#use-case-hdf-format-that-includes-dos-data)
+        - [Extending the Visualization (Plots)](#extending-the-visualization-plots)
+    - [Open Issues](#open-issues)
+
+<!-- markdown-toc end -->
+
+
+# Overview
+This subfolder `studentproject18ws` is currently a largely independent side-project accompanying the main module `masci-tools`. It was created in a student project at [FZJ PGI-1](http://www.fz-juelich.de/pgi/pgi-1/EN/Home/home_node.html), and consists of three submodules:
+
+  * preprocessor: a general [HDF5](https://www.hdfgroup.org/solutions/hdf5/) reader interface, and one implementation for band structure simulation output of the DFT code [Fleur](http://www.judft.de)
+  * visualization: a plotting interface, and one implementation for [Fleur](http://www.judft.de) band structure and density of states (DOS) plots
+  * frontends: a desktop GUI and web dashboard (Tk and Jupyter) for interactive Fleur band-DOS plots.
+
+A more thorough description and example use cases can be found in the project [report](./doc/report.pdf) and [presentation](./doc/presentation.pdf). 
+
+![](./readme/web_frontend.png)
+
+# For Frontend Users
+
+## General Remarks
+
+These remarks apply to all frontends.
+
+Though the desktop and web frontend are functionally identical, there might be small differences in how the controls are used and how they are labeled.  
+
+### File Input
+
+The frontends currently expects band structure data in the HDF output format of
+[Fleur](http://www.judft.de). The DOS data is expected to be in the CSV output
+format of [Fleur](http://www.judft.de), one file per spin. If no DOS files are
+supplied, the frontend will just draw a band structure plot and omit the
+adjoined DOS plot. Thus, in the following band-DOS plot stands for both kinds of
+plot. The web frontend will only show controls for data that is present in the
+input (e.g., DOS and spin controls).
+
+## Desktop Frontend
+
+### Access
+
+A windows executable file (.exe) is made by packing all the required packages
+into the file. Any modern PC running on windows can run the frontend without any
+installation process. You don't need Python or specific packages installed.
+
+The executable for Windows can be downloaded [here](https://rwth-aachen.sciebo.de/s/CP2dJ9M9KPDakN2). Executables for other operating systems may be requested from the developers.
+
+### Usage
+
+The desktop-based GUI is easy to use. Running the .exe file will open up the
+frontend with all packages loaded. The GUI consists of three tab windows. In the
+first tab window, absolute paths to the input data files must be entered in this
+order: HDF and (optional) DOS file for spin '0' and '1'. Tab 2 shows the
+band-DOS plot, and Tab 3 shows the 3D atoms plot. After loading the files, the controls
+must be initialized. Finally, clicking the 'Update' button produces the plots.
+
+Controls for all three plots: 
+
+  * **Update, SaveButton**: Redraw the plots with the new selection / save the the plot as a PDF.
+  * **Atom Groups**: Redraw only for the selected symmetry groups.
+  
+Controls for the band and DOS plots:
+
+  * **Ymin, Ymax**: Limit the energy range.
+  * **BandMin, BandMax**: Limit the band range.
+  * **Character**: Likewise for the characters (orbitals) 'S','P','D','F'.
+  * **Spin**: Draw bands and DOS for one or both spins.
+  
+Controls for the band plot only:
+
+  * **Marker Size**: Set the marker size of the dots (eigenenergies).
+  * **Exponential weight**: The unfolding exponent for supercell calculations (see [report](./doc/report.pdf)). Value 0.0 means no unfolding weight. If the calculation is done with a unit cell, this control has no effect.
+  * **Compare 2 Characters**: Show the respective contribution of the two selected characters to each eigenergy using a sequential (2) colormap. Disabled if other than two characters are selected.
+  * **Ignore Atom Group**: Set the contribution of each group to be equal
+    instead of to the number of atoms per group. Helpful to investigate defect states.
+    
+Controls for the DOS plot only:
+
+  * **Select groups**: Include the selected atom groups in the DOS.
+  * **Interstitial**: Include contribution from interstitial region in the DOS.
+  * **All characters**: Include all characters in the DOS regardless of character selection. In the DOS CSV file, different input data is used (a summed column).
+
+### Troubleshooting
+
+If the band plot is not visible:
+
+  * Click update two to three times.
+  * Check if the three input files (if any) are belonging to the same Fleur calculation and selected appropriately.
+  * Check if at least one Atom Group, one Character, one Spin is selected.
+  * Check if Ymin is less than Ymax and similarly BandMin is less than BandMax such that software is able to plot.
+  
+If the DOS plot is not visible:
+
+  * Make sure either Select Groups or Interstitial is selected.
+
+If the problem persists, try restarting the GUI. If that fails, please open an issue to contact the developers.
+
+## Web Frontend
+
+### Access
+
+The web frontend is a Jupyter dashboard. It is in experimental state (no fileupload yet). You can try it out on Binder [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/JuDFTteam/masci-tools/studentproject18ws?filepath=studentproject18w%2Ffrontend%2Fjupyter%2Fdemo%2Fbinder_demo.ipynb). You can also run it locally (see developer section). If you have an [AiiDA Lab account](https://aiidalab.materialscloud.org/hub/login): the dashboard is planned to be published as an app there.
+
+### Usage
+
+Using the Dashboard should be self-explanatory to the domain user. Some tips:
+
+   * If the plot window is not on startup or gets stuck, reload/rerun once.
+   * Plot updates are instantaneous.
+   * Empty selections are impossible.
+   * Only shows controls for data that is present in the input.
+   * Multi-selection boxes: use ctrl or shift to select multiple items. 
+   * Slider values can also be typed into the adjoining text box.
+   * Try out the zoom and pan tools below the plot, they're useful.
+
+# For Developers
+
+## Installation
+
+Clone this repo (branch). Then create a virtual environment for the project.
+
+With conda (recommended):
+- [Install Anaconda (3 recommended)](https://www.anaconda.com/download)
+- Install the environment `masci-stupro` with the necessary and recommended dependencies:
+```bash
+conda create -f environment.yml
+source activate masci-stupro
+```
+With virtualenv (untested):
+```bash
+virtualenv masci-stupro
+source masci-stupro/bin/activate
+pip install -r requirements_pip.txt # install requirements
+```
+
+## Programmatic use
+
+Though `masci-tools` is (planned to be) availabe via PyPI, there is currently no plan to integrate `studentproject18ws`. If you want to use it in your code, use it in an IDE, or append the path to your `sys.path`:
+
+``` python
+import sys
+if path_repo not in sys.path:
+    sys.path.append(path_repo)
+    
+# now import works
+from studentproject18w.hdf.reader import Reader
+# ...
+```
+
+In this example, a Fleur HDF file is preprocessed using the Recipe `FleurBands`. The resulting output `data` with the extracted and transformed HDF datasets and attached load methods (Extract-Transform-Load) is then passed to a plotter, alongside some DOS CSV files for a bandstructure plot using `matplotlib` as backend library.
+
+``` python
+from studentproject18w.hdf.reader import Reader
+from studentproject18w.hdf.recipes import Recipes
+from studentproject18w.plot.matplot import BandDOSPlot
+import matplotlib.pyplot as plt
+
+data = None
+reader = Reader(filepath=filepath_hdf)
+with reader as h5file:
+    data = reader.read(recipe=Recipes.FleurBands)
+    #
+    # Note:
+    # Inside the with statement (context manager),
+    # all data attributes that are type h5py Dataset are available
+    # (on-disk access). When the statement is left, the HDF5 file 
+    # gets closed and the datasets are closed.
+    #
+    # Use data outside the with-statement (in-memory access: all 
+    # HDF5 datasets converted to numpy ndarrays):
+    data.move_datasets_to_memory()
+
+plotter = BandDOSPlot(plt, data, filepaths_dos)
+(fig, ax_bands, ax_dos) = plotter.setup_figure()
+
+data_selection = some_selection_process()
+plotter.plot_bandDOS(*data_selection)
+plt.show()
+```
+
+## Try Out the Web Frontend Locally
+
+The demo notebook with the dashboard is `studentproject18w/frontend/jupyter/demo/demo.ipynb`.
+
+### If using Jupyter Notebook
+On Windows, omit keyword `source`.
+```bash
+source activate masci-stupro
+cd mypath/masci-tools/studentproject18ws/
+jupyter-notebook .
+# if Home is not set to this dir, try this instead:
+# /home/you/anaconda3/envs/myenv/bin/python /home/you/anaconda3/envs/myenv/bin/jupyter-notebook .
+```
+### If using Jupyter Lab
+Additional installation step needed:
+```bash
+source activate masci-stupro
+jupyter labextension install @jupyter-widgets/jupyterlab-manager jupyter-matplotlib ipyvolume
+cd mypath/masci-tools/studentproject18ws/
+jupyter-lab
+```
+
+## Frontend Deployment
+
+### Desktop Frontend
+
+To create executables for different operating systems, use
+[PyInstaller](https://www.pyinstaller.org/). The target file is
+`frontend/tkinter/gui.py`.
+
+``` bash
+source activate masci-stupro
+conda install -c conda-forge pyinstaller
+# if not using conda: pip install pyInstaller
+cd mypath/masci-tools/studentproject18ws/
+pyinstaller --onefile frontend/tkinter/gui.py
+```
+
+### Web Frontend
+
+The web frontend is currently a single Jupyter notebook. In order to publish it
+as a usable standalone app, additional work has to be done.
+
+  * Create `frontend/jupyter/Dashboard.py` and put code of [demo_backend.ipynb](./frontend/jupyter/demo/demo_backend.ipynb) notebook inside it. This will become the widget. Use [aiidalab-widgets-base > StructureUploadWidget](https://github.com/aiidalab/aiidalab-widgets-base/blob/master/aiidalab_widgets_base/structures.py) as a template. Create `frontend/jupyter/Dashboard.ipynb` notebook. This will become the app. Use [StructureUploadWidget demo notebook](https://github.com/aiidalab/aiidalab-widgets-base/blob/master/structures.ipynb) as a template.
+  * Add [fileupload](https://pypi.org/project/fileupload/) buttons (for HDF, DOS) to widget (again, like in StructureUploadWidget. See [binder_fileupload_test.ipynb](./frontend/jupyter/demo/binder_fileupload_test.ipynb) notebook for a demo that works with binder.)
+  * Now the web frontend should work on Binder.
+  * For publishing the app on [AiiDA Lab](https://aiidalab.materialscloud.org/hub/login): the dashboard is planned to be published as an app there.), it has to be registered in the [aiidalab-registry](https://github.com/aiidalab/aiidalab-registry).
+    * Create a skeleton using the [aiidalab-app-cutter](https://github.com/aiidalab/aiidalab-app-cutter).
+    * The project code is in Python3, but aiidalab requires Python2. So the code has to first be backported by hand using the `future` package. If this takes too long, maybe try the tool [3to2](https://pypi.org/project/3to2/).
+    * Use the simplest app in the registry, [aiidalab-units](https://github.com/aiidalab/aiidalab-units) as a template. Adapt code.
+    * Try it out first in the [Quantum Mobile Virtual Machine](https://www.materialscloud.org/work/quantum-mobile), which has aiidalab installed and configured. Else try it in a virtual environment with [aiidalab](https://pypi.org/project/aiidalab/) installed from PyPI.
+    * Register the app.
+    
+Note: other publishing options besides Binder and AiiDA Lab are listed [here](https://github.com/markusschanta/awesome-jupyter). For instance, [Google Colaboratory](http://colab.research.google.com/) is a free notebook hosting service that allows environment creation and file upload.
+
+
+## Extending the code
+
+### Use Case: HDF format that includes DOS data
+
+The Fleur output HDF format is expected to change and incorporate more data. In
+turn, this project's code has to be extended as well. The procedure is outlined for a
+an example use case: the incorporation of DOS data into the band structure HDF
+(thus eliminating the need for separate DOS CSV files). The instructions show
+how to extend the preprocessor, the visualization and frontend submodules to
+that scenario.
+
+  * Add a new output type to `hdf/output_types`, say `FleurBandDOS`. Let it
+    inherit from output type `FleurBands`. If you want an output type just for
+    the DOS as well, add a type `FleurDOS` and let `FleurBandDOS` inherit it.
+  * Add a new recipe to `hdf/recipes` e.g. `FleurBandDOS`. Copy unchanged things
+    from recipe `FleurBands`.
+  * If needed, add new transforms to `hdf/input_transforms`. Adhere to the
+    transform function standard there. If there are mutual dependencies, add
+    them to the list in the top of the file.
+  * Add a DOS data selection method to the output type `FleurBands`. The
+    `DOSPlot` in `plot/base` types will need those to plot the DOS plot. Simply
+    adapt from the function in `dos/reader` for the DOS CSV files, adopt the
+    identical signature.
+  * In the `DOSPlot` types in submodule `plot`, add a switch to the constructor
+    that can distinguish the three cases (bands, bands+CSV DOS, bands+HDF DOS).
+    Use the switch in the `plotDOS` methods, and for the case bands+HDF DOS, call
+    your new `FleurBandDOS` function.
+
+### Extending the Visualization (Plots)
+
+   * In addition to the inheritance scheme based on Python `AbstractBaseClass`
+     (ABC) detailed in the [report](./doc/report.pdf), the `Plot` types in
+     `plot` have an additional facility that helps to keep the appearance of
+     different frontends synchronized: each type has an attribute `icdv` of type
+     `InteractiveControlDisplayValues`. This is an ABC with the same inheritance
+     as the application Plot types. For every plot control argument that an
+     application type's Plot type exposes in it's methods' signatures, this
+     attribute describes the parameters of the accompanying control widget in
+     the frontend (text label, default values, value ranges, and so on). In the current code, only the web frontend uses this facility, so the labels in the desktop frontend differ slightly.  
+   * It is worth pointing out that unlike other languages, Python does not
+     enforce implemented abstract methods to have the same method signature.
+     However, when a new implementation for a different plotting library/backend
+     is added, it is recommended to adopt the `abstractmethod` signature. That
+     way, changing the backend in a use case only requires to change the import.
+   
+## Open Issues
+
+   * Running the frontends in a debugger or with a counter reveals: on a plot
+     selection change or update, the plot seems to be redrawn not once but
+     several times. The cause could not be found so far.
+   * In the desktop frontend, the update button has to be clicked several times.
+   * In the web frontend, on startup, the plot is only visible after two loads/cell runs.   
