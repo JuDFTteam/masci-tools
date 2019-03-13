@@ -32,5 +32,6 @@ if __name__ == '__main__':
             'h5py',
             'pytest-cov',
             'scipy',
+            'bumpversion',
         ],
     )
