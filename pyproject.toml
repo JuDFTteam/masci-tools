@@ -26,10 +26,10 @@ classifiers = ["Development Status :: 4 - Beta",
 
 [tool.poetry.dependencies]
 python = "^2.7"
-bumpversion = "^0.5.3"
-numpy = "^1.16.2"
-matplotlib = "^2.2.4"
-h5py = "^2.9.0"
-pytest-cov = "^2.6.1"
-scipy = "^1.2.1"
+bumpversion = "*"
+numpy = "*"
+matplotlib = "*"
+h5py = "*"
+pytest-cov = "*"
+scipy = "*"
 
