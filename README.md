@@ -13,10 +13,7 @@ Feel free to contribute.
 The code is hosted on GitHub at
 <https://github.com/JuDFTteam/masci-tools>
 
-The documentation is hosted on ...:
-
--   [stable version](...)
--   [develop version](...)
+The documentation is hosted on https://masci-tools.readthedocs.io.
 
 ## Installation
 

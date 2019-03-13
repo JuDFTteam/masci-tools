@@ -9,6 +9,20 @@ authors = ["Jens Bröder <j.broeder@fz-juelich.de>",
            "Philipp Rüssmann <p.ruessmann@fz-juelich.de>",
           ]
 license = "MIT"
+homepage = "https://github.com/JuDFTteam/masci-tools"
+repository = "https://github.com/JuDFTteam/masci-tools"
+documentation = "https://masci-tools.readthedocs.io"
+keywords = ["material science",
+            "plots",
+            "visualization",
+            "aiida",
+            "dft"]
+classifiers = ["Development Status :: 4 - Beta",
+               "Intended Audience :: Science/Research",
+               "License :: OSI Approved :: MIT License",
+               "Programming Language :: Python :: 2.7",
+               "Topic :: Scientific/Engineering :: Physics"]
+
 
 [tool.poetry.dependencies]
 python = "^2.7"
