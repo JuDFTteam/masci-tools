@@ -12,7 +12,7 @@ Also some defaults for the parameters are defined.
 __copyright__ = (u"Copyright (c), 2017, Forschungszentrum Jülich GmbH,"
                  "IAS-1/PGI-1, Germany. All rights reserved.")
 __license__ = "MIT license, see LICENSE.txt file"
-__version__ = "1.0"
+__version__ = "1.2"
 __contributors__ = u"Philipp Rüßmann"
 
 
@@ -433,6 +433,7 @@ class kkrparams(object):
             key2 = key
             if key not in default_keywords.keys():
                 key2 = '<'+key+'>'
+            val = kwargs[key]
             if self.__params_type=='kkrimp':
                 if key=='KEXCORE':
                     key2 = 'XC'
@@ -446,7 +447,22 @@ class kkrparams(object):
                     key2 = 'TESTFLAG'
                 if key=='NSTEPS':
                     key2 = 'SCFSTEPS'
-            default_keywords[key2][0] = kwargs[key]
+            # workaround to fix inconsistency of XC input between host and impurity code
+            if self.__params_type == 'kkrimp' and key2 == 'XC' and type(val)==int:
+                if val==0:
+                    val = 'LDA-MJW'
+                if val==1:
+                    val = 'LDA-vBH'
+                if val==2:
+                    val = 'LDA-VWN'
+                if val==3:
+                    val = 'GGA-PW91'
+                if val==4:
+                    val = 'GGA-PBE'
+                if val==5:
+                    val = 'GGA-PBEsol'
+                kwargs[key] = val
+            default_keywords[key2][0] = val
 
         return default_keywords
 
@@ -681,7 +697,6 @@ class kkrparams(object):
         for key in keyfmts.keys():
             keyfmts[key] = keyfmts[key].replace('%f', '%21.14f')
 
-
         # write all set keys to file
         tmpl = ''
         for key in sorted_keylist:
@@ -690,6 +705,23 @@ class kkrparams(object):
                 if (not key in self.__listargs.keys()) and (not key in self.__special_formatting):
                     tmpfmt = (keyfmts[key]).replace('%l', '%s')
                     try:
+                        if self.__params_type == 'kkrimp' and key == 'XC':
+                            # workaround to fix inconsistency of XC input between host and impurity code
+                            val = keywords[key]
+                            if type(val)==int:
+                                if val==0:
+                                    val = 'LDA-MJW'
+                                if val==1:
+                                    val = 'LDA-vBH'
+                                if val==2:
+                                    val = 'LDA-VWN'
+                                if val==3:
+                                    val = 'GGA-PW91'
+                                if val==4:
+                                    val = 'GGA-PBE'
+                                if val==5:
+                                    val = 'GGA-PBEsol'
+                            keywords[key] = val
                         repltxt = tmpfmt%(keywords[key])
                     except:
                         #print(key, tmpfmt, keywords[key])
@@ -881,20 +913,7 @@ class kkrparams(object):
                     if valtxt is not None:
                         # first deal with run and testopts (needs to spearate keys)
                         if key=='RUNOPT' or key=='TESTOPT':
-                            if type(valtxt) != list:
-                                valtxt = [valtxt]
-                            valtxt_tmp = []
-                            for itmp in valtxt:
-                                if len(itmp)>8:
-                                    Nsplitoff = int(len(itmp)/8)
-                                    for ii in range(Nsplitoff):
-                                        itmp_splitoff = itmp[ii*8:(ii+1)*8]
-                                        valtxt_tmp.append(itmp_splitoff)
-                                    itmp_splitoff = itmp[Nsplitoff*8:]
-                                    valtxt_tmp.append(itmp_splitoff)
-                                else:
-                                    valtxt_tmp.append(itmp)
-                            valtxt =valtxt_tmp
+                            valtxt = self.split_kkr_options(valtxt)
                         # then continue with valtxt
                         if type(valtxt)==list:
                             tmp = []
@@ -1182,5 +1201,25 @@ class kkrparams(object):
 
         return default_keywords
     
-    
-    
+    @classmethod
+    def split_kkr_options(self, valtxt):
+        """
+        Split keywords after fixed length of 8
+        :param valtxt: list of strings or single string
+        :returns: List of keywords of maximal length 8
+        """
+        if type(valtxt) != list:
+            valtxt = [valtxt]
+        valtxt_tmp = []
+        for itmp in valtxt:
+            if len(itmp)>8:
+                Nsplitoff = int(len(itmp)/8)
+                for ii in range(Nsplitoff):
+                    itmp_splitoff = itmp[ii*8:(ii+1)*8]
+                    valtxt_tmp.append(itmp_splitoff)
+                itmp_splitoff = itmp[Nsplitoff*8:]
+                valtxt_tmp.append(itmp_splitoff)
+            else:
+                valtxt_tmp.append(itmp)
+        valtxt =valtxt_tmp
+        return valtxt
