@@ -5,6 +5,7 @@ requires = ["setuptools", "wheel"]
 name = "masci_tools"
 version = "0.2.5"
 description = "Tools for Materials science. Vis contains wrapers of matplotlib functionality to visualalize common material science data. Plus wrapers of visualisation for aiida-fleur workflow nodes"
+readme = "README.md"
 authors = ["Jens Bröder <j.broeder@fz-juelich.de>",
            "Philipp Rüssmann <p.ruessmann@fz-juelich.de>",
           ]
