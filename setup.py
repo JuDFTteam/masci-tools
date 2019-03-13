@@ -8,7 +8,7 @@ from setuptools import setup, find_packages
 if __name__ == '__main__':
     setup(
         name='masci_tools',
-        version='0.2.1',
+        version='0.2.5',
         description='Tools for Materials science. Vis contains wrapers of matplotlib functionality to visualalize common material science data. Plus wrapers of visualisation for aiida-fleur workflow nodes',
         url='https://github.com/JuDFTteam/masci-tools',
         author='Jens Broeder',
@@ -32,5 +32,6 @@ if __name__ == '__main__':
             'h5py',
             'pytest-cov',
             'scipy',
+            'bumpversion',
         ],
     )
