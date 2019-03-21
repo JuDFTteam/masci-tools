@@ -211,4 +211,3 @@ def dosplot(p0='./', totonly=True, color='', label='', marker='', lw=2, ms=5, ls
     if return_data:
         return d,ef
 
-

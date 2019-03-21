@@ -28,10 +28,11 @@ if __name__ == '__main__':
         
         install_requires=[
             'numpy',
+            'scipy',
             'matplotlib',
             'h5py',
-            'pytest-cov',
-            'scipy',
             'bumpversion',
+            'pytest-cov',
+            'pytest-mpl',
         ],
     )
