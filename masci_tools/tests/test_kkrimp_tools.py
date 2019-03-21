@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 
 #import pytest
-from masci_tools.io.parsers.kkrimp_parser_functions import modify_potential, kkrimp_parser_functions
+from masci_tools.io.modify_potential import modify_potential
+from masci_tools.io.parsers.kkrimp_parser_functions import kkrimp_parser_functions
     
 
 class Test_modify_potential():
@@ -51,7 +52,7 @@ class Test_kkrimp_parser_functions():
     """ Tests for the KKRimp parser functions. """
     
     def test_parse_outfiles_full(self):
-        path = './files/kkrimp_parser/test2/'
+        path = 'files/kkrimp_parser/test1/'
         files = {}
         files['outfile'] = path+'out_kkrimp'
         files['out_log'] = path+'out_log.000.txt'
