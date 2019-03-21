@@ -58,7 +58,7 @@ def read_shapefun(path='.'):
           out[atm,face] = tmp
 
   # then read positions from inputcard
-  with open('inputcard') as file:
+  with open(path+'inputcard') as file:
     inp = file.readlines()
     # convert to uppercase
     for iline in range(len(inp)):
