@@ -32,6 +32,7 @@ if __name__ == '__main__':
             'matplotlib',
             'h5py',
             'bumpversion',
+            'pytest>=4.3.1',
             'pytest-cov',
             'pytest-mpl',
         ],
