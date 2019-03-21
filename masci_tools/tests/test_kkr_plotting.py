@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 import pytest
+
+# prevent issue with not having a display on travis-ci
+# this needs to go *before* pyplot imports
+import matplotlib
+matplotlib.use('Agg')
 from matplotlib.pyplot import gcf, title
 from masci_tools.io.kkr_read_shapefun_info import read_shapefun
 from masci_tools.vis.kkr_plot_shapefun import plot_shapefun
