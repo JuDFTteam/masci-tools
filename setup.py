@@ -35,5 +35,6 @@ if __name__ == '__main__':
             'pytest>=4.3.1',
             'pytest-cov',
             'pytest-mpl',
+            'future',
         ],
     )
