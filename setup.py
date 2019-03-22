@@ -31,7 +31,7 @@ if __name__ == '__main__':
             'scipy',
             'matplotlib',
             'h5py',
-            'bumpversion',
+            'bump2version',
             'pytest>=4.3.1',
             'pytest-cov',
             'pytest-mpl',
