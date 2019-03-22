@@ -3,6 +3,9 @@
 # by Philipp Ruessmann July 2016
 
 from __future__ import print_function
+from __future__ import division
+from builtins import str
+from builtins import range
 from numpy import array, sum, sqrt, log, abs, loadtxt, zeros_like, shape
 from matplotlib.pyplot import plot, figure, subplot, show, ion, title, suptitle, legend, gca, ioff, axvline, gcf
 import subprocess, sys, os, time
@@ -155,7 +158,7 @@ def read_rms_data(path0):
       if tmp!=[] and 'out_magneticmoments' in os.listdir(path0):
          it = int(tmp[-1])
          tmp = loadtxt(path0+'out_magneticmoments')
-         ncls = len(tmp)/it
+         ncls = len(tmp)//it
          tmp = tmp[::ncls,:3]
          tmpmomx = tmp[:,0]
          tmpmomy = tmp[:,1]

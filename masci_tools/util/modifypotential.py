@@ -5,6 +5,10 @@
 # added averaging of spin up/down by Philipp Sep. 2015
 
 from __future__ import print_function
+from __future__ import division
+from builtins import map
+from builtins import input
+from builtins import range
 from numpy import *
 from sys import argv,exit
 
@@ -91,7 +95,7 @@ def read_pot_values(lstart, lstop):
     s = s.replace('D','E')
     snew = []
     if il==lpotstart:
-      dl = len(s)/4
+      dl = len(s)//4
       print(dl)
       print(len(s))
     snew.append(s[:dl])
@@ -211,7 +215,7 @@ print('found %i potentials in file'%len(index1))
 print('')
 
 tempsave=-1
-order=range(len(index1))
+order=list(range(len(index1)))
 while 1:
 #while 0:
   for i in range(len(order)):
@@ -240,72 +244,72 @@ while 1:
   print('  *  (16) scale up mag. moment  *')
   print('  ***************************')
 
-  mode1=int(raw_input('Input: '))
+  mode1=int(input('Input: '))
   print(mode1)
   if mode1==0: break
   if mode1==1:
-    row1=int(raw_input('Row number:'))
+    row1=int(input('Row number:'))
     del order[row1]
   if mode1==2:
-    row1=int(raw_input('Row number:'))
+    row1=int(input('Row number:'))
     tempsave=order[row1]
   if mode1==3:
-    row1=int(raw_input('Row number:'))
+    row1=int(input('Row number:'))
     tempsave=order[row1]
     del order[row1]
   if mode1==4:
     if type(tempsave)==type(1):
       if tempsave!=-1:
-        row1=int(raw_input('Paste before number:'))
+        row1=int(input('Paste before number:'))
         order.insert(row1,tempsave)
       else:
         print('nothing in temp, copy first')
-        raw_input('Continue')
+        input('Continue')
     else:
-      row1=int(raw_input('Paste before number:'))
+      row1=int(input('Paste before number:'))
       print(row1)
       print(tempsave)
-      for i in reversed(range(len(tempsave))):
+      for i in reversed(list(range(len(tempsave)))):
         order.insert(row1,tempsave[i])
   if mode1==5:
-    row1=int(raw_input('Row number [start]:'))
-    row2=int(raw_input('Row number [stop] :'))
-    tempsave=range(row1,row2+1)
+    row1=int(input('Row number [start]:'))
+    row2=int(input('Row number [stop] :'))
+    tempsave=list(range(row1,row2+1))
   if mode1==6:
-    row1=int(raw_input('Row number [start]:'))
-    row2=int(raw_input('Row number [stop] :'))
-    tempsave=range(row1,row2+1)
+    row1=int(input('Row number [start]:'))
+    row2=int(input('Row number [stop] :'))
+    tempsave=list(range(row1,row2+1))
     for i in range(len(tempsave)):
       del order[row1]
   if mode1==7:
-    row1=int(raw_input('Row number [start]:'))
-    row2=int(raw_input('Row number [stop] :'))
+    row1=int(input('Row number [start]:'))
+    row2=int(input('Row number [stop] :'))
     for i in range(row1,row2+1):
       del order[row1]
   if mode1==8:
     if type(tempsave)==type(1):
       if tempsave!=-1:
-        row1=int(raw_input('Paste before number:'))
-        row2=int(raw_input('How many times?:'))
+        row1=int(input('Paste before number:'))
+        row2=int(input('How many times?:'))
         for i in range(row2):
           order.insert(row1,tempsave)
       else:
         print('nothing in temp, copy first')
-        raw_input('Continue')
+        input('Continue')
     else:
-      row1=int(raw_input('Paste before number:'))
-      row2=int(raw_input('How many times?:'))
+      row1=int(input('Paste before number:'))
+      row2=int(input('How many times?:'))
       for i in range(row2):
-        for i in reversed(range(len(tempsave))):
+        for i in reversed(list(range(len(tempsave)))):
           order.insert(row1,tempsave[i])
   if mode1==9:
-        row1=int(raw_input('Swap line: '))
-        row2=int(raw_input('with line: '))
+        row1=int(input('Swap line: '))
+        row2=int(input('with line: '))
         ordertemp=order[row1]
         order[row1]=order[row2]
         order[row2]=ordertemp
   if mode1==10:
-        nspintemp = int(raw_input('Double potential (1=no,2=yes) '))
+        nspintemp = int(input('Double potential (1=no,2=yes) '))
         natomtemp = int(open('scoef').readlines()[0])
         filedata=open('scoef').readlines()[1:natomtemp+1]
         listnew=[]
@@ -327,15 +331,15 @@ while 1:
         npot=len(order)
         if npot%2!=0:
           print('number of potentials is odd');exit()
-        print(range(0,len(order),2))
+        print(list(range(0,len(order),2)))
         for i in range(0,len(order),2):
           ordertemp=order[i]
           order[i]=order[i+1]
           order[i+1]=ordertemp
   if mode1==12:
-        listnew=raw_input('New list :').split()
+        listnew=input('New list :').split()
         makeorder= lambda x: int(x)-1
-        order=map(makeorder,listnew)
+        order=list(map(makeorder,listnew))
   if mode1==13:
         ordernew=[]
         for item in order:
@@ -363,7 +367,7 @@ while 1:
         print('mode 15 chosen')
         if len(order)%2!=0:
           exit('ERROR: odd number of potentials')
-        for i in range(len(order)/2):
+        for i in range(len(order)//2):
           print(i)
           head1, pot1 = read_pot_values(index1[2*i+0],index2[2*i+0])
           head2, pot2 = read_pot_values(index1[2*i+1],index2[2*i+1])
@@ -388,8 +392,8 @@ while 1:
         if len(order)%2!=0:
           exit('ERROR: odd number of potentials')
         print('scale magnetic moment up: newpot_1/2 = (v_1+v_2)/2 +/- alpha*(v_1-v_2)/2')
-        alpha = float(raw_input('alpha: '))
-        for i in range(len(order)/2):
+        alpha = float(input('alpha: '))
+        for i in range(len(order)//2):
           print(i)
           head1, pot1 = read_pot_values(index1[2*i+0],index2[2*i+0])
           head2, pot2 = read_pot_values(index1[2*i+1],index2[2*i+1])
