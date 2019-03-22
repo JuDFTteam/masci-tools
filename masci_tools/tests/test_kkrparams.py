@@ -441,10 +441,10 @@ class Test_other(object):
         assert set(d0.keys()) == set(p.get_dict().keys())
         
         l0 = ['<SHAPE>', 'KSHAPE', 'ZPERIODL', '<NRBASIS>', '<NLBASIS>', '<RBASIS>', 'NAEZ', 'CARTESIAN', '<RBRIGHT>', '<RBLEFT>', 'INTERFACE', 'BRAVAIS', 'ALATBASIS', 'ZPERIODR']
-        assert list(p.get_dict(group='lattice').keys()) == l0
+        assert set(p.get_dict(group='lattice').keys()) == set(l0)
         
         l0 = ['ZPERIODL', '<NRBASIS>', '<NLBASIS>', '<RBRIGHT>', '<RBLEFT>', 'INTERFACE', 'ZPERIODR']
-        assert l0 == list(p.get_dict(group='lattice', subgroup='2D mode').keys()) 
+        assert set(l0) == set(p.get_dict(group='lattice', subgroup='2D mode').keys()) 
         
     def test_get_KKRcalc_parameter_defaults(self):
         d = kkrparams.get_KKRcalc_parameter_defaults()
