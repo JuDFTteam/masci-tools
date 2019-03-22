@@ -7,10 +7,13 @@ Tools for the impurity caluclation plugin and its workflows
 #use print('message') instead of print 'message' in python 2.7 as well:
 from __future__ import print_function
 # redefine raw_input for python 3/2.7 compatilbility
+from builtins import input
+from builtins import range
+from builtins import object
 from sys import version_info
 if version_info[0] >= 3:
     def raw_input(msg):
-        return input(msg)
+        return eval(input(msg))
          
 __copyright__ = (u"Copyright (c), 2018, Forschungszentrum Jülich GmbH,"
                  "IAS-1/PGI-1, Germany. All rights reserved.")
@@ -19,7 +22,7 @@ __version__ = "0.3"
 __contributors__ = u"Philipp Rüßmann"
 
 
-class modify_potential():
+class modify_potential(object):
     """
     Class for old modify potential script, ported from modify_potential script, initially by D. Bauer
     """
@@ -85,7 +88,7 @@ class modify_potential():
         """
         index1, index2, data = self._read_input(shapefun_path)
         
-        order=range(len(index1))
+        order=list(range(len(index1)))
                
         natomtemp = int(open(scoefpath).readlines()[0])
         filedata=open(scoefpath).readlines()[1:natomtemp+1]

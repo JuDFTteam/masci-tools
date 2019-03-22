@@ -3,6 +3,7 @@
 
 from __future__ import print_function
 
+from builtins import range
 """
 Everything that is needed to parse the output of a voronoi calculation.
 """
@@ -195,11 +196,11 @@ def parse_voronoi_output(out_dict, outfile, potfile, atominfo, radii, inputfile)
         
     #convert arrays to lists
     from numpy import ndarray
-    for key in out_dict.keys():
+    for key in list(out_dict.keys()):
         if type(out_dict[key])==ndarray:
             out_dict[key] = list(out_dict[key])
         elif type(out_dict[key])==dict:
-            for subkey in out_dict[key].keys():
+            for subkey in list(out_dict[key].keys()):
                 if type(out_dict[key][subkey])==ndarray:
                     out_dict[key][subkey] = list(out_dict[key][subkey])
                     

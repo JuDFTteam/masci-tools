@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+from builtins import range
+from builtins import object
 import pytest
 
 # prevent issue with not having a display on travis-ci
@@ -12,7 +14,7 @@ from masci_tools.vis.kkr_plot_dos import dosplot
 from masci_tools.vis.kkr_plot_bandstruc_qdos import dispersionplot
 from masci_tools.vis.kkr_plot_FS_qdos import FSqdos2D
 
-class Test_kkr_plotting():
+class Test_kkr_plotting(object):
     """
     Test for KKR plotting functions
     """
@@ -47,7 +49,7 @@ class Test_kkr_plotting():
     @pytest.mark.mpl_image_compare(baseline_dir='files/kkr/kkr_run_dos_output/', filename='test4.png')
     def test_plot_dos4(self):
         gcf().clear()
-        dosplot('files/kkr/kkr_run_dos_output/', units='eV_rel', nofig=True, allatoms=True, lm=range(1,5))
+        dosplot('files/kkr/kkr_run_dos_output/', units='eV_rel', nofig=True, allatoms=True, lm=list(range(1,5)))
         return gcf()
 
     @pytest.mark.mpl_image_compare(baseline_dir='files/kkr/kkr_run_qdos/', filename='test.png')

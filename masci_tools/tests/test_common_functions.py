@@ -2,7 +2,9 @@
 """
 @author: ruess
 """
+from __future__ import division
 
+from builtins import object
 import pytest
 from masci_tools.io.common_functions import (interpolate_dos, get_alat_from_bravais, 
                                              search_string, angles_to_vec, 
@@ -12,7 +14,7 @@ from masci_tools.io.common_functions import (interpolate_dos, get_alat_from_brav
                                              get_ef_from_potfile)
 
 
-class Test_common_functions():
+class Test_common_functions(object):
     """
     Tests for the common functions from tools.common_functions
     """

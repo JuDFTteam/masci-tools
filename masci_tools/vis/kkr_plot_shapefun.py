@@ -12,6 +12,7 @@
 
 
 from __future__ import print_function
+from builtins import range
 def plot_shapefun(pos, out, mode):
   """
   Creates a simple matplotlib image to show the shapefunctions given it's positions in the unit cell, the atoms's vertices in `ut` and the plotting mode
@@ -38,7 +39,7 @@ def plot_shapefun(pos, out, mode):
     if mode=='single':
       fig = plt.figure()
       ax = fig.add_subplot(111, projection='3d')
-    for i in out.keys():
+    for i in list(out.keys()):
       if i[0]==j:
         linecolor = 'r'
       if j in [2,3,6,7]:

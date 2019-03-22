@@ -3,10 +3,11 @@
 @author: ruess
 """
 
+from builtins import object
 import pytest
 from masci_tools.io.parsers.voroparser_functions import parse_voronoi_output
 
-class Test_voronoi_parser_functions():
+class Test_voronoi_parser_functions(object):
     """
     Tests for the voronoi parser functions
     """
@@ -32,7 +33,7 @@ class Test_voronoi_parser_functions():
         assert success
         assert msg_list == []
         assert out_dict == dref
-        groups = [i for i in out_dict.keys() if 'group' in i]
+        groups = [i for i in list(out_dict.keys()) if 'group' in i]
         assert set(groups) == set(grouping_ref)
         
     def test_missing_outfile(self):

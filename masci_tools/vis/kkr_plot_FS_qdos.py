@@ -1,4 +1,5 @@
 from __future__ import print_function
+from __future__ import division
 from matplotlib import cm
 
 def FSqdos2D(p0='./', totonly=True, s=20, ls_ef= ':', lw_ef=1, color='', reload_data=False, clrbar=True, atoms=[], ax=None, nosave=False, noalat=False, cmap=cm.jet, noplot=False, return_data=False, pclrmesh=False, logscale=True):

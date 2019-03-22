@@ -3,7 +3,10 @@
 
 #use print('message') instead of print 'message' in python 2.7 as well:
 from __future__ import print_function
+from __future__ import division
 
+from builtins import range
+from builtins import object
 """
 Tools for the impurity caluclation plugin and its workflows
 """
@@ -16,7 +19,7 @@ __contributors__ = (u"Philipp Rüßmann",
                     u"Fabian Bertoldo")
 
 
-class kkrimp_parser_functions():
+class kkrimp_parser_functions(object):
     """
     Class of parser functions for KKRimp calculation
     
@@ -430,7 +433,7 @@ class kkrimp_parser_functions():
         try:
             result_WS, result_tot, result_C = get_charges_per_atom(files['out_log'])
             niter = len(out_dict['convergence_group']['rms_all_iterations'])
-            natyp = int(len(result_tot)/niter)
+            natyp = int(len(result_tot)//niter)
             out_dict['total_charge_per_atom'] = result_WS[-natyp:]
             out_dict['charge_core_states_per_atom'] = result_C[-natyp:]
             # this check deals with the DOS case where output is slightly different
@@ -486,11 +489,11 @@ class kkrimp_parser_functions():
             
         #convert arrays to lists
         from numpy import ndarray
-        for key in out_dict.keys():
+        for key in list(out_dict.keys()):
             if type(out_dict[key])==ndarray:
                 out_dict[key] = list(out_dict[key])
             elif type(out_dict[key])==dict:
-                for subkey in out_dict[key].keys():
+                for subkey in list(out_dict[key].keys()):
                     if type(out_dict[key][subkey])==ndarray:
                         out_dict[key][subkey] = (out_dict[key][subkey]).tolist()
                         

@@ -6,7 +6,10 @@ Created on Wed Nov 15 16:43:31 2017
 @author: ruess
 """
 from __future__ import print_function
+from __future__ import division
 
+from builtins import range
+from builtins import object
 import pytest
 from masci_tools.io.kkr_params import kkrparams
     
@@ -37,7 +40,7 @@ def check_full_dict(p,p0):
 # tests
     
 
-class Test_create_and_set_keys():
+class Test_create_and_set_keys(object):
     def test_create_params_with_inital_values(self):
         p = kkrparams(RBASIS=[0,0,0], params_type='voronoi')
         assert type(p)==kkrparams
@@ -60,7 +63,7 @@ class Test_create_and_set_keys():
         assert p.values['EMAX']== 2.
 
     
-class Test_capture_wrong_input():
+class Test_capture_wrong_input(object):
     def test_wrong_input_type(self):
         p = kkrparams()
         known_error = False
@@ -114,7 +117,7 @@ class Test_capture_wrong_input():
         assert knownError
     
         
-class Test_get_info():
+class Test_get_info(object):
     def test_get_mandatory(self):
         p = kkrparams()
         manlist = p.get_all_mandatory()
@@ -175,7 +178,7 @@ class Test_get_info():
         
 
     
-class Test_fill_inputfile():
+class Test_fill_inputfile(object):
     def test_fill_inputfile_minimal_Voronoi(self):
         p = kkrparams(ZATOM=29., LMAX=2, NAEZ=1, BRAVAIS=[[1,0,0],[0,1,0],[0,0,1]], RCLUSTZ=1.5, NSPIN=2, RBASIS=[0,0,0], ALATBASIS=1)
         p.fill_keywords_to_inputfile(is_voro_calc=True)
@@ -340,7 +343,7 @@ class Test_fill_inputfile():
         assert txt==reftxt
         
                
-class Test_read_inputfile():
+class Test_read_inputfile(object):
     def test_read_minimal_inputfile(self):
         p = kkrparams(ZATOM=26., LMAX=2, NAEZ=1, BRAVAIS=[[1,0,0],[0,1,0],[0,0,1]], RCLUSTZ=1.5, NSPIN=2, RBASIS=[0,0,0], ALATBASIS=1)
         p.fill_keywords_to_inputfile(is_voro_calc=True)
@@ -396,7 +399,7 @@ class Test_read_inputfile():
         check_full_dict(p,p0)
         
         
-class Test_other():
+class Test_other(object):
     def test_get_missing_keys(self): 
         p = kkrparams()
         missing = p.get_missing_keys()
@@ -438,10 +441,10 @@ class Test_other():
         assert set(d0.keys()) == set(p.get_dict().keys())
         
         l0 = ['<SHAPE>', 'KSHAPE', 'ZPERIODL', '<NRBASIS>', '<NLBASIS>', '<RBASIS>', 'NAEZ', 'CARTESIAN', '<RBRIGHT>', '<RBLEFT>', 'INTERFACE', 'BRAVAIS', 'ALATBASIS', 'ZPERIODR']
-        assert p.get_dict(group='lattice').keys() == l0
+        assert list(p.get_dict(group='lattice').keys()) == l0
         
         l0 = ['ZPERIODL', '<NRBASIS>', '<NLBASIS>', '<RBRIGHT>', '<RBLEFT>', 'INTERFACE', 'ZPERIODR']
-        assert l0 == p.get_dict(group='lattice', subgroup='2D mode').keys() 
+        assert l0 == list(p.get_dict(group='lattice', subgroup='2D mode').keys()) 
         
     def test_get_KKRcalc_parameter_defaults(self):
         d = kkrparams.get_KKRcalc_parameter_defaults()

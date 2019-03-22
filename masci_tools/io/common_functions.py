@@ -5,7 +5,9 @@ Here commonly used functions that do not need aiida-stuff (i.e. can be tested
 without a database) are collected.
 """
 from __future__ import print_function
+from __future__ import division
 
+from builtins import range
 __copyright__ = (u"Copyright (c), 2018, Forschungszentrum Jülich GmbH,"
                  "IAS-1/PGI-1, Germany. All rights reserved.")
 __license__ = "MIT license, see LICENSE.txt file"

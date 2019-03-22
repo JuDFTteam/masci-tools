@@ -3,11 +3,12 @@
 
 #import pytest
 from __future__ import print_function
+from builtins import object
 from masci_tools.io.modify_potential import modify_potential
 from masci_tools.io.parsers.kkrimp_parser_functions import kkrimp_parser_functions
     
 
-class Test_modify_potential():
+class Test_modify_potential(object):
     """ Tests for the modify_potential class functions. """
     
     def test_shapefun_from_scoef(self):
@@ -49,7 +50,7 @@ class Test_modify_potential():
         
         
         
-class Test_kkrimp_parser_functions():
+class Test_kkrimp_parser_functions(object):
     """ Tests for the KKRimp parser functions. """
     
     def test_parse_outfiles_full(self):

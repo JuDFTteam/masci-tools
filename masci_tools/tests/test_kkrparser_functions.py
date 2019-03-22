@@ -3,11 +3,12 @@
 @author: ruess
 """
 
+from builtins import object
 import pytest
 from masci_tools.io.parsers.kkrparser_functions import parse_kkr_outputfile, check_error_category
 
 
-class Test_kkr_parser_functions():
+class Test_kkr_parser_functions(object):
     """
     Tests for the kkr parser functions
     """
@@ -35,7 +36,7 @@ class Test_kkr_parser_functions():
         assert set(out_dict.keys()) == set(dref.keys())
         assert out_dict == dref
         assert msg_list == []
-        groups = [i for i in out_dict.keys() if 'group' in i]
+        groups = [i for i in list(out_dict.keys()) if 'group' in i]
         assert set(groups) == set(grouping_ref)
     
     def test_mag_orbmom_kkr_output(self):
@@ -193,7 +194,7 @@ class Test_kkr_parser_functions():
         success, msg_list, out_dict = parse_kkr_outputfile({}, p+'out_kkr', p+'output.0.txt', p+'output.000.txt', p+'out_timing.000.txt', p+'out_potential', p+'nonco_angle_out.dat', p+'output.2.txt')
         from numpy import isnan
         captured_nan = False
-        for key, val in out_dict['convergence_group'].iteritems():
+        for key, val in out_dict['convergence_group'].items():
             if key in ['charge_neutrality', 'rms']:
                 if isnan(val):
                     captured_nan = True

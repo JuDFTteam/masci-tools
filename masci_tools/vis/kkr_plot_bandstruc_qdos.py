@@ -1,4 +1,6 @@
 from __future__ import print_function
+from __future__ import division
+from builtins import range
 from matplotlib import cm
 
 def dispersionplot(p0='./', totonly=True, s=20, ls_ef= ':', lw_ef=1, units='eV_rel', noefline=False, 
@@ -108,7 +110,7 @@ def dispersionplot(p0='./', totonly=True, s=20, ls_ef= ':', lw_ef=1, units='eV_r
     x, y = xscale*sum(d[:,2:5], axis=1), d[:,0]
     if qcomponent==-2:
        el = len(set(d[:,0]))
-       x = array([[i for i in range(len(d)/el)] for j in range(el)])
+       x = array([[i for i in range(len(d)//el)] for j in range(el)])
     elif qcomponent!=-1:
        x = xscale*d[:,2:5][:,qcomponent]
 

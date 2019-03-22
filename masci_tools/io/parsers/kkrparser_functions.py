@@ -6,7 +6,9 @@ Here I collect all functions needed to parse the output of a KKR calculation.
 These functions do not need aiida and are therefore separated from the actual 
 parser file where parse_kkr_outputfile is called
 """ 
+from __future__ import division
 
+from builtins import range
 __copyright__ = (u"Copyright (c), 2017, Forschungszentrum Jülich GmbH,"
                  "IAS-1/PGI-1, Germany. All rights reserved.")
 __license__ = "MIT license, see LICENSE.txt file"
@@ -46,7 +48,7 @@ def get_rms(outfile, outfile2):
     res = parse_array_float(outfile, 'average rms-error', [2, '=', 1, 0], ['D', 'E'])
     res2 = parse_array_float(outfile2, 'rms-error for atom', [2, '=', 1, 0], ['D', 'E'])
     niter = len(res) # number of iterations
-    natoms = int(len(res2)/niter) # number of atoms in system, needed to take only atom resolved rms of last iteration
+    natoms = int(len(res2)//niter) # number of atoms in system, needed to take only atom resolved rms of last iteration
     return res, res2[-natoms:]
 
 
@@ -722,7 +724,7 @@ def parse_kkr_outputfile(out_dict, outfile, outfile_0init, outfile_000, timing_f
         try:
             result_WS, result_tot, result_C = get_charges_per_atom(outfile_000)
             niter = len(out_dict['convergence_group']['rms_all_iterations'])
-            natyp = int(len(result_tot)/niter)
+            natyp = int(len(result_tot)//niter)
             out_dict['total_charge_per_atom'] = result_tot[-natyp:]
             out_dict['charge_core_states_per_atom'] = result_C[-natyp:]
             # this check deals with the DOS case where output is slightly different
@@ -756,11 +758,11 @@ def parse_kkr_outputfile(out_dict, outfile, outfile_0init, outfile_000, timing_f
         
     #convert arrays to lists
     from numpy import ndarray
-    for key in out_dict.keys():
+    for key in list(out_dict.keys()):
         if type(out_dict[key])==ndarray:
             out_dict[key] = list(out_dict[key])
         elif type(out_dict[key])==dict:
-            for subkey in out_dict[key].keys():
+            for subkey in list(out_dict[key].keys()):
                 if type(out_dict[key][subkey])==ndarray:
                     out_dict[key][subkey] = (out_dict[key][subkey]).tolist()
                     
@@ -785,7 +787,7 @@ def check_error_category(err_cat, err_msg, out_dict):
     # check special cases:
     # 1. nonco_angle_file not present, but newsosol==False anyways
     if 'NONCO_ANGLES_OUT' in err_msg:
-        if "use_newsosol" in out_dict.keys():
+        if "use_newsosol" in list(out_dict.keys()):
             if out_dict["use_newsosol"]:
                 return True
             else:
