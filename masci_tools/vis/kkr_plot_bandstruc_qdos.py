@@ -24,7 +24,7 @@ def dispersionplot(p0='./', totonly=True, s=20, ls_ef= ':', lw_ef=1, units='eV_r
     # read in data
     if p0[-1]!='/': p0+='/'
     ef = float(open(p0+'potential').readlines()[3].split()[1])
-    alat = float(check_output('grep ALATBASIS '+p0+'inputcard', shell=True).split('=')[1].split()[0])
+    alat = float(check_output('grep ALATBASIS '+p0+'inputcard', shell=True, encoding='utf8').split('=')[1].split()[0])
     a0 = 2*pi/alat/0.52918
     if noscale: a0 = 1.
     if reload_data or 'saved_data_dispersion.npy' not in sort(listdir(p0)):
