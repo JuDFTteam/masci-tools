@@ -7,16 +7,9 @@ python:
   - "3.4"
   - "3.5"
   - "3.6"
-  - "3.7"
 matrix:
   # mark build as complete as soon as the versions that may not fail is finished
   fast_finish: true
-  # these environment so far are allowed to fail
-  allow_failures:
-    - python: "3.4"
-    - python: "3.5"
-    - python: "3.6"
-    - python: "3.7"
 
 notifications:
   slack:
