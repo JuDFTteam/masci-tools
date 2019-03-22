@@ -11,6 +11,7 @@
 ###############################################################################
 
 
+from __future__ import print_function
 def plot_shapefun(pos, out, mode):
   """
   Creates a simple matplotlib image to show the shapefunctions given it's positions in the unit cell, the atoms's vertices in `ut` and the plotting mode
@@ -86,6 +87,6 @@ def zoom_in(ax, atm, pos, zoom_range=10):
   :param zoom_range: range of the zoomed region (optional, defaults to 10)
   """
   center = pos[atm-1]
-  print 'zoom in to atom', atm, ':', center
+  print('zoom in to atom', atm, ':', center)
   change_zoom(ax, zoom_range, center)
 

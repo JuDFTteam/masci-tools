@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 #import pytest
+from __future__ import print_function
 from masci_tools.io.modify_potential import modify_potential
 from masci_tools.io.parsers.kkrimp_parser_functions import kkrimp_parser_functions
     

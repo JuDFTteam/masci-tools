@@ -1,3 +1,4 @@
+from __future__ import print_function
 from matplotlib import cm
 
 
@@ -13,7 +14,7 @@ def dosplot(p0='./', totonly=True, color='', label='', marker='', lw=2, ms=5, ls
     ion()
 
     # read in data
-    if p0[-1]<>'/': p0+='/'
+    if p0[-1]!='/': p0+='/'
     #if 'rel' in units: ef = float(open(p0+'potential').readlines()[3].split()[1])
     ef = float(open(p0+'potential').readlines()[3].split()[1])
     first=True
@@ -25,7 +26,7 @@ def dosplot(p0='./', totonly=True, color='', label='', marker='', lw=2, ms=5, ls
             iatom = i.replace('dos.','').replace('interpol.','').replace('atom','').replace('out_l','').replace('=','').replace('m','').split('_')[0]
             if atoms==[] or int(iatom) in atoms:
               tmp = loadtxt(p0+i)
-              print p0+i
+              print(p0+i)
 
               # set units
               if 'rel' in units:
@@ -126,7 +127,7 @@ def dosplot(p0='./', totonly=True, color='', label='', marker='', lw=2, ms=5, ls
     #   if lm<>[]:
     #      d = d[:,[0,1]+list(array(lm)+1)]
     #   d[:,1] = sum(d[:,2:], axis=1)
-    if lm<>[]:
+    if lm!=[]:
        d = d[:,[0,1]+list(array(lm)+1)]
     d[:,1] = sum(d[:,2:], axis=1)
 
@@ -187,7 +188,7 @@ def dosplot(p0='./', totonly=True, color='', label='', marker='', lw=2, ms=5, ls
 
     # plot fermi level
     if not noefline:
-       if color<>'' and efcolor=='': efcolor=color
+       if color!='' and efcolor=='': efcolor=color
        if efcolor=='':
          if xyswitch:
           axhline(ef, ls=ls_ef, lw=lw_ef, color='grey')

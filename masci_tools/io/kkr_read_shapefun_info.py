@@ -50,11 +50,11 @@ def read_shapefun(path='.'):
         else:
           i_newface = 0
           tmp2 = line.split()
-          if tmp2<>[]:
+          if tmp2!=[]:
             tmp2 = [float(i) for i in tmp2]
             tmp.append(tmp2)
           atm_old, face_old = atm,face
-        if face_old<>face:
+        if face_old!=face:
           out[atm,face] = tmp
 
   # then read positions from inputcard

@@ -5,6 +5,7 @@ Created on Wed Nov 15 16:43:31 2017
 
 @author: ruess
 """
+from __future__ import print_function
 
 import pytest
 from masci_tools.io.kkr_params import kkrparams

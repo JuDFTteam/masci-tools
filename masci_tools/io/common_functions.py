@@ -4,6 +4,7 @@
 Here commonly used functions that do not need aiida-stuff (i.e. can be tested 
 without a database) are collected.
 """
+from __future__ import print_function
 
 __copyright__ = (u"Copyright (c), 2018, Forschungszentrum Jülich GmbH,"
                  "IAS-1/PGI-1, Germany. All rights reserved.")
