@@ -20,7 +20,7 @@ def FSqdos2D(p0='./', totonly=True, s=20, ls_ef= ':', lw_ef=1, color='', reload_
        a0 = 1.
        alat = 1.
     else:
-       alat = float(check_output('grep ALATBASIS '+p0+'inputcard', shell=True, encoding='utf8').split('=')[1].split()[0])
+       alat = float(check_output('grep ALATBASIS '+p0+'inputcard', shell=True).decode('utf-8').split('=')[1].split()[0])
        a0 = 2*pi/alat/0.52918
     print(a0)
 

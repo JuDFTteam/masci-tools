@@ -111,14 +111,14 @@ def read_rms_data(path0):
    global opt, nopt
    ### rms
    try:
-      f = subprocess.check_output('grep aver '+path0+outfile,shell=True, encoding='utf8').split('\n')
+      f = subprocess.check_output('grep aver '+path0+outfile,shell=True).decode('utf-8').split('\n')
       rms = array([float((i.split()[-1]).replace('D','e').replace('\n','')) for i in f if i!=''])
    except:
       rms = []
    
    ### charge neutrality
    try:
-      f = subprocess.check_output('grep neutr '+path0+outfile,shell=True, encoding='utf8').split('\n')
+      f = subprocess.check_output('grep neutr '+path0+outfile,shell=True).decode('utf-8').split('\n')
       neut = array([float((i.split()[-1]).replace('D','e').replace('\n','')) for i in f if i!=''])
    except:
       neut = []
@@ -132,14 +132,14 @@ def read_rms_data(path0):
 
    ### read total energy
    try:
-      f = subprocess.check_output("grep 'TOTAL ENERGY' "+path0+outfile,shell=True, encoding='utf8').split('\n')
+      f = subprocess.check_output("grep 'TOTAL ENERGY' "+path0+outfile,shell=True).decode('utf-8').split('\n')
       etot = array([float((i.split()[-1]).replace('D','e').replace('\n','')) for i in f if i!=''])
    except:
       etot = []
    
    ### moment 
    try:
-      f = subprocess.check_output("grep 'L m' "+path0+outfile,shell=True, encoding='utf8').split('\n')
+      f = subprocess.check_output("grep 'L m' "+path0+outfile,shell=True).decode('utf-8').split('\n')
       mom = array([float((i.split()[-1]).replace('D','e').replace('\n','')) for i in f if i!=''])
    except:
       mom = []
@@ -151,7 +151,7 @@ def read_rms_data(path0):
         print('removing option', opt.pop(j), names.pop(j))
    else:
       try:
-         f = subprocess.check_output("grep 'ITERATION ' "+path0+outfile,shell=True, encoding='utf8').split('\n')
+         f = subprocess.check_output("grep 'ITERATION ' "+path0+outfile,shell=True).decode('utf-8').split('\n')
          tmp = array([float((i.split()[1]).replace('D','e').replace('\n','')) for i in f if 'SCF' not in i and i!=''])
       except:
          tmp=[]
@@ -179,7 +179,7 @@ def read_rms_data(path0):
          else:
             natyp = int(inp[natyp].split('NATYP=')[1])
          try:
-            tmp2 = subprocess.check_output("grep 'm_spin' "+path0+outfile+" -A"+str(natyp), shell=True, encoding='utf8').replace('TOT','').split('\n')
+            tmp2 = subprocess.check_output("grep 'm_spin' "+path0+outfile+" -A"+str(natyp), shell=True).decode('utf-8').replace('TOT','').split('\n')
             if tmp2!='':
               tmp2 = tmp2#[-natyp-1:]
               tmp2 = array([float(i.split()[2]) for i in tmp2 if i!='' and 'dn' not in i and i!='--'])
@@ -277,7 +277,7 @@ while(True):
                   plot(abs(data),'x--')
                gca().set_yscale('log')
             try:
-               t_iter=subprocess.check_output('grep Iter '+path0+'out_timing.000.txt', shell=True, encoding='utf8').split('\n')[-2].split()[-1]
+               t_iter=subprocess.check_output('grep Iter '+path0+'out_timing.000.txt', shell=True).decode('utf-8').split('\n')[-2].split()[-1]
                t_iter = '%5.2f min'%(float(t_iter)/60)
             except:
                t_iter='no time info for last iteration'
