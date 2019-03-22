@@ -2,28 +2,29 @@
 
 # by Philipp Ruessmann July 2016
 
+from __future__ import print_function
 from numpy import array, sum, sqrt, log, abs, loadtxt, zeros_like, shape
 from matplotlib.pyplot import plot, figure, subplot, show, ion, title, suptitle, legend, gca, ioff, axvline, gcf
 import subprocess, sys, os, time
 
 
-print
-print "  ########  start script rms_tracker  ########"
-print "  please give input path and some options:"
-print "  available options are: 0 = rms"
-print "                         1 = total energy"
-print "                         2 = charge neutrality"
-print "                         3 = total moment"
-print
-print "  if last given option is -1 then no refreshing is done and plots are only generated once"
-print
-print "  after the options there is the possibility to give the 'nodos' option which prevents the plotting of the dos if 'dos.atom*' files are there"
-print
-print "  input might look like this:"
-print "    for self refreshing plot of rms charge neutrality and moment: ./rms_tracker.py ./path/ 0 2 3"
-print "    for non refreshing plot of rms and total energy without dos plot: ./rms_tracker.py ./path/ 0 1 -1 nodos"
-print
-print "  default values: ./rms_tracker.py ./path/ 0 1 2 3"
+print()
+print("  ########  start script rms_tracker  ########")
+print("  please give input path and some options:")
+print("  available options are: 0 = rms")
+print("                         1 = total energy")
+print("                         2 = charge neutrality")
+print("                         3 = total moment")
+print()
+print("  if last given option is -1 then no refreshing is done and plots are only generated once")
+print()
+print("  after the options there is the possibility to give the 'nodos' option which prevents the plotting of the dos if 'dos.atom*' files are there")
+print()
+print("  input might look like this:")
+print("    for self refreshing plot of rms charge neutrality and moment: ./rms_tracker.py ./path/ 0 2 3")
+print("    for non refreshing plot of rms and total energy without dos plot: ./rms_tracker.py ./path/ 0 1 -1 nodos")
+print()
+print("  default values: ./rms_tracker.py ./path/ 0 1 2 3")
 
 
 if len(sys.argv)>1:
@@ -39,13 +40,13 @@ if len(sys.argv)>1:
            if outfile_found:
               if path0=='.' or path0=='./':
                  path0 = os.getcwd()
-    	      if path0[-1]<>'/':
+    	      if path0[-1]!='/':
 	         path0 += '/'
               allpath.append(path0)
            else:
-              print "WARNING: file 'out' not found in",path0
+              print("WARNING: file 'out' not found in",path0)
         if allpath==[]:
-           print "no file 'out' found"
+           print("no file 'out' found")
            sys.exit()
 
         if len(sys.argv)>2:
@@ -58,7 +59,7 @@ if len(sys.argv)>1:
               nopt = nopt-1
               opt = opt[:-1]
            opt = [int(i) for i in opt]
-           print opt
+           print(opt)
            if opt[-1]==-1:
               refresh = False
               nopt = nopt-1
@@ -75,14 +76,14 @@ if len(sys.argv)>1:
               dos=False
            
 else:
-	print 'Please give input path'
+	print('Please give input path')
 	sys.exit()
 
 # consistency check and names
 names = []
 for i in opt:
    if i not in [0,1,2,3]:
-      print 'Found non existing option:',i
+      print('Found non existing option:',i)
       sys.exit()
    else:
       if i==0:
@@ -95,10 +96,10 @@ for i in opt:
           names.append('total moment')
 
 # print input
-print
-print "  your input options:", opt, "; refresh=", refresh,"; DOS=",dos
-print "  path(s):",allpath
-print
+print()
+print("  your input options:", opt, "; refresh=", refresh,"; DOS=",dos)
+print("  path(s):",allpath)
+print()
 
 
 
@@ -108,14 +109,14 @@ def read_rms_data(path0):
    ### rms
    try:
       f = subprocess.check_output('grep aver '+path0+outfile,shell=True).split('\n')
-      rms = array([float((i.split()[-1]).replace('D','e').replace('\n','')) for i in f if i<>''])
+      rms = array([float((i.split()[-1]).replace('D','e').replace('\n','')) for i in f if i!=''])
    except:
       rms = []
    
    ### charge neutrality
    try:
       f = subprocess.check_output('grep neutr '+path0+outfile,shell=True).split('\n')
-      neut = array([float((i.split()[-1]).replace('D','e').replace('\n','')) for i in f if i<>''])
+      neut = array([float((i.split()[-1]).replace('D','e').replace('\n','')) for i in f if i!=''])
    except:
       neut = []
    # check if neutrality info is available (not there in case of impurity code output)
@@ -124,19 +125,19 @@ def read_rms_data(path0):
         j = 0
         for i in range(nopt+1):
            if opt[i]==2: j=i
-        print 'removing option', opt.pop(j), names.pop(j)
+        print('removing option', opt.pop(j), names.pop(j))
 
    ### read total energy
    try:
       f = subprocess.check_output("grep 'TOTAL ENERGY' "+path0+outfile,shell=True).split('\n')
-      etot = array([float((i.split()[-1]).replace('D','e').replace('\n','')) for i in f if i<>''])
+      etot = array([float((i.split()[-1]).replace('D','e').replace('\n','')) for i in f if i!=''])
    except:
       etot = []
    
    ### moment 
    try:
       f = subprocess.check_output("grep 'L m' "+path0+outfile,shell=True).split('\n')
-      mom = array([float((i.split()[-1]).replace('D','e').replace('\n','')) for i in f if i<>''])
+      mom = array([float((i.split()[-1]).replace('D','e').replace('\n','')) for i in f if i!=''])
    except:
       mom = []
    # check if moment info is available
@@ -144,14 +145,14 @@ def read_rms_data(path0):
         nopt = nopt-1
         for i in range(nopt+1):
            if opt[i]==3: j=i
-        print 'removing option', opt.pop(j), names.pop(j)
+        print('removing option', opt.pop(j), names.pop(j))
    else:
       try:
          f = subprocess.check_output("grep 'ITERATION ' "+path0+outfile,shell=True).split('\n')
-         tmp = array([float((i.split()[1]).replace('D','e').replace('\n','')) for i in f if 'SCF' not in i and i<>''])
+         tmp = array([float((i.split()[1]).replace('D','e').replace('\n','')) for i in f if 'SCF' not in i and i!=''])
       except:
          tmp=[]
-      if tmp<>[] and 'out_magneticmoments' in os.listdir(path0):
+      if tmp!=[] and 'out_magneticmoments' in os.listdir(path0):
          it = int(tmp[-1])
          tmp = loadtxt(path0+'out_magneticmoments')
          ncls = len(tmp)/it
@@ -176,9 +177,9 @@ def read_rms_data(path0):
             natyp = int(inp[natyp].split('NATYP=')[1])
          try:
             tmp2 = subprocess.check_output("grep 'm_spin' "+path0+outfile+" -A"+str(natyp), shell=True).replace('TOT','').split('\n')
-            if tmp2<>'':
+            if tmp2!='':
               tmp2 = tmp2#[-natyp-1:]
-              tmp2 = array([float(i.split()[2]) for i in tmp2 if i<>'' and 'dn' not in i and i<>'--'])
+              tmp2 = array([float(i.split()[2]) for i in tmp2 if i!='' and 'dn' not in i and i!='--'])
               tmp2 = tmp2.reshape(-1,natyp)
               mom = array([mom]+[tmp2[:,i] for i in range(len(tmp2[0]))])
          except:

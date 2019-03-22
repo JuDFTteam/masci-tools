@@ -20,6 +20,7 @@ Plotting utility to visualize the output of the voronoi code.
 Reads files 'vertices.dat' to extract the vertices of the shapefunctions and 'positions.dat' (done in 'read_shapefun' function)
 Then creates a simple matplotlib image to show the shapefunctions using the 'plot_shapefun' function.
 """
+from __future__ import print_function
 
 from numpy import array, shape
 from sys import argv
@@ -34,7 +35,7 @@ if len(argv)>1:
   mode = argv[1]
 
 if mode not in ['all','single']:
-  print 'ERROR: illegal mode chosen. Only all or single can be used'
+  print('ERROR: illegal mode chosen. Only all or single can be used')
   sys.exit()
 
 pos, vertices = read_shapefun('.')

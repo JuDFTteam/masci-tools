@@ -4,6 +4,7 @@
 # edited by Philipp Ruessmann 2014
 # added averaging of spin up/down by Philipp Sep. 2015
 
+from __future__ import print_function
 from numpy import *
 from sys import argv,exit
 
@@ -20,7 +21,7 @@ elif mode=='shape':
 
 def iatom2shape():
   atominfolines = open('inputcard').readlines()
-  print len(atominfolines)
+  print(len(atominfolines))
   starti = -1
   for i in range(len(atominfolines)):
     if 'ATOMINFO' in atominfolines[i]:
@@ -28,7 +29,7 @@ def iatom2shape():
   icount=2
   listatom=[]
   while (not ('---' in atominfolines[starti+icount])):
-    print
+    print()
     listatom.append(int(atominfolines[starti+icount].split()[8]))
     icount = icount +1
   return listatom
@@ -37,10 +38,10 @@ def iatom2shape_2016():
   inputcard = open('inputcard').readlines()
   try:
      natyp = [ int(line.split('=')[1].split()[0]) for line in inputcard if 'NAEZ' in line][0]
-     print 'natyp v1:', natyp
+     print('natyp v1:', natyp)
   except:
      natyp = [ int(line.split('=')[1].split()[0]) for line in inputcard if 'NATYP' in line][0]
-     print 'natyp v2:', natyp
+     print('natyp v2:', natyp)
   try:
      ntc_iline = [iline for iline in range(len(inputcard)) if '<SHAPE>' in inputcard[iline]][0]
      ntc_line_start = inputcard[ntc_iline].find('<SHAPE>')
@@ -64,7 +65,7 @@ def check_potstart(str1,shape_ver='new'):
     else:
         check1= (len(str1)==11)
   else:
-    print 'mode error'
+    print('mode error')
     exit()
   return check1
 
@@ -91,8 +92,8 @@ def read_pot_values(lstart, lstop):
     snew = []
     if il==lpotstart:
       dl = len(s)/4
-      print dl
-      print len(s)
+      print(dl)
+      print(len(s))
     snew.append(s[:dl])
     if len(s)>21:
       snew.append(s[dl:2*dl])
@@ -100,7 +101,7 @@ def read_pot_values(lstart, lstop):
       snew.append(s[2*dl:3*dl])
     if len(s)>61:
       snew.append(s[3*dl:-1])
-    print snew
+    print(snew)
     potential.append(snew)
   #now array potential contains potential values as float numbers
   return potentialheader,potential
@@ -122,12 +123,12 @@ def pot2newdata(header, pot):
 def calc_coulomb_spin_pot(pot1, pot2):
   """ calculate spin mixing and coulomb part of potential """
   # first do consistency checks
-  if len(pot1)<>len(pot2):
+  if len(pot1)!=len(pot2):
     exit('ERROR: potential1 and potential2 inconsistent in calc_coulomb_spin_pot')
   # now calculate coulomb part and spin part and save them in vc and vs
   vc, vs = [],[]
   for i in range(len(pot1)):
-    if len(pot1)<>len(pot2):
+    if len(pot1)!=len(pot2):
       exit('ERROR: potential1 and potential2 inconsistent in calc_coulomb_spin_pot')
     tmp1, tmp2 = pot1[i], pot2[i]
     tmpvc, tmpvs = [],[]
@@ -147,12 +148,12 @@ def calc_coulomb_spin_pot(pot1, pot2):
 def combine_potentials(pot1, pot2, alpha):
   """ combine potentials: pot_out = pot1 + alpha*pot2 """
   # first do consistency checks
-  if len(pot1)<>len(pot2):
+  if len(pot1)!=len(pot2):
     exit('ERROR: potential1 and potential2 inconsistent in combine_potentials')
   # now calculate coulomb part and spin part and save them in vc and vs
   potout = []
   for i in range(len(pot1)):
-    if len(pot1)<>len(pot2):
+    if len(pot1)!=len(pot2):
       exit('ERROR: potential1 and potential2 inconsistent in combine_potentials')
     tmp1, tmp2 = pot1[i], pot2[i]
     tmppot = []
@@ -166,22 +167,22 @@ def combine_potentials(pot1, pot2, alpha):
 
 
 def combine_header(head1, head2, alpha):
-  print len(head1),len(head2),alpha
+  print(len(head1),len(head2),alpha)
   # combine core energies
   headnew1 = head1[:7]
   ne = int(head1[6].split()[0])
   ne2 = int(head2[6].split()[0])
-  if ne<>ne2:
+  if ne!=ne2:
     exit('ERROR: number of core levels inconsistent')
   for i in range(ne):
     tmp1 = head1[7+i].replace('D','E').split()
     tmp2 = head2[7+i].replace('D','E').split()
     tmp = ('%5i%20.11e\n'%(int(tmp1[0]), ((float(tmp1[1])+float(tmp2[1]))/2. + alpha*((float(tmp1[1])-float(tmp2[1]))/2.)) )).replace('e','D')
     headnew1.append( tmp )
-  print 'rest length',len(head1[7+ne:])
+  print('rest length',len(head1[7+ne:]))
   for i in range(len(head1[7+ne:])):
     headnew1.append(head1[7+ne:][i])
-  print ne
+  print(ne)
   return headnew1
 
 
@@ -202,12 +203,12 @@ if mode=='shape' and len(index1)<1:
             if len(index1)>1: index2.append(i-1)
         index2.append(i)
 
-print index1
-print index2
+print(index1)
+print(index2)
 
-print 'Potential file read'
-print 'found %i potentials in file'%len(index1)
-print ''
+print('Potential file read')
+print('found %i potentials in file'%len(index1))
+print('')
 
 tempsave=-1
 order=range(len(index1))
@@ -216,31 +217,31 @@ while 1:
   for i in range(len(order)):
     #print '%3i'%i,data[index1[order[i]]][:-1]
     if 'GENERAL POTENTIAL' in data[index1[order[i]]][:-1]:
-       print '%3i'%i,data[index1[order[i]]][:-1],data[index1[order[i]]+1][:-1]
+       print('%3i'%i,data[index1[order[i]]][:-1],data[index1[order[i]]+1][:-1])
     else:
-       print '%3i'%i,data[index1[order[i]]][:-1]
-  print '  ***************************'
-  print '  *  ( 0) Stop and Save         *'
-  print '  *  ( 1) Delete                *'
-  print '  *  ( 2) Copy                  *'
-  print '  *  ( 3) Cut                   *'
-  print '  *  ( 4) Paste                 *'
-  print '  *  ( 5) Copy  [multiline]     *'
-  print '  *  ( 6) Cut   [multiline]     *'
-  print '  *  ( 7) Del   [multiline]     *'
-  print '  *  ( 8) Paste [multiple]      *'
-  print '  *  ( 9) swap lines            *'
-  print '  *  (10) read scoef nonmag host*'
-  print '  *  (11) flip magnetic moments *'
-  print '  *  (12) Input new list        *'
-  print '  *  (13) Nspin=1 -> 2  :       *'
-  print '  *  (14) read scoef mag host   *'
-  print '  *  (15) average spin up/down  *'
-  print '  *  (16) scale up mag. moment  *'
-  print '  ***************************'
+       print('%3i'%i,data[index1[order[i]]][:-1])
+  print('  ***************************')
+  print('  *  ( 0) Stop and Save         *')
+  print('  *  ( 1) Delete                *')
+  print('  *  ( 2) Copy                  *')
+  print('  *  ( 3) Cut                   *')
+  print('  *  ( 4) Paste                 *')
+  print('  *  ( 5) Copy  [multiline]     *')
+  print('  *  ( 6) Cut   [multiline]     *')
+  print('  *  ( 7) Del   [multiline]     *')
+  print('  *  ( 8) Paste [multiple]      *')
+  print('  *  ( 9) swap lines            *')
+  print('  *  (10) read scoef nonmag host*')
+  print('  *  (11) flip magnetic moments *')
+  print('  *  (12) Input new list        *')
+  print('  *  (13) Nspin=1 -> 2  :       *')
+  print('  *  (14) read scoef mag host   *')
+  print('  *  (15) average spin up/down  *')
+  print('  *  (16) scale up mag. moment  *')
+  print('  ***************************')
 
   mode1=int(raw_input('Input: '))
-  print mode1
+  print(mode1)
   if mode1==0: break
   if mode1==1:
     row1=int(raw_input('Row number:'))
@@ -258,12 +259,12 @@ while 1:
         row1=int(raw_input('Paste before number:'))
         order.insert(row1,tempsave)
       else:
-        print 'nothing in temp, copy first'
+        print('nothing in temp, copy first')
         raw_input('Continue')
     else:
       row1=int(raw_input('Paste before number:'))
-      print row1
-      print tempsave
+      print(row1)
+      print(tempsave)
       for i in reversed(range(len(tempsave))):
         order.insert(row1,tempsave[i])
   if mode1==5:
@@ -289,7 +290,7 @@ while 1:
         for i in range(row2):
           order.insert(row1,tempsave)
       else:
-        print 'nothing in temp, copy first'
+        print('nothing in temp, copy first')
         raw_input('Continue')
     else:
       row1=int(raw_input('Paste before number:'))
@@ -310,7 +311,7 @@ while 1:
         listnew=[]
         if mode=='shape':
           shapeorder = iatom2shape_2016()
-          print shapeorder
+          print(shapeorder)
         for line in filedata:
           if (len(line.split())>1):
             if mode=='pot':
@@ -318,15 +319,15 @@ while 1:
               if (nspintemp==2): listnew.append(int(line.split()[3])-1)
             elif mode=='shape':
               listnew.append(shapeorder[int(line.split()[3])-1]-1)
-        print 'new order list'
-        print listnew
-        print len(listnew)
+        print('new order list')
+        print(listnew)
+        print(len(listnew))
         order = listnew
   if mode1==11:
         npot=len(order)
         if npot%2!=0:
-          print'number of potentials is odd';exit()
-        print range(0,len(order),2)
+          print('number of potentials is odd');exit()
+        print(range(0,len(order),2))
         for i in range(0,len(order),2):
           ordertemp=order[i]
           order[i]=order[i+1]
@@ -346,7 +347,7 @@ while 1:
         listnew=[]
         if mode=='shape':
           shapeorder = iatom2shape_2016()
-          print shapeorder
+          print(shapeorder)
         for line in filedata:
           if (len(line.split())>1):
             if mode=='pot':
@@ -354,20 +355,20 @@ while 1:
               listnew.append( (int(line.split()[3])-1)*2+1 )
             elif mode=='shape':
               listnew.append(shapeorder[int(line.split()[3])-1]-1)
-        print 'new order list'
-        print listnew
-        print len(listnew)
+        print('new order list')
+        print(listnew)
+        print(len(listnew))
         order = listnew
   if mode1==15:
-        print 'mode 15 chosen'
-        if len(order)%2<>0:
+        print('mode 15 chosen')
+        if len(order)%2!=0:
           exit('ERROR: odd number of potentials')
         for i in range(len(order)/2):
-          print i
+          print(i)
           head1, pot1 = read_pot_values(index1[2*i+0],index2[2*i+0])
           head2, pot2 = read_pot_values(index1[2*i+1],index2[2*i+1])
-          if head1[1:7]<>head2[1:7]:
-            print head1, head2
+          if head1[1:7]!=head2[1:7]:
+            print(head1, head2)
             exit('ERROR: potential header for spin up and down do not match!!!')
           vc, vs = calc_coulomb_spin_pot(pot1, pot2)
           head1[0] = head1[0].replace('up','averaged')
@@ -376,35 +377,35 @@ while 1:
           head1[0] = head1[0].replace('DOWN','averaged')
           headnew1 = combine_header(head1, head2, 0)
           headnew2 = combine_header(head1, head2, 0)
-          print len(headnew1),len(head1),len(head2)
+          print(len(headnew1),len(head1),len(head2))
           newdat1 = pot2newdata(headnew1,vc)
           newdat2 = pot2newdata(headnew2,vc)
-          print len(headnew1),len(head1),len(head2), len(newdat1), len(newdat2), len(vc), len(vs)
-          print i, index1, index2
+          print(len(headnew1),len(head1),len(head2), len(newdat1), len(newdat2), len(vc), len(vs))
+          print(i, index1, index2)
           data[index1[2*i]:index2[2*i]] = newdat1
           data[index1[2*i+1]:index2[2*i+1]] = newdat2
   if mode1==16:
-        if len(order)%2<>0:
+        if len(order)%2!=0:
           exit('ERROR: odd number of potentials')
-        print 'scale magnetic moment up: newpot_1/2 = (v_1+v_2)/2 +/- alpha*(v_1-v_2)/2'
+        print('scale magnetic moment up: newpot_1/2 = (v_1+v_2)/2 +/- alpha*(v_1-v_2)/2')
         alpha = float(raw_input('alpha: '))
         for i in range(len(order)/2):
-          print i
+          print(i)
           head1, pot1 = read_pot_values(index1[2*i+0],index2[2*i+0])
           head2, pot2 = read_pot_values(index1[2*i+1],index2[2*i+1])
-          if head1[1:7]<>head2[1:7]:
-            print head1, head2
+          if head1[1:7]!=head2[1:7]:
+            print(head1, head2)
             exit('ERROR: potential header for spin up and down do not match!!!')
           vc, vs = calc_coulomb_spin_pot(pot1, pot2)
           pot_new1 = combine_potentials(vc,vs, alpha)
           pot_new2 = combine_potentials(vc,vs,-alpha)
           headnew1 = combine_header(head1, head2, alpha)
           headnew2 = combine_header(head2, head1, alpha)
-          print len(headnew1),len(head1),len(head2)
+          print(len(headnew1),len(head1),len(head2))
           newdat1 = pot2newdata(headnew1,pot_new1)
           newdat2 = pot2newdata(headnew2,pot_new2)
-          print len(headnew1),len(head1),len(head2), len(newdat1), len(newdat2), len(vc), len(vs)
-          print i, index1, index2
+          print(len(headnew1),len(head1),len(head2), len(newdat1), len(newdat2), len(vc), len(vs))
+          print(i, index1, index2)
           data[index1[2*i]:index2[2*i]] = newdat1
           data[index1[2*i+1]:index2[2*i+1]] = newdat2
 
@@ -425,5 +426,5 @@ elif mode=='shape':
   datanew += tmp
   open('shapefun_new','w').writelines(datanew)
 else:
-  print 'error';exit()
+  print('error');exit()
 
