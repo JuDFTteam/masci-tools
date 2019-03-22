@@ -33,6 +33,10 @@ install:
 script: 
     - pip freeze
     - cd masci_tools/tests/ && ./run_all.sh
+after_success:
+  # upload code coverage report
+  - pip install codecov
+  - codecov
 
 git:
   depth: 3
