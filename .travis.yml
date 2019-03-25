@@ -29,7 +29,7 @@ after_success:
   - pip install codecov
   - codecov
   - openssl aes-256-cbc -K $encrypted_88038449450e_key -iv $encrypted_88038449450e_iv -in publish_to_pypi.sh.enc -out publish_to_pypi.sh -d
-  - pip install twine && ./publish_to_pypi.sh
+  - cd ../../pip && install twine && ./publish_to_pypi.sh
 
 git:
   depth: 3
