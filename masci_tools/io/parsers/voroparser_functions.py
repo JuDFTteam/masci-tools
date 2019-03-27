@@ -6,7 +6,7 @@ from builtins import range
 import io
 import sys
 from masci_tools.io.common_functions import (get_corestates_from_potential, get_highest_core_state, search_string,
-                                             get_version_info, get_Ry2eV, get_ef_from_potfile)
+                                             get_version_info, get_Ry2eV, get_ef_from_potfile, open_general)
 from masci_tools.io.parsers.kkrparser_functions import get_core_states
 
 """
@@ -24,8 +24,7 @@ __version__ = 1.0
 def get_valence_min(outfile='out_voronoi'):
     """Construct minimum of energy contour (between valence band bottom and core states)"""
     from numpy import array
-    if type(outfile)!=io.TextIOWrapper:
-        f = open(outfile)
+    f = open_general(outfile)
     with f: # make sure the file is properly closed
         txt = f.readlines()
         searchstr = 'All other states are above'
@@ -215,8 +214,7 @@ def parse_voronoi_output(out_dict, outfile, potfile, atominfo, radii, inputfile)
 
 
 def startpot_jellium(outfile):
-    if type(outfile)!=io.TextIOWrapper:
-        f = open(outfile)
+    f = open_general(outfile)
     with f: # make sure the file is properly closed
         tmptxt = f.readlines()
     itmp = search_string('JELLSTART POTENTIALS', tmptxt)
@@ -227,8 +225,7 @@ def startpot_jellium(outfile):
 
 
 def get_volumes(outfile):
-    if type(outfile)!=io.TextIOWrapper:
-        f = open(outfile)
+    f = open_general(outfile)
     with f: # make sure the file is properly closed
         tmptxt = f.readlines()
 
@@ -249,8 +246,7 @@ def get_volumes(outfile):
 
 
 def get_cls_info(outfile):
-    if type(outfile)!=io.TextIOWrapper:
-        f = open(outfile)
+    f = open_general(outfile)
     with f: # make sure the file is properly closed
         tmptxt = f.readlines()
         f.close()
@@ -274,8 +270,7 @@ def get_cls_info(outfile):
 
 
 def get_shape_array(outfile, atominfo):
-    if type(outfile)!=io.TextIOWrapper:
-        f = open(outfile)
+    f = open_general(outfile)
     with f: # make sure the file is properly closed
         txt = f.readlines()
     #naez/natyp number of items either one number (=ishape without cpa or two =[iatom, ishape] with CPA)
@@ -304,9 +299,7 @@ def get_shape_array(outfile, atominfo):
         raise ValueError('Neither NAEZ nor NATYP found in %s'%outfile)
 
     # read shape index from atominfo file
-
-    if type(outfile)!=io.TextIOWrapper:
-        f = open(atominfo)
+    f = open_general(atominfo)
     with f: # make sure the file is properly closed
         tmptxt = f.readlines()
 
@@ -323,8 +316,7 @@ def get_shape_array(outfile, atominfo):
 
 
 def get_radii(naez, radii):
-    if type(radii)!=io.TextIOWrapper:
-        f = open(radii)
+    f = open_general(radii)
     with f: # make sure the file is properly closed
         txt = f.readlines()
     results = []
@@ -338,8 +330,7 @@ def get_radii(naez, radii):
 
 
 def get_fpradius(naez, atominfo):
-    if type(atominfo)!=io.TextIOWrapper:
-        f = open(atominfo)
+    f = open_general(atominfo)
     with f: # make sure the file is properly closed
         txt = f.readlines()
     itmp = search_string('<FPRADIUS>', txt) + 1
@@ -353,8 +344,7 @@ def get_fpradius(naez, atominfo):
 
 
 def get_alat(inpfile):
-    if type(inpfile)!=io.TextIOWrapper:
-        f = open(inpfile)
+    f = open_general(inpfile)
     with f: # make sure the file is properly closed
         txt = f.readlines()
     itmp = search_string('ALATBASIS', txt)
@@ -363,8 +353,7 @@ def get_alat(inpfile):
 
 
 def get_radial_meshpoints(potfile):
-    if type(potfile)!=io.TextIOWrapper:
-        f = open(potfile)
+    f = open_general(potfile)
     with f: # make sure the file is properly closed
         txt = f.readlines()
     itmp = 0

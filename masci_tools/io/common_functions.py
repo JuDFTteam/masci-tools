@@ -18,6 +18,25 @@ __version__ = 1.0
 ####################################################################################
 
 #helper functions used in calculation, parser etc.
+
+def open_general(filename_or_handle):
+    """
+    Open a file directly from a path or use a file handle if that is given.
+    Also take care of closed files by reopenning them.
+    This is intended to be used like this::
+
+        f = open_general(outfile)
+        with f: # make sure the file is properly closed
+            txt = f.readlines()
+    """
+    if type(filename_or_handle)!=io.TextIOWrapper and type(filename_or_handle)!=file:
+        f = open(filename_or_handle)
+    else:
+        f = filename_or_handle
+        if f.closed: # reopen file if it was closed before
+            f = open(f.name, f.mode)
+    return f
+
 def get_alat_from_bravais(bravais, is3D=True):
     from numpy import sqrt, sum
     bravais_tmp = bravais
@@ -114,8 +133,7 @@ def vec_to_angles(vec):
 
 
 def get_version_info(outfile):
-    if type(outfile)!=io.TextIOWrapper:
-        f = open(outfile)
+    f = open_general(outfile)
     with f:
         tmptxt = f.readlines()
     itmp = search_string('Code version:', tmptxt)
@@ -136,8 +154,7 @@ def get_version_info(outfile):
 def get_corestates_from_potential(potfile='potential'):
     """Read core states from potential file"""
     from numpy import zeros
-    if type(potfile)!=io.TextIOWrapper:
-        f = open(potfile)
+    f = open_general(potfile)
     with f:
         txt = f.readlines()
 
@@ -200,8 +217,7 @@ def interpolate_dos(dospath, return_original=False, ):
     """
     from numpy import array, real, imag
 
-    if type(dospath+'/complex.dos')!=io.TextIOWrapper:
-        f = open(dospath+'/complex.dos', 'r')
+    f = open_general(dospath+'/complex.dos')
     with f:
         text = f.readline() # dummy readin of header, may be replaced later
         npot = int(f.readline().split()[0])
@@ -276,8 +292,7 @@ def get_ef_from_potfile(potfile):
     """
     extract fermi energy from potfile
     """
-    if type(potfile)!=io.TextIOWrapper:
-        f = open(potfile)
+    f = open_general(potfile)
     with f:
         txt = f.readlines()
     ef = float(txt[3].split()[1])
