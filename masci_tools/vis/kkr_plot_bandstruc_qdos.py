@@ -3,10 +3,10 @@ from __future__ import division
 from builtins import range
 from matplotlib import cm
 
-def dispersionplot(p0='./', totonly=True, s=20, ls_ef= ':', lw_ef=1, units='eV_rel', noefline=False, 
-                   color='', reload_data=False, clrbar=True, logscale=True, nosave=False, atoms=[], 
-                   ratios=False, atoms2=[], noscale=False, newfig=False, cmap=None, alpha=1.0, 
-                   qcomponent=-2, clims=[], xscale=1., raster=True, atoms3=[], alpha_reverse=False, 
+def dispersionplot(p0='./', totonly=True, s=20, ls_ef= ':', lw_ef=1, units='eV_rel', noefline=False,
+                   color='', reload_data=False, clrbar=True, logscale=True, nosave=False, atoms=[],
+                   ratios=False, atoms2=[], noscale=False, newfig=False, cmap=None, alpha=1.0,
+                   qcomponent=-2, clims=[], xscale=1., raster=True, atoms3=[], alpha_reverse=False,
                    return_data=False, xshift=0, yshift=0, plotmode='pcolor', ptitle=None):
     """ plotting routine for qdos files - dispersion (E vs. q) """
     # import dependencies
@@ -16,6 +16,11 @@ def dispersionplot(p0='./', totonly=True, s=20, ls_ef= ':', lw_ef=1, units='eV_r
     from os.path import isdir, getctime
     from time import ctime
     from subprocess import check_output
+
+    # deal with input of file handle instead of path (see plot_kkr of aiida_kkr)
+    if type(p0)!=str:
+        pathname_with_file = p0.name
+        p0 = pathname_with_file.replace('/qdos.01.1.dat','') #dos.atom1
 
     if cmap==None:
        cmap = cm.viridis
@@ -124,7 +129,7 @@ def dispersionplot(p0='./', totonly=True, s=20, ls_ef= ':', lw_ef=1, units='eV_r
 
     if yshift != 0:
        y += yshift
-    
+
     colors = cmap(data/data.max())
     if ratios and atoms3!=[]:
        colors[:,-1] = abs(sum(d3[:,5:], axis=1))/abs(sum(d3[:,5:], axis=1)).max()
@@ -153,7 +158,7 @@ def dispersionplot(p0='./', totonly=True, s=20, ls_ef= ':', lw_ef=1, units='eV_r
           axhline(ef, ls=ls_ef, lw=lw_ef, color='grey')
        else:
           axhline(ef, color=color, ls=ls_ef, lw=lw_ef)
-    
+
     # set axis labels
     xlabel(xlab)
     ylabel(ylab)
@@ -169,5 +174,3 @@ def dispersionplot(p0='./', totonly=True, s=20, ls_ef= ':', lw_ef=1, units='eV_r
        data2 = abs(sum(d2[:,5:], axis=1))
        data3 = abs(sum(d3[:,5:], axis=1))
        return x, y, data, data2, data3
-
-
