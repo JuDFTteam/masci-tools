@@ -22,7 +22,7 @@ class Test_voronoi_parser_functions(object):
     atominfo = path0+'atominfo.txt'
     radii = path0+'radii.dat'
     inputfile = path0+'inputcard'
-    
+
     def test_complete_voro_output(self):
         """
         Parse complete output of voronoi calculation and compare out_dict, grouping, warnings
@@ -35,7 +35,7 @@ class Test_voronoi_parser_functions(object):
         assert out_dict == dref
         groups = [i for i in list(out_dict.keys()) if 'group' in i]
         assert set(groups) == set(grouping_ref)
-        
+
     def test_missing_outfile(self):
         """
         Parse output where out_voronoi is missing and compare error messages/rest of out_dict
@@ -47,7 +47,7 @@ class Test_voronoi_parser_functions(object):
         assert not success
         assert msg_list == ['Error parsing output of voronoi: Version Info', "Error parsing output of voronoi: 'EMIN'", 'Error parsing output of voronoi: Cluster Info', 'Error parsing output of voronoi: Jellium startpot', 'Error parsing output of voronoi: SHAPE Info', 'Error parsing output of voronoi: Volume Info', 'Error parsing output of voronoi: radii.dat Info', 'Error parsing output of voronoi: full potential radius']
         assert out_dict == dref2
-        
+
     def test_missing_atominfo(self):
         """
         Parse output where atominfo.txt is missing and compare error messages/rest of out_dict
@@ -73,7 +73,7 @@ class Test_voronoi_parser_functions(object):
         assert msg_list == ['Error parsing output of voronoi: alat']
         assert out_dict == dref2
         return out_dict
-        
+
     def test_missing_potfile(self):
         """
         Parse output where output.pot is missing and compare error messages/rest of out_dict
@@ -86,7 +86,7 @@ class Test_voronoi_parser_functions(object):
         assert msg_list == ["Error parsing output of voronoi: 'EMIN'", 'Error parsing output of voronoi: core_states', 'Error parsing output of voronoi: radial meshpoints']
         assert out_dict == dref2
         return out_dict
-        
+
     def test_missing_radii(self):
         """
         Parse output where radii.dat is missing and compare error messages/rest of out_dict
@@ -99,4 +99,3 @@ class Test_voronoi_parser_functions(object):
         assert msg_list == ['Error parsing output of voronoi: radii.dat Info']
         assert out_dict == dref2
         return out_dict
-

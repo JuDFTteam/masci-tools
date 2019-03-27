@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Here commonly used functions that do not need aiida-stuff (i.e. can be tested 
+Here commonly used functions that do not need aiida-stuff (i.e. can be tested
 without a database) are collected.
 """
 from __future__ import print_function
 from __future__ import division
-
 from builtins import range
+import io
+
 __copyright__ = (u"Copyright (c), 2018, Forschungszentrum Jülich GmbH,"
                  "IAS-1/PGI-1, Germany. All rights reserved.")
 __license__ = "MIT license, see LICENSE.txt file"
@@ -24,16 +25,16 @@ def get_alat_from_bravais(bravais, is3D=True):
         #take only in-plane lattice to find maximum as alat
         bravais_tmp = bravais[:2,:2]
     return sqrt(sum(bravais_tmp**2, axis=1)).max()
-    
+
 def get_Ang2aBohr():
     return 1.8897261254578281
-    
+
 def get_aBohr2Ang():
     return 1/get_Ang2aBohr()
 
 def get_Ry2eV():
     return 13.605693009
-    
+
 def search_string(searchkey, txt):
     iline = 0
     for line in txt:
@@ -46,14 +47,14 @@ def search_string(searchkey, txt):
 def angles_to_vec(magnitude, theta, phi):
     """
     convert (magnitude, theta, phi) to (x,y,z)
-    
+
     theta/phi need to be in radians!
-    
+
     Input can be single number, list of numpy.ndarray data
-    Returns x,y,z vector 
+    Returns x,y,z vector
     """
     from numpy import ndarray, array, cos, sin
-    
+
     # correct data type if necessary
     if type(magnitude) == list:
         magnitude = array(magnitude)
@@ -71,7 +72,7 @@ def angles_to_vec(magnitude, theta, phi):
     if type(phi) != ndarray:
         phi = array([phi])
         single_value_input = True
-        
+
     vec = []
     for ivec in range(len(magnitude)):
         r_inplane = magnitude[ivec]*sin(theta[ivec])
@@ -79,11 +80,11 @@ def angles_to_vec(magnitude, theta, phi):
         y = r_inplane*sin(phi[ivec])
         z = cos(theta[ivec])*magnitude[ivec]
         vec.append([x,y,z])
-    vec = array(vec)   
-    
+    vec = array(vec)
+
     if single_value_input:
         vec = vec[0]
-        
+
     return vec
 
 
@@ -98,7 +99,7 @@ def vec_to_angles(vec):
         multiple_entries = False
     else:
         multiple_entries = True
-        
+
     for ivec in range(len(vec)):
         phi.append(arctan2(vec[ivec, 1], vec[ivec, 0]))
         r_inplane = sqrt(vec[ivec, 0]**2+vec[ivec, 1]**2)
@@ -109,13 +110,14 @@ def vec_to_angles(vec):
     else:
         magnitude, theta, phi = magnitude[0], theta[0], phi[0]
     return magnitude, theta, phi
-    
+
 
 
 def get_version_info(outfile):
-    f = open(outfile)
-    tmptxt = f.readlines()
-    f.close()
+    if type(outfile)!=io.TextIOWrapper:
+        f = open(outfile)
+    with f:
+        tmptxt = f.readlines()
     itmp = search_string('Code version:', tmptxt)
     if itmp==-1: # try to find serial number from header of file
         itmp = search_string('# serial:', tmptxt)
@@ -134,7 +136,10 @@ def get_version_info(outfile):
 def get_corestates_from_potential(potfile='potential'):
     """Read core states from potential file"""
     from numpy import zeros
-    txt = open(potfile).readlines()
+    if type(potfile)!=io.TextIOWrapper:
+        f = open(potfile)
+    with f:
+        txt = f.readlines()
 
     #get start of each potential part
     istarts = [iline for iline in range(len(txt)) if 'POTENTIAL' in txt[iline]]
@@ -173,12 +178,12 @@ def get_highest_core_state(nstates, energies, lmoments):
 def interpolate_dos(dospath, return_original=False, ):
     """
     interpolation function copied from complexdos3 fortran code
-    
+
     Principle of DOS here: Two-point contour integration
     for DOS in the middle of the two points. The input DOS
     and energy must be complex. Parameter deltae should be
     of the order of magnitude of eim::
-        
+
               <-2*deltae->   _
                    /\        |     DOS=(n(1)+n(2))/2 + (n(1)-n(2))*eim/deltae
                   /  \       |
@@ -186,95 +191,94 @@ def interpolate_dos(dospath, return_original=False, ):
                 /      \     |
                /        \    |
         ------------------------ (Real E axis)
-    
+
     :param input: dospath, path where 'complex.dos' file can be found
-    
-    :returns: E_Fermi, numpy array of interpolated dos 
-    
+
+    :returns: E_Fermi, numpy array of interpolated dos
+
     :note: output units are in Ry!
     """
     from numpy import array, real, imag
-    
-    f = open(dospath+'/complex.dos', 'r')
-    text = f.readline() # dummy readin of header, may be replaced later
-    npot = int(f.readline().split()[0])
-    iemax = int(f.readline().split()[0])
-    lmax = int(f.readline().split()[0])
-    
-    dosnew_all_atoms = []
-    dos_all_atoms = []
-    
-    for i1 in range(npot):
-        #print('Reading potential',i1)
-        # Read header (not used)
-        for iheader in range(3):
-            text = f.readline()
-        
-        # extract EF
-        ef = float(f.readline().split()[7])
-        
-        # some more dummy lines
-        for iheader in range(5,9+1):
-            text = f.readline()
-        
-        # now header is done. start reading DOS
-        # Read dos: (total dos stored at DOS(LMAX+1,IE))
-        dos_l_cmplx = []
-        for ie in range(iemax):
-            tmpline = f.readline().replace('(','').replace(')','').replace(',','').split()
-            ez = float(tmpline[0])+1j*float(tmpline[1])
-            dostmp_complex = [[tmpline[len(tmpline)-2], tmpline[len(tmpline)-1]]]
-            dostmp_complex += [[tmpline[iline], tmpline[iline+1]] for iline in range(2,len(tmpline)-2,2)]
-            dostmp = [ez]+[float(ds[0])+1j*float(ds[1]) for ds in dostmp_complex]
-            dos_l_cmplx.append(dostmp)
-        dos_l_cmplx = array(dos_l_cmplx)
-        dos_l = imag(dos_l_cmplx.copy())
-        dos_l[:,0] = real(dos_l_cmplx.copy()[:,0])
-        dos_all_atoms.append(dos_l)
-        
-        # Compute and write out corrected dos at new (middle) energy points:
-        dosnew = []
-        ez = dos_l_cmplx[:,0]
-        for ie in range(1, iemax-1):
-            deltae = real(ez[ie+1] - ez[ie])
-            eim = imag(ez[ie])
-            enew = real(ez[ie]) # Real quantity
-        
-            tmpdos = [enew]
-            for ll in range(1,lmax+3):
-                t = (dos_l_cmplx[ie-1, ll]-dos_l_cmplx[ie+1, ll])*0.5*(0.0+eim*1j)/deltae
-                #print ie+1, ll,  dos_l_cmplx[ie, ll], deltae, eim, t, shape(dos_l_cmplx[ie]), lmax
-                #tmpdos.append(dos_l_cmplx[ie, ll] + 0.5*(dos_l_cmplx[ie-1, ll]-dos_l_cmplx[ie+1, ll])*(0.+1j*eim)/deltae)
-                tmpdos.append(dos_l_cmplx[ie, ll]+t)
-            tmpdos = array(tmpdos)
-            # build imaginary part (factor -1/2pi is already included)
-            tmpdos = array([real(tmpdos[0])]+[imag(ds) for ds in tmpdos[1:]])
-            dosnew.append(tmpdos)
-        
-        # save to big array with all atoms
-        dosnew_all_atoms.append(dosnew)
-        
-        if i1 != npot:
-            text = f.readline() # dummy line
-            
-    dosnew_all_atoms = array(dosnew_all_atoms)
-    dos_all_atoms = array(dos_all_atoms)
-    
-    # close complex.dos file
-    f.close()
-    
+
+    if type(dospath+'/complex.dos')!=io.TextIOWrapper:
+        f = open(dospath+'/complex.dos', 'r')
+    with f:
+        text = f.readline() # dummy readin of header, may be replaced later
+        npot = int(f.readline().split()[0])
+        iemax = int(f.readline().split()[0])
+        lmax = int(f.readline().split()[0])
+
+        dosnew_all_atoms = []
+        dos_all_atoms = []
+
+        for i1 in range(npot):
+            #print('Reading potential',i1)
+            # Read header (not used)
+            for iheader in range(3):
+                text = f.readline()
+
+            # extract EF
+            ef = float(f.readline().split()[7])
+
+            # some more dummy lines
+            for iheader in range(5,9+1):
+                text = f.readline()
+
+            # now header is done. start reading DOS
+            # Read dos: (total dos stored at DOS(LMAX+1,IE))
+            dos_l_cmplx = []
+            for ie in range(iemax):
+                tmpline = f.readline().replace('(','').replace(')','').replace(',','').split()
+                ez = float(tmpline[0])+1j*float(tmpline[1])
+                dostmp_complex = [[tmpline[len(tmpline)-2], tmpline[len(tmpline)-1]]]
+                dostmp_complex += [[tmpline[iline], tmpline[iline+1]] for iline in range(2,len(tmpline)-2,2)]
+                dostmp = [ez]+[float(ds[0])+1j*float(ds[1]) for ds in dostmp_complex]
+                dos_l_cmplx.append(dostmp)
+            dos_l_cmplx = array(dos_l_cmplx)
+            dos_l = imag(dos_l_cmplx.copy())
+            dos_l[:,0] = real(dos_l_cmplx.copy()[:,0])
+            dos_all_atoms.append(dos_l)
+
+            # Compute and write out corrected dos at new (middle) energy points:
+            dosnew = []
+            ez = dos_l_cmplx[:,0]
+            for ie in range(1, iemax-1):
+                deltae = real(ez[ie+1] - ez[ie])
+                eim = imag(ez[ie])
+                enew = real(ez[ie]) # Real quantity
+
+                tmpdos = [enew]
+                for ll in range(1,lmax+3):
+                    t = (dos_l_cmplx[ie-1, ll]-dos_l_cmplx[ie+1, ll])*0.5*(0.0+eim*1j)/deltae
+                    #print ie+1, ll,  dos_l_cmplx[ie, ll], deltae, eim, t, shape(dos_l_cmplx[ie]), lmax
+                    #tmpdos.append(dos_l_cmplx[ie, ll] + 0.5*(dos_l_cmplx[ie-1, ll]-dos_l_cmplx[ie+1, ll])*(0.+1j*eim)/deltae)
+                    tmpdos.append(dos_l_cmplx[ie, ll]+t)
+                tmpdos = array(tmpdos)
+                # build imaginary part (factor -1/2pi is already included)
+                tmpdos = array([real(tmpdos[0])]+[imag(ds) for ds in tmpdos[1:]])
+                dosnew.append(tmpdos)
+
+            # save to big array with all atoms
+            dosnew_all_atoms.append(dosnew)
+
+            if i1 != npot:
+                text = f.readline() # dummy line
+
+        dosnew_all_atoms = array(dosnew_all_atoms)
+        dos_all_atoms = array(dos_all_atoms)
+
     if return_original:
         return ef, dos_all_atoms, dosnew_all_atoms
     else:
         return ef, dosnew_all_atoms
-    
+
 def get_ef_from_potfile(potfile):
     """
     extract fermi energy from potfile
     """
-    f = open(potfile)
-    txt = f.readlines()
-    f.close()
+    if type(potfile)!=io.TextIOWrapper:
+        f = open(potfile)
+    with f:
+        txt = f.readlines()
     ef = float(txt[3].split()[1])
     return ef
-  
