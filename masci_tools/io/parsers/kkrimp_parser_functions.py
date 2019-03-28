@@ -40,7 +40,7 @@ class kkrimp_parser_functions(object):
             * 'epts', list of complex valued energy points
             * 'weights', list of complex valued weights for energy integration
         """
-        f = open(out_log)
+        f = open_general(out_log)
         tmptxt = f.readlines()
         f.close()
         econt = {}
