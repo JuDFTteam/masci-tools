@@ -42,4 +42,12 @@ if __name__ == '__main__':
             'pytest-mpl',
             'future',
         ],
+        extras_require={
+            "pre-commit": [
+                "pre-commit==1.11.0",
+                "yapf==0.24.0",
+                "prospector==0.12.11",
+                "pylint==1.9.3"
+            ]
+        },
     )

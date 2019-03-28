@@ -29,7 +29,17 @@ def open_general(filename_or_handle):
         with f: # make sure the file is properly closed
             txt = f.readlines()
     """
-    if type(filename_or_handle)!=io.TextIOWrapper and type(filename_or_handle)!=file:
+    reopen_file = False
+    # this is needed in order to make python2 and 3 work (in py3 file does not exist anymore)
+    import six
+    if six.PY2:
+        if type(filename_or_handle)!=io.TextIOWrapper and type(filename_or_handle)!=file:
+            reopen_file = True
+    else:
+        if type(filename_or_handle)!=io.TextIOWrapper:
+            reopen_file = True
+
+    if reopen_file:
         f = open(filename_or_handle)
     else:
         f = filename_or_handle
