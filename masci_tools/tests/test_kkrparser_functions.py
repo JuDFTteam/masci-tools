@@ -23,8 +23,8 @@ class Test_kkr_parser_functions(object):
     timing_file = path0+'out_timing.000.txt'
     potfile_out = path0+'out_potential'
     nonco_out_file = path0+'nonco_angle_out.dat'
-    
-    
+
+
     def test_complete_kkr_output(self):
         """
         Parse complete output of kkr calculation
@@ -38,7 +38,21 @@ class Test_kkr_parser_functions(object):
         assert msg_list == []
         groups = [i for i in list(out_dict.keys()) if 'group' in i]
         assert set(groups) == set(grouping_ref)
-    
+
+    def test_complete_kkr_output_filehandle(self):
+        """
+        Parse complete output of kkr calculation but using file handles as done in aiida-kkr
+        """
+        out_dict = {}
+        success, msg_list, out_dict = parse_kkr_outputfile(out_dict, open(outfile), open(outfile_0init), open(outfile_000), open(timing_file), open(potfile_out), open(nonco_out_file))
+        out_dict['parser_warnings'] = msg_list
+        assert success
+        assert set(out_dict.keys()) == set(dref.keys())
+        assert out_dict == dref
+        assert msg_list == []
+        groups = [i for i in list(out_dict.keys()) if 'group' in i]
+        assert set(groups) == set(grouping_ref)
+
     def test_mag_orbmom_kkr_output(self):
         """
         Parse complete output of kkr calculation with orbital moments
@@ -58,11 +72,11 @@ class Test_kkr_parser_functions(object):
         assert set(out_dict.keys()) == set(dref.keys())
         assert out_dict == dref
         assert msg_list == []
-    
+
     def test_nosoc_kkr_output(self):
         """
         Parse complete output of kkr calculation nosoc, magnetic
-        """        
+        """
         dref = {'nspin': 2, 'single_particle_energies': [0.3300528004408107, 1.5175235386980168, 38.20540868007191, 38.20540868007191, 1.5175235386980168, 0.3300528004408107], 'energy_contour_group': {'emin_unit': 'Rydberg', 'emin': -0.6, 'npol': 7, 'temperature_unit': 'Kelvin', 'n1': 3, 'n2': 32, 'n3': 3, 'number_of_energy_points': 45, 'temperature': 800.0}, 'energy': -69142.98679430102, 'warnings_group': {'number_of_warnings': 1, 'warnings_list': ['WARNING: HFIELD>0.0 found, set KHFIELD to 1']}, 'energy_unit': 'eV', 'charge_core_states_per_atom': [0.0, 0.0, 18.0, 18.0, 0.0, 0.0], 'ewald_sum_group': {'rsum_number_of_vectors': 425, 'gsum_cutoff_unit': '1/a_Bohr', 'rsum_number_of_shells': 74, 'gsum_cutoff': 11.98427, 'rsum_cutoff': 37.9646, 'gsum_number_of_shells': 1496, 'ewald_summation_mode': '3D', 'rsum_cutoff_unit': 'a_Bohr', 'gsum_number_of_vectors': 16167}, 'timings_group': {'main1a  ': 4.7957, 'main0': 0.976, 'main2': 0.5074, 'main1c  ': 10.57, 'Time in Iteration': 17.4351, 'main1b  ': 1.562}, 'core_states_group': {'energy_highest_lying_core_state_per_atom_unit': 'Rydberg', 'energy_highest_lying_core_state_per_atom': [None, None, None, None, -3.3808088817, -3.3808088774, -3.3808088817, -3.3808088774, None, None, None, None], 'number_of_core_states_per_atom': [0, 0, 0, 0, 5, 5, 5, 5, 0, 0, 0, 0], 'descr_highest_lying_core_state_per_atom': ['no core states', 'no core states', 'no core states', 'no core states', '3p', '3p', '3p', '3p', 'no core states', 'no core states', 'no core states', 'no core states']}, 'total_energy_Ry': -5081.91583836, 'direct_bravais_matrix_unit': 'alat', 'fermi_energy': 0.4928139832, 'convergence_group': {'rms': 0.23827, 'strmix': 0.01, 'calculation_converged': False, 'charge_neutrality': -0.275844, 'fermi_energy_all_iterations_units': 'Ry', 'dos_at_fermi_energy_all_iterations': [10.260433, 15.367202, 15.427578, 15.336628, 15.293781, 15.239316, 15.191993, 15.145917, 15.102739, 15.061817], 'rms_unit': 'unitless', 'charge_neutrality_all_iterations': [-4.90193, -0.576195, -0.303203, -0.369647, -0.330104, -0.324371, -0.309302, -0.298009, -0.286475, -0.275844], 'qbound': 0.0, 'rms_per_atom': [0.31264, 0.092533, 0.15846, 0.15846, 0.092533, 0.31264], 'rms_all_iterations': [2.3414, 0.23344, 0.23332, 0.2346, 0.23535, 0.23618, 0.23686, 0.23745, 0.23792, 0.23827], 'imix': 0, 'nsteps_exhausted': True, 'number_of_iterations_max': 10, 'total_spin_moment_all_iterations': [0.0, 0.0, -0.0, -0.0, -0.0, -0.0, -0.0, -0.0, -0.0, -0.0], 'idtbry': 40, 'charge_neutrality_unit': 'electrons', 'total_energy_Ry_all_iterations': [-5079.95660683, -5081.8656148, -5081.87192003, -5081.88104897, -5081.88827002, -5081.89505638, -5081.90107597, -5081.90651978, -5081.91141803, -5081.91583836], 'fcm': 20.0, 'number_of_iterations': 10, 'spin_moment_per_atom_all_iterations': [[0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, -0.0, -0.0, 0.0, 0.0], [0.0, 0.0, -0.0, -0.0, 0.0, 0.0], [0.0, 0.0, -0.0, -0.0, 0.0, 0.0], [0.0, 0.0, -0.0, -0.0, 0.0, 0.0], [0.0, 0.0, -0.0, -0.0, 0.0, 0.0], [0.0, 0.0, -0.0, -0.0, 0.0, 0.0], [0.0, 0.0, -0.0, -0.0, 0.0, 0.0], [0.0, 0.0, -0.0, -0.0, 0.0, 0.0], [0.0, 0.0, -0.0, -0.0, 0.0, 0.0]], 'fermi_energy_all_iterations': [0.459241, 0.4654901812, 0.4687657284, 0.472782771, 0.476380134, 0.4799276602, 0.4833209134, 0.4866002281, 0.4897616294, 0.4928139832], 'brymix': 0.01}, 'total_energy_Ry_unit': 'Rydberg', 'use_newsosol': False, 'two_pi_over_alat_internal_unit': '1/a_Bohr', 'magnetism_group': {'spin_moment_unit': 'mu_Bohr', 'total_spin_moment': -0.0, 'total_spin_moment_unit': 'mu_Bohr', 'spin_moment_per_atom': [0.0, 0.0, -0.0, -0.0, 0.0, 0.0]}, 'charge_core_states_per_atom_unit': 'electron charge', 'reciprocal_bravais_matrix': [[1.0, -0.707107], [0.0, 1.414214]], 'two_pi_over_alat_internal': 1.15850818, 'fermi_energy_units': 'Ry', 'alat_internal_unit': 'a_Bohr', 'charge_valence_states_per_atom_unit': 'electron charge', 'parser_warnings': [], 'kmesh_group': {'kmesh_energypoint': [4, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 3, 2, 1, 4, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 3, 2, 1], 'number_different_kmeshes': 4, 'number_kpoints_per_kmesh': {'n_kx': [10, 7, 5, 3], 'n_ky': [10, 7, 5, 3], 'n_kz': [10, 7, 5, 3], 'number_of_kpts': [310, 112, 45, 12]}}, 'direct_bravais_matrix': [[1.0, 0.0], [0.5, 0.707107]], 'symmetries_group': {'number_of_used_symmetries': 4, 'number_of_lattice_symmetries': 4, 'symmetry_description': {'C2z': {'has_inversion': 0, 'euler_angles': [180.0, 0.0, 0.0], 'is_unitary': 1}, 'IC2x': {'has_inversion': 1, 'euler_angles': [180.0, 180.0, 0.0], 'is_unitary': 1}, 'IC2y': {'has_inversion': 1, 'euler_angles': [0.0, 180.0, 0.0], 'is_unitary': 1}, 'E': {'has_inversion': 0, 'euler_angles': [0.0, 0.0, 0.0], 'is_unitary': 1}}}, 'alat_internal': 5.423514, 'timings_unit': 'seconds', 'total_charge_per_atom_unit': 'electron charge', 'code_info_group': {'code_version': 'v2.2-22-g4f8f5ff', 'calculation_serial_number': 'kkrjm_v2.2-22-g4f8f5ff_openmp_20171208160428', 'compile_options': 'openmp'}, 'single_particle_energies_unit': 'eV', 'dos_at_fermi_energy': 15.061817, 'charge_valence_states_per_atom': [0.004028, 0.229975, 7.628074000000002, 7.628074000000002, 0.229975, 0.004028], 'reciprocal_bravais_matrix_unit': '2*pi / alat', 'number_of_atoms_in_unit_cell': 6, 'total_charge_per_atom': [0.0, 0.0, 26.0, 26.0, 0.0, 0.0]}
         path0 = './files/kkr/kkr_run_slab_nosoc/'
         outfile = path0+'out_kkr'
@@ -128,7 +142,7 @@ class Test_kkr_parser_functions(object):
         out_dict['parser_warnings'] = msg_list
         assert not success
         assert msg_list == ['Error parsing output of KKR: core_states']
-        
+
 
     def test_missing_nonco_angles(self):
         """
@@ -154,7 +168,7 @@ class Test_kkr_parser_functions(object):
         err_cat, err_msg = (2, "Error! NONCO_ANGLES_OUT not found {}".format(fname))
         assert not check_error_category(err_cat, err_msg, {'use_newsosol': False})
         assert check_error_category(err_cat, err_msg, {'use_newsosol': True})
-        
+
     def test_parse_dosout(self):
         """
         Parse output of dos calculation since ouput changes slightly (e.g. no ewald sum)
@@ -165,7 +179,7 @@ class Test_kkr_parser_functions(object):
         outfile_000 = path0+'output.000.txt'
         timing_file = path0+'out_timing.000.txt'
         potfile_out = path0+'out_potential'
-        dref = {'nspin': 1, 'single_particle_energies': [489.0712275918133, 489.0712275918133, 489.0712275918133, 489.0712275918133], 'energy_contour_group': {'emin_unit': 'Rydberg', 'emin': -1.0, 'npol': 0, 'temperature_unit': 'Kelvin', 'n1': 0, 'n2': 21, 'n3': 0, 'number_of_energy_points': 21, 'temperature': 200.0}, 'energy': -390210.3784078399, 'warnings_group': {'number_of_warnings': 0, 'warnings_list': []}, 'energy_unit': 'eV', 'charge_core_states_per_atom': [], 'timings_group': {'main1c - serial part': 0.0054, 'main0': 0.136, 'main2': 0.2291, 'main1b - calctref13': 0.1511, 'main1c  ': 0.7165, 'main1a - tbref': 0.9809, 'Time in Iteration': 5.9128, 'main1b  ': 3.537, 'main1a  ': 1.4302}, 'core_states_group': {'energy_highest_lying_core_state_per_atom_unit': 'Rydberg', 'energy_highest_lying_core_state_per_atom': [-3.83243200276, -3.83243200276, -3.83243200276, -3.83243200276], 'number_of_core_states_per_atom': [8, 8, 8, 8], 'descr_highest_lying_core_state_per_atom': ['4p', '4p', '4p', '4p']}, 'total_energy_Ry': -28679.93406508, 'direct_bravais_matrix_unit': 'alat', 'fermi_energy': 1.05, 'convergence_group': {'strmix': 0.0, 'rms': 12.977, 'rms_unit': 'unitless', 'qbound': 0.0, 'calculation_converged': False, 'nsteps_exhausted': True, 'brymix': 0.01, 'charge_neutrality': -137.449522, 'number_of_iterations_max': 1, 'number_of_iterations': 1, 'rms_per_atom': [12.977, 12.977, 12.977, 12.977], 'fcm': 20.0, 'fermi_energy_all_iterations': [1.05], 'dos_at_fermi_energy_all_iterations': [3.672746], 'rms_all_iterations': [12.977], 'idtbry': 40, 'fermi_energy_all_iterations_units': 'Ry', 'charge_neutrality_unit': 'electrons', 'charge_neutrality_all_iterations': [-137.449522], 'total_energy_Ry_all_iterations': [-28679.93406508], 'imix': 0}, 'total_energy_Ry_unit': 'Rydberg', 'use_newsosol': False, 'two_pi_over_alat_internal_unit': '1/a_Bohr', 'charge_core_states_per_atom_unit': 'electron charge', 'reciprocal_bravais_matrix': [[1.0, 0.0, 0.0], [0.0, 1.0, 1.0], [0.0, 0.0, 0.0]], 'two_pi_over_alat_internal': 0.79844546, 'fermi_energy_units': 'Ry', 'alat_internal_unit': 'a_Bohr', 'charge_valence_states_per_atom_unit': 'electron charge', 'parser_warnings': [], 'kmesh_group': {'kmesh_energypoint': [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], 'number_different_kmeshes': 1, 'number_kpoints_per_kmesh': {'n_kx': [10], 'n_ky': [10], 'n_kz': [10], 'number_of_kpts': [216]}}, 'direct_bravais_matrix': [[1.0, 0.0, 0.0], [0.0, 1.0, 1.0], [0.0, 0.0, 0.0]], 'symmetries_group': {'number_of_used_symmetries': 8, 'number_of_lattice_symmetries': 8, 'symmetry_description': {'E': {'has_inversion': 0, 'euler_angles': [0.0, 0.0, 0.0], 'is_unitary': 1}, 'C2z': {'has_inversion': 0, 'euler_angles': [180.0, 0.0, 0.0], 'is_unitary': 1}, 'C2x': {'has_inversion': 0, 'euler_angles': [180.0, 180.0, 0.0], 'is_unitary': 1}, 'C2y': {'has_inversion': 0, 'euler_angles': [0.0, 180.0, 0.0], 'is_unitary': 1}, 'IC2z': {'has_inversion': 1, 'euler_angles': [180.0, 0.0, 0.0], 'is_unitary': 1}, 'IC2x': {'has_inversion': 1, 'euler_angles': [180.0, 180.0, 0.0], 'is_unitary': 1}, 'IC2y': {'has_inversion': 1, 'euler_angles': [0.0, 180.0, 0.0], 'is_unitary': 1}, 'IE': {'has_inversion': 1, 'euler_angles': [0.0, 0.0, 0.0], 'is_unitary': 1}}}, 'alat_internal': 7.869273, 'timings_unit': 'seconds', 'total_charge_per_atom_unit': 'electron charge', 'code_info_group': {'code_version': 'v2.2-22-g4f8f5ff', 'calculation_serial_number': 'kkrjm_v2.2-22-g4f8f5ff_openmp-mac_20171214102522', 'compile_options': 'openmp-mac'}, 'single_particle_energies_unit': 'eV', 'dos_at_fermi_energy': 3.672746, 'reciprocal_bravais_matrix_unit': '2*pi / alat', 'number_of_atoms_in_unit_cell': 4, 'total_charge_per_atom': []} 
+        dref = {'nspin': 1, 'single_particle_energies': [489.0712275918133, 489.0712275918133, 489.0712275918133, 489.0712275918133], 'energy_contour_group': {'emin_unit': 'Rydberg', 'emin': -1.0, 'npol': 0, 'temperature_unit': 'Kelvin', 'n1': 0, 'n2': 21, 'n3': 0, 'number_of_energy_points': 21, 'temperature': 200.0}, 'energy': -390210.3784078399, 'warnings_group': {'number_of_warnings': 0, 'warnings_list': []}, 'energy_unit': 'eV', 'charge_core_states_per_atom': [], 'timings_group': {'main1c - serial part': 0.0054, 'main0': 0.136, 'main2': 0.2291, 'main1b - calctref13': 0.1511, 'main1c  ': 0.7165, 'main1a - tbref': 0.9809, 'Time in Iteration': 5.9128, 'main1b  ': 3.537, 'main1a  ': 1.4302}, 'core_states_group': {'energy_highest_lying_core_state_per_atom_unit': 'Rydberg', 'energy_highest_lying_core_state_per_atom': [-3.83243200276, -3.83243200276, -3.83243200276, -3.83243200276], 'number_of_core_states_per_atom': [8, 8, 8, 8], 'descr_highest_lying_core_state_per_atom': ['4p', '4p', '4p', '4p']}, 'total_energy_Ry': -28679.93406508, 'direct_bravais_matrix_unit': 'alat', 'fermi_energy': 1.05, 'convergence_group': {'strmix': 0.0, 'rms': 12.977, 'rms_unit': 'unitless', 'qbound': 0.0, 'calculation_converged': False, 'nsteps_exhausted': True, 'brymix': 0.01, 'charge_neutrality': -137.449522, 'number_of_iterations_max': 1, 'number_of_iterations': 1, 'rms_per_atom': [12.977, 12.977, 12.977, 12.977], 'fcm': 20.0, 'fermi_energy_all_iterations': [1.05], 'dos_at_fermi_energy_all_iterations': [3.672746], 'rms_all_iterations': [12.977], 'idtbry': 40, 'fermi_energy_all_iterations_units': 'Ry', 'charge_neutrality_unit': 'electrons', 'charge_neutrality_all_iterations': [-137.449522], 'total_energy_Ry_all_iterations': [-28679.93406508], 'imix': 0}, 'total_energy_Ry_unit': 'Rydberg', 'use_newsosol': False, 'two_pi_over_alat_internal_unit': '1/a_Bohr', 'charge_core_states_per_atom_unit': 'electron charge', 'reciprocal_bravais_matrix': [[1.0, 0.0, 0.0], [0.0, 1.0, 1.0], [0.0, 0.0, 0.0]], 'two_pi_over_alat_internal': 0.79844546, 'fermi_energy_units': 'Ry', 'alat_internal_unit': 'a_Bohr', 'charge_valence_states_per_atom_unit': 'electron charge', 'parser_warnings': [], 'kmesh_group': {'kmesh_energypoint': [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], 'number_different_kmeshes': 1, 'number_kpoints_per_kmesh': {'n_kx': [10], 'n_ky': [10], 'n_kz': [10], 'number_of_kpts': [216]}}, 'direct_bravais_matrix': [[1.0, 0.0, 0.0], [0.0, 1.0, 1.0], [0.0, 0.0, 0.0]], 'symmetries_group': {'number_of_used_symmetries': 8, 'number_of_lattice_symmetries': 8, 'symmetry_description': {'E': {'has_inversion': 0, 'euler_angles': [0.0, 0.0, 0.0], 'is_unitary': 1}, 'C2z': {'has_inversion': 0, 'euler_angles': [180.0, 0.0, 0.0], 'is_unitary': 1}, 'C2x': {'has_inversion': 0, 'euler_angles': [180.0, 180.0, 0.0], 'is_unitary': 1}, 'C2y': {'has_inversion': 0, 'euler_angles': [0.0, 180.0, 0.0], 'is_unitary': 1}, 'IC2z': {'has_inversion': 1, 'euler_angles': [180.0, 0.0, 0.0], 'is_unitary': 1}, 'IC2x': {'has_inversion': 1, 'euler_angles': [180.0, 180.0, 0.0], 'is_unitary': 1}, 'IC2y': {'has_inversion': 1, 'euler_angles': [0.0, 180.0, 0.0], 'is_unitary': 1}, 'IE': {'has_inversion': 1, 'euler_angles': [0.0, 0.0, 0.0], 'is_unitary': 1}}}, 'alat_internal': 7.869273, 'timings_unit': 'seconds', 'total_charge_per_atom_unit': 'electron charge', 'code_info_group': {'code_version': 'v2.2-22-g4f8f5ff', 'calculation_serial_number': 'kkrjm_v2.2-22-g4f8f5ff_openmp-mac_20171214102522', 'compile_options': 'openmp-mac'}, 'single_particle_energies_unit': 'eV', 'dos_at_fermi_energy': 3.672746, 'reciprocal_bravais_matrix_unit': '2*pi / alat', 'number_of_atoms_in_unit_cell': 4, 'total_charge_per_atom': []}
         out_dict = {}
         success, msg_list, out_dict = parse_kkr_outputfile(out_dict, outfile, outfile_0init, outfile_000, timing_file, potfile_out, 'wrong_name')
         out_dict['parser_warnings'] = msg_list
@@ -185,7 +199,7 @@ class Test_kkr_parser_functions(object):
         assert msg_list == []
         assert set(out_dict.keys()) == set(dref.keys())
         assert out_dict == dref
-        
+
     def test_Nan_output(self):
         """
         Parse output of a dos calculation in 3D (used to fail due to symmetries reading)

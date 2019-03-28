@@ -1,23 +1,22 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from __future__ import print_function
-from builtins import range
-import io
-import sys
-from masci_tools.io.common_functions import (get_corestates_from_potential, get_highest_core_state, search_string,
-                                             get_version_info, get_Ry2eV, get_ef_from_potfile, open_general)
-from masci_tools.io.parsers.kkrparser_functions import get_core_states
-
 """
 Everything that is needed to parse the output of a voronoi calculation.
 """
+
+from __future__ import print_function
+from builtins import range
+import io, sys
+from masci_tools.io.common_functions import (get_corestates_from_potential, get_highest_core_state, search_string,
+                                             get_version_info, get_Ry2eV, get_ef_from_potfile, open_general)
+from masci_tools.io.parsers.kkrparser_functions import get_core_states
 
 __copyright__ = (u"Copyright (c), 2018, Forschungszentrum Jülich GmbH,"
                  "IAS-1/PGI-1, Germany. All rights reserved.")
 __license__ = "MIT license, see LICENSE.txt file"
 __contributors__ = (u"Philipp Rüßmann")
-__version__ = 1.0
+__version__ = 1.1
 
 ####################################################################################
 

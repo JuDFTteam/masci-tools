@@ -36,6 +36,19 @@ class Test_voronoi_parser_functions(object):
         groups = [i for i in list(out_dict.keys()) if 'group' in i]
         assert set(groups) == set(grouping_ref)
 
+    def test_complete_voro_output_filehandle(self):
+        """
+        Parse complete output of voronoi calculation from open file handles as done in aiida-kkr and compare out_dict, grouping, warnings
+        """
+        out_dict = {'parser_version': 'some_version_number'}
+        success, msg_list, out_dict = parse_voronoi_output(out_dict, open(outfile), open(potfile), open(atominfo), open(radii), open(inputfile))
+        out_dict['parser_warnings'] = msg_list
+        assert success
+        assert msg_list == []
+        assert out_dict == dref
+        groups = [i for i in list(out_dict.keys()) if 'group' in i]
+        assert set(groups) == set(grouping_ref)
+
     def test_missing_outfile(self):
         """
         Parse output where out_voronoi is missing and compare error messages/rest of out_dict
