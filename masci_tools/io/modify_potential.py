@@ -7,13 +7,14 @@ Tools for the impurity caluclation plugin and its workflows
 #use print('message') instead of print 'message' in python 2.7 as well:
 from __future__ import print_function
 # redefine raw_input for python 3/2.7 compatilbility
-from builtins import input
-from builtins import range
+from __future__ import absolute_import
 from builtins import object
 from sys import version_info
+from six.moves import range
+from six.moves import input
 if version_info[0] >= 3:
     def raw_input(msg):
-        return eval(input(msg))
+        return eval(eval(input(msg)))
          
 __copyright__ = (u"Copyright (c), 2018, Forschungszentrum Jülich GmbH,"
                  "IAS-1/PGI-1, Germany. All rights reserved.")

@@ -1,5 +1,6 @@
 from __future__ import print_function
 from __future__ import division
+from __future__ import absolute_import
 from matplotlib import cm
 
 def dosplot(p0='./', totonly=True, color='', label='', marker='', lw=2, ms=5, ls='-', ls_ef= ':', lw_ef=1, units='Ry', noefline=False, interpol=False, allatoms=False, onespin=False, atoms=[], lmdos=False, lm=[], nofig=False, scale=1.0, shift=0, normalized=False, xyswitch=False, efcolor='', return_data=False, xscale=1., xshift = 0.0, yshift = 0.0, filled=False, spins=2):

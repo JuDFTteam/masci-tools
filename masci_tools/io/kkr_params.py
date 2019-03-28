@@ -5,8 +5,9 @@
 from __future__ import print_function
 from __future__ import division
 
-from builtins import range
+from __future__ import absolute_import
 from builtins import object
+from six.moves import range
 """
 In this module you find the kkrparams class that helps defining the KKR input parameters
 Also some defaults for the parameters are defined.

@@ -8,10 +8,11 @@ parser file where parse_kkr_outputfile is called
 """
 
 from __future__ import division
-from builtins import range
+from __future__ import absolute_import
 from numpy import ndarray, array, loadtxt, shape
 from masci_tools.io.common_functions import (search_string, get_version_info, get_Ry2eV, angles_to_vec,
                                              get_corestates_from_potential, get_highest_core_state, open_general)
+from six.moves import range
 
 __copyright__ = (u"Copyright (c), 2017, Forschungszentrum Jülich GmbH,"
                  "IAS-1/PGI-1, Germany. All rights reserved.")

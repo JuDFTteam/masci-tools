@@ -4,11 +4,12 @@
 
 from __future__ import print_function
 from __future__ import division
-from builtins import str
-from builtins import range
+from __future__ import absolute_import
 from numpy import array, sum, sqrt, log, abs, loadtxt, zeros_like, shape
 from matplotlib.pyplot import plot, figure, subplot, show, ion, title, suptitle, legend, gca, ioff, axvline, gcf
 import subprocess, sys, os, time
+from six.moves import range
+from six import str
 
 
 print()

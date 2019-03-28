@@ -4,6 +4,7 @@
 """
 from __future__ import division
 
+from __future__ import absolute_import
 from builtins import object
 import pytest
 from masci_tools.io.common_functions import (interpolate_dos, get_alat_from_bravais,

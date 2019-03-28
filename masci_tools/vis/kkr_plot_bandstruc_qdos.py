@@ -1,7 +1,8 @@
 from __future__ import print_function
 from __future__ import division
-from builtins import range
+from __future__ import absolute_import
 from matplotlib import cm
+from six.moves import range
 
 def dispersionplot(p0='./', totonly=True, s=20, ls_ef= ':', lw_ef=1, units='eV_rel', noefline=False,
                    color='', reload_data=False, clrbar=True, logscale=True, nosave=False, atoms=[],

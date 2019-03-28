@@ -8,10 +8,11 @@ Created on Wed Nov 15 16:43:31 2017
 from __future__ import print_function
 from __future__ import division
 
-from builtins import range
+from __future__ import absolute_import
 from builtins import object
 import pytest
 from masci_tools.io.kkr_params import kkrparams
+from six.moves import range
     
         
 # helper functions

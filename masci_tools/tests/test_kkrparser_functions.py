@@ -3,6 +3,7 @@
 @author: ruess
 """
 
+from __future__ import absolute_import
 from builtins import object
 import pytest
 from masci_tools.io.parsers.kkrparser_functions import parse_kkr_outputfile, check_error_category

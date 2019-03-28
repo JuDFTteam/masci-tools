@@ -6,11 +6,12 @@
 
 from __future__ import print_function
 from __future__ import division
-from builtins import map
-from builtins import input
-from builtins import range
+from __future__ import absolute_import
 from numpy import *
 from sys import argv,exit
+from six.moves import map
+from six.moves import range
+from six.moves import input
 
 mode='pot'
 if len(argv)==2:
@@ -244,72 +245,72 @@ while 1:
   print('  *  (16) scale up mag. moment  *')
   print('  ***************************')
 
-  mode1=int(input('Input: '))
+  mode1=int(eval(input('Input: ')))
   print(mode1)
   if mode1==0: break
   if mode1==1:
-    row1=int(input('Row number:'))
+    row1=int(eval(input('Row number:')))
     del order[row1]
   if mode1==2:
-    row1=int(input('Row number:'))
+    row1=int(eval(input('Row number:')))
     tempsave=order[row1]
   if mode1==3:
-    row1=int(input('Row number:'))
+    row1=int(eval(input('Row number:')))
     tempsave=order[row1]
     del order[row1]
   if mode1==4:
     if type(tempsave)==type(1):
       if tempsave!=-1:
-        row1=int(input('Paste before number:'))
+        row1=int(eval(input('Paste before number:')))
         order.insert(row1,tempsave)
       else:
         print('nothing in temp, copy first')
-        input('Continue')
+        eval(input('Continue'))
     else:
-      row1=int(input('Paste before number:'))
+      row1=int(eval(input('Paste before number:')))
       print(row1)
       print(tempsave)
       for i in reversed(list(range(len(tempsave)))):
         order.insert(row1,tempsave[i])
   if mode1==5:
-    row1=int(input('Row number [start]:'))
-    row2=int(input('Row number [stop] :'))
+    row1=int(eval(input('Row number [start]:')))
+    row2=int(eval(input('Row number [stop] :')))
     tempsave=list(range(row1,row2+1))
   if mode1==6:
-    row1=int(input('Row number [start]:'))
-    row2=int(input('Row number [stop] :'))
+    row1=int(eval(input('Row number [start]:')))
+    row2=int(eval(input('Row number [stop] :')))
     tempsave=list(range(row1,row2+1))
     for i in range(len(tempsave)):
       del order[row1]
   if mode1==7:
-    row1=int(input('Row number [start]:'))
-    row2=int(input('Row number [stop] :'))
+    row1=int(eval(input('Row number [start]:')))
+    row2=int(eval(input('Row number [stop] :')))
     for i in range(row1,row2+1):
       del order[row1]
   if mode1==8:
     if type(tempsave)==type(1):
       if tempsave!=-1:
-        row1=int(input('Paste before number:'))
-        row2=int(input('How many times?:'))
+        row1=int(eval(input('Paste before number:')))
+        row2=int(eval(input('How many times?:')))
         for i in range(row2):
           order.insert(row1,tempsave)
       else:
         print('nothing in temp, copy first')
-        input('Continue')
+        eval(input('Continue'))
     else:
-      row1=int(input('Paste before number:'))
-      row2=int(input('How many times?:'))
+      row1=int(eval(input('Paste before number:')))
+      row2=int(eval(input('How many times?:')))
       for i in range(row2):
         for i in reversed(list(range(len(tempsave)))):
           order.insert(row1,tempsave[i])
   if mode1==9:
-        row1=int(input('Swap line: '))
-        row2=int(input('with line: '))
+        row1=int(eval(input('Swap line: ')))
+        row2=int(eval(input('with line: ')))
         ordertemp=order[row1]
         order[row1]=order[row2]
         order[row2]=ordertemp
   if mode1==10:
-        nspintemp = int(input('Double potential (1=no,2=yes) '))
+        nspintemp = int(eval(input('Double potential (1=no,2=yes) ')))
         natomtemp = int(open('scoef').readlines()[0])
         filedata=open('scoef').readlines()[1:natomtemp+1]
         listnew=[]
@@ -337,7 +338,7 @@ while 1:
           order[i]=order[i+1]
           order[i+1]=ordertemp
   if mode1==12:
-        listnew=input('New list :').split()
+        listnew=eval(input('New list :').split())
         makeorder= lambda x: int(x)-1
         order=list(map(makeorder,listnew))
   if mode1==13:
@@ -392,7 +393,7 @@ while 1:
         if len(order)%2!=0:
           exit('ERROR: odd number of potentials')
         print('scale magnetic moment up: newpot_1/2 = (v_1+v_2)/2 +/- alpha*(v_1-v_2)/2')
-        alpha = float(input('alpha: '))
+        alpha = float(eval(input('alpha: ')))
         for i in range(len(order)//2):
           print(i)
           head1, pot1 = read_pot_values(index1[2*i+0],index2[2*i+0])
