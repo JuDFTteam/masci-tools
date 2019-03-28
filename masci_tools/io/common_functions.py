@@ -45,6 +45,8 @@ def open_general(filename_or_handle):
         f = filename_or_handle
         if f.closed: # reopen file if it was closed before
             f = open(f.name, f.mode)
+        else: # make sure reading the file now starts at the beginning again
+            f.seek(0)
     return f
 
 def get_alat_from_bravais(bravais, is3D=True):
