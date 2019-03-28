@@ -20,7 +20,7 @@ __version__ = 1.0
 
 #helper functions used in calculation, parser etc.
 
-def open_general(filename_or_handle):
+def open_general(filename_or_handle, iomode='r'):
     """
     Open a file directly from a path or use a file handle if that is given.
     Also take care of closed files by reopenning them.
@@ -41,7 +41,7 @@ def open_general(filename_or_handle):
             reopen_file = True
 
     if reopen_file:
-        f = open(filename_or_handle)
+        f = open(filename_or_handle, iomode)
     else:
         f = filename_or_handle
         if f.closed: # reopen file if it was closed before
