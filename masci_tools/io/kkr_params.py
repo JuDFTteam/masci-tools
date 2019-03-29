@@ -4,6 +4,7 @@
 from __future__ import print_function
 from __future__ import division
 from __future__ import absolute_import
+from __future__ import unicode_literals
 from builtins import object
 from six.moves import range
 from masci_tools.io.common_functions import open_general
@@ -13,11 +14,11 @@ In this module you find the kkrparams class that helps defining the KKR input pa
 Also some defaults for the parameters are defined.
 """
 
-__copyright__ = (u"Copyright (c), 2017, Forschungszentrum Jülich GmbH,"
+__copyright__ = ("Copyright (c), 2017, Forschungszentrum Jülich GmbH,"
                  "IAS-1/PGI-1, Germany. All rights reserved.")
 __license__ = "MIT license, see LICENSE.txt file"
-__version__ = "1.3"
-__contributors__ = u"Philipp Rüßmann"
+__version__ = "1.4"
+__contributors__ = "Philipp Rüßmann"
 
 
 # This defines the default parameters for KKR used in the aiida plugin:
@@ -835,7 +836,7 @@ class kkrparams(object):
 
 
         # finally write to file
-        with open_general(output, 'w') as f:
+        with open_general(output, u'w') as f:
             f.write(tmpl)
 
 
