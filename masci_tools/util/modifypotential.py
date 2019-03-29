@@ -421,7 +421,8 @@ for i in range(len(order)):
   for ii in range(index1[order[i]], index2[order[i]]+1  ):
     datanew.append(data[ii])
 if mode=='pot':
-  open('potential_new','w').writelines(datanew)
+  with open('potential_new','w')as f:
+      f.writelines(datanew)
 elif mode=='shape':
   # add header to shapefun_new
   tmp = datanew
@@ -429,7 +430,7 @@ elif mode=='shape':
   datanew.append('   %i\n' %(len(order)))
   datanew.append('  1.000000000000E+00\n')
   datanew += tmp
-  open('shapefun_new','w').writelines(datanew)
+  with open('shapefun_new','w') as f:
+      f.writelines(datanew)
 else:
   print('error');exit()
-
