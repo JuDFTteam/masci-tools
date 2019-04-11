@@ -31,12 +31,22 @@ class Test_common_functions(object):
 
     def test_interpolate_dos(self):
         from numpy import load, loadtxt, shape
-        d0 = '../tests/files/interpol/'
+        d0 = '../tests/files/interpol/complex.dos'
         ef, dos, dos_int = interpolate_dos(d0, return_original=True)
         assert ef == 0.5256
-        dos_ref = loadtxt(d0+'new3.dos')
+        dos_ref = loadtxt('../tests/files/interpol/new3.dos')
         assert (dos_int.reshape(shape(dos_ref))-dos_ref).max()<10**-4
-        assert (dos == load(d0+'/ref_dos.npy')).all()
+        assert (dos == load('../tests/files/interpol/ref_dos.npy')).all()
+
+    def test_interpolate_dos_filehandle(self):
+        from numpy import load, loadtxt, shape
+        d0 = open('../tests/files/interpol/complex.dos')
+        d0 = '../tests/files/interpol/complex.dos'
+        ef, dos, dos_int = interpolate_dos(d0, return_original=True)
+        assert ef == 0.5256
+        dos_ref = loadtxt('../tests/files/interpol/new3.dos')
+        assert (dos_int.reshape(shape(dos_ref))-dos_ref).max()<10**-4
+        assert (dos == load('../tests/files/interpol/ref_dos.npy')).all()
 
     def test_get_alat_from_bravais(self):
         from numpy import array, sqrt

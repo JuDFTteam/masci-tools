@@ -205,7 +205,7 @@ def get_highest_core_state(nstates, energies, lmoments):
     return lval, energies[idx], level_descr
 
 
-def interpolate_dos(dospath, return_original=False, ):
+def interpolate_dos(dosfile, return_original=False, ):
     """
     interpolation function copied from complexdos3 fortran code
 
@@ -222,7 +222,7 @@ def interpolate_dos(dospath, return_original=False, ):
                /        \    |
         ------------------------ (Real E axis)
 
-    :param input: dospath, path where 'complex.dos' file can be found
+    :param input: either absolute path of 'complex.dos' file or file handle to it
 
     :returns: E_Fermi, numpy array of interpolated dos
 
@@ -230,7 +230,7 @@ def interpolate_dos(dospath, return_original=False, ):
     """
     from numpy import array, real, imag
 
-    f = open_general(dospath+'/complex.dos')
+    f = open_general(dosfile)
     with f:
         text = f.readline() # dummy readin of header, may be replaced later
         npot = int(f.readline().split()[0])
