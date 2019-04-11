@@ -18,7 +18,9 @@ Here are all plot varaiables/constants,
 #TODO: ggf write a plotter class
 
 
-class Ploter():
+from __future__ import absolute_import
+from builtins import object
+class Ploter(object):
     pass
     def set_defaults():
         pass

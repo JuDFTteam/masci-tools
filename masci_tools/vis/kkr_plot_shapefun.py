@@ -11,6 +11,9 @@
 ###############################################################################
 
 
+from __future__ import print_function
+from __future__ import absolute_import
+from six.moves import range
 def plot_shapefun(pos, out, mode):
   """
   Creates a simple matplotlib image to show the shapefunctions given it's positions in the unit cell, the atoms's vertices in `ut` and the plotting mode
@@ -37,7 +40,7 @@ def plot_shapefun(pos, out, mode):
     if mode=='single':
       fig = plt.figure()
       ax = fig.add_subplot(111, projection='3d')
-    for i in out.keys():
+    for i in list(out.keys()):
       if i[0]==j:
         linecolor = 'r'
       if j in [2,3,6,7]:
@@ -86,6 +89,6 @@ def zoom_in(ax, atm, pos, zoom_range=10):
   :param zoom_range: range of the zoomed region (optional, defaults to 10)
   """
   center = pos[atm-1]
-  print 'zoom in to atom', atm, ':', center
+  print('zoom in to atom', atm, ':', center)
   change_zoom(ax, zoom_range, center)
 

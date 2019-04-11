@@ -3,7 +3,7 @@ requires = ["setuptools", "wheel"]
 
 [tool.poetry]
 name = "masci_tools"
-version = "0.3.0"
+version = "0.3.1"
 description = "Tools for Materials science. Vis contains wrapers of matplotlib functionality to visualalize common material science data. Plus wrapers of visualisation for aiida-fleur workflow nodes"
 readme = "README.md"
 authors = ["Jens Bröder <j.broeder@fz-juelich.de>",
@@ -21,16 +21,24 @@ keywords = ["material science",
 classifiers = ["Development Status :: 4 - Beta",
                "Intended Audience :: Science/Research",
                "License :: OSI Approved :: MIT License",
+               "Programming Language :: Python :: 2",
                "Programming Language :: Python :: 2.7",
+               "Programming Language :: Python :: 3",
+               "Programming Language :: Python :: 3.4",
+               "Programming Language :: Python :: 3.5",
+               "Programming Language :: Python :: 3.6",
                "Topic :: Scientific/Engineering :: Physics"]
 
 
 [tool.poetry.dependencies]
 python = "^2.7"
-bumpversion = "*"
 numpy = "*"
+scipy = "*"
 matplotlib = "*"
 h5py = "*"
+bump2version = "*"
+pytest = "^4.3.1"
 pytest-cov = "*"
-scipy = "*"
+pytest-mpl = "*"
+future = "*"
 

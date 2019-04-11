@@ -3,12 +3,13 @@
 setup: usage: pip install -e .[graphs]
 """
 
+from __future__ import absolute_import
 from setuptools import setup, find_packages
 
 if __name__ == '__main__':
     setup(
         name='masci_tools',
-        version='0.3.0',
+        version='0.3.1',
         description='Tools for Materials science. Vis contains wrapers of matplotlib functionality to visualalize common material science data. Plus wrapers of visualisation for aiida-fleur workflow nodes',
         url='https://github.com/JuDFTteam/masci-tools',
         author='Jens Broeder',
@@ -18,7 +19,12 @@ if __name__ == '__main__':
             'Development Status :: 4 - Beta',
             'Intended Audience :: Science/Research',
             'License :: OSI Approved :: MIT License',
+            'Programming Language :: Python :: 2',
             'Programming Language :: Python :: 2.7',
+            'Programming Language :: Python :: 3',
+            'Programming Language :: Python :: 3.4',
+            'Programming Language :: Python :: 3.5',
+            'Programming Language :: Python :: 3.6',
             'Topic :: Scientific/Engineering :: Physics'
         ],
         keywords='material science plots fitting visualization aiida dft all-electron',
@@ -28,10 +34,21 @@ if __name__ == '__main__':
         
         install_requires=[
             'numpy',
+            'scipy',
             'matplotlib',
             'h5py',
+            'bump2version',
+            'pytest>=4.3.1',
             'pytest-cov',
-            'scipy',
-            'bumpversion',
+            'pytest-mpl',
+            'future',
         ],
+        extras_require={
+            "pre-commit": [
+                "pre-commit==1.11.0",
+                "yapf==0.24.0",
+                "prospector==0.12.11",
+                "pylint==1.9.3"
+            ]
+        },
     )

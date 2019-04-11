@@ -24,6 +24,8 @@ or files are ploted, parse a dict or filepath.
 #  (that user can put pks or structure formulas in there)
 # Write/export data to file for all methods
 
+from __future__ import absolute_import
+from __future__ import print_function
 import re
 import os
 import numpy as np
@@ -32,6 +34,9 @@ import matplotlib.mlab as mlab
 from matplotlib.patches import Rectangle
 from cycler import cycler
 from masci_tools.vis import * # import all global variables
+import six
+from six.moves import range
+from six.moves import zip
 
 ###############################################################################
 ################ GLOBAL MODULE VARIABLES setting properties ###################
@@ -217,7 +222,7 @@ def single_scatterplot(ydata, xdata, xlabel, ylabel, title, plotlabel ='scatterp
 
     if save_plots_g:
         savefilename = '{}.{}'.format(saveas, save_format_g)
-        print('save plot to: {}'.format(savefilename))
+        print(('save plot to: {}'.format(savefilename)))
         pp.savefig(savefilename, format=save_format_g, transparent=True)
     elif show_g:
         pp.show()
@@ -354,7 +359,7 @@ def multiple_scatterplots(ydata, xdata, xlabel, ylabel, title, plot_labels=None,
         #leg.get_title().set_fontsize(title_font_size) #legend 'Title' fontsize
     if save_plots_g:
         savefilename = '{}.{}'.format(saveas, save_format_g)
-        print('save plot to: {}'.format(savefilename))
+        print(('save plot to: {}'.format(savefilename)))
         pp.savefig(savefilename, format=save_format_g, transparent=True)
     elif show_g:
         pp.show()
@@ -466,7 +471,7 @@ def multi_scatter_plot(xdata, ydata, sdata, xlabel='', ylabel='', title='', plot
         #leg.get_title().set_fontsize(title_font_size) #legend 'Title' fontsize
     if save_plots_g:
         savefilename = '{}.{}'.format(saveas, save_format_g)
-        print('save plot to: {}'.format(savefilename))
+        print(('save plot to: {}'.format(savefilename)))
         pp.savefig(savefilename, format=save_format_g, transparent=True)        
             
     
@@ -548,7 +553,7 @@ def waterfall_plot(xdata, ydata, zdata, xlabel, ylabel,  zlabel, title, plot_lab
         #leg.get_title().set_fontsize(title_font_size) #legend 'Title' fontsize
     if save_plots_g:
         savefilename = '{}.{}'.format(saveas, save_format_g)
-        print('save plot to: {}'.format(savefilename))
+        print(('save plot to: {}'.format(savefilename)))
         pp.savefig(savefilename, format=save_format_g, transparent=True)
     elif show_g:
         pp.show()
@@ -660,7 +665,7 @@ def histogram(xdata, bins=None, range=None, density=None, weights=None,
  
     if save_plots_g:
         savefilename = '{}.{}'.format(saveas, save_format_g)
-        print('save plot to: {}'.format(savefilename))
+        print(('save plot to: {}'.format(savefilename)))
         pp.savefig(savefilename, format=save_format_g, transparent=True)
 
     if show_g:
@@ -805,7 +810,7 @@ def plot_convex_hull2d(hull, title='Convex Hull',  xlabel='Atomic Procentage', y
     #plt.plot(points[hull.vertices[2:],0], points[hull.vertices[2:],1], 'r--', lw=2)
     if save_plots_g:
         savefilename = '{}.{}'.format(saveas, save_format_g)
-        print('save plot to: {}'.format(savefilename))
+        print(('save plot to: {}'.format(savefilename)))
         pp.savefig(savefilename, format=save_format_g, transparent=True)
     elif show_g:
         pp.show()
@@ -965,7 +970,7 @@ def plot_lattice_constant(Total_energy, scaling, fit_y=None, relative=True, ref_
     if save_plots_g:
         # TODO override or not, better title?
         savefilename = '{}.{}'.format(saveas, save_format_g)
-        print('save plot to: {}'.format(savefilename))
+        print(('save plot to: {}'.format(savefilename)))
         pp.savefig(savefilename, format=save_format_g, transparent=True)
     else:
         pp.show()
@@ -1060,8 +1065,8 @@ def plot_bands(path_to_bands_file, kpath, title='Bandstructure', plotlabel ='ban
 
     """
 
-    xpos = kpath.values()
-    xNames = kpath.keys()
+    xpos = list(kpath.values())
+    xNames = list(kpath.keys())
     data = np.loadtxt(path_to_bands_file,skiprows = 0)
     xdata = data[..., 0]
     ydata = data[..., 1]
@@ -1107,7 +1112,7 @@ def plot_bands(path_to_bands_file, kpath, title='Bandstructure', plotlabel ='ban
 
     if save_plots_g:
         savefilename = '{}.{}'.format(saveas, save_format_g)
-        print('save plot to: {}'.format(savefilename))
+        print(('save plot to: {}'.format(savefilename)))
         pp.savefig(savefilename, format=save_format_g, transparent=True)
     else:
         pp.show()
@@ -1131,7 +1136,7 @@ def plot_corelevels(coreleveldict, compound=''):
     Ploting function to visualize corelevels and corelevel shifts
     """
 
-    for elem, corelevel_dict in coreleveldict.iteritems():
+    for elem, corelevel_dict in six.iteritems(coreleveldict):
         # one plot for each element
         plot_one_element_corelv(corelevel_dict, elem, compound=compound)
 
@@ -1150,7 +1155,7 @@ def plot_one_element_corelv(corelevel_dict, element, compound=''):
     xdata_all = []
     ydata_all = []
 
-    for corelevel, corelevel_list in corelevel_dict.iteritems():
+    for corelevel, corelevel_list in six.iteritems(corelevel_dict):
         #print corelevel
         n_atom = len(corelevel_list)
         x_axis = list(range(0,n_atom,1))
@@ -1224,7 +1229,7 @@ def plot_one_element_corelv(corelevel_dict, element, compound=''):
     pp.ylim(ymin, ymax)
     if save_plots_g:
         savefilename = '{}.{}'.format(saveas, save_format_g)
-        print('save plot to: {}'.format(savefilename))
+        print(('save plot to: {}'.format(savefilename)))
         pp.savefig(savefilename, format=save_format_g, transparent=True)
     else:
         pp.show()
@@ -1247,10 +1252,10 @@ def construct_corelevel_spectrum(coreleveldict, natom_typesdict, exp_references=
     #count = 0
     #compound_info_new = compound_info
 
-    for elem, corelevel_dict in coreleveldict.iteritems():
+    for elem, corelevel_dict in six.iteritems(coreleveldict):
         natom = natom_typesdict.get(elem, 0)
         #elem_count = 0
-        for corelevel_name, corelevel_list in corelevel_dict.iteritems():
+        for corelevel_name, corelevel_list in six.iteritems(corelevel_dict):
             # get number of electron if fully occ:
             nelectrons = 1
             if 's' in corelevel_name:
@@ -1258,7 +1263,7 @@ def construct_corelevel_spectrum(coreleveldict, natom_typesdict, exp_references=
             else:
                 max_state_occ_spin = {'1/2' : 2, '3/2' : 4, '5/2' : 6, '7/2' : 8}
                 # check if spin in name
-                for key, val in max_state_occ_spin.iteritems():
+                for key, val in six.iteritems(max_state_occ_spin):
                     if key in corelevel_name:
                         nelectrons = val
             for i,corelevel in enumerate(corelevel_list):
@@ -1430,8 +1435,8 @@ def plot_corelevel_spectra(coreleveldict, natom_typesdict, exp_references={}, sc
                  linewidth=linewidth_g, markersize= markersize_g)
 
     if show_ref and exp_references:
-        for elm,ref_list_dict in exp_references.iteritems():
-            for state,ref_list in ref_list_dict.iteritems():
+        for elm,ref_list_dict in six.iteritems(exp_references):
+            for state,ref_list in six.iteritems(ref_list_dict):
                 for ref in ref_list:
                     pp.axvline(ymin=0, ymax=0.1, x=ref, linewidth=linewidth_g, color='k')
     '''
@@ -1468,7 +1473,7 @@ def plot_corelevel_spectra(coreleveldict, natom_typesdict, exp_references={}, sc
 
     if save_plots_g:
         savefilename = '{}.{}'.format(saveas, save_format_g)
-        print('save plot to: {}'.format(savefilename))
+        print(('save plot to: {}'.format(savefilename)))
         pp.savefig(savefilename, format=save_format_g, transparent=True)
     else:
         pp.show()
@@ -1505,8 +1510,8 @@ def plot_corelevel_spectra(coreleveldict, natom_typesdict, exp_references={}, sc
                  linewidth=linewidth_g1, markersize = markersize_g)
 
     if show_ref and exp_references:
-        for elm,ref_list_dict in exp_references.iteritems():
-            for state,ref_list in ref_list_dict.iteritems():
+        for elm,ref_list_dict in six.iteritems(exp_references):
+            for state,ref_list in six.iteritems(ref_list_dict):
                 for ref in ref_list:
                     pp.axvline(ymin=0, ymax=0.1, x=ref, linewidth=2, color='k')
     '''
@@ -1536,7 +1541,7 @@ def plot_corelevel_spectra(coreleveldict, natom_typesdict, exp_references={}, sc
 
     if save_plots_g:
         savefilename = '{}.{}'.format(saveas1, save_format_g)
-        print('save plot to: {}'.format(savefilename))
+        print(('save plot to: {}'.format(savefilename)))
         pp.savefig(savefilename, format=save_format_g, transparent=True)
     else:
         pp.show()
@@ -1933,8 +1938,8 @@ def plot_fleur_bands(filename, limits=[None,[-15, 15]]):
     y2 = None
     if len(bands) == 2:
         y2 = bands[1]
-        print(len(y2))
-    print(len(x), len(y))
+        print((len(y2)))
+    print((len(x), len(y)))
     
     limits[0] = [min(xcoord), max(xcoord)]
 
@@ -1949,7 +1954,7 @@ def plot_fleur_bands(filename, limits=[None,[-15, 15]]):
         saveas='bandstruc_{}'.format(i)
         if save_plots_g:
             savefilename = '{}.{}'.format(saveas, save_format_g)
-            print('save plot to: {}'.format(savefilename))
+            print(('save plot to: {}'.format(savefilename)))
             pp.savefig(savefilename, format=save_format_g, transparent=True)
 
 

@@ -16,6 +16,8 @@ IO routines for hdf
 """
 
 
+from __future__ import absolute_import
+import six
 def read_hdf(filepath):
     """
     Reads in an hdf file and returns its context in a nested dictionary
@@ -28,13 +30,13 @@ def read_hdf(filepath):
     group_attrs = {}
     groups = []
     file_hdf = h5py.File(filepath, 'r')
-    groups = file_hdf.keys()
+    groups = list(file_hdf.keys())
     
-    for key, val in file_hdf.iteritems():
-        for k, v in val.iteritems():
+    for key, val in six.iteritems(file_hdf):
+        for k, v in six.iteritems(val):
             datasets[k] = v.value
         attr = val.attrs
-        for ke, val in attr.iteritems():
+        for ke, val in six.iteritems(attr):
             group_attrs[ke] = val
     file_hdf.close()
     
