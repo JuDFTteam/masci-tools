@@ -1,4 +1,4 @@
-# serial: voro_v1.0-6-gf0c2ac3_serial_20171207092915
+# serial: voro_v1.0-24-g25fcc61_serial_20190320214105
 # Radii after shift of cell centers (units of alat), ratio Rmt0/Rout, NN-dist. before shift, ratio      
 # IAT    Rmt0           Rout            Ratio(%)   dist(NN)      Rout/dist(NN) (%)              
     1   0.4330127912   0.5590171328       77.46   0.8660255824       64.55

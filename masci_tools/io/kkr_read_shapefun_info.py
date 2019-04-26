@@ -10,6 +10,8 @@
 #                                                                             #
 ###############################################################################
 
+from __future__ import absolute_import
+from six.moves import range
 __version__ = 0.1
 
 
@@ -25,7 +27,7 @@ def read_shapefun(path='.'):
   :returns pos: positions of the centers of the shapefunctions
   :returns out: dictionary of the vertices of the shapefunctions
   """
-  from masci_tools.io.parsers.common_functions import search_string
+  from masci_tools.io.common_functions import search_string
   from numpy import array
 
   path += '/'
@@ -50,15 +52,15 @@ def read_shapefun(path='.'):
         else:
           i_newface = 0
           tmp2 = line.split()
-          if tmp2<>[]:
+          if tmp2!=[]:
             tmp2 = [float(i) for i in tmp2]
             tmp.append(tmp2)
           atm_old, face_old = atm,face
-        if face_old<>face:
+        if face_old!=face:
           out[atm,face] = tmp
 
   # then read positions from inputcard
-  with open('inputcard') as file:
+  with open(path+'inputcard') as file:
     inp = file.readlines()
     # convert to uppercase
     for iline in range(len(inp)):

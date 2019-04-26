@@ -1,3 +1,6 @@
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
 from matplotlib import cm
 
 def FSqdos2D(p0='./', totonly=True, s=20, ls_ef= ':', lw_ef=1, color='', reload_data=False, clrbar=True, atoms=[], ax=None, nosave=False, noalat=False, cmap=cm.jet, noplot=False, return_data=False, pclrmesh=False, logscale=True):
@@ -11,20 +14,20 @@ def FSqdos2D(p0='./', totonly=True, s=20, ls_ef= ':', lw_ef=1, color='', reload_
     from subprocess import check_output
 
     # read in data
-    if p0[-1]<>'/': p0+='/'
+    if p0[-1]!='/': p0+='/'
 
     ef = float(open(p0+'potential').readlines()[3].split()[1])
     if noalat:
        a0 = 1.
        alat = 1.
     else:
-       alat = float(check_output('grep ALATBASIS inputcard', shell=True).split('=')[1].split()[0])
+       alat = float(check_output('grep ALATBASIS '+p0+'inputcard', shell=True).decode('utf-8').split('=')[1].split()[0])
        a0 = 2*pi/alat/0.52918
-    print a0
+    print(a0)
 
     if reload_data or 'saved_data_qdos.npy' not in sort(listdir(p0)):
        first=True
-       print 'reading qdos'
+       print('reading qdos')
        j = 0 
        for i in sort(listdir(p0)):
            if 'qdos.' in i[:6] and not isdir(p0+i):
@@ -33,7 +36,7 @@ def FSqdos2D(p0='./', totonly=True, s=20, ls_ef= ':', lw_ef=1, color='', reload_
                if atoms==[] or iatom in atoms:
                  tmp = loadtxt(p0+i)
                  tmp[:,2:5] = tmp[:,2:5]*a0
-                 print i, iatom
+                 print(i, iatom)
                  if first:
                      d = tmp
                      first=False
@@ -42,12 +45,12 @@ def FSqdos2D(p0='./', totonly=True, s=20, ls_ef= ':', lw_ef=1, color='', reload_
        if not nosave:
           save(p0+'saved_data_qdos', d)
     else:
-       print 'loading data'
+       print('loading data')
        d = load(p0+'saved_data_qdos.npy')
 
     xlab = r'kx'
     ylab = r'ky'
-    if a0<>1.:
+    if a0!=1.:
          xlab = r'$k_x (\AA^{-1})$'
          ylab = r'$k_y (\AA^{-1})$'
 

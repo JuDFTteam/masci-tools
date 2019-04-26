@@ -2,30 +2,52 @@
 """
 @author: ruess
 """
+from __future__ import division
 
+from __future__ import absolute_import
+from builtins import object
 import pytest
-from masci_tools.io.common_functions import (interpolate_dos, get_alat_from_bravais, 
-                                             search_string, angles_to_vec, 
-                                             vec_to_angles, get_version_info, 
-                                             get_corestates_from_potential, 
+from masci_tools.io.common_functions import (interpolate_dos, get_alat_from_bravais,
+                                             search_string, angles_to_vec,
+                                             vec_to_angles, get_version_info,
+                                             get_corestates_from_potential,
                                              get_highest_core_state,
-                                             get_ef_from_potfile)
+                                             get_ef_from_potfile, open_general)
 
 
-class Test_common_functions():
+class Test_common_functions(object):
     """
     Tests for the common functions from tools.common_functions
     """
 
+    def test_open_general(self):
+        path = '../tests/files/kkr/kkr_run_slab_nosoc/out_kkr'
+        f = open_general(path)
+        l1 = len(f.readlines())
+        f = open_general(f)
+        l2 = len(f.readlines())
+        assert l1==l2
+        assert l2>0
+
     def test_interpolate_dos(self):
         from numpy import load, loadtxt, shape
-        d0 = '../tests/files/interpol/' 
+        d0 = '../tests/files/interpol/complex.dos'
         ef, dos, dos_int = interpolate_dos(d0, return_original=True)
         assert ef == 0.5256
-        dos_ref = loadtxt(d0+'new3.dos')
+        dos_ref = loadtxt('../tests/files/interpol/new3.dos')
         assert (dos_int.reshape(shape(dos_ref))-dos_ref).max()<10**-4
-        assert (dos == load(d0+'/ref_dos.npy')).all()
-        
+        assert (dos == load('../tests/files/interpol/ref_dos.npy')).all()
+
+    def test_interpolate_dos_filehandle(self):
+        from numpy import load, loadtxt, shape
+        d0 = open('../tests/files/interpol/complex.dos')
+        d0 = '../tests/files/interpol/complex.dos'
+        ef, dos, dos_int = interpolate_dos(d0, return_original=True)
+        assert ef == 0.5256
+        dos_ref = loadtxt('../tests/files/interpol/new3.dos')
+        assert (dos_int.reshape(shape(dos_ref))-dos_ref).max()<10**-4
+        assert (dos == load('../tests/files/interpol/ref_dos.npy')).all()
+
     def test_get_alat_from_bravais(self):
         from numpy import array, sqrt
         bravais = array([[0.0, 0.5, 0.5], [0.5, 0.0, 0.5], [0.5, 0.5, 0.0]])
@@ -84,9 +106,7 @@ class Test_common_functions():
         lval = array([0, 0, 0, 0, 1, 1, 1, 2])
         out = get_highest_core_state(ncore, ener, lval)
         assert out == (1, -3.832432, '4p')
-        
+
     def test_get_ef_from_potfile(self):
         ef = get_ef_from_potfile('files/kkr/kkr_run_dos_output/out_potential')
         assert ef == 1.05
-        
-    

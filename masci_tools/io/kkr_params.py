@@ -1,19 +1,28 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-#use print('message') instead of print 'message' in python 2.7 as well:
 from __future__ import print_function
+<<<<<<< HEAD
 from masci_tools.io.common_functions import open_general
+=======
+from __future__ import division
+from __future__ import absolute_import
+from __future__ import unicode_literals
+from builtins import object
+from six.moves import range
+from masci_tools.io.common_functions import open_general
+
+>>>>>>> 302ac90d701225b6695ae4c7ba96c7be471dc16f
 """
 In this module you find the kkrparams class that helps defining the KKR input parameters
 Also some defaults for the parameters are defined.
-""" 
+"""
 
-__copyright__ = (u"Copyright (c), 2017, Forschungszentrum Jülich GmbH,"
+__copyright__ = ("Copyright (c), 2017, Forschungszentrum Jülich GmbH,"
                  "IAS-1/PGI-1, Germany. All rights reserved.")
 __license__ = "MIT license, see LICENSE.txt file"
-__version__ = "1.2"
-__contributors__ = u"Philipp Rüßmann"
+__version__ = "1.4"
+__contributors__ = "Philipp Rüßmann"
 
 
 # This defines the default parameters for KKR used in the aiida plugin:
@@ -45,7 +54,7 @@ class kkrparams(object):
     - print a list of mandatory keywords: params.get_all_mandatory()
     - print a list of keywords that are set including their value: params.get_set_values()
 
-    Note: KKR-units (e.g. atomic units with energy in Ry, length in a_Bohr) are assumed 
+    Note: KKR-units (e.g. atomic units with energy in Ry, length in a_Bohr) are assumed
           except for the keys'<RBLEFT>', '<RBRIGHT>', 'ZPERIODL', and 'ZPERIODR' which should be given in Ang. units!
     """
 
@@ -83,18 +92,18 @@ class kkrparams(object):
             self.__format[key] = keyw[key][1]
             self._mandatory[key] = keyw[key][2]
             self.__description[key] = keyw[key][3]
-            
+
         # update mandatory set for voronoi, kkrimp cases
         self._update_mandatory()
-         
-            
+
+
     @classmethod
     def get_KKRcalc_parameter_defaults(self, silent=False):
         """
         set defaults (defined in header of this file) and returns dict, kkrparams_version
         """
         p = kkrparams()
-        for key, val in __kkr_default_params__.items():
+        for key, val in list(__kkr_default_params__.items()):
             p.set_value(key,val,silent=silent)
         return dict(p.get_set_values()), __version__
 
@@ -102,38 +111,38 @@ class kkrparams(object):
     def get_dict(self, group=None, subgroup=None):
         """
         Returns values dictionary.
-        
+
         Prints values belonging to a certain group only if the 'group' argument
-        is one of the following: 'lattice', 'chemistry', 'accuracy', 
+        is one of the following: 'lattice', 'chemistry', 'accuracy',
                                  'external fields', 'scf cycle', 'other'
-          
-        Additionally the subgroups argument allows to print only a subset of 
+
+        Additionally the subgroups argument allows to print only a subset of
         all keys in a certain group. The following subgroups are available:
         in 'lattice' group:   '2D mode', 'shape functions'
-        in 'chemistry' group: 'Atom types', 'Exchange-correlation', 'CPA mode', 
+        in 'chemistry' group: 'Atom types', 'Exchange-correlation', 'CPA mode',
                               '2D mode'
         in 'accuracy' group:  'Valence energy contour', 'Semicore energy contour',
-                              'CPA mode', 'Screening clusters', 'Radial solver', 
+                              'CPA mode', 'Screening clusters', 'Radial solver',
                               'Ewald summation', 'LLoyd'
         """
         out_dict = self.values
-        
+
         #check for grouping
-        group_searchstrings = {'lattice':'Description of lattice', 
-                               'chemistry':'Chemistry', 
-                               'external fields':'External fields:', 
-                               'accuracy':'Accuracy', 
-                               'scf cycle':'Self-consistency control:', 
+        group_searchstrings = {'lattice':'Description of lattice',
+                               'chemistry':'Chemistry',
+                               'external fields':'External fields:',
+                               'accuracy':'Accuracy',
+                               'scf cycle':'Self-consistency control:',
                                'other':['Running and test options', 'Name of potential and shapefun file']}
-        subgroups_all = {'lattice':['2D mode', 'shape functions'], 
+        subgroups_all = {'lattice':['2D mode', 'shape functions'],
                          'chemistry':['Atom types', 'Exchange-correlation', 'CPA mode', '2D mode'],
                          'accuracy':['Valence energy contour', 'Semicore energy contour',
-                                     'CPA mode', 'Screening clusters', 'Radial solver', 
+                                     'CPA mode', 'Screening clusters', 'Radial solver',
                                      'Ewald summation', 'LLoyd']}
         if group in ['lattice', 'chemistry', 'accuracy', 'external fields', 'scf cycle', 'other']:
             print('Returning only values belonging to group %s'%group)
             tmp_dict = {}
-            for key in out_dict.keys():
+            for key in list(out_dict.keys()):
                 desc = self.__description[key]
                 key_in_group = False
                 if group_searchstrings[group] != 'other':
@@ -144,13 +153,13 @@ class kkrparams(object):
                         key_in_group = True
                 if key_in_group:
                     tmp_dict[key] = self.values[key]
-            
+
             #check for subgrouping and overwrite tmp_dict accordingly
             if group in ['lattice', 'chemistry', 'accuracy']:
                 if subgroup in subgroups_all[group]:
                     print('Restrict keys additionally to subgroup %s'%subgroup)
                     tmp_dict2 = {}
-                    for key in tmp_dict.keys():
+                    for key in list(tmp_dict.keys()):
                         desc = self.__description[key]
                         key_in_group = False
                         if subgroup in desc:
@@ -158,13 +167,13 @@ class kkrparams(object):
                             if key_in_group:
                                 tmp_dict2[key] = self.values[key]
                     tmp_dict = tmp_dict2
-                    
+
             # overwrite out_dict with tmp_dict
             out_dict = tmp_dict
-        
+
         return out_dict
 
-        
+
     def _get_type_from_string(self, fmtstr):
         """Helper function of get_type"""
         if 'f' in fmtstr or 'e' in fmtstr:
@@ -241,7 +250,7 @@ class kkrparams(object):
                 success = False
                 print('Error: type of value does not match expected type for ', key, self.values[key], cmptypes)
                 raise TypeError('type of value does not match expected type for key={}; value={}; expected type={}'.format(key, self.values[key], cmptypes))
-    
+
             if changed_type_automatically:
                 print('Warning: filling value of "%s" with integer but expects float. Converting automatically and continue'%key)
 
@@ -250,7 +259,7 @@ class kkrparams(object):
 
     def get_value(self, key):
         """Gets value of keyword 'key'"""
-        if key not in self.values.keys():
+        if key not in list(self.values.keys()):
             print('Error key ({}) not found in values dict! {}'.format(key, self.values))
             raise KeyError
         else:
@@ -270,8 +279,8 @@ class kkrparams(object):
         else:
             self.values[key] = value
             self._check_valuetype(key)
-        
-        
+
+
     def remove_value(self, key):
         """Removes value of keyword 'key', i.e. resets to None"""
         self.values[key] = None
@@ -281,7 +290,7 @@ class kkrparams(object):
         """Set multiple values (in example value1 and value2 of keywords 'key1' and 'key2') given as key1=value1, key2=value2"""
         for key in kwargs:
             key2 = key
-            if key not in self.values.keys():
+            if key not in list(self.values.keys()):
                 key2 = '<'+key+'>'
             #print('setting', key2, kwargs[key])
             self.set_value(key2, kwargs[key])
@@ -291,7 +300,7 @@ class kkrparams(object):
         """Return a list of all keys/values that are set (i.e. not None)"""
         set_values = []
         added = 0
-        for key in self.values.keys():
+        for key in list(self.values.keys()):
             if self.values[key] is not None:
                 set_values.append([key, self.values[key]])
                 added += 1
@@ -304,7 +313,7 @@ class kkrparams(object):
         """Return a list of mandatory keys"""
         self._update_mandatory()
         mandatory_list = []
-        for key in self.values.keys():
+        for key in list(self.values.keys()):
             if self.is_mandatory(key):
                 mandatory_list.append(key)
         return mandatory_list
@@ -325,9 +334,9 @@ class kkrparams(object):
         Creates KKR inputcard keywords dictionary and fills entry if value is given in **kwargs
 
         entries of keyword dictionary are: 'keyword', [value, format, keyword_mandatory, description]
-        
+
         where
-        
+
         - 'value' can be a single entry or a list of entries
         - 'format' contains formatting info
         - 'keyword_mandatory' is a logical stating if keyword needs to be defined to run a calculation
@@ -431,7 +440,7 @@ class kkrparams(object):
 
         for key in kwargs:
             key2 = key
-            if key not in default_keywords.keys():
+            if key not in list(default_keywords.keys()):
                 key2 = '<'+key+'>'
             val = kwargs[key]
             if self.__params_type=='kkrimp':
@@ -470,7 +479,7 @@ class kkrparams(object):
     def _update_mandatory(self):
         """Check if mandatory flags need to be updated if certain keywords are set"""
         # initialize all mandatory flags to False and update list afterwards
-        for key in self.values.keys():
+        for key in list(self.values.keys()):
             self._mandatory[key] = False
 
         runopts = []
@@ -487,13 +496,13 @@ class kkrparams(object):
         if self.values.get('INTERFACE', None):
             mandatory_list += ['<NLBASIS>', '<RBLEFT>', 'ZPERIODL', '<NRBASIS>', '<RBRIGHT>', 'ZPERIODR']
         #Mandatory in LDA+U
-        if 'NAT_LDAU' in self.values.keys() and 'LDAU' in runopts:
+        if 'NAT_LDAU' in list(self.values.keys()) and 'LDAU' in runopts:
             mandatory_list += ['NAT_LDAU', 'LDAU_PARA']
         #Mandatory in CPA
         if self.values.get('NATYP', None) is not None and self.values['NATYP'] > self.values['NAEZ']:
             mandatory_list += ['NATYP', '<SITE>', '<CPA-CONC>']
         #Mandatory in SEMICORE
-        if 'EBOTSEMI' in self.values.keys() and 'SEMICORE' in runopts:
+        if 'EBOTSEMI' in list(self.values.keys()) and 'SEMICORE' in runopts:
             mandatory_list += ['EBOTSEMI', 'EMUSEMI', 'TKSEMI', 'NPOLSEMI', 'N1SEMI', 'N2SEMI', 'N3SEMI', 'FSEMICORE']
         if self.values['INS'] == 1 and 'WRITEALL' not in runopts:
             mandatory_list += ['<SHAPE>']
@@ -511,7 +520,7 @@ class kkrparams(object):
     def _check_mandatory(self):
         """Check if all mandatory keywords are set"""
         self._update_mandatory()
-        for key in self.values.keys():
+        for key in list(self.values.keys()):
             if self._mandatory[key] and self.values[key] is None:
                 print('Error not all mandatory keys are set!')
                 set_of_mandatory = set(self.get_all_mandatory())
@@ -527,7 +536,7 @@ class kkrparams(object):
         vec3_entries = ['<RBASIS>', '<RBLEFT>', '<RBRIGHT>', 'ZPERIODL', 'ZPERIODR']
 
         #success = [True]
-        for key in self.__listargs.keys():
+        for key in list(self.__listargs.keys()):
             if self.values[key] is not None:
                 tmpsuccess = True
                 #print('checking', key, self.values[key], self.__listargs[key])
@@ -547,7 +556,7 @@ class kkrparams(object):
                     if tmpdims[1] != cmpdims[1]:
                         tmpsuccess = False
                 #success.append(tmpsuccess)
-        
+
                 if not tmpsuccess:
                     print('check consistency:', key, self.values[key], cmpdims, tmpdims, tmpsuccess)
                     raise TypeError('Error: array input not consistent for key {}'.format(key))
@@ -577,7 +586,7 @@ class kkrparams(object):
                 nrbasis = keywords['<NRBASIS>']
             else:
                 nrbasis = 1
-    
+
             listargs = dict([['<RBASIS>', naez], ['<RBLEFT>', nlbasis], ['<RBRIGHT>', nrbasis], ['<SHAPE>', natyp],
                              ['<ZATOM>', natyp], ['<SOCSCL>', natyp], ['<SITE>', natyp], ['<CPA-CONC>', natyp],
                              ['<KAOEZL>', nlbasis], ['<KAOEZR>', nrbasis], ['XINIPOL', natyp], ['<RMTREF>', natyp],
@@ -592,10 +601,10 @@ class kkrparams(object):
         else:
             special_formatting = ['RUNFLAG', 'TESTFLAG']
             listargs = dict([['HFIELD', 2]])
-            
+
         self.__special_formatting = special_formatting
         self.__listargs = listargs
-        
+
         # ruturn after setting __special_formatting and __listargs lists
         if set_lists_only:
             return
@@ -609,17 +618,17 @@ class kkrparams(object):
             set_values = [key[0] for key in self.get_set_values()]
             if 'INTERFACE' not in set_values or self.values['INTERFACE']:
                 bulkmode = True
-                
+
             bravais = array(self.values['BRAVAIS'])
             if bulkmode and sum(bravais[2]**2)==0:
                 print("Error: 'BRAVAIS' matches 2D calculation but 'INTERFACE' is not set to True!")
                 raise ValueError
-                
+
             # check if KSHAPE and INS are consistent and add missing values automatically
             # WARNING: KSHAPE should be 2*INS !!!
             if 'INS' not in set_values and 'KSHAPE' in set_values:
-                self.set_value('INS', self.get_value('KSHAPE')/2)
-                print("setting INS automatically with KSHAPE value ({})".format(self.get_value('KSHAPE')/2))
+                self.set_value('INS', self.get_value('KSHAPE')//2)
+                print("setting INS automatically with KSHAPE value ({})".format(self.get_value('KSHAPE')//2))
             elif 'INS' in set_values and 'KSHAPE' not in set_values:
                 self.set_value('KSHAPE', self.get_value('INS')*2)
                 print("setting KSHAPE automatically with INS value ({})".format(self.get_value('INS')*2))
@@ -639,16 +648,16 @@ class kkrparams(object):
         if is_voro_calc==True change mandatory list to match voronoi code, default is KKRcode
         """
         from numpy import array
-        
+
         # first check input consistency
         if is_voro_calc:
             self.__params_type = 'voronoi'
 
         # check for inconsistencies in input before writing file
         self._check_input_consistency()
-        
-        
-        
+
+
+
         #rename for easy reference
         keywords = self.values
         keyfmts = self.__format
@@ -682,19 +691,19 @@ class kkrparams(object):
                               #file names
                               'FILES']
         else:
-            sorted_keylist = ['RUNFLAG', 'TESTFLAG', 'INS', 'KVREL', 'NSPIN', 'SCFSTEPS', 
-                              'IMIX', 'ITDBRY', 'MIXFAC', 'BRYMIX', 'QBOUND', 'XC', 'ICST', 
-                              'SPINORBIT', 'NCOLL', 'NPAN_LOGPANELFAC', 'RADIUS_LOGPANELS', 
-                              'RADIUS_MIN', 'NPAN_LOG', 'NPAN_EQ', 'NCHEB', 'HFIELD', 
+            sorted_keylist = ['RUNFLAG', 'TESTFLAG', 'INS', 'KVREL', 'NSPIN', 'SCFSTEPS',
+                              'IMIX', 'ITDBRY', 'MIXFAC', 'BRYMIX', 'QBOUND', 'XC', 'ICST',
+                              'SPINORBIT', 'NCOLL', 'NPAN_LOGPANELFAC', 'RADIUS_LOGPANELS',
+                              'RADIUS_MIN', 'NPAN_LOG', 'NPAN_EQ', 'NCHEB', 'HFIELD',
                               'CALCORBITALMOMENT', 'CALCFORCE', 'CALCJIJMAT']
-            
+
         #add everything that was forgotten in sorted_keylist above
-        for key in keywords.keys():
+        for key in list(keywords.keys()):
             if key not in sorted_keylist:
                 sorted_keylist += [key]
 
         # ensure high enough precision in inputcard writeout
-        for key in keyfmts.keys():
+        for key in list(keyfmts.keys()):
             keyfmts[key] = keyfmts[key].replace('%f', '%21.14f')
 
         # write all set keys to file
@@ -702,7 +711,7 @@ class kkrparams(object):
         for key in sorted_keylist:
             if keywords[key] is not None:
                 #print(key)
-                if (not key in self.__listargs.keys()) and (not key in self.__special_formatting):
+                if (not key in list(self.__listargs.keys())) and (not key in self.__special_formatting):
                     tmpfmt = (keyfmts[key]).replace('%l', '%s')
                     try:
                         if self.__params_type == 'kkrimp' and key == 'XC':
@@ -792,7 +801,7 @@ class kkrparams(object):
                         repltxt = ops[iop]
                         tmpl += ' ' + repltxt
                     tmpl += '\n'
-                elif key in self.__listargs.keys():
+                elif key in list(self.__listargs.keys()):
                     if key in ['<RBASIS>', '<RBLEFT>', '<RBRIGHT>']: # RBASIS needs special formatting since three numbers are filled per line
                         tmpl += '%s\n'%key
                         for ival in range(self.__listargs[key]):
@@ -822,34 +831,40 @@ class kkrparams(object):
                 if self.__params_type == 'kkrimp':
                     breaklines = ['TESTFLAG', 'NSPIN', 'QBOUND', 'NCHEB', 'HFIELD']
                 else:
-                    breaklines = ['TESTOPT', 'CARTESIAN', '<RBASIS>', 'ZPERIODL', 'ZPERIODR', '<SHAPE>', 
+                    breaklines = ['TESTOPT', 'CARTESIAN', '<RBASIS>', 'ZPERIODL', 'ZPERIODR', '<SHAPE>',
                                   'KREADLDAU', '<ZATOM>', '<SOCSCL>', '<CPA-CONC>', '<KAOEZR>', 'VCONST',
                                   'BZDIVIDE', 'FSEMICORE', 'CPAINFO', 'RCLUSTXY', '<RMTREF>', '<RMTREFR>',
                                   'ICST', '<FPRADIUS>', 'GMAX', '<TOLRDIF>', 'QBOUND']
                 if key in breaklines:
                     tmpl += "\n"
-                    
+
 
         # finally write to file
-        open(output, 'w').write(tmpl)
+        with open_general(output, u'w') as f:
+            f.write(tmpl)
 
 
     def read_keywords_from_inputcard(self, inputcard='inputcard'):
         """
         Read list of keywords from inputcard and extract values to keywords dict
-        
+
         :example usage: p = kkrparams(); p.read_keywords_from_inputcard('inputcard')
         :note: converts '<RBLEFT>', '<RBRIGHT>', 'ZPERIODL', and 'ZPERIODR' automatically to Ang. units!
         """
         from numpy import shape, array
         from masci_tools.io.common_functions import get_aBohr2Ang
-        
+
         # some print statements with debug info
         debug = False
-        
+
         if debug: print('start reading {}'.format(inputcard))
+<<<<<<< HEAD
         
         txt = open_general(inputcard, 'r').readlines()
+=======
+
+        txt = open(inputcard, 'r').readlines()
+>>>>>>> 302ac90d701225b6695ae4c7ba96c7be471dc16f
         keywords = self.values
         keyfmts = self.__format
 
@@ -866,23 +881,23 @@ class kkrparams(object):
                 value = self.get_type(key)(valtxt)
                 self.set_value(key, value)
                 read_already.append(key)
-                
+
         # then set self.__special_formatting and self.__listargs in _check_input_consistency
         # needs NAEZ, NATYP, NLBASIS, NRBASIS to be set to get array dimensions correct
         self._check_input_consistency(set_lists_only=True)
-        
+
         # try to read keywords from inputcard and fill self.values
         for key in keywords:
             if key not in read_already:
                 item, num = 1, 1 # starting column and number of columns that are read in
-                
+
                 if keyfmts[key].count('%')>1:
                     num = keyfmts[key].count('%')
-                                
+
                 if key not in self.__special_formatting:
                     # determine if more than one line is read in
                     if key in self.__listargs and key not in ['ZPERIODL', 'ZPERIODR', 'BZDIVIDE']:
-                        lines = range(1,self.__listargs[key]+1)
+                        lines = list(range(1,self.__listargs[key]+1))
                     else:
                         lines = [1]
                 else: # special formatting keys
@@ -935,7 +950,7 @@ class kkrparams(object):
                         values.append(tmp)
                 if len(values)==1:
                     values = values[0]
-                
+
                 if key=='TESTOPT': # flatten list
                     if shape(values)[0]==2 and type(values[0])==list:
                         tmp = []
@@ -943,23 +958,23 @@ class kkrparams(object):
                             for ii in itmp:
                                 tmp.append(ii)
                         values = tmp
-                        
+
                 # finally set values in kkrparams object
                 if values != []:
                     self.set_value(key, values)
-        
+
         # finally check if some input of the old style was given and read it in
         natyp = self.get_value('NATYP')
         if natyp is None:
             natyp = self.get_value('NAEZ')
-            
+
         # look for old RBASIS input style
         if self.get_value('<RBASIS>') is None:
             rbasis = []
             for iatom in range(natyp):
                 rbasis.append([float(i) for i in self._find_value('RBASIS', txt, 1+iatom, 1, 3, debug=debug)])
             self.set_value('<RBASIS>', rbasis)
-        
+
         # look for old atominfo input style
         atominfo_c = self._find_value('ATOMINFOC', txt, 2, debug=debug)
         if atominfo_c is None:
@@ -973,10 +988,10 @@ class kkrparams(object):
             atominfo = True
         tmp = []
         if atominfo_c:
-            for iatom in range(natyp):    
+            for iatom in range(natyp):
                 tmp.append(self._find_value('ATOMINFOC', txt, 2+iatom, 1, 14, debug=debug))
         elif atominfo:
-            for iatom in range(natyp): 
+            for iatom in range(natyp):
                 tmp.append(self._find_value('ATOMINFO', txt, 2+iatom, 1, 12, debug=debug))
         if atominfo_c or atominfo:
             tmp = array(tmp)
@@ -986,8 +1001,8 @@ class kkrparams(object):
                 self.set_value('SITE', [int(i) for i in tmp[:,12]])
                 self.set_value('<CPA-CONC>', [float(i) for i in tmp[:,13]])
         else:
-            cls_list = range(1, natyp+1)
-                
+            cls_list = list(range(1, natyp+1))
+
         # look for old left/right basis input style
         if self.get_value('INTERFACE'):
             leftbasis = self._find_value('LEFTBASIS', txt, debug=debug)
@@ -1008,7 +1023,7 @@ class kkrparams(object):
                     tmp.append(self._find_value('LEFTBASIS', txt, 1+iatom, 1, 5, debug=debug))
                 tmp = array(tmp)
                 self.set_multiple_values(RBLEFT=[[float(i[j]) for j in range(3)] for i in tmp[:,0:3]], KAOEZL=[int(i) for i in tmp[:,3]])
-                tmp2 = [] 
+                tmp2 = []
                 for icls in tmp[:,3]:
                     rmtref = self.get_value('<RMTREF>')[cls_list.index(int(icls))]
                     tmp2.append(rmtref)
@@ -1019,12 +1034,12 @@ class kkrparams(object):
                     tmp.append(self._find_value('RIGHBASIS', txt, 1+iatom, 1, 5, debug=debug))
                 tmp = array(tmp)
                 self.set_multiple_values(RBRIGHT=[[float(i[j]) for j in range(3)] for i in tmp[:,0:3]], KAOEZR=[int(i) for i in tmp[:,3]])
-                tmp2 = [] 
+                tmp2 = []
                 for icls in tmp[:,3]:
                     rmtref = self.get_value('<RMTREF>')[cls_list.index(int(icls))]
                     tmp2.append(rmtref)
                 self.set_value('<RMTREFR>', tmp2)
-                
+
         # convert RBLEFT etc. from alat units to Ang. units (this is assumed in generate_inputcard)
         rbl = self.get_value('<RBLEFT>')
         rbr = self.get_value('<RBRIGHT>')
@@ -1035,20 +1050,20 @@ class kkrparams(object):
         if rbr is not None: self.set_value('<RBRIGHT>', array(rbr)*alat2ang)
         if zper_l is not None: self.set_value('ZPERIODL', array(zper_l)*alat2ang)
         if zper_r is not None: self.set_value('ZPERIODR', array(zper_r)*alat2ang)
-        
+
         if debug: print('extracted parameters: {}'.format(self.get_set_values()))
-                
-    
+
+
     def _find_value(self, charkey, txt, line=1, item=1, num=1, debug=False):
         """
         Search charkey in txt and return value string
-        
+
         parameter, input :: charkey         string that is search in txt
         parameter, input :: txt             text that is searched (output of readlines)
         parameter, input, optional :: line  index in which line to start reading after key was found
         parameter, input, optional :: item  index which column is read
         parameter, input, optional :: num   number of column that are read
-        
+
         returns :: valtxt                   string or list of strings depending on num setting
         """
         if debug: print('find_value: {}'.format(charkey))
@@ -1072,13 +1087,13 @@ class kkrparams(object):
                 return valtxt
         else:
             return None
-        
-        
+
+
     # redefine _update_mandatory for voronoi code
     def _update_mandatory_voronoi(self):
         """Change mandatory flags to match requirements of voronoi code"""
         # initialize all mandatory flags to False and update list afterwards
-        for key in self.values.keys():
+        for key in list(self.values.keys()):
             self._mandatory[key] = False
 
         runopts = []
@@ -1098,13 +1113,13 @@ class kkrparams(object):
 
         for key in mandatory_list:
             self._mandatory[key] = True
-            
-        
+
+
     # redefine _update_mandatory for kkrim code
     def _update_mandatory_kkrimp(self):
         """Change mandatory flags to match requirements of kkrimp code"""
         # initialize all mandatory flags to False and update list afterwards
-        for key in self.values.keys():
+        for key in list(self.values.keys()):
             self._mandatory[key] = False
 
         runopts = []
@@ -1117,11 +1132,11 @@ class kkrparams(object):
 
         for key in mandatory_list:
             self._mandatory[key] = True
-       
-            
+
+
     def get_missing_keys(self, use_aiida=False):
         """Find list of mandatory keys that are not yet set"""
-        setlist = dict(self.get_set_values()).keys()
+        setlist = list(dict(self.get_set_values()).keys())
         manlist = self.get_all_mandatory()
         missing = []
         autoset_list = ['BRAVAIS', '<RBASIS>', '<ZATOM>', 'ALATBASIS', 'NAEZ', '<SHAPE>', 'EMIN', 'RCLUSTZ']
@@ -1135,8 +1150,8 @@ class kkrparams(object):
                     if key not in autoset_list:
                         missing.append(key)
         return missing
-    
-    
+
+
     def update_to_voronoi(self):
         """
         Update parameter settings to match voronoi specification.
@@ -1144,8 +1159,8 @@ class kkrparams(object):
         """
         self.__params_type = 'voronoi'
         self._update_mandatory_voronoi()
-    
-        
+
+
     def update_to_kkrimp(self):
         """
         Update parameter settings to match kkrimp specification.
@@ -1153,8 +1168,8 @@ class kkrparams(object):
         """
         self.__params_type = 'kkrimp'
         self._update_mandatory_kkrimp()
-        
-    
+
+
     def _create_keywords_dict_kkrimp(self, **kwargs):
         """
         Like create_keywords_dict but for changed keys of impurity code
@@ -1195,12 +1210,12 @@ class kkrparams(object):
 
         for key in kwargs:
             key2 = key
-            if key not in default_keywords.keys():
+            if key not in list(default_keywords.keys()):
                 key2 = '<'+key+'>'
             default_keywords[key2][0] = kwargs[key]
 
         return default_keywords
-    
+
     @classmethod
     def split_kkr_options(self, valtxt):
         """
@@ -1213,7 +1228,7 @@ class kkrparams(object):
         valtxt_tmp = []
         for itmp in valtxt:
             if len(itmp)>8:
-                Nsplitoff = int(len(itmp)/8)
+                Nsplitoff = int(len(itmp)//8)
                 for ii in range(Nsplitoff):
                     itmp_splitoff = itmp[ii*8:(ii+1)*8]
                     valtxt_tmp.append(itmp_splitoff)

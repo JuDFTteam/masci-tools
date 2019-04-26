@@ -1,6 +1,7 @@
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
 from matplotlib import cm
-
-
 
 def dosplot(p0='./', totonly=True, color='', label='', marker='', lw=2, ms=5, ls='-', ls_ef= ':', lw_ef=1, units='Ry', noefline=False, interpol=False, allatoms=False, onespin=False, atoms=[], lmdos=False, lm=[], nofig=False, scale=1.0, shift=0, normalized=False, xyswitch=False, efcolor='', return_data=False, xscale=1., xshift = 0.0, yshift = 0.0, filled=False, spins=2):
     """ plotting routine for dos files """
@@ -12,8 +13,13 @@ def dosplot(p0='./', totonly=True, color='', label='', marker='', lw=2, ms=5, ls
 
     ion()
 
+    # deal with input of file handle instead of path (see plot_kkr of aiida_kkr)
+    if type(p0)!=str:
+        pathname_with_file = p0.name
+        p0 = pathname_with_file.replace('/dos.atom1', '')
+
     # read in data
-    if p0[-1]<>'/': p0+='/'
+    if p0[-1]!='/': p0+='/'
     #if 'rel' in units: ef = float(open(p0+'potential').readlines()[3].split()[1])
     ef = float(open(p0+'potential').readlines()[3].split()[1])
     first=True
@@ -25,7 +31,7 @@ def dosplot(p0='./', totonly=True, color='', label='', marker='', lw=2, ms=5, ls
             iatom = i.replace('dos.','').replace('interpol.','').replace('atom','').replace('out_l','').replace('=','').replace('m','').split('_')[0]
             if atoms==[] or int(iatom) in atoms:
               tmp = loadtxt(p0+i)
-              print p0+i
+              print(p0+i)
 
               # set units
               if 'rel' in units:
@@ -126,7 +132,7 @@ def dosplot(p0='./', totonly=True, color='', label='', marker='', lw=2, ms=5, ls
     #   if lm<>[]:
     #      d = d[:,[0,1]+list(array(lm)+1)]
     #   d[:,1] = sum(d[:,2:], axis=1)
-    if lm<>[]:
+    if lm!=[]:
        d = d[:,[0,1]+list(array(lm)+1)]
     d[:,1] = sum(d[:,2:], axis=1)
 
@@ -187,7 +193,7 @@ def dosplot(p0='./', totonly=True, color='', label='', marker='', lw=2, ms=5, ls
 
     # plot fermi level
     if not noefline:
-       if color<>'' and efcolor=='': efcolor=color
+       if color!='' and efcolor=='': efcolor=color
        if efcolor=='':
          if xyswitch:
           axhline(ef, ls=ls_ef, lw=lw_ef, color='grey')
@@ -199,7 +205,7 @@ def dosplot(p0='./', totonly=True, color='', label='', marker='', lw=2, ms=5, ls
          else:
           axvline(ef, color=efcolor, ls=ls_ef, lw=lw_ef)
 
-    
+
     # set axis labels
     if xyswitch:
       ylabel(xlab)
@@ -210,5 +216,3 @@ def dosplot(p0='./', totonly=True, color='', label='', marker='', lw=2, ms=5, ls
 
     if return_data:
         return d,ef
-
-
