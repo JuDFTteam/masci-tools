@@ -3,7 +3,7 @@
 
 #use print('message') instead of print 'message' in python 2.7 as well:
 from __future__ import print_function
-
+from masci_tools.io.common_functions import open_general
 """
 In this module you find the kkrparams class that helps defining the KKR input parameters
 Also some defaults for the parameters are defined.
@@ -849,7 +849,7 @@ class kkrparams(object):
         
         if debug: print('start reading {}'.format(inputcard))
         
-        txt = open(inputcard, 'r').readlines()
+        txt = open_general(inputcard, 'r').readlines()
         keywords = self.values
         keyfmts = self.__format
 
