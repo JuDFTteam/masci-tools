@@ -2,9 +2,6 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import print_function
-<<<<<<< HEAD
-from masci_tools.io.common_functions import open_general
-=======
 from __future__ import division
 from __future__ import absolute_import
 from __future__ import unicode_literals
@@ -12,7 +9,6 @@ from builtins import object
 from six.moves import range
 from masci_tools.io.common_functions import open_general
 
->>>>>>> 302ac90d701225b6695ae4c7ba96c7be471dc16f
 """
 In this module you find the kkrparams class that helps defining the KKR input parameters
 Also some defaults for the parameters are defined.
@@ -858,13 +854,8 @@ class kkrparams(object):
         debug = False
 
         if debug: print('start reading {}'.format(inputcard))
-<<<<<<< HEAD
         
         txt = open_general(inputcard, 'r').readlines()
-=======
-
-        txt = open(inputcard, 'r').readlines()
->>>>>>> 302ac90d701225b6695ae4c7ba96c7be471dc16f
         keywords = self.values
         keyfmts = self.__format
 
