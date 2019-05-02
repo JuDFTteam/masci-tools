@@ -854,8 +854,8 @@ class kkrparams(object):
         debug = False
 
         if debug: print('start reading {}'.format(inputcard))
-
-        txt = open(inputcard, 'r').readlines()
+        
+        txt = open_general(inputcard, 'r').readlines()
         keywords = self.values
         keyfmts = self.__format
 
