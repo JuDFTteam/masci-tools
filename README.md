@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.com/JuDFTteam/masci-tools.svg?branch=master)](https://travis-ci.com/JuDFTteam/masci-tools)
-[![Coverage Status](https://coveralls.io/repos/github/JuDFTteam/masci-tools/badge.svg?branch=develop)](https://coveralls.io/github/JuDFTteam/masci-tools?branch=develop)
+[![Coverage Status](https://codecov.io/gh/JuDFTteam/masci-tools/branch/master/graph/badge.svg)](https://codecov.io/gh/JuDFTteam/masci-tools)
 [![Documentation Status](https://readthedocs.org/projects/masci-tools/badge/?version=latest)](https://masci-tools.readthedocs.io/en/latest/?badge=latest)
 [![GitHub version](https://badge.fury.io/gh/JuDFTteam%2Fmasci-tools.svg)](https://badge.fury.io/gh/JuDFTteam%2Fmasci-tools)
 [![PyPI version](https://badge.fury.io/py/masci_tools.svg)](https://badge.fury.io/py/masci_tools)
