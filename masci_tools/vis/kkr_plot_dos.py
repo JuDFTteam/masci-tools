@@ -16,7 +16,7 @@ def dosplot(p0='./', totonly=True, color='', label='', marker='', lw=2, ms=5, ls
     # deal with input of file handle instead of path (see plot_kkr of aiida_kkr)
     if type(p0)!=str:
         pathname_with_file = p0.name
-        p0 = pathname_with_file.replace('/dos.atom1')
+        p0 = pathname_with_file.replace('/dos.atom1', '')
 
     # read in data
     if p0[-1]!='/': p0+='/'
