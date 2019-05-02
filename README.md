@@ -2,7 +2,7 @@
 [![Coverage Status](https://codecov.io/gh/JuDFTteam/masci-tools/branch/master/graph/badge.svg)](https://codecov.io/gh/JuDFTteam/masci-tools)
 [![Documentation Status](https://readthedocs.org/projects/masci-tools/badge/?version=latest)](https://masci-tools.readthedocs.io/en/latest/?badge=latest)
 [![GitHub version](https://badge.fury.io/gh/JuDFTteam%2Fmasci-tools.svg)](https://badge.fury.io/gh/JuDFTteam%2Fmasci-tools)
-[![PyPI version](https://badge.fury.io/py/masci_tools.svg)](https://badge.fury.io/py/masci_tools)
+[![PyPI version](https://badge.fury.io/py/masci-tools.svg)](https://badge.fury.io/py/masci-tools)
 
 
 # masci-tools
