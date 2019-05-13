@@ -11,14 +11,14 @@ from __future__ import division
 from __future__ import absolute_import
 from numpy import ndarray, array, loadtxt, shape
 from masci_tools.io.common_functions import (search_string, get_version_info, get_Ry2eV, angles_to_vec,
-                                             get_corestates_from_potential, get_highest_core_state, open_general)
+                                             get_corestates_from_potential, get_highest_core_state, open_general, convert_to_pystd)
 from six.moves import range
 
 __copyright__ = (u"Copyright (c), 2017, Forschungszentrum Jülich GmbH,"
                  "IAS-1/PGI-1, Germany. All rights reserved.")
 __license__ = "MIT license, see LICENSE.txt file"
 __contributors__ = u"Philipp Rüßmann"
-__version__ = "1.2"
+__version__ = "1.3"
 
 ####################################################################################
 
@@ -750,14 +750,8 @@ def parse_kkr_outputfile(out_dict, outfile, outfile_0init, outfile_000, timing_f
             msg = "Error parsing output of KKR: scfinfo"
             msg_list.append(msg)
 
-    #convert arrays to lists
-    for key in list(out_dict.keys()):
-        if type(out_dict[key])==ndarray:
-            out_dict[key] = list(out_dict[key])
-        elif type(out_dict[key])==dict:
-            for subkey in list(out_dict[key].keys()):
-                if type(out_dict[key][subkey])==ndarray:
-                    out_dict[key][subkey] = (out_dict[key][subkey]).tolist()
+    #convert numpy arrays to standard python lists
+    out_dict = convert_to_pystd(out_dict)
 
 
     # return output with error messages if there are any

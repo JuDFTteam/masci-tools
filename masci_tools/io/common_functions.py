@@ -310,3 +310,27 @@ def get_ef_from_potfile(potfile):
         txt = f.readlines()
     ef = float(txt[3].split()[1])
     return ef
+
+def convert_to_pystd(value):
+    """Recursively convert numpy datatypes to standard python, needed by aiida-core.
+    Usage::
+      converted = convert_to_pystd(to_convert)
+    
+    where `to_convert` can be a dict, array, list, or single valued variable
+    """
+    import numpy as np
+    if isinstance(value, np.ndarray):
+        value = list(value)
+        value = convert_to_pystd(value)
+    elif isinstance(value, list):
+        for item in range(len(value)):
+            value[item] = convert_to_pystd(value[item])
+    elif isinstance(value, np.integer):
+        value = int(value)
+    elif isinstance(value, np.floating):
+        value = float(value)
+    elif isinstance(value, dict):
+        for key, val in value.items():
+            value[key] = convert_to_pystd(val)
+    return value
+

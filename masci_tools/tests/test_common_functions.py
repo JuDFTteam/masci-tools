@@ -12,8 +12,8 @@ from masci_tools.io.common_functions import (interpolate_dos, get_alat_from_brav
                                              vec_to_angles, get_version_info,
                                              get_corestates_from_potential,
                                              get_highest_core_state,
-                                             get_ef_from_potfile, open_general)
-
+                                             get_ef_from_potfile, open_general,
+                                             convert_to_pystd)
 
 class Test_common_functions(object):
     """
@@ -110,3 +110,50 @@ class Test_common_functions(object):
     def test_get_ef_from_potfile(self):
         ef = get_ef_from_potfile('files/kkr/kkr_run_dos_output/out_potential')
         assert ef == 1.05
+
+    def test_convert_to_pystd(self):
+        import numpy as np
+        test = {'list': [0,1,2], 'nparray': np.array([0,1,2]), 'nparray_conv_list': list(np.array([0,1,2])), 
+                'int': 9, 'float': 0.9, 'np.int': np.int64(8), 'np.float': np.float128(9), 
+                'dict':{'list':[0,1,2], 'nparray': np.array([0,1,2]), 'nparray_conv_list': list(np.array([0,1,2])),
+                        'int': 9, 'float': 0.9, 'np.int': np.int64(8), 'np.float': np.float128(9), 
+                        'dict':{'list':[0,1,2], 'nparray': np.array([0,1,2]), 'nparray_conv_list': list(np.array([0,1,2])),
+                                'int': 9, 'float': 0.9, 'np.int': np.int64(8), 'np.float': np.float128(9)}
+                       }
+               }
+
+        # make a copy and convert the dict
+        test1 = test.copy()
+        test1 = convert_to_pystd(test1)
+
+        print('original ', test)
+        print('converted', test1)
+
+        # extract datatypes for comparison
+        for i in ['list', 'nparray', 'nparray_conv_list', 'int', 'float', 'np.int', 'np.float']:
+            ii = test[i]
+            if i=='list':
+                out0 = []
+            print(i, type(ii))
+            out0.append(type(ii))
+            if i in ['list', 'nparray', 'nparray_conv_list']:
+                for j in ii:
+                    print(j, type(j))
+                    out0.append(type(j))
+            # converted datatypes:
+            ii = test1[i]
+            if i=='list':
+                out = []
+            print(i, type(ii))
+            out.append(type(ii))
+            if i in ['list', 'nparray', 'nparray_conv_list']:
+                for j in ii:
+                    print(j, type(j))
+                    out.append(type(j))
+
+        # now compare datatypes:
+        assert out0 == [list, int, int, int, np.ndarray, np.int64, np.int64,
+                        np.int64, list, int, int, int, int, float, np.int64, np.float128]
+        assert out == [list, int, int, int, list, int, int, int, list, int, int, int, int, float, int, float]
+
+

@@ -9,14 +9,14 @@ from __future__ import print_function, division
 from __future__ import absolute_import
 from builtins import object
 from numpy import array, ndarray, loadtxt
-from masci_tools.io.common_functions import search_string, open_general, get_version_info, get_Ry2eV
+from masci_tools.io.common_functions import search_string, open_general, get_version_info, get_Ry2eV, convert_to_pystd
 from masci_tools.io.parsers.kkrparser_functions import get_rms, find_warnings, get_charges_per_atom, get_core_states
 from six.moves import range
 
 __copyright__ = (u"Copyright (c), 2018, Forschungszentrum Jülich GmbH,"
                  "IAS-1/PGI-1, Germany. All rights reserved.")
 __license__ = "MIT license, see LICENSE.txt file"
-__version__ = "0.4"
+__version__ = "0.5"
 __contributors__ = (u"Philipp Rüßmann",
                     u"Fabian Bertoldo")
 
@@ -479,14 +479,8 @@ class kkrimp_parser_functions(object):
             msg = "Error parsing output of KKRimp: scfinfo"
             msg_list.append(msg)
 
-        #convert arrays to lists
-        for key in list(out_dict.keys()):
-            if type(out_dict[key])==ndarray:
-                out_dict[key] = list(out_dict[key])
-            elif type(out_dict[key])==dict:
-                for subkey in list(out_dict[key].keys()):
-                    if type(out_dict[key][subkey])==ndarray:
-                        out_dict[key][subkey] = (out_dict[key][subkey]).tolist()
+        #convert numpy arrays to standard python lists
+        out_dict = convert_to_pystd(out_dict)
 
 
         # return output with error messages if there are any
