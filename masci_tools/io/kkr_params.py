@@ -414,7 +414,7 @@ class kkrparams(object):
                                 ('<DELTAE>', [None, '(%f, %f)', False, "Accuracy, LLoyd's formula: Energy difference for derivative calculation in Lloyd's formula"]),
                                 ('<TOLRDIF>', [None, '%e', False, 'Accuracy, Virtual atoms: For distance between scattering-centers smaller than [<TOLRDIF>], free GF is set to zero. Units are Bohr radii.']),
                                 ('<RMTCORE>', [None, '%f', False, 'Accuracy: Muffin tin radium in Bohr radii for each atom site. This sets the value of RMT used internally in the KKRcode. Needs to be smaller than the touching RMT of the cells. In particular for structure relaxations this should be kept constant.']),
-                                ('NMIN', [None, '%f', False, 'Accuracy: Minimal number of point per shape function panel. Only used by voronoi code in shape function generation.']),
+                                ('NMIN', [None, '%i', False, 'Accuracy: Minimal number of point per shape function panel. Only used by voronoi code in shape function generation.']),
                                 # scf cycle
                                 ('NSTEPS', [None, '%i', False, 'Self-consistency control: Max. number of self-consistency iterations. Is reset to 1 in several cases that require only 1 iteration (DOS, Jij, write out GF).']),
                                 ('IMIX', [None, '%i', False, "Self-consistency control: Mixing scheme for potential. 0 means straignt (linear) mixing, 3 means Broyden's 1st method, 4 means Broyden's 2nd method, 5 means Anderson's method"]),
