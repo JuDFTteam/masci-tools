@@ -8,10 +8,17 @@ Welcome to the `Masci-tools`_'s documentation!
 
 
 .. _FLEUR: http://www.flapw.de
-.. _AIIDA-FLEUR: https://github.com/broeder-j/aiida-fleur
-.. _Masci-tools: https://github.com/broeder-j/masci-tools
+.. _AiiDA-FLEUR: https://github.com/JuDFTteam/aiida-fleur
+.. _Masci-tools: https://github.com/JuDFTteam/masci-tools
+.. _AiiDA_KKR: https://github.com/JuDFTteam/aiida-kkr
+.. _AIIDA: https://aiida.net
+.. _KKR: https://jukkr.fz-juelich.de
+.. _juDFT: http://judft.de
 
-If you use this package please cite:
+This package was developed in the process of developing the `AiiDA-FLEUR`_ and `AiiDA_KKR`_ plugins to `AiiDA`_.
+It contains helper functions that can help with common pre and proprocessing steps of the `FLEUR`_ and `KKR`_ codes developed at the Forschungszentrum Jülich (see also the `juDFT`_ website for more information).
+
+If you use this package please cite: ...
 
 
 Requirements to use this code:

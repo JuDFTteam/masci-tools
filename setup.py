@@ -15,7 +15,7 @@ with open(path.join(this_directory, 'README.md')) as f:
 if __name__ == '__main__':
     setup(
         name='masci_tools',
-        version='0.3.4-dev',
+        version='0.3.4',
         description='Tools for Materials science. Vis contains wrapers of matplotlib functionality to visualalize common material science data. Plus wrapers of visualisation for aiida-fleur workflow nodes',
         # add long_description from readme.md:
         long_description = long_description, # add contents of README.md

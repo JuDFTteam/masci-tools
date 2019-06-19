@@ -17,7 +17,7 @@ Also some defaults for the parameters are defined.
 __copyright__ = ("Copyright (c), 2017, Forschungszentrum Jülich GmbH,"
                  "IAS-1/PGI-1, Germany. All rights reserved.")
 __license__ = "MIT license, see LICENSE.txt file"
-__version__ = "1.4"
+__version__ = "1.5"
 __contributors__ = "Philipp Rüßmann"
 
 
@@ -431,7 +431,9 @@ class kkrparams(object):
                                 ('JIJRAD', [None, '%f', False, 'Radius in alat which defines the cutoff for calcultion of Jij pairs']),
                                 ('JIJRADXY', [None, '%f', False, 'use a cylindical cluster in which Jij pairs are searched for']),
                                 ('JIJSITEI', [None, '%i', False, 'allow for the selection of specific sites in i in the unit cell, which should be considered in the calculation (default: all sites)']),
-                                ('JIJSITEJ', [None, '%i', False, 'allow for the selection of specific sites in j in the unit cell, which should be considered in the calculation (default: all sites)'])
+                                ('JIJSITEJ', [None, '%i', False, 'allow for the selection of specific sites in j in the unit cell, which should be considered in the calculation (default: all sites)']),
+                                # array dimensions
+                                ('NSHELD', [None, '%i', False, 'Array dimension: number of shells (default: 300)'])
                                 ])
 
         for key in kwargs:
@@ -1229,3 +1231,10 @@ class kkrparams(object):
                 valtxt_tmp.append(itmp)
         valtxt =valtxt_tmp
         return valtxt
+
+    def items(self):
+        """make kkrparams.items() work"""
+        return self.get_dict().items()
+    
+    
+    
