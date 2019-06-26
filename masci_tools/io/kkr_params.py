@@ -434,7 +434,8 @@ class kkrparams(object):
                                 ('JIJSITEI', [None, '%i', False, 'allow for the selection of specific sites in i in the unit cell, which should be considered in the calculation (default: all sites)']),
                                 ('JIJSITEJ', [None, '%i', False, 'allow for the selection of specific sites in j in the unit cell, which should be considered in the calculation (default: all sites)']),
                                 # array dimensions
-                                ('NSHELD', [None, '%i', False, 'Array dimension: number of shells (default: 300)'])
+                                ('NSHELD', [None, '%i', False, 'Array dimension: number of shells (default: 300)']),
+                                ('IEMXD', [None, '%i', False, 'Array dimension: number of energy points (default: 101)'])
                                 ])
 
         for key in kwargs:
