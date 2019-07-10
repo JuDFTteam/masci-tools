@@ -13,6 +13,11 @@ def FSqdos2D(p0='./', totonly=True, s=20, ls_ef= ':', lw_ef=1, color='', reload_
     from os.path import isdir
     from subprocess import check_output
 
+    # deal with input of file handle instead of path (see plot_kkr of aiida_kkr)
+    if type(p0)!=str:
+        pathname_with_file = p0.name
+        p0 = pathname_with_file.replace('/qdos.01.1.dat','') #dos.atom1
+
     # read in data
     if p0[-1]!='/': p0+='/'
 
@@ -23,7 +28,6 @@ def FSqdos2D(p0='./', totonly=True, s=20, ls_ef= ':', lw_ef=1, color='', reload_
     else:
        alat = float(check_output('grep ALATBASIS '+p0+'inputcard', shell=True).decode('utf-8').split('=')[1].split()[0])
        a0 = 2*pi/alat/0.52918
-    print(a0)
 
     if reload_data or 'saved_data_qdos.npy' not in sort(listdir(p0)):
        first=True
@@ -45,7 +49,6 @@ def FSqdos2D(p0='./', totonly=True, s=20, ls_ef= ':', lw_ef=1, color='', reload_
        if not nosave:
           save(p0+'saved_data_qdos', d)
     else:
-       print('loading data')
        d = load(p0+'saved_data_qdos.npy')
 
     xlab = r'kx'
