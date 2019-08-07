@@ -18,7 +18,7 @@ __copyright__ = (u"Copyright (c), 2017, Forschungszentrum Jülich GmbH,"
                  "IAS-1/PGI-1, Germany. All rights reserved.")
 __license__ = "MIT license, see LICENSE.txt file"
 __contributors__ = u"Philipp Rüßmann"
-__version__ = "1.3"
+__version__ = "1.4"
 
 ####################################################################################
 
@@ -712,8 +712,9 @@ def parse_kkr_outputfile(out_dict, outfile, outfile_0init, outfile_000, timing_f
             out_dict['single_particle_energies'] = result*Ry2eV
             out_dict['single_particle_energies_unit'] = 'eV'
         except:
-            msg = "Error parsing output of KKR: single particle energies"
-            msg_list.append(msg)
+            if not doscalc:
+                msg = "Error parsing output of KKR: single particle energies"
+                msg_list.append(msg)
 
         try:
             result_WS, result_tot, result_C = get_charges_per_atom(outfile_000)
@@ -728,8 +729,9 @@ def parse_kkr_outputfile(out_dict, outfile, outfile_0init, outfile_000, timing_f
             out_dict['charge_core_states_per_atom_unit'] = 'electron charge'
             out_dict['charge_valence_states_per_atom_unit'] = 'electron charge'
         except:
-            msg = "Error parsing output of KKR: charges"
-            msg_list.append(msg)
+            if not doscalc:
+                msg = "Error parsing output of KKR: charges"
+                msg_list.append(msg)
 
         try:
             try:
