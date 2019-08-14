@@ -14,13 +14,13 @@ __copyright__ = (u"Copyright (c), 2018, Forschungszentrum Jülich GmbH,"
                  "IAS-1/PGI-1, Germany. All rights reserved.")
 __license__ = "MIT license, see LICENSE.txt file"
 __contributors__ = (u"Philipp Rüßmann")
-__version__ = 1.0
+__version__ = 1.1
 
 ####################################################################################
 
 #helper functions used in calculation, parser etc.
 
-def open_general(filename_or_handle, iomode=u'r'):
+def open_general(filename_or_handle, iomode=None):
     """
     Open a file directly from a path or use a file handle if that is given.
     Also take care of closed files by reopenning them.
@@ -41,11 +41,15 @@ def open_general(filename_or_handle, iomode=u'r'):
             reopen_file = True
 
     if reopen_file:
+        if iomode is None: iomode = u'r'
         f = open(filename_or_handle, iomode)
     else:
         f = filename_or_handle
         if f.closed: # reopen file if it was closed before
-            f = open(f.name, f.mode)
+            if iomode is None:
+                f = open(f.name, f.mode)
+            else:
+                f = open(f.name, iomode)
         else: # make sure reading the file now starts at the beginning again
             f.seek(0)
     return f
