@@ -17,7 +17,7 @@ Also some defaults for the parameters are defined.
 __copyright__ = ("Copyright (c), 2017, Forschungszentrum Jülich GmbH,"
                  "IAS-1/PGI-1, Germany. All rights reserved.")
 __license__ = "MIT license, see LICENSE.txt file"
-__version__ = "1.6"
+__version__ = "1.7"
 __contributors__ = "Philipp Rüßmann"
 
 
@@ -435,7 +435,9 @@ class kkrparams(object):
                                 ('JIJSITEJ', [None, '%i', False, 'allow for the selection of specific sites in j in the unit cell, which should be considered in the calculation (default: all sites)']),
                                 # array dimensions
                                 ('NSHELD', [None, '%i', False, 'Array dimension: number of shells (default: 300)']),
-                                ('IEMXD', [None, '%i', False, 'Array dimension: number of energy points (default: 101)'])
+                                ('IEMXD', [None, '%i', False, 'Array dimension: number of energy points (default: 101)']),
+                                ('IRID', [None, '%i', False, 'Array dimension: number of radial points']),
+                                ('IPAND', [None, '%i', False, 'Array dimension: number of shapefunction panels']),
                                 ])
 
         for key in kwargs:
