@@ -5,17 +5,18 @@ setup: usage: pip install -e .[graphs]
 
 from __future__ import absolute_import
 from setuptools import setup, find_packages
+import io # needed to have `open` with encoding option
 
 # read the contents of your README file
 from os import path
 this_directory = path.abspath(path.dirname(__file__))
-with open(path.join(this_directory, 'README.md'), encoding="utf8") as f:
+with io.open(path.join(this_directory, 'README.md'), encoding="utf8") as f:
     long_description = f.read()
 
 if __name__ == '__main__':
     setup(
         name='masci_tools',
-        version='0.3.7',
+        version='0.3.8-dev',
         description='Tools for Materials science. Vis contains wrapers of matplotlib functionality to visualalize common material science data. Plus wrapers of visualisation for aiida-fleur workflow nodes',
         # add long_description from readme.md:
         long_description = long_description, # add contents of README.md
