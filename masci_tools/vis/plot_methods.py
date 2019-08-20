@@ -888,7 +888,8 @@ def plot_convergence_results(distance, total_energy, iteration, saveas1='t_energ
     single_scatterplot(distance, iteration, xlabel, ylabel2, title2, plotlabel='distance', saveas=saveas2, scale=[None, 'log'])
 
 
-def plot_convergence_results_m(distances, total_energies, iterations, plot_labels=[], saveas1='t_energy_convergence', saveas2='distance_convergence'):
+def plot_convergence_results_m(distances, total_energies, iterations, modes, plot_labels=[],
+                               saveas1='t_energy_convergence', saveas2='distance_convergence'):
     """
     Plot the total energy versus the scf iteration
     and plot the distance of the density versus iterations.
@@ -919,6 +920,10 @@ def plot_convergence_results_m(distances, total_energies, iterations, plot_label
         plot_labels1 = plot_labels
         plot_labels2 = plot_labels
     multiple_scatterplots(total_energy_abs_diffs, iterations1, xlabel, ylabel1, title1, plot_labels1, saveas=saveas1, scale=[None, 'log'])
+    for i, mode in enumerate(modes):
+        if mode == 'force':
+            iterations[i].pop()
+            print('Drop the last iteration because there was no charge distance, mode=force')
     multiple_scatterplots(distances, iterations, xlabel, ylabel2, title2, plot_labels2, saveas=saveas2, scale=[None, 'log'])
 
 
