@@ -8,7 +8,7 @@ def dispersionplot(p0='./', totonly=True, s=20, ls_ef= ':', lw_ef=1, units='eV_r
                    color='', reload_data=False, clrbar=True, logscale=True, nosave=False, atoms=[],
                    ratios=False, atoms2=[], noscale=False, newfig=False, cmap=None, alpha=1.0,
                    qcomponent=-2, clims=[], xscale=1., raster=True, atoms3=[], alpha_reverse=False,
-                   return_data=False, xshift=0, yshift=0, plotmode='pcolor', ptitle=None):
+                   return_data=False, xshift=0, yshift=0, plotmode='pcolor', ptitle=None, ef=None, as_e_dimension=None):
     """ plotting routine for qdos files - dispersion (E vs. q) """
     # import dependencies
     from numpy import loadtxt, load, save, log, abs, sum, sort, pi, shape, array
@@ -29,7 +29,12 @@ def dispersionplot(p0='./', totonly=True, s=20, ls_ef= ':', lw_ef=1, units='eV_r
 
     # read in data
     if p0[-1]!='/': p0+='/'
-    ef = float(open(p0+'potential').readlines()[3].split()[1])
+    # read EF if not given as input
+    if ef is None:
+        if 'potential' in listdir(p0):
+            ef = float(open(p0+'potential').readlines()[3].split()[1])
+        else:
+            ef = 0
     alat = float(check_output('grep ALATBASIS '+p0+'inputcard', shell=True).decode('utf-8').split('=')[1].split()[0])
     a0 = 2*pi/alat/0.52918
     if noscale: a0 = 1.
@@ -116,6 +121,10 @@ def dispersionplot(p0='./', totonly=True, s=20, ls_ef= ':', lw_ef=1, units='eV_r
     x, y = xscale*sum(d[:,2:5], axis=1), d[:,0]
     if qcomponent==-2:
        el = len(set(d[:,0]))
+       if el==1 and as_e_dimension is not None:
+           y = d[:,2+as_e_dimension]
+           el = len(set(y))
+           ylab = r'k (1/Ang.)'
        x = array([[i for i in range(len(d)//el)] for j in range(el)])
     elif qcomponent!=-1:
        x = xscale*d[:,2:5][:,qcomponent]

@@ -3,7 +3,7 @@ from __future__ import division
 from __future__ import absolute_import
 from matplotlib import cm
 
-def FSqdos2D(p0='./', totonly=True, s=20, ls_ef= ':', lw_ef=1, color='', reload_data=False, clrbar=True, atoms=[], ax=None, nosave=False, noalat=False, cmap=cm.jet, noplot=False, return_data=False, pclrmesh=False, logscale=True):
+def FSqdos2D(p0='./', totonly=True, s=20, ls_ef= ':', lw_ef=1, color='', reload_data=False, clrbar=True, atoms=[], ax=None, nosave=False, noalat=False, cmap=cm.jet, noplot=False, return_data=False, pclrmesh=False, logscale=True, ef=None):
     """ plotting routine for dos files """
     # import dependencies
     from numpy import loadtxt, load, save, sort, abs, log, sum, pi, linspace
@@ -21,7 +21,13 @@ def FSqdos2D(p0='./', totonly=True, s=20, ls_ef= ':', lw_ef=1, color='', reload_
     # read in data
     if p0[-1]!='/': p0+='/'
 
-    ef = float(open(p0+'potential').readlines()[3].split()[1])
+    # read EF if not given as input
+    if ef is None:
+        if 'potential' in listdir(p0):
+            ef = float(open(p0+'potential').readlines()[3].split()[1])
+        else:
+            ef = 0
+
     if noalat:
        a0 = 1.
        alat = 1.
