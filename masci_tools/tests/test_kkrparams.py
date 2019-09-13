@@ -10,6 +10,7 @@ from __future__ import division
 
 from __future__ import absolute_import
 from builtins import object
+from builtins import str
 import pytest
 from masci_tools.io.kkr_params import kkrparams
 from masci_tools.io.common_functions import open_general

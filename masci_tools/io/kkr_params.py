@@ -6,6 +6,7 @@ from __future__ import division
 from __future__ import absolute_import
 from __future__ import unicode_literals
 from builtins import object
+from builtins import str
 from six.moves import range
 from masci_tools.io.common_functions import open_general
 
@@ -212,6 +213,9 @@ class kkrparams(object):
     def _check_valuetype(self, key):
         """Consistency check if type of value matches expected type from format info"""
 
+        # this is the type which is expected
+        cmptypes = self.get_type(key)
+
         # check if entry is numpy array and change to list automatically:
         try:
             tmpval = self.values[key].flatten().tolist()
@@ -223,13 +227,17 @@ class kkrparams(object):
         if tmptype == list:
             valtype = []
             for val in range(len(tmpval)):
+                if cmptypes==str:
+                    tmpval[val] = str(tmpval[val]) # for pytho2/3 compatibility
                 valtype.append(type(tmpval[val]))
         else:
+            if cmptypes==str:
+                tmpval = str(tmpval) # for pytho2/3 compatibility
+                tmptype = type(tmpval)
             valtype = tmptype
         #print(key, valtype, self.get_type(key))
 
         # check if type matches format info
-        cmptypes = self.get_type(key)
         success = True
         if cmptypes is not None:
             #print(key, type(valtype), valtype, cmptypes)
@@ -243,13 +251,9 @@ class kkrparams(object):
                         changed_type_automatically = True
                         self.values[key][ival] = float(self.values[key][ival])
             elif valtype != cmptypes and tmpval is not None:
-                if (valtype==str and cmptypes==unicode) or (valtype==unicode and cmptypes==str):
-                    # sometimes (only in python2) unicode strings get compared to non unicode strings, then this would be a false positive
-                    success = True
-                else:
-                    success = False
-                    print('Error: type of value does not match expected type for ', key, self.values[key], cmptypes)
-                    raise TypeError('type of value does not match expected type for key={}; value={}; expected type={}; got type={}'.format(key, self.values[key], cmptypes, type(self.values[key])))
+                success = False
+                print('Error: type of value does not match expected type for ', key, self.values[key], cmptypes, type(self.values[key]), valtype)
+                raise TypeError('type of value does not match expected type for key={}; value={}; expected type={}; got type={}'.format(key, self.values[key], cmptypes, type(self.values[key])))
 
             if changed_type_automatically:
                 print('Warning: filling value of "%s" with integer but expects float. Converting automatically and continue'%key)
