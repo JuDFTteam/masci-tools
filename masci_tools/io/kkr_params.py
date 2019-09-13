@@ -17,7 +17,7 @@ Also some defaults for the parameters are defined.
 __copyright__ = ("Copyright (c), 2017, Forschungszentrum Jülich GmbH,"
                  "IAS-1/PGI-1, Germany. All rights reserved.")
 __license__ = "MIT license, see LICENSE.txt file"
-__version__ = "1.7"
+__version__ = "1.8"
 __contributors__ = "Philipp Rüßmann"
 
 
@@ -243,9 +243,13 @@ class kkrparams(object):
                         changed_type_automatically = True
                         self.values[key][ival] = float(self.values[key][ival])
             elif valtype != cmptypes and tmpval is not None:
-                success = False
-                print('Error: type of value does not match expected type for ', key, self.values[key], cmptypes)
-                raise TypeError('type of value does not match expected type for key={}; value={}; expected type={}'.format(key, self.values[key], cmptypes))
+                if (valtype==str and cmptypes==unicode) or (valtype==unicode and cmptypes==str):
+                    # sometimes (only in python2) unicode strings get compared to non unicode strings, then this would be a false positive
+                    success = True
+                else:
+                    success = False
+                    print('Error: type of value does not match expected type for ', key, self.values[key], cmptypes)
+                    raise TypeError('type of value does not match expected type for key={}; value={}; expected type={}; got type={}'.format(key, self.values[key], cmptypes, type(self.values[key])))
 
             if changed_type_automatically:
                 print('Warning: filling value of "%s" with integer but expects float. Converting automatically and continue'%key)
@@ -273,6 +277,8 @@ class kkrparams(object):
                 print('Warning setting value None is not permitted!')
                 print('Use remove_value funciton instead! Ignore keyword {}'.format(key))
         else:
+            if self.__params_type == 'kkrimp' and key == 'XC':
+                value = self.change_XC_val_kkrimp(value)
             self.values[key] = value
             self._check_valuetype(key)
 
@@ -459,19 +465,8 @@ class kkrparams(object):
                 if key=='NSTEPS':
                     key2 = 'SCFSTEPS'
             # workaround to fix inconsistency of XC input between host and impurity code
-            if self.__params_type == 'kkrimp' and key2 == 'XC' and type(val)==int:
-                if val==0:
-                    val = 'LDA-MJW'
-                if val==1:
-                    val = 'LDA-vBH'
-                if val==2:
-                    val = 'LDA-VWN'
-                if val==3:
-                    val = 'GGA-PW91'
-                if val==4:
-                    val = 'GGA-PBE'
-                if val==5:
-                    val = 'GGA-PBEsol'
+            if self.__params_type == 'kkrimp' and key2 == 'XC':
+                val = self.change_XC_val_kkrimp(val)
                 kwargs[key] = val
             default_keywords[key2][0] = val
 
@@ -718,21 +713,7 @@ class kkrparams(object):
                     try:
                         if self.__params_type == 'kkrimp' and key == 'XC':
                             # workaround to fix inconsistency of XC input between host and impurity code
-                            val = keywords[key]
-                            if type(val)==int:
-                                if val==0:
-                                    val = 'LDA-MJW'
-                                if val==1:
-                                    val = 'LDA-vBH'
-                                if val==2:
-                                    val = 'LDA-VWN'
-                                if val==3:
-                                    val = 'GGA-PW91'
-                                if val==4:
-                                    val = 'GGA-PBE'
-                                if val==5:
-                                    val = 'GGA-PBEsol'
-                            keywords[key] = val
+                            keywords[key] = self.change_XC_val_kkrimp(keywords[key])
                         repltxt = tmpfmt%(keywords[key])
                     except:
                         #print(key, tmpfmt, keywords[key])
@@ -795,7 +776,7 @@ class kkrparams(object):
                         tmpl += '%s\n'%self.values[key][0]
                         tmpl += '\n'
                         tmpl += '%s\n'%self.values[key][1]
-                        tmpl += '\n'
+                        tmpl += 'scoef\n'
                 elif self.__params_type == 'kkrimp' and key == 'RUNFLAG' or key == 'TESTFLAG': # for kkrimp
                     ops = keywords[key]
                     tmpl += key+'='
@@ -1239,6 +1220,23 @@ class kkrparams(object):
     def items(self):
         """make kkrparams.items() work"""
         return self.get_dict().items()
+
+    def change_XC_val_kkrimp(self, val):
+        """Convert integer value of KKRhost KEXCOR input to KKRimp XC string input."""
+        if type(val)==int:
+            if val==0:
+                val = 'LDA-MJW'
+            if val==1:
+                val = 'LDA-vBH'
+            if val==2:
+                val = 'LDA-VWN'
+            if val==3:
+                val = 'GGA-PW91'
+            if val==4:
+                val = 'GGA-PBE'
+            if val==5:
+                val = 'GGA-PBEsol'
+        return val
     
     
     

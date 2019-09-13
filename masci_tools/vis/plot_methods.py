@@ -251,7 +251,7 @@ def multiple_scatterplots(ydata, xdata, xlabel, ylabel, title, plot_labels=None,
                           linestyle='-', marker='o', markersize=markersize_g, legend=legend_g,
                           legend_option={}, saveas='mscatterplot',
                           limits=[None, None], scale=[None, None],
-                          axis=None, xerr=None, yerr=None, colors=[], linewidth=[], xticks=[], **kwargs):
+                          axis=None, xerr=None, yerr=None, colors=None, linewidth=[], xticks=[], **kwargs):
     """
     Create a standard scatter plot (this should be flexible enough) to do all the
     basic plots.
