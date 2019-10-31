@@ -8,7 +8,8 @@ def dispersionplot(p0='./', totonly=True, s=20, ls_ef= ':', lw_ef=1, units='eV_r
                    color='', reload_data=False, clrbar=True, logscale=True, nosave=False, atoms=[],
                    ratios=False, atoms2=[], noscale=False, newfig=False, cmap=None, alpha=1.0,
                    qcomponent=-2, clims=[], xscale=1., raster=True, atoms3=[], alpha_reverse=False,
-                   return_data=False, xshift=0, yshift=0, plotmode='pcolor', ptitle=None, ef=None, as_e_dimension=None):
+                   return_data=False, xshift=0, yshift=0, plotmode='pcolor', ptitle=None, ef=None,
+                   as_e_dimension=None, scale_alpha_data=False):
     """ plotting routine for qdos files - dispersion (E vs. q) """
     # import dependencies
     from numpy import loadtxt, load, save, log, abs, sum, sort, pi, shape, array
@@ -17,6 +18,8 @@ def dispersionplot(p0='./', totonly=True, s=20, ls_ef= ':', lw_ef=1, units='eV_r
     from os.path import isdir, getctime
     from time import ctime
     from subprocess import check_output
+    from numpy import linspace
+    from matplotlib.colors import ListedColormap
 
     # deal with input of file handle instead of path (see plot_kkr of aiida_kkr)
     if type(p0)!=str:
@@ -57,9 +60,9 @@ def dispersionplot(p0='./', totonly=True, s=20, ls_ef= ':', lw_ef=1, units='eV_r
                       first=False
                   else:
                       d[:,5:]+=tmp[:,5:]
-               if ratios and (atoms2==[] or int(iatom)):
+               if ratios and (atoms2==[] or int(iatom) in atoms2):
                   j += 1
-                  print(j,p0,i, 'atoms2')
+                  print(j,p0,i, 'atoms2=', atoms2)
                   tmp = loadtxt(p0+i)
                   tmp[:,2:5] = tmp[:,2:5]
                   if first2:
@@ -69,7 +72,7 @@ def dispersionplot(p0='./', totonly=True, s=20, ls_ef= ':', lw_ef=1, units='eV_r
                       d2[:,5:]+=tmp[:,5:]
                if (atoms3==[] or int(iatom) in atoms3) and ratios:
                   j += 1
-                  print(j,p0,i, 'atoms3')
+                  print(j,p0,i, 'atoms3=', atoms3)
                   tmp = loadtxt(p0+i)
                   tmp[:,2:5] = tmp[:,2:5]
                   if first3:
@@ -83,8 +86,9 @@ def dispersionplot(p0='./', totonly=True, s=20, ls_ef= ':', lw_ef=1, units='eV_r
        d = load(p0+'saved_data_dispersion.npy')
 
     d[:,2:5] = d[:,2:5]*a0
-    if ratios: d2[:,2:5] = d2[:,2:5]*a0
-    if ratios: d3[:,2:5] = d3[:,2:5]*a0
+    if ratios:
+       d2[:,2:5] = d2[:,2:5]*a0
+       d3[:,2:5] = d3[:,2:5]*a0
 
     # set units and axis labels
     if 'eV' in units:
@@ -96,12 +100,8 @@ def dispersionplot(p0='./', totonly=True, s=20, ls_ef= ':', lw_ef=1, units='eV_r
        ef = 0
     if ratios:
       if 'eV' in units:
-       d2[:,0] = d2[:,0]*13.6
        d2[:,5:] = d2[:,5:]/13.6
-       ef = ef*13.6
-      if 'rel' in units:
-       d2[:,0] = d2[:,0]-ef
-       ef = 0
+       d3[:,5:] = d3[:,5:]/13.6
 
     ylab = r'E (Ry)'
     xlab = r'k'
@@ -140,8 +140,17 @@ def dispersionplot(p0='./', totonly=True, s=20, ls_ef= ':', lw_ef=1, units='eV_r
     if yshift != 0:
        y += yshift
 
-    colors = cmap(data/data.max())
+    if scale_alpha_data:
+       dtmp = data.copy()
+       dtmp = linspace(dtmp.min(), dtmp.max(), 1000)
+       colors = cmap(dtmp)
+       dtmp = dtmp - dtmp.min()
+       dtmp = dtmp/dtmp.max()
+       colors[:,-1] = alpha*(dtmp)
+       cmap = ListedColormap(colors)
+       alpha = 1.
     if ratios and atoms3!=[]:
+       colors = cmap(data/data.max())
        colors[:,-1] = abs(sum(d3[:,5:], axis=1))/abs(sum(d3[:,5:], axis=1)).max()
        if alpha_reverse:
           colors[:,-1] = 1 - colors[:,-1]
@@ -149,16 +158,16 @@ def dispersionplot(p0='./', totonly=True, s=20, ls_ef= ':', lw_ef=1, units='eV_r
        if plotmode=='scatter':
            scatter(x,y,s=s, lw=0, c=colors, cmap=cmap, rasterized=raster)
        else:
-           lx = len(set(x.reshape(-1)))
-           ly = len(set(y.reshape(-1)))
-           pcolormesh(data.reshape(ly,lx), cmap=cmap, rasterized=raster)
+           lx = len(set(x.reshape(-1))); ly = len(set(y.reshape(-1)))
+           pcolormesh(x.reshape(ly,lx), y.reshape(ly,lx), data.reshape(ly,lx), cmap=cmap, rasterized=raster, edgecolor='face', linewidths=0.0001)
+           #pcolormesh(x.reshape(ly,lx), y.reshape(ly,lx), data.reshape(ly,lx), cmap=cmap, rasterized=raster)
     else:
        if plotmode=='scatter':
            scatter(x,y,c=data, s=s, lw=0, cmap=cmap, alpha=alpha, rasterized=raster)
        else:
-           lx = len(set(x.reshape(-1)))
-           ly = len(set(y.reshape(-1)))
-           pcolormesh(x.reshape(ly,lx), y.reshape(ly,lx), data.reshape(ly,lx), cmap=cmap, alpha=alpha, rasterized=raster)
+           lx = len(set(x.reshape(-1))); ly = len(set(y.reshape(-1)))
+           pcolormesh(x.reshape(ly,lx), y.reshape(ly,lx), data.reshape(ly,lx), cmap=cmap, rasterized=raster, edgecolor='face', linewidths=0.0001)
+           #pcolormesh(x.reshape(ly,lx), y.reshape(ly,lx), data.reshape(ly,lx), cmap=cmap, alpha=alpha, rasterized=raster)
     if clims!=[]: clim(clims[0], clims[1])
     if clrbar: colorbar()
 
@@ -181,6 +190,9 @@ def dispersionplot(p0='./', totonly=True, s=20, ls_ef= ':', lw_ef=1, units='eV_r
 
     if return_data:
        data = abs(sum(d[:,5:], axis=1))
-       data2 = abs(sum(d2[:,5:], axis=1))
-       data3 = abs(sum(d3[:,5:], axis=1))
-       return x, y, data, data2, data3
+       if ratios:
+          data2 = abs(sum(d2[:,5:], axis=1))
+          data3 = abs(sum(d3[:,5:], axis=1))
+          return x, y, data, data2, data3
+       else:
+          return x, y, data
