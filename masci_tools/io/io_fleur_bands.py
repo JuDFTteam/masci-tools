@@ -14,6 +14,8 @@
 """
 Io routines for band structure files
 """
+from __future__ import absolute_import
+from __future__ import print_function
 ry_to_ev = 13.6056917253
 hartree_to_ev = ry_to_ev * 2.
 
@@ -65,10 +67,10 @@ def read_fleur_banddos_hdf(filepath):
     datasets, groups, group_attrs = read_hdf(filepath)
     
     # correct eigenvalues with Fermi energy
-    fermien_htr = group_attrs.get(u'lastFermiEnergy', None)
+    fermien_htr = group_attrs.read(u'lastFermiEnergy', None)
     
     eig = datasets['eigenvalues']
-    print(len(eig), len(eig[-1]), len(eig[-1][-1]))
+    print((len(eig), len(eig[-1]), len(eig[-1][-1])))
     bands_tmp = [eig[0].transpose()]
     if len(eig)==2: # wo spins
         bands_tmp.append(eig[1].transpose())
@@ -79,12 +81,12 @@ def read_fleur_banddos_hdf(filepath):
             bands_s.append((np.array(band) - fermien_htr)*hartree_to_ev)
         bands.append(bands_s)
     
-    print(len(bands))
+    print((len(bands)))
     # get special points
-    nspecial_labels = group_attrs.get(u'nSpecialPoints', [0])[0]
+    nspecial_labels = group_attrs.read(u'nSpecialPoints', [0])[0]
     if nspecial_labels > 0:
-        special_point_labels = list(datasets.get(u'specialPointLabels', []))
-        special_point_pos = list(datasets.get(u'specialPointIndices', []))
+        special_point_labels = list(datasets.read(u'specialPointLabels', []))
+        special_point_pos = list(datasets.read(u'specialPointIndices', []))
         
         for i, special_label in enumerate(special_point_labels):
             label = special_label.rstrip()
@@ -95,7 +97,7 @@ def read_fleur_banddos_hdf(filepath):
         special_point_pos = None
     
     # construct kpoint path
-    kpoints = datasets.get('coordinates', None)
+    kpoints = datasets.read('coordinates', None)
     if kpoints is None:
         return None
     

@@ -3,10 +3,12 @@
 @author: ruess
 """
 
+from __future__ import absolute_import
+from builtins import object
 import pytest
 from masci_tools.io.parsers.voroparser_functions import parse_voronoi_output
 
-class Test_voronoi_parser_functions():
+class Test_voronoi_parser_functions(object):
     """
     Tests for the voronoi parser functions
     """
@@ -21,7 +23,7 @@ class Test_voronoi_parser_functions():
     atominfo = path0+'atominfo.txt'
     radii = path0+'radii.dat'
     inputfile = path0+'inputcard'
-    
+
     def test_complete_voro_output(self):
         """
         Parse complete output of voronoi calculation and compare out_dict, grouping, warnings
@@ -32,9 +34,22 @@ class Test_voronoi_parser_functions():
         assert success
         assert msg_list == []
         assert out_dict == dref
-        groups = [i for i in out_dict.keys() if 'group' in i]
+        groups = [i for i in list(out_dict.keys()) if 'group' in i]
         assert set(groups) == set(grouping_ref)
-        
+
+    def test_complete_voro_output_filehandle(self):
+        """
+        Parse complete output of voronoi calculation from open file handles as done in aiida-kkr and compare out_dict, grouping, warnings
+        """
+        out_dict = {'parser_version': 'some_version_number'}
+        success, msg_list, out_dict = parse_voronoi_output(out_dict, open(outfile), open(potfile), open(atominfo), open(radii), open(inputfile))
+        out_dict['parser_warnings'] = msg_list
+        assert success
+        assert msg_list == []
+        assert out_dict == dref
+        groups = [i for i in list(out_dict.keys()) if 'group' in i]
+        assert set(groups) == set(grouping_ref)
+
     def test_missing_outfile(self):
         """
         Parse output where out_voronoi is missing and compare error messages/rest of out_dict
@@ -46,7 +61,7 @@ class Test_voronoi_parser_functions():
         assert not success
         assert msg_list == ['Error parsing output of voronoi: Version Info', "Error parsing output of voronoi: 'EMIN'", 'Error parsing output of voronoi: Cluster Info', 'Error parsing output of voronoi: Jellium startpot', 'Error parsing output of voronoi: SHAPE Info', 'Error parsing output of voronoi: Volume Info', 'Error parsing output of voronoi: radii.dat Info', 'Error parsing output of voronoi: full potential radius']
         assert out_dict == dref2
-        
+
     def test_missing_atominfo(self):
         """
         Parse output where atominfo.txt is missing and compare error messages/rest of out_dict
@@ -72,7 +87,7 @@ class Test_voronoi_parser_functions():
         assert msg_list == ['Error parsing output of voronoi: alat']
         assert out_dict == dref2
         return out_dict
-        
+
     def test_missing_potfile(self):
         """
         Parse output where output.pot is missing and compare error messages/rest of out_dict
@@ -82,10 +97,10 @@ class Test_voronoi_parser_functions():
         out_dict['parser_warnings'] = msg_list
         dref2 = {'volumes_group': {'volume_total': 3.00000186, 'volume_unit': 'alat^3', 'volume_atoms': [{'iatom': 1, 'v_atom': 0.50000031}, {'iatom': 2, 'v_atom': 0.50000031}, {'iatom': 3, 'v_atom': 0.50000031}, {'iatom': 4, 'v_atom': 0.50000031}, {'iatom': 5, 'v_atom': 0.50000031}, {'iatom': 6, 'v_atom': 0.50000031}]}, 'parser_version': 'some_version_number', 'fpradius_atoms': [0.4696902, 0.4696902, 0.4696902, 0.4696902, 0.4696902, 0.4696902], 'alat_unit': 'a_Bohr', 'shapes': [1, 1, 1, 1, 1, 1], 'code_info_group': {'code_version': 'v1.0-6-gf0c2ac3', 'calculation_serial_number': 'voro_v1.0-6-gf0c2ac3_serial_20171207092915', 'compile_options': 'serial-O2 -r8 -traceback -i8-mkl -Wl,-stack_size,0x40000000,-stack_addr,0xf0000000'}, 'fpradius_atoms_unit': 'alat', 'alat': 5.423514, 'parser_warnings': ["Error parsing output of voronoi: 'EMIN'", 'Error parsing output of voronoi: core_states', 'Error parsing output of voronoi: radial meshpoints'], 'start_from_jellium_potentials': True, 'radii_atoms_group': [{'rout': 0.5590171328, 'iatom': 1, 'dist_nn': 0.8660255824, 'rout_over_dist_nn': 64.55, 'rmt0_over_rout': 77.46, 'rmt0': 0.4330127912}, {'rout': 0.5590171328, 'iatom': 2, 'dist_nn': 0.8660255824, 'rout_over_dist_nn': 64.55, 'rmt0_over_rout': 77.46, 'rmt0': 0.4330127912}, {'rout': 0.5590171328, 'iatom': 3, 'dist_nn': 0.8660247659, 'rout_over_dist_nn': 64.55, 'rmt0_over_rout': 77.46, 'rmt0': 0.4330127912}, {'rout': 0.5590171328, 'iatom': 4, 'dist_nn': 0.8660247659, 'rout_over_dist_nn': 64.55, 'rmt0_over_rout': 77.46, 'rmt0': 0.4330127912}, {'rout': 0.5590171328, 'iatom': 5, 'dist_nn': 0.8660255824, 'rout_over_dist_nn': 64.55, 'rmt0_over_rout': 77.46, 'rmt0': 0.4330127912}, {'rout': 0.5590171328, 'iatom': 6, 'dist_nn': 0.8660255824, 'rout_over_dist_nn': 64.55, 'rmt0_over_rout': 77.46, 'rmt0': 0.4330127912}, {'radii_units': 'alat'}], 'cluster_info_group': {'cluster_info_atoms': [{'rmt_ref': 2.3166, 'refpot': 1, 'iatom': 1, 'tb_cluster_id': 1, 'sites': 27}, {'rmt_ref': 2.3166, 'refpot': 1, 'iatom': 2, 'tb_cluster_id': 1, 'sites': 27}, {'rmt_ref': 2.3166, 'refpot': 1, 'iatom': 3, 'tb_cluster_id': 1, 'sites': 27}, {'rmt_ref': 2.3166, 'refpot': 1, 'iatom': 4, 'tb_cluster_id': 1, 'sites': 27}, {'rmt_ref': 2.3166, 'refpot': 1, 'iatom': 5, 'tb_cluster_id': 1, 'sites': 27}, {'rmt_ref': 2.3166, 'refpot': 1, 'iatom': 6, 'tb_cluster_id': 1, 'sites': 27}, {'rmt_ref': 2.3166, 'refpot': 1, 'iatom': 7, 'tb_cluster_id': 1, 'sites': 27}, {'rmt_ref': 2.3166, 'refpot': 1, 'iatom': 8, 'tb_cluster_id': 1, 'sites': 27}], 'number_of_clusters': 1}}
         assert not success
-        assert msg_list == ["Error parsing output of voronoi: 'EMIN'", 'Error parsing output of voronoi: core_states', 'Error parsing output of voronoi: radial meshpoints']
+        assert set(msg_list) == set(["Error parsing output of voronoi: 'EMIN'", 'Error parsing output of voronoi: core_states', 'Error parsing output of voronoi: radial meshpoints'])
         assert out_dict == dref2
         return out_dict
-        
+
     def test_missing_radii(self):
         """
         Parse output where radii.dat is missing and compare error messages/rest of out_dict
@@ -98,4 +113,3 @@ class Test_voronoi_parser_functions():
         assert msg_list == ['Error parsing output of voronoi: radii.dat Info']
         assert out_dict == dref2
         return out_dict
-

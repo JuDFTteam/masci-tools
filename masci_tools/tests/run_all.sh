@@ -1,2 +1,2 @@
 #!/usr/bin/env sh
-pytest --cov-report=term-missing --cov=..
+pytest -v --cov-report=term-missing --cov=.. --mpl

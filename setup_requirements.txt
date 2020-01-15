@@ -1,8 +1,0 @@
-# for utilities
-
-matplotlib
-numpy
-h5py
-#gnuplot
-pytest-cov
-scipy

@@ -1,8 +1,8 @@
 [![Build Status](https://travis-ci.com/JuDFTteam/masci-tools.svg?branch=master)](https://travis-ci.com/JuDFTteam/masci-tools)
-[![Coverage Status](https://coveralls.io/repos/github/JuDFTteam/masci-tools/badge.svg?branch=develop)](https://coveralls.io/github/JuDFTteam/masci-tools?branch=develop)
+[![Coverage Status](https://codecov.io/gh/JuDFTteam/masci-tools/branch/master/graph/badge.svg)](https://codecov.io/gh/JuDFTteam/masci-tools)
 [![Documentation Status](https://readthedocs.org/projects/masci-tools/badge/?version=latest)](https://masci-tools.readthedocs.io/en/latest/?badge=latest)
 [![GitHub version](https://badge.fury.io/gh/JuDFTteam%2Fmasci-tools.svg)](https://badge.fury.io/gh/JuDFTteam%2Fmasci-tools)
-[![PyPI version](https://badge.fury.io/py/masci_tools.svg)](https://badge.fury.io/py/masci_tools)
+[![PyPI version](https://badge.fury.io/py/masci-tools.svg)](https://badge.fury.io/py/masci-tools)
 
 
 # masci-tools
@@ -14,10 +14,9 @@ Feel free to contribute.
 The code is hosted on GitHub at
 <https://github.com/JuDFTteam/masci-tools>
 
-The documentation is hosted on ...:
+The documentation is hosted on https://masci-tools.readthedocs.io.
 
--   [stable version](...)
--   [develop version](...)
+Most functionality was developed for the use with the DFT codes developed at the Forschungszentrum Jülich (see <http://judft.de>, <https://flapw.de> and <https://jukkr.fz-juelich.de> for further information on the codes) and in the context of the AiiDA plugins for the [Fleur code](https://github.com/JuDFTteam/aiida-fleur) and the [KKR code](https://github.com/JuDFTteam/aiida-kkr).
 
 ## Installation
 

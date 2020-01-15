@@ -2,30 +2,52 @@
 """
 @author: ruess
 """
+from __future__ import division
 
+from __future__ import absolute_import
+from builtins import object
 import pytest
-from masci_tools.io.common_functions import (interpolate_dos, get_alat_from_bravais, 
-                                             search_string, angles_to_vec, 
-                                             vec_to_angles, get_version_info, 
-                                             get_corestates_from_potential, 
+from masci_tools.io.common_functions import (interpolate_dos, get_alat_from_bravais,
+                                             search_string, angles_to_vec,
+                                             vec_to_angles, get_version_info,
+                                             get_corestates_from_potential,
                                              get_highest_core_state,
-                                             get_ef_from_potfile)
+                                             get_ef_from_potfile, open_general,
+                                             convert_to_pystd)
 
-
-class Test_common_functions():
+class Test_common_functions(object):
     """
     Tests for the common functions from tools.common_functions
     """
 
+    def test_open_general(self):
+        path = '../tests/files/kkr/kkr_run_slab_nosoc/out_kkr'
+        f = open_general(path)
+        l1 = len(f.readlines())
+        f = open_general(f)
+        l2 = len(f.readlines())
+        assert l1==l2
+        assert l2>0
+
     def test_interpolate_dos(self):
         from numpy import load, loadtxt, shape
-        d0 = '../tests/files/interpol/' 
+        d0 = '../tests/files/interpol/complex.dos'
         ef, dos, dos_int = interpolate_dos(d0, return_original=True)
         assert ef == 0.5256
-        dos_ref = loadtxt(d0+'new3.dos')
+        dos_ref = loadtxt('../tests/files/interpol/new3.dos')
         assert (dos_int.reshape(shape(dos_ref))-dos_ref).max()<10**-4
-        assert (dos == load(d0+'/ref_dos.npy')).all()
-        
+        assert (dos == load('../tests/files/interpol/ref_dos.npy')).all()
+
+    def test_interpolate_dos_filehandle(self):
+        from numpy import load, loadtxt, shape
+        d0 = open('../tests/files/interpol/complex.dos')
+        d0 = '../tests/files/interpol/complex.dos'
+        ef, dos, dos_int = interpolate_dos(d0, return_original=True)
+        assert ef == 0.5256
+        dos_ref = loadtxt('../tests/files/interpol/new3.dos')
+        assert (dos_int.reshape(shape(dos_ref))-dos_ref).max()<10**-4
+        assert (dos == load('../tests/files/interpol/ref_dos.npy')).all()
+
     def test_get_alat_from_bravais(self):
         from numpy import array, sqrt
         bravais = array([[0.0, 0.5, 0.5], [0.5, 0.0, 0.5], [0.5, 0.5, 0.0]])
@@ -84,9 +106,54 @@ class Test_common_functions():
         lval = array([0, 0, 0, 0, 1, 1, 1, 2])
         out = get_highest_core_state(ncore, ener, lval)
         assert out == (1, -3.832432, '4p')
-        
+
     def test_get_ef_from_potfile(self):
         ef = get_ef_from_potfile('files/kkr/kkr_run_dos_output/out_potential')
         assert ef == 1.05
-        
-    
+
+    def test_convert_to_pystd(self):
+        import numpy as np
+        test = {'list': [0,1,2], 'nparray': np.array([0,1,2]), 'nparray_conv_list': list(np.array([0,1,2])), 
+                'int': 9, 'float': 0.9, 'np.int': np.int64(8), 'np.float': np.float128(9), 
+                'dict':{'list':[0,1,2], 'nparray': np.array([0,1,2]), 'nparray_conv_list': list(np.array([0,1,2])),
+                        'int': 9, 'float': 0.9, 'np.int': np.int64(8), 'np.float': np.float128(9), 
+                        'dict':{'list':[0,1,2], 'nparray': np.array([0,1,2]), 'nparray_conv_list': list(np.array([0,1,2])),
+                                'int': 9, 'float': 0.9, 'np.int': np.int64(8), 'np.float': np.float128(9)}
+                       }
+               }
+
+        # make a copy and convert the dict
+        test1 = test.copy()
+        test1 = convert_to_pystd(test1)
+
+        print('original ', test)
+        print('converted', test1)
+
+        # extract datatypes for comparison
+        for i in ['list', 'nparray', 'nparray_conv_list', 'int', 'float', 'np.int', 'np.float']:
+            ii = test[i]
+            if i=='list':
+                out0 = []
+            print(i, type(ii))
+            out0.append(type(ii))
+            if i in ['list', 'nparray', 'nparray_conv_list']:
+                for j in ii:
+                    print(j, type(j))
+                    out0.append(type(j))
+            # converted datatypes:
+            ii = test1[i]
+            if i=='list':
+                out = []
+            print(i, type(ii))
+            out.append(type(ii))
+            if i in ['list', 'nparray', 'nparray_conv_list']:
+                for j in ii:
+                    print(j, type(j))
+                    out.append(type(j))
+
+        # now compare datatypes:
+        assert out0 == [list, int, int, int, np.ndarray, np.int64, np.int64,
+                        np.int64, list, int, int, int, int, float, np.int64, np.float128]
+        assert out == [list, int, int, int, list, int, int, int, list, int, int, int, int, float, int, float]
+
+
