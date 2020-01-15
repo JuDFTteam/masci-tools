@@ -435,7 +435,7 @@ def multi_scatter_plot(xdata, ydata, sdata, xlabel='', ylabel='', title='', plot
             s = sdata[i]
         else:
             s = 1.0 # maybe list with one or marker size
-        if not color:
+        if color is None:
             if isinstance(y, list):
                 color1= ['k' for i in y]
             else:
