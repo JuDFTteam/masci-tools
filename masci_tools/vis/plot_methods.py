@@ -69,8 +69,8 @@ labelfonstsize_g = 15
 # ticks
 ticklabelsizex_g = 14
 ticklabelsizey_g = 14
-tick_paramsx_g = {'size' : 4.0, 'width' : 1.0, 'labelsize' : ticklabelsizex_g, 'length' : 5}
-tick_paramsy_g = {'size' : 4.0, 'width' : 1.0, 'labelsize' : ticklabelsizey_g, 'length' : 5}
+tick_paramsx_g = {'size' : 4.0, 'width' : 1.0, 'labelsize' : ticklabelsizex_g, 'length' : 5, 'labelrotation' : 0}
+tick_paramsy_g = {'size' : 4.0, 'width' : 1.0, 'labelsize' : ticklabelsizey_g, 'length' : 5, 'labelrotation' : 0}
 ticklabelsizex_minor_g = 0
 ticklabelsizey_minor_g = 0
 tick_paramsx_minor_g = {'size' : 2.0, 'width' : 1.0, 'labelsize' : ticklabelsizex_minor_g, 'length' : 2.5}
@@ -99,10 +99,10 @@ def set_plot_defaults(title_fontsize = 16,
                       axis_linewidth = 2.0,
                       tick_paramsx = {'size' : 4.0, 'width' : 1.0,
                                      'labelsize' : ticklabelsizex_g,
-                                     'length' : 5},
+                                     'length' : 5, 'labelrotation' : 0},
                       tick_paramsy = {'size' : 4.0, 'width' : 1.0,
                                      'labelsize' : ticklabelsizey_g,
-                                     'length' : 5},
+                                     'length' : 5, 'labelrotation': 0},
                       tick_paramsx_minor = {'size' : 2.0, 'width' : 1.0,
                                             'labelsize' : ticklabelsizex_minor_g,
                                             'length' : 2.5},
@@ -196,11 +196,13 @@ def single_scatterplot(ydata, xdata, xlabel, ylabel, title, plotlabel ='scatterp
     ax.yaxis.set_tick_params(size = tick_paramsy_g.get('size', 4.0),
                              width = tick_paramsy_g.get('width', 1.0),
                              labelsize = tick_paramsy_g.get('labelsize', 14),
-                             length = tick_paramsy_g.get('length', 5))
+                             length = tick_paramsy_g.get('length', 5),
+                             labelrotation = tick_paramsy_g.get('labelrotation', 0))
     ax.xaxis.set_tick_params(size = tick_paramsx_g.get('size', 4.0),
                              width = tick_paramsx_g.get('width', 1.0),
                              labelsize = tick_paramsx_g.get('labelsize', 14),
-                             length = tick_paramsx_g.get('length', 5))
+                             length = tick_paramsx_g.get('length', 5),
+                             labelrotation = tick_paramsx_g.get('labelrotation', 0))
     if use_axis_fromatter_g:
         ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
         ax.yaxis.get_major_formatter().set_useOffset(False)
@@ -760,6 +762,154 @@ def default_histogram(xdata, bins=None, range=None, density=None, weights=None,
         pass
 
     return ax
+
+def barchart(ydata, xdata, width=0.35, xlabel='x', ylabel='y', title='', plot_labels=None, bottom=None,
+                          linestyle='-', marker='o', markersize=markersize_g, legend=legend_g,
+                          legend_option={}, saveas='mscatterplot',
+                          limits=[None, None], scale=[None, None],
+                          axis=None, xerr=None, yerr=None, colors=[], linewidth=[], xticks=[], **kwargs):
+    """
+    Create a standard bar chart plot (this should be flexible enough) to do all the
+    basic bar chart plots.
+    Has to be overworked, was quickly adjusted from scatterplots, some things not used or not needed
+    """
+    nplots = len(ydata)
+    if not (nplots==len(xdata)): # todo check dimention not len, without moving to special datatype.
+        print('ydata and xdata must have the same dimension')
+        return
+
+    # TODO allow plotlabels to have different dimension
+    pl =[]
+    if axis:
+        ax = axis
+    else:
+        fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g,
+                        facecolor=facecolor_g, edgecolor=edgecolor_g)
+        ax = fig.add_subplot(111)
+    for axis in ['top','bottom','left','right']:
+        ax.spines[axis].set_linewidth(axis_linewidth_g)
+    ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
+    ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
+    ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
+    ax.yaxis.set_tick_params(size = tick_paramsy_g.get('size', 4.0),
+                             width = tick_paramsy_g.get('width', 1.0),
+                             labelsize = tick_paramsy_g.get('labelsize', 14),
+                             length = tick_paramsy_g.get('length', 5),
+                             labelrotation = tick_paramsy_g.get('labelrotation', 0))
+    ax.xaxis.set_tick_params(size = tick_paramsx_g.get('size', 4.0),
+                             width = tick_paramsx_g.get('width', 1.0),
+                             labelsize = tick_paramsx_g.get('labelsize', 14),
+                             length = tick_paramsx_g.get('length', 5),
+                             labelrotation = tick_paramsx_g.get('labelrotation', 0))
+    if len(xticks)!=0:
+        ax.xaxis.set_ticks(xticks[0])
+        ax.xaxis.set_ticklabels(xticks[1])
+    if use_axis_fromatter_g:
+        ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
+        ax.yaxis.get_major_formatter().set_useOffset(False)
+        ax.xaxis.get_major_formatter().set_powerlimits((0, 3))
+        ax.xaxis.get_major_formatter().set_useOffset(False)
+    # TODO good checks for input and setting of internals before plotting
+    # allow all arguments as value then use for all or as lists with the righ length.
+    if bottom:
+        datab = bottom
+    else:
+        datab = np.zeros(len(ydata[0]))
+    
+    for i, data in enumerate(ydata):
+        if isinstance(yerr, list):
+            try:
+                yerrt = yerr[i]
+            except KeyError:
+                yerrt = yerr[0]
+        else:
+            yerrt = yerr
+
+        if isinstance(xerr, list):
+            try:
+                xerrt = xerr[i]
+            except KeyError:
+                xerrt = xerr[0]
+        else:
+            xerrt = xerr
+        if isinstance(colors, list):
+            color = colors[i]
+        else:
+            color = None
+        if not linewidth:
+            linewidth_p = linewidth_g
+        else:
+            linewidth_p = linewidth[i]
+
+        if isinstance(linestyle, list):
+            linestyle_t = linestyle[i]
+        else:
+            linestyle_t = linestyle
+
+        if isinstance(marker, list):
+            marker_t = marker[i]
+        else:
+            marker_t = marker
+
+        if isinstance(markersize, list):
+            markersize_t = markersize[i]
+        else:
+            markersize_t = markersize_g
+        
+        if plot_labels is None:
+            plot_label = ''
+        else:
+            plot_label = plot_labels[i]
+        p1 = ax.bar(xdata[i], data, width, bottom=datab, color=color, **kwargs)
+        #p2 = pp.bar(ind, womenMeans, width, bottom=menMeans)
+        #p1 = ax.errorbar(xdata[i], data, linestyle=linestyle_t, label=plot_label,
+        #                 linewidth=linewidth_p, marker=marker_t, markersize=markersize_t,
+        #                 yerr=yerrt, xerr=xerrt, color=color, **kwargs)
+        datab = datab + np.array(data)
+    if scale:
+        if scale[0]:
+            ax.set_xscale(scale[0])
+        if scale[1]:
+            ax.set_yscale(scale[1])
+
+
+    if limits:
+        if limits[0]:
+            xmin = limits[0][0]
+            xmax = limits[0][1]
+            ax.set_xlim(xmin, xmax)
+        if limits[1]:
+            ymin = limits[1][0]
+            ymax = limits[1][1]
+            ax.set_ylim(ymin, ymax)
+
+    #TODO nice legend
+    if legend:
+        #print legend
+        #{anchor, title, fontsize, linewith, borderaxespad}
+        # defaults 'anchor' : (0.75, 0.97), 'title' : 'Legend', 'fontsize' : 17, 'linewith' : 1.5, 'borderaxespad' : },
+        legends_defaults = {'bbox_to_anchor' : (0.65, 0.97), 'fontsize' : 16,
+                            'linewidth' : 3.0, 'borderaxespad' : 0 , 'loc' : 2,
+                            'fancybox' : True} #'title' : 'Legend',
+        loptions = legends_defaults.copy()
+        loptions.update(legend_option)
+        linewidth = loptions.pop('linewidth', 1.5)
+        title_font_size = loptions.pop('title_font_size', 15)
+        leg = ax.legend(**loptions)#bbox_to_anchor=loptions['anchor'],loc=loptions['loc'], title=legend_title, borderaxespad=0., fancybox=True)
+        leg.get_frame().set_linewidth(linewidth)
+        leg.get_title().set_fontsize(title_font_size) #legend 'Title' fontsize
+    if save_plots_g:
+        savefilename = '{}.{}'.format(saveas, save_format_g)
+        print(('save plot to: {}'.format(savefilename)))
+        pp.savefig(savefilename, format=save_format_g, transparent=True)
+    elif show_g:
+        pp.show()
+    else:
+        pass
+    
+    return ax
+
+
 
 def multiaxis_scatterplot():
     """
@@ -1340,6 +1490,7 @@ def construct_corelevel_spectrum(coreleveldict, natom_typesdict, exp_references=
         elif peakfunction=='doniach-sunjic':
             data_f = np.array(doniach_sunjic(xdata_spec, scale=1.0, E_0=xpoint, gamma=fwhm_l, alpha=fwhm_g)) 
         elif peakfunction=='asymmetric_lorentz_gauss_conv':
+            #print(xpoint, xdata_spec)
             data_f = np.array(asymmetric_lorentz_gauss_conv(xdata_spec, xpoint, fwhm_g=fwhm_g, fwhm_l=fwhm_l, alpha=alpha_l, beta=beta_l))
         else:
             print('given peakfunction type not known')
@@ -1858,6 +2009,7 @@ def gauss_one(x, fwhm, mu):
     Returns a Lorentzian line shape at x with FWHM fwhm and mean mu
     """
     import numpy as np
+    x = np.array(x)
     return np.exp(-4*np.log(2)*((x-mu)/fwhm)**2)
 
 def asymmetric_lorentz_gauss_sum(x, mu, fwhm_l,fwhm_g,alpha=1.0, beta=1.5):
@@ -1884,8 +2036,9 @@ def asymmetric_lorentz_gauss_conv(x, mu, fwhm_l, fwhm_g, alpha=1.0, beta=1.5):
     # only one function has to be translated
     # gaus has to be symmetric arround 0 for convolution
     # and on the same equidistant grid
-    xstep = round(x[-1]-x[-2],6)
+    xstep = abs(round(x[-1]-x[-2],6))
     rangex = abs(x[-1]-x[0])
+    #print(xstep, rangex)
     xgaus = np.arange(-rangex/2.0, rangex/2.0+xstep,xstep)
     #print(xgaus[:10], xgaus[-1])
     ygaus = np.array(gauss_one(xgaus, fwhm_g, mu=0.0), dtype=np.float64)
