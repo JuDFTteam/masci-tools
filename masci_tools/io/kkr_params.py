@@ -1249,7 +1249,7 @@ class kkrparams(object):
         """Put '<' and '>' around the key expect for special keys defined in `__forbid_brackets__` list."""
         
         key2 = key
-        if key not in list(key_dict.keys()) and key not in self.__forbid_brackets__:
+        if key not in list(key_dict.keys()) and key not in __forbid_brackets__:
             key2 = '<'+key+'>'
 
         return key2
