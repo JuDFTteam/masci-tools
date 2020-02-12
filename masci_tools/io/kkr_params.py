@@ -299,7 +299,6 @@ class kkrparams(object):
         """Set multiple values (in example value1 and value2 of keywords 'key1' and 'key2') given as key1=value1, key2=value2"""
         for key in kwargs:
             key2 = self._add_brackets_to_key(key, self.values)
-            key2 = self._add_brackets_to_key(key, default_keywords)
             #print('setting', key2, kwargs[key])
             self.set_value(key2, kwargs[key])
 
