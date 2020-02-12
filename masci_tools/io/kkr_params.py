@@ -18,7 +18,7 @@ Also some defaults for the parameters are defined.
 __copyright__ = ("Copyright (c), 2017, Forschungszentrum Jülich GmbH,"
                  "IAS-1/PGI-1, Germany. All rights reserved.")
 __license__ = "MIT license, see LICENSE.txt file"
-__version__ = "1.8.1"
+__version__ = "1.8.2"
 __contributors__ = "Philipp Rüßmann"
 
 
@@ -31,6 +31,9 @@ __kkr_default_params__ = {"LMAX": 3,          # lmax-cutoff
                           "GMAX": 100.,       # Madelung sum reciprocal-space cutoff
                           "RCLUSTZ": 2.3      # size of screening cluster (in alat units)
                           }
+
+# prevent kkrparams to add brackets around these keywords automatically
+__forbid_brackets__ = ['use_input_alat']
 
 
 class kkrparams(object):
@@ -295,9 +298,8 @@ class kkrparams(object):
     def set_multiple_values(self, **kwargs):
         """Set multiple values (in example value1 and value2 of keywords 'key1' and 'key2') given as key1=value1, key2=value2"""
         for key in kwargs:
-            key2 = key
-            if key not in list(self.values.keys()):
-                key2 = '<'+key+'>'
+            key2 = self._add_brackets_to_key(key, self.values)
+            key2 = self._add_brackets_to_key(key, default_keywords)
             #print('setting', key2, kwargs[key])
             self.set_value(key2, kwargs[key])
 
@@ -452,9 +454,7 @@ class kkrparams(object):
                                 ])
 
         for key in kwargs:
-            key2 = key
-            if key not in list(default_keywords.keys()):
-                key2 = '<'+key+'>'
+            key2 = self._add_brackets_to_key(key, default_keywords)
             val = kwargs[key]
             if self.__params_type=='kkrimp':
                 if key=='KEXCORE':
@@ -1192,12 +1192,11 @@ class kkrparams(object):
                                 ])
 
         for key in kwargs:
-            key2 = key
-            if key not in list(default_keywords.keys()):
-                key2 = '<'+key+'>'
+            key2 = self._add_brackets_to_key(key, default_keywords)
             default_keywords[key2][0] = kwargs[key]
 
         return default_keywords
+
 
     @classmethod
     def split_kkr_options(self, valtxt):
@@ -1222,9 +1221,11 @@ class kkrparams(object):
         valtxt =valtxt_tmp
         return valtxt
 
+
     def items(self):
         """make kkrparams.items() work"""
         return self.get_dict().items()
+
 
     def change_XC_val_kkrimp(self, val):
         """Convert integer value of KKRhost KEXCOR input to KKRimp XC string input."""
@@ -1242,6 +1243,16 @@ class kkrparams(object):
             if val==5:
                 val = 'GGA-PBEsol'
         return val
+
+
+    def _add_brackets_to_key(self, key, key_dict):
+        """Put '<' and '>' around the key expect for special keys defined in `__forbid_brackets__` list."""
+        
+        key2 = key
+        if key not in list(key_dict.keys()) and key not in self.__forbid_brackets__:
+            key2 = '<'+key+'>'
+
+        return key2
     
     
     
