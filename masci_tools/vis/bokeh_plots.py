@@ -537,7 +537,7 @@ def plot_convergence_results(distance, total_energy, iteration, link=False, node
 
 def plot_convergence_results_m(distances, total_energies, iterations, link=False, nodes=None,
                                plot_labels=[], saveas1='t_energy_convergence',
-                               saveas2='distance_convergence'):
+                               saveas2='distance_convergence', **kwargs):
     """
     Plot the total energy versus the scf iteration
     and plot the distance of the density versus iterations in a bokeh grid for several SCF results.
