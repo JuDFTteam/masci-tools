@@ -20,7 +20,8 @@ import numpy as np
 import pandas as pd
 import json
 from bokeh.models import (ColumnDataSource, LinearColorMapper,
-                          LogColorMapper, ColorBar, BasicTicker, Title)
+                          LogColorMapper, ColorBar, BasicTicker, Title, Legend)
+from bokeh.layouts import gridplot
 from bokeh.core.properties import FontSize
 from bokeh.io import show as bshow
 from bokeh.plotting import figure as bokeh_fig
@@ -150,7 +151,8 @@ def bokeh_line(source, xdata=['x'], ydata=['y'], figure=None, scale=['linear', '
                title='', outfilename='scatter.html', tools="hover", tooltips=tooltips_def_line,
                toolbar_location=None, background_fill_color="#ffffff", colormap=None,
                color=None, marker="circle", marker_size=6,
-               figure_kwargs={}, show=True, plot_points=False, bounds=None, name='line plot', **kwargs):
+               figure_kwargs={}, show=True, plot_points=False, bounds=None, name='line plot',
+               legend_layout_location='center', **kwargs):
     """
     Create an interactive multi line plot with bokeh, while also showing points
 
@@ -159,7 +161,7 @@ def bokeh_line(source, xdata=['x'], ydata=['y'], figure=None, scale=['linear', '
     # create figure if needed
     if figure is None:
         fig_kwargs = {'title': title, 'tools': tools, 'y_axis_type': scale[1],
-                      'x_axis_type': scale[0], 'tooltips': tooltips}
+                      'x_axis_type': scale[0], 'tooltips': tooltips, 'toolbar_location' :'above'}
         fig_kwargs.update(figure_kwargs)
         p = bokeh_fig(**fig_kwargs)
     else:
@@ -219,6 +221,7 @@ def bokeh_line(source, xdata=['x'], ydata=['y'], figure=None, scale=['linear', '
     # draw line plot
     # dataframe and column data source expect all entries to be same length... :-(
     # therefore we parse data to plot routines directly... might make other things harder
+    legitems = []
 
     for i, yname, in enumerate(ydatad):
         color = colormap[i]
@@ -242,20 +245,29 @@ def bokeh_line(source, xdata=['x'], ydata=['y'], figure=None, scale=['linear', '
         else:
             leg_label = legend_labels[i]
 
-        p.line(x=xdat, y=yname, source=sourcet, legend_label=" " + leg_label,
+        l1 = p.line(x=xdat, y=yname, source=sourcet, #legend_label=" " + leg_label,
                color=color, name=namet, **kwargs)
-
+        s1 = None
         if plot_points:
-            p.scatter(x=xdat, y=yname, source=sourcet,
-                      legend_label=" " + leg_label,
+            s1 = p.scatter(x=xdat, y=yname, source=sourcet,
+                      #legend_label=" " + leg_label,
                       color=color, marker=marker, size=marker_size)
+        if s1:
+            legitems.append((leg_label, [l1, s1]))
+        else:
+            legitems.append((leg_label, [l1]))
 
     # TODO do not hardcode.
-    p.legend.location = "top_right"
-    p.legend.background_fill_color = background_fill_color
-    p.legend.click_policy = "hide"  # "mute"#"hide"
-    p.legend.orientation = "vertical"
-    p.legend.label_text_font_size = "14pt"
+    legend = Legend(items=legitems, location="top_right", background_fill_color=background_fill_color,
+        click_policy="hide", orientation="vertical", label_text_font_size="14pt")
+
+
+    p.add_layout(legend, legend_layout_location)
+    #p.legend.location = "top_right"
+    #p.legend.background_fill_color = background_fill_color
+    #p.legend.click_policy = "hide"  # "mute"#"hide"
+    #p.legend.orientation = "vertical"
+    #p.legend.label_text_font_size = "14pt"
     if show:
         bshow(p)
 
@@ -496,10 +508,24 @@ def periodic_table_plot(
 ######### plot convergence results plot ########
 
 def plot_convergence_results(distance, total_energy, iteration, link=False, nodes=[],
-                             saveas1='t_energy_convergence', saveas2='distance_convergence'):
+                             saveas1='t_energy_convergence', saveas2='distance_convergence',
+                             figure_kwargs={'plot_width': 800, 'plot_height': 450}, **kwargs):
     """
     Plot the total energy versus the scf iteration
-    and plot the distance of the density versus iterations.
+    and plot the distance of the density versus iterations. Uses bokeh_line and bokeh_scatter
+
+    :param distance: list of floats
+    :total_energy: list of floats
+    :param iteration: list of Int
+    :param link: bool, optional default=False:
+    :param nodes: list of node uuids or pks important for links
+    :param saveas1: str, optional default='t_energy_convergence', save first figure as
+    :param saveas2: str, optional default='distance_convergence', save second figure as
+    :param figure_kwargs: dict, optional default={'plot_width': 800, 'plot_height': 450}, gets parsed
+    to bokeh_line
+    :param **kwargs: further key-word arguments for bokeh_line
+
+    :returns grid: bokeh grid with figures
     """
 
     xlabel = r'Iteration'
@@ -518,29 +544,47 @@ def plot_convergence_results(distance, total_energy, iteration, link=False, node
     source2 = pd.DataFrame({'distance': distance,
                             'iterations': iteration})
 
-    tools = 'hover,tap,box_zoom,zoom_out,crosshair'
+    tools = 'hover,tap,box_zoom,zoom_out,crosshair,reset,save'
     active_tools = 'hover'
     tooltips_def_scatter1 = [("Iteration", "@x"),
                              ("Total energy distance", "@y")]
     tooltips_def_scatter2 = [("Iteration", "@x"),
                              ("Charge distance", "@y")]
-    figure_kwargs = {'active_inspect': 'hover'}
+    figure_kwargs.update({'active_inspect': 'hover'})
+
     # plot
-    bokeh_line(source=source1, ydata=['total_energy_delta'], xdata=['iterations'], xlabel=xlabel, ylabel=ylabel1,
-               title=title1, name='delta total energy', scale=['linear', 'log'], plot_points=True, tools=tools,
-               tooltips=tooltips_def_scatter1, figure_kwargs=figure_kwargs)
+    p1 = bokeh_line(source=source1, ydata=['total_energy_delta'], xdata=['iterations'], xlabel=xlabel, ylabel=ylabel1,
+                    title=title1, name='delta total energy', scale=['linear', 'log'], plot_points=True, tools=tools,
+                    tooltips=tooltips_def_scatter1, figure_kwargs=figure_kwargs, **kwargs)
 
-    bokeh_line(source=source2, ydata=['distance'], xdata=['iterations'], xlabel=xlabel, ylabel=ylabel2, title=title2,
-               name='distance', scale=['linear', 'log'], plot_points=True, tools=tools,
-               tooltips=tooltips_def_scatter2, figure_kwargs=figure_kwargs)
+    p2 = bokeh_line(source=source2, ydata=['distance'], xdata=['iterations'], xlabel=xlabel, ylabel=ylabel2,
+                    title=title2, name='distance', scale=['linear', 'log'], plot_points=True, tools=tools,
+                    tooltips=tooltips_def_scatter2, figure_kwargs=figure_kwargs, **kwargs)
+    grid = gridplot([p1, p2], ncols=2)
+
+    return grid
 
 
-def plot_convergence_results_m(distances, total_energies, iterations, link=False, nodes=None,
+def plot_convergence_results_m(distances, total_energies, iterations, link=False, nodes=[],
                                plot_labels=[], saveas1='t_energy_convergence',
-                               saveas2='distance_convergence', **kwargs):
+                               saveas2='distance_convergence',
+                               figure_kwargs={'plot_width': 1000, 'plot_height': 450}, **kwargs):
     """
     Plot the total energy versus the scf iteration
     and plot the distance of the density versus iterations in a bokeh grid for several SCF results.
+
+    :param distances: list of lists of floats
+    :total_energies: list of lists of floats
+    :param iterations: list of lists of Int
+    :param link: bool, optional default=False:
+    :param nodes: list of node uuids or pks important for links
+    :param saveas1: str, optional default='t_energy_convergence', save first figure as
+    :param saveas2: str, optional default='distance_convergence', save second figure as
+    :param figure_kwargs: dict, optional default={'plot_width': 800, 'plot_height': 450}, gets parsed
+    to bokeh_line
+    :param **kwargs: further key-word arguments for bokeh_line
+
+    :returns grid: bokeh grid with figures
     """
 
     xlabel = r'Iteration'
@@ -578,40 +622,45 @@ def plot_convergence_results_m(distances, total_energies, iterations, link=False
         ydata1l_all.append('y')
         ydata2l_all.append('y')
 
-        plot_labels1.append('delta total energy {}'.format(id))
-        plot_labels2.append('distance {}'.format(id))
-        datasrc = ColumnDataSource({'y': total_energy_abs_diff, 'x': iterations[i][1:], 'id': [
-                                   id for i in range(len(total_energy_abs_diff))]})
+        plot_labels1.append('{}'.format(id))
+        plot_labels2.append('{}'.format(id))
+
+        data = {'y': total_energy_abs_diff, 'x': iterations[i][1:],
+                'id': [id for i in range(len(total_energy_abs_diff))]}
+        datasrc = ColumnDataSource(data)
         data_sources.append(datasrc)
-        datasrc = ColumnDataSource({'y': distances[i], 'x': iterations[i], 'id': [
-                                   id for i in range(len(distances[i]))]})
+
+        data = {'y': distances[i], 'x': iterations[i], 'id': [id for i in range(len(distances[i]))]}
+        datasrc = ColumnDataSource(data)
         data_sources2.append(datasrc)
 
     if plot_labels:
         plot_labels1 = plot_labels
         plot_labels2 = plot_labels
 
-    tools = 'hover,tap,box_zoom,zoom_out,crosshair'
+    tools = 'hover,tap,box_zoom,zoom_out,crosshair,reset,save,pan'
     tooltips_def_scatter1 = [("Calculation id", "@id"),
                              ("Iteration", "@x"),
-                             ("Total energy distance", "@y")]
+                             ("Total energy difference", "@y")]
 
     tooltips_def_scatter2 = [("Calculation id", "@id"),
                              ("Iteration", "@x"),
                              ("Charge distance", "@y")]
-    figure_kwargs = {'active_inspect': 'hover'}
+    figure_kwargs.update({'active_inspect': 'hover'})
 
     # plot
-    bokeh_line(source=data_sources, ydata=ydata1l_all, xdata=xdatal_all, xlabel=xlabel, ylabel=ylabel1,
-               title=title1, name=plot_labels1, legend_labels=plot_labels1, scale=['linear', 'log'], plot_points=True, tools=tools,
-               tooltips=tooltips_def_scatter1, figure_kwargs=figure_kwargs)
+    p1 = bokeh_line(source=data_sources, ydata=ydata1l_all, xdata=xdatal_all, xlabel=xlabel, ylabel=ylabel1,
+                    title=title1, name=plot_labels1, legend_labels=plot_labels1, scale=['linear', 'log'], plot_points=True, tools=tools,
+                    tooltips=tooltips_def_scatter1, figure_kwargs=figure_kwargs, legend_layout_location='right')
 
-    bokeh_line(source=data_sources2, ydata=ydata2l_all, xdata=xdatal_all, xlabel=xlabel, ylabel=ylabel2,
-               name=plot_labels2, scale=['linear', 'log'], legend_labels=plot_labels2, plot_points=True, tools=tools, title=title2,
-               tooltips=tooltips_def_scatter2, figure_kwargs=figure_kwargs)
+    p2 = bokeh_line(source=data_sources2, ydata=ydata2l_all, xdata=xdatal_all, xlabel=xlabel, ylabel=ylabel2,
+                    name=plot_labels2, scale=['linear', 'log'], legend_labels=plot_labels2, plot_points=True, tools=tools, title=title2,
+                    tooltips=tooltips_def_scatter2, figure_kwargs=figure_kwargs, legend_layout_location='right')
+    grid = gridplot([p1, p2], ncols=2)
 
-
+    return grid
 ######### plot_convex_hull plot ########
+
 
 def plot_convex_hull2d(hull, title='Convex Hull',  xlabel='Atomic Procentage', ylabel='Formation energy / atom [eV]',
                        linestyle='-', marker='o', legend=True,
