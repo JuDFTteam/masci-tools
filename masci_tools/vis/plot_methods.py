@@ -1016,7 +1016,7 @@ def plot_residuen(xdata, fitdata, realdata, errors=None, xlabel = r'Energy [eV]'
     return ydata
 
 
-def plot_convergence_results(distance, total_energy, iteration, saveas1='t_energy_convergence', saveas2='distance_convergence'):
+def plot_convergence_results(distance, total_energy, iteration, saveas1='t_energy_convergence', saveas2='distance_convergence', **kwargs):
     """
     Plot the total energy versus the scf iteration
     and plot the distance of the density versus iterations.
@@ -1039,7 +1039,7 @@ def plot_convergence_results(distance, total_energy, iteration, saveas1='t_energ
 
 
 def plot_convergence_results_m(distances, total_energies, iterations, modes, plot_labels=[],
-                               saveas1='t_energy_convergence', saveas2='distance_convergence'):
+                               saveas1='t_energy_convergence', saveas2='distance_convergence', **kwargs):
     """
     Plot the total energy versus the scf iteration
     and plot the distance of the density versus iterations.
