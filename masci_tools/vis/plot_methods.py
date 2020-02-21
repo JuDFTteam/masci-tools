@@ -127,7 +127,7 @@ def set_plot_defaults(title_fontsize = 16,
     global ticklabelsize_g, tick_paramsx_g, tick_paramsy_g, save_plots_g, save_format_g, legend_g, figsize_g
     global raw_plot_data_format_g, save_raw_plot_data_g, show_g, use_axis_fromatter_g
     global ticklabelsize_minor_g, tick_paramsx_minor_g, tick_paramsy_minor_g
-    
+
     title_fontsize_g = title_fontsize
 
     # plot properties
@@ -334,7 +334,7 @@ def multiple_scatterplots(ydata, xdata, xlabel, ylabel, title, plot_labels=None,
             markersize_t = markersize[i]
         else:
             markersize_t = markersize_g
-        
+
         if plot_labels is None:
             plot_label = ''
         else:
@@ -383,7 +383,7 @@ def multiple_scatterplots(ydata, xdata, xlabel, ylabel, title, plot_labels=None,
         pp.show()
     else:
         pass
-    
+
     return ax
 
 
@@ -396,12 +396,12 @@ def multi_scatter_plot(xdata, ydata, sdata, xlabel='', ylabel='', title='', plot
     """
     xdata : list or array
     ydata : list or array
-    sdata: marker size list or array 
+    sdata: marker size list or array
     Info: x, y and s data must have the same dimensions.
     ...
     """
-    
-    
+
+
     nplots = len(ydata)
     if not (nplots==len(xdata)): # todo check dimention not len, without moving to special datatype.
         print('ydata and xdata must have the same dimension')
@@ -436,13 +436,13 @@ def multi_scatter_plot(xdata, ydata, sdata, xlabel='', ylabel='', title='', plot
         ax.yaxis.get_major_formatter().set_useOffset(False)
         ax.xaxis.get_major_formatter().set_powerlimits((0, 3))
         ax.xaxis.get_major_formatter().set_useOffset(False)
-    
+
     if scale:
         if scale[1]:
             ax.set_yscale(scale[0])
         if scale[0]:
             ax.set_xscale(scale[1])
-        
+
     if limits:
         if limits[0]:
             xmin = limits[0][0]
@@ -470,7 +470,7 @@ def multi_scatter_plot(xdata, ydata, sdata, xlabel='', ylabel='', title='', plot
         else:
             marker1 = marker
         ax.scatter(xdata[i],y=y,s=s,c=color1, alpha=alpha, marker=marker1, label=label)
-    
+
 
     #TODO nice legend
     if legend:
@@ -490,12 +490,12 @@ def multi_scatter_plot(xdata, ydata, sdata, xlabel='', ylabel='', title='', plot
     if save_plots_g:
         savefilename = '{}.{}'.format(saveas, save_format_g)
         print(('save plot to: {}'.format(savefilename)))
-        pp.savefig(savefilename, format=save_format_g, transparent=True)        
-            
-    
+        pp.savefig(savefilename, format=save_format_g, transparent=True)
+
+
     return ax
-    
-    
+
+
 def waterfall_plot(xdata, ydata, zdata, xlabel, ylabel,  zlabel, title, plot_labels,
                           linetyp='o-', legend=legend_g,
                           legend_option = {},
@@ -656,8 +656,8 @@ def histogram(xdata, bins=None, range=None, density=None, weights=None,
             bottom=bottom, histtype=histtype, align=align, orientation=orientation,
             rwidth=rwidth, log=log, color=color, label=label, stacked=stacked,
             normed=normed, data=data, **kwargs)
-    
-    
+
+
     if limits:
         if limits[0]:
             xmin = limits[0][0]
@@ -676,7 +676,7 @@ def histogram(xdata, bins=None, range=None, density=None, weights=None,
             b = ax.plot(y, bins, '--')
         else:
             b = ax.plot(bins, y, '--')
-              
+
     #TODO legend
     if legend:
         #print legend
@@ -690,7 +690,7 @@ def histogram(xdata, bins=None, range=None, density=None, weights=None,
         leg = ax.legend(**loptions)#bbox_to_anchor=loptions['anchor'],loc=loptions['loc'], title=legend_title, borderaxespad=0., fancybox=True)
         leg.get_frame().set_linewidth(linewidth)
         leg.get_title().set_fontsize(title_font_size) #legend 'Title' fontsize
- 
+
     if save_plots_g:
         savefilename = '{}.{}'.format(saveas, save_format_g)
         print(('save plot to: {}'.format(savefilename)))
@@ -700,12 +700,12 @@ def histogram(xdata, bins=None, range=None, density=None, weights=None,
         pp.show()
     else:
         pass
-    
+
     if return_hist_output:
         return ax, n, bins, patches
     else:
         return ax
-    
+
 # todo remove default histogramm, replace it in all code by histogramm
 def default_histogram(xdata, bins=None, range=None, density=None, weights=None,
                       cumulative=False, bottom=None, histtype='bar', align='mid',
@@ -815,7 +815,7 @@ def barchart(ydata, xdata, width=0.35, xlabel='x', ylabel='y', title='', plot_la
         datab = bottom
     else:
         datab = np.zeros(len(ydata[0]))
-    
+
     for i, data in enumerate(ydata):
         if isinstance(yerr, list):
             try:
@@ -855,7 +855,7 @@ def barchart(ydata, xdata, width=0.35, xlabel='x', ylabel='y', title='', plot_la
             markersize_t = markersize[i]
         else:
             markersize_t = markersize_g
-        
+
         if plot_labels is None:
             plot_label = ''
         else:
@@ -906,7 +906,7 @@ def barchart(ydata, xdata, width=0.35, xlabel='x', ylabel='y', title='', plot_la
         pp.show()
     else:
         pass
-    
+
     return ax
 
 
@@ -936,8 +936,9 @@ def plot_convex_hull2d(hull, title='Convex Hull',  xlabel='Atomic Procentage', y
     """
     Plot method for a 2d convex hull diagramm
 
-    :param hull: scipy.spatial.ConvexHull
+    :param hull: pyhull.Convexhull #scipy.spatial.ConvexHull
     """
+
     #TODO: the upper lines, part of the hull should not be connected/plottet
     if axis:
         ax = axis
@@ -966,11 +967,17 @@ def plot_convex_hull2d(hull, title='Convex Hull',  xlabel='Atomic Procentage', y
     a = ax.plot(points[:,0], points[:,1], marker=marker, markersize=markersize,
                 linestyle='', color=color, **kwargs)
     for simplex in hull.simplices:
-         # TODO leave out some lines, the ones about [0,0 -1,0]
-         ax.plot(points[simplex, 0], points[simplex, 1], linestyle=linestyle,
+        # TODO leave out some lines, the ones about [0,0 -1,0]
+        data = simplex.coords
+        ax.plot(data[:, 0], data[:, 1], linestyle=linestyle,
                  color=color_line, linewidth=linewidth, markersize=markersize, **kwargs)
-         ax.plot(points[simplex, 0], points[simplex, 1], linestyle='',
+        ax.plot(data[:, 0], data[:, 1], linestyle='',
                  color=color, markersize=markersize_hull, marker=marker_hull, **kwargs)
+         # this section is from scipy.spatial.Convexhull interface
+         #ax.plot(points[simplex, 0], points[simplex, 1], linestyle=linestyle,
+         #        color=color_line, linewidth=linewidth, markersize=markersize, **kwargs)
+         #ax.plot(points[simplex, 0], points[simplex, 1], linestyle='',
+         #        color=color, markersize=markersize_hull, marker=marker_hull, **kwargs)
 
     if limits:
         if limits[0]:
@@ -1016,7 +1023,8 @@ def plot_residuen(xdata, fitdata, realdata, errors=None, xlabel = r'Energy [eV]'
     return ydata
 
 
-def plot_convergence_results(distance, total_energy, iteration, saveas1='t_energy_convergence', saveas2='distance_convergence', **kwargs):
+def plot_convergence_results(distance, total_energy, iteration, saveas1='t_energy_convergence',
+                             show=True, saveas2='distance_convergence', **kwargs):
     """
     Plot the total energy versus the scf iteration
     and plot the distance of the density versus iterations.
@@ -1033,12 +1041,16 @@ def plot_convergence_results(distance, total_energy, iteration, saveas1='t_energ
         total_energy_abs_diff.append(abs(en1-en0))
     #saveas3 ='t_energy_convergence2'
 
-    single_scatterplot(total_energy_abs_diff, iteration[1:], xlabel, ylabel1, title1, plotlabel='delta total energy', saveas=saveas1, scale=[None, 'log'])
+    p1 = single_scatterplot(total_energy_abs_diff, iteration[1:], xlabel, ylabel1, title1, plotlabel='delta total energy', saveas=saveas1, scale=[None, 'log'])
     #single_scatterplot(total_energy, iteration, xlabel, ylabel1, title1, plotlabel='total energy', saveas=saveas3)
-    single_scatterplot(distance, iteration, xlabel, ylabel2, title2, plotlabel='distance', saveas=saveas2, scale=[None, 'log'])
+    p2 = single_scatterplot(distance, iteration, xlabel, ylabel2, title2, plotlabel='distance', saveas=saveas2, scale=[None, 'log'])
 
+    if show:
+        pp.show(p1)
+        pp.show(p2)
+    return [p1,p2]
 
-def plot_convergence_results_m(distances, total_energies, iterations, modes, plot_labels=[],
+def plot_convergence_results_m(distances, total_energies, iterations, modes, plot_labels=[], show=True,
                                saveas1='t_energy_convergence', saveas2='distance_convergence', **kwargs):
     """
     Plot the total energy versus the scf iteration
@@ -1069,15 +1081,25 @@ def plot_convergence_results_m(distances, total_energies, iterations, modes, plo
     if plot_labels:
         plot_labels1 = plot_labels
         plot_labels2 = plot_labels
-    multiple_scatterplots(total_energy_abs_diffs, iterations1, xlabel, ylabel1, title1, plot_labels1, saveas=saveas1, scale=[None, 'log'])
+    p1 = multiple_scatterplots(total_energy_abs_diffs, iterations1, xlabel, ylabel1, title1,
+                               plot_labels1, saveas=saveas1, scale=[None, 'log'])
     for i, mode in enumerate(modes):
         if mode == 'force':
             iterations[i].pop()
             print('Drop the last iteration because there was no charge distance, mode=force')
-    multiple_scatterplots(distances, iterations, xlabel, ylabel2, title2, plot_labels2, saveas=saveas2, scale=[None, 'log'])
 
+    p2 = multiple_scatterplots(distances, iterations, xlabel, ylabel2, title2,
+                               plot_labels2, saveas=saveas2, scale=[None, 'log'])
 
-def plot_lattice_constant(Total_energy, scaling, fit_y=None, relative=True, ref_const=None, multi=False, plotlables=[r'simulation data', r'fit results'], title=r'Equation of states', saveas='Lattice_constant', axis=None, **kwags):
+    if show:
+        pp.show(p1)
+        pp.show(p2)
+
+    return p1,p2
+
+def plot_lattice_constant(Total_energy, scaling, fit_y=None, relative=True, ref_const=None,
+        multi=False, plotlables=[r'simulation data', r'fit results'], title=r'Equation of states',
+        saveas='Lattice_constant', axis=None, show=True, **kwags):
     """
     Plot a lattice constant versus Total energy
     Plot also the fit.
@@ -1104,13 +1126,13 @@ def plot_lattice_constant(Total_energy, scaling, fit_y=None, relative=True, ref_
             xlabel = r'Relative Volume'
     else:
         xlabel = r'Volume [$\AA$]'
-    
+
     if axis:
         ax = axis
     else:
         fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
         ax = fig.add_subplot(111)
-    for axis in ['top','bottom','left','right']:
+    for axis in ['top', 'bottom', 'left', 'right']:
         ax.spines[axis].set_linewidth(axis_linewidth_g)
     ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
     ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
@@ -1156,7 +1178,7 @@ def plot_lattice_constant(Total_energy, scaling, fit_y=None, relative=True, ref_
         savefilename = '{}.{}'.format(saveas, save_format_g)
         print(('save plot to: {}'.format(savefilename)))
         pp.savefig(savefilename, format=save_format_g, transparent=True)
-    else:
+    if show:
         pp.show()
 
     return ax
@@ -1493,7 +1515,7 @@ def construct_corelevel_spectrum(coreleveldict, natom_typesdict, exp_references=
         elif peakfunction== 'lorentz':
             data_f = np.array(lorentzian(xdata_spec, fwhm_l, xpoint))
         elif peakfunction=='doniach-sunjic':
-            data_f = np.array(doniach_sunjic(xdata_spec, scale=1.0, E_0=xpoint, gamma=fwhm_l, alpha=fwhm_g)) 
+            data_f = np.array(doniach_sunjic(xdata_spec, scale=1.0, E_0=xpoint, gamma=fwhm_l, alpha=fwhm_g))
         elif peakfunction=='asymmetric_lorentz_gauss_conv':
             #print(xpoint, xdata_spec)
             data_f = np.array(asymmetric_lorentz_gauss_conv(xdata_spec, xpoint, fwhm_g=fwhm_g, fwhm_l=fwhm_l, alpha=alpha_l, beta=beta_l))
@@ -1501,7 +1523,7 @@ def construct_corelevel_spectrum(coreleveldict, natom_typesdict, exp_references=
             print('given peakfunction type not known')
             data_f = []
             return
-        
+
         # sometimes we get a point to much if constructed from new mesh..
         if len(ydata_spec) < len(data_f):
                 # TODO: further adjustements? we assume only one point difference
@@ -1599,9 +1621,9 @@ def plot_corelevel_spectra(coreleveldict, natom_typesdict, exp_references={}, sc
         saveas ='XPS_theo_{}_{}'.format(fwhm_g, title)
         saveas1 ='XPS_theo_2_{}_{}'.format(fwhm_g, title)
     else:
-        saveas1 = saveas[1]     
+        saveas1 = saveas[1]
         saveas = saveas[0]
-        
+
     color = 'k'
     scale = [None, None]
     font = {'family': 'serif',
@@ -1983,13 +2005,13 @@ def voigt_profile(x,E,F,m):
 def asymmetric_lorentz(x,fwhm, mu, alpha=1.0, beta=1.5):
     """
     asymetric lorentz function
-    
+
     L^alpha for x<=mu
     L^beta for x>mu
-    See 
+    See
     casexps LA
     """
-    
+
     index = 0
     for i, entry in enumerate(x):
         if entry<=mu:
@@ -1999,9 +2021,9 @@ def asymmetric_lorentz(x,fwhm, mu, alpha=1.0, beta=1.5):
 
     ydata1 = lorentzian_one(x[:index],fwhm, mu)**alpha
     ydata2 = lorentzian_one(x[index:],fwhm, mu)**beta
-    
+
     return np.array(list(ydata1)+list(ydata2))
-    
+
 
 def lorentzian_one(x, fwhm, mu):
     """
@@ -2020,10 +2042,10 @@ def gauss_one(x, fwhm, mu):
 def asymmetric_lorentz_gauss_sum(x, mu, fwhm_l,fwhm_g,alpha=1.0, beta=1.5):
     """
     asymmetric Lorentzian with Gauss convoluted
-    
+
     """
     import numpy as np
-        
+
     ygaus = np.array(gauss_one(x, fwhm_g, mu))
     ylorentz = np.array(asymmetric_lorentz(x,fwhm_l, mu, alpha=alpha, beta=beta))
     ydata = ylorentz+ygaus
@@ -2033,7 +2055,7 @@ def asymmetric_lorentz_gauss_sum(x, mu, fwhm_l,fwhm_g,alpha=1.0, beta=1.5):
 def asymmetric_lorentz_gauss_conv(x, mu, fwhm_l, fwhm_g, alpha=1.0, beta=1.5):
     """
     asymmetric Lorentzian with Gauss convoluted
-    
+
     """
     import numpy as np
     from scipy.signal import fftconvolve
@@ -2049,32 +2071,32 @@ def asymmetric_lorentz_gauss_conv(x, mu, fwhm_l, fwhm_g, alpha=1.0, beta=1.5):
     ygaus = np.array(gauss_one(xgaus, fwhm_g, mu=0.0), dtype=np.float64)
     ylorentz = np.array(asymmetric_lorentz(x,fwhm_l, mu=mu, alpha=alpha, beta=beta), dtype=np.float64)
     ydata = np.convolve(ylorentz, ygaus, mode='same')
-    
+
     return ydata
 
 '''
 def asymmetric_lorentz_gauss_conv_interp(x, mu, fwhm_l,fwhm_g,alpha=1.0, beta=1.5, grid_factor=10):
     """
     asymmetric Lorentzian with Gauss convoluted.
-    
-    Real convolution. For the convolution to work we construct a finer mesh, 
+
+    Real convolution. For the convolution to work we construct a finer mesh,
     with mu shifted to 0.0 on which we convolute.
     Then we linear interpolate on the original mesh points.
-    
+
     """
     import numpy as np
-    from scipy.interpolate import interp1d    
+    from scipy.interpolate import interp1d
     # convolution has to be symmetric arround 0
     # check if xmu is right or left,
     # double longest side, shift xmu to 0.0
     # then interpolate at original mesh points
-    
+
     x = np.array(x, dtype=np.float64)
     xstep = round(x[-1]-x[-2],6)
     xstepmesh = xstep/grid_factor
-    
+
     xmesh = np.arange(x[0], x[-1]+xstepmesh/2.0, xstepmesh)
-    
+
     xmu = np.float64(0.0)
     muindex = 0
     for i, en in enumerate(xmesh):
@@ -2088,15 +2110,15 @@ def asymmetric_lorentz_gauss_conv_interp(x, mu, fwhm_l,fwhm_g,alpha=1.0, beta=1.
         xtrans = np.arange(-x[-1] + xmu - xstep, x[-1] - xmu + xstep, xstepmesh)
     else:
         xtrans = np.arange(x[0] - xmu - xstep, -x[0] + xmu + xstep, xstepmesh)
-    
+
     ygaus = np.array(gauss_one(xtrans, fwhm_g, mu=0.0), dtype=np.float64)
     ylorentz = np.array(asymmetric_lorentz(xtrans,fwhm_l, mu=0.0, alpha=alpha, beta=beta), dtype=np.float64)
     ydata = np.convolve(ylorentz,ygaus,mode='same')
-    
+
     # iterpolate function and evalutate at original xdata
     f = interp1d(xtrans+xmu, ydata, assume_sorted=True)
     ydata_return = f(x)
-    
+
     return ydata_return
 
 
@@ -2104,11 +2126,11 @@ def asymmetric_lorentz_gauss_conv_interp(x, mu, fwhm_l,fwhm_g,alpha=1.0, beta=1.
 def asymmetric_lorentz_gauss_conv1(x, mu, fwhm_l,fwhm_g,alpha=1.0, beta=1.5):
     """
     asymmetric Lorentzian with Gauss convoluted
-    
+
     """
     import numpy as np
     from scipy import signal
-        
+
     ygaus = np.array(gauss_one(x, fwhm_g, mu))
     ylorentz = np.array(asymmetric_lorentz(x,fwhm_l, mu, alpha=alpha, beta=beta))
     #ydata = np.convolve(ylorentz,np.flip(ygaus, axis=0),mode='same')
@@ -2123,22 +2145,22 @@ def asymmetric_lorentz_gauss_conv1(x, mu, fwhm_l,fwhm_g,alpha=1.0, beta=1.5):
 def asymmetric_lorentz_gauss_conv_linear(x, mu, fwhm_l,fwhm_g,alpha=1.0, beta=1.5):
     """
     asymmetric Lorentzian with Gauss convoluted
-    
+
     """
     import numpy as np
     #from scipy import signal
-    
+
     # convolution has to be symmetric arround 0
     # check if xmu is right or left,
     # double longest side, shift xmu to 0.0
     # then shift back and cut off the rest
-    
+
     # we asume equidistant mesh
     x = np.array(x, dtype=np.float64)
-    
-    
+
+
     xstep = round(x[-1]-x[-2],6)
-    
+
     xmu = np.float64(0.0)
     muindex = 0
     for i, en in enumerate(x):
@@ -2147,41 +2169,41 @@ def asymmetric_lorentz_gauss_conv_linear(x, mu, fwhm_l,fwhm_g,alpha=1.0, beta=1.
             muindex = i
         else:
             break
-    
+
     #print(x[0]-xmu, -x[0]+xmu,xstep)
     if muindex <= len(x)/2.0:
         xtrans = np.arange(-x[-1]+xmu, x[-1]-xmu,xstep)
     else:
         xtrans = np.arange(x[0]-xmu, -x[0]+xmu,xstep)
-    
-    # To keep mu continous we parse the exact mu to the lorentz and gauss... 
+
+    # To keep mu continous we parse the exact mu to the lorentz and gauss...
     # the convolution will not be totally correct...
     # todo maybe combine with gridfactor...
     ygaus = np.array(gauss_one(xtrans, fwhm_g, mu=(xmu-mu)/2.0), dtype=np.float64)
     ylorentz = np.array(asymmetric_lorentz(xtrans,fwhm_l, mu=(xmu-mu)/2.0, alpha=alpha, beta=beta), dtype=np.float64)
     ydata = np.convolve(ylorentz,ygaus,mode='same')
-    
+
     # shift data back... through cutting it
     if muindex <= len(x)/2.0:
         ydata_new = np.array(ydata[len(ydata)-len(x):], dtype=np.float64)
     else:
         ydata_new = np.array(ydata[:len(x)], dtype=np.float64)
-    
+
     return ydata_new
 
 def asymmetric_lorentz_gauss_conv(x, mu, fwhm_l,fwhm_g,alpha=1.0, beta=1.5, grid_factor=10):
     """
     asymmetric Lorentzian with Gauss convoluted
-    
+
     """
     import numpy as np
     #from scipy import signal
-    
+
     # convolution has to be symmetric arround 0
     # check if xmu is right or left,
     # double longest side, shift xmu to 0.0
     # then shift back and cut off the rest
-    
+
 
     # TODO: overall a bit slow, can we speed this up?
     # cone idea for speed up would be only increase the mesh fineness between the x where mu lives...
@@ -2192,11 +2214,11 @@ def asymmetric_lorentz_gauss_conv(x, mu, fwhm_l,fwhm_g,alpha=1.0, beta=1.5, grid
     # we increase the mesh by a factor of grid_factor
     # because mu can only vary by the meshstep...
     x = np.array(x, dtype=np.float64)
-    
-    
+
+
     xstep = round(x[-1]-x[-2],6)
     xstepmesh = xstep/grid_factor
-    
+
     xmesh1 = np.arange(x[0], x[-1]+xstepmesh/2.0, xstepmesh)
     xmesh = np.round(xmesh1, 6)
 
@@ -2208,25 +2230,25 @@ def asymmetric_lorentz_gauss_conv(x, mu, fwhm_l,fwhm_g,alpha=1.0, beta=1.5, grid
             muindex = i
         else:
             break
-    
+
     if muindex <= len(xmesh)/2.0:
         xtrans = np.arange(-x[-1]+xmu, x[-1]-xmu,xstepmesh)
     else:
         xtrans = np.arange(x[0]-xmu, -x[0]+xmu,xstepmesh)
-    
+
     ygaus = np.array(gauss_one(xtrans, fwhm_g, mu=0.0), dtype=np.float64)
     ylorentz = np.array(asymmetric_lorentz(xtrans,fwhm_l, mu=0.0, alpha=alpha, beta=beta), dtype=np.float64)
     ydata = np.convolve(ylorentz,ygaus,mode='same')
-    
+
     # shift data back... through cutting it
     if muindex <= len(xmesh)/2.0:
         ydata_new = np.array(ydata[len(ydata)-len(xmesh):], dtype=np.float64)
     else:
         ydata_new = np.array(ydata[:len(xmesh)], dtype=np.float64)
-    
-    # back to original mesh 
+
+    # back to original mesh
     ydata_return = ydata_new[0::grid_factor]
-    
+
     return ydata_return
 
 
@@ -2235,25 +2257,25 @@ def direct_convolution(a,b):
     convolution, a, b same length, arrays
     """
     import numpy as np
-    
+
     ydata = np.zeros(len(a))
     for i, entry in enumerate(a):
         for j, entry2 in enumerate(a):
              ydata[i] = ydata[i] + (entry2*b[i-j])
-       
+
     return ydata
 '''
 
 def doniach_sunjic(x, scale=1.0, E_0=0, gamma=1.0, alpha=0.0):
     """
     Doniach Sunjic asymmetric peak function. tail to higher binding energies.
-    
+
     param x: list values to evaluate this function
     param scale: multiply the function with this factor
     param E_0: position of the peak
     param gamma, 'lifetime' broadening
     param alpha: 'asymmetry' parametera
-    
+
     See
     Doniach S. and Sunjic M., J. Phys. 4C31, 285 (1970)
     or http://www.casaxps.com/help_manual/line_shapes.htm
@@ -2349,16 +2371,16 @@ def pseudo_voigt_profile(x, fwhm_g, fwhm_l, mu, mix=0.5):
     lorentz = lorentzian(x, fwhm_l, mu)
     return mix * gaus  + (1-mix)*lorentz
 
-    
+
 
 
 def plot_bands2(xs,ys,ss,axis=None, linestyle='-',markersize_scaling=20,**kwargs):
     """
     """
-    
+
     ax = multi_scatter_plot(x,y,markersize_band)
 
-    if linestyle is not None:   
+    if linestyle is not None:
         for j, data in enumerate(ys):
             for i, entry in enumerate(data[1:]):
                 ynew = [data[i], entry]
@@ -2366,31 +2388,31 @@ def plot_bands2(xs,ys,ss,axis=None, linestyle='-',markersize_scaling=20,**kwargs
                 linewidth = np.sqrt(markersize_scaling*(ss[j][i] + ss[j][i+1])/4.0)
                 ax.plot(xnew,ynew, linestyle=linestyle, markersize=0.0, linewidth=linewidth, color='k', markeredgewidth=0.0)
 
-                
+
 def plot_fleur_bands(filename, limits=[None,[-15, 15]]):
     """
     plot a fleur bandstructure
-    
+
     # TODO: performance has to be increased.
     Maybe allow to specify a procentage of the kpoints to read in and plot.
     Therefore enable a partially read in of the dos_band.hdf
     """
-    
+
     from masci_tools.vis.plot_methods import multiple_scatterplots
     from masci_tools.io.io_fleur_bands import read_fleur_banddos_hdf
 
-    
-    xcoord, bands, xlabels, band_character, band_char_label, kts, wghts, rcell, cell, pos, atomn, spp = read_fleur_banddos_hdf(filename) 
-    
+
+    xcoord, bands, xlabels, band_character, band_char_label, kts, wghts, rcell, cell, pos, atomn, spp = read_fleur_banddos_hdf(filename)
+
     tllike = [band_character[0].transpose()]
     if len(tllike)==2:
         tllike.append(band_character[1].transpose())
-        
-    
+
+
     markersize_scaling = 10.0
     markersize_atomindependent = []#np.array([])
     markersize_like_s = []
-    
+
     # TODO there has to be a better way to do this, ... and faster with np.arrays
     for s, tllike_s in enumerate(tllike):
         markersize_like = []
@@ -2406,19 +2428,19 @@ def plot_fleur_bands(filename, limits=[None,[-15, 15]]):
                     #for spin in kpoint:
                     #    total = total + spin
                         markersize_temp.append((kpoint*markersize_scaling)**2)# scatter needs size squared
-                    markersize_band.append(markersize_temp)   
+                    markersize_band.append(markersize_temp)
                 markersize.append(markersize_band)
                 # always make the last one the total of all atomtypes
             markersize_like.append(markersize)
         markersize_like_s.append(markersize_like_s)
-        
+
     xticks = [[],[]]
     for label, pos in xlabels:
         if label == 'Gamma':
             label = u'$\Gamma$'
         xticks[1].append(label)
         xticks[0].append(pos)
-    
+
     # TODO spin is not treated right yet
     x = [xcoord for i in bands[0]]
     y = bands[0]
@@ -2427,17 +2449,17 @@ def plot_fleur_bands(filename, limits=[None,[-15, 15]]):
         y2 = bands[1]
         print((len(y2)))
     print((len(x), len(y)))
-    
+
     limits[0] = [min(xcoord), max(xcoord)]
 
-    for i, marker_likes in enumerate(markersize_like): 
-        ax = multi_scatter_plot(x,y,marker_likes[0], ylabel=u'Energy [eV]', title='{}'.format(i), 
+    for i, marker_likes in enumerate(markersize_like):
+        ax = multi_scatter_plot(x,y,marker_likes[0], ylabel=u'Energy [eV]', title='{}'.format(i),
                                 xticks=xticks, limits=limits, saveas='bandstru_{}'.format(i))
         for label, pos in xlabels:
-            ax.axvline(ymin=0, ymax=1, x=pos, #1.0/10.93, 
+            ax.axvline(ymin=0, ymax=1, x=pos, #1.0/10.93,
                        linewidth=1.0, linestyle='-', color='k')
         #ax.hxvline(xmin==0, xmax=1.0, linestyle='-', color='g')
-    
+
         saveas='bandstruc_{}'.format(i)
         if save_plots_g:
             savefilename = '{}.{}'.format(saveas, save_format_g)
@@ -2445,22 +2467,22 @@ def plot_fleur_bands(filename, limits=[None,[-15, 15]]):
             pp.savefig(savefilename, format=save_format_g, transparent=True)
 
 
-           
+
     ax1 = multiple_scatterplots(y,x,ylabel=u'Energy [eV]', xlabel='', title='', plot_labels=None,
                                 xticks=xticks, limits=limits, saveas='bandstructure', marker=None)
     #print ax1
     for label, pos in xlabels:
-        ax1.axvline(ymin=0, ymax=1, x=pos, #1.0/10.93, 
+        ax1.axvline(ymin=0, ymax=1, x=pos, #1.0/10.93,
                    linewidth=1.0, linestyle='-', color='k')
-    
+
     if y2:
         ax2 = multiple_scatterplots(y2,x,ylabel=u'Energy [eV]', xlabel='', title='', plot_labels=None,
                                     xticks=xticks, limits=limits, saveas='bandstructure', marker=None)
         #print ax1
         for label, pos in xlabels:
-            ax2.axvline(ymin=0, ymax=1, x=pos, #1.0/10.93, 
+            ax2.axvline(ymin=0, ymax=1, x=pos, #1.0/10.93,
                        linewidth=1.0, linestyle='-', color='k')
-     
+
 
 
     #saveas='bandstructure'
@@ -2468,5 +2490,5 @@ def plot_fleur_bands(filename, limits=[None,[-15, 15]]):
     #    savefilename = '{}.{}'.format(saveas, save_format_g)
     #    print('save plot to: {}'.format(savefilename))
     #    pp.savefig(savefilename, format=save_format_g, transparent=True)
-    
+
     return ax1
