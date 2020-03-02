@@ -9,20 +9,32 @@ parser file where parse_kkr_outputfile is called
 
 from __future__ import division
 from __future__ import absolute_import
+from __future__ import print_function
 from numpy import ndarray, array, loadtxt, shape
 from masci_tools.io.common_functions import (search_string, get_version_info, get_Ry2eV, angles_to_vec,
                                              get_corestates_from_potential, get_highest_core_state, open_general, convert_to_pystd)
 from six.moves import range
+import traceback
 
 __copyright__ = (u"Copyright (c), 2017, Forschungszentrum Jülich GmbH,"
                  "IAS-1/PGI-1, Germany. All rights reserved.")
 __license__ = "MIT license, see LICENSE.txt file"
 __contributors__ = u"Philipp Rüßmann"
-__version__ = "1.4"
+__version__ = "1.6"
 
 ####################################################################################
 
-def parse_array_float(outfile, searchstring, splitinfo, replacepair=None):
+def parse_array_float(outfile, searchstring, splitinfo, replacepair=None, debug=False):
+    """
+    Search for keyword `searchstring` in `outfile` and extract array of results
+    Note: `splitinfo`   can be of the form [1, 'X', 1] or [2, 'X', 1, 0] where
+      splitinfo[0] can only be 1 or 2 (determines the mode), 
+      splitinfo[1] is the string at which the line is split,
+      splitinfo[2] is the index which is used,
+      splitinfo[3] (only for splitinfo[0]==2) is the part that is taken after applying split() a second time (split at whitespace).
+    Note: If `replacepair` is not None the substring replacepair[0] is replaced by replacepair[1] before processing further
+    Returns: array of results
+    """
     f = open_general(outfile)
     tmptxt = f.readlines()
     f.close()
@@ -30,6 +42,7 @@ def parse_array_float(outfile, searchstring, splitinfo, replacepair=None):
     res = []
     while itmp>=0:
         itmp = search_string(searchstring, tmptxt)
+        if debug: print(('in parse_array_float (itmp, searchstring, outfile):', itmp, searchstring, outfile))
         if itmp>=0:
             tmpval = tmptxt.pop(itmp)
             if replacepair is not None:
@@ -45,12 +58,24 @@ def parse_array_float(outfile, searchstring, splitinfo, replacepair=None):
     return res
 
 
-def get_rms(outfile, outfile2):
-    res = parse_array_float(outfile, 'average rms-error', [2, '=', 1, 0], ['D', 'E'])
-    res2 = parse_array_float(outfile2, 'rms-error for atom', [2, '=', 1, 0], ['D', 'E'])
-    niter = len(res) # number of iterations
-    natoms = int(len(res2)//niter) # number of atoms in system, needed to take only atom resolved rms of last iteration
-    return res, res2[-natoms:]
+def get_rms(outfile, outfile2, debug=False):
+    """
+    Get rms error per atom (both values for charge and spin) and total (i.e. average) value
+    """
+    if debug: print((outfile, outfile2))
+    rms_charge = parse_array_float(outfile, 'average rms-error', [2, '=', 1, 0], ['D', 'E'], debug=debug)
+    if debug: print(rms_charge)
+    rms_spin = parse_array_float(outfile, 'v+ - v-', [1, '=', 1], ['D', 'E']) # this should be in the line after 'average rms-error' but is only present if NSPIN==2
+    if debug: print(rms_spin)
+    rms_charge_atoms = parse_array_float(outfile2, 'rms-error for atom', [2, '=', 1, 0], ['D', 'E'])
+    if debug: print(rms_charge_atoms)
+    rms_spin_atoms = parse_array_float(outfile2, 'rms-error for atom', [2, '=', 1, 0], ['D', 'E']) # only present for NSPIN==2
+    if debug: print(rms_spin_atoms)
+    niter = len(rms_charge) # number of iterations
+    if debug: print(niter)
+    natoms = int(len(rms_charge_atoms)//niter) # number of atoms in system, needed to take only atom resolved rms of last iteration
+    if debug: print(natoms)
+    return rms_charge, rms_spin, rms_charge_atoms[-natoms:], rms_spin_atoms[-natoms:]
 
 
 def get_neutr(outfile):
@@ -260,14 +285,15 @@ def get_kmeshinfo(outfile_0init, outfile_000):
     nkmesh = []
     itmp = search_string('number of different k-meshes', tmptxt)
     nkmesh.append( int(tmptxt[itmp].split(':')[1].split()[0]) )
-    itmp = search_string('k-mesh NofKs', tmptxt)
+    itmp = search_string('NofKs', tmptxt)
     nofks, nkx, nky, nkz = [],[],[],[]
-    for ik in range(nkmesh[0]):
-        tmpval = tmptxt[itmp+2+ik].split()
-        nofks.append(int(tmpval[1]))
-        nkx.append(int(tmpval[2]))
-        nky.append(int(tmpval[3]))
-        nkz.append(int(tmpval[4]))
+    if itmp>=0:
+        for ik in range(nkmesh[0]):
+            tmpval = tmptxt[itmp+2+ik].split()
+            nofks.append(int(tmpval[1]))
+            nkx.append(int(tmpval[2]))
+            nky.append(int(tmpval[3]))
+            nkz.append(int(tmpval[4]))
 
     tmpdict = {'number_of_kpts':nofks, 'n_kx':nkx, 'n_ky':nky, 'n_kz':nkz}
     nkmesh.append(tmpdict)
@@ -455,7 +481,9 @@ def get_lattice_vectors(outfile_0init):
     return vecs, rvecs
 
 
-def parse_kkr_outputfile(out_dict, outfile, outfile_0init, outfile_000, timing_file, potfile_out, nonco_out_file, outfile_2='output.2.txt', skip_readin=False):
+
+def parse_kkr_outputfile(out_dict, outfile, outfile_0init, outfile_000, timing_file, potfile_out, nonco_out_file, 
+                         outfile_2='output.2.txt', skip_readin=False, debug=False):
     """
     Parser method for the kkr outfile. It returns a dictionary with results
     """
@@ -476,6 +504,7 @@ def parse_kkr_outputfile(out_dict, outfile, outfile_0init, outfile_000, timing_f
     except:
         msg = "Error parsing output of KKR: Version Info"
         msg_list.append(msg)
+        if debug: traceback.print_exc()
 
     try:
         nspin = get_nspin(outfile_0init)
@@ -487,6 +516,7 @@ def parse_kkr_outputfile(out_dict, outfile, outfile_0init, outfile_000, timing_f
     except:
         msg = "Error parsing output of KKR: nspin/natom"
         msg_list.append(msg)
+        if debug: traceback.print_exc()
 
     try:
         result = find_warnings(outfile)
@@ -497,6 +527,7 @@ def parse_kkr_outputfile(out_dict, outfile, outfile_0init, outfile_000, timing_f
     except:
         msg = "Error parsing output of KKR: search for warnings"
         msg_list.append(msg)
+        if debug: traceback.print_exc()
 
     try:
         result = extract_timings(timing_file)
@@ -505,6 +536,7 @@ def parse_kkr_outputfile(out_dict, outfile, outfile_0init, outfile_000, timing_f
     except:
         msg = "Error parsing output of KKR: timings"
         msg_list.append(msg)
+        if debug: traceback.print_exc()
 
     try:
         emin, tempr, Nepts, Npol, N1, N2, N3 = get_econt_info(outfile_0init)
@@ -524,6 +556,7 @@ def parse_kkr_outputfile(out_dict, outfile, outfile_0init, outfile_000, timing_f
     except:
         msg = "Error parsing output of KKR: energy contour"
         msg_list.append(msg)
+        if debug: traceback.print_exc()
 
     try:
         alat, twopioveralat = get_alatinfo(outfile_0init)
@@ -534,6 +567,7 @@ def parse_kkr_outputfile(out_dict, outfile, outfile_0init, outfile_000, timing_f
     except:
         msg = "Error parsing output of KKR: alat, 2*pi/alat"
         msg_list.append(msg)
+        if debug: traceback.print_exc()
 
     try:
         nkmesh, kmesh_ie = get_kmeshinfo(outfile_0init, outfile_000)
@@ -545,6 +579,7 @@ def parse_kkr_outputfile(out_dict, outfile, outfile_0init, outfile_000, timing_f
     except:
         msg = "Error parsing output of KKR: kmesh"
         msg_list.append(msg)
+        if debug: traceback.print_exc()
 
     try:
         nsym, nsym_used, desc = get_symmetries(outfile_0init)
@@ -556,6 +591,7 @@ def parse_kkr_outputfile(out_dict, outfile, outfile_0init, outfile_000, timing_f
     except:
         msg = "Error parsing output of KKR: symmetries"
         msg_list.append(msg)
+        if debug: traceback.print_exc()
 
     if not doscalc: # in case of dos calculation no ewald summation is done
         try:
@@ -574,6 +610,7 @@ def parse_kkr_outputfile(out_dict, outfile, outfile_0init, outfile_000, timing_f
         except:
             msg = "Error parsing output of KKR: ewald summation for madelung poterntial"
             msg_list.append(msg)
+            if debug: traceback.print_exc()
 
     try:
         bv, recbv = get_lattice_vectors(outfile_0init)
@@ -584,6 +621,7 @@ def parse_kkr_outputfile(out_dict, outfile, outfile_0init, outfile_000, timing_f
     except:
         msg = "Error parsing output of KKR: lattice vectors (direct/reciprocal)"
         msg_list.append(msg)
+        if debug: traceback.print_exc()
 
     # this is skipped for qdos run for example
     if not skip_readin:
@@ -598,20 +636,28 @@ def parse_kkr_outputfile(out_dict, outfile, outfile_0init, outfile_000, timing_f
         except:
             msg = "Error parsing output of KKR: core_states"
             msg_list.append(msg)
+            if debug: traceback.print_exc()
 
         tmp_dict = {} # used to group convergence info (rms, rms per atom, charge neutrality)
         # also initialize convegence_group where all info stored for all iterations is kept
         out_dict['convergence_group'] = tmp_dict
         try:
-            result, result_atoms_last = get_rms(outfile, outfile_000)
-            tmp_dict['rms'] = result[-1]
-            tmp_dict['rms_all_iterations'] = result
-            tmp_dict['rms_per_atom'] = result_atoms_last
+            rms_charge, rms_spin, result_atoms_last_charge, result_atoms_last_spin = get_rms(outfile, outfile_000, debug=debug)
+            tmp_dict['rms'] = rms_charge[-1]
+            tmp_dict['rms_all_iterations'] = rms_charge
+            tmp_dict['rms_per_atom'] = result_atoms_last_charge
+            if len(rms_spin)>0:
+                tmp_dict['rms_spin'] = rms_spin[-1]
+            else:
+                tmp_dict['rms_spin'] = None
+            tmp_dict['rms_spin_all_iterations'] = rms_spin
+            tmp_dict['rms_spin_per_atom'] = result_atoms_last_spin
             tmp_dict['rms_unit'] = 'unitless'
             out_dict['convergence_group'] = tmp_dict
         except:
             msg = "Error parsing output of KKR: rms-error"
             msg_list.append(msg)
+            if debug: traceback.print_exc()
 
         try:
             result = get_neutr(outfile)
@@ -622,6 +668,7 @@ def parse_kkr_outputfile(out_dict, outfile, outfile_0init, outfile_000, timing_f
         except:
             msg = "Error parsing output of KKR: charge neutrality"
             msg_list.append(msg)
+            if debug: traceback.print_exc()
 
         tmp_dict = {} # used to group magnetism info (spin and orbital moments)
         try:
@@ -634,6 +681,7 @@ def parse_kkr_outputfile(out_dict, outfile, outfile_0init, outfile_000, timing_f
         except:
             msg = "Error parsing output of KKR: total magnetic moment"
             msg_list.append(msg)
+            if debug: traceback.print_exc()
 
         try:
             if nspin>1:
@@ -654,6 +702,7 @@ def parse_kkr_outputfile(out_dict, outfile, outfile_0init, outfile_000, timing_f
         except:
             msg = "Error parsing output of KKR: spin moment per atom"
             msg_list.append(msg)
+            if debug: traceback.print_exc()
 
         # add orbital moments to magnetis group in parser output
         try:
@@ -677,6 +726,7 @@ def parse_kkr_outputfile(out_dict, outfile, outfile_0init, outfile_000, timing_f
         except:
             msg = "Error parsing output of KKR: orbital moment"
             msg_list.append(msg)
+            if debug: traceback.print_exc()
 
         try:
             result = get_EF(outfile)
@@ -687,6 +737,7 @@ def parse_kkr_outputfile(out_dict, outfile, outfile_0init, outfile_000, timing_f
         except:
             msg = "Error parsing output of KKR: EF"
             msg_list.append(msg)
+            if debug: traceback.print_exc()
 
         try:
             result = get_DOS_EF(outfile)
@@ -695,6 +746,7 @@ def parse_kkr_outputfile(out_dict, outfile, outfile_0init, outfile_000, timing_f
         except:
             msg = "Error parsing output of KKR: DOS@EF"
             msg_list.append(msg)
+            if debug: traceback.print_exc()
 
         try:
             result = get_Etot(outfile)
@@ -706,6 +758,7 @@ def parse_kkr_outputfile(out_dict, outfile, outfile_0init, outfile_000, timing_f
         except:
             msg = "Error parsing output of KKR: total energy"
             msg_list.append(msg)
+        if debug: traceback.print_exc()
 
         try:
             result = get_single_particle_energies(outfile_000)
@@ -715,6 +768,7 @@ def parse_kkr_outputfile(out_dict, outfile, outfile_0init, outfile_000, timing_f
             if not doscalc:
                 msg = "Error parsing output of KKR: single particle energies"
                 msg_list.append(msg)
+                if debug: traceback.print_exc()
 
         try:
             result_WS, result_tot, result_C = get_charges_per_atom(outfile_000)
@@ -732,6 +786,7 @@ def parse_kkr_outputfile(out_dict, outfile, outfile_0init, outfile_000, timing_f
             if not doscalc:
                 msg = "Error parsing output of KKR: charges"
                 msg_list.append(msg)
+                if debug: traceback.print_exc()
 
         try:
             try:
@@ -751,6 +806,7 @@ def parse_kkr_outputfile(out_dict, outfile, outfile_0init, outfile_000, timing_f
         except:
             msg = "Error parsing output of KKR: scfinfo"
             msg_list.append(msg)
+            if debug: traceback.print_exc()
 
     #convert numpy arrays to standard python lists
     out_dict = convert_to_pystd(out_dict)
