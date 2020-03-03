@@ -6,7 +6,7 @@ from __future__ import print_function
 from __future__ import absolute_import
 from builtins import object
 from masci_tools.io.modify_potential import modify_potential
-from masci_tools.io.parsers.kkrimp_parser_functions import kkrimp_parser_functions
+from masci_tools.io.parsers.kkrimp_parser_functions import KkrimpParserFunctions
 
 
 class Test_modify_potential(object):
@@ -51,7 +51,7 @@ class Test_modify_potential(object):
 
 
 
-class Test_kkrimp_parser_functions(object):
+class Test_KkrimpParserFunctions(object):
     """ Tests for the KKRimp parser functions. """
 
     def test_parse_outfiles_full(self):
@@ -67,7 +67,7 @@ class Test_kkrimp_parser_functions(object):
         files['kkrflex_angles'] = path+'out_timing.000.txt'
         files['out_spinmoms'] = path+'out_magneticmoments.txt'
         files['out_orbmoms'] = path+'out_magneticmoments.txt'
-        s, m, o = kkrimp_parser_functions().parse_kkrimp_outputfile({}, files, debug=True)
+        s, m, o = KkrimpParserFunctions().parse_kkrimp_outputfile({}, files, debug=True)
         print('files:', files)
         print('\nsuccess?\n{}\n'.format(s))
         print('\nmessages?\n{}\n'.format(m))
@@ -91,7 +91,7 @@ class Test_kkrimp_parser_functions(object):
         files['kkrflex_angles'] = open(path+'out_timing.000.txt') # file not there yet and not parsed
         files['out_spinmoms'] = open(path+'out_timing.000.txt') # file not there yet and not parsed
         files['out_orbmoms'] = open(path+'out_timing.000.txt') # file not there yet and not parsed
-        s, m, o = kkrimp_parser_functions().parse_kkrimp_outputfile({}, files)
+        s, m, o = KkrimpParserFunctions().parse_kkrimp_outputfile({}, files)
         print('files:', files)
         print('\nsuccess?\n{}\n'.format(s))
         print('\nmessages?\n{}\n'.format(m))
@@ -114,7 +114,7 @@ class Test_kkrimp_parser_functions(object):
         files['kkrflex_angles'] = 'no_file_there'
         files['out_spinmoms'] = 'no_file_there'
         files['out_orbmoms'] = 'no_file_there'
-        s, m, o = kkrimp_parser_functions().parse_kkrimp_outputfile({}, files, debug=True)
+        s, m, o = KkrimpParserFunctions().parse_kkrimp_outputfile({}, files, debug=True)
         print('\nsuccess?\n{}\n'.format(s))
         print('\nmessages?\n{}\n'.format(m))
         print('\nout_dict?\n{}\n'.format(o))

@@ -17,13 +17,13 @@ import traceback
 __copyright__ = (u"Copyright (c), 2018, Forschungszentrum Jülich GmbH,"
                  "IAS-1/PGI-1, Germany. All rights reserved.")
 __license__ = "MIT license, see LICENSE.txt file"
-__version__ = "0.5"
+__version__ = "0.6"
 __contributors__ = (u"Philipp Rüßmann",
                     u"Fabian Bertoldo")
 
 ####################################################################################
 
-class kkrimp_parser_functions(object):
+class KkrimpParserFunctions(object):
     """
     Class of parser functions for KKRimp calculation
 
