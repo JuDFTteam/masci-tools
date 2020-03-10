@@ -29,7 +29,7 @@ class Test_kkr_plotting(object):
         # need to return the figure in order for mpl checks to work
         return gcf()
 
-    @pytest.mark.mpl_image_compare(baseline_dir='files/kkr/kkr_run_dos_output/', filename='test.png')
+    @pytest.mark.mpl_image_compare(baseline_dir='files/kkr/kkr_run_dos_output/', filename='test.png', tolerance=5)
     def test_plot_dos(self):
         gcf().clear()
         dosplot('files/kkr/kkr_run_dos_output/')
