@@ -18,7 +18,7 @@ Also some defaults for the parameters are defined.
 __copyright__ = ("Copyright (c), 2017, Forschungszentrum Jülich GmbH,"
                  "IAS-1/PGI-1, Germany. All rights reserved.")
 __license__ = "MIT license, see LICENSE.txt file"
-__version__ = "1.8.2"
+__version__ = "1.8.3"
 __contributors__ = "Philipp Rüßmann"
 
 
@@ -63,6 +63,145 @@ class kkrparams(object):
         Initialize class instance with containing the attribute values that also have
         a format, mandatory flags (defaults for KKRcode, changed for example via params_type='voronoi' keyword) and a description.
         """
+
+        # keywords for KKRhost and voronoi (all allowed keys for inputcard)
+        self._DEFAULT_KEYWORDS_KKR = dict([# complete list of keywords, detault all that are not mandatory to None
+            # lattice
+            ('ALATBASIS', [None, '%f', True, 'Description of lattice: Length unit in Bohr radii usually conventional lattice parameter']),
+            ('BRAVAIS', [None, '%f %f %f\n%f %f %f\n%f %f %f', True, 'Description of lattice: Bravais vectors in units of [ALATBASIS]']),
+            ('NAEZ', [None, '%i', True, 'Description of lattice: Number of sites in unit cell']),
+            ('<RBASIS>', [None, '%f %f %f', True, 'Description of lattice: Positions of sites in unit cell']),
+            ('CARTESIAN', [None, '%l', False, 'Description of lattice: Interpret the basis vector coordinates as reduced (w. respect to bravais) or as cartesian (in lattice constant units)']),
+            ('INTERFACE', [None, '%l', False, 'Description of lattice, 2D mode: needs to be TRUE for 2D calculation']),
+            ('<NLBASIS>', [None, '%i', False, 'Description of lattice, 2D mode: Number of basis sites forming the half-infinite lattice to the lower (=left) part of the slab.']),
+            ('<RBLEFT>', [None, '%f %f %f', False, 'Description of lattice, 2D mode: Positions of sites forming the basis sites of the half-infinite lattice to the lower (=left) part of the slab.']),
+            ('ZPERIODL', [None, '%f %f %f', False, 'Description of lattice, 2D mode: Lattice vector describing the periodicity perpendicular to the slab-plane for the half-infinite lattice to the lower (=left) part of the slab (plays the role of the 3rd Bravais vector for this half-infinite lattice). The <RBLEFT> vectors are periodically repeated by the ZPERIODL vector.']),
+            ('<NRBASIS>', [None, '%i', False, 'Description of lattice, 2D mode: Number of basis sites forming the half-infinite lattice to the upper (=right) part of the slab.']),
+            ('<RBRIGHT>', [None, '%f %f %f', False, 'Description of lattice, 2D mode: Positions of sites forming the basis sites of the half-infinite lattice to the upper (=right) part of the slab.']),
+            ('ZPERIODR', [None, '%f %f %f', False, 'Description of lattice, 2D mode: Lattice vector describing the periodicity perpendicular to the slab-plane for the half-infinite lattice to the upper (=right) part of the slab (plays the role of the 3rd Bravais vector for this half-infinite lattice). The <RBRIGHT> vectors are periodically repeated by the ZPERIODR vector.']),
+            ('KSHAPE', [None, '%i', False, 'Description of lattice, shape functions: 0 for ASA ([INS]=0), 2 for full potential ([INS]=1)']),
+            ('<SHAPE>', [None, '%i', False, 'Description of lattice, shape functions: Indexes which shape function from the shape-function file to use in which atom. Default is that each atom has its own shape function.']),
+            # chemistry
+            ('<ZATOM>', [None, '%f', True, 'Chemistry, Atom types: Nuclear charge per atom. Negative value signals to use value read in from the potential file.']),
+            ('NSPIN', [None, '%i', True, 'Chemistry, Atom types: Number of spin directions in potential. Values 1 or 2']),
+            ('KVREL', [None, '%i', False, 'Chemistry, Atom types: Relativistic treatment of valence electrons. Takes values 0 (Schroedinger), 1 (Scalar relativistic), 2 (Dirac ; works only in ASA mode)']),
+            ('<SOCSCL>', [None, '%f', False, 'Chemistry, Atom types: Spin-orbit coupling scaling per atom. Takes values between 0. (no spin-orbit) and 1. (full spin-orbit). Works only in combination with the Juelich spin orbit solver (runoption NEWSOSOL)']),
+            ('KEXCOR', [None, '%i', False, 'Chemistry, Exchange-correlation: Type of exchange correlation potential. Takes values 0 (LDA, Moruzzi-Janak-Williams), 1 (LDA, von Barth-Hedin), 2 (LDA, Vosko-Wilk-Nussair), 3 (GGA, Perdew-Wang 91), 4 (GGA, PBE), 5 (GGA, PBEsol)']),
+            ('LAMBDA_XC', [None, '%f', False, 'Chemistry, Exchange-correlation: Scale the magnetic part of the xc-potential and energy. Takes values between 0. (fully suppressed magnetisc potential) and 1. (normal magnetic potential).']),
+            ('NAT_LDAU', [None, '%i', False, 'Chemistry, Exchange-correlation: Numer of atoms where LDA+U will be used']),
+            ('LDAU_PARA', [None, '%i %i %f %f %f', False, 'Chemistry, Exchange-correlation: For each atom where LDA+U should be used, the entries are: [atom type] [angular mom. to apply LDA+U] [Ueff] [Jeff] [Eref] where [atom type] is between 1...[NATYP].']),
+            ('KREADLDAU', [None, '%i', False, "Chemistry, Exchange-correlation: Takes values 0 or 1; if [KREADLDAU]=1 then read previously calculated LDA+U matrix elements from file 'ldaupot'."]),
+            ('NATYP', [None, '%i', False, 'Chemistry, CPA mode: Number of atom types; CPA is triggered by setting [NATYP]>[NAEZ].']),
+            ('<SITE>', [None, '%i', False, 'Chemistry, CPA mode: Takes values 1 < [<SITE>] < [NAEZ] Assigns the position (given by [<RBASIS>]) where the atom-dependent read-in potential is situated. E.g., if the 3rd-in-the-row potential should be positioned at the 2nd <RBASIS> vector, then the 3rd entry of the <SITE> list should have the value 2.']),
+            ('<CPA-CONC>', [None, '%f', False, 'Chemistry, CPA mode: Takes values 0. < [<CPA-CONC>] < 1. Assigns the alloy-concentration corresponding to the atom-dependent read-in potential. Together with the variable <SITE>, <CPA-CONC> assigns the number and concentration of the atom-dependent potentials residing at each site form 1 to [NAEZ]. The sum of concentrations at each site should equal 1.']),
+            ('<KAOEZL>', [None, '%i', False, 'Chemistry, 2D mode: Controls the type of t-matrix at the lower (=left) half-crystal sites in case of embedding as these are given in the left-decimation file (i.e., changes the order compared to the one in the left-decimation file).']),
+            ('<KAOEZR>', [None, '%i', False, 'Chemistry, 2D mode: Controls the type of t-matrix at the upper (=right) half-crystal sites in case of embedding as these are given in the right-decimation file (i.e., changes the order compared to the one in the right-decimation file).']),
+            # external fields
+            ('LINIPOL', [None, '%l', False, 'External fields: If TRUE, triggers an external magn. field per atom in the first iteration.']),
+            ('HFIELD', [None, '%f', False, 'External fields: Value of an external magnetic field in the first iteration. Works only with LINIPOL, XINIPOL']),
+            ('XINIPOL', [None, '%i', False, 'External fields: Integer multiplying the HFIELD per atom']),
+            ('VCONST', [None, '%f', False, 'External fields: Constant potential shift in the first iteration.']),
+            # accuracy
+            ('LMAX', [None, '%i', True, 'Accuracy: Angular momentum cutoff']),
+            ('BZDIVIDE', [None, '%i %i %i', False, 'Accuracy: Maximal Brillouin zone mesh. Should not violate symmetry (e.g cubic symmetry implies i1=i2=i3; terragonal symmetry in xy implies i1=i2; i1=i2=i3 is always safe.)']),
+            ('EMIN', [None, '%f', False, 'Accuracy, Valence energy contour: Lower value (in Ryd) for the energy contour']),
+            ('EMAX', [None, '%f', False, 'Accuracy, Valence energy contour: Maximum value (in Ryd) for the DOS calculation Controls also [NPT2] in some cases']),
+            ('TEMPR', [None, '%f', False, 'Accuracy, Valence energy contour: Electronic temperature in K.']),
+            ('NPT1', [None, '%i', False, 'Accuracy, Valence energy contour: Number of energies in the 1st part of the rectangular contour ("going up").']),
+            ('NPT2', [None, '%i', False, 'Accuracy, Valence energy contour: Number of energies in the 2nd part of the rectangular contour ("going right").']),
+            ('NPT3', [None, '%i', False, 'Accuracy, Valence energy contour: Number of energies in the 3rd part of the rectangular contour (Fermi smearing part).']),
+            ('NPOL', [None, '%i', False, 'Accuracy, Valence energy contour: Number of Matsubara poles For DOS calculations, set [NPOL]=0']),
+            ('EBOTSEMI', [None, '%f', False, 'Accuracy, Semicore energy contour: Bottom of semicore contour in Ryd.']),
+            ('EMUSEMI', [None, '%f', False, 'Accuracy, Semicore energy contour: Top of semicore contour in Ryd.']),
+            ('TKSEMI', [None, '%f', False, 'Accuracy, Semicore energy contour: "Temperature" in K controlling height of semicore contour.']),
+            ('NPOLSEMI', [None, '%i', False, 'Accuracy, Semicore energy contour: Control of height of semicore contour: Im z = (2 * [NPOLSEMI] * pi * kB * [TKSEMI] ) with kB=0.6333659E-5']),
+            ('N1SEMI', [None, '%i', False, 'Accuracy, Semicore energy contour: Number of energies in first part of semicore contour ("going up").']),
+            ('N2SEMI', [None, '%i', False, 'Accuracy, Semicore energy contour: Number of energies in second part of semicore contour ("going right").']),
+            ('N3SEMI', [None, '%i', False, 'Accuracy, Semicore energy contour: Number of energies in third part of semicore contour ("going down").']),
+            ('FSEMICORE', [None, '%f', False, 'Accuracy, Semicore energy contour: Initial normalization factor for semicore states (approx. 1.).']),
+            ('CPAINFO', [None, '%f %i', False, 'Accuracy, CPA mode: CPA-error max. tolerance and max. number of CPA-cycle iterations.']),
+            ('RCLUSTZ', [None, '%f', False, 'Accuracy, Screening clusters: Radius of screening clusters in units of [ALATBASIS], default is 11 Bohr radii.']),
+            ('RCLUSTXY', [None, '%f', False, 'Accuracy, Screening clusters: If [RCLUSTXY] does not equal [RCLUSTZ] then cylindrical clusters are created with radius [RCLUSTXY] and height [RCLUSTZ].']),
+            ('<RMTREF>', [None, '%f', False, 'Accuracy, Screening clusters: Muffin tin radius in Bohr radii for each site forming screening clusters. Negative value signals automatic calculation by the code.']),
+            ('NLEFTHOS', [None, '%i', False, 'Accuracy, Screening clusters 2D mode: The vectors [<RBLEFT>] are repeated i=1,...,[NLEFTHOS] times, shifted by i*[ZPERIODL], for the later formation of screening clusters.']),
+            ('<RMTREFL>', [None, '%f', False, 'Accuracy, Screening clusters 2D mode: Muffin-tin radius in Bohr radii for each site forming screening clusters in the lower (=left) half-crystal. Negative value signals automatic calculation by the code.']),
+            ('NRIGHTHO', [None, '%i', False, 'Accuracy, Screening clusters 2D mode: The vectors [<RBRIGHT>] are repeated i=1,...,[NRIGHTHO] times, shifted by i*[ZPERIODR], for the later formation of screening clusters.']),
+            ('<RMTREFR>', [None, '%f', False, 'Accuracy, Screening clusters 2D mode: Muffin-tin radius in Bohr radii for each site forming screening clusters in the upper (=right) half-crystal. Negative value signals automatic calculation by the code.']),
+            ('INS', [None, '%i', False, 'Accuracy, Radial solver: Takes values 0 for ASA and 1 for full potential Must be 0 for Munich Dirac solver ([KREL]=2)']),
+            ('ICST', [None, '%i', False, 'Accuracy, Radial solver: Number of iterations in the radial solver']),
+            ('R_LOG', [None, '%f', False, 'Accuracy, Radial solver: Radius up to which log-rule is used for interval width. Used in conjunction with runopt NEWSOSOL']),
+            ('NPAN_LOG', [None, '%i', False, 'Accuracy, Radial solver: Number of intervals from nucleus to [R_LOG] Used in conjunction with runopt NEWSOSOL']),
+            ('NPAN_EQ', [None, '%i', False, 'Accuracy, Radial solver: Number of intervals from [R_LOG] to muffin-tin radius Used in conjunction with runopt NEWSOSOL']),
+            ('NCHEB', [None, '%i', False, 'Accuracy, Radial solver: Number of Chebyshev polynomials per interval Used in conjunction with runopt NEWSOSOL']),
+            ('<FPRADIUS>', [None, '%f', False, 'Accuracy, Radial solver: Full potential limit per atom (in Bohr radii); at points closer to the nucleus, the potential is assumed spherical. Negative values indicate to use values from potential file. Values larger than the muffin tin indicate to use the muffin tin radius.']),
+            ('RMAX', [None, '%f', True, 'Accuracy, Ewald summation for Madelung potential: Max. radius in [ALATBASIS] for real space Ewald sum']),
+            ('GMAX', [None, '%f', True, 'Accuracy, Ewald summation for Madelung potential: Max. radius in 2*pi/[ALATBASIS] for reciprocal space Ewald sum']),
+            ('<LLOYD>', [None, '%i', False, "Accuracy, LLoyd's formula: Set to 1 in order to use Lloyd's formula"]),
+            ('<DELTAE>', [None, '(%f, %f)', False, "Accuracy, LLoyd's formula: Energy difference for derivative calculation in Lloyd's formula"]),
+            ('<TOLRDIF>', [None, '%e', False, 'Accuracy, Virtual atoms: For distance between scattering-centers smaller than [<TOLRDIF>], free GF is set to zero. Units are Bohr radii.']),
+            ('<RMTCORE>', [None, '%f', False, 'Accuracy: Muffin tin radium in Bohr radii for each atom site. This sets the value of RMT used internally in the KKRcode. Needs to be smaller than the touching RMT of the cells. In particular for structure relaxations this should be kept constant.']),
+            ('NMIN', [None, '%i', False, 'Accuracy: Minimal number of point per shape function panel. Only used by voronoi code in shape function generation.']),
+            ('POT_NS_CUTOFF', [None, '%f', False, 'Accuracy: non-spherical cutoff for potential at the end of the iteration (defaults to 0.1*qbound if not set).']),
+            # scf cycle
+            ('NSTEPS', [None, '%i', False, 'Self-consistency control: Max. number of self-consistency iterations. Is reset to 1 in several cases that require only 1 iteration (DOS, Jij, write out GF).']),
+            ('IMIX', [None, '%i', False, "Self-consistency control: Mixing scheme for potential. 0 means straignt (linear) mixing, 3 means Broyden's 1st method, 4 means Broyden's 2nd method, 5 means Anderson's method"]),
+            ('STRMIX', [None, '%f', False, 'Self-consistency control: Linear mixing parameter Set to 0. if [NPOL]=0']),
+            ('ITDBRY', [None, '%i', False, 'Self-consistency control: how many iterations to keep in the Broyden/Anderson mixing scheme.']),
+            ('FCM', [None, '%f', False, 'Self-consistency control: Factor for increased linear mixing of magnetic part of potential compared to non-magnetic part.']),
+            ('BRYMIX', [None, '%f', False, 'Self-consistency control: Parameter for Broyden mixing.']),
+            ('QBOUND', [None, '%e', False, 'Self-consistency control: Lower limit of rms-error in potential to stop iterations.']),
+            #code options
+            ('RUNOPT', [None, '%s%s%s%s%s%s%s%s', False, 'Running and test options: 8-character keywords in a row without spaces between them']),
+            ('TESTOPT', [None, '%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s', False, 'Running and test options: optional 8-character keywords in a row without spaces between them plus a secod row of the same.']),
+            #file names
+            ('FILES', [None, '%s', False, 'Name of potential and shapefun file (list of two strings, empty string will set back to default of the one file that is supposed to be changed)']),
+            # special options
+            ('JIJRAD', [None, '%f', False, 'Radius in alat which defines the cutoff for calcultion of Jij pairs']),
+            ('JIJRADXY', [None, '%f', False, 'use a cylindical cluster in which Jij pairs are searched for']),
+            ('JIJSITEI', [None, '%i', False, 'allow for the selection of specific sites in i in the unit cell, which should be considered in the calculation (default: all sites)']),
+            ('JIJSITEJ', [None, '%i', False, 'allow for the selection of specific sites in j in the unit cell, which should be considered in the calculation (default: all sites)']),
+            ('EFSET', [None, '%f', False, 'Set Fermi level of jellium starting potential generated by voronoi to this value. Only used by voronoi code.']),
+            # array dimensions
+            ('NSHELD', [None, '%i', False, 'Array dimension: number of shells (default: 300)']),
+            ('IEMXD', [None, '%i', False, 'Array dimension: number of energy points (default: 101)']),
+            ('IRID', [None, '%i', False, 'Array dimension: number of radial points']),
+            ('IPAND', [None, '%i', False, 'Array dimension: number of shapefunction panels']),
+        ])
+
+        # keywords for KKRimp (all allowed settings for config file)
+        self._DEFAULT_KEYS_KKRIMP = dict([# complete list of keywords, detault all that are not mandatory to None
+            # chemistry
+            ('NSPIN', [None, '%i', False, 'Chemistry, Atom types: Number of spin directions in potential. Values 1 or 2']),
+            ('KVREL', [None, '%i', False, 'Chemistry, Atom types: Relativistic treatment of valence electrons. Takes values 0 (Schroedinger), 1 (Scalar relativistic), 2 (Dirac ; works only in ASA mode)']),
+            ('XC', [None, '%s', False, 'Chemistry, Exchange-correlation: Type of exchange correlation potential. Takes values 0 (LDA, Moruzzi-Janak-Williams), 1 (LDA, von Barth-Hedin), 2 (LDA, Vosko-Wilk-Nussair), 3 (GGA, Perdew-Wang 91), 4 (GGA, PBE), 5 (GGA, PBEsol)']),
+            # external fields
+            ('HFIELD', [None, '%f %i', False, 'External fields: Value of an external magnetic field in the first iteration. Works only with LINIPOL, XINIPOL']),
+            # accuracy
+            ('INS', [None, '%i', False, 'Accuracy, Radial solver: Takes values 0 for ASA and 1 for full potential Must be 0 for Munich Dirac solver ([KREL]=2)']),
+            ('ICST', [None, '%i', False, 'Accuracy, Radial solver: Number of iterations in the radial solver']),
+            ('RADIUS_LOGPANELS', [None, '%f', False, 'Accuracy, Radial solver: Radius up to which log-rule is used for interval width. Used in conjunction with runopt NEWSOSOL']),
+            ('NPAN_LOG', [None, '%i', False, 'Accuracy, Radial solver: Number of intervals from nucleus to [R_LOG] Used in conjunction with runopt NEWSOSOL']),
+            ('NPAN_EQ', [None, '%i', False, 'Accuracy, Radial solver: Number of intervals from [R_LOG] to muffin-tin radius Used in conjunction with runopt NEWSOSOL']),
+            ('NCHEB', [None, '%i', False, 'Accuracy, Radial solver: Number of Chebyshev polynomials per interval Used in conjunction with runopt NEWSOSOL']),
+            ('NPAN_LOGPANELFAC', [None, '%i', False, 'Accuracy, Radial solver: division factor logpanel']),
+            ('RADIUS_MIN', [None, '%i', False, 'Accuracy, Radial solver: ']),
+            ('NCOLL', [None, '%i', False, 'Accuracy, Radial solver: use nonco_angles solver (1/0)']),
+            ('SPINORBIT', [None, '%i', False, 'Accuracy, Radial solver: use SOC solver (1/0)']),
+            # scf cycle
+            ('SCFSTEPS', [None, '%i', False, 'Self-consistency control: Max. number of self-consistency iterations. Is reset to 1 in several cases that require only 1 iteration (DOS, Jij, write out GF).']),
+            ('IMIX', [None, '%i', False, "Self-consistency control: Mixing scheme for potential. 0 means straignt (linear) mixing, 3 means Broyden's 1st method, 4 means Broyden's 2nd method, 5 means Anderson's method"]),
+            ('MIXFAC', [None, '%f', False, 'Self-consistency control: Linear mixing parameter Set to 0. if [NPOL]=0']),
+            ('ITDBRY', [None, '%i', False, 'Self-consistency control: how many iterations to keep in the Broyden/Anderson mixing scheme.']),
+            ('BRYMIX', [None, '%f', False, 'Self-consistency control: Parameter for Broyden mixing.']),
+            ('QBOUND', [None, '%e', False, 'Self-consistency control: Lower limit of rms-error in potential to stop iterations.']),
+            #code options
+            ('RUNFLAG', [None, '%s', False, 'Running and test options: lmdos	, GBULKtomemory, LDA+U	, SIMULASA']),
+            ('TESTFLAG', [None, '%s', False, 'Running and test options: tmatnew, noscatteringmoment']),
+            ('CALCFORCE', [None, '%i', False, 'Calculate forces']),
+            ('CALCJIJMAT', [None, '%i', False, 'Calculate Jijmatrix']),
+            ('CALCORBITALMOMENT', [None, '%i', False, 'Calculate orbital moment (SOC solver only, 0/1)']),
+        ])
+
         if 'params_type' in kwargs:
             self.__params_type = kwargs.pop('params_type')
         else:
@@ -350,107 +489,7 @@ class kkrparams(object):
         - 'description' is a string containing human redable info about the keyword
         """
 
-        default_keywords = dict([# complete list of keywords, detault all that are not mandatory to None
-                                # lattice
-                                ('ALATBASIS', [None, '%f', True, 'Description of lattice: Length unit in Bohr radii usually conventional lattice parameter']),
-                                ('BRAVAIS', [None, '%f %f %f\n%f %f %f\n%f %f %f', True, 'Description of lattice: Bravais vectors in units of [ALATBASIS]']),
-                                ('NAEZ', [None, '%i', True, 'Description of lattice: Number of sites in unit cell']),
-                                ('<RBASIS>', [None, '%f %f %f', True, 'Description of lattice: Positions of sites in unit cell']),
-                                ('CARTESIAN', [None, '%l', False, 'Description of lattice: Interpret the basis vector coordinates as reduced (w. respect to bravais) or as cartesian (in lattice constant units)']),
-                                ('INTERFACE', [None, '%l', False, 'Description of lattice, 2D mode: needs to be TRUE for 2D calculation']),
-                                ('<NLBASIS>', [None, '%i', False, 'Description of lattice, 2D mode: Number of basis sites forming the half-infinite lattice to the lower (=left) part of the slab.']),
-                                ('<RBLEFT>', [None, '%f %f %f', False, 'Description of lattice, 2D mode: Positions of sites forming the basis sites of the half-infinite lattice to the lower (=left) part of the slab.']),
-                                ('ZPERIODL', [None, '%f %f %f', False, 'Description of lattice, 2D mode: Lattice vector describing the periodicity perpendicular to the slab-plane for the half-infinite lattice to the lower (=left) part of the slab (plays the role of the 3rd Bravais vector for this half-infinite lattice). The <RBLEFT> vectors are periodically repeated by the ZPERIODL vector.']),
-                                ('<NRBASIS>', [None, '%i', False, 'Description of lattice, 2D mode: Number of basis sites forming the half-infinite lattice to the upper (=right) part of the slab.']),
-                                ('<RBRIGHT>', [None, '%f %f %f', False, 'Description of lattice, 2D mode: Positions of sites forming the basis sites of the half-infinite lattice to the upper (=right) part of the slab.']),
-                                ('ZPERIODR', [None, '%f %f %f', False, 'Description of lattice, 2D mode: Lattice vector describing the periodicity perpendicular to the slab-plane for the half-infinite lattice to the upper (=right) part of the slab (plays the role of the 3rd Bravais vector for this half-infinite lattice). The <RBRIGHT> vectors are periodically repeated by the ZPERIODR vector.']),
-                                ('KSHAPE', [None, '%i', False, 'Description of lattice, shape functions: 0 for ASA ([INS]=0), 2 for full potential ([INS]=1)']),
-                                ('<SHAPE>', [None, '%i', False, 'Description of lattice, shape functions: Indexes which shape function from the shape-function file to use in which atom. Default is that each atom has its own shape function.']),
-                                # chemistry
-                                ('<ZATOM>', [None, '%f', True, 'Chemistry, Atom types: Nuclear charge per atom. Negative value signals to use value read in from the potential file.']),
-                                ('NSPIN', [None, '%i', True, 'Chemistry, Atom types: Number of spin directions in potential. Values 1 or 2']),
-                                ('KVREL', [None, '%i', False, 'Chemistry, Atom types: Relativistic treatment of valence electrons. Takes values 0 (Schroedinger), 1 (Scalar relativistic), 2 (Dirac ; works only in ASA mode)']),
-                                ('<SOCSCL>', [None, '%f', False, 'Chemistry, Atom types: Spin-orbit coupling scaling per atom. Takes values between 0. (no spin-orbit) and 1. (full spin-orbit). Works only in combination with the Juelich spin orbit solver (runoption NEWSOSOL)']),
-                                ('KEXCOR', [None, '%i', False, 'Chemistry, Exchange-correlation: Type of exchange correlation potential. Takes values 0 (LDA, Moruzzi-Janak-Williams), 1 (LDA, von Barth-Hedin), 2 (LDA, Vosko-Wilk-Nussair), 3 (GGA, Perdew-Wang 91), 4 (GGA, PBE), 5 (GGA, PBEsol)']),
-                                ('LAMBDA_XC', [None, '%f', False, 'Chemistry, Exchange-correlation: Scale the magnetic part of the xc-potential and energy. Takes values between 0. (fully suppressed magnetisc potential) and 1. (normal magnetic potential).']),
-                                ('NAT_LDAU', [None, '%i', False, 'Chemistry, Exchange-correlation: Numer of atoms where LDA+U will be used']),
-                                ('LDAU_PARA', [None, '%i %i %f %f %f', False, 'Chemistry, Exchange-correlation: For each atom where LDA+U should be used, the entries are: [atom type] [angular mom. to apply LDA+U] [Ueff] [Jeff] [Eref] where [atom type] is between 1...[NATYP].']),
-                                ('KREADLDAU', [None, '%i', False, "Chemistry, Exchange-correlation: Takes values 0 or 1; if [KREADLDAU]=1 then read previously calculated LDA+U matrix elements from file 'ldaupot'."]),
-                                ('NATYP', [None, '%i', False, 'Chemistry, CPA mode: Number of atom types; CPA is triggered by setting [NATYP]>[NAEZ].']),
-                                ('<SITE>', [None, '%i', False, 'Chemistry, CPA mode: Takes values 1 < [<SITE>] < [NAEZ] Assigns the position (given by [<RBASIS>]) where the atom-dependent read-in potential is situated. E.g., if the 3rd-in-the-row potential should be positioned at the 2nd <RBASIS> vector, then the 3rd entry of the <SITE> list should have the value 2.']),
-                                ('<CPA-CONC>', [None, '%f', False, 'Chemistry, CPA mode: Takes values 0. < [<CPA-CONC>] < 1. Assigns the alloy-concentration corresponding to the atom-dependent read-in potential. Together with the variable <SITE>, <CPA-CONC> assigns the number and concentration of the atom-dependent potentials residing at each site form 1 to [NAEZ]. The sum of concentrations at each site should equal 1.']),
-                                ('<KAOEZL>', [None, '%i', False, 'Chemistry, 2D mode: Controls the type of t-matrix at the lower (=left) half-crystal sites in case of embedding as these are given in the left-decimation file (i.e., changes the order compared to the one in the left-decimation file).']),
-                                ('<KAOEZR>', [None, '%i', False, 'Chemistry, 2D mode: Controls the type of t-matrix at the upper (=right) half-crystal sites in case of embedding as these are given in the right-decimation file (i.e., changes the order compared to the one in the right-decimation file).']),
-                                # external fields
-                                ('LINIPOL', [None, '%l', False, 'External fields: If TRUE, triggers an external magn. field per atom in the first iteration.']),
-                                ('HFIELD', [None, '%f', False, 'External fields: Value of an external magnetic field in the first iteration. Works only with LINIPOL, XINIPOL']),
-                                ('XINIPOL', [None, '%i', False, 'External fields: Integer multiplying the HFIELD per atom']),
-                                ('VCONST', [None, '%f', False, 'External fields: Constant potential shift in the first iteration.']),
-                                # accuracy
-                                ('LMAX', [None, '%i', True, 'Accuracy: Angular momentum cutoff']),
-                                ('BZDIVIDE', [None, '%i %i %i', False, 'Accuracy: Maximal Brillouin zone mesh. Should not violate symmetry (e.g cubic symmetry implies i1=i2=i3; terragonal symmetry in xy implies i1=i2; i1=i2=i3 is always safe.)']),
-                                ('EMIN', [None, '%f', False, 'Accuracy, Valence energy contour: Lower value (in Ryd) for the energy contour']),
-                                ('EMAX', [None, '%f', False, 'Accuracy, Valence energy contour: Maximum value (in Ryd) for the DOS calculation Controls also [NPT2] in some cases']),
-                                ('TEMPR', [None, '%f', False, 'Accuracy, Valence energy contour: Electronic temperature in K.']),
-                                ('NPT1', [None, '%i', False, 'Accuracy, Valence energy contour: Number of energies in the 1st part of the rectangular contour ("going up").']),
-                                ('NPT2', [None, '%i', False, 'Accuracy, Valence energy contour: Number of energies in the 2nd part of the rectangular contour ("going right").']),
-                                ('NPT3', [None, '%i', False, 'Accuracy, Valence energy contour: Number of energies in the 3rd part of the rectangular contour (Fermi smearing part).']),
-                                ('NPOL', [None, '%i', False, 'Accuracy, Valence energy contour: Number of Matsubara poles For DOS calculations, set [NPOL]=0']),
-                                ('EBOTSEMI', [None, '%f', False, 'Accuracy, Semicore energy contour: Bottom of semicore contour in Ryd.']),
-                                ('EMUSEMI', [None, '%f', False, 'Accuracy, Semicore energy contour: Top of semicore contour in Ryd.']),
-                                ('TKSEMI', [None, '%f', False, 'Accuracy, Semicore energy contour: "Temperature" in K controlling height of semicore contour.']),
-                                ('NPOLSEMI', [None, '%i', False, 'Accuracy, Semicore energy contour: Control of height of semicore contour: Im z = (2 * [NPOLSEMI] * pi * kB * [TKSEMI] ) with kB=0.6333659E-5']),
-                                ('N1SEMI', [None, '%i', False, 'Accuracy, Semicore energy contour: Number of energies in first part of semicore contour ("going up").']),
-                                ('N2SEMI', [None, '%i', False, 'Accuracy, Semicore energy contour: Number of energies in second part of semicore contour ("going right").']),
-                                ('N3SEMI', [None, '%i', False, 'Accuracy, Semicore energy contour: Number of energies in third part of semicore contour ("going down").']),
-                                ('FSEMICORE', [None, '%f', False, 'Accuracy, Semicore energy contour: Initial normalization factor for semicore states (approx. 1.).']),
-                                ('CPAINFO', [None, '%f %i', False, 'Accuracy, CPA mode: CPA-error max. tolerance and max. number of CPA-cycle iterations.']),
-                                ('RCLUSTZ', [None, '%f', False, 'Accuracy, Screening clusters: Radius of screening clusters in units of [ALATBASIS], default is 11 Bohr radii.']),
-                                ('RCLUSTXY', [None, '%f', False, 'Accuracy, Screening clusters: If [RCLUSTXY] does not equal [RCLUSTZ] then cylindrical clusters are created with radius [RCLUSTXY] and height [RCLUSTZ].']),
-                                ('<RMTREF>', [None, '%f', False, 'Accuracy, Screening clusters: Muffin tin radius in Bohr radii for each site forming screening clusters. Negative value signals automatic calculation by the code.']),
-                                ('NLEFTHOS', [None, '%i', False, 'Accuracy, Screening clusters 2D mode: The vectors [<RBLEFT>] are repeated i=1,...,[NLEFTHOS] times, shifted by i*[ZPERIODL], for the later formation of screening clusters.']),
-                                ('<RMTREFL>', [None, '%f', False, 'Accuracy, Screening clusters 2D mode: Muffin-tin radius in Bohr radii for each site forming screening clusters in the lower (=left) half-crystal. Negative value signals automatic calculation by the code.']),
-                                ('NRIGHTHO', [None, '%i', False, 'Accuracy, Screening clusters 2D mode: The vectors [<RBRIGHT>] are repeated i=1,...,[NRIGHTHO] times, shifted by i*[ZPERIODR], for the later formation of screening clusters.']),
-                                ('<RMTREFR>', [None, '%f', False, 'Accuracy, Screening clusters 2D mode: Muffin-tin radius in Bohr radii for each site forming screening clusters in the upper (=right) half-crystal. Negative value signals automatic calculation by the code.']),
-                                ('INS', [None, '%i', False, 'Accuracy, Radial solver: Takes values 0 for ASA and 1 for full potential Must be 0 for Munich Dirac solver ([KREL]=2)']),
-                                ('ICST', [None, '%i', False, 'Accuracy, Radial solver: Number of iterations in the radial solver']),
-                                ('R_LOG', [None, '%f', False, 'Accuracy, Radial solver: Radius up to which log-rule is used for interval width. Used in conjunction with runopt NEWSOSOL']),
-                                ('NPAN_LOG', [None, '%i', False, 'Accuracy, Radial solver: Number of intervals from nucleus to [R_LOG] Used in conjunction with runopt NEWSOSOL']),
-                                ('NPAN_EQ', [None, '%i', False, 'Accuracy, Radial solver: Number of intervals from [R_LOG] to muffin-tin radius Used in conjunction with runopt NEWSOSOL']),
-                                ('NCHEB', [None, '%i', False, 'Accuracy, Radial solver: Number of Chebyshev polynomials per interval Used in conjunction with runopt NEWSOSOL']),
-                                ('<FPRADIUS>', [None, '%f', False, 'Accuracy, Radial solver: Full potential limit per atom (in Bohr radii); at points closer to the nucleus, the potential is assumed spherical. Negative values indicate to use values from potential file. Values larger than the muffin tin indicate to use the muffin tin radius.']),
-                                ('RMAX', [None, '%f', True, 'Accuracy, Ewald summation for Madelung potential: Max. radius in [ALATBASIS] for real space Ewald sum']),
-                                ('GMAX', [None, '%f', True, 'Accuracy, Ewald summation for Madelung potential: Max. radius in 2*pi/[ALATBASIS] for reciprocal space Ewald sum']),
-                                ('<LLOYD>', [None, '%i', False, "Accuracy, LLoyd's formula: Set to 1 in order to use Lloyd's formula"]),
-                                ('<DELTAE>', [None, '(%f, %f)', False, "Accuracy, LLoyd's formula: Energy difference for derivative calculation in Lloyd's formula"]),
-                                ('<TOLRDIF>', [None, '%e', False, 'Accuracy, Virtual atoms: For distance between scattering-centers smaller than [<TOLRDIF>], free GF is set to zero. Units are Bohr radii.']),
-                                ('<RMTCORE>', [None, '%f', False, 'Accuracy: Muffin tin radium in Bohr radii for each atom site. This sets the value of RMT used internally in the KKRcode. Needs to be smaller than the touching RMT of the cells. In particular for structure relaxations this should be kept constant.']),
-                                ('NMIN', [None, '%i', False, 'Accuracy: Minimal number of point per shape function panel. Only used by voronoi code in shape function generation.']),
-                                # scf cycle
-                                ('NSTEPS', [None, '%i', False, 'Self-consistency control: Max. number of self-consistency iterations. Is reset to 1 in several cases that require only 1 iteration (DOS, Jij, write out GF).']),
-                                ('IMIX', [None, '%i', False, "Self-consistency control: Mixing scheme for potential. 0 means straignt (linear) mixing, 3 means Broyden's 1st method, 4 means Broyden's 2nd method, 5 means Anderson's method"]),
-                                ('STRMIX', [None, '%f', False, 'Self-consistency control: Linear mixing parameter Set to 0. if [NPOL]=0']),
-                                ('ITDBRY', [None, '%i', False, 'Self-consistency control: how many iterations to keep in the Broyden/Anderson mixing scheme.']),
-                                ('FCM', [None, '%f', False, 'Self-consistency control: Factor for increased linear mixing of magnetic part of potential compared to non-magnetic part.']),
-                                ('BRYMIX', [None, '%f', False, 'Self-consistency control: Parameter for Broyden mixing.']),
-                                ('QBOUND', [None, '%e', False, 'Self-consistency control: Lower limit of rms-error in potential to stop iterations.']),
-                                #code options
-                                ('RUNOPT', [None, '%s%s%s%s%s%s%s%s', False, 'Running and test options: 8-character keywords in a row without spaces between them']),
-                                ('TESTOPT', [None, '%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s', False, 'Running and test options: optional 8-character keywords in a row without spaces between them plus a secod row of the same.']),
-                                #file names
-                                ('FILES', [None, '%s', False, 'Name of potential and shapefun file (list of two strings, empty string will set back to default of the one file that is supposed to be changed)']),
-                                # special options
-                                ('JIJRAD', [None, '%f', False, 'Radius in alat which defines the cutoff for calcultion of Jij pairs']),
-                                ('JIJRADXY', [None, '%f', False, 'use a cylindical cluster in which Jij pairs are searched for']),
-                                ('JIJSITEI', [None, '%i', False, 'allow for the selection of specific sites in i in the unit cell, which should be considered in the calculation (default: all sites)']),
-                                ('JIJSITEJ', [None, '%i', False, 'allow for the selection of specific sites in j in the unit cell, which should be considered in the calculation (default: all sites)']),
-                                ('EFSET', [None, '%f', False, 'Set Fermi level of jellium starting potential generated by voronoi to this value. Only used by voronoi code.']),
-                                # array dimensions
-                                ('NSHELD', [None, '%i', False, 'Array dimension: number of shells (default: 300)']),
-                                ('IEMXD', [None, '%i', False, 'Array dimension: number of energy points (default: 101)']),
-                                ('IRID', [None, '%i', False, 'Array dimension: number of radial points']),
-                                ('IPAND', [None, '%i', False, 'Array dimension: number of shapefunction panels']),
-                                ])
+        default_keywords = self._DEFAULT_KEYWORDS_KKR
 
         for key in kwargs:
             key2 = self._add_brackets_to_key(key, default_keywords)
@@ -1157,38 +1196,7 @@ class kkrparams(object):
         Like create_keywords_dict but for changed keys of impurity code
         """
 
-        default_keywords = dict([# complete list of keywords, detault all that are not mandatory to None
-                                # chemistry
-                                ('NSPIN', [None, '%i', False, 'Chemistry, Atom types: Number of spin directions in potential. Values 1 or 2']),
-                                ('KVREL', [None, '%i', False, 'Chemistry, Atom types: Relativistic treatment of valence electrons. Takes values 0 (Schroedinger), 1 (Scalar relativistic), 2 (Dirac ; works only in ASA mode)']),
-                                ('XC', [None, '%s', False, 'Chemistry, Exchange-correlation: Type of exchange correlation potential. Takes values 0 (LDA, Moruzzi-Janak-Williams), 1 (LDA, von Barth-Hedin), 2 (LDA, Vosko-Wilk-Nussair), 3 (GGA, Perdew-Wang 91), 4 (GGA, PBE), 5 (GGA, PBEsol)']),
-                                # external fields
-                                ('HFIELD', [None, '%f %i', False, 'External fields: Value of an external magnetic field in the first iteration. Works only with LINIPOL, XINIPOL']),
-                                # accuracy
-                                ('INS', [None, '%i', False, 'Accuracy, Radial solver: Takes values 0 for ASA and 1 for full potential Must be 0 for Munich Dirac solver ([KREL]=2)']),
-                                ('ICST', [None, '%i', False, 'Accuracy, Radial solver: Number of iterations in the radial solver']),
-                                ('RADIUS_LOGPANELS', [None, '%f', False, 'Accuracy, Radial solver: Radius up to which log-rule is used for interval width. Used in conjunction with runopt NEWSOSOL']),
-                                ('NPAN_LOG', [None, '%i', False, 'Accuracy, Radial solver: Number of intervals from nucleus to [R_LOG] Used in conjunction with runopt NEWSOSOL']),
-                                ('NPAN_EQ', [None, '%i', False, 'Accuracy, Radial solver: Number of intervals from [R_LOG] to muffin-tin radius Used in conjunction with runopt NEWSOSOL']),
-                                ('NCHEB', [None, '%i', False, 'Accuracy, Radial solver: Number of Chebyshev polynomials per interval Used in conjunction with runopt NEWSOSOL']),
-                                ('NPAN_LOGPANELFAC', [None, '%i', False, 'Accuracy, Radial solver: division factor logpanel']),
-                                ('RADIUS_MIN', [None, '%i', False, 'Accuracy, Radial solver: ']),
-                                ('NCOLL', [None, '%i', False, 'Accuracy, Radial solver: use nonco_angles solver (1/0)']),
-                                ('SPINORBIT', [None, '%i', False, 'Accuracy, Radial solver: use SOC solver (1/0)']),
-                                # scf cycle
-                                ('SCFSTEPS', [None, '%i', False, 'Self-consistency control: Max. number of self-consistency iterations. Is reset to 1 in several cases that require only 1 iteration (DOS, Jij, write out GF).']),
-                                ('IMIX', [None, '%i', False, "Self-consistency control: Mixing scheme for potential. 0 means straignt (linear) mixing, 3 means Broyden's 1st method, 4 means Broyden's 2nd method, 5 means Anderson's method"]),
-                                ('MIXFAC', [None, '%f', False, 'Self-consistency control: Linear mixing parameter Set to 0. if [NPOL]=0']),
-                                ('ITDBRY', [None, '%i', False, 'Self-consistency control: how many iterations to keep in the Broyden/Anderson mixing scheme.']),
-                                ('BRYMIX', [None, '%f', False, 'Self-consistency control: Parameter for Broyden mixing.']),
-                                ('QBOUND', [None, '%e', False, 'Self-consistency control: Lower limit of rms-error in potential to stop iterations.']),
-                                #code options
-                                ('RUNFLAG', [None, '%s', False, 'Running and test options: lmdos	, GBULKtomemory, LDA+U	, SIMULASA']),
-                                ('TESTFLAG', [None, '%s', False, 'Running and test options: tmatnew, noscatteringmoment']),
-                                ('CALCFORCE', [None, '%i', False, 'Calculate forces']),
-                                ('CALCJIJMAT', [None, '%i', False, 'Calculate Jijmatrix']),
-                                ('CALCORBITALMOMENT', [None, '%i', False, 'Calculate orbital moment (SOC solver only, 0/1)']),
-                                ])
+        default_keywords = self._DEFAULT_KEYS_KKRIMP
 
         for key in kwargs:
             key2 = self._add_brackets_to_key(key, default_keywords)
@@ -1223,7 +1231,7 @@ class kkrparams(object):
 
     def items(self):
         """make kkrparams.items() work"""
-        return self.get_dict().items()
+        return list(self.get_dict().items())
 
 
     def change_XC_val_kkrimp(self, val):
