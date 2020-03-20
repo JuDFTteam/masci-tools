@@ -742,15 +742,16 @@ class kkrparams(object):
             if key not in sorted_keylist:
                 sorted_keylist += [key]
 
-        # ensure high enough precision in inputcard writeout
+        # set accuracy of float writeouts
+        # ensure high enough precision in inputcard writeout, limit to 12 places everything else is overkill
         for key in list(keyfmts.keys()):
-            keyfmts[key] = keyfmts[key].replace('%f', '%21.14f')
+            keyfmts[key] = keyfmts[key].replace('%f', '%21.12f')
 
         # write all set keys to file
         tmpl = ''
         for key in sorted_keylist:
             if keywords[key] is not None:
-                #print(key)
+                # go through different formatting options (first normal case then special cases)
                 if (not key in list(self.__listargs.keys())) and (not key in self.__special_formatting):
                     tmpfmt = (keyfmts[key]).replace('%l', '%s')
                     try:
@@ -766,7 +767,7 @@ class kkrparams(object):
                     tmpl += '%s= %s\n'%(key, repltxt)
                 elif key == 'BRAVAIS':
                     self.values[key] = array(self.values[key])
-                    tmpl += ('BRAVAIS\n'+self.__format[key]+'\n')%(self.values[key][0, 0], self.values[key][0, 1], self.values[key][0, 2],
+                    tmpl += ('BRAVAIS\n'+keyfmts[key]+'\n')%(self.values[key][0, 0], self.values[key][0, 1], self.values[key][0, 2],
                                                                    self.values[key][1, 0], self.values[key][1, 1], self.values[key][1, 2],
                                                                    self.values[key][2, 0], self.values[key][2, 1], self.values[key][2, 2])
                 elif key == 'RUNOPT':
@@ -800,7 +801,7 @@ class kkrparams(object):
                 elif key == 'XINIPOL':
                     tmpl += '%s='%key
                     for ival in range(len(self.values[key])):
-                        tmpl += (' %s'%self.__format[key])%self.values[key][ival]
+                        tmpl += (' %s'%keyfmts[key])%self.values[key][ival]
                     tmpl += '\n'
                 elif key == 'FILES':
                     files_changed = 0
@@ -820,7 +821,8 @@ class kkrparams(object):
                         tmpl += '\n'
                         tmpl += '%s\n'%self.values[key][1]
                         tmpl += 'scoef\n'
-                elif self.__params_type == 'kkrimp' and key == 'RUNFLAG' or key == 'TESTFLAG': # for kkrimp
+                elif self.__params_type == 'kkrimp' and key == 'RUNFLAG' or key == 'TESTFLAG':
+                    # for kkrimp
                     ops = keywords[key]
                     tmpl += key+'='
                     for iop in range(len(ops)):
@@ -828,27 +830,28 @@ class kkrparams(object):
                         tmpl += ' ' + repltxt
                     tmpl += '\n'
                 elif key in list(self.__listargs.keys()):
+                    # keys that have array values
                     if key in ['<RBASIS>', '<RBLEFT>', '<RBRIGHT>']: # RBASIS needs special formatting since three numbers are filled per line
                         tmpl += '%s\n'%key
                         for ival in range(self.__listargs[key]):
-                            tmpl += (self.__format[key]+'\n')%(self.values[key][ival][0], self.values[key][ival][1], self.values[key][ival][2])
+                            tmpl += (keyfmts[key]+'\n')%(self.values[key][ival][0], self.values[key][ival][1], self.values[key][ival][2])
                     elif key in ['CPAINFO', '<DELTAE>']:
                         tmpl += '%s= '%key
-                        tmpl += (self.__format[key]+'\n')%(self.values[key][0], self.values[key][1])
+                        tmpl += (keyfmts[key]+'\n')%(self.values[key][0], self.values[key][1])
                     elif key in ['BZDIVIDE', 'ZPERIODL', 'ZPERIODR']:
                         tmpl += '%s= '%key
-                        tmpl += (self.__format[key]+'\n')%(self.values[key][0], self.values[key][1], self.values[key][2])
+                        tmpl += (keyfmts[key]+'\n')%(self.values[key][0], self.values[key][1], self.values[key][2])
                     elif key in ['LDAU_PARA']:
                         tmpl += '%s= '%key
-                        tmpl += (self.__format[key]+'\n')%(self.values[key][0], self.values[key][1], self.values[key][2], self.values[key][3], self.values[key][4])
+                        tmpl += (keyfmts[key]+'\n')%(self.values[key][0], self.values[key][1], self.values[key][2], self.values[key][3], self.values[key][4])
                     elif self.__params_type == 'kkrimp' and key in ['HFIELD']: # for kkrimp
                         tmpl += '%s= '%key
-                        tmpl += (self.__format[key]+'\n')%(self.values[key][0], self.values[key][1])
+                        tmpl += (keyfmts[key]+'\n')%(self.values[key][0], self.values[key][1])
                     else:
                         #print(key, self.__listargs[key], len(self.values[key]))
                         tmpl += '%s\n'%key
                         for ival in range(self.__listargs[key]):
-                            tmpl += (self.__format[key]+'\n')%(self.values[key][ival])
+                            tmpl += (keyfmts[key]+'\n')%(self.values[key][ival])
                 else:
                     print('Error trying to write keyword %s but writing failed!'%key)
                     raise ValueError
