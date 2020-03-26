@@ -17,7 +17,7 @@ __copyright__ = (u"Copyright (c), 2018, Forschungszentrum Jülich GmbH,"
                  "IAS-1/PGI-1, Germany. All rights reserved.")
 __license__ = "MIT license, see LICENSE.txt file"
 __contributors__ = (u"Philipp Rüßmann")
-__version__ = 1.2
+__version__ = 1.3
 
 ####################################################################################
 
@@ -58,7 +58,7 @@ def check_voronoi_output(potfile, outfile, delta_emin_safety=0.1):
     return emin_guess, e_core_max.max()
 
 
-def parse_voronoi_output(out_dict, outfile, potfile, atominfo, radii, inputfile):
+def parse_voronoi_output(out_dict, outfile, potfile, atominfo, radii, inputfile, debug=False):
     """
     Parse output of voronoi calculation and return (success, error_messages_list, out_dict)
     """
@@ -75,6 +75,7 @@ def parse_voronoi_output(out_dict, outfile, potfile, atominfo, radii, inputfile)
     except:
         msg = "Error parsing output of voronoi: Version Info"
         msg_list.append(msg)
+        if debug: traceback.print_exc()
 
     try:
         emin, e_core_max = check_voronoi_output(potfile, outfile)
@@ -88,6 +89,7 @@ def parse_voronoi_output(out_dict, outfile, potfile, atominfo, radii, inputfile)
     except:
         msg = "Error parsing output of voronoi: 'EMIN'"
         msg_list.append(msg)
+        if debug: traceback.print_exc()
 
     # parse
     try:
@@ -101,6 +103,7 @@ def parse_voronoi_output(out_dict, outfile, potfile, atominfo, radii, inputfile)
     except:
         msg = "Error parsing output of voronoi: core_states"
         msg_list.append(msg)
+        if debug: traceback.print_exc()
 
     try:
         Ncls, natom,  results = get_cls_info(outfile)
@@ -120,12 +123,14 @@ def parse_voronoi_output(out_dict, outfile, potfile, atominfo, radii, inputfile)
     except:
         msg = "Error parsing output of voronoi: Cluster Info"
         msg_list.append(msg)
+        if debug: traceback.print_exc()
 
     try:
         out_dict['start_from_jellium_potentials'] = startpot_jellium(outfile)
     except:
         msg = "Error parsing output of voronoi: Jellium startpot"
         msg_list.append(msg)
+        if debug: traceback.print_exc()
 
     try:
         natyp, naez, shapes = get_shape_array(outfile, atominfo)
@@ -133,6 +138,7 @@ def parse_voronoi_output(out_dict, outfile, potfile, atominfo, radii, inputfile)
     except:
         msg = "Error parsing output of voronoi: SHAPE Info"
         msg_list.append(msg)
+        if debug: traceback.print_exc()
 
     try:
         Vtot, results = get_volumes(outfile)
@@ -150,6 +156,7 @@ def parse_voronoi_output(out_dict, outfile, potfile, atominfo, radii, inputfile)
     except:
         msg = "Error parsing output of voronoi: Volume Info"
         msg_list.append(msg)
+        if debug: traceback.print_exc()
 
     try:
         results = get_radii(naez, radii)
@@ -168,6 +175,7 @@ def parse_voronoi_output(out_dict, outfile, potfile, atominfo, radii, inputfile)
     except:
         msg = "Error parsing output of voronoi: radii.dat Info"
         msg_list.append(msg)
+        if debug: traceback.print_exc()
 
     try:
         results = get_fpradius(naez, atominfo)
@@ -176,6 +184,7 @@ def parse_voronoi_output(out_dict, outfile, potfile, atominfo, radii, inputfile)
     except:
         msg = "Error parsing output of voronoi: full potential radius"
         msg_list.append(msg)
+        if debug: traceback.print_exc()
 
     try:
         result = get_alat(inputfile)
@@ -184,6 +193,7 @@ def parse_voronoi_output(out_dict, outfile, potfile, atominfo, radii, inputfile)
     except:
         msg = "Error parsing output of voronoi: alat"
         msg_list.append(msg)
+        if debug: traceback.print_exc()
 
     try:
         result = get_radial_meshpoints(potfile)
@@ -191,6 +201,7 @@ def parse_voronoi_output(out_dict, outfile, potfile, atominfo, radii, inputfile)
     except:
         msg = "Error parsing output of voronoi: radial meshpoints"
         msg_list.append(msg)
+        if debug: traceback.print_exc()
 
     # some consistency checks comparing lists with natyp/naez numbers
     #TODO implement checks
