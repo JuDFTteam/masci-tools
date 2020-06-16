@@ -19,6 +19,7 @@ import math
 import numpy as np
 import pandas as pd
 import json
+import six
 from bokeh.models import (ColumnDataSource, LinearColorMapper,
                           LogColorMapper, ColorBar, BasicTicker, Title, Legend)
 from bokeh.layouts import gridplot
@@ -71,7 +72,7 @@ def get_colormap(colormap, N_cols):
         colormap = colormap[:N_cols]
     else:
         raise ValueError(
-            "<colormap> can onyl be None, a name of a colorpalette as string( see "
+            "<colormap> can only be None, a name of a colorpalette as string( see "
             "https://bokeh.pydata.org/en/latest/docs/reference/palettes.html ) or a list/tuple of colors."
         )
 
@@ -79,7 +80,9 @@ def get_colormap(colormap, N_cols):
 
 
 def prepare_plot(data, figure_options):
-    """da"""
+    """
+    used to set some default options.
+    """
 
     # get updated default figure option, data from columns
     figure_options_defaults = {
@@ -100,11 +103,12 @@ def prepare_plot(data, figure_options):
 
 
 ##################################### general plots ##########################
+
 tooltips_def_scatter = [("X value", "@x"),
                         ("Y value", "@y")]
 
 
-def bokeh_scatter(source, xdata='x', ydata='y', figure=None,
+def bokeh_scatter(source, xdata='x', ydata='y', figure=None, scale=['linear', 'linear'],
                   xlabel='x', ylabel='y', legend_labels=None,
                   title='', outfilename='scatter.html', tools="hover", tooltips=tooltips_def_scatter,
                   toolbar_location=None, background_fill_color="#ffffff",
@@ -117,22 +121,31 @@ def bokeh_scatter(source, xdata='x', ydata='y', figure=None,
     # create figure if needed
 
     if figure is None:
-        p = bokeh_fig(title=title, tools=tools,
-                      tooltips=tooltips, **figure_kwargs)
+        fig_kwargs = {'title': title, 'tools': tools, 'y_axis_type': scale[1],
+                      'x_axis_type': scale[0], 'tooltips': tooltips, 'toolbar_location' : toolbar_location}
+        fig_kwargs.update(figure_kwargs)
+        p = bokeh_fig(**fig_kwargs)
     else:
         p = figure
         if background_fill_color is not None:
             p.background_fill_color = background_fill_color
         if title is not None:
             p.title = Title(text=title)
-        if xlabel is not None:
-            p.xaxis.axis_label = xlabel
-        if ylabel is not None:
-            p.yaxis.axis_label = ylabel
+    if xlabel is not None:
+        p.xaxis.axis_label = xlabel
+    if ylabel is not None:
+        p.yaxis.axis_label = ylabel
+
+    p.yaxis.axis_line_width = 2
+    p.xaxis.axis_line_width = 2
+    p.xaxis.axis_label_text_font_size = '18pt'
+    p.yaxis.axis_label_text_font_size = '18pt'
+    p.yaxis.major_label_text_font_size = '16pt'
+    p.xaxis.major_label_text_font_size = '16pt'
 
     # choose color map
     # draw scatter plot
-    p.scatter(x=xdata, y=ydata, source=source, legend="Hide/Show", **kwargs)
+    p.scatter(x=xdata, y=ydata, source=source, **kwargs)
 
     # source.plot_bokeh.scatter(x='pt_number', y='mean', category='mean', colormap='Plasma', show_figure=False
     if show:
@@ -212,14 +225,14 @@ def bokeh_line(source, xdata=['x'], ydata=['y'], figure=None, scale=['linear', '
                     xdat = xdata[0]
                 source.append(ColumnDataSource({'x': xdat, 'y': ydata}))
         else:
-            raise ValueError("If no source dataframe or CoulumnData is given, ydata has to be a list"
+            raise ValueError("If no source dataframe or ColumnData is given, ydata has to be a list"
                              " of lists, not of type: {}".format(type(ydata[0])))
     else:
         xdatad = xdata
         ydatad = ydata
 
     # draw line plot
-    # dataframe and column data source expect all entries to be same length... :-(
+    # dataframe and column data source expect all entries to be same length...
     # therefore we parse data to plot routines directly... might make other things harder
     legitems = []
 
@@ -412,7 +425,7 @@ def periodic_table_plot(
     # source["c_value"] = color_values
 
     if include_legend:
-        # we copy the Be entry and display it with some text again at onother spot
+        # we copy the Be entry and display it with some text again at another spot
         be = source1[3:4].copy()
         be["group"] = '7'
         # print(be)
@@ -504,6 +517,9 @@ def periodic_table_plot(
 
     return p
 
+
+
+######## a 2d matrix plot ##########
 
 ######### plot convergence results plot ########
 
@@ -696,8 +712,11 @@ def plot_convex_hull2d(hull, title='Convex Hull',  xlabel='Atomic Procentage', y
                        limits=[None, None], scale=[None, None], axis=None, color='k', color_line='k',
                        linewidth=2, markersize=8, marker_hull='o', markersize_hull=8, **kwargs):
     """
-    Plot method for a 2d convex hull diagramm
+    Plot method for a 2d convex hull diagram
 
     :param hull: scipy.spatial.ConvexHull
     """
     pass
+
+
+
