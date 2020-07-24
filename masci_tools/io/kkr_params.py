@@ -18,7 +18,7 @@ Also some defaults for the parameters are defined.
 __copyright__ = ("Copyright (c), 2017, Forschungszentrum Jülich GmbH,"
                  "IAS-1/PGI-1, Germany. All rights reserved.")
 __license__ = "MIT license, see LICENSE.txt file"
-__version__ = "1.8.3"
+__version__ = "1.8.4"
 __contributors__ = "Philipp Rüßmann"
 
 
@@ -194,6 +194,8 @@ class kkrparams(object):
             ('ITDBRY', [None, '%i', False, 'Self-consistency control: how many iterations to keep in the Broyden/Anderson mixing scheme.']),
             ('BRYMIX', [None, '%f', False, 'Self-consistency control: Parameter for Broyden mixing.']),
             ('QBOUND', [None, '%e', False, 'Self-consistency control: Lower limit of rms-error in potential to stop iterations.']),
+            ('QBOUND_LDAU', [None, '%e', False, 'Self-consistency control: Lower limit of rms-error for LDA+U potential.']),
+            ('NSIMPLEMIXFIRST', [None, '%i', False, 'Self-consistency control: Number of simple mixing steps to do before starting more aggressive mixing scheme (only has effect for IMIX>3).']),
             #code options
             ('RUNFLAG', [None, '%s', False, 'Running and test options: lmdos	, GBULKtomemory, LDA+U	, SIMULASA']),
             ('TESTFLAG', [None, '%s', False, 'Running and test options: tmatnew, noscatteringmoment']),

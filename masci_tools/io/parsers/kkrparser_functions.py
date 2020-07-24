@@ -20,7 +20,7 @@ __copyright__ = (u"Copyright (c), 2017, Forschungszentrum Jülich GmbH,"
                  "IAS-1/PGI-1, Germany. All rights reserved.")
 __license__ = "MIT license, see LICENSE.txt file"
 __contributors__ = u"Philipp Rüßmann"
-__version__ = "1.6"
+__version__ = "1.7"
 
 ####################################################################################
 
@@ -197,7 +197,7 @@ def get_econt_info(outfile_0init):
         Npol = int(tmptxt[itmp].split('=')[1].split()[0])
         # npt1, npt2, npt3
         itmp = search_string('contour:', tmptxt)
-        tmp = tmptxt[itmp].replace(',','').split(':')[1].split()
+        tmp = tmptxt[itmp].replace(',','').replace('=','= ').split(':')[1].split()
         N1 = int(tmp[2])
         N2 = int(tmp[5])
         N3 = int(tmp[8])
@@ -423,7 +423,7 @@ def get_spinmom_per_atom(outfile, natom, nonco_out_file=None):
 
     # if the file is there, i.e. NEWSOSOL is used, then extract also direction of spins (angles theta and phi)
     if nonco_out_file is not None and result != []:
-        angles = loadtxt(nonco_out_file)
+        angles = loadtxt(nonco_out_file, usecols=[0,1]) # make sure only theta and phi are read in
         if len(shape(angles))==1:
             angles = array([angles])
         vec = angles_to_vec(result[-1], angles[:,0], angles[:,1])

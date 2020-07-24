@@ -8,7 +8,7 @@ def dispersionplot(p0='./', totonly=True, s=20, ls_ef= ':', lw_ef=1, units='eV_r
                    color='', reload_data=False, clrbar=True, logscale=True, nosave=False, atoms=[],
                    ratios=False, atoms2=[], noscale=False, newfig=False, cmap=None, alpha=1.0,
                    qcomponent=-2, clims=[], xscale=1., raster=True, atoms3=[], alpha_reverse=False,
-                   return_data=False, xshift=0, yshift=0, plotmode='pcolor', ptitle=None, ef=None,
+                   return_data=False, xshift=0., yshift=0., plotmode='pcolor', ptitle=None, ef=None,
                    as_e_dimension=None, scale_alpha_data=False):
     """ plotting routine for qdos files - dispersion (E vs. q) """
     # import dependencies

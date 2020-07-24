@@ -428,7 +428,7 @@ class KkrimpParserFunctions(object):
             if debug: traceback.print_exc()
 
         try:
-            if nspin>1:
+            if nspin>1 and newsosol:
                 #result, vec, angles = get_spinmom_per_atom(outfile, natom, nonco_out_file)
                 spinmom_atom, spinmom_atom_vec_all_iter, spin_tot_abs  = self._get_spinmom_per_atom(files['out_spinmoms'], natom)
                 if len(result)>0:
