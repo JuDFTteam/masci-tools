@@ -12,4 +12,4 @@
 '''
 masci-tools
 '''
-__version__ = "0.3.12-dev4"
+__version__ = "0.3.12-dev5"

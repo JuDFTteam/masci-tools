@@ -12,35 +12,35 @@ from masci_tools.io.common_functions import (get_corestates_from_potential, get_
                                              get_version_info, get_Ry2eV, get_ef_from_potfile, open_general, convert_to_pystd)
 from masci_tools.io.parsers.kkrparser_functions import get_core_states
 from six.moves import range
+import numpy as np
+import traceback
 
 __copyright__ = (u"Copyright (c), 2018, Forschungszentrum Jülich GmbH,"
                  "IAS-1/PGI-1, Germany. All rights reserved.")
 __license__ = "MIT license, see LICENSE.txt file"
 __contributors__ = (u"Philipp Rüßmann")
-__version__ = 1.3
+__version__ = 1.4
 
 ####################################################################################
 
 def get_valence_min(outfile='out_voronoi'):
     """Construct minimum of energy contour (between valence band bottom and core states)"""
-    from numpy import array
     f = open_general(outfile)
     with f: # make sure the file is properly closed
         txt = f.readlines()
         searchstr = 'All other states are above'
-        valence_minimum = array([float(line.split(':')[1].split()[0]) for line in txt if searchstr in line])
+        valence_minimum = np.array([float(line.split(':')[1].split()[0]) for line in txt if searchstr in line])
     return valence_minimum
 
 
 def check_voronoi_output(potfile, outfile, delta_emin_safety=0.1):
     """Read output from voronoi code and create guess of energy contour"""
-    from numpy import zeros
     #analyse core levels, minimum of valence band and their difference
     ncore, ecore, lcore = get_corestates_from_potential(potfile=potfile)
     e_val_min = get_valence_min(outfile=outfile)
 
     #print a table that summarizes the result
-    e_core_max = zeros(len(ncore))
+    e_core_max = np.zeros(len(ncore))
     print('pot    Highest core-level     low. val. state    diff')
     for ipot in range(len(ncore)):
         if ncore[ipot] > 0:
