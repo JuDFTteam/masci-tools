@@ -459,7 +459,7 @@ schema_dict = {'attrib_paths': {'Gmax': '/fleurInput/calculationSetup/cutoffs/@G
                   'spgrp': 'string',
                   'spinDown': 'string',
                   'spinUp': 'string',
-                  'spinf': 'float',
+                  'spinf': ['float', 'string'],
                   'sso_opt': 'string',
                   'star': 'switch',
                   'state': 'string',

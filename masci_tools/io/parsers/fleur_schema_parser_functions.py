@@ -46,6 +46,9 @@ def get_parent_fleur_type(elem,namespaces,stop_sequence=False):
         parent_type = remove_xsd_namespace(parent.tag,namespaces)
     return parent
 
+def get_root_tag(xmlschema,namespaces):
+    return xmlschema.xpath('/xsd:schema/xsd:element/@name',namespaces=namespaces)[0]
+
 def analyse_type_elem(xmlschema,namespaces,type_elem,base_types, convert_to_base=True):
 
     possible_base_types = []
@@ -130,14 +133,14 @@ def analyse_type(xmlschema,namespaces,type_name,base_types,convert_to_base=True)
 
     return analyse_type_elem(xmlschema,namespaces,type_elem,base_types,convert_to_base=convert_to_base)
 
-def get_xpath(xmlschema,namespaces,tag_name,contains=None,enforce_end_type=None,stop_non_unique=False):
+def get_xpath(xmlschema,namespaces,tag_name,enforce_end_type=None,stop_non_unique=False):
     """
     construct all possible simple xpaths to a given tag
     """
 
     possible_paths = []
 
-    root_tag = 'fleurInput'
+    root_tag = get_root_tag(xmlschema,namespaces)
     if tag_name == root_tag:
         return f'/{root_tag}'
 
@@ -166,13 +169,6 @@ def get_xpath(xmlschema,namespaces,tag_name,contains=None,enforce_end_type=None,
             possible_paths_tag = [possible_paths_tag]
         for tagpath in possible_paths_tag:
             possible_paths.append(f'{tagpath}/{tag_name}')
-    
-    #Remove paths that do not meet the requirement from contains
-    if contains is not None:
-        possible_paths_copy = possible_paths.copy()
-        for xpath in possible_paths_copy:
-            if contains not in xpath:
-                possible_paths.remove(xpath)
     
     if len(possible_paths) > 1:
         return possible_paths
@@ -241,7 +237,6 @@ def get_sequence_order(sequence_elem,namespaces):
 def extract_attribute_types(xmlschema,namespaces, **kwargs):
     """
     Determine the required type of all attributes
-    TODO: What to do with types like numbands (they are classified as string here, but do we want some flexibility there)
     """
     possible_attrib = xmlschema.xpath("//xsd:attribute", namespaces=namespaces)
 
@@ -252,7 +247,9 @@ def extract_attribute_types(xmlschema,namespaces, **kwargs):
         name_attrib = attrib.attrib['name']
         type_attrib = attrib.attrib['type']
 
-        types_dict[name_attrib] = []
+        if name_attrib not in types_dict:
+            types_dict[name_attrib] = []
+
         type_found = False
         for base_type, type_names in base_types.items():
             if type_attrib in type_names:
@@ -270,13 +267,15 @@ def extract_attribute_types(xmlschema,namespaces, **kwargs):
                         types_dict[name_attrib].append(base_type)
             else:
                 print(f'Unsorted type:{type_attrib}')
-
         if 'string' in types_dict[name_attrib]:
             #This makes sure that string is always the last element (for cascading conversion)
             types_dict[name_attrib].remove('string')
             types_dict[name_attrib].append('string')
-        if len(types_dict[name_attrib]) == 1:
-            types_dict[name_attrib] = types_dict[name_attrib][0]
+
+    #For unambiguously defined types only return the element
+    for key, value in types_dict.items():
+        if len(types_dict[key]) == 1:
+            types_dict[key] = value[0]
 
     return types_dict
 
