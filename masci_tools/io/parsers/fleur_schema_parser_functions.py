@@ -46,7 +46,7 @@ def get_parent_fleur_type(elem,namespaces,stop_sequence=False):
         parent_type = remove_xsd_namespace(parent.tag,namespaces)
     return parent
 
-def analyse_type_elem(xmlschema,namespaces,type_elem,base_types, return_base=False):
+def analyse_type_elem(xmlschema,namespaces,type_elem,base_types, convert_to_base=True):
 
     possible_base_types = []
 
@@ -62,8 +62,8 @@ def analyse_type_elem(xmlschema,namespaces,type_elem,base_types, return_base=Fal
             base_type_list = child.attrib['memberTypes'].split(' ')
         if child_type == 'extension':
             base_type_list = [child.attrib['base']]
-        else:
-            possible_base_types_new = analyse_type_elem(xmlschema,namespaces,child,base_types,return_base=True)
+        elif child_type == 'union' or child_type == 'simpleType':
+            possible_base_types_new = analyse_type_elem(xmlschema,namespaces,child,base_types,convert_to_base=False)
             for base_type in possible_base_types_new:
                 if base_type not in possible_base_types:
                     possible_base_types.append(base_type)
@@ -76,7 +76,7 @@ def analyse_type_elem(xmlschema,namespaces,type_elem,base_types, return_base=Fal
                     if base_type in type_names:
                         is_base = True
                 if not is_base: #We need to go deeper
-                    possible_base_types_new = analyse_type(xmlschema,namespaces,base_type,base_types,array_return=True)
+                    possible_base_types_new = analyse_type(xmlschema,namespaces,base_type,base_types,convert_to_base=False)
                     for base_type in possible_base_types_new:
                         if base_type not in possible_base_types:
                             possible_base_types.append(base_type)
@@ -84,21 +84,13 @@ def analyse_type_elem(xmlschema,namespaces,type_elem,base_types, return_base=Fal
                     if base_type not in possible_base_types:
                         possible_base_types.append(base_type)
 
-    if return_base:
-        return possible_base_types
-    else:
+    if convert_to_base:
         for index,possible_type in enumerate(possible_base_types):
             for base_type, type_names in base_types.items():
                 if possible_type in type_names:
-                    type_found = True
                     possible_base_types[index] = base_type
-        if len(possible_base_types) == 1:
-            return possible_base_types[0]
-        else:
-            if 'string' in possible_base_types:
-                return 'string'
-            else:
-                raise ValueError('Not supported')
+
+    return possible_base_types
 
 def get_length(xmlschema,namespaces,type_name):
 
@@ -127,7 +119,7 @@ def get_length(xmlschema,namespaces,type_name):
 
     return None
 
-def analyse_type(xmlschema,namespaces,type_name,base_types,array_return=False):
+def analyse_type(xmlschema,namespaces,type_name,base_types,convert_to_base=True):
 
     type_elem = xmlschema.xpath(f"//xsd:simpleType[@name='{type_name}']",namespaces=namespaces)
     if len(type_elem) == 0:
@@ -136,7 +128,7 @@ def analyse_type(xmlschema,namespaces,type_name,base_types,array_return=False):
             return None
     type_elem = type_elem[0]
 
-    return analyse_type_elem(xmlschema,namespaces,type_elem,base_types,return_base=array_return)
+    return analyse_type_elem(xmlschema,namespaces,type_elem,base_types,convert_to_base=convert_to_base)
 
 def get_xpath(xmlschema,namespaces,tag_name,contains=None,enforce_end_type=None,stop_non_unique=False):
     """
@@ -256,32 +248,36 @@ def extract_attribute_types(xmlschema,namespaces, **kwargs):
     base_types = get_base_types()
 
     types_dict = {}
-    types_dict['switch'] = []
-    types_dict['int'] = []
-    types_dict['float'] = []
-    types_dict['string'] = []
-    types_dict['other'] = []
     for attrib in possible_attrib:
         name_attrib = attrib.attrib['name']
         type_attrib = attrib.attrib['type']
 
+        types_dict[name_attrib] = []
         type_found = False
         for base_type, type_names in base_types.items():
             if type_attrib in type_names:
                 type_found = True
-                if name_attrib not in types_dict[base_type]:
-                    types_dict[base_type].append(name_attrib)
+                if base_type not in types_dict[name_attrib]:
+                    types_dict[name_attrib].append(base_type)
 
         if not type_found:
-            base_type = analyse_type(xmlschema,namespaces,type_attrib,base_types)
-            print(f'{type_attrib}: {base_type}')
-            if base_type is not None:
-                if name_attrib not in types_dict[base_type]:
-                    types_dict[base_type].append(name_attrib)
+            possible_types = analyse_type(xmlschema,namespaces,type_attrib,base_types)
+            print(f'{type_attrib}: {possible_types}')
+
+            if possible_types is not None:
+                for base_type in possible_types:
+                    if base_type not in types_dict[name_attrib]:
+                        types_dict[name_attrib].append(base_type)
             else:
-                if name_attrib not in types_dict['other']:
-                    types_dict['other'].append(name_attrib)
                 print(f'Unsorted type:{type_attrib}')
+
+        if 'string' in types_dict[name_attrib]:
+            #This makes sure that string is always the last element (for cascading conversion)
+            types_dict[name_attrib].remove('string')
+            types_dict[name_attrib].append('string')
+        if len(types_dict[name_attrib]) == 1:
+            types_dict[name_attrib] = types_dict[name_attrib][0]
+
     return types_dict
 
 def get_tag_paths(xmlschema,namespaces, **kwargs):
@@ -339,29 +335,24 @@ def get_basic_elements(xmlschema,namespaces, **kwargs):
         type_elem = elem.attrib['type']
 
         is_base = False
-        for base_type_name, type_names in base_types.items():
+        for base_type, type_names in base_types.items():
             if type_elem in type_names:
                 is_base = True
-                base_type = [base_type_name]
+                possible_types = [base_type]
 
         if not is_base:
-            base_type = analyse_type(xmlschema,namespaces,type_elem,base_types,array_return=True)
+            possible_types = analyse_type(xmlschema,namespaces,type_elem,base_types)
 
-        if base_type is None:
+        if possible_types is None:
             continue
-
-        for index,possible_type in enumerate(base_type):
-            for base_type_name, type_names in base_types.items():
-                if possible_type in type_names:
-                    base_type[index] = base_type_name
 
         length = get_length(xmlschema,namespaces,type_elem)
 
         new_dict = {}
-        if len(base_type) == 1:
-            new_dict['type'] = base_type[0]
+        if len(possible_types) == 1:
+            new_dict['type'] = possible_types[0]
         else:
-           new_dict['type'] = base_type
+           new_dict['type'] = possible_types
         if length is not None:
             new_dict['length'] = length
         else:
