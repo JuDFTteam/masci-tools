@@ -10,7 +10,7 @@ import importlib.util
 def get_base_types():
     base_types = {}
 
-    #These types should not be reduced further and are associated with one base type
+    #These types should not be reduced further and are associated with one clear base type
     #AngularMomentumNumberType and MainQuantumNumberType are here because they are integers
     #but are implemented as xsd:string with a regex
     base_types['switch'] = ['FleurBool']
@@ -24,6 +24,7 @@ def get_base_types():
 def remove_xsd_namespace(tag,namespaces):
     """
     Strips the xsd namespace prefix from tags to make the functions more understandable
+    The try block is here if a comment element enters
     """
     try:
         return tag.replace(f"{'{'}{namespaces['xsd']}{'}'}","")
@@ -53,7 +54,7 @@ def analyse_type_elem(xmlschema,namespaces,type_elem,base_types, convert_to_base
 
     possible_base_types = []
 
-    for child in type_elem.getchildren():
+    for child in type_elem:
         child_type = remove_xsd_namespace(child.tag,namespaces)
 
         base_type_list = None
@@ -63,7 +64,7 @@ def analyse_type_elem(xmlschema,namespaces,type_elem,base_types, convert_to_base
             base_type_list = [child.attrib['itemType']]
         elif child_type == 'union' and 'memberTypes' in child.attrib:
             base_type_list = child.attrib['memberTypes'].split(' ')
-        if child_type == 'extension':
+        elif child_type == 'extension':
             base_type_list = [child.attrib['base']]
         elif child_type == 'union' or child_type == 'simpleType':
             possible_base_types_new = analyse_type_elem(xmlschema,namespaces,child,base_types,convert_to_base=False)
@@ -99,6 +100,7 @@ def get_length(xmlschema,namespaces,type_name):
 
     type_elem = xmlschema.xpath(f"//xsd:simpleType[@name='{type_name}']",namespaces=namespaces)
     if len(type_elem) == 0:
+        #I know that this is not general but this is the only other case than simpleType, which occurs at the moment
         type_elem = xmlschema.xpath(f"//xsd:complexType[@name='{type_name}']/xsd:simpleContent/xsd:extension/@base",namespaces=namespaces)
         if len(type_elem) == 0:
             return None
@@ -113,7 +115,7 @@ def get_length(xmlschema,namespaces,type_name):
     child_type = remove_xsd_namespace(child.tag,namespaces)
 
     if child_type == 'restriction':
-        for restriction_child in child.getchildren():
+        for restriction_child in child:
             restr_type = remove_xsd_namespace(restriction_child.tag,namespaces)
             if restr_type == 'length':
                 return int(restriction_child.attrib['value'])
@@ -218,7 +220,7 @@ def get_sequence_order(sequence_elem,namespaces):
     Extract the enforced order of elements in the given sequence element
     """
     elem_order = []
-    for child in sequence_elem.getchildren():
+    for child in sequence_elem:
         child_type = remove_xsd_namespace(child.tag,namespaces)
 
         if child_type == 'element':
@@ -226,7 +228,7 @@ def get_sequence_order(sequence_elem,namespaces):
         elif child_type == 'choice' or child_type == 'sequence':
             elem_order.append(get_sequence_order(child,namespaces))
         elif child_type is None:
-            continue # With getchildren sometimes a weird cython function object enters this loop
+            continue #This is produced by a comment
         else:
             raise KeyError(f'Dont know what to do with {child_type}')
     if len(elem_order) == 1:
@@ -299,7 +301,7 @@ def get_tags_order(xmlschema,namespaces, **kwargs):
 
     for sequence in sequences:
         parent = get_parent_fleur_type(sequence,namespaces,stop_sequence=True)
-        if parent is None:
+        if parent is None: #This sequence is nested in another sequence, meaning it could overwrite the same key
             continue
         parent_type = parent.attrib['name']
         tag_name = xmlschema.xpath(f"//xsd:element[@type='{parent_type}']/@name", namespaces=namespaces)
