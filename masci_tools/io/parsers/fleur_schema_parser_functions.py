@@ -28,6 +28,43 @@ def get_parent_fleur_type(elem,namespaces,stop_sequence=False):
         parent_type = remove_xsd_namespace(parent.tag,namespaces)
     return parent
 
+def analyse_type_elem(xmlschema,namespaces,type_elem,base_types, return_base=False):
+
+    possible_base_types = []
+
+    for child in type_elem.getchildren():
+        child_type = remove_xsd_namespace(child.tag,namespaces)
+
+        if child_type == 'restriction':
+            possible_base_types.append(child.attrib['base'])
+        else:
+            possible_base_types_new = analyse_type_elem(xmlschema,namespaces,child,base_types,return_base=True)
+            for base_type in possible_base_types_new:
+                possible_base_types.append(base_type)
+
+    if return_base:
+        return possible_base_types
+    else:
+        for index,possible_type in enumerate(possible_base_types):
+            for base_type, type_names in base_types.items():
+                if possible_type in type_names:
+                    possible_base_types[index] = base_type
+        if len(possible_base_types) == 1:
+            return possible_base_types[0]
+        else:
+            if 'string' in possible_base_types:
+                return 'string'
+            else:
+                raise ValueError('Not supported')
+
+def analyse_type(xmlschema,namespaces,type_name,base_types):
+
+    type_elem = xmlschema.xpath(f"//xsd:simpleType[@name='{type_name}']",namespaces=namespaces)
+    if len(type_elem) == 0:
+        type_elem = xmlschema.xpath(f"//xsd:complexType[@name='{type_name}']",namespaces=namespaces)
+    type_elem = type_elem[0]
+
+    return analyse_type_elem(xmlschema,namespaces,type_elem,base_types)
 
 def get_xpath(xmlschema,namespaces,tag_name,contains=None,enforce_end_type=None,stop_non_unique=False):
     """
@@ -140,19 +177,21 @@ def get_sequence_order(sequence_elem,namespaces):
 def extract_attribute_types(xmlschema,namespaces, **kwargs):
     """
     Determine the required type of all attributes
-    TODO: Inspect custom types to determine which category they should be
+    TODO: What to do with types like numbands (they are classified as string here, but do we want some flexibility there)
     """
     possible_attrib = xmlschema.xpath("//xsd:attribute", namespaces=namespaces)
-    
-    bool_types = ['FleurBool']
-    int_types = ['xsd:nonNegativeInteger','xsd:positiveInteger','xsd:integer',
-                 'SpinNumberType','AngularMomentumNumberType','MainQuantumNumberType']
-    float_types = ['xsd:double','ZeroToOneNumberType','FleurDouble'] 
-    string_types = ['BZIntegrationModeEnum','XCFunctionalEnum','xsd:string','EParamSelectionEnum',
-                    'MixingEnum','ForceMixEnum','RDMFTFunctionalEnum','KPointListPurposeEnum','CoreSpecEdgeEnum',
-                    'ElectronStateEnum','FleurVersionType','ManualCutoffType','ManualKKintgrCutoffType','ManualCutoffType',
-                   'NumBandsType','kPointListTypeEnum','TripleFleurBool']
-    
+
+    base_types = {}
+
+    #These types should not be reduced further and are associated with one base type
+    #AngularMomentumNumberType and MainQuantumNumberType are here because they are integers
+    #but are implemented as xsd:string with a regex
+    base_types['switch'] = ['FleurBool']
+    base_types['int'] = ['xsd:nonNegativeInteger','xsd:positiveInteger','xsd:integer',
+                         'AngularMomentumNumberType','MainQuantumNumberType']
+    base_types['float'] = ['xsd:double','FleurDouble']
+    base_types['string'] = ['xsd:string']
+
     types_dict = {}
     types_dict['switch'] = []
     types_dict['int'] = []
@@ -162,21 +201,23 @@ def extract_attribute_types(xmlschema,namespaces, **kwargs):
     for attrib in possible_attrib:
         name_attrib = attrib.attrib['name']
         type_attrib = attrib.attrib['type']
-        if type_attrib in bool_types:
-            if name_attrib not in types_dict['switch']:
-                types_dict['switch'].append(name_attrib)
-        elif type_attrib in int_types:
-            if name_attrib not in types_dict['int']:
-                types_dict['int'].append(name_attrib)
-        elif type_attrib in float_types:
-            if name_attrib not in types_dict['float']:
-                types_dict['float'].append(name_attrib)
-        elif type_attrib in string_types:
-            if name_attrib not in types_dict['string']:
-                types_dict['string'].append(name_attrib)
-        else:
-            if name_attrib not in types_dict['other']:
-                types_dict['other'].append(name_attrib)
+
+        type_found = False
+        for base_type, type_names in base_types.items():
+            if type_attrib in type_names:
+                type_found = True
+                if name_attrib not in types_dict[base_type]:
+                    types_dict[base_type].append(name_attrib)
+
+        if not type_found:
+            base_type = analyse_type(xmlschema,namespaces,type_attrib,base_types)
+            print(f'{type_attrib}: {base_type}')
+            if base_type is not None:
+                if name_attrib not in types_dict[base_type]:
+                    types_dict[base_type].append(name_attrib)
+            else:
+                if name_attrib not in types_dict['other']:
+                    types_dict['other'].append(name_attrib)
                 print(f'Unsorted type:{type_attrib}')
     return types_dict
 
