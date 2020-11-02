@@ -5,7 +5,26 @@ from lxml import etree
 from pprint import pprint
 import os
 import importlib.util
+
+
+def get_base_types():
+    base_types = {}
+
+    #These types should not be reduced further and are associated with one base type
+    #AngularMomentumNumberType and MainQuantumNumberType are here because they are integers
+    #but are implemented as xsd:string with a regex
+    base_types['switch'] = ['FleurBool']
+    base_types['int'] = ['xsd:nonNegativeInteger','xsd:positiveInteger','xsd:integer',
+                         'AngularMomentumNumberType','MainQuantumNumberType']
+    base_types['float'] = ['xsd:double','FleurDouble']
+    base_types['string'] = ['xsd:string']
+
+    return base_types
+
 def remove_xsd_namespace(tag,namespaces):
+    """
+    Strips the xsd namespace prefix from tags to make the functions more understandable
+    """
     try:
         return tag.replace(f"{'{'}{namespaces['xsd']}{'}'}","")
     except:
@@ -16,7 +35,6 @@ def get_parent_fleur_type(elem,namespaces,stop_sequence=False):
     Returns the parent simple or complexType to the given element
     If stop_sequence is given and True None is returned when a sequence is encountered
     in the parent chain
-
     """
     fleur_types = ['simpleType','complexType']
     parent = elem.getparent()
@@ -35,12 +53,36 @@ def analyse_type_elem(xmlschema,namespaces,type_elem,base_types, return_base=Fal
     for child in type_elem.getchildren():
         child_type = remove_xsd_namespace(child.tag,namespaces)
 
+        base_type_list = None
         if child_type == 'restriction':
-            possible_base_types.append(child.attrib['base'])
+            base_type_list = [child.attrib['base']]
+        elif child_type == 'list':
+            base_type_list = [child.attrib['itemType']]
+        elif child_type == 'union' and 'memberTypes' in child.attrib:
+            base_type_list = child.attrib['memberTypes'].split(' ')
+        if child_type == 'extension':
+            base_type_list = [child.attrib['base']]
         else:
             possible_base_types_new = analyse_type_elem(xmlschema,namespaces,child,base_types,return_base=True)
             for base_type in possible_base_types_new:
-                possible_base_types.append(base_type)
+                if base_type not in possible_base_types:
+                    possible_base_types.append(base_type)
+
+
+        if base_type_list is not None:
+            for base_type in base_type_list:
+                is_base = False
+                for type_names in base_types.values():
+                    if base_type in type_names:
+                        is_base = True
+                if not is_base: #We need to go deeper
+                    possible_base_types_new = analyse_type(xmlschema,namespaces,base_type,base_types,array_return=True)
+                    for base_type in possible_base_types_new:
+                        if base_type not in possible_base_types:
+                            possible_base_types.append(base_type)
+                else:
+                    if base_type not in possible_base_types:
+                        possible_base_types.append(base_type)
 
     if return_base:
         return possible_base_types
@@ -48,6 +90,7 @@ def analyse_type_elem(xmlschema,namespaces,type_elem,base_types, return_base=Fal
         for index,possible_type in enumerate(possible_base_types):
             for base_type, type_names in base_types.items():
                 if possible_type in type_names:
+                    type_found = True
                     possible_base_types[index] = base_type
         if len(possible_base_types) == 1:
             return possible_base_types[0]
@@ -57,14 +100,43 @@ def analyse_type_elem(xmlschema,namespaces,type_elem,base_types, return_base=Fal
             else:
                 raise ValueError('Not supported')
 
-def analyse_type(xmlschema,namespaces,type_name,base_types):
+def get_length(xmlschema,namespaces,type_name):
 
     type_elem = xmlschema.xpath(f"//xsd:simpleType[@name='{type_name}']",namespaces=namespaces)
     if len(type_elem) == 0:
-        type_elem = xmlschema.xpath(f"//xsd:complexType[@name='{type_name}']",namespaces=namespaces)
+        type_elem = xmlschema.xpath(f"//xsd:complexType[@name='{type_name}']/xsd:simpleContent/xsd:extension/@base",namespaces=namespaces)
+        if len(type_elem) == 0:
+            return None
+        length = get_length(xmlschema,namespaces,type_elem[0])
+        return length
+
+    child = type_elem[0].getchildren()
+    if len(child) != 1:
+        return None
+    child = child[0]
+
+    child_type = remove_xsd_namespace(child.tag,namespaces)
+
+    if child_type == 'restriction':
+        for restriction_child in child.getchildren():
+            restr_type = remove_xsd_namespace(restriction_child.tag,namespaces)
+            if restr_type == 'length':
+                return int(restriction_child.attrib['value'])
+    elif child_type == 'list':
+        return 'unbounded'
+
+    return None
+
+def analyse_type(xmlschema,namespaces,type_name,base_types,array_return=False):
+
+    type_elem = xmlschema.xpath(f"//xsd:simpleType[@name='{type_name}']",namespaces=namespaces)
+    if len(type_elem) == 0:
+        type_elem = xmlschema.xpath(f"//xsd:complexType[@name='{type_name}']/xsd:simpleContent",namespaces=namespaces)
+        if len(type_elem) == 0:
+            return None
     type_elem = type_elem[0]
 
-    return analyse_type_elem(xmlschema,namespaces,type_elem,base_types)
+    return analyse_type_elem(xmlschema,namespaces,type_elem,base_types,return_base=array_return)
 
 def get_xpath(xmlschema,namespaces,tag_name,contains=None,enforce_end_type=None,stop_non_unique=False):
     """
@@ -181,16 +253,7 @@ def extract_attribute_types(xmlschema,namespaces, **kwargs):
     """
     possible_attrib = xmlschema.xpath("//xsd:attribute", namespaces=namespaces)
 
-    base_types = {}
-
-    #These types should not be reduced further and are associated with one base type
-    #AngularMomentumNumberType and MainQuantumNumberType are here because they are integers
-    #but are implemented as xsd:string with a regex
-    base_types['switch'] = ['FleurBool']
-    base_types['int'] = ['xsd:nonNegativeInteger','xsd:positiveInteger','xsd:integer',
-                         'AngularMomentumNumberType','MainQuantumNumberType']
-    base_types['float'] = ['xsd:double','FleurDouble']
-    base_types['string'] = ['xsd:string']
+    base_types = get_base_types()
 
     types_dict = {}
     types_dict['switch'] = []
@@ -264,6 +327,73 @@ def get_settable_attributes(xmlschema,namespaces, **kwargs):
 
     return settable
 
+def get_basic_elements(xmlschema,namespaces, **kwargs):
+
+    elements = xmlschema.xpath('//xsd:element',namespaces=namespaces)
+
+    base_types = get_base_types()
+
+    basic_elements = {}
+    for elem in elements:
+        name_elem = elem.attrib['name']
+        type_elem = elem.attrib['type']
+
+        is_base = False
+        for base_type_name, type_names in base_types.items():
+            if type_elem in type_names:
+                is_base = True
+                base_type = [base_type_name]
+
+        if not is_base:
+            base_type = analyse_type(xmlschema,namespaces,type_elem,base_types,array_return=True)
+
+        if base_type is None:
+            continue
+
+        for index,possible_type in enumerate(base_type):
+            for base_type_name, type_names in base_types.items():
+                if possible_type in type_names:
+                    base_type[index] = base_type_name
+
+        length = get_length(xmlschema,namespaces,type_elem)
+
+        new_dict = {}
+        if len(base_type) == 1:
+            new_dict['type'] = base_type[0]
+        else:
+           new_dict['type'] = base_type
+        if length is not None:
+            new_dict['length'] = length
+        else:
+            new_dict['length'] = 1
+
+        if name_elem in basic_elements:
+
+            if isinstance(basic_elements[name_elem],dict):
+                equal_dicts = True
+                for key, value in basic_elements[name_elem].items():
+                    if new_dict[key] != value:
+                        equal_dicts = False
+                if not equal_dicts:
+                    basic_elements[name_elem] = [basic_elements[name_elem]]
+                    basic_elements[name_elem].append(new_dict)
+            else:
+                for index,old_dict in enumerate(basic_elements[name_elem]):
+                    equal_dicts = True
+                    for key, value in old_dict.items():
+                        if new_dict[key] != value:
+                            equal_dicts = False
+                    if equal_dicts:
+                        break
+                    elif index == len(basic_elements[name_elem])-1:
+                        basic_elements[name_elem].append(new_dict)
+
+        else:
+            basic_elements[name_elem] = new_dict
+
+    return basic_elements
+
+
 
 def create_schema_dict(path):
 
@@ -272,7 +402,8 @@ def create_schema_dict(path):
                       'tags_several': get_tags_several,
                       'tag_order': get_tags_order,
                       'attrib_types': extract_attribute_types,
-                      'settable_attribs': get_settable_attributes
+                      'settable_attribs': get_settable_attributes,
+                      'simple_elements': get_basic_elements
                       }
 
     print(f'processing: {path}/FleurInputSchema.xsd')
