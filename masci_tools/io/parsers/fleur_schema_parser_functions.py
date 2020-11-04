@@ -1,18 +1,15 @@
 """
-functions to extract information about the fleur schema into a python dict
+functions to extract information about the fleur schema input or output
 """
 from lxml import etree
-from pprint import pprint
-import os
-import importlib.util
-
 
 def get_base_types():
+    """
+    The types defined here should not be reduced further and are associated with one clear base type
+    AngularMomentumNumberType and MainQuantumNumberType are here because they are integers
+    but are implemented as xsd:string with a regex
+    """
     base_types = {}
-
-    #These types should not be reduced further and are associated with one clear base type
-    #AngularMomentumNumberType and MainQuantumNumberType are here because they are integers
-    #but are implemented as xsd:string with a regex
     base_types['switch'] = ['FleurBool']
     base_types['int'] = ['xsd:nonNegativeInteger','xsd:positiveInteger','xsd:integer',
                          'AngularMomentumNumberType','MainQuantumNumberType']
@@ -26,10 +23,8 @@ def remove_xsd_namespace(tag,namespaces):
     Strips the xsd namespace prefix from tags to make the functions more understandable
     The try block is here if a comment element enters
     """
-    try:
-        return tag.replace(f"{'{'}{namespaces['xsd']}{'}'}","")
-    except:
-        return None
+    return tag.replace(f"{'{'}{namespaces['xsd']}{'}'}","")
+
 
 def get_parent_fleur_type(elem,namespaces,stop_sequence=False):
     """
@@ -48,6 +43,9 @@ def get_parent_fleur_type(elem,namespaces,stop_sequence=False):
     return parent
 
 def get_root_tag(xmlschema,namespaces):
+    """
+    Returns the tag for the root element of the xmlschema
+    """
     return xmlschema.xpath('/xsd:schema/xsd:element/@name',namespaces=namespaces)[0]
 
 def analyse_type_elem(xmlschema,namespaces,type_elem,base_types, convert_to_base=True):
@@ -227,8 +225,6 @@ def get_sequence_order(sequence_elem,namespaces):
             elem_order.append(child.attrib['name'])
         elif child_type == 'choice' or child_type == 'sequence':
             elem_order.append(get_sequence_order(child,namespaces))
-        elif child_type is None:
-            continue #This is produced by a comment
         else:
             raise KeyError(f'Dont know what to do with {child_type}')
     if len(elem_order) == 1:
@@ -261,7 +257,6 @@ def extract_attribute_types(xmlschema,namespaces, **kwargs):
 
         if not type_found:
             possible_types = analyse_type(xmlschema,namespaces,type_attrib,base_types)
-            print(f'{type_attrib}: {possible_types}')
 
             if possible_types is not None:
                 for base_type in possible_types:
@@ -311,9 +306,9 @@ def get_tags_order(xmlschema,namespaces, **kwargs):
             continue
         tag_order[tag_name] = get_sequence_order(sequence,namespaces)
     return tag_order
-   
+
 def get_settable_attributes(xmlschema,namespaces, **kwargs):
-    
+
     settable = {}
     for attrib, path in kwargs['attrib_paths'].items():
         if isinstance(path,list):
@@ -345,15 +340,11 @@ def get_omittable_tags(xmlschema,namespaces, **kwargs):
             omittable = False
             for child in type_elem:
                 child_type = remove_xsd_namespace(child.tag,namespaces)
-                if child_type is None:
-                    continue
 
                 if child_type == 'sequence':
                     allowed_tags = 0
                     for sequence_elem in child:
                         elem_type = remove_xsd_namespace(sequence_elem.tag,namespaces)
-                        if elem_type is None:
-                            continue
                         allowed_tags += 1
                     if allowed_tags == 1:
                         omittable = True
@@ -424,68 +415,3 @@ def get_basic_elements(xmlschema,namespaces, **kwargs):
             basic_elements[name_elem] = new_dict
 
     return basic_elements
-
-
-
-def create_schema_dict(path):
-
-    schema_actions = {'tag_paths': get_tag_paths,
-                      'attrib_paths': get_attrib_paths,
-                      'tags_several': get_tags_several,
-                      'tag_order': get_tags_order,
-                      'attrib_types': extract_attribute_types,
-                      'settable_attribs': get_settable_attributes,
-                      'simple_elements': get_basic_elements,
-                      'omittable_tags': get_omittable_tags,
-                      }
-
-    print(f'processing: {path}/FleurInputSchema.xsd')
-    xmlschema = etree.parse(f'{path}/FleurInputSchema.xsd')
-
-    namespaces = {"xsd": "http://www.w3.org/2001/XMLSchema"}
-    inp_version = xmlschema.xpath("/xsd:schema/@version", namespaces=namespaces)[0]
-    schema_dict = {}
-    for key, action in schema_actions.items():
-        schema_dict[key] = action(xmlschema,namespaces,**schema_dict)
-
-    with open(f'{path}/schema_dict.py','w') as f:
-        f.write(f"__inp_version__ = '{inp_version}'\n")
-        f.write('schema_dict = ')
-        pprint(schema_dict, f)
-
-
-def load_schema_dict(version, schmema_return=False):
-    """
-    load the Fleurschema dict for the specified
-    """
-
-    PACKAGE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
-
-    fleur_schema_path = f'./fleur_schema/input/{version}'
-
-    path = os.path.abspath(os.path.join(PACKAGE_DIRECTORY, fleur_schema_path))
-
-    schema_file_path = os.path.join(path,'FleurInputSchema.xsd')
-    schema_dict_path = os.path.join(path,'schema_dict.py')
-    if not os.path.isfile(schema_file_path):
-        raise ValueError(f'No input schema found at {path}')
-
-    if not os.path.isfile(schema_dict_path):
-        print(f'Generating schema_dict file for given input schema: {schema_file_path}')
-        create_schema_dict(path)
-
-    #import schema_dict
-    spec = importlib.util.spec_from_file_location("schema", schema_dict_path)
-    schema = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(schema)
-    if schema.__inp_version__ != version:
-        raise ValueError(f'Something has gone wrong specified version does not match __inp_version__ in loaded schema_dict')
-    print(f'Loaded schema_dict input version {schema.__inp_version__}')
-
-    if schmema_return:
-        xmlschema_doc = etree.parse(schema_file_path)
-        xmlschema = etree.XMLSchema(xmlschema_doc)
-        return xmlschema, schema.schema_dict
-    else:
-        return schema.schema_dict
-

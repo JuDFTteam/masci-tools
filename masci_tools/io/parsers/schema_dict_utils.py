@@ -1,6 +1,4 @@
 
-
-
 def get_tag_xpath(schema_dict, tag, contains=None):
 
    if tag not in schema_dict['tag_paths']:

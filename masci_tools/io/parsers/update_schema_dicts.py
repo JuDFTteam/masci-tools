@@ -1,5 +1,4 @@
-
-from masci_tools.io.parsers.fleur_schema_parser_functions import create_schema_dict, load_schema_dict
+from masci_tools.io.parsers.inpschema_todict import create_inpschema_dict
 import os
 
 SCHEMA_FOLDER_PATHS = [
@@ -13,7 +12,4 @@ PACKAGE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 def update_schema_dicts():
 
     for schema_folder in SCHEMA_FOLDER_PATHS:
-        create_schema_dict(os.path.abspath(os.path.join(PACKAGE_DIRECTORY, schema_folder)))
-
-
-update_schema_dicts()
+        create_inpschema_dict(os.path.abspath(os.path.join(PACKAGE_DIRECTORY, schema_folder)))

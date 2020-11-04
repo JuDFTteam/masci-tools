@@ -1,6 +1,7 @@
 from lxml import etree
 from pprint import pprint
-from masci_tools.io.parsers.fleur_schema_parser_functions import load_schema_dict
+from masci_tools.io.parsers.inpschema_todict import load_inpschema
+from masci_tools.io.parsers.common_fleur_xml_utils import clear_xml, convert_xml_attribute
 
 def inpxml_parse(inpxmlfile):
 
@@ -10,13 +11,15 @@ def inpxml_parse(inpxmlfile):
     else:
         xmltree = inpxmlfile
 
+    xmltree = clear_xml(xmltree)
+
     try:
         root = xmltree.getroot()
         version = root.attrib['fleurInputVersion']
     except:
         raise ValueError('Failed to extract inputVersion')
 
-    xmlschema, schema_dict = load_schema_dict(version, schmema_return=True)
+    xmlschema, schema_dict = load_inpschema(version, schmema_return=True)
 
     message = ''
     success = xmlschema.validate(xmltree)
@@ -103,77 +106,3 @@ def inpxml_todict(parent, schema_dict, return_dict=None):
             return_dict[element.tag] = inpxml_todict(element, schema_dict)
 
     return return_dict
-
-
-def convert_xml_attribute(stringattribute, possible_types):
-
-    if not isinstance(possible_types, list):
-        possible_types = [possible_types]
-
-    for value_type in possible_types:
-        if value_type == 'float':
-            converted_value, suc = convert_to_float(stringattribute)
-        elif value_type == 'int':
-            converted_value, suc = convert_to_int(stringattribute)
-        elif value_type == 'switch':
-            converted_value, suc = convert_from_fortran_bool(stringattribute)
-        elif value_type == 'string':
-            suc = True
-            converted_value = str(stringattribute)
-        if suc:
-            return converted_value
-
-    return None
-
-def convert_to_float(value_string):
-    """
-    Tries to make a float out of a string. If it can't it logs a warning
-    and returns True or False if convertion worked or not.
-
-    :param value_string: a string
-    :returns value: the new float or value_string: the string given
-    :returns: True if convertation was successfull, False otherwise
-    """
-    try:
-        value = float(value_string)
-    except:
-        return value_string, False
-    return value, True
-
-def convert_to_int(value_string):
-    """
-    Tries to make a int out of a string. If it can't it logs a warning
-    and returns True or False if convertion worked or not.
-
-    :param value_string: a string
-    :returns value: the new int or value_string: the string given
-    :returns: True or False
-    """
-    try:
-        value = int(value_string)
-    except:
-        return value_string, False
-    return value, True
-
-
-def convert_from_fortran_bool(stringbool):
-    """
-    Converts a string in this case ('T', 'F', or 't', 'f') to True or False
-
-    :param stringbool: a string ('t', 'f', 'F', 'T')
-
-    :return: boolean  (either True or False)
-    """
-    true_items = ['True', 't', 'T']
-    false_items = ['False', 'f', 'F']
-    if isinstance(stringbool, str):
-        if stringbool in false_items:
-            return False, True
-        if stringbool in true_items:
-            return True, True
-        else:
-            return stringbool, False
-    elif isinstance(stringbool, bool):
-        return stringbool, True  # no conversion needed...
-    else:
-        return stringbool, False

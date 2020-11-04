@@ -1,5 +1,5 @@
 __inp_version__ = '0.29'
-schema_dict = {'attrib_paths': {'Gmax': '/fleurInput/calculationSetup/cutoffs/@Gmax',
+inpschema_dict = {'attrib_paths': {'Gmax': '/fleurInput/calculationSetup/cutoffs/@Gmax',
                   'GmaxXC': '/fleurInput/calculationSetup/cutoffs/@GmaxXC',
                   'I_initial': '/fleurInput/output/coreSpectrum/@I_initial',
                   'J': ['/fleurInput/atomSpecies/species/ldaU/@J',
