@@ -2,12 +2,13 @@ from lxml import etree
 from pprint import pprint
 from masci_tools.io.parsers.fleur_schema_parser_functions import load_schema_dict
 
-def inpxml_parse(file):
+def inpxml_parse(inpxmlfile):
 
-    parser = etree.XMLParser(attribute_defaults=True, encoding='utf-8')
-
-    with open(file, mode='r') as inpxmlfile:
+    if isinstance(inpxmlfile,str):
+        parser = etree.XMLParser(attribute_defaults=True, encoding='utf-8')
         xmltree = etree.parse(inpxmlfile, parser)
+    else:
+        xmltree = inpxmlfile
 
     try:
         root = xmltree.getroot()
@@ -18,11 +19,21 @@ def inpxml_parse(file):
     xmlschema, schema_dict = load_schema_dict(version)
 
     if not xmlschema.validate(xmltree):
-        raise ValueError('File does not validate against schema')
+        # get a more information on what does not validate
+        message = ''
+        parser_on_fly = etree.XMLParser(attribute_defaults=True, schema=xmlschema, encoding='utf-8')
+        inpxmlfile = etree.tostring(xmltree)
+        try:
+            tree_x = etree.fromstring(inpxmlfile, parser_on_fly)
+        except etree.XMLSyntaxError as msg:
+            message = msg
+            raise InputValidationError('Input file does not validate against the schema: {}'.format(message))
+
+        raise InputValidationError('Input file is not validated against the schema.' 'Reason is unknown')
 
     inp_dict = inpxml_todict(root, schema_dict)
 
-    pprint(inp_dict)
+    return inp_dict
 
 
 def inpxml_todict(parent, schema_dict, return_dict=None):
@@ -60,8 +71,25 @@ def inpxml_todict(parent, schema_dict, return_dict=None):
     if parent.text:  # TODO more detal, exp: relPos, basic_elements should have all tags with text and can split them apart and convert to the given type
         # has text, but we don't want all the '\n' s and empty stings in the database
         if parent.text.strip() != '':  # might not be the best solution
-            # set text
-            return_dict = parent.text.strip()
+            base_text = parent.text.strip()
+            split_text = base_text.split(' ')
+            while '' in split_text:
+                split_text.remove('')
+            if parent.tag not in schema_dict['simple_elements']:
+                raise KeyError(f'Something is wrong in the schema_dict: {parent.tag} is not in simple_elements')
+            text_definition = None
+            if isinstance(schema_dict['simple_elements'][parent.tag],dict):
+                text_definition = schema_dict['simple_elements'][parent.tag]
+            else:
+                for possible_def in schema_dict['simple_elements'][parent.tag]:
+                    if possible_def['length'] == len(split_text) or \
+                       (possible_def['length'] == 1 and len(split_text) != 1):
+                       text_definition = possible_def
+            return_dict = []
+            for value in split_text:
+                converted_value = convert_xml_attribute(value, text_definition['type'])
+                if converted_value is not None:
+                    return_dict.append(converted_value)
 
     for element in parent:
         if element.tag in schema_dict['tags_several']:
