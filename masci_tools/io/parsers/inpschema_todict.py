@@ -28,7 +28,7 @@ def create_inpschema_dict(path):
                       'attrib_types': schema_parse.extract_attribute_types,
                       'settable_attribs': schema_parse.get_settable_attributes,
                       'simple_elements': schema_parse.get_basic_elements,
-                      'omittable_tags': schema_parse.get_omittable_tags,
+                      'omitt_contained_tags': schema_parse.get_omittable_tags,
                       }
 
     print(f'processing: {path}/FleurInputSchema.xsd')

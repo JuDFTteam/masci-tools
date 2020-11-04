@@ -345,13 +345,17 @@ def get_omittable_tags(xmlschema,namespaces, **kwargs):
                     allowed_tags = 0
                     for sequence_elem in child:
                         elem_type = remove_xsd_namespace(sequence_elem.tag,namespaces)
-                        allowed_tags += 1
+                        if elem_type == 'element':
+                            allowed_tags += 1
+                        else:
+                            allowed_tags = 0 #So that it is not unintentionally accepted
+                            break
                     if allowed_tags == 1:
                         omittable = True
                 else:
                     omittable = False
 
-            if omittable and tag_name:
+            if omittable:
                 omittable_tags.append(tag_name)
     return omittable_tags
 

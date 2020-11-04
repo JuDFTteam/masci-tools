@@ -39,7 +39,7 @@ def inpxml_parse(inpxmlfile):
     return inp_dict, success , message
 
 
-def inpxml_todict(parent, schema_dict, return_dict=None):
+def inpxml_todict(parent, schema_dict, omitted_tags=False):
     """
     Recursive operation which transforms an xml etree to
     python nested dictionaries and lists.
@@ -51,8 +51,7 @@ def inpxml_todict(parent, schema_dict, return_dict=None):
     :return: a python dictionary
     """
 
-    if return_dict is None:
-        return_dict = {}
+    return_dict = {}
     if list(parent.items()):
         return_dict = dict(list(parent.items()))
         # Now we have to convert lazy fortan style into pretty things for the Database
@@ -88,21 +87,34 @@ def inpxml_todict(parent, schema_dict, return_dict=None):
                     if possible_def['length'] == len(split_text) or \
                        (possible_def['length'] == 1 and len(split_text) != 1):
                        text_definition = possible_def
-            return_dict = []
-            for value in split_text:
-                converted_value = convert_xml_attribute(value, text_definition['type'])
+            if text_definition['length'] == 1:
+                converted_value = convert_xml_attribute(base_text, text_definition['type'])
                 if converted_value is not None:
-                    return_dict.append(converted_value)
+                    return_dict = base_text
+            else:
+                return_dict = []
+                for value in split_text:
+                    converted_value = convert_xml_attribute(value, text_definition['type'])
+                    if converted_value is not None:
+                        return_dict.append(converted_value)
+
 
     for element in parent:
         if element.tag in schema_dict['tags_several']:
             # make a list, otherwise the tag will be overwritten in the dict
             if element.tag not in return_dict:  # is this the first occurence?
-                return_dict[element.tag] = []
-            return_dict[element.tag].append(inpxml_todict(element, schema_dict))
-        elif element.tag in schema_dict['omittable_tags']: #The tag is not useful in a parsed python dictionary
-            return_dict = inpxml_todict(element, schema_dict, return_dict=return_dict)
+                if omitted_tags:
+                    return_dict = []
+                else:
+                    return_dict[element.tag] = []
+            if omitted_tags:
+                return_dict.append(inpxml_todict(element, schema_dict))
+            else:
+                return_dict[element.tag].append(inpxml_todict(element, schema_dict))
+        elif element.tag in schema_dict['omitt_contained_tags']: #The tags on level deeper are not useful in a parsed python dictionary
+            return_dict[element.tag] = inpxml_todict(element, schema_dict, omitted_tags=True)
         else:
             return_dict[element.tag] = inpxml_todict(element, schema_dict)
 
     return return_dict
+
