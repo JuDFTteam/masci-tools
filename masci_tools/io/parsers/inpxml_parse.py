@@ -25,14 +25,14 @@ def inpxml_parse(inpxmlfile, return_errmsg=False):
     success = xmlschema.validate(xmltree)
     if not success:
         # get a more information on what does not validate
-        message = ''
         parser_on_fly = etree.XMLParser(attribute_defaults=True, schema=xmlschema, encoding='utf-8')
         inpxmlfile = etree.tostring(xmltree)
         try:
             tree_x = etree.fromstring(inpxmlfile, parser_on_fly)
         except etree.XMLSyntaxError as msg:
             message = msg
-        message = 'Reason is unknown'
+        except:
+            message = 'Reason is unknown'
 
     inp_dict = inpxml_todict(root, schema_dict)
 
