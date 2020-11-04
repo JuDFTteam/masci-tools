@@ -324,6 +324,46 @@ def get_settable_attributes(xmlschema,namespaces, **kwargs):
 
     return settable
 
+def get_omittable_tags(xmlschema,namespaces, **kwargs):
+    """
+    find tags with no attributes and, which are only used to mask a list of one other possible tag (e.g. atomSpecies)
+    """
+
+    possible_tags = xmlschema.xpath("//xsd:element", namespaces=namespaces)
+
+    omittable_tags = []
+    for tag in possible_tags:
+        tag_type = tag.attrib['type']
+        tag_name = tag.attrib['name']
+
+        if tag_name not in omittable_tags:
+            type_elem = xmlschema.xpath(f"//xsd:complexType[@name='{tag_type}']",namespaces=namespaces)
+            if len(type_elem) == 0:
+                continue
+            type_elem = type_elem[0]
+
+            omittable = False
+            for child in type_elem:
+                child_type = remove_xsd_namespace(child.tag,namespaces)
+                if child_type is None:
+                    continue
+
+                if child_type == 'sequence':
+                    allowed_tags = 0
+                    for sequence_elem in child:
+                        elem_type = remove_xsd_namespace(sequence_elem.tag,namespaces)
+                        if elem_type is None:
+                            continue
+                        allowed_tags += 1
+                    if allowed_tags == 1:
+                        omittable = True
+                else:
+                    omittable = False
+
+            if omittable and tag_name:
+                omittable_tags.append(tag_name)
+    return omittable_tags
+
 def get_basic_elements(xmlschema,namespaces, **kwargs):
 
     elements = xmlschema.xpath('//xsd:element',namespaces=namespaces)
@@ -395,7 +435,8 @@ def create_schema_dict(path):
                       'tag_order': get_tags_order,
                       'attrib_types': extract_attribute_types,
                       'settable_attribs': get_settable_attributes,
-                      'simple_elements': get_basic_elements
+                      'simple_elements': get_basic_elements,
+                      'omittable_tags': get_omittable_tags,
                       }
 
     print(f'processing: {path}/FleurInputSchema.xsd')
