@@ -3,7 +3,7 @@ from pprint import pprint
 from masci_tools.io.parsers.inpschema_todict import load_inpschema
 from masci_tools.io.parsers.common_fleur_xml_utils import clear_xml, convert_xml_attribute
 
-def inpxml_parse(inpxmlfile):
+def inpxml_parse(inpxmlfile, return_errmsg=False):
 
     if isinstance(inpxmlfile,str):
         parser = etree.XMLParser(attribute_defaults=True, encoding='utf-8')
@@ -36,7 +36,12 @@ def inpxml_parse(inpxmlfile):
 
     inp_dict = inpxml_todict(root, schema_dict)
 
-    return inp_dict, success , message
+    if return_errmsg:
+        return inp_dict, success , message
+    else:
+        if not success:
+            raise ValueError(f'Failed to validate the inp.xml against the Schema: {message}')
+        return inp_dict
 
 
 def inpxml_todict(parent, schema_dict, omitted_tags=False):
