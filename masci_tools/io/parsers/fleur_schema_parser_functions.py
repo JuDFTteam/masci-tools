@@ -454,15 +454,24 @@ def create_schema_dict(path):
         pprint(schema_dict, f)
 
 
-def load_schema_dict(path):
+def load_schema_dict(version):
     """
-    load the Fleurschema dict from the specified path
+    load the Fleurschema dict for the specified
     """
+
+    PACKAGE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
+
+    fleur_schema_path = f'./fleur_schema/input/{version}'
+
+    path = os.path.abspath(os.path.join(PACKAGE_DIRECTORY, fleur_schema_path))
 
     schema_file_path = os.path.join(path,'FleurInputSchema.xsd')
     schema_dict_path = os.path.join(path,'schema_dict.py')
     if not os.path.isfile(schema_file_path):
         raise ValueError(f'No input schema found at {path}')
+
+    xmlschema_doc = etree.parse(schema_file_path)
+    xmlschema = etree.XMLSchema(xmlschema_doc)
 
     if not os.path.isfile(schema_dict_path):
         print(f'Generating schema_dict file for given input schema: {schema_file_path}')
@@ -472,6 +481,9 @@ def load_schema_dict(path):
     spec = importlib.util.spec_from_file_location("schema", schema_dict_path)
     schema = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(schema)
+    if schema.__inp_version__ != version:
+        raise ValueError(f'Something has gone wrong specified version does not match __inp_version__ in loaded schema_dict')
     print(f'Loaded schema_dict input version {schema.__inp_version__}')
-    return schema.schema_dict
+
+    return xmlschema, schema.schema_dict
 
