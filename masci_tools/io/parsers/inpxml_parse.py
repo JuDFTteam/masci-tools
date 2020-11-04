@@ -19,7 +19,7 @@ def inpxml_parse(inpxmlfile, return_errmsg=False):
     except:
         raise ValueError('Failed to extract inputVersion')
 
-    xmlschema, schema_dict = load_inpschema(version, schmema_return=True)
+    schema_dict, xmlschema = load_inpschema(version, schema_return=True)
 
     message = ''
     success = xmlschema.validate(xmltree)

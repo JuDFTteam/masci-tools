@@ -47,7 +47,7 @@ def create_inpschema_dict(path):
         pprint(schema_dict, f)
 
 
-def load_inpschema(version, schmema_return=False):
+def load_inpschema(version, schema_return=False, return_errmsg=False):
     """
     load the FleurInputSchema dict for the specified version
     """
@@ -60,24 +60,37 @@ def load_inpschema(version, schmema_return=False):
 
     schema_file_path = os.path.join(path,'FleurInputSchema.xsd')
     schema_dict_path = os.path.join(path,'schema_dict.py')
+
+    success = True
+    message = ''
     if not os.path.isfile(schema_file_path):
-        raise ValueError(f'No input schema found at {path}')
+        success = False
+        message = f'No input schema found at {path}'
+        if not return_errmsg:
+            raise ValueError(message)
 
-    if not os.path.isfile(schema_dict_path):
-        print(f'Generating schema_dict file for given input schema: {schema_file_path}')
-        create_schema_dict(path)
+    schema_dict = None
+    if success:
+        if not os.path.isfile(schema_dict_path):
+            print(f'Generating schema_dict file for given input schema: {schema_file_path}')
+            create_schema_dict(path)
 
-    #import schema_dict
-    spec = importlib.util.spec_from_file_location("schema", schema_dict_path)
-    schema = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(schema)
-    if schema.__inp_version__ != version:
-        raise ValueError(f'Something has gone wrong specified version does not match __inp_version__ in loaded schema_dict')
-    print(f'Loaded schema_dict input version {schema.__inp_version__}')
+        #import schema_dict
+        spec = importlib.util.spec_from_file_location("schema", schema_dict_path)
+        schema = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(schema)
+        schema_dict = schema.inpschema_dict
+        success = True
 
-    if schmema_return:
+    if schema_return:
         xmlschema_doc = etree.parse(schema_file_path)
         xmlschema = etree.XMLSchema(xmlschema_doc)
-        return xmlschema, schema.inpschema_dict
+        if return_errmsg:
+            return schema_dict, xmlschema, success, message
+        else:
+            return schema_dict, xmlschema
     else:
-        return schema.inpschema_dict
+        if return_errmsg:
+            return schema_dict, success, message
+        else:
+            return schema_dict
