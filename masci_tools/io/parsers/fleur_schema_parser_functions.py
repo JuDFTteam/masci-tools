@@ -315,7 +315,20 @@ def get_settable_attributes(xmlschema,namespaces, **kwargs):
             continue #Already multiple possible paths
         path = get_attrib_xpath(xmlschema,namespaces,attrib,stop_non_unique=True)
         if path is not None:
-            settable[attrib] = path
+            settable[attrib] = path.replace(f'/@{attrib}','')
+
+    return settable
+
+def get_settable_contains_attributes(xmlschema,namespaces, **kwargs):
+
+    settable = {}
+    possible_attrib = xmlschema.xpath("//xsd:attribute/@name", namespaces=namespaces)
+    for attrib in possible_attrib:
+        path = get_attrib_xpath(xmlschema,namespaces,attrib,stop_non_unique=True)
+        if path is not None and attrib not in kwargs['settable_attribs']:
+            if not isinstance(path,list):
+                path = [path]
+            settable[attrib] = [x.replace(f'/@{attrib}','') for x in path]
 
     return settable
 

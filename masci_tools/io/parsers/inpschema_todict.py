@@ -27,6 +27,7 @@ def create_inpschema_dict(path):
                       'tag_order': schema_parse.get_tags_order,
                       'attrib_types': schema_parse.extract_attribute_types,
                       'settable_attribs': schema_parse.get_settable_attributes,
+                      'settable_contains_attribs': schema_parse.get_settable_contains_attributes,
                       'simple_elements': schema_parse.get_basic_elements,
                       'omitt_contained_tags': schema_parse.get_omittable_tags,
                       }
