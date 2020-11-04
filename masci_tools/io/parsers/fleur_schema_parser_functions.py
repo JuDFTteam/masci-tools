@@ -454,7 +454,7 @@ def create_schema_dict(path):
         pprint(schema_dict, f)
 
 
-def load_schema_dict(version):
+def load_schema_dict(version, schmema_return=False):
     """
     load the Fleurschema dict for the specified
     """
@@ -470,9 +470,6 @@ def load_schema_dict(version):
     if not os.path.isfile(schema_file_path):
         raise ValueError(f'No input schema found at {path}')
 
-    xmlschema_doc = etree.parse(schema_file_path)
-    xmlschema = etree.XMLSchema(xmlschema_doc)
-
     if not os.path.isfile(schema_dict_path):
         print(f'Generating schema_dict file for given input schema: {schema_file_path}')
         create_schema_dict(path)
@@ -485,5 +482,10 @@ def load_schema_dict(version):
         raise ValueError(f'Something has gone wrong specified version does not match __inp_version__ in loaded schema_dict')
     print(f'Loaded schema_dict input version {schema.__inp_version__}')
 
-    return xmlschema, schema.schema_dict
+    if schmema_return:
+        xmlschema_doc = etree.parse(schema_file_path)
+        xmlschema = etree.XMLSchema(xmlschema_doc)
+        return xmlschema, schema.schema_dict
+    else:
+        return schema.schema_dict
 
