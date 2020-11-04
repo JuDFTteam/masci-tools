@@ -47,6 +47,9 @@ def inpxml_todict(parent, schema_dict, omitted_tags=False):
 
     :param parent: some xmltree, or xml element
     :param schema_dict: structure/layout of the xml file in python dictionary
+    :param omitted_tags: switch. If True only a list of the contained tags is returned
+                         Used to omitt useless tags like e.g ['atomSpecies']['species'][3]
+                         becomes ['atomSpecies'][3]
 
     :return: a python dictionary
     """
@@ -56,23 +59,16 @@ def inpxml_todict(parent, schema_dict, omitted_tags=False):
         return_dict = dict(list(parent.items()))
         # Now we have to convert lazy fortan style into pretty things for the Database
         for key in return_dict:
-
-            converted_value = convert_xml_attribute(return_dict[key], schema_dict['attrib_types'][key])
-            if converted_value is not None:
-                return_dict[key] = converted_value
+            if key in schema_dict['attrib_types']:
+                converted_value = convert_xml_attribute(return_dict[key], schema_dict['attrib_types'][key])
+                if converted_value is not None:
+                    return_dict[key] = converted_value
             else:
-                pass
-                # this key is not know to plug-in TODO maybe make this a method
-                # of the parser and log this as warning, or add here make a log
-                # list, to which you always append messages, pass them back to
-                # the parser, who locks it then
-                # raise TypeError("Parser wanted to convert the key:'{}' with
-                # value '{}', from the inpxml file but the key is unknown to the
-                # fleur plug-in".format(key, return_dict[key]))
+                pass #This key should be in simple_elements
 
     if parent.text:  # TODO more detal, exp: relPos, basic_elements should have all tags with text and can split them apart and convert to the given type
         # has text, but we don't want all the '\n' s and empty stings in the database
-        if parent.text.strip() != '':  # might not be the best solution
+        if parent.text.strip() != '':  # might not be the best solutions
             base_text = parent.text.strip()
             split_text = base_text.split(' ')
             while '' in split_text:
@@ -90,13 +86,20 @@ def inpxml_todict(parent, schema_dict, omitted_tags=False):
             if text_definition['length'] == 1:
                 converted_value = convert_xml_attribute(base_text, text_definition['type'])
                 if converted_value is not None:
-                    return_dict = base_text
+                    if not return_dict:
+                        return_dict = converted_value
+                    else:
+                        return_dict['value'] = converted_value
             else:
-                return_dict = []
+                text_list = []
                 for value in split_text:
                     converted_value = convert_xml_attribute(value, text_definition['type'])
                     if converted_value is not None:
-                        return_dict.append(converted_value)
+                        text_list.append(converted_value)
+                if not return_dict:
+                    return_dict = text_list
+                else:
+                    return_dict['value'] = text_list
 
 
     for element in parent:
@@ -104,14 +107,16 @@ def inpxml_todict(parent, schema_dict, omitted_tags=False):
             # make a list, otherwise the tag will be overwritten in the dict
             if element.tag not in return_dict:  # is this the first occurence?
                 if omitted_tags:
-                    return_dict = []
+                    if len(return_dict) == 0:
+                        return_dict = []
                 else:
                     return_dict[element.tag] = []
             if omitted_tags:
                 return_dict.append(inpxml_todict(element, schema_dict))
             else:
                 return_dict[element.tag].append(inpxml_todict(element, schema_dict))
-        elif element.tag in schema_dict['omitt_contained_tags']: #The tags on level deeper are not useful in a parsed python dictionary
+        elif element.tag in schema_dict['omitt_contained_tags']:
+            #The tags on level deeper are not useful in a parsed python dictionary
             return_dict[element.tag] = inpxml_todict(element, schema_dict, omitted_tags=True)
         else:
             return_dict[element.tag] = inpxml_todict(element, schema_dict)
