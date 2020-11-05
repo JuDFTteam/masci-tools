@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 __inp_version__ = '0.33'
 schema_dict = {'attrib_paths': {'Gmax': '/fleurInput/calculationSetup/cutoffs/@Gmax',
                   'GmaxXC': '/fleurInput/calculationSetup/cutoffs/@GmaxXC',

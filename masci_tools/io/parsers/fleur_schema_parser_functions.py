@@ -111,18 +111,18 @@ def analyse_type_elem(xmlschema, namespaces, type_elem, base_types, convert_to_b
                         for base_type in possible_base_types_new:
                             possible_base_types.append(base_type)
                 else:
-                    if base_type not in possible_base_types:
-                        possible_base_types.append(base_type)
+                    if detected_base_type not in possible_base_types:
+                        possible_base_types.append(detected_base_type)
 
     return_types = []
     if convert_to_base:
         if basic_types_mapping is not None:
             length = None
             for index, type_name in enumerate(possible_base_types):
-                if base_type in basic_types_mapping:
-                    map_types = basic_types_mapping[base_type]['base_types']
+                if type_name in basic_types_mapping:
+                    map_types = basic_types_mapping[type_name]['base_types']
                     if length is None:
-                        length = basic_types_mapping[base_type]['length']
+                        length = basic_types_mapping[type_name]['length']
                     if not isinstance(map_types, list):
                         map_types = [map_types]
                     for map_type in map_types:
@@ -169,7 +169,7 @@ def get_length(xmlschema, namespaces, type_name):
     return 1
 
 
-def get_xpath(xmlschema, namespaces, tag_name, enforce_end_type=None, ref=None, stop_non_unique=False):
+def get_xpath(xmlschema, namespaces, tag_name, enforce_end_type=None, ref=None, stop_non_unique=False, stop_group=False, group_root=False):
     """
     construct all possible simple xpaths to a given tag
     """
@@ -179,7 +179,10 @@ def get_xpath(xmlschema, namespaces, tag_name, enforce_end_type=None, ref=None, 
     possible_paths = []
     root_tag = get_root_tag(xmlschema, namespaces)
     if tag_name == root_tag:
-        return f'/{root_tag}'
+        if group_root:
+            return None
+        else:
+            return f'/{root_tag}'
     #Get all possible starting points
     if ref is not None:
         startPoints = xmlschema.xpath(f"//xsd:group[@ref='{ref}']", namespaces=namespaces)
@@ -201,11 +204,17 @@ def get_xpath(xmlschema, namespaces, tag_name, enforce_end_type=None, ref=None, 
         parent_type, parent_tag = get_parent_fleur_type(currentelem, namespaces)
         next_type = parent_type.attrib['name']
         if parent_tag == 'group':
+            if stop_group:
+                continue
+            elif group_root:
+                return f'/{currentTag}'
             possible_paths_group = get_xpath(xmlschema,
                                              namespaces,
                                              currentTag,
                                              ref=next_type,
-                                             stop_non_unique=stop_non_unique)
+                                             stop_non_unique=stop_non_unique,
+                                             stop_group=stop_group,
+                                             group_root=group_root)
             if possible_paths_group is None:
                 continue
             if not isinstance(possible_paths_group, list):
@@ -229,7 +238,9 @@ def get_xpath(xmlschema, namespaces, tag_name, enforce_end_type=None, ref=None, 
                                                namespaces,
                                                newTag,
                                                enforce_end_type=next_type,
-                                               stop_non_unique=stop_non_unique)
+                                               stop_non_unique=stop_non_unique,
+                                               stop_group=stop_group,
+                                               group_root=group_root)
                 if possible_paths_tag is None:
                     continue
                 if not isinstance(possible_paths_tag, list):
@@ -237,6 +248,13 @@ def get_xpath(xmlschema, namespaces, tag_name, enforce_end_type=None, ref=None, 
                 for tagpath in possible_paths_tag:
                     if f'{tagpath}/{tag_name}' not in possible_paths:
                         possible_paths.append(f'{tagpath}/{tag_name}')
+
+    if group_root:
+        possible_paths_copy = possible_paths.copy()
+        for path in possible_paths_copy:
+            if root_tag in path:
+                possible_paths.remove(path)
+
     if len(possible_paths) > 1:
         return possible_paths
     elif len(possible_paths) == 0:
@@ -245,7 +263,7 @@ def get_xpath(xmlschema, namespaces, tag_name, enforce_end_type=None, ref=None, 
         return possible_paths[0]
 
 
-def get_attrib_xpath(xmlschema, namespaces, attrib_name, stop_non_unique=False):
+def get_attrib_xpath(xmlschema, namespaces, attrib_name, stop_non_unique=False, stop_group=False, group_root=False):
 
     possible_paths = []
     attribute_tags = xmlschema.xpath(f"//xsd:attribute[@name='{attrib_name}']", namespaces=namespaces)
@@ -265,7 +283,9 @@ def get_attrib_xpath(xmlschema, namespaces, attrib_name, stop_non_unique=False):
                                   namespaces,
                                   tag,
                                   enforce_end_type=start_type,
-                                  stop_non_unique=stop_non_unique)
+                                  stop_non_unique=stop_non_unique,
+                                  stop_group=stop_group,
+                                  group_root=group_root)
             if tag_paths is None:
                 continue
             if not isinstance(tag_paths, list):
@@ -300,7 +320,7 @@ def get_sequence_order(xmlschema, namespaces, sequence_elem):
 
         if child_type == 'element':
             elem_order.append(child.attrib['name'])
-        elif child_type in ['choice', 'sequence']:
+        elif child_type in ['choice', 'sequence', 'all']:
             elem_order.append(get_sequence_order(xmlschema, namespaces, child))
         elif child_type == 'group':
             group = xmlschema.xpath(f"//xsd:group[@name='{child.attrib['ref']}']/xsd:sequence", namespaces=namespaces)
@@ -366,6 +386,42 @@ def get_tag_paths(xmlschema, namespaces, **kwargs):
             tag_paths[tag] = paths
     return tag_paths
 
+def get_tag_paths_outschema(xmlschema, namespaces, **kwargs):
+    possible_tags = xmlschema.xpath('//xsd:element/@name', namespaces=namespaces)
+    tag_paths = {}
+    for tag in possible_tags:
+        paths = get_xpath(xmlschema, namespaces, tag, stop_group=True)
+        if paths is not None:
+            tag_paths[tag] = paths
+    return tag_paths
+
+def get_group_paths(xmlschema, namespaces, **kwargs):
+    possible_tags = xmlschema.xpath('//xsd:element/@name', namespaces=namespaces)
+    tag_paths = {}
+    for tag in possible_tags:
+        paths = get_xpath(xmlschema, namespaces, tag, group_root=True)
+        if paths is not None:
+            tag_paths[tag] = paths
+    return tag_paths
+
+
+def get_attrib_paths_outschema(xmlschema, namespaces, **kwargs):
+    attrib_paths = {}
+    possible_attrib = xmlschema.xpath('//xsd:attribute/@name', namespaces=namespaces)
+    for attrib in possible_attrib:
+        paths = get_attrib_xpath(xmlschema, namespaces, attrib, stop_group=True)
+        if paths is not None:
+            attrib_paths[attrib] = paths
+    return attrib_paths
+
+def get_attrib_group_paths(xmlschema, namespaces, **kwargs):
+    attrib_paths = {}
+    possible_attrib = xmlschema.xpath('//xsd:attribute/@name', namespaces=namespaces)
+    for attrib in possible_attrib:
+        paths = get_attrib_xpath(xmlschema, namespaces, attrib, group_root=True)
+        if paths is not None:
+            attrib_paths[attrib] = paths
+    return attrib_paths
 
 def get_attrib_paths(xmlschema, namespaces, **kwargs):
     attrib_paths = {}

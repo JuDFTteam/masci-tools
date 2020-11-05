@@ -25,8 +25,10 @@ def create_outschema_dict(path):
 
     #Add new functionality to this dictionary here
     schema_actions = {
-        'tag_paths': schema_parse.get_tag_paths,
-        'attrib_paths': schema_parse.get_attrib_paths,
+        'tag_paths': schema_parse.get_tag_paths_outschema,
+        'iteration_paths': schema_parse.get_group_paths,
+        'attrib_paths': schema_parse.get_attrib_paths_outschema,
+        'iteration_attrib_paths': schema_parse.get_attrib_group_paths,
         'tags_several': schema_parse.get_tags_several,
         'tag_order': schema_parse.get_tags_order,
         'basic_types': schema_parse.get_basic_types,
@@ -50,7 +52,7 @@ def create_outschema_dict(path):
         schema_dict[key] = action(xmlschema, namespaces, **schema_dict, input_basic_types=inpschema_dict['basic_types'])
 
     with open(f'{path}/outschema_dict.py', 'w') as f:
-        f.write('# -*- coding: utf-8 -*-')
+        f.write('# -*- coding: utf-8 -*-\n')
         f.write(f"__inp_version__ = '{out_version}'\n")
         f.write('schema_dict = ')
         pprint(schema_dict, f)

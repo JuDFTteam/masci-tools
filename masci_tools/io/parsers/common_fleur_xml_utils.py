@@ -23,12 +23,12 @@ def clear_xml(tree, schema_dict=None):
     # replace XInclude parts to validate against schema
     cleared_tree.xinclude()
 
-    if schema_dict is None:
+    if schema_dict is not None:
         # get rid of xml:base attribute in the included parts
         for include_tag in possible_include:
             try:
                 include_path = get_tag_xpath(schema_dict, include_tag)
-            except ValueError:
+            except (ValueError,KeyError):
                 continue
             included_elem = tree.xpath(include_path)
             if included_elem != []:
