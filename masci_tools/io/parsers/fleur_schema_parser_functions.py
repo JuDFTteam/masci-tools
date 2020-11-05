@@ -169,7 +169,14 @@ def get_length(xmlschema, namespaces, type_name):
     return 1
 
 
-def get_xpath(xmlschema, namespaces, tag_name, enforce_end_type=None, ref=None, stop_non_unique=False, stop_group=False, group_root=False):
+def get_xpath(xmlschema,
+              namespaces,
+              tag_name,
+              enforce_end_type=None,
+              ref=None,
+              stop_non_unique=False,
+              stop_group=False,
+              group_root=False):
     """
     construct all possible simple xpaths to a given tag
     """
@@ -206,7 +213,7 @@ def get_xpath(xmlschema, namespaces, tag_name, enforce_end_type=None, ref=None, 
         if parent_tag == 'group':
             if stop_group:
                 continue
-            elif group_root:
+            if group_root:
                 return f'/{currentTag}'
             possible_paths_group = get_xpath(xmlschema,
                                              namespaces,
@@ -301,6 +308,20 @@ def get_attrib_xpath(xmlschema, namespaces, attrib_name, stop_non_unique=False, 
         return possible_paths
 
 
+def get_group_tags(xmlschema, namespaces, **kwargs):
+    group_tags = []
+    group_refs = xmlschema.xpath('//xsd:group[@ref]', namespaces=namespaces)
+
+    for ref in group_refs:
+        parent_type, parent_tag = get_parent_fleur_type(ref, namespaces)
+        type_ref = xmlschema.xpath(f"//xsd:element[@type='{parent_type.attrib['name']}']", namespaces=namespaces)
+
+        for elem in type_ref:
+            if elem.attrib['name'] not in group_tags:
+                group_tags.append(elem.attrib['name'])
+    return group_tags
+
+
 def get_tags_several(xmlschema, namespaces, **kwargs):
     tags_several = []
     tags = xmlschema.xpath('//xsd:element[@maxOccurs!=1]/@name', namespaces=namespaces)
@@ -386,6 +407,7 @@ def get_tag_paths(xmlschema, namespaces, **kwargs):
             tag_paths[tag] = paths
     return tag_paths
 
+
 def get_tag_paths_outschema(xmlschema, namespaces, **kwargs):
     possible_tags = xmlschema.xpath('//xsd:element/@name', namespaces=namespaces)
     tag_paths = {}
@@ -394,6 +416,7 @@ def get_tag_paths_outschema(xmlschema, namespaces, **kwargs):
         if paths is not None:
             tag_paths[tag] = paths
     return tag_paths
+
 
 def get_group_paths(xmlschema, namespaces, **kwargs):
     possible_tags = xmlschema.xpath('//xsd:element/@name', namespaces=namespaces)
@@ -414,6 +437,7 @@ def get_attrib_paths_outschema(xmlschema, namespaces, **kwargs):
             attrib_paths[attrib] = paths
     return attrib_paths
 
+
 def get_attrib_group_paths(xmlschema, namespaces, **kwargs):
     attrib_paths = {}
     possible_attrib = xmlschema.xpath('//xsd:attribute/@name', namespaces=namespaces)
@@ -422,6 +446,7 @@ def get_attrib_group_paths(xmlschema, namespaces, **kwargs):
         if paths is not None:
             attrib_paths[attrib] = paths
     return attrib_paths
+
 
 def get_attrib_paths(xmlschema, namespaces, **kwargs):
     attrib_paths = {}

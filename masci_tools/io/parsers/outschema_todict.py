@@ -25,6 +25,7 @@ def create_outschema_dict(path):
 
     #Add new functionality to this dictionary here
     schema_actions = {
+        'group_tags': schema_parse.get_group_tags,
         'tag_paths': schema_parse.get_tag_paths_outschema,
         'iteration_paths': schema_parse.get_group_paths,
         'attrib_paths': schema_parse.get_attrib_paths_outschema,
