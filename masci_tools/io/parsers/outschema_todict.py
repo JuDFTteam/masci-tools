@@ -40,7 +40,7 @@ def create_outschema_dict(path):
 
     namespaces = {"xsd": "http://www.w3.org/2001/XMLSchema"}
     out_version = xmlschema.xpath("/xsd:schema/@version", namespaces=namespaces)[0]
-    inpschema_dict = load_inpschema(out_version)
+    inpschema_dict = load_inpschema(out_version) #Used to make type definitions available without reparsing inputSchema
 
     schema_dict = {}
     for key, action in schema_actions.items():
