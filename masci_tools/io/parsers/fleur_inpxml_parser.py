@@ -3,7 +3,7 @@ from pprint import pprint
 from masci_tools.io.parsers.inpschema_todict import load_inpschema
 from masci_tools.io.parsers.common_fleur_xml_utils import clear_xml, convert_xml_attribute
 
-def inpxml_parse(inpxmlfile, return_errmsg=False):
+def inpxml_parser(inpxmlfile, return_errmsg=False, version=None):
 
     if isinstance(inpxmlfile,str):
         parser = etree.XMLParser(attribute_defaults=True, encoding='utf-8')
@@ -12,12 +12,13 @@ def inpxml_parse(inpxmlfile, return_errmsg=False):
         xmltree = inpxmlfile
 
     xmltree = clear_xml(xmltree)
+    root = xmltree.getroot()
 
-    try:
-        root = xmltree.getroot()
-        version = root.attrib['fleurInputVersion']
-    except:
-        raise ValueError('Failed to extract inputVersion')
+    if version is None:
+        try:
+            version = root.attrib['fleurInputVersion']
+        except:
+            raise ValueError('Failed to extract inputVersion')
 
     schema_dict, xmlschema = load_inpschema(version, schema_return=True)
 

@@ -32,15 +32,15 @@ def get_parent_fleur_type(elem,namespaces,stop_sequence=False):
     If stop_sequence is given and True None is returned when a sequence is encountered
     in the parent chain
     """
-    fleur_types = ['simpleType','complexType']
+    valid_end_types = ['simpleType','complexType','group']
+    if stop_sequence:
+        valid_end_types.append('sequence')
     parent = elem.getparent()
     parent_type = remove_xsd_namespace(parent.tag,namespaces)
-    while parent_type not in fleur_types:
-        if parent_type == 'sequence' and stop_sequence:
-            return None
+    while parent_type not in valid_end_types:
         parent = parent.getparent()
         parent_type = remove_xsd_namespace(parent.tag,namespaces)
-    return parent
+    return parent, parent_type
 
 def get_root_tag(xmlschema,namespaces):
     """
@@ -152,7 +152,7 @@ def get_xpath(xmlschema,namespaces,tag_name,enforce_end_type=None,stop_non_uniqu
     for elem in startPoints:
         currentelem = elem
         currentTag = tag_name
-        parent_type = get_parent_fleur_type(currentelem,namespaces)
+        parent_type, parent_tag = get_parent_fleur_type(currentelem,namespaces)
         next_type = parent_type.attrib['name']
         if stop_non_unique:
             currentelem = xmlschema.xpath(f"//xsd:element[@type='{next_type}' and @maxOccurs=1] | //xsd:element[@type='{next_type}' and not(@maxOccurs)]", namespaces=namespaces)
@@ -182,15 +182,16 @@ def get_attrib_xpath(xmlschema,namespaces,attrib_name,stop_non_unique=False):
     possible_paths = []
     attribute_tags = xmlschema.xpath(f"//xsd:attribute[@name='{attrib_name}']", namespaces=namespaces)
     for attrib in attribute_tags:
-        attrib_type = get_parent_fleur_type(attrib,namespaces).attrib['name']
+        parent_type, parent_tag = get_parent_fleur_type(attrib,namespaces)
+        start_type = parent_type.attrib['name']
         if stop_non_unique:
-            element_tags = xmlschema.xpath(f"//xsd:element[@type='{attrib_type}' and @maxOccurs=1]/@name | //xsd:element[@type='{attrib_type}' and not(@maxOccurs)]/@name", namespaces=namespaces)
+            element_tags = xmlschema.xpath(f"//xsd:element[@type='{start_type}' and @maxOccurs=1]/@name | //xsd:element[@type='{start_type}' and not(@maxOccurs)]/@name", namespaces=namespaces)
         else:
-            element_tags = xmlschema.xpath(f"//xsd:element[@type='{attrib_type}']/@name", namespaces=namespaces)
+            element_tags = xmlschema.xpath(f"//xsd:element[@type='{start_type}']/@name", namespaces=namespaces)
         if len(element_tags) == 0:
             continue
         for tag in element_tags:
-            tag_paths = get_xpath(xmlschema,namespaces,tag,enforce_end_type=attrib_type,stop_non_unique=stop_non_unique)
+            tag_paths = get_xpath(xmlschema,namespaces,tag,enforce_end_type=start_type,stop_non_unique=stop_non_unique)
             if tag_paths is None:
                 continue
             if not isinstance(tag_paths,list):
@@ -295,8 +296,8 @@ def get_tags_order(xmlschema,namespaces, **kwargs):
     sequences = xmlschema.xpath("//xsd:sequence", namespaces=namespaces)
 
     for sequence in sequences:
-        parent = get_parent_fleur_type(sequence,namespaces,stop_sequence=True)
-        if parent is None: #This sequence is nested in another sequence, meaning it could overwrite the same key
+        parent, parent_tag = get_parent_fleur_type(sequence,namespaces,stop_sequence=True)
+        if parent_tag == 'sequence':
             continue
         parent_type = parent.attrib['name']
         tag_name = xmlschema.xpath(f"//xsd:element[@type='{parent_type}']/@name", namespaces=namespaces)
