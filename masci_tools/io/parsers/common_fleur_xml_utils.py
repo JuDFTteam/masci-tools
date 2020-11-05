@@ -1,8 +1,10 @@
+# -*- coding: utf-8 -*-
 """
 Common functions for parsing input/output files or XMLschemas from FLEUR
 """
 from lxml import etree
 from masci_tools.io.parsers.schema_dict_utils import get_tag_xpath
+
 
 def clear_xml(tree, schema_dict=None):
     """
@@ -14,7 +16,7 @@ def clear_xml(tree, schema_dict=None):
     """
     import copy
 
-    possible_include = ['relaxation','atomGroups','atomSpecies', 'kPointLists', 'symmetryOperations']
+    possible_include = ['relaxation', 'atomGroups', 'atomSpecies', 'kPointLists', 'symmetryOperations']
 
     cleared_tree = copy.deepcopy(tree)
 
@@ -26,7 +28,7 @@ def clear_xml(tree, schema_dict=None):
         for include_tag in possible_include:
             try:
                 include_path = get_tag_xpath(schema_dict, include_tag)
-            except:
+            except ValueError:
                 continue
             included_elem = tree.xpath(include_path)
             if included_elem != []:
@@ -42,6 +44,7 @@ def clear_xml(tree, schema_dict=None):
         com_parent.remove(comment)
 
     return cleared_tree
+
 
 def convert_xml_attribute(stringattribute, possible_types):
 
@@ -63,6 +66,7 @@ def convert_xml_attribute(stringattribute, possible_types):
 
     return None
 
+
 def convert_to_float(value_string):
     """
     Tries to make a float out of a string. If it can't it logs a warning
@@ -74,9 +78,10 @@ def convert_to_float(value_string):
     """
     try:
         value = float(value_string)
-    except:
+    except (TypeError, ValueError):
         return value_string, False
     return value, True
+
 
 def convert_to_int(value_string):
     """
@@ -89,7 +94,7 @@ def convert_to_int(value_string):
     """
     try:
         value = int(value_string)
-    except:
+    except (TypeError, ValueError):
         return value_string, False
     return value, True
 
@@ -115,6 +120,7 @@ def convert_from_fortran_bool(stringbool):
         return stringbool, True  # no conversion needed...
     else:
         return stringbool, False
+
 
 def delete_att(xmltree, xpath, attrib):
     """

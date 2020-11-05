@@ -1,17 +1,17 @@
+# -*- coding: utf-8 -*-
 from lxml import etree
 from pprint import pprint
 from masci_tools.io.parsers.inpschema_todict import load_inpschema
 from masci_tools.io.parsers.common_fleur_xml_utils import clear_xml, convert_xml_attribute
 
+
 def inpxml_parser(inpxmlfile, return_errmsg=False, version=None):
 
-    if isinstance(inpxmlfile,str):
+    if isinstance(inpxmlfile, str):
         parser = etree.XMLParser(attribute_defaults=True, encoding='utf-8')
         xmltree = etree.parse(inpxmlfile, parser)
     else:
         xmltree = inpxmlfile
-
-    root = xmltree.getroot()
 
     if version is None:
         try:
@@ -27,21 +27,21 @@ def inpxml_parser(inpxmlfile, return_errmsg=False, version=None):
 
     message = ''
     success = xmlschema.validate(xmltree)
+    inp_dict = None
     if not success:
-        # get a more information on what does not validate
+        # get more information on what does not validate
         parser_on_fly = etree.XMLParser(attribute_defaults=True, schema=xmlschema, encoding='utf-8')
         inpxmlfile = etree.tostring(xmltree)
+        message = 'Reason is unknown'
         try:
             tree_x = etree.fromstring(inpxmlfile, parser_on_fly)
         except etree.XMLSyntaxError as msg:
             message = msg
-        except:
-            message = 'Reason is unknown'
-
-    inp_dict = inpxml_todict(root, schema_dict)
+    else:
+        inp_dict = inpxml_todict(root, schema_dict)
 
     if return_errmsg:
-        return inp_dict, success , message
+        return inp_dict, success, message
     else:
         if not success:
             raise ValueError(f'Failed to validate the inp.xml against the Schema: {message}')
@@ -73,7 +73,7 @@ def inpxml_todict(parent, schema_dict, omitted_tags=False):
                 if converted_value is not None:
                     return_dict[key] = converted_value
             else:
-                pass #This key should be in simple_elements
+                pass  #This key should be in simple_elements
 
     if parent.text:  # TODO more detal, exp: relPos, basic_elements should have all tags with text and can split them apart and convert to the given type
         # has text, but we don't want all the '\n' s and empty stings in the database
@@ -85,13 +85,13 @@ def inpxml_todict(parent, schema_dict, omitted_tags=False):
             if parent.tag not in schema_dict['simple_elements']:
                 raise KeyError(f'Something is wrong in the schema_dict: {parent.tag} is not in simple_elements')
             text_definition = None
-            if isinstance(schema_dict['simple_elements'][parent.tag],dict):
+            if isinstance(schema_dict['simple_elements'][parent.tag], dict):
                 text_definition = schema_dict['simple_elements'][parent.tag]
             else:
                 for possible_def in schema_dict['simple_elements'][parent.tag]:
                     if possible_def['length'] == len(split_text) or \
                        (possible_def['length'] == 1 and len(split_text) != 1):
-                       text_definition = possible_def
+                        text_definition = possible_def
             if text_definition['length'] == 1:
                 converted_value = convert_xml_attribute(base_text, text_definition['type'])
                 if converted_value is not None:
@@ -109,7 +109,6 @@ def inpxml_todict(parent, schema_dict, omitted_tags=False):
                     return_dict = text_list
                 else:
                     return_dict['value'] = text_list
-
 
     for element in parent:
         if element.tag in schema_dict['tags_several']:
@@ -131,6 +130,3 @@ def inpxml_todict(parent, schema_dict, omitted_tags=False):
             return_dict[element.tag] = inpxml_todict(element, schema_dict)
 
     return return_dict
-
-
-

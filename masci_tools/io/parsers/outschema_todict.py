@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 This module provides the functionality to create/load the schema_dict for the
 FleurInputSchema.xsd
@@ -9,6 +10,7 @@ from lxml import etree
 from pprint import pprint
 import importlib.util
 import os
+
 
 def create_outschema_dict(path):
     """
@@ -22,31 +24,33 @@ def create_outschema_dict(path):
     """
 
     #Add new functionality to this dictionary here
-    schema_actions = {'tag_paths': schema_parse.get_tag_paths,
-                      'attrib_paths': schema_parse.get_attrib_paths,
-                      'tags_several': schema_parse.get_tags_several,
-                      'tag_order': schema_parse.get_tags_order,
-                      'basic_types': schema_parse.get_basic_types,
-                      'attrib_types': schema_parse.extract_attribute_types,
-                      'simple_elements': schema_parse.get_basic_elements,
-                      #'settable_attribs': schema_parse.get_settable_attributes,
-                      #'settable_contains_attribs': schema_parse.get_settable_contains_attributes,
-                      #'omitt_contained_tags': schema_parse.get_omittable_tags,
-                      }
+    schema_actions = {
+        'tag_paths': schema_parse.get_tag_paths,
+        'attrib_paths': schema_parse.get_attrib_paths,
+        'tags_several': schema_parse.get_tags_several,
+        'tag_order': schema_parse.get_tags_order,
+        'basic_types': schema_parse.get_basic_types,
+        'attrib_types': schema_parse.extract_attribute_types,
+        'simple_elements': schema_parse.get_basic_elements,
+        #'settable_attribs': schema_parse.get_settable_attributes,
+        #'settable_contains_attribs': schema_parse.get_settable_contains_attributes,
+        #'omitt_contained_tags': schema_parse.get_omittable_tags,
+    }
 
     print(f'processing: {path}/FleurOutputSchema.xsd')
     xmlschema = etree.parse(f'{path}/FleurOutputSchema.xsd')
     xmlschema = clear_xml(xmlschema)
 
-    namespaces = {"xsd": "http://www.w3.org/2001/XMLSchema"}
-    out_version = xmlschema.xpath("/xsd:schema/@version", namespaces=namespaces)[0]
-    inpschema_dict = load_inpschema(out_version) #Used to make type definitions available without reparsing inputSchema
+    namespaces = {'xsd': 'http://www.w3.org/2001/XMLSchema'}
+    out_version = xmlschema.xpath('/xsd:schema/@version', namespaces=namespaces)[0]
+    inpschema_dict = load_inpschema(out_version)  #Used to make type definitions available without reparsing inputSchema
 
     schema_dict = {}
     for key, action in schema_actions.items():
-        schema_dict[key] = action(xmlschema,namespaces,**schema_dict, input_basic_types=inpschema_dict['basic_types'])
+        schema_dict[key] = action(xmlschema, namespaces, **schema_dict, input_basic_types=inpschema_dict['basic_types'])
 
-    with open(f'{path}/outschema_dict.py','w') as f:
+    with open(f'{path}/outschema_dict.py', 'w') as f:
+        f.write('# -*- coding: utf-8 -*-')
         f.write(f"__inp_version__ = '{out_version}'\n")
         f.write('schema_dict = ')
         pprint(schema_dict, f)
@@ -63,8 +67,8 @@ def load_outschema(version, schema_return=False, return_errmsg=False):
 
     path = os.path.abspath(os.path.join(PACKAGE_DIRECTORY, fleur_schema_path))
 
-    schema_file_path = os.path.join(path,'FleurOutputSchema.xsd')
-    schema_dict_path = os.path.join(path,'outschema_dict.py')
+    schema_file_path = os.path.join(path, 'FleurOutputSchema.xsd')
+    schema_dict_path = os.path.join(path, 'outschema_dict.py')
 
     success = True
     message = ''
@@ -78,10 +82,10 @@ def load_outschema(version, schema_return=False, return_errmsg=False):
     if success:
         if not os.path.isfile(schema_dict_path):
             print(f'Generating schema_dict file for given input schema: {schema_file_path}')
-            create_schema_dict(path)
+            create_outschema_dict(path)
 
         #import schema_dict
-        spec = importlib.util.spec_from_file_location("schema", schema_dict_path)
+        spec = importlib.util.spec_from_file_location('schema', schema_dict_path)
         schema = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(schema)
         schema_dict = schema.schema_dict
