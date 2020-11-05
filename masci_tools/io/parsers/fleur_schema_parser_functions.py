@@ -149,6 +149,13 @@ def get_xpath(xmlschema,namespaces,tag_name,enforce_end_type=None,stop_non_uniqu
         startPoints = xmlschema.xpath(f"//xsd:element[@name='{tag_name}']", namespaces=namespaces)
     else:
         startPoints = xmlschema.xpath(f"//xsd:element[@name='{tag_name}' and @type='{enforce_end_type}']", namespaces=namespaces)
+    if stop_non_unique:
+        startPoints_copy = startPoints.copy()
+        for point in startPoints_copy:
+            if 'maxOccurs' in point.attrib:
+                if point.attrib['maxOccurs'] != '1':
+                    print('remove')
+                    startPoints.remove(point)
     for elem in startPoints:
         currentelem = elem
         currentTag = tag_name
@@ -158,22 +165,24 @@ def get_xpath(xmlschema,namespaces,tag_name,enforce_end_type=None,stop_non_uniqu
             currentelem = xmlschema.xpath(f"//xsd:element[@type='{next_type}' and @maxOccurs=1] | //xsd:element[@type='{next_type}' and not(@maxOccurs)]", namespaces=namespaces)
         else:
             currentelem = xmlschema.xpath(f"//xsd:element[@type='{next_type}']", namespaces=namespaces)
-        
+
         if len(currentelem) == 0:
-            return None
-        
+            continue
         for new_elem in currentelem:
             newTag = new_elem.attrib['name']
-            possible_paths_tag = get_xpath(xmlschema,namespaces,newTag,enforce_end_type=next_type)
-        if not isinstance(possible_paths_tag,list):
-            possible_paths_tag = [possible_paths_tag]
-        for tagpath in possible_paths_tag:
-            possible_paths.append(f'{tagpath}/{tag_name}')
-    
+            possible_paths_tag = get_xpath(xmlschema,namespaces,newTag,enforce_end_type=next_type,stop_non_unique=stop_non_unique)
+            if possible_paths_tag is None:
+                continue
+            if not isinstance(possible_paths_tag,list):
+                possible_paths_tag = [possible_paths_tag]
+            for tagpath in possible_paths_tag:
+                if f'{tagpath}/{tag_name}' not in possible_paths:
+                    possible_paths.append(f'{tagpath}/{tag_name}')
+
     if len(possible_paths) > 1:
         return possible_paths
     elif len(possible_paths) == 0:
-        raise ValueError(f'Found no path to tag {tag_name}')
+        return None
     else:
         return possible_paths[0]
 
@@ -318,6 +327,13 @@ def get_settable_attributes(xmlschema,namespaces, **kwargs):
         if path is not None:
             settable[attrib] = path.replace(f'/@{attrib}','')
 
+    for attrib, attrib_dict in kwargs['simple_elements'].items():
+        path = get_xpath(xmlschema,namespaces,attrib,stop_non_unique=True)
+        print(path)
+        if path is not None:
+            if not isinstance(path,list):
+                settable[attrib] = path.replace(f'/@{attrib}','')
+
     return settable
 
 def get_settable_contains_attributes(xmlschema,namespaces, **kwargs):
@@ -330,6 +346,14 @@ def get_settable_contains_attributes(xmlschema,namespaces, **kwargs):
             if not isinstance(path,list):
                 path = [path]
             settable[attrib] = [x.replace(f'/@{attrib}','') for x in path]
+
+    for attrib, attrib_dict in kwargs['simple_elements'].items():
+        path = get_xpath(xmlschema,namespaces,attrib,stop_non_unique=True)
+        if path is not None:
+            if not isinstance(path,list):
+                path = [path]
+            if attrib not in kwargs['settable_attribs']:
+                settable[attrib] = [x.replace(f'/@{attrib}','') for x in path]
 
     return settable
 
