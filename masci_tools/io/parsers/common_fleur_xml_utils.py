@@ -2,8 +2,9 @@
 Common functions for parsing input/output files or XMLschemas from FLEUR
 """
 from lxml import etree
+from masci_tools.io.parsers.schema_dict_utils import get_tag_xpath
 
-def clear_xml(tree):
+def clear_xml(tree, schema_dict=None):
     """
     Removes comments and executes xinclude tags of an
     xml tree.
@@ -13,10 +14,26 @@ def clear_xml(tree):
     """
     import copy
 
+    possible_include = ['relaxation','atomGroups','atomSpecies', 'kPointLists', 'symmetryOperations']
+
     cleared_tree = copy.deepcopy(tree)
 
     # replace XInclude parts to validate against schema
     cleared_tree.xinclude()
+
+    if schema_dict is None:
+        # get rid of xml:base attribute in the included parts
+        for include_tag in possible_include:
+            try:
+                include_path = get_tag_xpath(schema_dict, include_tag)
+            except:
+                continue
+            included_elem = tree.xpath(include_path)
+            if included_elem != []:
+                included_elem = included_elem[0]
+                for attribute in included_elem.keys():
+                    if 'base' in attribute:
+                        cleared_tree = delete_att(cleared_tree, include_path, attribute)
 
     # remove comments from inp.xml
     comments = cleared_tree.xpath('//comment()')
@@ -98,3 +115,21 @@ def convert_from_fortran_bool(stringbool):
         return stringbool, True  # no conversion needed...
     else:
         return stringbool, False
+
+def delete_att(xmltree, xpath, attrib):
+    """
+    Deletes an xml tag in an xmletree.
+
+    :param xmltree: an xmltree that represents inp.xml
+    :param xpathn: a path to the attribute to be deleted
+    :param attrib: the name of an attribute
+    """
+    root = xmltree.getroot()
+    nodes = root.xpath(xpath)
+    if nodes:
+        for node in nodes:
+            try:
+                del node.attrib[attrib]
+            except BaseException:
+                pass
+    return xmltree

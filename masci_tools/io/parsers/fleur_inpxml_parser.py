@@ -11,16 +11,19 @@ def inpxml_parser(inpxmlfile, return_errmsg=False, version=None):
     else:
         xmltree = inpxmlfile
 
-    xmltree = clear_xml(xmltree)
     root = xmltree.getroot()
 
     if version is None:
         try:
+            root = xmltree.getroot()
             version = root.attrib['fleurInputVersion']
         except:
             raise ValueError('Failed to extract inputVersion')
 
     schema_dict, xmlschema = load_inpschema(version, schema_return=True)
+
+    xmltree = clear_xml(xmltree, schema_dict=schema_dict)
+    root = xmltree.getroot()
 
     message = ''
     success = xmlschema.validate(xmltree)
@@ -128,4 +131,6 @@ def inpxml_todict(parent, schema_dict, omitted_tags=False):
             return_dict[element.tag] = inpxml_todict(element, schema_dict)
 
     return return_dict
+
+
 
