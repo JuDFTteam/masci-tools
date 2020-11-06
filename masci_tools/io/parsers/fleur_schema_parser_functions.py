@@ -324,10 +324,20 @@ def get_group_tags(xmlschema, namespaces, **kwargs):
 
 def get_tags_several(xmlschema, namespaces, **kwargs):
     tags_several = []
-    tags = xmlschema.xpath('//xsd:element[@maxOccurs!=1]/@name', namespaces=namespaces)
+    tags = xmlschema.xpath('//xsd:*[@maxOccurs!=1]', namespaces=namespaces)
     for tag in tags:
-        if tag not in tags_several:
-            tags_several.append(tag)
+        tag_type = remove_xsd_namespace(tag.tag, namespaces)
+        if tag_type == 'element':
+            name_list = [tag.attrib['name']]
+        elif tag_type in ['choice', 'sequence']:
+            name_list = get_sequence_order(xmlschema, namespaces, tag)
+            if not isinstance(name_list, list):
+                name_list = [name_list]
+        else:
+            raise ValueError(f"Don't know what to do with {tag_type}")
+        for name in name_list:
+            if name not in tags_several:
+                tags_several.append(name)
     return tags_several
 
 

@@ -724,6 +724,9 @@ schema_dict = {'attrib_paths': {'Gmax': '/fleurInput/calculationSetup/cutoffs/@G
                   'ldaU',
                   'lo',
                   'atomGroup',
+                  'relPos',
+                  'absPos',
+                  'filmPos',
                   'specialPoint',
                   'kPoint',
                   'stateOccupation']}
