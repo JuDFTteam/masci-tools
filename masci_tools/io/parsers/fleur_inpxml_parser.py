@@ -1,4 +1,19 @@
 # -*- coding: utf-8 -*-
+###############################################################################
+# Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
+#                All rights reserved.                                         #
+# This file is part of the Masci-tools package.                               #
+# (Material science tools)                                                    #
+#                                                                             #
+# The code is hosted on GitHub at https://github.com/judftteam/masci-tools    #
+# For further information on the license, see the LICENSE.txt file            #
+# For further information please visit http://www.flapw.de or                 #
+#                                                                             #
+###############################################################################
+"""
+This module contains functions to load an fleur inp.xml file, parse it with a schema
+and convert its content to a dict
+"""
 from lxml import etree
 from pprint import pprint
 from masci_tools.io.parsers.inpschema_todict import load_inpschema
@@ -6,7 +21,9 @@ from masci_tools.io.parsers.common_fleur_xml_utils import clear_xml, convert_xml
 
 
 def inpxml_parser(inpxmlfile, return_errmsg=False, version=None):
-
+    """
+    
+    """
     if isinstance(inpxmlfile, str):
         parser = etree.XMLParser(attribute_defaults=True, encoding='utf-8')
         xmltree = etree.parse(inpxmlfile, parser)
