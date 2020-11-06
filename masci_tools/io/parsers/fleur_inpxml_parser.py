@@ -98,7 +98,7 @@ def inpxml_todict(parent, schema_dict, omitted_tags=False):
                     if not return_dict:
                         return_dict = converted_value
                     else:
-                        return_dict['value'] = converted_value
+                        return_dict['text_value'] = converted_value
             else:
                 text_list = []
                 for value in split_text:
@@ -108,7 +108,7 @@ def inpxml_todict(parent, schema_dict, omitted_tags=False):
                 if not return_dict:
                     return_dict = text_list
                 else:
-                    return_dict['value'] = text_list
+                    return_dict['text_value'] = text_list
 
     for element in parent:
         if element.tag in schema_dict['tags_several']:
@@ -122,7 +122,17 @@ def inpxml_todict(parent, schema_dict, omitted_tags=False):
             if omitted_tags:
                 return_dict.append(inpxml_todict(element, schema_dict))
             else:
-                return_dict[element.tag].append(inpxml_todict(element, schema_dict))
+                tmp_return_dict = inpxml_todict(element, schema_dict)
+                if 'text_value' in tmp_return_dict:
+                    for key, value in tmp_return_dict.items():
+                        if key == 'text_value':
+                            return_dict[element.tag].append(tmp_return_dict['text_value'])
+                        else:
+                            if key not in return_dict:
+                                return_dict[key] = []
+                            return_dict[key].append(value)
+                else:
+                    return_dict[element.tag].append(tmp_return_dict)
         elif element.tag in schema_dict['omitt_contained_tags']:
             #The tags on level deeper are not useful in a parsed python dictionary
             return_dict[element.tag] = inpxml_todict(element, schema_dict, omitted_tags=True)
