@@ -92,7 +92,7 @@ def inpxml_todict(parent, schema_dict, omitted_tags=False):
             else:
                 pass  #This key should be in simple_elements
 
-    if parent.text:  # TODO more detal, exp: relPos, basic_elements should have all tags with text and can split them apart and convert to the given type
+    if parent.text:
         # has text, but we don't want all the '\n' s and empty stings in the database
         if parent.text.strip() != '':  # might not be the best solutions
             base_text = parent.text.strip()
@@ -100,7 +100,7 @@ def inpxml_todict(parent, schema_dict, omitted_tags=False):
             while '' in split_text:
                 split_text.remove('')
             if parent.tag not in schema_dict['simple_elements']:
-                raise KeyError(f'Something is wrong in the schema_dict: {parent.tag} is not in simple_elements')
+                raise KeyError(f'Something is wrong in the schema_dict: {parent.tag} is not in simple_elements, but it has text')
             text_definition = None
             if isinstance(schema_dict['simple_elements'][parent.tag], dict):
                 text_definition = schema_dict['simple_elements'][parent.tag]
@@ -116,6 +116,9 @@ def inpxml_todict(parent, schema_dict, omitted_tags=False):
                         return_dict = converted_value
                     else:
                         return_dict['text_value'] = converted_value
+                        if 'label' in return_dict:
+                            return_dict['text_label'] = return_dict['label']
+                            return_dict.pop('label')
             else:
                 text_list = []
                 for value in split_text:
@@ -126,6 +129,9 @@ def inpxml_todict(parent, schema_dict, omitted_tags=False):
                     return_dict = text_list
                 else:
                     return_dict['text_value'] = text_list
+                    if 'label' in return_dict:
+                        return_dict['text_label'] = return_dict['label']
+                        return_dict.pop('label')
 
     for element in parent:
         if element.tag in schema_dict['tags_several']:
@@ -144,10 +150,21 @@ def inpxml_todict(parent, schema_dict, omitted_tags=False):
                     for key, value in tmp_return_dict.items():
                         if key == 'text_value':
                             return_dict[element.tag].append(tmp_return_dict['text_value'])
+                        elif key == 'text_label':
+                            if 'labels' not in return_dict:
+                                return_dict['labels'] = {}
+                            return_dict['labels'][tmp_return_dict['text_label']] = tmp_return_dict['text_value']
                         else:
                             if key not in return_dict:
                                 return_dict[key] = []
+                            elif not isinstance(return_dict[key],list): #Key seems to be defined already
+                                raise ValueError(f'{key} cannot be extracted to the next level')
                             return_dict[key].append(value)
+                    for key in tmp_return_dict.keys():
+                        if key in ['text_value', 'text_label']:
+                            continue
+                        if len(return_dict[key]) != len(return_dict[element.tag]):
+                            raise ValueError(f'Extracted optional argument {key} at the moment only label is supported correctly')
                 else:
                     return_dict[element.tag].append(tmp_return_dict)
         elif element.tag in schema_dict['omitt_contained_tags']:
