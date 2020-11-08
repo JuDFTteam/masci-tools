@@ -19,7 +19,8 @@ def get_base_types():
         'xsd:nonNegativeInteger', 'xsd:positiveInteger', 'xsd:integer', 'AngularMomentumNumberType',
         'MainQuantumNumberType'
     ]
-    base_types['float'] = ['xsd:double', 'FleurDouble']
+    base_types['float'] = ['xsd:double']
+    base_types['float_expression'] = ['FleurDouble']
     base_types['string'] = ['xsd:string']
 
     return base_types

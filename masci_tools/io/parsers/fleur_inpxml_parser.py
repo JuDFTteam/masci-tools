@@ -17,7 +17,7 @@ and convert its content to a dict
 from lxml import etree
 from pprint import pprint
 from masci_tools.io.parsers.inpschema_todict import load_inpschema
-from masci_tools.io.parsers.common_fleur_xml_utils import clear_xml, convert_xml_attribute
+from masci_tools.io.parsers.common_fleur_xml_utils import clear_xml, convert_xml_attribute, read_constants
 
 
 def inpxml_parser(inpxmlfile, return_errmsg=False, version=None):
@@ -42,6 +42,8 @@ def inpxml_parser(inpxmlfile, return_errmsg=False, version=None):
     xmltree = clear_xml(xmltree, schema_dict=schema_dict)
     root = xmltree.getroot()
 
+    constants = read_constants(xmltree,schema_dict)
+
     message = ''
     success = xmlschema.validate(xmltree)
     inp_dict = None
@@ -55,7 +57,7 @@ def inpxml_parser(inpxmlfile, return_errmsg=False, version=None):
         except etree.XMLSyntaxError as msg:
             message = msg
     else:
-        inp_dict = inpxml_todict(root, schema_dict)
+        inp_dict = inpxml_todict(root, schema_dict, constants)
 
     if return_errmsg:
         return inp_dict, success, message
@@ -65,7 +67,7 @@ def inpxml_parser(inpxmlfile, return_errmsg=False, version=None):
         return inp_dict
 
 
-def inpxml_todict(parent, schema_dict, omitted_tags=False):
+def inpxml_todict(parent, schema_dict, constants, omitted_tags=False):
     """
     Recursive operation which transforms an xml etree to
     python nested dictionaries and lists.
@@ -110,7 +112,7 @@ def inpxml_todict(parent, schema_dict, omitted_tags=False):
                        (possible_def['length'] == 1 and len(split_text) != 1):
                         text_definition = possible_def
             if text_definition['length'] == 1:
-                converted_value = convert_xml_attribute(base_text, text_definition['type'])
+                converted_value = convert_xml_attribute(base_text, text_definition['type'], constants)
                 if converted_value is not None:
                     if not return_dict:
                         return_dict = converted_value
@@ -122,7 +124,7 @@ def inpxml_todict(parent, schema_dict, omitted_tags=False):
             else:
                 text_list = []
                 for value in split_text:
-                    converted_value = convert_xml_attribute(value, text_definition['type'])
+                    converted_value = convert_xml_attribute(value, text_definition['type'], constants)
                     if converted_value is not None:
                         text_list.append(converted_value)
                 if not return_dict:
@@ -143,9 +145,9 @@ def inpxml_todict(parent, schema_dict, omitted_tags=False):
                 else:
                     return_dict[element.tag] = []
             if omitted_tags:
-                return_dict.append(inpxml_todict(element, schema_dict))
+                return_dict.append(inpxml_todict(element, constants, schema_dict))
             else:
-                tmp_return_dict = inpxml_todict(element, schema_dict)
+                tmp_return_dict = inpxml_todict(element, constants, schema_dict)
                 if 'text_value' in tmp_return_dict:
                     for key, value in tmp_return_dict.items():
                         if key == 'text_value':
@@ -169,8 +171,8 @@ def inpxml_todict(parent, schema_dict, omitted_tags=False):
                     return_dict[element.tag].append(tmp_return_dict)
         elif element.tag in schema_dict['omitt_contained_tags']:
             #The tags on level deeper are not useful in a parsed python dictionary
-            return_dict[element.tag] = inpxml_todict(element, schema_dict, omitted_tags=True)
+            return_dict[element.tag] = inpxml_todict(element, schema_dict, constants, omitted_tags=True)
         else:
-            return_dict[element.tag] = inpxml_todict(element, schema_dict)
+            return_dict[element.tag] = inpxml_todict(element, constants, schema_dict)
 
     return return_dict

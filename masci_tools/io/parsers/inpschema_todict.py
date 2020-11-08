@@ -71,7 +71,7 @@ def load_inpschema(version, schema_return=False, return_errmsg=False):
 
     PACKAGE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 
-    fleur_schema_path = f'./fleur_schema/{version}'
+    fleur_schema_path = f'./fleur/fleur_schema/{version}'
 
     path = os.path.abspath(os.path.join(PACKAGE_DIRECTORY, fleur_schema_path))
 
