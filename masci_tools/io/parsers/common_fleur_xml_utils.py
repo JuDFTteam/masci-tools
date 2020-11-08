@@ -101,7 +101,8 @@ def convert_xml_attribute(stringattribute, possible_types, constants):
         if value_type == 'float':
             converted_value, suc = convert_to_float(stringattribute)
         elif value_type == 'float_expression':
-            converted_value, suc = calculate_expression(stringattribute, constants)
+            converted_value = calculate_expression(stringattribute, constants)
+            suc = True
         elif value_type == 'int':
             converted_value, suc = convert_to_int(stringattribute)
         elif value_type == 'switch':

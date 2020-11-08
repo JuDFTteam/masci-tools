@@ -18,7 +18,7 @@ from __future__ import absolute_import
 import numpy as np
 
 
-def calculate_expression(expression, constants, prevCommand=None, suc_return=True):
+def calculate_expression(expression, constants, prevCommand=None, exp_return=False):
     """
     Recursively evaluates the given expression string with the given defined constants
 
@@ -27,7 +27,7 @@ def calculate_expression(expression, constants, prevCommand=None, suc_return=Tru
     :param prevCommand: str, which gives the command before the beginning of the current block
                         if it is given the calculation is stopped, when a command is encountered, which should
                         be exectuted after prevCommand (order of operations)
-    :param suc_return: bool, determines whether to return a bool, which indicates success of the conversion
+    :param exp_return: bool, determines whether to return the remaining string of the expression
 
     :return: float value of the given expression string
     """
@@ -54,7 +54,7 @@ def calculate_expression(expression, constants, prevCommand=None, suc_return=Tru
 
     stop_loop = False
     loop_count = 0
-    expression = expression.strip()
+    expression = expression.replace(' ','')
     value = None
     while not stop_loop and len(expression) != 0:
         loop_count += 1
@@ -104,25 +104,25 @@ def calculate_expression(expression, constants, prevCommand=None, suc_return=Tru
                     block_value, expression = calculate_expression(expression[1:],
                                                                    constants,
                                                                    prevCommand='+',
-                                                                   suc_return=False)
+                                                                   exp_return=True)
                     value += block_value
                 elif operator == '-':
                     block_value, expression = calculate_expression(expression[1:],
                                                                    constants,
                                                                    prevCommand='-',
-                                                                   suc_return=False)
+                                                                   exp_return=True)
                     value -= block_value
                 elif operator == '*':
                     block_value, expression = calculate_expression(expression[1:],
                                                                    constants,
                                                                    prevCommand='*',
-                                                                   suc_return=False)
+                                                                   exp_return=True)
                     value *= block_value
                 elif operator == '/':
                     block_value, expression = calculate_expression(expression[1:],
                                                                    constants,
                                                                    prevCommand='/',
-                                                                   suc_return=False)
+                                                                   exp_return=True)
                     if abs(block_value) < 1e-12:
                         raise ValueError('Undefined Expression: Division by zero')
                     value *= 1.0 / block_value
@@ -130,19 +130,19 @@ def calculate_expression(expression, constants, prevCommand=None, suc_return=Tru
                     block_value, expression = calculate_expression(expression[1:],
                                                                    constants,
                                                                    prevCommand='%',
-                                                                   suc_return=False)
+                                                                   exp_return=True)
                     value = value % block_value
                 elif operator in ['^', '**']:
                     if operator == '^':
                         block_value, expression = calculate_expression(expression[1:],
                                                                        constants,
                                                                        prevCommand='^',
-                                                                       suc_return=False)
+                                                                       exp_return=True)
                     elif operator == '**':
                         block_value, expression = calculate_expression(expression[2:],
                                                                        constants,
                                                                        prevCommand='**',
-                                                                       suc_return=False)
+                                                                       exp_return=True)
                     if abs(value) < 1e-12 and abs(block_value) < 1e-12:
                         raise ValueError('Undefined Expression: 0^0')
                     if value < 0.0 and abs(int(block_value) - block_value) > 1e-12:
@@ -158,11 +158,10 @@ def calculate_expression(expression, constants, prevCommand=None, suc_return=Tru
         else:
             raise ValueError(f'Invalid expression: Found unexpected character {firstchar}')
 
-    success = value is not None
-    if suc_return:
-        return value, success
-    else:
+    if exp_return:
         return value, expression
+    else:
+        return value
 
 
 def get_first_number(expression):
@@ -237,6 +236,6 @@ def evaluate_bracket(expression, constants):
     if opened_brackets != 0:
         raise ValueError('Invalid Expression: Unbalanced parentheses')
 
-    value, success = calculate_expression(expression[1:closing_pos], constants, suc_return=False)
+    value = calculate_expression(expression[1:closing_pos], constants)
 
     return value, expression[closing_pos + 1:]
