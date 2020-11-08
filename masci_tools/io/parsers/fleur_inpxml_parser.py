@@ -88,7 +88,7 @@ def inpxml_todict(parent, schema_dict, constants, omitted_tags=False):
         # Now we have to convert lazy fortan style into pretty things for the Database
         for key in return_dict:
             if key in schema_dict['attrib_types']:
-                converted_value = convert_xml_attribute(return_dict[key], schema_dict['attrib_types'][key])
+                converted_value = convert_xml_attribute(return_dict[key], schema_dict['attrib_types'][key], constants)
                 if converted_value is not None:
                     return_dict[key] = converted_value
             else:
@@ -145,9 +145,9 @@ def inpxml_todict(parent, schema_dict, constants, omitted_tags=False):
                 else:
                     return_dict[element.tag] = []
             if omitted_tags:
-                return_dict.append(inpxml_todict(element, constants, schema_dict))
+                return_dict.append(inpxml_todict(element, schema_dict, constants))
             else:
-                tmp_return_dict = inpxml_todict(element, constants, schema_dict)
+                tmp_return_dict = inpxml_todict(element, schema_dict, constants)
                 if 'text_value' in tmp_return_dict:
                     for key, value in tmp_return_dict.items():
                         if key == 'text_value':
@@ -173,6 +173,6 @@ def inpxml_todict(parent, schema_dict, constants, omitted_tags=False):
             #The tags on level deeper are not useful in a parsed python dictionary
             return_dict[element.tag] = inpxml_todict(element, schema_dict, constants, omitted_tags=True)
         else:
-            return_dict[element.tag] = inpxml_todict(element, constants, schema_dict)
+            return_dict[element.tag] = inpxml_todict(element, schema_dict, constants)
 
     return return_dict
