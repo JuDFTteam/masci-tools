@@ -22,7 +22,15 @@ from masci_tools.io.parsers.common_fleur_xml_utils import clear_xml, convert_xml
 
 def inpxml_parser(inpxmlfile, return_errmsg=False, version=None):
     """
-    
+    Parses the given inp.xml file to a python dictionary utilizing the schema
+    defined by the version number to validate and corretly convert to the dictionary
+
+    :param inpxmlfile: either path to the inp.xml file or a xml etree to be parsed
+    :param return_errmsg: if True and the file does not validate the error is not raised
+                          in this function. Instead the error message is returned
+    :param version: version string to enforce that a given schema is used
+
+    :return: python dictionary
     """
     if isinstance(inpxmlfile, str):
         parser = etree.XMLParser(attribute_defaults=True, encoding='utf-8')
