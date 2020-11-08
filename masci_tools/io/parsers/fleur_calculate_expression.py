@@ -217,7 +217,7 @@ def evaluate_bracket(expression, constants):
     """
     Evaluates the bracket opened at the start of the expression
 
-    :param expression: expresion to be parsed
+    :param expression: expression to be parsed
     :param constants: dict with defined constants
 
     :return: value of the expression inside the brackets and remaining string of the expression
