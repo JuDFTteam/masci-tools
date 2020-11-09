@@ -1,4 +1,15 @@
 # -*- coding: utf-8 -*-
+###############################################################################
+# Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
+#                All rights reserved.                                         #
+# This file is part of the Masci-tools package.                               #
+# (Material science tools)                                                    #
+#                                                                             #
+# The code is hosted on GitHub at https://github.com/judftteam/masci-tools    #
+# For further information on the license, see the LICENSE.txt file            #
+# For further information please visit http://www.flapw.de or                 #
+#                                                                             #
+###############################################################################
 """
 functions to extract information about the fleur schema input or output
 """
@@ -19,7 +30,8 @@ def get_base_types():
         'xsd:nonNegativeInteger', 'xsd:positiveInteger', 'xsd:integer', 'AngularMomentumNumberType',
         'MainQuantumNumberType'
     ]
-    base_types['float'] = ['xsd:double', 'FleurDouble']
+    base_types['float'] = ['xsd:double']
+    base_types['float_expression'] = ['FleurDouble']
     base_types['string'] = ['xsd:string']
 
     return base_types
@@ -28,7 +40,11 @@ def get_base_types():
 def remove_xsd_namespace(tag, namespaces):
     """
     Strips the xsd namespace prefix from tags to make the functions more understandable
-    The try block is here if a comment element enters
+
+    :param tag: tag containing the xsd namespace prefix
+    :param namespaces: dictionary with the defined namespaces
+
+    :return: tag with the xsd namespace removed
     """
     return tag.replace(f"{'{'}{namespaces['xsd']}{'}'}", '')
 
@@ -38,6 +54,12 @@ def get_parent_fleur_type(elem, namespaces, stop_sequence=False):
     Returns the parent simple or complexType to the given element
     If stop_sequence is given and True None is returned when a sequence is encountered
     in the parent chain
+
+    :param elem: etree element, starting element
+    :param namespaces: dictionary with the defined namespaces
+    :param stop_sequence: If a sequence is encountered in the loop it alos terminates
+
+    :return: the element of the parent type and the tag of the parent type with the namespaces removed
     """
     valid_end_types = ['simpleType', 'complexType', 'group']
     if stop_sequence:
@@ -53,11 +75,30 @@ def get_parent_fleur_type(elem, namespaces, stop_sequence=False):
 def get_root_tag(xmlschema, namespaces):
     """
     Returns the tag for the root element of the xmlschema
+
+    :param xmlschema: xmltree representing the schema
+    :param namespaces: dictionary with the defined namespaces
+
+    :return: name of the single element defined in the first level of the schema
     """
     return xmlschema.xpath('/xsd:schema/xsd:element/@name', namespaces=namespaces)[0]
 
 
 def analyse_type_elem(xmlschema, namespaces, type_elem, base_types, convert_to_base=True, basic_types_mapping=None):
+    """
+    Analyses the given type element to deduce its base_types
+
+    :param xmlschema: xmltree representing the schema
+    :param namespaces: dictionary with the defined namespaces
+    :param type_elem: etree element of the type to analyse
+    :param base_types: dict with all types, which can be mapped directly to a base_type
+    :param convert_to_base: if True all possible types are converted to their base_types using either base_types
+                            or basic_types_mapping
+    :param basic_types_mapping: dictionary with definitions of basic_types (used for the ouputschema to get the
+                                definitions from the inputschema)
+
+    :return: list of valid base_types
+    """
 
     possible_base_types = []
 
@@ -141,6 +182,17 @@ def analyse_type_elem(xmlschema, namespaces, type_elem, base_types, convert_to_b
 
 
 def get_length(xmlschema, namespaces, type_name):
+    """
+    Analyse the given type to determine, whether there is a length restriction
+
+    :param xmlschema: xmltree representing the schema
+    :param namespaces: dictionary with the defined namespaces
+    :param type_name: name of the type to analyse
+
+    :return: if a length restriction is found return the value,
+             if a list with no restriction is found return 'unbounded',
+             if neither are found return 1
+    """
     type_elem = xmlschema.xpath(f"//xsd:simpleType[@name='{type_name}']", namespaces=namespaces)
     if len(type_elem) == 0:
         #I know that this is not general but this is the only other case than simpleType, which occurs at the moment
@@ -179,6 +231,18 @@ def get_xpath(xmlschema,
               group_root=False):
     """
     construct all possible simple xpaths to a given tag
+
+    :param xmlschema: xmltree representing the schema
+    :param namespaces: dictionary with the defined namespaces
+    :param tag_name: name of the starting tag
+    :param enforce_end_type: If given the type of the starting tag has o match this string
+    :param ref: If given we start from a group reference with this name
+    :param stop_non_unique: If True all paths, where one tag has maxOccurs!=1 is discarded
+    :param stop_group: If True the path generation discards all paths going through a group element
+    :param group_root: If True the path generation only generates paths going through a group but
+                       terminates as if the group element is the root of the file
+    :return: None if no path is found, if a single path is found return the string of the path,
+             otherwise a list with all possible paths is returned
     """
     skip = ['CompositeTimerType']  #These types have infinite recursive paths and CANNOT BE PARSED
     if enforce_end_type in skip:
@@ -271,7 +335,19 @@ def get_xpath(xmlschema,
 
 
 def get_attrib_xpath(xmlschema, namespaces, attrib_name, stop_non_unique=False, stop_group=False, group_root=False):
+    """
+    construct all possible simple xpaths to a given attribute
 
+    :param xmlschema: xmltree representing the schema
+    :param namespaces: dictionary with the defined namespaces
+    :param attrib_name: name of the attribute
+    :param stop_non_unique: If True all paths, where one tag has maxOccurs!=1 is discarded
+    :param stop_group: If True the path generation discards all paths going through a group element
+    :param group_root: If True the path generation only generates paths going through a group but
+                       terminates as if the group element is the root of the file
+    :return: None if no path is found, if a single path is found return the string of the path,
+             otherwise a list with all possible paths is returned
+    """
     possible_paths = []
     attribute_tags = xmlschema.xpath(f"//xsd:attribute[@name='{attrib_name}']", namespaces=namespaces)
     for attrib in attribute_tags:
@@ -309,6 +385,14 @@ def get_attrib_xpath(xmlschema, namespaces, attrib_name, stop_non_unique=False, 
 
 
 def get_group_tags(xmlschema, namespaces, **kwargs):
+    """
+    get all names of reference elements referring to a group
+
+    :param xmlschema: xmltree representing the schema
+    :param namespaces: dictionary with the defined namespaces
+
+    :return: list of tags referring to a group element
+    """
     group_tags = []
     group_refs = xmlschema.xpath('//xsd:group[@ref]', namespaces=namespaces)
 
@@ -323,6 +407,14 @@ def get_group_tags(xmlschema, namespaces, **kwargs):
 
 
 def get_tags_several(xmlschema, namespaces, **kwargs):
+    """
+    get all tags, that have maxOccurs!=1 or a surrounding sequence/choice with maxOccurs!=1
+
+    :param xmlschema: xmltree representing the schema
+    :param namespaces: dictionary with the defined namespaces
+
+    :return: list of tags, which can occur multiple times in the same place
+    """
     tags_several = []
     tags = xmlschema.xpath('//xsd:*[@maxOccurs!=1]', namespaces=namespaces)
     for tag in tags:
@@ -344,6 +436,12 @@ def get_tags_several(xmlschema, namespaces, **kwargs):
 def get_sequence_order(xmlschema, namespaces, sequence_elem):
     """
     Extract the enforced order of elements in the given sequence element
+
+    :param xmlschema: xmltree representing the schema
+    :param namespaces: dictionary with the defined namespaces
+    :param sequence_elem: element of the sequence to analyse
+
+    :return: list of tags, in the order they have to occur in
     """
     elem_order = []
     for child in sequence_elem:
@@ -367,6 +465,12 @@ def get_sequence_order(xmlschema, namespaces, sequence_elem):
 def extract_attribute_types(xmlschema, namespaces, **kwargs):
     """
     Determine the required type of all attributes
+
+    :param xmlschema: xmltree representing the schema
+    :param namespaces: dictionary with the defined namespaces
+
+    :return: possible types of the attributes in a dictionary, if multiple
+             types are possible a list is inserted for the tag
     """
     possible_attrib = xmlschema.xpath('//xsd:attribute', namespaces=namespaces)
 
@@ -409,6 +513,15 @@ def extract_attribute_types(xmlschema, namespaces, **kwargs):
 
 
 def get_tag_paths(xmlschema, namespaces, **kwargs):
+    """
+    Determine simple xpaths to all possible tags
+
+    :param xmlschema: xmltree representing the schema
+    :param namespaces: dictionary with the defined namespaces
+
+    :return: possible paths of all tags in a dictionary, if multiple
+             paths are possible a list is inserted for the tag
+    """
     possible_tags = xmlschema.xpath('//xsd:element/@name', namespaces=namespaces)
     tag_paths = {}
     for tag in possible_tags:
@@ -419,6 +532,16 @@ def get_tag_paths(xmlschema, namespaces, **kwargs):
 
 
 def get_tag_paths_outschema(xmlschema, namespaces, **kwargs):
+    """
+    Determine simple xpaths to all possible tags.
+    Excludes path going through a group element (iteration groups)
+
+    :param xmlschema: xmltree representing the schema
+    :param namespaces: dictionary with the defined namespaces
+
+    :return: possible paths of all tags in a dictionary, if multiple
+             paths are possible a list is inserted for the tag
+    """
     possible_tags = xmlschema.xpath('//xsd:element/@name', namespaces=namespaces)
     tag_paths = {}
     for tag in possible_tags:
@@ -429,6 +552,17 @@ def get_tag_paths_outschema(xmlschema, namespaces, **kwargs):
 
 
 def get_group_paths(xmlschema, namespaces, **kwargs):
+    """
+    Determine simple xpaths to all possible tags.
+    Only includes path going through a group element (iteration groups)
+    and stops, when a group element is encountered
+
+    :param xmlschema: xmltree representing the schema
+    :param namespaces: dictionary with the defined namespaces
+
+    :return: possible paths of all tags in a dictionary, if multiple
+             paths are possible a list is inserted for the tag
+    """
     possible_tags = xmlschema.xpath('//xsd:element/@name', namespaces=namespaces)
     tag_paths = {}
     for tag in possible_tags:
@@ -439,6 +573,16 @@ def get_group_paths(xmlschema, namespaces, **kwargs):
 
 
 def get_attrib_paths_outschema(xmlschema, namespaces, **kwargs):
+    """
+    Determine simple xpaths to all possible attributes.
+    Excludes path going through a group element (iteration groups)
+
+    :param xmlschema: xmltree representing the schema
+    :param namespaces: dictionary with the defined namespaces
+
+    :return: possible paths of all tags in a dictionary, if multiple
+             paths are possible a list is inserted for the tag
+    """
     attrib_paths = {}
     possible_attrib = xmlschema.xpath('//xsd:attribute/@name', namespaces=namespaces)
     for attrib in possible_attrib:
@@ -449,6 +593,17 @@ def get_attrib_paths_outschema(xmlschema, namespaces, **kwargs):
 
 
 def get_attrib_group_paths(xmlschema, namespaces, **kwargs):
+    """
+    Determine simple xpaths to all possible tags.
+    Only includes path going through a group element (iteration groups)
+    and stops, when a group element is encountered
+
+    :param xmlschema: xmltree representing the schema
+    :param namespaces: dictionary with the defined namespaces
+
+    :return: possible paths of all tags in a dictionary, if multiple
+             paths are possible a list is inserted for the tag
+    """
     attrib_paths = {}
     possible_attrib = xmlschema.xpath('//xsd:attribute/@name', namespaces=namespaces)
     for attrib in possible_attrib:
@@ -459,6 +614,15 @@ def get_attrib_group_paths(xmlschema, namespaces, **kwargs):
 
 
 def get_attrib_paths(xmlschema, namespaces, **kwargs):
+    """
+    Determine simple xpaths to all possible tags
+
+    :param xmlschema: xmltree representing the schema
+    :param namespaces: dictionary with the defined namespaces
+
+    :return: possible paths of all tags in a dictionary, if multiple
+             paths are possible a list is inserted for the tag
+    """
     attrib_paths = {}
     possible_attrib = xmlschema.xpath('//xsd:attribute/@name', namespaces=namespaces)
     for attrib in possible_attrib:
@@ -469,6 +633,15 @@ def get_attrib_paths(xmlschema, namespaces, **kwargs):
 
 
 def get_tags_order(xmlschema, namespaces, **kwargs):
+    """
+    Determine the order of contained tags for all elements
+    inclusing a sequence
+
+    :param xmlschema: xmltree representing the schema
+    :param namespaces: dictionary with the defined namespaces
+
+    :return: dictionary with all tags and their corresponding order list
+    """
     tag_order = {}
     sequences = xmlschema.xpath('//xsd:sequence', namespaces=namespaces)
 
@@ -487,7 +660,15 @@ def get_tags_order(xmlschema, namespaces, **kwargs):
 
 
 def get_settable_attributes(xmlschema, namespaces, **kwargs):
+    """
+    Determine all attributes, which can be set through set_inpchanges in aiida_fleur
+    Meaning ONE possible path and no tags in the path with maxOccurs!=1
 
+    :param xmlschema: xmltree representing the schema
+    :param namespaces: dictionary with the defined namespaces
+
+    :return: dictionary with all settable attributes and the corresponding path to the tag
+    """
     settable = {}
     for attrib, path in kwargs['attrib_paths'].items():
         if isinstance(path, list):
@@ -506,7 +687,15 @@ def get_settable_attributes(xmlschema, namespaces, **kwargs):
 
 
 def get_settable_contains_attributes(xmlschema, namespaces, **kwargs):
+    """
+    Determine all attributes, with multiple possible path that do have at
+    least one path with all contained tags maxOccurs!=1
 
+    :param xmlschema: xmltree representing the schema
+    :param namespaces: dictionary with the defined namespaces
+
+    :return: dictionary with all attributes and the corresponding list of paths to the tag
+    """
     settable = {}
     possible_attrib = xmlschema.xpath('//xsd:attribute/@name', namespaces=namespaces)
     for attrib in possible_attrib:
@@ -530,6 +719,11 @@ def get_settable_contains_attributes(xmlschema, namespaces, **kwargs):
 def get_omittable_tags(xmlschema, namespaces, **kwargs):
     """
     find tags with no attributes and, which are only used to mask a list of one other possible tag (e.g. atomSpecies)
+
+    :param xmlschema: xmltree representing the schema
+    :param namespaces: dictionary with the defined namespaces
+
+    :return: list of tags, containing only a sequence of one allowed tag
     """
 
     possible_tags = xmlschema.xpath('//xsd:element', namespaces=namespaces)
@@ -569,6 +763,15 @@ def get_omittable_tags(xmlschema, namespaces, **kwargs):
 
 
 def get_basic_elements(xmlschema, namespaces, **kwargs):
+    """
+    find all elements, whose type can be directly trace back to a basic_type
+
+    :param xmlschema: xmltree representing the schema
+    :param namespaces: dictionary with the defined namespaces
+
+    :return: dictionary with tags and their corresponding type_definition
+             meaning a dicationary with possible base types and evtl. length restriction
+    """
 
     elements = xmlschema.xpath('//xsd:element', namespaces=namespaces)
 
@@ -619,7 +822,15 @@ def get_basic_elements(xmlschema, namespaces, **kwargs):
 
 
 def get_basic_types(xmlschema, namespaces, **kwargs):
+    """
+    find all types, which can be traced back directly to a base_type
 
+    :param xmlschema: xmltree representing the schema
+    :param namespaces: dictionary with the defined namespaces
+
+    :return: dictionary with type names and their corresponding type_definition
+             meaning a dicationary with possible base types and evtl. length restriction
+    """
     basic_type_elems = xmlschema.xpath('//xsd:simpleType[@name]', namespaces=namespaces)
     complex_type_elems = xmlschema.xpath('//xsd:complexType/xsd:simpleContent', namespaces=namespaces)
 

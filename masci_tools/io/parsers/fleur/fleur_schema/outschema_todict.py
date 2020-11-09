@@ -25,13 +25,14 @@ import os
 
 def create_outschema_dict(path):
     """
-    Creates dictionary with information about the FleurInputSchema.xsd and writes
-    it to the same folder in a file called schema_dict.py
+    Creates dictionary with information about the FleurOutputSchema.xsd and writes
+    it to the same folder in a file called outschema_dict.py. The FleurInputSchema.xsd
+    corresponding to the same version is expected to be in the same folder.
 
     The functions, whose results are added to the schema_dict and the corresponding keys
     are defined in schema_actions
 
-    :param parent: str path to the folder containing the FleurInputSchema.xsd file
+    :param path: str path to the folder containing the FleurOutputSchema.xsd file
     """
 
     #Add new functionality to this dictionary here
@@ -77,7 +78,7 @@ def load_outschema(version, schema_return=False, return_errmsg=False):
 
     PACKAGE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 
-    fleur_schema_path = f'./fleur_schema/{version}'
+    fleur_schema_path = f'./fleur/fleur_schema/{version}'
 
     path = os.path.abspath(os.path.join(PACKAGE_DIRECTORY, fleur_schema_path))
 

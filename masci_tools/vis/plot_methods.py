@@ -655,7 +655,8 @@ def histogram(xdata, bins=None, range=None, density=None, weights=None,
                                weights=weights, cumulative=cumulative,
             bottom=bottom, histtype=histtype, align=align, orientation=orientation,
             rwidth=rwidth, log=log, color=color, label=label, stacked=stacked,
-            normed=normed, data=data, **kwargs)
+            #normed=normed, 
+            data=data, **kwargs)
 
 
     if limits:
@@ -744,8 +745,9 @@ def default_histogram(xdata, bins=None, range=None, density=None, weights=None,
                                weights=weights, cumulative=cumulative,
             bottom=bottom, histtype=histtype, align=align, orientation=orientation,
             rwidth=rwidth, log=log, color=color, label=label, stacked=stacked,
-            normed=normed, data=data, **kwargs)
-
+            #normed=normed, 
+            data=data, **kwargs)
+    # normed has somehow changed in matplotlib ...
     if normed:
         mu = np.mean(xdata)
         sigma = np.std(xdata)

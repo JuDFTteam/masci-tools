@@ -16,6 +16,39 @@ Common functions for parsing input/output files or XMLschemas from FLEUR
 from lxml import etree
 from masci_tools.io.parsers.fleur.fleur_schema.schema_dict_utils import get_tag_xpath
 
+def read_constants(xmltree,schema_dict):
+   """
+   Reads in the constants defined in the inp.xml
+   and returns them combined with the predefined constants from
+   fleur as a dictionary
+
+   :param xmltree: xmltree of the inp.xml file
+   :param schema_dict: schema_dictionary of the version of the inp.xml
+
+   :return: a python dictionary with all defined constants
+   """
+
+   from masci_tools.io.parsers.schema_dict_utils import get_tag_xpath
+   import numpy as np
+
+   #Predefined constants in the Fleur Code
+   const_dict = {'Pi': np.pi,
+                 'Deg': 2*np.pi/360.0,
+                 'Ang': 1.8897261247728981,
+                 'nm': 18.897261247728981,
+                 'pm': 0.018897261247728981,
+                 'Bohr': 1.0}
+   xpath_constants = get_tag_xpath(schema_dict,'constant')
+   constant_elems = xmltree.xpath(xpath_constants)
+   for const in constant_elems:
+      name = const.attrib['name']
+      value = const.attrib['value']
+      if name not in const_dict:
+         const_dict[name] = value
+      else:
+         raise KeyError('Ambiguous definition of key {name}')
+
+   return const_dict
 
 def clear_xml(tree, schema_dict=None):
     """
@@ -60,21 +93,27 @@ def clear_xml(tree, schema_dict=None):
     return cleared_tree
 
 
-def convert_xml_attribute(stringattribute, possible_types):
+<<<<<<< HEAD:masci_tools/util/xml/common_xml_util.py
+def convert_xml_attribute(stringattribute, possible_types, constants):
     """
     Tries to converts a given string attribute to the types given in possible_types.
     First succeeded conversion will be returned
 
     :param stringattribute (str): Attribute to convert.
     :param possible_types (str, list of str): What types it will try to convert to
-
+    :param constants: dict, of constants defined in fleur input
     """
+    from masci_tools.util.fleur_calculate_expression import calculate_expression
+
     if not isinstance(possible_types, list):
         possible_types = [possible_types]
     
     for value_type in possible_types:
         if value_type == 'float':
             converted_value, suc = convert_to_float(stringattribute)
+        elif value_type == 'float_expression':
+            converted_value = calculate_expression(stringattribute, constants)
+            suc = True
         elif value_type == 'int':
             converted_value, suc = convert_to_int(stringattribute)
         elif value_type == 'switch':
