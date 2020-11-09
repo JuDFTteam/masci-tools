@@ -1,5 +1,15 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+###############################################################################
+# Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
+#                All rights reserved.                                         #
+# This file is part of the Masci-tools package.                               #
+# (Material science tools)                                                    #
+#                                                                             #
+# The code is hosted on GitHub at https://github.com/judftteam/masci-tools    #
+# For further information on the license, see the LICENSE.txt file            #
+# For further information please visit http://www.flapw.de or                 #
+#                                                                             #
+###############################################################################
 """
 Here commonly used functions that do not need aiida-stuff (i.e. can be tested
 without a database) are collected.
@@ -9,12 +19,6 @@ from __future__ import division
 from __future__ import absolute_import
 import io
 from six.moves import range
-
-__copyright__ = (u"Copyright (c), 2018, Forschungszentrum Jülich GmbH,"
-                 "IAS-1/PGI-1, Germany. All rights reserved.")
-__license__ = "MIT license, see LICENSE.txt file"
-__contributors__ = (u"Philipp Rüßmann")
-__version__ = 1.1
 
 ####################################################################################
 
@@ -33,12 +37,12 @@ def open_general(filename_or_handle, iomode=None):
     reopen_file = False
     # this is needed in order to make python2 and 3 work (in py3 file does not exist anymore)
     import six
-    if six.PY2:
-        if type(filename_or_handle)!=io.TextIOWrapper and type(filename_or_handle)!=file:
-            reopen_file = True
-    else:
-        if type(filename_or_handle)!=io.TextIOWrapper:
-            reopen_file = True
+    #if six.PY2:
+    #    if type(filename_or_handle)!=io.TextIOWrapper and type(filename_or_handle)!=file:
+    #        reopen_file = True
+    #else:
+    if type(filename_or_handle)!=io.TextIOWrapper:
+        reopen_file = True
 
     if reopen_file:
         if iomode is None: iomode = u'r'
