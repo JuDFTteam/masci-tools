@@ -27,8 +27,6 @@ def read_constants(xmltree,schema_dict):
 
    :return: a python dictionary with all defined constants
    """
-
-   from masci_tools.io.parsers.schema_dict_utils import get_tag_xpath
    import numpy as np
 
    #Predefined constants in the Fleur Code
@@ -93,7 +91,6 @@ def clear_xml(tree, schema_dict=None):
     return cleared_tree
 
 
-<<<<<<< HEAD:masci_tools/util/xml/common_xml_util.py
 def convert_xml_attribute(stringattribute, possible_types, constants):
     """
     Tries to converts a given string attribute to the types given in possible_types.
