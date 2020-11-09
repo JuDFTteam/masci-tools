@@ -22,7 +22,18 @@ from masci_tools.io.parsers.common_fleur_xml_utils import clear_xml, convert_xml
 
 def inpxml_parser(inpxmlfile, return_errmsg=False, version=None):
     """
-    
+
+    Args:
+        inpxmlfile (xmltree or str): alreadypath
+        return_errmsg (bool, optional): [description]. Defaults to False.
+        version (float, optional): What . Defaults to None.
+
+    Raises:
+        ValueError: [description]
+        ValueError: [description]
+
+    Returns:
+        [type]: [description]
     """
     if isinstance(inpxmlfile, str):
         parser = etree.XMLParser(attribute_defaults=True, encoding='utf-8')

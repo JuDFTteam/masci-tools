@@ -14,16 +14,15 @@
 This module provides the functionality to create/load the schema_dict for the
 FleurInputSchema.xsd
 """
-import masci_tools.io.parsers.fleur_schema_parser_functions as schema_parse
-from masci_tools.io.parsers.inpschema_todict import load_inpschema
-from masci_tools.io.parsers.common_fleur_xml_utils import clear_xml
+import .fleur_schema_parser_functions as schema_parse
+from masci_tools.util.xml.common_xml_utils import clear_xml
 from lxml import etree
 from pprint import pprint
 import importlib.util
 import os
 
 
-def create_outschema_dict(path):
+def create_inpschema_dict(path):
     """
     Creates dictionary with information about the FleurInputSchema.xsd and writes
     it to the same folder in a file called schema_dict.py
@@ -36,41 +35,36 @@ def create_outschema_dict(path):
 
     #Add new functionality to this dictionary here
     schema_actions = {
-        'group_tags': schema_parse.get_group_tags,
-        'tag_paths': schema_parse.get_tag_paths_outschema,
-        'iteration_paths': schema_parse.get_group_paths,
-        'attrib_paths': schema_parse.get_attrib_paths_outschema,
-        'iteration_attrib_paths': schema_parse.get_attrib_group_paths,
+        'tag_paths': schema_parse.get_tag_paths,
+        'attrib_paths': schema_parse.get_attrib_paths,
         'tags_several': schema_parse.get_tags_several,
         'tag_order': schema_parse.get_tags_order,
         'basic_types': schema_parse.get_basic_types,
         'attrib_types': schema_parse.extract_attribute_types,
         'simple_elements': schema_parse.get_basic_elements,
-        #'settable_attribs': schema_parse.get_settable_attributes,
-        #'settable_contains_attribs': schema_parse.get_settable_contains_attributes,
-        #'omitt_contained_tags': schema_parse.get_omittable_tags,
+        'settable_attribs': schema_parse.get_settable_attributes,
+        'settable_contains_attribs': schema_parse.get_settable_contains_attributes,
+        'omitt_contained_tags': schema_parse.get_omittable_tags,
     }
 
-    print(f'processing: {path}/FleurOutputSchema.xsd')
-    xmlschema = etree.parse(f'{path}/FleurOutputSchema.xsd')
+    print(f'processing: {path}/FleurInputSchema.xsd')
+    xmlschema = etree.parse(f'{path}/FleurInputSchema.xsd')
     xmlschema = clear_xml(xmlschema)
 
     namespaces = {'xsd': 'http://www.w3.org/2001/XMLSchema'}
-    out_version = xmlschema.xpath('/xsd:schema/@version', namespaces=namespaces)[0]
-    inpschema_dict = load_inpschema(out_version)  #Used to make type definitions available without reparsing inputSchema
-
+    inp_version = xmlschema.xpath('/xsd:schema/@version', namespaces=namespaces)[0]
     schema_dict = {}
     for key, action in schema_actions.items():
-        schema_dict[key] = action(xmlschema, namespaces, **schema_dict, input_basic_types=inpschema_dict['basic_types'])
+        schema_dict[key] = action(xmlschema, namespaces, **schema_dict)
 
-    with open(f'{path}/outschema_dict.py', 'w') as f:
+    with open(f'{path}/inpschema_dict.py', 'w') as f:
         f.write('# -*- coding: utf-8 -*-\n')
-        f.write(f"__inp_version__ = '{out_version}'\n")
+        f.write(f"__inp_version__ = '{inp_version}'\n")
         f.write('schema_dict = ')
         pprint(schema_dict, f)
 
 
-def load_outschema(version, schema_return=False, return_errmsg=False):
+def load_inpschema(version, schema_return=False, return_errmsg=False):
     """
     load the FleurInputSchema dict for the specified version
     """
@@ -81,14 +75,14 @@ def load_outschema(version, schema_return=False, return_errmsg=False):
 
     path = os.path.abspath(os.path.join(PACKAGE_DIRECTORY, fleur_schema_path))
 
-    schema_file_path = os.path.join(path, 'FleurOutputSchema.xsd')
-    schema_dict_path = os.path.join(path, 'outschema_dict.py')
+    schema_file_path = os.path.join(path, 'FleurInputSchema.xsd')
+    schema_dict_path = os.path.join(path, 'inpschema_dict.py')
 
     success = True
     message = ''
     if not os.path.isfile(schema_file_path):
         success = False
-        message = f'No output schema found at {path}'
+        message = f'No input schema found at {path}'
         if not return_errmsg:
             raise ValueError(message)
 
@@ -96,7 +90,7 @@ def load_outschema(version, schema_return=False, return_errmsg=False):
     if success:
         if not os.path.isfile(schema_dict_path):
             print(f'Generating schema_dict file for given input schema: {schema_file_path}')
-            create_outschema_dict(path)
+            create_inpschema_dict(path)
 
         #import schema_dict
         spec = importlib.util.spec_from_file_location('schema', schema_dict_path)

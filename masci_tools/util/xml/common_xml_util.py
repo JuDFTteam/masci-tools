@@ -14,16 +14,19 @@
 Common functions for parsing input/output files or XMLschemas from FLEUR
 """
 from lxml import etree
-from masci_tools.io.parsers.schema_dict_utils import get_tag_xpath
+from masci_tools.io.parsers.fleur.fleur_schema.schema_dict_utils import get_tag_xpath
 
 
 def clear_xml(tree, schema_dict=None):
     """
     Removes comments and executes xinclude tags of an
-    xml tree.
+    xml tree. 
 
     :param tree: an xml-tree which will be processes
-    :return cleared_tree: an xml-tree without comments and with replaced xinclude tags
+    :return: cleared_tree, an xml-tree without comments and with replaced xinclude tags
+
+    TODO: Currently what can be included is fleur specific. 
+    But this can probably easily generalized
     """
     import copy
 
@@ -58,10 +61,17 @@ def clear_xml(tree, schema_dict=None):
 
 
 def convert_xml_attribute(stringattribute, possible_types):
+    """
+    Tries to converts a given string attribute to the types given in possible_types.
+    First succeeded conversion will be returned
 
+    :param stringattribute (str): Attribute to convert.
+    :param possible_types (str, list of str): What types it will try to convert to
+
+    """
     if not isinstance(possible_types, list):
         possible_types = [possible_types]
-
+    
     for value_type in possible_types:
         if value_type == 'float':
             converted_value, suc = convert_to_float(stringattribute)
@@ -84,8 +94,8 @@ def convert_to_float(value_string):
     and returns True or False if convertion worked or not.
 
     :param value_string: a string
-    :returns value: the new float or value_string: the string given
-    :returns: True if convertation was successfull, False otherwise
+    :return: value the new float or value_string: the string given
+    :return: True if convertion was successfull, False otherwise
     """
     try:
         value = float(value_string)
@@ -100,8 +110,8 @@ def convert_to_int(value_string):
     and returns True or False if convertion worked or not.
 
     :param value_string: a string
-    :returns value: the new int or value_string: the string given
-    :returns: True or False
+    :return: value the new int or value_string: the string given
+    :return: True or False
     """
     try:
         value = int(value_string)
@@ -135,10 +145,10 @@ def convert_from_fortran_bool(stringbool):
 
 def delete_att(xmltree, xpath, attrib):
     """
-    Deletes an xml tag in an xmletree.
+    Deletes an xml tag in an xmltree.
 
     :param xmltree: an xmltree that represents inp.xml
-    :param xpathn: a path to the attribute to be deleted
+    :param xpath: a path to the attribute to be deleted
     :param attrib: the name of an attribute
     """
     root = xmltree.getroot()
