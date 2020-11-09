@@ -56,11 +56,20 @@ if __name__ == '__main__':
             'future',
         ],
         extras_require={
-            "pre-commit": [
-                "pre-commit==1.11.0",
-                "yapf==0.24.0",
-                "prospector==0.12.11",
-                "pylint==1.9.3"
+            'pre-commit': [
+                'pre-commit==1.11.0',
+                'yapf==0.24.0',
+                'pylint==1.9.3'
+            ],
+            'docs': [
+                'Sphinx',
+                'docutil',
+                'sphinx_rtd_theme'
+            ],
+            'testing': [
+                'pytest>=4.3.1',
+                'pytest-cov',
+                'pytest-mpl'
             ]
         },
     )

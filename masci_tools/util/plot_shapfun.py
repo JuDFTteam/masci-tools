@@ -24,6 +24,7 @@ from __future__ import print_function
 
 from __future__ import absolute_import
 from numpy import array, shape
+import sys
 from sys import argv
 from masci_tools.io.kkr_read_shapefun_info import read_shapefun
 from masci_tools.vis.kkr_plot_shapefun import plot_shapefun#, change_zoom, zoom_in

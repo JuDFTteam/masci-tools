@@ -95,8 +95,7 @@ jobs:
 
     - name: Install python dependencies
       run: |
-        pip install .
-        reentry scan
+        pip install .[testing]
 
     - name: Run pytest
       run: |

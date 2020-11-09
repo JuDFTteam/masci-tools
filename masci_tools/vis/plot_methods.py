@@ -1375,7 +1375,7 @@ def plot_one_element_corelv(corelevel_dict, element, compound=''):
     ydata = ydata_all[0]
     xlabel = '{} atomtype'.format(elem)
     ylabel = 'energy in eV'
-    title = 'Element: {} from {} cl {}'.format(elem, title, corelevels_names)
+    title = 'Element: {} from {} cl {}'.format(elem, compound, corelevels_names)
     #plotlabel ='corelevel shifts'
     #linetyp='o-'
     xmin = xdata[0] - 0.5
@@ -2145,16 +2145,16 @@ def pseudo_voigt_profile(x, fwhm_g, fwhm_l, mu, mix=0.5):
 def plot_bands2(xs,ys,ss,axis=None, linestyle='-',markersize_scaling=20,**kwargs):
     """
     """
-
-    ax = multi_scatter_plot(x,y,markersize_band)
+    markersize_band =5
+    ax = multi_scatter_plot(xs,ys,markersize_band)
 
     if linestyle is not None:
         for j, data in enumerate(ys):
             for i, entry in enumerate(data[1:]):
                 ynew = [data[i], entry]
-                xnew = [x[j][i], x[j][i+1]]
+                xnew = [xs[j][i], xs[j][i+1]]
                 linewidth = np.sqrt(markersize_scaling*(ss[j][i] + ss[j][i+1])/4.0)
-                ax.plot(xnew,ynew, linestyle=linestyle, markersize=0.0, linewidth=linewidth, color='k', markeredgewidth=0.0)
+                ax.plot(xnew, ynew, linestyle=linestyle, markersize=0.0, linewidth=linewidth, color='k', markeredgewidth=0.0)
 
 
 def plot_fleur_bands(filename, limits=[None,[-15, 15]]):

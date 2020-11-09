@@ -433,7 +433,8 @@ def periodic_table_plot(
         source1.index = source1.index + 1
         source1 = source1.sort_index()
         # df.head()
-
+    groups = [str(x) for x in range(1,19)]
+    periods = ["I", "II", "III", "IV", "V", "VI", "VII"]
     # Plot
     p = figure(title=title,
                plot_width=plot_width, plot_height=plot_height,  # 450,
@@ -493,7 +494,7 @@ def periodic_table_plot(
     p.axis.major_label_standoff = 0
     # p.legend.orientation = "horizontal"
     p.hover.renderers = [r]
-
+    alpha = 1.0
     # add color bar
     if color_bar_title is None:
         color_bar_title = color_value
