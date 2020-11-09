@@ -10,8 +10,6 @@
 # For further information please visit http://www.flapw.de or                 #
 #                                                                             #
 ###############################################################################
-
 """
-Here you find some routines to visualize electronic bandstructures in certain ways 
+Here you find some routines to visualize electronic bandstructures in certain ways
 """
-

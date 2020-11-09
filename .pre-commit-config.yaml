@@ -1,12 +1,46 @@
-# Install pre-commit hooks via
-# pre-commit install
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.5.0
+    hooks:
+    - id: double-quote-string-fixer
+      types: [python]
+    - id: end-of-file-fixer
+    - id: fix-encoding-pragma
+    - id: mixed-line-ending
+      types: [python]
+    - id: trailing-whitespace
+      types: [python]
 
-# modernizer: make sure our code-base is Python 3 ready
-- repo: https://github.com/python-modernize/python-modernize.git
-  sha: a234ce4e185cf77a55632888f1811d83b4ad9ef2
+- repo: git://github.com/pre-commit/mirrors-yapf
+  rev: v0.30.0
   hooks:
-  - id: python-modernize
-    exclude: ^docs/
-    args:
-      - --write
-      - --nobackups
+  - id: yapf
+    name: yapf
+    types: [python]
+    exclude: &exclude_files >
+        (?x)^(
+            docs/.*|
+        )$
+    args: ['-i']
+
+- repo: local
+  hooks:
+
+  - id: pylint
+    name: pylint
+    entry: pylint
+    types: [python]
+    language: system
+    exclude: '^(docs/)|(examples/)'
+
+  - id: version-number
+    name: Check version numbers
+    entry: python ./utils/validate_version_consistency.py
+    language: system
+    files: >-
+      (?x)^(
+        setup.json|
+        utils/validate_version_consistency.py|
+        aiida_fleur/__init__.py
+      )$
+    pass_filenames: false

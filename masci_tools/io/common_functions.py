@@ -24,6 +24,7 @@ from six.moves import range
 
 #helper functions used in calculation, parser etc.
 
+
 def open_general(filename_or_handle, iomode=None):
     """
     Open a file directly from a path or use a file handle if that is given.
@@ -41,46 +42,52 @@ def open_general(filename_or_handle, iomode=None):
     #    if type(filename_or_handle)!=io.TextIOWrapper and type(filename_or_handle)!=file:
     #        reopen_file = True
     #else:
-    if type(filename_or_handle)!=io.TextIOWrapper:
+    if type(filename_or_handle) != io.TextIOWrapper:
         reopen_file = True
 
     if reopen_file:
-        if iomode is None: iomode = u'r'
+        if iomode is None:
+            iomode = u'r'
         f = open(filename_or_handle, iomode)
     else:
         f = filename_or_handle
-        if f.closed: # reopen file if it was closed before
+        if f.closed:  # reopen file if it was closed before
             if iomode is None:
                 f = open(f.name, f.mode)
             else:
                 f = open(f.name, iomode)
-        else: # make sure reading the file now starts at the beginning again
+        else:  # make sure reading the file now starts at the beginning again
             f.seek(0)
     return f
+
 
 def get_alat_from_bravais(bravais, is3D=True):
     from numpy import sqrt, sum
     bravais_tmp = bravais
     if not is3D:
         #take only in-plane lattice to find maximum as alat
-        bravais_tmp = bravais[:2,:2]
+        bravais_tmp = bravais[:2, :2]
     return sqrt(sum(bravais_tmp**2, axis=1)).max()
+
 
 def get_Ang2aBohr():
     return 1.8897261254578281
 
+
 def get_aBohr2Ang():
-    return 1/get_Ang2aBohr()
+    return 1 / get_Ang2aBohr()
+
 
 def get_Ry2eV():
     return 13.605693009
+
 
 def search_string(searchkey, txt):
     iline = 0
     for line in txt:
         if searchkey in line:
             return iline
-        iline+=1
+        iline += 1
     return -1
 
 
@@ -115,11 +122,11 @@ def angles_to_vec(magnitude, theta, phi):
 
     vec = []
     for ivec in range(len(magnitude)):
-        r_inplane = magnitude[ivec]*sin(theta[ivec])
-        x = r_inplane*cos(phi[ivec])
-        y = r_inplane*sin(phi[ivec])
-        z = cos(theta[ivec])*magnitude[ivec]
-        vec.append([x,y,z])
+        r_inplane = magnitude[ivec] * sin(theta[ivec])
+        x = r_inplane * cos(phi[ivec])
+        y = r_inplane * sin(phi[ivec])
+        z = cos(theta[ivec]) * magnitude[ivec]
+        vec.append([x, y, z])
     vec = array(vec)
 
     if single_value_input:
@@ -134,7 +141,7 @@ def vec_to_angles(vec):
     """
     from numpy import array, arctan2, sqrt, shape
     magnitude, theta, phi = [], [], []
-    if len(vec)==3 and len(shape(vec))<2:
+    if len(vec) == 3 and len(shape(vec)) < 2:
         vec = array([vec])
         multiple_entries = False
     else:
@@ -142,9 +149,9 @@ def vec_to_angles(vec):
 
     for ivec in range(len(vec)):
         phi.append(arctan2(vec[ivec, 1], vec[ivec, 0]))
-        r_inplane = sqrt(vec[ivec, 0]**2+vec[ivec, 1]**2)
+        r_inplane = sqrt(vec[ivec, 0]**2 + vec[ivec, 1]**2)
         theta.append(arctan2(r_inplane, vec[ivec, 2]))
-        magnitude.append(sqrt(r_inplane**2+vec[ivec, 2]**2))
+        magnitude.append(sqrt(r_inplane**2 + vec[ivec, 2]**2))
     if multiple_entries:
         magnitude, theta, phi = array(magnitude), array(theta), array(phi)
     else:
@@ -152,13 +159,12 @@ def vec_to_angles(vec):
     return magnitude, theta, phi
 
 
-
 def get_version_info(outfile):
     f = open_general(outfile)
     with f:
         tmptxt = f.readlines()
     itmp = search_string('Code version:', tmptxt)
-    if itmp==-1: # try to find serial number from header of file
+    if itmp == -1:  # try to find serial number from header of file
         itmp = search_string('# serial:', tmptxt)
         code_version = tmptxt[itmp].split(':')[1].split('_')[1].strip()
         compile_options = tmptxt[itmp].split(':')[1].split('_')[2].strip()
@@ -183,18 +189,18 @@ def get_corestates_from_potential(potfile='potential'):
     istarts = [iline for iline in range(len(txt)) if 'POTENTIAL' in txt[iline]]
     print(istarts)
 
-    n_core_states = [] #number of core states per potential
-    e_core_states = [] #energies of core states
-    l_core_states = [] #angular momentum index, i.e. 0=s, 1=p etc...
+    n_core_states = []  #number of core states per potential
+    e_core_states = []  #energies of core states
+    l_core_states = []  #angular momentum index, i.e. 0=s, 1=p etc...
     for ipot in range(len(istarts)):
-        line = txt[istarts[ipot]+6]
+        line = txt[istarts[ipot] + 6]
         n = int(line.split()[0])
         print(ipot, n)
         n_core_states.append(n)
-        elevels = zeros(n) #temp array for energies
-        langmom = zeros(n, dtype=int) #temp array for angular momentum index
+        elevels = zeros(n)  #temp array for energies
+        langmom = zeros(n, dtype=int)  #temp array for angular momentum index
         for icore in range(n):
-            line = txt[istarts[ipot]+7+icore].split()
+            line = txt[istarts[ipot] + 7 + icore].split()
             langmom[icore] = int(line[0])
             elevels[icore] = float(line[1].replace('D', 'E'))
         e_core_states.append(elevels)
@@ -208,12 +214,15 @@ def get_highest_core_state(nstates, energies, lmoments):
     idx = energies.argmax()
     lval = lmoments[idx]
     nquant = sum(lmoments == lval) + lval
-    level_descr = '%i%s'%(nquant, 'spdfgh'[lval])
+    level_descr = '%i%s' % (nquant, 'spdfgh'[lval])
 
     return lval, energies[idx], level_descr
 
 
-def interpolate_dos(dosfile, return_original=False, ):
+def interpolate_dos(
+    dosfile,
+    return_original=False,
+):
     """
     interpolation function copied from complexdos3 fortran code
 
@@ -240,7 +249,7 @@ def interpolate_dos(dosfile, return_original=False, ):
 
     f = open_general(dosfile)
     with f:
-        text = f.readline() # dummy readin of header, may be replaced later
+        text = f.readline()  # dummy readin of header, may be replaced later
         npot = int(f.readline().split()[0])
         iemax = int(f.readline().split()[0])
         lmax = int(f.readline().split()[0])
@@ -258,48 +267,48 @@ def interpolate_dos(dosfile, return_original=False, ):
             ef = float(f.readline().split()[7])
 
             # some more dummy lines
-            for iheader in range(5,9+1):
+            for iheader in range(5, 9 + 1):
                 text = f.readline()
 
             # now header is done. start reading DOS
             # Read dos: (total dos stored at DOS(LMAX+1,IE))
             dos_l_cmplx = []
             for ie in range(iemax):
-                tmpline = f.readline().replace('(','').replace(')','').replace(',','').split()
-                ez = float(tmpline[0])+1j*float(tmpline[1])
-                dostmp_complex = [[tmpline[len(tmpline)-2], tmpline[len(tmpline)-1]]]
-                dostmp_complex += [[tmpline[iline], tmpline[iline+1]] for iline in range(2,len(tmpline)-2,2)]
-                dostmp = [ez]+[float(ds[0])+1j*float(ds[1]) for ds in dostmp_complex]
+                tmpline = f.readline().replace('(', '').replace(')', '').replace(',', '').split()
+                ez = float(tmpline[0]) + 1j * float(tmpline[1])
+                dostmp_complex = [[tmpline[len(tmpline) - 2], tmpline[len(tmpline) - 1]]]
+                dostmp_complex += [[tmpline[iline], tmpline[iline + 1]] for iline in range(2, len(tmpline) - 2, 2)]
+                dostmp = [ez] + [float(ds[0]) + 1j * float(ds[1]) for ds in dostmp_complex]
                 dos_l_cmplx.append(dostmp)
             dos_l_cmplx = array(dos_l_cmplx)
             dos_l = imag(dos_l_cmplx.copy())
-            dos_l[:,0] = real(dos_l_cmplx.copy()[:,0])
+            dos_l[:, 0] = real(dos_l_cmplx.copy()[:, 0])
             dos_all_atoms.append(dos_l)
 
             # Compute and write out corrected dos at new (middle) energy points:
             dosnew = []
-            ez = dos_l_cmplx[:,0]
-            for ie in range(1, iemax-1):
-                deltae = real(ez[ie+1] - ez[ie])
+            ez = dos_l_cmplx[:, 0]
+            for ie in range(1, iemax - 1):
+                deltae = real(ez[ie + 1] - ez[ie])
                 eim = imag(ez[ie])
-                enew = real(ez[ie]) # Real quantity
+                enew = real(ez[ie])  # Real quantity
 
                 tmpdos = [enew]
-                for ll in range(1,lmax+3):
-                    t = (dos_l_cmplx[ie-1, ll]-dos_l_cmplx[ie+1, ll])*0.5*(0.0+eim*1j)/deltae
+                for ll in range(1, lmax + 3):
+                    t = (dos_l_cmplx[ie - 1, ll] - dos_l_cmplx[ie + 1, ll]) * 0.5 * (0.0 + eim * 1j) / deltae
                     #print ie+1, ll,  dos_l_cmplx[ie, ll], deltae, eim, t, shape(dos_l_cmplx[ie]), lmax
                     #tmpdos.append(dos_l_cmplx[ie, ll] + 0.5*(dos_l_cmplx[ie-1, ll]-dos_l_cmplx[ie+1, ll])*(0.+1j*eim)/deltae)
-                    tmpdos.append(dos_l_cmplx[ie, ll]+t)
+                    tmpdos.append(dos_l_cmplx[ie, ll] + t)
                 tmpdos = array(tmpdos)
                 # build imaginary part (factor -1/2pi is already included)
-                tmpdos = array([real(tmpdos[0])]+[imag(ds) for ds in tmpdos[1:]])
+                tmpdos = array([real(tmpdos[0])] + [imag(ds) for ds in tmpdos[1:]])
                 dosnew.append(tmpdos)
 
             # save to big array with all atoms
             dosnew_all_atoms.append(dosnew)
 
             if i1 != npot:
-                text = f.readline() # dummy line
+                text = f.readline()  # dummy line
 
         dosnew_all_atoms = array(dosnew_all_atoms)
         dos_all_atoms = array(dos_all_atoms)
@@ -308,6 +317,7 @@ def interpolate_dos(dosfile, return_original=False, ):
         return ef, dos_all_atoms, dosnew_all_atoms
     else:
         return ef, dosnew_all_atoms
+
 
 def get_ef_from_potfile(potfile):
     """
@@ -319,11 +329,12 @@ def get_ef_from_potfile(potfile):
     ef = float(txt[3].split()[1])
     return ef
 
+
 def convert_to_pystd(value):
     """Recursively convert numpy datatypes to standard python, needed by aiida-core.
     Usage::
       converted = convert_to_pystd(to_convert)
-    
+
     where `to_convert` can be a dict, array, list, or single valued variable
     """
     import numpy as np
@@ -341,4 +352,3 @@ def convert_to_pystd(value):
         for key, val in value.items():
             value[key] = convert_to_pystd(val)
     return value
-

@@ -8,8 +8,7 @@
 # For further information on the license, see the LICENSE.txt file            #
 # For further information please visit                                        #
 ###############################################################################
-
 '''
 masci-tools
 '''
-__version__ = "0.3.12-dev5"
+__version__ = '0.3.12-dev5'
