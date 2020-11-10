@@ -36,7 +36,6 @@ def create_inpschema_dict(path):
     #Add new functionality to this dictionary here
     schema_actions = {
         'tag_paths': get_tag_paths,
-        'attrib_paths': get_attrib_paths,
         'tags_several': get_tags_several,
         'tag_order': get_tags_order,
         'basic_types': get_basic_types,

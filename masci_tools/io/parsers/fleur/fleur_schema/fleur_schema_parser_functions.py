@@ -717,11 +717,10 @@ def get_settable_attributes(xmlschema, namespaces, **kwargs):
     :return: dictionary with all settable attributes and the corresponding path to the tag
     """
     settable = {}
-    for attrib, path in kwargs['attrib_paths'].items():
-        if isinstance(path, list):
-            continue  #Already multiple possible paths
+    possible_attrib = xmlschema.xpath('//xsd:attribute/@name', namespaces=namespaces)
+    for attrib in possible_attrib:
         path = get_attrib_xpath(xmlschema, namespaces, attrib, stop_non_unique=True)
-        if path is not None:
+        if path is not None and not isinstance(path, list):
             settable[attrib] = path.replace(f'/@{attrib}', '')
 
     for attrib, attrib_dict in kwargs['simple_elements'].items():
