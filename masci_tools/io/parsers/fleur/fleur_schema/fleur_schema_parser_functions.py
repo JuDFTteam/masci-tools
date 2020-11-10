@@ -333,6 +333,53 @@ def get_xpath(xmlschema,
     else:
         return possible_paths[0]
 
+def get_contained_attribs(xmlschema, namespaces, elem):
+
+    attrib_list = []
+    for child in elem:
+        child_type = remove_xsd_namespace(child.tag, namespaces)
+
+        if child_type == 'attribute':
+            attrib_list.append(child.attrib['name'])
+        elif child_type in ['simpleContent', 'extension']:
+            new_attribs = get_contained_attribs(xmlschema, namespaces, child)
+            for attrib in new_attribs:
+                attrib_list.append(attrib)
+
+    return attrib_list
+
+
+def get_tag_attribs(xmlschema, namespaces, **kwargs):
+
+    possible_tags = xmlschema.xpath('//xsd:element', namespaces=namespaces)
+
+    tag_attribs = {}
+    for tag in possible_tags:
+
+        name_tag = tag.attrib['name']
+        type_tag = tag.attrib['type']
+
+        #Get the xpath for this tag
+        tag_path = get_xpath(xmlschema, namespaces, name_tag, enforce_end_type=type_tag)
+
+        if tag_path is None:
+            continue
+        if not isinstance(tag_path, list):
+            tag_path = [tag_path]
+
+        type_elem = xmlschema.xpath(f"//xsd:complexType[@name='{type_tag}']", namespaces=namespaces)
+        if len(type_elem) == 0:
+            continue
+        type_elem = type_elem[0]
+
+        attrib_list = get_contained_attribs(xmlschema, namespaces, type_elem)
+        if len(attrib_list) == 0:
+            continue
+
+        for path in tag_path:
+            tag_attribs[path] = attrib_list
+
+    return tag_attribs
 
 def get_attrib_xpath(xmlschema, namespaces, attrib_name, stop_non_unique=False, stop_group=False, group_root=False):
     """
