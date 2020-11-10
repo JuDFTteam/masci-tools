@@ -14,8 +14,8 @@
 This module provides the functionality to create/load the schema_dict for the
 FleurInputSchema.xsd
 """
-import .fleur_schema_parser_functions as schema_parse
-from masci_tools.util.xml.common_xml_utils import clear_xml
+from .fleur_schema_parser_functions import *
+from masci_tools.util.xml.common_xml_util import clear_xml
 from lxml import etree
 from pprint import pprint
 import importlib.util
@@ -35,16 +35,16 @@ def create_inpschema_dict(path):
 
     #Add new functionality to this dictionary here
     schema_actions = {
-        'tag_paths': schema_parse.get_tag_paths,
-        'attrib_paths': schema_parse.get_attrib_paths,
-        'tags_several': schema_parse.get_tags_several,
-        'tag_order': schema_parse.get_tags_order,
-        'basic_types': schema_parse.get_basic_types,
-        'attrib_types': schema_parse.extract_attribute_types,
-        'simple_elements': schema_parse.get_basic_elements,
-        'settable_attribs': schema_parse.get_settable_attributes,
-        'settable_contains_attribs': schema_parse.get_settable_contains_attributes,
-        'omitt_contained_tags': schema_parse.get_omittable_tags,
+        'tag_paths': get_tag_paths,
+        'attrib_paths': get_attrib_paths,
+        'tags_several': get_tags_several,
+        'tag_order': get_tags_order,
+        'basic_types': get_basic_types,
+        'attrib_types': extract_attribute_types,
+        'simple_elements': get_basic_elements,
+        'settable_attribs': get_settable_attributes,
+        'settable_contains_attribs': get_settable_contains_attributes,
+        'omitt_contained_tags': get_omittable_tags,
     }
 
     print(f'processing: {path}/FleurInputSchema.xsd')
@@ -71,7 +71,7 @@ def load_inpschema(version, schema_return=False, return_errmsg=False):
 
     PACKAGE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 
-    fleur_schema_path = f'./fleur/fleur_schema/{version}'
+    fleur_schema_path = f'./{version}'
 
     path = os.path.abspath(os.path.join(PACKAGE_DIRECTORY, fleur_schema_path))
 

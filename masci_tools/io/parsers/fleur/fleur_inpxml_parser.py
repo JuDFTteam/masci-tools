@@ -16,8 +16,8 @@ and convert its content to a dict
 """
 from lxml import etree
 from pprint import pprint
-from masci_tools.io.parsers.inpschema_todict import load_inpschema
-from masci_tools.io.parsers.common_fleur_xml_utils import clear_xml, convert_xml_attribute, read_constants
+from masci_tools.io.parsers.fleur.fleur_schema.inpschema_todict import load_inpschema
+from masci_tools.util.xml.common_xml_util import clear_xml, convert_xml_attribute, read_constants
 
 
 def inpxml_parser(inpxmlfile, return_errmsg=False, version=None):
