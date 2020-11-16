@@ -424,6 +424,22 @@ def get_several_tags(xmlschema, namespaces, elem):
 
     return several_list
 
+def get_text_tags(xmlschema, namespaces, elem, simple_elements):
+
+    text_list = []
+    for child in elem:
+        child_type = remove_xsd_namespace(child.tag, namespaces)
+
+        if child_type == 'element':
+            if child.attrib['name'] in simple_elements:
+                text_list.append(child.attrib['name'])
+        elif child_type in ['sequence', 'all', 'choice']:
+            new_tags = get_text_tags(xmlschema, namespaces, child, simple_elements)
+            for tag in new_tags:
+                text_list.append(tag)
+
+    return text_list
+
 def get_attrib_xpath(xmlschema, namespaces, attrib_name, stop_non_unique=False, stop_group=False, group_root=False):
     """
     construct all possible simple xpaths to a given attribute
@@ -1005,29 +1021,22 @@ def get_tag_info(xmlschema, namespaces, **kwargs):
             continue
         type_elem = type_elem[0]
 
-
         info_dict = {}
-        attrib_list = get_contained_attribs(xmlschema, namespaces, type_elem)
-        if len(attrib_list) != 0:
-            info_dict['attribs'] = attrib_list
+        info_dict['attribs'] = get_contained_attribs(xmlschema, namespaces, type_elem)
+        info_dict['optional'] = get_optional_tags(xmlschema, namespaces, type_elem)
+        info_dict['several'] = get_several_tags(xmlschema, namespaces, type_elem)
+        info_dict['order'] = get_sequence_order(xmlschema, namespaces, type_elem)
+        info_dict['simple'] = get_simple_tags(xmlschema, namespaces, type_elem)
+        info_dict['text'] = get_text_tags(xmlschema, namespaces, type_elem, kwargs['simple_elements'])
 
-        elem_list = get_optional_tags(xmlschema, namespaces, type_elem)
-        if len(elem_list) != 0:
-            info_dict['optional'] = elem_list
 
-        elem_list = get_several_tags(xmlschema, namespaces, type_elem)
-        if len(elem_list) != 0:
-            info_dict['several'] = elem_list
+        empty = True
+        for elem_list in info_dict.values():
+            if isinstance(elem_list, list):
+                if len(elem_list)!=0:
+                    empty = False
 
-        elem_list = get_sequence_order(xmlschema, namespaces, type_elem)
-        if len(elem_list) != 0:
-            info_dict['order'] = elem_list
-
-        elem_list = get_simple_tags(xmlschema, namespaces, type_elem)
-        if len(elem_list) != 0:
-            info_dict['simple'] = elem_list
-
-        if info_dict:
+        if not empty:
             for path in tag_path:
                 tag_info[path] = info_dict
 
