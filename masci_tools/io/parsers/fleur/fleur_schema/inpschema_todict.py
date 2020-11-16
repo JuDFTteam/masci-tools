@@ -99,9 +99,12 @@ def load_inpschema(version, schema_return=False, return_errmsg=False):
         schema_dict = schema.schema_dict
         success = True
 
-    if schema_return:
+    xmlschema = None
+    if schema_return and success:
         xmlschema_doc = etree.parse(schema_file_path)
         xmlschema = etree.XMLSchema(xmlschema_doc)
+
+    if schema_return:
         if return_errmsg:
             return schema_dict, xmlschema, success, message
         else:

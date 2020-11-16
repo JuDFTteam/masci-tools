@@ -66,7 +66,7 @@ def create_outschema_dict(path):
 
     with open(f'{path}/outschema_dict.py', 'w') as f:
         f.write('# -*- coding: utf-8 -*-\n')
-        f.write(f"__inp_version__ = '{out_version}'\n")
+        f.write(f"__out_version__ = '{out_version}'\n")
         f.write('schema_dict = ')
         pprint(schema_dict, f)
 

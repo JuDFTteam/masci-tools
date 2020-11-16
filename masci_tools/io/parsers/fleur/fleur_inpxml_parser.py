@@ -45,7 +45,14 @@ def inpxml_parser(inpxmlfile, return_errmsg=False, version=None):
         except:
             raise ValueError('Failed to extract inputVersion')
 
-    schema_dict, xmlschema = load_inpschema(version, schema_return=True)
+    success = True
+    if return_errmsg:
+        schema_dict, xmlschema, success, message = load_inpschema(version, schema_return=True, return_errmsg=True)
+    else:
+        schema_dict, xmlschema = load_inpschema(version, schema_return=True, return_errmsg=True)
+
+    if not success:
+        return None, False, message
 
     xmltree = clear_xml(xmltree, schema_dict=schema_dict)
     root = xmltree.getroot()
