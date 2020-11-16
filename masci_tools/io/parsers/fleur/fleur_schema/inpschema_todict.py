@@ -44,7 +44,7 @@ def create_inpschema_dict(path):
         'settable_attribs': get_settable_attributes,
         'settable_contains_attribs': get_settable_contains_attributes,
         'omitt_contained_tags': get_omittable_tags,
-        'tag_attribs': get_tag_attribs
+        'tag_info': get_tag_info,
     }
 
     print(f'processing: {path}/FleurInputSchema.xsd')

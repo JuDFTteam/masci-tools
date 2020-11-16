@@ -348,38 +348,45 @@ def get_contained_attribs(xmlschema, namespaces, elem):
 
     return attrib_list
 
+def get_optional_tags(xmlschema, namespaces, elem):
 
-def get_tag_attribs(xmlschema, namespaces, **kwargs):
+    optional_list = []
+    for child in elem:
+        child_type = remove_xsd_namespace(child.tag, namespaces)
 
-    possible_tags = xmlschema.xpath('//xsd:element', namespaces=namespaces)
+        if child_type == 'element':
+            if 'minOccurs' in child.attrib:
+                if child.attrib['minOccurs'] == '0':
+                    optional_list.append(child.attrib['name'])
+        elif child_type in ['sequence', 'all', 'choice']:
+            new_optionals = get_optional_tags(xmlschema, namespaces, child)
+            for opt in new_optionals:
+                optional_list.append(opt)
 
-    tag_attribs = {}
-    for tag in possible_tags:
+    return optional_list
 
-        name_tag = tag.attrib['name']
-        type_tag = tag.attrib['type']
+def get_several_tags(xmlschema, namespaces, elem):
 
-        #Get the xpath for this tag
-        tag_path = get_xpath(xmlschema, namespaces, name_tag, enforce_end_type=type_tag)
+    several_list = []
+    for child in elem:
+        child_type = remove_xsd_namespace(child.tag, namespaces)
 
-        if tag_path is None:
-            continue
-        if not isinstance(tag_path, list):
-            tag_path = [tag_path]
+        if child_type == 'element':
+            if 'maxOccurs' in child.attrib:
+                if child.attrib['maxOccurs'] != '1':
+                    several_list.append(child.attrib['name'])
+        elif child_type in ['sequence', 'all', 'choice']:
+            if 'maxOccurs' in child.attrib:
+                if child.attrib['maxOccurs'] != '1':
+                    new_several = get_sequence_order(xmlschema, namespaces, child)
+                    for tag in new_several:
+                        several_list.append(tag)
+            else:
+                new_several = get_several_tags(xmlschema, namespaces, child)
+                for tag in new_several:
+                    several_list.append(tag)
 
-        type_elem = xmlschema.xpath(f"//xsd:complexType[@name='{type_tag}']", namespaces=namespaces)
-        if len(type_elem) == 0:
-            continue
-        type_elem = type_elem[0]
-
-        attrib_list = get_contained_attribs(xmlschema, namespaces, type_elem)
-        if len(attrib_list) == 0:
-            continue
-
-        for path in tag_path:
-            tag_attribs[path] = attrib_list
-
-    return tag_attribs
+    return several_list
 
 def get_attrib_xpath(xmlschema, namespaces, attrib_name, stop_non_unique=False, stop_group=False, group_root=False):
     """
@@ -470,8 +477,6 @@ def get_tags_several(xmlschema, namespaces, **kwargs):
             name_list = [tag.attrib['name']]
         elif tag_type in ['choice', 'sequence']:
             name_list = get_sequence_order(xmlschema, namespaces, tag)
-            if not isinstance(name_list, list):
-                name_list = [name_list]
         else:
             raise ValueError(f"Don't know what to do with {tag_type}")
         for name in name_list:
@@ -497,16 +502,20 @@ def get_sequence_order(xmlschema, namespaces, sequence_elem):
         if child_type == 'element':
             elem_order.append(child.attrib['name'])
         elif child_type in ['choice', 'sequence', 'all']:
-            elem_order.append(get_sequence_order(xmlschema, namespaces, child))
+            new_order = get_sequence_order(xmlschema, namespaces, child)
+            for elem in new_order:
+                elem_order.append(elem)
         elif child_type == 'group':
             group = xmlschema.xpath(f"//xsd:group[@name='{child.attrib['ref']}']/xsd:sequence", namespaces=namespaces)
-            elem_order.append(get_sequence_order(xmlschema, namespaces, group[0]))
+            new_order = get_sequence_order(xmlschema, namespaces, group[0])
+            for elem in new_order:
+                elem_order.append(elem)
+        elif child_type in ['attribute', 'simpleContent']:
+            continue
         else:
             raise KeyError(f'Dont know what to do with {child_type}')
-    if len(elem_order) == 1:
-        return elem_order[0]
-    else:
-        return elem_order
+
+    return elem_order
 
 
 def extract_attribute_types(xmlschema, namespaces, **kwargs):
@@ -924,3 +933,62 @@ def get_basic_types(xmlschema, namespaces, **kwargs):
             if key not in basic_types:
                 basic_types[key] = value
     return basic_types
+
+
+def get_tag_info(xmlschema, namespaces, **kwargs):
+    """
+    Get all important information about the tags
+        - allowed attributes
+        - contained tags (simple (only attributes), optional, several, order)
+
+    :param xmlschema: xmltree representing the schema
+    :param namespaces: dictionary with the defined namespaces
+
+    :return: dictionary with the tag information
+    """
+
+    tag_info = {}
+
+    possible_tags = xmlschema.xpath('//xsd:element', namespaces=namespaces)
+
+    for tag in possible_tags:
+
+        name_tag = tag.attrib['name']
+        type_tag = tag.attrib['type']
+
+        #Get the xpath for this tag
+        tag_path = get_xpath(xmlschema, namespaces, name_tag, enforce_end_type=type_tag)
+
+        if tag_path is None:
+            continue
+        if not isinstance(tag_path, list):
+            tag_path = [tag_path]
+
+        type_elem = xmlschema.xpath(f"//xsd:complexType[@name='{type_tag}']", namespaces=namespaces)
+        if len(type_elem) == 0:
+            continue
+        type_elem = type_elem[0]
+
+
+        info_dict = {}
+        attrib_list = get_contained_attribs(xmlschema, namespaces, type_elem)
+        if len(attrib_list) != 0:
+            info_dict['attribs'] = attrib_list
+
+        elem_list = get_optional_tags(xmlschema, namespaces, type_elem)
+        if len(elem_list) != 0:
+            info_dict['optional'] = elem_list
+
+        elem_list = get_several_tags(xmlschema, namespaces, type_elem)
+        if len(elem_list) != 0:
+            info_dict['several'] = elem_list
+
+        elem_list = get_sequence_order(xmlschema, namespaces, type_elem)
+        if len(elem_list) != 0:
+            info_dict['order'] = elem_list
+
+        if info_dict:
+            for path in tag_path:
+                tag_info[path] = info_dict
+
+    return tag_info
