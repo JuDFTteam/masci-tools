@@ -34,7 +34,10 @@ def inpxml_parser(inpxmlfile, version=None):
     """
     if isinstance(inpxmlfile, str):
         parser = etree.XMLParser(attribute_defaults=True, encoding='utf-8')
-        xmltree = etree.parse(inpxmlfile, parser)
+        try:
+            xmltree = etree.parse(inpxmlfile, parser)
+        except etree.XMLSyntaxError as msg:
+            raise ValueError(f'Failed to parse input file: {msg}')
     else:
         xmltree = inpxmlfile
 
@@ -42,7 +45,7 @@ def inpxml_parser(inpxmlfile, version=None):
         try:
             root = xmltree.getroot()
             version = root.attrib['fleurInputVersion']
-        except:
+        except KeyError:
             raise ValueError('Failed to extract inputVersion')
 
     schema_dict, xmlschema = load_inpschema(version, schema_return=True)
