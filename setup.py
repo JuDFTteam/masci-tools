@@ -5,12 +5,12 @@ setup: usage: pip install -e .[graphs]
 
 from __future__ import absolute_import
 from setuptools import setup, find_packages
-import io # needed to have `open` with encoding option
+import io  # needed to have `open` with encoding option
 
 # read the contents of your README file
 from os import path
 this_directory = path.abspath(path.dirname(__file__))
-with io.open(path.join(this_directory, 'README.md'), encoding="utf8") as f:
+with io.open(path.join(this_directory, 'README.md'), encoding='utf8') as f:
     long_description = f.read()
 
 if __name__ == '__main__':
@@ -43,7 +43,7 @@ if __name__ == '__main__':
         packages=find_packages(),
         #['src', 'tests'],
         include_package_data=True,
-        
+
         install_requires=[
             'numpy',
             'scipy',
@@ -56,11 +56,20 @@ if __name__ == '__main__':
             'future',
         ],
         extras_require={
-            "pre-commit": [
-                "pre-commit==1.11.0",
-                "yapf==0.24.0",
-                "prospector==0.12.11",
-                "pylint==1.9.3"
+            'pre-commit': [
+                'pre-commit>=2.6.0',
+                'yapf>=0.30.0',
+                'pylint>=2.5.2'
+            ],
+            'docs': [
+                'Sphinx',
+                'docutils',
+                'sphinx_rtd_theme'
+            ],
+            'testing': [
+                'pytest>=4.3.1',
+                'pytest-cov',
+                'pytest-mpl'
             ]
         },
     )

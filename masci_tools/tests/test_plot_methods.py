@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 from builtins import range
 from builtins import object
 import pytest
@@ -17,11 +18,12 @@ from matplotlib.pyplot import gcf, title
 # TODO: test if interfaces stay the same...
 # I do not write extensive testing, since plot_methods should be redesigned anyway....
 
+
 class Test_plot_methods_imports(object):
     """
     Test plotting functions
     """
-    
+
     #from masci_tools.vis.plot_methods import *
     from masci_tools.vis.plot_methods import set_plot_defaults
     from masci_tools.vis.plot_methods import single_scatterplot
@@ -45,7 +47,7 @@ class Test_plot_methods_imports(object):
     from masci_tools.vis.plot_methods import plot_fleur_bands
 
     def test_set_defaults(self):
-        from masci_tools.vis.plot_methods import linewidth_g  
+        from masci_tools.vis.plot_methods import linewidth_g
         from masci_tools.vis.plot_methods import set_plot_defaults
         set_plot_defaults(linewidth=3.0)
-        assert(linewidth_g==2.0) # if worked should be 3.0
+        assert (linewidth_g == 2.0)  # if worked should be 3.0

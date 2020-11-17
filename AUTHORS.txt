@@ -8,4 +8,3 @@ Henning Janssen he.jansen@fz-juelich.de
 
 We would also like to thank the following people for their contibution:
 David S. G. Bauer (initial version of modifypotential script)
-

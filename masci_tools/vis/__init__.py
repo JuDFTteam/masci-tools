@@ -10,19 +10,21 @@
 # For further information please visit http://www.flapw.de or                 #
 #                                                                             #
 ###############################################################################
-
 """
 Here are all plot varaiables/constants,
 
 """
 #TODO: ggf write a plotter class
 
-
 from __future__ import absolute_import
 from builtins import object
+
+
 class Ploter(object):
     pass
-    def set_defaults():
+
+    def __init__(self):
         pass
-    
-    
+
+    def set_defaults(self):
+        pass

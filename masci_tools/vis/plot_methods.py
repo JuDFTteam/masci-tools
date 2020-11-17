@@ -10,7 +10,6 @@
 # For further information please visit http://www.flapw.de or                 #
 #                                                                             #
 ###############################################################################
-
 """
 In this module are plot routines collected to create default plots out of certain
 ouput nodes from certain workflows with matplot lib.
@@ -33,7 +32,7 @@ import matplotlib.pyplot as pp
 import matplotlib.mlab as mlab
 from matplotlib.patches import Rectangle
 from cycler import cycler
-from masci_tools.vis import * # import all global variables
+from masci_tools.vis import *  # import all global variables
 import six
 from six.moves import range
 from six.moves import zip
@@ -69,18 +68,18 @@ labelfonstsize_g = 15
 # ticks
 ticklabelsizex_g = 14
 ticklabelsizey_g = 14
-tick_paramsx_g = {'size' : 4.0, 'width' : 1.0, 'labelsize' : ticklabelsizex_g, 'length' : 5, 'labelrotation' : 0}
-tick_paramsy_g = {'size' : 4.0, 'width' : 1.0, 'labelsize' : ticklabelsizey_g, 'length' : 5, 'labelrotation' : 0}
+tick_paramsx_g = {'size': 4.0, 'width': 1.0, 'labelsize': ticklabelsizex_g, 'length': 5, 'labelrotation': 0}
+tick_paramsy_g = {'size': 4.0, 'width': 1.0, 'labelsize': ticklabelsizey_g, 'length': 5, 'labelrotation': 0}
 ticklabelsizex_minor_g = 0
 ticklabelsizey_minor_g = 0
-tick_paramsx_minor_g = {'size' : 2.0, 'width' : 1.0, 'labelsize' : ticklabelsizex_minor_g, 'length' : 2.5}
-tick_paramsy_minor_g = {'size' : 2.0, 'width' : 1.0, 'labelsize' : ticklabelsizey_minor_g, 'length' : 2.5}
+tick_paramsx_minor_g = {'size': 2.0, 'width': 1.0, 'labelsize': ticklabelsizex_minor_g, 'length': 2.5}
+tick_paramsy_minor_g = {'size': 2.0, 'width': 1.0, 'labelsize': ticklabelsizey_minor_g, 'length': 2.5}
 # legend properties
 legend_g = False
 
 # save all plots?
-save_plots_g = False# True
-save_format_g = 'png'#'pdf'
+save_plots_g = False  # True
+save_format_g = 'png'  #'pdf'
 tightlayout_g = False
 
 show_g = True
@@ -90,34 +89,49 @@ raw_plot_data_format_g = 'txt'
 ##############
 
 
-def set_plot_defaults(title_fontsize = 16,
-                      linewidth = 2.0,
-                      markersize = 4.0,
-                      labelfonstsize = 15,
-                      ticklabelsize = 14,
-                      ticklabelsize_minor = 0,
-                      axis_linewidth = 2.0,
-                      tick_paramsx = {'size' : 4.0, 'width' : 1.0,
-                                     'labelsize' : ticklabelsizex_g,
-                                     'length' : 5, 'labelrotation' : 0},
-                      tick_paramsy = {'size' : 4.0, 'width' : 1.0,
-                                     'labelsize' : ticklabelsizey_g,
-                                     'length' : 5, 'labelrotation': 0},
-                      tick_paramsx_minor = {'size' : 2.0, 'width' : 1.0,
-                                            'labelsize' : ticklabelsizex_minor_g,
-                                            'length' : 2.5},
-                      tick_paramsy_minor = {'size' : 2.0, 'width' : 1.0,
-                                            'labelsize' : ticklabelsizey_minor_g,
-                                            'length' : 2.5},
-                      figsize = (8, 6),
-                      save_plots = False, #True,
-                      save_format = 'pdf',
-                      legend=True,
-                      save_raw_plot_data=False,
-                      raw_plot_data_format='txt',
-                      show = True,
-                      use_axis_fromatter=True,
-                      **kwargs):
+def set_plot_defaults(
+        title_fontsize=16,
+        linewidth=2.0,
+        markersize=4.0,
+        labelfonstsize=15,
+        ticklabelsize=14,
+        ticklabelsize_minor=0,
+        axis_linewidth=2.0,
+        tick_paramsx={
+            'size': 4.0,
+            'width': 1.0,
+            'labelsize': ticklabelsizex_g,
+            'length': 5,
+            'labelrotation': 0
+        },
+        tick_paramsy={
+            'size': 4.0,
+            'width': 1.0,
+            'labelsize': ticklabelsizey_g,
+            'length': 5,
+            'labelrotation': 0
+        },
+        tick_paramsx_minor={
+            'size': 2.0,
+            'width': 1.0,
+            'labelsize': ticklabelsizex_minor_g,
+            'length': 2.5
+        },
+        tick_paramsy_minor={
+            'size': 2.0,
+            'width': 1.0,
+            'labelsize': ticklabelsizey_minor_g,
+            'length': 2.5
+        },
+        figsize=(8, 6),
+        save_plots=False,  #True,
+        save_format='pdf',
+        legend=True,
+        save_raw_plot_data=False,
+        raw_plot_data_format='txt',
+        show=True,
+        use_axis_fromatter=True,
+        **kwargs):
     """
     Try to use this to set some global default values.
 
@@ -135,7 +149,6 @@ def set_plot_defaults(title_fontsize = 16,
     markersize_g = markersize
     axis_linewidth_g = axis_linewidth
     use_axis_fromatter_g = use_axis_fromatter
-
 
     # x, y label
     labelfonstsize_g = labelfonstsize
@@ -169,16 +182,28 @@ def set_plot_defaults(title_fontsize = 16,
     show_g = show
 
 
-
-
 ###############################################################################
 ########################## general plot routines ##############################
 ###############################################################################
 
 
-def single_scatterplot(ydata, xdata, xlabel, ylabel, title, plotlabel ='scatterplot',
-                       linestyle='-', marker='o', limits=[None, None], saveas ='scatterplot',
-                       color='k', scale=[None, None], axis=None, xerr=None, yerr=None, markersize=markersize_g, **kwargs):
+def single_scatterplot(ydata,
+                       xdata,
+                       xlabel,
+                       ylabel,
+                       title,
+                       plotlabel='scatterplot',
+                       linestyle='-',
+                       marker='o',
+                       limits=[None, None],
+                       saveas='scatterplot',
+                       color='k',
+                       scale=[None, None],
+                       axis=None,
+                       xerr=None,
+                       yerr=None,
+                       markersize=markersize_g,
+                       **kwargs):
     """
     Create a standard scatter plot (this should be flexible enough) to do all the
     basic plots.
@@ -188,21 +213,21 @@ def single_scatterplot(ydata, xdata, xlabel, ylabel, title, plotlabel ='scatterp
     else:
         fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
         ax = fig.add_subplot(111)
-    for axis in ['top','bottom','left','right']:
+    for axis in ['top', 'bottom', 'left', 'right']:
         ax.spines[axis].set_linewidth(axis_linewidth_g)
     ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
     ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
     ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
-    ax.yaxis.set_tick_params(size = tick_paramsy_g.get('size', 4.0),
-                             width = tick_paramsy_g.get('width', 1.0),
-                             labelsize = tick_paramsy_g.get('labelsize', 14),
-                             length = tick_paramsy_g.get('length', 5),
-                             labelrotation = tick_paramsy_g.get('labelrotation', 0))
-    ax.xaxis.set_tick_params(size = tick_paramsx_g.get('size', 4.0),
-                             width = tick_paramsx_g.get('width', 1.0),
-                             labelsize = tick_paramsx_g.get('labelsize', 14),
-                             length = tick_paramsx_g.get('length', 5),
-                             labelrotation = tick_paramsx_g.get('labelrotation', 0))
+    ax.yaxis.set_tick_params(size=tick_paramsy_g.get('size', 4.0),
+                             width=tick_paramsy_g.get('width', 1.0),
+                             labelsize=tick_paramsy_g.get('labelsize', 14),
+                             length=tick_paramsy_g.get('length', 5),
+                             labelrotation=tick_paramsy_g.get('labelrotation', 0))
+    ax.xaxis.set_tick_params(size=tick_paramsx_g.get('size', 4.0),
+                             width=tick_paramsx_g.get('width', 1.0),
+                             labelsize=tick_paramsx_g.get('labelsize', 14),
+                             length=tick_paramsx_g.get('length', 5),
+                             labelrotation=tick_paramsx_g.get('labelrotation', 0))
     if use_axis_fromatter_g:
         ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
         ax.yaxis.get_major_formatter().set_useOffset(False)
@@ -217,16 +242,23 @@ def single_scatterplot(ydata, xdata, xlabel, ylabel, title, plotlabel ='scatterp
     #                 linewidth=linewidth_g, markersize=markersize_g)
     # TODO customizable error bars fmt='o', ecolor='g', capthick=2, ...
     # there the if is prob better...
-    p1 = ax.errorbar(xdata, ydata, linestyle=linestyle, label=plotlabel, color=color,
-                     linewidth=linewidth_g, marker=marker, markersize=markersize,
-                     yerr=yerr, xerr=xerr, **kwargs)
+    p1 = ax.errorbar(xdata,
+                     ydata,
+                     linestyle=linestyle,
+                     label=plotlabel,
+                     color=color,
+                     linewidth=linewidth_g,
+                     marker=marker,
+                     markersize=markersize,
+                     yerr=yerr,
+                     xerr=xerr,
+                     **kwargs)
 
     if scale:
         if scale[0]:
             ax.set_xscale(scale[0])
         if scale[1]:
             ax.set_yscale(scale[1])
-
 
     if limits:
         if limits[0]:
@@ -249,42 +281,57 @@ def single_scatterplot(ydata, xdata, xlabel, ylabel, title, plotlabel ='scatterp
     return ax
 
 
-def multiple_scatterplots(ydata, xdata, xlabel, ylabel, title, plot_labels=None,
-                          linestyle='-', marker='o', markersize=markersize_g, legend=legend_g,
-                          legend_option={}, saveas='mscatterplot',
-                          limits=[None, None], scale=[None, None],
-                          axis=None, xerr=None, yerr=None, colors=None, linewidth=[], xticks=[], **kwargs):
+def multiple_scatterplots(ydata,
+                          xdata,
+                          xlabel,
+                          ylabel,
+                          title,
+                          plot_labels=None,
+                          linestyle='-',
+                          marker='o',
+                          markersize=markersize_g,
+                          legend=legend_g,
+                          legend_option={},
+                          saveas='mscatterplot',
+                          limits=[None, None],
+                          scale=[None, None],
+                          axis=None,
+                          xerr=None,
+                          yerr=None,
+                          colors=None,
+                          linewidth=[],
+                          xticks=[],
+                          **kwargs):
     """
     Create a standard scatter plot (this should be flexible enough) to do all the
     basic plots.
     """
     nplots = len(ydata)
-    if not (nplots==len(xdata)): # todo check dimention not len, without moving to special datatype.
+    if not (nplots == len(xdata)):  # todo check dimention not len, without moving to special datatype.
         print('ydata and xdata must have the same dimension')
         return
 
     # TODO allow plotlabels to have different dimension
-    pl =[]
+    pl = []
     if axis:
         ax = axis
     else:
-        fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g,
-                        facecolor=facecolor_g, edgecolor=edgecolor_g)
+        fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
         ax = fig.add_subplot(111)
-    for axis in ['top','bottom','left','right']:
+    for axis in ['top', 'bottom', 'left', 'right']:
         ax.spines[axis].set_linewidth(axis_linewidth_g)
     ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
     ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
     ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
-    ax.yaxis.set_tick_params(size = tick_paramsy_g.get('size', 4.0),
-                             width = tick_paramsy_g.get('width', 1.0),
-                             labelsize = tick_paramsy_g.get('labelsize', 14),
-                             length = tick_paramsy_g.get('length', 5))
-    ax.xaxis.set_tick_params(size = tick_paramsx_g.get('size', 4.0),
-                             width = tick_paramsx_g.get('width', 1.0),
-                             labelsize = tick_paramsx_g.get('labelsize', 14),
-                             length = tick_paramsx_g.get('length', 5))
-    if len(xticks)!=0:
+    ax.yaxis.set_tick_params(size=tick_paramsy_g.get('size', 4.0),
+                             width=tick_paramsy_g.get('width', 1.0),
+                             labelsize=tick_paramsy_g.get('labelsize', 14),
+                             length=tick_paramsy_g.get('length', 5))
+    ax.xaxis.set_tick_params(size=tick_paramsx_g.get('size', 4.0),
+                             width=tick_paramsx_g.get('width', 1.0),
+                             labelsize=tick_paramsx_g.get('labelsize', 14),
+                             length=tick_paramsx_g.get('length', 5))
+    if len(xticks) != 0:
         ax.xaxis.set_ticks(xticks[0])
         ax.xaxis.set_ticklabels(xticks[1])
     if use_axis_fromatter_g:
@@ -340,15 +387,22 @@ def multiple_scatterplots(ydata, xdata, xlabel, ylabel, title, plot_labels=None,
         else:
             plot_label = plot_labels[i]
 
-        p1 = ax.errorbar(xdata[i], data, linestyle=linestyle_t, label=plot_label,
-                         linewidth=linewidth_p, marker=marker_t, markersize=markersize_t,
-                         yerr=yerrt, xerr=xerrt, color=color, **kwargs)
+        p1 = ax.errorbar(xdata[i],
+                         data,
+                         linestyle=linestyle_t,
+                         label=plot_label,
+                         linewidth=linewidth_p,
+                         marker=marker_t,
+                         markersize=markersize_t,
+                         yerr=yerrt,
+                         xerr=xerrt,
+                         color=color,
+                         **kwargs)
     if scale:
         if scale[0]:
             ax.set_xscale(scale[0])
         if scale[1]:
             ax.set_yscale(scale[1])
-
 
     if limits:
         if limits[0]:
@@ -365,16 +419,23 @@ def multiple_scatterplots(ydata, xdata, xlabel, ylabel, title, plot_labels=None,
         #print legend
         #{anchor, title, fontsize, linewith, borderaxespad}
         # defaults 'anchor' : (0.75, 0.97), 'title' : 'Legend', 'fontsize' : 17, 'linewith' : 1.5, 'borderaxespad' : },
-        legends_defaults = {'bbox_to_anchor' : (0.65, 0.97), 'fontsize' : 16,
-                            'linewidth' : 3.0, 'borderaxespad' : 0 , 'loc' : 2,
-                            'fancybox' : True} #'title' : 'Legend',
+        legends_defaults = {
+            'bbox_to_anchor': (0.65, 0.97),
+            'fontsize': 16,
+            'linewidth': 3.0,
+            'borderaxespad': 0,
+            'loc': 2,
+            'fancybox': True
+        }  #'title' : 'Legend',
         loptions = legends_defaults.copy()
         loptions.update(legend_option)
         linewidth = loptions.pop('linewidth', 1.5)
         title_font_size = loptions.pop('title_font_size', 15)
-        leg = ax.legend(**loptions)#bbox_to_anchor=loptions['anchor'],loc=loptions['loc'], title=legend_title, borderaxespad=0., fancybox=True)
+        leg = ax.legend(
+            **loptions
+        )  #bbox_to_anchor=loptions['anchor'],loc=loptions['loc'], title=legend_title, borderaxespad=0., fancybox=True)
         leg.get_frame().set_linewidth(linewidth)
-        leg.get_title().set_fontsize(title_font_size) #legend 'Title' fontsize
+        leg.get_title().set_fontsize(title_font_size)  #legend 'Title' fontsize
     if save_plots_g:
         savefilename = '{}.{}'.format(saveas, save_format_g)
         print(('save plot to: {}'.format(savefilename)))
@@ -387,12 +448,25 @@ def multiple_scatterplots(ydata, xdata, xlabel, ylabel, title, plot_labels=None,
     return ax
 
 
-def multi_scatter_plot(xdata, ydata, sdata, xlabel='', ylabel='', title='', plot_labels=[],
-                          marker='o', legend=legend_g,
-                          legend_option={}, saveas='mscatterplot',
-                          limits=[None, None], scale=[None, None],
-                          axis=None, color=[], xticks=[], alpha=1.0, label=None,
-                          **kwargs):
+def multi_scatter_plot(xdata,
+                       ydata,
+                       sdata,
+                       xlabel='',
+                       ylabel='',
+                       title='',
+                       plot_labels=[],
+                       marker='o',
+                       legend=legend_g,
+                       legend_option={},
+                       saveas='mscatterplot',
+                       limits=[None, None],
+                       scale=[None, None],
+                       axis=None,
+                       color=[],
+                       xticks=[],
+                       alpha=1.0,
+                       label=None,
+                       **kwargs):
     """
     xdata : list or array
     ydata : list or array
@@ -401,34 +475,32 @@ def multi_scatter_plot(xdata, ydata, sdata, xlabel='', ylabel='', title='', plot
     ...
     """
 
-
     nplots = len(ydata)
-    if not (nplots==len(xdata)): # todo check dimention not len, without moving to special datatype.
+    if not (nplots == len(xdata)):  # todo check dimention not len, without moving to special datatype.
         print('ydata and xdata must have the same dimension')
         return
 
     # TODO allow plotlabels to have different dimension
-    pl =[]
+    pl = []
     if axis:
         ax = axis
     else:
-        fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g,
-                        facecolor=facecolor_g, edgecolor=edgecolor_g)
+        fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
         ax = fig.add_subplot(111)
-    for axis in ['top','bottom','left','right']:
+    for axis in ['top', 'bottom', 'left', 'right']:
         ax.spines[axis].set_linewidth(axis_linewidth_g)
     ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
     ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
     ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
-    ax.yaxis.set_tick_params(size = tick_paramsy_g.get('size', 4.0),
-                             width = tick_paramsy_g.get('width', 1.0),
-                             labelsize = tick_paramsy_g.get('labelsize', 14),
-                             length = tick_paramsy_g.get('length', 5))
-    ax.xaxis.set_tick_params(size = tick_paramsx_g.get('size', 4.0),
-                             width = tick_paramsx_g.get('width', 1.0),
-                             labelsize = tick_paramsx_g.get('labelsize', 14),
-                             length = tick_paramsx_g.get('length', 5))
-    if len(xticks)!=0:
+    ax.yaxis.set_tick_params(size=tick_paramsy_g.get('size', 4.0),
+                             width=tick_paramsy_g.get('width', 1.0),
+                             labelsize=tick_paramsy_g.get('labelsize', 14),
+                             length=tick_paramsy_g.get('length', 5))
+    ax.xaxis.set_tick_params(size=tick_paramsx_g.get('size', 4.0),
+                             width=tick_paramsx_g.get('width', 1.0),
+                             labelsize=tick_paramsx_g.get('labelsize', 14),
+                             length=tick_paramsx_g.get('length', 5))
+    if len(xticks) != 0:
         ax.xaxis.set_ticks(xticks[0])
         ax.xaxis.set_ticklabels(xticks[1])
     if use_axis_fromatter_g:
@@ -457,10 +529,10 @@ def multi_scatter_plot(xdata, ydata, sdata, xlabel='', ylabel='', title='', plot
         if sdata[i] is not None:
             s = sdata[i]
         else:
-            s = 1.0 # maybe list with one or marker size
+            s = 1.0  # maybe list with one or marker size
         if color is None:
             if isinstance(y, list):
-                color1= ['k' for i in y]
+                color1 = ['k' for i in y]
             else:
                 color1 = ['k']
         else:
@@ -469,22 +541,28 @@ def multi_scatter_plot(xdata, ydata, sdata, xlabel='', ylabel='', title='', plot
             marker1 = marker[i]
         else:
             marker1 = marker
-        ax.scatter(xdata[i],y=y,s=s,c=color1, alpha=alpha, marker=marker1, label=label)
-
+        ax.scatter(xdata[i], y=y, s=s, c=color1, alpha=alpha, marker=marker1, label=label)
 
     #TODO nice legend
     if legend:
         #print legend
         #{anchor, title, fontsize, linewith, borderaxespad}
         # defaults 'anchor' : (0.75, 0.97), 'title' : 'Legend', 'fontsize' : 17, 'linewith' : 1.5, 'borderaxespad' : },
-        legends_defaults = {'bbox_to_anchor' : (0.65, 0.97), 'fontsize' : 16,
-                            'linewidth' : 3.0, 'borderaxespad' : 0 , 'loc' : 2,
-                            'fancybox' : True} #'title' : 'Legend',
+        legends_defaults = {
+            'bbox_to_anchor': (0.65, 0.97),
+            'fontsize': 16,
+            'linewidth': 3.0,
+            'borderaxespad': 0,
+            'loc': 2,
+            'fancybox': True
+        }  #'title' : 'Legend',
         loptions = legends_defaults.copy()
         loptions.update(legend_option)
         linewidth = loptions.pop('linewidth', 1.5)
         #title_font_size = loptions.pop('title_font_size', 15)
-        leg = ax.legend(**loptions)#bbox_to_anchor=loptions['anchor'],loc=loptions['loc'], title=legend_title, borderaxespad=0., fancybox=True)
+        leg = ax.legend(
+            **loptions
+        )  #bbox_to_anchor=loptions['anchor'],loc=loptions['loc'], title=legend_title, borderaxespad=0., fancybox=True)
         leg.get_frame().set_linewidth(linewidth)
         #leg.get_title().set_fontsize(title_font_size) #legend 'Title' fontsize
     if save_plots_g:
@@ -492,14 +570,23 @@ def multi_scatter_plot(xdata, ydata, sdata, xlabel='', ylabel='', title='', plot
         print(('save plot to: {}'.format(savefilename)))
         pp.savefig(savefilename, format=save_format_g, transparent=True)
 
-
     return ax
 
 
-def waterfall_plot(xdata, ydata, zdata, xlabel, ylabel,  zlabel, title, plot_labels,
-                          linetyp='o-', legend=legend_g,
-                          legend_option = {},
-                          saveas ='mscatterplot', limits=[None, None], scale = [None, None]):
+def waterfall_plot(xdata,
+                   ydata,
+                   zdata,
+                   xlabel,
+                   ylabel,
+                   zlabel,
+                   title,
+                   plot_labels,
+                   linetyp='o-',
+                   legend=legend_g,
+                   legend_option={},
+                   saveas='mscatterplot',
+                   limits=[None, None],
+                   scale=[None, None]):
     """
     Create a standard waterfall plot (this should be flexible enough) to do all the
     basic plots.
@@ -507,44 +594,48 @@ def waterfall_plot(xdata, ydata, zdata, xlabel, ylabel,  zlabel, title, plot_lab
     from mpl_toolkits.mplot3d.axes3d import Axes3D
 
     nplots = len(ydata)
-    if not (nplots==len(xdata)): # todo check dimention not len, without moving to special datatype.
+    if not (nplots == len(xdata)):  # todo check dimention not len, without moving to special datatype.
         print('ydata and xdata must have the same dimension')
         return
-    if not (nplots==len(zdata)): # todo check dimention not len, without moving to special datatype.
+    if not (nplots == len(zdata)):  # todo check dimention not len, without moving to special datatype.
         print('ydata and zdata must have the same dimension')
         return
 
     # TODO allow plotlabels to have different dimension
-    pl =[]
+    pl = []
 
     fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
     ax = fig.add_subplot(111, projection='3d')
-    for axis in ['top','bottom','left','right']:
+    for axis in ['top', 'bottom', 'left', 'right']:
         ax.spines[axis].set_linewidth(axis_linewidth_g)
     ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
     ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
     ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
-    ax.yaxis.set_tick_params(size = tick_paramsy_g.get('size', 4.0),
-                             width = tick_paramsy_g.get('width', 1.0),
-                             labelsize = tick_paramsy_g.get('labelsize', 14),
-                             length = tick_paramsy_g.get('length', 5))
-    ax.xaxis.set_tick_params(size = tick_paramsx_g.get('size', 4.0),
-                             width = tick_paramsx_g.get('width', 1.0),
-                             labelsize = tick_paramsx_g.get('labelsize', 14),
-                             length = tick_paramsx_g.get('length', 5))
+    ax.yaxis.set_tick_params(size=tick_paramsy_g.get('size', 4.0),
+                             width=tick_paramsy_g.get('width', 1.0),
+                             labelsize=tick_paramsy_g.get('labelsize', 14),
+                             length=tick_paramsy_g.get('length', 5))
+    ax.xaxis.set_tick_params(size=tick_paramsx_g.get('size', 4.0),
+                             width=tick_paramsx_g.get('width', 1.0),
+                             labelsize=tick_paramsx_g.get('labelsize', 14),
+                             length=tick_paramsx_g.get('length', 5))
 
     ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
     ax.yaxis.get_major_formatter().set_useOffset(False)
 
     for i, data in enumerate(ydata):
-        p1 = ax.plot3D(xdata[i], data, zdata[i], linetyp, label=plot_labels[i],
-                     linewidth = linewidth_g, markersize = markersize_g)
+        p1 = ax.plot3D(xdata[i],
+                       data,
+                       zdata[i],
+                       linetyp,
+                       label=plot_labels[i],
+                       linewidth=linewidth_g,
+                       markersize=markersize_g)
     if scale:
         if scale[0]:
             ax.set_xscale(scale[0])
         if scale[1]:
             ax.set_yscale(scale[1])
-
 
     if limits:
         if limits[0]:
@@ -561,12 +652,21 @@ def waterfall_plot(xdata, ydata, zdata, xlabel, ylabel,  zlabel, title, plot_lab
         #print legend
         #{anchor, title, fontsize, linewith, borderaxespad}
         # defaults 'anchor' : (0.75, 0.97), 'title' : 'Legend', 'fontsize' : 17, 'linewith' : 1.5, 'borderaxespad' : },
-        legends_defaults = {'bbox_to_anchor' : (0.70, 0.97), 'fontsize' : 12, 'linewidth' : 1.5, 'borderaxespad' : 0 , 'loc' : 2, 'fancybox' : True} #'title' : 'Legend',
+        legends_defaults = {
+            'bbox_to_anchor': (0.70, 0.97),
+            'fontsize': 12,
+            'linewidth': 1.5,
+            'borderaxespad': 0,
+            'loc': 2,
+            'fancybox': True
+        }  #'title' : 'Legend',
         loptions = legends_defaults.copy()
         loptions.update(legend_option)
         linewidth = loptions.pop('linewidth', 1.5)
         #title_font_size = loptions.pop('title_font_size', 15)
-        leg = pp.legend(**loptions)#bbox_to_anchor=loptions['anchor'],loc=loptions['loc'], title=legend_title, borderaxespad=0., fancybox=True)
+        leg = pp.legend(
+            **loptions
+        )  #bbox_to_anchor=loptions['anchor'],loc=loptions['loc'], title=legend_title, borderaxespad=0., fancybox=True)
         leg.get_frame().set_linewidth(linewidth)
         #leg.get_title().set_fontsize(title_font_size) #legend 'Title' fontsize
     if save_plots_g:
@@ -579,10 +679,22 @@ def waterfall_plot(xdata, ydata, zdata, xlabel, ylabel,  zlabel, title, plot_lab
         pass
 
 
-def multiplot_moved(ydata, xdata, xlabel, ylabel, title, plot_labels, scale_move=1.0,
-                          linestyle='-', marker='o', legend=legend_g,
-                          legend_option={}, min_add=0,
-                          saveas='mscatterplot', limits=[None, None], scale=[None, None], **kwargs):
+def multiplot_moved(ydata,
+                    xdata,
+                    xlabel,
+                    ylabel,
+                    title,
+                    plot_labels,
+                    scale_move=1.0,
+                    linestyle='-',
+                    marker='o',
+                    legend=legend_g,
+                    legend_option={},
+                    min_add=0,
+                    saveas='mscatterplot',
+                    limits=[None, None],
+                    scale=[None, None],
+                    **kwargs):
     """
     Plots all the scater plots above each other. It adds an arbitray offset to the ydata to do this and
     calls multi scatter plot. Therefore you might not want to show the yaxis ticks
@@ -593,21 +705,53 @@ def multiplot_moved(ydata, xdata, xlabel, ylabel, title, plot_labels, scale_move
     ymax = 0
     for data in ydata:
         ydatanew.append(np.array(data) + ymax)
-        ymax = ymax + max(data)*scale_move + min_add
+        ymax = ymax + max(data) * scale_move + min_add
 
-    ax = multiple_scatterplots(ydatanew, xdata, xlabel, ylabel, title, plot_labels,
-                          linestyle=linestyle, marker=marker, legend=legend,
-                          legend_option=legend_option,
-                          saveas=saveas, limits=limits, scale=scale, **kwargs)
+    ax = multiple_scatterplots(ydatanew,
+                               xdata,
+                               xlabel,
+                               ylabel,
+                               title,
+                               plot_labels,
+                               linestyle=linestyle,
+                               marker=marker,
+                               legend=legend,
+                               legend_option=legend_option,
+                               saveas=saveas,
+                               limits=limits,
+                               scale=scale,
+                               **kwargs)
 
     return ax
 
-def histogram(xdata, bins=None, range=None, density=None, weights=None,
-                      cumulative=False, bottom=None, histtype='bar', align='mid',
-                      orientation='vertical', rwidth=None, log=False, color=None,
-                      label=None, stacked=False, normed=None, data=None, axis=None,
-                      title='hist', xlabel='bins', ylabel='counts', limits=[None, None], legend=legend_g,
-                      legend_option={}, saveas='histogram', return_hist_output=False, **kwargs):
+
+def histogram(xdata,
+              bins=None,
+              range=None,
+              density=None,
+              weights=None,
+              cumulative=False,
+              bottom=None,
+              histtype='bar',
+              align='mid',
+              orientation='vertical',
+              rwidth=None,
+              log=False,
+              color=None,
+              label=None,
+              stacked=False,
+              normed=None,
+              data=None,
+              axis=None,
+              title='hist',
+              xlabel='bins',
+              ylabel='counts',
+              limits=[None, None],
+              legend=legend_g,
+              legend_option={},
+              saveas='histogram',
+              return_hist_output=False,
+              **kwargs):
     """
     Create a standard looking histogram
     """
@@ -618,29 +762,32 @@ def histogram(xdata, bins=None, range=None, density=None, weights=None,
         fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
         ax = fig.add_subplot(111)
 
-    for axis in ['top','bottom','left','right']:
+    for axis in ['top', 'bottom', 'left', 'right']:
         ax.spines[axis].set_linewidth(axis_linewidth_g)
     ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
     ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
     ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
-    ax.yaxis.set_tick_params(size = tick_paramsy_g.get('size', 4.0),
-                             width = tick_paramsy_g.get('width', 1.0),
-                             labelsize = tick_paramsy_g.get('labelsize', 14),
-                             length = tick_paramsy_g.get('length', 5), which='major')
-    ax.xaxis.set_tick_params(size = tick_paramsx_g.get('size', 4.0),
-                             width = tick_paramsx_g.get('width', 1.0),
-                             labelsize = tick_paramsx_g.get('labelsize', 14),
-                             length = tick_paramsx_g.get('length', 5), which='major')
+    ax.yaxis.set_tick_params(size=tick_paramsy_g.get('size', 4.0),
+                             width=tick_paramsy_g.get('width', 1.0),
+                             labelsize=tick_paramsy_g.get('labelsize', 14),
+                             length=tick_paramsy_g.get('length', 5),
+                             which='major')
+    ax.xaxis.set_tick_params(size=tick_paramsx_g.get('size', 4.0),
+                             width=tick_paramsx_g.get('width', 1.0),
+                             labelsize=tick_paramsx_g.get('labelsize', 14),
+                             length=tick_paramsx_g.get('length', 5),
+                             which='major')
 
     ax.yaxis.set_tick_params(size=tick_paramsy_minor_g.get('size', 2.0),
-                    width=tick_paramsy_minor_g.get('width', 1.0),
-                    labelsize=tick_paramsy_minor_g.get('labelsize', 0),
-                    length=tick_paramsy_minor_g.get('length', 2.5), which='minor')
+                             width=tick_paramsy_minor_g.get('width', 1.0),
+                             labelsize=tick_paramsy_minor_g.get('labelsize', 0),
+                             length=tick_paramsy_minor_g.get('length', 2.5),
+                             which='minor')
     ax.xaxis.set_tick_params(size=tick_paramsx_minor_g.get('size', 2.0),
-                    width=tick_paramsx_minor_g.get('width', 1.0),
-                    labelsize=tick_paramsx_minor_g.get('labelsize', 0),
-                    length=tick_paramsx_minor_g.get('length', 2.5), which='minor')
-
+                             width=tick_paramsx_minor_g.get('width', 1.0),
+                             labelsize=tick_paramsx_minor_g.get('labelsize', 0),
+                             length=tick_paramsx_minor_g.get('length', 2.5),
+                             which='minor')
 
     if use_axis_fromatter_g:
         if not log:
@@ -649,15 +796,25 @@ def histogram(xdata, bins=None, range=None, density=None, weights=None,
         ax.yaxis.get_major_formatter().set_useOffset(False)
         ax.xaxis.get_major_formatter().set_useOffset(False)
 
-
     #matplotlib.pyplot.hist(x, bins=None, range=None, density=None, weights=None, cumulative=False, bottom=None, histtype='bar', align='mid', orientation='vertical', rwidth=None, log=False, color=None, label=None, stacked=False, normed=None, hold=None, data=None, **kwargs)
-    n, bins, patches = ax.hist(xdata, bins=bins, range=range, density=density,
-                               weights=weights, cumulative=cumulative,
-            bottom=bottom, histtype=histtype, align=align, orientation=orientation,
-            rwidth=rwidth, log=log, color=color, label=label, stacked=stacked,
-            #normed=normed, 
-            data=data, **kwargs)
-
+    n, bins, patches = ax.hist(xdata,
+                               bins=bins,
+                               range=range,
+                               density=density,
+                               weights=weights,
+                               cumulative=cumulative,
+                               bottom=bottom,
+                               histtype=histtype,
+                               align=align,
+                               orientation=orientation,
+                               rwidth=rwidth,
+                               log=log,
+                               color=color,
+                               label=label,
+                               stacked=stacked,
+                               normed=normed,
+                               data=data,
+                               **kwargs)
 
     if limits:
         if limits[0]:
@@ -673,7 +830,7 @@ def histogram(xdata, bins=None, range=None, density=None, weights=None,
         mu = np.mean(xdata)
         sigma = np.std(xdata)
         y = mlab.normpdf(bins, mu, sigma)
-        if orientation=='horizontal':
+        if orientation == 'horizontal':
             b = ax.plot(y, bins, '--')
         else:
             b = ax.plot(bins, y, '--')
@@ -683,14 +840,22 @@ def histogram(xdata, bins=None, range=None, density=None, weights=None,
         #print legend
         #{anchor, title, fontsize, linewith, borderaxespad}
         # defaults 'anchor' : (0.75, 0.97), 'title' : 'Legend', 'fontsize' : 17, 'linewith' : 1.5, 'borderaxespad' : },
-        legends_defaults = {'bbox_to_anchor' : (0.70, 0.97), 'fontsize' : 12, 'borderaxespad' : 0 , 'loc' : 2, 'fancybox' : True} #'linewidth' : 1.5,, 'title' : 'Legend',
+        legends_defaults = {
+            'bbox_to_anchor': (0.70, 0.97),
+            'fontsize': 12,
+            'borderaxespad': 0,
+            'loc': 2,
+            'fancybox': True
+        }  #'linewidth' : 1.5,, 'title' : 'Legend',
         loptions = legends_defaults.copy()
         loptions.update(legend_option)
         linewidth = loptions.pop('linewidth', 1.5)
         title_font_size = loptions.pop('title_fontsize', 15)
-        leg = ax.legend(**loptions)#bbox_to_anchor=loptions['anchor'],loc=loptions['loc'], title=legend_title, borderaxespad=0., fancybox=True)
+        leg = ax.legend(
+            **loptions
+        )  #bbox_to_anchor=loptions['anchor'],loc=loptions['loc'], title=legend_title, borderaxespad=0., fancybox=True)
         leg.get_frame().set_linewidth(linewidth)
-        leg.get_title().set_fontsize(title_font_size) #legend 'Title' fontsize
+        leg.get_title().set_fontsize(title_font_size)  #legend 'Title' fontsize
 
     if save_plots_g:
         savefilename = '{}.{}'.format(saveas, save_format_g)
@@ -707,12 +872,30 @@ def histogram(xdata, bins=None, range=None, density=None, weights=None,
     else:
         return ax
 
+
 # todo remove default histogramm, replace it in all code by histogramm
-def default_histogram(xdata, bins=None, range=None, density=None, weights=None,
-                      cumulative=False, bottom=None, histtype='bar', align='mid',
-                      orientation='vertical', rwidth=None, log=False, color=None,
-                      label=None, stacked=False, normed=None, data=None, axis=None,
-                      title='hist', xlabel='bins', ylabel='counts', **kwargs):
+def default_histogram(xdata,
+                      bins=None,
+                      range=None,
+                      density=None,
+                      weights=None,
+                      cumulative=False,
+                      bottom=None,
+                      histtype='bar',
+                      align='mid',
+                      orientation='vertical',
+                      rwidth=None,
+                      log=False,
+                      color=None,
+                      label=None,
+                      stacked=False,
+                      normed=None,
+                      data=None,
+                      axis=None,
+                      title='hist',
+                      xlabel='bins',
+                      ylabel='counts',
+                      **kwargs):
     """
     Create a standard looking histogram
     """
@@ -723,36 +906,47 @@ def default_histogram(xdata, bins=None, range=None, density=None, weights=None,
         fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
         ax = fig.add_subplot(111)
 
-    for axis in ['top','bottom','left','right']:
+    for axis in ['top', 'bottom', 'left', 'right']:
         ax.spines[axis].set_linewidth(axis_linewidth_g)
     ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
     ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
     ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
-    ax.yaxis.set_tick_params(size = tick_paramsy_g.get('size', 4.0),
-                             width = tick_paramsy_g.get('width', 1.0),
-                             labelsize = tick_paramsy_g.get('labelsize', 14),
-                             length = tick_paramsy_g.get('length', 5))
-    ax.xaxis.set_tick_params(size = tick_paramsx_g.get('size', 4.0),
-                             width = tick_paramsx_g.get('width', 1.0),
-                             labelsize = tick_paramsx_g.get('labelsize', 14),
-                             length = tick_paramsx_g.get('length', 5))
+    ax.yaxis.set_tick_params(size=tick_paramsy_g.get('size', 4.0),
+                             width=tick_paramsy_g.get('width', 1.0),
+                             labelsize=tick_paramsy_g.get('labelsize', 14),
+                             length=tick_paramsy_g.get('length', 5))
+    ax.xaxis.set_tick_params(size=tick_paramsx_g.get('size', 4.0),
+                             width=tick_paramsx_g.get('width', 1.0),
+                             labelsize=tick_paramsx_g.get('labelsize', 14),
+                             length=tick_paramsx_g.get('length', 5))
     ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
     ax.yaxis.get_major_formatter().set_useOffset(False)
 
-
     #matplotlib.pyplot.hist(x, bins=None, range=None, density=None, weights=None, cumulative=False, bottom=None, histtype='bar', align='mid', orientation='vertical', rwidth=None, log=False, color=None, label=None, stacked=False, normed=None, hold=None, data=None, **kwargs)
-    n, bins, patches = ax.hist(xdata, bins=bins, range=range, density=density,
-                               weights=weights, cumulative=cumulative,
-            bottom=bottom, histtype=histtype, align=align, orientation=orientation,
-            rwidth=rwidth, log=log, color=color, label=label, stacked=stacked,
-            #normed=normed, 
-            data=data, **kwargs)
-    # normed has somehow changed in matplotlib ...
+    n, bins, patches = ax.hist(xdata,
+                               bins=bins,
+                               range=range,
+                               density=density,
+                               weights=weights,
+                               cumulative=cumulative,
+                               bottom=bottom,
+                               histtype=histtype,
+                               align=align,
+                               orientation=orientation,
+                               rwidth=rwidth,
+                               log=log,
+                               color=color,
+                               label=label,
+                               stacked=stacked,
+                               normed=normed,
+                               data=data,
+                               **kwargs)
+
     if normed:
         mu = np.mean(xdata)
         sigma = np.std(xdata)
         y = mlab.normpdf(bins, mu, sigma)
-        if orientation=='horizontal':
+        if orientation == 'horizontal':
             b = ax.plot(y, bins, '--')
 
         else:
@@ -765,45 +959,63 @@ def default_histogram(xdata, bins=None, range=None, density=None, weights=None,
 
     return ax
 
-def barchart(ydata, xdata, width=0.35, xlabel='x', ylabel='y', title='', plot_labels=None, bottom=None,
-                          linestyle='-', marker='o', markersize=markersize_g, legend=legend_g,
-                          legend_option={}, saveas='mscatterplot',
-                          limits=[None, None], scale=[None, None],
-                          axis=None, xerr=None, yerr=None, colors=[], linewidth=[], xticks=[], **kwargs):
+
+def barchart(ydata,
+             xdata,
+             width=0.35,
+             xlabel='x',
+             ylabel='y',
+             title='',
+             plot_labels=None,
+             bottom=None,
+             linestyle='-',
+             marker='o',
+             markersize=markersize_g,
+             legend=legend_g,
+             legend_option={},
+             saveas='mscatterplot',
+             limits=[None, None],
+             scale=[None, None],
+             axis=None,
+             xerr=None,
+             yerr=None,
+             colors=[],
+             linewidth=[],
+             xticks=[],
+             **kwargs):
     """
     Create a standard bar chart plot (this should be flexible enough) to do all the
     basic bar chart plots.
     Has to be overworked, was quickly adjusted from scatterplots, some things not used or not needed
     """
     nplots = len(ydata)
-    if not (nplots==len(xdata)): # todo check dimention not len, without moving to special datatype.
+    if not (nplots == len(xdata)):  # todo check dimention not len, without moving to special datatype.
         print('ydata and xdata must have the same dimension')
         return
 
     # TODO allow plotlabels to have different dimension
-    pl =[]
+    pl = []
     if axis:
         ax = axis
     else:
-        fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g,
-                        facecolor=facecolor_g, edgecolor=edgecolor_g)
+        fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
         ax = fig.add_subplot(111)
-    for axis in ['top','bottom','left','right']:
+    for axis in ['top', 'bottom', 'left', 'right']:
         ax.spines[axis].set_linewidth(axis_linewidth_g)
     ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
     ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
     ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
-    ax.yaxis.set_tick_params(size = tick_paramsy_g.get('size', 4.0),
-                             width = tick_paramsy_g.get('width', 1.0),
-                             labelsize = tick_paramsy_g.get('labelsize', 14),
-                             length = tick_paramsy_g.get('length', 5),
-                             labelrotation = tick_paramsy_g.get('labelrotation', 0))
-    ax.xaxis.set_tick_params(size = tick_paramsx_g.get('size', 4.0),
-                             width = tick_paramsx_g.get('width', 1.0),
-                             labelsize = tick_paramsx_g.get('labelsize', 14),
-                             length = tick_paramsx_g.get('length', 5),
-                             labelrotation = tick_paramsx_g.get('labelrotation', 0))
-    if len(xticks)!=0:
+    ax.yaxis.set_tick_params(size=tick_paramsy_g.get('size', 4.0),
+                             width=tick_paramsy_g.get('width', 1.0),
+                             labelsize=tick_paramsy_g.get('labelsize', 14),
+                             length=tick_paramsy_g.get('length', 5),
+                             labelrotation=tick_paramsy_g.get('labelrotation', 0))
+    ax.xaxis.set_tick_params(size=tick_paramsx_g.get('size', 4.0),
+                             width=tick_paramsx_g.get('width', 1.0),
+                             labelsize=tick_paramsx_g.get('labelsize', 14),
+                             length=tick_paramsx_g.get('length', 5),
+                             labelrotation=tick_paramsx_g.get('labelrotation', 0))
+    if len(xticks) != 0:
         ax.xaxis.set_ticks(xticks[0])
         ax.xaxis.set_ticklabels(xticks[1])
     if use_axis_fromatter_g:
@@ -874,7 +1086,6 @@ def barchart(ydata, xdata, width=0.35, xlabel='x', ylabel='y', title='', plot_la
         if scale[1]:
             ax.set_yscale(scale[1])
 
-
     if limits:
         if limits[0]:
             xmin = limits[0][0]
@@ -890,16 +1101,23 @@ def barchart(ydata, xdata, width=0.35, xlabel='x', ylabel='y', title='', plot_la
         #print legend
         #{anchor, title, fontsize, linewith, borderaxespad}
         # defaults 'anchor' : (0.75, 0.97), 'title' : 'Legend', 'fontsize' : 17, 'linewith' : 1.5, 'borderaxespad' : },
-        legends_defaults = {'bbox_to_anchor' : (0.65, 0.97), 'fontsize' : 16,
-                            'linewidth' : 3.0, 'borderaxespad' : 0 , 'loc' : 2,
-                            'fancybox' : True} #'title' : 'Legend',
+        legends_defaults = {
+            'bbox_to_anchor': (0.65, 0.97),
+            'fontsize': 16,
+            'linewidth': 3.0,
+            'borderaxespad': 0,
+            'loc': 2,
+            'fancybox': True
+        }  #'title' : 'Legend',
         loptions = legends_defaults.copy()
         loptions.update(legend_option)
         linewidth = loptions.pop('linewidth', 1.5)
         title_font_size = loptions.pop('title_font_size', 15)
-        leg = ax.legend(**loptions)#bbox_to_anchor=loptions['anchor'],loc=loptions['loc'], title=legend_title, borderaxespad=0., fancybox=True)
+        leg = ax.legend(
+            **loptions
+        )  #bbox_to_anchor=loptions['anchor'],loc=loptions['loc'], title=legend_title, borderaxespad=0., fancybox=True)
         leg.get_frame().set_linewidth(linewidth)
-        leg.get_title().set_fontsize(title_font_size) #legend 'Title' fontsize
+        leg.get_title().set_fontsize(title_font_size)  #legend 'Title' fontsize
     if save_plots_g:
         savefilename = '{}.{}'.format(saveas, save_format_g)
         print(('save plot to: {}'.format(savefilename)))
@@ -912,12 +1130,12 @@ def barchart(ydata, xdata, width=0.35, xlabel='x', ylabel='y', title='', plot_la
     return ax
 
 
-
 def multiaxis_scatterplot():
     """
     Create a scatter plot with multiple axes
     """
     pass
+
 
 def surface_plot():
     """
@@ -925,16 +1143,31 @@ def surface_plot():
     """
     pass
 
+
 ###############################################################################
 ########################## special plot routines ##############################
 ###############################################################################
 
 
-def plot_convex_hull2d(hull, title='Convex Hull',  xlabel='Atomic Procentage', ylabel='Formation energy / atom [eV]',
-                       linestyle='-', marker='o', legend=legend_g,
-                       legend_option={}, saveas='convex_hull',
-                       limits=[None, None], scale=[None, None], axis=None, color='k', color_line='k',
-                       linewidth=linewidth_g, markersize=markersize_g, marker_hull='o', markersize_hull=markersize_g, **kwargs):
+def plot_convex_hull2d(hull,
+                       title='Convex Hull',
+                       xlabel='Atomic Procentage',
+                       ylabel='Formation energy / atom [eV]',
+                       linestyle='-',
+                       marker='o',
+                       legend=legend_g,
+                       legend_option={},
+                       saveas='convex_hull',
+                       limits=[None, None],
+                       scale=[None, None],
+                       axis=None,
+                       color='k',
+                       color_line='k',
+                       linewidth=linewidth_g,
+                       markersize=markersize_g,
+                       marker_hull='o',
+                       markersize_hull=markersize_g,
+                       **kwargs):
     """
     Plot method for a 2d convex hull diagramm
 
@@ -948,38 +1181,47 @@ def plot_convex_hull2d(hull, title='Convex Hull',  xlabel='Atomic Procentage', y
         fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
         ax = fig.add_subplot(111)
 
-    for axis in ['top','bottom','left','right']:
+    for axis in ['top', 'bottom', 'left', 'right']:
         ax.spines[axis].set_linewidth(axis_linewidth_g)
     ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
     ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
     ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
-    ax.yaxis.set_tick_params(size = tick_paramsy_g.get('size', 4.0),
-                             width = tick_paramsy_g.get('width', 1.0),
-                             labelsize = tick_paramsy_g.get('labelsize', 14),
-                             length = tick_paramsy_g.get('length', 5))
-    ax.xaxis.set_tick_params(size = tick_paramsx_g.get('size', 4.0),
-                             width = tick_paramsx_g.get('width', 1.0),
-                             labelsize = tick_paramsx_g.get('labelsize', 14),
-                             length = tick_paramsx_g.get('length', 5))
+    ax.yaxis.set_tick_params(size=tick_paramsy_g.get('size', 4.0),
+                             width=tick_paramsy_g.get('width', 1.0),
+                             labelsize=tick_paramsy_g.get('labelsize', 14),
+                             length=tick_paramsy_g.get('length', 5))
+    ax.xaxis.set_tick_params(size=tick_paramsx_g.get('size', 4.0),
+                             width=tick_paramsx_g.get('width', 1.0),
+                             labelsize=tick_paramsx_g.get('labelsize', 14),
+                             length=tick_paramsx_g.get('length', 5))
     #ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
     ax.yaxis.get_major_formatter().set_useOffset(False)
 
     points = hull.points
 
-    a = ax.plot(points[:,0], points[:,1], marker=marker, markersize=markersize,
-                linestyle='', color=color, **kwargs)
+    a = ax.plot(points[:, 0], points[:, 1], marker=marker, markersize=markersize, linestyle='', color=color, **kwargs)
     for simplex in hull.simplices:
         # TODO leave out some lines, the ones about [0,0 -1,0]
         data = simplex.coords
-        ax.plot(data[:, 0], data[:, 1], linestyle=linestyle,
-                 color=color_line, linewidth=linewidth, markersize=markersize, **kwargs)
-        ax.plot(data[:, 0], data[:, 1], linestyle='',
-                 color=color, markersize=markersize_hull, marker=marker_hull, **kwargs)
-         # this section is from scipy.spatial.Convexhull interface
-         #ax.plot(points[simplex, 0], points[simplex, 1], linestyle=linestyle,
-         #        color=color_line, linewidth=linewidth, markersize=markersize, **kwargs)
-         #ax.plot(points[simplex, 0], points[simplex, 1], linestyle='',
-         #        color=color, markersize=markersize_hull, marker=marker_hull, **kwargs)
+        ax.plot(data[:, 0],
+                data[:, 1],
+                linestyle=linestyle,
+                color=color_line,
+                linewidth=linewidth,
+                markersize=markersize,
+                **kwargs)
+        ax.plot(data[:, 0],
+                data[:, 1],
+                linestyle='',
+                color=color,
+                markersize=markersize_hull,
+                marker=marker_hull,
+                **kwargs)
+        # this section is from scipy.spatial.Convexhull interface
+        #ax.plot(points[simplex, 0], points[simplex, 1], linestyle=linestyle,
+        #        color=color_line, linewidth=linewidth, markersize=markersize, **kwargs)
+        #ax.plot(points[simplex, 0], points[simplex, 1], linestyle='',
+        #        color=color, markersize=markersize_hull, marker=marker_hull, **kwargs)
 
     if limits:
         if limits[0]:
@@ -1003,7 +1245,15 @@ def plot_convex_hull2d(hull, title='Convex Hull',  xlabel='Atomic Procentage', y
         pass
     return ax
 
-def plot_residuen(xdata, fitdata, realdata, errors=None, xlabel = r'Energy [eV]', ylabel = r'cts/s [arb]', title = r'Residuen', hist=True):
+
+def plot_residuen(xdata,
+                  fitdata,
+                  realdata,
+                  errors=None,
+                  xlabel=r'Energy [eV]',
+                  ylabel=r'cts/s [arb]',
+                  title=r'Residuen',
+                  hist=True):
     """
     Calculates and Plots the residuen for given xdata fit results and the real data.
 
@@ -1012,11 +1262,15 @@ def plot_residuen(xdata, fitdata, realdata, errors=None, xlabel = r'Energy [eV]'
     global show_g
 
     show_g = False
-    ydata = realdata-fitdata
+    ydata = realdata - fitdata
     #TODO single scatter error plot....
-    fig = pp.figure(num=None, figsize=(figsize_g[0]*2, figsize_g[1]), dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
+    fig = pp.figure(num=None,
+                    figsize=(figsize_g[0] * 2, figsize_g[1]),
+                    dpi=dpi_g,
+                    facecolor=facecolor_g,
+                    edgecolor=edgecolor_g)
     ax2 = pp.subplot2grid((1, 2), (0, 0))
-    ax3 = pp.subplot2grid((1, 2), (0, 1))#, sharex = ax2, sharey = ax2)
+    ax3 = pp.subplot2grid((1, 2), (0, 1))  #, sharex = ax2, sharey = ax2)
     a = single_scatterplot(ydata, xdata, xlabel, ylabel, title, axis=ax2)
 
     if hist:
@@ -1025,8 +1279,13 @@ def plot_residuen(xdata, fitdata, realdata, errors=None, xlabel = r'Energy [eV]'
     return ydata
 
 
-def plot_convergence_results(distance, total_energy, iteration, saveas1='t_energy_convergence',
-                             show=True, saveas2='distance_convergence', **kwargs):
+def plot_convergence_results(distance,
+                             total_energy,
+                             iteration,
+                             saveas1='t_energy_convergence',
+                             show=True,
+                             saveas2='distance_convergence',
+                             **kwargs):
     """
     Plot the total energy versus the scf iteration
     and plot the distance of the density versus iterations.
@@ -1040,20 +1299,42 @@ def plot_convergence_results(distance, total_energy, iteration, saveas1='t_energ
     # since we make a log plot of the total_energy make sure to plot the absolute total energy
     total_energy_abs_diff = []
     for en0, en1 in zip(total_energy[:-1], total_energy[1:]):
-        total_energy_abs_diff.append(abs(en1-en0))
+        total_energy_abs_diff.append(abs(en1 - en0))
     #saveas3 ='t_energy_convergence2'
 
-    p1 = single_scatterplot(total_energy_abs_diff, iteration[1:], xlabel, ylabel1, title1, plotlabel='delta total energy', saveas=saveas1, scale=[None, 'log'])
+    p1 = single_scatterplot(total_energy_abs_diff,
+                            iteration[1:],
+                            xlabel,
+                            ylabel1,
+                            title1,
+                            plotlabel='delta total energy',
+                            saveas=saveas1,
+                            scale=[None, 'log'])
     #single_scatterplot(total_energy, iteration, xlabel, ylabel1, title1, plotlabel='total energy', saveas=saveas3)
-    p2 = single_scatterplot(distance, iteration, xlabel, ylabel2, title2, plotlabel='distance', saveas=saveas2, scale=[None, 'log'])
+    p2 = single_scatterplot(distance,
+                            iteration,
+                            xlabel,
+                            ylabel2,
+                            title2,
+                            plotlabel='distance',
+                            saveas=saveas2,
+                            scale=[None, 'log'])
 
     if show:
         pp.show(p1)
         pp.show(p2)
-    return [p1,p2]
+    return [p1, p2]
 
-def plot_convergence_results_m(distances, total_energies, iterations, modes, plot_labels=[], show=True,
-                               saveas1='t_energy_convergence', saveas2='distance_convergence', **kwargs):
+
+def plot_convergence_results_m(distances,
+                               total_energies,
+                               iterations,
+                               modes,
+                               plot_labels=[],
+                               show=True,
+                               saveas1='t_energy_convergence',
+                               saveas2='distance_convergence',
+                               **kwargs):
     """
     Plot the total energy versus the scf iteration
     and plot the distance of the density versus iterations.
@@ -1075,7 +1356,7 @@ def plot_convergence_results_m(distances, total_energies, iterations, modes, plo
         iterations1.append(iterations[i][1:])
         total_energy_abs_diff = []
         for en0, en1 in zip(total_energy[:-1], total_energy[1:]):
-            total_energy_abs_diff.append(abs(en1-en0))
+            total_energy_abs_diff.append(abs(en1 - en0))
         total_energy_abs_diffs.append(total_energy_abs_diff)
         plot_labels1.append('delta total energy {}'.format(i))
         plot_labels2.append('distance {}'.format(i))
@@ -1083,25 +1364,47 @@ def plot_convergence_results_m(distances, total_energies, iterations, modes, plo
     if plot_labels:
         plot_labels1 = plot_labels
         plot_labels2 = plot_labels
-    p1 = multiple_scatterplots(total_energy_abs_diffs, iterations1, xlabel, ylabel1, title1,
-                               plot_labels1, saveas=saveas1, scale=[None, 'log'])
+    p1 = multiple_scatterplots(total_energy_abs_diffs,
+                               iterations1,
+                               xlabel,
+                               ylabel1,
+                               title1,
+                               plot_labels1,
+                               saveas=saveas1,
+                               scale=[None, 'log'])
     for i, mode in enumerate(modes):
         if mode == 'force':
             iterations[i].pop()
             print('Drop the last iteration because there was no charge distance, mode=force')
 
-    p2 = multiple_scatterplots(distances, iterations, xlabel, ylabel2, title2,
-                               plot_labels2, saveas=saveas2, scale=[None, 'log'])
+    p2 = multiple_scatterplots(distances,
+                               iterations,
+                               xlabel,
+                               ylabel2,
+                               title2,
+                               plot_labels2,
+                               saveas=saveas2,
+                               scale=[None, 'log'])
 
     if show:
         pp.show(p1)
         pp.show(p2)
 
-    return p1,p2
+    return p1, p2
 
-def plot_lattice_constant(Total_energy, scaling, fit_y=None, relative=True, ref_const=None,
-        multi=False, plotlables=[r'simulation data', r'fit results'], title=r'Equation of states',
-        saveas='Lattice_constant', axis=None, show=True, **kwags):
+
+def plot_lattice_constant(Total_energy,
+                          scaling,
+                          fit_y=None,
+                          relative=True,
+                          ref_const=None,
+                          multi=False,
+                          plotlables=[r'simulation data', r'fit results'],
+                          title=r'Equation of states',
+                          saveas='Lattice_constant',
+                          axis=None,
+                          show=True,
+                          **kwags):
     """
     Plot a lattice constant versus Total energy
     Plot also the fit.
@@ -1139,14 +1442,14 @@ def plot_lattice_constant(Total_energy, scaling, fit_y=None, relative=True, ref_
     ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
     ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
     ax.set_ylabel(r'Total energy [eV]', fontsize=labelfonstsize_g)
-    ax.yaxis.set_tick_params(size = tick_paramsy_g.get('size', 4.0),
-                             width = tick_paramsy_g.get('width', 1.0),
-                             labelsize = tick_paramsy_g.get('labelsize', 14),
-                             length = tick_paramsy_g.get('length', 5))
-    ax.xaxis.set_tick_params(size = tick_paramsx_g.get('size', 4.0),
-                             width = tick_paramsx_g.get('width', 1.0),
-                             labelsize = tick_paramsx_g.get('labelsize', 14),
-                             length = tick_paramsx_g.get('length', 5))
+    ax.yaxis.set_tick_params(size=tick_paramsy_g.get('size', 4.0),
+                             width=tick_paramsy_g.get('width', 1.0),
+                             labelsize=tick_paramsy_g.get('labelsize', 14),
+                             length=tick_paramsy_g.get('length', 5))
+    ax.xaxis.set_tick_params(size=tick_paramsx_g.get('size', 4.0),
+                             width=tick_paramsx_g.get('width', 1.0),
+                             labelsize=tick_paramsx_g.get('labelsize', 14),
+                             length=tick_paramsx_g.get('length', 5))
     ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
     ax.yaxis.get_major_formatter().set_useOffset(False)
     if multi:
@@ -1156,20 +1459,26 @@ def plot_lattice_constant(Total_energy, scaling, fit_y=None, relative=True, ref_
 
         for i, scale in enumerate(scaling):
             #print i
-            p1 = pp.plot(scale, Total_energy[i], 'o-', label=plotlables[2*i],
-                         linewidth=linewidth_g, markersize=markersize_g)
+            p1 = pp.plot(scale,
+                         Total_energy[i],
+                         'o-',
+                         label=plotlables[2 * i],
+                         linewidth=linewidth_g,
+                         markersize=markersize_g)
             if fit_y:
-                p2 = pp.plot(scale, fit_y[i], 's-', label=plotlables[2*i+1],
-                             linewidth=linewidth_g, markersize=markersize_g)
+                p2 = pp.plot(scale,
+                             fit_y[i],
+                             's-',
+                             label=plotlables[2 * i + 1],
+                             linewidth=linewidth_g,
+                             markersize=markersize_g)
     else:
-        p1 = pp.plot(scaling, Total_energy, 'o-', label=plotlables[0],
-                      linewidth=linewidth_g, markersize=markersize_g)
+        p1 = pp.plot(scaling, Total_energy, 'o-', label=plotlables[0], linewidth=linewidth_g, markersize=markersize_g)
         if fit_y:
-            p2 = pp.plot(scaling, fit_y, r'-', label=plotlables[1],
-                         linewidth=linewidth_g, markersize=markersize_g)
+            p2 = pp.plot(scaling, fit_y, r'-', label=plotlables[1], linewidth=linewidth_g, markersize=markersize_g)
     if legend_g:
         pp.legend(bbox_to_anchor=(0.85, 1), loc=2, borderaxespad=0., fancybox=True)
-        pp.legend(loc='best', borderaxespad=0., fancybox=True) #, framealpha=0.5) #loc='upper right')
+        pp.legend(loc='best', borderaxespad=0., fancybox=True)  #, framealpha=0.5) #loc='upper right')
         #lg = pp.legend(bbox_to_anchor=(0.76, 0.400), loc=2, borderaxespad=0., borderpad=1, fancybox=True, title =r'K-pts in $\bf{k_{x,y,z}}$',fontsize=14)#loc='best', fancybox=True) #, framealpha=0.5) #loc='upper right')
         #lg.get_frame().set_linewidth(2.0)
         #lg.get_title().set_fontsize('16') #legend 'Title' fontsize
@@ -1186,7 +1495,6 @@ def plot_lattice_constant(Total_energy, scaling, fit_y=None, relative=True, ref_
     return ax
 
 
-
 def plot_relaxation_results():
     """
     Plot from the result node of a relaxation workflow,
@@ -1199,7 +1507,14 @@ def plot_relaxation_results():
     pass
 
 
-def plot_dos(path_to_dosfile, only_total=False, saveas=r'dos_plot', title=r'Density of states', linestyle='-', marker=None, legend=legend_g, limits=[None, None]):
+def plot_dos(path_to_dosfile,
+             only_total=False,
+             saveas=r'dos_plot',
+             title=r'Density of states',
+             linestyle='-',
+             marker=None,
+             legend=legend_g,
+             limits=[None, None]):
     """
     Plot the total density of states from a FLEUR DOS.1 file
 
@@ -1211,13 +1526,13 @@ def plot_dos(path_to_dosfile, only_total=False, saveas=r'dos_plot', title=r'Dens
     #totaldos = np.zeros(nData, "d")
 
     #read data from file
-    datafile = path_to_dosfile#'DOS.1'
-    data = np.loadtxt(datafile,skiprows = 0)
+    datafile = path_to_dosfile  #'DOS.1'
+    data = np.loadtxt(datafile, skiprows=0)
 
     energy = data[..., 0]
     totaldos = data[:, 1]
     interstitialdos = data[:, 2]
-    dosmt_total = totaldos-interstitialdos
+    dosmt_total = totaldos - interstitialdos
 
     doses = [totaldos, interstitialdos, dosmt_total]
     energies = [energy, energy, energy]
@@ -1226,9 +1541,28 @@ def plot_dos(path_to_dosfile, only_total=False, saveas=r'dos_plot', title=r'Dens
     ylabel = r'DOS [eV$^{-1}$]'
 
     if only_total:
-        single_scatterplot(totaldos, energy, xlabel, ylabel, title, plotlabel='total dos', linestyle=linestyle, marker=marker, limits=limits, saveas=saveas)
+        single_scatterplot(totaldos,
+                           energy,
+                           xlabel,
+                           ylabel,
+                           title,
+                           plotlabel='total dos',
+                           linestyle=linestyle,
+                           marker=marker,
+                           limits=limits,
+                           saveas=saveas)
     else:
-        multiple_scatterplots(doses, energies, xlabel, ylabel, title, plot_labels=['Total', 'Interstitial', 'Muffin-Tin'], linestyle=linestyle, marker=marker, legend=legend, limits=limits, saveas=saveas)
+        multiple_scatterplots(doses,
+                              energies,
+                              xlabel,
+                              ylabel,
+                              title,
+                              plot_labels=['Total', 'Interstitial', 'Muffin-Tin'],
+                              linestyle=linestyle,
+                              marker=marker,
+                              legend=legend,
+                              limits=limits,
+                              saveas=saveas)
 
 
 def plot_dos_total_atom_resolved():
@@ -1239,6 +1573,7 @@ def plot_dos_total_atom_resolved():
     """
     pass
 
+
 def plot_dos_total_l_resolved():
     """
     Plot the density of states from a FLEUR DOS.1 file
@@ -1246,6 +1581,7 @@ def plot_dos_total_l_resolved():
     params:
     """
     pass
+
 
 def plot_dos_atom_resolved():
     """
@@ -1266,7 +1602,14 @@ def plot_spin_dos():
     pass
 
 
-def plot_bands(path_to_bands_file, kpath, title='Bandstructure', plotlabel ='bands', linetyp='o', limits=[None, None], saveas ='bandstructure', color = 'k'):
+def plot_bands(path_to_bands_file,
+               kpath,
+               title='Bandstructure',
+               plotlabel='bands',
+               linetyp='o',
+               limits=[None, None],
+               saveas='bandstructure',
+               color='k'):
     """
     Plot a band structure from a bands.1 file from FLEUR
     params: kpath: dict: {r"$\Gamma$": 0.00000, r"$H$" : 1.04590, r"$N$" : 1.78546, r"$P$": 2.30841, r"$\Gamma$" : 3.21419, r"$N$" 3.95375 }
@@ -1275,36 +1618,35 @@ def plot_bands(path_to_bands_file, kpath, title='Bandstructure', plotlabel ='ban
 
     xpos = list(kpath.values())
     xNames = list(kpath.keys())
-    data = np.loadtxt(path_to_bands_file,skiprows = 0)
+    data = np.loadtxt(path_to_bands_file, skiprows=0)
     xdata = data[..., 0]
     ydata = data[..., 1]
-    xmin = min(xdata)-0.01
-    xmax = max(xdata)+0.01
+    xmin = min(xdata) - 0.01
+    xmax = max(xdata) + 0.01
     ymin = 0
     ymax = max(ydata)
     xlabel = ''
     ylabel = r'$E - E_F$ [eV]'
     fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
     ax = fig.add_subplot(111)
-    for axis in ['top','bottom','left','right']:
+    for axis in ['top', 'bottom', 'left', 'right']:
         ax.spines[axis].set_linewidth(axis_linewidth_g)
 
     pp.xticks(xpos, xNames)
     ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
     ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
     ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
-    ax.yaxis.set_tick_params(size = tick_paramsy_g.get('size', 4.0),
-                             width = tick_paramsy_g.get('width', 1.0),
-                             labelsize = tick_paramsy_g.get('labelsize', 14),
-                             length = tick_paramsy_g.get('length', 5))
-    ax.xaxis.set_tick_params(size = tick_paramsx_g.get('size', 4.0),
-                             width = tick_paramsx_g.get('width', 1.0),
-                             labelsize = tick_paramsx_g.get('labelsize', 14),
-                             length = tick_paramsx_g.get('length', 5))
+    ax.yaxis.set_tick_params(size=tick_paramsy_g.get('size', 4.0),
+                             width=tick_paramsy_g.get('width', 1.0),
+                             labelsize=tick_paramsy_g.get('labelsize', 14),
+                             length=tick_paramsy_g.get('length', 5))
+    ax.xaxis.set_tick_params(size=tick_paramsx_g.get('size', 4.0),
+                             width=tick_paramsx_g.get('width', 1.0),
+                             labelsize=tick_paramsx_g.get('labelsize', 14),
+                             length=tick_paramsx_g.get('length', 5))
     ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
     ax.yaxis.get_major_formatter().set_useOffset(False)
-    p1 = pp.plot(xdata, ydata, linetyp, label = plotlabel, color = color,
-                 linewidth = linewidth_g, markersize = markersize_g)
+    p1 = pp.plot(xdata, ydata, linetyp, label=plotlabel, color=color, linewidth=linewidth_g, markersize=markersize_g)
 
     if limits:
         if limits[0]:
@@ -1316,7 +1658,7 @@ def plot_bands(path_to_bands_file, kpath, title='Bandstructure', plotlabel ='ban
             ymax = limits[1][1]
             pp.ylim(ymin, ymax)
     for i in xpos:
-        pp.axvline(x=i, ymin=ymin, ymax = ymax, linewidth=1, color='k')
+        pp.axvline(x=i, ymin=ymin, ymax=ymax, linewidth=1, color='k')
 
     if save_plots_g:
         savefilename = '{}.{}'.format(saveas, save_format_g)
@@ -1324,6 +1666,7 @@ def plot_bands(path_to_bands_file, kpath, title='Bandstructure', plotlabel ='ban
         pp.savefig(savefilename, format=save_format_g, transparent=True)
     else:
         pp.show()
+
 
 def plot_certain_bands():
     """
@@ -1348,6 +1691,7 @@ def plot_corelevels(coreleveldict, compound=''):
         # one plot for each element
         plot_one_element_corelv(corelevel_dict, elem, compound=compound)
 
+
 def plot_one_element_corelv(corelevel_dict, element, compound=''):
     """
     This routine creates a plot which visualizes all the binding energies of one
@@ -1366,7 +1710,7 @@ def plot_one_element_corelv(corelevel_dict, element, compound=''):
     for corelevel, corelevel_list in six.iteritems(corelevel_dict):
         #print corelevel
         n_atom = len(corelevel_list)
-        x_axis = list(range(0,n_atom,1))
+        x_axis = list(range(0, n_atom, 1))
         y_axis = corelevel_list
         xdata_all.append(x_axis)
         ydata_all.append(y_axis)
@@ -1377,53 +1721,52 @@ def plot_one_element_corelv(corelevel_dict, element, compound=''):
     ydata = ydata_all[0]
     xlabel = '{} atomtype'.format(elem)
     ylabel = 'energy in eV'
-    title = 'Element: {} from {} cl {}'.format(elem, title, corelevels_names)
+    title = 'Element: {} from {} cl {}'.format(elem, compound, corelevels_names)
     #plotlabel ='corelevel shifts'
     #linetyp='o-'
     xmin = xdata[0] - 0.5
     xmax = xdata[-1] + 0.5
-    ymin = min(ydata)-1
-    ymax = max(ydata)+1
+    ymin = min(ydata) - 1
+    ymax = max(ydata) + 1
     #limits=[(xmin, xmax), (ymin, ymax)],
-    saveas ='scatterplot'
+    saveas = 'scatterplot'
     #color = 'k'
     scale = [None, None]
-    font = {'family': 'serif',
-            'color':  'darkred',
-            'weight': 'normal',
-            'size': 16,
-            }
-
+    font = {
+        'family': 'serif',
+        'color': 'darkred',
+        'weight': 'normal',
+        'size': 16,
+    }
 
     fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
     ax = fig.add_subplot(111)
-    for axis in ['top','bottom','left','right']:
+    for axis in ['top', 'bottom', 'left', 'right']:
         ax.spines[axis].set_linewidth(axis_linewidth_g)
     ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
     ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
     ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
-    ax.yaxis.set_tick_params(size = tick_paramsy_g.get('size', 4.0),
-                             width = tick_paramsy_g.get('width', 1.0),
-                             labelsize = tick_paramsy_g.get('labelsize', 14),
-                             length = tick_paramsy_g.get('length', 5))
-    ax.xaxis.set_tick_params(size = tick_paramsx_g.get('size', 4.0),
-                             width = tick_paramsx_g.get('width', 1.0),
-                             labelsize = tick_paramsx_g.get('labelsize', 14),
-                             length = tick_paramsx_g.get('length', 5))
+    ax.yaxis.set_tick_params(size=tick_paramsy_g.get('size', 4.0),
+                             width=tick_paramsy_g.get('width', 1.0),
+                             labelsize=tick_paramsy_g.get('labelsize', 14),
+                             length=tick_paramsy_g.get('length', 5))
+    ax.xaxis.set_tick_params(size=tick_paramsx_g.get('size', 4.0),
+                             width=tick_paramsx_g.get('width', 1.0),
+                             labelsize=tick_paramsx_g.get('labelsize', 14),
+                             length=tick_paramsx_g.get('length', 5))
     ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
     ax.yaxis.get_major_formatter().set_useOffset(False)
 
-    for j,y in enumerate(ydata_all):
-        for i,x in enumerate(xdata):
-            lenx = xmax-xmin
-            length = 0.5/lenx
-            offset = 0.5/lenx
-            xminline = x/lenx + offset - length/2
-            xmaxline = x/lenx + offset + length/2
+    for j, y in enumerate(ydata_all):
+        for i, x in enumerate(xdata):
+            lenx = xmax - xmin
+            length = 0.5 / lenx
+            offset = 0.5 / lenx
+            xminline = x / lenx + offset - length / 2
+            xmaxline = x / lenx + offset + length / 2
             pp.axhline(y=y[i], xmin=xminline, xmax=xmaxline, linewidth=2, color='k')
             text = r'{}'.format(y[i])
-            pp.text(x-0.25, y[i]+0.3, text, fontdict=font)
-
+            pp.text(x - 0.25, y[i] + 0.3, text, fontdict=font)
 
     if scale:
         if scale[0]:
@@ -1443,7 +1786,18 @@ def plot_one_element_corelv(corelevel_dict, element, compound=''):
         pp.show()
 
 
-def construct_corelevel_spectrum(coreleveldict, natom_typesdict, exp_references={}, scale_to=-1, fwhm_g=0.6, fwhm_l=0.1, energy_range=[None, None], xspec=None, energy_grid=0.2, peakfunction='voigt', alpha_l=1.0, beta_l=1.5):
+def construct_corelevel_spectrum(coreleveldict,
+                                 natom_typesdict,
+                                 exp_references={},
+                                 scale_to=-1,
+                                 fwhm_g=0.6,
+                                 fwhm_l=0.1,
+                                 energy_range=[None, None],
+                                 xspec=None,
+                                 energy_grid=0.2,
+                                 peakfunction='voigt',
+                                 alpha_l=1.0,
+                                 beta_l=1.5):
     """
     Constructrs a corelevel spectrum from a given corelevel dict
 
@@ -1456,7 +1810,7 @@ def construct_corelevel_spectrum(coreleveldict, natom_typesdict, exp_references=
     ydata_spec = []
     xdata_spec = []
     xdatalabel = []
-    energy_grid = round(energy_grid, 5) # eV
+    energy_grid = round(energy_grid, 5)  # eV
     #count = 0
     #compound_info_new = compound_info
 
@@ -1469,15 +1823,15 @@ def construct_corelevel_spectrum(coreleveldict, natom_typesdict, exp_references=
             if 's' in corelevel_name:
                 nelectrons = 2
             else:
-                max_state_occ_spin = {'1/2' : 2, '3/2' : 4, '5/2' : 6, '7/2' : 8}
+                max_state_occ_spin = {'1/2': 2, '3/2': 4, '5/2': 6, '7/2': 8}
                 # check if spin in name
                 for key, val in six.iteritems(max_state_occ_spin):
                     if key in corelevel_name:
                         nelectrons = val
-            for i,corelevel in enumerate(corelevel_list):
+            for i, corelevel in enumerate(corelevel_list):
                 xdatalabel.append(elem + ' ' + corelevel_name)
                 xdata_all.append(corelevel)
-                ydata_all.append(natom[i]*nelectrons)
+                ydata_all.append(natom[i] * nelectrons)
                 #count = count + 1
                 #elem_count = elem_count + 1
             '''
@@ -1491,9 +1845,9 @@ def construct_corelevel_spectrum(coreleveldict, natom_typesdict, exp_references=
                             if isinstance(number, list):
                                 continue
                             compound_info_new[compound][elemt] = [count-elem_count, count-elem_count+number]
-             '''  
-    xmin = min(xdata_all) - 2 #0.5
-    xmax = max(xdata_all) + 2   #0.5
+             '''
+    xmin = min(xdata_all) - 2  #0.5
+    xmax = max(xdata_all) + 2  #0.5
     if energy_range[0]:
         xmin = energy_range[0]
     if energy_range[1]:
@@ -1502,23 +1856,29 @@ def construct_corelevel_spectrum(coreleveldict, natom_typesdict, exp_references=
     if xspec is not None:
         xdata_spec = xspec
     else:
-        xdata_spec = np.array(np.arange(xmin, xmax+energy_grid, energy_grid))
+        xdata_spec = np.array(np.arange(xmin, xmax + energy_grid, energy_grid))
     ydata_spec = np.zeros(len(xdata_spec), dtype=float)
     ydata_single_all = []
-    for i,xpoint in enumerate(xdata_all):
-        if peakfunction== 'gaus':
-            data_f = np.array(gaussian(xdata_spec, fwhm_g, xpoint))#, 1.0))
-        elif peakfunction== 'voigt':
-            data_f = np.array(voigt_profile(xdata_spec, fwhm_g, fwhm_l, xpoint))# different fwhn for g und l
-        elif peakfunction== 'pseudo-voigt':
+    for i, xpoint in enumerate(xdata_all):
+        if peakfunction == 'gaus':
+            data_f = np.array(gaussian(xdata_spec, fwhm_g, xpoint))  #, 1.0))
+        elif peakfunction == 'voigt':
+            data_f = np.array(voigt_profile(xdata_spec, fwhm_g, fwhm_l, xpoint))  # different fwhn for g und l
+        elif peakfunction == 'pseudo-voigt':
             data_f = np.array(pseudo_voigt_profile(xdata_spec, fwhm_g, fwhm_l, xpoint))
-        elif peakfunction== 'lorentz':
+        elif peakfunction == 'lorentz':
             data_f = np.array(lorentzian(xdata_spec, fwhm_l, xpoint))
-        elif peakfunction=='doniach-sunjic':
+        elif peakfunction == 'doniach-sunjic':
             data_f = np.array(doniach_sunjic(xdata_spec, scale=1.0, E_0=xpoint, gamma=fwhm_l, alpha=fwhm_g))
-        elif peakfunction=='asymmetric_lorentz_gauss_conv':
+        elif peakfunction == 'asymmetric_lorentz_gauss_conv':
             #print(xpoint, xdata_spec)
-            data_f = np.array(asymmetric_lorentz_gauss_conv(xdata_spec, xpoint, fwhm_g=fwhm_g, fwhm_l=fwhm_l, alpha=alpha_l, beta=beta_l))
+            data_f = np.array(
+                asymmetric_lorentz_gauss_conv(xdata_spec,
+                                              xpoint,
+                                              fwhm_g=fwhm_g,
+                                              fwhm_l=fwhm_l,
+                                              alpha=alpha_l,
+                                              beta=beta_l))
         else:
             print('given peakfunction type not known')
             data_f = []
@@ -1526,22 +1886,22 @@ def construct_corelevel_spectrum(coreleveldict, natom_typesdict, exp_references=
 
         # sometimes we get a point to much if constructed from new mesh..
         if len(ydata_spec) < len(data_f):
-                # TODO: further adjustements? we assume only one point difference
-                data_f = data_f[:-1]
+            # TODO: further adjustements? we assume only one point difference
+            data_f = data_f[:-1]
         #print('length', len(ydata_spec), len(data_f))
         #gaus_f = lorentzian(xdata_spec, xpoint, 0.6, 100.0)
-        if peakfunction=='doniach-sunjic':
-            ydata_spec = ydata_spec + ydata_all[i]*data_f
-            ydata_single_all.append(ydata_all[i]*data_f)
+        if peakfunction == 'doniach-sunjic':
+            ydata_spec = ydata_spec + ydata_all[i] * data_f
+            ydata_single_all.append(ydata_all[i] * data_f)
         else:
-            ydata_spec = ydata_spec + ydata_all[i]*data_f
-            ydata_single_all.append(ydata_all[i]*data_f)
+            ydata_spec = ydata_spec + ydata_all[i] * data_f
+            ydata_single_all.append(ydata_all[i] * data_f)
 
     # we scale after and not before, because the max intensity is not neccesary
     # the number of electrons.
     if scale_to > 0.0:
         y_valmax = max(ydata_spec)
-        scalingfactor = scale_to/y_valmax
+        scalingfactor = scale_to / y_valmax
         ydata_spec = ydata_spec * scalingfactor
         ydata_single_all_new = []
         for ydata_single in ydata_single_all:
@@ -1551,8 +1911,27 @@ def construct_corelevel_spectrum(coreleveldict, natom_typesdict, exp_references=
     return [xdata_spec, ydata_spec, ydata_single_all, xdata_all, ydata_all, xdatalabel]
 
 
-def plot_corelevel_spectra(coreleveldict, natom_typesdict, exp_references={}, scale_to=-1, show_single=True, show_ref=True, energy_range=[None, None], title = '', fwhm_g=0.6, fwhm_l=0.1, energy_grid=0.2, peakfunction='voigt', linetyp_spec='o-', limits=[None, None], xlabel='Binding energy [eV]',
-    ylabel='Intensity [arb] (natoms*nelectrons)', saveas=None, xspec=None, alpha_l=1.0, beta_l=1.0,**kwargs):
+def plot_corelevel_spectra(coreleveldict,
+                           natom_typesdict,
+                           exp_references={},
+                           scale_to=-1,
+                           show_single=True,
+                           show_ref=True,
+                           energy_range=[None, None],
+                           title='',
+                           fwhm_g=0.6,
+                           fwhm_l=0.1,
+                           energy_grid=0.2,
+                           peakfunction='voigt',
+                           linetyp_spec='o-',
+                           limits=[None, None],
+                           xlabel='Binding energy [eV]',
+                           ylabel='Intensity [arb] (natoms*nelectrons)',
+                           saveas=None,
+                           xspec=None,
+                           alpha_l=1.0,
+                           beta_l=1.0,
+                           **kwargs):
     #show_compound=True, , compound_info={} compound_info dict: dict that can be used to specify what component should be shown together     compound_info = {'Be12Ti' : {'Be' : 4, 'Ti' : 1}, 'BeTi' : {'Be' : 1, 'Ti' : 1}}
     """
     Ploting function of corelevel in the form of a spectrum.
@@ -1579,14 +1958,22 @@ def plot_corelevel_spectra(coreleveldict, natom_typesdict, exp_references={}, sc
     n_atom_types_Be12Ti = {'Be' : [4,4,4]}
     # TODO feature to make singles of different compounds a different color
     """
-    [xdata_spec, ydata_spec, ydata_single_all, xdata_all, ydata_all, xdatalabel] = construct_corelevel_spectrum(
-                                 coreleveldict, natom_typesdict,
-                                 exp_references=exp_references, scale_to=scale_to,
-                                 fwhm_g=fwhm_g, fwhm_l=fwhm_l, energy_range=energy_range, xspec=xspec,
-                                 energy_grid=energy_grid, peakfunction=peakfunction, alpha_l=alpha_l, beta_l=beta_l)
-    
-    xmin = min(xdata_all) - 2 #0.5
-    xmax = max(xdata_all) + 2   #0.5
+    [xdata_spec, ydata_spec, ydata_single_all, xdata_all, ydata_all,
+     xdatalabel] = construct_corelevel_spectrum(coreleveldict,
+                                                natom_typesdict,
+                                                exp_references=exp_references,
+                                                scale_to=scale_to,
+                                                fwhm_g=fwhm_g,
+                                                fwhm_l=fwhm_l,
+                                                energy_range=energy_range,
+                                                xspec=xspec,
+                                                energy_grid=energy_grid,
+                                                peakfunction=peakfunction,
+                                                alpha_l=alpha_l,
+                                                beta_l=beta_l)
+
+    xmin = min(xdata_all) - 2  #0.5
+    xmax = max(xdata_all) + 2  #0.5
     if energy_range[0]:
         xmin = energy_range[0]
     if energy_range[1]:
@@ -1594,9 +1981,8 @@ def plot_corelevel_spectra(coreleveldict, natom_typesdict, exp_references={}, sc
 
     xdata = xdata_all
     ydata = ydata_all
-    ymax2 = max(ydata_spec)+1
-    title = title#'Spectrum of {}'.format(compound)
-
+    ymax2 = max(ydata_spec) + 1
+    title = title  #'Spectrum of {}'.format(compound)
     """
     # ToDo redesign to use multiple_scatterplot
     axis = multiple_scatterplots(ydata, xdata, xlabel, ylabel, title, plot_labels,
@@ -1607,29 +1993,29 @@ def plot_corelevel_spectra(coreleveldict, natom_typesdict, exp_references={}, sc
     """
 
     #print len(xdata), len(ydata)
-    plotlabel ='corelevel shifts'
+    plotlabel = 'corelevel shifts'
     linetyp = 'o'
-    linetyp1 = linetyp_spec#'-'
+    linetyp1 = linetyp_spec  #'-'
     linewidth_g1 = linewidth_g
 
-
     ymin = -0.3
-    ymax = max(ydata)+1
+    ymax = max(ydata) + 1
 
     if saveas is None:
-        saveas ='XPS_theo_{}_{}'.format(fwhm_g, title)
-        saveas1 ='XPS_theo_2_{}_{}'.format(fwhm_g, title)
+        saveas = 'XPS_theo_{}_{}'.format(fwhm_g, title)
+        saveas1 = 'XPS_theo_2_{}_{}'.format(fwhm_g, title)
     else:
         saveas1 = saveas[1]
         saveas = saveas[0]
 
     color = 'k'
     scale = [None, None]
-    font = {'family': 'serif',
-            'color':  'darkred',
-            'weight': 'normal',
-            'size': 16,
-            }
+    font = {
+        'family': 'serif',
+        'color': 'darkred',
+        'weight': 'normal',
+        'size': 16,
+    }
     ####################################
     ##### PLOT 1, plot raw datapoints
 
@@ -1638,27 +2024,32 @@ def plot_corelevel_spectra(coreleveldict, natom_typesdict, exp_references={}, sc
 
     fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
     ax = fig.add_subplot(111)
-    for axis in ['top','bottom','left','right']:
+    for axis in ['top', 'bottom', 'left', 'right']:
         ax.spines[axis].set_linewidth(axis_linewidth_g)
     ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
     ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
     ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
-    ax.yaxis.set_tick_params(size = tick_paramsy_g.get('size', 4.0),
-                             width = tick_paramsy_g.get('width', 1.0),
-                             labelsize = tick_paramsy_g.get('labelsize', 14),
-                             length = tick_paramsy_g.get('length', 5))
-    ax.xaxis.set_tick_params(size = tick_paramsx_g.get('size', 4.0),
-                             width = tick_paramsx_g.get('width', 1.0),
-                             labelsize = tick_paramsx_g.get('labelsize', 14),
-                             length = tick_paramsx_g.get('length', 5))
+    ax.yaxis.set_tick_params(size=tick_paramsy_g.get('size', 4.0),
+                             width=tick_paramsy_g.get('width', 1.0),
+                             labelsize=tick_paramsy_g.get('labelsize', 14),
+                             length=tick_paramsy_g.get('length', 5))
+    ax.xaxis.set_tick_params(size=tick_paramsx_g.get('size', 4.0),
+                             width=tick_paramsx_g.get('width', 1.0),
+                             labelsize=tick_paramsx_g.get('labelsize', 14),
+                             length=tick_paramsx_g.get('length', 5))
     ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
     ax.yaxis.get_major_formatter().set_useOffset(False)
-    p1 = ax.plot(xdata_all, ydata_all, linetyp, label=plotlabel, color=color,
-                 linewidth=linewidth_g, markersize= markersize_g)
+    p1 = ax.plot(xdata_all,
+                 ydata_all,
+                 linetyp,
+                 label=plotlabel,
+                 color=color,
+                 linewidth=linewidth_g,
+                 markersize=markersize_g)
 
     if show_ref and exp_references:
-        for elm,ref_list_dict in six.iteritems(exp_references):
-            for state,ref_list in six.iteritems(ref_list_dict):
+        for elm, ref_list_dict in six.iteritems(exp_references):
+            for state, ref_list in six.iteritems(ref_list_dict):
                 for ref in ref_list:
                     pp.axvline(ymin=0, ymax=0.1, x=ref, linewidth=linewidth_g, color='k')
     '''
@@ -1690,7 +2081,7 @@ def plot_corelevel_spectra(coreleveldict, natom_typesdict, exp_references={}, sc
             ymin = limits[1][0]
             ymax = limits[1][1]
 
-    ax.set_xlim(xmax, xmin)    #flip x axes
+    ax.set_xlim(xmax, xmin)  #flip x axes
     ax.set_ylim(ymin, ymax)
 
     if save_plots_g:
@@ -1705,35 +2096,44 @@ def plot_corelevel_spectra(coreleveldict, natom_typesdict, exp_references={}, sc
 
     fig1 = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
     ax1 = fig1.add_subplot(111)
-    for axis in ['top','bottom','left','right']:
+    for axis in ['top', 'bottom', 'left', 'right']:
         ax1.spines[axis].set_linewidth(axis_linewidth_g)
     ax1.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
     ax1.set_xlabel(xlabel, fontsize=labelfonstsize_g)
     ax1.set_ylabel(ylabel, fontsize=labelfonstsize_g)
-    ax1.yaxis.set_tick_params(size = tick_paramsy_g.get('size', 4.0),
-                             width = tick_paramsy_g.get('width', 1.0),
-                             labelsize = tick_paramsy_g.get('labelsize', 14),
-                             length = tick_paramsy_g.get('length', 5))
-    ax1.xaxis.set_tick_params(size = tick_paramsx_g.get('size', 4.0),
-                             width = tick_paramsx_g.get('width', 1.0),
-                             labelsize = tick_paramsx_g.get('labelsize', 14),
-                             length = tick_paramsx_g.get('length', 5))
+    ax1.yaxis.set_tick_params(size=tick_paramsy_g.get('size', 4.0),
+                              width=tick_paramsy_g.get('width', 1.0),
+                              labelsize=tick_paramsy_g.get('labelsize', 14),
+                              length=tick_paramsy_g.get('length', 5))
+    ax1.xaxis.set_tick_params(size=tick_paramsx_g.get('size', 4.0),
+                              width=tick_paramsx_g.get('width', 1.0),
+                              labelsize=tick_paramsx_g.get('labelsize', 14),
+                              length=tick_paramsx_g.get('length', 5))
     ax1.yaxis.get_major_formatter().set_powerlimits((0, 3))
     ax1.yaxis.get_major_formatter().set_useOffset(False)
 
-
-    p11 = ax1.plot(xdata_spec, ydata_spec, linetyp1, label=plotlabel, color=color,
-                 linewidth=linewidth_g1, markersize=markersize_g)
+    p11 = ax1.plot(xdata_spec,
+                   ydata_spec,
+                   linetyp1,
+                   label=plotlabel,
+                   color=color,
+                   linewidth=linewidth_g1,
+                   markersize=markersize_g)
 
     if show_single:
         for single_peek in ydata_single_all:
             #xdatalabel
-            pp.plot(xdata_spec, single_peek, '-', label=plotlabel, color='g',
-                 linewidth=linewidth_g1, markersize = markersize_g)
+            pp.plot(xdata_spec,
+                    single_peek,
+                    '-',
+                    label=plotlabel,
+                    color='g',
+                    linewidth=linewidth_g1,
+                    markersize=markersize_g)
 
     if show_ref and exp_references:
-        for elm,ref_list_dict in six.iteritems(exp_references):
-            for state,ref_list in six.iteritems(ref_list_dict):
+        for elm, ref_list_dict in six.iteritems(exp_references):
+            for state, ref_list in six.iteritems(ref_list_dict):
                 for ref in ref_list:
                     pp.axvline(ymin=0, ymax=0.1, x=ref, linewidth=2, color='k')
     '''
@@ -1757,7 +2157,7 @@ def plot_corelevel_spectra(coreleveldict, natom_typesdict, exp_references={}, sc
         if limits[1]:
             ymin = limits[1][0]
             ymax2 = limits[1][1]
-    ax1.set_xlim(xmax, xmin)    #flip x axes
+    ax1.set_xlim(xmax, xmin)  #flip x axes
     ax1.set_ylim(ymin, ymax2)
 
     if save_plots_g:
@@ -1771,9 +2171,7 @@ def plot_corelevel_spectra(coreleveldict, natom_typesdict, exp_references={}, sc
     return [xdata_spec, ydata_spec, ydata_single_all, xdata_all, ydata_all, xdatalabel, fig, fig1]
 
 
-
-
-def asymmetric_lorentz(x,fwhm, mu, alpha=1.0, beta=1.5):
+def asymmetric_lorentz(x, fwhm, mu, alpha=1.0, beta=1.5):
     """
     asymetric lorentz function
 
@@ -1785,22 +2183,23 @@ def asymmetric_lorentz(x,fwhm, mu, alpha=1.0, beta=1.5):
 
     index = 0
     for i, entry in enumerate(x):
-        if entry<=mu:
-            index=i
+        if entry <= mu:
+            index = i
         else:
             break
 
-    ydata1 = lorentzian_one(x[:index],fwhm, mu)**alpha
-    ydata2 = lorentzian_one(x[index:],fwhm, mu)**beta
+    ydata1 = lorentzian_one(x[:index], fwhm, mu)**alpha
+    ydata2 = lorentzian_one(x[index:], fwhm, mu)**beta
 
-    return np.array(list(ydata1)+list(ydata2))
+    return np.array(list(ydata1) + list(ydata2))
 
 
 def lorentzian_one(x, fwhm, mu):
     """
     Returns a Lorentzian line shape at x with FWHM fwhm and mean mu
     """
-    return 1.0 / (1+4*((x-mu)/fwhm)**2)
+    return 1.0 / (1 + 4 * ((x - mu) / fwhm)**2)
+
 
 def gauss_one(x, fwhm, mu):
     """
@@ -1808,9 +2207,10 @@ def gauss_one(x, fwhm, mu):
     """
     import numpy as np
     x = np.array(x)
-    return np.exp(-4*np.log(2)*((x-mu)/fwhm)**2)
+    return np.exp(-4 * np.log(2) * ((x - mu) / fwhm)**2)
 
-def asymmetric_lorentz_gauss_sum(x, mu, fwhm_l,fwhm_g,alpha=1.0, beta=1.5):
+
+def asymmetric_lorentz_gauss_sum(x, mu, fwhm_l, fwhm_g, alpha=1.0, beta=1.5):
     """
     asymmetric Lorentzian with Gauss convoluted
 
@@ -1818,10 +2218,11 @@ def asymmetric_lorentz_gauss_sum(x, mu, fwhm_l,fwhm_g,alpha=1.0, beta=1.5):
     import numpy as np
 
     ygaus = np.array(gauss_one(x, fwhm_g, mu))
-    ylorentz = np.array(asymmetric_lorentz(x,fwhm_l, mu, alpha=alpha, beta=beta))
-    ydata = ylorentz+ygaus
+    ylorentz = np.array(asymmetric_lorentz(x, fwhm_l, mu, alpha=alpha, beta=beta))
+    ydata = ylorentz + ygaus
 
     return ydata
+
 
 def asymmetric_lorentz_gauss_conv(x, mu, fwhm_l, fwhm_g, alpha=1.0, beta=1.5):
     """
@@ -1834,16 +2235,17 @@ def asymmetric_lorentz_gauss_conv(x, mu, fwhm_l, fwhm_g, alpha=1.0, beta=1.5):
     # only one function has to be translated
     # gaus has to be symmetric arround 0 for convolution
     # and on the same equidistant grid
-    xstep = abs(round(x[-1]-x[-2],6))
-    rangex = abs(x[-1]-x[0])
+    xstep = abs(round(x[-1] - x[-2], 6))
+    rangex = abs(x[-1] - x[0])
     #print(xstep, rangex)
-    xgaus = np.arange(-rangex/2.0, rangex/2.0+xstep,xstep)
+    xgaus = np.arange(-rangex / 2.0, rangex / 2.0 + xstep, xstep)
     #print(xgaus[:10], xgaus[-1])
     ygaus = np.array(gauss_one(xgaus, fwhm_g, mu=0.0), dtype=np.float64)
-    ylorentz = np.array(asymmetric_lorentz(x,fwhm_l, mu=mu, alpha=alpha, beta=beta), dtype=np.float64)
+    ylorentz = np.array(asymmetric_lorentz(x, fwhm_l, mu=mu, alpha=alpha, beta=beta), dtype=np.float64)
     ydata = np.convolve(ylorentz, ygaus, mode='same')
 
     return ydata
+
 
 '''
 def asymmetric_lorentz_gauss_conv_interp(x, mu, fwhm_l,fwhm_g,alpha=1.0, beta=1.5, grid_factor=10):
@@ -2037,6 +2439,7 @@ def direct_convolution(a,b):
     return ydata
 '''
 
+
 def doniach_sunjic(x, scale=1.0, E_0=0, gamma=1.0, alpha=0.0):
     """
     Doniach Sunjic asymmetric peak function. tail to higher binding energies.
@@ -2053,11 +2456,12 @@ def doniach_sunjic(x, scale=1.0, E_0=0, gamma=1.0, alpha=0.0):
     """
     import numpy as np
 
-    arg = (E_0-x)/gamma
+    arg = (E_0 - x) / gamma
     alpha2 = (1.0 - alpha)
     #scale = scale/(gamma**alpha2)
-    don_su = np.cos(np.pi*alpha + alpha2*np.arctan(arg))/(1 + arg**2)**(alpha2/2)
-    return np.array(scale*don_su)
+    don_su = np.cos(np.pi * alpha + alpha2 * np.arctan(arg)) / (1 + arg**2)**(alpha2 / 2)
+    return np.array(scale * don_su)
+
 
 def gaussian(x, fwhm, mu):
     """
@@ -2069,14 +2473,16 @@ def gaussian(x, fwhm, mu):
     sigma = fwhm / (2 * np.sqrt(2 * np.log(2)))
     #return np.sqrt(np.log(2) / np.pi) / hwhm\
     #                         * np.exp(-((x-mu) / hwhm)**2 * np.log(2))
-    return np.exp(-(x-mu)**2 / (2*(sigma**2))) / (np.sqrt(2 * np.pi) * sigma)
+    return np.exp(-(x - mu)**2 / (2 * (sigma**2))) / (np.sqrt(2 * np.pi) * sigma)
+
 
 def lorentzian(x, fwhm, mu):
     """
     Returns a Lorentzian line shape at x with FWHM fwhm and mean mu
     """
-    hwhm = fwhm/2.0
-    return hwhm / np.pi / ((x-mu)**2 + hwhm**2)
+    hwhm = fwhm / 2.0
+    return hwhm / np.pi / ((x - mu)**2 + hwhm**2)
+
 
 def voigt_profile(x, fwhm_g, fwhm_l, mu):
     """
@@ -2089,10 +2495,11 @@ def voigt_profile(x, fwhm_g, fwhm_l, mu):
     """
     from scipy.special import wofz
 
-    hwhm_l = fwhm_l/2.0
+    hwhm_l = fwhm_l / 2.0
     sigma = fwhm_g / (2 * np.sqrt(2 * np.log(2)))
     # complex 1j
-    return np.real(wofz(((x-mu) + 1j*hwhm_l)/sigma/np.sqrt(2)))/sigma/np.sqrt(2*np.pi)
+    return np.real(wofz(((x - mu) + 1j * hwhm_l) / sigma / np.sqrt(2))) / sigma / np.sqrt(2 * np.pi)
+
 
 def CDF_voigt_profile(x, fwhm_g, fwhm_l, mu):
     """
@@ -2107,7 +2514,8 @@ def CDF_voigt_profile(x, fwhm_g, fwhm_l, mu):
 
     return None
 
-def hyp2f2(a,b,z):
+
+def hyp2f2(a, b, z):
     """
     Calculation of the 2F2() hypergeometric function,
     since it is not part of scipy
@@ -2123,6 +2531,7 @@ def hyp2f2(a,b,z):
     pass
     return none
 
+
 def pseudo_voigt_profile(x, fwhm_g, fwhm_l, mu, mix=0.5):
     """
     Linear combination of gaussian and loretzian instead of convolution
@@ -2134,32 +2543,36 @@ def pseudo_voigt_profile(x, fwhm_g, fwhm_l, mu, mix=0.5):
        mix: ratio of gaus to lorentz, mix* gaus, (1-mix)*Lorentz
     """
     #pseudo_voigt = []
-    if not (mix <=1):
+    if not (mix <= 1):
         print('mix has to be smaller than 1.')
         return []
     gaus = gaussian(x, fwhm_g, mu)
     lorentz = lorentzian(x, fwhm_l, mu)
-    return mix * gaus  + (1-mix)*lorentz
+    return mix * gaus + (1 - mix) * lorentz
 
 
-
-
-def plot_bands2(xs,ys,ss,axis=None, linestyle='-',markersize_scaling=20,**kwargs):
+def plot_bands2(xs, ys, ss, axis=None, linestyle='-', markersize_scaling=20, **kwargs):
     """
     """
-
-    ax = multi_scatter_plot(x,y,markersize_band)
+    markersize_band = 5
+    ax = multi_scatter_plot(xs, ys, markersize_band)
 
     if linestyle is not None:
         for j, data in enumerate(ys):
             for i, entry in enumerate(data[1:]):
                 ynew = [data[i], entry]
-                xnew = [x[j][i], x[j][i+1]]
-                linewidth = np.sqrt(markersize_scaling*(ss[j][i] + ss[j][i+1])/4.0)
-                ax.plot(xnew,ynew, linestyle=linestyle, markersize=0.0, linewidth=linewidth, color='k', markeredgewidth=0.0)
+                xnew = [xs[j][i], xs[j][i + 1]]
+                linewidth = np.sqrt(markersize_scaling * (ss[j][i] + ss[j][i + 1]) / 4.0)
+                ax.plot(xnew,
+                        ynew,
+                        linestyle=linestyle,
+                        markersize=0.0,
+                        linewidth=linewidth,
+                        color='k',
+                        markeredgewidth=0.0)
 
 
-def plot_fleur_bands(filename, limits=[None,[-15, 15]]):
+def plot_fleur_bands(filename, limits=[None, [-15, 15]]):
     """
     plot a fleur bandstructure
 
@@ -2171,40 +2584,39 @@ def plot_fleur_bands(filename, limits=[None,[-15, 15]]):
     from masci_tools.vis.plot_methods import multiple_scatterplots
     from masci_tools.io.io_fleur_bands import read_fleur_banddos_hdf
 
-
-    xcoord, bands, xlabels, band_character, band_char_label, kts, wghts, rcell, cell, pos, atomn, spp = read_fleur_banddos_hdf(filename)
+    xcoord, bands, xlabels, band_character, band_char_label, kts, wghts, rcell, cell, pos, atomn, spp = read_fleur_banddos_hdf(
+        filename)
 
     tllike = [band_character[0].transpose()]
-    if len(tllike)==2:
+    if len(tllike) == 2:
         tllike.append(band_character[1].transpose())
 
-
     markersize_scaling = 10.0
-    markersize_atomindependent = []#np.array([])
+    markersize_atomindependent = []  #np.array([])
     markersize_like_s = []
 
     # TODO there has to be a better way to do this, ... and faster with np.arrays
     for s, tllike_s in enumerate(tllike):
         markersize_like = []
         for n, llike in enumerate(tllike_s):
-            markersize = []#np.array([])
+            markersize = []  #np.array([])
             for i, atomtype in enumerate(llike):
-                markersize_band = []#np.array([])
+                markersize_band = []  #np.array([])
                 for j, band in enumerate(atomtype):
-                    markersize_temp = []#np.array([])
+                    markersize_temp = []  #np.array([])
                     for m, kpoint in enumerate(band):
-                    #total = 0
-                    #print kpoint
-                    #for spin in kpoint:
-                    #    total = total + spin
-                        markersize_temp.append((kpoint*markersize_scaling)**2)# scatter needs size squared
+                        #total = 0
+                        #print kpoint
+                        #for spin in kpoint:
+                        #    total = total + spin
+                        markersize_temp.append((kpoint * markersize_scaling)**2)  # scatter needs size squared
                     markersize_band.append(markersize_temp)
                 markersize.append(markersize_band)
                 # always make the last one the total of all atomtypes
             markersize_like.append(markersize)
         markersize_like_s.append(markersize_like_s)
 
-    xticks = [[],[]]
+    xticks = [[], []]
     for label, pos in xlabels:
         if label == 'Gamma':
             label = u'$\Gamma$'
@@ -2223,37 +2635,70 @@ def plot_fleur_bands(filename, limits=[None,[-15, 15]]):
     limits[0] = [min(xcoord), max(xcoord)]
 
     for i, marker_likes in enumerate(markersize_like):
-        ax = multi_scatter_plot(x,y,marker_likes[0], ylabel=u'Energy [eV]', title='{}'.format(i),
-                                xticks=xticks, limits=limits, saveas='bandstru_{}'.format(i))
+        ax = multi_scatter_plot(x,
+                                y,
+                                marker_likes[0],
+                                ylabel=u'Energy [eV]',
+                                title='{}'.format(i),
+                                xticks=xticks,
+                                limits=limits,
+                                saveas='bandstru_{}'.format(i))
         for label, pos in xlabels:
-            ax.axvline(ymin=0, ymax=1, x=pos, #1.0/10.93,
-                       linewidth=1.0, linestyle='-', color='k')
+            ax.axvline(
+                ymin=0,
+                ymax=1,
+                x=pos,  #1.0/10.93,
+                linewidth=1.0,
+                linestyle='-',
+                color='k')
         #ax.hxvline(xmin==0, xmax=1.0, linestyle='-', color='g')
 
-        saveas='bandstruc_{}'.format(i)
+        saveas = 'bandstruc_{}'.format(i)
         if save_plots_g:
             savefilename = '{}.{}'.format(saveas, save_format_g)
             print(('save plot to: {}'.format(savefilename)))
             pp.savefig(savefilename, format=save_format_g, transparent=True)
 
-
-
-    ax1 = multiple_scatterplots(y,x,ylabel=u'Energy [eV]', xlabel='', title='', plot_labels=None,
-                                xticks=xticks, limits=limits, saveas='bandstructure', marker=None)
+    ax1 = multiple_scatterplots(y,
+                                x,
+                                ylabel=u'Energy [eV]',
+                                xlabel='',
+                                title='',
+                                plot_labels=None,
+                                xticks=xticks,
+                                limits=limits,
+                                saveas='bandstructure',
+                                marker=None)
     #print ax1
     for label, pos in xlabels:
-        ax1.axvline(ymin=0, ymax=1, x=pos, #1.0/10.93,
-                   linewidth=1.0, linestyle='-', color='k')
+        ax1.axvline(
+            ymin=0,
+            ymax=1,
+            x=pos,  #1.0/10.93,
+            linewidth=1.0,
+            linestyle='-',
+            color='k')
 
     if y2:
-        ax2 = multiple_scatterplots(y2,x,ylabel=u'Energy [eV]', xlabel='', title='', plot_labels=None,
-                                    xticks=xticks, limits=limits, saveas='bandstructure', marker=None)
+        ax2 = multiple_scatterplots(y2,
+                                    x,
+                                    ylabel=u'Energy [eV]',
+                                    xlabel='',
+                                    title='',
+                                    plot_labels=None,
+                                    xticks=xticks,
+                                    limits=limits,
+                                    saveas='bandstructure',
+                                    marker=None)
         #print ax1
         for label, pos in xlabels:
-            ax2.axvline(ymin=0, ymax=1, x=pos, #1.0/10.93,
-                       linewidth=1.0, linestyle='-', color='k')
-
-
+            ax2.axvline(
+                ymin=0,
+                ymax=1,
+                x=pos,  #1.0/10.93,
+                linewidth=1.0,
+                linestyle='-',
+                color='k')
 
     #saveas='bandstructure'
     #if save_plots_g:

@@ -10,7 +10,6 @@
 # For further information please visit http://www.flapw.de or                 #
 #                                                                             #
 ###############################################################################
-
 """
 Basic plots that wrap matplotlib plots
 """
