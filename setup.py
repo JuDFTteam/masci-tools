@@ -54,6 +54,7 @@ if __name__ == '__main__':
             'pytest-cov',
             'pytest-mpl',
             'future',
+            'lxml>=3.6.4'
         ],
         extras_require={
             'pre-commit': [
