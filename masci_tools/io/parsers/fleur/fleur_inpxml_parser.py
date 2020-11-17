@@ -99,7 +99,7 @@ def inpxml_todict(parent, schema_dict, constants, omitted_tags=False, base_xpath
     """
 
     if base_xpath is None:
-        base_xpath = '/fleurInput'
+        base_xpath = f'/{parent.tag}'
 
     return_dict = {}
     if list(parent.items()):
