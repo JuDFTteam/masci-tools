@@ -54,7 +54,7 @@ def calculate_expression(expression, constants, prevCommand=None, exp_return=Fal
 
     stop_loop = False
     loop_count = 0
-    expression = expression.replace(' ','')
+    expression = expression.replace(' ', '')
     value = None
     while not stop_loop and len(expression) != 0:
         loop_count += 1

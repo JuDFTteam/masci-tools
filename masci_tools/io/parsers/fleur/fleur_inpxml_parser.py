@@ -53,7 +53,7 @@ def inpxml_parser(inpxmlfile, version=None):
     xmltree = clear_xml(xmltree, schema_dict=schema_dict)
     root = xmltree.getroot()
 
-    constants = read_constants(xmltree,schema_dict)
+    constants = read_constants(xmltree, schema_dict)
 
     if not xmlschema.validate(xmltree):
         # get more information on what does not validate
@@ -110,7 +110,8 @@ def inpxml_todict(parent, schema_dict, constants, omitted_tags=False, base_xpath
             while '' in split_text:
                 split_text.remove('')
             if parent.tag not in schema_dict['simple_elements']:
-                raise ValueError(f'Something is wrong in the schema_dict: {parent.tag} is not in simple_elements, but it has text')
+                raise ValueError(
+                    f'Something is wrong in the schema_dict: {parent.tag} is not in simple_elements, but it has text')
             text_definition = None
             if isinstance(schema_dict['simple_elements'][parent.tag], dict):
                 text_definition = schema_dict['simple_elements'][parent.tag]
@@ -173,19 +174,24 @@ def inpxml_todict(parent, schema_dict, constants, omitted_tags=False, base_xpath
                         else:
                             if key not in return_dict:
                                 return_dict[key] = []
-                            elif not isinstance(return_dict[key],list): #Key seems to be defined already
+                            elif not isinstance(return_dict[key], list):  #Key seems to be defined already
                                 raise ValueError(f'{key} cannot be extracted to the next level')
                             return_dict[key].append(value)
                     for key in tmp_return_dict.keys():
                         if key in ['text_value', 'text_label']:
                             continue
                         if len(return_dict[key]) != len(return_dict[element.tag]):
-                            raise ValueError(f'Extracted optional argument {key} at the moment only label is supported correctly')
+                            raise ValueError(
+                                f'Extracted optional argument {key} at the moment only label is supported correctly')
                 else:
                     return_dict[element.tag].append(tmp_return_dict)
         elif element.tag in schema_dict['omitt_contained_tags']:
             #The tags on level deeper are not useful in a parsed python dictionary
-            return_dict[element.tag] = inpxml_todict(element, schema_dict, constants, omitted_tags=True, base_xpath=new_base_xpath)
+            return_dict[element.tag] = inpxml_todict(element,
+                                                     schema_dict,
+                                                     constants,
+                                                     omitted_tags=True,
+                                                     base_xpath=new_base_xpath)
         else:
             return_dict[element.tag] = inpxml_todict(element, schema_dict, constants, base_xpath=new_base_xpath)
 

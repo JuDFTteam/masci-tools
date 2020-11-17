@@ -343,6 +343,7 @@ def get_xpath(xmlschema,
     else:
         return possible_paths[0]
 
+
 def get_contained_attribs(xmlschema, namespaces, elem):
 
     attrib_list = []
@@ -357,6 +358,7 @@ def get_contained_attribs(xmlschema, namespaces, elem):
                 attrib_list.append(attrib)
 
     return attrib_list
+
 
 def get_optional_tags(xmlschema, namespaces, elem):
 
@@ -375,6 +377,7 @@ def get_optional_tags(xmlschema, namespaces, elem):
 
     return optional_list
 
+
 def is_simple(namespaces, elem):
 
     simple = True
@@ -387,6 +390,7 @@ def is_simple(namespaces, elem):
             simple = False
 
     return simple
+
 
 def get_simple_tags(xmlschema, namespaces, elem):
 
@@ -411,6 +415,7 @@ def get_simple_tags(xmlschema, namespaces, elem):
 
     return simple_list
 
+
 def get_several_tags(xmlschema, namespaces, elem):
 
     several_list = []
@@ -434,6 +439,7 @@ def get_several_tags(xmlschema, namespaces, elem):
 
     return several_list
 
+
 def get_text_tags(xmlschema, namespaces, elem, simple_elements):
 
     text_list = []
@@ -449,6 +455,7 @@ def get_text_tags(xmlschema, namespaces, elem, simple_elements):
                 text_list.append(tag)
 
     return text_list
+
 
 def get_attrib_xpath(xmlschema, namespaces, attrib_name, stop_non_unique=False, stop_group=False, group_root=False):
     """
@@ -829,6 +836,7 @@ def get_settable_contains_attributes(xmlschema, namespaces, **kwargs):
 
     return settable
 
+
 def get_other_attributes(xmlschema, namespaces, **kwargs):
     """
     Determine all other attributes not contained in settable or settable_contains
@@ -869,6 +877,7 @@ def get_other_attributes(xmlschema, namespaces, **kwargs):
                 other[attrib] = [x.replace(f'/@{attrib}', '') for x in path]
 
     return other
+
 
 def get_omittable_tags(xmlschema, namespaces, **kwargs):
     """
@@ -1076,11 +1085,10 @@ def get_tag_info(xmlschema, namespaces, **kwargs):
         info_dict['simple'] = get_simple_tags(xmlschema, namespaces, type_elem)
         info_dict['text'] = get_text_tags(xmlschema, namespaces, type_elem, kwargs['simple_elements'])
 
-
         empty = True
         for elem_list in info_dict.values():
             if isinstance(elem_list, list):
-                if len(elem_list)!=0:
+                if len(elem_list) != 0:
                     empty = False
 
         if not empty:

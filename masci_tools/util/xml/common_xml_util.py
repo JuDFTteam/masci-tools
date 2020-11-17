@@ -16,8 +16,9 @@ Common functions for parsing input/output files or XMLschemas from FLEUR
 from lxml import etree
 from masci_tools.io.parsers.fleur.fleur_schema.schema_dict_utils import get_tag_xpath
 
-def read_constants(xmltree,schema_dict):
-   """
+
+def read_constants(xmltree, schema_dict):
+    """
    Reads in the constants defined in the inp.xml
    and returns them combined with the predefined constants from
    fleur as a dictionary
@@ -27,36 +28,39 @@ def read_constants(xmltree,schema_dict):
 
    :return: a python dictionary with all defined constants
    """
-   import numpy as np
+    import numpy as np
 
-   #Predefined constants in the Fleur Code
-   const_dict = {'Pi': np.pi,
-                 'Deg': 2*np.pi/360.0,
-                 'Ang': 1.8897261247728981,
-                 'nm': 18.897261247728981,
-                 'pm': 0.018897261247728981,
-                 'Bohr': 1.0}
-   xpath_constants = get_tag_xpath(schema_dict,'constant')
-   constant_elems = xmltree.xpath(xpath_constants)
-   for const in constant_elems:
-      name = const.attrib['name']
-      value = const.attrib['value']
-      if name not in const_dict:
-         const_dict[name] = value
-      else:
-         raise KeyError('Ambiguous definition of key {name}')
+    #Predefined constants in the Fleur Code
+    const_dict = {
+        'Pi': np.pi,
+        'Deg': 2 * np.pi / 360.0,
+        'Ang': 1.8897261247728981,
+        'nm': 18.897261247728981,
+        'pm': 0.018897261247728981,
+        'Bohr': 1.0
+    }
+    xpath_constants = get_tag_xpath(schema_dict, 'constant')
+    constant_elems = xmltree.xpath(xpath_constants)
+    for const in constant_elems:
+        name = const.attrib['name']
+        value = const.attrib['value']
+        if name not in const_dict:
+            const_dict[name] = value
+        else:
+            raise KeyError('Ambiguous definition of key {name}')
 
-   return const_dict
+    return const_dict
+
 
 def clear_xml(tree, schema_dict=None):
     """
     Removes comments and executes xinclude tags of an
-    xml tree. 
+    xml tree.
 
     :param tree: an xml-tree which will be processes
     :return: cleared_tree, an xml-tree without comments and with replaced xinclude tags
 
-    TODO: Currently what can be included is fleur specific. 
+    TODO: Currently what can be included is fleur specific.
     But this can probably easily generalized
     """
     import copy
@@ -73,7 +77,7 @@ def clear_xml(tree, schema_dict=None):
         for include_tag in possible_include:
             try:
                 include_path = get_tag_xpath(schema_dict, include_tag)
-            except (ValueError,KeyError):
+            except (ValueError, KeyError):
                 continue
             included_elem = tree.xpath(include_path)
             if included_elem != []:
@@ -101,7 +105,7 @@ def convert_xml_attribute(stringattribute, possible_types, constants):
     :param constants: dict, of constants defined in fleur input
     """
     from masci_tools.util.fleur_calculate_expression import calculate_expression
-    
+
     for value_type in possible_types:
         if value_type == 'float':
             converted_value, suc = convert_to_float(stringattribute)

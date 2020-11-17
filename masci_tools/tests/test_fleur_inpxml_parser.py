@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from __future__ import absolute_import
 import pytest
 from masci_tools.io.parsers.fleur.fleur_inpxml_parser import inpxml_parser
@@ -11,17 +12,17 @@ file_path3 = 'files/fleur/aiida_fleur/nonvalid_inpxml'
 inpxmlfilefolder = os.path.dirname(os.path.abspath(__file__))
 inpxmlfilefolder_non_valid = [os.path.abspath(os.path.join(inpxmlfilefolder, file_path3))]
 
-inpxmlfilefolder_valid = [os.path.abspath(os.path.join(inpxmlfilefolder, file_path1)),
-                          os.path.abspath(os.path.join(inpxmlfilefolder, file_path2))]
+inpxmlfilefolder_valid = [
+    os.path.abspath(os.path.join(inpxmlfilefolder, file_path1)),
+    os.path.abspath(os.path.join(inpxmlfilefolder, file_path2))
+]
 
-
-ignore_inputs = ['NiO_ldauXML', 'Bi2Te3XML'] #These should fail but don't (except when they do)
+ignore_inputs = ['NiO_ldauXML', 'Bi2Te3XML']  #These should fail but don't (except when they do)
 #Thes inputs are currently broken in the fleur tests
-broken_inputs = ['CoHybridPBE0', 'CoUnfold', 'Gd_Hubbard1',
-                 'Gd_Hubbard1_noSYM', 'gw1Interface', 'GaAsWannSOC',
-                  'TiO2eelsXML', 'gw2Interface',
-                 'Fe_film_SS_conv', 'SiHybrid8kpt_nosym', 'Diamond_SCAN',
-                 'Fe_bulk_SS_conv', 'Fe_film_SSFT']
+broken_inputs = [
+    'CoHybridPBE0', 'CoUnfold', 'Gd_Hubbard1', 'Gd_Hubbard1_noSYM', 'gw1Interface', 'GaAsWannSOC', 'TiO2eelsXML',
+    'gw2Interface', 'Fe_film_SS_conv', 'SiHybrid8kpt_nosym', 'Diamond_SCAN', 'Fe_bulk_SS_conv', 'Fe_film_SSFT'
+]
 inpxmlfilelist = []
 inpxmlfilelist2 = []
 for folder in inpxmlfilefolder_valid:
@@ -45,6 +46,7 @@ for folder in inpxmlfilefolder_non_valid:
             if file.endswith('.xml') and 'inp' in file:
                 inpxmlfilelist2.append(os.path.join(subdir, file))
 
+
 @pytest.mark.parametrize('inpxmlfilepath', inpxmlfilelist)
 def test_inpxml_valid_inpxml(inpxmlfilepath):
     """
@@ -61,7 +63,6 @@ def test_inpxml_valid_inpxml(inpxmlfilepath):
     inp_dict = inpxml_parser(xmltree)
 
 
-
 @pytest.mark.parametrize('inpxmlfilepath', inpxmlfilelist2)
 def test_inpxml_non_valid_inpxml(inpxmlfilepath):
     """
@@ -69,5 +70,5 @@ def test_inpxml_non_valid_inpxml(inpxmlfilepath):
     """
 
     #Pass Path
-    with pytest.raises((ValueError,FileNotFoundError)):
+    with pytest.raises((ValueError, FileNotFoundError)):
         inp_dict = inpxml_parser(inpxmlfilepath)

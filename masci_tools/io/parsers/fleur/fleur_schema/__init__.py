@@ -18,6 +18,4 @@ from .inpschema_todict import *
 from .outschema_todict import *
 from .update_schema_dicts import *
 
-__all__ = ['load_inpschema', 'load_outschema',
-           'create_inpschema_dict', 'create_outschema_dict',
-           'update_schema_dicts']
+__all__ = ['load_inpschema', 'load_outschema', 'create_inpschema_dict', 'create_outschema_dict', 'update_schema_dicts']
