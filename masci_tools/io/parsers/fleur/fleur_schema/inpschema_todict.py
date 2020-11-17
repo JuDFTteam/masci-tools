@@ -63,7 +63,7 @@ def create_inpschema_dict(path):
         pprint(schema_dict, f)
 
 
-def load_inpschema(version, schema_return=False, return_errmsg=False):
+def load_inpschema(version, schema_return=False):
     """
     load the FleurInputSchema dict for the specified version
     """
@@ -77,39 +77,25 @@ def load_inpschema(version, schema_return=False, return_errmsg=False):
     schema_file_path = os.path.join(path, 'FleurInputSchema.xsd')
     schema_dict_path = os.path.join(path, 'inpschema_dict.py')
 
-    success = True
-    message = ''
     if not os.path.isfile(schema_file_path):
-        success = False
-        message = f'No input schema found at {path}'
-        if not return_errmsg:
-            raise ValueError(message)
+        message = f'No FleurInputSchema.xsd found at {path}'
+        raise FileNotFoundError(message)
 
-    schema_dict = None
-    if success:
-        if not os.path.isfile(schema_dict_path):
-            print(f'Generating schema_dict file for given input schema: {schema_file_path}')
-            create_inpschema_dict(path)
+    if not os.path.isfile(schema_dict_path):
+        print(f'Generating schema_dict file for given input schema: {schema_file_path}')
+        create_inpschema_dict(path)
 
-        #import schema_dict
-        spec = importlib.util.spec_from_file_location('schema', schema_dict_path)
-        schema = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(schema)
-        schema_dict = schema.schema_dict
-        success = True
+    #import schema_dict
+    spec = importlib.util.spec_from_file_location('schema', schema_dict_path)
+    schema = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(schema)
+    schema_dict = schema.schema_dict
 
-    xmlschema = None
-    if schema_return and success:
+    if schema_return:
         xmlschema_doc = etree.parse(schema_file_path)
         xmlschema = etree.XMLSchema(xmlschema_doc)
 
     if schema_return:
-        if return_errmsg:
-            return schema_dict, xmlschema, success, message
-        else:
-            return schema_dict, xmlschema
+        return schema_dict, xmlschema
     else:
-        if return_errmsg:
-            return schema_dict, success, message
-        else:
-            return schema_dict
+        return schema_dict

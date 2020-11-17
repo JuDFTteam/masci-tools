@@ -20,7 +20,7 @@ from masci_tools.io.parsers.fleur.fleur_schema.inpschema_todict import load_inps
 from masci_tools.util.xml.common_xml_util import clear_xml, convert_xml_attribute, read_constants
 
 
-def inpxml_parser(inpxmlfile, return_errmsg=False, version=None):
+def inpxml_parser(inpxmlfile, version=None):
     """
     Parses the given inp.xml file to a python dictionary utilizing the schema
     defined by the version number to validate and corretly convert to the dictionary
@@ -45,24 +45,14 @@ def inpxml_parser(inpxmlfile, return_errmsg=False, version=None):
         except:
             raise ValueError('Failed to extract inputVersion')
 
-    success = True
-    if return_errmsg:
-        schema_dict, xmlschema, success, message = load_inpschema(version, schema_return=True, return_errmsg=True)
-    else:
-        schema_dict, xmlschema = load_inpschema(version, schema_return=True)
-
-    if not success:
-        return None, False, message
+    schema_dict, xmlschema = load_inpschema(version, schema_return=True)
 
     xmltree = clear_xml(xmltree, schema_dict=schema_dict)
     root = xmltree.getroot()
 
     constants = read_constants(xmltree,schema_dict)
 
-    message = ''
-    success = xmlschema.validate(xmltree)
-    inp_dict = None
-    if not success:
+    if not xmlschema.validate(xmltree):
         # get more information on what does not validate
         parser_on_fly = etree.XMLParser(attribute_defaults=True, schema=xmlschema, encoding='utf-8')
         inpxmlfile = etree.tostring(xmltree)
@@ -71,15 +61,11 @@ def inpxml_parser(inpxmlfile, return_errmsg=False, version=None):
             tree_x = etree.fromstring(inpxmlfile, parser_on_fly)
         except etree.XMLSyntaxError as msg:
             message = msg
+        raise ValueError(f'Input file does not validate against the schema: {message}')
     else:
         inp_dict = inpxml_todict(root, schema_dict, constants)
 
-    if return_errmsg:
-        return inp_dict, success, message
-    else:
-        if not success:
-            raise ValueError(f'Failed to validate the inp.xml against the Schema: {message}')
-        return inp_dict
+    return inp_dict
 
 
 def inpxml_todict(parent, schema_dict, constants, omitted_tags=False, base_xpath=None):
@@ -121,7 +107,7 @@ def inpxml_todict(parent, schema_dict, constants, omitted_tags=False, base_xpath
             while '' in split_text:
                 split_text.remove('')
             if parent.tag not in schema_dict['simple_elements']:
-                raise KeyError(f'Something is wrong in the schema_dict: {parent.tag} is not in simple_elements, but it has text')
+                raise ValueError(f'Something is wrong in the schema_dict: {parent.tag} is not in simple_elements, but it has text')
             text_definition = None
             if isinstance(schema_dict['simple_elements'][parent.tag], dict):
                 text_definition = schema_dict['simple_elements'][parent.tag]
