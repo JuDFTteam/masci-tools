@@ -49,7 +49,7 @@ def remove_xsd_namespace(tag, namespaces):
     return tag.replace(f"{'{'}{namespaces['xsd']}{'}'}", '')
 
 
-def get_parent_fleur_type(elem, namespaces, stop_sequence=False):
+def get_parent_fleur_type(elem, namespaces, stop_sequence=False, stop_non_unique=False):
     """
     Returns the parent simple or complexType to the given element
     If stop_sequence is given and True None is returned when a sequence is encountered
@@ -66,9 +66,17 @@ def get_parent_fleur_type(elem, namespaces, stop_sequence=False):
         valid_end_types.append('sequence')
     parent = elem.getparent()
     parent_type = remove_xsd_namespace(parent.tag, namespaces)
+    if stop_non_unique:
+        if 'maxOccurs' in parent.attrib:
+            if parent.attrib['maxOccurs'] != '1':
+                return None, None
     while parent_type not in valid_end_types:
         parent = parent.getparent()
         parent_type = remove_xsd_namespace(parent.tag, namespaces)
+        if stop_non_unique:
+            if 'maxOccurs' in parent.attrib:
+                if parent.attrib['maxOccurs'] != '1':
+                    return None, None
     return parent, parent_type
 
 
@@ -272,7 +280,9 @@ def get_xpath(xmlschema,
     for elem in startPoints:
         currentelem = elem
         currentTag = tag_name
-        parent_type, parent_tag = get_parent_fleur_type(currentelem, namespaces)
+        parent_type, parent_tag = get_parent_fleur_type(currentelem, namespaces, stop_non_unique=stop_non_unique)
+        if parent_type is None:
+            continue
         next_type = parent_type.attrib['name']
         if parent_tag == 'group':
             if stop_group:
@@ -457,7 +467,9 @@ def get_attrib_xpath(xmlschema, namespaces, attrib_name, stop_non_unique=False, 
     possible_paths = []
     attribute_tags = xmlschema.xpath(f"//xsd:attribute[@name='{attrib_name}']", namespaces=namespaces)
     for attrib in attribute_tags:
-        parent_type, parent_tag = get_parent_fleur_type(attrib, namespaces)
+        parent_type, parent_tag = get_parent_fleur_type(attrib, namespaces, stop_non_unique=stop_non_unique)
+        if parent_type is None:
+            continue
         start_type = parent_type.attrib['name']
         if stop_non_unique:
             element_tags = xmlschema.xpath(
@@ -480,8 +492,8 @@ def get_attrib_xpath(xmlschema, namespaces, attrib_name, stop_non_unique=False, 
             if not isinstance(tag_paths, list):
                 tag_paths = [tag_paths]
             for path in tag_paths:
-                if f'{path}/@{attrib_name}' not in possible_paths:
-                    possible_paths.append(f'{path}/@{attrib_name}')
+                if path not in possible_paths:
+                    possible_paths.append(path)
     if len(possible_paths) == 1:
         return possible_paths[0]
     elif len(possible_paths) == 0:
@@ -830,20 +842,30 @@ def get_other_attributes(xmlschema, namespaces, **kwargs):
     possible_attrib = xmlschema.xpath('//xsd:attribute/@name', namespaces=namespaces)
     for attrib in possible_attrib:
         path = get_attrib_xpath(xmlschema, namespaces, attrib)
-        if path is not None and \
-           attrib not in kwargs['settable_attribs'] and \
-           attrib not in kwargs['settable_contains_attribs']:
+        if path is not None:
             if not isinstance(path, list):
                 path = [path]
-            other[attrib] = [x.replace(f'/@{attrib}', '') for x in path]
+            if attrib in kwargs['settable_attribs']:
+                path.remove(kwargs['settable_attribs'][attrib])
+            if attrib in kwargs['settable_contains_attribs']:
+                for contains_path in kwargs['settable_contains_attribs'][attrib]:
+                    path.remove(contains_path)
+
+            if len(path) != 0:
+                other[attrib] = [x.replace(f'/@{attrib}', '') for x in path]
 
     for attrib, attrib_dict in kwargs['simple_elements'].items():
         path = get_xpath(xmlschema, namespaces, attrib)
         if path is not None:
             if not isinstance(path, list):
                 path = [path]
-            if attrib not in kwargs['settable_attribs'] and \
-               attrib not in kwargs['settable_contains_attribs']:
+            if attrib in kwargs['settable_attribs']:
+                path.remove(kwargs['settable_attribs'][attrib])
+            if attrib in kwargs['settable_contains_attribs']:
+                for contains_path in kwargs['settable_contains_attribs'][attrib]:
+                    path.remove(contains_path)
+
+            if len(path) != 0:
                 other[attrib] = [x.replace(f'/@{attrib}', '') for x in path]
 
     return other
