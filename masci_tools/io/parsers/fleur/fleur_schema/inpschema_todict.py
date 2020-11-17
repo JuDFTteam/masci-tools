@@ -43,6 +43,7 @@ def create_inpschema_dict(path):
         'simple_elements': get_basic_elements,
         'settable_attribs': get_settable_attributes,
         'settable_contains_attribs': get_settable_contains_attributes,
+        'other_attribs': get_other_attributes,
         'omitt_contained_tags': get_omittable_tags,
         'tag_info': get_tag_info,
     }

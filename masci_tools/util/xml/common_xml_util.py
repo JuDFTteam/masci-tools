@@ -101,9 +101,6 @@ def convert_xml_attribute(stringattribute, possible_types, constants):
     :param constants: dict, of constants defined in fleur input
     """
     from masci_tools.util.fleur_calculate_expression import calculate_expression
-
-    if not isinstance(possible_types, list):
-        possible_types = [possible_types]
     
     for value_type in possible_types:
         if value_type == 'float':

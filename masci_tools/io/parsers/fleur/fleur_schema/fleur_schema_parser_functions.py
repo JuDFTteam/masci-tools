@@ -612,11 +612,6 @@ def extract_attribute_types(xmlschema, namespaces, **kwargs):
             types_dict[name_attrib].remove('string')
             types_dict[name_attrib].append('string')
 
-    #For unambiguously defined types only return the element
-    for key, value in types_dict.items():
-        if len(types_dict[key]) == 1:
-            types_dict[key] = value[0]
-
     return types_dict
 
 
@@ -822,6 +817,36 @@ def get_settable_contains_attributes(xmlschema, namespaces, **kwargs):
 
     return settable
 
+def get_other_attributes(xmlschema, namespaces, **kwargs):
+    """
+    Determine all other attributes not contained in settable or settable_contains
+
+    :param xmlschema: xmltree representing the schema
+    :param namespaces: dictionary with the defined namespaces
+
+    :return: dictionary with all attributes and the corresponding list of paths to the tag
+    """
+    other = {}
+    possible_attrib = xmlschema.xpath('//xsd:attribute/@name', namespaces=namespaces)
+    for attrib in possible_attrib:
+        path = get_attrib_xpath(xmlschema, namespaces, attrib)
+        if path is not None and \
+           attrib not in kwargs['settable_attribs'] and \
+           attrib not in kwargs['settable_contains_attribs']:
+            if not isinstance(path, list):
+                path = [path]
+            other[attrib] = [x.replace(f'/@{attrib}', '') for x in path]
+
+    for attrib, attrib_dict in kwargs['simple_elements'].items():
+        path = get_xpath(xmlschema, namespaces, attrib)
+        if path is not None:
+            if not isinstance(path, list):
+                path = [path]
+            if attrib not in kwargs['settable_attribs'] and \
+               attrib not in kwargs['settable_contains_attribs']:
+                other[attrib] = [x.replace(f'/@{attrib}', '') for x in path]
+
+    return other
 
 def get_omittable_tags(xmlschema, namespaces, **kwargs):
     """
