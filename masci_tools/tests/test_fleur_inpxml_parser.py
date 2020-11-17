@@ -15,7 +15,7 @@ inpxmlfilefolder_valid = [os.path.abspath(os.path.join(inpxmlfilefolder, file_pa
                           os.path.abspath(os.path.join(inpxmlfilefolder, file_path2))]
 
 
-ignore_inputs = ['NiO_ldauXML', 'Bi2Te3XML']
+ignore_inputs = ['NiO_ldauXML', 'Bi2Te3XML'] #These should fail but don't (except when they do)
 #Thes inputs are currently broken in the fleur tests
 broken_inputs = ['CoHybridPBE0', 'CoUnfold', 'Gd_Hubbard1',
                  'Gd_Hubbard1_noSYM', 'gw1Interface', 'GaAsWannSOC',
@@ -50,9 +50,16 @@ def test_inpxml_valid_inpxml(inpxmlfilepath):
     """
     test if valid inp.xml files are recognized by the inpxml_parser
     """
+    from lxml import etree
 
-    #Pass Path
+    #Pass inpxmlfile
     inp_dict = inpxml_parser(inpxmlfilepath)
+
+    #Parse before
+    parser = etree.XMLParser(attribute_defaults=True, encoding='utf-8')
+    xmltree = etree.parse(inpxmlfilepath, parser)
+    inp_dict = inpxml_parser(xmltree)
+
 
 
 @pytest.mark.parametrize('inpxmlfilepath', inpxmlfilelist2)
