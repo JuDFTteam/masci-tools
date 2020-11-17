@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<fleurInput fleurInputVersion="0.27">
+   <comment>
+      Bi2Te3
+   </comment>
+   <calculationSetup>
+      <cutoffs Kmax="3.00000000" Gmax="10.50000000" GmaxXC="8.80000000" numbands="0"/>
+      <scfLoop itmax="1" maxIterBroyd="99" imix="Anderson" alpha=".05000000" spinf="2.00000000"/>
+      <coreElectrons ctail="F" frcor="F" kcrel="0"/>
+      <magnetism jspins="2" l_noco="F" l_J="F" swsp="F" lflip="F"/>
+      <soc theta=".00000000" phi=".00000000" l_soc="T" spav="F" off="F" soc66="T"/>
+      <expertModes gw="0" pot8="F" eig66="F" lpr="0" isec1="99" secvar="F"/>
+      <geometryOptimization l_f="F" xa="2.00000000" thetad="330.00000000" epsdisp=".00001000" epsforce=".00001000"/>
+      <bzIntegration valenceElectrons="144.00000000" mode="hist" fermiSmearingEnergy=".00100000">
+         <kPointList posScale="6.00000000" weightScale="1.00000000" count="1">
+            <kPoint weight="    1.0">-2.0 4.0 -2.0</kPoint>
+         </kPointList>
+      </bzIntegration>
+      <energyParameterLimits ellow="-.80000000" elup="1.00000000"/>
+   </calculationSetup>
+   <cell>
+      <symmetry spgrp="p3" invs="F" zrfs="F"/>
+      <bulkLattice scale="1.000000000000" latnam="hx3">
+         <a1>8.28833805</a1>
+         <c>57.63097255</c>
+      </bulkLattice>
+   </cell>
+   <xcFunctional name="pbe" relativisticCorrections="F"/>
+   <atomSpecies>
+      <species name="Bi-1" element="Bi" atomicNumber="83" coreStates="19" magMom="1.00000000" flipSpin="T">
+         <mtSphere radius="2.83000000" gridPoints="681" logIncrement=".01900000"/>
+         <atomicCutoffs lmax="10" lnonsphr="8"/>
+         <energyParameters s="6" p="6" d="6" f="4"/>
+         <lo type="SCLO" l="2" n="5" eDeriv="0"/>
+      </species>
+      <species name="Te-1" element="Te" atomicNumber="52" coreStates="14" magMom="0.00000000" flipSpin="T">
+         <mtSphere radius="2.83000000" gridPoints="681" logIncrement=".01900000"/>
+         <atomicCutoffs lmax="10" lnonsphr="8"/>
+         <energyParameters s="5" p="5" d="4" f="4"/>
+      </species>
+   </atomSpecies>
+   <atomGroups>
+      <atomGroup species="Bi-1">
+         <relPos>0.0 0.0 0.4</relPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+      </atomGroup>
+      <atomGroup species="Bi-1">
+         <relPos>0.0 0.0 -0.4</relPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+      </atomGroup>
+      <atomGroup species="Bi-1">
+         <relPos>-1/3 1/3 -4/15</relPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+      </atomGroup>
+      <atomGroup species="Bi-1">
+         <relPos>-1/3 1/3 -1/15</relPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+      </atomGroup>
+      <atomGroup species="Bi-1">
+         <relPos>1/3 -1/3 1/15</relPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+      </atomGroup>
+      <atomGroup species="Bi-1">
+         <relPos>1/3 -1/3 4/15</relPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+      </atomGroup>
+      
+      <atomGroup species="Te-1">
+         <relPos>0.0 0.0 0.0</relPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+      </atomGroup>
+      <atomGroup species="Te-1">
+         <relPos>-1/3 1/3 1/3</relPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+      </atomGroup>
+      <atomGroup species="Te-1">
+         <relPos>1/3 -1/3 -1/3</relPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+      </atomGroup>
+      <atomGroup species="Te-1">
+         <relPos>0.0 0.0 1.047500/5.0</relPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+      </atomGroup>
+      <atomGroup species="Te-1">
+         <relPos>0.0 0.0 -1.047500/5.0</relPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+      </atomGroup>
+      <atomGroup species="Te-1">
+         <relPos>-1/3   1/3  -2.285833/5.000000</relPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+      </atomGroup>
+      <atomGroup species="Te-1">
+         <relPos>-1/3   1/3   0.619167/5.000000</relPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+      </atomGroup>
+      <atomGroup species="Te-1">
+         <relPos>1/3  -1/3  -0.619167/5.000000</relPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+      </atomGroup>
+      <atomGroup species="Te-1">
+         <relPos>1/3  -1/3   2.285833/5.000000</relPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+      </atomGroup>
+      
+   </atomGroups>
+   <output dos="F" band="F" vacdos="F" slice="F">
+      <checks vchk="F" cdinf="F" disp="F"/>
+      <densityOfStates ndir="0" minEnergy="-.50000000" maxEnergy=".50000000" sigma=".01500000"/>
+      <vacuumDOS layers="0" integ="F" star="F" nstars="0" locx1=".00000000" locy1=".00000000" locx2=".00000000" locy2=".00000000" nstm="0" tworkf=".00000000"/>
+      <plotting iplot="F" score="F" plplot="F"/>
+      <chargeDensitySlicing numkpt="0" minEigenval=".00000000" maxEigenval=".00000000" nnne="0" pallst="F"/>
+      <specialOutput form66="F" eonly="F" bmt="F"/>
+   </output>
+</fleurInput>

@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<fleurInput fleurInputVersion="0.33">
+   <comment>
+      bcc Fe  
+   </comment>
+   <calculationSetup>
+      <cutoffs Kmax="3.0000000" Gmax="10.0000000" GmaxXC="8.00000000" numbands="all"/>
+      <scfLoop itmax="1" minDistance=".00001000" maxIterBroyd="99" imix="Anderson" alpha=".05000000" precondParam="0.0" spinf="2.00000000"/>
+      <coreElectrons ctail="T" frcor="F" kcrel="0" coretail_lmax="0"/>
+      <xcFunctional name="pbe" relativisticCorrections="F"/>
+      <magnetism jspins="2" l_noco="F" swsp="F" lflip="F"/>
+      <soc theta=".00000000" phi=".00000000" l_soc="F" spav="F"/>
+      <expertModes gw="0" secvar="F"/>
+      <geometryOptimization l_f="F" forcealpha="1.00000000" forcemix="BFGS" epsdisp=".00001000" epsforce=".00001000"/>
+      <ldaU l_linMix="F" mixParam=".050000" spinf="1.000000"/>
+      <greensFunction l_mperp="F">
+         <realAxis ne="5400" ellow="-2.0" elup="1.0"/>
+         <contourSemicircle n="128" eb="-1.99" et="0.0" alpha="0.25"/>
+      </greensFunction>
+   </calculationSetup>
+   <cell>
+      <bzIntegration valenceElectrons="16.00000000" mode="tetra" fermiSmearingEnergy=".00100000">
+         <kPointListSelection listName="default" />
+         <kPointLists>
+            <kPointList name="default" count="10" nx="5" ny="5" nz="5" type="mesh">
+               <kPoint weight="     1.0000000000000"> 0.0000000000000  0.0000000000000  0.0000000000000</kPoint>
+               <kPoint weight="    12.0000000000000"> 0.0000000000000  0.0000000000000  0.2000000000000</kPoint>
+               <kPoint weight="    12.0000000000000"> 0.0000000000000  0.0000000000000  0.4000000000000</kPoint>
+               <kPoint weight="    24.0000000000000"> 0.0000000000000  0.2000000000000  0.2000000000000</kPoint>
+               <kPoint weight="    24.0000000000000"> 0.0000000000000  0.2000000000000  0.4000000000000</kPoint>
+               <kPoint weight="     8.0000000000000"> 0.2000000000000  0.2000000000000  0.2000000000000</kPoint>
+               <kPoint weight="     6.0000000000000"> 0.2000000000000  0.2000000000000  0.8000000000000</kPoint>
+               <kPoint weight="    24.0000000000000"> 0.2000000000000  0.4000000000000  0.6000000000000</kPoint>
+               <kPoint weight="     8.0000000000000"> 0.2000000000000  0.6000000000000  0.6000000000000</kPoint>
+               <kPoint weight="     6.0000000000000"> 0.4000000000000  0.4000000000000  0.6000000000000</kPoint>
+               <tetraeder ntet="107">
+                  <tet> 0.5706666666667  1 2 2 4</tet>
+                  <tet> 1.7120000000000  2 4 2 4</tet>
+                  <tet> 0.5706666666667  4 6 2 4</tet>
+                  <tet> 0.5706666666667  2 3 4 5</tet>
+                  <tet> 1.7120000000000  4 6 4 5</tet>
+                  <tet> 0.5706666666667  2 4 4 5</tet>
+                  <tet> 2.2826666666667  3 5 4 5</tet>
+                  <tet> 3.9946666666667  5 6 4 5</tet>
+                  <tet> 1.1413333333333  6 6 4 5</tet>
+                  <tet> 0.5706666666667  3 3 5 4</tet>
+                  <tet> 1.7120000000000  3 4 5 4</tet>
+                  <tet> 0.5706666666667  4 4 5 4</tet>
+                  <tet> 0.5706666666667  3 2 4 2</tet>
+                  <tet> 1.1413333333333  4 4 4 2</tet>
+                  <tet> 1.7120000000000  3 4 4 2</tet>
+                  <tet> 1.1413333333333  2 2 4 2</tet>
+                  <tet> 1.7120000000000  2 7 4 2</tet>
+                  <tet> 1.7120000000000  4 7 4 2</tet>
+                  <tet> 1.1413333333333  2 1 2 2</tet>
+                  <tet> 0.5706666666667  2 7 2 2</tet>
+                  <tet> 0.5706666666667  2 2 2 2</tet>
+                  <tet> 0.5706666666667  2 4 3 6</tet>
+                  <tet> 1.7120000000000  4 5 3 6</tet>
+                  <tet> 0.5706666666667  5 6 3 6</tet>
+                  <tet> 1.1413333333333  6 6 5 6</tet>
+                  <tet> 1.1413333333333  5 5 5 6</tet>
+                  <tet> 2.2826666666667  6 5 5 6</tet>
+                  <tet> 0.5706666666667  5 4 5 4</tet>
+                  <tet> 3.4240000000000  3 8 5 4</tet>
+                  <tet> 2.2826666666667  5 8 5 4</tet>
+                  <tet> 2.2826666666667  4 2 3 7</tet>
+                  <tet> 1.7120000000000  4 8 3 7</tet>
+                  <tet> 0.5706666666667  4 4 3 7</tet>
+                  <tet> 0.5706666666667  8 8 3 7</tet>
+                  <tet> 1.1413333333333  7 8 4 4</tet>
+                  <tet> 1.1413333333333  8 5 4 4</tet>
+                  <tet> 0.5706666666667  3 5 3 6</tet>
+                  <tet> 1.1413333333333  4 4 3 6</tet>
+                  <tet> 0.5706666666667  5 5 4 5</tet>
+                  <tet> 1.7120000000000  5 3 3 8</tet>
+                  <tet> 1.7120000000000  5 8 3 8</tet>
+                  <tet> 1.7120000000000  5 5 3 8</tet>
+                  <tet> 0.5706666666667  5 9 3 8</tet>
+                  <tet> 0.5706666666667  8 9 3 8</tet>
+                  <tet> 2.2826666666667  8 9 5 8</tet>
+                  <tet> 0.8560000000000  5 8 5 8</tet>
+                  <tet> 0.2853333333333  3 3 5 5</tet>
+                  <tet> 1.7120000000000  4 3 2 8</tet>
+                  <tet> 1.1413333333333  4 7 2 8</tet>
+                  <tet> 0.5706666666667  4 4 2 8</tet>
+                  <tet> 0.5706666666667  4 8 2 8</tet>
+                  <tet> 0.5706666666667  7 8 2 8</tet>
+                  <tet> 0.5706666666667  3 5 4 9</tet>
+                  <tet> 1.1413333333333  8 8 4 9</tet>
+                  <tet> 0.5706666666667  3 8 4 9</tet>
+                  <tet> 1.1413333333333  5 5 4 9</tet>
+                  <tet> 1.7120000000000  5 8 4 9</tet>
+                  <tet> 0.5706666666667  5 5 5 8</tet>
+                  <tet> 2.2826666666667  5 9 5 8</tet>
+                  <tet> 0.5706666666667  4 7 5 8</tet>
+                  <tet> 0.5706666666667  8 7 5 8</tet>
+                  <tet> 1.1413333333333  2 2 1 7</tet>
+                  <tet> 0.5706666666667  2 4 1 7</tet>
+                  <tet> 0.5706666666667  2 4 2 8</tet>
+                  <tet> 0.5706666666667  2 7 2 8</tet>
+                  <tet> 0.5706666666667  3 5 2 8</tet>
+                  <tet> 0.5706666666667  4 5 2 8</tet>
+                  <tet> 0.5706666666667  4 8 3 8</tet>
+                  <tet> 0.5706666666667  3 4 3 8</tet>
+                  <tet> 0.5706666666667  5 4 3 7</tet>
+                  <tet> 0.5706666666667  5 8 3 7</tet>
+                  <tet> 0.5706666666667  2 2 3 7</tet>
+                  <tet> 1.1413333333333  5 5 6 3</tet>
+                  <tet> 0.5706666666667  4 8 6 3</tet>
+                  <tet> 0.5706666666667  5 8 6 3</tet>
+                  <tet> 0.5706666666667  3 8 4 4</tet>
+                  <tet> 0.5706666666667  4 3 4 4</tet>
+                  <tet> 0.5706666666667  8 8 4 4</tet>
+                  <tet> 0.5706666666667  5 9 6 5</tet>
+                  <tet> 0.5706666666667  6 4 5 8</tet>
+                  <tet> 0.5706666666667  6 5 5 8</tet>
+                  <tet> 1.1413333333333  4 8 5 8</tet>
+                  <tet> 1.1413333333333  8 10 5 8</tet>
+                  <tet> 1.1413333333333  9 10 5 8</tet>
+                  <tet> 0.5706666666667  4 7 8 8</tet>
+                  <tet> 1.1413333333333  8 10 8 8</tet>
+                  <tet> 0.5706666666667  4 8 8 8</tet>
+                  <tet> 0.5706666666667  7 8 8 8</tet>
+                  <tet> 0.5706666666667  8 9 8 8</tet>
+                  <tet> 2.8533333333333  10 9 8 8</tet>
+                  <tet> 0.5706666666667  6 5 4 9</tet>
+                  <tet> 0.5706666666667  8 10 4 9</tet>
+                  <tet> 1.7120000000000  9 10 8 10</tet>
+                  <tet> 0.5706666666667  10 10 8 10</tet>
+                  <tet> 0.8560000000000  8 8 9 9</tet>
+                  <tet> 0.8560000000000  10 10 9 9</tet>
+                  <tet> 1.1413333333333  8 10 9 9</tet>
+                  <tet> 0.5706666666667  4 8 7 10</tet>
+                  <tet> 0.5706666666667  8 8 7 10</tet>
+                  <tet> 0.5706666666667  8 9 7 10</tet>
+                  <tet> 0.5706666666667  8 10 8 10</tet>
+                  <tet> 0.5706666666667  7 8 4 9</tet>
+                  <tet> 0.5706666666667  8 8 5 8</tet>
+                  <tet> 0.5706666666667  5 3 5 5</tet>
+                  <tet> 0.5706666666667  5 8 9 9</tet>
+                  <tet> 0.5706666666667  9 10 10 10</tet>
+                  <tet> 0.2853333333333  10 10 10 10</tet>
+               </tetraeder>
+            </kPointList>
+         </kPointLists>
+      </bzIntegration>
+      <symmetryOperations>
+         <symOp>
+            <row-1>1 0 0 .0000000000</row-1>
+            <row-2>0 1 0 .0000000000</row-2>
+            <row-3>0 0 1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>-1 0 0 .0000000000</row-1>
+            <row-2>-1 1 0 .0000000000</row-2>
+            <row-3>-1 0 1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>1 -1 0 .0000000000</row-1>
+            <row-2>0 -1 0 .0000000000</row-2>
+            <row-3>0 -1 1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 -1 0 .0000000000</row-1>
+            <row-2>1 -1 0 .0000000000</row-2>
+            <row-3>0 -1 1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>-1 1 0 .0000000000</row-1>
+            <row-2>-1 0 0 .0000000000</row-2>
+            <row-3>-1 0 1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 1 0 .0000000000</row-1>
+            <row-2>1 0 0 .0000000000</row-2>
+            <row-3>0 0 1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>1 0 -1 .0000000000</row-1>
+            <row-2>0 1 -1 .0000000000</row-2>
+            <row-3>0 0 -1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 0 -1 .0000000000</row-1>
+            <row-2>0 1 -1 .0000000000</row-2>
+            <row-3>1 0 -1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 1 -1 .0000000000</row-1>
+            <row-2>1 0 -1 .0000000000</row-2>
+            <row-3>0 0 -1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 1 -1 .0000000000</row-1>
+            <row-2>0 0 -1 .0000000000</row-2>
+            <row-3>1 0 -1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>1 0 -1 .0000000000</row-1>
+            <row-2>0 0 -1 .0000000000</row-2>
+            <row-3>0 1 -1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 0 -1 .0000000000</row-1>
+            <row-2>1 0 -1 .0000000000</row-2>
+            <row-3>0 1 -1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>-1 0 0 .0000000000</row-1>
+            <row-2>0 -1 0 .0000000000</row-2>
+            <row-3>0 0 -1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>1 0 0 .0000000000</row-1>
+            <row-2>1 -1 0 .0000000000</row-2>
+            <row-3>1 0 -1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 -1 0 .0000000000</row-1>
+            <row-2>-1 0 0 .0000000000</row-2>
+            <row-3>0 0 -1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>1 -1 0 .0000000000</row-1>
+            <row-2>1 0 0 .0000000000</row-2>
+            <row-3>1 0 -1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 1 0 .0000000000</row-1>
+            <row-2>-1 1 0 .0000000000</row-2>
+            <row-3>0 1 -1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>-1 1 0 .0000000000</row-1>
+            <row-2>0 1 0 .0000000000</row-2>
+            <row-3>0 1 -1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>-1 0 0 .0000000000</row-1>
+            <row-2>0 0 -1 .0000000000</row-2>
+            <row-3>0 -1 0 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>1 0 0 .0000000000</row-1>
+            <row-2>1 0 -1 .0000000000</row-2>
+            <row-3>1 -1 0 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 -1 0 .0000000000</row-1>
+            <row-2>0 0 -1 .0000000000</row-2>
+            <row-3>-1 0 0 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>1 -1 0 .0000000000</row-1>
+            <row-2>1 0 -1 .0000000000</row-2>
+            <row-3>1 0 0 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 1 0 .0000000000</row-1>
+            <row-2>0 1 -1 .0000000000</row-2>
+            <row-3>-1 1 0 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>-1 1 0 .0000000000</row-1>
+            <row-2>0 1 -1 .0000000000</row-2>
+            <row-3>0 1 0 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 0 -1 .0000000000</row-1>
+            <row-2>-1 0 0 .0000000000</row-2>
+            <row-3>0 -1 0 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>1 0 -1 .0000000000</row-1>
+            <row-2>1 0 0 .0000000000</row-2>
+            <row-3>1 -1 0 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 0 -1 .0000000000</row-1>
+            <row-2>0 -1 0 .0000000000</row-2>
+            <row-3>-1 0 0 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>1 0 -1 .0000000000</row-1>
+            <row-2>1 -1 0 .0000000000</row-2>
+            <row-3>1 0 0 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 1 -1 .0000000000</row-1>
+            <row-2>0 1 0 .0000000000</row-2>
+            <row-3>-1 1 0 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 1 -1 .0000000000</row-1>
+            <row-2>-1 1 0 .0000000000</row-2>
+            <row-3>0 1 0 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>-1 0 1 .0000000000</row-1>
+            <row-2>-1 1 0 .0000000000</row-2>
+            <row-3>-1 0 0 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 0 1 .0000000000</row-1>
+            <row-2>0 1 0 .0000000000</row-2>
+            <row-3>1 0 0 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 -1 1 .0000000000</row-1>
+            <row-2>1 -1 0 .0000000000</row-2>
+            <row-3>0 -1 0 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 -1 1 .0000000000</row-1>
+            <row-2>0 -1 0 .0000000000</row-2>
+            <row-3>1 -1 0 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>-1 0 1 .0000000000</row-1>
+            <row-2>-1 0 0 .0000000000</row-2>
+            <row-3>-1 1 0 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 0 1 .0000000000</row-1>
+            <row-2>1 0 0 .0000000000</row-2>
+            <row-3>0 1 0 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>1 -1 0 .0000000000</row-1>
+            <row-2>0 -1 1 .0000000000</row-2>
+            <row-3>0 -1 0 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 -1 0 .0000000000</row-1>
+            <row-2>0 -1 1 .0000000000</row-2>
+            <row-3>1 -1 0 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>-1 1 0 .0000000000</row-1>
+            <row-2>-1 0 1 .0000000000</row-2>
+            <row-3>-1 0 0 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 1 0 .0000000000</row-1>
+            <row-2>0 0 1 .0000000000</row-2>
+            <row-3>1 0 0 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>1 0 0 .0000000000</row-1>
+            <row-2>0 0 1 .0000000000</row-2>
+            <row-3>0 1 0 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>-1 0 0 .0000000000</row-1>
+            <row-2>-1 0 1 .0000000000</row-2>
+            <row-3>-1 1 0 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 0 1 .0000000000</row-1>
+            <row-2>-1 0 1 .0000000000</row-2>
+            <row-3>0 -1 1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>-1 0 1 .0000000000</row-1>
+            <row-2>0 0 1 .0000000000</row-2>
+            <row-3>0 -1 1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 0 1 .0000000000</row-1>
+            <row-2>0 -1 1 .0000000000</row-2>
+            <row-3>-1 0 1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>-1 0 1 .0000000000</row-1>
+            <row-2>0 -1 1 .0000000000</row-2>
+            <row-3>0 0 1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 -1 1 .0000000000</row-1>
+            <row-2>0 0 1 .0000000000</row-2>
+            <row-3>-1 0 1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 -1 1 .0000000000</row-1>
+            <row-2>-1 0 1 .0000000000</row-2>
+            <row-3>0 0 1 .0000000000</row-3>
+         </symOp>
+      </symmetryOperations>
+      <bulkLattice scale="1.0000000000">
+         <bravaisMatrix>
+            <row-1>   -2.7079786477     2.7079786477     2.7079786477</row-1>
+            <row-2>    2.7079786477    -2.7079786477     2.7079786477</row-2>
+            <row-3>    2.7079786477     2.7079786477    -2.7079786477</row-3>
+         </bravaisMatrix>
+      </bulkLattice>
+   </cell>
+   <atomSpecies>
+      <species name="Fe-1" element="Fe" atomicNumber="26">
+         <mtSphere radius="2.29000000" gridPoints="757" logIncrement=".01600000"/>
+         <atomicCutoffs lmax="8" lnonsphr="6"/>
+         <electronConfig>
+            <coreConfig>(1s1/2) (2s1/2) (2p1/2) (2p3/2)</coreConfig>
+            <valenceConfig>(3s1/2) (3p1/2) (3p3/2) (4s1/2) (3d3/2) (3d5/2)</valenceConfig>
+            <stateOccupation state="(3d3/2)" spinUp="1.20000000" spinDown="1.20000000"/>
+            <stateOccupation state="(3d5/2)" spinUp="2.90000000" spinDown=".70000000"/>
+         </electronConfig>
+         <energyParameters s="4" p="4" d="3" f="4"/>
+         <greensfCalculation l_sphavg="F" >
+            <diagElements s="F" p="T" d="T" f="F"/>
+         </greensfCalculation>
+         <lo type="SCLO" l="0" n="3" eDeriv="0"/>
+         <lo type="SCLO" l="1" n="3" eDeriv="0"/>
+      </species>
+   </atomSpecies>
+   <atomGroups>
+      <atomGroup species="Fe-1">
+         <relPos label="                   1">.0000000000 .0000000000 .0000000000</relPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+      </atomGroup>
+   </atomGroups>
+   <output dos="F" band="F" slice="F" >
+      <checks vchk="F" cdinf="F"/>
+      <unfoldingBand unfoldBand="F" supercellX="1" supercellY="1" supercellZ="1"/>
+      <plotting iplot="0"/>
+      <chargeDensitySlicing numkpt="0" minEigenval=".00000000" maxEigenval=".00000000" nnne="0" pallst="F"/>
+      <specialOutput eonly="F" bmt="F"/>
+   </output>
+  <!-- We include the file relax.inp here to enable relaxations (see documentation) -->
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="relax.xml"> <xi:fallback/> </xi:include>
+</fleurInput>

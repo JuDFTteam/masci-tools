@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<fleurInput fleurInputVersion="0.27">
+   <comment>
+      bcc Fe                                                                          
+   </comment>
+   <calculationSetup>
+      <cutoffs Kmax="3.40000000" Gmax="10.2000000" GmaxXC="8.50000000" numbands="0"/>
+      <scfLoop itmax="20" maxIterBroyd="99" imix="Anderson" alpha=".05000000" spinf="2.00000000"/>
+      <coreElectrons ctail="F" frcor="F" kcrel="0"/>
+      <magnetism jspins="2" l_noco="T" l_J="F" swsp="F" lflip="F"/>
+      <soc theta=".00000000" phi=".00000000" l_soc="F" spav="F" off="F" soc66="T"/>
+      <nocoParams l_ss="T" l_mperp="F" l_constr="F" l_disp="F" sso_opt="FFF" mix_b=".50000000" thetaJ=".00000000" nsh="0">
+         <qss>.500000000000000 .500000000000000 .000000000000000</qss>
+      </nocoParams>
+      <expertModes gw="0" pot8="F" eig66="F" lpr="0" isec1="99" secvar="F"/>
+      <geometryOptimization l_f="F" xa="2.00000000" thetad="330.00000000" epsdisp=".00001000" epsforce=".00001000"/>
+      <bzIntegration valenceElectrons="8.00000000" mode="hist" fermiSmearingEnergy=".00100000">
+         <kPointList posScale="2.00000000" weightScale="1.00000000" count="1">
+            <kPoint weight="    1.000000">    0.000000     0.000000     0.000000</kPoint>
+         </kPointList>
+      </bzIntegration>
+      <energyParameterLimits ellow="-.80000000" elup="1.00000000"/>
+   </calculationSetup>
+   <cell>
+      <symmetryFile filename="sym.out"/>
+      <bulkLattice scale="1.000000000000" latnam="any">
+         <bravaisMatrix>
+            <row-1>.000000000000 3.410000000000 3.410000000000</row-1>
+            <row-2>3.410000000000 .000000000000 3.410000000000</row-2>
+            <row-3>3.410000000000 3.410000000000 .000000000000</row-3>
+         </bravaisMatrix>
+      </bulkLattice>
+   </cell>
+   <xcFunctional name="pbe" relativisticCorrections="F"/>
+   <atomSpecies>
+      <species name="Fe-1" element="Fe" atomicNumber="26" coreStates="7" magMom="2.20000000" flipSpin="T">
+         <mtSphere radius="2.35000000" gridPoints="565" logIncrement=".02100000"/>
+         <atomicCutoffs lmax="8" lnonsphr="6"/>
+         <energyParameters s="4" p="4" d="3" f="4"/>
+      </species>
+   </atomSpecies>
+   <atomGroups>
+      <atomGroup species="Fe-1">
+         <relPos>.000000000000 .000000000000 .000000000000</relPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+         <nocoParams l_relax="F" l_magn="F" M=".0000000000" alpha=".0000000000" beta="1.5707963268" b_cons_x=".0000000000" b_cons_y=".0000000000"/>
+      </atomGroup>
+   </atomGroups>
+   <output dos="F" band="F" vacdos="F" slice="F">
+      <checks vchk="F" cdinf="F" disp="F"/>
+      <densityOfStates ndir="0" minEnergy="-.50000000" maxEnergy=".50000000" sigma=".01500000"/>
+      <vacuumDOS layers="0" integ="F" star="F" nstars="0" locx1=".00000000" locy1=".00000000" locx2=".00000000" locy2=".00000000" nstm="0" tworkf=".00000000"/>
+      <plotting iplot="F" score="F" plplot="F"/>
+      <chargeDensitySlicing numkpt="0" minEigenval=".00000000" maxEigenval=".00000000" nnne="0" pallst="F"/>
+      <specialOutput form66="F" eonly="F" bmt="F"/>
+   </output>
+</fleurInput>

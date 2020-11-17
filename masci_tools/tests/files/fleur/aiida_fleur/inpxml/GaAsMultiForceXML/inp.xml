@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<fleurInput fleurInputVersion="0.28">
+   <comment>
+      GaAs bulk zinc-blende structure                                                 
+   </comment>
+   <calculationSetup>
+      <cutoffs Kmax="3.60000000" Gmax="10.80000000" GmaxXC="9.00000000" numbands="0"/>
+      <scfLoop itmax="1" minDistance=".00000000" maxIterBroyd="99" imix="Anderson" alpha=".05000000" spinf="2.00000000"/>
+      <coreElectrons ctail="T" frcor="F" kcrel="0" coretail_lmax="99"/>
+      <magnetism jspins="1" l_noco="F" l_J="F" swsp="F" lflip="F"/>
+      <soc theta=".00000000" phi=".00000000" l_soc="F" spav="F" off="F"/>
+      <expertModes gw="0" pot8="F" isec1="99" secvar="F"/>
+      <bzIntegration valenceElectrons="28.00000000" mode="hist" fermiSmearingEnergy=".00100000">
+         <kPointCount count="10" gamma="F"/>
+      </bzIntegration>
+      <energyParameterLimits ellow="-1.80000000" elup="1.00000000"/>
+   </calculationSetup>
+   <cell>
+      <symmetryFile filename="sym.out"/>
+      <bulkLattice scale="1.0000000000" latnam="any">
+         <bravaisMatrix>
+            <row-1>.0000000000 5.3100000000 5.3100000000</row-1>
+            <row-2>5.3100000000 .0000000000 5.3100000000</row-2>
+            <row-3>5.3100000000 5.3100000000 .0000000000</row-3>
+         </bravaisMatrix>
+      </bulkLattice>
+   </cell>
+   <xcFunctional name="pbe" relativisticCorrections="F"/>
+   <atomSpecies>
+      <species name="Ga-1" element="Ga" atomicNumber="31" coreStates="7" magMom=".00000000" flipSpin="T">
+         <mtSphere radius="2.21000000" gridPoints="731" logIncrement=".01700000"/>
+         <atomicCutoffs lmax="8" lnonsphr="6"/>
+         <energyParameters s="4" p="4" d="3" f="4"/>
+         <ldaU l="1" U="-5.0" J="0.9" l_amf="F"/>
+         <ldaU l="2" U="8.0" J="0.9" l_amf="F"/>
+      </species>
+      <species name="As-2" element="As" atomicNumber="33" coreStates="7" magMom=".00000000" flipSpin="T">
+         <mtSphere radius="2.21000000" gridPoints="731" logIncrement=".01700000"/>
+         <atomicCutoffs lmax="8" lnonsphr="6"/>
+         <energyParameters s="4" p="4" d="3" f="4"/>
+         <ldaU l="2" U="5.5" J="0.9" l_amf="F"/>
+         <ldaU l="1" U="-6.5" J="0.9" l_amf="F"/>
+      </species>
+   </atomSpecies>
+   <atomGroups>
+      <atomGroup species="Ga-1">
+         <relPos>-.1300000000 -.1300000000 -.1300000000</relPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+      </atomGroup>
+      <atomGroup species="As-2">
+         <relPos>.1300000000 .1300000000 .1300000000</relPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+      </atomGroup>
+   </atomGroups>
+   <output dos="F" band="F" vacdos="F" slice="F">
+      <checks vchk="F" cdinf="F" disp="F"/>
+      <densityOfStates ndir="0" minEnergy="-.50000000" maxEnergy=".50000000" sigma=".01500000"/>
+      <vacuumDOS layers="0" integ="F" star="F" nstars="0" locx1=".00000000" locy1=".00000000" locx2=".00000000" locy2=".00000000" nstm="0" tworkf=".00000000"/>
+      <chargeDensitySlicing numkpt="0" minEigenval=".00000000" maxEigenval=".00000000" nnne="0" pallst="F"/>
+      <specialOutput eonly="F" bmt="F"/>
+   </output>
+</fleurInput>
