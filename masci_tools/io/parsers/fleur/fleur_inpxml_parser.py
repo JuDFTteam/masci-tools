@@ -49,7 +49,7 @@ def inpxml_parser(inpxmlfile, return_errmsg=False, version=None):
     if return_errmsg:
         schema_dict, xmlschema, success, message = load_inpschema(version, schema_return=True, return_errmsg=True)
     else:
-        schema_dict, xmlschema = load_inpschema(version, schema_return=True, return_errmsg=True)
+        schema_dict, xmlschema = load_inpschema(version, schema_return=True)
 
     if not success:
         return None, False, message
@@ -82,7 +82,7 @@ def inpxml_parser(inpxmlfile, return_errmsg=False, version=None):
         return inp_dict
 
 
-def inpxml_todict(parent, schema_dict, constants, omitted_tags=False):
+def inpxml_todict(parent, schema_dict, constants, omitted_tags=False, base_xpath=None):
     """
     Recursive operation which transforms an xml etree to
     python nested dictionaries and lists.
@@ -93,9 +93,13 @@ def inpxml_todict(parent, schema_dict, constants, omitted_tags=False):
     :param omitted_tags: switch. If True only a list of the contained tags is returned
                          Used to omitt useless tags like e.g ['atomSpecies']['species'][3]
                          becomes ['atomSpecies'][3]
+    :param base_xpath: str, keeps track of the place in the inp.xml currently being processed
 
     :return: a python dictionary
     """
+
+    if base_xpath is None:
+        base_xpath = '/fleurInput'
 
     return_dict = {}
     if list(parent.items()):
@@ -150,8 +154,14 @@ def inpxml_todict(parent, schema_dict, constants, omitted_tags=False):
                         return_dict['text_label'] = return_dict['label']
                         return_dict.pop('label')
 
+    if base_xpath in schema_dict['tag_info']:
+        tag_info = schema_dict['tag_info'][base_xpath]
+    else:
+        tag_info = {'several': []}
+
     for element in parent:
-        if element.tag in schema_dict['tags_several']:
+        new_base_xpath = f'{base_xpath}/{element.tag}'
+        if element.tag in tag_info['several']:
             # make a list, otherwise the tag will be overwritten in the dict
             if element.tag not in return_dict:  # is this the first occurence?
                 if omitted_tags:
@@ -160,9 +170,9 @@ def inpxml_todict(parent, schema_dict, constants, omitted_tags=False):
                 else:
                     return_dict[element.tag] = []
             if omitted_tags:
-                return_dict.append(inpxml_todict(element, schema_dict, constants))
+                return_dict.append(inpxml_todict(element, schema_dict, constants, base_xpath=new_base_xpath))
             else:
-                tmp_return_dict = inpxml_todict(element, schema_dict, constants)
+                tmp_return_dict = inpxml_todict(element, schema_dict, constants, base_xpath=new_base_xpath)
                 if 'text_value' in tmp_return_dict:
                     for key, value in tmp_return_dict.items():
                         if key == 'text_value':
@@ -186,8 +196,8 @@ def inpxml_todict(parent, schema_dict, constants, omitted_tags=False):
                     return_dict[element.tag].append(tmp_return_dict)
         elif element.tag in schema_dict['omitt_contained_tags']:
             #The tags on level deeper are not useful in a parsed python dictionary
-            return_dict[element.tag] = inpxml_todict(element, schema_dict, constants, omitted_tags=True)
+            return_dict[element.tag] = inpxml_todict(element, schema_dict, constants, omitted_tags=True, base_xpath=new_base_xpath)
         else:
-            return_dict[element.tag] = inpxml_todict(element, schema_dict, constants)
+            return_dict[element.tag] = inpxml_todict(element, schema_dict, constants, base_xpath=new_base_xpath)
 
     return return_dict
