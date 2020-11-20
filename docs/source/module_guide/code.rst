@@ -52,3 +52,9 @@ I/O helper and output file parsers
 
 .. automodule:: masci_tools.io.parsers.kkrimp_parser_functions
    :members:
+
+.. automodule:: masci_tools.io.parsers.fleur.fleur_inpxml_parser
+   :members:
+
+.. automodule:: masci_tools.io.parsers.fleur.fleur_schema
+   :members:
