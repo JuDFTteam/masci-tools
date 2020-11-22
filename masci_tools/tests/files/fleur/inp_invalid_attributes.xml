@@ -4,7 +4,7 @@
       A Fleur input generator calculation with aiida
    </comment>
    <calculationSetup>
-      <cutoffs Kmax="4.00000000" Gmax="10.00000000" GmaxXC="2..041" numbands="0"/>
+      <cutoffs Kmax="4.00000000" Gmax="10.00000000" GmaxXC="2..041" numbands="all"/>
       <scfLoop itmax="1" minDistance="1e5" maxIterBroyd="99" imix="Anderson" alpha=".05000000" precondParam="0.0" spinf="2.00000000"/>
       <coreElectrons ctail="F" frcor="F" kcrel="0" coretail_lmax="0"/>
       <xcFunctional name="vwn" relativisticCorrections="F"/>
