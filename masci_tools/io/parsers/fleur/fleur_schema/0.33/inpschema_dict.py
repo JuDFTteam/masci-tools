@@ -905,90 +905,90 @@ schema_dict = {
         'theta': ['/fleurInput/calculationSetup/soc', '/fleurInput/forceTheorem/MAE', '/fleurInput/forceTheorem/DMI']
     },
     'simple_elements': {
-        'a1': {
+        'a1': [{
             'length': 1,
             'type': ['float_expression']
-        },
-        'a2': {
+        }],
+        'a2': [{
             'length': 1,
             'type': ['float_expression']
-        },
-        'absPos': {
+        }],
+        'absPos': [{
             'length': 3,
             'type': ['float_expression']
-        },
-        'c': {
+        }],
+        'c': [{
             'length': 1,
             'type': ['float_expression']
-        },
-        'comment': {
+        }],
+        'comment': [{
             'length': 1,
             'type': ['string']
-        },
-        'coreConfig': {
+        }],
+        'coreConfig': [{
             'length': 'unbounded',
             'type': ['string']
-        },
-        'd': {
+        }],
+        'd': [{
             'length': 4,
             'type': ['switch']
-        },
-        'displace': {
+        }],
+        'displace': [{
             'length': 3,
             'type': ['float']
-        },
-        'edgeIndices': {
+        }],
+        'edgeIndices': [{
             'length': 'unbounded',
             'type': ['int']
-        },
-        'f': {
+        }],
+        'f': [{
             'length': 4,
             'type': ['switch']
-        },
-        'filmPos': {
+        }],
+        'filmPos': [{
             'length': 3,
             'type': ['float_expression']
-        },
-        'jobList': {
+        }],
+        'jobList': [{
             'length': 'unbounded',
             'type': ['string']
-        },
-        'kPoint': {
+        }],
+        'kPoint': [{
             'length': 3,
             'type': ['float_expression']
-        },
-        'layer': {
+        }],
+        'layer': [{
             'length': 1,
             'type': ['string']
-        },
-        'orbcomprot': {
+        }],
+        'orbcomprot': [{
             'length': 3,
             'type': ['float']
-        },
-        'p': {
+        }],
+        'p': [{
             'length': 4,
             'type': ['switch']
-        },
-        'posforce': {
+        }],
+        'posforce': [{
             'length': 1,
             'type': ['string']
-        },
-        'q': {
+        }],
+        'q': [{
             'length': 1,
             'type': ['string']
-        },
-        'qsc': {
+        }],
+        'qsc': [{
             'length': 3,
             'type': ['float_expression']
-        },
-        'qss': {
+        }],
+        'qss': [{
             'length': 3,
             'type': ['float_expression']
-        },
-        'relPos': {
+        }],
+        'relPos': [{
             'length': 3,
             'type': ['float_expression']
-        },
+        }],
         'row-1': [{
             'length': 2,
             'type': ['float_expression']
@@ -1016,26 +1016,26 @@ schema_dict = {
             'length': 4,
             'type': ['float']
         }],
-        's': {
+        's': [{
             'length': 4,
             'type': ['switch']
-        },
-        'shape': {
+        }],
+        'shape': [{
             'length': 1,
             'type': ['string']
-        },
-        'tet': {
+        }],
+        'tet': [{
             'length': 'unbounded',
             'type': ['string']
-        },
-        'tria': {
+        }],
+        'tria': [{
             'length': 'unbounded',
             'type': ['string']
-        },
-        'valenceConfig': {
+        }],
+        'valenceConfig': [{
             'length': 'unbounded',
             'type': ['string']
-        }
+        }]
     },
     'tag_info': {
         '/fleurInput': {

@@ -17,7 +17,7 @@ and convert its content to a dict
 from lxml import etree
 from pprint import pprint
 from masci_tools.io.parsers.fleur.fleur_schema import load_inpschema
-from masci_tools.util.xml.common_xml_util import clear_xml, convert_xml_attribute, read_constants
+from masci_tools.util.xml.common_xml_util import clear_xml, convert_xml_attribute, read_constants, convert_xml_text
 
 
 def inpxml_parser(inpxmlfile, version=None):
@@ -71,7 +71,7 @@ def inpxml_parser(inpxmlfile, version=None):
     return inp_dict
 
 
-def inpxml_todict(parent, schema_dict, constants, omitted_tags=False, base_xpath=None):
+def inpxml_todict(parent, schema_dict, constants, omitted_tags=False, base_xpath=None, parser_info_out=None):
     """
     Recursive operation which transforms an xml etree to
     python nested dictionaries and lists.
@@ -87,6 +87,10 @@ def inpxml_todict(parent, schema_dict, constants, omitted_tags=False, base_xpath
     :return: a python dictionary
     """
 
+    if parser_info_out is None:
+        parser_info_out = {'parser_warnings': []}
+
+    #Check if this is the first call to this routine
     if base_xpath is None:
         base_xpath = f'/{parent.tag}'
 
@@ -96,53 +100,42 @@ def inpxml_todict(parent, schema_dict, constants, omitted_tags=False, base_xpath
         # Now we have to convert lazy fortan style into pretty things for the Database
         for key in return_dict:
             if key in schema_dict['attrib_types']:
-                converted_value = convert_xml_attribute(return_dict[key], schema_dict['attrib_types'][key], constants)
-                if converted_value is not None:
-                    return_dict[key] = converted_value
-            else:
-                pass  #This key should be in simple_elements
+                conversion_warnings = []
+                return_dict[key], suc = convert_xml_attribute(return_dict[key],
+                                                              schema_dict['attrib_types'][key],
+                                                              constants,
+                                                              conversion_warnings=conversion_warnings)
+                if not suc:
+                    parser_info_out['parser_warnings'].append(
+                        f"Failed to convert attribute '{key}'"
+                        'Below are the warnings raised from convert_xml_attribute')
+                    for warning in conversion_warnings:
+                        parser_info_out['parser_warnings'].append(warning)
 
     if parent.text:
         # has text, but we don't want all the '\n' s and empty stings in the database
         if parent.text.strip() != '':  # might not be the best solutions
-            base_text = parent.text.strip()
-            split_text = base_text.split(' ')
-            while '' in split_text:
-                split_text.remove('')
             if parent.tag not in schema_dict['simple_elements']:
                 raise ValueError(
                     f'Something is wrong in the schema_dict: {parent.tag} is not in simple_elements, but it has text')
-            text_definition = None
-            if isinstance(schema_dict['simple_elements'][parent.tag], dict):
-                text_definition = schema_dict['simple_elements'][parent.tag]
+            conversion_warnings = []
+            converted_text, suc = convert_xml_text(parent.text,
+                                                   schema_dict['simple_elements'][parent.tag],
+                                                   constants,
+                                                   conversion_warnings=conversion_warnings)
+            if not suc:
+                parser_info_out['parser_warnings'].append(f"Failed to convert text of '{parent.tag}'"
+                                                          'Below are the warnings raised from convert_xml_text')
+                for warning in conversion_warnings:
+                    parser_info_out['parser_warnings'].append(warning)
+
+            if not return_dict:
+                return_dict = converted_text
             else:
-                for possible_def in schema_dict['simple_elements'][parent.tag]:
-                    if possible_def['length'] == len(split_text) or \
-                       (possible_def['length'] == 1 and len(split_text) != 1):
-                        text_definition = possible_def
-            if text_definition['length'] == 1:
-                converted_value = convert_xml_attribute(base_text, text_definition['type'], constants)
-                if converted_value is not None:
-                    if not return_dict:
-                        return_dict = converted_value
-                    else:
-                        return_dict['text_value'] = converted_value
-                        if 'label' in return_dict:
-                            return_dict['text_label'] = return_dict['label']
-                            return_dict.pop('label')
-            else:
-                text_list = []
-                for value in split_text:
-                    converted_value = convert_xml_attribute(value, text_definition['type'], constants)
-                    if converted_value is not None:
-                        text_list.append(converted_value)
-                if not return_dict:
-                    return_dict = text_list
-                else:
-                    return_dict['text_value'] = text_list
-                    if 'label' in return_dict:
-                        return_dict['text_label'] = return_dict['label']
-                        return_dict.pop('label')
+                return_dict['text_value'] = converted_text
+                if 'label' in return_dict:
+                    return_dict['text_label'] = return_dict['label']
+                    return_dict.pop('label')
 
     if base_xpath in schema_dict['tag_info']:
         tag_info = schema_dict['tag_info'][base_xpath]
@@ -150,7 +143,16 @@ def inpxml_todict(parent, schema_dict, constants, omitted_tags=False, base_xpath
         tag_info = {'several': []}
 
     for element in parent:
+
         new_base_xpath = f'{base_xpath}/{element.tag}'
+        omitt_contained_tags = element.tag in schema_dict['omitt_contained_tags']
+        new_return_dict = inpxml_todict(element,
+                                        schema_dict,
+                                        constants,
+                                        base_xpath=new_base_xpath,
+                                        omitted_tags=omitt_contained_tags,
+                                        parser_info_out=parser_info_out)
+
         if element.tag in tag_info['several']:
             # make a list, otherwise the tag will be overwritten in the dict
             if element.tag not in return_dict:  # is this the first occurence?
@@ -160,39 +162,30 @@ def inpxml_todict(parent, schema_dict, constants, omitted_tags=False, base_xpath
                 else:
                     return_dict[element.tag] = []
             if omitted_tags:
-                return_dict.append(inpxml_todict(element, schema_dict, constants, base_xpath=new_base_xpath))
+                return_dict.append(new_return_dict)
+            elif 'text_value' in new_return_dict:
+                for key, value in new_return_dict.items():
+                    if key == 'text_value':
+                        return_dict[element.tag].append(value)
+                    elif key == 'text_label':
+                        if 'labels' not in return_dict:
+                            return_dict['labels'] = {}
+                        return_dict['labels'][value] = new_return_dict['text_value']
+                    else:
+                        if key not in return_dict:
+                            return_dict[key] = []
+                        elif not isinstance(return_dict[key], list):  #Key seems to be defined already
+                            raise ValueError(f'{key} cannot be extracted to the next level')
+                        return_dict[key].append(value)
+                for key in new_return_dict.keys():
+                    if key in ['text_value', 'text_label']:
+                        continue
+                    if len(return_dict[key]) != len(return_dict[element.tag]):
+                        raise ValueError(
+                            f'Extracted optional argument {key} at the moment only label is supported correctly')
             else:
-                tmp_return_dict = inpxml_todict(element, schema_dict, constants, base_xpath=new_base_xpath)
-                if 'text_value' in tmp_return_dict:
-                    for key, value in tmp_return_dict.items():
-                        if key == 'text_value':
-                            return_dict[element.tag].append(tmp_return_dict['text_value'])
-                        elif key == 'text_label':
-                            if 'labels' not in return_dict:
-                                return_dict['labels'] = {}
-                            return_dict['labels'][tmp_return_dict['text_label']] = tmp_return_dict['text_value']
-                        else:
-                            if key not in return_dict:
-                                return_dict[key] = []
-                            elif not isinstance(return_dict[key], list):  #Key seems to be defined already
-                                raise ValueError(f'{key} cannot be extracted to the next level')
-                            return_dict[key].append(value)
-                    for key in tmp_return_dict.keys():
-                        if key in ['text_value', 'text_label']:
-                            continue
-                        if len(return_dict[key]) != len(return_dict[element.tag]):
-                            raise ValueError(
-                                f'Extracted optional argument {key} at the moment only label is supported correctly')
-                else:
-                    return_dict[element.tag].append(tmp_return_dict)
-        elif element.tag in schema_dict['omitt_contained_tags']:
-            #The tags on level deeper are not useful in a parsed python dictionary
-            return_dict[element.tag] = inpxml_todict(element,
-                                                     schema_dict,
-                                                     constants,
-                                                     omitted_tags=True,
-                                                     base_xpath=new_base_xpath)
+                return_dict[element.tag].append(new_return_dict)
         else:
-            return_dict[element.tag] = inpxml_todict(element, schema_dict, constants, base_xpath=new_base_xpath)
+            return_dict[element.tag] = new_return_dict
 
     return return_dict

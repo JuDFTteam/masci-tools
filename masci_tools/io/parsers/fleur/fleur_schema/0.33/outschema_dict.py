@@ -644,30 +644,30 @@ schema_dict = {
         'valenceElectrons': '/totalEnergy/sumOfEigenvalues/valenceElectrons'
     },
     'simple_elements': {
-        'additionalCompilerFlags': {
+        'additionalCompilerFlags': [{
             'length': 'unbounded',
             'type': ['string']
-        },
-        'densityMatrixFor': {
+        }],
+        'densityMatrixFor': [{
             'length': 'unbounded',
             'type': ['string']
-        },
-        'eigenvaluesAt': {
+        }],
+        'eigenvaluesAt': [{
             'length': 'unbounded',
             'type': ['float']
-        },
-        'kPoint': {
+        }],
+        'kPoint': [{
             'length': 3,
             'type': ['float_expression']
-        },
-        'targetComputerArchitectures': {
+        }],
+        'targetComputerArchitectures': [{
             'length': 1,
             'type': ['string']
-        },
-        'targetStructureClass': {
+        }],
+        'targetStructureClass': [{
             'length': 'unbounded',
             'type': ['string']
-        }
+        }]
     },
     'tag_order': {
         'Forcetheorem_SSDISP': ['Entry'],

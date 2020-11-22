@@ -712,74 +712,74 @@ schema_dict = {
         'theta': ['/fleurInput/calculationSetup/soc', '/fleurInput/forceTheorem/MAE', '/fleurInput/forceTheorem/DMI']
     },
     'simple_elements': {
-        'a1': {
+        'a1': [{
             'length': 1,
             'type': ['string']
-        },
-        'a2': {
+        }],
+        'a2': [{
             'length': 1,
             'type': ['string']
-        },
-        'absPos': {
+        }],
+        'absPos': [{
             'length': 3,
             'type': ['string']
-        },
-        'c': {
+        }],
+        'c': [{
             'length': 1,
             'type': ['string']
-        },
-        'comment': {
+        }],
+        'comment': [{
             'length': 1,
             'type': ['string']
-        },
-        'coreConfig': {
+        }],
+        'coreConfig': [{
             'length': 'unbounded',
             'type': ['string']
-        },
-        'displace': {
+        }],
+        'displace': [{
             'length': 3,
             'type': ['float']
-        },
-        'edgeIndices': {
+        }],
+        'edgeIndices': [{
             'length': 'unbounded',
             'type': ['int']
-        },
-        'filmPos': {
+        }],
+        'filmPos': [{
             'length': 3,
             'type': ['string']
-        },
-        'jobList': {
+        }],
+        'jobList': [{
             'length': 'unbounded',
             'type': ['string']
-        },
-        'kPoint': {
+        }],
+        'kPoint': [{
             'length': 3,
             'type': ['float']
-        },
-        'orbcomprot': {
+        }],
+        'orbcomprot': [{
             'length': 3,
             'type': ['float']
-        },
-        'posforce': {
+        }],
+        'posforce': [{
             'length': 1,
             'type': ['string']
-        },
-        'q': {
+        }],
+        'q': [{
             'length': 1,
             'type': ['string']
-        },
-        'qsc': {
+        }],
+        'qsc': [{
             'length': 3,
             'type': ['float']
-        },
-        'qss': {
+        }],
+        'qss': [{
             'length': 3,
             'type': ['float']
-        },
-        'relPos': {
+        }],
+        'relPos': [{
             'length': 3,
             'type': ['string']
-        },
+        }],
         'row-1': [{
             'length': 2,
             'type': ['string']
@@ -807,18 +807,18 @@ schema_dict = {
             'length': 4,
             'type': ['float']
         }],
-        'shape': {
+        'shape': [{
             'length': 1,
             'type': ['string']
-        },
-        'specialPoint': {
+        }],
+        'specialPoint': [{
             'length': 3,
             'type': ['string']
-        },
-        'valenceConfig': {
+        }],
+        'valenceConfig': [{
             'length': 'unbounded',
             'type': ['string']
-        }
+        }]
     },
     'tag_info': {
         '/fleurInput': {

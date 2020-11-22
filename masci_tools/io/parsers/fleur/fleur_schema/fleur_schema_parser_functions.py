@@ -977,10 +977,6 @@ def get_basic_elements(xmlschema, namespaces, **kwargs):
         else:
             basic_elements[name_elem] = [new_dict]
 
-    for key, value in basic_elements.items():
-        if len(value) == 1:
-            basic_elements[key] = value[0]
-
     return basic_elements
 
 
