@@ -32,6 +32,13 @@ def inpxml_parser(inpxmlfile, version=None, parser_info_out=None):
 
     :return: python dictionary
     """
+
+    if parser_info_out is None:
+        parser_info_out = {'parser_warnings': []}
+
+    parser_version = '0.1.0'
+    parser_info_out['parser_info'] = f'Masci-Tools Fleur inp.xml Parser v{parser_version}'
+
     if isinstance(inpxmlfile, str):
         parser = etree.XMLParser(attribute_defaults=True, encoding='utf-8')
         try:
@@ -48,6 +55,7 @@ def inpxml_parser(inpxmlfile, version=None, parser_info_out=None):
         except KeyError:
             raise ValueError('Failed to extract inputVersion')
 
+    parser_info_out['fleur_inp_version'] = version
     schema_dict, xmlschema = load_inpschema(version, schema_return=True)
 
     xmltree = clear_xml(xmltree, schema_dict=schema_dict)

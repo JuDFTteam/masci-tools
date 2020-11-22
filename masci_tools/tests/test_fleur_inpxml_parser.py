@@ -369,7 +369,9 @@ def test_inpxml_todict_warnings():
             "Could not evaluate expression 'pi*2.0' The following error was raised: Unknown string expression: pi",
             "Could not evaluate expression 'cos1.0)' The following error was raised: Invalid expression: Expected Bracket after function name",
             "Could not evaluate expression 'Pi/(3.0-3.0)' The following error was raised: Undefined Expression: Division by zero"
-        ]
+        ],
+        'parser_info': 'Masci-Tools Fleur inp.xml Parser v0.1.0',
+        'fleur_inp_version': '0.33'
     }
 
     input_invalid_attr = os.path.abspath(os.path.join(inpxmlfilefolder, 'files/fleur/inp_invalid_attributes.xml'))
