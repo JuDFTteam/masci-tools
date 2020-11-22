@@ -20,7 +20,7 @@ from masci_tools.io.parsers.fleur.fleur_schema import load_inpschema
 from masci_tools.util.xml.common_xml_util import clear_xml, convert_xml_attribute, read_constants, convert_xml_text
 
 
-def inpxml_parser(inpxmlfile, version=None):
+def inpxml_parser(inpxmlfile, version=None, parser_info_out=None):
     """
     Parses the given inp.xml file to a python dictionary utilizing the schema
     defined by the version number to validate and corretly convert to the dictionary
@@ -66,7 +66,7 @@ def inpxml_parser(inpxmlfile, version=None):
             message = msg
         raise ValueError(f'Input file does not validate against the schema: {message}')
     else:
-        inp_dict = inpxml_todict(root, schema_dict, constants)
+        inp_dict = inpxml_todict(root, schema_dict, constants, parser_info_out=parser_info_out)
 
     return inp_dict
 
@@ -107,7 +107,7 @@ def inpxml_todict(parent, schema_dict, constants, omitted_tags=False, base_xpath
                                                               conversion_warnings=conversion_warnings)
                 if not suc:
                     parser_info_out['parser_warnings'].append(
-                        f"Failed to convert attribute '{key}'"
+                        f"Failed to convert attribute '{key}': "
                         'Below are the warnings raised from convert_xml_attribute')
                     for warning in conversion_warnings:
                         parser_info_out['parser_warnings'].append(warning)
@@ -124,7 +124,7 @@ def inpxml_todict(parent, schema_dict, constants, omitted_tags=False, base_xpath
                                                    constants,
                                                    conversion_warnings=conversion_warnings)
             if not suc:
-                parser_info_out['parser_warnings'].append(f"Failed to convert text of '{parent.tag}'"
+                parser_info_out['parser_warnings'].append(f"Failed to convert text of '{parent.tag}': "
                                                           'Below are the warnings raised from convert_xml_text')
                 for warning in conversion_warnings:
                     parser_info_out['parser_warnings'].append(warning)

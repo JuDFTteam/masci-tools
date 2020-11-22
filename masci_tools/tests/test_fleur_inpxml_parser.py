@@ -353,3 +353,29 @@ def test_inpxml_todict(inpxmlfilepath, expected_result):
 
     inp_dict = inpxml_parser(inpxmlfilepath)
     assert inp_dict == expected_result
+
+
+def test_inpxml_todict_warnings():
+    """
+    test if valid inp.xml files are translated to the correct inp_dict
+    """
+    expected_warnings = {
+        'parser_warnings': [
+            "Failed to convert attribute 'GmaxXC': Below are the warnings raised from convert_xml_attribute",
+            "Could not evaluate expression '2..041' The following error was raised: Cannot parse number: Found two decimal points",
+            "Failed to convert attribute 'minDistance': Below are the warnings raised from convert_xml_attribute",
+            "Could not evaluate expression '1e5' The following error was raised: Unknown string expression: e",
+            "Failed to convert text of 'qss': Below are the warnings raised from convert_xml_text",
+            "Could not evaluate expression 'pi*2.0' The following error was raised: Unknown string expression: pi",
+            "Could not evaluate expression 'cos1.0)' The following error was raised: Invalid expression: Expected Bracket after function name",
+            "Could not evaluate expression 'Pi/(3.0-3.0)' The following error was raised: Undefined Expression: Division by zero"
+        ]
+    }
+
+    input_invalid_attr = os.path.abspath(os.path.join(inpxmlfilefolder, 'files/fleur/inp_invalid_attributes.xml'))
+    warnings = {'parser_warnings': []}
+
+    #The parser shoul not raise and just log all the failed conversions
+    inp_dict = inpxml_parser(input_invalid_attr, parser_info_out=warnings)
+
+    assert warnings == expected_warnings
