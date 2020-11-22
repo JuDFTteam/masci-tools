@@ -15,11 +15,11 @@ def test_calculate_expression():
         'Bohr': 1.0
     }
 
-    assert (pytest.approx(calculate_expression('1.0+3.0-2.45*8.45', const_dict)) == -16.7025)
-    assert (pytest.approx(calculate_expression('Pi/4.0', const_dict)) == 0.78539816339)
-    assert (pytest.approx(calculate_expression('cos(Pi)-exp(2)*(4.0+sin(Pi/2))', const_dict)) == -37.94528049)
-    assert (pytest.approx(calculate_expression('(2+5)**(1/2.0)', const_dict)) == 2.64575)
-    assert (pytest.approx(calculate_expression('-0.5**(4%(2.0+1.0))', const_dict)) == -0.5)
+    assert pytest.approx(calculate_expression('1.0+3.0-2.45*8.45', const_dict)) == -16.7025
+    assert pytest.approx(calculate_expression('Pi/4.0', const_dict)) == 0.78539816339
+    assert pytest.approx(calculate_expression('cos(Pi)-exp(2)*(4.0+sin(Pi/2))', const_dict)) == -37.94528049
+    assert pytest.approx(calculate_expression('(2+5)**(1/2.0)', const_dict)) == 2.64575
+    assert pytest.approx(calculate_expression('-0.5**(4%(2.0+1.0))', const_dict)) == -0.5
 
 
 def test_calculate_expression_errors():

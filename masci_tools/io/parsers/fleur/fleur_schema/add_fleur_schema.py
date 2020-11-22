@@ -22,45 +22,48 @@ from masci_tools.util.xml.common_xml_util import clear_xml
 
 PACKAGE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 
+
 def add_fleur_schema(path, overwrite=False):
-   """
+    """
    Adds the FleurInput/OutputSchema from the specified path (folder containing the Schemas)
    to the folder with the correct version number and creates the schema_dicts
    """
 
-   schema_path = os.path.join(path,'FleurInputSchema.xsd')
-   if os.path.isfile(schema_path):
-      xmlschema = etree.parse(schema_path)
-      xmlschema = clear_xml(xmlschema)
+    schema_path = os.path.join(path, 'FleurInputSchema.xsd')
+    if os.path.isfile(schema_path):
+        xmlschema = etree.parse(schema_path)
+        xmlschema = clear_xml(xmlschema)
 
-      namespaces = {'xsd': 'http://www.w3.org/2001/XMLSchema'}
-      inp_version = xmlschema.xpath('/xsd:schema/@version', namespaces=namespaces)[0]
+        namespaces = {'xsd': 'http://www.w3.org/2001/XMLSchema'}
+        inp_version = xmlschema.xpath('/xsd:schema/@version', namespaces=namespaces)[0]
 
-      copy_schema_folder = os.path.abspath(os.path.join(PACKAGE_DIRECTORY, f'./{inp_version}'))
-      copy_schema_file = os.path.abspath(os.path.join(copy_schema_folder, 'FleurInputSchema.xsd'))
-      if os.path.isfile(copy_schema_file) and not overwrite:
-         raise ValueError(f'Input Schema for version {inp_version} already exists. Use overwrite=True to replace the Schema')
+        copy_schema_folder = os.path.abspath(os.path.join(PACKAGE_DIRECTORY, f'./{inp_version}'))
+        copy_schema_file = os.path.abspath(os.path.join(copy_schema_folder, 'FleurInputSchema.xsd'))
+        if os.path.isfile(copy_schema_file) and not overwrite:
+            raise ValueError(
+                f'Input Schema for version {inp_version} already exists. Use overwrite=True to replace the Schema')
 
-      os.makedirs(copy_schema_folder, exist_ok=True)
-      shutil.copy(schema_path, copy_schema_file)
-      create_inpschema_dict(copy_schema_folder)
+        os.makedirs(copy_schema_folder, exist_ok=True)
+        shutil.copy(schema_path, copy_schema_file)
+        create_inpschema_dict(copy_schema_folder)
 
-   schema_path = os.path.join(path,'FleurOutputSchema.xsd')
-   if os.path.isfile(schema_path):
-      xmlschema = etree.parse(schema_path)
-      xmlschema = clear_xml(xmlschema)
+    schema_path = os.path.join(path, 'FleurOutputSchema.xsd')
+    if os.path.isfile(schema_path):
+        xmlschema = etree.parse(schema_path)
+        xmlschema = clear_xml(xmlschema)
 
-      namespaces = {'xsd': 'http://www.w3.org/2001/XMLSchema'}
-      out_version = xmlschema.xpath('/xsd:schema/@version', namespaces=namespaces)[0]
+        namespaces = {'xsd': 'http://www.w3.org/2001/XMLSchema'}
+        out_version = xmlschema.xpath('/xsd:schema/@version', namespaces=namespaces)[0]
 
-      copy_schema_folder = os.path.abspath(os.path.join(PACKAGE_DIRECTORY, f'./{out_version}'))
-      copy_schema_file = os.path.abspath(os.path.join(copy_schema_folder, 'FleurOutputSchema.xsd'))
-      if os.path.isfile(copy_schema_file) and not overwrite:
-         raise ValueError(f'Output Schema for version {out_version} already exists. Use overwrite=True to replace the Schema')
+        copy_schema_folder = os.path.abspath(os.path.join(PACKAGE_DIRECTORY, f'./{out_version}'))
+        copy_schema_file = os.path.abspath(os.path.join(copy_schema_folder, 'FleurOutputSchema.xsd'))
+        if os.path.isfile(copy_schema_file) and not overwrite:
+            raise ValueError(
+                f'Output Schema for version {out_version} already exists. Use overwrite=True to replace the Schema')
 
-      os.makedirs(copy_schema_folder, exist_ok=True)
-      shutil.copy(schema_path, copy_schema_file)
-      create_outschema_dict(copy_schema_folder)
+        os.makedirs(copy_schema_folder, exist_ok=True)
+        shutil.copy(schema_path, copy_schema_file)
+        create_outschema_dict(copy_schema_folder)
 
 
 if __name__ == '__main__':
