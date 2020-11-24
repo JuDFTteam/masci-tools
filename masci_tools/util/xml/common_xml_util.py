@@ -14,20 +14,19 @@
 Common functions for parsing input/output files or XMLschemas from FLEUR
 """
 from lxml import etree
-from masci_tools.io.parsers.fleur.fleur_schema.schema_dict_utils import get_tag_xpath
 
-
-def read_constants(xmltree, schema_dict):
+def read_constants(xmltree, schema_dict, abspath=None):
     """
-   Reads in the constants defined in the inp.xml
-   and returns them combined with the predefined constants from
-   fleur as a dictionary
+    Reads in the constants defined in the inp.xml
+    and returns them combined with the predefined constants from
+    fleur as a dictionary
 
-   :param xmltree: xmltree of the inp.xml file
-   :param schema_dict: schema_dictionary of the version of the inp.xml
+    :param xmltree: xmltree of the inp.xml file
+    :param schema_dict: schema_dictionary of the version of the inp.xml
 
-   :return: a python dictionary with all defined constants
-   """
+    :return: a python dictionary with all defined constants
+    """
+    from masci_tools.util.schema_dict_util import get_tag_xpath
     import numpy as np
 
     #Predefined constants in the Fleur Code
@@ -40,6 +39,8 @@ def read_constants(xmltree, schema_dict):
         'Bohr': 1.0
     }
     xpath_constants = get_tag_xpath(schema_dict, 'constant')
+    if abspath is not None:
+        xpath_constants = f'{abspath}{xpath_constants}'
     constant_elems = xmltree.xpath(xpath_constants)
     for const in constant_elems:
         name = const.attrib['name']
@@ -47,10 +48,9 @@ def read_constants(xmltree, schema_dict):
         if name not in const_dict:
             const_dict[name] = value
         else:
-            raise KeyError('Ambiguous definition of key {name}')
+            raise KeyError(f'Ambiguous definition of key {name}')
 
     return const_dict
-
 
 def clear_xml(tree, schema_dict=None):
     """
@@ -63,6 +63,7 @@ def clear_xml(tree, schema_dict=None):
     TODO: Currently what can be included is fleur specific.
     But this can probably easily generalized
     """
+    from masci_tools.util.schema_dict_util import get_tag_xpath
     import copy
 
     possible_include = ['relaxation', 'atomGroups', 'atomSpecies', 'kPointLists', 'symmetryOperations']
@@ -106,37 +107,49 @@ def convert_xml_attribute(stringattribute, possible_types, constants, suc_return
     """
     from masci_tools.util.fleur_calculate_expression import calculate_expression
 
+    if not isinstance(stringattribute, list):
+        stringattribute = [stringattribute]
+
     if conversion_warnings is None:
         conversion_warnings = []
 
-    for value_type in possible_types:
-        if value_type == 'float':
-            converted_value, suc = convert_to_float(stringattribute, conversion_warnings=conversion_warnings)
-        elif value_type == 'float_expression':
-            try:
-                converted_value = calculate_expression(stringattribute, constants)
+    converted_list = []
+    all_success = True
+    for attrib in stringattribute:
+        suc = False
+        for value_type in possible_types:
+            if value_type == 'float':
+                converted_value, suc = convert_to_float(attrib, conversion_warnings=conversion_warnings)
+            elif value_type == 'float_expression':
+                try:
+                    converted_value = calculate_expression(attrib, constants)
+                    suc = True
+                except ValueError as errmsg:
+                    suc = False
+                    conversion_warnings.append(f"Could not evaluate expression '{attrib}' "
+                                               f'The following error was raised: {errmsg}')
+            elif value_type == 'int':
+                converted_value, suc = convert_to_int(attrib, conversion_warnings=conversion_warnings)
+            elif value_type == 'switch':
+                converted_value, suc = convert_from_fortran_bool(attrib, conversion_warnings=conversion_warnings)
+            elif value_type == 'string':
                 suc = True
-            except ValueError as errmsg:
-                suc = False
-                conversion_warnings.append(f"Could not evaluate expression '{stringattribute}' "
-                                           f'The following error was raised: {errmsg}')
-        elif value_type == 'int':
-            converted_value, suc = convert_to_int(stringattribute, conversion_warnings=conversion_warnings)
-        elif value_type == 'switch':
-            converted_value, suc = convert_from_fortran_bool(stringattribute, conversion_warnings=conversion_warnings)
-        elif value_type == 'string':
-            suc = True
-            converted_value = str(stringattribute)
-        if suc:
-            break
+                converted_value = str(attrib)
+            if suc:
+                converted_list.append(converted_value)
+                break
+        if not suc:
+            converted_list.append(attrib)
+            all_success = False
 
-    if not suc:
-        converted_value = stringattribute
+    ret_value = converted_list
+    if len(converted_list) == 1:
+        ret_value = converted_list[0]
 
     if suc_return:
-        return converted_value, suc
+        return ret_value, all_success
     else:
-        return converted_value
+        return ret_value
 
 
 def convert_xml_text(tagtext, possible_definitions, constants, conversion_warnings=None, suc_return=True):
@@ -299,6 +312,69 @@ def convert_from_fortran_bool(stringbool, conversion_warnings=None, suc_return=T
         return converted_value, suc
     else:
         return converted_value
+
+
+def eval_xpath(node, xpath, parser_info_out=None, list_return=False):
+    """
+    Tries to evaluate an xpath expression. If it fails it logs it.
+
+    :param node: root node of an etree
+    :param xpath: xpath expression (relative, or absolute)
+    :param parser_info_out: dict with warnings, info, errors, ...
+    :param list_return: if True, the returned quantity is always a list even if only one element is in it
+    :returns: text, attribute or a node list
+    """
+    if parser_info_out is None:
+        parser_info_out = {'parser_warnings': []}
+
+    try:
+        return_value = node.xpath(xpath)
+    except etree.XPathEvalError:
+        parser_info_out['parser_warnings'].append(f'There was a XpathEvalError on the xpath: {xpath} \n Either it does '
+                                                  'not exist, or something is wrong with the expression.')
+        return []  # or rather None?
+    if len(return_value) == 1 and not list_return:
+        return return_value[0]
+    else:
+        return return_value
+
+
+def get_xml_attribute(node, attributename, parser_info_out=None):
+    """
+    Get an attribute value from a node.
+
+    :param node: a node from etree
+    :param attributename: a string with the attribute name.
+    :param parser_info_out: dict with warnings, info, errors, ...
+    :returns: either attributevalue, or None
+    """
+    if parser_info_out is None:
+        parser_info_out = {'parser_warnings': []}
+
+    if etree.iselement(node):
+        attrib_value = node.get(attributename)
+        if attrib_value:
+            return attrib_value
+        else:
+            if parser_info_out:
+                parser_info_out['parser_warnings'].append('Tried to get attribute: "{}" from element {}.\n '
+                                                          'I recieved "{}", maybe the attribute does not exist'
+                                                          ''.format(attributename, node, attrib_value))
+            else:
+                print(('Can not get attributename: "{}" from node "{}", '
+                       'because node is not an element of etree.'
+                       ''.format(attributename, node)))
+            return None
+    else:  # something doesn't work here, some nodes get through here
+        if parser_info_out:
+            parser_info_out['parser_warnings'].append('Can not get attributename: "{}" from node "{}", '
+                                                      'because node is not an element of etree.'
+                                                      ''.format(attributename, node))
+        else:
+            print(('Can not get attributename: "{}" from node "{}", '
+                   'because node is not an element of etree.'
+                   ''.format(attributename, node)))
+        return None
 
 
 def delete_att(xmltree, xpath, attrib):
