@@ -15,7 +15,6 @@
       <bzIntegration valenceElectrons="8.00000000" mode="hist" fermiSmearingEnergy=".00100000">
          <kPointMesh nx="2" ny="2" nz="2" gamma="T"/>
       </bzIntegration>
-      <energyParameterLimits ellow="-2.80000000" elup="11.00000000"/>
    </calculationSetup>
    <cell>
       <symmetryFile filename="sym.out"/>

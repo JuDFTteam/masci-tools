@@ -21,7 +21,6 @@
             <kPointListFile filename="kpts_gw"/>
          </altKPointSet>
       </bzIntegration>
-      <energyParameterLimits ellow="-.80000000" elup="1.00000000"/>
    </calculationSetup>
    <cell>
       <symmetryFile filename="sym.out"/>

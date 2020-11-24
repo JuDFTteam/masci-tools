@@ -15,7 +15,6 @@
       <bzIntegration valenceElectrons="32.00000000" mode="hist" fermiSmearingEnergy=".00100000">
          <kPointCount count="5" gamma="F"/>
       </bzIntegration>
-      <energyParameterLimits ellow="-.80000000" elup="1.00000000"/>
    </calculationSetup>
    <cell>
       <symmetryFile filename="sym.out"/>

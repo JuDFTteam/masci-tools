@@ -17,7 +17,6 @@
          <kPointListSelection listName="default" />
          <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="kpts.xml"> </xi:include>
       </bzIntegration>
-      <energyParameterLimits ellow="-1.80000000" elup="1.00000000"/>
       <!-- symmetry operations included here -->
       <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="sym.xml"> </xi:include>
    </calculationSetup>

@@ -20,8 +20,8 @@ inpxmlfilefolder_valid = [
 ignore_inputs = ['NiO_ldauXML', 'Bi2Te3XML']  #These should fail but don't (except when they do)
 #Thes inputs are currently broken in the fleur tests
 broken_inputs = [
-    'CoHybridPBE0', 'CoUnfold', 'Gd_Hubbard1', 'Gd_Hubbard1_noSYM', 'gw1Interface', 'GaAsWannSOC', 'TiO2eelsXML',
-    'gw2Interface', 'Fe_film_SS_conv', 'SiHybrid8kpt_nosym', 'Diamond_SCAN', 'Fe_bulk_SS_conv', 'Fe_film_SSFT'
+    'CoHybridPBE0', 'CoUnfold', 'gw1Interface', 'GaAsWannSOC', 'TiO2eelsXML',
+    'gw2Interface', 'Fe_film_SS_conv', 'SiHybrid8kpt_nosym', 'Fe_bulk_SS_conv', 'Fe_film_SSFT'
 ]
 
 inp_dict_input = ['FePt_film_SSFT_LO/files/inp2.xml']
@@ -370,8 +370,10 @@ def test_inpxml_todict_warnings():
             "Could not evaluate expression 'cos1.0)' The following error was raised: Invalid expression: Expected Bracket after function name",
             "Could not evaluate expression 'Pi/(3.0-3.0)' The following error was raised: Undefined Expression: Division by zero"
         ],
-        'parser_info': 'Masci-Tools Fleur inp.xml Parser v0.1.0',
-        'fleur_inp_version': '0.33'
+        'parser_info':
+        'Masci-Tools Fleur inp.xml Parser v0.1.0',
+        'fleur_inp_version':
+        '0.33'
     }
 
     input_invalid_attr = os.path.abspath(os.path.join(inpxmlfilefolder, 'files/fleur/inp_invalid_attributes.xml'))

@@ -31,7 +31,6 @@
          <kPoint weight="0.066667">0.000000            0.000000            0.500000</kPoint>
      	</kPointList>
       </bzIntegration>
-      <energyParameterLimits ellow="-1.80000000" elup="1.00000000"/>
    </calculationSetup>
    <cell>
       <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="sym.xml"/> 

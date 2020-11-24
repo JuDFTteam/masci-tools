@@ -19,7 +19,6 @@
             <kPointCount count="   240" gamma="F"/>
          </altKPointSet>
       </bzIntegration>
-      <energyParameterLimits ellow="-2.80000000" elup="11.00000000"/>
    </calculationSetup>
    <cell>
       <symmetryFile filename="sym.out"/>

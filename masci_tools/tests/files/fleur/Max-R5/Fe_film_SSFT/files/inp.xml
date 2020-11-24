@@ -25,7 +25,6 @@
          </kPointList>
          </kPointLists>
       </bzIntegration>
-      <energyParameterLimits ellow="-.80000000" elup=".50000000"/>
    </calculationSetup>
    <cell>
       <symmetryOperations>
