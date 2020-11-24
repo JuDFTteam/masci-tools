@@ -161,57 +161,70 @@ def convert_xml_text(tagtext, possible_definitions, constants, conversion_warnin
     :param possible_types (list of dicts): What types it will try to convert to
     :param constants: dict, of constants defined in fleur input
     """
+
     if conversion_warnings is None:
         conversion_warnings = []
 
-    base_text = tagtext.strip()
-    split_text = tagtext.split(' ')
-    while '' in split_text:
-        split_text.remove('')
+    if not isinstance(tagtext, list):
+        tagtext = [tagtext]
 
-    text_definition = None
-    for definition in possible_definitions:
-        if definition['length'] == len(split_text):
-            text_definition = definition
+    converted_list = []
+    all_success = True
+    for text in tagtext:
 
-    if text_definition is None:
+        base_text = text.strip()
+        split_text = text.split(' ')
+        while '' in split_text:
+            split_text.remove('')
+
+        text_definition = None
         for definition in possible_definitions:
-            if definition['length'] == 'unbounded' or \
-               definition['length'] == 1:
+            if definition['length'] == len(split_text):
                 text_definition = definition
 
-    if text_definition is None:
-        conversion_warnings.append(f"Failed to convert '{tagtext}', no matching definition found ")
-        if suc_return:
-            return tagtext, False
-        else:
-            return tagtext
+        if text_definition is None:
+            for definition in possible_definitions:
+                if definition['length'] == 'unbounded' or \
+                   definition['length'] == 1:
+                    text_definition = definition
 
-    #Avoid splitting the text accidentally if there is no length restriction
-    if text_definition['length'] == 1:
-        split_text = [base_text]
+        if text_definition is None:
+            conversion_warnings.append(f"Failed to convert '{text}', no matching definition found ")
+            converted_list.append(text)
+            all_success = False
+            continue
 
-    success = True
-    converted_text = []
-    for value in split_text:
-        warnings = []
-        converted_value, suc = convert_xml_attribute(value,
-                                                     text_definition['type'],
-                                                     constants,
-                                                     conversion_warnings=warnings)
-        converted_text.append(converted_value)
-        if not suc:
-            success = False
-            for warning in warnings:
-                conversion_warnings.append(warning)
+        #Avoid splitting the text accidentally if there is no length restriction
+        if text_definition['length'] == 1:
+            split_text = [base_text]
 
-    if len(converted_text) == 1 and text_definition['length'] != 'unbounded':
-        converted_text = converted_text[0]
+        converted_text = []
+        for value in split_text:
+            warnings = []
+            converted_value, suc = convert_xml_attribute(value,
+                                                         text_definition['type'],
+                                                         constants,
+                                                         conversion_warnings=warnings)
+            converted_text.append(converted_value)
+            if not suc:
+                all_success = False
+                for warning in warnings:
+                    conversion_warnings.append(warning)
+
+
+        if len(converted_text) == 1 and text_definition['length'] != 'unbounded':
+            converted_text = converted_text[0]
+
+        converted_list.append(converted_text)
+
+    ret_value = converted_list
+    if len(converted_list) == 1:
+        ret_value = converted_list[0]
 
     if suc_return:
-        return converted_text, success
+        return ret_value, all_success
     else:
-        converted_text
+        ret_value
 
 
 def convert_to_float(value_string, conversion_warnings=None, suc_return=True):
