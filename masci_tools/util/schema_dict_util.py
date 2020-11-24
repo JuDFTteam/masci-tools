@@ -21,6 +21,19 @@ attribute from the right place in the given etree
 from masci_tools.util.xml.common_xml_util import eval_xpath, convert_xml_text, convert_xml_attribute
 
 def get_tag_xpath(schema_dict, name, contains=None, not_contains=None):
+    """
+    Tries to find a unique path from the schema_dict based on the given name of the tag
+    and additional further specifications
+
+    :param schema_dict: dict, containing all the path information and more
+    :param name: str, name of the tag
+    :param contains: str, this string has to be in the final path
+    :param not_contains: str, this string has to NOT be in the final path
+
+    :returns: str, xpath to the given tag
+
+    :raises ValueError: If no unique path could be found
+    """
 
     possible_lists = ['tag_paths']
 
@@ -61,7 +74,21 @@ def get_tag_xpath(schema_dict, name, contains=None, not_contains=None):
 
 
 def get_attrib_xpath(schema_dict, name, contains=None, not_contains=None, exclude=None):
+    """
+    Tries to find a unique path from the schema_dict based on the given name of the attribute
+    and additional further specifications
 
+    :param schema_dict: dict, containing all the path information and more
+    :param name: str, name of the attribute
+    :param contains: str, this string has to be in the final path
+    :param not_contains: str, this string has to NOT be in the final path
+    :param exclude: list of str, here specific types of attributes can be excluded
+                    valid values are: settable, settable_contains, other
+
+    :returns: str, xpath to the tag with the given attribute
+
+    :raises ValueError: If no unique path could be found
+    """
 
     possible_lists = ['settable_attribs', 'settable_contains_attribs', 'other_attribs']
     output = False
@@ -116,6 +143,23 @@ def evaluate_attribute(node,
                        exclude=None,
                        parser_info_out=None,
                        abspath=None):
+    """
+    Evaluates the value of the attribute based on the given name
+    and additional further specifications with the available type information
+
+    :param schema_dict: dict, containing all the path information and more
+    :param name: str, name of the attribute
+    :param constants: dict, contains the defined constants
+    :param contains: str, this string has to be in the final path
+    :param not_contains: str, this string has to NOT be in the final path
+    :param exclude: list of str, here specific types of attributes can be excluded
+                    valid values are: settable, settable_contains, other
+    :param parser_info_out: dict, with warnings, info, errors, ...
+    :param abspath: str, to append in front of the path
+
+    :returns: list or single value, converted in convert_xml_attribute
+    """
+
 
     if parser_info_out is None:
         parser_info_out = {'parser_warnings': []}
@@ -157,6 +201,20 @@ def evaluate_text(node,
                   not_contains=None,
                   parser_info_out=None,
                   abspath=None):
+    """
+    Evaluates the text of the tag based on the given name
+    and additional further specifications with the available type information
+
+    :param schema_dict: dict, containing all the path information and more
+    :param name: str, name of the tag
+    :param constants: dict, contains the defined constants
+    :param contains: str, this string has to be in the final path
+    :param not_contains: str, this string has to NOT be in the final path
+    :param parser_info_out: dict, with warnings, info, errors, ...
+    :param abspath: str, to append in front of the path
+
+    :returns: list or single value, converted in convert_xml_text
+    """
 
     if parser_info_out is None:
         parser_info_out = {'parser_warnings': []}
@@ -190,7 +248,20 @@ def evaluate_single_value_tag(node,
                               not_contains=None,
                               parser_info_out=None,
                               abspath=None):
+    """
+    Evaluates the value and unit attribute of the tag based on the given name
+    and additional further specifications with the available type information
 
+    :param schema_dict: dict, containing all the path information and more
+    :param name: str, name of the tag
+    :param constants: dict, contains the defined constants
+    :param contains: str, this string has to be in the final path
+    :param not_contains: str, this string has to NOT be in the final path
+    :param parser_info_out: dict, with warnings, info, errors, ...
+    :param abspath: str, to append in front of the path
+
+    :returns: value and unit, both converted in convert_xml_attribute
+    """
     if parser_info_out is None:
         parser_info_out = {'parser_warnings': []}
 
@@ -229,15 +300,39 @@ def evaluate_single_value_tag(node,
     return value_dict['value'], value_dict['units']
 
 
-def tag_exists(node, schema_dict, name, contains=None, parser_info_out=None, abspath=None):
+def tag_exists(node, schema_dict, name, contains=None, not_contains=None, parser_info_out=None, abspath=None):
+    """
+    Evaluates whether the tag exists in the xmltree based on the given name
+    and additional further specifications with the available type information
 
+    :param schema_dict: dict, containing all the path information and more
+    :param name: str, name of the tag
+    :param contains: str, this string has to be in the final path
+    :param not_contains: str, this string has to NOT be in the final path
+    :param parser_info_out: dict, with warnings, info, errors, ...
+    :param abspath: str, to append in front of the path
+
+    :returns: bool, True if any nodes with the path exist
+    """
     return get_number_of_nodes(
         node, schema_dict, name, contains=contains, parser_info_out=parser_info_out, abspath=abspath) != 0
 
 
-def get_number_of_nodes(node, schema_dict, name, contains=None, parser_info_out=None, abspath=None):
+def get_number_of_nodes(node, schema_dict, name, contains=None, not_contains=None, parser_info_out=None, abspath=None):
+    """
+    Evaluates the number of occurences of the tag in the xmltree based on the given name
+    and additional further specifications with the available type information
 
-    tag_xpath = get_tag_xpath(schema_dict, name, contains=contains)
+    :param schema_dict: dict, containing all the path information and more
+    :param name: str, name of the tag
+    :param contains: str, this string has to be in the final path
+    :param not_contains: str, this string has to NOT be in the final path
+    :param parser_info_out: dict, with warnings, info, errors, ...
+    :param abspath: str, to append in front of the path
+
+    :returns: bool, True if any nodes with the path exist
+    """
+    tag_xpath = get_tag_xpath(schema_dict, name, contains=contains, not_contains=not_contains)
 
     if abspath is not None:
         tag_xpath = f'{abspath}{tag_xpath}'
