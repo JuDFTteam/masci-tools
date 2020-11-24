@@ -38,18 +38,16 @@ def create_outschema_dict(path):
     #Add new functionality to this dictionary here
     schema_actions = {
         'group_tags': get_group_tags,
-        'tag_paths': get_tag_paths_outschema,
-        'iteration_paths': get_group_paths,
-        'attrib_paths': get_attrib_paths_outschema,
-        'iteration_attrib_paths': get_attrib_group_paths,
-        'tags_several': get_tags_several,
-        'tag_order': get_tags_order,
         'basic_types': get_basic_types,
         'attrib_types': extract_attribute_types,
         'simple_elements': get_basic_elements,
-        #'settable_attribs': get_settable_attributes,
-        #'settable_contains_attribs': get_settable_contains_attributes,
-        #'omitt_contained_tags': get_omittable_tags,
+        'tag_paths': get_tag_paths_outschema,
+        'iteration_paths': get_group_paths,
+        'settable_attribs': get_settable_attributes,
+        'settable_contains_attribs': get_settable_contains_attributes,
+        'other_attribs': get_other_attributes,
+        'iteration_attrib_paths': get_attrib_group_paths,
+        'tags_info': get_tag_info,
     }
 
     print(f'processing: {path}/FleurOutputSchema.xsd')

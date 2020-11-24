@@ -10,11 +10,10 @@
          <xsd:element maxOccurs="1" minOccurs="0" name="programVersion" type="ProgramVersionType"/>
          <xsd:element maxOccurs="1" minOccurs="0" name="parallelSetup" type="ParallelSetupType"/>
          <xsd:element maxOccurs="1" minOccurs="0" name="startDateAndTime" type="DateAndTimeType"/>
-         <!--The following element is defined in the FleurInputSchema!-->
          <xsd:element maxOccurs="1" minOccurs="0" name="fleurInput" type="FleurInputType"/>
          <xsd:element maxOccurs="1" minOccurs="0" name="numericalParameters" type="NumericalParametersType"/>
-         <xsd:element maxOccurs="1" minOccurs="0" name="startDensityCharges" type="ChargeDensityType"/>
          <xsd:element maxOccurs="1" minOccurs="0" name="scfLoop" type="OutSCFLoopType"/>
+         <xsd:element maxOccurs="1" minOccurs="0" name="ERROR" type="ErrorType"/>
          <xsd:element maxOccurs="1" minOccurs="0" name="endDateAndTime" type="DateAndTimeType"/>
       </xsd:all>
       <xsd:attribute name="fleurOutputVersion" type="FleurVersionType" use="required"/>
@@ -84,6 +83,10 @@
       <xsd:attribute name="zone" type="xsd:string" use="required"/>
    </xsd:complexType>
 
+   <xsd:complexType name="ErrorType">
+      <xsd:attribute name="Message" type="xsd:string" use="required"/>
+   </xsd:complexType>
+
    <xsd:complexType name="NumericalParametersType">
       <xsd:sequence>
          <xsd:element name="atomsInCell" type="AtomsInCellType"/>
@@ -145,52 +148,13 @@
 
    <xsd:complexType name="OutSCFLoopType">
       <xsd:sequence>
-         <xsd:element maxOccurs="1" minOccurs="0" name="readDensityCharges" type="ChargeDensityType"/>
          <xsd:element maxOccurs="unbounded" minOccurs="0" name="iteration" type="IterationType"/>
       </xsd:sequence>
    </xsd:complexType>
 
-   <xsd:complexType name="IterationType">
-      <xsd:sequence>
-         <xsd:choice>
-            <xsd:group ref="GeneralIterationType"/>
-            <xsd:element maxOccurs='unbounded' minOccurs="0" name="Forcetheorem_Loop_SSDISP" type="SSDISP_IterationType"/>
-            <xsd:element maxOccurs='unbounded' minOccurs="0" name="Forcetheorem_Loop_DMI" type="SSDISP_IterationType"/>
-            <xsd:element maxOccurs='unbounded' minOccurs="0" name="Forcetheorem_Loop_MAE" type="MAE_IterationType"/>
-            <xsd:element maxOccurs='unbounded' minOccurs="0" name="Forcetheorem_Loop_JIJ" type="MAE_IterationType"/>
-         </xsd:choice>
-         <xsd:choice>
-            <xsd:element maxOccurs="1" minOccurs="0" name="Forcetheorem_SSDISP" type="SSDISP_IterationSummaryType"/>
-         </xsd:choice>
-      </xsd:sequence>
-      <xsd:attribute name="numberForCurrentRun" type="xsd:integer" use="required"/>
-      <xsd:attribute name="overallNumber" type="xsd:integer" use="optional"/>
-   </xsd:complexType>
-
-   <xsd:complexType name="SSDISP_IterationType">
-      <xsd:group ref="GeneralIterationType"/>
-      <xsd:attribute name="Q-vec" type="xsd:integer" use="required"/>
-   </xsd:complexType>
-
-   <xsd:complexType name="MAE_IterationType">
-      <xsd:group ref="GeneralIterationType"/>
-      <xsd:attribute name="No" type="xsd:integer" use="required"/>
-   </xsd:complexType>
-
-   <xsd:complexType name="SSDISP_IterationSummaryType">
-      <xsd:sequence>
-         <xsd:element maxOccurs="unbounded" minOccurs="0" name="Entry" type="EntryType"/>
-      </xsd:sequence>
-      <xsd:attribute name="qvectors" type="xsd:integer" use="required"/>
-   </xsd:complexType>
-
-   <xsd:complexType name="EntryType">
-      <xsd:attribute name="q" type="xsd:integer" use="required"/>
-      <xsd:attribute name="ev-sum" type="xsd:double" use="required"/>
-   </xsd:complexType>
-
    <xsd:group name="GeneralIterationType">
       <xsd:sequence>
+         <!--These tags can occur in a iteration/Forcetheorem iteration/!-->
          <xsd:element maxOccurs="1" minOccurs="0" name="energyParameters" type="OutEnergyParameterType"/>
          <xsd:element maxOccurs="1" minOccurs="0" name="eigenvalues" type="EigenvaluesType"/>
          <xsd:element maxOccurs="1" minOccurs="0" name="bandgap" type="SingleValueType"/>
@@ -210,6 +174,41 @@
          <xsd:element maxOccurs="1" minOccurs="0" name="timing" type="TimingType"/>
       </xsd:sequence>
    </xsd:group>
+
+   <xsd:complexType name="IterationType">
+      <xsd:sequence>
+         <xsd:choice>
+            <xsd:group ref="GeneralIterationType"/>
+            <!--xsd:element maxOccurs="unbounded" minOccurs="0" name="Forcetheorem_Loop" type="Forcetheorem_Loop_Type"/!-->
+         </xsd:choice>
+         <!--xsd:choice>
+            <xsd:element maxOccurs="1" minOccurs="0" name="Forcetheorem_SSDISP" type="Forcetheorem_SSDISP_SummaryType"/>
+            <xsd:element maxOccurs="1" minOccurs="0" name="Forcetheorem_DMI" type="Forcetheorem_DMI_SummaryType"/>
+            <xsd:element maxOccurs="1" minOccurs="0" name="Forcetheorem_MAE" type="Forcetheorem_MAE_SummaryType"/>
+            <xsd:element maxOccurs="1" minOccurs="0" name="Forcetheorem_JIJ" type="Forcetheorem_JIJ_SummaryType"/>
+         </xsd:choice!-->
+      </xsd:sequence>
+      <xsd:attribute name="numberForCurrentRun" type="xsd:integer" use="required"/>
+      <xsd:attribute name="overallNumber" type="xsd:integer" use="optional"/>
+   </xsd:complexType>
+
+   <!--xsd:complexType name="Forcetheorem_LoopType">
+      <xsd:all>
+         <xsd:group ref="GeneralIterationType"/>
+      </xsd:all>
+      <xsd:attribute name="No" type="xsd:integer" use="required"/>
+      <xsd:attribute name="calculationType" type="ForceTheoremEnum" use="required">
+   </xsd:complexType>
+
+   <xsd:complexType name="Forcetheorem_DMI_SummaryType">
+      <xsd:sequence>
+         <xsd:element maxOccurs="unbounded" minOccurs="0" name="Entry" type="Entry_DMI_Type"/>
+         <xsd:element maxOccurs="unbounded" minOccurs="0" name="allAtoms" type="Entry_DMIALLATOMS_Type">
+         <xsd:element maxOccurs="unbounded" minOccurs="0" name="atom" type="Entry_DMIATOMTYPE_Type">
+      </xsd:sequence>
+      <xsd:attribute name="Angles" type="xsd:integer" use="required"/>
+      <xsd:attribute name="qpoints" type="xsd:integer" use="required"/>
+   <xsd:complexType!-->
 
    <xsd:complexType name="OutEnergyParameterType">
       <xsd:sequence maxOccurs="unbounded">
@@ -271,11 +270,18 @@
    </xsd:complexType>
 
    <xsd:complexType name="ChargeDensityType">
-      <xsd:sequence>
+      <xsd:sequence maxOccurs="unbounded">
          <xsd:element maxOccurs="unbounded" minOccurs="0" name="mtCharges" type="MTChargesType"/>
          <xsd:element maxOccurs="unbounded" minOccurs="0" name="spinDependentCharge" type="SpinDependentChargeType"/>
          <xsd:element maxOccurs="1" minOccurs="0" name="totalCharge" type="SingleValueType"/>
-         <!--xsd:element maxOccurs="1" minOccurs="0" name="fixedCharges" type="ChargeDensityType"/!-->
+         <xsd:element maxOccurs="1" minOccurs="0" name="fixedCharges" type="FixedChargeDensityType"/>
+      </xsd:sequence>
+   </xsd:complexType>
+
+   <xsd:complexType name="FixedChargeDensityType">
+      <xsd:sequence maxOccurs="unbounded">
+         <xsd:element maxOccurs="unbounded" minOccurs="0" name="spinDependentCharge" type="SpinDependentChargeType"/>
+         <xsd:element maxOccurs="1" minOccurs="0" name="totalCharge" type="SingleValueType"/>
       </xsd:sequence>
    </xsd:complexType>
 
@@ -367,10 +373,15 @@
       <xsd:attribute name="units" type="xsd:string" use="optional"/>
    </xsd:complexType>
 
-   <xsd:complexType name="LDAUDensityMatrixType">
-      <xsd:sequence>
-         <xsd:element maxOccurs="unbounded" minOccurs="0" name="densityMatrixFor" type="DensityMatrixForType"/>
-      </xsd:sequence>
+   <xsd:complexType name="ForceTotalType">
+      <xsd:attribute name="atomType" type="xsd:integer" use="required"/>
+      <xsd:attribute name="x" type="xsd:double" use="required"/>
+      <xsd:attribute name="y" type="xsd:double" use="required"/>
+      <xsd:attribute name="z" type="xsd:double" use="required"/>
+      <xsd:attribute name="F_x" type="xsd:double" use="required"/>
+      <xsd:attribute name="F_y" type="xsd:double" use="required"/>
+      <xsd:attribute name="F_z" type="xsd:double" use="required"/>
+      <xsd:attribute name="units" type="xsd:string" use="optional"/>
    </xsd:complexType>
 
    <xsd:complexType name="OnSiteExchangeSplittingType">
@@ -386,6 +397,12 @@
       <xsd:attribute name="unit" type="xsd:string" use="required"/>
    </xsd:complexType>
 
+   <xsd:complexType name="LDAUDensityMatrixType">
+      <xsd:sequence>
+         <xsd:element maxOccurs="unbounded" minOccurs="0" name="densityMatrixFor" type="DensityMatrixForType"/>
+      </xsd:sequence>
+   </xsd:complexType>
+
    <xsd:complexType name="DensityMatrixForType">
       <xsd:simpleContent>
          <xsd:extension base="StringVecType">
@@ -399,19 +416,8 @@
       </xsd:simpleContent>
    </xsd:complexType>
 
-   <xsd:complexType name="ForceTotalType">
-      <xsd:attribute name="atomType" type="xsd:integer" use="required"/>
-      <xsd:attribute name="x" type="xsd:double" use="required"/>
-      <xsd:attribute name="y" type="xsd:double" use="required"/>
-      <xsd:attribute name="z" type="xsd:double" use="required"/>
-      <xsd:attribute name="F_x" type="xsd:double" use="required"/>
-      <xsd:attribute name="F_y" type="xsd:double" use="required"/>
-      <xsd:attribute name="F_z" type="xsd:double" use="required"/>
-      <xsd:attribute name="units" type="xsd:string" use="optional"/>
-   </xsd:complexType>
-
    <xsd:complexType name="TotalEnergyType">
-      <xsd:sequence>
+      <xsd:sequence maxOccurs="unbounded">
          <xsd:element maxOccurs="1" minOccurs="0" name="sumOfEigenvalues" type="SumOfEigenvaluesType"/>
          <xsd:element maxOccurs="1" minOccurs="0" name="densityCoulombPotentialIntegral" type="SingleValueType"/>
          <xsd:element maxOccurs="1" minOccurs="0" name="densityEffectivePotentialIntegral" type="SingleValueType"/>
@@ -447,7 +453,7 @@
    </xsd:complexType>
 
    <xsd:complexType name="DensityConvergenceType">
-      <xsd:sequence>
+      <xsd:sequence maxOccurs="unbounded">
          <xsd:element maxOccurs="unbounded" minOccurs="0" name="chargeDensity" type="DensityDistanceType"/>
          <xsd:element maxOccurs="1" minOccurs="0" name="overallChargeDensity" type="DensityDistanceType"/>
          <xsd:element maxOccurs="1" minOccurs="0" name="spinDensity" type="DensityDistanceType"/>
@@ -495,5 +501,14 @@
       <xsd:attribute name="value" type="xsd:double" use="required"/>
       <xsd:attribute name="units" type="xsd:string" use="optional"/>
    </xsd:complexType>
+
+   <xsd:simpleType name="ForceTheoremEnum">
+      <xsd:restriction base="xsd:string">
+         <xsd:enumeration value="SSDISP"/>
+         <xsd:enumeration value="MAE"/>
+         <xsd:enumeration value="JIJ"/>
+         <xsd:enumeration value="DMI"/>
+      </xsd:restriction>
+   </xsd:simpleType>
 
 </xsd:schema>

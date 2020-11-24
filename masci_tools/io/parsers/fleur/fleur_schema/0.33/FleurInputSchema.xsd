@@ -12,8 +12,8 @@
          <xsd:element name="atomSpecies" type="AtomSpeciesType"/>
          <xsd:element name="atomGroups" type="AtomGroupsType"/>
          <xsd:element maxOccurs="1" minOccurs="0" name="output" type="OutputType"/>
-	 <xsd:element maxOccurs="1" minOccurs="0" name="forceTheorem" type="ForcetheoremType"/>
-	 <xsd:element maxOccurs="1" minOccurs="0" name="relaxation" type="RelaxationType"/>
+	       <xsd:element maxOccurs="1" minOccurs="0" name="forceTheorem" type="ForcetheoremType"/>
+	       <xsd:element maxOccurs="1" minOccurs="0" name="relaxation" type="RelaxationType"/>
       </xsd:all>
       <xsd:attribute name="fleurInputVersion" type="FleurVersionType" use="required"/>
    </xsd:complexType>
@@ -53,14 +53,9 @@
          <xsd:element maxOccurs="1" minOccurs="0" name="rdmft" type="RDMFTType"/>
          <xsd:element maxOccurs="1" minOccurs="0" name="spinSpiralQPointMesh" type="SpinSpiralQPointMeshType"/>
          <xsd:element maxOccurs="1" minOccurs="0" name="fields" type="FieldType"/>
-         <xsd:element maxOccurs="1" minOccurs="0" name="energyParameterLimits" type="EnergyParameterLimitsType"/>
       </xsd:all>
    </xsd:complexType>
 
-   <xsd:complexType name="EnergyParameterLimitsType">
-      <xsd:attribute name="ellow" type="FleurDouble"/>
-      <xsd:attribute name="elup" type="FleurDouble"/>
-   </xsd:complexType>
 
    <xsd:complexType name="FieldType">
       <xsd:sequence>

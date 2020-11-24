@@ -58,8 +58,8 @@ schema_dict = {
         'edgeType': ['string'],
         'eig66': ['switch'],
         'element': ['string'],
-        'ellow': ['float_expression', 'float'],
-        'elup': ['float_expression', 'float'],
+        'ellow': ['float'],
+        'elup': ['float'],
         'energy': ['float_expression'],
         'energyLo': ['float'],
         'energyUp': ['float'],
@@ -712,6 +712,8 @@ schema_dict = {
         'eV': '/fleurInput/calculationSetup/fields',
         'edgeIndices': '/fleurInput/output/coreSpectrum/edgeIndices',
         'edgeType': '/fleurInput/output/coreSpectrum',
+        'ellow': '/fleurInput/calculationSetup/greensFunction/realAxis',
+        'elup': '/fleurInput/calculationSetup/greensFunction/realAxis',
         'energyLo': '/fleurInput/output/magneticCircularDichroism',
         'energyUp': '/fleurInput/output/magneticCircularDichroism',
         'eonly': '/fleurInput/output/specialOutput',
@@ -873,10 +875,6 @@ schema_dict = {
         'correlation':
         ['/fleurInput/calculationSetup/xcFunctional/LibXCID', '/fleurInput/calculationSetup/xcFunctional/LibXCName'],
         'eig66': ['/fleurInput/calculationSetup/expertModes', '/fleurInput/output'],
-        'ellow':
-        ['/fleurInput/calculationSetup/energyParameterLimits', '/fleurInput/calculationSetup/greensFunction/realAxis'],
-        'elup':
-        ['/fleurInput/calculationSetup/energyParameterLimits', '/fleurInput/calculationSetup/greensFunction/realAxis'],
         'etot_correlation':
         ['/fleurInput/calculationSetup/xcFunctional/LibXCID', '/fleurInput/calculationSetup/xcFunctional/LibXCName'],
         'etot_exchange':
@@ -1442,17 +1440,17 @@ schema_dict = {
             'attribs': [],
             'optional': [
                 'prodBasis', 'soc', 'oneDParams', 'expertModes', 'geometryOptimization', 'ldaU', 'ldaHIA',
-                'greensFunction', 'rdmft', 'spinSpiralQPointMesh', 'fields', 'energyParameterLimits'
+                'greensFunction', 'rdmft', 'spinSpiralQPointMesh', 'fields'
             ],
             'order': [
                 'cutoffs', 'scfLoop', 'coreElectrons', 'xcFunctional', 'magnetism', 'prodBasis', 'soc', 'oneDParams',
                 'expertModes', 'geometryOptimization', 'ldaU', 'ldaHIA', 'greensFunction', 'rdmft',
-                'spinSpiralQPointMesh', 'fields', 'energyParameterLimits'
+                'spinSpiralQPointMesh', 'fields'
             ],
             'several': [],
             'simple': [
                 'cutoffs', 'scfLoop', 'coreElectrons', 'magnetism', 'prodBasis', 'soc', 'oneDParams', 'expertModes',
-                'geometryOptimization', 'ldaU', 'ldaHIA', 'rdmft', 'spinSpiralQPointMesh', 'energyParameterLimits'
+                'geometryOptimization', 'ldaU', 'ldaHIA', 'rdmft', 'spinSpiralQPointMesh'
             ],
             'text': []
         },
@@ -1466,14 +1464,6 @@ schema_dict = {
         },
         '/fleurInput/calculationSetup/cutoffs': {
             'attribs': ['Kmax', 'Gmax', 'GmaxXC', 'numbands'],
-            'optional': [],
-            'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
-        },
-        '/fleurInput/calculationSetup/energyParameterLimits': {
-            'attribs': ['ellow', 'elup'],
             'optional': [],
             'order': [],
             'several': [],
@@ -2155,8 +2145,6 @@ schema_dict = {
         '/fleurInput/output/coreSpectrum/edgeIndices',
         'electronConfig':
         '/fleurInput/atomSpecies/species/electronConfig',
-        'energyParameterLimits':
-        '/fleurInput/calculationSetup/energyParameterLimits',
         'energyParameters':
         ['/fleurInput/atomSpecies/species/energyParameters', '/fleurInput/atomGroups/atomGroup/energyParameters'],
         'exc': ['/fleurInput/atomSpecies/species/ldaHIA/exc', '/fleurInput/atomGroups/atomGroup/ldaHIA/exc'],
