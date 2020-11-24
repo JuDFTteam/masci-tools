@@ -280,522 +280,277 @@ schema_dict = {
         }
     },
     'group_tags': ['iteration'],
-    'iteration_attrib_paths': {
-        'Delta':
-        '/onSiteExchangeSplitting/excSplit',
-        'F_x':
-        '/totalForcesOnRepresentativeAtoms/forceTotal',
-        'F_y':
-        '/totalForcesOnRepresentativeAtoms/forceTotal',
-        'F_z':
-        '/totalForcesOnRepresentativeAtoms/forceTotal',
-        'J':
-        '/ldaUDensityMatrix/densityMatrixFor',
-        'U':
-        '/ldaUDensityMatrix/densityMatrixFor',
+    'iteration_other_attribs': {
+        'Delta': ['./onSiteExchangeSplitting/excSplit'],
+        'F_x': ['./totalForcesOnRepresentativeAtoms/forceTotal'],
+        'F_y': ['./totalForcesOnRepresentativeAtoms/forceTotal'],
+        'F_z': ['./totalForcesOnRepresentativeAtoms/forceTotal'],
+        'J': ['./ldaUDensityMatrix/densityMatrixFor'],
+        'U': ['./ldaUDensityMatrix/densityMatrixFor'],
         'atomType': [
-            '/energyParameters/atomicEP', '/energyParameters/heAtomicEP', '/energyParameters/loAtomicEP',
-            '/energyParameters/heloAtomicEP', '/valenceDensity/mtCharges/mtCharge',
-            '/allElectronCharges/mtCharges/mtCharge', '/valenceDensity/mtCharges/mtJcharge',
-            '/allElectronCharges/mtCharges/mtJcharge', '/coreStates', '/magneticMomentsInMTSpheres/magneticMoment',
-            '/orbitalMagneticMomentsInMTSpheres/orbMagMoment', '/totalForcesOnRepresentativeAtoms/forceTotal',
-            '/onSiteExchangeSplitting/excSplit', '/ldaUDensityMatrix/densityMatrixFor',
-            '/totalEnergy/atomTypeDependentContributions'
+            './energyParameters/atomicEP', './energyParameters/heAtomicEP', './energyParameters/loAtomicEP',
+            './energyParameters/heloAtomicEP', './valenceDensity/mtCharges/mtCharge',
+            './allElectronCharges/mtCharges/mtCharge', './valenceDensity/mtCharges/mtJcharge',
+            './allElectronCharges/mtCharges/mtJcharge', './coreStates', './magneticMomentsInMTSpheres/magneticMoment',
+            './orbitalMagneticMomentsInMTSpheres/orbMagMoment', './totalForcesOnRepresentativeAtoms/forceTotal',
+            './onSiteExchangeSplitting/excSplit', './ldaUDensityMatrix/densityMatrixFor',
+            './totalEnergy/atomTypeDependentContributions'
         ],
-        'atomicNumber':
-        '/coreStates',
+        'atomicNumber': ['./coreStates'],
         'branch': [
-            '/energyParameters/atomicEP', '/energyParameters/heAtomicEP', '/energyParameters/loAtomicEP',
-            '/energyParameters/heloAtomicEP'
+            './energyParameters/atomicEP', './energyParameters/heAtomicEP', './energyParameters/loAtomicEP',
+            './energyParameters/heloAtomicEP'
         ],
         'branchHighest': [
-            '/energyParameters/atomicEP', '/energyParameters/heAtomicEP', '/energyParameters/loAtomicEP',
-            '/energyParameters/heloAtomicEP'
+            './energyParameters/atomicEP', './energyParameters/heAtomicEP', './energyParameters/loAtomicEP',
+            './energyParameters/heloAtomicEP'
         ],
         'branchLowest': [
-            '/energyParameters/atomicEP', '/energyParameters/heAtomicEP', '/energyParameters/loAtomicEP',
-            '/energyParameters/heloAtomicEP'
+            './energyParameters/atomicEP', './energyParameters/heAtomicEP', './energyParameters/loAtomicEP',
+            './energyParameters/heloAtomicEP'
         ],
-        'comment':
-        '/totalEnergy',
         'd': [
-            '/valenceDensity/mtCharges/mtCharge', '/allElectronCharges/mtCharges/mtCharge',
-            '/valenceDensity/mtCharges/mtJcharge/lowJ', '/allElectronCharges/mtCharges/mtJcharge/lowJ',
-            '/valenceDensity/mtCharges/mtJcharge/highJ', '/allElectronCharges/mtCharges/mtJcharge/highJ'
+            './valenceDensity/mtCharges/mtCharge', './allElectronCharges/mtCharges/mtCharge',
+            './valenceDensity/mtCharges/mtJcharge/lowJ', './allElectronCharges/mtCharges/mtJcharge/lowJ',
+            './valenceDensity/mtCharges/mtJcharge/highJ', './allElectronCharges/mtCharges/mtJcharge/highJ'
         ],
+        'densityMatrixFor': ['./ldaUDensityMatrix/densityMatrixFor'],
         'distance': [
-            '/ldaUDensityMatrixConvergence/distance', '/densityConvergence/chargeDensity',
-            '/densityConvergence/overallChargeDensity', '/densityConvergence/spinDensity'
+            './ldaUDensityMatrixConvergence/distance', './densityConvergence/chargeDensity',
+            './densityConvergence/overallChargeDensity', './densityConvergence/spinDensity'
         ],
-        'eigValSum':
-        '/coreStates',
-        'energy':
-        '/coreStates/state',
+        'eigValSum': ['./coreStates'],
+        'eigenvaluesAt': ['./eigenvalues/eigenvaluesAt'],
+        'energy': ['./coreStates/state'],
         'f': [
-            '/valenceDensity/mtCharges/mtCharge', '/allElectronCharges/mtCharges/mtCharge',
-            '/valenceDensity/mtCharges/mtJcharge/lowJ', '/allElectronCharges/mtCharges/mtJcharge/lowJ',
-            '/valenceDensity/mtCharges/mtJcharge/highJ', '/allElectronCharges/mtCharges/mtJcharge/highJ'
+            './valenceDensity/mtCharges/mtCharge', './allElectronCharges/mtCharges/mtCharge',
+            './valenceDensity/mtCharges/mtJcharge/lowJ', './allElectronCharges/mtCharges/mtJcharge/lowJ',
+            './valenceDensity/mtCharges/mtJcharge/highJ', './allElectronCharges/mtCharges/mtJcharge/highJ'
         ],
-        'ikpt':
-        '/eigenvalues/eigenvaluesAt',
+        'ikpt': ['./eigenvalues/eigenvaluesAt'],
         'interstitial': [
-            '/valenceDensity/spinDependentCharge', '/allElectronCharges/spinDependentCharge',
-            '/valenceDensity/fixedCharges/spinDependentCharge', '/allElectronCharges/fixedCharges/spinDependentCharge'
+            './valenceDensity/spinDependentCharge', './allElectronCharges/spinDependentCharge',
+            './valenceDensity/fixedCharges/spinDependentCharge', './allElectronCharges/fixedCharges/spinDependentCharge'
         ],
-        'j':
-        '/coreStates/state',
-        'k_x':
-        '/eigenvalues/eigenvaluesAt',
-        'k_y':
-        '/eigenvalues/eigenvaluesAt',
-        'k_z':
-        '/eigenvalues/eigenvaluesAt',
-        'kinEnergy':
-        '/coreStates',
-        'l': ['/coreStates/state', '/onSiteExchangeSplitting/excSplit', '/ldaUDensityMatrix/densityMatrixFor'],
-        'lostElectrons':
-        '/coreStates',
-        'moment': ['/magneticMomentsInMTSpheres/magneticMoment', '/orbitalMagneticMomentsInMTSpheres/orbMagMoment'],
+        'j': ['./coreStates/state'],
+        'k_x': ['./eigenvalues/eigenvaluesAt'],
+        'k_y': ['./eigenvalues/eigenvaluesAt'],
+        'k_z': ['./eigenvalues/eigenvaluesAt'],
+        'kinEnergy': ['./coreStates'],
+        'l': ['./coreStates/state', './onSiteExchangeSplitting/excSplit', './ldaUDensityMatrix/densityMatrixFor'],
+        'lostElectrons': ['./coreStates'],
+        'moment': ['./magneticMomentsInMTSpheres/magneticMoment', './orbitalMagneticMomentsInMTSpheres/orbMagMoment'],
         'mtSpheres': [
-            '/valenceDensity/spinDependentCharge', '/allElectronCharges/spinDependentCharge',
-            '/valenceDensity/fixedCharges/spinDependentCharge', '/allElectronCharges/fixedCharges/spinDependentCharge'
+            './valenceDensity/spinDependentCharge', './allElectronCharges/spinDependentCharge',
+            './valenceDensity/fixedCharges/spinDependentCharge', './allElectronCharges/fixedCharges/spinDependentCharge'
         ],
-        'n':
-        '/coreStates/state',
-        'name':
-        '/timing/timer',
+        'n': ['./coreStates/state'],
+        'name': ['./timing/timer'],
         'p': [
-            '/valenceDensity/mtCharges/mtCharge', '/allElectronCharges/mtCharges/mtCharge',
-            '/valenceDensity/mtCharges/mtJcharge/lowJ', '/allElectronCharges/mtCharges/mtJcharge/lowJ',
-            '/valenceDensity/mtCharges/mtJcharge/highJ', '/allElectronCharges/mtCharges/mtJcharge/highJ'
+            './valenceDensity/mtCharges/mtCharge', './allElectronCharges/mtCharges/mtCharge',
+            './valenceDensity/mtCharges/mtJcharge/lowJ', './allElectronCharges/mtCharges/mtJcharge/lowJ',
+            './valenceDensity/mtCharges/mtJcharge/highJ', './allElectronCharges/mtCharges/mtJcharge/highJ'
         ],
-        's': ['/valenceDensity/mtCharges/mtCharge', '/allElectronCharges/mtCharges/mtCharge'],
+        's': ['./valenceDensity/mtCharges/mtCharge', './allElectronCharges/mtCharges/mtCharge'],
         'spin': [
-            '/energyParameters/atomicEP', '/energyParameters/heAtomicEP', '/energyParameters/loAtomicEP',
-            '/energyParameters/heloAtomicEP', '/energyParameters/vacuumEP', '/eigenvalues/eigenvaluesAt',
-            '/valenceDensity/mtCharges', '/allElectronCharges/mtCharges', '/valenceDensity/spinDependentCharge',
-            '/allElectronCharges/spinDependentCharge', '/valenceDensity/fixedCharges/spinDependentCharge',
-            '/allElectronCharges/fixedCharges/spinDependentCharge', '/coreStates',
-            '/ldaUDensityMatrix/densityMatrixFor', '/ldaUDensityMatrixConvergence/distance',
-            '/densityConvergence/chargeDensity', '/densityConvergence/overallChargeDensity',
-            '/densityConvergence/spinDensity'
+            './energyParameters/atomicEP', './energyParameters/heAtomicEP', './energyParameters/loAtomicEP',
+            './energyParameters/heloAtomicEP', './energyParameters/vacuumEP', './eigenvalues/eigenvaluesAt',
+            './valenceDensity/mtCharges', './allElectronCharges/mtCharges', './valenceDensity/spinDependentCharge',
+            './allElectronCharges/spinDependentCharge', './valenceDensity/fixedCharges/spinDependentCharge',
+            './allElectronCharges/fixedCharges/spinDependentCharge', './coreStates',
+            './ldaUDensityMatrix/densityMatrixFor', './ldaUDensityMatrixConvergence/distance',
+            './densityConvergence/chargeDensity', './densityConvergence/overallChargeDensity',
+            './densityConvergence/spinDensity'
         ],
         'spinDownCharge':
-        ['/magneticMomentsInMTSpheres/magneticMoment', '/orbitalMagneticMomentsInMTSpheres/orbMagMoment'],
+        ['./magneticMomentsInMTSpheres/magneticMoment', './orbitalMagneticMomentsInMTSpheres/orbMagMoment'],
         'spinUpCharge':
-        ['/magneticMomentsInMTSpheres/magneticMoment', '/orbitalMagneticMomentsInMTSpheres/orbMagMoment'],
+        ['./magneticMomentsInMTSpheres/magneticMoment', './orbitalMagneticMomentsInMTSpheres/orbMagMoment'],
         'total': [
-            '/valenceDensity/mtCharges/mtCharge', '/allElectronCharges/mtCharges/mtCharge',
-            '/valenceDensity/spinDependentCharge', '/allElectronCharges/spinDependentCharge',
-            '/valenceDensity/fixedCharges/spinDependentCharge', '/allElectronCharges/fixedCharges/spinDependentCharge'
+            './valenceDensity/mtCharges/mtCharge', './allElectronCharges/mtCharges/mtCharge',
+            './valenceDensity/spinDependentCharge', './allElectronCharges/spinDependentCharge',
+            './valenceDensity/fixedCharges/spinDependentCharge', './allElectronCharges/fixedCharges/spinDependentCharge'
         ],
-        'uIndex':
-        '/ldaUDensityMatrix/densityMatrixFor',
-        'unit':
-        '/onSiteExchangeSplitting/excSplit',
+        'uIndex': ['./ldaUDensityMatrix/densityMatrixFor'],
+        'unit': ['./onSiteExchangeSplitting/excSplit'],
         'units': [
-            '/energyParameters', '/bandgap', '/sumValenceSingleParticleEnergies', '/FermiEnergy',
-            '/valenceDensity/totalCharge', '/allElectronCharges/totalCharge',
-            '/valenceDensity/fixedCharges/totalCharge', '/allElectronCharges/fixedCharges/totalCharge',
-            '/totalEnergy/densityCoulombPotentialIntegral', '/totalEnergy/densityEffectivePotentialIntegral',
-            '/totalEnergy/chargeDenXCDenIntegral', '/totalEnergy/FockExchangeEnergyValence',
-            '/totalEnergy/FockExchangeEnergyCore', '/totalEnergy/dftUCorrection', '/totalEnergy/tkbTimesEntropy',
-            '/totalEnergy/freeEnergy', '/totalEnergy/extrapolationTo0K', '/totalEnergy/sumOfEigenvalues/coreElectrons',
-            '/totalEnergy/sumOfEigenvalues/valenceElectrons',
-            '/totalEnergy/atomTypeDependentContributions/electronNucleiInteractionDifferentMTs',
-            '/totalEnergy/atomTypeDependentContributions/MadelungTerm', '/magneticMomentsInMTSpheres',
-            '/orbitalMagneticMomentsInMTSpheres', '/totalForcesOnRepresentativeAtoms',
-            '/totalForcesOnRepresentativeAtoms/forceTotal', '/totalEnergy', '/totalEnergy/sumOfEigenvalues',
-            '/densityConvergence', '/densityConvergence/chargeDensity', '/densityConvergence/overallChargeDensity',
-            '/densityConvergence/spinDensity', '/timing', '/timing/timer'
+            './valenceDensity/totalCharge', './allElectronCharges/totalCharge',
+            './valenceDensity/fixedCharges/totalCharge', './allElectronCharges/fixedCharges/totalCharge',
+            './totalEnergy/densityCoulombPotentialIntegral', './totalEnergy/densityEffectivePotentialIntegral',
+            './totalEnergy/chargeDenXCDenIntegral', './totalEnergy/FockExchangeEnergyValence',
+            './totalEnergy/FockExchangeEnergyCore', './totalEnergy/dftUCorrection', './totalEnergy/tkbTimesEntropy',
+            './totalEnergy/freeEnergy', './totalEnergy/extrapolationTo0K',
+            './totalEnergy/sumOfEigenvalues/coreElectrons', './totalEnergy/sumOfEigenvalues/valenceElectrons',
+            './totalEnergy/atomTypeDependentContributions/electronNucleiInteractionDifferentMTs',
+            './totalEnergy/atomTypeDependentContributions/MadelungTerm',
+            './totalForcesOnRepresentativeAtoms/forceTotal', './totalEnergy/sumOfEigenvalues',
+            './densityConvergence/chargeDensity', './densityConvergence/overallChargeDensity',
+            './densityConvergence/spinDensity', './timing/timer'
         ],
-        'vacuum':
-        '/energyParameters/vacuumEP',
+        'vacuum': ['./energyParameters/vacuumEP'],
         'vacuum1': [
-            '/valenceDensity/spinDependentCharge', '/allElectronCharges/spinDependentCharge',
-            '/valenceDensity/fixedCharges/spinDependentCharge', '/allElectronCharges/fixedCharges/spinDependentCharge'
+            './valenceDensity/spinDependentCharge', './allElectronCharges/spinDependentCharge',
+            './valenceDensity/fixedCharges/spinDependentCharge', './allElectronCharges/fixedCharges/spinDependentCharge'
         ],
         'vacuum2': [
-            '/valenceDensity/spinDependentCharge', '/allElectronCharges/spinDependentCharge',
-            '/valenceDensity/fixedCharges/spinDependentCharge', '/allElectronCharges/fixedCharges/spinDependentCharge'
+            './valenceDensity/spinDependentCharge', './allElectronCharges/spinDependentCharge',
+            './valenceDensity/fixedCharges/spinDependentCharge', './allElectronCharges/fixedCharges/spinDependentCharge'
         ],
         'value': [
-            '/energyParameters/atomicEP', '/energyParameters/heAtomicEP', '/energyParameters/loAtomicEP',
-            '/energyParameters/heloAtomicEP', '/energyParameters/vacuumEP', '/bandgap',
-            '/sumValenceSingleParticleEnergies', '/FermiEnergy', '/valenceDensity/totalCharge',
-            '/allElectronCharges/totalCharge', '/valenceDensity/fixedCharges/totalCharge',
-            '/allElectronCharges/fixedCharges/totalCharge', '/totalEnergy/densityCoulombPotentialIntegral',
-            '/totalEnergy/densityEffectivePotentialIntegral', '/totalEnergy/chargeDenXCDenIntegral',
-            '/totalEnergy/FockExchangeEnergyValence', '/totalEnergy/FockExchangeEnergyCore',
-            '/totalEnergy/dftUCorrection', '/totalEnergy/tkbTimesEntropy', '/totalEnergy/freeEnergy',
-            '/totalEnergy/extrapolationTo0K', '/totalEnergy/sumOfEigenvalues/coreElectrons',
-            '/totalEnergy/sumOfEigenvalues/valenceElectrons',
-            '/totalEnergy/atomTypeDependentContributions/electronNucleiInteractionDifferentMTs',
-            '/totalEnergy/atomTypeDependentContributions/MadelungTerm', '/totalEnergy', '/totalEnergy/sumOfEigenvalues',
-            '/timing/timer'
+            './energyParameters/atomicEP', './energyParameters/heAtomicEP', './energyParameters/loAtomicEP',
+            './energyParameters/heloAtomicEP', './energyParameters/vacuumEP', './valenceDensity/totalCharge',
+            './allElectronCharges/totalCharge', './valenceDensity/fixedCharges/totalCharge',
+            './allElectronCharges/fixedCharges/totalCharge', './totalEnergy/densityCoulombPotentialIntegral',
+            './totalEnergy/densityEffectivePotentialIntegral', './totalEnergy/chargeDenXCDenIntegral',
+            './totalEnergy/FockExchangeEnergyValence', './totalEnergy/FockExchangeEnergyCore',
+            './totalEnergy/dftUCorrection', './totalEnergy/tkbTimesEntropy', './totalEnergy/freeEnergy',
+            './totalEnergy/extrapolationTo0K', './totalEnergy/sumOfEigenvalues/coreElectrons',
+            './totalEnergy/sumOfEigenvalues/valenceElectrons',
+            './totalEnergy/atomTypeDependentContributions/electronNucleiInteractionDifferentMTs',
+            './totalEnergy/atomTypeDependentContributions/MadelungTerm', './totalEnergy/sumOfEigenvalues',
+            './timing/timer'
         ],
-        'vzIR':
-        '/energyParameters/vacuumEP',
-        'vzInf':
-        '/energyParameters/vacuumEP',
-        'weight':
-        '/coreStates/state',
-        'x':
-        '/totalForcesOnRepresentativeAtoms/forceTotal',
-        'y':
-        '/totalForcesOnRepresentativeAtoms/forceTotal',
-        'z':
-        '/totalForcesOnRepresentativeAtoms/forceTotal'
+        'vzIR': ['./energyParameters/vacuumEP'],
+        'vzInf': ['./energyParameters/vacuumEP'],
+        'weight': ['./coreStates/state'],
+        'x': ['./totalForcesOnRepresentativeAtoms/forceTotal'],
+        'y': ['./totalForcesOnRepresentativeAtoms/forceTotal'],
+        'z': ['./totalForcesOnRepresentativeAtoms/forceTotal']
     },
-    'iteration_paths': {
+    'iteration_settable_attribs': {
+        'comment': './totalEnergy'
+    },
+    'iteration_settable_contains_attribs': {
+        'units': [
+            './energyParameters', './bandgap', './sumValenceSingleParticleEnergies', './FermiEnergy',
+            './magneticMomentsInMTSpheres', './orbitalMagneticMomentsInMTSpheres', './totalForcesOnRepresentativeAtoms',
+            './totalEnergy', './densityConvergence', './timing'
+        ],
+        'value': ['./bandgap', './sumValenceSingleParticleEnergies', './FermiEnergy', './totalEnergy']
+    },
+    'iteration_tag_paths': {
         'FermiEnergy':
-        '/FermiEnergy',
+        './FermiEnergy',
         'FockExchangeEnergyCore':
-        '/totalEnergy/FockExchangeEnergyCore',
+        './totalEnergy/FockExchangeEnergyCore',
         'FockExchangeEnergyValence':
-        '/totalEnergy/FockExchangeEnergyValence',
+        './totalEnergy/FockExchangeEnergyValence',
         'MadelungTerm':
-        '/totalEnergy/atomTypeDependentContributions/MadelungTerm',
+        './totalEnergy/atomTypeDependentContributions/MadelungTerm',
         'allElectronCharges':
-        '/allElectronCharges',
+        './allElectronCharges',
         'atomTypeDependentContributions':
-        '/totalEnergy/atomTypeDependentContributions',
+        './totalEnergy/atomTypeDependentContributions',
         'atomicEP':
-        '/energyParameters/atomicEP',
+        './energyParameters/atomicEP',
         'bandgap':
-        '/bandgap',
+        './bandgap',
         'chargeDenXCDenIntegral':
-        '/totalEnergy/chargeDenXCDenIntegral',
+        './totalEnergy/chargeDenXCDenIntegral',
         'chargeDensity':
-        '/densityConvergence/chargeDensity',
+        './densityConvergence/chargeDensity',
         'compositeTimer':
-        '/timing/compositeTimer',
+        './timing/compositeTimer',
         'coreElectrons':
-        '/totalEnergy/sumOfEigenvalues/coreElectrons',
+        './totalEnergy/sumOfEigenvalues/coreElectrons',
         'coreStates':
-        '/coreStates',
+        './coreStates',
         'densityConvergence':
-        '/densityConvergence',
+        './densityConvergence',
         'densityCoulombPotentialIntegral':
-        '/totalEnergy/densityCoulombPotentialIntegral',
+        './totalEnergy/densityCoulombPotentialIntegral',
         'densityEffectivePotentialIntegral':
-        '/totalEnergy/densityEffectivePotentialIntegral',
+        './totalEnergy/densityEffectivePotentialIntegral',
         'densityMatrixFor':
-        '/ldaUDensityMatrix/densityMatrixFor',
+        './ldaUDensityMatrix/densityMatrixFor',
         'dftUCorrection':
-        '/totalEnergy/dftUCorrection',
+        './totalEnergy/dftUCorrection',
         'distance':
-        '/ldaUDensityMatrixConvergence/distance',
+        './ldaUDensityMatrixConvergence/distance',
         'eigenvalues':
-        '/eigenvalues',
+        './eigenvalues',
         'eigenvaluesAt':
-        '/eigenvalues/eigenvaluesAt',
+        './eigenvalues/eigenvaluesAt',
         'electronNucleiInteractionDifferentMTs':
-        '/totalEnergy/atomTypeDependentContributions/electronNucleiInteractionDifferentMTs',
+        './totalEnergy/atomTypeDependentContributions/electronNucleiInteractionDifferentMTs',
         'energyParameters':
-        '/energyParameters',
+        './energyParameters',
         'excSplit':
-        '/onSiteExchangeSplitting/excSplit',
+        './onSiteExchangeSplitting/excSplit',
         'extrapolationTo0K':
-        '/totalEnergy/extrapolationTo0K',
-        'fixedCharges': ['/valenceDensity/fixedCharges', '/allElectronCharges/fixedCharges'],
+        './totalEnergy/extrapolationTo0K',
+        'fixedCharges': ['./valenceDensity/fixedCharges', './allElectronCharges/fixedCharges'],
         'forceTotal':
-        '/totalForcesOnRepresentativeAtoms/forceTotal',
+        './totalForcesOnRepresentativeAtoms/forceTotal',
         'freeEnergy':
-        '/totalEnergy/freeEnergy',
+        './totalEnergy/freeEnergy',
         'heAtomicEP':
-        '/energyParameters/heAtomicEP',
+        './energyParameters/heAtomicEP',
         'heloAtomicEP':
-        '/energyParameters/heloAtomicEP',
-        'highJ': ['/valenceDensity/mtCharges/mtJcharge/highJ', '/allElectronCharges/mtCharges/mtJcharge/highJ'],
+        './energyParameters/heloAtomicEP',
+        'highJ': ['./valenceDensity/mtCharges/mtJcharge/highJ', './allElectronCharges/mtCharges/mtJcharge/highJ'],
         'ldaUDensityMatrix':
-        '/ldaUDensityMatrix',
+        './ldaUDensityMatrix',
         'ldaUDensityMatrixConvergence':
-        '/ldaUDensityMatrixConvergence',
+        './ldaUDensityMatrixConvergence',
         'loAtomicEP':
-        '/energyParameters/loAtomicEP',
-        'lowJ': ['/valenceDensity/mtCharges/mtJcharge/lowJ', '/allElectronCharges/mtCharges/mtJcharge/lowJ'],
+        './energyParameters/loAtomicEP',
+        'lowJ': ['./valenceDensity/mtCharges/mtJcharge/lowJ', './allElectronCharges/mtCharges/mtJcharge/lowJ'],
         'magneticMoment':
-        '/magneticMomentsInMTSpheres/magneticMoment',
+        './magneticMomentsInMTSpheres/magneticMoment',
         'magneticMomentsInMTSpheres':
-        '/magneticMomentsInMTSpheres',
-        'mtCharge': ['/valenceDensity/mtCharges/mtCharge', '/allElectronCharges/mtCharges/mtCharge'],
-        'mtCharges': ['/valenceDensity/mtCharges', '/allElectronCharges/mtCharges'],
-        'mtJcharge': ['/valenceDensity/mtCharges/mtJcharge', '/allElectronCharges/mtCharges/mtJcharge'],
+        './magneticMomentsInMTSpheres',
+        'mtCharge': ['./valenceDensity/mtCharges/mtCharge', './allElectronCharges/mtCharges/mtCharge'],
+        'mtCharges': ['./valenceDensity/mtCharges', './allElectronCharges/mtCharges'],
+        'mtJcharge': ['./valenceDensity/mtCharges/mtJcharge', './allElectronCharges/mtCharges/mtJcharge'],
         'onSiteExchangeSplitting':
-        '/onSiteExchangeSplitting',
+        './onSiteExchangeSplitting',
         'orbMagMoment':
-        '/orbitalMagneticMomentsInMTSpheres/orbMagMoment',
+        './orbitalMagneticMomentsInMTSpheres/orbMagMoment',
         'orbitalMagneticMomentsInMTSpheres':
-        '/orbitalMagneticMomentsInMTSpheres',
+        './orbitalMagneticMomentsInMTSpheres',
         'overallChargeDensity':
-        '/densityConvergence/overallChargeDensity',
+        './densityConvergence/overallChargeDensity',
         'spinDensity':
-        '/densityConvergence/spinDensity',
+        './densityConvergence/spinDensity',
         'spinDependentCharge': [
-            '/valenceDensity/spinDependentCharge', '/allElectronCharges/spinDependentCharge',
-            '/valenceDensity/fixedCharges/spinDependentCharge', '/allElectronCharges/fixedCharges/spinDependentCharge'
+            './valenceDensity/spinDependentCharge', './allElectronCharges/spinDependentCharge',
+            './valenceDensity/fixedCharges/spinDependentCharge', './allElectronCharges/fixedCharges/spinDependentCharge'
         ],
         'state':
-        '/coreStates/state',
+        './coreStates/state',
         'sumOfEigenvalues':
-        '/totalEnergy/sumOfEigenvalues',
+        './totalEnergy/sumOfEigenvalues',
         'sumValenceSingleParticleEnergies':
-        '/sumValenceSingleParticleEnergies',
+        './sumValenceSingleParticleEnergies',
         'timer':
-        '/timing/timer',
+        './timing/timer',
         'timing':
-        '/timing',
+        './timing',
         'tkbTimesEntropy':
-        '/totalEnergy/tkbTimesEntropy',
+        './totalEnergy/tkbTimesEntropy',
         'totalCharge': [
-            '/valenceDensity/totalCharge', '/allElectronCharges/totalCharge',
-            '/valenceDensity/fixedCharges/totalCharge', '/allElectronCharges/fixedCharges/totalCharge'
+            './valenceDensity/totalCharge', './allElectronCharges/totalCharge',
+            './valenceDensity/fixedCharges/totalCharge', './allElectronCharges/fixedCharges/totalCharge'
         ],
         'totalEnergy':
-        '/totalEnergy',
+        './totalEnergy',
         'totalForcesOnRepresentativeAtoms':
-        '/totalForcesOnRepresentativeAtoms',
+        './totalForcesOnRepresentativeAtoms',
         'vacuumEP':
-        '/energyParameters/vacuumEP',
+        './energyParameters/vacuumEP',
         'valenceDensity':
-        '/valenceDensity',
+        './valenceDensity',
         'valenceElectrons':
-        '/totalEnergy/sumOfEigenvalues/valenceElectrons'
+        './totalEnergy/sumOfEigenvalues/valenceElectrons'
     },
     'other_attribs': {
-        'Delta': ['/fleurOutput/scfLoop/iteration/onSiteExchangeSplitting/excSplit'],
-        'F_x': ['/fleurOutput/scfLoop/iteration/totalForcesOnRepresentativeAtoms/forceTotal'],
-        'F_y': ['/fleurOutput/scfLoop/iteration/totalForcesOnRepresentativeAtoms/forceTotal'],
-        'F_z': ['/fleurOutput/scfLoop/iteration/totalForcesOnRepresentativeAtoms/forceTotal'],
-        'J': ['/fleurOutput/scfLoop/iteration/ldaUDensityMatrix/densityMatrixFor'],
-        'U': ['/fleurOutput/scfLoop/iteration/ldaUDensityMatrix/densityMatrixFor'],
-        'atomType': [
-            '/fleurOutput/numericalParameters/volumes/mtVolume',
-            '/fleurOutput/scfLoop/iteration/energyParameters/atomicEP',
-            '/fleurOutput/scfLoop/iteration/energyParameters/heAtomicEP',
-            '/fleurOutput/scfLoop/iteration/energyParameters/loAtomicEP',
-            '/fleurOutput/scfLoop/iteration/energyParameters/heloAtomicEP',
-            '/fleurOutput/scfLoop/iteration/valenceDensity/mtCharges/mtCharge',
-            '/fleurOutput/scfLoop/iteration/allElectronCharges/mtCharges/mtCharge',
-            '/fleurOutput/scfLoop/iteration/valenceDensity/mtCharges/mtJcharge',
-            '/fleurOutput/scfLoop/iteration/allElectronCharges/mtCharges/mtJcharge',
-            '/fleurOutput/scfLoop/iteration/coreStates',
-            '/fleurOutput/scfLoop/iteration/magneticMomentsInMTSpheres/magneticMoment',
-            '/fleurOutput/scfLoop/iteration/orbitalMagneticMomentsInMTSpheres/orbMagMoment',
-            '/fleurOutput/scfLoop/iteration/totalForcesOnRepresentativeAtoms/forceTotal',
-            '/fleurOutput/scfLoop/iteration/onSiteExchangeSplitting/excSplit',
-            '/fleurOutput/scfLoop/iteration/ldaUDensityMatrix/densityMatrixFor',
-            '/fleurOutput/scfLoop/iteration/totalEnergy/atomTypeDependentContributions'
-        ],
-        'atomicNumber': ['/fleurOutput/scfLoop/iteration/coreStates'],
-        'branch': [
-            '/fleurOutput/scfLoop/iteration/energyParameters/atomicEP',
-            '/fleurOutput/scfLoop/iteration/energyParameters/heAtomicEP',
-            '/fleurOutput/scfLoop/iteration/energyParameters/loAtomicEP',
-            '/fleurOutput/scfLoop/iteration/energyParameters/heloAtomicEP'
-        ],
-        'branchHighest': [
-            '/fleurOutput/scfLoop/iteration/energyParameters/atomicEP',
-            '/fleurOutput/scfLoop/iteration/energyParameters/heAtomicEP',
-            '/fleurOutput/scfLoop/iteration/energyParameters/loAtomicEP',
-            '/fleurOutput/scfLoop/iteration/energyParameters/heloAtomicEP'
-        ],
-        'branchLowest': [
-            '/fleurOutput/scfLoop/iteration/energyParameters/atomicEP',
-            '/fleurOutput/scfLoop/iteration/energyParameters/heAtomicEP',
-            '/fleurOutput/scfLoop/iteration/energyParameters/loAtomicEP',
-            '/fleurOutput/scfLoop/iteration/energyParameters/heloAtomicEP'
-        ],
-        'comment': ['/fleurOutput/scfLoop/iteration/totalEnergy'],
-        'd': [
-            '/fleurOutput/scfLoop/iteration/valenceDensity/mtCharges/mtCharge',
-            '/fleurOutput/scfLoop/iteration/allElectronCharges/mtCharges/mtCharge',
-            '/fleurOutput/scfLoop/iteration/valenceDensity/mtCharges/mtJcharge/lowJ',
-            '/fleurOutput/scfLoop/iteration/allElectronCharges/mtCharges/mtJcharge/lowJ',
-            '/fleurOutput/scfLoop/iteration/valenceDensity/mtCharges/mtJcharge/highJ',
-            '/fleurOutput/scfLoop/iteration/allElectronCharges/mtCharges/mtJcharge/highJ'
-        ],
-        'densityMatrixFor': ['/fleurOutput/scfLoop/iteration/ldaUDensityMatrix/densityMatrixFor'],
-        'distance': [
-            '/fleurOutput/scfLoop/iteration/ldaUDensityMatrixConvergence/distance',
-            '/fleurOutput/scfLoop/iteration/densityConvergence/chargeDensity',
-            '/fleurOutput/scfLoop/iteration/densityConvergence/overallChargeDensity',
-            '/fleurOutput/scfLoop/iteration/densityConvergence/spinDensity'
-        ],
-        'eigValSum': ['/fleurOutput/scfLoop/iteration/coreStates'],
-        'eigenvaluesAt': ['/fleurOutput/scfLoop/iteration/eigenvalues/eigenvaluesAt'],
-        'energy': ['/fleurOutput/scfLoop/iteration/coreStates/state'],
-        'f': [
-            '/fleurOutput/scfLoop/iteration/valenceDensity/mtCharges/mtCharge',
-            '/fleurOutput/scfLoop/iteration/allElectronCharges/mtCharges/mtCharge',
-            '/fleurOutput/scfLoop/iteration/valenceDensity/mtCharges/mtJcharge/lowJ',
-            '/fleurOutput/scfLoop/iteration/allElectronCharges/mtCharges/mtJcharge/lowJ',
-            '/fleurOutput/scfLoop/iteration/valenceDensity/mtCharges/mtJcharge/highJ',
-            '/fleurOutput/scfLoop/iteration/allElectronCharges/mtCharges/mtJcharge/highJ'
-        ],
-        'ikpt': ['/fleurOutput/scfLoop/iteration/eigenvalues/eigenvaluesAt'],
-        'interstitial': [
-            '/fleurOutput/scfLoop/iteration/valenceDensity/spinDependentCharge',
-            '/fleurOutput/scfLoop/iteration/allElectronCharges/spinDependentCharge',
-            '/fleurOutput/scfLoop/iteration/valenceDensity/fixedCharges/spinDependentCharge',
-            '/fleurOutput/scfLoop/iteration/allElectronCharges/fixedCharges/spinDependentCharge'
-        ],
-        'j': ['/fleurOutput/scfLoop/iteration/coreStates/state'],
+        'atomType': ['/fleurOutput/numericalParameters/volumes/mtVolume'],
         'kPoint': ['/fleurOutput/numericalParameters/kPointList/kPoint'],
-        'k_x': ['/fleurOutput/scfLoop/iteration/eigenvalues/eigenvaluesAt'],
-        'k_y': ['/fleurOutput/scfLoop/iteration/eigenvalues/eigenvaluesAt'],
-        'k_z': ['/fleurOutput/scfLoop/iteration/eigenvalues/eigenvaluesAt'],
-        'kinEnergy': ['/fleurOutput/scfLoop/iteration/coreStates'],
-        'l': [
-            '/fleurOutput/scfLoop/iteration/coreStates/state',
-            '/fleurOutput/scfLoop/iteration/onSiteExchangeSplitting/excSplit',
-            '/fleurOutput/scfLoop/iteration/ldaUDensityMatrix/densityMatrixFor'
-        ],
-        'lostElectrons': ['/fleurOutput/scfLoop/iteration/coreStates'],
-        'moment': [
-            '/fleurOutput/scfLoop/iteration/magneticMomentsInMTSpheres/magneticMoment',
-            '/fleurOutput/scfLoop/iteration/orbitalMagneticMomentsInMTSpheres/orbMagMoment'
-        ],
         'mtRadius': ['/fleurOutput/numericalParameters/volumes/mtVolume'],
-        'mtSpheres': [
-            '/fleurOutput/scfLoop/iteration/valenceDensity/spinDependentCharge',
-            '/fleurOutput/scfLoop/iteration/allElectronCharges/spinDependentCharge',
-            '/fleurOutput/scfLoop/iteration/valenceDensity/fixedCharges/spinDependentCharge',
-            '/fleurOutput/scfLoop/iteration/allElectronCharges/fixedCharges/spinDependentCharge'
-        ],
         'mtVolume': ['/fleurOutput/numericalParameters/volumes/mtVolume'],
-        'n': ['/fleurOutput/scfLoop/iteration/coreStates/state'],
-        'name': ['/fleurOutput/scfLoop/iteration/timing/timer'],
         'numberForCurrentRun': ['/fleurOutput/scfLoop/iteration'],
-        'overallNumber': ['/fleurOutput/scfLoop/iteration'],
-        'p': [
-            '/fleurOutput/scfLoop/iteration/valenceDensity/mtCharges/mtCharge',
-            '/fleurOutput/scfLoop/iteration/allElectronCharges/mtCharges/mtCharge',
-            '/fleurOutput/scfLoop/iteration/valenceDensity/mtCharges/mtJcharge/lowJ',
-            '/fleurOutput/scfLoop/iteration/allElectronCharges/mtCharges/mtJcharge/lowJ',
-            '/fleurOutput/scfLoop/iteration/valenceDensity/mtCharges/mtJcharge/highJ',
-            '/fleurOutput/scfLoop/iteration/allElectronCharges/mtCharges/mtJcharge/highJ'
-        ],
-        's': [
-            '/fleurOutput/scfLoop/iteration/valenceDensity/mtCharges/mtCharge',
-            '/fleurOutput/scfLoop/iteration/allElectronCharges/mtCharges/mtCharge'
-        ],
-        'spin': [
-            '/fleurOutput/scfLoop/iteration/energyParameters/atomicEP',
-            '/fleurOutput/scfLoop/iteration/energyParameters/heAtomicEP',
-            '/fleurOutput/scfLoop/iteration/energyParameters/loAtomicEP',
-            '/fleurOutput/scfLoop/iteration/energyParameters/heloAtomicEP',
-            '/fleurOutput/scfLoop/iteration/energyParameters/vacuumEP',
-            '/fleurOutput/scfLoop/iteration/eigenvalues/eigenvaluesAt',
-            '/fleurOutput/scfLoop/iteration/valenceDensity/mtCharges',
-            '/fleurOutput/scfLoop/iteration/allElectronCharges/mtCharges',
-            '/fleurOutput/scfLoop/iteration/valenceDensity/spinDependentCharge',
-            '/fleurOutput/scfLoop/iteration/allElectronCharges/spinDependentCharge',
-            '/fleurOutput/scfLoop/iteration/valenceDensity/fixedCharges/spinDependentCharge',
-            '/fleurOutput/scfLoop/iteration/allElectronCharges/fixedCharges/spinDependentCharge',
-            '/fleurOutput/scfLoop/iteration/coreStates',
-            '/fleurOutput/scfLoop/iteration/ldaUDensityMatrix/densityMatrixFor',
-            '/fleurOutput/scfLoop/iteration/ldaUDensityMatrixConvergence/distance',
-            '/fleurOutput/scfLoop/iteration/densityConvergence/chargeDensity',
-            '/fleurOutput/scfLoop/iteration/densityConvergence/overallChargeDensity',
-            '/fleurOutput/scfLoop/iteration/densityConvergence/spinDensity'
-        ],
-        'spinDownCharge': [
-            '/fleurOutput/scfLoop/iteration/magneticMomentsInMTSpheres/magneticMoment',
-            '/fleurOutput/scfLoop/iteration/orbitalMagneticMomentsInMTSpheres/orbMagMoment'
-        ],
-        'spinUpCharge': [
-            '/fleurOutput/scfLoop/iteration/magneticMomentsInMTSpheres/magneticMoment',
-            '/fleurOutput/scfLoop/iteration/orbitalMagneticMomentsInMTSpheres/orbMagMoment'
-        ],
-        'total': [
-            '/fleurOutput/scfLoop/iteration/valenceDensity/mtCharges/mtCharge',
-            '/fleurOutput/scfLoop/iteration/allElectronCharges/mtCharges/mtCharge',
-            '/fleurOutput/scfLoop/iteration/valenceDensity/spinDependentCharge',
-            '/fleurOutput/scfLoop/iteration/allElectronCharges/spinDependentCharge',
-            '/fleurOutput/scfLoop/iteration/valenceDensity/fixedCharges/spinDependentCharge',
-            '/fleurOutput/scfLoop/iteration/allElectronCharges/fixedCharges/spinDependentCharge'
-        ],
-        'uIndex': ['/fleurOutput/scfLoop/iteration/ldaUDensityMatrix/densityMatrixFor'],
-        'unit': ['/fleurOutput/scfLoop/iteration/onSiteExchangeSplitting/excSplit'],
-        'units': [
-            '/fleurOutput/scfLoop/iteration/energyParameters', '/fleurOutput/scfLoop/iteration/bandgap',
-            '/fleurOutput/scfLoop/iteration/sumValenceSingleParticleEnergies',
-            '/fleurOutput/scfLoop/iteration/FermiEnergy', '/fleurOutput/scfLoop/iteration/valenceDensity/totalCharge',
-            '/fleurOutput/scfLoop/iteration/allElectronCharges/totalCharge',
-            '/fleurOutput/scfLoop/iteration/valenceDensity/fixedCharges/totalCharge',
-            '/fleurOutput/scfLoop/iteration/allElectronCharges/fixedCharges/totalCharge',
-            '/fleurOutput/scfLoop/iteration/totalEnergy/densityCoulombPotentialIntegral',
-            '/fleurOutput/scfLoop/iteration/totalEnergy/densityEffectivePotentialIntegral',
-            '/fleurOutput/scfLoop/iteration/totalEnergy/chargeDenXCDenIntegral',
-            '/fleurOutput/scfLoop/iteration/totalEnergy/FockExchangeEnergyValence',
-            '/fleurOutput/scfLoop/iteration/totalEnergy/FockExchangeEnergyCore',
-            '/fleurOutput/scfLoop/iteration/totalEnergy/dftUCorrection',
-            '/fleurOutput/scfLoop/iteration/totalEnergy/tkbTimesEntropy',
-            '/fleurOutput/scfLoop/iteration/totalEnergy/freeEnergy',
-            '/fleurOutput/scfLoop/iteration/totalEnergy/extrapolationTo0K',
-            '/fleurOutput/scfLoop/iteration/totalEnergy/sumOfEigenvalues/coreElectrons',
-            '/fleurOutput/scfLoop/iteration/totalEnergy/sumOfEigenvalues/valenceElectrons',
-            '/fleurOutput/scfLoop/iteration/totalEnergy/atomTypeDependentContributions/electronNucleiInteractionDifferentMTs',
-            '/fleurOutput/scfLoop/iteration/totalEnergy/atomTypeDependentContributions/MadelungTerm',
-            '/fleurOutput/scfLoop/iteration/magneticMomentsInMTSpheres',
-            '/fleurOutput/scfLoop/iteration/orbitalMagneticMomentsInMTSpheres',
-            '/fleurOutput/scfLoop/iteration/totalForcesOnRepresentativeAtoms',
-            '/fleurOutput/scfLoop/iteration/totalForcesOnRepresentativeAtoms/forceTotal',
-            '/fleurOutput/scfLoop/iteration/totalEnergy', '/fleurOutput/scfLoop/iteration/totalEnergy/sumOfEigenvalues',
-            '/fleurOutput/scfLoop/iteration/densityConvergence',
-            '/fleurOutput/scfLoop/iteration/densityConvergence/chargeDensity',
-            '/fleurOutput/scfLoop/iteration/densityConvergence/overallChargeDensity',
-            '/fleurOutput/scfLoop/iteration/densityConvergence/spinDensity', '/fleurOutput/scfLoop/iteration/timing',
-            '/fleurOutput/scfLoop/iteration/timing/timer'
-        ],
-        'vacuum': ['/fleurOutput/scfLoop/iteration/energyParameters/vacuumEP'],
-        'vacuum1': [
-            '/fleurOutput/scfLoop/iteration/valenceDensity/spinDependentCharge',
-            '/fleurOutput/scfLoop/iteration/allElectronCharges/spinDependentCharge',
-            '/fleurOutput/scfLoop/iteration/valenceDensity/fixedCharges/spinDependentCharge',
-            '/fleurOutput/scfLoop/iteration/allElectronCharges/fixedCharges/spinDependentCharge'
-        ],
-        'vacuum2': [
-            '/fleurOutput/scfLoop/iteration/valenceDensity/spinDependentCharge',
-            '/fleurOutput/scfLoop/iteration/allElectronCharges/spinDependentCharge',
-            '/fleurOutput/scfLoop/iteration/valenceDensity/fixedCharges/spinDependentCharge',
-            '/fleurOutput/scfLoop/iteration/allElectronCharges/fixedCharges/spinDependentCharge'
-        ],
-        'value': [
-            '/fleurOutput/scfLoop/iteration/energyParameters/atomicEP',
-            '/fleurOutput/scfLoop/iteration/energyParameters/heAtomicEP',
-            '/fleurOutput/scfLoop/iteration/energyParameters/loAtomicEP',
-            '/fleurOutput/scfLoop/iteration/energyParameters/heloAtomicEP',
-            '/fleurOutput/scfLoop/iteration/energyParameters/vacuumEP', '/fleurOutput/scfLoop/iteration/bandgap',
-            '/fleurOutput/scfLoop/iteration/sumValenceSingleParticleEnergies',
-            '/fleurOutput/scfLoop/iteration/FermiEnergy', '/fleurOutput/scfLoop/iteration/valenceDensity/totalCharge',
-            '/fleurOutput/scfLoop/iteration/allElectronCharges/totalCharge',
-            '/fleurOutput/scfLoop/iteration/valenceDensity/fixedCharges/totalCharge',
-            '/fleurOutput/scfLoop/iteration/allElectronCharges/fixedCharges/totalCharge',
-            '/fleurOutput/scfLoop/iteration/totalEnergy/densityCoulombPotentialIntegral',
-            '/fleurOutput/scfLoop/iteration/totalEnergy/densityEffectivePotentialIntegral',
-            '/fleurOutput/scfLoop/iteration/totalEnergy/chargeDenXCDenIntegral',
-            '/fleurOutput/scfLoop/iteration/totalEnergy/FockExchangeEnergyValence',
-            '/fleurOutput/scfLoop/iteration/totalEnergy/FockExchangeEnergyCore',
-            '/fleurOutput/scfLoop/iteration/totalEnergy/dftUCorrection',
-            '/fleurOutput/scfLoop/iteration/totalEnergy/tkbTimesEntropy',
-            '/fleurOutput/scfLoop/iteration/totalEnergy/freeEnergy',
-            '/fleurOutput/scfLoop/iteration/totalEnergy/extrapolationTo0K',
-            '/fleurOutput/scfLoop/iteration/totalEnergy/sumOfEigenvalues/coreElectrons',
-            '/fleurOutput/scfLoop/iteration/totalEnergy/sumOfEigenvalues/valenceElectrons',
-            '/fleurOutput/scfLoop/iteration/totalEnergy/atomTypeDependentContributions/electronNucleiInteractionDifferentMTs',
-            '/fleurOutput/scfLoop/iteration/totalEnergy/atomTypeDependentContributions/MadelungTerm',
-            '/fleurOutput/scfLoop/iteration/totalEnergy', '/fleurOutput/scfLoop/iteration/totalEnergy/sumOfEigenvalues',
-            '/fleurOutput/scfLoop/iteration/timing/timer'
-        ],
-        'vzIR': ['/fleurOutput/scfLoop/iteration/energyParameters/vacuumEP'],
-        'vzInf': ['/fleurOutput/scfLoop/iteration/energyParameters/vacuumEP'],
-        'weight': ['/fleurOutput/scfLoop/iteration/coreStates/state'],
-        'x': ['/fleurOutput/scfLoop/iteration/totalForcesOnRepresentativeAtoms/forceTotal'],
-        'y': ['/fleurOutput/scfLoop/iteration/totalForcesOnRepresentativeAtoms/forceTotal'],
-        'z': ['/fleurOutput/scfLoop/iteration/totalForcesOnRepresentativeAtoms/forceTotal']
+        'overallNumber': ['/fleurOutput/scfLoop/iteration']
     },
     'settable_attribs': {
         'Message': '/fleurOutput/ERROR',

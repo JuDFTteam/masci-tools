@@ -288,7 +288,7 @@ def get_xpath(xmlschema,
             if stop_group:
                 continue
             if group_root:
-                return f'/{currentTag}'
+                return f'./{currentTag}'
             possible_paths_group = get_xpath(xmlschema,
                                              namespaces,
                                              currentTag,
@@ -644,114 +644,22 @@ def get_tag_paths(xmlschema, namespaces, **kwargs):
     :return: possible paths of all tags in a dictionary, if multiple
              paths are possible a list is inserted for the tag
     """
+
+    stop_group = False
+    if 'stop_group' in kwargs:
+        stop_group = kwargs['stop_group']
+
+    group_root = False
+    if 'group_root' in kwargs:
+        group_root = kwargs['group_root']
+
     possible_tags = xmlschema.xpath('//xsd:element/@name', namespaces=namespaces)
     tag_paths = {}
     for tag in possible_tags:
-        paths = get_xpath(xmlschema, namespaces, tag)
+        paths = get_xpath(xmlschema, namespaces, tag, stop_group=stop_group, group_root=group_root)
         if paths is not None:
             tag_paths[tag] = paths
     return tag_paths
-
-
-def get_tag_paths_outschema(xmlschema, namespaces, **kwargs):
-    """
-    Determine simple xpaths to all possible tags.
-    Excludes path going through a group element (iteration groups)
-
-    :param xmlschema: xmltree representing the schema
-    :param namespaces: dictionary with the defined namespaces
-
-    :return: possible paths of all tags in a dictionary, if multiple
-             paths are possible a list is inserted for the tag
-    """
-    possible_tags = xmlschema.xpath('//xsd:element/@name', namespaces=namespaces)
-    tag_paths = {}
-    for tag in possible_tags:
-        paths = get_xpath(xmlschema, namespaces, tag, stop_group=True)
-        if paths is not None:
-            tag_paths[tag] = paths
-    return tag_paths
-
-
-def get_group_paths(xmlschema, namespaces, **kwargs):
-    """
-    Determine simple xpaths to all possible tags.
-    Only includes path going through a group element (iteration groups)
-    and stops, when a group element is encountered
-
-    :param xmlschema: xmltree representing the schema
-    :param namespaces: dictionary with the defined namespaces
-
-    :return: possible paths of all tags in a dictionary, if multiple
-             paths are possible a list is inserted for the tag
-    """
-    possible_tags = xmlschema.xpath('//xsd:element/@name', namespaces=namespaces)
-    tag_paths = {}
-    for tag in possible_tags:
-        paths = get_xpath(xmlschema, namespaces, tag, group_root=True)
-        if paths is not None:
-            tag_paths[tag] = paths
-    return tag_paths
-
-
-def get_attrib_paths_outschema(xmlschema, namespaces, **kwargs):
-    """
-    Determine simple xpaths to all possible attributes.
-    Excludes path going through a group element (iteration groups)
-
-    :param xmlschema: xmltree representing the schema
-    :param namespaces: dictionary with the defined namespaces
-
-    :return: possible paths of all tags in a dictionary, if multiple
-             paths are possible a list is inserted for the tag
-    """
-    attrib_paths = {}
-    possible_attrib = xmlschema.xpath('//xsd:attribute/@name', namespaces=namespaces)
-    for attrib in possible_attrib:
-        paths = get_attrib_xpath(xmlschema, namespaces, attrib, stop_group=True)
-        if paths is not None:
-            attrib_paths[attrib] = paths
-    return attrib_paths
-
-
-def get_attrib_group_paths(xmlschema, namespaces, **kwargs):
-    """
-    Determine simple xpaths to all possible tags.
-    Only includes path going through a group element (iteration groups)
-    and stops, when a group element is encountered
-
-    :param xmlschema: xmltree representing the schema
-    :param namespaces: dictionary with the defined namespaces
-
-    :return: possible paths of all tags in a dictionary, if multiple
-             paths are possible a list is inserted for the tag
-    """
-    attrib_paths = {}
-    possible_attrib = xmlschema.xpath('//xsd:attribute/@name', namespaces=namespaces)
-    for attrib in possible_attrib:
-        paths = get_attrib_xpath(xmlschema, namespaces, attrib, group_root=True)
-        if paths is not None:
-            attrib_paths[attrib] = paths
-    return attrib_paths
-
-
-def get_attrib_paths(xmlschema, namespaces, **kwargs):
-    """
-    Determine simple xpaths to all possible tags
-
-    :param xmlschema: xmltree representing the schema
-    :param namespaces: dictionary with the defined namespaces
-
-    :return: possible paths of all tags in a dictionary, if multiple
-             paths are possible a list is inserted for the tag
-    """
-    attrib_paths = {}
-    possible_attrib = xmlschema.xpath('//xsd:attribute/@name', namespaces=namespaces)
-    for attrib in possible_attrib:
-        paths = get_attrib_xpath(xmlschema, namespaces, attrib)
-        if paths is not None:
-            attrib_paths[attrib] = paths
-    return attrib_paths
 
 
 def get_tags_order(xmlschema, namespaces, **kwargs):
@@ -791,15 +699,33 @@ def get_settable_attributes(xmlschema, namespaces, **kwargs):
 
     :return: dictionary with all settable attributes and the corresponding path to the tag
     """
+    stop_group = False
+    if 'stop_group' in kwargs:
+        stop_group = kwargs['stop_group']
+
+    group_root = False
+    if 'group_root' in kwargs:
+        group_root = kwargs['group_root']
+
     settable = {}
     possible_attrib = xmlschema.xpath('//xsd:attribute/@name', namespaces=namespaces)
     for attrib in possible_attrib:
-        path = get_attrib_xpath(xmlschema, namespaces, attrib, stop_non_unique=True)
+        path = get_attrib_xpath(xmlschema,
+                                namespaces,
+                                attrib,
+                                stop_non_unique=True,
+                                stop_group=stop_group,
+                                group_root=group_root)
         if path is not None and not isinstance(path, list):
             settable[attrib] = path.replace(f'/@{attrib}', '')
 
     for attrib, attrib_dict in kwargs['simple_elements'].items():
-        path = get_xpath(xmlschema, namespaces, attrib, stop_non_unique=True)
+        path = get_xpath(xmlschema,
+                         namespaces,
+                         attrib,
+                         stop_non_unique=True,
+                         stop_group=stop_group,
+                         group_root=group_root)
         if path is not None:
             if not isinstance(path, list):
                 settable[attrib] = path.replace(f'/@{attrib}', '')
@@ -817,21 +743,44 @@ def get_settable_contains_attributes(xmlschema, namespaces, **kwargs):
 
     :return: dictionary with all attributes and the corresponding list of paths to the tag
     """
+    stop_group = False
+    if 'stop_group' in kwargs:
+        stop_group = kwargs['stop_group']
+
+    group_root = False
+    if 'group_root' in kwargs:
+        group_root = kwargs['group_root']
+
+    settable_key = 'settable_attribs'
+    if 'iteration' in kwargs:
+        if kwargs['iteration']:
+            settable_key = 'iteration_settable_attribs'
+
     settable = {}
     possible_attrib = xmlschema.xpath('//xsd:attribute/@name', namespaces=namespaces)
     for attrib in possible_attrib:
-        path = get_attrib_xpath(xmlschema, namespaces, attrib, stop_non_unique=True)
-        if path is not None and attrib not in kwargs['settable_attribs']:
+        path = get_attrib_xpath(xmlschema,
+                                namespaces,
+                                attrib,
+                                stop_non_unique=True,
+                                stop_group=stop_group,
+                                group_root=group_root)
+        if path is not None and attrib not in kwargs[settable_key]:
             if not isinstance(path, list):
                 path = [path]
             settable[attrib] = [x.replace(f'/@{attrib}', '') for x in path]
 
     for attrib, attrib_dict in kwargs['simple_elements'].items():
-        path = get_xpath(xmlschema, namespaces, attrib, stop_non_unique=True)
+        path = get_xpath(xmlschema,
+                         namespaces,
+                         attrib,
+                         stop_non_unique=True,
+                         stop_group=stop_group,
+                         group_root=group_root)
         if path is not None:
             if not isinstance(path, list):
                 path = [path]
-            if attrib not in kwargs['settable_attribs']:
+            if attrib not in kwargs[settable_key]:
                 settable[attrib] = [x.replace(f'/@{attrib}', '') for x in path]
 
     return settable
@@ -846,31 +795,46 @@ def get_other_attributes(xmlschema, namespaces, **kwargs):
 
     :return: dictionary with all attributes and the corresponding list of paths to the tag
     """
+    stop_group = False
+    if 'stop_group' in kwargs:
+        stop_group = kwargs['stop_group']
+
+    group_root = False
+    if 'group_root' in kwargs:
+        group_root = kwargs['group_root']
+
+    settable_key = 'settable_attribs'
+    settable_contains_key = 'settable_contains_attribs'
+    if 'iteration' in kwargs:
+        if kwargs['iteration']:
+            settable_key = 'iteration_settable_attribs'
+            settable_contains_key = 'iteration_settable_contains_attribs'
+
     other = {}
     possible_attrib = xmlschema.xpath('//xsd:attribute/@name', namespaces=namespaces)
     for attrib in possible_attrib:
-        path = get_attrib_xpath(xmlschema, namespaces, attrib)
+        path = get_attrib_xpath(xmlschema, namespaces, attrib, stop_group=stop_group, group_root=group_root)
         if path is not None:
             if not isinstance(path, list):
                 path = [path]
-            if attrib in kwargs['settable_attribs']:
-                path.remove(kwargs['settable_attribs'][attrib])
-            if attrib in kwargs['settable_contains_attribs']:
-                for contains_path in kwargs['settable_contains_attribs'][attrib]:
+            if attrib in kwargs[settable_key]:
+                path.remove(kwargs[settable_key][attrib])
+            if attrib in kwargs[settable_contains_key]:
+                for contains_path in kwargs[settable_contains_key][attrib]:
                     path.remove(contains_path)
 
             if len(path) != 0:
                 other[attrib] = [x.replace(f'/@{attrib}', '') for x in path]
 
     for attrib, attrib_dict in kwargs['simple_elements'].items():
-        path = get_xpath(xmlschema, namespaces, attrib)
+        path = get_xpath(xmlschema, namespaces, attrib, stop_group=stop_group, group_root=group_root)
         if path is not None:
             if not isinstance(path, list):
                 path = [path]
-            if attrib in kwargs['settable_attribs']:
-                path.remove(kwargs['settable_attribs'][attrib])
-            if attrib in kwargs['settable_contains_attribs']:
-                for contains_path in kwargs['settable_contains_attribs'][attrib]:
+            if attrib in kwargs[settable_key]:
+                path.remove(kwargs[settable_key][attrib])
+            if attrib in kwargs[settable_contains_key]:
+                for contains_path in kwargs[settable_contains_key][attrib]:
                     path.remove(contains_path)
 
             if len(path) != 0:

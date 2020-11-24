@@ -41,12 +41,14 @@ def create_outschema_dict(path):
         'basic_types': get_basic_types,
         'attrib_types': extract_attribute_types,
         'simple_elements': get_basic_elements,
-        'tag_paths': get_tag_paths_outschema,
-        'iteration_paths': get_group_paths,
+        'tag_paths': get_tag_paths,
+        'iteration_tag_paths': get_tag_paths,
         'settable_attribs': get_settable_attributes,
         'settable_contains_attribs': get_settable_contains_attributes,
         'other_attribs': get_other_attributes,
-        'iteration_attrib_paths': get_attrib_group_paths,
+        'iteration_settable_attribs': get_settable_attributes,
+        'iteration_settable_contains_attribs': get_settable_contains_attributes,
+        'iteration_other_attribs': get_other_attributes,
         'tags_info': get_tag_info,
     }
 
@@ -60,7 +62,16 @@ def create_outschema_dict(path):
 
     schema_dict = {}
     for key, action in schema_actions.items():
-        schema_dict[key] = action(xmlschema, namespaces, **schema_dict, input_basic_types=inpschema_dict['basic_types'])
+        addargs = {'input_basic_types': inpschema_dict['basic_types']}
+        if key in ['settable_attribs', 'settable_contains_attribs', 'other_attribs', 'tag_paths']:
+            addargs['stop_group'] = True
+        elif key in [
+                'iteration_settable_attribs', 'iteration_settable_contains_attribs', 'iteration_other_attribs',
+                'iteration_tag_paths'
+        ]:
+            addargs['group_root'] = True
+            addargs['iteration'] = True
+        schema_dict[key] = action(xmlschema, namespaces, **schema_dict, **addargs)
 
     with open(f'{path}/outschema_dict.py', 'w') as f:
         f.write('# -*- coding: utf-8 -*-\n')
