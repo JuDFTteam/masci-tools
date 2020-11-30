@@ -463,14 +463,6 @@ schema_dict = {
         'y': ['./totalForcesOnRepresentativeAtoms/forceTotal'],
         'z': ['./totalForcesOnRepresentativeAtoms/forceTotal']
     },
-    'iteration_settable_attribs': {
-        'Configs': './Forcetheorem_JIJ',
-        'qpoints': './Forcetheorem_DMI',
-        'qvectors': './Forcetheorem_SSDISP'
-    },
-    'iteration_settable_contains_attribs': {
-        'Angles': ['./Forcetheorem_DMI', './Forcetheorem_MAE']
-    },
     'iteration_tag_info': {
         './FermiEnergy': {
             'attribs': ['value', 'units'],
@@ -1324,6 +1316,18 @@ schema_dict = {
         'valenceElectrons':
         './totalEnergy/sumOfEigenvalues/valenceElectrons'
     },
+    'iteration_unique_attribs': {
+        'Configs': './Forcetheorem_JIJ',
+        'qpoints': './Forcetheorem_DMI',
+        'qvectors': './Forcetheorem_SSDISP'
+    },
+    'iteration_unique_path_attribs': {
+        'Angles': ['./Forcetheorem_DMI', './Forcetheorem_MAE']
+    },
+    'omitt_contained_tags': [
+        'scfLoop', 'eigenvalues', 'onSiteExchangeSplitting', 'noncollinearTorgue', 'spinorbitTorgue',
+        'ldaUDensityMatrix', 'ldaUDensityMatrixConvergence'
+    ],
     'other_attribs': {
         'atomType': ['/fleurOutput/numericalParameters/volumes/mtVolume'],
         'kPoint': ['/fleurOutput/numericalParameters/kPointList/kPoint'],
@@ -1331,48 +1335,6 @@ schema_dict = {
         'mtVolume': ['/fleurOutput/numericalParameters/volumes/mtVolume'],
         'numberForCurrentRun': ['/fleurOutput/scfLoop/iteration'],
         'overallNumber': ['/fleurOutput/scfLoop/iteration']
-    },
-    'settable_attribs': {
-        'Message': '/fleurOutput/ERROR',
-        'additionalCompilerFlags': '/fleurOutput/programVersion/additionalCompilerFlags',
-        'branch': '/fleurOutput/programVersion/gitInfo',
-        'count': '/fleurOutput/numericalParameters/kPointList',
-        'flag': '/fleurOutput/programVersion/compilationInfo',
-        'fleurOutputVersion': '/fleurOutput',
-        'host': '/fleurOutput/programVersion/compilationInfo',
-        'interstitial': '/fleurOutput/numericalParameters/volumes',
-        'jmtd': '/fleurOutput/numericalParameters/atomsInCell',
-        'lastCommitHash': '/fleurOutput/programVersion/gitInfo',
-        'link': '/fleurOutput/programVersion/compilationInfo',
-        'lmaxd': '/fleurOutput/numericalParameters/basis',
-        'memoryPerNode': '/fleurOutput/parallelSetup/mem',
-        'mpiProcesses': '/fleurOutput/parallelSetup/mpi',
-        'n_hia': '/fleurOutput/numericalParameters/atomsInCell',
-        'n_u': '/fleurOutput/numericalParameters/atomsInCell',
-        'nat': '/fleurOutput/numericalParameters/atomsInCell',
-        'ng2': '/fleurOutput/numericalParameters/density',
-        'ng3': '/fleurOutput/numericalParameters/density',
-        'nlotot': '/fleurOutput/numericalParameters/basis',
-        'ntype': '/fleurOutput/numericalParameters/atomsInCell',
-        'numbands': '/fleurOutput/numericalParameters/bands',
-        'nvd': '/fleurOutput/numericalParameters/basis',
-        'omegaTilda': '/fleurOutput/numericalParameters/volumes',
-        'ompThreads': '/fleurOutput/parallelSetup/openMP',
-        'surfaceArea': '/fleurOutput/numericalParameters/volumes',
-        'targetComputerArchitectures': '/fleurOutput/programVersion/targetComputerArchitectures',
-        'targetStructureClass': '/fleurOutput/programVersion/targetStructureClass',
-        'type': '/fleurOutput/programVersion/precision',
-        'unitCell': '/fleurOutput/numericalParameters/volumes',
-        'user': '/fleurOutput/programVersion/compilationInfo',
-        'weightScale': '/fleurOutput/numericalParameters/kPointList',
-        'z1': '/fleurOutput/numericalParameters/volumes'
-    },
-    'settable_contains_attribs': {
-        'date':
-        ['/fleurOutput/programVersion/compilationInfo', '/fleurOutput/startDateAndTime', '/fleurOutput/endDateAndTime'],
-        'time': ['/fleurOutput/startDateAndTime', '/fleurOutput/endDateAndTime'],
-        'version': ['/fleurOutput/programVersion', '/fleurOutput/programVersion/gitInfo'],
-        'zone': ['/fleurOutput/startDateAndTime', '/fleurOutput/endDateAndTime']
     },
     'simple_elements': {
         'additionalCompilerFlags': [{
@@ -1629,5 +1591,47 @@ schema_dict = {
         'targetComputerArchitectures': '/fleurOutput/programVersion/targetComputerArchitectures',
         'targetStructureClass': '/fleurOutput/programVersion/targetStructureClass',
         'volumes': '/fleurOutput/numericalParameters/volumes'
+    },
+    'unique_attribs': {
+        'Message': '/fleurOutput/ERROR',
+        'additionalCompilerFlags': '/fleurOutput/programVersion/additionalCompilerFlags',
+        'branch': '/fleurOutput/programVersion/gitInfo',
+        'count': '/fleurOutput/numericalParameters/kPointList',
+        'flag': '/fleurOutput/programVersion/compilationInfo',
+        'fleurOutputVersion': '/fleurOutput',
+        'host': '/fleurOutput/programVersion/compilationInfo',
+        'interstitial': '/fleurOutput/numericalParameters/volumes',
+        'jmtd': '/fleurOutput/numericalParameters/atomsInCell',
+        'lastCommitHash': '/fleurOutput/programVersion/gitInfo',
+        'link': '/fleurOutput/programVersion/compilationInfo',
+        'lmaxd': '/fleurOutput/numericalParameters/basis',
+        'memoryPerNode': '/fleurOutput/parallelSetup/mem',
+        'mpiProcesses': '/fleurOutput/parallelSetup/mpi',
+        'n_hia': '/fleurOutput/numericalParameters/atomsInCell',
+        'n_u': '/fleurOutput/numericalParameters/atomsInCell',
+        'nat': '/fleurOutput/numericalParameters/atomsInCell',
+        'ng2': '/fleurOutput/numericalParameters/density',
+        'ng3': '/fleurOutput/numericalParameters/density',
+        'nlotot': '/fleurOutput/numericalParameters/basis',
+        'ntype': '/fleurOutput/numericalParameters/atomsInCell',
+        'numbands': '/fleurOutput/numericalParameters/bands',
+        'nvd': '/fleurOutput/numericalParameters/basis',
+        'omegaTilda': '/fleurOutput/numericalParameters/volumes',
+        'ompThreads': '/fleurOutput/parallelSetup/openMP',
+        'surfaceArea': '/fleurOutput/numericalParameters/volumes',
+        'targetComputerArchitectures': '/fleurOutput/programVersion/targetComputerArchitectures',
+        'targetStructureClass': '/fleurOutput/programVersion/targetStructureClass',
+        'type': '/fleurOutput/programVersion/precision',
+        'unitCell': '/fleurOutput/numericalParameters/volumes',
+        'user': '/fleurOutput/programVersion/compilationInfo',
+        'weightScale': '/fleurOutput/numericalParameters/kPointList',
+        'z1': '/fleurOutput/numericalParameters/volumes'
+    },
+    'unique_path_attribs': {
+        'date':
+        ['/fleurOutput/programVersion/compilationInfo', '/fleurOutput/startDateAndTime', '/fleurOutput/endDateAndTime'],
+        'time': ['/fleurOutput/startDateAndTime', '/fleurOutput/endDateAndTime'],
+        'version': ['/fleurOutput/programVersion', '/fleurOutput/programVersion/gitInfo'],
+        'zone': ['/fleurOutput/startDateAndTime', '/fleurOutput/endDateAndTime']
     }
 }

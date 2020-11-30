@@ -42,14 +42,15 @@ def create_outschema_dict(path):
         'simple_elements': get_basic_elements,
         'tag_paths': get_tag_paths,
         'iteration_tag_paths': get_tag_paths,
-        'settable_attribs': get_settable_attributes,
-        'settable_contains_attribs': get_settable_contains_attributes,
-        'other_attribs': get_other_attributes,
-        'iteration_settable_attribs': get_settable_attributes,
-        'iteration_settable_contains_attribs': get_settable_contains_attributes,
-        'iteration_other_attribs': get_other_attributes,
+        'unique_attribs': get_unique_attribs,
+        'unique_path_attribs': get_unique_path_attribs,
+        'other_attribs': get_other_attribs,
+        'iteration_unique_attribs': get_unique_attribs,
+        'iteration_unique_path_attribs': get_unique_path_attribs,
+        'iteration_other_attribs': get_other_attribs,
         'tag_info': get_tag_info,
         'iteration_tag_info': get_tag_info,
+        'omitt_contained_tags': get_omittable_tags,
     }
 
     print(f'processing: {path}/FleurOutputSchema.xsd')
@@ -63,10 +64,10 @@ def create_outschema_dict(path):
     schema_dict = {}
     for key, action in schema_actions.items():
         addargs = {'input_basic_types': inpschema_dict['basic_types']}
-        if key in ['settable_attribs', 'settable_contains_attribs', 'other_attribs', 'tag_paths', 'tag_info']:
+        if key in ['unique_attribs', 'unique_path_attribs', 'other_attribs', 'tag_paths', 'tag_info']:
             addargs['stop_iteration'] = True
         elif key in [
-                'iteration_settable_attribs', 'iteration_settable_contains_attribs', 'iteration_other_attribs',
+                'iteration_unique_attribs', 'iteration_unique_path_attribs', 'iteration_other_attribs',
                 'iteration_tag_paths', 'iteration_tag_info'
         ]:
             addargs['iteration_root'] = True

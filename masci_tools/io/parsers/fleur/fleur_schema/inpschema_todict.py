@@ -39,9 +39,9 @@ def create_inpschema_dict(path, save_to_file=True):
         'basic_types': get_basic_types,
         'attrib_types': extract_attribute_types,
         'simple_elements': get_basic_elements,
-        'settable_attribs': get_settable_attributes,
-        'settable_contains_attribs': get_settable_contains_attributes,
-        'other_attribs': get_other_attributes,
+        'unique_attribs': get_unique_attribs,
+        'unique_path_attribs': get_unique_path_attribs,
+        'other_attribs': get_other_attribs,
         'omitt_contained_tags': get_omittable_tags,
         'tag_info': get_tag_info,
     }
