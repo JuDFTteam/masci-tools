@@ -476,7 +476,10 @@
          <xsd:extension base="FleurDouble3DVecType">
             <xsd:attribute default=" " name="label" type="xsd:string" use="optional"/>
             <xsd:attribute default="F" name="wannier" type="FleurBool" use="optional"/>
-            <xsd:attribute name="banddos"    type="FleurBool" use="optional"/>
+            <xsd:attribute name="banddos" type="FleurBool" use="optional"/>
+            <xsd:attribute name="alpha" type="FleurDouble" use="optional"/>
+            <xsd:attribute name="beta"  type="FleurDouble" use="optional"/>
+            <xsd:attribute name="gamma" type="FleurDouble" use="optional"/>
          </xsd:extension>
       </xsd:simpleContent>
    </xsd:complexType>

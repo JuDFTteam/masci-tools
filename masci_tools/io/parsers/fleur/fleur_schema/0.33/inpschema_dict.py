@@ -89,6 +89,7 @@ schema_dict = {
         'frcor': ['switch'],
         'fullMatch': ['switch'],
         'functional': ['string'],
+        'gamma': ['float_expression'],
         'gcutm': ['float'],
         'grid': ['string'],
         'gridPoints': ['int'],
@@ -474,7 +475,9 @@ schema_dict = {
         ],
         'absPos': ['/fleurInput/atomGroups/atomGroup/absPos'],
         'alpha': [
-            '/fleurInput/atomSpecies/species/nocoParams', '/fleurInput/atomGroups/atomGroup/nocoParams',
+            '/fleurInput/atomGroups/atomGroup/relPos', '/fleurInput/atomGroups/atomGroup/absPos',
+            '/fleurInput/atomGroups/atomGroup/filmPos', '/fleurInput/atomSpecies/species/nocoParams',
+            '/fleurInput/atomGroups/atomGroup/nocoParams',
             '/fleurInput/calculationSetup/greensFunction/contourSemicircle'
         ],
         'analytical_cont': ['/fleurInput/calculationSetup/greensFunction/contourDOS'],
@@ -486,7 +489,11 @@ schema_dict = {
             '/fleurInput/atomGroups/atomGroup/relPos', '/fleurInput/atomGroups/atomGroup/absPos',
             '/fleurInput/atomGroups/atomGroup/filmPos'
         ],
-        'beta': ['/fleurInput/atomSpecies/species/nocoParams', '/fleurInput/atomGroups/atomGroup/nocoParams'],
+        'beta': [
+            '/fleurInput/atomGroups/atomGroup/relPos', '/fleurInput/atomGroups/atomGroup/absPos',
+            '/fleurInput/atomGroups/atomGroup/filmPos', '/fleurInput/atomSpecies/species/nocoParams',
+            '/fleurInput/atomGroups/atomGroup/nocoParams'
+        ],
         'calculate': ['/fleurInput/atomSpecies/species/force', '/fleurInput/atomGroups/atomGroup/force'],
         'cartesian': ['/fleurInput/output/plotting/plot'],
         'chargeDensity': ['/fleurInput/atomGroups/atomGroup/cFCoeffs'],
@@ -522,6 +529,10 @@ schema_dict = {
         'flipSpinPhi': ['/fleurInput/atomSpecies/species/modInitDen', '/fleurInput/atomGroups/atomGroup/modInitDen'],
         'flipSpinScale': ['/fleurInput/atomSpecies/species/modInitDen', '/fleurInput/atomGroups/atomGroup/modInitDen'],
         'flipSpinTheta': ['/fleurInput/atomSpecies/species/modInitDen', '/fleurInput/atomGroups/atomGroup/modInitDen'],
+        'gamma': [
+            '/fleurInput/atomGroups/atomGroup/relPos', '/fleurInput/atomGroups/atomGroup/absPos',
+            '/fleurInput/atomGroups/atomGroup/filmPos'
+        ],
         'grid': ['/fleurInput/output/plotting/plot'],
         'gridPoints': ['/fleurInput/atomSpecies/species/mtSphere', '/fleurInput/atomGroups/atomGroup/mtSphere'],
         'init_mom': ['/fleurInput/atomSpecies/species/ldaHIA/exc', '/fleurInput/atomGroups/atomGroup/ldaHIA/exc'],
@@ -1074,7 +1085,7 @@ schema_dict = {
             'text': ['relPos', 'absPos', 'filmPos', 'orbcomprot']
         },
         '/fleurInput/atomGroups/atomGroup/absPos': {
-            'attribs': ['label', 'wannier', 'banddos'],
+            'attribs': ['label', 'wannier', 'banddos', 'alpha', 'beta', 'gamma'],
             'optional': [],
             'order': [],
             'several': [],
@@ -1106,7 +1117,7 @@ schema_dict = {
             'text': []
         },
         '/fleurInput/atomGroups/atomGroup/filmPos': {
-            'attribs': ['label', 'wannier', 'banddos'],
+            'attribs': ['label', 'wannier', 'banddos', 'alpha', 'beta', 'gamma'],
             'optional': [],
             'order': [],
             'several': [],
@@ -1219,7 +1230,7 @@ schema_dict = {
             'text': []
         },
         '/fleurInput/atomGroups/atomGroup/relPos': {
-            'attribs': ['label', 'wannier', 'banddos'],
+            'attribs': ['label', 'wannier', 'banddos', 'alpha', 'beta', 'gamma'],
             'optional': [],
             'order': [],
             'several': [],

@@ -37,7 +37,6 @@ def create_outschema_dict(path):
 
     #Add new functionality to this dictionary here
     schema_actions = {
-        'group_tags': get_group_tags,
         'basic_types': get_basic_types,
         'attrib_types': extract_attribute_types,
         'simple_elements': get_basic_elements,
@@ -49,7 +48,8 @@ def create_outschema_dict(path):
         'iteration_settable_attribs': get_settable_attributes,
         'iteration_settable_contains_attribs': get_settable_contains_attributes,
         'iteration_other_attribs': get_other_attributes,
-        'tags_info': get_tag_info,
+        'tag_info': get_tag_info,
+        'iteration_tag_info': get_tag_info,
     }
 
     print(f'processing: {path}/FleurOutputSchema.xsd')
@@ -63,13 +63,13 @@ def create_outschema_dict(path):
     schema_dict = {}
     for key, action in schema_actions.items():
         addargs = {'input_basic_types': inpschema_dict['basic_types']}
-        if key in ['settable_attribs', 'settable_contains_attribs', 'other_attribs', 'tag_paths']:
-            addargs['stop_group'] = True
+        if key in ['settable_attribs', 'settable_contains_attribs', 'other_attribs', 'tag_paths', 'tag_info']:
+            addargs['stop_iteration'] = True
         elif key in [
                 'iteration_settable_attribs', 'iteration_settable_contains_attribs', 'iteration_other_attribs',
-                'iteration_tag_paths'
+                'iteration_tag_paths', 'iteration_tag_info'
         ]:
-            addargs['group_root'] = True
+            addargs['iteration_root'] = True
             addargs['iteration'] = True
         schema_dict[key] = action(xmlschema, namespaces, **schema_dict, **addargs)
 

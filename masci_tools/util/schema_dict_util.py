@@ -20,6 +20,7 @@ attribute from the right place in the given etree
 
 from masci_tools.util.xml.common_xml_util import eval_xpath, convert_xml_text, convert_xml_attribute
 
+
 def get_tag_xpath(schema_dict, name, contains=None, not_contains=None):
     """
     Tries to find a unique path from the schema_dict based on the given name of the tag
@@ -95,7 +96,9 @@ def get_attrib_xpath(schema_dict, name, contains=None, not_contains=None, exclud
     if 'iteration_settable_attribs' in schema_dict:
         #outputschema
         output = True
-        possible_lists += ['iteration_settable_attribs', 'iteration_settable_contains_attribs', 'iteration_other_attribs']
+        possible_lists += [
+            'iteration_settable_attribs', 'iteration_settable_contains_attribs', 'iteration_other_attribs'
+        ]
 
     if exclude is not None:
         for list_name in exclude:
@@ -134,6 +137,7 @@ def get_attrib_xpath(schema_dict, name, contains=None, not_contains=None, exclud
                      f'contains: {contains}, not_contains: {not_contains}, exclude {exclude}\n'
                      f'These are possible: {all_paths}')
 
+
 def evaluate_attribute(node,
                        schema_dict,
                        name,
@@ -159,7 +163,6 @@ def evaluate_attribute(node,
 
     :returns: list or single value, converted in convert_xml_attribute
     """
-
 
     if parser_info_out is None:
         parser_info_out = {'parser_warnings': []}

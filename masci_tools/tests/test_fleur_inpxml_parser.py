@@ -20,8 +20,8 @@ inpxmlfilefolder_valid = [
 ignore_inputs = ['NiO_ldauXML', 'Bi2Te3XML']  #These should fail but don't (except when they do)
 #Thes inputs are currently broken in the fleur tests
 broken_inputs = [
-    'CoHybridPBE0', 'CoUnfold', 'gw1Interface', 'GaAsWannSOC', 'TiO2eelsXML',
-    'gw2Interface', 'Fe_film_SS_conv', 'SiHybrid8kpt_nosym', 'Fe_bulk_SS_conv', 'Fe_film_SSFT'
+    'CoHybridPBE0', 'CoUnfold', 'gw1Interface', 'GaAsWannSOC', 'TiO2eelsXML', 'gw2Interface', 'Fe_film_SS_conv',
+    'SiHybrid8kpt_nosym', 'Fe_bulk_SS_conv', 'Fe_film_SSFT'
 ]
 
 inp_dict_input = ['FePt_film_SSFT_LO/files/inp2.xml']

@@ -15,6 +15,7 @@ Common functions for parsing input/output files or XMLschemas from FLEUR
 """
 from lxml import etree
 
+
 def read_constants(xmltree, schema_dict, abspath=None):
     """
     Reads in the constants defined in the inp.xml
@@ -51,6 +52,7 @@ def read_constants(xmltree, schema_dict, abspath=None):
             raise KeyError(f'Ambiguous definition of key {name}')
 
     return const_dict
+
 
 def clear_xml(tree, schema_dict=None):
     """
@@ -210,7 +212,6 @@ def convert_xml_text(tagtext, possible_definitions, constants, conversion_warnin
                 all_success = False
                 for warning in warnings:
                     conversion_warnings.append(warning)
-
 
         if len(converted_text) == 1 and text_definition['length'] != 'unbounded':
             converted_text = converted_text[0]

@@ -235,8 +235,8 @@ def get_xpath(xmlschema,
               enforce_end_type=None,
               ref=None,
               stop_non_unique=False,
-              stop_group=False,
-              group_root=False):
+              stop_iteration=False,
+              iteration_root=False):
     """
     construct all possible simple xpaths to a given tag
 
@@ -246,19 +246,21 @@ def get_xpath(xmlschema,
     :param enforce_end_type: If given the type of the starting tag has o match this string
     :param ref: If given we start from a group reference with this name
     :param stop_non_unique: If True all paths, where one tag has maxOccurs!=1 is discarded
-    :param stop_group: If True the path generation discards all paths going through a group element
-    :param group_root: If True the path generation only generates paths going through a group but
+    :param stop_iteration: If True the path generation discards all paths going through a iteration element
+    :param iteration_root: If True the path generation only generates paths going through a iteration but
                        terminates as if the group element is the root of the file
     :return: None if no path is found, if a single path is found return the string of the path,
              otherwise a list with all possible paths is returned
     """
     skip = ['CompositeTimerType']  #These types have infinite recursive paths and CANNOT BE PARSED
+    ITERATION_TYPE = 'IterationType'
+
     if enforce_end_type in skip:
         return None
     possible_paths = []
     root_tag = get_root_tag(xmlschema, namespaces)
     if tag_name == root_tag:
-        if group_root:
+        if iteration_root:
             return None
         else:
             return f'/{root_tag}'
@@ -284,18 +286,21 @@ def get_xpath(xmlschema,
         if parent_type is None:
             continue
         next_type = parent_type.attrib['name']
-        if parent_tag == 'group':
-            if stop_group:
+
+        if next_type == ITERATION_TYPE:
+            if stop_iteration:
                 continue
-            if group_root:
+            if iteration_root:
                 return f'./{currentTag}'
+
+        if parent_tag == 'group':
             possible_paths_group = get_xpath(xmlschema,
                                              namespaces,
                                              currentTag,
                                              ref=next_type,
                                              stop_non_unique=stop_non_unique,
-                                             stop_group=stop_group,
-                                             group_root=group_root)
+                                             stop_iteration=stop_iteration,
+                                             iteration_root=iteration_root)
             if possible_paths_group is None:
                 continue
             if not isinstance(possible_paths_group, list):
@@ -320,8 +325,8 @@ def get_xpath(xmlschema,
                                                newTag,
                                                enforce_end_type=next_type,
                                                stop_non_unique=stop_non_unique,
-                                               stop_group=stop_group,
-                                               group_root=group_root)
+                                               stop_iteration=stop_iteration,
+                                               iteration_root=iteration_root)
                 if possible_paths_tag is None:
                     continue
                 if not isinstance(possible_paths_tag, list):
@@ -330,7 +335,8 @@ def get_xpath(xmlschema,
                     if f'{tagpath}/{tag_name}' not in possible_paths:
                         possible_paths.append(f'{tagpath}/{tag_name}')
 
-    if group_root:
+    if iteration_root:
+        #Remove any path that slipped through and contains the root tag of the out file
         possible_paths_copy = possible_paths.copy()
         for path in possible_paths_copy:
             if root_tag in path:
@@ -457,7 +463,12 @@ def get_text_tags(xmlschema, namespaces, elem, simple_elements):
     return text_list
 
 
-def get_attrib_xpath(xmlschema, namespaces, attrib_name, stop_non_unique=False, stop_group=False, group_root=False):
+def get_attrib_xpath(xmlschema,
+                     namespaces,
+                     attrib_name,
+                     stop_non_unique=False,
+                     stop_iteration=False,
+                     iteration_root=False):
     """
     construct all possible simple xpaths to a given attribute
 
@@ -465,9 +476,9 @@ def get_attrib_xpath(xmlschema, namespaces, attrib_name, stop_non_unique=False, 
     :param namespaces: dictionary with the defined namespaces
     :param attrib_name: name of the attribute
     :param stop_non_unique: If True all paths, where one tag has maxOccurs!=1 is discarded
-    :param stop_group: If True the path generation discards all paths going through a group element
-    :param group_root: If True the path generation only generates paths going through a group but
-                       terminates as if the group element is the root of the file
+    :param stop_iteration: If True the path generation discards all paths going through a iteration element
+    :param iteration_root: If True the path generation only generates paths going through a iteration but
+                       terminates as if the iteration element is the root of the file
     :return: None if no path is found, if a single path is found return the string of the path,
              otherwise a list with all possible paths is returned
     """
@@ -492,8 +503,8 @@ def get_attrib_xpath(xmlschema, namespaces, attrib_name, stop_non_unique=False, 
                                   tag,
                                   enforce_end_type=start_type,
                                   stop_non_unique=stop_non_unique,
-                                  stop_group=stop_group,
-                                  group_root=group_root)
+                                  stop_iteration=stop_iteration,
+                                  iteration_root=iteration_root)
             if tag_paths is None:
                 continue
             if not isinstance(tag_paths, list):
@@ -507,28 +518,6 @@ def get_attrib_xpath(xmlschema, namespaces, attrib_name, stop_non_unique=False, 
         return None
     else:
         return possible_paths
-
-
-def get_group_tags(xmlschema, namespaces, **kwargs):
-    """
-    get all names of reference elements referring to a group
-
-    :param xmlschema: xmltree representing the schema
-    :param namespaces: dictionary with the defined namespaces
-
-    :return: list of tags referring to a group element
-    """
-    group_tags = []
-    group_refs = xmlschema.xpath('//xsd:group[@ref]', namespaces=namespaces)
-
-    for ref in group_refs:
-        parent_type, parent_tag = get_parent_fleur_type(ref, namespaces)
-        type_ref = xmlschema.xpath(f"//xsd:element[@type='{parent_type.attrib['name']}']", namespaces=namespaces)
-
-        for elem in type_ref:
-            if elem.attrib['name'] not in group_tags:
-                group_tags.append(elem.attrib['name'])
-    return group_tags
 
 
 def get_tags_several(xmlschema, namespaces, **kwargs):
@@ -645,18 +634,18 @@ def get_tag_paths(xmlschema, namespaces, **kwargs):
              paths are possible a list is inserted for the tag
     """
 
-    stop_group = False
-    if 'stop_group' in kwargs:
-        stop_group = kwargs['stop_group']
+    stop_iteration = False
+    if 'stop_iteration' in kwargs:
+        stop_iteration = kwargs['stop_iteration']
 
-    group_root = False
-    if 'group_root' in kwargs:
-        group_root = kwargs['group_root']
+    iteration_root = False
+    if 'iteration_root' in kwargs:
+        iteration_root = kwargs['iteration_root']
 
     possible_tags = xmlschema.xpath('//xsd:element/@name', namespaces=namespaces)
     tag_paths = {}
     for tag in possible_tags:
-        paths = get_xpath(xmlschema, namespaces, tag, stop_group=stop_group, group_root=group_root)
+        paths = get_xpath(xmlschema, namespaces, tag, stop_iteration=stop_iteration, iteration_root=iteration_root)
         if paths is not None:
             tag_paths[tag] = paths
     return tag_paths
@@ -699,13 +688,13 @@ def get_settable_attributes(xmlschema, namespaces, **kwargs):
 
     :return: dictionary with all settable attributes and the corresponding path to the tag
     """
-    stop_group = False
-    if 'stop_group' in kwargs:
-        stop_group = kwargs['stop_group']
+    stop_iteration = False
+    if 'stop_iteration' in kwargs:
+        stop_iteration = kwargs['stop_iteration']
 
-    group_root = False
-    if 'group_root' in kwargs:
-        group_root = kwargs['group_root']
+    iteration_root = False
+    if 'iteration_root' in kwargs:
+        iteration_root = kwargs['iteration_root']
 
     settable = {}
     possible_attrib = xmlschema.xpath('//xsd:attribute/@name', namespaces=namespaces)
@@ -714,8 +703,8 @@ def get_settable_attributes(xmlschema, namespaces, **kwargs):
                                 namespaces,
                                 attrib,
                                 stop_non_unique=True,
-                                stop_group=stop_group,
-                                group_root=group_root)
+                                stop_iteration=stop_iteration,
+                                iteration_root=iteration_root)
         if path is not None and not isinstance(path, list):
             settable[attrib] = path.replace(f'/@{attrib}', '')
 
@@ -724,8 +713,8 @@ def get_settable_attributes(xmlschema, namespaces, **kwargs):
                          namespaces,
                          attrib,
                          stop_non_unique=True,
-                         stop_group=stop_group,
-                         group_root=group_root)
+                         stop_iteration=stop_iteration,
+                         iteration_root=iteration_root)
         if path is not None:
             if not isinstance(path, list):
                 settable[attrib] = path.replace(f'/@{attrib}', '')
@@ -743,13 +732,13 @@ def get_settable_contains_attributes(xmlschema, namespaces, **kwargs):
 
     :return: dictionary with all attributes and the corresponding list of paths to the tag
     """
-    stop_group = False
-    if 'stop_group' in kwargs:
-        stop_group = kwargs['stop_group']
+    stop_iteration = False
+    if 'stop_iteration' in kwargs:
+        stop_iteration = kwargs['stop_iteration']
 
-    group_root = False
-    if 'group_root' in kwargs:
-        group_root = kwargs['group_root']
+    iteration_root = False
+    if 'iteration_root' in kwargs:
+        iteration_root = kwargs['iteration_root']
 
     settable_key = 'settable_attribs'
     if 'iteration' in kwargs:
@@ -763,8 +752,8 @@ def get_settable_contains_attributes(xmlschema, namespaces, **kwargs):
                                 namespaces,
                                 attrib,
                                 stop_non_unique=True,
-                                stop_group=stop_group,
-                                group_root=group_root)
+                                stop_iteration=stop_iteration,
+                                iteration_root=iteration_root)
         if path is not None and attrib not in kwargs[settable_key]:
             if not isinstance(path, list):
                 path = [path]
@@ -775,8 +764,8 @@ def get_settable_contains_attributes(xmlschema, namespaces, **kwargs):
                          namespaces,
                          attrib,
                          stop_non_unique=True,
-                         stop_group=stop_group,
-                         group_root=group_root)
+                         stop_iteration=stop_iteration,
+                         iteration_root=iteration_root)
         if path is not None:
             if not isinstance(path, list):
                 path = [path]
@@ -795,13 +784,13 @@ def get_other_attributes(xmlschema, namespaces, **kwargs):
 
     :return: dictionary with all attributes and the corresponding list of paths to the tag
     """
-    stop_group = False
-    if 'stop_group' in kwargs:
-        stop_group = kwargs['stop_group']
+    stop_iteration = False
+    if 'stop_iteration' in kwargs:
+        stop_iteration = kwargs['stop_iteration']
 
-    group_root = False
-    if 'group_root' in kwargs:
-        group_root = kwargs['group_root']
+    iteration_root = False
+    if 'iteration_root' in kwargs:
+        iteration_root = kwargs['iteration_root']
 
     settable_key = 'settable_attribs'
     settable_contains_key = 'settable_contains_attribs'
@@ -813,7 +802,11 @@ def get_other_attributes(xmlschema, namespaces, **kwargs):
     other = {}
     possible_attrib = xmlschema.xpath('//xsd:attribute/@name', namespaces=namespaces)
     for attrib in possible_attrib:
-        path = get_attrib_xpath(xmlschema, namespaces, attrib, stop_group=stop_group, group_root=group_root)
+        path = get_attrib_xpath(xmlschema,
+                                namespaces,
+                                attrib,
+                                stop_iteration=stop_iteration,
+                                iteration_root=iteration_root)
         if path is not None:
             if not isinstance(path, list):
                 path = [path]
@@ -827,7 +820,7 @@ def get_other_attributes(xmlschema, namespaces, **kwargs):
                 other[attrib] = [x.replace(f'/@{attrib}', '') for x in path]
 
     for attrib, attrib_dict in kwargs['simple_elements'].items():
-        path = get_xpath(xmlschema, namespaces, attrib, stop_group=stop_group, group_root=group_root)
+        path = get_xpath(xmlschema, namespaces, attrib, stop_iteration=stop_iteration, iteration_root=iteration_root)
         if path is not None:
             if not isinstance(path, list):
                 path = [path]
@@ -1015,6 +1008,14 @@ def get_tag_info(xmlschema, namespaces, **kwargs):
     :return: dictionary with the tag information
     """
 
+    stop_iteration = False
+    if 'stop_iteration' in kwargs:
+        stop_iteration = kwargs['stop_iteration']
+
+    iteration_root = False
+    if 'iteration_root' in kwargs:
+        iteration_root = kwargs['iteration_root']
+
     tag_info = {}
 
     possible_tags = xmlschema.xpath('//xsd:element', namespaces=namespaces)
@@ -1025,7 +1026,12 @@ def get_tag_info(xmlschema, namespaces, **kwargs):
         type_tag = tag.attrib['type']
 
         #Get the xpath for this tag
-        tag_path = get_xpath(xmlschema, namespaces, name_tag, enforce_end_type=type_tag)
+        tag_path = get_xpath(xmlschema,
+                             namespaces,
+                             name_tag,
+                             enforce_end_type=type_tag,
+                             stop_iteration=stop_iteration,
+                             iteration_root=iteration_root)
 
         if tag_path is None:
             continue
