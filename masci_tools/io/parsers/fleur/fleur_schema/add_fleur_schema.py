@@ -11,7 +11,7 @@
 #                                                                             #
 ###############################################################################
 """
-Contains utility to update the schema dicts.
+Contains utility to add new pairs of input/output schemas.
 """
 from .inpschema_todict import create_inpschema_dict
 from .outschema_todict import create_outschema_dict
