@@ -288,23 +288,23 @@ def evaluate_tag(node,
 
     out_dict = {}
 
-    for attrib in attribs_to_parse:
+    for attrib in attribs:
 
         stringattribute = eval_xpath(node, f'{tag_xpath}/@{attrib}', parser_info_out=parser_info_out)
 
         if isinstance(stringattribute, list):
             if len(stringattribute) == 0:
                 parser_info_out['parser_warnings'].append(f'No values found for attribute {attrib} at tag {name}')
-                value_dict[attrib] = None
+                out_dict[attrib] = None
                 continue
 
         possible_types = schema_dict['attrib_types'][attrib]
 
         warnings = []
-        value_dict[attrib], suc = convert_xml_attribute(stringattribute,
-                                                        possible_types,
-                                                        constants,
-                                                        conversion_warnings=warnings)
+        out_dict[attrib], suc = convert_xml_attribute(stringattribute,
+                                                      possible_types,
+                                                      constants,
+                                                      conversion_warnings=warnings)
 
         if not suc:
             parser_info_out['parser_warnings'].append(f'Failed to evaluate attribute {attrib}: '
