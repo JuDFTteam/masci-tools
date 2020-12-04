@@ -609,13 +609,8 @@ def get_tag_paths(xmlschema, namespaces, **kwargs):
              paths are possible a list is inserted for the tag
     """
 
-    stop_iteration = False
-    if 'stop_iteration' in kwargs:
-        stop_iteration = kwargs['stop_iteration']
-
-    iteration_root = False
-    if 'iteration_root' in kwargs:
-        iteration_root = kwargs['iteration_root']
+    stop_iteration = kwargs.get('stop_iteration', False)
+    iteration_root = kwargs.get('iteration_root', False)
 
     possible_tags = xmlschema.xpath('//xsd:element/@name', namespaces=namespaces)
     tag_paths = {}
@@ -636,13 +631,9 @@ def get_unique_attribs(xmlschema, namespaces, **kwargs):
 
     :return: dictionary with all settable attributes and the corresponding path to the tag
     """
-    stop_iteration = False
-    if 'stop_iteration' in kwargs:
-        stop_iteration = kwargs['stop_iteration']
 
-    iteration_root = False
-    if 'iteration_root' in kwargs:
-        iteration_root = kwargs['iteration_root']
+    stop_iteration = kwargs.get('stop_iteration', False)
+    iteration_root = kwargs.get('iteration_root', False)
 
     settable = {}
     possible_attrib = xmlschema.xpath('//xsd:attribute/@name', namespaces=namespaces)
@@ -680,18 +671,17 @@ def get_unique_path_attribs(xmlschema, namespaces, **kwargs):
 
     :return: dictionary with all attributes and the corresponding list of paths to the tag
     """
-    stop_iteration = False
-    if 'stop_iteration' in kwargs:
-        stop_iteration = kwargs['stop_iteration']
 
-    iteration_root = False
-    if 'iteration_root' in kwargs:
-        iteration_root = kwargs['iteration_root']
+    stop_iteration = kwargs.get('stop_iteration', False)
+    iteration_root = kwargs.get('iteration_root', False)
+    iteration = kwargs.get('iteration', False)
 
-    settable_key = 'unique_attribs'
-    if 'iteration' in kwargs:
-        if kwargs['iteration']:
-            settable_key = 'iteration_unique_attribs'
+    if iteration:
+        settable_key = 'iteration_unique_attribs'
+        settable_contains_key = 'unique_path_attribs'
+    else:
+        settable_key = 'unique_attribs'
+        settable_contains_key = 'iteration_unique_path_attribs'
 
     settable = {}
     possible_attrib = xmlschema.xpath('//xsd:attribute/@name', namespaces=namespaces)
@@ -732,20 +722,17 @@ def get_other_attribs(xmlschema, namespaces, **kwargs):
 
     :return: dictionary with all attributes and the corresponding list of paths to the tag
     """
-    stop_iteration = False
-    if 'stop_iteration' in kwargs:
-        stop_iteration = kwargs['stop_iteration']
 
-    iteration_root = False
-    if 'iteration_root' in kwargs:
-        iteration_root = kwargs['iteration_root']
+    stop_iteration = kwargs.get('stop_iteration', False)
+    iteration_root = kwargs.get('iteration_root', False)
+    iteration = kwargs.get('iteration', False)
 
-    settable_key = 'unique_attribs'
-    settable_contains_key = 'unique_path_attribs'
-    if 'iteration' in kwargs:
-        if kwargs['iteration']:
-            settable_key = 'iteration_unique_attribs'
-            settable_contains_key = 'iteration_unique_path_attribs'
+    if iteration:
+        settable_key = 'iteration_unique_attribs'
+        settable_contains_key = 'unique_path_attribs'
+    else:
+        settable_key = 'unique_attribs'
+        settable_contains_key = 'iteration_unique_path_attribs'
 
     other = {}
     possible_attrib = xmlschema.xpath('//xsd:attribute/@name', namespaces=namespaces)
@@ -956,13 +943,8 @@ def get_tag_info(xmlschema, namespaces, **kwargs):
     :return: dictionary with the tag information
     """
 
-    stop_iteration = False
-    if 'stop_iteration' in kwargs:
-        stop_iteration = kwargs['stop_iteration']
-
-    iteration_root = False
-    if 'iteration_root' in kwargs:
-        iteration_root = kwargs['iteration_root']
+    stop_iteration = kwargs.get('stop_iteration', False)
+    iteration_root = kwargs.get('iteration_root', False)
 
     tag_info = {}
 
