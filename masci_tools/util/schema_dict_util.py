@@ -243,6 +243,78 @@ def evaluate_text(node,
     return converted_value
 
 
+def evaluate_tag(node,
+                 schema_dict,
+                 name,
+                 constants,
+                 contains=None,
+                 not_contains=None,
+                 parser_info_out=None,
+                 abspath=None):
+    """
+    Evaluates all attributes of the tag based on the given name
+    and additional further specifications with the available type information
+
+    :param schema_dict: dict, containing all the path information and more
+    :param name: str, name of the tag
+    :param constants: dict, contains the defined constants
+    :param contains: str, this string has to be in the final path
+    :param not_contains: str, this string has to NOT be in the final path
+    :param parser_info_out: dict, with warnings, info, errors, ...
+    :param abspath: str, to append in front of the path
+
+    :returns: dict, with attribute values converted via convert_xml_attribute
+    """
+    if parser_info_out is None:
+        parser_info_out = {'parser_warnings': []}
+
+    tag_xpath = get_tag_xpath(schema_dict, name, contains=contains, not_contains=not_contains)
+
+    #Which attributes are expected
+    attribs = []
+    if tag_xpath in schema_dict['tag_info']:
+        attribs = schema_dict['tag_info'][tag_xpath]['attribs']
+    elif 'iteration_tag_info' in schema_dict:
+        if tag_xpath in schema_dict['iteration_tag_info']:
+            attribs = schema_dict['iteration_tag_info'][tag_xpath]['attribs']
+
+    if not attribs:
+        parser_info_out['parser_warnings'].append(f'Failed to evaluate attributes from tag {name}: '
+                                                  'No attributes to parse either the tag does not '
+                                                  'exist or it has no attributes')
+
+    if abspath is not None:
+        tag_xpath = f'{abspath}{tag_xpath}'
+
+    out_dict = {}
+
+    for attrib in attribs_to_parse:
+
+        stringattribute = eval_xpath(node, f'{tag_xpath}/@{attrib}', parser_info_out=parser_info_out)
+
+        if isinstance(stringattribute, list):
+            if len(stringattribute) == 0:
+                parser_info_out['parser_warnings'].append(f'No values found for attribute {attrib} at tag {name}')
+                value_dict[attrib] = None
+                continue
+
+        possible_types = schema_dict['attrib_types'][attrib]
+
+        warnings = []
+        value_dict[attrib], suc = convert_xml_attribute(stringattribute,
+                                                        possible_types,
+                                                        constants,
+                                                        conversion_warnings=warnings)
+
+        if not suc:
+            parser_info_out['parser_warnings'].append(f'Failed to evaluate attribute {attrib}: '
+                                                      'Below are the warnings from convert_xml_attribute')
+            for warning in warnings:
+                parser_info_out['parser_warnings'].append(warning)
+
+    return out_dict
+
+
 def evaluate_single_value_tag(node,
                               schema_dict,
                               name,
@@ -268,37 +340,21 @@ def evaluate_single_value_tag(node,
     if parser_info_out is None:
         parser_info_out = {'parser_warnings': []}
 
-    tag_xpath = get_tag_xpath(schema_dict, name, contains=contains, not_contains=not_contains)
+    value_dict = evaluate_tag(node,
+                              schema_dict,
+                              name,
+                              constants,
+                              contains=contains,
+                              not_contains=not_contains,
+                              parser_info_out=parser_info_out,
+                              abspath=parser_info_out)
 
-    if abspath is not None:
-        tag_xpath = f'{abspath}{tag_xpath}'
-
-    value_dict = {}
-    attribs_to_parse = ['value', 'units']
-    for attrib in attribs_to_parse:
-
-        stringattribute = eval_xpath(node, f'{tag_xpath}/@{attrib}', parser_info_out=parser_info_out)
-
-        if isinstance(stringattribute, list):
-            if len(stringattribute) == 0: #If unit is not available this is expected
-                if attrib=='value':
-                    parser_info_out['parser_warnings'].append(f'No values found for attribute {attrib} at tag {name}')
-                value_dict[attrib] = None
-                continue
-
-        possible_types = schema_dict['attrib_types'][attrib]
-
-        warnings = []
-        value_dict[attrib], suc = convert_xml_attribute(stringattribute,
-                                                        possible_types,
-                                                        constants,
-                                                        conversion_warnings=warnings)
-
-        if not suc:
-            parser_info_out['parser_warnings'].append(f'Failed to evaluate attribute {attrib}: '
-                                                      'Below are the warnings from convert_xml_attribute')
-            for warning in warnings:
-                parser_info_out['parser_warnings'].append(warning)
+    if 'value' not in value_dict:
+        parser_info_out['parser_warnings'].append(f'Failed to evaluate singleValue from tag {name}: '
+                                                  "Has no 'value' attribute")
+    if 'units' not in value_dict:
+        parser_info_out['parser_warnings'].append(f'Failed to evaluate singleValue from tag {name}: '
+                                                  "Has no 'units' attribute")
 
     return value_dict['value'], value_dict['units']
 
