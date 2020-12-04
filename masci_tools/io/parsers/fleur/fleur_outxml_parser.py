@@ -14,11 +14,20 @@
 This module contains functions to load an fleur out.xml file, parse it with a schema
 and convert its content to a dict, based on the tasks given
 """
-from masci_tools.util.xml.common_xml_util import eval_xpath, get_xml_attribute, clear_xml, convert_xml_attribute
-from masci_tools.util.schema_dict_util import *
+from masci_tools.util.xml.common_xml_util import eval_xpath, get_xml_attribute, clear_xml, convert_xml_attribute, read_constants
+import masci_tools.util.schema_dict_util as schema_util
 from masci_tools.io.parsers.fleur.fleur_schema import load_inpschema, load_outschema
 from datetime import date
 from lxml import etree
+
+function_dict = {
+    'attrib': schema_util.evaluate_attribute,
+    'text': schema_util.evaluate_text,
+    'exists': schema_util.tag_exists,
+    'numberNodes': schema_util.get_number_of_nodes,
+    'singleValue': schema_util.evaluate_single_value_tag,
+    'allAttribs': schema_util.evaluate_tag,
+}
 
 
 def outxml_parser(outxmlfile,
@@ -60,7 +69,6 @@ def outxml_parser(outxmlfile,
     if not parse_xml:
         return {}
 
-
     if version is None:
         try:
             root = xmltree.getroot()
@@ -89,7 +97,7 @@ def outxml_parser(outxmlfile,
     if iteration_to_parse is None:
         iteration_to_parse = 'last'  #This is the default from the aiida_fleur parser
 
-    iteration_base_xpath = get_tag_xpath(outschema_dict, 'iteration')
+    iteration_base_xpath = schema_util.get_tag_xpath(outschema_dict, 'iteration')
 
     if iteration_to_parse == 'last':
         iteration_xpath = f'{iteration_base_xpath}[last()]'
@@ -103,7 +111,7 @@ def outxml_parser(outxmlfile,
         iteration_xpath = f'{iteration_base_xpath}[{iteration_to_parse}]'
     else:
         raise ValueError(f"Invalid value for iteration_to_parse: Got '{iteration_to_parse}' "
-                          "Valid values are: 'first', 'last', 'all', or int")
+                         "Valid values are: 'first', 'last', 'all', or int")
 
     out_dict, fleurmode, constants = parse_general_information(root,
                                                                outschema_dict,
@@ -125,7 +133,7 @@ def outxml_parser(outxmlfile,
     #Convert energy to eV
     htr = 27.21138602
     if 'energy_hartree' in out_dict:
-        out_dict['energy'] = [e*htr for e in out_dict['energy_hartree']]
+        out_dict['energy'] = [e * htr for e in out_dict['energy_hartree']]
         out_dict['energy_units'] = 'eV'
 
     for key, value in out_dict.items():
@@ -145,79 +153,128 @@ def parse_general_information(root, outschema_dict, inpschema_dict, parser_info_
 
     #General switches determining how to parse the output
     fleurmode_info = {
-        'jspin': ('attrib', {
-            'name': 'jspins'
-        }),
-        'relax': ('attrib', {
-            'name': 'l_f'
-        }),
-        'ldau': ('exists', {
-            'name': 'ldaU',
-            'contains': 'species'
-        }),
-        'soc': ('attrib', {
-            'name': 'l_soc'
-        }),
-        'noco': ('attrib', {
-            'name': 'l_noco'
-        }),
-        'film': ('exists', {
-            'name': 'filmPos'
-            })
+        'jspin': {
+            'parse_type': 'attrib',
+            'args': {
+                'name': 'jspins'
+            }
+        },
+        'relax': {
+            'parse_type': 'attrib',
+            'args': {
+                'name': 'l_f'
+            }
+        },
+        'ldau': {
+            'parse_type': 'exists',
+            'args': {
+                'name': 'ldaU',
+                'contains': 'species'
+            }
+        },
+        'soc': {
+            'parse_type': 'attrib',
+            'args': {
+                'name': 'l_soc'
+            }
+        },
+        'noco': {
+            'parse_type': 'attrib',
+            'args': {
+                'name': 'l_noco'
+            }
+        },
+        'film': {
+            'parse_type': 'exists',
+            'args': {
+                'name': 'filmPos'
+            }
+        }
     }
 
     general_out_info = {
-        'creator_name': ('attrib', {
-            'name': 'version',
-            'not_contains': 'git'
-        }),
-        'creator_target_architecture': ('text', {
-            'name': 'targetComputerArchitectures'
-        }),
-        'creator_target_structure': ('text', {
-            'name': 'targetStructureClass'
-        }),
-        'output_file_version': ('attrib', {
-            'name': 'fleurOutputVersion'
-        }),
-        'number_of_iterations': ('numberNodes', {
-            'name': 'iteration'
-        }),
-        'number_of_atoms': ('attrib', {
-            'name': 'nat'
-        }),
-        'number_of_atom_types': ('attrib', {
-            'name': 'ntype'
-        })
+        'creator_name': {
+            'parse_type': 'attrib',
+            'args': {
+                'name': 'version',
+                'not_contains': 'git'
+            }
+        },
+        'creator_target_architecture': {
+            'parse_type': 'text',
+            'args': {
+                'name': 'targetComputerArchitectures'
+            }
+        },
+        'creator_target_structure': {
+            'parse_type': 'text',
+            'args': {
+                'name': 'targetStructureClass'
+            }
+        },
+        'output_file_version': {
+            'parse_type': 'attrib',
+            'args': {
+                'name': 'fleurOutputVersion'
+            }
+        },
+        'number_of_iterations': {
+            'parse_type': 'numberNodes',
+            'args': {
+                'name': 'iteration'
+            }
+        },
+        'number_of_atoms': {
+            'parse_type': 'attrib',
+            'args': {
+                'name': 'nat'
+            }
+        },
+        'number_of_atom_types': {
+            'parse_type': 'attrib',
+            'args': {
+                'name': 'ntype'
+            }
+        }
     }
 
     general_inp_info = {
-        'title': ('text', {
-            'name': 'comment'
-        }),
-        'kmax': ('attrib', {
-            'name': 'Kmax'
-        }),
-        'gmax': ('attrib', {
-            'name': 'Gmax'
-        }),
-        'number_of_spin_components': ('attrib', {
-            'name': 'jspins'
-        }),
-        'number_of_symmetries': ('numberNodes', {
-            'name': 'symOp'
-        }),
-        'number_of_species': ('numberNodes', {
-            'name': 'species'
-        })
-    }
-
-    function_dict = {
-        'attrib': evaluate_attribute,
-        'text': evaluate_text,
-        'exists': tag_exists,
-        'numberNodes': get_number_of_nodes,
-        'singleValue': evaluate_single_value_tag,
+        'title': {
+            'parse_type': 'text',
+            'args': {
+                'name': 'comment'
+            }
+        },
+        'kmax': {
+            'parse_type': 'attrib',
+            'args': {
+                'name': 'Kmax'
+            }
+        },
+        'gmax': {
+            'parse_type': 'attrib',
+            'args': {
+                'name': 'Gmax'
+            }
+        },
+        'number_of_spin_components': {
+            'parse_type': 'attrib',
+            'args': {
+                'name': 'jspins'
+            }
+        },
+        'number_of_symmetries': {
+            'parse_type': 'numberNodes',
+            'args': {
+                'name': 'symOp'
+            }
+        },
+        'number_of_species': {
+            'parse_type': 'numberNodes',
+            'args': {
+                'name': 'species'
+            }
+        }
     }
 
     root_tag = '/fleurOutput'
@@ -227,37 +284,43 @@ def parse_general_information(root, outschema_dict, inpschema_dict, parser_info_
     fleurmode = {'jspin': 1, 'relax': False, 'ldau': False, 'soc': False, 'noco': False, 'film': False}
 
     for key, spec in fleurmode_info.items():
-        action = function_dict[spec[0]]
-        spec[1]['abspath'] = root_tag
-        if spec[0] in ['attrib', 'text']:
-            spec[1]['constants'] = constants
-        value = action(root, inpschema_dict, parser_info_out=parser_info_out, **spec[1])
+        action = function_dict[spec['parse_type']]
+        args = spec['args'].copy()
+
+        args['abspath'] = root_tag
+        if spec['parse_type'] in ['attrib', 'text']:
+            args['constants'] = constants
+        value = action(root, inpschema_dict, parser_info_out=parser_info_out, **args)
         if value is not None:  #Don't overwrite defaults if there was no value
             fleurmode[key] = value
 
     out_dict = {}
     for key, spec in general_inp_info.items():
-        action = function_dict[spec[0]]
-        spec[1]['abspath'] = root_tag
-        if spec[0] in ['attrib', 'text']:
-            spec[1]['constants'] = constants
-        out_dict[key] = action(root, inpschema_dict, parser_info_out=parser_info_out, **spec[1])
+        action = function_dict[spec['parse_type']]
+        args = spec['args'].copy()
+
+        args['abspath'] = root_tag
+        if spec['parse_type'] in ['attrib', 'text']:
+            args['constants'] = constants
+        out_dict[key] = action(root, inpschema_dict, parser_info_out=parser_info_out, **args)
 
     for key, spec in general_out_info.items():
-        action = function_dict[spec[0]]
-        if spec[0] in ['attrib', 'text']:
-            spec[1]['constants'] = constants
-        out_dict[key] = action(root, outschema_dict, parser_info_out=parser_info_out, **spec[1])
+        action = function_dict[spec['parse_type']]
+        args = spec['args'].copy()
+
+        if spec['parse_type'] in ['attrib', 'text']:
+            args['constants'] = constants
+        out_dict[key] = action(root, inpschema_dict, parser_info_out=parser_info_out, **args)
 
     # time
     # Maybe change the behavior if things could not be parsed...
     # Especially if file was broken, ie endtime it not there.
-    starttime = evaluate_attribute(root,
-                                   outschema_dict,
-                                   'time',
-                                   constants,
-                                   contains='start',
-                                   parser_info_out=parser_info_out)
+    starttime = schema_util.evaluate_attribute(root,
+                                               outschema_dict,
+                                               'time',
+                                               constants,
+                                               contains='start',
+                                               parser_info_out=parser_info_out)
     if starttime is not None:
         starttimes = starttime.split(':')
     else:
@@ -265,30 +328,30 @@ def parse_general_information(root, outschema_dict, inpschema_dict, parser_info_
         msg = 'Startime was unparsed, inp.xml prob not complete, do not believe the walltime!'
         parser_info_out['parser_warnings'].append(msg)
 
-    endtime = evaluate_attribute(root,
-                                 outschema_dict,
-                                 'time',
-                                 constants,
-                                 contains='end',
-                                 parser_info_out=parser_info_out)
+    endtime = schema_util.evaluate_attribute(root,
+                                             outschema_dict,
+                                             'time',
+                                             constants,
+                                             contains='end',
+                                             parser_info_out=parser_info_out)
     if endtime is not None:
         endtimes = endtime.split(':')
     else:
         endtimes = [0, 0, 0]
         msg = 'Endtime was unparsed, inp.xml prob not complete, do not believe the walltime!'
         parser_info_out['parser_warnings'].append(msg)
-    start_date = evaluate_attribute(root,
-                                    outschema_dict,
-                                    'date',
-                                    constants,
-                                    contains='start',
-                                    parser_info_out=parser_info_out)
-    end_date = evaluate_attribute(root,
-                                  outschema_dict,
-                                  'date',
-                                  constants,
-                                  contains='end',
-                                  parser_info_out=parser_info_out)
+    start_date = schema_util.evaluate_attribute(root,
+                                                outschema_dict,
+                                                'date',
+                                                constants,
+                                                contains='start',
+                                                parser_info_out=parser_info_out)
+    end_date = schema_util.evaluate_attribute(root,
+                                              outschema_dict,
+                                              'date',
+                                              constants,
+                                              contains='end',
+                                              parser_info_out=parser_info_out)
 
     offset = 0
     if start_date != end_date:
@@ -311,15 +374,15 @@ def parse_general_information(root, outschema_dict, inpschema_dict, parser_info_
     if fleurmode['ldau']:
         out_dict['ldau_info'] = {}
 
-        ldau_tag_path = get_tag_xpath(inpschema_dict, 'ldaU', contains='species')
+        ldau_tag_path = schema_util.get_tag_xpath(inpschema_dict, 'ldaU', contains='species')
         ldau_tag_info = inpschema_dict['tag_info'][ldau_tag_path]
         ldau_tag_path = f'{root_tag}{ldau_tag_path}'
         ldaU_definitions = eval_xpath(root, ldau_tag_path)
 
         for ldaU in ldaU_definitions:
             parent = ldaU.getparent()
-            element_z = get_xml_attribute(parent, 'atomicNumber')
-            species_name = get_xml_attribute(parent, 'name')
+            element_z = schema_util.get_xml_attribute(parent, 'atomicNumber')
+            species_name = schema_util.get_xml_attribute(parent, 'name')
             ldauKey = f'{species_name}/{element_z}'
 
             if ldauKey not in out_dict['ldau_info']:
@@ -368,47 +431,102 @@ def parse_iteration(iteration,
     #The task definition dictionary maps all the keys in the out_dict to the right function call
     #to obtain them from the out.xml
 
-    function_dict = {
-        'attrib': evaluate_attribute,
-        'text': evaluate_text,
-        'exists': tag_exists,
-        'numberNodes': get_number_of_nodes,
-        'singleValue': evaluate_single_value_tag,
+    tasks_definition = {}
+    tasks_definition['total_energy'] = {
+        'energy_hartree': {
+            'parseType': 'singleValue',
+            'args': {
+                'name': 'totalEnergy'
+            }
+        },
     }
 
-    tasks_definition = {}
-    tasks_definition['total_energy'] = {'energy_hartree': ('singleValue', {'name': 'totalEnergy'})}
-
     tasks_definition['total_energy_contributions'] = {
-        'sum_of_eigenvalues': ('singleValue', {
-            'name': 'sumOfEigenvalues'
-        }),
-        'energy_core_electrons': ('singleValue', {
-            'name': 'coreElectrons'
-        }),
-        'energy_valence_electrons': ('singleValue', {
-            'name': 'valenceElectrons'
-        }),
-        'charge_den_xc_den_integral': ('singleValue', {
-            'name': 'chargeDenXCDenIntegral'
-        }),
+        'sum_of_eigenvalues': {
+            'parse_type': 'singleValue',
+            'args': {
+                'name': 'sumOfEigenvalues'
+            }
+        },
+        'energy_core_electrons': {
+            'parse_type': 'singleValue',
+            'args': {
+                'name': 'coreElectrons'
+            }
+        },
+        'energy_valence_electrons': {
+            'parse_type': 'singleValue',
+            'args': {
+                'name': 'valenceElectrons'
+            }
+        },
+        'charge_den_xc_den_integral': {
+            'parse_type': 'singleValue',
+            'args': {
+                'name': 'chargeDenXCDenIntegral'
+            }
+        },
     }
 
     tasks_definition['ldau_energy_correction'] = {
-            'ldau_energy_correction': ('singleValue', {
+        'ldau_energy_correction': {
+            'parse_type': 'singleValue',
+            'args': {
                 'name': 'dftUCorrection'
-            }, 'ldau_info')
+            },
+            'subdict': 'ldau_info'
+        },
     }
 
     tasks_definition['nmmp_distances'] = {
-            'density_matrix_distance': ('attrib', {
+        'density_matrix_distance': {
+            'parse_type': 'singleValue',
+            'args': {
                 'name': 'distance',
                 'contains': 'ldaUDensityMatrixConvergence'
-            }, 'ldau_info')
+            },
+            'subdict': 'ldau_info'
+        },
     }
 
-    tasks_definition['fermi_energy'] = {'fermi_energy': ('singleValue', {'name': 'FermiEnergy'})}
-    tasks_definition['bandgap'] = {'bandgap': ('singleValue', {'name': 'bandgap'})}
+    tasks_definition['fermi_energy'] = {
+        'fermi_energy': {
+            'parse_type': 'singleValue',
+            'args': {
+                'name': 'FermiEnergy'
+            },
+        }
+    }
+    tasks_definition['bandgap'] = {
+        'bandgap': {
+            'parse_type': 'singleValue',
+            'args': {
+                'name': 'bandgap'
+            },
+        }
+    }
+
+    tasks_definition['magnetic_moments'] = {
+        'magnetic_moments': {
+            'parse_type': 'allAttribs',
+            'args': {
+                'name': 'magneticMoment'
+            },
+            'base_value': 'moment',
+            'ignore': ['atomType']
+        }
+    }
+
+    tasks_definition['orbital_magnetic_moments'] = {
+        'orbital_magnetic_moments': {
+            'parse_type': 'allAttribs',
+            'args': {
+                'name': 'orbMagMoment'
+            },
+            'base_value': 'moment',
+            'ignore': ['atomType']
+        }
+    }
 
     if fleurmode['jspin'] == 1:
         tasks_definition['distances'] = {}
@@ -416,110 +534,85 @@ def parse_iteration(iteration,
         tasks_definition['distances'] = {}
 
     #These are the default things to be parsed for all iterations
-    iteration_tasks_all = ['total_energy' , 'distances']
-
-    #These are the default things to be parsed for the last iteration (atm they just overwrite the value)
-    iteration_tasks_last = [
-        'total_energy_contributions',
-        'fermi_energy',
-        'bandgap',
-    ]
+    iteration_tasks = ['total_energy', 'distances', 'total_energy_contributions', 'fermi_energy', 'bandgap']
 
     iteration_tasks_forcetheorem = []
 
     #Mode specific tasks
     if fleurmode['jspin'] == 2:
-        pass
-        #iteration_tasks_last.append('magnetic_moments')
+        iteration_tasks.append('magnetic_moments')
 
     if fleurmode['soc']:
-        pass
-        #iteration_tasks_last.append('orbital_magnetic_moments')
+        iteration_tasks.append('orbital_magnetic_moments')
 
     if fleurmode['ldau']:
-        iteration_tasks_last.append('ldau_energy_correction')
-        iteration_tasks_all.append('nmmp_distances')
+        iteration_tasks.append('ldau_energy_correction')
+        iteration_tasks.append('nmmp_distances')
 
     #Check if this is a Forcetheorem iteration
 
     if 'overallNumber' in iteration.attrib:
         out_dict['number_of_iterations_total'] = int(iteration.attrib['overallNumber'])
 
-    for task in iteration_tasks_all:
+    for task in iteration_tasks:
         for key, spec in tasks_definition[task].items():
 
-            action = function_dict[spec[0]]
+            action = function_dict[spec['parse_type']]
+            args = spec['args'].copy()
 
-            if spec[0] in ['attrib', 'text', 'singleValue']:
-                spec[1]['constants'] = constants
+            if spec['parse_type'] in ['attrib', 'text', 'singleValue', 'allAttribs']:
+                args['constants'] = constants
 
-            subkey = None
-            if len(spec) == 3:
-                subkey = spec[2]
+            tmp_dict = out_dict
 
-            if subkey is not None:
-                if subkey not in out_dict:
-                    out_dict[subkey] = {}
+            if 'subdict' in spec:
+                if spec['subdict'] not in out_dict:
+                    out_dict[spec['subdict']] = {}
+                tmp_dict = out_dict[spec['subdict']]
+
+            if key not in tmp_dict:
+                tmp_dict[key] = []
+
+            ret_val = action(iteration, outschema_dict, parser_info_out=parser_info_out, **args)
+
+            if isinstance(ret_val, dict):
+                if spec['parse_type'] == 'singleValue':
+                    base_value = 'value'
+                    no_list = ['units']
+                elif spec['parse_type'] == 'allAttribs':
+                    base_value = spec['base_value']
+                    ignore = []
+                    if 'ignore' in spec:
+                        ignore = spec['ignore']
+                    no_list = []
+                    if 'overwrite' in spec:
+                        no_list = spec['overwrite']
+
+                for attrib_key, val in ret_val.items():
+                    if attrib_key in ignore:
+                        continue
+
+                    if attrib_key == base_value:
+                        current_key = attrib_key
+                    else:
+                        current_key = f'{key}_{attrib_key}'
+
+                    if current_key not in tmp_dict:
+                        tmp_dict[current_key] = []
+
+                    if attrib_key in no_list:
+                        tmp_dict[current_key] = val
+                    else:
+                        tmp_dict[current_key].append(val)
+
             else:
-                if key not in out_dict:
-                    out_dict[key] = []
+                if ret_val is not None:
+                    tmp_dict[key].append(ret_val)
 
-            value = None
-            unit = None
-            if spec[0] == 'singleValue':
-                value, unit = action(iteration, outschema_dict, parser_info_out=parser_info_out, **spec[1])
+            if 'subdict' in spec:
+                out_dict[spec['subdict']] = tmp_dict
             else:
-                value = action(iteration, outschema_dict, parser_info_out=parser_info_out, **spec[1])
-
-            if subkey is not None:
-                if key not in out_dict[subkey]:
-                    out_dict[subkey][key] = []
-                if value is not None:
-                    out_dict[subkey][key].append(value)
-                if unit is not None:
-                    out_dict[subkey][f'{key}_units'] = unit
-            else:
-                if value is not None:
-                    out_dict[key].append(value)
-                if unit is not None:
-                    out_dict[f'{key}_units'] = unit
-
-
-
-
-    for task in iteration_tasks_last:
-        for key, spec in tasks_definition[task].items():
-
-            action = function_dict[spec[0]]
-
-            if spec[0] in ['attrib', 'text', 'singleValue']:
-                spec[1]['constants'] = constants
-
-            subkey = None
-            if len(spec) == 3:
-                subkey = spec[2]
-
-            if subkey is not None:
-                if subkey not in out_dict:
-                    out_dict[subkey] = {}
-
-            value = None
-            unit = None
-            if spec[0] == 'singleValue':
-                value, unit = action(iteration, outschema_dict, parser_info_out=parser_info_out, **spec[1])
-            else:
-                value = action(iteration, outschema_dict, parser_info_out=parser_info_out, **spec[1])
-
-            if subkey is not None:
-                if value is not None:
-                    out_dict[subkey][key] = value
-                if unit is not None:
-                    out_dict[subkey][f'{key}_units'] = unit
-            else:
-                if value is not None:
-                    out_dict[key] = value
-                if unit is not None:
-                    out_dict[f'{key}_units'] = unit
+                out_dict = tmp_dict
 
     if fleurmode['relax']:  #This is too complex to put it into the standard tasks for now
         pass

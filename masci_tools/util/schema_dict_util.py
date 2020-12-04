@@ -356,7 +356,7 @@ def evaluate_single_value_tag(node,
         parser_info_out['parser_warnings'].append(f'Failed to evaluate singleValue from tag {name}: '
                                                   "Has no 'units' attribute")
 
-    return value_dict['value'], value_dict['units']
+    return value_dict
 
 
 def tag_exists(node, schema_dict, name, contains=None, not_contains=None, parser_info_out=None, abspath=None):
