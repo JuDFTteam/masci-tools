@@ -20,11 +20,10 @@ inpxmlfilefolder_valid = [
     os.path.abspath(os.path.join(inpxmlfilefolder, file_path2))
 ]
 
-ignore_inputs = ['NiO_ldauXML', 'Bi2Te3XML']  #These should fail but don't (except when they do)
 #Thes inputs are currently broken in the fleur tests
 broken_inputs = [
     'CoHybridPBE0', 'CoUnfold', 'gw1Interface', 'GaAsWannSOC', 'TiO2eelsXML', 'gw2Interface', 'Fe_film_SS_conv',
-    'SiHybrid8kpt_nosym', 'Fe_bulk_SS_conv', 'Fe_film_SSFT'
+    'SiHybrid8kpt_nosym', 'Fe_bulk_SS_conv', 'Fe_film_SSFT', 'Max-R5/NiO_ldauXML', 'Max-R5/Bi2Te3XML'
 ]
 
 inp_dict_input = ['FePt_film_SSFT_LO/files/inp2.xml']
@@ -40,9 +39,6 @@ for folder in inpxmlfilefolder_valid:
                 for broken in broken_inputs:
                     if broken in subdir:
                         inpxmlfilelist2.append(os.path.join(subdir, file))
-                        non_valid = True
-                for broken in ignore_inputs:
-                    if broken in subdir:
                         non_valid = True
                 if not non_valid:
                     inpxmlfilelist.append(os.path.join(subdir, file))
