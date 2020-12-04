@@ -56,9 +56,34 @@ def create_inpschema_dict(path, save_to_file=True):
     for key, action in schema_actions.items():
         schema_dict[key] = action(xmlschema, namespaces, **schema_dict)
 
+    docstring = '\n'\
+                'This file contains information parsed from the FleurInputSchema.xsd\n'\
+                f'for version {inp_version}\n'\
+                '\n'\
+                'The keys contain the following information:\n'\
+                '\n'\
+                "    - 'tag_paths': simple xpath expressions to all valid tag names\n"\
+                '                   Multiple paths or ambiguous tag names are parsed as a list\n'\
+                "    - 'basic_types': Parsed definitions of all simple Types with their respective\n"\
+                '                     base type (int, float, ...) and evtl. length restrictions\n'\
+                "    - 'attrib_types': All possible base types for all valid attributes. If multiple are\n"\
+                "                      possible a list, with 'string' always last (if possible)\n"\
+                "    - 'simple_elements': All elements with simple types and their type definition\n"\
+                '                         with the additional attributes\n'\
+                "    - 'unique_attribs': All attributes and their paths, which occur only once and\n"\
+                '                        have a unique path\n'\
+                "    - 'unique_path_attribs': All attributes and their paths, which have a unique path\n"\
+                '                             but occur in multiple places\n'\
+                "    - 'other_attribs': All attributes and their paths, which are not in 'unique_attribs' or\n"\
+                "                       'unique_path_attribs'\n"\
+                "    - 'omitt_contained_tags': All tags, which only contain a list of one other tag\n"\
+                "    - 'tag_info': For each tag (path), the valid attributes and tags (optional, several,\n"\
+                '                  order, simple, text)\n'
+
     if save_to_file:
         with open(f'{path}/inpschema_dict.py', 'w') as f:
             f.write('# -*- coding: utf-8 -*-\n')
+            f.write(f'"""{docstring}"""\n')
             f.write(f"__inp_version__ = '{inp_version}'\n")
             f.write('schema_dict = ')
             pprint(schema_dict, f)

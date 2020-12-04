@@ -1,4 +1,28 @@
 # -*- coding: utf-8 -*-
+"""
+This file contains information parsed from the FleurInputSchema.xsd
+for version 0.30
+
+The keys contain the following information:
+
+    - 'tag_paths': simple xpath expressions to all valid tag names
+                   Multiple paths or ambiguous tag names are parsed as a list
+    - 'basic_types': Parsed definitions of all simple Types with their respective
+                     base type (int, float, ...) and evtl. length restrictions
+    - 'attrib_types': All possible base types for all valid attributes. If multiple are
+                      possible a list, with 'string' always last (if possible)
+    - 'simple_elements': All elements with simple types and their type definition
+                         with the additional attributes
+    - 'unique_attribs': All attributes and their paths, which occur only once and
+                        have a unique path
+    - 'unique_path_attribs': All attributes and their paths, which have a unique path
+                             but occur in multiple places
+    - 'other_attribs': All attributes and their paths, which are not in 'unique_attribs' or
+                       'unique_path_attribs'
+    - 'omitt_contained_tags': All tags, which only contain a list of one other tag
+    - 'tag_info': For each tag (path), the valid attributes and tags (optional, several,
+                  order, simple, text)
+"""
 __inp_version__ = '0.30'
 schema_dict = {
     'attrib_types': {
