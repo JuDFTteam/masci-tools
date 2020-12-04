@@ -74,8 +74,47 @@ def create_outschema_dict(path):
             addargs['iteration'] = True
         schema_dict[key] = action(xmlschema, namespaces, **schema_dict, **addargs)
 
+    docstring = '\n'\
+                'This file contains information parsed from the FleurOutputSchema.xsd\n'\
+                f'for version {out_version}\n'\
+                '\n'\
+                'The keys contain the following information:\n'\
+                '\n'\
+                "    - 'tag_paths': simple xpath expressions to all valid tag names not in an iteration\n"\
+                '                   Multiple paths or ambiguous tag names are parsed as a list\n'\
+                "    - 'iteration_tag_paths': simple relative xpath expressions to all valid tag names\n"\
+                '                             inside an iteration. Multiple paths or ambiguous tag names\n'\
+                '                             are parsed as a list\n'\
+                "    - 'basic_types': Parsed definitions of all simple Types with their respective\n"\
+                '                     base type (int, float, ...) and evtl. length restrictions\n'\
+                "    - 'attrib_types': All possible base types for all valid attributes. If multiple are\n"\
+                "                      possible a list, with 'string' always last (if possible)\n"\
+                "    - 'simple_elements': All elements with simple types and their type definition\n"\
+                '                         with the additional attributes\n'\
+                "    - 'unique_attribs': All attributes and their paths, which occur only once and\n"\
+                '                        have a unique path outside of an iteration\n'\
+                "    - 'unique_path_attribs': All attributes and their paths, which have a unique path\n"\
+                '                             but occur in multiple places outside of an iteration\n'\
+                "    - 'other_attribs': All attributes and their paths, which are not in 'unique_attribs' or\n"\
+                "                       'unique_path_attribs' outside of an iteration\n"\
+                "    - 'iteration_unique_attribs': All attributes and their relative paths, which occur\n"\
+                '                                  only once and have a unique path inside of an iteration\n'\
+                "    - 'iteration_unique_path_attribs': All attributes and their relative paths, which have\n"\
+                '                                       a unique path but occur in multiple places inside\n'\
+                '                                       of an iteration\n'\
+                "    - 'iteration_other_attribs': All attributes and their relative paths, which are not\n"\
+                "                                 in 'unique_attribs' or 'unique_path_attribs' inside\n"\
+                '                                 of an iteration\n'\
+                "    - 'omitt_contained_tags': All tags, which only contain a list of one other tag\n"\
+                "    - 'tag_info': For each tag outside of an iteration (path), the valid attributes\n"\
+                '                  and tags (optional, several, order, simple, text)\n'\
+                "    - 'iteration_tag_info': For each tag inside of an iteration (relative path),\n"\
+                '                            the valid attributes and tags (optional, several,\n'\
+                '                            order, simple, text)\n'
+
     with open(f'{path}/outschema_dict.py', 'w') as f:
         f.write('# -*- coding: utf-8 -*-\n')
+        f.write(f'"""{docstring}"""\n')
         f.write(f"__out_version__ = '{out_version}'\n")
         f.write('schema_dict = ')
         pprint(schema_dict, f)

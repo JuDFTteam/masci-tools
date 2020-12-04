@@ -1,4 +1,42 @@
 # -*- coding: utf-8 -*-
+"""
+This file contains information parsed from the FleurOutputSchema.xsd
+for version 0.33
+
+The keys contain the following information:
+
+    - 'tag_paths': simple xpath expressions to all valid tag names not in an iteration
+                   Multiple paths or ambiguous tag names are parsed as a list
+    - 'iteration_tag_paths': simple relative xpath expressions to all valid tag names
+                             inside an iteration. Multiple paths or ambiguous tag names
+                             are parsed as a list
+    - 'basic_types': Parsed definitions of all simple Types with their respective
+                     base type (int, float, ...) and evtl. length restrictions
+    - 'attrib_types': All possible base types for all valid attributes. If multiple are
+                      possible a list, with 'string' always last (if possible)
+    - 'simple_elements': All elements with simple types and their type definition
+                         with the additional attributes
+    - 'unique_attribs': All attributes and their paths, which occur only once and
+                        have a unique path outside of an iteration
+    - 'unique_path_attribs': All attributes and their paths, which have a unique path
+                             but occur in multiple places outside of an iteration
+    - 'other_attribs': All attributes and their paths, which are not in 'unique_attribs' or
+                       'unique_path_attribs' outside of an iteration
+    - 'iteration_unique_attribs': All attributes and their relative paths, which occur
+                                  only once and have a unique path inside of an iteration
+    - 'iteration_unique_path_attribs': All attributes and their relative paths, which have
+                                       a unique path but occur in multiple places inside
+                                       of an iteration
+    - 'iteration_other_attribs': All attributes and their relative paths, which are not
+                                 in 'unique_attribs' or 'unique_path_attribs' inside
+                                 of an iteration
+    - 'omitt_contained_tags': All tags, which only contain a list of one other tag
+    - 'tag_info': For each tag outside of an iteration (path), the valid attributes
+                  and tags (optional, several, order, simple, text)
+    - 'iteration_tag_info': For each tag inside of an iteration (relative path),
+                            the valid attributes and tags (optional, several,
+                            order, simple, text)
+"""
 __out_version__ = '0.33'
 schema_dict = {
     'attrib_types': {
@@ -300,6 +338,7 @@ schema_dict = {
         }
     },
     'iteration_other_attribs': {
+        'Angles': ['./Forcetheorem_DMI', './Forcetheorem_MAE'],
         'Delta': ['./onSiteExchangeSplitting/excSplit'],
         'F_x': ['./totalForcesOnRepresentativeAtoms/forceTotal'],
         'F_y': ['./totalForcesOnRepresentativeAtoms/forceTotal'],
