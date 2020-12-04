@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+"""
+Test of the consistency the input schema dictionaries with the SchemaFiles in the same folder
+"""
 import pytest
 import os
 from masci_tools.io.parsers.fleur.fleur_schema import load_inpschema, create_inpschema_dict
