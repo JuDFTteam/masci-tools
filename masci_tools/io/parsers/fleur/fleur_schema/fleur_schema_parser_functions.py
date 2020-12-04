@@ -681,7 +681,7 @@ def get_unique_path_attribs(xmlschema, namespaces, **kwargs):
         settable_contains_key = 'unique_path_attribs'
     else:
         settable_key = 'unique_attribs'
-        settable_contains_key = 'iteration_unique_path_attribs'
+        settable_contains_key = 'unique_path_attribs'
 
     settable = {}
     possible_attrib = xmlschema.xpath('//xsd:attribute/@name', namespaces=namespaces)
@@ -732,7 +732,7 @@ def get_other_attribs(xmlschema, namespaces, **kwargs):
         settable_contains_key = 'unique_path_attribs'
     else:
         settable_key = 'unique_attribs'
-        settable_contains_key = 'iteration_unique_path_attribs'
+        settable_contains_key = 'unique_path_attribs'
 
     other = {}
     possible_attrib = xmlschema.xpath('//xsd:attribute/@name', namespaces=namespaces)
