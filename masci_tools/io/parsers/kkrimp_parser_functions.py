@@ -248,7 +248,10 @@ class KkrimpParserFunctions(object):
             spinmom_at_all = np.append(spinmom_at_all, [lines[j].split()], axis=0)
         spinmom_at_tot = 0
         for i in range(0, natom):
-            spinmom_at_tot += sqrt(float(spinmom_at[i][0])**2 + float(spinmom_at[i][1])**2 + float(spinmom_at[i][2])**2)
+            spinmom_at_tot += sqrt(float(spinmom_at[i][0])**2+float(spinmom_at[i][1])**2+float(spinmom_at[i][2])**2)
+        # make sure the values are converted from string to float
+        spinmom_at = np.array(spinmom_at, dtype=float)
+        spinmom_at_all = np.array(spinmom_at_all, dtype=float)
 
         return spinmom_at, spinmom_at_all, spinmom_at_tot
 
