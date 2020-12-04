@@ -225,8 +225,6 @@ schema_dict = {
         'nshells': ['int'],
         'nstars': ['int'],
         'nstm': ['int'],
-        'ntet': ['int'],
-        'ntria': ['int'],
         'numPoints': ['int'],
         'numbands': ['int', 'string'],
         'numberPoints': ['int'],
@@ -303,7 +301,6 @@ schema_dict = {
         'vec3': ['string'],
         'vecField': ['switch'],
         'verbose': ['switch'],
-        'vol': ['string'],
         'wannier': ['switch'],
         'warp_factor': ['float_expression'],
         'weight': ['float_expression'],
@@ -455,10 +452,6 @@ schema_dict = {
         'StringVecType': {
             'base_types': ['string'],
             'length': 'unbounded'
-        },
-        'TriaType': {
-            'base_types': ['int'],
-            'length': 3
         },
         'TripleFleurBool': {
             'base_types': ['string'],
@@ -623,8 +616,6 @@ schema_dict = {
         'nmatsub': ['/fleurInput/calculationSetup/greensFunction/contourRectangle'],
         'nshells':
         ['/fleurInput/atomSpecies/species/greensfCalculation', '/fleurInput/atomGroups/atomGroup/greensfCalculation'],
-        'ntet': ['/fleurInput/cell/bzIntegration/kPointLists/kPointList/tetraeder'],
-        'ntria': ['/fleurInput/cell/bzIntegration/kPointLists/kPointList/triangles'],
         'nx': ['/fleurInput/cell/bzIntegration/kPointLists/kPointList'],
         'ny': ['/fleurInput/cell/bzIntegration/kPointLists/kPointList'],
         'nz': ['/fleurInput/cell/bzIntegration/kPointLists/kPointList'],
@@ -676,12 +667,10 @@ schema_dict = {
             '/fleurInput/atomSpecies/species/electronConfig/stateOccupation'
         ],
         'state': ['/fleurInput/atomSpecies/species/electronConfig/stateOccupation'],
-        'tet': ['/fleurInput/cell/bzIntegration/kPointLists/kPointList/tetraeder/tet'],
         'theta': [
             '/fleurInput/atomSpecies/species/ldaU', '/fleurInput/atomGroups/atomGroup/ldaU',
             '/fleurInput/atomSpecies/species/ldaHIA', '/fleurInput/atomGroups/atomGroup/ldaHIA'
         ],
-        'tria': ['/fleurInput/cell/bzIntegration/kPointLists/kPointList/triangles/tria'],
         'type': [
             '/fleurInput/atomSpecies/species/lo', '/fleurInput/atomGroups/atomGroup/lo',
             '/fleurInput/cell/bzIntegration/kPointLists/kPointList'
@@ -825,14 +814,6 @@ schema_dict = {
         }],
         'shape': [{
             'length': 1,
-            'type': ['string']
-        }],
-        'tet': [{
-            'length': 'unbounded',
-            'type': ['string']
-        }],
-        'tria': [{
-            'length': 'unbounded',
             'type': ['string']
         }],
         'valenceConfig': [{
@@ -1549,8 +1530,8 @@ schema_dict = {
         },
         '/fleurInput/cell/bzIntegration/kPointLists/kPointList': {
             'attribs': ['name', 'type', 'count', 'nx', 'ny', 'nz'],
-            'optional': ['tetraeder', 'triangles'],
-            'order': ['kPoint', 'tetraeder', 'triangles'],
+            'optional': [],
+            'order': ['kPoint'],
             'several': ['kPoint'],
             'simple': ['kPoint'],
             'text': ['kPoint']
@@ -1562,22 +1543,6 @@ schema_dict = {
             'several': [],
             'simple': [],
             'text': []
-        },
-        '/fleurInput/cell/bzIntegration/kPointLists/kPointList/tetraeder': {
-            'attribs': ['ntet'],
-            'optional': [],
-            'order': ['tet'],
-            'several': ['tet'],
-            'simple': ['tet'],
-            'text': ['tet']
-        },
-        '/fleurInput/cell/bzIntegration/kPointLists/kPointList/triangles': {
-            'attribs': ['ntria'],
-            'optional': [],
-            'order': ['tria'],
-            'several': ['tria'],
-            'simple': ['tria'],
-            'text': ['tria']
         },
         '/fleurInput/cell/filmLattice': {
             'attribs': ['scale', 'dVac', 'dTilda'],
@@ -2104,16 +2069,8 @@ schema_dict = {
         '/fleurInput/cell/symmetryOperations/symOp',
         'symmetryOperations':
         '/fleurInput/cell/symmetryOperations',
-        'tet':
-        '/fleurInput/cell/bzIntegration/kPointLists/kPointList/tetraeder/tet',
-        'tetraeder':
-        '/fleurInput/cell/bzIntegration/kPointLists/kPointList/tetraeder',
         'torgueCalculation':
         ['/fleurInput/atomSpecies/species/torgueCalculation', '/fleurInput/atomGroups/atomGroup/torgueCalculation'],
-        'tria':
-        '/fleurInput/cell/bzIntegration/kPointLists/kPointList/triangles/tria',
-        'triangles':
-        '/fleurInput/cell/bzIntegration/kPointLists/kPointList/triangles',
         'unfoldingBand':
         '/fleurInput/output/unfoldingBand',
         'vacuumDOS':
