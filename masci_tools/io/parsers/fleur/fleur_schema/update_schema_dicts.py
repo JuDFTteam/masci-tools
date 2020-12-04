@@ -13,8 +13,8 @@
 """
 Contains utility to update the schema dicts.
 """
-from .inpschema_todict import create_inpschema_dict
-from .outschema_todict import create_outschema_dict
+from masci_tools.io.parsers.fleur.fleur_schema import create_inpschema_dict
+from masci_tools.io.parsers.fleur.fleur_schema import create_outschema_dict
 import os
 
 PACKAGE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
@@ -31,3 +31,7 @@ def update_schema_dicts():
                 if not os.path.isfile(os.path.join(path, 'inpschema_dict.py')):
                     create_inpschema_dict(path)
                 create_outschema_dict(path)
+
+
+if __name__ == '__main__':
+    update_schema_dicts()
