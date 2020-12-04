@@ -16,6 +16,7 @@ Contains utility to add new pairs of input/output schemas.
 from .inpschema_todict import create_inpschema_dict
 from .outschema_todict import create_outschema_dict
 import os
+import sys
 import shutil
 from lxml import etree
 from masci_tools.util.xml.common_xml_util import clear_xml

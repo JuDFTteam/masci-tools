@@ -333,6 +333,7 @@ def test_inpxml_valid_inpxml(inpxmlfilepath):
     xmltree = etree.parse(inpxmlfilepath, parser)
     inp_dict = inpxml_parser(xmltree)
 
+
 @pytest.mark.parametrize('inpxmlfilepath', inpxmlfilelist2)
 def test_inpxml_non_valid_inpxml(inpxmlfilepath):
     """

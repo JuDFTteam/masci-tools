@@ -225,7 +225,7 @@ def convert_xml_text(tagtext, possible_definitions, constants, conversion_warnin
     if suc_return:
         return ret_value, all_success
     else:
-        ret_value
+        return ret_value
 
 
 def convert_to_float(value_string, conversion_warnings=None, suc_return=True):
