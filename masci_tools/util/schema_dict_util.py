@@ -58,7 +58,7 @@ def get_tag_xpath(schema_dict, name, contains=None, not_contains=None):
 
             if not_contains is not None:
                 for xpath in paths:
-                    if not_contains not in xpath and xpath not in invalid_paths:
+                    if not_contains in xpath and xpath not in invalid_paths:
                         invalid_paths.append(xpath)
 
             for invalid in invalid_paths:
@@ -69,9 +69,13 @@ def get_tag_xpath(schema_dict, name, contains=None, not_contains=None):
 
             all_paths += paths
 
-    raise ValueError(f'The tag {name} has multiple possible paths with the current specification.\n'
-                     f'contains: {contains}, not_contains: {not_contains} \n'
-                     f'These are possible: {all_paths}')
+    if len(all_paths) == 0:
+        raise ValueError(f'The tag {name} has no possible paths with the current specification.\n'
+                         f'contains: {contains}, not_contains: {not_contains}')
+    else:
+        raise ValueError(f'The tag {name} has multiple possible paths with the current specification.\n'
+                         f'contains: {contains}, not_contains: {not_contains} \n'
+                         f'These are possible: {all_paths}')
 
 
 def get_attrib_xpath(schema_dict, name, contains=None, not_contains=None, exclude=None):
@@ -91,14 +95,12 @@ def get_attrib_xpath(schema_dict, name, contains=None, not_contains=None, exclud
     :raises ValueError: If no unique path could be found
     """
 
-    possible_lists = ['settable_attribs', 'settable_contains_attribs', 'other_attribs']
+    possible_lists = ['unique_attribs', 'unique_path_attribs', 'other_attribs']
     output = False
-    if 'iteration_settable_attribs' in schema_dict:
+    if 'iteration_unique_attribs' in schema_dict:
         #outputschema
         output = True
-        possible_lists += [
-            'iteration_settable_attribs', 'iteration_settable_contains_attribs', 'iteration_other_attribs'
-        ]
+        possible_lists += ['iteration_unique_attribs', 'iteration_unique_path_attribs', 'iteration_other_attribs']
 
     if exclude is not None:
         for list_name in exclude:
@@ -122,7 +124,7 @@ def get_attrib_xpath(schema_dict, name, contains=None, not_contains=None, exclud
 
             if not_contains is not None:
                 for xpath in paths:
-                    if not_contains not in xpath and xpath not in invalid_paths:
+                    if not_contains in xpath and xpath not in invalid_paths:
                         invalid_paths.append(xpath)
 
             for invalid in invalid_paths:
@@ -133,9 +135,13 @@ def get_attrib_xpath(schema_dict, name, contains=None, not_contains=None, exclud
 
             all_paths += paths
 
-    raise ValueError(f'The attrib {name} has multiple possible paths with the current specification.\n'
-                     f'contains: {contains}, not_contains: {not_contains}, exclude {exclude}\n'
-                     f'These are possible: {all_paths}')
+    if len(all_paths) == 0:
+        raise ValueError(f'The attrib {name} has no possible paths with the current specification.\n'
+                         f'contains: {contains}, not_contains: {not_contains}, exclude {exclude}')
+    else:
+        raise ValueError(f'The attrib {name} has multiple possible paths with the current specification.\n'
+                         f'contains: {contains}, not_contains: {not_contains}, exclude {exclude}\n'
+                         f'These are possible: {all_paths}')
 
 
 def evaluate_attribute(node,
