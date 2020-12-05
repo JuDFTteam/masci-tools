@@ -392,8 +392,13 @@ def tag_exists(node, schema_dict, name, contains=None, not_contains=None, parser
 
     :returns: bool, True if any nodes with the path exist
     """
-    return get_number_of_nodes(
-        node, schema_dict, name, contains=contains, parser_info_out=parser_info_out, abspath=abspath) != 0
+    return get_number_of_nodes(node,
+                               schema_dict,
+                               name,
+                               contains=contains,
+                               not_contains=not_contains,
+                               parser_info_out=parser_info_out,
+                               abspath=abspath) != 0
 
 
 def get_number_of_nodes(node, schema_dict, name, contains=None, not_contains=None, parser_info_out=None, abspath=None):

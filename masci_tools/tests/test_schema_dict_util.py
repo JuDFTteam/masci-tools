@@ -294,6 +294,120 @@ def test_evaluate_text():
     expected_info = {'parser_warnings': ['No text found for tag magnetism']}
     parser_info_out = {'parser_warnings': []}
     assert evaluate_text(root, schema_dict, 'magnetism', CONSTANTS, parser_info_out=parser_info_out) is None
+
+    assert schema_dict == schema_dict_33
+
+
+def test_evaluate_tag():
+    """
+    Test of the evaluate_tag function
+    """
+    from lxml import etree
+    from masci_tools.util.schema_dict_util import evaluate_tag
+
+    schema_dict = copy.deepcopy(schema_dict_33)
+
+    parser = etree.XMLParser(attribute_defaults=True, recover=False, encoding='utf-8')
+    xmltree = etree.parse(TEST_INPXML_PATH, parser)
+    root = xmltree.getroot()
+
+    expected = {
+        'itmax': 1,
+        'maxIterBroyd': 99,
+        'imix': 'Anderson',
+        'alpha': 0.05,
+        'precondParam': 0.0,
+        'spinf': 2.0,
+        'minDistance': 1e-05,
+        'maxTimeToStartIter': None
+    }
+    scfloop = evaluate_tag(root, schema_dict, 'scfLoop', CONSTANTS)
+    assert scfloop == expected
+
+    with pytest.raises(ValueError, match='The tag Magnetism has no possible paths with the current specification.'):
+        evaluate_tag(root, schema_dict, 'Magnetism', CONSTANTS)
+    with pytest.raises(ValueError,
+                       match='The tag mtSphere has multiple possible paths with the current specification.'):
+        evaluate_tag(root, schema_dict, 'mtSphere', CONSTANTS)
+
+    expected_info = {
+        'parser_warnings': [
+            'Failed to evaluate attributes from tag qss: '
+            'No attributes to parse either the tag does not '
+            'exist or it has no attributes'
+        ]
+    }
+    parser_info_out = {'parser_warnings': []}
+    assert evaluate_tag(root, schema_dict, 'qss', CONSTANTS, parser_info_out=parser_info_out) == {}
     assert parser_info_out == expected_info
+
+    expected = {'radius': [2.2, 2.2], 'gridPoints': [787, 787], 'logIncrement': [0.016, 0.017]}
+    mtRadii = evaluate_tag(root, schema_dict, 'mtSphere', CONSTANTS, contains='species')
+    assert mtRadii == expected
+
+    expected = {
+        'l_constrained': None,
+        'l_mtNocoPot': None,
+        'l_relaxSQA': None,
+        'l_magn': None,
+        'M': None,
+        'alpha': [0.0, 0.0],
+        'beta': [1.570796326, 1.570796326],
+        'b_cons_x': None,
+        'b_cons_y': None
+    }
+    nocoParams = evaluate_tag(root, schema_dict, 'nocoParams', CONSTANTS, contains='atomGroup')
+    assert nocoParams == expected
+    assert schema_dict == schema_dict_33
+
+
+def test_tag_exists():
+    """
+    Test of the tag_exists function
+    """
+    from lxml import etree
+    from masci_tools.util.schema_dict_util import tag_exists
+
+    schema_dict = copy.deepcopy(schema_dict_33)
+
+    parser = etree.XMLParser(attribute_defaults=True, recover=False, encoding='utf-8')
+    xmltree = etree.parse(TEST_INPXML_PATH, parser)
+    root = xmltree.getroot()
+
+    assert tag_exists(root, schema_dict, 'filmPos')
+    assert tag_exists(root, schema_dict, 'calculationSetup')
+    assert not tag_exists(root, schema_dict, 'ldaU', contains='species')
+    assert tag_exists(root, schema_dict, 'ldaU', not_contains='atom')
+
+    with pytest.raises(ValueError, match='The tag ldaU has multiple possible paths with the current specification.'):
+        tag_exists(root, schema_dict, 'ldaU')
+    with pytest.raises(ValueError, match='The tag ldaU has no possible paths with the current specification.'):
+        tag_exists(root, schema_dict, 'ldaU', contains='group')
+
+    assert schema_dict == schema_dict_33
+
+
+def test_get_number_of_nodes():
+    """
+    Test of the get_number_of_nodes function
+    """
+    from lxml import etree
+    from masci_tools.util.schema_dict_util import get_number_of_nodes
+
+    schema_dict = copy.deepcopy(schema_dict_33)
+
+    parser = etree.XMLParser(attribute_defaults=True, recover=False, encoding='utf-8')
+    xmltree = etree.parse(TEST_INPXML_PATH, parser)
+    root = xmltree.getroot()
+
+    assert get_number_of_nodes(root, schema_dict, 'filmPos') == 2
+    assert get_number_of_nodes(root, schema_dict, 'calculationSetup') == 1
+    assert get_number_of_nodes(root, schema_dict, 'ldaU', contains='species') == 0
+    assert get_number_of_nodes(root, schema_dict, 'ldaU', not_contains='atom') == 1
+
+    with pytest.raises(ValueError, match='The tag ldaU has multiple possible paths with the current specification.'):
+        get_number_of_nodes(root, schema_dict, 'ldaU')
+    with pytest.raises(ValueError, match='The tag ldaU has no possible paths with the current specification.'):
+        get_number_of_nodes(root, schema_dict, 'ldaU', contains='group')
 
     assert schema_dict == schema_dict_33
