@@ -15,11 +15,11 @@ Contains utility to add new pairs of input/output schemas.
 """
 from masci_tools.io.parsers.fleur.fleur_schema import create_inpschema_dict
 from masci_tools.io.parsers.fleur.fleur_schema import create_outschema_dict
+from masci_tools.util.xml.common_xml_util import clear_xml
 import os
 import sys
 import shutil
 from lxml import etree
-from masci_tools.util.xml.common_xml_util import clear_xml
 
 PACKAGE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 

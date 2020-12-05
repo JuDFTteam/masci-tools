@@ -6,11 +6,24 @@ both path finding and easy information extraction
 import pytest
 import os
 import copy
+import numpy as np
 from masci_tools.io.parsers.fleur.fleur_schema import load_inpschema
 
 #Load different schema versions (for now only input schemas)
 schema_dict_33 = load_inpschema('0.33')
 schema_dict_27 = load_inpschema('0.27')
+
+FILE_PATH = os.path.dirname(os.path.abspath(__file__))
+TEST_INPXML_PATH = os.path.join(FILE_PATH, 'files/fleur/Max-R5/FePt_film_SSFT_LO/files/inp2.xml')
+
+CONSTANTS = {
+    'Pi': np.pi,
+    'Deg': 2 * np.pi / 360.0,
+    'Ang': 1.8897261247728981,
+    'nm': 18.897261247728981,
+    'pm': 0.018897261247728981,
+    'Bohr': 1.0
+}
 
 
 def test_get_tag_xpath_input():
@@ -189,3 +202,47 @@ def test_get_attrib_xpath_exclude():
 
     #Make sure that this did not modify the schema dict
     assert schema_dict == schema_dict_33
+
+
+def test_evaluate_attribute():
+
+    from lxml import etree
+    from masci_tools.util.schema_dict_util import evaluate_attribute
+
+    schema_dict = copy.deepcopy(schema_dict_33)
+
+    parser = etree.XMLParser(attribute_defaults=True, recover=False, encoding='utf-8')
+    xmltree = etree.parse(TEST_INPXML_PATH, parser)
+
+    root = xmltree.getroot()
+
+    assert evaluate_attribute(root, schema_dict, 'jspins', CONSTANTS) == 2
+    assert evaluate_attribute(root, schema_dict, 'l_noco', CONSTANTS)
+    assert evaluate_attribute(root, schema_dict, 'mode', CONSTANTS) == 'hist'
+    assert pytest.approx(evaluate_attribute(root, schema_dict, 'radius', CONSTANTS, contains='species')) == [2.2, 2.2]
+
+    with pytest.raises(ValueError, match='The attrib beta has multiple possible paths with the current specification.'):
+        evaluate_attribute(root, schema_dict, 'beta', CONSTANTS, exclude=['unique'])
+
+    assert pytest.approx(
+        evaluate_attribute(root,
+                           schema_dict,
+                           'beta',
+                           CONSTANTS,
+                           exclude=['unique'],
+                           contains='nocoParams',
+                           not_contains='species')) == [np.pi / 2.0, np.pi / 2.0]
+
+    with pytest.raises(ValueError, match='The attrib l_Noco has no possible paths with the current specification.'):
+        evaluate_attribute(root, schema_dict, 'l_Noco', CONSTANTS)
+
+    with pytest.raises(ValueError,
+                       match='The attrib spinf has multiple possible paths with the current specification.'):
+        evaluate_attribute(root, schema_dict, 'spinf', CONSTANTS)
+
+    expected_info = {'parser_warnings': ['No values found for attribute radius']}
+
+    parser_info_out = {'parser_warnings': []}
+    assert evaluate_attribute(
+        root, schema_dict, 'radius', CONSTANTS, not_contains='species', parser_info_out=parser_info_out) is None
+    assert parser_info_out == expected_info
