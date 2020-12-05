@@ -235,6 +235,19 @@ def evaluate_text(node,
 
     stringtext = eval_xpath(node, f'{tag_xpath}/text()', parser_info_out=parser_info_out)
 
+    if isinstance(stringtext, list):
+        for text in stringtext.copy():
+            if text.strip() == '':
+                stringtext.remove(text)
+    else:
+        if stringtext.strip() == '':
+            stringtext = []
+
+    if isinstance(stringtext, list):
+        if len(stringtext) == 0:
+            parser_info_out['parser_warnings'].append(f'No text found for tag {name}')
+            return None
+
     possible_definitions = schema_dict['simple_elements'][name]
 
     warnings = []
