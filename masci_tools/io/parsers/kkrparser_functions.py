@@ -28,12 +28,13 @@ __version__ = "1.8"
 def parse_array_float(outfile, searchstring, splitinfo, replacepair=None, debug=False):
     """
     Search for keyword `searchstring` in `outfile` and extract array of results
+
     .. note:
-      `splitinfo`   can be of the form [1, 'X', 1] or [2, 'X', 1, 0] where
-      splitinfo[0] can only be 1 or 2 (determines the mode),
-      splitinfo[1] is the string at which the line is split,
-      splitinfo[2] is the index which is used,
-      splitinfo[3] (only for splitinfo[0]==2) is the part that is taken after applying split() a second time (split at whitespace).
+        `splitinfo` can be of the form [1, 'X', 1] or [2, 'X', 1, 0] where
+        splitinfo[0] can only be 1 or 2 (determines the mode),
+        splitinfo[1] is the string at which the line is split,
+        splitinfo[2] is the index which is used,
+        splitinfo[3] (only for splitinfo[0]==2) is the part that is taken after applying split() a second time (split at whitespace).
 
     .. note:
         If `replacepair` is not None the substring replacepair[0] is replaced by replacepair[1] before processing further
