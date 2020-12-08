@@ -1950,6 +1950,7 @@ def plot_corelevel_spectra(coreleveldict,
         energy_grid (float): energy resolution
         linetyp_spec : linetype for spectrum
         peakfunction (string): what the peakfunction should be {'voigt', 'pseudo-voigt', 'lorentz', 'gaus'}
+
     example:
 
     coreleveldict = {u'Be': {'1s1/2' : [-1.0220669053033051, -0.3185614920138805,
