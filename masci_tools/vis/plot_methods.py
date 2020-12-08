@@ -1696,12 +1696,10 @@ def plot_one_element_corelv(corelevel_dict, element, compound=''):
     """
     This routine creates a plot which visualizes all the binding energies of one
     element (and currenlty one corelevel) for different atomtypes.
-
     
     example:
-        corelevels = {'W' : {'4f7/2' : [123, 123.3, 123.4 ,123.1],
-                             '4f5/2' : [103, 103.3, 103.4, 103.1]},
-                      'Be' : {'1s': [118, 118.2, 118.4, 118.1, 118.3]}}
+        corelevels = {'W' : {'4f7/2' : [123, 123.3, 123.4 ,123.1], '4f5/2' : [103, 103.3, 103.4, 103.1]}, 'Be' : {'1s': [118, 118.2, 118.4, 118.1, 118.3]}}
+    
     """
     corelevels_names = []
     xdata_all = []
