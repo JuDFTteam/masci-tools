@@ -27,11 +27,11 @@ def check_full_dict(p, p0):
     for key in [i[0] for i in p.get_set_values()]:
         v = p.get_value(key)
         v0 = p0.get_value(key)
-        if not isinstance(type(v), list) and not isinstance(type(v), ndarray):
+        if not isinstance(v, list) and not isinstance(v, ndarray):
             if v != v0:
                 print(key, v, v0)
             assert v == v0
-        elif not isinstance(type(v[0]), str):
+        elif not isinstance(v[0], str):
             if abs(array(v) - array(v0)).max() >= 10**-14:
                 print(key, abs(array(v) - array(v0)).max())
             assert abs(array(v) - array(v0)).max() < 10**-14
@@ -48,7 +48,7 @@ class Test_create_and_set_keys(object):  # pylint: disable=missing-class-docstri
 
     def test_create_params_with_inital_values(self):
         p = kkrparams(RBASIS=[0, 0, 0], params_type='voronoi')
-        assert isinstance(type(p), kkrparams)
+        assert isinstance(p, kkrparams)
         assert p.values['<RBASIS>'] == [0, 0, 0]
 
     def test_default_values(self):

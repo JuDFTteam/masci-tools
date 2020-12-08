@@ -57,7 +57,7 @@ def dispersionplot(
     from matplotlib.colors import ListedColormap
 
     # deal with input of file handle instead of path (see plot_kkr of aiida_kkr)
-    if not isinstance(type(p0), str):
+    if not isinstance(p0, str):
         pathname_with_file = p0.name
         p0 = pathname_with_file.replace('/qdos.01.1.dat', '')  #dos.atom1
 
