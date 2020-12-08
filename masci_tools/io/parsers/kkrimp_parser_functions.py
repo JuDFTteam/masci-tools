@@ -338,16 +338,18 @@ class KkrimpParserFunctions(object):
         :param file_dict: dictionary of files that are parsed
         :returns: success (bool), msg_list(list of error/warning messages of parser), out_dict (filled dict of parsed output)
         :note: file_dict should contain the following keys
-            * 'outfile', the std_out of the KKRimp calculation
-            * 'out_log', the out_log.000.txt file
-            * 'out_pot', the output potential
-            * 'out_enersp_at', the out_energysp_per_atom_eV file
-            * 'out_enertot_at', the out_energytotal_per_atom_eV file
-            * 'out_timing', the timing file
-            * 'kkrflex_llyfac', the file for the Lloyd factor
-            * 'kkrflex_angles', the nonco_angles file for the KKRimp calculation
-            * 'out_spinmoms', the output spin moments file
-            * 'out_orbmoms', the output orbital moments file
+
+               - 'outfile', the std_out of the KKRimp calculation
+               - 'out_log', the out_log.000.txt file
+               - 'out_pot', the output potential
+               - 'out_enersp_at', the out_energysp_per_atom_eV file
+               - 'out_enertot_at', the out_energytotal_per_atom_eV file
+               - 'out_timing', the timing file
+               - 'kkrflex_llyfac', the file for the Lloyd factor
+               - 'kkrflex_angles', the nonco_angles file for the KKRimp calculation
+               - 'out_spinmoms', the output spin moments file
+               - 'out_orbmoms', the output orbital moments file
+
         """
         from masci_tools.io.parsers.kkrparser_functions import get_rms, find_warnings, get_charges_per_atom, get_core_states
         from masci_tools.io.common_functions import get_version_info, get_Ry2eV
