@@ -2534,12 +2534,14 @@ def hyp2f2(a, b, z):
 def pseudo_voigt_profile(x, fwhm_g, fwhm_l, mu, mix=0.5):
     """
     Linear combination of gaussian and loretzian instead of convolution
+
     Args:
-       x: array of floats
-       fwhm_g: FWHM of gaussian
-       fwhm_l: FWHM of Lorentzian
-       mu: Mean
-       mix: ratio of gaus to lorentz, mix* gaus, (1-mix)*Lorentz
+        x: array of floats
+        fwhm_g: FWHM of gaussian
+        fwhm_l: FWHM of Lorentzian
+        mu: Mean
+        mix: ratio of gaus to lorentz, mix* gaus, (1-mix)*Lorentz
+
     """
     #pseudo_voigt = []
     if not (mix <= 1):
