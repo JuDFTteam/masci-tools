@@ -1952,13 +1952,11 @@ def plot_corelevel_spectra(coreleveldict,
         peakfunction (string): what the peakfunction should be {'voigt', 'pseudo-voigt', 'lorentz', 'gaus'}
 
     example:
-
-    coreleveldict = {u'Be': {'1s1/2' : [-1.0220669053033051, -0.3185614920138805,
-                                        -0.7924091040092139]}}
-    n_atom_types_Be12Ti = {'Be' : [4,4,4]}
+        coreleveldict = {u'Be': {'1s1/2' : [-1.0220669053033051, -0.3185614920138805,-0.7924091040092139]}}
+        n_atom_types_Be12Ti = {'Be' : [4,4,4]}
+    """
     #show_compound=True, , compound_info={} compound_info dict: dict that can be used to specify what component should be shown together     compound_info = {'Be12Ti' : {'Be' : 4, 'Ti' : 1}, 'BeTi' : {'Be' : 1, 'Ti' : 1}}
     # TODO feature to make singles of different compounds a different color
-    """
     [xdata_spec, ydata_spec, ydata_single_all, xdata_all, ydata_all,
      xdatalabel] = construct_corelevel_spectrum(coreleveldict,
                                                 natom_typesdict,
