@@ -48,13 +48,15 @@ class kkrparams(object):
     or multiple keys at once with
         params.set_multiple_values(EMIN=-0.5, EMAX=1)
 
-    Other useful functions:
+    Other useful functions
+
     - print the description of a keyword: params.get_description([key]) where [key] is a string for a keyword in params.values
     - print a list of mandatory keywords: params.get_all_mandatory()
     - print a list of keywords that are set including their value: params.get_set_values()
 
-    Note: KKR-units (e.g. atomic units with energy in Ry, length in a_Bohr) are assumed
-          except for the keys'<RBLEFT>', '<RBRIGHT>', 'ZPERIODL', and 'ZPERIODR' which should be given in Ang. units!
+    .. note: 
+        KKR-units (e.g. atomic units with energy in Ry, length in a_Bohr) are assumed
+        except for the keys'<RBLEFT>', '<RBRIGHT>', 'ZPERIODL', and 'ZPERIODR' which should be given in Ang. units!
     """
 
     def __init__(self, **kwargs):
@@ -593,13 +595,14 @@ class kkrparams(object):
         'external fields', 'scf cycle', 'other'
 
         Additionally the subgroups argument allows to print only a subset of
-        all keys in a certain group. The following subgroups are available:
-        - in 'lattice' group:   '2D mode', 'shape functions'
-        - in 'chemistry' group: 'Atom types', 'Exchange-correlation', 'CPA mode',
-          '2D mode'
-        - in 'accuracy' group:  'Valence energy contour', 'Semicore energy contour',
+        all keys in a certain group. The following subgroups are available.
+        
+        - in 'lattice' group  '2D mode', 'shape functions'
+        - in 'chemistry' group 'Atom types', 'Exchange-correlation', 'CPA mode', '2D mode'
+        - in 'accuracy' group  'Valence energy contour', 'Semicore energy contour',
           'CPA mode', 'Screening clusters', 'Radial solver',
           'Ewald summation', 'LLoyd'
+        
         """
         out_dict = self.values
 
