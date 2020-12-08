@@ -41,8 +41,7 @@ class kkrparams(object):
     Class for creating and handling the parameter input for a KKR calculation
     Optional keyword arguments are passed to init and stored in values dictionary.
 
-    Example usage:
-    params = kkrparams(LMAX=3, BRAVAIS=array([[1,0,0], [0,1,0], [0,0,1]]))
+    Example usage: params = kkrparams(LMAX=3, BRAVAIS=array([[1,0,0], [0,1,0], [0,0,1]]))
 
     Alternatively values can be set afterwards either individually with
         params.set_value('LMAX', 3)
@@ -591,16 +590,16 @@ class kkrparams(object):
 
         Prints values belonging to a certain group only if the 'group' argument
         is one of the following: 'lattice', 'chemistry', 'accuracy',
-                                 'external fields', 'scf cycle', 'other'
+        'external fields', 'scf cycle', 'other'
 
         Additionally the subgroups argument allows to print only a subset of
         all keys in a certain group. The following subgroups are available:
-        in 'lattice' group:   '2D mode', 'shape functions'
-        in 'chemistry' group: 'Atom types', 'Exchange-correlation', 'CPA mode',
-                              '2D mode'
-        in 'accuracy' group:  'Valence energy contour', 'Semicore energy contour',
-                              'CPA mode', 'Screening clusters', 'Radial solver',
-                              'Ewald summation', 'LLoyd'
+        - in 'lattice' group:   '2D mode', 'shape functions'
+        - in 'chemistry' group: 'Atom types', 'Exchange-correlation', 'CPA mode',
+          '2D mode'
+        - in 'accuracy' group:  'Valence energy contour', 'Semicore energy contour',
+          'CPA mode', 'Screening clusters', 'Radial solver',
+          'Ewald summation', 'LLoyd'
         """
         out_dict = self.values
 
