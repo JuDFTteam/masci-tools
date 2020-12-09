@@ -17,6 +17,11 @@ from __future__ import absolute_import
 from __future__ import print_function
 from lxml import etree
 
+#These types have infinite recursive paths and CANNOT BE PARSED in the path generation
+_RECURSIVE_TYPES = ['CompositeTimerType']
+#Name of the type of an scf iteration in the out schema (At this point the paths are split up)
+_ITERATION_TYPE = 'IterationType'
+
 
 def _get_base_types():
     """
@@ -252,10 +257,7 @@ def _get_xpath(xmlschema,
     :return: None if no path is found, if a single path is found return the string of the path,
              otherwise a list with all possible paths is returned
     """
-    skip = ['CompositeTimerType']  #These types have infinite recursive paths and CANNOT BE PARSED
-    ITERATION_TYPE = 'IterationType'
-
-    if enforce_end_type in skip:
+    if enforce_end_type in _RECURSIVE_TYPES:
         return None
     possible_paths = []
     root_tag = _get_root_tag(xmlschema, namespaces)
@@ -287,7 +289,7 @@ def _get_xpath(xmlschema,
             continue
         next_type = parent_type.attrib['name']
 
-        if next_type == ITERATION_TYPE:
+        if next_type == _ITERATION_TYPE:
             if stop_iteration:
                 continue
             if iteration_root:
@@ -489,6 +491,12 @@ def _get_attrib_xpath(xmlschema,
         if parent_type is None:
             continue
         start_type = parent_type.attrib['name']
+        if start_type == _ITERATION_TYPE:
+            if stop_iteration:
+                continue
+            if iteration_root:
+                possible_paths.append('./')
+                continue
         if stop_non_unique:
             element_tags = xmlschema.xpath(
                 f"//xsd:element[@type='{start_type}' and @maxOccurs=1]/@name | //xsd:element[@type='{start_type}' and not(@maxOccurs)]/@name",

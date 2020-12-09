@@ -312,10 +312,6 @@ schema_dict = {
             'base_types': ['string'],
             'length': 'unbounded'
         },
-        'TriaType': {
-            'base_types': ['int'],
-            'length': 3
-        },
         'TripleFleurBool': {
             'base_types': ['string'],
             'length': 1
@@ -1357,6 +1353,8 @@ schema_dict = {
     },
     'iteration_unique_attribs': {
         'Configs': './Forcetheorem_JIJ',
+        'numberForCurrentRun': './',
+        'overallNumber': './',
         'qpoints': './Forcetheorem_DMI',
         'qvectors': './Forcetheorem_SSDISP'
     },
@@ -1371,9 +1369,7 @@ schema_dict = {
         'atomType': ['/fleurOutput/numericalParameters/volumes/mtVolume'],
         'kPoint': ['/fleurOutput/numericalParameters/kPointList/kPoint'],
         'mtRadius': ['/fleurOutput/numericalParameters/volumes/mtVolume'],
-        'mtVolume': ['/fleurOutput/numericalParameters/volumes/mtVolume'],
-        'numberForCurrentRun': ['/fleurOutput/scfLoop/iteration'],
-        'overallNumber': ['/fleurOutput/scfLoop/iteration']
+        'mtVolume': ['/fleurOutput/numericalParameters/volumes/mtVolume']
     },
     'simple_elements': {
         'additionalCompilerFlags': [{
