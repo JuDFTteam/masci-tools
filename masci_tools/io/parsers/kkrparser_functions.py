@@ -434,7 +434,9 @@ def use_newsosol(outfile_0init):
     # new style: check for output of runoptions
     if itmp>=0 :
         if tmptxt[itmp].split()[1][:1].upper()=='T':
-            newsosol = True    
+            newsosol = True
+        if tmptxt[itmp].split()[1][:1].upper()=='F':
+            newsosol = False
     return newsosol
 
 
