@@ -332,7 +332,7 @@ def get_ef_from_potfile(potfile):
 
 def convert_to_pystd(value):
     """Recursively convert numpy datatypes to standard python, needed by aiida-core.
-    
+
     Usage:
         converted = convert_to_pystd(to_convert)
 
