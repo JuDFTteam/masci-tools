@@ -128,7 +128,6 @@ schema_dict = {
         'total': ['float'],
         'type': ['string'],
         'uIndex': ['int'],
-        'unit': ['string'],
         'unitCell': ['float'],
         'units': ['string'],
         'user': ['string'],
@@ -339,18 +338,19 @@ schema_dict = {
         'F_x': ['./totalForcesOnRepresentativeAtoms/forceTotal'],
         'F_y': ['./totalForcesOnRepresentativeAtoms/forceTotal'],
         'F_z': ['./totalForcesOnRepresentativeAtoms/forceTotal'],
-        'H_so': ['./Forcetheorem_DMI/allAtoms'],
+        'H_so': ['./Forcetheorem_DMI/allAtoms', './Forcetheorem_DMI/singleAtom'],
         'J': ['./ldaUDensityMatrix/densityMatrixFor'],
         'No': ['./Forcetheorem_Loop'],
         'U': ['./ldaUDensityMatrix/densityMatrixFor'],
         'atomType': [
-            './Forcetheorem_DMI/allAtoms', './energyParameters/atomicEP', './energyParameters/heAtomicEP',
-            './energyParameters/loAtomicEP', './energyParameters/heloAtomicEP', './valenceDensity/mtCharges/mtCharge',
-            './allElectronCharges/mtCharges/mtCharge', './valenceDensity/mtCharges/mtJcharge',
-            './allElectronCharges/mtCharges/mtJcharge', './coreStates', './magneticMomentsInMTSpheres/magneticMoment',
-            './orbitalMagneticMomentsInMTSpheres/orbMagMoment', './totalForcesOnRepresentativeAtoms/forceTotal',
-            './noncollinearTorgue/torgue', './spinorbitTorgue/torgue', './onSiteExchangeSplitting/excSplit',
-            './ldaUDensityMatrix/densityMatrixFor', './totalEnergy/atomTypeDependentContributions'
+            './Forcetheorem_DMI/allAtoms', './Forcetheorem_DMI/singleAtom', './energyParameters/atomicEP',
+            './energyParameters/heAtomicEP', './energyParameters/loAtomicEP', './energyParameters/heloAtomicEP',
+            './valenceDensity/mtCharges/mtCharge', './allElectronCharges/mtCharges/mtCharge',
+            './valenceDensity/mtCharges/mtJcharge', './allElectronCharges/mtCharges/mtJcharge', './coreStates',
+            './magneticMomentsInMTSpheres/magneticMoment', './orbitalMagneticMomentsInMTSpheres/orbMagMoment',
+            './totalForcesOnRepresentativeAtoms/forceTotal', './noncollinearTorgue/torgue', './spinorbitTorgue/torgue',
+            './onSiteExchangeSplitting/excSplit', './ldaUDensityMatrix/densityMatrixFor',
+            './totalEnergy/atomTypeDependentContributions'
         ],
         'atomicNumber': ['./coreStates'],
         'branch': [
@@ -419,10 +419,13 @@ schema_dict = {
             './valenceDensity/mtCharges/mtJcharge/highJ', './allElectronCharges/mtCharges/mtJcharge/highJ'
         ],
         'phase': ['./Forcetheorem_JIJ/Config'],
-        'phi': ['./Forcetheorem_MAE/Angle', './Forcetheorem_DMI/Entry', './Forcetheorem_DMI/allAtoms'],
+        'phi': [
+            './Forcetheorem_MAE/Angle', './Forcetheorem_DMI/Entry', './Forcetheorem_DMI/allAtoms',
+            './Forcetheorem_DMI/singleAtom'
+        ],
         'q': [
             './Forcetheorem_SSDISP/Entry', './Forcetheorem_JIJ/Config', './Forcetheorem_DMI/Entry',
-            './Forcetheorem_DMI/allAtoms'
+            './Forcetheorem_DMI/allAtoms', './Forcetheorem_DMI/singleAtom'
         ],
         's': ['./valenceDensity/mtCharges/mtCharge', './allElectronCharges/mtCharges/mtCharge'],
         'sigma_x': ['./noncollinearTorgue/torgue', './spinorbitTorgue/torgue'],
@@ -442,14 +445,16 @@ schema_dict = {
         ['./magneticMomentsInMTSpheres/magneticMoment', './orbitalMagneticMomentsInMTSpheres/orbMagMoment'],
         'spinUpCharge':
         ['./magneticMomentsInMTSpheres/magneticMoment', './orbitalMagneticMomentsInMTSpheres/orbMagMoment'],
-        'theta': ['./Forcetheorem_MAE/Angle', './Forcetheorem_DMI/Entry', './Forcetheorem_DMI/allAtoms'],
+        'theta': [
+            './Forcetheorem_MAE/Angle', './Forcetheorem_DMI/Entry', './Forcetheorem_DMI/allAtoms',
+            './Forcetheorem_DMI/singleAtom'
+        ],
         'total': [
             './valenceDensity/mtCharges/mtCharge', './allElectronCharges/mtCharges/mtCharge',
             './valenceDensity/spinDependentCharge', './allElectronCharges/spinDependentCharge',
             './valenceDensity/fixedCharges/spinDependentCharge', './allElectronCharges/fixedCharges/spinDependentCharge'
         ],
         'uIndex': ['./ldaUDensityMatrix/densityMatrixFor'],
-        'unit': ['./onSiteExchangeSplitting/excSplit'],
         'units': [
             './energyParameters', './bandgap', './sumValenceSingleParticleEnergies', './FermiEnergy',
             './valenceDensity/totalCharge', './allElectronCharges/totalCharge',
@@ -509,10 +514,10 @@ schema_dict = {
         },
         './Forcetheorem_DMI': {
             'attribs': ['Angles', 'qpoints'],
-            'optional': ['Entry', 'allAtoms'],
-            'order': ['Entry', 'allAtoms'],
-            'several': ['Entry', 'allAtoms'],
-            'simple': ['Entry', 'allAtoms'],
+            'optional': ['Entry', 'allAtoms', 'singleAtom'],
+            'order': ['Entry', 'allAtoms', 'singleAtom'],
+            'several': ['Entry', 'allAtoms', 'singleAtom'],
+            'simple': ['Entry', 'allAtoms', 'singleAtom'],
             'text': []
         },
         './Forcetheorem_DMI/Entry': {
@@ -524,6 +529,14 @@ schema_dict = {
             'text': []
         },
         './Forcetheorem_DMI/allAtoms': {
+            'attribs': ['atomType', 'q', 'phi', 'theta', 'H_so'],
+            'optional': [],
+            'order': [],
+            'several': [],
+            'simple': [],
+            'text': []
+        },
+        './Forcetheorem_DMI/singleAtom': {
             'attribs': ['atomType', 'q', 'phi', 'theta', 'H_so'],
             'optional': [],
             'order': [],
@@ -874,7 +887,7 @@ schema_dict = {
             'text': []
         },
         './onSiteExchangeSplitting/excSplit': {
-            'attribs': ['atomType', 'l', 'Delta', 'unit', 'units'],
+            'attribs': ['atomType', 'l', 'Delta', 'units'],
             'optional': [],
             'order': [],
             'several': [],
@@ -1316,6 +1329,8 @@ schema_dict = {
         './densityConvergence/overallChargeDensity',
         'rdmft':
         './rdmft',
+        'singleAtom':
+        './Forcetheorem_DMI/singleAtom',
         'spinDensity':
         './densityConvergence/spinDensity',
         'spinDependentCharge': [

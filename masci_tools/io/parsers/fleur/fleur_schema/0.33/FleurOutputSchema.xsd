@@ -153,7 +153,7 @@
    </xsd:complexType>
 
    <xsd:group name="GeneralIterationType">
-      <xsd:sequence maxOccurs="unbounded">
+      <xsd:sequence>
          <!--These tags can occur in a iteration/Forcetheorem iteration/!-->
          <xsd:element maxOccurs="1" minOccurs="0" name="energyParameters" type="OutEnergyParameterType"/>
          <xsd:element maxOccurs="1" minOccurs="0" name="eigenvalues" type="EigenvaluesType"/>
@@ -168,7 +168,7 @@
          <xsd:element maxOccurs="1" minOccurs="0" name="allElectronCharges" type="ChargeDensityType"/>
          <xsd:element maxOccurs="1" minOccurs="0" name="magneticMomentsInMTSpheres" type="MTMagneticMomentsType"/>
          <xsd:element maxOccurs="1" minOccurs="0" name="orbitalMagneticMomentsInMTSpheres" type="MTOrbMagneticMomentsType"/>
-         <xsd:element maxOccurs="1" minOccurs="0" name="rdmft" type="RDMFTType"/>
+         <xsd:element maxOccurs="1" minOccurs="0" name="rdmft" type="RDMFTOutType"/>
          <xsd:element maxOccurs="1" minOccurs="0" name="totalEnergy" type="TotalEnergyType"/>
          <xsd:element maxOccurs="1" minOccurs="0" name="totalForcesOnRepresentativeAtoms" type="OutTotalForcesType"/>
          <xsd:element maxOccurs="1" minOccurs="0" name="ldaUDensityMatrix" type="LDAUDensityMatrixType"/>
@@ -181,7 +181,7 @@
    <xsd:complexType name="IterationType">
       <xsd:sequence>
          <xsd:choice>
-            <xsd:group ref="GeneralIterationType"/>
+            <xsd:group maxOccurs="unbounded" ref="GeneralIterationType"/>
             <xsd:element maxOccurs="unbounded" minOccurs="0" name="Forcetheorem_Loop" type="Forcetheorem_LoopType"/>
          </xsd:choice>
          <xsd:choice>
@@ -197,7 +197,7 @@
 
    <xsd:complexType name="Forcetheorem_LoopType">
       <xsd:sequence>
-         <xsd:group ref="GeneralIterationType"/>
+         <xsd:group maxOccurs="unbounded" ref="GeneralIterationType"/>
       </xsd:sequence>
       <xsd:attribute name="No" type="xsd:integer" use="required"/>
       <xsd:attribute name="calculationType" type="ForceTheoremEnum" use="required"/>
@@ -207,6 +207,7 @@
       <xsd:sequence>
          <xsd:element maxOccurs="unbounded" minOccurs="0" name="Entry" type="Entry_DMI_Type"/>
          <xsd:element maxOccurs="unbounded" minOccurs="0" name="allAtoms" type="Entry_DMIATOMS_Type"/>
+         <xsd:element maxOccurs="unbounded" minOccurs="0" name="singleAtom" type="Entry_DMIATOMS_Type"/>
       </xsd:sequence>
       <xsd:attribute name="Angles" type="xsd:integer" use="required"/>
       <xsd:attribute name="qpoints" type="xsd:integer" use="required"/>
@@ -466,7 +467,6 @@
       <xsd:attribute name="atomType" type="xsd:integer" use="required"/>
       <xsd:attribute name="l" type="xsd:integer" use="required"/>
       <xsd:attribute name="Delta" type="xsd:double" use="required"/>
-      <xsd:attribute name="unit" type="xsd:string" use="required"/>
       <xsd:attribute name="units" type="xsd:string" use="required"/>
    </xsd:complexType>
 
@@ -489,7 +489,7 @@
       </xsd:simpleContent>
    </xsd:complexType>
 
-   <xsd:complexType name="RDMFTType">
+   <xsd:complexType name="RDMFTOutType">
       <xsd:sequence>
          <xsd:element maxOccurs="unbounded" minOccurs="0" name="occupations" type="RDMFTOccupationsType"/>
       </xsd:sequence>
