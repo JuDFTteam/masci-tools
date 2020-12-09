@@ -14,12 +14,10 @@ In this module you find the kkrparams class that helps defining the KKR input pa
 Also some defaults for the parameters are defined.
 """
 
-__copyright__ = ("Copyright (c), 2017, Forschungszentrum Jülich GmbH,"
-                 "IAS-1/PGI-1, Germany. All rights reserved.")
-__license__ = "MIT license, see LICENSE.txt file"
-__version__ = "1.8.5"
-__contributors__ = "Philipp Rüßmann"
-
+__copyright__ = ('Copyright (c), 2017, Forschungszentrum Jülich GmbH,' 'IAS-1/PGI-1, Germany. All rights reserved.')
+__license__ = 'MIT license, see LICENSE.txt file'
+__version__ = '1.8.5'
+__contributors__ = 'Philipp Rüßmann'
 
 # This defines the default parameters for KKR used in the aiida plugin:
 __kkr_default_params__ = {
@@ -41,21 +39,22 @@ class kkrparams(object):
     Class for creating and handling the parameter input for a KKR calculation
     Optional keyword arguments are passed to init and stored in values dictionary.
 
-    Example usage:
-    params = kkrparams(LMAX=3, BRAVAIS=array([[1,0,0], [0,1,0], [0,0,1]]))
+    Example usage: params = kkrparams(LMAX=3, BRAVAIS=array([[1,0,0], [0,1,0], [0,0,1]]))
 
     Alternatively values can be set afterwards either individually with
         params.set_value('LMAX', 3)
     or multiple keys at once with
         params.set_multiple_values(EMIN=-0.5, EMAX=1)
 
-    Other useful functions:
+    Other useful functions
+
     - print the description of a keyword: params.get_description([key]) where [key] is a string for a keyword in params.values
     - print a list of mandatory keywords: params.get_all_mandatory()
     - print a list of keywords that are set including their value: params.get_set_values()
 
-    Note: KKR-units (e.g. atomic units with energy in Ry, length in a_Bohr) are assumed
-          except for the keys'<RBLEFT>', '<RBRIGHT>', 'ZPERIODL', and 'ZPERIODR' which should be given in Ang. units!
+    .. note:
+        KKR-units (e.g. atomic units with energy in Ry, length in a_Bohr) are assumed
+        except for the keys'<RBLEFT>', '<RBRIGHT>', 'ZPERIODL', and 'ZPERIODR' which should be given in Ang. units!
     """
 
     def __init__(self, **kwargs):
@@ -339,136 +338,335 @@ class kkrparams(object):
                 'Self-consistency control: Factor for increased linear mixing of magnetic part of potential compared to non-magnetic part.'
             ]),
             ('BRYMIX', [None, '%f', False, 'Self-consistency control: Parameter for Broyden mixing.']),
-            ('QBOUND', [None, '%e', False, 'Self-consistency control: Lower limit of rms-error in potential to stop iterations.']),
+            ('QBOUND',
+             [None, '%e', False,
+              'Self-consistency control: Lower limit of rms-error in potential to stop iterations.']),
             # mixing of noco angles
-            ('SPINMIXQBOUND', [None, '%e', False, 'Self-consistency control: threshold in degrees after which the rms of the nonco angles a assumed to not change anymore (i.e. activate fixing of all angles simultaneously)']),
+            ('SPINMIXQBOUND', [
+                None, '%e', False,
+                'Self-consistency control: threshold in degrees after which the rms of the nonco angles a assumed to not change anymore (i.e. activate fixing of all angles simultaneously)'
+            ]),
             ('SPINMIXALPHA', [None, '%e', False, 'Self-consistency control: Broyden mixing factor for nonco angles']),
-            ('SPINMIXNSIMPLE', [None, '%i', False, 'Self-consistency control: number of simple mixing steps before Broyden spinmixing starts ( should be >=1).']),
-            ('SPINMIXMEMLEN', [None, '%i', False, 'Self-consistency control: Memory length of the Broyden spin mixing']),
-            ('<WRITE_ANGLES_ALLITER>', [None, '%l', False, 'Self-consistency control: write out the nonco angles for all iterations']),
-            ('<USE_BROYDEN_SPINMIX>', [None, '%l', False, 'Self-consistency control: Use Broyden mixing for nonco angles']),
+            ('SPINMIXNSIMPLE', [
+                None, '%i', False,
+                'Self-consistency control: number of simple mixing steps before Broyden spinmixing starts ( should be >=1).'
+            ]),
+            ('SPINMIXMEMLEN', [None, '%i', False,
+                               'Self-consistency control: Memory length of the Broyden spin mixing']),
+            ('<WRITE_ANGLES_ALLITER>',
+             [None, '%l', False, 'Self-consistency control: write out the nonco angles for all iterations']),
+            ('<USE_BROYDEN_SPINMIX>',
+             [None, '%l', False, 'Self-consistency control: Use Broyden mixing for nonco angles']),
             #code options
-            ('RUNOPT', [None, '%s%s%s%s%s%s%s%s', False, 'Running and test options: 8-character keywords in a row without spaces between them']),
-            ('TESTOPT', [None, '%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s', False, 'Running and test options: optional 8-character keywords in a row without spaces between them plus a secod row of the same.']),
-            ('<MPI_SCHEME>', [None, '%i', False, 'Parallelization scheme (defaults to 0 which means auto parallelization, 1=atom, 2=energy parallelization preferred).']),
+            ('RUNOPT', [
+                None, '%s%s%s%s%s%s%s%s', False,
+                'Running and test options: 8-character keywords in a row without spaces between them'
+            ]),
+            ('TESTOPT', [
+                None, '%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s', False,
+                'Running and test options: optional 8-character keywords in a row without spaces between them plus a secod row of the same.'
+            ]),
+            ('<MPI_SCHEME>', [
+                None, '%i', False,
+                'Parallelization scheme (defaults to 0 which means auto parallelization, 1=atom, 2=energy parallelization preferred).'
+            ]),
             #file names
-            ('FILES', [None, '%s', False, 'Filenames: Name of potential and shapefun file (list of two strings, empty string will set back to default of the one file that is supposed to be changed)']),
-            ('DECIFILES', [None, '%s', False, 'Filenames: Name of left and right decifiles (use "vaccum" name to inducate vacuum continuation)']),
+            ('FILES', [
+                None, '%s', False,
+                'Filenames: Name of potential and shapefun file (list of two strings, empty string will set back to default of the one file that is supposed to be changed)'
+            ]),
+            ('DECIFILES', [
+                None, '%s', False,
+                'Filenames: Name of left and right decifiles (use "vaccum" name to inducate vacuum continuation)'
+            ]),
             # special options
-            ('JIJRAD', [None, '%f', False, 'Exchange coupling: Radius in alat which defines the cutoff for calcultion of Jij pairs']),
-            ('JIJRADXY', [None, '%f', False, 'Exchange coupling: use a cylindical cluster in which Jij pairs are searched for']),
-            ('JIJSITEI', [None, '%i', False, 'Exchange coupling: allow for the selection of specific sites in i in the unit cell, which should be considered in the calculation (default: all sites)']),
-            ('JIJSITEJ', [None, '%i', False, 'Exchange coupling: allow for the selection of specific sites in j in the unit cell, which should be considered in the calculation (default: all sites)']),
-            ('EFSET', [None, '%f', False, 'Set Fermi level of jellium starting potential generated by voronoi to this value. Only used by voronoi code.']),
+            ('JIJRAD', [
+                None, '%f', False,
+                'Exchange coupling: Radius in alat which defines the cutoff for calcultion of Jij pairs'
+            ]),
+            ('JIJRADXY',
+             [None, '%f', False, 'Exchange coupling: use a cylindical cluster in which Jij pairs are searched for']),
+            ('JIJSITEI', [
+                None, '%i', False,
+                'Exchange coupling: allow for the selection of specific sites in i in the unit cell, which should be considered in the calculation (default: all sites)'
+            ]),
+            ('JIJSITEJ', [
+                None, '%i', False,
+                'Exchange coupling: allow for the selection of specific sites in j in the unit cell, which should be considered in the calculation (default: all sites)'
+            ]),
+            ('EFSET', [
+                None, '%f', False,
+                'Set Fermi level of jellium starting potential generated by voronoi to this value. Only used by voronoi code.'
+            ]),
             # Bogoliubov de Gennes mode:
-            ('<USE_BDG>', [None, '%l', False, 'Superconductivity: Activate Bogoliubov de Gennes (BdG) mode. Attention: needs Chebychev solver!']),
+            ('<USE_BDG>', [
+                None, '%l', False,
+                'Superconductivity: Activate Bogoliubov de Gennes (BdG) mode. Attention: needs Chebychev solver!'
+            ]),
             ('<DELTA_BDG>', [None, '%f', False, 'Superconductivity: Starting value of BdG coupling constant in Ry']),
             ('<LAMBDA_BDG>', [None, '%f', False, 'Superconductivity: Electron-phonon coupling parameter in Ry']),
-            ('<AT_SCALE_BDG>', [None, '%f', False, 'Superconductivity: Scaling factor for lambda_BdG (e.g. used to deactivate BdG coupling in some layers by setting the value to 0)']),
+            ('<AT_SCALE_BDG>', [
+                None, '%f', False,
+                'Superconductivity: Scaling factor for lambda_BdG (e.g. used to deactivate BdG coupling in some layers by setting the value to 0)'
+            ]),
             ('<NEWVERSION_BDG>', [None, '%l', False, 'Superconductivity: Old or new version of BdG solver.']),
-            ('<CUSTOM_TESTSTRING>', [None, '%s', False, 'Superconductivity: String input for some test options with BdG']),
+            ('<CUSTOM_TESTSTRING>',
+             [None, '%s', False, 'Superconductivity: String input for some test options with BdG']),
             # array dimensions
             ('NSHELD', [None, '%i', False, 'Array dimension: number of shells (default: 300)']),
             ('IEMXD', [None, '%i', False, 'Array dimension: number of energy points (default: 101)']),
             ('IRID', [None, '%i', False, 'Array dimension: number of radial points']),
             ('IPAND', [None, '%i', False, 'Array dimension: number of shapefunction panels']),
-            ('NPRINCD', [None, '%i', False, 'Array dimension: number of layers in each principle layer (decimation technique).']),
+            ('NPRINCD',
+             [None, '%i', False, 'Array dimension: number of layers in each principle layer (decimation technique).']),
             # new style run options
-            ('<CALC_GF_EFERMI>', [None, '%l', False, "Run option: calculation of cluster Green function at E Fermi (former: 'GF-EF')"]),
-            ('<SET_CHEBY_NOSPEEDUP>', [None, '%l', False, "Run option: always calculate irregular solution in Chebychev solver (even if not needed) (former: 'norllsll')"]),
-            ('<SET_CHEBY_NOSOC>', [None, '%l', False, "Run option: set SOC strength to 0 for all atoms (former: 'NOSOC')"]),
-            ('<DECOUPLE_SPINS_CHEBY>', [None, '%l', False, "Run option: decouple spin matrices in Chebychev solver neglecting SOC and for collinear calculations only"]),
-            ('<CALC_COMPLEX_BANDSTRUCTURE>', [None, '%l', False, "Run option: complex band structure (former: 'COMPLEX')"]),
-            ('<CALC_EXCHANGE_COUPLINGS>', [None, '%l', False, "Run option: calculate magnetic exchange coupling parameters (former: 'XCPL')"]),
-            ('<CALC_EXCHANGE_COUPLINGS_ENERGY>', [None, '%l', False, "Run option: write energy-resolved Jij-files also if npol/=0 (former: 'Jijenerg')"]),
-            ('<CALC_GMAT_LM_FULL>', [None, '%l', False, "Run option: calculate all lm-lm components of systems greens function and store to file `gflle` (former: 'lmlm-dos')"]),
-            ('<DIRAC_SCALE_SPEEFOFLIGHT>', [None, '%l', False, "Run option: scale the speed of light for Dirac solver (former: 'CSCALE')"]),
-            ('<DISABLE_CHARGE_NEUTRALITY>', [None, '%l', False, "Run option: no charge neutrailty required: leaving Fermi level unaffected (former: 'no-neutr')"]),
-            ('<DISABLE_PRINT_SERIALNUMBER>', [None, '%l', False, "Run option: deactivate writing of serial number and version information to files (for backwards compatibility) (former: 'noserial')"]),
-            ('<DISABLE_REFERENCE_SYSTEM>', [None, '%l', False, "Run option: deactivate the tight-binding reference system (former: 'lrefsysf')"]),
-            ('<DISABLE_TMAT_SRATRICK>', [None, '%l', False, "Run option: deactivate SRATRICK in solver for t-matirx (former: 'nosph')"]),
-            ('<FIX_NONCO_ANGLES>', [None, '%l', False, "Run option: fix direction of non-collinear magnetic moments (Chebychev solver) (former: 'FIXMOM')"]),
-            ('<FORMATTED_FILE>', [None, '%l', False, "Run option: write files ascii-format. only effective with some other write-options (former: 'fileverb')"]),
-            ('<IMPURITY_OPERATOR_ONLY>', [None, '%l', False, "Run option: only for `write_pkkr_operators`: disable costly recalculation of host operators (former: 'IMP_ONLY')"]),
+            ('<CALC_GF_EFERMI>',
+             [None, '%l', False, "Run option: calculation of cluster Green function at E Fermi (former: 'GF-EF')"]),
+            ('<SET_CHEBY_NOSPEEDUP>', [
+                None, '%l', False,
+                "Run option: always calculate irregular solution in Chebychev solver (even if not needed) (former: 'norllsll')"
+            ]),
+            ('<SET_CHEBY_NOSOC>',
+             [None, '%l', False, "Run option: set SOC strength to 0 for all atoms (former: 'NOSOC')"]),
+            ('<DECOUPLE_SPINS_CHEBY>', [
+                None, '%l', False,
+                'Run option: decouple spin matrices in Chebychev solver neglecting SOC and for collinear calculations only'
+            ]),
+            ('<CALC_COMPLEX_BANDSTRUCTURE>',
+             [None, '%l', False, "Run option: complex band structure (former: 'COMPLEX')"]),
+            ('<CALC_EXCHANGE_COUPLINGS>',
+             [None, '%l', False, "Run option: calculate magnetic exchange coupling parameters (former: 'XCPL')"]),
+            ('<CALC_EXCHANGE_COUPLINGS_ENERGY>',
+             [None, '%l', False, "Run option: write energy-resolved Jij-files also if npol/=0 (former: 'Jijenerg')"]),
+            ('<CALC_GMAT_LM_FULL>', [
+                None, '%l', False,
+                "Run option: calculate all lm-lm components of systems greens function and store to file `gflle` (former: 'lmlm-dos')"
+            ]),
+            ('<DIRAC_SCALE_SPEEFOFLIGHT>',
+             [None, '%l', False, "Run option: scale the speed of light for Dirac solver (former: 'CSCALE')"]),
+            ('<DISABLE_CHARGE_NEUTRALITY>', [
+                None, '%l', False,
+                "Run option: no charge neutrailty required: leaving Fermi level unaffected (former: 'no-neutr')"
+            ]),
+            ('<DISABLE_PRINT_SERIALNUMBER>', [
+                None, '%l', False,
+                "Run option: deactivate writing of serial number and version information to files (for backwards compatibility) (former: 'noserial')"
+            ]),
+            ('<DISABLE_REFERENCE_SYSTEM>',
+             [None, '%l', False, "Run option: deactivate the tight-binding reference system (former: 'lrefsysf')"]),
+            ('<DISABLE_TMAT_SRATRICK>',
+             [None, '%l', False, "Run option: deactivate SRATRICK in solver for t-matirx (former: 'nosph')"]),
+            ('<FIX_NONCO_ANGLES>', [
+                None, '%l', False,
+                "Run option: fix direction of non-collinear magnetic moments (Chebychev solver) (former: 'FIXMOM')"
+            ]),
+            ('<FORMATTED_FILE>', [
+                None, '%l', False,
+                "Run option: write files ascii-format. only effective with some other write-options (former: 'fileverb')"
+            ]),
+            ('<IMPURITY_OPERATOR_ONLY>', [
+                None, '%l', False,
+                "Run option: only for `write_pkkr_operators`: disable costly recalculation of host operators (former: 'IMP_ONLY')"
+            ]),
             ('<MODIFY_SOC_DIRAC>', [None, '%l', False, "Run option: modify SOC for Dirac solver (former: 'SOC')"]),
-            ('<NO_MADELUNG>', [None, '%l', False, "Run option: do not add some energy terms (coulomb, XC, eff. pot.) to total energy (former: 'NoMadel')"]),
-            ('<PRINT_GIJ>', [None, '%l', False, "Run option: print cluster G_ij matrices to outfile (former: 'Gmatij')"]),
+            ('<NO_MADELUNG>', [
+                None, '%l', False,
+                "Run option: do not add some energy terms (coulomb, XC, eff. pot.) to total energy (former: 'NoMadel')"
+            ]),
+            ('<PRINT_GIJ>',
+             [None, '%l', False, "Run option: print cluster G_ij matrices to outfile (former: 'Gmatij')"]),
             ('<PRINT_GMAT>', [None, '%l', False, "Run option: print Gmat to outfile (former: 'Gmat')"]),
-            ('<PRINT_ICKECK>', [None, '%l', False, "Run option: enable test-output of ICHECK matrix from gfmask (former: 'ICHECK')"]),
+            ('<PRINT_ICKECK>',
+             [None, '%l', False, "Run option: enable test-output of ICHECK matrix from gfmask (former: 'ICHECK')"]),
             ('<PRINT_KMESH>', [None, '%l', False, "Run option: output of k-mesh (former: 'k-net')"]),
             ('<PRINT_KPOINTS>', [None, '%l', False, "Run option: print k-points to outfile (former: 'BZKP')"]),
-            ('<PRINT_PROGRAM_FLOW>', [None, '%l', False, "Run option: monitor the program flow in some parts of the code (former: 'flow')"]),
-            ('<PRINT_RADIAL_MESH>', [None, '%l', False, "Run option: write mesh information to output (former: 'RMESH')"]),
+            ('<PRINT_PROGRAM_FLOW>',
+             [None, '%l', False, "Run option: monitor the program flow in some parts of the code (former: 'flow')"]),
+            ('<PRINT_RADIAL_MESH>',
+             [None, '%l', False, "Run option: write mesh information to output (former: 'RMESH')"]),
             ('<PRINT_REFPOT>', [None, '%l', False, "Run option: test output of refpot (former: 'REFPOT')"]),
-            ('<PRINT_TAU_STRUCTURE>', [None, '%l', False, "Run option: write extensive information about k-mesh symmetrization and structure of site-diagonal tau matrices to output (former: 'TAUSTRUC')"]),
+            ('<PRINT_TAU_STRUCTURE>', [
+                None, '%l', False,
+                "Run option: write extensive information about k-mesh symmetrization and structure of site-diagonal tau matrices to output (former: 'TAUSTRUC')"
+            ]),
             ('<PRINT_TMAT>', [None, '%l', False, "Run option: print t-matrix to outfile (former: 'tmat')"]),
-            ('<RELAX_SPINANGLE_DIRAC>', [None, '%l', False, "Run option: relax the spin angle in a SCF calculation [only DIRAC mode] (former: 'ITERMDIR')"]),
-            ('<SEARCH_EFERMI>', [None, '%l', False, "Run option: modify convergence parameters to scan for fermi energy only (to reach charge neutrality). (former: 'SEARCHEF')"]),
-            ('<SET_GMAT_TO_ZERO>', [None, '%l', False, "Run option: set GMAT=0 in evaluation of density (former: 'GMAT=0')"]),
-            ('<SET_EMPTY_SYSTEM>', [None, '%l', False, "Run option: set potential and nuclear charge to zero (former: 'zeropot')"]),
-            ('<SET_KMESH_LARGE>', [None, '%l', False, "Run option: set equal k-mesh (largest) for all energy points (former: 'fix mesh')"]),
-            ('<SET_KMESH_SMALL>', [None, '%l', False, "Run option: set equal k-mesh (smallest) for all energy points (former: 'fix4mesh')"]),
-            ('<SET_TMAT_NOINVERSION>', [None, '%l', False, "Run option: do not perform inversion to get msst = Delta t^-1, but msst = Delta t. (former: 'testgmat')"]),
-            ('<SIMULATE_ASA>', [None, '%l', False, "Run option: set non-spherical potential to zero in full-potential calculation with Chebychev solver (former: 'simulasa')"]),
-            ('<SLOW_MIXING_EFERMI>', [None, '%l', False, "Run option: renormalize Fermi-energy shift by mixing factor during mixing (former: 'slow-neu')"]),
+            ('<RELAX_SPINANGLE_DIRAC>', [
+                None, '%l', False,
+                "Run option: relax the spin angle in a SCF calculation [only DIRAC mode] (former: 'ITERMDIR')"
+            ]),
+            ('<SEARCH_EFERMI>', [
+                None, '%l', False,
+                "Run option: modify convergence parameters to scan for fermi energy only (to reach charge neutrality). (former: 'SEARCHEF')"
+            ]),
+            ('<SET_GMAT_TO_ZERO>',
+             [None, '%l', False, "Run option: set GMAT=0 in evaluation of density (former: 'GMAT=0')"]),
+            ('<SET_EMPTY_SYSTEM>',
+             [None, '%l', False, "Run option: set potential and nuclear charge to zero (former: 'zeropot')"]),
+            ('<SET_KMESH_LARGE>',
+             [None, '%l', False, "Run option: set equal k-mesh (largest) for all energy points (former: 'fix mesh')"]),
+            ('<SET_KMESH_SMALL>',
+             [None, '%l', False, "Run option: set equal k-mesh (smallest) for all energy points (former: 'fix4mesh')"]),
+            ('<SET_TMAT_NOINVERSION>', [
+                None, '%l', False,
+                "Run option: do not perform inversion to get msst = Delta t^-1, but msst = Delta t. (former: 'testgmat')"
+            ]),
+            ('<SIMULATE_ASA>', [
+                None, '%l', False,
+                "Run option: set non-spherical potential to zero in full-potential calculation with Chebychev solver (former: 'simulasa')"
+            ]),
+            ('<SLOW_MIXING_EFERMI>', [
+                None, '%l', False,
+                "Run option: renormalize Fermi-energy shift by mixing factor during mixing (former: 'slow-neu')"
+            ]),
             ('<STOP_1A>', [None, '%l', False, "Run option: stop after main1a (former: 'STOP1A')"]),
             ('<STOP_1B>', [None, '%l', False, "Run option: stop after main1b (former: 'STOP1B')"]),
             ('<STOP_1C>', [None, '%l', False, "Run option: stop after main1c (former: 'STOP1C')"]),
-            ('<SYMMETRIZE_GMAT>', [None, '%l', False, "Run option: use symmetrization [G(k) + G(-k)]/2 in k-point loop (former: 'symG(k)')"]),
-            ('<SYMMETRIZE_POTENTIAL_CUBIC>', [None, '%l', False, "Run option: keep only symmetric part of potential (L=1,11,21,25,43,47). (former: 'potcubic')"]),
-            ('<SYMMETRIZE_POTENTIAL_MADELUNG>', [None, '%l', False, "Run option: symmetrize potential in consistency to madelung potential (former: 'potsymm')"]),
-            ('<TORQUE_OPERATOR_ONLYMT>', [None, '%l', False, "Run option: for torque operator: include only the part within the muffin tin (former: 'ONLYMT')"]),
-            ('<TORQUE_OPERATOR_ONLYSPH>', [None, '%l', False, "Run option: for torque operator: include only the spherically symmetric part (former: 'ONLYSPH')"]),
-            ('<USE_CHEBYCHEV_SOLVER>', [None, '%l', False, "Run option: use the Chebychev solver (former: 'NEWSOSOL')"]),
-            ('<USE_COND_LB>', [None, '%l', False, "Run option: perform calculation of conductance in Landauer-Büttiker formalism (former: 'CONDUCT')"]),
-            ('<USE_CONT>', [None, '%l', False, "Run option: no usage of embedding points. NEMB is set to 0. (former: 'CONT')"]),
-            ('<USE_DECI_ONEBULK>', [None, '%l', False, "Run option: in case of decimation: use same bulk on right and left. Speeds up calculations. (former: 'ONEBULK')"]),
-            ('<USE_DECIMATION>', [None, '%l', False, "Run option: use Decimation technique for semi-infinite systems (former: 'DECIMATE')"]),
-            ('<USE_EWALD_2D>', [None, '%l', False, "Run option: use 2D ewald sum instead of 3D sum (Attention: does not work always!) (former: 'ewald2d')"]),
-            ('<USE_FULL_BZ>', [None, '%l', False, "Run option: use full Brillouin zone, i.e. switch off symmetries for k-space integration (former: 'fullBZ')"]),
-            ('<USE_LDAU>', [None, '%l', False, "Run option: use LDA+U as exchange-correlation potential (former: 'LDA+U')"]),
-            ('<USE_LLOYD>', [None, '%l', False, "Run option: use Lloyds formula to correct finite angular momentum cutoff (former: 'LLOYD')"]),
-            ('<USE_QDOS>', [None, '%l', False, "Run option: writes out qdos files for band structure calculations. (former: 'qdos')"]),
+            ('<SYMMETRIZE_GMAT>',
+             [None, '%l', False,
+              "Run option: use symmetrization [G(k) + G(-k)]/2 in k-point loop (former: 'symG(k)')"]),
+            ('<SYMMETRIZE_POTENTIAL_CUBIC>', [
+                None, '%l', False,
+                "Run option: keep only symmetric part of potential (L=1,11,21,25,43,47). (former: 'potcubic')"
+            ]),
+            ('<SYMMETRIZE_POTENTIAL_MADELUNG>', [
+                None, '%l', False,
+                "Run option: symmetrize potential in consistency to madelung potential (former: 'potsymm')"
+            ]),
+            ('<TORQUE_OPERATOR_ONLYMT>', [
+                None, '%l', False,
+                "Run option: for torque operator: include only the part within the muffin tin (former: 'ONLYMT')"
+            ]),
+            ('<TORQUE_OPERATOR_ONLYSPH>', [
+                None, '%l', False,
+                "Run option: for torque operator: include only the spherically symmetric part (former: 'ONLYSPH')"
+            ]),
+            ('<USE_CHEBYCHEV_SOLVER>', [None, '%l', False,
+                                        "Run option: use the Chebychev solver (former: 'NEWSOSOL')"]),
+            ('<USE_COND_LB>', [
+                None, '%l', False,
+                "Run option: perform calculation of conductance in Landauer-Büttiker formalism (former: 'CONDUCT')"
+            ]),
+            ('<USE_CONT>',
+             [None, '%l', False, "Run option: no usage of embedding points. NEMB is set to 0. (former: 'CONT')"]),
+            ('<USE_DECI_ONEBULK>', [
+                None, '%l', False,
+                "Run option: in case of decimation: use same bulk on right and left. Speeds up calculations. (former: 'ONEBULK')"
+            ]),
+            ('<USE_DECIMATION>',
+             [None, '%l', False,
+              "Run option: use Decimation technique for semi-infinite systems (former: 'DECIMATE')"]),
+            ('<USE_EWALD_2D>', [
+                None, '%l', False,
+                "Run option: use 2D ewald sum instead of 3D sum (Attention: does not work always!) (former: 'ewald2d')"
+            ]),
+            ('<USE_FULL_BZ>', [
+                None, '%l', False,
+                "Run option: use full Brillouin zone, i.e. switch off symmetries for k-space integration (former: 'fullBZ')"
+            ]),
+            ('<USE_LDAU>',
+             [None, '%l', False, "Run option: use LDA+U as exchange-correlation potential (former: 'LDA+U')"]),
+            ('<USE_LLOYD>', [
+                None, '%l', False,
+                "Run option: use Lloyds formula to correct finite angular momentum cutoff (former: 'LLOYD')"
+            ]),
+            ('<USE_QDOS>',
+             [None, '%l', False,
+              "Run option: writes out qdos files for band structure calculations. (former: 'qdos')"]),
             ('<USE_READCPA>', [None, '%l', False, "Run option: read cpa t-matrix from file (former: 'readcpa')"]),
-            ('<USE_RIGID_EFERMI>', [None, '%l', False, "Run option: keep the Fermi energy fixed during self-consistency (former: 'rigid-ef')"]),
+            ('<USE_RIGID_EFERMI>', [
+                None, '%l', False,
+                "Run option: keep the Fermi energy fixed during self-consistency (former: 'rigid-ef')"
+            ]),
             ('<USE_SEMICORE>', [None, '%l', False, "Run option: use semicore contour (former: 'SEMICORE')"]),
-            ('<USE_SPHERICAL_POTENTIAL_ONLY>', [None, '%l', False, "Run option: keeping only spherical component of potential (former: 'Vspher')"]),
+            ('<USE_SPHERICAL_POTENTIAL_ONLY>',
+             [None, '%l', False, "Run option: keeping only spherical component of potential (former: 'Vspher')"]),
             ('<USE_VIRTUAL_ATOMS>', [None, '%l', False, "Run option: add virtual atoms (former: 'VIRATOMS')"]),
-            ('<WRITE_BDG_TESTS>', [None, '%l', False, "Run option: test options for Bogouliubov-deGennes (former: 'BdG_dev')"]),
-            ('<WRITE_DOS>', [None, '%l', False, "Run option: write out DOS files in any case (also if npol!=0) (former: 'DOS')"]),
-            ('<WRITE_DOS_LM>', [None, '%l', False, "Run option: write out DOS files with decomposition into l and m components (former: 'lmdos')"]),
-            ('<WRITE_GMAT_PLAIN>', [None, '%l', False, "Run option: write out Green function as plain text file (former: 'GPLAIN')"]),
-            ('<WRITE_GREEN_HOST>', [None, '%l', False, "Run option: write green function of the host to file `green_host` (former: 'WRTGREEN')"]),
-            ('<WRITE_GREEN_IMP>', [None, '%l', False, "Run option: write out impurity Green function to GMATLL_GES (former: 'GREENIMP')"]),
-            ('<WRITE_COMPLEX_QDOS>', [None, '%l', False, "Run option: write complex qdos to file (former: 'compqdos')"]),
-            ('<WRITE_CPA_PROJECTION_FILE>', [None, '%l', False, "Run option: write CPA projectors to file (former: 'projfile')"]),
-            ('<WRITE_DECI_POT>', [None, '%l', False, "Run option: write decimation-potential file (former: 'deci-pot')"]),
-            ('<WRITE_DECI_TMAT>', [None, '%l', False, "Run option: write t-matrix to file 'decifile' (former: 'deci-out')"]),
-            ('<WRITE_DENSITY_ASCII>', [None, '%l', False, "Run option: write density rho2ns to file densitydn.ascii (former: 'den-asci')"]),
-            ('<WRITE_ENERGY_MESH>', [None, '%l', False, "Run option: write out the energy mesh to file `emesh.scf` (former: 'EMESH')"]),
-            ('<WRITE_GENERALIZED_POTENTIAL>', [None, '%l', False, "Run option: write potential in general format. Usually prepares for running the VORONOI program. (former: 'GENPOT')"]),
+            ('<WRITE_BDG_TESTS>',
+             [None, '%l', False, "Run option: test options for Bogouliubov-deGennes (former: 'BdG_dev')"]),
+            ('<WRITE_DOS>',
+             [None, '%l', False, "Run option: write out DOS files in any case (also if npol!=0) (former: 'DOS')"]),
+            ('<WRITE_DOS_LM>', [
+                None, '%l', False,
+                "Run option: write out DOS files with decomposition into l and m components (former: 'lmdos')"
+            ]),
+            ('<WRITE_GMAT_PLAIN>',
+             [None, '%l', False, "Run option: write out Green function as plain text file (former: 'GPLAIN')"]),
+            ('<WRITE_GREEN_HOST>', [
+                None, '%l', False,
+                "Run option: write green function of the host to file `green_host` (former: 'WRTGREEN')"
+            ]),
+            ('<WRITE_GREEN_IMP>',
+             [None, '%l', False, "Run option: write out impurity Green function to GMATLL_GES (former: 'GREENIMP')"]),
+            ('<WRITE_COMPLEX_QDOS>', [None, '%l', False,
+                                      "Run option: write complex qdos to file (former: 'compqdos')"]),
+            ('<WRITE_CPA_PROJECTION_FILE>',
+             [None, '%l', False, "Run option: write CPA projectors to file (former: 'projfile')"]),
+            ('<WRITE_DECI_POT>',
+             [None, '%l', False, "Run option: write decimation-potential file (former: 'deci-pot')"]),
+            ('<WRITE_DECI_TMAT>',
+             [None, '%l', False, "Run option: write t-matrix to file 'decifile' (former: 'deci-out')"]),
+            ('<WRITE_DENSITY_ASCII>',
+             [None, '%l', False, "Run option: write density rho2ns to file densitydn.ascii (former: 'den-asci')"]),
+            ('<WRITE_ENERGY_MESH>',
+             [None, '%l', False, "Run option: write out the energy mesh to file `emesh.scf` (former: 'EMESH')"]),
+            ('<WRITE_GENERALIZED_POTENTIAL>', [
+                None, '%l', False,
+                "Run option: write potential in general format. Usually prepares for running the VORONOI program. (former: 'GENPOT')"
+            ]),
             ('<WRITE_GMAT_FILE>', [None, '%l', False, "Run option: write GMAT to file (former: 'gmatfile')"]),
             ('<WRITE_GREF_FILE>', [None, '%l', False, "Run option: write GREF to file (former: 'greffile')"]),
-            ('<WRITE_GMAT_ASCII>', [None, '%l', False, "Run option: write GMAT to formatted file `gmat.ascii` (former: 'gmatasci')"]),
-            ('<WRITE_KKRIMP_INPUT>', [None, '%l', False, "Run option: write out files for KKRimp-code (former: 'KKRFLEX')"]),
-            ('<WRITE_KKRSUSC_INPUT>', [None, '%l', False, "Run option: write out files for KKRsusc-code (former: 'KKRSUSC')"]),
-            ('<WRITE_KPTS_FILE>', [None, '%l', False, "Run option: write and read k-mesh to/from file `kpoints` (former: 'kptsfile')"]),
-            ('<WRITE_LLOYD_CDOS_FILE>', [None, '%l', False, "Run option: write Lloyd array to file  (former: 'wrtcdos')"]),
-            ('<WRITE_LLOYD_DGREF_FILE>', [None, '%l', False, "Run option: write Lloyd array to file  (former: 'wrtdgref')"]),
-            ('<WRITE_LLOYD_DTMAT_FILE>', [None, '%l', False, "Run option: write Lloyd array to file  (former: 'wrtdtmat')"]),
-            ('<WRITE_LLOYD_FILE>', [None, '%l', False, "Run option: write several Lloyd-arrays to files (former: 'llyfiles')"]),
-            ('<WRITE_LLOYD_G0TR_FILE>', [None, '%l', False, "Run option: write Lloyd array to file  (former: 'wrtgotr')"]),
-            ('<WRITE_LLOYD_TRALPHA_FILE>', [None, '%l', False, "Run option: write Lloyd array to file  (former: 'wrttral')"]),
-            ('<WRITE_MADELUNG_FILE>', [None, '%l', False, "Run option: write madelung summation to file 'abvmad.unformatted' instead of keeping it in memory (former: 'madelfil')"]),
-            ('<WRITE_PKKR_INPUT>', [None, '%l', False, "Run option: write out files for Pkkprime-code (former: 'FERMIOUT')"]),
-            ('<WRITE_PKKR_OPERATORS>', [None, '%l', False, "Run option: for Fermi-surface output: calculate various operators in KKR basis. (former: 'OPERATOR')"]),
-            ('<WRITE_POTENTIAL_TESTS>', [None, '%l', False, "Run option: write potential at different steps in main2 to different files (former: 'vintrasp' and 'vpotout')"]),
-            ('<WRITE_RHO2NS>', [None, '%l', False, "Run option: write array rho2ns into file out_rhoval (from main1c) and out_rhotot (from main2) (former: 'RHOVALTW' and 'RHOVALW')"]),
-            ('<WRITE_RHOQ_INPUT>', [None, '%l', False, "Run option: write out files needed for rhoq module (Quasiparticle interference) (former: 'rhoqtest')"]),
+            ('<WRITE_GMAT_ASCII>',
+             [None, '%l', False, "Run option: write GMAT to formatted file `gmat.ascii` (former: 'gmatasci')"]),
+            ('<WRITE_KKRIMP_INPUT>',
+             [None, '%l', False, "Run option: write out files for KKRimp-code (former: 'KKRFLEX')"]),
+            ('<WRITE_KKRSUSC_INPUT>',
+             [None, '%l', False, "Run option: write out files for KKRsusc-code (former: 'KKRSUSC')"]),
+            ('<WRITE_KPTS_FILE>',
+             [None, '%l', False, "Run option: write and read k-mesh to/from file `kpoints` (former: 'kptsfile')"]),
+            ('<WRITE_LLOYD_CDOS_FILE>',
+             [None, '%l', False, "Run option: write Lloyd array to file  (former: 'wrtcdos')"]),
+            ('<WRITE_LLOYD_DGREF_FILE>',
+             [None, '%l', False, "Run option: write Lloyd array to file  (former: 'wrtdgref')"]),
+            ('<WRITE_LLOYD_DTMAT_FILE>',
+             [None, '%l', False, "Run option: write Lloyd array to file  (former: 'wrtdtmat')"]),
+            ('<WRITE_LLOYD_FILE>',
+             [None, '%l', False, "Run option: write several Lloyd-arrays to files (former: 'llyfiles')"]),
+            ('<WRITE_LLOYD_G0TR_FILE>',
+             [None, '%l', False, "Run option: write Lloyd array to file  (former: 'wrtgotr')"]),
+            ('<WRITE_LLOYD_TRALPHA_FILE>',
+             [None, '%l', False, "Run option: write Lloyd array to file  (former: 'wrttral')"]),
+            ('<WRITE_MADELUNG_FILE>', [
+                None, '%l', False,
+                "Run option: write madelung summation to file 'abvmad.unformatted' instead of keeping it in memory (former: 'madelfil')"
+            ]),
+            ('<WRITE_PKKR_INPUT>',
+             [None, '%l', False, "Run option: write out files for Pkkprime-code (former: 'FERMIOUT')"]),
+            ('<WRITE_PKKR_OPERATORS>', [
+                None, '%l', False,
+                "Run option: for Fermi-surface output: calculate various operators in KKR basis. (former: 'OPERATOR')"
+            ]),
+            ('<WRITE_POTENTIAL_TESTS>', [
+                None, '%l', False,
+                "Run option: write potential at different steps in main2 to different files (former: 'vintrasp' and 'vpotout')"
+            ]),
+            ('<WRITE_RHO2NS>', [
+                None, '%l', False,
+                "Run option: write array rho2ns into file out_rhoval (from main1c) and out_rhotot (from main2) (former: 'RHOVALTW' and 'RHOVALW')"
+            ]),
+            ('<WRITE_RHOQ_INPUT>', [
+                None, '%l', False,
+                "Run option: write out files needed for rhoq module (Quasiparticle interference) (former: 'rhoqtest')"
+            ]),
             ('<WRITE_TMAT_FILE>', [None, '%l', False, "Run option: write t-matix to file (former: 'tmatfile')"]),
-            ('<WRITE_TB_COUPLING>', [None, '%l', False, "Run option: write couplings in tight-binging reference system to file `couplings.dat` (former: 'godfrin')"]),
-            ('<CALC_WRONSKIAN>', [None, '%l', False, "Run option: calculate the wronskian relations of first and second kind for the wavefunctions (see PhD Bauer pp 48)"]),
-            # end new style run options            
+            ('<WRITE_TB_COUPLING>', [
+                None, '%l', False,
+                "Run option: write couplings in tight-binging reference system to file `couplings.dat` (former: 'godfrin')"
+            ]),
+            ('<CALC_WRONSKIAN>', [
+                None, '%l', False,
+                'Run option: calculate the wronskian relations of first and second kind for the wavefunctions (see PhD Bauer pp 48)'
+            ]),
+            # end new style run options
         ])
 
         # keywords for KKRimp (all allowed settings for config file)
@@ -516,9 +714,18 @@ class kkrparams(object):
             ('NCOLL', [None, '%i', False, 'Accuracy, Radial solver: use nonco_angles solver (1/0)']),
             ('SPINORBIT', [None, '%i', False, 'Accuracy, Radial solver: use SOC solver (1/0)']),
             # scf cycle
-            ('SCFSTEPS', [None, '%i', False, 'Self-consistency control: Max. number of self-consistency iterations. Is reset to 1 in several cases that require only 1 iteration (DOS, Jij, write out GF).']),
-            ('IMIX', [None, '%i', False, "Self-consistency control: Mixing scheme for potential. 0 means straignt (linear) mixing, 3 means Broyden's 1st method, 4 means Broyden's 2nd method, 5 means Anderson's method"]),
-            ('IMIXSPIN', [None, '%i', False, "Self-consistency control: Mixing scheme for magnetic moments. 0 means straignt (linear) mixing, >1 means Broyden mixing for spin moment directions."]),
+            ('SCFSTEPS', [
+                None, '%i', False,
+                'Self-consistency control: Max. number of self-consistency iterations. Is reset to 1 in several cases that require only 1 iteration (DOS, Jij, write out GF).'
+            ]),
+            ('IMIX', [
+                None, '%i', False,
+                "Self-consistency control: Mixing scheme for potential. 0 means straignt (linear) mixing, 3 means Broyden's 1st method, 4 means Broyden's 2nd method, 5 means Anderson's method"
+            ]),
+            ('IMIXSPIN', [
+                None, '%i', False,
+                'Self-consistency control: Mixing scheme for magnetic moments. 0 means straignt (linear) mixing, >1 means Broyden mixing for spin moment directions.'
+            ]),
             ('MIXFAC', [None, '%f', False, 'Self-consistency control: Linear mixing parameter Set to 0. if [NPOL]=0']),
             ('ITDBRY', [
                 None, '%i', False,
@@ -591,16 +798,17 @@ class kkrparams(object):
 
         Prints values belonging to a certain group only if the 'group' argument
         is one of the following: 'lattice', 'chemistry', 'accuracy',
-                                 'external fields', 'scf cycle', 'other'
+        'external fields', 'scf cycle', 'other'
 
         Additionally the subgroups argument allows to print only a subset of
-        all keys in a certain group. The following subgroups are available:
-        in 'lattice' group:   '2D mode', 'shape functions'
-        in 'chemistry' group: 'Atom types', 'Exchange-correlation', 'CPA mode',
-                              '2D mode'
-        in 'accuracy' group:  'Valence energy contour', 'Semicore energy contour',
-                              'CPA mode', 'Screening clusters', 'Radial solver',
-                              'Ewald summation', 'LLoyd'
+        all keys in a certain group. The following subgroups are available.
+
+        - in 'lattice' group  '2D mode', 'shape functions'
+        - in 'chemistry' group 'Atom types', 'Exchange-correlation', 'CPA mode', '2D mode'
+        - in 'accuracy' group  'Valence energy contour', 'Semicore energy contour',
+          'CPA mode', 'Screening clusters', 'Radial solver',
+          'Ewald summation', 'LLoyd'
+
         """
         out_dict = self.values
 
@@ -766,7 +974,7 @@ class kkrparams(object):
                 print('Warning setting value None is not permitted!')
                 print('Use remove_value funciton instead! Ignore keyword {}'.format(key))
         else:
-            key = key.upper() # make case insensitive
+            key = key.upper()  # make case insensitive
             if self.__params_type == 'kkrimp' and key == 'XC':
                 value = self.change_XC_val_kkrimp(value)
             self.values[key] = value
@@ -1044,33 +1252,94 @@ class kkrparams(object):
         keyfmts = self.__format
 
         if self.__params_type != 'kkrimp':
-            sorted_keylist = [#run/testopts
-                              'RUNOPT', 'TESTOPT',
-                              #lattice:
-                              'ALATBASIS', 'BRAVAIS', 'NAEZ', 'CARTESIAN', '<RBASIS>',
-                              'INTERFACE', '<NLBASIS>', '<RBLEFT>', 'ZPERIODL', '<NRBASIS>', '<RBRIGHT>', 'ZPERIODR',
-                              'KSHAPE', '<SHAPE>',
-                              # chemistry
-                              'NSPIN', 'KVREL', 'KEXCOR', 'LAMBDA_XC',
-                              'NAT_LDAU', 'LDAU_PARA', 'KREADLDAU',
-                              '<ZATOM>', '<SOCSCL>',
-                              'NATYP', '<SITE>', '<CPA-CONC>',
-                              '<KAOEZL>', '<KAOEZR>',
-                              # external fields
-                              'LINIPOL', 'HFIELD', 'XINIPOL', 'VCONST',
-                              # accuracy
-                              'LMAX', 'BZDIVIDE', 'EMIN', 'EMAX', 'TEMPR', 'NPT1', 'NPT2', 'NPT3', 'NPOL',
-                              'EBOTSEMI', 'EMUSEMI', 'TKSEMI', 'NPOLSEMI', 'N1SEMI', 'N2SEMI', 'N3SEMI', 'FSEMICORE',
-                              'CPAINFO',
-                              'RCLUSTZ', 'RCLUSTXY',
-                              '<RMTREF>', 'NLEFTHOS', '<RMTREFL>', 'NRIGHTHO', '<RMTREFR>',
-                              'INS', 'ICST',
-                              'R_LOG', 'NPAN_LOG', 'NPAN_EQ', 'NCHEB', '<FPRADIUS>',
-                              'RMAX', 'GMAX', '<LLOYD>', '<DELTAE>', '<TOLRDIF>',
-                              # scf cycle
-                              'NSTEPS', 'IMIX', 'STRMIX', 'ITDBRY', 'FCM', 'BRYMIX', 'QBOUND',
-                              #file names
-                              'FILES', 'DECIFILES']
+            sorted_keylist = [  #run/testopts
+                'RUNOPT',
+                'TESTOPT',
+                #lattice:
+                'ALATBASIS',
+                'BRAVAIS',
+                'NAEZ',
+                'CARTESIAN',
+                '<RBASIS>',
+                'INTERFACE',
+                '<NLBASIS>',
+                '<RBLEFT>',
+                'ZPERIODL',
+                '<NRBASIS>',
+                '<RBRIGHT>',
+                'ZPERIODR',
+                'KSHAPE',
+                '<SHAPE>',
+                # chemistry
+                'NSPIN',
+                'KVREL',
+                'KEXCOR',
+                'LAMBDA_XC',
+                'NAT_LDAU',
+                'LDAU_PARA',
+                'KREADLDAU',
+                '<ZATOM>',
+                '<SOCSCL>',
+                'NATYP',
+                '<SITE>',
+                '<CPA-CONC>',
+                '<KAOEZL>',
+                '<KAOEZR>',
+                # external fields
+                'LINIPOL',
+                'HFIELD',
+                'XINIPOL',
+                'VCONST',
+                # accuracy
+                'LMAX',
+                'BZDIVIDE',
+                'EMIN',
+                'EMAX',
+                'TEMPR',
+                'NPT1',
+                'NPT2',
+                'NPT3',
+                'NPOL',
+                'EBOTSEMI',
+                'EMUSEMI',
+                'TKSEMI',
+                'NPOLSEMI',
+                'N1SEMI',
+                'N2SEMI',
+                'N3SEMI',
+                'FSEMICORE',
+                'CPAINFO',
+                'RCLUSTZ',
+                'RCLUSTXY',
+                '<RMTREF>',
+                'NLEFTHOS',
+                '<RMTREFL>',
+                'NRIGHTHO',
+                '<RMTREFR>',
+                'INS',
+                'ICST',
+                'R_LOG',
+                'NPAN_LOG',
+                'NPAN_EQ',
+                'NCHEB',
+                '<FPRADIUS>',
+                'RMAX',
+                'GMAX',
+                '<LLOYD>',
+                '<DELTAE>',
+                '<TOLRDIF>',
+                # scf cycle
+                'NSTEPS',
+                'IMIX',
+                'STRMIX',
+                'ITDBRY',
+                'FCM',
+                'BRYMIX',
+                'QBOUND',
+                #file names
+                'FILES',
+                'DECIFILES'
+            ]
         else:
             sorted_keylist = [
                 'RUNFLAG', 'TESTFLAG', 'INS', 'KVREL', 'NSPIN', 'SCFSTEPS', 'IMIX', 'ITDBRY', 'MIXFAC', 'BRYMIX',
@@ -1155,9 +1424,11 @@ class kkrparams(object):
                         self.values[key][1] = 'shapefun'
                     else:
                         files_changed += 1
-                    if files_changed>0 or 'DECIFILES' in self.values: # force writing FILES line if DECIFILES should be set
-                        if files_changed>0:
-                            print('Warning: Changing file name of potential file to "%s" and of shapefunction file to "%s"'%(self.values[key][0], self.values[key][1]))
+                    if files_changed > 0 or 'DECIFILES' in self.values:  # force writing FILES line if DECIFILES should be set
+                        if files_changed > 0:
+                            print(
+                                'Warning: Changing file name of potential file to "%s" and of shapefunction file to "%s"'
+                                % (self.values[key][0], self.values[key][1]))
                         tmpl += 'FILES\n'
                         tmpl += '\n'
                         tmpl += '%s\n' % self.values[key][0]
@@ -1166,8 +1437,8 @@ class kkrparams(object):
                         tmpl += 'scoef\n'
                 elif key == 'DECIFILES':
                     tmpl += 'DECIFILES\n'
-                    tmpl += '%s\n'%self.values[key][0]
-                    tmpl += '%s\n'%self.values[key][1]
+                    tmpl += '%s\n' % self.values[key][0]
+                    tmpl += '%s\n' % self.values[key][1]
                 elif self.__params_type == 'kkrimp' and key == 'RUNFLAG' or key == 'TESTFLAG':
                     # for kkrimp
                     ops = keywords[key]
@@ -1295,7 +1566,7 @@ class kkrparams(object):
                         lines = [2, 4]
                         num = 1
                         keyfmts[key] = '%s'
-                    elif key=='DECIFILES':
+                    elif key == 'DECIFILES':
                         lines = [1, 2]
                         num = 1
                         keyfmts[key] = '%s'

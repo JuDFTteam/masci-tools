@@ -3,9 +3,11 @@
 @author: ruess
 """
 
+# pylint: disable=E0602,W0602
+
 from __future__ import absolute_import
 from __future__ import print_function
-from builtins import object
+from builtins import object  # pylint: disable=redefined-builtin
 import pytest
 from masci_tools.io.parsers.kkrparser_functions import parse_kkr_outputfile, check_error_category
 
@@ -810,12 +812,17 @@ class Test_kkr_parser_functions(object):
         out_dict['parser_warnings'] = msg_list
         assert not success
         assert set(msg_list) == set([
-            'Error parsing output of KKR: nspin/natom', 'Error parsing output of KKR: spin moment per atom',
-            'Error parsing output of KKR: orbital moment', 'Error parsing output of KKR: energy contour',
-            'Error parsing output of KKR: alat, 2*pi/alat', 'Error parsing output of KKR: scfinfo',
-            'Error parsing output of KKR: kmesh', 'Error parsing output of KKR: symmetries',
+            'Error parsing output of KKR: nspin/natom',
+            'Error parsing output of KKR: spin moment per atom',
+            'Error parsing output of KKR: orbital moment',
+            'Error parsing output of KKR: energy contour',
+            'Error parsing output of KKR: alat, 2*pi/alat',
+            'Error parsing output of KKR: scfinfo',
+            'Error parsing output of KKR: kmesh',
+            'Error parsing output of KKR: symmetries',
             'Error parsing output of KKR: ewald summation for madelung poterntial',
-            'Error parsing output of KKR: lattice vectors (direct/reciprocal)'
+            'Error parsing output of KKR: lattice vectors (direct/reciprocal)',
+            'Error parsing output of KKR: noco angles rms value',
         ])
 
     def test_missing_outfile000(self):

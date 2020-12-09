@@ -16,11 +16,10 @@ from masci_tools.io.common_functions import (search_string, get_version_info, ge
 from six.moves import range
 import traceback
 
-__copyright__ = (u"Copyright (c), 2017, Forschungszentrum Jülich GmbH,"
-                 "IAS-1/PGI-1, Germany. All rights reserved.")
-__license__ = "MIT license, see LICENSE.txt file"
-__contributors__ = u"Philipp Rüßmann"
-__version__ = "1.8"
+__copyright__ = (u'Copyright (c), 2017, Forschungszentrum Jülich GmbH,' 'IAS-1/PGI-1, Germany. All rights reserved.')
+__license__ = 'MIT license, see LICENSE.txt file'
+__contributors__ = u'Philipp Rüßmann'
+__version__ = '1.8'
 
 ####################################################################################
 
@@ -28,13 +27,19 @@ __version__ = "1.8"
 def parse_array_float(outfile, searchstring, splitinfo, replacepair=None, debug=False):
     """
     Search for keyword `searchstring` in `outfile` and extract array of results
-    Note: `splitinfo`   can be of the form [1, 'X', 1] or [2, 'X', 1, 0] where
-      splitinfo[0] can only be 1 or 2 (determines the mode),
-      splitinfo[1] is the string at which the line is split,
-      splitinfo[2] is the index which is used,
-      splitinfo[3] (only for splitinfo[0]==2) is the part that is taken after applying split() a second time (split at whitespace).
-    Note: If `replacepair` is not None the substring replacepair[0] is replaced by replacepair[1] before processing further
+
+    .. note:
+        `splitinfo` can be of the form [1, 'X', 1] or [2, 'X', 1, 0] where
+        splitinfo[0] can only be 1 or 2 (determines the mode),
+        splitinfo[1] is the string at which the line is split,
+        splitinfo[2] is the index which is used,
+        splitinfo[3] (only for splitinfo[0]==2) is the part that is taken after applying split() a second time (split at whitespace).
+
+    .. note:
+        If `replacepair` is not None the substring replacepair[0] is replaced by replacepair[1] before processing further
+
     Returns: array of results
+
     """
     f = open_general(outfile)
     tmptxt = f.readlines()
@@ -95,12 +100,14 @@ def get_noco_rms(outfile, debug=False):
     """
     Get average noco rms error
     """
-    if debug: print(outfile)
+    if debug:
+        print(outfile)
     try:
         rms_noco = parse_array_float(outfile, 'Total RMS(angles)', [1, ':', 1], debug=debug)
     except:
         rms_noco = []
-        if debug: traceback.print_exc()
+        if debug:
+            traceback.print_exc()
     return rms_noco
 
 
@@ -428,7 +435,7 @@ def use_newsosol(outfile_0init):
     newsosol = False
     # old style (RUNOPT output)
     itmp = search_string('NEWSOSOL', tmptxt)
-    if itmp>=0 and 'NEWSOSOL' in tmptxt[itmp].upper():
+    if itmp >= 0 and 'NEWSOSOL' in tmptxt[itmp].upper():
         newsosol = True
     itmp = search_string('<use_Chebychev_solver>=', tmptxt)
     # new style: check for output of runoptions
@@ -793,15 +800,16 @@ def parse_kkr_outputfile(out_dict,
 
         # get RMS info for nonco angles
         try:
-            if nspin>1 and newsosol:
+            if nspin > 1 and newsosol:
                 result = get_noco_rms(outfile, debug)
-                if len(result)>0:
+                if len(result) > 0:
                     out_dict['convergence_group']['noco_angles_rms_all_iterations'] = result[:]
                     out_dict['convergence_group']['noco_angles_rms_all_iterations_unit'] = 'degrees'
         except:
-            msg = "Error parsing output of KKR: noco angles rms value"
+            msg = 'Error parsing output of KKR: noco angles rms value'
             msg_list.append(msg)
-            if debug: traceback.print_exc()
+            if debug:
+                traceback.print_exc()
 
         try:
             result = get_EF(outfile)
