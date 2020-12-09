@@ -1697,11 +1697,9 @@ def plot_one_element_corelv(corelevel_dict, element, compound=''):
     This routine creates a plot which visualizes all the binding energies of one
     element (and currenlty one corelevel) for different atomtypes.
 
-    i.e
+    example:
+        corelevels = {'W' : {'4f7/2' : [123, 123.3, 123.4 ,123.1], '4f5/2' : [103, 103.3, 103.4, 103.1]}, 'Be' : {'1s': [118, 118.2, 118.4, 118.1, 118.3]}}
 
-    corelevels = {'W' : {'4f7/2' : [123, 123.3, 123.4 ,123.1],
-                     '4f5/2' : [103, 103.3, 103.4, 103.1]},
-              'Be' : {'1s': [118, 118.2, 118.4, 118.1, 118.3]}}
     """
     corelevels_names = []
     xdata_all = []
@@ -1932,9 +1930,8 @@ def plot_corelevel_spectra(coreleveldict,
                            alpha_l=1.0,
                            beta_l=1.0,
                            **kwargs):
-    #show_compound=True, , compound_info={} compound_info dict: dict that can be used to specify what component should be shown together     compound_info = {'Be12Ti' : {'Be' : 4, 'Ti' : 1}, 'BeTi' : {'Be' : 1, 'Ti' : 1}}
     """
-    Ploting function of corelevel in the form of a spectrum.
+    Plotting function of corelevel in the form of a spectrum.
 
     Convention: Binding energies are positiv!
 
@@ -1951,13 +1948,13 @@ def plot_corelevel_spectra(coreleveldict,
         energy_grid (float): energy resolution
         linetyp_spec : linetype for spectrum
         peakfunction (string): what the peakfunction should be {'voigt', 'pseudo-voigt', 'lorentz', 'gaus'}
-    example:
 
-    coreleveldict = {u'Be': {'1s1/2' : [-1.0220669053033051, -0.3185614920138805,
-                                        -0.7924091040092139]}}
-    n_atom_types_Be12Ti = {'Be' : [4,4,4]}
-    # TODO feature to make singles of different compounds a different color
+    example:
+        coreleveldict = {u'Be': {'1s1/2' : [-1.0220669053033051, -0.3185614920138805,-0.7924091040092139]}}
+        n_atom_types_Be12Ti = {'Be' : [4,4,4]}
     """
+    #show_compound=True, , compound_info={} compound_info dict: dict that can be used to specify what component should be shown together     compound_info = {'Be12Ti' : {'Be' : 4, 'Ti' : 1}, 'BeTi' : {'Be' : 1, 'Ti' : 1}}
+    # TODO feature to make singles of different compounds a different color
     [xdata_spec, ydata_spec, ydata_single_all, xdata_all, ydata_all,
      xdatalabel] = construct_corelevel_spectrum(coreleveldict,
                                                 natom_typesdict,
@@ -2535,12 +2532,14 @@ def hyp2f2(a, b, z):
 def pseudo_voigt_profile(x, fwhm_g, fwhm_l, mu, mix=0.5):
     """
     Linear combination of gaussian and loretzian instead of convolution
+
     Args:
-       x: array of floats
-       fwhm_g: FWHM of gaussian
-       fwhm_l: FWHM of Lorentzian
-       mu: Mean
-       mix: ratio of gaus to lorentz, mix* gaus, (1-mix)*Lorentz
+        x: array of floats
+        fwhm_g: FWHM of gaussian
+        fwhm_l: FWHM of Lorentzian
+        mu: Mean
+        mix: ratio of gaus to lorentz, mix* gaus, (1-mix)*Lorentz
+
     """
     #pseudo_voigt = []
     if not (mix <= 1):

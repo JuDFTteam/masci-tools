@@ -9,12 +9,12 @@ from __future__ import print_function
 from __future__ import division
 
 from __future__ import absolute_import
-from builtins import object
-from builtins import str
+from builtins import object  # pylint: disable=redefined-builtin
+from builtins import str  # pylint: disable=redefined-builtin
 import pytest
 from masci_tools.io.kkr_params import kkrparams
 from masci_tools.io.common_functions import open_general
-from six.moves import range
+from six.moves import range  # pylint: disable=redefined-builtin
 
 # helper functions
 
@@ -27,11 +27,11 @@ def check_full_dict(p, p0):
     for key in [i[0] for i in p.get_set_values()]:
         v = p.get_value(key)
         v0 = p0.get_value(key)
-        if type(v) != list and type(v) != ndarray:
+        if not isinstance(v, list) and not isinstance(v, ndarray):
             if v != v0:
                 print(key, v, v0)
             assert v == v0
-        elif type(v[0]) != str:
+        elif not isinstance(v[0], str):
             if abs(array(v) - array(v0)).max() >= 10**-14:
                 print(key, abs(array(v) - array(v0)).max())
             assert abs(array(v) - array(v0)).max() < 10**-14
@@ -44,11 +44,11 @@ def check_full_dict(p, p0):
 # tests
 
 
-class Test_create_and_set_keys(object):
+class Test_create_and_set_keys(object):  # pylint: disable=missing-class-docstring
 
     def test_create_params_with_inital_values(self):
         p = kkrparams(RBASIS=[0, 0, 0], params_type='voronoi')
-        assert type(p) == kkrparams
+        assert isinstance(p, kkrparams)
         assert p.values['<RBASIS>'] == [0, 0, 0]
 
     def test_default_values(self):
@@ -68,7 +68,7 @@ class Test_create_and_set_keys(object):
         assert p.values['EMAX'] == 2.
 
 
-class Test_capture_wrong_input(object):
+class Test_capture_wrong_input(object):  # pylint: disable=missing-class-docstring
 
     def test_wrong_input_type(self):
         p = kkrparams()
@@ -139,7 +139,7 @@ class Test_capture_wrong_input(object):
         assert knownError
 
 
-class Test_get_info(object):
+class Test_get_info(object):  # pylint: disable=missing-class-docstring
 
     def test_get_mandatory(self):
         p = kkrparams()
@@ -172,7 +172,7 @@ class Test_get_info(object):
     def test_is_mandatory(self):
         p = kkrparams()
         man = p.is_mandatory('EMAX')
-        assert (not man)
+        assert not man
 
     def test_get_value(self):
         p = kkrparams(LMAX=3)
@@ -185,7 +185,7 @@ class Test_get_info(object):
         assert known_error
         # check for returning unset value
         npol = p.get_value('NPOL')
-        assert npol == None
+        assert npol is None
         # check correct LMAX value
         lmax = p.get_value('LMAX')
         assert lmax == 3
@@ -273,9 +273,9 @@ class Test_fill_inputfile(object):
         txt.sort()
         ref.sort()
         print(txt, ref)
-        for i in range(len(txt)):
-            print(i, txt[i], ref[i])
-            assert set(txt[i].split()) == set(ref[i].split())
+        for i, t in enumerate(txt):
+            print(i, t, ref[i])
+            assert set(t.split()) == set(ref[i].split())
 
     def test_fill_inputfile_KKR(self):
         reffile = [
@@ -306,8 +306,8 @@ class Test_fill_inputfile(object):
         assert len(txt) == len(reffile)
         txt.sort()
         reffile.sort()
-        for i in range(len(txt)):
-            assert set(txt[i].split()) == set(reffile[i].split())
+        for i, t in enumerate(txt):
+            assert set(t.split()) == set(reffile[i].split())
 
     def test_fill_inputfile_empty_check(self):
         p = kkrparams(LMAX=2, NAEZ=1)
@@ -486,7 +486,7 @@ class Test_fill_inputfile(object):
         assert txt == reftxt
 
 
-class Test_read_inputfile(object):
+class Test_read_inputfile(object):  # pylint: disable=missing-class-docstring
 
     def test_read_minimal_inputfile(self):
         p = kkrparams(ZATOM=26.,
@@ -618,8 +618,8 @@ class Test_read_inputfile(object):
             6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
             1, 2, 3, 4, 5, 6, 7, 8, 9, 10
         ])
-        p0.set_multiple_values(KAOEZR=[i for i in range(1, 11)],
-                               KAOEZL=[i for i in range(1, 11)],
+        p0.set_multiple_values(KAOEZR=list(range(1, 11)),
+                               KAOEZL=list(range(1, 11)),
                                KVREL=1,
                                RMTREFL=[
                                    2.2671000, 2.2671000, 2.4948000, 2.3562000, 2.3562000, 2.3562000, 2.4948000,
@@ -700,12 +700,13 @@ class Test_read_inputfile(object):
                                        [1.5375, -0.887676038879049, 7.367], [1.7296875, -0.99863554373893, 7.4505],
                                        [1.921875, -1.10959504859881, 7.567], [1.5375, -0.887676038879049, 7.6835],
                                        [1.7296875, -0.99863554373893, 7.734], [1.921875, -1.10959504859881, 7.867]])
+        p0.set_value('DECIFILES', ['fedeci.fp1', 'fedeci.fp2'])
 
         # check all values
         check_full_dict(p, p0)
 
 
-class Test_other(object):
+class Test_other(object):  # pylint: disable=missing-class-docstring
 
     def test_get_missing_keys(self):
         p = kkrparams()
@@ -749,8 +750,8 @@ class Test_other(object):
         itmp = search_string('FILES', txt)
         potname = txt[itmp + 2].split()[0]
         shapename = txt[itmp + 4].split()[0]
-        assert 'potential' == potname
-        assert 'shapenew' == shapename
+        assert potname == 'potential'
+        assert shapename == 'shapenew'
 
     def test_get_dict(self):
         d0 = {
@@ -844,7 +845,117 @@ class Test_other(object):
             'IEMXD': None,
             'IRID': None,
             'IPAND': None,
-            'EFSET': None
+            'EFSET': None,
+            '<AT_SCALE_BDG>': None,
+            '<CALC_COMPLEX_BANDSTRUCTURE>': None,
+            '<CALC_EXCHANGE_COUPLINGS>': None,
+            '<CALC_EXCHANGE_COUPLINGS_ENERGY>': None,
+            '<CALC_GF_EFERMI>': None,
+            '<CALC_GMAT_LM_FULL>': None,
+            '<CALC_WRONSKIAN>': None,
+            '<CUSTOM_TESTSTRING>': None,
+            '<DECOUPLE_SPINS_CHEBY>': None,
+            '<DELTA_BDG>': None,
+            '<DIRAC_SCALE_SPEEFOFLIGHT>': None,
+            '<DISABLE_CHARGE_NEUTRALITY>': None,
+            '<DISABLE_PRINT_SERIALNUMBER>': None,
+            '<DISABLE_REFERENCE_SYSTEM>': None,
+            '<DISABLE_TMAT_SRATRICK>': None,
+            '<FIX_NONCO_ANGLES>': None,
+            '<FORMATTED_FILE>': None,
+            '<IMPURITY_OPERATOR_ONLY>': None,
+            '<LAMBDA_BDG>': None,
+            '<MODIFY_SOC_DIRAC>': None,
+            '<MPI_SCHEME>': None,
+            '<NEWVERSION_BDG>': None,
+            '<NO_MADELUNG>': None,
+            '<PRINT_GIJ>': None,
+            '<PRINT_GMAT>': None,
+            '<PRINT_ICKECK>': None,
+            '<PRINT_KMESH>': None,
+            '<PRINT_KPOINTS>': None,
+            '<PRINT_PROGRAM_FLOW>': None,
+            '<PRINT_RADIAL_MESH>': None,
+            '<PRINT_REFPOT>': None,
+            '<PRINT_TAU_STRUCTURE>': None,
+            '<PRINT_TMAT>': None,
+            '<RELAX_SPINANGLE_DIRAC>': None,
+            '<SEARCH_EFERMI>': None,
+            '<SET_CHEBY_NOSOC>': None,
+            '<SET_CHEBY_NOSPEEDUP>': None,
+            '<SET_EMPTY_SYSTEM>': None,
+            '<SET_GMAT_TO_ZERO>': None,
+            '<SET_KMESH_LARGE>': None,
+            '<SET_KMESH_SMALL>': None,
+            '<SET_TMAT_NOINVERSION>': None,
+            '<SIMULATE_ASA>': None,
+            '<SLOW_MIXING_EFERMI>': None,
+            '<STOP_1A>': None,
+            '<STOP_1B>': None,
+            '<STOP_1C>': None,
+            '<SYMMETRIZE_GMAT>': None,
+            '<SYMMETRIZE_POTENTIAL_CUBIC>': None,
+            '<SYMMETRIZE_POTENTIAL_MADELUNG>': None,
+            '<TORQUE_OPERATOR_ONLYMT>': None,
+            '<TORQUE_OPERATOR_ONLYSPH>': None,
+            '<USE_BDG>': None,
+            '<USE_BROYDEN_SPINMIX>': None,
+            '<USE_CHEBYCHEV_SOLVER>': None,
+            '<USE_COND_LB>': None,
+            '<USE_CONT>': None,
+            '<USE_DECIMATION>': None,
+            '<USE_DECI_ONEBULK>': None,
+            '<USE_EWALD_2D>': None,
+            '<USE_FULL_BZ>': None,
+            '<USE_LDAU>': None,
+            '<USE_LLOYD>': None,
+            '<USE_QDOS>': None,
+            '<USE_READCPA>': None,
+            '<USE_RIGID_EFERMI>': None,
+            '<USE_SEMICORE>': None,
+            '<USE_SPHERICAL_POTENTIAL_ONLY>': None,
+            '<USE_VIRTUAL_ATOMS>': None,
+            '<WRITE_ANGLES_ALLITER>': None,
+            '<WRITE_BDG_TESTS>': None,
+            '<WRITE_COMPLEX_QDOS>': None,
+            '<WRITE_CPA_PROJECTION_FILE>': None,
+            '<WRITE_DECI_POT>': None,
+            '<WRITE_DECI_TMAT>': None,
+            '<WRITE_DENSITY_ASCII>': None,
+            '<WRITE_DOS>': None,
+            '<WRITE_DOS_LM>': None,
+            '<WRITE_ENERGY_MESH>': None,
+            '<WRITE_GENERALIZED_POTENTIAL>': None,
+            '<WRITE_GMAT_ASCII>': None,
+            '<WRITE_GMAT_FILE>': None,
+            '<WRITE_GMAT_PLAIN>': None,
+            '<WRITE_GREEN_HOST>': None,
+            '<WRITE_GREEN_IMP>': None,
+            '<WRITE_GREF_FILE>': None,
+            '<WRITE_KKRIMP_INPUT>': None,
+            '<WRITE_KKRSUSC_INPUT>': None,
+            '<WRITE_KPTS_FILE>': None,
+            '<WRITE_LLOYD_CDOS_FILE>': None,
+            '<WRITE_LLOYD_DGREF_FILE>': None,
+            '<WRITE_LLOYD_DTMAT_FILE>': None,
+            '<WRITE_LLOYD_FILE>': None,
+            '<WRITE_LLOYD_G0TR_FILE>': None,
+            '<WRITE_LLOYD_TRALPHA_FILE>': None,
+            '<WRITE_MADELUNG_FILE>': None,
+            '<WRITE_PKKR_INPUT>': None,
+            '<WRITE_PKKR_OPERATORS>': None,
+            '<WRITE_POTENTIAL_TESTS>': None,
+            '<WRITE_RHO2NS>': None,
+            '<WRITE_RHOQ_INPUT>': None,
+            '<WRITE_TB_COUPLING>': None,
+            '<WRITE_TMAT_FILE>': None,
+            'DECIFILES': None,
+            'IVSHIFT': None,
+            'NPRINCD': None,
+            'SPINMIXALPHA': None,
+            'SPINMIXMEMLEN': None,
+            'SPINMIXNSIMPLE': None,
+            'SPINMIXQBOUND': None,
         }
 
         p = kkrparams()

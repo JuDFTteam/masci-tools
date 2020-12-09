@@ -28,35 +28,34 @@ def read_fleur_banddos_hdf(filepath):
 
     :param filepath: path to the banddos.hdf file
 
-    :return: xcoord, bands, xlabels, band_character, band_char_label,
-    kpoints, weights, rep_cell, cell, positions, atomicnumbers, special_point_pos
-
+    :return: xcoord, bands, xlabels, band_character, band_char_label, kpoints, weights, rep_cell, cell, positions, atomicnumbers, special_point_pos
 
     Expected file content:
-    datasets
-    [u'bravaisMatrix',
-     u'numFoundEigenvals',
-     u'specialPointIndices',
-     u'lLikeCharge',
-     u'positions',
-     u'atomicNumbers',
-     u'coordinates',
-     u'weights',
-     u'reciprocalCell',
-     u'eigenvalues',
-     u'specialPointLabels',
-     u'equivAtomsGroup']
+        datasets::
+            [u'bravaisMatrix',
+             u'numFoundEigenvals',
+             u'specialPointIndices',
+             u'lLikeCharge',
+             u'positions',
+             u'atomicNumbers',
+             u'coordinates',
+             u'weights',
+             u'reciprocalCell',
+             u'eigenvalues',
+             u'specialPointLabels',
+             u'equivAtomsGroup']
 
-    attributes:
-    {u'lastFermiEnergy': array([0.20852455]),
-     u'maxL': array([3], dtype=int32),
-     u'nAtoms': array([2], dtype=int32),
-     u'nSpecialPoints': array([7], dtype=int32),
-     u'nTypes': array([1], dtype=int32),
-     u'neigd': array([19], dtype=int32),
-     u'nkpt': array([100], dtype=int32),
-     u'spins': array([1], dtype=int32),
-     u'version': array([1], dtype=int32)}
+        attributes::
+            {u'lastFermiEnergy': array([0.20852455]),
+             u'maxL': array([3], dtype=int32),
+             u'nAtoms': array([2], dtype=int32),
+             u'nSpecialPoints': array([7], dtype=int32),
+             u'nTypes': array([1], dtype=int32),
+             u'neigd': array([19], dtype=int32),
+             u'nkpt': array([100], dtype=int32),
+             u'spins': array([1], dtype=int32),
+             u'version': array([1], dtype=int32)}
+
     """
     import numpy as np
     from masci_tools.io.io_hdf5 import read_hdf

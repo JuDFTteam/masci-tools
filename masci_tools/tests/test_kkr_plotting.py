@@ -1,13 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""
+Tests for kkr-specific plotting functions
+"""
+
 from __future__ import absolute_import
-from builtins import object
+from builtins import object  # pylint: disable=redefined-builtin
 import pytest
 
 # prevent issue with not having a display on travis-ci
 # this needs to go *before* pyplot imports
 import matplotlib
-from six.moves import range
+from six.moves import range  # pylint: disable=redefined-builtin
 matplotlib.use('Agg')
 from matplotlib.pyplot import gcf, title
 from masci_tools.io.kkr_read_shapefun_info import read_shapefun
@@ -72,7 +76,12 @@ class Test_kkr_plotting(object):
     @pytest.mark.mpl_image_compare(baseline_dir='files/kkr/kkr_run_qdos/', filename='test2.png')
     def test_plot_qdos2(self):
         gcf().clear()
-        dispersionplot('files/kkr/kkr_run_qdos', reload_data=True, ratios=False, units='eV_rel', clrbar=False)
+        dispersionplot('files/kkr/kkr_run_qdos',
+                       reload_data=True,
+                       ratios=False,
+                       units='eV_rel',
+                       clrbar=False,
+                       shading='nearest')
         title('')
         return gcf()
 
