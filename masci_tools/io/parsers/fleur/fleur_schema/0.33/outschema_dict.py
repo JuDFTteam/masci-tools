@@ -456,6 +456,7 @@ schema_dict = {
         ],
         'uIndex': ['./ldaUDensityMatrix/densityMatrixFor'],
         'units': [
+            './Forcetheorem_DMI', './Forcetheorem_JIJ', './Forcetheorem_MAE', './Forcetheorem_SSDISP',
             './energyParameters', './bandgap', './sumValenceSingleParticleEnergies', './FermiEnergy',
             './valenceDensity/totalCharge', './allElectronCharges/totalCharge',
             './valenceDensity/fixedCharges/totalCharge', './allElectronCharges/fixedCharges/totalCharge',
@@ -513,7 +514,7 @@ schema_dict = {
             'text': []
         },
         './Forcetheorem_DMI': {
-            'attribs': ['Angles', 'qpoints'],
+            'attribs': ['Angles', 'qpoints', 'units'],
             'optional': ['Entry', 'allAtoms', 'singleAtom'],
             'order': ['Entry', 'allAtoms', 'singleAtom'],
             'several': ['Entry', 'allAtoms', 'singleAtom'],
@@ -545,7 +546,7 @@ schema_dict = {
             'text': []
         },
         './Forcetheorem_JIJ': {
-            'attribs': ['Configs'],
+            'attribs': ['Configs', 'units'],
             'optional': ['Config'],
             'order': ['Config'],
             'several': ['Config'],
@@ -575,7 +576,7 @@ schema_dict = {
             'text': []
         },
         './Forcetheorem_MAE': {
-            'attribs': ['Angles'],
+            'attribs': ['Angles', 'units'],
             'optional': ['Angle'],
             'order': ['Angle'],
             'several': ['Angle'],
@@ -591,7 +592,7 @@ schema_dict = {
             'text': []
         },
         './Forcetheorem_SSDISP': {
-            'attribs': ['qvectors'],
+            'attribs': ['qvectors', 'units'],
             'optional': ['Entry'],
             'order': ['Entry'],
             'several': ['Entry'],
@@ -1374,7 +1375,8 @@ schema_dict = {
         'qvectors': './Forcetheorem_SSDISP'
     },
     'iteration_unique_path_attribs': {
-        'Angles': ['./Forcetheorem_DMI', './Forcetheorem_MAE']
+        'Angles': ['./Forcetheorem_DMI', './Forcetheorem_MAE'],
+        'units': ['./Forcetheorem_DMI', './Forcetheorem_JIJ', './Forcetheorem_MAE', './Forcetheorem_SSDISP']
     },
     'omitt_contained_tags': [
         'scfLoop', 'eigenvalues', 'onSiteExchangeSplitting', 'noncollinearTorgue', 'spinorbitTorgue',
