@@ -20,15 +20,6 @@ from masci_tools.io.parsers.fleur.fleur_schema import load_inpschema, load_outsc
 from datetime import date
 from lxml import etree
 
-function_dict = {
-    'attrib': schema_util.evaluate_attribute,
-    'text': schema_util.evaluate_text,
-    'exists': schema_util.tag_exists,
-    'numberNodes': schema_util.get_number_of_nodes,
-    'singleValue': schema_util.evaluate_single_value_tag,
-    'allAttribs': schema_util.evaluate_tag,
-}
-
 
 def outxml_parser(outxmlfile,
                   version=None,
@@ -133,7 +124,10 @@ def outxml_parser(outxmlfile,
     #Convert energy to eV
     htr = 27.21138602
     if 'energy_hartree' in out_dict:
-        out_dict['energy'] = [e * htr for e in out_dict['energy_hartree']]
+        if out_dict['energy_hartree'] is not None:
+            out_dict['energy'] = [e * htr for e in out_dict['energy_hartree']]
+        else:
+            out_dict['energy'] = None
         out_dict['energy_units'] = 'eV'
 
     for key, value in out_dict.items():
@@ -235,6 +229,22 @@ def parse_general_information(root, outschema_dict, inpschema_dict, parser_info_
             'args': {
                 'name': 'ntype'
             }
+        },
+        'start_date': {
+            'parse_type': 'allAttribs',
+            'args': {
+                'name': 'startDateAndTime'
+            },
+            'ignore': ['zone'],
+            'flat': False,
+        },
+        'end_date': {
+            'parse_type': 'allAttribs',
+            'args': {
+                'name': 'endDateAndTime'
+            },
+            'ignore': ['zone'],
+            'flat': False,
         }
     }
 
@@ -277,99 +287,45 @@ def parse_general_information(root, outschema_dict, inpschema_dict, parser_info_
         }
     }
 
-    root_tag = '/fleurOutput'
+    ldau_info = {
+        'parsed_ldau': {
+            'parse_type': 'allAttribs',
+            'args': {
+                'name': 'ldaU',
+                'contains': 'species'
+            },
+            'subdict': 'ldau_info',
+        }
+    }
 
+    root_tag = '/fleurOutput'
     constants = read_constants(root, inpschema_dict, abspath=root_tag)
 
     fleurmode = {'jspin': 1, 'relax': False, 'ldau': False, 'soc': False, 'noco': False, 'film': False}
 
-    for key, spec in fleurmode_info.items():
-        action = function_dict[spec['parse_type']]
-        args = spec['args'].copy()
-
-        args['abspath'] = root_tag
-        if spec['parse_type'] in ['attrib', 'text']:
-            args['constants'] = constants
-        value = action(root, inpschema_dict, parser_info_out=parser_info_out, **args)
-        if value is not None:  #Don't overwrite defaults if there was no value
-            fleurmode[key] = value
+    fleurmode = parse_task(fleurmode_info,
+                           root,
+                           fleurmode,
+                           inpschema_dict,
+                           constants,
+                           parser_info_out,
+                           root_tag=root_tag,
+                           use_lists=False)
 
     out_dict = {}
-    for key, spec in general_inp_info.items():
-        action = function_dict[spec['parse_type']]
-        args = spec['args'].copy()
+    out_dict = parse_task(general_inp_info,
+                          root,
+                          out_dict,
+                          inpschema_dict,
+                          constants,
+                          parser_info_out,
+                          root_tag=root_tag,
+                          use_lists=False)
 
-        args['abspath'] = root_tag
-        if spec['parse_type'] in ['attrib', 'text']:
-            args['constants'] = constants
-        out_dict[key] = action(root, inpschema_dict, parser_info_out=parser_info_out, **args)
+    out_dict = parse_task(general_out_info, root, out_dict, outschema_dict, constants, parser_info_out, use_lists=False)
 
-    for key, spec in general_out_info.items():
-        action = function_dict[spec['parse_type']]
-        args = spec['args'].copy()
-
-        if spec['parse_type'] in ['attrib', 'text']:
-            args['constants'] = constants
-        out_dict[key] = action(root, inpschema_dict, parser_info_out=parser_info_out, **args)
-
-    # time
-    # Maybe change the behavior if things could not be parsed...
-    # Especially if file was broken, ie endtime it not there.
-    starttime = schema_util.evaluate_attribute(root,
-                                               outschema_dict,
-                                               'time',
-                                               constants,
-                                               contains='start',
-                                               parser_info_out=parser_info_out)
-    if starttime is not None:
-        starttimes = starttime.split(':')
-    else:
-        starttimes = [0, 0, 0]
-        msg = 'Startime was unparsed, inp.xml prob not complete, do not believe the walltime!'
-        parser_info_out['parser_warnings'].append(msg)
-
-    endtime = schema_util.evaluate_attribute(root,
-                                             outschema_dict,
-                                             'time',
-                                             constants,
-                                             contains='end',
-                                             parser_info_out=parser_info_out)
-    if endtime is not None:
-        endtimes = endtime.split(':')
-    else:
-        endtimes = [0, 0, 0]
-        msg = 'Endtime was unparsed, inp.xml prob not complete, do not believe the walltime!'
-        parser_info_out['parser_warnings'].append(msg)
-    start_date = schema_util.evaluate_attribute(root,
-                                                outschema_dict,
-                                                'date',
-                                                constants,
-                                                contains='start',
-                                                parser_info_out=parser_info_out)
-    end_date = schema_util.evaluate_attribute(root,
-                                              outschema_dict,
-                                              'date',
-                                              constants,
-                                              contains='end',
-                                              parser_info_out=parser_info_out)
-
-    offset = 0
-    if start_date != end_date:
-        # date="2018/01/15", Can this fail? what happens if not there
-        if start_date and end_date:
-            date_sl = [int(ent) for ent in start_date.split('/')]
-            date_el = [int(ent) for ent in end_date.split('/')]
-            date_s = date(*date_sl)
-            date_e = date(*date_el)
-            diff = date_e - date_s
-            offset = diff.days * 86400
-
-    time = offset + (int(endtimes[0]) - int(starttimes[0])) * 60 * 60 + (
-        int(endtimes[1]) - int(starttimes[1])) * 60 + int(endtimes[2]) - int(starttimes[2])
-    out_dict['walltime'] = time
-    out_dict['walltime_units'] = 'seconds'
-    out_dict['start_date'] = {'date': start_date, 'time': starttime}
-    out_dict['end_date'] = {'date': end_date, 'time': endtime}
+    #Convert the read in times/dates to a walltime
+    out_dict = calculate_walltime(out_dict, parser_info_out)
 
     if fleurmode['ldau']:
         out_dict['ldau_info'] = {}
@@ -381,8 +337,8 @@ def parse_general_information(root, outschema_dict, inpschema_dict, parser_info_
 
         for ldaU in ldaU_definitions:
             parent = ldaU.getparent()
-            element_z = schema_util.get_xml_attribute(parent, 'atomicNumber')
-            species_name = schema_util.get_xml_attribute(parent, 'name')
+            element_z = get_xml_attribute(parent, 'atomicNumber')
+            species_name = get_xml_attribute(parent, 'name')
             ldauKey = f'{species_name}/{element_z}'
 
             if ldauKey not in out_dict['ldau_info']:
@@ -432,9 +388,20 @@ def parse_iteration(iteration,
     #to obtain them from the out.xml
 
     tasks_definition = {}
+
+    tasks_definition['iteration_number'] = {
+        'number_of_iterations_total': {
+            'parse_type': 'attrib',
+            'args': {
+                'name': 'overallNumber'
+            },
+            'overwrite_last': True,
+        }
+    }
+
     tasks_definition['total_energy'] = {
         'energy_hartree': {
-            'parseType': 'singleValue',
+            'parse_type': 'singleValue',
             'args': {
                 'name': 'totalEnergy'
             }
@@ -528,13 +495,39 @@ def parse_iteration(iteration,
         }
     }
 
+    tasks_definition['forcetheorem_dmi'] = {
+        'force_dmi': {
+            'parse_type': 'allAttribs',
+            'args': {
+                'name': 'Entry',
+                'contains': 'DMI'
+            }
+        },
+        'force_dmi_qs': {
+            'parse_type': 'attrib',
+            'args': {
+                'name': 'qpoints',
+                'contains': 'Forcetheorem_DMI'
+            }
+        },
+        'force_dmi_angles': {
+            'parse_type': 'attrib',
+            'args': {
+                'name': 'Angles',
+                'contains': 'Forcetheorem_DMI'
+            }
+        }
+    }
+
     if fleurmode['jspin'] == 1:
         tasks_definition['distances'] = {}
     else:
         tasks_definition['distances'] = {}
 
     #These are the default things to be parsed for all iterations
-    iteration_tasks = ['total_energy', 'distances', 'total_energy_contributions', 'fermi_energy', 'bandgap']
+    iteration_tasks = [
+        'iteration_number', 'total_energy', 'distances', 'total_energy_contributions', 'fermi_energy', 'bandgap'
+    ]
 
     iteration_tasks_forcetheorem = []
 
@@ -549,72 +542,178 @@ def parse_iteration(iteration,
         iteration_tasks.append('ldau_energy_correction')
         iteration_tasks.append('nmmp_distances')
 
-    #Check if this is a Forcetheorem iteration
+    #TODO: Check if this is a Forcetheorem iteration
 
-    if 'overallNumber' in iteration.attrib:
-        out_dict['number_of_iterations_total'] = int(iteration.attrib['overallNumber'])
+    forcetheorem_tags = ['Forcetheorem_DMI', 'Forcetheorem_SSDISP', 'Forcetheorem_JIJ', 'Forcetheorem_MAE']
+    for tag in forcetheorem_tags:
+        exists = schema_util.tag_exists(iteration, outschema_dict, tag)
+        if exists:
+            iteration_tasks = [tag.lower()]
+            break
 
     for task in iteration_tasks:
-        for key, spec in tasks_definition[task].items():
+        try:
+            definition = tasks_definition[task]
+            out_dict = parse_task(definition, iteration, out_dict, outschema_dict, constants, parser_info_out)
+        except KeyError:
+            parser_info_out['parser_warnings'].append(f"Unknown task: '{task}'. Skipping this one")
 
-            action = function_dict[spec['parse_type']]
-            args = spec['args'].copy()
+    if fleurmode['relax']:  #This is too complex to put it into the standard tasks for now
+        pass
 
-            if spec['parse_type'] in ['attrib', 'text', 'singleValue', 'allAttribs']:
-                args['constants'] = constants
+    return out_dict
 
-            tmp_dict = out_dict
 
-            if 'subdict' in spec:
-                if spec['subdict'] not in out_dict:
-                    out_dict[spec['subdict']] = {}
-                tmp_dict = out_dict[spec['subdict']]
+def parse_task(tasks_definition,
+               node,
+               out_dict,
+               schema_dict,
+               constants,
+               parser_info_out,
+               root_tag=None,
+               use_lists=True):
+    """
+    Evaluates the task given in the tasks_definition dict
+    """
 
-            if key not in tmp_dict:
-                tmp_dict[key] = []
+    _FUNCTION_DICT = {
+        'attrib': schema_util.evaluate_attribute,
+        'text': schema_util.evaluate_text,
+        'exists': schema_util.tag_exists,
+        'numberNodes': schema_util.get_number_of_nodes,
+        'singleValue': schema_util.evaluate_single_value_tag,
+        'allAttribs': schema_util.evaluate_tag,
+    }
 
-            ret_val = action(iteration, outschema_dict, parser_info_out=parser_info_out, **args)
+    for key, spec in tasks_definition.items():
 
-            if isinstance(ret_val, dict):
-                if spec['parse_type'] == 'singleValue':
-                    base_value = 'value'
-                    no_list = ['units']
-                elif spec['parse_type'] == 'allAttribs':
-                    base_value = spec['base_value']
-                    ignore = []
-                    if 'ignore' in spec:
-                        ignore = spec['ignore']
-                    no_list = []
-                    if 'overwrite' in spec:
-                        no_list = spec['overwrite']
+        action = _FUNCTION_DICT[spec['parse_type']]
+        args = spec['args'].copy()
 
+        if spec['parse_type'] in ['attrib', 'text', 'singleValue', 'allAttribs']:
+            args['constants'] = constants
+
+        if root_tag is not None:
+            args['abspath'] = root_tag
+
+        tmp_dict = out_dict
+        if 'subdict' in spec:
+            tmp_dict = out_dict.get(spec['subdict'], {})
+
+        ret_val = action(node, schema_dict, parser_info_out=parser_info_out, **args)
+
+        if 'process_function' in spec:
+            ret_val = spec['process_function'](ret_val, parser_info_out=parser_info_out)
+
+        if isinstance(ret_val, dict):
+            if spec['parse_type'] == 'singleValue':
+                base_value = 'value'
+                no_list = ['units']
+                ignore = ['comment']
+                flat = True
+            elif spec['parse_type'] == 'allAttribs':
+                base_value = spec.get('base_value', '')
+                ignore = spec.get('ignore', [])
+                no_list = spec.get('overwrite', [])
+                flat = spec.get('flat', True)
+
+            if flat:
                 for attrib_key, val in ret_val.items():
                     if attrib_key in ignore:
                         continue
 
+                    if val is None:
+                        continue
+
                     if attrib_key == base_value:
-                        current_key = attrib_key
+                        current_key = key
                     else:
                         current_key = f'{key}_{attrib_key}'
 
-                    if current_key not in tmp_dict:
+                    if current_key not in tmp_dict and use_lists:
                         tmp_dict[current_key] = []
 
                     if attrib_key in no_list:
                         tmp_dict[current_key] = val
                     else:
-                        tmp_dict[current_key].append(val)
-
+                        if use_lists:
+                            tmp_dict[current_key].append(val)
+                        else:
+                            tmp_dict[current_key] = val
             else:
-                if ret_val is not None:
+                current = tmp_dict.get(key, {})
+                for attrib_key in list(ret_val.keys()):
+                    if attrib_key in ignore:
+                        ret_val.pop(attrib_key)
+                tmp_dict[key] = ret_val
+
+        else:
+            if key not in tmp_dict and use_lists:
+                tmp_dict[key] = []
+            overwrite = spec.get('overwrite_last', False)
+            if ret_val is not None:
+                if use_lists and not overwrite:
                     tmp_dict[key].append(ret_val)
+                else:
+                    tmp_dict[key] = ret_val
 
-            if 'subdict' in spec:
-                out_dict[spec['subdict']] = tmp_dict
-            else:
-                out_dict = tmp_dict
+        if 'subdict' in spec:
+            out_dict[spec['subdict']] = tmp_dict
+        else:
+            out_dict = tmp_dict
 
-    if fleurmode['relax']:  #This is too complex to put it into the standard tasks for now
-        pass
+    return out_dict
+
+
+def calculate_walltime(out_dict, parser_info_out=None):
+    """
+    Convert the times
+    """
+    if parser_info_out is None:
+        parser_info_out = {'parser_warnings': []}
+
+    if out_dict['start_date']['time'] is not None:
+        starttimes = out_dict['start_date']['time'].split(':')
+    else:
+        starttimes = [0, 0, 0]
+        msg = 'Starttime was unparsed, inp.xml prob not complete, do not believe the walltime!'
+        parser_info_out['parser_warnings'].append(msg)
+
+    if out_dict['end_date']['time'] is not None:
+        endtimes = out_dict['end_date']['time'].split(':')
+    else:
+        endtimes = [0, 0, 0]
+        msg = 'Endtime was unparsed, inp.xml prob not complete, do not believe the walltime!'
+        parser_info_out['parser_warnings'].append(msg)
+
+    if out_dict['start_date']['date'] is not None:
+        start_date = out_dict['start_date']['date']
+    else:
+        starttimes = [0, 0, 0]
+        msg = 'Startdate was unparsed, inp.xml prob not complete, do not believe the walltime!'
+        parser_info_out['parser_warnings'].append(msg)
+
+    if out_dict['end_date']['date'] is not None:
+        end_date = out_dict['end_date']['date']
+    else:
+        starttimes = [0, 0, 0]
+        msg = 'Enddate was unparsed, inp.xml prob not complete, do not believe the walltime!'
+        parser_info_out['parser_warnings'].append(msg)
+
+    offset = 0
+    if start_date != end_date:
+        # date="2018/01/15", Can this fail? what happens if not there
+        if start_date and end_date:
+            date_sl = [int(ent) for ent in start_date.split('/')]
+            date_el = [int(ent) for ent in end_date.split('/')]
+            date_s = date(*date_sl)
+            date_e = date(*date_el)
+            diff = date_e - date_s
+            offset = diff.days * 86400
+
+    time = offset + (int(endtimes[0]) - int(starttimes[0])) * 60 * 60 + (
+        int(endtimes[1]) - int(starttimes[1])) * 60 + int(endtimes[2]) - int(starttimes[2])
+    out_dict['walltime'] = time
+    out_dict['walltime_units'] = 'seconds'
 
     return out_dict

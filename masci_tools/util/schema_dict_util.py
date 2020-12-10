@@ -269,7 +269,8 @@ def evaluate_tag(node,
                  contains=None,
                  not_contains=None,
                  parser_info_out=None,
-                 abspath=None):
+                 abspath=None,
+                 no_raise=None):
     """
     Evaluates all attributes of the tag based on the given name
     and additional further specifications with the available type information
@@ -286,6 +287,9 @@ def evaluate_tag(node,
     """
     if parser_info_out is None:
         parser_info_out = {'parser_warnings': []}
+
+    if no_raise is None:
+        no_raise = []
 
     tag_xpath = get_tag_xpath(schema_dict, name, contains=contains, not_contains=not_contains)
 
@@ -313,7 +317,8 @@ def evaluate_tag(node,
 
         if isinstance(stringattribute, list):
             if len(stringattribute) == 0:
-                parser_info_out['parser_warnings'].append(f'No values found for attribute {attrib} at tag {name}')
+                if attrib not in no_raise:
+                    parser_info_out['parser_warnings'].append(f'No values found for attribute {attrib} at tag {name}')
                 out_dict[attrib] = None
                 continue
 
@@ -366,7 +371,8 @@ def evaluate_single_value_tag(node,
                               contains=contains,
                               not_contains=not_contains,
                               parser_info_out=parser_info_out,
-                              abspath=parser_info_out)
+                              abspath=abspath,
+                              no_raise=['units', 'comment'])
 
     if 'value' not in value_dict:
         parser_info_out['parser_warnings'].append(f'Failed to evaluate singleValue from tag {name}: '
