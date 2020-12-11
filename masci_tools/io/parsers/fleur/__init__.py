@@ -16,5 +16,6 @@ Load both the outxml_parser and inpxml_parser
 
 from .fleur_inpxml_parser import inpxml_parser
 from .fleur_outxml_parser import outxml_parser
+from .parse_tasks import ParseTasks
 
-__all__ = ['inpxml_parser', 'outxml_parser']
+__all__ = ['inpxml_parser', 'outxml_parser', 'ParseTask']

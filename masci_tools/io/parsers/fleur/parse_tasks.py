@@ -10,8 +10,7 @@
 # For further information please visit http://www.flapw.de or                 #
 #                                                                             #
 ###############################################################################
-import masci_tools.io.parsers.fleur.default_parse_tasks as default_tasks
-
+from .default_parse_tasks import TASKS_DEFINITION, __working_out_versions__
 
 class ParseTasks(object):
 
@@ -27,9 +26,9 @@ class ParseTasks(object):
         """
         Initialize the default parse tasks
         """
-        if version not in default_tasks.__working_out_versions__:
+        if version not in __working_out_versions__:
             raise ValueError(f'Unsupported output version: {version}')
-        self.tasks = default_tasks.TASKS_DEFINITION.copy()
+        self.tasks = TASKS_DEFINITION.copy()
 
     def add_task(self, task_name, task_definition, **kwargs):
 

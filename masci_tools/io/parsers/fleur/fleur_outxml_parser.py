@@ -14,10 +14,10 @@
 This module contains functions to load an fleur out.xml file, parse it with a schema
 and convert its content to a dict, based on the tasks given
 """
+from .parse_tasks import ParseTasks
 from masci_tools.util.xml.common_xml_util import eval_xpath, get_xml_attribute, clear_xml, convert_xml_attribute, read_constants
 import masci_tools.util.schema_dict_util as schema_util
 from masci_tools.io.parsers.fleur.fleur_schema import load_inpschema, load_outschema
-from masci_tools.io.parsers.fleur.parse_tasks import ParseTasks
 from masci_tools.io.common_functions import camel_to_snake
 from datetime import date
 from lxml import etree
