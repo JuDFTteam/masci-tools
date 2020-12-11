@@ -17,6 +17,7 @@ and convert its content to a dict, based on the tasks given
 from masci_tools.util.xml.common_xml_util import eval_xpath, get_xml_attribute, clear_xml, convert_xml_attribute, read_constants
 import masci_tools.util.schema_dict_util as schema_util
 from masci_tools.io.parsers.fleur.fleur_schema import load_inpschema, load_outschema
+from masci_tools.io.common_functions import camel_to_snake
 from datetime import date
 from lxml import etree
 
@@ -85,6 +86,11 @@ def outxml_parser(outxmlfile,
             message = msg
         raise ValueError(f'Output file does not validate against the schema: {message}')
 
+    out_dict, fleurmode, constants = parse_general_information(root,
+                                                               outschema_dict,
+                                                               inpschema_dict,
+                                                               parser_info_out=parser_info_out)
+
     if iteration_to_parse is None:
         iteration_to_parse = 'last'  #This is the default from the aiida_fleur parser
 
@@ -103,13 +109,6 @@ def outxml_parser(outxmlfile,
     else:
         raise ValueError(f"Invalid value for iteration_to_parse: Got '{iteration_to_parse}' "
                          "Valid values are: 'first', 'last', 'all', or int")
-
-    out_dict, fleurmode, constants = parse_general_information(root,
-                                                               outschema_dict,
-                                                               inpschema_dict,
-                                                               parser_info_out=parser_info_out)
-
-    parser_info_out['fleur_modes'] = fleurmode
 
     for iteration in eval_xpath(root, iteration_xpath, parser_info_out=parser_info_out, list_return=True):
         out_dict = parse_iteration(iteration,
@@ -149,38 +148,38 @@ def parse_general_information(root, outschema_dict, inpschema_dict, parser_info_
     fleurmode_info = {
         'jspin': {
             'parse_type': 'attrib',
-            'args': {
+            'path_spec': {
                 'name': 'jspins'
             }
         },
         'relax': {
             'parse_type': 'attrib',
-            'args': {
+            'path_spec': {
                 'name': 'l_f'
             }
         },
         'ldau': {
             'parse_type': 'exists',
-            'args': {
+            'path_spec': {
                 'name': 'ldaU',
                 'contains': 'species'
             }
         },
         'soc': {
             'parse_type': 'attrib',
-            'args': {
+            'path_spec': {
                 'name': 'l_soc'
             }
         },
         'noco': {
             'parse_type': 'attrib',
-            'args': {
+            'path_spec': {
                 'name': 'l_noco'
             }
         },
         'film': {
             'parse_type': 'exists',
-            'args': {
+            'path_spec': {
                 'name': 'filmPos'
             }
         }
@@ -189,50 +188,50 @@ def parse_general_information(root, outschema_dict, inpschema_dict, parser_info_
     general_out_info = {
         'creator_name': {
             'parse_type': 'attrib',
-            'args': {
+            'path_spec': {
                 'name': 'version',
                 'not_contains': 'git'
             }
         },
         'creator_target_architecture': {
             'parse_type': 'text',
-            'args': {
+            'path_spec': {
                 'name': 'targetComputerArchitectures'
             }
         },
         'creator_target_structure': {
             'parse_type': 'text',
-            'args': {
+            'path_spec': {
                 'name': 'targetStructureClass'
             }
         },
         'output_file_version': {
             'parse_type': 'attrib',
-            'args': {
+            'path_spec': {
                 'name': 'fleurOutputVersion'
             }
         },
         'number_of_iterations': {
             'parse_type': 'numberNodes',
-            'args': {
+            'path_spec': {
                 'name': 'iteration'
             }
         },
         'number_of_atoms': {
             'parse_type': 'attrib',
-            'args': {
+            'path_spec': {
                 'name': 'nat'
             }
         },
         'number_of_atom_types': {
             'parse_type': 'attrib',
-            'args': {
+            'path_spec': {
                 'name': 'ntype'
             }
         },
         'start_date': {
             'parse_type': 'allAttribs',
-            'args': {
+            'path_spec': {
                 'name': 'startDateAndTime'
             },
             'ignore': ['zone'],
@@ -240,7 +239,7 @@ def parse_general_information(root, outschema_dict, inpschema_dict, parser_info_
         },
         'end_date': {
             'parse_type': 'allAttribs',
-            'args': {
+            'path_spec': {
                 'name': 'endDateAndTime'
             },
             'ignore': ['zone'],
@@ -251,37 +250,37 @@ def parse_general_information(root, outschema_dict, inpschema_dict, parser_info_
     general_inp_info = {
         'title': {
             'parse_type': 'text',
-            'args': {
+            'path_spec': {
                 'name': 'comment'
             }
         },
         'kmax': {
             'parse_type': 'attrib',
-            'args': {
+            'path_spec': {
                 'name': 'Kmax'
             }
         },
         'gmax': {
             'parse_type': 'attrib',
-            'args': {
+            'path_spec': {
                 'name': 'Gmax'
             }
         },
         'number_of_spin_components': {
             'parse_type': 'attrib',
-            'args': {
+            'path_spec': {
                 'name': 'jspins'
             }
         },
         'number_of_symmetries': {
             'parse_type': 'numberNodes',
-            'args': {
+            'path_spec': {
                 'name': 'symOp'
             }
         },
         'number_of_species': {
             'parse_type': 'numberNodes',
-            'args': {
+            'path_spec': {
                 'name': 'species'
             }
         }
@@ -290,7 +289,7 @@ def parse_general_information(root, outschema_dict, inpschema_dict, parser_info_
     ldau_info = {
         'parsed_ldau': {
             'parse_type': 'allAttribs',
-            'args': {
+            'path_spec': {
                 'name': 'ldaU',
                 'contains': 'species'
             },
@@ -302,7 +301,6 @@ def parse_general_information(root, outschema_dict, inpschema_dict, parser_info_
     constants = read_constants(root, inpschema_dict, abspath=root_tag)
 
     fleurmode = {'jspin': 1, 'relax': False, 'ldau': False, 'soc': False, 'noco': False, 'film': False}
-
     fleurmode = parse_task(fleurmode_info,
                            root,
                            fleurmode,
@@ -311,6 +309,7 @@ def parse_general_information(root, outschema_dict, inpschema_dict, parser_info_
                            parser_info_out,
                            root_tag=root_tag,
                            use_lists=False)
+    parser_info_out['fleur_modes'] = fleurmode
 
     out_dict = {}
     out_dict = parse_task(general_inp_info,
@@ -392,7 +391,7 @@ def parse_iteration(iteration,
     tasks_definition['iteration_number'] = {
         'number_of_iterations_total': {
             'parse_type': 'attrib',
-            'args': {
+            'path_spec': {
                 'name': 'overallNumber'
             },
             'overwrite_last': True,
@@ -402,7 +401,7 @@ def parse_iteration(iteration,
     tasks_definition['total_energy'] = {
         'energy_hartree': {
             'parse_type': 'singleValue',
-            'args': {
+            'path_spec': {
                 'name': 'totalEnergy'
             }
         },
@@ -411,25 +410,25 @@ def parse_iteration(iteration,
     tasks_definition['total_energy_contributions'] = {
         'sum_of_eigenvalues': {
             'parse_type': 'singleValue',
-            'args': {
+            'path_spec': {
                 'name': 'sumOfEigenvalues'
             }
         },
         'energy_core_electrons': {
             'parse_type': 'singleValue',
-            'args': {
+            'path_spec': {
                 'name': 'coreElectrons'
             }
         },
         'energy_valence_electrons': {
             'parse_type': 'singleValue',
-            'args': {
+            'path_spec': {
                 'name': 'valenceElectrons'
             }
         },
         'charge_den_xc_den_integral': {
             'parse_type': 'singleValue',
-            'args': {
+            'path_spec': {
                 'name': 'chargeDenXCDenIntegral'
             }
         },
@@ -438,7 +437,7 @@ def parse_iteration(iteration,
     tasks_definition['ldau_energy_correction'] = {
         'ldau_energy_correction': {
             'parse_type': 'singleValue',
-            'args': {
+            'path_spec': {
                 'name': 'dftUCorrection'
             },
             'subdict': 'ldau_info'
@@ -448,7 +447,7 @@ def parse_iteration(iteration,
     tasks_definition['nmmp_distances'] = {
         'density_matrix_distance': {
             'parse_type': 'singleValue',
-            'args': {
+            'path_spec': {
                 'name': 'distance',
                 'contains': 'ldaUDensityMatrixConvergence'
             },
@@ -459,7 +458,7 @@ def parse_iteration(iteration,
     tasks_definition['fermi_energy'] = {
         'fermi_energy': {
             'parse_type': 'singleValue',
-            'args': {
+            'path_spec': {
                 'name': 'FermiEnergy'
             },
         }
@@ -467,7 +466,7 @@ def parse_iteration(iteration,
     tasks_definition['bandgap'] = {
         'bandgap': {
             'parse_type': 'singleValue',
-            'args': {
+            'path_spec': {
                 'name': 'bandgap'
             },
         }
@@ -476,7 +475,7 @@ def parse_iteration(iteration,
     tasks_definition['magnetic_moments'] = {
         'magnetic_moments': {
             'parse_type': 'allAttribs',
-            'args': {
+            'path_spec': {
                 'name': 'magneticMoment'
             },
             'base_value': 'moment',
@@ -487,7 +486,7 @@ def parse_iteration(iteration,
     tasks_definition['orbital_magnetic_moments'] = {
         'orbital_magnetic_moments': {
             'parse_type': 'allAttribs',
-            'args': {
+            'path_spec': {
                 'name': 'orbMagMoment'
             },
             'base_value': 'moment',
@@ -498,21 +497,21 @@ def parse_iteration(iteration,
     tasks_definition['forcetheorem_dmi'] = {
         'force_dmi': {
             'parse_type': 'allAttribs',
-            'args': {
+            'path_spec': {
                 'name': 'Entry',
                 'contains': 'DMI'
             }
         },
         'force_dmi_qs': {
             'parse_type': 'attrib',
-            'args': {
+            'path_spec': {
                 'name': 'qpoints',
                 'contains': 'Forcetheorem_DMI'
             }
         },
         'force_dmi_angles': {
             'parse_type': 'attrib',
-            'args': {
+            'path_spec': {
                 'name': 'Angles',
                 'contains': 'Forcetheorem_DMI'
             }
@@ -574,6 +573,39 @@ def parse_task(tasks_definition,
                use_lists=True):
     """
     Evaluates the task given in the tasks_definition dict
+
+    :param task_definition: dict, specifies what should be parsed (explanation below)
+    :param node: etree.Element, the xpath expressions are evaluated from this node
+    :param out_dict: dict, output will be put in this dictionary
+    :param schema_dict: dict, here all paths and attributes are stored according to the
+                        outputschema
+    :param constants: dict with all the defined mathematical constants
+    :param parser_info_out: dict, with warnings, info, errors, ...
+    :param root_tag: str, this string will be appended in front of any xpath before it is evaluated
+    :param use_lists: bool, if True lists are created for each key if not otherwise specified
+
+
+    Each entry in the task_definition dict will be parsed and inserted into the same key in
+    the output dict
+
+    The following keys are expected in each entry of the task_definition dictionary:
+        :param parse_type: str, defines which methods to use when extracting the information
+        :param path_spec: dict with all the arguments that should be passed to get_tag_xpath
+                          or get_attrib_xpath to get the correct path
+        :param subdict: str, if present the parsed values are put into this key in the output dictionary
+        :param overwrite_last: bool, if True no list is inserted and each entry overwrites the last
+
+    For the allAttribs parse_type there are more keys that can appear:
+        :param base_value: str, optional. If given the attribute
+                           with this name will be inserted into the key from the task_definition
+                           all other keys are formatted as {task_key}_{attribute_name}
+        :param ignore: list of str, these attributes will be ignored
+        :param overwrite: list of str, these attributes will not create a list and overwrite any value
+                          that might be there
+        :param flat: bool, if False the dict parsed from the tag is inserted as a dict into the correspondin key
+                           if True the values will be extracted and put into the output dictionary with the
+                           format {task_key}_{attribute_name}
+
     """
 
     _FUNCTION_DICT = {
@@ -585,10 +617,10 @@ def parse_task(tasks_definition,
         'allAttribs': schema_util.evaluate_tag,
     }
 
-    for key, spec in tasks_definition.items():
+    for task_key, spec in tasks_definition.items():
 
         action = _FUNCTION_DICT[spec['parse_type']]
-        args = spec['args'].copy()
+        args = spec['path_spec'].copy()
 
         if spec['parse_type'] in ['attrib', 'text', 'singleValue', 'allAttribs']:
             args['constants'] = constants
@@ -596,16 +628,17 @@ def parse_task(tasks_definition,
         if root_tag is not None:
             args['abspath'] = root_tag
 
-        tmp_dict = out_dict
+        parsed_dict = out_dict
         if 'subdict' in spec:
-            tmp_dict = out_dict.get(spec['subdict'], {})
+            parsed_dict = out_dict.get(spec['subdict'], {})
 
-        ret_val = action(node, schema_dict, parser_info_out=parser_info_out, **args)
+        parsed_value = action(node, schema_dict, parser_info_out=parser_info_out, **args)
 
         if 'process_function' in spec:
-            ret_val = spec['process_function'](ret_val, parser_info_out=parser_info_out)
+            parsed_value = spec['process_function'](parsed_value, parser_info_out=parser_info_out)
 
-        if isinstance(ret_val, dict):
+        if isinstance(parsed_value, dict):
+
             if spec['parse_type'] == 'singleValue':
                 base_value = 'value'
                 no_list = ['units']
@@ -618,49 +651,52 @@ def parse_task(tasks_definition,
                 flat = spec.get('flat', True)
 
             if flat:
-                for attrib_key, val in ret_val.items():
-                    if attrib_key in ignore:
+                for key, val in parsed_value.items():
+                    if key in ignore:
                         continue
 
                     if val is None:
                         continue
 
-                    if attrib_key == base_value:
-                        current_key = key
+                    if key == base_value:
+                        current_key = task_key
                     else:
-                        current_key = f'{key}_{attrib_key}'
+                        current_key = f'{task_key}_{camel_to_snake(key)}'
 
-                    if current_key not in tmp_dict and use_lists:
-                        tmp_dict[current_key] = []
+                    if current_key not in parsed_dict and use_lists:
+                        parsed_dict[current_key] = []
 
-                    if attrib_key in no_list:
-                        tmp_dict[current_key] = val
+                    if key in no_list:
+                        parsed_dict[current_key] = val
                     else:
                         if use_lists:
-                            tmp_dict[current_key].append(val)
+                            parsed_dict[current_key].append(val)
                         else:
-                            tmp_dict[current_key] = val
+                            parsed_dict[current_key] = val
             else:
-                current = tmp_dict.get(key, {})
-                for attrib_key in list(ret_val.keys()):
-                    if attrib_key in ignore:
-                        ret_val.pop(attrib_key)
-                tmp_dict[key] = ret_val
+                for key, val in list(parsed_value.items()):
+                    if key in ignore:
+                        parsed_value.pop(key)
+                    else:
+                        parsed_value.pop(key)
+                        parsed_value[camel_to_snake(key)] = val
+
+                parsed_dict[task_key] = parsed_value
 
         else:
-            if key not in tmp_dict and use_lists:
-                tmp_dict[key] = []
+            if task_key not in parsed_dict and use_lists:
+                parsed_dict[task_key] = []
             overwrite = spec.get('overwrite_last', False)
-            if ret_val is not None:
+            if parsed_value is not None:
                 if use_lists and not overwrite:
-                    tmp_dict[key].append(ret_val)
+                    parsed_dict[task_key].append(parsed_value)
                 else:
-                    tmp_dict[key] = ret_val
+                    parsed_dict[task_key] = parsed_value
 
         if 'subdict' in spec:
-            out_dict[spec['subdict']] = tmp_dict
+            out_dict[spec['subdict']] = parsed_dict
         else:
-            out_dict = tmp_dict
+            out_dict = parsed_dict
 
     return out_dict
 
@@ -669,6 +705,7 @@ def calculate_walltime(out_dict, parser_info_out=None):
     """
     Convert the times
     """
+    print(out_dict)
     if parser_info_out is None:
         parser_info_out = {'parser_warnings': []}
 
