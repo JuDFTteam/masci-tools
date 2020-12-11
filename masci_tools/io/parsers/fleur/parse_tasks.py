@@ -76,7 +76,6 @@ class ParseTasks(object):
 
         """
 
-
         append = kwargs.get('append', False)
         overwrite = kwargs.get('overwrite', False)
 
@@ -121,4 +120,3 @@ class ParseTasks(object):
             pprint(self.tasks)
         else:
             pprint(self.tasks.keys())
-

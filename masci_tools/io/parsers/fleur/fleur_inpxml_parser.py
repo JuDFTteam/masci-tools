@@ -21,6 +21,7 @@ from masci_tools.io.parsers.fleur.fleur_schema import load_inpschema
 from masci_tools.util.xml.common_xml_util import clear_xml, convert_xml_attribute, convert_xml_text
 from masci_tools.util.schema_dict_util import read_constants
 
+
 def inpxml_parser(inpxmlfile, version=None, parser_info_out=None):
     """
     Parses the given inp.xml file to a python dictionary utilizing the schema

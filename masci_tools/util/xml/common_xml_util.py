@@ -16,6 +16,7 @@ Common functions for parsing input/output files or XMLschemas from FLEUR
 from __future__ import absolute_import
 from lxml import etree
 
+
 def clear_xml(tree):
     """
     Removes comments and executes xinclude tags of an
@@ -30,25 +31,28 @@ def clear_xml(tree):
     cleared_tree = copy.deepcopy(tree)
 
     #find any include tags
-    include_tags = eval_xpath(cleared_tree,'//xi:include', namespaces={'xi': 'http://www.w3.org/2001/XInclude'}, list_return=True)
+    include_tags = eval_xpath(cleared_tree,
+                              '//xi:include',
+                              namespaces={'xi': 'http://www.w3.org/2001/XInclude'},
+                              list_return=True)
 
     parents = []
     known_tags = []
     for tag in include_tags:
         parent = tag.getparent()
         parents.append(parent)
-        known_tags.append(set([elem.tag for elem in parent]))
+        known_tags.append({elem.tag for elem in parent})
 
     # replace XInclude parts to validate against schema
     cleared_tree.xinclude()
 
     # get rid of xml:base attribute in the included parts
     for parent, old_tags in zip(parents, known_tags):
-        tags = [elem.tag for elem in parent]
+        new_tags = {elem.tag for elem in parent}
 
         #determine the elements not in old_tags, which are in tags
         #so what should have been included
-        included_tag_names = set(tags).difference(old_tags)
+        included_tag_names = new_tags.difference(old_tags)
 
         #Check for emtpy set (relax.xml include may not insert something)
         if not included_tag_names:

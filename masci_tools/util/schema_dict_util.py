@@ -19,6 +19,7 @@ attribute from the right place in the given etree
 """
 from __future__ import absolute_import
 
+
 def get_tag_xpath(schema_dict, name, contains=None, not_contains=None):
     """
     Tries to find a unique path from the schema_dict based on the given name of the tag
@@ -141,6 +142,7 @@ def get_attrib_xpath(schema_dict, name, contains=None, not_contains=None, exclud
                          f'contains: {contains}, not_contains: {not_contains}, exclude {exclude}\n'
                          f'These are possible: {all_paths}')
 
+
 def read_constants(xmltree, schema_dict, abspath=None):
     """
     Reads in the constants defined in the inp.xml
@@ -174,6 +176,7 @@ def read_constants(xmltree, schema_dict, abspath=None):
                 raise KeyError(f'Ambiguous definition of key {name}')
 
     return const_dict
+
 
 def evaluate_attribute(node,
                        schema_dict,
