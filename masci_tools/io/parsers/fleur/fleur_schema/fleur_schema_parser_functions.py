@@ -54,7 +54,7 @@ def _remove_xsd_namespace(tag, namespaces):
     return tag.replace(f"{'{'}{namespaces['xsd']}{'}'}", '')
 
 
-def _get_parent_fleur_type(elem, namespaces, stop_sequence=False, stop_non_unique=False):
+def _get_parent_fleur_type(elem, namespaces, stop_non_unique=False):
     """
     Returns the parent simple or complexType to the given element
     If stop_sequence is given and True None is returned when a sequence is encountered
@@ -67,8 +67,6 @@ def _get_parent_fleur_type(elem, namespaces, stop_sequence=False, stop_non_uniqu
     :return: the element of the parent type and the tag of the parent type with the namespaces removed
     """
     valid_end_types = ['simpleType', 'complexType', 'group']
-    if stop_sequence:
-        valid_end_types.append('sequence')
     parent = elem.getparent()
     parent_type = _remove_xsd_namespace(parent.tag, namespaces)
     if stop_non_unique:

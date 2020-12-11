@@ -23,7 +23,7 @@ import importlib.util
 import os
 
 
-def create_outschema_dict(path):
+def create_outschema_dict(path, save_to_file=True):
     """
     Creates dictionary with information about the FleurOutputSchema.xsd and writes
     it to the same folder in a file called outschema_dict.py. The FleurInputSchema.xsd
@@ -111,16 +111,18 @@ def create_outschema_dict(path):
                 "    - 'iteration_tag_info': For each tag inside of an iteration (relative path),\n"\
                 '                            the valid attributes and tags (optional, several,\n'\
                 '                            order, simple, text)\n'
+    if save_to_file:
+        with open(f'{path}/outschema_dict.py', 'w') as f:
+            f.write('# -*- coding: utf-8 -*-\n')
+            f.write(f'"""{docstring}"""\n')
+            f.write(f"__out_version__ = '{out_version}'\n")
+            f.write('schema_dict = ')
+            pprint(schema_dict, f)
+    else:
+        return schema_dict, out_version
 
-    with open(f'{path}/outschema_dict.py', 'w') as f:
-        f.write('# -*- coding: utf-8 -*-\n')
-        f.write(f'"""{docstring}"""\n')
-        f.write(f"__out_version__ = '{out_version}'\n")
-        f.write('schema_dict = ')
-        pprint(schema_dict, f)
 
-
-def load_outschema(version, schema_return=False, return_errmsg=False):
+def load_outschema(version, schema_return=False, create=True):
     """
     load the FleurInputSchema dict for the specified version
     """
@@ -134,36 +136,28 @@ def load_outschema(version, schema_return=False, return_errmsg=False):
     schema_file_path = os.path.join(path, 'FleurOutputSchema.xsd')
     schema_dict_path = os.path.join(path, 'outschema_dict.py')
 
-    success = True
-    message = ''
     if not os.path.isfile(schema_file_path):
-        success = False
-        message = f'No output schema found at {path}'
-        if not return_errmsg:
-            raise ValueError(message)
+        message = f'No FleurOutputSchema.xsd found at {path}'
+        raise FileNotFoundError(message)
 
-    schema_dict = None
-    if success:
-        if not os.path.isfile(schema_dict_path):
-            print(f'Generating schema_dict file for given input schema: {schema_file_path}')
+    if not os.path.isfile(schema_dict_path):
+        if create:
+            print(f'Generating schema_dict file for given output schema: {schema_file_path}')
             create_outschema_dict(path)
+        else:
+            raise FileNotFoundError(f'No inpschema_dict generated for FleurOutputSchema.xsd at {path}')
 
-        #import schema_dict
-        spec = importlib.util.spec_from_file_location('schema', schema_dict_path)
-        schema = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(schema)
-        schema_dict = schema.schema_dict
-        success = True
+    #import schema_dict
+    spec = importlib.util.spec_from_file_location('schema', schema_dict_path)
+    schema = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(schema)
+    schema_dict = schema.schema_dict
 
     if schema_return:
         xmlschema_doc = etree.parse(schema_file_path)
         xmlschema = etree.XMLSchema(xmlschema_doc)
-        if return_errmsg:
-            return schema_dict, xmlschema, success, message
-        else:
-            return schema_dict, xmlschema
+
+    if schema_return:
+        return schema_dict, xmlschema
     else:
-        if return_errmsg:
-            return schema_dict, success, message
-        else:
-            return schema_dict
+        return schema_dict
