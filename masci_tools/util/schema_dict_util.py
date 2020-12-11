@@ -18,8 +18,6 @@ Also provides convienient functions to use just a attribute name for extracting 
 attribute from the right place in the given etree
 """
 from __future__ import absolute_import
-from masci_tools.util.xml.common_xml_util import eval_xpath, convert_xml_text, convert_xml_attribute
-
 
 def get_tag_xpath(schema_dict, name, contains=None, not_contains=None):
     """
@@ -169,6 +167,7 @@ def evaluate_attribute(node,
 
     :returns: list or single value, converted in convert_xml_attribute
     """
+    from masci_tools.util.xml.common_xml_util import eval_xpath, convert_xml_attribute
 
     if parser_info_out is None:
         parser_info_out = {'parser_warnings': []}
@@ -224,6 +223,7 @@ def evaluate_text(node,
 
     :returns: list or single value, converted in convert_xml_text
     """
+    from masci_tools.util.xml.common_xml_util import eval_xpath, convert_xml_text
 
     if parser_info_out is None:
         parser_info_out = {'parser_warnings': []}
@@ -285,6 +285,8 @@ def evaluate_tag(node,
 
     :returns: dict, with attribute values converted via convert_xml_attribute
     """
+    from masci_tools.util.xml.common_xml_util import eval_xpath, convert_xml_attribute
+
     if parser_info_out is None:
         parser_info_out = {'parser_warnings': []}
 
@@ -421,6 +423,8 @@ def get_number_of_nodes(node, schema_dict, name, contains=None, not_contains=Non
 
     :returns: bool, True if any nodes with the path exist
     """
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+
     tag_xpath = get_tag_xpath(schema_dict, name, contains=contains, not_contains=not_contains)
 
     if abspath is not None:

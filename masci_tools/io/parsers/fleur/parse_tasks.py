@@ -16,6 +16,7 @@ and provides fuctionality for adding custom tasks easily
 """
 from __future__ import absolute_import
 from .default_parse_tasks import TASKS_DEFINITION, __working_out_versions__
+from pprint import pprint
 
 
 class ParseTasks(object):
@@ -48,6 +49,15 @@ class ParseTasks(object):
         if version not in __working_out_versions__:
             raise ValueError(f'Unsupported output version: {version}')
         self.tasks = TASKS_DEFINITION.copy()
+
+    def __getitem__(self, task):
+        """
+        Access tasks via [] index
+        """
+        if task in self.tasks:
+            return self.tasks[task]
+        else:
+            raise KeyError(f"Unknown Tasks: '{task}'")
 
     def add_task(self, task_name, task_definition, **kwargs):
         """
@@ -102,11 +112,13 @@ class ParseTasks(object):
         else:
             self.tasks[task_name] = task_definition
 
-    def __getitem__(self, task):
+    def show_available_tasks(self, show_defintions=False):
         """
-        Access tasks via [] index
+        Print all currently available task keys.
+        If show_definitions is True also the corresponding defintions will be printed
         """
-        if task in self.tasks:
-            return self.tasks[task]
+        if show_definitions:
+            pprint(self.tasks)
         else:
-            raise KeyError(f"Unknown Tasks: '{task}'")
+            pprint(self.tasks.keys())
+
