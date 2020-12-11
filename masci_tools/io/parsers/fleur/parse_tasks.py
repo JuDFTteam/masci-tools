@@ -111,7 +111,7 @@ class ParseTasks(object):
         else:
             self.tasks[task_name] = task_definition
 
-    def show_available_tasks(self, show_defintions=False):
+    def show_available_tasks(self, show_definitions=False):
         """
         Print all currently available task keys.
         If show_definitions is True also the corresponding defintions will be printed
