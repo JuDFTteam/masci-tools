@@ -164,13 +164,14 @@ def read_constants(xmltree, schema_dict, abspath=None):
         'Bohr': 1.0
     }
 
-    constants = evaluate_tag(xmltree, schema_dict, 'constants', abspath=abspath)
+    constants = evaluate_tag(xmltree, schema_dict, 'constants', const_dict, abspath=abspath)
 
-    for name, value in zip(constants['name'], constants['value']):
-        if name not in const_dict:
-            const_dict[name] = value
-        else:
-            raise KeyError(f'Ambiguous definition of key {name}')
+    if constants:
+        for name, value in zip(constants['name'], constants['value']):
+            if name not in const_dict:
+                const_dict[name] = value
+            else:
+                raise KeyError(f'Ambiguous definition of key {name}')
 
     return const_dict
 

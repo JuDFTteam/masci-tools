@@ -37,42 +37,32 @@ def clear_xml(tree):
     for tag in include_tags:
         parent = tag.getparent()
         parents.append(parent)
-        tags = []
-        for elem in parent:
-            tags.append(elem.tag)
-        known_tags.append(set(tags))
+        known_tags.append(set([elem.tag for elem in parent]))
 
     # replace XInclude parts to validate against schema
     cleared_tree.xinclude()
 
     # get rid of xml:base attribute in the included parts
     for parent, old_tags in zip(parents, known_tags):
-        tags = []
-        for elem in parent:
-            tags.append(elem.tag)
+        tags = [elem.tag for elem in parent]
 
         #determine the elements not in old_tags, which are in tags
         #so what should have been included
-        included_tag_name = set(tags).difference(old_tags)
+        included_tag_names = set(tags).difference(old_tags)
 
         #Check for emtpy set (relax.xml include may not insert something)
-        if not included_tag_name:
+        if not included_tag_names:
             continue
-        included_tag_name = included_tag_name.pop()
 
-        #Determine the corresponding tag
-        included_tag = eval_xpath(parent,f'./{included_tag_name}')
-        if len(included_tag) != 1:
-            raise ValueError(f"Could not determine included element '{included_tag_name}'")
-        included_tag = included_tag[0]
-
-        for attribute in included_tag.keys():
-            if 'base' in attribute:
-                try:
-                    del included_tag.attrib[attribute]
-                except BaseException:
-                    pass
-        raise Exception
+        for tag_name in included_tag_names:
+            for elem in parent:
+                if elem.tag == tag_name:
+                    for attribute in elem.keys():
+                        if 'base' in attribute:
+                            try:
+                                del elem.attrib[attribute]
+                            except BaseException:
+                                pass
 
     # remove comments from inp.xml
     comments = cleared_tree.xpath('//comment()')
