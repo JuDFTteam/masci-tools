@@ -354,9 +354,10 @@ def convert_to_pystd(value):
             value[key] = convert_to_pystd(val)
     return value
 
+
 def camel_to_snake(name):
     """
     Converts camelCase to snake_case variable names
     Used in the Fleur parser to convert attribute names from the xml files
     """
-    return ''.join(['_'+c.lower() if c.isupper() else c for c in name]).lstrip('_')
+    return ''.join(['_' + c.lower() if c.isupper() else c for c in name]).lstrip('_')

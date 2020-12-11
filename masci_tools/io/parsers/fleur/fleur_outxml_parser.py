@@ -17,6 +17,7 @@ and convert its content to a dict, based on the tasks given
 from masci_tools.util.xml.common_xml_util import eval_xpath, get_xml_attribute, clear_xml, convert_xml_attribute, read_constants
 import masci_tools.util.schema_dict_util as schema_util
 from masci_tools.io.parsers.fleur.fleur_schema import load_inpschema, load_outschema
+from masci_tools.io.parsers.fleur import ParseTasks
 from masci_tools.io.common_functions import camel_to_snake
 from datetime import date
 from lxml import etree
@@ -86,7 +87,14 @@ def outxml_parser(outxmlfile,
             message = msg
         raise ValueError(f'Output file does not validate against the schema: {message}')
 
+    parse_tasks = ParseTasks(version)
+
+    if additional_tasks is not None:
+        for task_name, task_definition in additional_tasks.items():
+            parse_tasks.add_task(task_name, task_definition)
+
     out_dict, fleurmode, constants = parse_general_information(root,
+                                                               parse_tasks,
                                                                outschema_dict,
                                                                inpschema_dict,
                                                                parser_info_out=parser_info_out)
@@ -142,166 +150,13 @@ def outxml_parser(outxmlfile,
     return out_dict
 
 
-def parse_general_information(root, outschema_dict, inpschema_dict, parser_info_out=None):
-
-    #General switches determining how to parse the output
-    fleurmode_info = {
-        'jspin': {
-            'parse_type': 'attrib',
-            'path_spec': {
-                'name': 'jspins'
-            }
-        },
-        'relax': {
-            'parse_type': 'attrib',
-            'path_spec': {
-                'name': 'l_f'
-            }
-        },
-        'ldau': {
-            'parse_type': 'exists',
-            'path_spec': {
-                'name': 'ldaU',
-                'contains': 'species'
-            }
-        },
-        'soc': {
-            'parse_type': 'attrib',
-            'path_spec': {
-                'name': 'l_soc'
-            }
-        },
-        'noco': {
-            'parse_type': 'attrib',
-            'path_spec': {
-                'name': 'l_noco'
-            }
-        },
-        'film': {
-            'parse_type': 'exists',
-            'path_spec': {
-                'name': 'filmPos'
-            }
-        }
-    }
-
-    general_out_info = {
-        'creator_name': {
-            'parse_type': 'attrib',
-            'path_spec': {
-                'name': 'version',
-                'not_contains': 'git'
-            }
-        },
-        'creator_target_architecture': {
-            'parse_type': 'text',
-            'path_spec': {
-                'name': 'targetComputerArchitectures'
-            }
-        },
-        'creator_target_structure': {
-            'parse_type': 'text',
-            'path_spec': {
-                'name': 'targetStructureClass'
-            }
-        },
-        'output_file_version': {
-            'parse_type': 'attrib',
-            'path_spec': {
-                'name': 'fleurOutputVersion'
-            }
-        },
-        'number_of_iterations': {
-            'parse_type': 'numberNodes',
-            'path_spec': {
-                'name': 'iteration'
-            }
-        },
-        'number_of_atoms': {
-            'parse_type': 'attrib',
-            'path_spec': {
-                'name': 'nat'
-            }
-        },
-        'number_of_atom_types': {
-            'parse_type': 'attrib',
-            'path_spec': {
-                'name': 'ntype'
-            }
-        },
-        'start_date': {
-            'parse_type': 'allAttribs',
-            'path_spec': {
-                'name': 'startDateAndTime'
-            },
-            'ignore': ['zone'],
-            'flat': False,
-        },
-        'end_date': {
-            'parse_type': 'allAttribs',
-            'path_spec': {
-                'name': 'endDateAndTime'
-            },
-            'ignore': ['zone'],
-            'flat': False,
-        }
-    }
-
-    general_inp_info = {
-        'title': {
-            'parse_type': 'text',
-            'path_spec': {
-                'name': 'comment'
-            }
-        },
-        'kmax': {
-            'parse_type': 'attrib',
-            'path_spec': {
-                'name': 'Kmax'
-            }
-        },
-        'gmax': {
-            'parse_type': 'attrib',
-            'path_spec': {
-                'name': 'Gmax'
-            }
-        },
-        'number_of_spin_components': {
-            'parse_type': 'attrib',
-            'path_spec': {
-                'name': 'jspins'
-            }
-        },
-        'number_of_symmetries': {
-            'parse_type': 'numberNodes',
-            'path_spec': {
-                'name': 'symOp'
-            }
-        },
-        'number_of_species': {
-            'parse_type': 'numberNodes',
-            'path_spec': {
-                'name': 'species'
-            }
-        }
-    }
-
-    ldau_info = {
-        'parsed_ldau': {
-            'parse_type': 'allAttribs',
-            'path_spec': {
-                'name': 'ldaU',
-                'contains': 'species'
-            },
-            'subdict': 'ldau_info',
-        }
-    }
+def parse_general_information(root, parse_tasks, outschema_dict, inpschema_dict, parser_info_out=None):
 
     root_tag = '/fleurOutput'
     constants = read_constants(root, inpschema_dict, abspath=root_tag)
 
     fleurmode = {'jspin': 1, 'relax': False, 'ldau': False, 'soc': False, 'noco': False, 'film': False}
-    fleurmode = parse_task(fleurmode_info,
+    fleurmode = parse_task(parse_tasks['fleur_modes'],
                            root,
                            fleurmode,
                            inpschema_dict,
@@ -312,7 +167,7 @@ def parse_general_information(root, outschema_dict, inpschema_dict, parser_info_
     parser_info_out['fleur_modes'] = fleurmode
 
     out_dict = {}
-    out_dict = parse_task(general_inp_info,
+    out_dict = parse_task(parse_tasks['general_inp_info'],
                           root,
                           out_dict,
                           inpschema_dict,
@@ -321,7 +176,13 @@ def parse_general_information(root, outschema_dict, inpschema_dict, parser_info_
                           root_tag=root_tag,
                           use_lists=False)
 
-    out_dict = parse_task(general_out_info, root, out_dict, outschema_dict, constants, parser_info_out, use_lists=False)
+    out_dict = parse_task(parse_tasks['general_out_info'],
+                          root,
+                          out_dict,
+                          outschema_dict,
+                          constants,
+                          parser_info_out,
+                          use_lists=False)
 
     #Convert the read in times/dates to a walltime
     out_dict = calculate_walltime(out_dict, parser_info_out)
@@ -386,143 +247,6 @@ def parse_iteration(iteration,
     #The task definition dictionary maps all the keys in the out_dict to the right function call
     #to obtain them from the out.xml
 
-    tasks_definition = {}
-
-    tasks_definition['iteration_number'] = {
-        'number_of_iterations_total': {
-            'parse_type': 'attrib',
-            'path_spec': {
-                'name': 'overallNumber'
-            },
-            'overwrite_last': True,
-        }
-    }
-
-    tasks_definition['total_energy'] = {
-        'energy_hartree': {
-            'parse_type': 'singleValue',
-            'path_spec': {
-                'name': 'totalEnergy'
-            }
-        },
-    }
-
-    tasks_definition['total_energy_contributions'] = {
-        'sum_of_eigenvalues': {
-            'parse_type': 'singleValue',
-            'path_spec': {
-                'name': 'sumOfEigenvalues'
-            }
-        },
-        'energy_core_electrons': {
-            'parse_type': 'singleValue',
-            'path_spec': {
-                'name': 'coreElectrons'
-            }
-        },
-        'energy_valence_electrons': {
-            'parse_type': 'singleValue',
-            'path_spec': {
-                'name': 'valenceElectrons'
-            }
-        },
-        'charge_den_xc_den_integral': {
-            'parse_type': 'singleValue',
-            'path_spec': {
-                'name': 'chargeDenXCDenIntegral'
-            }
-        },
-    }
-
-    tasks_definition['ldau_energy_correction'] = {
-        'ldau_energy_correction': {
-            'parse_type': 'singleValue',
-            'path_spec': {
-                'name': 'dftUCorrection'
-            },
-            'subdict': 'ldau_info'
-        },
-    }
-
-    tasks_definition['nmmp_distances'] = {
-        'density_matrix_distance': {
-            'parse_type': 'singleValue',
-            'path_spec': {
-                'name': 'distance',
-                'contains': 'ldaUDensityMatrixConvergence'
-            },
-            'subdict': 'ldau_info'
-        },
-    }
-
-    tasks_definition['fermi_energy'] = {
-        'fermi_energy': {
-            'parse_type': 'singleValue',
-            'path_spec': {
-                'name': 'FermiEnergy'
-            },
-        }
-    }
-    tasks_definition['bandgap'] = {
-        'bandgap': {
-            'parse_type': 'singleValue',
-            'path_spec': {
-                'name': 'bandgap'
-            },
-        }
-    }
-
-    tasks_definition['magnetic_moments'] = {
-        'magnetic_moments': {
-            'parse_type': 'allAttribs',
-            'path_spec': {
-                'name': 'magneticMoment'
-            },
-            'base_value': 'moment',
-            'ignore': ['atomType']
-        }
-    }
-
-    tasks_definition['orbital_magnetic_moments'] = {
-        'orbital_magnetic_moments': {
-            'parse_type': 'allAttribs',
-            'path_spec': {
-                'name': 'orbMagMoment'
-            },
-            'base_value': 'moment',
-            'ignore': ['atomType']
-        }
-    }
-
-    tasks_definition['forcetheorem_dmi'] = {
-        'force_dmi': {
-            'parse_type': 'allAttribs',
-            'path_spec': {
-                'name': 'Entry',
-                'contains': 'DMI'
-            }
-        },
-        'force_dmi_qs': {
-            'parse_type': 'attrib',
-            'path_spec': {
-                'name': 'qpoints',
-                'contains': 'Forcetheorem_DMI'
-            }
-        },
-        'force_dmi_angles': {
-            'parse_type': 'attrib',
-            'path_spec': {
-                'name': 'Angles',
-                'contains': 'Forcetheorem_DMI'
-            }
-        }
-    }
-
-    if fleurmode['jspin'] == 1:
-        tasks_definition['distances'] = {}
-    else:
-        tasks_definition['distances'] = {}
-
     #These are the default things to be parsed for all iterations
     iteration_tasks = [
         'iteration_number', 'total_energy', 'distances', 'total_energy_contributions', 'fermi_energy', 'bandgap'
@@ -552,8 +276,7 @@ def parse_iteration(iteration,
 
     for task in iteration_tasks:
         try:
-            definition = tasks_definition[task]
-            out_dict = parse_task(definition, iteration, out_dict, outschema_dict, constants, parser_info_out)
+            out_dict = parse_task(parse_tasks[task], iteration, out_dict, outschema_dict, constants, parser_info_out)
         except KeyError:
             parser_info_out['parser_warnings'].append(f"Unknown task: '{task}'. Skipping this one")
 
