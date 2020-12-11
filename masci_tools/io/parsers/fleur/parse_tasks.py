@@ -10,9 +10,25 @@
 # For further information please visit http://www.flapw.de or                 #
 #                                                                             #
 ###############################################################################
+"""
+This module contains a class which organizes the known parsing tasks for outxml files
+and provides fuctionality for adding custom tasks easily
+"""
+from __future__ import absolute_import
 from .default_parse_tasks import TASKS_DEFINITION, __working_out_versions__
 
+
 class ParseTasks(object):
+    """
+    Representation of all known parsing tasks for the out.xml file
+
+    When set up it will initialize the known default tasks and check if they work
+    for the given output version
+
+    Accesing definition of task example::
+        parse_tasks = ParseTasks('0.33')
+        totE_definition = parse_tasks['total_energy']
+    """
 
     PARSE_TYPES = {'attrib', 'text', 'numNodes', 'exists', 'allAttribs', 'singleValue'}
 
@@ -25,12 +41,31 @@ class ParseTasks(object):
     def __init__(self, version):
         """
         Initialize the default parse tasks
+        Terminates if the version is not marked as working with the default tasks
+
+        TODO: We need some way of versioning for the default tasks
         """
         if version not in __working_out_versions__:
             raise ValueError(f'Unsupported output version: {version}')
         self.tasks = TASKS_DEFINITION.copy()
 
     def add_task(self, task_name, task_definition, **kwargs):
+        """
+        Add a new task definition to the tasks dictionary
+
+        Will first check if the definition has all the required keys
+
+        :param task_name: str, key in the tasks dict
+        :param task_definition: dict with the defined tasks
+
+        kwargs:
+            :param overwrite: bool, if True and the key is present in the dictionary it will be
+                              overwritten with the new definition
+            :param append: bool, if True and the key is present in the dictionary the new defintions
+                           will be inserted into this dictionary (inner keys WILL BE OVERWRITTEN)
+
+        """
+
 
         append = kwargs.get('append', False)
         overwrite = kwargs.get('overwrite', False)
@@ -68,7 +103,9 @@ class ParseTasks(object):
             self.tasks[task_name] = task_definition
 
     def __getitem__(self, task):
-
+        """
+        Access tasks via [] index
+        """
         if task in self.tasks:
             return self.tasks[task]
         else:

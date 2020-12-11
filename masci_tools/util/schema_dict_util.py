@@ -17,7 +17,7 @@ schema_dicts defined for the Fleur input/output
 Also provides convienient functions to use just a attribute name for extracting the
 attribute from the right place in the given etree
 """
-
+from __future__ import absolute_import
 from masci_tools.util.xml.common_xml_util import eval_xpath, convert_xml_text, convert_xml_attribute
 
 

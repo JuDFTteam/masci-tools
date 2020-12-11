@@ -14,6 +14,7 @@
 This module contains functions to load an fleur inp.xml file, parse it with a schema
 and convert its content to a dict
 """
+from __future__ import absolute_import
 from lxml import etree
 from pprint import pprint
 from masci_tools.io.parsers.fleur.fleur_schema import load_inpschema
