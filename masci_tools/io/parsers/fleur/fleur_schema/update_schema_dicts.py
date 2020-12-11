@@ -13,8 +13,12 @@
 """
 Contains utility to update the schema dicts.
 """
-from masci_tools.io.parsers.fleur.fleur_schema import create_inpschema_dict
-from masci_tools.io.parsers.fleur.fleur_schema import create_outschema_dict
+try:
+    from .inpschema_todict import create_inpschema_dict
+    from .outschema_todict import create_outschema_dict
+except ImportError:
+    from masci_tools.io.parsers.fleur.fleur_schema import create_inpschema_dict
+    from masci_tools.io.parsers.fleur.fleur_schema import create_outschema_dict
 import os
 
 PACKAGE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))

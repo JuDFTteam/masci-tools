@@ -13,8 +13,12 @@
 """
 Contains utility to add new pairs of input/output schemas.
 """
-from masci_tools.io.parsers.fleur.fleur_schema import create_inpschema_dict
-from masci_tools.io.parsers.fleur.fleur_schema import create_outschema_dict
+try:
+    from .inpschema_todict import create_inpschema_dict
+    from .outschema_todict import create_outschema_dict
+except ImportError:
+    from masci_tools.io.parsers.fleur.fleur_schema import create_inpschema_dict
+    from masci_tools.io.parsers.fleur.fleur_schema import create_outschema_dict
 from masci_tools.util.xml.common_xml_util import clear_xml
 import os
 import sys
