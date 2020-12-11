@@ -58,10 +58,10 @@ def inpxml_parser(inpxmlfile, version=None, parser_info_out=None):
     parser_info_out['fleur_inp_version'] = version
     schema_dict, xmlschema = load_inpschema(version, schema_return=True)
 
-    xmltree = clear_xml(xmltree, schema_dict=schema_dict)
+    xmltree = clear_xml(xmltree)
     root = xmltree.getroot()
 
-    constants = read_constants(xmltree)
+    constants = read_constants(xmltree, schema_dict)
 
     if not xmlschema.validate(xmltree):
         # get more information on what does not validate
