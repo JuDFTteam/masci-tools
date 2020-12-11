@@ -26,11 +26,10 @@ def inpxml_parser(inpxmlfile, version=None, parser_info_out=None):
     defined by the version number to validate and corretly convert to the dictionary
 
     :param inpxmlfile: either path to the inp.xml file or a xml etree to be parsed
-    :param return_errmsg: if True and the file does not validate the error is not raised
-                          in this function. Instead the error message is returned
     :param version: version string to enforce that a given schema is used
+    :param parser_info_out: dict, with warnings, info, errors, ...
 
-    :return: python dictionary
+    :return: python dictionary with the parsed inp.xml
     """
 
     if parser_info_out is None:
@@ -87,10 +86,12 @@ def inpxml_todict(parent, schema_dict, constants, omitted_tags=False, base_xpath
 
     :param parent: some xmltree, or xml element
     :param schema_dict: structure/layout of the xml file in python dictionary
+    :param constants: dict with all the defined constants
     :param omitted_tags: switch. If True only a list of the contained tags is returned
                          Used to omitt useless tags like e.g ['atomSpecies']['species'][3]
                          becomes ['atomSpecies'][3]
     :param base_xpath: str, keeps track of the place in the inp.xml currently being processed
+    :param parser_info_out: dict, with warnings, info, errors, ...
 
     :return: a python dictionary
     """
