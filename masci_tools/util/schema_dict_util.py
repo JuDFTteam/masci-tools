@@ -141,6 +141,38 @@ def get_attrib_xpath(schema_dict, name, contains=None, not_contains=None, exclud
                          f'contains: {contains}, not_contains: {not_contains}, exclude {exclude}\n'
                          f'These are possible: {all_paths}')
 
+def read_constants(xmltree, schema_dict, abspath=None):
+    """
+    Reads in the constants defined in the inp.xml
+    and returns them combined with the predefined constants from
+    fleur as a dictionary
+
+    :param xmltree: xmltree of the inp.xml file
+    :param schema_dict: schema_dictionary of the version of the inp.xml
+
+    :return: a python dictionary with all defined constants
+    """
+    import numpy as np
+
+    #Predefined constants in the Fleur Code
+    const_dict = {
+        'Pi': np.pi,
+        'Deg': 2 * np.pi / 360.0,
+        'Ang': 1.8897261247728981,
+        'nm': 18.897261247728981,
+        'pm': 0.018897261247728981,
+        'Bohr': 1.0
+    }
+
+    constants = evaluate_tag(xmltree, schema_dict, 'constants', abspath=abspath)
+
+    for name, value in zip(constants['name'], constants['value']):
+        if name not in const_dict:
+            const_dict[name] = value
+        else:
+            raise KeyError(f'Ambiguous definition of key {name}')
+
+    return const_dict
 
 def evaluate_attribute(node,
                        schema_dict,

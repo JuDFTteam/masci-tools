@@ -18,8 +18,8 @@ from __future__ import absolute_import
 from lxml import etree
 from pprint import pprint
 from masci_tools.io.parsers.fleur.fleur_schema import load_inpschema
-from masci_tools.util.xml.common_xml_util import clear_xml, convert_xml_attribute, read_constants, convert_xml_text
-
+from masci_tools.util.xml.common_xml_util import clear_xml, convert_xml_attribute, convert_xml_text
+from masci_tools.util.schema_dict_util import read_constants
 
 def inpxml_parser(inpxmlfile, version=None, parser_info_out=None):
     """
@@ -61,7 +61,7 @@ def inpxml_parser(inpxmlfile, version=None, parser_info_out=None):
     xmltree = clear_xml(xmltree, schema_dict=schema_dict)
     root = xmltree.getroot()
 
-    constants = read_constants(xmltree, schema_dict)
+    constants = read_constants(xmltree)
 
     if not xmlschema.validate(xmltree):
         # get more information on what does not validate

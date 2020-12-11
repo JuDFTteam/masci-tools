@@ -16,7 +16,7 @@ and convert its content to a dict, based on the tasks given
 """
 from __future__ import absolute_import
 from .parse_tasks import ParseTasks
-from masci_tools.util.xml.common_xml_util import eval_xpath, get_xml_attribute, clear_xml, convert_xml_attribute, read_constants
+from masci_tools.util.xml.common_xml_util import eval_xpath, get_xml_attribute, clear_xml, convert_xml_attribute
 import masci_tools.util.schema_dict_util as schema_util
 from masci_tools.io.parsers.fleur.fleur_schema import load_inpschema, load_outschema
 from masci_tools.io.common_functions import camel_to_snake
@@ -81,7 +81,7 @@ def outxml_parser(outxmlfile,
     inpschema_dict = load_inpschema(version)
     outschema_dict, outxmlschema = load_outschema(version, schema_return=True)
 
-    xmltree = clear_xml(xmltree, schema_dict=inpschema_dict)
+    xmltree = clear_xml(xmltree)
     root = xmltree.getroot()
 
     if not outxmlschema.validate(xmltree):
@@ -161,7 +161,7 @@ def outxml_parser(outxmlfile,
 def parse_general_information(root, parse_tasks, outschema_dict, inpschema_dict, parser_info_out=None):
 
     root_tag = '/fleurOutput'
-    constants = read_constants(root, inpschema_dict, abspath=root_tag)
+    constants = schema_util.read_constants(root, inpschema_dict, abspath=root_tag)
 
     fleurmode = {'jspin': 1, 'relax': False, 'ldau': False, 'soc': False, 'noco': False, 'film': False}
     fleurmode = parse_task(parse_tasks['fleur_modes'],

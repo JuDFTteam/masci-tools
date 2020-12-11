@@ -13,48 +13,10 @@
 """
 Common functions for parsing input/output files or XMLschemas from FLEUR
 """
+from __future__ import absolute_import
 from lxml import etree
 
-
-def read_constants(xmltree, schema_dict, abspath=None):
-    """
-    Reads in the constants defined in the inp.xml
-    and returns them combined with the predefined constants from
-    fleur as a dictionary
-
-    :param xmltree: xmltree of the inp.xml file
-    :param schema_dict: schema_dictionary of the version of the inp.xml
-
-    :return: a python dictionary with all defined constants
-    """
-    from masci_tools.util.schema_dict_util import get_tag_xpath
-    import numpy as np
-
-    #Predefined constants in the Fleur Code
-    const_dict = {
-        'Pi': np.pi,
-        'Deg': 2 * np.pi / 360.0,
-        'Ang': 1.8897261247728981,
-        'nm': 18.897261247728981,
-        'pm': 0.018897261247728981,
-        'Bohr': 1.0
-    }
-    xpath_constants = get_tag_xpath(schema_dict, 'constant')
-    if abspath is not None:
-        xpath_constants = f'{abspath}{xpath_constants}'
-    constant_elems = xmltree.xpath(xpath_constants)
-    for const in constant_elems:
-        name = const.attrib['name']
-        value = const.attrib['value']
-        if name not in const_dict:
-            const_dict[name] = value
-        else:
-            raise KeyError(f'Ambiguous definition of key {name}')
-
-    return const_dict
-
-
-def clear_xml(tree, schema_dict=None):
+def clear_xml(tree):
     """
     Removes comments and executes xinclude tags of an
     xml tree.
@@ -62,32 +24,55 @@ def clear_xml(tree, schema_dict=None):
     :param tree: an xml-tree which will be processes
     :return: cleared_tree, an xml-tree without comments and with replaced xinclude tags
 
-    TODO: Currently what can be included is fleur specific.
-    But this can probably easily generalized
     """
-    from masci_tools.util.schema_dict_util import get_tag_xpath
     import copy
 
-    possible_include = ['relaxation', 'atomGroups', 'atomSpecies', 'kPointLists', 'symmetryOperations']
-
     cleared_tree = copy.deepcopy(tree)
+
+    #find any include tags
+    include_tags = eval_xpath(cleared_tree,'//xi:include', namespaces={'xi': 'http://www.w3.org/2001/XInclude'}, list_return=True)
+
+    parents = []
+    known_tags = []
+    for tag in include_tags:
+        parent = tag.getparent()
+        parents.append(parent)
+        tags = []
+        for elem in parent:
+            tags.append(elem.tag)
+        known_tags.append(set(tags))
 
     # replace XInclude parts to validate against schema
     cleared_tree.xinclude()
 
-    if schema_dict is not None:
-        # get rid of xml:base attribute in the included parts
-        for include_tag in possible_include:
-            try:
-                include_path = get_tag_xpath(schema_dict, include_tag)
-            except (ValueError, KeyError):
-                continue
-            included_elem = tree.xpath(include_path)
-            if included_elem != []:
-                included_elem = included_elem[0]
-                for attribute in included_elem.keys():
-                    if 'base' in attribute:
-                        cleared_tree = delete_att(cleared_tree, include_path, attribute)
+    # get rid of xml:base attribute in the included parts
+    for parent, old_tags in zip(parents, known_tags):
+        tags = []
+        for elem in parent:
+            tags.append(elem.tag)
+
+        #determine the elements not in old_tags, which are in tags
+        #so what should have been included
+        included_tag_name = set(tags).difference(old_tags)
+
+        #Check for emtpy set (relax.xml include may not insert something)
+        if not included_tag_name:
+            continue
+        included_tag_name = included_tag_name.pop()
+
+        #Determine the corresponding tag
+        included_tag = eval_xpath(parent,f'./{included_tag_name}')
+        if len(included_tag) != 1:
+            raise ValueError(f"Could not determine included element '{included_tag_name}'")
+        included_tag = included_tag[0]
+
+        for attribute in included_tag.keys():
+            if 'base' in attribute:
+                try:
+                    del included_tag.attrib[attribute]
+                except BaseException:
+                    pass
+        raise Exception
 
     # remove comments from inp.xml
     comments = cleared_tree.xpath('//comment()')
@@ -328,7 +313,7 @@ def convert_from_fortran_bool(stringbool, conversion_warnings=None, suc_return=T
         return converted_value
 
 
-def eval_xpath(node, xpath, parser_info_out=None, list_return=False):
+def eval_xpath(node, xpath, parser_info_out=None, list_return=False, namespaces=None):
     """
     Tries to evaluate an xpath expression. If it fails it logs it.
 
@@ -342,7 +327,10 @@ def eval_xpath(node, xpath, parser_info_out=None, list_return=False):
         parser_info_out = {'parser_warnings': []}
 
     try:
-        return_value = node.xpath(xpath)
+        if namespaces is not None:
+            return_value = node.xpath(xpath, namespaces=namespaces)
+        else:
+            return_value = node.xpath(xpath)
     except etree.XPathEvalError:
         parser_info_out['parser_warnings'].append(f'There was a XpathEvalError on the xpath: {xpath} \n Either it does '
                                                   'not exist, or something is wrong with the expression.')
