@@ -17,7 +17,6 @@ schema_dicts defined for the Fleur input/output
 Also provides convienient functions to use just a attribute name for extracting the
 attribute from the right place in the given etree
 """
-from __future__ import absolute_import
 
 
 def get_tag_xpath(schema_dict, name, contains=None, not_contains=None):

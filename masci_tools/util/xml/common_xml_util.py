@@ -13,7 +13,6 @@
 """
 Common functions for parsing input/output files or XMLschemas from FLEUR
 """
-from __future__ import absolute_import
 from lxml import etree
 
 
