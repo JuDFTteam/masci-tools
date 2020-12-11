@@ -17,7 +17,7 @@ and convert its content to a dict, based on the tasks given
 from masci_tools.util.xml.common_xml_util import eval_xpath, get_xml_attribute, clear_xml, convert_xml_attribute, read_constants
 import masci_tools.util.schema_dict_util as schema_util
 from masci_tools.io.parsers.fleur.fleur_schema import load_inpschema, load_outschema
-from masci_tools.io.parsers.fleur import ParseTasks
+from masci_tools.io.parsers.fleur.parse_tasks import ParseTasks
 from masci_tools.io.common_functions import camel_to_snake
 from datetime import date
 from lxml import etree
@@ -25,13 +25,20 @@ from lxml import etree
 
 def outxml_parser(outxmlfile,
                   version=None,
+                  mode=None,
                   parser_info_out=None,
                   iteration_to_parse=None,
                   overwrite_tasks=None,
-                  additional_tasks=None):
+                  additional_tasks=None,
+                  **kwargs):
 
     if parser_info_out is None:
         parser_info_out = {'parser_warnings': [], 'fleur_modes': {}}
+
+    minimal_mode = False
+    if mode is not None:
+        if mode == 'minimal':
+            minimal_mode = True
 
     parser_version = '0.0.1'
     parser_info_out['parser_info'] = f'Masci-Tools Fleur out.xml Parser v{parser_version}'
@@ -91,7 +98,7 @@ def outxml_parser(outxmlfile,
 
     if additional_tasks is not None:
         for task_name, task_definition in additional_tasks.items():
-            parse_tasks.add_task(task_name, task_definition)
+            parse_tasks.add_task(task_name, task_definition, **kwargs)
 
     out_dict, fleurmode, constants = parse_general_information(root,
                                                                parse_tasks,
@@ -120,13 +127,13 @@ def outxml_parser(outxmlfile,
 
     for iteration in eval_xpath(root, iteration_xpath, parser_info_out=parser_info_out, list_return=True):
         out_dict = parse_iteration(iteration,
+                                   parse_tasks,
                                    fleurmode,
                                    outschema_dict,
                                    out_dict,
                                    constants,
-                                   overwrite_tasks=overwrite_tasks,
-                                   additional_tasks=additional_tasks,
-                                   parser_info_out=parser_info_out)
+                                   parser_info_out=parser_info_out,
+                                   minimal_mode=minimal_mode)
 
     #Convert energy to eV
     htr = 27.21138602
@@ -236,13 +243,14 @@ def parse_general_information(root, parse_tasks, outschema_dict, inpschema_dict,
 
 
 def parse_iteration(iteration,
+                    parse_tasks,
                     fleurmode,
                     outschema_dict,
                     out_dict,
                     constants,
                     overwrite_tasks=None,
-                    additional_tasks=None,
-                    parser_info_out=None):
+                    parser_info_out=None,
+                    minimal_mode=False):
 
     #The task definition dictionary maps all the keys in the out_dict to the right function call
     #to obtain them from the out.xml
@@ -265,13 +273,19 @@ def parse_iteration(iteration,
         iteration_tasks.append('ldau_energy_correction')
         iteration_tasks.append('nmmp_distances')
 
+    if minimal_mode:
+        iteration_tasks = ['iteration_number', 'total_energy', 'distances']
+
     #TODO: Check if this is a Forcetheorem iteration
 
     forcetheorem_tags = ['Forcetheorem_DMI', 'Forcetheorem_SSDISP', 'Forcetheorem_JIJ', 'Forcetheorem_MAE']
     for tag in forcetheorem_tags:
         exists = schema_util.tag_exists(iteration, outschema_dict, tag)
         if exists:
-            iteration_tasks = [tag.lower()]
+            if minimal_mode:
+                iteration_tasks = []
+            else:
+                iteration_tasks = [tag.lower()]
             break
 
     for task in iteration_tasks:
@@ -428,7 +442,6 @@ def calculate_walltime(out_dict, parser_info_out=None):
     """
     Convert the times
     """
-    print(out_dict)
     if parser_info_out is None:
         parser_info_out = {'parser_warnings': []}
 

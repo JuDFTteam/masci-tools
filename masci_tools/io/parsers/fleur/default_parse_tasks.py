@@ -50,7 +50,8 @@ The following keys are configured at the moment:
 
 __working_out_versions__ = {'0.33'}
 
-TASKS_DEFINITION = {'fleur_modes':{
+TASKS_DEFINITION = {
+    'fleur_modes': {
         'jspin': {
             'parse_type': 'attrib',
             'path_spec': {
@@ -89,8 +90,7 @@ TASKS_DEFINITION = {'fleur_modes':{
             }
         }
     },
-
-    'general_out_info':{
+    'general_out_info': {
         'creator_name': {
             'parse_type': 'attrib',
             'path_spec': {
@@ -151,8 +151,7 @@ TASKS_DEFINITION = {'fleur_modes':{
             'flat': False,
         }
     },
-
-    'general_inp_info':{
+    'general_inp_info': {
         'title': {
             'parse_type': 'text',
             'path_spec': {
@@ -190,7 +189,6 @@ TASKS_DEFINITION = {'fleur_modes':{
             }
         }
     },
-
     'ldau_info': {
         'parsed_ldau': {
             'parse_type': 'allAttribs',
@@ -201,7 +199,6 @@ TASKS_DEFINITION = {'fleur_modes':{
             'subdict': 'ldau_info',
         }
     },
-
     'iteration_number': {
         'number_of_iterations_total': {
             'parse_type': 'attrib',
@@ -211,7 +208,6 @@ TASKS_DEFINITION = {'fleur_modes':{
             'overwrite_last': True,
         }
     },
-
     'total_energy': {
         'energy_hartree': {
             'parse_type': 'singleValue',
@@ -220,9 +216,7 @@ TASKS_DEFINITION = {'fleur_modes':{
             }
         },
     },
-
     'distances': {},
-
     'total_energy_contributions': {
         'sum_of_eigenvalues': {
             'parse_type': 'singleValue',
@@ -249,7 +243,6 @@ TASKS_DEFINITION = {'fleur_modes':{
             }
         },
     },
-
     'ldau_energy_correction': {
         'ldau_energy_correction': {
             'parse_type': 'singleValue',
@@ -259,7 +252,6 @@ TASKS_DEFINITION = {'fleur_modes':{
             'subdict': 'ldau_info'
         },
     },
-
     'nmmp_distances': {
         'density_matrix_distance': {
             'parse_type': 'singleValue',
@@ -270,7 +262,6 @@ TASKS_DEFINITION = {'fleur_modes':{
             'subdict': 'ldau_info'
         },
     },
-
     'fermi_energy': {
         'fermi_energy': {
             'parse_type': 'singleValue',
@@ -287,7 +278,6 @@ TASKS_DEFINITION = {'fleur_modes':{
             },
         }
     },
-
     'magnetic_moments': {
         'magnetic_moments': {
             'parse_type': 'allAttribs',
@@ -298,7 +288,6 @@ TASKS_DEFINITION = {'fleur_modes':{
             'ignore': ['atomType']
         }
     },
-
     'orbital_magnetic_moments': {
         'orbital_magnetic_moments': {
             'parse_type': 'allAttribs',
@@ -309,7 +298,6 @@ TASKS_DEFINITION = {'fleur_modes':{
             'ignore': ['atomType']
         }
     },
-
     'forcetheorem_dmi': {
         'force_dmi': {
             'parse_type': 'allAttribs',
@@ -333,3 +321,4 @@ TASKS_DEFINITION = {'fleur_modes':{
             }
         }
     }
+}
