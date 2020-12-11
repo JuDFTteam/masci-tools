@@ -18,8 +18,8 @@ try:
     from .outschema_todict import create_outschema_dict
 except ImportError:
     #These are here so that the scripts can be used from the commandline
-    from masci_tools.io.parsers.fleur.fleur_schema import create_inpschema_dict # pylint: disable=cyclic-import
-    from masci_tools.io.parsers.fleur.fleur_schema import create_outschema_dict # pylint: disable=cyclic-import
+    from masci_tools.io.parsers.fleur.fleur_schema import create_inpschema_dict  # pylint: disable=cyclic-import
+    from masci_tools.io.parsers.fleur.fleur_schema import create_outschema_dict  # pylint: disable=cyclic-import
 import os
 
 PACKAGE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
