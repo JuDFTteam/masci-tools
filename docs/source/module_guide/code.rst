@@ -52,5 +52,20 @@ I/O helper and output file parsers
 .. automodule:: masci_tools.io.parsers.fleur
    :members:
 
-.. automodule:: masci_tools.io.parsers.fleur.fleur_schema
+Fleur Schema parser functions
+++++++++++++++++++++++++++++++++++
+
+.. automodule:: masci_tools.io.parsers.fleur.fleur_schema.inpschema_todict
+   :members:
+   
+.. automodule:: masci_tools.io.parsers.fleur.fleur_schema.outschema_todict
+   :members:
+   
+.. automodule:: masci_tools.io.parsers.fleur.fleur_schema.add_fleur_schema
+   :members:
+   
+.. automodule:: masci_tools.io.parsers.fleur.fleur_schema.update_schema_dicts
+   :members:
+   
+.. automodule:: masci_tools.io.parsers.fleur.fleur_schema.fleur_schema_parser_functions
    :members:
