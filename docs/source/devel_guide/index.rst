@@ -37,10 +37,21 @@ All functions below can either be called in python or on the commandline
     #If the schema with the found version is found the above call will raise an exception
     #use overwrite=True to replace the schemas
     add_fleur_schema('/path/to/folder/with/schema/', overwrite=True)
-
-
    
 .. topic:: Modifying the parsed Fleur Schema:
 
+  The :py:func:`~masci_tools.io.parsers.fleur.fleur_schema.update_schema_dicts()`: can be used if all available schemas should be be reparsed and all
+  dictionaries updated, if the parsing functions are updated or a new key added for exmaple. This is really straightforward to use:
+  
+  .. code-block:: python
+
+    from masci_tools.io.parsers.fleur.fleur_schema import update_schema_dicts
+
+    #This function goes through all .xsd files in the version subfolder of masci_tools/io/parsers/fleur/fleur_schema
+    #And creates a new dict and restores them
+    update_schema_dicts
+
 .. topic:: Adapting the outxml_parser:
+
+  The :py:func:`~masci_tools.io.parsers.fleur.outxml_parser()`: has to be more flexible.
 
