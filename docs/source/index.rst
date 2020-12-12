@@ -53,8 +53,7 @@ User's Guide
 
 .. toctree::
    :maxdepth: 4
-
-.. 
+ 
    user_guide/index
 
   
