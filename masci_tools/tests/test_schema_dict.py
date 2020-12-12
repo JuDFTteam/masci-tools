@@ -7,7 +7,6 @@ import os
 from masci_tools.io.parsers.fleur.fleur_schema import load_inpschema, create_inpschema_dict
 from masci_tools.io.parsers.fleur.fleur_schema import load_outschema, create_outschema_dict
 
-
 CURRENT_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 
 schema_directory = '../io/parsers/fleur/fleur_schema'
@@ -36,6 +35,7 @@ def test_inpschema_dict(schema_version, schema_path):
 
     assert created_version == schema_version
     assert dict_created == dict_stored
+
 
 @pytest.mark.parametrize('schema_version,schema_path', zip(outschema_versions, outschema_paths))
 def test_outschema_dict(schema_version, schema_path):

@@ -420,6 +420,7 @@ def evaluate_single_value_tag(node,
 
     return value_dict
 
+
 def evaluate_parent_tag(node,
                         schema_dict,
                         name,
@@ -485,17 +486,15 @@ def evaluate_parent_tag(node,
 
             if stringattribute == '':
                 if attrib not in no_raise:
-                    parser_info_out['parser_warnings'].append(f'No values found for attribute {attrib} for parent tag of {name}')
+                    parser_info_out['parser_warnings'].append(
+                        f'No values found for attribute {attrib} for parent tag of {name}')
                 out_dict[attrib].append(None)
                 continue
 
             possible_types = schema_dict['attrib_types'][attrib]
 
             warnings = []
-            value, suc = convert_xml_attribute(stringattribute,
-                                               possible_types,
-                                               constants,
-                                               conversion_warnings=warnings)
+            value, suc = convert_xml_attribute(stringattribute, possible_types, constants, conversion_warnings=warnings)
 
             out_dict[attrib].append(value)
 

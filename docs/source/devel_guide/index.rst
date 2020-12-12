@@ -61,4 +61,3 @@ All functions below can either be called in python or on the commandline
   
 .. automodule:: masci_tools.io.parsers.fleur.default_parse_tasks
   :members:
-

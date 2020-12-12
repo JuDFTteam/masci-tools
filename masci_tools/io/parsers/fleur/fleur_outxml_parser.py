@@ -23,6 +23,7 @@ from masci_tools.io.common_functions import camel_to_snake
 from datetime import date
 from lxml import etree
 
+
 def outxml_parser(outxmlfile,
                   version=None,
                   mode=None,
@@ -466,12 +467,13 @@ def calculate_walltime(out_dict, parser_info_out=None):
 
     return out_dict
 
+
 def convert_ldau_definitions(out_dict):
 
     parsed_ldau = out_dict['ldau_info'].pop('parsed_ldau')
     ldau_species = out_dict['ldau_info'].pop('ldau_species')
 
-    ldau_definitions = zip(ldau_species['name'],ldau_species['atomic_number'],parsed_ldau['l'])
+    ldau_definitions = zip(ldau_species['name'], ldau_species['atomic_number'], parsed_ldau['l'])
     for index, ldau_def in enumerate(ldau_definitions):
 
         species_name, atom_number, orbital = ldau_def
@@ -494,6 +496,3 @@ def convert_ldau_definitions(out_dict):
         out_dict['ldau_info'][species_key] = ldau_dict
 
     return out_dict
-
-
-

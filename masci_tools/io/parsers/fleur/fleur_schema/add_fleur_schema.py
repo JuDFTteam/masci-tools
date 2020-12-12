@@ -51,7 +51,7 @@ def add_fleur_schema(path, overwrite=False):
 
         os.makedirs(copy_schema_folder, exist_ok=True)
         if not os.path.isfile(os.path.abspath(os.path.join(copy_schema_folder, '__init__.py'))):
-            with open(os.path.abspath(os.path.join(copy_schema_folder, '__init__.py')),'w') as f:
+            with open(os.path.abspath(os.path.join(copy_schema_folder, '__init__.py')), 'w') as f:
                 pass
         shutil.copy(schema_path, copy_schema_file)
         create_inpschema_dict(copy_schema_folder)
@@ -72,7 +72,7 @@ def add_fleur_schema(path, overwrite=False):
 
         os.makedirs(copy_schema_folder, exist_ok=True)
         if not os.path.isfile(os.path.abspath(os.path.join(copy_schema_folder, '__init__.py'))):
-            with open(os.path.abspath(os.path.join(copy_schema_folder, '__init__.py')),'w') as f:
+            with open(os.path.abspath(os.path.join(copy_schema_folder, '__init__.py')), 'w') as f:
                 pass
         shutil.copy(schema_path, copy_schema_file)
         create_outschema_dict(copy_schema_folder)
