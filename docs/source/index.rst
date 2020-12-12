@@ -53,8 +53,7 @@ User's Guide
 
 .. toctree::
    :maxdepth: 4
-
-.. 
+ 
    user_guide/index
 
   
@@ -64,7 +63,6 @@ Developer's Guide
 .. toctree::
    :maxdepth: 4
 
-.. 
    devel_guide/index
 
 Module reference (API)
