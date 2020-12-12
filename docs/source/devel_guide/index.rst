@@ -40,7 +40,7 @@ All functions below can either be called in python or on the commandline
    
 .. topic:: Modifying the parsed Fleur Schema:
 
-  The :py:func:`~masci_tools.io.parsers.fleur.fleur_schema.update_schema_dicts.update_schema_dicts()`: can be used if all available schemas should be be reparsed and all
+  The :py:func:`~masci_tools.io.parsers.fleur.fleur_schema.update_schema_dicts()`: can be used if all available schemas should be be reparsed and all
   dictionaries updated, if the parsing functions are updated or a new key is added for example. This is really straightforward to use:
   
   .. code-block:: python
