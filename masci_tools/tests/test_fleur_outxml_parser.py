@@ -20,7 +20,7 @@ for folder in outxmlfilefolder_valid:
                  outxmlfilelist.append(os.path.join(subdir, file))
 
 @pytest.mark.parametrize('outxmlfilepath', outxmlfilelist)
-def test_outxml_valid_inpxml(outxmlfilepath):
+def test_outxml_valid_outxml(outxmlfilepath):
     """
     test if valid inp.xml files are recognized by the inpxml_parser
     """
