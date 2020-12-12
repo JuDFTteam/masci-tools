@@ -23,7 +23,6 @@ from masci_tools.io.common_functions import camel_to_snake
 from datetime import date
 from lxml import etree
 
-
 def outxml_parser(outxmlfile,
                   version=None,
                   mode=None,
@@ -196,49 +195,15 @@ def parse_general_information(root, parse_tasks, outschema_dict, inpschema_dict,
     out_dict = calculate_walltime(out_dict, parser_info_out)
 
     if fleurmode['ldau']:
-        out_dict['ldau_info'] = {}
-
-        ldau_tag_path = schema_util.get_tag_xpath(inpschema_dict, 'ldaU', contains='species')
-        ldau_tag_info = inpschema_dict['tag_info'][ldau_tag_path]
-        ldau_tag_path = f'{root_tag}{ldau_tag_path}'
-        ldaU_definitions = eval_xpath(root, ldau_tag_path)
-
-        for ldaU in ldaU_definitions:
-            parent = ldaU.getparent()
-            element_z = get_xml_attribute(parent, 'atomicNumber')
-            species_name = get_xml_attribute(parent, 'name')
-            ldauKey = f'{species_name}/{element_z}'
-
-            if ldauKey not in out_dict['ldau_info']:
-                out_dict['ldau_info'][ldauKey] = {}
-
-            new_ldau = {}
-            for attrib in ldau_tag_info['attribs']:
-                possible_types = inpschema_dict['attrib_types'][attrib]
-                if attrib not in ldaU.attrib:
-                    continue
-
-                warnings = []
-                new_ldau[attrib.lower()], suc = convert_xml_attribute(ldaU.attrib[attrib],
-                                                                      possible_types,
-                                                                      constants,
-                                                                      conversion_warnings=warnings)
-
-                if not suc:
-                    parser_info_out['parser_warnings'].append(f'Failed to evaluate attribute {attrib}: '
-                                                              'Below are the warnings from convert_xml_attribute')
-                    for warning in warnings:
-                        parser_info_out['parser_warnings'].append(warning)
-
-            #Convert orbital number and double counting to more readable values
-            orbital = 'spdf'[new_ldau['l']]
-            if new_ldau['l_amf']:
-                new_ldau['double_counting'] = 'AMF'
-            else:
-                new_ldau['double_counting'] = 'FLL'
-            new_ldau.pop('l_amf')
-            new_ldau.pop('l')
-            out_dict['ldau_info'][ldauKey][orbital] = new_ldau
+        out_dict = parse_task(parse_tasks['ldau_info'],
+                              root,
+                              out_dict,
+                              inpschema_dict,
+                              constants,
+                              parser_info_out,
+                              root_tag=root_tag,
+                              use_lists=True)
+        out_dict = convert_ldau_definitions(out_dict)
 
     return out_dict, fleurmode, constants
 
@@ -353,6 +318,7 @@ def parse_task(tasks_definition,
         'numberNodes': schema_util.get_number_of_nodes,
         'singleValue': schema_util.evaluate_single_value_tag,
         'allAttribs': schema_util.evaluate_tag,
+        'parentAttribs': schema_util.evaluate_parent_tag,
     }
 
     for task_key, spec in tasks_definition.items():
@@ -360,7 +326,7 @@ def parse_task(tasks_definition,
         action = _FUNCTION_DICT[spec['parse_type']]
         args = spec['path_spec'].copy()
 
-        if spec['parse_type'] in ['attrib', 'text', 'singleValue', 'allAttribs']:
+        if spec['parse_type'] in ['attrib', 'text', 'singleValue', 'allAttribs', 'parentAttribs']:
             args['constants'] = constants
 
         if root_tag is not None:
@@ -382,7 +348,7 @@ def parse_task(tasks_definition,
                 no_list = ['units']
                 ignore = ['comment']
                 flat = True
-            elif spec['parse_type'] == 'allAttribs':
+            elif spec['parse_type'] in ['allAttribs', 'parentAttribs']:
                 base_value = spec.get('base_value', '')
                 ignore = spec.get('ignore', [])
                 no_list = spec.get('overwrite', [])
@@ -491,3 +457,35 @@ def calculate_walltime(out_dict, parser_info_out=None):
     out_dict['walltime_units'] = 'seconds'
 
     return out_dict
+
+def convert_ldau_definitions(out_dict):
+
+    parsed_ldau = out_dict['ldau_info'].pop('parsed_ldau')
+    ldau_species = out_dict['ldau_info'].pop('ldau_species')
+
+    ldau_definitions = zip(ldau_species['name'],ldau_species['atomic_number'],parsed_ldau['l'])
+    for index, ldau_def in enumerate(ldau_definitions):
+
+        species_name, atom_number, orbital = ldau_def
+
+        species_key = f'{species_name}/{atom_number}'
+        orbital_key = 'spdf'[orbital]
+
+        if species_key not in out_dict['ldau_info']:
+            ldau_dict = out_dict['ldau_info'].get(species_key, {})
+
+        ldau_dict[orbital_key] = {}
+        ldau_dict[orbital_key]['u'] = parsed_ldau['u'][index]
+        ldau_dict[orbital_key]['j'] = parsed_ldau['j'][index]
+        ldau_dict[orbital_key]['unit'] = 'eV'
+        if parsed_ldau['l_amf'][index]:
+            ldau_dict[orbital_key]['double_counting'] = 'AMF'
+        else:
+            ldau_dict[orbital_key]['double_counting'] = 'FLL'
+
+        out_dict['ldau_info'][species_key] = ldau_dict
+
+    return out_dict
+
+
+

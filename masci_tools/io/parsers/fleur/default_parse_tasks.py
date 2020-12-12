@@ -197,6 +197,16 @@ TASKS_DEFINITION = {
                 'contains': 'species'
             },
             'subdict': 'ldau_info',
+            'flat': False,
+        },
+        'ldau_species': {
+            'parse_type': 'parentAttribs',
+            'path_spec': {
+                'name': 'ldaU',
+                'contains': 'species'
+            },
+            'subdict': 'ldau_info',
+            'flat': False,
         }
     },
     'iteration_number': {
@@ -254,7 +264,7 @@ TASKS_DEFINITION = {
     },
     'nmmp_distances': {
         'density_matrix_distance': {
-            'parse_type': 'singleValue',
+            'parse_type': 'attrib',
             'path_spec': {
                 'name': 'distance',
                 'contains': 'ldaUDensityMatrixConvergence'

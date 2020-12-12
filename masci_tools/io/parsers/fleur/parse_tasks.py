@@ -31,7 +31,7 @@ class ParseTasks(object):
         totE_definition = parse_tasks['total_energy']
     """
 
-    PARSE_TYPES = {'attrib', 'text', 'numNodes', 'exists', 'allAttribs', 'singleValue'}
+    PARSE_TYPES = {'attrib', 'text', 'numNodes', 'exists', 'allAttribs', 'parentAttribs', 'singleValue'}
 
     REQUIRED_KEYS = {'parse_type', 'path_spec'}
     ALLOWED_KEYS = {'parse_type', 'path_spec', 'subdict', 'overwrite_last'}
@@ -95,7 +95,7 @@ class ParseTasks(object):
             if not definition['parse_type'] in self.PARSE_TYPES:
                 raise ValueError(f"Unknown parse_type: {definition['parse_type']}")
 
-            if definition['parse_type'] == 'allAttribs':
+            if definition['parse_type'] in ['allAttribs', 'parentAttribs']:
                 extra_keys = self.ALLOWED_KEYS_ALLATTRIBS.difference(task_keys)
             else:
                 extra_keys = self.ALLOWED_KEYS.difference(task_keys)

@@ -420,6 +420,93 @@ def evaluate_single_value_tag(node,
 
     return value_dict
 
+def evaluate_parent_tag(node,
+                        schema_dict,
+                        name,
+                        constants,
+                        contains=None,
+                        not_contains=None,
+                        parser_info_out=None,
+                        abspath=None,
+                        no_raise=None):
+    """
+    Evaluates all attributes of the parent tag based on the given name
+    and additional further specifications with the available type information
+
+    :param schema_dict: dict, containing all the path information and more
+    :param name: str, name of the tag
+    :param constants: dict, contains the defined constants
+    :param contains: str, this string has to be in the final path
+    :param not_contains: str, this string has to NOT be in the final path
+    :param parser_info_out: dict, with warnings, info, errors, ...
+    :param abspath: str, to append in front of the path
+
+    :returns: dict, with attribute values converted via convert_xml_attribute
+    """
+    from masci_tools.util.xml.common_xml_util import eval_xpath, convert_xml_attribute, get_xml_attribute
+
+    if parser_info_out is None:
+        parser_info_out = {'parser_warnings': []}
+
+    if no_raise is None:
+        no_raise = []
+
+    tag_xpath = get_tag_xpath(schema_dict, name, contains=contains, not_contains=not_contains)
+
+    parent_xpath = tag_xpath.replace(f'/{name}', '')
+
+    #Which attributes are expected
+    attribs = []
+    if parent_xpath in schema_dict['tag_info']:
+        attribs = schema_dict['tag_info'][parent_xpath]['attribs']
+    elif 'iteration_tag_info' in schema_dict:
+        if parent_xpath in schema_dict['iteration_tag_info']:
+            attribs = schema_dict['iteration_tag_info'][parent_xpath]['attribs']
+
+    if not attribs:
+        parser_info_out['parser_warnings'].append(f'Failed to evaluate attributes from tag {name}: '
+                                                  'No attributes to parse either the tag does not '
+                                                  'exist or it has no attributes')
+
+    if abspath is not None:
+        tag_xpath = f'{abspath}{tag_xpath}'
+
+    out_dict = dict.fromkeys(attribs)
+    for attrib in attribs:
+        out_dict[attrib] = []
+
+    elems = eval_xpath(node, tag_xpath, parser_info_out=parser_info_out)
+
+    for elem in elems:
+        parent = elem.getparent()
+        for attrib in attribs:
+
+            stringattribute = get_xml_attribute(parent, attrib)
+
+            if stringattribute == '':
+                if attrib not in no_raise:
+                    parser_info_out['parser_warnings'].append(f'No values found for attribute {attrib} for parent tag of {name}')
+                out_dict[attrib].append(None)
+                continue
+
+            possible_types = schema_dict['attrib_types'][attrib]
+
+            warnings = []
+            value, suc = convert_xml_attribute(stringattribute,
+                                               possible_types,
+                                               constants,
+                                               conversion_warnings=warnings)
+
+            out_dict[attrib].append(value)
+
+            if not suc:
+                parser_info_out['parser_warnings'].append(f'Failed to evaluate attribute {attrib}: '
+                                                          'Below are the warnings from convert_xml_attribute')
+                for warning in warnings:
+                    parser_info_out['parser_warnings'].append(warning)
+
+    return out_dict
+
 
 def tag_exists(node, schema_dict, name, contains=None, not_contains=None, parser_info_out=None, abspath=None):
     """
