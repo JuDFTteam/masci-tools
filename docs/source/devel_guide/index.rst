@@ -11,7 +11,7 @@ Updating or adapting the Fleur Parsers
 Each input and output file for Fleur has a correspong XML-Schema, where the structure
 of these files are defined.
 
-To be able to parse such files efficiently and without hardcoding their structure we extract all necessary information about the schemas in :py:func:`~masci_tools.io.parsers.fleur.fleur_schema.create_inpschema_dict()` and :py:func:`~masci_tools.io.parsers.fleur.fleur_schema.create_outschema_dict()`. The resulting python dictionaries are stored in ```inpschema_dict.py``` or ```outschema_dict.py``` files next to the schema and can be loaded via the functions :py:func:`~masci_tools.io.parsers.fleur.fleur_schema.load_inpschema()`:
+To be able to parse such files efficiently and without hardcoding their structure we extract all necessary information about the schemas in :py:func:`~masci_tools.io.parsers.fleur.fleur_schema.create_inpschema_dict()` and :py:func:`~masci_tools.io.parsers.fleur.fleur_schema.create_outschema_dict()`. The resulting python dictionaries are stored in ```inpschema_dict.py``` or ```outschema_dict.py``` files next to the schema and can be loaded via the functions :py:func:`~masci_tools.io.parsers.fleur.fleur_schema.load_inpschema()`
 or :py:func:`~masci_tools.io.parsers.fleur.fleur_schema.load_outschema()` by providing the desired version string.
 
 To make maintenance of the plugin and the schemas easier, a couple of small utility functions are provided.
