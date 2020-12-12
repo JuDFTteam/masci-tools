@@ -32,4 +32,4 @@ def test_outxml_valid_inpxml(outxmlfilepath):
     #Parse before
     parser = etree.XMLParser(attribute_defaults=True, encoding='utf-8')
     xmltree = etree.parse(outxmlfilepath, parser)
-    out_dict = outxml_parser(xmltree)
+    out_dict = outxml_parser(xmltree, strict=True)

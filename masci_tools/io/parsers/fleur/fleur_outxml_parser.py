@@ -133,7 +133,8 @@ def outxml_parser(outxmlfile,
                                    out_dict,
                                    constants,
                                    parser_info_out=parser_info_out,
-                                   minimal_mode=minimal_mode)
+                                   minimal_mode=minimal_mode,
+                                   **kwargs)
 
     #Convert energy to eV
     htr = 27.21138602
@@ -216,8 +217,10 @@ def parse_iteration(iteration,
                     constants,
                     overwrite_tasks=None,
                     parser_info_out=None,
-                    minimal_mode=False):
+                    minimal_mode=False,
+                    **kwargs):
 
+    strict = kwargs.get('strict', False)
     #The task definition dictionary maps all the keys in the out_dict to the right function call
     #to obtain them from the out.xml
 
@@ -259,6 +262,8 @@ def parse_iteration(iteration,
             out_dict = parse_task(parse_tasks[task], iteration, out_dict, outschema_dict, constants, parser_info_out)
         except KeyError:
             parser_info_out['parser_warnings'].append(f"Unknown task: '{task}'. Skipping this one")
+            if strict:
+                raise
 
     if fleurmode['relax']:  #This is too complex to put it into the standard tasks for now
         pass
