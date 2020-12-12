@@ -32,9 +32,9 @@ def outxml_parser(outxmlfile,
                   overwrite_tasks=None,
                   additional_tasks=None,
                   **kwargs):
-   """
-   Parses the out.xml file to a dictionary based on the version and the given tasks
-   """
+    """
+    Parses the out.xml file to a dictionary based on the version and the given tasks
+    """
 
     if parser_info_out is None:
         parser_info_out = {'parser_warnings': [], 'fleur_modes': {}}
