@@ -309,25 +309,87 @@ TASKS_DEFINITION = {
         }
     },
     'forcetheorem_dmi': {
-        'force_dmi': {
+        'dmi_force': {
             'parse_type': 'allAttribs',
             'path_spec': {
                 'name': 'Entry',
                 'contains': 'DMI'
             }
         },
-        'force_dmi_qs': {
+        'dmi_force_qs': {
             'parse_type': 'attrib',
             'path_spec': {
                 'name': 'qpoints',
                 'contains': 'Forcetheorem_DMI'
             }
         },
-        'force_dmi_angles': {
+        'dmi_force_angles': {
             'parse_type': 'attrib',
             'path_spec': {
                 'name': 'Angles',
                 'contains': 'Forcetheorem_DMI'
+            }
+        },
+        'dmi_force_units': {
+            'parse_type': 'attrib',
+            'path_spec': {
+                'name': 'units',
+                'contains': 'Forcetheorem_DMI'
+            }
+        }
+    },
+    'forcetheorem_ssdisp': {
+        'spst_force': {
+            'parse_type': 'allAttribs',
+            'path_spec': {
+                'name': 'Entry',
+                'contains': 'SSDISP'
+            }
+        },
+        'spst_force_qs': {
+            'parse_type': 'attrib',
+            'path_spec': {
+                'name': 'qvectors',
+                'contains': 'Forcetheorem_SSDISP'
+            }
+        },
+        'spst_force_units': {
+            'parse_type': 'attrib',
+            'path_spec': {
+                'name': 'units',
+                'contains': 'Forcetheorem_SSDISP'
+            }
+        }
+    },
+    'forcetheorem_mae': {
+        'mae_force': {
+            'parse_type': 'allAttribs',
+            'path_spec': {
+                'name': 'Entry',
+                'contains': 'MAE'
+            }
+        },
+        'mae_force_units': {
+            'parse_type': 'attrib',
+            'path_spec': {
+                'name': 'units',
+                'contains': 'Forcetheorem_MAE'
+            }
+        }
+    },
+    'forcetheorem_jij': {
+        'jij_force': {
+            'parse_type': 'allAttribs',
+            'path_spec': {
+                'name': 'Config',
+                'contains': 'JIJ'
+            }
+        },
+        'jij_force_units': {
+            'parse_type': 'attrib',
+            'path_spec': {
+                'name': 'units',
+                'contains': 'Forcetheorem_JIJ'
             }
         }
     }
