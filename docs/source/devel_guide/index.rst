@@ -12,7 +12,7 @@ Each input and output file for Fleur has a correspong XML-Schema, where the stru
 of these files are defined.
 
 To be able to parse such files efficiently and without hardcoding their structure we
-extract all necessary infomration about the schemas in :py:func:`~masci_tools.io.parsers.fleur.fleur_schema.create_inpschema_dict()`:
+extract all necessary information about the schemas in :py:func:`~masci_tools.io.parsers.fleur.fleur_schema.create_inpschema_dict()`:
 and :py:func:`~masci_tools.io.parsers.fleur.fleur_schema.create_outschema_dict()`:. The resulting python dictionaries are stored
 in ```.py``` files next to the schema and can be loaded via :py:func:`~masci_tools.io.parsers.fleur.fleur_schema.load_inpschema()`:
 or :py:func:`~masci_tools.io.parsers.fleur.fleur_schema.load_outschema()`: by providing the version string.
@@ -49,9 +49,16 @@ All functions below can either be called in python or on the commandline
 
     #This function goes through all .xsd files in the version subfolder of masci_tools/io/parsers/fleur/fleur_schema
     #And creates a new dict and restores them
-    update_schema_dicts
+    update_schema_dicts()
 
 .. topic:: Adapting the outxml_parser:
 
-  The :py:func:`~masci_tools.io.parsers.fleur.outxml_parser()`: has to be more flexible.
+  In contrast to the input file parser :py:func:`~masci_tools.io.parsers.fleur.inpxml_parser()`:, which parses all information available,
+  the :py:func:`~masci_tools.io.parsers.fleur.outxml_parser()`: has to be more flexible. The out file has much more information which might
+  not be always useful for users. Therefore the selection of hwta is parsed has to be much more specific.
+  
+  The hardcoded known parsing tasks are stored in ```masci_tools/io/parsers/fleur/default_parse_tasks.py```
+  
+.. automodule:: masci_tools.io.parsers.fleur.default_parse_tasks
+  :members:
 
