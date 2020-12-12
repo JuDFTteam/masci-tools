@@ -26,7 +26,12 @@ class ParseTasks(object):
     When set up it will initialize the known default tasks and check if they work
     for the given output version
 
-    Accesing definition of task example::
+    Accesing definition of task example
+
+    .. code-block:: python
+
+        from masci_tools.io.parsers.fleur import ParseTasks
+
         parse_tasks = ParseTasks('0.33')
         totE_definition = parse_tasks['total_energy']
     """
@@ -67,12 +72,10 @@ class ParseTasks(object):
 
         :param task_name: str, key in the tasks dict
         :param task_definition: dict with the defined tasks
-
-        kwargs:
-            :param overwrite: bool, if True and the key is present in the dictionary it will be
-                              overwritten with the new definition
-            :param append: bool, if True and the key is present in the dictionary the new defintions
-                           will be inserted into this dictionary (inner keys WILL BE OVERWRITTEN)
+        :param overwrite: bool (optional), if True and the key is present in the dictionary it will be
+                          overwritten with the new definition
+        :param append: bool (optional), if True and the key is present in the dictionary the new defintions
+                       will be inserted into this dictionary (inner keys WILL BE OVERWRITTEN)
 
         """
 

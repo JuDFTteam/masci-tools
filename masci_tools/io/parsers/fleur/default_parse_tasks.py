@@ -39,12 +39,19 @@ For the allAttribs parse_type there are more keys that can appear:
                        format {task_key}_{attribute_name}
 
 The following keys are configured at the moment:
-    - 'fleur_modes' specifies how to identify the type of the calculation (e.g. SOC, magnetic, lda+u)
+    - ```fleur_modes``` specifies how to identify the type of the calculation (e.g. SOC, magnetic, lda+u)
       this is used to determine, whether additional things should be parsed
-    - 'general_inp_info' gets information from the input section of the out.xml like number of symmnetries
-    - 'general_out_info' gets information from the section of the out.xml outside iterations, like timing
+    - ```general_inp_info``` gets information from the input section of the out.xml like number of symmnetries
+    - ```general_out_info``` gets information from the section of the out.xml outside iterations, like timing
       basis information, ...
-    - All other keys are parsed for each iteration. (total_energy, distances, ...)
+    - All other keys are parsed for each iteration. (```total_energy```, ```distances```, ...)
+
+Following is the current specification of tasks
+
+.. literalinclude:: ../../../masci_tools/io/parsers/fleur/default_parse_tasks.py
+   :language: python
+   :lines: 60-
+   :linenos:
 
 """
 

@@ -57,7 +57,5 @@ All functions below can either be called in python or on the commandline
   the :py:func:`~masci_tools.io.parsers.fleur.outxml_parser()`: has to be more flexible. The out file has much more information which might
   not be always useful for users. Therefore the selection of hwta is parsed has to be much more specific.
   
-  The hardcoded known parsing tasks are stored in ```masci_tools/io/parsers/fleur/default_parse_tasks.py```
-  
-.. automodule:: masci_tools.io.parsers.fleur.default_parse_tasks
-  :members:
+  The hardcoded known parsing tasks are stored in :py:mod:`~masci_tools.io.parsers.fleur.default_parse_tasks`:
+
