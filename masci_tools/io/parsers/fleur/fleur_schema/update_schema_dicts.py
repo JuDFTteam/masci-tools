@@ -26,7 +26,9 @@ PACKAGE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 
 
 def update_schema_dicts():
-
+    """
+    Reruns the parsing for all fleur schema files present in the version folders
+    """
     for root, dirs, files in os.walk(PACKAGE_DIRECTORY):
         for file in files:
             path = os.path.abspath(root)
