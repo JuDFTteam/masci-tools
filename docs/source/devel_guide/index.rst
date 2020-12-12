@@ -12,8 +12,8 @@ Each input and output file for Fleur has a correspong XML-Schema, where the stru
 of these files are defined.
 
 To be able to parse such files efficiently and without hardcoding their structure we
-extract all necessary infomration about the schemas in :py:func:`~masci_tools.io.parsers.fleur.fleur_schema.inpschema_todict()`:
-and :py:func:`~masci_tools.io.parsers.fleur.fleur_schema.outschema_todict()`:. The resulting python dictionaries are stored
+extract all necessary infomration about the schemas in :py:func:`~masci_tools.io.parsers.fleur.fleur_schema.create_inpschema_dict()`:
+and :py:func:`~masci_tools.io.parsers.fleur.fleur_schema.create_outschema_dict()`:. The resulting python dictionaries are stored
 in ```.py``` files next to the schema and can be loaded via :py:func:`~masci_tools.io.parsers.fleur.fleur_schema.load_inpschema()`:
 or :py:func:`~masci_tools.io.parsers.fleur.fleur_schema.load_outschema()`: by providing the version string.
 
