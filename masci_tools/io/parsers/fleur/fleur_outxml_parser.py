@@ -60,7 +60,7 @@ def outxml_parser(outxmlfile,
     if parser_info_out is None:
         parser_info_out = {'parser_warnings': [], 'fleur_modes': {}}
 
-    parser_version = '0.0.1'
+    parser_version = '0.1.0'
     parser_info_out['parser_info'] = f'Masci-Tools Fleur out.xml Parser v{parser_version}'
 
     outfile_broken = False
