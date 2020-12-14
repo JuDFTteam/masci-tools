@@ -17,7 +17,35 @@ and provides fuctionality for adding custom tasks easily
 from __future__ import absolute_import
 from .default_parse_tasks import TASKS_DEFINITION, __working_out_versions__
 from pprint import pprint
+import copy
+from functools import wraps
 
+def register_migration(cls, base_version, target_version):
+    """
+    Decorator to add migration for task defintion dictionary
+    The function should only take tasks_defintion as an argument
+    """
+    def migration_decorator(func):
+        """
+        Return decorated ParseTasks object with _migrations dict attribute
+        Here all registered migrations are inserted
+        """
+        @wraps(func)
+        def migration(*args):
+            """Decorator for migration function"""
+            return func(*args)
+
+        setattr(cls, func.__name__, migration)
+
+        if not hasattr(cls, '_migrations'):
+            cls._migrations = {}  # pylint: disable=protected-access
+        if not base_version in cls._migrations:
+            cls._migrations[base_version] = {}
+        cls._migrations[base_version][target_version] = getattr(cls, func.__name__)  # pylint: disable=protected-access
+
+        return migration
+
+    return migration_decorator
 
 class ParseTasks(object):
     """
@@ -51,9 +79,14 @@ class ParseTasks(object):
 
         TODO: We need some way of versioning for the default tasks
         """
-        if version not in __working_out_versions__:
-            raise ValueError(f'Unsupported output version: {version}')
         self.tasks = TASKS_DEFINITION.copy()
+
+        #Look if the base version is compatible if not look for a migration
+        if version not in __working_out_versions__:
+            if version in self._migrations['0.33'][version]:
+                self.tasks = self._migrations['0.33'][version](self.tasks)
+            else:
+                raise ValueError(f'Unsupported output version: {version}')
 
     def __getitem__(self, task):
         """
@@ -123,3 +156,22 @@ class ParseTasks(object):
             pprint(self.tasks)
         else:
             pprint(self.tasks.keys())
+
+
+@register_migration(ParseTasks,'0.33', '0.27')
+def migrate_033_to027(definition_dict):
+    """
+    Test migration from 0.33 to 0.27
+    Will not work at the moment only to show the concept
+    """
+    new_dict = copy.deepcopy(definition_dict)
+
+    new_dict['general_out_info'].pop('number_of_atom_types')
+    new_dict['general_inp_info']['number_of_atom_types'] = {
+        'parse_type': 'numberNodes',
+        'path_spec': {
+            'name': 'atomGroup'
+        }
+    }
+
+    return new_dict
