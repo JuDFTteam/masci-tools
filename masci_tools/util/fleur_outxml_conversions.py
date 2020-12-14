@@ -15,7 +15,28 @@ This module contains custom conversion functions for the outxml_parser, which
 cannot be handled by the standard parsing framework
 """
 from datetime import date
+import numpy as np
+from pprint import pprint
 
+def calculate_total_magnetic_moment(out_dict):
+    """
+    Calculate the the total magnetic moment per cell
+
+    :param out_dict: dict with the already parsed information
+    """
+    total_charge = out_dict.get('spin_dependent_charge_total', None)
+
+    if total_charge is None:
+        return out_dict
+
+    total_charge = total_charge[-1]
+    if isinstance(total_charge, list):
+        if 'total_magnetic_moment_cell' not in out_dict:
+            out_dict['total_magnetic_moment_cell'] = []
+
+        out_dict['total_magnetic_moment_cell'].append(np.abs(total_charge[0]-total_charge[1]))
+
+    return out_dict
 
 def calculate_walltime(out_dict, parser_info_out=None):
     """

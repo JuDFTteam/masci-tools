@@ -538,5 +538,24 @@ TASKS_DEFINITION = {
             },
             'flat': False
         }
+    },
+    'charges': {
+        'spin_dependent_charge': {
+            'parse_type': 'allAttribs',
+            'path_spec': {
+                'name': 'spinDependentCharge',
+                'contains': 'allElectronCharges',
+                'not_contains': 'fixed'
+            },
+            'ignore': ['spin','vacuum1','vacuum2']
+        },
+        'total_charge': {
+            'parse_type': 'singleValue',
+            'path_spec': {
+                'name': 'totalCharge',
+                'contains': 'allElectronCharges',
+                'not_contains': 'fixed'
+            },
+        }
     }
 }

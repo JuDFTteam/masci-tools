@@ -22,6 +22,7 @@ from masci_tools.io.parsers.fleur.fleur_schema import load_inpschema, load_outsc
 from masci_tools.io.common_functions import camel_to_snake
 from masci_tools.util.fleur_outxml_conversions import calculate_walltime, convert_ldau_definitions
 from masci_tools.util.fleur_outxml_conversions import convert_relax_info, convert_forces
+from masci_tools.util.fleur_outxml_conversions import calculate_total_magnetic_moment
 from lxml import etree
 
 
@@ -297,7 +298,7 @@ def parse_iteration(iteration_node,
 
     #These are the default things to be parsed for all iterations
     iteration_tasks = [
-        'iteration_number', 'total_energy', 'distances', 'total_energy_contributions', 'fermi_energy', 'bandgap'
+        'iteration_number', 'total_energy', 'distances', 'total_energy_contributions', 'fermi_energy', 'bandgap', 'charges'
     ]
 
     iteration_tasks_forcetheorem = []
@@ -344,6 +345,9 @@ def parse_iteration(iteration_node,
 
     if fleurmode['relax']:  #This is too complex to put it into the standard tasks for now
         out_dict = convert_forces(out_dict)
+
+    if 'charges' in iteration_tasks:
+        out_dict = calculate_total_magnetic_moment(out_dict)
 
     return out_dict
 
