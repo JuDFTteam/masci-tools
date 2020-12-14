@@ -132,10 +132,10 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
         iteration_nodes = iteration_nodes[:-2]
         parser_info_out['last_iteration_parsed'] = n_iters - 2
     elif outfile_broken and (n_iters == 1):
-        iteration_nodes = iteration_nodes[0]
+        iteration_nodes = [iteration_nodes[0]]
         parser_info_out['last_iteration_parsed'] = n_iters
     elif not outfile_broken and (n_iters >= 1):
-        iteration_nodes = iteration_nodes
+        pass
     else:  # there was no iteration found.
         # only the starting charge density could be generated
         parser_info_out['parser_warnings'].append('There was no iteration found in the outfile, either just a '
@@ -150,7 +150,7 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
     elif iteration_to_parse == 'first':
         iteration_nodes = iteration_nodes[0]
     elif iteration_to_parse == 'all':
-        iteration_nodes = iteration_nodes
+        pass
     elif isinstance(iteration_to_parse, int):
         iteration_nodes = iteration_nodes[iteration_to_parse]
     else:
