@@ -81,9 +81,13 @@ def convert_xml_attribute(stringattribute, possible_types, constants, suc_return
     Tries to converts a given string attribute to the types given in possible_types.
     First succeeded conversion will be returned
 
-    :param stringattribute (str): Attribute to convert.
-    :param possible_types (str, list of str): What types it will try to convert to
+    :param stringattribute: str, Attribute to convert.
+    :param possible_types: list of str What types it will try to convert to
     :param constants: dict, of constants defined in fleur input
+    :param suc_return: bool, if True next to the value a bool indicating conversion success is returned
+    :param conversion_warnings: dict with warings about failed conversions
+
+    :return: The converted value of the first succesful conversion
     """
     from masci_tools.util.fleur_calculate_expression import calculate_expression
 
@@ -137,9 +141,13 @@ def convert_xml_text(tagtext, possible_definitions, constants, conversion_warnin
     Tries to converts a given string text based on the definitions (length and type).
     First succeeded conversion will be returned
 
-    :param tagtext (str): text to convert.
-    :param possible_types (list of dicts): What types it will try to convert to
+    :param tagtext: str, text to convert.
+    :param possible_defintions: list of dicts What types it will try to convert to
     :param constants: dict, of constants defined in fleur input
+    :param suc_return: bool, if True next to the value a bool indicating conversion success is returned
+    :param conversion_warnings: dict with warings about failed conversions
+
+    :return: The converted value of the first succesful conversion
     """
 
     if conversion_warnings is None:
@@ -314,6 +322,8 @@ def eval_xpath(node, xpath, parser_info_out=None, list_return=False, namespaces=
     :param xpath: xpath expression (relative, or absolute)
     :param parser_info_out: dict with warnings, info, errors, ...
     :param list_return: if True, the returned quantity is always a list even if only one element is in it
+    :param namespaces: dict, passed to namespaces argument in xpath call
+
     :returns: text, attribute or a node list
     """
     if parser_info_out is None:

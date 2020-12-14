@@ -66,3 +66,18 @@ Definition of default parsing tasks for out.xml
 
 .. automodule:: masci_tools.io.parsers.fleur.default_parse_tasks
    :members:
+
+Utility functions
++++++++++++++++++++++
+
+.. automodule:: masci_tools.util.xml.common_xml_util
+   :members:
+
+.. automodule:: masci_tools.util.schema_dict_util
+   :members:
+
+.. automodule:: masci_tools.util.fleur_calculate_expression
+   :members:
+
+.. automodule:: masci_tools.util.fleur_outxml_conversions
+   :members:
