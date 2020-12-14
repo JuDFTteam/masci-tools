@@ -46,4 +46,3 @@ For the ```out.xml``` file a similar parser is implemented. However, since the o
    input_dict = outxml_parser('/path/to/random/out.xml', parser_info_out=warnings)
 
 For each iteration the parser decides based on the type of fleur calculation, what things should be parsed. For a more detailed explanation refer to the :doc:`../../devel_guide/index`.
-
