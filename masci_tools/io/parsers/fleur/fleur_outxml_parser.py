@@ -161,7 +161,6 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
         iteration_nodes = [iteration_nodes]
 
     for node in iteration_nodes:
-        print(node)
         out_dict = parse_iteration(node,
                                    parse_tasks,
                                    fleurmode,
@@ -195,7 +194,7 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
 
 def parse_general_information(root, parse_tasks, outschema_dict, inpschema_dict, parser_info_out=None):
     """
-    Parses the information from teh out.xml outside scf iterations
+    Parses the information from the out.xml outside scf iterations
 
     Also defined constants and fleur calculation modes are read in
 
