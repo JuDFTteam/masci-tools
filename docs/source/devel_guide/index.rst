@@ -49,6 +49,51 @@ All functions below can either be called in python scripts or from the commandli
 
   In contrast to the input file parser :py:func:`~masci_tools.io.parsers.fleur.inpxml_parser()`, which parses all information available,
   the :py:func:`~masci_tools.io.parsers.fleur.outxml_parser()` has to be more flexible. The out file has much more information which might
-  not be always useful for users. Therefore the selection of hwta is parsed has to be much more specific.
+  not be always useful for users. Therefore the selection of what is parsed has to be much more specific.
   
-  The hardcoded known parsing tasks are stored in :py:mod:`~masci_tools.io.parsers.fleur.default_parse_tasks`
+  This selection is expressed in the context of tasks. In general this corresponds to things like:
+    - Total energy
+    - Charge density distances
+    - Magnetic moments
+    - and so on ...
+
+  These are expressed in a definition in form of a dictionary. Below a simple example (Total energy) is shown, which parses the ```value``` and ```units``` attribute of the ```totalEnergy``` tag. The hardcoded known parsing tasks can be found in :py:mod:`~masci_tools.io.parsers.fleur.default_parse_tasks`
+
+  .. code-block:: python
+
+    total_energy_definition = {
+        'energy_hartree': {
+            'parse_type': 'singleValue',
+            'path_spec': {
+                'name': 'totalEnergy'
+            }
+        },
+    }
+
+  The definition of a task can consist of multiple keys (in this case only ```energy_hartree```), which by default correspond to the key in the resulting output dictionary. Each key has to contain the ```parse_type``` and ```path_spec``` key. The ```parse_type``` defined the method used to extract the information.
+
+  The following are possible:
+    :attrib: Will parse the value of the given attribute
+    :text: Will parse the text of the given tag
+    :numberNodes: Will return the number of nodes for the given tag
+    :exists: Will return, whether the given tag exists
+    :allAttribs: Will parse all known attributes at the given tag
+                 into a dictionary
+    :parentAttribs: Will parse all known attributes at the given tag
+                    into a dictionary, but for the parent of the tag
+    :singleValue: Special case of allAttribs to parse value and units
+                  attribute for the given tag
+
+  The ```path_spec``` key specifies how the key can be uniquely identified.
+
+  It can contain the following specifications:
+    :name: Name of the wanted tag/attribute (CASE SENSITIVE!!)
+    :contains: A phrase, which has to occur in the path
+    :no_contains: A phrase, which has to not occur in the path
+    :exclude: Only valid for attributes (these are sorted into different categories
+              ```unique```, ```unique_path``` and ```other```). Can exclude one or more
+              of these categories
+
+  All except the ```name``` key are optional and should be constructed so that there is only one
+  possible choice. Otherwise an exception is raised. There are other keywords, which can be entered
+  here. These control how the parsed data is entered into the output dictionary. For a definition of these keywords, please refer to :py:mod:`~masci_tools.io.parsers.fleur.default_parse_tasks`.
