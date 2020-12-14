@@ -216,6 +216,88 @@ TASKS_DEFINITION = {
             'flat': False,
         }
     },
+    'bulk_relax_info': {
+        'lat_row1': {
+            'parse_type': 'text',
+            'path_spec': {
+                'name': 'row-1',
+                'contains': 'bulkLattice/bravais'
+            }},
+        'lat_row2': {
+            'parse_type': 'text',
+            'path_spec': {
+                'name': 'row-2',
+                'contains': 'bulkLattice/bravais'
+            }},
+        'lat_row3': {
+            'parse_type': 'text',
+            'path_spec': {
+                'name': 'row-3',
+                'contains': 'bulkLattice/bravais'
+            }},
+        'atom_positions': {
+            'parse_type': 'text',
+            'path_spec': {
+                'name': 'relPos'
+            }
+        },
+        'position_species': {
+            'parse_type': 'parentAttribs',
+            'path_spec': {
+                'name': 'relPos'
+            },
+            'flat': False,
+            'only': 'species'
+        },
+        'element_species': {
+            'parse_type': 'allAttribs',
+            'path_spec': {
+                'name': 'species'
+            },
+            'flat': False,
+        },
+    },
+    'film_relax_info': {
+        'lat_row1': {
+            'parse_type': 'text',
+            'path_spec': {
+                'name': 'row-1',
+                'contains': 'filmLattice/bravais'
+            }},
+        'lat_row2': {
+            'parse_type': 'text',
+            'path_spec': {
+                'name': 'row-2',
+                'contains': 'filmLattice/bravais'
+            }},
+        'lat_row3': {
+            'parse_type': 'text',
+            'path_spec': {
+                'name': 'row-3',
+                'contains': 'filmLattice/bravais'
+            }},
+        'atom_positions': {
+            'parse_type': 'text',
+            'path_spec': {
+                'name': 'filmPos'
+            }
+        },
+        'position_species': {
+            'parse_type': 'parentAttribs',
+            'path_spec': {
+                'name': 'filmPos'
+            },
+            'flat': False,
+            'only': 'species'
+        },
+        'element_species': {
+            'parse_type': 'allAttribs',
+            'path_spec': {
+                'name': 'species'
+            },
+            'flat': False,
+        },
+    },
     'iteration_number': {
         'number_of_iterations_total': {
             'parse_type': 'attrib',
@@ -233,7 +315,40 @@ TASKS_DEFINITION = {
             }
         },
     },
-    'distances': {},
+    'distances': {
+        'charge_density': {
+            'parse_type': 'attrib',
+            'path_spec': {
+                'name': 'distance',
+                'contains': 'chargeDensity'
+            }
+        },
+        'density_convergence_units': {
+            'parse_type': 'attrib',
+            'path_spec': {
+                'name': 'units',
+                'contains': 'densityConvergence',
+                'not_contains': 'Density'
+            },
+            'overwrite_last': True,
+        }
+    },
+    'magnetic_distances': {
+        'overall_charge_density': {
+            'parse_type': 'attrib',
+            'path_spec': {
+                'name': 'distance',
+                'contains': 'overallChargeDensity'
+            }
+        },
+        'spin_density': {
+            'parse_type': 'attrib',
+            'path_spec': {
+                'name': 'distance',
+                'contains': 'spinDensity'
+            }
+        }
+    },
     'total_energy_contributions': {
         'sum_of_eigenvalues': {
             'parse_type': 'singleValue',
@@ -398,6 +513,24 @@ TASKS_DEFINITION = {
                 'name': 'units',
                 'contains': 'Forcetheorem_JIJ'
             }
+        }
+    },
+    'forces': {
+        'force_units': {
+            'parse_type': 'attrib',
+            'path_spec': {
+                'name': 'units',
+                'contains': 'totalForcesOnRepresentativeAtoms',
+                'not_contains': 'forceTotal'
+            },
+            'overwrite_last': True
+        },
+        'parsed_forces': {
+            'parse_type': 'allAttribs',
+            'path_spec': {
+                'name': 'forceTotal'
+            },
+            'flat': False
         }
     }
 }

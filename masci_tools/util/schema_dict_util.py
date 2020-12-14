@@ -429,7 +429,8 @@ def evaluate_parent_tag(node,
                         not_contains=None,
                         parser_info_out=None,
                         abspath=None,
-                        no_raise=None):
+                        no_raise=None,
+                        only=None):
     """
     Evaluates all attributes of the parent tag based on the given name
     and additional further specifications with the available type information
@@ -468,6 +469,12 @@ def evaluate_parent_tag(node,
         parser_info_out['parser_warnings'].append(f'Failed to evaluate attributes from tag {name}: '
                                                   'No attributes to parse either the tag does not '
                                                   'exist or it has no attributes')
+
+    if only is not None:
+        if only not in attribs:
+            raise ValueError(f"Invalid specification: Attribute only '{only}' not in available attribs"
+                             f'Valid attribs: {attribs}')
+        attribs = [only]
 
     if abspath is not None:
         tag_xpath = f'{abspath}{tag_xpath}'

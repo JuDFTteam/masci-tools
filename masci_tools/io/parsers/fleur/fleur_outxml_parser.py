@@ -206,9 +206,33 @@ def parse_general_information(root, parse_tasks, outschema_dict, inpschema_dict,
                               inpschema_dict,
                               constants,
                               parser_info_out,
-                              root_tag=root_tag,
-                              use_lists=True)
+                              root_tag=root_tag)
         out_dict = convert_ldau_definitions(out_dict)
+
+    if fleurmode['relax']:
+
+        out_dict['film'] = fleurmode['film']
+
+        if fleurmode['film']:
+            out_dict = parse_task(parse_tasks['film_relax_info'],
+                                  root,
+                                  out_dict,
+                                  inpschema_dict,
+                                  constants,
+                                  parser_info_out,
+                                  root_tag=root_tag,
+                                  use_lists=False)
+        else:
+            out_dict = parse_task(parse_tasks['bulk_relax_info'],
+                                  root,
+                                  out_dict,
+                                  inpschema_dict,
+                                  constants,
+                                  parser_info_out,
+                                  root_tag=root_tag,
+                                  use_lists=False)
+
+        out_dict = convert_relax_info(out_dict)
 
     return out_dict, fleurmode, constants
 
@@ -239,7 +263,7 @@ def parse_iteration(iteration,
     if fleurmode['jspin'] == 2:
         iteration_tasks.append('magnetic_moments')
 
-    if fleurmode['soc']:
+    if fleurmode['soc'] and fleurmode['jspin'] == 2:
         iteration_tasks.append('orbital_magnetic_moments')
 
     if fleurmode['ldau']:
@@ -249,8 +273,14 @@ def parse_iteration(iteration,
     if minimal_mode:
         iteration_tasks = ['iteration_number', 'total_energy', 'distances']
 
-    #TODO: Check if this is a Forcetheorem iteration
+    if fleurmode['jspin'] == 2:
+        iteration_tasks.append('magnetic_distances')
 
+    if fleurmode['relax']:
+        iteration_tasks.append('forces')
+
+    #If the iteration is a forcetheorem calculation
+    #Replace all tasks with the given tasks for the calculation
     forcetheorem_tags = ['Forcetheorem_DMI', 'Forcetheorem_SSDISP', 'Forcetheorem_JIJ', 'Forcetheorem_MAE']
     for tag in forcetheorem_tags:
         exists = schema_util.tag_exists(iteration, outschema_dict, tag)
@@ -270,7 +300,7 @@ def parse_iteration(iteration,
                 raise
 
     if fleurmode['relax']:  #This is too complex to put it into the standard tasks for now
-        pass
+        out_dict = convert_forces(out_dict)
 
     return out_dict
 
@@ -340,6 +370,9 @@ def parse_task(tasks_definition,
 
         if root_tag is not None:
             args['abspath'] = root_tag
+
+        if 'only' in spec and spec['parse_type'] == 'parentAttribs':
+            args['only'] = spec['only']
 
         parsed_dict = out_dict
         if 'subdict' in spec:
@@ -494,5 +527,66 @@ def convert_ldau_definitions(out_dict):
             ldau_dict[orbital_key]['double_counting'] = 'FLL'
 
         out_dict['ldau_info'][species_key] = ldau_dict
+
+    return out_dict
+
+def convert_relax_info(out_dict):
+
+    v_1 = out_dict.pop('lat_row1')
+    v_2 = out_dict.pop('lat_row2')
+    v_3 = out_dict.pop('lat_row3')
+
+    out_dict['relax_brav_vectors'] = [v_1, v_2, v_3]
+
+    out_dict['relax_atom_positions'] = out_dict.pop('atom_positions')
+    species = out_dict.pop('position_species')
+    species = species['species']
+    species_info = out_dict.pop('element_species')
+    species_info = dict(zip(species_info['name'],species_info['element']))
+
+    out_dict['relax_atomtype_info'] = []
+    for specie in species:
+        out_dict['relax_atomtype_info'].append([specie, species_info[specie]])
+
+    return out_dict
+
+def convert_forces(out_dict):
+
+    parsed_forces = out_dict.pop('parsed_forces')
+
+    if 'force_largest' not in out_dict:
+        out_dict[f'force_largest'] = []
+
+    largest_force = 0.0
+    for index, atomType in enumerate(parsed_forces['atom_type']):
+
+        if f'force_x_type{atomType}' not in out_dict:
+            out_dict[f'force_x_type{atomType}'] = []
+            out_dict[f'force_y_type{atomType}'] = []
+            out_dict[f'force_z_type{atomType}'] = []
+            out_dict[f'abspos_x_type{atomType}'] = []
+            out_dict[f'abspos_y_type{atomType}'] = []
+            out_dict[f'abspos_z_type{atomType}'] = []
+
+        force_x = parsed_forces['f_x'][index]
+        force_y = parsed_forces['f_y'][index]
+        force_z = parsed_forces['f_z'][index]
+
+        if abs(force_x) > largest_force:
+            largest_force = abs(force_x)
+        if abs(force_y) > largest_force:
+            largest_force = abs(force_y)
+        if abs(force_z) > largest_force:
+            largest_force = abs(force_z)
+
+        out_dict[f'force_x_type{atomType}'].append(force_x)
+        out_dict[f'force_y_type{atomType}'].append(force_y)
+        out_dict[f'force_z_type{atomType}'].append(force_z)
+
+        out_dict[f'abspos_x_type{atomType}'].append(parsed_forces['x'][index])
+        out_dict[f'abspos_y_type{atomType}'].append(parsed_forces['y'][index])
+        out_dict[f'abspos_z_type{atomType}'].append(parsed_forces['z'][index])
+
+    out_dict['force_largest'].append(largest_force)
 
     return out_dict
