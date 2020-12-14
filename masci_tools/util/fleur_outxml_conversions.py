@@ -19,7 +19,10 @@ from datetime import date
 
 def calculate_walltime(out_dict, parser_info_out=None):
     """
-    Convert the times
+    Calculate the walltime from start and end time
+
+    :param out_dict: dict with the already parsed information
+    :param parser_info_out: dict, with warnings, info, errors, ...
     """
     if parser_info_out is None:
         parser_info_out = {'parser_warnings': []}
@@ -72,7 +75,14 @@ def calculate_walltime(out_dict, parser_info_out=None):
 
 
 def convert_ldau_definitions(out_dict):
+    """
+    Convert the parsed information from LDA+U into a more readable dict
 
+    ldau_info has keys for each species with LDA+U ({species_name}/{atom_number})
+    and this in turn contains a dict with the LDA+U definition for the given orbital (spdf)
+
+    :param out_dict: dict with the already parsed information
+    """
     parsed_ldau = out_dict['ldau_info'].pop('parsed_ldau')
     ldau_species = out_dict['ldau_info'].pop('ldau_species')
 
@@ -102,7 +112,11 @@ def convert_ldau_definitions(out_dict):
 
 
 def convert_relax_info(out_dict):
+    """
+    Convert the general relaxation information
 
+    :param out_dict: dict with the already parsed information
+    """
     v_1 = out_dict.pop('lat_row1')
     v_2 = out_dict.pop('lat_row2')
     v_3 = out_dict.pop('lat_row3')
@@ -123,7 +137,11 @@ def convert_relax_info(out_dict):
 
 
 def convert_forces(out_dict):
+    """
+    Convert the parsed forces from a iteration
 
+    :param out_dict: dict with the already parsed information
+    """
     parsed_forces = out_dict.pop('parsed_forces')
 
     if 'force_largest' not in out_dict:
