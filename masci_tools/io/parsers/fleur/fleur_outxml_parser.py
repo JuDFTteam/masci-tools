@@ -38,6 +38,7 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
     Kwargs:
         :param strict: bool, if True an error will be raised if an unknown task is encountered
                        otherwise a warning is written to parser_info_out
+        :param ignore_validation: bool, if True schema validation errors are only logged
         :param minimal_mode: bool, if True only total Energy, iteration number and distances are parsed
         :param additional_tasks: dict to define custom parsing tasks. For detailed explanation
                                  See :py:mod:`~masci_tools.io.parsers.fleur.default_parse_tasks`.
@@ -106,7 +107,10 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
             tree_x = etree.fromstring(outxmlfile, parser_on_fly)
         except etree.XMLSyntaxError as msg:
             message = msg
-        raise ValueError(f'Output file does not validate against the schema: {message}')
+        if kwargs.get('ignore_validation', False):
+            parser_info_out['parser_warnings'].append(f'Output file does not validate against the schema: {message}')
+        else
+            raise ValueError(f'Output file does not validate against the schema: {message}')
 
     parse_tasks = ParseTasks(version)
     additional_tasks = kwargs.pop('additional_tasks', {})
