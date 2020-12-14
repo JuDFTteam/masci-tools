@@ -95,6 +95,18 @@ TASKS_DEFINITION = {
             'path_spec': {
                 'name': 'filmPos'
             }
+        },
+        'dos': {
+            'parse_type': 'attrib',
+            'path_spec': {
+                'name': 'dos'
+            }
+        },
+        'band': {
+            'parse_type': 'attrib',
+            'path_spec': {
+                'name': 'band'
+            }
         }
     },
     'general_out_info': {
@@ -547,7 +559,7 @@ TASKS_DEFINITION = {
                 'contains': 'allElectronCharges',
                 'not_contains': 'fixed'
             },
-            'ignore': ['spin','vacuum1','vacuum2']
+            'ignore': ['spin', 'vacuum1', 'vacuum2']
         },
         'total_charge': {
             'parse_type': 'singleValue',

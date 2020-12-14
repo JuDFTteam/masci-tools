@@ -54,7 +54,7 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
     """
 
     if parser_info_out is None:
-        parser_info_out = {'parser_warnings': [], 'fleur_modes': {}}
+        parser_info_out = {'parser_warnings': [], 'fleur_modes': {}, 'debug_info': {}}
 
     parser_version = '0.1.0'
     parser_info_out['parser_info'] = f'Masci-Tools Fleur out.xml Parser v{parser_version}'
@@ -121,27 +121,48 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
                                                                inpschema_dict,
                                                                parser_info_out=parser_info_out)
 
+    # get all iterations in out.xml file
+    iteration_xpath = schema_util.get_tag_xpath(outschema_dict, 'iteration')
+    iteration_nodes = eval_xpath(root, iteration_xpath, parser_info_out=parser_info_out, list_return=True)
+    n_iters = len(iteration_nodes)
+
+    # parse only last stable interation
+    # (if modes (dos and co) maybe parse anyway if broken?)
+    if outfile_broken and (n_iters >= 2):
+        iteration_nodes = iteration_nodes[:-2]
+        parser_info_out['last_iteration_parsed'] = n_iters - 2
+    elif outfile_broken and (n_iters == 1):
+        iteration_nodes = iteration_nodes[0]
+        parser_info_out['last_iteration_parsed'] = n_iters
+    elif not outfile_broken and (n_iters >= 1):
+        iteration_nodes = iteration_nodes
+    else:  # there was no iteration found.
+        # only the starting charge density could be generated
+        parser_info_out['parser_warnings'].append('There was no iteration found in the outfile, either just a '
+                                                  'starting density was generated or something went wrong.')
+        iteration_nodes = None
+
     if iteration_to_parse is None:
         iteration_to_parse = 'last'  #This is the default from the aiida_fleur parser
 
-    iteration_base_xpath = schema_util.get_tag_xpath(outschema_dict, 'iteration')
-
     if iteration_to_parse == 'last':
-        iteration_xpath = f'{iteration_base_xpath}[last()]'
+        iteration_nodes = iteration_nodes[-1]
     elif iteration_to_parse == 'first':
-        iteration_xpath = f'{iteration_base_xpath}[1]'
+        iteration_nodes = iteration_nodes[0]
     elif iteration_to_parse == 'all':
-        iteration_xpath = iteration_base_xpath
+        iteration_nodes = iteration_nodes
     elif isinstance(iteration_to_parse, int):
-        if iteration_to_parse < 0:
-            raise ValueError('Invalid value for iteration_to_parse: Has to be positive or 0')
-        iteration_xpath = f'{iteration_base_xpath}[{iteration_to_parse}]'
+        iteration_nodes = iteration_nodes[iteration_to_parse]
     else:
         raise ValueError(f"Invalid value for iteration_to_parse: Got '{iteration_to_parse}' "
                          "Valid values are: 'first', 'last', 'all', or int")
 
-    for iteration in eval_xpath(root, iteration_xpath, parser_info_out=parser_info_out, list_return=True):
-        out_dict = parse_iteration(iteration,
+    if not isinstance(iteration_nodes, list):
+        iteration_nodes = [iteration_nodes]
+
+    for node in iteration_nodes:
+        print(node)
+        out_dict = parse_iteration(node,
                                    parse_tasks,
                                    fleurmode,
                                    outschema_dict,
@@ -190,7 +211,16 @@ def parse_general_information(root, parse_tasks, outschema_dict, inpschema_dict,
     root_tag = '/fleurOutput'
     constants = schema_util.read_constants(root, inpschema_dict, abspath=root_tag)
 
-    fleurmode = {'jspin': 1, 'relax': False, 'ldau': False, 'soc': False, 'noco': False, 'film': False}
+    fleurmode = {
+        'jspin': 1,
+        'relax': False,
+        'ldau': False,
+        'soc': False,
+        'noco': False,
+        'film': False,
+        'dos': False,
+        'band': False
+    }
     fleurmode = parse_task(parse_tasks['fleur_modes'],
                            root,
                            fleurmode,
@@ -291,6 +321,7 @@ def parse_iteration(iteration_node,
 
     strict = kwargs.get('strict', False)
     minimal_mode = kwargs.get('minimal_mode', False)
+    debug = kwargs.get('debug', False)
 
     #These are the default things to be parsed for all iterations
     iteration_tasks = [
@@ -320,6 +351,9 @@ def parse_iteration(iteration_node,
     if fleurmode['jspin'] == 2:
         iteration_tasks.append('magnetic_distances')
 
+    if fleurmode['dos'] or fleurmode['band']:
+        iteration_tasks = ['iteration_number', 'fermi_energy', 'bandgap']
+
     #If the iteration is a forcetheorem calculation
     #Replace all tasks with the given tasks for the calculation
     forcetheorem_tags = ['Forcetheorem_DMI', 'Forcetheorem_SSDISP', 'Forcetheorem_JIJ', 'Forcetheorem_MAE']
@@ -331,6 +365,9 @@ def parse_iteration(iteration_node,
             else:
                 iteration_tasks = [tag.lower()]
             break
+
+    if debug:
+        parser_info_out['debug_info']['iteration_tasks'] = iteration_tasks
 
     for task in iteration_tasks:
         try:
