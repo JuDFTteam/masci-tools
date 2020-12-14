@@ -70,7 +70,7 @@ All functions below can either be called in python scripts or from the commandli
         },
     }
 
-  The definition of a task can consist of multiple keys (in this case only ```energy_hartree```), which by default correspond to the key in the resulting output dictionary. Each key has to contain the ```parse_type``` and ```path_spec``` key. The ```parse_type``` defined the method used to extract the information.
+  The definition of a task can consist of multiple keys (in this case only ```energy_hartree```), which by default correspond to the keys in the resulting output dictionary. Each key has to contain the ```parse_type``` and ```path_spec``` key. The ```parse_type``` defines the method used to extract the information.
 
   The following are possible:
     :attrib: Will parse the value of the given attribute
@@ -90,8 +90,8 @@ All functions below can either be called in python scripts or from the commandli
     :name: Name of the wanted tag/attribute (CASE SENSITIVE!!)
     :contains: A phrase, which has to occur in the path
     :no_contains: A phrase, which has to not occur in the path
-    :exclude: Only valid for attributes (these are sorted into different categories
-              ```unique```, ```unique_path``` and ```other```). Can exclude one or more
+    :exclude: list of str. Only valid for attributes (these are sorted into different categories
+              ```unique```, ```unique_path``` and ```other```). This attribute can exclude one or more
               of these categories
 
   All except the ```name``` key are optional and should be constructed so that there is only one
