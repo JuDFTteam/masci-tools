@@ -530,6 +530,7 @@ def convert_ldau_definitions(out_dict):
 
     return out_dict
 
+
 def convert_relax_info(out_dict):
 
     v_1 = out_dict.pop('lat_row1')
@@ -542,7 +543,7 @@ def convert_relax_info(out_dict):
     species = out_dict.pop('position_species')
     species = species['species']
     species_info = out_dict.pop('element_species')
-    species_info = dict(zip(species_info['name'],species_info['element']))
+    species_info = dict(zip(species_info['name'], species_info['element']))
 
     out_dict['relax_atomtype_info'] = []
     for specie in species:
@@ -550,12 +551,13 @@ def convert_relax_info(out_dict):
 
     return out_dict
 
+
 def convert_forces(out_dict):
 
     parsed_forces = out_dict.pop('parsed_forces')
 
     if 'force_largest' not in out_dict:
-        out_dict[f'force_largest'] = []
+        out_dict['force_largest'] = []
 
     largest_force = 0.0
     for index, atomType in enumerate(parsed_forces['atom_type']):

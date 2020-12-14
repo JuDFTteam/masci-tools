@@ -52,4 +52,3 @@ All functions below can either be called in python scripts or from the commandli
   not be always useful for users. Therefore the selection of hwta is parsed has to be much more specific.
   
   The hardcoded known parsing tasks are stored in :py:mod:`~masci_tools.io.parsers.fleur.default_parse_tasks`
-
