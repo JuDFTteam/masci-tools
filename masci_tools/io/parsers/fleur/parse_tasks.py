@@ -83,7 +83,7 @@ class ParseTasks(object):
 
         #Look if the base version is compatible if not look for a migration
         if version not in __working_out_versions__:
-            if version in self._migrations['0.33'][version]:
+            if version in self._migrations['0.33']:
                 self.tasks = self._migrations['0.33'][version](self.tasks)
             else:
                 raise ValueError(f'Unsupported output version: {version}')
