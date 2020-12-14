@@ -33,17 +33,17 @@ For the ```out.xml``` file a similar parser is implemented. However, since the o
    from masci_tools.io.parsers.fleur import outxml_parser
 
    #The default is that only the last stable iteration is parsed
-   output_dict = inpxml_parser('/path/to/random/out.xml')
+   output_dict = outxml_parser('/path/to/random/out.xml')
 
    #Here all iterations are parsed
-   output_dict = inpxml_parser('/path/to/random/out.xml', iteration_to_parse='all')
+   output_dict = outxml_parser('/path/to/random/out.xml', iteration_to_parse='all')
 
    #Or the 5.
-   output_dict = inpxml_parser('/path/to/random/out.xml', iteration_to_parse=5)
+   output_dict = outxml_parser('/path/to/random/out.xml', iteration_to_parse=5)
 
    #The call below will output warnings about failed conversions in the warnings dictionary
    warnings = {'parser_warnings': []}
-   input_dict = inpxml_parser('/path/to/random/out.xml', parser_info_out=warnings)
+   input_dict = outxml_parser('/path/to/random/out.xml', parser_info_out=warnings)
 
 For each iteration the parser decides based on the type of fleur calculation, what things should be parsed. For a more detailed explanation refer to the :doc:`../../devel_guide/index`.
 
