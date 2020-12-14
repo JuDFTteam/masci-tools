@@ -26,11 +26,7 @@ from masci_tools.util.fleur_outxml_conversions import calculate_total_magnetic_m
 from lxml import etree
 
 
-def outxml_parser(outxmlfile,
-                  version=None,
-                  parser_info_out=None,
-                  iteration_to_parse=None,
-                  **kwargs):
+def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_parse=None, **kwargs):
     """
     Parses the out.xml file to a dictionary based on the version and the given tasks
 
@@ -298,7 +294,8 @@ def parse_iteration(iteration_node,
 
     #These are the default things to be parsed for all iterations
     iteration_tasks = [
-        'iteration_number', 'total_energy', 'distances', 'total_energy_contributions', 'fermi_energy', 'bandgap', 'charges'
+        'iteration_number', 'total_energy', 'distances', 'total_energy_contributions', 'fermi_energy', 'bandgap',
+        'charges'
     ]
 
     iteration_tasks_forcetheorem = []
@@ -337,7 +334,8 @@ def parse_iteration(iteration_node,
 
     for task in iteration_tasks:
         try:
-            out_dict = parse_task(parse_tasks[task], iteration_node, out_dict, outschema_dict, constants, parser_info_out)
+            out_dict = parse_task(parse_tasks[task], iteration_node, out_dict, outschema_dict, constants,
+                                  parser_info_out)
         except KeyError:
             parser_info_out['parser_warnings'].append(f"Unknown task: '{task}'. Skipping this one")
             if strict:

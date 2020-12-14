@@ -18,6 +18,7 @@ from datetime import date
 import numpy as np
 from pprint import pprint
 
+
 def calculate_total_magnetic_moment(out_dict):
     """
     Calculate the the total magnetic moment per cell
@@ -34,9 +35,10 @@ def calculate_total_magnetic_moment(out_dict):
         if 'total_magnetic_moment_cell' not in out_dict:
             out_dict['total_magnetic_moment_cell'] = []
 
-        out_dict['total_magnetic_moment_cell'].append(np.abs(total_charge[0]-total_charge[1]))
+        out_dict['total_magnetic_moment_cell'].append(np.abs(total_charge[0] - total_charge[1]))
 
     return out_dict
+
 
 def calculate_walltime(out_dict, parser_info_out=None):
     """
