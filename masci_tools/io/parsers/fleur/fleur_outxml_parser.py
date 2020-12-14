@@ -371,9 +371,6 @@ def parse_task(tasks_definition,
 
         parsed_value = action(node, schema_dict, parser_info_out=parser_info_out, **args)
 
-        if 'process_function' in spec:
-            parsed_value = spec['process_function'](parsed_value, parser_info_out=parser_info_out)
-
         if isinstance(parsed_value, dict):
 
             if spec['parse_type'] == 'singleValue':
@@ -389,10 +386,8 @@ def parse_task(tasks_definition,
 
             if flat:
                 for key, val in parsed_value.items():
-                    if key in ignore:
-                        continue
 
-                    if val is None:
+                    if key in ignore or val is None:
                         continue
 
                     if key == base_value:
@@ -403,19 +398,15 @@ def parse_task(tasks_definition,
                     if current_key not in parsed_dict and use_lists:
                         parsed_dict[current_key] = []
 
-                    if key in no_list:
+                    if key in no_list or not use_lists:
                         parsed_dict[current_key] = val
                     else:
-                        if use_lists:
-                            parsed_dict[current_key].append(val)
-                        else:
-                            parsed_dict[current_key] = val
+                        parsed_dict[current_key].append(val)
+
             else:
                 for key, val in list(parsed_value.items()):
-                    if key in ignore:
-                        parsed_value.pop(key)
-                    else:
-                        parsed_value.pop(key)
+                    parsed_value.pop(key)
+                    if not key in ignore:
                         parsed_value[camel_to_snake(key)] = val
 
                 parsed_dict[task_key] = parsed_value
