@@ -109,7 +109,7 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
             message = msg
         if kwargs.get('ignore_validation', False):
             parser_info_out['parser_warnings'].append(f'Output file does not validate against the schema: {message}')
-        else
+        else:
             raise ValueError(f'Output file does not validate against the schema: {message}')
 
     parse_tasks = ParseTasks(version)
