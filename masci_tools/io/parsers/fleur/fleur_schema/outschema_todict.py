@@ -26,13 +26,15 @@ import os
 def create_outschema_dict(path, save_to_file=True):
     """
     Creates dictionary with information about the FleurOutputSchema.xsd and writes
-    it to the same folder in a file called outschema_dict.py. The FleurInputSchema.xsd
+    it to the same folder in a file called ```outschema_dict.py```. The FleurOutputSchema.xsd
     corresponding to the same version is expected to be in the same folder.
 
     The functions, whose results are added to the schema_dict and the corresponding keys
     are defined in schema_actions
 
     :param path: str path to the folder containing the FleurOutputSchema.xsd file
+    :param save_to_file: bool, if True the schema_dict is saved to a ```outschema_dict.py```
+                         file in the folder with the corresponding version number
     """
 
     #Add new functionality to this dictionary here
@@ -124,7 +126,14 @@ def create_outschema_dict(path, save_to_file=True):
 
 def load_outschema(version, schema_return=False, create=True):
     """
-    load the FleurInputSchema dict for the specified version
+    load the FleurOutputSchema dict for the specified version
+
+    :param version: str with the desired version, e.g. '0.33'
+    :param schema_return: bool, if True also a etree XMLSchema object is returned
+    :param create: bool, if True and the schema_dict does not exist it is created
+                   via :py:func:`~masci_tools.io.parsers.fleur.fleur_schema.create_outschema_dict()`
+
+    :return: python dictionary with the schema information
     """
 
     PACKAGE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))

@@ -52,6 +52,8 @@ def outxml_parser(outxmlfile,
                        The inner tasks will be written into the dict. If inner keys collide
                        they are overwritten
 
+    :return: python dictionary with the information parsed from the out.xml
+
     """
 
     if parser_info_out is None:

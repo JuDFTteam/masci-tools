@@ -31,9 +31,13 @@ PACKAGE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 
 def add_fleur_schema(path, overwrite=False):
     """
-   Adds the FleurInput/OutputSchema from the specified path (folder containing the Schemas)
-   to the folder with the correct version number and creates the schema_dicts
-   """
+    Adds the FleurInput/OutputSchema from the specified path (folder containing the Schemas)
+    to the folder with the correct version number and creates the schema_dicts
+
+    :param path: path to the folder containing the schema files
+    :param overwrite: bool, if True and the schema with the same version exists it will be
+                      overwritten. Otherwise an error is raised
+    """
 
     schema_path = os.path.join(path, 'FleurInputSchema.xsd')
     if os.path.isfile(schema_path):
