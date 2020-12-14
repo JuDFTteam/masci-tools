@@ -20,17 +20,15 @@ from masci_tools.util.xml.common_xml_util import eval_xpath, get_xml_attribute, 
 import masci_tools.util.schema_dict_util as schema_util
 from masci_tools.io.parsers.fleur.fleur_schema import load_inpschema, load_outschema
 from masci_tools.io.common_functions import camel_to_snake
-from datetime import date
+from masci_tools.util.fleur_outxml_conversions import calculate_walltime, convert_ldau_definitions
+from masci_tools.util.fleur_outxml_conversions import convert_relax_info, convert_forces
 from lxml import etree
 
 
 def outxml_parser(outxmlfile,
                   version=None,
-                  mode=None,
                   parser_info_out=None,
                   iteration_to_parse=None,
-                  overwrite_tasks=None,
-                  additional_tasks=None,
                   **kwargs):
     """
     Parses the out.xml file to a dictionary based on the version and the given tasks
@@ -38,11 +36,6 @@ def outxml_parser(outxmlfile,
 
     if parser_info_out is None:
         parser_info_out = {'parser_warnings': [], 'fleur_modes': {}}
-
-    minimal_mode = False
-    if mode is not None:
-        if mode == 'minimal':
-            minimal_mode = True
 
     parser_version = '0.0.1'
     parser_info_out['parser_info'] = f'Masci-Tools Fleur out.xml Parser v{parser_version}'
@@ -99,10 +92,9 @@ def outxml_parser(outxmlfile,
         raise ValueError(f'Output file does not validate against the schema: {message}')
 
     parse_tasks = ParseTasks(version)
-
-    if additional_tasks is not None:
-        for task_name, task_definition in additional_tasks.items():
-            parse_tasks.add_task(task_name, task_definition, **kwargs)
+    additional_tasks = kwargs.pop('additional_tasks', {})
+    for task_name, task_definition in additional_tasks.items():
+        parse_tasks.add_task(task_name, task_definition, **kwargs)
 
     out_dict, fleurmode, constants = parse_general_information(root,
                                                                parse_tasks,
@@ -137,7 +129,6 @@ def outxml_parser(outxmlfile,
                                    out_dict,
                                    constants,
                                    parser_info_out=parser_info_out,
-                                   minimal_mode=minimal_mode,
                                    **kwargs)
 
     #Convert energy to eV
@@ -243,12 +234,12 @@ def parse_iteration(iteration,
                     outschema_dict,
                     out_dict,
                     constants,
-                    overwrite_tasks=None,
                     parser_info_out=None,
-                    minimal_mode=False,
                     **kwargs):
 
     strict = kwargs.get('strict', False)
+    minimal_mode = kwargs.get('minimal_mode', False)
+    overwrite_tasks = kwargs.get('overwrite_tasks', None)
     #The task definition dictionary maps all the keys in the out_dict to the right function call
     #to obtain them from the out.xml
 
@@ -270,14 +261,14 @@ def parse_iteration(iteration,
         iteration_tasks.append('ldau_energy_correction')
         iteration_tasks.append('nmmp_distances')
 
+    if fleurmode['relax']:
+        iteration_tasks.append('forces')
+
     if minimal_mode:
         iteration_tasks = ['iteration_number', 'total_energy', 'distances']
 
     if fleurmode['jspin'] == 2:
         iteration_tasks.append('magnetic_distances')
-
-    if fleurmode['relax']:
-        iteration_tasks.append('forces')
 
     #If the iteration is a forcetheorem calculation
     #Replace all tasks with the given tasks for the calculation
@@ -443,152 +434,5 @@ def parse_task(tasks_definition,
             out_dict[spec['subdict']] = parsed_dict
         else:
             out_dict = parsed_dict
-
-    return out_dict
-
-
-def calculate_walltime(out_dict, parser_info_out=None):
-    """
-    Convert the times
-    """
-    if parser_info_out is None:
-        parser_info_out = {'parser_warnings': []}
-
-    if out_dict['start_date']['time'] is not None:
-        starttimes = out_dict['start_date']['time'].split(':')
-    else:
-        starttimes = [0, 0, 0]
-        msg = 'Starttime was unparsed, inp.xml prob not complete, do not believe the walltime!'
-        parser_info_out['parser_warnings'].append(msg)
-
-    if out_dict['end_date']['time'] is not None:
-        endtimes = out_dict['end_date']['time'].split(':')
-    else:
-        endtimes = [0, 0, 0]
-        msg = 'Endtime was unparsed, inp.xml prob not complete, do not believe the walltime!'
-        parser_info_out['parser_warnings'].append(msg)
-
-    if out_dict['start_date']['date'] is not None:
-        start_date = out_dict['start_date']['date']
-    else:
-        starttimes = [0, 0, 0]
-        msg = 'Startdate was unparsed, inp.xml prob not complete, do not believe the walltime!'
-        parser_info_out['parser_warnings'].append(msg)
-
-    if out_dict['end_date']['date'] is not None:
-        end_date = out_dict['end_date']['date']
-    else:
-        starttimes = [0, 0, 0]
-        msg = 'Enddate was unparsed, inp.xml prob not complete, do not believe the walltime!'
-        parser_info_out['parser_warnings'].append(msg)
-
-    offset = 0
-    if start_date != end_date:
-        # date="2018/01/15", Can this fail? what happens if not there
-        if start_date and end_date:
-            date_sl = [int(ent) for ent in start_date.split('/')]
-            date_el = [int(ent) for ent in end_date.split('/')]
-            date_s = date(*date_sl)
-            date_e = date(*date_el)
-            diff = date_e - date_s
-            offset = diff.days * 86400
-
-    time = offset + (int(endtimes[0]) - int(starttimes[0])) * 60 * 60 + (
-        int(endtimes[1]) - int(starttimes[1])) * 60 + int(endtimes[2]) - int(starttimes[2])
-    out_dict['walltime'] = time
-    out_dict['walltime_units'] = 'seconds'
-
-    return out_dict
-
-
-def convert_ldau_definitions(out_dict):
-
-    parsed_ldau = out_dict['ldau_info'].pop('parsed_ldau')
-    ldau_species = out_dict['ldau_info'].pop('ldau_species')
-
-    ldau_definitions = zip(ldau_species['name'], ldau_species['atomic_number'], parsed_ldau['l'])
-    for index, ldau_def in enumerate(ldau_definitions):
-
-        species_name, atom_number, orbital = ldau_def
-
-        species_key = f'{species_name}/{atom_number}'
-        orbital_key = 'spdf'[orbital]
-
-        if species_key not in out_dict['ldau_info']:
-            ldau_dict = out_dict['ldau_info'].get(species_key, {})
-
-        ldau_dict[orbital_key] = {}
-        ldau_dict[orbital_key]['u'] = parsed_ldau['u'][index]
-        ldau_dict[orbital_key]['j'] = parsed_ldau['j'][index]
-        ldau_dict[orbital_key]['unit'] = 'eV'
-        if parsed_ldau['l_amf'][index]:
-            ldau_dict[orbital_key]['double_counting'] = 'AMF'
-        else:
-            ldau_dict[orbital_key]['double_counting'] = 'FLL'
-
-        out_dict['ldau_info'][species_key] = ldau_dict
-
-    return out_dict
-
-
-def convert_relax_info(out_dict):
-
-    v_1 = out_dict.pop('lat_row1')
-    v_2 = out_dict.pop('lat_row2')
-    v_3 = out_dict.pop('lat_row3')
-
-    out_dict['relax_brav_vectors'] = [v_1, v_2, v_3]
-
-    out_dict['relax_atom_positions'] = out_dict.pop('atom_positions')
-    species = out_dict.pop('position_species')
-    species = species['species']
-    species_info = out_dict.pop('element_species')
-    species_info = dict(zip(species_info['name'], species_info['element']))
-
-    out_dict['relax_atomtype_info'] = []
-    for specie in species:
-        out_dict['relax_atomtype_info'].append([specie, species_info[specie]])
-
-    return out_dict
-
-
-def convert_forces(out_dict):
-
-    parsed_forces = out_dict.pop('parsed_forces')
-
-    if 'force_largest' not in out_dict:
-        out_dict['force_largest'] = []
-
-    largest_force = 0.0
-    for index, atomType in enumerate(parsed_forces['atom_type']):
-
-        if f'force_x_type{atomType}' not in out_dict:
-            out_dict[f'force_x_type{atomType}'] = []
-            out_dict[f'force_y_type{atomType}'] = []
-            out_dict[f'force_z_type{atomType}'] = []
-            out_dict[f'abspos_x_type{atomType}'] = []
-            out_dict[f'abspos_y_type{atomType}'] = []
-            out_dict[f'abspos_z_type{atomType}'] = []
-
-        force_x = parsed_forces['f_x'][index]
-        force_y = parsed_forces['f_y'][index]
-        force_z = parsed_forces['f_z'][index]
-
-        if abs(force_x) > largest_force:
-            largest_force = abs(force_x)
-        if abs(force_y) > largest_force:
-            largest_force = abs(force_y)
-        if abs(force_z) > largest_force:
-            largest_force = abs(force_z)
-
-        out_dict[f'force_x_type{atomType}'].append(force_x)
-        out_dict[f'force_y_type{atomType}'].append(force_y)
-        out_dict[f'force_z_type{atomType}'].append(force_z)
-
-        out_dict[f'abspos_x_type{atomType}'].append(parsed_forces['x'][index])
-        out_dict[f'abspos_y_type{atomType}'].append(parsed_forces['y'][index])
-        out_dict[f'abspos_z_type{atomType}'].append(parsed_forces['z'][index])
-
-    out_dict['force_largest'].append(largest_force)
 
     return out_dict
