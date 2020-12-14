@@ -20,9 +20,7 @@ from masci_tools.util.xml.common_xml_util import eval_xpath, get_xml_attribute, 
 import masci_tools.util.schema_dict_util as schema_util
 from masci_tools.io.parsers.fleur.fleur_schema import load_inpschema, load_outschema
 from masci_tools.io.common_functions import camel_to_snake
-from masci_tools.util.fleur_outxml_conversions import calculate_walltime, convert_ldau_definitions
-from masci_tools.util.fleur_outxml_conversions import convert_relax_info, convert_forces
-from masci_tools.util.fleur_outxml_conversions import calculate_total_magnetic_moment
+import masci_tools.util.fleur_outxml_conversions as convert_funcs
 from lxml import etree
 
 
@@ -249,7 +247,7 @@ def parse_general_information(root, parse_tasks, outschema_dict, inpschema_dict,
                           use_lists=False)
 
     #Convert the read in times/dates to a walltime
-    out_dict = calculate_walltime(out_dict, parser_info_out)
+    out_dict = convert_funcs.calculate_walltime(out_dict, parser_info_out)
 
     if fleurmode['ldau']:
         out_dict = parse_task(parse_tasks['ldau_info'],
@@ -259,7 +257,7 @@ def parse_general_information(root, parse_tasks, outschema_dict, inpschema_dict,
                               constants,
                               parser_info_out,
                               root_tag=root_tag)
-        out_dict = convert_ldau_definitions(out_dict)
+        out_dict = convert_funcs.convert_ldau_definitions(out_dict)
 
     if fleurmode['relax']:
 
@@ -284,7 +282,7 @@ def parse_general_information(root, parse_tasks, outschema_dict, inpschema_dict,
                                   root_tag=root_tag,
                                   use_lists=False)
 
-        out_dict = convert_relax_info(out_dict)
+        out_dict = convert_funcs.convert_relax_info(out_dict)
 
     return out_dict, fleurmode, constants
 
@@ -327,8 +325,6 @@ def parse_iteration(iteration_node,
         'iteration_number', 'total_energy', 'distances', 'total_energy_contributions', 'fermi_energy', 'bandgap',
         'charges'
     ]
-
-    iteration_tasks_forcetheorem = []
 
     #Mode specific tasks
     if fleurmode['jspin'] == 2:
@@ -378,10 +374,10 @@ def parse_iteration(iteration_node,
                 raise
 
     if fleurmode['relax']:  #This is too complex to put it into the standard tasks for now
-        out_dict = convert_forces(out_dict)
+        out_dict = convert_funcs.convert_forces(out_dict)
 
     if 'charges' in iteration_tasks:
-        out_dict = calculate_total_magnetic_moment(out_dict)
+        out_dict = convert_funcs.calculate_total_magnetic_moment(out_dict)
 
     return out_dict
 
