@@ -58,6 +58,7 @@ Following is the current specification of tasks
 __working_out_versions__ = {'0.33'}
 
 TASKS_DEFINITION = {
+    #--------Definitions for Fleur calculation modes--------
     'fleur_modes': {
         'jspin': {
             'parse_type': 'attrib',
@@ -109,6 +110,7 @@ TASKS_DEFINITION = {
             }
         }
     },
+    #--------Defintions for general info from outfile (start, endtime, number_iterations)--------
     'general_out_info': {
         'creator_name': {
             'parse_type': 'attrib',
@@ -170,6 +172,7 @@ TASKS_DEFINITION = {
             'flat': False,
         }
     },
+    #--------Defintions for general info from input section of outfile (kmax, symmetries, ..)--------
     'general_inp_info': {
         'title': {
             'parse_type': 'text',
@@ -208,6 +211,7 @@ TASKS_DEFINITION = {
             }
         }
     },
+    #--------Defintions for lda+u info from input section (species, ldau tags)--------
     'ldau_info': {
         'parsed_ldau': {
             'parse_type': 'allAttribs',
@@ -228,6 +232,8 @@ TASKS_DEFINITION = {
             'flat': False,
         }
     },
+    #--------Defintions for relaxation info from input section (bravais matrix, atompos)
+    #--------for Bulk and film
     'bulk_relax_info': {
         'lat_row1': {
             'parse_type': 'text',
@@ -316,6 +322,15 @@ TASKS_DEFINITION = {
             'flat': False,
         },
     },
+    #----General iteration tasks
+    # iteration number
+    # total energy (only total or also contributions, also lda+u correction)
+    # distances (nonmagnetic and magnetic, lda+u density matrix)
+    # charges (total, interstitial, mt sphere)
+    # fermi energy and bandgap
+    # magnetic moments
+    # orbital magnetic moments
+    # forces
     'iteration_number': {
         'number_of_iterations_total': {
             'parse_type': 'attrib',
@@ -448,6 +463,45 @@ TASKS_DEFINITION = {
             'ignore': ['atomType']
         }
     },
+    'forces': {
+        'force_units': {
+            'parse_type': 'attrib',
+            'path_spec': {
+                'name': 'units',
+                'contains': 'totalForcesOnRepresentativeAtoms',
+                'not_contains': 'forceTotal'
+            },
+            'overwrite_last': True
+        },
+        'parsed_forces': {
+            'parse_type': 'allAttribs',
+            'path_spec': {
+                'name': 'forceTotal'
+            },
+            'flat': False
+        }
+    },
+    'charges': {
+        'spin_dependent_charge': {
+            'parse_type': 'allAttribs',
+            'path_spec': {
+                'name': 'spinDependentCharge',
+                'contains': 'allElectronCharges',
+                'not_contains': 'fixed'
+            },
+            'ignore': ['spin', 'vacuum1', 'vacuum2']
+        },
+        'total_charge': {
+            'parse_type': 'singleValue',
+            'path_spec': {
+                'name': 'totalCharge',
+                'contains': 'allElectronCharges',
+                'not_contains': 'fixed'
+            },
+        }
+    },
+    #-------Tasks for forcetheorem Calculations
+    # DMI, JIJ, MAE, SSDISP
     'forcetheorem_dmi': {
         'dmi_force': {
             'parse_type': 'allAttribs',
@@ -531,43 +585,6 @@ TASKS_DEFINITION = {
                 'name': 'units',
                 'contains': 'Forcetheorem_JIJ'
             }
-        }
-    },
-    'forces': {
-        'force_units': {
-            'parse_type': 'attrib',
-            'path_spec': {
-                'name': 'units',
-                'contains': 'totalForcesOnRepresentativeAtoms',
-                'not_contains': 'forceTotal'
-            },
-            'overwrite_last': True
-        },
-        'parsed_forces': {
-            'parse_type': 'allAttribs',
-            'path_spec': {
-                'name': 'forceTotal'
-            },
-            'flat': False
-        }
-    },
-    'charges': {
-        'spin_dependent_charge': {
-            'parse_type': 'allAttribs',
-            'path_spec': {
-                'name': 'spinDependentCharge',
-                'contains': 'allElectronCharges',
-                'not_contains': 'fixed'
-            },
-            'ignore': ['spin', 'vacuum1', 'vacuum2']
-        },
-        'total_charge': {
-            'parse_type': 'singleValue',
-            'path_spec': {
-                'name': 'totalCharge',
-                'contains': 'allElectronCharges',
-                'not_contains': 'fixed'
-            },
         }
     }
 }
