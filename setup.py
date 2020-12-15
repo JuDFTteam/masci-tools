@@ -49,10 +49,9 @@ if __name__ == '__main__':
             'scipy',
             'matplotlib',
             'h5py',
+            'pandas',
+            'bokeh',
             'bump2version',
-            'pytest>=4.3.1',
-            'pytest-cov',
-            'pytest-mpl',
             'future',
             'lxml>=3.6.4'
         ],
