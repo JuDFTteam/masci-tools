@@ -45,7 +45,7 @@ def inpxml_parser(inpxmlfile, version=None, parser_info_out=None):
         try:
             xmltree = etree.parse(inpxmlfile, parser)
         except etree.XMLSyntaxError as msg:
-            raise ValueError(f'Failed to parse input file: {msg}')
+            raise ValueError(f'Failed to parse input file: {msg}') from msg
     else:
         xmltree = inpxmlfile
 
@@ -53,8 +53,8 @@ def inpxml_parser(inpxmlfile, version=None, parser_info_out=None):
         try:
             root = xmltree.getroot()
             version = root.attrib['fleurInputVersion']
-        except KeyError:
-            raise ValueError('Failed to extract inputVersion')
+        except KeyError as exc:
+            raise ValueError('Failed to extract inputVersion') from exc
 
     parser_info_out['fleur_inp_version'] = version
     schema_dict, xmlschema = load_inpschema(version, schema_return=True)
@@ -68,12 +68,14 @@ def inpxml_parser(inpxmlfile, version=None, parser_info_out=None):
         # get more information on what does not validate
         parser_on_fly = etree.XMLParser(attribute_defaults=True, schema=xmlschema, encoding='utf-8')
         inpxmlfile = etree.tostring(xmltree)
-        message = 'Reason is unknown'
+        message = ''
         try:
             tree_x = etree.fromstring(inpxmlfile, parser_on_fly)
         except etree.XMLSyntaxError as msg:
             message = msg
-        raise ValueError(f'Input file does not validate against the schema: {message}')
+            raise ValueError(f'Input file does not validate against the schema: {message}') from msg
+        raise ValueError('Input file does not validate against the schema: Reason is unknown')
+
     else:
         inp_dict = inpxml_todict(root, schema_dict, constants, parser_info_out=parser_info_out)
 

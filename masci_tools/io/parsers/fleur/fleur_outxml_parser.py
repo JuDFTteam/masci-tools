@@ -88,8 +88,8 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
         try:
             root = xmltree.getroot()
             version = root.attrib['fleurOutputVersion']
-        except KeyError:
-            raise ValueError('Failed to extract outputVersion')
+        except KeyError as exc:
+            raise ValueError('Failed to extract outputVersion') from exc
 
     #Load schema_dict (inp and out)
     inpschema_dict = load_inpschema(version)
@@ -102,15 +102,21 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
         # get more information on what does not validate
         parser_on_fly = etree.XMLParser(attribute_defaults=True, schema=outxmlschema, encoding='utf-8')
         outxmlfile = etree.tostring(xmltree)
-        message = 'Reason is unknown'
+        message = ''
         try:
             tree_x = etree.fromstring(outxmlfile, parser_on_fly)
         except etree.XMLSyntaxError as msg:
             message = msg
+            if kwargs.get('ignore_validation', False):
+                parser_info_out['parser_warnings'].append(
+                    f'Output file does not validate against the schema: {message}')
+            else:
+                raise ValueError(f'Output file does not validate against the schema: {message}') from msg
         if kwargs.get('ignore_validation', False):
-            parser_info_out['parser_warnings'].append(f'Output file does not validate against the schema: {message}')
+            parser_info_out['parser_warnings'].append(
+                'Output file does not validate against the schema: Reason is unknown')
         else:
-            raise ValueError(f'Output file does not validate against the schema: {message}')
+            raise ValueError(f'Output file does not validate against the schema: Reason is unknown')
 
     parse_tasks = ParseTasks(version)
     additional_tasks = kwargs.pop('additional_tasks', {})

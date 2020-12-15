@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+"""
+Tests of the out.xml parser for Fleur
+"""
 from __future__ import absolute_import
 import pytest
 from masci_tools.io.parsers.fleur import outxml_parser
