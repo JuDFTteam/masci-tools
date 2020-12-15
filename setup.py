@@ -59,7 +59,8 @@ if __name__ == '__main__':
             'pre-commit': [
                 'pre-commit>=2.6.0',
                 'yapf>=0.30.0',
-                'pylint>=2.5.2'
+                'pylint>=2.5.2',
+                'pytest>=4.3.1'
             ],
             'docs': [
                 'Sphinx',
