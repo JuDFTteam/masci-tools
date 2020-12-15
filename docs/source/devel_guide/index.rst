@@ -97,3 +97,33 @@ All functions below can either be called in python scripts or from the commandli
   All except the ```name``` key are optional and should be constructed so that there is only one
   possible choice. Otherwise an exception is raised. There are other keywords, which can be entered
   here. These control how the parsed data is entered into the output dictionary. For a definition of these keywords, please refer to :py:mod:`~masci_tools.io.parsers.fleur.default_parse_tasks`.
+
+.. topic:: Migrating the parsing tasks
+
+  These task definitions might have to be adapted for new fleur versions. Some changes might be possible to make in :py:mod:`~masci_tools.io.parsers.fleur.default_parse_tasks` directly without breaking backwards compatibility. If this is not possible there is a decorator :py:func:`~masci_tools.io.parsers.fleur.register_migration()` to define a function that is recognized by the class :py:class:`~masci_tools.io.parsers.fleur.ParseTasks` to convert between versions. A usage example is shown below.
+
+  .. code-block:: python
+
+    from masci_tools.io.parsers.fleur import ParseTasks, register_migration
+    import copy
+
+    @register_migration(ParseTasks, base_version='0.33', target_version='0.34')
+    def migrate_033_to034(definition_dict):
+      """
+      Ficticious migration from 0.33 to 0.34
+      Moves the `number_of_atom_types` attribute from reading a simple
+      attribute to counting the number of atomGroups in the input section
+      """
+
+      #IMPORTANT: First copy the original dict
+      new_dict = copy.deepcopy(definition_dict)
+
+      new_dict['general_out_info'].pop('number_of_atom_types')
+      new_dict['general_inp_info']['number_of_atom_types'] = {
+          'parse_type': 'numberNodes',
+          'path_spec': {
+              'name': 'atomGroup'
+          }
+      }
+
+      return new_dict
