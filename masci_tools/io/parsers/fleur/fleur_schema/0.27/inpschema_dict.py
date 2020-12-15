@@ -452,6 +452,7 @@ schema_dict = {
         '/fleurInput': {
             'attribs': ['fleurInputVersion'],
             'optional': ['comment', 'constants', 'output'],
+            'optional_attribs': [],
             'order':
             ['comment', 'constants', 'calculationSetup', 'cell', 'xcFunctional', 'atomSpecies', 'atomGroups', 'output'],
             'several': [],
@@ -461,6 +462,7 @@ schema_dict = {
         '/fleurInput/atomGroups': {
             'attribs': [],
             'optional': [],
+            'optional_attribs': [],
             'order': ['atomGroup'],
             'several': ['atomGroup'],
             'simple': [],
@@ -470,6 +472,7 @@ schema_dict = {
             'attribs': ['species', 'orbcomp', 'magField', 'vcaAddCharge'],
             'optional':
             ['mtSphere', 'atomicCutoffs', 'energyParameters', 'force', 'nocoParams', 'ldaU', 'lo', 'orbcomprot'],
+            'optional_attribs': ['orbcomp', 'magField', 'vcaAddCharge'],
             'order': [
                 'relPos', 'absPos', 'filmPos', 'mtSphere', 'atomicCutoffs', 'energyParameters', 'force', 'nocoParams',
                 'ldaU', 'lo', 'orbcomprot'
@@ -484,6 +487,7 @@ schema_dict = {
         '/fleurInput/atomGroups/atomGroup/atomicCutoffs': {
             'attribs': ['lmax', 'lnonsphr', 'lmaxAPW'],
             'optional': [],
+            'optional_attribs': ['lmaxAPW'],
             'order': [],
             'several': [],
             'simple': [],
@@ -492,6 +496,7 @@ schema_dict = {
         '/fleurInput/atomGroups/atomGroup/energyParameters': {
             'attribs': ['s', 'p', 'd', 'f'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -500,6 +505,7 @@ schema_dict = {
         '/fleurInput/atomGroups/atomGroup/force': {
             'attribs': ['calculate', 'relaxXYZ'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -508,6 +514,7 @@ schema_dict = {
         '/fleurInput/atomGroups/atomGroup/ldaU': {
             'attribs': ['l', 'U', 'J', 'l_amf'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -516,6 +523,7 @@ schema_dict = {
         '/fleurInput/atomGroups/atomGroup/lo': {
             'attribs': ['type', 'l', 'n', 'eDeriv'],
             'optional': [],
+            'optional_attribs': ['eDeriv'],
             'order': [],
             'several': [],
             'simple': [],
@@ -524,6 +532,7 @@ schema_dict = {
         '/fleurInput/atomGroups/atomGroup/mtSphere': {
             'attribs': ['radius', 'gridPoints', 'logIncrement'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -532,6 +541,7 @@ schema_dict = {
         '/fleurInput/atomGroups/atomGroup/nocoParams': {
             'attribs': ['l_relax', 'l_magn', 'M', 'alpha', 'beta', 'b_cons_x', 'b_cons_y'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -540,6 +550,7 @@ schema_dict = {
         '/fleurInput/atomSpecies': {
             'attribs': [],
             'optional': [],
+            'optional_attribs': [],
             'order': ['species'],
             'several': ['species'],
             'simple': [],
@@ -549,6 +560,7 @@ schema_dict = {
             'attribs':
             ['name', 'element', 'atomicNumber', 'coreStates', 'magMom', 'flipSpin', 'magField', 'vcaAddCharge'],
             'optional': ['energyParameters', 'force', 'electronConfig', 'nocoParams', 'ldaU', 'lo'],
+            'optional_attribs': ['magMom', 'flipSpin', 'magField', 'vcaAddCharge'],
             'order':
             ['mtSphere', 'atomicCutoffs', 'energyParameters', 'force', 'electronConfig', 'nocoParams', 'ldaU', 'lo'],
             'several': ['ldaU', 'lo'],
@@ -558,6 +570,7 @@ schema_dict = {
         '/fleurInput/atomSpecies/species/atomicCutoffs': {
             'attribs': ['lmax', 'lnonsphr', 'lmaxAPW'],
             'optional': [],
+            'optional_attribs': ['lmaxAPW'],
             'order': [],
             'several': [],
             'simple': [],
@@ -566,6 +579,7 @@ schema_dict = {
         '/fleurInput/atomSpecies/species/electronConfig': {
             'attribs': [],
             'optional': ['valenceConfig', 'stateOccupation'],
+            'optional_attribs': [],
             'order': ['coreConfig', 'valenceConfig', 'stateOccupation'],
             'several': ['stateOccupation'],
             'simple': ['coreConfig', 'valenceConfig', 'stateOccupation'],
@@ -574,6 +588,7 @@ schema_dict = {
         '/fleurInput/atomSpecies/species/electronConfig/stateOccupation': {
             'attribs': ['state', 'spinUp', 'spinDown'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -582,6 +597,7 @@ schema_dict = {
         '/fleurInput/atomSpecies/species/energyParameters': {
             'attribs': ['s', 'p', 'd', 'f'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -590,6 +606,7 @@ schema_dict = {
         '/fleurInput/atomSpecies/species/force': {
             'attribs': ['calculate', 'relaxXYZ'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -598,6 +615,7 @@ schema_dict = {
         '/fleurInput/atomSpecies/species/ldaU': {
             'attribs': ['l', 'U', 'J', 'l_amf'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -606,6 +624,7 @@ schema_dict = {
         '/fleurInput/atomSpecies/species/lo': {
             'attribs': ['type', 'l', 'n', 'eDeriv'],
             'optional': [],
+            'optional_attribs': ['eDeriv'],
             'order': [],
             'several': [],
             'simple': [],
@@ -614,6 +633,7 @@ schema_dict = {
         '/fleurInput/atomSpecies/species/mtSphere': {
             'attribs': ['radius', 'gridPoints', 'logIncrement'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -622,6 +642,7 @@ schema_dict = {
         '/fleurInput/atomSpecies/species/nocoParams': {
             'attribs': ['l_relax', 'l_magn', 'M', 'alpha', 'beta', 'b_cons_x', 'b_cons_y'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -633,6 +654,7 @@ schema_dict = {
                 'soc', 'nocoParams', 'oneDParams', 'expertModes', 'geometryOptimization', 'spinSpiralQPointMesh',
                 'eField', 'energyParameterLimits'
             ],
+            'optional_attribs': [],
             'order': [
                 'cutoffs', 'scfLoop', 'coreElectrons', 'magnetism', 'bzIntegration', 'soc', 'nocoParams', 'oneDParams',
                 'expertModes', 'geometryOptimization', 'spinSpiralQPointMesh', 'eField', 'energyParameterLimits'
@@ -647,6 +669,7 @@ schema_dict = {
         '/fleurInput/calculationSetup/bzIntegration': {
             'attribs': ['valenceElectrons', 'mode', 'fermiSmearingEnergy', 'fermiSmearingTemp'],
             'optional': [],
+            'optional_attribs': ['valenceElectrons', 'mode', 'fermiSmearingEnergy', 'fermiSmearingTemp'],
             'order': ['kPointMesh', 'kPointCount', 'kPointList'],
             'several': [],
             'simple': ['kPointMesh'],
@@ -655,6 +678,7 @@ schema_dict = {
         '/fleurInput/calculationSetup/bzIntegration/kPointCount': {
             'attribs': ['count', 'gamma'],
             'optional': ['specialPoint'],
+            'optional_attribs': [],
             'order': ['specialPoint'],
             'several': ['specialPoint'],
             'simple': ['specialPoint'],
@@ -663,6 +687,7 @@ schema_dict = {
         '/fleurInput/calculationSetup/bzIntegration/kPointCount/specialPoint': {
             'attribs': ['name'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -671,6 +696,7 @@ schema_dict = {
         '/fleurInput/calculationSetup/bzIntegration/kPointList': {
             'attribs': ['posScale', 'weightScale', 'count'],
             'optional': [],
+            'optional_attribs': ['count'],
             'order': ['kPoint'],
             'several': ['kPoint'],
             'simple': ['kPoint'],
@@ -679,6 +705,7 @@ schema_dict = {
         '/fleurInput/calculationSetup/bzIntegration/kPointList/kPoint': {
             'attribs': ['weight'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -687,6 +714,7 @@ schema_dict = {
         '/fleurInput/calculationSetup/bzIntegration/kPointMesh': {
             'attribs': ['nx', 'ny', 'nz', 'gamma'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -695,6 +723,7 @@ schema_dict = {
         '/fleurInput/calculationSetup/coreElectrons': {
             'attribs': ['ctail', 'frcor', 'kcrel'],
             'optional': [],
+            'optional_attribs': ['frcor', 'kcrel'],
             'order': [],
             'several': [],
             'simple': [],
@@ -703,6 +732,7 @@ schema_dict = {
         '/fleurInput/calculationSetup/cutoffs': {
             'attribs': ['Kmax', 'Gmax', 'GmaxXC', 'numbands'],
             'optional': [],
+            'optional_attribs': ['GmaxXC', 'numbands'],
             'order': [],
             'several': [],
             'simple': [],
@@ -711,6 +741,8 @@ schema_dict = {
         '/fleurInput/calculationSetup/eField': {
             'attribs': ['zsigma', 'sig_b_1', 'sig_b_2', 'plot_charge', 'plot_rho', 'autocomp', 'dirichlet', 'eV'],
             'optional': [],
+            'optional_attribs':
+            ['zsigma', 'sig_b_1', 'sig_b_2', 'plot_charge', 'plot_rho', 'autocomp', 'dirichlet', 'eV'],
             'order': [],
             'several': [],
             'simple': [],
@@ -719,6 +751,7 @@ schema_dict = {
         '/fleurInput/calculationSetup/energyParameterLimits': {
             'attribs': ['ellow', 'elup'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -727,6 +760,7 @@ schema_dict = {
         '/fleurInput/calculationSetup/expertModes': {
             'attribs': ['gw', 'pot8', 'eig66', 'lpr', 'isec1', 'secvar'],
             'optional': [],
+            'optional_attribs': ['gw', 'pot8', 'eig66', 'lpr', 'isec1', 'secvar'],
             'order': [],
             'several': [],
             'simple': [],
@@ -735,6 +769,7 @@ schema_dict = {
         '/fleurInput/calculationSetup/geometryOptimization': {
             'attribs': ['l_f', 'xa', 'thetad', 'epsdisp', 'epsforce', 'qfix'],
             'optional': [],
+            'optional_attribs': ['qfix'],
             'order': [],
             'several': [],
             'simple': [],
@@ -743,6 +778,7 @@ schema_dict = {
         '/fleurInput/calculationSetup/magnetism': {
             'attribs': ['jspins', 'l_noco', 'l_J', 'swsp', 'lflip'],
             'optional': [],
+            'optional_attribs': ['l_noco', 'l_J', 'swsp', 'lflip'],
             'order': [],
             'several': [],
             'simple': [],
@@ -751,6 +787,7 @@ schema_dict = {
         '/fleurInput/calculationSetup/nocoParams': {
             'attribs': ['l_ss', 'l_mperp', 'l_constr', 'l_disp', 'sso_opt', 'mix_b', 'thetaJ', 'nsh'],
             'optional': ['qsc'],
+            'optional_attribs': [],
             'order': ['qss', 'qsc'],
             'several': [],
             'simple': ['qss', 'qsc'],
@@ -759,6 +796,7 @@ schema_dict = {
         '/fleurInput/calculationSetup/oneDParams': {
             'attribs': ['d1', 'MM', 'vM', 'm_cyl', 'chi', 'rot', 'invs1', 'zrfs1'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -767,6 +805,7 @@ schema_dict = {
         '/fleurInput/calculationSetup/scfLoop': {
             'attribs': ['itmax', 'maxIterBroyd', 'imix', 'alpha', 'spinf', 'minDistance', 'maxTimeToStartIter'],
             'optional': [],
+            'optional_attribs': ['maxIterBroyd', 'spinf', 'minDistance', 'maxTimeToStartIter'],
             'order': [],
             'several': [],
             'simple': [],
@@ -775,6 +814,7 @@ schema_dict = {
         '/fleurInput/calculationSetup/soc': {
             'attribs': ['theta', 'phi', 'l_soc', 'spav', 'off', 'soc66'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -783,6 +823,7 @@ schema_dict = {
         '/fleurInput/calculationSetup/spinSpiralQPointMesh': {
             'attribs': ['qx', 'qy', 'qz'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -791,6 +832,7 @@ schema_dict = {
         '/fleurInput/cell': {
             'attribs': [],
             'optional': [],
+            'optional_attribs': [],
             'order': ['symmetry', 'symmetryFile', 'symmetryOperations', 'bulkLattice', 'filmLattice'],
             'several': [],
             'simple': ['symmetry', 'symmetryFile'],
@@ -799,6 +841,7 @@ schema_dict = {
         '/fleurInput/cell/bulkLattice': {
             'attribs': ['scale', 'latnam'],
             'optional': ['a2'],
+            'optional_attribs': [],
             'order': ['a1', 'a2', 'c', 'row-1', 'row-2', 'c', 'bravaisMatrix'],
             'several': [],
             'simple': ['a1', 'a2', 'c', 'row-1', 'row-2', 'c'],
@@ -807,6 +850,7 @@ schema_dict = {
         '/fleurInput/cell/bulkLattice/bravaisMatrix': {
             'attribs': [],
             'optional': [],
+            'optional_attribs': [],
             'order': ['row-1', 'row-2', 'row-3'],
             'several': [],
             'simple': ['row-1', 'row-2', 'row-3'],
@@ -815,6 +859,7 @@ schema_dict = {
         '/fleurInput/cell/filmLattice': {
             'attribs': ['scale', 'latnam', 'dVac', 'dTilda'],
             'optional': ['a2', 'vacuumEnergyParameters'],
+            'optional_attribs': [],
             'order': ['a1', 'a2', 'row-1', 'row-2', 'bravaisMatrix', 'vacuumEnergyParameters'],
             'several': ['vacuumEnergyParameters'],
             'simple': ['a1', 'a2', 'row-1', 'row-2', 'vacuumEnergyParameters'],
@@ -823,6 +868,7 @@ schema_dict = {
         '/fleurInput/cell/filmLattice/bravaisMatrix': {
             'attribs': [],
             'optional': [],
+            'optional_attribs': [],
             'order': ['row-1', 'row-2', 'row-3'],
             'several': [],
             'simple': ['row-1', 'row-2', 'row-3'],
@@ -831,6 +877,7 @@ schema_dict = {
         '/fleurInput/cell/filmLattice/vacuumEnergyParameters': {
             'attribs': ['vacuum', 'spinUp', 'spinDown'],
             'optional': [],
+            'optional_attribs': ['spinDown'],
             'order': [],
             'several': [],
             'simple': [],
@@ -839,6 +886,7 @@ schema_dict = {
         '/fleurInput/cell/symmetry': {
             'attribs': ['spgrp', 'invs', 'zrfs'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -847,6 +895,7 @@ schema_dict = {
         '/fleurInput/cell/symmetryFile': {
             'attribs': ['filename'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -855,6 +904,7 @@ schema_dict = {
         '/fleurInput/cell/symmetryOperations': {
             'attribs': [],
             'optional': [],
+            'optional_attribs': [],
             'order': ['symOp'],
             'several': ['symOp'],
             'simple': [],
@@ -863,6 +913,7 @@ schema_dict = {
         '/fleurInput/cell/symmetryOperations/symOp': {
             'attribs': [],
             'optional': [],
+            'optional_attribs': [],
             'order': ['row-1', 'row-2', 'row-3'],
             'several': [],
             'simple': ['row-1', 'row-2', 'row-3'],
@@ -871,6 +922,7 @@ schema_dict = {
         '/fleurInput/constants': {
             'attribs': [],
             'optional': ['constant'],
+            'optional_attribs': [],
             'order': ['constant'],
             'several': ['constant'],
             'simple': ['constant'],
@@ -879,6 +931,7 @@ schema_dict = {
         '/fleurInput/constants/constant': {
             'attribs': ['name', 'value'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -887,6 +940,7 @@ schema_dict = {
         '/fleurInput/output': {
             'attribs': ['dos', 'band', 'vacdos', 'slice'],
             'optional': ['checks', 'densityOfStates', 'vacuumDOS', 'plotting', 'chargeDensitySlicing', 'specialOutput'],
+            'optional_attribs': ['dos', 'band', 'vacdos', 'slice'],
             'order': ['checks', 'densityOfStates', 'vacuumDOS', 'plotting', 'chargeDensitySlicing', 'specialOutput'],
             'several': [],
             'simple': ['checks', 'densityOfStates', 'vacuumDOS', 'plotting', 'chargeDensitySlicing', 'specialOutput'],
@@ -895,6 +949,7 @@ schema_dict = {
         '/fleurInput/output/chargeDensitySlicing': {
             'attribs': ['numkpt', 'minEigenval', 'maxEigenval', 'nnne', 'pallst'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -903,6 +958,7 @@ schema_dict = {
         '/fleurInput/output/checks': {
             'attribs': ['vchk', 'cdinf', 'disp'],
             'optional': [],
+            'optional_attribs': ['vchk', 'cdinf', 'disp'],
             'order': [],
             'several': [],
             'simple': [],
@@ -911,6 +967,7 @@ schema_dict = {
         '/fleurInput/output/densityOfStates': {
             'attribs': ['ndir', 'minEnergy', 'maxEnergy', 'sigma'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -919,6 +976,7 @@ schema_dict = {
         '/fleurInput/output/plotting': {
             'attribs': ['iplot', 'score', 'plplot'],
             'optional': [],
+            'optional_attribs': ['iplot', 'score', 'plplot'],
             'order': [],
             'several': [],
             'simple': [],
@@ -927,6 +985,7 @@ schema_dict = {
         '/fleurInput/output/specialOutput': {
             'attribs': ['form66', 'eonly', 'bmt'],
             'optional': [],
+            'optional_attribs': ['form66', 'eonly', 'bmt'],
             'order': [],
             'several': [],
             'simple': [],
@@ -935,6 +994,7 @@ schema_dict = {
         '/fleurInput/output/vacuumDOS': {
             'attribs': ['layers', 'integ', 'star', 'nstars', 'locx1', 'locy1', 'locx2', 'locy2', 'nstm', 'tworkf'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -943,6 +1003,7 @@ schema_dict = {
         '/fleurInput/xcFunctional': {
             'attribs': ['name', 'relativisticCorrections'],
             'optional': ['xcParams', 'ggaPrinting'],
+            'optional_attribs': ['relativisticCorrections'],
             'order': ['xcParams', 'ggaPrinting'],
             'several': [],
             'simple': ['xcParams', 'ggaPrinting'],
@@ -951,6 +1012,7 @@ schema_dict = {
         '/fleurInput/xcFunctional/ggaPrinting': {
             'attribs': ['iggachk', 'idsprs0', 'idsprsl', 'idsprsi', 'idsprsv'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -959,6 +1021,7 @@ schema_dict = {
         '/fleurInput/xcFunctional/xcParams': {
             'attribs': ['igrd', 'lwb', 'ndvgrd', 'idsprs', 'chng'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],

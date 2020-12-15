@@ -350,16 +350,19 @@ def _get_xpath(xmlschema,
         return possible_paths[0]
 
 
-def _get_contained_attribs(xmlschema, namespaces, elem):
+def _get_contained_attribs(xmlschema, namespaces, elem, optional=False):
 
     attrib_list = []
     for child in elem:
         child_type = _remove_xsd_namespace(child.tag, namespaces)
 
         if child_type == 'attribute':
-            attrib_list.append(child.attrib['name'])
+            if optional and child.attrib.get('use', 'required') == 'optional':
+                attrib_list.append(child.attrib['name'])
+            elif not optional:
+                attrib_list.append(child.attrib['name'])
         elif child_type in ['simpleContent', 'extension']:
-            new_attribs = _get_contained_attribs(xmlschema, namespaces, child)
+            new_attribs = _get_contained_attribs(xmlschema, namespaces, child, optional=optional)
             for attrib in new_attribs:
                 attrib_list.append(attrib)
 
@@ -981,6 +984,7 @@ def get_tag_info(xmlschema, namespaces, **kwargs):
 
         info_dict = {}
         info_dict['attribs'] = _get_contained_attribs(xmlschema, namespaces, type_elem)
+        info_dict['optional_attribs'] = _get_contained_attribs(xmlschema, namespaces, type_elem, optional=True)
         info_dict['optional'] = _get_optional_tags(xmlschema, namespaces, type_elem)
         info_dict['several'] = _get_several_tags(xmlschema, namespaces, type_elem)
         info_dict['order'] = _get_sequence_order(xmlschema, namespaces, type_elem)

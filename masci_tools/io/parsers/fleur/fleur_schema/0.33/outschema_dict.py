@@ -508,6 +508,7 @@ schema_dict = {
         './FermiEnergy': {
             'attribs': ['value', 'units'],
             'optional': [],
+            'optional_attribs': ['units'],
             'order': [],
             'several': [],
             'simple': [],
@@ -516,6 +517,7 @@ schema_dict = {
         './Forcetheorem_DMI': {
             'attribs': ['Angles', 'qpoints', 'units'],
             'optional': ['Entry', 'allAtoms', 'singleAtom'],
+            'optional_attribs': [],
             'order': ['Entry', 'allAtoms', 'singleAtom'],
             'several': ['Entry', 'allAtoms', 'singleAtom'],
             'simple': ['Entry', 'allAtoms', 'singleAtom'],
@@ -524,6 +526,7 @@ schema_dict = {
         './Forcetheorem_DMI/Entry': {
             'attribs': ['q', 'phi', 'theta', 'ev-sum'],
             'optional': [],
+            'optional_attribs': ['phi', 'theta'],
             'order': [],
             'several': [],
             'simple': [],
@@ -532,6 +535,7 @@ schema_dict = {
         './Forcetheorem_DMI/allAtoms': {
             'attribs': ['atomType', 'q', 'phi', 'theta', 'H_so'],
             'optional': [],
+            'optional_attribs': ['atomType'],
             'order': [],
             'several': [],
             'simple': [],
@@ -540,6 +544,7 @@ schema_dict = {
         './Forcetheorem_DMI/singleAtom': {
             'attribs': ['atomType', 'q', 'phi', 'theta', 'H_so'],
             'optional': [],
+            'optional_attribs': ['atomType'],
             'order': [],
             'several': [],
             'simple': [],
@@ -548,6 +553,7 @@ schema_dict = {
         './Forcetheorem_JIJ': {
             'attribs': ['Configs', 'units'],
             'optional': ['Config'],
+            'optional_attribs': [],
             'order': ['Config'],
             'several': ['Config'],
             'simple': ['Config'],
@@ -556,6 +562,7 @@ schema_dict = {
         './Forcetheorem_JIJ/Config': {
             'attribs': ['n', 'q', 'iatom', 'jatom', 'phase', 'ev-sum'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -564,6 +571,7 @@ schema_dict = {
         './Forcetheorem_Loop': {
             'attribs': ['No', 'calculationType'],
             'optional': [],
+            'optional_attribs': [],
             'order': [
                 'energyParameters', 'eigenvalues', 'bandgap', 'sumValenceSingleParticleEnergies', 'FermiEnergy',
                 'valenceDensity', 'onSiteExchangeSplitting', 'noncollinearTorgue', 'spinorbitTorgue', 'coreStates',
@@ -578,6 +586,7 @@ schema_dict = {
         './Forcetheorem_MAE': {
             'attribs': ['Angles', 'units'],
             'optional': ['Angle'],
+            'optional_attribs': [],
             'order': ['Angle'],
             'several': ['Angle'],
             'simple': ['Angle'],
@@ -586,6 +595,7 @@ schema_dict = {
         './Forcetheorem_MAE/Angle': {
             'attribs': ['phi', 'theta', 'ev-sum'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -594,6 +604,7 @@ schema_dict = {
         './Forcetheorem_SSDISP': {
             'attribs': ['qvectors', 'units'],
             'optional': ['Entry'],
+            'optional_attribs': [],
             'order': ['Entry'],
             'several': ['Entry'],
             'simple': ['Entry'],
@@ -602,6 +613,7 @@ schema_dict = {
         './Forcetheorem_SSDISP/Entry': {
             'attribs': ['q', 'ev-sum'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -610,6 +622,7 @@ schema_dict = {
         './allElectronCharges': {
             'attribs': [],
             'optional': ['mtCharges', 'spinDependentCharge', 'totalCharge', 'fixedCharges'],
+            'optional_attribs': [],
             'order': ['mtCharges', 'spinDependentCharge', 'totalCharge', 'fixedCharges'],
             'several': ['mtCharges', 'spinDependentCharge', 'totalCharge', 'fixedCharges'],
             'simple': ['spinDependentCharge', 'totalCharge'],
@@ -618,6 +631,7 @@ schema_dict = {
         './allElectronCharges/fixedCharges': {
             'attribs': [],
             'optional': ['spinDependentCharge', 'totalCharge'],
+            'optional_attribs': [],
             'order': ['spinDependentCharge', 'totalCharge'],
             'several': ['spinDependentCharge', 'totalCharge'],
             'simple': ['spinDependentCharge', 'totalCharge'],
@@ -626,6 +640,7 @@ schema_dict = {
         './allElectronCharges/fixedCharges/spinDependentCharge': {
             'attribs': ['spin', 'total', 'interstitial', 'mtSpheres', 'vacuum1', 'vacuum2'],
             'optional': [],
+            'optional_attribs': ['spin', 'vacuum1', 'vacuum2'],
             'order': [],
             'several': [],
             'simple': [],
@@ -634,6 +649,7 @@ schema_dict = {
         './allElectronCharges/fixedCharges/totalCharge': {
             'attribs': ['value', 'units'],
             'optional': [],
+            'optional_attribs': ['units'],
             'order': [],
             'several': [],
             'simple': [],
@@ -642,6 +658,7 @@ schema_dict = {
         './allElectronCharges/mtCharges': {
             'attribs': ['spin'],
             'optional': ['mtCharge', 'mtJcharge'],
+            'optional_attribs': ['spin'],
             'order': ['mtCharge', 'mtJcharge'],
             'several': ['mtCharge', 'mtJcharge'],
             'simple': ['mtCharge'],
@@ -650,6 +667,7 @@ schema_dict = {
         './allElectronCharges/mtCharges/mtCharge': {
             'attribs': ['atomType', 'total', 's', 'p', 'd', 'f'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -658,6 +676,7 @@ schema_dict = {
         './allElectronCharges/mtCharges/mtJcharge': {
             'attribs': ['atomType'],
             'optional': [],
+            'optional_attribs': [],
             'order': ['lowJ', 'highJ'],
             'several': [],
             'simple': ['lowJ', 'highJ'],
@@ -666,6 +685,7 @@ schema_dict = {
         './allElectronCharges/mtCharges/mtJcharge/highJ': {
             'attribs': ['p', 'd', 'f'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -674,6 +694,7 @@ schema_dict = {
         './allElectronCharges/mtCharges/mtJcharge/lowJ': {
             'attribs': ['p', 'd', 'f'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -682,6 +703,7 @@ schema_dict = {
         './allElectronCharges/spinDependentCharge': {
             'attribs': ['spin', 'total', 'interstitial', 'mtSpheres', 'vacuum1', 'vacuum2'],
             'optional': [],
+            'optional_attribs': ['spin', 'vacuum1', 'vacuum2'],
             'order': [],
             'several': [],
             'simple': [],
@@ -690,6 +712,7 @@ schema_dict = {
         './allElectronCharges/totalCharge': {
             'attribs': ['value', 'units'],
             'optional': [],
+            'optional_attribs': ['units'],
             'order': [],
             'several': [],
             'simple': [],
@@ -698,6 +721,7 @@ schema_dict = {
         './bandgap': {
             'attribs': ['value', 'units'],
             'optional': [],
+            'optional_attribs': ['units'],
             'order': [],
             'several': [],
             'simple': [],
@@ -706,6 +730,7 @@ schema_dict = {
         './coreStates': {
             'attribs': ['atomType', 'atomicNumber', 'spin', 'kinEnergy', 'eigValSum', 'lostElectrons'],
             'optional': ['state'],
+            'optional_attribs': ['spin'],
             'order': ['state'],
             'several': ['state'],
             'simple': ['state'],
@@ -714,6 +739,7 @@ schema_dict = {
         './coreStates/state': {
             'attribs': ['n', 'l', 'j', 'energy', 'weight'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -722,6 +748,7 @@ schema_dict = {
         './densityConvergence': {
             'attribs': ['units'],
             'optional': ['chargeDensity', 'overallChargeDensity', 'spinDensity'],
+            'optional_attribs': ['units'],
             'order': ['chargeDensity', 'overallChargeDensity', 'spinDensity'],
             'several': ['chargeDensity', 'overallChargeDensity', 'spinDensity'],
             'simple': ['chargeDensity', 'overallChargeDensity', 'spinDensity'],
@@ -730,6 +757,7 @@ schema_dict = {
         './densityConvergence/chargeDensity': {
             'attribs': ['spin', 'distance', 'units'],
             'optional': [],
+            'optional_attribs': ['spin', 'units'],
             'order': [],
             'several': [],
             'simple': [],
@@ -738,6 +766,7 @@ schema_dict = {
         './densityConvergence/overallChargeDensity': {
             'attribs': ['spin', 'distance', 'units'],
             'optional': [],
+            'optional_attribs': ['spin', 'units'],
             'order': [],
             'several': [],
             'simple': [],
@@ -746,6 +775,7 @@ schema_dict = {
         './densityConvergence/spinDensity': {
             'attribs': ['spin', 'distance', 'units'],
             'optional': [],
+            'optional_attribs': ['spin', 'units'],
             'order': [],
             'several': [],
             'simple': [],
@@ -754,6 +784,7 @@ schema_dict = {
         './eigenvalues': {
             'attribs': [],
             'optional': [],
+            'optional_attribs': [],
             'order': ['eigenvaluesAt'],
             'several': ['eigenvaluesAt'],
             'simple': ['eigenvaluesAt'],
@@ -762,6 +793,7 @@ schema_dict = {
         './eigenvalues/eigenvaluesAt': {
             'attribs': ['spin', 'ikpt', 'k_x', 'k_y', 'k_z'],
             'optional': [],
+            'optional_attribs': ['spin', 'k_x', 'k_y', 'k_z'],
             'order': [],
             'several': [],
             'simple': [],
@@ -770,6 +802,7 @@ schema_dict = {
         './energyParameters': {
             'attribs': ['units'],
             'optional': ['atomicEP', 'heAtomicEP', 'loAtomicEP', 'heloAtomicEP', 'vacuumEP'],
+            'optional_attribs': [],
             'order': ['atomicEP', 'heAtomicEP', 'loAtomicEP', 'heloAtomicEP', 'vacuumEP'],
             'several': ['atomicEP', 'heAtomicEP', 'loAtomicEP', 'heloAtomicEP', 'vacuumEP'],
             'simple': ['atomicEP', 'heAtomicEP', 'loAtomicEP', 'heloAtomicEP', 'vacuumEP'],
@@ -778,6 +811,7 @@ schema_dict = {
         './energyParameters/atomicEP': {
             'attribs': ['atomType', 'spin', 'branch', 'branchLowest', 'branchHighest', 'value'],
             'optional': [],
+            'optional_attribs': ['spin', 'branchLowest', 'branchHighest'],
             'order': [],
             'several': [],
             'simple': [],
@@ -786,6 +820,7 @@ schema_dict = {
         './energyParameters/heAtomicEP': {
             'attribs': ['atomType', 'spin', 'branch', 'branchLowest', 'branchHighest', 'value'],
             'optional': [],
+            'optional_attribs': ['spin', 'branchLowest', 'branchHighest'],
             'order': [],
             'several': [],
             'simple': [],
@@ -794,6 +829,7 @@ schema_dict = {
         './energyParameters/heloAtomicEP': {
             'attribs': ['atomType', 'spin', 'branch', 'branchLowest', 'branchHighest', 'value'],
             'optional': [],
+            'optional_attribs': ['spin', 'branchLowest', 'branchHighest'],
             'order': [],
             'several': [],
             'simple': [],
@@ -802,6 +838,7 @@ schema_dict = {
         './energyParameters/loAtomicEP': {
             'attribs': ['atomType', 'spin', 'branch', 'branchLowest', 'branchHighest', 'value'],
             'optional': [],
+            'optional_attribs': ['spin', 'branchLowest', 'branchHighest'],
             'order': [],
             'several': [],
             'simple': [],
@@ -810,6 +847,7 @@ schema_dict = {
         './energyParameters/vacuumEP': {
             'attribs': ['vacuum', 'spin', 'vzIR', 'vzInf', 'value'],
             'optional': [],
+            'optional_attribs': ['spin', 'vzIR', 'vzInf'],
             'order': [],
             'several': [],
             'simple': [],
@@ -818,6 +856,7 @@ schema_dict = {
         './ldaUDensityMatrix': {
             'attribs': [],
             'optional': ['densityMatrixFor'],
+            'optional_attribs': [],
             'order': ['densityMatrixFor'],
             'several': ['densityMatrixFor'],
             'simple': ['densityMatrixFor'],
@@ -826,6 +865,7 @@ schema_dict = {
         './ldaUDensityMatrix/densityMatrixFor': {
             'attribs': ['spin', 'atomType', 'uIndex', 'l', 'U', 'J'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -834,6 +874,7 @@ schema_dict = {
         './ldaUDensityMatrixConvergence': {
             'attribs': [],
             'optional': ['distance'],
+            'optional_attribs': [],
             'order': ['distance'],
             'several': ['distance'],
             'simple': ['distance'],
@@ -842,6 +883,7 @@ schema_dict = {
         './ldaUDensityMatrixConvergence/distance': {
             'attribs': ['spin', 'distance'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -850,6 +892,7 @@ schema_dict = {
         './magneticMomentsInMTSpheres': {
             'attribs': ['units'],
             'optional': ['magneticMoment'],
+            'optional_attribs': ['units'],
             'order': ['magneticMoment'],
             'several': ['magneticMoment'],
             'simple': ['magneticMoment'],
@@ -858,6 +901,7 @@ schema_dict = {
         './magneticMomentsInMTSpheres/magneticMoment': {
             'attribs': ['atomType', 'moment', 'spinUpCharge', 'spinDownCharge'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -866,6 +910,7 @@ schema_dict = {
         './noncollinearTorgue': {
             'attribs': [],
             'optional': ['torgue'],
+            'optional_attribs': [],
             'order': ['torgue'],
             'several': ['torgue'],
             'simple': ['torgue'],
@@ -874,6 +919,7 @@ schema_dict = {
         './noncollinearTorgue/torgue': {
             'attribs': ['atomType', 'sigma_x', 'sigma_y', 'sigma_z', 'units'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -882,6 +928,7 @@ schema_dict = {
         './onSiteExchangeSplitting': {
             'attribs': [],
             'optional': ['excSplit'],
+            'optional_attribs': [],
             'order': ['excSplit'],
             'several': ['excSplit'],
             'simple': ['excSplit'],
@@ -890,6 +937,7 @@ schema_dict = {
         './onSiteExchangeSplitting/excSplit': {
             'attribs': ['atomType', 'l', 'Delta', 'units'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -898,6 +946,7 @@ schema_dict = {
         './orbitalMagneticMomentsInMTSpheres': {
             'attribs': ['units'],
             'optional': ['orbMagMoment'],
+            'optional_attribs': ['units'],
             'order': ['orbMagMoment'],
             'several': ['orbMagMoment'],
             'simple': ['orbMagMoment'],
@@ -906,6 +955,7 @@ schema_dict = {
         './orbitalMagneticMomentsInMTSpheres/orbMagMoment': {
             'attribs': ['atomType', 'moment', 'spinUpCharge', 'spinDownCharge'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -914,6 +964,7 @@ schema_dict = {
         './rdmft': {
             'attribs': ['energy'],
             'optional': ['occupations'],
+            'optional_attribs': [],
             'order': ['occupations'],
             'several': ['occupations'],
             'simple': [],
@@ -922,6 +973,7 @@ schema_dict = {
         './rdmft/occupations': {
             'attribs': ['spin', 'kpoint'],
             'optional': ['state'],
+            'optional_attribs': [],
             'order': ['state'],
             'several': ['state'],
             'simple': ['state'],
@@ -930,6 +982,7 @@ schema_dict = {
         './rdmft/occupations/state': {
             'attribs': ['index', 'energy', 'occupation'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -938,6 +991,7 @@ schema_dict = {
         './spinorbitTorgue': {
             'attribs': [],
             'optional': ['torgue'],
+            'optional_attribs': [],
             'order': ['torgue'],
             'several': ['torgue'],
             'simple': ['torgue'],
@@ -946,6 +1000,7 @@ schema_dict = {
         './spinorbitTorgue/torgue': {
             'attribs': ['atomType', 'sigma_x', 'sigma_y', 'sigma_z', 'units'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -954,6 +1009,7 @@ schema_dict = {
         './sumValenceSingleParticleEnergies': {
             'attribs': ['value', 'units'],
             'optional': [],
+            'optional_attribs': ['units'],
             'order': [],
             'several': [],
             'simple': [],
@@ -962,6 +1018,7 @@ schema_dict = {
         './timing': {
             'attribs': ['units'],
             'optional': ['compositeTimer', 'timer'],
+            'optional_attribs': ['units'],
             'order': ['compositeTimer', 'timer'],
             'several': ['compositeTimer', 'timer'],
             'simple': ['timer'],
@@ -970,6 +1027,7 @@ schema_dict = {
         './timing/timer': {
             'attribs': ['name', 'value', 'units'],
             'optional': [],
+            'optional_attribs': ['units'],
             'order': [],
             'several': [],
             'simple': [],
@@ -982,6 +1040,7 @@ schema_dict = {
                 'chargeDenXCDenIntegral', 'FockExchangeEnergyValence', 'FockExchangeEnergyCore',
                 'atomTypeDependentContributions', 'dftUCorrection', 'tkbTimesEntropy', 'freeEnergy', 'extrapolationTo0K'
             ],
+            'optional_attribs': ['units', 'comment'],
             'order': [
                 'sumOfEigenvalues', 'densityCoulombPotentialIntegral', 'densityEffectivePotentialIntegral',
                 'chargeDenXCDenIntegral', 'FockExchangeEnergyValence', 'FockExchangeEnergyCore',
@@ -1002,6 +1061,7 @@ schema_dict = {
         './totalEnergy/FockExchangeEnergyCore': {
             'attribs': ['value', 'units'],
             'optional': [],
+            'optional_attribs': ['units'],
             'order': [],
             'several': [],
             'simple': [],
@@ -1010,6 +1070,7 @@ schema_dict = {
         './totalEnergy/FockExchangeEnergyValence': {
             'attribs': ['value', 'units'],
             'optional': [],
+            'optional_attribs': ['units'],
             'order': [],
             'several': [],
             'simple': [],
@@ -1018,6 +1079,7 @@ schema_dict = {
         './totalEnergy/atomTypeDependentContributions': {
             'attribs': ['atomType'],
             'optional': ['electronNucleiInteractionDifferentMTs', 'MadelungTerm'],
+            'optional_attribs': [],
             'order': ['electronNucleiInteractionDifferentMTs', 'MadelungTerm'],
             'several': [],
             'simple': ['electronNucleiInteractionDifferentMTs', 'MadelungTerm'],
@@ -1026,6 +1088,7 @@ schema_dict = {
         './totalEnergy/atomTypeDependentContributions/MadelungTerm': {
             'attribs': ['value', 'units'],
             'optional': [],
+            'optional_attribs': ['units'],
             'order': [],
             'several': [],
             'simple': [],
@@ -1034,6 +1097,7 @@ schema_dict = {
         './totalEnergy/atomTypeDependentContributions/electronNucleiInteractionDifferentMTs': {
             'attribs': ['value', 'units'],
             'optional': [],
+            'optional_attribs': ['units'],
             'order': [],
             'several': [],
             'simple': [],
@@ -1042,6 +1106,7 @@ schema_dict = {
         './totalEnergy/chargeDenXCDenIntegral': {
             'attribs': ['value', 'units'],
             'optional': [],
+            'optional_attribs': ['units'],
             'order': [],
             'several': [],
             'simple': [],
@@ -1050,6 +1115,7 @@ schema_dict = {
         './totalEnergy/densityCoulombPotentialIntegral': {
             'attribs': ['value', 'units'],
             'optional': [],
+            'optional_attribs': ['units'],
             'order': [],
             'several': [],
             'simple': [],
@@ -1058,6 +1124,7 @@ schema_dict = {
         './totalEnergy/densityEffectivePotentialIntegral': {
             'attribs': ['value', 'units'],
             'optional': [],
+            'optional_attribs': ['units'],
             'order': [],
             'several': [],
             'simple': [],
@@ -1066,6 +1133,7 @@ schema_dict = {
         './totalEnergy/dftUCorrection': {
             'attribs': ['value', 'units'],
             'optional': [],
+            'optional_attribs': ['units'],
             'order': [],
             'several': [],
             'simple': [],
@@ -1074,6 +1142,7 @@ schema_dict = {
         './totalEnergy/extrapolationTo0K': {
             'attribs': ['value', 'units'],
             'optional': [],
+            'optional_attribs': ['units'],
             'order': [],
             'several': [],
             'simple': [],
@@ -1082,6 +1151,7 @@ schema_dict = {
         './totalEnergy/freeEnergy': {
             'attribs': ['value', 'units'],
             'optional': [],
+            'optional_attribs': ['units'],
             'order': [],
             'several': [],
             'simple': [],
@@ -1090,6 +1160,7 @@ schema_dict = {
         './totalEnergy/sumOfEigenvalues': {
             'attribs': ['value', 'units'],
             'optional': ['coreElectrons', 'valenceElectrons'],
+            'optional_attribs': ['units'],
             'order': ['coreElectrons', 'valenceElectrons'],
             'several': [],
             'simple': ['coreElectrons', 'valenceElectrons'],
@@ -1098,6 +1169,7 @@ schema_dict = {
         './totalEnergy/sumOfEigenvalues/coreElectrons': {
             'attribs': ['value', 'units'],
             'optional': [],
+            'optional_attribs': ['units'],
             'order': [],
             'several': [],
             'simple': [],
@@ -1106,6 +1178,7 @@ schema_dict = {
         './totalEnergy/sumOfEigenvalues/valenceElectrons': {
             'attribs': ['value', 'units'],
             'optional': [],
+            'optional_attribs': ['units'],
             'order': [],
             'several': [],
             'simple': [],
@@ -1114,6 +1187,7 @@ schema_dict = {
         './totalEnergy/tkbTimesEntropy': {
             'attribs': ['value', 'units'],
             'optional': [],
+            'optional_attribs': ['units'],
             'order': [],
             'several': [],
             'simple': [],
@@ -1122,6 +1196,7 @@ schema_dict = {
         './totalForcesOnRepresentativeAtoms': {
             'attribs': ['units'],
             'optional': ['forceTotal'],
+            'optional_attribs': ['units'],
             'order': ['forceTotal'],
             'several': ['forceTotal'],
             'simple': ['forceTotal'],
@@ -1130,6 +1205,7 @@ schema_dict = {
         './totalForcesOnRepresentativeAtoms/forceTotal': {
             'attribs': ['atomType', 'x', 'y', 'z', 'F_x', 'F_y', 'F_z', 'units'],
             'optional': [],
+            'optional_attribs': ['units'],
             'order': [],
             'several': [],
             'simple': [],
@@ -1138,6 +1214,7 @@ schema_dict = {
         './valenceDensity': {
             'attribs': [],
             'optional': ['mtCharges', 'spinDependentCharge', 'totalCharge', 'fixedCharges'],
+            'optional_attribs': [],
             'order': ['mtCharges', 'spinDependentCharge', 'totalCharge', 'fixedCharges'],
             'several': ['mtCharges', 'spinDependentCharge', 'totalCharge', 'fixedCharges'],
             'simple': ['spinDependentCharge', 'totalCharge'],
@@ -1146,6 +1223,7 @@ schema_dict = {
         './valenceDensity/fixedCharges': {
             'attribs': [],
             'optional': ['spinDependentCharge', 'totalCharge'],
+            'optional_attribs': [],
             'order': ['spinDependentCharge', 'totalCharge'],
             'several': ['spinDependentCharge', 'totalCharge'],
             'simple': ['spinDependentCharge', 'totalCharge'],
@@ -1154,6 +1232,7 @@ schema_dict = {
         './valenceDensity/fixedCharges/spinDependentCharge': {
             'attribs': ['spin', 'total', 'interstitial', 'mtSpheres', 'vacuum1', 'vacuum2'],
             'optional': [],
+            'optional_attribs': ['spin', 'vacuum1', 'vacuum2'],
             'order': [],
             'several': [],
             'simple': [],
@@ -1162,6 +1241,7 @@ schema_dict = {
         './valenceDensity/fixedCharges/totalCharge': {
             'attribs': ['value', 'units'],
             'optional': [],
+            'optional_attribs': ['units'],
             'order': [],
             'several': [],
             'simple': [],
@@ -1170,6 +1250,7 @@ schema_dict = {
         './valenceDensity/mtCharges': {
             'attribs': ['spin'],
             'optional': ['mtCharge', 'mtJcharge'],
+            'optional_attribs': ['spin'],
             'order': ['mtCharge', 'mtJcharge'],
             'several': ['mtCharge', 'mtJcharge'],
             'simple': ['mtCharge'],
@@ -1178,6 +1259,7 @@ schema_dict = {
         './valenceDensity/mtCharges/mtCharge': {
             'attribs': ['atomType', 'total', 's', 'p', 'd', 'f'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -1186,6 +1268,7 @@ schema_dict = {
         './valenceDensity/mtCharges/mtJcharge': {
             'attribs': ['atomType'],
             'optional': [],
+            'optional_attribs': [],
             'order': ['lowJ', 'highJ'],
             'several': [],
             'simple': ['lowJ', 'highJ'],
@@ -1194,6 +1277,7 @@ schema_dict = {
         './valenceDensity/mtCharges/mtJcharge/highJ': {
             'attribs': ['p', 'd', 'f'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -1202,6 +1286,7 @@ schema_dict = {
         './valenceDensity/mtCharges/mtJcharge/lowJ': {
             'attribs': ['p', 'd', 'f'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -1210,6 +1295,7 @@ schema_dict = {
         './valenceDensity/spinDependentCharge': {
             'attribs': ['spin', 'total', 'interstitial', 'mtSpheres', 'vacuum1', 'vacuum2'],
             'optional': [],
+            'optional_attribs': ['spin', 'vacuum1', 'vacuum2'],
             'order': [],
             'several': [],
             'simple': [],
@@ -1218,6 +1304,7 @@ schema_dict = {
         './valenceDensity/totalCharge': {
             'attribs': ['value', 'units'],
             'optional': [],
+            'optional_attribs': ['units'],
             'order': [],
             'several': [],
             'simple': [],
@@ -1421,6 +1508,7 @@ schema_dict = {
                 'programVersion', 'parallelSetup', 'startDateAndTime', 'fleurInput', 'numericalParameters', 'scfLoop',
                 'ERROR', 'endDateAndTime'
             ],
+            'optional_attribs': [],
             'order': [
                 'programVersion', 'parallelSetup', 'startDateAndTime', 'fleurInput', 'numericalParameters', 'scfLoop',
                 'ERROR', 'endDateAndTime'
@@ -1432,6 +1520,7 @@ schema_dict = {
         '/fleurOutput/ERROR': {
             'attribs': ['Message'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -1440,6 +1529,7 @@ schema_dict = {
         '/fleurOutput/endDateAndTime': {
             'attribs': ['date', 'time', 'zone'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -1448,6 +1538,7 @@ schema_dict = {
         '/fleurOutput/numericalParameters': {
             'attribs': [],
             'optional': [],
+            'optional_attribs': [],
             'order': ['atomsInCell', 'basis', 'density', 'bands', 'volumes', 'kPointList'],
             'several': [],
             'simple': ['atomsInCell', 'basis', 'density', 'bands'],
@@ -1456,6 +1547,7 @@ schema_dict = {
         '/fleurOutput/numericalParameters/atomsInCell': {
             'attribs': ['nat', 'ntype', 'jmtd', 'n_u', 'n_hia'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -1464,6 +1556,7 @@ schema_dict = {
         '/fleurOutput/numericalParameters/bands': {
             'attribs': ['numbands'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -1472,6 +1565,7 @@ schema_dict = {
         '/fleurOutput/numericalParameters/basis': {
             'attribs': ['nvd', 'lmaxd', 'nlotot'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -1480,6 +1574,7 @@ schema_dict = {
         '/fleurOutput/numericalParameters/density': {
             'attribs': ['ng3', 'ng2'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -1488,6 +1583,7 @@ schema_dict = {
         '/fleurOutput/numericalParameters/kPointList': {
             'attribs': ['weightScale', 'count'],
             'optional': ['kPoint'],
+            'optional_attribs': [],
             'order': ['kPoint'],
             'several': ['kPoint'],
             'simple': ['kPoint'],
@@ -1496,6 +1592,7 @@ schema_dict = {
         '/fleurOutput/numericalParameters/volumes': {
             'attribs': ['unitCell', 'interstitial', 'omegaTilda', 'surfaceArea', 'z1'],
             'optional': ['mtVolume'],
+            'optional_attribs': ['omegaTilda', 'surfaceArea', 'z1'],
             'order': ['mtVolume'],
             'several': ['mtVolume'],
             'simple': ['mtVolume'],
@@ -1504,6 +1601,7 @@ schema_dict = {
         '/fleurOutput/numericalParameters/volumes/mtVolume': {
             'attribs': ['atomType', 'mtRadius', 'mtVolume'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -1512,6 +1610,7 @@ schema_dict = {
         '/fleurOutput/parallelSetup': {
             'attribs': [],
             'optional': ['openMP', 'mpi', 'mem'],
+            'optional_attribs': [],
             'order': ['openMP', 'mpi', 'mem'],
             'several': [],
             'simple': ['openMP', 'mpi', 'mem'],
@@ -1520,6 +1619,7 @@ schema_dict = {
         '/fleurOutput/parallelSetup/mem': {
             'attribs': ['memoryPerNode'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -1528,6 +1628,7 @@ schema_dict = {
         '/fleurOutput/parallelSetup/mpi': {
             'attribs': ['mpiProcesses'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -1536,6 +1637,7 @@ schema_dict = {
         '/fleurOutput/parallelSetup/openMP': {
             'attribs': ['ompThreads'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -1547,6 +1649,7 @@ schema_dict = {
                 'compilationInfo', 'gitInfo', 'targetComputerArchitectures', 'precision', 'targetStructureClass',
                 'additionalCompilerFlags'
             ],
+            'optional_attribs': [],
             'order': [
                 'compilationInfo', 'gitInfo', 'targetComputerArchitectures', 'precision', 'targetStructureClass',
                 'additionalCompilerFlags'
@@ -1561,6 +1664,7 @@ schema_dict = {
         '/fleurOutput/programVersion/compilationInfo': {
             'attribs': ['date', 'user', 'host', 'flag', 'link'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -1569,6 +1673,7 @@ schema_dict = {
         '/fleurOutput/programVersion/gitInfo': {
             'attribs': ['version', 'lastCommitHash', 'branch'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -1577,6 +1682,7 @@ schema_dict = {
         '/fleurOutput/programVersion/precision': {
             'attribs': ['type'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
@@ -1585,6 +1691,7 @@ schema_dict = {
         '/fleurOutput/scfLoop': {
             'attribs': [],
             'optional': ['iteration'],
+            'optional_attribs': [],
             'order': ['iteration'],
             'several': ['iteration'],
             'simple': [],
@@ -1594,6 +1701,7 @@ schema_dict = {
             'attribs': ['numberForCurrentRun', 'overallNumber'],
             'optional':
             ['Forcetheorem_Loop', 'Forcetheorem_SSDISP', 'Forcetheorem_DMI', 'Forcetheorem_MAE', 'Forcetheorem_JIJ'],
+            'optional_attribs': ['overallNumber'],
             'order': [
                 'energyParameters', 'eigenvalues', 'bandgap', 'sumValenceSingleParticleEnergies', 'FermiEnergy',
                 'valenceDensity', 'onSiteExchangeSplitting', 'noncollinearTorgue', 'spinorbitTorgue', 'coreStates',
@@ -1609,6 +1717,7 @@ schema_dict = {
         '/fleurOutput/startDateAndTime': {
             'attribs': ['date', 'time', 'zone'],
             'optional': [],
+            'optional_attribs': [],
             'order': [],
             'several': [],
             'simple': [],
