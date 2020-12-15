@@ -469,8 +469,13 @@ def parse_task(tasks_definition,
         if root_tag is not None:
             args['abspath'] = root_tag
 
-        if 'only' in spec and spec['parse_type'] == 'parentAttribs':
-            args['only'] = spec['only']
+        if 'only_required' in spec and spec['parse_type'] in ['parentAttribs', 'allAttribs', 'singleValue']:
+            args['only_required'] = spec['only_required']
+
+        if spec['parse_type'] == 'singleValue':
+            args['ignore'] = ['comment']
+        elif spec['parse_type'] in ['allAttribs', 'parentAttribs']:
+            args['ignore'] = spec.get('ignore', [])
 
         parsed_dict = out_dict
         if 'subdict' in spec:
@@ -483,18 +488,16 @@ def parse_task(tasks_definition,
             if spec['parse_type'] == 'singleValue':
                 base_value = 'value'
                 no_list = ['units']
-                ignore = ['comment']
                 flat = True
             elif spec['parse_type'] in ['allAttribs', 'parentAttribs']:
                 base_value = spec.get('base_value', '')
-                ignore = spec.get('ignore', [])
                 no_list = spec.get('overwrite', [])
                 flat = spec.get('flat', True)
 
             if flat:
                 for key, val in parsed_value.items():
 
-                    if key in ignore or val is None:
+                    if val is None:
                         continue
 
                     if key == base_value:
@@ -513,8 +516,7 @@ def parse_task(tasks_definition,
             else:
                 for key, val in list(parsed_value.items()):
                     parsed_value.pop(key)
-                    if not key in ignore:
-                        parsed_value[camel_to_snake(key)] = val
+                    parsed_value[camel_to_snake(key)] = val
 
                 parsed_dict[task_key] = parsed_value
 

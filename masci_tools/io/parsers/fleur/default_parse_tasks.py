@@ -268,7 +268,7 @@ TASKS_DEFINITION = {
                 'name': 'relPos'
             },
             'flat': False,
-            'only': 'species'
+            'only_required': True
         },
         'element_species': {
             'parse_type': 'allAttribs',
@@ -312,7 +312,7 @@ TASKS_DEFINITION = {
                 'name': 'filmPos'
             },
             'flat': False,
-            'only': 'species'
+            'only_required': True
         },
         'element_species': {
             'parse_type': 'allAttribs',
@@ -387,25 +387,29 @@ TASKS_DEFINITION = {
             'parse_type': 'singleValue',
             'path_spec': {
                 'name': 'sumOfEigenvalues'
-            }
+            },
+            'only_required': True
         },
         'energy_core_electrons': {
             'parse_type': 'singleValue',
             'path_spec': {
                 'name': 'coreElectrons'
-            }
+            },
+            'only_required': True
         },
         'energy_valence_electrons': {
             'parse_type': 'singleValue',
             'path_spec': {
                 'name': 'valenceElectrons'
-            }
+            },
+            'only_required': True
         },
         'charge_den_xc_den_integral': {
             'parse_type': 'singleValue',
             'path_spec': {
                 'name': 'chargeDenXCDenIntegral'
-            }
+            },
+            'only_required': True
         },
     },
     'ldau_energy_correction': {
@@ -489,7 +493,7 @@ TASKS_DEFINITION = {
                 'contains': 'allElectronCharges',
                 'not_contains': 'fixed'
             },
-            'ignore': ['spin', 'vacuum1', 'vacuum2']
+            'only_required': True
         },
         'total_charge': {
             'parse_type': 'singleValue',
@@ -498,6 +502,7 @@ TASKS_DEFINITION = {
                 'contains': 'allElectronCharges',
                 'not_contains': 'fixed'
             },
+            'only_required': True
         }
     },
     #-------Tasks for forcetheorem Calculations

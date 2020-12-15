@@ -305,7 +305,8 @@ def evaluate_tag(node,
                  not_contains=None,
                  parser_info_out=None,
                  abspath=None,
-                 no_raise=None):
+                 only_required=False,
+                 ignore=None):
     """
     Evaluates all attributes of the tag based on the given name
     and additional further specifications with the available type information
@@ -325,8 +326,6 @@ def evaluate_tag(node,
     if parser_info_out is None:
         parser_info_out = {'parser_warnings': []}
 
-    if no_raise is None:
-        no_raise = []
 
     tag_xpath = get_tag_xpath(schema_dict, name, contains=contains, not_contains=not_contains)
 
@@ -334,9 +333,21 @@ def evaluate_tag(node,
     attribs = []
     if tag_xpath in schema_dict['tag_info']:
         attribs = schema_dict['tag_info'][tag_xpath]['attribs']
+        optional = schema_dict['tag_info'][tag_xpath]['optional_attribs']
     elif 'iteration_tag_info' in schema_dict:
         if tag_xpath in schema_dict['iteration_tag_info']:
             attribs = schema_dict['iteration_tag_info'][tag_xpath]['attribs']
+            optional = schema_dict['iteration_tag_info'][tag_xpath]['optional_attribs']
+
+    attribs = attribs.copy()
+    if only_required:
+        for attrib in optional:
+            attribs.remove(attrib)
+
+    if ignore is not None:
+        for attrib in ignore:
+            if attrib in attribs:
+                attribs.remove(attrib)
 
     if not attribs:
         parser_info_out['parser_warnings'].append(f'Failed to evaluate attributes from tag {name}: '
@@ -354,8 +365,7 @@ def evaluate_tag(node,
 
         if isinstance(stringattribute, list):
             if len(stringattribute) == 0:
-                if attrib not in no_raise:
-                    parser_info_out['parser_warnings'].append(f'No values found for attribute {attrib} at tag {name}')
+                parser_info_out['parser_warnings'].append(f'No values found for attribute {attrib} at tag {name}')
                 out_dict[attrib] = None
                 continue
 
@@ -383,7 +393,9 @@ def evaluate_single_value_tag(node,
                               contains=None,
                               not_contains=None,
                               parser_info_out=None,
-                              abspath=None):
+                              abspath=None,
+                              only_required=False,
+                              ignore=None):
     """
     Evaluates the value and unit attribute of the tag based on the given name
     and additional further specifications with the available type information
@@ -409,12 +421,13 @@ def evaluate_single_value_tag(node,
                               not_contains=not_contains,
                               parser_info_out=parser_info_out,
                               abspath=abspath,
-                              no_raise=['units', 'comment'])
+                              only_required=only_required,
+                              ignore=ignore)
 
     if 'value' not in value_dict:
         parser_info_out['parser_warnings'].append(f'Failed to evaluate singleValue from tag {name}: '
                                                   "Has no 'value' attribute")
-    if 'units' not in value_dict:
+    if 'units' not in value_dict and not only_required:
         parser_info_out['parser_warnings'].append(f'Failed to evaluate singleValue from tag {name}: '
                                                   "Has no 'units' attribute")
 
@@ -429,8 +442,8 @@ def evaluate_parent_tag(node,
                         contains=None,
                         not_contains=None,
                         abspath=None,
-                        no_raise=None,
-                        only=None):
+                        only_required=False,
+                        ignore=None):
     """
     Evaluates all attributes of the parent tag based on the given name
     and additional further specifications with the available type information
@@ -450,9 +463,6 @@ def evaluate_parent_tag(node,
     if parser_info_out is None:
         parser_info_out = {'parser_warnings': []}
 
-    if no_raise is None:
-        no_raise = []
-
     tag_xpath = get_tag_xpath(schema_dict, name, contains=contains, not_contains=not_contains)
 
     parent_xpath = tag_xpath.replace(f'/{name}', '')
@@ -461,20 +471,26 @@ def evaluate_parent_tag(node,
     attribs = []
     if parent_xpath in schema_dict['tag_info']:
         attribs = schema_dict['tag_info'][parent_xpath]['attribs']
+        optional = schema_dict['tag_info'][parent_xpath]['optional_attribs']
     elif 'iteration_tag_info' in schema_dict:
         if parent_xpath in schema_dict['iteration_tag_info']:
             attribs = schema_dict['iteration_tag_info'][parent_xpath]['attribs']
+            optional = schema_dict['iteration_tag_info'][parent_xpath]['optional_attribs']
+
+    attribs = attribs.copy()
+    if only_required:
+        for attrib in optional:
+            attribs.remove(attrib)
+
+    if ignore is not None:
+        for attrib in ignore:
+            if attrib in attribs:
+                attribs.remove(attrib)
 
     if not attribs:
         parser_info_out['parser_warnings'].append(f'Failed to evaluate attributes from tag {name}: '
                                                   'No attributes to parse either the tag does not '
                                                   'exist or it has no attributes')
-
-    if only is not None:
-        if only not in attribs:
-            raise ValueError(f"Invalid specification: Attribute only '{only}' not in available attribs"
-                             f'Valid attribs: {attribs}')
-        attribs = [only]
 
     if abspath is not None:
         tag_xpath = f'{abspath}{tag_xpath}'
@@ -492,8 +508,7 @@ def evaluate_parent_tag(node,
             stringattribute = get_xml_attribute(parent, attrib)
 
             if stringattribute == '':
-                if attrib not in no_raise:
-                    parser_info_out['parser_warnings'].append(
+                parser_info_out['parser_warnings'].append(
                         f'No values found for attribute {attrib} for parent tag of {name}')
                 out_dict[attrib].append(None)
                 continue

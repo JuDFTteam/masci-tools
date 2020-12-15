@@ -72,7 +72,7 @@ class ParseTasks(object):
 
     REQUIRED_KEYS = {'parse_type', 'path_spec'}
     ALLOWED_KEYS = {'parse_type', 'path_spec', 'subdict', 'overwrite_last'}
-    ALLOWED_KEYS_ALLATTRIBS = {'parse_type', 'path_spec', 'subdict', 'base_value', 'ignore', 'overwrite', 'flat'}
+    ALLOWED_KEYS_ALLATTRIBS = {'parse_type', 'path_spec', 'subdict', 'base_value', 'ignore', 'overwrite', 'flat', 'only_required'}
 
     _version = '0.1.0'
 
@@ -135,7 +135,7 @@ class ParseTasks(object):
             if not definition['parse_type'] in self.PARSE_TYPES:
                 raise ValueError(f"Unknown parse_type: {definition['parse_type']}")
 
-            if definition['parse_type'] in ['allAttribs', 'parentAttribs']:
+            if definition['parse_type'] in ['allAttribs', 'parentAttribs', 'singleValue']:
                 extra_keys = self.ALLOWED_KEYS_ALLATTRIBS.difference(task_keys)
             else:
                 extra_keys = self.ALLOWED_KEYS.difference(task_keys)
