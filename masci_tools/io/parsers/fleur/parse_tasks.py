@@ -50,6 +50,7 @@ def register_migration(cls, base_version, target_version):
 
     return migration_decorator
 
+
 class ParseTasks(object):
     """
     Representation of all known parsing tasks for the out.xml file

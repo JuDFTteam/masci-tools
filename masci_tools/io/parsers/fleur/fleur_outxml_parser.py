@@ -117,8 +117,9 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
     append_tasks = []
     for task_name, task_definition in additional_tasks.items():
         parse_tasks.add_task(task_name, task_definition, **kwargs)
-        if task_name not in ['fleur_modes', 'general_inp_info', 'general_out_info',
-                             'ldau_info', 'bulk_relax_info', 'film_relax_info']:
+        if task_name not in [
+                'fleur_modes', 'general_inp_info', 'general_out_info', 'ldau_info', 'bulk_relax_info', 'film_relax_info'
+        ]:
             append_tasks.append(task_name)
 
     out_dict, fleurmode, constants = parse_general_information(root,
