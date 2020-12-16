@@ -84,16 +84,38 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
     if not parse_xml:
         return {}
 
+    root = xmltree.getroot()
     if version is None:
-        try:
-            root = xmltree.getroot()
-            version = root.attrib['fleurOutputVersion']
-        except KeyError as exc:
-            raise ValueError('Failed to extract outputVersion') from exc
+        out_version = eval_xpath(root, '//@fleurOutputVersion', parser_info_out=parser_info_out)
+        if out_version is None:
+            raise ValueError('Failed to extract outputVersion')
+    else:
+        out_version = version
+
+    if out_version == '0.27':
+        program_version = eval_xpath(root, '//programVersion/@version', parser_info_out=parser_info_out)
+        if programVersion == 'fleur 31':
+            #Max4 release
+            out_version = '0.31'
+            inp_version = '0.31'
+            ignore_validation = True
+            parser_info_out['parser_warnings'].append("Ignoring '0.27' outputVersion for MaX4.0 release")
+        else:
+            raise ValueError('Versions before fleur MaX4.0 are not supported')
+    else:
+        ignore_validation = False
+        inp_version = eval_xpath(root, '//@fleurInputVersion', parser_info_out=parser_info_out)
+        if inp_version is None:
+            raise ValueError('Failed to extract inputVersion')
+
+    ignore_validation = kwargs.get('ignore_validation', ignore_validation)
+
+    if inp_version != out_version:
+        raise ValueError('inputVersion does not match outputVersion')
 
     #Load schema_dict (inp and out)
-    inpschema_dict = load_inpschema(version)
-    outschema_dict, outxmlschema = load_outschema(version, schema_return=True)
+    inpschema_dict = load_inpschema(inp_version)
+    outschema_dict, outxmlschema = load_outschema(out_version, schema_return=True)
 
     xmltree = clear_xml(xmltree)
     root = xmltree.getroot()
@@ -107,18 +129,18 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
             tree_x = etree.fromstring(outxmlfile, parser_on_fly)
         except etree.XMLSyntaxError as msg:
             message = msg
-            if kwargs.get('ignore_validation', False):
+            if ignore_validation:
                 parser_info_out['parser_warnings'].append(
                     f'Output file does not validate against the schema: {message}')
             else:
                 raise ValueError(f'Output file does not validate against the schema: {message}') from msg
-        if kwargs.get('ignore_validation', False):
+        if ignore_validation:
             parser_info_out['parser_warnings'].append(
                 'Output file does not validate against the schema: Reason is unknown')
         else:
             raise ValueError('Output file does not validate against the schema: Reason is unknown')
 
-    parse_tasks = ParseTasks(version)
+    parse_tasks = ParseTasks(out_version)
     additional_tasks = kwargs.pop('additional_tasks', {})
     append_tasks = []
     for task_name, task_definition in additional_tasks.items():
