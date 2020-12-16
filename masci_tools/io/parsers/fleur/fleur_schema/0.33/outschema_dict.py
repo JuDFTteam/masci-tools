@@ -5,6 +5,7 @@ for version 0.33
 
 The keys contain the following information:
 
+    - 'input_tag': Name of the element containing the fleur input
     - 'tag_paths': simple xpath expressions to all valid tag names not in an iteration
                    Multiple paths or ambiguous tag names are parsed as a list
     - 'iteration_tag_paths': simple relative xpath expressions to all valid tag names
@@ -332,6 +333,8 @@ schema_dict = {
             'length': 1
         }
     },
+    'input_tag':
+    'fleurInput',
     'iteration_other_attribs': {
         'Angles': ['./Forcetheorem_DMI', './Forcetheorem_MAE'],
         'Delta': ['./onSiteExchangeSplitting/excSplit'],

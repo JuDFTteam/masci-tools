@@ -21,6 +21,7 @@ from lxml import etree
 _RECURSIVE_TYPES = ['CompositeTimerType']
 #Name of the type of an scf iteration in the out schema (At this point the paths are split up)
 _ITERATION_TYPE = 'IterationType'
+_INPUT_TYPE = 'FleurInputType'
 
 
 def _get_base_types():
@@ -1002,3 +1003,15 @@ def get_tag_info(xmlschema, namespaces, **kwargs):
                 tag_info[path] = info_dict
 
     return tag_info
+
+
+def get_input_tag(xmlschema, namespaces, **kwargs):
+    """
+    Returns the tag for the input type element of the outxmlschema
+
+    :param xmlschema: xmltree representing the schema
+    :param namespaces: dictionary with the defined namespaces
+
+    :return: name of the element with the type 'FleurInputType'
+    """
+    return xmlschema.xpath(f"//xsd:element[@type='{_INPUT_TYPE}']/@name", namespaces=namespaces)[0]

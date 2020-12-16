@@ -39,6 +39,7 @@ def create_outschema_dict(path, save_to_file=True):
 
     #Add new functionality to this dictionary here
     schema_actions = {
+        'input_tag': get_input_tag,
         'basic_types': get_basic_types,
         'attrib_types': extract_attribute_types,
         'simple_elements': get_basic_elements,
@@ -82,6 +83,7 @@ def create_outschema_dict(path, save_to_file=True):
                 '\n'\
                 'The keys contain the following information:\n'\
                 '\n'\
+                "    - 'input_tag': Name of the element containing the fleur input\n"\
                 "    - 'tag_paths': simple xpath expressions to all valid tag names not in an iteration\n"\
                 '                   Multiple paths or ambiguous tag names are parsed as a list\n'\
                 "    - 'iteration_tag_paths': simple relative xpath expressions to all valid tag names\n"\
