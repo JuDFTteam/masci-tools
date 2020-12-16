@@ -512,7 +512,7 @@ def parse_task(tasks_definition,
                         parsed_dict[current_key].append(val)
 
             else:
-                parsed_dict[task_key] = {camel_to_snake(key):val for key, val in parsed_value.items()}
+                parsed_dict[task_key] = {camel_to_snake(key): val for key, val in parsed_value.items()}
 
         else:
             if task_key not in parsed_dict and use_lists:
