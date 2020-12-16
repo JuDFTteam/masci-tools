@@ -142,7 +142,7 @@ def get_attrib_xpath(schema_dict, name, contains=None, not_contains=None, exclud
                          f'These are possible: {all_paths}')
 
 
-def read_constants(xmltree, schema_dict, abspath=None):
+def read_constants(xmltree, schema_dict, replace_root=None):
     """
     Reads in the constants defined in the inp.xml
     and returns them combined with the predefined constants from
@@ -165,7 +165,7 @@ def read_constants(xmltree, schema_dict, abspath=None):
         'Bohr': 1.0
     }
 
-    constants = evaluate_tag(xmltree, schema_dict, 'constants', const_dict, abspath=abspath)
+    constants = evaluate_tag(xmltree, schema_dict, 'constants', const_dict, replace_root=replace_root)
 
     if constants:
         for name, value in zip(constants['name'], constants['value']):
@@ -193,7 +193,7 @@ def evaluate_attribute(node, schema_dict, name, constants, parser_info_out=None,
         :param not_contains: str, this string has to NOT be in the final path
         :param exclude: list of str, here specific types of attributes can be excluded
                         valid values are: settable, settable_contains, other
-        :param abspath: str, to append in front of the path
+        :param replace_root: str, replaces the root tag (used for inserting output root to input paths)
 
     :returns: list or single value, converted in convert_xml_attribute
     """
@@ -223,8 +223,10 @@ def evaluate_attribute(node, schema_dict, name, constants, parser_info_out=None,
                                         not_contains=not_contains,
                                         exclude=exclude)
 
-    if 'abspath' in kwargs:
-        attrib_xpath = f"{kwargs.get('abspath')}{attrib_xpath}"
+    if 'replace_root' in kwargs:
+        replace_root = kwargs.get('replace_root')
+        if replace_root is not None:
+            attrib_xpath = attrib_xpath.replace(f"/{schema_dict['root_tag']}", replace_root)
 
     stringattribute = eval_xpath(node, f'{attrib_xpath}/@{name}', parser_info_out=parser_info_out)
 
@@ -263,7 +265,7 @@ def evaluate_text(node, schema_dict, name, constants, parser_info_out=None, **kw
     Kwargs:
         :param contains: str, this string has to be in the final path
         :param not_contains: str, this string has to NOT be in the final path
-        :param abspath: str, to append in front of the path
+        :param replace_root: str, replaces the root tag (used for inserting output root to input paths)
 
 
     :returns: list or single value, converted in convert_xml_text
@@ -278,8 +280,10 @@ def evaluate_text(node, schema_dict, name, constants, parser_info_out=None, **kw
 
     tag_xpath = get_tag_xpath(schema_dict, name, contains=contains, not_contains=not_contains)
 
-    if 'abspath' in kwargs:
-        tag_xpath = f"{kwargs.get('abspath')}{tag_xpath}"
+    if 'replace_root' in kwargs:
+        replace_root = kwargs.get('replace_root')
+        if replace_root is not None:
+            tag_xpath = tag_xpath.replace(f"/{schema_dict['root_tag']}", replace_root)
 
     stringtext = eval_xpath(node, f'{tag_xpath}/text()', parser_info_out=parser_info_out)
 
@@ -321,7 +325,7 @@ def evaluate_tag(node, schema_dict, name, constants, parser_info_out=None, **kwa
     :param parser_info_out: dict, with warnings, info, errors, ...
 
     Kwargs:
-        :param abspath: str, to append in front of the path
+        :param replace_root: str, replaces the root tag (used for inserting output root to input paths)
         :param contains: str, this string has to be in the final path
         :param not_contains: str, this string has to NOT be in the final path
         :param only_required: bool (optional, default False), if True only required attributes are parsed
@@ -365,8 +369,10 @@ def evaluate_tag(node, schema_dict, name, constants, parser_info_out=None, **kwa
                                                   'No attributes to parse either the tag does not '
                                                   'exist or it has no attributes')
 
-    if 'abspath' in kwargs:
-        tag_xpath = f"{kwargs.get('abspath')}{tag_xpath}"
+    if 'replace_root' in kwargs:
+        replace_root = kwargs.get('replace_root')
+        if replace_root is not None:
+            tag_xpath = tag_xpath.replace(f"/{schema_dict['root_tag']}", replace_root)
 
     out_dict = {}
 
@@ -408,7 +414,7 @@ def evaluate_single_value_tag(node, schema_dict, name, constants, parser_info_ou
     :param parser_info_out: dict, with warnings, info, errors, ...
 
     Kwargs:
-        :param abspath: str, to append in front of the path
+        :param replace_root: str, replaces the root tag (used for inserting output root to input paths)
         :param contains: str, this string has to be in the final path
         :param not_contains: str, this string has to NOT be in the final path
         :param only_required: bool (optional, default False), if True only required attributes are parsed
@@ -444,7 +450,7 @@ def evaluate_parent_tag(node, schema_dict, name, constants, parser_info_out=None
     :param parser_info_out: dict, with warnings, info, errors, ...
 
     Kwargs:
-        :param abspath: str, to append in front of the path
+        :param replace_root: str, replaces the root tag (used for inserting output root to input paths)
         :param contains: str, this string has to be in the final path
         :param not_contains: str, this string has to NOT be in the final path
         :param only_required: bool (optional, default False), if True only required attributes are parsed
@@ -490,8 +496,10 @@ def evaluate_parent_tag(node, schema_dict, name, constants, parser_info_out=None
                                                   'No attributes to parse either the tag does not '
                                                   'exist or it has no attributes')
 
-    if 'abspath' in kwargs:
-        tag_xpath = f"{kwargs.get('abspath')}{tag_xpath}"
+    if 'replace_root' in kwargs:
+        replace_root = kwargs.get('replace_root')
+        if replace_root is not None:
+            tag_xpath = tag_xpath.replace(f"/{schema_dict['root_tag']}", replace_root)
 
     out_dict = dict.fromkeys(attribs)
     for attrib in attribs:
@@ -537,7 +545,7 @@ def tag_exists(node, schema_dict, name, parser_info_out=None, **kwargs):
     :param parser_info_out: dict, with warnings, info, errors, ...
 
     Kwargs:
-        :param abspath: str, to append in front of the path
+        :param replace_root: str, replaces the root tag (used for inserting output root to input paths)
         :param contains: str, this string has to be in the final path
         :param not_contains: str, this string has to NOT be in the final path
 
@@ -553,10 +561,12 @@ def get_number_of_nodes(node, schema_dict, name, parser_info_out=None, **kwargs)
 
     :param schema_dict: dict, containing all the path information and more
     :param name: str, name of the tag
-    :param contains: str, this string has to be in the final path
-    :param not_contains: str, this string has to NOT be in the final path
     :param parser_info_out: dict, with warnings, info, errors, ...
-    :param abspath: str, to append in front of the path
+
+    Kwargs:
+        :param contains: str, this string has to be in the final path
+        :param not_contains: str, this string has to NOT be in the final path
+        :param replace_root: str, replaces the root tag (used for inserting output root to input paths)
 
     :returns: bool, True if any nodes with the path exist
     """
@@ -567,7 +577,9 @@ def get_number_of_nodes(node, schema_dict, name, parser_info_out=None, **kwargs)
 
     tag_xpath = get_tag_xpath(schema_dict, name, contains=contains, not_contains=not_contains)
 
-    if 'abspath' in kwargs:
-        tag_xpath = f"{kwargs.get('abspath')}{tag_xpath}"
+    if 'replace_root' in kwargs:
+        replace_root = kwargs.get('replace_root')
+        if replace_root is not None:
+            tag_xpath = tag_xpath.replace(f"/{schema_dict['root_tag']}", replace_root)
 
     return len(eval_xpath(node, tag_xpath, parser_info_out=parser_info_out, list_return=True))

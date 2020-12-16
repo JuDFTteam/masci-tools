@@ -242,8 +242,8 @@ def parse_general_information(root, parse_tasks, outschema_dict, inpschema_dict,
 
     """
 
-    root_tag = '/fleurOutput'
-    constants = schema_util.read_constants(root, inpschema_dict, abspath=root_tag)
+    input_tag_path = schema_util.get_tag_xpath(outschema_dict, outschema_dict['input_tag'])
+    constants = schema_util.read_constants(root, inpschema_dict, replace_root=input_tag_path)
 
     fleurmode = {
         'jspin': 1,
@@ -261,7 +261,7 @@ def parse_general_information(root, parse_tasks, outschema_dict, inpschema_dict,
                            inpschema_dict,
                            constants,
                            parser_info_out,
-                           root_tag=root_tag,
+                           replace_root=input_tag_path,
                            use_lists=False)
     parser_info_out['fleur_modes'] = fleurmode
 
@@ -272,7 +272,7 @@ def parse_general_information(root, parse_tasks, outschema_dict, inpschema_dict,
                           inpschema_dict,
                           constants,
                           parser_info_out,
-                          root_tag=root_tag,
+                          replace_root=input_tag_path,
                           use_lists=False)
 
     out_dict = parse_task(parse_tasks['general_out_info'],
@@ -293,7 +293,7 @@ def parse_general_information(root, parse_tasks, outschema_dict, inpschema_dict,
                               inpschema_dict,
                               constants,
                               parser_info_out,
-                              root_tag=root_tag)
+                              replace_root=input_tag_path)
         out_dict = convert_funcs.convert_ldau_definitions(out_dict)
 
     if fleurmode['relax']:
@@ -307,7 +307,7 @@ def parse_general_information(root, parse_tasks, outschema_dict, inpschema_dict,
                                   inpschema_dict,
                                   constants,
                                   parser_info_out,
-                                  root_tag=root_tag,
+                                  replace_root=input_tag_path,
                                   use_lists=False)
         else:
             out_dict = parse_task(parse_tasks['bulk_relax_info'],
@@ -316,7 +316,7 @@ def parse_general_information(root, parse_tasks, outschema_dict, inpschema_dict,
                                   inpschema_dict,
                                   constants,
                                   parser_info_out,
-                                  root_tag=root_tag,
+                                  replace_root=input_tag_path,
                                   use_lists=False)
 
         out_dict = convert_funcs.convert_relax_info(out_dict)
@@ -430,7 +430,7 @@ def parse_task(tasks_definition,
                schema_dict,
                constants,
                parser_info_out,
-               root_tag=None,
+               replace_root=None,
                use_lists=True):
     """
     Evaluates the task given in the tasks_definition dict
@@ -485,8 +485,8 @@ def parse_task(tasks_definition,
         args = spec['path_spec'].copy()
         args['constants'] = constants
 
-        if root_tag is not None:
-            args['abspath'] = root_tag
+        if replace_root is not None:
+            args['replace_root'] = replace_root
 
         if 'only_required' in spec:
             args['only_required'] = spec['only_required']
