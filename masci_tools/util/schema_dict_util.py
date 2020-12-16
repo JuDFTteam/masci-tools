@@ -217,7 +217,11 @@ def evaluate_attribute(node, schema_dict, name, constants, parser_info_out=None,
                 parser_info_out['parser_warnings'].append(f"No attribute {name} found at tag {kwargs.get('tag_name')}")
                 return None
     else:
-        attrib_xpath = get_attrib_xpath(schema_dict, name, contains=contains, not_contains=not_contains, exclude=exclude)
+        attrib_xpath = get_attrib_xpath(schema_dict,
+                                        name,
+                                        contains=contains,
+                                        not_contains=not_contains,
+                                        exclude=exclude)
 
     if 'abspath' in kwargs:
         attrib_xpath = f"{kwargs.get('abspath')}{attrib_xpath}"
