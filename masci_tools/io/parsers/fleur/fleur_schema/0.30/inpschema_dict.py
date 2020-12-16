@@ -525,6 +525,8 @@ schema_dict = {
         ],
         'weightScale': ['/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointList']
     },
+    'root_tag':
+    'fleurInput',
     'simple_elements': {
         'a1': [{
             'length': 1,

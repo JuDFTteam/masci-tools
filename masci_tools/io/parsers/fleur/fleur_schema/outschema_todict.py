@@ -40,6 +40,7 @@ def create_outschema_dict(path, save_to_file=True):
     #Add new functionality to this dictionary here
     schema_actions = {
         'input_tag': get_input_tag,
+        'root_tag': get_root_tag,
         'basic_types': get_basic_types,
         'attrib_types': extract_attribute_types,
         'simple_elements': get_basic_elements,

@@ -363,6 +363,7 @@ schema_dict = {
         'vcaAddCharge': ['/fleurInput/atomSpecies/species', '/fleurInput/atomGroups/atomGroup'],
         'weight': ['/fleurInput/calculationSetup/bzIntegration/kPointList/kPoint']
     },
+    'root_tag': 'fleurInput',
     'simple_elements': {
         'a1': [{
             'length': 1,

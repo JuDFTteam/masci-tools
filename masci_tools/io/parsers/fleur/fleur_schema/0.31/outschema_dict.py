@@ -1233,6 +1233,7 @@ schema_dict = {
         'mtRadius': ['/fleurOutput/numericalParameters/volumes/mtVolume'],
         'mtVolume': ['/fleurOutput/numericalParameters/volumes/mtVolume']
     },
+    'root_tag': 'fleurOutput',
     'simple_elements': {
         'additionalCompilerFlags': [{
             'length': 'unbounded',

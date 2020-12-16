@@ -38,6 +38,7 @@ def create_inpschema_dict(path, save_to_file=True):
 
     #Add new functionality to this dictionary here
     schema_actions = {
+        'root_tag': get_root_tag,
         'tag_paths': get_tag_paths,
         'basic_types': get_basic_types,
         'attrib_types': extract_attribute_types,

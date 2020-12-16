@@ -695,6 +695,8 @@ schema_dict = {
         'weight': ['/fleurInput/calculationSetup/bzIntegration/kPointLists/kPointList/kPoint'],
         'zero': ['/fleurInput/output/plotting/plot']
     },
+    'root_tag':
+    'fleurInput',
     'simple_elements': {
         'a1': [{
             'length': 1,

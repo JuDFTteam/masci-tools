@@ -84,18 +84,6 @@ def _get_parent_fleur_type(elem, namespaces, stop_non_unique=False):
     return parent, parent_type
 
 
-def _get_root_tag(xmlschema, namespaces):
-    """
-    Returns the tag for the root element of the xmlschema
-
-    :param xmlschema: xmltree representing the schema
-    :param namespaces: dictionary with the defined namespaces
-
-    :return: name of the single element defined in the first level of the schema
-    """
-    return xmlschema.xpath('/xsd:schema/xsd:element/@name', namespaces=namespaces)[0]
-
-
 def _analyse_type_elem(xmlschema, namespaces, type_elem, base_types, convert_to_base=True, basic_types_mapping=None):
     """
     Analyses the given type element to deduce its base_types
@@ -259,7 +247,7 @@ def _get_xpath(xmlschema,
     if enforce_end_type in _RECURSIVE_TYPES:
         return None
     possible_paths = []
-    root_tag = _get_root_tag(xmlschema, namespaces)
+    root_tag = get_root_tag(xmlschema, namespaces)
     if tag_name == root_tag:
         if iteration_root:
             return None
@@ -1003,6 +991,18 @@ def get_tag_info(xmlschema, namespaces, **kwargs):
                 tag_info[path] = info_dict
 
     return tag_info
+
+
+def get_root_tag(xmlschema, namespaces, **kwargs):
+    """
+    Returns the tag for the root element of the xmlschema
+
+    :param xmlschema: xmltree representing the schema
+    :param namespaces: dictionary with the defined namespaces
+
+    :return: name of the single element defined in the first level of the schema
+    """
+    return xmlschema.xpath('/xsd:schema/xsd:element/@name', namespaces=namespaces)[0]
 
 
 def get_input_tag(xmlschema, namespaces, **kwargs):
