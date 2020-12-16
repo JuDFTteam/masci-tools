@@ -162,3 +162,33 @@ class ParseTasks(object):
             pprint(self.tasks)
         else:
             pprint(self.tasks.keys())
+
+
+@register_migration(ParseTasks, base_version='0.33', target_version='0.31')
+def migrate_033_to_031(definition_dict):
+    """
+    Migrate definitions for MaX5 release to MaX4 release
+
+    Changes:
+        - LDA+U density matrix distance output did not exist
+        - forcetheorem units attribute did not exist (get from 'sumValenceSingleParticleEnergies')
+    """
+
+    new_dict = copy.deepcopy(definition_dict)
+
+    new_dict.pop('nmmp_distances')
+
+    force_units = {
+        'parse_type': 'attrib',
+        'path_spec': {
+            'name': 'units',
+            'tag_name': 'sumValenceSingleParticleEnergies'
+        }
+    }
+
+    new_dict['forcetheorem_mae']['mae_force_units'] = copy.deepcopy(force_units)
+    new_dict['forcetheorem_ssdisp']['spst_force_units'] = copy.deepcopy(force_units)
+    new_dict['forcetheorem_jij']['jij_force_units'] = copy.deepcopy(force_units)
+    new_dict['forcetheorem_dmi']['dmi_force_units'] = copy.deepcopy(force_units)
+
+    return new_dict
