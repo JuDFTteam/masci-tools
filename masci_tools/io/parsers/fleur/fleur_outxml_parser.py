@@ -403,6 +403,11 @@ def parse_iteration(iteration_node,
     if append_tasks is not None:
         iteration_tasks += append_tasks
 
+    #Remove tasks that might be incompatible
+    for task in parse_tasks.incompatible_tasks:
+        if task in iteration_tasks:
+            iteration_tasks.remove(task)
+
     if debug:
         parser_info_out['debug_info']['iteration_tasks'] = iteration_tasks
 

@@ -221,6 +221,7 @@ TASKS_DEFINITION = {
             },
             'subdict': 'ldau_info',
             'flat': False,
+            'only_required': True
         },
         'ldau_species': {
             'parse_type': 'parentAttribs',
@@ -230,6 +231,7 @@ TASKS_DEFINITION = {
             },
             'subdict': 'ldau_info',
             'flat': False,
+            'only_required': True
         }
     },
     #--------Defintions for relaxation info from input section (bravais matrix, atompos)
@@ -417,7 +419,8 @@ TASKS_DEFINITION = {
             'path_spec': {
                 'name': 'dftUCorrection'
             },
-            'subdict': 'ldau_info'
+            'subdict': 'ldau_info',
+            'only_required': True
         },
     },
     'nmmp_distances': {

@@ -86,11 +86,13 @@ class ParseTasks(object):
         TODO: We need some way of versioning for the default tasks
         """
         self.tasks = TASKS_DEFINITION.copy()
+        self.incompatible_tasks = []
 
         #Look if the base version is compatible if not look for a migration
         if version not in __working_out_versions__:
             if version in self._migrations['0.33']:
-                self.tasks = self._migrations['0.33'][version](self.tasks)
+                self.tasks, self.incompatible_tasks = self._migrations['0.33'][version](self.tasks,
+                                                                                        self.incompatible_tasks)
             else:
                 raise ValueError(f'Unsupported output version: {version}')
 
@@ -165,7 +167,7 @@ class ParseTasks(object):
 
 
 @register_migration(ParseTasks, base_version='0.33', target_version='0.31')
-def migrate_033_to_031(definition_dict):
+def migrate_033_to_031(definition_dict, incompatible_tasks):
     """
     Migrate definitions for MaX5 release to MaX4 release
 
@@ -175,8 +177,10 @@ def migrate_033_to_031(definition_dict):
     """
 
     new_dict = copy.deepcopy(definition_dict)
+    new_incompatible_tasks = copy.deepcopy(incompatible_tasks)
 
     new_dict.pop('nmmp_distances')
+    new_incompatible_tasks.append('nmmp_distances')
 
     force_units = {
         'parse_type': 'attrib',
@@ -191,4 +195,4 @@ def migrate_033_to_031(definition_dict):
     new_dict['forcetheorem_jij']['jij_force_units'] = copy.deepcopy(force_units)
     new_dict['forcetheorem_dmi']['dmi_force_units'] = copy.deepcopy(force_units)
 
-    return new_dict
+    return new_dict, new_incompatible_tasks
