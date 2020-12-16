@@ -394,7 +394,7 @@ def parse_iteration(iteration_node,
             if strict:
                 raise
 
-    if fleurmode['relax']:  #This is too complex to put it into the standard tasks for now
+    if fleurmode['relax']:
         out_dict = convert_funcs.convert_forces(out_dict)
 
     if 'charges' in iteration_tasks:

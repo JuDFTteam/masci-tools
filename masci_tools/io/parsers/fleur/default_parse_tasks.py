@@ -353,15 +353,14 @@ TASKS_DEFINITION = {
             'parse_type': 'attrib',
             'path_spec': {
                 'name': 'distance',
-                'contains': 'chargeDensity'
+                'tag_name': 'chargeDensity'
             }
         },
         'density_convergence_units': {
             'parse_type': 'attrib',
             'path_spec': {
                 'name': 'units',
-                'contains': 'densityConvergence',
-                'not_contains': 'Density'
+                'tag_name': 'densityConvergence',
             },
             'overwrite_last': True,
         }
@@ -371,14 +370,14 @@ TASKS_DEFINITION = {
             'parse_type': 'attrib',
             'path_spec': {
                 'name': 'distance',
-                'contains': 'overallChargeDensity'
+                'tag_name': 'overallChargeDensity'
             }
         },
         'spin_density': {
             'parse_type': 'attrib',
             'path_spec': {
                 'name': 'distance',
-                'contains': 'spinDensity'
+                'tag_name': 'spinDensity'
             }
         }
     },
@@ -472,8 +471,7 @@ TASKS_DEFINITION = {
             'parse_type': 'attrib',
             'path_spec': {
                 'name': 'units',
-                'contains': 'totalForcesOnRepresentativeAtoms',
-                'not_contains': 'forceTotal'
+                'tag_name': 'totalForcesOnRepresentativeAtoms'
             },
             'overwrite_last': True
         },

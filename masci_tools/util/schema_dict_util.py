@@ -188,6 +188,7 @@ def evaluate_attribute(node, schema_dict, name, constants, parser_info_out=None,
     :param parser_info_out: dict, with warnings, info, errors, ...
 
     Kwargs:
+        :param tag_name: str, name of the tag where the attribute should be parsed
         :param contains: str, this string has to be in the final path
         :param not_contains: str, this string has to NOT be in the final path
         :param exclude: list of str, here specific types of attributes can be excluded
@@ -205,7 +206,18 @@ def evaluate_attribute(node, schema_dict, name, constants, parser_info_out=None,
     not_contains = kwargs.get('not_contains', None)
     exclude = kwargs.get('exclude', None)
 
-    attrib_xpath = get_attrib_xpath(schema_dict, name, contains=contains, not_contains=not_contains, exclude=exclude)
+    if 'tag_name' in kwargs:
+        attrib_xpath = get_tag_xpath(schema_dict, kwargs.get('tag_name'), contains=contains, not_contains=not_contains)
+        if attrib_xpath in schema_dict['tag_info']:
+            if name not in schema_dict['tag_info'][attrib_xpath]['attribs']:
+                parser_info_out['parser_warnings'].append(f"No attribute {name} found at tag {kwargs.get('tag_name')}")
+                return None
+        else:
+            if name not in schema_dict['iteration_tag_info'][attrib_xpath]['attribs']:
+                parser_info_out['parser_warnings'].append(f"No attribute {name} found at tag {kwargs.get('tag_name')}")
+                return None
+    else:
+        attrib_xpath = get_attrib_xpath(schema_dict, name, contains=contains, not_contains=not_contains, exclude=exclude)
 
     if 'abspath' in kwargs:
         attrib_xpath = f"{kwargs.get('abspath')}{attrib_xpath}"
