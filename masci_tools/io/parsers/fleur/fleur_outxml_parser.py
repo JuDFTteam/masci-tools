@@ -96,7 +96,7 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
 
     if out_version == '0.27':
         program_version = eval_xpath(root, '//programVersion/@version', parser_info_out=parser_info_out)
-        if programVersion == 'fleur 31':
+        if program_version == 'fleur 31':
             #Max4 release
             out_version = '0.31'
             inp_version = '0.31'
