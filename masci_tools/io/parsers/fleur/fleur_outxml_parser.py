@@ -84,7 +84,9 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
     if not parse_xml:
         return {}
 
+    xmltree = clear_xml(xmltree)
     root = xmltree.getroot()
+
     if version is None:
         out_version = eval_xpath(root, '//@fleurOutputVersion', parser_info_out=parser_info_out)
         if out_version is None:
@@ -116,9 +118,6 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
     #Load schema_dict (inp and out)
     inpschema_dict = load_inpschema(inp_version)
     outschema_dict, outxmlschema = load_outschema(out_version, schema_return=True)
-
-    xmltree = clear_xml(xmltree)
-    root = xmltree.getroot()
 
     if not outxmlschema.validate(xmltree):
         # get more information on what does not validate
