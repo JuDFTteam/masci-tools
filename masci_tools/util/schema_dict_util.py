@@ -177,15 +177,7 @@ def read_constants(xmltree, schema_dict, abspath=None):
     return const_dict
 
 
-def evaluate_attribute(node,
-                       schema_dict,
-                       name,
-                       constants,
-                       contains=None,
-                       not_contains=None,
-                       exclude=None,
-                       parser_info_out=None,
-                       abspath=None):
+def evaluate_attribute(node, schema_dict, name, constants, parser_info_out=None, **kwargs):
     """
     Evaluates the value of the attribute based on the given name
     and additional further specifications with the available type information
@@ -193,12 +185,14 @@ def evaluate_attribute(node,
     :param schema_dict: dict, containing all the path information and more
     :param name: str, name of the attribute
     :param constants: dict, contains the defined constants
-    :param contains: str, this string has to be in the final path
-    :param not_contains: str, this string has to NOT be in the final path
-    :param exclude: list of str, here specific types of attributes can be excluded
-                    valid values are: settable, settable_contains, other
     :param parser_info_out: dict, with warnings, info, errors, ...
-    :param abspath: str, to append in front of the path
+
+    Kwargs:
+        :param contains: str, this string has to be in the final path
+        :param not_contains: str, this string has to NOT be in the final path
+        :param exclude: list of str, here specific types of attributes can be excluded
+                        valid values are: settable, settable_contains, other
+        :param abspath: str, to append in front of the path
 
     :returns: list or single value, converted in convert_xml_attribute
     """
@@ -207,10 +201,14 @@ def evaluate_attribute(node,
     if parser_info_out is None:
         parser_info_out = {'parser_warnings': []}
 
+    contains = kwargs.get('contains', None)
+    not_contains = kwargs.get('not_contains', None)
+    exclude = kwargs.get('exclude', None)
+
     attrib_xpath = get_attrib_xpath(schema_dict, name, contains=contains, not_contains=not_contains, exclude=exclude)
 
-    if abspath is not None:
-        attrib_xpath = f'{abspath}{attrib_xpath}'
+    if 'abspath' in kwargs:
+        attrib_xpath = f"{kwargs.get('abspath')}{attrib_xpath}"
 
     stringattribute = eval_xpath(node, f'{attrib_xpath}/@{name}', parser_info_out=parser_info_out)
 
@@ -236,14 +234,7 @@ def evaluate_attribute(node,
     return converted_value
 
 
-def evaluate_text(node,
-                  schema_dict,
-                  name,
-                  constants,
-                  contains=None,
-                  not_contains=None,
-                  parser_info_out=None,
-                  abspath=None):
+def evaluate_text(node, schema_dict, name, constants, parser_info_out=None, **kwargs):
     """
     Evaluates the text of the tag based on the given name
     and additional further specifications with the available type information
@@ -251,10 +242,13 @@ def evaluate_text(node,
     :param schema_dict: dict, containing all the path information and more
     :param name: str, name of the tag
     :param constants: dict, contains the defined constants
-    :param contains: str, this string has to be in the final path
-    :param not_contains: str, this string has to NOT be in the final path
     :param parser_info_out: dict, with warnings, info, errors, ...
-    :param abspath: str, to append in front of the path
+
+    Kwargs:
+        :param contains: str, this string has to be in the final path
+        :param not_contains: str, this string has to NOT be in the final path
+        :param abspath: str, to append in front of the path
+
 
     :returns: list or single value, converted in convert_xml_text
     """
@@ -263,10 +257,13 @@ def evaluate_text(node,
     if parser_info_out is None:
         parser_info_out = {'parser_warnings': []}
 
+    contains = kwargs.get('contains', None)
+    not_contains = kwargs.get('not_contains', None)
+
     tag_xpath = get_tag_xpath(schema_dict, name, contains=contains, not_contains=not_contains)
 
-    if abspath is not None:
-        tag_xpath = f'{abspath}{tag_xpath}'
+    if 'abspath' in kwargs:
+        tag_xpath = f"{kwargs.get('abspath')}{tag_xpath}"
 
     stringtext = eval_xpath(node, f'{tag_xpath}/text()', parser_info_out=parser_info_out)
 
@@ -297,16 +294,7 @@ def evaluate_text(node,
     return converted_value
 
 
-def evaluate_tag(node,
-                 schema_dict,
-                 name,
-                 constants,
-                 contains=None,
-                 not_contains=None,
-                 parser_info_out=None,
-                 abspath=None,
-                 only_required=False,
-                 ignore=None):
+def evaluate_tag(node, schema_dict, name, constants, parser_info_out=None, **kwargs):
     """
     Evaluates all attributes of the tag based on the given name
     and additional further specifications with the available type information
@@ -314,10 +302,14 @@ def evaluate_tag(node,
     :param schema_dict: dict, containing all the path information and more
     :param name: str, name of the tag
     :param constants: dict, contains the defined constants
-    :param contains: str, this string has to be in the final path
-    :param not_contains: str, this string has to NOT be in the final path
     :param parser_info_out: dict, with warnings, info, errors, ...
-    :param abspath: str, to append in front of the path
+
+    Kwargs:
+        :param abspath: str, to append in front of the path
+        :param contains: str, this string has to be in the final path
+        :param not_contains: str, this string has to NOT be in the final path
+        :param only_required: bool (optional, default False), if True only required attributes are parsed
+        :param ignore: list of str (optional), attributes not to parse
 
     :returns: dict, with attribute values converted via convert_xml_attribute
     """
@@ -326,6 +318,9 @@ def evaluate_tag(node,
     if parser_info_out is None:
         parser_info_out = {'parser_warnings': []}
 
+    contains = kwargs.get('contains', None)
+    not_contains = kwargs.get('not_contains', None)
+    only_required = kwargs.get('only_required', False)
 
     tag_xpath = get_tag_xpath(schema_dict, name, contains=contains, not_contains=not_contains)
 
@@ -344,8 +339,8 @@ def evaluate_tag(node,
         for attrib in optional:
             attribs.remove(attrib)
 
-    if ignore is not None:
-        for attrib in ignore:
+    if 'ignore' in kwargs:
+        for attrib in kwargs.get('ignore'):
             if attrib in attribs:
                 attribs.remove(attrib)
 
@@ -354,8 +349,8 @@ def evaluate_tag(node,
                                                   'No attributes to parse either the tag does not '
                                                   'exist or it has no attributes')
 
-    if abspath is not None:
-        tag_xpath = f'{abspath}{tag_xpath}'
+    if 'abspath' in kwargs:
+        tag_xpath = f"{kwargs.get('abspath')}{tag_xpath}"
 
     out_dict = {}
 
@@ -386,16 +381,7 @@ def evaluate_tag(node,
     return out_dict
 
 
-def evaluate_single_value_tag(node,
-                              schema_dict,
-                              name,
-                              constants,
-                              contains=None,
-                              not_contains=None,
-                              parser_info_out=None,
-                              abspath=None,
-                              only_required=False,
-                              ignore=None):
+def evaluate_single_value_tag(node, schema_dict, name, constants, parser_info_out=None, **kwargs):
     """
     Evaluates the value and unit attribute of the tag based on the given name
     and additional further specifications with the available type information
@@ -403,26 +389,23 @@ def evaluate_single_value_tag(node,
     :param schema_dict: dict, containing all the path information and more
     :param name: str, name of the tag
     :param constants: dict, contains the defined constants
-    :param contains: str, this string has to be in the final path
-    :param not_contains: str, this string has to NOT be in the final path
     :param parser_info_out: dict, with warnings, info, errors, ...
-    :param abspath: str, to append in front of the path
+
+    Kwargs:
+        :param abspath: str, to append in front of the path
+        :param contains: str, this string has to be in the final path
+        :param not_contains: str, this string has to NOT be in the final path
+        :param only_required: bool (optional, default False), if True only required attributes are parsed
+        :param ignore: list of str (optional), attributes not to parse
 
     :returns: value and unit, both converted in convert_xml_attribute
     """
     if parser_info_out is None:
         parser_info_out = {'parser_warnings': []}
 
-    value_dict = evaluate_tag(node,
-                              schema_dict,
-                              name,
-                              constants,
-                              contains=contains,
-                              not_contains=not_contains,
-                              parser_info_out=parser_info_out,
-                              abspath=abspath,
-                              only_required=only_required,
-                              ignore=ignore)
+    only_required = kwargs.get('only_required', False)
+
+    value_dict = evaluate_tag(node, schema_dict, name, constants, parser_info_out=parser_info_out, **kwargs)
 
     if 'value' not in value_dict:
         parser_info_out['parser_warnings'].append(f'Failed to evaluate singleValue from tag {name}: '
@@ -434,16 +417,7 @@ def evaluate_single_value_tag(node,
     return value_dict
 
 
-def evaluate_parent_tag(node,
-                        schema_dict,
-                        name,
-                        constants,
-                        parser_info_out=None,
-                        contains=None,
-                        not_contains=None,
-                        abspath=None,
-                        only_required=False,
-                        ignore=None):
+def evaluate_parent_tag(node, schema_dict, name, constants, parser_info_out=None, **kwargs):
     """
     Evaluates all attributes of the parent tag based on the given name
     and additional further specifications with the available type information
@@ -451,10 +425,14 @@ def evaluate_parent_tag(node,
     :param schema_dict: dict, containing all the path information and more
     :param name: str, name of the tag
     :param constants: dict, contains the defined constants
-    :param contains: str, this string has to be in the final path
-    :param not_contains: str, this string has to NOT be in the final path
     :param parser_info_out: dict, with warnings, info, errors, ...
-    :param abspath: str, to append in front of the path
+
+    Kwargs:
+        :param abspath: str, to append in front of the path
+        :param contains: str, this string has to be in the final path
+        :param not_contains: str, this string has to NOT be in the final path
+        :param only_required: bool (optional, default False), if True only required attributes are parsed
+        :param ignore: list of str (optional), attributes not to parse
 
     :returns: dict, with attribute values converted via convert_xml_attribute
     """
@@ -462,6 +440,10 @@ def evaluate_parent_tag(node,
 
     if parser_info_out is None:
         parser_info_out = {'parser_warnings': []}
+
+    contains = kwargs.get('contains', None)
+    not_contains = kwargs.get('not_contains', None)
+    only_required = kwargs.get('only_required', False)
 
     tag_xpath = get_tag_xpath(schema_dict, name, contains=contains, not_contains=not_contains)
 
@@ -482,18 +464,18 @@ def evaluate_parent_tag(node,
         for attrib in optional:
             attribs.remove(attrib)
 
-    if ignore is not None:
-        for attrib in ignore:
+    if 'ignore' in kwargs:
+        for attrib in kwargs.get('ignore'):
             if attrib in attribs:
                 attribs.remove(attrib)
 
     if not attribs:
-        parser_info_out['parser_warnings'].append(f'Failed to evaluate attributes from tag {name}: '
+        parser_info_out['parser_warnings'].append(f'Failed to evaluate attributes from parent tag of {name}: '
                                                   'No attributes to parse either the tag does not '
                                                   'exist or it has no attributes')
 
-    if abspath is not None:
-        tag_xpath = f'{abspath}{tag_xpath}'
+    if 'abspath' in kwargs:
+        tag_xpath = f"{kwargs.get('abspath')}{tag_xpath}"
 
     out_dict = dict.fromkeys(attribs)
     for attrib in attribs:
@@ -509,7 +491,7 @@ def evaluate_parent_tag(node,
 
             if stringattribute == '':
                 parser_info_out['parser_warnings'].append(
-                        f'No values found for attribute {attrib} for parent tag of {name}')
+                    f'No values found for attribute {attrib} for parent tag of {name}')
                 out_dict[attrib].append(None)
                 continue
 
@@ -529,30 +511,26 @@ def evaluate_parent_tag(node,
     return out_dict
 
 
-def tag_exists(node, schema_dict, name, contains=None, not_contains=None, parser_info_out=None, abspath=None):
+def tag_exists(node, schema_dict, name, parser_info_out=None, **kwargs):
     """
     Evaluates whether the tag exists in the xmltree based on the given name
     and additional further specifications with the available type information
 
     :param schema_dict: dict, containing all the path information and more
     :param name: str, name of the tag
-    :param contains: str, this string has to be in the final path
-    :param not_contains: str, this string has to NOT be in the final path
     :param parser_info_out: dict, with warnings, info, errors, ...
-    :param abspath: str, to append in front of the path
+
+    Kwargs:
+        :param abspath: str, to append in front of the path
+        :param contains: str, this string has to be in the final path
+        :param not_contains: str, this string has to NOT be in the final path
 
     :returns: bool, True if any nodes with the path exist
     """
-    return get_number_of_nodes(node,
-                               schema_dict,
-                               name,
-                               contains=contains,
-                               not_contains=not_contains,
-                               parser_info_out=parser_info_out,
-                               abspath=abspath) != 0
+    return get_number_of_nodes(node, schema_dict, name, parser_info_out=parser_info_out, **kwargs) != 0
 
 
-def get_number_of_nodes(node, schema_dict, name, contains=None, not_contains=None, parser_info_out=None, abspath=None):
+def get_number_of_nodes(node, schema_dict, name, parser_info_out=None, **kwargs):
     """
     Evaluates the number of occurences of the tag in the xmltree based on the given name
     and additional further specifications with the available type information
@@ -568,9 +546,12 @@ def get_number_of_nodes(node, schema_dict, name, contains=None, not_contains=Non
     """
     from masci_tools.util.xml.common_xml_util import eval_xpath
 
+    contains = kwargs.get('contains', None)
+    not_contains = kwargs.get('not_contains', None)
+
     tag_xpath = get_tag_xpath(schema_dict, name, contains=contains, not_contains=not_contains)
 
-    if abspath is not None:
-        tag_xpath = f'{abspath}{tag_xpath}'
+    if 'abspath' in kwargs:
+        tag_xpath = f"{kwargs.get('abspath')}{tag_xpath}"
 
     return len(eval_xpath(node, tag_xpath, parser_info_out=parser_info_out, list_return=True))

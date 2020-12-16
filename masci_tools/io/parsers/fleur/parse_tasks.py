@@ -72,7 +72,9 @@ class ParseTasks(object):
 
     REQUIRED_KEYS = {'parse_type', 'path_spec'}
     ALLOWED_KEYS = {'parse_type', 'path_spec', 'subdict', 'overwrite_last'}
-    ALLOWED_KEYS_ALLATTRIBS = {'parse_type', 'path_spec', 'subdict', 'base_value', 'ignore', 'overwrite', 'flat', 'only_required'}
+    ALLOWED_KEYS_ALLATTRIBS = {
+        'parse_type', 'path_spec', 'subdict', 'base_value', 'ignore', 'overwrite', 'flat', 'only_required'
+    }
 
     _version = '0.1.0'
 

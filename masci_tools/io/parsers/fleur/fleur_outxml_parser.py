@@ -462,14 +462,12 @@ def parse_task(tasks_definition,
 
         action = _FUNCTION_DICT[spec['parse_type']]
         args = spec['path_spec'].copy()
-
-        if spec['parse_type'] in ['attrib', 'text', 'singleValue', 'allAttribs', 'parentAttribs']:
-            args['constants'] = constants
+        args['constants'] = constants
 
         if root_tag is not None:
             args['abspath'] = root_tag
 
-        if 'only_required' in spec and spec['parse_type'] in ['parentAttribs', 'allAttribs', 'singleValue']:
+        if 'only_required' in spec:
             args['only_required'] = spec['only_required']
 
         if spec['parse_type'] == 'singleValue':
@@ -514,11 +512,7 @@ def parse_task(tasks_definition,
                         parsed_dict[current_key].append(val)
 
             else:
-                for key, val in list(parsed_value.items()):
-                    parsed_value.pop(key)
-                    parsed_value[camel_to_snake(key)] = val
-
-                parsed_dict[task_key] = parsed_value
+                parsed_dict[task_key] = {camel_to_snake(key):val for key, val in parsed_value.items()}
 
         else:
             if task_key not in parsed_dict and use_lists:
