@@ -100,49 +100,25 @@ def calculate_expression(expression, constants, prevCommand=None, exp_return=Fal
                 prevOrder = 0
             operatorOrder = order_dict[operator]
             if operatorOrder > prevOrder:
+                #Evaluate the next block
+                block_value, expression = calculate_expression(expression[len(operator):],
+                                                               constants,
+                                                               prevCommand=operator,
+                                                               exp_return=True)
+                #Perform the operation
                 if operator == '+':
-                    block_value, expression = calculate_expression(expression[1:],
-                                                                   constants,
-                                                                   prevCommand='+',
-                                                                   exp_return=True)
                     value += block_value
                 elif operator == '-':
-                    block_value, expression = calculate_expression(expression[1:],
-                                                                   constants,
-                                                                   prevCommand='-',
-                                                                   exp_return=True)
                     value -= block_value
                 elif operator == '*':
-                    block_value, expression = calculate_expression(expression[1:],
-                                                                   constants,
-                                                                   prevCommand='*',
-                                                                   exp_return=True)
                     value *= block_value
                 elif operator == '/':
-                    block_value, expression = calculate_expression(expression[1:],
-                                                                   constants,
-                                                                   prevCommand='/',
-                                                                   exp_return=True)
                     if abs(block_value) < 1e-12:
                         raise ValueError('Undefined Expression: Division by zero')
                     value *= 1.0 / block_value
                 elif operator == '%':
-                    block_value, expression = calculate_expression(expression[1:],
-                                                                   constants,
-                                                                   prevCommand='%',
-                                                                   exp_return=True)
                     value = value % block_value
                 elif operator in ['^', '**']:
-                    if operator == '^':
-                        block_value, expression = calculate_expression(expression[1:],
-                                                                       constants,
-                                                                       prevCommand='^',
-                                                                       exp_return=True)
-                    elif operator == '**':
-                        block_value, expression = calculate_expression(expression[2:],
-                                                                       constants,
-                                                                       prevCommand='**',
-                                                                       exp_return=True)
                     if abs(value) < 1e-12 and abs(block_value) < 1e-12:
                         raise ValueError('Undefined Expression: 0^0')
                     if value < 0.0 and abs(int(block_value) - block_value) > 1e-12:
