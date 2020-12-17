@@ -540,8 +540,10 @@ def parse_task(tasks_definition,
         else:
             overwrite = spec.get('overwrite_last', False)
             if task_key not in parsed_dict and use_lists:
-                parsed_dict[task_key] = []
-
+                if overwrite:
+                    parsed_dict[task_key] = None
+                else:
+                    parsed_dict[task_key] = []
 
             if use_lists and not overwrite:
                 parsed_dict[task_key].append(parsed_value)
@@ -549,7 +551,9 @@ def parse_task(tasks_definition,
                 if parsed_value is not None:
                     parsed_dict[task_key] = parsed_value
             else:
-                parsed_dict[task_key] = parsed_value
+                if parsed_value is not None or\
+                   task_key not in parsed_dict:
+                    parsed_dict[task_key] = parsed_value
 
         if 'subdict' in spec:
             out_dict[spec['subdict']] = parsed_dict
