@@ -2611,7 +2611,7 @@ def plot_fleur_bands(filename, limits=[None, [-15, 15]]):
     xticks = [[], []]
     for label, pos in xlabels:
         if label == 'Gamma':
-            label = u'$\Gamma$'
+            label = r'$\Gamma$'
         xticks[1].append(label)
         xticks[0].append(pos)
 
