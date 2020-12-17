@@ -81,8 +81,18 @@ def test_convert_to_int():
     assert warnings == ["Could not convert: '()' to int, TypeError"]
 
     warnings = []
+    ret_val = convert_to_int((), conversion_warnings=warnings, suc_return=False)
+    assert ret_val == ()
+    assert warnings == ["Could not convert: '()' to int, TypeError"]
+
+    warnings = []
     ret_val, suc = convert_to_int('1.231', conversion_warnings=warnings)
     assert not suc
+    assert ret_val == '1.231'
+    assert warnings == ["Could not convert: '1.231' to int, ValueError"]
+
+    warnings = []
+    ret_val = convert_to_int('1.231', conversion_warnings=warnings, suc_return=False)
     assert ret_val == '1.231'
     assert warnings == ["Could not convert: '1.231' to int, ValueError"]
 
