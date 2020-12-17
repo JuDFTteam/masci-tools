@@ -343,12 +343,13 @@ TEST_TEXT_STRINGS = [
 ]
 
 TEST_DEFINITIONS = [[{
-                        'length': 3,
-                        'type': ['float', 'float_expression']
-                    }], [{
-                        'length': 4,
-                        'type': ['float', 'float_expression']
-                    }], [{
+    'length': 3,
+    'type': ['float', 'float_expression']
+}], [{
+    'length': 4,
+    'type': ['float', 'float_expression']
+}],
+                    [{
                         'length': 4,
                         'type': ['float', 'float_expression']
                     }, {
