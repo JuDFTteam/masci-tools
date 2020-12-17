@@ -59,7 +59,7 @@ jobs:
 
     - name: Install python dependencies
       run:
-        pip install .[pre-commit]
+        pip install .[pre-commit, bokeh-plots]
         pip freeze
 
     - name: Run pre-commit
