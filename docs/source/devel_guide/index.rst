@@ -108,15 +108,22 @@ All functions below can either be called in python scripts or from the commandli
     import copy
 
     @register_migration(ParseTasks, base_version='0.33', target_version='0.34')
-    def migrate_033_to034(definition_dict):
+    def migrate_033_to034(definition_dict, incompatible_tasks):
       """
       Ficticious migration from 0.33 to 0.34
       Moves the `number_of_atom_types` attribute from reading a simple
       attribute to counting the number of atomGroups in the input section
+      And removes orbital_magnetic_moments task
       """
 
       #IMPORTANT: First copy the original dict
       new_dict = copy.deepcopy(definition_dict)
+      new_incompatible_tasks = copy.deepcopy(incompatible_tasks)
+
+      #If a task is incompatible remove it from the defintion_dict
+      #BUT also append it to the incompatible_tasks
+      new_dict.pop('orbital_magnetic_moments')
+      new_incompatible_tasks.append('orbital_magentic_moments')
 
       new_dict['general_out_info'].pop('number_of_atom_types')
       new_dict['general_inp_info']['number_of_atom_types'] = {
@@ -126,4 +133,4 @@ All functions below can either be called in python scripts or from the commandli
           }
       }
 
-      return new_dict
+      return new_dict, new_incompatible_tasks

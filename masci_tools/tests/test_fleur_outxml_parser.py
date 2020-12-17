@@ -60,7 +60,8 @@ def test_outxml_max4compatibility():
         'fleur 31',
         'creator_target_architecture':
         'GEN',
-        'creator_target_structure': None,
+        'creator_target_structure':
+        None,
         'density_convergence_units':
         'me/bohr^3',
         'end_date': {
@@ -329,7 +330,8 @@ def test_outxml_alliter():
         'fleur 32',
         'creator_target_architecture':
         'GEN',
-        'creator_target_structure': None,
+        'creator_target_structure':
+        None,
         'density_convergence_units':
         'me/bohr^3',
         'end_date': {
@@ -460,7 +462,8 @@ def test_outxml_minimal_mode():
         'fleur 32',
         'creator_target_architecture':
         'GEN',
-        'creator_target_structure': None,
+        'creator_target_structure':
+        None,
         'density_convergence_units':
         'me/bohr^3',
         'end_date': {
@@ -529,7 +532,8 @@ def test_outxml_magnetic():
         'fleur 32',
         'creator_target_architecture':
         'GEN',
-        'creator_target_structure': None,
+        'creator_target_structure':
+        None,
         'density_convergence_units':
         'me/bohr^3',
         'end_date': {
