@@ -167,7 +167,7 @@ def read_constants(xmltree, schema_dict, replace_root=None):
 
     constants = evaluate_tag(xmltree, schema_dict, 'constant', const_dict, replace_root=replace_root)
 
-    if constants:
+    if constants['name'] is not None:
         for name, value in zip(constants['name'], constants['value']):
             if name not in const_dict:
                 const_dict[name] = value
