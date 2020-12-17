@@ -13,7 +13,8 @@ def test_calculate_expression():
 
     assert pytest.approx(calculate_expression('1.0+3.0-2.45*8.45', FLEUR_DEFINED_CONSTANTS)) == -16.7025
     assert pytest.approx(calculate_expression('Pi/4.0', FLEUR_DEFINED_CONSTANTS)) == 0.78539816339
-    assert pytest.approx(calculate_expression('cos(Pi)-exp(2)*(4.0+sin(Pi/2))', FLEUR_DEFINED_CONSTANTS)) == -37.94528049
+    assert pytest.approx(calculate_expression('cos(Pi)-exp(2)*(4.0+sin(Pi/2))',
+                                              FLEUR_DEFINED_CONSTANTS)) == -37.94528049
     assert pytest.approx(calculate_expression('(2+5)**(1/2.0)', FLEUR_DEFINED_CONSTANTS)) == 2.64575
     assert pytest.approx(calculate_expression('-0.5**(4%(2.0+1.0))', FLEUR_DEFINED_CONSTANTS)) == -0.5
 

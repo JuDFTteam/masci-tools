@@ -381,21 +381,3 @@ def get_xml_attribute(node, attributename, parser_info_out=None):
                    ''.format(attributename, node)))
         return None
 
-
-def delete_att(xmltree, xpath, attrib):
-    """
-    Deletes an xml tag in an xmltree.
-
-    :param xmltree: an xmltree that represents inp.xml
-    :param xpath: a path to the attribute to be deleted
-    :param attrib: the name of an attribute
-    """
-    root = xmltree.getroot()
-    nodes = root.xpath(xpath)
-    if nodes:
-        for node in nodes:
-            try:
-                del node.attrib[attrib]
-            except BaseException:
-                pass
-    return xmltree

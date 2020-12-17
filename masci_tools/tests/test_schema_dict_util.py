@@ -338,7 +338,8 @@ def test_evaluate_attribute():
     assert evaluate_attribute(root, schema_dict, 'jspins', FLEUR_DEFINED_CONSTANTS) == 2
     assert evaluate_attribute(root, schema_dict, 'l_noco', FLEUR_DEFINED_CONSTANTS)
     assert evaluate_attribute(root, schema_dict, 'mode', FLEUR_DEFINED_CONSTANTS) == 'hist'
-    assert pytest.approx(evaluate_attribute(root, schema_dict, 'radius', FLEUR_DEFINED_CONSTANTS, contains='species')) == [2.2, 2.2]
+    assert pytest.approx(evaluate_attribute(root, schema_dict, 'radius', FLEUR_DEFINED_CONSTANTS,
+                                            contains='species')) == [2.2, 2.2]
 
     with pytest.raises(ValueError, match='The attrib beta has multiple possible paths with the current specification.'):
         evaluate_attribute(root, schema_dict, 'beta', FLEUR_DEFINED_CONSTANTS, exclude=['unique'])
@@ -373,7 +374,8 @@ def test_evaluate_attribute():
 
     parser_info_out = {'parser_warnings': []}
     assert evaluate_attribute(
-        root, schema_dict, 'radius', FLEUR_DEFINED_CONSTANTS, not_contains='species', parser_info_out=parser_info_out) is None
+        root, schema_dict, 'radius', FLEUR_DEFINED_CONSTANTS, not_contains='species',
+        parser_info_out=parser_info_out) is None
     assert parser_info_out == expected_info
     assert schema_dict == schema_dict_33
 
@@ -418,7 +420,11 @@ def test_evaluate_text():
     for val, result in zip(sym_row1, expected):
         assert pytest.approx(val) == result
     assert pytest.approx(
-        evaluate_text(root, schema_dict, 'row-1', FLEUR_DEFINED_CONSTANTS, not_contains='symOp',
+        evaluate_text(root,
+                      schema_dict,
+                      'row-1',
+                      FLEUR_DEFINED_CONSTANTS,
+                      not_contains='symOp',
                       contains='filmLattice/bravaisMatrix')) == [5.3011797029, 0.0, 0.0]
 
     with pytest.raises(ValueError, match='The tag Magnetism has no possible paths with the current specification.'):
@@ -426,7 +432,8 @@ def test_evaluate_text():
 
     expected_info = {'parser_warnings': ['No text found for tag magnetism']}
     parser_info_out = {'parser_warnings': []}
-    assert evaluate_text(root, schema_dict, 'magnetism', FLEUR_DEFINED_CONSTANTS, parser_info_out=parser_info_out) is None
+    assert evaluate_text(root, schema_dict, 'magnetism', FLEUR_DEFINED_CONSTANTS,
+                         parser_info_out=parser_info_out) is None
 
     assert schema_dict == schema_dict_33
 
@@ -481,7 +488,12 @@ def test_evaluate_tag():
     mtRadii = evaluate_tag(root, schema_dict, 'mtSphere', FLEUR_DEFINED_CONSTANTS, contains='species')
     assert mtRadii == expected
 
-    mtRadii = evaluate_tag(outroot, schema_dict, 'mtSphere', FLEUR_DEFINED_CONSTANTS, contains='species', replace_root=INPUT_TAG_33)
+    mtRadii = evaluate_tag(outroot,
+                           schema_dict,
+                           'mtSphere',
+                           FLEUR_DEFINED_CONSTANTS,
+                           contains='species',
+                           replace_root=INPUT_TAG_33)
     assert mtRadii == expected
 
     expected = {
@@ -502,7 +514,12 @@ def test_evaluate_tag():
         'alpha': [0.0, 0.0],
         'beta': [1.570796326, 1.570796326],
     }
-    nocoParams = evaluate_tag(root, schema_dict, 'nocoParams', FLEUR_DEFINED_CONSTANTS, contains='atomGroup', only_required=True)
+    nocoParams = evaluate_tag(root,
+                              schema_dict,
+                              'nocoParams',
+                              FLEUR_DEFINED_CONSTANTS,
+                              contains='atomGroup',
+                              only_required=True)
     assert nocoParams == expected
 
     expected = {
@@ -542,7 +559,11 @@ def test_single_value_tag():
     assert totalEnergy == expected
 
     expected = {'value': -4204.714048254}
-    totalEnergy = evaluate_single_value_tag(iteration, schema_dict, 'totalEnergy', FLEUR_DEFINED_CONSTANTS, only_required=True)
+    totalEnergy = evaluate_single_value_tag(iteration,
+                                            schema_dict,
+                                            'totalEnergy',
+                                            FLEUR_DEFINED_CONSTANTS,
+                                            only_required=True)
     assert totalEnergy == expected
 
     with pytest.raises(ValueError, match='The tag total_energy has no possible paths with the current specification.'):

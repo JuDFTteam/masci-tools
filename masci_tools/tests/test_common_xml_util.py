@@ -5,6 +5,7 @@ Test of the functions in common_xml_util
 import pytest
 from masci_tools.util.constants import FLEUR_DEFINED_CONSTANTS
 
+
 def test_convert_to_float():
     """
     Test of the convert_to_float function
@@ -28,7 +29,6 @@ def test_convert_to_float():
     assert ret_val == {}
     assert warnings == ["Could not convert: '{}' to float, TypeError"]
 
-
     warnings = []
     ret_val, suc = convert_to_float('1,23', conversion_warnings=warnings)
     assert not suc
@@ -40,6 +40,7 @@ def test_convert_to_float():
     assert suc
     assert pytest.approx(ret_val) == .325352
     assert warnings == []
+
 
 def test_convert_to_int():
     """
@@ -64,7 +65,6 @@ def test_convert_to_int():
     assert ret_val == ()
     assert warnings == ["Could not convert: '()' to int, TypeError"]
 
-
     warnings = []
     ret_val, suc = convert_to_int('1.231', conversion_warnings=warnings)
     assert not suc
@@ -76,6 +76,7 @@ def test_convert_to_int():
     assert suc
     assert ret_val == 213
     assert warnings == []
+
 
 def test_convert_from_fortran_bool():
     """
@@ -106,8 +107,7 @@ def test_convert_from_fortran_bool():
     ret_val, suc = convert_from_fortran_bool('TEST', conversion_warnings=warnings)
     assert not suc
     assert ret_val == 'TEST'
-    assert warnings == ["Could not convert: 'TEST' to boolean, "
-                        "which is not 'True', 'False', 't', 'T', 'F' or 'f'"]
+    assert warnings == ["Could not convert: 'TEST' to boolean, " "which is not 'True', 'False', 't', 'T', 'F' or 'f'"]
 
     warnings = []
     ret_val, suc = convert_from_fortran_bool({}, conversion_warnings=warnings)
@@ -120,7 +120,3 @@ def test_convert_from_fortran_bool():
     assert suc
     assert ret_val
     assert warnings == []
-
-
-
-
