@@ -209,7 +209,7 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
     htr = 27.21138602
     if 'energy_hartree' in out_dict:
         if out_dict['energy_hartree'] is not None:
-            out_dict['energy'] = [e * htr for e in out_dict['energy_hartree']]
+            out_dict['energy'] = [e * htr if e is not None else None for e in out_dict['energy_hartree']]
         else:
             out_dict['energy'] = None
         out_dict['energy_units'] = 'eV'
@@ -521,9 +521,6 @@ def parse_task(tasks_definition,
             if flat:
                 for key, val in parsed_value.items():
 
-                    if val is None:
-                        continue
-
                     if key == base_value:
                         current_key = task_key
                     else:
@@ -541,14 +538,18 @@ def parse_task(tasks_definition,
                 parsed_dict[task_key] = {camel_to_snake(key): val for key, val in parsed_value.items()}
 
         else:
+            overwrite = spec.get('overwrite_last', False)
             if task_key not in parsed_dict and use_lists:
                 parsed_dict[task_key] = []
-            overwrite = spec.get('overwrite_last', False)
-            if parsed_value is not None:
-                if use_lists and not overwrite:
-                    parsed_dict[task_key].append(parsed_value)
-                else:
+
+
+            if use_lists and not overwrite:
+                parsed_dict[task_key].append(parsed_value)
+            elif overwrite:
+                if parsed_value is not None:
                     parsed_dict[task_key] = parsed_value
+            else:
+                parsed_dict[task_key] = parsed_value
 
         if 'subdict' in spec:
             out_dict[spec['subdict']] = parsed_dict

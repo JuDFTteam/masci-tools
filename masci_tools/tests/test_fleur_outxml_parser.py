@@ -60,6 +60,7 @@ def test_outxml_max4compatibility():
         'fleur 31',
         'creator_target_architecture':
         'GEN',
+        'creator_target_structure': None,
         'density_convergence_units':
         'me/bohr^3',
         'end_date': {
@@ -216,6 +217,7 @@ def test_outxml_lastiter():
         'charge_density': 0.026112816,
         'creator_name': 'fleur 32',
         'creator_target_architecture': 'GEN',
+        'creator_target_structure': None,
         'density_convergence_units': 'me/bohr^3',
         'end_date': {
             'date': '2020/12/10',
@@ -269,6 +271,7 @@ def test_outxml_firstiter():
         'charge_density': 8.7379598265,
         'creator_name': 'fleur 32',
         'creator_target_architecture': 'GEN',
+        'creator_target_structure': None,
         'density_convergence_units': 'me/bohr^3',
         'end_date': {
             'date': '2020/12/10',
@@ -326,6 +329,7 @@ def test_outxml_alliter():
         'fleur 32',
         'creator_target_architecture':
         'GEN',
+        'creator_target_structure': None,
         'density_convergence_units':
         'me/bohr^3',
         'end_date': {
@@ -403,6 +407,7 @@ def test_outxml_indexiter():
         'charge_density': 0.5765372317,
         'creator_name': 'fleur 32',
         'creator_target_architecture': 'GEN',
+        'creator_target_structure': None,
         'density_convergence_units': 'me/bohr^3',
         'end_date': {
             'date': '2020/12/10',
@@ -455,6 +460,7 @@ def test_outxml_minimal_mode():
         'fleur 32',
         'creator_target_architecture':
         'GEN',
+        'creator_target_structure': None,
         'density_convergence_units':
         'me/bohr^3',
         'end_date': {
@@ -523,6 +529,7 @@ def test_outxml_magnetic():
         'fleur 32',
         'creator_target_architecture':
         'GEN',
+        'creator_target_structure': None,
         'density_convergence_units':
         'me/bohr^3',
         'end_date': {
@@ -608,9 +615,10 @@ def test_outxml_ldaurelax():
         'bandgap': [4.1667073913, 4.1667065775],
         'bandgap_units': 'eV',
         'charge_den_xc_den_integral': [-159.6317907519, -159.6317901441],
-        'charge_density': 0.0003427664,
+        'charge_density': [0.0003427664, None],
         'creator_name': 'fleur 32',
         'creator_target_architecture': 'GEN',
+        'creator_target_structure': None,
         'density_convergence_units': 'me/bohr^3',
         'end_date': {
             'date': '2020/12/10',
@@ -664,7 +672,7 @@ def test_outxml_ldaurelax():
                     'unit': 'eV'
                 }
             },
-            'density_matrix_distance': 2.3e-05,
+            'density_matrix_distance': [2.3e-05, None],
             'ldau_energy_correction': [-2.6822617141, -2.6822616556]
         },
         'number_of_atom_types': 2,
@@ -704,6 +712,7 @@ def test_outxml_force():
     expected_result = {
         'creator_name': 'fleur 32',
         'creator_target_architecture': 'GEN',
+        'creator_target_structure': None,
         'end_date': {
             'date': '2020/12/10',
             'time': '16:58:39'
