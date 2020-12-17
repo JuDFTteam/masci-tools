@@ -7,14 +7,22 @@ import pytest
 import os
 import copy
 import numpy as np
-from masci_tools.io.parsers.fleur.fleur_schema import load_inpschema
+from masci_tools.io.parsers.fleur.fleur_schema import load_inpschema, load_outschema
+from pprint import pprint
 
 #Load different schema versions (for now only input schemas)
 schema_dict_33 = load_inpschema('0.33')
 schema_dict_27 = load_inpschema('0.27')
+schema_dict_31 = load_inpschema('0.31')
+outschema_dict_33 = load_outschema('0.33')
+outschema_dict_31 = load_outschema('0.31')
+
+INPUT_TAG_33 = outschema_dict_33['tag_paths'][outschema_dict_33['input_tag']]
 
 FILE_PATH = os.path.dirname(os.path.abspath(__file__))
 TEST_INPXML_PATH = os.path.join(FILE_PATH, 'files/fleur/Max-R5/FePt_film_SSFT_LO/files/inp2.xml')
+TEST_OUTXML_PATH = os.path.join(FILE_PATH, 'files/fleur/Max-R5/GaAsMultiUForceXML/files/out.xml')
+TEST_OUTXML_PATH2 = os.path.join(FILE_PATH, 'files/fleur/Max-R5/FePt_film_SSFT_LO/files/out.xml')
 
 CONSTANTS = {
     'Pi': np.pi,
@@ -51,6 +59,39 @@ def test_get_tag_xpath_input():
         get_tag_xpath(schema_dict_27, 'ldaU')
     with pytest.raises(ValueError, match='The tag ldaU has multiple possible paths with the current specification.'):
         get_tag_xpath(schema_dict_33, 'ldaU')
+
+
+def test_get_tag_xpath_output():
+    """
+    Test the path finding for tags for the output schema without additional options
+    And verify with different version of the schema
+    """
+    from masci_tools.util.schema_dict_util import get_tag_xpath
+
+    #absolute
+    assert get_tag_xpath(outschema_dict_33, 'iteration') == '/fleurOutput/scfLoop/iteration'
+    assert get_tag_xpath(outschema_dict_31, 'iteration') == '/fleurOutput/scfLoop/iteration'
+
+    #relative paths
+    assert get_tag_xpath(outschema_dict_33, 'totalEnergy') == './totalEnergy'
+    assert get_tag_xpath(outschema_dict_31, 'totalEnergy') == './totalEnergy'
+
+    #Non existent tag
+    assert get_tag_xpath(outschema_dict_33, 'fleurInput') == '/fleurOutput/fleurInput'
+    with pytest.raises(ValueError, match='The tag fleurInput has no possible paths with the current specification.'):
+        get_tag_xpath(outschema_dict_31, 'fleurInput')
+
+    assert get_tag_xpath(outschema_dict_31, 'inputData') == '/fleurOutput/inputData'
+    with pytest.raises(ValueError, match='The tag inputData has no possible paths with the current specification.'):
+        get_tag_xpath(outschema_dict_33, 'inputData')
+
+    #Multiple possible paths
+    with pytest.raises(ValueError,
+                       match='The tag spinDependentCharge has multiple possible paths with the current specification.'):
+        get_tag_xpath(outschema_dict_31, 'spinDependentCharge')
+    with pytest.raises(ValueError,
+                       match='The tag spinDependentCharge has multiple possible paths with the current specification.'):
+        get_tag_xpath(outschema_dict_33, 'spinDependentCharge')
 
 
 def test_get_tag_xpath_contains():
@@ -131,6 +172,22 @@ def test_get_attrib_xpath_input():
         get_attrib_xpath(schema_dict_33, 'l_amf')
 
 
+def test_get_attrib_xpath_output():
+    """
+    Test the path finding for tags for the input schema without additional options
+    And verify with different version of the schema
+    """
+    from masci_tools.util.schema_dict_util import get_attrib_xpath
+
+    #absolute
+    assert get_attrib_xpath(outschema_dict_31, 'nat') == '/fleurOutput/numericalParameters/atomsInCell'
+    assert get_attrib_xpath(outschema_dict_33, 'nat') == '/fleurOutput/numericalParameters/atomsInCell'
+
+    #relative
+    assert get_attrib_xpath(outschema_dict_31, 'qvectors') == './Forcetheorem_SSDISP'
+    assert get_attrib_xpath(outschema_dict_33, 'qvectors') == './Forcetheorem_SSDISP'
+
+
 def test_get_attrib_xpath_contains():
     """
     Test the selection of paths based on a contained keyword
@@ -204,6 +261,72 @@ def test_get_attrib_xpath_exclude():
     assert schema_dict == schema_dict_33
 
 
+def test_get_attrib_xpath_exclude_output():
+    """
+    Test the selection of paths based on a contained keyword
+    """
+    from masci_tools.util.schema_dict_util import get_attrib_xpath
+
+    schema_dict = copy.deepcopy(outschema_dict_33)
+
+    with pytest.raises(ValueError,
+                       match='The attrib units has multiple possible paths with the current specification.'):
+        get_attrib_xpath(schema_dict, 'units')
+
+    assert get_attrib_xpath(schema_dict, 'units', contains='DMI') == './Forcetheorem_DMI'
+    assert get_attrib_xpath(schema_dict, 'units', exclude=['other'], contains='DMI') == './Forcetheorem_DMI'
+
+    with pytest.raises(ValueError, match='The attrib units has no possible paths with the current specification.'):
+        get_attrib_xpath(schema_dict, 'units', exclude=['unique_path'], contains='DMI')
+
+    #Make sure that this did not modify the schema dict
+    assert schema_dict == outschema_dict_33
+
+
+def test_read_contants():
+    """
+    Test of the read_constants function
+    """
+    from lxml import etree
+    from masci_tools.util.schema_dict_util import read_constants
+
+    schema_dict = copy.deepcopy(schema_dict_33)
+
+    VALID_INP_CONSTANTS_PATH = os.path.join(FILE_PATH, 'files/fleur/inp_with_constants.xml')
+    INVALID_INP_CONSTANTS_PATH = os.path.join(FILE_PATH, 'files/fleur/inp_invalid_constants.xml')
+    VALID_OUT_CONSTANTS_PATH = os.path.join(FILE_PATH, 'files/fleur/out_with_constants.xml')
+
+    parser = etree.XMLParser(attribute_defaults=True, recover=False, encoding='utf-8')
+    xmltree = etree.parse(VALID_INP_CONSTANTS_PATH, parser)
+    outxmltree = etree.parse(VALID_OUT_CONSTANTS_PATH, parser)
+    invalidxmltree = etree.parse(INVALID_INP_CONSTANTS_PATH, parser)
+
+    root1 = xmltree.getroot()
+    root2 = outxmltree.getroot()
+    root3 = invalidxmltree.getroot()
+
+    expected_constants = {
+        'A': -3.14,
+        'Ang': 1.889726124772898,
+        'Bohr': 1.0,
+        'Deg': 0.017453292519943295,
+        'Pi': 3.141592653589793,
+        'nm': 18.89726124772898,
+        'notPi': 3.0,
+        'pm': 0.01889726124772898
+    }
+    result = read_constants(root1, schema_dict)
+    assert result == expected_constants
+
+    result = read_constants(root2, schema_dict, replace_root=INPUT_TAG_33)
+    assert result == expected_constants
+
+    with pytest.raises(KeyError, match='Ambiguous definition of key Pi'):
+        result = read_constants(root3, schema_dict)
+
+    assert schema_dict == schema_dict_33
+
+
 def test_evaluate_attribute():
     """
     Test of the evaluate_attribute function
@@ -215,7 +338,9 @@ def test_evaluate_attribute():
 
     parser = etree.XMLParser(attribute_defaults=True, recover=False, encoding='utf-8')
     xmltree = etree.parse(TEST_INPXML_PATH, parser)
+    outxmltree = etree.parse(TEST_OUTXML_PATH2, parser)
 
+    outroot = outxmltree.getroot()
     root = xmltree.getroot()
 
     assert evaluate_attribute(root, schema_dict, 'jspins', CONSTANTS) == 2
@@ -234,6 +359,16 @@ def test_evaluate_attribute():
                            exclude=['unique'],
                            contains='nocoParams',
                            not_contains='species')) == [np.pi / 2.0, np.pi / 2.0]
+
+    assert pytest.approx(
+        evaluate_attribute(outroot,
+                           schema_dict,
+                           'beta',
+                           CONSTANTS,
+                           exclude=['unique'],
+                           contains='nocoParams',
+                           not_contains='species',
+                           replace_root=INPUT_TAG_33)) == [np.pi / 2.0, np.pi / 2.0]
 
     with pytest.raises(ValueError, match='The attrib l_Noco has no possible paths with the current specification.'):
         evaluate_attribute(root, schema_dict, 'l_Noco', CONSTANTS)
@@ -262,7 +397,9 @@ def test_evaluate_text():
 
     parser = etree.XMLParser(attribute_defaults=True, recover=False, encoding='utf-8')
     xmltree = etree.parse(TEST_INPXML_PATH, parser)
+    outxmltree = etree.parse(TEST_OUTXML_PATH2, parser)
 
+    outroot = outxmltree.getroot()
     root = xmltree.getroot()
 
     assert pytest.approx(evaluate_text(root, schema_dict, 'qss', CONSTANTS)) == [0.0, 0.0, 0.0]
@@ -272,8 +409,12 @@ def test_evaluate_text():
         assert pytest.approx(val) == result
 
     positions = evaluate_text(root, schema_dict, 'filmPos', CONSTANTS)
+    positions_out = evaluate_text(outroot, schema_dict, 'filmPos', CONSTANTS, replace_root=INPUT_TAG_33)
+
     expected = [[0.0, 0.0, -0.9964250044], [0.5, 0.5, 0.9964250044]]
     for val, result in zip(positions, expected):
+        assert pytest.approx(val) == result
+    for val, result in zip(positions_out, expected):
         assert pytest.approx(val) == result
 
     with pytest.raises(ValueError, match='The tag row-1 has multiple possible paths with the current specification.'):
@@ -309,6 +450,9 @@ def test_evaluate_tag():
 
     parser = etree.XMLParser(attribute_defaults=True, recover=False, encoding='utf-8')
     xmltree = etree.parse(TEST_INPXML_PATH, parser)
+    outxmltree = etree.parse(TEST_OUTXML_PATH2, parser)
+
+    outroot = outxmltree.getroot()
     root = xmltree.getroot()
 
     expected = {
@@ -345,6 +489,9 @@ def test_evaluate_tag():
     mtRadii = evaluate_tag(root, schema_dict, 'mtSphere', CONSTANTS, contains='species')
     assert mtRadii == expected
 
+    mtRadii = evaluate_tag(outroot, schema_dict, 'mtSphere', CONSTANTS, contains='species', replace_root=INPUT_TAG_33)
+    assert mtRadii == expected
+
     expected = {
         'l_constrained': None,
         'l_mtNocoPot': None,
@@ -358,6 +505,132 @@ def test_evaluate_tag():
     }
     nocoParams = evaluate_tag(root, schema_dict, 'nocoParams', CONSTANTS, contains='atomGroup')
     assert nocoParams == expected
+
+    expected = {
+        'alpha': [0.0, 0.0],
+        'beta': [1.570796326, 1.570796326],
+    }
+    nocoParams = evaluate_tag(root, schema_dict, 'nocoParams', CONSTANTS, contains='atomGroup', only_required=True)
+    assert nocoParams == expected
+
+    expected = {
+        'beta': [1.570796326, 1.570796326],
+    }
+    nocoParams = evaluate_tag(root,
+                              schema_dict,
+                              'nocoParams',
+                              CONSTANTS,
+                              contains='atomGroup',
+                              only_required=True,
+                              ignore=['alpha'])
+    assert nocoParams == expected
+
+    assert schema_dict == schema_dict_33
+
+
+def test_single_value_tag():
+    """
+    Test of the evaluate_single_value_tag function
+    """
+    from lxml import etree
+    from masci_tools.util.schema_dict_util import evaluate_single_value_tag, get_tag_xpath
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+
+    schema_dict = copy.deepcopy(outschema_dict_33)
+
+    parser = etree.XMLParser(attribute_defaults=True, recover=False, encoding='utf-8')
+    xmltree = etree.parse(TEST_OUTXML_PATH, parser)
+    root = xmltree.getroot()
+
+    iteration_xpath = get_tag_xpath(schema_dict, 'iteration')
+    iteration = eval_xpath(root, iteration_xpath, list_return=True)[0]
+
+    expected = {'comment': None, 'units': 'Htr', 'value': -4204.714048254}
+    totalEnergy = evaluate_single_value_tag(iteration, schema_dict, 'totalEnergy', CONSTANTS)
+    assert totalEnergy == expected
+
+    expected = {'value': -4204.714048254}
+    totalEnergy = evaluate_single_value_tag(iteration, schema_dict, 'totalEnergy', CONSTANTS, only_required=True)
+    assert totalEnergy == expected
+
+    with pytest.raises(ValueError, match='The tag total_energy has no possible paths with the current specification.'):
+        evaluate_single_value_tag(root, schema_dict, 'total_energy', CONSTANTS)
+    with pytest.raises(ValueError,
+                       match='The tag totalCharge has multiple possible paths with the current specification.'):
+        evaluate_single_value_tag(root, schema_dict, 'totalCharge', CONSTANTS)
+
+    expected = {'units': None, 'value': 63.9999999893}
+    totalCharge = evaluate_single_value_tag(iteration,
+                                            schema_dict,
+                                            'totalCharge',
+                                            CONSTANTS,
+                                            contains='allElectronCharges',
+                                            not_contains='fixed')
+    assert totalCharge == expected
+
+    expected = {'value': 63.9999999893}
+    totalCharge = evaluate_single_value_tag(iteration,
+                                            schema_dict,
+                                            'totalCharge',
+                                            CONSTANTS,
+                                            contains='allElectronCharges',
+                                            not_contains='fixed',
+                                            ignore=['units'])
+    assert totalCharge == expected
+
+    assert schema_dict == outschema_dict_33
+
+
+def test_evaluate_parent_tag():
+    """
+    Test of the evaluate_parent_tag function
+    """
+    from lxml import etree
+    from masci_tools.util.schema_dict_util import evaluate_parent_tag
+
+    schema_dict = copy.deepcopy(schema_dict_33)
+
+    parser = etree.XMLParser(attribute_defaults=True, recover=False, encoding='utf-8')
+    xmltree = etree.parse(TEST_OUTXML_PATH, parser)
+    root = xmltree.getroot()
+
+    expected = {
+        'atomicNumber': [31, 31, 33, 33],
+        'element': ['Ga', 'Ga', 'As', 'As'],
+        'name': ['Ga-1', 'Ga-1', 'As-2', 'As-2']
+    }
+    ldaU_species = evaluate_parent_tag(root,
+                                       schema_dict,
+                                       'ldaU',
+                                       CONSTANTS,
+                                       contains='species',
+                                       replace_root=INPUT_TAG_33)
+    pprint(ldaU_species)
+    assert ldaU_species == expected
+
+    expected = {'atomicNumber': [31, 31, 33, 33], 'name': ['Ga-1', 'Ga-1', 'As-2', 'As-2']}
+    ldaU_species = evaluate_parent_tag(root,
+                                       schema_dict,
+                                       'ldaU',
+                                       CONSTANTS,
+                                       contains='species',
+                                       only_required=True,
+                                       replace_root=INPUT_TAG_33)
+    pprint(ldaU_species)
+    assert ldaU_species == expected
+
+    expected = {'name': ['Ga-1', 'Ga-1', 'As-2', 'As-2']}
+    ldaU_species = evaluate_parent_tag(root,
+                                       schema_dict,
+                                       'ldaU',
+                                       CONSTANTS,
+                                       contains='species',
+                                       only_required=True,
+                                       replace_root=INPUT_TAG_33,
+                                       ignore=['atomicNumber'])
+    pprint(ldaU_species)
+    assert ldaU_species == expected
+
     assert schema_dict == schema_dict_33
 
 
@@ -372,12 +645,19 @@ def test_tag_exists():
 
     parser = etree.XMLParser(attribute_defaults=True, recover=False, encoding='utf-8')
     xmltree = etree.parse(TEST_INPXML_PATH, parser)
+    outxmltree = etree.parse(TEST_OUTXML_PATH2, parser)
+
+    outroot = outxmltree.getroot()
     root = xmltree.getroot()
 
     assert tag_exists(root, schema_dict, 'filmPos')
     assert tag_exists(root, schema_dict, 'calculationSetup')
+
     assert not tag_exists(root, schema_dict, 'ldaU', contains='species')
     assert tag_exists(root, schema_dict, 'ldaU', not_contains='atom')
+
+    assert not tag_exists(outroot, schema_dict, 'ldaU', contains='species', replace_root=INPUT_TAG_33)
+    assert tag_exists(outroot, schema_dict, 'ldaU', not_contains='atom', replace_root=INPUT_TAG_33)
 
     with pytest.raises(ValueError, match='The tag ldaU has multiple possible paths with the current specification.'):
         tag_exists(root, schema_dict, 'ldaU')
@@ -398,12 +678,18 @@ def test_get_number_of_nodes():
 
     parser = etree.XMLParser(attribute_defaults=True, recover=False, encoding='utf-8')
     xmltree = etree.parse(TEST_INPXML_PATH, parser)
+    outxmltree = etree.parse(TEST_OUTXML_PATH2, parser)
+
+    outroot = outxmltree.getroot()
     root = xmltree.getroot()
 
     assert get_number_of_nodes(root, schema_dict, 'filmPos') == 2
     assert get_number_of_nodes(root, schema_dict, 'calculationSetup') == 1
     assert get_number_of_nodes(root, schema_dict, 'ldaU', contains='species') == 0
     assert get_number_of_nodes(root, schema_dict, 'ldaU', not_contains='atom') == 1
+
+    assert get_number_of_nodes(outroot, schema_dict, 'filmPos', replace_root=INPUT_TAG_33) == 2
+    assert get_number_of_nodes(outroot, schema_dict, 'calculationSetup', replace_root=INPUT_TAG_33) == 1
 
     with pytest.raises(ValueError, match='The tag ldaU has multiple possible paths with the current specification.'):
         get_number_of_nodes(root, schema_dict, 'ldaU')

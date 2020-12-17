@@ -165,7 +165,7 @@ def read_constants(xmltree, schema_dict, replace_root=None):
         'Bohr': 1.0
     }
 
-    constants = evaluate_tag(xmltree, schema_dict, 'constants', const_dict, replace_root=replace_root)
+    constants = evaluate_tag(xmltree, schema_dict, 'constant', const_dict, replace_root=replace_root)
 
     if constants:
         for name, value in zip(constants['name'], constants['value']):
