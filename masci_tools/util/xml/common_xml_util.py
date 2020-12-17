@@ -364,20 +364,19 @@ def get_xml_attribute(node, attributename, parser_info_out=None):
             if parser_info_out:
                 parser_info_out['parser_warnings'].append('Tried to get attribute: "{}" from element {}.\n '
                                                           'I recieved "{}", maybe the attribute does not exist'
-                                                          ''.format(attributename, node, attrib_value))
+                                                          ''.format(attributename, node.tag, attrib_value))
             else:
                 print(('Can not get attributename: "{}" from node "{}", '
                        'because node is not an element of etree.'
-                       ''.format(attributename, node)))
+                       ''.format(attributename, node.tag)))
             return None
     else:  # something doesn't work here, some nodes get through here
         if parser_info_out:
-            parser_info_out['parser_warnings'].append('Can not get attributename: "{}" from node "{}", '
+            parser_info_out['parser_warnings'].append('Can not get attributename: "{}" from node of type {}, '
                                                       'because node is not an element of etree.'
-                                                      ''.format(attributename, node))
+                                                      ''.format(attributename, type(node)))
         else:
-            print(('Can not get attributename: "{}" from node "{}", '
+            print(('Can not get attributename: "{}" from node of type "{}", '
                    'because node is not an element of etree.'
-                   ''.format(attributename, node)))
+                   ''.format(attributename, type(node))))
         return None
-
