@@ -5,6 +5,7 @@ Test of the functions in common_xml_util
 import pytest
 import os
 from masci_tools.util.constants import FLEUR_DEFINED_CONSTANTS
+from pprint import pprint
 
 TEST_FOLDER = os.path.dirname(os.path.abspath(__file__))
 CLEAR_XML_TEST_FILE = os.path.abspath(os.path.join(TEST_FOLDER, 'files/fleur/test_clear.xml'))
@@ -34,8 +35,18 @@ def test_convert_to_float():
     assert warnings == ["Could not convert: '{}' to float, TypeError"]
 
     warnings = []
+    ret_val = convert_to_float({}, suc_return=False, conversion_warnings=warnings)
+    assert ret_val == {}
+    assert warnings == ["Could not convert: '{}' to float, TypeError"]
+
+    warnings = []
     ret_val, suc = convert_to_float('1,23', conversion_warnings=warnings)
     assert not suc
+    assert ret_val == '1,23'
+    assert warnings == ["Could not convert: '1,23' to float, ValueError"]
+
+    warnings = []
+    ret_val = convert_to_float('1,23', suc_return=False, conversion_warnings=warnings)
     assert ret_val == '1,23'
     assert warnings == ["Could not convert: '1,23' to float, ValueError"]
 
@@ -249,3 +260,172 @@ def test_get_xml_attribute():
             'Can not get attributename: "TEST" from node of type <class \'lxml.etree._ElementTree\'>, because node is not an element of etree.'
         ]
     }
+
+
+TEST_STRINGS = ['1.2314', 'all', ['all', '213', '-12'], ['PI', 'NOT_PI', '1.2'], ['F', 'T']]
+
+TEST_TYPES = [['float'], ['int', 'string'], ['int', 'string'], ['float', 'float_expression'], ['int', 'switch']]
+
+TEST_RESULTS = [(pytest.approx(1.2314), True), ('all', True), (['all', 213, -12], True),
+                (['PI', 'NOT_PI', pytest.approx(1.2)], False), ([False, True], True)]
+
+TEST_WARNINGS = [
+    [], ["Could not convert: 'all' to int, ValueError"], ["Could not convert: 'all' to int, ValueError"],
+    [
+        "Could not convert: 'PI' to float, ValueError",
+        "Could not evaluate expression 'PI' The following error was raised: Unknown string expression: PI",
+        "Could not convert: 'NOT_PI' to float, ValueError",
+        "Could not evaluate expression 'NOT_PI' The following error was raised: Unknown string expression: NOT"
+    ], ["Could not convert: 'F' to int, ValueError", "Could not convert: 'T' to int, ValueError"]
+]
+
+
+@pytest.mark.parametrize('string_attr,types,results', zip(TEST_STRINGS, TEST_TYPES, TEST_RESULTS))
+def test_convert_xml_attribute(string_attr, types, results):
+    """
+    Test of the convert_xml_attribute function
+    """
+    from masci_tools.util.xml.common_xml_util import convert_xml_attribute
+
+    expected_val, expected_suc = results
+
+    ret_val, suc = convert_xml_attribute(string_attr, types, FLEUR_DEFINED_CONSTANTS)
+    assert ret_val == expected_val
+    assert suc == expected_suc
+
+
+@pytest.mark.parametrize('string_attr,types,results', zip(TEST_STRINGS, TEST_TYPES, TEST_RESULTS))
+def test_convert_xml_attribute_nosucreturn(string_attr, types, results):
+    """
+    Test of the convert_xml_attribute function
+    """
+    from masci_tools.util.xml.common_xml_util import convert_xml_attribute
+
+    expected_val, expected_suc = results
+
+    ret_val = convert_xml_attribute(string_attr, types, FLEUR_DEFINED_CONSTANTS, suc_return=False)
+    assert ret_val == expected_val
+
+
+@pytest.mark.parametrize('string_attr,types,results, warnings',
+                         zip(TEST_STRINGS, TEST_TYPES, TEST_RESULTS, TEST_WARNINGS))
+def test_convert_xml_attribute_warnings(string_attr, types, results, warnings):
+    """
+    Test of the convert_xml_attribute function
+    """
+    from masci_tools.util.xml.common_xml_util import convert_xml_attribute
+
+    expected_val, expected_suc = results
+    conversion_warnings = []
+    ret_val, suc = convert_xml_attribute(string_attr,
+                                         types,
+                                         FLEUR_DEFINED_CONSTANTS,
+                                         conversion_warnings=conversion_warnings)
+    assert ret_val == expected_val
+    assert suc == expected_suc
+    assert conversion_warnings == warnings
+
+
+TEST_TEXT_STRINGS = [
+    '0.0 Pi/4.0 6.3121', '0.0 Pi/4.0 6.3121', '0.0 Pi/4.0 6.3121', '0.0 Pi/4.0 6.3121',
+    ['0.0 Pi/4.0 6.3121', 'Bohr Pi/4.0 all', '0.0 Pi/*4.0 0.0'], ['F asd', 'T'],
+    ['12 213 4215 412', '12 213 4215 412 123 14124']
+]
+
+TEST_DEFINITIONS = [[{
+                        'length': 3,
+                        'type': ['float', 'float_expression']
+                    }], [{
+                        'length': 4,
+                        'type': ['float', 'float_expression']
+                    }], [{
+                        'length': 4,
+                        'type': ['float', 'float_expression']
+                    }, {
+                        'length': 'unbounded',
+                        'type': ['float', 'float_expression']
+                    }], [{
+                        'length': 1,
+                        'type': ['float', 'float_expression']
+                    }], [{
+                        'length': 3,
+                        'type': ['float', 'float_expression']
+                    }], [{
+                        'length': 'unbounded',
+                        'type': ['switch', 'string']
+                    }], [{
+                        'length': 4,
+                        'type': ['switch', 'int']
+                    }, {
+                        'length': 'unbounded',
+                        'type': ['int']
+                    }]]
+
+TEST_TEXT_RESULTS = [(pytest.approx([0.0, 0.7853981633974483, 6.3121]), True), ('0.0 Pi/4.0 6.3121', False),
+                     (pytest.approx([0.0, 0.7853981633974483, 6.3121]), True), ('0.0 Pi/4.0 6.3121', False),
+                     ([[0.0, 0.7853981633974483, 6.3121], [1.0, 0.7853981633974483, 'all'], [0.0, 'Pi/*4.0',
+                                                                                             0.0]], False),
+                     ([[False, 'asd'], [True]], True), ([[12, 213, 4215, 412], [12, 213, 4215, 412, 123, 14124]], True)]
+
+TEST_TEXT_WARNINGS = [[], ["Failed to convert '0.0 Pi/4.0 6.3121', no matching definition found "], [],
+                      [
+                          "Could not convert: '0.0 Pi/4.0 6.3121' to float, ValueError",
+                          "Could not evaluate expression '0.0 Pi/4.0 6.3121' The following error was "
+                          'raised: Cannot parse number: Found two decimal points'
+                      ],
+                      [
+                          "Could not convert: 'all' to float, ValueError",
+                          "Could not evaluate expression 'all' The following error was raised: Unknown "
+                          'string expression: all', "Could not convert: 'Pi/*4.0' to float, ValueError",
+                          "Could not evaluate expression 'Pi/*4.0' The following error was raised: "
+                          'Invalid Expression: Operator following operator'
+                      ], [], []]
+
+
+@pytest.mark.parametrize('string_text,definitions, results', zip(TEST_TEXT_STRINGS, TEST_DEFINITIONS,
+                                                                 TEST_TEXT_RESULTS))
+def test_convert_xml_text(string_text, definitions, results):
+    """
+    Test of the convert_xml_attribute function
+    """
+    from masci_tools.util.xml.common_xml_util import convert_xml_text
+
+    expected_val, expected_suc = results
+
+    ret_val, suc = convert_xml_text(string_text, definitions, FLEUR_DEFINED_CONSTANTS)
+    assert ret_val == expected_val
+    assert suc == expected_suc
+
+
+@pytest.mark.parametrize('string_text,definitions,results', zip(TEST_TEXT_STRINGS, TEST_DEFINITIONS, TEST_TEXT_RESULTS))
+def test_convert_xml_text_nosucreturn(string_text, definitions, results):
+    """
+    Test of the convert_xml_attribute function
+    """
+    from masci_tools.util.xml.common_xml_util import convert_xml_text
+
+    expected_val, expected_suc = results
+
+    ret_val = convert_xml_text(string_text, definitions, FLEUR_DEFINED_CONSTANTS, suc_return=False)
+    assert ret_val == expected_val
+
+
+@pytest.mark.parametrize('string_text,definitions,results,warnings',
+                         zip(TEST_TEXT_STRINGS, TEST_DEFINITIONS, TEST_TEXT_RESULTS, TEST_TEXT_WARNINGS))
+def test_convert_xml_text_warnings(string_text, definitions, results, warnings):
+    """
+    Test of the convert_xml_attribute function
+    """
+    from masci_tools.util.xml.common_xml_util import convert_xml_text
+
+    expected_val, expected_suc = results
+
+    conversion_warnings = []
+
+    ret_val, suc = convert_xml_text(string_text,
+                                    definitions,
+                                    FLEUR_DEFINED_CONSTANTS,
+                                    conversion_warnings=conversion_warnings)
+    assert ret_val == expected_val
+    assert suc == expected_suc
+    assert conversion_warnings == warnings
