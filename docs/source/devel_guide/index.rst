@@ -18,9 +18,9 @@ To make maintenance of the plugin and the schemas easier, a couple of small util
 All functions below can either be called in python scripts or from the commandline
 
 .. topic:: Adding/modifying a Fleur Schema:
-  
+
   The :py:func:`~masci_tools.io.parsers.fleur.fleur_schema.add_fleur_schema()` function can be used if a new ```FleurInputSchema.xsd``` or ```FleurOutputSchema.xsd``` are to be added and parsed into their corresponding dictionaries. A usage example is provided below:
-  
+
   .. code-block:: python
 
     from masci_tools.io.parsers.fleur.fleur_schema import add_fleur_schema
@@ -32,11 +32,11 @@ All functions below can either be called in python scripts or from the commandli
     #If the schema with the found version is found the above call will raise an exception
     #use overwrite=True to replace the schemas
     add_fleur_schema('/path/to/folder/with/schema/', overwrite=True)
-   
+
 .. topic:: Modifying the parsed Fleur Schema:
 
   The :py:func:`~masci_tools.io.parsers.fleur.fleur_schema.update_schema_dicts()` function can be used if all available schemas should be be reparsed and all dictionaries updated, if the parsing functions are updated or a new key is added for example. This is really straightforward to use:
-  
+
   .. code-block:: python
 
     from masci_tools.io.parsers.fleur.fleur_schema import update_schema_dicts
@@ -50,7 +50,7 @@ All functions below can either be called in python scripts or from the commandli
   In contrast to the input file parser :py:func:`~masci_tools.io.parsers.fleur.inpxml_parser()`, which parses all information available,
   the :py:func:`~masci_tools.io.parsers.fleur.outxml_parser()` has to be more flexible. The out file has much more information which might
   not be always useful for users. Therefore the selection of what is parsed has to be much more specific.
-  
+
   This selection is expressed in the context of tasks. In general this corresponds to things like:
     - Total energy
     - Charge density distances
@@ -123,7 +123,7 @@ All functions below can either be called in python scripts or from the commandli
       #If a task is incompatible remove it from the defintion_dict
       #BUT also append it to the incompatible_tasks
       new_dict.pop('orbital_magnetic_moments')
-      new_incompatible_tasks.append('orbital_magentic_moments')
+      new_incompatible_tasks.append('orbital_magnetic_moments')
 
       new_dict['general_out_info'].pop('number_of_atom_types')
       new_dict['general_inp_info']['number_of_atom_types'] = {
