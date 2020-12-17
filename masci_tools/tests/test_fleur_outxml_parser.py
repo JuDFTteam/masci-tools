@@ -6,6 +6,7 @@ from __future__ import absolute_import
 import pytest
 from masci_tools.io.parsers.fleur import outxml_parser
 import os
+from pprint import pprint
 
 # Collect the input files
 file_path = 'files/fleur/Max-R5'
@@ -69,9 +70,9 @@ def test_outxml_max4compatibility():
             'time': '16:22:41'
         },
         'energy': [
-            -114418.28718385972, -114418.24068105136, -114418.07760372653, -114417.96806006074, -114417.96701859937,
-            -114417.95935136413, -114417.95666810652, -114417.95654429198, -114417.95600895694, -114417.956023847,
-            -114417.95588135459, -114417.9559142205
+            -114418.28813409281, -114418.2416312841, -114418.07855395791, -114417.96901029118, -114417.96796882982,
+            -114417.96030159452, -114417.95761833688, -114417.95749452234, -114417.9569591873, -114417.95697407736,
+            -114417.95683158495, -114417.95686445085
         ],
         'energy_core_electrons': [
             -2406.3435230507, -2406.3719624068, -2406.5005612744, -2406.2641219962, -2406.2791532601, -2406.3090185232,
@@ -204,7 +205,7 @@ def test_outxml_max4compatibility():
 
     warnings = {'parser_warnings': []}
     out_dict = outxml_parser(OUTXML_FILEPATH, parser_info_out=warnings, iteration_to_parse='all')
-
+    pprint(out_dict)
     assert out_dict == expected_result
     assert warnings == expected_warnings
 
@@ -224,7 +225,7 @@ def test_outxml_lastiter():
             'date': '2020/12/10',
             'time': '16:51:35'
         },
-        'energy': -15784.360800784752,
+        'energy': -15784.360931872383,
         'energy_core_electrons': -260.7708027749,
         'energy_hartree': -580.0645652222,
         'energy_hartree_units': 'Htr',
@@ -259,7 +260,7 @@ def test_outxml_lastiter():
     OUTXML_FILEPATH = os.path.join(outxmlfilefolder_valid[0], 'SiLOXML/files/out.xml')
 
     out_dict = outxml_parser(OUTXML_FILEPATH, strict=True)
-
+    pprint(out_dict)
     assert out_dict == expected_result
 
 
@@ -278,7 +279,7 @@ def test_outxml_firstiter():
             'date': '2020/12/10',
             'time': '16:51:35'
         },
-        'energy': -15784.558462216572,
+        'energy': -15784.558593305843,
         'energy_core_electrons': -260.8588755929,
         'energy_hartree': -580.0718291459,
         'energy_hartree_units': 'Htr',
@@ -313,7 +314,7 @@ def test_outxml_firstiter():
     OUTXML_FILEPATH = os.path.join(outxmlfilefolder_valid[0], 'SiLOXML/files/out.xml')
 
     out_dict = outxml_parser(OUTXML_FILEPATH, iteration_to_parse='first', strict=True)
-
+    pprint(out_dict)
     assert out_dict == expected_result
 
 
@@ -339,8 +340,8 @@ def test_outxml_alliter():
             'time': '16:51:35'
         },
         'energy': [
-            -15784.558462216572, -15784.53099477957, -15784.361353401742, -15784.35737835975, -15784.359702783555,
-            -15784.360800784752
+            -15784.558593305843, -15784.531125868616, -15784.361484489378, -15784.357509447353, -15784.359833871176,
+            -15784.360931872383
         ],
         'energy_core_electrons':
         [-260.8588755929, -260.8499161476, -260.706488686, -260.7469665908, -260.7692856056, -260.7708027749],
@@ -396,7 +397,7 @@ def test_outxml_alliter():
     OUTXML_FILEPATH = os.path.join(outxmlfilefolder_valid[0], 'SiLOXML/files/out.xml')
 
     out_dict = outxml_parser(OUTXML_FILEPATH, iteration_to_parse='all', strict=True)
-
+    pprint(out_dict)
     assert out_dict == expected_result
 
 
@@ -415,7 +416,7 @@ def test_outxml_indexiter():
             'date': '2020/12/10',
             'time': '16:51:35'
         },
-        'energy': -15784.35737835975,
+        'energy': -15784.357509447353,
         'energy_core_electrons': -260.7469665908,
         'energy_hartree': -580.0644394504,
         'energy_hartree_units': 'Htr',
@@ -448,9 +449,9 @@ def test_outxml_indexiter():
     }
 
     OUTXML_FILEPATH = os.path.join(outxmlfilefolder_valid[0], 'SiLOXML/files/out.xml')
-    print(OUTXML_FILEPATH)
-    out_dict = outxml_parser(OUTXML_FILEPATH, iteration_to_parse=3, strict=True)
 
+    out_dict = outxml_parser(OUTXML_FILEPATH, iteration_to_parse=3, strict=True)
+    pprint(out_dict)
     assert out_dict == expected_result
 
 
@@ -471,8 +472,8 @@ def test_outxml_minimal_mode():
             'time': '16:51:35'
         },
         'energy': [
-            -15784.558462216572, -15784.53099477957, -15784.361353401742, -15784.35737835975, -15784.359702783555,
-            -15784.360800784752
+            -15784.558593305843, -15784.531125868616, -15784.361484489378, -15784.357509447353, -15784.359833871176,
+            -15784.360931872383
         ],
         'energy_hartree':
         [-580.0718291459, -580.0708197362, -580.0645855305, -580.0644394504, -580.0645248714, -580.0645652222],
@@ -515,7 +516,7 @@ def test_outxml_minimal_mode():
     OUTXML_FILEPATH = os.path.join(outxmlfilefolder_valid[0], 'SiLOXML/files/out.xml')
 
     out_dict = outxml_parser(OUTXML_FILEPATH, iteration_to_parse='all', minimal_mode=True, strict=True)
-
+    pprint(out_dict)
     assert out_dict == expected_result
 
 
@@ -540,7 +541,7 @@ def test_outxml_magnetic():
             'date': '2020/12/10',
             'time': '16:53:09'
         },
-        'energy': [-69269.26222704063, -69269.20103443766, -69269.1612911444, -69269.20170072748],
+        'energy': [-69269.26280231532, -69269.20160971185, -69269.16186641826, -69269.20227600168],
         'energy_core_electrons': [-1455.1337167156, -1455.4152321083, -1456.700254102, -1456.7494708632],
         'energy_hartree': [-2545.5984555924, -2545.5962068057, -2545.5947462666, -2545.5962312914],
         'energy_hartree_units':
@@ -603,7 +604,7 @@ def test_outxml_magnetic():
     OUTXML_FILEPATH = os.path.join(outxmlfilefolder_valid[0], 'Fe_bct_LOXML/files/out.xml')
 
     out_dict = outxml_parser(OUTXML_FILEPATH, iteration_to_parse='all', strict=True)
-
+    pprint(out_dict)
     assert out_dict == expected_result
 
 
@@ -628,7 +629,7 @@ def test_outxml_ldaurelax():
             'date': '2020/12/10',
             'time': '16:52:15'
         },
-        'energy': [-114416.0970707565, -114416.09707142044],
+        'energy': [-114416.09802097142, -114416.09802163536],
         'energy_core_electrons': [-2406.2024893454, -2406.2024979422],
         'energy_hartree': [-4204.714048254, -4204.7140482784],
         'energy_hartree_units': 'Htr',
@@ -707,7 +708,7 @@ def test_outxml_ldaurelax():
     OUTXML_FILEPATH = os.path.join(outxmlfilefolder_valid[0], 'GaAsMultiUForceXML/files/out.xml')
 
     out_dict = outxml_parser(OUTXML_FILEPATH, iteration_to_parse='all', strict=True)
-
+    pprint(out_dict)
     assert out_dict == expected_result
 
 

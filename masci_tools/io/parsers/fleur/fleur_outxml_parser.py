@@ -16,11 +16,12 @@ and convert its content to a dict, based on the tasks given
 """
 from __future__ import absolute_import
 from .parse_tasks import ParseTasks
-from masci_tools.util.xml.common_xml_util import eval_xpath, get_xml_attribute, clear_xml, convert_xml_attribute
+import masci_tools.util.fleur_outxml_conversions as convert_funcs
 import masci_tools.util.schema_dict_util as schema_util
+from masci_tools.util.xml.common_xml_util import eval_xpath, clear_xml
+from masci_tools.util.constants import HTR_TO_EV
 from masci_tools.io.parsers.fleur.fleur_schema import load_inpschema, load_outschema
 from masci_tools.io.common_functions import camel_to_snake
-import masci_tools.util.fleur_outxml_conversions as convert_funcs
 from lxml import etree
 
 
@@ -206,14 +207,14 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
                                    **kwargs)
 
     #Convert energy to eV
-    htr = 27.21138602
     if 'energy_hartree' in out_dict:
         if out_dict['energy_hartree'] is not None:
-            out_dict['energy'] = [e * htr if e is not None else None for e in out_dict['energy_hartree']]
+            out_dict['energy'] = [e * HTR_TO_EV if e is not None else None for e in out_dict['energy_hartree']]
         else:
             out_dict['energy'] = None
         out_dict['energy_units'] = 'eV'
 
+    #Convert one item lists to simple values
     for key, value in out_dict.items():
         if isinstance(value, list):
             if len(value) == 1:
