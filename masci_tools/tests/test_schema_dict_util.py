@@ -354,6 +354,28 @@ def test_evaluate_attribute():
                            not_contains='species')) == [np.pi / 2.0, np.pi / 2.0]
 
     assert pytest.approx(
+        evaluate_attribute(root,
+                           schema_dict,
+                           'beta',
+                           FLEUR_DEFINED_CONSTANTS,
+                           tag_name='nocoParams',
+                           not_contains='species')) == [np.pi / 2.0, np.pi / 2.0]
+
+
+    expected_info = {'parser_warnings': ['No attribute TEST found at tag nocoParams']}
+
+    parser_info_out = {'parser_warnings': []}
+    assert evaluate_attribute(root,
+                           schema_dict,
+                           'TEST',
+                           FLEUR_DEFINED_CONSTANTS,
+                           tag_name='nocoParams',
+                           not_contains='species',
+                           parser_info_out=parser_info_out) is None
+
+    assert parser_info_out == expected_info
+
+    assert pytest.approx(
         evaluate_attribute(outroot,
                            schema_dict,
                            'beta',
@@ -362,6 +384,25 @@ def test_evaluate_attribute():
                            contains='nocoParams',
                            not_contains='species',
                            replace_root=INPUT_TAG_33)) == [np.pi / 2.0, np.pi / 2.0]
+
+    iteration = outroot.xpath('//iteration')[0]
+
+    assert evaluate_attribute(iteration,
+                           outschema_dict_33,
+                           'units',
+                           FLEUR_DEFINED_CONSTANTS,
+                           tag_name='Forcetheorem_SSDISP') == 'Htr'
+
+    expected_info = {'parser_warnings': ['No attribute TEST found at tag Forcetheorem_SSDISP']}
+
+    parser_info_out = {'parser_warnings': []}
+    assert evaluate_attribute(iteration,
+                           outschema_dict_33,
+                           'TEST',
+                           FLEUR_DEFINED_CONSTANTS,
+                           tag_name='Forcetheorem_SSDISP',
+                           parser_info_out=parser_info_out) is None
+    assert parser_info_out == expected_info
 
     with pytest.raises(ValueError, match='The attrib l_Noco has no possible paths with the current specification.'):
         evaluate_attribute(root, schema_dict, 'l_Noco', FLEUR_DEFINED_CONSTANTS)
