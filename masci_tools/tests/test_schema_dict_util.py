@@ -8,6 +8,7 @@ import os
 import copy
 import numpy as np
 from masci_tools.io.parsers.fleur.fleur_schema import load_inpschema, load_outschema
+from masci_tools.util.constants import FLEUR_DEFINED_CONSTANTS
 from pprint import pprint
 
 #Load different schema versions (for now only input schemas)
@@ -23,15 +24,6 @@ FILE_PATH = os.path.dirname(os.path.abspath(__file__))
 TEST_INPXML_PATH = os.path.join(FILE_PATH, 'files/fleur/Max-R5/FePt_film_SSFT_LO/files/inp2.xml')
 TEST_OUTXML_PATH = os.path.join(FILE_PATH, 'files/fleur/Max-R5/GaAsMultiUForceXML/files/out.xml')
 TEST_OUTXML_PATH2 = os.path.join(FILE_PATH, 'files/fleur/Max-R5/FePt_film_SSFT_LO/files/out.xml')
-
-CONSTANTS = {
-    'Pi': np.pi,
-    'Deg': 2 * np.pi / 360.0,
-    'Ang': 1.8897261247728981,
-    'nm': 18.897261247728981,
-    'pm': 0.018897261247728981,
-    'Bohr': 1.0
-}
 
 
 def test_get_tag_xpath_input():
@@ -343,19 +335,19 @@ def test_evaluate_attribute():
     outroot = outxmltree.getroot()
     root = xmltree.getroot()
 
-    assert evaluate_attribute(root, schema_dict, 'jspins', CONSTANTS) == 2
-    assert evaluate_attribute(root, schema_dict, 'l_noco', CONSTANTS)
-    assert evaluate_attribute(root, schema_dict, 'mode', CONSTANTS) == 'hist'
-    assert pytest.approx(evaluate_attribute(root, schema_dict, 'radius', CONSTANTS, contains='species')) == [2.2, 2.2]
+    assert evaluate_attribute(root, schema_dict, 'jspins', FLEUR_DEFINED_CONSTANTS) == 2
+    assert evaluate_attribute(root, schema_dict, 'l_noco', FLEUR_DEFINED_CONSTANTS)
+    assert evaluate_attribute(root, schema_dict, 'mode', FLEUR_DEFINED_CONSTANTS) == 'hist'
+    assert pytest.approx(evaluate_attribute(root, schema_dict, 'radius', FLEUR_DEFINED_CONSTANTS, contains='species')) == [2.2, 2.2]
 
     with pytest.raises(ValueError, match='The attrib beta has multiple possible paths with the current specification.'):
-        evaluate_attribute(root, schema_dict, 'beta', CONSTANTS, exclude=['unique'])
+        evaluate_attribute(root, schema_dict, 'beta', FLEUR_DEFINED_CONSTANTS, exclude=['unique'])
 
     assert pytest.approx(
         evaluate_attribute(root,
                            schema_dict,
                            'beta',
-                           CONSTANTS,
+                           FLEUR_DEFINED_CONSTANTS,
                            exclude=['unique'],
                            contains='nocoParams',
                            not_contains='species')) == [np.pi / 2.0, np.pi / 2.0]
@@ -364,24 +356,24 @@ def test_evaluate_attribute():
         evaluate_attribute(outroot,
                            schema_dict,
                            'beta',
-                           CONSTANTS,
+                           FLEUR_DEFINED_CONSTANTS,
                            exclude=['unique'],
                            contains='nocoParams',
                            not_contains='species',
                            replace_root=INPUT_TAG_33)) == [np.pi / 2.0, np.pi / 2.0]
 
     with pytest.raises(ValueError, match='The attrib l_Noco has no possible paths with the current specification.'):
-        evaluate_attribute(root, schema_dict, 'l_Noco', CONSTANTS)
+        evaluate_attribute(root, schema_dict, 'l_Noco', FLEUR_DEFINED_CONSTANTS)
 
     with pytest.raises(ValueError,
                        match='The attrib spinf has multiple possible paths with the current specification.'):
-        evaluate_attribute(root, schema_dict, 'spinf', CONSTANTS)
+        evaluate_attribute(root, schema_dict, 'spinf', FLEUR_DEFINED_CONSTANTS)
 
     expected_info = {'parser_warnings': ['No values found for attribute radius']}
 
     parser_info_out = {'parser_warnings': []}
     assert evaluate_attribute(
-        root, schema_dict, 'radius', CONSTANTS, not_contains='species', parser_info_out=parser_info_out) is None
+        root, schema_dict, 'radius', FLEUR_DEFINED_CONSTANTS, not_contains='species', parser_info_out=parser_info_out) is None
     assert parser_info_out == expected_info
     assert schema_dict == schema_dict_33
 
@@ -402,14 +394,14 @@ def test_evaluate_text():
     outroot = outxmltree.getroot()
     root = xmltree.getroot()
 
-    assert pytest.approx(evaluate_text(root, schema_dict, 'qss', CONSTANTS)) == [0.0, 0.0, 0.0]
-    kpoints = evaluate_text(root, schema_dict, 'kPoint', CONSTANTS)
+    assert pytest.approx(evaluate_text(root, schema_dict, 'qss', FLEUR_DEFINED_CONSTANTS)) == [0.0, 0.0, 0.0]
+    kpoints = evaluate_text(root, schema_dict, 'kPoint', FLEUR_DEFINED_CONSTANTS)
     expected = [[-0.25, 0.25, 0.0], [0.25, 0.25, 0.0]]
     for val, result in zip(kpoints, expected):
         assert pytest.approx(val) == result
 
-    positions = evaluate_text(root, schema_dict, 'filmPos', CONSTANTS)
-    positions_out = evaluate_text(outroot, schema_dict, 'filmPos', CONSTANTS, replace_root=INPUT_TAG_33)
+    positions = evaluate_text(root, schema_dict, 'filmPos', FLEUR_DEFINED_CONSTANTS)
+    positions_out = evaluate_text(outroot, schema_dict, 'filmPos', FLEUR_DEFINED_CONSTANTS, replace_root=INPUT_TAG_33)
 
     expected = [[0.0, 0.0, -0.9964250044], [0.5, 0.5, 0.9964250044]]
     for val, result in zip(positions, expected):
@@ -418,23 +410,23 @@ def test_evaluate_text():
         assert pytest.approx(val) == result
 
     with pytest.raises(ValueError, match='The tag row-1 has multiple possible paths with the current specification.'):
-        evaluate_text(root, schema_dict, 'row-1', CONSTANTS)
+        evaluate_text(root, schema_dict, 'row-1', FLEUR_DEFINED_CONSTANTS)
     #Test the correct passing of contains parameters
 
-    sym_row1 = evaluate_text(root, schema_dict, 'row-1', CONSTANTS, contains='symOp')
+    sym_row1 = evaluate_text(root, schema_dict, 'row-1', FLEUR_DEFINED_CONSTANTS, contains='symOp')
     expected = [[1.0, 0.0, 0.0, 0.0], [1.0, 0.0, 0.0, 0.0]]
     for val, result in zip(sym_row1, expected):
         assert pytest.approx(val) == result
     assert pytest.approx(
-        evaluate_text(root, schema_dict, 'row-1', CONSTANTS, not_contains='symOp',
+        evaluate_text(root, schema_dict, 'row-1', FLEUR_DEFINED_CONSTANTS, not_contains='symOp',
                       contains='filmLattice/bravaisMatrix')) == [5.3011797029, 0.0, 0.0]
 
     with pytest.raises(ValueError, match='The tag Magnetism has no possible paths with the current specification.'):
-        evaluate_text(root, schema_dict, 'Magnetism', CONSTANTS)
+        evaluate_text(root, schema_dict, 'Magnetism', FLEUR_DEFINED_CONSTANTS)
 
     expected_info = {'parser_warnings': ['No text found for tag magnetism']}
     parser_info_out = {'parser_warnings': []}
-    assert evaluate_text(root, schema_dict, 'magnetism', CONSTANTS, parser_info_out=parser_info_out) is None
+    assert evaluate_text(root, schema_dict, 'magnetism', FLEUR_DEFINED_CONSTANTS, parser_info_out=parser_info_out) is None
 
     assert schema_dict == schema_dict_33
 
@@ -465,14 +457,14 @@ def test_evaluate_tag():
         'minDistance': 1e-05,
         'maxTimeToStartIter': None
     }
-    scfloop = evaluate_tag(root, schema_dict, 'scfLoop', CONSTANTS)
+    scfloop = evaluate_tag(root, schema_dict, 'scfLoop', FLEUR_DEFINED_CONSTANTS)
     assert scfloop == expected
 
     with pytest.raises(ValueError, match='The tag Magnetism has no possible paths with the current specification.'):
-        evaluate_tag(root, schema_dict, 'Magnetism', CONSTANTS)
+        evaluate_tag(root, schema_dict, 'Magnetism', FLEUR_DEFINED_CONSTANTS)
     with pytest.raises(ValueError,
                        match='The tag mtSphere has multiple possible paths with the current specification.'):
-        evaluate_tag(root, schema_dict, 'mtSphere', CONSTANTS)
+        evaluate_tag(root, schema_dict, 'mtSphere', FLEUR_DEFINED_CONSTANTS)
 
     expected_info = {
         'parser_warnings': [
@@ -482,14 +474,14 @@ def test_evaluate_tag():
         ]
     }
     parser_info_out = {'parser_warnings': []}
-    assert evaluate_tag(root, schema_dict, 'qss', CONSTANTS, parser_info_out=parser_info_out) == {}
+    assert evaluate_tag(root, schema_dict, 'qss', FLEUR_DEFINED_CONSTANTS, parser_info_out=parser_info_out) == {}
     assert parser_info_out == expected_info
 
     expected = {'radius': [2.2, 2.2], 'gridPoints': [787, 787], 'logIncrement': [0.016, 0.017]}
-    mtRadii = evaluate_tag(root, schema_dict, 'mtSphere', CONSTANTS, contains='species')
+    mtRadii = evaluate_tag(root, schema_dict, 'mtSphere', FLEUR_DEFINED_CONSTANTS, contains='species')
     assert mtRadii == expected
 
-    mtRadii = evaluate_tag(outroot, schema_dict, 'mtSphere', CONSTANTS, contains='species', replace_root=INPUT_TAG_33)
+    mtRadii = evaluate_tag(outroot, schema_dict, 'mtSphere', FLEUR_DEFINED_CONSTANTS, contains='species', replace_root=INPUT_TAG_33)
     assert mtRadii == expected
 
     expected = {
@@ -503,14 +495,14 @@ def test_evaluate_tag():
         'b_cons_x': None,
         'b_cons_y': None
     }
-    nocoParams = evaluate_tag(root, schema_dict, 'nocoParams', CONSTANTS, contains='atomGroup')
+    nocoParams = evaluate_tag(root, schema_dict, 'nocoParams', FLEUR_DEFINED_CONSTANTS, contains='atomGroup')
     assert nocoParams == expected
 
     expected = {
         'alpha': [0.0, 0.0],
         'beta': [1.570796326, 1.570796326],
     }
-    nocoParams = evaluate_tag(root, schema_dict, 'nocoParams', CONSTANTS, contains='atomGroup', only_required=True)
+    nocoParams = evaluate_tag(root, schema_dict, 'nocoParams', FLEUR_DEFINED_CONSTANTS, contains='atomGroup', only_required=True)
     assert nocoParams == expected
 
     expected = {
@@ -519,7 +511,7 @@ def test_evaluate_tag():
     nocoParams = evaluate_tag(root,
                               schema_dict,
                               'nocoParams',
-                              CONSTANTS,
+                              FLEUR_DEFINED_CONSTANTS,
                               contains='atomGroup',
                               only_required=True,
                               ignore=['alpha'])
@@ -546,24 +538,24 @@ def test_single_value_tag():
     iteration = eval_xpath(root, iteration_xpath, list_return=True)[0]
 
     expected = {'comment': None, 'units': 'Htr', 'value': -4204.714048254}
-    totalEnergy = evaluate_single_value_tag(iteration, schema_dict, 'totalEnergy', CONSTANTS)
+    totalEnergy = evaluate_single_value_tag(iteration, schema_dict, 'totalEnergy', FLEUR_DEFINED_CONSTANTS)
     assert totalEnergy == expected
 
     expected = {'value': -4204.714048254}
-    totalEnergy = evaluate_single_value_tag(iteration, schema_dict, 'totalEnergy', CONSTANTS, only_required=True)
+    totalEnergy = evaluate_single_value_tag(iteration, schema_dict, 'totalEnergy', FLEUR_DEFINED_CONSTANTS, only_required=True)
     assert totalEnergy == expected
 
     with pytest.raises(ValueError, match='The tag total_energy has no possible paths with the current specification.'):
-        evaluate_single_value_tag(root, schema_dict, 'total_energy', CONSTANTS)
+        evaluate_single_value_tag(root, schema_dict, 'total_energy', FLEUR_DEFINED_CONSTANTS)
     with pytest.raises(ValueError,
                        match='The tag totalCharge has multiple possible paths with the current specification.'):
-        evaluate_single_value_tag(root, schema_dict, 'totalCharge', CONSTANTS)
+        evaluate_single_value_tag(root, schema_dict, 'totalCharge', FLEUR_DEFINED_CONSTANTS)
 
     expected = {'units': None, 'value': 63.9999999893}
     totalCharge = evaluate_single_value_tag(iteration,
                                             schema_dict,
                                             'totalCharge',
-                                            CONSTANTS,
+                                            FLEUR_DEFINED_CONSTANTS,
                                             contains='allElectronCharges',
                                             not_contains='fixed')
     assert totalCharge == expected
@@ -572,7 +564,7 @@ def test_single_value_tag():
     totalCharge = evaluate_single_value_tag(iteration,
                                             schema_dict,
                                             'totalCharge',
-                                            CONSTANTS,
+                                            FLEUR_DEFINED_CONSTANTS,
                                             contains='allElectronCharges',
                                             not_contains='fixed',
                                             ignore=['units'])
@@ -602,7 +594,7 @@ def test_evaluate_parent_tag():
     ldaU_species = evaluate_parent_tag(root,
                                        schema_dict,
                                        'ldaU',
-                                       CONSTANTS,
+                                       FLEUR_DEFINED_CONSTANTS,
                                        contains='species',
                                        replace_root=INPUT_TAG_33)
     pprint(ldaU_species)
@@ -612,7 +604,7 @@ def test_evaluate_parent_tag():
     ldaU_species = evaluate_parent_tag(root,
                                        schema_dict,
                                        'ldaU',
-                                       CONSTANTS,
+                                       FLEUR_DEFINED_CONSTANTS,
                                        contains='species',
                                        only_required=True,
                                        replace_root=INPUT_TAG_33)
@@ -623,7 +615,7 @@ def test_evaluate_parent_tag():
     ldaU_species = evaluate_parent_tag(root,
                                        schema_dict,
                                        'ldaU',
-                                       CONSTANTS,
+                                       FLEUR_DEFINED_CONSTANTS,
                                        contains='species',
                                        only_required=True,
                                        replace_root=INPUT_TAG_33,

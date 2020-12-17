@@ -14,6 +14,17 @@
 Here we collect physical constants which are used throughout the code
 that way we ensure consitency
 """
+import numpy as np
+
+#Predefined constants in the Fleur Code (These are accepted in the inp.xml)
+FLEUR_DEFINED_CONSTANTS = {
+    'Pi': np.pi,
+    'Deg': 2 * np.pi / 360.0,
+    'Ang': 1.8897261247728981,
+    'nm': 18.897261247728981,
+    'pm': 0.018897261247728981,
+    'Bohr': 1.0
+}
 
 # NIST https://physics.nist.gov/cgi-bin/cuu/Value?hrev
 HTR_TO_EV = 27.211386245988  #(53)

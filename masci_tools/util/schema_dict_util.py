@@ -153,28 +153,21 @@ def read_constants(xmltree, schema_dict, replace_root=None):
 
     :return: a python dictionary with all defined constants
     """
-    import numpy as np
+    from masci_tools.util.constants import FLEUR_DEFINED_CONSTANTS
+    import copy
 
-    #Predefined constants in the Fleur Code
-    const_dict = {
-        'Pi': np.pi,
-        'Deg': 2 * np.pi / 360.0,
-        'Ang': 1.8897261247728981,
-        'nm': 18.897261247728981,
-        'pm': 0.018897261247728981,
-        'Bohr': 1.0
-    }
+    defined_constants = copy.deepcopy(FLEUR_DEFINED_CONSTANTS)
 
-    constants = evaluate_tag(xmltree, schema_dict, 'constant', const_dict, replace_root=replace_root)
+    constants = evaluate_tag(xmltree, schema_dict, 'constant', defined_constants, replace_root=replace_root)
 
     if constants['name'] is not None:
         for name, value in zip(constants['name'], constants['value']):
-            if name not in const_dict:
-                const_dict[name] = value
+            if name not in defined_constants:
+                defined_constants[name] = value
             else:
                 raise KeyError(f'Ambiguous definition of key {name}')
 
-    return const_dict
+    return defined_constants
 
 
 def evaluate_attribute(node, schema_dict, name, constants, parser_info_out=None, **kwargs):

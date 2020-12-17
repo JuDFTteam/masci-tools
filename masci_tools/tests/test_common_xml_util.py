@@ -3,16 +3,7 @@
 Test of the functions in common_xml_util
 """
 import pytest
-import numpy as np
-
-CONSTANTS = {
-    'Pi': np.pi,
-    'Deg': 2 * np.pi / 360.0,
-    'Ang': 1.8897261247728981,
-    'nm': 18.897261247728981,
-    'pm': 0.018897261247728981,
-    'Bohr': 1.0
-}
+from masci_tools.util.constants import FLEUR_DEFINED_CONSTANTS
 
 def test_convert_to_float():
     """
