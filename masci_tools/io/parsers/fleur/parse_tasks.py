@@ -76,6 +76,10 @@ class ParseTasks(object):
         'parse_type', 'path_spec', 'subdict', 'base_value', 'ignore', 'overwrite', 'flat', 'only_required'
     }
 
+    GENERAL_TASKS = {
+        'fleur_modes', 'general_inp_info', 'general_out_info', 'ldau_info', 'bulk_relax_info', 'film_relax_info'
+    }
+
     _version = '0.1.0'
 
     def __init__(self, version):
@@ -85,8 +89,9 @@ class ParseTasks(object):
 
         TODO: We need some way of versioning for the default tasks
         """
-        self.tasks = TASKS_DEFINITION.copy()
+        self.tasks = copy.deepcopy(TASKS_DEFINITION)
         self.incompatible_tasks = []
+        self.append_tasks = []
 
         #Look if the base version is compatible if not look for a migration
         if version not in __working_out_versions__:
@@ -116,14 +121,15 @@ class ParseTasks(object):
         :param overwrite: bool (optional), if True and the key is present in the dictionary it will be
                           overwritten with the new definition
         :param append: bool (optional), if True and the key is present in the dictionary the new defintions
-                       will be inserted into this dictionary (inner keys WILL BE OVERWRITTEN)
+                       will be inserted into this dictionary (inner keys WILL BE OVERWRITTEN). Additionally
+                       if an inner key is overwritten with an empty dict the inner key will be removed
 
         """
 
         append = kwargs.get('append', False)
         overwrite = kwargs.get('overwrite', False)
 
-        if task_name in self.tasks and not append:
+        if task_name in self.tasks and not (append or overwrite):
             raise ValueError(f"Task '{task_name}' is already defined."
                              'Use append=True to append them (conflicting keys are overwritten)'
                              'or overwrite=True to remove all existing tasks')
@@ -132,7 +138,10 @@ class ParseTasks(object):
 
             task_keys = set(definition.keys())
 
-            missing_required = task_keys.difference(self.REQUIRED_KEYS)
+            if not task_keys and task_key in self.tasks[task_name]:
+                continue
+
+            missing_required = self.REQUIRED_KEYS.difference(task_keys)
             if missing_required:
                 raise ValueError(f'Reqired Keys missing: {missing_required}')
 
@@ -140,9 +149,9 @@ class ParseTasks(object):
                 raise ValueError(f"Unknown parse_type: {definition['parse_type']}")
 
             if definition['parse_type'] in ['allAttribs', 'parentAttribs', 'singleValue']:
-                extra_keys = self.ALLOWED_KEYS_ALLATTRIBS.difference(task_keys)
+                extra_keys = task_keys.difference(self.ALLOWED_KEYS_ALLATTRIBS)
             else:
-                extra_keys = self.ALLOWED_KEYS.difference(task_keys)
+                extra_keys = task_keys.difference(self.ALLOWED_KEYS)
 
             if extra_keys:
                 raise ValueError(f'Got extra Keys: {extra_keys}')
@@ -151,9 +160,15 @@ class ParseTasks(object):
             if task_name not in self.tasks:
                 self.tasks[task_name] = {}
             for task_key, definition in task_definition.items():
-                self.tasks[task_name][task_key] = definition
+                if definition:
+                    self.tasks[task_name][task_key] = definition
+                elif task_key in self.tasks[task_name]:
+                    self.tasks[task_name].pop(task_key)
         else:
             self.tasks[task_name] = task_definition
+
+        if task_name not in self.GENERAL_TASKS:
+            self.append_tasks.append(task_name)
 
     def show_available_tasks(self, show_definitions=False):
         """

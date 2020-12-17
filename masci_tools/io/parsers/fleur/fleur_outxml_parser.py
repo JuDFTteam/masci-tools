@@ -142,13 +142,8 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
 
     parse_tasks = ParseTasks(out_version)
     additional_tasks = kwargs.pop('additional_tasks', {})
-    append_tasks = []
     for task_name, task_definition in additional_tasks.items():
         parse_tasks.add_task(task_name, task_definition, **kwargs)
-        if task_name not in [
-                'fleur_modes', 'general_inp_info', 'general_out_info', 'ldau_info', 'bulk_relax_info', 'film_relax_info'
-        ]:
-            append_tasks.append(task_name)
 
     out_dict, fleurmode, constants = parse_general_information(root,
                                                                parse_tasks,
@@ -203,7 +198,6 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
                                    out_dict,
                                    constants,
                                    parser_info_out=parser_info_out,
-                                   append_tasks=append_tasks,
                                    **kwargs)
 
     #Convert energy to eV
@@ -332,7 +326,6 @@ def parse_iteration(iteration_node,
                     out_dict,
                     constants,
                     parser_info_out=None,
-                    append_tasks=None,
                     **kwargs):
     """
     Parses an scf iteration node.
@@ -401,8 +394,9 @@ def parse_iteration(iteration_node,
             break
 
     #Add custom tasks
-    if append_tasks is not None:
-        iteration_tasks += append_tasks
+    for task in parse_tasks.append_tasks:
+        if task not in iteration_tasks:
+            iteration_tasks.append(task)
 
     #Remove tasks that might be incompatible
     for task in parse_tasks.incompatible_tasks:

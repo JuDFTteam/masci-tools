@@ -29,13 +29,321 @@ def test_outxml_valid_outxml(outxmlfilepath):
     """
     from lxml import etree
 
-    #Pass inpxmlfile
+    #Pass outxmlfile
     out_dict = outxml_parser(outxmlfilepath)
 
     #Parse before
     parser = etree.XMLParser(attribute_defaults=True, encoding='utf-8')
     xmltree = etree.parse(outxmlfilepath, parser)
     out_dict = outxml_parser(xmltree, strict=True)
+
+
+def test_outxml_additional_tasks():
+    """
+    Test the definition of additional tasks
+    """
+    OUTXML_FILEPATH = os.path.join(outxmlfilefolder_valid[0], 'SiLOXML/files/out.xml')
+
+    expected_result1 = {
+        'bandgap': 2.2729704824,
+        'bandgap_units': 'eV',
+        'charge_den_xc_den_integral': -41.7653329254,
+        'charge_density': 0.026112816,
+        'core_eig_val_sum': -130.3854013875,  #This key was added by the additional_task
+        'creator_name': 'fleur 32',
+        'creator_target_architecture': 'GEN',
+        'creator_target_structure': None,
+        'density_convergence_units': 'me/bohr^3',
+        'end_date': {
+            'date': '2020/12/10',
+            'time': '16:51:35'
+        },
+        'energy': -15784.360931872383,
+        'energy_core_electrons': -260.7708027749,
+        'energy_hartree': -580.0645652222,
+        'energy_hartree_units': 'Htr',
+        'energy_units': 'eV',
+        'energy_valence_electrons': -55.6062832263,
+        'fermi_energy': 0.1848170588,
+        'fermi_energy_units': 'Htr',
+        'gmax': 11.1,
+        'kmax': 3.5,
+        'number_of_atom_types': 1,
+        'number_of_atoms': 2,
+        'number_of_iterations': 6,
+        'number_of_iterations_total': 6,
+        'number_of_species': 1,
+        'number_of_spin_components': 1,
+        'number_of_symmetries': 48,
+        'output_file_version': '0.33',
+        'spin_dependent_charge_interstitial': 3.5380095,
+        'spin_dependent_charge_mt_spheres': 24.4619905,
+        'spin_dependent_charge_total': 28.0,
+        'start_date': {
+            'date': '2020/12/10',
+            'time': '16:51:33'
+        },
+        'sum_of_eigenvalues': -316.3770860013,
+        'title': 'Si bulk',
+        'total_charge': 28.0000000002,
+        'walltime': 2,
+        'walltime_units': 'seconds'
+    }
+
+    expected_result2 = {
+        'bandgap': 2.2729704824,
+        'bandgap_units': 'eV',
+        'charge_den_xc_den_integral': -41.7653329254,
+        'charge_density': 0.026112816,
+        'core_info': {
+            'core_info_atom_type': 1,
+            'core_info_atomic_number': 14,
+            'core_info_eig_val_sum': -130.3854013875,
+            'core_info_kin_energy': 185.6353434326,
+            'core_info_lost_electrons': 0.0,
+            'core_info_spin': 1
+        },
+        'creator_name': 'fleur 32',
+        'creator_target_architecture': 'GEN',
+        'creator_target_structure': None,
+        'density_convergence_units': 'me/bohr^3',
+        'end_date': {
+            'date': '2020/12/10',
+            'time': '16:51:35'
+        },
+        'energy': -15784.360931872383,
+        'energy_core_electrons': -260.7708027749,
+        'energy_hartree': -580.0645652222,
+        'energy_hartree_units': 'Htr',
+        'energy_units': 'eV',
+        'energy_valence_electrons': -55.6062832263,
+        'fermi_energy': 0.1848170588,
+        'fermi_energy_units': 'Htr',
+        'gmax': 11.1,
+        'kmax': 3.5,
+        'number_of_atom_types': 1,
+        'number_of_atoms': 2,
+        'number_of_iterations': 6,
+        'number_of_iterations_total': 6,
+        'number_of_species': 1,
+        'number_of_spin_components': 1,
+        'number_of_symmetries': 48,
+        'output_file_version': '0.33',
+        'spin_dependent_charge_interstitial': 3.5380095,
+        'spin_dependent_charge_mt_spheres': 24.4619905,
+        'spin_dependent_charge_total': 28.0,
+        'start_date': {
+            'date': '2020/12/10',
+            'time': '16:51:33'
+        },
+        'sum_of_eigenvalues': -316.3770860013,
+        'title': 'Si bulk',
+        'total_charge': 28.0000000002,
+        'walltime': 2,
+        'walltime_units': 'seconds'
+    }
+
+    TEST_TASK_ITERATION = {
+        'core_states': {
+            'core_eig_val_sum': {
+                'parse_type': 'attrib',
+                'path_spec': {
+                    'name': 'eigValSum'
+                }
+            }
+        }
+    }
+
+    out_dict = outxml_parser(OUTXML_FILEPATH, additional_tasks=TEST_TASK_ITERATION)
+    assert out_dict == expected_result1
+
+    TEST_TASK_ITERATION_INVALID = {
+        'core_states': {
+            'core_eig_val_sum': {
+                'parse_type': 'attrib',
+                'path_spec': {
+                    'name': 'eigValSum'
+                },
+                'ignore': ['eigValSum']
+            }
+        }
+    }
+    with pytest.raises(ValueError, match="Got extra Keys: {'ignore'}"):
+        out_dict = outxml_parser(OUTXML_FILEPATH, additional_tasks=TEST_TASK_ITERATION_INVALID)
+
+    TEST_TASK_ITERATION_ALLATTRIBS = {
+        'core_states': {
+            'core_info': {
+                'parse_type': 'allAttribs',
+                'path_spec': {
+                    'name': 'coreStates'
+                },
+                'subdict': 'core_info'
+            }
+        }
+    }
+    out_dict = outxml_parser(OUTXML_FILEPATH, additional_tasks=TEST_TASK_ITERATION_ALLATTRIBS)
+    assert out_dict == expected_result2
+
+    TEST_TASK_ITERATION_ALLATTRIBS_INVALID = {
+        'core_states': {
+            'core_info': {
+                'parse_type': 'allAttribs',
+                'path_spec': {
+                    'name': 'coreStates'
+                },
+                'overwrite_last': True
+            }
+        }
+    }
+    with pytest.raises(ValueError, match="Got extra Keys: {'overwrite_last'}"):
+        out_dict = outxml_parser(OUTXML_FILEPATH, additional_tasks=TEST_TASK_ITERATION_ALLATTRIBS_INVALID)
+
+
+def test_outxml_add_tasks_overwrite():
+    """
+    Test the overwriting of tasks
+    """
+    expected_result = {
+        'bandgap': -580.0645652222,
+        'charge_den_xc_den_integral': -41.7653329254,
+        'charge_density': 0.026112816,
+        'creator_name': 'fleur 32',
+        'creator_target_architecture': 'GEN',
+        'creator_target_structure': None,
+        'density_convergence_units': 'me/bohr^3',
+        'end_date': {
+            'date': '2020/12/10',
+            'time': '16:51:35'
+        },
+        'energy': -15784.360931872383,
+        'energy_core_electrons': -260.7708027749,
+        'energy_hartree': -580.0645652222,
+        'energy_hartree_units': 'Htr',
+        'energy_units': 'eV',
+        'energy_valence_electrons': -55.6062832263,
+        'fermi_energy': 0.1848170588,
+        'fermi_energy_units': 'Htr',
+        'gmax': 11.1,
+        'kmax': 3.5,
+        'number_of_atom_types': 1,
+        'number_of_atoms': 2,
+        'number_of_iterations': 6,
+        'number_of_iterations_total': 6,
+        'number_of_species': 1,
+        'number_of_spin_components': 1,
+        'number_of_symmetries': 48,
+        'output_file_version': '0.33',
+        'spin_dependent_charge_interstitial': 3.5380095,
+        'spin_dependent_charge_mt_spheres': 24.4619905,
+        'spin_dependent_charge_total': 28.0,
+        'start_date': {
+            'date': '2020/12/10',
+            'time': '16:51:33'
+        },
+        'sum_of_eigenvalues': -316.3770860013,
+        'title': 'Si bulk',
+        'total_charge': 28.0000000002,
+        'walltime': 2,
+        'walltime_units': 'seconds'
+    }
+
+    OUTXML_FILEPATH = os.path.join(outxmlfilefolder_valid[0], 'SiLOXML/files/out.xml')
+
+    REPLACE_BANDGAP = {
+        'bandgap': {
+            'bandgap': {
+                'parse_type': 'singleValue',
+                'path_spec': {
+                    'name': 'freeEnergy'
+                },
+                'only_required': True
+            }
+        }
+    }
+
+    with pytest.raises(ValueError, match="Task 'bandgap' is already defined."):
+        out_dict = outxml_parser(OUTXML_FILEPATH, additional_tasks=REPLACE_BANDGAP)
+
+    out_dict = outxml_parser(OUTXML_FILEPATH, additional_tasks=REPLACE_BANDGAP, overwrite=True)
+    assert out_dict == expected_result
+
+
+def test_outxml_add_tasks_append():
+    """
+    Test the append option for defining additional tasks
+    """
+    expected_result = {
+        'bandgap': 2.2729704824,
+        'bandgap_units': 'eV',
+        'charge_den_xc_den_integral': -41.7653329254,
+        'charge_density': 0.026112816,
+        'creator_name': 'fleur 32',
+        'creator_target_architecture': 'GEN',
+        'creator_target_structure': None,
+        'density_convergence_units': 'me/bohr^3',
+        'end_date': {
+            'date': '2020/12/10',
+            'time': '16:51:35'
+        },
+        'energy': -15784.360931872383,
+        'energy_core_electrons': -260.7708027749,
+        'energy_hartree': -580.0645652222,
+        'energy_hartree_units': 'Htr',
+        'energy_units': 'eV',
+        'energy_valence_electrons': -55.6062832263,
+        'fermi_energy': 0.1848170588,
+        'fermi_energy_units': 'Htr',
+        'gmax': 11.1,
+        'kmax': 3.5,
+        'number_of_atom_types': 'Si bulk',
+        'number_of_atoms': 2,
+        'number_of_iterations': 6,
+        'number_of_iterations_total': 6,
+        'number_of_species': 1,
+        'number_of_spin_components': 1,
+        'number_of_symmetries': 48,
+        'output_file_version': '0.33',
+        'spin_dependent_charge_interstitial': 3.5380095,
+        'spin_dependent_charge_mt_spheres': 24.4619905,
+        'spin_dependent_charge_total': 28.0,
+        'start_date': {
+            'date': '2020/12/10',
+            'time': '16:51:33'
+        },
+        'sum_of_eigenvalues': -316.3770860013,
+        'title': 'Si bulk',
+        'total_charge': 28.0000000002,
+        'walltime': 2,
+        'walltime_units': 'seconds'
+    }
+
+    OUTXML_FILEPATH = os.path.join(outxmlfilefolder_valid[0], 'SiLOXML/files/out.xml')
+
+    #Move the number_of_atom_types from general_out_info to general_inp_info
+    #and write the comment from the inp.xml into it
+    #This tests both the correct insertin in general_inp_info and that inner keys can be
+    #overwritten in general_out_info
+
+    REPLACE_DICT = {
+        'general_out_info': {
+            'number_of_atom_types': {}
+        },
+        'general_inp_info': {
+            'number_of_atom_types': {
+                'parse_type': 'text',
+                'path_spec': {
+                    'name': 'comment'
+                }
+            }
+        }
+    }
+
+    with pytest.raises(ValueError, match="Task 'general_out_info' is already defined."):
+        out_dict = outxml_parser(OUTXML_FILEPATH, additional_tasks=REPLACE_DICT)
+
+    out_dict = outxml_parser(OUTXML_FILEPATH, additional_tasks=REPLACE_DICT, append=True)
+    assert out_dict == expected_result
 
 
 def test_outxml_max4compatibility():
