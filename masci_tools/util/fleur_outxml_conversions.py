@@ -67,21 +67,20 @@ def calculate_walltime(out_dict, parser_info_out=None):
     if out_dict['start_date']['date'] is not None:
         start_date = out_dict['start_date']['date']
     else:
-        starttimes = [0, 0, 0]
+        start_date = None
         msg = 'Startdate was unparsed, inp.xml prob not complete, do not believe the walltime!'
         parser_info_out['parser_warnings'].append(msg)
 
     if out_dict['end_date']['date'] is not None:
         end_date = out_dict['end_date']['date']
     else:
-        starttimes = [0, 0, 0]
+        end_date = None
         msg = 'Enddate was unparsed, inp.xml prob not complete, do not believe the walltime!'
         parser_info_out['parser_warnings'].append(msg)
 
     offset = 0
-    if start_date != end_date:
-        # date="2018/01/15", Can this fail? what happens if not there
-        if start_date and end_date:
+    if start_date is not None and end_date is not None:
+        if start_date != end_date:
             date_sl = [int(ent) for ent in start_date.split('/')]
             date_el = [int(ent) for ent in end_date.split('/')]
             date_s = date(*date_sl)
