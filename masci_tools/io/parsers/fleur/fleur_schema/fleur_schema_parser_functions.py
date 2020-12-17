@@ -676,7 +676,7 @@ def get_unique_path_attribs(xmlschema, namespaces, **kwargs):
 
     if iteration:
         settable_key = 'iteration_unique_attribs'
-        settable_contains_key = 'unique_path_attribs'
+        settable_contains_key = 'iteration_unique_path_attribs'
     else:
         settable_key = 'unique_attribs'
         settable_contains_key = 'unique_path_attribs'
@@ -727,7 +727,7 @@ def get_other_attribs(xmlschema, namespaces, **kwargs):
 
     if iteration:
         settable_key = 'iteration_unique_attribs'
-        settable_contains_key = 'unique_path_attribs'
+        settable_contains_key = 'iteration_unique_path_attribs'
     else:
         settable_key = 'unique_attribs'
         settable_contains_key = 'unique_path_attribs'

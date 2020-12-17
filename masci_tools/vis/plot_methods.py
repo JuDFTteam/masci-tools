@@ -2506,7 +2506,6 @@ def CDF_voigt_profile(x, fwhm_g, fwhm_l, mu):
     pass
 
 
-
 def hyp2f2(a, b, z):
     """
     Calculation of the 2F2() hypergeometric function,

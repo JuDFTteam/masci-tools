@@ -293,7 +293,6 @@ schema_dict = {
     },
     'input_tag': 'inputData',
     'iteration_other_attribs': {
-        'Angles': ['./Forcetheorem_DMI', './Forcetheorem_MAE'],
         'F_x': ['./totalForcesOnRepresentativeAtoms/forceTotal'],
         'F_y': ['./totalForcesOnRepresentativeAtoms/forceTotal'],
         'F_z': ['./totalForcesOnRepresentativeAtoms/forceTotal'],

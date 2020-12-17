@@ -336,7 +336,6 @@ schema_dict = {
     'input_tag':
     'fleurInput',
     'iteration_other_attribs': {
-        'Angles': ['./Forcetheorem_DMI', './Forcetheorem_MAE'],
         'Delta': ['./onSiteExchangeSplitting/excSplit'],
         'F_x': ['./totalForcesOnRepresentativeAtoms/forceTotal'],
         'F_y': ['./totalForcesOnRepresentativeAtoms/forceTotal'],
@@ -459,7 +458,6 @@ schema_dict = {
         ],
         'uIndex': ['./ldaUDensityMatrix/densityMatrixFor'],
         'units': [
-            './Forcetheorem_DMI', './Forcetheorem_JIJ', './Forcetheorem_MAE', './Forcetheorem_SSDISP',
             './energyParameters', './bandgap', './sumValenceSingleParticleEnergies', './FermiEnergy',
             './valenceDensity/totalCharge', './allElectronCharges/totalCharge',
             './valenceDensity/fixedCharges/totalCharge', './allElectronCharges/fixedCharges/totalCharge',
