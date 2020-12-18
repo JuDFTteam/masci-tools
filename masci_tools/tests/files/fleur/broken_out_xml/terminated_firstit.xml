@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<fleurOutput fleurOutputVersion="0.33">
+   <programVersion version="fleur 32">
+      <compilationInfo date="2020-12-10T16:35:46" user="janssen" host="mb-janssen" flag="-ffree-line-length-none -Wno-missing-include-dirs -fno-sign-zero -fdefault-real-8 -fdefault-double-8 -fopenmp" link="/usr/lib/libxml2.dylib;/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Accelerate.framework;-lm;-ldl"/>
+      <gitInfo version="MaX-R4-5146-gbe764185-dirty" branch="update_outschema" lastCommitHash="be76418584b223bce77124acbc20eea21ceedf26"/>
+      <targetComputerArchitectures>GEN</targetComputerArchitectures>
+      <precision type="DOUBLE"/>
+      <targetStructureClass> </targetStructureClass>
+   </programVersion>
+   <parallelSetup>
+      <openMP ompThreads="8"/>
+      <mem memoryPerNode="unknown"/>
+   </parallelSetup>
+   <startDateAndTime date="2020/12/10" time="16:53:07" zone="+0100"/>
+   <!-- Now follows a dump of the inp.xml file after evaluating the Schema -->
+   <fleurInput fleurInputVersion="0.33">
+      <comment>
+         Fe fcc 2
+      </comment>
+      <calculationSetup>
+         <cutoffs Kmax="3.40000000" Gmax="10.20000000" GmaxXC="8.50000000" numbands="0"/>
+         <scfLoop itmax="4" minDistance=".00001000" maxIterBroyd="99" imix="Anderson" alpha=".05000000" precondParam="0.0" spinf="2.00000000"/>
+         <coreElectrons ctail="F" frcor="F" kcrel="0" coretail_lmax="99" l_core_confpot="T"/>
+         <xcFunctional name="pbe" relativisticCorrections="F"/>
+         <magnetism jspins="2" l_noco="T" l_ss="F" swsp="F" lflip="F" l_J="F" l_onlyMtStDen="F" fixed_moment="0.0">
+            <qss>.0000000000 .0000000000 .0000000000</qss>
+         </magnetism>
+         <soc theta=".00000000" phi=".00000000" l_soc="F" spav="F" off="F" soc66="T"/>
+         <expertModes gw="0" secvar="F" pot8="F" eig66="F" lpr="0" isec1="99" warp_factor="1.0"/>
+         <geometryOptimization l_f="F" forcealpha="1.00000000" forcemix="BFGS" epsdisp=".00001000" epsforce=".00001000" f_level="0" qfix="0" force_converged="0.00001"/>
+         <ldaU l_linMix="F" mixParam=".100000" spinf="2.000000" l_adjEnpara="F"/>
+      </calculationSetup>
+      <cell>
+         <bzIntegration valenceElectrons="28.00000000" mode="hist" fermiSmearingEnergy=".00100000" l_bloechl="F">
+            <kPointListSelection listName="default"/>
+            <kPointLists>
+            <kPointList name="default" count="3" type="unspecified">
+               <kPoint weight="    8.000000" label="">    0.375000     0.375000     0.250000</kPoint>
+               <kPoint weight="   16.000000" label="">    0.375000     0.125000     0.250000</kPoint>
+               <kPoint weight="    8.000000" label="">    0.125000     0.125000     0.250000</kPoint>
+            </kPointList>
+            </kPointLists>
+         </bzIntegration>
+         <symmetryOperations>
+            <symOp>
+               <row-1>1 0 0 .0000000000</row-1>
+               <row-2>0 1 0 .0000000000</row-2>
+               <row-3>0 0 1 .0000000000</row-3>
+            </symOp>
+            <symOp>
+               <row-1>-1 0 0 .0000000000</row-1>
+               <row-2>0 1 0 .0000000000</row-2>
+               <row-3>0 0 1 .0000000000</row-3>
+            </symOp>
+            <symOp>
+               <row-1>1 0 0 .0000000000</row-1>
+               <row-2>0 -1 0 .0000000000</row-2>
+               <row-3>0 0 1 .0000000000</row-3>
+            </symOp>
+            <symOp>
+               <row-1>-1 0 0 .0000000000</row-1>
+               <row-2>0 -1 0 .0000000000</row-2>
+               <row-3>0 0 1 .0000000000</row-3>
+            </symOp>
+            <symOp>
+               <row-1>0 -1 0 .0000000000</row-1>
+               <row-2>-1 0 0 .0000000000</row-2>
+               <row-3>0 0 1 .0000000000</row-3>
+            </symOp>
+            <symOp>
+               <row-1>0 -1 0 .0000000000</row-1>
+               <row-2>1 0 0 .0000000000</row-2>
+               <row-3>0 0 1 .0000000000</row-3>
+            </symOp>
+            <symOp>
+               <row-1>0 1 0 .0000000000</row-1>
+               <row-2>-1 0 0 .0000000000</row-2>
+               <row-3>0 0 1 .0000000000</row-3>
+            </symOp>
+            <symOp>
+               <row-1>0 1 0 .0000000000</row-1>
+               <row-2>1 0 0 .0000000000</row-2>
+               <row-3>0 0 1 .0000000000</row-3>
+            </symOp>
+            <symOp>
+               <row-1>1 0 0 .0000000000</row-1>
+               <row-2>0 1 0 .0000000000</row-2>
+               <row-3>0 0 -1 .0000000000</row-3>
+            </symOp>
+            <symOp>
+               <row-1>-1 0 0 .0000000000</row-1>
+               <row-2>0 1 0 .0000000000</row-2>
+               <row-3>0 0 -1 .0000000000</row-3>
+            </symOp>
+            <symOp>
+               <row-1>1 0 0 .0000000000</row-1>
+               <row-2>0 -1 0 .0000000000</row-2>
+               <row-3>0 0 -1 .0000000000</row-3>
+            </symOp>
+            <symOp>
+               <row-1>-1 0 0 .0000000000</row-1>
+               <row-2>0 -1 0 .0000000000</row-2>
+               <row-3>0 0 -1 .0000000000</row-3>
+            </symOp>
+            <symOp>
+               <row-1>0 -1 0 .0000000000</row-1>
+               <row-2>-1 0 0 .0000000000</row-2>
+               <row-3>0 0 -1 .0000000000</row-3>
+            </symOp>
+            <symOp>
+               <row-1>0 -1 0 .0000000000</row-1>
+               <row-2>1 0 0 .0000000000</row-2>
+               <row-3>0 0 -1 .0000000000</row-3>
+            </symOp>
+            <symOp>
+               <row-1>0 1 0 .0000000000</row-1>
+               <row-2>-1 0 0 .0000000000</row-2>
+               <row-3>0 0 -1 .0000000000</row-3>
+            </symOp>
+            <symOp>
+               <row-1>0 1 0 .0000000000</row-1>
+               <row-2>1 0 0 .0000000000</row-2>
+               <row-3>0 0 -1 .0000000000</row-3>
+            </symOp>
+         </symmetryOperations>
+         <bulkLattice scale="1.0000000000">
+            <bravaisMatrix>
+               <row-1>4.8224683800 .0000000000 .0000000000</row-1>
+               <row-2>.0000000000 4.8224683800 .0000000000</row-2>
+               <row-3>.0000000000 .0000000000 6.8200000000</row-3>
+            </bravaisMatrix>
+         </bulkLattice>
+      </cell>
+      <atomSpecies>
+         <species name="Fe-1" element="Fe" atomicNumber="26">
+            <mtSphere radius="2.35000000" gridPoints="565" logIncrement=".02100000"/>
+            <atomicCutoffs lmax="8" lnonsphr="6"/>
+            <electronConfig>
+               <coreConfig>(1s1/2) (2s1/2) (2p1/2) (2p3/2) (3s1/2)</coreConfig>
+               <valenceConfig>(3p1/2) (3p3/2) (4s1/2) (3d3/2) (3d5/2)</valenceConfig>
+               <stateOccupation state="(3d3/2)" spinUp="2.00000000" spinDown="0.00000000"/>
+               <stateOccupation state="(3d5/2)" spinUp="2.10000000" spinDown="1.90000000"/>
+            </electronConfig>
+            <energyParameters s="4" p="4" d="3" f="4"/>
+            <lo type="SCLO" l="1" n="3" eDeriv="0"/>
+         </species>
+        </atomSpecies>
+      <atomGroups>
+         <atomGroup species="Fe-1">
+            <relPos label="                    " wannier="F">.0000000000 .0000000000 .0000000000</relPos>
+            <force calculate="T" relaxXYZ="TTT"/>
+            <nocoParams alpha=".00000000" beta=".00000000" l_magn="F" M="0.0"/>
+         </atomGroup>
+         <atomGroup species="Fe-1">
+            <relPos label="                    " wannier="F">1.000/2.000 1.000/2.000 1.000/2.000</relPos>
+            <force calculate="T" relaxXYZ="TTT"/>
+            <nocoParams alpha=".00000000" beta="3.14159265" l_magn="F" M="0.0"/>
+         </atomGroup>
+      </atomGroups>
+      <output dos="F" band="F" slice="F" coreSpec="F" wannier="F" eig66="F">
+         <checks vchk="F" cdinf="F" disp="F"/>
+      </output>
+     <!-- We include the file relax.inp here to enable relaxations (see documentation) -->
+   
+   </fleurInput>
+   <!-- END of dump of the inp.xml file -->
+   <numericalParameters>
+      <atomsInCell nat="2" ntype="2" jmtd="565" n_u="0" n_hia="0"/>
+      <basis nvd="105" lmaxd="8" nlotot="6"/>
+      <density ng3="255" ng2="2"/>
+      <bands numbands="44"/>
+      <volumes unitCell="158.607292" interstitial="49.8841013">
+         <mtVolume atomType="1" mtRadius="2.35000000" mtVolume="54.36159568"/>
+         <mtVolume atomType="2" mtRadius="2.35000000" mtVolume="54.36159568"/>
+      </volumes>
+      <kPointList weightScale="1.00000000" count="         3">
+         <kPoint weight="0.250000">0.375000            0.375000            0.250000</kPoint>
+         <kPoint weight="0.500000">0.375000            0.125000            0.250000</kPoint>
+         <kPoint weight="0.250000">0.125000            0.125000            0.250000</kPoint>
+      </kPointList>
+   </numericalParameters>
+   <scfLoop>
+      <iteration numberForCurrentRun="    1" overallNumber="    1">
+         <energyParameters units="Htr">
+            <atomicEP atomType="1" spin="1" branch="4s" branchLowest="-2.87" branchHighest="1.77" value="0.2046953349"/>
+            <atomicEP atomType="1" spin="1" branch="4p" branchLowest="-1.61" branchHighest="2.33" value="0.3368453585"/>
+            <atomicEP atomType="1" spin="1" branch="3d" branchLowest="-9.99" branchHighest="0.43" value="0.2884043106"/>
+            <atomicEP atomType="1" spin="1" branch="4f" branchLowest="-9.99" branchHighest="3.41" value="0.6494066571"/>
+            <loAtomicEP atomType="1" spin="1" branch="3p" branchLowest="-25.03" branchHighest="-1.58" value="-1.6119586396"/>
+            <atomicEP atomType="2" spin="1" branch="4s" branchLowest="-2.87" branchHighest="1.77" value="0.2046953349"/>
+            <atomicEP atomType="2" spin="1" branch="4p" branchLowest="-1.61" branchHighest="2.33" value="0.3368453585"/>
+            <atomicEP atomType="2" spin="1" branch="3d" branchLowest="-9.99" branchHighest="0.43" value="0.2884043106"/>
+            <atomicEP atomType="2" spin="1" branch="4f" branchLowest="-9.99" branchHighest="3.41" value="0.6494066571"/>
+            <loAtomicEP atomType="2" spin="1" branch="3p" branchLowest="-25.03" branchHighest="-1.58" value="-1.6119586396"/>
+            <atomicEP atomType="1" spin="2" branch="4s" branchLowest="-2.78" branchHighest="1.83" value="0.2140937371"/>
+            <atomicEP atomType="1" spin="2" branch="4p" branchLowest="-1.53" branchHighest="2.39" value="0.3419173508"/>
+            <atomicEP atomType="1" spin="2" branch="3d" branchLowest="-9.99" branchHighest="0.51" value="0.3492201948"/>
+            <atomicEP atomType="1" spin="2" branch="4f" branchLowest="-9.99" branchHighest="3.47" value="0.6511535368"/>
+            <loAtomicEP atomType="1" spin="2" branch="3p" branchLowest="-25.00" branchHighest="-1.50" value="-1.5281863687"/>
+            <atomicEP atomType="2" spin="2" branch="4s" branchLowest="-2.78" branchHighest="1.83" value="0.2140937371"/>
+            <atomicEP atomType="2" spin="2" branch="4p" branchLowest="-1.53" branchHighest="2.39" value="0.3419173508"/>
+            <atomicEP atomType="2" spin="2" branch="3d" branchLowest="-9.99" branchHighest="0.51" value="0.3492201948"/>
+            <atomicEP atomType="2" spin="2" branch="4f" branchLowest="-9.99" branchHighest="3.47" value="0.6511535368"/>
+            <loAtomicEP atomType="2" spin="2" branch="3p" branchLowest="-25.00" branchHighest="-1.50" value="-1.5281863687"/>
+         </energyParameters>
+         <eigenvalues>
+            <eigenvaluesAt spin="1" ikpt="1" k_x="0.37500000" k_y="0.37500000" k_z="0.25000000">
+                      -1.6137159315       -1.6137148985       -1.6135079083       -1.6135071866       -1.6108157555
+                      -1.6108157233       -1.5299124339       -1.5299113269       -1.5297389788       -1.5297381622
+                      -1.5269011874       -1.5269011215        0.2138677116        0.2143266824        0.2414684222
+                       0.2419159445        0.2448703899        0.2450351824        0.2487536498        0.2488762536
+                       0.3170683946        0.3172252384        0.3237882281        0.3240059211        0.3578235610
+                       0.3578983877        0.3843020305        0.3843440540        0.4083760977        0.4084172904
+                       0.4256589934        0.4256826973        0.4666960482        0.4669102308        0.6002782878
+                       0.6006515583        0.6537865409        0.6543480825        0.7640019308        0.7645770033
+                       0.8496744996        0.8501360689        0.8654214473        0.8662314326
+            </eigenvaluesAt>
+            <eigenvaluesAt spin="1" ikpt="2" k_x="0.37500000" k_y="0.12500000" k_z="0.25000000">

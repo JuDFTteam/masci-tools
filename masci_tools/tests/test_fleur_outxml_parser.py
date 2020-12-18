@@ -6,6 +6,7 @@ from __future__ import absolute_import
 import pytest
 from masci_tools.io.parsers.fleur import outxml_parser
 import os
+import math
 from pprint import pprint
 
 # Collect the input files
@@ -36,6 +37,432 @@ def test_outxml_valid_outxml(outxmlfilepath):
     parser = etree.XMLParser(attribute_defaults=True, encoding='utf-8')
     xmltree = etree.parse(outxmlfilepath, parser)
     out_dict = outxml_parser(xmltree, strict=True)
+
+
+def test_outxml_validation_errors():
+    """
+    Test the output parser against files for detecting validation
+    """
+
+    OUTXML_FILEPATH1 = os.path.join(outxmlfilefolder, 'files/fleur/broken_out_xml/simple_validation_error.xml')
+    OUTXML_FILEPATH2 = os.path.join(outxmlfilefolder, 'files/fleur/broken_out_xml/empty_values.xml')
+
+    with pytest.raises(
+            ValueError,
+            match="Output file does not validate against the schema: Element 'kPointList', attribute 'weightSc'"):
+        out_dict = outxml_parser(OUTXML_FILEPATH1, strict=True)
+
+    expected_result = {
+        'bandgap': None,
+        'bandgap_units': None,
+        'charge_den_xc_den_integral': -55.9720588982,
+        'charge_density': [6.4966088913, 11.8289058385],
+        'creator_name': 'fleur 32',
+        'creator_target_architecture': 'GEN',
+        'creator_target_structure': None,
+        'density_convergence_units': 'me/bohr^3',
+        'end_date': {
+            'date': '2020/12/10',
+            'time': '16:54:09'
+        },
+        'energy': -34633.84643810278,
+        'energy_core_electrons': -721.8910476696,
+        'energy_hartree': -1272.770380936,
+        'energy_hartree_units': 'Htr',
+        'energy_units': 'eV',
+        'energy_valence_electrons': -12.7065554237,
+        'fermi_energy': 0.3685303739,
+        'fermi_energy_units': 'Htr',
+        'gmax': 10.0,
+        'kmax': 3.0,
+        'magnetic_moments': 2.1699434793,
+        'magnetic_moments_spin_down_charge': 6.2948978468,
+        'magnetic_moments_spin_up_charge': 8.4648413261,
+        'number_of_atom_types': 1,
+        'number_of_atoms': 1,
+        'number_of_iterations': 1,
+        'number_of_iterations_total': 1,
+        'number_of_species': 1,
+        'number_of_spin_components': 2,
+        'number_of_symmetries': 48,
+        'output_file_version': '0.33',
+        'overall_charge_density': 16.4186207974,
+        'spin_density': 9.7307128187,
+        'spin_dependent_charge_interstitial': [0.6160276, 0.6242332],
+        'spin_dependent_charge_mt_spheres': [13.4648413, 11.2948979],
+        'spin_dependent_charge_total': [14.080869, 11.919131],
+        'start_date': {
+            'date': '2020/12/10',
+            'time': '16:54:08'
+        },
+        'sum_of_eigenvalues': -734.5976030933,
+        'title': 'bcc Fe',
+        'total_charge': 26.0000000113,
+        'total_magnetic_moment_cell': 2.1617379999999997,
+        'walltime': 1,
+        'walltime_units': 'seconds'
+    }
+    expected_warnings = {
+        'fleur_modes': {
+            'band': False,
+            'dos': False,
+            'film': False,
+            'jspin': 2,
+            'ldau': False,
+            'noco': False,
+            'relax': False,
+            'soc': False
+        },
+        'parser_info':
+        'Masci-Tools Fleur out.xml Parser v0.1.0',
+        'parser_warnings': [
+            'Output file does not validate against the schema: '
+            "Element 'kPointList', attribute 'weightSc': The "
+            "attribute 'weightSc' is not allowed. (<string>, line 0)", 'No text found for tag targetStructureClass',
+            'No values found for attribute value at tag bandgap', 'No values found for attribute units at tag bandgap'
+        ]
+    }
+
+    result_warnings = {'parser_warnings': []}
+    out_dict = outxml_parser(OUTXML_FILEPATH1, strict=True, ignore_validation=True, parser_info_out=result_warnings)
+
+    assert result_warnings == expected_warnings
+    assert out_dict == expected_result
+
+    with pytest.raises(ValueError, match='Output file does not validate against the schema:'):
+        out_dict = outxml_parser(OUTXML_FILEPATH2, strict=True)
+
+    #TODO:Test log of multiple validation errors
+
+
+def test_outxml_empty_out():
+    """
+    Test the output parser against empty file
+    """
+
+    OUTXML_FILEPATH = os.path.join(outxmlfilefolder, 'files/fleur/broken_out_xml/empty_out.xml')
+
+    expected_warnings = {
+        'parser_info':
+        'Masci-Tools Fleur out.xml Parser v0.1.0',
+        'parser_warnings': [
+            'The out.xml file is broken I try to repair it.', 'Skipping the parsing of the xml file. Repairing was not '
+            'possible.'
+        ]
+    }
+
+    result_warnings = {'parser_warnings': []}
+    out_dict = outxml_parser(OUTXML_FILEPATH, strict=True, parser_info_out=result_warnings)
+    assert out_dict == {}
+    assert result_warnings == expected_warnings
+
+
+def test_outxml_broken():
+    """
+    Test the output parser against a file which terminates after some iterations
+    """
+
+    OUTXML_FILEPATH = os.path.join(outxmlfilefolder, 'files/fleur/broken_out_xml/terminated.xml')
+
+    expected_warnings = {
+        'fleur_modes': {
+            'band': False,
+            'dos': False,
+            'film': False,
+            'jspin': 2,
+            'ldau': False,
+            'noco': True,
+            'relax': False,
+            'soc': False
+        },
+        'last_iteration_parsed':
+        2,
+        'parser_info':
+        'Masci-Tools Fleur out.xml Parser v0.1.0',
+        'parser_warnings': [
+            'The out.xml file is broken I try to repair it.', 'No text found for tag targetStructureClass',
+            'No values found for attribute date at tag endDateAndTime',
+            'No values found for attribute time at tag endDateAndTime',
+            'Endtime was unparsed, inp.xml prob not complete, do not '
+            'believe the walltime!', 'Enddate was unparsed, inp.xml prob not complete, do not '
+            'believe the walltime!'
+        ]
+    }
+
+    expected_result = {
+        'bandgap': 0.0323610284,
+        'bandgap_units': 'eV',
+        'charge_den_xc_den_integral': -111.9182938603,
+        'charge_density': [9.2786635283, 5.4278279348],
+        'creator_name': 'fleur 32',
+        'creator_target_architecture': 'GEN',
+        'creator_target_structure': None,
+        'density_convergence_units': 'me/bohr^3',
+        'end_date': {
+            'date': None,
+            'time': None
+        },
+        'energy': -69269.20160971185,
+        'energy_core_electrons': -1455.4152321083,
+        'energy_hartree': -2545.5962068057,
+        'energy_hartree_units': 'Htr',
+        'energy_units': 'eV',
+        'energy_valence_electrons': -14.4723754179,
+        'fermi_energy': 0.3782147185,
+        'fermi_energy_units': 'Htr',
+        'gmax': 10.2,
+        'kmax': 3.4,
+        'magnetic_moments': [1.9333985458, 1.9345705319],
+        'magnetic_moments_spin_down_charge': [5.5306467297, 5.5301342089],
+        'magnetic_moments_spin_up_charge': [7.4640452754, 7.4647047409],
+        'number_of_atom_types': 2,
+        'number_of_atoms': 2,
+        'number_of_iterations': 4,
+        'number_of_iterations_total': 2,
+        'number_of_species': 1,
+        'number_of_spin_components': 2,
+        'number_of_symmetries': 16,
+        'output_file_version': '0.33',
+        'overall_charge_density': 10.8914872112,
+        'spin_density': 10.6059102509,
+        'spin_dependent_charge_interstitial': [1.00491, 1.0077593],
+        'spin_dependent_charge_mt_spheres': [26.927695, 23.059636],
+        'spin_dependent_charge_total': [27.932605, 24.0673954],
+        'start_date': {
+            'date': '2020/12/10',
+            'time': '16:53:07'
+        },
+        'sum_of_eigenvalues': -1469.8876075262,
+        'title': 'Fe fcc 2',
+        'total_charge': 52.0000003806,
+        'total_magnetic_moment_cell': 3.8652096,
+        'walltime': -60787,
+        'walltime_units': 'seconds'
+    }
+
+    result_warnings = {'parser_warnings': []}
+    out_dict = outxml_parser(OUTXML_FILEPATH, strict=True, parser_info_out=result_warnings)
+    pprint(out_dict)
+    pprint(result_warnings)
+    assert out_dict == expected_result
+    assert result_warnings == expected_warnings
+
+
+def test_outxml_broken_firstiter():
+    """
+    Test the output parser against a file which terminates in the first iteration
+    """
+
+    expected_warnings = {
+        'fleur_modes': {
+            'band': False,
+            'dos': False,
+            'film': False,
+            'jspin': 2,
+            'ldau': False,
+            'noco': True,
+            'relax': False,
+            'soc': False
+        },
+        'last_iteration_parsed':
+        1,
+        'parser_info':
+        'Masci-Tools Fleur out.xml Parser v0.1.0',
+        'parser_warnings': [
+            'The out.xml file is broken I try to repair it.', 'No text found for tag targetStructureClass',
+            'No values found for attribute date at tag endDateAndTime',
+            'No values found for attribute time at tag endDateAndTime',
+            'Endtime was unparsed, inp.xml prob not complete, do not '
+            'believe the walltime!', 'Enddate was unparsed, inp.xml prob not complete, do not '
+            'believe the walltime!', 'No values found for attribute value at tag totalEnergy',
+            'No values found for attribute units at tag totalEnergy', 'No values found for attribute distance',
+            'No values found for attribute units', 'No values found for attribute value at tag '
+            'sumOfEigenvalues', 'No values found for attribute value at tag coreElectrons',
+            'No values found for attribute value at tag '
+            'valenceElectrons', 'No values found for attribute value at tag '
+            'chargeDenXCDenIntegral', 'No values found for attribute value at tag FermiEnergy',
+            'No values found for attribute units at tag FermiEnergy',
+            'No values found for attribute value at tag bandgap', 'No values found for attribute units at tag bandgap',
+            'No values found for attribute total at tag '
+            'spinDependentCharge', 'No values found for attribute interstitial at tag '
+            'spinDependentCharge', 'No values found for attribute mtSpheres at tag '
+            'spinDependentCharge', 'No values found for attribute value at tag totalCharge',
+            'No values found for attribute moment at tag '
+            'magneticMoment', 'No values found for attribute spinUpCharge at tag '
+            'magneticMoment', 'No values found for attribute spinDownCharge at tag '
+            'magneticMoment', 'No values found for attribute distance', 'No values found for attribute distance'
+        ]
+    }
+    expected_result = {
+        'bandgap': None,
+        'bandgap_units': None,
+        'charge_den_xc_den_integral': None,
+        'charge_density': None,
+        'creator_name': 'fleur 32',
+        'creator_target_architecture': 'GEN',
+        'creator_target_structure': None,
+        'density_convergence_units': None,
+        'end_date': {
+            'date': None,
+            'time': None
+        },
+        'energy': None,
+        'energy_core_electrons': None,
+        'energy_hartree': None,
+        'energy_hartree_units': None,
+        'energy_units': 'eV',
+        'energy_valence_electrons': None,
+        'fermi_energy': None,
+        'fermi_energy_units': None,
+        'gmax': 10.2,
+        'kmax': 3.4,
+        'magnetic_moments': None,
+        'magnetic_moments_spin_down_charge': None,
+        'magnetic_moments_spin_up_charge': None,
+        'number_of_atom_types': 2,
+        'number_of_atoms': 2,
+        'number_of_iterations': 1,
+        'number_of_iterations_total': 1,
+        'number_of_species': 1,
+        'number_of_spin_components': 2,
+        'number_of_symmetries': 16,
+        'output_file_version': '0.33',
+        'overall_charge_density': None,
+        'spin_density': None,
+        'spin_dependent_charge_interstitial': None,
+        'spin_dependent_charge_mt_spheres': None,
+        'spin_dependent_charge_total': None,
+        'start_date': {
+            'date': '2020/12/10',
+            'time': '16:53:07'
+        },
+        'sum_of_eigenvalues': None,
+        'title': 'Fe fcc 2',
+        'total_charge': None,
+        'walltime': -60787,
+        'walltime_units': 'seconds'
+    }
+    OUTXML_FILEPATH = os.path.join(outxmlfilefolder, 'files/fleur/broken_out_xml/terminated_firstit.xml')
+    result_warnings = {'parser_warnings': []}
+    out_dict = outxml_parser(OUTXML_FILEPATH, strict=True, parser_info_out=result_warnings)
+    pprint(out_dict)
+    pprint(result_warnings)
+    assert out_dict == expected_result
+    assert result_warnings == expected_warnings
+
+
+def test_outxml_garbage_values():
+    """
+    Test the behaviour of the ouput parser when encountering NaN, Inf or fortran formatting errors ****
+    """
+    OUTXML_FILEPATH = os.path.join(outxmlfilefolder, 'files/fleur/broken_out_xml/garbage_values.xml')
+
+    expected_result = {
+        'bandgap': None,
+        'bandgap_units': None,
+        'charge_den_xc_den_integral': -55.9720588982,
+        'charge_density': [6.4966088913, 11.8289058385],
+        'creator_name': 'fleur 32',
+        'creator_target_architecture': 'GEN',
+        'creator_target_structure': None,
+        'density_convergence_units': 'me/bohr^3',
+        'end_date': {
+            'date': '2020/12/10',
+            'time': '16:54:09'
+        },
+        'energy': -34633.84643810278,
+        'energy_core_electrons': -721.8910476696,
+        'energy_hartree': -1272.770380936,
+        'energy_hartree_units': 'Htr',
+        'energy_units': 'eV',
+        'energy_valence_electrons': -12.7065554237,
+        'fermi_energy': float('NaN'),
+        'fermi_energy_units': 'Htr',
+        'gmax': 10.0,
+        'kmax': 3.0,
+        'magnetic_moments': '********',
+        'magnetic_moments_spin_down_charge': 6.2948978468,
+        'magnetic_moments_spin_up_charge': 8.4648413261,
+        'number_of_atom_types': 1,
+        'number_of_atoms': 1,
+        'number_of_iterations': 1,
+        'number_of_iterations_total': 1,
+        'number_of_species': 1,
+        'number_of_spin_components': 2,
+        'number_of_symmetries': 48,
+        'output_file_version': '0.33',
+        'overall_charge_density': 16.4186207974,
+        'spin_density': 9.7307128187,
+        'spin_dependent_charge_interstitial': [0.6160276, 0.6242332],
+        'spin_dependent_charge_mt_spheres': [13.4648413, 11.2948979],
+        'spin_dependent_charge_total': [14.080869, 11.919131],
+        'start_date': {
+            'date': '2020/12/10',
+            'time': '16:54:08'
+        },
+        'sum_of_eigenvalues': -734.5976030933,
+        'title': 'bcc Fe',
+        'total_charge': float('Inf'),
+        'total_magnetic_moment_cell': 2.1617379999999997,
+        'walltime': 1,
+        'walltime_units': 'seconds'
+    }
+    expected_warnings = {
+        'fleur_modes': {
+            'band': False,
+            'dos': False,
+            'film': False,
+            'jspin': 2,
+            'ldau': False,
+            'noco': False,
+            'relax': False,
+            'soc': False
+        },
+        'parser_info':
+        'Masci-Tools Fleur out.xml Parser v0.1.0',
+        'parser_warnings': [
+            'Output file does not validate against the schema: '
+            "Element 'FermiEnergy', attribute 'value': 'NAN' is not a "
+            "valid value of the atomic type 'xs:double'. (<string>, "
+            'line 0)', 'No text found for tag targetStructureClass',
+            'No values found for attribute value at tag bandgap', 'No values found for attribute units at tag bandgap',
+            'Failed to evaluate attribute moment: Below are the '
+            'warnings from convert_xml_attribute', "Could not convert: '********' to float, ValueError"
+        ]
+    }
+
+    def isNaN(num):
+        return math.isnan(num)  #num != num
+
+    result_warnings = {'parser_warnings': []}
+    out_dict = outxml_parser(OUTXML_FILEPATH, strict=True, ignore_validation=True, parser_info_out=result_warnings)
+    pprint(out_dict)
+    pprint(result_warnings)
+    assert isNaN(out_dict['fermi_energy']) == isNaN(expected_result['fermi_energy'])
+    assert out_dict['magnetic_moments'] == expected_result['magnetic_moments']
+    assert out_dict['total_charge'] == expected_result['total_charge']
+    assert result_warnings == expected_warnings
+
+
+def test_outxml_incompatible_versions():
+    """
+    Test the output parser against files with broken/wrong or unsupported version strings
+    """
+
+    #output version does not exist (InputSchema is loaded first so this is the raised error)
+    OUTXML_FILEPATH1 = os.path.join(outxmlfilefolder, 'files/fleur/broken_out_xml/non_existing_version.xml')
+    with pytest.raises(FileNotFoundError, match='No FleurInputSchema.xsd found'):
+        out_dict = outxml_parser(OUTXML_FILEPATH1, strict=True)
+
+    #version string 0.27 and programVersion='fleur 27' not supported
+    OUTXML_FILEPATH1 = os.path.join(outxmlfilefolder, 'files/fleur/broken_out_xml/non_supported_version.xml')
+    with pytest.raises(ValueError, match='Versions before fleur MaX4.0 are not supported'):
+        out_dict = outxml_parser(OUTXML_FILEPATH1, strict=True)
+
+    #input version does not match
+    OUTXML_FILEPATH1 = os.path.join(outxmlfilefolder, 'files/fleur/broken_out_xml/broken_input_version.xml')
+    with pytest.raises(ValueError, match='inputVersion does not match outputVersion'):
+        out_dict = outxml_parser(OUTXML_FILEPATH1, strict=True)
 
 
 def test_outxml_additional_tasks():
@@ -504,8 +931,7 @@ def test_outxml_max4compatibility():
         'parser_warnings': [
             "Ignoring '0.27' outputVersion for MaX4.0 release", 'Output file does not validate against the schema: '
             "Element 'inputData': The attribute 'fleurInputVersion' "
-            'is required but missing. (<string>, line 0)', 'Output file does not validate against the schema: Reason '
-            'is unknown', 'No text found for tag targetStructureClass'
+            'is required but missing. (<string>, line 0)', 'No text found for tag targetStructureClass'
         ]
     }
 

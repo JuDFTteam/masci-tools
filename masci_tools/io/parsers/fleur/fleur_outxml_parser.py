@@ -134,11 +134,11 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
                     f'Output file does not validate against the schema: {message}')
             else:
                 raise ValueError(f'Output file does not validate against the schema: {message}') from msg
-        if ignore_validation:
+        if not ignore_validation:
+            raise ValueError('Output file does not validate against the schema: Reason is unknown')
+        if message == '':
             parser_info_out['parser_warnings'].append(
                 'Output file does not validate against the schema: Reason is unknown')
-        else:
-            raise ValueError('Output file does not validate against the schema: Reason is unknown')
 
     parse_tasks = ParseTasks(out_version)
     additional_tasks = kwargs.pop('additional_tasks', {})
