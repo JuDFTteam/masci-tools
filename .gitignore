@@ -1,3 +1,17 @@
+# not to be published
+publish_to_pypi.sh
+
+
+# test files
+masci_tools/tests
+
+#editors etc
+.pytest_cache
+.vscode
+
+# vim
+*.swp
+
 
 # Created by https://www.gitignore.io/api/python,linux,macos
 
@@ -11,8 +25,11 @@ __pycache__/
 *.so
 
 # Distribution / packaging
+poetry.lock
+pip-wheel-metadata
 .Python
 env/
+venv*
 build/
 develop-eggs/
 dist/
@@ -173,4 +190,3 @@ data/
 *.el
 # # Jetbrains PyCharm Project folder:
 .idea/
-

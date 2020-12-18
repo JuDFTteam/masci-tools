@@ -28,12 +28,12 @@ import os
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.autodoc', 
-              'sphinx.ext.doctest', 
-              'sphinx.ext.todo', 
-              'sphinx.ext.coverage',  
+extensions = ['sphinx.ext.autodoc',
+              'sphinx.ext.doctest',
+              'sphinx.ext.todo',
+              'sphinx.ext.coverage',
               'sphinx.ext.imgmath',
-              'sphinx.ext.ifconfig', 
+              'sphinx.ext.ifconfig',
               'sphinx.ext.viewcode']
 
 todo_include_todos = True
@@ -135,7 +135,7 @@ html_theme = 'default'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+#html_static_path = ['_static']
 
 # Add any extra paths that contain custom files (such as robots.txt or
 # .htaccess) here, relative to this directory. These files are copied
@@ -392,4 +392,3 @@ nitpick_ignore = [
     ('py:obj', 'Mapping'),
     ('py:obj', 'plum'),
 ]
-

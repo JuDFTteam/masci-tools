@@ -40,10 +40,6 @@ I/O helper and output file parsers
 .. automodule:: masci_tools.io.kkr_read_shapefun_info
    :members:
 
-.. automodule:: masci_tools.io.kkrimp_scoef_tools
-   :members:
-
-
 .. automodule:: masci_tools.io.parsers.kkrparser_functions
    :members:
 
@@ -52,4 +48,3 @@ I/O helper and output file parsers
 
 .. automodule:: masci_tools.io.parsers.kkrimp_parser_functions
    :members:
-

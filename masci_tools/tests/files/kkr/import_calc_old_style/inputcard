@@ -302,4 +302,3 @@ fedeci.fp2                                  right (down) host
 Parameters for ewald sums
 RMAX=15.0d0     GMAX=900.d0     (fcc 7  65)
 ----------------------------------------------------------------------
-
