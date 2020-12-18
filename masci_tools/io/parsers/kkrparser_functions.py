@@ -439,9 +439,11 @@ def use_newsosol(outfile_0init):
         newsosol = True
     itmp = search_string('<use_Chebychev_solver>=', tmptxt)
     # new style: check for output of runoptions
-    if itmp >= 0:
-        if tmptxt[itmp].split()[1][:1].upper() == 'T':
+    if itmp>=0 :
+        if tmptxt[itmp].split()[1][:1].upper()=='T':
             newsosol = True
+        if tmptxt[itmp].split()[1][:1].upper()=='F':
+            newsosol = False
     return newsosol
 
 
