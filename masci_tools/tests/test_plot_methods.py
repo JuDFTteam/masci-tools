@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from builtins import range
-from builtins import object
 import pytest
 
 # prevent issue with not having a display on travis-ci

@@ -2,7 +2,6 @@
 """
 Tests of the calculator of mathematical expressions in the inp.xml files
 """
-from __future__ import absolute_import
 import pytest
 from masci_tools.util.fleur_calculate_expression import calculate_expression
 from masci_tools.util.constants import FLEUR_DEFINED_CONSTANTS

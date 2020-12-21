@@ -3,8 +3,6 @@
 @author: ruess
 """
 
-from __future__ import absolute_import
-from builtins import object
 import pytest
 from masci_tools.io.parsers.voroparser_functions import parse_voronoi_output
 

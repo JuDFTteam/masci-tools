@@ -5,16 +5,9 @@ Created on Wed Nov 15 16:43:31 2017
 
 @author: ruess
 """
-from __future__ import print_function
-from __future__ import division
-
-from __future__ import absolute_import
-from builtins import object  # pylint: disable=redefined-builtin
-from builtins import str  # pylint: disable=redefined-builtin
 import pytest
 from masci_tools.io.kkr_params import kkrparams
 from masci_tools.io.common_functions import open_general
-from six.moves import range  # pylint: disable=redefined-builtin
 
 # helper functions
 

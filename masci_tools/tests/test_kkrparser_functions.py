@@ -5,9 +5,6 @@
 
 # pylint: disable=E0602,W0602
 
-from __future__ import absolute_import
-from __future__ import print_function
-from builtins import object  # pylint: disable=redefined-builtin
 import pytest
 from masci_tools.io.parsers.kkrparser_functions import parse_kkr_outputfile, check_error_category
 
