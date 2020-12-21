@@ -14,6 +14,7 @@
 IO routines for hdf
 """
 
+
 def read_hdf(filepath):
     """
     Reads in an hdf file and returns its context in a nested dictionary

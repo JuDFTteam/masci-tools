@@ -15,7 +15,7 @@ Here commonly used functions that do not need aiida-stuff (i.e. can be tested
 without a database) are collected.
 """
 import io
-
+import numpy as np
 ####################################################################################
 
 #helper functions used in calculation, parser etc.
@@ -54,12 +54,11 @@ def open_general(filename_or_handle, iomode=None):
 
 
 def get_alat_from_bravais(bravais, is3D=True):
-    from numpy import sqrt, sum
     bravais_tmp = bravais
     if not is3D:
         #take only in-plane lattice to find maximum as alat
         bravais_tmp = bravais[:2, :2]
-    return sqrt(sum(bravais_tmp**2, axis=1)).max()
+    return np.sqrt(np.sum(bravais_tmp**2, axis=1)).max()
 
 
 def get_Ang2aBohr():
@@ -92,34 +91,33 @@ def angles_to_vec(magnitude, theta, phi):
     Input can be single number, list of numpy.ndarray data
     Returns x,y,z vector
     """
-    from numpy import ndarray, array, cos, sin
 
     # correct data type if necessary
     if isinstance(magnitude, list):
-        magnitude = array(magnitude)
+        magnitude = np.array(magnitude)
     if isinstance(theta, list):
-        theta = array(theta)
+        theta = np.array(theta)
     if isinstance(phi, list):
-        phi = array(phi)
+        phi = np.array(phi)
     single_value_input = False
-    if not isinstance(magnitude, ndarray):
-        magnitude = array([magnitude])
+    if not isinstance(magnitude, np.ndarray):
+        magnitude = np.array([magnitude])
         single_value_input = True
-    if not isinstance(theta, ndarray):
-        theta = array([theta])
+    if not isinstance(theta, np.ndarray):
+        theta = np.array([theta])
         single_value_input = True
-    if not isinstance(phi, ndarray):
-        phi = array([phi])
+    if not isinstance(phi, np.ndarray):
+        phi = np.array([phi])
         single_value_input = True
 
     vec = []
     for mag_i, phi_i, theta_i in zip(magnitude, phi, theta):
-        r_inplane = mag_i * sin(theta_i)
-        x = r_inplane * cos(phi_i)
-        y = r_inplane * sin(phi_i)
-        z = cos(theta_i) * mag_i
+        r_inplane = mag_i * np.sin(theta_i)
+        x = r_inplane * np.cos(phi_i)
+        y = r_inplane * np.sin(phi_i)
+        z = np.cos(theta_i) * mag_i
         vec.append([x, y, z])
-    vec = array(vec)
+    vec = np.array(vec)
 
     if single_value_input:
         vec = vec[0]
@@ -131,21 +129,20 @@ def vec_to_angles(vec):
     """
     converts vector (x,y,z) to (magnitude, theta, phi)
     """
-    from numpy import array, arctan2, sqrt, shape
     magnitude, theta, phi = [], [], []
-    if len(vec) == 3 and len(shape(vec)) < 2:
-        vec = array([vec])
+    if len(vec) == 3 and len(np.shape(vec)) < 2:
+        vec = np.array([vec])
         multiple_entries = False
     else:
         multiple_entries = True
 
     for vec_i in vec:
-        phi.append(arctan2(vec_i[1], vec_i[0]))
-        r_inplane = sqrt(vec_i[0]**2 + vec_i[1]**2)
-        theta.append(arctan2(r_inplane, vec_i[2]))
-        magnitude.append(sqrt(r_inplane**2 + vec_i[2]**2))
+        phi.append(np.arctan2(vec_i[1], vec_i[0]))
+        r_inplane = np.sqrt(vec_i[0]**2 + vec_i[1]**2)
+        theta.append(np.arctan2(r_inplane, vec_i[2]))
+        magnitude.append(np.sqrt(r_inplane**2 + vec_i[2]**2))
     if multiple_entries:
-        magnitude, theta, phi = array(magnitude), array(theta), array(phi)
+        magnitude, theta, phi = np.array(magnitude), np.array(theta), np.array(phi)
     else:
         magnitude, theta, phi = magnitude[0], theta[0], phi[0]
     return magnitude, theta, phi
@@ -172,7 +169,6 @@ def get_version_info(outfile):
 
 def get_corestates_from_potential(potfile='potential'):
     """Read core states from potential file"""
-    from numpy import zeros
     f = open_general(potfile)
     with f:
         txt = f.readlines()
@@ -189,8 +185,8 @@ def get_corestates_from_potential(potfile='potential'):
         n = int(line.split()[0])
         print(ipot, n)
         n_core_states.append(n)
-        elevels = zeros(n)  #temp array for energies
-        langmom = zeros(n, dtype=int)  #temp array for angular momentum index
+        elevels = np.zeros(n)  #temp array for energies
+        langmom = np.zeros(n, dtype=int)  #temp array for angular momentum index
         for icore in range(n):
             line = txt[istarts[ipot] + 7 + icore].split()
             langmom[icore] = int(line[0])
@@ -237,7 +233,6 @@ def interpolate_dos(
 
     :note: output units are in Ry!
     """
-    from numpy import array, real, imag
 
     f = open_general(dosfile)
     with f:
@@ -272,18 +267,18 @@ def interpolate_dos(
                 dostmp_complex += [[tmpline[iline], tmpline[iline + 1]] for iline in range(2, len(tmpline) - 2, 2)]
                 dostmp = [ez] + [float(ds[0]) + 1j * float(ds[1]) for ds in dostmp_complex]
                 dos_l_cmplx.append(dostmp)
-            dos_l_cmplx = array(dos_l_cmplx)
-            dos_l = imag(dos_l_cmplx.copy())
-            dos_l[:, 0] = real(dos_l_cmplx.copy()[:, 0])
+            dos_l_cmplx = np.array(dos_l_cmplx)
+            dos_l = np.imag(dos_l_cmplx.copy())
+            dos_l[:, 0] = np.real(dos_l_cmplx.copy()[:, 0])
             dos_all_atoms.append(dos_l)
 
             # Compute and write out corrected dos at new (middle) energy points:
             dosnew = []
             ez = dos_l_cmplx[:, 0]
             for ie in range(1, iemax - 1):
-                deltae = real(ez[ie + 1] - ez[ie])
-                eim = imag(ez[ie])
-                enew = real(ez[ie])  # Real quantity
+                deltae = np.real(ez[ie + 1] - ez[ie])
+                eim = np.imag(ez[ie])
+                enew = np.real(ez[ie])  # Real quantity
 
                 tmpdos = [enew]
                 for ll in range(1, lmax + 3):
@@ -291,9 +286,9 @@ def interpolate_dos(
                     #print ie+1, ll,  dos_l_cmplx[ie, ll], deltae, eim, t, shape(dos_l_cmplx[ie]), lmax
                     #tmpdos.append(dos_l_cmplx[ie, ll] + 0.5*(dos_l_cmplx[ie-1, ll]-dos_l_cmplx[ie+1, ll])*(0.+1j*eim)/deltae)
                     tmpdos.append(dos_l_cmplx[ie, ll] + t)
-                tmpdos = array(tmpdos)
+                tmpdos = np.array(tmpdos)
                 # build imaginary part (factor -1/2pi is already included)
-                tmpdos = array([real(tmpdos[0])] + [imag(ds) for ds in tmpdos[1:]])
+                tmpdos = np.array([np.real(tmpdos[0])] + [np.imag(ds) for ds in tmpdos[1:]])
                 dosnew.append(tmpdos)
 
             # save to big array with all atoms
@@ -302,8 +297,8 @@ def interpolate_dos(
             if i1 != npot:
                 text = f.readline()  # dummy line
 
-        dosnew_all_atoms = array(dosnew_all_atoms)
-        dos_all_atoms = array(dos_all_atoms)
+        dosnew_all_atoms = np.array(dosnew_all_atoms)
+        dos_all_atoms = np.array(dos_all_atoms)
 
     if return_original:
         return ef, dos_all_atoms, dosnew_all_atoms
@@ -330,7 +325,6 @@ def convert_to_pystd(value):
 
     where `to_convert` can be a dict, array, list, or single valued variable
     """
-    import numpy as np
     if isinstance(value, np.ndarray):
         value = list(value)
         value = convert_to_pystd(value)
