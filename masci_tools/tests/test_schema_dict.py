@@ -7,25 +7,23 @@ import os
 from masci_tools.io.parsers.fleur.fleur_schema import load_inpschema, create_inpschema_dict
 from masci_tools.io.parsers.fleur.fleur_schema import load_outschema, create_outschema_dict
 
-CURRENT_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+SCHEMA_DIR = '../io/parsers/fleur/fleur_schema'
 
-schema_directory = '../io/parsers/fleur/fleur_schema'
-
-schema_versions = []
-schema_paths = []
-outschema_versions = []
-outschema_paths = []
-for root, dirs, files in os.walk(os.path.abspath(os.path.join(CURRENT_DIRECTORY, schema_directory))):
+#Collect all schemas from the folder
+schema_versions = {'inp': [], 'out': []}
+schema_paths = {'inp': [], 'out': []}
+for root, dirs, files in os.walk(os.path.abspath(os.path.join(CURRENT_DIR, SCHEMA_DIR))):
     for folder in dirs:
         if '0.' in folder:
-            schema_versions.append(folder)
-            schema_paths.append(os.path.join(root, folder))
+            schema_versions['inp'].append(folder)
+            schema_paths['inp'].append(os.path.join(root, folder))
             if int(folder.split('.')[1]) >= 33 or folder == '0.31':
-                outschema_versions.append(folder)
-                outschema_paths.append(os.path.join(root, folder))
+                schema_versions['out'].append(folder)
+                schema_paths['out'].append(os.path.join(root, folder))
 
 
-@pytest.mark.parametrize('schema_version,schema_path', zip(schema_versions, schema_paths))
+@pytest.mark.parametrize('schema_version,schema_path', zip(schema_versions['inp'], schema_paths['inp']))
 def test_inpschema_dict(schema_version, schema_path):
     """
     Test the fleur_schema_parser_functions to make sure that they match the stored inputschema_dict
@@ -37,7 +35,7 @@ def test_inpschema_dict(schema_version, schema_path):
     assert dict_created == dict_stored
 
 
-@pytest.mark.parametrize('schema_version,schema_path', zip(outschema_versions, outschema_paths))
+@pytest.mark.parametrize('schema_version,schema_path', zip(schema_versions['out'], schema_paths['out']))
 def test_outschema_dict(schema_version, schema_path):
     """
     Test the fleur_schema_parser_functions to make sure that they match the stored inputschema_dict
