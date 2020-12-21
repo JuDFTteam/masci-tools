@@ -14,9 +14,7 @@
 Io routines for band structure files
 """
 from __future__ import absolute_import
-from __future__ import print_function
-ry_to_ev = 13.6056917253
-hartree_to_ev = ry_to_ev * 2.
+from masci_tools.util.constants import HTR_TO_EV
 
 
 def read_fleur_banddos_hdf(filepath):
@@ -77,7 +75,7 @@ def read_fleur_banddos_hdf(filepath):
     for i, spinband in enumerate(bands_tmp):
         bands_s = []
         for j, band in enumerate(spinband):
-            bands_s.append((np.array(band) - fermien_htr) * hartree_to_ev)
+            bands_s.append((np.array(band) - fermien_htr) * HTR_TO_EV)
         bands.append(bands_s)
 
     print((len(bands)))

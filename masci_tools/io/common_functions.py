@@ -14,11 +14,8 @@
 Here commonly used functions that do not need aiida-stuff (i.e. can be tested
 without a database) are collected.
 """
-from __future__ import print_function
-from __future__ import division
 from __future__ import absolute_import
 import io
-from six.moves import range
 
 ####################################################################################
 
@@ -37,12 +34,8 @@ def open_general(filename_or_handle, iomode=None):
     """
     reopen_file = False
     # this is needed in order to make python2 and 3 work (in py3 file does not exist anymore)
-    import six
-    #if six.PY2:
-    #    if type(filename_or_handle)!=io.TextIOWrapper and type(filename_or_handle)!=file:
-    #        reopen_file = True
-    #else:
-    if type(filename_or_handle) != io.TextIOWrapper:
+
+    if not isinstance(filename_or_handle, io.IOBase):
         reopen_file = True
 
     if reopen_file:

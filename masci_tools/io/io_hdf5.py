@@ -13,9 +13,7 @@
 """
 IO routines for hdf
 """
-
 from __future__ import absolute_import
-import six
 
 
 def read_hdf(filepath):
@@ -29,15 +27,15 @@ def read_hdf(filepath):
     datasets = {}
     group_attrs = {}
     groups = []
-    file_hdf = h5py.File(filepath, 'r')
-    groups = list(file_hdf.keys())
 
-    for key, val in six.iteritems(file_hdf):
-        for k, v in six.iteritems(val):
-            datasets[k] = v.value
-        attr = val.attrs
-        for ke, val in six.iteritems(attr):
-            group_attrs[ke] = val
-    file_hdf.close()
+    with h5py.File(filepath, 'r') as file_hdf:
+        groups = list(file_hdf.keys())
+
+        for key, val in file_hdf.items():
+            for k, v in val.items():
+                datasets[k] = v.value
+            attr = val.attrs
+            for ke, attr_val in attr.items():
+                group_attrs[ke] = attr_val
 
     return datasets, groups, group_attrs
