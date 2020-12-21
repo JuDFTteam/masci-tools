@@ -72,19 +72,11 @@ class Test_capture_wrong_input(object):  # pylint: disable=missing-class-docstri
 
     def test_wrong_input_type(self):
         p = kkrparams()
-        known_error = False
-        try:
+        with pytest.raises(TypeError):
             p.set_value('EMIN', '2')
-        except TypeError:
-            known_error = True
-        assert known_error
 
-        known_error = False
-        try:
+        with pytest.raises(TypeError):
             p.set_value('EMIN', False)
-        except TypeError:
-            known_error = True
-        assert known_error
 
     def test_wrong_input_array_dimension(self):
         p = kkrparams()
@@ -104,22 +96,19 @@ class Test_capture_wrong_input(object):  # pylint: disable=missing-class-docstri
         p.set_value('<RBLEFT>', array([[1, 1], [0, 1]]))
 
     def test_input_consistency_check_fail(self):
-        knownError = False
-        try:
-            p = kkrparams(ZATOM=29.,
-                          LMAX=2,
-                          NAEZ=1,
-                          BRAVAIS=[[1, 0, 0], [0, 1, 0], [0, 0, 1]],
-                          RMAX=7,
-                          GMAX=65,
-                          NSPIN=2,
-                          RBASIS=[0, 0, 0],
-                          ALATBASIS=1)
-            p.set_value('LDAU_PARA', [1, 2])
+
+        p = kkrparams(ZATOM=29.,
+                      LMAX=2,
+                      NAEZ=1,
+                      BRAVAIS=[[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+                      RMAX=7,
+                      GMAX=65,
+                      NSPIN=2,
+                      RBASIS=[0, 0, 0],
+                      ALATBASIS=1)
+        p.set_value('LDAU_PARA', [1, 2])
+        with pytest.raises(TypeError):
             p._check_input_consistency()
-        except TypeError:
-            knownError = True
-        assert knownError
 
     def test_inconsistency_bulk_mode_bravais(self):
         p = kkrparams(LMAX=2,
@@ -131,12 +120,8 @@ class Test_capture_wrong_input(object):  # pylint: disable=missing-class-docstri
                       RMAX=7,
                       GMAX=65,
                       ZATOM=29.)
-        knownError = False
-        try:
+        with pytest.raises(ValueError):
             p.fill_keywords_to_inputfile()
-        except ValueError:
-            knownError = True
-        assert knownError
 
 
 class Test_get_info(object):  # pylint: disable=missing-class-docstring
@@ -177,12 +162,9 @@ class Test_get_info(object):  # pylint: disable=missing-class-docstring
     def test_get_value(self):
         p = kkrparams(LMAX=3)
         # check for KeyError if wrong key is checked
-        known_error = False
-        try:
+        with pytest.raises(KeyError):
             p.get_value('something_wrong')
-        except KeyError:
-            known_error = True
-        assert known_error
+
         # check for returning unset value
         npol = p.get_value('NPOL')
         assert npol is None
@@ -311,12 +293,9 @@ class Test_fill_inputfile(object):
 
     def test_fill_inputfile_empty_check(self):
         p = kkrparams(LMAX=2, NAEZ=1)
-        known_error = False
-        try:
+
+        with pytest.raises(ValueError):
             p.fill_keywords_to_inputfile()
-        except ValueError:
-            known_error = True
-        assert known_error
 
     def test_fill_inputfile_all_keys(self):
         """Example filling all keys"""
