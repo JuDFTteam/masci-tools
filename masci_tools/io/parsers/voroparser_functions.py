@@ -13,16 +13,13 @@
 """
 Everything that is needed to parse the output of a voronoi calculation.
 """
-
-from __future__ import print_function
-from __future__ import absolute_import
-import io, sys
 from masci_tools.io.common_functions import (get_corestates_from_potential, get_highest_core_state, search_string,
                                              get_version_info, get_Ry2eV, get_ef_from_potfile, open_general,
                                              convert_to_pystd)
 from masci_tools.io.parsers.kkrparser_functions import get_core_states
-from six.moves import range
 import numpy as np
+import io
+import sys
 import traceback
 
 __copyright__ = (u'Copyright (c), 2018, Forschungszentrum Jülich GmbH,' 'IAS-1/PGI-1, Germany. All rights reserved.')

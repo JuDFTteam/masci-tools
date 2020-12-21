@@ -13,8 +13,6 @@
 """
 functions to extract information about the fleur schema input or output
 """
-from __future__ import absolute_import
-from __future__ import print_function
 from lxml import etree
 
 #These types have infinite recursive paths and CANNOT BE PARSED in the path generation

@@ -13,8 +13,6 @@
 """
 IO routines for hdf
 """
-from __future__ import absolute_import
-
 
 def read_hdf(filepath):
     """

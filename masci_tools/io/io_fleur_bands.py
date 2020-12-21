@@ -13,7 +13,6 @@
 """
 Io routines for band structure files
 """
-from __future__ import absolute_import
 from masci_tools.util.constants import HTR_TO_EV
 
 

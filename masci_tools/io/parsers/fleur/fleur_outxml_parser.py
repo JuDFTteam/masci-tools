@@ -14,7 +14,6 @@
 This module contains functions to load an fleur out.xml file, parse it with a schema
 and convert its content to a dict, based on the tasks given
 """
-from __future__ import absolute_import
 from .parse_tasks import ParseTasks
 import masci_tools.util.fleur_outxml_conversions as convert_funcs
 import masci_tools.util.schema_dict_util as schema_util

@@ -13,14 +13,9 @@
 """
 Tools for the impurity caluclation plugin and its workflows
 """
-
-from __future__ import print_function, division
-from __future__ import absolute_import
-from builtins import object
 from numpy import array, ndarray, loadtxt
 from masci_tools.io.common_functions import search_string, open_general, get_version_info, get_Ry2eV, convert_to_pystd
 from masci_tools.io.parsers.kkrparser_functions import get_rms, find_warnings, get_charges_per_atom, get_core_states
-from six.moves import range
 import traceback
 
 __copyright__ = (u'Copyright (c), 2018, Forschungszentrum Jülich GmbH,' 'IAS-1/PGI-1, Germany. All rights reserved.')

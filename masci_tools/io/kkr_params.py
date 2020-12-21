@@ -10,13 +10,6 @@
 # For further information please visit http://www.flapw.de or                 #
 #                                                                             #
 ###############################################################################
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
-from __future__ import unicode_literals
-from builtins import object
-from builtins import str
-from six.moves import range
 from masci_tools.io.common_functions import open_general
 """
 In this module you find the kkrparams class that helps defining the KKR input parameters

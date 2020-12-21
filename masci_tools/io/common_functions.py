@@ -14,7 +14,6 @@
 Here commonly used functions that do not need aiida-stuff (i.e. can be tested
 without a database) are collected.
 """
-from __future__ import absolute_import
 import io
 
 ####################################################################################

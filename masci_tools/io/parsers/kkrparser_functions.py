@@ -15,15 +15,10 @@ Here I collect all functions needed to parse the output of a KKR calculation.
 These functions do not need aiida and are therefore separated from the actual
 parser file where parse_kkr_outputfile is called
 """
-
-from __future__ import division
-from __future__ import absolute_import
-from __future__ import print_function
 from numpy import ndarray, array, loadtxt, shape
 from masci_tools.io.common_functions import (search_string, get_version_info, get_Ry2eV, angles_to_vec,
                                              get_corestates_from_potential, get_highest_core_state, open_general,
                                              convert_to_pystd)
-from six.moves import range
 import traceback
 
 __copyright__ = (u'Copyright (c), 2017, Forschungszentrum Jülich GmbH,' 'IAS-1/PGI-1, Germany. All rights reserved.')

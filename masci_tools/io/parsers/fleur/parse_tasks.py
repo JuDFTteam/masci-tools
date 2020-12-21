@@ -14,7 +14,6 @@
 This module contains a class which organizes the known parsing tasks for outxml files
 and provides fuctionality for adding custom tasks easily
 """
-from __future__ import absolute_import
 from .default_parse_tasks import TASKS_DEFINITION, __working_out_versions__
 from pprint import pprint
 import copy
