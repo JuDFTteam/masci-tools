@@ -103,29 +103,29 @@ def angles_to_vec(magnitude, theta, phi):
     from numpy import ndarray, array, cos, sin
 
     # correct data type if necessary
-    if type(magnitude) == list:
+    if isinstance(magnitude, list):
         magnitude = array(magnitude)
-    if type(theta) == list:
+    if isinstance(theta, list):
         theta = array(theta)
-    if type(phi) == list:
+    if isinstance(phi, list):
         phi = array(phi)
     single_value_input = False
-    if type(magnitude) != ndarray:
+    if not isinstance(magnitude, ndarray):
         magnitude = array([magnitude])
         single_value_input = True
-    if type(theta) != ndarray:
+    if not isinstance(theta, ndarray):
         theta = array([theta])
         single_value_input = True
-    if type(phi) != ndarray:
+    if not isinstance(phi, ndarray):
         phi = array([phi])
         single_value_input = True
 
     vec = []
-    for ivec in range(len(magnitude)):
-        r_inplane = magnitude[ivec] * sin(theta[ivec])
-        x = r_inplane * cos(phi[ivec])
-        y = r_inplane * sin(phi[ivec])
-        z = cos(theta[ivec]) * magnitude[ivec]
+    for mag_i, phi_i, theta_i in zip(magnitude, phi, theta):
+        r_inplane = mag_i * sin(theta_i)
+        x = r_inplane * cos(phi_i)
+        y = r_inplane * sin(phi_i)
+        z = cos(theta_i) * mag_i
         vec.append([x, y, z])
     vec = array(vec)
 
@@ -147,11 +147,11 @@ def vec_to_angles(vec):
     else:
         multiple_entries = True
 
-    for ivec in range(len(vec)):
-        phi.append(arctan2(vec[ivec, 1], vec[ivec, 0]))
-        r_inplane = sqrt(vec[ivec, 0]**2 + vec[ivec, 1]**2)
-        theta.append(arctan2(r_inplane, vec[ivec, 2]))
-        magnitude.append(sqrt(r_inplane**2 + vec[ivec, 2]**2))
+    for vec_i in vec:
+        phi.append(arctan2(vec_i[1], vec_i[0]))
+        r_inplane = sqrt(vec_i[0]**2 + vec_i[1]**2)
+        theta.append(arctan2(r_inplane, vec_i[2]))
+        magnitude.append(sqrt(r_inplane**2 + vec_i[2]**2))
     if multiple_entries:
         magnitude, theta, phi = array(magnitude), array(theta), array(phi)
     else:
@@ -223,7 +223,7 @@ def interpolate_dos(
     dosfile,
     return_original=False,
 ):
-    """
+    r"""
     interpolation function copied from complexdos3 fortran code
 
     Principle of DOS here: Two-point contour integration
@@ -353,3 +353,11 @@ def convert_to_pystd(value):
         for key, val in value.items():
             value[key] = convert_to_pystd(val)
     return value
+
+
+def camel_to_snake(name):
+    """
+    Converts camelCase to snake_case variable names
+    Used in the Fleur parser to convert attribute names from the xml files
+    """
+    return ''.join(['_' + c.lower() if c.isupper() else c for c in name]).lstrip('_')

@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<fleurOutput fleurOutputVersion="0.33">
+   <programVersion version="fleur 32">
+      <compilationInfo date="2020-12-10T16:35:46" user="janssen" host="mb-janssen" flag="-ffree-line-length-none -Wno-missing-include-dirs -fno-sign-zero -fdefault-real-8 -fdefault-double-8 -fopenmp" link="/usr/lib/libxml2.dylib;/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Accelerate.framework;-lm;-ldl"/>
+      <gitInfo version="MaX-R4-5146-gbe764185-dirty" branch="update_outschema" lastCommitHash="be76418584b223bce77124acbc20eea21ceedf26"/>
+      <targetComputerArchitectures>GEN</targetComputerArchitectures>
+      <precision type="DOUBLE"/>
+      <targetStructureClass> </targetStructureClass>
+   </programVersion>
+   <parallelSetup>
+      <openMP ompThreads="8"/>
+      <mem memoryPerNode="unknown"/>
+   </parallelSetup>
+   <startDateAndTime date="2020/12/10" time="16:53:50" zone="+0100"/>
+   <!-- Now follows a dump of the inp.xml file after evaluating the Schema -->
+   <fleurInput fleurInputVersion="0.33">
+      <comment>
+         FLEUR in
+      </comment>
+      <calculationSetup>
+         <cutoffs Kmax="3.50000000" Gmax="15.00000000" GmaxXC="10.00000000" numbands="0"/>
+         <scfLoop itmax="1" minDistance=".00001000" maxIterBroyd="99" imix="Anderson" alpha=".05000000" precondParam="0.0" spinf="2.00000000"/>
+         <coreElectrons ctail="T" frcor="F" kcrel="0" coretail_lmax="99" l_core_confpot="T"/>
+         <xcFunctional name="pz" relativisticCorrections="F"/>
+         <magnetism jspins="1" l_noco="F" swsp="F" lflip="F" l_ss="F" l_J="F" l_onlyMtStDen="F" fixed_moment="0.0"/>
+         <soc theta=".00000000" phi=".00000000" l_soc="F" spav="F" off="F" soc66="T"/>
+         <expertModes gw="0" secvar="F" pot8="F" eig66="F" lpr="0" isec1="99" warp_factor="1.0"/>
+         <geometryOptimization l_f="F" forcealpha="1.00000000" forcemix="BFGS" epsdisp=".00001000" epsforce=".00001000" f_level="0" qfix="0" force_converged="0.00001"/>
+         <ldaU l_linMix="F" mixParam=".100000" spinf="2.000000" l_adjEnpara="F"/>
+      </calculationSetup>
+      <cell>
+         <bzIntegration valenceElectrons="22.00000000" mode="tria" fermiSmearingEnergy=".00100000" l_bloechl="F">
+            <kPointListSelection listName="default"/>
+            <kPointLists>
+            <kPointList name="default" count="20" type="tria-bulk">
+               <kPoint weight="    1.000000" label="">    0.500000     0.500000     0.000000</kPoint>
+               <kPoint weight="    1.000000" label="">    0.500000     0.500000     0.500000</kPoint>
+               <kPoint weight="    1.000000" label="">    0.500000     0.000000     0.500000</kPoint>
+               <kPoint weight="    1.000000" label="">    0.500000     0.000000     0.000000</kPoint>
+               <kPoint weight="    1.000000" label="">    0.000000     0.000000     0.000000</kPoint>
+               <kPoint weight="    1.000000" label="">    0.000000     0.000000     0.500000</kPoint>
+               <kPoint weight="    1.000000" label="">    0.375000     0.125000     0.500000</kPoint>
+               <kPoint weight="    1.000000" label="">    0.349019     0.349019     0.349019</kPoint>
+               <kPoint weight="    1.000000" label="">    0.208334     0.208334     0.500000</kPoint>
+               <kPoint weight="    1.000000" label="">    0.375000     0.125000     0.000000</kPoint>
+               <kPoint weight="    1.000000" label="">    0.416666     0.416666     0.235294</kPoint>
+               <kPoint weight="    1.000000" label="">    0.399510     0.100490     0.200981</kPoint>
+               <kPoint weight="    1.000000" label="">    0.333334     0.333334     0.000000</kPoint>
+               <kPoint weight="    1.000000" label="">    0.166666     0.166666     0.000000</kPoint>
+               <kPoint weight="    1.000000" label="">    0.083334     0.083334     0.235294</kPoint>
+               <kPoint weight="    1.000000" label="">    0.500000     0.250000     0.500000</kPoint>
+               <kPoint weight="    1.000000" label="">    0.250000     0.000000     0.500000</kPoint>
+               <kPoint weight="    1.000000" label="">    0.500000     0.250000     0.117647</kPoint>
+               <kPoint weight="    1.000000" label="">    0.250000     0.000000     0.117647</kPoint>
+               <kPoint weight="    1.000000" label="">    0.247059     0.247059     0.247059</kPoint>
+            </kPointList>
+            </kPointLists>
+         </bzIntegration>
+         <symmetryOperations>
+            <symOp>
+               <row-1>1 0 0 .0000000000</row-1>
+               <row-2>0 1 0 .0000000000</row-2>
+               <row-3>0 0 1 .0000000000</row-3>
+            </symOp>
+            <symOp>
+               <row-1>-1 0 0 .0000000000</row-1>
+               <row-2>0 -1 0 .0000000000</row-2>
+               <row-3>0 0 1 .0000000000</row-3>
+            </symOp>
+            <symOp>
+               <row-1>-1 0 0 .0000000000</row-1>
+               <row-2>0 1 0 .0000000000</row-2>
+               <row-3>0 0 1 .0000000000</row-3>
+            </symOp>
+            <symOp>
+               <row-1>0 1 0 .0000000000</row-1>
+               <row-2>-1 0 0 .0000000000</row-2>
+               <row-3>0 0 1 .0000000000</row-3>
+            </symOp>
+            <symOp>
+               <row-1>1 0 0 .0000000000</row-1>
+               <row-2>0 -1 0 .0000000000</row-2>
+               <row-3>0 0 1 .0000000000</row-3>
+            </symOp>
+            <symOp>
+               <row-1>0 -1 0 .0000000000</row-1>
+               <row-2>1 0 0 .0000000000</row-2>
+               <row-3>0 0 1 .0000000000</row-3>
+            </symOp>
+            <symOp>
+               <row-1>0 -1 0 .0000000000</row-1>
+               <row-2>-1 0 0 .0000000000</row-2>
+               <row-3>0 0 1 .0000000000</row-3>
+            </symOp>
+            <symOp>
+               <row-1>0 1 0 .0000000000</row-1>
+               <row-2>1 0 0 .0000000000</row-2>
+               <row-3>0 0 1 .0000000000</row-3>
+            </symOp>
+            <symOp>
+               <row-1>-1 0 0 .0000000000</row-1>
+               <row-2>0 -1 0 .0000000000</row-2>
+               <row-3>0 0 -1 .0000000000</row-3>
+            </symOp>
+            <symOp>
+               <row-1>1 0 0 .0000000000</row-1>
+               <row-2>0 1 0 .0000000000</row-2>
+               <row-3>0 0 -1 .0000000000</row-3>
+            </symOp>
+            <symOp>
+               <row-1>1 0 0 .0000000000</row-1>
+               <row-2>0 -1 0 .0000000000</row-2>
+               <row-3>0 0 -1 .0000000000</row-3>
+            </symOp>
+            <symOp>
+               <row-1>-1 0 0 .0000000000</row-1>
+               <row-2>0 1 0 .0000000000</row-2>
+               <row-3>0 0 -1 .0000000000</row-3>
+            </symOp>
+            <symOp>
+               <row-1>0 -1 0 .0000000000</row-1>
+               <row-2>1 0 0 .0000000000</row-2>
+               <row-3>0 0 -1 .0000000000</row-3>
+            </symOp>
+            <symOp>
+               <row-1>0 1 0 .0000000000</row-1>
+               <row-2>-1 0 0 .0000000000</row-2>
+               <row-3>0 0 -1 .0000000000</row-3>
+            </symOp>
+            <symOp>
+               <row-1>0 1 0 .0000000000</row-1>
+               <row-2>1 0 0 .0000000000</row-2>
+               <row-3>0 0 -1 .0000000000</row-3>
+            </symOp>
+            <symOp>
+               <row-1>0 -1 0 .0000000000</row-1>
+               <row-2>-1 0 0 .0000000000</row-2>
+               <row-3>0 0 -1 .0000000000</row-3>
+            </symOp>
+         </symmetryOperations>
+         <bulkLattice scale="1.0000000000">
+            <bravaisMatrix>
+               <row-1>4.6709350900 .0000000000 .0000000000</row-1>
+               <row-2>.0000000000 4.6709350900 .0000000000</row-2>
+               <row-3>.0000000000 .0000000000 6.6057000000</row-3>
+            </bravaisMatrix>
+         </bulkLattice>
+      </cell>
+      <atomSpecies>
+         <species name="Cu-1" element="Cu" atomicNumber="29">
+            <mtSphere radius="2.20000000" gridPoints="935" logIncrement=".01300000"/>
+            <atomicCutoffs lmax="12" lnonsphr="8"/>
+            <electronConfig>
+               <coreConfig>(1s1/2) (2s1/2) (2p1/2) (2p3/2) (3s1/2) (3p1/2) (3p3/2)</coreConfig>
+               <valenceConfig>(4s1/2) (3d3/2) (3d5/2)</valenceConfig>
+               <stateOccupation state="(4s1/2)" spinUp=".50000000" spinDown=".50000000"/>
+            </electronConfig>
+            <energyParameters s="0" p="0" d="0" f="0"/>
+         </species>
+         <species name="Cu-2" element="Cu" atomicNumber="29">
+            <mtSphere radius="2.20000000" gridPoints="935" logIncrement=".01300000"/>
+            <atomicCutoffs lmax="12" lnonsphr="8"/>
+            <electronConfig>
+               <coreConfig>(1s1/2) (2s1/2) (2p1/2) (2p3/2) (3s1/2) (3p1/2) (3p3/2)</coreConfig>
+               <valenceConfig>(4s1/2) (3d3/2) (3d5/2)</valenceConfig>
+               <stateOccupation state="(4s1/2)" spinUp=".50000000" spinDown=".50000000"/>
+            </electronConfig>
+            <energyParameters s="0" p="0" d="0" f="0"/>
+         </species>
+      </atomSpecies>
+      <atomGroups>
+         <atomGroup species="Cu-1">
+            <relPos label="                    " wannier="F">.0000000000 .0000000000 1.000/2.000</relPos>
+            <force calculate="T" relaxXYZ="TTT"/>
+         </atomGroup>
+         <atomGroup species="Cu-2">
+            <relPos label="                    " wannier="F">1.000/2.000 1.000/2.000 .0000000000</relPos>
+            <force calculate="T" relaxXYZ="TTT"/>
+         </atomGroup>
+      </atomGroups>
+      <output dos="T" band="F" slice="F" coreSpec="F" wannier="F" eig66="F">
+         <checks vchk="T" cdinf="F" disp="F"/>
+         <bandDOS minEnergy="-.50000000" maxEnergy=".50000000" sigma=".01500000" orbcomp="T" all_atoms="T" jDOS="F" numberPoints="1321"/>
+         <plotting iplot="0" polar="F" format="1"/>
+         <chargeDensitySlicing numkpt="0" minEigenval=".00000000" maxEigenval=".00000000" nnne="0" pallst="F"/>
+         <specialOutput eonly="F" bmt="F" form66="F"/>
+      </output>
+     <!-- We include the file relax.inp here to enable relaxations (see documentation) -->
+   
+   </fleurInput>
+   <!-- END of dump of the inp.xml file -->
+   <numericalParameters>
+      <atomsInCell nat="2" ntype="2" jmtd="935" n_u="0" n_hia="0"/>
+      <basis nvd="114" lmaxd="12" nlotot="0"/>
+      <density ng3="665" ng2="2"/>
+      <bands numbands="18"/>
+      <volumes unitCell="144.120748" interstitial="54.9162727">
+         <mtVolume atomType="1" mtRadius="2.20000000" mtVolume="44.60223810"/>
+         <mtVolume atomType="2" mtRadius="2.20000000" mtVolume="44.60223810"/>
+      </volumes>
+      <kPointList weightScale="1.00000000" count="        20">
+         <kPoint weight="0.050000">0.500000            0.500000            0.000000</kPoint>
+         <kPoint weight="0.050000">0.500000            0.500000            0.500000</kPoint>
+         <kPoint weight="0.050000">0.500000            0.000000            0.500000</kPoint>
+         <kPoint weight="0.050000">0.500000            0.000000            0.000000</kPoint>
+         <kPoint weight="0.050000">0.000000            0.000000            0.000000</kPoint>
+         <kPoint weight="0.050000">0.000000            0.000000            0.500000</kPoint>
+         <kPoint weight="0.050000">0.375000            0.125000            0.500000</kPoint>
+         <kPoint weight="0.050000">0.349019            0.349019            0.349019</kPoint>
+         <kPoint weight="0.050000">0.208334            0.208334            0.500000</kPoint>
+         <kPoint weight="0.050000">0.375000            0.125000            0.000000</kPoint>
+         <kPoint weight="0.050000">0.416666            0.416666            0.235294</kPoint>
+         <kPoint weight="0.050000">0.399510            0.100490            0.200981</kPoint>
+         <kPoint weight="0.050000">0.333334            0.333334            0.000000</kPoint>
+         <kPoint weight="0.050000">0.166666            0.166666            0.000000</kPoint>
+         <kPoint weight="0.050000">0.083334            0.083334            0.235294</kPoint>
+         <kPoint weight="0.050000">0.500000            0.250000            0.500000</kPoint>
+         <kPoint weight="0.050000">0.250000            0.000000            0.500000</kPoint>
+         <kPoint weight="0.050000">0.500000            0.250000            0.117647</kPoint>
+         <kPoint weight="0.050000">0.250000            0.000000            0.117647</kPoint>
+         <kPoint weight="0.050000">0.247059            0.247059            0.247059</kPoint>
+      </kPointList>
+   </numericalParameters>
+   <scfLoop>
+      <iteration numberForCurrentRun="    1" overallNumber="    1">
+         <energyParameters units="Htr">
+         </energyParameters>
+         <eigenvalues>
+            <eigenvaluesAt spin="1" ikpt="1" k_x="0.50000000" k_y="0.50000000" k_z="0.00000000">
+                       0.2008509338        0.2008509338        0.2345180041        0.2345180041        0.3790417177
+                       0.3790417177        0.3878566359        0.3878566359        0.3878566412        0.3878566412
+                       0.4114868993        0.4114868993        0.6960258924        0.6960258925        0.8694993565
+                       0.8694993566        0.8694993577        0.8694993577
+            </eigenvaluesAt>
+            <eigenvaluesAt spin="1" ikpt="2" k_x="0.50000000" k_y="0.50000000" k_z="0.50000000">
+                       0.2375127963        0.2375127964        0.2707448760        0.2707448760        0.2707448760
+                       0.2707448760        0.3433636763        0.3433636763        0.3866898826        0.3866898826
+                       0.6312168252        0.6312168252        0.6312168252        0.6312168252        0.7313656873
+                       0.7313656874        0.7319974088        0.7319974089
+            </eigenvaluesAt>
+            <eigenvaluesAt spin="1" ikpt="3" k_x="0.50000000" k_y="0.00000000" k_z="0.50000000">
+                       0.1883102026        0.1883102026        0.3047493156        0.3047493156        0.3047493248
+                       0.3047493249        0.3095331543        0.3095331544        0.3798369331        0.3798369331
+                       0.3798369367        0.3798369367        0.5668313881        0.5668313881        1.1586907800
+                       1.1586907800        1.2342460850        1.2342460851
+            </eigenvaluesAt>
+            <eigenvaluesAt spin="1" ikpt="4" k_x="0.50000000" k_y="0.00000000" k_z="0.00000000">
+                       0.1831080306        0.1831080307        0.2735567707        0.2735567707        0.2853647689
+                       0.2853647689        0.3308835416        0.3308835416        0.3488334775        0.3488334775
+                       0.4183217180        0.4183217180        0.7845776360        0.7845776361        0.8165629685
+                       0.8165629685        1.2213069618        1.2213069619
+            </eigenvaluesAt>
+            <eigenvaluesAt spin="1" ikpt="5" k_x="0.00000000" k_y="0.00000000" k_z="0.00000000">
+                      -0.0153336582        0.2008509309        0.2345180061        0.3067407754        0.3067407840
+                       0.3067407840        0.3496605367        0.3496605454        0.3790417182        0.3878566377
+                       0.3878566377        0.4114868666        0.6960258542        0.8694993919        0.8694993919
+                       1.2190818268        1.2198465735        1.2317013517
+            </eigenvaluesAt>
+            <eigenvaluesAt spin="1" ikpt="6" k_x="0.00000000" k_y="0.00000000" k_z="0.50000000">
+                       0.0961084277        0.0961084277        0.2688829921        0.2688829921        0.3181850223
+                       0.3181850223        0.3402549368        0.3402549368        0.3402549368        0.3402549368
+                       0.3633646794        0.3633646794        1.0626550368        1.0626550368        1.0626550369
+                       1.0626550369        1.1389393860        1.1389393862
+            </eigenvaluesAt>
+            <eigenvaluesAt spin="1" ikpt="7" k_x="0.37500000" k_y="0.12500000" k_z="0.50000000">
+                       0.1869724796        0.1869724797        0.2795457919        0.2795457919        0.2998160368
+                       0.2998160368        0.3140600657        0.3140600657        0.3690062334        0.3690062334
+                       0.4072708539        0.4072708540        0.6291339099        0.6291339099        1.0383198290
+                       1.0383198290        1.2044811034        1.2044811035
+            </eigenvaluesAt>
+            <eigenvaluesAt spin="1" ikpt="8" k_x="0.34901900" k_y="0.34901900" k_z="0.34901900">
+                       0.2062360350        0.2415742363        0.2486681984        0.2604927881        0.2830436494
+                       0.2882453261        0.3449256143        0.3488900262        0.3654038890        0.3698072651
+                       0.4346285585        0.5338905858        0.6204866894        0.7310579056        0.7814614472
+                       0.8127137225        0.9539273983        1.0243543264
+            </eigenvaluesAt>
+            <eigenvaluesAt spin="1" ikpt="9" k_x="0.20833400" k_y="0.20833400" k_z="0.50000000">
+                       0.1603278768        0.1603278769        0.2732291440        0.2732291440        0.2927268181
+                       0.2927268181        0.3317545008        0.3317545008        0.3449568937        0.3449568937
+                       0.4035240249        0.4035240249        0.8318539430        0.8318539430        0.8508364308
+                       0.8508364309        1.2058264180        1.2058264183
+            </eigenvaluesAt>
+            <eigenvaluesAt spin="1" ikpt="10" k_x="0.37500000" k_y="0.12500000" k_z="0.00000000">
+                       0.1209746773        0.2369990852        0.2627204754        0.2710020233        0.2724922441
+                       0.3037893104        0.3402267014        0.3408544640        0.3423571186        0.3718783536
+                       0.3793872125        0.5005386492        0.6763314191        0.7525141301        0.9348382290
+                       0.9367596579        0.9381723860        1.1708088724
+            </eigenvaluesAt>
+            <eigenvaluesAt spin="1" ikpt="11" k_x="0.41666600" k_y="0.41666600" k_z="0.23529400">
+                       0.2104697899        0.2222334084        0.2429330080        0.2456104415        0.3119043192
+                       0.3160934870        0.3611873009        0.3646349881        0.3796883348        0.3814320066
+                       0.4488191456        0.5244578660        0.6738475418        0.7075870285        0.7924726998
+                       0.8061896385        0.8259854884        0.9233654002
+            </eigenvaluesAt>
+            <eigenvaluesAt spin="1" ikpt="12" k_x="0.39951000" k_y="0.10049000" k_z="0.20098100">
+                       0.1432764755        0.2248976489        0.2598644755        0.2735109494        0.2897234581
+                       0.3026944313        0.3208011630        0.3284411416        0.3640517441        0.3746757102
+                       0.3810665461        0.4717033224        0.5916885187        0.7543814889        0.9217425504
+                       1.0068330487        1.0858961160        1.1743727330
+            </eigenvaluesAt>
+            <eigenvaluesAt spin="1" ikpt="13" k_x="0.33333400" k_y="0.33333400" k_z="0.00000000">
+                       0.1597813543        0.2262383941        0.2497113501        0.2509324076        0.3020487767
+                       0.3207050274        0.3548610473        0.3609823672        0.3609823684        0.3704708448
+                       0.3867374215        0.5434074200        0.7092557480        0.7276597720        0.7742793829
+                       0.9481821747        0.9610025288        0.9610025338
+            </eigenvaluesAt>
+            <eigenvaluesAt spin="1" ikpt="14" k_x="0.16666600" k_y="0.16666600" k_z="0.00000000">
+                       0.0368594179        0.2262383926        0.2497113545        0.2871010036        0.3020487668
+                       0.3217893561        0.3217893617        0.3314014275        0.3548610471        0.3564414088
+                       0.3867374225        0.5434073945        0.7092557088        0.7276598031        0.7742794217
+                       1.1787789831        1.1787789934        1.2090154223
+            </eigenvaluesAt>
+            <eigenvaluesAt spin="1" ikpt="15" k_x="0.08333400" k_y="0.08333400" k_z="0.23529400">
+                       0.0240275736        0.1941294329        0.2460381216        0.2950160269        0.3145789454
+                       0.3157411471        0.3166029044        0.3408612452        0.3534327611        0.3669551277
+                       0.3726126273        0.4066235750        0.8507872186        0.8639718658        0.8719047097
+                       1.1393047104        1.1413025242        1.2830676515
+            </eigenvaluesAt>
+            <eigenvaluesAt spin="1" ikpt="16" k_x="0.50000000" k_y="0.25000000" k_z="0.50000000">
+                       0.2270471020        0.2270471020        0.2584294329        0.2584294330        0.2909568860
+                       0.2909568860        0.3281525240        0.3281525240        0.3768387300        0.3768387300
+                       0.4799621351        0.4799621352        0.5761385046        0.5761385046        0.9620995042
+                       0.9620995043        0.9626125440        0.9626125441
+            </eigenvaluesAt>
+            <eigenvaluesAt spin="1" ikpt="17" k_x="0.25000000" k_y="0.00000000" k_z="0.50000000">
+                       0.1414117066        0.1414117067        0.2735150047        0.2735150047        0.3035952401
+                       0.3035952401        0.3198701882        0.3198701882        0.3700457065        0.3700457066
+                       0.3742078160        0.3742078160        0.7524417641        0.7524417642        1.1344897647
+                       1.1344897648        1.1581632092        1.1581632093
+            </eigenvaluesAt>
+            <eigenvaluesAt spin="1" ikpt="18" k_x="0.50000000" k_y="0.25000000" k_z="0.11764700">
+                       0.2050864165        0.2050864166        0.2509769315        0.2509769315        0.2985273994
+                       0.2985273994        0.3503548267        0.3503548267        0.3786374511        0.3786374511
+                       0.4298893426        0.4298893426        0.7409346812        0.7409346812        0.8814126866
+                       0.8814126867        0.9268408343        0.9268408343
+            </eigenvaluesAt>
+            <eigenvaluesAt spin="1" ikpt="19" k_x="0.25000000" k_y="0.00000000" k_z="0.11764700">
+                       0.0491679186        0.2295730668        0.2453060560        0.2897342505        0.3009920124
+                       0.3147642016        0.3172898343        0.3426316957        0.3498352962        0.3562371198
+                       0.3794437017        0.5148938481        0.6266385521        0.7699394335        0.9787645513
+                       0.9844122048        1.1768015552        1.2049400126
+            </eigenvaluesAt>
+            <eigenvaluesAt spin="1" ikpt="20" k_x="0.24705900" k_y="0.24705900" k_z="0.24705900">
+                       0.1182169571        0.2367361177        0.2633822478        0.2714962284        0.2717909795
+                       0.3044486056        0.3399663058        0.3401715529        0.3425516689        0.3721254732
+                       0.3783946429        0.4999228591        0.6785527512        0.7534726464        0.9331013505
+                       0.9399666701        0.9413259228        1.1775142095
+            </eigenvaluesAt>
+         </eigenvalues>
+         <FermiEnergy value="0.4239195363" units="Htr"/>
+         <valenceDensity>
+            <mtCharges spin="1">
+               <mtCharge atomType="1" total="9.7535492" s="0.4709129" p="0.5152121" d="8.7328503" f="0.0275743"/>
+               <mtCharge atomType="2" total="9.6869382" s="0.4633186" p="0.5294952" d="8.6596062" f="0.0274925"/>
+            </mtCharges>
+         </valenceDensity>
+      </iteration>
+   </scfLoop>
+   <endDateAndTime date="2020/12/10" time="16:53:51" zone="+0100"/>
+</fleurOutput>

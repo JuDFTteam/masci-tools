@@ -59,7 +59,7 @@ jobs:
 
     - name: Install python dependencies
       run:
-        pip install .[pre-commit]
+        pip install .[pre-commit,bokeh-plots]
         pip freeze
 
     - name: Run pre-commit
@@ -99,7 +99,7 @@ jobs:
 
     - name: Run pytest
       run: |
-        cd masci_tools/tests/ && ./run_all.sh
+        cd masci_tools/tests/ && ./run_all_cov.sh
     
     - name: Upload code coverage report
       run: |

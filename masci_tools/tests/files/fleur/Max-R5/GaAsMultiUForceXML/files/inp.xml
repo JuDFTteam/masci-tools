@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<fleurInput fleurInputVersion="0.33">
+   <comment>
+      GaAs bulk zinc-blende structure
+   </comment>
+   <calculationSetup>
+      <cutoffs Kmax="3.60000000" Gmax="10.80000000" GmaxXC="9.00000000" numbands="0"/>
+      <scfLoop itmax="1" minDistance=".00000000" maxIterBroyd="99" imix="Anderson" alpha=".05000000" spinf="2.00000000"/>
+      <coreElectrons ctail="T" frcor="F" kcrel="0" coretail_lmax="99"/>
+      <xcFunctional name="pbe" relativisticCorrections="F"/>
+      <magnetism jspins="1" l_noco="F" l_J="F" swsp="F" lflip="F"/>
+      <soc theta=".00000000" phi=".00000000" l_soc="F" spav="F" off="F"/>
+      <expertModes gw="0" pot8="F" isec1="99" secvar="F"/>
+   </calculationSetup>
+   <cell>
+      <bzIntegration valenceElectrons="28.00000000" mode="hist" fermiSmearingEnergy=".00100000">
+         <kPointListSelection listName="default" />
+         <kPointLists>
+         <kPointList name="default" count="1">
+             <kPoint weight="    8.000000">    0.375000     0.375000     0.250000</kPoint>
+         </kPointList>
+         </kPointLists>
+      </bzIntegration>
+      <symmetryOperations>
+         <symOp>
+            <row-1>1 0 0 .0000000000</row-1>
+            <row-2>0 1 0 .0000000000</row-2>
+            <row-3>0 0 1 .0000000000</row-3>
+         </symOp>
+	 <symOp>
+           <row-1>0 1 0 .0000000000</row-1>
+           <row-2>1 0 0 .0000000000</row-2>
+           <row-3>0 0 1 .0000000000</row-3>
+         </symOp>
+	 <symOp>
+           <row-1>0 0 1 .0000000000</row-1>
+           <row-2>0 1 0 .0000000000</row-2>
+           <row-3>1 0 0 .0000000000</row-3>
+         </symOp>
+	 <symOp>
+           <row-1>0 0 1 .0000000000</row-1>
+           <row-2>1 0 0 .0000000000</row-2>
+           <row-3>0 1 0 .0000000000</row-3>
+         </symOp>
+	 <symOp>
+           <row-1>0 1 0 .0000000000</row-1>
+           <row-2>0 0 1 .0000000000</row-2>
+           <row-3>1 0 0 .0000000000</row-3>
+         </symOp>
+	 <symOp>
+           <row-1>1 0 0 .0000000000</row-1>
+           <row-2>0 0 1 .0000000000</row-2>
+           <row-3>0 1 0 .0000000000</row-3>
+         </symOp>
+      </symmetryOperations>
+      <bulkLattice scale="1.0000000000">
+         <bravaisMatrix>
+            <row-1>.0000000000 5.3100000000 5.3100000000</row-1>
+            <row-2>5.3100000000 .0000000000 5.3100000000</row-2>
+            <row-3>5.3100000000 5.3100000000 .0000000000</row-3>
+         </bravaisMatrix>
+      </bulkLattice>
+   </cell>
+   <atomSpecies>
+      <species name="Ga-1" element="Ga" atomicNumber="31">
+         <mtSphere radius="2.21000000" gridPoints="731" logIncrement=".01700000"/>
+         <atomicCutoffs lmax="8" lnonsphr="6"/>
+	 <electronConfig>
+           <coreConfig>[Ar]</coreConfig>
+	   <valenceConfig>(4s1/2) (3d3/2) (3d5/2) (4p1/2)</valenceConfig>
+	   <stateOccupation state="(4p1/2)" spinUp=".50000000" spinDown=".50000000"/>
+         </electronConfig>
+         <energyParameters s="4" p="4" d="3" f="4"/>
+         <ldaU l="1" U="-5.0" J="0.9" l_amf="F"/>
+         <ldaU l="2" U="8.0" J="0.9" l_amf="F"/>
+      </species>
+      <species name="As-2" element="As" atomicNumber="33" >
+         <mtSphere radius="2.21000000" gridPoints="731" logIncrement=".01700000"/>
+         <atomicCutoffs lmax="8" lnonsphr="6"/>
+	 <electronConfig>
+           <coreConfig>[Ar]</coreConfig>
+	   <valenceConfig>(4s1/2) (3d3/2) (3d5/2) (4p1/2)</valenceConfig>
+	   <stateOccupation state="(4p1/2)" spinUp="1.50000000" spinDown="1.50000000"/>
+         </electronConfig>
+         <energyParameters s="4" p="4" d="3" f="4"/>
+         <ldaU l="2" U="5.5" J="0.9" l_amf="F"/>
+         <ldaU l="1" U="-6.5" J="0.9" l_amf="F"/>
+      </species>
+   </atomSpecies>
+   <atomGroups>
+      <atomGroup species="Ga-1">
+         <relPos>-.1300000000 -.1300000000 -.1300000000</relPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+      </atomGroup>
+      <atomGroup species="As-2">
+         <relPos>.1300000000 .1300000000 .1300000000</relPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+      </atomGroup>
+   </atomGroups>
+   <output dos="F" band="F" >
+      <checks vchk="F" cdinf="F" disp="F"/>
+   </output>
+</fleurInput>

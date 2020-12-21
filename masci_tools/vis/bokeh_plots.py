@@ -230,7 +230,7 @@ def bokeh_line(source,
     p.yaxis.major_label_text_font_size = '16pt'
     p.xaxis.major_label_text_font_size = '16pt'
 
-    if type(xdata) == list:
+    if isinstance(xdata, list):
         if len(xdata) != len(ydata):
             xdata = xdata[0]
 
@@ -246,14 +246,14 @@ def bokeh_line(source,
     if source is None:  # create columndatasources from data given
         # Columns need to have same length
         source = []
-        if type(ydata[0]) == list:
+        if isinstance(ydata[0], list):
             ydatad = []
             xdatad = []
             for i, ydat in enumerate(ydata):
                 label = 'y{}'.format(i)
                 ydatad.append(label)
                 xdatad.append('x{}'.format(i))
-                if type(xdata[0]) == list:
+                if isinstance(xdata[0], list):
                     xdat = xdata[i]
                 else:
                     xdat = xdata[0]

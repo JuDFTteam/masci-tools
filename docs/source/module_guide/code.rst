@@ -48,3 +48,36 @@ I/O helper and output file parsers
 
 .. automodule:: masci_tools.io.parsers.kkrimp_parser_functions
    :members:
+
+.. automodule:: masci_tools.io.parsers.fleur
+   :members:
+
+.. automodule:: masci_tools.io.parsers.fleur.fleur_schema
+   :members:
+
+Fleur Schema parser functions
+++++++++++++++++++++++++++++++++++
+
+.. automodule:: masci_tools.io.parsers.fleur.fleur_schema.fleur_schema_parser_functions
+   :members:
+
+Definition of default parsing tasks for out.xml
++++++++++++++++++++++++++++++++++++++++++++++++
+
+.. automodule:: masci_tools.io.parsers.fleur.default_parse_tasks
+   :members:
+
+Utility functions
++++++++++++++++++++++
+
+.. automodule:: masci_tools.util.xml.common_xml_util
+   :members:
+
+.. automodule:: masci_tools.util.schema_dict_util
+   :members:
+
+.. automodule:: masci_tools.util.fleur_calculate_expression
+   :members:
+
+.. automodule:: masci_tools.util.fleur_outxml_conversions
+   :members:

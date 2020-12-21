@@ -307,7 +307,7 @@ def multiple_scatterplots(ydata,
     basic plots.
     """
     nplots = len(ydata)
-    if not (nplots == len(xdata)):  # todo check dimention not len, without moving to special datatype.
+    if nplots != len(xdata):  # todo check dimention not len, without moving to special datatype.
         print('ydata and xdata must have the same dimension')
         return
 
@@ -476,7 +476,7 @@ def multi_scatter_plot(xdata,
     """
 
     nplots = len(ydata)
-    if not (nplots == len(xdata)):  # todo check dimention not len, without moving to special datatype.
+    if nplots != len(xdata):  # todo check dimention not len, without moving to special datatype.
         print('ydata and xdata must have the same dimension')
         return
 
@@ -594,10 +594,10 @@ def waterfall_plot(xdata,
     from mpl_toolkits.mplot3d.axes3d import Axes3D
 
     nplots = len(ydata)
-    if not (nplots == len(xdata)):  # todo check dimention not len, without moving to special datatype.
+    if nplots != len(xdata):  # todo check dimention not len, without moving to special datatype.
         print('ydata and xdata must have the same dimension')
         return
-    if not (nplots == len(zdata)):  # todo check dimention not len, without moving to special datatype.
+    if nplots != len(zdata):  # todo check dimention not len, without moving to special datatype.
         print('ydata and zdata must have the same dimension')
         return
 
@@ -989,7 +989,7 @@ def barchart(ydata,
     Has to be overworked, was quickly adjusted from scatterplots, some things not used or not needed
     """
     nplots = len(ydata)
-    if not (nplots == len(xdata)):  # todo check dimention not len, without moving to special datatype.
+    if nplots != len(xdata):  # todo check dimention not len, without moving to special datatype.
         print('ydata and xdata must have the same dimension')
         return
 
@@ -1610,7 +1610,7 @@ def plot_bands(path_to_bands_file,
                limits=[None, None],
                saveas='bandstructure',
                color='k'):
-    """
+    r"""
     Plot a band structure from a bands.1 file from FLEUR
     params: kpath: dict: {r"$\Gamma$": 0.00000, r"$H$" : 1.04590, r"$N$" : 1.78546, r"$P$": 2.30841, r"$\Gamma$" : 3.21419, r"$N$" 3.95375 }
 
@@ -2202,7 +2202,6 @@ def gauss_one(x, fwhm, mu):
     """
     Returns a Lorentzian line shape at x with FWHM fwhm and mean mu
     """
-    import numpy as np
     x = np.array(x)
     return np.exp(-4 * np.log(2) * ((x - mu) / fwhm)**2)
 
@@ -2212,7 +2211,6 @@ def asymmetric_lorentz_gauss_sum(x, mu, fwhm_l, fwhm_g, alpha=1.0, beta=1.5):
     asymmetric Lorentzian with Gauss convoluted
 
     """
-    import numpy as np
 
     ygaus = np.array(gauss_one(x, fwhm_g, mu))
     ylorentz = np.array(asymmetric_lorentz(x, fwhm_l, mu, alpha=alpha, beta=beta))
@@ -2226,7 +2224,6 @@ def asymmetric_lorentz_gauss_conv(x, mu, fwhm_l, fwhm_g, alpha=1.0, beta=1.5):
     asymmetric Lorentzian with Gauss convoluted
 
     """
-    import numpy as np
     from scipy.signal import fftconvolve
     #from scipy import signal
     # only one function has to be translated
@@ -2451,7 +2448,6 @@ def doniach_sunjic(x, scale=1.0, E_0=0, gamma=1.0, alpha=0.0):
     Doniach S. and Sunjic M., J. Phys. 4C31, 285 (1970)
     or http://www.casaxps.com/help_manual/line_shapes.htm
     """
-    import numpy as np
 
     arg = (E_0 - x) / gamma
     alpha2 = (1.0 - alpha)
@@ -2509,8 +2505,6 @@ def CDF_voigt_profile(x, fwhm_g, fwhm_l, mu):
     from scipy.special import erf
     pass
 
-    return None
-
 
 def hyp2f2(a, b, z):
     """
@@ -2526,7 +2520,6 @@ def hyp2f2(a, b, z):
     from scipy.special import hyp0f1
 
     pass
-    return none
 
 
 def pseudo_voigt_profile(x, fwhm_g, fwhm_l, mu, mix=0.5):
@@ -2542,7 +2535,7 @@ def pseudo_voigt_profile(x, fwhm_g, fwhm_l, mu, mix=0.5):
 
     """
     #pseudo_voigt = []
-    if not (mix <= 1):
+    if mix > 1:
         print('mix has to be smaller than 1.')
         return []
     gaus = gaussian(x, fwhm_g, mu)
@@ -2580,7 +2573,6 @@ def plot_fleur_bands(filename, limits=[None, [-15, 15]]):
     Therefore enable a partially read in of the dos_band.hdf
     """
 
-    from masci_tools.vis.plot_methods import multiple_scatterplots
     from masci_tools.io.io_fleur_bands import read_fleur_banddos_hdf
 
     xcoord, bands, xlabels, band_character, band_char_label, kts, wghts, rcell, cell, pos, atomn, spp = read_fleur_banddos_hdf(
@@ -2618,7 +2610,7 @@ def plot_fleur_bands(filename, limits=[None, [-15, 15]]):
     xticks = [[], []]
     for label, pos in xlabels:
         if label == 'Gamma':
-            label = u'$\Gamma$'
+            label = r'$\Gamma$'
         xticks[1].append(label)
         xticks[0].append(pos)
 

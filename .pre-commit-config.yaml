@@ -39,8 +39,9 @@ repos:
     language: system
     files: >-
       (?x)^(
-        setup.json|
+        setup.py|
         utils/validate_version_consistency.py|
-        aiida_fleur/__init__.py
+        masci_tools/__init__.py|
+        .bumpversion.cfg
       )$
     pass_filenames: false

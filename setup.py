@@ -47,16 +47,15 @@ if __name__ == '__main__':
             'matplotlib',
             'h5py',
             'bump2version',
-            'pytest>=4.3.1',
-            'pytest-cov',
-            'pytest-mpl',
             'future',
+            'lxml>=3.6.4'
         ],
         extras_require={
             'pre-commit': [
                 'pre-commit>=2.6.0',
                 'yapf>=0.30.0',
-                'pylint>=2.5.2'
+                'pylint>=2.5.2',
+                'pytest>=4.3.1'
             ],
             'docs': [
                 'Sphinx',
@@ -67,6 +66,10 @@ if __name__ == '__main__':
                 'pytest>=4.3.1',
                 'pytest-cov',
                 'pytest-mpl'
+            ],
+            'bokeh-plots': [
+                'pandas',
+                'bokeh'
             ]
         },
     )
