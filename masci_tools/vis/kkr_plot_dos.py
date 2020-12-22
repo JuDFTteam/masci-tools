@@ -110,12 +110,12 @@ def dosplot(p0='./',
                                     plt.fill_between(tmp[:, 0], sgn * tmp[:, 1], color=color, label=label)
                                 else:
                                     plt.plot(tmp[:, 0],
-                                         sgn * tmp[:, 1],
-                                         marker + ls,
-                                         color=color,
-                                         label=label,
-                                         lw=lw,
-                                         ms=ms)
+                                             sgn * tmp[:, 1],
+                                             marker + ls,
+                                             color=color,
+                                             label=label,
+                                             lw=lw,
+                                             ms=ms)
                         else:
                             if not nofig and sgn == 1:
                                 plt.figure()
@@ -160,7 +160,12 @@ def dosplot(p0='./',
                                             lmname += 'f_{2}'
                                         if ilm == 16:
                                             lmname += 'f_{3}'
-                                        plt.plot(tmp[:, 0], sgn * tmp[:, 1 + ilm], marker + ls, lw=lw, ms=ms, label=lmname)
+                                        plt.plot(tmp[:, 0],
+                                                 sgn * tmp[:, 1 + ilm],
+                                                 marker + ls,
+                                                 lw=lw,
+                                                 ms=ms,
+                                                 label=lmname)
                             else:
                                 if lm == []:
                                     if filled:
@@ -203,12 +208,12 @@ def dosplot(p0='./',
                                         if ilm == 16:
                                             lmname += 'f_{3}'
                                         plt.plot(tmp[:, 0],
-                                             sgn * tmp[:, 1 + ilm],
-                                             marker + ls,
-                                             lw=lw,
-                                             ms=ms,
-                                             label=lmname,
-                                             color=color)
+                                                 sgn * tmp[:, 1 + ilm],
+                                                 marker + ls,
+                                                 lw=lw,
+                                                 ms=ms,
+                                                 label=lmname,
+                                                 color=color)
                             plt.title(label + ' ' + i)
 
                     #sum data

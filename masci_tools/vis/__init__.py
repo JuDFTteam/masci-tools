@@ -15,10 +15,12 @@ Here are all plot varaiables/constants,
 
 """
 
+
 class Plotter(object):
     """
     TODO: ggf write a plotter class
     """
+
     def __init__(self):
         pass
 
