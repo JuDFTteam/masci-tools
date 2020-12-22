@@ -132,7 +132,7 @@ def test_convert_from_fortran_bool():
     ret_val, suc = convert_from_fortran_bool('TEST', conversion_warnings=warnings)
     assert not suc
     assert ret_val == 'TEST'
-    assert warnings == ["Could not convert: 'TEST' to boolean, " "which is not 'True', 'False', 't', 'T', 'F' or 'f'"]
+    assert warnings == ["Could not convert: 'TEST' to boolean, which is not 'True', 'False', 't', 'T', 'F' or 'f'"]
 
     warnings = []
     ret_val, suc = convert_from_fortran_bool({}, conversion_warnings=warnings)

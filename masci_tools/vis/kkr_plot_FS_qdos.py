@@ -10,9 +10,6 @@
 # For further information please visit http://www.flapw.de or                 #
 #                                                                             #
 ###############################################################################
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
 from matplotlib import cm
 
 
@@ -36,15 +33,14 @@ def FSqdos2D(p0='./',
              ef=None):
     """ plotting routine for dos files """
     # import dependencies
-    from numpy import loadtxt, load, save, sort, abs, log, sum, pi, linspace
-    from matplotlib.pyplot import figure, plot, axvline, scatter, xlabel, ylabel, title, colorbar, axis, pcolormesh
-    from matplotlib import cm
+    import numpy as np
+    import matplotlib.pyplot as plt
     from os import listdir
     from os.path import isdir
     from subprocess import check_output
 
     # deal with input of file handle instead of path (see plot_kkr of aiida_kkr)
-    if type(p0) != str:
+    if not isinstance(p0, str):
         pathname_with_file = p0.name
         p0 = pathname_with_file.replace('/qdos.01.1.dat', '')  #dos.atom1
 
@@ -65,18 +61,18 @@ def FSqdos2D(p0='./',
     else:
         alat = float(
             check_output('grep ALATBASIS ' + p0 + 'inputcard', shell=True).decode('utf-8').split('=')[1].split()[0])
-        a0 = 2 * pi / alat / 0.52918
+        a0 = 2 * np.pi / alat / 0.52918
 
-    if reload_data or 'saved_data_qdos.npy' not in sort(listdir(p0)):
+    if reload_data or 'saved_data_qdos.npy' not in np.sort(listdir(p0)):
         first = True
         print('reading qdos')
         j = 0
-        for i in sort(listdir(p0)):
+        for i in np.sort(listdir(p0)):
             if 'qdos.' in i[:6] and not isdir(p0 + i):
                 j += 1
                 iatom = int(i.replace('qdos.', '').split('.')[0])
                 if atoms == [] or iatom in atoms:
-                    tmp = loadtxt(p0 + i)
+                    tmp = np.loadtxt(p0 + i)
                     tmp[:, 2:5] = tmp[:, 2:5] * a0
                     print(i, iatom)
                     if first:
@@ -85,9 +81,9 @@ def FSqdos2D(p0='./',
                     else:
                         d[:, 5:] += tmp[:, 5:]
         if not nosave:
-            save(p0 + 'saved_data_qdos', d)
+            np.save(p0 + 'saved_data_qdos', d)
     else:
-        d = load(p0 + 'saved_data_qdos.npy')
+        d = np.load(p0 + 'saved_data_qdos.npy')
 
     xlab = r'kx'
     ylab = r'ky'
@@ -96,31 +92,31 @@ def FSqdos2D(p0='./',
         ylab = r'$k_y (\AA^{-1})$'
 
     # plot dos
-    data = abs(sum(d[:, 5:], axis=1))
+    data = np.abs(np.sum(d[:, 5:], axis=1))
     if logscale:
-        data = log(data)
+        data = np.log(data)
     x, y = d[:, 2], d[:, 3]
 
     if not noplot:
-        if ax == None:
+        if ax is None:
             if pclrmesh:
                 lx = len(set(x))
                 ly = len(set(y))
-                x = linspace(x.min(), x.max(), lx)
-                y = linspace(y.min(), y.max(), ly)
-                pcolormesh(x, y, data.reshape(lx, ly).T, cmap=cmap)
+                x = np.linspace(x.min(), x.max(), lx)
+                y = np.linspace(y.min(), y.max(), ly)
+                plt.pcolormesh(x, y, data.reshape(lx, ly).T, cmap=cmap)
             else:
-                scatter(x, y, c=data, s=s, lw=0, cmap=cmap)
+                plt.scatter(x, y, c=data, s=s, lw=0, cmap=cmap)
             if clrbar:
-                colorbar()
+                plt.colorbar()
         else:
             ax.scatter(x, y, c=data, lw=0, cmap=cmap)
 
         # set axis labels
-        if ax == None:
-            xlabel(xlab)
-            ylabel(ylab)
-            axis('equal')
+        if ax is None:
+            plt.xlabel(xlab)
+            plt.ylabel(ylab)
+            plt.axis('equal')
 
     if return_data:
         return x, y, data

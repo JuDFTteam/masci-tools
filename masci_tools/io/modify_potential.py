@@ -101,7 +101,7 @@ class modify_potential(object):
         filedata = open(scoefpath).readlines()[1:natomtemp + 1]
         listnew = []
         for line in filedata:
-            if (len(line.split()) > 1):
+            if len(line.split()) > 1:
                 listnew.append(atom2shapes[int(line.split()[3]) - 1] - 1)
         order = listnew
 

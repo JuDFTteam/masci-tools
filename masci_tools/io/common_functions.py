@@ -180,15 +180,15 @@ def get_corestates_from_potential(potfile='potential'):
     n_core_states = []  #number of core states per potential
     e_core_states = []  #energies of core states
     l_core_states = []  #angular momentum index, i.e. 0=s, 1=p etc...
-    for ipot in range(len(istarts)):
-        line = txt[istarts[ipot] + 6]
+    for pot_index, start_index in enumerate(istarts):
+        line = txt[start_index + 6]
         n = int(line.split()[0])
-        print(ipot, n)
+        print(pot_index, n)
         n_core_states.append(n)
         elevels = np.zeros(n)  #temp array for energies
         langmom = np.zeros(n, dtype=int)  #temp array for angular momentum index
         for icore in range(n):
-            line = txt[istarts[ipot] + 7 + icore].split()
+            line = txt[start_index + 7 + icore].split()
             langmom[icore] = int(line[0])
             elevels[icore] = float(line[1].replace('D', 'E'))
         e_core_states.append(elevels)
@@ -329,8 +329,8 @@ def convert_to_pystd(value):
         value = list(value)
         value = convert_to_pystd(value)
     elif isinstance(value, list):
-        for item in range(len(value)):
-            value[item] = convert_to_pystd(value[item])
+        for index, val in enumerate(value):
+            value[index] = convert_to_pystd(val)
     elif isinstance(value, np.integer):
         value = int(value)
     elif isinstance(value, np.floating):

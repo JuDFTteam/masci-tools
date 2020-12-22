@@ -4948,7 +4948,7 @@ class Test_KkrimpParserFunctions(object):
         print('\nsuccess?\n{}\n'.format(s))
         print('\nmessages?\n{}\n'.format(m))
         print('\nout_dict?\n{}\n'.format(o))
-        assert (not s)
+        assert not s
         assert set(m) == set([
             'Error parsing output of KKRimp: Version Info', 'Error parsing output of KKRimp: rms-error',
             'Error parsing output of KKRimp: nspin/natom', 'Error parsing output of KKRimp: total magnetic moment',

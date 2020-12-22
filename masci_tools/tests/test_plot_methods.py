@@ -48,4 +48,4 @@ class Test_plot_methods_imports(object):
         from masci_tools.vis.plot_methods import linewidth_g
         from masci_tools.vis.plot_methods import set_plot_defaults
         set_plot_defaults(linewidth=3.0)
-        assert (linewidth_g == 2.0)  # if worked should be 3.0
+        assert linewidth_g == 2.0  # if worked should be 3.0
