@@ -906,10 +906,7 @@ def parse_kkr_outputfile(out_dict,
     out_dict = convert_to_pystd(out_dict)
 
     # return output with error messages if there are any
-    if len(msg_list) > 0:
-        return False, msg_list, out_dict
-    else:
-        return True, [], out_dict
+    return len(msg_list) == 0, msg_list, out_dict
 
 
 def check_error_category(err_cat, err_msg, out_dict):
@@ -926,16 +923,10 @@ def check_error_category(err_cat, err_msg, out_dict):
     # check special cases:
     # 1. nonco_angle_file not present, but newsosol==False anyways
     if 'NONCO_ANGLES_OUT' in err_msg:
-        if 'use_newsosol' in list(out_dict.keys()):
-            if out_dict['use_newsosol']:
-                return True
-            else:
-                return False
+        if 'use_newsosol' in out_dict:
+            return out_dict['use_newsosol']
         else:
             return True
 
     # default behavior
-    if err_cat == 1:
-        return True
-    else:
-        return False
+    return err_cat == 1

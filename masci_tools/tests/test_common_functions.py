@@ -58,7 +58,8 @@ class Test_common_functions(object):
         assert abs(vec[0] - 1.) < 10**-10
         assert abs(vec[1] - 1.) < 10**-10
         assert abs(vec[2] - np.sqrt(2)) < 10**-10
-        vec = angles_to_vec(np.array([2., 3.]), np.array([45. / 180. * np.pi, np.pi]), np.array([45. / 180. * np.pi, np.pi / 2]))
+        vec = angles_to_vec(np.array([2., 3.]), np.array([45. / 180. * np.pi, np.pi]),
+                            np.array([45. / 180. * np.pi, np.pi / 2]))
         assert np.sum(abs(vec - np.array([[1., 1., np.sqrt(2)], [0, 0, -3]]))) < 10**-10
 
     def test_vec_to_angles(self):
