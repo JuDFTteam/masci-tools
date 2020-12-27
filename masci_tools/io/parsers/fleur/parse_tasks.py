@@ -54,6 +54,38 @@ def register_migration(cls, base_version, target_version):
     return migration_decorator
 
 
+def register_parsing_function(cls, parse_type_name, all_attribs_keys=False):
+    """
+    Decorator to add parse type for task defintion dictionary
+    The function should only take tasks_defintion as an argument
+    """
+
+    def parse_type_decorator(func):
+        """
+        Return decorated ParseTasks object with _parse_functions dict attribute
+        Here all registered migrations are inserted
+        """
+
+        @wraps(func)
+        def parse_type(*args, **kwargs):
+            """Decorator for parse_type function"""
+            return func(*args, **kwargs)
+
+        setattr(cls, func.__name__, parse_type)
+
+        if not hasattr(cls, '_parse_functions'):
+            cls._parse_functions = {}  # pylint: disable=protected-access
+            cls._all_attribs_function = set()
+
+        cls._parse_functions[parse_type_name] = getattr(cls, func.__name__)  # pylint: disable=protected-access
+        if all_attribs_keys:
+            cls._all_attribs_function.add(parse_type_name)
+
+        return parse_type
+
+    return parse_type_decorator
+
+
 class ParseTasks(object):
     """
     Representation of all known parsing tasks for the out.xml file
@@ -67,11 +99,9 @@ class ParseTasks(object):
 
         from masci_tools.io.parsers.fleur import ParseTasks
 
-        parse_tasks = ParseTasks('0.33')
-        totE_definition = parse_tasks['total_energy']
+        p = ParseTasks('0.33')
+        totE_definition = p.tasks['total_energy']
     """
-
-    PARSE_TYPES = {'attrib', 'text', 'numberNodes', 'exists', 'allAttribs', 'parentAttribs', 'singleValue'}
 
     REQUIRED_KEYS = {'parse_type', 'path_spec'}
     ALLOWED_KEYS = {'parse_type', 'path_spec', 'subdict', 'overwrite_last'}
@@ -83,7 +113,7 @@ class ParseTasks(object):
         'fleur_modes', 'general_inp_info', 'general_out_info', 'ldau_info', 'bulk_relax_info', 'film_relax_info'
     }
 
-    _version = '0.1.1'
+    _version = '0.2.0'
 
     def __init__(self, version, task_file=None, validate_defaults=False):
         """
@@ -121,15 +151,6 @@ class ParseTasks(object):
             else:
                 raise ValueError(f'Unsupported output version: {version}')
 
-    def __getitem__(self, task):
-        """
-        Access tasks via [] index
-        """
-        if task in self.tasks:
-            return self.tasks[task]
-        else:
-            raise KeyError(f"Unknown Tasks: '{task}'")
-
     def add_task(self, task_name, task_definition, **kwargs):
         """
         Add a new task definition to the tasks dictionary
@@ -145,6 +166,24 @@ class ParseTasks(object):
                        if an inner key is overwritten with an empty dict the inner key will be removed
         :param perform_default: bool (optional), if True (default) the task is automatically appended to the
                                 tasks to be performed each iteration
+
+        The following keys are expected in each entry of the task_definition dictionary:
+            :param parse_type: str, defines which methods to use when extracting the information
+            :param path_spec: dict with all the arguments that should be passed to get_tag_xpath
+                              or get_attrib_xpath to get the correct path
+            :param subdict: str, if present the parsed values are put into this key in the output dictionary
+            :param overwrite_last: bool, if True no list is inserted and each entry overwrites the last
+
+        For the allAttribs parse_type there are more keys that can appear:
+            :param base_value: str, optional. If given the attribute
+                               with this name will be inserted into the key from the task_definition
+                               all other keys are formatted as {task_key}_{attribute_name}
+            :param ignore: list of str, these attributes will be ignored
+            :param overwrite: list of str, these attributes will not create a list and overwrite any value
+                              that might be there
+            :param flat: bool, if False the dict parsed from the tag is inserted as a dict into the correspondin key
+                               if True the values will be extracted and put into the output dictionary with the
+                               format {task_key}_{attribute_name}
 
         """
 
@@ -168,10 +207,10 @@ class ParseTasks(object):
             if missing_required:
                 raise ValueError(f'Reqired Keys missing: {missing_required}')
 
-            if not definition['parse_type'] in self.PARSE_TYPES:
+            if not definition['parse_type'] in self._parse_functions.keys():
                 raise ValueError(f"Unknown parse_type: {definition['parse_type']}")
 
-            if definition['parse_type'] in ['allAttribs', 'parentAttribs', 'singleValue']:
+            if definition['parse_type'] in self._all_attribs_function:
                 extra_keys = task_keys.difference(self.ALLOWED_KEYS_ALLATTRIBS)
             else:
                 extra_keys = task_keys.difference(self.ALLOWED_KEYS)
@@ -192,6 +231,118 @@ class ParseTasks(object):
 
         if task_name not in self.GENERAL_TASKS and perform_default:
             self.append_tasks.append(task_name)
+
+    def perform_task(self,
+                     task_name,
+                     node,
+                     out_dict,
+                     schema_dict,
+                     constants,
+                     parser_info_out=None,
+                     replace_root=None,
+                     use_lists=True):
+        """
+        Evaluates the task given in the tasks_definition dict
+
+        :param task_name: str, specifies the task to perform
+        :param node: etree.Element, the xpath expressions are evaluated from this node
+        :param out_dict: dict, output will be put in this dictionary
+        :param schema_dict: dict, here all paths and attributes are stored according to the
+                            outputschema
+        :param constants: dict with all the defined mathematical constants
+        :param parser_info_out: dict, with warnings, info, errors, ...
+        :param root_tag: str, this string will be appended in front of any xpath before it is evaluated
+        :param use_lists: bool, if True lists are created for each key if not otherwise specified
+
+        """
+        from masci_tools.io.common_functions import camel_to_snake
+
+        if parser_info_out is None:
+            parser_info_out = {'parser_warnings': []}
+
+        try:
+            tasks_definition = self.tasks[task_name]
+        except KeyError as exc:
+            raise KeyError(f'Unknown Task: {task_name}') from exc
+
+        for task_key, spec in tasks_definition.items():
+
+            action = self._parse_functions[spec['parse_type']]
+
+            args = spec['path_spec'].copy()
+            args['constants'] = constants
+
+            if replace_root is not None:
+                args['replace_root'] = replace_root
+
+            if 'only_required' in spec:
+                args['only_required'] = spec['only_required']
+
+            if spec['parse_type'] == 'singleValue':
+                args['ignore'] = ['comment']
+            elif spec['parse_type'] in ['allAttribs', 'parentAttribs']:
+                args['ignore'] = spec.get('ignore', [])
+
+            parsed_dict = out_dict
+            if 'subdict' in spec:
+                parsed_dict = out_dict.get(spec['subdict'], {})
+
+            parsed_value = action(node, schema_dict, parser_info_out=parser_info_out, **args)
+
+            if isinstance(parsed_value, dict):
+
+                if spec['parse_type'] == 'singleValue':
+                    base_value = 'value'
+                    no_list = ['units']
+                    flat = True
+                elif spec['parse_type'] in ['allAttribs', 'parentAttribs']:
+                    base_value = spec.get('base_value', '')
+                    no_list = spec.get('overwrite', [])
+                    flat = spec.get('flat', True)
+
+                if flat:
+                    for key, val in parsed_value.items():
+
+                        if key == base_value:
+                            current_key = task_key
+                        else:
+                            current_key = f'{task_key}_{camel_to_snake(key)}'
+
+                        if current_key not in parsed_dict and use_lists:
+                            parsed_dict[current_key] = []
+
+                        if key in no_list or not use_lists:
+                            parsed_dict[current_key] = val
+                        else:
+                            parsed_dict[current_key].append(val)
+
+                else:
+                    parsed_dict[task_key] = {camel_to_snake(key): val for key, val in parsed_value.items()}
+
+            else:
+                overwrite = spec.get('overwrite_last', False)
+                if task_key not in parsed_dict and use_lists:
+                    if overwrite:
+                        parsed_dict[task_key] = None
+                    else:
+                        parsed_dict[task_key] = []
+
+                if use_lists and not overwrite:
+                    parsed_dict[task_key].append(parsed_value)
+                elif overwrite:
+                    if parsed_value is not None:
+                        parsed_dict[task_key] = parsed_value
+                else:
+                    if parsed_value is not None or\
+                       task_key not in parsed_dict:
+                        parsed_dict[task_key] = parsed_value
+
+            if 'subdict' in spec:
+                out_dict[spec['subdict']] = parsed_dict
+            else:
+                out_dict = parsed_dict
+
+        return out_dict
 
     def show_available_tasks(self, show_definitions=False):
         """
