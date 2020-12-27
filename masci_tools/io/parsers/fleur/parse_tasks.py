@@ -14,10 +14,14 @@
 This module contains a class which organizes the known parsing tasks for outxml files
 and provides fuctionality for adding custom tasks easily
 """
-from .default_parse_tasks import TASKS_DEFINITION, __working_out_versions__
 from pprint import pprint
-import copy
 from functools import wraps
+import importlib.util
+import copy
+import os
+
+PACKAGE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
+DEFAULT_TASK_FILE = os.path.abspath(os.path.join(PACKAGE_DIRECTORY, 'default_parse_tasks.py'))
 
 
 def register_migration(cls, base_version, target_version):
@@ -67,7 +71,7 @@ class ParseTasks(object):
         totE_definition = parse_tasks['total_energy']
     """
 
-    PARSE_TYPES = {'attrib', 'text', 'numNodes', 'exists', 'allAttribs', 'parentAttribs', 'singleValue'}
+    PARSE_TYPES = {'attrib', 'text', 'numberNodes', 'exists', 'allAttribs', 'parentAttribs', 'singleValue'}
 
     REQUIRED_KEYS = {'parse_type', 'path_spec'}
     ALLOWED_KEYS = {'parse_type', 'path_spec', 'subdict', 'overwrite_last'}
@@ -79,21 +83,38 @@ class ParseTasks(object):
         'fleur_modes', 'general_inp_info', 'general_out_info', 'ldau_info', 'bulk_relax_info', 'film_relax_info'
     }
 
-    _version = '0.1.0'
+    _version = '0.1.1'
 
-    def __init__(self, version):
+    def __init__(self, version, task_file=None, validate_defaults=False):
         """
         Initialize the default parse tasks
         Terminates if the version is not marked as working with the default tasks
 
         TODO: We need some way of versioning for the default tasks
         """
-        self.tasks = copy.deepcopy(TASKS_DEFINITION)
+
+        if task_file is None:
+            task_file = DEFAULT_TASK_FILE
+
+        #import task definitions
+        spec = importlib.util.spec_from_file_location('tasks', task_file)
+        tasks = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(tasks)
+
         self.incompatible_tasks = []
         self.append_tasks = []
 
+        tasks_dict = copy.deepcopy(tasks.TASKS_DEFINITION)
+        if validate_defaults:
+            #Manually add each task to make sure that there are no typos/inconsitencies in the keys
+            self.tasks = {}
+            for task_name, task in tasks_dict.items():
+                self.add_task(task_name, task, perform_default=False)
+        else:
+            self.tasks = tasks_dict
+
         #Look if the base version is compatible if not look for a migration
-        if version not in __working_out_versions__:
+        if version not in tasks.__working_out_versions__:
             if version in self._migrations['0.33']:
                 self.tasks, self.incompatible_tasks = self._migrations['0.33'][version](self.tasks,
                                                                                         self.incompatible_tasks)
@@ -122,11 +143,14 @@ class ParseTasks(object):
         :param append: bool (optional), if True and the key is present in the dictionary the new defintions
                        will be inserted into this dictionary (inner keys WILL BE OVERWRITTEN). Additionally
                        if an inner key is overwritten with an empty dict the inner key will be removed
+        :param perform_default: bool (optional), if True (default) the task is automatically appended to the
+                                tasks to be performed each iteration
 
         """
 
         append = kwargs.get('append', False)
         overwrite = kwargs.get('overwrite', False)
+        perform_default = kwargs.get('perform_default', True)
 
         if task_name in self.tasks and not (append or overwrite):
             raise ValueError(f"Task '{task_name}' is already defined."
@@ -166,7 +190,7 @@ class ParseTasks(object):
         else:
             self.tasks[task_name] = task_definition
 
-        if task_name not in self.GENERAL_TASKS:
+        if task_name not in self.GENERAL_TASKS and perform_default:
             self.append_tasks.append(task_name)
 
     def show_available_tasks(self, show_definitions=False):

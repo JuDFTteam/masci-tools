@@ -565,7 +565,7 @@ TASKS_DEFINITION = {
         'mae_force': {
             'parse_type': 'allAttribs',
             'path_spec': {
-                'name': 'Entry',
+                'name': 'Angle',
                 'contains': 'MAE'
             }
         },
