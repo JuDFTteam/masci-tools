@@ -317,6 +317,7 @@ def parse_iteration(iteration_node,
     minimal_mode = kwargs.get('minimal_mode', False)
     debug = kwargs.get('debug', False)
 
+    iteration_tasks = parser.iteration_tasks
     #If the iteration is a forcetheorem calculation
     #Replace all tasks with the given tasks for the calculation
     forcetheorem_tags = ['Forcetheorem_DMI', 'Forcetheorem_SSDISP', 'Forcetheorem_JIJ', 'Forcetheorem_MAE']
@@ -324,15 +325,15 @@ def parse_iteration(iteration_node,
         exists = tag_exists(iteration_node, outschema_dict, tag)
         if exists:
             if minimal_mode:
-                parser.iteration_tasks = []
+                iteration_tasks = []
             else:
-                parser.iteration_tasks = [tag.lower()]
+                iteration_tasks = [tag.lower()]
             break
 
     if debug:
-        parser_info_out['debug_info']['iteration_tasks'] = parser.iteration_tasks
+        parser_info_out['debug_info']['iteration_tasks'] = iteration_tasks
 
-    for task in parser.iteration_tasks:
+    for task in iteration_tasks:
         try:
             out_dict = parser.perform_task(task,
                                            iteration_node,
