@@ -19,6 +19,7 @@ import numpy as np
 from pprint import pprint
 from masci_tools.util.constants import HTR_TO_EV
 
+
 def convert_total_energy(out_dict, parser_info_out=None):
     """
     Convert total energy to eV

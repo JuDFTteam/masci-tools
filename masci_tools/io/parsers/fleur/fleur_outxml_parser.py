@@ -19,6 +19,7 @@ from masci_tools.util.schema_dict_util import get_tag_xpath, tag_exists, read_co
 from masci_tools.util.xml.common_xml_util import eval_xpath, clear_xml
 from masci_tools.io.parsers.fleur.fleur_schema import load_inpschema, load_outschema
 from lxml import etree
+import copy
 
 
 def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_parse=None, **kwargs):
@@ -286,13 +287,7 @@ def parse_general_information(root, parser, outschema_dict, inpschema_dict, pars
     return out_dict, constants
 
 
-def parse_iteration(iteration_node,
-                    parser,
-                    outschema_dict,
-                    out_dict,
-                    constants,
-                    parser_info_out=None,
-                    **kwargs):
+def parse_iteration(iteration_node, parser, outschema_dict, out_dict, constants, parser_info_out=None, **kwargs):
     """
     Parses an scf iteration node.
 
