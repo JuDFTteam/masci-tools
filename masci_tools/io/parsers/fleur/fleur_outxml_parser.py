@@ -344,6 +344,6 @@ def parse_iteration(iteration_node,
         except KeyError:
             parser_info_out['parser_warnings'].append(f"Unknown task: '{task}'. Skipping this one")
             if strict:
-                raisex
+                raise
 
     return out_dict
