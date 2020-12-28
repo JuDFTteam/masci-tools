@@ -317,7 +317,7 @@ def parse_iteration(iteration_node,
     minimal_mode = kwargs.get('minimal_mode', False)
     debug = kwargs.get('debug', False)
 
-    iteration_tasks = parser.iteration_tasks
+    iteration_tasks = copy.deepcopy(parser.iteration_tasks)
     #If the iteration is a forcetheorem calculation
     #Replace all tasks with the given tasks for the calculation
     forcetheorem_tags = ['Forcetheorem_DMI', 'Forcetheorem_SSDISP', 'Forcetheorem_JIJ', 'Forcetheorem_MAE']
