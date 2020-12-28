@@ -103,14 +103,11 @@ class ParseTasks(object):
         totE_definition = p.tasks['total_energy']
     """
 
+    CONTROL_KEYS = {'_general', '_modes', '_minimal', '_special', '_conversions'}
     REQUIRED_KEYS = {'parse_type', 'path_spec'}
     ALLOWED_KEYS = {'parse_type', 'path_spec', 'subdict', 'overwrite_last'}
     ALLOWED_KEYS_ALLATTRIBS = {
         'parse_type', 'path_spec', 'subdict', 'base_value', 'ignore', 'overwrite', 'flat', 'only_required'
-    }
-
-    GENERAL_TASKS = {
-        'fleur_modes', 'general_inp_info', 'general_out_info', 'ldau_info', 'bulk_relax_info', 'film_relax_info'
     }
 
     _version = '0.2.0'
@@ -131,25 +128,52 @@ class ParseTasks(object):
         tasks = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(tasks)
 
-        self.incompatible_tasks = []
-        self.append_tasks = []
+        self._iteration_tasks = []
+        self._general_tasks = []
 
         tasks_dict = copy.deepcopy(tasks.TASKS_DEFINITION)
         if validate_defaults:
             #Manually add each task to make sure that there are no typos/inconsitencies in the keys
             self.tasks = {}
             for task_name, task in tasks_dict.items():
-                self.add_task(task_name, task, perform_default=False)
+                self.add_task(task_name, task)
         else:
             self.tasks = tasks_dict
 
         #Look if the base version is compatible if not look for a migration
         if version not in tasks.__working_out_versions__:
             if version in self._migrations['0.33']:
-                self.tasks, self.incompatible_tasks = self._migrations['0.33'][version](self.tasks,
-                                                                                        self.incompatible_tasks)
+                self.tasks = self._migrations['0.33'][version](self.tasks)
             else:
                 raise ValueError(f'Unsupported output version: {version}')
+
+    @property
+    def iteration_tasks(self):
+        """
+        Tasks to perform for each iteration
+        """
+        return self._iteration_tasks
+
+    @property
+    def general_tasks(self):
+        """
+        Tasks to perform for the root node
+        """
+        return self._general_tasks
+
+    @iteration_tasks.setter
+    def iteration_tasks(self, task_list):
+        """
+        Setter for iteration_tasks
+        """
+        self._iteration_tasks = task_list
+
+    @general_tasks.setter
+    def general_tasks(self, task_list):
+        """
+        Setter for general_tasks
+        """
+        self._general_tasks = task_list
 
     def add_task(self, task_name, task_definition, **kwargs):
         """
@@ -164,8 +188,6 @@ class ParseTasks(object):
         :param append: bool (optional), if True and the key is present in the dictionary the new defintions
                        will be inserted into this dictionary (inner keys WILL BE OVERWRITTEN). Additionally
                        if an inner key is overwritten with an empty dict the inner key will be removed
-        :param perform_default: bool (optional), if True (default) the task is automatically appended to the
-                                tasks to be performed each iteration
 
         The following keys are expected in each entry of the task_definition dictionary:
             :param parse_type: str, defines which methods to use when extracting the information
@@ -189,7 +211,6 @@ class ParseTasks(object):
 
         append = kwargs.get('append', False)
         overwrite = kwargs.get('overwrite', False)
-        perform_default = kwargs.get('perform_default', True)
 
         if task_name in self.tasks and not (append or overwrite):
             raise ValueError(f"Task '{task_name}' is already defined."
@@ -197,6 +218,11 @@ class ParseTasks(object):
                              'or overwrite=True to remove all existing tasks')
 
         for task_key, definition in task_definition.items():
+
+            if task_key.startswith('_'):
+                if task_key not in self.CONTROL_KEYS:
+                    raise ValueError(f'Unknown control key: {task_key}')
+                continue
 
             task_keys = set(definition.keys())
 
@@ -229,8 +255,42 @@ class ParseTasks(object):
         else:
             self.tasks[task_name] = task_definition
 
-        if task_name not in self.GENERAL_TASKS and perform_default:
-            self.append_tasks.append(task_name)
+    def determine_tasks(self, fleurmodes, minimal=False):
+        """
+        Determine, which tasks to perform based on the fleur_modes
+
+        :param fleurmodes: dict with the calculation modes
+        :param minimal: bool, whether to inly perform minimal tasks
+        """
+
+        for task_name, definition in self.tasks.items():
+
+            if task_name == 'fleur_modes':
+                continue
+
+            if minimal:
+                task_minimal = definition.get('_minimal', False)
+                if not task_minimal:
+                    continue
+
+            #These tasks are always added manually
+            special = definition.get('_special', False)
+            if special:
+                continue
+
+            mode_req = definition.get('_modes', [])
+
+            check = [fleurmodes[mode] == required_value for mode, required_value in mode_req]
+
+            if not all(check):
+                continue
+
+            general_task = definition.get('_general', False)
+
+            if general_task:
+                self._general_tasks.append(task_name)
+            else:
+                self._iteration_tasks.append(task_name)
 
     def perform_task(self,
                      task_name,
@@ -256,6 +316,7 @@ class ParseTasks(object):
 
         """
         from masci_tools.io.common_functions import camel_to_snake
+        import masci_tools.util.fleur_outxml_conversions as convert_funcs
 
         if parser_info_out is None:
             parser_info_out = {'parser_warnings': []}
@@ -266,6 +327,9 @@ class ParseTasks(object):
             raise KeyError(f'Unknown Task: {task_name}') from exc
 
         for task_key, spec in tasks_definition.items():
+
+            if task_key.startswith('_'):
+                continue
 
             action = self._parse_functions[spec['parse_type']]
 
@@ -342,6 +406,11 @@ class ParseTasks(object):
             else:
                 out_dict = parsed_dict
 
+        conversions = tasks_definition.get('_conversions', [])
+        for conversion in conversions:
+            action = getattr(convert_funcs, conversion)
+            out_dict = action(out_dict, parser_info_out=parser_info_out)
+
         return out_dict
 
     def show_available_tasks(self, show_definitions=False):
@@ -356,7 +425,7 @@ class ParseTasks(object):
 
 
 @register_migration(ParseTasks, base_version='0.33', target_version='0.31')
-def migrate_033_to_031(definition_dict, incompatible_tasks):
+def migrate_033_to_031(definition_dict):
     """
     Migrate definitions for MaX5 release to MaX4 release
 
@@ -366,10 +435,8 @@ def migrate_033_to_031(definition_dict, incompatible_tasks):
     """
 
     new_dict = copy.deepcopy(definition_dict)
-    new_incompatible_tasks = copy.deepcopy(incompatible_tasks)
 
     new_dict.pop('nmmp_distances')
-    new_incompatible_tasks.append('nmmp_distances')
 
     force_units = {
         'parse_type': 'attrib',
@@ -384,4 +451,4 @@ def migrate_033_to_031(definition_dict, incompatible_tasks):
     new_dict['forcetheorem_jij']['jij_force_units'] = copy.deepcopy(force_units)
     new_dict['forcetheorem_dmi']['dmi_force_units'] = copy.deepcopy(force_units)
 
-    return new_dict, new_incompatible_tasks
+    return new_dict

@@ -38,19 +38,26 @@ For the allAttribs parse_type there are more keys that can appear:
                        if True the values will be extracted and put into the output dictionary with the
                        format {task_key}_{attribute_name}
 
-The following keys are configured at the moment:
+Each task entry can have additional keys to specify, when to perform the task.
+These are denoted with underscores in their namesand are all optional:
+    :param _general: bool, default False. If True the parsing is not performed for each iteration on the
+                     iteration node but beforehand and on the root node
+    :param _modes: list of tuples, sets conditions for the keys in fleur_modes to perform the task
+                   .e.g. [('jspins', 2), ('soc', True)] means only perform this task for a magnetic soc calculation
+    :param _minimal: bool, default False, denotes task to perform when minimal_mode=True is passed to the parser
+    :param _special: bool, default False, If true these tasks are not added by defualt and need to be added manually
+    :param _conversions: list of str, gives the names of functions in fleur_outxml_conversions to perform after parsing
+
+
+The following keys are special at the moment:
     - ```fleur_modes``` specifies how to identify the type of the calculation (e.g. SOC, magnetic, lda+u)
       this is used to determine, whether additional things should be parsed
-    - ```general_inp_info``` gets information from the input section of the out.xml like number of symmnetries
-    - ```general_out_info``` gets information from the section of the out.xml outside iterations, like timing
-      basis information, ...
-    - All other keys are parsed for each iteration. (```total_energy```, ```distances```, ...)
 
 Following is the current specification of tasks
 
 .. literalinclude:: ../../../masci_tools/io/parsers/fleur/default_parse_tasks.py
    :language: python
-   :lines: 60-
+   :lines: 67-
    :linenos:
 
 """
@@ -108,10 +115,13 @@ TASKS_DEFINITION = {
             'path_spec': {
                 'name': 'band'
             }
-        }
+        },
     },
     #--------Defintions for general info from outfile (start, endtime, number_iterations)--------
     'general_out_info': {
+        '_general': True,
+        '_minimal': True,
+        '_conversions': ['calculate_walltime'],
         'creator_name': {
             'parse_type': 'attrib',
             'path_spec': {
@@ -174,6 +184,8 @@ TASKS_DEFINITION = {
     },
     #--------Defintions for general info from input section of outfile (kmax, symmetries, ..)--------
     'general_inp_info': {
+        '_general': True,
+        '_minimal': True,
         'title': {
             'parse_type': 'text',
             'path_spec': {
@@ -209,10 +221,19 @@ TASKS_DEFINITION = {
             'path_spec': {
                 'name': 'species'
             }
-        }
+        },
+        'film': {
+            'parse_type': 'exists',
+            'path_spec': {
+                'name': 'filmPos'
+            }
+        },
     },
     #--------Defintions for lda+u info from input section (species, ldau tags)--------
     'ldau_info': {
+        '_general': True,
+        '_modes': [('ldau', True)],
+        '_conversions': ['convert_ldau_definitions'],
         'parsed_ldau': {
             'parse_type': 'allAttribs',
             'path_spec': {
@@ -237,6 +258,9 @@ TASKS_DEFINITION = {
     #--------Defintions for relaxation info from input section (bravais matrix, atompos)
     #--------for Bulk and film
     'bulk_relax_info': {
+        '_general': True,
+        '_modes': [('relax', True), ('film', False)],
+        '_conversions': ['convert_relax_info'],
         'lat_row1': {
             'parse_type': 'text',
             'path_spec': {
@@ -281,6 +305,9 @@ TASKS_DEFINITION = {
         },
     },
     'film_relax_info': {
+        '_general': True,
+        '_modes': [('relax', True), ('film', True)],
+        '_conversions': ['convert_relax_info'],
         'lat_row1': {
             'parse_type': 'text',
             'path_spec': {
@@ -334,6 +361,7 @@ TASKS_DEFINITION = {
     # orbital magnetic moments
     # forces
     'iteration_number': {
+        '_minimal': True,
         'number_of_iterations_total': {
             'parse_type': 'attrib',
             'path_spec': {
@@ -343,6 +371,8 @@ TASKS_DEFINITION = {
         }
     },
     'total_energy': {
+        '_minimal': True,
+        '_conversions': ['convert_total_energy'],
         'energy_hartree': {
             'parse_type': 'singleValue',
             'path_spec': {
@@ -351,6 +381,7 @@ TASKS_DEFINITION = {
         },
     },
     'distances': {
+        '_minimal': True,
         'charge_density': {
             'parse_type': 'attrib',
             'path_spec': {
@@ -368,6 +399,8 @@ TASKS_DEFINITION = {
         }
     },
     'magnetic_distances': {
+        '_minimal': True,
+        '_modes': [('jspin', 2)],
         'overall_charge_density': {
             'parse_type': 'attrib',
             'path_spec': {
@@ -414,6 +447,7 @@ TASKS_DEFINITION = {
         },
     },
     'ldau_energy_correction': {
+        '_modes': [('ldau', True)],
         'ldau_energy_correction': {
             'parse_type': 'singleValue',
             'path_spec': {
@@ -424,6 +458,7 @@ TASKS_DEFINITION = {
         },
     },
     'nmmp_distances': {
+        '_modes': [('ldau', True)],
         'density_matrix_distance': {
             'parse_type': 'attrib',
             'path_spec': {
@@ -450,6 +485,7 @@ TASKS_DEFINITION = {
         }
     },
     'magnetic_moments': {
+        '_modes': [('jspin', 2)],
         'magnetic_moments': {
             'parse_type': 'allAttribs',
             'path_spec': {
@@ -460,6 +496,7 @@ TASKS_DEFINITION = {
         }
     },
     'orbital_magnetic_moments': {
+        '_modes': [('jspin', 2), ('soc', True)],
         'orbital_magnetic_moments': {
             'parse_type': 'allAttribs',
             'path_spec': {
@@ -470,6 +507,8 @@ TASKS_DEFINITION = {
         }
     },
     'forces': {
+        '_modes': [('relax', True)],
+        '_conversions': ['convert_forces'],
         'force_units': {
             'parse_type': 'attrib',
             'path_spec': {
@@ -487,6 +526,7 @@ TASKS_DEFINITION = {
         }
     },
     'charges': {
+        '_conversions': ['calculate_total_magnetic_moment'],
         'spin_dependent_charge': {
             'parse_type': 'allAttribs',
             'path_spec': {
@@ -509,6 +549,7 @@ TASKS_DEFINITION = {
     #-------Tasks for forcetheorem Calculations
     # DMI, JIJ, MAE, SSDISP
     'forcetheorem_dmi': {
+        '_special': True,
         'dmi_force': {
             'parse_type': 'allAttribs',
             'path_spec': {
@@ -539,6 +580,7 @@ TASKS_DEFINITION = {
         }
     },
     'forcetheorem_ssdisp': {
+        '_special': True,
         'spst_force': {
             'parse_type': 'allAttribs',
             'path_spec': {
@@ -562,6 +604,7 @@ TASKS_DEFINITION = {
         }
     },
     'forcetheorem_mae': {
+        '_special': True,
         'mae_force': {
             'parse_type': 'allAttribs',
             'path_spec': {
@@ -578,6 +621,7 @@ TASKS_DEFINITION = {
         }
     },
     'forcetheorem_jij': {
+        '_special': True,
         'jij_force': {
             'parse_type': 'allAttribs',
             'path_spec': {

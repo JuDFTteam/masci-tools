@@ -17,9 +17,36 @@ cannot be handled by the standard parsing framework
 from datetime import date
 import numpy as np
 from pprint import pprint
+from masci_tools.util.constants import HTR_TO_EV
+
+def convert_total_energy(out_dict, parser_info_out=None):
+    """
+    Convert total energy to eV
+    """
+
+    total_energy = out_dict.get('energy_hartree', None)
+
+    if total_energy is None:
+        if 'energy_hartree' in out_dict:
+            out_dict['energy'] = None
+            out_dict['energy_units'] = 'eV'
+        return out_dict
+
+    total_energy = total_energy[-1]
+
+    if 'energy' not in out_dict:
+        out_dict['energy'] = []
+        out_dict['energy_units'] = 'eV'
+
+    if total_energy is not None:
+        out_dict['energy'].append(total_energy * HTR_TO_EV)
+    else:
+        out_dict['energy'].append(None)
+
+    return out_dict
 
 
-def calculate_total_magnetic_moment(out_dict):
+def calculate_total_magnetic_moment(out_dict, parser_info_out=None):
     """
     Calculate the the total magnetic moment per cell
 
@@ -96,7 +123,7 @@ def calculate_walltime(out_dict, parser_info_out=None):
     return out_dict
 
 
-def convert_ldau_definitions(out_dict):
+def convert_ldau_definitions(out_dict, parser_info_out=None):
     """
     Convert the parsed information from LDA+U into a more readable dict
 
@@ -133,7 +160,7 @@ def convert_ldau_definitions(out_dict):
     return out_dict
 
 
-def convert_relax_info(out_dict):
+def convert_relax_info(out_dict, parser_info_out=None):
     """
     Convert the general relaxation information
 
@@ -158,7 +185,7 @@ def convert_relax_info(out_dict):
     return out_dict
 
 
-def convert_forces(out_dict):
+def convert_forces(out_dict, parser_info_out=None):
     """
     Convert the parsed forces from a iteration
 

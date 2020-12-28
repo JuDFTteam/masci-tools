@@ -72,6 +72,7 @@ def test_outxml_validation_errors():
         'energy_valence_electrons': -12.7065554237,
         'fermi_energy': 0.3685303739,
         'fermi_energy_units': 'Htr',
+        'film': False,
         'gmax': 10.0,
         'kmax': 3.0,
         'magnetic_moments': 2.1699434793,
@@ -209,6 +210,7 @@ def test_outxml_broken():
         'energy_valence_electrons': -14.4723754179,
         'fermi_energy': 0.3782147185,
         'fermi_energy_units': 'Htr',
+        'film': False,
         'gmax': 10.2,
         'kmax': 3.4,
         'magnetic_moments': [1.9333985458, 1.9345705319],
@@ -275,21 +277,21 @@ def test_outxml_broken_firstiter():
             'believe the walltime!', 'Enddate was unparsed, inp.xml prob not complete, do not '
             'believe the walltime!', 'No values found for attribute value at tag totalEnergy',
             'No values found for attribute units at tag totalEnergy', 'No values found for attribute distance',
-            'No values found for attribute units', 'No values found for attribute value at tag '
+            'No values found for attribute units', 'No values found for attribute distance',
+            'No values found for attribute distance', 'No values found for attribute value at tag '
             'sumOfEigenvalues', 'No values found for attribute value at tag coreElectrons',
             'No values found for attribute value at tag '
             'valenceElectrons', 'No values found for attribute value at tag '
             'chargeDenXCDenIntegral', 'No values found for attribute value at tag FermiEnergy',
             'No values found for attribute units at tag FermiEnergy',
             'No values found for attribute value at tag bandgap', 'No values found for attribute units at tag bandgap',
-            'No values found for attribute total at tag '
-            'spinDependentCharge', 'No values found for attribute interstitial at tag '
-            'spinDependentCharge', 'No values found for attribute mtSpheres at tag '
-            'spinDependentCharge', 'No values found for attribute value at tag totalCharge',
             'No values found for attribute moment at tag '
             'magneticMoment', 'No values found for attribute spinUpCharge at tag '
             'magneticMoment', 'No values found for attribute spinDownCharge at tag '
-            'magneticMoment', 'No values found for attribute distance', 'No values found for attribute distance'
+            'magneticMoment', 'No values found for attribute total at tag '
+            'spinDependentCharge', 'No values found for attribute interstitial at tag '
+            'spinDependentCharge', 'No values found for attribute mtSpheres at tag '
+            'spinDependentCharge', 'No values found for attribute value at tag totalCharge'
         ]
     }
     expected_result = {
@@ -313,6 +315,7 @@ def test_outxml_broken_firstiter():
         'energy_valence_electrons': None,
         'fermi_energy': None,
         'fermi_energy_units': None,
+        'film': False,
         'gmax': 10.2,
         'kmax': 3.4,
         'magnetic_moments': None,
@@ -377,6 +380,7 @@ def test_outxml_garbage_values():
         'energy_valence_electrons': -12.7065554237,
         'fermi_energy': float('NaN'),
         'fermi_energy_units': 'Htr',
+        'film': False,
         'gmax': 10.0,
         'kmax': 3.0,
         'magnetic_moments': '********',
@@ -492,6 +496,7 @@ def test_outxml_additional_tasks():
         'energy_valence_electrons': -55.6062832263,
         'fermi_energy': 0.1848170588,
         'fermi_energy_units': 'Htr',
+        'film': False,
         'gmax': 11.1,
         'kmax': 3.5,
         'number_of_atom_types': 1,
@@ -545,6 +550,7 @@ def test_outxml_additional_tasks():
         'energy_valence_electrons': -55.6062832263,
         'fermi_energy': 0.1848170588,
         'fermi_energy_units': 'Htr',
+        'film': False,
         'gmax': 11.1,
         'kmax': 3.5,
         'number_of_atom_types': 1,
@@ -650,6 +656,7 @@ def test_outxml_add_tasks_overwrite():
         'energy_valence_electrons': -55.6062832263,
         'fermi_energy': 0.1848170588,
         'fermi_energy_units': 'Htr',
+        'film': False,
         'gmax': 11.1,
         'kmax': 3.5,
         'number_of_atom_types': 1,
@@ -720,6 +727,7 @@ def test_outxml_add_tasks_append():
         'energy_valence_electrons': -55.6062832263,
         'fermi_energy': 0.1848170588,
         'fermi_energy_units': 'Htr',
+        'film': False,
         'gmax': 11.1,
         'kmax': 3.5,
         'number_of_atom_types': 'Si bulk',
@@ -830,6 +838,8 @@ def test_outxml_max4compatibility():
         ],
         'fermi_energy_units':
         'Htr',
+        'film':
+        False,
         'gmax':
         '10.80000000',
         'kmax':
@@ -966,6 +976,7 @@ def test_outxml_lastiter():
         'energy_valence_electrons': -55.6062832263,
         'fermi_energy': 0.1848170588,
         'fermi_energy_units': 'Htr',
+        'film': False,
         'gmax': 11.1,
         'kmax': 3.5,
         'number_of_atom_types': 1,
@@ -1020,6 +1031,7 @@ def test_outxml_firstiter():
         'energy_valence_electrons': -56.0370181786,
         'fermi_energy': 0.1670838071,
         'fermi_energy_units': 'Htr',
+        'film': False,
         'gmax': 11.1,
         'kmax': 3.5,
         'number_of_atom_types': 1,
@@ -1089,6 +1101,8 @@ def test_outxml_alliter():
         'fermi_energy': [0.1670838071, 0.1682300942, 0.1878849091, 0.1857922767, 0.1853849541, 0.1848170588],
         'fermi_energy_units':
         'Htr',
+        'film':
+        False,
         'gmax':
         11.1,
         'kmax':
@@ -1157,6 +1171,7 @@ def test_outxml_indexiter():
         'energy_valence_electrons': -55.5145626436,
         'fermi_energy': 0.1857922767,
         'fermi_energy_units': 'Htr',
+        'film': False,
         'gmax': 11.1,
         'kmax': 3.5,
         'number_of_atom_types': 1,
@@ -1214,6 +1229,8 @@ def test_outxml_minimal_mode():
         'Htr',
         'energy_units':
         'eV',
+        'film':
+        False,
         'gmax':
         11.1,
         'kmax':
@@ -1285,6 +1302,8 @@ def test_outxml_magnetic():
         'fermi_energy': [0.3836568571, 0.3782147185, 0.3527552733, 0.3477025411],
         'fermi_energy_units':
         'Htr',
+        'film':
+        False,
         'gmax':
         10.2,
         'kmax':
@@ -1455,6 +1474,7 @@ def test_outxml_force():
             'date': '2020/12/10',
             'time': '16:58:39'
         },
+        'film': True,
         'gmax': 10.0,
         'kmax': 4.0,
         'number_of_atom_types': 2,
