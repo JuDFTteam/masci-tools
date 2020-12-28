@@ -85,6 +85,26 @@ def register_parsing_function(parse_type_name, all_attribs_keys=False):
 
     return parse_type_decorator
 
+def conversion_function(func):
+    """
+    Return decorated ParseTasks object with _conversion_functions dict attribute
+    Here all registered conversion functions are inserted
+    """
+
+    @wraps(func)
+    def convert_func(*args, **kwargs):
+        """Decorator for parse_type function"""
+        return func(*args, **kwargs)
+
+    setattr(ParseTasks, func.__name__, convert_func)
+
+    if not hasattr(ParseTasks, '_conversion_functions'):
+        ParseTasks._conversion_functions = {}  # pylint: disable=protected-access
+
+    ParseTasks._conversion_functions[func.__name__] = getattr(ParseTasks, func.__name__)  # pylint: disable=protected-access
+
+    return convert_func
+
 
 class ParseTasks(object):
     """
@@ -317,7 +337,6 @@ class ParseTasks(object):
 
         """
         from masci_tools.io.common_functions import camel_to_snake
-        import masci_tools.util.fleur_outxml_conversions as convert_funcs
 
         if parser_info_out is None:
             parser_info_out = {'parser_warnings': []}
@@ -409,7 +428,7 @@ class ParseTasks(object):
 
         conversions = tasks_definition.get('_conversions', [])
         for conversion in conversions:
-            action = getattr(convert_funcs, conversion)
+            action = self._conversion_functions[conversion]
             out_dict = action(out_dict, parser_info_out=parser_info_out)
 
         return out_dict

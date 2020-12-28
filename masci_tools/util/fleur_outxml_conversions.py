@@ -18,8 +18,9 @@ from datetime import date
 import numpy as np
 from pprint import pprint
 from masci_tools.util.constants import HTR_TO_EV
+from masci_tools.io.parsers.fleur.parse_tasks import conversion_function
 
-
+@conversion_function
 def convert_total_energy(out_dict, parser_info_out=None):
     """
     Convert total energy to eV
@@ -46,7 +47,7 @@ def convert_total_energy(out_dict, parser_info_out=None):
 
     return out_dict
 
-
+@conversion_function
 def calculate_total_magnetic_moment(out_dict, parser_info_out=None):
     """
     Calculate the the total magnetic moment per cell
@@ -67,7 +68,7 @@ def calculate_total_magnetic_moment(out_dict, parser_info_out=None):
 
     return out_dict
 
-
+@conversion_function
 def calculate_walltime(out_dict, parser_info_out=None):
     """
     Calculate the walltime from start and end time
@@ -123,7 +124,7 @@ def calculate_walltime(out_dict, parser_info_out=None):
 
     return out_dict
 
-
+@conversion_function
 def convert_ldau_definitions(out_dict, parser_info_out=None):
     """
     Convert the parsed information from LDA+U into a more readable dict
@@ -160,7 +161,7 @@ def convert_ldau_definitions(out_dict, parser_info_out=None):
 
     return out_dict
 
-
+@conversion_function
 def convert_relax_info(out_dict, parser_info_out=None):
     """
     Convert the general relaxation information
@@ -185,7 +186,7 @@ def convert_relax_info(out_dict, parser_info_out=None):
 
     return out_dict
 
-
+@conversion_function
 def convert_forces(out_dict, parser_info_out=None):
     """
     Convert the parsed forces from a iteration
