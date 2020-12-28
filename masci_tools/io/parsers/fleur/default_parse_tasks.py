@@ -39,13 +39,14 @@ For the allAttribs parse_type there are more keys that can appear:
                        format {task_key}_{attribute_name}
 
 Each task entry can have additional keys to specify, when to perform the task.
-These are denoted with underscores in their namesand are all optional:
+These are denoted with underscores in their names and are all optional:
+
     :param _general: bool, default False. If True the parsing is not performed for each iteration on the
                      iteration node but beforehand and on the root node
     :param _modes: list of tuples, sets conditions for the keys in fleur_modes to perform the task
                    .e.g. [('jspins', 2), ('soc', True)] means only perform this task for a magnetic soc calculation
     :param _minimal: bool, default False, denotes task to perform when minimal_mode=True is passed to the parser
-    :param _special: bool, default False, If true these tasks are not added by defualt and need to be added manually
+    :param _special: bool, default False, If true these tasks are not added by default and need to be added manually
     :param _conversions: list of str, gives the names of functions in fleur_outxml_conversions to perform after parsing
 
 

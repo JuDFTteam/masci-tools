@@ -67,6 +67,9 @@ Definition of default parsing tasks for out.xml
 .. automodule:: masci_tools.io.parsers.fleur.default_parse_tasks
    :members:
 
+.. automodule:: masci_tools.io.parsers.fleur.task_migrations
+   :members:
+
 Utility functions
 +++++++++++++++++++++
 
@@ -80,4 +83,7 @@ Utility functions
    :members:
 
 .. automodule:: masci_tools.util.fleur_outxml_conversions
+   :members:
+
+.. automodule:: masci_tools.util.parse_tasks_decorators
    :members:
