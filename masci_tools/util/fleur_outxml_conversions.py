@@ -18,7 +18,8 @@ from datetime import date
 import numpy as np
 from pprint import pprint
 from masci_tools.util.constants import HTR_TO_EV
-from masci_tools.io.parsers.fleur.parse_tasks import conversion_function
+from masci_tools.util.parse_tasks_decorators import conversion_function
+
 
 @conversion_function
 def convert_total_energy(out_dict, parser_info_out=None):
@@ -47,6 +48,7 @@ def convert_total_energy(out_dict, parser_info_out=None):
 
     return out_dict
 
+
 @conversion_function
 def calculate_total_magnetic_moment(out_dict, parser_info_out=None):
     """
@@ -67,6 +69,7 @@ def calculate_total_magnetic_moment(out_dict, parser_info_out=None):
         out_dict['total_magnetic_moment_cell'].append(np.abs(total_charge[0] - total_charge[1]))
 
     return out_dict
+
 
 @conversion_function
 def calculate_walltime(out_dict, parser_info_out=None):
@@ -124,6 +127,7 @@ def calculate_walltime(out_dict, parser_info_out=None):
 
     return out_dict
 
+
 @conversion_function
 def convert_ldau_definitions(out_dict, parser_info_out=None):
     """
@@ -161,6 +165,7 @@ def convert_ldau_definitions(out_dict, parser_info_out=None):
 
     return out_dict
 
+
 @conversion_function
 def convert_relax_info(out_dict, parser_info_out=None):
     """
@@ -185,6 +190,7 @@ def convert_relax_info(out_dict, parser_info_out=None):
         out_dict['relax_atomtype_info'].append([specie, species_info[specie]])
 
     return out_dict
+
 
 @conversion_function
 def convert_forces(out_dict, parser_info_out=None):

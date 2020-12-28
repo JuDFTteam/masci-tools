@@ -14,96 +14,14 @@
 This module contains a class which organizes the known parsing tasks for outxml files
 and provides fuctionality for adding custom tasks easily
 """
+
 from pprint import pprint
-from functools import wraps
 import importlib.util
 import copy
 import os
 
 PACKAGE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_TASK_FILE = os.path.abspath(os.path.join(PACKAGE_DIRECTORY, 'default_parse_tasks.py'))
-
-
-def register_migration(base_version, target_version):
-    """
-    Decorator to add migration for task defintion dictionary
-    The function should only take tasks_defintion as an argument
-    """
-
-    def migration_decorator(func):
-        """
-        Return decorated ParseTasks object with _migrations dict attribute
-        Here all registered migrations are inserted
-        """
-
-        @wraps(func)
-        def migration(*args):
-            """Decorator for migration function"""
-            return func(*args)
-
-        setattr(ParseTasks, func.__name__, migration)
-
-        if not hasattr(ParseTasks, '_migrations'):
-            ParseTasks._migrations = {}  # pylint: disable=protected-access
-        if not base_version in ParseTasks._migrations:
-            ParseTasks._migrations[base_version] = {}
-        ParseTasks._migrations[base_version][target_version] = getattr(ParseTasks, func.__name__)  # pylint: disable=protected-access
-
-        return migration
-
-    return migration_decorator
-
-
-def register_parsing_function(parse_type_name, all_attribs_keys=False):
-    """
-    Decorator to add parse type for task defintion dictionary
-    The function should only take tasks_defintion as an argument
-    """
-
-    def parse_type_decorator(func):
-        """
-        Return decorated ParseTasks object with _parse_functions dict attribute
-        Here all registered migrations are inserted
-        """
-
-        @wraps(func)
-        def parse_type(*args, **kwargs):
-            """Decorator for parse_type function"""
-            return func(*args, **kwargs)
-
-        setattr(ParseTasks, func.__name__, parse_type)
-
-        if not hasattr(ParseTasks, '_parse_functions'):
-            ParseTasks._parse_functions = {}  # pylint: disable=protected-access
-            ParseTasks._all_attribs_function = set()
-
-        ParseTasks._parse_functions[parse_type_name] = getattr(ParseTasks, func.__name__)  # pylint: disable=protected-access
-        if all_attribs_keys:
-            ParseTasks._all_attribs_function.add(parse_type_name)
-
-        return parse_type
-
-    return parse_type_decorator
-
-def conversion_function(func):
-    """
-    Return decorated ParseTasks object with _conversion_functions dict attribute
-    Here all registered conversion functions are inserted
-    """
-
-    @wraps(func)
-    def convert_func(*args, **kwargs):
-        """Decorator for parse_type function"""
-        return func(*args, **kwargs)
-
-    setattr(ParseTasks, func.__name__, convert_func)
-
-    if not hasattr(ParseTasks, '_conversion_functions'):
-        ParseTasks._conversion_functions = {}  # pylint: disable=protected-access
-
-    ParseTasks._conversion_functions[func.__name__] = getattr(ParseTasks, func.__name__)  # pylint: disable=protected-access
-
-    return convert_func
 
 
 class ParseTasks(object):
@@ -442,33 +360,3 @@ class ParseTasks(object):
             pprint(self.tasks)
         else:
             pprint(self.tasks.keys())
-
-
-@register_migration(base_version='0.33', target_version='0.31')
-def migrate_033_to_031(definition_dict):
-    """
-    Migrate definitions for MaX5 release to MaX4 release
-
-    Changes:
-        - LDA+U density matrix distance output did not exist
-        - forcetheorem units attribute did not exist (get from 'sumValenceSingleParticleEnergies')
-    """
-
-    new_dict = copy.deepcopy(definition_dict)
-
-    new_dict.pop('nmmp_distances')
-
-    force_units = {
-        'parse_type': 'attrib',
-        'path_spec': {
-            'name': 'units',
-            'tag_name': 'sumValenceSingleParticleEnergies'
-        }
-    }
-
-    new_dict['forcetheorem_mae']['mae_force_units'] = copy.deepcopy(force_units)
-    new_dict['forcetheorem_ssdisp']['spst_force_units'] = copy.deepcopy(force_units)
-    new_dict['forcetheorem_jij']['jij_force_units'] = copy.deepcopy(force_units)
-    new_dict['forcetheorem_dmi']['dmi_force_units'] = copy.deepcopy(force_units)
-
-    return new_dict

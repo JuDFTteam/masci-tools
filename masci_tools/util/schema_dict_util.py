@@ -17,7 +17,7 @@ schema_dicts defined for the Fleur input/output
 Also provides convienient functions to use just a attribute name for extracting the
 attribute from the right place in the given etree
 """
-from masci_tools.io.parsers.fleur.parse_tasks import register_parsing_function
+from masci_tools.util.parse_tasks_decorators import register_parsing_function
 
 
 def get_tag_xpath(schema_dict, name, contains=None, not_contains=None):
