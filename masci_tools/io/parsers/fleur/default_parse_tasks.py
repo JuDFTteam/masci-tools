@@ -67,6 +67,7 @@ __working_out_versions__ = {'0.33'}
 TASKS_DEFINITION = {
     #--------Definitions for Fleur calculation modes--------
     'fleur_modes': {
+        '_special': True,
         'jspin': {
             'parse_type': 'attrib',
             'path_spec': {

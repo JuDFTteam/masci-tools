@@ -117,7 +117,11 @@ class ParseTasks(object):
         Initialize the default parse tasks
         Terminates if the version is not marked as working with the default tasks
 
-        TODO: We need some way of versioning for the default tasks
+        :param version: str of the wanted ouput version
+        :param task_file: optional, file to override default_parse_tasks
+        :param validate_defaults: bool, if True all tasks from the default tasks
+                                  are added one by one and are checked for
+                                  inconsistent keys
         """
 
         if task_file is None:
@@ -260,13 +264,10 @@ class ParseTasks(object):
         Determine, which tasks to perform based on the fleur_modes
 
         :param fleurmodes: dict with the calculation modes
-        :param minimal: bool, whether to inly perform minimal tasks
+        :param minimal: bool, whether to only perform minimal tasks
         """
 
         for task_name, definition in self.tasks.items():
-
-            if task_name == 'fleur_modes':
-                continue
 
             if minimal:
                 task_minimal = definition.get('_minimal', False)
