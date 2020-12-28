@@ -289,10 +289,7 @@ def parse_general_information(root, parser, outschema_dict, inpschema_dict, pars
 
 def parse_iteration(iteration_node, parser, outschema_dict, out_dict, constants, parser_info_out=None, **kwargs):
     """
-    Parses an scf iteration node.
-
-    First the necessary tasks are determined according to the fleurmodes, determined before.
-    The each task is performed
+    Parses an scf iteration node. Which tasks to perform is stored in parser.iteration_tasks
 
     Args:
         :param iteration_node: etree Element for a scf iteration
