@@ -17,7 +17,7 @@ schema_dicts defined for the Fleur input/output
 Also provides convienient functions to use just a attribute name for extracting the
 attribute from the right place in the given etree
 """
-from masci_tools.io.parsers.fleur.parse_tasks import ParseTasks, register_parsing_function
+from masci_tools.io.parsers.fleur.parse_tasks import register_parsing_function
 
 
 def get_tag_xpath(schema_dict, name, contains=None, not_contains=None):
@@ -171,7 +171,7 @@ def read_constants(xmltree, schema_dict, replace_root=None):
     return defined_constants
 
 
-@register_parsing_function(ParseTasks, 'attrib')
+@register_parsing_function('attrib')
 def evaluate_attribute(node, schema_dict, name, constants, parser_info_out=None, **kwargs):
     """
     Evaluates the value of the attribute based on the given name
@@ -247,7 +247,7 @@ def evaluate_attribute(node, schema_dict, name, constants, parser_info_out=None,
     return converted_value
 
 
-@register_parsing_function(ParseTasks, 'text')
+@register_parsing_function('text')
 def evaluate_text(node, schema_dict, name, constants, parser_info_out=None, **kwargs):
     """
     Evaluates the text of the tag based on the given name
@@ -310,7 +310,7 @@ def evaluate_text(node, schema_dict, name, constants, parser_info_out=None, **kw
     return converted_value
 
 
-@register_parsing_function(ParseTasks, 'allAttribs', all_attribs_keys=True)
+@register_parsing_function('allAttribs', all_attribs_keys=True)
 def evaluate_tag(node, schema_dict, name, constants, parser_info_out=None, **kwargs):
     """
     Evaluates all attributes of the tag based on the given name
@@ -400,7 +400,7 @@ def evaluate_tag(node, schema_dict, name, constants, parser_info_out=None, **kwa
     return out_dict
 
 
-@register_parsing_function(ParseTasks, 'singleValue', all_attribs_keys=True)
+@register_parsing_function('singleValue', all_attribs_keys=True)
 def evaluate_single_value_tag(node, schema_dict, name, constants, parser_info_out=None, **kwargs):
     """
     Evaluates the value and unit attribute of the tag based on the given name
@@ -437,7 +437,7 @@ def evaluate_single_value_tag(node, schema_dict, name, constants, parser_info_ou
     return value_dict
 
 
-@register_parsing_function(ParseTasks, 'parentAttribs', all_attribs_keys=True)
+@register_parsing_function('parentAttribs', all_attribs_keys=True)
 def evaluate_parent_tag(node, schema_dict, name, constants, parser_info_out=None, **kwargs):
     """
     Evaluates all attributes of the parent tag based on the given name
@@ -534,7 +534,7 @@ def evaluate_parent_tag(node, schema_dict, name, constants, parser_info_out=None
     return out_dict
 
 
-@register_parsing_function(ParseTasks, 'exists')
+@register_parsing_function('exists')
 def tag_exists(node, schema_dict, name, parser_info_out=None, **kwargs):
     """
     Evaluates whether the tag exists in the xmltree based on the given name
@@ -554,7 +554,7 @@ def tag_exists(node, schema_dict, name, parser_info_out=None, **kwargs):
     return get_number_of_nodes(node, schema_dict, name, parser_info_out=parser_info_out, **kwargs) != 0
 
 
-@register_parsing_function(ParseTasks, 'numberNodes')
+@register_parsing_function('numberNodes')
 def get_number_of_nodes(node, schema_dict, name, parser_info_out=None, **kwargs):
     """
     Evaluates the number of occurences of the tag in the xmltree based on the given name

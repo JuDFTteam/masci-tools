@@ -24,7 +24,7 @@ PACKAGE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_TASK_FILE = os.path.abspath(os.path.join(PACKAGE_DIRECTORY, 'default_parse_tasks.py'))
 
 
-def register_migration(cls, base_version, target_version):
+def register_migration(base_version, target_version):
     """
     Decorator to add migration for task defintion dictionary
     The function should only take tasks_defintion as an argument
@@ -41,20 +41,20 @@ def register_migration(cls, base_version, target_version):
             """Decorator for migration function"""
             return func(*args)
 
-        setattr(cls, func.__name__, migration)
+        setattr(ParseTasks, func.__name__, migration)
 
-        if not hasattr(cls, '_migrations'):
-            cls._migrations = {}  # pylint: disable=protected-access
-        if not base_version in cls._migrations:
-            cls._migrations[base_version] = {}
-        cls._migrations[base_version][target_version] = getattr(cls, func.__name__)  # pylint: disable=protected-access
+        if not hasattr(ParseTasks, '_migrations'):
+            ParseTasks._migrations = {}  # pylint: disable=protected-access
+        if not base_version in ParseTasks._migrations:
+            ParseTasks._migrations[base_version] = {}
+        ParseTasks._migrations[base_version][target_version] = getattr(ParseTasks, func.__name__)  # pylint: disable=protected-access
 
         return migration
 
     return migration_decorator
 
 
-def register_parsing_function(cls, parse_type_name, all_attribs_keys=False):
+def register_parsing_function(parse_type_name, all_attribs_keys=False):
     """
     Decorator to add parse type for task defintion dictionary
     The function should only take tasks_defintion as an argument
@@ -71,15 +71,15 @@ def register_parsing_function(cls, parse_type_name, all_attribs_keys=False):
             """Decorator for parse_type function"""
             return func(*args, **kwargs)
 
-        setattr(cls, func.__name__, parse_type)
+        setattr(ParseTasks, func.__name__, parse_type)
 
-        if not hasattr(cls, '_parse_functions'):
-            cls._parse_functions = {}  # pylint: disable=protected-access
-            cls._all_attribs_function = set()
+        if not hasattr(ParseTasks, '_parse_functions'):
+            ParseTasks._parse_functions = {}  # pylint: disable=protected-access
+            ParseTasks._all_attribs_function = set()
 
-        cls._parse_functions[parse_type_name] = getattr(cls, func.__name__)  # pylint: disable=protected-access
+        ParseTasks._parse_functions[parse_type_name] = getattr(ParseTasks, func.__name__)  # pylint: disable=protected-access
         if all_attribs_keys:
-            cls._all_attribs_function.add(parse_type_name)
+            ParseTasks._all_attribs_function.add(parse_type_name)
 
         return parse_type
 
@@ -424,7 +424,7 @@ class ParseTasks(object):
             pprint(self.tasks.keys())
 
 
-@register_migration(ParseTasks, base_version='0.33', target_version='0.31')
+@register_migration(base_version='0.33', target_version='0.31')
 def migrate_033_to_031(definition_dict):
     """
     Migrate definitions for MaX5 release to MaX4 release
