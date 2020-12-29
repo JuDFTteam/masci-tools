@@ -63,20 +63,19 @@ def inpxml_parser(inpxmlfile, version=None, parser_info_out=None):
 
     constants = read_constants(xmltree, schema_dict)
 
-    if not xmlschema.validate(xmltree):
-        # get more information on what does not validate
-        parser_on_fly = etree.XMLParser(attribute_defaults=True, schema=xmlschema, encoding='utf-8')
-        inpxmlfile = etree.tostring(xmltree)
-        message = ''
-        try:
-            tree_x = etree.fromstring(inpxmlfile, parser_on_fly)
-        except etree.XMLSyntaxError as msg:
-            message = msg
-            raise ValueError(f'Input file does not validate against the schema: {message}') from msg
-        raise ValueError('Input file does not validate against the schema: Reason is unknown')
+    try:
+        xmlschema.assertValid(xmltree)
+    except etree.DocumentInvalid as err:
+        validation_errors = ''.join([f'Line {error.line}: {error.message} \n' for error in xmlschema.error_log])
+        parser_info_out['parser_warnings'].append(
+            f'Input file does not validate against the schema: \n{validation_errors}')
+        raise ValueError(f'Input file does not validate against the schema: \n{validation_errors}') from err
 
-    else:
+    if xmlschema.validate(xmltree):
         inp_dict = inpxml_todict(root, schema_dict, constants, parser_info_out=parser_info_out)
+    else:
+        parser_info_out['parser_warnings'].append('Input file does not validate against the schema: Reason is unknown')
+        raise ValueError('Input file does not validate against the schema: Reason is unknown')
 
     return inp_dict
 

@@ -46,9 +46,7 @@ def test_outxml_validation_errors():
     OUTXML_FILEPATH1 = os.path.join(outxmlfilefolder, 'files/fleur/broken_out_xml/simple_validation_error.xml')
     OUTXML_FILEPATH2 = os.path.join(outxmlfilefolder, 'files/fleur/broken_out_xml/empty_values.xml')
 
-    with pytest.raises(
-            ValueError,
-            match="Output file does not validate against the schema: Element 'kPointList', attribute 'weightSc'"):
+    with pytest.raises(ValueError, match='Output file does not validate against the schema:'):
         out_dict = outxml_parser(OUTXML_FILEPATH1, strict=True)
 
     expected_result = {
@@ -114,18 +112,20 @@ def test_outxml_validation_errors():
             'soc': False
         },
         'parser_info':
-        'Masci-Tools Fleur out.xml Parser v0.1.0',
+        'Masci-Tools Fleur out.xml Parser v0.2.0',
         'parser_warnings': [
-            'Output file does not validate against the schema: '
-            "Element 'kPointList', attribute 'weightSc': The "
-            "attribute 'weightSc' is not allowed. (<string>, line 0)", 'No text found for tag targetStructureClass',
+            'Output file does not validate against the schema: \n'
+            "Line 346: Element 'kPointList', attribute 'weightSc': "
+            "The attribute 'weightSc' is not allowed. \n"
+            "Line 346: Element 'kPointList': The attribute "
+            "'weightScale' is required but missing. \n", 'No text found for tag targetStructureClass',
             'No values found for attribute value at tag bandgap', 'No values found for attribute units at tag bandgap'
         ]
     }
 
     result_warnings = {'parser_warnings': []}
     out_dict = outxml_parser(OUTXML_FILEPATH1, strict=True, ignore_validation=True, parser_info_out=result_warnings)
-
+    pprint(result_warnings)
     assert result_warnings == expected_warnings
     assert out_dict == expected_result
 
@@ -144,7 +144,7 @@ def test_outxml_empty_out():
 
     expected_warnings = {
         'parser_info':
-        'Masci-Tools Fleur out.xml Parser v0.1.0',
+        'Masci-Tools Fleur out.xml Parser v0.2.0',
         'parser_warnings': [
             'The out.xml file is broken I try to repair it.', 'Skipping the parsing of the xml file. Repairing was not '
             'possible.'
@@ -178,7 +178,7 @@ def test_outxml_broken():
         'last_iteration_parsed':
         2,
         'parser_info':
-        'Masci-Tools Fleur out.xml Parser v0.1.0',
+        'Masci-Tools Fleur out.xml Parser v0.2.0',
         'parser_warnings': [
             'The out.xml file is broken I try to repair it.', 'No text found for tag targetStructureClass',
             'No values found for attribute date at tag endDateAndTime',
@@ -268,7 +268,7 @@ def test_outxml_broken_firstiter():
         'last_iteration_parsed':
         1,
         'parser_info':
-        'Masci-Tools Fleur out.xml Parser v0.1.0',
+        'Masci-Tools Fleur out.xml Parser v0.2.0',
         'parser_warnings': [
             'The out.xml file is broken I try to repair it.', 'No text found for tag targetStructureClass',
             'No values found for attribute date at tag endDateAndTime',
@@ -422,12 +422,15 @@ def test_outxml_garbage_values():
             'soc': False
         },
         'parser_info':
-        'Masci-Tools Fleur out.xml Parser v0.1.0',
+        'Masci-Tools Fleur out.xml Parser v0.2.0',
         'parser_warnings': [
-            'Output file does not validate against the schema: '
-            "Element 'FermiEnergy', attribute 'value': 'NAN' is not a "
-            "valid value of the atomic type 'xs:double'. (<string>, "
-            'line 0)', 'No text found for tag targetStructureClass',
+            'Output file does not validate against the schema: \n'
+            "Line 591: Element 'FermiEnergy', attribute 'value': "
+            "'NAN' is not a valid value of the atomic type "
+            "'xs:double'. \n"
+            "Line 624: Element 'magneticMoment', attribute 'moment': "
+            "'********' is not a valid value of the atomic type "
+            "'xs:double'. \n", 'No text found for tag targetStructureClass',
             'No values found for attribute value at tag bandgap', 'No values found for attribute units at tag bandgap',
             'Failed to evaluate attribute moment: Below are the '
             'warnings from convert_xml_attribute', "Could not convert: '********' to float, ValueError"
@@ -936,11 +939,14 @@ def test_outxml_max4compatibility():
             'soc': False
         },
         'parser_info':
-        'Masci-Tools Fleur out.xml Parser v0.1.0',
+        'Masci-Tools Fleur out.xml Parser v0.2.0',
         'parser_warnings': [
-            "Ignoring '0.27' outputVersion for MaX4.0 release", 'Output file does not validate against the schema: '
-            "Element 'inputData': The attribute 'fleurInputVersion' "
-            'is required but missing. (<string>, line 0)', 'No text found for tag targetStructureClass'
+            "Ignoring '0.27' outputVersion for MaX4.0 release", 'Output file does not validate against the schema: \n'
+            "Line 17: Element 'inputData': The attribute 'fleurInputVersion' is required but missing. \n"
+            "Line 92: Element 'atomsInCell': The attribute 'n_hia' is required but missing. \n"
+            "Line 100: Element 'kPointList', attribute 'posScale': The attribute 'posScale' is not allowed. \n"
+            "Line 109: Element 'spinDependentCharge': This element is not expected. \n",
+            'No text found for tag targetStructureClass'
         ]
     }
 
@@ -949,6 +955,7 @@ def test_outxml_max4compatibility():
     warnings = {'parser_warnings': []}
     out_dict = outxml_parser(OUTXML_FILEPATH, parser_info_out=warnings, iteration_to_parse='all')
     pprint(out_dict)
+    pprint(warnings)
     assert out_dict == expected_result
     assert warnings == expected_warnings
 

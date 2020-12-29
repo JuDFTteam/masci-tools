@@ -117,25 +117,20 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
     inpschema_dict = load_inpschema(inp_version)
     outschema_dict, outxmlschema = load_outschema(out_version, schema_return=True)
 
-    if not outxmlschema.validate(xmltree):
-        # get more information on what does not validate
-        parser_on_fly = etree.XMLParser(attribute_defaults=True, schema=outxmlschema, encoding='utf-8')
-        outxmlfile = etree.tostring(xmltree)
-        message = ''
-        try:
-            tree_x = etree.fromstring(outxmlfile, parser_on_fly)
-        except etree.XMLSyntaxError as msg:
-            message = msg
-            if ignore_validation:
-                parser_info_out['parser_warnings'].append(
-                    f'Output file does not validate against the schema: {message}')
-            else:
-                raise ValueError(f'Output file does not validate against the schema: {message}') from msg
+    errmsg = ''
+    try:
+        outxmlschema.assertValid(xmltree)
+    except etree.DocumentInvalid as err:
+        validation_errors = ''.join([f'Line {error.line}: {error.message} \n' for error in outxmlschema.error_log])
+        errmsg = f'Output file does not validate against the schema: \n{validation_errors}'
+        parser_info_out['parser_warnings'].append(errmsg)
+        if not ignore_validation:
+            raise ValueError(errmsg) from err
+
+    if not outxmlschema.validate(xmltree) and errmsg == '':
+        parser_info_out['parser_warnings'].append('Output file does not validate against the schema: Reason is unknown')
         if not ignore_validation:
             raise ValueError('Output file does not validate against the schema: Reason is unknown')
-        if message == '':
-            parser_info_out['parser_warnings'].append(
-                'Output file does not validate against the schema: Reason is unknown')
 
     parser = ParseTasks(out_version)
     additional_tasks = kwargs.pop('additional_tasks', {})
