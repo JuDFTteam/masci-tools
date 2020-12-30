@@ -43,7 +43,8 @@ def clear_xml(tree):
         known_tags.append({elem.tag for elem in parent})
 
     # replace XInclude parts to validate against schema
-    cleared_tree.xinclude()
+    if len(include_tags)!=0:
+        cleared_tree.xinclude()
 
     # get rid of xml:base attribute in the included parts
     for parent, old_tags in zip(parents, known_tags):
