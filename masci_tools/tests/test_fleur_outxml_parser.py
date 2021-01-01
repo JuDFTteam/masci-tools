@@ -112,7 +112,7 @@ def test_outxml_validation_errors():
             'soc': False
         },
         'parser_info':
-        'Masci-Tools Fleur out.xml Parser v0.2.0',
+        'Masci-Tools Fleur out.xml Parser v0.2.1',
         'parser_warnings': [
             'Output file does not validate against the schema: \n'
             "Line 346: Element 'kPointList', attribute 'weightSc': "
@@ -144,7 +144,7 @@ def test_outxml_empty_out():
 
     expected_warnings = {
         'parser_info':
-        'Masci-Tools Fleur out.xml Parser v0.2.0',
+        'Masci-Tools Fleur out.xml Parser v0.2.1',
         'parser_warnings': [
             'The out.xml file is broken I try to repair it.', 'Skipping the parsing of the xml file. Repairing was not '
             'possible.'
@@ -178,7 +178,7 @@ def test_outxml_broken():
         'last_iteration_parsed':
         2,
         'parser_info':
-        'Masci-Tools Fleur out.xml Parser v0.2.0',
+        'Masci-Tools Fleur out.xml Parser v0.2.1',
         'parser_warnings': [
             'The out.xml file is broken I try to repair it.', 'No text found for tag targetStructureClass',
             'No values found for attribute date at tag endDateAndTime',
@@ -268,7 +268,7 @@ def test_outxml_broken_firstiter():
         'last_iteration_parsed':
         1,
         'parser_info':
-        'Masci-Tools Fleur out.xml Parser v0.2.0',
+        'Masci-Tools Fleur out.xml Parser v0.2.1',
         'parser_warnings': [
             'The out.xml file is broken I try to repair it.', 'No text found for tag targetStructureClass',
             'No values found for attribute date at tag endDateAndTime',
@@ -422,7 +422,7 @@ def test_outxml_garbage_values():
             'soc': False
         },
         'parser_info':
-        'Masci-Tools Fleur out.xml Parser v0.2.0',
+        'Masci-Tools Fleur out.xml Parser v0.2.1',
         'parser_warnings': [
             'Output file does not validate against the schema: \n'
             "Line 591: Element 'FermiEnergy', attribute 'value': "
@@ -939,7 +939,7 @@ def test_outxml_max4compatibility():
             'soc': False
         },
         'parser_info':
-        'Masci-Tools Fleur out.xml Parser v0.2.0',
+        'Masci-Tools Fleur out.xml Parser v0.2.1',
         'parser_warnings': [
             "Ignoring '0.27' outputVersion for MaX4.0 release", 'Output file does not validate against the schema: \n'
             "Line 17: Element 'inputData': The attribute 'fleurInputVersion' is required but missing. \n"
