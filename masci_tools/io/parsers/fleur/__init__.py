@@ -18,5 +18,6 @@ from .fleur_inpxml_parser import inpxml_parser
 from .fleur_outxml_parser import outxml_parser
 from .parse_tasks import ParseTasks
 from .task_migrations import *
+from .outxml_conversions import *
 
 __all__ = ['inpxml_parser', 'outxml_parser', 'ParseTasks']

@@ -20,13 +20,14 @@ from masci_tools.util.xml.common_xml_util import eval_xpath, clear_xml
 from masci_tools.io.parsers.fleur.fleur_schema import load_inpschema, load_outschema
 from lxml import etree
 import copy
+import io
 
 
 def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_parse=None, **kwargs):
     """
     Parses the out.xml file to a dictionary based on the version and the given tasks
 
-    :param outxmlfile: either path to the out.xml file or a xml etree to be parsed
+    :param outxmlfile: either path to the out.xml file, opened file handle or a xml etree to be parsed
     :param version: version string to enforce that a given schema is used
     :param parser_info_out: dict, with warnings, info, errors, ...
     :param iteration_to_parse: either str or int, (optional, default 'last')
@@ -58,7 +59,7 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
 
     outfile_broken = False
     parse_xml = True
-    if isinstance(outxmlfile, str):
+    if isinstance(outxmlfile, str) or isinstance(outxmlfile, io.IOBase):
         parser = etree.XMLParser(attribute_defaults=True, recover=False, encoding='utf-8')
 
         try:
