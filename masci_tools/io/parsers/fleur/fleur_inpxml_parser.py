@@ -19,14 +19,14 @@ from pprint import pprint
 from masci_tools.io.parsers.fleur.fleur_schema import load_inpschema
 from masci_tools.util.xml.common_xml_util import clear_xml, convert_xml_attribute, convert_xml_text
 from masci_tools.util.schema_dict_util import read_constants
-
+import io
 
 def inpxml_parser(inpxmlfile, version=None, parser_info_out=None):
     """
     Parses the given inp.xml file to a python dictionary utilizing the schema
     defined by the version number to validate and corretly convert to the dictionary
 
-    :param inpxmlfile: either path to the inp.xml file or a xml etree to be parsed
+    :param inpxmlfile: either path to the inp.xml file, opened file handle or a xml etree to be parsed
     :param version: version string to enforce that a given schema is used
     :param parser_info_out: dict, with warnings, info, errors, ...
 
@@ -36,10 +36,10 @@ def inpxml_parser(inpxmlfile, version=None, parser_info_out=None):
     if parser_info_out is None:
         parser_info_out = {'parser_warnings': []}
 
-    parser_version = '0.1.0'
+    parser_version = '0.1.1'
     parser_info_out['parser_info'] = f'Masci-Tools Fleur inp.xml Parser v{parser_version}'
 
-    if isinstance(inpxmlfile, str):
+    if isinstance(inpxmlfile, str) or isinstance(inpxmlfile, io.IOBase):
         parser = etree.XMLParser(attribute_defaults=True, encoding='utf-8')
         try:
             xmltree = etree.parse(inpxmlfile, parser)

@@ -369,7 +369,7 @@ def test_inpxml_todict_warnings():
             "Could not evaluate expression 'Pi/(3.0-3.0)' The following error was raised: Undefined Expression: Division by zero"
         ],
         'parser_info':
-        'Masci-Tools Fleur inp.xml Parser v0.1.0',
+        'Masci-Tools Fleur inp.xml Parser v0.1.1',
         'fleur_inp_version':
         '0.33'
     }
