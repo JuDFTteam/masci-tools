@@ -326,10 +326,22 @@ def test_inpxml_valid_inpxml(inpxmlfilepath):
     #Pass inpxmlfile
     inp_dict = inpxml_parser(inpxmlfilepath)
 
+    assert inp_dict is not None
+    assert isinstance(inp_dict, dict)
+    assert inp_dict != {}
+
     #Parse before
     parser = etree.XMLParser(attribute_defaults=True, encoding='utf-8')
     xmltree = etree.parse(inpxmlfilepath, parser)
     inp_dict = inpxml_parser(xmltree)
+
+    assert inp_dict is not None
+    assert isinstance(inp_dict, dict)
+    assert inp_dict != {}
+
+    #Pass file handle
+    with open(inpxmlfilepath, 'r') as inpfile:
+        inp_dict = inpxml_parser(inpfile)
 
     assert inp_dict is not None
     assert isinstance(inp_dict, dict)

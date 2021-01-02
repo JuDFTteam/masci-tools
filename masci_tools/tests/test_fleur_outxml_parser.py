@@ -32,6 +32,10 @@ def test_outxml_valid_outxml(outxmlfilepath):
     #Pass outxmlfile
     out_dict = outxml_parser(outxmlfilepath)
 
+    assert out_dict is not None
+    assert isinstance(out_dict, dict)
+    assert out_dict != {}
+
     #Parse before
     parser = etree.XMLParser(attribute_defaults=True, encoding='utf-8')
     xmltree = etree.parse(outxmlfilepath, parser)
@@ -41,6 +45,13 @@ def test_outxml_valid_outxml(outxmlfilepath):
     assert isinstance(out_dict, dict)
     assert out_dict != {}
 
+    #call with contextmanager
+    with open(outxmlfilepath, 'r') as outfile:
+        out_dict = outxml_parser(outfile, strict=True)
+
+    assert out_dict is not None
+    assert isinstance(out_dict, dict)
+    assert out_dict != {}
 
 
 def test_outxml_validation_errors():

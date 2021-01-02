@@ -20,7 +20,6 @@ from masci_tools.util.xml.common_xml_util import eval_xpath, clear_xml
 from masci_tools.io.parsers.fleur.fleur_schema import load_inpschema, load_outschema
 from lxml import etree
 import copy
-import io
 
 
 def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_parse=None, **kwargs):
@@ -59,7 +58,10 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
 
     outfile_broken = False
     parse_xml = True
-    if isinstance(outxmlfile, str) or isinstance(outxmlfile, io.IOBase):
+
+    if isinstance(outxmlfile, etree._ElementTree):
+        xmltree = outxmlfile
+    else:
         parser = etree.XMLParser(attribute_defaults=True, recover=False, encoding='utf-8')
 
         try:
@@ -77,8 +79,6 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
                 parse_xml = False
                 parser_info_out['parser_warnings'].append('Skipping the parsing of the xml file. '
                                                           'Repairing was not possible.')
-    else:
-        xmltree = outxmlfile
 
     if not parse_xml:
         return {}
