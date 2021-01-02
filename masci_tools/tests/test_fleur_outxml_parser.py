@@ -37,6 +37,11 @@ def test_outxml_valid_outxml(outxmlfilepath):
     xmltree = etree.parse(outxmlfilepath, parser)
     out_dict = outxml_parser(xmltree, strict=True)
 
+    assert out_dict is not None
+    assert isinstance(out_dict, dict)
+    assert out_dict != {}
+
+
 
 def test_outxml_validation_errors():
     """
