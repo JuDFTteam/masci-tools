@@ -15,7 +15,7 @@ This module contains functions to load an fleur out.xml file, parse it with a sc
 and convert its content to a dict, based on the tasks given
 """
 from .parse_tasks import ParseTasks
-from masci_tools.util.schema_dict_util import get_tag_xpath, tag_exists, read_constants
+from masci_tools.util.schema_dict_util import get_tag_xpath, tag_exists, read_constants, eval_simple_xpath
 from masci_tools.util.xml.common_xml_util import eval_xpath, clear_xml
 from masci_tools.io.parsers.fleur.fleur_schema import load_inpschema, load_outschema
 from lxml import etree
@@ -147,8 +147,7 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
                                                     **kwargs)
 
     # get all iterations in out.xml file
-    iteration_xpath = get_tag_xpath(outschema_dict, 'iteration')
-    iteration_nodes = eval_xpath(root, iteration_xpath, parser_info_out=parser_info_out, list_return=True)
+    iteration_nodes = eval_simple_xpath(root, outschema_dict, 'iteration', parser_info_out=parser_info_out, list_return=True)
     n_iters = len(iteration_nodes)
 
     # parse only last stable interation

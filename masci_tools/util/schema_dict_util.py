@@ -224,12 +224,6 @@ def evaluate_attribute(node, schema_dict, name, constants, parser_info_out=None,
     if replace_root is not None:
         attrib_xpath = attrib_xpath.replace(f"/{schema_dict['root_tag']}", replace_root)
 
-    if node.tag != attrib_xpath.split('/')[1] and attrib_xpath.split('/')[0] != '.':
-        #absolute path with a different tag than xmlelement
-        if node.tag in attrib_xpath:
-            attrib_xpath = attrib_xpath.replace(attrib_xpath.split(node.tag)[-1]+node.tag,'.')
-
-
     stringattribute = eval_xpath(node, f'{attrib_xpath}/@{name}', parser_info_out=parser_info_out)
 
     if isinstance(stringattribute, list):
@@ -287,11 +281,6 @@ def evaluate_text(node, schema_dict, name, constants, parser_info_out=None, **kw
     replace_root = kwargs.get('replace_root', None)
     if replace_root is not None:
         tag_xpath = tag_xpath.replace(f"/{schema_dict['root_tag']}", replace_root)
-
-    if node.tag != tag_xpath.split('/')[1] and tag_xpath.split('/')[0] != '.':
-        #absolute path with a different tag than xmlelement
-        if node.tag in tag_xpath:
-            tag_xpath = tag_xpath.replace(tag_xpath.split(node.tag)[-1]+node.tag,'.')
 
     stringtext = eval_xpath(node, f'{tag_xpath}/text()', parser_info_out=parser_info_out)
 
@@ -382,11 +371,6 @@ def evaluate_tag(node, schema_dict, name, constants, parser_info_out=None, **kwa
     replace_root = kwargs.get('replace_root', None)
     if replace_root is not None:
         tag_xpath = tag_xpath.replace(f"/{schema_dict['root_tag']}", replace_root)
-
-    if node.tag != tag_xpath.split('/')[1] and tag_xpath.split('/')[0] != '.':
-        #absolute path with a different tag than xmlelement
-        if node.tag in tag_xpath:
-            tag_xpath = tag_xpath.replace(tag_xpath.split(node.tag)[-1]+node.tag,'.')
 
     out_dict = {}
 
@@ -518,16 +502,11 @@ def evaluate_parent_tag(node, schema_dict, name, constants, parser_info_out=None
     if replace_root is not None:
         tag_xpath = tag_xpath.replace(f"/{schema_dict['root_tag']}", replace_root)
 
-    if node.tag != tag_xpath.split('/')[1] and tag_xpath.split('/')[0] != '.':
-        #absolute path with a different tag than xmlelement
-        if node.tag in tag_xpath:
-            tag_xpath = tag_xpath.replace(tag_xpath.split(node.tag)[-1]+node.tag,'.')
+    elems = eval_xpath(node, tag_xpath, parser_info_out=parser_info_out)
 
     out_dict = dict.fromkeys(attribs)
     for attrib in attribs:
         out_dict[attrib] = []
-
-    elems = eval_xpath(node, tag_xpath, parser_info_out=parser_info_out)
 
     for elem in elems:
         parent = elem.getparent()
@@ -596,10 +575,31 @@ def get_number_of_nodes(node, schema_dict, name, parser_info_out=None, **kwargs)
 
     :returns: bool, True if any nodes with the path exist
     """
+    return len(eval_simple_xpath(node, schema_dict, name, parser_info_out=parser_info_out, list_return=True, **kwargs))
+
+def eval_simple_xpath(node, schema_dict, name, parser_info_out=None, **kwargs):
+    """
+    Evaluates a simple xpath expression of the tag in the xmltree based on the given name
+    and additional further specifications with the available type information
+
+    :param node: etree Element, on which to execute the xpath evaluations
+    :param schema_dict: dict, containing all the path information and more
+    :param name: str, name of the tag
+    :param parser_info_out: dict, with warnings, info, errors, ...
+
+    Kwargs:
+        :param contains: str, this string has to be in the final path
+        :param not_contains: str, this string has to NOT be in the final path
+        :param replace_root: str, replaces the root tag (used for inserting output root to input paths)
+        :param list_return: bool, if True a list is always returned
+
+    :returns: bool, True if any nodes with the path exist
+    """
     from masci_tools.util.xml.common_xml_util import eval_xpath
 
     contains = kwargs.get('contains', None)
     not_contains = kwargs.get('not_contains', None)
+    list_return = kwargs.get('list_return', False)
 
     tag_xpath = get_tag_xpath(schema_dict, name, contains=contains, not_contains=not_contains)
 
@@ -607,9 +607,4 @@ def get_number_of_nodes(node, schema_dict, name, parser_info_out=None, **kwargs)
     if replace_root is not None:
         tag_xpath = tag_xpath.replace(f"/{schema_dict['root_tag']}", replace_root)
 
-    if node.tag != tag_xpath.split('/')[1] and tag_xpath.split('/')[0] != '.':
-        #absolute path with a different tag than xmlelement
-        if node.tag in tag_xpath:
-            tag_xpath = tag_xpath.replace(tag_xpath.split(node.tag)[-1]+node.tag,'.')
-
-    return len(eval_xpath(node, tag_xpath, parser_info_out=parser_info_out, list_return=True))
+    return eval_xpath(node, tag_xpath, parser_info_out=parser_info_out, list_return=list_return)
