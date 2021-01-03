@@ -143,14 +143,15 @@ def get_attrib_xpath(schema_dict, name, contains=None, not_contains=None, exclud
                          f'These are possible: {all_paths}')
 
 
-def read_constants(xmltree, schema_dict, replace_root=None):
+def read_constants(root, schema_dict, replace_root=None):
     """
     Reads in the constants defined in the inp.xml
     and returns them combined with the predefined constants from
     fleur as a dictionary
 
-    :param xmltree: xmltree of the inp.xml file
+    :param root: root of the etree of the inp.xml file
     :param schema_dict: schema_dictionary of the version of the inp.xml
+    :param replace_root: str, replaces the root tag (used for inserting output root to input paths)
 
     :return: a python dictionary with all defined constants
     """
@@ -159,7 +160,7 @@ def read_constants(xmltree, schema_dict, replace_root=None):
 
     defined_constants = copy.deepcopy(FLEUR_DEFINED_CONSTANTS)
 
-    constants = evaluate_tag(xmltree, schema_dict, 'constant', defined_constants, replace_root=replace_root)
+    constants = evaluate_tag(root, schema_dict, 'constant', defined_constants, replace_root=replace_root)
 
     if constants['name'] is not None:
         for name, value in zip(constants['name'], constants['value']):
@@ -177,6 +178,7 @@ def evaluate_attribute(node, schema_dict, name, constants, parser_info_out=None,
     Evaluates the value of the attribute based on the given name
     and additional further specifications with the available type information
 
+    :param node: etree Element, on which to execute the xpath evaluations
     :param schema_dict: dict, containing all the path information and more
     :param name: str, name of the attribute
     :param constants: dict, contains the defined constants
@@ -258,6 +260,7 @@ def evaluate_text(node, schema_dict, name, constants, parser_info_out=None, **kw
     Evaluates the text of the tag based on the given name
     and additional further specifications with the available type information
 
+    :param node: etree Element, on which to execute the xpath evaluations
     :param schema_dict: dict, containing all the path information and more
     :param name: str, name of the tag
     :param constants: dict, contains the defined constants
@@ -325,6 +328,7 @@ def evaluate_tag(node, schema_dict, name, constants, parser_info_out=None, **kwa
     Evaluates all attributes of the tag based on the given name
     and additional further specifications with the available type information
 
+    :param node: etree Element, on which to execute the xpath evaluations
     :param schema_dict: dict, containing all the path information and more
     :param name: str, name of the tag
     :param constants: dict, contains the defined constants
@@ -419,6 +423,7 @@ def evaluate_single_value_tag(node, schema_dict, name, constants, parser_info_ou
     Evaluates the value and unit attribute of the tag based on the given name
     and additional further specifications with the available type information
 
+    :param node: etree Element, on which to execute the xpath evaluations
     :param schema_dict: dict, containing all the path information and more
     :param name: str, name of the tag
     :param constants: dict, contains the defined constants
@@ -456,6 +461,7 @@ def evaluate_parent_tag(node, schema_dict, name, constants, parser_info_out=None
     Evaluates all attributes of the parent tag based on the given name
     and additional further specifications with the available type information
 
+    :param node: etree Element, on which to execute the xpath evaluations
     :param schema_dict: dict, containing all the path information and more
     :param name: str, name of the tag
     :param constants: dict, contains the defined constants
@@ -557,6 +563,7 @@ def tag_exists(node, schema_dict, name, parser_info_out=None, **kwargs):
     Evaluates whether the tag exists in the xmltree based on the given name
     and additional further specifications with the available type information
 
+    :param node: etree Element, on which to execute the xpath evaluations
     :param schema_dict: dict, containing all the path information and more
     :param name: str, name of the tag
     :param parser_info_out: dict, with warnings, info, errors, ...
@@ -577,6 +584,7 @@ def get_number_of_nodes(node, schema_dict, name, parser_info_out=None, **kwargs)
     Evaluates the number of occurences of the tag in the xmltree based on the given name
     and additional further specifications with the available type information
 
+    :param node: etree Element, on which to execute the xpath evaluations
     :param schema_dict: dict, containing all the path information and more
     :param name: str, name of the tag
     :param parser_info_out: dict, with warnings, info, errors, ...
