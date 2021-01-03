@@ -183,6 +183,8 @@ def convert_relax_info(out_dict, parser_info_out=None):
     species = out_dict.pop('position_species')
     species = species['species']
     species_info = out_dict.pop('element_species')
+    if isinstance(species_info['name'], str):
+        species_info = {key: [val] for key, val in species_info.items()}
     species_info = dict(zip(species_info['name'], species_info['element']))
 
     out_dict['relax_atomtype_info'] = []
@@ -203,6 +205,9 @@ def convert_forces(out_dict, parser_info_out=None):
 
     if 'force_largest' not in out_dict:
         out_dict['force_largest'] = []
+
+    if isinstance(parsed_forces['atom_type'], int):
+        parsed_forces = {key: [val] for key, val in parsed_forces.items()}
 
     largest_force = 0.0
     for index, atomType in enumerate(parsed_forces['atom_type']):

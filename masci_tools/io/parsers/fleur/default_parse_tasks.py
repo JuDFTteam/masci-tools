@@ -524,7 +524,8 @@ TASKS_DEFINITION = {
             'path_spec': {
                 'name': 'forceTotal'
             },
-            'flat': False
+            'flat': False,
+            'only_required': True
         }
     },
     'charges': {
