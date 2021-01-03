@@ -304,6 +304,7 @@ TASKS_DEFINITION = {
                 'name': 'species'
             },
             'flat': False,
+            'ignore': ['vcaAddCharge', 'magField']
         },
     },
     'film_relax_info': {
@@ -351,6 +352,7 @@ TASKS_DEFINITION = {
                 'name': 'species'
             },
             'flat': False,
+            'ignore': ['vcaAddCharge', 'magField']
         },
     },
     #----General iteration tasks
