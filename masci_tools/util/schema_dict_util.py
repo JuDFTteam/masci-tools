@@ -218,10 +218,15 @@ def evaluate_attribute(node, schema_dict, name, constants, parser_info_out=None,
                                         not_contains=not_contains,
                                         exclude=exclude)
 
-    if 'replace_root' in kwargs:
-        replace_root = kwargs.get('replace_root')
-        if replace_root is not None:
-            attrib_xpath = attrib_xpath.replace(f"/{schema_dict['root_tag']}", replace_root)
+    replace_root = kwargs.get('replace_root', None)
+    if replace_root is not None:
+        attrib_xpath = attrib_xpath.replace(f"/{schema_dict['root_tag']}", replace_root)
+
+    if node.tag != attrib_xpath.split('/')[1] and attrib_xpath.split('/')[0] != '.':
+        #absolute path with a different tag than xmlelement
+        if node.tag in attrib_xpath:
+            attrib_xpath = attrib_xpath.replace(attrib_xpath.split(node.tag)[-1]+node.tag,'.')
+
 
     stringattribute = eval_xpath(node, f'{attrib_xpath}/@{name}', parser_info_out=parser_info_out)
 
@@ -276,10 +281,14 @@ def evaluate_text(node, schema_dict, name, constants, parser_info_out=None, **kw
 
     tag_xpath = get_tag_xpath(schema_dict, name, contains=contains, not_contains=not_contains)
 
-    if 'replace_root' in kwargs:
-        replace_root = kwargs.get('replace_root')
-        if replace_root is not None:
-            tag_xpath = tag_xpath.replace(f"/{schema_dict['root_tag']}", replace_root)
+    replace_root = kwargs.get('replace_root', None)
+    if replace_root is not None:
+        tag_xpath = tag_xpath.replace(f"/{schema_dict['root_tag']}", replace_root)
+
+    if node.tag != tag_xpath.split('/')[1] and tag_xpath.split('/')[0] != '.':
+        #absolute path with a different tag than xmlelement
+        if node.tag in tag_xpath:
+            tag_xpath = tag_xpath.replace(tag_xpath.split(node.tag)[-1]+node.tag,'.')
 
     stringtext = eval_xpath(node, f'{tag_xpath}/text()', parser_info_out=parser_info_out)
 
@@ -366,10 +375,14 @@ def evaluate_tag(node, schema_dict, name, constants, parser_info_out=None, **kwa
                                                   'No attributes to parse either the tag does not '
                                                   'exist or it has no attributes')
 
-    if 'replace_root' in kwargs:
-        replace_root = kwargs.get('replace_root')
-        if replace_root is not None:
-            tag_xpath = tag_xpath.replace(f"/{schema_dict['root_tag']}", replace_root)
+    replace_root = kwargs.get('replace_root', None)
+    if replace_root is not None:
+        tag_xpath = tag_xpath.replace(f"/{schema_dict['root_tag']}", replace_root)
+
+    if node.tag != tag_xpath.split('/')[1] and tag_xpath.split('/')[0] != '.':
+        #absolute path with a different tag than xmlelement
+        if node.tag in tag_xpath:
+            tag_xpath = tag_xpath.replace(tag_xpath.split(node.tag)[-1]+node.tag,'.')
 
     out_dict = {}
 
@@ -495,10 +508,14 @@ def evaluate_parent_tag(node, schema_dict, name, constants, parser_info_out=None
                                                   'No attributes to parse either the tag does not '
                                                   'exist or it has no attributes')
 
-    if 'replace_root' in kwargs:
-        replace_root = kwargs.get('replace_root')
-        if replace_root is not None:
-            tag_xpath = tag_xpath.replace(f"/{schema_dict['root_tag']}", replace_root)
+    replace_root = kwargs.get('replace_root', None)
+    if replace_root is not None:
+        tag_xpath = tag_xpath.replace(f"/{schema_dict['root_tag']}", replace_root)
+
+    if node.tag != tag_xpath.split('/')[1] and tag_xpath.split('/')[0] != '.':
+        #absolute path with a different tag than xmlelement
+        if node.tag in tag_xpath:
+            tag_xpath = tag_xpath.replace(tag_xpath.split(node.tag)[-1]+node.tag,'.')
 
     out_dict = dict.fromkeys(attribs)
     for attrib in attribs:
@@ -578,9 +595,13 @@ def get_number_of_nodes(node, schema_dict, name, parser_info_out=None, **kwargs)
 
     tag_xpath = get_tag_xpath(schema_dict, name, contains=contains, not_contains=not_contains)
 
-    if 'replace_root' in kwargs:
-        replace_root = kwargs.get('replace_root')
-        if replace_root is not None:
-            tag_xpath = tag_xpath.replace(f"/{schema_dict['root_tag']}", replace_root)
+    replace_root = kwargs.get('replace_root', None)
+    if replace_root is not None:
+        tag_xpath = tag_xpath.replace(f"/{schema_dict['root_tag']}", replace_root)
+
+    if node.tag != tag_xpath.split('/')[1] and tag_xpath.split('/')[0] != '.':
+        #absolute path with a different tag than xmlelement
+        if node.tag in tag_xpath:
+            tag_xpath = tag_xpath.replace(tag_xpath.split(node.tag)[-1]+node.tag,'.')
 
     return len(eval_xpath(node, tag_xpath, parser_info_out=parser_info_out, list_return=True))

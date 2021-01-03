@@ -60,7 +60,7 @@ def inpxml_parser(inpxmlfile, version=None, parser_info_out=None):
     xmltree = clear_xml(xmltree)
     root = xmltree.getroot()
 
-    constants = read_constants(xmltree, schema_dict)
+    constants = read_constants(root, schema_dict)
 
     try:
         xmlschema.assertValid(xmltree)
