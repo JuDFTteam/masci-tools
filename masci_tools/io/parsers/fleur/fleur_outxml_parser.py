@@ -38,6 +38,7 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
                        otherwise a warning is written to parser_info_out
         :param ignore_validation: bool, if True schema validation errors are only logged
         :param minimal_mode: bool, if True only total Energy, iteration number and distances are parsed
+        :param list_return: bool, if True one-item lists in the output dict are not converted to simple values
         :param additional_tasks: dict to define custom parsing tasks. For detailed explanation
                                  See :py:mod:`~masci_tools.io.parsers.fleur.default_parse_tasks`.
         :param overwrite: bool, if True and keys in additional_tasks collide with defaults
@@ -193,16 +194,17 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
                                    parser_info_out=parser_info_out,
                                    **kwargs)
 
-    #Convert one item lists to simple values
-    for key, value in out_dict.items():
-        if isinstance(value, list):
-            if len(value) == 1:
-                out_dict[key] = value[0]
-        elif isinstance(value, dict):
-            for subkey, subvalue in value.items():
-                if isinstance(subvalue, list):
-                    if len(subvalue) == 1:
-                        out_dict[key][subkey] = subvalue[0]
+    if not kwargs.get('list_return', False):
+        #Convert one item lists to simple values
+        for key, value in out_dict.items():
+            if isinstance(value, list):
+                if len(value) == 1:
+                    out_dict[key] = value[0]
+            elif isinstance(value, dict):
+                for subkey, subvalue in value.items():
+                    if isinstance(subvalue, list):
+                        if len(subvalue) == 1:
+                            out_dict[key][subkey] = subvalue[0]
 
     return out_dict
 
