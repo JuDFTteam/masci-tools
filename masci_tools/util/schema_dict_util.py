@@ -647,7 +647,7 @@ def eval_simple_xpath(node, schema_dict, name, parser_info_out=None, **kwargs):
         :param replace_root: str, replaces the root tag (used for inserting output root to input paths)
         :param list_return: bool, if True a list is always returned
 
-    :returns: bool, True if any nodes with the path exist
+    :returns: etree Elements obtained via the simple xpath expression
     """
     from masci_tools.util.xml.common_xml_util import eval_xpath
 
