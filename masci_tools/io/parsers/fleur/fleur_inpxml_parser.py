@@ -17,7 +17,7 @@ and convert its content to a dict
 from lxml import etree
 from pprint import pprint
 from masci_tools.io.parsers.fleur.fleur_schema import load_inpschema
-from masci_tools.util.xml.common_xml_util import clear_xml, convert_xml_attribute, convert_xml_text
+from masci_tools.util.xml.common_xml_util import clear_xml, convert_xml_attribute, convert_xml_text, eval_xpath
 from masci_tools.util.schema_dict_util import read_constants
 
 def inpxml_parser(inpxmlfile, version=None, parser_info_out=None):
@@ -48,11 +48,9 @@ def inpxml_parser(inpxmlfile, version=None, parser_info_out=None):
             raise ValueError(f'Failed to parse input file: {msg}') from msg
 
     if version is None:
-        try:
-            root = xmltree.getroot()
-            version = root.attrib['fleurInputVersion']
-        except KeyError as exc:
-            raise ValueError('Failed to extract inputVersion') from exc
+        version = eval_xpath(xmltree, '//@fleurInputVersion', parser_info_out=parser_info_out)
+        if version is None:
+            raise ValueError('Failed to extract inputVersion')
 
     parser_info_out['fleur_inp_version'] = version
     schema_dict, xmlschema = load_inpschema(version, schema_return=True)
