@@ -87,7 +87,3 @@ If only a small amount of information is required form the input or output files
 
    species = eval_simple_xpath(root, schema_dict, 'atomSpecies')
    mt_radii = evaluate_attribute(species, schema_dict, 'radius', constants)
-
-
-
-
