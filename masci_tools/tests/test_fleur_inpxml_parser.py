@@ -348,7 +348,6 @@ def test_inpxml_valid_inpxml(inpxmlfilepath):
     assert inp_dict != {}
 
 
-
 @pytest.mark.parametrize('inpxmlfilepath', inpxmlfilelist2)
 def test_inpxml_non_valid_inpxml(inpxmlfilepath):
     """

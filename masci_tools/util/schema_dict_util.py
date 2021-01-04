@@ -227,11 +227,11 @@ def evaluate_attribute(node, schema_dict, name, constants, parser_info_out=None,
 
     if isinstance(node, etree._Element) and replace_root is None:
         if node.tag != schema_dict['root_tag'] and node.tag != 'iteration':
-                if contains is None:
-                    contains = []
-                contains = set(contains)
-                contains.add(node.tag)
-                contains = list(contains)
+            if contains is None:
+                contains = []
+            contains = set(contains)
+            contains.add(node.tag)
+            contains = list(contains)
 
     if 'tag_name' in kwargs:
         attrib_xpath = get_tag_xpath(schema_dict, kwargs.get('tag_name'), contains=contains, not_contains=not_contains)
@@ -308,11 +308,11 @@ def evaluate_text(node, schema_dict, name, constants, parser_info_out=None, **kw
 
     if isinstance(node, etree._Element) and replace_root is None:
         if node.tag != schema_dict['root_tag'] and node.tag != 'iteration':
-                if contains is None:
-                    contains = []
-                contains = set(contains)
-                contains.add(node.tag)
-                contains = list(contains)
+            if contains is None:
+                contains = []
+            contains = set(contains)
+            contains.add(node.tag)
+            contains = list(contains)
 
     tag_xpath = get_tag_xpath(schema_dict, name, contains=contains, not_contains=not_contains)
 
@@ -381,11 +381,11 @@ def evaluate_tag(node, schema_dict, name, constants, parser_info_out=None, **kwa
 
     if isinstance(node, etree._Element) and replace_root is None:
         if node.tag != schema_dict['root_tag'] and node.tag != 'iteration':
-                if contains is None:
-                    contains = []
-                contains = set(contains)
-                contains.add(node.tag)
-                contains = list(contains)
+            if contains is None:
+                contains = []
+            contains = set(contains)
+            contains.add(node.tag)
+            contains = list(contains)
 
     tag_xpath = get_tag_xpath(schema_dict, name, contains=contains, not_contains=not_contains)
 
@@ -517,11 +517,11 @@ def evaluate_parent_tag(node, schema_dict, name, constants, parser_info_out=None
 
     if isinstance(node, etree._Element) and replace_root is None:
         if node.tag != schema_dict['root_tag'] and node.tag != 'iteration':
-                if contains is None:
-                    contains = []
-                contains = set(contains)
-                contains.add(node.tag)
-                contains = list(contains)
+            if contains is None:
+                contains = []
+            contains = set(contains)
+            contains.add(node.tag)
+            contains = list(contains)
 
     tag_xpath = get_tag_xpath(schema_dict, name, contains=contains, not_contains=not_contains)
 
@@ -630,6 +630,7 @@ def get_number_of_nodes(node, schema_dict, name, parser_info_out=None, **kwargs)
     """
     return len(eval_simple_xpath(node, schema_dict, name, parser_info_out=parser_info_out, list_return=True, **kwargs))
 
+
 def eval_simple_xpath(node, schema_dict, name, parser_info_out=None, **kwargs):
     """
     Evaluates a simple xpath expression of the tag in the xmltree based on the given name
@@ -657,11 +658,11 @@ def eval_simple_xpath(node, schema_dict, name, parser_info_out=None, **kwargs):
 
     if isinstance(node, etree._Element) and replace_root is None:
         if node.tag != schema_dict['root_tag'] and node.tag != 'iteration':
-                if contains is None:
-                    contains = []
-                contains = set(contains)
-                contains.add(node.tag)
-                contains = list(contains)
+            if contains is None:
+                contains = []
+            contains = set(contains)
+            contains.add(node.tag)
+            contains = list(contains)
 
     tag_xpath = get_tag_xpath(schema_dict, name, contains=contains, not_contains=not_contains)
 

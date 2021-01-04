@@ -148,7 +148,11 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
                                                     **kwargs)
 
     # get all iterations in out.xml file
-    iteration_nodes = eval_simple_xpath(root, outschema_dict, 'iteration', parser_info_out=parser_info_out, list_return=True)
+    iteration_nodes = eval_simple_xpath(root,
+                                        outschema_dict,
+                                        'iteration',
+                                        parser_info_out=parser_info_out,
+                                        list_return=True)
     n_iters = len(iteration_nodes)
 
     # parse only last stable interation
@@ -209,7 +213,13 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
     return out_dict
 
 
-def parse_general_information(root, parser, outschema_dict, inpschema_dict, iteration_to_parse=None, parser_info_out=None, **kwargs):
+def parse_general_information(root,
+                              parser,
+                              outschema_dict,
+                              inpschema_dict,
+                              iteration_to_parse=None,
+                              parser_info_out=None,
+                              **kwargs):
     """
     Parses the information from the out.xml outside scf iterations
 
@@ -260,7 +270,6 @@ def parse_general_information(root, parser, outschema_dict, inpschema_dict, iter
     #For certain fleur modes we need to overwrite the tasks
     if fleurmode['dos'] or fleurmode['band']:
         parser.iteration_tasks = ['iteration_number', 'fermi_energy', 'bandgap']
-
 
     if fleurmode['relax'] and iteration_to_parse == 'last':
         if 'distances' in parser.iteration_tasks:

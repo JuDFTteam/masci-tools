@@ -52,6 +52,9 @@ I/O helper and output file parsers
 .. automodule:: masci_tools.io.parsers.fleur
    :members:
 
+.. automodule:: masci_tools.io.parsers.fleur.outxml_conversions
+   :members:
+
 .. automodule:: masci_tools.io.parsers.fleur.fleur_schema
    :members:
 
@@ -80,9 +83,6 @@ Utility functions
    :members:
 
 .. automodule:: masci_tools.util.fleur_calculate_expression
-   :members:
-
-.. automodule:: masci_tools.util.fleur_outxml_conversions
    :members:
 
 .. automodule:: masci_tools.util.parse_tasks_decorators

@@ -43,7 +43,7 @@ def clear_xml(tree):
         known_tags.append({elem.tag for elem in parent})
 
     # replace XInclude parts to validate against schema
-    if len(include_tags)!=0:
+    if len(include_tags) != 0:
         cleared_tree.xinclude()
 
     # get rid of xml:base attribute in the included parts
@@ -337,7 +337,7 @@ def eval_xpath(node, xpath, parser_info_out=None, list_return=False, namespaces=
         if node.tag != xpath.split('/')[1] and xpath.split('/')[0] != '.':
             #absolute path with a different root tag than node
             if node.tag in xpath:
-                xpath = xpath.replace(xpath.split(node.tag)[-1]+node.tag,'.')
+                xpath = xpath.replace(xpath.split(node.tag)[-1] + node.tag, '.')
 
     try:
         if namespaces is not None:
