@@ -84,18 +84,15 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
     if not parse_xml:
         return {}
 
-    xmltree = clear_xml(xmltree)
-    root = xmltree.getroot()
-
     if version is None:
-        out_version = eval_xpath(root, '//@fleurOutputVersion', parser_info_out=parser_info_out)
+        out_version = eval_xpath(xmltree, '//@fleurOutputVersion', parser_info_out=parser_info_out)
         if out_version is None:
             raise ValueError('Failed to extract outputVersion')
     else:
         out_version = version
 
     if out_version == '0.27':
-        program_version = eval_xpath(root, '//programVersion/@version', parser_info_out=parser_info_out)
+        program_version = eval_xpath(xmltree, '//programVersion/@version', parser_info_out=parser_info_out)
         if program_version == 'fleur 31':
             #Max4 release
             out_version = '0.31'
@@ -106,7 +103,7 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
             raise ValueError('Versions before fleur MaX4.0 are not supported')
     else:
         ignore_validation = False
-        inp_version = eval_xpath(root, '//@fleurInputVersion', parser_info_out=parser_info_out)
+        inp_version = eval_xpath(xmltree, '//@fleurInputVersion', parser_info_out=parser_info_out)
         if inp_version is None:
             raise ValueError('Failed to extract inputVersion')
 
@@ -118,6 +115,9 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
     #Load schema_dict (inp and out)
     inpschema_dict = load_inpschema(inp_version)
     outschema_dict, outxmlschema = load_outschema(out_version, schema_return=True)
+
+    xmltree = clear_xml(xmltree)
+    root = xmltree.getroot()
 
     errmsg = ''
     try:
@@ -144,6 +144,7 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
                                                     outschema_dict,
                                                     inpschema_dict,
                                                     parser_info_out=parser_info_out,
+                                                    iteration_to_parse=iteration_to_parse,
                                                     **kwargs)
 
     # get all iterations in out.xml file
@@ -208,7 +209,7 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
     return out_dict
 
 
-def parse_general_information(root, parser, outschema_dict, inpschema_dict, parser_info_out=None, **kwargs):
+def parse_general_information(root, parser, outschema_dict, inpschema_dict, iteration_to_parse=None, parser_info_out=None, **kwargs):
     """
     Parses the information from the out.xml outside scf iterations
 
@@ -228,6 +229,8 @@ def parse_general_information(root, parser, outschema_dict, inpschema_dict, pars
 
     minimal_mode = kwargs.get('minimal_mode', False)
     debug = kwargs.get('debug', False)
+    if iteration_to_parse is None:
+        iteration_to_parse = 'last'
 
     input_tag_path = get_tag_xpath(outschema_dict, outschema_dict['input_tag'])
     constants = read_constants(root, inpschema_dict, replace_root=input_tag_path)
@@ -257,6 +260,13 @@ def parse_general_information(root, parser, outschema_dict, inpschema_dict, pars
     #For certain fleur modes we need to overwrite the tasks
     if fleurmode['dos'] or fleurmode['band']:
         parser.iteration_tasks = ['iteration_number', 'fermi_energy', 'bandgap']
+
+
+    if fleurmode['relax'] and iteration_to_parse == 'last':
+        if 'distances' in parser.iteration_tasks:
+            parser.iteration_tasks.remove('distances')
+        if 'magnetic_distances' in parser.iteration_tasks:
+            parser.iteration_tasks.remove('magnetic_distances')
 
     if debug:
         parser_info_out['debug_info']['general_tasks'] = parser.general_tasks
