@@ -608,7 +608,7 @@ def get_tag_paths(xmlschema, namespaces, **kwargs):
     stop_iteration = kwargs.get('stop_iteration', False)
     iteration_root = kwargs.get('iteration_root', False)
 
-    possible_tags = xmlschema.xpath('//xsd:element/@name', namespaces=namespaces)
+    possible_tags = set(xmlschema.xpath('//xsd:element/@name', namespaces=namespaces))
     tag_paths = {}
     for tag in possible_tags:
         paths = _get_xpath(xmlschema, namespaces, tag, stop_iteration=stop_iteration, iteration_root=iteration_root)
@@ -632,7 +632,7 @@ def get_unique_attribs(xmlschema, namespaces, **kwargs):
     iteration_root = kwargs.get('iteration_root', False)
 
     settable = {}
-    possible_attrib = xmlschema.xpath('//xsd:attribute/@name', namespaces=namespaces)
+    possible_attrib = set(xmlschema.xpath('//xsd:attribute/@name', namespaces=namespaces))
     for attrib in possible_attrib:
         path = _get_attrib_xpath(xmlschema,
                                  namespaces,
@@ -680,20 +680,24 @@ def get_unique_path_attribs(xmlschema, namespaces, **kwargs):
         settable_contains_key = 'unique_path_attribs'
 
     settable = {}
-    possible_attrib = xmlschema.xpath('//xsd:attribute/@name', namespaces=namespaces)
+    possible_attrib = set(xmlschema.xpath('//xsd:attribute/@name', namespaces=namespaces))
     for attrib in possible_attrib:
+        if attrib in kwargs[settable_key]:
+            continue
         path = _get_attrib_xpath(xmlschema,
                                  namespaces,
                                  attrib,
                                  stop_non_unique=True,
                                  stop_iteration=stop_iteration,
                                  iteration_root=iteration_root)
-        if path is not None and attrib not in kwargs[settable_key]:
+        if path is not None:
             if not isinstance(path, list):
                 path = [path]
             settable[attrib] = [x.replace(f'/@{attrib}', '') for x in path]
 
     for attrib, attrib_dict in kwargs['simple_elements'].items():
+        if attrib in kwargs[settable_key]:
+            continue
         path = _get_xpath(xmlschema,
                           namespaces,
                           attrib,
@@ -703,8 +707,7 @@ def get_unique_path_attribs(xmlschema, namespaces, **kwargs):
         if path is not None:
             if not isinstance(path, list):
                 path = [path]
-            if attrib not in kwargs[settable_key]:
-                settable[attrib] = [x.replace(f'/@{attrib}', '') for x in path]
+            settable[attrib] = [x.replace(f'/@{attrib}', '') for x in path]
 
     return settable
 
@@ -731,7 +734,7 @@ def get_other_attribs(xmlschema, namespaces, **kwargs):
         settable_contains_key = 'unique_path_attribs'
 
     other = {}
-    possible_attrib = xmlschema.xpath('//xsd:attribute/@name', namespaces=namespaces)
+    possible_attrib = set(xmlschema.xpath('//xsd:attribute/@name', namespaces=namespaces))
     for attrib in possible_attrib:
         path = _get_attrib_xpath(xmlschema,
                                  namespaces,
