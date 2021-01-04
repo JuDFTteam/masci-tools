@@ -46,3 +46,48 @@ For the ```out.xml``` file a similar parser is implemented. However, since the o
    output_dict = outxml_parser('/path/to/random/out.xml', parser_info_out=warnings)
 
 For each iteration the parser decides based on the type of fleur calculation, what things should be parsed. For a more detailed explanation refer to the :doc:`../../devel_guide/index`.
+
+Using the :py:mod:`~masci_tools.util.schema_dict_util` functions
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+If only a small amount of information is required form the input or output files of fleur the full parsers might be overkill. But there are a number of utility functions allowing easy access to information from the ```.xml``` files without knowing the exact xpath expressions for each version of the input/output. A code example extracting information from a input file is given below.
+
+.. code-block:: python
+
+   from lxml import etree
+   from masci-tools.io.parsers.fleur.fleur_schema import load_inpschema
+   from masci_tools.util.schema_dict_util import read_constants #Read in predefined constants
+   from masci_tools.util.schema_dict_util import evaluate_attribute, eval_simple_xpath
+
+   #First we create a xml-tree from the input file and load the desired input schema dictionary
+   root = etree.parse('/path/to/inp.xml').getroot()
+   schema_dict = load_inpschema('0.33')
+
+   #For the input file there can be predefined contants
+   constants = read_constants(root, schema_dict)
+
+   #Here an example of extracting some attributes. The interface to all functions in
+   #schema_dict_util is the same
+
+   #Number of spins
+   spins = evaluate_attribute(root, schema_dict, 'jspins', constants)
+
+   #Planewave cutoff (notice the names are case-sensitive)
+   kmax = evaluate_attribute(root, schema_dict, 'Kmax', constants)
+
+   #Some attributes need to be specified further for a distinct path
+   #`radius` exists both for atom species and atom groups so we give a phrase to distinguish them
+   mt_radii = evaluate_attribute(root, schema_dict, 'radius', constants, contains='species')
+
+   #But we can also make implicit constraints
+   # 1. Get some element in the xml tree, where the path is more specified. In the example lets
+   #    get the element containing all species
+   # 2. If we evaluate the `radius` attribute now on the species elements, we do not need
+   #    the contains parameter
+
+   species = eval_simple_xpath(root, schema_dict, 'atomSpecies')
+   mt_radii = evaluate_attribute(species, schema_dict, 'radius', constants)
+
+
+
+
