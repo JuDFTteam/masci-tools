@@ -184,6 +184,8 @@ def read_constants(root, schema_dict, replace_root=None):
     constants = evaluate_tag(root, schema_dict, 'constant', defined_constants, replace_root=replace_root)
 
     if constants['name'] is not None:
+        if not isinstance(constants['name'], list):
+            constants = {key: [val] for key, val in constants.items()}
         for name, value in zip(constants['name'], constants['value']):
             if name not in defined_constants:
                 defined_constants[name] = value
