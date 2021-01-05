@@ -1,8 +1,12 @@
-[![Build Status](https://travis-ci.com/JuDFTteam/masci-tools.svg?branch=master)](https://travis-ci.com/JuDFTteam/masci-tools)
+[![MIT license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![GitHub version](https://img.shields.io/github/v/tag/JuDFTTeam/masci-tools?include_prereleases&label=GitHub%20version&logo=GitHub)](https://github.com/JuDFTteam/masci-tools/releases)
+[![PyPI version](https://img.shields.io/pypi/v/masci-tools)](https://pypi.org/project/masci-tools/)
+![PyPI pyversion](https://img.shields.io/pypi/pyversions/masci-tools)
+[![Build status](https://github.com/JuDFTteam/masci-tools/workflows/masci-tools/badge.svg?branch=develop&event=push)](https://github.com/JuDFTteam/masci-tools/actions)
 [![Coverage Status](https://codecov.io/gh/JuDFTteam/masci-tools/branch/master/graph/badge.svg)](https://codecov.io/gh/JuDFTteam/masci-tools)
 [![Documentation Status](https://readthedocs.org/projects/masci-tools/badge/?version=latest)](https://masci-tools.readthedocs.io/en/latest/?badge=latest)
-[![GitHub version](https://badge.fury.io/gh/JuDFTteam%2Fmasci-tools.svg)](https://badge.fury.io/gh/JuDFTteam%2Fmasci-tools)
-[![PyPI version](https://badge.fury.io/py/masci-tools.svg)](https://badge.fury.io/py/masci-tools)
+
+
 
 
 # masci-tools
