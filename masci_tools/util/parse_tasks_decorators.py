@@ -49,7 +49,12 @@ def register_migration(base_version, target_version):
             ParseTasks._migrations = {}  # pylint: disable=protected-access
         if not base_version in ParseTasks._migrations:
             ParseTasks._migrations[base_version] = {}
-        ParseTasks._migrations[base_version][target_version] = getattr(ParseTasks, func.__name__)  # pylint: disable=protected-access
+
+        target_version_list = target_version
+        if not isinstance(target_version_list, list):
+            target_version_list = [target_version_list]
+        for valid_version in target_version_list:
+            ParseTasks._migrations[base_version][valid_version] = getattr(ParseTasks, func.__name__)  # pylint: disable=protected-access
 
         return migration
 
