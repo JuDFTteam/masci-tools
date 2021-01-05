@@ -24,6 +24,39 @@ PACKAGE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_TASK_FILE = os.path.abspath(os.path.join(PACKAGE_DIRECTORY, 'default_parse_tasks.py'))
 
 
+def find_migration(start, target, migrations):
+    """
+    Tries to find a migration path from the start to the target version
+    via the defined migration functions
+
+    :param start: str of the starting version
+    :param target: str of the target version
+    :param migrations: dict of funcs registered via the register_migration_function decorator
+
+    :returns: list of migration functions to be called to go from start to target
+    """
+
+    if start == target:
+        return []
+
+    if start not in migrations:
+        return None
+
+    if target in migrations[start]:
+        return [migrations[start][target]]
+
+    call_list = []
+    for possible_stop in migrations[start].keys():
+        new_call_list = find_migration(possible_stop, target, migrations)
+
+        if new_call_list is None:
+            continue
+
+        call_list = [migrations[start][possible_stop]]
+        call_list += new_call_list
+        return call_list
+
+
 class ParseTasks(object):
     """
     Representation of all known parsing tasks for the out.xml file
@@ -84,10 +117,14 @@ class ParseTasks(object):
 
         #Look if the base version is compatible if not look for a migration
         if version not in tasks.__working_out_versions__:
-            if version in self._migrations['0.34']:
-                self.tasks = self._migrations['0.34'][version](self.tasks)
-            else:
+
+            migration_list = find_migration(tasks.__base_version__, version, self._migrations)
+
+            if migration_list is None:
                 raise ValueError(f'Unsupported output version: {version}')
+
+            for migration in migration_list:
+                self.tasks = migration(self.tasks)
 
     @property
     def iteration_tasks(self):
