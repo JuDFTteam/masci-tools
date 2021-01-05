@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" version="0.33">
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" version="0.34">
 
    <xsd:element name="fleurInput" type="FleurInputType"/>
 
@@ -12,15 +12,15 @@
          <xsd:element name="atomSpecies" type="AtomSpeciesType"/>
          <xsd:element name="atomGroups" type="AtomGroupsType"/>
          <xsd:element maxOccurs="1" minOccurs="0" name="output" type="OutputType"/>
-         <xsd:element maxOccurs="1" minOccurs="0" name="forceTheorem" type="ForcetheoremType"/>
-         <xsd:element maxOccurs="1" minOccurs="0" name="relaxation" type="RelaxationType"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="forceTheorem" type="ForcetheoremType"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="relaxation" type="RelaxationType"/>
       </xsd:all>
       <xsd:attribute name="fleurInputVersion" type="FleurVersionType" use="required"/>
    </xsd:complexType>
 
    <xsd:simpleType name="FleurVersionType">
       <xsd:restriction base="xsd:string">
-         <xsd:enumeration value="0.33"/>
+         <xsd:enumeration value="0.34"/>
       </xsd:restriction>
    </xsd:simpleType>
 
@@ -334,6 +334,7 @@
      <xsd:attribute name="tolerance" type="xsd:double" use="optional" default="0.00001"/>
      <xsd:attribute name="lexp" type="xsd:integer" use="optional" default="16"/>
      <xsd:attribute name="ewaldlambda" type="xsd:integer" use="optional" default="3"/>
+     <xsd:attribute name="fftcut" type="xsd:double" use="optional" default="1.0"/>
    </xsd:complexType>
 
    <xsd:simpleType name="XCFunctionalEnum">
@@ -352,13 +353,13 @@
          <xsd:enumeration value="rpbe"/>
          <xsd:enumeration value="Rpbe"/>
          <xsd:enumeration value="wc"/>
-         <xsd:enumeration value="PBEs"/>
-         <xsd:enumeration value="pbe0"/>
-         <xsd:enumeration value="hse"/>
-         <xsd:enumeration value="vhse"/>
-         <xsd:enumeration value="lhse"/>
-         <xsd:enumeration value="hf"/>
-         <xsd:enumeration value="LibXC"/>
+    <xsd:enumeration value="PBEs"/>
+    <xsd:enumeration value="pbe0"/>
+    <xsd:enumeration value="hse"/>
+    <xsd:enumeration value="vhse"/>
+    <xsd:enumeration value="lhse"/>
+    <xsd:enumeration value="hf"/>
+    <xsd:enumeration value="LibXC"/>
       </xsd:restriction>
    </xsd:simpleType>
    <xsd:complexType name="XCLibXCIDType">
@@ -875,6 +876,7 @@
       <xsd:attribute name="nx" type="xsd:nonNegativeInteger" use="optional"/>
       <xsd:attribute name="ny" type="xsd:nonNegativeInteger" use="optional"/>
       <xsd:attribute name="nz" type="xsd:nonNegativeInteger" use="optional"/>
+      <xsd:attribute name="nkq_pairs" type="xsd:nonNegativeInteger" use="optional"/>
    </xsd:complexType>
 
    <xsd:complexType name="KPointListSelectionType">

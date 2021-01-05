@@ -57,7 +57,6 @@ schema_dict = {
         'branch': ['string'],
         'branchHighest': ['float'],
         'branchLowest': ['float'],
-        'calculationType': ['string'],
         'comment': ['string'],
         'count': ['int'],
         'd': ['float'],
@@ -367,7 +366,6 @@ schema_dict = {
             './energyParameters/atomicEP', './energyParameters/heAtomicEP', './energyParameters/loAtomicEP',
             './energyParameters/heloAtomicEP'
         ],
-        'calculationType': ['./Forcetheorem_Loop'],
         'comment': ['./totalEnergy'],
         'd': [
             './valenceDensity/mtCharges/mtCharge', './allElectronCharges/mtCharges/mtCharge',
@@ -516,7 +514,7 @@ schema_dict = {
             'text': []
         },
         './Forcetheorem_DMI': {
-            'attribs': ['Angles', 'qpoints', 'units'],
+            'attribs': ['Angles', 'qpoints'],
             'optional': ['Entry', 'allAtoms', 'singleAtom'],
             'optional_attribs': [],
             'order': ['Entry', 'allAtoms', 'singleAtom'],
@@ -552,7 +550,7 @@ schema_dict = {
             'text': []
         },
         './Forcetheorem_JIJ': {
-            'attribs': ['Configs', 'units'],
+            'attribs': ['Configs'],
             'optional': ['Config'],
             'optional_attribs': [],
             'order': ['Config'],
@@ -570,7 +568,7 @@ schema_dict = {
             'text': []
         },
         './Forcetheorem_Loop': {
-            'attribs': ['No', 'calculationType'],
+            'attribs': ['No'],
             'optional': [],
             'optional_attribs': [],
             'order': [
@@ -585,7 +583,7 @@ schema_dict = {
             'text': []
         },
         './Forcetheorem_MAE': {
-            'attribs': ['Angles', 'units'],
+            'attribs': ['Angles'],
             'optional': ['Angle'],
             'optional_attribs': [],
             'order': ['Angle'],
@@ -603,7 +601,7 @@ schema_dict = {
             'text': []
         },
         './Forcetheorem_SSDISP': {
-            'attribs': ['qvectors', 'units'],
+            'attribs': ['qvectors'],
             'optional': ['Entry'],
             'optional_attribs': [],
             'order': ['Entry'],
@@ -1463,8 +1461,7 @@ schema_dict = {
         'qvectors': './Forcetheorem_SSDISP'
     },
     'iteration_unique_path_attribs': {
-        'Angles': ['./Forcetheorem_DMI', './Forcetheorem_MAE'],
-        'units': ['./Forcetheorem_DMI', './Forcetheorem_JIJ', './Forcetheorem_MAE', './Forcetheorem_SSDISP']
+        'Angles': ['./Forcetheorem_DMI', './Forcetheorem_MAE']
     },
     'omitt_contained_tags': [
         'scfLoop', 'eigenvalues', 'onSiteExchangeSplitting', 'noncollinearTorgue', 'spinorbitTorgue',

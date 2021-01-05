@@ -93,7 +93,13 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
 
     if out_version == '0.27':
         program_version = eval_xpath(xmltree, '//programVersion/@version', parser_info_out=parser_info_out)
-        if program_version == 'fleur 31':
+        if program_version == 'fleur 32':
+            #Max5 release (before bugfix)
+            out_version = '0.33'
+            inp_version = '0.33'
+            ignore_validation = True
+            parser_info_out['parser_warnings'].append("Ignoring '0.27' outputVersion for MaX5.0 release")
+        elif program_version == 'fleur 31':
             #Max4 release
             out_version = '0.31'
             inp_version = '0.31'
