@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<fleurOutput fleurOutputVersion="0.33">
+<fleurOutput fleurOutputVersion="0.34">
    <programVersion version="fleur 32">
       <compilationInfo date="2020-12-10T16:35:46" user="janssen" host="mb-janssen" flag="-ffree-line-length-none -Wno-missing-include-dirs -fno-sign-zero -fdefault-real-8 -fdefault-double-8 -fopenmp" link="/usr/lib/libxml2.dylib;/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Accelerate.framework;-lm;-ldl"/>
       <gitInfo version="MaX-R4-5146-gbe764185-dirty" branch="update_outschema" lastCommitHash="be76418584b223bce77124acbc20eea21ceedf26"/>
@@ -13,7 +13,7 @@
    </parallelSetup>
    <startDateAndTime date="2020/12/10" time="16:53:48" zone="+0100"/>
    <!-- Now follows a dump of the inp.xml file after evaluating the Schema -->
-   <fleurInput fleurInputVersion="0.33">
+   <fleurInput fleurInputVersion="0.34">
       <comment>
          hcp Cobalt
       </comment>
