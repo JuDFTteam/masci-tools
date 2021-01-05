@@ -50,18 +50,18 @@ For each iteration the parser decides based on the type of fleur calculation, wh
 Using the :py:mod:`~masci_tools.util.schema_dict_util` functions
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-If only a small amount of information is required form the input or output files of fleur the full parsers might be overkill. But there are a number of utility functions allowing easy access to information from the ```.xml``` files without knowing the exact xpath expressions for each version of the input/output. A code example extracting information from a input file is given below.
+If only a small amount of information is required from the input or output files of fleur the full parsers might be overkill. But there are a number of utility functions allowing easy access to information from the ```.xml``` files without knowing the exact xpath expressions for each version of the input/output. A code example extracting information from a input file is given below.
 
 .. code-block:: python
 
    from lxml import etree
-   from masci-tools.io.parsers.fleur.fleur_schema import load_inpschema
+   from masci_tools.io.parsers.fleur.fleur_schema import load_inpschema
    from masci_tools.util.schema_dict_util import read_constants #Read in predefined constants
    from masci_tools.util.schema_dict_util import evaluate_attribute, eval_simple_xpath
 
    #First we create a xml-tree from the input file and load the desired input schema dictionary
    root = etree.parse('/path/to/inp.xml').getroot()
-   schema_dict = load_inpschema('0.33')
+   schema_dict = load_inpschema(root.xpath('//@fleurInputVersion')[0])
 
    #For the input file there can be predefined contants
    constants = read_constants(root, schema_dict)
@@ -83,7 +83,8 @@ If only a small amount of information is required form the input or output files
    # 1. Get some element in the xml tree, where the path is more specified. In the example lets
    #    get the element containing all species
    # 2. If we evaluate the `radius` attribute now on the species elements, we do not need
-   #    the contains parameter
+   #    the contains parameter, since from the point of the species element there is only one possibility
+   #    for the `radius` attribute
 
    species = eval_simple_xpath(root, schema_dict, 'atomSpecies')
    mt_radii = evaluate_attribute(species, schema_dict, 'radius', constants)
