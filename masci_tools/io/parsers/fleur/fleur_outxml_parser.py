@@ -15,20 +15,18 @@ This module contains functions to load an fleur out.xml file, parse it with a sc
 and convert its content to a dict, based on the tasks given
 """
 from .parse_tasks import ParseTasks
-import masci_tools.util.fleur_outxml_conversions as convert_funcs
-import masci_tools.util.schema_dict_util as schema_util
+from masci_tools.util.schema_dict_util import get_tag_xpath, tag_exists, read_constants, eval_simple_xpath
 from masci_tools.util.xml.common_xml_util import eval_xpath, clear_xml
-from masci_tools.util.constants import HTR_TO_EV
 from masci_tools.io.parsers.fleur.fleur_schema import load_inpschema, load_outschema
-from masci_tools.io.common_functions import camel_to_snake
 from lxml import etree
+import copy
 
 
 def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_parse=None, **kwargs):
     """
     Parses the out.xml file to a dictionary based on the version and the given tasks
 
-    :param outxmlfile: either path to the out.xml file or a xml etree to be parsed
+    :param outxmlfile: either path to the out.xml file, opened file handle or a xml etree to be parsed
     :param version: version string to enforce that a given schema is used
     :param parser_info_out: dict, with warnings, info, errors, ...
     :param iteration_to_parse: either str or int, (optional, default 'last')
@@ -40,6 +38,7 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
                        otherwise a warning is written to parser_info_out
         :param ignore_validation: bool, if True schema validation errors are only logged
         :param minimal_mode: bool, if True only total Energy, iteration number and distances are parsed
+        :param list_return: bool, if True one-item lists in the output dict are not converted to simple values
         :param additional_tasks: dict to define custom parsing tasks. For detailed explanation
                                  See :py:mod:`~masci_tools.io.parsers.fleur.default_parse_tasks`.
         :param overwrite: bool, if True and keys in additional_tasks collide with defaults
@@ -55,12 +54,15 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
     if parser_info_out is None:
         parser_info_out = {'parser_warnings': [], 'fleur_modes': {}, 'debug_info': {}}
 
-    parser_version = '0.1.0'
+    parser_version = '0.2.1'
     parser_info_out['parser_info'] = f'Masci-Tools Fleur out.xml Parser v{parser_version}'
 
     outfile_broken = False
     parse_xml = True
-    if isinstance(outxmlfile, str):
+
+    if isinstance(outxmlfile, etree._ElementTree):
+        xmltree = outxmlfile
+    else:
         parser = etree.XMLParser(attribute_defaults=True, recover=False, encoding='utf-8')
 
         try:
@@ -78,24 +80,19 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
                 parse_xml = False
                 parser_info_out['parser_warnings'].append('Skipping the parsing of the xml file. '
                                                           'Repairing was not possible.')
-    else:
-        xmltree = outxmlfile
 
     if not parse_xml:
         return {}
 
-    xmltree = clear_xml(xmltree)
-    root = xmltree.getroot()
-
     if version is None:
-        out_version = eval_xpath(root, '//@fleurOutputVersion', parser_info_out=parser_info_out)
+        out_version = eval_xpath(xmltree, '//@fleurOutputVersion', parser_info_out=parser_info_out)
         if out_version is None:
             raise ValueError('Failed to extract outputVersion')
     else:
         out_version = version
 
     if out_version == '0.27':
-        program_version = eval_xpath(root, '//programVersion/@version', parser_info_out=parser_info_out)
+        program_version = eval_xpath(xmltree, '//programVersion/@version', parser_info_out=parser_info_out)
         if program_version == 'fleur 31':
             #Max4 release
             out_version = '0.31'
@@ -106,7 +103,7 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
             raise ValueError('Versions before fleur MaX4.0 are not supported')
     else:
         ignore_validation = False
-        inp_version = eval_xpath(root, '//@fleurInputVersion', parser_info_out=parser_info_out)
+        inp_version = eval_xpath(xmltree, '//@fleurInputVersion', parser_info_out=parser_info_out)
         if inp_version is None:
             raise ValueError('Failed to extract inputVersion')
 
@@ -119,40 +116,43 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
     inpschema_dict = load_inpschema(inp_version)
     outschema_dict, outxmlschema = load_outschema(out_version, schema_return=True)
 
-    if not outxmlschema.validate(xmltree):
-        # get more information on what does not validate
-        parser_on_fly = etree.XMLParser(attribute_defaults=True, schema=outxmlschema, encoding='utf-8')
-        outxmlfile = etree.tostring(xmltree)
-        message = ''
-        try:
-            tree_x = etree.fromstring(outxmlfile, parser_on_fly)
-        except etree.XMLSyntaxError as msg:
-            message = msg
-            if ignore_validation:
-                parser_info_out['parser_warnings'].append(
-                    f'Output file does not validate against the schema: {message}')
-            else:
-                raise ValueError(f'Output file does not validate against the schema: {message}') from msg
+    xmltree = clear_xml(xmltree)
+    root = xmltree.getroot()
+
+    errmsg = ''
+    try:
+        outxmlschema.assertValid(xmltree)
+    except etree.DocumentInvalid as err:
+        validation_errors = ''.join([f'Line {error.line}: {error.message} \n' for error in outxmlschema.error_log])
+        errmsg = f'Output file does not validate against the schema: \n{validation_errors}'
+        parser_info_out['parser_warnings'].append(errmsg)
+        if not ignore_validation:
+            raise ValueError(errmsg) from err
+
+    if not outxmlschema.validate(xmltree) and errmsg == '':
+        parser_info_out['parser_warnings'].append('Output file does not validate against the schema: Reason is unknown')
         if not ignore_validation:
             raise ValueError('Output file does not validate against the schema: Reason is unknown')
-        if message == '':
-            parser_info_out['parser_warnings'].append(
-                'Output file does not validate against the schema: Reason is unknown')
 
-    parse_tasks = ParseTasks(out_version)
+    parser = ParseTasks(out_version)
     additional_tasks = kwargs.pop('additional_tasks', {})
     for task_name, task_definition in additional_tasks.items():
-        parse_tasks.add_task(task_name, task_definition, **kwargs)
+        parser.add_task(task_name, task_definition, **kwargs)
 
-    out_dict, fleurmode, constants = parse_general_information(root,
-                                                               parse_tasks,
-                                                               outschema_dict,
-                                                               inpschema_dict,
-                                                               parser_info_out=parser_info_out)
+    out_dict, constants = parse_general_information(root,
+                                                    parser,
+                                                    outschema_dict,
+                                                    inpschema_dict,
+                                                    parser_info_out=parser_info_out,
+                                                    iteration_to_parse=iteration_to_parse,
+                                                    **kwargs)
 
     # get all iterations in out.xml file
-    iteration_xpath = schema_util.get_tag_xpath(outschema_dict, 'iteration')
-    iteration_nodes = eval_xpath(root, iteration_xpath, parser_info_out=parser_info_out, list_return=True)
+    iteration_nodes = eval_simple_xpath(root,
+                                        outschema_dict,
+                                        'iteration',
+                                        parser_info_out=parser_info_out,
+                                        list_return=True)
     n_iters = len(iteration_nodes)
 
     # parse only last stable interation
@@ -191,37 +191,35 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
 
     for node in iteration_nodes:
         out_dict = parse_iteration(node,
-                                   parse_tasks,
-                                   fleurmode,
+                                   parser,
                                    outschema_dict,
                                    out_dict,
                                    constants,
                                    parser_info_out=parser_info_out,
                                    **kwargs)
 
-    #Convert energy to eV
-    if 'energy_hartree' in out_dict:
-        if out_dict['energy_hartree'] is not None:
-            out_dict['energy'] = [e * HTR_TO_EV if e is not None else None for e in out_dict['energy_hartree']]
-        else:
-            out_dict['energy'] = None
-        out_dict['energy_units'] = 'eV'
-
-    #Convert one item lists to simple values
-    for key, value in out_dict.items():
-        if isinstance(value, list):
-            if len(value) == 1:
-                out_dict[key] = value[0]
-        elif isinstance(value, dict):
-            for subkey, subvalue in value.items():
-                if isinstance(subvalue, list):
-                    if len(subvalue) == 1:
-                        out_dict[key][subkey] = subvalue[0]
+    if not kwargs.get('list_return', False):
+        #Convert one item lists to simple values
+        for key, value in out_dict.items():
+            if isinstance(value, list):
+                if len(value) == 1:
+                    out_dict[key] = value[0]
+            elif isinstance(value, dict):
+                for subkey, subvalue in value.items():
+                    if isinstance(subvalue, list):
+                        if len(subvalue) == 1:
+                            out_dict[key][subkey] = subvalue[0]
 
     return out_dict
 
 
-def parse_general_information(root, parse_tasks, outschema_dict, inpschema_dict, parser_info_out=None):
+def parse_general_information(root,
+                              parser,
+                              outschema_dict,
+                              inpschema_dict,
+                              iteration_to_parse=None,
+                              parser_info_out=None,
+                              **kwargs):
     """
     Parses the information from the out.xml outside scf iterations
 
@@ -229,15 +227,23 @@ def parse_general_information(root, parse_tasks, outschema_dict, inpschema_dict,
 
     Args:
         :param root: etree Element for the root of the out.xml
-        :param parse_tasks: ParseTasks object with all defined tasks
+        :param parser: ParseTasks object with all defined tasks
         :param outschema_dict: dict with the information parsed from the OutputSchema
         :param inpschema_dict: dict with the information parsed from the InputSchema
         :param parser_info_out: dict, with warnings, info, errors, ...
 
+    Kwargs:
+        :param minimal_mode: bool, if True only total Energy, iteration number and distances are parsed
+
     """
 
-    input_tag_path = schema_util.get_tag_xpath(outschema_dict, outschema_dict['input_tag'])
-    constants = schema_util.read_constants(root, inpschema_dict, replace_root=input_tag_path)
+    minimal_mode = kwargs.get('minimal_mode', False)
+    debug = kwargs.get('debug', False)
+    if iteration_to_parse is None:
+        iteration_to_parse = 'last'
+
+    input_tag_path = get_tag_xpath(outschema_dict, outschema_dict['input_tag'])
+    constants = read_constants(root, inpschema_dict, replace_root=input_tag_path)
 
     fleurmode = {
         'jspin': 1,
@@ -249,93 +255,61 @@ def parse_general_information(root, parse_tasks, outschema_dict, inpschema_dict,
         'dos': False,
         'band': False
     }
-    fleurmode = parse_task(parse_tasks['fleur_modes'],
-                           root,
-                           fleurmode,
-                           inpschema_dict,
-                           constants,
-                           parser_info_out,
-                           replace_root=input_tag_path,
-                           use_lists=False)
+    fleurmode = parser.perform_task('fleur_modes',
+                                    root,
+                                    fleurmode,
+                                    inpschema_dict,
+                                    constants,
+                                    parser_info_out=parser_info_out,
+                                    replace_root=input_tag_path,
+                                    use_lists=False)
     parser_info_out['fleur_modes'] = fleurmode
 
+    parser.determine_tasks(fleurmode, minimal=minimal_mode)
+
+    #For certain fleur modes we need to overwrite the tasks
+    if fleurmode['dos'] or fleurmode['band']:
+        parser.iteration_tasks = ['iteration_number', 'fermi_energy', 'bandgap']
+
+    if fleurmode['relax'] and iteration_to_parse == 'last':
+        if 'distances' in parser.iteration_tasks:
+            parser.iteration_tasks.remove('distances')
+        if 'magnetic_distances' in parser.iteration_tasks:
+            parser.iteration_tasks.remove('magnetic_distances')
+
+    if debug:
+        parser_info_out['debug_info']['general_tasks'] = parser.general_tasks
+
     out_dict = {}
-    out_dict = parse_task(parse_tasks['general_inp_info'],
-                          root,
-                          out_dict,
-                          inpschema_dict,
-                          constants,
-                          parser_info_out,
-                          replace_root=input_tag_path,
-                          use_lists=False)
 
-    out_dict = parse_task(parse_tasks['general_out_info'],
-                          root,
-                          out_dict,
-                          outschema_dict,
-                          constants,
-                          parser_info_out,
-                          use_lists=False)
+    for task in parser.general_tasks:
 
-    #Convert the read in times/dates to a walltime
-    out_dict = convert_funcs.calculate_walltime(out_dict, parser_info_out)
-
-    if fleurmode['ldau']:
-        out_dict = parse_task(parse_tasks['ldau_info'],
-                              root,
-                              out_dict,
-                              inpschema_dict,
-                              constants,
-                              parser_info_out,
-                              replace_root=input_tag_path)
-        out_dict = convert_funcs.convert_ldau_definitions(out_dict)
-
-    if fleurmode['relax']:
-
-        out_dict['film'] = fleurmode['film']
-
-        if fleurmode['film']:
-            out_dict = parse_task(parse_tasks['film_relax_info'],
-                                  root,
-                                  out_dict,
-                                  inpschema_dict,
-                                  constants,
-                                  parser_info_out,
-                                  replace_root=input_tag_path,
-                                  use_lists=False)
+        if task == 'general_out_info':
+            schema_dict = outschema_dict
+            replace_root = None
         else:
-            out_dict = parse_task(parse_tasks['bulk_relax_info'],
-                                  root,
-                                  out_dict,
-                                  inpschema_dict,
-                                  constants,
-                                  parser_info_out,
-                                  replace_root=input_tag_path,
-                                  use_lists=False)
+            schema_dict = inpschema_dict
+            replace_root = input_tag_path
 
-        out_dict = convert_funcs.convert_relax_info(out_dict)
+        out_dict = parser.perform_task(task,
+                                       root,
+                                       out_dict,
+                                       schema_dict,
+                                       constants,
+                                       parser_info_out=parser_info_out,
+                                       replace_root=replace_root,
+                                       use_lists=False)
 
-    return out_dict, fleurmode, constants
+    return out_dict, constants
 
 
-def parse_iteration(iteration_node,
-                    parse_tasks,
-                    fleurmode,
-                    outschema_dict,
-                    out_dict,
-                    constants,
-                    parser_info_out=None,
-                    **kwargs):
+def parse_iteration(iteration_node, parser, outschema_dict, out_dict, constants, parser_info_out=None, **kwargs):
     """
-    Parses an scf iteration node.
-
-    First the necessary tasks are determined according to the fleurmodes.
-    The each task is performed
+    Parses an scf iteration node. Which tasks to perform is stored in parser.iteration_tasks
 
     Args:
         :param iteration_node: etree Element for a scf iteration
-        :param parse_tasks: ParseTasks object with all defined tasks
-        :param fleurmode: dict with the fleur claculation modes (DOS, magnetic, ...)
+        :param parser: ParseTasks object with all defined tasks
         :param outschema_dict: dict with the information parsed form the OutputSchema
         :param out_dict: dict with the parsed results
         :param constants: dict with all the defined mathematical constants
@@ -351,40 +325,12 @@ def parse_iteration(iteration_node,
     minimal_mode = kwargs.get('minimal_mode', False)
     debug = kwargs.get('debug', False)
 
-    #These are the default things to be parsed for all iterations
-    iteration_tasks = [
-        'iteration_number', 'total_energy', 'distances', 'total_energy_contributions', 'fermi_energy', 'bandgap',
-        'charges'
-    ]
-
-    #Mode specific tasks
-    if fleurmode['jspin'] == 2:
-        iteration_tasks.append('magnetic_moments')
-
-    if fleurmode['soc'] and fleurmode['jspin'] == 2:
-        iteration_tasks.append('orbital_magnetic_moments')
-
-    if fleurmode['ldau']:
-        iteration_tasks.append('ldau_energy_correction')
-        iteration_tasks.append('nmmp_distances')
-
-    if fleurmode['relax']:
-        iteration_tasks.append('forces')
-
-    if minimal_mode:
-        iteration_tasks = ['iteration_number', 'total_energy', 'distances']
-
-    if fleurmode['jspin'] == 2:
-        iteration_tasks.append('magnetic_distances')
-
-    if fleurmode['dos'] or fleurmode['band']:
-        iteration_tasks = ['iteration_number', 'fermi_energy', 'bandgap']
-
+    iteration_tasks = copy.deepcopy(parser.iteration_tasks)
     #If the iteration is a forcetheorem calculation
     #Replace all tasks with the given tasks for the calculation
     forcetheorem_tags = ['Forcetheorem_DMI', 'Forcetheorem_SSDISP', 'Forcetheorem_JIJ', 'Forcetheorem_MAE']
     for tag in forcetheorem_tags:
-        exists = schema_util.tag_exists(iteration_node, outschema_dict, tag)
+        exists = tag_exists(iteration_node, outschema_dict, tag)
         if exists:
             if minimal_mode:
                 iteration_tasks = []
@@ -392,166 +338,20 @@ def parse_iteration(iteration_node,
                 iteration_tasks = [tag.lower()]
             break
 
-    #Add custom tasks
-    for task in parse_tasks.append_tasks:
-        if task not in iteration_tasks:
-            iteration_tasks.append(task)
-
-    #Remove tasks that might be incompatible
-    for task in parse_tasks.incompatible_tasks:
-        if task in iteration_tasks:
-            iteration_tasks.remove(task)
-
     if debug:
         parser_info_out['debug_info']['iteration_tasks'] = iteration_tasks
 
     for task in iteration_tasks:
         try:
-            out_dict = parse_task(parse_tasks[task], iteration_node, out_dict, outschema_dict, constants,
-                                  parser_info_out)
+            out_dict = parser.perform_task(task,
+                                           iteration_node,
+                                           out_dict,
+                                           outschema_dict,
+                                           constants,
+                                           parser_info_out=parser_info_out)
         except KeyError:
             parser_info_out['parser_warnings'].append(f"Unknown task: '{task}'. Skipping this one")
             if strict:
                 raise
-
-    if fleurmode['relax']:
-        out_dict = convert_funcs.convert_forces(out_dict)
-
-    if 'charges' in iteration_tasks:
-        out_dict = convert_funcs.calculate_total_magnetic_moment(out_dict)
-
-    return out_dict
-
-
-def parse_task(tasks_definition,
-               node,
-               out_dict,
-               schema_dict,
-               constants,
-               parser_info_out,
-               replace_root=None,
-               use_lists=True):
-    """
-    Evaluates the task given in the tasks_definition dict
-
-    :param task_definition: dict, specifies what should be parsed (explanation below)
-    :param node: etree.Element, the xpath expressions are evaluated from this node
-    :param out_dict: dict, output will be put in this dictionary
-    :param schema_dict: dict, here all paths and attributes are stored according to the
-                        outputschema
-    :param constants: dict with all the defined mathematical constants
-    :param parser_info_out: dict, with warnings, info, errors, ...
-    :param root_tag: str, this string will be appended in front of any xpath before it is evaluated
-    :param use_lists: bool, if True lists are created for each key if not otherwise specified
-
-
-    Each entry in the task_definition dict will be parsed and inserted into the same key in
-    the output dict
-
-    The following keys are expected in each entry of the task_definition dictionary:
-        :param parse_type: str, defines which methods to use when extracting the information
-        :param path_spec: dict with all the arguments that should be passed to get_tag_xpath
-                          or get_attrib_xpath to get the correct path
-        :param subdict: str, if present the parsed values are put into this key in the output dictionary
-        :param overwrite_last: bool, if True no list is inserted and each entry overwrites the last
-
-    For the allAttribs parse_type there are more keys that can appear:
-        :param base_value: str, optional. If given the attribute
-                           with this name will be inserted into the key from the task_definition
-                           all other keys are formatted as {task_key}_{attribute_name}
-        :param ignore: list of str, these attributes will be ignored
-        :param overwrite: list of str, these attributes will not create a list and overwrite any value
-                          that might be there
-        :param flat: bool, if False the dict parsed from the tag is inserted as a dict into the correspondin key
-                           if True the values will be extracted and put into the output dictionary with the
-                           format {task_key}_{attribute_name}
-
-    """
-
-    _FUNCTION_DICT = {
-        'attrib': schema_util.evaluate_attribute,
-        'text': schema_util.evaluate_text,
-        'exists': schema_util.tag_exists,
-        'numberNodes': schema_util.get_number_of_nodes,
-        'singleValue': schema_util.evaluate_single_value_tag,
-        'allAttribs': schema_util.evaluate_tag,
-        'parentAttribs': schema_util.evaluate_parent_tag,
-    }
-
-    for task_key, spec in tasks_definition.items():
-
-        action = _FUNCTION_DICT[spec['parse_type']]
-        args = spec['path_spec'].copy()
-        args['constants'] = constants
-
-        if replace_root is not None:
-            args['replace_root'] = replace_root
-
-        if 'only_required' in spec:
-            args['only_required'] = spec['only_required']
-
-        if spec['parse_type'] == 'singleValue':
-            args['ignore'] = ['comment']
-        elif spec['parse_type'] in ['allAttribs', 'parentAttribs']:
-            args['ignore'] = spec.get('ignore', [])
-
-        parsed_dict = out_dict
-        if 'subdict' in spec:
-            parsed_dict = out_dict.get(spec['subdict'], {})
-
-        parsed_value = action(node, schema_dict, parser_info_out=parser_info_out, **args)
-
-        if isinstance(parsed_value, dict):
-
-            if spec['parse_type'] == 'singleValue':
-                base_value = 'value'
-                no_list = ['units']
-                flat = True
-            elif spec['parse_type'] in ['allAttribs', 'parentAttribs']:
-                base_value = spec.get('base_value', '')
-                no_list = spec.get('overwrite', [])
-                flat = spec.get('flat', True)
-
-            if flat:
-                for key, val in parsed_value.items():
-
-                    if key == base_value:
-                        current_key = task_key
-                    else:
-                        current_key = f'{task_key}_{camel_to_snake(key)}'
-
-                    if current_key not in parsed_dict and use_lists:
-                        parsed_dict[current_key] = []
-
-                    if key in no_list or not use_lists:
-                        parsed_dict[current_key] = val
-                    else:
-                        parsed_dict[current_key].append(val)
-
-            else:
-                parsed_dict[task_key] = {camel_to_snake(key): val for key, val in parsed_value.items()}
-
-        else:
-            overwrite = spec.get('overwrite_last', False)
-            if task_key not in parsed_dict and use_lists:
-                if overwrite:
-                    parsed_dict[task_key] = None
-                else:
-                    parsed_dict[task_key] = []
-
-            if use_lists and not overwrite:
-                parsed_dict[task_key].append(parsed_value)
-            elif overwrite:
-                if parsed_value is not None:
-                    parsed_dict[task_key] = parsed_value
-            else:
-                if parsed_value is not None or\
-                   task_key not in parsed_dict:
-                    parsed_dict[task_key] = parsed_value
-
-        if 'subdict' in spec:
-            out_dict[spec['subdict']] = parsed_dict
-        else:
-            out_dict = parsed_dict
 
     return out_dict

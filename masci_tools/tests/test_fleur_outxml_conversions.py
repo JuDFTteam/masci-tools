@@ -124,7 +124,7 @@ def test_calculate_walltime(input_dict, walltime, warnings):
     """
    Test of the calculate_walltime function
    """
-    from masci_tools.util.fleur_outxml_conversions import calculate_walltime
+    from masci_tools.io.parsers.fleur.outxml_conversions import calculate_walltime
 
     parser_warnings = {'parser_warnings': []}
     out_dict = calculate_walltime(input_dict, parser_info_out=parser_warnings)

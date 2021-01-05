@@ -98,17 +98,32 @@ All functions below can either be called in python scripts or from the commandli
   possible choice. Otherwise an exception is raised. There are other keywords, which can be entered
   here. These control how the parsed data is entered into the output dictionary. For a definition of these keywords, please refer to :py:mod:`~masci_tools.io.parsers.fleur.default_parse_tasks`.
 
+  Each task can also contain a number of control keys, determining when to peform the tasks.
+  Each of these keys bins with a ```_```. All of these are optional.
+  The following are valid:
+
+    :_general: bool, if True (default False) the task is not performed for each iteration but once
+               on the root of the file
+    :_minimal: bool, if True the task is peformed even when ```minimal_mode = True``` is given
+    :_modes: list of tuples specifying requirements on the ```fleur_modes``` for the task.
+             For example ```[('jspins', 2), ('soc', True)]``` will only perform the task for a
+             magnetic SOC calculation
+    :_conversions: list of str, giving the names of functions to call after this task. functions
+                   given here have to be decorated with the :py:func:`~masci_tools.util.parse_tasks_decorators.conversion_function()` decorator
+    :_special: bool, if True (default False) this task is NEVER added automatically and has to be added 
+               by hand
+
 .. topic:: Migrating the parsing tasks
 
-  These task definitions might have to be adapted for new fleur versions. Some changes might be possible to make in :py:mod:`~masci_tools.io.parsers.fleur.default_parse_tasks` directly without breaking backwards compatibility. If this is not possible there is a decorator :py:func:`~masci_tools.io.parsers.fleur.register_migration()` to define a function that is recognized by the class :py:class:`~masci_tools.io.parsers.fleur.ParseTasks` to convert between versions. A usage example is shown below.
+  These task definitions might have to be adapted for new fleur versions. Some changes might be possible to make in :py:mod:`~masci_tools.io.parsers.fleur.default_parse_tasks` directly without breaking backwards compatibility. If this is not possible there is a decorator :py:func:`~masci_tools.util.parse_tasks_decorators.register_migration()` to define a function that is recognized by the class :py:class:`~masci_tools.io.parsers.fleur.ParseTasks` to convert between versions. A usage example is shown below.
 
   .. code-block:: python
 
-    from masci_tools.io.parsers.fleur import ParseTasks, register_migration
+    from masci_tools.util.parse_tasks_decorators import register_migration
     import copy
 
-    @register_migration(ParseTasks, base_version='0.33', target_version='0.34')
-    def migrate_033_to034(definition_dict, incompatible_tasks):
+    @register_migration(base_version='0.33', target_version='0.34')
+    def migrate_033_to034(definition_dict):
       """
       Ficticious migration from 0.33 to 0.34
       Moves the `number_of_atom_types` attribute from reading a simple
@@ -118,12 +133,9 @@ All functions below can either be called in python scripts or from the commandli
 
       #IMPORTANT: First copy the original dict
       new_dict = copy.deepcopy(definition_dict)
-      new_incompatible_tasks = copy.deepcopy(incompatible_tasks)
 
       #If a task is incompatible remove it from the defintion_dict
-      #BUT also append it to the incompatible_tasks
       new_dict.pop('orbital_magnetic_moments')
-      new_incompatible_tasks.append('orbital_magnetic_moments')
 
       new_dict['general_out_info'].pop('number_of_atom_types')
       new_dict['general_inp_info']['number_of_atom_types'] = {
@@ -133,4 +145,4 @@ All functions below can either be called in python scripts or from the commandli
           }
       }
 
-      return new_dict, new_incompatible_tasks
+      return new_dict

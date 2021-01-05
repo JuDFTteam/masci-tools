@@ -326,10 +326,26 @@ def test_inpxml_valid_inpxml(inpxmlfilepath):
     #Pass inpxmlfile
     inp_dict = inpxml_parser(inpxmlfilepath)
 
+    assert inp_dict is not None
+    assert isinstance(inp_dict, dict)
+    assert inp_dict != {}
+
     #Parse before
     parser = etree.XMLParser(attribute_defaults=True, encoding='utf-8')
     xmltree = etree.parse(inpxmlfilepath, parser)
     inp_dict = inpxml_parser(xmltree)
+
+    assert inp_dict is not None
+    assert isinstance(inp_dict, dict)
+    assert inp_dict != {}
+
+    #Pass file handle
+    with open(inpxmlfilepath, 'r') as inpfile:
+        inp_dict = inpxml_parser(inpfile)
+
+    assert inp_dict is not None
+    assert isinstance(inp_dict, dict)
+    assert inp_dict != {}
 
 
 @pytest.mark.parametrize('inpxmlfilepath', inpxmlfilelist2)
@@ -369,7 +385,7 @@ def test_inpxml_todict_warnings():
             "Could not evaluate expression 'Pi/(3.0-3.0)' The following error was raised: Undefined Expression: Division by zero"
         ],
         'parser_info':
-        'Masci-Tools Fleur inp.xml Parser v0.1.0',
+        'Masci-Tools Fleur inp.xml Parser v0.1.1',
         'fleur_inp_version':
         '0.33'
     }

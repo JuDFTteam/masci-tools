@@ -43,7 +43,8 @@ def clear_xml(tree):
         known_tags.append({elem.tag for elem in parent})
 
     # replace XInclude parts to validate against schema
-    cleared_tree.xinclude()
+    if len(include_tags) != 0:
+        cleared_tree.xinclude()
 
     # get rid of xml:base attribute in the included parts
     for parent, old_tags in zip(parents, known_tags):
@@ -317,6 +318,9 @@ def convert_from_fortran_bool(stringbool, conversion_warnings=None, suc_return=T
 def eval_xpath(node, xpath, parser_info_out=None, list_return=False, namespaces=None):
     """
     Tries to evaluate an xpath expression. If it fails it logs it.
+    If a absolute path is given (starting with '/') and the tag of the node
+    does not match the root.
+    It will try to find the tag in the path and convert it into a relative path
 
     :param node: root node of an etree
     :param xpath: xpath expression (relative, or absolute)
@@ -328,6 +332,12 @@ def eval_xpath(node, xpath, parser_info_out=None, list_return=False, namespaces=
     """
     if parser_info_out is None:
         parser_info_out = {'parser_warnings': []}
+
+    if isinstance(node, etree._Element):
+        if node.tag != xpath.split('/')[1] and xpath.split('/')[0] != '.':
+            #absolute path with a different root tag than node
+            if node.tag in xpath:
+                xpath = xpath.replace(xpath.split(node.tag)[-1] + node.tag, '.')
 
     try:
         if namespaces is not None:

@@ -32,10 +32,26 @@ def test_outxml_valid_outxml(outxmlfilepath):
     #Pass outxmlfile
     out_dict = outxml_parser(outxmlfilepath)
 
+    assert out_dict is not None
+    assert isinstance(out_dict, dict)
+    assert out_dict != {}
+
     #Parse before
     parser = etree.XMLParser(attribute_defaults=True, encoding='utf-8')
     xmltree = etree.parse(outxmlfilepath, parser)
     out_dict = outxml_parser(xmltree, strict=True)
+
+    assert out_dict is not None
+    assert isinstance(out_dict, dict)
+    assert out_dict != {}
+
+    #call with contextmanager
+    with open(outxmlfilepath, 'r') as outfile:
+        out_dict = outxml_parser(outfile, strict=True)
+
+    assert out_dict is not None
+    assert isinstance(out_dict, dict)
+    assert out_dict != {}
 
 
 def test_outxml_validation_errors():
@@ -46,9 +62,7 @@ def test_outxml_validation_errors():
     OUTXML_FILEPATH1 = os.path.join(outxmlfilefolder, 'files/fleur/broken_out_xml/simple_validation_error.xml')
     OUTXML_FILEPATH2 = os.path.join(outxmlfilefolder, 'files/fleur/broken_out_xml/empty_values.xml')
 
-    with pytest.raises(
-            ValueError,
-            match="Output file does not validate against the schema: Element 'kPointList', attribute 'weightSc'"):
+    with pytest.raises(ValueError, match='Output file does not validate against the schema:'):
         out_dict = outxml_parser(OUTXML_FILEPATH1, strict=True)
 
     expected_result = {
@@ -72,6 +86,7 @@ def test_outxml_validation_errors():
         'energy_valence_electrons': -12.7065554237,
         'fermi_energy': 0.3685303739,
         'fermi_energy_units': 'Htr',
+        'film': False,
         'gmax': 10.0,
         'kmax': 3.0,
         'magnetic_moments': 2.1699434793,
@@ -113,18 +128,20 @@ def test_outxml_validation_errors():
             'soc': False
         },
         'parser_info':
-        'Masci-Tools Fleur out.xml Parser v0.1.0',
+        'Masci-Tools Fleur out.xml Parser v0.2.1',
         'parser_warnings': [
-            'Output file does not validate against the schema: '
-            "Element 'kPointList', attribute 'weightSc': The "
-            "attribute 'weightSc' is not allowed. (<string>, line 0)", 'No text found for tag targetStructureClass',
+            'Output file does not validate against the schema: \n'
+            "Line 346: Element 'kPointList', attribute 'weightSc': "
+            "The attribute 'weightSc' is not allowed. \n"
+            "Line 346: Element 'kPointList': The attribute "
+            "'weightScale' is required but missing. \n", 'No text found for tag targetStructureClass',
             'No values found for attribute value at tag bandgap', 'No values found for attribute units at tag bandgap'
         ]
     }
 
     result_warnings = {'parser_warnings': []}
     out_dict = outxml_parser(OUTXML_FILEPATH1, strict=True, ignore_validation=True, parser_info_out=result_warnings)
-
+    pprint(result_warnings)
     assert result_warnings == expected_warnings
     assert out_dict == expected_result
 
@@ -143,7 +160,7 @@ def test_outxml_empty_out():
 
     expected_warnings = {
         'parser_info':
-        'Masci-Tools Fleur out.xml Parser v0.1.0',
+        'Masci-Tools Fleur out.xml Parser v0.2.1',
         'parser_warnings': [
             'The out.xml file is broken I try to repair it.', 'Skipping the parsing of the xml file. Repairing was not '
             'possible.'
@@ -177,7 +194,7 @@ def test_outxml_broken():
         'last_iteration_parsed':
         2,
         'parser_info':
-        'Masci-Tools Fleur out.xml Parser v0.1.0',
+        'Masci-Tools Fleur out.xml Parser v0.2.1',
         'parser_warnings': [
             'The out.xml file is broken I try to repair it.', 'No text found for tag targetStructureClass',
             'No values found for attribute date at tag endDateAndTime',
@@ -209,6 +226,7 @@ def test_outxml_broken():
         'energy_valence_electrons': -14.4723754179,
         'fermi_energy': 0.3782147185,
         'fermi_energy_units': 'Htr',
+        'film': False,
         'gmax': 10.2,
         'kmax': 3.4,
         'magnetic_moments': [1.9333985458, 1.9345705319],
@@ -266,7 +284,7 @@ def test_outxml_broken_firstiter():
         'last_iteration_parsed':
         1,
         'parser_info':
-        'Masci-Tools Fleur out.xml Parser v0.1.0',
+        'Masci-Tools Fleur out.xml Parser v0.2.1',
         'parser_warnings': [
             'The out.xml file is broken I try to repair it.', 'No text found for tag targetStructureClass',
             'No values found for attribute date at tag endDateAndTime',
@@ -275,21 +293,21 @@ def test_outxml_broken_firstiter():
             'believe the walltime!', 'Enddate was unparsed, inp.xml prob not complete, do not '
             'believe the walltime!', 'No values found for attribute value at tag totalEnergy',
             'No values found for attribute units at tag totalEnergy', 'No values found for attribute distance',
-            'No values found for attribute units', 'No values found for attribute value at tag '
+            'No values found for attribute units', 'No values found for attribute distance',
+            'No values found for attribute distance', 'No values found for attribute value at tag '
             'sumOfEigenvalues', 'No values found for attribute value at tag coreElectrons',
             'No values found for attribute value at tag '
             'valenceElectrons', 'No values found for attribute value at tag '
             'chargeDenXCDenIntegral', 'No values found for attribute value at tag FermiEnergy',
             'No values found for attribute units at tag FermiEnergy',
             'No values found for attribute value at tag bandgap', 'No values found for attribute units at tag bandgap',
-            'No values found for attribute total at tag '
-            'spinDependentCharge', 'No values found for attribute interstitial at tag '
-            'spinDependentCharge', 'No values found for attribute mtSpheres at tag '
-            'spinDependentCharge', 'No values found for attribute value at tag totalCharge',
             'No values found for attribute moment at tag '
             'magneticMoment', 'No values found for attribute spinUpCharge at tag '
             'magneticMoment', 'No values found for attribute spinDownCharge at tag '
-            'magneticMoment', 'No values found for attribute distance', 'No values found for attribute distance'
+            'magneticMoment', 'No values found for attribute total at tag '
+            'spinDependentCharge', 'No values found for attribute interstitial at tag '
+            'spinDependentCharge', 'No values found for attribute mtSpheres at tag '
+            'spinDependentCharge', 'No values found for attribute value at tag totalCharge'
         ]
     }
     expected_result = {
@@ -313,6 +331,7 @@ def test_outxml_broken_firstiter():
         'energy_valence_electrons': None,
         'fermi_energy': None,
         'fermi_energy_units': None,
+        'film': False,
         'gmax': 10.2,
         'kmax': 3.4,
         'magnetic_moments': None,
@@ -377,6 +396,7 @@ def test_outxml_garbage_values():
         'energy_valence_electrons': -12.7065554237,
         'fermi_energy': float('NaN'),
         'fermi_energy_units': 'Htr',
+        'film': False,
         'gmax': 10.0,
         'kmax': 3.0,
         'magnetic_moments': '********',
@@ -418,12 +438,15 @@ def test_outxml_garbage_values():
             'soc': False
         },
         'parser_info':
-        'Masci-Tools Fleur out.xml Parser v0.1.0',
+        'Masci-Tools Fleur out.xml Parser v0.2.1',
         'parser_warnings': [
-            'Output file does not validate against the schema: '
-            "Element 'FermiEnergy', attribute 'value': 'NAN' is not a "
-            "valid value of the atomic type 'xs:double'. (<string>, "
-            'line 0)', 'No text found for tag targetStructureClass',
+            'Output file does not validate against the schema: \n'
+            "Line 591: Element 'FermiEnergy', attribute 'value': "
+            "'NAN' is not a valid value of the atomic type "
+            "'xs:double'. \n"
+            "Line 624: Element 'magneticMoment', attribute 'moment': "
+            "'********' is not a valid value of the atomic type "
+            "'xs:double'. \n", 'No text found for tag targetStructureClass',
             'No values found for attribute value at tag bandgap', 'No values found for attribute units at tag bandgap',
             'Failed to evaluate attribute moment: Below are the '
             'warnings from convert_xml_attribute', "Could not convert: '********' to float, ValueError"
@@ -492,6 +515,7 @@ def test_outxml_additional_tasks():
         'energy_valence_electrons': -55.6062832263,
         'fermi_energy': 0.1848170588,
         'fermi_energy_units': 'Htr',
+        'film': False,
         'gmax': 11.1,
         'kmax': 3.5,
         'number_of_atom_types': 1,
@@ -545,6 +569,7 @@ def test_outxml_additional_tasks():
         'energy_valence_electrons': -55.6062832263,
         'fermi_energy': 0.1848170588,
         'fermi_energy_units': 'Htr',
+        'film': False,
         'gmax': 11.1,
         'kmax': 3.5,
         'number_of_atom_types': 1,
@@ -650,6 +675,7 @@ def test_outxml_add_tasks_overwrite():
         'energy_valence_electrons': -55.6062832263,
         'fermi_energy': 0.1848170588,
         'fermi_energy_units': 'Htr',
+        'film': False,
         'gmax': 11.1,
         'kmax': 3.5,
         'number_of_atom_types': 1,
@@ -720,6 +746,7 @@ def test_outxml_add_tasks_append():
         'energy_valence_electrons': -55.6062832263,
         'fermi_energy': 0.1848170588,
         'fermi_energy_units': 'Htr',
+        'film': False,
         'gmax': 11.1,
         'kmax': 3.5,
         'number_of_atom_types': 'Si bulk',
@@ -830,6 +857,8 @@ def test_outxml_max4compatibility():
         ],
         'fermi_energy_units':
         'Htr',
+        'film':
+        False,
         'gmax':
         '10.80000000',
         'kmax':
@@ -926,11 +955,14 @@ def test_outxml_max4compatibility():
             'soc': False
         },
         'parser_info':
-        'Masci-Tools Fleur out.xml Parser v0.1.0',
+        'Masci-Tools Fleur out.xml Parser v0.2.1',
         'parser_warnings': [
-            "Ignoring '0.27' outputVersion for MaX4.0 release", 'Output file does not validate against the schema: '
-            "Element 'inputData': The attribute 'fleurInputVersion' "
-            'is required but missing. (<string>, line 0)', 'No text found for tag targetStructureClass'
+            "Ignoring '0.27' outputVersion for MaX4.0 release", 'Output file does not validate against the schema: \n'
+            "Line 17: Element 'inputData': The attribute 'fleurInputVersion' is required but missing. \n"
+            "Line 92: Element 'atomsInCell': The attribute 'n_hia' is required but missing. \n"
+            "Line 100: Element 'kPointList', attribute 'posScale': The attribute 'posScale' is not allowed. \n"
+            "Line 109: Element 'spinDependentCharge': This element is not expected. \n",
+            'No text found for tag targetStructureClass'
         ]
     }
 
@@ -939,6 +971,7 @@ def test_outxml_max4compatibility():
     warnings = {'parser_warnings': []}
     out_dict = outxml_parser(OUTXML_FILEPATH, parser_info_out=warnings, iteration_to_parse='all')
     pprint(out_dict)
+    pprint(warnings)
     assert out_dict == expected_result
     assert warnings == expected_warnings
 
@@ -966,6 +999,7 @@ def test_outxml_lastiter():
         'energy_valence_electrons': -55.6062832263,
         'fermi_energy': 0.1848170588,
         'fermi_energy_units': 'Htr',
+        'film': False,
         'gmax': 11.1,
         'kmax': 3.5,
         'number_of_atom_types': 1,
@@ -1020,6 +1054,7 @@ def test_outxml_firstiter():
         'energy_valence_electrons': -56.0370181786,
         'fermi_energy': 0.1670838071,
         'fermi_energy_units': 'Htr',
+        'film': False,
         'gmax': 11.1,
         'kmax': 3.5,
         'number_of_atom_types': 1,
@@ -1089,6 +1124,8 @@ def test_outxml_alliter():
         'fermi_energy': [0.1670838071, 0.1682300942, 0.1878849091, 0.1857922767, 0.1853849541, 0.1848170588],
         'fermi_energy_units':
         'Htr',
+        'film':
+        False,
         'gmax':
         11.1,
         'kmax':
@@ -1157,6 +1194,7 @@ def test_outxml_indexiter():
         'energy_valence_electrons': -55.5145626436,
         'fermi_energy': 0.1857922767,
         'fermi_energy_units': 'Htr',
+        'film': False,
         'gmax': 11.1,
         'kmax': 3.5,
         'number_of_atom_types': 1,
@@ -1214,6 +1252,8 @@ def test_outxml_minimal_mode():
         'Htr',
         'energy_units':
         'eV',
+        'film':
+        False,
         'gmax':
         11.1,
         'kmax':
@@ -1285,6 +1325,8 @@ def test_outxml_magnetic():
         'fermi_energy': [0.3836568571, 0.3782147185, 0.3527552733, 0.3477025411],
         'fermi_energy_units':
         'Htr',
+        'film':
+        False,
         'gmax':
         10.2,
         'kmax':
@@ -1455,6 +1497,7 @@ def test_outxml_force():
             'date': '2020/12/10',
             'time': '16:58:39'
         },
+        'film': True,
         'gmax': 10.0,
         'kmax': 4.0,
         'number_of_atom_types': 2,
