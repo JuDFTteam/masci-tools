@@ -387,7 +387,7 @@ def test_inpxml_todict_warnings():
         'parser_info':
         'Masci-Tools Fleur inp.xml Parser v0.1.1',
         'fleur_inp_version':
-        '0.34'
+        '0.33'
     }
 
     input_invalid_attr = os.path.abspath(os.path.join(inpxmlfilefolder, 'files/fleur/inp_invalid_attributes.xml'))
