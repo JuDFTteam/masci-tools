@@ -1,4 +1,4 @@
-[![MIT license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![MIT license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE.txt)
 [![GitHub version](https://img.shields.io/github/v/tag/JuDFTTeam/masci-tools?include_prereleases&label=GitHub%20version&logo=GitHub)](https://github.com/JuDFTteam/masci-tools/releases)
 [![PyPI version](https://img.shields.io/pypi/v/masci-tools)](https://pypi.org/project/masci-tools/)
 [![PyPI pyversion](https://img.shields.io/pypi/pyversions/masci-tools)](https://pypi.org/project/masci-tools/)
