@@ -2486,7 +2486,7 @@ def voigt_profile(x, fwhm_g, fwhm_l, mu):
     which is used here.
 
     """
-    from scipy.special import wofz
+    from scipy.special import wofz #pylint: disable=no-name-in-module
 
     hwhm_l = fwhm_l / 2.0
     sigma = fwhm_g / (2 * np.sqrt(2 * np.log(2)))
@@ -2502,7 +2502,7 @@ def CDF_voigt_profile(x, fwhm_g, fwhm_l, mu):
     # or is there an other way to calc the integral of wofz directly, or use
     different error functions.
     """
-    from scipy.special import erf
+    from scipy.special import erf #pylint: disable=no-name-in-module
     pass
 
 

@@ -18,14 +18,15 @@ import math
 import numpy as np
 import pandas as pd
 import json
-import six
+
 from bokeh.models import (ColumnDataSource, LinearColorMapper, LogColorMapper, ColorBar, BasicTicker, Title, Legend)
 from bokeh.layouts import gridplot
 from bokeh.core.properties import FontSize
 from bokeh.io import show as bshow
 from bokeh.plotting import figure as bokeh_fig
 from matplotlib.colors import Normalize, LogNorm, to_hex
-from matplotlib.cm import plasma, inferno, magma, viridis, ScalarMappable
+from matplotlib.cm import plasma, inferno, magma, viridis #pylint: disable=no-name-in-module
+from matplotlib.cm import ScalarMappable
 
 ################## Helpers     ################
 
@@ -396,24 +397,12 @@ def periodic_table_plot(source,
     param display_positions: list of floats, length has to match display_values, At which y offset the display values should be displayed.
     """
     # TODO: solve the use of two different color bars, we just one to use a bokeh color bar and not matplotlib...
-
-    from bokeh.models import (ColumnDataSource, LinearColorMapper, LogColorMapper, ColorBar, BasicTicker)
+    from bokeh.io import export_png
     from bokeh.io import output_notebook, output_file
-    from bokeh.io import show as bshow
-    from bokeh.plotting import figure
     from bokeh.sampledata.periodic_table import elements
     from bokeh.transform import dodge, factor_cmap
-    from bokeh.io import export_png
     from bokeh.models import Arrow, OpenHead, NormalHead, VeeHead
-    from bokeh.models import ColumnDataSource, Range1d, LabelSet, Label
-
-    # matplotlib color scales
-    from matplotlib.colors import Normalize, LogNorm, to_hex
-    from matplotlib.cm import plasma, inferno, magma, viridis, ScalarMappable
-
-    import math
-    import pandas as pd
-    import json
+    from bokeh.models import Range1d, LabelSet, Label
 
     if len(display_values) != len(display_positions):
         raise ValueError(
@@ -494,7 +483,7 @@ def periodic_table_plot(source,
     groups = [str(x) for x in range(1, 19)]
     periods = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII']
     # Plot
-    p = figure(
+    p = bokeh_fig(
         title=title,
         plot_width=plot_width,
         plot_height=plot_height,  # 450,
