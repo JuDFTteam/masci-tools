@@ -200,7 +200,7 @@ class Plotter(object):
 
         if minor:
             ax.yaxis.set_tick_params(which='minor', **self['tick_paramsy_minor'])
-            ax.xaxis.set_tick_params(which='minor', **self['tick_paramsy_minor'])
+            ax.xaxis.set_tick_params(which='minor', **self['tick_paramsx_minor'])
 
         if self['xticks'] is not None:
                 ax.xaxis.set_ticks(self['xticks'])
