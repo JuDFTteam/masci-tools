@@ -165,7 +165,7 @@ class Plotter(object):
 
         return fig_kwargs
 
-    def plot_kwargs(self):
+    def plot_kwargs(self, indx=None):
 
         FIGURE_KEYS = {'linewidth','linestyle','marker','markersize','color','plot_label'}
 
