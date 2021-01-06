@@ -187,7 +187,7 @@ class Plotter(object):
         if axis is not None:
             ax = axis
         else:
-            fig = plt.figure(num=None, **self.figure_kwargs)
+            fig = plt.figure(num=None, **self.figure_kwargs())
             ax = fig.add_subplot(111, projection=projection)
 
         for axis in ['top', 'bottom', 'left', 'right']:
