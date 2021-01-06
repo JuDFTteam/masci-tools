@@ -153,8 +153,6 @@ class Plotter(object):
     def get_dict(self):
         return self._plot_parameters
 
-
-    @property
     def figure_kwargs(self):
 
         FIGURE_KEYS = {'figsize', 'dpi', 'facecolor', 'edgecolor'}
@@ -166,8 +164,7 @@ class Plotter(object):
 
         return fig_kwargs
 
-    @property
-    def plot_kwargs(self, indx=None):
+    def plot_kwargs(self):
 
         FIGURE_KEYS = {'linewidth','linestyle','marker','markersize','color','plot_label'}
 
