@@ -356,8 +356,6 @@ class KkrimpParserFunctions(object):
                - 'out_orbmoms', the output orbital moments file
 
         """
-        from masci_tools.io.parsers.kkrparser_functions import get_rms, find_warnings, get_charges_per_atom, get_core_states
-        from masci_tools.io.common_functions import get_version_info, get_Ry2eV
 
         Ry2eV = get_Ry2eV()
         msg_list = []
