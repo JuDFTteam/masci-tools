@@ -43,16 +43,24 @@ def find_migration(start, target, migrations):
         return None
 
     if target in migrations[start]:
-        return [migrations[start][target]]
+        if isinstance(migrations[start][target], str):
+            if migrations[start][target] == 'compatible':
+                return []
+            return None
+        else:
+            return [migrations[start][target]]
 
-    call_list = []
     for possible_stop in migrations[start].keys():
         new_call_list = find_migration(possible_stop, target, migrations)
 
         if new_call_list is None:
             continue
 
-        call_list = [migrations[start][possible_stop]]
+        if isinstance(migrations[start][possible_stop], str):
+            if migrations[start][possible_stop] == 'compatible':
+                call_list = []
+        else:
+            call_list = [migrations[start][possible_stop]]
         call_list += new_call_list
         return call_list
 
