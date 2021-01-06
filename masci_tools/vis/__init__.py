@@ -112,17 +112,18 @@ class Plotter(object):
             return None
 
     @staticmethod
-    def _setkey(key, value, dict_to_change):
+    def _setkey(key, value, dict_to_change, force=False):
         if key not in dict_to_change:
             raise KeyError(f'The key {key} is not a parameter key')
 
         if isinstance(dict_to_change[key], dict):
             if not isinstance(value, dict):
-                raise ValueError(f"Expected a dict for key {key} got '{value}'")
-            dict_to_change[key].update(value)
+                if not force:
+                    raise ValueError(f"Expected a dict for key {key} got '{value}'")
+                dict_to_change[key] = value
+            else:
+                dict_to_change[key].update(value)
         else:
-            if isinstance(value, dict):
-                    raise ValueError(f"Got dict for key {key}")
             dict_to_change[key] = value
 
     def __setitem__(self, key, value):
@@ -131,7 +132,7 @@ class Plotter(object):
     def set_defaults(self, continue_on_error=False, **kwargs):
         for key, value in kwargs.items():
             try:
-                self._setkey(key, value, self._current_defaults)
+                self._setkey(key, value, self._current_defaults, force=kwargs.get('force',False))
             except KeyError:
                 if not continue_on_error:
                     raise
@@ -139,7 +140,7 @@ class Plotter(object):
     def set_parameters(self, continue_on_error=False, **kwargs):
         for key, value in kwargs.items():
             try:
-                self[key] = value
+                self._setkey(key, value, self._plot_parameters, force=kwargs.get('force',False))
             except KeyError:
                 if not continue_on_error:
                     raise
