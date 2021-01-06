@@ -14,7 +14,7 @@
 Here are all plot varaiables/constants,
 
 """
-
+from masci_tools.vis import Plotter
 import matplotlib.pyplot as plt
 
 class MatplotlibPlotter(Plotter):
