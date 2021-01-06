@@ -25,7 +25,7 @@ from bokeh.core.properties import FontSize
 from bokeh.io import show as bshow
 from bokeh.plotting import figure as bokeh_fig
 from matplotlib.colors import Normalize, LogNorm, to_hex
-from matplotlib.cm import plasma, inferno, magma, viridis #pylint: disable=no-name-in-module
+from matplotlib.cm import plasma, inferno, magma, viridis  #pylint: disable=no-name-in-module
 from matplotlib.cm import ScalarMappable
 
 ################## Helpers     ################
