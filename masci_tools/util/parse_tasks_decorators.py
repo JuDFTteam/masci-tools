@@ -28,8 +28,13 @@ from functools import wraps
 
 def register_migration(base_version, target_version):
     """
-    Decorator to add migration for task defintion dictionary
-    The function should only take tasks_defintion as an argument
+    Decorator to add migration for task definition dictionary to the ParseTasks class
+    The function should only take the dict of task definitions as an argument
+
+    :param base_version: str of the version, from which the migration starts
+    :param target_version: str or list of str with the versions that work after
+                           the migration has been performed
+
     """
 
     def migration_decorator(func):
@@ -63,8 +68,20 @@ def register_migration(base_version, target_version):
 
 def register_parsing_function(parse_type_name, all_attribs_keys=False):
     """
-    Decorator to add parse type for task defintion dictionary
-    The function should only take tasks_defintion as an argument
+    Decorator to add parse type for task definition dictionary.
+
+    :param parse_type_name: str, the function can be selected in task defintions
+                            via this string
+    :param all_attribs_keys: bool, if True the arguments for parsing multiple attributes
+                             are valid
+
+    The decorated function has to have the following arguments:
+        :param node: etree Element, on which to execute the xpath evaluations
+        :param schema_dict: dict, containing all the path information and more
+        :param name: str, name of the tag/attribute
+        :param parser_info_out: dict, with warnings, info, errors, ...
+        :param kwargs: here all other keyword arguments are collected
+
     """
 
     def parse_type_decorator(func):
@@ -95,8 +112,15 @@ def register_parsing_function(parse_type_name, all_attribs_keys=False):
 
 def conversion_function(func):
     """
-    Return decorated ParseTasks object with _conversion_functions dict attribute
-    Here all registered conversion functions are inserted
+    Marks a function as a conversion function, which can be called after
+    performing a parsing task. The function can be specified via the _conversions
+    control key in the task definitions.
+
+    A conversion function has to have the following arguments:
+        :param out_dict: dict with the previously parsed information
+        :param parser_info_out: dict, with warnings, info, errors, ...
+
+    and return only the modified output dict
     """
 
     @wraps(func)
