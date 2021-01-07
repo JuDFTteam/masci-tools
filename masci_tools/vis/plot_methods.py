@@ -656,26 +656,25 @@ def waterfall_plot(xdata,
         pass
 
 
-def multiplot_moved(ydata,
-                    xdata,
-                    xlabel,
-                    ylabel,
-                    title,
-                    plot_labels,
-                    scale_move=1.0,
-                    linestyle='-',
-                    marker='o',
-                    legend=legend_g,
-                    legend_option={},
-                    min_add=0,
-                    saveas='mscatterplot',
-                    limits=[None, None],
-                    scale=[None, None],
-                    **kwargs):
+def multiplot_moved(ydata, xdata, xlabel, ylabel, title, scale_move=1.0, min_add=0, saveas='mscatterplot', **kwargs):
     """
     Plots all the scater plots above each other. It adds an arbitray offset to the ydata to do this and
     calls multi scatter plot. Therefore you might not want to show the yaxis ticks
+
+    :param xdata: arraylike, data for the x coordinate
+    :param ydata: arraylike, data for the y coordinate
+    :param xlabel: str, label written on the x axis
+    :param ylabel: str, label written on the y axis
+    :param title: str, title of the figure
+    :param scale_move: float, max*scale_move determines size of the shift
+    :param min_add: float, minimum shift
+    :param saveas: str specifying the filename (without file format)
     """
+
+    if 'yticks' not in kwargs:
+        kwargs['yticks'] = []
+    if 'yticklabels' not in kwargs:
+        kwargs['yticklabels'] = []
 
     ydatanew = []
 
@@ -684,20 +683,7 @@ def multiplot_moved(ydata,
         ydatanew.append(np.array(data) + ymax)
         ymax = ymax + max(data) * scale_move + min_add
 
-    ax = multiple_scatterplots(ydatanew,
-                               xdata,
-                               xlabel,
-                               ylabel,
-                               title,
-                               plot_labels,
-                               linestyle=linestyle,
-                               marker=marker,
-                               legend=legend,
-                               legend_option=legend_option,
-                               saveas=saveas,
-                               limits=limits,
-                               scale=scale,
-                               **kwargs)
+    ax = multiple_scatterplots(ydatanew, xdata, xlabel, ylabel, title, saveas=saveas, **kwargs)
 
     return ax
 

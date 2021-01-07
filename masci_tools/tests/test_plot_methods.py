@@ -571,3 +571,26 @@ class TestMultiScatterPlot(object):
         multi_scatter_plot(x, y, s, 'X', 'Y', 'Plot Test',color=['darkred', 'darkorange'], marker='^', plot_alpha=0.6, plot_label= ['Parabola', 'Line'], legend=True, show=False)
         # need to return the figure in order for mpl checks to work
         return gcf()
+
+class TestMultiPlotMoved(object):
+    """Test of the multiplot_moved function"""
+
+
+    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiplot_moved/',
+                                   filename='defaults.png')
+    def test_multiple_scatterplots_default(self):
+        """
+        Mulitplot_moved with default parameters
+        """
+        import numpy as np
+        from masci_tools.vis.plot_methods import multiplot_moved
+
+        x = [np.linspace(-10, 10, 100)] * 3
+        y = [x[0] * 5 + 30, 50 * np.sin(x[1]), 50 * np.cos(x[2])]
+
+        gcf().clear()
+
+        multiplot_moved(y, x, 'X', 'Y', 'Plot Test', scale_move=2.0, show=False)
+        # need to return the figure in order for mpl checks to work
+        return gcf()
+        
