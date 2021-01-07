@@ -43,6 +43,10 @@ class MatplotlibPlotter(Plotter):
         'color': None,
         'plot_label': None,
 
+        #scale and limits placeholder
+        'scale': None,
+        'limits': None,
+
         # x, y label
         'labelfontsize' : 15,
 
@@ -154,6 +158,26 @@ class MatplotlibPlotter(Plotter):
             ax.xaxis.get_major_formatter().set_useOffset(False)
 
         return ax
+
+    def set_scale(self, ax):
+
+        if self['scale'] is not None:
+            if 'x' in self['scale']:
+                ax.set_xscale(self['scale']['x'])
+            if 'y' in self['scale']:
+                ax.set_yscale(self['scale']['y'])
+
+    def set_limits(self, ax):
+
+        if self['limits'] is not None:
+            if 'x' in self['limits']:
+                xmin = self['limits']['x'][0]
+                xmax = self['limits']['x'][1]
+                ax.set_xlim(xmin, xmax)
+            if 'y' in self['limits']:
+                ymin = self['limits']['y'][0]
+                ymax = self['limits']['y'][1]
+                ax.set_ylim(ymin, ymax)
 
     def show_legend(self, ax):
         #TODO legend
