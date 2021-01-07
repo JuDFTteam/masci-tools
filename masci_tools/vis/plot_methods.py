@@ -277,8 +277,14 @@ def single_scatterplot(ydata,
     #                 linewidth=linewidth_g, markersize=markersize_g)
     # TODO customizable error bars fmt='o', ecolor='g', capthick=2, ...
     # there the if is prob better...
-
-    p1 = ax.errorbar(xdata, ydata, yerr=yerr, xerr=xerr, **plot_params.plot_kwargs, **kwargs)
+    plot_kwargs = plot_params.plot_kwargs
+    if plot_kwargs.pop('area_plot'):
+        #For fill_between there are no marker arguments
+        plot_kwargs.pop('marker',None)
+        plot_kwargs.pop('markersize',None)
+        p1 = ax.fill_between(xdata,ydata, **plot_kwargs, **kwargs)
+    else:
+        p1 = ax.errorbar(xdata, ydata, yerr=yerr, xerr=xerr, **plot_kwargs, **kwargs)
 
     plot_params.set_scale(ax)
     plot_params.set_limits(ax)

@@ -140,6 +140,24 @@ class TestSingleScatterPlot(object):
         return gcf()
 
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/single_scatterplot/',
+                                   filename='area.png')
+    def test_single_scatterplot_area(self):
+        """
+        Scatterplot with default parameters
+        """
+        import numpy as np
+        from masci_tools.vis.plot_methods import single_scatterplot
+
+        x = np.linspace(-10, 10, 100)
+        y = x**2
+
+        gcf().clear()
+
+        single_scatterplot(y, x, 'X', 'Y', 'Plot Test', show=False, area_plot=True, plot_alpha=0.3,marker=None,color='darkblue')
+        # need to return the figure in order for mpl checks to work
+        return gcf()
+
+    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/single_scatterplot/',
                                    filename='limits.png')
     def test_single_scatterplot_limits_deprecated(self):
         """

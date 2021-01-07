@@ -47,6 +47,7 @@ class MatplotlibPlotter(Plotter):
         'markersize': 4.0,
         'color': None,
         'plot_label': None,
+        'area_plot': False,
         'plot_alpha': 1.0,
 
         #scale and limits placeholder
@@ -119,6 +120,8 @@ class MatplotlibPlotter(Plotter):
             #Convert to list with defaults for not specified keys
             value = [value[indx] if indx in value else None for indx in range(self['num_plots'])]
         if isinstance(value, list) and key not in IGNORE_LISTS:
+            if not self['single_plot'] and self['num_plots']==1:
+                value = [value]
             if len(value) != self['num_plots']:
                 value = value.copy() + [None] * (self['num_plots'] - len(value))
             value = [val if val is not None else self._current_defaults[key] for val in value]
@@ -140,7 +143,7 @@ class MatplotlibPlotter(Plotter):
     @property
     def plot_kwargs(self):
 
-        PLOT_KEYS = {'linewidth', 'linestyle', 'marker', 'markersize', 'color', 'plot_label', 'plot_alpha'}
+        PLOT_KEYS = {'linewidth', 'linestyle', 'marker', 'markersize', 'color', 'plot_label', 'plot_alpha', 'area_plot'}
 
         plot_kwargs = {}
         for key in PLOT_KEYS:
