@@ -47,8 +47,10 @@ from pprint import pprint
 
 plot_params = MatplotlibPlotter()
 
+
 def set_defaults_new(**kwargs):
     plot_params.set_defaults(**kwargs)
+
 
 def show_defaults():
     pprint(plot_params.get_dict())
@@ -203,6 +205,7 @@ def set_plot_defaults(
 ########################## general plot routines ##############################
 ###############################################################################
 
+
 def single_scatterplot(ydata,
                        xdata,
                        xlabel,
@@ -233,13 +236,13 @@ def single_scatterplot(ydata,
     """
     #Old argument name
     if 'plotlabel' in kwargs:
-        warnings.warn('Please use plot_label instead of plotlabel',DeprecationWarning)
+        warnings.warn('Please use plot_label instead of plotlabel', DeprecationWarning)
         plot_label = kwargs.pop('plotlabel')
 
     if 'scale' in kwargs:
         scale = kwargs.get('scale')
         if isinstance(scale, list):
-            warnings.warn("Please provide scale as dict in the form {'x': value, 'y': value2}",DeprecationWarning)
+            warnings.warn("Please provide scale as dict in the form {'x': value, 'y': value2}", DeprecationWarning)
             scale_new = {}
             if scale[0] is not None:
                 scale_new['x'] = scale[0]
@@ -247,11 +250,10 @@ def single_scatterplot(ydata,
                 scale_new['y'] = scale[1]
             kwargs['scale'] = scale_new
 
-
     if 'limits' in kwargs:
         limits = kwargs.get('limits')
         if isinstance(limits, list):
-            warnings.warn("Please provide limits as dict in the form {'x': value, 'y': value2}",DeprecationWarning)
+            warnings.warn("Please provide limits as dict in the form {'x': value, 'y': value2}", DeprecationWarning)
             limits_new = {}
             if limits[0] is not None:
                 limits_new['x'] = limits[0]
@@ -259,17 +261,12 @@ def single_scatterplot(ydata,
                 limits_new['y'] = limits[1]
             kwargs['limits'] = limits_new
 
-    plot_params.set_parameters(continue_on_error=True,color=color,plot_label=plot_label,**kwargs)
+    plot_params.set_parameters(continue_on_error=True, color=color, plot_label=plot_label, **kwargs)
     #Remove the processed kwargs
     kwargs = {k: v for k, v in kwargs.items() if k not in plot_params.get_dict()}
-    ax = plot_params.prepare_plot(title=title,xlabel=xlabel,ylabel=ylabel,axis=axis)
+    ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
-    p1 = ax.errorbar(xdata,
-                     ydata,
-                     yerr=yerr,
-                     xerr=xerr,
-                     **plot_params.plot_kwargs,
-                     **kwargs)
+    p1 = ax.errorbar(xdata, ydata, yerr=yerr, xerr=xerr, **plot_params.plot_kwargs, **kwargs)
 
     plot_params.set_scale(ax)
     plot_params.set_limits(ax)

@@ -155,8 +155,8 @@ class MatplotlibPlotter(Plotter):
             fig = plt.figure(num=None, **self.figure_kwargs)
             ax = fig.add_subplot(111, projection=projection)
 
-        for axis in ['top', 'bottom', 'left', 'right']:
-            ax.spines[axis].set_linewidth(self['axis_linewidth'])
+        for axes in ['top', 'bottom', 'left', 'right']:
+            ax.spines[axes].set_linewidth(self['axis_linewidth'])
         ax.set_title(title, fontsize=self['title_fontsize'], alpha=self['alpha'], ha='center')
         ax.set_xlabel(xlabel, fontsize=self['labelfontsize'])
         ax.set_ylabel(ylabel, fontsize=self['labelfontsize'])
