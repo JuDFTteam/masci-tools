@@ -526,3 +526,48 @@ class TestMultipleScatterPlot(object):
             multiple_scatterplots(y, x, 'X', 'Y', 'Plot Test', colors=['darkred', 'darkblue', 'limegreen'], show=False)
         # need to return the figure in order for mpl checks to work
         return gcf()
+
+
+class TestMultiScatterPlot(object):
+    """
+    Test of the multi_scatter_plot function
+    """
+
+
+    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multi_scatter_plot/',
+                                   filename='defaults.png')
+    def test_multi_scatter_plot_default(self):
+        """
+        Scatterplot with default parameters
+        """
+        import numpy as np
+        from masci_tools.vis.plot_methods import multi_scatter_plot
+
+        x = [np.linspace(-10, 10, 50)] * 2
+        y = [x[0]**2, x[1] * 5 + 30]
+        s = [100*np.exp(-0.1*x[0]**2),abs(x[1])]
+
+        gcf().clear()
+
+        multi_scatter_plot(x, y, s, 'X', 'Y', 'Plot Test', show=False)
+        # need to return the figure in order for mpl checks to work
+        return gcf()
+
+    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multi_scatter_plot/',
+                                   filename='param_change.png')
+    def test_multi_scatter_plot_param_change(self):
+        """
+        Scatterplot with changed parameters
+        """
+        import numpy as np
+        from masci_tools.vis.plot_methods import multi_scatter_plot
+
+        x = [np.linspace(-10, 10, 50)] * 2
+        y = [x[0]**2, x[1] * 5 + 30]
+        s = [100*np.exp(-0.1*x[0]**2),abs(x[1])]
+
+        gcf().clear()
+
+        multi_scatter_plot(x, y, s, 'X', 'Y', 'Plot Test',color=['darkred', 'darkorange'], marker='^', plot_alpha=0.6, plot_label= ['Parabola', 'Line'], legend=True, show=False)
+        # need to return the figure in order for mpl checks to work
+        return gcf()
