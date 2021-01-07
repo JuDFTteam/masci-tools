@@ -54,7 +54,7 @@ class Plotter(object):
 
     @staticmethod
     def _setkey(key, value, dict_to_change, force=False):
-        if key not in dict_to_change:
+        if key not in dict_to_change and not force:
             raise KeyError(f'The key {key} is not a parameter key')
 
         if isinstance(dict_to_change[key], dict):
@@ -86,6 +86,17 @@ class Plotter(object):
                 if not continue_on_error:
                     raise
 
+    def add_parameter(self, name, default_from=None):
+
+        default_val = None
+        if default_from is not None:
+            default_val = self._current_defaults[default_from]
+            if isinstance(default_val, dict) or isinstance(default_val, list):
+                default_val = copy.deepcopy(default_val)
+
+        self._setkey(name, default_val, self._plot_parameters, force=True)
+
+
     def reset_defaults(self):
         self._current_defaults = copy.deepcopy(self._PLOT_DEFAULTS)
 
@@ -95,11 +106,11 @@ class Plotter(object):
     def get_dict(self):
         return self._plot_parameters
 
-    def prepare_figure(self, *args, **kwargs):
+    def prepare_plot(self, *args, **kwargs):
         raise NotImplementedError
 
     def show_legend(self, *args, **kwargs):
         raise NotImplementedError
 
-    def save_figure(self, *args, **kwargs):
+    def save_plot(self, *args, **kwargs):
         raise NotImplementedError
