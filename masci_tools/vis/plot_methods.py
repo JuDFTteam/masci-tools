@@ -42,15 +42,16 @@ import matplotlib.pyplot as pp
 import matplotlib.mlab as mlab
 from matplotlib.patches import Rectangle
 from cycler import cycler
-
+import six
 from pprint import pprint
 
 plot_params = MatplotlibPlotter()
 
-
-def set_defaults_new(**kwargs):
+def set_plot_defaults_new(**kwargs):
     plot_params.set_defaults(**kwargs)
 
+def reset_plot_defaults():
+    plot_params.reset_defaults(**kwargs)
 
 def show_defaults():
     pprint(plot_params.get_dict())
@@ -285,6 +286,7 @@ def single_scatterplot(ydata,
 
     return ax
 
+
 def multiple_scatterplots(ydata,
                           xdata,
                           xlabel,
@@ -296,7 +298,7 @@ def multiple_scatterplots(ydata,
                           yerr=None,
                           **kwargs):
     """
-    Create a standard scatter plot with multiple sets of data (this should be flexible enough) 
+    Create a standard scatter plot with multiple sets of data (this should be flexible enough)
     to do all the basic plots.
 
     :param xdata: arraylike, data for the x coordinate
@@ -354,10 +356,9 @@ def multiple_scatterplots(ydata,
     if 'xticks' in kwargs:
         xticks = kwargs.get('xticks')
         if isinstance(xticks[0], list):
-            warnings.warn("Please provide xticks and xticklabels seperately as two lists", DeprecationWarning)
+            warnings.warn('Please provide xticks and xticklabels seperately as two lists', DeprecationWarning)
             kwargs['xticklabels'] = xticks[0]
             kwargs['xticks'] = xticks[1]
-
 
     plot_params.set_parameters(continue_on_error=True, num_plots=len(ydata), **kwargs)
     #Remove the processed kwargs
@@ -369,39 +370,35 @@ def multiple_scatterplots(ydata,
 
     plot_kwargs = plot_params.plot_kwargs
 
-    for indx, data in enumerate(zip(xdata,ydata)):
+    for indx, data in enumerate(zip(xdata, ydata)):
 
-        x,y = data
+        x, y = data
 
         try:
             plot_kw = plot_kwargs[indx]
         except IndexError:
-            if len(plot_kwargs)==1:
+            if len(plot_kwargs) == 1:
                 plot_kw = plot_kwargs[0]
             else:
                 raise
 
         if isinstance(yerr, list):
             try:
-                yerrt = yerr[i]
-            except KeyError:
+                yerrt = yerr[indx]
+            except IndexError:
                 yerrt = yerr[0]
         else:
             yerrt = yerr
 
         if isinstance(xerr, list):
             try:
-                xerrt = xerr[i]
-            except KeyError:
+                xerrt = xerr[indx]
+            except IndexError:
                 xerrt = xerr[0]
         else:
             xerrt = xerr
 
-        p1 = ax.errorbar(x,y,
-                         yerr=yerrt,
-                         xerr=xerrt,
-                         **plot_kw,
-                         **kwargs)
+        p1 = ax.errorbar(x, y, yerr=yerrt, xerr=xerrt, **plot_kw, **kwargs)
 
     plot_params.set_scale(ax)
     plot_params.set_limits(ax)
