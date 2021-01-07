@@ -153,7 +153,16 @@ class TestSingleScatterPlot(object):
 
         gcf().clear()
 
-        single_scatterplot(y, x, 'X', 'Y', 'Plot Test', show=False, area_plot=True, plot_alpha=0.3,marker=None,color='darkblue')
+        single_scatterplot(y,
+                           x,
+                           'X',
+                           'Y',
+                           'Plot Test',
+                           show=False,
+                           area_plot=True,
+                           plot_alpha=0.3,
+                           marker=None,
+                           color='darkblue')
         # need to return the figure in order for mpl checks to work
         return gcf()
 
@@ -394,7 +403,10 @@ class TestMultipleScatterPlot(object):
                               'Y',
                               'Plot Test',
                               marker='^',
-                              color={4: 'k', 3: 'darkorange'},
+                              color={
+                                  4: 'k',
+                                  3: 'darkorange'
+                              },
                               area_plot={3: True},
                               plot_label={
                                   0: 'Parabola',
@@ -533,7 +545,6 @@ class TestMultiScatterPlot(object):
     Test of the multi_scatter_plot function
     """
 
-
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multi_scatter_plot/',
                                    filename='defaults.png')
     def test_multi_scatter_plot_default(self):
@@ -545,7 +556,7 @@ class TestMultiScatterPlot(object):
 
         x = [np.linspace(-10, 10, 50)] * 2
         y = [x[0]**2, x[1] * 5 + 30]
-        s = [100*np.exp(-0.1*x[0]**2),abs(x[1])]
+        s = [100 * np.exp(-0.1 * x[0]**2), abs(x[1])]
 
         gcf().clear()
 
@@ -564,17 +575,28 @@ class TestMultiScatterPlot(object):
 
         x = [np.linspace(-10, 10, 50)] * 2
         y = [x[0]**2, x[1] * 5 + 30]
-        s = [100*np.exp(-0.1*x[0]**2),abs(x[1])]
+        s = [100 * np.exp(-0.1 * x[0]**2), abs(x[1])]
 
         gcf().clear()
 
-        multi_scatter_plot(x, y, s, 'X', 'Y', 'Plot Test',color=['darkred', 'darkorange'], marker='^', plot_alpha=0.6, plot_label= ['Parabola', 'Line'], legend=True, show=False)
+        multi_scatter_plot(x,
+                           y,
+                           s,
+                           'X',
+                           'Y',
+                           'Plot Test',
+                           color=['darkred', 'darkorange'],
+                           marker='^',
+                           plot_alpha=0.6,
+                           plot_label=['Parabola', 'Line'],
+                           legend=True,
+                           show=False)
         # need to return the figure in order for mpl checks to work
         return gcf()
 
+
 class TestMultiPlotMoved(object):
     """Test of the multiplot_moved function"""
-
 
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiplot_moved/',
                                    filename='defaults.png')
@@ -593,6 +615,7 @@ class TestMultiPlotMoved(object):
         multiplot_moved(y, x, 'X', 'Y', 'Plot Test', scale_move=2.0, show=False)
         # need to return the figure in order for mpl checks to work
         return gcf()
+
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiplot_moved/',
                                    filename='param_change.png')
     def test_multiplot_moved_param_change(self):
@@ -607,12 +630,21 @@ class TestMultiPlotMoved(object):
 
         gcf().clear()
 
-        multiplot_moved(y, x, 'X', 'Y', 'Plot Test', plot_label=['Line', None, 'cosine'], legend=True, min_add=20, color=['darkred', 'darkblue', 'darkorange'], scale_move=2.0, show=False)
+        multiplot_moved(y,
+                        x,
+                        'X',
+                        'Y',
+                        'Plot Test',
+                        plot_label=['Line', None, 'cosine'],
+                        legend=True,
+                        min_add=20,
+                        color=['darkred', 'darkblue', 'darkorange'],
+                        scale_move=2.0,
+                        show=False)
         # need to return the figure in order for mpl checks to work
         return gcf()
 
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiplot_moved/',
-                                   filename='area.png')
+    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiplot_moved/', filename='area.png')
     def test_multiplot_moved_area(self):
         """
         Mulitplot_moved with changed parameters
@@ -628,4 +660,3 @@ class TestMultiPlotMoved(object):
         multiplot_moved(y, x, 'X', 'Y', 'Plot Test', area_plot={2: True}, show=False)
         # need to return the figure in order for mpl checks to work
         return gcf()
-        
