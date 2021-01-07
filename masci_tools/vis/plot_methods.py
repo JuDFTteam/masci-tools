@@ -48,11 +48,14 @@ from pprint import pprint
 
 plot_params = MatplotlibPlotter()
 
+
 def set_plot_defaults_new(**kwargs):
     plot_params.set_defaults(**kwargs)
 
+
 def reset_plot_defaults():
     plot_params.reset_defaults(**kwargs)
+
 
 def show_defaults():
     pprint(plot_params.get_dict())
@@ -281,7 +284,7 @@ def single_scatterplot(ydata,
     area_curve = kwargs.pop('area_curve', 0)
 
     if plot_params['area_plot']:
-        p1 = ax.fill_between(xdata,ydata, y2=area_curve, **plot_kwargs, **kwargs)
+        p1 = ax.fill_between(xdata, ydata, y2=area_curve, **plot_kwargs, **kwargs)
     else:
         p1 = ax.errorbar(xdata, ydata, yerr=yerr, xerr=xerr, **plot_kwargs, **kwargs)
 
@@ -323,7 +326,7 @@ def multiple_scatterplots(ydata,
         print('ydata and xdata must have the same dimension')
         return
 
-    if isinstance(ydata[0],(list,np.ndarray)):
+    if isinstance(ydata[0], (list, np.ndarray)):
         num_plots = len(ydata)
     else:
         num_plots = 1
@@ -412,11 +415,10 @@ def multiple_scatterplots(ydata,
         else:
             shift = 0
 
-        if plot_params[('area_plot',indx)]:
+        if plot_params[('area_plot', indx)]:
             p1 = ax.fill_between(x, y, y2=shift, **plot_kw, **kwargs)
         else:
             p1 = ax.errorbar(x, y, yerr=yerrt, xerr=xerrt, **plot_kw, **kwargs)
-
 
     plot_params.set_scale(ax)
     plot_params.set_limits(ax)
@@ -427,17 +429,18 @@ def multiple_scatterplots(ydata,
     return ax
 
 
-def multi_scatter_plot(xdata,
-                       ydata,
-                       sdata,
-                       xlabel='',
-                       ylabel='',
-                       title='',
-                       linestyle='', #By default no line
-                       color='k', #By default black
-                       saveas='mscatterplot',
-                       axis=None,
-                       **kwargs):
+def multi_scatter_plot(
+        xdata,
+        ydata,
+        sdata,
+        xlabel='',
+        ylabel='',
+        title='',
+        linestyle='',  #By default no line
+        color='k',  #By default black
+        saveas='mscatterplot',
+        axis=None,
+        **kwargs):
     """
     Create a scatter plot with varying marker size
     Info: x, y and s data must have the same dimensions.
@@ -460,7 +463,7 @@ def multi_scatter_plot(xdata,
         print('ydata and xdata must have the same dimension')
         return
 
-    if isinstance(ydata[0],(list,np.ndarray)):
+    if isinstance(ydata[0], (list, np.ndarray)):
         num_plots = len(ydata)
     else:
         num_plots = 1
@@ -511,19 +514,24 @@ def multi_scatter_plot(xdata,
     #Override default color None in plotter
     if isinstance(color, list):
         for index, value in enumerate(color):
-            if isinstance(value,list):
+            if isinstance(value, list):
                 color[index] = [c if c is not None else 'k' for c in color[index]]
             elif value is None:
                 color[index] = 'k'
 
-    plot_params.set_parameters(continue_on_error=True, single_plot=False, num_plots=num_plots, color=color, area_plot=None, **kwargs)
+    plot_params.set_parameters(continue_on_error=True,
+                               single_plot=False,
+                               num_plots=num_plots,
+                               color=color,
+                               area_plot=False,
+                               **kwargs)
     #Remove the processed kwargs
     kwargs = {k: v for k, v in kwargs.items() if k not in plot_params.get_dict()}
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
     plot_kwargs = plot_params.plot_kwargs(ignore='markersize')
 
-    for indx, data in enumerate(zip(xdata,ydata,sdata, plot_kwargs)):
+    for indx, data in enumerate(zip(xdata, ydata, sdata, plot_kwargs)):
 
         x, y, size, plot_kw = data
 
@@ -531,7 +539,6 @@ def multi_scatter_plot(xdata,
             size = plot_params['markersize']
 
         ax.scatter(x, y=y, s=size, **plot_kw)
-
 
     plot_params.set_scale(ax)
     plot_params.set_limits(ax)

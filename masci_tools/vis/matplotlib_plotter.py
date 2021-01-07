@@ -28,7 +28,6 @@ class MatplotlibPlotter(Plotter):
         'dpi': 80,
         'facecolor': 'w',
         'edgecolor': 'k',
-
         'single_plot': True,
         'num_plots': 1,
 
@@ -122,14 +121,13 @@ class MatplotlibPlotter(Plotter):
             #Convert to list with defaults for not specified keys
             value = [value[indx] if indx in value else None for indx in range(self['num_plots'])]
         if isinstance(value, list) and key not in IGNORE_LISTS:
-            if not self['single_plot'] and self['num_plots']==1:
+            if not self['single_plot'] and self['num_plots'] == 1:
                 value = [value]
             if len(value) != self['num_plots']:
                 value = value.copy() + [None] * (self['num_plots'] - len(value))
             value = [val if val is not None else self._current_defaults[key] for val in value]
 
         super()._setkey(key, value, dict_to_change, force=force)
-
 
     def figure_kwargs(self):
 
@@ -184,14 +182,14 @@ class MatplotlibPlotter(Plotter):
                 else:
                     raise ValueError('Length does not match number of plots')
             for index, value in enumerate(plot_kwargs):
-                if self[('area_plot',index)]:
-                    value.pop('marker',None)
-                    value.pop('markersize',None)
+                if self[('area_plot', index)]:
+                    value.pop('marker', None)
+                    value.pop('markersize', None)
                     plot_kwargs[index] = value
         else:
             if self['area_plot']:
-                plot_kwargs.pop('marker',None)
-                plot_kwargs.pop('markersize',None)
+                plot_kwargs.pop('marker', None)
+                plot_kwargs.pop('markersize', None)
 
         return plot_kwargs
 
