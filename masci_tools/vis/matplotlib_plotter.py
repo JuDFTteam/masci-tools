@@ -130,7 +130,7 @@ class MatplotlibPlotter(Plotter):
 
         super()._setkey(key, value, dict_to_change, force=force)
 
-    @property
+
     def figure_kwargs(self):
 
         FIGURE_KEYS = {'figsize', 'dpi', 'facecolor', 'edgecolor'}
@@ -142,10 +142,15 @@ class MatplotlibPlotter(Plotter):
 
         return fig_kwargs
 
-    @property
-    def plot_kwargs(self):
+    def plot_kwargs(self, ignore=None):
 
         PLOT_KEYS = {'linewidth', 'linestyle', 'marker', 'markersize', 'color', 'plot_label', 'plot_alpha'}
+
+        if ignore is not None:
+            if not isinstance(ignore, list):
+                ignore = [ignore]
+            for key in ignore:
+                PLOT_KEYS.remove(key)
 
         plot_kwargs = {}
         for key in PLOT_KEYS:
@@ -173,6 +178,20 @@ class MatplotlibPlotter(Plotter):
             plot_kwargs = [{key: value[index]
                             for key, value in plot_kwargs.items()}
                            for index in range(max(map(len, plot_kwargs.values())))]
+            if len(plot_kwargs) != self['num_plots']:
+                if len(plot_kwargs) == 1:
+                    plot_kwargs = [copy.deepcopy(plot_kwargs[0]) for i in range(self['num_plots'])]
+                else:
+                    raise ValueError('Length does not match number of plots')
+            for index, value in enumerate(plot_kwargs):
+                if self[('area_plot',index)]:
+                    value.pop('marker',None)
+                    value.pop('markersize',None)
+                    plot_kwargs[index] = value
+        else:
+            if self['area_plot']:
+                plot_kwargs.pop('marker',None)
+                plot_kwargs.pop('markersize',None)
 
         return plot_kwargs
 
@@ -181,7 +200,7 @@ class MatplotlibPlotter(Plotter):
         if axis is not None:
             ax = axis
         else:
-            fig = plt.figure(num=None, **self.figure_kwargs)
+            fig = plt.figure(num=None, **self.figure_kwargs())
             ax = fig.add_subplot(111, projection=projection)
 
         for axes in ['top', 'bottom', 'left', 'right']:
