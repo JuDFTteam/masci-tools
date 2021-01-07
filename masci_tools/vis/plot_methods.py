@@ -278,7 +278,7 @@ def single_scatterplot(ydata,
     # TODO customizable error bars fmt='o', ecolor='g', capthick=2, ...
     # there the if is prob better...
     plot_kwargs = plot_params.plot_kwargs
-    area_curve = kwargs.pop('area_curve', None)
+    area_curve = kwargs.pop('area_curve', 0)
 
     if plot_kwargs.pop('area_plot'):
         #For fill_between there are no marker arguments
