@@ -79,6 +79,7 @@ class MatplotlibPlotter(Plotter):
     def __init__(self, **kwargs):
         super().__init__(self._PLOT_DEFAULTS, **kwargs)
 
+    @property
     def figure_kwargs(self):
 
         FIGURE_KEYS = {'figsize', 'dpi', 'facecolor', 'edgecolor'}
@@ -90,7 +91,8 @@ class MatplotlibPlotter(Plotter):
 
         return fig_kwargs
 
-    def plot_kwargs(self, indx=None):
+    @property
+    def plot_kwargs(self):
 
         FIGURE_KEYS = {'linewidth','linestyle','marker','markersize','color','plot_label'}
 
@@ -101,12 +103,25 @@ class MatplotlibPlotter(Plotter):
             else:
                 set_key = key
 
-            if self[(key,indx)] is not None:
-                plot_kwargs[set_key] = self[(key,indx)]
+            if self[key] is not None:
+                plot_kwargs[set_key] = self[key]
+
+        any_list = any([isinstance(val,list) for val in plot_kwargs.values()])
+
+        if any_list:
+            max_length = max([len(val) for val in plot_kwargs.values() if isinstance(val, list)])
+
+            for key, val in plot_kwargs.items():
+                if isinstance(val, list):
+                    if len(val) != max_length:
+                        plot_kwargs[key] = val.copy() + [val[0]] * (max_length-len(val))
+                else:
+                    plot_kwargs[key] = [val] * max_length
+
 
         return plot_kwargs
 
-    def prepare_figure(self, title=None, xlabel=None, ylabel=None, axis=None, minor=False, projection=None):
+    def prepare_plot(self, title=None, xlabel=None, ylabel=None, axis=None, minor=False, projection=None):
 
         if axis is not None:
             ax = axis
@@ -150,7 +165,7 @@ class MatplotlibPlotter(Plotter):
             leg.get_frame().set_linewidth(linewidth)
             leg.get_title().set_fontsize(title_font_size)  #legend 'Title' fontsize
 
-    def save_figure(self, saveas):
+    def save_plot(self, saveas):
         if self['save_plots']:
             savefilename = f"{saveas}.{self['save_format']}"
             print(f'Save plot to: {savefilename}')
