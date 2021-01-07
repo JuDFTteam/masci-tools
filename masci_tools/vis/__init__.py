@@ -115,7 +115,7 @@ class Plotter(object):
         default_val = None
         if default_from is not None:
             default_val = self._current_defaults[default_from]
-            if isinstance(default_val, dict) or isinstance(default_val, list):
+            if isinstance(default_val, (dict, list)):
                 default_val = copy.deepcopy(default_val)
 
         self._setkey(name, default_val, self._plot_parameters, force=True)
@@ -131,12 +131,3 @@ class Plotter(object):
 
     def get_dict(self):
         return self._plot_parameters
-
-    def prepare_plot(self, *args, **kwargs):
-        raise NotImplementedError
-
-    def show_legend(self, *args, **kwargs):
-        raise NotImplementedError
-
-    def save_plot(self, *args, **kwargs):
-        raise NotImplementedError

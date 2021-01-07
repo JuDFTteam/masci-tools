@@ -28,7 +28,6 @@ class MatplotlibPlotter(Plotter):
         'dpi': 80,
         'facecolor': 'w',
         'edgecolor': 'k',
-
         'num_plots': 1,
 
         # axis properties
@@ -126,7 +125,6 @@ class MatplotlibPlotter(Plotter):
 
         FIGURE_KEYS = {'linewidth', 'linestyle', 'marker', 'markersize', 'color', 'plot_label'}
 
-
         plot_kwargs = {}
         for key in FIGURE_KEYS:
             if self[key] is not None:
@@ -147,9 +145,9 @@ class MatplotlibPlotter(Plotter):
 
         print(plot_kwargs)
         if self['num_plots'] != 1:
-            plot_kwargs = [{key:value[index] for key,value in plot_kwargs.items()}
-                                for index in range(max(map(len,plot_kwargs.values())))]
-
+            plot_kwargs = [{key: value[index]
+                            for key, value in plot_kwargs.items()}
+                           for index in range(max(map(len, plot_kwargs.values())))]
 
         return plot_kwargs
 
