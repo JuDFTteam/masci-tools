@@ -233,7 +233,7 @@ class TestMultipleScatterPlot(object):
 
         multiple_scatterplots(y,x,'X','Y','Plot Test',
                                   title_fontsize=30,plot_label=['Parabola','Line',None,'cosine'],
-                                  marker='^',linewidth=[1,3],color=['darkred','darkblue','limegreen'])
+                                  marker='^',linewidth=[1,3],color=['darkred','darkblue','limegreen'],show=False)
         # need to return the figure in order for mpl checks to work
         return gcf()
 
@@ -252,7 +252,7 @@ class TestMultipleScatterPlot(object):
         gcf().clear()
 
         multiple_scatterplots(y,x,'X','Y','Plot Test',plot_label=['Parabola','Line',None,'cosine'],
-                                  legend=True,legend_options={'fontsize': 17})
+                                  legend=True,legend_options={'fontsize': 17},show=False)
         # need to return the figure in order for mpl checks to work
         return gcf()
 
@@ -270,7 +270,7 @@ class TestMultipleScatterPlot(object):
 
         gcf().clear()
 
-        multiple_scatterplots(y,x,'X','Y','Plot Test',scale={'y': 'log'},limits={'y': (0, 100), 'x': (0, 10)})
+        multiple_scatterplots(y,x,'X','Y','Plot Test',scale={'y': 'log'},limits={'y': (0.01, 100), 'x': (0, 10)},show=False)
         # need to return the figure in order for mpl checks to work
         return gcf()
 
@@ -288,7 +288,7 @@ class TestMultipleScatterPlot(object):
 
         gcf().clear()
 
-        multiple_scatterplots(y,x,'X','Y','Plot Test',xticks=[-10,3,3,10,20],xticklabels=[r'$\pi$', '4', 'TEST', r'$\Omega$', r'$\frac{{1}}{{4}}$'])
+        multiple_scatterplots(y,x,'X','Y','Plot Test',xticks=[-10,3,3,10,20],xticklabels=[r'$\pi$', '4', 'TEST', r'$\Omega$', r'$\frac{{1}}{{4}}$'],show=False)
         # need to return the figure in order for mpl checks to work
         return gcf()
 
@@ -306,7 +306,7 @@ class TestMultipleScatterPlot(object):
 
         gcf().clear()
         with pytest.deprecated_call():
-            multiple_scatterplots(y,x,'X','Y','Plot Test',scale=[None,'log'],limits=[(0, 10),(-100, 100)])
+            multiple_scatterplots(y,x,'X','Y','Plot Test',scale=[None,'log'],limits=[(0, 10),(0.01, 100)],show=False)
         # need to return the figure in order for mpl checks to work
         return gcf()
 
@@ -323,8 +323,8 @@ class TestMultipleScatterPlot(object):
         y = [x[0]**2, x[1]*5+30, 50*np.sin(x[2]),50*np.cos(x[3]),-5*x[4]+30]
 
         gcf().clear()
-
-        multiple_scatterplots(y,x,'X','Y','Plot Test',xticks=[[r'$\pi$', '4', 'TEST', r'$\Omega$', r'$\frac{{1}}{{4}}$'],[-10,3,3,10,20]])
+        with pytest.deprecated_call():
+            multiple_scatterplots(y,x,'X','Y','Plot Test',xticks=[[r'$\pi$', '4', 'TEST', r'$\Omega$', r'$\frac{{1}}{{4}}$'],[-10,3,3,10,20]],show=False)
         # need to return the figure in order for mpl checks to work
         return gcf()
 
@@ -342,8 +342,8 @@ class TestMultipleScatterPlot(object):
 
         gcf().clear()
         with pytest.deprecated_call():
-            multiple_scatterplots(y, x, 'X', 'Y', 'Plot Test', show=False,plot_labels=['Parabola','Line',None,'cosine'],
-                                  legend=True,legend_options={'fontsize': 20})
+            multiple_scatterplots(y, x, 'X', 'Y', 'Plot Test', plot_labels=['Parabola','Line',None,'cosine'],
+                                  legend=True,legend_options={'fontsize': 20},show=False)
         # need to return the figure in order for mpl checks to work
         return gcf()
 
@@ -361,8 +361,8 @@ class TestMultipleScatterPlot(object):
 
         gcf().clear()
         with pytest.deprecated_call():
-            multiple_scatterplots(y, x, 'X', 'Y', 'Plot Test', show=False,plot_label=['Parabola','Line',None,'cosine'],
-                                  legend=True,legend_option={'fontsize': 20})
+            multiple_scatterplots(y, x, 'X', 'Y', 'Plot Test', plot_label=['Parabola','Line',None,'cosine'],
+                                  legend=True,legend_option={'fontsize': 20},show=False)
         # need to return the figure in order for mpl checks to work
         return gcf()
 
@@ -381,7 +381,7 @@ class TestMultipleScatterPlot(object):
 
         gcf().clear()
         with pytest.deprecated_call():
-            multiple_scatterplots(y, x, 'X', 'Y', 'Plot Test', show=False,colors=['darkred','darkblue','limegreen'])
+            multiple_scatterplots(y, x, 'X', 'Y', 'Plot Test', colors=['darkred','darkblue','limegreen'],show=False)
         # need to return the figure in order for mpl checks to work
         return gcf()
 
