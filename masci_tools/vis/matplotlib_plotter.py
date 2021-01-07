@@ -39,6 +39,8 @@ class MatplotlibPlotter(Plotter):
         'set_powerlimits': True,
         'xticks': None,
         'xticklabels': None,
+        'yticks': None,
+        'yticklabels': None,
 
         # plot properties
         'linewidth': 2.0,
@@ -114,7 +116,7 @@ class MatplotlibPlotter(Plotter):
 
     def _setkey(self, key, value, dict_to_change, force=False):
 
-        IGNORE_LISTS = {'xticks', 'xticklabels'}
+        IGNORE_LISTS = {'xticks', 'xticklabels', 'yticks', 'yticklabels'}
 
         if isinstance(value, dict) and all([isinstance(key, int) for key in value]):
             #Convert to list with defaults for not specified keys
@@ -198,6 +200,11 @@ class MatplotlibPlotter(Plotter):
             ax.xaxis.set_ticks(self['xticks'])
         if self['xticklabels'] is not None:
             ax.xaxis.set_ticklabels(self['xticklabels'])
+
+        if self['yticks'] is not None:
+            ax.yaxis.set_ticks(self['yticks'])
+        if self['yticklabels'] is not None:
+            ax.yaxis.set_ticklabels(self['yticklabels'])
 
         if self['use_axis_formatter']:
             if self['set_powerlimits']:
