@@ -16,6 +16,7 @@ Here are all plot varaiables/constants,
 """
 from masci_tools.vis import Plotter
 import matplotlib.pyplot as plt
+import copy
 
 
 class MatplotlibPlotter(Plotter):
@@ -27,6 +28,8 @@ class MatplotlibPlotter(Plotter):
         'dpi': 80,
         'facecolor': 'w',
         'edgecolor': 'k',
+
+        'num_plots': 1,
 
         # axis properties
         'alpha': 1,
@@ -123,27 +126,30 @@ class MatplotlibPlotter(Plotter):
 
         FIGURE_KEYS = {'linewidth', 'linestyle', 'marker', 'markersize', 'color', 'plot_label'}
 
+
         plot_kwargs = {}
         for key in FIGURE_KEYS:
-            if key == 'plot_label':
-                set_key = 'label'
-            else:
-                set_key = key
-
             if self[key] is not None:
-                plot_kwargs[set_key] = self[key]
+                plot_kwargs[key] = self[key]
 
         any_list = any([isinstance(val, list) for val in plot_kwargs.values()])
 
         if any_list:
-            max_length = max([len(val) for val in plot_kwargs.values() if isinstance(val, list)])
-
             for key, val in plot_kwargs.items():
-                if isinstance(val, list):
-                    if len(val) != max_length:
-                        plot_kwargs[key] = val.copy() + [val[0]] * (max_length - len(val))
-                else:
-                    plot_kwargs[key] = [val] * max_length
+                if not isinstance(val, list):
+                    plot_kwargs[key] = [val] * self['num_plots']
+        elif self['num_plots'] != 1:
+            plot_kwargs = {key: [value] for key, value in plot_kwargs.items()}
+
+        if 'plot_label' in plot_kwargs:
+            plot_kwargs['label'] = plot_kwargs['plot_label']
+            plot_kwargs.pop('plot_label')
+
+        print(plot_kwargs)
+        if self['num_plots'] != 1:
+            plot_kwargs = [{key:value[index] for key,value in plot_kwargs.items()}
+                                for index in range(max(map(len,plot_kwargs.values())))]
+
 
         return plot_kwargs
 
@@ -206,7 +212,7 @@ class MatplotlibPlotter(Plotter):
         if self['legend']:
             loptions = copy.deepcopy(self['legend_options'])
             linewidth = loptions.pop('linewidth', 1.5)
-            title_font_size = loptions.pop('title_fontsize', 15)
+            title_font_size = loptions.pop('fontsize', 15)
             leg = ax.legend(**loptions)
             leg.get_frame().set_linewidth(linewidth)
             leg.get_title().set_fontsize(title_font_size)  #legend 'Title' fontsize
