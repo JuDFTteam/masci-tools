@@ -28,6 +28,8 @@ class MatplotlibPlotter(Plotter):
         'dpi': 80,
         'facecolor': 'w',
         'edgecolor': 'k',
+
+        'single_plot': False,
         'num_plots': 1,
 
         # axis properties
@@ -45,6 +47,7 @@ class MatplotlibPlotter(Plotter):
         'markersize': 4.0,
         'color': None,
         'plot_label': None,
+        'plot_alpha': 1.0,
 
         #scale and limits placeholder
         'scale': None,
@@ -123,10 +126,10 @@ class MatplotlibPlotter(Plotter):
     @property
     def plot_kwargs(self):
 
-        FIGURE_KEYS = {'linewidth', 'linestyle', 'marker', 'markersize', 'color', 'plot_label'}
+        PLOT_KEYS = {'linewidth', 'linestyle', 'marker', 'markersize', 'color', 'plot_label', 'plot_alpha'}
 
         plot_kwargs = {}
-        for key in FIGURE_KEYS:
+        for key in PLOT_KEYS:
             if self[key] is not None:
                 plot_kwargs[key] = self[key]
 
@@ -136,15 +139,18 @@ class MatplotlibPlotter(Plotter):
             for key, val in plot_kwargs.items():
                 if not isinstance(val, list):
                     plot_kwargs[key] = [val] * self['num_plots']
-        elif self['num_plots'] != 1:
+        elif not self['single_plot']:
             plot_kwargs = {key: [value] for key, value in plot_kwargs.items()}
 
         if 'plot_label' in plot_kwargs:
             plot_kwargs['label'] = plot_kwargs['plot_label']
             plot_kwargs.pop('plot_label')
 
-        print(plot_kwargs)
-        if self['num_plots'] != 1:
+        if 'plot_alpha' in plot_kwargs:
+            plot_kwargs['alpha'] = plot_kwargs['plot_alpha']
+            plot_kwargs.pop('plot_alpha')
+
+        if not self['single_plot']:
             plot_kwargs = [{key: value[index]
                             for key, value in plot_kwargs.items()}
                            for index in range(max(map(len, plot_kwargs.values())))]
