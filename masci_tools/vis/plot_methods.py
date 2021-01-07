@@ -280,7 +280,7 @@ def single_scatterplot(ydata,
     plot_kwargs = plot_params.plot_kwargs
     area_curve = kwargs.pop('area_curve', 0)
 
-    if plot_kwargs.pop('area_plot'):
+    if plot_params['area_plot']:
         #For fill_between there are no marker arguments
         plot_kwargs.pop('marker',None)
         plot_kwargs.pop('markersize',None)
@@ -288,6 +288,7 @@ def single_scatterplot(ydata,
     else:
         p1 = ax.errorbar(xdata, ydata, yerr=yerr, xerr=xerr, **plot_kwargs, **kwargs)
 
+    print(plot_params['area_plot'])
     plot_params.set_scale(ax)
     plot_params.set_limits(ax)
     plot_params.save_plot(saveas)
@@ -423,7 +424,7 @@ def multiple_scatterplots(ydata,
         else:
             shift = 0
 
-        if plot_kw.pop('area_plot'):
+        if plot_params[('area_plot',indx)]:
             #For fill_between there are no marker arguments
             plot_kw.pop('marker',None)
             plot_kw.pop('markersize',None)

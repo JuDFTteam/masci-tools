@@ -145,7 +145,7 @@ class MatplotlibPlotter(Plotter):
     @property
     def plot_kwargs(self):
 
-        PLOT_KEYS = {'linewidth', 'linestyle', 'marker', 'markersize', 'color', 'plot_label', 'plot_alpha', 'area_plot'}
+        PLOT_KEYS = {'linewidth', 'linestyle', 'marker', 'markersize', 'color', 'plot_label', 'plot_alpha'}
 
         plot_kwargs = {}
         for key in PLOT_KEYS:
