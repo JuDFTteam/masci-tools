@@ -55,6 +55,8 @@ class Plotter(object):
     def _setkey(key, value, dict_to_change, force=False):
         if key not in dict_to_change and not force:
             raise KeyError(f'The key {key} is not a parameter key')
+        elif key not in dict_to_change:
+            dict_to_change[key] = None
 
         if isinstance(dict_to_change[key], dict):
             if not isinstance(value, dict):
