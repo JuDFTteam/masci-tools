@@ -23,11 +23,10 @@ class Plotter(object):
 
         self._PLOT_DEFAULTS = copy.deepcopy(default_parameters)
         self._current_defaults = copy.deepcopy(default_parameters)
+        self._plot_parameters = copy.deepcopy(default_parameters)
 
         if kwargs:
             self.set_defaults(continue_on_error=True, **kwargs)
-
-        self._plot_parameters = copy.deepcopy(self._current_defaults)
 
     def __getitem__(self, indices):
         if isinstance(indices, tuple):
