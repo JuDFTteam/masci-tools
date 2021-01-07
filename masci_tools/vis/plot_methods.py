@@ -277,18 +277,14 @@ def single_scatterplot(ydata,
     #                 linewidth=linewidth_g, markersize=markersize_g)
     # TODO customizable error bars fmt='o', ecolor='g', capthick=2, ...
     # there the if is prob better...
-    plot_kwargs = plot_params.plot_kwargs
+    plot_kwargs = plot_params.plot_kwargs()
     area_curve = kwargs.pop('area_curve', 0)
 
     if plot_params['area_plot']:
-        #For fill_between there are no marker arguments
-        plot_kwargs.pop('marker',None)
-        plot_kwargs.pop('markersize',None)
         p1 = ax.fill_between(xdata,ydata, y2=area_curve, **plot_kwargs, **kwargs)
     else:
         p1 = ax.errorbar(xdata, ydata, yerr=yerr, xerr=xerr, **plot_kwargs, **kwargs)
 
-    print(plot_params['area_plot'])
     plot_params.set_scale(ax)
     plot_params.set_limits(ax)
     plot_params.save_plot(saveas)
@@ -382,20 +378,12 @@ def multiple_scatterplots(ydata,
     # TODO good checks for input and setting of internals before plotting
     # allow all arguments as value then use for all or as lists with the righ length.
 
-    plot_kwargs = plot_params.plot_kwargs
+    plot_kwargs = plot_params.plot_kwargs()
     area_curve = kwargs.pop('area_curve', None)
 
-    for indx, data in enumerate(zip(xdata, ydata)):
+    for indx, data in enumerate(zip(xdata, ydata, plot_kwargs)):
 
-        x, y = data
-
-        try:
-            plot_kw = copy.deepcopy(plot_kwargs[indx])
-        except IndexError:
-            if len(plot_kwargs) == 1:
-                plot_kw = copy.deepcopy(plot_kwargs[0])
-            else:
-                raise
+        x, y, plot_kw = data
 
         if isinstance(yerr, list):
             try:
@@ -425,9 +413,6 @@ def multiple_scatterplots(ydata,
             shift = 0
 
         if plot_params[('area_plot',indx)]:
-            #For fill_between there are no marker arguments
-            plot_kw.pop('marker',None)
-            plot_kw.pop('markersize',None)
             p1 = ax.fill_between(x, y, y2=shift, **plot_kw, **kwargs)
         else:
             p1 = ax.errorbar(x, y, yerr=yerrt, xerr=xerrt, **plot_kw, **kwargs)
@@ -531,24 +516,16 @@ def multi_scatter_plot(xdata,
             elif value is None:
                 color[index] = 'k'
 
-
     plot_params.set_parameters(continue_on_error=True, single_plot=False, num_plots=num_plots, color=color, area_plot=None, **kwargs)
     #Remove the processed kwargs
     kwargs = {k: v for k, v in kwargs.items() if k not in plot_params.get_dict()}
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
-    plot_kwargs = plot_params.plot_kwargs
+    plot_kwargs = plot_params.plot_kwargs(ignore='markersize')
 
-    for indx, data in enumerate(zip(xdata,ydata,sdata)):
+    for indx, data in enumerate(zip(xdata,ydata,sdata, plot_kwargs)):
 
-        x, y, size = data
-
-        try:
-            plot_kw = copy.deepcopy(plot_kwargs[indx])
-        except IndexError:
-            plot_kw = copy.deepcopy(plot_kwargs[0])
-
-        plot_kw.pop('markersize')
+        x, y, size, plot_kw = data
 
         if size is None:
             size = plot_params['markersize']
