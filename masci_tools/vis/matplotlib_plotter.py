@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt
 
 class MatplotlibPlotter(Plotter):
 
-    _PLOT_DEFAULTS = {
+    _MATPLOTLIB_DEFAULTS = {
         # figure properties
         'title_fontsize' : 16,
         'figsize' : (8, 6),
@@ -41,7 +41,7 @@ class MatplotlibPlotter(Plotter):
         'marker': 'o',
         'markersize' : 4.0,
         'color': None,
-        'plot_label': '',
+        'plot_label': None,
 
         # x, y label
         'labelfontsize' : 15,
@@ -77,7 +77,7 @@ class MatplotlibPlotter(Plotter):
         'raw_plot_data_format' : 'txt'}
 
     def __init__(self, **kwargs):
-        super().__init__(self._PLOT_DEFAULTS, **kwargs)
+        super().__init__(self._MATPLOTLIB_DEFAULTS, **kwargs)
 
     @property
     def figure_kwargs(self):
