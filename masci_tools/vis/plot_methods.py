@@ -278,11 +278,13 @@ def single_scatterplot(ydata,
     # TODO customizable error bars fmt='o', ecolor='g', capthick=2, ...
     # there the if is prob better...
     plot_kwargs = plot_params.plot_kwargs
+    area_curve = kwargs.pop('area_curve', None)
+
     if plot_kwargs.pop('area_plot'):
         #For fill_between there are no marker arguments
         plot_kwargs.pop('marker',None)
         plot_kwargs.pop('markersize',None)
-        p1 = ax.fill_between(xdata,ydata, **plot_kwargs, **kwargs)
+        p1 = ax.fill_between(xdata,ydata, y2=area_curve, **plot_kwargs, **kwargs)
     else:
         p1 = ax.errorbar(xdata, ydata, yerr=yerr, xerr=xerr, **plot_kwargs, **kwargs)
 
@@ -380,6 +382,7 @@ def multiple_scatterplots(ydata,
     # allow all arguments as value then use for all or as lists with the righ length.
 
     plot_kwargs = plot_params.plot_kwargs
+    area_curve = kwargs.pop('area_curve', None)
 
     for indx, data in enumerate(zip(xdata, ydata)):
 
@@ -409,11 +412,22 @@ def multiple_scatterplots(ydata,
         else:
             xerrt = xerr
 
+        if area_curve is not None:
+            if isinstance(area_curve, list):
+                try:
+                    shift = area_curve[indx]
+                except IndexError:
+                    shift = area_curve[0]
+            else:
+                shift = area_curve
+        else:
+            shift = 0
+
         if plot_kw.pop('area_plot'):
             #For fill_between there are no marker arguments
             plot_kw.pop('marker',None)
             plot_kw.pop('markersize',None)
-            p1 = ax.fill_between(x, y, **plot_kw, **kwargs)
+            p1 = ax.fill_between(x, y, y2=shift, **plot_kw, **kwargs)
         else:
             p1 = ax.errorbar(x, y, yerr=yerrt, xerr=xerrt, **plot_kw, **kwargs)
 
@@ -677,13 +691,15 @@ def multiplot_moved(ydata, xdata, xlabel, ylabel, title, scale_move=1.0, min_add
         kwargs['yticklabels'] = []
 
     ydatanew = []
+    shifts = []
 
     ymax = 0
     for data in ydata:
         ydatanew.append(np.array(data) + ymax)
+        shifts.append(ymax)
         ymax = ymax + max(data) * scale_move + min_add
 
-    ax = multiple_scatterplots(ydatanew, xdata, xlabel, ylabel, title, saveas=saveas, **kwargs)
+    ax = multiple_scatterplots(ydatanew, xdata, xlabel, ylabel, title, saveas=saveas, area_curve=shifts, **kwargs)
 
     return ax
 
