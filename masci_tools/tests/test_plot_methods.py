@@ -146,8 +146,8 @@ class Test_plot_methods_imports(object):
         y = x**2
 
         gcf().clear()
-
-        single_scatterplot(y, x, 'X', 'Y', 'Plot Test', limits=[(0, 10),(-100, 100)], show=False)
+        with pytest.deprecated_call():
+            single_scatterplot(y, x, 'X', 'Y', 'Plot Test', limits=[(0, 10),(-100, 100)], show=False)
         # need to return the figure in order for mpl checks to work
         return gcf()
 
@@ -164,8 +164,8 @@ class Test_plot_methods_imports(object):
         y = x**2
 
         gcf().clear()
-
-        single_scatterplot(y, x, 'X', 'Y', 'Plot Test', scale=[None, 'log'], show=False)
+        with pytest.deprecated_call():
+            single_scatterplot(y, x, 'X', 'Y', 'Plot Test', scale=[None, 'log'], show=False)
         # need to return the figure in order for mpl checks to work
         return gcf()
 
@@ -183,7 +183,7 @@ class Test_plot_methods_imports(object):
         y = x**2
 
         gcf().clear()
-
-        single_scatterplot(y, x, 'X', 'Y', 'Plot Test', plotlabel='Test', show=False)
+        with pytest.deprecated_call():
+            single_scatterplot(y, x, 'X', 'Y', 'Plot Test', plotlabel='Test', show=False)
         # need to return the figure in order for mpl checks to work
         return gcf()
