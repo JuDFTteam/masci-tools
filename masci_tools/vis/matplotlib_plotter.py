@@ -17,29 +17,30 @@ Here are all plot varaiables/constants,
 from masci_tools.vis import Plotter
 import matplotlib.pyplot as plt
 
+
 class MatplotlibPlotter(Plotter):
 
     _MATPLOTLIB_DEFAULTS = {
         # figure properties
-        'title_fontsize' : 16,
-        'figsize' : (8, 6),
-        'dpi' : 80,
-        'facecolor' : 'w',
+        'title_fontsize': 16,
+        'figsize': (8, 6),
+        'dpi': 80,
+        'facecolor': 'w',
         'edgecolor': 'k',
 
         # axis properties
-        'alpha' : 1,
-        'axis_linewidth' : 1.5,
-        'use_axis_formatter' : False,
+        'alpha': 1,
+        'axis_linewidth': 1.5,
+        'use_axis_formatter': False,
         'set_powerlimits': True,
         'xticks': None,
         'xticklabels': None,
 
         # plot properties
-        'linewidth' : 2.0,
-        'linestyle' : '-',
+        'linewidth': 2.0,
+        'linestyle': '-',
         'marker': 'o',
-        'markersize' : 4.0,
+        'markersize': 4.0,
         'color': None,
         'plot_label': None,
 
@@ -48,19 +49,41 @@ class MatplotlibPlotter(Plotter):
         'limits': None,
 
         # x, y label
-        'labelfontsize' : 15,
+        'labelfontsize': 15,
 
         # ticks
-        'ticklabelsizex' : 14,
-        'ticklabelsizey' : 14,
-        'tick_paramsx' : {'size': 4.0, 'width': 1.0, 'labelsize': 14, 'length': 5, 'labelrotation': 0},
-        'tick_paramsy' : {'size': 4.0, 'width': 1.0, 'labelsize': 14, 'length': 5, 'labelrotation': 0},
-        'ticklabelsizex_minor' : 0,
-        'ticklabelsizey_minor' : 0,
-        'tick_paramsx_minor_g' : {'size': 2.0, 'width': 1.0, 'labelsize': 0, 'length': 2.5},
-        'tick_paramsy_minor_g' : {'size': 2.0, 'width': 1.0, 'labelsize': 0, 'length': 2.5},
+        'ticklabelsizex': 14,
+        'ticklabelsizey': 14,
+        'tick_paramsx': {
+            'size': 4.0,
+            'width': 1.0,
+            'labelsize': 14,
+            'length': 5,
+            'labelrotation': 0
+        },
+        'tick_paramsy': {
+            'size': 4.0,
+            'width': 1.0,
+            'labelsize': 14,
+            'length': 5,
+            'labelrotation': 0
+        },
+        'ticklabelsizex_minor': 0,
+        'ticklabelsizey_minor': 0,
+        'tick_paramsx_minor_g': {
+            'size': 2.0,
+            'width': 1.0,
+            'labelsize': 0,
+            'length': 2.5
+        },
+        'tick_paramsy_minor_g': {
+            'size': 2.0,
+            'width': 1.0,
+            'labelsize': 0,
+            'length': 2.5
+        },
         # legend properties
-        'legend' : False,
+        'legend': False,
         'legend_options': {
             'bbox_to_anchor': (0.65, 0.97),
             'fontsize': 16,
@@ -71,14 +94,14 @@ class MatplotlibPlotter(Plotter):
         },
 
         # save all plots?
-        'save_plots' : False,  # True
-        'save_format' : 'png',  #'pdf'
-        'tightlayout' : False,
-
-        'show' : True,
+        'save_plots': False,  # True
+        'save_format': 'png',  #'pdf'
+        'tightlayout': False,
+        'show': True,
         # write data to file
-        'save_raw_plot_data' : False,
-        'raw_plot_data_format' : 'txt'}
+        'save_raw_plot_data': False,
+        'raw_plot_data_format': 'txt'
+    }
 
     def __init__(self, **kwargs):
         super().__init__(self._MATPLOTLIB_DEFAULTS, **kwargs)
@@ -98,7 +121,7 @@ class MatplotlibPlotter(Plotter):
     @property
     def plot_kwargs(self):
 
-        FIGURE_KEYS = {'linewidth','linestyle','marker','markersize','color','plot_label'}
+        FIGURE_KEYS = {'linewidth', 'linestyle', 'marker', 'markersize', 'color', 'plot_label'}
 
         plot_kwargs = {}
         for key in FIGURE_KEYS:
@@ -110,7 +133,7 @@ class MatplotlibPlotter(Plotter):
             if self[key] is not None:
                 plot_kwargs[set_key] = self[key]
 
-        any_list = any([isinstance(val,list) for val in plot_kwargs.values()])
+        any_list = any([isinstance(val, list) for val in plot_kwargs.values()])
 
         if any_list:
             max_length = max([len(val) for val in plot_kwargs.values() if isinstance(val, list)])
@@ -118,10 +141,9 @@ class MatplotlibPlotter(Plotter):
             for key, val in plot_kwargs.items():
                 if isinstance(val, list):
                     if len(val) != max_length:
-                        plot_kwargs[key] = val.copy() + [val[0]] * (max_length-len(val))
+                        plot_kwargs[key] = val.copy() + [val[0]] * (max_length - len(val))
                 else:
                     plot_kwargs[key] = [val] * max_length
-
 
         return plot_kwargs
 
@@ -130,7 +152,7 @@ class MatplotlibPlotter(Plotter):
         if axis is not None:
             ax = axis
         else:
-            fig = plt.figure(num=None, **self.figure_kwargs())
+            fig = plt.figure(num=None, **self.figure_kwargs)
             ax = fig.add_subplot(111, projection=projection)
 
         for axis in ['top', 'bottom', 'left', 'right']:
@@ -146,9 +168,9 @@ class MatplotlibPlotter(Plotter):
             ax.xaxis.set_tick_params(which='minor', **self['tick_paramsx_minor'])
 
         if self['xticks'] is not None:
-                ax.xaxis.set_ticks(self['xticks'])
+            ax.xaxis.set_ticks(self['xticks'])
         if self['xticklabels'] is not None:
-                ax.xaxis.set_ticklabels(self['xticklabels'])
+            ax.xaxis.set_ticklabels(self['xticklabels'])
 
         if self['use_axis_formatter']:
             if self['set_powerlimits']:

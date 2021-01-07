@@ -17,6 +17,7 @@ Here are all plot varaiables/constants,
 
 import copy
 
+
 class Plotter(object):
 
     def __init__(self, default_parameters, **kwargs):
@@ -79,7 +80,7 @@ class Plotter(object):
         defaults_before = copy.deepcopy(self._current_defaults)
         for key, value in kwargs.items():
             try:
-                self._setkey(key, value, self._current_defaults, force=kwargs.get('force',False))
+                self._setkey(key, value, self._current_defaults, force=kwargs.get('force', False))
             except KeyError:
                 if not continue_on_error:
                     self._current_defaults = defaults_before
@@ -93,7 +94,7 @@ class Plotter(object):
         params_before = copy.deepcopy(self._plot_parameters)
         for key, value in kwargs.items():
             try:
-                self._setkey(key, value, self._plot_parameters, force=kwargs.get('force',False))
+                self._setkey(key, value, self._plot_parameters, force=kwargs.get('force', False))
             except KeyError:
                 if not continue_on_error:
                     self._plot_parameters = params_before
@@ -108,7 +109,6 @@ class Plotter(object):
                 default_val = copy.deepcopy(default_val)
 
         self._setkey(name, default_val, self._plot_parameters, force=True)
-
 
     def reset_defaults(self):
         assert self._plot_parameters == self._current_defaults, \

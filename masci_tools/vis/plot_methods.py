@@ -23,8 +23,8 @@ or files are ploted, parse a dict or filepath.
 #  (that user can put pks or structure formulas in there)
 # Write/export data to file for all methods
 
-from __future__ import absolute_import
-from __future__ import print_function
+from .matplotlib_plotter import MatplotlibPlotter
+import warnings
 import re
 import os
 import numpy as np
@@ -32,10 +32,17 @@ import matplotlib.pyplot as pp
 import matplotlib.mlab as mlab
 from matplotlib.patches import Rectangle
 from cycler import cycler
-from masci_tools.vis import *  # import all global variables
-import six
-from six.moves import range
-from six.moves import zip
+
+from pprint import pprint
+
+plot_params = MatplotlibPlotter()
+
+def set_defaults_new(**kwargs):
+    plot_params.set_defaults(**kwargs)
+
+def show_defaults():
+    pprint(plot_params.get_dict())
+
 
 ###############################################################################
 ################ GLOBAL MODULE VARIABLES setting properties ###################
@@ -186,98 +193,79 @@ def set_plot_defaults(
 ########################## general plot routines ##############################
 ###############################################################################
 
-
 def single_scatterplot(ydata,
                        xdata,
                        xlabel,
                        ylabel,
                        title,
-                       plotlabel='scatterplot',
-                       linestyle='-',
-                       marker='o',
-                       limits=[None, None],
-                       saveas='scatterplot',
+                       plot_label='scatterplot',
                        color='k',
-                       scale=[None, None],
+                       saveas='scatterplot',
                        axis=None,
                        xerr=None,
                        yerr=None,
-                       markersize=markersize_g,
                        **kwargs):
     """
     Create a standard scatter plot (this should be flexible enough) to do all the
     basic plots.
+
+    :param xdata: arraylike, data for the x coordinate
+    :param ydata: arraylike, data for the y coordinate
+    :param xlabel: str, label written on the x axis
+    :param ylabel: str, label written on the y axis
+    :param title: str, title of the figure
+    :param plot_label: str, label for the plot
+    :param saveas: str specifying the filename (without file format)
+    :param color: str specifying the color of the lines and points
+    :param axis: Axes object, if given the plot will be applied to this object
+    :param xerr: optional data for errorbar in x-direction
+    :param yerr: optional data for errorbar in y-direction
     """
-    if axis:
-        ax = axis
-    else:
-        fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
-        ax = fig.add_subplot(111)
-    for axis in ['top', 'bottom', 'left', 'right']:
-        ax.spines[axis].set_linewidth(axis_linewidth_g)
-    ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
-    ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
-    ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
-    ax.yaxis.set_tick_params(size=tick_paramsy_g.get('size', 4.0),
-                             width=tick_paramsy_g.get('width', 1.0),
-                             labelsize=tick_paramsy_g.get('labelsize', 14),
-                             length=tick_paramsy_g.get('length', 5),
-                             labelrotation=tick_paramsy_g.get('labelrotation', 0))
-    ax.xaxis.set_tick_params(size=tick_paramsx_g.get('size', 4.0),
-                             width=tick_paramsx_g.get('width', 1.0),
-                             labelsize=tick_paramsx_g.get('labelsize', 14),
-                             length=tick_paramsx_g.get('length', 5),
-                             labelrotation=tick_paramsx_g.get('labelrotation', 0))
-    if use_axis_fromatter_g:
-        ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
-        ax.yaxis.get_major_formatter().set_useOffset(False)
-        ax.xaxis.get_major_formatter().set_powerlimits((0, 3))
-        ax.xaxis.get_major_formatter().set_useOffset(False)
-    #ax.xaxis.set_major_formatter(DateFormatter("%b %y"))
-    #if yerr or xerr:
-    #    p1 = ax.errorbar(xdata, ydata, linetyp, label=plotlabel, color=color,
-    #                 linewidth=linewidth_g, markersize=markersize_g, yerr=yerr, xerr=xerr)
-    #else:
-    #    p1 = ax.plot(xdata, ydata, linetyp, label=plotlabel, color=color,
-    #                 linewidth=linewidth_g, markersize=markersize_g)
-    # TODO customizable error bars fmt='o', ecolor='g', capthick=2, ...
-    # there the if is prob better...
+    #Old argument name
+    if 'plotlabel' in kwargs:
+        warnings.warn('Please use plot_label instead of plotlabel',DeprecationWarning)
+        plot_label = kwargs.pop('plotlabel')
+
+    if 'scale' in kwargs:
+        scale = kwargs.get('scale')
+        if isinstance(scale, list):
+            warnings.warn("Please provide scale as dict in the form {'x': value, 'y': value2}",DeprecationWarning)
+            scale_new = {}
+            if scale[0] is not None:
+                scale_new['x'] = scale[0]
+            if scale[1] is not None:
+                scale_new['y'] = scale[1]
+            kwargs['scale'] = scale_new
+
+
+    if 'limits' in kwargs:
+        limits = kwargs.get('limits')
+        if isinstance(limits, list):
+            warnings.warn("Please provide scale as dict in the form {'x': value, 'y': value2}",DeprecationWarning)
+            limits_new = {}
+            if limits[0] is not None:
+                limits_new['x'] = limits[0]
+            if limits[1] is not None:
+                limits_new['y'] = limits[1]
+            kwargs['limits'] = limits_new
+
+    plot_params.set_parameters(continue_on_error=True,color=color,plot_label=plot_label,**kwargs)
+    #Remove the processed kwargs
+    kwargs = {k: v for k, v in kwargs.items() if k not in plot_params.get_dict()}
+    ax = plot_params.prepare_plot(title=title,xlabel=xlabel,ylabel=ylabel,axis=axis)
+
     p1 = ax.errorbar(xdata,
                      ydata,
-                     linestyle=linestyle,
-                     label=plotlabel,
-                     color=color,
-                     linewidth=linewidth_g,
-                     marker=marker,
-                     markersize=markersize,
                      yerr=yerr,
                      xerr=xerr,
+                     **plot_params.plot_kwargs,
                      **kwargs)
 
-    if scale:
-        if scale[0]:
-            ax.set_xscale(scale[0])
-        if scale[1]:
-            ax.set_yscale(scale[1])
+    plot_params.set_scale(ax)
+    plot_params.set_limits(ax)
+    plot_params.save_plot(saveas)
+    plot_params.reset_parameters()
 
-    if limits:
-        if limits[0]:
-            xmin = limits[0][0]
-            xmax = limits[0][1]
-            ax.set_xlim(xmin, xmax)
-        if limits[1]:
-            ymin = limits[1][0]
-            ymax = limits[1][1]
-            ax.set_ylim(ymin, ymax)
-
-    if save_plots_g:
-        savefilename = '{}.{}'.format(saveas, save_format_g)
-        print(('save plot to: {}'.format(savefilename)))
-        pp.savefig(savefilename, format=save_format_g, transparent=True)
-    elif show_g:
-        pp.show()
-    else:
-        pass
     return ax
 
 
