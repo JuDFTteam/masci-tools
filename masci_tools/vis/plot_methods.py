@@ -37,6 +37,7 @@ from .matplotlib_plotter import MatplotlibPlotter
 import warnings
 import re
 import os
+import copy
 import numpy as np
 import matplotlib.pyplot as pp
 import matplotlib.mlab as mlab
@@ -312,11 +313,15 @@ def multiple_scatterplots(ydata,
     :param yerr: optional data for errorbar in y-direction
     """
 
-    #TODO: DeprecationWarnings for  xticks
     nplots = len(ydata)
     if nplots != len(xdata):  # todo check dimention not len, without moving to special datatype.
         print('ydata and xdata must have the same dimension')
         return
+
+    if isinstance(ydata[0],(list,np.ndarray)):
+        num_plots = len(ydata)
+    else:
+        num_plots = 1
 
     #DEPRECATION WARNINGS
     if 'plot_labels' in kwargs:
@@ -360,7 +365,7 @@ def multiple_scatterplots(ydata,
             kwargs['xticklabels'] = xticks[0]
             kwargs['xticks'] = xticks[1]
 
-    plot_params.set_parameters(continue_on_error=True, num_plots=len(ydata), **kwargs)
+    plot_params.set_parameters(continue_on_error=True, single_plot=False, num_plots=num_plots, **kwargs)
     #Remove the processed kwargs
     kwargs = {k: v for k, v in kwargs.items() if k not in plot_params.get_dict()}
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
