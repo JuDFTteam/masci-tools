@@ -375,6 +375,39 @@ class TestMultipleScatterPlot(object):
         return gcf()
 
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiple_scatterplots/',
+                                   filename='area.png')
+    def test_multiple_scatterplots_area(self):
+        """
+        Test the partial setting of values via integer indexed dict
+        """
+        import numpy as np
+        from masci_tools.vis.plot_methods import multiple_scatterplots
+
+        x = [np.linspace(-10, 10, 100)] * 4 + [np.linspace(-10, 20, 100)]
+        y = [x[0]**2, x[1] * 5 + 30, 50 * np.sin(x[2]), 50 * np.cos(x[3]), -5 * x[4] + 30]
+
+        gcf().clear()
+
+        multiple_scatterplots(y,
+                              x,
+                              'X',
+                              'Y',
+                              'Plot Test',
+                              marker='^',
+                              color={4: 'k', 3: 'darkorange'},
+                              area_plot={3: True},
+                              plot_label={
+                                  0: 'Parabola',
+                                  1: 'Line',
+                                  3: 'cosine'
+                              },
+                              linewidth={2: 5},
+                              legend=True,
+                              show=False)
+        # need to return the figure in order for mpl checks to work
+        return gcf()
+
+    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiple_scatterplots/',
                                    filename='scale_limits.png')
     def test_multiple_scatterplots_scale_limits_deprecated(self):
         """

@@ -386,10 +386,10 @@ def multiple_scatterplots(ydata,
         x, y = data
 
         try:
-            plot_kw = plot_kwargs[indx]
+            plot_kw = copy.deepcopy(plot_kwargs[indx])
         except IndexError:
             if len(plot_kwargs) == 1:
-                plot_kw = plot_kwargs[0]
+                plot_kw = copy.deepcopy(plot_kwargs[0])
             else:
                 raise
 
@@ -409,7 +409,14 @@ def multiple_scatterplots(ydata,
         else:
             xerrt = xerr
 
-        p1 = ax.errorbar(x, y, yerr=yerrt, xerr=xerrt, **plot_kw, **kwargs)
+        if plot_kw.pop('area_plot'):
+            #For fill_between there are no marker arguments
+            plot_kw.pop('marker',None)
+            plot_kw.pop('markersize',None)
+            p1 = ax.fill_between(x, y, **plot_kw, **kwargs)
+        else:
+            p1 = ax.errorbar(x, y, yerr=yerrt, xerr=xerrt, **plot_kw, **kwargs)
+
 
     plot_params.set_scale(ax)
     plot_params.set_limits(ax)
