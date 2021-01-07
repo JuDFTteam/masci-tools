@@ -52,7 +52,8 @@ class Plotter(object):
         except KeyError:
             return None
 
-    def _setkey(self, key, value, dict_to_change, force=False):
+    @staticmethod
+    def _setkey(key, value, dict_to_change, force=False):
 
         if key not in dict_to_change and not force:
             raise KeyError(f'The key {key} is not a parameter key')
