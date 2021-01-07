@@ -50,6 +50,12 @@ class Test_plot_methods_imports(object):
         set_plot_defaults(linewidth=3.0)
         assert linewidth_g == 2.0  # if worked should be 3.0
 
+
+def TestSingleScatterPlot(object):
+    """
+    Test of the single_scatterplot function
+    """
+
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/single_scatterplot/',
                                    filename='defaults.png')
     def test_single_scatterplot_default(self):
