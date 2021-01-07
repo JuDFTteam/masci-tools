@@ -75,22 +75,27 @@ class Plotter(object):
         assert self._plot_parameters == self._current_defaults, \
                'Changing the defaults will reset changes to the current parameters'
 
+        defaults_before = copy.deepcopy(self._current_defaults)
         for key, value in kwargs.items():
             try:
                 self._setkey(key, value, self._current_defaults, force=kwargs.get('force',False))
             except KeyError:
                 if not continue_on_error:
+                    self._current_defaults = defaults_before
                     raise
 
         #Propagate changes to the parameters
         self._plot_parameters = copy.deepcopy(self._current_defaults)
 
     def set_parameters(self, continue_on_error=False, **kwargs):
+
+        params_before = copy.deepcopy(self._plot_parameters)
         for key, value in kwargs.items():
             try:
                 self._setkey(key, value, self._plot_parameters, force=kwargs.get('force',False))
             except KeyError:
                 if not continue_on_error:
+                    self._plot_parameters = params_before
                     raise
 
     def add_parameter(self, name, default_from=None):
