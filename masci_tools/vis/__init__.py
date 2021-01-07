@@ -110,7 +110,10 @@ class Plotter(object):
 
 
     def reset_defaults(self):
+        assert self._plot_parameters == self._current_defaults, \
+               'Changing the defaults will reset changes to the current parameters'
         self._current_defaults = copy.deepcopy(self._PLOT_DEFAULTS)
+        self._plot_parameters = copy.deepcopy(self._current_defaults)
 
     def reset_parameters(self):
         self._plot_parameters = copy.deepcopy(self._current_defaults)
