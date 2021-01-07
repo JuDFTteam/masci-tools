@@ -54,20 +54,10 @@ class Plotter(object):
 
     def _setkey(self, key, value, dict_to_change, force=False):
 
-        IGNORE_LISTS = {'xticks', 'xticklabels'}
-
         if key not in dict_to_change and not force:
             raise KeyError(f'The key {key} is not a parameter key')
         elif key not in dict_to_change:
             dict_to_change[key] = None
-
-        if isinstance(value, dict) and all([isinstance(key, int) for key in value]):
-            #Convert to list with defaults for not specified keys
-            value = [value[indx] if indx in value else None for indx in range(self['num_plots'])]
-        if isinstance(value, list) and key not in IGNORE_LISTS:
-            if len(value) != self['num_plots']:
-                value = value.copy() + [None] * (self['num_plots'] - len(value))
-            value = [val if val is not None else self._current_defaults[key] for val in value]
 
         if isinstance(dict_to_change[key], dict):
             if not isinstance(value, dict):

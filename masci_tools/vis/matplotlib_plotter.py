@@ -29,7 +29,7 @@ class MatplotlibPlotter(Plotter):
         'facecolor': 'w',
         'edgecolor': 'k',
 
-        'single_plot': False,
+        'single_plot': True,
         'num_plots': 1,
 
         # axis properties
@@ -110,6 +110,20 @@ class MatplotlibPlotter(Plotter):
 
     def __init__(self, **kwargs):
         super().__init__(self._MATPLOTLIB_DEFAULTS, **kwargs)
+
+    def _setkey(self, key, value, dict_to_change, force=False):
+
+        IGNORE_LISTS = {'xticks', 'xticklabels'}
+
+        if isinstance(value, dict) and all([isinstance(key, int) for key in value]):
+            #Convert to list with defaults for not specified keys
+            value = [value[indx] if indx in value else None for indx in range(self['num_plots'])]
+        if isinstance(value, list) and key not in IGNORE_LISTS:
+            if len(value) != self['num_plots']:
+                value = value.copy() + [None] * (self['num_plots'] - len(value))
+            value = [val if val is not None else self._current_defaults[key] for val in value]
+
+        super()._setkey(key, value, dict_to_change, force=force)
 
     @property
     def figure_kwargs(self):
