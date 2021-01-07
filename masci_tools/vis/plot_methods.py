@@ -17,7 +17,17 @@ ouput nodes from certain workflows with matplot lib.
 Comment: Do not use any aiida methods, otherwise the methods in here can become
 tricky to use inside a virtual environment. Make the user extract thing out of
 aiida objects before hand or write something on top. Since usually parameter nodes,
-or files are ploted, parse a dict or filepath.
+or files are plotted, parse a dict or filepath.
+
+Each of the plot_methods can take keyword arguments to modify parameters of the plots
+There are keywords that are handled by a special class for defaults. All other arguments
+will be passed on to the matplotlib plotting calls
+
+.. literalinclude:: ../../../masci_tools/vis/matplotlib_plotter.py
+   :language: python
+   :lines: 23-104
+   :linenos:
+
 """
 # TODO but allow to optional parse information for saving and title,
 #  (that user can put pks or structure formulas in there)
@@ -241,7 +251,7 @@ def single_scatterplot(ydata,
     if 'limits' in kwargs:
         limits = kwargs.get('limits')
         if isinstance(limits, list):
-            warnings.warn("Please provide scale as dict in the form {'x': value, 'y': value2}",DeprecationWarning)
+            warnings.warn("Please provide limits as dict in the form {'x': value, 'y': value2}",DeprecationWarning)
             limits_new = {}
             if limits[0] is not None:
                 limits_new['x'] = limits[0]
