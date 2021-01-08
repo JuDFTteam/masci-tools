@@ -82,6 +82,7 @@ class Plotter(object):
         self._single_plot = True
         self._num_plots = 1
 
+        self._LIST_ARGS = set()
         if list_arguments is not None:
             self._LIST_ARGS = list_arguments
 
