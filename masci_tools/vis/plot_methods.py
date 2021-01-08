@@ -34,6 +34,7 @@ will be passed on to the matplotlib plotting calls
 # Write/export data to file for all methods
 
 from .matplotlib_plotter import MatplotlibPlotter
+from masci_tools.vis import ensure_plotter_consistency
 import warnings
 import re
 import os
@@ -54,7 +55,7 @@ def set_plot_defaults_new(**kwargs):
 
 
 def reset_plot_defaults():
-    plot_params.reset_defaults(**kwargs)
+    plot_params.reset_defaults()
 
 
 def show_defaults():
@@ -211,6 +212,7 @@ def set_plot_defaults(
 ###############################################################################
 
 
+@ensure_plotter_consistency(plot_params)
 def single_scatterplot(ydata,
                        xdata,
                        xlabel,
@@ -291,11 +293,11 @@ def single_scatterplot(ydata,
     plot_params.set_scale(ax)
     plot_params.set_limits(ax)
     plot_params.save_plot(saveas)
-    plot_params.reset_parameters()
 
     return ax
 
 
+@ensure_plotter_consistency(plot_params)
 def multiple_scatterplots(ydata,
                           xdata,
                           xlabel,
@@ -326,10 +328,11 @@ def multiple_scatterplots(ydata,
         print('ydata and xdata must have the same dimension')
         return
 
-    if isinstance(ydata[0], (list, np.ndarray)):
-        num_plots = len(ydata)
-    else:
-        num_plots = 1
+    if not isinstance(ydata[0], (list, np.ndarray)):
+        xdata, ydata = [xdata], [ydata]
+
+    plot_params.single_plot = False
+    plot_params.num_plots = len(ydata)
 
     #DEPRECATION WARNINGS
     if 'plot_labels' in kwargs:
@@ -373,7 +376,7 @@ def multiple_scatterplots(ydata,
             kwargs['xticklabels'] = xticks[0]
             kwargs['xticks'] = xticks[1]
 
-    plot_params.set_parameters(continue_on_error=True, single_plot=False, num_plots=num_plots, **kwargs)
+    plot_params.set_parameters(continue_on_error=True, **kwargs)
     #Remove the processed kwargs
     kwargs = {k: v for k, v in kwargs.items() if k not in plot_params.get_dict()}
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
@@ -424,11 +427,11 @@ def multiple_scatterplots(ydata,
     plot_params.set_limits(ax)
     plot_params.show_legend(ax)
     plot_params.save_plot(saveas)
-    plot_params.reset_parameters()
 
     return ax
 
 
+@ensure_plotter_consistency(plot_params)
 def multi_scatter_plot(
         xdata,
         ydata,
@@ -463,10 +466,11 @@ def multi_scatter_plot(
         print('ydata and xdata must have the same dimension')
         return
 
-    if isinstance(ydata[0], (list, np.ndarray)):
-        num_plots = len(ydata)
-    else:
-        num_plots = 1
+    if not isinstance(ydata[0], (list, np.ndarray)):
+        xdata, ydata = [xdata], [ydata]
+
+    plot_params.single_plot = False
+    plot_params.num_plots = len(ydata)
 
     #DEPRECATION WARNINGS: label/plot_labels, alpha, limits, scale, legend_option, xticks
 
@@ -519,12 +523,7 @@ def multi_scatter_plot(
             elif value is None:
                 color[index] = 'k'
 
-    plot_params.set_parameters(continue_on_error=True,
-                               single_plot=False,
-                               num_plots=num_plots,
-                               color=color,
-                               area_plot=False,
-                               **kwargs)
+    plot_params.set_parameters(continue_on_error=True, color=color, area_plot=False, **kwargs)
     #Remove the processed kwargs
     kwargs = {k: v for k, v in kwargs.items() if k not in plot_params.get_dict()}
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
@@ -544,7 +543,6 @@ def multi_scatter_plot(
     plot_params.set_limits(ax)
     plot_params.show_legend(ax)
     plot_params.save_plot(saveas)
-    plot_params.reset_parameters()
 
     return ax
 
@@ -655,6 +653,8 @@ def waterfall_plot(xdata,
         pass
 
 
+
+@ensure_plotter_consistency(plot_params)
 def multiplot_moved(ydata, xdata, xlabel, ylabel, title, scale_move=1.0, min_add=0, saveas='mscatterplot', **kwargs):
     """
     Plots all the scater plots above each other. It adds an arbitray offset to the ydata to do this and

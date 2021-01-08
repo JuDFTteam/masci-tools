@@ -28,8 +28,6 @@ class MatplotlibPlotter(Plotter):
         'dpi': 80,
         'facecolor': 'w',
         'edgecolor': 'k',
-        'single_plot': True,
-        'num_plots': 1,
 
         # axis properties
         'alpha': 1,
@@ -110,24 +108,10 @@ class MatplotlibPlotter(Plotter):
         'raw_plot_data_format': 'txt'
     }
 
+    _MATPLOTLIB_LIST_ARGS = {'xticks', 'xticklabels', 'yticks', 'yticklabels'}
+
     def __init__(self, **kwargs):
-        super().__init__(self._MATPLOTLIB_DEFAULTS, **kwargs)
-
-    def _setkey(self, key, value, dict_to_change, force=False):
-
-        IGNORE_LISTS = {'xticks', 'xticklabels', 'yticks', 'yticklabels'}
-
-        if isinstance(value, dict) and all([isinstance(key, int) for key in value]):
-            #Convert to list with defaults for not specified keys
-            value = [value[indx] if indx in value else None for indx in range(self['num_plots'])]
-        if isinstance(value, list) and key not in IGNORE_LISTS:
-            if not self['single_plot'] and self['num_plots'] == 1:
-                value = [value]
-            if len(value) != self['num_plots']:
-                value = value.copy() + [None] * (self['num_plots'] - len(value))
-            value = [val if val is not None else self._current_defaults[key] for val in value]
-
-        super()._setkey(key, value, dict_to_change, force=force)
+        super().__init__(self._MATPLOTLIB_DEFAULTS, list_arguments=self._MATPLOTLIB_LIST_ARGS, **kwargs)
 
     def figure_kwargs(self):
 
@@ -160,8 +144,8 @@ class MatplotlibPlotter(Plotter):
         if any_list:
             for key, val in plot_kwargs.items():
                 if not isinstance(val, list):
-                    plot_kwargs[key] = [val] * self['num_plots']
-        elif not self['single_plot']:
+                    plot_kwargs[key] = [val] * self.num_plots
+        elif not self.single_plot:
             plot_kwargs = {key: [value] for key, value in plot_kwargs.items()}
 
         if 'plot_label' in plot_kwargs:
@@ -172,13 +156,13 @@ class MatplotlibPlotter(Plotter):
             plot_kwargs['alpha'] = plot_kwargs['plot_alpha']
             plot_kwargs.pop('plot_alpha')
 
-        if not self['single_plot']:
+        if not self.single_plot:
             plot_kwargs = [{key: value[index]
                             for key, value in plot_kwargs.items()}
                            for index in range(max(map(len, plot_kwargs.values())))]
-            if len(plot_kwargs) != self['num_plots']:
+            if len(plot_kwargs) != self.num_plots:
                 if len(plot_kwargs) == 1:
-                    plot_kwargs = [copy.deepcopy(plot_kwargs[0]) for i in range(self['num_plots'])]
+                    plot_kwargs = [copy.deepcopy(plot_kwargs[0]) for i in range(self.num_plots)]
                 else:
                     raise ValueError('Length does not match number of plots')
             for index, value in enumerate(plot_kwargs):
