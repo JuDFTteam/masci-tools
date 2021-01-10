@@ -126,8 +126,38 @@ class MatplotlibPlotter(Plotter):
 
     _MATPLOTLIB_LIST_ARGS = {'xticks', 'xticklabels', 'yticks', 'yticklabels'}
 
+    #Sets of keys with special purposes
+    _FIGURE_KWARGS = {'figsize', 'dpi', 'facecolor', 'edgecolor', 'constrained_layout'}
+
+    _PLOT_KWARGS = {'linewidth', 'linestyle', 'marker', 'markersize', 'color', 'plot_label', 'plot_alpha'}
+
     def __init__(self, **kwargs):
         super().__init__(self._MATPLOTLIB_DEFAULTS, list_arguments=self._MATPLOTLIB_LIST_ARGS, **kwargs)
+
+
+    def get_multiple_kwargs(self, keys, ignore=None):
+        """
+        Get multiple parameters and return them in a dictionary
+
+        :param keys: set of keys to process
+        :param ignore: str or list of str (optional), defines keys to ignore in the creation of the dict
+        """
+
+        keys_used = copy.deepcopy(keys)
+
+        if ignore is not None:
+            if not isinstance(ignore, list):
+                ignore = [ignore]
+            for key in ignore:
+                keys_used.remove(key)
+
+        ret_dict = {}
+        for key in keys_used:
+            if self[key] is not None:
+                ret_dict[key] = self[key]
+
+        return ret_dict
+
 
     def figure_kwargs(self, ignore=None):
         """
@@ -135,21 +165,7 @@ class MatplotlibPlotter(Plotter):
 
         :param ignore: str or list of str (optional), defines keys to ignore in the creation of the dict
         """
-
-        FIGURE_KEYS = {'figsize', 'dpi', 'facecolor', 'edgecolor', 'constrained_layout'}
-
-        if ignore is not None:
-            if not isinstance(ignore, list):
-                ignore = [ignore]
-            for key in ignore:
-                FIGURE_KEYS.remove(key)
-
-        fig_kwargs = {}
-        for key in FIGURE_KEYS:
-            if self[key] is not None:
-                fig_kwargs[key] = self[key]
-
-        return fig_kwargs
+        return self.get_multiple_kwargs(self._FIGURE_KWARGS, ignore=ignore)
 
     def plot_kwargs(self, ignore=None):
         """
@@ -159,18 +175,7 @@ class MatplotlibPlotter(Plotter):
         :param ignore: str or list of str (optional), defines keys to ignore in the creation of the dict
         """
 
-        PLOT_KEYS = {'linewidth', 'linestyle', 'marker', 'markersize', 'color', 'plot_label', 'plot_alpha'}
-
-        if ignore is not None:
-            if not isinstance(ignore, list):
-                ignore = [ignore]
-            for key in ignore:
-                PLOT_KEYS.remove(key)
-
-        plot_kwargs = {}
-        for key in PLOT_KEYS:
-            if self[key] is not None:
-                plot_kwargs[key] = self[key]
+        plot_kwargs = self.get_multiple_kwargs(self._PLOT_KWARGS, ignore=ignore)
 
         any_list = any([isinstance(val, list) for val in plot_kwargs.values()])
 
