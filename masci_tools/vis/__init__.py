@@ -47,13 +47,15 @@ def ensure_plotter_consistency(plotter_object):
             """
             defaults_before = copy.deepcopy(plotter_object._current_defaults)
 
+            no_reset = kwargs.pop('no_reset', None)
+
             try:
                 res = func(*args, **kwargs)
             except Exception:
                 plotter_object.reset_parameters()
                 raise  #We do not want to erase the exception only wedge in the call to reset_parameters
             else:
-                plotter_object.reset_parameters()
+                plotter_object.reset_parameters(no_reset=no_reset)
 
             if plotter_object._current_defaults != defaults_before:
                 #Reset the changes
@@ -61,8 +63,9 @@ def ensure_plotter_consistency(plotter_object):
                 plotter_object.reset_parameters()
                 raise ValueError(f"Defaults have changed inside the plotting function '{func.__name__}'")
 
-            assert plotter_object._plot_parameters == plotter_object._current_defaults, \
-                  f"Parameters are not consistent with defaults after call to '{func.__name__}'"
+            if no_reset is None:
+                assert plotter_object._plot_parameters == plotter_object._current_defaults, \
+                      f"Parameters are not consistent with defaults after call to '{func.__name__}'"
 
             return res
 
@@ -277,29 +280,50 @@ class Plotter(object):
 
         self._setkey(name, default_val, self._plot_parameters, force=True)
 
-    def reset_defaults(self):
+    def reset_defaults(self, no_reset=None):
         """
         Resets the defaults to the hardcoded defaults in _PLOT_DEFAULTS. Will check beforehand
         if the parameters or properties differ from the defaults and will raise an error if this
         is the case
+
+        :param no_reset: str or list of str of keys not to reset
         """
         assert self._plot_parameters == self._current_defaults, \
                'Changing the defaults will reset changes to the current parameters'
         assert self.single_plot, 'Changing the defaults will reset changes to single_plot property'
         assert self.num_plots == 1, 'Changing the defaults will reset changes to num_plots property'
 
+        save_values = {}
+        if no_reset is not None:
+            if not isinstance(no_reset, list):
+                no_reset = [no_reset]
+            save_values = {key: self._current_defaults[key] for key in no_reset}
+
         self._current_defaults = copy.deepcopy(self._PLOT_DEFAULTS)
+        self.set_defaults(**save_values)
+
         self._plot_parameters = copy.deepcopy(self._current_defaults)
 
-    def reset_parameters(self):
+    def reset_parameters(self, no_reset=None):
         """
         Reset the parameters to the current defaults. The properties single_plot and num_plots
         are also set to default values
+
+        :param no_reset: str or list of str of keys not to reset
         """
+
+        save_values = {}
+        if no_reset is not None:
+            if not isinstance(no_reset, list):
+                no_reset = [no_reset]
+            save_values = {key: self._plot_parameters[key] for key in no_reset}
+
         self._plot_parameters = copy.deepcopy(self._current_defaults)
         #Reset number of plots properties
         self.single_plot = True
         self.num_plots = 1
+
+        self.set_parameters(**save_values)
 
     def get_dict(self):
         """

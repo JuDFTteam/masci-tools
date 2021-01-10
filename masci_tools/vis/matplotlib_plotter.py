@@ -117,6 +117,7 @@ class MatplotlibPlotter(Plotter):
         'save_plots': False,  # True
         'save_format': 'png',  #'pdf'
         'tightlayout': False,
+        'constrained_layout': False,
         'show': True,
         # write data to file
         'save_raw_plot_data': False,
@@ -128,12 +129,20 @@ class MatplotlibPlotter(Plotter):
     def __init__(self, **kwargs):
         super().__init__(self._MATPLOTLIB_DEFAULTS, list_arguments=self._MATPLOTLIB_LIST_ARGS, **kwargs)
 
-    def figure_kwargs(self):
+    def figure_kwargs(self, ignore=None):
         """
         Returns a dictionary containing all the parameters to go into the creation of a figure
+
+        :param ignore: str or list of str (optional), defines keys to ignore in the creation of the dict
         """
 
-        FIGURE_KEYS = {'figsize', 'dpi', 'facecolor', 'edgecolor'}
+        FIGURE_KEYS = {'figsize', 'dpi', 'facecolor', 'edgecolor', 'constrained_layout'}
+
+        if ignore is not None:
+            if not isinstance(ignore, list):
+                ignore = [ignore]
+            for key in ignore:
+                FIGURE_KEYS.remove(key)
 
         fig_kwargs = {}
         for key in FIGURE_KEYS:
