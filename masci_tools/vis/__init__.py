@@ -102,11 +102,11 @@ class Plotter(object):
         params = Plotter(parameter_dict)
 
         #Accessing a parameter
-        print(params['fonstsize']) # 16
+        print(params['fontsize']) # 16
 
         #Modifying a parameter
         params['fontsize'] = 20
-        print(params['fonstsize']) # 20
+        print(params['fontsize']) # 20
 
         #Creating a parameter set for multiple plots
 
