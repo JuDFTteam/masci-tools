@@ -134,7 +134,6 @@ class MatplotlibPlotter(Plotter):
     def __init__(self, **kwargs):
         super().__init__(self._MATPLOTLIB_DEFAULTS, list_arguments=self._MATPLOTLIB_LIST_ARGS, **kwargs)
 
-
     def get_multiple_kwargs(self, keys, ignore=None):
         """
         Get multiple parameters and return them in a dictionary
@@ -157,7 +156,6 @@ class MatplotlibPlotter(Plotter):
                 ret_dict[key] = self[key]
 
         return ret_dict
-
 
     def figure_kwargs(self, ignore=None):
         """

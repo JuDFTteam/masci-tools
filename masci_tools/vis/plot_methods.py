@@ -41,6 +41,7 @@ import matplotlib.pyplot as pp
 import matplotlib.mlab as mlab
 from matplotlib.patches import Rectangle
 from cycler import cycler
+import copy
 import six
 from pprint import pprint
 
