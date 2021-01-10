@@ -159,7 +159,6 @@ class MatplotlibPlotter(Plotter):
         :param ignore: str or list of str (optional), defines keys to ignore in the creation of the dict
         """
 
-
         PLOT_KEYS = {'linewidth', 'linestyle', 'marker', 'markersize', 'color', 'plot_label', 'plot_alpha'}
 
         if ignore is not None:

@@ -1090,8 +1090,18 @@ def barchart(ydata,
 
     return ax
 
+
 @ensure_plotter_consistency(plot_params)
-def multiaxis_scatterplot(xdata, ydata, axes_loc, xlabel, ylabel, title, num_cols=1, num_rows=1, saveas='mscatterplot', **kwargs):
+def multiaxis_scatterplot(xdata,
+                          ydata,
+                          axes_loc,
+                          xlabel,
+                          ylabel,
+                          title,
+                          num_cols=1,
+                          num_rows=1,
+                          saveas='mscatterplot',
+                          **kwargs):
     """
     Create a scatter plot with multiple axes
     """
@@ -1125,7 +1135,6 @@ def multiaxis_scatterplot(xdata, ydata, axes_loc, xlabel, ylabel, title, num_col
         else:
             param_list[indx]['title'] = title[indx]
 
-
     plot_params.set_parameters(continue_on_error=True, **kwargs)
 
     fig_kwargs = plot_params.figure_kwargs()
@@ -1151,8 +1160,6 @@ def multiaxis_scatterplot(xdata, ydata, axes_loc, xlabel, ylabel, title, num_col
     plot_params.save_plot(saveas)
 
     return axis
-
-
 
 
 ###############################################################################
