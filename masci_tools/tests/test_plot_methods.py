@@ -58,7 +58,7 @@ class TestSingleScatterPlot(object):
 
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/single_scatterplot/',
                                    filename='defaults.png')
-    def test_single_scatterplot_default(self):
+    def test_default(self):
         """
         Scatterplot with default parameters
         """
@@ -76,7 +76,7 @@ class TestSingleScatterPlot(object):
 
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/single_scatterplot/',
                                    filename='param_change.png')
-    def test_single_scatterplot_params_changed(self):
+    def test_params_changed(self):
         """
         Scatterplot with default parameters
         """
@@ -105,7 +105,7 @@ class TestSingleScatterPlot(object):
 
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/single_scatterplot/',
                                    filename='scale.png')
-    def test_single_scatterplot_scale(self):
+    def test_scale(self):
         """
         Scatterplot with default parameters
         """
@@ -123,7 +123,7 @@ class TestSingleScatterPlot(object):
 
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/single_scatterplot/',
                                    filename='limits.png')
-    def test_single_scatterplot_limits(self):
+    def test_limits(self):
         """
         Scatterplot with default parameters
         """
@@ -141,7 +141,7 @@ class TestSingleScatterPlot(object):
 
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/single_scatterplot/',
                                    filename='area.png')
-    def test_single_scatterplot_area(self):
+    def test_area(self):
         """
         Scatterplot with default parameters
         """
@@ -168,7 +168,7 @@ class TestSingleScatterPlot(object):
 
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/single_scatterplot/',
                                    filename='limits.png')
-    def test_single_scatterplot_limits_deprecated(self):
+    def test_limits_deprecated(self):
         """
         Scatterplot with default parameters
         """
@@ -186,7 +186,7 @@ class TestSingleScatterPlot(object):
 
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/single_scatterplot/',
                                    filename='scale.png')
-    def test_single_scatterplot_scale_deprecated(self):
+    def test_scale_deprecated(self):
         """
         Scatterplot with default parameters
         """
@@ -204,7 +204,7 @@ class TestSingleScatterPlot(object):
 
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/single_scatterplot/',
                                    filename='defaults.png')
-    def test_single_scatterplot_deprecated_label(self):
+    def test_deprecated_label(self):
         """
         Scatterplot with default parameters
         """
@@ -228,7 +228,7 @@ class TestMultipleScatterPlot(object):
 
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiple_scatterplots/',
                                    filename='defaults.png')
-    def test_multiple_scatterplots_default(self):
+    def test_default(self):
         """
         Scatterplot with default parameters
         """
@@ -246,7 +246,7 @@ class TestMultipleScatterPlot(object):
 
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiple_scatterplots/',
                                    filename='param_change.png')
-    def test_multiple_scatterplots_param_change(self):
+    def test_param_change(self):
         """
         Scatterplot with a variety of changed parameters
         """
@@ -274,7 +274,7 @@ class TestMultipleScatterPlot(object):
 
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiple_scatterplots/',
                                    filename='legend.png')
-    def test_multiple_scatterplots_legend(self):
+    def test_legend(self):
         """
         Scatterplot with setting the legend
         """
@@ -300,7 +300,7 @@ class TestMultipleScatterPlot(object):
 
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiple_scatterplots/',
                                    filename='scale_limits.png')
-    def test_multiple_scatterplots_scale_limits(self):
+    def test_scale_limits(self):
         """
         Scatterplot with setting scales and limits
         """
@@ -328,7 +328,7 @@ class TestMultipleScatterPlot(object):
 
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiple_scatterplots/',
                                    filename='xticks.png')
-    def test_multiple_scatterplots_xticks(self):
+    def test_xticks(self):
         """
         Scatterplot with setting custom xticks
         """
@@ -353,7 +353,7 @@ class TestMultipleScatterPlot(object):
 
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiple_scatterplots/',
                                    filename='dict_selection.png')
-    def test_multiple_scatterplots_dict_selection(self):
+    def test_dict_selection(self):
         """
         Test the partial setting of values via integer indexed dict
         """
@@ -385,7 +385,7 @@ class TestMultipleScatterPlot(object):
 
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiple_scatterplots/',
                                    filename='area.png')
-    def test_multiple_scatterplots_area(self):
+    def test_area(self):
         """
         Test the partial setting of values via integer indexed dict
         """
@@ -421,7 +421,7 @@ class TestMultipleScatterPlot(object):
 
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiple_scatterplots/',
                                    filename='scale_limits.png')
-    def test_multiple_scatterplots_scale_limits_deprecated(self):
+    def test_scale_limits_deprecated(self):
         """
         Scatterplot with default parameters
         """
@@ -446,7 +446,7 @@ class TestMultipleScatterPlot(object):
 
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiple_scatterplots/',
                                    filename='xticks.png')
-    def test_multiple_scatterplots_xticks_deprecated(self):
+    def test_xticks_deprecated(self):
         """
         Scatterplot with setting custom xticks
         """
@@ -471,7 +471,7 @@ class TestMultipleScatterPlot(object):
 
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiple_scatterplots/',
                                    filename='legend.png')
-    def test_multiple_scatterplots_plot_labels_deprecated(self):
+    def test_plot_labels_deprecated(self):
         """
         Scatterplot with default parameters
         """
@@ -497,7 +497,7 @@ class TestMultipleScatterPlot(object):
 
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiple_scatterplots/',
                                    filename='legend.png')
-    def test_multiple_scatterplots_legend_option_deprecated(self):
+    def test_legend_option_deprecated(self):
         """
         Scatterplot with default parameters
         """
@@ -523,7 +523,7 @@ class TestMultipleScatterPlot(object):
 
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiple_scatterplots/',
                                    filename='colors.png')
-    def test_multiple_scatterplots_colors_deprecated(self):
+    def test_colors_deprecated(self):
         """
         Scatterplot with setting colors via deprecated option
         """
@@ -547,7 +547,7 @@ class TestMultiScatterPlot(object):
 
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multi_scatter_plot/',
                                    filename='defaults.png')
-    def test_multi_scatter_plot_default(self):
+    def test_default(self):
         """
         Scatterplot with default parameters
         """
@@ -566,7 +566,7 @@ class TestMultiScatterPlot(object):
 
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multi_scatter_plot/',
                                    filename='param_change.png')
-    def test_multi_scatter_plot_param_change(self):
+    def test_param_change(self):
         """
         Scatterplot with changed parameters
         """
@@ -600,7 +600,7 @@ class TestMultiPlotMoved(object):
 
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiplot_moved/',
                                    filename='defaults.png')
-    def test_multiplot_moved_default(self):
+    def test_default(self):
         """
         Mulitplot_moved with default parameters
         """
@@ -618,7 +618,7 @@ class TestMultiPlotMoved(object):
 
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiplot_moved/',
                                    filename='param_change.png')
-    def test_multiplot_moved_param_change(self):
+    def test_param_change(self):
         """
         Mulitplot_moved with changed parameters
         """
@@ -645,7 +645,7 @@ class TestMultiPlotMoved(object):
         return gcf()
 
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiplot_moved/', filename='area.png')
-    def test_multiplot_moved_area(self):
+    def test_area(self):
         """
         Mulitplot_moved with changed parameters
         """
@@ -665,6 +665,9 @@ class TestMultiAxisScatterPlot(object): #pylint: disable=missing-class-docstring
 
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiaxis/',
                                    filename='defaults.png')
+class TestMultiAxisScatterPlot(object):  #pylint: disable=missing-class-docstring
+
+    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiaxis/', filename='defaults.png')
     def test_defaults(self):
         """
         Test of multiaxis_scatterplot with default values
@@ -674,10 +677,17 @@ class TestMultiAxisScatterPlot(object): #pylint: disable=missing-class-docstring
         x = [np.linspace(-10, 10, 100)] * 2 + [[np.linspace(-10, 10, 100)] * 2] + [np.linspace(-10, 20, 100)]
         y = [x[0]**2, x[1] * 5 + 30, [50 * np.sin(x[2][0]), 50 * np.cos(x[2][1])], -5 * x[3] + 30]
 
-
         gcf().clear()
 
-        multiaxis_scatterplot(x, y, axes_loc=[(0,0), (0,1), (1,0), (1,1)], xlabel='X', ylabel='Y', title=['Parabola', 'Line1', 'sin/cos', 'Line2'], num_rows=2, num_cols=2, show=False)
+        multiaxis_scatterplot(x,
+                              y,
+                              axes_loc=[(0, 0), (0, 1), (1, 0), (1, 1)],
+                              xlabel='X',
+                              ylabel='Y',
+                              title=['Parabola', 'Line1', 'sin/cos', 'Line2'],
+                              num_rows=2,
+                              num_cols=2,
+                              show=False)
         # need to return the figure in order for mpl checks to work
 
         return gcf()
