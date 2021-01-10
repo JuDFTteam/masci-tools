@@ -118,10 +118,14 @@ def test_plotter_add_parameter():
     p['D'] = 2
     assert p['D'] == 2
 
+    assert p._current_defaults == TEST_DICT
+
     p.add_parameter('E', default_from='C')
     assert p['E'] == 'title'
 
     p.reset_parameters()
+    p.reset_defaults()
 
     assert p._plot_parameters == TEST_DICT
     assert p._current_defaults == TEST_DICT
+
