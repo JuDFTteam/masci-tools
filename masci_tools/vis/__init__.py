@@ -119,12 +119,12 @@ class Plotter(object):
         params['linestyle'] = [None, '--', '--']
         params['linestyle'] = {1: '--', 2: '--'}
 
+        # Not specified values are replaced with the default value for a single plot
+        print(params['linestyle']) # ['-', '--', '--']
+
         #In lists properties can also be indexed via tuples
         print(params[('linestyle', 0)]) # '-'
         print(params[('linestyle', 1)]) # '--'
-
-        # Not specified values are replaced with the default value for a single plot
-        print(params['linestyle']) # ['-', '--', '--']
 
         #Changes to the parameters and properties are reset
         params.reset_parameters()
