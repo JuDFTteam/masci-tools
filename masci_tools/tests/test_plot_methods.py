@@ -660,14 +660,12 @@ class TestMultiPlotMoved(object):
         multiplot_moved(y, x, 'X', 'Y', 'Plot Test', area_plot={2: True}, show=False)
         # need to return the figure in order for mpl checks to work
         return gcf()
+
 class TestMultiAxisScatterPlot(object): #pylint: disable=missing-class-docstring
 
 
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiaxis/',
                                    filename='defaults.png')
-class TestMultiAxisScatterPlot(object):  #pylint: disable=missing-class-docstring
-
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiaxis/', filename='defaults.png')
     def test_defaults(self):
         """
         Test of multiaxis_scatterplot with default values
