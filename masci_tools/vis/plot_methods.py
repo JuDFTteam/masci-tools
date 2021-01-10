@@ -1098,6 +1098,7 @@ def multiaxis_scatterplot(xdata, ydata, axes_loc, xlabel, ylabel, title, num_col
 
     #convert parameters to list of parameters for subplots
     subplot_params = kwargs.pop('subplot_params', {})
+    axes_kwargs = kwargs.pop('axes_kwargs', {})
 
     param_list = [None] * len(axes_loc)
     for indx, val in enumerate(param_list):
@@ -1105,6 +1106,9 @@ def multiaxis_scatterplot(xdata, ydata, axes_loc, xlabel, ylabel, title, num_col
             param_list[indx] = subplot_params[indx]
         else:
             param_list[indx] = {}
+
+        if indx in axes_kwargs:
+            param_list[indx]['axes_kwargs'] = axes_kwargs[indx]
 
         if not isinstance(xlabel, list):
             param_list[indx]['xlabel'] = xlabel
@@ -1139,7 +1143,7 @@ def multiaxis_scatterplot(xdata, ydata, axes_loc, xlabel, ylabel, title, num_col
     for indx, subplot_data in enumerate(zip(axes_loc, xdata, ydata, param_list)):
 
         location, x, y, params = subplot_data
-        ax = pp.subplot2grid(plot_shape, location)
+        ax = pp.subplot2grid(plot_shape, location, **params.pop('axes_kwargs', {}))
         ax = multiple_scatterplots(y, x, axis=ax, no_reset=no_reset, **params, **kwargs)
 
         axis.append(ax)
