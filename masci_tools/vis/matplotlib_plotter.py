@@ -11,8 +11,7 @@
 #                                                                             #
 ###############################################################################
 """
-Here are all plot varaiables/constants,
-
+This module contains a subclass of :py:class:`~masci_tools.vis.Plotter` for the matplotlib library
 """
 from masci_tools.vis import Plotter
 import matplotlib.pyplot as plt
@@ -20,7 +19,23 @@ import copy
 
 
 class MatplotlibPlotter(Plotter):
+    """
+    Class for plotting parameters and standard code snippets for plotting with the
+    matplotlib backend.
 
+    Kwargs in the __init__ method are forwarded to setting default values for the instance
+
+    For specific documentation about the parameter/defaults handling refer to
+    :py:class:`~masci_tools.vis.Plotter`.
+
+    Below the current defined default values are shown
+
+    .. literalinclude:: ../../../masci_tools/vis/matplotlib_plotter.py
+       :language: python
+       :lines: 39-124
+       :linenos:
+
+    """
     _MATPLOTLIB_DEFAULTS = {
         # figure properties
         'title_fontsize': 16,
@@ -114,6 +129,9 @@ class MatplotlibPlotter(Plotter):
         super().__init__(self._MATPLOTLIB_DEFAULTS, list_arguments=self._MATPLOTLIB_LIST_ARGS, **kwargs)
 
     def figure_kwargs(self):
+        """
+        Returns a dictionary containing all the parameters to go into the creation of a figure
+        """
 
         FIGURE_KEYS = {'figsize', 'dpi', 'facecolor', 'edgecolor'}
 
@@ -125,6 +143,13 @@ class MatplotlibPlotter(Plotter):
         return fig_kwargs
 
     def plot_kwargs(self, ignore=None):
+        """
+        Creates a dict or list of dicts (for multiple plots) with the defined parameters
+        for the plotting calls fo matplotlib
+
+        :param ignore: str or list of str (optional), defines keys to ignore in the creation of the dict
+        """
+
 
         PLOT_KEYS = {'linewidth', 'linestyle', 'marker', 'markersize', 'color', 'plot_label', 'plot_alpha'}
 
@@ -177,8 +202,20 @@ class MatplotlibPlotter(Plotter):
 
         return plot_kwargs
 
-    def prepare_plot(self, title=None, xlabel=None, ylabel=None, axis=None, minor=False, projection=None):
+    def prepare_plot(self, title=None, xlabel=None, ylabel=None, zlabel=None, axis=None, minor=False, projection=None):
+        """
+        Prepares the figure of a matplotlib plot, setting the labels/titles, ticks, ...
 
+        :param title: str for the title of the figure
+        :param xlabel: str for the label on the x-axis
+        :param ylabel: str for the label on the y-axis
+        :param zlabel: str for the label on the z-axis
+        :param axis: matplotlib axes object, optional, if given the operations are performed on the object
+                     otherwise a new figure and subplot are created
+        :param minor: bool, if True minor tick parameters are set
+        :param projection: str, passed on to the add_subplot call
+
+        """
         if axis is not None:
             ax = axis
         else:
@@ -190,6 +227,8 @@ class MatplotlibPlotter(Plotter):
         ax.set_title(title, fontsize=self['title_fontsize'], alpha=self['alpha'], ha='center')
         ax.set_xlabel(xlabel, fontsize=self['labelfontsize'])
         ax.set_ylabel(ylabel, fontsize=self['labelfontsize'])
+        if zlabel is not None:
+            ax.set_zlabel(zlabel, fontsize=self['labelfontsize'])
         ax.yaxis.set_tick_params(**self['tick_paramsy'])
         ax.xaxis.set_tick_params(**self['tick_paramsx'])
 
@@ -217,14 +256,26 @@ class MatplotlibPlotter(Plotter):
         return ax
 
     def set_scale(self, ax):
+        """
+        Set scale of the axis (for example 'log')
+
+        :param ax: Axes object on which to perform the operation
+        """
 
         if self['scale'] is not None:
             if 'x' in self['scale']:
                 ax.set_xscale(self['scale']['x'])
             if 'y' in self['scale']:
                 ax.set_yscale(self['scale']['y'])
+            if 'z' in self['scale']:
+                ax.set_zscale(self['scale']['z'])
 
     def set_limits(self, ax):
+        """
+        Set limits of the axis
+
+        :param ax: Axes object on which to perform the operation
+        """
 
         if self['limits'] is not None:
             if 'x' in self['limits']:
@@ -235,9 +286,18 @@ class MatplotlibPlotter(Plotter):
                 ymin = self['limits']['y'][0]
                 ymax = self['limits']['y'][1]
                 ax.set_ylim(ymin, ymax)
+            if 'z' in self['limits']:
+                zmin = self['limits']['z'][0]
+                zmax = self['limits']['z'][1]
+                ax.set_zlim(zmin, zmax)
 
     def show_legend(self, ax):
-        #TODO legend
+        """
+        Print a legend for the plot
+
+        :param ax: Axes object on which to perform the operation
+        """
+
         if self['legend']:
             loptions = copy.deepcopy(self['legend_options'])
             linewidth = loptions.pop('linewidth', 1.5)
@@ -247,6 +307,11 @@ class MatplotlibPlotter(Plotter):
             leg.get_title().set_fontsize(title_font_size)  #legend 'Title' fontsize
 
     def save_plot(self, saveas):
+        """
+        Save the current figure or show the current figure
+
+        :param saveas: str, filename for the resulting file
+        """
         if self['save_plots']:
             savefilename = f"{saveas}.{self['save_format']}"
             print(f'Save plot to: {savefilename}')

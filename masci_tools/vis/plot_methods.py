@@ -23,10 +23,7 @@ Each of the plot_methods can take keyword arguments to modify parameters of the 
 There are keywords that are handled by a special class for defaults. All other arguments
 will be passed on to the matplotlib plotting calls
 
-.. literalinclude:: ../../../masci_tools/vis/matplotlib_plotter.py
-   :language: python
-   :lines: 23-104
-   :linenos:
+For the definition of the defaults refer to :py:class:`~masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`
 
 """
 # TODO but allow to optional parse information for saving and title,

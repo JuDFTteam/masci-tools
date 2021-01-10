@@ -9,6 +9,9 @@ Visualisation and Plotting
 .. automodule:: masci_tools.vis
    :members:
 
+.. automodule:: masci_tools.vis.matplotlib_plotter
+   :members:
+
 .. automodule:: masci_tools.vis.plot_methods
    :members:
 
