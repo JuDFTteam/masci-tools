@@ -128,4 +128,3 @@ def test_plotter_add_parameter():
 
     assert p._plot_parameters == TEST_DICT
     assert p._current_defaults == TEST_DICT
-
