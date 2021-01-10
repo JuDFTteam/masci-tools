@@ -102,10 +102,11 @@ class Plotter(object):
         params = Plotter(parameter_dict)
 
         #Accessing a parameter
-        print(params['fonstsize'])
+        print(params['fonstsize']) # 16
 
         #Modifying a parameter
         params['fontsize'] = 20
+        print(params['fonstsize']) # 20
 
         #Creating a parameter set for multiple plots
 
@@ -122,10 +123,13 @@ class Plotter(object):
         print(params[('linestyle', 0)]) # '-'
         print(params[('linestyle', 1)]) # '--'
 
+        # Not specified values are replaced with the default value for a single plot
+        print(params['linestyle']) # ['-', '--', '--']
+
         #Changes to the parameters and properties are reset
         params.reset_parameters()
 
-        print(params['linestyle'])
+        print(params['linestyle']) # '-'
 
     """
 
