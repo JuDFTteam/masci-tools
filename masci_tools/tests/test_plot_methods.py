@@ -721,7 +721,8 @@ class TestMultiAxisScatterPlot(object):  #pylint: disable=missing-class-docstrin
 
         return gcf()
 
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiaxis/', filename='overall_param_change.png')
+    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiaxis/',
+                                   filename='overall_param_change.png')
     def test_overall_param_change(self):
         """
         Test of multiaxis_scatterplot with a variety of parameters changed
@@ -740,7 +741,7 @@ class TestMultiAxisScatterPlot(object):  #pylint: disable=missing-class-docstrin
                               ylabel='Y',
                               title=['Parabola', 'Line1', 'sin/cos', 'Line2'],
                               marker='^',
-                              color={0:'darkred'},
+                              color={0: 'darkred'},
                               linewidth=10,
                               title_fontsize=30,
                               markersize=15,
@@ -751,7 +752,8 @@ class TestMultiAxisScatterPlot(object):  #pylint: disable=missing-class-docstrin
 
         return gcf()
 
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiaxis/', filename='single_subplot_param_change.png')
+    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiaxis/',
+                                   filename='single_subplot_param_change.png')
     def test_single_subplot_param_change(self):
         """
         Test of multiaxis_scatterplot with a variety of parameters changed
@@ -769,8 +771,24 @@ class TestMultiAxisScatterPlot(object):  #pylint: disable=missing-class-docstrin
                               xlabel='X',
                               ylabel='Y',
                               title=['Parabola', 'Line1', 'sin/cos', 'Line2'],
-                              subplot_params={0: {'color': 'limegreen', 'scale':{'y': 'log'}},
-                                              2: {'limits': {'x': (0,10)}, 'color': {0: 'darkorange'}, 'plot_label': ['sin', 'cos'],'legend': True}},
+                              subplot_params={
+                                  0: {
+                                      'color': 'limegreen',
+                                      'scale': {
+                                          'y': 'log'
+                                      }
+                                  },
+                                  2: {
+                                      'limits': {
+                                          'x': (0, 10)
+                                      },
+                                      'color': {
+                                          0: 'darkorange'
+                                      },
+                                      'plot_label': ['sin', 'cos'],
+                                      'legend': True
+                                  }
+                              },
                               num_rows=2,
                               num_cols=2,
                               show=False)
