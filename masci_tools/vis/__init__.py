@@ -136,7 +136,6 @@ class Plotter(object):
 
     """
 
-
     def __init__(self, default_parameters, list_arguments=None, **kwargs):
 
         self._PLOT_DEFAULTS = copy.deepcopy(default_parameters)
