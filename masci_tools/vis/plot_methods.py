@@ -1154,7 +1154,7 @@ def multiaxis_scatterplot(xdata,
 
         location, x, y, params = subplot_data
         ax = pp.subplot2grid(plot_shape, location, **params.pop('axes_kwargs', {}))
-        ax = multiple_scatterplots(y, x, axis=ax, **params, **kwargs)
+        ax = multiple_scatterplots(y, x, axis=ax, **params, **kwargs, save_plots=False, show=False)
 
         axis.append(ax)
 
