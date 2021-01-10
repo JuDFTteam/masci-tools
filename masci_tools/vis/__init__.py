@@ -188,8 +188,6 @@ class Plotter(object):
             if self.single_plot:
                 raise ValueError(f"Got list for key '{key}' but only a single plot is allowed")
 
-            if not self.single_plot and self.num_plots == 1:
-                value = [value]
             if len(value) != self.num_plots:
                 value = value.copy() + [None] * (self.num_plots - len(value))
             value = [val if val is not None else self._current_defaults[key] for val in value]

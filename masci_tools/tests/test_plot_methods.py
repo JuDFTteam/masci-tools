@@ -740,6 +740,7 @@ class TestMultiAxisScatterPlot(object):  #pylint: disable=missing-class-docstrin
                               ylabel='Y',
                               title=['Parabola', 'Line1', 'sin/cos', 'Line2'],
                               marker='^',
+                              color={0:'darkred'},
                               linewidth=10,
                               title_fontsize=30,
                               markersize=15,
