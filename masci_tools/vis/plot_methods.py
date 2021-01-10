@@ -1090,19 +1090,65 @@ def barchart(ydata,
 
     return ax
 
-
-def multiaxis_scatterplot():
+@ensure_plotter_consistency(plot_params)
+def multiaxis_scatterplot(xdata, ydata, axes_loc, xlabel, ylabel, title, num_cols=1, num_rows=1, saveas='mscatterplot', **kwargs):
     """
     Create a scatter plot with multiple axes
     """
-    pass
+
+    #convert parameters to list of parameters for subplots
+    subplot_params = kwargs.pop('subplot_params', {})
+
+    param_list = [None] * len(axes_loc)
+    for indx, val in enumerate(param_list):
+        if indx in subplot_params:
+            param_list[indx] = subplot_params[indx]
+        else:
+            param_list[indx] = {}
+
+        if not isinstance(xlabel, list):
+            param_list[indx]['xlabel'] = xlabel
+        else:
+            param_list[indx]['xlabel'] = xlabel[indx]
+
+        if not isinstance(ylabel, list):
+            param_list[indx]['ylabel'] = ylabel
+        else:
+            param_list[indx]['ylabel'] = ylabel[indx]
+
+        if not isinstance(title, list):
+            param_list[indx]['title'] = title
+        else:
+            param_list[indx]['title'] = title[indx]
 
 
-def surface_plot():
-    """
-    Create a standard 3D surface plot
-    """
-    pass
+    plot_params.set_parameters(continue_on_error=True, **kwargs)
+
+    fig_kwargs = plot_params.figure_kwargs()
+    no_reset = list(fig_kwargs.keys()) + ['show', 'save_plots']
+    for key in no_reset:
+        kwargs.pop(key, None)
+
+    #figsize is automatically scaled with the shape of the plot
+    plot_shape = (num_rows, num_cols)
+    fig_kwargs['figsize'] = ([plot_shape[indx] * size for indx, size in enumerate(fig_kwargs['figsize'])])
+
+    pp.figure(**fig_kwargs)
+
+    axis = []
+    for indx, subplot_data in enumerate(zip(axes_loc, xdata, ydata, param_list)):
+
+        location, x, y, params = subplot_data
+        ax = pp.subplot2grid(plot_shape, location)
+        ax = multiple_scatterplots(y, x, axis=ax, no_reset=no_reset, **params, **kwargs)
+
+        axis.append(ax)
+
+    plot_params.save_plot(saveas)
+
+    return axis
+
+
 
 
 ###############################################################################
