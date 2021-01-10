@@ -681,3 +681,22 @@ class TestMultiAxisScatterPlot(object): #pylint: disable=missing-class-docstring
         # need to return the figure in order for mpl checks to work
 
         return gcf()
+
+    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiaxis/',
+                                   filename='non_standard_layout.png')
+    def test_non_standard_layout(self):
+        """
+        Test of multiaxis_scatterplot with default values
+        """
+        import numpy as np
+        from masci_tools.vis.plot_methods import multiaxis_scatterplot
+        x = [np.linspace(-10, 10, 100)] + [[np.linspace(-10, 10, 100)] * 2] * 2
+        y = [x[0]**2, [-5 * x[1][0] + 30,x[1][1] * 5 + 30], [50 * np.sin(x[2][0]), 50 * np.cos(x[2][1])]]
+
+
+        gcf().clear()
+
+        multiaxis_scatterplot(x, y, axes_loc=[(0,0), (0,1), (1,0)], axes_kwargs={1: {'rowspan': 2}}, xlabel='X', ylabel='Y', title=['Parabola', 'Lines', 'sin/cos'], num_rows=2, num_cols=2, show=False)
+        # need to return the figure in order for mpl checks to work
+
+        return gcf()
