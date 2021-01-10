@@ -172,6 +172,29 @@ class Plotter(object):
         except KeyError:
             return None
 
+    def get_multiple_kwargs(self, keys, ignore=None):
+        """
+        Get multiple parameters and return them in a dictionary
+
+        :param keys: set of keys to process
+        :param ignore: str or list of str (optional), defines keys to ignore in the creation of the dict
+        """
+
+        keys_used = copy.deepcopy(keys)
+
+        if ignore is not None:
+            if not isinstance(ignore, list):
+                ignore = [ignore]
+            for key in ignore:
+                keys_used.remove(key)
+
+        ret_dict = {}
+        for key in keys_used:
+            if self[key] is not None:
+                ret_dict[key] = self[key]
+
+        return ret_dict
+
     def _setkey(self, key, value, dict_to_change, force=False):
 
         if key not in dict_to_change and not force:
