@@ -1135,12 +1135,13 @@ def multiaxis_scatterplot(xdata,
         else:
             param_list[indx]['title'] = title[indx]
 
-    plot_params.set_parameters(continue_on_error=True, **kwargs)
+    general_keys = plot_params._FIGURE_KWARGS | {'show', 'save_plots'}
+    general_info = {key: val for key, val in kwargs.items() if key in general_keys}
+    kwargs = {key: val for key, val in kwargs.items() if key not in general_info}
+
+    plot_params.set_parameters(continue_on_error=True, **general_info)
 
     fig_kwargs = plot_params.figure_kwargs()
-    no_reset = list(fig_kwargs.keys()) + ['show', 'save_plots']
-    for key in no_reset:
-        kwargs.pop(key, None)
 
     #figsize is automatically scaled with the shape of the plot
     plot_shape = (num_rows, num_cols)
@@ -1153,10 +1154,11 @@ def multiaxis_scatterplot(xdata,
 
         location, x, y, params = subplot_data
         ax = pp.subplot2grid(plot_shape, location, **params.pop('axes_kwargs', {}))
-        ax = multiple_scatterplots(y, x, axis=ax, no_reset=no_reset, **params, **kwargs)
+        ax = multiple_scatterplots(y, x, axis=ax, **params, **kwargs)
 
         axis.append(ax)
 
+    plot_params.set_parameters(continue_on_error=True, **general_info)
     plot_params.save_plot(saveas)
 
     return axis
