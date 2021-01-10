@@ -1140,7 +1140,7 @@ def multiaxis_scatterplot(xdata,
     general_info = {key: val for key, val in kwargs.items() if key in general_keys}
     kwargs = {key: val for key, val in kwargs.items() if key not in general_info}
 
-    plot_params.set_parameters(continue_on_error=True, **general_info)
+    plot_params.set_parameters(**general_info)
 
     fig_kwargs = plot_params.figure_kwargs()
 
@@ -1163,7 +1163,7 @@ def multiaxis_scatterplot(xdata,
 
         axis.append(ax)
 
-    plot_params.set_parameters(continue_on_error=True, **general_info)
+    plot_params.set_parameters(**general_info)
     plot_params.save_plot(saveas)
 
     return axis
