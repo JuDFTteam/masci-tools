@@ -11,8 +11,8 @@
 #                                                                             #
 ###############################################################################
 """
-Here are all plot varaiables/constants,
-
+Here basic functionality is provided for setting default parameters for plotting
+and ensuring consitent values for these
 """
 
 import copy
@@ -72,6 +72,63 @@ def ensure_plotter_consistency(plotter_object):
 
 
 class Plotter(object):
+    """
+    Base class for handling parameters for plotting methods. For different plotting backends
+    a subclass can be created to represent the specific parameters of the backend.
+
+    Args:
+        :param default_parameters: dict with hardcoded default parameters
+        :param list_arguments: set of str optional, defines parameters which
+                               can be lists for single plots
+
+    Kwargs in the __init__ method are forwarded to :py:func:`Plotter.set_defaults()`
+    to change the current defaults away from the hardcoded parameters.
+
+    The Plotter class creates 3 copies of the given parameter dict:
+        :param _PLOT_DEFAULTS: exact copy of the given parameter dict. Will never be changed
+        :param _current_defaults: represents defaults with applied changes via :py:func:`Plotter.set_defaults()`.
+                                  Always corresponds to a single parameter set
+        :param _plot_parameters: based on _current_defaults, can be changed via :py:func:`Plotter.set_parameters()`
+                                 and is the dict from where the actual used parameters are provided. Can also contain
+                                 multiple parameter sets if the single_plot and num_plots properties were set before
+
+
+    The current parameters can be accessed by bracket indexing the class. A example of this is shown below.
+
+    .. code-block:: python
+
+        parameter_dict = {'fontsize': 16, 'linestyle': '-'}
+
+        params = Plotter(parameter_dict)
+
+        #Accessing a parameter
+        print(params['fonstsize'])
+
+        #Modifying a parameter
+        params['fontsize'] = 20
+
+        #Creating a parameter set for multiple plots
+
+        #1. Set the properties to the correct values
+        params.single_plot = False
+        params.num_plots = 3
+
+        #2. Now we can set a property either by providing a list or a integer indexed dict
+        #   Both of the following examples set the linestyle of the second and third plot to '--'
+        params['linestyle'] = [None, '--', '--']
+        params['linestyle'] = {1: '--', 2: '--'}
+
+        #In lists properties can also be indexed via tuples
+        print(params[('linestyle', 0)]) # '-'
+        print(params[('linestyle', 1)]) # '--'
+
+        #Changes to the parameters and properties are reset
+        params.reset_parameters()
+
+        print(params['linestyle'])
+
+    """
+
 
     def __init__(self, default_parameters, list_arguments=None, **kwargs):
 
@@ -148,9 +205,23 @@ class Plotter(object):
         self._setkey(key, value, self._plot_parameters)
 
     def set_defaults(self, continue_on_error=False, **kwargs):
+        """
+        Set the current defaults. This method will only work if the parameters
+        are not changed from the defaults. Otherwise a error is raised. This is because
+        after changing the defaults the changes will be propagated to the parameters to ensure
+        consistency.
 
+        :param continue_on_error: bool, if True unknown key are simply skipped
+
+        Special Kwargs:
+            :param force: bool, if True checks are skipped in setting the key
+
+        Kwargs are used to set the defaults.
+        """
         assert self._plot_parameters == self._current_defaults, \
                'Changing the defaults will reset changes to the current parameters'
+        assert self.single_plot, 'Changing the defaults will reset changes to single_plot property'
+        assert self.num_plots == 1, 'Changing the defaults will reset changes to num_plots property'
 
         defaults_before = copy.deepcopy(self._current_defaults)
         for key, value in kwargs.items():
@@ -162,10 +233,19 @@ class Plotter(object):
                     raise
 
         #Propagate changes to the parameters
-        self._plot_parameters = copy.deepcopy(self._current_defaults)
+        self.reset_parameters()
 
     def set_parameters(self, continue_on_error=False, **kwargs):
+        """
+        Set the current parameters.
 
+        :param continue_on_error: bool, if True unknown key are simply skipped
+
+        Special Kwargs:
+            :param force: bool, if True checks are skipped in setting the key
+
+        Kwargs are used to set the defaults.
+        """
         params_before = copy.deepcopy(self._plot_parameters)
         for key, value in kwargs.items():
             try:
@@ -176,16 +256,29 @@ class Plotter(object):
                     raise
 
     def add_parameter(self, name, default_from=None):
+        """
+        Add a new parameter to the parameters dictionary.
 
+        :param name: str name of the parameter
+        :param default_from: str (optional), if given a entry is created in the curent defaults
+                             with the name and the default value of the key `default_from`
+
+        """
         default_val = None
         if default_from is not None:
             default_val = self._current_defaults[default_from]
             if isinstance(default_val, (dict, list)):
                 default_val = copy.deepcopy(default_val)
+            self._setkey(name, default_val, self._current_defaults, force=True)
 
         self._setkey(name, default_val, self._plot_parameters, force=True)
 
     def reset_defaults(self):
+        """
+        Resets the defaults to the hardcoded defaults in _PLOT_DEFAULTS. Will check beforehand
+        if the parameters or properties differ from the defaults and will raise an error if this
+        is the case
+        """
         assert self._plot_parameters == self._current_defaults, \
                'Changing the defaults will reset changes to the current parameters'
         assert self.single_plot, 'Changing the defaults will reset changes to single_plot property'
@@ -195,12 +288,19 @@ class Plotter(object):
         self._plot_parameters = copy.deepcopy(self._current_defaults)
 
     def reset_parameters(self):
+        """
+        Reset the parameters to the current defaults. The properties single_plot and num_plots
+        are also set to default values
+        """
         self._plot_parameters = copy.deepcopy(self._current_defaults)
         #Reset number of plots properties
         self.single_plot = True
         self.num_plots = 1
 
     def get_dict(self):
+        """
+        Return the dictionary of the current defaults. For use of printing
+        """
         return self._plot_parameters
 
     @property
