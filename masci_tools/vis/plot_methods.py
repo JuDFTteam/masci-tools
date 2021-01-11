@@ -587,7 +587,7 @@ def colormesh_plot(xdata, ydata, cdata, xlabel, ylabel, title, saveas='colormesh
     plot_params.set_scale(ax)
     plot_params.set_limits(ax)
     plot_params.show_legend(ax)
-    plot_params.show_colorbar(ax, cmap=plot_kwargs['cmap'], norm=plot_kwargs['norm'])
+    plot_params.show_colorbar(ax, cmap=plot_kwargs['cmap'], norm=plot_kwargs.get('norm', None))
     plot_params.save_plot(saveas)
 
     return ax

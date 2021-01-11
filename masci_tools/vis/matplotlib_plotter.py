@@ -139,7 +139,7 @@ class MatplotlibPlotter(Plotter):
 
     _PLOT_KWARGS = {'linewidth', 'linestyle', 'marker', 'markersize', 'color', 'plot_label', 'plot_alpha'}
     _PLOT_KWARGS_COLORMESH = {
-        'linewidth', 'linestyle', 'shading', 'rasterized', 'cmap', 'edgecolor', 'plot_label', 'plot_alpha'
+        'linewidth', 'linestyle', 'shading', 'rasterized', 'cmap', 'norm', 'edgecolor', 'plot_label', 'plot_alpha'
     }
 
     def __init__(self, **kwargs):
