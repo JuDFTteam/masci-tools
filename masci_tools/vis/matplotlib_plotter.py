@@ -305,17 +305,15 @@ class MatplotlibPlotter(Plotter):
             leg.get_frame().set_linewidth(linewidth)
             leg.get_title().set_fontsize(title_font_size)  #legend 'Title' fontsize
 
-    def show_colorbar(self, ax, cmap=None, norm=None):
+    def show_colorbar(self, ax):
         """
         Print a colorbar for the plot
 
         :param ax: Axes object on which to perform the operation
-        :param cmap: colormap to show
-        :param norm: Normalize instance to pass for the construction fo the colorbar
         """
 
         if self['colorbar']:
-            plt.colorbar(cm.ScalarMappable(cmap=cmap, norm=norm), ax=ax)
+            plt.colorbar(cm.ScalarMappable(cmap=self['cmap'], norm=self['norm']), ax=ax)
 
     def save_plot(self, saveas):
         """
