@@ -791,3 +791,25 @@ class TestMultiAxisScatterPlot(object):  #pylint: disable=missing-class-docstrin
                               show=False)
         # need to return the figure in order for mpl checks to work
         return gcf()
+
+class TestColormeshPlot(object): #pylint: disable=missing-class-docstring
+
+    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/colormesh/', filename='defaults.png')
+    def test_defaults(self):
+        """
+        Test of colormesh plot with default values
+        """
+        import numpy as np
+        from masci_tools.vis.plot_methods import colormesh_plot
+
+        x = np.linspace(0, np.pi, 100)
+        y = np.linspace(0, np.pi, 100)
+        x,y = np.meshgrid(x,y)
+        data = np.sin(x+y)
+
+        gcf().clear()
+
+        colormesh_plot(x,y,data,'X','Y','sin', show=False)
+
+        # need to return the figure in order for mpl checks to work
+        return gcf()

@@ -548,6 +548,44 @@ def multi_scatter_plot(
     return ax
 
 
+@ensure_plotter_consistency(plot_params)
+def colormesh_plot(xdata,ydata,cdata,xlabel,ylabel,title,saveas='colormesh',axis=None, **kwargs):
+    """
+    Create plot with pcolormesh
+
+    TODO
+    """
+
+    #Set default limits (not setting them leaves empty border)
+    limits = kwargs.pop('limits', {})
+    if 'x' not in limits:
+        limits['x'] = (xdata.min(), xdata.max())
+    if 'y' not in limits:
+        limits['y'] = (ydata.min(), ydata.max())
+    kwargs['limits'] = limits
+
+    plot_params.plot_type = 'colormesh'
+
+    kwargs = plot_params.set_parameters(continue_on_error=True, return_unprocessed_kwargs=True, area_plot=False, **kwargs)
+    ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
+
+    plot_kwargs = plot_params.plot_kwargs()
+
+    p = ax.pcolormesh(xdata,ydata,cdata,**plot_kwargs, **kwargs)
+
+    plot_params.set_scale(ax)
+    plot_params.set_limits(ax)
+    plot_params.show_legend(ax)
+    plot_params.show_colorbar(ax)
+    plot_params.save_plot(saveas)
+
+    return ax
+
+
+
+
+
+
 def waterfall_plot(xdata,
                    ydata,
                    zdata,
