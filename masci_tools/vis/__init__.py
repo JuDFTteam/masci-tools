@@ -141,6 +141,7 @@ class Plotter(object):
 
         self._single_plot = True
         self._num_plots = 1
+        self._plot_type = 'default'
 
         self._LIST_ARGS = set()
         if list_arguments is not None:
@@ -330,6 +331,7 @@ class Plotter(object):
                'Changing the defaults will reset changes to the current parameters'
         assert self.single_plot, 'Changing the defaults will reset changes to single_plot property'
         assert self.num_plots == 1, 'Changing the defaults will reset changes to num_plots property'
+        assert self.plot_type == 'default', 'Changing the defaults will reset changes to plot_type property'
 
         self._current_defaults = copy.deepcopy(self._PLOT_DEFAULTS)
         self._plot_parameters = copy.deepcopy(self._current_defaults)
@@ -344,6 +346,7 @@ class Plotter(object):
         #Reset number of plots properties
         self.single_plot = True
         self.num_plots = 1
+        self.plot_type = 'default'
 
     def get_dict(self):
         """
@@ -378,3 +381,17 @@ class Plotter(object):
         Setter for num_plots property
         """
         self._num_plots = int_value
+
+    @property
+    def plot_type(self):
+        """
+        String property for the type of plotting function
+        """
+        return self._plot_type
+
+    @plot_type.setter
+    def plot_type(self, str_value):
+        """
+        Setter for plot_type property
+        """
+        self._plot_type = str_value
