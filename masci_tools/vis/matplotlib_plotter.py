@@ -40,13 +40,13 @@ class MatplotlibPlotter(Plotter):
     _MATPLOTLIB_DEFAULTS = {
         # figure properties
         'title_fontsize': 16,
-
-        'figure_kwargs':{
-        'figsize': (8, 6),
-        'dpi': 80,
-        'facecolor': 'w',
-        'edgecolor': 'k',
-        'constrained_layout': False,},
+        'figure_kwargs': {
+            'figsize': (8, 6),
+            'dpi': 80,
+            'facecolor': 'w',
+            'edgecolor': 'k',
+            'constrained_layout': False,
+        },
 
         # axis properties
         'alpha': 1,
@@ -69,7 +69,8 @@ class MatplotlibPlotter(Plotter):
         'plot_alpha': 1.0,
         'edgecolor': 'face',
         'cmap': 'viridis',
-        'shading':'gouraud',
+        'norm': None,
+        'shading': 'gouraud',
         'rasterized': True,
 
         #scale and limits placeholder
@@ -137,7 +138,9 @@ class MatplotlibPlotter(Plotter):
     #Sets of keys with special purposes
 
     _PLOT_KWARGS = {'linewidth', 'linestyle', 'marker', 'markersize', 'color', 'plot_label', 'plot_alpha'}
-    _PLOT_KWARGS_COLORMESH = {'linewidth', 'linestyle', 'shading', 'rasterized', 'cmap', 'edgecolor', 'plot_label', 'plot_alpha'}
+    _PLOT_KWARGS_COLORMESH = {
+        'linewidth', 'linestyle', 'shading', 'rasterized', 'cmap', 'edgecolor', 'plot_label', 'plot_alpha'
+    }
 
     def __init__(self, **kwargs):
         super().__init__(self._MATPLOTLIB_DEFAULTS, list_arguments=self._MATPLOTLIB_LIST_ARGS, **kwargs)
@@ -149,9 +152,9 @@ class MatplotlibPlotter(Plotter):
 
         :param ignore: str or list of str (optional), defines keys to ignore in the creation of the dict
         """
-        if self.plot_type=='default':
+        if self.plot_type == 'default':
             kwargs_keys = self._PLOT_KWARGS
-        elif self.plot_type=='colormesh':
+        elif self.plot_type == 'colormesh':
             kwargs_keys = self._PLOT_KWARGS_COLORMESH
 
         plot_kwargs = self.get_multiple_kwargs(kwargs_keys, ignore=ignore)
@@ -302,15 +305,17 @@ class MatplotlibPlotter(Plotter):
             leg.get_frame().set_linewidth(linewidth)
             leg.get_title().set_fontsize(title_font_size)  #legend 'Title' fontsize
 
-    def show_colorbar(self, ax):
+    def show_colorbar(self, ax, cmap=None, norm=None):
         """
         Print a colorbar for the plot
 
         :param ax: Axes object on which to perform the operation
+        :param cmap: colormap to show
+        :param norm: Normalize instance to pass for the construction fo the colorbar
         """
 
         if self['colorbar']:
-            plt.colorbar(cm.ScalarMappable(cmap=self['cmap']), ax=ax)
+            plt.colorbar(cm.ScalarMappable(cmap=cmap, norm=norm), ax=ax)
 
     def save_plot(self, saveas):
         """

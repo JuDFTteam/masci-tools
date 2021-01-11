@@ -269,7 +269,11 @@ def single_scatterplot(ydata,
                 limits_new['y'] = limits[1]
             kwargs['limits'] = limits_new
 
-    kwargs = plot_params.set_parameters(continue_on_error=True, return_unprocessed_kwargs=True, color=color, plot_label=plot_label, **kwargs)
+    kwargs = plot_params.set_parameters(continue_on_error=True,
+                                        return_unprocessed_kwargs=True,
+                                        color=color,
+                                        plot_label=plot_label,
+                                        **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
     #ax.xaxis.set_major_formatter(DateFormatter("%b %y"))
@@ -526,7 +530,11 @@ def multi_scatter_plot(
             elif value is None:
                 color[index] = 'k'
 
-    kwargs = plot_params.set_parameters(continue_on_error=True, return_unprocessed_kwargs=True, color=color, area_plot=False, **kwargs)
+    kwargs = plot_params.set_parameters(continue_on_error=True,
+                                        return_unprocessed_kwargs=True,
+                                        color=color,
+                                        area_plot=False,
+                                        **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
     plot_kwargs = plot_params.plot_kwargs(ignore='markersize')
@@ -549,7 +557,7 @@ def multi_scatter_plot(
 
 
 @ensure_plotter_consistency(plot_params)
-def colormesh_plot(xdata,ydata,cdata,xlabel,ylabel,title,saveas='colormesh',axis=None, **kwargs):
+def colormesh_plot(xdata, ydata, cdata, xlabel, ylabel, title, saveas='colormesh', axis=None, **kwargs):
     """
     Create plot with pcolormesh
 
@@ -566,24 +574,23 @@ def colormesh_plot(xdata,ydata,cdata,xlabel,ylabel,title,saveas='colormesh',axis
 
     plot_params.plot_type = 'colormesh'
 
-    kwargs = plot_params.set_parameters(continue_on_error=True, return_unprocessed_kwargs=True, area_plot=False, **kwargs)
+    kwargs = plot_params.set_parameters(continue_on_error=True,
+                                        return_unprocessed_kwargs=True,
+                                        area_plot=False,
+                                        **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
     plot_kwargs = plot_params.plot_kwargs()
 
-    p = ax.pcolormesh(xdata,ydata,cdata,**plot_kwargs, **kwargs)
+    p = ax.pcolormesh(xdata, ydata, cdata, **plot_kwargs, **kwargs)
 
     plot_params.set_scale(ax)
     plot_params.set_limits(ax)
     plot_params.show_legend(ax)
-    plot_params.show_colorbar(ax)
+    plot_params.show_colorbar(ax, cmap=plot_kwargs['cmap'], norm=plot_kwargs['norm'])
     plot_params.save_plot(saveas)
 
     return ax
-
-
-
-
 
 
 def waterfall_plot(xdata,
@@ -1201,10 +1208,11 @@ def multiaxis_scatterplot(xdata,
 
     plot_params.set_parameters(**general_info)
 
-
     #figsize is automatically scaled with the shape of the plot
     plot_shape = (num_rows, num_cols)
-    plot_params['figure_kwargs'] = {'figsize': ([plot_shape[indx] * size for indx, size in enumerate(plot_params['figure_kwargs']['figsize'])])}
+    plot_params['figure_kwargs'] = {
+        'figsize': ([plot_shape[indx] * size for indx, size in enumerate(plot_params['figure_kwargs']['figsize'])])
+    }
 
     pp.figure(**plot_params['figure_kwargs'])
 
