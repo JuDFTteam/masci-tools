@@ -228,7 +228,7 @@ class Plotter(object):
     def __setitem__(self, key, value):
         self._setkey(key, value, self._plot_parameters)
 
-    def set_defaults(self, continue_on_error=False, **kwargs):
+    def set_defaults(self, continue_on_error=False, return_unprocessed_kwargs=False, **kwargs):
         """
         Set the current defaults. This method will only work if the parameters
         are not changed from the defaults. Otherwise a error is raised. This is because
@@ -236,6 +236,7 @@ class Plotter(object):
         consistency.
 
         :param continue_on_error: bool, if True unknown key are simply skipped
+        :param return_unprocessed_kwargs: bool, if True the unknown keys are returned
 
         Special Kwargs:
             :param force: bool, if True checks are skipped in setting the key
@@ -247,10 +248,13 @@ class Plotter(object):
         assert self.single_plot, 'Changing the defaults will reset changes to single_plot property'
         assert self.num_plots == 1, 'Changing the defaults will reset changes to num_plots property'
 
+        kwargs_unprocessed = copy.deepcopy(kwargs)
         defaults_before = copy.deepcopy(self._current_defaults)
+        force = kwargs.pop('force', False)
         for key, value in kwargs.items():
             try:
-                self._setkey(key, value, self._current_defaults, force=kwargs.get('force', False))
+                self._setkey(key, value, self._current_defaults, force=force)
+                kwargs_unprocessed.pop(key)
             except KeyError:
                 if not continue_on_error:
                     self._current_defaults = defaults_before
@@ -259,11 +263,19 @@ class Plotter(object):
         #Propagate changes to the parameters
         self.reset_parameters()
 
-    def set_parameters(self, continue_on_error=False, **kwargs):
+        if 'extra_kwargs' in kwargs_unprocessed:
+            extra_kwargs = kwargs_unprocessed.pop('extra_kwargs')
+            kwargs_unprocessed.update(extra_kwargs)
+
+        if return_unprocessed_kwargs:
+            return kwargs_unprocessed
+
+    def set_parameters(self, continue_on_error=False, return_unprocessed_kwargs=False, **kwargs):
         """
         Set the current parameters.
 
         :param continue_on_error: bool, if True unknown key are simply skipped
+        :param return_unprocessed_kwargs: bool, if True the unknown keys are returned
 
         Special Kwargs:
             :param force: bool, if True checks are skipped in setting the key
@@ -271,13 +283,24 @@ class Plotter(object):
         Kwargs are used to set the defaults.
         """
         params_before = copy.deepcopy(self._plot_parameters)
+        force = kwargs.pop('force', False)
+
+        kwargs_unprocessed = copy.deepcopy(kwargs)
         for key, value in kwargs.items():
             try:
-                self._setkey(key, value, self._plot_parameters, force=kwargs.get('force', False))
+                self._setkey(key, value, self._plot_parameters, force=force)
+                kwargs_unprocessed.pop(key)
             except KeyError:
                 if not continue_on_error:
                     self._plot_parameters = params_before
                     raise
+
+        if 'extra_kwargs' in kwargs_unprocessed:
+            extra_kwargs = kwargs_unprocessed.pop('extra_kwargs')
+            kwargs_unprocessed.update(extra_kwargs)
+
+        if return_unprocessed_kwargs:
+            return kwargs_unprocessed
 
     def add_parameter(self, name, default_from=None):
         """
