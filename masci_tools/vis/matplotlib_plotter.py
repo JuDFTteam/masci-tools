@@ -15,6 +15,7 @@ This module contains a subclass of :py:class:`~masci_tools.vis.Plotter` for the 
 """
 from masci_tools.vis import Plotter
 import matplotlib.pyplot as plt
+from matplotlib import cm
 import copy
 
 
@@ -39,10 +40,13 @@ class MatplotlibPlotter(Plotter):
     _MATPLOTLIB_DEFAULTS = {
         # figure properties
         'title_fontsize': 16,
+
+        'figure_kwargs':{
         'figsize': (8, 6),
         'dpi': 80,
         'facecolor': 'w',
         'edgecolor': 'k',
+        'constrained_layout': False,},
 
         # axis properties
         'alpha': 1,
@@ -63,6 +67,10 @@ class MatplotlibPlotter(Plotter):
         'plot_label': None,
         'area_plot': False,
         'plot_alpha': 1.0,
+        'edgecolor': 'face',
+        'cmap': 'viridis',
+        'shading':'gouraud',
+        'rasterized': True,
 
         #scale and limits placeholder
         'scale': None,
@@ -102,6 +110,7 @@ class MatplotlibPlotter(Plotter):
             'labelsize': 0,
             'length': 2.5
         },
+        'colorbar': True,
         # legend properties
         'legend': False,
         'legend_options': {
@@ -117,7 +126,6 @@ class MatplotlibPlotter(Plotter):
         'save_plots': False,  # True
         'save_format': 'png',  #'pdf'
         'tightlayout': False,
-        'constrained_layout': False,
         'show': True,
         # write data to file
         'save_raw_plot_data': False,
@@ -127,20 +135,12 @@ class MatplotlibPlotter(Plotter):
     _MATPLOTLIB_LIST_ARGS = {'xticks', 'xticklabels', 'yticks', 'yticklabels'}
 
     #Sets of keys with special purposes
-    _FIGURE_KWARGS = {'figsize', 'dpi', 'facecolor', 'edgecolor', 'constrained_layout'}
 
     _PLOT_KWARGS = {'linewidth', 'linestyle', 'marker', 'markersize', 'color', 'plot_label', 'plot_alpha'}
+    _PLOT_KWARGS_COLORMESH = {'linewidth', 'linestyle', 'shading', 'rasterized', 'cmap', 'edgecolor', 'plot_label', 'plot_alpha'}
 
     def __init__(self, **kwargs):
         super().__init__(self._MATPLOTLIB_DEFAULTS, list_arguments=self._MATPLOTLIB_LIST_ARGS, **kwargs)
-
-    def figure_kwargs(self, ignore=None):
-        """
-        Returns a dictionary containing all the parameters to go into the creation of a figure
-
-        :param ignore: str or list of str (optional), defines keys to ignore in the creation of the dict
-        """
-        return self.get_multiple_kwargs(self._FIGURE_KWARGS, ignore=ignore)
 
     def plot_kwargs(self, ignore=None):
         """
@@ -149,8 +149,12 @@ class MatplotlibPlotter(Plotter):
 
         :param ignore: str or list of str (optional), defines keys to ignore in the creation of the dict
         """
+        if self.plot_type=='default':
+            kwargs_keys = self._PLOT_KWARGS
+        elif self.plot_type=='colormesh':
+            kwargs_keys = self._PLOT_KWARGS_COLORMESH
 
-        plot_kwargs = self.get_multiple_kwargs(self._PLOT_KWARGS, ignore=ignore)
+        plot_kwargs = self.get_multiple_kwargs(kwargs_keys, ignore=ignore)
 
         any_list = any([isinstance(val, list) for val in plot_kwargs.values()])
 
@@ -207,7 +211,7 @@ class MatplotlibPlotter(Plotter):
         if axis is not None:
             ax = axis
         else:
-            fig = plt.figure(num=None, **self.figure_kwargs())
+            fig = plt.figure(num=None, **self['figure_kwargs'])
             ax = fig.add_subplot(111, projection=projection)
 
         for axes in ['top', 'bottom', 'left', 'right']:
@@ -278,6 +282,10 @@ class MatplotlibPlotter(Plotter):
                 zmin = self['limits']['z'][0]
                 zmax = self['limits']['z'][1]
                 ax.set_zlim(zmin, zmax)
+            if 'color' in self['limits']:
+                cmin = self['limits'][0]
+                cmax = self['limits'][1]
+                ax.set_clim(cmin, cmax)
 
     def show_legend(self, ax):
         """
@@ -293,6 +301,16 @@ class MatplotlibPlotter(Plotter):
             leg = ax.legend(**loptions)
             leg.get_frame().set_linewidth(linewidth)
             leg.get_title().set_fontsize(title_font_size)  #legend 'Title' fontsize
+
+    def show_colorbar(self, ax):
+        """
+        Print a colorbar for the plot
+
+        :param ax: Axes object on which to perform the operation
+        """
+
+        if self['colorbar']:
+            plt.colorbar(cm.ScalarMappable(cmap=self['cmap']), ax=ax)
 
     def save_plot(self, saveas):
         """
