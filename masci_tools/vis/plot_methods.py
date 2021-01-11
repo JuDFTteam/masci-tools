@@ -269,9 +269,7 @@ def single_scatterplot(ydata,
                 limits_new['y'] = limits[1]
             kwargs['limits'] = limits_new
 
-    plot_params.set_parameters(continue_on_error=True, color=color, plot_label=plot_label, **kwargs)
-    #Remove the processed kwargs
-    kwargs = {k: v for k, v in kwargs.items() if k not in plot_params.get_dict()}
+    kwargs = plot_params.set_parameters(continue_on_error=True, return_unprocessed_kwargs=True, color=color, plot_label=plot_label, **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
     #ax.xaxis.set_major_formatter(DateFormatter("%b %y"))
@@ -381,9 +379,7 @@ def multiple_scatterplots(ydata,
             kwargs['xticklabels'] = xticks[0]
             kwargs['xticks'] = xticks[1]
 
-    plot_params.set_parameters(continue_on_error=True, **kwargs)
-    #Remove the processed kwargs
-    kwargs = {k: v for k, v in kwargs.items() if k not in plot_params.get_dict()}
+    kwargs = plot_params.set_parameters(continue_on_error=True, return_unprocessed_kwargs=True, **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
     # TODO good checks for input and setting of internals before plotting
@@ -530,9 +526,7 @@ def multi_scatter_plot(
             elif value is None:
                 color[index] = 'k'
 
-    plot_params.set_parameters(continue_on_error=True, color=color, area_plot=False, **kwargs)
-    #Remove the processed kwargs
-    kwargs = {k: v for k, v in kwargs.items() if k not in plot_params.get_dict()}
+    kwargs = plot_params.set_parameters(continue_on_error=True, return_unprocessed_kwargs=True, color=color, area_plot=False, **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
     plot_kwargs = plot_params.plot_kwargs(ignore='markersize')
