@@ -237,6 +237,10 @@ def single_scatterplot(ydata,
     :param axis: Axes object, if given the plot will be applied to this object
     :param xerr: optional data for errorbar in x-direction
     :param yerr: optional data for errorbar in y-direction
+
+    Kwargs will be passed on to :py:class:`masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`.
+    If the arguments are not recognized they are passed on to the matplotlib functions
+    (`errorbar` or `fill_between`)
     """
     #DEPRECATION WARNINGS
     if 'plotlabel' in kwargs:
@@ -318,6 +322,10 @@ def multiple_scatterplots(ydata,
     :param axis: Axes object, if given the plot will be applied to this object
     :param xerr: optional data for errorbar in x-direction
     :param yerr: optional data for errorbar in y-direction
+
+    Kwargs will be passed on to :py:class:`masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`.
+    If the arguments are not recognized they are passed on to the matplotlib functions
+    (`errorbar` or `fill_between`)
     """
 
     nplots = len(ydata)
@@ -456,6 +464,8 @@ def multi_scatter_plot(
     :param xerr: optional data for errorbar in x-direction
     :param yerr: optional data for errorbar in y-direction
 
+    Kwargs will be passed on to :py:class:`masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`.
+    If the arguments are not recognized they are passed on to the matplotlib function `scatter`
     """
 
     nplots = len(ydata)
@@ -1102,7 +1112,26 @@ def multiaxis_scatterplot(xdata,
                           saveas='mscatterplot',
                           **kwargs):
     """
-    Create a scatter plot with multiple axes
+    Create a scatter plot with multiple axes.
+
+    :param xdata: list of arraylikes, passed on to the plotting functions for each axis (x-axis)
+    :param ydata: list of arraylikes, passed on to the plotting functions for each axis (y-axis)
+    :param axes_loc: list of tuples of two integers, location of each axis
+    :param xlabel: str or list of str, labels for the x axis
+    :param ylabel: str or list of str, labels for the y-axis
+    :param title: str or list of str, titles for the subplots
+    :param num_rows: int, how many rows of axis are created
+    :param num_cols: int, how many columns of axis are created
+    :param saveas: str filename of the saved file
+
+    Special Kwargs:
+        :param subplot_params: dict with integer keys, can contain all valid kwargs for :py:func:`multiple_scatterplots()`
+                               with the integer key denoting to which subplot the changes are applied
+        :param axes_kwargs: dict with integer keys, additional arguments to pass on to `subplot2grid` for the creation
+                            of each axis (e.g colspan, rowspan)
+
+    Other Kwargs will be passed on to all :py:func:`multiple_scatterplots()` calls
+    (If they are not overwritten by parameters in `subplot_params`).
     """
 
     #convert parameters to list of parameters for subplots
