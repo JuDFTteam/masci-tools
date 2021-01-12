@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""
+Tests of the matplotib plotting functions
+"""
+
 import pytest
 
 # prevent issue with not having a display on travis-ci
@@ -12,9 +16,6 @@ from matplotlib.pyplot import gcf, title
 #from masci_tools.vis.kkr_plot_dos import dosplot
 #from masci_tools.vis.kkr_plot_bandstruc_qdos import dispersionplot
 #from masci_tools.vis.kkr_plot_FS_qdos import FSqdos2D
-
-# TODO: test if interfaces stay the same...
-# I do not write extensive testing, since plot_methods should be redesigned anyway....
 
 
 def test_plot_methods_imports():
@@ -898,6 +899,60 @@ class TestColormeshPlot(object):  #pylint: disable=missing-class-docstring
         gcf().clear()
 
         colormesh_plot(x, y, data, 'X', 'Y', 'sin', show=False)
+
+        # need to return the figure in order for mpl checks to work
+        return gcf()
+
+
+class TestHistogramPlot(object):  #pylint: disable=missing-class-docstring
+
+    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/histogram/', filename='defaults.png')
+    def test_defaults(self):
+        """
+        Test of histogram plot with default values
+        """
+        import numpy as np
+        from masci_tools.vis.plot_methods import histogram
+
+        np.random.seed(19680801)
+        N_points = 10000
+
+        # Generate a normal distribution, center at x=0 and y=5
+        x = np.random.randn(N_points)
+
+        gcf().clear()
+
+        histogram(x, show=False)
+
+        # need to return the figure in order for mpl checks to work
+        return gcf()
+
+    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/histogram/', filename='param_change.png')
+    def test_param_change(self):
+        """
+        Test of histogram plot with default values
+        """
+        import numpy as np
+        from masci_tools.vis.plot_methods import histogram
+
+        np.random.seed(19680801)
+        N_points = 10000
+
+        # Generate a normal distribution, center at x=0 and y=5
+        x = np.random.randn(N_points)
+
+        gcf().clear()
+
+        histogram(x,
+                  color='darkred',
+                  linewidth=2,
+                  plot_alpha=0.3,
+                  plot_label='Normal',
+                  density=True,
+                  legend=True,
+                  orientation='horizontal',
+                  log=True,
+                  show=False)
 
         # need to return the figure in order for mpl checks to work
         return gcf()

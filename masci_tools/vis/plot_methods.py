@@ -38,7 +38,7 @@ import os
 import copy
 import numpy as np
 import matplotlib.pyplot as pp
-import matplotlib.mlab as mlab
+from scipy.stats import norm
 from matplotlib.patches import Rectangle
 from cycler import cycler
 import six
@@ -738,10 +738,11 @@ def multiplot_moved(ydata, xdata, xlabel, ylabel, title, scale_move=1.0, min_add
     return ax
 
 
+@ensure_plotter_consistency(plot_params)
 def histogram(xdata,
               bins=None,
               range=None,
-              density=None,
+              density=False,
               weights=None,
               cumulative=False,
               bottom=None,
@@ -750,18 +751,12 @@ def histogram(xdata,
               orientation='vertical',
               rwidth=None,
               log=False,
-              color=None,
-              label=None,
               stacked=False,
-              normed=None,
               data=None,
               axis=None,
               title='hist',
               xlabel='bins',
               ylabel='counts',
-              limits=[None, None],
-              legend=legend_g,
-              legend_option={},
               saveas='histogram',
               return_hist_output=False,
               **kwargs):
@@ -769,47 +764,35 @@ def histogram(xdata,
     Create a standard looking histogram
     """
 
-    if axis:
-        ax = axis
-    else:
-        fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
-        ax = fig.add_subplot(111)
+    plot_params.plot_type = 'histogram'
 
-    for axis in ['top', 'bottom', 'left', 'right']:
-        ax.spines[axis].set_linewidth(axis_linewidth_g)
-    ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
-    ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
-    ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
-    ax.yaxis.set_tick_params(size=tick_paramsy_g.get('size', 4.0),
-                             width=tick_paramsy_g.get('width', 1.0),
-                             labelsize=tick_paramsy_g.get('labelsize', 14),
-                             length=tick_paramsy_g.get('length', 5),
-                             which='major')
-    ax.xaxis.set_tick_params(size=tick_paramsx_g.get('size', 4.0),
-                             width=tick_paramsx_g.get('width', 1.0),
-                             labelsize=tick_paramsx_g.get('labelsize', 14),
-                             length=tick_paramsx_g.get('length', 5),
-                             which='major')
+    if 'label' in kwargs:
+        warnings.warn('Please use plot_label instead of label', DeprecationWarning)
+        kwargs['plot_label'] = kwargs.pop('label')
 
-    ax.yaxis.set_tick_params(size=tick_paramsy_minor_g.get('size', 2.0),
-                             width=tick_paramsy_minor_g.get('width', 1.0),
-                             labelsize=tick_paramsy_minor_g.get('labelsize', 0),
-                             length=tick_paramsy_minor_g.get('length', 2.5),
-                             which='minor')
-    ax.xaxis.set_tick_params(size=tick_paramsx_minor_g.get('size', 2.0),
-                             width=tick_paramsx_minor_g.get('width', 1.0),
-                             labelsize=tick_paramsx_minor_g.get('labelsize', 0),
-                             length=tick_paramsx_minor_g.get('length', 2.5),
-                             which='minor')
+    if 'legend_option' in kwargs:
+        warnings.warn('Please use legend_options instead of legend_option', DeprecationWarning)
+        kwargs['legend_options'] = kwargs.pop('legend_option')
 
-    if use_axis_fromatter_g:
-        if not log:
-            ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
-            ax.xaxis.get_major_formatter().set_powerlimits((0, 3))
-        ax.yaxis.get_major_formatter().set_useOffset(False)
-        ax.xaxis.get_major_formatter().set_useOffset(False)
+    if 'limits' in kwargs:
+        limits = kwargs.get('limits')
+        if isinstance(limits, list):
+            warnings.warn("Please provide limits as dict in the form {'x': value, 'y': value2}", DeprecationWarning)
+            limits_new = {}
+            if limits[0] is not None:
+                limits_new['x'] = limits[0]
+            if limits[1] is not None:
+                limits_new['y'] = limits[1]
+            kwargs['limits'] = limits_new
 
-    #matplotlib.pyplot.hist(x, bins=None, range=None, density=None, weights=None, cumulative=False, bottom=None, histtype='bar', align='mid', orientation='vertical', rwidth=None, log=False, color=None, label=None, stacked=False, normed=None, hold=None, data=None, **kwargs)
+    kwargs = plot_params.set_parameters(continue_on_error=True,
+                                        return_unprocessed_kwargs=True,
+                                        set_powerlimits=not log,
+                                        area_plot=False,
+                                        **kwargs)
+    ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis, minor=True)
+
+    plot_kwargs = plot_params.plot_kwargs()
     n, bins, patches = ax.hist(xdata,
                                bins=bins,
                                range=range,
@@ -822,63 +805,25 @@ def histogram(xdata,
                                orientation=orientation,
                                rwidth=rwidth,
                                log=log,
-                               color=color,
-                               label=label,
                                stacked=stacked,
-                               normed=normed,
                                data=data,
+                               **plot_kwargs,
                                **kwargs)
 
-    if limits:
-        if limits[0]:
-            xmin = limits[0][0]
-            xmax = limits[0][1]
-            ax.set_xlim(xmin, xmax)
-        if limits[1]:
-            ymin = limits[1][0]
-            ymax = limits[1][1]
-            ax.set_ylim(ymin, ymax)
+    plot_params.set_limits(ax)
 
-    if normed:
+    if density:
         mu = np.mean(xdata)
         sigma = np.std(xdata)
-        y = mlab.normpdf(bins, mu, sigma)
+        y = norm.pdf(bins, mu, sigma)
         if orientation == 'horizontal':
             b = ax.plot(y, bins, '--')
         else:
             b = ax.plot(bins, y, '--')
 
-    #TODO legend
-    if legend:
-        #print legend
-        #{anchor, title, fontsize, linewith, borderaxespad}
-        # defaults 'anchor' : (0.75, 0.97), 'title' : 'Legend', 'fontsize' : 17, 'linewith' : 1.5, 'borderaxespad' : },
-        legends_defaults = {
-            'bbox_to_anchor': (0.70, 0.97),
-            'fontsize': 12,
-            'borderaxespad': 0,
-            'loc': 2,
-            'fancybox': True
-        }  #'linewidth' : 1.5,, 'title' : 'Legend',
-        loptions = legends_defaults.copy()
-        loptions.update(legend_option)
-        linewidth = loptions.pop('linewidth', 1.5)
-        title_font_size = loptions.pop('title_fontsize', 15)
-        leg = ax.legend(
-            **loptions
-        )  #bbox_to_anchor=loptions['anchor'],loc=loptions['loc'], title=legend_title, borderaxespad=0., fancybox=True)
-        leg.get_frame().set_linewidth(linewidth)
-        leg.get_title().set_fontsize(title_font_size)  #legend 'Title' fontsize
-
-    if save_plots_g:
-        savefilename = '{}.{}'.format(saveas, save_format_g)
-        print(('save plot to: {}'.format(savefilename)))
-        pp.savefig(savefilename, format=save_format_g, transparent=True)
-
-    if show_g:
-        pp.show()
-    else:
-        pass
+    plot_params.show_legend(ax)
+    plot_params.draw_lines(ax)
+    plot_params.save_plot(ax)
 
     if return_hist_output:
         return ax, n, bins, patches
@@ -887,90 +832,16 @@ def histogram(xdata,
 
 
 # todo remove default histogramm, replace it in all code by histogramm
-def default_histogram(xdata,
-                      bins=None,
-                      range=None,
-                      density=None,
-                      weights=None,
-                      cumulative=False,
-                      bottom=None,
-                      histtype='bar',
-                      align='mid',
-                      orientation='vertical',
-                      rwidth=None,
-                      log=False,
-                      color=None,
-                      label=None,
-                      stacked=False,
-                      normed=None,
-                      data=None,
-                      axis=None,
-                      title='hist',
-                      xlabel='bins',
-                      ylabel='counts',
-                      **kwargs):
+def default_histogram(*args, **kwargs):
     """
-    Create a standard looking histogram
+    Create a standard looking histogram (DEPRECATED)
     """
 
-    if axis:
-        ax = axis
-    else:
-        fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
-        ax = fig.add_subplot(111)
+    warnings.warn('Use histogram instead of default_histogram', DeprecationWarning)
 
-    for axis in ['top', 'bottom', 'left', 'right']:
-        ax.spines[axis].set_linewidth(axis_linewidth_g)
-    ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
-    ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
-    ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
-    ax.yaxis.set_tick_params(size=tick_paramsy_g.get('size', 4.0),
-                             width=tick_paramsy_g.get('width', 1.0),
-                             labelsize=tick_paramsy_g.get('labelsize', 14),
-                             length=tick_paramsy_g.get('length', 5))
-    ax.xaxis.set_tick_params(size=tick_paramsx_g.get('size', 4.0),
-                             width=tick_paramsx_g.get('width', 1.0),
-                             labelsize=tick_paramsx_g.get('labelsize', 14),
-                             length=tick_paramsx_g.get('length', 5))
-    ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
-    ax.yaxis.get_major_formatter().set_useOffset(False)
+    res = histogram(*args, **kwargs)
 
-    #matplotlib.pyplot.hist(x, bins=None, range=None, density=None, weights=None, cumulative=False, bottom=None, histtype='bar', align='mid', orientation='vertical', rwidth=None, log=False, color=None, label=None, stacked=False, normed=None, hold=None, data=None, **kwargs)
-    n, bins, patches = ax.hist(xdata,
-                               bins=bins,
-                               range=range,
-                               density=density,
-                               weights=weights,
-                               cumulative=cumulative,
-                               bottom=bottom,
-                               histtype=histtype,
-                               align=align,
-                               orientation=orientation,
-                               rwidth=rwidth,
-                               log=log,
-                               color=color,
-                               label=label,
-                               stacked=stacked,
-                               normed=normed,
-                               data=data,
-                               **kwargs)
-
-    if normed:
-        mu = np.mean(xdata)
-        sigma = np.std(xdata)
-        y = mlab.normpdf(bins, mu, sigma)
-        if orientation == 'horizontal':
-            b = ax.plot(y, bins, '--')
-
-        else:
-            b = ax.plot(bins, y, '--')
-
-    if show_g:
-        pp.show()
-    else:
-        pass
-
-    return ax
+    return res
 
 
 def barchart(ydata,
