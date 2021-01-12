@@ -30,6 +30,7 @@ def test_plot_methods_imports():
     from masci_tools.vis.plot_methods import colormesh_plot
     from masci_tools.vis.plot_methods import waterfall_plot
     from masci_tools.vis.plot_methods import multiplot_moved
+    from masci_tools.vis.plot_methods import multiaxis_scatterplot
     from masci_tools.vis.plot_methods import histogram
     from masci_tools.vis.plot_methods import default_histogram
     from masci_tools.vis.plot_methods import plot_convex_hull2d
