@@ -79,11 +79,12 @@ class MatplotlibPlotter(Plotter):
 
         # x, y label
         'labelfontsize': 15,
-
         'lines': None,
-        'line_options': {'linestyle': '--',
-                         'color': 'k',
-                         'linewidth': 1.0},
+        'line_options': {
+            'linestyle': '--',
+            'color': 'k',
+            'linewidth': 1.0
+        },
 
         # ticks
         'ticklabelsizex': 14,
@@ -340,7 +341,6 @@ class MatplotlibPlotter(Plotter):
 
                     for pos in positions:
                         ax.axvline(pos, **options)
-
 
     def show_legend(self, ax):
         """

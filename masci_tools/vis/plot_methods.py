@@ -55,7 +55,7 @@ def reset_plot_defaults():
     plot_params.reset_defaults()
 
 
-def show_defaults():
+def show_plot_defaults():
     pprint(plot_params.get_dict())
 
 
