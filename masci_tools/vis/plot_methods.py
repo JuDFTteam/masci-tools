@@ -826,7 +826,7 @@ def histogram(xdata,
 
     plot_params.show_legend(ax)
     plot_params.draw_lines(ax)
-    plot_params.save_plot(ax)
+    plot_params.save_plot(saveas)
 
     if return_hist_output:
         return ax, n, bins, patches
@@ -962,7 +962,7 @@ def barchart(ydata,
     plot_params.set_limits(ax)
     plot_params.draw_lines(ax)
     plot_params.show_legend(ax)
-    plot_params.save_plot(ax)
+    plot_params.save_plot(saveas)
 
     return ax
 
