@@ -80,6 +80,11 @@ class MatplotlibPlotter(Plotter):
         # x, y label
         'labelfontsize': 15,
 
+        'lines': None,
+        'line_options': {'linestyle': '--',
+                         'color': 'k',
+                         'linewidth': 1.0},
+
         # ticks
         'ticklabelsizex': 14,
         'ticklabelsizey': 14,
@@ -289,6 +294,49 @@ class MatplotlibPlotter(Plotter):
                 cmin = self['limits'][0]
                 cmax = self['limits'][1]
                 ax.set_clim(cmin, cmax)
+
+    def draw_lines(self, ax):
+        """
+        Draw horizontal and vertical lines specified in the lines argument
+
+        :param ax: Axes object on which to perform the operation
+        """
+        if self['lines'] is not None:
+            if 'horizontal' in self['lines']:
+                lines = copy.deepcopy(self['lines']['horizontal'])
+                if not isinstance(lines, list):
+                    lines = [lines]
+
+                for line_def in lines:
+                    options = copy.deepcopy(self['line_options'])
+                    if isinstance(line_def, dict):
+                        positions = line_def.pop('pos')
+                        options.update(line_def)
+                    elif isinstance(line_def, list):
+                        positions = line_def
+                    else:
+                        positions = [line_def]
+
+                    for pos in positions:
+                        ax.axhline(pos, **options)
+            if 'vertical' in self['lines']:
+                lines = copy.deepcopy(self['lines']['vertical'])
+                if not isinstance(lines, list):
+                    lines = [lines]
+
+                for line_def in lines:
+                    options = copy.deepcopy(self['line_options'])
+                    if isinstance(line_def, dict):
+                        positions = line_def.pop('pos')
+                        options.update(line_def)
+                    elif isinstance(line_def, list):
+                        positions = line_def
+                    else:
+                        positions = [line_def]
+
+                    for pos in positions:
+                        ax.axvline(pos, **options)
+
 
     def show_legend(self, ax):
         """

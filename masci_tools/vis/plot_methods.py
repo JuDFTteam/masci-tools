@@ -295,6 +295,7 @@ def single_scatterplot(ydata,
 
     plot_params.set_scale(ax)
     plot_params.set_limits(ax)
+    plot_params.draw_lines(ax)
     plot_params.save_plot(saveas)
 
     return ax
@@ -431,6 +432,7 @@ def multiple_scatterplots(ydata,
     plot_params.set_scale(ax)
     plot_params.set_limits(ax)
     plot_params.show_legend(ax)
+    plot_params.draw_lines(ax)
     plot_params.save_plot(saveas)
 
     return ax
@@ -551,6 +553,7 @@ def multi_scatter_plot(
     plot_params.set_scale(ax)
     plot_params.set_limits(ax)
     plot_params.show_legend(ax)
+    plot_params.draw_lines(ax)
     plot_params.save_plot(saveas)
 
     return ax
@@ -588,6 +591,7 @@ def colormesh_plot(xdata, ydata, cdata, xlabel, ylabel, title, saveas='colormesh
     plot_params.set_limits(ax)
     plot_params.show_legend(ax)
     plot_params.show_colorbar(ax)
+    plot_params.draw_lines(ax)
     plot_params.save_plot(saveas)
 
     return ax
