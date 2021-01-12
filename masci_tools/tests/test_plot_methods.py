@@ -17,16 +17,17 @@ from matplotlib.pyplot import gcf, title
 # I do not write extensive testing, since plot_methods should be redesigned anyway....
 
 
-class Test_plot_methods_imports(object):
+def test_plot_methods_imports():
     """
-    Test plotting functions
+    Test that all expected functions are still there
     """
-
-    #from masci_tools.vis.plot_methods import *
-    from masci_tools.vis.plot_methods import set_plot_defaults
+    from masci_tools.vis.plot_methods import set_plot_defaults_new
+    from masci_tools.vis.plot_methods import reset_plot_defaults
+    from masci_tools.vis.plot_methods import show_plot_defaults
     from masci_tools.vis.plot_methods import single_scatterplot
     from masci_tools.vis.plot_methods import multiple_scatterplots
     from masci_tools.vis.plot_methods import multi_scatter_plot
+    from masci_tools.vis.plot_methods import colormesh_plot
     from masci_tools.vis.plot_methods import waterfall_plot
     from masci_tools.vis.plot_methods import multiplot_moved
     from masci_tools.vis.plot_methods import histogram
@@ -44,11 +45,46 @@ class Test_plot_methods_imports(object):
     from masci_tools.vis.plot_methods import plot_corelevel_spectra
     from masci_tools.vis.plot_methods import plot_fleur_bands
 
-    def test_set_defaults(self):
-        from masci_tools.vis.plot_methods import linewidth_g
-        from masci_tools.vis.plot_methods import set_plot_defaults
-        set_plot_defaults(linewidth=3.0)
-        assert linewidth_g == 2.0  # if worked should be 3.0
+
+TEST_CHANGES = [{'markersize': 50}, {'show': False}, {'tick_paramsx': {'labelsize': 100}}]
+
+EXPECTED_RESULT = [{
+    'markersize': 50
+}, {
+    'show': False
+}, {
+    'tick_paramsx': {
+        'size': 4.0,
+        'width': 1.0,
+        'labelsize': 100,
+        'length': 5,
+        'labelrotation': 0
+    }
+}]
+
+
+@pytest.mark.parametrize('change_dict, result', zip(TEST_CHANGES, EXPECTED_RESULT))
+def test_set_defaults(change_dict, result):
+    """
+    Test the setting of default values
+    """
+    from masci_tools.vis.plot_methods import plot_params
+    from masci_tools.vis.plot_methods import set_plot_defaults_new  #_new because the old routine is not yet removed
+    from masci_tools.vis.plot_methods import reset_plot_defaults
+
+    value_before = {}
+    for key in change_dict:
+        value_before[key] = plot_params[key]
+
+    set_plot_defaults_new(**change_dict)
+
+    for key, val in result.items():
+        assert plot_params[key] == val
+
+    reset_plot_defaults()
+
+    for key, val in value_before.items():
+        assert plot_params[key] == val
 
 
 class TestSingleScatterPlot(object):
@@ -180,7 +216,7 @@ class TestSingleScatterPlot(object):
 
         gcf().clear()
 
-        single_scatterplot(y, x, 'X', 'Y', 'Plot Test', lines={'horizontal': 50, 'vertical': [-5,5]}, show=False)
+        single_scatterplot(y, x, 'X', 'Y', 'Plot Test', lines={'horizontal': 50, 'vertical': [-5, 5]}, show=False)
         # need to return the figure in order for mpl checks to work
         return gcf()
 
@@ -198,7 +234,21 @@ class TestSingleScatterPlot(object):
 
         gcf().clear()
 
-        single_scatterplot(y, x, 'X', 'Y', 'Plot Test', lines={'horizontal': 50, 'vertical': [-5,{'pos':5, 'color':'darkred', 'linestyle': ':', 'linewidth':10}]}, show=False)
+        single_scatterplot(y,
+                           x,
+                           'X',
+                           'Y',
+                           'Plot Test',
+                           lines={
+                               'horizontal': 50,
+                               'vertical': [-5, {
+                                   'pos': 5,
+                                   'color': 'darkred',
+                                   'linestyle': ':',
+                                   'linewidth': 10
+                               }]
+                           },
+                           show=False)
         # need to return the figure in order for mpl checks to work
         return gcf()
 
