@@ -431,8 +431,8 @@ def multiple_scatterplots(ydata,
 
     plot_params.set_scale(ax)
     plot_params.set_limits(ax)
-    plot_params.show_legend(ax)
     plot_params.draw_lines(ax)
+    plot_params.show_legend(ax)
     plot_params.save_plot(saveas)
 
     return ax
@@ -552,8 +552,8 @@ def multi_scatter_plot(
 
     plot_params.set_scale(ax)
     plot_params.set_limits(ax)
-    plot_params.show_legend(ax)
     plot_params.draw_lines(ax)
+    plot_params.show_legend(ax)
     plot_params.save_plot(saveas)
 
     return ax
@@ -611,7 +611,7 @@ def waterfall_plot(xdata,
                    legend_option={},
                    saveas='mscatterplot',
                    limits=[None, None],
-                   scale=[None, None]):
+                   scale=[None, None]): #TODO: convert to new system
     """
     Create a standard waterfall plot (this should be flexible enough) to do all the
     basic plots.
