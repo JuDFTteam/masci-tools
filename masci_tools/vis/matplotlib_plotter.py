@@ -377,5 +377,5 @@ class MatplotlibPlotter(Plotter):
             savefilename = f"{saveas}.{self['save_format']}"
             print(f'Save plot to: {savefilename}')
             plt.savefig(savefilename, format=self['save_format'], transparent=True)
-        elif self['show']:
+        if self['show']:
             plt.show()
