@@ -105,13 +105,13 @@ class MatplotlibPlotter(Plotter):
         },
         'ticklabelsizex_minor': 0,
         'ticklabelsizey_minor': 0,
-        'tick_paramsx_minor_g': {
+        'tick_paramsx_minor': {
             'size': 2.0,
             'width': 1.0,
             'labelsize': 0,
             'length': 2.5
         },
-        'tick_paramsy_minor_g': {
+        'tick_paramsy_minor': {
             'size': 2.0,
             'width': 1.0,
             'labelsize': 0,
@@ -147,6 +147,7 @@ class MatplotlibPlotter(Plotter):
     _PLOT_KWARGS_COLORMESH = {
         'linewidth', 'linestyle', 'shading', 'rasterized', 'cmap', 'norm', 'edgecolor', 'plot_label', 'plot_alpha'
     }
+    _PLOT_KWARGS_HIST = {'linewidth', 'linestyle', 'color', 'plot_label', 'plot_alpha'}
 
     def __init__(self, **kwargs):
         super().__init__(self._MATPLOTLIB_DEFAULTS, list_arguments=self._MATPLOTLIB_LIST_ARGS, **kwargs)
@@ -162,6 +163,8 @@ class MatplotlibPlotter(Plotter):
             kwargs_keys = self._PLOT_KWARGS
         elif self.plot_type == 'colormesh':
             kwargs_keys = self._PLOT_KWARGS_COLORMESH
+        elif self.plot_type == 'histogram':
+            kwargs_keys = self._PLOT_KWARGS_HIST
 
         plot_kwargs = self.get_multiple_kwargs(kwargs_keys, ignore=ignore)
 
