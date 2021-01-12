@@ -64,10 +64,11 @@ class MatplotlibPlotter(Plotter):
         'marker': 'o',
         'markersize': 4.0,
         'color': None,
+        'edgecolor': None,
+        'facecolor': None,
         'plot_label': None,
         'area_plot': False,
         'plot_alpha': 1.0,
-        'edgecolor': 'face',
         'cmap': 'viridis',
         'norm': None,
         'shading': 'gouraud',
@@ -145,9 +146,9 @@ class MatplotlibPlotter(Plotter):
 
     _PLOT_KWARGS = {'linewidth', 'linestyle', 'marker', 'markersize', 'color', 'plot_label', 'plot_alpha'}
     _PLOT_KWARGS_COLORMESH = {
-        'linewidth', 'linestyle', 'shading', 'rasterized', 'cmap', 'norm', 'edgecolor', 'plot_label', 'plot_alpha'
+        'linewidth', 'linestyle', 'shading', 'rasterized', 'cmap', 'norm', 'edgecolor', 'facecolor', 'plot_label', 'plot_alpha'
     }
-    _PLOT_KWARGS_HIST = {'linewidth', 'linestyle', 'color', 'plot_label', 'plot_alpha'}
+    _PLOT_KWARGS_HIST = {'linewidth', 'linestyle', 'color', 'plot_label', 'plot_alpha', 'edgecolor', 'facecolor'}
 
     def __init__(self, **kwargs):
         super().__init__(self._MATPLOTLIB_DEFAULTS, list_arguments=self._MATPLOTLIB_LIST_ARGS, **kwargs)

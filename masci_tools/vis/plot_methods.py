@@ -560,7 +560,7 @@ def multi_scatter_plot(
 
 
 @ensure_plotter_consistency(plot_params)
-def colormesh_plot(xdata, ydata, cdata, xlabel, ylabel, title, saveas='colormesh', axis=None, **kwargs):
+def colormesh_plot(xdata, ydata, cdata, xlabel, ylabel, title, saveas='colormesh', edgecolor='face', axis=None, **kwargs):
     """
     Create plot with pcolormesh
 
@@ -580,6 +580,7 @@ def colormesh_plot(xdata, ydata, cdata, xlabel, ylabel, title, saveas='colormesh
     kwargs = plot_params.set_parameters(continue_on_error=True,
                                         return_unprocessed_kwargs=True,
                                         area_plot=False,
+                                        edgecolor=edgecolor,
                                         **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
@@ -762,6 +763,8 @@ def histogram(xdata,
               **kwargs):
     """
     Create a standard looking histogram
+
+    TODO
     """
 
     plot_params.plot_type = 'histogram'
@@ -843,70 +846,85 @@ def default_histogram(*args, **kwargs):
 
     return res
 
-
+@ensure_plotter_consistency(plot_params)
 def barchart(ydata,
              xdata,
              width=0.35,
              xlabel='x',
              ylabel='y',
              title='',
-             plot_labels=None,
              bottom=None,
-             linestyle='-',
-             marker='o',
-             markersize=markersize_g,
-             legend=legend_g,
-             legend_option={},
              saveas='mscatterplot',
-             limits=[None, None],
-             scale=[None, None],
              axis=None,
              xerr=None,
              yerr=None,
-             colors=[],
-             linewidth=[],
-             xticks=[],
              **kwargs):
     """
     Create a standard bar chart plot (this should be flexible enough) to do all the
     basic bar chart plots.
     Has to be overworked, was quickly adjusted from scatterplots, some things not used or not needed
+
+    TODO
     """
+
     nplots = len(ydata)
     if nplots != len(xdata):  # todo check dimention not len, without moving to special datatype.
         print('ydata and xdata must have the same dimension')
         return
 
-    # TODO allow plotlabels to have different dimension
-    pl = []
-    if axis:
-        ax = axis
-    else:
-        fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
-        ax = fig.add_subplot(111)
-    for axis in ['top', 'bottom', 'left', 'right']:
-        ax.spines[axis].set_linewidth(axis_linewidth_g)
-    ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
-    ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
-    ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
-    ax.yaxis.set_tick_params(size=tick_paramsy_g.get('size', 4.0),
-                             width=tick_paramsy_g.get('width', 1.0),
-                             labelsize=tick_paramsy_g.get('labelsize', 14),
-                             length=tick_paramsy_g.get('length', 5),
-                             labelrotation=tick_paramsy_g.get('labelrotation', 0))
-    ax.xaxis.set_tick_params(size=tick_paramsx_g.get('size', 4.0),
-                             width=tick_paramsx_g.get('width', 1.0),
-                             labelsize=tick_paramsx_g.get('labelsize', 14),
-                             length=tick_paramsx_g.get('length', 5),
-                             labelrotation=tick_paramsx_g.get('labelrotation', 0))
-    if len(xticks) != 0:
-        ax.xaxis.set_ticks(xticks[0])
-        ax.xaxis.set_ticklabels(xticks[1])
-    if use_axis_fromatter_g:
-        ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
-        ax.yaxis.get_major_formatter().set_useOffset(False)
-        ax.xaxis.get_major_formatter().set_powerlimits((0, 3))
-        ax.xaxis.get_major_formatter().set_useOffset(False)
+
+    if not isinstance(ydata[0], (list, np.ndarray)):
+        xdata, ydata = [xdata], [ydata]
+
+    plot_params.single_plot = False
+    plot_params.num_plots = len(ydata)
+    plot_params.plot_type = 'histogram'
+
+    #DEPRECATION WARNINGS
+    if 'plot_labels' in kwargs:
+        warnings.warn('Please use plot_label instead of plot_labels', DeprecationWarning)
+        kwargs['plot_label'] = kwargs.pop('plot_labels')
+
+    if 'colors' in kwargs:
+        warnings.warn('Please use color instead of colors', DeprecationWarning)
+        kwargs['color'] = kwargs.pop('colors')
+
+    if 'legend_option' in kwargs:
+        warnings.warn('Please use legend_options instead of legend_option', DeprecationWarning)
+        kwargs['legend_options'] = kwargs.pop('legend_option')
+
+    if 'scale' in kwargs:
+        scale = kwargs.get('scale')
+        if isinstance(scale, list):
+            warnings.warn("Please provide scale as dict in the form {'x': value, 'y': value2}", DeprecationWarning)
+            scale_new = {}
+            if scale[0] is not None:
+                scale_new['x'] = scale[0]
+            if scale[1] is not None:
+                scale_new['y'] = scale[1]
+            kwargs['scale'] = scale_new
+
+    if 'limits' in kwargs:
+        limits = kwargs.get('limits')
+        if isinstance(limits, list):
+            warnings.warn("Please provide limits as dict in the form {'x': value, 'y': value2}", DeprecationWarning)
+            limits_new = {}
+            if limits[0] is not None:
+                limits_new['x'] = limits[0]
+            if limits[1] is not None:
+                limits_new['y'] = limits[1]
+            kwargs['limits'] = limits_new
+
+    if 'xticks' in kwargs:
+        xticks = kwargs.get('xticks')
+        if isinstance(xticks[0], list):
+            warnings.warn('Please provide xticks and xticklabels seperately as two lists', DeprecationWarning)
+            kwargs['xticklabels'] = xticks[0]
+            kwargs['xticks'] = xticks[1]
+
+    kwargs = plot_params.set_parameters(continue_on_error=True, return_unprocessed_kwargs=True, **kwargs)
+    ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
+
     # TODO good checks for input and setting of internals before plotting
     # allow all arguments as value then use for all or as lists with the righ length.
     if bottom:
@@ -914,10 +932,15 @@ def barchart(ydata,
     else:
         datab = np.zeros(len(ydata[0]))
 
-    for i, data in enumerate(ydata):
+    plot_kwargs = plot_params.plot_kwargs()
+
+    for indx, data in enumerate(zip(xdata, ydata, plot_kwargs)):
+
+        x,y,plot_kw = data
+
         if isinstance(yerr, list):
             try:
-                yerrt = yerr[i]
+                yerrt = yerr[indx]
             except KeyError:
                 yerrt = yerr[0]
         else:
@@ -925,91 +948,21 @@ def barchart(ydata,
 
         if isinstance(xerr, list):
             try:
-                xerrt = xerr[i]
+                xerrt = xerr[indx]
             except KeyError:
                 xerrt = xerr[0]
         else:
             xerrt = xerr
-        if isinstance(colors, list):
-            color = colors[i]
-        else:
-            color = None
-        if not linewidth:
-            linewidth_p = linewidth_g
-        else:
-            linewidth_p = linewidth[i]
 
-        if isinstance(linestyle, list):
-            linestyle_t = linestyle[i]
-        else:
-            linestyle_t = linestyle
+        p1 = ax.bar(x, y, width, bottom=datab, **plot_kw, **kwargs)
 
-        if isinstance(marker, list):
-            marker_t = marker[i]
-        else:
-            marker_t = marker
+        datab = datab + np.array(y)
 
-        if isinstance(markersize, list):
-            markersize_t = markersize[i]
-        else:
-            markersize_t = markersize_g
-
-        if plot_labels is None:
-            plot_label = ''
-        else:
-            plot_label = plot_labels[i]
-        p1 = ax.bar(xdata[i], data, width, bottom=datab, color=color, **kwargs)
-        #p2 = pp.bar(ind, womenMeans, width, bottom=menMeans)
-        #p1 = ax.errorbar(xdata[i], data, linestyle=linestyle_t, label=plot_label,
-        #                 linewidth=linewidth_p, marker=marker_t, markersize=markersize_t,
-        #                 yerr=yerrt, xerr=xerrt, color=color, **kwargs)
-        datab = datab + np.array(data)
-    if scale:
-        if scale[0]:
-            ax.set_xscale(scale[0])
-        if scale[1]:
-            ax.set_yscale(scale[1])
-
-    if limits:
-        if limits[0]:
-            xmin = limits[0][0]
-            xmax = limits[0][1]
-            ax.set_xlim(xmin, xmax)
-        if limits[1]:
-            ymin = limits[1][0]
-            ymax = limits[1][1]
-            ax.set_ylim(ymin, ymax)
-
-    #TODO nice legend
-    if legend:
-        #print legend
-        #{anchor, title, fontsize, linewith, borderaxespad}
-        # defaults 'anchor' : (0.75, 0.97), 'title' : 'Legend', 'fontsize' : 17, 'linewith' : 1.5, 'borderaxespad' : },
-        legends_defaults = {
-            'bbox_to_anchor': (0.65, 0.97),
-            'fontsize': 16,
-            'linewidth': 3.0,
-            'borderaxespad': 0,
-            'loc': 2,
-            'fancybox': True
-        }  #'title' : 'Legend',
-        loptions = legends_defaults.copy()
-        loptions.update(legend_option)
-        linewidth = loptions.pop('linewidth', 1.5)
-        title_font_size = loptions.pop('title_font_size', 15)
-        leg = ax.legend(
-            **loptions
-        )  #bbox_to_anchor=loptions['anchor'],loc=loptions['loc'], title=legend_title, borderaxespad=0., fancybox=True)
-        leg.get_frame().set_linewidth(linewidth)
-        leg.get_title().set_fontsize(title_font_size)  #legend 'Title' fontsize
-    if save_plots_g:
-        savefilename = '{}.{}'.format(saveas, save_format_g)
-        print(('save plot to: {}'.format(savefilename)))
-        pp.savefig(savefilename, format=save_format_g, transparent=True)
-    elif show_g:
-        pp.show()
-    else:
-        pass
+    plot_params.set_scale(ax)
+    plot_params.set_limits(ax)
+    plot_params.draw_lines(ax)
+    plot_params.show_legend(ax)
+    plot_params.save_plot(ax)
 
     return ax
 
