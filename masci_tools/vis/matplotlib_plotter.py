@@ -311,6 +311,8 @@ class MatplotlibPlotter(Plotter):
                     options = copy.deepcopy(self['line_options'])
                     if isinstance(line_def, dict):
                         positions = line_def.pop('pos')
+                        if not isinstance(positions, list):
+                            positions = [positions]
                         options.update(line_def)
                     elif isinstance(line_def, list):
                         positions = line_def
@@ -328,6 +330,8 @@ class MatplotlibPlotter(Plotter):
                     options = copy.deepcopy(self['line_options'])
                     if isinstance(line_def, dict):
                         positions = line_def.pop('pos')
+                        if not isinstance(positions, list):
+                            positions = [positions]
                         options.update(line_def)
                     elif isinstance(line_def, list):
                         positions = line_def

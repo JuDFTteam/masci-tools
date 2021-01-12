@@ -167,6 +167,42 @@ class TestSingleScatterPlot(object):
         return gcf()
 
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/single_scatterplot/',
+                                   filename='lines.png')
+    def test_lines(self):
+        """
+        Scatterplot with default parameters
+        """
+        import numpy as np
+        from masci_tools.vis.plot_methods import single_scatterplot
+
+        x = np.linspace(-10, 10, 100)
+        y = x**2
+
+        gcf().clear()
+
+        single_scatterplot(y, x, 'X', 'Y', 'Plot Test', lines={'horizontal': 50, 'vertical': [-5,5]}, show=False)
+        # need to return the figure in order for mpl checks to work
+        return gcf()
+
+    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/single_scatterplot/',
+                                   filename='lines_param_change.png')
+    def test_lines_param_change(self):
+        """
+        Scatterplot with default parameters
+        """
+        import numpy as np
+        from masci_tools.vis.plot_methods import single_scatterplot
+
+        x = np.linspace(-10, 10, 100)
+        y = x**2
+
+        gcf().clear()
+
+        single_scatterplot(y, x, 'X', 'Y', 'Plot Test', lines={'horizontal': 50, 'vertical': [-5,{'pos':5, 'color':'darkred', 'linestyle': ':', 'linewidth':10}]}, show=False)
+        # need to return the figure in order for mpl checks to work
+        return gcf()
+
+    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/single_scatterplot/',
                                    filename='limits.png')
     def test_limits_deprecated(self):
         """
