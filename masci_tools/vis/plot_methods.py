@@ -560,7 +560,16 @@ def multi_scatter_plot(
 
 
 @ensure_plotter_consistency(plot_params)
-def colormesh_plot(xdata, ydata, cdata, xlabel, ylabel, title, saveas='colormesh', edgecolor='face', axis=None, **kwargs):
+def colormesh_plot(xdata,
+                   ydata,
+                   cdata,
+                   xlabel,
+                   ylabel,
+                   title,
+                   saveas='colormesh',
+                   edgecolor='face',
+                   axis=None,
+                   **kwargs):
     """
     Create plot with pcolormesh
 
@@ -611,7 +620,7 @@ def waterfall_plot(xdata,
                    legend_option={},
                    saveas='mscatterplot',
                    limits=[None, None],
-                   scale=[None, None]): #TODO: convert to new system
+                   scale=[None, None]):  #TODO: convert to new system
     """
     Create a standard waterfall plot (this should be flexible enough) to do all the
     basic plots.
@@ -846,6 +855,7 @@ def default_histogram(*args, **kwargs):
 
     return res
 
+
 @ensure_plotter_consistency(plot_params)
 def barchart(ydata,
              xdata,
@@ -872,7 +882,6 @@ def barchart(ydata,
     if nplots != len(xdata):  # todo check dimention not len, without moving to special datatype.
         print('ydata and xdata must have the same dimension')
         return
-
 
     if not isinstance(ydata[0], (list, np.ndarray)):
         xdata, ydata = [xdata], [ydata]
@@ -923,7 +932,10 @@ def barchart(ydata,
             kwargs['xticklabels'] = xticks[0]
             kwargs['xticks'] = xticks[1]
 
-    kwargs = plot_params.set_parameters(continue_on_error=True, return_unprocessed_kwargs=True, linewidth=linewidth, **kwargs)
+    kwargs = plot_params.set_parameters(continue_on_error=True,
+                                        return_unprocessed_kwargs=True,
+                                        linewidth=linewidth,
+                                        **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
     # TODO good checks for input and setting of internals before plotting
@@ -937,7 +949,7 @@ def barchart(ydata,
 
     for indx, data in enumerate(zip(xdata, ydata, plot_kwargs)):
 
-        x,y,plot_kw = data
+        x, y, plot_kw = data
 
         if isinstance(yerr, list):
             try:
@@ -1185,10 +1197,10 @@ def plot_residuen(xdata,
     ydata = realdata - fitdata
     #TODO single scatter error plot....
     fig = plt.figure(num=None,
-                    figsize=(figsize_g[0] * 2, figsize_g[1]),
-                    dpi=dpi_g,
-                    facecolor=facecolor_g,
-                    edgecolor=edgecolor_g)
+                     figsize=(figsize_g[0] * 2, figsize_g[1]),
+                     dpi=dpi_g,
+                     facecolor=facecolor_g,
+                     edgecolor=edgecolor_g)
     ax2 = plt.subplot2grid((1, 2), (0, 0))
     ax3 = plt.subplot2grid((1, 2), (0, 1))  #, sharex = ax2, sharey = ax2)
     a = single_scatterplot(ydata, xdata, xlabel, ylabel, title, axis=ax2)
@@ -1380,18 +1392,18 @@ def plot_lattice_constant(Total_energy,
         for i, scale in enumerate(scaling):
             #print i
             p1 = plt.plot(scale,
-                         Total_energy[i],
-                         'o-',
-                         label=plotlables[2 * i],
-                         linewidth=linewidth_g,
-                         markersize=markersize_g)
+                          Total_energy[i],
+                          'o-',
+                          label=plotlables[2 * i],
+                          linewidth=linewidth_g,
+                          markersize=markersize_g)
             if fit_y:
                 p2 = plt.plot(scale,
-                             fit_y[i],
-                             's-',
-                             label=plotlables[2 * i + 1],
-                             linewidth=linewidth_g,
-                             markersize=markersize_g)
+                              fit_y[i],
+                              's-',
+                              label=plotlables[2 * i + 1],
+                              linewidth=linewidth_g,
+                              markersize=markersize_g)
     else:
         p1 = plt.plot(scaling, Total_energy, 'o-', label=plotlables[0], linewidth=linewidth_g, markersize=markersize_g)
         if fit_y:
@@ -2041,12 +2053,12 @@ def plot_corelevel_spectra(coreleveldict,
         for single_peek in ydata_single_all:
             #xdatalabel
             plt.plot(xdata_spec,
-                    single_peek,
-                    '-',
-                    label=plotlabel,
-                    color='g',
-                    linewidth=linewidth_g1,
-                    markersize=markersize_g)
+                     single_peek,
+                     '-',
+                     label=plotlabel,
+                     color='g',
+                     linewidth=linewidth_g1,
+                     markersize=markersize_g)
 
     if show_ref and exp_references:
         for elm, ref_list_dict in six.iteritems(exp_references):

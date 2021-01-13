@@ -957,8 +957,8 @@ class TestHistogramPlot(object):  #pylint: disable=missing-class-docstring
         # need to return the figure in order for mpl checks to work
         return gcf()
 
-class TestBarchartPlot(object): #pylint: disable=missing-class-docstring
 
+class TestBarchartPlot(object):  #pylint: disable=missing-class-docstring
 
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/barchart/', filename='defaults.png')
     def test_defaults(self):
@@ -968,8 +968,8 @@ class TestBarchartPlot(object): #pylint: disable=missing-class-docstring
         import numpy as np
         from masci_tools.vis.plot_methods import barchart
 
-        x = [np.linspace(0,10,11)] * 2
-        y =[x[0]**2,[50]*11]
+        x = [np.linspace(0, 10, 11)] * 2
+        y = [x[0]**2, [50] * 11]
         gcf().clear()
 
         barchart(y, x, show=False)
