@@ -858,6 +858,7 @@ def barchart(ydata,
              axis=None,
              xerr=None,
              yerr=None,
+             linewidth=None,
              **kwargs):
     """
     Create a standard bar chart plot (this should be flexible enough) to do all the
@@ -922,7 +923,7 @@ def barchart(ydata,
             kwargs['xticklabels'] = xticks[0]
             kwargs['xticks'] = xticks[1]
 
-    kwargs = plot_params.set_parameters(continue_on_error=True, return_unprocessed_kwargs=True, **kwargs)
+    kwargs = plot_params.set_parameters(continue_on_error=True, return_unprocessed_kwargs=True, linewidth=linewidth, **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
     # TODO good checks for input and setting of internals before plotting

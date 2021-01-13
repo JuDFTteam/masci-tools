@@ -972,7 +972,7 @@ class TestBarchartPlot(object): #pylint: disable=missing-class-docstring
         y =[x[0]**2,[50]*11]
         gcf().clear()
 
-        barchart(y,x)
+        barchart(y, x, show=False)
 
         # need to return the figure in order for mpl checks to work
         return gcf()
