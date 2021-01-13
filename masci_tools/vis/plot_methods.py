@@ -37,7 +37,7 @@ import re
 import os
 import copy
 import numpy as np
-import matplotlib.pyplot as pp
+import matplotlib.pyplot as plt
 from scipy.stats import norm
 from matplotlib.patches import Rectangle
 from cycler import cycler
@@ -629,7 +629,7 @@ def waterfall_plot(xdata,
     # TODO allow plotlabels to have different dimension
     pl = []
 
-    fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
+    fig = plt.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
     ax = fig.add_subplot(111, projection='3d')
     for axis in ['top', 'bottom', 'left', 'right']:
         ax.spines[axis].set_linewidth(axis_linewidth_g)
@@ -689,7 +689,7 @@ def waterfall_plot(xdata,
         loptions.update(legend_option)
         linewidth = loptions.pop('linewidth', 1.5)
         #title_font_size = loptions.pop('title_font_size', 15)
-        leg = pp.legend(
+        leg = plt.legend(
             **loptions
         )  #bbox_to_anchor=loptions['anchor'],loc=loptions['loc'], title=legend_title, borderaxespad=0., fancybox=True)
         leg.get_frame().set_linewidth(linewidth)
@@ -697,9 +697,9 @@ def waterfall_plot(xdata,
     if save_plots_g:
         savefilename = '{}.{}'.format(saveas, save_format_g)
         print(('save plot to: {}'.format(savefilename)))
-        pp.savefig(savefilename, format=save_format_g, transparent=True)
+        plt.savefig(savefilename, format=save_format_g, transparent=True)
     elif show_g:
-        pp.show()
+        plt.show()
     else:
         pass
 
@@ -1042,7 +1042,7 @@ def multiaxis_scatterplot(xdata,
         'figsize': ([plot_shape[indx] * size for indx, size in enumerate(plot_params['figure_kwargs']['figsize'])])
     }
 
-    pp.figure(**plot_params['figure_kwargs'])
+    plt.figure(**plot_params['figure_kwargs'])
 
     axis = []
     for indx, subplot_data in enumerate(zip(axes_loc, xdata, ydata, param_list)):
@@ -1052,7 +1052,7 @@ def multiaxis_scatterplot(xdata,
         subplot_kwargs = copy.deepcopy(kwargs)
         subplot_kwargs.update(params)
 
-        ax = pp.subplot2grid(plot_shape, location, **subplot_kwargs.pop('axes_kwargs', {}))
+        ax = plt.subplot2grid(plot_shape, location, **subplot_kwargs.pop('axes_kwargs', {}))
         ax = multiple_scatterplots(y, x, axis=ax, **subplot_kwargs, save_plots=False, show=False)
 
         axis.append(ax)
@@ -1097,7 +1097,7 @@ def plot_convex_hull2d(hull,
     if axis:
         ax = axis
     else:
-        fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
+        fig = plt.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
         ax = fig.add_subplot(111)
 
     for axis in ['top', 'bottom', 'left', 'right']:
@@ -1157,9 +1157,9 @@ def plot_convex_hull2d(hull,
     if save_plots_g:
         savefilename = '{}.{}'.format(saveas, save_format_g)
         print(('save plot to: {}'.format(savefilename)))
-        pp.savefig(savefilename, format=save_format_g, transparent=True)
+        plt.savefig(savefilename, format=save_format_g, transparent=True)
     elif show_g:
-        pp.show()
+        plt.show()
     else:
         pass
     return ax
@@ -1183,13 +1183,13 @@ def plot_residuen(xdata,
     show_g = False
     ydata = realdata - fitdata
     #TODO single scatter error plot....
-    fig = pp.figure(num=None,
+    fig = plt.figure(num=None,
                     figsize=(figsize_g[0] * 2, figsize_g[1]),
                     dpi=dpi_g,
                     facecolor=facecolor_g,
                     edgecolor=edgecolor_g)
-    ax2 = pp.subplot2grid((1, 2), (0, 0))
-    ax3 = pp.subplot2grid((1, 2), (0, 1))  #, sharex = ax2, sharey = ax2)
+    ax2 = plt.subplot2grid((1, 2), (0, 0))
+    ax3 = plt.subplot2grid((1, 2), (0, 1))  #, sharex = ax2, sharey = ax2)
     a = single_scatterplot(ydata, xdata, xlabel, ylabel, title, axis=ax2)
 
     if hist:
@@ -1240,8 +1240,8 @@ def plot_convergence_results(distance,
                             scale=[None, 'log'])
 
     if show:
-        pp.show(p1)
-        pp.show(p2)
+        plt.show(p1)
+        plt.show(p2)
     return [p1, p2]
 
 
@@ -1306,8 +1306,8 @@ def plot_convergence_results_m(distances,
                                scale=[None, 'log'])
 
     if show:
-        pp.show(p1)
-        pp.show(p2)
+        plt.show(p1)
+        plt.show(p2)
 
     return p1, p2
 
@@ -1354,7 +1354,7 @@ def plot_lattice_constant(Total_energy,
     if axis:
         ax = axis
     else:
-        fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
+        fig = plt.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
         ax = fig.add_subplot(111)
     for axis in ['top', 'bottom', 'left', 'right']:
         ax.spines[axis].set_linewidth(axis_linewidth_g)
@@ -1378,27 +1378,27 @@ def plot_lattice_constant(Total_energy,
 
         for i, scale in enumerate(scaling):
             #print i
-            p1 = pp.plot(scale,
+            p1 = plt.plot(scale,
                          Total_energy[i],
                          'o-',
                          label=plotlables[2 * i],
                          linewidth=linewidth_g,
                          markersize=markersize_g)
             if fit_y:
-                p2 = pp.plot(scale,
+                p2 = plt.plot(scale,
                              fit_y[i],
                              's-',
                              label=plotlables[2 * i + 1],
                              linewidth=linewidth_g,
                              markersize=markersize_g)
     else:
-        p1 = pp.plot(scaling, Total_energy, 'o-', label=plotlables[0], linewidth=linewidth_g, markersize=markersize_g)
+        p1 = plt.plot(scaling, Total_energy, 'o-', label=plotlables[0], linewidth=linewidth_g, markersize=markersize_g)
         if fit_y:
-            p2 = pp.plot(scaling, fit_y, r'-', label=plotlables[1], linewidth=linewidth_g, markersize=markersize_g)
+            p2 = plt.plot(scaling, fit_y, r'-', label=plotlables[1], linewidth=linewidth_g, markersize=markersize_g)
     if legend_g:
-        pp.legend(bbox_to_anchor=(0.85, 1), loc=2, borderaxespad=0., fancybox=True)
-        pp.legend(loc='best', borderaxespad=0., fancybox=True)  #, framealpha=0.5) #loc='upper right')
-        #lg = pp.legend(bbox_to_anchor=(0.76, 0.400), loc=2, borderaxespad=0., borderpad=1, fancybox=True, title =r'K-pts in $\bf{k_{x,y,z}}$',fontsize=14)#loc='best', fancybox=True) #, framealpha=0.5) #loc='upper right')
+        plt.legend(bbox_to_anchor=(0.85, 1), loc=2, borderaxespad=0., fancybox=True)
+        plt.legend(loc='best', borderaxespad=0., fancybox=True)  #, framealpha=0.5) #loc='upper right')
+        #lg = plt.legend(bbox_to_anchor=(0.76, 0.400), loc=2, borderaxespad=0., borderpad=1, fancybox=True, title =r'K-pts in $\bf{k_{x,y,z}}$',fontsize=14)#loc='best', fancybox=True) #, framealpha=0.5) #loc='upper right')
         #lg.get_frame().set_linewidth(2.0)
         #lg.get_title().set_fontsize('16') #legend 'Title' fontsize
 
@@ -1407,9 +1407,9 @@ def plot_lattice_constant(Total_energy,
         # TODO override or not, better title?
         savefilename = '{}.{}'.format(saveas, save_format_g)
         print(('save plot to: {}'.format(savefilename)))
-        pp.savefig(savefilename, format=save_format_g, transparent=True)
+        plt.savefig(savefilename, format=save_format_g, transparent=True)
     if show:
-        pp.show()
+        plt.show()
 
     return ax
 
@@ -1546,12 +1546,12 @@ def plot_bands(path_to_bands_file,
     ymax = max(ydata)
     xlabel = ''
     ylabel = r'$E - E_F$ [eV]'
-    fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
+    fig = plt.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
     ax = fig.add_subplot(111)
     for axis in ['top', 'bottom', 'left', 'right']:
         ax.spines[axis].set_linewidth(axis_linewidth_g)
 
-    pp.xticks(xpos, xNames)
+    plt.xticks(xpos, xNames)
     ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
     ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
     ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
@@ -1565,26 +1565,26 @@ def plot_bands(path_to_bands_file,
                              length=tick_paramsx_g.get('length', 5))
     ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
     ax.yaxis.get_major_formatter().set_useOffset(False)
-    p1 = pp.plot(xdata, ydata, linetyp, label=plotlabel, color=color, linewidth=linewidth_g, markersize=markersize_g)
+    p1 = plt.plot(xdata, ydata, linetyp, label=plotlabel, color=color, linewidth=linewidth_g, markersize=markersize_g)
 
     if limits:
         if limits[0]:
             xmin = limits[0][0]
             xmax = limits[0][1]
-            pp.xlim(xmin, xmax)
+            plt.xlim(xmin, xmax)
         if limits[1]:
             ymin = limits[1][0]
             ymax = limits[1][1]
-            pp.ylim(ymin, ymax)
+            plt.ylim(ymin, ymax)
     for i in xpos:
-        pp.axvline(x=i, ymin=ymin, ymax=ymax, linewidth=1, color='k')
+        plt.axvline(x=i, ymin=ymin, ymax=ymax, linewidth=1, color='k')
 
     if save_plots_g:
         savefilename = '{}.{}'.format(saveas, save_format_g)
         print(('save plot to: {}'.format(savefilename)))
-        pp.savefig(savefilename, format=save_format_g, transparent=True)
+        plt.savefig(savefilename, format=save_format_g, transparent=True)
     else:
-        pp.show()
+        plt.show()
 
 
 def plot_certain_bands():
@@ -1656,7 +1656,7 @@ def plot_one_element_corelv(corelevel_dict, element, compound=''):
         'size': 16,
     }
 
-    fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
+    fig = plt.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
     ax = fig.add_subplot(111)
     for axis in ['top', 'bottom', 'left', 'right']:
         ax.spines[axis].set_linewidth(axis_linewidth_g)
@@ -1681,9 +1681,9 @@ def plot_one_element_corelv(corelevel_dict, element, compound=''):
             offset = 0.5 / lenx
             xminline = x / lenx + offset - length / 2
             xmaxline = x / lenx + offset + length / 2
-            pp.axhline(y=y[i], xmin=xminline, xmax=xmaxline, linewidth=2, color='k')
+            plt.axhline(y=y[i], xmin=xminline, xmax=xmaxline, linewidth=2, color='k')
             text = r'{}'.format(y[i])
-            pp.text(x - 0.25, y[i] + 0.3, text, fontdict=font)
+            plt.text(x - 0.25, y[i] + 0.3, text, fontdict=font)
 
     if scale:
         if scale[0]:
@@ -1693,14 +1693,14 @@ def plot_one_element_corelv(corelevel_dict, element, compound=''):
         else:
             pass
 
-    pp.xlim(xmin, xmax)
-    pp.ylim(ymin, ymax)
+    plt.xlim(xmin, xmax)
+    plt.ylim(ymin, ymax)
     if save_plots_g:
         savefilename = '{}.{}'.format(saveas, save_format_g)
         print(('save plot to: {}'.format(savefilename)))
-        pp.savefig(savefilename, format=save_format_g, transparent=True)
+        plt.savefig(savefilename, format=save_format_g, transparent=True)
     else:
-        pp.show()
+        plt.show()
 
 
 def construct_corelevel_spectrum(coreleveldict,
@@ -1938,7 +1938,7 @@ def plot_corelevel_spectra(coreleveldict,
     if not show_g:
         return [xdata_spec, ydata_spec, ydata_single_all, xdata_all, ydata_all, xdatalabel]
 
-    fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
+    fig = plt.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
     ax = fig.add_subplot(111)
     for axis in ['top', 'bottom', 'left', 'right']:
         ax.spines[axis].set_linewidth(axis_linewidth_g)
@@ -1967,7 +1967,7 @@ def plot_corelevel_spectra(coreleveldict,
         for elm, ref_list_dict in six.iteritems(exp_references):
             for state, ref_list in six.iteritems(ref_list_dict):
                 for ref in ref_list:
-                    pp.axvline(ymin=0, ymax=0.1, x=ref, linewidth=linewidth_g, color='k')
+                    plt.axvline(ymin=0, ymax=0.1, x=ref, linewidth=linewidth_g, color='k')
     '''
     for j,y in enumerate(ydata_all):
         for i,x in enumerate(xdata):
@@ -2003,14 +2003,14 @@ def plot_corelevel_spectra(coreleveldict,
     if save_plots_g:
         savefilename = '{}.{}'.format(saveas, save_format_g)
         print(('save plot to: {}'.format(savefilename)))
-        pp.savefig(savefilename, format=save_format_g, transparent=True)
+        plt.savefig(savefilename, format=save_format_g, transparent=True)
     else:
-        pp.show()
+        plt.show()
 
     ##############################################################
     ##### PLOT 2, plot spectra, voigts around datapoints #########
 
-    fig1 = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
+    fig1 = plt.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
     ax1 = fig1.add_subplot(111)
     for axis in ['top', 'bottom', 'left', 'right']:
         ax1.spines[axis].set_linewidth(axis_linewidth_g)
@@ -2039,7 +2039,7 @@ def plot_corelevel_spectra(coreleveldict,
     if show_single:
         for single_peek in ydata_single_all:
             #xdatalabel
-            pp.plot(xdata_spec,
+            plt.plot(xdata_spec,
                     single_peek,
                     '-',
                     label=plotlabel,
@@ -2051,12 +2051,12 @@ def plot_corelevel_spectra(coreleveldict,
         for elm, ref_list_dict in six.iteritems(exp_references):
             for state, ref_list in six.iteritems(ref_list_dict):
                 for ref in ref_list:
-                    pp.axvline(ymin=0, ymax=0.1, x=ref, linewidth=2, color='k')
+                    plt.axvline(ymin=0, ymax=0.1, x=ref, linewidth=2, color='k')
     '''
     if show_compound and compound_info:
         for i,compound_data in enumerate(ydata_compound):
             plotlabel = compound_plot_label[i]
-            pp.plot(xdata_spec, compound_data, '-', label=plotlabel, color = color,
+            plt.plot(xdata_spec, compound_data, '-', label=plotlabel, color = color,
                  linewidth=linewidth_g1, markersize = markersize_g)
     '''
     if scale:
@@ -2079,9 +2079,9 @@ def plot_corelevel_spectra(coreleveldict,
     if save_plots_g:
         savefilename = '{}.{}'.format(saveas1, save_format_g)
         print(('save plot to: {}'.format(savefilename)))
-        pp.savefig(savefilename, format=save_format_g, transparent=True)
+        plt.savefig(savefilename, format=save_format_g, transparent=True)
     else:
-        pp.show()
+        plt.show()
 
     # for plotting or file writting
     return [xdata_spec, ydata_spec, ydata_single_all, xdata_all, ydata_all, xdatalabel, fig, fig1]
@@ -2567,7 +2567,7 @@ def plot_fleur_bands(filename, limits=[None, [-15, 15]]):
         if save_plots_g:
             savefilename = '{}.{}'.format(saveas, save_format_g)
             print(('save plot to: {}'.format(savefilename)))
-            pp.savefig(savefilename, format=save_format_g, transparent=True)
+            plt.savefig(savefilename, format=save_format_g, transparent=True)
 
     ax1 = multiple_scatterplots(y,
                                 x,
@@ -2614,6 +2614,6 @@ def plot_fleur_bands(filename, limits=[None, [-15, 15]]):
     #if save_plots_g:
     #    savefilename = '{}.{}'.format(saveas, save_format_g)
     #    print('save plot to: {}'.format(savefilename))
-    #    pp.savefig(savefilename, format=save_format_g, transparent=True)
+    #    plt.savefig(savefilename, format=save_format_g, transparent=True)
 
     return ax1
