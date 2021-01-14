@@ -822,8 +822,6 @@ def histogram(xdata,
                                **plot_kwargs,
                                **kwargs)
 
-    plot_params.set_limits(ax)
-
     if density:
         mu = np.mean(xdata)
         sigma = np.std(xdata)
@@ -833,8 +831,10 @@ def histogram(xdata,
         else:
             b = ax.plot(bins, y, '--')
 
-    plot_params.show_legend(ax)
+
+    plot_params.set_limits(ax)
     plot_params.draw_lines(ax)
+    plot_params.show_legend(ax)
     plot_params.save_plot(saveas)
 
     if return_hist_output:
@@ -875,7 +875,7 @@ def barchart(ydata,
     basic bar chart plots.
     Has to be overworked, was quickly adjusted from scatterplots, some things not used or not needed
 
-    TODO
+    TODO: docstring, grouped barchart (meaing not stacked)
     """
 
     nplots = len(ydata)
