@@ -66,6 +66,7 @@ def create_outschema_dict(path, save_to_file=True):
     inpschema_dict = load_inpschema(out_version)  #Used to make type definitions available without reparsing inputSchema
 
     schema_dict = {}
+    schema_dict['out_version'] = out_version
     for key, action in schema_actions.items():
         addargs = {'input_basic_types': inpschema_dict['basic_types']}
         if key in ['unique_attribs', 'unique_path_attribs', 'other_attribs', 'tag_paths', 'tag_info']:
@@ -84,6 +85,7 @@ def create_outschema_dict(path, save_to_file=True):
                 '\n'\
                 'The keys contain the following information:\n'\
                 '\n'\
+                "    - 'out_version': Version string of the output schema represented in this file\n"\
                 "    - 'input_tag': Name of the element containing the fleur input\n"\
                 "    - 'tag_paths': simple xpath expressions to all valid tag names not in an iteration\n"\
                 '                   Multiple paths or ambiguous tag names are parsed as a list\n'\

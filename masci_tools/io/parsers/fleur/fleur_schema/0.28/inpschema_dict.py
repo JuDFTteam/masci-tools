@@ -5,6 +5,7 @@ for version 0.28
 
 The keys contain the following information:
 
+    - 'inp_version': Version string of the input schema represented in this file
     - 'tag_paths': simple xpath expressions to all valid tag names
                    Multiple paths or ambiguous tag names are parsed as a list
     - 'basic_types': Parsed definitions of all simple Types with their respective
@@ -361,6 +362,8 @@ schema_dict = {
             'length': 1
         }
     },
+    'inp_version':
+    '0.28',
     'omitt_contained_tags':
     ['constants', 'atomSpecies', 'atomGroups', 'symmetryOperations', 'spinSpiralDispersion', 'qVectors'],
     'other_attribs': {

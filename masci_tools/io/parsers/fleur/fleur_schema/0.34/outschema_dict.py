@@ -5,6 +5,7 @@ for version 0.34
 
 The keys contain the following information:
 
+    - 'out_version': Version string of the output schema represented in this file
     - 'input_tag': Name of the element containing the fleur input
     - 'tag_paths': simple xpath expressions to all valid tag names not in an iteration
                    Multiple paths or ambiguous tag names are parsed as a list
@@ -1476,6 +1477,8 @@ schema_dict = {
         'mtRadius': ['/fleurOutput/numericalParameters/volumes/mtVolume'],
         'mtVolume': ['/fleurOutput/numericalParameters/volumes/mtVolume']
     },
+    'out_version':
+    '0.34',
     'root_tag':
     'fleurOutput',
     'simple_elements': {

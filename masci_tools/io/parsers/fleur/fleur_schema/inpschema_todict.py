@@ -56,7 +56,9 @@ def create_inpschema_dict(path, save_to_file=True):
 
     namespaces = {'xsd': 'http://www.w3.org/2001/XMLSchema'}
     inp_version = xmlschema.xpath('/xsd:schema/@version', namespaces=namespaces)[0]
+
     schema_dict = {}
+    schema_dict['inp_version'] = inp_version
     for key, action in schema_actions.items():
         schema_dict[key] = action(xmlschema, namespaces, **schema_dict)
 
@@ -66,6 +68,7 @@ def create_inpschema_dict(path, save_to_file=True):
                 '\n'\
                 'The keys contain the following information:\n'\
                 '\n'\
+                "    - 'inp_version': Version string of the input schema represented in this file\n"\
                 "    - 'tag_paths': simple xpath expressions to all valid tag names\n"\
                 '                   Multiple paths or ambiguous tag names are parsed as a list\n'\
                 "    - 'basic_types': Parsed definitions of all simple Types with their respective\n"\
