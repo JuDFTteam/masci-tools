@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<fleurOutput fleurOutputVersion="0.33">
+<fleurOutput fleurOutputVersion="0.34">
    <programVersion version="fleur 30">
       <compilationInfo date="2020-11-25T11:28:05" user="janssen" host="mb-janssen" flag="-ffree-line-length-none -Wno-missing-include-dirs -fno-sign-zero -fdefault-real-8 -fdefault-double-8 -fopenmp" link="/usr/lib/libxml2.dylib;/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Accelerate.framework;-lm;-ldl"/>
       <gitInfo version="MaX-R4-4958-gc911bc8b-dirty" branch="update_outschema" lastCommitHash="c911bc8b985be5c88a3ac0fc27d21553e0529449"/>
@@ -13,7 +13,7 @@
    </parallelSetup>
    <startDateAndTime date="2020/11/25" time="15:36:35" zone="+0100"/>
    <!-- Now follows a dump of the inp.xml file after evaluating the Schema -->
-   <fleurInput fleurInputVersion="0.33">
+   <fleurInput fleurInputVersion="0.34">
       <comment>
          Ga1As1
       </comment>

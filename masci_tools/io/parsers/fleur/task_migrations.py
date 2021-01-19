@@ -24,12 +24,24 @@ def migrate_033_to_031(definition_dict):
 
     Changes:
         - LDA+U density matrix distance output did not exist
+    """
+
+    new_dict = copy.deepcopy(definition_dict)
+    new_dict.pop('nmmp_distances')
+
+    return new_dict
+
+
+@register_migration(base_version='0.34', target_version='0.33')
+def migrate_034_to_033(definition_dict):
+    """
+    Migrate definitions for MaX5 bugfix release to MaX5 release
+
+    Changes:
         - forcetheorem units attribute did not exist (get from 'sumValenceSingleParticleEnergies')
     """
 
     new_dict = copy.deepcopy(definition_dict)
-
-    new_dict.pop('nmmp_distances')
 
     force_units = {
         'parse_type': 'attrib',

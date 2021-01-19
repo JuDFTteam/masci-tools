@@ -12,8 +12,8 @@
          <xsd:element name="atomSpecies" type="AtomSpeciesType"/>
          <xsd:element name="atomGroups" type="AtomGroupsType"/>
          <xsd:element maxOccurs="1" minOccurs="0" name="output" type="OutputType"/>
-	       <xsd:element maxOccurs="1" minOccurs="0" name="forceTheorem" type="ForcetheoremType"/>
-	       <xsd:element maxOccurs="1" minOccurs="0" name="relaxation" type="RelaxationType"/>
+         <xsd:element maxOccurs="1" minOccurs="0" name="forceTheorem" type="ForcetheoremType"/>
+         <xsd:element maxOccurs="1" minOccurs="0" name="relaxation" type="RelaxationType"/>
       </xsd:all>
       <xsd:attribute name="fleurInputVersion" type="FleurVersionType" use="required"/>
    </xsd:complexType>
@@ -352,13 +352,13 @@
          <xsd:enumeration value="rpbe"/>
          <xsd:enumeration value="Rpbe"/>
          <xsd:enumeration value="wc"/>
-	 <xsd:enumeration value="PBEs"/>
-	 <xsd:enumeration value="pbe0"/>
-	 <xsd:enumeration value="hse"/>
-	 <xsd:enumeration value="vhse"/>
-	 <xsd:enumeration value="lhse"/>
-	 <xsd:enumeration value="hf"/>
-	 <xsd:enumeration value="LibXC"/>
+         <xsd:enumeration value="PBEs"/>
+         <xsd:enumeration value="pbe0"/>
+         <xsd:enumeration value="hse"/>
+         <xsd:enumeration value="vhse"/>
+         <xsd:enumeration value="lhse"/>
+         <xsd:enumeration value="hf"/>
+         <xsd:enumeration value="LibXC"/>
       </xsd:restriction>
    </xsd:simpleType>
    <xsd:complexType name="XCLibXCIDType">

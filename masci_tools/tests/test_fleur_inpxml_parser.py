@@ -280,7 +280,7 @@ expected_inp_dicts = [{
     'comment':
     'A Fleur input generator calculation with aiida',
     'fleurInputVersion':
-    '0.33',
+    '0.34',
     'forceTheorem': {
         'spinSpiralDispersion': ['0.0 0.0 0.0', '0.2 0.0 0.0']
     },

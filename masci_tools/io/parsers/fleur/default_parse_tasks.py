@@ -63,7 +63,8 @@ Following is the current specification of tasks
 
 """
 
-__working_out_versions__ = {'0.33'}
+__working_out_versions__ = {'0.34'}
+__base_version__ = '0.34'
 
 TASKS_DEFINITION = {
     #--------Definitions for Fleur calculation modes--------

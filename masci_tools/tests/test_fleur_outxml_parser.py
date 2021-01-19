@@ -99,7 +99,7 @@ def test_outxml_validation_errors():
         'number_of_species': 1,
         'number_of_spin_components': 2,
         'number_of_symmetries': 48,
-        'output_file_version': '0.33',
+        'output_file_version': '0.34',
         'overall_charge_density': 16.4186207974,
         'spin_density': 9.7307128187,
         'spin_dependent_charge_interstitial': [0.6160276, 0.6242332],
@@ -239,7 +239,7 @@ def test_outxml_broken():
         'number_of_species': 1,
         'number_of_spin_components': 2,
         'number_of_symmetries': 16,
-        'output_file_version': '0.33',
+        'output_file_version': '0.34',
         'overall_charge_density': 10.8914872112,
         'spin_density': 10.6059102509,
         'spin_dependent_charge_interstitial': [1.00491, 1.0077593],
@@ -344,7 +344,7 @@ def test_outxml_broken_firstiter():
         'number_of_species': 1,
         'number_of_spin_components': 2,
         'number_of_symmetries': 16,
-        'output_file_version': '0.33',
+        'output_file_version': '0.34',
         'overall_charge_density': None,
         'spin_density': None,
         'spin_dependent_charge_interstitial': None,
@@ -409,7 +409,7 @@ def test_outxml_garbage_values():
         'number_of_species': 1,
         'number_of_spin_components': 2,
         'number_of_symmetries': 48,
-        'output_file_version': '0.33',
+        'output_file_version': '0.34',
         'overall_charge_density': 16.4186207974,
         'spin_density': 9.7307128187,
         'spin_dependent_charge_interstitial': [0.6160276, 0.6242332],
@@ -481,11 +481,6 @@ def test_outxml_incompatible_versions():
     with pytest.raises(ValueError, match='Versions before fleur MaX4.0 are not supported'):
         out_dict = outxml_parser(OUTXML_FILEPATH1, strict=True)
 
-    #input version does not match
-    OUTXML_FILEPATH1 = os.path.join(outxmlfilefolder, 'files/fleur/broken_out_xml/broken_input_version.xml')
-    with pytest.raises(ValueError, match='inputVersion does not match outputVersion'):
-        out_dict = outxml_parser(OUTXML_FILEPATH1, strict=True)
-
 
 def test_outxml_additional_tasks():
     """
@@ -525,7 +520,7 @@ def test_outxml_additional_tasks():
         'number_of_species': 1,
         'number_of_spin_components': 1,
         'number_of_symmetries': 48,
-        'output_file_version': '0.33',
+        'output_file_version': '0.34',
         'spin_dependent_charge_interstitial': 3.5380095,
         'spin_dependent_charge_mt_spheres': 24.4619905,
         'spin_dependent_charge_total': 28.0,
@@ -579,7 +574,7 @@ def test_outxml_additional_tasks():
         'number_of_species': 1,
         'number_of_spin_components': 1,
         'number_of_symmetries': 48,
-        'output_file_version': '0.33',
+        'output_file_version': '0.34',
         'spin_dependent_charge_interstitial': 3.5380095,
         'spin_dependent_charge_mt_spheres': 24.4619905,
         'spin_dependent_charge_total': 28.0,
@@ -685,7 +680,7 @@ def test_outxml_add_tasks_overwrite():
         'number_of_species': 1,
         'number_of_spin_components': 1,
         'number_of_symmetries': 48,
-        'output_file_version': '0.33',
+        'output_file_version': '0.34',
         'spin_dependent_charge_interstitial': 3.5380095,
         'spin_dependent_charge_mt_spheres': 24.4619905,
         'spin_dependent_charge_total': 28.0,
@@ -756,7 +751,7 @@ def test_outxml_add_tasks_append():
         'number_of_species': 1,
         'number_of_spin_components': 1,
         'number_of_symmetries': 48,
-        'output_file_version': '0.33',
+        'output_file_version': '0.34',
         'spin_dependent_charge_interstitial': 3.5380095,
         'spin_dependent_charge_mt_spheres': 24.4619905,
         'spin_dependent_charge_total': 28.0,
@@ -976,6 +971,187 @@ def test_outxml_max4compatibility():
     assert warnings == expected_warnings
 
 
+def test_outxml_max5_0_compatibility():
+    """
+    Test if Max5.0 output files are processed correctly
+    """
+    expected_result = {
+        'bandgap': [
+            4.3899601642, 4.3600940743, 4.1884362448, 4.161112755, 4.1502140025, 4.1592774961, 4.1655580016,
+            4.1630246338, 4.1667130444, 4.1668382365, 4.1665958162, 4.166693438
+        ],
+        'bandgap_units':
+        'eV',
+        'charge_den_xc_den_integral': [
+            -159.6130530468, -159.6110804192, -159.6027903257, -159.6223152334, -159.6259184397, -159.6289626472,
+            -159.6301220369, -159.6324414991, -159.6315569332, -159.6315020089, -159.6317756613, -159.6317889102
+        ],
+        'charge_density': [
+            7.6594195508, 7.073203372, 4.0712886772, 1.7324648803, 1.3588143617, 0.2194779606, 0.154579797,
+            0.0819413773, 0.0109374487, 0.0111727979, 0.0021412, 0.0003416974
+        ],
+        'creator_name':
+        'fleur 32',
+        'creator_target_architecture':
+        'GEN',
+        'creator_target_structure':
+        None,
+        'density_convergence_units':
+        'me/bohr^3',
+        'end_date': {
+            'date': '2021/01/19',
+            'time': '19:50:52'
+        },
+        'energy': [
+            -114416.40762597162, -114416.35542656259, -114416.16660376563, -114416.11244577351, -114416.10535560465,
+            -114416.10062380036, -114416.10045472787, -114416.0980810351, -114416.09819073236, -114416.09821137221,
+            -114416.09801875913, -114416.09802365174
+        ],
+        'energy_core_electrons': [
+            -2406.294161697, -2406.3122488278, -2406.4066923245, -2406.2206908152, -2406.2020829901, -2406.2208740448,
+            -2406.2106094009, -2406.1879984624, -2406.2053103167, -2406.206098793, -2406.2026667513, -2406.2025030655
+        ],
+        'energy_hartree': [
+            -4204.7254260279, -4204.723507735, -4204.7165686252, -4204.7145783557, -4204.7143177968, -4204.7141439062,
+            -4204.7141376929, -4204.7140504613, -4204.7140544926, -4204.7140552511, -4204.7140481727, -4204.7140483525
+        ],
+        'energy_hartree_units':
+        'Htr',
+        'energy_units':
+        'eV',
+        'energy_valence_electrons': [
+            -16.4422188617, -16.4231451738, -16.2979128331, -16.1560052791, -16.1267472176, -16.1210568775,
+            -16.1220007895, -16.1109499149, -16.1183444542, -16.1186316008, -16.1166777367, -16.1166296247
+        ],
+        'fermi_energy': [
+            0.1083537793, 0.1098081157, 0.1188904998, 0.1238463298, 0.1252654825, 0.1260166788, 0.1257884266,
+            0.1260637229, 0.1259068625, 0.1258998184, 0.1259289874, 0.1259316497
+        ],
+        'fermi_energy_units':
+        'Htr',
+        'film':
+        False,
+        'gmax':
+        10.8,
+        'kmax':
+        3.6,
+        'ldau_info': {
+            'As-2/33': {
+                'd': {
+                    'double_counting': 'FLL',
+                    'j': 0.9,
+                    'u': 5.5,
+                    'unit': 'eV'
+                },
+                'p': {
+                    'double_counting': 'FLL',
+                    'j': 0.9,
+                    'u': -6.5,
+                    'unit': 'eV'
+                }
+            },
+            'Ga-1/31': {
+                'd': {
+                    'double_counting': 'FLL',
+                    'j': 0.9,
+                    'u': 8.0,
+                    'unit': 'eV'
+                },
+                'p': {
+                    'double_counting': 'FLL',
+                    'j': 0.9,
+                    'u': -5.0,
+                    'unit': 'eV'
+                }
+            },
+            'density_matrix_distance': [
+                0.234868, 0.193245, 0.058426, 0.028854, 0.03455, 0.004927, 0.010623, 0.002635, 0.000649, 0.000675,
+                5.1e-05, 1.2e-05
+            ],
+            'ldau_energy_correction': [
+                -2.6822617847, -2.68170972, -2.6785112879, -2.6807399105, -2.6810257136, -2.6821148178, -2.6823219907,
+                -2.6822168578, -2.6822792486, -2.6822796983, -2.6822634415, -2.682261088
+            ]
+        },
+        'number_of_atom_types':
+        2,
+        'number_of_atoms':
+        2,
+        'number_of_iterations':
+        12,
+        'number_of_iterations_total':
+        12,
+        'number_of_species':
+        2,
+        'number_of_spin_components':
+        1,
+        'number_of_symmetries':
+        6,
+        'output_file_version':
+        '0.27',
+        'spin_dependent_charge_interstitial': [
+            3.4327294, 3.4396028, 3.4809014, 3.5002097, 3.5047773, 3.5037356, 3.5025908, 3.5039271, 3.5029878,
+            3.5029545, 3.5031321, 3.5031328
+        ],
+        'spin_dependent_charge_mt_spheres': [
+            60.5672693, 60.560396, 60.5190978, 60.49979, 60.4952225, 60.4962643, 60.4974091, 60.4960729, 60.4970122,
+            60.4970455, 60.4968679, 60.4968671
+        ],
+        'spin_dependent_charge_total':
+        [63.9999987, 63.9999988, 63.9999992, 63.9999997, 63.9999998, 64.0, 64.0, 64.0, 64.0, 64.0, 64.0, 64.0],
+        'start_date': {
+            'date': '2021/01/19',
+            'time': '19:50:48'
+        },
+        'sum_of_eigenvalues': [
+            -2422.7363805587, -2422.7353940017, -2422.7046051575, -2422.3766960943, -2422.3288302077, -2422.3419309223,
+            -2422.3326101904, -2422.2989483773, -2422.3236547709, -2422.3247303938, -2422.319344488, -2422.3191326902
+        ],
+        'title':
+        'GaAs bulk zinc-blende structure',
+        'total_charge': [
+            63.9999987458, 63.9999988066, 63.9999992105, 63.9999996828, 63.9999997982, 63.9999999637, 63.9999999696,
+            63.9999999841, 63.9999999896, 63.9999999894, 63.9999999895, 63.9999999893
+        ],
+        'walltime':
+        4,
+        'walltime_units':
+        'seconds'
+    }
+    expected_warnings = {
+        'fleur_modes': {
+            'band': False,
+            'dos': False,
+            'film': False,
+            'jspin': 1,
+            'ldau': True,
+            'noco': False,
+            'relax': False,
+            'soc': False
+        },
+        'parser_info':
+        'Masci-Tools Fleur out.xml Parser v0.2.1',
+        'parser_warnings': [
+            "Ignoring '0.27' outputVersion for MaX5.0 release", 'Output file does not validate against the schema: \n'
+            "Line 131: Element 'kPointList', attribute 'weightSc': "
+            "The attribute 'weightSc' is not allowed. \n"
+            "Line 131: Element 'kPointList': The attribute "
+            "'weightScale' is required but missing. \n"
+            "Line 135: Element 'spinDependentCharge': This element is "
+            'not expected. \n', 'No values found for attribute l_f', 'No text found for tag targetStructureClass'
+        ]
+    }
+
+    OUTXML_FILEPATH = os.path.abspath(os.path.join(outxmlfilefolder, 'files/fleur/Max-R5/Max5_0_test_out.xml'))
+
+    warnings = {'parser_warnings': []}
+    out_dict = outxml_parser(OUTXML_FILEPATH, parser_info_out=warnings, iteration_to_parse='all')
+    pprint(out_dict)
+    pprint(warnings)
+    assert out_dict == expected_result
+    assert warnings == expected_warnings
+
+
 def test_outxml_lastiter():
 
     expected_result = {
@@ -1009,7 +1185,7 @@ def test_outxml_lastiter():
         'number_of_species': 1,
         'number_of_spin_components': 1,
         'number_of_symmetries': 48,
-        'output_file_version': '0.33',
+        'output_file_version': '0.34',
         'spin_dependent_charge_interstitial': 3.5380095,
         'spin_dependent_charge_mt_spheres': 24.4619905,
         'spin_dependent_charge_total': 28.0,
@@ -1064,7 +1240,7 @@ def test_outxml_firstiter():
         'number_of_species': 1,
         'number_of_spin_components': 1,
         'number_of_symmetries': 48,
-        'output_file_version': '0.33',
+        'output_file_version': '0.34',
         'spin_dependent_charge_interstitial': 3.4450476,
         'spin_dependent_charge_mt_spheres': 24.5549524,
         'spin_dependent_charge_total': 28.0,
@@ -1145,7 +1321,7 @@ def test_outxml_alliter():
         'number_of_symmetries':
         48,
         'output_file_version':
-        '0.33',
+        '0.34',
         'spin_dependent_charge_interstitial': [3.4450476, 3.4514909, 3.5537094, 3.543144, 3.5407065, 3.5380095],
         'spin_dependent_charge_mt_spheres': [24.5549524, 24.5485091, 24.4462906, 24.456856, 24.4592935, 24.4619905],
         'spin_dependent_charge_total': [28.0, 28.0, 28.0, 28.0, 28.0, 28.0],
@@ -1204,7 +1380,7 @@ def test_outxml_indexiter():
         'number_of_species': 1,
         'number_of_spin_components': 1,
         'number_of_symmetries': 48,
-        'output_file_version': '0.33',
+        'output_file_version': '0.34',
         'spin_dependent_charge_interstitial': 3.543144,
         'spin_dependent_charge_mt_spheres': 24.456856,
         'spin_dependent_charge_total': 28.0,
@@ -1273,7 +1449,7 @@ def test_outxml_minimal_mode():
         'number_of_symmetries':
         48,
         'output_file_version':
-        '0.33',
+        '0.34',
         'start_date': {
             'date': '2020/12/10',
             'time': '16:51:33'
@@ -1352,7 +1528,7 @@ def test_outxml_magnetic():
         'number_of_symmetries':
         16,
         'output_file_version':
-        '0.33',
+        '0.34',
         'overall_charge_density': [13.455846664, 10.8914872112, 3.3253791756, 1.5936155801],
         'spin_density': [11.5422933539, 10.6059102509, 6.4298583438, 4.9036481595],
         'spin_dependent_charge_interstitial': [[1.0181605, 1.0212141], [1.00491, 1.0077593], [0.9449583, 0.9472272],
@@ -1462,7 +1638,7 @@ def test_outxml_ldaurelax():
         'number_of_species': 2,
         'number_of_spin_components': 1,
         'number_of_symmetries': 6,
-        'output_file_version': '0.33',
+        'output_file_version': '0.34',
         'relax_atom_positions': [[-0.13, -0.13, -0.13], [0.13, 0.13, 0.13]],
         'relax_atomtype_info': [['Ga-1', 'Ga'], ['As-2', 'As']],
         'relax_brav_vectors': [[0.0, 5.31, 5.31], [5.31, 0.0, 5.31], [5.31, 5.31, 0.0]],
@@ -1506,7 +1682,7 @@ def test_outxml_force():
         'number_of_species': 2,
         'number_of_spin_components': 2,
         'number_of_symmetries': 2,
-        'output_file_version': '0.33',
+        'output_file_version': '0.34',
         'spst_force_ev-sum': [-37.3674567, -37.3421158],
         'spst_force_q': [1, 2],
         'spst_force_qs': 2,

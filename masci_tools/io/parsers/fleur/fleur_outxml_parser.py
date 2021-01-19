@@ -85,36 +85,34 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
         return {}
 
     if version is None:
-        out_version = eval_xpath(xmltree, '//@fleurOutputVersion', parser_info_out=parser_info_out)
-        if out_version is None:
+        file_version = eval_xpath(xmltree, '//@fleurOutputVersion', parser_info_out=parser_info_out)
+        if file_version is None:
             raise ValueError('Failed to extract outputVersion')
     else:
-        out_version = version
+        file_version = version
 
-    if out_version == '0.27':
+    if file_version == '0.27':
         program_version = eval_xpath(xmltree, '//programVersion/@version', parser_info_out=parser_info_out)
-        if program_version == 'fleur 31':
+        if program_version == 'fleur 32':
+            #Max5 release (before bugfix)
+            file_version = '0.33'
+            ignore_validation = True
+            parser_info_out['parser_warnings'].append("Ignoring '0.27' outputVersion for MaX5.0 release")
+        elif program_version == 'fleur 31':
             #Max4 release
-            out_version = '0.31'
-            inp_version = '0.31'
+            file_version = '0.31'
             ignore_validation = True
             parser_info_out['parser_warnings'].append("Ignoring '0.27' outputVersion for MaX4.0 release")
         else:
             raise ValueError('Versions before fleur MaX4.0 are not supported')
     else:
         ignore_validation = False
-        inp_version = eval_xpath(xmltree, '//@fleurInputVersion', parser_info_out=parser_info_out)
-        if inp_version is None:
-            raise ValueError('Failed to extract inputVersion')
 
     ignore_validation = kwargs.get('ignore_validation', ignore_validation)
 
-    if inp_version != out_version:
-        raise ValueError('inputVersion does not match outputVersion')
-
     #Load schema_dict (inp and out)
-    inpschema_dict = load_inpschema(inp_version)
-    outschema_dict, outxmlschema = load_outschema(out_version, schema_return=True)
+    inpschema_dict = load_inpschema(file_version)
+    outschema_dict, outxmlschema = load_outschema(file_version, schema_return=True)
 
     xmltree = clear_xml(xmltree)
     root = xmltree.getroot()
@@ -134,7 +132,7 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
         if not ignore_validation:
             raise ValueError('Output file does not validate against the schema: Reason is unknown')
 
-    parser = ParseTasks(out_version)
+    parser = ParseTasks(file_version)
     additional_tasks = kwargs.pop('additional_tasks', {})
     for task_name, task_definition in additional_tasks.items():
         parser.add_task(task_name, task_definition, **kwargs)

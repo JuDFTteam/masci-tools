@@ -16,7 +16,7 @@
          <xsd:element maxOccurs="1" minOccurs="0" name="ERROR" type="ErrorType"/>
          <xsd:element maxOccurs="1" minOccurs="0" name="endDateAndTime" type="DateAndTimeType"/>
       </xsd:all>
-      <xsd:attribute name="fleurOutputVersion" type="FleurVersionType" use="required"/>
+      <xsd:attribute name="fleurOutputVersion" type="xsd:string" use="required"/>
    </xsd:complexType>
 
    <xsd:complexType name="ProgramVersionType">
@@ -200,7 +200,6 @@
          <xsd:group maxOccurs="unbounded" ref="GeneralIterationType"/>
       </xsd:sequence>
       <xsd:attribute name="No" type="xsd:integer" use="required"/>
-      <xsd:attribute name="calculationType" type="ForceTheoremEnum" use="required"/>
    </xsd:complexType>
 
    <xsd:complexType name="Forcetheorem_DMI_SummaryType">
@@ -211,7 +210,6 @@
       </xsd:sequence>
       <xsd:attribute name="Angles" type="xsd:integer" use="required"/>
       <xsd:attribute name="qpoints" type="xsd:integer" use="required"/>
-      <xsd:attribute name="units" type="xsd:string" use="required"/>
    </xsd:complexType>
 
    <xsd:complexType name="Forcetheorem_JIJ_SummaryType">
@@ -219,7 +217,6 @@
          <xsd:element maxOccurs="unbounded" minOccurs="0" name="Config" type="Entry_JIJ_Type"/>
       </xsd:sequence>
       <xsd:attribute name="Configs" type="xsd:integer" use="required"/>
-      <xsd:attribute name="units" type="xsd:string" use="required"/>
    </xsd:complexType>
 
    <xsd:complexType name="Forcetheorem_MAE_SummaryType">
@@ -227,7 +224,6 @@
          <xsd:element maxOccurs="unbounded" minOccurs="0" name="Angle" type="Entry_MAE_Type"/>
       </xsd:sequence>
       <xsd:attribute name="Angles" type="xsd:integer" use="required"/>
-      <xsd:attribute name="units" type="xsd:string" use="required"/>
    </xsd:complexType>
 
    <xsd:complexType name="Forcetheorem_SSDISP_SummaryType">
@@ -235,7 +231,6 @@
          <xsd:element maxOccurs="unbounded" minOccurs="0" name="Entry" type="Entry_SSDISP_Type"/>
       </xsd:sequence>
       <xsd:attribute name="qvectors" type="xsd:integer" use="required"/>
-      <xsd:attribute name="units" type="xsd:string" use="required"/>
    </xsd:complexType>
 
    <xsd:complexType name="Entry_SSDISP_Type">
