@@ -481,11 +481,6 @@ def test_outxml_incompatible_versions():
     with pytest.raises(ValueError, match='Versions before fleur MaX4.0 are not supported'):
         out_dict = outxml_parser(OUTXML_FILEPATH1, strict=True)
 
-    #input version does not match
-    OUTXML_FILEPATH1 = os.path.join(outxmlfilefolder, 'files/fleur/broken_out_xml/broken_input_version.xml')
-    with pytest.raises(ValueError, match='inputVersion does not match outputVersion'):
-        out_dict = outxml_parser(OUTXML_FILEPATH1, strict=True)
-
 
 def test_outxml_additional_tasks():
     """
