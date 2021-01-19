@@ -69,7 +69,7 @@ if __name__ == '__main__':
             ],
             'bokeh-plots': [
                 'pandas',
-                'bokeh'
+                'bokeh<=1.4.0' # versions beyond 1.4.0 require a tornardo version not compatible with aiida-core /circus 
             ]
         },
     )

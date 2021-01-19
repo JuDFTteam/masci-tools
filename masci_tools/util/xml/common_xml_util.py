@@ -370,3 +370,43 @@ def get_xml_attribute(node, attributename, parser_info_out=None):
                                                   'because node is not an element of etree.'
                                                   ''.format(attributename, type(node)))
         return None
+
+def convert_to_fortran_bool(boolean):
+    """
+    Converts a Boolean as string to the format defined in the input
+
+    :param boolean: either a boolean or a string ('True', 'False', 'F', 'T')
+
+    :return: a string (either 't' or 'f')
+    """
+
+    if isinstance(boolean, bool):
+        if boolean:
+            new_string = 'T'
+            return new_string
+        else:
+            new_string = 'F'
+            return new_string
+    elif isinstance(boolean, str):  # basestring):
+        if boolean in ('True', 't', 'T'):
+            new_string = 'T'
+            return new_string
+        elif boolean in ('False', 'f', 'F'):
+            new_string = 'F'
+            return new_string
+        else:
+            raise InputValidationError("A string: {} for a boolean was given, which is not 'True',"
+                                       "'False', 't', 'T', 'F' or 'f'".format(boolean))
+    else:
+        raise TypeError('convert_to_fortran_bool accepts only a string or '
+                        'bool as argument, given {} '.format(boolean))
+
+
+def convert_to_fortran_string(string):
+    """
+    converts some parameter strings to the format for the inpgen
+    :param string: some string
+    :returns: string in right format (extra "")
+    """
+    new_string = '"' + string + '"'
+    return new_string

@@ -347,3 +347,56 @@ def camel_to_snake(name):
     Used in the Fleur parser to convert attribute names from the xml files
     """
     return ''.join(['_' + c.lower() if c.isupper() else c for c in name]).lstrip('_')
+
+
+def abs_to_rel(vector, cell):
+    """
+    Converts a position vector in absolute coordinates to relative coordinates.
+
+    :param vector: list or np.array of length 3, vector to be converted
+    :param cell: Bravais matrix of a crystal 3x3 Array, List of list or np.array
+    :return: list of length 3 of scaled vector, or False if vector was not length 3
+    """
+
+    if len(vector) == 3:
+        cell_np = np.array(cell)
+        inv_cell_np = np.linalg.inv(cell_np)
+        postionR = np.array(vector)
+        # np.matmul(inv_cell_np, postionR)#
+        new_rel_post = np.matmul(postionR, inv_cell_np)
+        new_rel_pos = list(new_rel_post)
+        return new_rel_pos
+    else:
+        return False
+
+
+def abs_to_rel_f(vector, cell, pbc):
+    """
+    Converts a position vector in absolute coordinates to relative coordinates
+    for a film system.
+
+    :param vector: list or np.array of length 3, vector to be converted
+    :param cell: Bravais matrix of a crystal 3x3 Array, List of list or np.array
+    :param pbc: Boundary conditions, List or Tuple of 3 Boolean
+    :return: list of length 3 of scaled vector, or False if vector was not length 3
+    """
+    # TODO this currently only works if the z-coordinate is the one with no pbc
+    # Therefore if a structure with x non pbc is given this should also work.
+    # maybe write a 'tranform film to fleur_film routine'?
+    if len(vector) == 3:
+        if not pbc[2]:
+            # leave z coordinate absolute
+            # convert only x and y.
+            postionR = np.array(vector)
+            postionR_f = np.array(postionR[:2])
+            cell_np = np.array(cell)
+            cell_np = np.array(cell_np[0:2, 0:2])
+            inv_cell_np = np.linalg.inv(cell_np)
+            # np.matmul(inv_cell_np, postionR_f)]
+            new_xy = np.matmul(postionR_f, inv_cell_np)
+            new_rel_pos_f = [new_xy[0], new_xy[1], postionR[2]]
+            return new_rel_pos_f
+        else:
+            print('FLEUR can not handle this type of film coordinate')
+    else:
+        return False
