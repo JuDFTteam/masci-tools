@@ -105,6 +105,8 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
             parser_info_out['parser_warnings'].append("Ignoring '0.27' outputVersion for MaX4.0 release")
         else:
             raise ValueError('Versions before fleur MaX4.0 are not supported')
+    else:
+        ignore_validation = False
 
     ignore_validation = kwargs.get('ignore_validation', ignore_validation)
 
