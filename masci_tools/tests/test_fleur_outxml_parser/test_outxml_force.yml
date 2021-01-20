@@ -6,8 +6,8 @@ output_dict:
     date: 2020/12/10
     time: '16:58:39'
   film: true
-  gmax: '10.000000'
-  kmax: '4.000000'
+  gmax: '10.0000000000'
+  kmax: '4.0000000000'
   number_of_atom_types: 2
   number_of_atoms: 2
   number_of_iterations: 1
@@ -16,8 +16,8 @@ output_dict:
   number_of_symmetries: 2
   output_file_version: '0.34'
   spst_force_ev-sum:
-  - '-37.367457'
-  - '-37.342116'
+  - '-37.3674567000'
+  - '-37.3421158000'
   spst_force_q:
   - 1
   - 2

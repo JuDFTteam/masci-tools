@@ -1,8 +1,8 @@
 output_dict:
-  bandgap: '2.255746'
+  bandgap: '2.2557459059'
   bandgap_units: eV
-  charge_den_xc_den_integral: '-41.769961'
-  charge_density: '0.576537'
+  charge_den_xc_den_integral: '-41.7699610697'
+  charge_density: '0.5765372317'
   creator_name: fleur 32
   creator_target_architecture: GEN
   creator_target_structure: null
@@ -10,17 +10,17 @@ output_dict:
   end_date:
     date: 2020/12/10
     time: '16:51:35'
-  energy: '-15784.357509'
-  energy_core_electrons: '-260.746967'
-  energy_hartree: '-580.064439'
+  energy: '-15784.3575094474'
+  energy_core_electrons: '-260.7469665908'
+  energy_hartree: '-580.0644394504'
   energy_hartree_units: Htr
   energy_units: eV
-  energy_valence_electrons: '-55.514563'
-  fermi_energy: '0.185792'
+  energy_valence_electrons: '-55.5145626436'
+  fermi_energy: '0.1857922767'
   fermi_energy_units: Htr
   film: false
-  gmax: '11.100000'
-  kmax: '3.500000'
+  gmax: '11.1000000000'
+  kmax: '3.5000000000'
   number_of_atom_types: 1
   number_of_atoms: 2
   number_of_iterations: 6
@@ -29,14 +29,14 @@ output_dict:
   number_of_spin_components: 1
   number_of_symmetries: 48
   output_file_version: '0.34'
-  spin_dependent_charge_interstitial: '3.543144'
-  spin_dependent_charge_mt_spheres: '24.456856'
-  spin_dependent_charge_total: '28.000000'
+  spin_dependent_charge_interstitial: '3.5431440000'
+  spin_dependent_charge_mt_spheres: '24.4568560000'
+  spin_dependent_charge_total: '28.0000000000'
   start_date:
     date: 2020/12/10
     time: '16:51:33'
-  sum_of_eigenvalues: '-316.261529'
+  sum_of_eigenvalues: '-316.2615292344'
   title: Si bulk
-  total_charge: '28.000000'
+  total_charge: '28.0000000002'
   walltime: 2
   walltime_units: seconds

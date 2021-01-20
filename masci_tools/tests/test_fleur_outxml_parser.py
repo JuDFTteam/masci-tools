@@ -419,7 +419,7 @@ def test_outxml_force(data_regression):
     })
 
 
-def clean_outdict_for_reg_dump(outdict, tolerance=8):
+def clean_outdict_for_reg_dump(outdict):
     """
     Converts float values in out dict to strings with fixed number
     of decimal points. data_regression complained about number with many numbers
@@ -428,12 +428,12 @@ def clean_outdict_for_reg_dump(outdict, tolerance=8):
 
     for key, val in outdict.items():
         if isinstance(val, float):
-            outdict[key] = f'{val:.^{tolerance}f}'
+            outdict[key] = f'{val:.10f}'
         elif isinstance(val, list):
             for indx, list_val in enumerate(val):
                 if isinstance(list_val, float):
-                    val[indx] = f'{list_val:.^{tolerance}f}'
+                    val[indx] = f'{list_val:.10f}'
         elif isinstance(val, dict):
-            outdict[key] = clean_outdict_for_reg_dump(val, tolerance=tolerance)
+            outdict[key] = clean_outdict_for_reg_dump(val)
 
     return outdict
