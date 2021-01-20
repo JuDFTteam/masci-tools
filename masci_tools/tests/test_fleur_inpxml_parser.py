@@ -95,7 +95,7 @@ def test_inpxml_non_valid_inpxml(inpxmlfilepath):
         inp_dict = inpxml_parser(inpxmlfilepath)
 
 
-@pytest.mark.parametrize('inpxmlfilepath', inpxmlfilelist3)
+@pytest.mark.parametrize('inpxmlfilepath', inpxmlfilelist3, ids=['Fe_film_SSFT_LO'])
 def test_inpxml_todict(data_regression, inpxmlfilepath):
     """
     test if valid inp.xml files are translated to the correct inp_dict
