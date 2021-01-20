@@ -50,6 +50,7 @@ def inpxml_parser(inpxmlfile, version=None, parser_info_out=None):
 
     if version is None:
         version = eval_xpath(xmltree, '//@fleurInputVersion', parser_info_out=parser_info_out)
+        version = str(version)
         if version is None:
             raise ValueError('Failed to extract inputVersion')
 

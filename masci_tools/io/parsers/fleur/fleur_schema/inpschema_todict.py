@@ -55,7 +55,7 @@ def create_inpschema_dict(path, save_to_file=True):
     xmlschema = clear_xml(xmlschema)
 
     namespaces = {'xsd': 'http://www.w3.org/2001/XMLSchema'}
-    inp_version = xmlschema.xpath('/xsd:schema/@version', namespaces=namespaces)[0]
+    inp_version = str(xmlschema.xpath('/xsd:schema/@version', namespaces=namespaces)[0])
 
     schema_dict = {}
     schema_dict['inp_version'] = inp_version

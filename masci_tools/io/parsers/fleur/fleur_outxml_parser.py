@@ -86,6 +86,7 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
 
     if version is None:
         file_version = eval_xpath(xmltree, '//@fleurOutputVersion', parser_info_out=parser_info_out)
+        file_version = str(file_version)
         if file_version is None:
             raise ValueError('Failed to extract outputVersion')
     else:
