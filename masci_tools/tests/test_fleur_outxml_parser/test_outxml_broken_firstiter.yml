@@ -19,8 +19,8 @@ output_dict:
   fermi_energy: null
   fermi_energy_units: null
   film: false
-  gmax: '10.2000000000'
-  kmax: '3.4000000000'
+  gmax: 10.2
+  kmax: 3.4
   magnetic_moments: null
   magnetic_moments_spin_down_charge: null
   magnetic_moments_spin_up_charge: null

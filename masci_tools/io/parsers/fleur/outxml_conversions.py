@@ -19,6 +19,7 @@ import numpy as np
 from pprint import pprint
 from masci_tools.util.constants import HTR_TO_EV
 from masci_tools.util.parse_tasks_decorators import conversion_function
+from masci_tools.io.common_functions import convert_to_pystd
 
 
 @conversion_function
@@ -66,7 +67,7 @@ def calculate_total_magnetic_moment(out_dict, parser_info_out=None):
         if 'total_magnetic_moment_cell' not in out_dict:
             out_dict['total_magnetic_moment_cell'] = []
 
-        out_dict['total_magnetic_moment_cell'].append(np.abs(total_charge[0] - total_charge[1]))
+        out_dict['total_magnetic_moment_cell'].append(convert_to_pystd(np.abs(total_charge[0] - total_charge[1])))
 
     return out_dict
 

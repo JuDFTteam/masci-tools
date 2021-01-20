@@ -67,7 +67,7 @@ def test_outxml_validation_errors(data_regression):
     result_warnings = {'parser_warnings': []}
     out_dict = outxml_parser(OUTXML_FILEPATH1, strict=True, ignore_validation=True, parser_info_out=result_warnings)
 
-    data_regression.check({'output_dict': clean_outdict_for_reg_dump(out_dict), 'warnings': result_warnings})
+    data_regression.check({'output_dict': out_dict, 'warnings': result_warnings})
 
 
 def test_outxml_empty_out(data_regression):
@@ -94,7 +94,7 @@ def test_outxml_broken(data_regression):
     out_dict = outxml_parser(OUTXML_FILEPATH, strict=True, parser_info_out=result_warnings)
 
     data_regression.check({
-        'output_dict': clean_outdict_for_reg_dump(out_dict),
+        'output_dict': out_dict,
         'warnings': result_warnings,
     })
 
@@ -108,7 +108,7 @@ def test_outxml_broken_firstiter(data_regression):
     out_dict = outxml_parser(OUTXML_FILEPATH, strict=True, parser_info_out=result_warnings)
 
     data_regression.check({
-        'output_dict': clean_outdict_for_reg_dump(out_dict),
+        'output_dict': out_dict,
         'warnings': result_warnings,
     })
 
@@ -168,7 +168,7 @@ def test_outxml_additional_tasks_simple(data_regression):
     out_dict = outxml_parser(OUTXML_FILEPATH, additional_tasks=TEST_TASK_ITERATION)
 
     data_regression.check({
-        'output_dict': clean_outdict_for_reg_dump(out_dict),
+        'output_dict': out_dict,
     })
 
     TEST_TASK_ITERATION_INVALID = {
@@ -205,7 +205,7 @@ def test_outxml_additional_tasks_allattribs(data_regression):
     }
     out_dict = outxml_parser(OUTXML_FILEPATH, additional_tasks=TEST_TASK_ITERATION_ALLATTRIBS)
     data_regression.check({
-        'output_dict': clean_outdict_for_reg_dump(out_dict),
+        'output_dict': out_dict,
     })
 
     TEST_TASK_ITERATION_ALLATTRIBS_INVALID = {
@@ -247,7 +247,7 @@ def test_outxml_add_tasks_overwrite(data_regression):
 
     out_dict = outxml_parser(OUTXML_FILEPATH, additional_tasks=REPLACE_BANDGAP, overwrite=True)
     data_regression.check({
-        'output_dict': clean_outdict_for_reg_dump(out_dict),
+        'output_dict': out_dict,
     })
 
 
@@ -282,7 +282,7 @@ def test_outxml_add_tasks_append(data_regression):
 
     out_dict = outxml_parser(OUTXML_FILEPATH, additional_tasks=REPLACE_DICT, append=True)
     data_regression.check({
-        'output_dict': clean_outdict_for_reg_dump(out_dict),
+        'output_dict': out_dict,
     })
 
 
@@ -296,7 +296,7 @@ def test_outxml_max4compatibility(data_regression):
     warnings = {'parser_warnings': []}
     out_dict = outxml_parser(OUTXML_FILEPATH, parser_info_out=warnings, iteration_to_parse='all')
     data_regression.check({
-        'output_dict': clean_outdict_for_reg_dump(out_dict),
+        'output_dict': out_dict,
         'warnings': warnings,
     })
 
@@ -311,7 +311,7 @@ def test_outxml_max5_0_compatibility(data_regression):
     warnings = {'parser_warnings': []}
     out_dict = outxml_parser(OUTXML_FILEPATH, parser_info_out=warnings, iteration_to_parse='all')
     data_regression.check({
-        'output_dict': clean_outdict_for_reg_dump(out_dict),
+        'output_dict': out_dict,
         'warnings': warnings,
     })
 
@@ -325,7 +325,7 @@ def test_outxml_lastiter(data_regression):
 
     out_dict = outxml_parser(OUTXML_FILEPATH, strict=True)
     data_regression.check({
-        'output_dict': clean_outdict_for_reg_dump(out_dict),
+        'output_dict': out_dict,
     })
 
 
@@ -338,7 +338,7 @@ def test_outxml_firstiter(data_regression):
 
     out_dict = outxml_parser(OUTXML_FILEPATH, iteration_to_parse='first', strict=True)
     data_regression.check({
-        'output_dict': clean_outdict_for_reg_dump(out_dict),
+        'output_dict': out_dict,
     })
 
 
@@ -351,7 +351,7 @@ def test_outxml_alliter(data_regression):
 
     out_dict = outxml_parser(OUTXML_FILEPATH, iteration_to_parse='all', strict=True)
     data_regression.check({
-        'output_dict': clean_outdict_for_reg_dump(out_dict),
+        'output_dict': out_dict,
     })
 
 
@@ -364,7 +364,7 @@ def test_outxml_indexiter(data_regression):
 
     out_dict = outxml_parser(OUTXML_FILEPATH, iteration_to_parse=3, strict=True)
     data_regression.check({
-        'output_dict': clean_outdict_for_reg_dump(out_dict),
+        'output_dict': out_dict,
     })
 
 
@@ -377,7 +377,7 @@ def test_outxml_minimal_mode(data_regression):
 
     out_dict = outxml_parser(OUTXML_FILEPATH, iteration_to_parse='all', minimal_mode=True, strict=True)
     data_regression.check({
-        'output_dict': clean_outdict_for_reg_dump(out_dict),
+        'output_dict': out_dict,
     })
 
 
@@ -401,7 +401,7 @@ def test_outxml_ldaurelax(data_regression):
 
     out_dict = outxml_parser(OUTXML_FILEPATH, iteration_to_parse='all', strict=True)
     data_regression.check({
-        'output_dict': clean_outdict_for_reg_dump(out_dict),
+        'output_dict': out_dict,
     })
 
 
@@ -415,25 +415,5 @@ def test_outxml_force(data_regression):
     out_dict = outxml_parser(OUTXML_FILEPATH, iteration_to_parse='all', strict=True)
 
     data_regression.check({
-        'output_dict': clean_outdict_for_reg_dump(out_dict),
+        'output_dict': out_dict,
     })
-
-
-def clean_outdict_for_reg_dump(outdict):
-    """
-    Converts float values in out dict to strings with fixed number
-    of decimal points. data_regression complained about number with many numbers
-    after the decimal point
-    """
-
-    for key, val in outdict.items():
-        if isinstance(val, float):
-            outdict[key] = f'{val:.10f}'
-        elif isinstance(val, list):
-            for indx, list_val in enumerate(val):
-                if isinstance(list_val, float):
-                    val[indx] = f'{list_val:.10f}'
-        elif isinstance(val, dict):
-            outdict[key] = clean_outdict_for_reg_dump(val)
-
-    return outdict
