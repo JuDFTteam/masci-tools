@@ -1,0 +1,74 @@
+output_dict:
+  bandgap: null
+  bandgap_units: null
+  charge_den_xc_den_integral: '-55.9720588982'
+  charge_density:
+  - '6.4966088913'
+  - '11.8289058385'
+  creator_name: fleur 32
+  creator_target_architecture: GEN
+  creator_target_structure: null
+  density_convergence_units: me/bohr^3
+  end_date:
+    date: 2020/12/10
+    time: '16:54:09'
+  energy: '-34633.8464381028'
+  energy_core_electrons: '-721.8910476696'
+  energy_hartree: '-1272.7703809360'
+  energy_hartree_units: Htr
+  energy_units: eV
+  energy_valence_electrons: '-12.7065554237'
+  fermi_energy: '0.3685303739'
+  fermi_energy_units: Htr
+  film: false
+  gmax: '10.0000000000'
+  kmax: '3.0000000000'
+  magnetic_moments: '2.1699434793'
+  magnetic_moments_spin_down_charge: '6.2948978468'
+  magnetic_moments_spin_up_charge: '8.4648413261'
+  number_of_atom_types: 1
+  number_of_atoms: 1
+  number_of_iterations: 1
+  number_of_iterations_total: 1
+  number_of_species: 1
+  number_of_spin_components: 2
+  number_of_symmetries: 48
+  output_file_version: '0.34'
+  overall_charge_density: '16.4186207974'
+  spin_density: '9.7307128187'
+  spin_dependent_charge_interstitial:
+  - '0.6160276000'
+  - '0.6242332000'
+  spin_dependent_charge_mt_spheres:
+  - '13.4648413000'
+  - '11.2948979000'
+  spin_dependent_charge_total:
+  - '14.0808690000'
+  - '11.9191310000'
+  start_date:
+    date: 2020/12/10
+    time: '16:54:08'
+  sum_of_eigenvalues: '-734.5976030933'
+  title: bcc Fe
+  total_charge: '26.0000000113'
+  total_magnetic_moment_cell: '2.1617380000'
+  walltime: 1
+  walltime_units: seconds
+warnings:
+  fleur_modes:
+    band: false
+    dos: false
+    film: false
+    jspin: 2
+    ldau: false
+    noco: false
+    relax: false
+    soc: false
+  parser_info: Masci-Tools Fleur out.xml Parser v0.2.1
+  parser_warnings:
+  - "Output file does not validate against the schema: \nLine 346: Element 'kPointList',\
+    \ attribute 'weightSc': The attribute 'weightSc' is not allowed. \nLine 346: Element\
+    \ 'kPointList': The attribute 'weightScale' is required but missing. \n"
+  - No text found for tag targetStructureClass
+  - No values found for attribute value at tag bandgap
+  - No values found for attribute units at tag bandgap

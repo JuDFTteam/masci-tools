@@ -62,7 +62,7 @@ def create_outschema_dict(path, save_to_file=True):
     xmlschema = clear_xml(xmlschema)
 
     namespaces = {'xsd': 'http://www.w3.org/2001/XMLSchema'}
-    out_version = xmlschema.xpath('/xsd:schema/@version', namespaces=namespaces)[0]
+    out_version = str(xmlschema.xpath('/xsd:schema/@version', namespaces=namespaces)[0])
     inpschema_dict = load_inpschema(out_version)  #Used to make type definitions available without reparsing inputSchema
 
     schema_dict = {}

@@ -1,0 +1,159 @@
+output_dict:
+  abspos_x_type1:
+  - '-1.3806000000'
+  - '-1.3806000000'
+  abspos_x_type2:
+  - '1.3806000000'
+  - '1.3806000000'
+  abspos_y_type1:
+  - '-1.3806000000'
+  - '-1.3806000000'
+  abspos_y_type2:
+  - '1.3806000000'
+  - '1.3806000000'
+  abspos_z_type1:
+  - '-1.3806000000'
+  - '-1.3806000000'
+  abspos_z_type2:
+  - '1.3806000000'
+  - '1.3806000000'
+  bandgap:
+  - '4.1667073913'
+  - '4.1667065775'
+  bandgap_units: eV
+  charge_den_xc_den_integral:
+  - '-159.6317907519'
+  - '-159.6317901441'
+  charge_density:
+  - '0.0003427664'
+  - null
+  creator_name: fleur 32
+  creator_target_architecture: GEN
+  creator_target_structure: null
+  density_convergence_units: me/bohr^3
+  end_date:
+    date: 2020/12/10
+    time: '16:52:15'
+  energy:
+  - '-114416.0980209714'
+  - '-114416.0980216354'
+  energy_core_electrons:
+  - '-2406.2024893454'
+  - '-2406.2024979422'
+  energy_hartree:
+  - '-4204.7140482540'
+  - '-4204.7140482784'
+  energy_hartree_units: Htr
+  energy_units: eV
+  energy_valence_electrons:
+  - '-16.1166243591'
+  - '-16.1166281237'
+  fermi_energy:
+  - '0.1259314171'
+  - '0.1259314083'
+  fermi_energy_units: Htr
+  film: false
+  force_largest:
+  - '0.0179807200'
+  - '0.0179807200'
+  force_units: Htr/bohr
+  force_x_type1:
+  - '0.0179807200'
+  - '0.0179807200'
+  force_x_type2:
+  - '-0.0179711500'
+  - '-0.0179715800'
+  force_y_type1:
+  - '0.0179807200'
+  - '0.0179807200'
+  force_y_type2:
+  - '-0.0179711500'
+  - '-0.0179715800'
+  force_z_type1:
+  - '0.0179807200'
+  - '0.0179807200'
+  force_z_type2:
+  - '-0.0179711500'
+  - '-0.0179715800'
+  gmax: '10.8000000000'
+  kmax: '3.6000000000'
+  ldau_info:
+    As-2/33:
+      d:
+        double_counting: FLL
+        j: '0.9000000000'
+        u: '5.5000000000'
+        unit: eV
+      p:
+        double_counting: FLL
+        j: '0.9000000000'
+        u: '-6.5000000000'
+        unit: eV
+    Ga-1/31:
+      d:
+        double_counting: FLL
+        j: '0.9000000000'
+        u: '8.0000000000'
+        unit: eV
+      p:
+        double_counting: FLL
+        j: '0.9000000000'
+        u: '-5.0000000000'
+        unit: eV
+    density_matrix_distance:
+    - '0.0000230000'
+    - null
+    ldau_energy_correction:
+    - '-2.6822617141'
+    - '-2.6822616556'
+  number_of_atom_types: 2
+  number_of_atoms: 2
+  number_of_iterations: 2
+  number_of_iterations_total: 15
+  number_of_species: 2
+  number_of_spin_components: 1
+  number_of_symmetries: 6
+  output_file_version: '0.34'
+  relax_atom_positions:
+  - - -0.13
+    - -0.13
+    - -0.13
+  - - 0.13
+    - 0.13
+    - 0.13
+  relax_atomtype_info:
+  - - Ga-1
+    - Ga
+  - - As-2
+    - As
+  relax_brav_vectors:
+  - - 0.0
+    - 5.31
+    - 5.31
+  - - 5.31
+    - 0.0
+    - 5.31
+  - - 5.31
+    - 5.31
+    - 0.0
+  spin_dependent_charge_interstitial:
+  - '3.5031316000'
+  - '3.5031315000'
+  spin_dependent_charge_mt_spheres:
+  - '60.4968684000'
+  - '60.4968685000'
+  spin_dependent_charge_total:
+  - '64.0000000000'
+  - '64.0000000000'
+  start_date:
+    date: 2020/12/10
+    time: '16:52:14'
+  sum_of_eigenvalues:
+  - '-2422.3191137045'
+  - '-2422.3191260659'
+  title: GaAs bulk zinc-blende structure
+  total_charge:
+  - '63.9999999893'
+  - '63.9999999893'
+  walltime: 1
+  walltime_units: seconds

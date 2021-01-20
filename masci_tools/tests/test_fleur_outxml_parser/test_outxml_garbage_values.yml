@@ -1,0 +1,21 @@
+warnings:
+  fleur_modes:
+    band: false
+    dos: false
+    film: false
+    jspin: 2
+    ldau: false
+    noco: false
+    relax: false
+    soc: false
+  parser_info: Masci-Tools Fleur out.xml Parser v0.2.1
+  parser_warnings:
+  - "Output file does not validate against the schema: \nLine 591: Element 'FermiEnergy',\
+    \ attribute 'value': 'NAN' is not a valid value of the atomic type 'xs:double'.\
+    \ \nLine 624: Element 'magneticMoment', attribute 'moment': '********' is not\
+    \ a valid value of the atomic type 'xs:double'. \n"
+  - No text found for tag targetStructureClass
+  - No values found for attribute value at tag bandgap
+  - No values found for attribute units at tag bandgap
+  - 'Failed to evaluate attribute moment: Below are the warnings from convert_xml_attribute'
+  - 'Could not convert: ''********'' to float, ValueError'

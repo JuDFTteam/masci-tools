@@ -1,0 +1,87 @@
+output_dict:
+  bandgap: null
+  bandgap_units: null
+  charge_den_xc_den_integral: null
+  charge_density: null
+  creator_name: fleur 32
+  creator_target_architecture: GEN
+  creator_target_structure: null
+  density_convergence_units: null
+  end_date:
+    date: null
+    time: null
+  energy: null
+  energy_core_electrons: null
+  energy_hartree: null
+  energy_hartree_units: null
+  energy_units: eV
+  energy_valence_electrons: null
+  fermi_energy: null
+  fermi_energy_units: null
+  film: false
+  gmax: '10.2000000000'
+  kmax: '3.4000000000'
+  magnetic_moments: null
+  magnetic_moments_spin_down_charge: null
+  magnetic_moments_spin_up_charge: null
+  number_of_atom_types: 2
+  number_of_atoms: 2
+  number_of_iterations: 1
+  number_of_iterations_total: 1
+  number_of_species: 1
+  number_of_spin_components: 2
+  number_of_symmetries: 16
+  output_file_version: '0.34'
+  overall_charge_density: null
+  spin_density: null
+  spin_dependent_charge_interstitial: null
+  spin_dependent_charge_mt_spheres: null
+  spin_dependent_charge_total: null
+  start_date:
+    date: 2020/12/10
+    time: '16:53:07'
+  sum_of_eigenvalues: null
+  title: Fe fcc 2
+  total_charge: null
+  walltime: -60787
+  walltime_units: seconds
+warnings:
+  fleur_modes:
+    band: false
+    dos: false
+    film: false
+    jspin: 2
+    ldau: false
+    noco: true
+    relax: false
+    soc: false
+  last_iteration_parsed: 1
+  parser_info: Masci-Tools Fleur out.xml Parser v0.2.1
+  parser_warnings:
+  - The out.xml file is broken I try to repair it.
+  - No text found for tag targetStructureClass
+  - No values found for attribute date at tag endDateAndTime
+  - No values found for attribute time at tag endDateAndTime
+  - Endtime was unparsed, inp.xml prob not complete, do not believe the walltime!
+  - Enddate was unparsed, inp.xml prob not complete, do not believe the walltime!
+  - No values found for attribute value at tag totalEnergy
+  - No values found for attribute units at tag totalEnergy
+  - No values found for attribute distance
+  - No values found for attribute units
+  - No values found for attribute distance
+  - No values found for attribute distance
+  - No values found for attribute value at tag sumOfEigenvalues
+  - No values found for attribute value at tag coreElectrons
+  - No values found for attribute value at tag valenceElectrons
+  - No values found for attribute value at tag chargeDenXCDenIntegral
+  - No values found for attribute value at tag FermiEnergy
+  - No values found for attribute units at tag FermiEnergy
+  - No values found for attribute value at tag bandgap
+  - No values found for attribute units at tag bandgap
+  - No values found for attribute moment at tag magneticMoment
+  - No values found for attribute spinUpCharge at tag magneticMoment
+  - No values found for attribute spinDownCharge at tag magneticMoment
+  - No values found for attribute total at tag spinDependentCharge
+  - No values found for attribute interstitial at tag spinDependentCharge
+  - No values found for attribute mtSpheres at tag spinDependentCharge
+  - No values found for attribute value at tag totalCharge
