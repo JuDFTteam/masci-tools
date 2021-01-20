@@ -1,0 +1,253 @@
+output_dict:
+  bandgap:
+  - '1.367139'
+  - '1.334145'
+  - '1.172560'
+  - '1.136111'
+  - '1.138371'
+  - '1.158045'
+  - '1.157076'
+  - '1.158784'
+  - '1.159124'
+  - '1.159160'
+  - '1.159510'
+  - '1.159520'
+  bandgap_units: eV
+  charge_den_xc_den_integral:
+  - '-159.610863'
+  - '-159.608143'
+  - '-159.596851'
+  - '-159.620192'
+  - '-159.619507'
+  - '-159.620213'
+  - '-159.622622'
+  - '-159.622678'
+  - '-159.622164'
+  - '-159.622146'
+  - '-159.622372'
+  - '-159.622354'
+  charge_density:
+  - '6.684700'
+  - '6.143543'
+  - '3.808557'
+  - '1.502251'
+  - '1.196666'
+  - '0.174444'
+  - '0.078397'
+  - '0.067682'
+  - '0.007345'
+  - '0.007494'
+  - '0.001715'
+  - '0.000327'
+  creator_name: fleur 31
+  creator_target_architecture: GEN
+  creator_target_structure: null
+  density_convergence_units: me/bohr^3
+  end_date:
+    date: 2020/10/06
+    time: '16:22:41'
+  energy:
+  - '-114418.288134'
+  - '-114418.241631'
+  - '-114418.078554'
+  - '-114417.969010'
+  - '-114417.967969'
+  - '-114417.960302'
+  - '-114417.957618'
+  - '-114417.957495'
+  - '-114417.956959'
+  - '-114417.956974'
+  - '-114417.956832'
+  - '-114417.956864'
+  energy_core_electrons:
+  - '-2406.343523'
+  - '-2406.371962'
+  - '-2406.500561'
+  - '-2406.264122'
+  - '-2406.279153'
+  - '-2406.309019'
+  - '-2406.286679'
+  - '-2406.287179'
+  - '-2406.299422'
+  - '-2406.299660'
+  - '-2406.296651'
+  - '-2406.296946'
+  energy_hartree:
+  - '-4204.794533'
+  - '-4204.792824'
+  - '-4204.786831'
+  - '-4204.782806'
+  - '-4204.782768'
+  - '-4204.782486'
+  - '-4204.782387'
+  - '-4204.782383'
+  - '-4204.782363'
+  - '-4204.782364'
+  - '-4204.782358'
+  - '-4204.782359'
+  energy_hartree_units: Htr
+  energy_units: eV
+  energy_valence_electrons:
+  - '-16.528540'
+  - '-16.514832'
+  - '-16.436623'
+  - '-16.228114'
+  - '-16.232807'
+  - '-16.237491'
+  - '-16.229714'
+  - '-16.230703'
+  - '-16.234943'
+  - '-16.235067'
+  - '-16.233189'
+  - '-16.233372'
+  fermi_energy:
+  - '0.169756'
+  - '0.171695'
+  - '0.181839'
+  - '0.191584'
+  - '0.191557'
+  - '0.191648'
+  - '0.191809'
+  - '0.191727'
+  - '0.191691'
+  - '0.191687'
+  - '0.191722'
+  - '0.191722'
+  fermi_energy_units: Htr
+  film: false
+  gmax: '10.80000000'
+  kmax: '3.60000000'
+  ldau_info:
+    As-2/33:
+      d:
+        double_counting: FLL
+        j: '.90000'
+        u: '5.50000'
+        unit: eV
+      p:
+        double_counting: FLL
+        j: '.90000'
+        u: '-6.50000'
+        unit: eV
+    Ga-1/31:
+      d:
+        double_counting: FLL
+        j: '.90000'
+        u: '8.00000'
+        unit: eV
+      p:
+        double_counting: FLL
+        j: '.90000'
+        u: '-5.00000'
+        unit: eV
+    ldau_energy_correction:
+    - '-2.666874'
+    - '-2.666974'
+    - '-2.667900'
+    - '-2.676254'
+    - '-2.676508'
+    - '-2.678472'
+    - '-2.678618'
+    - '-2.678664'
+    - '-2.678698'
+    - '-2.678699'
+    - '-2.678686'
+    - '-2.678683'
+  number_of_atom_types: 2
+  number_of_atoms: 2
+  number_of_iterations: 12
+  number_of_iterations_total: 12
+  number_of_species: 2
+  number_of_spin_components: 1
+  number_of_symmetries: 0
+  output_file_version: '0.27'
+  spin_dependent_charge_interstitial:
+  - '3.453363'
+  - '3.458991'
+  - '3.487719'
+  - '3.518711'
+  - '3.518089'
+  - '3.516137'
+  - '3.516576'
+  - '3.516321'
+  - '3.515942'
+  - '3.515929'
+  - '3.516059'
+  - '3.516045'
+  spin_dependent_charge_mt_spheres:
+  - '60.546636'
+  - '60.541008'
+  - '60.512281'
+  - '60.481289'
+  - '60.481910'
+  - '60.483863'
+  - '60.483424'
+  - '60.483679'
+  - '60.484058'
+  - '60.484071'
+  - '60.483941'
+  - '60.483955'
+  spin_dependent_charge_total:
+  - '63.999999'
+  - '63.999999'
+  - '63.999999'
+  - '64.000000'
+  - '64.000000'
+  - '64.000000'
+  - '64.000000'
+  - '64.000000'
+  - '64.000000'
+  - '64.000000'
+  - '64.000000'
+  - '64.000000'
+  start_date:
+    date: 2020/10/06
+    time: '16:22:35'
+  sum_of_eigenvalues:
+  - '-2422.872063'
+  - '-2422.886795'
+  - '-2422.937184'
+  - '-2422.492236'
+  - '-2422.511960'
+  - '-2422.546510'
+  - '-2422.516393'
+  - '-2422.517882'
+  - '-2422.534365'
+  - '-2422.534727'
+  - '-2422.529840'
+  - '-2422.530318'
+  title: GaAs bulk zinc-blende structure
+  total_charge:
+  - '63.999999'
+  - '63.999999'
+  - '63.999999'
+  - '64.000000'
+  - '64.000000'
+  - '64.000000'
+  - '64.000000'
+  - '64.000000'
+  - '64.000000'
+  - '64.000000'
+  - '64.000000'
+  - '64.000000'
+  walltime: 6
+  walltime_units: seconds
+warnings:
+  fleur_modes:
+    band: false
+    dos: false
+    film: false
+    jspin: 1
+    ldau: true
+    noco: false
+    relax: false
+    soc: false
+  parser_info: Masci-Tools Fleur out.xml Parser v0.2.1
+  parser_warnings:
+  - Ignoring '0.27' outputVersion for MaX4.0 release
+  - "Output file does not validate against the schema: \nLine 17: Element 'inputData':\
+    \ The attribute 'fleurInputVersion' is required but missing. \nLine 92: Element\
+    \ 'atomsInCell': The attribute 'n_hia' is required but missing. \nLine 100: Element\
+    \ 'kPointList', attribute 'posScale': The attribute 'posScale' is not allowed.\
+    \ \nLine 109: Element 'spinDependentCharge': This element is not expected. \n"
+  - No text found for tag targetStructureClass

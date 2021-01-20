@@ -65,7 +65,8 @@ if __name__ == '__main__':
             'testing': [
                 'pytest>=4.3.1',
                 'pytest-cov',
-                'pytest-mpl'
+                'pytest-mpl',
+                'pytest-regressions>=1.0'
             ],
             'bokeh-plots': [
                 'pandas',

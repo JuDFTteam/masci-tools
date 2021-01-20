@@ -1,0 +1,31 @@
+output_dict:
+  creator_name: fleur 32
+  creator_target_architecture: GEN
+  creator_target_structure: null
+  end_date:
+    date: 2020/12/10
+    time: '16:58:39'
+  film: true
+  gmax: '10.000000'
+  kmax: '4.000000'
+  number_of_atom_types: 2
+  number_of_atoms: 2
+  number_of_iterations: 1
+  number_of_species: 2
+  number_of_spin_components: 2
+  number_of_symmetries: 2
+  output_file_version: '0.34'
+  spst_force_ev-sum:
+  - '-37.367457'
+  - '-37.342116'
+  spst_force_q:
+  - 1
+  - 2
+  spst_force_qs: 2
+  spst_force_units: Htr
+  start_date:
+    date: 2020/12/10
+    time: '16:58:34'
+  title: A Fleur input generator calculation with aiida
+  walltime: 5
+  walltime_units: seconds

@@ -1,0 +1,74 @@
+output_dict:
+  bandgap: null
+  bandgap_units: null
+  charge_den_xc_den_integral: '-55.972059'
+  charge_density:
+  - '6.496609'
+  - '11.828906'
+  creator_name: fleur 32
+  creator_target_architecture: GEN
+  creator_target_structure: null
+  density_convergence_units: me/bohr^3
+  end_date:
+    date: 2020/12/10
+    time: '16:54:09'
+  energy: '-34633.846438'
+  energy_core_electrons: '-721.891048'
+  energy_hartree: '-1272.770381'
+  energy_hartree_units: Htr
+  energy_units: eV
+  energy_valence_electrons: '-12.706555'
+  fermi_energy: '0.368530'
+  fermi_energy_units: Htr
+  film: false
+  gmax: '10.000000'
+  kmax: '3.000000'
+  magnetic_moments: '2.169943'
+  magnetic_moments_spin_down_charge: '6.294898'
+  magnetic_moments_spin_up_charge: '8.464841'
+  number_of_atom_types: 1
+  number_of_atoms: 1
+  number_of_iterations: 1
+  number_of_iterations_total: 1
+  number_of_species: 1
+  number_of_spin_components: 2
+  number_of_symmetries: 48
+  output_file_version: '0.34'
+  overall_charge_density: '16.418621'
+  spin_density: '9.730713'
+  spin_dependent_charge_interstitial:
+  - '0.616028'
+  - '0.624233'
+  spin_dependent_charge_mt_spheres:
+  - '13.464841'
+  - '11.294898'
+  spin_dependent_charge_total:
+  - '14.080869'
+  - '11.919131'
+  start_date:
+    date: 2020/12/10
+    time: '16:54:08'
+  sum_of_eigenvalues: '-734.597603'
+  title: bcc Fe
+  total_charge: '26.000000'
+  total_magnetic_moment_cell: '2.161738'
+  walltime: 1
+  walltime_units: seconds
+warnings:
+  fleur_modes:
+    band: false
+    dos: false
+    film: false
+    jspin: 2
+    ldau: false
+    noco: false
+    relax: false
+    soc: false
+  parser_info: Masci-Tools Fleur out.xml Parser v0.2.1
+  parser_warnings:
+  - "Output file does not validate against the schema: \nLine 346: Element 'kPointList',\
+    \ attribute 'weightSc': The attribute 'weightSc' is not allowed. \nLine 346: Element\
+    \ 'kPointList': The attribute 'weightScale' is required but missing. \n"
+  - No text found for tag targetStructureClass
+  - No values found for attribute value at tag bandgap
+  - No values found for attribute units at tag bandgap
