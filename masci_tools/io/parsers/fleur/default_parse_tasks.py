@@ -463,6 +463,7 @@ TASKS_DEFINITION = {
         },
     },
     'nmmp_distances': {
+        '_minimal': True,
         '_modes': [('ldau', True)],
         'density_matrix_distance': {
             'parse_type': 'attrib',
