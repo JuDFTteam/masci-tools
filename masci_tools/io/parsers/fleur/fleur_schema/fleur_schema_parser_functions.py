@@ -652,7 +652,10 @@ def get_unique_attribs(xmlschema, namespaces, **kwargs):
                           iteration_root=iteration_root)
         if path is not None:
             if not isinstance(path, list):
-                settable[attrib] = path.replace(f'/@{attrib}', '')
+                if attrib not in settable:
+                    settable[attrib] = path.replace(f'/@{attrib}', '')
+                else:
+                    settable.pop(attrib)
 
     return settable
 
@@ -707,7 +710,10 @@ def get_unique_path_attribs(xmlschema, namespaces, **kwargs):
         if path is not None:
             if not isinstance(path, list):
                 path = [path]
-            settable[attrib] = [x.replace(f'/@{attrib}', '') for x in path]
+            if attrib in settable:
+                settable[attrib] += [x.replace(f'/@{attrib}', '') for x in path]
+            else:
+                settable[attrib] = [x.replace(f'/@{attrib}', '') for x in path]
 
     return settable
 
@@ -765,7 +771,10 @@ def get_other_attribs(xmlschema, namespaces, **kwargs):
                     path.remove(contains_path)
 
             if len(path) != 0:
-                other[attrib] = [x.replace(f'/@{attrib}', '') for x in path]
+                if attrib in other:
+                    other[attrib] += [x.replace(f'/@{attrib}', '') for x in path]
+                else:
+                    other[attrib] = [x.replace(f'/@{attrib}', '') for x in path]
 
     return other
 

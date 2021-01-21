@@ -512,6 +512,9 @@ schema_dict = {
         'coreConfig': ['/fleurInput/atomSpecies/species/electronConfig/coreConfig'],
         'count': ['/fleurInput/calculationSetup/bzIntegration/kPointLists/kPointList'],
         'd': [
+            '/fleurInput/atomSpecies/species/greensfCalculation/diagElements',
+            '/fleurInput/atomGroups/atomGroup/greensfCalculation/diagElements',
+            '/fleurInput/atomSpecies/species/energyParameters', '/fleurInput/atomGroups/atomGroup/energyParameters',
             '/fleurInput/atomSpecies/species/greensfCalculation/matrixElements/d',
             '/fleurInput/atomGroups/atomGroup/greensfCalculation/matrixElements/d',
             '/fleurInput/atomSpecies/species/torgueCalculation/greensfElements/d',
@@ -531,6 +534,9 @@ schema_dict = {
             '/fleurInput/calculationSetup/greensFunction/contourDOS'
         ],
         'f': [
+            '/fleurInput/atomSpecies/species/greensfCalculation/diagElements',
+            '/fleurInput/atomGroups/atomGroup/greensfCalculation/diagElements',
+            '/fleurInput/atomSpecies/species/energyParameters', '/fleurInput/atomGroups/atomGroup/energyParameters',
             '/fleurInput/atomSpecies/species/greensfCalculation/matrixElements/f',
             '/fleurInput/atomGroups/atomGroup/greensfCalculation/matrixElements/f',
             '/fleurInput/atomSpecies/species/torgueCalculation/greensfElements/f',
@@ -619,6 +625,9 @@ schema_dict = {
         ],
         'orbcomprot': ['/fleurInput/atomGroups/atomGroup/orbcomprot'],
         'p': [
+            '/fleurInput/atomSpecies/species/greensfCalculation/diagElements',
+            '/fleurInput/atomGroups/atomGroup/greensfCalculation/diagElements',
+            '/fleurInput/atomSpecies/species/energyParameters', '/fleurInput/atomGroups/atomGroup/energyParameters',
             '/fleurInput/atomSpecies/species/greensfCalculation/matrixElements/p',
             '/fleurInput/atomGroups/atomGroup/greensfCalculation/matrixElements/p',
             '/fleurInput/atomSpecies/species/torgueCalculation/greensfElements/p',
@@ -642,6 +651,9 @@ schema_dict = {
         'row-2': ['/fleurInput/calculationSetup/symmetryOperations/symOp/row-2'],
         'row-3': ['/fleurInput/calculationSetup/symmetryOperations/symOp/row-3'],
         's': [
+            '/fleurInput/atomSpecies/species/greensfCalculation/diagElements',
+            '/fleurInput/atomGroups/atomGroup/greensfCalculation/diagElements',
+            '/fleurInput/atomSpecies/species/energyParameters', '/fleurInput/atomGroups/atomGroup/energyParameters',
             '/fleurInput/atomSpecies/species/greensfCalculation/matrixElements/s',
             '/fleurInput/atomGroups/atomGroup/greensfCalculation/matrixElements/s',
             '/fleurInput/atomSpecies/species/torgueCalculation/greensfElements/s',
