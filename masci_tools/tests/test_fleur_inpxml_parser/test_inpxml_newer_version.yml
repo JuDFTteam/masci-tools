@@ -1,0 +1,285 @@
+input_dict:
+  atomGroups:
+  - filmPos:
+    - - 0.0
+      - 0.0
+      - -0.9964250044
+    force:
+      calculate: true
+      relaxXYZ: TTT
+    labels:
+      '                 222':
+      - 0.0
+      - 0.0
+      - -0.9964250044
+    nocoParams:
+      alpha: 0.0
+      beta: 1.570796326
+    species: Fe-1
+  - filmPos:
+    - - 0.5
+      - 0.5
+      - 0.9964250044
+    force:
+      calculate: true
+      relaxXYZ: TTT
+    labels:
+      '                   2':
+      - 0.5
+      - 0.5
+      - 0.9964250044
+    nocoParams:
+      alpha: 0.0
+      beta: 1.570796326
+    species: Pt-1
+  atomSpecies:
+  - atomicCutoffs:
+      lmax: 10
+      lnonsphr: 6
+    atomicNumber: 26
+    electronConfig:
+      coreConfig:
+      - '[Ne]'
+      stateOccupation:
+      - spinDown: 1.0
+        spinUp: 2.0
+        state: (3d3/2)
+      - spinDown: 0.0
+        spinUp: 3.0
+        state: (3d5/2)
+      valenceConfig:
+      - (3s1/2)
+      - (3p1/2)
+      - (3p3/2)
+      - (4s1/2)
+      - (3d3/2)
+      - (3d5/2)
+    element: Fe
+    energyParameters:
+      d: 3
+      f: 4
+      p: 4
+      s: 4
+    lo:
+    - eDeriv: 0
+      l: 0
+      n: 3
+      type: SCLO
+    - eDeriv: 0
+      l: 1
+      n: 3
+      type: SCLO
+    mtSphere:
+      gridPoints: 787
+      logIncrement: 0.016
+      radius: 2.2
+    name: Fe-1
+  - atomicCutoffs:
+      lmax: 10
+      lnonsphr: 6
+    atomicNumber: 78
+    electronConfig:
+      coreConfig:
+      - '[Kr]'
+      - (5s1/2)
+      - (4d3/2)
+      - (4d5/2)
+      - (4f5/2)
+      - (4f7/2)
+      stateOccupation:
+      - spinDown: 0.5
+        spinUp: 0.5
+        state: (6s1/2)
+      - spinDown: 2.0
+        spinUp: 3.0
+        state: (5d5/2)
+      valenceConfig:
+      - (5p1/2)
+      - (5p3/2)
+      - (6s1/2)
+      - (5d3/2)
+      - (5d5/2)
+    element: Pt
+    energyParameters:
+      d: 5
+      f: 5
+      p: 6
+      s: 6
+    lo:
+    - eDeriv: 0
+      l: 1
+      n: 5
+      type: SCLO
+    mtSphere:
+      gridPoints: 787
+      logIncrement: 0.017
+      radius: 2.2
+    name: Pt-1
+  calculationSetup:
+    coreElectrons:
+      coretail_lmax: 0
+      ctail: false
+      frcor: false
+      kcrel: 0
+    cutoffs:
+      Gmax: 10.0
+      GmaxXC: 8.7
+      Kmax: 4.0
+      numbands: 0
+    expertModes:
+      gw: 0
+      secvar: false
+    geometryOptimization:
+      epsdisp: 1.0e-05
+      epsforce: 1.0e-05
+      forcealpha: 1.0
+      forcemix: BFGS
+      l_f: false
+    ldaU:
+      l_linMix: false
+      mixParam: 0.05
+      spinf: 1.0
+    magnetism:
+      jspins: 2
+      l_noco: true
+      l_ss: true
+      lflip: false
+      qss:
+      - 0.0
+      - 0.0
+      - 0.0
+      swsp: false
+    prodBasis:
+      bands: 0
+      ewaldlambda: 3
+      gcutm: 2.9
+      lexp: 16
+      tolerance: 0.0001
+    scfLoop:
+      alpha: 0.05
+      imix: Anderson
+      itmax: 1
+      maxIterBroyd: 99
+      minDistance: 1.0e-05
+      precondParam: 0.0
+      spinf: 2.0
+    soc:
+      l_soc: false
+      phi: 0.0
+      spav: false
+      theta: 0.0
+    xcFunctional:
+      name: vwn
+      relativisticCorrections: false
+  cell:
+    bzIntegration:
+      fermiSmearingEnergy: 0.001
+      kPointListSelection:
+        listName: default
+      kPointLists:
+      - count: 2
+        kPoint:
+        - - -0.25
+          - 0.25
+          - 0.0
+        - - 0.25
+          - 0.25
+          - 0.0
+        name: default
+        weight:
+        - 0.5
+        - 0.5
+      mode: hist
+      valenceElectrons: 32.0
+    filmLattice:
+      bravaisMatrix:
+        row-1:
+        - 5.3011797029
+        - 0.0
+        - 0.0
+        row-2:
+        - 0.0
+        - 7.497000033
+        - 0.0
+        row-3:
+        - 0.0
+        - 0.0
+        - 7.9928500088
+      dTilda: 10.91
+      dVac: 7.35
+      scale: 1.0
+      vacuumEnergyParameters:
+      - spinDown: -0.25
+        spinUp: -0.25
+        vacuum: 1
+      - spinDown: -0.25
+        spinUp: -0.25
+        vacuum: 2
+    symmetryOperations:
+    - row-1:
+      - 1.0
+      - 0.0
+      - 0.0
+      - 0.0
+      row-2:
+      - 0.0
+      - 1.0
+      - 0.0
+      - 0.0
+      row-3:
+      - 0.0
+      - 0.0
+      - 1.0
+      - 0.0
+    - row-1:
+      - 1.0
+      - 0.0
+      - 0.0
+      - 0.0
+      row-2:
+      - 0.0
+      - -1.0
+      - 0.0
+      - 0.0
+      row-3:
+      - 0.0
+      - 0.0
+      - 1.0
+      - 0.0
+  comment: A Fleur input generator calculation with aiida
+  fleurInputVersion: '0.36'
+  forceTheorem:
+    spinSpiralDispersion:
+    - 0.0 0.0 0.0
+    - 0.2 0.0 0.0
+  output:
+    band: false
+    chargeDensitySlicing:
+      maxEigenval: 0.0
+      minEigenval: 0.0
+      nnne: 0
+      numkpt: 0
+      pallst: false
+    checks:
+      cdinf: false
+      vchk: false
+    dos: false
+    plotting:
+      iplot: 0
+    slice: false
+    specialOutput:
+      bmt: false
+      eonly: false
+    unfoldingBand:
+      supercellX: 1
+      supercellY: 1
+      supercellZ: 1
+      unfoldBand: false
+warnings:
+  fleur_inp_version: '0.36'
+  parser_info: Masci-Tools Fleur inp.xml Parser v0.1.1
+  parser_warnings:
+  - No Input Schema available for version '0.36'; falling back to '0.34'
+  - "Input file does not validate against the schema: \nLine 2: Element 'fleurInput',\
+    \ attribute 'fleurInputVersion': [facet 'enumeration'] The value '0.36' is not\
+    \ an element of the set {'0.34'}. \n"

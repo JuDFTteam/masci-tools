@@ -123,6 +123,10 @@ schema_dict = {
             'base_types': ['float_expression'],
             'length': 'unbounded'
         },
+        'FleurOutputVersionType': {
+            'base_types': ['string'],
+            'length': 1
+        },
         'FleurVersionType': {
             'base_types': ['string'],
             'length': 1

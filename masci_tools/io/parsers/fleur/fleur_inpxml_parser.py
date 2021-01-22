@@ -55,7 +55,9 @@ def inpxml_parser(inpxmlfile, version=None, parser_info_out=None):
             raise ValueError('Failed to extract inputVersion')
 
     parser_info_out['fleur_inp_version'] = version
-    schema_dict, xmlschema = load_inpschema(version, schema_return=True)
+    schema_dict, xmlschema = load_inpschema(version, schema_return=True, parser_info_out=parser_info_out)
+
+    ignore_validation = schema_dict['inp_version'] != version
 
     xmltree = clear_xml(xmltree)
     root = xmltree.getroot()
@@ -68,13 +70,15 @@ def inpxml_parser(inpxmlfile, version=None, parser_info_out=None):
         validation_errors = ''.join([f'Line {error.line}: {error.message} \n' for error in xmlschema.error_log])
         parser_info_out['parser_warnings'].append(
             f'Input file does not validate against the schema: \n{validation_errors}')
-        raise ValueError(f'Input file does not validate against the schema: \n{validation_errors}') from err
+        if not ignore_validation:
+            raise ValueError(f'Input file does not validate against the schema: \n{validation_errors}') from err
 
-    if xmlschema.validate(xmltree):
+    if xmlschema.validate(xmltree) or ignore_validation:
         inp_dict = inpxml_todict(root, schema_dict, constants, parser_info_out=parser_info_out)
     else:
         parser_info_out['parser_warnings'].append('Input file does not validate against the schema: Reason is unknown')
-        raise ValueError('Input file does not validate against the schema: Reason is unknown')
+        if not ignore_validation:
+            raise ValueError('Input file does not validate against the schema: Reason is unknown')
 
     return inp_dict
 

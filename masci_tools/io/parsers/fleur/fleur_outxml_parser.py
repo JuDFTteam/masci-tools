@@ -117,10 +117,18 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
 
     ignore_validation = kwargs.get('ignore_validation', ignore_validation)
 
-    print(out_version, inp_version)
     #Load schema_dict (inp and out)
-    inpschema_dict = load_inpschema(inp_version)
-    outschema_dict, outxmlschema = load_outschema(out_version, schema_return=True, inp_version=inp_version,parser_info_out=parser_info_out)
+    inpschema_dict = load_inpschema(inp_version, parser_info_out=parser_info_out)
+    outschema_dict, outxmlschema = load_outschema(out_version,
+                                                  schema_return=True,
+                                                  inp_version=inp_version,
+                                                  parser_info_out=parser_info_out)
+
+    if outschema_dict['out_version'] != out_version or \
+       inpschema_dict['inp_version'] != inp_version:
+        ignore_validation = True
+        out_version = outschema_dict['out_version']
+        inp_version = inpschema_dict['inp_version']
 
     xmltree = clear_xml(xmltree)
     root = xmltree.getroot()

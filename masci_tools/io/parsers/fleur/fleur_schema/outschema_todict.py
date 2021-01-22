@@ -169,12 +169,35 @@ def load_outschema(version, schema_return=False, create=True, inp_version=None, 
     schema_dict_path = os.path.join(path, 'outschema_dict.py')
 
     if not os.path.isfile(schema_file_path):
-        message = f'No FleurOutputSchema.xsd found at {path}'
-        raise FileNotFoundError(message)
+        latest_version = 0
+        #Get latest version available
+        for root, dirs, files in os.walk(PACKAGE_DIRECTORY):
+            for folder in dirs:
+                if '0.' in folder:
+                    latest_version = max(latest_version, int(folder.split('.')[1]))
+
+        if int(version.split('.')[1]) < latest_version:
+            message = f'No FleurOutputSchema.xsd found at {path}'
+            raise FileNotFoundError(message)
+        else:
+            latest_version = f'0.{latest_version}'
+            parser_info_out['parser_warnings'].append(
+                f"No Output Schema available for version '{version}'; falling back to '{latest_version}'")
+
+            fleur_schema_path = f'./{latest_version}'
+
+            path = os.path.abspath(os.path.join(PACKAGE_DIRECTORY, fleur_schema_path))
+
+            schema_file_path = os.path.join(path, 'FleurOutputSchema.xsd')
+            schema_dict_path = os.path.join(path, 'outschema_dict.py')
+
+            inp_version = latest_version
+            version = latest_version
 
     if not os.path.isfile(schema_dict_path):
         if create:
-            parser_info_out['parser_warnings'].append(f'Generating schema_dict file for given output schema: {schema_file_path}')
+            parser_info_out['parser_warnings'].append(
+                f'Generating schema_dict file for given output schema: {schema_file_path}')
             create_outschema_dict(path)
         else:
             raise FileNotFoundError(f'No inpschema_dict generated for FleurOutputSchema.xsd at {path}')
@@ -192,7 +215,8 @@ def load_outschema(version, schema_return=False, create=True, inp_version=None, 
         inpschema = load_inpschema(inp_version)
         if inpschema['_basic_types'] != schema_dict['_input_basic_types']:
             #Basic type defintions have changed so we create the output schema on the fly
-            parser_info_out['parser_warnings'].append(f'Basic type definitions differ (out: {version}; inp: {inp_version}), recreating outputschema dict')
+            parser_info_out['parser_warnings'].append(
+                f'Basic type definitions differ (out: {version}; inp: {inp_version}), recreating outputschema dict')
             schema_dict, version = create_outschema_dict(path, save_to_file=False, inp_version=inp_version)
 
     if schema_return:
@@ -201,7 +225,8 @@ def load_outschema(version, schema_return=False, create=True, inp_version=None, 
             xmlschema_doc = etree.parse(schema_file_path)
             xmlschema = etree.XMLSchema(xmlschema_doc)
         else:
-            parser_info_out['parser_warnings'].append(f'Creating OutputSchema object for differing versions (out: {version}; inp: {inp_version})')
+            parser_info_out['parser_warnings'].append(
+                f'Creating OutputSchema object for differing versions (out: {version}; inp: {inp_version})')
             with tempfile.TemporaryDirectory() as td:
                 temp_input_schema_path = os.path.join(td, 'FleurInputSchema.xsd')
                 input_schema_path = os.path.abspath(

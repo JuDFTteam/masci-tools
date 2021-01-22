@@ -124,12 +124,32 @@ def load_inpschema(version, schema_return=False, create=True, parser_info_out=No
     schema_dict_path = os.path.join(path, 'inpschema_dict.py')
 
     if not os.path.isfile(schema_file_path):
-        message = f'No FleurInputSchema.xsd found at {path}'
-        raise FileNotFoundError(message)
+        latest_version = 0
+        #Get latest version available
+        for root, dirs, files in os.walk(PACKAGE_DIRECTORY):
+            for folder in dirs:
+                if '0.' in folder:
+                    latest_version = max(latest_version, int(folder.split('.')[1]))
+
+        if int(version.split('.')[1]) < latest_version:
+            message = f'No FleurInputSchema.xsd found at {path}'
+            raise FileNotFoundError(message)
+        else:
+            latest_version = f'0.{latest_version}'
+            parser_info_out['parser_warnings'].append(
+                f"No Input Schema available for version '{version}'; falling back to '{latest_version}'")
+
+            fleur_schema_path = f'./{latest_version}'
+
+            path = os.path.abspath(os.path.join(PACKAGE_DIRECTORY, fleur_schema_path))
+
+            schema_file_path = os.path.join(path, 'FleurInputSchema.xsd')
+            schema_dict_path = os.path.join(path, 'inpschema_dict.py')
 
     if not os.path.isfile(schema_dict_path):
         if create:
-            parser_info_out['parser_warnings'].append(f'Generating schema_dict file for given input schema: {schema_file_path}')
+            parser_info_out['parser_warnings'].append(
+                f'Generating schema_dict file for given input schema: {schema_file_path}')
             create_inpschema_dict(path)
         else:
             raise FileNotFoundError(f'No inpschema_dict generated for FleurInputSchema.xsd at {path}')
