@@ -143,7 +143,7 @@ def create_outschema_dict(path, save_to_file=True, inp_version=None):
         return schema_dict, out_version
 
 
-def load_outschema(version, schema_return=False, create=True, inp_version=None):
+def load_outschema(version, schema_return=False, create=True, inp_version=None, parser_info_out=None):
     """
     load the FleurOutputSchema dict for the specified version
 
@@ -151,9 +151,13 @@ def load_outschema(version, schema_return=False, create=True, inp_version=None):
     :param schema_return: bool, if True also a etree XMLSchema object is returned
     :param create: bool, if True and the schema_dict does not exist it is created
                    via :py:func:`~masci_tools.io.parsers.fleur.fleur_schema.create_outschema_dict()`
+    :param inp_version: str, optional (default same as version) loads Inputschema for the specified version
+    :param parser_info_out: dict with warnings, errors and information, ...
 
     :return: python dictionary with the schema information
     """
+    if parser_info_out is None:
+        parser_info_out = {'parser_warnings': []}
 
     PACKAGE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 
@@ -170,7 +174,7 @@ def load_outschema(version, schema_return=False, create=True, inp_version=None):
 
     if not os.path.isfile(schema_dict_path):
         if create:
-            print(f'Generating schema_dict file for given output schema: {schema_file_path}')
+            parser_info_out['parser_warnings'].append(f'Generating schema_dict file for given output schema: {schema_file_path}')
             create_outschema_dict(path)
         else:
             raise FileNotFoundError(f'No inpschema_dict generated for FleurOutputSchema.xsd at {path}')
@@ -188,7 +192,7 @@ def load_outschema(version, schema_return=False, create=True, inp_version=None):
         inpschema = load_inpschema(inp_version)
         if inpschema['_basic_types'] != schema_dict['_input_basic_types']:
             #Basic type defintions have changed so we create the output schema on the fly
-            warnings.warn('Basic type definitions have changed, recreating outputschema dict')
+            parser_info_out['parser_warnings'].append(f'Basic type definitions differ (out: {version}; inp: {inp_version}), recreating outputschema dict')
             schema_dict, version = create_outschema_dict(path, save_to_file=False, inp_version=inp_version)
 
     if schema_return:
@@ -197,6 +201,7 @@ def load_outschema(version, schema_return=False, create=True, inp_version=None):
             xmlschema_doc = etree.parse(schema_file_path)
             xmlschema = etree.XMLSchema(xmlschema_doc)
         else:
+            parser_info_out['parser_warnings'].append(f'Creating OutputSchema object for differing versions (out: {version}; inp: {inp_version})')
             with tempfile.TemporaryDirectory() as td:
                 temp_input_schema_path = os.path.join(td, 'FleurInputSchema.xsd')
                 input_schema_path = os.path.abspath(
@@ -207,7 +212,7 @@ def load_outschema(version, schema_return=False, create=True, inp_version=None):
                 output_schema_path = os.path.abspath(
                     os.path.join(PACKAGE_DIRECTORY, f'./{version}/FleurOutputSchema.xsd'))
                 shutil.copy(output_schema_path, temp_output_schema_path)
-                xmlschema_doc = etree.parse(output_schema_path)
+                xmlschema_doc = etree.parse(temp_output_schema_path)
                 xmlschema = etree.XMLSchema(xmlschema_doc)
 
     if schema_return:

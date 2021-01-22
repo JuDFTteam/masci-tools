@@ -1,0 +1,85 @@
+output_dict:
+  bandgap: 0.1480235793
+  bandgap_units: eV
+  charge_den_xc_den_integral: -111.7983059673
+  charge_density:
+  - 0.0056284998
+  - 0.0037099809
+  creator_name: fleur 32
+  creator_target_architecture: GEN
+  creator_target_structure: null
+  density_convergence_units: me/bohr^3
+  end_date:
+    date: 2021/01/22
+    time: '12:05:24'
+  energy: -69269.47887586526
+  energy_core_electrons: -1476.8200550749
+  energy_hartree: -2545.6063961489
+  energy_hartree_units: Htr
+  energy_units: eV
+  energy_valence_electrons: 3.7137334341
+  fermi_energy: 0.3263945678
+  fermi_energy_units: Htr
+  film: false
+  gmax: 10.2
+  kmax: 3.4
+  magnetic_moments:
+  - 1.7481314169
+  - 1.748408318
+  magnetic_moments_spin_down_charge:
+  - 2.6541041481
+  - 2.6540102684
+  magnetic_moments_spin_up_charge:
+  - 4.402235565
+  - 4.4024185864
+  number_of_atom_types: 2
+  number_of_atoms: 2
+  number_of_iterations: 20
+  number_of_iterations_total: 20
+  number_of_species: 2
+  number_of_spin_components: 2
+  number_of_symmetries: 16
+  orbital_magnetic_moments:
+  - 0.0541958344
+  - 0.0541948912
+  orbital_magnetic_moments_spin_down_charge:
+  - 0.0839236153
+  - 0.083921618
+  orbital_magnetic_moments_spin_up_charge:
+  - -0.0297277809
+  - -0.0297267268
+  output_file_version: '0.34'
+  overall_charge_density: 0.0060794373
+  spin_density: 0.0073435944
+  spin_dependent_charge_interstitial:
+  - 0.9585356
+  - 0.9585064
+  spin_dependent_charge_mt_spheres:
+  - 26.7903595
+  - 23.2925985
+  spin_dependent_charge_total:
+  - 27.7488951
+  - 24.2511049
+  start_date:
+    date: 2021/01/22
+    time: '12:05:19'
+  sum_of_eigenvalues: -1473.1063216407
+  title: Fe fcc 2
+  total_charge: 52.0000000742
+  total_magnetic_moment_cell: 3.497790199999997
+  walltime: 5
+  walltime_units: seconds
+warnings:
+  fleur_modes:
+    band: false
+    dos: false
+    film: false
+    jspin: 2
+    ldau: false
+    noco: true
+    relax: false
+    soc: true
+  parser_info: Masci-Tools Fleur out.xml Parser v0.2.1
+  parser_warnings:
+  - 'Creating OutputSchema object for differing versions (out: 0.34; inp: 0.33)'
+  - No text found for tag targetStructureClass

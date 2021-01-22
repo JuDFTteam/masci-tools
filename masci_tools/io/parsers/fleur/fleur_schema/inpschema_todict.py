@@ -99,7 +99,7 @@ def create_inpschema_dict(path, save_to_file=True):
         return schema_dict, inp_version
 
 
-def load_inpschema(version, schema_return=False, create=True):
+def load_inpschema(version, schema_return=False, create=True, parser_info_out=None):
     """
     load the FleurInputSchema dict for the specified version
 
@@ -107,9 +107,12 @@ def load_inpschema(version, schema_return=False, create=True):
     :param schema_return: bool, if True also a etree XMLSchema object is returned
     :param create: bool, if True and the schema_dict does not exist it is created
                    via :py:func:`~masci_tools.io.parsers.fleur.fleur_schema.create_inpschema_dict()`
+    :param parser_info_out: dict with warnings, errors and information, ...
 
     :return: python dictionary with the schema information
     """
+    if parser_info_out is None:
+        parser_info_out = {'parser_warnings': []}
 
     PACKAGE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 
@@ -126,7 +129,7 @@ def load_inpschema(version, schema_return=False, create=True):
 
     if not os.path.isfile(schema_dict_path):
         if create:
-            print(f'Generating schema_dict file for given input schema: {schema_file_path}')
+            parser_info_out['parser_warnings'].append(f'Generating schema_dict file for given input schema: {schema_file_path}')
             create_inpschema_dict(path)
         else:
             raise FileNotFoundError(f'No inpschema_dict generated for FleurInputSchema.xsd at {path}')

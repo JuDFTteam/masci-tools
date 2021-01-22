@@ -315,6 +315,20 @@ def test_outxml_max5_0_compatibility(data_regression):
         'warnings': warnings,
     })
 
+def test_outxml_differing_versions(data_regression):
+    """
+    Test if files with different input/output versions are parsed correctly
+    """
+    OUTXML_FILEPATH = os.path.abspath(os.path.join(outxmlfilefolder, 'files/fleur/output_mixed_versions.xml'))
+
+    warnings = {'parser_warnings': []}
+    out_dict = outxml_parser(OUTXML_FILEPATH, parser_info_out=warnings)
+
+    data_regression.check({
+        'output_dict': out_dict,
+        'warnings': warnings,
+    })
+
 
 def test_outxml_lastiter(data_regression):
     """
