@@ -40,7 +40,7 @@ def create_inpschema_dict(path, save_to_file=True):
     schema_actions = {
         'root_tag': get_root_tag,
         'tag_paths': get_tag_paths,
-        'basic_types': get_basic_types,
+        '_basic_types': get_basic_types,
         'attrib_types': extract_attribute_types,
         'simple_elements': get_basic_elements,
         'unique_attribs': get_unique_attribs,
@@ -71,8 +71,9 @@ def create_inpschema_dict(path, save_to_file=True):
                 "    - 'inp_version': Version string of the input schema represented in this file\n"\
                 "    - 'tag_paths': simple xpath expressions to all valid tag names\n"\
                 '                   Multiple paths or ambiguous tag names are parsed as a list\n'\
-                "    - 'basic_types': Parsed definitions of all simple Types with their respective\n"\
-                '                     base type (int, float, ...) and evtl. length restrictions\n'\
+                "    - '_basic_types': Parsed definitions of all simple Types with their respective\n"\
+                '                      base type (int, float, ...) and evtl. length restrictions\n'\
+                '                     (Only used in the schema construction itself)\n'\
                 "    - 'attrib_types': All possible base types for all valid attributes. If multiple are\n"\
                 "                      possible a list, with 'string' always last (if possible)\n"\
                 "    - 'simple_elements': All elements with simple types and their type definition\n"\

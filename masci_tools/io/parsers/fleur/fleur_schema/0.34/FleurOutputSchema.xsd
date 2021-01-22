@@ -16,8 +16,14 @@
          <xsd:element maxOccurs="1" minOccurs="0" name="ERROR" type="ErrorType"/>
          <xsd:element maxOccurs="1" minOccurs="0" name="endDateAndTime" type="DateAndTimeType"/>
       </xsd:all>
-      <xsd:attribute name="fleurOutputVersion" type="FleurVersionType" use="required"/>
+      <xsd:attribute name="fleurOutputVersion" type="FleurOutputVersionType" use="required"/>
    </xsd:complexType>
+
+   <xsd:simpleType name="FleurOutputVersionType">
+      <xsd:restriction base="xsd:string">
+         <xsd:enumeration value="0.34"/>
+      </xsd:restriction>
+   </xsd:simpleType>
 
    <xsd:complexType name="ProgramVersionType">
       <xsd:all>

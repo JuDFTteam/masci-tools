@@ -12,8 +12,13 @@ The keys contain the following information:
     - 'iteration_tag_paths': simple relative xpath expressions to all valid tag names
                              inside an iteration. Multiple paths or ambiguous tag names
                              are parsed as a list
-    - 'basic_types': Parsed definitions of all simple Types with their respective
-                     base type (int, float, ...) and evtl. length restrictions
+    - '_basic_types': Parsed definitions of all simple Types with their respective
+                      base type (int, float, ...) and evtl. length restrictions
+                     (Only used in the schema construction itself)
+    - '_input_basic_types': Part of the parsed definitions of all simple Types with their
+                            respective base type (int, float, ...) and evtl. length
+                            restrictions from the input schema
+                            (Only used in the schema construction itself)
     - 'attrib_types': All possible base types for all valid attributes. If multiple are
                       possible a list, with 'string' always last (if possible)
     - 'simple_elements': All elements with simple types and their type definition
@@ -41,113 +46,7 @@ The keys contain the following information:
 """
 __out_version__ = '0.33'
 schema_dict = {
-    'attrib_types': {
-        'Angles': ['int'],
-        'Configs': ['int'],
-        'Delta': ['float'],
-        'F_x': ['float'],
-        'F_y': ['float'],
-        'F_z': ['float'],
-        'H_so': ['float'],
-        'J': ['float'],
-        'Message': ['string'],
-        'No': ['int'],
-        'U': ['float'],
-        'atomType': ['int'],
-        'atomicNumber': ['int'],
-        'branch': ['string'],
-        'branchHighest': ['float'],
-        'branchLowest': ['float'],
-        'comment': ['string'],
-        'count': ['int'],
-        'd': ['float'],
-        'date': ['string'],
-        'distance': ['float'],
-        'eigValSum': ['float'],
-        'energy': ['float'],
-        'ev-sum': ['float'],
-        'f': ['float'],
-        'flag': ['string'],
-        'fleurOutputVersion': ['string'],
-        'host': ['string'],
-        'iatom': ['int'],
-        'ikpt': ['int'],
-        'index': ['int'],
-        'interstitial': ['float'],
-        'j': ['float'],
-        'jatom': ['int'],
-        'jmtd': ['int'],
-        'k_x': ['float'],
-        'k_y': ['float'],
-        'k_z': ['float'],
-        'kinEnergy': ['float'],
-        'kpoint': ['int'],
-        'l': ['int'],
-        'lastCommitHash': ['string'],
-        'link': ['string'],
-        'lmaxd': ['int'],
-        'logDerivMT': ['float'],
-        'lostElectrons': ['float'],
-        'memoryPerNode': ['string'],
-        'moment': ['float'],
-        'mpiProcesses': ['string'],
-        'mtRadius': ['float'],
-        'mtSpheres': ['float'],
-        'mtVolume': ['float'],
-        'n': ['int'],
-        'n_hia': ['int'],
-        'n_u': ['int'],
-        'name': ['string'],
-        'nat': ['int'],
-        'ng2': ['int'],
-        'ng3': ['int'],
-        'nlotot': ['int'],
-        'ntype': ['int'],
-        'numbands': ['int'],
-        'numberForCurrentRun': ['int'],
-        'nvd': ['int'],
-        'occupation': ['float'],
-        'omegaTilda': ['float'],
-        'ompThreads': ['string'],
-        'overallNumber': ['int'],
-        'p': ['float'],
-        'phase': ['switch'],
-        'phi': ['float'],
-        'q': ['int', 'float'],
-        'qpoints': ['int'],
-        'qvectors': ['int'],
-        's': ['float'],
-        'sigma_x': ['float'],
-        'sigma_y': ['float'],
-        'sigma_z': ['float'],
-        'spin': ['int'],
-        'spinDownCharge': ['float'],
-        'spinUpCharge': ['float'],
-        'surfaceArea': ['float'],
-        'theta': ['float'],
-        'time': ['string'],
-        'total': ['float'],
-        'type': ['string'],
-        'uIndex': ['int'],
-        'unitCell': ['float'],
-        'units': ['string'],
-        'user': ['string'],
-        'vacuum': ['int'],
-        'vacuum1': ['float'],
-        'vacuum2': ['float'],
-        'value': ['float'],
-        'version': ['string'],
-        'vzIR': ['float'],
-        'vzInf': ['float'],
-        'weight': ['float'],
-        'weightScale': ['float'],
-        'x': ['float'],
-        'y': ['float'],
-        'z': ['float'],
-        'z1': ['float'],
-        'zone': ['string']
-    },
-    'basic_types': {
+    '_basic_types': {
         'AdditionalCompilerFlagsType': {
             'base_types': ['string'],
             'length': 'unbounded'
@@ -332,6 +231,278 @@ schema_dict = {
             'base_types': ['string'],
             'length': 1
         }
+    },
+    '_input_basic_types': {
+        'AtomPosType': {
+            'base_types': ['float_expression'],
+            'length': 3
+        },
+        'BZIntegrationModeEnum': {
+            'base_types': ['string'],
+            'length': 1
+        },
+        'CoreConfigEnum': {
+            'base_types': ['string'],
+            'length': 1
+        },
+        'CoreSpecEdgeEnum': {
+            'base_types': ['string'],
+            'length': 1
+        },
+        'CoreStateListType': {
+            'base_types': ['string'],
+            'length': 'unbounded'
+        },
+        'DisplaceType': {
+            'base_types': ['float'],
+            'length': 3
+        },
+        'Double3DVecType': {
+            'base_types': ['float'],
+            'length': 3
+        },
+        'Double4DVecType': {
+            'base_types': ['float'],
+            'length': 4
+        },
+        'DoubleVecType': {
+            'base_types': ['float'],
+            'length': 'unbounded'
+        },
+        'EParamSelectionEnum': {
+            'base_types': ['string'],
+            'length': 1
+        },
+        'ElectronStateEnum': {
+            'base_types': ['string'],
+            'length': 1
+        },
+        'FleurBool4DVecType': {
+            'base_types': ['switch'],
+            'length': 4
+        },
+        'FleurBoolVecType': {
+            'base_types': ['switch'],
+            'length': 'unbounded'
+        },
+        'FleurDouble2DVecType': {
+            'base_types': ['float_expression'],
+            'length': 2
+        },
+        'FleurDouble3DVecType': {
+            'base_types': ['float_expression'],
+            'length': 3
+        },
+        'FleurDoubleVecType': {
+            'base_types': ['float_expression'],
+            'length': 'unbounded'
+        },
+        'FleurVersionType': {
+            'base_types': ['string'],
+            'length': 1
+        },
+        'ForceMixEnum': {
+            'base_types': ['string'],
+            'length': 1
+        },
+        'Integer3DVecType': {
+            'base_types': ['int'],
+            'length': 3
+        },
+        'Integer4DVecType': {
+            'base_types': ['int'],
+            'length': 4
+        },
+        'IntegerVecType': {
+            'base_types': ['int'],
+            'length': 'unbounded'
+        },
+        'KPointListPurposeEnum': {
+            'base_types': ['string'],
+            'length': 1
+        },
+        'KPointType': {
+            'base_types': ['float_expression'],
+            'length': 3
+        },
+        'LatticeParameterType': {
+            'base_types': ['float_expression'],
+            'length': 1
+        },
+        'ManualCutoffType': {
+            'base_types': ['float', 'string'],
+            'length': 1
+        },
+        'ManualKKintgrCutoffType': {
+            'base_types': ['float', 'string'],
+            'length': 1
+        },
+        'MixingEnum': {
+            'base_types': ['string'],
+            'length': 1
+        },
+        'NobleGasConfigEnum': {
+            'base_types': ['string'],
+            'length': 1
+        },
+        'NumBandsType': {
+            'base_types': ['int', 'string'],
+            'length': 1
+        },
+        'PositionType': {
+            'base_types': ['float'],
+            'length': 3
+        },
+        'RDMFTFunctionalEnum': {
+            'base_types': ['string'],
+            'length': 1
+        },
+        'SpecialPointType': {
+            'base_types': ['float_expression'],
+            'length': 3
+        },
+        'SpinNumberType': {
+            'base_types': ['int'],
+            'length': 1
+        },
+        'String2DVecType': {
+            'base_types': ['string'],
+            'length': 2
+        },
+        'String3DVecType': {
+            'base_types': ['string'],
+            'length': 3
+        },
+        'StringVecType': {
+            'base_types': ['string'],
+            'length': 'unbounded'
+        },
+        'TripleFleurBool': {
+            'base_types': ['string'],
+            'length': 1
+        },
+        'ValenceStateListType': {
+            'base_types': ['string'],
+            'length': 'unbounded'
+        },
+        'XCFunctionalEnum': {
+            'base_types': ['string'],
+            'length': 1
+        },
+        'ZeroToOneNumberType': {
+            'base_types': ['float'],
+            'length': 1
+        },
+        'kPointListTypeEnum': {
+            'base_types': ['string'],
+            'length': 1
+        }
+    },
+    'attrib_types': {
+        'Angles': ['int'],
+        'Configs': ['int'],
+        'Delta': ['float'],
+        'F_x': ['float'],
+        'F_y': ['float'],
+        'F_z': ['float'],
+        'H_so': ['float'],
+        'J': ['float'],
+        'Message': ['string'],
+        'No': ['int'],
+        'U': ['float'],
+        'atomType': ['int'],
+        'atomicNumber': ['int'],
+        'branch': ['string'],
+        'branchHighest': ['float'],
+        'branchLowest': ['float'],
+        'comment': ['string'],
+        'count': ['int'],
+        'd': ['float'],
+        'date': ['string'],
+        'distance': ['float'],
+        'eigValSum': ['float'],
+        'energy': ['float'],
+        'ev-sum': ['float'],
+        'f': ['float'],
+        'flag': ['string'],
+        'fleurOutputVersion': ['string'],
+        'host': ['string'],
+        'iatom': ['int'],
+        'ikpt': ['int'],
+        'index': ['int'],
+        'interstitial': ['float'],
+        'j': ['float'],
+        'jatom': ['int'],
+        'jmtd': ['int'],
+        'k_x': ['float'],
+        'k_y': ['float'],
+        'k_z': ['float'],
+        'kinEnergy': ['float'],
+        'kpoint': ['int'],
+        'l': ['int'],
+        'lastCommitHash': ['string'],
+        'link': ['string'],
+        'lmaxd': ['int'],
+        'logDerivMT': ['float'],
+        'lostElectrons': ['float'],
+        'memoryPerNode': ['string'],
+        'moment': ['float'],
+        'mpiProcesses': ['string'],
+        'mtRadius': ['float'],
+        'mtSpheres': ['float'],
+        'mtVolume': ['float'],
+        'n': ['int'],
+        'n_hia': ['int'],
+        'n_u': ['int'],
+        'name': ['string'],
+        'nat': ['int'],
+        'ng2': ['int'],
+        'ng3': ['int'],
+        'nlotot': ['int'],
+        'ntype': ['int'],
+        'numbands': ['int'],
+        'numberForCurrentRun': ['int'],
+        'nvd': ['int'],
+        'occupation': ['float'],
+        'omegaTilda': ['float'],
+        'ompThreads': ['string'],
+        'overallNumber': ['int'],
+        'p': ['float'],
+        'phase': ['switch'],
+        'phi': ['float'],
+        'q': ['int', 'float'],
+        'qpoints': ['int'],
+        'qvectors': ['int'],
+        's': ['float'],
+        'sigma_x': ['float'],
+        'sigma_y': ['float'],
+        'sigma_z': ['float'],
+        'spin': ['int'],
+        'spinDownCharge': ['float'],
+        'spinUpCharge': ['float'],
+        'surfaceArea': ['float'],
+        'theta': ['float'],
+        'time': ['string'],
+        'total': ['float'],
+        'type': ['string'],
+        'uIndex': ['int'],
+        'unitCell': ['float'],
+        'units': ['string'],
+        'user': ['string'],
+        'vacuum': ['int'],
+        'vacuum1': ['float'],
+        'vacuum2': ['float'],
+        'value': ['float'],
+        'version': ['string'],
+        'vzIR': ['float'],
+        'vzInf': ['float'],
+        'weight': ['float'],
+        'weightScale': ['float'],
+        'x': ['float'],
+        'y': ['float'],
+        'z': ['float'],
+        'z1': ['float'],
+        'zone': ['string']
     },
     'input_tag':
     'fleurInput',

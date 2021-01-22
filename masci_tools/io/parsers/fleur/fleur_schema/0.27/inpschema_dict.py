@@ -8,8 +8,9 @@ The keys contain the following information:
     - 'inp_version': Version string of the input schema represented in this file
     - 'tag_paths': simple xpath expressions to all valid tag names
                    Multiple paths or ambiguous tag names are parsed as a list
-    - 'basic_types': Parsed definitions of all simple Types with their respective
-                     base type (int, float, ...) and evtl. length restrictions
+    - '_basic_types': Parsed definitions of all simple Types with their respective
+                      base type (int, float, ...) and evtl. length restrictions
+                     (Only used in the schema construction itself)
     - 'attrib_types': All possible base types for all valid attributes. If multiple are
                       possible a list, with 'string' always last (if possible)
     - 'simple_elements': All elements with simple types and their type definition
@@ -26,6 +27,104 @@ The keys contain the following information:
 """
 __inp_version__ = '0.27'
 schema_dict = {
+    '_basic_types': {
+        'BZIntegrationModeEnum': {
+            'base_types': ['string'],
+            'length': 1
+        },
+        'CoreConfigEnum': {
+            'base_types': ['string'],
+            'length': 1
+        },
+        'CoreStateListType': {
+            'base_types': ['string'],
+            'length': 'unbounded'
+        },
+        'Double3DVecType': {
+            'base_types': ['float'],
+            'length': 3
+        },
+        'Double4DVecType': {
+            'base_types': ['float'],
+            'length': 4
+        },
+        'DoubleVecType': {
+            'base_types': ['float'],
+            'length': 'unbounded'
+        },
+        'EParamSelectionEnum': {
+            'base_types': ['string'],
+            'length': 1
+        },
+        'ElectronStateEnum': {
+            'base_types': ['string'],
+            'length': 1
+        },
+        'FleurVersionType': {
+            'base_types': ['string'],
+            'length': 1
+        },
+        'KPointType': {
+            'base_types': ['float'],
+            'length': 3
+        },
+        'LatnamEnum': {
+            'base_types': ['string'],
+            'length': 1
+        },
+        'MixingEnum': {
+            'base_types': ['string'],
+            'length': 1
+        },
+        'NobleGasConfigEnum': {
+            'base_types': ['string'],
+            'length': 1
+        },
+        'NumBandsType': {
+            'base_types': ['int', 'string'],
+            'length': 1
+        },
+        'PositionType': {
+            'base_types': ['float'],
+            'length': 3
+        },
+        'SpecialPointType': {
+            'base_types': ['float'],
+            'length': 3
+        },
+        'SpgrpEnum': {
+            'base_types': ['string'],
+            'length': 1
+        },
+        'SpinNumberType': {
+            'base_types': ['int'],
+            'length': 1
+        },
+        'String2DVecType': {
+            'base_types': ['string'],
+            'length': 2
+        },
+        'String3DVecType': {
+            'base_types': ['string'],
+            'length': 3
+        },
+        'StringVecType': {
+            'base_types': ['string'],
+            'length': 'unbounded'
+        },
+        'TripleFleurBool': {
+            'base_types': ['string'],
+            'length': 1
+        },
+        'ValenceStateListType': {
+            'base_types': ['string'],
+            'length': 'unbounded'
+        },
+        'XCFunctionalEnum': {
+            'base_types': ['string'],
+            'length': 1
+        }
+    },
     'attrib_types': {
         'Gmax': ['float'],
         'GmaxXC': ['float'],
@@ -197,104 +296,6 @@ schema_dict = {
         'zrfs': ['switch'],
         'zrfs1': ['switch'],
         'zsigma': ['float']
-    },
-    'basic_types': {
-        'BZIntegrationModeEnum': {
-            'base_types': ['string'],
-            'length': 1
-        },
-        'CoreConfigEnum': {
-            'base_types': ['string'],
-            'length': 1
-        },
-        'CoreStateListType': {
-            'base_types': ['string'],
-            'length': 'unbounded'
-        },
-        'Double3DVecType': {
-            'base_types': ['float'],
-            'length': 3
-        },
-        'Double4DVecType': {
-            'base_types': ['float'],
-            'length': 4
-        },
-        'DoubleVecType': {
-            'base_types': ['float'],
-            'length': 'unbounded'
-        },
-        'EParamSelectionEnum': {
-            'base_types': ['string'],
-            'length': 1
-        },
-        'ElectronStateEnum': {
-            'base_types': ['string'],
-            'length': 1
-        },
-        'FleurVersionType': {
-            'base_types': ['string'],
-            'length': 1
-        },
-        'KPointType': {
-            'base_types': ['float'],
-            'length': 3
-        },
-        'LatnamEnum': {
-            'base_types': ['string'],
-            'length': 1
-        },
-        'MixingEnum': {
-            'base_types': ['string'],
-            'length': 1
-        },
-        'NobleGasConfigEnum': {
-            'base_types': ['string'],
-            'length': 1
-        },
-        'NumBandsType': {
-            'base_types': ['int', 'string'],
-            'length': 1
-        },
-        'PositionType': {
-            'base_types': ['float'],
-            'length': 3
-        },
-        'SpecialPointType': {
-            'base_types': ['float'],
-            'length': 3
-        },
-        'SpgrpEnum': {
-            'base_types': ['string'],
-            'length': 1
-        },
-        'SpinNumberType': {
-            'base_types': ['int'],
-            'length': 1
-        },
-        'String2DVecType': {
-            'base_types': ['string'],
-            'length': 2
-        },
-        'String3DVecType': {
-            'base_types': ['string'],
-            'length': 3
-        },
-        'StringVecType': {
-            'base_types': ['string'],
-            'length': 'unbounded'
-        },
-        'TripleFleurBool': {
-            'base_types': ['string'],
-            'length': 1
-        },
-        'ValenceStateListType': {
-            'base_types': ['string'],
-            'length': 'unbounded'
-        },
-        'XCFunctionalEnum': {
-            'base_types': ['string'],
-            'length': 1
-        }
     },
     'inp_version': '0.27',
     'omitt_contained_tags': ['constants', 'atomSpecies', 'atomGroups', 'symmetryOperations'],

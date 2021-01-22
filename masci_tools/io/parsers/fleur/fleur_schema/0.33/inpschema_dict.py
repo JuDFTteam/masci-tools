@@ -8,8 +8,9 @@ The keys contain the following information:
     - 'inp_version': Version string of the input schema represented in this file
     - 'tag_paths': simple xpath expressions to all valid tag names
                    Multiple paths or ambiguous tag names are parsed as a list
-    - 'basic_types': Parsed definitions of all simple Types with their respective
-                     base type (int, float, ...) and evtl. length restrictions
+    - '_basic_types': Parsed definitions of all simple Types with their respective
+                      base type (int, float, ...) and evtl. length restrictions
+                     (Only used in the schema construction itself)
     - 'attrib_types': All possible base types for all valid attributes. If multiple are
                       possible a list, with 'string' always last (if possible)
     - 'simple_elements': All elements with simple types and their type definition
@@ -26,6 +27,172 @@ The keys contain the following information:
 """
 __inp_version__ = '0.33'
 schema_dict = {
+    '_basic_types': {
+        'AtomPosType': {
+            'base_types': ['float_expression'],
+            'length': 3
+        },
+        'BZIntegrationModeEnum': {
+            'base_types': ['string'],
+            'length': 1
+        },
+        'CoreConfigEnum': {
+            'base_types': ['string'],
+            'length': 1
+        },
+        'CoreSpecEdgeEnum': {
+            'base_types': ['string'],
+            'length': 1
+        },
+        'CoreStateListType': {
+            'base_types': ['string'],
+            'length': 'unbounded'
+        },
+        'DisplaceType': {
+            'base_types': ['float'],
+            'length': 3
+        },
+        'Double3DVecType': {
+            'base_types': ['float'],
+            'length': 3
+        },
+        'Double4DVecType': {
+            'base_types': ['float'],
+            'length': 4
+        },
+        'DoubleVecType': {
+            'base_types': ['float'],
+            'length': 'unbounded'
+        },
+        'EParamSelectionEnum': {
+            'base_types': ['string'],
+            'length': 1
+        },
+        'ElectronStateEnum': {
+            'base_types': ['string'],
+            'length': 1
+        },
+        'FleurBool4DVecType': {
+            'base_types': ['switch'],
+            'length': 4
+        },
+        'FleurBoolVecType': {
+            'base_types': ['switch'],
+            'length': 'unbounded'
+        },
+        'FleurDouble2DVecType': {
+            'base_types': ['float_expression'],
+            'length': 2
+        },
+        'FleurDouble3DVecType': {
+            'base_types': ['float_expression'],
+            'length': 3
+        },
+        'FleurDoubleVecType': {
+            'base_types': ['float_expression'],
+            'length': 'unbounded'
+        },
+        'FleurVersionType': {
+            'base_types': ['string'],
+            'length': 1
+        },
+        'ForceMixEnum': {
+            'base_types': ['string'],
+            'length': 1
+        },
+        'Integer3DVecType': {
+            'base_types': ['int'],
+            'length': 3
+        },
+        'Integer4DVecType': {
+            'base_types': ['int'],
+            'length': 4
+        },
+        'IntegerVecType': {
+            'base_types': ['int'],
+            'length': 'unbounded'
+        },
+        'KPointListPurposeEnum': {
+            'base_types': ['string'],
+            'length': 1
+        },
+        'KPointType': {
+            'base_types': ['float_expression'],
+            'length': 3
+        },
+        'LatticeParameterType': {
+            'base_types': ['float_expression'],
+            'length': 1
+        },
+        'ManualCutoffType': {
+            'base_types': ['float', 'string'],
+            'length': 1
+        },
+        'ManualKKintgrCutoffType': {
+            'base_types': ['float', 'string'],
+            'length': 1
+        },
+        'MixingEnum': {
+            'base_types': ['string'],
+            'length': 1
+        },
+        'NobleGasConfigEnum': {
+            'base_types': ['string'],
+            'length': 1
+        },
+        'NumBandsType': {
+            'base_types': ['int', 'string'],
+            'length': 1
+        },
+        'PositionType': {
+            'base_types': ['float'],
+            'length': 3
+        },
+        'RDMFTFunctionalEnum': {
+            'base_types': ['string'],
+            'length': 1
+        },
+        'SpecialPointType': {
+            'base_types': ['float_expression'],
+            'length': 3
+        },
+        'SpinNumberType': {
+            'base_types': ['int'],
+            'length': 1
+        },
+        'String2DVecType': {
+            'base_types': ['string'],
+            'length': 2
+        },
+        'String3DVecType': {
+            'base_types': ['string'],
+            'length': 3
+        },
+        'StringVecType': {
+            'base_types': ['string'],
+            'length': 'unbounded'
+        },
+        'TripleFleurBool': {
+            'base_types': ['string'],
+            'length': 1
+        },
+        'ValenceStateListType': {
+            'base_types': ['string'],
+            'length': 'unbounded'
+        },
+        'XCFunctionalEnum': {
+            'base_types': ['string'],
+            'length': 1
+        },
+        'ZeroToOneNumberType': {
+            'base_types': ['float'],
+            'length': 1
+        },
+        'kPointListTypeEnum': {
+            'base_types': ['string'],
+            'length': 1
+        }
+    },
     'attrib_types': {
         'Gmax': ['float_expression'],
         'GmaxXC': ['float_expression'],
@@ -308,172 +475,6 @@ schema_dict = {
         'zero': ['string'],
         'zrfs1': ['switch'],
         'zsigma': ['float_expression']
-    },
-    'basic_types': {
-        'AtomPosType': {
-            'base_types': ['float_expression'],
-            'length': 3
-        },
-        'BZIntegrationModeEnum': {
-            'base_types': ['string'],
-            'length': 1
-        },
-        'CoreConfigEnum': {
-            'base_types': ['string'],
-            'length': 1
-        },
-        'CoreSpecEdgeEnum': {
-            'base_types': ['string'],
-            'length': 1
-        },
-        'CoreStateListType': {
-            'base_types': ['string'],
-            'length': 'unbounded'
-        },
-        'DisplaceType': {
-            'base_types': ['float'],
-            'length': 3
-        },
-        'Double3DVecType': {
-            'base_types': ['float'],
-            'length': 3
-        },
-        'Double4DVecType': {
-            'base_types': ['float'],
-            'length': 4
-        },
-        'DoubleVecType': {
-            'base_types': ['float'],
-            'length': 'unbounded'
-        },
-        'EParamSelectionEnum': {
-            'base_types': ['string'],
-            'length': 1
-        },
-        'ElectronStateEnum': {
-            'base_types': ['string'],
-            'length': 1
-        },
-        'FleurBool4DVecType': {
-            'base_types': ['switch'],
-            'length': 4
-        },
-        'FleurBoolVecType': {
-            'base_types': ['switch'],
-            'length': 'unbounded'
-        },
-        'FleurDouble2DVecType': {
-            'base_types': ['float_expression'],
-            'length': 2
-        },
-        'FleurDouble3DVecType': {
-            'base_types': ['float_expression'],
-            'length': 3
-        },
-        'FleurDoubleVecType': {
-            'base_types': ['float_expression'],
-            'length': 'unbounded'
-        },
-        'FleurVersionType': {
-            'base_types': ['string'],
-            'length': 1
-        },
-        'ForceMixEnum': {
-            'base_types': ['string'],
-            'length': 1
-        },
-        'Integer3DVecType': {
-            'base_types': ['int'],
-            'length': 3
-        },
-        'Integer4DVecType': {
-            'base_types': ['int'],
-            'length': 4
-        },
-        'IntegerVecType': {
-            'base_types': ['int'],
-            'length': 'unbounded'
-        },
-        'KPointListPurposeEnum': {
-            'base_types': ['string'],
-            'length': 1
-        },
-        'KPointType': {
-            'base_types': ['float_expression'],
-            'length': 3
-        },
-        'LatticeParameterType': {
-            'base_types': ['float_expression'],
-            'length': 1
-        },
-        'ManualCutoffType': {
-            'base_types': ['float', 'string'],
-            'length': 1
-        },
-        'ManualKKintgrCutoffType': {
-            'base_types': ['float', 'string'],
-            'length': 1
-        },
-        'MixingEnum': {
-            'base_types': ['string'],
-            'length': 1
-        },
-        'NobleGasConfigEnum': {
-            'base_types': ['string'],
-            'length': 1
-        },
-        'NumBandsType': {
-            'base_types': ['int', 'string'],
-            'length': 1
-        },
-        'PositionType': {
-            'base_types': ['float'],
-            'length': 3
-        },
-        'RDMFTFunctionalEnum': {
-            'base_types': ['string'],
-            'length': 1
-        },
-        'SpecialPointType': {
-            'base_types': ['float_expression'],
-            'length': 3
-        },
-        'SpinNumberType': {
-            'base_types': ['int'],
-            'length': 1
-        },
-        'String2DVecType': {
-            'base_types': ['string'],
-            'length': 2
-        },
-        'String3DVecType': {
-            'base_types': ['string'],
-            'length': 3
-        },
-        'StringVecType': {
-            'base_types': ['string'],
-            'length': 'unbounded'
-        },
-        'TripleFleurBool': {
-            'base_types': ['string'],
-            'length': 1
-        },
-        'ValenceStateListType': {
-            'base_types': ['string'],
-            'length': 'unbounded'
-        },
-        'XCFunctionalEnum': {
-            'base_types': ['string'],
-            'length': 1
-        },
-        'ZeroToOneNumberType': {
-            'base_types': ['float'],
-            'length': 1
-        },
-        'kPointListTypeEnum': {
-            'base_types': ['string'],
-            'length': 1
-        }
     },
     'inp_version':
     '0.33',

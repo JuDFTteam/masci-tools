@@ -579,8 +579,8 @@ def extract_attribute_types(xmlschema, namespaces, **kwargs):
                     types_dict[name_attrib].append(base_type)
 
         if not is_base:
-            if type_attrib in kwargs['basic_types']:
-                for base_type in kwargs['basic_types'][type_attrib]['base_types']:
+            if type_attrib in kwargs['_basic_types']:
+                for base_type in kwargs['_basic_types'][type_attrib]['base_types']:
                     if base_type not in types_dict[name_attrib]:
                         types_dict[name_attrib].append(base_type)
             else:
@@ -853,9 +853,9 @@ def get_basic_elements(xmlschema, namespaces, **kwargs):
                 length = 1
 
         if not is_base:
-            if type_elem in kwargs['basic_types']:
-                possible_types = kwargs['basic_types'][type_elem]['base_types']
-                length = kwargs['basic_types'][type_elem]['length']
+            if type_elem in kwargs['_basic_types']:
+                possible_types = kwargs['_basic_types'][type_elem]['base_types']
+                length = kwargs['_basic_types'][type_elem]['length']
             else:
                 continue
 

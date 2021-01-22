@@ -21,9 +21,13 @@ from lxml import etree
 from pprint import pprint
 import importlib.util
 import os
+import copy
+import tempfile
+import shutil
+import warnings
 
 
-def create_outschema_dict(path, save_to_file=True):
+def create_outschema_dict(path, save_to_file=True, inp_version=None):
     """
     Creates dictionary with information about the FleurOutputSchema.xsd and writes
     it to the same folder in a file called ```outschema_dict.py```. The FleurOutputSchema.xsd
@@ -41,7 +45,7 @@ def create_outschema_dict(path, save_to_file=True):
     schema_actions = {
         'input_tag': get_input_tag,
         'root_tag': get_root_tag,
-        'basic_types': get_basic_types,
+        '_basic_types': get_basic_types,
         'attrib_types': extract_attribute_types,
         'simple_elements': get_basic_elements,
         'tag_paths': get_tag_paths,
@@ -63,12 +67,15 @@ def create_outschema_dict(path, save_to_file=True):
 
     namespaces = {'xsd': 'http://www.w3.org/2001/XMLSchema'}
     out_version = str(xmlschema.xpath('/xsd:schema/@version', namespaces=namespaces)[0])
-    inpschema_dict = load_inpschema(out_version)  #Used to make type definitions available without reparsing inputSchema
+
+    if inp_version is None:
+        inp_version = out_version
+    inpschema_dict = load_inpschema(inp_version)  #Used to make type definitions available without reparsing inputSchema
 
     schema_dict = {}
     schema_dict['out_version'] = out_version
     for key, action in schema_actions.items():
-        addargs = {'input_basic_types': inpschema_dict['basic_types']}
+        addargs = {'input_basic_types': inpschema_dict['_basic_types']}
         if key in ['unique_attribs', 'unique_path_attribs', 'other_attribs', 'tag_paths', 'tag_info']:
             addargs['stop_iteration'] = True
         elif key in [
@@ -78,6 +85,8 @@ def create_outschema_dict(path, save_to_file=True):
             addargs['iteration_root'] = True
             addargs['iteration'] = True
         schema_dict[key] = action(xmlschema, namespaces, **schema_dict, **addargs)
+
+    schema_dict['_input_basic_types'] = copy.deepcopy(inpschema_dict['_basic_types'])
 
     docstring = '\n'\
                 'This file contains information parsed from the FleurOutputSchema.xsd\n'\
@@ -92,8 +101,13 @@ def create_outschema_dict(path, save_to_file=True):
                 "    - 'iteration_tag_paths': simple relative xpath expressions to all valid tag names\n"\
                 '                             inside an iteration. Multiple paths or ambiguous tag names\n'\
                 '                             are parsed as a list\n'\
-                "    - 'basic_types': Parsed definitions of all simple Types with their respective\n"\
-                '                     base type (int, float, ...) and evtl. length restrictions\n'\
+                "    - '_basic_types': Parsed definitions of all simple Types with their respective\n"\
+                '                      base type (int, float, ...) and evtl. length restrictions\n'\
+                '                     (Only used in the schema construction itself)\n'\
+                "    - '_input_basic_types': Part of the parsed definitions of all simple Types with their\n"\
+                '                            respective base type (int, float, ...) and evtl. length\n'\
+                '                            restrictions from the input schema\n'\
+                '                            (Only used in the schema construction itself)\n'\
                 "    - 'attrib_types': All possible base types for all valid attributes. If multiple are\n"\
                 "                      possible a list, with 'string' always last (if possible)\n"\
                 "    - 'simple_elements': All elements with simple types and their type definition\n"\
@@ -129,7 +143,7 @@ def create_outschema_dict(path, save_to_file=True):
         return schema_dict, out_version
 
 
-def load_outschema(version, schema_return=False, create=True):
+def load_outschema(version, schema_return=False, create=True, inp_version=None):
     """
     load the FleurOutputSchema dict for the specified version
 
@@ -167,9 +181,34 @@ def load_outschema(version, schema_return=False, create=True):
     spec.loader.exec_module(schema)
     schema_dict = schema.schema_dict
 
+    if inp_version is None:
+        inp_version = version
+
+    if version != inp_version:
+        inpschema = load_inpschema(inp_version)
+        if inpschema['_basic_types'] != schema_dict['_input_basic_types']:
+            #Basic type defintions have changed so we create the output schema on the fly
+            warnings.warn('Basic type definitions have changed, recreating outputschema dict')
+            schema_dict, version = create_outschema_dict(path, save_to_file=False, inp_version=inp_version)
+
     if schema_return:
-        xmlschema_doc = etree.parse(schema_file_path)
-        xmlschema = etree.XMLSchema(xmlschema_doc)
+        if version == inp_version:
+            #This can be constructed in place
+            xmlschema_doc = etree.parse(schema_file_path)
+            xmlschema = etree.XMLSchema(xmlschema_doc)
+        else:
+            with tempfile.TemporaryDirectory() as td:
+                temp_input_schema_path = os.path.join(td, 'FleurInputSchema.xsd')
+                input_schema_path = os.path.abspath(
+                    os.path.join(PACKAGE_DIRECTORY, f'./{inp_version}/FleurInputSchema.xsd'))
+                shutil.copy(input_schema_path, temp_input_schema_path)
+
+                temp_output_schema_path = os.path.join(td, 'FleurOutputSchema.xsd')
+                output_schema_path = os.path.abspath(
+                    os.path.join(PACKAGE_DIRECTORY, f'./{version}/FleurOutputSchema.xsd'))
+                shutil.copy(output_schema_path, temp_output_schema_path)
+                xmlschema_doc = etree.parse(output_schema_path)
+                xmlschema = etree.XMLSchema(xmlschema_doc)
 
     if schema_return:
         return schema_dict, xmlschema
