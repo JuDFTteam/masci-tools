@@ -9,7 +9,7 @@ def test_default_parse_tasks():
     """
     Test the default parsing tasks fro inconsitencies/typos
     """
-    from masci_tools.io.parsers.fleur import ParseTasks
+    from masci_tools.util.parse_tasks import ParseTasks
 
     expected_keys = {
         'film_relax_info', 'distances', 'forcetheorem_jij', 'ldau_info', 'bulk_relax_info', 'orbital_magnetic_moments',
@@ -28,8 +28,7 @@ def test_find_migration():
     """
     Test the finding of migrations
     """
-    from masci_tools.io.parsers.fleur import ParseTasks
-    from masci_tools.io.parsers.fleur.parse_tasks import find_migration
+    from masci_tools.util.parse_tasks import ParseTasks, find_migration
 
     assert len(find_migration('0.34', '0.34', ParseTasks._migrations)) == 0
     assert len(find_migration('0.34', '0.33', ParseTasks._migrations)) == 1

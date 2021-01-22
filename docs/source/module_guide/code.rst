@@ -85,5 +85,8 @@ Utility functions
 .. automodule:: masci_tools.util.fleur_calculate_expression
    :members:
 
+.. automodule:: masci_tools.util.parse_tasks
+   :members:
+
 .. automodule:: masci_tools.util.parse_tasks_decorators
    :members:

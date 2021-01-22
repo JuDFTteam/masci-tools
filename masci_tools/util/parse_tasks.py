@@ -21,7 +21,7 @@ import copy
 import os
 
 PACKAGE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
-DEFAULT_TASK_FILE = os.path.abspath(os.path.join(PACKAGE_DIRECTORY, 'default_parse_tasks.py'))
+DEFAULT_TASK_FILE = os.path.abspath(os.path.join(PACKAGE_DIRECTORY, '../io/parsers/fleur/default_parse_tasks.py'))
 
 
 def find_migration(start, target, migrations):

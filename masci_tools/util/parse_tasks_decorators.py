@@ -22,7 +22,7 @@ Up till now 3 decorators are defined:
     - ```conversion_function``` makes the decorated function available to be called easily
       after a certain parsing task has occured
 """
-from masci_tools.io.parsers.fleur.parse_tasks import ParseTasks
+from masci_tools.util.parse_tasks import ParseTasks
 from functools import wraps
 
 
