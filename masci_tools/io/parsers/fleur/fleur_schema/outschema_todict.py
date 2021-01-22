@@ -143,7 +143,7 @@ def create_outschema_dict(path, save_to_file=True, inp_version=None):
         return schema_dict, out_version
 
 
-def load_outschema(version, schema_return=False, create=True, inp_version=None, parser_info_out=None):
+def load_outschema(version, schema_return=False, create=True, inp_version=None, parser_info_out=None, show_help=False):
     """
     load the FleurOutputSchema dict for the specified version
 
@@ -207,6 +207,9 @@ def load_outschema(version, schema_return=False, create=True, inp_version=None, 
     schema = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(schema)
     schema_dict = schema.schema_dict
+
+    if show_help:
+        help(schema)
 
     if inp_version is None:
         inp_version = version

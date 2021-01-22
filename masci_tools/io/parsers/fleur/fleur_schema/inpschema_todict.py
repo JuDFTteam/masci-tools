@@ -99,7 +99,7 @@ def create_inpschema_dict(path, save_to_file=True):
         return schema_dict, inp_version
 
 
-def load_inpschema(version, schema_return=False, create=True, parser_info_out=None):
+def load_inpschema(version, schema_return=False, create=True, parser_info_out=None, show_help=False):
     """
     load the FleurInputSchema dict for the specified version
 
@@ -159,6 +159,9 @@ def load_inpschema(version, schema_return=False, create=True, parser_info_out=No
     schema = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(schema)
     schema_dict = schema.schema_dict
+
+    if show_help:
+        help(schema)
 
     if schema_return:
         xmlschema_doc = etree.parse(schema_file_path)
