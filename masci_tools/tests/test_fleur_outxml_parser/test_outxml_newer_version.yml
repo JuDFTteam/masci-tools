@@ -70,7 +70,7 @@ warnings:
     noco: true
     relax: false
     soc: false
-  parser_info: Masci-Tools Fleur out.xml Parser v0.2.1
+  parser_info: Masci-Tools Fleur out.xml Parser v0.3.0
   parser_warnings:
   - No Input Schema available for version '0.36'; falling back to '0.34'
   - No Output Schema available for version '0.36'; falling back to '0.34'

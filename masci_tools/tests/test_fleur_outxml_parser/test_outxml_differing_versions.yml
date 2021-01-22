@@ -79,7 +79,7 @@ warnings:
     noco: true
     relax: false
     soc: true
-  parser_info: Masci-Tools Fleur out.xml Parser v0.2.1
+  parser_info: Masci-Tools Fleur out.xml Parser v0.3.0
   parser_warnings:
   - 'Creating OutputSchema object for differing versions (out: 0.34; inp: 0.33)'
   - No text found for tag targetStructureClass

@@ -277,7 +277,7 @@ input_dict:
       unfoldBand: false
 warnings:
   fleur_inp_version: '0.33'
-  parser_info: Masci-Tools Fleur inp.xml Parser v0.1.1
+  parser_info: Masci-Tools Fleur inp.xml Parser v0.2.0
   parser_warnings:
   - 'Failed to convert attribute ''GmaxXC'': Below are the warnings raised from convert_xml_attribute'
   - 'Could not evaluate expression ''2..041'' The following error was raised: Cannot

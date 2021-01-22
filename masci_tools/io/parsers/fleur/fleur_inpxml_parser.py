@@ -36,7 +36,7 @@ def inpxml_parser(inpxmlfile, version=None, parser_info_out=None):
     if parser_info_out is None:
         parser_info_out = {'parser_warnings': []}
 
-    parser_version = '0.1.1'
+    parser_version = '0.2.0'
     parser_info_out['parser_info'] = f'Masci-Tools Fleur inp.xml Parser v{parser_version}'
 
     if isinstance(inpxmlfile, etree._ElementTree):
