@@ -153,6 +153,7 @@ def load_outschema(version, schema_return=False, create=True, inp_version=None, 
                    via :py:func:`~masci_tools.io.parsers.fleur.fleur_schema.create_outschema_dict()`
     :param inp_version: str, optional (default same as version) loads Inputschema for the specified version
     :param parser_info_out: dict with warnings, errors and information, ...
+    :param show_help: bool, if True a explanation of the keys in the schema dictionary is printed
 
     :return: python dictionary with the schema information
     """

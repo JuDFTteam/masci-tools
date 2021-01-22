@@ -108,6 +108,7 @@ def load_inpschema(version, schema_return=False, create=True, parser_info_out=No
     :param create: bool, if True and the schema_dict does not exist it is created
                    via :py:func:`~masci_tools.io.parsers.fleur.fleur_schema.create_inpschema_dict()`
     :param parser_info_out: dict with warnings, errors and information, ...
+    :param show_help: bool, if True a explanation of the keys in the schema dictionary is printed
 
     :return: python dictionary with the schema information
     """
