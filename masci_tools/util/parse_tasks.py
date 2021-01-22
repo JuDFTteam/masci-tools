@@ -123,19 +123,18 @@ class ParseTasks(object):
         else:
             self.tasks = tasks_dict
 
-
         #Catch initializations, where decorators have not been triggered
         #(if we do this at import we produce circular imports)
         #The alternative is moving concrete definitions for the output parser away from the parser which
         #I do not like at all
         if getattr(self, '_migrations', None) is None:
-            import masci_tools.io.parsers.fleur.task_migrations
+            import masci_tools.io.parsers.fleur.task_migrations  # pylint: disable=cyclic-import
 
         if getattr(self, '_conversion_functions', None) is None:
-            import masci_tools.io.parsers.fleur.outxml_conversions
+            import masci_tools.io.parsers.fleur.outxml_conversions  # pylint: disable=cyclic-import
 
         if getattr(self, '_parse_functions', None) is None:
-            import masci_tools.util.schema_dict_util
+            import masci_tools.util.schema_dict_util  # pylint: disable=cyclic-import
 
         #Look if the base version is compatible if not look for a migration
         if version not in tasks.__working_out_versions__:

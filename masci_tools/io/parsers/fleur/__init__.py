@@ -19,4 +19,4 @@ from .fleur_outxml_parser import outxml_parser
 from .task_migrations import *
 from .outxml_conversions import *
 
-__all__ = ['inpxml_parser', 'outxml_parser', 'ParseTasks']
+__all__ = ['inpxml_parser', 'outxml_parser']
