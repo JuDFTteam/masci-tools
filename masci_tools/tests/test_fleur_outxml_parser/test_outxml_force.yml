@@ -15,7 +15,7 @@ output_dict:
   number_of_spin_components: 2
   number_of_symmetries: 2
   output_file_version: '0.34'
-  spst_force_ev-sum:
+  spst_force_evsum:
   - -37.3674567
   - -37.3421158
   spst_force_q:
