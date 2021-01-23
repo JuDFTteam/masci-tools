@@ -8,6 +8,8 @@ Created on Wed Nov 15 16:43:31 2017
 import pytest
 from masci_tools.io.kkr_params import kkrparams
 from masci_tools.io.common_functions import open_general
+import tempfile
+import os
 
 # helper functions
 
@@ -181,7 +183,7 @@ class Test_fill_inputfile(object):
     Tests checking writing an input file
     """
 
-    def test_fill_inputfile_filehandle(self):
+    def test_fill_inputfile_filehandle(self,file_regression):
         p = kkrparams(params_type='kkrimp')
         p.set_multiple_values(CALCORBITALMOMENT=0,
                               RUNFLAG='',
@@ -208,20 +210,13 @@ class Test_fill_inputfile(object):
                               MIXFAC=0.05,
                               SCFSTEPS=1,
                               XC='LDA-VWN')
-        out_fhandle = open_general('config.cfg', 'w')
-        p.fill_keywords_to_inputfile(output=out_fhandle)
-        reftxt = [
-            'RUNFLAG=\n', 'TESTFLAG=\n', '\n', 'INS= 1\n', 'KVREL= 1\n', 'NSPIN= 1\n', '\n', 'SCFSTEPS= 1\n',
-            'IMIX= 0\n', 'ITDBRY= 20\n', 'MIXFAC=        0.050000000000\n', 'BRYMIX=        0.050000000000\n',
-            'QBOUND= 1.000000e-07\n', '\n', 'XC= LDA-VWN\n', 'ICST= 2\n', 'SPINORBIT= 0\n', 'NCOLL= 0\n',
-            'NPAN_LOGPANELFAC= 2\n', 'RADIUS_LOGPANELS=        0.600000000000\n', 'RADIUS_MIN= -1\n', 'NPAN_LOG= 5\n',
-            'NPAN_EQ= 7\n', 'NCHEB= 10\n', '\n', 'HFIELD=        0.000000000000 0\n', '\n', 'CALCORBITALMOMENT= 0\n',
-            'CALCFORCE= 0\n', 'CALCJIJMAT= 0\n'
-        ]
-        txt = open('config.cfg').readlines()
-        assert txt == reftxt
+        with tempfile.NamedTemporaryFile('r') as tmp:
+            p.fill_keywords_to_inputfile(output=tmp.name)
+            file_content = tmp.read()
 
-    def test_fill_inputfile_minimal_Voronoi(self):
+        file_regression.check(file_content)
+
+    def test_fill_inputfile_minimal_Voronoi(self, file_regression):
         p = kkrparams(ZATOM=29.,
                       LMAX=2,
                       NAEZ=1,
@@ -230,36 +225,16 @@ class Test_fill_inputfile(object):
                       NSPIN=2,
                       RBASIS=[0, 0, 0],
                       ALATBASIS=1)
-        p.fill_keywords_to_inputfile(is_voro_calc=True)
-        txt = open('inputcard').readlines()
-        ref = [
-            'ALATBASIS= 1.000000000000\n', 'BRAVAIS\n', '1.000000000000 0.000000000000 0.000000000000\n',
-            '0.000000000000 1.000000000000 0.000000000000\n', '0.000000000000 0.000000000000 1.000000000000\n',
-            'NAEZ= 1\n', '<RBASIS>\n', '0.000000000000 0.000000000000 0.000000000000\n', '<ZATOM>\n',
-            '29.000000000000\n', 'NSPIN= 2\n', 'LMAX= 2\n', 'RCLUSTZ= 1.500000000000\n'
-        ]
-        done = False
-        while not done:
-            try:
-                txt.remove('\n')
-            except ValueError:
-                done = True
-        assert len(txt) == len(ref)
-        txt.sort()
-        ref.sort()
-        print(txt, ref)
-        for i, t in enumerate(txt):
-            print(i, t, ref[i])
-            assert set(t.split()) == set(ref[i].split())
+        cwd = os.getcwd()
+        with tempfile.TemporaryDirectory() as td:
+            os.chdir(td)
+            p.fill_keywords_to_inputfile(is_voro_calc=True)
+            file_content = open('inputcard').read()
+            os.chdir(cwd)
 
-    def test_fill_inputfile_KKR(self):
-        reffile = [
-            'ALATBASIS= 1.000000000000\n', 'BRAVAIS\n', '1.000000000000 0.000000000000 0.000000000000\n', '<ZATOM>\n',
-            '29.000000000000\n', '0.000000000000 1.000000000000 0.000000000000\n',
-            '0.000000000000 0.000000000000 1.000000000000\n', 'NAEZ= 1\n', '<RBASIS>\n',
-            '0.000000000000 0.000000000000 0.000000000000\n', 'NSPIN= 2\n', 'LMAX= 2\n', 'RCLUSTZ= 1.500000000000\n',
-            'RMAX=      7.000000000000\n', 'GMAX=      65.000000000000\n'
-        ]
+        file_regression.check(file_content)
+
+    def test_fill_inputfile_KKR(self, file_regression):
         p = kkrparams(ZATOM=29.,
                       LMAX=2,
                       NAEZ=1,
@@ -270,19 +245,14 @@ class Test_fill_inputfile(object):
                       NSPIN=2,
                       RBASIS=[0, 0, 0],
                       ALATBASIS=1)
-        p.fill_keywords_to_inputfile()
-        txt = open('inputcard').readlines()
-        done = False
-        while not done:
-            try:
-                txt.remove('\n')
-            except ValueError:
-                done = True
-        assert len(txt) == len(reffile)
-        txt.sort()
-        reffile.sort()
-        for i, t in enumerate(txt):
-            assert set(t.split()) == set(reffile[i].split())
+        cwd = os.getcwd()
+        with tempfile.TemporaryDirectory() as td:
+            os.chdir(td)
+            p.fill_keywords_to_inputfile()
+            file_content = open('inputcard').read()
+            os.chdir(cwd)
+
+        file_regression.check(file_content)
 
     def test_fill_inputfile_empty_check(self):
         p = kkrparams(LMAX=2, NAEZ=1)
@@ -389,7 +359,8 @@ class Test_fill_inputfile(object):
         p.set_multiple_values(NATYP=natyp, SITE=cpa_sites)
         p.set_value('<CPA-CONC>', cpa_conc)
         p.set_value('FILES', ['output.pot', ''])
-        p.fill_keywords_to_inputfile(is_voro_calc=True)
+        with tempfile.NamedTemporaryFile() as tmp:
+            p.fill_keywords_to_inputfile(is_voro_calc=True, output=tmp.name)
 
     def test_set_rmtcore(self):
         #test rmtcore
@@ -406,9 +377,10 @@ class Test_fill_inputfile(object):
         bravais = array([[1., 0., 0.], [0., 1., 0.], [0., 0., 1.]])
         k = kkrparams(**para_dict)
         k.set_multiple_values(ZATOM=zatom, NAEZ=natom, ALATBASIS=alat, RBASIS=positions, BRAVAIS=bravais)
-        k.fill_keywords_to_inputfile()
+        with tempfile.NamedTemporaryFile('r') as tmp:
+            k.fill_keywords_to_inputfile(output=tmp.name)
+            txt = tmp.readlines()
 
-        txt = open('inputcard').readlines()
         naez = int(txt[search_string('NAEZ', txt)].split()[-1])
         rmtcore = []
         l_offset = search_string('RMTCORE', txt)
@@ -418,7 +390,7 @@ class Test_fill_inputfile(object):
         maxdiff = (max(abs(array(para_dict['<RMTCORE>']) - array(rmtcore))))
         assert maxdiff < 10**-6
 
-    def test_set_kkrimp_params_full(self):
+    def test_set_kkrimp_params_full(self, file_regression):
         p = kkrparams(params_type='kkrimp')
         p.set_multiple_values(CALCORBITALMOMENT=0,
                               RUNFLAG='',
@@ -445,17 +417,11 @@ class Test_fill_inputfile(object):
                               MIXFAC=0.05,
                               SCFSTEPS=1,
                               XC='LDA-VWN')
-        p.fill_keywords_to_inputfile(output='config.cfg')
-        reftxt = [
-            'RUNFLAG=\n', 'TESTFLAG=\n', '\n', 'INS= 1\n', 'KVREL= 1\n', 'NSPIN= 1\n', '\n', 'SCFSTEPS= 1\n',
-            'IMIX= 0\n', 'ITDBRY= 20\n', 'MIXFAC=        0.050000000000\n', 'BRYMIX=        0.050000000000\n',
-            'QBOUND= 1.000000e-07\n', '\n', 'XC= LDA-VWN\n', 'ICST= 2\n', 'SPINORBIT= 0\n', 'NCOLL= 0\n',
-            'NPAN_LOGPANELFAC= 2\n', 'RADIUS_LOGPANELS=        0.600000000000\n', 'RADIUS_MIN= -1\n', 'NPAN_LOG= 5\n',
-            'NPAN_EQ= 7\n', 'NCHEB= 10\n', '\n', 'HFIELD=        0.000000000000 0\n', '\n', 'CALCORBITALMOMENT= 0\n',
-            'CALCFORCE= 0\n', 'CALCJIJMAT= 0\n'
-        ]
-        txt = open('config.cfg').readlines()
-        assert txt == reftxt
+        with tempfile.NamedTemporaryFile('r') as tmp:
+            p.fill_keywords_to_inputfile(output=tmp.name)
+            file_content = tmp.read()
+
+        file_regression.check(file_content)
 
 
 class Test_read_inputfile(object):  # pylint: disable=missing-class-docstring
@@ -469,9 +435,14 @@ class Test_read_inputfile(object):  # pylint: disable=missing-class-docstring
                       NSPIN=2,
                       RBASIS=[0, 0, 0],
                       ALATBASIS=1)
-        p.fill_keywords_to_inputfile(is_voro_calc=True)
-        p2 = kkrparams(params_type='voronoi')
-        p2.read_keywords_from_inputcard()
+        cwd = os.getcwd()
+        with tempfile.TemporaryDirectory() as td:
+            os.chdir(td)
+            p.fill_keywords_to_inputfile(is_voro_calc=True)
+            p2 = kkrparams(params_type='voronoi')
+            p2.read_keywords_from_inputcard()
+            os.chdir(cwd)
+
         check_full_dict(p, p2)
 
     def test_read_unsorted_inputfile(self):
@@ -485,28 +456,33 @@ class Test_read_inputfile(object):  # pylint: disable=missing-class-docstring
                       ALATBASIS=1,
                       RMAX=7,
                       GMAX=65)
-        p.fill_keywords_to_inputfile(output='input.temp.txt')
-        txt = open('input.temp.txt', 'r').readlines()
-        # exchange some lines
-        tmp = txt[0]
-        txt[0] = txt[5]
-        txt[5] = tmp
-        tmp = txt[-1]
-        txt[-1] = txt[-2]
-        txt[-2] = tmp
-        tmp = txt[-2]
-        txt[-2] = txt[-4]
-        txt[-4] = tmp
-        tmp = txt[-3]
-        txt[-3] = txt[-1]
-        txt[-1] = tmp
-        with open('input.temp_unsorted.txt', 'w') as f:
-            f.writelines(txt)
-        p2 = kkrparams()
-        p2.read_keywords_from_inputcard(inputcard='input.temp_unsorted.txt')
-        print(p2.get_dict())
-        print(dict(p2.get_set_values()))
-        check_full_dict(p, p2)
+        cwd = os.getcwd()
+        with tempfile.TemporaryDirectory() as td:
+            os.chdir(td)
+            p.fill_keywords_to_inputfile(output='input.temp.txt')
+            txt = open('input.temp.txt', 'r').readlines()
+            # exchange some lines
+            tmp = txt[0]
+            txt[0] = txt[5]
+            txt[5] = tmp
+            tmp = txt[-1]
+            txt[-1] = txt[-2]
+            txt[-2] = tmp
+            tmp = txt[-2]
+            txt[-2] = txt[-4]
+            txt[-4] = tmp
+            tmp = txt[-3]
+            txt[-3] = txt[-1]
+            txt[-1] = tmp
+            with open('input.temp_unsorted.txt', 'w') as f:
+                f.writelines(txt)
+            p2 = kkrparams()
+            p2.read_keywords_from_inputcard(inputcard='input.temp_unsorted.txt')
+            print(p2.get_dict())
+            print(dict(p2.get_set_values()))
+            check_full_dict(p, p2)
+            os.chdir(cwd)
+
 
     def test_read_slab(self):
         from numpy import array
@@ -704,6 +680,7 @@ class Test_other(object):  # pylint: disable=missing-class-docstring
         assert p.values['EMIN'] is None
 
     def test_set_potname_empty(self):
+        from masci_tools.io.common_functions import search_string
         p = kkrparams()
         p.set_multiple_values(RMAX=1,
                               GMAX=1,
@@ -716,9 +693,9 @@ class Test_other(object):  # pylint: disable=missing-class-docstring
                               BRAVAIS=[[1, 0, 0], [0, 1, 0], [0, 0, 1]],
                               ALATBASIS=1,
                               FILES=['', 'shapenew'])
-        p.fill_keywords_to_inputfile()
-        from masci_tools.io.common_functions import search_string
-        txt = open('inputcard').readlines()
+        with tempfile.NamedTemporaryFile('r') as tmp:
+            p.fill_keywords_to_inputfile(output=tmp.name)
+            txt = tmp.readlines()
         itmp = search_string('FILES', txt)
         potname = txt[itmp + 2].split()[0]
         shapename = txt[itmp + 4].split()[0]
