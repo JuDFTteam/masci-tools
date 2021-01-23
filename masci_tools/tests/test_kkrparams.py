@@ -249,7 +249,7 @@ class Test_fill_inputfile(object):
         with tempfile.TemporaryDirectory() as td:
             os.chdir(td)
             p.fill_keywords_to_inputfile()
-            file_content = open('inputcard').read()
+            file_content = open('inputcard').read().strip()
             os.chdir(cwd)
 
         file_regression.check(file_content)
