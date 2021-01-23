@@ -335,6 +335,8 @@ def convert_to_pystd(value):
         value = int(value)
     elif isinstance(value, np.floating):
         value = float(value)
+    elif isinstance(value, np.str):
+        value = str(value)
     elif isinstance(value, dict):
         for key, val in value.items():
             value[key] = convert_to_pystd(val)
