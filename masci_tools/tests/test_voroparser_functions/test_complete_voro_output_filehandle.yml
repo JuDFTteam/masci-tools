@@ -1,0 +1,181 @@
+alat: 5.423514
+alat_unit: a_Bohr
+cluster_info_group:
+  cluster_info_atoms:
+  - iatom: 1
+    refpot: 1
+    rmt_ref: 2.3166
+    sites: 27
+    tb_cluster_id: 1
+  - iatom: 2
+    refpot: 1
+    rmt_ref: 2.3166
+    sites: 27
+    tb_cluster_id: 1
+  - iatom: 3
+    refpot: 1
+    rmt_ref: 2.3166
+    sites: 27
+    tb_cluster_id: 1
+  - iatom: 4
+    refpot: 1
+    rmt_ref: 2.3166
+    sites: 27
+    tb_cluster_id: 1
+  - iatom: 5
+    refpot: 1
+    rmt_ref: 2.3166
+    sites: 27
+    tb_cluster_id: 1
+  - iatom: 6
+    refpot: 1
+    rmt_ref: 2.3166
+    sites: 27
+    tb_cluster_id: 1
+  - iatom: 7
+    refpot: 1
+    rmt_ref: 2.3166
+    sites: 27
+    tb_cluster_id: 1
+  - iatom: 8
+    refpot: 1
+    rmt_ref: 2.3166
+    sites: 27
+    tb_cluster_id: 1
+  number_of_clusters: 1
+code_info_group:
+  calculation_serial_number: voro_v1.0-6-gf0c2ac3_serial_20171207092915
+  code_version: v1.0-6-gf0c2ac3
+  compile_options: serial-O2 -r8 -traceback -i8-mkl -Wl,-stack_size,0x40000000,-stack_addr,0xf0000000
+core_states_group:
+  descr_highest_lying_core_state_per_atom:
+  - no core states
+  - no core states
+  - no core states
+  - no core states
+  - 3p
+  - 3p
+  - 3p
+  - 3p
+  - no core states
+  - no core states
+  - no core states
+  - no core states
+  energy_highest_lying_core_state_per_atom:
+  - null
+  - null
+  - null
+  - null
+  - -3.3287908
+  - -3.3287908
+  - -3.3287908
+  - -3.3287908
+  - null
+  - null
+  - null
+  - null
+  energy_highest_lying_core_state_per_atom_unit: Rydberg
+  number_of_core_states_per_atom:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 5
+  - 5
+  - 5
+  - 5
+  - 0
+  - 0
+  - 0
+  - 0
+emin: -0.5
+emin_minus_efermi: -12.370853917196168
+emin_minus_efermi_Ry: -0.909241
+emin_minus_efermi_Ry_units: Ry
+emin_minus_efermi_units: eV
+emin_units: Ry
+fpradius_atoms:
+- 0.4696902
+- 0.4696902
+- 0.4696902
+- 0.4696902
+- 0.4696902
+- 0.4696902
+fpradius_atoms_unit: alat
+parser_version: some_version_number
+parser_warnings: []
+radial_meshpoints:
+- 484.0
+- 484.0
+- 484.0
+- 484.0
+- 484.0
+- 484.0
+- 484.0
+- 484.0
+- 484.0
+- 484.0
+- 484.0
+- 484.0
+radii_atoms_group:
+- dist_nn: 0.8660255824
+  iatom: 1
+  rmt0: 0.4330127912
+  rmt0_over_rout: 77.46
+  rout: 0.5590171328
+  rout_over_dist_nn: 64.55
+- dist_nn: 0.8660255824
+  iatom: 2
+  rmt0: 0.4330127912
+  rmt0_over_rout: 77.46
+  rout: 0.5590171328
+  rout_over_dist_nn: 64.55
+- dist_nn: 0.8660247659
+  iatom: 3
+  rmt0: 0.4330127912
+  rmt0_over_rout: 77.46
+  rout: 0.5590171328
+  rout_over_dist_nn: 64.55
+- dist_nn: 0.8660247659
+  iatom: 4
+  rmt0: 0.4330127912
+  rmt0_over_rout: 77.46
+  rout: 0.5590171328
+  rout_over_dist_nn: 64.55
+- dist_nn: 0.8660255824
+  iatom: 5
+  rmt0: 0.4330127912
+  rmt0_over_rout: 77.46
+  rout: 0.5590171328
+  rout_over_dist_nn: 64.55
+- dist_nn: 0.8660255824
+  iatom: 6
+  rmt0: 0.4330127912
+  rmt0_over_rout: 77.46
+  rout: 0.5590171328
+  rout_over_dist_nn: 64.55
+- radii_units: alat
+shapes:
+- 1
+- 1
+- 1
+- 1
+- 1
+- 1
+start_from_jellium_potentials: true
+volumes_group:
+  volume_atoms:
+  - iatom: 1
+    v_atom: 0.50000031
+  - iatom: 2
+    v_atom: 0.50000031
+  - iatom: 3
+    v_atom: 0.50000031
+  - iatom: 4
+    v_atom: 0.50000031
+  - iatom: 5
+    v_atom: 0.50000031
+  - iatom: 6
+    v_atom: 0.50000031
+  volume_total: 3.00000186
+  volume_unit: alat^3
