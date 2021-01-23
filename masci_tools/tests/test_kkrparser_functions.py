@@ -15,8 +15,8 @@ class Test_kkr_parser_functions(object):
     """
 
     grouping_ref = [
-    'energy_contour_group', 'warnings_group', 'ewald_sum_group', 'timings_group', 'core_states_group',
-    'convergence_group', 'magnetism_group', 'kmesh_group', 'symmetries_group', 'code_info_group'
+        'energy_contour_group', 'warnings_group', 'ewald_sum_group', 'timings_group', 'core_states_group',
+        'convergence_group', 'magnetism_group', 'kmesh_group', 'symmetries_group', 'code_info_group'
     ]
     path0 = './files/kkr/kkr_run_slab_soc_simple/'
     outfile = path0 + 'out_kkr'
@@ -31,8 +31,8 @@ class Test_kkr_parser_functions(object):
         Parse complete output of kkr calculation
         """
         out_dict = {}
-        success, msg_list, out_dict = parse_kkr_outputfile(out_dict, self.outfile, self.outfile_0init, self.outfile_000, self.timing_file,
-                                                           self.potfile_out, self.nonco_out_file)
+        success, msg_list, out_dict = parse_kkr_outputfile(out_dict, self.outfile, self.outfile_0init, self.outfile_000,
+                                                           self.timing_file, self.potfile_out, self.nonco_out_file)
         out_dict['parser_warnings'] = msg_list
         assert success
         assert msg_list == []
@@ -46,8 +46,8 @@ class Test_kkr_parser_functions(object):
         """
         out_dict = {}
         success, msg_list, out_dict = parse_kkr_outputfile(out_dict, open(self.outfile), open(self.outfile_0init),
-                                                           open(self.outfile_000), open(self.timing_file), open(self.potfile_out),
-                                                           open(self.nonco_out_file))
+                                                           open(self.outfile_000), open(self.timing_file),
+                                                           open(self.potfile_out), open(self.nonco_out_file))
         out_dict['parser_warnings'] = msg_list
         assert success
         assert msg_list == []
@@ -117,8 +117,8 @@ class Test_kkr_parser_functions(object):
         Parse kkr output where output.0.txt is missing. Compares error messages
         """
         out_dict = {}
-        success, msg_list, out_dict = parse_kkr_outputfile(out_dict, self.outfile, 'wrong_name', self.outfile_000, self.timing_file,
-                                                           self.potfile_out, self.nonco_out_file)
+        success, msg_list, out_dict = parse_kkr_outputfile(out_dict, self.outfile, 'wrong_name', self.outfile_000,
+                                                           self.timing_file, self.potfile_out, self.nonco_out_file)
         out_dict['parser_warnings'] = msg_list
         assert not success
         assert set(msg_list) == set([
@@ -140,8 +140,8 @@ class Test_kkr_parser_functions(object):
         Parse kkr output where output.000.txt is missing. Compares error messages
         """
         out_dict = {}
-        success, msg_list, out_dict = parse_kkr_outputfile(out_dict, self.outfile, self.outfile_0init, 'wrong_name', self.timing_file,
-                                                           self.potfile_out, self.nonco_out_file)
+        success, msg_list, out_dict = parse_kkr_outputfile(out_dict, self.outfile, self.outfile_0init, 'wrong_name',
+                                                           self.timing_file, self.potfile_out, self.nonco_out_file)
         out_dict['parser_warnings'] = msg_list
         assert not success
         assert set(msg_list) == set([
@@ -155,8 +155,8 @@ class Test_kkr_parser_functions(object):
         Parse kkr output where out_timing.000.txt is missing. Compares error messages
         """
         out_dict = {}
-        success, msg_list, out_dict = parse_kkr_outputfile(out_dict, self.outfile, self.outfile_0init, self.outfile_000, 'wrong_name',
-                                                           self.potfile_out, self.nonco_out_file)
+        success, msg_list, out_dict = parse_kkr_outputfile(out_dict, self.outfile, self.outfile_0init, self.outfile_000,
+                                                           'wrong_name', self.potfile_out, self.nonco_out_file)
         out_dict['parser_warnings'] = msg_list
         assert not success
         assert msg_list == ['Error parsing output of KKR: timings']
@@ -166,8 +166,8 @@ class Test_kkr_parser_functions(object):
         Parse kkr output where out_potential is missing. Compares error messages
         """
         out_dict = {}
-        success, msg_list, out_dict = parse_kkr_outputfile(out_dict, self.outfile, self.outfile_0init, self.outfile_000, self.timing_file,
-                                                           'wrong_name', self.nonco_out_file)
+        success, msg_list, out_dict = parse_kkr_outputfile(out_dict, self.outfile, self.outfile_0init, self.outfile_000,
+                                                           self.timing_file, 'wrong_name', self.nonco_out_file)
         out_dict['parser_warnings'] = msg_list
         assert not success
         assert msg_list == ['Error parsing output of KKR: core_states']

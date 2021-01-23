@@ -26,7 +26,8 @@ class Test_voronoi_parser_functions(object):
         Parse complete output of voronoi calculation and compare out_dict, grouping, warnings
         """
         out_dict = {'parser_version': 'some_version_number'}
-        success, msg_list, out_dict = parse_voronoi_output(out_dict, self.outfile, self.potfile, self.atominfo, self.radii, self.inputfile)
+        success, msg_list, out_dict = parse_voronoi_output(out_dict, self.outfile, self.potfile, self.atominfo,
+                                                           self.radii, self.inputfile)
         out_dict['parser_warnings'] = msg_list
 
         assert success
@@ -41,8 +42,8 @@ class Test_voronoi_parser_functions(object):
         Parse complete output of voronoi calculation from open file handles as done in aiida-kkr and compare out_dict, grouping, warnings
         """
         out_dict = {'parser_version': 'some_version_number'}
-        success, msg_list, out_dict = parse_voronoi_output(out_dict, open(self.outfile), open(self.potfile), open(self.atominfo),
-                                                           open(self.radii), open(self.inputfile))
+        success, msg_list, out_dict = parse_voronoi_output(out_dict, open(self.outfile), open(self.potfile),
+                                                           open(self.atominfo), open(self.radii), open(self.inputfile))
         out_dict['parser_warnings'] = msg_list
         assert success
         assert msg_list == []
@@ -56,7 +57,8 @@ class Test_voronoi_parser_functions(object):
         Parse output where out_voronoi is missing and compare error messages/rest of out_dict
         """
         out_dict = {'parser_version': 'some_version_number'}
-        success, msg_list, out_dict = parse_voronoi_output(out_dict, '', self.potfile, self.atominfo, self.radii, self.inputfile)
+        success, msg_list, out_dict = parse_voronoi_output(out_dict, '', self.potfile, self.atominfo, self.radii,
+                                                           self.inputfile)
         out_dict['parser_warnings'] = msg_list
 
         assert not success
@@ -67,7 +69,8 @@ class Test_voronoi_parser_functions(object):
         Parse output where atominfo.txt is missing and compare error messages/rest of out_dict
         """
         out_dict = {'parser_version': 'some_version_number'}
-        success, msg_list, out_dict = parse_voronoi_output(out_dict, self.outfile, self.potfile, 'wrong_name', self.radii, self.inputfile)
+        success, msg_list, out_dict = parse_voronoi_output(out_dict, self.outfile, self.potfile, 'wrong_name',
+                                                           self.radii, self.inputfile)
         out_dict['parser_warnings'] = msg_list
         assert not success
         data_regression.check({'msg_list': msg_list, 'output': out_dict})
@@ -77,7 +80,8 @@ class Test_voronoi_parser_functions(object):
         Parse output where inputcard is missing and compare error messages/rest of out_dict
         """
         out_dict = {'parser_version': 'some_version_number'}
-        success, msg_list, out_dict = parse_voronoi_output(out_dict, self.outfile, self.potfile, self.atominfo, self.radii, 'wrong_name')
+        success, msg_list, out_dict = parse_voronoi_output(out_dict, self.outfile, self.potfile, self.atominfo,
+                                                           self.radii, 'wrong_name')
         out_dict['parser_warnings'] = msg_list
         assert not success
         data_regression.check({'msg_list': msg_list, 'output': out_dict})
@@ -87,7 +91,8 @@ class Test_voronoi_parser_functions(object):
         Parse output where output.pot is missing and compare error messages/rest of out_dict
         """
         out_dict = {'parser_version': 'some_version_number'}
-        success, msg_list, out_dict = parse_voronoi_output(out_dict, self.outfile, 'wrong_name', self.atominfo, self.radii, self.inputfile)
+        success, msg_list, out_dict = parse_voronoi_output(out_dict, self.outfile, 'wrong_name', self.atominfo,
+                                                           self.radii, self.inputfile)
         out_dict['parser_warnings'] = msg_list
 
         assert not success
@@ -98,8 +103,8 @@ class Test_voronoi_parser_functions(object):
         Parse output where radii.dat is missing and compare error messages/rest of out_dict
         """
         out_dict = {'parser_version': 'some_version_number'}
-        success, msg_list, out_dict = parse_voronoi_output(out_dict, self.outfile, self.potfile, self.atominfo, 'wrong_name',
-                                                           self.inputfile)
+        success, msg_list, out_dict = parse_voronoi_output(out_dict, self.outfile, self.potfile, self.atominfo,
+                                                           'wrong_name', self.inputfile)
         out_dict['parser_warnings'] = msg_list
 
         assert not success

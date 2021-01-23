@@ -183,7 +183,7 @@ class Test_fill_inputfile(object):
     Tests checking writing an input file
     """
 
-    def test_fill_inputfile_filehandle(self,file_regression):
+    def test_fill_inputfile_filehandle(self, file_regression):
         p = kkrparams(params_type='kkrimp')
         p.set_multiple_values(CALCORBITALMOMENT=0,
                               RUNFLAG='',
@@ -482,7 +482,6 @@ class Test_read_inputfile(object):  # pylint: disable=missing-class-docstring
             print(dict(p2.get_set_values()))
             check_full_dict(p, p2)
             os.chdir(cwd)
-
 
     def test_read_slab(self):
         from numpy import array
