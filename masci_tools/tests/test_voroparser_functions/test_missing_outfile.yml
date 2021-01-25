@@ -1,0 +1,76 @@
+msg_list:
+- 'Error parsing output of voronoi: Version Info'
+- 'Error parsing output of voronoi: ''EMIN'''
+- 'Error parsing output of voronoi: Cluster Info'
+- 'Error parsing output of voronoi: Jellium startpot'
+- 'Error parsing output of voronoi: SHAPE Info'
+- 'Error parsing output of voronoi: Volume Info'
+- 'Error parsing output of voronoi: radii.dat Info'
+- 'Error parsing output of voronoi: full potential radius'
+output:
+  alat: 5.423514
+  alat_unit: a_Bohr
+  core_states_group:
+    descr_highest_lying_core_state_per_atom:
+    - no core states
+    - no core states
+    - no core states
+    - no core states
+    - 3p
+    - 3p
+    - 3p
+    - 3p
+    - no core states
+    - no core states
+    - no core states
+    - no core states
+    energy_highest_lying_core_state_per_atom:
+    - null
+    - null
+    - null
+    - null
+    - -3.3287908
+    - -3.3287908
+    - -3.3287908
+    - -3.3287908
+    - null
+    - null
+    - null
+    - null
+    energy_highest_lying_core_state_per_atom_unit: Rydberg
+    number_of_core_states_per_atom:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 5
+    - 5
+    - 5
+    - 5
+    - 0
+    - 0
+    - 0
+    - 0
+  parser_version: some_version_number
+  parser_warnings:
+  - 'Error parsing output of voronoi: Version Info'
+  - 'Error parsing output of voronoi: ''EMIN'''
+  - 'Error parsing output of voronoi: Cluster Info'
+  - 'Error parsing output of voronoi: Jellium startpot'
+  - 'Error parsing output of voronoi: SHAPE Info'
+  - 'Error parsing output of voronoi: Volume Info'
+  - 'Error parsing output of voronoi: radii.dat Info'
+  - 'Error parsing output of voronoi: full potential radius'
+  radial_meshpoints:
+  - 484.0
+  - 484.0
+  - 484.0
+  - 484.0
+  - 484.0
+  - 484.0
+  - 484.0
+  - 484.0
+  - 484.0
+  - 484.0
+  - 484.0
+  - 484.0
