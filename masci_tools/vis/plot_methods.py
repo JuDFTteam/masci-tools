@@ -1285,12 +1285,23 @@ def plot_convergence_results(distance,
                              total_energy,
                              iteration,
                              saveas1='t_energy_convergence',
-                             show=True,
+                             axis1=None,
                              saveas2='distance_convergence',
+                             axis2=None,
                              **kwargs):
     """
     Plot the total energy versus the scf iteration
     and plot the distance of the density versus iterations.
+
+    :param distance: array of distances
+    :param total_energy: array of total energies
+    :param iteration: array for the number of iterations
+    :param saveas1: str, filename for the energy convergence plot
+    :param axis1: Axes object for the energy convergence plot
+    :param saveas2: str, filename for the distance plot
+    :param axis2: Axes object for the distance plot
+
+    Other Kwargs will be passed on to all :py:func:`single_scatterplot()` calls
     """
     xlabel = r'Iteration'
     ylabel1 = r'Total energy difference [Htr]'
@@ -1309,22 +1320,23 @@ def plot_convergence_results(distance,
                             xlabel,
                             ylabel1,
                             title1,
-                            plotlabel='delta total energy',
+                            plot_label='delta total energy',
                             saveas=saveas1,
-                            scale=[None, 'log'])
+                            scale={'y': 'log'},
+                            axis=axis1,
+                            **kwargs)
     #single_scatterplot(total_energy, iteration, xlabel, ylabel1, title1, plotlabel='total energy', saveas=saveas3)
     p2 = single_scatterplot(distance,
                             iteration,
                             xlabel,
                             ylabel2,
                             title2,
-                            plotlabel='distance',
+                            plot_label='distance',
                             saveas=saveas2,
-                            scale=[None, 'log'])
+                            scale={'y': 'log'},
+                            axis=axis2,
+                            **kwargs)
 
-    if show:
-        plt.show(p1)
-        plt.show(p2)
     return [p1, p2]
 
 

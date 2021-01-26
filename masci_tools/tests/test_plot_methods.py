@@ -11,6 +11,7 @@ import pytest
 import matplotlib
 matplotlib.use('Agg')
 from matplotlib.pyplot import gcf, title
+import matplotlib.pyplot as plt
 #from masci_tools.io.kkr_read_shapefun_info import read_shapefun
 #from masci_tools.vis.kkr_plot_shapefun import plot_shapefun
 #from masci_tools.vis.kkr_plot_dos import dosplot
@@ -1100,3 +1101,66 @@ class TestResiduenPlot(object):  #pylint: disable=missing-class-docstring
 
         # need to return the figure in order for mpl checks to work
         return gcf()
+
+class TestPlotConvergenceResults(object):
+
+    energies = [-69269.46134019217,
+            -69269.42108466873,
+            -69269.35509388152,
+            -69269.62486438647,
+            -69269.51102655893,
+            -69269.48862754989,
+            -69269.48874847183,
+            -69269.48459145911,
+            -69269.47327003669,
+            -69269.47248623992,
+            -69269.47244891679,
+            -69269.47645687914,
+            -69269.47922946361,
+            -69269.4793222245,
+            -69269.47901836311,
+            -69269.47895198638,
+            -69269.47886053707,
+            -69269.47875692157,
+            -69269.47890881824,
+            -69269.47887586526]
+
+    distances = [11.6508412231,
+                  10.5637525546,
+                  7.1938351319,
+                  2.6117836621,
+                  2.4735288205,
+                  2.9455389405,
+                  1.8364080301,
+                  1.4740568937,
+                  1.8542068593,
+                  0.9186745766,
+                  0.900191025,
+                  0.5290019787,
+                  0.0979035892,
+                  0.1098240811,
+                  0.0717916768,
+                  0.0258508395,
+                  0.0300810883,
+                  0.0067904499,
+                  0.0085097364,
+                  0.0073435947]
+
+    iteration = range(len(distances))
+
+    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/convergence/', filename='defaults.png')
+    def test_defaults(self):
+        """
+        Test of residuen plot with default values
+        """
+        from masci_tools.vis.plot_methods import plot_convergence_results
+
+        gcf().clear()
+
+        #plot_convergence produces two figures, for testing we merge them into one
+        fig, (ax1, ax2) = plt.subplots(1,2,figsize=(16,6))
+
+        plot_convergence_results(self.distances, self.energies, self.iteration, show=False,axis1=ax1, axis2=ax2)
+
+        # need to return the figure in order for mpl checks to work
+        return fig
