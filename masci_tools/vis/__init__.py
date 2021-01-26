@@ -142,6 +142,7 @@ class Plotter(object):
         self._single_plot = True
         self._num_plots = 1
         self._plot_type = 'default'
+        self._added_parameters = set()
 
         self._LIST_ARGS = set()
         if list_arguments is not None:
@@ -318,8 +319,18 @@ class Plotter(object):
             if isinstance(default_val, (dict, list)):
                 default_val = copy.deepcopy(default_val)
             self._setkey(name, default_val, self._current_defaults, force=True)
+            self._added_parameters.add(name)
 
         self._setkey(name, default_val, self._plot_parameters, force=True)
+
+    def remove_added_parameters(self):
+        """
+        Remove the parameters added via :py:func:`Plotter.add_parameter()`
+        """
+
+        for key in self._added_parameters:
+            self._current_defaults.pop(key, None)
+            self._plot_parameters.pop(key, None)
 
     def reset_defaults(self):
         """
