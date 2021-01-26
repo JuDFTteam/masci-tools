@@ -201,25 +201,44 @@ class Plotter(object):
 
         return ret_dict
 
+    @staticmethod
+    def convert_to_complete_list(given_value, single_plot, num_plots, list_allowed=False, default=None):
+        """
+        Converts given value to list with length num_plots with None for the non-specified values
+
+        :param given_value: value passed in, for multiple plots either list or dict with integer keys
+        :param single_plot: bool, if True only a single parameter is allowed
+        :param num_plots: int, if single_plot is False this defines the number of plots
+        """
+
+        if not isinstance(given_value, dict) and not isinstance(given_value, list):
+            return given_value
+
+        ret_value = copy.copy(given_value)
+        if isinstance(given_value, dict) and all([isinstance(key, int) for key in given_value]):
+            if single_plot:
+                raise ValueError(f"Got dict with integer indices for but only a single plot is allowed")
+            #Convert to list with defaults for not specified keys
+            ret_value = [ret_value[indx] if indx in ret_value else None for indx in range(num_plots)]
+
+        if isinstance(ret_value, list) and not list_allowed:
+            if single_plot:
+                raise ValueError(f"Got list for key but only a single plot is allowed")
+
+            if len(ret_value) != num_plots:
+                ret_value = ret_value.copy() + [None] * (num_plots - len(ret_value))
+            ret_value = [val if val is not None else default for val in ret_value]
+
+        return ret_value
+
+
     def _setkey(self, key, value, dict_to_change, force=False):
 
         if key not in dict_to_change and not force:
             raise KeyError(f'The key {key} is not a parameter key')
         elif key not in dict_to_change:
             dict_to_change[key] = None
-
-        if isinstance(value, dict) and all([isinstance(key, int) for key in value]):
-            if self.single_plot:
-                raise ValueError(f"Got dict with integer indices for key '{key}' but only a single plot is allowed")
-            #Convert to list with defaults for not specified keys
-            value = [value[indx] if indx in value else None for indx in range(self.num_plots)]
-        if isinstance(value, list) and key not in self._LIST_ARGS:
-            if self.single_plot:
-                raise ValueError(f"Got list for key '{key}' but only a single plot is allowed")
-
-            if len(value) != self.num_plots:
-                value = value.copy() + [None] * (self.num_plots - len(value))
-            value = [val if val is not None else self._current_defaults[key] for val in value]
+        value = self.convert_to_complete_list(value, self.single_plot, self.num_plots, list_allowed=key in self._LIST_ARGS, default=self._current_defaults[key])
 
         if isinstance(dict_to_change[key], dict):
             if not isinstance(value, dict):
@@ -322,8 +341,9 @@ class Plotter(object):
             default_val = self._current_defaults[default_from]
             if isinstance(default_val, (dict, list)):
                 default_val = copy.deepcopy(default_val)
-            self._setkey(name, default_val, self._current_defaults, force=True)
-            self._added_parameters.add(name)
+
+        self._setkey(name, default_val, self._current_defaults, force=True)
+        self._added_parameters.add(name)
 
         self._setkey(name, default_val, self._plot_parameters, force=True)
 

@@ -1382,9 +1382,9 @@ def plot_convergence_results_m(distances,
         plot_labels2.append('distance {}'.format(i))
     #saveas3 ='t_energy_convergence2'
     if 'plot_label' in kwargs:
-        plot_label = kwargs.pop('plot_label')
-        plot_labels1 = plot_label
-        plot_labels2 = plot_label
+        plot_label = plot_params.convert_to_complete_list(kwargs.pop('plot_label'),single_plot=False, num_plots=len(plot_labels1))
+        plot_labels1 = [label if label is not None else plot_labels1[indx] for indx, label in enumerate(plot_label)]
+        plot_labels2 = [label if label is not None else plot_labels2[indx] for indx, label in enumerate(plot_label)]
 
     p1 = multiple_scatterplots(total_energy_abs_diffs,
                                iterations1,

@@ -1204,7 +1204,7 @@ class TestPlotConvergenceMulti(object):  #pylint: disable=missing-class-docstrin
         #plot_convergence produces two figures, for testing we merge them into one
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 6))
 
-        plot_convergence_results_m(distances, energies, iteration, show=False, axis1=ax1, axis2=ax2, modes={})
+        plot_convergence_results_m(distances, energies, iteration, show=False, axis1=ax1, axis2=ax2, modes=[])
 
         # need to return the figure in order for mpl checks to work
         return fig
