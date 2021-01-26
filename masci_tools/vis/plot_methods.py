@@ -727,6 +727,8 @@ def multiplot_moved(ydata, xdata, xlabel, ylabel, title, scale_move=1.0, min_add
     :param scale_move: float, max*scale_move determines size of the shift
     :param min_add: float, minimum shift
     :param saveas: str specifying the filename (without file format)
+
+    Kwargs are passed on to the :py:func:`multiple_scatterplots()` call
     """
 
     if 'yticks' not in kwargs:
@@ -750,19 +752,11 @@ def multiplot_moved(ydata, xdata, xlabel, ylabel, title, scale_move=1.0, min_add
 
 @ensure_plotter_consistency(plot_params)
 def histogram(xdata,
-              bins=None,
-              range=None,
               density=False,
-              weights=None,
-              cumulative=False,
-              bottom=None,
               histtype='bar',
               align='mid',
               orientation='vertical',
-              rwidth=None,
               log=False,
-              stacked=False,
-              data=None,
               axis=None,
               title='hist',
               xlabel='bins',
@@ -773,7 +767,22 @@ def histogram(xdata,
     """
     Create a standard looking histogram
 
-    TODO
+    :param xdata: arraylike, Data for the histogram
+    :param density: bool, if True the histogram is normed and a normal distribution is plotted with
+                    the same mu and sigma as the data
+    :param histtype: str, type of the histogram
+    :param align: str, defines where the bars for the bins are aligned
+    :param orientation: str, is the histogram vertical or horizontal
+    :param log: bool, if True a logarithmic scale is used for the counts
+    :param axis: Axes object where to add the plot
+    :param title: str, Title of the plot
+    :param xlabel: str, label for the x-axis
+    :param ylabel: str, label for the y-axis
+    :param saveas: str, filename for the saved plot
+    :param return_hist_output: bool, if True the data output from hist will be returned
+
+    Kwargs will be passed on to :py:class:`masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`.
+    If the arguments are not recognized they are passed on to the matplotlib function `hist`
     """
 
     plot_params.plot_type = 'histogram'
@@ -811,19 +820,11 @@ def histogram(xdata,
 
     plot_kwargs = plot_params.plot_kwargs()
     n, bins, patches = ax.hist(xdata,
-                               bins=bins,
-                               range=range,
                                density=density,
-                               weights=weights,
-                               cumulative=cumulative,
-                               bottom=bottom,
                                histtype=histtype,
                                align=align,
                                orientation=orientation,
-                               rwidth=rwidth,
                                log=log,
-                               stacked=stacked,
-                               data=data,
                                **plot_kwargs,
                                **kwargs)
 
@@ -1382,7 +1383,10 @@ def plot_convergence_results_m(distances,
         plot_labels2.append('distance {}'.format(i))
     #saveas3 ='t_energy_convergence2'
     if 'plot_label' in kwargs:
-        plot_label = plot_params.convert_to_complete_list(kwargs.pop('plot_label'),single_plot=False, num_plots=len(plot_labels1))
+        plot_label = plot_params.convert_to_complete_list(kwargs.pop('plot_label'),
+                                                          single_plot=False,
+                                                          num_plots=len(plot_labels1),
+                                                          key='plot_label')
         plot_labels1 = [label if label is not None else plot_labels1[indx] for indx, label in enumerate(plot_label)]
         plot_labels2 = [label if label is not None else plot_labels2[indx] for indx, label in enumerate(plot_label)]
 

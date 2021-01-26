@@ -202,7 +202,7 @@ class Plotter(object):
         return ret_dict
 
     @staticmethod
-    def convert_to_complete_list(given_value, single_plot, num_plots, list_allowed=False, default=None):
+    def convert_to_complete_list(given_value, single_plot, num_plots, list_allowed=False, default=None, key=''):
         """
         Converts given value to list with length num_plots with None for the non-specified values
 
@@ -217,13 +217,13 @@ class Plotter(object):
         ret_value = copy.copy(given_value)
         if isinstance(given_value, dict) and all([isinstance(key, int) for key in given_value]):
             if single_plot:
-                raise ValueError(f"Got dict with integer indices for but only a single plot is allowed")
+                raise ValueError(f"Got dict with integer indices for '{key}' but only a single plot is allowed")
             #Convert to list with defaults for not specified keys
             ret_value = [ret_value[indx] if indx in ret_value else None for indx in range(num_plots)]
 
         if isinstance(ret_value, list) and not list_allowed:
             if single_plot:
-                raise ValueError(f"Got list for key but only a single plot is allowed")
+                raise ValueError(f"Got list for key '{key}' but only a single plot is allowed")
 
             if len(ret_value) != num_plots:
                 ret_value = ret_value.copy() + [None] * (num_plots - len(ret_value))
@@ -231,14 +231,18 @@ class Plotter(object):
 
         return ret_value
 
-
     def _setkey(self, key, value, dict_to_change, force=False):
 
         if key not in dict_to_change and not force:
             raise KeyError(f'The key {key} is not a parameter key')
         elif key not in dict_to_change:
             dict_to_change[key] = None
-        value = self.convert_to_complete_list(value, self.single_plot, self.num_plots, list_allowed=key in self._LIST_ARGS, default=self._current_defaults[key])
+        value = self.convert_to_complete_list(value,
+                                              self.single_plot,
+                                              self.num_plots,
+                                              list_allowed=key in self._LIST_ARGS,
+                                              default=self._current_defaults[key],
+                                              key=key)
 
         if isinstance(dict_to_change[key], dict):
             if not isinstance(value, dict):
