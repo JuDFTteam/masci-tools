@@ -1181,6 +1181,7 @@ def plot_convex_hull2d(hull,
         pass
     return ax
 
+
 @ensure_plotter_consistency(plot_params)
 def plot_residuen(xdata,
                   fitdata,
@@ -1237,7 +1238,6 @@ def plot_residuen(xdata,
         axes = [ax1, ax2]
     else:
         ax1 = None
-        axes = ax1
 
     ax1 = single_scatterplot(ydata,
                              xdata,
@@ -1261,6 +1261,8 @@ def plot_residuen(xdata,
                         show=False,
                         save_plots=False,
                         **hist_kwargs)
+    else:
+        axes = ax1
 
     if return_residuen_data:
         return axes, ydata
