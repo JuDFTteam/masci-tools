@@ -802,6 +802,11 @@ def histogram(xdata,
                                         set_powerlimits=not log,
                                         area_plot=False,
                                         **kwargs)
+
+    if orientation == 'horizontal':
+        if xlabel == 'bins' and ylabel =='counts':
+            xlabel, ylabel = ylabel, xlabel
+
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis, minor=True)
 
     plot_kwargs = plot_params.plot_kwargs()
@@ -1206,7 +1211,7 @@ def plot_residuen(xdata,
     a = single_scatterplot(ydata, xdata, xlabel, ylabel, title, axis=ax2)
 
     if hist:
-        default_histogram(ydata, bins=20, axis=ax3, orientation='horizontal', title='Residuen distribution', normed=1)
+        histogram(ydata, bins=20, axis=ax3, orientation='horizontal', title='Residuen distribution', density=True)
     show_g = True
     return ydata
 
