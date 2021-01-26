@@ -1264,6 +1264,9 @@ def plot_residuen(xdata,
     else:
         axes = ax1
 
+    plot_params.set_parameters(**general_info)
+    plot_params.save_plot(saveas)
+
     if return_residuen_data:
         return axes, ydata
     else:
