@@ -331,7 +331,7 @@ class Plotter(object):
         Remove the parameters added via :py:func:`Plotter.add_parameter()`
         """
 
-        for key in self._added_parameters:
+        for key in copy.deepcopy(self._added_parameters):
             self._current_defaults.pop(key, None)
             self._plot_parameters.pop(key, None)
             self._added_parameters.remove(key)

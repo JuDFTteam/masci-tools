@@ -123,8 +123,102 @@ def test_plotter_add_parameter():
     p.add_parameter('E', default_from='C')
     assert p['E'] == 'title'
 
+    p.remove_added_parameters()
     p.reset_parameters()
-    p.reset_defaults()
 
     assert p._plot_parameters == TEST_DICT
     assert p._current_defaults == TEST_DICT
+
+def test_plotter_decorator_working():
+    """
+    Test the ensure_plotter_consistency decorator for a working function
+    """
+    from masci_tools.vis import Plotter, ensure_plotter_consistency
+
+    p = Plotter(TEST_DICT)
+
+    @ensure_plotter_consistency(p)
+    def test_function():
+        p.set_parameters(B=4.0)
+
+    test_function()
+
+    assert p._plot_parameters == TEST_DICT
+    assert p._current_defaults == TEST_DICT
+
+def test_plotter_decorator_raised_error():
+    """
+    Test the ensure_plotter_consistency decorator for a function with an error occuring durin execution
+    """
+    from masci_tools.vis import Plotter, ensure_plotter_consistency
+
+    p = Plotter(TEST_DICT)
+
+    @ensure_plotter_consistency(p)
+    def test_function():
+        p.set_parameters(B=4.0)
+        raise ValueError('Test')
+
+    with pytest.raises(ValueError, match='Test'):
+        test_function()
+
+    assert p._plot_parameters == TEST_DICT
+    assert p._current_defaults == TEST_DICT
+
+def test_plotter_decorator_set_defaults():
+    """
+    Test the ensure_plotter_consistency decorator for a function changing the defaults (raises Error)
+    """
+    from masci_tools.vis import Plotter, ensure_plotter_consistency
+
+    p = Plotter(TEST_DICT)
+
+    @ensure_plotter_consistency(p)
+    def test_function():
+        p.set_defaults(C='TEST')
+        p.set_parameters(B=4.0)
+
+    with pytest.raises(ValueError):
+        test_function()
+
+    assert p._plot_parameters == TEST_DICT
+    assert p._current_defaults == TEST_DICT
+
+def test_plotter_decorator_add_parameter():
+    """
+    Test the ensure_plotter_consistency decorator for a function adding custom parameters
+    """
+    from masci_tools.vis import Plotter, ensure_plotter_consistency
+
+    p = Plotter(TEST_DICT)
+
+    @ensure_plotter_consistency(p)
+    def test_function():
+        p.add_parameter('D')
+        p.add_parameter('E', default_from='C')
+
+    test_function()
+
+    assert p._plot_parameters == TEST_DICT
+    assert p._current_defaults == TEST_DICT
+
+def test_plotter_decorator_add_parameter_raised_error():
+    """
+    Test the ensure_plotter_consistency decorator for a function adding custom parameters with an exception occuring
+    """
+    from masci_tools.vis import Plotter, ensure_plotter_consistency
+
+    p = Plotter(TEST_DICT)
+
+    @ensure_plotter_consistency(p)
+    def test_function():
+        p.add_parameter('D')
+        p.add_parameter('E', default_from='C')
+        raise ValueError('Test')
+
+    with pytest.raises(ValueError, match='Test'):
+        test_function()
+
+    assert p._plot_parameters == TEST_DICT
+    assert p._current_defaults == TEST_DICT
+
