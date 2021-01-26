@@ -1195,6 +1195,7 @@ def plot_residuen(xdata,
                   xlabel=r'Energy [eV]',
                   ylabel=r'cts/s [arb]',
                   title=r'Residuen',
+                  saveas='residuen',
                   hist=True,
                   return_residuen_data=True,
                   **kwargs):
@@ -1210,6 +1211,7 @@ def plot_residuen(xdata,
     :param xlabel: str, label for the x-axis
     :param ylabel: str, label for the y-axis
     :param title: str, title for the plot
+    :param saveas: str, filename for the saved plot
     :param hist: bool, if True a normed residual distribution is ploted with a normal distribution.
     :param return_residuen_data: bool, if True in addition to the produced axis object also
                                  the residuen data is returned
