@@ -804,7 +804,7 @@ def histogram(xdata,
                                         **kwargs)
 
     if orientation == 'horizontal':
-        if xlabel == 'bins' and ylabel =='counts':
+        if xlabel == 'bins' and ylabel == 'counts':
             xlabel, ylabel = ylabel, xlabel
 
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis, minor=True)
@@ -835,7 +835,6 @@ def histogram(xdata,
             b = ax.plot(y, bins, '--')
         else:
             b = ax.plot(bins, y, '--')
-
 
     plot_params.set_limits(ax)
     plot_params.draw_lines(ax)
@@ -1182,7 +1181,7 @@ def plot_convex_hull2d(hull,
         pass
     return ax
 
-
+@ensure_plotter_consistency(plot_params)
 def plot_residuen(xdata,
                   fitdata,
                   realdata,
@@ -1190,29 +1189,59 @@ def plot_residuen(xdata,
                   xlabel=r'Energy [eV]',
                   ylabel=r'cts/s [arb]',
                   title=r'Residuen',
-                  hist=True):
+                  hist=True,
+                  **kwargs):
     """
     Calculates and Plots the residuen for given xdata fit results and the real data.
 
     If hist=True also the normed residual distribution is ploted with a normal distribution.
     """
-    global show_g
 
-    show_g = False
+    if errors is None:
+        errors = {}
+
     ydata = realdata - fitdata
-    #TODO single scatter error plot....
-    fig = plt.figure(num=None,
-                     figsize=(figsize_g[0] * 2, figsize_g[1]),
-                     dpi=dpi_g,
-                     facecolor=facecolor_g,
-                     edgecolor=edgecolor_g)
-    ax2 = plt.subplot2grid((1, 2), (0, 0))
-    ax3 = plt.subplot2grid((1, 2), (0, 1))  #, sharex = ax2, sharey = ax2)
-    a = single_scatterplot(ydata, xdata, xlabel, ylabel, title, axis=ax2)
 
     if hist:
-        histogram(ydata, bins=20, axis=ax3, orientation='horizontal', title='Residuen distribution', density=True)
-    show_g = True
+        general_keys = set(plot_params['figure_kwargs']) | {'show', 'save_plots'}
+        general_info = {key: val for key, val in kwargs.items() if key in general_keys}
+        kwargs = {key: val for key, val in kwargs.items() if key not in general_keys}
+        hist_kwargs = kwargs.pop('hist_kwargs', {})
+
+        plot_params.set_parameters(**general_info)
+
+        figsize = plot_params['figure_kwargs']['figsize']
+        #figsize is automatically scaled with the shape of the plot
+        plot_params['figure_kwargs'] = {'figsize': (figsize[0] * 2, figsize[1])}
+
+        plt.figure(**plot_params['figure_kwargs'])
+        ax1 = plt.subplot2grid((1, 2), (0, 0))
+    else:
+        ax1 = None
+
+    ax1 = single_scatterplot(ydata,
+                             xdata,
+                             xlabel,
+                             ylabel,
+                             title,
+                             axis=ax1,
+                             show=False,
+                             save_plots=False,
+                             xerr=errors.get('x', None),
+                             yerr=errors.get('y', None),
+                             **kwargs)
+
+    if hist:
+        ax2 = plt.subplot2grid((1, 2), (0, 1), sharey=ax1)
+        ax2 = histogram(ydata,
+                        bins=20,
+                        axis=ax2,
+                        orientation='horizontal',
+                        title='Residuen distribution',
+                        density=True,
+                        show=False,
+                        save_plots=False,
+                        **hist_kwargs)
     return ydata
 
 

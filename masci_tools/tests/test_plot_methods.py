@@ -980,11 +980,10 @@ class TestBarchartPlot(object):  #pylint: disable=missing-class-docstring
 
 class TestResiduenPlot(object):  #pylint: disable=missing-class-docstring
 
-
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/residuen/', filename='defaults.png')
     def test_defaults(self):
         """
-        Test of barchart plot with default values
+        Test of residuen plot with default values
         """
         import numpy as np
         from masci_tools.vis.plot_methods import plot_residuen
@@ -997,11 +996,36 @@ class TestResiduenPlot(object):  #pylint: disable=missing-class-docstring
 
         x = np.linspace(-10, 10, N_points)
         fit = x**2
-        real = [y + r for y, r in zip(fit,rand)]
+        real = [y + r for y, r in zip(fit, rand)]
 
         gcf().clear()
 
-        plot_residuen(x,fit,real)
+        plot_residuen(x, fit, real)
+
+        # need to return the figure in order for mpl checks to work
+        return gcf()
+
+    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/residuen/', filename='no_hist.png')
+    def test_no_hist(self):
+        """
+        Test of residuen plot without histogram
+        """
+        import numpy as np
+        from masci_tools.vis.plot_methods import plot_residuen
+
+        np.random.seed(19680801)
+        N_points = 100
+
+        # Generate a normal distribution, center at x=0 and y=5
+        rand = np.random.randn(N_points)
+
+        x = np.linspace(-10, 10, N_points)
+        fit = x**2
+        real = [y + r for y, r in zip(fit, rand)]
+
+        gcf().clear()
+
+        plot_residuen(x, fit, real, hist=False)
 
         # need to return the figure in order for mpl checks to work
         return gcf()
