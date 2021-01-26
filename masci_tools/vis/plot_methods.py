@@ -1200,7 +1200,7 @@ def plot_residuen(xdata,
                   return_residuen_data=True,
                   **kwargs):
     """
-    Calculates and Plots the residuen for given xdata fit results and the real data.
+    Calculates and plots the residuen for given xdata fit results and the real data.
 
     If hist=True also the normed residual distribution is ploted with a normal distribution.
 
@@ -1217,7 +1217,8 @@ def plot_residuen(xdata,
                                  the residuen data is returned
 
     Special Kwargs:
-        :param hist_kwargs: dict, these arguments will be passed on to the histogram plot
+        :param hist_kwargs: dict, these arguments will be passed on to the
+                            :py:func:`histogram()` call (if hist=True)
 
     Other Kwargs will be passed on to all :py:func:`single_scatterplot()` call
     """
@@ -1237,7 +1238,6 @@ def plot_residuen(xdata,
         figsize = plot_params['figure_kwargs']['figsize']
         #figsize is automatically scaled with the shape of the plot
         plot_params['figure_kwargs'] = {'figsize': (figsize[0] * 2, figsize[1])}
-
 
     plt.figure(**plot_params['figure_kwargs'])
 

@@ -29,7 +29,8 @@ def ensure_plotter_consistency(plotter_object):
     :param plotter_object: Plotter instance to be checked for consistency
     """
 
-    assert isinstance(plotter_object, Plotter), 'The ensure_plotter_consistency should only be used for Plotter objects'
+    assert isinstance(plotter_object, Plotter), \
+           'The ensure_plotter_consistency decorator should only be used for Plotter objects'
 
     def ensure_plotter_consistency_decorator(func):
         """
