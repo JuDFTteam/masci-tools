@@ -1164,3 +1164,20 @@ class TestPlotConvergenceResults(object):
 
         # need to return the figure in order for mpl checks to work
         return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/convergence/', filename='param_change.png')
+    def test_param_change(self):
+        """
+        Test of residuen plot with changed parameters
+        """
+        from masci_tools.vis.plot_methods import plot_convergence_results
+
+        gcf().clear()
+
+        #plot_convergence produces two figures, for testing we merge them into one
+        fig, (ax1, ax2) = plt.subplots(1,2,figsize=(16,6))
+
+        plot_convergence_results(self.distances, self.energies, self.iteration, show=False,axis1=ax1, axis2=ax2, linestyle='--', color='darkred', marker='s', linewidth=10, title_fontsize=20)
+
+        # need to return the figure in order for mpl checks to work
+        return fig
