@@ -50,14 +50,17 @@ def ensure_plotter_consistency(plotter_object):
             try:
                 res = func(*args, **kwargs)
             except Exception:
+                plotter_object.remove_added_parameters()
                 plotter_object.reset_parameters()
                 raise  #We do not want to erase the exception only wedge in the call to reset_parameters
             else:
+                plotter_object.remove_added_parameters()
                 plotter_object.reset_parameters()
 
             if plotter_object._current_defaults != defaults_before:
                 #Reset the changes
                 plotter_object._current_defaults = defaults_before
+                plotter_object.remove_added_parameters()
                 plotter_object.reset_parameters()
                 raise ValueError(f"Defaults have changed inside the plotting function '{func.__name__}'")
 
@@ -331,6 +334,7 @@ class Plotter(object):
         for key in self._added_parameters:
             self._current_defaults.pop(key, None)
             self._plot_parameters.pop(key, None)
+            self._added_parameters.remove(key)
 
     def reset_defaults(self):
         """
