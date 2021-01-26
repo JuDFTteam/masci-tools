@@ -1216,6 +1216,7 @@ def plot_residuen(xdata,
 
         plt.figure(**plot_params['figure_kwargs'])
         ax1 = plt.subplot2grid((1, 2), (0, 0))
+        ax2 = plt.subplot2grid((1, 2), (0, 1), sharey=ax1)
     else:
         ax1 = None
 
@@ -1232,7 +1233,6 @@ def plot_residuen(xdata,
                              **kwargs)
 
     if hist:
-        ax2 = plt.subplot2grid((1, 2), (0, 1), sharey=ax1)
         ax2 = histogram(ydata,
                         bins=20,
                         axis=ax2,
