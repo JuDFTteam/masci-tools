@@ -1226,23 +1226,26 @@ def plot_residuen(xdata,
     ydata = realdata - fitdata
     hist_kwargs = kwargs.pop('hist_kwargs', {})
 
+    general_keys = set(plot_params['figure_kwargs']) | {'show', 'save_plots'}
+    general_info = {key: val for key, val in kwargs.items() if key in general_keys}
+    kwargs = {key: val for key, val in kwargs.items() if key not in general_keys}
+    plot_params.set_parameters(**general_info)
+
     if hist:
-        general_keys = set(plot_params['figure_kwargs']) | {'show', 'save_plots'}
-        general_info = {key: val for key, val in kwargs.items() if key in general_keys}
-        kwargs = {key: val for key, val in kwargs.items() if key not in general_keys}
-
-        plot_params.set_parameters(**general_info)
-
         figsize = plot_params['figure_kwargs']['figsize']
         #figsize is automatically scaled with the shape of the plot
         plot_params['figure_kwargs'] = {'figsize': (figsize[0] * 2, figsize[1])}
 
-        plt.figure(**plot_params['figure_kwargs'])
+
+    plt.figure(**plot_params['figure_kwargs'])
+
+    if hist:
         ax1 = plt.subplot2grid((1, 2), (0, 0))
         ax2 = plt.subplot2grid((1, 2), (0, 1), sharey=ax1)
         axes = [ax1, ax2]
     else:
-        ax1 = None
+        ax1 = plt.subplot2grid((1, 1), (0, 0))
+        axes = ax1
 
     ax1 = single_scatterplot(ydata,
                              xdata,
@@ -1266,8 +1269,6 @@ def plot_residuen(xdata,
                         show=False,
                         save_plots=False,
                         **hist_kwargs)
-    else:
-        axes = ax1
 
     plot_params.set_parameters(**general_info)
     plot_params.save_plot(saveas)

@@ -129,6 +129,7 @@ def test_plotter_add_parameter():
     assert p._plot_parameters == TEST_DICT
     assert p._current_defaults == TEST_DICT
 
+
 def test_plotter_decorator_working():
     """
     Test the ensure_plotter_consistency decorator for a working function
@@ -145,6 +146,7 @@ def test_plotter_decorator_working():
 
     assert p._plot_parameters == TEST_DICT
     assert p._current_defaults == TEST_DICT
+
 
 def test_plotter_decorator_raised_error():
     """
@@ -165,6 +167,7 @@ def test_plotter_decorator_raised_error():
     assert p._plot_parameters == TEST_DICT
     assert p._current_defaults == TEST_DICT
 
+
 def test_plotter_decorator_set_defaults():
     """
     Test the ensure_plotter_consistency decorator for a function changing the defaults (raises Error)
@@ -184,6 +187,7 @@ def test_plotter_decorator_set_defaults():
     assert p._plot_parameters == TEST_DICT
     assert p._current_defaults == TEST_DICT
 
+
 def test_plotter_decorator_add_parameter():
     """
     Test the ensure_plotter_consistency decorator for a function adding custom parameters
@@ -201,6 +205,7 @@ def test_plotter_decorator_add_parameter():
 
     assert p._plot_parameters == TEST_DICT
     assert p._current_defaults == TEST_DICT
+
 
 def test_plotter_decorator_add_parameter_raised_error():
     """
@@ -221,4 +226,3 @@ def test_plotter_decorator_add_parameter_raised_error():
 
     assert p._plot_parameters == TEST_DICT
     assert p._current_defaults == TEST_DICT
-
