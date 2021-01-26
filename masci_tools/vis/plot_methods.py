@@ -1190,23 +1190,40 @@ def plot_residuen(xdata,
                   ylabel=r'cts/s [arb]',
                   title=r'Residuen',
                   hist=True,
+                  return_residuen_data=True,
                   **kwargs):
     """
     Calculates and Plots the residuen for given xdata fit results and the real data.
 
     If hist=True also the normed residual distribution is ploted with a normal distribution.
+
+    :param xdata: arraylike data for the x-coordinate
+    :param fitdata: arraylike fitted data for the y-coordinate
+    :param realdata: arraylike data to plot residuen against the fit
+    :param errors: dict, can be used to provide errordata for the x and y direction
+    :param xlabel: str, label for the x-axis
+    :param ylabel: str, label for the y-axis
+    :param title: str, title for the plot
+    :param hist: bool, if True a normed residual distribution is ploted with a normal distribution.
+    :param return_residuen_data: bool, if True in addition to the produced axis object also
+                                 the residuen data is returned
+
+    Special Kwargs:
+        :param hist_kwargs: dict, these arguments will be passed on to the histogram plot
+
+    Other Kwargs will be passed on to all :py:func:`single_scatterplot()` call
     """
 
     if errors is None:
         errors = {}
 
     ydata = realdata - fitdata
+    hist_kwargs = kwargs.pop('hist_kwargs', {})
 
     if hist:
         general_keys = set(plot_params['figure_kwargs']) | {'show', 'save_plots'}
         general_info = {key: val for key, val in kwargs.items() if key in general_keys}
         kwargs = {key: val for key, val in kwargs.items() if key not in general_keys}
-        hist_kwargs = kwargs.pop('hist_kwargs', {})
 
         plot_params.set_parameters(**general_info)
 
@@ -1217,8 +1234,10 @@ def plot_residuen(xdata,
         plt.figure(**plot_params['figure_kwargs'])
         ax1 = plt.subplot2grid((1, 2), (0, 0))
         ax2 = plt.subplot2grid((1, 2), (0, 1), sharey=ax1)
+        axes = [ax1, ax2]
     else:
         ax1 = None
+        axes = ax1
 
     ax1 = single_scatterplot(ydata,
                              xdata,
@@ -1242,7 +1261,11 @@ def plot_residuen(xdata,
                         show=False,
                         save_plots=False,
                         **hist_kwargs)
-    return ydata
+
+    if return_residuen_data:
+        return axes, ydata
+    else:
+        return axes
 
 
 def plot_convergence_results(distance,
