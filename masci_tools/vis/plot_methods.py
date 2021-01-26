@@ -1346,7 +1346,6 @@ def plot_convergence_results_m(distances,
                                total_energies,
                                iterations,
                                modes,
-                               show=True,
                                saveas1='t_energy_convergence',
                                saveas2='distance_convergence',
                                axis1=None,
@@ -1394,7 +1393,7 @@ def plot_convergence_results_m(distances,
                                title1,
                                plot_label=plot_labels1,
                                saveas=saveas1,
-                               scale=[None, 'log'],
+                               scale={'y': 'log'},
                                axis=axis1,
                                **kwargs)
     for i, mode in enumerate(modes):
@@ -1409,13 +1408,9 @@ def plot_convergence_results_m(distances,
                                title2,
                                plot_label=plot_labels2,
                                saveas=saveas2,
-                               scale=[None, 'log'],
+                               scale={'y': 'log'},
                                axis=axis2,
                                **kwargs)
-
-    if show:
-        plt.show(p1)
-        plt.show(p2)
 
     return p1, p2
 
