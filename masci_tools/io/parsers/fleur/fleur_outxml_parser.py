@@ -49,6 +49,11 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
 
     :return: python dictionary with the information parsed from the out.xml
 
+    :raises ValueError: If the validation against the schema failed, or an irrecoverable error
+                        occured during parsing
+    :raises FileNotFoundError: If no Schema file for the given version was found
+    :raises KeyError: If an unknown task is encountered
+
     """
 
     if parser_info_out is None:

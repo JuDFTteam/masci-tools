@@ -31,6 +31,11 @@ def inpxml_parser(inpxmlfile, version=None, parser_info_out=None):
     :param parser_info_out: dict, with warnings, info, errors, ...
 
     :return: python dictionary with the parsed inp.xml
+
+    :raises ValueError: If the validation against the schema failed, or an irrecoverable error
+                        occured during parsing
+    :raises FileNotFoundError: If no Schema file for the given version was found
+
     """
 
     if parser_info_out is None:
