@@ -1281,6 +1281,7 @@ def plot_residuen(xdata,
         return axes
 
 
+@ensure_plotter_consistency(plot_params)
 def plot_convergence_results(distance,
                              total_energy,
                              iteration,
@@ -1337,17 +1338,19 @@ def plot_convergence_results(distance,
                             axis=axis2,
                             **kwargs)
 
-    return [p1, p2]
+    return p1, p2
 
 
+@ensure_plotter_consistency(plot_params)
 def plot_convergence_results_m(distances,
                                total_energies,
                                iterations,
                                modes,
-                               plot_labels=[],
                                show=True,
                                saveas1='t_energy_convergence',
                                saveas2='distance_convergence',
+                               axis1=None,
+                               axis2=None,
                                **kwargs):
     """
     Plot the total energy versus the scf iteration
@@ -1359,6 +1362,10 @@ def plot_convergence_results_m(distances,
     title1 = r'Total energy difference over scf-Iterations'
     #title2 = r'Distance over scf-Iterations'
     title2 = r'Convergence (log)'
+
+    if 'plot_labels' in kwargs:
+        warnings.warn('Please use plot_label instead of plot_labels', DeprecationWarning)
+        kwargs['plot_label'] = kwargs.pop('plot_labels')
 
     iterations1 = []
     plot_labels1 = []
@@ -1375,17 +1382,21 @@ def plot_convergence_results_m(distances,
         plot_labels1.append('delta total energy {}'.format(i))
         plot_labels2.append('distance {}'.format(i))
     #saveas3 ='t_energy_convergence2'
-    if plot_labels:
-        plot_labels1 = plot_labels
-        plot_labels2 = plot_labels
+    if 'plot_label' in kwargs:
+        plot_label = kwargs.pop('plot_label')
+        plot_labels1 = plot_label
+        plot_labels2 = plot_label
+
     p1 = multiple_scatterplots(total_energy_abs_diffs,
                                iterations1,
                                xlabel,
                                ylabel1,
                                title1,
-                               plot_labels1,
+                               plot_label=plot_labels1,
                                saveas=saveas1,
-                               scale=[None, 'log'])
+                               scale=[None, 'log'],
+                               axis=axis1,
+                               **kwargs)
     for i, mode in enumerate(modes):
         if mode == 'force':
             iterations[i].pop()
@@ -1396,9 +1407,11 @@ def plot_convergence_results_m(distances,
                                xlabel,
                                ylabel2,
                                title2,
-                               plot_labels2,
+                               plot_label=plot_labels2,
                                saveas=saveas2,
-                               scale=[None, 'log'])
+                               scale=[None, 'log'],
+                               axis=axis2,
+                               **kwargs)
 
     if show:
         plt.show(p1)

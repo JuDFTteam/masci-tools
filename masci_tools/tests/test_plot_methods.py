@@ -1103,7 +1103,7 @@ class TestResiduenPlot(object):  #pylint: disable=missing-class-docstring
         return gcf()
 
 
-class TestPlotConvergenceResults(object):
+class TestPlotConvergenceResults(object):  #pylint: disable=missing-class-docstring
 
     energies = [
         -69269.46134019217, -69269.42108466873, -69269.35509388152, -69269.62486438647, -69269.51102655893,
@@ -1123,7 +1123,7 @@ class TestPlotConvergenceResults(object):
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/convergence/', filename='defaults.png')
     def test_defaults(self):
         """
-        Test of residuen plot with default values
+        Test of convergence plot with default values
         """
         from masci_tools.vis.plot_methods import plot_convergence_results
 
@@ -1141,7 +1141,7 @@ class TestPlotConvergenceResults(object):
                                    filename='param_change.png')
     def test_param_change(self):
         """
-        Test of residuen plot with changed parameters
+        Test of convergence plot with changed parameters
         """
         from masci_tools.vis.plot_methods import plot_convergence_results
 
@@ -1161,6 +1161,50 @@ class TestPlotConvergenceResults(object):
                                  marker='s',
                                  linewidth=10,
                                  title_fontsize=20)
+
+        # need to return the figure in order for mpl checks to work
+        return fig
+
+
+class TestPlotConvergenceMulti(object):  #pylint: disable=missing-class-docstring
+
+    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/convergence_multi/',
+                                   filename='defaults.png')
+    def test_defaults(self):
+        """
+        Test of multiple convergence plot with default values
+        """
+        from masci_tools.vis.plot_methods import plot_convergence_results_m
+        import numpy as np
+
+        np.random.seed(19680801)
+        number_iterations = np.random.randint(15, high=50, size=15)
+        iteration = [np.array(range(iters)) for iters in number_iterations]
+
+        noise_arr = [0.1 * np.random.randn(iters) + 1.0 for iters in number_iterations]
+
+        distance_decay = np.random.rand(15)
+        distance_offset = 100 * np.random.rand(15)
+
+        energy_decay = np.random.rand(15)
+        energy_offset = 20000 + 500 * np.random.rand(15)
+        energy_offset2 = 1000 * np.random.rand(15)
+
+        distances = [
+            noise * offset * np.exp(-decay * iters)
+            for iters, noise, decay, offset in zip(iteration, noise_arr, distance_decay, distance_offset)
+        ]
+        energies = [
+            noise * offset2 * np.exp(-decay * iters) + offset for iters, noise, decay, offset, offset2 in zip(
+                iteration, noise_arr, energy_decay, energy_offset, energy_offset2)
+        ]
+
+        gcf().clear()
+
+        #plot_convergence produces two figures, for testing we merge them into one
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 6))
+
+        plot_convergence_results_m(distances, energies, iteration, show=False, axis1=ax1, axis2=ax2, modes={})
 
         # need to return the figure in order for mpl checks to work
         return fig
