@@ -2,7 +2,7 @@
 """
 Tests of the plotter base class
 """
-from masci_tools.vis import Plotter
+from masci_tools.vis import Plotter, ensure_plotter_consistency
 import pytest
 
 TEST_DICT = {'A': {'test1': 12, 'test2': 4}, 'B': 3.0, 'C': 'title'}
@@ -134,7 +134,6 @@ def test_plotter_decorator_working():
     """
     Test the ensure_plotter_consistency decorator for a working function
     """
-    from masci_tools.vis import Plotter, ensure_plotter_consistency
 
     p = Plotter(TEST_DICT)
 
@@ -152,7 +151,6 @@ def test_plotter_decorator_raised_error():
     """
     Test the ensure_plotter_consistency decorator for a function with an error occuring durin execution
     """
-    from masci_tools.vis import Plotter, ensure_plotter_consistency
 
     p = Plotter(TEST_DICT)
 
@@ -172,7 +170,6 @@ def test_plotter_decorator_set_defaults():
     """
     Test the ensure_plotter_consistency decorator for a function changing the defaults (raises Error)
     """
-    from masci_tools.vis import Plotter, ensure_plotter_consistency
 
     p = Plotter(TEST_DICT)
 
@@ -192,7 +189,6 @@ def test_plotter_decorator_add_parameter():
     """
     Test the ensure_plotter_consistency decorator for a function adding custom parameters
     """
-    from masci_tools.vis import Plotter, ensure_plotter_consistency
 
     p = Plotter(TEST_DICT)
 
@@ -211,7 +207,6 @@ def test_plotter_decorator_add_parameter_raised_error():
     """
     Test the ensure_plotter_consistency decorator for a function adding custom parameters with an exception occuring
     """
-    from masci_tools.vis import Plotter, ensure_plotter_consistency
 
     p = Plotter(TEST_DICT)
 
