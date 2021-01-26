@@ -1110,6 +1110,11 @@ def plot_convex_hull2d(hull,
     :param hull: pyhull.Convexhull #scipy.spatial.ConvexHull
     """
 
+    #Define function wide custom parameters
+    #plot_params.add_parameter('marker_hull', default_from='marker')
+    #plot_params.add_parameter('markersize_hull', default_from='markersize')
+    #plot_params.add_parameter('color_line', default_from='color')
+
     #TODO: the upper lines, part of the hull should not be connected/plottet
     if axis:
         ax = axis
