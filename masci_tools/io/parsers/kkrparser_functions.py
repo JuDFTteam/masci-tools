@@ -24,7 +24,7 @@ import traceback
 __copyright__ = (u'Copyright (c), 2017, Forschungszentrum Jülich GmbH,' 'IAS-1/PGI-1, Germany. All rights reserved.')
 __license__ = 'MIT license, see LICENSE.txt file'
 __contributors__ = u'Philipp Rüßmann'
-__version__ = '1.8'
+__version__ = '1.8.1'
 
 ####################################################################################
 
@@ -231,20 +231,35 @@ def get_econt_info(outfile_0init):
     Nepts = int(tmptxt[itmp].split(':')[1].split()[0])
 
     doscalc = search_string('Density-of-States calculation', tmptxt)
+    semi_circ = search_string('integration on semi-circle contour', tmptxt)
+    
+    # dummy values
+    N1, N2, N3, Npol = None, None, None, None
+    Nsemi_circ, im_e_min = None, None
+    
+    # for DOS contour
     if doscalc == -1:
-        # npol
-        itmp = search_string('poles =', tmptxt)
-        Npol = int(tmptxt[itmp].split('=')[1].split()[0])
-        # npt1, npt2, npt3
-        itmp = search_string('contour:', tmptxt)
-        tmp = tmptxt[itmp].replace(',', '').replace('=', '= ').split(':')[1].split()
-        N1 = int(tmp[2])
-        N2 = int(tmp[5])
-        N3 = int(tmp[8])
+        # scf contour
+        if semi_circ == -1:
+            # npol
+            itmp = search_string('poles =', tmptxt)
+            Npol = int(tmptxt[itmp].split('=')[1].split()[0])
+            # npt1, npt2, npt3
+            itmp = search_string('contour:', tmptxt)
+            tmp = tmptxt[itmp].replace(',', '').replace('=', '= ').split(':')[1].split()
+            N1 = int(tmp[2])
+            N2 = int(tmp[5])
+            N3 = int(tmp[8])
+        else:
+            # semi-circular contour
+            Nsemi_circ = Nepts
+            itmp = search_string('smallest imaginary part ', tmptxt)
+            im_e_min = tmptxt[itmp].split('=')[1].split()[0]
     else:
+        # DOS contour
         Npol, N1, N2, N3 = 0, 0, Nepts, 0
 
-    return emin, tempr, Nepts, Npol, N1, N2, N3
+    return emin, tempr, Nepts, Npol, N1, N2, N3, Nsemi_circ, im_e_min
 
 
 def get_core_states(potfile):
@@ -600,17 +615,24 @@ def parse_kkr_outputfile(out_dict,
             traceback.print_exc()
 
     try:
-        emin, tempr, Nepts, Npol, N1, N2, N3 = get_econt_info(outfile_0init)
+        emin, tempr, Nepts, Npol, N1, N2, N3, Nsemi_circ, im_e_min = get_econt_info(outfile_0init)
         tmp_dict = {}
         tmp_dict['emin'] = emin
         tmp_dict['emin_unit'] = 'Rydberg'
         tmp_dict['number_of_energy_points'] = Nepts
-        tmp_dict['temperature'] = tempr
-        tmp_dict['temperature_unit'] = 'Kelvin'
-        tmp_dict['npol'] = Npol
-        tmp_dict['n1'] = N1
-        tmp_dict['n2'] = N2
-        tmp_dict['n3'] = N3
+        if Nsemi_circ is None:
+            # normal scf or DOS contour
+            tmp_dict['temperature'] = tempr
+            tmp_dict['temperature_unit'] = 'Kelvin'
+            tmp_dict['npol'] = Npol
+            tmp_dict['n1'] = N1
+            tmp_dict['n2'] = N2
+            tmp_dict['n3'] = N3
+        else:
+            # semi-circle contour
+            tmp_dict['im_e_min'] = im_e_min
+            tmp_dict['im_e_min_unit'] = 'Ry'
+        # now fill energy contour group
         out_dict['energy_contour_group'] = tmp_dict
         if Npol == 0:
             doscalc = True

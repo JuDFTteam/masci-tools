@@ -18,7 +18,7 @@ Also some defaults for the parameters are defined.
 
 __copyright__ = ('Copyright (c), 2017, Forschungszentrum Jülich GmbH,' 'IAS-1/PGI-1, Germany. All rights reserved.')
 __license__ = 'MIT license, see LICENSE.txt file'
-__version__ = '1.8.5'
+__version__ = '1.8.6'
 __contributors__ = 'Philipp Rüßmann'
 
 # This defines the default parameters for KKR used in the aiida plugin:
@@ -414,6 +414,15 @@ class kkrparams(object):
             ('<NEWVERSION_BDG>', [None, '%l', False, 'Superconductivity: Old or new version of BdG solver.']),
             ('<CUSTOM_TESTSTRING>',
              [None, '%s', False, 'Superconductivity: String input for some test options with BdG']),
+            # misc
+            ('IM_E_CIRC_MIN', [
+                None, '%f', False,
+                'Minimal imaginary part (for energy point closest to EF) in semi-circular contour (needs USE_SEMI_CIRCLE_CONTOUR to become active.'
+            ]),
+            ('MAX_NUM_KMESH', [
+                None, '%i', False,
+                'Maximal number of differet k-meshes used to coarsen the BZ integration at elevated imaginary parts of the energy.'
+            ]),
             # array dimensions
             ('NSHELD', [None, '%i', False, 'Array dimension: number of shells (default: 300)']),
             ('IEMXD', [None, '%i', False, 'Array dimension: number of energy points (default: 101)']),
@@ -430,7 +439,7 @@ class kkrparams(object):
             ]),
             ('<SET_CHEBY_NOSOC>',
              [None, '%l', False, "Run option: set SOC strength to 0 for all atoms (former: 'NOSOC')"]),
-            ('<DECOUPLE_SPINS_CHEBY>', [
+            ('<DECOUPLE_SPIN_CHEBY>', [
                 None, '%l', False,
                 'Run option: decouple spin matrices in Chebychev solver neglecting SOC and for collinear calculations only'
             ]),
@@ -580,6 +589,7 @@ class kkrparams(object):
                 "Run option: keep the Fermi energy fixed during self-consistency (former: 'rigid-ef')"
             ]),
             ('<USE_SEMICORE>', [None, '%l', False, "Run option: use semicore contour (former: 'SEMICORE')"]),
+            ('<USE_SEMI_CIRCLE_CONTOUR>', [None, '%l', False, "Run option: use semi-circular energy contour (set number of points with NPT1)"]),
             ('<USE_SPHERICAL_POTENTIAL_ONLY>',
              [None, '%l', False, "Run option: keeping only spherical component of potential (former: 'Vspher')"]),
             ('<USE_VIRTUAL_ATOMS>', [None, '%l', False, "Run option: add virtual atoms (former: 'VIRATOMS')"]),
@@ -1234,10 +1244,10 @@ class kkrparams(object):
                     )
                     raise ValueError('INS,KSHAPE mismatch')
 
-    def fill_keywords_to_inputfile(self, is_voro_calc=False, output='inputcard'):
+    def fill_keywords_to_inputfile(self, is_voro_calc=False, output='inputcard', no_check=False):
         """
         Fill new inputcard with keywords/values
-        automatically check for input consistency
+        automatically check for input consistency (can be disabled by the no_check input)
         if is_voro_calc==True change mandatory list to match voronoi code, default is KKRcode
         """
         from numpy import array
@@ -1247,7 +1257,7 @@ class kkrparams(object):
             self.__params_type = 'voronoi'
 
         # check for inconsistencies in input before writing file
-        self._check_input_consistency()
+        self._check_input_consistency(set_lists_only=no_check)
 
         #rename for easy reference
         keywords = self.values
@@ -1495,7 +1505,7 @@ class kkrparams(object):
         with open_general(output, u'w') as f:
             f.write(tmpl)
 
-    def read_keywords_from_inputcard(self, inputcard='inputcard'):
+    def read_keywords_from_inputcard(self, inputcard='inputcard', verbose=False):
         """
         Read list of keywords from inputcard and extract values to keywords dict
 
@@ -1505,11 +1515,10 @@ class kkrparams(object):
         from numpy import shape, array
         from masci_tools.io.common_functions import get_aBohr2Ang
 
-        # some print statements with debug info
         debug = False
-
-        if debug:
+        if verbose:
             print('start reading {}'.format(inputcard))
+            debug = True
 
         txt = open_general(inputcard, 'r').readlines()
         keywords = self.values
@@ -1544,7 +1553,10 @@ class kkrparams(object):
                 if key not in self.__special_formatting:
                     # determine if more than one line is read in
                     if key in self.__listargs and key not in ['ZPERIODL', 'ZPERIODR', 'BZDIVIDE']:
-                        lines = list(range(1, self.__listargs[key] + 1))
+                        itmp = self.__listargs[key]
+                        if itmp is None:
+                            itmp = 0
+                        lines = list(range(1, itmp + 1))
                     else:
                         lines = [1]
                 else:  # special formatting keys
@@ -1617,10 +1629,12 @@ class kkrparams(object):
         # finally check if some input of the old style was given and read it in
         natyp = self.get_value('NATYP')
         if natyp is None:
+            if debug: print('set NATYP=NAEZ')
             natyp = self.get_value('NAEZ')
 
         # look for old RBASIS input style
         if self.get_value('<RBASIS>') is None:
+            if debug: print('look for RBASIS instead of <RBASIS>')
             rbasis = []
             for iatom in range(natyp):
                 rbasis.append([float(i) for i in self._find_value('RBASIS', txt, 1 + iatom, 1, 3, debug=debug)])
@@ -1639,9 +1653,11 @@ class kkrparams(object):
             atominfo = True
         tmp = []
         if atominfo_c:
+            if debug: print('read ATOMINFOC')
             for iatom in range(natyp):
                 tmp.append(self._find_value('ATOMINFOC', txt, 2 + iatom, 1, 14, debug=debug))
         elif atominfo:
+            if debug: print('read ATOMINFO')
             for iatom in range(natyp):
                 tmp.append(self._find_value('ATOMINFO', txt, 2 + iatom, 1, 12, debug=debug))
         if atominfo_c or atominfo:
