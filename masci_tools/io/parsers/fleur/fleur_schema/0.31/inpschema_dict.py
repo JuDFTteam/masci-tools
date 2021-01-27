@@ -650,7 +650,7 @@ schema_dict = {
                 'output', 'forceTheorem', 'relaxation'
             ],
             'several': [],
-            'simple': ['comment', 'calculationSetup', 'output', 'relaxation'],
+            'simple': ['comment'],
             'text': ['comment']
         },
         '/fleurInput/atomGroups': {
@@ -1353,7 +1353,7 @@ schema_dict = {
             'optional_attribs': [],
             'order': ['MAE', 'spinSpiralDispersion', 'DMI', 'Jij'],
             'several': [],
-            'simple': ['MAE', 'DMI', 'Jij'],
+            'simple': ['MAE'],
             'text': []
         },
         '/fleurInput/forceTheorem/DMI': {
@@ -1424,7 +1424,7 @@ schema_dict = {
             'several': [],
             'simple': [
                 'checks', 'densityOfStates', 'vacuumDOS', 'plotting', 'chargeDensitySlicing', 'specialOutput',
-                'wannier', 'magneticCircularDichroism', 'unfoldingBand'
+                'magneticCircularDichroism', 'unfoldingBand'
             ],
             'text': []
         },

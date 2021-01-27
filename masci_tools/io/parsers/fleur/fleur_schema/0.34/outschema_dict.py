@@ -1229,9 +1229,9 @@ schema_dict = {
                 'atomTypeDependentContributions', 'dftUCorrection', 'tkbTimesEntropy', 'freeEnergy', 'extrapolationTo0K'
             ],
             'simple': [
-                'sumOfEigenvalues', 'densityCoulombPotentialIntegral', 'densityEffectivePotentialIntegral',
-                'chargeDenXCDenIntegral', 'FockExchangeEnergyValence', 'FockExchangeEnergyCore',
-                'atomTypeDependentContributions', 'dftUCorrection', 'tkbTimesEntropy', 'freeEnergy', 'extrapolationTo0K'
+                'densityCoulombPotentialIntegral', 'densityEffectivePotentialIntegral', 'chargeDenXCDenIntegral',
+                'FockExchangeEnergyValence', 'FockExchangeEnergyCore', 'dftUCorrection', 'tkbTimesEntropy',
+                'freeEnergy', 'extrapolationTo0K'
             ],
             'text': []
         },
@@ -1695,7 +1695,7 @@ schema_dict = {
                 'ERROR', 'endDateAndTime'
             ],
             'several': [],
-            'simple': ['programVersion', 'startDateAndTime', 'fleurInput', 'ERROR', 'endDateAndTime'],
+            'simple': ['startDateAndTime', 'fleurInput', 'ERROR', 'endDateAndTime'],
             'text': []
         },
         '/fleurOutput/ERROR': {
