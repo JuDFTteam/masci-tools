@@ -200,7 +200,11 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
     elif iteration_to_parse == 'all':
         pass
     elif isinstance(iteration_to_parse, int):
-        iteration_nodes = iteration_nodes[iteration_to_parse]
+        try:
+            iteration_nodes = iteration_nodes[iteration_to_parse]
+        except IndexError as exc:
+            raise ValueError(f"Invalid value for iteration_to_parse: Got '{iteration_to_parse}'"
+                             f"; but only '{len(iteration_nodes)}' iterations are available") from exc
     else:
         raise ValueError(f"Invalid value for iteration_to_parse: Got '{iteration_to_parse}' "
                          "Valid values are: 'first', 'last', 'all', or int")

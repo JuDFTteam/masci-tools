@@ -148,6 +148,20 @@ def test_outxml_incompatible_versions():
         out_dict = outxml_parser(OUTXML_FILEPATH1, strict=True)
 
 
+def test_outxml_invalid_iteration():
+    """
+    Test the output parser with invaid iteration to parse arguments
+    """
+
+    #output version does not exist (InputSchema is loaded first so this is the raised error)
+    OUTXML_FILEPATH = os.path.join(outxmlfilefolder_valid[0], 'SiLOXML/files/out.xml')
+    with pytest.raises(ValueError, match=r"Valid values are: 'first', 'last', 'all', or int"):
+        out_dict = outxml_parser(OUTXML_FILEPATH, strict=True, iteration_to_parse=('Test', 3))
+        pprint(out_dict)
+
+    with pytest.raises(ValueError, match=r"Got '999'; but only '6' iterations are available"):
+        out_dict = outxml_parser(OUTXML_FILEPATH, strict=True, iteration_to_parse=999)
+
 def test_outxml_additional_tasks_simple(data_regression):
     """
     Test the definition of additional tasks (resding an attribute)
