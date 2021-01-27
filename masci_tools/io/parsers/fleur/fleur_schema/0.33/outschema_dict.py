@@ -1688,7 +1688,7 @@ schema_dict = {
                 'ERROR', 'endDateAndTime'
             ],
             'several': [],
-            'simple': ['startDateAndTime', 'fleurInput', 'ERROR', 'endDateAndTime'],
+            'simple': ['startDateAndTime', 'ERROR', 'endDateAndTime'],
             'text': []
         },
         '/fleurOutput/ERROR': {

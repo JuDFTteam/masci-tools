@@ -1413,7 +1413,7 @@ schema_dict = {
                 'endDateAndTime'
             ],
             'several': [],
-            'simple': ['startDateAndTime', 'inputData', 'endDateAndTime'],
+            'simple': ['startDateAndTime', 'endDateAndTime'],
             'text': []
         },
         '/fleurOutput/endDateAndTime': {

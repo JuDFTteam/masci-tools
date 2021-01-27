@@ -397,6 +397,8 @@ def _get_simple_tags(xmlschema, namespaces, elem):
         child_type = _remove_xsd_namespace(child.tag, namespaces)
 
         if child_type == 'element':
+            if child.attrib['type'] == _INPUT_TYPE:
+                continue
             type_elem = xmlschema.xpath(f"//xsd:simpleType[@name='{child.attrib['type']}']", namespaces=namespaces)
             if len(type_elem) != 0:
                 simple_list.append(child.attrib['name'])
