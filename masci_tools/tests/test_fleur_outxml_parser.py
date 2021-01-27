@@ -162,6 +162,7 @@ def test_outxml_invalid_iteration():
     with pytest.raises(ValueError, match=r"Got '999'; but only '6' iterations are available"):
         out_dict = outxml_parser(OUTXML_FILEPATH, strict=True, iteration_to_parse=999)
 
+
 def test_outxml_additional_tasks_simple(data_regression):
     """
     Test the definition of additional tasks (resding an attribute)
