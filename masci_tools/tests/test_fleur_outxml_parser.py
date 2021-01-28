@@ -301,12 +301,44 @@ def test_outxml_add_tasks_append(data_regression):
     })
 
 
+def test_outxml_pre_max3_1compatibility(data_regression):
+    """
+    Test if older than Max3.1 output files are processed correctly (and a warning should be shown for this case)
+    """
+
+    OUTXML_FILEPATH = os.path.abspath(os.path.join(outxmlfilefolder, 'files/fleur/old_versions/Max3_0_test_out.xml'))
+
+    warnings = {'parser_warnings': []}
+    with pytest.warns(UserWarning):
+        out_dict = outxml_parser(OUTXML_FILEPATH, parser_info_out=warnings, iteration_to_parse='all')
+    data_regression.check({
+        'output_dict': out_dict,
+        'warnings': warnings,
+    })
+
+
+
+def test_outxml_max3_1compatibility(data_regression):
+    """
+    Test if Max3.1 output files are processed correctly
+    """
+
+    OUTXML_FILEPATH = os.path.abspath(os.path.join(outxmlfilefolder, 'files/fleur/old_versions/Max3_1_test_out.xml'))
+
+    warnings = {'parser_warnings': []}
+    out_dict = outxml_parser(OUTXML_FILEPATH, parser_info_out=warnings, iteration_to_parse='all')
+    data_regression.check({
+        'output_dict': out_dict,
+        'warnings': warnings,
+    })
+
+
 def test_outxml_max4compatibility(data_regression):
     """
     Test if Max4 output files are processed correctly
     """
 
-    OUTXML_FILEPATH = os.path.abspath(os.path.join(outxmlfilefolder, 'files/fleur/Max-R4/Max4_test_out.xml'))
+    OUTXML_FILEPATH = os.path.abspath(os.path.join(outxmlfilefolder, 'files/fleur/old_versions/Max4_test_out.xml'))
 
     warnings = {'parser_warnings': []}
     out_dict = outxml_parser(OUTXML_FILEPATH, parser_info_out=warnings, iteration_to_parse='all')
@@ -321,7 +353,7 @@ def test_outxml_max5_0_compatibility(data_regression):
     Test if Max5.0 output files are processed correctly
     """
 
-    OUTXML_FILEPATH = os.path.abspath(os.path.join(outxmlfilefolder, 'files/fleur/Max-R5/Max5_0_test_out.xml'))
+    OUTXML_FILEPATH = os.path.abspath(os.path.join(outxmlfilefolder, 'files/fleur/old_versions/Max5_0_test_out.xml'))
 
     warnings = {'parser_warnings': []}
     out_dict = outxml_parser(OUTXML_FILEPATH, parser_info_out=warnings, iteration_to_parse='all')
