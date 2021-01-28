@@ -382,7 +382,7 @@ def _is_simple(namespaces, elem):
 
         if child_type in ['attribute', 'simpleContent']:
             continue
-        elif child_type in ['element', 'sequence', 'choice', 'all']:
+        if child_type in ['element', 'sequence', 'choice', 'all']:
             simple = False
         else:
             raise ValueError(f"Don't know what to do with '{child_type}'")
