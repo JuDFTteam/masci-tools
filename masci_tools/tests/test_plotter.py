@@ -219,3 +219,62 @@ def test_plotter_decorator_add_parameter_raised_error():
 
     assert p._plot_parameters == TEST_DICT
     assert p._current_defaults == TEST_DICT
+
+
+WORKING_VALUES = [[None, 3, None], 'Test', [1, 2, 3, 4, 5], {4: 'Test2'}, [5.0], {'NotAList': 'Test2'}]
+GIVEN_NUM_PLOTS = [5, 3, 5, 5, 2, 1]
+SINGLE_PLOT_ERROR = [True, False, True, True, True, False]
+EXPECTED_RESULTS = [[None, 3, None, None, None], 'Test', [1, 2, 3, 4, 5], [None, None, None, None, 'Test2'],
+                    [5.0, None], {
+                        'NotAList': 'Test2'
+                    }]
+EXPECTED_RESULTS_WITH_DEFAULT = [['default', 3, 'default', 'default', 'default'], 'Test', [1, 2, 3, 4, 5],
+                                 ['default', 'default', 'default', 'default', 'Test2'], [5.0, 'default'], {
+                                     'NotAList': 'Test2'
+                                 }]
+
+
+@pytest.mark.parametrize('given_value,num_plots,expected_list', zip(WORKING_VALUES, GIVEN_NUM_PLOTS, EXPECTED_RESULTS))
+def test_plotter_convert_to_complete_list_multiple_plots_list(given_value, num_plots, expected_list):
+
+    complete_list = Plotter.convert_to_complete_list(given_value, False, num_plots)
+
+    assert complete_list == expected_list
+
+
+@pytest.mark.parametrize('given_value,num_plots,expected_list',
+                         zip(WORKING_VALUES, GIVEN_NUM_PLOTS, EXPECTED_RESULTS_WITH_DEFAULT))
+def test_plotter_convert_to_complete_list_multiple_plots_list_default(given_value, num_plots, expected_list):
+
+    complete_list = Plotter.convert_to_complete_list(given_value, False, num_plots, default='default')
+
+    assert complete_list == expected_list
+
+
+@pytest.mark.parametrize('given_value, error_expected, expected_result',
+                         zip(WORKING_VALUES, SINGLE_PLOT_ERROR, EXPECTED_RESULTS))
+def test_plotter_convert_to_complete_list_single_plot_no_list_allowed(given_value, error_expected, expected_result):
+
+    if error_expected:
+        with pytest.raises(ValueError):
+            res = Plotter.convert_to_complete_list(given_value, True, 1)
+    else:
+        res = Plotter.convert_to_complete_list(given_value, True, 1)
+
+        assert res == expected_result
+
+
+@pytest.mark.parametrize('given_value, error_expected, expected_result',
+                         zip(WORKING_VALUES, SINGLE_PLOT_ERROR, EXPECTED_RESULTS))
+def test_plotter_convert_to_complete_list_single_plot_list_allowed(given_value, error_expected, expected_result):
+
+    if error_expected and not isinstance(given_value, list):
+        with pytest.raises(ValueError):
+            res = Plotter.convert_to_complete_list(given_value, True, 1, list_allowed=True)
+    else:
+        res = Plotter.convert_to_complete_list(given_value, True, 1, list_allowed=True)
+
+        if isinstance(given_value, list):
+            assert res == given_value
+        else:
+            assert res == expected_result
