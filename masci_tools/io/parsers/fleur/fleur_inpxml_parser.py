@@ -16,6 +16,7 @@ and convert its content to a dict
 """
 from lxml import etree
 from pprint import pprint
+from itertools import groupby
 from masci_tools.io.parsers.fleur.fleur_schema import load_inpschema
 from masci_tools.util.xml.common_xml_util import clear_xml, convert_xml_attribute, convert_xml_text, eval_xpath
 from masci_tools.util.schema_dict_util import read_constants
@@ -72,11 +73,25 @@ def inpxml_parser(inpxmlfile, version=None, parser_info_out=None):
     try:
         xmlschema.assertValid(xmltree)
     except etree.DocumentInvalid as err:
-        validation_errors = ''.join([f'Line {error.line}: {error.message} \n' for error in xmlschema.error_log])
-        parser_info_out['parser_warnings'].append(
-            f'Input file does not validate against the schema: \n{validation_errors}')
+
+        error_log = sorted(xmlschema.error_log, key=lambda x: x.message)
+        error_output = []
+        first_occurence = []
+        for message, group in groupby(error_log, key=lambda x: x.message):
+            err_occurences = list(group)
+            error_message = f'Line {err_occurences[0].line}: {message}'
+            error_lines = ''
+            if len(err_occurences) > 1:
+                error_lines = f"; This error also occured on the lines {', '.join([str(x.line) for x in err_occurences[1:]])}"
+            error_output.append(f'{error_message}{error_lines} \n')
+            first_occurence.append(err_occurences[0].line)
+
+        error_output = [line for _, line in sorted(zip(first_occurence, error_output))]
+        errmsg = f"Input file does not validate against the schema: \n{''.join(error_output)}"
+
+        parser_info_out['parser_warnings'].append(errmsg)
         if not ignore_validation:
-            raise ValueError(f'Input file does not validate against the schema: \n{validation_errors}') from err
+            raise ValueError(errmsg) from err
 
     if xmlschema.validate(xmltree) or ignore_validation:
         inp_dict = inpxml_todict(root, schema_dict, constants, parser_info_out=parser_info_out)
