@@ -405,13 +405,21 @@ class kkrparams(object):
                 None, '%l', False,
                 'Superconductivity: Activate Bogoliubov de Gennes (BdG) mode. Attention: needs Chebychev solver!'
             ]),
-            ('<DELTA_BDG>', [None, '%f', False, 'Superconductivity: Starting value of BdG coupling constant in Ry']),
-            ('<LAMBDA_BDG>', [None, '%f', False, 'Superconductivity: Electron-phonon coupling parameter in Ry']),
+            ('<DELTA_BDG>', [None, '%f', False, 'Superconductivity: Starting value of BdG coupling constant in Ry (defaults to 1e-4)']),
+            ('<LAMBDA_BDG>', [None, '%f', False, 'Superconductivity: Electron-phonon coupling parameter in Ry (defaults to 1.0)']),
+            ('<LM_SCALE_BDG>', [
+                None, '%f', False,
+                'Superconductivity: Scaling factor for lambda_BdG on some L channels (e.g. used to get more structure into BdG matrix. Defaults to 1.0)'
+            ]),
             ('<AT_SCALE_BDG>', [
                 None, '%f', False,
                 'Superconductivity: Scaling factor for lambda_BdG (e.g. used to deactivate BdG coupling in some layers by setting the value to 0)'
             ]),
-            ('<NEWVERSION_BDG>', [None, '%l', False, 'Superconductivity: Old or new version of BdG solver.']),
+            ('<MIXFAC_BDG>', [None, '%f', False, 'Superconductivity: Mixing factor used in the mixing of the BdG Delta (defaults to 0.1)']),
+            ('<NINIT_BROYDEN_BDG>', [None, '%i', False, 'Superconductivity: Number of simple mixing steps before Broyden for BdG Delta starts (defaults to 1).']),
+            ('<MEMLEN_BROYDEN_BDG>', [None, '%i', False, 'Superconductivity: Memory length of Broyden mixing (defaults to 20)']),
+            ('<TEMP_BDG>', [None, '%f', False, 'Superconductivity: Smearing temperature for the calculation of the anomalous density (used to calculate Tc, defaults to 0).']),
+            ('<USE_E_SYMM_BDG>', [None, '%l', False, 'Superconductivity: Use only the ee block in the contour integration and mirror the results for the hh block (works only for Temp_BdG=0, defaults to False)']),
             ('<CUSTOM_TESTSTRING>',
              [None, '%s', False, 'Superconductivity: String input for some test options with BdG']),
             # misc
@@ -430,6 +438,7 @@ class kkrparams(object):
             ('IPAND', [None, '%i', False, 'Array dimension: number of shapefunction panels']),
             ('NPRINCD',
              [None, '%i', False, 'Array dimension: number of layers in each principle layer (decimation technique).']),
+            ('KPOIBZ', [None, '%i', False, 'Array dimension: Max number of k-points in IBZ']),
             # new style run options
             ('<CALC_GF_EFERMI>',
              [None, '%l', False, "Run option: calculation of cluster Green function at E Fermi (former: 'GF-EF')"]),
@@ -1164,7 +1173,7 @@ class kkrparams(object):
                     print('check consistency:', key, self.values[key], cmpdims, tmpdims, tmpsuccess)
                     raise TypeError('Error: array input not consistent for key {}'.format(key))
 
-    def _check_input_consistency(self, set_lists_only=False):
+    def _check_input_consistency(self, set_lists_only=False, verbose=False):
         """Check consistency of input, to be done before wrinting to inputcard"""
         from numpy import array
 
@@ -1188,14 +1197,38 @@ class kkrparams(object):
                 nrbasis = keywords['<NRBASIS>']
             else:
                 nrbasis = 1
+            lmax = keywords['LMAX']
 
-            listargs = dict([['<RBASIS>', naez], ['<RBLEFT>', nlbasis], ['<RBRIGHT>', nrbasis], ['<SHAPE>', natyp],
-                             ['<ZATOM>', natyp], ['<SOCSCL>', natyp], ['<SITE>', natyp], ['<CPA-CONC>', natyp],
-                             ['<KAOEZL>', nlbasis], ['<KAOEZR>', nrbasis], ['XINIPOL', natyp], ['<RMTREF>', natyp],
-                             ['<RMTREFL>', nlbasis], ['<RMTREFR>', nrbasis], ['<FPRADIUS>', natyp], ['BZDIVIDE', 3],
-                             ['<RBLEFT>', nrbasis], ['ZPERIODL', 3], ['<RBRIGHT>', nrbasis], ['ZPERIODR', 3],
-                             ['LDAU_PARA', 5], ['CPAINFO', 2], ['<DELTAE>', 2], ['FILES', 2], ['DECIFILES', 2],
-                             ['<RMTCORE>', natyp], ['<AT_SCALE_BDG>', natyp]])
+            listargs = dict([
+                ['<RBASIS>', naez],
+                ['<RBLEFT>', nlbasis],
+                ['<RBRIGHT>', nrbasis],
+                ['<SHAPE>', natyp],
+                ['<ZATOM>', natyp],
+                ['<SOCSCL>', natyp],
+                ['<SITE>', natyp],
+                ['<CPA-CONC>', natyp],
+                ['<KAOEZL>', nlbasis],
+                ['<KAOEZR>', nrbasis],
+                ['XINIPOL', natyp],
+                ['<RMTREF>', natyp],
+                ['<RMTREFL>', nlbasis],
+                ['<RMTREFR>', nrbasis],
+                ['<FPRADIUS>', natyp],
+                ['BZDIVIDE', 3],
+                ['<RBLEFT>', nrbasis],
+                ['ZPERIODL', 3],
+                ['<RBRIGHT>', nrbasis],
+                ['ZPERIODR', 3],
+                ['LDAU_PARA', 5],
+                ['CPAINFO', 2],
+                ['<DELTAE>', 2],
+                ['FILES', 2],
+                ['DECIFILES', 2],
+                ['<RMTCORE>', natyp],
+                ['<AT_SCALE_BDG>', natyp],
+                ['<LM_SCALE_BDG>', (lmax+1)**2]
+            ])
             # deal with special stuff for voronoi:
             if self.__params_type == 'voronoi':
                 listargs['<RMTCORE>'] = natyp
@@ -1526,7 +1559,7 @@ class kkrparams(object):
 
         #TODO loop over known keywords and fill with values found in inputcard
         # first read array dimensions
-        read_first = ['NAEZ', 'NATYP', '<NLBASIS>', '<NRBASIS>']
+        read_first = ['NAEZ', 'NATYP', '<NLBASIS>', '<NRBASIS>', 'LMAX']
         read_already = []
         for key in read_first:
             valtxt = self._find_value(key, txt, debug=debug)
@@ -1540,7 +1573,7 @@ class kkrparams(object):
 
         # then set self.__special_formatting and self.__listargs in _check_input_consistency
         # needs NAEZ, NATYP, NLBASIS, NRBASIS to be set to get array dimensions correct
-        self._check_input_consistency(set_lists_only=True)
+        self._check_input_consistency(set_lists_only=True, verbose=verbose)
 
         # try to read keywords from inputcard and fill self.values
         for key in keywords:

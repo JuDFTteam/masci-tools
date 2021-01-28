@@ -467,6 +467,23 @@ def use_newsosol(outfile_0init):
     return newsosol
 
 
+def use_BdG(outfile_0init):
+    """
+    extract BdG run info from output.0.txt
+    """
+    f = open_general(outfile_0init)
+    tmptxt = f.readlines()
+    f.close()
+    use_BdG = False
+    itmp = search_string('<use_BdG>=', tmptxt)
+    if itmp >= 0:
+        if tmptxt[itmp].split()[1][:1].upper() == 'T':
+            use_BdG = True
+        if tmptxt[itmp].split()[1][:1].upper() == 'F':
+            use_BdG = False
+    return use_BdG
+
+
 def get_spinmom_per_atom(outfile, natom, nonco_out_file=None):
     """
     Extract spin moment information from outfile and nonco_angles_out (if given)
@@ -588,6 +605,15 @@ def parse_kkr_outputfile(out_dict,
         out_dict['use_newsosol'] = newsosol
     except:
         msg = 'Error parsing output of KKR: nspin/natom'
+        msg_list.append(msg)
+        if debug:
+            traceback.print_exc()
+
+    try:
+        # extract some BdG infos
+        out_dict['use_BdG'] = use_BdG(outfile_0init)
+    except:
+        msg = 'Error parsing output of KKR: BdG'
         msg_list.append(msg)
         if debug:
             traceback.print_exc()
