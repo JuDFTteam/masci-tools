@@ -317,7 +317,6 @@ def test_outxml_pre_max3_1compatibility(data_regression):
     })
 
 
-
 def test_outxml_max3_1compatibility(data_regression):
     """
     Test if Max3.1 output files are processed correctly
