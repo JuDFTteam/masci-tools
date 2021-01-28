@@ -20,6 +20,7 @@ from masci_tools.util.xml.common_xml_util import eval_xpath, clear_xml
 from masci_tools.io.parsers.fleur.fleur_schema import load_inpschema, load_outschema
 from lxml import etree
 import copy
+import warnings
 
 
 def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_parse=None, **kwargs):
@@ -111,8 +112,24 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
             inp_version = '0.31'
             ignore_validation = True
             parser_info_out['parser_warnings'].append("Ignoring '0.27' outputVersion for MaX4.0 release")
+        elif program_version == 'fleur 30':
+            #Max3.1 release
+            out_version = '0.30'
+            inp_version = '0.30'
+            ignore_validation = True
+            parser_info_out['parser_warnings'].append("Ignoring '0.27' outputVersion for MaX3.1 release")
+        elif program_version == 'fleur 27':
+            #Max3.1 release
+            out_version = '0.29'
+            inp_version = '0.29'
+            ignore_validation = True
+            parser_info_out['parser_warnings'].append(
+                "Found version before MaX3.1 release falling back to file version '0.29'")
+            warnings.warn(
+                'out.xml files before the MaX3.1 release are not explicitely supported.'
+                ' No guarantee is given that the parser will work without error', UserWarning)
         else:
-            raise ValueError('Versions before fleur MaX4.0 are not supported')
+            raise ValueError(f"Unknown fleur version: File-version '{out_version}' Program-version '{program_version}'")
     else:
         ignore_validation = False
         inp_version = eval_xpath(xmltree, '//@fleurInputVersion', parser_info_out=parser_info_out)

@@ -144,7 +144,7 @@ def test_outxml_incompatible_versions():
 
     #version string 0.27 and programVersion='fleur 27' not supported
     OUTXML_FILEPATH1 = os.path.join(outxmlfilefolder, 'files/fleur/broken_out_xml/non_supported_version.xml')
-    with pytest.raises(ValueError, match='Versions before fleur MaX4.0 are not supported'):
+    with pytest.raises(ValueError, match="Unknown fleur version: File-version '0.27' Program-version 'fleur 20'"):
         out_dict = outxml_parser(OUTXML_FILEPATH1, strict=True)
 
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <fleurOutput fleurOutputVersion="0.27">
-   <programVersion version="fleur 27">
+   <programVersion version="fleur 20">
       <compilationInfo date="2020-12-10T16:35:46" user="janssen" host="mb-janssen" flag="-ffree-line-length-none -Wno-missing-include-dirs -fno-sign-zero -fdefault-real-8 -fdefault-double-8 -fopenmp" link="/usr/lib/libxml2.dylib;/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Accelerate.framework;-lm;-ldl"/>
       <gitInfo version="MaX-R4-5146-gbe764185-dirty" branch="update_outschema" lastCommitHash="be76418584b223bce77124acbc20eea21ceedf26"/>
       <targetComputerArchitectures>GEN</targetComputerArchitectures>

@@ -60,15 +60,18 @@ def register_migration(base_version, target_version):
             target_version_list = [target_version_list]
         for valid_version in target_version_list:
             ParseTasks._migrations[base_version][valid_version] = getattr(ParseTasks, func.__name__)  # pylint: disable=protected-access
+
             for valid_version_2 in target_version_list:
                 if valid_version == valid_version_2:
                     continue
-                if valid_version not in ParseTasks._migrations:
-                    ParseTasks._migrations[valid_version] = {}
-                if valid_version_2 not in ParseTasks._migrations:
-                    ParseTasks._migrations[valid_version_2] = {}
-                ParseTasks._migrations[valid_version][valid_version_2] = 'compatible'
-                ParseTasks._migrations[valid_version_2][valid_version] = 'compatible'
+                if int(valid_version.split('.')[1]) > int(valid_version_2.split('.')[1]):
+                    if valid_version not in ParseTasks._migrations:
+                        ParseTasks._migrations[valid_version] = {}
+                    ParseTasks._migrations[valid_version][valid_version_2] = 'compatible'
+                else:
+                    if valid_version_2 not in ParseTasks._migrations:
+                        ParseTasks._migrations[valid_version_2] = {}
+                    ParseTasks._migrations[valid_version_2][valid_version] = 'compatible'
 
         return migration
 
