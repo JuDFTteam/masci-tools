@@ -343,6 +343,10 @@ class kkrparams(object):
             ('QBOUND',
              [None, '%e', False,
               'Self-consistency control: Lower limit of rms-error in potential to stop iterations.']),
+            ('NSIMPLEMIXFIRST', [
+                None, '%i', False,
+                'Self-consistency control: Number of simple mixing steps to do before starting more aggressive mixing scheme (only has effect for IMIX>3).'
+            ]),
             # mixing of noco angles
             ('SPINMIXQBOUND', [
                 None, '%e', False,
