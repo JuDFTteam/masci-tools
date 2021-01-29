@@ -33,19 +33,13 @@ For the definition of the defaults refer to :py:class:`~masci_tools.vis.matplotl
 from .matplotlib_plotter import MatplotlibPlotter
 from masci_tools.vis import ensure_plotter_consistency
 import warnings
-import re
-import os
 import copy
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import norm
-from matplotlib.patches import Rectangle
-from cycler import cycler
-import six
 from pprint import pprint
 
 plot_params = MatplotlibPlotter()
-
 
 def set_plot_defaults_new(**kwargs):
     plot_params.set_defaults(**kwargs)
@@ -1713,7 +1707,7 @@ def plot_corelevels(coreleveldict, compound=''):
     Ploting function to visualize corelevels and corelevel shifts
     """
 
-    for elem, corelevel_dict in six.iteritems(coreleveldict):
+    for elem, corelevel_dict in coreleveldict.items():
         # one plot for each element
         plot_one_element_corelv(corelevel_dict, elem, compound=compound)
 
@@ -1731,7 +1725,7 @@ def plot_one_element_corelv(corelevel_dict, element, compound=''):
     xdata_all = []
     ydata_all = []
 
-    for corelevel, corelevel_list in six.iteritems(corelevel_dict):
+    for corelevel, corelevel_list in corelevel_dict.items():
         #print corelevel
         n_atom = len(corelevel_list)
         x_axis = list(range(0, n_atom, 1))
@@ -1838,10 +1832,10 @@ def construct_corelevel_spectrum(coreleveldict,
     #count = 0
     #compound_info_new = compound_info
 
-    for elem, corelevel_dict in six.iteritems(coreleveldict):
+    for elem, corelevel_dict in coreleveldict.items():
         natom = natom_typesdict.get(elem, 0)
         #elem_count = 0
-        for corelevel_name, corelevel_list in six.iteritems(corelevel_dict):
+        for corelevel_name, corelevel_list in corelevel_dict.items():
             # get number of electron if fully occ:
             nelectrons = 1
             if 's' in corelevel_name:
@@ -1849,7 +1843,7 @@ def construct_corelevel_spectrum(coreleveldict,
             else:
                 max_state_occ_spin = {'1/2': 2, '3/2': 4, '5/2': 6, '7/2': 8}
                 # check if spin in name
-                for key, val in six.iteritems(max_state_occ_spin):
+                for key, val in max_state_occ_spin.items():
                     if key in corelevel_name:
                         nelectrons = val
             for i, corelevel in enumerate(corelevel_list):
@@ -2071,8 +2065,8 @@ def plot_corelevel_spectra(coreleveldict,
                  markersize=markersize_g)
 
     if show_ref and exp_references:
-        for elm, ref_list_dict in six.iteritems(exp_references):
-            for state, ref_list in six.iteritems(ref_list_dict):
+        for elm, ref_list_dict in exp_references.items():
+            for state, ref_list in ref_list_dict.items():
                 for ref in ref_list:
                     plt.axvline(ymin=0, ymax=0.1, x=ref, linewidth=linewidth_g, color='k')
     '''
@@ -2155,8 +2149,8 @@ def plot_corelevel_spectra(coreleveldict,
                      markersize=markersize_g)
 
     if show_ref and exp_references:
-        for elm, ref_list_dict in six.iteritems(exp_references):
-            for state, ref_list in six.iteritems(ref_list_dict):
+        for elm, ref_list_dict in exp_references.items():
+            for state, ref_list in ref_list_dict.items():
                 for ref in ref_list:
                     plt.axvline(ymin=0, ymax=0.1, x=ref, linewidth=2, color='k')
     '''
