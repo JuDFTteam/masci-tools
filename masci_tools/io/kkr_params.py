@@ -1237,7 +1237,7 @@ class kkrparams(object):
             if self.__params_type == 'voronoi':
                 listargs['<RMTCORE>'] = natyp
                 self.update_to_voronoi()
-            special_formatting = ['BRAVAIS', 'RUNOPT', 'TESTOPT', 'FILES', 'DECIFILES']
+            special_formatting = ['BRAVAIS', 'RUNOPT', 'TESTOPT', 'FILES', 'DECIFILES', 'JIJSITEI', 'JIJSITEJ']
         else:
             special_formatting = ['RUNFLAG', 'TESTFLAG']
             listargs = dict([['HFIELD', 2]])
@@ -1281,7 +1281,7 @@ class kkrparams(object):
                     )
                     raise ValueError('INS,KSHAPE mismatch')
 
-    def fill_keywords_to_inputfile(self, is_voro_calc=False, output='inputcard', no_check=False):
+    def fill_keywords_to_inputfile(self, is_voro_calc=False, output='inputcard', no_check=False, verbose=False):
         """
         Fill new inputcard with keywords/values
         automatically check for input consistency (can be disabled by the no_check input)
@@ -1410,6 +1410,8 @@ class kkrparams(object):
         tmpl = ''
         for key in sorted_keylist:
             if keywords[key] is not None:
+                if verbose:
+                    print('writing', key, keywords[key])
                 # go through different formatting options (first normal case then special cases)
                 if (not key in list(self.__listargs.keys())) and (not key in self.__special_formatting):
                     tmpfmt = (keyfmts[key]).replace('%l', '%s')
@@ -1488,6 +1490,13 @@ class kkrparams(object):
                     tmpl += 'DECIFILES\n'
                     tmpl += '%s\n' % self.values[key][0]
                     tmpl += '%s\n' % self.values[key][1]
+                elif key in ['JIJSITEI', 'JIJSITEJ']:
+                    tmpl += '%s= '%key
+                    jijsite = self.values[key]
+                    tmpl += '%i '%jijsite[0]
+                    for isite in range(jijsite[0]):
+                        tmpl += '%i '%jijsite[1+isite]
+                    tmpl += '\n'
                 elif self.__params_type == 'kkrimp' and key == 'RUNFLAG' or key == 'TESTFLAG':
                     # for kkrimp
                     ops = keywords[key]
