@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 This file contains information parsed from the FleurOutputSchema.xsd
-for version 0.34
+for version 0.30
 
 The keys contain the following information:
 
@@ -44,7 +44,7 @@ The keys contain the following information:
                             the valid attributes and tags (optional, several,
                             order, simple, text)
 """
-__out_version__ = '0.34'
+__out_version__ = '0.30'
 schema_dict = {
     '_basic_types': {
         'AdditionalCompilerFlagsType': {
@@ -52,7 +52,7 @@ schema_dict = {
             'length': 'unbounded'
         },
         'AtomPosType': {
-            'base_types': ['float_expression'],
+            'base_types': ['string'],
             'length': 3
         },
         'BZIntegrationModeEnum': {
@@ -103,30 +103,6 @@ schema_dict = {
             'base_types': ['string'],
             'length': 1
         },
-        'FleurBool4DVecType': {
-            'base_types': ['switch'],
-            'length': 4
-        },
-        'FleurBoolVecType': {
-            'base_types': ['switch'],
-            'length': 'unbounded'
-        },
-        'FleurDouble2DVecType': {
-            'base_types': ['float_expression'],
-            'length': 2
-        },
-        'FleurDouble3DVecType': {
-            'base_types': ['float_expression'],
-            'length': 3
-        },
-        'FleurDoubleVecType': {
-            'base_types': ['float_expression'],
-            'length': 'unbounded'
-        },
-        'FleurOutputVersionType': {
-            'base_types': ['string'],
-            'length': 1
-        },
         'FleurVersionType': {
             'base_types': ['string'],
             'length': 1
@@ -135,40 +111,24 @@ schema_dict = {
             'base_types': ['string'],
             'length': 1
         },
-        'ForceTheoremEnum': {
-            'base_types': ['string'],
-            'length': 1
-        },
-        'Integer3DVecType': {
-            'base_types': ['int'],
-            'length': 3
-        },
-        'Integer4DVecType': {
-            'base_types': ['int'],
-            'length': 4
-        },
         'IntegerVecType': {
             'base_types': ['int'],
             'length': 'unbounded'
         },
-        'KPointListPurposeEnum': {
+        'KPointSetPurposeEnum': {
             'base_types': ['string'],
             'length': 1
         },
         'KPointType': {
-            'base_types': ['float_expression'],
+            'base_types': ['float'],
             'length': 3
         },
+        'LatnamEnum': {
+            'base_types': ['string'],
+            'length': 1
+        },
         'LatticeParameterType': {
-            'base_types': ['float_expression'],
-            'length': 1
-        },
-        'ManualCutoffType': {
-            'base_types': ['float', 'string'],
-            'length': 1
-        },
-        'ManualKKintgrCutoffType': {
-            'base_types': ['float', 'string'],
+            'base_types': ['string'],
             'length': 1
         },
         'MixingEnum': {
@@ -192,8 +152,12 @@ schema_dict = {
             'length': 1
         },
         'SpecialPointType': {
-            'base_types': ['float_expression'],
+            'base_types': ['string'],
             'length': 3
+        },
+        'SpgrpEnum': {
+            'base_types': ['string'],
+            'length': 1
         },
         'SpinNumberType': {
             'base_types': ['int'],
@@ -230,15 +194,11 @@ schema_dict = {
         'ZeroToOneNumberType': {
             'base_types': ['float'],
             'length': 1
-        },
-        'kPointListTypeEnum': {
-            'base_types': ['string'],
-            'length': 1
         }
     },
     '_input_basic_types': {
         'AtomPosType': {
-            'base_types': ['float_expression'],
+            'base_types': ['string'],
             'length': 3
         },
         'BZIntegrationModeEnum': {
@@ -281,26 +241,6 @@ schema_dict = {
             'base_types': ['string'],
             'length': 1
         },
-        'FleurBool4DVecType': {
-            'base_types': ['switch'],
-            'length': 4
-        },
-        'FleurBoolVecType': {
-            'base_types': ['switch'],
-            'length': 'unbounded'
-        },
-        'FleurDouble2DVecType': {
-            'base_types': ['float_expression'],
-            'length': 2
-        },
-        'FleurDouble3DVecType': {
-            'base_types': ['float_expression'],
-            'length': 3
-        },
-        'FleurDoubleVecType': {
-            'base_types': ['float_expression'],
-            'length': 'unbounded'
-        },
         'FleurVersionType': {
             'base_types': ['string'],
             'length': 1
@@ -309,36 +249,24 @@ schema_dict = {
             'base_types': ['string'],
             'length': 1
         },
-        'Integer3DVecType': {
-            'base_types': ['int'],
-            'length': 3
-        },
-        'Integer4DVecType': {
-            'base_types': ['int'],
-            'length': 4
-        },
         'IntegerVecType': {
             'base_types': ['int'],
             'length': 'unbounded'
         },
-        'KPointListPurposeEnum': {
+        'KPointSetPurposeEnum': {
             'base_types': ['string'],
             'length': 1
         },
         'KPointType': {
-            'base_types': ['float_expression'],
+            'base_types': ['float'],
             'length': 3
         },
+        'LatnamEnum': {
+            'base_types': ['string'],
+            'length': 1
+        },
         'LatticeParameterType': {
-            'base_types': ['float_expression'],
-            'length': 1
-        },
-        'ManualCutoffType': {
-            'base_types': ['float', 'string'],
-            'length': 1
-        },
-        'ManualKKintgrCutoffType': {
-            'base_types': ['float', 'string'],
+            'base_types': ['string'],
             'length': 1
         },
         'MixingEnum': {
@@ -362,8 +290,12 @@ schema_dict = {
             'length': 1
         },
         'SpecialPointType': {
-            'base_types': ['float_expression'],
+            'base_types': ['string'],
             'length': 3
+        },
+        'SpgrpEnum': {
+            'base_types': ['string'],
+            'length': 1
         },
         'SpinNumberType': {
             'base_types': ['int'],
@@ -396,20 +328,14 @@ schema_dict = {
         'ZeroToOneNumberType': {
             'base_types': ['float'],
             'length': 1
-        },
-        'kPointListTypeEnum': {
-            'base_types': ['string'],
-            'length': 1
         }
     },
     'attrib_types': {
         'Angles': ['int'],
         'Configs': ['int'],
-        'Delta': ['float'],
         'F_x': ['float'],
         'F_y': ['float'],
         'F_z': ['float'],
-        'H_so': ['float'],
         'J': ['float'],
         'Message': ['string'],
         'No': ['int'],
@@ -419,7 +345,6 @@ schema_dict = {
         'branch': ['string'],
         'branchHighest': ['float'],
         'branchLowest': ['float'],
-        'calculationType': ['string'],
         'comment': ['string'],
         'count': ['int'],
         'd': ['float'],
@@ -479,9 +404,6 @@ schema_dict = {
         'qpoints': ['int'],
         'qvectors': ['int'],
         's': ['float'],
-        'sigma_x': ['float'],
-        'sigma_y': ['float'],
-        'sigma_z': ['float'],
         'spin': ['int'],
         'spinDownCharge': ['float'],
         'spinUpCharge': ['float'],
@@ -509,26 +431,20 @@ schema_dict = {
         'z1': ['float'],
         'zone': ['string']
     },
-    'input_tag':
-    'fleurInput',
+    'input_tag': 'inputData',
     'iteration_other_attribs': {
-        'Delta': ['./onSiteExchangeSplitting/excSplit'],
         'F_x': ['./totalForcesOnRepresentativeAtoms/forceTotal'],
         'F_y': ['./totalForcesOnRepresentativeAtoms/forceTotal'],
         'F_z': ['./totalForcesOnRepresentativeAtoms/forceTotal'],
-        'H_so': ['./Forcetheorem_DMI/allAtoms', './Forcetheorem_DMI/singleAtom'],
         'J': ['./ldaUDensityMatrix/densityMatrixFor'],
         'No': ['./Forcetheorem_Loop'],
         'U': ['./ldaUDensityMatrix/densityMatrixFor'],
         'atomType': [
-            './Forcetheorem_DMI/allAtoms', './Forcetheorem_DMI/singleAtom', './energyParameters/atomicEP',
-            './energyParameters/heAtomicEP', './energyParameters/loAtomicEP', './energyParameters/heloAtomicEP',
-            './valenceDensity/mtCharges/mtCharge', './allElectronCharges/mtCharges/mtCharge',
-            './valenceDensity/mtCharges/mtJcharge', './allElectronCharges/mtCharges/mtJcharge', './coreStates',
-            './magneticMomentsInMTSpheres/magneticMoment', './orbitalMagneticMomentsInMTSpheres/orbMagMoment',
-            './totalForcesOnRepresentativeAtoms/forceTotal', './noncollinearTorgue/torgue', './spinorbitTorgue/torgue',
-            './onSiteExchangeSplitting/excSplit', './ldaUDensityMatrix/densityMatrixFor',
-            './totalEnergy/atomTypeDependentContributions'
+            './energyParameters/atomicEP', './energyParameters/heAtomicEP', './energyParameters/loAtomicEP',
+            './energyParameters/heloAtomicEP', './valenceDensity/mtCharges/mtCharge',
+            './allElectronCharges/mtCharges/mtCharge', './coreStates', './magneticMomentsInMTSpheres/magneticMoment',
+            './orbitalMagneticMomentsInMTSpheres/orbMagMoment', './totalForcesOnRepresentativeAtoms/forceTotal',
+            './ldaUDensityMatrix/densityMatrixFor', './totalEnergy/atomTypeDependentContributions'
         ],
         'atomicNumber': ['./coreStates'],
         'branch': [
@@ -543,17 +459,12 @@ schema_dict = {
             './energyParameters/atomicEP', './energyParameters/heAtomicEP', './energyParameters/loAtomicEP',
             './energyParameters/heloAtomicEP'
         ],
-        'calculationType': ['./Forcetheorem_Loop'],
         'comment': ['./totalEnergy'],
-        'd': [
-            './valenceDensity/mtCharges/mtCharge', './allElectronCharges/mtCharges/mtCharge',
-            './valenceDensity/mtCharges/mtJcharge/lowJ', './allElectronCharges/mtCharges/mtJcharge/lowJ',
-            './valenceDensity/mtCharges/mtJcharge/highJ', './allElectronCharges/mtCharges/mtJcharge/highJ'
-        ],
+        'd': ['./valenceDensity/mtCharges/mtCharge', './allElectronCharges/mtCharges/mtCharge'],
         'densityMatrixFor': ['./ldaUDensityMatrix/densityMatrixFor'],
         'distance': [
-            './ldaUDensityMatrixConvergence/distance', './densityConvergence/chargeDensity',
-            './densityConvergence/overallChargeDensity', './densityConvergence/spinDensity'
+            './densityConvergence/chargeDensity', './densityConvergence/overallChargeDensity',
+            './densityConvergence/spinDensity'
         ],
         'eigValSum': ['./coreStates'],
         'eigenvaluesAt': ['./eigenvalues/eigenvaluesAt'],
@@ -562,11 +473,7 @@ schema_dict = {
             './Forcetheorem_SSDISP/Entry', './Forcetheorem_MAE/Angle', './Forcetheorem_JIJ/Config',
             './Forcetheorem_DMI/Entry'
         ],
-        'f': [
-            './valenceDensity/mtCharges/mtCharge', './allElectronCharges/mtCharges/mtCharge',
-            './valenceDensity/mtCharges/mtJcharge/lowJ', './allElectronCharges/mtCharges/mtJcharge/lowJ',
-            './valenceDensity/mtCharges/mtJcharge/highJ', './allElectronCharges/mtCharges/mtJcharge/highJ'
-        ],
+        'f': ['./valenceDensity/mtCharges/mtCharge', './allElectronCharges/mtCharges/mtCharge'],
         'iatom': ['./Forcetheorem_JIJ/Config'],
         'ikpt': ['./eigenvalues/eigenvaluesAt'],
         'index': ['./rdmft/occupations/state'],
@@ -581,7 +488,7 @@ schema_dict = {
         'k_z': ['./eigenvalues/eigenvaluesAt'],
         'kinEnergy': ['./coreStates'],
         'kpoint': ['./rdmft/occupations'],
-        'l': ['./coreStates/state', './onSiteExchangeSplitting/excSplit', './ldaUDensityMatrix/densityMatrixFor'],
+        'l': ['./coreStates/state', './ldaUDensityMatrix/densityMatrixFor'],
         'lostElectrons': ['./coreStates'],
         'moment': ['./magneticMomentsInMTSpheres/magneticMoment', './orbitalMagneticMomentsInMTSpheres/orbMagMoment'],
         'mtSpheres': [
@@ -591,42 +498,25 @@ schema_dict = {
         'n': ['./Forcetheorem_JIJ/Config', './coreStates/state'],
         'name': ['./timing/timer'],
         'occupation': ['./rdmft/occupations/state'],
-        'p': [
-            './valenceDensity/mtCharges/mtCharge', './allElectronCharges/mtCharges/mtCharge',
-            './valenceDensity/mtCharges/mtJcharge/lowJ', './allElectronCharges/mtCharges/mtJcharge/lowJ',
-            './valenceDensity/mtCharges/mtJcharge/highJ', './allElectronCharges/mtCharges/mtJcharge/highJ'
-        ],
+        'p': ['./valenceDensity/mtCharges/mtCharge', './allElectronCharges/mtCharges/mtCharge'],
         'phase': ['./Forcetheorem_JIJ/Config'],
-        'phi': [
-            './Forcetheorem_MAE/Angle', './Forcetheorem_DMI/Entry', './Forcetheorem_DMI/allAtoms',
-            './Forcetheorem_DMI/singleAtom'
-        ],
-        'q': [
-            './Forcetheorem_SSDISP/Entry', './Forcetheorem_JIJ/Config', './Forcetheorem_DMI/Entry',
-            './Forcetheorem_DMI/allAtoms', './Forcetheorem_DMI/singleAtom'
-        ],
+        'phi': ['./Forcetheorem_MAE/Angle', './Forcetheorem_DMI/Entry'],
+        'q': ['./Forcetheorem_SSDISP/Entry', './Forcetheorem_JIJ/Config', './Forcetheorem_DMI/Entry'],
         's': ['./valenceDensity/mtCharges/mtCharge', './allElectronCharges/mtCharges/mtCharge'],
-        'sigma_x': ['./noncollinearTorgue/torgue', './spinorbitTorgue/torgue'],
-        'sigma_y': ['./noncollinearTorgue/torgue', './spinorbitTorgue/torgue'],
-        'sigma_z': ['./noncollinearTorgue/torgue', './spinorbitTorgue/torgue'],
         'spin': [
             './energyParameters/atomicEP', './energyParameters/heAtomicEP', './energyParameters/loAtomicEP',
             './energyParameters/heloAtomicEP', './energyParameters/vacuumEP', './eigenvalues/eigenvaluesAt',
             './valenceDensity/mtCharges', './allElectronCharges/mtCharges', './valenceDensity/spinDependentCharge',
             './allElectronCharges/spinDependentCharge', './valenceDensity/fixedCharges/spinDependentCharge',
             './allElectronCharges/fixedCharges/spinDependentCharge', './coreStates',
-            './ldaUDensityMatrix/densityMatrixFor', './rdmft/occupations', './ldaUDensityMatrixConvergence/distance',
-            './densityConvergence/chargeDensity', './densityConvergence/overallChargeDensity',
-            './densityConvergence/spinDensity'
+            './ldaUDensityMatrix/densityMatrixFor', './rdmft/occupations', './densityConvergence/chargeDensity',
+            './densityConvergence/overallChargeDensity', './densityConvergence/spinDensity'
         ],
         'spinDownCharge':
         ['./magneticMomentsInMTSpheres/magneticMoment', './orbitalMagneticMomentsInMTSpheres/orbMagMoment'],
         'spinUpCharge':
         ['./magneticMomentsInMTSpheres/magneticMoment', './orbitalMagneticMomentsInMTSpheres/orbMagMoment'],
-        'theta': [
-            './Forcetheorem_MAE/Angle', './Forcetheorem_DMI/Entry', './Forcetheorem_DMI/allAtoms',
-            './Forcetheorem_DMI/singleAtom'
-        ],
+        'theta': ['./Forcetheorem_MAE/Angle', './Forcetheorem_DMI/Entry'],
         'total': [
             './valenceDensity/mtCharges/mtCharge', './allElectronCharges/mtCharges/mtCharge',
             './valenceDensity/spinDependentCharge', './allElectronCharges/spinDependentCharge',
@@ -645,8 +535,7 @@ schema_dict = {
             './totalEnergy/atomTypeDependentContributions/electronNucleiInteractionDifferentMTs',
             './totalEnergy/atomTypeDependentContributions/MadelungTerm', './magneticMomentsInMTSpheres',
             './orbitalMagneticMomentsInMTSpheres', './totalForcesOnRepresentativeAtoms',
-            './totalForcesOnRepresentativeAtoms/forceTotal', './noncollinearTorgue/torgue', './spinorbitTorgue/torgue',
-            './onSiteExchangeSplitting/excSplit', './totalEnergy', './totalEnergy/sumOfEigenvalues',
+            './totalForcesOnRepresentativeAtoms/forceTotal', './totalEnergy', './totalEnergy/sumOfEigenvalues',
             './densityConvergence', './densityConvergence/chargeDensity', './densityConvergence/overallChargeDensity',
             './densityConvergence/spinDensity', './timing', './timing/timer'
         ],
@@ -692,12 +581,12 @@ schema_dict = {
             'text': []
         },
         './Forcetheorem_DMI': {
-            'attribs': ['Angles', 'qpoints', 'units'],
-            'optional': ['Entry', 'allAtoms', 'singleAtom'],
+            'attribs': ['Angles', 'qpoints'],
+            'optional': ['Entry'],
             'optional_attribs': [],
-            'order': ['Entry', 'allAtoms', 'singleAtom'],
-            'several': ['Entry', 'allAtoms', 'singleAtom'],
-            'simple': ['Entry', 'allAtoms', 'singleAtom'],
+            'order': ['Entry'],
+            'several': ['Entry'],
+            'simple': ['Entry'],
             'text': []
         },
         './Forcetheorem_DMI/Entry': {
@@ -709,26 +598,8 @@ schema_dict = {
             'simple': [],
             'text': []
         },
-        './Forcetheorem_DMI/allAtoms': {
-            'attribs': ['atomType', 'q', 'phi', 'theta', 'H_so'],
-            'optional': [],
-            'optional_attribs': ['atomType'],
-            'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
-        },
-        './Forcetheorem_DMI/singleAtom': {
-            'attribs': ['atomType', 'q', 'phi', 'theta', 'H_so'],
-            'optional': [],
-            'optional_attribs': ['atomType'],
-            'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
-        },
         './Forcetheorem_JIJ': {
-            'attribs': ['Configs', 'units'],
+            'attribs': ['Configs'],
             'optional': ['Config'],
             'optional_attribs': [],
             'order': ['Config'],
@@ -746,22 +617,21 @@ schema_dict = {
             'text': []
         },
         './Forcetheorem_Loop': {
-            'attribs': ['No', 'calculationType'],
+            'attribs': ['No'],
             'optional': [],
             'optional_attribs': [],
             'order': [
                 'energyParameters', 'eigenvalues', 'bandgap', 'sumValenceSingleParticleEnergies', 'FermiEnergy',
-                'valenceDensity', 'onSiteExchangeSplitting', 'noncollinearTorgue', 'spinorbitTorgue', 'coreStates',
-                'allElectronCharges', 'magneticMomentsInMTSpheres', 'orbitalMagneticMomentsInMTSpheres', 'rdmft',
-                'totalEnergy', 'totalForcesOnRepresentativeAtoms', 'ldaUDensityMatrix', 'ldaUDensityMatrixConvergence',
-                'densityConvergence', 'timing'
+                'valenceDensity', 'coreStates', 'allElectronCharges', 'magneticMomentsInMTSpheres',
+                'orbitalMagneticMomentsInMTSpheres', 'rdmft', 'totalEnergy', 'totalForcesOnRepresentativeAtoms',
+                'ldaUDensityMatrix', 'densityConvergence', 'timing'
             ],
             'several': [],
             'simple': [],
             'text': []
         },
         './Forcetheorem_MAE': {
-            'attribs': ['Angles', 'units'],
+            'attribs': ['Angles'],
             'optional': ['Angle'],
             'optional_attribs': [],
             'order': ['Angle'],
@@ -779,7 +649,7 @@ schema_dict = {
             'text': []
         },
         './Forcetheorem_SSDISP': {
-            'attribs': ['qvectors', 'units'],
+            'attribs': ['qvectors'],
             'optional': ['Entry'],
             'optional_attribs': [],
             'order': ['Entry'],
@@ -834,42 +704,15 @@ schema_dict = {
         },
         './allElectronCharges/mtCharges': {
             'attribs': ['spin'],
-            'optional': ['mtCharge', 'mtJcharge'],
+            'optional': ['mtCharge'],
             'optional_attribs': ['spin'],
-            'order': ['mtCharge', 'mtJcharge'],
-            'several': ['mtCharge', 'mtJcharge'],
+            'order': ['mtCharge'],
+            'several': ['mtCharge'],
             'simple': ['mtCharge'],
             'text': []
         },
         './allElectronCharges/mtCharges/mtCharge': {
             'attribs': ['atomType', 'total', 's', 'p', 'd', 'f'],
-            'optional': [],
-            'optional_attribs': [],
-            'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
-        },
-        './allElectronCharges/mtCharges/mtJcharge': {
-            'attribs': ['atomType'],
-            'optional': [],
-            'optional_attribs': [],
-            'order': ['lowJ', 'highJ'],
-            'several': [],
-            'simple': ['lowJ', 'highJ'],
-            'text': []
-        },
-        './allElectronCharges/mtCharges/mtJcharge/highJ': {
-            'attribs': ['p', 'd', 'f'],
-            'optional': [],
-            'optional_attribs': [],
-            'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
-        },
-        './allElectronCharges/mtCharges/mtJcharge/lowJ': {
-            'attribs': ['p', 'd', 'f'],
             'optional': [],
             'optional_attribs': [],
             'order': [],
@@ -1048,24 +891,6 @@ schema_dict = {
             'simple': [],
             'text': []
         },
-        './ldaUDensityMatrixConvergence': {
-            'attribs': [],
-            'optional': ['distance'],
-            'optional_attribs': [],
-            'order': ['distance'],
-            'several': ['distance'],
-            'simple': ['distance'],
-            'text': []
-        },
-        './ldaUDensityMatrixConvergence/distance': {
-            'attribs': ['spin', 'distance'],
-            'optional': [],
-            'optional_attribs': [],
-            'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
-        },
         './magneticMomentsInMTSpheres': {
             'attribs': ['units'],
             'optional': ['magneticMoment'],
@@ -1077,42 +902,6 @@ schema_dict = {
         },
         './magneticMomentsInMTSpheres/magneticMoment': {
             'attribs': ['atomType', 'moment', 'spinUpCharge', 'spinDownCharge'],
-            'optional': [],
-            'optional_attribs': [],
-            'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
-        },
-        './noncollinearTorgue': {
-            'attribs': [],
-            'optional': ['torgue'],
-            'optional_attribs': [],
-            'order': ['torgue'],
-            'several': ['torgue'],
-            'simple': ['torgue'],
-            'text': []
-        },
-        './noncollinearTorgue/torgue': {
-            'attribs': ['atomType', 'sigma_x', 'sigma_y', 'sigma_z', 'units'],
-            'optional': [],
-            'optional_attribs': [],
-            'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
-        },
-        './onSiteExchangeSplitting': {
-            'attribs': [],
-            'optional': ['excSplit'],
-            'optional_attribs': [],
-            'order': ['excSplit'],
-            'several': ['excSplit'],
-            'simple': ['excSplit'],
-            'text': []
-        },
-        './onSiteExchangeSplitting/excSplit': {
-            'attribs': ['atomType', 'l', 'Delta', 'units'],
             'optional': [],
             'optional_attribs': [],
             'order': [],
@@ -1158,24 +947,6 @@ schema_dict = {
         },
         './rdmft/occupations/state': {
             'attribs': ['index', 'energy', 'occupation'],
-            'optional': [],
-            'optional_attribs': [],
-            'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
-        },
-        './spinorbitTorgue': {
-            'attribs': [],
-            'optional': ['torgue'],
-            'optional_attribs': [],
-            'order': ['torgue'],
-            'several': ['torgue'],
-            'simple': ['torgue'],
-            'text': []
-        },
-        './spinorbitTorgue/torgue': {
-            'attribs': ['atomType', 'sigma_x', 'sigma_y', 'sigma_z', 'units'],
             'optional': [],
             'optional_attribs': [],
             'order': [],
@@ -1426,42 +1197,15 @@ schema_dict = {
         },
         './valenceDensity/mtCharges': {
             'attribs': ['spin'],
-            'optional': ['mtCharge', 'mtJcharge'],
+            'optional': ['mtCharge'],
             'optional_attribs': ['spin'],
-            'order': ['mtCharge', 'mtJcharge'],
-            'several': ['mtCharge', 'mtJcharge'],
+            'order': ['mtCharge'],
+            'several': ['mtCharge'],
             'simple': ['mtCharge'],
             'text': []
         },
         './valenceDensity/mtCharges/mtCharge': {
             'attribs': ['atomType', 'total', 's', 'p', 'd', 'f'],
-            'optional': [],
-            'optional_attribs': [],
-            'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
-        },
-        './valenceDensity/mtCharges/mtJcharge': {
-            'attribs': ['atomType'],
-            'optional': [],
-            'optional_attribs': [],
-            'order': ['lowJ', 'highJ'],
-            'several': [],
-            'simple': ['lowJ', 'highJ'],
-            'text': []
-        },
-        './valenceDensity/mtCharges/mtJcharge/highJ': {
-            'attribs': ['p', 'd', 'f'],
-            'optional': [],
-            'optional_attribs': [],
-            'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
-        },
-        './valenceDensity/mtCharges/mtJcharge/lowJ': {
-            'attribs': ['p', 'd', 'f'],
             'optional': [],
             'optional_attribs': [],
             'order': [],
@@ -1512,8 +1256,6 @@ schema_dict = {
         './Forcetheorem_SSDISP',
         'MadelungTerm':
         './totalEnergy/atomTypeDependentContributions/MadelungTerm',
-        'allAtoms':
-        './Forcetheorem_DMI/allAtoms',
         'allElectronCharges':
         './allElectronCharges',
         'atomTypeDependentContributions':
@@ -1542,8 +1284,6 @@ schema_dict = {
         './ldaUDensityMatrix/densityMatrixFor',
         'dftUCorrection':
         './totalEnergy/dftUCorrection',
-        'distance':
-        './ldaUDensityMatrixConvergence/distance',
         'eigenvalues':
         './eigenvalues',
         'eigenvaluesAt':
@@ -1552,8 +1292,6 @@ schema_dict = {
         './totalEnergy/atomTypeDependentContributions/electronNucleiInteractionDifferentMTs',
         'energyParameters':
         './energyParameters',
-        'excSplit':
-        './onSiteExchangeSplitting/excSplit',
         'extrapolationTo0K':
         './totalEnergy/extrapolationTo0K',
         'fixedCharges': ['./valenceDensity/fixedCharges', './allElectronCharges/fixedCharges'],
@@ -1565,27 +1303,18 @@ schema_dict = {
         './energyParameters/heAtomicEP',
         'heloAtomicEP':
         './energyParameters/heloAtomicEP',
-        'highJ': ['./valenceDensity/mtCharges/mtJcharge/highJ', './allElectronCharges/mtCharges/mtJcharge/highJ'],
         'ldaUDensityMatrix':
         './ldaUDensityMatrix',
-        'ldaUDensityMatrixConvergence':
-        './ldaUDensityMatrixConvergence',
         'loAtomicEP':
         './energyParameters/loAtomicEP',
-        'lowJ': ['./valenceDensity/mtCharges/mtJcharge/lowJ', './allElectronCharges/mtCharges/mtJcharge/lowJ'],
         'magneticMoment':
         './magneticMomentsInMTSpheres/magneticMoment',
         'magneticMomentsInMTSpheres':
         './magneticMomentsInMTSpheres',
         'mtCharge': ['./valenceDensity/mtCharges/mtCharge', './allElectronCharges/mtCharges/mtCharge'],
         'mtCharges': ['./valenceDensity/mtCharges', './allElectronCharges/mtCharges'],
-        'mtJcharge': ['./valenceDensity/mtCharges/mtJcharge', './allElectronCharges/mtCharges/mtJcharge'],
-        'noncollinearTorgue':
-        './noncollinearTorgue',
         'occupations':
         './rdmft/occupations',
-        'onSiteExchangeSplitting':
-        './onSiteExchangeSplitting',
         'orbMagMoment':
         './orbitalMagneticMomentsInMTSpheres/orbMagMoment',
         'orbitalMagneticMomentsInMTSpheres':
@@ -1594,16 +1323,12 @@ schema_dict = {
         './densityConvergence/overallChargeDensity',
         'rdmft':
         './rdmft',
-        'singleAtom':
-        './Forcetheorem_DMI/singleAtom',
         'spinDensity':
         './densityConvergence/spinDensity',
         'spinDependentCharge': [
             './valenceDensity/spinDependentCharge', './allElectronCharges/spinDependentCharge',
             './valenceDensity/fixedCharges/spinDependentCharge', './allElectronCharges/fixedCharges/spinDependentCharge'
         ],
-        'spinorbitTorgue':
-        './spinorbitTorgue',
         'state': ['./coreStates/state', './rdmft/occupations/state'],
         'sumOfEigenvalues':
         './totalEnergy/sumOfEigenvalues',
@@ -1615,7 +1340,6 @@ schema_dict = {
         './timing',
         'tkbTimesEntropy':
         './totalEnergy/tkbTimesEntropy',
-        'torgue': ['./noncollinearTorgue/torgue', './spinorbitTorgue/torgue'],
         'totalCharge': [
             './valenceDensity/totalCharge', './allElectronCharges/totalCharge',
             './valenceDensity/fixedCharges/totalCharge', './allElectronCharges/fixedCharges/totalCharge'
@@ -1639,23 +1363,17 @@ schema_dict = {
         'qvectors': './Forcetheorem_SSDISP'
     },
     'iteration_unique_path_attribs': {
-        'Angles': ['./Forcetheorem_DMI', './Forcetheorem_MAE'],
-        'units': ['./Forcetheorem_DMI', './Forcetheorem_JIJ', './Forcetheorem_MAE', './Forcetheorem_SSDISP']
+        'Angles': ['./Forcetheorem_DMI', './Forcetheorem_MAE']
     },
-    'omitt_contained_tags': [
-        'scfLoop', 'eigenvalues', 'onSiteExchangeSplitting', 'noncollinearTorgue', 'spinorbitTorgue',
-        'ldaUDensityMatrix', 'ldaUDensityMatrixConvergence'
-    ],
+    'omitt_contained_tags': ['scfLoop', 'eigenvalues', 'ldaUDensityMatrix'],
     'other_attribs': {
         'atomType': ['/fleurOutput/numericalParameters/volumes/mtVolume'],
         'kPoint': ['/fleurOutput/numericalParameters/kPointList/kPoint'],
         'mtRadius': ['/fleurOutput/numericalParameters/volumes/mtVolume'],
         'mtVolume': ['/fleurOutput/numericalParameters/volumes/mtVolume']
     },
-    'out_version':
-    '0.34',
-    'root_tag':
-    'fleurOutput',
+    'out_version': '0.30',
+    'root_tag': 'fleurOutput',
     'simple_elements': {
         'additionalCompilerFlags': [{
             'length': 'unbounded',
@@ -1671,7 +1389,7 @@ schema_dict = {
         }],
         'kPoint': [{
             'length': 3,
-            'type': ['float_expression']
+            'type': ['float']
         }],
         'targetComputerArchitectures': [{
             'length': 1,
@@ -1686,25 +1404,16 @@ schema_dict = {
         '/fleurOutput': {
             'attribs': ['fleurOutputVersion'],
             'optional': [
-                'programVersion', 'parallelSetup', 'startDateAndTime', 'fleurInput', 'numericalParameters', 'scfLoop',
-                'ERROR', 'endDateAndTime'
+                'programVersion', 'parallelSetup', 'startDateAndTime', 'inputData', 'numericalParameters', 'scfLoop',
+                'endDateAndTime'
             ],
             'optional_attribs': [],
             'order': [
-                'programVersion', 'parallelSetup', 'startDateAndTime', 'fleurInput', 'numericalParameters', 'scfLoop',
-                'ERROR', 'endDateAndTime'
+                'programVersion', 'parallelSetup', 'startDateAndTime', 'inputData', 'numericalParameters', 'scfLoop',
+                'endDateAndTime'
             ],
             'several': [],
-            'simple': ['startDateAndTime', 'ERROR', 'endDateAndTime'],
-            'text': []
-        },
-        '/fleurOutput/ERROR': {
-            'attribs': ['Message'],
-            'optional': [],
-            'optional_attribs': [],
-            'order': [],
-            'several': [],
-            'simple': [],
+            'simple': ['startDateAndTime', 'endDateAndTime'],
             'text': []
         },
         '/fleurOutput/endDateAndTime': {
@@ -1885,11 +1594,10 @@ schema_dict = {
             'optional_attribs': ['overallNumber'],
             'order': [
                 'energyParameters', 'eigenvalues', 'bandgap', 'sumValenceSingleParticleEnergies', 'FermiEnergy',
-                'valenceDensity', 'onSiteExchangeSplitting', 'noncollinearTorgue', 'spinorbitTorgue', 'coreStates',
-                'allElectronCharges', 'magneticMomentsInMTSpheres', 'orbitalMagneticMomentsInMTSpheres', 'rdmft',
-                'totalEnergy', 'totalForcesOnRepresentativeAtoms', 'ldaUDensityMatrix', 'ldaUDensityMatrixConvergence',
-                'densityConvergence', 'timing', 'Forcetheorem_Loop', 'Forcetheorem_SSDISP', 'Forcetheorem_DMI',
-                'Forcetheorem_MAE', 'Forcetheorem_JIJ'
+                'valenceDensity', 'coreStates', 'allElectronCharges', 'magneticMomentsInMTSpheres',
+                'orbitalMagneticMomentsInMTSpheres', 'rdmft', 'totalEnergy', 'totalForcesOnRepresentativeAtoms',
+                'ldaUDensityMatrix', 'densityConvergence', 'timing', 'Forcetheorem_Loop', 'Forcetheorem_SSDISP',
+                'Forcetheorem_DMI', 'Forcetheorem_MAE', 'Forcetheorem_JIJ'
             ],
             'several': ['Forcetheorem_Loop'],
             'simple': [],
@@ -1906,7 +1614,6 @@ schema_dict = {
         }
     },
     'tag_paths': {
-        'ERROR': '/fleurOutput/ERROR',
         'additionalCompilerFlags': '/fleurOutput/programVersion/additionalCompilerFlags',
         'atomsInCell': '/fleurOutput/numericalParameters/atomsInCell',
         'bands': '/fleurOutput/numericalParameters/bands',
@@ -1914,9 +1621,9 @@ schema_dict = {
         'compilationInfo': '/fleurOutput/programVersion/compilationInfo',
         'density': '/fleurOutput/numericalParameters/density',
         'endDateAndTime': '/fleurOutput/endDateAndTime',
-        'fleurInput': '/fleurOutput/fleurInput',
         'fleurOutput': '/fleurOutput',
         'gitInfo': '/fleurOutput/programVersion/gitInfo',
+        'inputData': '/fleurOutput/inputData',
         'iteration': '/fleurOutput/scfLoop/iteration',
         'kPoint': '/fleurOutput/numericalParameters/kPointList/kPoint',
         'kPointList': '/fleurOutput/numericalParameters/kPointList',
@@ -1935,7 +1642,6 @@ schema_dict = {
         'volumes': '/fleurOutput/numericalParameters/volumes'
     },
     'unique_attribs': {
-        'Message': '/fleurOutput/ERROR',
         'additionalCompilerFlags': '/fleurOutput/programVersion/additionalCompilerFlags',
         'branch': '/fleurOutput/programVersion/gitInfo',
         'count': '/fleurOutput/numericalParameters/kPointList',

@@ -460,7 +460,7 @@ schema_dict = {
             'order':
             ['comment', 'constants', 'calculationSetup', 'cell', 'xcFunctional', 'atomSpecies', 'atomGroups', 'output'],
             'several': [],
-            'simple': ['comment', 'calculationSetup', 'output'],
+            'simple': ['comment'],
             'text': ['comment']
         },
         '/fleurInput/atomGroups': {

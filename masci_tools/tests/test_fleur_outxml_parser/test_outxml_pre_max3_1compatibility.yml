@@ -1,0 +1,172 @@
+output_dict:
+  bandgap:
+  - 0.0409353576
+  - 0.0375563526
+  - 0.0245783391
+  - 0.0781953081
+  bandgap_units: eV
+  charge_den_xc_den_integral:
+  - -111.9516156572
+  - -111.9237671976
+  - -111.8007892626
+  - -111.8137206932
+  charge_density:
+  - - 11.3070796811
+    - 6.349138471
+  - - 9.5004625695
+    - 5.6454576433
+  - - 2.7120080793
+    - 4.2692445478
+  - - 2.564353547
+    - 2.092207419
+  creator_name: fleur 27
+  creator_target_architecture: GEN
+  creator_target_structure: null
+  density_convergence_units: me/bohr^3
+  end_date:
+    date: 2021/01/28
+    time: '14:48:58'
+  energy:
+  - -69269.28825182961
+  - -69269.21715289376
+  - -69269.16088131983
+  - -69269.21523828703
+  energy_core_electrons:
+  - -1455.043280865
+  - -1455.3423821959
+  - -1456.6846836158
+  - -1456.7402935195
+  energy_hartree:
+  - -2545.5993908448
+  - -2545.5967780071
+  - -2545.5947100649
+  - -2545.5967076466
+  energy_hartree_units: Htr
+  energy_units: eV
+  energy_valence_electrons:
+  - -14.2885211626
+  - -14.4446048831
+  - -15.1639889522
+  - -15.3465312793
+  fermi_energy:
+  - 0.3849266246
+  - 0.3791964982
+  - 0.3528749443
+  - 0.3463696897
+  fermi_energy_units: Htr
+  film: false
+  gmax: '10.17596029'
+  kmax: '3.40000000'
+  magnetic_moments:
+  - - 1.9158091539
+    - 1.9159592226
+  - - 1.9248599438
+    - 1.9246136861
+  - - 1.9570670537
+    - 1.9573858772
+  - - 1.8879142028
+    - 1.890303107
+  magnetic_moments_spin_down_charge:
+  - - 5.5310501211
+    - 5.5304826392
+  - - 5.5333668761
+    - 5.5335037976
+  - - 5.5489944232
+    - 5.5483853673
+  - - 5.5765466106
+    - 5.5786504617
+  magnetic_moments_spin_up_charge:
+  - - 7.446859275
+    - 7.4464418618
+  - - 7.4582268199
+    - 7.4581174838
+  - - 7.5060614769
+    - 7.5057712446
+  - - 7.4644608135
+    - 7.4689535686
+  number_of_atom_types: 2
+  number_of_atoms: 2
+  number_of_iterations: 4
+  number_of_iterations_total: 4
+  number_of_species: 1
+  number_of_spin_components: 2
+  number_of_symmetries: 0
+  output_file_version: '0.27'
+  overall_charge_density:
+  - 14.2933028381
+  - 11.5538575761
+  - 3.3076624962
+  - 1.4762736535
+  spin_density:
+  - 11.4902008012
+  - 10.5246537798
+  - 6.3421007934
+  - 4.4415197958
+  spin_dependent_charge_interstitial:
+  - null
+  - null
+  - null
+  - null
+  spin_dependent_charge_mt_spheres:
+  - null
+  - null
+  - null
+  - null
+  spin_dependent_charge_total:
+  - null
+  - null
+  - null
+  - null
+  start_date:
+    date: 2021/01/28
+    time: '14:48:55'
+  sum_of_eigenvalues:
+  - -1469.3318020276
+  - -1469.786987079
+  - -1471.8486725679
+  - -1472.0868247989
+  title: Fe fcc 2-atom uc
+  total_charge:
+  - null
+  - null
+  - null
+  - null
+  walltime: 3
+  walltime_units: seconds
+warnings:
+  fleur_modes:
+    band: false
+    dos: false
+    film: false
+    jspin: 2
+    ldau: false
+    noco: true
+    relax: false
+    soc: false
+  parser_info: Masci-Tools Fleur out.xml Parser v0.3.0
+  parser_warnings:
+  - Found version before MaX3.1 release falling back to file version '0.29'
+  - "Output file does not validate against the schema: \nLine 14: Element 'inputData':\
+    \ The attribute 'fleurInputVersion' is required but missing. \nLine 28: Element\
+    \ 'geometryOptimization', attribute 'thetad': The attribute 'thetad' is not allowed.\
+    \ \nLine 28: Element 'geometryOptimization', attribute 'xa': The attribute 'xa'\
+    \ is not allowed. \nLine 72: Element 'numericalParameters': Missing child element(s).\
+    \ Expected is ( volumes ). \nLine 73: Element 'atomsInCell': The attribute 'n_hia'\
+    \ is required but missing. \n"
+  - No text found for tag targetStructureClass
+  - No values found for attribute total at tag spinDependentCharge
+  - No values found for attribute interstitial at tag spinDependentCharge
+  - No values found for attribute mtSpheres at tag spinDependentCharge
+  - No values found for attribute value at tag totalCharge
+  - No values found for attribute total at tag spinDependentCharge
+  - No values found for attribute interstitial at tag spinDependentCharge
+  - No values found for attribute mtSpheres at tag spinDependentCharge
+  - No values found for attribute value at tag totalCharge
+  - No values found for attribute total at tag spinDependentCharge
+  - No values found for attribute interstitial at tag spinDependentCharge
+  - No values found for attribute mtSpheres at tag spinDependentCharge
+  - No values found for attribute value at tag totalCharge
+  - No values found for attribute total at tag spinDependentCharge
+  - No values found for attribute interstitial at tag spinDependentCharge
+  - No values found for attribute mtSpheres at tag spinDependentCharge
+  - No values found for attribute value at tag totalCharge

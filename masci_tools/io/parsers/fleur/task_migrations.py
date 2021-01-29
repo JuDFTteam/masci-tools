@@ -17,7 +17,7 @@ import copy
 from masci_tools.util.parse_tasks_decorators import register_migration
 
 
-@register_migration(base_version='0.33', target_version='0.31')
+@register_migration(base_version='0.33', target_version=['0.31', '0.30', '0.29'])
 def migrate_033_to_031(definition_dict):
     """
     Migrate definitions for MaX5 release to MaX4 release

@@ -382,19 +382,30 @@ def _is_simple(namespaces, elem):
 
         if child_type in ['attribute', 'simpleContent']:
             continue
-        if child_type in ['element', 'sequence', 'choice']:
+        if child_type in ['element', 'sequence', 'choice', 'all']:
             simple = False
+        else:
+            raise ValueError(f"Don't know what to do with '{child_type}'")
 
     return simple
 
 
-def _get_simple_tags(xmlschema, namespaces, elem):
+def _get_simple_tags(xmlschema, namespaces, elem, input_mapping=None):
+
+    if input_mapping is None:
+        input_mapping = {}
 
     simple_list = []
     for child in elem:
         child_type = _remove_xsd_namespace(child.tag, namespaces)
 
         if child_type == 'element':
+            if child.attrib['type'] == _INPUT_TYPE:
+                continue
+            if child.attrib['type'] in input_mapping:
+                simple_list.append(child.attrib['name'])
+                continue
+
             type_elem = xmlschema.xpath(f"//xsd:simpleType[@name='{child.attrib['type']}']", namespaces=namespaces)
             if len(type_elem) != 0:
                 simple_list.append(child.attrib['name'])
@@ -987,7 +998,10 @@ def get_tag_info(xmlschema, namespaces, **kwargs):
         info_dict['optional'] = _get_optional_tags(xmlschema, namespaces, type_elem)
         info_dict['several'] = _get_several_tags(xmlschema, namespaces, type_elem)
         info_dict['order'] = _get_sequence_order(xmlschema, namespaces, type_elem)
-        info_dict['simple'] = _get_simple_tags(xmlschema, namespaces, type_elem)
+        info_dict['simple'] = _get_simple_tags(xmlschema,
+                                               namespaces,
+                                               type_elem,
+                                               input_mapping=kwargs.get('_input_basic_types', None))
         info_dict['text'] = _get_text_tags(xmlschema, namespaces, type_elem, kwargs['simple_elements'])
 
         empty = True
