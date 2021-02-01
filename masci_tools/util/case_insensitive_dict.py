@@ -29,10 +29,6 @@ class CaseInsensitiveDict(UserDict):
         will be False if a is an CaseInsensitiveDict
 
     """
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
     #Here we modify the methods needed to make the lookups case insensitive
     #Since we use UserDict these methods should be enough to modify all behaviour
     def __delitem__(self, key):
