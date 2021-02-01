@@ -242,15 +242,16 @@ def _get_xpath(xmlschema,
     :return: None if no path is found, if a single path is found return the string of the path,
              otherwise a list with all possible paths is returned
     """
+
+    possible_paths = set()
     if enforce_end_type in _RECURSIVE_TYPES:
-        return None
-    possible_paths = []
+        return possible_paths
     root_tag = get_root_tag(xmlschema, namespaces)
     if tag_name == root_tag:
-        if iteration_root:
-            return None
-        else:
-            return f'/{root_tag}'
+        if not iteration_root:
+            possible_paths.add(f'/{root_tag}')
+        return possible_paths
+
     #Get all possible starting points
     if ref is not None:
         startPoints = xmlschema.xpath(f"//xsd:group[@ref='{ref}']", namespaces=namespaces)
@@ -278,7 +279,8 @@ def _get_xpath(xmlschema,
             if stop_iteration:
                 continue
             if iteration_root:
-                return f'./{currentTag}'
+                possible_paths.add(f'./{currentTag}')
+                return possible_paths
 
         if parent_tag == 'group':
             possible_paths_group = _get_xpath(xmlschema,
@@ -288,13 +290,8 @@ def _get_xpath(xmlschema,
                                               stop_non_unique=stop_non_unique,
                                               stop_iteration=stop_iteration,
                                               iteration_root=iteration_root)
-            if possible_paths_group is None:
-                continue
-            if not isinstance(possible_paths_group, list):
-                possible_paths_group = [possible_paths_group]
             for grouppath in possible_paths_group:
-                if f'{grouppath}' not in possible_paths:
-                    possible_paths.append(f'{grouppath}')
+                possible_paths.add(grouppath)
         else:
             if stop_non_unique:
                 currentelem = xmlschema.xpath(
@@ -314,27 +311,17 @@ def _get_xpath(xmlschema,
                                                 stop_non_unique=stop_non_unique,
                                                 stop_iteration=stop_iteration,
                                                 iteration_root=iteration_root)
-                if possible_paths_tag is None:
-                    continue
-                if not isinstance(possible_paths_tag, list):
-                    possible_paths_tag = [possible_paths_tag]
                 for tagpath in possible_paths_tag:
-                    if f'{tagpath}/{tag_name}' not in possible_paths:
-                        possible_paths.append(f'{tagpath}/{tag_name}')
+                    possible_paths.add(f'{tagpath}/{tag_name}')
 
     if iteration_root:
         #Remove any path that slipped through and contains the root tag of the out file
         possible_paths_copy = possible_paths.copy()
         for path in possible_paths_copy:
             if root_tag in path:
-                possible_paths.remove(path)
+                possible_paths.discard(path)
 
-    if len(possible_paths) > 1:
-        return possible_paths
-    elif len(possible_paths) == 0:
-        return None
-    else:
-        return possible_paths[0]
+    return possible_paths
 
 
 def _get_contained_attribs(xmlschema, namespaces, elem, optional=False):
@@ -483,27 +470,28 @@ def _get_attrib_xpath(xmlschema,
     :return: None if no path is found, if a single path is found return the string of the path,
              otherwise a list with all possible paths is returned
     """
-    possible_paths = []
+    possible_paths = set()
     attribute_tags = xmlschema.xpath(f"//xsd:attribute[@name='{attrib_name}']", namespaces=namespaces)
     for attrib in attribute_tags:
         parent_type, parent_tag = _get_parent_fleur_type(attrib, namespaces, stop_non_unique=stop_non_unique)
         if parent_type is None:
             continue
+
         start_type = parent_type.attrib['name']
         if start_type == _ITERATION_TYPE:
             if stop_iteration:
                 continue
             if iteration_root:
-                possible_paths.append('./')
+                possible_paths.add(f'./@{attrib_name}')
                 continue
+
         if stop_non_unique:
             element_tags = xmlschema.xpath(
                 f"//xsd:element[@type='{start_type}' and @maxOccurs=1]/@name | //xsd:element[@type='{start_type}' and not(@maxOccurs)]/@name",
                 namespaces=namespaces)
         else:
             element_tags = xmlschema.xpath(f"//xsd:element[@type='{start_type}']/@name", namespaces=namespaces)
-        if len(element_tags) == 0:
-            continue
+
         for tag in element_tags:
             tag_paths = _get_xpath(xmlschema,
                                    namespaces,
@@ -512,19 +500,10 @@ def _get_attrib_xpath(xmlschema,
                                    stop_non_unique=stop_non_unique,
                                    stop_iteration=stop_iteration,
                                    iteration_root=iteration_root)
-            if tag_paths is None:
-                continue
-            if not isinstance(tag_paths, list):
-                tag_paths = [tag_paths]
             for path in tag_paths:
-                if path not in possible_paths:
-                    possible_paths.append(path)
-    if len(possible_paths) == 1:
-        return possible_paths[0]
-    elif len(possible_paths) == 0:
-        return None
-    else:
-        return possible_paths
+                possible_paths.add(f'{path}/@{attrib_name}')
+
+    return possible_paths
 
 
 def _get_sequence_order(xmlschema, namespaces, sequence_elem):
@@ -623,8 +602,8 @@ def get_tag_paths(xmlschema, namespaces, **kwargs):
     tag_paths = {}
     for tag in possible_tags:
         paths = _get_xpath(xmlschema, namespaces, tag, stop_iteration=stop_iteration, iteration_root=iteration_root)
-        if paths is not None:
-            tag_paths[tag] = paths
+        if len(paths) != 0:
+            tag_paths[tag.lower()] = sorted(paths)
     return tag_paths
 
 
@@ -651,22 +630,26 @@ def get_unique_attribs(xmlschema, namespaces, **kwargs):
                                  stop_non_unique=True,
                                  stop_iteration=stop_iteration,
                                  iteration_root=iteration_root)
-        if path is not None and not isinstance(path, list):
-            settable[attrib] = path.replace(f'/@{attrib}', '')
+        if len(path) == 1:
+            attrib_key = attrib.lower()
+            if attrib_key in settable:
+                settable.pop(attrib_key)
+            else:
+                settable[attrib_key] = path.pop()
 
-    for attrib, attrib_dict in kwargs['simple_elements'].items():
+    for attrib in kwargs['simple_elements']:
         path = _get_xpath(xmlschema,
                           namespaces,
                           attrib,
                           stop_non_unique=True,
                           stop_iteration=stop_iteration,
                           iteration_root=iteration_root)
-        if path is not None:
-            if not isinstance(path, list):
-                if attrib not in settable:
-                    settable[attrib] = path.replace(f'/@{attrib}', '')
-                else:
-                    settable.pop(attrib)
+        if len(path) == 1:
+            attrib_key = attrib.lower()
+            if attrib_key in settable:
+                settable.pop(attrib_key)
+            else:
+                settable[attrib_key] = path.pop()
 
     return settable
 
@@ -696,7 +679,8 @@ def get_unique_path_attribs(xmlschema, namespaces, **kwargs):
     settable = {}
     possible_attrib = set(xmlschema.xpath('//xsd:attribute/@name', namespaces=namespaces))
     for attrib in possible_attrib:
-        if attrib in kwargs[settable_key]:
+        attrib_key = attrib.lower()
+        if attrib_key in kwargs[settable_key]:
             continue
         path = _get_attrib_xpath(xmlschema,
                                  namespaces,
@@ -704,13 +688,15 @@ def get_unique_path_attribs(xmlschema, namespaces, **kwargs):
                                  stop_non_unique=True,
                                  stop_iteration=stop_iteration,
                                  iteration_root=iteration_root)
-        if path is not None:
-            if not isinstance(path, list):
-                path = [path]
-            settable[attrib] = [x.replace(f'/@{attrib}', '') for x in path]
+        if len(path) != 0:
+            if attrib_key in settable:
+                settable[attrib_key] += sorted(path)
+            else:
+                settable[attrib_key] = sorted(path)
 
-    for attrib, attrib_dict in kwargs['simple_elements'].items():
-        if attrib in kwargs[settable_key]:
+    for attrib in kwargs['simple_elements']:
+        attrib_key = attrib.lower()
+        if attrib_key in kwargs[settable_key]:
             continue
         path = _get_xpath(xmlschema,
                           namespaces,
@@ -718,13 +704,11 @@ def get_unique_path_attribs(xmlschema, namespaces, **kwargs):
                           stop_non_unique=True,
                           stop_iteration=stop_iteration,
                           iteration_root=iteration_root)
-        if path is not None:
-            if not isinstance(path, list):
-                path = [path]
-            if attrib in settable:
-                settable[attrib] += [x.replace(f'/@{attrib}', '') for x in path]
+        if len(path) != 0:
+            if attrib_key in settable:
+                settable[attrib_key] += sorted(path)
             else:
-                settable[attrib] = [x.replace(f'/@{attrib}', '') for x in path]
+                settable[attrib_key] = sorted(path)
 
     return settable
 
@@ -758,34 +742,36 @@ def get_other_attribs(xmlschema, namespaces, **kwargs):
                                  attrib,
                                  stop_iteration=stop_iteration,
                                  iteration_root=iteration_root)
-        if path is not None:
-            if not isinstance(path, list):
-                path = [path]
-            if attrib in kwargs[settable_key]:
-                path.remove(kwargs[settable_key][attrib])
-            if attrib in kwargs[settable_contains_key]:
-                for contains_path in kwargs[settable_contains_key][attrib]:
-                    path.remove(contains_path)
+        if len(path) != 0:
+            attrib_key = attrib.lower()
+            if attrib_key in kwargs[settable_key]:
+                path.discard(kwargs[settable_key][attrib_key])
+            if attrib_key in kwargs[settable_contains_key]:
+                for contains_path in kwargs[settable_contains_key][attrib_key]:
+                    path.discard(contains_path)
 
             if len(path) != 0:
-                other[attrib] = [x.replace(f'/@{attrib}', '') for x in path]
-
-    for attrib, attrib_dict in kwargs['simple_elements'].items():
-        path = _get_xpath(xmlschema, namespaces, attrib, stop_iteration=stop_iteration, iteration_root=iteration_root)
-        if path is not None:
-            if not isinstance(path, list):
-                path = [path]
-            if attrib in kwargs[settable_key]:
-                path.remove(kwargs[settable_key][attrib])
-            if attrib in kwargs[settable_contains_key]:
-                for contains_path in kwargs[settable_contains_key][attrib]:
-                    path.remove(contains_path)
-
-            if len(path) != 0:
-                if attrib in other:
-                    other[attrib] += [x.replace(f'/@{attrib}', '') for x in path]
+                if attrib_key in other:
+                    other[attrib_key] += sorted(path)
                 else:
-                    other[attrib] = [x.replace(f'/@{attrib}', '') for x in path]
+                    other[attrib_key] = sorted(path)
+
+    for attrib in kwargs['simple_elements']:
+        path = _get_xpath(xmlschema, namespaces, attrib, stop_iteration=stop_iteration, iteration_root=iteration_root)
+        if len(path) != 0:
+
+            attrib_key = attrib.lower()
+            if attrib_key in kwargs[settable_key]:
+                path.discard(kwargs[settable_key][attrib_key])
+            if attrib_key in kwargs[settable_contains_key]:
+                for contains_path in kwargs[settable_contains_key][attrib_key]:
+                    path.discard(contains_path)
+
+            if len(path) != 0:
+                if attrib_key in other:
+                    other[attrib_key] += sorted(path)
+                else:
+                    other[attrib_key] = sorted(path)
 
     return other
 
@@ -982,10 +968,7 @@ def get_tag_info(xmlschema, namespaces, **kwargs):
                               stop_iteration=stop_iteration,
                               iteration_root=iteration_root)
 
-        if tag_path is None:
-            continue
-        if not isinstance(tag_path, list):
-            tag_path = [tag_path]
+        tag_path = list(tag_path)
 
         type_elem = xmlschema.xpath(f"//xsd:complexType[@name='{type_tag}']", namespaces=namespaces)
         if len(type_elem) == 0:
