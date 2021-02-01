@@ -602,7 +602,9 @@ def get_tag_paths(xmlschema, namespaces, **kwargs):
     tag_paths = {}
     for tag in possible_tags:
         paths = _get_xpath(xmlschema, namespaces, tag, stop_iteration=stop_iteration, iteration_root=iteration_root)
-        if len(paths) != 0:
+        if len(paths) == 1:
+            tag_paths[tag.lower()] = paths.pop()
+        else:
             tag_paths[tag.lower()] = sorted(paths)
     return tag_paths
 

@@ -576,7 +576,7 @@ schema_dict = {
             './valenceDensity/fixedCharges/spinDependentCharge/@interstitial',
             './valenceDensity/spinDependentCharge/@interstitial'
         ],
-        'j': ['./ldaUDensityMatrix/densityMatrixFor/@J', './coreStates/state/@j'],
+        'j': ['./coreStates/state/@j', './ldaUDensityMatrix/densityMatrixFor/@J'],
         'jatom': ['./Forcetheorem_JIJ/Config/@jatom'],
         'k_x': ['./eigenvalues/eigenvaluesAt/@k_x'],
         'k_y': ['./eigenvalues/eigenvaluesAt/@k_y'],
@@ -1514,86 +1514,174 @@ schema_dict = {
         }
     },
     'iteration_tag_paths': {
-        'allatoms': ['./Forcetheorem_DMI/allAtoms'],
-        'allelectroncharges': ['./allElectronCharges'],
-        'angle': ['./Forcetheorem_MAE/Angle'],
-        'atomicep': ['./energyParameters/atomicEP'],
-        'atomtypedependentcontributions': ['./totalEnergy/atomTypeDependentContributions'],
-        'bandgap': ['./bandgap'],
-        'chargedensity': ['./densityConvergence/chargeDensity'],
-        'chargedenxcdenintegral': ['./totalEnergy/chargeDenXCDenIntegral'],
-        'compositetimer': ['./timing/compositeTimer'],
-        'config': ['./Forcetheorem_JIJ/Config'],
-        'coreelectrons': ['./totalEnergy/sumOfEigenvalues/coreElectrons'],
-        'corestates': ['./coreStates'],
-        'densityconvergence': ['./densityConvergence'],
-        'densitycoulombpotentialintegral': ['./totalEnergy/densityCoulombPotentialIntegral'],
-        'densityeffectivepotentialintegral': ['./totalEnergy/densityEffectivePotentialIntegral'],
-        'densitymatrixfor': ['./ldaUDensityMatrix/densityMatrixFor'],
-        'dftucorrection': ['./totalEnergy/dftUCorrection'],
-        'distance': ['./ldaUDensityMatrixConvergence/distance'],
-        'eigenvalues': ['./eigenvalues'],
-        'eigenvaluesat': ['./eigenvalues/eigenvaluesAt'],
+        'additionalcompilerflags': [],
+        'allatoms':
+        './Forcetheorem_DMI/allAtoms',
+        'allelectroncharges':
+        './allElectronCharges',
+        'angle':
+        './Forcetheorem_MAE/Angle',
+        'atomicep':
+        './energyParameters/atomicEP',
+        'atomsincell': [],
+        'atomtypedependentcontributions':
+        './totalEnergy/atomTypeDependentContributions',
+        'bandgap':
+        './bandgap',
+        'bands': [],
+        'basis': [],
+        'chargedensity':
+        './densityConvergence/chargeDensity',
+        'chargedenxcdenintegral':
+        './totalEnergy/chargeDenXCDenIntegral',
+        'compilationinfo': [],
+        'compositetimer':
+        './timing/compositeTimer',
+        'config':
+        './Forcetheorem_JIJ/Config',
+        'coreelectrons':
+        './totalEnergy/sumOfEigenvalues/coreElectrons',
+        'corestates':
+        './coreStates',
+        'density': [],
+        'densityconvergence':
+        './densityConvergence',
+        'densitycoulombpotentialintegral':
+        './totalEnergy/densityCoulombPotentialIntegral',
+        'densityeffectivepotentialintegral':
+        './totalEnergy/densityEffectivePotentialIntegral',
+        'densitymatrixfor':
+        './ldaUDensityMatrix/densityMatrixFor',
+        'dftucorrection':
+        './totalEnergy/dftUCorrection',
+        'distance':
+        './ldaUDensityMatrixConvergence/distance',
+        'eigenvalues':
+        './eigenvalues',
+        'eigenvaluesat':
+        './eigenvalues/eigenvaluesAt',
         'electronnucleiinteractiondifferentmts':
-        ['./totalEnergy/atomTypeDependentContributions/electronNucleiInteractionDifferentMTs'],
-        'energyparameters': ['./energyParameters'],
+        './totalEnergy/atomTypeDependentContributions/electronNucleiInteractionDifferentMTs',
+        'enddateandtime': [],
+        'energyparameters':
+        './energyParameters',
         'entry': ['./Forcetheorem_DMI/Entry', './Forcetheorem_SSDISP/Entry'],
-        'excsplit': ['./onSiteExchangeSplitting/excSplit'],
-        'extrapolationto0k': ['./totalEnergy/extrapolationTo0K'],
-        'fermienergy': ['./FermiEnergy'],
+        'error': [],
+        'excsplit':
+        './onSiteExchangeSplitting/excSplit',
+        'extrapolationto0k':
+        './totalEnergy/extrapolationTo0K',
+        'fermienergy':
+        './FermiEnergy',
         'fixedcharges': ['./allElectronCharges/fixedCharges', './valenceDensity/fixedCharges'],
-        'fockexchangeenergycore': ['./totalEnergy/FockExchangeEnergyCore'],
-        'fockexchangeenergyvalence': ['./totalEnergy/FockExchangeEnergyValence'],
-        'forcetheorem_dmi': ['./Forcetheorem_DMI'],
-        'forcetheorem_jij': ['./Forcetheorem_JIJ'],
-        'forcetheorem_loop': ['./Forcetheorem_Loop'],
-        'forcetheorem_mae': ['./Forcetheorem_MAE'],
-        'forcetheorem_ssdisp': ['./Forcetheorem_SSDISP'],
-        'forcetotal': ['./totalForcesOnRepresentativeAtoms/forceTotal'],
-        'freeenergy': ['./totalEnergy/freeEnergy'],
-        'heatomicep': ['./energyParameters/heAtomicEP'],
-        'heloatomicep': ['./energyParameters/heloAtomicEP'],
+        'fleurinput': [],
+        'fleuroutput': [],
+        'fockexchangeenergycore':
+        './totalEnergy/FockExchangeEnergyCore',
+        'fockexchangeenergyvalence':
+        './totalEnergy/FockExchangeEnergyValence',
+        'forcetheorem_dmi':
+        './Forcetheorem_DMI',
+        'forcetheorem_jij':
+        './Forcetheorem_JIJ',
+        'forcetheorem_loop':
+        './Forcetheorem_Loop',
+        'forcetheorem_mae':
+        './Forcetheorem_MAE',
+        'forcetheorem_ssdisp':
+        './Forcetheorem_SSDISP',
+        'forcetotal':
+        './totalForcesOnRepresentativeAtoms/forceTotal',
+        'freeenergy':
+        './totalEnergy/freeEnergy',
+        'gitinfo': [],
+        'heatomicep':
+        './energyParameters/heAtomicEP',
+        'heloatomicep':
+        './energyParameters/heloAtomicEP',
         'highj': ['./allElectronCharges/mtCharges/mtJcharge/highJ', './valenceDensity/mtCharges/mtJcharge/highJ'],
-        'ldaudensitymatrix': ['./ldaUDensityMatrix'],
-        'ldaudensitymatrixconvergence': ['./ldaUDensityMatrixConvergence'],
-        'loatomicep': ['./energyParameters/loAtomicEP'],
+        'iteration': [],
+        'kpoint': [],
+        'kpointlist': [],
+        'ldaudensitymatrix':
+        './ldaUDensityMatrix',
+        'ldaudensitymatrixconvergence':
+        './ldaUDensityMatrixConvergence',
+        'loatomicep':
+        './energyParameters/loAtomicEP',
         'lowj': ['./allElectronCharges/mtCharges/mtJcharge/lowJ', './valenceDensity/mtCharges/mtJcharge/lowJ'],
-        'madelungterm': ['./totalEnergy/atomTypeDependentContributions/MadelungTerm'],
-        'magneticmoment': ['./magneticMomentsInMTSpheres/magneticMoment'],
-        'magneticmomentsinmtspheres': ['./magneticMomentsInMTSpheres'],
+        'madelungterm':
+        './totalEnergy/atomTypeDependentContributions/MadelungTerm',
+        'magneticmoment':
+        './magneticMomentsInMTSpheres/magneticMoment',
+        'magneticmomentsinmtspheres':
+        './magneticMomentsInMTSpheres',
+        'mem': [],
+        'mpi': [],
         'mtcharge': ['./allElectronCharges/mtCharges/mtCharge', './valenceDensity/mtCharges/mtCharge'],
         'mtcharges': ['./allElectronCharges/mtCharges', './valenceDensity/mtCharges'],
         'mtjcharge': ['./allElectronCharges/mtCharges/mtJcharge', './valenceDensity/mtCharges/mtJcharge'],
-        'noncollineartorgue': ['./noncollinearTorgue'],
-        'occupations': ['./rdmft/occupations'],
-        'onsiteexchangesplitting': ['./onSiteExchangeSplitting'],
-        'orbitalmagneticmomentsinmtspheres': ['./orbitalMagneticMomentsInMTSpheres'],
-        'orbmagmoment': ['./orbitalMagneticMomentsInMTSpheres/orbMagMoment'],
-        'overallchargedensity': ['./densityConvergence/overallChargeDensity'],
-        'rdmft': ['./rdmft'],
-        'singleatom': ['./Forcetheorem_DMI/singleAtom'],
-        'spindensity': ['./densityConvergence/spinDensity'],
+        'mtvolume': [],
+        'noncollineartorgue':
+        './noncollinearTorgue',
+        'numericalparameters': [],
+        'occupations':
+        './rdmft/occupations',
+        'onsiteexchangesplitting':
+        './onSiteExchangeSplitting',
+        'openmp': [],
+        'orbitalmagneticmomentsinmtspheres':
+        './orbitalMagneticMomentsInMTSpheres',
+        'orbmagmoment':
+        './orbitalMagneticMomentsInMTSpheres/orbMagMoment',
+        'overallchargedensity':
+        './densityConvergence/overallChargeDensity',
+        'parallelsetup': [],
+        'precision': [],
+        'programversion': [],
+        'rdmft':
+        './rdmft',
+        'scfloop': [],
+        'singleatom':
+        './Forcetheorem_DMI/singleAtom',
+        'spindensity':
+        './densityConvergence/spinDensity',
         'spindependentcharge': [
             './allElectronCharges/fixedCharges/spinDependentCharge', './allElectronCharges/spinDependentCharge',
             './valenceDensity/fixedCharges/spinDependentCharge', './valenceDensity/spinDependentCharge'
         ],
-        'spinorbittorgue': ['./spinorbitTorgue'],
+        'spinorbittorgue':
+        './spinorbitTorgue',
+        'startdateandtime': [],
         'state': ['./coreStates/state', './rdmft/occupations/state'],
-        'sumofeigenvalues': ['./totalEnergy/sumOfEigenvalues'],
-        'sumvalencesingleparticleenergies': ['./sumValenceSingleParticleEnergies'],
-        'timer': ['./timing/timer'],
-        'timing': ['./timing'],
-        'tkbtimesentropy': ['./totalEnergy/tkbTimesEntropy'],
+        'sumofeigenvalues':
+        './totalEnergy/sumOfEigenvalues',
+        'sumvalencesingleparticleenergies':
+        './sumValenceSingleParticleEnergies',
+        'targetcomputerarchitectures': [],
+        'targetstructureclass': [],
+        'timer':
+        './timing/timer',
+        'timing':
+        './timing',
+        'tkbtimesentropy':
+        './totalEnergy/tkbTimesEntropy',
         'torgue': ['./noncollinearTorgue/torgue', './spinorbitTorgue/torgue'],
         'totalcharge': [
             './allElectronCharges/fixedCharges/totalCharge', './allElectronCharges/totalCharge',
             './valenceDensity/fixedCharges/totalCharge', './valenceDensity/totalCharge'
         ],
-        'totalenergy': ['./totalEnergy'],
-        'totalforcesonrepresentativeatoms': ['./totalForcesOnRepresentativeAtoms'],
-        'vacuumep': ['./energyParameters/vacuumEP'],
-        'valencedensity': ['./valenceDensity'],
-        'valenceelectrons': ['./totalEnergy/sumOfEigenvalues/valenceElectrons']
+        'totalenergy':
+        './totalEnergy',
+        'totalforcesonrepresentativeatoms':
+        './totalForcesOnRepresentativeAtoms',
+        'vacuumep':
+        './energyParameters/vacuumEP',
+        'valencedensity':
+        './valenceDensity',
+        'valenceelectrons':
+        './totalEnergy/sumOfEigenvalues/valenceElectrons',
+        'volumes': []
     },
     'iteration_unique_attribs': {
         'configs': './Forcetheorem_JIJ/@Configs',
@@ -1873,33 +1961,106 @@ schema_dict = {
         }
     },
     'tag_paths': {
-        'additionalcompilerflags': ['/fleurOutput/programVersion/additionalCompilerFlags'],
-        'atomsincell': ['/fleurOutput/numericalParameters/atomsInCell'],
-        'bands': ['/fleurOutput/numericalParameters/bands'],
-        'basis': ['/fleurOutput/numericalParameters/basis'],
-        'compilationinfo': ['/fleurOutput/programVersion/compilationInfo'],
-        'density': ['/fleurOutput/numericalParameters/density'],
-        'enddateandtime': ['/fleurOutput/endDateAndTime'],
-        'error': ['/fleurOutput/ERROR'],
-        'fleurinput': ['/fleurOutput/fleurInput'],
-        'fleuroutput': ['/fleurOutput'],
-        'gitinfo': ['/fleurOutput/programVersion/gitInfo'],
-        'iteration': ['/fleurOutput/scfLoop/iteration'],
-        'kpoint': ['/fleurOutput/numericalParameters/kPointList/kPoint'],
-        'kpointlist': ['/fleurOutput/numericalParameters/kPointList'],
-        'mem': ['/fleurOutput/parallelSetup/mem'],
-        'mpi': ['/fleurOutput/parallelSetup/mpi'],
-        'mtvolume': ['/fleurOutput/numericalParameters/volumes/mtVolume'],
-        'numericalparameters': ['/fleurOutput/numericalParameters'],
-        'openmp': ['/fleurOutput/parallelSetup/openMP'],
-        'parallelsetup': ['/fleurOutput/parallelSetup'],
-        'precision': ['/fleurOutput/programVersion/precision'],
-        'programversion': ['/fleurOutput/programVersion'],
-        'scfloop': ['/fleurOutput/scfLoop'],
-        'startdateandtime': ['/fleurOutput/startDateAndTime'],
-        'targetcomputerarchitectures': ['/fleurOutput/programVersion/targetComputerArchitectures'],
-        'targetstructureclass': ['/fleurOutput/programVersion/targetStructureClass'],
-        'volumes': ['/fleurOutput/numericalParameters/volumes']
+        'additionalcompilerflags': '/fleurOutput/programVersion/additionalCompilerFlags',
+        'allatoms': [],
+        'allelectroncharges': [],
+        'angle': [],
+        'atomicep': [],
+        'atomsincell': '/fleurOutput/numericalParameters/atomsInCell',
+        'atomtypedependentcontributions': [],
+        'bandgap': [],
+        'bands': '/fleurOutput/numericalParameters/bands',
+        'basis': '/fleurOutput/numericalParameters/basis',
+        'chargedensity': [],
+        'chargedenxcdenintegral': [],
+        'compilationinfo': '/fleurOutput/programVersion/compilationInfo',
+        'compositetimer': [],
+        'config': [],
+        'coreelectrons': [],
+        'corestates': [],
+        'density': '/fleurOutput/numericalParameters/density',
+        'densityconvergence': [],
+        'densitycoulombpotentialintegral': [],
+        'densityeffectivepotentialintegral': [],
+        'densitymatrixfor': [],
+        'dftucorrection': [],
+        'distance': [],
+        'eigenvalues': [],
+        'eigenvaluesat': [],
+        'electronnucleiinteractiondifferentmts': [],
+        'enddateandtime': '/fleurOutput/endDateAndTime',
+        'energyparameters': [],
+        'entry': [],
+        'error': '/fleurOutput/ERROR',
+        'excsplit': [],
+        'extrapolationto0k': [],
+        'fermienergy': [],
+        'fixedcharges': [],
+        'fleurinput': '/fleurOutput/fleurInput',
+        'fleuroutput': '/fleurOutput',
+        'fockexchangeenergycore': [],
+        'fockexchangeenergyvalence': [],
+        'forcetheorem_dmi': [],
+        'forcetheorem_jij': [],
+        'forcetheorem_loop': [],
+        'forcetheorem_mae': [],
+        'forcetheorem_ssdisp': [],
+        'forcetotal': [],
+        'freeenergy': [],
+        'gitinfo': '/fleurOutput/programVersion/gitInfo',
+        'heatomicep': [],
+        'heloatomicep': [],
+        'highj': [],
+        'iteration': '/fleurOutput/scfLoop/iteration',
+        'kpoint': '/fleurOutput/numericalParameters/kPointList/kPoint',
+        'kpointlist': '/fleurOutput/numericalParameters/kPointList',
+        'ldaudensitymatrix': [],
+        'ldaudensitymatrixconvergence': [],
+        'loatomicep': [],
+        'lowj': [],
+        'madelungterm': [],
+        'magneticmoment': [],
+        'magneticmomentsinmtspheres': [],
+        'mem': '/fleurOutput/parallelSetup/mem',
+        'mpi': '/fleurOutput/parallelSetup/mpi',
+        'mtcharge': [],
+        'mtcharges': [],
+        'mtjcharge': [],
+        'mtvolume': '/fleurOutput/numericalParameters/volumes/mtVolume',
+        'noncollineartorgue': [],
+        'numericalparameters': '/fleurOutput/numericalParameters',
+        'occupations': [],
+        'onsiteexchangesplitting': [],
+        'openmp': '/fleurOutput/parallelSetup/openMP',
+        'orbitalmagneticmomentsinmtspheres': [],
+        'orbmagmoment': [],
+        'overallchargedensity': [],
+        'parallelsetup': '/fleurOutput/parallelSetup',
+        'precision': '/fleurOutput/programVersion/precision',
+        'programversion': '/fleurOutput/programVersion',
+        'rdmft': [],
+        'scfloop': '/fleurOutput/scfLoop',
+        'singleatom': [],
+        'spindensity': [],
+        'spindependentcharge': [],
+        'spinorbittorgue': [],
+        'startdateandtime': '/fleurOutput/startDateAndTime',
+        'state': [],
+        'sumofeigenvalues': [],
+        'sumvalencesingleparticleenergies': [],
+        'targetcomputerarchitectures': '/fleurOutput/programVersion/targetComputerArchitectures',
+        'targetstructureclass': '/fleurOutput/programVersion/targetStructureClass',
+        'timer': [],
+        'timing': [],
+        'tkbtimesentropy': [],
+        'torgue': [],
+        'totalcharge': [],
+        'totalenergy': [],
+        'totalforcesonrepresentativeatoms': [],
+        'vacuumep': [],
+        'valencedensity': [],
+        'valenceelectrons': [],
+        'volumes': '/fleurOutput/numericalParameters/volumes'
     },
     'unique_attribs': {
         'additionalcompilerflags': '/fleurOutput/programVersion/additionalCompilerFlags',
