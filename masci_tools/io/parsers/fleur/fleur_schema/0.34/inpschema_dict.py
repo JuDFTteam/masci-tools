@@ -521,10 +521,10 @@ schema_dict = {
         'd': [
             '/fleurInput/atomGroups/atomGroup/energyParameters/@d',
             '/fleurInput/atomGroups/atomGroup/greensfCalculation/diagElements/@d',
-            '/fleurInput/atomSpecies/species/energyParameters/@d',
-            '/fleurInput/atomSpecies/species/greensfCalculation/diagElements/@d',
             '/fleurInput/atomGroups/atomGroup/greensfCalculation/matrixElements/d',
             '/fleurInput/atomGroups/atomGroup/torgueCalculation/greensfElements/d',
+            '/fleurInput/atomSpecies/species/energyParameters/@d',
+            '/fleurInput/atomSpecies/species/greensfCalculation/diagElements/@d',
             '/fleurInput/atomSpecies/species/greensfCalculation/matrixElements/d',
             '/fleurInput/atomSpecies/species/torgueCalculation/greensfElements/d'
         ],
@@ -544,10 +544,10 @@ schema_dict = {
         'f': [
             '/fleurInput/atomGroups/atomGroup/energyParameters/@f',
             '/fleurInput/atomGroups/atomGroup/greensfCalculation/diagElements/@f',
-            '/fleurInput/atomSpecies/species/energyParameters/@f',
-            '/fleurInput/atomSpecies/species/greensfCalculation/diagElements/@f',
             '/fleurInput/atomGroups/atomGroup/greensfCalculation/matrixElements/f',
             '/fleurInput/atomGroups/atomGroup/torgueCalculation/greensfElements/f',
+            '/fleurInput/atomSpecies/species/energyParameters/@f',
+            '/fleurInput/atomSpecies/species/greensfCalculation/diagElements/@f',
             '/fleurInput/atomSpecies/species/greensfCalculation/matrixElements/f',
             '/fleurInput/atomSpecies/species/torgueCalculation/greensfElements/f'
         ],
@@ -657,8 +657,8 @@ schema_dict = {
             '/fleurInput/atomSpecies/species/mtSphere/@logIncrement'
         ],
         'm': [
-            '/fleurInput/atomGroups/atomGroup/ldaHIA/cFCoeff/@m', '/fleurInput/atomSpecies/species/ldaHIA/cFCoeff/@m',
-            '/fleurInput/atomGroups/atomGroup/nocoParams/@M', '/fleurInput/atomSpecies/species/nocoParams/@M'
+            '/fleurInput/atomGroups/atomGroup/ldaHIA/cFCoeff/@m', '/fleurInput/atomGroups/atomGroup/nocoParams/@M',
+            '/fleurInput/atomSpecies/species/ldaHIA/cFCoeff/@m', '/fleurInput/atomSpecies/species/nocoParams/@M'
         ],
         'magfield': ['/fleurInput/atomGroups/atomGroup/@magField'],
         'magmom':
@@ -689,10 +689,10 @@ schema_dict = {
         'p': [
             '/fleurInput/atomGroups/atomGroup/energyParameters/@p',
             '/fleurInput/atomGroups/atomGroup/greensfCalculation/diagElements/@p',
-            '/fleurInput/atomSpecies/species/energyParameters/@p',
-            '/fleurInput/atomSpecies/species/greensfCalculation/diagElements/@p',
             '/fleurInput/atomGroups/atomGroup/greensfCalculation/matrixElements/p',
             '/fleurInput/atomGroups/atomGroup/torgueCalculation/greensfElements/p',
+            '/fleurInput/atomSpecies/species/energyParameters/@p',
+            '/fleurInput/atomSpecies/species/greensfCalculation/diagElements/@p',
             '/fleurInput/atomSpecies/species/greensfCalculation/matrixElements/p',
             '/fleurInput/atomSpecies/species/torgueCalculation/greensfElements/p'
         ],
@@ -718,10 +718,10 @@ schema_dict = {
         's': [
             '/fleurInput/atomGroups/atomGroup/energyParameters/@s',
             '/fleurInput/atomGroups/atomGroup/greensfCalculation/diagElements/@s',
-            '/fleurInput/atomSpecies/species/energyParameters/@s',
-            '/fleurInput/atomSpecies/species/greensfCalculation/diagElements/@s',
             '/fleurInput/atomGroups/atomGroup/greensfCalculation/matrixElements/s',
             '/fleurInput/atomGroups/atomGroup/torgueCalculation/greensfElements/s',
+            '/fleurInput/atomSpecies/species/energyParameters/@s',
+            '/fleurInput/atomSpecies/species/greensfCalculation/diagElements/@s',
             '/fleurInput/atomSpecies/species/greensfCalculation/matrixElements/s',
             '/fleurInput/atomSpecies/species/torgueCalculation/greensfElements/s'
         ],

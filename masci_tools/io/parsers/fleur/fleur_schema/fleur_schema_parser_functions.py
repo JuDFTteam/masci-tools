@@ -691,10 +691,7 @@ def get_unique_path_attribs(xmlschema, namespaces, **kwargs):
                                  stop_iteration=stop_iteration,
                                  iteration_root=iteration_root)
         if len(path) != 0:
-            if attrib_key in settable:
-                settable[attrib_key] += sorted(path)
-            else:
-                settable[attrib_key] = sorted(path)
+            settable[attrib_key] = sorted(set(settable.get(attrib_key, [])).union(path))
 
     for attrib in kwargs['simple_elements']:
         attrib_key = attrib.lower()
@@ -707,10 +704,7 @@ def get_unique_path_attribs(xmlschema, namespaces, **kwargs):
                           stop_iteration=stop_iteration,
                           iteration_root=iteration_root)
         if len(path) != 0:
-            if attrib_key in settable:
-                settable[attrib_key] += sorted(path)
-            else:
-                settable[attrib_key] = sorted(path)
+            settable[attrib_key] = sorted(set(settable.get(attrib_key, [])).union(path))
 
     return settable
 
@@ -753,10 +747,7 @@ def get_other_attribs(xmlschema, namespaces, **kwargs):
                     path.discard(contains_path)
 
             if len(path) != 0:
-                if attrib_key in other:
-                    other[attrib_key] += sorted(path)
-                else:
-                    other[attrib_key] = sorted(path)
+                other[attrib_key] = sorted(set(other.get(attrib_key, [])).union(path))
 
     for attrib in kwargs['simple_elements']:
         path = _get_xpath(xmlschema, namespaces, attrib, stop_iteration=stop_iteration, iteration_root=iteration_root)
@@ -770,10 +761,7 @@ def get_other_attribs(xmlschema, namespaces, **kwargs):
                     path.discard(contains_path)
 
             if len(path) != 0:
-                if attrib_key in other:
-                    other[attrib_key] += sorted(path)
-                else:
-                    other[attrib_key] = sorted(path)
+                other[attrib_key] = sorted(set(other.get(attrib_key, [])).union(path))
 
     return other
 
