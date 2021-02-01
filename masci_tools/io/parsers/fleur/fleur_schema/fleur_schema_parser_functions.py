@@ -601,7 +601,7 @@ def get_tag_paths(xmlschema, namespaces, **kwargs):
 
     possible_tags = set(xmlschema.xpath('//xsd:element/@name', namespaces=namespaces))
     tag_paths = CaseInsensitiveDict()
-    for tag in possible_tags:
+    for tag in sorted(possible_tags):
         paths = _get_xpath(xmlschema, namespaces, tag, stop_iteration=stop_iteration, iteration_root=iteration_root)
         if len(paths) == 1:
             tag_paths[tag] = paths.pop()
@@ -626,7 +626,7 @@ def get_unique_attribs(xmlschema, namespaces, **kwargs):
 
     settable = CaseInsensitiveDict()
     possible_attrib = set(xmlschema.xpath('//xsd:attribute/@name', namespaces=namespaces))
-    for attrib in possible_attrib:
+    for attrib in sorted(possible_attrib):
         path = _get_attrib_xpath(xmlschema,
                                  namespaces,
                                  attrib,
@@ -639,7 +639,7 @@ def get_unique_attribs(xmlschema, namespaces, **kwargs):
             else:
                 settable[attrib] = path.pop()
 
-    for attrib in kwargs['simple_elements']:
+    for attrib in sorted(kwargs['simple_elements']):
         path = _get_xpath(xmlschema,
                           namespaces,
                           attrib,
@@ -679,7 +679,7 @@ def get_unique_path_attribs(xmlschema, namespaces, **kwargs):
 
     settable = CaseInsensitiveDict()
     possible_attrib = set(xmlschema.xpath('//xsd:attribute/@name', namespaces=namespaces))
-    for attrib in possible_attrib:
+    for attrib in sorted(possible_attrib):
         if attrib in kwargs[settable_key]:
             continue
         path = _get_attrib_xpath(xmlschema,
@@ -691,7 +691,7 @@ def get_unique_path_attribs(xmlschema, namespaces, **kwargs):
         if len(path) != 0:
             settable[attrib] = sorted(set(settable.get(attrib, [])).union(path))
 
-    for attrib in kwargs['simple_elements']:
+    for attrib in sorted(kwargs['simple_elements']):
         if attrib in kwargs[settable_key]:
             continue
         path = _get_xpath(xmlschema,
@@ -729,7 +729,7 @@ def get_other_attribs(xmlschema, namespaces, **kwargs):
 
     other = CaseInsensitiveDict()
     possible_attrib = set(xmlschema.xpath('//xsd:attribute/@name', namespaces=namespaces))
-    for attrib in possible_attrib:
+    for attrib in sorted(possible_attrib):
         path = _get_attrib_xpath(xmlschema,
                                  namespaces,
                                  attrib,
@@ -745,7 +745,7 @@ def get_other_attribs(xmlschema, namespaces, **kwargs):
             if len(path) != 0:
                 other[attrib] = sorted(set(other.get(attrib, [])).union(path))
 
-    for attrib in kwargs['simple_elements']:
+    for attrib in sorted(kwargs['simple_elements']):
         path = _get_xpath(xmlschema, namespaces, attrib, stop_iteration=stop_iteration, iteration_root=iteration_root)
         if len(path) != 0:
 

@@ -408,107 +408,47 @@ schema_dict = {
     ],
     'other_attribs':
     CaseInsensitiveDict({
-        'corestates': ['/fleurInput/atomSpecies/species/@coreStates'],
-        'radius':
-        ['/fleurInput/atomGroups/atomGroup/mtSphere/@radius', '/fleurInput/atomSpecies/species/mtSphere/@radius'],
-        'wannier': [
-            '/fleurInput/atomGroups/atomGroup/absPos/@wannier', '/fleurInput/atomGroups/atomGroup/filmPos/@wannier',
-            '/fleurInput/atomGroups/atomGroup/relPos/@wannier'
-        ],
-        'flipspin': ['/fleurInput/atomSpecies/species/@flipSpin'],
-        'lda': ['/fleurInput/atomSpecies/species/special/@lda'],
-        'l_amf': ['/fleurInput/atomGroups/atomGroup/ldaU/@l_amf', '/fleurInput/atomSpecies/species/ldaU/@l_amf'],
-        'l_magn':
-        ['/fleurInput/atomGroups/atomGroup/nocoParams/@l_magn', '/fleurInput/atomSpecies/species/nocoParams/@l_magn'],
-        'nx': ['/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointMesh/@nx'],
-        'logincrement': [
-            '/fleurInput/atomGroups/atomGroup/mtSphere/@logIncrement',
-            '/fleurInput/atomSpecies/species/mtSphere/@logIncrement'
-        ],
-        'weightscale': ['/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointList/@weightScale'],
-        'orbcomp': [
-            '/fleurInput/atomGroups/atomGroup/absPos/@orbcomp', '/fleurInput/atomGroups/atomGroup/filmPos/@orbcomp',
-            '/fleurInput/atomGroups/atomGroup/relPos/@orbcomp'
-        ],
-        'species': ['/fleurInput/atomGroups/atomGroup/@species'],
-        'value': ['/fleurInput/constants/constant/@value'],
-        'f':
-        ['/fleurInput/atomGroups/atomGroup/energyParameters/@f', '/fleurInput/atomSpecies/species/energyParameters/@f'],
-        'socscale': ['/fleurInput/atomSpecies/species/special/@socscale'],
-        'vca_charge': ['/fleurInput/atomSpecies/species/special/@vca_charge'],
-        'b_cons_y': [
-            '/fleurInput/atomGroups/atomGroup/nocoParams/@b_cons_y',
-            '/fleurInput/atomSpecies/species/nocoParams/@b_cons_y'
-        ],
-        'spindown': [
-            '/fleurInput/atomSpecies/species/electronConfig/stateOccupation/@spinDown',
-            '/fleurInput/cell/filmLattice/vacuumEnergyParameters/@spinDown'
-        ],
-        'energy': ['/fleurInput/relaxation/relaxation-history/step/@energy'],
-        'vcaaddcharge':
-        ['/fleurInput/atomGroups/atomGroup/@vcaAddCharge', '/fleurInput/atomSpecies/species/@vcaAddCharge'],
-        'b_field_mt': ['/fleurInput/atomSpecies/species/special/@b_field_mt'],
-        'posscale': ['/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointList/@posScale'],
-        'lmaxapw': [
-            '/fleurInput/atomGroups/atomGroup/atomicCutoffs/@lmaxAPW',
-            '/fleurInput/atomSpecies/species/atomicCutoffs/@lmaxAPW'
-        ],
+        'j': ['/fleurInput/atomGroups/atomGroup/ldaU/@J', '/fleurInput/atomSpecies/species/ldaU/@J'],
+        'm': ['/fleurInput/atomGroups/atomGroup/nocoParams/@M', '/fleurInput/atomSpecies/species/nocoParams/@M'],
         'u': ['/fleurInput/atomGroups/atomGroup/ldaU/@U', '/fleurInput/atomSpecies/species/ldaU/@U'],
-        'spinup': [
-            '/fleurInput/atomSpecies/species/electronConfig/stateOccupation/@spinUp',
-            '/fleurInput/cell/filmLattice/vacuumEnergyParameters/@spinUp'
-        ],
-        'theta': ['/fleurInput/atomGroups/atomGroup/ldaU/@theta', '/fleurInput/atomSpecies/species/ldaU/@theta'],
-        'select': ['/fleurInput/atomSpecies/species/prodBasis/@select'],
-        'nz': ['/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointMesh/@nz'],
+        'alpha':
+        ['/fleurInput/atomGroups/atomGroup/nocoParams/@alpha', '/fleurInput/atomSpecies/species/nocoParams/@alpha'],
+        'atomicnumber': ['/fleurInput/atomSpecies/species/@atomicNumber'],
         'b_cons_x': [
             '/fleurInput/atomGroups/atomGroup/nocoParams/@b_cons_x',
             '/fleurInput/atomSpecies/species/nocoParams/@b_cons_x'
         ],
-        'calculate':
-        ['/fleurInput/atomGroups/atomGroup/force/@calculate', '/fleurInput/atomSpecies/species/force/@calculate'],
-        'l_relax':
-        ['/fleurInput/atomGroups/atomGroup/nocoParams/@l_relax', '/fleurInput/atomSpecies/species/nocoParams/@l_relax'],
+        'b_cons_y': [
+            '/fleurInput/atomGroups/atomGroup/nocoParams/@b_cons_y',
+            '/fleurInput/atomSpecies/species/nocoParams/@b_cons_y'
+        ],
+        'b_field_mt': ['/fleurInput/atomSpecies/species/special/@b_field_mt'],
         'beta':
         ['/fleurInput/atomGroups/atomGroup/nocoParams/@beta', '/fleurInput/atomSpecies/species/nocoParams/@beta'],
-        'p':
-        ['/fleurInput/atomGroups/atomGroup/energyParameters/@p', '/fleurInput/atomSpecies/species/energyParameters/@p'],
+        'calculate':
+        ['/fleurInput/atomGroups/atomGroup/force/@calculate', '/fleurInput/atomSpecies/species/force/@calculate'],
+        'corestates': ['/fleurInput/atomSpecies/species/@coreStates'],
+        'count': [
+            '/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointCount/@count',
+            '/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointList/@count'
+        ],
+        'd':
+        ['/fleurInput/atomGroups/atomGroup/energyParameters/@d', '/fleurInput/atomSpecies/species/energyParameters/@d'],
+        'denx': ['/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointDensity/@denX'],
+        'deny': ['/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointDensity/@denY'],
+        'denz': ['/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointDensity/@denZ'],
+        'ederiv': ['/fleurInput/atomGroups/atomGroup/lo/@eDeriv', '/fleurInput/atomSpecies/species/lo/@eDeriv'],
+        'element': ['/fleurInput/atomSpecies/species/@element'],
+        'energy': ['/fleurInput/relaxation/relaxation-history/step/@energy'],
+        'f':
+        ['/fleurInput/atomGroups/atomGroup/energyParameters/@f', '/fleurInput/atomSpecies/species/energyParameters/@f'],
+        'filename': ['/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointListFile/@filename'],
+        'flipspin': ['/fleurInput/atomSpecies/species/@flipSpin'],
         'gamma': [
             '/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointCount/@gamma',
             '/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointDensity/@gamma',
             '/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointMesh/@gamma'
         ],
-        'magfield': ['/fleurInput/atomGroups/atomGroup/@magField', '/fleurInput/atomSpecies/species/@magField'],
-        'relaxxyz':
-        ['/fleurInput/atomGroups/atomGroup/force/@relaxXYZ', '/fleurInput/atomSpecies/species/force/@relaxXYZ'],
-        's':
-        ['/fleurInput/atomGroups/atomGroup/energyParameters/@s', '/fleurInput/atomSpecies/species/energyParameters/@s'],
-        'type': ['/fleurInput/atomGroups/atomGroup/lo/@type', '/fleurInput/atomSpecies/species/lo/@type'],
-        'name': [
-            '/fleurInput/atomSpecies/species/@name',
-            '/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointCount/specialPoint/@name',
-            '/fleurInput/calculationSetup/bzIntegration/kPointCount/specialPoint/@name',
-            '/fleurInput/constants/constant/@name'
-        ],
-        'ny': ['/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointMesh/@ny'],
-        'element': ['/fleurInput/atomSpecies/species/@element'],
-        'denx': ['/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointDensity/@denX'],
-        'alpha':
-        ['/fleurInput/atomGroups/atomGroup/nocoParams/@alpha', '/fleurInput/atomSpecies/species/nocoParams/@alpha'],
-        'm': ['/fleurInput/atomGroups/atomGroup/nocoParams/@M', '/fleurInput/atomSpecies/species/nocoParams/@M'],
-        'j': ['/fleurInput/atomGroups/atomGroup/ldaU/@J', '/fleurInput/atomSpecies/species/ldaU/@J'],
-        'count': [
-            '/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointCount/@count',
-            '/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointList/@count'
-        ],
-        'atomicnumber': ['/fleurInput/atomSpecies/species/@atomicNumber'],
-        'filename': ['/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointListFile/@filename'],
-        'magmom': ['/fleurInput/atomSpecies/species/@magMom'],
-        'weight': [
-            '/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointList/kPoint/@weight',
-            '/fleurInput/calculationSetup/bzIntegration/kPointList/kPoint/@weight'
-        ],
-        'vacuum': ['/fleurInput/cell/filmLattice/vacuumEnergyParameters/@vacuum'],
         'gridpoints': [
             '/fleurInput/atomGroups/atomGroup/mtSphere/@gridPoints',
             '/fleurInput/atomSpecies/species/mtSphere/@gridPoints'
@@ -517,50 +457,111 @@ schema_dict = {
             '/fleurInput/atomGroups/atomGroup/ldaU/@l', '/fleurInput/atomGroups/atomGroup/lo/@l',
             '/fleurInput/atomSpecies/species/ldaU/@l', '/fleurInput/atomSpecies/species/lo/@l'
         ],
-        'deny': ['/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointDensity/@denY'],
-        'lnonsphr': [
-            '/fleurInput/atomGroups/atomGroup/atomicCutoffs/@lnonsphr',
-            '/fleurInput/atomSpecies/species/atomicCutoffs/@lnonsphr'
-        ],
-        'ederiv': ['/fleurInput/atomGroups/atomGroup/lo/@eDeriv', '/fleurInput/atomSpecies/species/lo/@eDeriv'],
+        'l_amf': ['/fleurInput/atomGroups/atomGroup/ldaU/@l_amf', '/fleurInput/atomSpecies/species/ldaU/@l_amf'],
+        'l_magn':
+        ['/fleurInput/atomGroups/atomGroup/nocoParams/@l_magn', '/fleurInput/atomSpecies/species/nocoParams/@l_magn'],
+        'l_relax':
+        ['/fleurInput/atomGroups/atomGroup/nocoParams/@l_relax', '/fleurInput/atomSpecies/species/nocoParams/@l_relax'],
         'label': [
             '/fleurInput/atomGroups/atomGroup/absPos/@label', '/fleurInput/atomGroups/atomGroup/filmPos/@label',
             '/fleurInput/atomGroups/atomGroup/relPos/@label'
         ],
-        'state': ['/fleurInput/atomSpecies/species/electronConfig/stateOccupation/@state'],
-        'phi': ['/fleurInput/atomGroups/atomGroup/ldaU/@phi', '/fleurInput/atomSpecies/species/ldaU/@phi'],
-        'd':
-        ['/fleurInput/atomGroups/atomGroup/energyParameters/@d', '/fleurInput/atomSpecies/species/energyParameters/@d'],
         'lcutm': ['/fleurInput/atomSpecies/species/prodBasis/@lcutm'],
         'lcutwf': ['/fleurInput/atomSpecies/species/prodBasis/@lcutwf'],
-        'denz': ['/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointDensity/@denZ'],
-        'purpose': ['/fleurInput/calculationSetup/bzIntegration/altKPointSet/@purpose'],
+        'lda': ['/fleurInput/atomSpecies/species/special/@lda'],
         'lmax':
         ['/fleurInput/atomGroups/atomGroup/atomicCutoffs/@lmax', '/fleurInput/atomSpecies/species/atomicCutoffs/@lmax'],
-        'n': ['/fleurInput/atomGroups/atomGroup/lo/@n', '/fleurInput/atomSpecies/species/lo/@n'],
-        'shape': ['/fleurInput/calculationSetup/fields/shape'],
-        'row-1': ['/fleurInput/cell/symmetryOperations/symOp/row-1'],
-        'row-2': ['/fleurInput/cell/symmetryOperations/symOp/row-2'],
-        'row-3': ['/fleurInput/cell/symmetryOperations/symOp/row-3'],
-        'relpos': ['/fleurInput/atomGroups/atomGroup/relPos'],
-        'abspos': ['/fleurInput/atomGroups/atomGroup/absPos'],
-        'filmpos': ['/fleurInput/atomGroups/atomGroup/filmPos'],
-        'orbcomprot': ['/fleurInput/atomGroups/atomGroup/orbcomprot'],
-        'specialpoint': [
-            '/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointCount/specialPoint',
-            '/fleurInput/calculationSetup/bzIntegration/kPointCount/specialPoint'
+        'lmaxapw': [
+            '/fleurInput/atomGroups/atomGroup/atomicCutoffs/@lmaxAPW',
+            '/fleurInput/atomSpecies/species/atomicCutoffs/@lmaxAPW'
         ],
+        'lnonsphr': [
+            '/fleurInput/atomGroups/atomGroup/atomicCutoffs/@lnonsphr',
+            '/fleurInput/atomSpecies/species/atomicCutoffs/@lnonsphr'
+        ],
+        'logincrement': [
+            '/fleurInput/atomGroups/atomGroup/mtSphere/@logIncrement',
+            '/fleurInput/atomSpecies/species/mtSphere/@logIncrement'
+        ],
+        'magfield': ['/fleurInput/atomGroups/atomGroup/@magField', '/fleurInput/atomSpecies/species/@magField'],
+        'magmom': ['/fleurInput/atomSpecies/species/@magMom'],
+        'n': ['/fleurInput/atomGroups/atomGroup/lo/@n', '/fleurInput/atomSpecies/species/lo/@n'],
+        'name': [
+            '/fleurInput/atomSpecies/species/@name',
+            '/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointCount/specialPoint/@name',
+            '/fleurInput/calculationSetup/bzIntegration/kPointCount/specialPoint/@name',
+            '/fleurInput/constants/constant/@name'
+        ],
+        'nx': ['/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointMesh/@nx'],
+        'ny': ['/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointMesh/@ny'],
+        'nz': ['/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointMesh/@nz'],
+        'orbcomp': [
+            '/fleurInput/atomGroups/atomGroup/absPos/@orbcomp', '/fleurInput/atomGroups/atomGroup/filmPos/@orbcomp',
+            '/fleurInput/atomGroups/atomGroup/relPos/@orbcomp'
+        ],
+        'p':
+        ['/fleurInput/atomGroups/atomGroup/energyParameters/@p', '/fleurInput/atomSpecies/species/energyParameters/@p'],
+        'phi': ['/fleurInput/atomGroups/atomGroup/ldaU/@phi', '/fleurInput/atomSpecies/species/ldaU/@phi'],
+        'posscale': ['/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointList/@posScale'],
+        'purpose': ['/fleurInput/calculationSetup/bzIntegration/altKPointSet/@purpose'],
+        'radius':
+        ['/fleurInput/atomGroups/atomGroup/mtSphere/@radius', '/fleurInput/atomSpecies/species/mtSphere/@radius'],
+        'relaxxyz':
+        ['/fleurInput/atomGroups/atomGroup/force/@relaxXYZ', '/fleurInput/atomSpecies/species/force/@relaxXYZ'],
+        's':
+        ['/fleurInput/atomGroups/atomGroup/energyParameters/@s', '/fleurInput/atomSpecies/species/energyParameters/@s'],
+        'select': ['/fleurInput/atomSpecies/species/prodBasis/@select'],
+        'socscale': ['/fleurInput/atomSpecies/species/special/@socscale'],
+        'species': ['/fleurInput/atomGroups/atomGroup/@species'],
+        'spindown': [
+            '/fleurInput/atomSpecies/species/electronConfig/stateOccupation/@spinDown',
+            '/fleurInput/cell/filmLattice/vacuumEnergyParameters/@spinDown'
+        ],
+        'spinup': [
+            '/fleurInput/atomSpecies/species/electronConfig/stateOccupation/@spinUp',
+            '/fleurInput/cell/filmLattice/vacuumEnergyParameters/@spinUp'
+        ],
+        'state': ['/fleurInput/atomSpecies/species/electronConfig/stateOccupation/@state'],
+        'theta': ['/fleurInput/atomGroups/atomGroup/ldaU/@theta', '/fleurInput/atomSpecies/species/ldaU/@theta'],
+        'type': ['/fleurInput/atomGroups/atomGroup/lo/@type', '/fleurInput/atomSpecies/species/lo/@type'],
+        'vacuum': ['/fleurInput/cell/filmLattice/vacuumEnergyParameters/@vacuum'],
+        'value': ['/fleurInput/constants/constant/@value'],
+        'vcaaddcharge': [
+            '/fleurInput/atomGroups/atomGroup/@vcaAddCharge', '/fleurInput/atomSpecies/species/@vcaAddCharge'
+        ],
+        'vca_charge': ['/fleurInput/atomSpecies/species/special/@vca_charge'],
+        'wannier': [
+            '/fleurInput/atomGroups/atomGroup/absPos/@wannier', '/fleurInput/atomGroups/atomGroup/filmPos/@wannier',
+            '/fleurInput/atomGroups/atomGroup/relPos/@wannier'
+        ],
+        'weight': [
+            '/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointList/kPoint/@weight',
+            '/fleurInput/calculationSetup/bzIntegration/kPointList/kPoint/@weight'
+        ],
+        'weightscale': ['/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointList/@weightScale'],
+        'abspos': ['/fleurInput/atomGroups/atomGroup/absPos'],
+        'coreconfig': ['/fleurInput/atomSpecies/species/electronConfig/coreConfig'],
+        'displace': ['/fleurInput/relaxation/displacements/displace'],
+        'filmpos': ['/fleurInput/atomGroups/atomGroup/filmPos'],
         'kpoint': [
             '/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointList/kPoint',
             '/fleurInput/calculationSetup/bzIntegration/kPointList/kPoint'
         ],
-        'displace': ['/fleurInput/relaxation/displacements/displace'],
+        'orbcomprot': ['/fleurInput/atomGroups/atomGroup/orbcomprot'],
         'posforce': ['/fleurInput/relaxation/relaxation-history/step/posforce'],
         'q': [
             '/fleurInput/forceTheorem/DMI/qVectors/q', '/fleurInput/forceTheorem/Jij/qVectors/q',
             '/fleurInput/forceTheorem/spinSpiralDispersion/q'
         ],
-        'coreconfig': ['/fleurInput/atomSpecies/species/electronConfig/coreConfig'],
+        'relpos': ['/fleurInput/atomGroups/atomGroup/relPos'],
+        'row-1': ['/fleurInput/cell/symmetryOperations/symOp/row-1'],
+        'row-2': ['/fleurInput/cell/symmetryOperations/symOp/row-2'],
+        'row-3': ['/fleurInput/cell/symmetryOperations/symOp/row-3'],
+        'shape': ['/fleurInput/calculationSetup/fields/shape'],
+        'specialpoint': [
+            '/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointCount/specialPoint',
+            '/fleurInput/calculationSetup/bzIntegration/kPointCount/specialPoint'
+        ],
         'valenceconfig': ['/fleurInput/atomSpecies/species/electronConfig/valenceConfig']
     }),
     'root_tag':
@@ -1648,411 +1649,429 @@ schema_dict = {
     },
     'tag_paths':
     CaseInsensitiveDict({
-        'filmpos':
-        '/fleurInput/atomGroups/atomGroup/filmPos',
-        'abspos':
-        '/fleurInput/atomGroups/atomGroup/absPos',
-        'constants':
-        '/fleurInput/constants',
-        'force': ['/fleurInput/atomGroups/atomGroup/force', '/fleurInput/atomSpecies/species/force'],
-        'displace':
-        '/fleurInput/relaxation/displacements/displace',
+        'dmi':
+        '/fleurInput/forceTheorem/DMI',
+        'jij':
+        '/fleurInput/forceTheorem/Jij',
         'libxcid':
         '/fleurInput/xcFunctional/LibXCID',
-        'wannier':
-        '/fleurInput/output/wannier',
-        'plotting':
-        '/fleurInput/output/plotting',
-        'symop':
-        '/fleurInput/cell/symmetryOperations/symOp',
-        'orbcomprot':
-        '/fleurInput/atomGroups/atomGroup/orbcomprot',
+        'libxcname':
+        '/fleurInput/xcFunctional/LibXCName',
+        'mae':
+        '/fleurInput/forceTheorem/MAE',
+        'a1': ['/fleurInput/cell/bulkLattice/a1', '/fleurInput/cell/filmLattice/a1'],
+        'a2': ['/fleurInput/cell/bulkLattice/a2', '/fleurInput/cell/filmLattice/a2'],
+        'abspos':
+        '/fleurInput/atomGroups/atomGroup/absPos',
+        'altkpointset':
+        '/fleurInput/calculationSetup/bzIntegration/altKPointSet',
+        'atomgroup':
+        '/fleurInput/atomGroups/atomGroup',
+        'atomgroups':
+        '/fleurInput/atomGroups',
+        'atomspecies':
+        '/fleurInput/atomSpecies',
+        'atomiccutoffs':
+        ['/fleurInput/atomGroups/atomGroup/atomicCutoffs', '/fleurInput/atomSpecies/species/atomicCutoffs'],
+        'bandselection':
+        '/fleurInput/output/wannier/bandSelection',
+        'bravaismatrix': ['/fleurInput/cell/bulkLattice/bravaisMatrix', '/fleurInput/cell/filmLattice/bravaisMatrix'],
+        'bulklattice':
+        '/fleurInput/cell/bulkLattice',
+        'bzintegration':
+        '/fleurInput/calculationSetup/bzIntegration',
+        'c':
+        '/fleurInput/cell/bulkLattice/c',
+        'calculationsetup':
+        '/fleurInput/calculationSetup',
+        'cell':
+        '/fleurInput/cell',
         'chargedensityslicing':
         '/fleurInput/output/chargeDensitySlicing',
-        'densityofstates':
-        '/fleurInput/output/densityOfStates',
+        'checks':
+        '/fleurInput/output/checks',
+        'comment':
+        '/fleurInput/comment',
+        'constant':
+        '/fleurInput/constants/constant',
+        'constants':
+        '/fleurInput/constants',
         'coreconfig':
         '/fleurInput/atomSpecies/species/electronConfig/coreConfig',
-        'row-1': [
-            '/fleurInput/cell/bulkLattice/bravaisMatrix/row-1', '/fleurInput/cell/bulkLattice/row-1',
-            '/fleurInput/cell/filmLattice/bravaisMatrix/row-1', '/fleurInput/cell/filmLattice/row-1',
-            '/fleurInput/cell/symmetryOperations/symOp/row-1'
+        'coreelectrons':
+        '/fleurInput/calculationSetup/coreElectrons',
+        'corespectrum':
+        '/fleurInput/output/coreSpectrum',
+        'cutoffs':
+        '/fleurInput/calculationSetup/cutoffs',
+        'densityofstates':
+        '/fleurInput/output/densityOfStates',
+        'displace':
+        '/fleurInput/relaxation/displacements/displace',
+        'displacements':
+        '/fleurInput/relaxation/displacements',
+        'edgeindices':
+        '/fleurInput/output/coreSpectrum/edgeIndices',
+        'electronconfig':
+        '/fleurInput/atomSpecies/species/electronConfig',
+        'energyparameterlimits':
+        '/fleurInput/calculationSetup/energyParameterLimits',
+        'energyparameters':
+        ['/fleurInput/atomGroups/atomGroup/energyParameters', '/fleurInput/atomSpecies/species/energyParameters'],
+        'expertmodes':
+        '/fleurInput/calculationSetup/expertModes',
+        'fields':
+        '/fleurInput/calculationSetup/fields',
+        'filmlattice':
+        '/fleurInput/cell/filmLattice',
+        'filmpos':
+        '/fleurInput/atomGroups/atomGroup/filmPos',
+        'fleurinput':
+        '/fleurInput',
+        'force': ['/fleurInput/atomGroups/atomGroup/force', '/fleurInput/atomSpecies/species/force'],
+        'forcetheorem':
+        '/fleurInput/forceTheorem',
+        'geometryoptimization':
+        '/fleurInput/calculationSetup/geometryOptimization',
+        'ggaprinting':
+        '/fleurInput/xcFunctional/ggaPrinting',
+        'joblist':
+        '/fleurInput/output/wannier/jobList',
+        'kpoint': [
+            '/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointList/kPoint',
+            '/fleurInput/calculationSetup/bzIntegration/kPointList/kPoint'
+        ],
+        'kpointcount': [
+            '/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointCount',
+            '/fleurInput/calculationSetup/bzIntegration/kPointCount'
+        ],
+        'kpointdensity': [
+            '/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointDensity',
+            '/fleurInput/calculationSetup/bzIntegration/kPointDensity'
+        ],
+        'kpointlist': [
+            '/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointList',
+            '/fleurInput/calculationSetup/bzIntegration/kPointList'
+        ],
+        'kpointlistfile': [
+            '/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointListFile',
+            '/fleurInput/calculationSetup/bzIntegration/kPointListFile'
+        ],
+        'kpointmesh': [
+            '/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointMesh',
+            '/fleurInput/calculationSetup/bzIntegration/kPointMesh'
         ],
         'ldau': [
             '/fleurInput/atomGroups/atomGroup/ldaU', '/fleurInput/atomSpecies/species/ldaU',
             '/fleurInput/calculationSetup/ldaU'
         ],
-        'altkpointset':
-        '/fleurInput/calculationSetup/bzIntegration/altKPointSet',
-        'filmlattice':
-        '/fleurInput/cell/filmLattice',
-        'specialpoint': [
-            '/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointCount/specialPoint',
-            '/fleurInput/calculationSetup/bzIntegration/kPointCount/specialPoint'
+        'lo': ['/fleurInput/atomGroups/atomGroup/lo', '/fleurInput/atomSpecies/species/lo'],
+        'magneticcirculardichroism':
+        '/fleurInput/output/magneticCircularDichroism',
+        'magnetism':
+        '/fleurInput/calculationSetup/magnetism',
+        'mtsphere': ['/fleurInput/atomGroups/atomGroup/mtSphere', '/fleurInput/atomSpecies/species/mtSphere'],
+        'nocoparams': [
+            '/fleurInput/atomGroups/atomGroup/nocoParams', '/fleurInput/atomSpecies/species/nocoParams',
+            '/fleurInput/calculationSetup/nocoParams'
         ],
-        'unfoldingband':
-        '/fleurInput/output/unfoldingBand',
-        'species':
-        '/fleurInput/atomSpecies/species',
-        'qvectors': ['/fleurInput/forceTheorem/DMI/qVectors', '/fleurInput/forceTheorem/Jij/qVectors'],
-        'kpointlistfile': [
-            '/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointListFile',
-            '/fleurInput/calculationSetup/bzIntegration/kPointListFile'
-        ],
+        'onedparams':
+        '/fleurInput/calculationSetup/oneDParams',
+        'orbcomprot':
+        '/fleurInput/atomGroups/atomGroup/orbcomprot',
+        'output':
+        '/fleurInput/output',
+        'plotting':
+        '/fleurInput/output/plotting',
+        'posforce':
+        '/fleurInput/relaxation/relaxation-history/step/posforce',
+        'prodbasis': ['/fleurInput/atomSpecies/species/prodBasis', '/fleurInput/calculationSetup/prodBasis'],
         'q': [
             '/fleurInput/forceTheorem/DMI/qVectors/q', '/fleurInput/forceTheorem/Jij/qVectors/q',
             '/fleurInput/forceTheorem/spinSpiralDispersion/q'
         ],
-        'electronconfig':
-        '/fleurInput/atomSpecies/species/electronConfig',
-        'symmetry':
-        '/fleurInput/cell/symmetry',
-        'row-3': [
-            '/fleurInput/cell/bulkLattice/bravaisMatrix/row-3', '/fleurInput/cell/filmLattice/bravaisMatrix/row-3',
-            '/fleurInput/cell/symmetryOperations/symOp/row-3'
-        ],
-        'symmetryoperations':
-        '/fleurInput/cell/symmetryOperations',
-        'forcetheorem':
-        '/fleurInput/forceTheorem',
-        'xcfunctional':
-        '/fleurInput/xcFunctional',
-        'cell':
-        '/fleurInput/cell',
-        'constant':
-        '/fleurInput/constants/constant',
-        'checks':
-        '/fleurInput/output/checks',
-        'special':
-        '/fleurInput/atomSpecies/species/special',
-        'mtsphere': ['/fleurInput/atomGroups/atomGroup/mtSphere', '/fleurInput/atomSpecies/species/mtSphere'],
-        'kpointdensity': [
-            '/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointDensity',
-            '/fleurInput/calculationSetup/bzIntegration/kPointDensity'
-        ],
-        'bravaismatrix': ['/fleurInput/cell/bulkLattice/bravaisMatrix', '/fleurInput/cell/filmLattice/bravaisMatrix'],
-        'output':
-        '/fleurInput/output',
-        'ggaprinting':
-        '/fleurInput/xcFunctional/ggaPrinting',
-        'spinspiraldispersion':
-        '/fleurInput/forceTheorem/spinSpiralDispersion',
-        'vacuumenergyparameters':
-        '/fleurInput/cell/filmLattice/vacuumEnergyParameters',
-        'scfloop':
-        '/fleurInput/calculationSetup/scfLoop',
-        'geometryoptimization':
-        '/fleurInput/calculationSetup/geometryOptimization',
-        'bzintegration':
-        '/fleurInput/calculationSetup/bzIntegration',
-        'calculationsetup':
-        '/fleurInput/calculationSetup',
-        'a1': ['/fleurInput/cell/bulkLattice/a1', '/fleurInput/cell/filmLattice/a1'],
-        'corespectrum':
-        '/fleurInput/output/coreSpectrum',
-        'onedparams':
-        '/fleurInput/calculationSetup/oneDParams',
-        'jij':
-        '/fleurInput/forceTheorem/Jij',
-        'displacements':
-        '/fleurInput/relaxation/displacements',
-        'step':
-        '/fleurInput/relaxation/relaxation-history/step',
-        'energyparameters':
-        ['/fleurInput/atomGroups/atomGroup/energyParameters', '/fleurInput/atomSpecies/species/energyParameters'],
-        'expertmodes':
-        '/fleurInput/calculationSetup/expertModes',
-        'a2': ['/fleurInput/cell/bulkLattice/a2', '/fleurInput/cell/filmLattice/a2'],
-        'specialoutput':
-        '/fleurInput/output/specialOutput',
-        'kpointmesh': [
-            '/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointMesh',
-            '/fleurInput/calculationSetup/bzIntegration/kPointMesh'
-        ],
-        'edgeindices':
-        '/fleurInput/output/coreSpectrum/edgeIndices',
-        'stateoccupation':
-        '/fleurInput/atomSpecies/species/electronConfig/stateOccupation',
-        'fleurinput':
-        '/fleurInput',
-        'spinspiralqpointmesh':
-        '/fleurInput/calculationSetup/spinSpiralQPointMesh',
-        'xcparams':
-        '/fleurInput/xcFunctional/xcParams',
-        'valenceconfig':
-        '/fleurInput/atomSpecies/species/electronConfig/valenceConfig',
-        'kpointlist': [
-            '/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointList',
-            '/fleurInput/calculationSetup/bzIntegration/kPointList'
-        ],
-        'lo': ['/fleurInput/atomGroups/atomGroup/lo', '/fleurInput/atomSpecies/species/lo'],
-        'joblist':
-        '/fleurInput/output/wannier/jobList',
-        'mae':
-        '/fleurInput/forceTheorem/MAE',
-        'comment':
-        '/fleurInput/comment',
-        'relaxation-history':
-        '/fleurInput/relaxation/relaxation-history',
-        'qss':
-        '/fleurInput/calculationSetup/nocoParams/qss',
-        'c':
-        '/fleurInput/cell/bulkLattice/c',
-        'fields':
-        '/fleurInput/calculationSetup/fields',
-        'libxcname':
-        '/fleurInput/xcFunctional/LibXCName',
+        'qvectors': ['/fleurInput/forceTheorem/DMI/qVectors', '/fleurInput/forceTheorem/Jij/qVectors'],
         'qsc':
         '/fleurInput/calculationSetup/nocoParams/qsc',
+        'qss':
+        '/fleurInput/calculationSetup/nocoParams/qss',
         'rdmft':
         '/fleurInput/calculationSetup/rdmft',
-        'coreelectrons':
-        '/fleurInput/calculationSetup/coreElectrons',
-        'atomspecies':
-        '/fleurInput/atomSpecies',
-        'soc':
-        '/fleurInput/calculationSetup/soc',
-        'atomgroups':
-        '/fleurInput/atomGroups',
-        'kpointcount': [
-            '/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointCount',
-            '/fleurInput/calculationSetup/bzIntegration/kPointCount'
+        'relpos':
+        '/fleurInput/atomGroups/atomGroup/relPos',
+        'relaxation':
+        '/fleurInput/relaxation',
+        'relaxation-history':
+        '/fleurInput/relaxation/relaxation-history',
+        'row-1': [
+            '/fleurInput/cell/bulkLattice/bravaisMatrix/row-1', '/fleurInput/cell/bulkLattice/row-1',
+            '/fleurInput/cell/filmLattice/bravaisMatrix/row-1', '/fleurInput/cell/filmLattice/row-1',
+            '/fleurInput/cell/symmetryOperations/symOp/row-1'
         ],
-        'posforce':
-        '/fleurInput/relaxation/relaxation-history/step/posforce',
         'row-2': [
             '/fleurInput/cell/bulkLattice/bravaisMatrix/row-2', '/fleurInput/cell/bulkLattice/row-2',
             '/fleurInput/cell/filmLattice/bravaisMatrix/row-2', '/fleurInput/cell/filmLattice/row-2',
             '/fleurInput/cell/symmetryOperations/symOp/row-2'
         ],
-        'energyparameterlimits':
-        '/fleurInput/calculationSetup/energyParameterLimits',
-        'atomgroup':
-        '/fleurInput/atomGroups/atomGroup',
-        'vacuumdos':
-        '/fleurInput/output/vacuumDOS',
-        'nocoparams': [
-            '/fleurInput/atomGroups/atomGroup/nocoParams', '/fleurInput/atomSpecies/species/nocoParams',
-            '/fleurInput/calculationSetup/nocoParams'
+        'row-3': [
+            '/fleurInput/cell/bulkLattice/bravaisMatrix/row-3', '/fleurInput/cell/filmLattice/bravaisMatrix/row-3',
+            '/fleurInput/cell/symmetryOperations/symOp/row-3'
         ],
-        'bandselection':
-        '/fleurInput/output/wannier/bandSelection',
-        'kpoint': [
-            '/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointList/kPoint',
-            '/fleurInput/calculationSetup/bzIntegration/kPointList/kPoint'
-        ],
-        'atomiccutoffs':
-        ['/fleurInput/atomGroups/atomGroup/atomicCutoffs', '/fleurInput/atomSpecies/species/atomicCutoffs'],
-        'dmi':
-        '/fleurInput/forceTheorem/DMI',
-        'relaxation':
-        '/fleurInput/relaxation',
-        'prodbasis': ['/fleurInput/atomSpecies/species/prodBasis', '/fleurInput/calculationSetup/prodBasis'],
-        'cutoffs':
-        '/fleurInput/calculationSetup/cutoffs',
-        'relpos':
-        '/fleurInput/atomGroups/atomGroup/relPos',
+        'scfloop':
+        '/fleurInput/calculationSetup/scfLoop',
         'shape':
         '/fleurInput/calculationSetup/fields/shape',
-        'magnetism':
-        '/fleurInput/calculationSetup/magnetism',
-        'magneticcirculardichroism':
-        '/fleurInput/output/magneticCircularDichroism',
+        'soc':
+        '/fleurInput/calculationSetup/soc',
+        'special':
+        '/fleurInput/atomSpecies/species/special',
+        'specialoutput':
+        '/fleurInput/output/specialOutput',
+        'specialpoint': [
+            '/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointCount/specialPoint',
+            '/fleurInput/calculationSetup/bzIntegration/kPointCount/specialPoint'
+        ],
+        'species':
+        '/fleurInput/atomSpecies/species',
+        'spinspiraldispersion':
+        '/fleurInput/forceTheorem/spinSpiralDispersion',
+        'spinspiralqpointmesh':
+        '/fleurInput/calculationSetup/spinSpiralQPointMesh',
+        'stateoccupation':
+        '/fleurInput/atomSpecies/species/electronConfig/stateOccupation',
+        'step':
+        '/fleurInput/relaxation/relaxation-history/step',
+        'symop':
+        '/fleurInput/cell/symmetryOperations/symOp',
+        'symmetry':
+        '/fleurInput/cell/symmetry',
         'symmetryfile':
         '/fleurInput/cell/symmetryFile',
-        'bulklattice':
-        '/fleurInput/cell/bulkLattice'
+        'symmetryoperations':
+        '/fleurInput/cell/symmetryOperations',
+        'unfoldingband':
+        '/fleurInput/output/unfoldingBand',
+        'vacuumdos':
+        '/fleurInput/output/vacuumDOS',
+        'vacuumenergyparameters':
+        '/fleurInput/cell/filmLattice/vacuumEnergyParameters',
+        'valenceconfig':
+        '/fleurInput/atomSpecies/species/electronConfig/valenceConfig',
+        'wannier':
+        '/fleurInput/output/wannier',
+        'xcfunctional':
+        '/fleurInput/xcFunctional',
+        'xcparams':
+        '/fleurInput/xcFunctional/xcParams'
     }),
     'unique_attribs':
     CaseInsensitiveDict({
+        'gmax': '/fleurInput/calculationSetup/cutoffs/@Gmax',
+        'gmaxxc': '/fleurInput/calculationSetup/cutoffs/@GmaxXC',
+        'i_initial': '/fleurInput/output/coreSpectrum/@I_initial',
+        'kmax': '/fleurInput/calculationSetup/cutoffs/@Kmax',
+        'mm': '/fleurInput/calculationSetup/oneDParams/@MM',
+        'alpha': '/fleurInput/calculationSetup/scfLoop/@alpha',
+        'alpha_ex': '/fleurInput/output/coreSpectrum/@alpha_Ex',
+        'atomlist': '/fleurInput/output/wannier/@atomList',
+        'atomtype': '/fleurInput/output/coreSpectrum/@atomType',
+        'autocomp': '/fleurInput/calculationSetup/fields/@autocomp',
+        'b_field': '/fleurInput/calculationSetup/fields/@b_field',
+        'band': '/fleurInput/output/@band',
+        'bands': '/fleurInput/calculationSetup/prodBasis/@bands',
+        'beta_ex': '/fleurInput/output/coreSpectrum/@beta_Ex',
+        'bmt': '/fleurInput/output/specialOutput/@bmt',
+        'bscomf': '/fleurInput/output/wannier/@bsComf',
+        'cdinf': '/fleurInput/output/checks/@cdinf',
+        'chi': '/fleurInput/calculationSetup/oneDParams/@chi',
+        'chng': '/fleurInput/xcFunctional/xcParams/@chng',
+        'corespec': '/fleurInput/output/@coreSpec',
+        'coretail_lmax': '/fleurInput/calculationSetup/coreElectrons/@coretail_lmax',
+        'ctail': '/fleurInput/calculationSetup/coreElectrons/@ctail',
+        'd1': '/fleurInput/calculationSetup/oneDParams/@d1',
+        'dtilda': '/fleurInput/cell/filmLattice/@dTilda',
+        'dvac': '/fleurInput/cell/filmLattice/@dVac',
+        'denx': '/fleurInput/calculationSetup/bzIntegration/kPointDensity/@denX',
+        'deny': '/fleurInput/calculationSetup/bzIntegration/kPointDensity/@denY',
+        'denz': '/fleurInput/calculationSetup/bzIntegration/kPointDensity/@denZ',
+        'dirichlet': '/fleurInput/calculationSetup/fields/@dirichlet',
+        'disp': '/fleurInput/output/checks/@disp',
+        'dos': '/fleurInput/output/@dos',
+        'ekin': '/fleurInput/output/coreSpectrum/@eKin',
+        'emax': '/fleurInput/output/coreSpectrum/@eMax',
+        'emin': '/fleurInput/output/coreSpectrum/@eMin',
+        'ev': '/fleurInput/calculationSetup/fields/@eV',
+        'edgetype': '/fleurInput/output/coreSpectrum/@edgeType',
         'eig66': '/fleurInput/calculationSetup/expertModes/@eig66',
         'ellow': '/fleurInput/calculationSetup/energyParameterLimits/@ellow',
-        'iggachk': '/fleurInput/xcFunctional/ggaPrinting/@iggachk',
-        'wannier': '/fleurInput/output/@wannier',
-        'plplot': '/fleurInput/output/plotting/@plplot',
-        'socgwf': '/fleurInput/output/wannier/@socgwf',
-        'dirichlet': '/fleurInput/calculationSetup/fields/@dirichlet',
-        'locy2': '/fleurInput/output/vacuumDOS/@locy2',
-        'mixparam': '/fleurInput/calculationSetup/ldaU/@mixParam',
-        'isec1': '/fleurInput/calculationSetup/expertModes/@isec1',
-        'plot_rho': '/fleurInput/calculationSetup/fields/@plot_rho',
-        'nx': '/fleurInput/calculationSetup/bzIntegration/kPointMesh/@nx',
-        'idsprsv': '/fleurInput/xcFunctional/ggaPrinting/@idsprsv',
-        'corespec': '/fleurInput/output/@coreSpec',
-        'igrd': '/fleurInput/xcFunctional/xcParams/@igrd',
-        'statesbelow': '/fleurInput/calculationSetup/rdmft/@statesBelow',
-        'weightscale': '/fleurInput/calculationSetup/bzIntegration/kPointList/@weightScale',
-        'cdinf': '/fleurInput/output/checks/@cdinf',
-        'star': '/fleurInput/output/vacuumDOS/@star',
-        'bscomf': '/fleurInput/output/wannier/@bsComf',
-        'maxspinup': '/fleurInput/output/wannier/bandSelection/@maxSpinUp',
-        'invs1': '/fleurInput/calculationSetup/oneDParams/@invs1',
-        'plot_charge': '/fleurInput/calculationSetup/fields/@plot_charge',
-        'pot8': '/fleurInput/calculationSetup/expertModes/@pot8',
-        'minspindown': '/fleurInput/output/wannier/bandSelection/@minSpinDown',
-        'maxspindown': '/fleurInput/output/wannier/bandSelection/@maxSpinDown',
-        'gcutm': '/fleurInput/calculationSetup/prodBasis/@gcutm',
-        'd1': '/fleurInput/calculationSetup/oneDParams/@d1',
-        'numpoints': '/fleurInput/output/coreSpectrum/@numPoints',
-        'maxtimetostartiter': '/fleurInput/calculationSetup/scfLoop/@maxTimeToStartIter',
-        'emax': '/fleurInput/output/coreSpectrum/@eMax',
-        'occeps': '/fleurInput/calculationSetup/rdmft/@occEps',
-        'qz': '/fleurInput/calculationSetup/spinSpiralQPointMesh/@qz',
-        'epsdisp': '/fleurInput/calculationSetup/geometryOptimization/@epsdisp',
-        'kcrel': '/fleurInput/calculationSetup/coreElectrons/@kcrel',
-        'forcealpha': '/fleurInput/calculationSetup/geometryOptimization/@forcealpha',
-        'statesabove': '/fleurInput/calculationSetup/rdmft/@statesAbove',
-        'spgrp': '/fleurInput/cell/symmetry/@spgrp',
-        'idsprs0': '/fleurInput/xcFunctional/ggaPrinting/@idsprs0',
-        'functional': '/fleurInput/calculationSetup/rdmft/@functional',
-        'ndvgrd': '/fleurInput/xcFunctional/xcParams/@ndvgrd',
-        'coretail_lmax': '/fleurInput/calculationSetup/coreElectrons/@coretail_lmax',
-        'vm': '/fleurInput/calculationSetup/oneDParams/@vM',
-        'unfoldband': '/fleurInput/output/unfoldingBand/@unfoldBand',
-        'slice': '/fleurInput/output/@slice',
-        'l_disp': '/fleurInput/calculationSetup/nocoParams/@l_disp',
-        'supercellz': '/fleurInput/output/unfoldingBand/@supercellZ',
-        'minspinup': '/fleurInput/output/wannier/bandSelection/@minSpinUp',
-        'jspins': '/fleurInput/calculationSetup/magnetism/@jspins',
-        'beta_ex': '/fleurInput/output/coreSpectrum/@beta_Ex',
-        'supercellx': '/fleurInput/output/unfoldingBand/@supercellX',
-        'qy': '/fleurInput/calculationSetup/spinSpiralQPointMesh/@qy',
-        'mode': '/fleurInput/calculationSetup/bzIntegration/@mode',
-        'rot': '/fleurInput/calculationSetup/oneDParams/@rot',
-        'posscale': '/fleurInput/calculationSetup/bzIntegration/kPointList/@posScale',
-        'sso_opt': '/fleurInput/calculationSetup/nocoParams/@sso_opt',
-        'vacdos': '/fleurInput/output/@vacdos',
-        'maxiterbroyd': '/fleurInput/calculationSetup/scfLoop/@maxIterBroyd',
-        'integ': '/fleurInput/output/vacuumDOS/@integ',
-        'gw': '/fleurInput/calculationSetup/expertModes/@gw',
-        'nqphi': '/fleurInput/output/coreSpectrum/@nqphi',
-        'qfix': '/fleurInput/calculationSetup/geometryOptimization/@qfix',
-        'idsprsl': '/fleurInput/xcFunctional/ggaPrinting/@idsprsl',
-        'l_soc': '/fleurInput/calculationSetup/soc/@l_soc',
-        'fermismearingenergy': '/fleurInput/calculationSetup/bzIntegration/@fermiSmearingEnergy',
-        'zrfs1': '/fleurInput/calculationSetup/oneDParams/@zrfs1',
-        'l_j': '/fleurInput/calculationSetup/magnetism/@l_J',
-        'swsp': '/fleurInput/calculationSetup/magnetism/@swsp',
-        'nz': '/fleurInput/calculationSetup/bzIntegration/kPointMesh/@nz',
-        'vchk': '/fleurInput/output/checks/@vchk',
-        'm_cyl': '/fleurInput/calculationSetup/oneDParams/@m_cyl',
-        'precondparam': '/fleurInput/calculationSetup/scfLoop/@precondParam',
-        'lexp': '/fleurInput/calculationSetup/prodBasis/@lexp',
-        'atomtype': '/fleurInput/output/coreSpectrum/@atomType',
-        'l_linmix': '/fleurInput/calculationSetup/ldaU/@l_linMix',
-        'gmax': '/fleurInput/calculationSetup/cutoffs/@Gmax',
-        'i_initial': '/fleurInput/output/coreSpectrum/@I_initial',
-        'locx1': '/fleurInput/output/vacuumDOS/@locx1',
-        'alpha_ex': '/fleurInput/output/coreSpectrum/@alpha_Ex',
-        'ev': '/fleurInput/calculationSetup/fields/@eV',
-        'form66': '/fleurInput/output/specialOutput/@form66',
-        'imix': '/fleurInput/calculationSetup/scfLoop/@imix',
-        'nstars': '/fleurInput/output/vacuumDOS/@nstars',
-        'mcd': '/fleurInput/output/@mcd',
-        'name': '/fleurInput/xcFunctional/@name',
-        'mix_b': '/fleurInput/calculationSetup/nocoParams/@mix_b',
-        'itmax': '/fleurInput/calculationSetup/scfLoop/@itmax',
-        'l_rdmft': '/fleurInput/calculationSetup/rdmft/@l_rdmft',
-        'dos': '/fleurInput/output/@dos',
-        'minenergy': '/fleurInput/output/densityOfStates/@minEnergy',
-        'locx2': '/fleurInput/output/vacuumDOS/@locx2',
-        'ny': '/fleurInput/calculationSetup/bzIntegration/kPointMesh/@ny',
-        'ekin': '/fleurInput/output/coreSpectrum/@eKin',
-        'dvac': '/fleurInput/cell/filmLattice/@dVac',
-        'soc66': '/fleurInput/calculationSetup/soc/@soc66',
-        'denx': '/fleurInput/calculationSetup/bzIntegration/kPointDensity/@denX',
-        'alpha': '/fleurInput/calculationSetup/scfLoop/@alpha',
-        'valenceelectrons': '/fleurInput/calculationSetup/bzIntegration/@valenceElectrons',
-        'qx': '/fleurInput/calculationSetup/spinSpiralQPointMesh/@qx',
-        'l_noco': '/fleurInput/calculationSetup/magnetism/@l_noco',
-        'disp': '/fleurInput/output/checks/@disp',
-        'sigma': '/fleurInput/output/densityOfStates/@sigma',
-        'locy1': '/fleurInput/output/vacuumDOS/@locy1',
-        'spav': '/fleurInput/calculationSetup/soc/@spav',
+        'elup': '/fleurInput/calculationSetup/energyParameterLimits/@elup',
         'energylo': '/fleurInput/output/magneticCircularDichroism/@energyLo',
-        'nqr': '/fleurInput/output/coreSpectrum/@nqr',
-        'chi': '/fleurInput/calculationSetup/oneDParams/@chi',
-        'edgetype': '/fleurInput/output/coreSpectrum/@edgeType',
-        'chng': '/fleurInput/xcFunctional/xcParams/@chng',
-        'lwb': '/fleurInput/xcFunctional/xcParams/@lwb',
-        'epsforce': '/fleurInput/calculationSetup/geometryOptimization/@epsforce',
-        'forcemix': '/fleurInput/calculationSetup/geometryOptimization/@forcemix',
-        'invs': '/fleurInput/cell/symmetry/@invs',
-        'idsprs': '/fleurInput/xcFunctional/xcParams/@idsprs',
-        'idsprsi': '/fleurInput/xcFunctional/ggaPrinting/@idsprsi',
-        'eonly': '/fleurInput/output/specialOutput/@eonly',
-        'verbose': '/fleurInput/output/coreSpectrum/@verbose',
-        'mm': '/fleurInput/calculationSetup/oneDParams/@MM',
-        'score': '/fleurInput/output/plotting/@score',
-        'tolerance': '/fleurInput/calculationSetup/prodBasis/@tolerance',
-        'sig_b_1': '/fleurInput/calculationSetup/fields/@sig_b_1',
-        'l_mperp': '/fleurInput/calculationSetup/nocoParams/@l_mperp',
-        'layers': '/fleurInput/output/vacuumDOS/@layers',
-        'l_f': '/fleurInput/calculationSetup/geometryOptimization/@l_f',
-        'iplot': '/fleurInput/output/plotting/@iplot',
         'energyup': '/fleurInput/output/magneticCircularDichroism/@energyUp',
-        'lpr': '/fleurInput/calculationSetup/expertModes/@lpr',
-        'ndir': '/fleurInput/output/densityOfStates/@ndir',
-        'emin': '/fleurInput/output/coreSpectrum/@eMin',
-        'numkpt': '/fleurInput/output/chargeDensitySlicing/@numkpt',
-        'l_mtnocopot': '/fleurInput/calculationSetup/nocoParams/@l_mtNocoPot',
-        'relativisticcorrections': '/fleurInput/xcFunctional/@relativisticCorrections',
+        'eonly': '/fleurInput/output/specialOutput/@eonly',
+        'epsdisp': '/fleurInput/calculationSetup/geometryOptimization/@epsdisp',
+        'epsforce': '/fleurInput/calculationSetup/geometryOptimization/@epsforce',
         'ewaldlambda': '/fleurInput/calculationSetup/prodBasis/@ewaldlambda',
-        'lflip': '/fleurInput/calculationSetup/magnetism/@lflip',
-        'mineigenval': '/fleurInput/output/chargeDensitySlicing/@minEigenval',
-        'nnne': '/fleurInput/output/chargeDensitySlicing/@nnne',
-        'zsigma': '/fleurInput/calculationSetup/fields/@zsigma',
-        'deny': '/fleurInput/calculationSetup/bzIntegration/kPointDensity/@denY',
+        'fermismearingenergy': '/fleurInput/calculationSetup/bzIntegration/@fermiSmearingEnergy',
         'fermismearingtemp': '/fleurInput/calculationSetup/bzIntegration/@fermiSmearingTemp',
         'fixed_moment': '/fleurInput/calculationSetup/magnetism/@fixed_moment',
-        'dtilda': '/fleurInput/cell/filmLattice/@dTilda',
-        'mindistance': '/fleurInput/calculationSetup/scfLoop/@minDistance',
-        'nstm': '/fleurInput/output/vacuumDOS/@nstm',
-        'maxeigenval': '/fleurInput/output/chargeDensitySlicing/@maxEigenval',
-        'force_converged': '/fleurInput/calculationSetup/geometryOptimization/@force_converged',
-        'maxenergy': '/fleurInput/output/densityOfStates/@maxEnergy',
-        'ms': '/fleurInput/output/wannier/@ms',
-        'supercelly': '/fleurInput/output/unfoldingBand/@supercellY',
-        'secvar': '/fleurInput/calculationSetup/expertModes/@secvar',
-        'frcor': '/fleurInput/calculationSetup/coreElectrons/@frcor',
-        'tworkf': '/fleurInput/output/vacuumDOS/@tworkf',
-        'elup': '/fleurInput/calculationSetup/energyParameterLimits/@elup',
-        'bands': '/fleurInput/calculationSetup/prodBasis/@bands',
-        'ctail': '/fleurInput/calculationSetup/coreElectrons/@ctail',
-        'atomlist': '/fleurInput/output/wannier/@atomList',
-        'sgwf': '/fleurInput/output/wannier/@sgwf',
         'fleurinputversion': '/fleurInput/@fleurInputVersion',
-        'b_field': '/fleurInput/calculationSetup/fields/@b_field',
-        'nsh': '/fleurInput/calculationSetup/nocoParams/@nsh',
-        'band': '/fleurInput/output/@band',
-        'denz': '/fleurInput/calculationSetup/bzIntegration/kPointDensity/@denZ',
-        'zrfs': '/fleurInput/cell/symmetry/@zrfs',
-        'gmaxxc': '/fleurInput/calculationSetup/cutoffs/@GmaxXC',
+        'force_converged': '/fleurInput/calculationSetup/geometryOptimization/@force_converged',
+        'forcealpha': '/fleurInput/calculationSetup/geometryOptimization/@forcealpha',
+        'forcemix': '/fleurInput/calculationSetup/geometryOptimization/@forcemix',
+        'form66': '/fleurInput/output/specialOutput/@form66',
+        'frcor': '/fleurInput/calculationSetup/coreElectrons/@frcor',
+        'functional': '/fleurInput/calculationSetup/rdmft/@functional',
+        'gcutm': '/fleurInput/calculationSetup/prodBasis/@gcutm',
+        'gw': '/fleurInput/calculationSetup/expertModes/@gw',
+        'idsprs': '/fleurInput/xcFunctional/xcParams/@idsprs',
+        'idsprs0': '/fleurInput/xcFunctional/ggaPrinting/@idsprs0',
+        'idsprsi': '/fleurInput/xcFunctional/ggaPrinting/@idsprsi',
+        'idsprsl': '/fleurInput/xcFunctional/ggaPrinting/@idsprsl',
+        'idsprsv': '/fleurInput/xcFunctional/ggaPrinting/@idsprsv',
+        'iggachk': '/fleurInput/xcFunctional/ggaPrinting/@iggachk',
+        'igrd': '/fleurInput/xcFunctional/xcParams/@igrd',
+        'imix': '/fleurInput/calculationSetup/scfLoop/@imix',
+        'integ': '/fleurInput/output/vacuumDOS/@integ',
+        'invs': '/fleurInput/cell/symmetry/@invs',
+        'invs1': '/fleurInput/calculationSetup/oneDParams/@invs1',
+        'iplot': '/fleurInput/output/plotting/@iplot',
+        'isec1': '/fleurInput/calculationSetup/expertModes/@isec1',
+        'itmax': '/fleurInput/calculationSetup/scfLoop/@itmax',
+        'jspins': '/fleurInput/calculationSetup/magnetism/@jspins',
+        'kcrel': '/fleurInput/calculationSetup/coreElectrons/@kcrel',
+        'l_j': '/fleurInput/calculationSetup/magnetism/@l_J',
         'l_constr': '/fleurInput/calculationSetup/nocoParams/@l_constr',
-        'lmax': '/fleurInput/output/coreSpectrum/@lmax',
-        'off': '/fleurInput/calculationSetup/soc/@off',
-        'autocomp': '/fleurInput/calculationSetup/fields/@autocomp',
+        'l_disp': '/fleurInput/calculationSetup/nocoParams/@l_disp',
+        'l_f': '/fleurInput/calculationSetup/geometryOptimization/@l_f',
+        'l_linmix': '/fleurInput/calculationSetup/ldaU/@l_linMix',
+        'l_mperp': '/fleurInput/calculationSetup/nocoParams/@l_mperp',
+        'l_mtnocopot': '/fleurInput/calculationSetup/nocoParams/@l_mtNocoPot',
+        'l_noco': '/fleurInput/calculationSetup/magnetism/@l_noco',
+        'l_rdmft': '/fleurInput/calculationSetup/rdmft/@l_rdmft',
+        'l_soc': '/fleurInput/calculationSetup/soc/@l_soc',
         'l_ss': '/fleurInput/calculationSetup/nocoParams/@l_ss',
-        'bmt': '/fleurInput/output/specialOutput/@bmt',
+        'layers': '/fleurInput/output/vacuumDOS/@layers',
+        'lexp': '/fleurInput/calculationSetup/prodBasis/@lexp',
+        'lflip': '/fleurInput/calculationSetup/magnetism/@lflip',
+        'lmax': '/fleurInput/output/coreSpectrum/@lmax',
+        'locx1': '/fleurInput/output/vacuumDOS/@locx1',
+        'locx2': '/fleurInput/output/vacuumDOS/@locx2',
+        'locy1': '/fleurInput/output/vacuumDOS/@locy1',
+        'locy2': '/fleurInput/output/vacuumDOS/@locy2',
+        'lpr': '/fleurInput/calculationSetup/expertModes/@lpr',
+        'lwb': '/fleurInput/xcFunctional/xcParams/@lwb',
+        'm_cyl': '/fleurInput/calculationSetup/oneDParams/@m_cyl',
+        'maxeigenval': '/fleurInput/output/chargeDensitySlicing/@maxEigenval',
+        'maxenergy': '/fleurInput/output/densityOfStates/@maxEnergy',
+        'maxiterbroyd': '/fleurInput/calculationSetup/scfLoop/@maxIterBroyd',
+        'maxspindown': '/fleurInput/output/wannier/bandSelection/@maxSpinDown',
+        'maxspinup': '/fleurInput/output/wannier/bandSelection/@maxSpinUp',
+        'maxtimetostartiter': '/fleurInput/calculationSetup/scfLoop/@maxTimeToStartIter',
+        'mcd': '/fleurInput/output/@mcd',
+        'mindistance': '/fleurInput/calculationSetup/scfLoop/@minDistance',
+        'mineigenval': '/fleurInput/output/chargeDensitySlicing/@minEigenval',
+        'minenergy': '/fleurInput/output/densityOfStates/@minEnergy',
+        'minspindown': '/fleurInput/output/wannier/bandSelection/@minSpinDown',
+        'minspinup': '/fleurInput/output/wannier/bandSelection/@minSpinUp',
+        'mixparam': '/fleurInput/calculationSetup/ldaU/@mixParam',
+        'mix_b': '/fleurInput/calculationSetup/nocoParams/@mix_b',
+        'mode': '/fleurInput/calculationSetup/bzIntegration/@mode',
+        'ms': '/fleurInput/output/wannier/@ms',
+        'name': '/fleurInput/xcFunctional/@name',
+        'ndir': '/fleurInput/output/densityOfStates/@ndir',
+        'ndvgrd': '/fleurInput/xcFunctional/xcParams/@ndvgrd',
+        'nnne': '/fleurInput/output/chargeDensitySlicing/@nnne',
+        'nqphi': '/fleurInput/output/coreSpectrum/@nqphi',
+        'nqr': '/fleurInput/output/coreSpectrum/@nqr',
+        'nsh': '/fleurInput/calculationSetup/nocoParams/@nsh',
+        'nstars': '/fleurInput/output/vacuumDOS/@nstars',
+        'nstm': '/fleurInput/output/vacuumDOS/@nstm',
+        'numpoints': '/fleurInput/output/coreSpectrum/@numPoints',
         'numbands': '/fleurInput/calculationSetup/cutoffs/@numbands',
-        'sig_b_2': '/fleurInput/calculationSetup/fields/@sig_b_2',
+        'numkpt': '/fleurInput/output/chargeDensitySlicing/@numkpt',
+        'nx': '/fleurInput/calculationSetup/bzIntegration/kPointMesh/@nx',
+        'ny': '/fleurInput/calculationSetup/bzIntegration/kPointMesh/@ny',
+        'nz': '/fleurInput/calculationSetup/bzIntegration/kPointMesh/@nz',
+        'occeps': '/fleurInput/calculationSetup/rdmft/@occEps',
+        'off': '/fleurInput/calculationSetup/soc/@off',
         'pallst': '/fleurInput/output/chargeDensitySlicing/@pallst',
-        'kmax': '/fleurInput/calculationSetup/cutoffs/@Kmax',
-        'comment': '/fleurInput/comment',
-        'qss': '/fleurInput/calculationSetup/nocoParams/qss',
-        'qsc': '/fleurInput/calculationSetup/nocoParams/qsc',
+        'plot_charge': '/fleurInput/calculationSetup/fields/@plot_charge',
+        'plot_rho': '/fleurInput/calculationSetup/fields/@plot_rho',
+        'plplot': '/fleurInput/output/plotting/@plplot',
+        'posscale': '/fleurInput/calculationSetup/bzIntegration/kPointList/@posScale',
+        'pot8': '/fleurInput/calculationSetup/expertModes/@pot8',
+        'precondparam': '/fleurInput/calculationSetup/scfLoop/@precondParam',
+        'qfix': '/fleurInput/calculationSetup/geometryOptimization/@qfix',
+        'qx': '/fleurInput/calculationSetup/spinSpiralQPointMesh/@qx',
+        'qy': '/fleurInput/calculationSetup/spinSpiralQPointMesh/@qy',
+        'qz': '/fleurInput/calculationSetup/spinSpiralQPointMesh/@qz',
+        'relativisticcorrections': '/fleurInput/xcFunctional/@relativisticCorrections',
+        'rot': '/fleurInput/calculationSetup/oneDParams/@rot',
+        'score': '/fleurInput/output/plotting/@score',
+        'secvar': '/fleurInput/calculationSetup/expertModes/@secvar',
+        'sgwf': '/fleurInput/output/wannier/@sgwf',
+        'sig_b_1': '/fleurInput/calculationSetup/fields/@sig_b_1',
+        'sig_b_2': '/fleurInput/calculationSetup/fields/@sig_b_2',
+        'sigma': '/fleurInput/output/densityOfStates/@sigma',
+        'slice': '/fleurInput/output/@slice',
+        'soc66': '/fleurInput/calculationSetup/soc/@soc66',
+        'socgwf': '/fleurInput/output/wannier/@socgwf',
+        'spav': '/fleurInput/calculationSetup/soc/@spav',
+        'spgrp': '/fleurInput/cell/symmetry/@spgrp',
+        'sso_opt': '/fleurInput/calculationSetup/nocoParams/@sso_opt',
+        'star': '/fleurInput/output/vacuumDOS/@star',
+        'statesabove': '/fleurInput/calculationSetup/rdmft/@statesAbove',
+        'statesbelow': '/fleurInput/calculationSetup/rdmft/@statesBelow',
+        'supercellx': '/fleurInput/output/unfoldingBand/@supercellX',
+        'supercelly': '/fleurInput/output/unfoldingBand/@supercellY',
+        'supercellz': '/fleurInput/output/unfoldingBand/@supercellZ',
+        'swsp': '/fleurInput/calculationSetup/magnetism/@swsp',
+        'tolerance': '/fleurInput/calculationSetup/prodBasis/@tolerance',
+        'tworkf': '/fleurInput/output/vacuumDOS/@tworkf',
+        'unfoldband': '/fleurInput/output/unfoldingBand/@unfoldBand',
+        'vm': '/fleurInput/calculationSetup/oneDParams/@vM',
+        'vacdos': '/fleurInput/output/@vacdos',
+        'valenceelectrons': '/fleurInput/calculationSetup/bzIntegration/@valenceElectrons',
+        'vchk': '/fleurInput/output/checks/@vchk',
+        'verbose': '/fleurInput/output/coreSpectrum/@verbose',
+        'wannier': '/fleurInput/output/@wannier',
+        'weightscale': '/fleurInput/calculationSetup/bzIntegration/kPointList/@weightScale',
+        'zrfs': '/fleurInput/cell/symmetry/@zrfs',
+        'zrfs1': '/fleurInput/calculationSetup/oneDParams/@zrfs1',
+        'zsigma': '/fleurInput/calculationSetup/fields/@zsigma',
         'c': '/fleurInput/cell/bulkLattice/c',
+        'comment': '/fleurInput/comment',
         'edgeindices': '/fleurInput/output/coreSpectrum/edgeIndices',
-        'joblist': '/fleurInput/output/wannier/jobList'
+        'joblist': '/fleurInput/output/wannier/jobList',
+        'qsc': '/fleurInput/calculationSetup/nocoParams/qsc',
+        'qss': '/fleurInput/calculationSetup/nocoParams/qss'
     }),
     'unique_path_attribs':
     CaseInsensitiveDict({
         'correlation':
         ['/fleurInput/xcFunctional/LibXCID/@correlation', '/fleurInput/xcFunctional/LibXCName/@correlation'],
+        'count': [
+            '/fleurInput/calculationSetup/bzIntegration/kPointCount/@count',
+            '/fleurInput/calculationSetup/bzIntegration/kPointList/@count'
+        ],
+        'etot_correlation':
+        ['/fleurInput/xcFunctional/LibXCID/@etot_correlation', '/fleurInput/xcFunctional/LibXCName/@etot_correlation'],
+        'etot_exchange':
+        ['/fleurInput/xcFunctional/LibXCID/@etot_exchange', '/fleurInput/xcFunctional/LibXCName/@etot_exchange'],
+        'exchange': ['/fleurInput/xcFunctional/LibXCID/@exchange', '/fleurInput/xcFunctional/LibXCName/@exchange'],
+        'filename': [
+            '/fleurInput/calculationSetup/bzIntegration/kPointListFile/@filename',
+            '/fleurInput/cell/symmetryFile/@filename'
+        ],
+        'gamma': [
+            '/fleurInput/calculationSetup/bzIntegration/kPointCount/@gamma',
+            '/fleurInput/calculationSetup/bzIntegration/kPointDensity/@gamma',
+            '/fleurInput/calculationSetup/bzIntegration/kPointMesh/@gamma'
+        ],
         'latnam': ['/fleurInput/cell/bulkLattice/@latnam', '/fleurInput/cell/filmLattice/@latnam'],
-        'theta': [
-            '/fleurInput/calculationSetup/soc/@theta', '/fleurInput/forceTheorem/DMI/@theta',
-            '/fleurInput/forceTheorem/MAE/@theta'
+        'phi': [
+            '/fleurInput/calculationSetup/soc/@phi', '/fleurInput/forceTheorem/DMI/@phi',
+            '/fleurInput/forceTheorem/MAE/@phi'
         ],
         'scale': [
             '/fleurInput/cell/bulkLattice/@scale', '/fleurInput/cell/bulkLattice/a1/@scale',
@@ -2060,30 +2079,12 @@ schema_dict = {
             '/fleurInput/cell/filmLattice/@scale', '/fleurInput/cell/filmLattice/a1/@scale',
             '/fleurInput/cell/filmLattice/a2/@scale'
         ],
-        'exchange': ['/fleurInput/xcFunctional/LibXCID/@exchange', '/fleurInput/xcFunctional/LibXCName/@exchange'],
-        'gamma': [
-            '/fleurInput/calculationSetup/bzIntegration/kPointCount/@gamma',
-            '/fleurInput/calculationSetup/bzIntegration/kPointDensity/@gamma',
-            '/fleurInput/calculationSetup/bzIntegration/kPointMesh/@gamma'
-        ],
-        'etot_exchange':
-        ['/fleurInput/xcFunctional/LibXCID/@etot_exchange', '/fleurInput/xcFunctional/LibXCName/@etot_exchange'],
-        'thetaj': ['/fleurInput/calculationSetup/nocoParams/@thetaJ', '/fleurInput/forceTheorem/Jij/@thetaj'],
-        'count': [
-            '/fleurInput/calculationSetup/bzIntegration/kPointCount/@count',
-            '/fleurInput/calculationSetup/bzIntegration/kPointList/@count'
-        ],
-        'etot_correlation':
-        ['/fleurInput/xcFunctional/LibXCID/@etot_correlation', '/fleurInput/xcFunctional/LibXCName/@etot_correlation'],
-        'filename': [
-            '/fleurInput/calculationSetup/bzIntegration/kPointListFile/@filename',
-            '/fleurInput/cell/symmetryFile/@filename'
-        ],
         'spinf': ['/fleurInput/calculationSetup/ldaU/@spinf', '/fleurInput/calculationSetup/scfLoop/@spinf'],
-        'phi': [
-            '/fleurInput/calculationSetup/soc/@phi', '/fleurInput/forceTheorem/DMI/@phi',
-            '/fleurInput/forceTheorem/MAE/@phi'
+        'theta': [
+            '/fleurInput/calculationSetup/soc/@theta', '/fleurInput/forceTheorem/DMI/@theta',
+            '/fleurInput/forceTheorem/MAE/@theta'
         ],
+        'thetaj': ['/fleurInput/calculationSetup/nocoParams/@thetaJ', '/fleurInput/forceTheorem/Jij/@thetaj'],
         'a1': ['/fleurInput/cell/bulkLattice/a1', '/fleurInput/cell/filmLattice/a1'],
         'a2': ['/fleurInput/cell/bulkLattice/a2', '/fleurInput/cell/filmLattice/a2'],
         'row-1': [
