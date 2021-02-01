@@ -554,7 +554,7 @@ def extract_attribute_types(xmlschema, namespaces, **kwargs):
 
     base_types = _get_base_types()
 
-    types_dict = {}
+    types_dict = CaseInsensitiveDict()
     for attrib in possible_attrib:
         name_attrib = attrib.attrib['name']
         type_attrib = attrib.attrib['type']
