@@ -136,6 +136,7 @@ def create_outschema_dict(path, save_to_file=True, inp_version=None):
         with open(f'{path}/outschema_dict.py', 'w') as f:
             f.write('# -*- coding: utf-8 -*-\n')
             f.write(f'"""{docstring}"""\n')
+            f.write('from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict\n')
             f.write(f"__out_version__ = '{out_version}'\n")
             f.write('schema_dict = ')
             pprint(schema_dict, f)

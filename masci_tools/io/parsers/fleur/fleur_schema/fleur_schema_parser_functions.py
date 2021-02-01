@@ -14,6 +14,7 @@
 functions to extract information about the fleur schema input or output
 """
 from lxml import etree
+from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict
 
 #These types have infinite recursive paths and CANNOT BE PARSED in the path generation
 _RECURSIVE_TYPES = ['CompositeTimerType']
@@ -599,13 +600,13 @@ def get_tag_paths(xmlschema, namespaces, **kwargs):
     iteration_root = kwargs.get('iteration_root', False)
 
     possible_tags = set(xmlschema.xpath('//xsd:element/@name', namespaces=namespaces))
-    tag_paths = {}
+    tag_paths = CaseInsensitiveDict()
     for tag in possible_tags:
         paths = _get_xpath(xmlschema, namespaces, tag, stop_iteration=stop_iteration, iteration_root=iteration_root)
         if len(paths) == 1:
-            tag_paths[tag.lower()] = paths.pop()
+            tag_paths[tag] = paths.pop()
         else:
-            tag_paths[tag.lower()] = sorted(paths)
+            tag_paths[tag] = sorted(paths)
     return tag_paths
 
 
@@ -623,7 +624,7 @@ def get_unique_attribs(xmlschema, namespaces, **kwargs):
     stop_iteration = kwargs.get('stop_iteration', False)
     iteration_root = kwargs.get('iteration_root', False)
 
-    settable = {}
+    settable = CaseInsensitiveDict()
     possible_attrib = set(xmlschema.xpath('//xsd:attribute/@name', namespaces=namespaces))
     for attrib in possible_attrib:
         path = _get_attrib_xpath(xmlschema,
@@ -633,11 +634,10 @@ def get_unique_attribs(xmlschema, namespaces, **kwargs):
                                  stop_iteration=stop_iteration,
                                  iteration_root=iteration_root)
         if len(path) == 1:
-            attrib_key = attrib.lower()
-            if attrib_key in settable:
-                settable.pop(attrib_key)
+            if attrib in settable:
+                settable.pop(attrib)
             else:
-                settable[attrib_key] = path.pop()
+                settable[attrib] = path.pop()
 
     for attrib in kwargs['simple_elements']:
         path = _get_xpath(xmlschema,
@@ -647,11 +647,10 @@ def get_unique_attribs(xmlschema, namespaces, **kwargs):
                           stop_iteration=stop_iteration,
                           iteration_root=iteration_root)
         if len(path) == 1:
-            attrib_key = attrib.lower()
-            if attrib_key in settable:
-                settable.pop(attrib_key)
+            if attrib in settable:
+                settable.pop(attrib)
             else:
-                settable[attrib_key] = path.pop()
+                settable[attrib] = path.pop()
 
     return settable
 
@@ -678,11 +677,10 @@ def get_unique_path_attribs(xmlschema, namespaces, **kwargs):
         settable_key = 'unique_attribs'
         settable_contains_key = 'unique_path_attribs'
 
-    settable = {}
+    settable = CaseInsensitiveDict()
     possible_attrib = set(xmlschema.xpath('//xsd:attribute/@name', namespaces=namespaces))
     for attrib in possible_attrib:
-        attrib_key = attrib.lower()
-        if attrib_key in kwargs[settable_key]:
+        if attrib in kwargs[settable_key]:
             continue
         path = _get_attrib_xpath(xmlschema,
                                  namespaces,
@@ -691,11 +689,10 @@ def get_unique_path_attribs(xmlschema, namespaces, **kwargs):
                                  stop_iteration=stop_iteration,
                                  iteration_root=iteration_root)
         if len(path) != 0:
-            settable[attrib_key] = sorted(set(settable.get(attrib_key, [])).union(path))
+            settable[attrib] = sorted(set(settable.get(attrib, [])).union(path))
 
     for attrib in kwargs['simple_elements']:
-        attrib_key = attrib.lower()
-        if attrib_key in kwargs[settable_key]:
+        if attrib in kwargs[settable_key]:
             continue
         path = _get_xpath(xmlschema,
                           namespaces,
@@ -704,7 +701,7 @@ def get_unique_path_attribs(xmlschema, namespaces, **kwargs):
                           stop_iteration=stop_iteration,
                           iteration_root=iteration_root)
         if len(path) != 0:
-            settable[attrib_key] = sorted(set(settable.get(attrib_key, [])).union(path))
+            settable[attrib] = sorted(set(settable.get(attrib, [])).union(path))
 
     return settable
 
@@ -730,7 +727,7 @@ def get_other_attribs(xmlschema, namespaces, **kwargs):
         settable_key = 'unique_attribs'
         settable_contains_key = 'unique_path_attribs'
 
-    other = {}
+    other = CaseInsensitiveDict()
     possible_attrib = set(xmlschema.xpath('//xsd:attribute/@name', namespaces=namespaces))
     for attrib in possible_attrib:
         path = _get_attrib_xpath(xmlschema,
@@ -739,29 +736,27 @@ def get_other_attribs(xmlschema, namespaces, **kwargs):
                                  stop_iteration=stop_iteration,
                                  iteration_root=iteration_root)
         if len(path) != 0:
-            attrib_key = attrib.lower()
-            if attrib_key in kwargs[settable_key]:
-                path.discard(kwargs[settable_key][attrib_key])
-            if attrib_key in kwargs[settable_contains_key]:
-                for contains_path in kwargs[settable_contains_key][attrib_key]:
+            if attrib in kwargs[settable_key]:
+                path.discard(kwargs[settable_key][attrib])
+            if attrib in kwargs[settable_contains_key]:
+                for contains_path in kwargs[settable_contains_key][attrib]:
                     path.discard(contains_path)
 
             if len(path) != 0:
-                other[attrib_key] = sorted(set(other.get(attrib_key, [])).union(path))
+                other[attrib] = sorted(set(other.get(attrib, [])).union(path))
 
     for attrib in kwargs['simple_elements']:
         path = _get_xpath(xmlschema, namespaces, attrib, stop_iteration=stop_iteration, iteration_root=iteration_root)
         if len(path) != 0:
 
-            attrib_key = attrib.lower()
-            if attrib_key in kwargs[settable_key]:
-                path.discard(kwargs[settable_key][attrib_key])
-            if attrib_key in kwargs[settable_contains_key]:
-                for contains_path in kwargs[settable_contains_key][attrib_key]:
+            if attrib in kwargs[settable_key]:
+                path.discard(kwargs[settable_key][attrib])
+            if attrib in kwargs[settable_contains_key]:
+                for contains_path in kwargs[settable_contains_key][attrib]:
                     path.discard(contains_path)
 
             if len(path) != 0:
-                other[attrib_key] = sorted(set(other.get(attrib_key, [])).union(path))
+                other[attrib] = sorted(set(other.get(attrib, [])).union(path))
 
     return other
 
