@@ -48,8 +48,10 @@ def test_outschema_dict(schema_version, schema_path):
     """
     from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict
 
-    CASE_INSENSITIVE_KEYS = {'attrib_types', 'tag_paths', 'unique_attribs', 'unique_path_attribs', 'other_attribs',
-                            'iteration_tag_paths', 'iteration_unique_attribs', 'iteration_unique_path_attribs', 'iteration_other_attribs'}
+    CASE_INSENSITIVE_KEYS = {
+        'attrib_types', 'tag_paths', 'unique_attribs', 'unique_path_attribs', 'other_attribs', 'iteration_tag_paths',
+        'iteration_unique_attribs', 'iteration_unique_path_attribs', 'iteration_other_attribs'
+    }
 
     dict_created, created_version = create_outschema_dict(schema_path, save_to_file=False)
     dict_stored = load_outschema(schema_version, create=False)
