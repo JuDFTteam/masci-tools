@@ -1705,32 +1705,33 @@ schema_dict = {
     '0.33',
     'root_tag':
     'fleurOutput',
-    'simple_elements': {
-        'additionalCompilerFlags': [{
-            'length': 'unbounded',
-            'type': ['string']
+    'simple_elements':
+    CaseInsensitiveDict({
+        'targetcomputerarchitectures': [{
+            'type': ['string'],
+            'length': 1
         }],
-        'densityMatrixFor': [{
-            'length': 'unbounded',
-            'type': ['string']
+        'targetstructureclass': [{
+            'type': ['string'],
+            'length': 'unbounded'
         }],
-        'eigenvaluesAt': [{
-            'length': 'unbounded',
-            'type': ['float']
+        'additionalcompilerflags': [{
+            'type': ['string'],
+            'length': 'unbounded'
         }],
-        'kPoint': [{
-            'length': 3,
-            'type': ['float_expression']
+        'kpoint': [{
+            'type': ['float_expression'],
+            'length': 3
         }],
-        'targetComputerArchitectures': [{
-            'length': 1,
-            'type': ['string']
+        'eigenvaluesat': [{
+            'type': ['float'],
+            'length': 'unbounded'
         }],
-        'targetStructureClass': [{
-            'length': 'unbounded',
-            'type': ['string']
+        'densitymatrixfor': [{
+            'type': ['string'],
+            'length': 'unbounded'
         }]
-    },
+    }),
     'tag_info': {
         '/fleurOutput': {
             'attribs': ['fleurOutputVersion'],

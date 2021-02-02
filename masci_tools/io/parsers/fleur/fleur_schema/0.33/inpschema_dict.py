@@ -778,131 +778,132 @@ schema_dict = {
     }),
     'root_tag':
     'fleurInput',
-    'simple_elements': {
-        'a1': [{
-            'length': 1,
-            'type': ['float_expression']
-        }],
-        'a2': [{
-            'length': 1,
-            'type': ['float_expression']
-        }],
-        'absPos': [{
-            'length': 3,
-            'type': ['float_expression']
-        }],
-        'c': [{
-            'length': 1,
-            'type': ['float_expression']
-        }],
+    'simple_elements':
+    CaseInsensitiveDict({
         'comment': [{
-            'length': 1,
-            'type': ['string']
-        }],
-        'coreConfig': [{
-            'length': 'unbounded',
-            'type': ['string']
-        }],
-        'd': [{
-            'length': 4,
-            'type': ['switch']
-        }],
-        'displace': [{
-            'length': 3,
-            'type': ['float']
-        }],
-        'edgeIndices': [{
-            'length': 'unbounded',
-            'type': ['int']
-        }],
-        'f': [{
-            'length': 4,
-            'type': ['switch']
-        }],
-        'filmPos': [{
-            'length': 3,
-            'type': ['float_expression']
-        }],
-        'jobList': [{
-            'length': 'unbounded',
-            'type': ['string']
-        }],
-        'kPoint': [{
-            'length': 3,
-            'type': ['float_expression']
-        }],
-        'layer': [{
-            'length': 1,
-            'type': ['string']
-        }],
-        'orbcomprot': [{
-            'length': 3,
-            'type': ['float']
-        }],
-        'p': [{
-            'length': 4,
-            'type': ['switch']
-        }],
-        'posforce': [{
-            'length': 1,
-            'type': ['string']
-        }],
-        'q': [{
-            'length': 1,
-            'type': ['string']
-        }],
-        'qsc': [{
-            'length': 3,
-            'type': ['float_expression']
-        }],
-        'qss': [{
-            'length': 3,
-            'type': ['float_expression']
-        }],
-        'relPos': [{
-            'length': 3,
-            'type': ['float_expression']
-        }],
-        'row-1': [{
-            'length': 2,
-            'type': ['float_expression']
-        }, {
-            'length': 3,
-            'type': ['float_expression']
-        }, {
-            'length': 4,
-            'type': ['float']
-        }],
-        'row-2': [{
-            'length': 2,
-            'type': ['float_expression']
-        }, {
-            'length': 3,
-            'type': ['float_expression']
-        }, {
-            'length': 4,
-            'type': ['float']
-        }],
-        'row-3': [{
-            'length': 3,
-            'type': ['float_expression']
-        }, {
-            'length': 4,
-            'type': ['float']
-        }],
-        's': [{
-            'length': 4,
-            'type': ['switch']
+            'type': ['string'],
+            'length': 1
         }],
         'shape': [{
-            'length': 1,
-            'type': ['string']
+            'type': ['string'],
+            'length': 1
         }],
-        'valenceConfig': [{
-            'length': 'unbounded',
-            'type': ['string']
+        'qss': [{
+            'type': ['float_expression'],
+            'length': 3
+        }],
+        'qsc': [{
+            'type': ['float_expression'],
+            'length': 3
+        }],
+        'a1': [{
+            'type': ['float_expression'],
+            'length': 1
+        }],
+        'a2': [{
+            'type': ['float_expression'],
+            'length': 1
+        }],
+        'c': [{
+            'type': ['float_expression'],
+            'length': 1
+        }],
+        'row-1': [{
+            'type': ['float_expression'],
+            'length': 2
+        }, {
+            'type': ['float_expression'],
+            'length': 3
+        }, {
+            'type': ['float'],
+            'length': 4
+        }],
+        'row-2': [{
+            'type': ['float_expression'],
+            'length': 2
+        }, {
+            'type': ['float_expression'],
+            'length': 3
+        }, {
+            'type': ['float'],
+            'length': 4
+        }],
+        'row-3': [{
+            'type': ['float_expression'],
+            'length': 3
+        }, {
+            'type': ['float'],
+            'length': 4
+        }],
+        's': [{
+            'type': ['switch'],
+            'length': 4
+        }],
+        'p': [{
+            'type': ['switch'],
+            'length': 4
+        }],
+        'd': [{
+            'type': ['switch'],
+            'length': 4
+        }],
+        'f': [{
+            'type': ['switch'],
+            'length': 4
+        }],
+        'relpos': [{
+            'type': ['float_expression'],
+            'length': 3
+        }],
+        'abspos': [{
+            'type': ['float_expression'],
+            'length': 3
+        }],
+        'filmpos': [{
+            'type': ['float_expression'],
+            'length': 3
+        }],
+        'orbcomprot': [{
+            'type': ['float'],
+            'length': 3
+        }],
+        'layer': [{
+            'type': ['string'],
+            'length': 1
+        }],
+        'kpoint': [{
+            'type': ['float_expression'],
+            'length': 3
+        }],
+        'edgeindices': [{
+            'type': ['int'],
+            'length': 'unbounded'
+        }],
+        'joblist': [{
+            'type': ['string'],
+            'length': 'unbounded'
+        }],
+        'displace': [{
+            'type': ['float'],
+            'length': 3
+        }],
+        'posforce': [{
+            'type': ['string'],
+            'length': 1
+        }],
+        'q': [{
+            'type': ['string'],
+            'length': 1
+        }],
+        'coreconfig': [{
+            'type': ['string'],
+            'length': 'unbounded'
+        }],
+        'valenceconfig': [{
+            'type': ['string'],
+            'length': 'unbounded'
         }]
-    },
+    }),
     'tag_info': {
         '/fleurInput': {
             'attribs': ['fleurInputVersion'],

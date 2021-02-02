@@ -405,91 +405,92 @@ schema_dict = {
     }),
     'root_tag':
     'fleurInput',
-    'simple_elements': {
-        'a1': [{
-            'length': 1,
-            'type': ['float']
-        }],
-        'a2': [{
-            'length': 1,
-            'type': ['float']
-        }],
-        'absPos': [{
-            'length': 3,
-            'type': ['string']
-        }],
-        'c': [{
-            'length': 1,
-            'type': ['float']
-        }],
+    'simple_elements':
+    CaseInsensitiveDict({
         'comment': [{
-            'length': 1,
-            'type': ['string']
-        }],
-        'coreConfig': [{
-            'length': 'unbounded',
-            'type': ['string']
-        }],
-        'filmPos': [{
-            'length': 3,
-            'type': ['string']
-        }],
-        'kPoint': [{
-            'length': 3,
-            'type': ['float']
-        }],
-        'orbcomprot': [{
-            'length': 3,
-            'type': ['float']
-        }],
-        'qsc': [{
-            'length': 3,
-            'type': ['float']
+            'type': ['string'],
+            'length': 1
         }],
         'qss': [{
-            'length': 3,
-            'type': ['float']
+            'type': ['float'],
+            'length': 3
         }],
-        'relPos': [{
-            'length': 3,
-            'type': ['string']
+        'qsc': [{
+            'type': ['float'],
+            'length': 3
+        }],
+        'a1': [{
+            'type': ['float'],
+            'length': 1
+        }],
+        'a2': [{
+            'type': ['float'],
+            'length': 1
+        }],
+        'c': [{
+            'type': ['float'],
+            'length': 1
         }],
         'row-1': [{
-            'length': 2,
-            'type': ['string']
+            'type': ['string'],
+            'length': 2
         }, {
-            'length': 3,
-            'type': ['string']
+            'type': ['string'],
+            'length': 3
         }, {
-            'length': 4,
-            'type': ['float']
+            'type': ['float'],
+            'length': 4
         }],
         'row-2': [{
-            'length': 2,
-            'type': ['string']
+            'type': ['string'],
+            'length': 2
         }, {
-            'length': 3,
-            'type': ['string']
+            'type': ['string'],
+            'length': 3
         }, {
-            'length': 4,
-            'type': ['float']
+            'type': ['float'],
+            'length': 4
         }],
         'row-3': [{
-            'length': 3,
-            'type': ['string']
+            'type': ['string'],
+            'length': 3
         }, {
-            'length': 4,
-            'type': ['float']
+            'type': ['float'],
+            'length': 4
         }],
-        'specialPoint': [{
-            'length': 3,
-            'type': ['float']
+        'relpos': [{
+            'type': ['string'],
+            'length': 3
         }],
-        'valenceConfig': [{
-            'length': 'unbounded',
-            'type': ['string']
+        'abspos': [{
+            'type': ['string'],
+            'length': 3
+        }],
+        'filmpos': [{
+            'type': ['string'],
+            'length': 3
+        }],
+        'orbcomprot': [{
+            'type': ['float'],
+            'length': 3
+        }],
+        'specialpoint': [{
+            'type': ['float'],
+            'length': 3
+        }],
+        'kpoint': [{
+            'type': ['float'],
+            'length': 3
+        }],
+        'coreconfig': [{
+            'type': ['string'],
+            'length': 'unbounded'
+        }],
+        'valenceconfig': [{
+            'type': ['string'],
+            'length': 'unbounded'
         }]
-    },
+    }),
     'tag_info': {
         '/fleurInput': {
             'attribs': ['fleurInputVersion'],

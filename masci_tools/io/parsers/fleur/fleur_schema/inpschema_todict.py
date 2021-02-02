@@ -16,6 +16,7 @@ FleurInputSchema.xsd
 """
 from .fleur_schema_parser_functions import *  #pylint: disable=unused-wildcard-import
 from masci_tools.util.xml.common_xml_util import clear_xml
+from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict
 from lxml import etree
 from pprint import pprint
 import importlib.util
@@ -61,6 +62,10 @@ def create_inpschema_dict(path, save_to_file=True):
     schema_dict['inp_version'] = inp_version
     for key, action in schema_actions.items():
         schema_dict[key] = action(xmlschema, namespaces, **schema_dict)
+
+    #We cannot do the conversion to CaseInsensitiveDict before since we need the correct case
+    #For these attributes in the attrib_path functions
+    schema_dict['simple_elements'] = CaseInsensitiveDict(schema_dict['simple_elements'])
 
     docstring = '\n'\
                 'This file contains information parsed from the FleurInputSchema.xsd\n'\
