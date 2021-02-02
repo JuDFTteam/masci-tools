@@ -24,6 +24,11 @@ class CaseInsensitiveDict(UserDict):
     Does not preserve the case of the inserted key.
     Does not support case insensitive lookups in nested dicts
 
+    :param upper: bool if True the method `upper()` will be used instead of `lower()`
+                  to normalize keys
+
+    All other args or kwargs will be passed on to initialize the `UserDict`
+
     IMPORTANT NOTE:
         This is not a direct subcalss of dict. So isinstance(a, dict)
         will be False if a is an CaseInsensitiveDict
