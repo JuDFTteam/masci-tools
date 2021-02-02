@@ -72,8 +72,8 @@ If only a small amount of information is required from the input or output files
    #Number of spins
    spins = evaluate_attribute(root, schema_dict, 'jspins', constants)
 
-   #Planewave cutoff (notice the names are case-sensitive)
-   kmax = evaluate_attribute(root, schema_dict, 'Kmax', constants)
+   #Planewave cutoff (notice the names are case-insensitive, 'KMAX' would work as well)
+   kmax = evaluate_attribute(root, schema_dict, 'kmax', constants)
 
    #Some attributes need to be specified further for a distinct path
    #`radius` exists both for atom species and atom groups so we give a phrase to distinguish them

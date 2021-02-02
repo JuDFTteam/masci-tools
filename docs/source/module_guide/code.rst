@@ -76,6 +76,9 @@ Definition of default parsing tasks for out.xml
 Utility functions
 +++++++++++++++++++++
 
+.. automodule:: masci_tools.util.case_insensitive_dict
+   :members:
+
 .. automodule:: masci_tools.util.xml.common_xml_util
    :members:
 
@@ -90,3 +93,8 @@ Utility functions
 
 .. automodule:: masci_tools.util.parse_tasks_decorators
    :members:
+
+Defined constants
+++++++++++++++++++++
+
+.. automodule:: masci_tools.util.constants
