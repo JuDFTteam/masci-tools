@@ -55,4 +55,4 @@ class CaseInsensitiveDict(UserDict):
         return super().__contains__(self._norm_key(key))
 
     def __repr__(self):
-        return f'{type(self).__name__}({super().__repr__()})'
+        return f'{self.__class__.__name__}({super().__repr__()})'
