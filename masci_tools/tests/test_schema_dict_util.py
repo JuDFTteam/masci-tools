@@ -134,6 +134,27 @@ def test_get_tag_xpath_notcontains():
     assert schema_dict == schema_dict_34
 
 
+def get_tagattrib_xpath_case_insensitivity():
+    """
+    Test that the selection works with case insensitivity
+    """
+    from masci_tools.util.schema_dict_util import get_tag_xpath, get_attrib_xpath
+
+    schema_dict = copy.deepcopy(schema_dict_34)
+
+    assert get_tag_xpath(schema_dict, 'bzIntegration') == '/fleurInput/cell/bzIntegration'
+    assert get_tag_xpath(schema_dict, 'BZINTEGRATION') == '/fleurInput/cell/bzIntegration'
+    assert get_tag_xpath(schema_dict, 'bzintegration') == '/fleurInput/cell/bzIntegration'
+    assert get_tag_xpath(schema_dict, 'bZInTegrAtIon') == '/fleurInput/cell/bzIntegration'
+
+    assert get_attrib_xpath(schema_dict, 'jspins') == '/fleurInput/calculationSetup/magnetism/@jspins'
+    assert get_attrib_xpath(schema_dict, 'JSPINS') == '/fleurInput/calculationSetup/magnetism/@jspins'
+    assert get_attrib_xpath(schema_dict, 'jSpInS') == '/fleurInput/calculationSetup/magnetism/@jspins'
+
+    #Make sure that this did not modify the schema dict
+    assert schema_dict == schema_dict_34
+
+
 def test_get_attrib_xpath_input():
     """
     Test the path finding for tags for the input schema without additional options
@@ -276,6 +297,85 @@ def test_get_attrib_xpath_exclude_output():
 
     #Make sure that this did not modify the schema dict
     assert schema_dict == outschema_dict_34
+
+
+def test_get_tag_info():
+    """
+    Basic test of the `get_tag_info()` function
+    """
+    from masci_tools.util.schema_dict_util import get_tag_info
+
+    schema_dict = copy.deepcopy(schema_dict_34)
+
+    EXPECTED_RESULT = {
+        'attribs': ['name', 'element', 'atomicNumber'],
+        'optional': [
+            'energyParameters', 'prodBasis', 'special', 'force', 'nocoParams', 'modInitDen', 'ldaU', 'ldaHIA',
+            'greensfCalculation', 'torgueCalculation', 'lo'
+        ],
+        'optional_attribs': ['element'],
+        'order': [
+            'mtSphere', 'atomicCutoffs', 'electronConfig', 'energyParameters', 'prodBasis', 'special', 'force',
+            'nocoParams', 'modInitDen', 'ldaU', 'ldaHIA', 'greensfCalculation', 'torgueCalculation', 'lo'
+        ],
+        'several': ['ldaU', 'ldaHIA', 'greensfCalculation', 'lo'],
+        'simple': [
+            'mtSphere', 'atomicCutoffs', 'energyParameters', 'prodBasis', 'special', 'force', 'nocoParams',
+            'modInitDen', 'ldaU', 'lo'
+        ],
+        'text': []
+    }
+
+    res, path = get_tag_info(schema_dict, 'species')
+    pprint(res)
+    assert res == EXPECTED_RESULT
+    assert path == '/fleurInput/atomSpecies/species'
+
+    res = get_tag_info(schema_dict, 'species', path_return=False)
+
+    assert res == EXPECTED_RESULT
+
+    with pytest.raises(ValueError, match='The tag ldaHIA has multiple possible paths with the current specification.'):
+        res = get_tag_info(schema_dict, 'ldaHIA')
+
+    EXPECTED_RESULT = {
+        'attribs': ['l', 'U', 'J', 'phi', 'theta', 'l_amf', 'init_occ', 'kkintgrCutoff', 'label'],
+        'optional': ['exc', 'cFCoeff', 'addArg'],
+        'optional_attribs': ['phi', 'theta', 'init_occ', 'kkintgrCutoff', 'label'],
+        'order': ['exc', 'cFCoeff', 'addArg'],
+        'several': ['exc', 'cFCoeff', 'addArg'],
+        'simple': ['exc', 'cFCoeff', 'addArg'],
+        'text': []
+    }
+
+    res, path = get_tag_info(schema_dict, 'ldaHIA', contains='species')
+
+    assert res == EXPECTED_RESULT
+    assert path == '/fleurInput/atomSpecies/species/ldaHIA'
+
+    EXPECTED_RESULT = {
+        'attribs': [
+            'itmaxHubbard1', 'beta', 'minoccDistance', 'minmatDistance', 'n_occpm', 'dftspinpol', 'fullMatch',
+            'l_nonsphDC', 'l_correctEtot'
+        ],
+        'optional': [],
+        'optional_attribs': [
+            'beta', 'minoccDistance', 'minmatDistance', 'n_occpm', 'dftspinpol', 'fullMatch', 'l_nonsphDC',
+            'l_correctEtot'
+        ],
+        'order': [],
+        'several': [],
+        'simple': [],
+        'text': []
+    }
+
+    res, path = get_tag_info(schema_dict, 'ldaHIA', not_contains='atom')
+
+    assert res == EXPECTED_RESULT
+    assert path == '/fleurInput/calculationSetup/ldaHIA'
+
+    with pytest.raises(ValueError, match='The tag ldaHIA has no possible paths with the current specification.'):
+        res = get_tag_info(schema_dict, 'ldaHIA', not_contains='atom', contains='species')
 
 
 def test_read_contants():

@@ -110,7 +110,7 @@ def get_tag_info(schema_dict, name, contains=None, not_contains=None, path_retur
     if path_return:
         return tag_info, tag_xpath
     else:
-        return tag_xpath
+        return tag_info
 
 
 def get_attrib_xpath(schema_dict, name, contains=None, not_contains=None, exclude=None, tag_name=None):
