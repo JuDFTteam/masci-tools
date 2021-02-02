@@ -134,7 +134,7 @@ def test_get_tag_xpath_notcontains():
     assert schema_dict == schema_dict_34
 
 
-def get_tagattrib_xpath_case_insensitivity():
+def test_get_tagattrib_xpath_case_insensitivity():
     """
     Test that the selection works with case insensitivity
     """
@@ -327,7 +327,7 @@ def test_get_tag_info():
     }
 
     res, path = get_tag_info(schema_dict, 'species')
-    pprint(res)
+
     assert res == EXPECTED_RESULT
     assert path == '/fleurInput/atomSpecies/species'
 
