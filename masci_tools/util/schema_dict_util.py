@@ -88,6 +88,31 @@ def get_tag_xpath(schema_dict, name, contains=None, not_contains=None):
                          f'These are possible: {all_paths}')
 
 
+def get_tag_info(schema_dict, name, contains=None, not_contains=None, path_return=True):
+    """
+    Tries to find a unique path from the schema_dict based on the given name of the tag
+    and additional further specifications and returns the tag_info entry for this tag
+
+    :param schema_dict: dict, containing all the path information and more
+    :param name: str, name of the tag
+    :param contains: str or list of str, this string has to be in the final path
+    :param not_contains: str or list of str, this string has to NOT be in the final path
+    :param path_return: bool, if True the found path will be returned alongside the tag_info
+
+    :returns: dict, tag_info for the found xpath
+    :returns: str, xpath to the tag if `path_return=True`
+    """
+    import copy
+
+    tag_xpath = get_tag_xpath(schema_dict, name, contains=contains, not_contains=not_contains)
+    tag_info = copy.deepcopy(schema_dict['tag_info'][tag_xpath])
+
+    if path_return:
+        return tag_info, tag_xpath
+    else:
+        return tag_xpath
+
+
 def get_attrib_xpath(schema_dict, name, contains=None, not_contains=None, exclude=None, tag_name=None):
     """
     Tries to find a unique path from the schema_dict based on the given name of the attribute
@@ -99,6 +124,8 @@ def get_attrib_xpath(schema_dict, name, contains=None, not_contains=None, exclud
     :param not_contains: str or list of str, this string has to NOT be in the final path
     :param exclude: list of str, here specific types of attributes can be excluded
                     valid values are: settable, settable_contains, other
+    :param tag_name: str, if given this name will be used to find a path to a tag with the
+                     same name in :py:func:`get_tag_xpath()`
 
     :returns: str, xpath to the tag with the given attribute
 
