@@ -30,19 +30,29 @@ class CaseInsensitiveDict(UserDict):
 
     """
 
+    def __init__(self, *args, upper=False, **kwargs):
+        self._upper = upper
+        super().__init__(*args, **kwargs)
+
+    def _norm_key(self, key):
+        if self._upper:
+            return key.upper()
+        else:
+            return key.lower()
+
     #Here we modify the methods needed to make the lookups case insensitive
     #Since we use UserDict these methods should be enough to modify all behaviour
     def __delitem__(self, key):
-        super().__delitem__(key.lower())
+        super().__delitem__(self._norm_key(key))
 
     def __setitem__(self, key, value):
-        super().__setitem__(key.lower(), value)
+        super().__setitem__(self._norm_key(key), value)
 
     def __getitem__(self, key):
-        return super().__getitem__(key.lower())
+        return super().__getitem__(self._norm_key(key))
 
     def __contains__(self, key):
-        return super().__contains__(key.lower())
+        return super().__contains__(self._norm_key(key))
 
     def __repr__(self):
         return f'{type(self).__name__}({super().__repr__()})'
