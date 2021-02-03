@@ -5,9 +5,9 @@ from collections import UserDict, UserList
 
 class LockableDict(UserDict):
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, recursive=True, **kwargs):
         self._locked = False
-        self._entered = False
+        self._recursive = recursive
         super().__init__(*args, **kwargs)
 
     def __check_lock(self):
@@ -30,40 +30,40 @@ class LockableDict(UserDict):
     def __setitem__(self, key, value):
         self.__check_lock()
         if isinstance(value, (dict, UserDict)):
-            super().__setitem__(key, LockableDict(value))
+            super().__setitem__(key, LockableDict(value, recursive=self._recursive))
         elif isinstance(value, (list, UserList)):
-            super().__setitem__(key, LockableList(value))
+            super().__setitem__(key, LockableList(value, recursive=self._recursive))
         else:
             super().__setitem__(key, value)
 
-    def freeze(self, recursive=True):
-        self.__freeze(recursive=recursive)
+    def freeze(self):
+        self.__freeze()
 
-    def __freeze(self, recursive=True):
+    def __freeze(self):
 
-        if recursive:
+        if self._recursive:
             for key, val in self.items():
                 if isinstance(val, LockableDict):
-                    val.__freeze(recursive=recursive)
+                    val.__freeze()
                 elif isinstance(val, LockableList):
-                    val._LockableList__freeze(recursive=recursive)
+                    val._LockableList__freeze()
 
         self._locked = True
 
-    def __unfreeze(self, recursive=True):
+    def __unfreeze(self):
 
-        if recursive:
+        if self._recursive:
             for key, val in self.items():
                 if isinstance(val, LockableDict):
-                    val.__unfreeze(recursive=recursive)
+                    val.__unfreeze()
                 elif isinstance(val, LockableList):
-                    val._LockableList__unfreeze(recursive=recursive)
+                    val._LockableList__unfreeze()
 
         self._locked = False
 
-    def get_unlocked(self, recursive=True):
+    def get_unlocked(self):
 
-        if recursive:
+        if self._recursive:
             ret_dict = {}
             for key, value in self.items():
                 if isinstance(value, LockableDict):
@@ -80,8 +80,9 @@ class LockableDict(UserDict):
 
 class LockableList(UserList):
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, recursive=True, **kwargs):
         self._locked = False
+        self._recursive = recursive
         super().__init__(*args, **kwargs)
 
     def __enter__(self):
@@ -104,9 +105,9 @@ class LockableList(UserList):
     def __setitem__(self, i, item):
         self.__check_lock()
         if isinstance(item, (dict, UserDict)):
-            super().__setitem__(i, LockableDict(item))
+            super().__setitem__(i, LockableDict(item, recursive=self._recursive))
         elif isinstance(item, (list, UserList)):
-            super().__setitem__(i, LockableList(item))
+            super().__setitem__(i, LockableList(item, recursive=self._recursive))
         else:
             super().__setitem__(i, item)
 
@@ -146,33 +147,33 @@ class LockableList(UserList):
         self.__check_lock()
         super().extend(other)
 
-    def freeze(self, recursive=True):
-        self.__freeze(recursive=recursive)
+    def freeze(self):
+        self.__freeze()
 
-    def __freeze(self, recursive=True):
+    def __freeze(self):
 
-        if recursive:
+        if self._recursive:
             for val in self:
                 if isinstance(val, LockableList):
-                    val.__freeze(recursive=recursive)
+                    val.__freeze()
                 elif isinstance(val, LockableDict):
-                    val._LockableDict__freeze(recursive=recursive)
+                    val._LockableDict__freeze()
 
         self._locked = True
 
-    def __unfreeze(self, recursive=True):
+    def __unfreeze(self):
 
-        if recursive:
+        if self._recursive:
             for val in self:
                 if isinstance(val, LockableList):
-                    val.__unfreeze(recursive=recursive)
+                    val.__unfreeze()
                 elif isinstance(val, LockableDict):
-                    val._LockableDict__unfreeze(recursive=recursive)
+                    val._LockableDict__unfreeze()
         self._locked = False
 
-    def get_unlocked(self, recursive=True):
+    def get_unlocked(self):
 
-        if recursive:
+        if self._recursive:
             ret_list = []
             for value in self:
                 if isinstance(value, LockableDict):

@@ -31,3 +31,4 @@ class SchemaDict(LockableDict):
 
     def get_tag_info(self, name, contains=None, not_contains=None):
         return get_tag_info(self, name, contains=contains, not_contains=not_contains)
+
