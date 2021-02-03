@@ -8,7 +8,7 @@ from .outschema_todict import load_outschema
 class SchemaDict(LockableDict):
 
     @classmethod
-    def from_version(cls,*args, input_schema=True, **kwargs):
+    def from_version(cls, *args, input_schema=True, **kwargs):
 
         if input_schema:
             schema_dict, xmlschema = load_inpschema(*args, schema_return=True, **kwargs)
@@ -16,7 +16,6 @@ class SchemaDict(LockableDict):
             schema_dict, xmlschema = load_outschema(*args, schema_return=True, **kwargs)
 
         return cls(schema_dict, xmlschema=xmlschema)
-
 
     def __init__(self, *args, xmlschema=None, **kwargs):
         self.xmlschema = xmlschema
@@ -36,4 +35,3 @@ class SchemaDict(LockableDict):
 
     def get_tag_info(self, name, contains=None, not_contains=None):
         return get_tag_info(self, name, contains=contains, not_contains=not_contains)
-

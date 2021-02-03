@@ -1,6 +1,25 @@
 # -*- coding: utf-8 -*-
 
 from collections import UserDict, UserList
+from contextlib import contextmanager
+
+
+@contextmanager
+def LockContainer(lock_object):
+
+    assert isinstance(lock_object, (LockableDict, LockableList)), f'Wrong type Got: {lock_object.__class__}'
+
+    assert not lock_object._locked, f'{lock_object.__class__.__name__} was already locked before entering the contextmanager'
+
+    lock_object.freeze()
+
+    try:
+        yield
+    finally:
+        if isinstance(lock_object, LockableDict):
+            lock_object._LockableDict__unfreeze()
+        elif isinstance(lock_object, LockableList):
+            lock_object._LockableList__unfreeze()
 
 
 class LockableDict(UserDict):
@@ -13,15 +32,6 @@ class LockableDict(UserDict):
     def __check_lock(self):
         if self._locked:
             raise RuntimeError('Modification not allowed')
-
-    def __enter__(self):
-        if self._locked:
-            raise RuntimeError(f'{self.__class__.__name__} was already locked before entering the contextmanager')
-        self.__freeze()
-        return self
-
-    def __exit__(self, *args):
-        self.__unfreeze()
 
     def __delitem__(self, key):
         self.__check_lock()
@@ -84,15 +94,6 @@ class LockableList(UserList):
         self._locked = False
         self._recursive = recursive
         super().__init__(*args, **kwargs)
-
-    def __enter__(self):
-        if self._locked:
-            raise RuntimeError(f'{self.__class__.__name__} was already locked before entering the contextmanager')
-        self.__freeze()
-        return self
-
-    def __exit__(self, *args):
-        self.__unfreeze()
 
     def __check_lock(self):
         if self._locked:
