@@ -7,15 +7,20 @@ from .outschema_todict import load_outschema
 
 class SchemaDict(LockableDict):
 
-    def __init__(self, *args, input_schema=True, **kwargs):
+    @classmethod
+    def from_version(cls,*args, input_schema=True, **kwargs):
 
         if input_schema:
-            schema_dict, self.xmlschema = load_inpschema(*args, schema_return=True, **kwargs)
+            schema_dict, xmlschema = load_inpschema(*args, schema_return=True, **kwargs)
         else:
-            schema_dict, self.xmlschema = load_outschema(*args, schema_return=True, **kwargs)
+            schema_dict, xmlschema = load_outschema(*args, schema_return=True, **kwargs)
 
-        #Here we initialize the LockableDict and lock it immediately afterwards
-        super().__init__(schema_dict)
+        return cls(schema_dict, xmlschema=xmlschema)
+
+
+    def __init__(self, *args, xmlschema=None, **kwargs):
+        self.xmlschema = xmlschema
+        super().__init__(*args, **kwargs)
         super().freeze()
 
     def get_tag_xpath(self, name, contains=None, not_contains=None):
