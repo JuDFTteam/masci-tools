@@ -13,6 +13,7 @@ class SchemaDict(LockableDict):
         else:
             schema_dict, self.xmlschema = load_outschema(*args, schema_return=True, **kwargs)
 
+        #Here we initialize the LockableDict and lock it immediately afterwards
         super().__init__(schema_dict)
         super().freeze()
 
