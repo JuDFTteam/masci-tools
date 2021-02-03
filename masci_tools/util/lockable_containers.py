@@ -29,12 +29,10 @@ class LockableDict(UserDict):
 
     def __setitem__(self, key, value):
         self.__check_lock()
-        if isinstance(value, (dict, UserDict, list, UserList)) and \
-           getattr(value, 'freeze', None) is None:
-            if isinstance(value, (dict, UserDict)):
-                super().__setitem__(key, LockableDict(value, recursive=self._recursive))
-            elif isinstance(value, (list, UserList)):
-                super().__setitem__(key, LockableList(value, recursive=self._recursive))
+        if isinstance(value, list):
+            super().__setitem__(key, LockableList(value, recursive=self._recursive))
+        elif isinstance(value, dict):
+            super().__setitem__(key, LockableDict(value, recursive=self._recursive))
         else:
             super().__setitem__(key, value)
 
@@ -106,12 +104,10 @@ class LockableList(UserList):
 
     def __setitem__(self, i, item):
         self.__check_lock()
-        if isinstance(item, (dict, UserDict, list, UserList)) and \
-           getattr(item, 'freeze', None) is None:
-            if isinstance(item, (dict, UserDict)):
-                super().__setitem__(i, LockableDict(item, recursive=self._recursive))
-            elif isinstance(item, (list, UserList)):
-                super().__setitem__(key, LockableList(item, recursive=self._recursive))
+        if isinstance(item, list):
+            super().__setitem__(i, LockableList(item, recursive=self._recursive))
+        elif isinstance(item, dict):
+            super().__setitem__(i, LockableDict(item, recursive=self._recursive))
         else:
             super().__setitem__(i, item)
 
