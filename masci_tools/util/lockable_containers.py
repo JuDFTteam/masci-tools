@@ -61,7 +61,6 @@ class LockableDict(UserDict):
 
         self._locked = False
 
-
     def get_unlocked(self, recursive=True):
 
         if recursive:
@@ -98,9 +97,9 @@ class LockableList(UserList):
         if self._locked:
             raise RuntimeError('Modification not allowed')
 
-    def __delitem__(self):
+    def __delitem__(self, i):
         self.__check_lock()
-        super().__delitem__()
+        super().__delitem__(i)
 
     def __setitem__(self, i, item):
         self.__check_lock()
