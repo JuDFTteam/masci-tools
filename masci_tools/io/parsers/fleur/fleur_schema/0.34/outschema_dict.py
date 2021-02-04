@@ -710,7 +710,7 @@ schema_dict = {
     }),
     'iteration_tag_info': {
         './FermiEnergy': {
-            'attribs': CaseInsensitiveFrozenSet(['value', 'units']),
+            'attribs': CaseInsensitiveFrozenSet(['units', 'value']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': CaseInsensitiveFrozenSet([]),
@@ -728,7 +728,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         './Forcetheorem_DMI/Entry': {
-            'attribs': CaseInsensitiveFrozenSet(['q', 'phi', 'theta', 'ev-sum']),
+            'attribs': CaseInsensitiveFrozenSet(['ev-sum', 'phi', 'q', 'theta']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['phi', 'theta']),
             'order': CaseInsensitiveFrozenSet([]),
@@ -737,7 +737,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         './Forcetheorem_DMI/allAtoms': {
-            'attribs': CaseInsensitiveFrozenSet(['atomType', 'q', 'phi', 'theta', 'H_so']),
+            'attribs': CaseInsensitiveFrozenSet(['H_so', 'atomType', 'phi', 'q', 'theta']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['atomType']),
             'order': CaseInsensitiveFrozenSet([]),
@@ -746,7 +746,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         './Forcetheorem_DMI/singleAtom': {
-            'attribs': CaseInsensitiveFrozenSet(['atomType', 'q', 'phi', 'theta', 'H_so']),
+            'attribs': CaseInsensitiveFrozenSet(['H_so', 'atomType', 'phi', 'q', 'theta']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['atomType']),
             'order': CaseInsensitiveFrozenSet([]),
@@ -764,7 +764,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         './Forcetheorem_JIJ/Config': {
-            'attribs': CaseInsensitiveFrozenSet(['n', 'q', 'iatom', 'jatom', 'phase', 'ev-sum']),
+            'attribs': CaseInsensitiveFrozenSet(['ev-sum', 'iatom', 'jatom', 'n', 'phase', 'q']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': CaseInsensitiveFrozenSet([]),
@@ -781,11 +781,11 @@ schema_dict = {
             CaseInsensitiveFrozenSet([]),
             'order':
             CaseInsensitiveFrozenSet([
-                'energyParameters', 'eigenvalues', 'bandgap', 'sumValenceSingleParticleEnergies', 'FermiEnergy',
-                'valenceDensity', 'onSiteExchangeSplitting', 'noncollinearTorgue', 'spinorbitTorgue', 'coreStates',
-                'allElectronCharges', 'magneticMomentsInMTSpheres', 'orbitalMagneticMomentsInMTSpheres', 'rdmft',
-                'totalEnergy', 'totalForcesOnRepresentativeAtoms', 'ldaUDensityMatrix', 'ldaUDensityMatrixConvergence',
-                'densityConvergence', 'timing'
+                'FermiEnergy', 'allElectronCharges', 'bandgap', 'coreStates', 'densityConvergence', 'eigenvalues',
+                'energyParameters', 'ldaUDensityMatrix', 'ldaUDensityMatrixConvergence', 'magneticMomentsInMTSpheres',
+                'noncollinearTorgue', 'onSiteExchangeSplitting', 'orbitalMagneticMomentsInMTSpheres', 'rdmft',
+                'spinorbitTorgue', 'sumValenceSingleParticleEnergies', 'timing', 'totalEnergy',
+                'totalForcesOnRepresentativeAtoms', 'valenceDensity'
             ]),
             'several':
             CaseInsensitiveFrozenSet([]),
@@ -804,7 +804,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         './Forcetheorem_MAE/Angle': {
-            'attribs': CaseInsensitiveFrozenSet(['phi', 'theta', 'ev-sum']),
+            'attribs': CaseInsensitiveFrozenSet(['ev-sum', 'phi', 'theta']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': CaseInsensitiveFrozenSet([]),
@@ -822,7 +822,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         './Forcetheorem_SSDISP/Entry': {
-            'attribs': CaseInsensitiveFrozenSet(['q', 'ev-sum']),
+            'attribs': CaseInsensitiveFrozenSet(['ev-sum', 'q']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': CaseInsensitiveFrozenSet([]),
@@ -832,10 +832,10 @@ schema_dict = {
         },
         './allElectronCharges': {
             'attribs': CaseInsensitiveFrozenSet([]),
-            'optional': CaseInsensitiveFrozenSet(['mtCharges', 'spinDependentCharge', 'totalCharge', 'fixedCharges']),
+            'optional': CaseInsensitiveFrozenSet(['fixedCharges', 'mtCharges', 'spinDependentCharge', 'totalCharge']),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet(['mtCharges', 'spinDependentCharge', 'totalCharge', 'fixedCharges']),
-            'several': CaseInsensitiveFrozenSet(['mtCharges', 'spinDependentCharge', 'totalCharge', 'fixedCharges']),
+            'order': CaseInsensitiveFrozenSet(['fixedCharges', 'mtCharges', 'spinDependentCharge', 'totalCharge']),
+            'several': CaseInsensitiveFrozenSet(['fixedCharges', 'mtCharges', 'spinDependentCharge', 'totalCharge']),
             'simple': CaseInsensitiveFrozenSet(['spinDependentCharge', 'totalCharge']),
             'text': CaseInsensitiveFrozenSet([])
         },
@@ -849,7 +849,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         './allElectronCharges/fixedCharges/spinDependentCharge': {
-            'attribs': CaseInsensitiveFrozenSet(['spin', 'total', 'interstitial', 'mtSpheres', 'vacuum1', 'vacuum2']),
+            'attribs': CaseInsensitiveFrozenSet(['interstitial', 'mtSpheres', 'spin', 'total', 'vacuum1', 'vacuum2']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['spin', 'vacuum1', 'vacuum2']),
             'order': CaseInsensitiveFrozenSet([]),
@@ -858,7 +858,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         './allElectronCharges/fixedCharges/totalCharge': {
-            'attribs': CaseInsensitiveFrozenSet(['value', 'units']),
+            'attribs': CaseInsensitiveFrozenSet(['units', 'value']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': CaseInsensitiveFrozenSet([]),
@@ -876,7 +876,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         './allElectronCharges/mtCharges/mtCharge': {
-            'attribs': CaseInsensitiveFrozenSet(['atomType', 'total', 's', 'p', 'd', 'f']),
+            'attribs': CaseInsensitiveFrozenSet(['atomType', 'd', 'f', 'p', 's', 'total']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': CaseInsensitiveFrozenSet([]),
@@ -888,13 +888,13 @@ schema_dict = {
             'attribs': CaseInsensitiveFrozenSet(['atomType']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet(['lowJ', 'highJ']),
+            'order': CaseInsensitiveFrozenSet(['highJ', 'lowJ']),
             'several': CaseInsensitiveFrozenSet([]),
-            'simple': CaseInsensitiveFrozenSet(['lowJ', 'highJ']),
+            'simple': CaseInsensitiveFrozenSet(['highJ', 'lowJ']),
             'text': CaseInsensitiveFrozenSet([])
         },
         './allElectronCharges/mtCharges/mtJcharge/highJ': {
-            'attribs': CaseInsensitiveFrozenSet(['p', 'd', 'f']),
+            'attribs': CaseInsensitiveFrozenSet(['d', 'f', 'p']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': CaseInsensitiveFrozenSet([]),
@@ -903,7 +903,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         './allElectronCharges/mtCharges/mtJcharge/lowJ': {
-            'attribs': CaseInsensitiveFrozenSet(['p', 'd', 'f']),
+            'attribs': CaseInsensitiveFrozenSet(['d', 'f', 'p']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': CaseInsensitiveFrozenSet([]),
@@ -912,7 +912,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         './allElectronCharges/spinDependentCharge': {
-            'attribs': CaseInsensitiveFrozenSet(['spin', 'total', 'interstitial', 'mtSpheres', 'vacuum1', 'vacuum2']),
+            'attribs': CaseInsensitiveFrozenSet(['interstitial', 'mtSpheres', 'spin', 'total', 'vacuum1', 'vacuum2']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['spin', 'vacuum1', 'vacuum2']),
             'order': CaseInsensitiveFrozenSet([]),
@@ -921,7 +921,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         './allElectronCharges/totalCharge': {
-            'attribs': CaseInsensitiveFrozenSet(['value', 'units']),
+            'attribs': CaseInsensitiveFrozenSet(['units', 'value']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': CaseInsensitiveFrozenSet([]),
@@ -930,7 +930,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         './bandgap': {
-            'attribs': CaseInsensitiveFrozenSet(['value', 'units']),
+            'attribs': CaseInsensitiveFrozenSet(['units', 'value']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': CaseInsensitiveFrozenSet([]),
@@ -940,7 +940,7 @@ schema_dict = {
         },
         './coreStates': {
             'attribs':
-            CaseInsensitiveFrozenSet(['atomType', 'atomicNumber', 'spin', 'kinEnergy', 'eigValSum', 'lostElectrons']),
+            CaseInsensitiveFrozenSet(['atomType', 'atomicNumber', 'eigValSum', 'kinEnergy', 'lostElectrons', 'spin']),
             'optional':
             CaseInsensitiveFrozenSet(['state']),
             'optional_attribs':
@@ -955,7 +955,7 @@ schema_dict = {
             CaseInsensitiveFrozenSet([])
         },
         './coreStates/state': {
-            'attribs': CaseInsensitiveFrozenSet(['n', 'l', 'j', 'energy', 'weight']),
+            'attribs': CaseInsensitiveFrozenSet(['energy', 'j', 'l', 'n', 'weight']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': CaseInsensitiveFrozenSet([]),
@@ -973,7 +973,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         './densityConvergence/chargeDensity': {
-            'attribs': CaseInsensitiveFrozenSet(['spin', 'distance', 'units']),
+            'attribs': CaseInsensitiveFrozenSet(['distance', 'spin', 'units']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['spin', 'units']),
             'order': CaseInsensitiveFrozenSet([]),
@@ -982,7 +982,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         './densityConvergence/overallChargeDensity': {
-            'attribs': CaseInsensitiveFrozenSet(['spin', 'distance', 'units']),
+            'attribs': CaseInsensitiveFrozenSet(['distance', 'spin', 'units']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['spin', 'units']),
             'order': CaseInsensitiveFrozenSet([]),
@@ -991,7 +991,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         './densityConvergence/spinDensity': {
-            'attribs': CaseInsensitiveFrozenSet(['spin', 'distance', 'units']),
+            'attribs': CaseInsensitiveFrozenSet(['distance', 'spin', 'units']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['spin', 'units']),
             'order': CaseInsensitiveFrozenSet([]),
@@ -1009,9 +1009,9 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet(['eigenvaluesAt'])
         },
         './eigenvalues/eigenvaluesAt': {
-            'attribs': CaseInsensitiveFrozenSet(['spin', 'ikpt', 'k_x', 'k_y', 'k_z']),
+            'attribs': CaseInsensitiveFrozenSet(['ikpt', 'k_x', 'k_y', 'k_z', 'spin']),
             'optional': CaseInsensitiveFrozenSet([]),
-            'optional_attribs': CaseInsensitiveFrozenSet(['spin', 'k_x', 'k_y', 'k_z']),
+            'optional_attribs': CaseInsensitiveFrozenSet(['k_x', 'k_y', 'k_z', 'spin']),
             'order': CaseInsensitiveFrozenSet([]),
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
@@ -1019,18 +1019,18 @@ schema_dict = {
         },
         './energyParameters': {
             'attribs': CaseInsensitiveFrozenSet(['units']),
-            'optional': CaseInsensitiveFrozenSet(['atomicEP', 'heAtomicEP', 'loAtomicEP', 'heloAtomicEP', 'vacuumEP']),
+            'optional': CaseInsensitiveFrozenSet(['atomicEP', 'heAtomicEP', 'heloAtomicEP', 'loAtomicEP', 'vacuumEP']),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet(['atomicEP', 'heAtomicEP', 'loAtomicEP', 'heloAtomicEP', 'vacuumEP']),
-            'several': CaseInsensitiveFrozenSet(['atomicEP', 'heAtomicEP', 'loAtomicEP', 'heloAtomicEP', 'vacuumEP']),
-            'simple': CaseInsensitiveFrozenSet(['atomicEP', 'heAtomicEP', 'loAtomicEP', 'heloAtomicEP', 'vacuumEP']),
+            'order': CaseInsensitiveFrozenSet(['atomicEP', 'heAtomicEP', 'heloAtomicEP', 'loAtomicEP', 'vacuumEP']),
+            'several': CaseInsensitiveFrozenSet(['atomicEP', 'heAtomicEP', 'heloAtomicEP', 'loAtomicEP', 'vacuumEP']),
+            'simple': CaseInsensitiveFrozenSet(['atomicEP', 'heAtomicEP', 'heloAtomicEP', 'loAtomicEP', 'vacuumEP']),
             'text': CaseInsensitiveFrozenSet([])
         },
         './energyParameters/atomicEP': {
             'attribs':
-            CaseInsensitiveFrozenSet(['atomType', 'spin', 'branch', 'branchLowest', 'branchHighest', 'value']),
+            CaseInsensitiveFrozenSet(['atomType', 'branch', 'branchHighest', 'branchLowest', 'spin', 'value']),
             'optional': CaseInsensitiveFrozenSet([]),
-            'optional_attribs': CaseInsensitiveFrozenSet(['spin', 'branchLowest', 'branchHighest']),
+            'optional_attribs': CaseInsensitiveFrozenSet(['branchHighest', 'branchLowest', 'spin']),
             'order': CaseInsensitiveFrozenSet([]),
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
@@ -1038,9 +1038,9 @@ schema_dict = {
         },
         './energyParameters/heAtomicEP': {
             'attribs':
-            CaseInsensitiveFrozenSet(['atomType', 'spin', 'branch', 'branchLowest', 'branchHighest', 'value']),
+            CaseInsensitiveFrozenSet(['atomType', 'branch', 'branchHighest', 'branchLowest', 'spin', 'value']),
             'optional': CaseInsensitiveFrozenSet([]),
-            'optional_attribs': CaseInsensitiveFrozenSet(['spin', 'branchLowest', 'branchHighest']),
+            'optional_attribs': CaseInsensitiveFrozenSet(['branchHighest', 'branchLowest', 'spin']),
             'order': CaseInsensitiveFrozenSet([]),
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
@@ -1048,9 +1048,9 @@ schema_dict = {
         },
         './energyParameters/heloAtomicEP': {
             'attribs':
-            CaseInsensitiveFrozenSet(['atomType', 'spin', 'branch', 'branchLowest', 'branchHighest', 'value']),
+            CaseInsensitiveFrozenSet(['atomType', 'branch', 'branchHighest', 'branchLowest', 'spin', 'value']),
             'optional': CaseInsensitiveFrozenSet([]),
-            'optional_attribs': CaseInsensitiveFrozenSet(['spin', 'branchLowest', 'branchHighest']),
+            'optional_attribs': CaseInsensitiveFrozenSet(['branchHighest', 'branchLowest', 'spin']),
             'order': CaseInsensitiveFrozenSet([]),
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
@@ -1058,16 +1058,16 @@ schema_dict = {
         },
         './energyParameters/loAtomicEP': {
             'attribs':
-            CaseInsensitiveFrozenSet(['atomType', 'spin', 'branch', 'branchLowest', 'branchHighest', 'value']),
+            CaseInsensitiveFrozenSet(['atomType', 'branch', 'branchHighest', 'branchLowest', 'spin', 'value']),
             'optional': CaseInsensitiveFrozenSet([]),
-            'optional_attribs': CaseInsensitiveFrozenSet(['spin', 'branchLowest', 'branchHighest']),
+            'optional_attribs': CaseInsensitiveFrozenSet(['branchHighest', 'branchLowest', 'spin']),
             'order': CaseInsensitiveFrozenSet([]),
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         './energyParameters/vacuumEP': {
-            'attribs': CaseInsensitiveFrozenSet(['vacuum', 'spin', 'vzIR', 'vzInf', 'value']),
+            'attribs': CaseInsensitiveFrozenSet(['spin', 'vacuum', 'value', 'vzIR', 'vzInf']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['spin', 'vzIR', 'vzInf']),
             'order': CaseInsensitiveFrozenSet([]),
@@ -1085,7 +1085,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet(['densityMatrixFor'])
         },
         './ldaUDensityMatrix/densityMatrixFor': {
-            'attribs': CaseInsensitiveFrozenSet(['spin', 'atomType', 'uIndex', 'l', 'U', 'J']),
+            'attribs': CaseInsensitiveFrozenSet(['J', 'U', 'atomType', 'l', 'spin', 'uIndex']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': CaseInsensitiveFrozenSet([]),
@@ -1103,7 +1103,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         './ldaUDensityMatrixConvergence/distance': {
-            'attribs': CaseInsensitiveFrozenSet(['spin', 'distance']),
+            'attribs': CaseInsensitiveFrozenSet(['distance', 'spin']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': CaseInsensitiveFrozenSet([]),
@@ -1121,7 +1121,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         './magneticMomentsInMTSpheres/magneticMoment': {
-            'attribs': CaseInsensitiveFrozenSet(['atomType', 'moment', 'spinUpCharge', 'spinDownCharge']),
+            'attribs': CaseInsensitiveFrozenSet(['atomType', 'moment', 'spinDownCharge', 'spinUpCharge']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': CaseInsensitiveFrozenSet([]),
@@ -1157,7 +1157,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         './onSiteExchangeSplitting/excSplit': {
-            'attribs': CaseInsensitiveFrozenSet(['atomType', 'l', 'Delta', 'units']),
+            'attribs': CaseInsensitiveFrozenSet(['Delta', 'atomType', 'l', 'units']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': CaseInsensitiveFrozenSet([]),
@@ -1175,7 +1175,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         './orbitalMagneticMomentsInMTSpheres/orbMagMoment': {
-            'attribs': CaseInsensitiveFrozenSet(['atomType', 'moment', 'spinUpCharge', 'spinDownCharge']),
+            'attribs': CaseInsensitiveFrozenSet(['atomType', 'moment', 'spinDownCharge', 'spinUpCharge']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': CaseInsensitiveFrozenSet([]),
@@ -1193,7 +1193,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         './rdmft/occupations': {
-            'attribs': CaseInsensitiveFrozenSet(['spin', 'kpoint']),
+            'attribs': CaseInsensitiveFrozenSet(['kpoint', 'spin']),
             'optional': CaseInsensitiveFrozenSet(['state']),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': CaseInsensitiveFrozenSet(['state']),
@@ -1202,7 +1202,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         './rdmft/occupations/state': {
-            'attribs': CaseInsensitiveFrozenSet(['index', 'energy', 'occupation']),
+            'attribs': CaseInsensitiveFrozenSet(['energy', 'index', 'occupation']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': CaseInsensitiveFrozenSet([]),
@@ -1229,7 +1229,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         './sumValenceSingleParticleEnergies': {
-            'attribs': CaseInsensitiveFrozenSet(['value', 'units']),
+            'attribs': CaseInsensitiveFrozenSet(['units', 'value']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': CaseInsensitiveFrozenSet([]),
@@ -1247,7 +1247,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         './timing/timer': {
-            'attribs': CaseInsensitiveFrozenSet(['name', 'value', 'units']),
+            'attribs': CaseInsensitiveFrozenSet(['name', 'units', 'value']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': CaseInsensitiveFrozenSet([]),
@@ -1257,38 +1257,38 @@ schema_dict = {
         },
         './totalEnergy': {
             'attribs':
-            CaseInsensitiveFrozenSet(['value', 'units', 'comment']),
+            CaseInsensitiveFrozenSet(['comment', 'units', 'value']),
             'optional':
             CaseInsensitiveFrozenSet([
-                'sumOfEigenvalues', 'densityCoulombPotentialIntegral', 'densityEffectivePotentialIntegral',
-                'chargeDenXCDenIntegral', 'FockExchangeEnergyValence', 'FockExchangeEnergyCore',
-                'atomTypeDependentContributions', 'dftUCorrection', 'tkbTimesEntropy', 'freeEnergy', 'extrapolationTo0K'
+                'FockExchangeEnergyCore', 'FockExchangeEnergyValence', 'atomTypeDependentContributions',
+                'chargeDenXCDenIntegral', 'densityCoulombPotentialIntegral', 'densityEffectivePotentialIntegral',
+                'dftUCorrection', 'extrapolationTo0K', 'freeEnergy', 'sumOfEigenvalues', 'tkbTimesEntropy'
             ]),
             'optional_attribs':
-            CaseInsensitiveFrozenSet(['units', 'comment']),
+            CaseInsensitiveFrozenSet(['comment', 'units']),
             'order':
             CaseInsensitiveFrozenSet([
-                'sumOfEigenvalues', 'densityCoulombPotentialIntegral', 'densityEffectivePotentialIntegral',
-                'chargeDenXCDenIntegral', 'FockExchangeEnergyValence', 'FockExchangeEnergyCore',
-                'atomTypeDependentContributions', 'dftUCorrection', 'tkbTimesEntropy', 'freeEnergy', 'extrapolationTo0K'
+                'FockExchangeEnergyCore', 'FockExchangeEnergyValence', 'atomTypeDependentContributions',
+                'chargeDenXCDenIntegral', 'densityCoulombPotentialIntegral', 'densityEffectivePotentialIntegral',
+                'dftUCorrection', 'extrapolationTo0K', 'freeEnergy', 'sumOfEigenvalues', 'tkbTimesEntropy'
             ]),
             'several':
             CaseInsensitiveFrozenSet([
-                'sumOfEigenvalues', 'densityCoulombPotentialIntegral', 'densityEffectivePotentialIntegral',
-                'chargeDenXCDenIntegral', 'FockExchangeEnergyValence', 'FockExchangeEnergyCore',
-                'atomTypeDependentContributions', 'dftUCorrection', 'tkbTimesEntropy', 'freeEnergy', 'extrapolationTo0K'
+                'FockExchangeEnergyCore', 'FockExchangeEnergyValence', 'atomTypeDependentContributions',
+                'chargeDenXCDenIntegral', 'densityCoulombPotentialIntegral', 'densityEffectivePotentialIntegral',
+                'dftUCorrection', 'extrapolationTo0K', 'freeEnergy', 'sumOfEigenvalues', 'tkbTimesEntropy'
             ]),
             'simple':
             CaseInsensitiveFrozenSet([
-                'densityCoulombPotentialIntegral', 'densityEffectivePotentialIntegral', 'chargeDenXCDenIntegral',
-                'FockExchangeEnergyValence', 'FockExchangeEnergyCore', 'dftUCorrection', 'tkbTimesEntropy',
-                'freeEnergy', 'extrapolationTo0K'
+                'FockExchangeEnergyCore', 'FockExchangeEnergyValence', 'chargeDenXCDenIntegral',
+                'densityCoulombPotentialIntegral', 'densityEffectivePotentialIntegral', 'dftUCorrection',
+                'extrapolationTo0K', 'freeEnergy', 'tkbTimesEntropy'
             ]),
             'text':
             CaseInsensitiveFrozenSet([])
         },
         './totalEnergy/FockExchangeEnergyCore': {
-            'attribs': CaseInsensitiveFrozenSet(['value', 'units']),
+            'attribs': CaseInsensitiveFrozenSet(['units', 'value']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': CaseInsensitiveFrozenSet([]),
@@ -1297,7 +1297,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         './totalEnergy/FockExchangeEnergyValence': {
-            'attribs': CaseInsensitiveFrozenSet(['value', 'units']),
+            'attribs': CaseInsensitiveFrozenSet(['units', 'value']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': CaseInsensitiveFrozenSet([]),
@@ -1307,15 +1307,15 @@ schema_dict = {
         },
         './totalEnergy/atomTypeDependentContributions': {
             'attribs': CaseInsensitiveFrozenSet(['atomType']),
-            'optional': CaseInsensitiveFrozenSet(['electronNucleiInteractionDifferentMTs', 'MadelungTerm']),
+            'optional': CaseInsensitiveFrozenSet(['MadelungTerm', 'electronNucleiInteractionDifferentMTs']),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet(['electronNucleiInteractionDifferentMTs', 'MadelungTerm']),
+            'order': CaseInsensitiveFrozenSet(['MadelungTerm', 'electronNucleiInteractionDifferentMTs']),
             'several': CaseInsensitiveFrozenSet([]),
-            'simple': CaseInsensitiveFrozenSet(['electronNucleiInteractionDifferentMTs', 'MadelungTerm']),
+            'simple': CaseInsensitiveFrozenSet(['MadelungTerm', 'electronNucleiInteractionDifferentMTs']),
             'text': CaseInsensitiveFrozenSet([])
         },
         './totalEnergy/atomTypeDependentContributions/MadelungTerm': {
-            'attribs': CaseInsensitiveFrozenSet(['value', 'units']),
+            'attribs': CaseInsensitiveFrozenSet(['units', 'value']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': CaseInsensitiveFrozenSet([]),
@@ -1324,7 +1324,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         './totalEnergy/atomTypeDependentContributions/electronNucleiInteractionDifferentMTs': {
-            'attribs': CaseInsensitiveFrozenSet(['value', 'units']),
+            'attribs': CaseInsensitiveFrozenSet(['units', 'value']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': CaseInsensitiveFrozenSet([]),
@@ -1333,7 +1333,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         './totalEnergy/chargeDenXCDenIntegral': {
-            'attribs': CaseInsensitiveFrozenSet(['value', 'units']),
+            'attribs': CaseInsensitiveFrozenSet(['units', 'value']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': CaseInsensitiveFrozenSet([]),
@@ -1342,7 +1342,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         './totalEnergy/densityCoulombPotentialIntegral': {
-            'attribs': CaseInsensitiveFrozenSet(['value', 'units']),
+            'attribs': CaseInsensitiveFrozenSet(['units', 'value']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': CaseInsensitiveFrozenSet([]),
@@ -1351,7 +1351,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         './totalEnergy/densityEffectivePotentialIntegral': {
-            'attribs': CaseInsensitiveFrozenSet(['value', 'units']),
+            'attribs': CaseInsensitiveFrozenSet(['units', 'value']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': CaseInsensitiveFrozenSet([]),
@@ -1360,7 +1360,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         './totalEnergy/dftUCorrection': {
-            'attribs': CaseInsensitiveFrozenSet(['value', 'units']),
+            'attribs': CaseInsensitiveFrozenSet(['units', 'value']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': CaseInsensitiveFrozenSet([]),
@@ -1369,7 +1369,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         './totalEnergy/extrapolationTo0K': {
-            'attribs': CaseInsensitiveFrozenSet(['value', 'units']),
+            'attribs': CaseInsensitiveFrozenSet(['units', 'value']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': CaseInsensitiveFrozenSet([]),
@@ -1378,7 +1378,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         './totalEnergy/freeEnergy': {
-            'attribs': CaseInsensitiveFrozenSet(['value', 'units']),
+            'attribs': CaseInsensitiveFrozenSet(['units', 'value']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': CaseInsensitiveFrozenSet([]),
@@ -1387,7 +1387,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         './totalEnergy/sumOfEigenvalues': {
-            'attribs': CaseInsensitiveFrozenSet(['value', 'units']),
+            'attribs': CaseInsensitiveFrozenSet(['units', 'value']),
             'optional': CaseInsensitiveFrozenSet(['coreElectrons', 'valenceElectrons']),
             'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': CaseInsensitiveFrozenSet(['coreElectrons', 'valenceElectrons']),
@@ -1396,7 +1396,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         './totalEnergy/sumOfEigenvalues/coreElectrons': {
-            'attribs': CaseInsensitiveFrozenSet(['value', 'units']),
+            'attribs': CaseInsensitiveFrozenSet(['units', 'value']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': CaseInsensitiveFrozenSet([]),
@@ -1405,7 +1405,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         './totalEnergy/sumOfEigenvalues/valenceElectrons': {
-            'attribs': CaseInsensitiveFrozenSet(['value', 'units']),
+            'attribs': CaseInsensitiveFrozenSet(['units', 'value']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': CaseInsensitiveFrozenSet([]),
@@ -1414,7 +1414,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         './totalEnergy/tkbTimesEntropy': {
-            'attribs': CaseInsensitiveFrozenSet(['value', 'units']),
+            'attribs': CaseInsensitiveFrozenSet(['units', 'value']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': CaseInsensitiveFrozenSet([]),
@@ -1432,7 +1432,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         './totalForcesOnRepresentativeAtoms/forceTotal': {
-            'attribs': CaseInsensitiveFrozenSet(['atomType', 'x', 'y', 'z', 'F_x', 'F_y', 'F_z', 'units']),
+            'attribs': CaseInsensitiveFrozenSet(['F_x', 'F_y', 'F_z', 'atomType', 'units', 'x', 'y', 'z']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': CaseInsensitiveFrozenSet([]),
@@ -1442,10 +1442,10 @@ schema_dict = {
         },
         './valenceDensity': {
             'attribs': CaseInsensitiveFrozenSet([]),
-            'optional': CaseInsensitiveFrozenSet(['mtCharges', 'spinDependentCharge', 'totalCharge', 'fixedCharges']),
+            'optional': CaseInsensitiveFrozenSet(['fixedCharges', 'mtCharges', 'spinDependentCharge', 'totalCharge']),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet(['mtCharges', 'spinDependentCharge', 'totalCharge', 'fixedCharges']),
-            'several': CaseInsensitiveFrozenSet(['mtCharges', 'spinDependentCharge', 'totalCharge', 'fixedCharges']),
+            'order': CaseInsensitiveFrozenSet(['fixedCharges', 'mtCharges', 'spinDependentCharge', 'totalCharge']),
+            'several': CaseInsensitiveFrozenSet(['fixedCharges', 'mtCharges', 'spinDependentCharge', 'totalCharge']),
             'simple': CaseInsensitiveFrozenSet(['spinDependentCharge', 'totalCharge']),
             'text': CaseInsensitiveFrozenSet([])
         },
@@ -1459,7 +1459,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         './valenceDensity/fixedCharges/spinDependentCharge': {
-            'attribs': CaseInsensitiveFrozenSet(['spin', 'total', 'interstitial', 'mtSpheres', 'vacuum1', 'vacuum2']),
+            'attribs': CaseInsensitiveFrozenSet(['interstitial', 'mtSpheres', 'spin', 'total', 'vacuum1', 'vacuum2']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['spin', 'vacuum1', 'vacuum2']),
             'order': CaseInsensitiveFrozenSet([]),
@@ -1468,7 +1468,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         './valenceDensity/fixedCharges/totalCharge': {
-            'attribs': CaseInsensitiveFrozenSet(['value', 'units']),
+            'attribs': CaseInsensitiveFrozenSet(['units', 'value']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': CaseInsensitiveFrozenSet([]),
@@ -1486,7 +1486,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         './valenceDensity/mtCharges/mtCharge': {
-            'attribs': CaseInsensitiveFrozenSet(['atomType', 'total', 's', 'p', 'd', 'f']),
+            'attribs': CaseInsensitiveFrozenSet(['atomType', 'd', 'f', 'p', 's', 'total']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': CaseInsensitiveFrozenSet([]),
@@ -1498,13 +1498,13 @@ schema_dict = {
             'attribs': CaseInsensitiveFrozenSet(['atomType']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet(['lowJ', 'highJ']),
+            'order': CaseInsensitiveFrozenSet(['highJ', 'lowJ']),
             'several': CaseInsensitiveFrozenSet([]),
-            'simple': CaseInsensitiveFrozenSet(['lowJ', 'highJ']),
+            'simple': CaseInsensitiveFrozenSet(['highJ', 'lowJ']),
             'text': CaseInsensitiveFrozenSet([])
         },
         './valenceDensity/mtCharges/mtJcharge/highJ': {
-            'attribs': CaseInsensitiveFrozenSet(['p', 'd', 'f']),
+            'attribs': CaseInsensitiveFrozenSet(['d', 'f', 'p']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': CaseInsensitiveFrozenSet([]),
@@ -1513,7 +1513,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         './valenceDensity/mtCharges/mtJcharge/lowJ': {
-            'attribs': CaseInsensitiveFrozenSet(['p', 'd', 'f']),
+            'attribs': CaseInsensitiveFrozenSet(['d', 'f', 'p']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': CaseInsensitiveFrozenSet([]),
@@ -1522,7 +1522,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         './valenceDensity/spinDependentCharge': {
-            'attribs': CaseInsensitiveFrozenSet(['spin', 'total', 'interstitial', 'mtSpheres', 'vacuum1', 'vacuum2']),
+            'attribs': CaseInsensitiveFrozenSet(['interstitial', 'mtSpheres', 'spin', 'total', 'vacuum1', 'vacuum2']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['spin', 'vacuum1', 'vacuum2']),
             'order': CaseInsensitiveFrozenSet([]),
@@ -1531,7 +1531,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         './valenceDensity/totalCharge': {
-            'attribs': CaseInsensitiveFrozenSet(['value', 'units']),
+            'attribs': CaseInsensitiveFrozenSet(['units', 'value']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': CaseInsensitiveFrozenSet([]),
@@ -1775,20 +1775,20 @@ schema_dict = {
             CaseInsensitiveFrozenSet(['fleurOutputVersion']),
             'optional':
             CaseInsensitiveFrozenSet([
-                'programVersion', 'parallelSetup', 'startDateAndTime', 'fleurInput', 'numericalParameters', 'scfLoop',
-                'ERROR', 'endDateAndTime'
+                'ERROR', 'endDateAndTime', 'fleurInput', 'numericalParameters', 'parallelSetup', 'programVersion',
+                'scfLoop', 'startDateAndTime'
             ]),
             'optional_attribs':
             CaseInsensitiveFrozenSet([]),
             'order':
             CaseInsensitiveFrozenSet([
-                'programVersion', 'parallelSetup', 'startDateAndTime', 'fleurInput', 'numericalParameters', 'scfLoop',
-                'ERROR', 'endDateAndTime'
+                'ERROR', 'endDateAndTime', 'fleurInput', 'numericalParameters', 'parallelSetup', 'programVersion',
+                'scfLoop', 'startDateAndTime'
             ]),
             'several':
             CaseInsensitiveFrozenSet([]),
             'simple':
-            CaseInsensitiveFrozenSet(['startDateAndTime', 'ERROR', 'endDateAndTime']),
+            CaseInsensitiveFrozenSet(['ERROR', 'endDateAndTime', 'startDateAndTime']),
             'text':
             CaseInsensitiveFrozenSet([])
         },
@@ -1814,13 +1814,13 @@ schema_dict = {
             'attribs': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet(['atomsInCell', 'basis', 'density', 'bands', 'volumes', 'kPointList']),
+            'order': CaseInsensitiveFrozenSet(['atomsInCell', 'bands', 'basis', 'density', 'kPointList', 'volumes']),
             'several': CaseInsensitiveFrozenSet([]),
-            'simple': CaseInsensitiveFrozenSet(['atomsInCell', 'basis', 'density', 'bands']),
+            'simple': CaseInsensitiveFrozenSet(['atomsInCell', 'bands', 'basis', 'density']),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurOutput/numericalParameters/atomsInCell': {
-            'attribs': CaseInsensitiveFrozenSet(['nat', 'ntype', 'jmtd', 'n_u', 'n_hia']),
+            'attribs': CaseInsensitiveFrozenSet(['jmtd', 'n_hia', 'n_u', 'nat', 'ntype']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': CaseInsensitiveFrozenSet([]),
@@ -1838,7 +1838,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurOutput/numericalParameters/basis': {
-            'attribs': CaseInsensitiveFrozenSet(['nvd', 'lmaxd', 'nlotot']),
+            'attribs': CaseInsensitiveFrozenSet(['lmaxd', 'nlotot', 'nvd']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': CaseInsensitiveFrozenSet([]),
@@ -1847,7 +1847,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurOutput/numericalParameters/density': {
-            'attribs': CaseInsensitiveFrozenSet(['ng3', 'ng2']),
+            'attribs': CaseInsensitiveFrozenSet(['ng2', 'ng3']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': CaseInsensitiveFrozenSet([]),
@@ -1856,7 +1856,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurOutput/numericalParameters/kPointList': {
-            'attribs': CaseInsensitiveFrozenSet(['weightScale', 'count']),
+            'attribs': CaseInsensitiveFrozenSet(['count', 'weightScale']),
             'optional': CaseInsensitiveFrozenSet(['kPoint']),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': CaseInsensitiveFrozenSet(['kPoint']),
@@ -1865,7 +1865,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet(['kPoint'])
         },
         '/fleurOutput/numericalParameters/volumes': {
-            'attribs': CaseInsensitiveFrozenSet(['unitCell', 'interstitial', 'omegaTilda', 'surfaceArea', 'z1']),
+            'attribs': CaseInsensitiveFrozenSet(['interstitial', 'omegaTilda', 'surfaceArea', 'unitCell', 'z1']),
             'optional': CaseInsensitiveFrozenSet(['mtVolume']),
             'optional_attribs': CaseInsensitiveFrozenSet(['omegaTilda', 'surfaceArea', 'z1']),
             'order': CaseInsensitiveFrozenSet(['mtVolume']),
@@ -1884,11 +1884,11 @@ schema_dict = {
         },
         '/fleurOutput/parallelSetup': {
             'attribs': CaseInsensitiveFrozenSet([]),
-            'optional': CaseInsensitiveFrozenSet(['openMP', 'mpi', 'mem']),
+            'optional': CaseInsensitiveFrozenSet(['mem', 'mpi', 'openMP']),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet(['openMP', 'mpi', 'mem']),
+            'order': CaseInsensitiveFrozenSet(['mem', 'mpi', 'openMP']),
             'several': CaseInsensitiveFrozenSet([]),
-            'simple': CaseInsensitiveFrozenSet(['openMP', 'mpi', 'mem']),
+            'simple': CaseInsensitiveFrozenSet(['mem', 'mpi', 'openMP']),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurOutput/parallelSetup/mem': {
@@ -1923,28 +1923,28 @@ schema_dict = {
             CaseInsensitiveFrozenSet(['version']),
             'optional':
             CaseInsensitiveFrozenSet([
-                'compilationInfo', 'gitInfo', 'targetComputerArchitectures', 'precision', 'targetStructureClass',
-                'additionalCompilerFlags'
+                'additionalCompilerFlags', 'compilationInfo', 'gitInfo', 'precision', 'targetComputerArchitectures',
+                'targetStructureClass'
             ]),
             'optional_attribs':
             CaseInsensitiveFrozenSet([]),
             'order':
             CaseInsensitiveFrozenSet([
-                'compilationInfo', 'gitInfo', 'targetComputerArchitectures', 'precision', 'targetStructureClass',
-                'additionalCompilerFlags'
+                'additionalCompilerFlags', 'compilationInfo', 'gitInfo', 'precision', 'targetComputerArchitectures',
+                'targetStructureClass'
             ]),
             'several':
             CaseInsensitiveFrozenSet([]),
             'simple':
             CaseInsensitiveFrozenSet([
-                'compilationInfo', 'gitInfo', 'targetComputerArchitectures', 'precision', 'targetStructureClass',
-                'additionalCompilerFlags'
+                'additionalCompilerFlags', 'compilationInfo', 'gitInfo', 'precision', 'targetComputerArchitectures',
+                'targetStructureClass'
             ]),
             'text':
-            CaseInsensitiveFrozenSet(['targetComputerArchitectures', 'targetStructureClass', 'additionalCompilerFlags'])
+            CaseInsensitiveFrozenSet(['additionalCompilerFlags', 'targetComputerArchitectures', 'targetStructureClass'])
         },
         '/fleurOutput/programVersion/compilationInfo': {
-            'attribs': CaseInsensitiveFrozenSet(['date', 'user', 'host', 'flag', 'link']),
+            'attribs': CaseInsensitiveFrozenSet(['date', 'flag', 'host', 'link', 'user']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': CaseInsensitiveFrozenSet([]),
@@ -1953,7 +1953,7 @@ schema_dict = {
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurOutput/programVersion/gitInfo': {
-            'attribs': CaseInsensitiveFrozenSet(['version', 'lastCommitHash', 'branch']),
+            'attribs': CaseInsensitiveFrozenSet(['branch', 'lastCommitHash', 'version']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': CaseInsensitiveFrozenSet([]),
@@ -1984,18 +1984,18 @@ schema_dict = {
             CaseInsensitiveFrozenSet(['numberForCurrentRun', 'overallNumber']),
             'optional':
             CaseInsensitiveFrozenSet([
-                'Forcetheorem_Loop', 'Forcetheorem_SSDISP', 'Forcetheorem_DMI', 'Forcetheorem_MAE', 'Forcetheorem_JIJ'
+                'Forcetheorem_DMI', 'Forcetheorem_JIJ', 'Forcetheorem_Loop', 'Forcetheorem_MAE', 'Forcetheorem_SSDISP'
             ]),
             'optional_attribs':
             CaseInsensitiveFrozenSet(['overallNumber']),
             'order':
             CaseInsensitiveFrozenSet([
-                'energyParameters', 'eigenvalues', 'bandgap', 'sumValenceSingleParticleEnergies', 'FermiEnergy',
-                'valenceDensity', 'onSiteExchangeSplitting', 'noncollinearTorgue', 'spinorbitTorgue', 'coreStates',
-                'allElectronCharges', 'magneticMomentsInMTSpheres', 'orbitalMagneticMomentsInMTSpheres', 'rdmft',
-                'totalEnergy', 'totalForcesOnRepresentativeAtoms', 'ldaUDensityMatrix', 'ldaUDensityMatrixConvergence',
-                'densityConvergence', 'timing', 'Forcetheorem_Loop', 'Forcetheorem_SSDISP', 'Forcetheorem_DMI',
-                'Forcetheorem_MAE', 'Forcetheorem_JIJ'
+                'FermiEnergy', 'Forcetheorem_DMI', 'Forcetheorem_JIJ', 'Forcetheorem_Loop', 'Forcetheorem_MAE',
+                'Forcetheorem_SSDISP', 'allElectronCharges', 'bandgap', 'coreStates', 'densityConvergence',
+                'eigenvalues', 'energyParameters', 'ldaUDensityMatrix', 'ldaUDensityMatrixConvergence',
+                'magneticMomentsInMTSpheres', 'noncollinearTorgue', 'onSiteExchangeSplitting',
+                'orbitalMagneticMomentsInMTSpheres', 'rdmft', 'spinorbitTorgue', 'sumValenceSingleParticleEnergies',
+                'timing', 'totalEnergy', 'totalForcesOnRepresentativeAtoms', 'valenceDensity'
             ]),
             'several':
             CaseInsensitiveFrozenSet(['Forcetheorem_Loop']),

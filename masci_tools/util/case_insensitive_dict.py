@@ -100,7 +100,7 @@ class CaseInsensitiveFrozenSet(frozenset):
 
     def __repr__(self):
         """Returns the repr with the orinal case of the entered keys (first encounter)"""
-        return f'{self.__class__.__name__}({[val for val in self.original_case.values()]})'
+        return f'{self.__class__.__name__}({sorted(list(self.original_case.values()))})'
 
     def __sub__(self, other):
         return self.difference(other)
@@ -148,5 +148,3 @@ class CaseInsensitiveFrozenSet(frozenset):
 
     def issuperset(self, other):
         return super().issuperset({key.lower() for key in other})
-
-

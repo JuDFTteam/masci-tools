@@ -442,7 +442,6 @@ def evaluate_tag(node, schema_dict, name, constants, parser_info_out=None, **kwa
     if 'ignore' in kwargs:
         attribs = attribs.difference(kwargs.get('ignore'))
 
-
     if not attribs:
         parser_info_out['parser_warnings'].append(f'Failed to evaluate attributes from tag {name}: '
                                                   'No attributes to parse either the tag does not '
