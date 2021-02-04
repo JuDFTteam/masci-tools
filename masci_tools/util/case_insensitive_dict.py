@@ -61,3 +61,38 @@ class CaseInsensitiveDict(UserDict):
 
     def __repr__(self):
         return f'{self.__class__.__name__}({super().__repr__()})'
+
+
+class CaseInsensitiveFrozenSet(frozenset):
+    """
+    Frozenset (i.e. immutable set) with case insensitive membership tests. Used in Schema dicts in `tag_info`
+    entries to make flexible classification easy
+    Preserves the case of the entered keys (`original_case()` returns the case of the first encounter)
+
+    :param iterable: iterable only containing str
+
+    Note:
+        Up till now only __contains__ is modified for case insensitivity so not all functionality will be as expected
+        for full case insensitivity
+
+    """
+
+    def __new__(cls, iterable):
+        return super().__new__(cls, [key.lower() for key in iterable])
+
+    def __init__(self, iterable):
+        self.__original_case = CaseInsensitiveDict()
+        for key in iterable:
+            if key not in self.__original_case:
+                self.__original_case[key] = key
+        super().__init__()
+
+    def original_case(self, key):
+        return self.__original_case[key]
+
+    def __contains__(self, key):
+        return super().__contains__(key.lower())
+
+    def __repr__(self):
+        """Returns the repr with the orinal case of the entered keys (first encounter)"""
+        return f'{self.__class__.__name__}({self.__original_case.values()})'

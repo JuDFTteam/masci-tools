@@ -14,7 +14,7 @@
 functions to extract information about the fleur schema input or output
 """
 from lxml import etree
-from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict
+from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict, CaseInsensitiveFrozenSet
 
 #These types have infinite recursive paths and CANNOT BE PARSED in the path generation
 _RECURSIVE_TYPES = ['CompositeTimerType']
@@ -961,24 +961,18 @@ def get_tag_info(xmlschema, namespaces, **kwargs):
         type_elem = type_elem[0]
 
         info_dict = {}
-        info_dict['attribs'] = _get_contained_attribs(xmlschema, namespaces, type_elem)
-        info_dict['optional_attribs'] = _get_contained_attribs(xmlschema, namespaces, type_elem, optional=True)
-        info_dict['optional'] = _get_optional_tags(xmlschema, namespaces, type_elem)
-        info_dict['several'] = _get_several_tags(xmlschema, namespaces, type_elem)
-        info_dict['order'] = _get_sequence_order(xmlschema, namespaces, type_elem)
-        info_dict['simple'] = _get_simple_tags(xmlschema,
-                                               namespaces,
-                                               type_elem,
-                                               input_mapping=kwargs.get('_input_basic_types', None))
-        info_dict['text'] = _get_text_tags(xmlschema, namespaces, type_elem, kwargs['simple_elements'])
+        info_dict['attribs'] = CaseInsensitiveFrozenSet(_get_contained_attribs(xmlschema, namespaces, type_elem))
+        info_dict['optional_attribs'] = CaseInsensitiveFrozenSet(
+            _get_contained_attribs(xmlschema, namespaces, type_elem, optional=True))
+        info_dict['optional'] = CaseInsensitiveFrozenSet(_get_optional_tags(xmlschema, namespaces, type_elem))
+        info_dict['several'] = CaseInsensitiveFrozenSet(_get_several_tags(xmlschema, namespaces, type_elem))
+        info_dict['order'] = CaseInsensitiveFrozenSet(_get_sequence_order(xmlschema, namespaces, type_elem))
+        info_dict['simple'] = CaseInsensitiveFrozenSet(
+            _get_simple_tags(xmlschema, namespaces, type_elem, input_mapping=kwargs.get('_input_basic_types', None)))
+        info_dict['text'] = CaseInsensitiveFrozenSet(
+            _get_text_tags(xmlschema, namespaces, type_elem, kwargs['simple_elements']))
 
-        empty = True
-        for elem_list in info_dict.values():
-            if isinstance(elem_list, list):
-                if len(elem_list) != 0:
-                    empty = False
-
-        if not empty:
+        if any([len(elem) != 0 for elem in info_dict.values()]):
             for path in tag_path:
                 tag_info[path] = info_dict
 

@@ -97,7 +97,8 @@ def create_inpschema_dict(path, save_to_file=True):
         with open(f'{path}/inpschema_dict.py', 'w') as f:
             f.write('# -*- coding: utf-8 -*-\n')
             f.write(f'"""{docstring}"""\n')
-            f.write('from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict\n')
+            f.write(
+                'from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict, CaseInsensitiveFrozenSet\n')
             f.write(f"__inp_version__ = '{inp_version}'\n")
             f.write('schema_dict = ')
             pprint(schema_dict, f)
