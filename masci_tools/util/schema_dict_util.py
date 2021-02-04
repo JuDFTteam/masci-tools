@@ -422,7 +422,7 @@ def evaluate_tag(node, schema_dict, name, constants, parser_info_out=None, **kwa
     tag_xpath = get_tag_xpath(schema_dict, name, contains=contains, not_contains=not_contains)
 
     #Which attributes are expected
-    attribs = []
+    attribs = set()
     if tag_xpath in schema_dict['tag_info']:
         attribs = schema_dict['tag_info'][tag_xpath]['attribs']
         optional = schema_dict['tag_info'][tag_xpath]['optional_attribs']
@@ -431,20 +431,19 @@ def evaluate_tag(node, schema_dict, name, constants, parser_info_out=None, **kwa
             attribs = schema_dict['iteration_tag_info'][tag_xpath]['attribs']
             optional = schema_dict['iteration_tag_info'][tag_xpath]['optional_attribs']
 
-    attribs = attribs.copy()
     if only_required:
-        for attrib in optional:
-            attribs.remove(attrib)
+        attribs = attribs.difference(optional)
 
     if 'ignore' in kwargs:
-        for attrib in kwargs.get('ignore'):
-            if attrib in attribs:
-                attribs.remove(attrib)
+        attribs = attribs.difference(kwargs.get('ignore'))
+
 
     if not attribs:
         parser_info_out['parser_warnings'].append(f'Failed to evaluate attributes from tag {name}: '
                                                   'No attributes to parse either the tag does not '
                                                   'exist or it has no attributes')
+    else:
+        attribs = sorted(list(attribs.original_case.values()))
 
     if replace_root is not None:
         tag_xpath = tag_xpath.replace(f"/{schema_dict['root_tag']}", replace_root)
@@ -560,7 +559,7 @@ def evaluate_parent_tag(node, schema_dict, name, constants, parser_info_out=None
     parent_xpath = tag_xpath.replace(f'/{name}', '')
 
     #Which attributes are expected
-    attribs = []
+    attribs = set()
     if parent_xpath in schema_dict['tag_info']:
         attribs = schema_dict['tag_info'][parent_xpath]['attribs']
         optional = schema_dict['tag_info'][parent_xpath]['optional_attribs']
@@ -569,20 +568,18 @@ def evaluate_parent_tag(node, schema_dict, name, constants, parser_info_out=None
             attribs = schema_dict['iteration_tag_info'][parent_xpath]['attribs']
             optional = schema_dict['iteration_tag_info'][parent_xpath]['optional_attribs']
 
-    attribs = attribs.copy()
     if only_required:
-        for attrib in optional:
-            attribs.remove(attrib)
+        attribs = attribs.difference(optional)
 
     if 'ignore' in kwargs:
-        for attrib in kwargs.get('ignore'):
-            if attrib in attribs:
-                attribs.remove(attrib)
+        attribs = attribs.difference(kwargs.get('ignore'))
 
     if not attribs:
         parser_info_out['parser_warnings'].append(f'Failed to evaluate attributes from parent tag of {name}: '
                                                   'No attributes to parse either the tag does not '
                                                   'exist or it has no attributes')
+    else:
+        attribs = sorted(list(attribs.original_case.values()))
 
     if replace_root is not None:
         tag_xpath = tag_xpath.replace(f"/{schema_dict['root_tag']}", replace_root)

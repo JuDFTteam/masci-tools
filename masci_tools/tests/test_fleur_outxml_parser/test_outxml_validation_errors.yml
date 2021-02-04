@@ -70,5 +70,5 @@ warnings:
     \ attribute 'weightSc': The attribute 'weightSc' is not allowed. \nLine 346: Element\
     \ 'kPointList': The attribute 'weightScale' is required but missing. \n"
   - No text found for tag targetStructureClass
-  - No values found for attribute value at tag bandgap
   - No values found for attribute units at tag bandgap
+  - No values found for attribute value at tag bandgap

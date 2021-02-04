@@ -72,8 +72,8 @@ class CaseInsensitiveFrozenSet(frozenset):
     :param iterable: iterable only containing str
 
     Note:
-        Up till now only __contains__ is modified for case insensitivity so not all functionality will be as expected
-        for full case insensitivity
+        There might be subtle differences to expected behaviour with the methods
+        __radd__, __ror__, and so on
 
     """
 
@@ -81,18 +81,72 @@ class CaseInsensitiveFrozenSet(frozenset):
         return super().__new__(cls, [key.lower() for key in iterable])
 
     def __init__(self, iterable):
-        self.__original_case = CaseInsensitiveDict()
-        for key in iterable:
-            if key not in self.__original_case:
-                self.__original_case[key] = key
+        self.original_case = self._get_new_original_case(iterable)
         super().__init__()
 
-    def original_case(self, key):
-        return self.__original_case[key]
+    def _get_new_original_case(self, *iterables):
+        new_dict = CaseInsensitiveDict()
+        for iterable in iterables:
+            for key in iterable:
+                if key not in new_dict:
+                    if isinstance(iterable, self.__class__):
+                        new_dict[key] = iterable.original_case(key)
+                    else:
+                        new_dict[key] = key
+        return new_dict
 
     def __contains__(self, key):
         return super().__contains__(key.lower())
 
     def __repr__(self):
         """Returns the repr with the orinal case of the entered keys (first encounter)"""
-        return f'{self.__class__.__name__}({self.__original_case.values()})'
+        return f'{self.__class__.__name__}({[val for val in self.original_case.values()]})'
+
+    def __sub__(self, other):
+        return self.difference(other)
+
+    def __and__(self, other):
+        return self.intersection(other)
+
+    def __xor__(self, other):
+        return self.symmetric_difference(other)
+
+    def __or__(self, other):
+        return self.union(other)
+
+    def __eq__(self, other):
+        return super().__eq__({key.lower() for key in other})
+
+    def __ne__(self, other):
+        return super().__ne__({key.lower() for key in other})
+
+    def difference(self, *others):
+        new_frozenset = super().difference(*[{key.lower() for key in other} for other in others])
+        new_case_dict = self._get_new_original_case(self.original_case.values(), *others)
+        return self.__class__({new_case_dict[key] for key in new_frozenset})
+
+    def symmetric_difference(self, other):
+        new_frozenset = super().symmetric_difference({key.lower() for key in other})
+        new_case_dict = self._get_new_original_case(self.original_case.values(), other)
+        return self.__class__({new_case_dict[key] for key in new_frozenset})
+
+    def union(self, *others):
+        new_frozenset = super().union(*[{key.lower() for key in other} for other in others])
+        new_case_dict = self._get_new_original_case(self.original_case.values(), *others)
+        return self.__class__({new_case_dict[key] for key in new_frozenset})
+
+    def intersection(self, *others):
+        new_frozenset = super().intersection(*[{key.lower() for key in other} for other in others])
+        new_case_dict = self._get_new_original_case(self.original_case.values(), *others)
+        return self.__class__({new_case_dict[key] for key in new_frozenset})
+
+    def isdisjoint(self, other):
+        return super().isdisjoint({key.lower() for key in other})
+
+    def issubset(self, other):
+        return super().issubset({key.lower() for key in other})
+
+    def issuperset(self, other):
+        return super().issuperset({key.lower() for key in other})
+
+
