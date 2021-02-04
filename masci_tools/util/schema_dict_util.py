@@ -88,7 +88,7 @@ def get_tag_xpath(schema_dict, name, contains=None, not_contains=None):
                          f'These are possible: {all_paths}')
 
 
-def get_tag_info(schema_dict, name, contains=None, not_contains=None, path_return=True, convert_to_builtin=True):
+def get_tag_info(schema_dict, name, contains=None, not_contains=None, path_return=True, convert_to_builtin=False):
     """
     Tries to find a unique path from the schema_dict based on the given name of the tag
     and additional further specifications and returns the tag_info entry for this tag
