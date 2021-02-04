@@ -556,7 +556,7 @@ def evaluate_parent_tag(node, schema_dict, name, constants, parser_info_out=None
 
     tag_xpath = get_tag_xpath(schema_dict, name, contains=contains, not_contains=not_contains)
 
-    parent_xpath = tag_xpath.replace(f'/{name}', '')
+    parent_xpath = '/'.join(tag_xpath.split('/')[:-1])
 
     #Which attributes are expected
     attribs = set()
