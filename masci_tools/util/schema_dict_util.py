@@ -88,7 +88,7 @@ def get_tag_xpath(schema_dict, name, contains=None, not_contains=None):
                          f'These are possible: {all_paths}')
 
 
-def get_tag_info(schema_dict, name, contains=None, not_contains=None, path_return=True):
+def get_tag_info(schema_dict, name, contains=None, not_contains=None, path_return=True, convert_to_builtin=True):
     """
     Tries to find a unique path from the schema_dict based on the given name of the tag
     and additional further specifications and returns the tag_info entry for this tag
@@ -98,6 +98,8 @@ def get_tag_info(schema_dict, name, contains=None, not_contains=None, path_retur
     :param contains: str or list of str, this string has to be in the final path
     :param not_contains: str or list of str, this string has to NOT be in the final path
     :param path_return: bool, if True the found path will be returned alongside the tag_info
+    :param convert_to_builtin: bool, if True the CaseInsensitiveFrozenSets are converetd to normal sets
+                               with the rigth case of the attributes
 
     :returns: dict, tag_info for the found xpath
     :returns: str, xpath to the tag if `path_return=True`
@@ -105,7 +107,10 @@ def get_tag_info(schema_dict, name, contains=None, not_contains=None, path_retur
     import copy
 
     tag_xpath = get_tag_xpath(schema_dict, name, contains=contains, not_contains=not_contains)
-    tag_info = copy.deepcopy(schema_dict['tag_info'][tag_xpath])
+    tag_info = schema_dict['tag_info'][tag_xpath].copy()
+
+    if convert_to_builtin:
+        tag_info = {key: set(val.original_case.values()) for key, val in tag_info.items()}
 
     if path_return:
         return tag_info, tag_xpath
