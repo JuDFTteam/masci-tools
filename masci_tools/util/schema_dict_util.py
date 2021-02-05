@@ -111,7 +111,10 @@ def get_tag_info(schema_dict, name, contains=None, not_contains=None, path_retur
     tag_info = schema_dict['tag_info'][tag_xpath].copy()
 
     if convert_to_builtin:
-        tag_info = {key: set(val.original_case.values()) if isinstance(val, CaseInsensitiveFrozenSet) else val for key, val in tag_info.items()}
+        tag_info = {
+            key: set(val.original_case.values()) if isinstance(val, CaseInsensitiveFrozenSet) else val
+            for key, val in tag_info.items()
+        }
 
     if path_return:
         return tag_info, tag_xpath
