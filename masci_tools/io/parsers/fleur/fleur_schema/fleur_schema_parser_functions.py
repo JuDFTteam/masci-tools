@@ -333,18 +333,27 @@ def _get_contained_attribs(xmlschema, namespaces, elem, optional=False):
 
         if child_type == 'attribute':
             if optional and child.attrib.get('use', 'required') == 'optional':
-                attrib_list.append(child.attrib['name'])
+                name = child.attrib['name']
+                default = child.attrib.get('default', None)
+                attrib_list.append((name, default))
             elif not optional:
                 attrib_list.append(child.attrib['name'])
         elif child_type in ['simpleContent', 'extension']:
             new_attribs = _get_contained_attribs(xmlschema, namespaces, child, optional=optional)
-            for attrib in new_attribs:
-                attrib_list.append(new_attribs.original_case[attrib])
+            if optional:
+                for entry in new_attribs.items():
+                    attrib_list.append(entry)
+            else:
+                for attrib in new_attribs:
+                    attrib_list.append(new_attribs.original_case[attrib])
 
-    attrib_set = CaseInsensitiveFrozenSet(attrib_list)
-    assert len(set(attrib_list)) == len(attrib_set), f'Lost Information: {attrib_list}'
+    if not optional:
+        attrib_res = CaseInsensitiveFrozenSet(attrib_list)
+        assert len(set(attrib_list)) == len(attrib_res), f'Lost Information: {attrib_list}'
+    else:
+        attrib_res = CaseInsensitiveDict(attrib_list)
 
-    return attrib_set
+    return attrib_res
 
 
 def _get_optional_tags(xmlschema, namespaces, elem):
