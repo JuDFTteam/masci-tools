@@ -89,7 +89,7 @@ All functions below can either be called in python scripts or from the commandli
   It can contain the following specifications:
     :name: Name of the wanted tag/attribute
     :contains: A phrase, which has to occur in the path
-    :no_contains: A phrase, which has to not occur in the path
+    :not_contains: A phrase, which has to not occur in the path
     :exclude: list of str. Only valid for attributes (these are sorted into different categories
               ```unique```, ```unique_path``` and ```other```). This attribute can exclude one or more
               of these categories
@@ -99,7 +99,7 @@ All functions below can either be called in python scripts or from the commandli
   here. These control how the parsed data is entered into the output dictionary. For a definition of these keywords, please refer to :py:mod:`~masci_tools.io.parsers.fleur.default_parse_tasks`.
 
   Each task can also contain a number of control keys, determining when to peform the tasks.
-  Each of these keys bins with a ```_```. All of these are optional.
+  Each of these keys begins with an underscore. All of these are optional.
   The following are valid:
 
     :_general: bool, if True (default False) the task is not performed for each iteration but once
@@ -108,9 +108,9 @@ All functions below can either be called in python scripts or from the commandli
     :_modes: list of tuples specifying requirements on the ```fleur_modes``` for the task.
              For example ```[('jspins', 2), ('soc', True)]``` will only perform the task for a
              magnetic SOC calculation
-    :_conversions: list of str, giving the names of functions to call after this task. functions
+    :_conversions: list of str, giving the names of functions to call after this task. Functions
                    given here have to be decorated with the :py:func:`~masci_tools.util.parse_tasks_decorators.conversion_function()` decorator
-    :_special: bool, if True (default False) this task is NEVER added automatically and has to be added 
+    :_special: bool, if True (default False) this task is NEVER added automatically and has to be added
                by hand
 
 .. topic:: Migrating the parsing tasks

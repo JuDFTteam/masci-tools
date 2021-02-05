@@ -26,7 +26,7 @@ The conversion of each attribute or text is done according to the FleurInputSche
 Parser for the Fleur out.xml file
 +++++++++++++++++++++++++++++++++
 
-For the ```out.xml``` file a similar parser is implemented. However, since the ouput file contains a lot more information, which is not always useful the :py:func:`~masci_tools.io.parsers.fleur.outxml_parser()` is defined a lot more selectively. But the usage is almost completely identical to the input file.
+For the ```out.xml``` file a similar parser is implemented. However, since the output file contains a lot more information, which is not always useful the :py:func:`~masci_tools.io.parsers.fleur.outxml_parser()` is defined a lot more selectively. But the usage is almost completely identical to the input file.
 
 .. code-block:: python
 
