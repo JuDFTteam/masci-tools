@@ -323,7 +323,8 @@ def test_get_tag_info():
             'mtSphere', 'atomicCutoffs', 'energyParameters', 'prodBasis', 'special', 'force', 'nocoParams',
             'modInitDen', 'ldaU', 'lo'
         },
-        'text': set(),
+        'text':
+        set(),
         'complex': {'electronConfig', 'ldaHIA', 'greensfCalculation', 'torgueCalculation'}
     }
 
