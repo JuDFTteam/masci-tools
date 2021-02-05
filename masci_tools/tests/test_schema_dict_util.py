@@ -308,22 +308,23 @@ def test_get_tag_info():
     schema_dict = copy.deepcopy(schema_dict_34)
 
     EXPECTED_RESULT = {
-        'attribs': ['name', 'element', 'atomicNumber'],
-        'optional': [
+        'attribs': {'name', 'element', 'atomicNumber'},
+        'optional': {
             'energyParameters', 'prodBasis', 'special', 'force', 'nocoParams', 'modInitDen', 'ldaU', 'ldaHIA',
             'greensfCalculation', 'torgueCalculation', 'lo'
-        ],
-        'optional_attribs': ['element'],
+        },
+        'optional_attribs': {'element'},
         'order': [
             'mtSphere', 'atomicCutoffs', 'electronConfig', 'energyParameters', 'prodBasis', 'special', 'force',
             'nocoParams', 'modInitDen', 'ldaU', 'ldaHIA', 'greensfCalculation', 'torgueCalculation', 'lo'
         ],
-        'several': ['ldaU', 'ldaHIA', 'greensfCalculation', 'lo'],
-        'simple': [
+        'several': {'ldaU', 'ldaHIA', 'greensfCalculation', 'lo'},
+        'simple': {
             'mtSphere', 'atomicCutoffs', 'energyParameters', 'prodBasis', 'special', 'force', 'nocoParams',
             'modInitDen', 'ldaU', 'lo'
-        ],
-        'text': []
+        },
+        'text': set(),
+        'complex': {'electronConfig', 'ldaHIA', 'greensfCalculation', 'torgueCalculation'}
     }
 
     res, path = get_tag_info(schema_dict, 'species')
@@ -339,13 +340,14 @@ def test_get_tag_info():
         res = get_tag_info(schema_dict, 'ldaHIA')
 
     EXPECTED_RESULT = {
-        'attribs': ['l', 'U', 'J', 'phi', 'theta', 'l_amf', 'init_occ', 'kkintgrCutoff', 'label'],
-        'optional': ['exc', 'cFCoeff', 'addArg'],
-        'optional_attribs': ['phi', 'theta', 'init_occ', 'kkintgrCutoff', 'label'],
+        'attribs': {'l', 'U', 'J', 'phi', 'theta', 'l_amf', 'init_occ', 'kkintgrCutoff', 'label'},
+        'optional': {'exc', 'cFCoeff', 'addArg'},
+        'optional_attribs': {'phi', 'theta', 'init_occ', 'kkintgrCutoff', 'label'},
         'order': ['exc', 'cFCoeff', 'addArg'],
-        'several': ['exc', 'cFCoeff', 'addArg'],
-        'simple': ['exc', 'cFCoeff', 'addArg'],
-        'text': []
+        'several': {'exc', 'cFCoeff', 'addArg'},
+        'simple': {'exc', 'cFCoeff', 'addArg'},
+        'text': set(),
+        'complex': set()
     }
 
     res, path = get_tag_info(schema_dict, 'ldaHIA', contains='species')
@@ -354,19 +356,20 @@ def test_get_tag_info():
     assert path == '/fleurInput/atomSpecies/species/ldaHIA'
 
     EXPECTED_RESULT = {
-        'attribs': [
+        'attribs': {
             'itmaxHubbard1', 'beta', 'minoccDistance', 'minmatDistance', 'n_occpm', 'dftspinpol', 'fullMatch',
             'l_nonsphDC', 'l_correctEtot'
-        ],
-        'optional': [],
-        'optional_attribs': [
+        },
+        'optional': set(),
+        'optional_attribs': {
             'beta', 'minoccDistance', 'minmatDistance', 'n_occpm', 'dftspinpol', 'fullMatch', 'l_nonsphDC',
             'l_correctEtot'
-        ],
+        },
         'order': [],
-        'several': [],
-        'simple': [],
-        'text': []
+        'several': set(),
+        'simple': set(),
+        'text': set(),
+        'complex': set()
     }
 
     res, path = get_tag_info(schema_dict, 'ldaHIA', not_contains='atom')
