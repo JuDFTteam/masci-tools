@@ -339,9 +339,12 @@ def _get_contained_attribs(xmlschema, namespaces, elem, optional=False):
         elif child_type in ['simpleContent', 'extension']:
             new_attribs = _get_contained_attribs(xmlschema, namespaces, child, optional=optional)
             for attrib in new_attribs:
-                attrib_list.append(attrib)
+                attrib_list.append(new_attribs.original_case[attrib])
 
-    return attrib_list
+    attrib_set = CaseInsensitiveFrozenSet(attrib_list)
+    assert len(set(attrib_list)) == len(attrib_set), f'Lost Information: {attrib_list}'
+
+    return attrib_set
 
 
 def _get_optional_tags(xmlschema, namespaces, elem):
@@ -357,9 +360,12 @@ def _get_optional_tags(xmlschema, namespaces, elem):
         elif child_type in ['sequence', 'all', 'choice']:
             new_optionals = _get_optional_tags(xmlschema, namespaces, child)
             for opt in new_optionals:
-                optional_list.append(opt)
+                optional_list.append(new_optionals.original_case[opt])
 
-    return optional_list
+    optional_set = CaseInsensitiveFrozenSet(optional_list)
+    assert len(set(optional_list)) == len(optional_set), f'Lost Information: {optional_list}'
+
+    return optional_set
 
 
 def _is_simple(namespaces, elem):
@@ -406,9 +412,12 @@ def _get_simple_tags(xmlschema, namespaces, elem, input_mapping=None):
         elif child_type in ['sequence', 'all', 'choice']:
             new_simple = _get_simple_tags(xmlschema, namespaces, child)
             for simple in new_simple:
-                simple_list.append(simple)
+                simple_list.append(new_simple.original_case[simple])
 
-    return simple_list
+    simple_set = CaseInsensitiveFrozenSet(simple_list)
+    assert len(set(simple_list)) == len(simple_set), f'Lost Information: {simple_list}'
+
+    return simple_set
 
 
 def _get_several_tags(xmlschema, namespaces, elem):
@@ -430,9 +439,12 @@ def _get_several_tags(xmlschema, namespaces, elem):
             else:
                 new_several = _get_several_tags(xmlschema, namespaces, child)
                 for tag in new_several:
-                    several_list.append(tag)
+                    several_list.append(new_several.original_case[tag])
 
-    return several_list
+    several_set = CaseInsensitiveFrozenSet(several_list)
+    assert len(set(several_list)) == len(several_set), f'Lost Information: {several_list}'
+
+    return several_set
 
 
 def _get_text_tags(xmlschema, namespaces, elem, simple_elements):
@@ -447,9 +459,12 @@ def _get_text_tags(xmlschema, namespaces, elem, simple_elements):
         elif child_type in ['sequence', 'all', 'choice']:
             new_tags = _get_text_tags(xmlschema, namespaces, child, simple_elements)
             for tag in new_tags:
-                text_list.append(tag)
+                text_list.append(new_tags.original_case[tag])
 
-    return text_list
+    text_set = CaseInsensitiveFrozenSet(text_list)
+    assert len(set(text_list)) == len(text_set), f'Lost Information: {text_list}'
+
+    return text_set
 
 
 def _get_attrib_xpath(xmlschema,
@@ -961,16 +976,17 @@ def get_tag_info(xmlschema, namespaces, **kwargs):
         type_elem = type_elem[0]
 
         info_dict = {}
-        info_dict['attribs'] = CaseInsensitiveFrozenSet(_get_contained_attribs(xmlschema, namespaces, type_elem))
-        info_dict['optional_attribs'] = CaseInsensitiveFrozenSet(
-            _get_contained_attribs(xmlschema, namespaces, type_elem, optional=True))
-        info_dict['optional'] = CaseInsensitiveFrozenSet(_get_optional_tags(xmlschema, namespaces, type_elem))
-        info_dict['several'] = CaseInsensitiveFrozenSet(_get_several_tags(xmlschema, namespaces, type_elem))
-        info_dict['order'] = CaseInsensitiveFrozenSet(_get_sequence_order(xmlschema, namespaces, type_elem))
-        info_dict['simple'] = CaseInsensitiveFrozenSet(
-            _get_simple_tags(xmlschema, namespaces, type_elem, input_mapping=kwargs.get('_input_basic_types', None)))
-        info_dict['text'] = CaseInsensitiveFrozenSet(
-            _get_text_tags(xmlschema, namespaces, type_elem, kwargs['simple_elements']))
+        info_dict['attribs'] = _get_contained_attribs(xmlschema, namespaces, type_elem)
+        info_dict['optional_attribs'] = _get_contained_attribs(xmlschema, namespaces, type_elem, optional=True)
+        info_dict['optional'] = _get_optional_tags(xmlschema, namespaces, type_elem)
+        info_dict['several'] = _get_several_tags(xmlschema, namespaces, type_elem)
+        info_dict['order'] = _get_sequence_order(xmlschema, namespaces, type_elem)
+        info_dict['simple'] = _get_simple_tags(xmlschema,
+                                               namespaces,
+                                               type_elem,
+                                               input_mapping=kwargs.get('_input_basic_types', None))
+        info_dict['complex'] = CaseInsensitiveFrozenSet(info_dict['order']).difference(info_dict['simple'])
+        info_dict['text'] = _get_text_tags(xmlschema, namespaces, type_elem, kwargs['simple_elements'])
 
         if any([len(elem) != 0 for elem in info_dict.values()]):
             for path in tag_path:

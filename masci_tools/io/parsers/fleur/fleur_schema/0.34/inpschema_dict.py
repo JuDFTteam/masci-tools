@@ -911,15 +911,19 @@ schema_dict = {
         '/fleurInput': {
             'attribs':
             CaseInsensitiveFrozenSet(['fleurInputVersion']),
+            'complex':
+            CaseInsensitiveFrozenSet([
+                'atomGroups', 'atomSpecies', 'calculationSetup', 'cell', 'constants', 'forceTheorem', 'output',
+                'relaxation'
+            ]),
             'optional':
             CaseInsensitiveFrozenSet(['comment', 'constants', 'forceTheorem', 'output', 'relaxation']),
             'optional_attribs':
             CaseInsensitiveFrozenSet([]),
-            'order':
-            CaseInsensitiveFrozenSet([
-                'atomGroups', 'atomSpecies', 'calculationSetup', 'cell', 'comment', 'constants', 'forceTheorem',
-                'output', 'relaxation'
-            ]),
+            'order': [
+                'comment', 'constants', 'calculationSetup', 'cell', 'atomSpecies', 'atomGroups', 'output',
+                'forceTheorem', 'relaxation'
+            ],
             'several':
             CaseInsensitiveFrozenSet([]),
             'simple':
@@ -929,9 +933,10 @@ schema_dict = {
         },
         '/fleurInput/atomGroups': {
             'attribs': CaseInsensitiveFrozenSet([]),
+            'complex': CaseInsensitiveFrozenSet(['atomGroup']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet(['atomGroup']),
+            'order': ['atomGroup'],
             'several': CaseInsensitiveFrozenSet(['atomGroup']),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
@@ -939,6 +944,8 @@ schema_dict = {
         '/fleurInput/atomGroups/atomGroup': {
             'attribs':
             CaseInsensitiveFrozenSet(['magField', 'species', 'vcaAddCharge']),
+            'complex':
+            CaseInsensitiveFrozenSet(['greensfCalculation', 'ldaHIA', 'torgueCalculation']),
             'optional':
             CaseInsensitiveFrozenSet([
                 'atomicCutoffs', 'cFCoeffs', 'energyParameters', 'force', 'greensfCalculation', 'ldaHIA', 'ldaU', 'lo',
@@ -946,12 +953,11 @@ schema_dict = {
             ]),
             'optional_attribs':
             CaseInsensitiveFrozenSet(['magField', 'vcaAddCharge']),
-            'order':
-            CaseInsensitiveFrozenSet([
-                'absPos', 'atomicCutoffs', 'cFCoeffs', 'energyParameters', 'filmPos', 'force', 'greensfCalculation',
-                'ldaHIA', 'ldaU', 'lo', 'modInitDen', 'mtSphere', 'nocoParams', 'orbcomprot', 'relPos',
-                'torgueCalculation'
-            ]),
+            'order': [
+                'relPos', 'absPos', 'filmPos', 'mtSphere', 'atomicCutoffs', 'energyParameters', 'force', 'nocoParams',
+                'modInitDen', 'ldaU', 'ldaHIA', 'greensfCalculation', 'torgueCalculation', 'lo', 'orbcomprot',
+                'cFCoeffs'
+            ],
             'several':
             CaseInsensitiveFrozenSet(['absPos', 'filmPos', 'greensfCalculation', 'ldaHIA', 'ldaU', 'lo', 'relPos']),
             'simple':
@@ -964,81 +970,90 @@ schema_dict = {
         },
         '/fleurInput/atomGroups/atomGroup/absPos': {
             'attribs': CaseInsensitiveFrozenSet(['alpha', 'banddos', 'beta', 'gamma', 'label', 'wannier']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['alpha', 'banddos', 'beta', 'gamma', 'label', 'wannier']),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomGroups/atomGroup/atomicCutoffs': {
             'attribs': CaseInsensitiveFrozenSet(['lmax', 'lmaxAPW', 'lnonsphr']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['lmaxAPW']),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomGroups/atomGroup/cFCoeffs': {
             'attribs': CaseInsensitiveFrozenSet(['chargeDensity', 'potential', 'remove4f']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['remove4f']),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomGroups/atomGroup/energyParameters': {
             'attribs': CaseInsensitiveFrozenSet(['d', 'f', 'p', 's']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomGroups/atomGroup/filmPos': {
             'attribs': CaseInsensitiveFrozenSet(['alpha', 'banddos', 'beta', 'gamma', 'label', 'wannier']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['alpha', 'banddos', 'beta', 'gamma', 'label', 'wannier']),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomGroups/atomGroup/force': {
             'attribs': CaseInsensitiveFrozenSet(['calculate', 'relaxXYZ']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['relaxXYZ']),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomGroups/atomGroup/greensfCalculation': {
             'attribs': CaseInsensitiveFrozenSet(['kkintgrCutoff', 'l_sphavg', 'label', 'nshells']),
+            'complex': CaseInsensitiveFrozenSet(['matrixElements']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['kkintgrCutoff', 'label', 'nshells']),
-            'order': CaseInsensitiveFrozenSet(['diagElements', 'matrixElements']),
+            'order': ['matrixElements', 'diagElements'],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet(['diagElements']),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomGroups/atomGroup/greensfCalculation/diagElements': {
             'attribs': CaseInsensitiveFrozenSet(['d', 'f', 'p', 's']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomGroups/atomGroup/greensfCalculation/matrixElements': {
             'attribs': CaseInsensitiveFrozenSet([]),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet(['d', 'f', 'p', 's']),
+            'order': ['s', 'p', 'd', 'f'],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet(['d', 'f', 'p', 's']),
             'text': CaseInsensitiveFrozenSet(['d', 'f', 'p', 's'])
@@ -1046,12 +1061,13 @@ schema_dict = {
         '/fleurInput/atomGroups/atomGroup/ldaHIA': {
             'attribs':
             CaseInsensitiveFrozenSet(['J', 'U', 'init_occ', 'kkintgrCutoff', 'l', 'l_amf', 'label', 'phi', 'theta']),
+            'complex':
+            CaseInsensitiveFrozenSet([]),
             'optional':
             CaseInsensitiveFrozenSet(['addArg', 'cFCoeff', 'exc']),
             'optional_attribs':
             CaseInsensitiveFrozenSet(['init_occ', 'kkintgrCutoff', 'label', 'phi', 'theta']),
-            'order':
-            CaseInsensitiveFrozenSet(['addArg', 'cFCoeff', 'exc']),
+            'order': ['exc', 'cFCoeff', 'addArg'],
             'several':
             CaseInsensitiveFrozenSet(['addArg', 'cFCoeff', 'exc']),
             'simple':
@@ -1061,63 +1077,70 @@ schema_dict = {
         },
         '/fleurInput/atomGroups/atomGroup/ldaHIA/addArg': {
             'attribs': CaseInsensitiveFrozenSet(['key', 'value']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomGroups/atomGroup/ldaHIA/cFCoeff': {
             'attribs': CaseInsensitiveFrozenSet(['l', 'm', 'value']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomGroups/atomGroup/ldaHIA/exc': {
             'attribs': CaseInsensitiveFrozenSet(['J', 'init_mom', 'l']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['init_mom']),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomGroups/atomGroup/ldaU': {
             'attribs': CaseInsensitiveFrozenSet(['J', 'U', 'l', 'l_amf', 'phi', 'theta']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['phi', 'theta']),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomGroups/atomGroup/lo': {
             'attribs': CaseInsensitiveFrozenSet(['eDeriv', 'l', 'n', 'type']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['eDeriv']),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomGroups/atomGroup/modInitDen': {
             'attribs': CaseInsensitiveFrozenSet(['flipSpinPhi', 'flipSpinScale', 'flipSpinTheta', 'magMom']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['flipSpinPhi', 'flipSpinScale', 'flipSpinTheta', 'magMom']),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomGroups/atomGroup/mtSphere': {
             'attribs': CaseInsensitiveFrozenSet(['gridPoints', 'logIncrement', 'radius']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
@@ -1126,13 +1149,14 @@ schema_dict = {
             'attribs':
             CaseInsensitiveFrozenSet(
                 ['M', 'alpha', 'b_cons_x', 'b_cons_y', 'beta', 'l_constrained', 'l_magn', 'l_mtNocoPot', 'l_relaxSQA']),
+            'complex':
+            CaseInsensitiveFrozenSet([]),
             'optional':
             CaseInsensitiveFrozenSet([]),
             'optional_attribs':
             CaseInsensitiveFrozenSet(
                 ['M', 'b_cons_x', 'b_cons_y', 'l_constrained', 'l_magn', 'l_mtNocoPot', 'l_relaxSQA']),
-            'order':
-            CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several':
             CaseInsensitiveFrozenSet([]),
             'simple':
@@ -1142,36 +1166,40 @@ schema_dict = {
         },
         '/fleurInput/atomGroups/atomGroup/relPos': {
             'attribs': CaseInsensitiveFrozenSet(['alpha', 'banddos', 'beta', 'gamma', 'label', 'wannier']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['alpha', 'banddos', 'beta', 'gamma', 'label', 'wannier']),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomGroups/atomGroup/torgueCalculation': {
             'attribs': CaseInsensitiveFrozenSet(['kkintgrCutoff', 'label']),
+            'complex': CaseInsensitiveFrozenSet(['greensfElements']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['kkintgrCutoff', 'label']),
-            'order': CaseInsensitiveFrozenSet(['greensfElements']),
+            'order': ['greensfElements'],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomGroups/atomGroup/torgueCalculation/greensfElements': {
             'attribs': CaseInsensitiveFrozenSet([]),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet(['d', 'f', 'p', 's']),
+            'order': ['s', 'p', 'd', 'f'],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet(['d', 'f', 'p', 's']),
             'text': CaseInsensitiveFrozenSet(['d', 'f', 'p', 's'])
         },
         '/fleurInput/atomSpecies': {
             'attribs': CaseInsensitiveFrozenSet([]),
+            'complex': CaseInsensitiveFrozenSet(['species']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet(['species']),
+            'order': ['species'],
             'several': CaseInsensitiveFrozenSet(['species']),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
@@ -1179,6 +1207,8 @@ schema_dict = {
         '/fleurInput/atomSpecies/species': {
             'attribs':
             CaseInsensitiveFrozenSet(['atomicNumber', 'element', 'name']),
+            'complex':
+            CaseInsensitiveFrozenSet(['electronConfig', 'greensfCalculation', 'ldaHIA', 'torgueCalculation']),
             'optional':
             CaseInsensitiveFrozenSet([
                 'energyParameters', 'force', 'greensfCalculation', 'ldaHIA', 'ldaU', 'lo', 'modInitDen', 'nocoParams',
@@ -1186,11 +1216,10 @@ schema_dict = {
             ]),
             'optional_attribs':
             CaseInsensitiveFrozenSet(['element']),
-            'order':
-            CaseInsensitiveFrozenSet([
-                'atomicCutoffs', 'electronConfig', 'energyParameters', 'force', 'greensfCalculation', 'ldaHIA', 'ldaU',
-                'lo', 'modInitDen', 'mtSphere', 'nocoParams', 'prodBasis', 'special', 'torgueCalculation'
-            ]),
+            'order': [
+                'mtSphere', 'atomicCutoffs', 'electronConfig', 'energyParameters', 'prodBasis', 'special', 'force',
+                'nocoParams', 'modInitDen', 'ldaU', 'ldaHIA', 'greensfCalculation', 'torgueCalculation', 'lo'
+            ],
             'several':
             CaseInsensitiveFrozenSet(['greensfCalculation', 'ldaHIA', 'ldaU', 'lo']),
             'simple':
@@ -1203,72 +1232,80 @@ schema_dict = {
         },
         '/fleurInput/atomSpecies/species/atomicCutoffs': {
             'attribs': CaseInsensitiveFrozenSet(['lmax', 'lmaxAPW', 'lnonsphr']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['lmaxAPW']),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomSpecies/species/electronConfig': {
             'attribs': CaseInsensitiveFrozenSet([]),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet(['stateOccupation', 'valenceConfig']),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet(['coreConfig', 'stateOccupation', 'valenceConfig']),
+            'order': ['coreConfig', 'valenceConfig', 'stateOccupation'],
             'several': CaseInsensitiveFrozenSet(['stateOccupation']),
             'simple': CaseInsensitiveFrozenSet(['coreConfig', 'stateOccupation', 'valenceConfig']),
             'text': CaseInsensitiveFrozenSet(['coreConfig', 'valenceConfig'])
         },
         '/fleurInput/atomSpecies/species/electronConfig/stateOccupation': {
             'attribs': CaseInsensitiveFrozenSet(['spinDown', 'spinUp', 'state']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomSpecies/species/energyParameters': {
             'attribs': CaseInsensitiveFrozenSet(['d', 'f', 'p', 's']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomSpecies/species/force': {
             'attribs': CaseInsensitiveFrozenSet(['calculate', 'relaxXYZ']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['relaxXYZ']),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomSpecies/species/greensfCalculation': {
             'attribs': CaseInsensitiveFrozenSet(['kkintgrCutoff', 'l_sphavg', 'label', 'nshells']),
+            'complex': CaseInsensitiveFrozenSet(['matrixElements']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['kkintgrCutoff', 'label', 'nshells']),
-            'order': CaseInsensitiveFrozenSet(['diagElements', 'matrixElements']),
+            'order': ['matrixElements', 'diagElements'],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet(['diagElements']),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomSpecies/species/greensfCalculation/diagElements': {
             'attribs': CaseInsensitiveFrozenSet(['d', 'f', 'p', 's']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomSpecies/species/greensfCalculation/matrixElements': {
             'attribs': CaseInsensitiveFrozenSet([]),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet(['d', 'f', 'p', 's']),
+            'order': ['s', 'p', 'd', 'f'],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet(['d', 'f', 'p', 's']),
             'text': CaseInsensitiveFrozenSet(['d', 'f', 'p', 's'])
@@ -1276,12 +1313,13 @@ schema_dict = {
         '/fleurInput/atomSpecies/species/ldaHIA': {
             'attribs':
             CaseInsensitiveFrozenSet(['J', 'U', 'init_occ', 'kkintgrCutoff', 'l', 'l_amf', 'label', 'phi', 'theta']),
+            'complex':
+            CaseInsensitiveFrozenSet([]),
             'optional':
             CaseInsensitiveFrozenSet(['addArg', 'cFCoeff', 'exc']),
             'optional_attribs':
             CaseInsensitiveFrozenSet(['init_occ', 'kkintgrCutoff', 'label', 'phi', 'theta']),
-            'order':
-            CaseInsensitiveFrozenSet(['addArg', 'cFCoeff', 'exc']),
+            'order': ['exc', 'cFCoeff', 'addArg'],
             'several':
             CaseInsensitiveFrozenSet(['addArg', 'cFCoeff', 'exc']),
             'simple':
@@ -1291,63 +1329,70 @@ schema_dict = {
         },
         '/fleurInput/atomSpecies/species/ldaHIA/addArg': {
             'attribs': CaseInsensitiveFrozenSet(['key', 'value']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomSpecies/species/ldaHIA/cFCoeff': {
             'attribs': CaseInsensitiveFrozenSet(['l', 'm', 'value']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomSpecies/species/ldaHIA/exc': {
             'attribs': CaseInsensitiveFrozenSet(['J', 'init_mom', 'l']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['init_mom']),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomSpecies/species/ldaU': {
             'attribs': CaseInsensitiveFrozenSet(['J', 'U', 'l', 'l_amf', 'phi', 'theta']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['phi', 'theta']),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomSpecies/species/lo': {
             'attribs': CaseInsensitiveFrozenSet(['eDeriv', 'l', 'n', 'type']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['eDeriv']),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomSpecies/species/modInitDen': {
             'attribs': CaseInsensitiveFrozenSet(['flipSpinPhi', 'flipSpinScale', 'flipSpinTheta', 'magMom']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['flipSpinPhi', 'flipSpinScale', 'flipSpinTheta', 'magMom']),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomSpecies/species/mtSphere': {
             'attribs': CaseInsensitiveFrozenSet(['gridPoints', 'logIncrement', 'radius']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
@@ -1356,13 +1401,14 @@ schema_dict = {
             'attribs':
             CaseInsensitiveFrozenSet(
                 ['M', 'alpha', 'b_cons_x', 'b_cons_y', 'beta', 'l_constrained', 'l_magn', 'l_mtNocoPot', 'l_relaxSQA']),
+            'complex':
+            CaseInsensitiveFrozenSet([]),
             'optional':
             CaseInsensitiveFrozenSet([]),
             'optional_attribs':
             CaseInsensitiveFrozenSet(
                 ['M', 'b_cons_x', 'b_cons_y', 'l_constrained', 'l_magn', 'l_mtNocoPot', 'l_relaxSQA']),
-            'order':
-            CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several':
             CaseInsensitiveFrozenSet([]),
             'simple':
@@ -1372,36 +1418,40 @@ schema_dict = {
         },
         '/fleurInput/atomSpecies/species/prodBasis': {
             'attribs': CaseInsensitiveFrozenSet(['lcutm', 'lcutwf', 'select']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['select']),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomSpecies/species/special': {
             'attribs': CaseInsensitiveFrozenSet(['b_field_mt', 'lda', 'socscale', 'vca_charge']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['b_field_mt', 'lda', 'socscale', 'vca_charge']),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomSpecies/species/torgueCalculation': {
             'attribs': CaseInsensitiveFrozenSet(['kkintgrCutoff', 'label']),
+            'complex': CaseInsensitiveFrozenSet(['greensfElements']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['kkintgrCutoff', 'label']),
-            'order': CaseInsensitiveFrozenSet(['greensfElements']),
+            'order': ['greensfElements'],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomSpecies/species/torgueCalculation/greensfElements': {
             'attribs': CaseInsensitiveFrozenSet([]),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet(['d', 'f', 'p', 's']),
+            'order': ['s', 'p', 'd', 'f'],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet(['d', 'f', 'p', 's']),
             'text': CaseInsensitiveFrozenSet(['d', 'f', 'p', 's'])
@@ -1409,6 +1459,8 @@ schema_dict = {
         '/fleurInput/calculationSetup': {
             'attribs':
             CaseInsensitiveFrozenSet([]),
+            'complex':
+            CaseInsensitiveFrozenSet(['fields', 'greensFunction', 'magnetism', 'xcFunctional']),
             'optional':
             CaseInsensitiveFrozenSet([
                 'expertModes', 'fields', 'geometryOptimization', 'greensFunction', 'ldaHIA', 'ldaU', 'oneDParams',
@@ -1416,12 +1468,11 @@ schema_dict = {
             ]),
             'optional_attribs':
             CaseInsensitiveFrozenSet([]),
-            'order':
-            CaseInsensitiveFrozenSet([
-                'coreElectrons', 'cutoffs', 'expertModes', 'fields', 'geometryOptimization', 'greensFunction', 'ldaHIA',
-                'ldaU', 'magnetism', 'oneDParams', 'prodBasis', 'rdmft', 'scfLoop', 'soc', 'spinSpiralQPointMesh',
-                'xcFunctional'
-            ]),
+            'order': [
+                'cutoffs', 'scfLoop', 'coreElectrons', 'xcFunctional', 'magnetism', 'prodBasis', 'soc', 'oneDParams',
+                'expertModes', 'geometryOptimization', 'ldaU', 'ldaHIA', 'greensFunction', 'rdmft',
+                'spinSpiralQPointMesh', 'fields'
+            ],
             'several':
             CaseInsensitiveFrozenSet([]),
             'simple':
@@ -1434,28 +1485,31 @@ schema_dict = {
         },
         '/fleurInput/calculationSetup/coreElectrons': {
             'attribs': CaseInsensitiveFrozenSet(['coretail_lmax', 'ctail', 'frcor', 'kcrel', 'l_core_confpot']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['coretail_lmax', 'frcor', 'kcrel', 'l_core_confpot']),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/calculationSetup/cutoffs': {
             'attribs': CaseInsensitiveFrozenSet(['Gmax', 'GmaxXC', 'Kmax', 'numbands']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['GmaxXC', 'numbands']),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/calculationSetup/expertModes': {
             'attribs': CaseInsensitiveFrozenSet(['eig66', 'gw', 'isec1', 'lpr', 'pot8', 'secvar', 'warp_factor']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs':
             CaseInsensitiveFrozenSet(['eig66', 'gw', 'isec1', 'lpr', 'pot8', 'secvar', 'warp_factor']),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
@@ -1464,13 +1518,14 @@ schema_dict = {
             'attribs':
             CaseInsensitiveFrozenSet(
                 ['autocomp', 'b_field', 'dirichlet', 'eV', 'plot_charge', 'plot_rho', 'sig_b_1', 'sig_b_2', 'zsigma']),
+            'complex':
+            CaseInsensitiveFrozenSet([]),
             'optional':
             CaseInsensitiveFrozenSet(['shape']),
             'optional_attribs':
             CaseInsensitiveFrozenSet(
                 ['autocomp', 'b_field', 'dirichlet', 'eV', 'plot_charge', 'plot_rho', 'sig_b_1', 'sig_b_2', 'zsigma']),
-            'order':
-            CaseInsensitiveFrozenSet(['shape']),
+            'order': ['shape'],
             'several':
             CaseInsensitiveFrozenSet(['shape']),
             'simple':
@@ -1482,13 +1537,14 @@ schema_dict = {
             'attribs':
             CaseInsensitiveFrozenSet(
                 ['epsdisp', 'epsforce', 'f_level', 'force_converged', 'forcealpha', 'forcemix', 'l_f', 'qfix']),
+            'complex':
+            CaseInsensitiveFrozenSet([]),
             'optional':
             CaseInsensitiveFrozenSet([]),
             'optional_attribs':
             CaseInsensitiveFrozenSet(
                 ['epsdisp', 'epsforce', 'f_level', 'force_converged', 'forcealpha', 'forcemix', 'qfix']),
-            'order':
-            CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several':
             CaseInsensitiveFrozenSet([]),
             'simple':
@@ -1499,12 +1555,13 @@ schema_dict = {
         '/fleurInput/calculationSetup/greensFunction': {
             'attribs':
             CaseInsensitiveFrozenSet(['intFullRadial', 'l_mperp', 'l_resolvent', 'minCalcDistance', 'outputSphavg']),
+            'complex':
+            CaseInsensitiveFrozenSet([]),
             'optional':
             CaseInsensitiveFrozenSet([]),
             'optional_attribs':
             CaseInsensitiveFrozenSet(['intFullRadial', 'l_mperp', 'l_resolvent', 'minCalcDistance', 'outputSphavg']),
-            'order':
-            CaseInsensitiveFrozenSet(['contourDOS', 'contourRectangle', 'contourSemicircle', 'realAxis']),
+            'order': ['realAxis', 'contourRectangle', 'contourSemicircle', 'contourDOS'],
             'several':
             CaseInsensitiveFrozenSet(['contourDOS', 'contourRectangle', 'contourSemicircle']),
             'simple':
@@ -1514,36 +1571,40 @@ schema_dict = {
         },
         '/fleurInput/calculationSetup/greensFunction/contourDOS': {
             'attribs': CaseInsensitiveFrozenSet(['analytical_cont', 'eb', 'et', 'l_fermi', 'label', 'n', 'sigma']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['label']),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/calculationSetup/greensFunction/contourRectangle': {
             'attribs': CaseInsensitiveFrozenSet(['eb', 'label', 'n1', 'n2', 'n3', 'nmatsub', 'sigma']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['label']),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/calculationSetup/greensFunction/contourSemicircle': {
             'attribs': CaseInsensitiveFrozenSet(['alpha', 'eb', 'et', 'label', 'n']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['label']),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/calculationSetup/greensFunction/realAxis': {
             'attribs': CaseInsensitiveFrozenSet(['ellow', 'elup', 'ne']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
@@ -1554,6 +1615,8 @@ schema_dict = {
                 'beta', 'dftspinpol', 'fullMatch', 'itmaxHubbard1', 'l_correctEtot', 'l_nonsphDC', 'minmatDistance',
                 'minoccDistance', 'n_occpm'
             ]),
+            'complex':
+            CaseInsensitiveFrozenSet([]),
             'optional':
             CaseInsensitiveFrozenSet([]),
             'optional_attribs':
@@ -1561,8 +1624,7 @@ schema_dict = {
                 'beta', 'dftspinpol', 'fullMatch', 'l_correctEtot', 'l_nonsphDC', 'minmatDistance', 'minoccDistance',
                 'n_occpm'
             ]),
-            'order':
-            CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several':
             CaseInsensitiveFrozenSet([]),
             'simple':
@@ -1572,9 +1634,10 @@ schema_dict = {
         },
         '/fleurInput/calculationSetup/ldaU': {
             'attribs': CaseInsensitiveFrozenSet(['l_adjEnpara', 'l_linMix', 'mixParam', 'spinf']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['l_adjEnpara', 'l_linMix', 'mixParam', 'spinf']),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
@@ -1583,12 +1646,13 @@ schema_dict = {
             'attribs':
             CaseInsensitiveFrozenSet(
                 ['fixed_moment', 'jspins', 'l_J', 'l_noco', 'l_onlyMtStDen', 'l_ss', 'lflip', 'swsp']),
+            'complex':
+            CaseInsensitiveFrozenSet([]),
             'optional':
             CaseInsensitiveFrozenSet(['mtNocoParams', 'qsc', 'qss', 'sourceFreeMag']),
             'optional_attribs':
             CaseInsensitiveFrozenSet(['fixed_moment', 'l_J', 'l_noco', 'l_onlyMtStDen', 'l_ss', 'lflip', 'swsp']),
-            'order':
-            CaseInsensitiveFrozenSet(['mtNocoParams', 'qsc', 'qss', 'sourceFreeMag']),
+            'order': ['qss', 'qsc', 'mtNocoParams', 'sourceFreeMag'],
             'several':
             CaseInsensitiveFrozenSet([]),
             'simple':
@@ -1602,6 +1666,8 @@ schema_dict = {
                 'l_constrained', 'l_mperp', 'l_mtNocoPot', 'l_relaxSQA', 'mag_mixing_scheme', 'mix_RelaxWeightOffD',
                 'mix_constr'
             ]),
+            'complex':
+            CaseInsensitiveFrozenSet([]),
             'optional':
             CaseInsensitiveFrozenSet([]),
             'optional_attribs':
@@ -1609,8 +1675,7 @@ schema_dict = {
                 'l_constrained', 'l_mperp', 'l_mtNocoPot', 'l_relaxSQA', 'mag_mixing_scheme', 'mix_RelaxWeightOffD',
                 'mix_constr'
             ]),
-            'order':
-            CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several':
             CaseInsensitiveFrozenSet([]),
             'simple':
@@ -1620,36 +1685,40 @@ schema_dict = {
         },
         '/fleurInput/calculationSetup/magnetism/sourceFreeMag': {
             'attribs': CaseInsensitiveFrozenSet(['l_scaleMag', 'l_sourceFree', 'mag_scale']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['l_scaleMag', 'l_sourceFree', 'mag_scale']),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/calculationSetup/oneDParams': {
             'attribs': CaseInsensitiveFrozenSet(['MM', 'chi', 'd1', 'invs1', 'm_cyl', 'rot', 'vM', 'zrfs1']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/calculationSetup/prodBasis': {
             'attribs': CaseInsensitiveFrozenSet(['bands', 'ewaldlambda', 'fftcut', 'gcutm', 'lexp', 'tolerance']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['ewaldlambda', 'fftcut', 'lexp', 'tolerance']),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/calculationSetup/rdmft': {
             'attribs': CaseInsensitiveFrozenSet(['functional', 'l_rdmft', 'occEps', 'statesAbove', 'statesBelow']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['occEps']),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
@@ -1659,12 +1728,13 @@ schema_dict = {
             CaseInsensitiveFrozenSet([
                 'alpha', 'imix', 'itmax', 'maxIterBroyd', 'maxTimeToStartIter', 'minDistance', 'precondParam', 'spinf'
             ]),
+            'complex':
+            CaseInsensitiveFrozenSet([]),
             'optional':
             CaseInsensitiveFrozenSet([]),
             'optional_attribs':
             CaseInsensitiveFrozenSet(['maxIterBroyd', 'maxTimeToStartIter', 'minDistance', 'precondParam', 'spinf']),
-            'order':
-            CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several':
             CaseInsensitiveFrozenSet([]),
             'simple':
@@ -1674,117 +1744,130 @@ schema_dict = {
         },
         '/fleurInput/calculationSetup/soc': {
             'attribs': CaseInsensitiveFrozenSet(['l_soc', 'off', 'phi', 'soc66', 'spav', 'theta']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['off', 'soc66', 'spav']),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/calculationSetup/spinSpiralQPointMesh': {
             'attribs': CaseInsensitiveFrozenSet(['qx', 'qy', 'qz']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/calculationSetup/xcFunctional': {
             'attribs': CaseInsensitiveFrozenSet(['name', 'relativisticCorrections']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet(['LibXCID', 'LibXCName', 'ggaPrinting', 'xcParams']),
             'optional_attribs': CaseInsensitiveFrozenSet(['relativisticCorrections']),
-            'order': CaseInsensitiveFrozenSet(['LibXCID', 'LibXCName', 'ggaPrinting', 'xcParams']),
+            'order': ['LibXCID', 'LibXCName', 'xcParams', 'ggaPrinting'],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet(['LibXCID', 'LibXCName', 'ggaPrinting', 'xcParams']),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/calculationSetup/xcFunctional/LibXCID': {
             'attribs': CaseInsensitiveFrozenSet(['correlation', 'etot_correlation', 'etot_exchange', 'exchange']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['etot_correlation', 'etot_exchange']),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/calculationSetup/xcFunctional/LibXCName': {
             'attribs': CaseInsensitiveFrozenSet(['correlation', 'etot_correlation', 'etot_exchange', 'exchange']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['etot_correlation', 'etot_exchange']),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/calculationSetup/xcFunctional/ggaPrinting': {
             'attribs': CaseInsensitiveFrozenSet(['idsprs0', 'idsprsi', 'idsprsl', 'idsprsv', 'iggachk']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/calculationSetup/xcFunctional/xcParams': {
             'attribs': CaseInsensitiveFrozenSet(['chng', 'idsprs', 'igrd', 'lwb', 'ndvgrd']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/cell': {
             'attribs': CaseInsensitiveFrozenSet([]),
+            'complex': CaseInsensitiveFrozenSet(['bulkLattice', 'bzIntegration', 'filmLattice', 'symmetryOperations']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet(['bulkLattice', 'bzIntegration', 'filmLattice', 'symmetryOperations']),
+            'order': ['bzIntegration', 'symmetryOperations', 'bulkLattice', 'filmLattice'],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/cell/bulkLattice': {
             'attribs': CaseInsensitiveFrozenSet(['scale']),
+            'complex': CaseInsensitiveFrozenSet(['bravaisMatrix']),
             'optional': CaseInsensitiveFrozenSet(['a2']),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet(['a1', 'a2', 'bravaisMatrix', 'c', 'row-1', 'row-2']),
+            'order': ['a1', 'a2', 'c', 'row-1', 'row-2', 'c', 'bravaisMatrix'],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet(['a1', 'a2', 'c', 'row-1', 'row-2']),
             'text': CaseInsensitiveFrozenSet(['a1', 'a2', 'c', 'row-1', 'row-2'])
         },
         '/fleurInput/cell/bulkLattice/a1': {
             'attribs': CaseInsensitiveFrozenSet(['scale']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['scale']),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/cell/bulkLattice/a2': {
             'attribs': CaseInsensitiveFrozenSet(['scale']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['scale']),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/cell/bulkLattice/bravaisMatrix': {
             'attribs': CaseInsensitiveFrozenSet([]),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet(['row-1', 'row-2', 'row-3']),
+            'order': ['row-1', 'row-2', 'row-3'],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet(['row-1', 'row-2', 'row-3']),
             'text': CaseInsensitiveFrozenSet(['row-1', 'row-2', 'row-3'])
         },
         '/fleurInput/cell/bulkLattice/c': {
             'attribs': CaseInsensitiveFrozenSet(['scale']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['scale']),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
@@ -1793,13 +1876,14 @@ schema_dict = {
             'attribs':
             CaseInsensitiveFrozenSet(
                 ['fermiSmearingEnergy', 'fermiSmearingTemp', 'l_bloechl', 'mode', 'valenceElectrons']),
+            'complex':
+            CaseInsensitiveFrozenSet(['kPointLists']),
             'optional':
             CaseInsensitiveFrozenSet([]),
             'optional_attribs':
             CaseInsensitiveFrozenSet(
                 ['fermiSmearingEnergy', 'fermiSmearingTemp', 'l_bloechl', 'mode', 'valenceElectrons']),
-            'order':
-            CaseInsensitiveFrozenSet(['kPointListSelection', 'kPointLists']),
+            'order': ['kPointListSelection', 'kPointLists'],
             'several':
             CaseInsensitiveFrozenSet([]),
             'simple':
@@ -1809,181 +1893,200 @@ schema_dict = {
         },
         '/fleurInput/cell/bzIntegration/kPointListSelection': {
             'attribs': CaseInsensitiveFrozenSet(['listName']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/cell/bzIntegration/kPointLists': {
             'attribs': CaseInsensitiveFrozenSet([]),
+            'complex': CaseInsensitiveFrozenSet(['kPointList']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet(['kPointList']),
+            'order': ['kPointList'],
             'several': CaseInsensitiveFrozenSet(['kPointList']),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/cell/bzIntegration/kPointLists/kPointList': {
             'attribs': CaseInsensitiveFrozenSet(['count', 'name', 'nkq_pairs', 'nx', 'ny', 'nz', 'type']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['count', 'nkq_pairs', 'nx', 'ny', 'nz', 'type']),
-            'order': CaseInsensitiveFrozenSet(['kPoint']),
+            'order': ['kPoint'],
             'several': CaseInsensitiveFrozenSet(['kPoint']),
             'simple': CaseInsensitiveFrozenSet(['kPoint']),
             'text': CaseInsensitiveFrozenSet(['kPoint'])
         },
         '/fleurInput/cell/bzIntegration/kPointLists/kPointList/kPoint': {
             'attribs': CaseInsensitiveFrozenSet(['label', 'weight']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['label']),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/cell/filmLattice': {
             'attribs': CaseInsensitiveFrozenSet(['dTilda', 'dVac', 'scale']),
+            'complex': CaseInsensitiveFrozenSet(['bravaisMatrix']),
             'optional': CaseInsensitiveFrozenSet(['a2', 'vacuumEnergyParameters']),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet(['a1', 'a2', 'bravaisMatrix', 'row-1', 'row-2',
-                                               'vacuumEnergyParameters']),
+            'order': ['a1', 'a2', 'row-1', 'row-2', 'bravaisMatrix', 'vacuumEnergyParameters'],
             'several': CaseInsensitiveFrozenSet(['vacuumEnergyParameters']),
             'simple': CaseInsensitiveFrozenSet(['a1', 'a2', 'row-1', 'row-2', 'vacuumEnergyParameters']),
             'text': CaseInsensitiveFrozenSet(['a1', 'a2', 'row-1', 'row-2'])
         },
         '/fleurInput/cell/filmLattice/a1': {
             'attribs': CaseInsensitiveFrozenSet(['scale']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['scale']),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/cell/filmLattice/a2': {
             'attribs': CaseInsensitiveFrozenSet(['scale']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['scale']),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/cell/filmLattice/bravaisMatrix': {
             'attribs': CaseInsensitiveFrozenSet([]),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet(['row-1', 'row-2', 'row-3']),
+            'order': ['row-1', 'row-2', 'row-3'],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet(['row-1', 'row-2', 'row-3']),
             'text': CaseInsensitiveFrozenSet(['row-1', 'row-2', 'row-3'])
         },
         '/fleurInput/cell/filmLattice/vacuumEnergyParameters': {
             'attribs': CaseInsensitiveFrozenSet(['spinDown', 'spinUp', 'vacuum']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['spinDown']),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/cell/symmetryOperations': {
             'attribs': CaseInsensitiveFrozenSet([]),
+            'complex': CaseInsensitiveFrozenSet(['symOp']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet(['symOp']),
+            'order': ['symOp'],
             'several': CaseInsensitiveFrozenSet(['symOp']),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/cell/symmetryOperations/symOp': {
             'attribs': CaseInsensitiveFrozenSet([]),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet(['row-1', 'row-2', 'row-3']),
+            'order': ['row-1', 'row-2', 'row-3'],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet(['row-1', 'row-2', 'row-3']),
             'text': CaseInsensitiveFrozenSet(['row-1', 'row-2', 'row-3'])
         },
         '/fleurInput/constants': {
             'attribs': CaseInsensitiveFrozenSet([]),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet(['constant']),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet(['constant']),
+            'order': ['constant'],
             'several': CaseInsensitiveFrozenSet(['constant']),
             'simple': CaseInsensitiveFrozenSet(['constant']),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/constants/constant': {
             'attribs': CaseInsensitiveFrozenSet(['name', 'value']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/forceTheorem': {
             'attribs': CaseInsensitiveFrozenSet([]),
+            'complex': CaseInsensitiveFrozenSet(['DMI', 'Jij', 'spinSpiralDispersion']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet(['DMI', 'Jij', 'MAE', 'spinSpiralDispersion']),
+            'order': ['MAE', 'spinSpiralDispersion', 'DMI', 'Jij'],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet(['MAE']),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/forceTheorem/DMI': {
             'attribs': CaseInsensitiveFrozenSet(['phi', 'theta']),
+            'complex': CaseInsensitiveFrozenSet(['qVectors']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet(['qVectors']),
+            'order': ['qVectors'],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/forceTheorem/DMI/qVectors': {
             'attribs': CaseInsensitiveFrozenSet([]),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet(['q']),
+            'order': ['q'],
             'several': CaseInsensitiveFrozenSet(['q']),
             'simple': CaseInsensitiveFrozenSet(['q']),
             'text': CaseInsensitiveFrozenSet(['q'])
         },
         '/fleurInput/forceTheorem/Jij': {
             'attribs': CaseInsensitiveFrozenSet(['thetaj']),
+            'complex': CaseInsensitiveFrozenSet(['qVectors']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet(['qVectors']),
+            'order': ['qVectors'],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/forceTheorem/Jij/qVectors': {
             'attribs': CaseInsensitiveFrozenSet([]),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet(['q']),
+            'order': ['q'],
             'several': CaseInsensitiveFrozenSet(['q']),
             'simple': CaseInsensitiveFrozenSet(['q']),
             'text': CaseInsensitiveFrozenSet(['q'])
         },
         '/fleurInput/forceTheorem/MAE': {
             'attribs': CaseInsensitiveFrozenSet(['phi', 'theta']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/forceTheorem/spinSpiralDispersion': {
             'attribs': CaseInsensitiveFrozenSet([]),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet(['q']),
+            'order': ['q'],
             'several': CaseInsensitiveFrozenSet(['q']),
             'simple': CaseInsensitiveFrozenSet(['q']),
             'text': CaseInsensitiveFrozenSet(['q'])
@@ -1991,6 +2094,8 @@ schema_dict = {
         '/fleurInput/output': {
             'attribs':
             CaseInsensitiveFrozenSet(['band', 'coreSpec', 'dos', 'eig66', 'slice', 'wannier']),
+            'complex':
+            CaseInsensitiveFrozenSet(['coreSpectrum', 'plotting', 'vacuumDOS', 'wannier']),
             'optional':
             CaseInsensitiveFrozenSet([
                 'bandDOS', 'chargeDensitySlicing', 'checks', 'coreSpectrum', 'juPhon', 'magneticCircularDichroism',
@@ -1998,11 +2103,10 @@ schema_dict = {
             ]),
             'optional_attribs':
             CaseInsensitiveFrozenSet(['band', 'coreSpec', 'dos', 'eig66', 'slice', 'wannier']),
-            'order':
-            CaseInsensitiveFrozenSet([
-                'bandDOS', 'chargeDensitySlicing', 'checks', 'coreSpectrum', 'juPhon', 'magneticCircularDichroism',
-                'plotting', 'specialOutput', 'unfoldingBand', 'vacuumDOS', 'wannier'
-            ]),
+            'order': [
+                'checks', 'bandDOS', 'vacuumDOS', 'plotting', 'chargeDensitySlicing', 'specialOutput', 'coreSpectrum',
+                'wannier', 'magneticCircularDichroism', 'unfoldingBand', 'juPhon'
+            ],
             'several':
             CaseInsensitiveFrozenSet([]),
             'simple':
@@ -2017,13 +2121,14 @@ schema_dict = {
             'attribs':
             CaseInsensitiveFrozenSet(
                 ['all_atoms', 'jDOS', 'maxEnergy', 'minEnergy', 'numberPoints', 'orbcomp', 'sigma']),
+            'complex':
+            CaseInsensitiveFrozenSet([]),
             'optional':
             CaseInsensitiveFrozenSet([]),
             'optional_attribs':
             CaseInsensitiveFrozenSet(
                 ['all_atoms', 'jDOS', 'maxEnergy', 'minEnergy', 'numberPoints', 'orbcomp', 'sigma']),
-            'order':
-            CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several':
             CaseInsensitiveFrozenSet([]),
             'simple':
@@ -2033,18 +2138,20 @@ schema_dict = {
         },
         '/fleurInput/output/chargeDensitySlicing': {
             'attribs': CaseInsensitiveFrozenSet(['maxEigenval', 'minEigenval', 'nnne', 'numkpt', 'pallst']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/output/checks': {
             'attribs': CaseInsensitiveFrozenSet(['cdinf', 'disp', 'vchk']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['cdinf', 'disp', 'vchk']),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
@@ -2055,12 +2162,13 @@ schema_dict = {
                 'I_initial', 'alpha_Ex', 'atomType', 'beta_Ex', 'eKin', 'eMax', 'eMin', 'edgeType', 'lmax', 'nqphi',
                 'nqr', 'numPoints', 'verbose'
             ]),
+            'complex':
+            CaseInsensitiveFrozenSet([]),
             'optional':
             CaseInsensitiveFrozenSet([]),
             'optional_attribs':
             CaseInsensitiveFrozenSet(['I_initial', 'alpha_Ex', 'beta_Ex', 'nqphi', 'nqr', 'verbose']),
-            'order':
-            CaseInsensitiveFrozenSet(['edgeIndices']),
+            'order': ['edgeIndices'],
             'several':
             CaseInsensitiveFrozenSet([]),
             'simple':
@@ -2070,27 +2178,30 @@ schema_dict = {
         },
         '/fleurInput/output/juPhon': {
             'attribs': CaseInsensitiveFrozenSet(['l_eigout', 'l_potout']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/output/magneticCircularDichroism': {
             'attribs': CaseInsensitiveFrozenSet(['energyLo', 'energyUp', 'mcd']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/output/plotting': {
             'attribs': CaseInsensitiveFrozenSet(['format', 'iplot', 'polar']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet(['plot']),
             'optional_attribs': CaseInsensitiveFrozenSet(['format', 'iplot', 'polar']),
-            'order': CaseInsensitiveFrozenSet(['plot']),
+            'order': ['plot'],
             'several': CaseInsensitiveFrozenSet(['plot']),
             'simple': CaseInsensitiveFrozenSet(['plot']),
             'text': CaseInsensitiveFrozenSet([])
@@ -2099,13 +2210,14 @@ schema_dict = {
             'attribs':
             CaseInsensitiveFrozenSet(
                 ['TwoD', 'cartesian', 'file', 'grid', 'onlyMT', 'typeMT', 'vec1', 'vec2', 'vec3', 'vecField', 'zero']),
+            'complex':
+            CaseInsensitiveFrozenSet([]),
             'optional':
             CaseInsensitiveFrozenSet([]),
             'optional_attribs':
             CaseInsensitiveFrozenSet(
                 ['TwoD', 'cartesian', 'file', 'grid', 'onlyMT', 'typeMT', 'vec1', 'vec2', 'vec3', 'vecField', 'zero']),
-            'order':
-            CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several':
             CaseInsensitiveFrozenSet([]),
             'simple':
@@ -2115,18 +2227,20 @@ schema_dict = {
         },
         '/fleurInput/output/specialOutput': {
             'attribs': CaseInsensitiveFrozenSet(['bmt', 'eonly', 'form66']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['bmt', 'eonly', 'form66']),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/output/unfoldingBand': {
             'attribs': CaseInsensitiveFrozenSet(['supercellX', 'supercellY', 'supercellZ', 'unfoldBand']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
@@ -2135,12 +2249,13 @@ schema_dict = {
             'attribs':
             CaseInsensitiveFrozenSet(
                 ['integ', 'locx1', 'locx2', 'locy1', 'locy2', 'nstars', 'nstm', 'star', 'tworkf', 'vacdos']),
+            'complex':
+            CaseInsensitiveFrozenSet([]),
             'optional':
             CaseInsensitiveFrozenSet(['layer']),
             'optional_attribs':
             CaseInsensitiveFrozenSet(['integ', 'locx1', 'locx2', 'locy1', 'locy2', 'nstars', 'nstm', 'star', 'tworkf']),
-            'order':
-            CaseInsensitiveFrozenSet(['layer']),
+            'order': ['layer'],
             'several':
             CaseInsensitiveFrozenSet(['layer']),
             'simple':
@@ -2150,54 +2265,60 @@ schema_dict = {
         },
         '/fleurInput/output/wannier': {
             'attribs': CaseInsensitiveFrozenSet(['atomList', 'bsComf', 'ms', 'sgwf', 'socgwf']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet(['bandSelection', 'jobList']),
             'optional_attribs': CaseInsensitiveFrozenSet(['atomList', 'bsComf', 'ms', 'sgwf', 'socgwf']),
-            'order': CaseInsensitiveFrozenSet(['bandSelection', 'jobList']),
+            'order': ['bandSelection', 'jobList'],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet(['bandSelection', 'jobList']),
             'text': CaseInsensitiveFrozenSet(['jobList'])
         },
         '/fleurInput/output/wannier/bandSelection': {
             'attribs': CaseInsensitiveFrozenSet(['maxSpinDown', 'maxSpinUp', 'minSpinDown', 'minSpinUp']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet(['maxSpinDown', 'minSpinDown']),
-            'order': CaseInsensitiveFrozenSet([]),
+            'order': [],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/relaxation': {
             'attribs': CaseInsensitiveFrozenSet([]),
+            'complex': CaseInsensitiveFrozenSet(['displacements', 'relaxation-history']),
             'optional': CaseInsensitiveFrozenSet(['displacements', 'relaxation-history']),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet(['displacements', 'relaxation-history']),
+            'order': ['displacements', 'relaxation-history'],
             'several': CaseInsensitiveFrozenSet([]),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/relaxation/displacements': {
             'attribs': CaseInsensitiveFrozenSet([]),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet(['displace']),
+            'order': ['displace'],
             'several': CaseInsensitiveFrozenSet(['displace']),
             'simple': CaseInsensitiveFrozenSet(['displace']),
             'text': CaseInsensitiveFrozenSet(['displace'])
         },
         '/fleurInput/relaxation/relaxation-history': {
             'attribs': CaseInsensitiveFrozenSet([]),
+            'complex': CaseInsensitiveFrozenSet(['step']),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet(['step']),
+            'order': ['step'],
             'several': CaseInsensitiveFrozenSet(['step']),
             'simple': CaseInsensitiveFrozenSet([]),
             'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/relaxation/relaxation-history/step': {
             'attribs': CaseInsensitiveFrozenSet(['energy']),
+            'complex': CaseInsensitiveFrozenSet([]),
             'optional': CaseInsensitiveFrozenSet([]),
             'optional_attribs': CaseInsensitiveFrozenSet([]),
-            'order': CaseInsensitiveFrozenSet(['posforce']),
+            'order': ['posforce'],
             'several': CaseInsensitiveFrozenSet(['posforce']),
             'simple': CaseInsensitiveFrozenSet(['posforce']),
             'text': CaseInsensitiveFrozenSet(['posforce'])

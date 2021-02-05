@@ -105,12 +105,13 @@ def get_tag_info(schema_dict, name, contains=None, not_contains=None, path_retur
     :returns: str, xpath to the tag if `path_return=True`
     """
     import copy
+    from masci_tools.util.case_insensitive_dict import CaseInsensitiveFrozenSet
 
     tag_xpath = get_tag_xpath(schema_dict, name, contains=contains, not_contains=not_contains)
     tag_info = schema_dict['tag_info'][tag_xpath].copy()
 
     if convert_to_builtin:
-        tag_info = {key: set(val.original_case.values()) for key, val in tag_info.items()}
+        tag_info = {key: set(val.original_case.values()) if isinstance(val, CaseInsensitiveFrozenSet) else val for key, val in tag_info.items()}
 
     if path_return:
         return tag_info, tag_xpath
