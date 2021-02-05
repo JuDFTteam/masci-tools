@@ -90,7 +90,7 @@ class CaseInsensitiveFrozenSet(frozenset):
             for key in iterable:
                 if key not in new_dict:
                     if isinstance(iterable, self.__class__):
-                        new_dict[key] = iterable.original_case(key)
+                        new_dict[key] = iterable.original_case[key]
                     else:
                         new_dict[key] = key
         return new_dict
