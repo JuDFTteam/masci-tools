@@ -16,7 +16,6 @@ functions to extract information about the fleur schema input or output
 from lxml import etree
 from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict, CaseInsensitiveFrozenSet
 from functools import wraps
-import copy
 
 #These types have infinite recursive paths and CANNOT BE PARSED in the path generation
 _RECURSIVE_TYPES = ['CompositeTimerType']
@@ -87,7 +86,10 @@ def cache_xpath_eval(func):
 
 @cache_xpath_eval
 def xpath_eval(xmlschema, xpath, namespaces):
-
+    """
+    Wrapper around the xpath calls in this module. Used for caching the
+    results
+    """
     return xmlschema.xpath(xpath, namespaces=namespaces)
 
 
