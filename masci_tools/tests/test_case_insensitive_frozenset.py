@@ -70,7 +70,7 @@ def test_case_insensitive_frozenset_difference(test_set, exp_diff, exp_case):
     actual = s.difference(test_set)
 
     assert isinstance(actual, CaseInsensitiveFrozenSet)
-    assert actual == exp_diff
+    assert s - test_set == actual
     assert actual.original_case == exp_case
 
 
@@ -94,7 +94,7 @@ TEST_UNION_CASES = [{
 @pytest.mark.parametrize('test_set,exp_union,exp_case', zip(TEST_SET, TEST_UNIONS, TEST_UNION_CASES))
 def test_case_insensitive_frozenset_union(test_set, exp_union, exp_case):
     """
-   Test CaseInsensitiveFrozenSet for correct difference
+   Test CaseInsensitiveFrozenSet for correct union
    """
     from masci_tools.util.case_insensitive_dict import CaseInsensitiveFrozenSet
 
@@ -104,6 +104,7 @@ def test_case_insensitive_frozenset_union(test_set, exp_union, exp_case):
 
     assert isinstance(actual, CaseInsensitiveFrozenSet)
     assert actual == exp_union
+    assert s | test_set == actual
     assert actual.original_case == exp_case
 
 
@@ -120,7 +121,7 @@ TEST_SYMDIFF_CASES = [{}, {
 @pytest.mark.parametrize('test_set,exp_diff,exp_case', zip(TEST_SET, TEST_SYM_DIFFERENCES, TEST_SYMDIFF_CASES))
 def test_case_insensitive_frozenset_sym_difference(test_set, exp_diff, exp_case):
     """
-   Test CaseInsensitiveFrozenSet for correct difference
+   Test CaseInsensitiveFrozenSet for correct symmetric difference
    """
     from masci_tools.util.case_insensitive_dict import CaseInsensitiveFrozenSet
 
@@ -130,6 +131,7 @@ def test_case_insensitive_frozenset_sym_difference(test_set, exp_diff, exp_case)
     print(actual.original_case)
     assert isinstance(actual, CaseInsensitiveFrozenSet)
     assert actual == exp_diff
+    assert s ^ test_set == actual
     assert actual.original_case == exp_case
 
 
@@ -147,7 +149,7 @@ TEST_INTERSECTIONS_CASES = [{
 @pytest.mark.parametrize('test_set,exp_intersect,exp_case', zip(TEST_SET, TEST_INTERSECTIONS, TEST_INTERSECTIONS_CASES))
 def test_case_insensitive_frozenset_intersection(test_set, exp_intersect, exp_case):
     """
-   Test CaseInsensitiveFrozenSet for correct difference
+   Test CaseInsensitiveFrozenSet for correct intersection
    """
     from masci_tools.util.case_insensitive_dict import CaseInsensitiveFrozenSet
 
@@ -156,5 +158,5 @@ def test_case_insensitive_frozenset_intersection(test_set, exp_intersect, exp_ca
     actual = s.intersection(test_set)
     print(actual.original_case)
     assert isinstance(actual, CaseInsensitiveFrozenSet)
-    assert actual == exp_intersect
+    assert s & test_set == actual
     assert actual.original_case == exp_case
