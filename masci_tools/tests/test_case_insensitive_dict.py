@@ -39,7 +39,7 @@ def test_case_insensitive_dict_upper_get(key, result):
 @pytest.mark.parametrize('key', TEST_LOOKUPS_NOT_EXISTENT)
 def test_case_insensitive_dict_get_not_existent(key):
    """
-   Test case insensitive lookup in CaseInsensitiveDict with upper() as normalizing function
+   Test case insensitive lookup (non existent keys) in CaseInsensitiveDict
    """
    from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict
 
@@ -53,7 +53,7 @@ def test_case_insensitive_dict_get_not_existent(key):
 @pytest.mark.parametrize('key', TEST_LOOKUPS_NOT_EXISTENT)
 def test_case_insensitive_dict_upper_get_not_existent(key):
    """
-   Test case insensitive lookup in CaseInsensitiveDict with upper() as normalizing function
+   Test case insensitive lookup (non existent keys) in CaseInsensitiveDict with upper() as normalizing function
    """
    from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict
 
@@ -66,7 +66,7 @@ def test_case_insensitive_dict_upper_get_not_existent(key):
 @pytest.mark.parametrize('key, result', TEST_LOOKUPS)
 def test_case_insensitive_dict_pop(key, result):
    """
-   Test case insensitive lookup in CaseInsensitiveDict
+   Test case insensitive pop in CaseInsensitiveDict
    """
    from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict
 
@@ -79,7 +79,7 @@ def test_case_insensitive_dict_pop(key, result):
 @pytest.mark.parametrize('key, result', TEST_LOOKUPS)
 def test_case_insensitive_dict_pop_upper(key, result):
    """
-   Test case insensitive lookup in CaseInsensitiveDict
+   Test case insensitive pop in CaseInsensitiveDict with upper() as normalizing function
    """
    from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict
 
