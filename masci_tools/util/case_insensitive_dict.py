@@ -120,6 +120,17 @@ class CaseInsensitiveFrozenSet(frozenset):
     def __ne__(self, other):
         return super().__ne__({key.lower() for key in other})
 
+    def __iter__(self):
+        self._frozenset_iter = super().__iter__()
+        return self
+
+    def __next__(self):
+        try:
+            return self.original_case[next(self._frozenset_iter)]
+        except StopIteration:
+            self._frozenset_iter = None
+            raise
+
     def difference(self, *others):
         new_frozenset = super().difference(*[{key.lower() for key in other} for other in others])
         new_case_dict = self._get_new_original_case(self.original_case.values(), *others)
