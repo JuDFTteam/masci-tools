@@ -96,6 +96,7 @@ class CaseInsensitiveFrozenSet(frozenset):
                         new_dict[key] = iterable.original_case[key]
                     else:
                         new_dict[key] = key
+        new_dict.freeze()
         return new_dict
 
     def __contains__(self, key):

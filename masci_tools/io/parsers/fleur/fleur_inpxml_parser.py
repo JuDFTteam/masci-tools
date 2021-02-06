@@ -17,7 +17,7 @@ and convert its content to a dict
 from lxml import etree
 from pprint import pprint
 from itertools import groupby
-from masci_tools.io.parsers.fleur.fleur_schema import load_inpschema
+from masci_tools.io.parsers.fleur.fleur_schema.schema_dict import InputSchemaDict
 from masci_tools.util.xml.common_xml_util import clear_xml, convert_xml_attribute, convert_xml_text, eval_xpath
 from masci_tools.util.schema_dict_util import read_constants
 
@@ -61,7 +61,7 @@ def inpxml_parser(inpxmlfile, version=None, parser_info_out=None):
             raise ValueError('Failed to extract inputVersion')
 
     parser_info_out['fleur_inp_version'] = version
-    schema_dict, xmlschema = load_inpschema(version, schema_return=True, parser_info_out=parser_info_out)
+    schema_dict = InputSchemaDict.fromVersion(version, parser_info_out=parser_info_out)
 
     ignore_validation = schema_dict['inp_version'] != version
 
@@ -71,10 +71,10 @@ def inpxml_parser(inpxmlfile, version=None, parser_info_out=None):
     constants = read_constants(root, schema_dict)
 
     try:
-        xmlschema.assertValid(xmltree)
+        schema_dict.xmlschema.assertValid(xmltree)
     except etree.DocumentInvalid as err:
 
-        error_log = sorted(xmlschema.error_log, key=lambda x: x.message)
+        error_log = sorted(schema_dict.xmlschema.error_log, key=lambda x: x.message)
         error_output = []
         first_occurence = []
         for message, group in groupby(error_log, key=lambda x: x.message):
@@ -93,7 +93,7 @@ def inpxml_parser(inpxmlfile, version=None, parser_info_out=None):
         if not ignore_validation:
             raise ValueError(errmsg) from err
 
-    if xmlschema.validate(xmltree) or ignore_validation:
+    if schema_dict.xmlschema.validate(xmltree) or ignore_validation:
         inp_dict = inpxml_todict(root, schema_dict, constants, parser_info_out=parser_info_out)
     else:
         parser_info_out['parser_warnings'].append('Input file does not validate against the schema: Reason is unknown')

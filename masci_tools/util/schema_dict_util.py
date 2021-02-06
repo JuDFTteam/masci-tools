@@ -18,6 +18,7 @@ Also provides convienient functions to use just a attribute name for extracting 
 attribute from the right place in the given etree
 """
 from masci_tools.util.parse_tasks_decorators import register_parsing_function
+from masci_tools.util.lockable_containers import LockableList
 from lxml import etree
 
 
@@ -56,9 +57,10 @@ def get_tag_xpath(schema_dict, name, contains=None, not_contains=None):
         if name in schema_dict[list_name]:
             paths = schema_dict[list_name][name]
 
-            if not isinstance(paths, list):
+            if not isinstance(paths, LockableList):
                 paths = [paths]
-            paths = paths.copy()
+            else:
+                paths = paths.get_unlocked()
 
             invalid_paths = set()
             for phrase in contains:
@@ -180,9 +182,10 @@ def get_attrib_xpath(schema_dict, name, contains=None, not_contains=None, exclud
         if name in schema_dict[list_name]:
             paths = schema_dict[list_name][name]
 
-            if not isinstance(paths, list):
+            if not isinstance(paths, LockableList):
                 paths = [paths]
-            paths = paths.copy()
+            else:
+                paths = paths.get_unlocked()
 
             invalid_paths = set()
             for phrase in contains:
