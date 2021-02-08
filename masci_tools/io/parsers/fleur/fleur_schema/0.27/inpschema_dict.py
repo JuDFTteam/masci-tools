@@ -25,6 +25,7 @@ The keys contain the following information:
     - 'tag_info': For each tag (path), the valid attributes and tags (optional, several,
                   order, simple, text)
 """
+from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict, CaseInsensitiveFrozenSet
 __inp_version__ = '0.27'
 schema_dict = {
     '_basic_types': {
@@ -125,938 +126,1116 @@ schema_dict = {
             'length': 1
         }
     },
-    'attrib_types': {
-        'Gmax': ['float'],
-        'GmaxXC': ['float'],
-        'J': ['float'],
-        'Kmax': ['float'],
-        'M': ['float'],
-        'MM': ['int'],
-        'U': ['float'],
-        'alpha': ['float'],
-        'atomicNumber': ['int'],
-        'autocomp': ['switch'],
-        'b_cons_x': ['float'],
-        'b_cons_y': ['float'],
-        'band': ['switch'],
-        'beta': ['float'],
-        'bmt': ['switch'],
-        'calculate': ['switch'],
-        'cdinf': ['switch'],
-        'chi': ['int'],
-        'chng': ['float'],
-        'coreStates': ['int'],
-        'count': ['int'],
-        'ctail': ['switch'],
-        'd': ['int'],
-        'd1': ['switch'],
-        'dTilda': ['float'],
-        'dVac': ['float'],
-        'dirichlet': ['switch'],
-        'disp': ['switch'],
-        'dos': ['switch'],
-        'eDeriv': ['int'],
-        'eV': ['switch'],
-        'eig66': ['switch'],
-        'element': ['string'],
+    'attrib_types':
+    CaseInsensitiveDict({
+        'fleurinputversion': ['string'],
+        'name': ['string'],
+        'value': ['string'],
         'ellow': ['float'],
         'elup': ['float'],
-        'eonly': ['switch'],
-        'epsdisp': ['float'],
-        'epsforce': ['float'],
-        'f': ['int'],
-        'fermiSmearingEnergy': ['float'],
-        'fermiSmearingTemp': ['float'],
-        'filename': ['string'],
-        'fleurInputVersion': ['string'],
-        'flipSpin': ['switch'],
-        'form66': ['switch'],
-        'frcor': ['switch'],
-        'gamma': ['switch'],
-        'gridPoints': ['int'],
-        'gw': ['int'],
-        'idsprs': ['int'],
-        'idsprs0': ['int'],
-        'idsprsi': ['int'],
-        'idsprsl': ['int'],
-        'idsprsv': ['float'],
-        'iggachk': ['int'],
-        'igrd': ['int'],
-        'imix': ['string'],
-        'integ': ['switch'],
-        'invs': ['switch'],
-        'invs1': ['switch'],
-        'iplot': ['switch'],
-        'isec1': ['int'],
-        'itmax': ['int'],
-        'jspins': ['int'],
-        'kcrel': ['int'],
-        'l': ['int'],
-        'l_J': ['switch'],
-        'l_amf': ['switch'],
+        'zsigma': ['float'],
+        'sig_b_1': ['float'],
+        'sig_b_2': ['float'],
+        'plot_charge': ['switch'],
+        'plot_rho': ['switch'],
+        'autocomp': ['switch'],
+        'dirichlet': ['switch'],
+        'ev': ['switch'],
+        'l_ss': ['switch'],
+        'l_mperp': ['switch'],
         'l_constr': ['switch'],
         'l_disp': ['switch'],
-        'l_f': ['switch'],
-        'l_magn': ['switch'],
-        'l_mperp': ['switch'],
-        'l_noco': ['switch'],
-        'l_relax': ['switch'],
-        'l_soc': ['switch'],
-        'l_ss': ['switch'],
-        'latnam': ['string'],
-        'layers': ['int'],
-        'lflip': ['switch'],
-        'lmax': ['int'],
-        'lmaxAPW': ['int'],
-        'lnonsphr': ['int'],
-        'locx1': ['float'],
-        'locx2': ['float'],
-        'locy1': ['float'],
-        'locy2': ['float'],
-        'logIncrement': ['float'],
-        'lpr': ['int'],
-        'lwb': ['switch'],
-        'm_cyl': ['int'],
-        'magField': ['float'],
-        'magMom': ['float'],
-        'maxEigenval': ['float'],
-        'maxEnergy': ['float'],
-        'maxIterBroyd': ['int'],
-        'maxTimeToStartIter': ['float'],
-        'minDistance': ['float'],
-        'minEigenval': ['float'],
-        'minEnergy': ['float'],
+        'sso_opt': ['string'],
         'mix_b': ['float'],
-        'mode': ['string'],
-        'n': ['int'],
-        'name': ['string'],
-        'ndir': ['int'],
-        'ndvgrd': ['int'],
-        'nnne': ['int'],
+        'thetaj': ['float'],
         'nsh': ['int'],
-        'nstars': ['int'],
-        'nstm': ['int'],
+        'd1': ['switch'],
+        'mm': ['int'],
+        'vm': ['int'],
+        'm_cyl': ['int'],
+        'chi': ['int'],
+        'rot': ['int'],
+        'invs1': ['switch'],
+        'zrfs1': ['switch'],
+        'ctail': ['switch'],
+        'frcor': ['switch'],
+        'kcrel': ['int'],
+        'spgrp': ['string'],
+        'invs': ['switch'],
+        'zrfs': ['switch'],
+        'filename': ['string'],
+        'jspins': ['int'],
+        'l_noco': ['switch'],
+        'l_j': ['switch'],
+        'swsp': ['switch'],
+        'lflip': ['switch'],
+        'scale': ['float'],
+        'latnam': ['string'],
+        'dvac': ['float'],
+        'dtilda': ['float'],
+        'vacuum': ['int'],
+        'spinup': ['float'],
+        'spindown': ['float'],
+        'relativisticcorrections': ['switch'],
+        'igrd': ['int'],
+        'lwb': ['switch'],
+        'ndvgrd': ['int'],
+        'idsprs': ['int'],
+        'chng': ['float'],
+        'iggachk': ['int'],
+        'idsprs0': ['int'],
+        'idsprsl': ['int'],
+        'idsprsi': ['int'],
+        'idsprsv': ['float'],
+        'element': ['string'],
+        'atomicnumber': ['int'],
+        'corestates': ['int'],
+        'magmom': ['float'],
+        'flipspin': ['switch'],
+        'magfield': ['float'],
+        'vcaaddcharge': ['float'],
+        'species': ['string'],
+        'orbcomp': ['switch'],
+        'l_relax': ['switch'],
+        'l_magn': ['switch'],
+        'm': ['float'],
+        'alpha': ['float'],
+        'beta': ['float'],
+        'b_cons_x': ['float'],
+        'b_cons_y': ['float'],
+        'radius': ['float'],
+        'gridpoints': ['int'],
+        'logincrement': ['float'],
+        'lmax': ['int'],
+        'lnonsphr': ['int'],
+        'lmaxapw': ['int'],
+        's': ['int'],
+        'p': ['int'],
+        'd': ['int'],
+        'f': ['int'],
+        'l': ['int'],
+        'u': ['float'],
+        'j': ['float'],
+        'l_amf': ['switch'],
+        'calculate': ['switch'],
+        'relaxxyz': ['string'],
+        'type': ['string'],
+        'n': ['int'],
+        'ederiv': ['int'],
+        'kmax': ['float'],
+        'gmax': ['float'],
+        'gmaxxc': ['float'],
         'numbands': ['int', 'string'],
+        'valenceelectrons': ['float'],
+        'mode': ['string'],
+        'fermismearingenergy': ['float'],
+        'fermismearingtemp': ['float'],
+        'theta': ['float'],
+        'phi': ['float'],
+        'l_soc': ['switch'],
+        'spav': ['switch'],
+        'off': ['switch'],
+        'soc66': ['switch'],
+        'itmax': ['int'],
+        'maxiterbroyd': ['int'],
+        'imix': ['string'],
+        'spinf': ['float'],
+        'mindistance': ['float'],
+        'maxtimetostartiter': ['float'],
+        'layers': ['int'],
+        'integ': ['switch'],
+        'star': ['switch'],
+        'nstars': ['int'],
+        'locx1': ['float'],
+        'locy1': ['float'],
+        'locx2': ['float'],
+        'locy2': ['float'],
+        'nstm': ['int'],
+        'tworkf': ['float'],
+        'iplot': ['switch'],
+        'score': ['switch'],
+        'plplot': ['switch'],
         'numkpt': ['int'],
+        'mineigenval': ['float'],
+        'maxeigenval': ['float'],
+        'nnne': ['int'],
+        'pallst': ['switch'],
+        'l_f': ['switch'],
+        'xa': ['float'],
+        'thetad': ['float'],
+        'epsdisp': ['float'],
+        'epsforce': ['float'],
+        'qfix': ['switch'],
+        'ndir': ['int'],
+        'minenergy': ['float'],
+        'maxenergy': ['float'],
+        'sigma': ['float'],
         'nx': ['int'],
         'ny': ['int'],
         'nz': ['int'],
-        'off': ['switch'],
-        'orbcomp': ['switch'],
-        'p': ['int'],
-        'pallst': ['switch'],
-        'phi': ['float'],
-        'plot_charge': ['switch'],
-        'plot_rho': ['switch'],
-        'plplot': ['switch'],
-        'posScale': ['float'],
-        'pot8': ['switch'],
-        'qfix': ['switch'],
+        'gamma': ['switch'],
+        'count': ['int'],
+        'posscale': ['float'],
+        'weightscale': ['float'],
+        'weight': ['float'],
         'qx': ['int'],
         'qy': ['int'],
         'qz': ['int'],
-        'radius': ['float'],
-        'relativisticCorrections': ['switch'],
-        'relaxXYZ': ['string'],
-        'rot': ['int'],
-        's': ['int'],
-        'scale': ['float'],
-        'score': ['switch'],
+        'gw': ['int'],
+        'pot8': ['switch'],
+        'eig66': ['switch'],
+        'lpr': ['int'],
+        'isec1': ['int'],
         'secvar': ['switch'],
-        'sig_b_1': ['float'],
-        'sig_b_2': ['float'],
-        'sigma': ['float'],
-        'slice': ['switch'],
-        'soc66': ['switch'],
-        'spav': ['switch'],
-        'species': ['string'],
-        'spgrp': ['string'],
-        'spinDown': ['float'],
-        'spinUp': ['float'],
-        'spinf': ['float'],
-        'sso_opt': ['string'],
-        'star': ['switch'],
-        'state': ['string'],
-        'swsp': ['switch'],
-        'theta': ['float'],
-        'thetaJ': ['float'],
-        'thetad': ['float'],
-        'tworkf': ['float'],
-        'type': ['string'],
-        'vM': ['int'],
-        'vacdos': ['switch'],
-        'vacuum': ['int'],
-        'valenceElectrons': ['float'],
-        'value': ['string'],
-        'vcaAddCharge': ['float'],
         'vchk': ['switch'],
-        'weight': ['float'],
-        'weightScale': ['float'],
-        'xa': ['float'],
-        'zrfs': ['switch'],
-        'zrfs1': ['switch'],
-        'zsigma': ['float']
-    },
-    'inp_version': '0.27',
+        'cdinf': ['switch'],
+        'disp': ['switch'],
+        'form66': ['switch'],
+        'eonly': ['switch'],
+        'bmt': ['switch'],
+        'dos': ['switch'],
+        'band': ['switch'],
+        'vacdos': ['switch'],
+        'slice': ['switch'],
+        'state': ['string']
+    }),
+    'inp_version':
+    '0.27',
     'omitt_contained_tags': ['constants', 'atomSpecies', 'atomGroups', 'symmetryOperations'],
-    'other_attribs': {
-        'J': ['/fleurInput/atomSpecies/species/ldaU', '/fleurInput/atomGroups/atomGroup/ldaU'],
-        'M': ['/fleurInput/atomSpecies/species/nocoParams', '/fleurInput/atomGroups/atomGroup/nocoParams'],
-        'U': ['/fleurInput/atomSpecies/species/ldaU', '/fleurInput/atomGroups/atomGroup/ldaU'],
-        'absPos': ['/fleurInput/atomGroups/atomGroup/absPos'],
-        'alpha': ['/fleurInput/atomSpecies/species/nocoParams', '/fleurInput/atomGroups/atomGroup/nocoParams'],
-        'atomicNumber': ['/fleurInput/atomSpecies/species'],
-        'b_cons_x': ['/fleurInput/atomSpecies/species/nocoParams', '/fleurInput/atomGroups/atomGroup/nocoParams'],
-        'b_cons_y': ['/fleurInput/atomSpecies/species/nocoParams', '/fleurInput/atomGroups/atomGroup/nocoParams'],
-        'beta': ['/fleurInput/atomSpecies/species/nocoParams', '/fleurInput/atomGroups/atomGroup/nocoParams'],
-        'calculate': ['/fleurInput/atomSpecies/species/force', '/fleurInput/atomGroups/atomGroup/force'],
-        'coreConfig': ['/fleurInput/atomSpecies/species/electronConfig/coreConfig'],
-        'coreStates': ['/fleurInput/atomSpecies/species'],
-        'd': ['/fleurInput/atomSpecies/species/energyParameters', '/fleurInput/atomGroups/atomGroup/energyParameters'],
-        'eDeriv': ['/fleurInput/atomSpecies/species/lo', '/fleurInput/atomGroups/atomGroup/lo'],
-        'element': ['/fleurInput/atomSpecies/species'],
-        'f': ['/fleurInput/atomSpecies/species/energyParameters', '/fleurInput/atomGroups/atomGroup/energyParameters'],
-        'filmPos': ['/fleurInput/atomGroups/atomGroup/filmPos'],
-        'flipSpin': ['/fleurInput/atomSpecies/species'],
-        'gridPoints': ['/fleurInput/atomSpecies/species/mtSphere', '/fleurInput/atomGroups/atomGroup/mtSphere'],
-        'kPoint': ['/fleurInput/calculationSetup/bzIntegration/kPointList/kPoint'],
+    'other_attribs':
+    CaseInsensitiveDict({
+        'j': ['/fleurInput/atomGroups/atomGroup/ldaU/@J', '/fleurInput/atomSpecies/species/ldaU/@J'],
+        'm': ['/fleurInput/atomGroups/atomGroup/nocoParams/@M', '/fleurInput/atomSpecies/species/nocoParams/@M'],
+        'u': ['/fleurInput/atomGroups/atomGroup/ldaU/@U', '/fleurInput/atomSpecies/species/ldaU/@U'],
+        'alpha':
+        ['/fleurInput/atomGroups/atomGroup/nocoParams/@alpha', '/fleurInput/atomSpecies/species/nocoParams/@alpha'],
+        'atomicnumber': ['/fleurInput/atomSpecies/species/@atomicNumber'],
+        'b_cons_x': [
+            '/fleurInput/atomGroups/atomGroup/nocoParams/@b_cons_x',
+            '/fleurInput/atomSpecies/species/nocoParams/@b_cons_x'
+        ],
+        'b_cons_y': [
+            '/fleurInput/atomGroups/atomGroup/nocoParams/@b_cons_y',
+            '/fleurInput/atomSpecies/species/nocoParams/@b_cons_y'
+        ],
+        'beta':
+        ['/fleurInput/atomGroups/atomGroup/nocoParams/@beta', '/fleurInput/atomSpecies/species/nocoParams/@beta'],
+        'calculate':
+        ['/fleurInput/atomGroups/atomGroup/force/@calculate', '/fleurInput/atomSpecies/species/force/@calculate'],
+        'corestates': ['/fleurInput/atomSpecies/species/@coreStates'],
+        'd':
+        ['/fleurInput/atomGroups/atomGroup/energyParameters/@d', '/fleurInput/atomSpecies/species/energyParameters/@d'],
+        'ederiv': ['/fleurInput/atomGroups/atomGroup/lo/@eDeriv', '/fleurInput/atomSpecies/species/lo/@eDeriv'],
+        'element': ['/fleurInput/atomSpecies/species/@element'],
+        'f':
+        ['/fleurInput/atomGroups/atomGroup/energyParameters/@f', '/fleurInput/atomSpecies/species/energyParameters/@f'],
+        'flipspin': ['/fleurInput/atomSpecies/species/@flipSpin'],
+        'gridpoints': [
+            '/fleurInput/atomGroups/atomGroup/mtSphere/@gridPoints',
+            '/fleurInput/atomSpecies/species/mtSphere/@gridPoints'
+        ],
         'l': [
-            '/fleurInput/atomSpecies/species/ldaU', '/fleurInput/atomGroups/atomGroup/ldaU',
-            '/fleurInput/atomSpecies/species/lo', '/fleurInput/atomGroups/atomGroup/lo'
+            '/fleurInput/atomGroups/atomGroup/ldaU/@l', '/fleurInput/atomGroups/atomGroup/lo/@l',
+            '/fleurInput/atomSpecies/species/ldaU/@l', '/fleurInput/atomSpecies/species/lo/@l'
         ],
-        'l_amf': ['/fleurInput/atomSpecies/species/ldaU', '/fleurInput/atomGroups/atomGroup/ldaU'],
-        'l_magn': ['/fleurInput/atomSpecies/species/nocoParams', '/fleurInput/atomGroups/atomGroup/nocoParams'],
-        'l_relax': ['/fleurInput/atomSpecies/species/nocoParams', '/fleurInput/atomGroups/atomGroup/nocoParams'],
-        'lmax': ['/fleurInput/atomSpecies/species/atomicCutoffs', '/fleurInput/atomGroups/atomGroup/atomicCutoffs'],
-        'lmaxAPW': ['/fleurInput/atomSpecies/species/atomicCutoffs', '/fleurInput/atomGroups/atomGroup/atomicCutoffs'],
-        'lnonsphr': ['/fleurInput/atomSpecies/species/atomicCutoffs', '/fleurInput/atomGroups/atomGroup/atomicCutoffs'],
-        'logIncrement': ['/fleurInput/atomSpecies/species/mtSphere', '/fleurInput/atomGroups/atomGroup/mtSphere'],
-        'magField': ['/fleurInput/atomSpecies/species', '/fleurInput/atomGroups/atomGroup'],
-        'magMom': ['/fleurInput/atomSpecies/species'],
-        'n': ['/fleurInput/atomSpecies/species/lo', '/fleurInput/atomGroups/atomGroup/lo'],
+        'l_amf': ['/fleurInput/atomGroups/atomGroup/ldaU/@l_amf', '/fleurInput/atomSpecies/species/ldaU/@l_amf'],
+        'l_magn':
+        ['/fleurInput/atomGroups/atomGroup/nocoParams/@l_magn', '/fleurInput/atomSpecies/species/nocoParams/@l_magn'],
+        'l_relax':
+        ['/fleurInput/atomGroups/atomGroup/nocoParams/@l_relax', '/fleurInput/atomSpecies/species/nocoParams/@l_relax'],
+        'lmax':
+        ['/fleurInput/atomGroups/atomGroup/atomicCutoffs/@lmax', '/fleurInput/atomSpecies/species/atomicCutoffs/@lmax'],
+        'lmaxapw': [
+            '/fleurInput/atomGroups/atomGroup/atomicCutoffs/@lmaxAPW',
+            '/fleurInput/atomSpecies/species/atomicCutoffs/@lmaxAPW'
+        ],
+        'lnonsphr': [
+            '/fleurInput/atomGroups/atomGroup/atomicCutoffs/@lnonsphr',
+            '/fleurInput/atomSpecies/species/atomicCutoffs/@lnonsphr'
+        ],
+        'logincrement': [
+            '/fleurInput/atomGroups/atomGroup/mtSphere/@logIncrement',
+            '/fleurInput/atomSpecies/species/mtSphere/@logIncrement'
+        ],
+        'magfield': ['/fleurInput/atomGroups/atomGroup/@magField', '/fleurInput/atomSpecies/species/@magField'],
+        'magmom': ['/fleurInput/atomSpecies/species/@magMom'],
+        'n': ['/fleurInput/atomGroups/atomGroup/lo/@n', '/fleurInput/atomSpecies/species/lo/@n'],
         'name': [
-            '/fleurInput/constants/constant', '/fleurInput/atomSpecies/species',
-            '/fleurInput/calculationSetup/bzIntegration/kPointCount/specialPoint'
+            '/fleurInput/atomSpecies/species/@name',
+            '/fleurInput/calculationSetup/bzIntegration/kPointCount/specialPoint/@name',
+            '/fleurInput/constants/constant/@name'
         ],
-        'orbcomp': ['/fleurInput/atomGroups/atomGroup'],
+        'orbcomp': ['/fleurInput/atomGroups/atomGroup/@orbcomp'],
+        'p':
+        ['/fleurInput/atomGroups/atomGroup/energyParameters/@p', '/fleurInput/atomSpecies/species/energyParameters/@p'],
+        'radius':
+        ['/fleurInput/atomGroups/atomGroup/mtSphere/@radius', '/fleurInput/atomSpecies/species/mtSphere/@radius'],
+        'relaxxyz':
+        ['/fleurInput/atomGroups/atomGroup/force/@relaxXYZ', '/fleurInput/atomSpecies/species/force/@relaxXYZ'],
+        's':
+        ['/fleurInput/atomGroups/atomGroup/energyParameters/@s', '/fleurInput/atomSpecies/species/energyParameters/@s'],
+        'species': ['/fleurInput/atomGroups/atomGroup/@species'],
+        'spindown': [
+            '/fleurInput/atomSpecies/species/electronConfig/stateOccupation/@spinDown',
+            '/fleurInput/cell/filmLattice/vacuumEnergyParameters/@spinDown'
+        ],
+        'spinup': [
+            '/fleurInput/atomSpecies/species/electronConfig/stateOccupation/@spinUp',
+            '/fleurInput/cell/filmLattice/vacuumEnergyParameters/@spinUp'
+        ],
+        'state': ['/fleurInput/atomSpecies/species/electronConfig/stateOccupation/@state'],
+        'type': ['/fleurInput/atomGroups/atomGroup/lo/@type', '/fleurInput/atomSpecies/species/lo/@type'],
+        'vacuum': ['/fleurInput/cell/filmLattice/vacuumEnergyParameters/@vacuum'],
+        'value': ['/fleurInput/constants/constant/@value'],
+        'vcaaddcharge': [
+            '/fleurInput/atomGroups/atomGroup/@vcaAddCharge', '/fleurInput/atomSpecies/species/@vcaAddCharge'
+        ],
+        'weight': ['/fleurInput/calculationSetup/bzIntegration/kPointList/kPoint/@weight'],
+        'abspos': ['/fleurInput/atomGroups/atomGroup/absPos'],
+        'coreconfig': ['/fleurInput/atomSpecies/species/electronConfig/coreConfig'],
+        'filmpos': ['/fleurInput/atomGroups/atomGroup/filmPos'],
+        'kpoint': ['/fleurInput/calculationSetup/bzIntegration/kPointList/kPoint'],
         'orbcomprot': ['/fleurInput/atomGroups/atomGroup/orbcomprot'],
-        'p': ['/fleurInput/atomSpecies/species/energyParameters', '/fleurInput/atomGroups/atomGroup/energyParameters'],
-        'radius': ['/fleurInput/atomSpecies/species/mtSphere', '/fleurInput/atomGroups/atomGroup/mtSphere'],
-        'relPos': ['/fleurInput/atomGroups/atomGroup/relPos'],
-        'relaxXYZ': ['/fleurInput/atomSpecies/species/force', '/fleurInput/atomGroups/atomGroup/force'],
+        'relpos': ['/fleurInput/atomGroups/atomGroup/relPos'],
         'row-1': ['/fleurInput/cell/symmetryOperations/symOp/row-1'],
         'row-2': ['/fleurInput/cell/symmetryOperations/symOp/row-2'],
         'row-3': ['/fleurInput/cell/symmetryOperations/symOp/row-3'],
-        's': ['/fleurInput/atomSpecies/species/energyParameters', '/fleurInput/atomGroups/atomGroup/energyParameters'],
-        'specialPoint': ['/fleurInput/calculationSetup/bzIntegration/kPointCount/specialPoint'],
-        'species': ['/fleurInput/atomGroups/atomGroup'],
-        'spinDown': [
-            '/fleurInput/cell/filmLattice/vacuumEnergyParameters',
-            '/fleurInput/atomSpecies/species/electronConfig/stateOccupation'
-        ],
-        'spinUp': [
-            '/fleurInput/cell/filmLattice/vacuumEnergyParameters',
-            '/fleurInput/atomSpecies/species/electronConfig/stateOccupation'
-        ],
-        'state': ['/fleurInput/atomSpecies/species/electronConfig/stateOccupation'],
-        'type': ['/fleurInput/atomSpecies/species/lo', '/fleurInput/atomGroups/atomGroup/lo'],
-        'vacuum': ['/fleurInput/cell/filmLattice/vacuumEnergyParameters'],
-        'valenceConfig': ['/fleurInput/atomSpecies/species/electronConfig/valenceConfig'],
-        'value': ['/fleurInput/constants/constant'],
-        'vcaAddCharge': ['/fleurInput/atomSpecies/species', '/fleurInput/atomGroups/atomGroup'],
-        'weight': ['/fleurInput/calculationSetup/bzIntegration/kPointList/kPoint']
-    },
-    'root_tag': 'fleurInput',
-    'simple_elements': {
-        'a1': [{
-            'length': 1,
-            'type': ['float']
-        }],
-        'a2': [{
-            'length': 1,
-            'type': ['float']
-        }],
-        'absPos': [{
-            'length': 3,
-            'type': ['string']
-        }],
-        'c': [{
-            'length': 1,
-            'type': ['float']
-        }],
+        'specialpoint': ['/fleurInput/calculationSetup/bzIntegration/kPointCount/specialPoint'],
+        'valenceconfig': ['/fleurInput/atomSpecies/species/electronConfig/valenceConfig']
+    }),
+    'root_tag':
+    'fleurInput',
+    'simple_elements':
+    CaseInsensitiveDict({
         'comment': [{
-            'length': 1,
-            'type': ['string']
-        }],
-        'coreConfig': [{
-            'length': 'unbounded',
-            'type': ['string']
-        }],
-        'filmPos': [{
-            'length': 3,
-            'type': ['string']
-        }],
-        'kPoint': [{
-            'length': 3,
-            'type': ['float']
-        }],
-        'orbcomprot': [{
-            'length': 3,
-            'type': ['float']
-        }],
-        'qsc': [{
-            'length': 3,
-            'type': ['float']
+            'type': ['string'],
+            'length': 1
         }],
         'qss': [{
-            'length': 3,
-            'type': ['float']
+            'type': ['float'],
+            'length': 3
         }],
-        'relPos': [{
-            'length': 3,
-            'type': ['string']
+        'qsc': [{
+            'type': ['float'],
+            'length': 3
+        }],
+        'a1': [{
+            'type': ['float'],
+            'length': 1
+        }],
+        'a2': [{
+            'type': ['float'],
+            'length': 1
+        }],
+        'c': [{
+            'type': ['float'],
+            'length': 1
         }],
         'row-1': [{
-            'length': 2,
-            'type': ['string']
+            'type': ['string'],
+            'length': 2
         }, {
-            'length': 3,
-            'type': ['string']
+            'type': ['string'],
+            'length': 3
         }, {
-            'length': 4,
-            'type': ['float']
+            'type': ['float'],
+            'length': 4
         }],
         'row-2': [{
-            'length': 2,
-            'type': ['string']
+            'type': ['string'],
+            'length': 2
         }, {
-            'length': 3,
-            'type': ['string']
+            'type': ['string'],
+            'length': 3
         }, {
-            'length': 4,
-            'type': ['float']
+            'type': ['float'],
+            'length': 4
         }],
         'row-3': [{
-            'length': 3,
-            'type': ['string']
+            'type': ['string'],
+            'length': 3
         }, {
-            'length': 4,
-            'type': ['float']
+            'type': ['float'],
+            'length': 4
         }],
-        'specialPoint': [{
-            'length': 3,
-            'type': ['float']
+        'relpos': [{
+            'type': ['string'],
+            'length': 3
         }],
-        'valenceConfig': [{
-            'length': 'unbounded',
-            'type': ['string']
+        'abspos': [{
+            'type': ['string'],
+            'length': 3
+        }],
+        'filmpos': [{
+            'type': ['string'],
+            'length': 3
+        }],
+        'orbcomprot': [{
+            'type': ['float'],
+            'length': 3
+        }],
+        'specialpoint': [{
+            'type': ['float'],
+            'length': 3
+        }],
+        'kpoint': [{
+            'type': ['float'],
+            'length': 3
+        }],
+        'coreconfig': [{
+            'type': ['string'],
+            'length': 'unbounded'
+        }],
+        'valenceconfig': [{
+            'type': ['string'],
+            'length': 'unbounded'
         }]
-    },
+    }),
     'tag_info': {
         '/fleurInput': {
-            'attribs': ['fleurInputVersion'],
-            'optional': ['comment', 'constants', 'output'],
-            'optional_attribs': [],
+            'attribs':
+            CaseInsensitiveFrozenSet(['fleurInputVersion']),
+            'complex':
+            CaseInsensitiveFrozenSet(
+                ['atomGroups', 'atomSpecies', 'calculationSetup', 'cell', 'constants', 'output', 'xcFunctional']),
+            'optional':
+            CaseInsensitiveFrozenSet(['comment', 'constants', 'output']),
+            'optional_attribs':
+            CaseInsensitiveFrozenSet([]),
             'order':
             ['comment', 'constants', 'calculationSetup', 'cell', 'xcFunctional', 'atomSpecies', 'atomGroups', 'output'],
-            'several': [],
-            'simple': ['comment'],
-            'text': ['comment']
+            'several':
+            CaseInsensitiveFrozenSet([]),
+            'simple':
+            CaseInsensitiveFrozenSet(['comment']),
+            'text':
+            CaseInsensitiveFrozenSet(['comment'])
         },
         '/fleurInput/atomGroups': {
-            'attribs': [],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet([]),
+            'complex': CaseInsensitiveFrozenSet(['atomGroup']),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': ['atomGroup'],
-            'several': ['atomGroup'],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet(['atomGroup']),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomGroups/atomGroup': {
-            'attribs': ['species', 'orbcomp', 'magField', 'vcaAddCharge'],
+            'attribs':
+            CaseInsensitiveFrozenSet(['magField', 'orbcomp', 'species', 'vcaAddCharge']),
+            'complex':
+            CaseInsensitiveFrozenSet([]),
             'optional':
-            ['mtSphere', 'atomicCutoffs', 'energyParameters', 'force', 'nocoParams', 'ldaU', 'lo', 'orbcomprot'],
-            'optional_attribs': ['orbcomp', 'magField', 'vcaAddCharge'],
+            CaseInsensitiveFrozenSet(
+                ['atomicCutoffs', 'energyParameters', 'force', 'ldaU', 'lo', 'mtSphere', 'nocoParams', 'orbcomprot']),
+            'optional_attribs':
+            CaseInsensitiveFrozenSet(['magField', 'orbcomp', 'vcaAddCharge']),
             'order': [
                 'relPos', 'absPos', 'filmPos', 'mtSphere', 'atomicCutoffs', 'energyParameters', 'force', 'nocoParams',
                 'ldaU', 'lo', 'orbcomprot'
             ],
-            'several': ['relPos', 'absPos', 'filmPos', 'ldaU', 'lo'],
-            'simple': [
-                'relPos', 'absPos', 'filmPos', 'mtSphere', 'atomicCutoffs', 'energyParameters', 'force', 'nocoParams',
-                'ldaU', 'lo', 'orbcomprot'
-            ],
-            'text': ['relPos', 'absPos', 'filmPos', 'orbcomprot']
+            'several':
+            CaseInsensitiveFrozenSet(['absPos', 'filmPos', 'ldaU', 'lo', 'relPos']),
+            'simple':
+            CaseInsensitiveFrozenSet([
+                'absPos', 'atomicCutoffs', 'energyParameters', 'filmPos', 'force', 'ldaU', 'lo', 'mtSphere',
+                'nocoParams', 'orbcomprot', 'relPos'
+            ]),
+            'text':
+            CaseInsensitiveFrozenSet(['absPos', 'filmPos', 'orbcomprot', 'relPos'])
         },
         '/fleurInput/atomGroups/atomGroup/atomicCutoffs': {
-            'attribs': ['lmax', 'lnonsphr', 'lmaxAPW'],
-            'optional': [],
-            'optional_attribs': ['lmaxAPW'],
+            'attribs': CaseInsensitiveFrozenSet(['lmax', 'lmaxAPW', 'lnonsphr']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['lmaxAPW']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomGroups/atomGroup/energyParameters': {
-            'attribs': ['s', 'p', 'd', 'f'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['d', 'f', 'p', 's']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomGroups/atomGroup/force': {
-            'attribs': ['calculate', 'relaxXYZ'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['calculate', 'relaxXYZ']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomGroups/atomGroup/ldaU': {
-            'attribs': ['l', 'U', 'J', 'l_amf'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['J', 'U', 'l', 'l_amf']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomGroups/atomGroup/lo': {
-            'attribs': ['type', 'l', 'n', 'eDeriv'],
-            'optional': [],
-            'optional_attribs': ['eDeriv'],
+            'attribs': CaseInsensitiveFrozenSet(['eDeriv', 'l', 'n', 'type']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['eDeriv']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomGroups/atomGroup/mtSphere': {
-            'attribs': ['radius', 'gridPoints', 'logIncrement'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['gridPoints', 'logIncrement', 'radius']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomGroups/atomGroup/nocoParams': {
-            'attribs': ['l_relax', 'l_magn', 'M', 'alpha', 'beta', 'b_cons_x', 'b_cons_y'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['M', 'alpha', 'b_cons_x', 'b_cons_y', 'beta', 'l_magn', 'l_relax']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomSpecies': {
-            'attribs': [],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet([]),
+            'complex': CaseInsensitiveFrozenSet(['species']),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': ['species'],
-            'several': ['species'],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet(['species']),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomSpecies/species': {
             'attribs':
-            ['name', 'element', 'atomicNumber', 'coreStates', 'magMom', 'flipSpin', 'magField', 'vcaAddCharge'],
-            'optional': ['energyParameters', 'force', 'electronConfig', 'nocoParams', 'ldaU', 'lo'],
-            'optional_attribs': ['magMom', 'flipSpin', 'magField', 'vcaAddCharge'],
+            CaseInsensitiveFrozenSet(
+                ['atomicNumber', 'coreStates', 'element', 'flipSpin', 'magField', 'magMom', 'name', 'vcaAddCharge']),
+            'complex':
+            CaseInsensitiveFrozenSet(['electronConfig']),
+            'optional':
+            CaseInsensitiveFrozenSet(['electronConfig', 'energyParameters', 'force', 'ldaU', 'lo', 'nocoParams']),
+            'optional_attribs':
+            CaseInsensitiveFrozenSet(['flipSpin', 'magField', 'magMom', 'vcaAddCharge']),
             'order':
             ['mtSphere', 'atomicCutoffs', 'energyParameters', 'force', 'electronConfig', 'nocoParams', 'ldaU', 'lo'],
-            'several': ['ldaU', 'lo'],
-            'simple': ['mtSphere', 'atomicCutoffs', 'energyParameters', 'force', 'nocoParams', 'ldaU', 'lo'],
-            'text': []
+            'several':
+            CaseInsensitiveFrozenSet(['ldaU', 'lo']),
+            'simple':
+            CaseInsensitiveFrozenSet(
+                ['atomicCutoffs', 'energyParameters', 'force', 'ldaU', 'lo', 'mtSphere', 'nocoParams']),
+            'text':
+            CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomSpecies/species/atomicCutoffs': {
-            'attribs': ['lmax', 'lnonsphr', 'lmaxAPW'],
-            'optional': [],
-            'optional_attribs': ['lmaxAPW'],
+            'attribs': CaseInsensitiveFrozenSet(['lmax', 'lmaxAPW', 'lnonsphr']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['lmaxAPW']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomSpecies/species/electronConfig': {
-            'attribs': [],
-            'optional': ['valenceConfig', 'stateOccupation'],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet([]),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet(['stateOccupation', 'valenceConfig']),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': ['coreConfig', 'valenceConfig', 'stateOccupation'],
-            'several': ['stateOccupation'],
-            'simple': ['coreConfig', 'valenceConfig', 'stateOccupation'],
-            'text': ['coreConfig', 'valenceConfig']
+            'several': CaseInsensitiveFrozenSet(['stateOccupation']),
+            'simple': CaseInsensitiveFrozenSet(['coreConfig', 'stateOccupation', 'valenceConfig']),
+            'text': CaseInsensitiveFrozenSet(['coreConfig', 'valenceConfig'])
         },
         '/fleurInput/atomSpecies/species/electronConfig/stateOccupation': {
-            'attribs': ['state', 'spinUp', 'spinDown'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['spinDown', 'spinUp', 'state']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomSpecies/species/energyParameters': {
-            'attribs': ['s', 'p', 'd', 'f'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['d', 'f', 'p', 's']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomSpecies/species/force': {
-            'attribs': ['calculate', 'relaxXYZ'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['calculate', 'relaxXYZ']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomSpecies/species/ldaU': {
-            'attribs': ['l', 'U', 'J', 'l_amf'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['J', 'U', 'l', 'l_amf']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomSpecies/species/lo': {
-            'attribs': ['type', 'l', 'n', 'eDeriv'],
-            'optional': [],
-            'optional_attribs': ['eDeriv'],
+            'attribs': CaseInsensitiveFrozenSet(['eDeriv', 'l', 'n', 'type']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['eDeriv']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomSpecies/species/mtSphere': {
-            'attribs': ['radius', 'gridPoints', 'logIncrement'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['gridPoints', 'logIncrement', 'radius']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/atomSpecies/species/nocoParams': {
-            'attribs': ['l_relax', 'l_magn', 'M', 'alpha', 'beta', 'b_cons_x', 'b_cons_y'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['M', 'alpha', 'b_cons_x', 'b_cons_y', 'beta', 'l_magn', 'l_relax']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/calculationSetup': {
-            'attribs': [],
-            'optional': [
-                'soc', 'nocoParams', 'oneDParams', 'expertModes', 'geometryOptimization', 'spinSpiralQPointMesh',
-                'eField', 'energyParameterLimits'
-            ],
-            'optional_attribs': [],
+            'attribs':
+            CaseInsensitiveFrozenSet([]),
+            'complex':
+            CaseInsensitiveFrozenSet(['bzIntegration', 'nocoParams']),
+            'optional':
+            CaseInsensitiveFrozenSet([
+                'eField', 'energyParameterLimits', 'expertModes', 'geometryOptimization', 'nocoParams', 'oneDParams',
+                'soc', 'spinSpiralQPointMesh'
+            ]),
+            'optional_attribs':
+            CaseInsensitiveFrozenSet([]),
             'order': [
                 'cutoffs', 'scfLoop', 'coreElectrons', 'magnetism', 'bzIntegration', 'soc', 'nocoParams', 'oneDParams',
                 'expertModes', 'geometryOptimization', 'spinSpiralQPointMesh', 'eField', 'energyParameterLimits'
             ],
-            'several': [],
-            'simple': [
-                'cutoffs', 'scfLoop', 'coreElectrons', 'magnetism', 'soc', 'oneDParams', 'expertModes',
-                'geometryOptimization', 'spinSpiralQPointMesh', 'eField', 'energyParameterLimits'
-            ],
-            'text': []
+            'several':
+            CaseInsensitiveFrozenSet([]),
+            'simple':
+            CaseInsensitiveFrozenSet([
+                'coreElectrons', 'cutoffs', 'eField', 'energyParameterLimits', 'expertModes', 'geometryOptimization',
+                'magnetism', 'oneDParams', 'scfLoop', 'soc', 'spinSpiralQPointMesh'
+            ]),
+            'text':
+            CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/calculationSetup/bzIntegration': {
-            'attribs': ['valenceElectrons', 'mode', 'fermiSmearingEnergy', 'fermiSmearingTemp'],
-            'optional': [],
-            'optional_attribs': ['valenceElectrons', 'mode', 'fermiSmearingEnergy', 'fermiSmearingTemp'],
+            'attribs':
+            CaseInsensitiveFrozenSet(['fermiSmearingEnergy', 'fermiSmearingTemp', 'mode', 'valenceElectrons']),
+            'complex':
+            CaseInsensitiveFrozenSet(['kPointCount', 'kPointList']),
+            'optional':
+            CaseInsensitiveFrozenSet([]),
+            'optional_attribs':
+            CaseInsensitiveFrozenSet(['fermiSmearingEnergy', 'fermiSmearingTemp', 'mode', 'valenceElectrons']),
             'order': ['kPointMesh', 'kPointCount', 'kPointList'],
-            'several': [],
-            'simple': ['kPointMesh'],
-            'text': []
+            'several':
+            CaseInsensitiveFrozenSet([]),
+            'simple':
+            CaseInsensitiveFrozenSet(['kPointMesh']),
+            'text':
+            CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/calculationSetup/bzIntegration/kPointCount': {
-            'attribs': ['count', 'gamma'],
-            'optional': ['specialPoint'],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['count', 'gamma']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet(['specialPoint']),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': ['specialPoint'],
-            'several': ['specialPoint'],
-            'simple': ['specialPoint'],
-            'text': ['specialPoint']
+            'several': CaseInsensitiveFrozenSet(['specialPoint']),
+            'simple': CaseInsensitiveFrozenSet(['specialPoint']),
+            'text': CaseInsensitiveFrozenSet(['specialPoint'])
         },
         '/fleurInput/calculationSetup/bzIntegration/kPointCount/specialPoint': {
-            'attribs': ['name'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['name']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/calculationSetup/bzIntegration/kPointList': {
-            'attribs': ['posScale', 'weightScale', 'count'],
-            'optional': [],
-            'optional_attribs': ['count'],
+            'attribs': CaseInsensitiveFrozenSet(['count', 'posScale', 'weightScale']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['count']),
             'order': ['kPoint'],
-            'several': ['kPoint'],
-            'simple': ['kPoint'],
-            'text': ['kPoint']
+            'several': CaseInsensitiveFrozenSet(['kPoint']),
+            'simple': CaseInsensitiveFrozenSet(['kPoint']),
+            'text': CaseInsensitiveFrozenSet(['kPoint'])
         },
         '/fleurInput/calculationSetup/bzIntegration/kPointList/kPoint': {
-            'attribs': ['weight'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['weight']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/calculationSetup/bzIntegration/kPointMesh': {
-            'attribs': ['nx', 'ny', 'nz', 'gamma'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['gamma', 'nx', 'ny', 'nz']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/calculationSetup/coreElectrons': {
-            'attribs': ['ctail', 'frcor', 'kcrel'],
-            'optional': [],
-            'optional_attribs': ['frcor', 'kcrel'],
+            'attribs': CaseInsensitiveFrozenSet(['ctail', 'frcor', 'kcrel']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['frcor', 'kcrel']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/calculationSetup/cutoffs': {
-            'attribs': ['Kmax', 'Gmax', 'GmaxXC', 'numbands'],
-            'optional': [],
-            'optional_attribs': ['GmaxXC', 'numbands'],
+            'attribs': CaseInsensitiveFrozenSet(['Gmax', 'GmaxXC', 'Kmax', 'numbands']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['GmaxXC', 'numbands']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/calculationSetup/eField': {
-            'attribs': ['zsigma', 'sig_b_1', 'sig_b_2', 'plot_charge', 'plot_rho', 'autocomp', 'dirichlet', 'eV'],
-            'optional': [],
+            'attribs':
+            CaseInsensitiveFrozenSet(
+                ['autocomp', 'dirichlet', 'eV', 'plot_charge', 'plot_rho', 'sig_b_1', 'sig_b_2', 'zsigma']),
+            'complex':
+            CaseInsensitiveFrozenSet([]),
+            'optional':
+            CaseInsensitiveFrozenSet([]),
             'optional_attribs':
-            ['zsigma', 'sig_b_1', 'sig_b_2', 'plot_charge', 'plot_rho', 'autocomp', 'dirichlet', 'eV'],
+            CaseInsensitiveFrozenSet(
+                ['autocomp', 'dirichlet', 'eV', 'plot_charge', 'plot_rho', 'sig_b_1', 'sig_b_2', 'zsigma']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several':
+            CaseInsensitiveFrozenSet([]),
+            'simple':
+            CaseInsensitiveFrozenSet([]),
+            'text':
+            CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/calculationSetup/energyParameterLimits': {
-            'attribs': ['ellow', 'elup'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['ellow', 'elup']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/calculationSetup/expertModes': {
-            'attribs': ['gw', 'pot8', 'eig66', 'lpr', 'isec1', 'secvar'],
-            'optional': [],
-            'optional_attribs': ['gw', 'pot8', 'eig66', 'lpr', 'isec1', 'secvar'],
+            'attribs': CaseInsensitiveFrozenSet(['eig66', 'gw', 'isec1', 'lpr', 'pot8', 'secvar']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['eig66', 'gw', 'isec1', 'lpr', 'pot8', 'secvar']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/calculationSetup/geometryOptimization': {
-            'attribs': ['l_f', 'xa', 'thetad', 'epsdisp', 'epsforce', 'qfix'],
-            'optional': [],
-            'optional_attribs': ['qfix'],
+            'attribs': CaseInsensitiveFrozenSet(['epsdisp', 'epsforce', 'l_f', 'qfix', 'thetad', 'xa']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['qfix']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/calculationSetup/magnetism': {
-            'attribs': ['jspins', 'l_noco', 'l_J', 'swsp', 'lflip'],
-            'optional': [],
-            'optional_attribs': ['l_noco', 'l_J', 'swsp', 'lflip'],
+            'attribs': CaseInsensitiveFrozenSet(['jspins', 'l_J', 'l_noco', 'lflip', 'swsp']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['l_J', 'l_noco', 'lflip', 'swsp']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/calculationSetup/nocoParams': {
-            'attribs': ['l_ss', 'l_mperp', 'l_constr', 'l_disp', 'sso_opt', 'mix_b', 'thetaJ', 'nsh'],
-            'optional': ['qsc'],
-            'optional_attribs': [],
+            'attribs':
+            CaseInsensitiveFrozenSet(['l_constr', 'l_disp', 'l_mperp', 'l_ss', 'mix_b', 'nsh', 'sso_opt', 'thetaJ']),
+            'complex':
+            CaseInsensitiveFrozenSet([]),
+            'optional':
+            CaseInsensitiveFrozenSet(['qsc']),
+            'optional_attribs':
+            CaseInsensitiveFrozenSet([]),
             'order': ['qss', 'qsc'],
-            'several': [],
-            'simple': ['qss', 'qsc'],
-            'text': ['qss', 'qsc']
+            'several':
+            CaseInsensitiveFrozenSet([]),
+            'simple':
+            CaseInsensitiveFrozenSet(['qsc', 'qss']),
+            'text':
+            CaseInsensitiveFrozenSet(['qsc', 'qss'])
         },
         '/fleurInput/calculationSetup/oneDParams': {
-            'attribs': ['d1', 'MM', 'vM', 'm_cyl', 'chi', 'rot', 'invs1', 'zrfs1'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['MM', 'chi', 'd1', 'invs1', 'm_cyl', 'rot', 'vM', 'zrfs1']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/calculationSetup/scfLoop': {
-            'attribs': ['itmax', 'maxIterBroyd', 'imix', 'alpha', 'spinf', 'minDistance', 'maxTimeToStartIter'],
-            'optional': [],
-            'optional_attribs': ['maxIterBroyd', 'spinf', 'minDistance', 'maxTimeToStartIter'],
+            'attribs':
+            CaseInsensitiveFrozenSet(
+                ['alpha', 'imix', 'itmax', 'maxIterBroyd', 'maxTimeToStartIter', 'minDistance', 'spinf']),
+            'complex':
+            CaseInsensitiveFrozenSet([]),
+            'optional':
+            CaseInsensitiveFrozenSet([]),
+            'optional_attribs':
+            CaseInsensitiveFrozenSet(['maxIterBroyd', 'maxTimeToStartIter', 'minDistance', 'spinf']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several':
+            CaseInsensitiveFrozenSet([]),
+            'simple':
+            CaseInsensitiveFrozenSet([]),
+            'text':
+            CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/calculationSetup/soc': {
-            'attribs': ['theta', 'phi', 'l_soc', 'spav', 'off', 'soc66'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['l_soc', 'off', 'phi', 'soc66', 'spav', 'theta']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/calculationSetup/spinSpiralQPointMesh': {
-            'attribs': ['qx', 'qy', 'qz'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['qx', 'qy', 'qz']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/cell': {
-            'attribs': [],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet([]),
+            'complex': CaseInsensitiveFrozenSet(['bulkLattice', 'filmLattice', 'symmetryOperations']),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': ['symmetry', 'symmetryFile', 'symmetryOperations', 'bulkLattice', 'filmLattice'],
-            'several': [],
-            'simple': ['symmetry', 'symmetryFile'],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet(['symmetry', 'symmetryFile']),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/cell/bulkLattice': {
-            'attribs': ['scale', 'latnam'],
-            'optional': ['a2'],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['latnam', 'scale']),
+            'complex': CaseInsensitiveFrozenSet(['bravaisMatrix']),
+            'optional': CaseInsensitiveFrozenSet(['a2']),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': ['a1', 'a2', 'c', 'row-1', 'row-2', 'c', 'bravaisMatrix'],
-            'several': [],
-            'simple': ['a1', 'a2', 'c', 'row-1', 'row-2', 'c'],
-            'text': ['a1', 'a2', 'c', 'row-1', 'row-2', 'c']
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet(['a1', 'a2', 'c', 'row-1', 'row-2']),
+            'text': CaseInsensitiveFrozenSet(['a1', 'a2', 'c', 'row-1', 'row-2'])
         },
         '/fleurInput/cell/bulkLattice/bravaisMatrix': {
-            'attribs': [],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet([]),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': ['row-1', 'row-2', 'row-3'],
-            'several': [],
-            'simple': ['row-1', 'row-2', 'row-3'],
-            'text': ['row-1', 'row-2', 'row-3']
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet(['row-1', 'row-2', 'row-3']),
+            'text': CaseInsensitiveFrozenSet(['row-1', 'row-2', 'row-3'])
         },
         '/fleurInput/cell/filmLattice': {
-            'attribs': ['scale', 'latnam', 'dVac', 'dTilda'],
-            'optional': ['a2', 'vacuumEnergyParameters'],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['dTilda', 'dVac', 'latnam', 'scale']),
+            'complex': CaseInsensitiveFrozenSet(['bravaisMatrix']),
+            'optional': CaseInsensitiveFrozenSet(['a2', 'vacuumEnergyParameters']),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': ['a1', 'a2', 'row-1', 'row-2', 'bravaisMatrix', 'vacuumEnergyParameters'],
-            'several': ['vacuumEnergyParameters'],
-            'simple': ['a1', 'a2', 'row-1', 'row-2', 'vacuumEnergyParameters'],
-            'text': ['a1', 'a2', 'row-1', 'row-2']
+            'several': CaseInsensitiveFrozenSet(['vacuumEnergyParameters']),
+            'simple': CaseInsensitiveFrozenSet(['a1', 'a2', 'row-1', 'row-2', 'vacuumEnergyParameters']),
+            'text': CaseInsensitiveFrozenSet(['a1', 'a2', 'row-1', 'row-2'])
         },
         '/fleurInput/cell/filmLattice/bravaisMatrix': {
-            'attribs': [],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet([]),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': ['row-1', 'row-2', 'row-3'],
-            'several': [],
-            'simple': ['row-1', 'row-2', 'row-3'],
-            'text': ['row-1', 'row-2', 'row-3']
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet(['row-1', 'row-2', 'row-3']),
+            'text': CaseInsensitiveFrozenSet(['row-1', 'row-2', 'row-3'])
         },
         '/fleurInput/cell/filmLattice/vacuumEnergyParameters': {
-            'attribs': ['vacuum', 'spinUp', 'spinDown'],
-            'optional': [],
-            'optional_attribs': ['spinDown'],
+            'attribs': CaseInsensitiveFrozenSet(['spinDown', 'spinUp', 'vacuum']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['spinDown']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/cell/symmetry': {
-            'attribs': ['spgrp', 'invs', 'zrfs'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['invs', 'spgrp', 'zrfs']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/cell/symmetryFile': {
-            'attribs': ['filename'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['filename']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/cell/symmetryOperations': {
-            'attribs': [],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet([]),
+            'complex': CaseInsensitiveFrozenSet(['symOp']),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': ['symOp'],
-            'several': ['symOp'],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet(['symOp']),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/cell/symmetryOperations/symOp': {
-            'attribs': [],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet([]),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': ['row-1', 'row-2', 'row-3'],
-            'several': [],
-            'simple': ['row-1', 'row-2', 'row-3'],
-            'text': ['row-1', 'row-2', 'row-3']
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet(['row-1', 'row-2', 'row-3']),
+            'text': CaseInsensitiveFrozenSet(['row-1', 'row-2', 'row-3'])
         },
         '/fleurInput/constants': {
-            'attribs': [],
-            'optional': ['constant'],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet([]),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet(['constant']),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': ['constant'],
-            'several': ['constant'],
-            'simple': ['constant'],
-            'text': []
+            'several': CaseInsensitiveFrozenSet(['constant']),
+            'simple': CaseInsensitiveFrozenSet(['constant']),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/constants/constant': {
-            'attribs': ['name', 'value'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['name', 'value']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/output': {
-            'attribs': ['dos', 'band', 'vacdos', 'slice'],
-            'optional': ['checks', 'densityOfStates', 'vacuumDOS', 'plotting', 'chargeDensitySlicing', 'specialOutput'],
-            'optional_attribs': ['dos', 'band', 'vacdos', 'slice'],
+            'attribs':
+            CaseInsensitiveFrozenSet(['band', 'dos', 'slice', 'vacdos']),
+            'complex':
+            CaseInsensitiveFrozenSet([]),
+            'optional':
+            CaseInsensitiveFrozenSet(
+                ['chargeDensitySlicing', 'checks', 'densityOfStates', 'plotting', 'specialOutput', 'vacuumDOS']),
+            'optional_attribs':
+            CaseInsensitiveFrozenSet(['band', 'dos', 'slice', 'vacdos']),
             'order': ['checks', 'densityOfStates', 'vacuumDOS', 'plotting', 'chargeDensitySlicing', 'specialOutput'],
-            'several': [],
-            'simple': ['checks', 'densityOfStates', 'vacuumDOS', 'plotting', 'chargeDensitySlicing', 'specialOutput'],
-            'text': []
+            'several':
+            CaseInsensitiveFrozenSet([]),
+            'simple':
+            CaseInsensitiveFrozenSet(
+                ['chargeDensitySlicing', 'checks', 'densityOfStates', 'plotting', 'specialOutput', 'vacuumDOS']),
+            'text':
+            CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/output/chargeDensitySlicing': {
-            'attribs': ['numkpt', 'minEigenval', 'maxEigenval', 'nnne', 'pallst'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['maxEigenval', 'minEigenval', 'nnne', 'numkpt', 'pallst']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/output/checks': {
-            'attribs': ['vchk', 'cdinf', 'disp'],
-            'optional': [],
-            'optional_attribs': ['vchk', 'cdinf', 'disp'],
+            'attribs': CaseInsensitiveFrozenSet(['cdinf', 'disp', 'vchk']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['cdinf', 'disp', 'vchk']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/output/densityOfStates': {
-            'attribs': ['ndir', 'minEnergy', 'maxEnergy', 'sigma'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['maxEnergy', 'minEnergy', 'ndir', 'sigma']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/output/plotting': {
-            'attribs': ['iplot', 'score', 'plplot'],
-            'optional': [],
-            'optional_attribs': ['iplot', 'score', 'plplot'],
+            'attribs': CaseInsensitiveFrozenSet(['iplot', 'plplot', 'score']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['iplot', 'plplot', 'score']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/output/specialOutput': {
-            'attribs': ['form66', 'eonly', 'bmt'],
-            'optional': [],
-            'optional_attribs': ['form66', 'eonly', 'bmt'],
+            'attribs': CaseInsensitiveFrozenSet(['bmt', 'eonly', 'form66']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['bmt', 'eonly', 'form66']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/output/vacuumDOS': {
-            'attribs': ['layers', 'integ', 'star', 'nstars', 'locx1', 'locy1', 'locx2', 'locy2', 'nstm', 'tworkf'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs':
+            CaseInsensitiveFrozenSet(
+                ['integ', 'layers', 'locx1', 'locx2', 'locy1', 'locy2', 'nstars', 'nstm', 'star', 'tworkf']),
+            'complex':
+            CaseInsensitiveFrozenSet([]),
+            'optional':
+            CaseInsensitiveFrozenSet([]),
+            'optional_attribs':
+            CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several':
+            CaseInsensitiveFrozenSet([]),
+            'simple':
+            CaseInsensitiveFrozenSet([]),
+            'text':
+            CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/xcFunctional': {
-            'attribs': ['name', 'relativisticCorrections'],
-            'optional': ['xcParams', 'ggaPrinting'],
-            'optional_attribs': ['relativisticCorrections'],
+            'attribs': CaseInsensitiveFrozenSet(['name', 'relativisticCorrections']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet(['ggaPrinting', 'xcParams']),
+            'optional_attribs': CaseInsensitiveFrozenSet(['relativisticCorrections']),
             'order': ['xcParams', 'ggaPrinting'],
-            'several': [],
-            'simple': ['xcParams', 'ggaPrinting'],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet(['ggaPrinting', 'xcParams']),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/xcFunctional/ggaPrinting': {
-            'attribs': ['iggachk', 'idsprs0', 'idsprsl', 'idsprsi', 'idsprsv'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['idsprs0', 'idsprsi', 'idsprsl', 'idsprsv', 'iggachk']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurInput/xcFunctional/xcParams': {
-            'attribs': ['igrd', 'lwb', 'ndvgrd', 'idsprs', 'chng'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['chng', 'idsprs', 'igrd', 'lwb', 'ndvgrd']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         }
     },
-    'tag_paths': {
+    'tag_paths':
+    CaseInsensitiveDict({
         'a1': ['/fleurInput/cell/bulkLattice/a1', '/fleurInput/cell/filmLattice/a1'],
         'a2': ['/fleurInput/cell/bulkLattice/a2', '/fleurInput/cell/filmLattice/a2'],
-        'absPos':
+        'abspos':
         '/fleurInput/atomGroups/atomGroup/absPos',
-        'atomGroup':
+        'atomgroup':
         '/fleurInput/atomGroups/atomGroup',
-        'atomGroups':
+        'atomgroups':
         '/fleurInput/atomGroups',
-        'atomSpecies':
+        'atomspecies':
         '/fleurInput/atomSpecies',
-        'atomicCutoffs':
-        ['/fleurInput/atomSpecies/species/atomicCutoffs', '/fleurInput/atomGroups/atomGroup/atomicCutoffs'],
-        'bravaisMatrix': ['/fleurInput/cell/bulkLattice/bravaisMatrix', '/fleurInput/cell/filmLattice/bravaisMatrix'],
-        'bulkLattice':
+        'atomiccutoffs':
+        ['/fleurInput/atomGroups/atomGroup/atomicCutoffs', '/fleurInput/atomSpecies/species/atomicCutoffs'],
+        'bravaismatrix': ['/fleurInput/cell/bulkLattice/bravaisMatrix', '/fleurInput/cell/filmLattice/bravaisMatrix'],
+        'bulklattice':
         '/fleurInput/cell/bulkLattice',
-        'bzIntegration':
+        'bzintegration':
         '/fleurInput/calculationSetup/bzIntegration',
         'c':
         '/fleurInput/cell/bulkLattice/c',
-        'calculationSetup':
+        'calculationsetup':
         '/fleurInput/calculationSetup',
         'cell':
         '/fleurInput/cell',
-        'chargeDensitySlicing':
+        'chargedensityslicing':
         '/fleurInput/output/chargeDensitySlicing',
         'checks':
         '/fleurInput/output/checks',
@@ -1066,53 +1245,53 @@ schema_dict = {
         '/fleurInput/constants/constant',
         'constants':
         '/fleurInput/constants',
-        'coreConfig':
+        'coreconfig':
         '/fleurInput/atomSpecies/species/electronConfig/coreConfig',
-        'coreElectrons':
+        'coreelectrons':
         '/fleurInput/calculationSetup/coreElectrons',
         'cutoffs':
         '/fleurInput/calculationSetup/cutoffs',
-        'densityOfStates':
+        'densityofstates':
         '/fleurInput/output/densityOfStates',
-        'eField':
+        'efield':
         '/fleurInput/calculationSetup/eField',
-        'electronConfig':
+        'electronconfig':
         '/fleurInput/atomSpecies/species/electronConfig',
-        'energyParameterLimits':
+        'energyparameterlimits':
         '/fleurInput/calculationSetup/energyParameterLimits',
-        'energyParameters':
-        ['/fleurInput/atomSpecies/species/energyParameters', '/fleurInput/atomGroups/atomGroup/energyParameters'],
-        'expertModes':
+        'energyparameters':
+        ['/fleurInput/atomGroups/atomGroup/energyParameters', '/fleurInput/atomSpecies/species/energyParameters'],
+        'expertmodes':
         '/fleurInput/calculationSetup/expertModes',
-        'filmLattice':
+        'filmlattice':
         '/fleurInput/cell/filmLattice',
-        'filmPos':
+        'filmpos':
         '/fleurInput/atomGroups/atomGroup/filmPos',
-        'fleurInput':
+        'fleurinput':
         '/fleurInput',
-        'force': ['/fleurInput/atomSpecies/species/force', '/fleurInput/atomGroups/atomGroup/force'],
-        'geometryOptimization':
+        'force': ['/fleurInput/atomGroups/atomGroup/force', '/fleurInput/atomSpecies/species/force'],
+        'geometryoptimization':
         '/fleurInput/calculationSetup/geometryOptimization',
-        'ggaPrinting':
+        'ggaprinting':
         '/fleurInput/xcFunctional/ggaPrinting',
-        'kPoint':
+        'kpoint':
         '/fleurInput/calculationSetup/bzIntegration/kPointList/kPoint',
-        'kPointCount':
+        'kpointcount':
         '/fleurInput/calculationSetup/bzIntegration/kPointCount',
-        'kPointList':
+        'kpointlist':
         '/fleurInput/calculationSetup/bzIntegration/kPointList',
-        'kPointMesh':
+        'kpointmesh':
         '/fleurInput/calculationSetup/bzIntegration/kPointMesh',
-        'ldaU': ['/fleurInput/atomSpecies/species/ldaU', '/fleurInput/atomGroups/atomGroup/ldaU'],
-        'lo': ['/fleurInput/atomSpecies/species/lo', '/fleurInput/atomGroups/atomGroup/lo'],
+        'ldau': ['/fleurInput/atomGroups/atomGroup/ldaU', '/fleurInput/atomSpecies/species/ldaU'],
+        'lo': ['/fleurInput/atomGroups/atomGroup/lo', '/fleurInput/atomSpecies/species/lo'],
         'magnetism':
         '/fleurInput/calculationSetup/magnetism',
-        'mtSphere': ['/fleurInput/atomSpecies/species/mtSphere', '/fleurInput/atomGroups/atomGroup/mtSphere'],
-        'nocoParams': [
-            '/fleurInput/calculationSetup/nocoParams', '/fleurInput/atomSpecies/species/nocoParams',
-            '/fleurInput/atomGroups/atomGroup/nocoParams'
+        'mtsphere': ['/fleurInput/atomGroups/atomGroup/mtSphere', '/fleurInput/atomSpecies/species/mtSphere'],
+        'nocoparams': [
+            '/fleurInput/atomGroups/atomGroup/nocoParams', '/fleurInput/atomSpecies/species/nocoParams',
+            '/fleurInput/calculationSetup/nocoParams'
         ],
-        'oneDParams':
+        'onedparams':
         '/fleurInput/calculationSetup/oneDParams',
         'orbcomprot':
         '/fleurInput/atomGroups/atomGroup/orbcomprot',
@@ -1124,209 +1303,211 @@ schema_dict = {
         '/fleurInput/calculationSetup/nocoParams/qsc',
         'qss':
         '/fleurInput/calculationSetup/nocoParams/qss',
-        'relPos':
+        'relpos':
         '/fleurInput/atomGroups/atomGroup/relPos',
         'row-1': [
-            '/fleurInput/cell/bulkLattice/row-1', '/fleurInput/cell/filmLattice/row-1',
-            '/fleurInput/cell/bulkLattice/bravaisMatrix/row-1', '/fleurInput/cell/filmLattice/bravaisMatrix/row-1',
+            '/fleurInput/cell/bulkLattice/bravaisMatrix/row-1', '/fleurInput/cell/bulkLattice/row-1',
+            '/fleurInput/cell/filmLattice/bravaisMatrix/row-1', '/fleurInput/cell/filmLattice/row-1',
             '/fleurInput/cell/symmetryOperations/symOp/row-1'
         ],
         'row-2': [
-            '/fleurInput/cell/bulkLattice/row-2', '/fleurInput/cell/filmLattice/row-2',
-            '/fleurInput/cell/bulkLattice/bravaisMatrix/row-2', '/fleurInput/cell/filmLattice/bravaisMatrix/row-2',
+            '/fleurInput/cell/bulkLattice/bravaisMatrix/row-2', '/fleurInput/cell/bulkLattice/row-2',
+            '/fleurInput/cell/filmLattice/bravaisMatrix/row-2', '/fleurInput/cell/filmLattice/row-2',
             '/fleurInput/cell/symmetryOperations/symOp/row-2'
         ],
         'row-3': [
             '/fleurInput/cell/bulkLattice/bravaisMatrix/row-3', '/fleurInput/cell/filmLattice/bravaisMatrix/row-3',
             '/fleurInput/cell/symmetryOperations/symOp/row-3'
         ],
-        'scfLoop':
+        'scfloop':
         '/fleurInput/calculationSetup/scfLoop',
         'soc':
         '/fleurInput/calculationSetup/soc',
-        'specialOutput':
+        'specialoutput':
         '/fleurInput/output/specialOutput',
-        'specialPoint':
+        'specialpoint':
         '/fleurInput/calculationSetup/bzIntegration/kPointCount/specialPoint',
         'species':
         '/fleurInput/atomSpecies/species',
-        'spinSpiralQPointMesh':
+        'spinspiralqpointmesh':
         '/fleurInput/calculationSetup/spinSpiralQPointMesh',
-        'stateOccupation':
+        'stateoccupation':
         '/fleurInput/atomSpecies/species/electronConfig/stateOccupation',
-        'symOp':
+        'symop':
         '/fleurInput/cell/symmetryOperations/symOp',
         'symmetry':
         '/fleurInput/cell/symmetry',
-        'symmetryFile':
+        'symmetryfile':
         '/fleurInput/cell/symmetryFile',
-        'symmetryOperations':
+        'symmetryoperations':
         '/fleurInput/cell/symmetryOperations',
-        'vacuumDOS':
+        'vacuumdos':
         '/fleurInput/output/vacuumDOS',
-        'vacuumEnergyParameters':
+        'vacuumenergyparameters':
         '/fleurInput/cell/filmLattice/vacuumEnergyParameters',
-        'valenceConfig':
+        'valenceconfig':
         '/fleurInput/atomSpecies/species/electronConfig/valenceConfig',
-        'xcFunctional':
+        'xcfunctional':
         '/fleurInput/xcFunctional',
-        'xcParams':
+        'xcparams':
         '/fleurInput/xcFunctional/xcParams'
-    },
-    'unique_attribs': {
-        'Gmax': '/fleurInput/calculationSetup/cutoffs',
-        'GmaxXC': '/fleurInput/calculationSetup/cutoffs',
-        'Kmax': '/fleurInput/calculationSetup/cutoffs',
-        'MM': '/fleurInput/calculationSetup/oneDParams',
-        'alpha': '/fleurInput/calculationSetup/scfLoop',
-        'autocomp': '/fleurInput/calculationSetup/eField',
-        'band': '/fleurInput/output',
-        'bmt': '/fleurInput/output/specialOutput',
+    }),
+    'unique_attribs':
+    CaseInsensitiveDict({
+        'gmax': '/fleurInput/calculationSetup/cutoffs/@Gmax',
+        'gmaxxc': '/fleurInput/calculationSetup/cutoffs/@GmaxXC',
+        'kmax': '/fleurInput/calculationSetup/cutoffs/@Kmax',
+        'mm': '/fleurInput/calculationSetup/oneDParams/@MM',
+        'alpha': '/fleurInput/calculationSetup/scfLoop/@alpha',
+        'autocomp': '/fleurInput/calculationSetup/eField/@autocomp',
+        'band': '/fleurInput/output/@band',
+        'bmt': '/fleurInput/output/specialOutput/@bmt',
+        'cdinf': '/fleurInput/output/checks/@cdinf',
+        'chi': '/fleurInput/calculationSetup/oneDParams/@chi',
+        'chng': '/fleurInput/xcFunctional/xcParams/@chng',
+        'ctail': '/fleurInput/calculationSetup/coreElectrons/@ctail',
+        'd1': '/fleurInput/calculationSetup/oneDParams/@d1',
+        'dtilda': '/fleurInput/cell/filmLattice/@dTilda',
+        'dvac': '/fleurInput/cell/filmLattice/@dVac',
+        'dirichlet': '/fleurInput/calculationSetup/eField/@dirichlet',
+        'disp': '/fleurInput/output/checks/@disp',
+        'dos': '/fleurInput/output/@dos',
+        'ev': '/fleurInput/calculationSetup/eField/@eV',
+        'eig66': '/fleurInput/calculationSetup/expertModes/@eig66',
+        'ellow': '/fleurInput/calculationSetup/energyParameterLimits/@ellow',
+        'elup': '/fleurInput/calculationSetup/energyParameterLimits/@elup',
+        'eonly': '/fleurInput/output/specialOutput/@eonly',
+        'epsdisp': '/fleurInput/calculationSetup/geometryOptimization/@epsdisp',
+        'epsforce': '/fleurInput/calculationSetup/geometryOptimization/@epsforce',
+        'fermismearingenergy': '/fleurInput/calculationSetup/bzIntegration/@fermiSmearingEnergy',
+        'fermismearingtemp': '/fleurInput/calculationSetup/bzIntegration/@fermiSmearingTemp',
+        'filename': '/fleurInput/cell/symmetryFile/@filename',
+        'fleurinputversion': '/fleurInput/@fleurInputVersion',
+        'form66': '/fleurInput/output/specialOutput/@form66',
+        'frcor': '/fleurInput/calculationSetup/coreElectrons/@frcor',
+        'gw': '/fleurInput/calculationSetup/expertModes/@gw',
+        'idsprs': '/fleurInput/xcFunctional/xcParams/@idsprs',
+        'idsprs0': '/fleurInput/xcFunctional/ggaPrinting/@idsprs0',
+        'idsprsi': '/fleurInput/xcFunctional/ggaPrinting/@idsprsi',
+        'idsprsl': '/fleurInput/xcFunctional/ggaPrinting/@idsprsl',
+        'idsprsv': '/fleurInput/xcFunctional/ggaPrinting/@idsprsv',
+        'iggachk': '/fleurInput/xcFunctional/ggaPrinting/@iggachk',
+        'igrd': '/fleurInput/xcFunctional/xcParams/@igrd',
+        'imix': '/fleurInput/calculationSetup/scfLoop/@imix',
+        'integ': '/fleurInput/output/vacuumDOS/@integ',
+        'invs': '/fleurInput/cell/symmetry/@invs',
+        'invs1': '/fleurInput/calculationSetup/oneDParams/@invs1',
+        'iplot': '/fleurInput/output/plotting/@iplot',
+        'isec1': '/fleurInput/calculationSetup/expertModes/@isec1',
+        'itmax': '/fleurInput/calculationSetup/scfLoop/@itmax',
+        'jspins': '/fleurInput/calculationSetup/magnetism/@jspins',
+        'kcrel': '/fleurInput/calculationSetup/coreElectrons/@kcrel',
+        'l_j': '/fleurInput/calculationSetup/magnetism/@l_J',
+        'l_constr': '/fleurInput/calculationSetup/nocoParams/@l_constr',
+        'l_disp': '/fleurInput/calculationSetup/nocoParams/@l_disp',
+        'l_f': '/fleurInput/calculationSetup/geometryOptimization/@l_f',
+        'l_mperp': '/fleurInput/calculationSetup/nocoParams/@l_mperp',
+        'l_noco': '/fleurInput/calculationSetup/magnetism/@l_noco',
+        'l_soc': '/fleurInput/calculationSetup/soc/@l_soc',
+        'l_ss': '/fleurInput/calculationSetup/nocoParams/@l_ss',
+        'layers': '/fleurInput/output/vacuumDOS/@layers',
+        'lflip': '/fleurInput/calculationSetup/magnetism/@lflip',
+        'locx1': '/fleurInput/output/vacuumDOS/@locx1',
+        'locx2': '/fleurInput/output/vacuumDOS/@locx2',
+        'locy1': '/fleurInput/output/vacuumDOS/@locy1',
+        'locy2': '/fleurInput/output/vacuumDOS/@locy2',
+        'lpr': '/fleurInput/calculationSetup/expertModes/@lpr',
+        'lwb': '/fleurInput/xcFunctional/xcParams/@lwb',
+        'm_cyl': '/fleurInput/calculationSetup/oneDParams/@m_cyl',
+        'maxeigenval': '/fleurInput/output/chargeDensitySlicing/@maxEigenval',
+        'maxenergy': '/fleurInput/output/densityOfStates/@maxEnergy',
+        'maxiterbroyd': '/fleurInput/calculationSetup/scfLoop/@maxIterBroyd',
+        'maxtimetostartiter': '/fleurInput/calculationSetup/scfLoop/@maxTimeToStartIter',
+        'mindistance': '/fleurInput/calculationSetup/scfLoop/@minDistance',
+        'mineigenval': '/fleurInput/output/chargeDensitySlicing/@minEigenval',
+        'minenergy': '/fleurInput/output/densityOfStates/@minEnergy',
+        'mix_b': '/fleurInput/calculationSetup/nocoParams/@mix_b',
+        'mode': '/fleurInput/calculationSetup/bzIntegration/@mode',
+        'name': '/fleurInput/xcFunctional/@name',
+        'ndir': '/fleurInput/output/densityOfStates/@ndir',
+        'ndvgrd': '/fleurInput/xcFunctional/xcParams/@ndvgrd',
+        'nnne': '/fleurInput/output/chargeDensitySlicing/@nnne',
+        'nsh': '/fleurInput/calculationSetup/nocoParams/@nsh',
+        'nstars': '/fleurInput/output/vacuumDOS/@nstars',
+        'nstm': '/fleurInput/output/vacuumDOS/@nstm',
+        'numbands': '/fleurInput/calculationSetup/cutoffs/@numbands',
+        'numkpt': '/fleurInput/output/chargeDensitySlicing/@numkpt',
+        'nx': '/fleurInput/calculationSetup/bzIntegration/kPointMesh/@nx',
+        'ny': '/fleurInput/calculationSetup/bzIntegration/kPointMesh/@ny',
+        'nz': '/fleurInput/calculationSetup/bzIntegration/kPointMesh/@nz',
+        'off': '/fleurInput/calculationSetup/soc/@off',
+        'pallst': '/fleurInput/output/chargeDensitySlicing/@pallst',
+        'phi': '/fleurInput/calculationSetup/soc/@phi',
+        'plot_charge': '/fleurInput/calculationSetup/eField/@plot_charge',
+        'plot_rho': '/fleurInput/calculationSetup/eField/@plot_rho',
+        'plplot': '/fleurInput/output/plotting/@plplot',
+        'posscale': '/fleurInput/calculationSetup/bzIntegration/kPointList/@posScale',
+        'pot8': '/fleurInput/calculationSetup/expertModes/@pot8',
+        'qfix': '/fleurInput/calculationSetup/geometryOptimization/@qfix',
+        'qx': '/fleurInput/calculationSetup/spinSpiralQPointMesh/@qx',
+        'qy': '/fleurInput/calculationSetup/spinSpiralQPointMesh/@qy',
+        'qz': '/fleurInput/calculationSetup/spinSpiralQPointMesh/@qz',
+        'relativisticcorrections': '/fleurInput/xcFunctional/@relativisticCorrections',
+        'rot': '/fleurInput/calculationSetup/oneDParams/@rot',
+        'score': '/fleurInput/output/plotting/@score',
+        'secvar': '/fleurInput/calculationSetup/expertModes/@secvar',
+        'sig_b_1': '/fleurInput/calculationSetup/eField/@sig_b_1',
+        'sig_b_2': '/fleurInput/calculationSetup/eField/@sig_b_2',
+        'sigma': '/fleurInput/output/densityOfStates/@sigma',
+        'slice': '/fleurInput/output/@slice',
+        'soc66': '/fleurInput/calculationSetup/soc/@soc66',
+        'spav': '/fleurInput/calculationSetup/soc/@spav',
+        'spgrp': '/fleurInput/cell/symmetry/@spgrp',
+        'spinf': '/fleurInput/calculationSetup/scfLoop/@spinf',
+        'sso_opt': '/fleurInput/calculationSetup/nocoParams/@sso_opt',
+        'star': '/fleurInput/output/vacuumDOS/@star',
+        'swsp': '/fleurInput/calculationSetup/magnetism/@swsp',
+        'theta': '/fleurInput/calculationSetup/soc/@theta',
+        'thetaj': '/fleurInput/calculationSetup/nocoParams/@thetaJ',
+        'thetad': '/fleurInput/calculationSetup/geometryOptimization/@thetad',
+        'tworkf': '/fleurInput/output/vacuumDOS/@tworkf',
+        'vm': '/fleurInput/calculationSetup/oneDParams/@vM',
+        'vacdos': '/fleurInput/output/@vacdos',
+        'valenceelectrons': '/fleurInput/calculationSetup/bzIntegration/@valenceElectrons',
+        'vchk': '/fleurInput/output/checks/@vchk',
+        'weightscale': '/fleurInput/calculationSetup/bzIntegration/kPointList/@weightScale',
+        'xa': '/fleurInput/calculationSetup/geometryOptimization/@xa',
+        'zrfs': '/fleurInput/cell/symmetry/@zrfs',
+        'zrfs1': '/fleurInput/calculationSetup/oneDParams/@zrfs1',
+        'zsigma': '/fleurInput/calculationSetup/eField/@zsigma',
         'c': '/fleurInput/cell/bulkLattice/c',
-        'cdinf': '/fleurInput/output/checks',
-        'chi': '/fleurInput/calculationSetup/oneDParams',
-        'chng': '/fleurInput/xcFunctional/xcParams',
         'comment': '/fleurInput/comment',
-        'ctail': '/fleurInput/calculationSetup/coreElectrons',
-        'd1': '/fleurInput/calculationSetup/oneDParams',
-        'dTilda': '/fleurInput/cell/filmLattice',
-        'dVac': '/fleurInput/cell/filmLattice',
-        'dirichlet': '/fleurInput/calculationSetup/eField',
-        'disp': '/fleurInput/output/checks',
-        'dos': '/fleurInput/output',
-        'eV': '/fleurInput/calculationSetup/eField',
-        'eig66': '/fleurInput/calculationSetup/expertModes',
-        'ellow': '/fleurInput/calculationSetup/energyParameterLimits',
-        'elup': '/fleurInput/calculationSetup/energyParameterLimits',
-        'eonly': '/fleurInput/output/specialOutput',
-        'epsdisp': '/fleurInput/calculationSetup/geometryOptimization',
-        'epsforce': '/fleurInput/calculationSetup/geometryOptimization',
-        'fermiSmearingEnergy': '/fleurInput/calculationSetup/bzIntegration',
-        'fermiSmearingTemp': '/fleurInput/calculationSetup/bzIntegration',
-        'filename': '/fleurInput/cell/symmetryFile',
-        'fleurInputVersion': '/fleurInput',
-        'form66': '/fleurInput/output/specialOutput',
-        'frcor': '/fleurInput/calculationSetup/coreElectrons',
-        'gw': '/fleurInput/calculationSetup/expertModes',
-        'idsprs': '/fleurInput/xcFunctional/xcParams',
-        'idsprs0': '/fleurInput/xcFunctional/ggaPrinting',
-        'idsprsi': '/fleurInput/xcFunctional/ggaPrinting',
-        'idsprsl': '/fleurInput/xcFunctional/ggaPrinting',
-        'idsprsv': '/fleurInput/xcFunctional/ggaPrinting',
-        'iggachk': '/fleurInput/xcFunctional/ggaPrinting',
-        'igrd': '/fleurInput/xcFunctional/xcParams',
-        'imix': '/fleurInput/calculationSetup/scfLoop',
-        'integ': '/fleurInput/output/vacuumDOS',
-        'invs': '/fleurInput/cell/symmetry',
-        'invs1': '/fleurInput/calculationSetup/oneDParams',
-        'iplot': '/fleurInput/output/plotting',
-        'isec1': '/fleurInput/calculationSetup/expertModes',
-        'itmax': '/fleurInput/calculationSetup/scfLoop',
-        'jspins': '/fleurInput/calculationSetup/magnetism',
-        'kcrel': '/fleurInput/calculationSetup/coreElectrons',
-        'l_J': '/fleurInput/calculationSetup/magnetism',
-        'l_constr': '/fleurInput/calculationSetup/nocoParams',
-        'l_disp': '/fleurInput/calculationSetup/nocoParams',
-        'l_f': '/fleurInput/calculationSetup/geometryOptimization',
-        'l_mperp': '/fleurInput/calculationSetup/nocoParams',
-        'l_noco': '/fleurInput/calculationSetup/magnetism',
-        'l_soc': '/fleurInput/calculationSetup/soc',
-        'l_ss': '/fleurInput/calculationSetup/nocoParams',
-        'layers': '/fleurInput/output/vacuumDOS',
-        'lflip': '/fleurInput/calculationSetup/magnetism',
-        'locx1': '/fleurInput/output/vacuumDOS',
-        'locx2': '/fleurInput/output/vacuumDOS',
-        'locy1': '/fleurInput/output/vacuumDOS',
-        'locy2': '/fleurInput/output/vacuumDOS',
-        'lpr': '/fleurInput/calculationSetup/expertModes',
-        'lwb': '/fleurInput/xcFunctional/xcParams',
-        'm_cyl': '/fleurInput/calculationSetup/oneDParams',
-        'maxEigenval': '/fleurInput/output/chargeDensitySlicing',
-        'maxEnergy': '/fleurInput/output/densityOfStates',
-        'maxIterBroyd': '/fleurInput/calculationSetup/scfLoop',
-        'maxTimeToStartIter': '/fleurInput/calculationSetup/scfLoop',
-        'minDistance': '/fleurInput/calculationSetup/scfLoop',
-        'minEigenval': '/fleurInput/output/chargeDensitySlicing',
-        'minEnergy': '/fleurInput/output/densityOfStates',
-        'mix_b': '/fleurInput/calculationSetup/nocoParams',
-        'mode': '/fleurInput/calculationSetup/bzIntegration',
-        'name': '/fleurInput/xcFunctional',
-        'ndir': '/fleurInput/output/densityOfStates',
-        'ndvgrd': '/fleurInput/xcFunctional/xcParams',
-        'nnne': '/fleurInput/output/chargeDensitySlicing',
-        'nsh': '/fleurInput/calculationSetup/nocoParams',
-        'nstars': '/fleurInput/output/vacuumDOS',
-        'nstm': '/fleurInput/output/vacuumDOS',
-        'numbands': '/fleurInput/calculationSetup/cutoffs',
-        'numkpt': '/fleurInput/output/chargeDensitySlicing',
-        'nx': '/fleurInput/calculationSetup/bzIntegration/kPointMesh',
-        'ny': '/fleurInput/calculationSetup/bzIntegration/kPointMesh',
-        'nz': '/fleurInput/calculationSetup/bzIntegration/kPointMesh',
-        'off': '/fleurInput/calculationSetup/soc',
-        'pallst': '/fleurInput/output/chargeDensitySlicing',
-        'phi': '/fleurInput/calculationSetup/soc',
-        'plot_charge': '/fleurInput/calculationSetup/eField',
-        'plot_rho': '/fleurInput/calculationSetup/eField',
-        'plplot': '/fleurInput/output/plotting',
-        'posScale': '/fleurInput/calculationSetup/bzIntegration/kPointList',
-        'pot8': '/fleurInput/calculationSetup/expertModes',
-        'qfix': '/fleurInput/calculationSetup/geometryOptimization',
         'qsc': '/fleurInput/calculationSetup/nocoParams/qsc',
-        'qss': '/fleurInput/calculationSetup/nocoParams/qss',
-        'qx': '/fleurInput/calculationSetup/spinSpiralQPointMesh',
-        'qy': '/fleurInput/calculationSetup/spinSpiralQPointMesh',
-        'qz': '/fleurInput/calculationSetup/spinSpiralQPointMesh',
-        'relativisticCorrections': '/fleurInput/xcFunctional',
-        'rot': '/fleurInput/calculationSetup/oneDParams',
-        'score': '/fleurInput/output/plotting',
-        'secvar': '/fleurInput/calculationSetup/expertModes',
-        'sig_b_1': '/fleurInput/calculationSetup/eField',
-        'sig_b_2': '/fleurInput/calculationSetup/eField',
-        'sigma': '/fleurInput/output/densityOfStates',
-        'slice': '/fleurInput/output',
-        'soc66': '/fleurInput/calculationSetup/soc',
-        'spav': '/fleurInput/calculationSetup/soc',
-        'spgrp': '/fleurInput/cell/symmetry',
-        'spinf': '/fleurInput/calculationSetup/scfLoop',
-        'sso_opt': '/fleurInput/calculationSetup/nocoParams',
-        'star': '/fleurInput/output/vacuumDOS',
-        'swsp': '/fleurInput/calculationSetup/magnetism',
-        'theta': '/fleurInput/calculationSetup/soc',
-        'thetaJ': '/fleurInput/calculationSetup/nocoParams',
-        'thetad': '/fleurInput/calculationSetup/geometryOptimization',
-        'tworkf': '/fleurInput/output/vacuumDOS',
-        'vM': '/fleurInput/calculationSetup/oneDParams',
-        'vacdos': '/fleurInput/output',
-        'valenceElectrons': '/fleurInput/calculationSetup/bzIntegration',
-        'vchk': '/fleurInput/output/checks',
-        'weightScale': '/fleurInput/calculationSetup/bzIntegration/kPointList',
-        'xa': '/fleurInput/calculationSetup/geometryOptimization',
-        'zrfs': '/fleurInput/cell/symmetry',
-        'zrfs1': '/fleurInput/calculationSetup/oneDParams',
-        'zsigma': '/fleurInput/calculationSetup/eField'
-    },
-    'unique_path_attribs': {
-        'a1': ['/fleurInput/cell/bulkLattice/a1', '/fleurInput/cell/filmLattice/a1'],
-        'a2': ['/fleurInput/cell/bulkLattice/a2', '/fleurInput/cell/filmLattice/a2'],
+        'qss': '/fleurInput/calculationSetup/nocoParams/qss'
+    }),
+    'unique_path_attribs':
+    CaseInsensitiveDict({
         'count': [
-            '/fleurInput/calculationSetup/bzIntegration/kPointCount',
-            '/fleurInput/calculationSetup/bzIntegration/kPointList'
+            '/fleurInput/calculationSetup/bzIntegration/kPointCount/@count',
+            '/fleurInput/calculationSetup/bzIntegration/kPointList/@count'
         ],
         'gamma': [
-            '/fleurInput/calculationSetup/bzIntegration/kPointMesh',
-            '/fleurInput/calculationSetup/bzIntegration/kPointCount'
+            '/fleurInput/calculationSetup/bzIntegration/kPointCount/@gamma',
+            '/fleurInput/calculationSetup/bzIntegration/kPointMesh/@gamma'
         ],
-        'latnam': ['/fleurInput/cell/bulkLattice', '/fleurInput/cell/filmLattice'],
+        'latnam': ['/fleurInput/cell/bulkLattice/@latnam', '/fleurInput/cell/filmLattice/@latnam'],
+        'scale': ['/fleurInput/cell/bulkLattice/@scale', '/fleurInput/cell/filmLattice/@scale'],
+        'a1': ['/fleurInput/cell/bulkLattice/a1', '/fleurInput/cell/filmLattice/a1'],
+        'a2': ['/fleurInput/cell/bulkLattice/a2', '/fleurInput/cell/filmLattice/a2'],
         'row-1': [
-            '/fleurInput/cell/bulkLattice/row-1', '/fleurInput/cell/filmLattice/row-1',
-            '/fleurInput/cell/bulkLattice/bravaisMatrix/row-1', '/fleurInput/cell/filmLattice/bravaisMatrix/row-1'
+            '/fleurInput/cell/bulkLattice/bravaisMatrix/row-1', '/fleurInput/cell/bulkLattice/row-1',
+            '/fleurInput/cell/filmLattice/bravaisMatrix/row-1', '/fleurInput/cell/filmLattice/row-1'
         ],
         'row-2': [
-            '/fleurInput/cell/bulkLattice/row-2', '/fleurInput/cell/filmLattice/row-2',
-            '/fleurInput/cell/bulkLattice/bravaisMatrix/row-2', '/fleurInput/cell/filmLattice/bravaisMatrix/row-2'
+            '/fleurInput/cell/bulkLattice/bravaisMatrix/row-2', '/fleurInput/cell/bulkLattice/row-2',
+            '/fleurInput/cell/filmLattice/bravaisMatrix/row-2', '/fleurInput/cell/filmLattice/row-2'
         ],
         'row-3':
-        ['/fleurInput/cell/bulkLattice/bravaisMatrix/row-3', '/fleurInput/cell/filmLattice/bravaisMatrix/row-3'],
-        'scale': ['/fleurInput/cell/bulkLattice', '/fleurInput/cell/filmLattice']
-    }
+        ['/fleurInput/cell/bulkLattice/bravaisMatrix/row-3', '/fleurInput/cell/filmLattice/bravaisMatrix/row-3']
+    })
 }

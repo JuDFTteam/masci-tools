@@ -64,8 +64,8 @@ warnings:
   - No values found for attribute time at tag endDateAndTime
   - Endtime was unparsed, inp.xml prob not complete, do not believe the walltime!
   - Enddate was unparsed, inp.xml prob not complete, do not believe the walltime!
-  - No values found for attribute value at tag totalEnergy
   - No values found for attribute units at tag totalEnergy
+  - No values found for attribute value at tag totalEnergy
   - No values found for attribute distance
   - No values found for attribute units
   - No values found for attribute distance
@@ -74,14 +74,14 @@ warnings:
   - No values found for attribute value at tag coreElectrons
   - No values found for attribute value at tag valenceElectrons
   - No values found for attribute value at tag chargeDenXCDenIntegral
-  - No values found for attribute value at tag FermiEnergy
   - No values found for attribute units at tag FermiEnergy
-  - No values found for attribute value at tag bandgap
+  - No values found for attribute value at tag FermiEnergy
   - No values found for attribute units at tag bandgap
+  - No values found for attribute value at tag bandgap
   - No values found for attribute moment at tag magneticMoment
-  - No values found for attribute spinUpCharge at tag magneticMoment
   - No values found for attribute spinDownCharge at tag magneticMoment
-  - No values found for attribute total at tag spinDependentCharge
+  - No values found for attribute spinUpCharge at tag magneticMoment
   - No values found for attribute interstitial at tag spinDependentCharge
   - No values found for attribute mtSpheres at tag spinDependentCharge
+  - No values found for attribute total at tag spinDependentCharge
   - No values found for attribute value at tag totalCharge

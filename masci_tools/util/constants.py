@@ -12,7 +12,13 @@
 ###############################################################################
 """
 Here we collect physical constants which are used throughout the code
-that way we ensure consitency
+that way we ensure consistency
+
+.. literalinclude:: ../../../masci_tools/util/constants.py
+   :language: python
+   :lines: 23-
+   :linenos:
+
 """
 import numpy as np
 

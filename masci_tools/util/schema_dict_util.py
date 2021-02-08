@@ -88,7 +88,41 @@ def get_tag_xpath(schema_dict, name, contains=None, not_contains=None):
                          f'These are possible: {all_paths}')
 
 
-def get_attrib_xpath(schema_dict, name, contains=None, not_contains=None, exclude=None):
+def get_tag_info(schema_dict, name, contains=None, not_contains=None, path_return=True, convert_to_builtin=False):
+    """
+    Tries to find a unique path from the schema_dict based on the given name of the tag
+    and additional further specifications and returns the tag_info entry for this tag
+
+    :param schema_dict: dict, containing all the path information and more
+    :param name: str, name of the tag
+    :param contains: str or list of str, this string has to be in the final path
+    :param not_contains: str or list of str, this string has to NOT be in the final path
+    :param path_return: bool, if True the found path will be returned alongside the tag_info
+    :param convert_to_builtin: bool, if True the CaseInsensitiveFrozenSets are converetd to normal sets
+                               with the rigth case of the attributes
+
+    :returns: dict, tag_info for the found xpath
+    :returns: str, xpath to the tag if `path_return=True`
+    """
+    import copy
+    from masci_tools.util.case_insensitive_dict import CaseInsensitiveFrozenSet
+
+    tag_xpath = get_tag_xpath(schema_dict, name, contains=contains, not_contains=not_contains)
+    tag_info = schema_dict['tag_info'][tag_xpath].copy()
+
+    if convert_to_builtin:
+        tag_info = {
+            key: set(val.original_case.values()) if isinstance(val, CaseInsensitiveFrozenSet) else val
+            for key, val in tag_info.items()
+        }
+
+    if path_return:
+        return tag_info, tag_xpath
+    else:
+        return tag_info
+
+
+def get_attrib_xpath(schema_dict, name, contains=None, not_contains=None, exclude=None, tag_name=None):
     """
     Tries to find a unique path from the schema_dict based on the given name of the attribute
     and additional further specifications
@@ -99,11 +133,25 @@ def get_attrib_xpath(schema_dict, name, contains=None, not_contains=None, exclud
     :param not_contains: str or list of str, this string has to NOT be in the final path
     :param exclude: list of str, here specific types of attributes can be excluded
                     valid values are: settable, settable_contains, other
+    :param tag_name: str, if given this name will be used to find a path to a tag with the
+                     same name in :py:func:`get_tag_xpath()`
 
     :returns: str, xpath to the tag with the given attribute
 
     :raises ValueError: If no unique path could be found
     """
+
+    if tag_name is not None:
+        tag_xpath = get_tag_xpath(schema_dict, tag_name, contains=contains, not_contains=not_contains)
+
+        err_msg = f'No attribute {name} found at tag {tag_name}'
+        if tag_xpath in schema_dict['tag_info']:
+            if name not in schema_dict['tag_info'][tag_xpath]['attribs']:
+                raise ValueError(err_msg)
+        else:
+            if name not in schema_dict['iteration_tag_info'][tag_xpath]['attribs']:
+                raise ValueError(err_msg)
+        return f'{tag_xpath}/@{name}'
 
     if contains is None:
         contains = []
@@ -226,6 +274,7 @@ def evaluate_attribute(node, schema_dict, name, constants, parser_info_out=None,
     not_contains = kwargs.get('not_contains', None)
     exclude = kwargs.get('exclude', None)
     replace_root = kwargs.get('replace_root', None)
+    tag_name = kwargs.get('tag_name', None)
 
     if isinstance(node, etree._Element) and replace_root is None:
         if node.tag != schema_dict['root_tag'] and node.tag != 'iteration':
@@ -235,27 +284,17 @@ def evaluate_attribute(node, schema_dict, name, constants, parser_info_out=None,
             contains.add(node.tag)
             contains = list(contains)
 
-    if 'tag_name' in kwargs:
-        attrib_xpath = get_tag_xpath(schema_dict, kwargs.get('tag_name'), contains=contains, not_contains=not_contains)
-        if attrib_xpath in schema_dict['tag_info']:
-            if name not in schema_dict['tag_info'][attrib_xpath]['attribs']:
-                parser_info_out['parser_warnings'].append(f"No attribute {name} found at tag {kwargs.get('tag_name')}")
-                return None
-        else:
-            if name not in schema_dict['iteration_tag_info'][attrib_xpath]['attribs']:
-                parser_info_out['parser_warnings'].append(f"No attribute {name} found at tag {kwargs.get('tag_name')}")
-                return None
-    else:
-        attrib_xpath = get_attrib_xpath(schema_dict,
-                                        name,
-                                        contains=contains,
-                                        not_contains=not_contains,
-                                        exclude=exclude)
+    attrib_xpath = get_attrib_xpath(schema_dict,
+                                    name,
+                                    contains=contains,
+                                    not_contains=not_contains,
+                                    exclude=exclude,
+                                    tag_name=tag_name)
 
     if replace_root is not None:
         attrib_xpath = attrib_xpath.replace(f"/{schema_dict['root_tag']}", replace_root)
 
-    stringattribute = eval_xpath(node, f'{attrib_xpath}/@{name}', parser_info_out=parser_info_out)
+    stringattribute = eval_xpath(node, attrib_xpath, parser_info_out=parser_info_out)
 
     if isinstance(stringattribute, list):
         if len(stringattribute) == 0:
@@ -392,7 +431,7 @@ def evaluate_tag(node, schema_dict, name, constants, parser_info_out=None, **kwa
     tag_xpath = get_tag_xpath(schema_dict, name, contains=contains, not_contains=not_contains)
 
     #Which attributes are expected
-    attribs = []
+    attribs = set()
     if tag_xpath in schema_dict['tag_info']:
         attribs = schema_dict['tag_info'][tag_xpath]['attribs']
         optional = schema_dict['tag_info'][tag_xpath]['optional_attribs']
@@ -401,20 +440,18 @@ def evaluate_tag(node, schema_dict, name, constants, parser_info_out=None, **kwa
             attribs = schema_dict['iteration_tag_info'][tag_xpath]['attribs']
             optional = schema_dict['iteration_tag_info'][tag_xpath]['optional_attribs']
 
-    attribs = attribs.copy()
     if only_required:
-        for attrib in optional:
-            attribs.remove(attrib)
+        attribs = attribs.difference(optional)
 
     if 'ignore' in kwargs:
-        for attrib in kwargs.get('ignore'):
-            if attrib in attribs:
-                attribs.remove(attrib)
+        attribs = attribs.difference(kwargs.get('ignore'))
 
     if not attribs:
         parser_info_out['parser_warnings'].append(f'Failed to evaluate attributes from tag {name}: '
                                                   'No attributes to parse either the tag does not '
                                                   'exist or it has no attributes')
+    else:
+        attribs = sorted(list(attribs.original_case.values()))
 
     if replace_root is not None:
         tag_xpath = tag_xpath.replace(f"/{schema_dict['root_tag']}", replace_root)
@@ -527,10 +564,10 @@ def evaluate_parent_tag(node, schema_dict, name, constants, parser_info_out=None
 
     tag_xpath = get_tag_xpath(schema_dict, name, contains=contains, not_contains=not_contains)
 
-    parent_xpath = tag_xpath.replace(f'/{name}', '')
+    parent_xpath = '/'.join(tag_xpath.split('/')[:-1])
 
     #Which attributes are expected
-    attribs = []
+    attribs = set()
     if parent_xpath in schema_dict['tag_info']:
         attribs = schema_dict['tag_info'][parent_xpath]['attribs']
         optional = schema_dict['tag_info'][parent_xpath]['optional_attribs']
@@ -539,20 +576,18 @@ def evaluate_parent_tag(node, schema_dict, name, constants, parser_info_out=None
             attribs = schema_dict['iteration_tag_info'][parent_xpath]['attribs']
             optional = schema_dict['iteration_tag_info'][parent_xpath]['optional_attribs']
 
-    attribs = attribs.copy()
     if only_required:
-        for attrib in optional:
-            attribs.remove(attrib)
+        attribs = attribs.difference(optional)
 
     if 'ignore' in kwargs:
-        for attrib in kwargs.get('ignore'):
-            if attrib in attribs:
-                attribs.remove(attrib)
+        attribs = attribs.difference(kwargs.get('ignore'))
 
     if not attribs:
         parser_info_out['parser_warnings'].append(f'Failed to evaluate attributes from parent tag of {name}: '
                                                   'No attributes to parse either the tag does not '
                                                   'exist or it has no attributes')
+    else:
+        attribs = sorted(list(attribs.original_case.values()))
 
     if replace_root is not None:
         tag_xpath = tag_xpath.replace(f"/{schema_dict['root_tag']}", replace_root)

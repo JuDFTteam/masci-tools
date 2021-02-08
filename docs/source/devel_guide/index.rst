@@ -87,7 +87,7 @@ All functions below can either be called in python scripts or from the commandli
   The ```path_spec``` key specifies how the key can be uniquely identified.
 
   It can contain the following specifications:
-    :name: Name of the wanted tag/attribute (CASE SENSITIVE!!)
+    :name: Name of the wanted tag/attribute
     :contains: A phrase, which has to occur in the path
     :not_contains: A phrase, which has to not occur in the path
     :exclude: list of str. Only valid for attributes (these are sorted into different categories

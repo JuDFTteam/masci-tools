@@ -14,9 +14,10 @@
 This module provides the functionality to create/load the schema_dict for the
 FleurInputSchema.xsd
 """
-from .fleur_schema_parser_functions import *
+from .fleur_schema_parser_functions import *  #pylint: disable=unused-wildcard-import
 from .inpschema_todict import load_inpschema
 from masci_tools.util.xml.common_xml_util import clear_xml
+from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict
 from lxml import etree
 from pprint import pprint
 import importlib.util
@@ -88,6 +89,10 @@ def create_outschema_dict(path, save_to_file=True, inp_version=None):
 
     schema_dict['_input_basic_types'] = copy.deepcopy(inpschema_dict['_basic_types'])
 
+    #We cannot do the conversion to CaseInsensitiveDict before since we need the correct case
+    #For these attributes in the attrib_path functions
+    schema_dict['simple_elements'] = CaseInsensitiveDict(schema_dict['simple_elements'])
+
     docstring = '\n'\
                 'This file contains information parsed from the FleurOutputSchema.xsd\n'\
                 f'for version {out_version}\n'\
@@ -136,6 +141,8 @@ def create_outschema_dict(path, save_to_file=True, inp_version=None):
         with open(f'{path}/outschema_dict.py', 'w') as f:
             f.write('# -*- coding: utf-8 -*-\n')
             f.write(f'"""{docstring}"""\n')
+            f.write(
+                'from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict, CaseInsensitiveFrozenSet\n')
             f.write(f"__out_version__ = '{out_version}'\n")
             f.write('schema_dict = ')
             pprint(schema_dict, f)

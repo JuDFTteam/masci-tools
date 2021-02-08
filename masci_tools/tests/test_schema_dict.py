@@ -28,11 +28,17 @@ def test_inpschema_dict(schema_version, schema_path):
     """
     Test the fleur_schema_parser_functions to make sure that they match the stored inputschema_dict
     """
+    from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict
+
+    CASE_INSENSITIVE_KEYS = {'attrib_types', 'tag_paths', 'unique_attribs', 'unique_path_attribs', 'other_attribs'}
+
     dict_created, created_version = create_inpschema_dict(schema_path, save_to_file=False)
     dict_stored = load_inpschema(schema_version, create=False)
 
     assert created_version == schema_version
     assert dict_created == dict_stored
+    assert all([isinstance(dict_created[key], CaseInsensitiveDict) for key in CASE_INSENSITIVE_KEYS])
+    assert all([isinstance(dict_stored[key], CaseInsensitiveDict) for key in CASE_INSENSITIVE_KEYS])
 
 
 @pytest.mark.parametrize('schema_version,schema_path', zip(schema_versions['out'], schema_paths['out']))
@@ -40,8 +46,17 @@ def test_outschema_dict(schema_version, schema_path):
     """
     Test the fleur_schema_parser_functions to make sure that they match the stored inputschema_dict
     """
+    from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict
+
+    CASE_INSENSITIVE_KEYS = {
+        'attrib_types', 'tag_paths', 'unique_attribs', 'unique_path_attribs', 'other_attribs', 'iteration_tag_paths',
+        'iteration_unique_attribs', 'iteration_unique_path_attribs', 'iteration_other_attribs'
+    }
+
     dict_created, created_version = create_outschema_dict(schema_path, save_to_file=False)
     dict_stored = load_outschema(schema_version, create=False)
 
     assert created_version == schema_version
     assert dict_created == dict_stored
+    assert all([isinstance(dict_created[key], CaseInsensitiveDict) for key in CASE_INSENSITIVE_KEYS])
+    assert all([isinstance(dict_stored[key], CaseInsensitiveDict) for key in CASE_INSENSITIVE_KEYS])

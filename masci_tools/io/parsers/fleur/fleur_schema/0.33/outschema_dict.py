@@ -44,6 +44,7 @@ The keys contain the following information:
                             the valid attributes and tags (optional, several,
                             order, simple, text)
 """
+from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict, CaseInsensitiveFrozenSet
 __out_version__ = '0.33'
 schema_dict = {
     '_basic_types': {
@@ -398,351 +399,395 @@ schema_dict = {
             'length': 1
         }
     },
-    'attrib_types': {
-        'Angles': ['int'],
-        'Configs': ['int'],
-        'Delta': ['float'],
-        'F_x': ['float'],
-        'F_y': ['float'],
-        'F_z': ['float'],
-        'H_so': ['float'],
-        'J': ['float'],
-        'Message': ['string'],
-        'No': ['int'],
-        'U': ['float'],
-        'atomType': ['int'],
-        'atomicNumber': ['int'],
-        'branch': ['string'],
-        'branchHighest': ['float'],
-        'branchLowest': ['float'],
-        'comment': ['string'],
-        'count': ['int'],
-        'd': ['float'],
+    'attrib_types':
+    CaseInsensitiveDict({
+        'fleuroutputversion': ['string'],
+        'version': ['string'],
         'date': ['string'],
-        'distance': ['float'],
-        'eigValSum': ['float'],
-        'energy': ['float'],
-        'ev-sum': ['float'],
-        'f': ['float'],
-        'flag': ['string'],
-        'fleurOutputVersion': ['string'],
+        'user': ['string'],
         'host': ['string'],
-        'iatom': ['int'],
-        'ikpt': ['int'],
-        'index': ['int'],
-        'interstitial': ['float'],
-        'j': ['float'],
-        'jatom': ['int'],
+        'flag': ['string'],
+        'link': ['string'],
+        'lastcommithash': ['string'],
+        'branch': ['string'],
+        'type': ['string'],
+        'ompthreads': ['string'],
+        'mpiprocesses': ['string'],
+        'memorypernode': ['string'],
+        'time': ['string'],
+        'zone': ['string'],
+        'message': ['string'],
+        'nat': ['int'],
+        'ntype': ['int'],
         'jmtd': ['int'],
+        'n_u': ['int'],
+        'n_hia': ['int'],
+        'nvd': ['int'],
+        'lmaxd': ['int'],
+        'nlotot': ['int'],
+        'ng3': ['int'],
+        'ng2': ['int'],
+        'numbands': ['int'],
+        'unitcell': ['float'],
+        'interstitial': ['float'],
+        'omegatilda': ['float'],
+        'surfacearea': ['float'],
+        'z1': ['float'],
+        'atomtype': ['int'],
+        'mtradius': ['float'],
+        'mtvolume': ['float'],
+        'weightscale': ['float'],
+        'count': ['int'],
+        'numberforcurrentrun': ['int'],
+        'overallnumber': ['int'],
+        'no': ['int'],
+        'angles': ['int'],
+        'qpoints': ['int'],
+        'configs': ['int'],
+        'qvectors': ['int'],
+        'q': ['int', 'float'],
+        'ev-sum': ['float'],
+        'phi': ['float'],
+        'theta': ['float'],
+        'n': ['int'],
+        'iatom': ['int'],
+        'jatom': ['int'],
+        'phase': ['switch'],
+        'h_so': ['float'],
+        'units': ['string'],
+        'spin': ['int'],
+        'branchlowest': ['float'],
+        'branchhighest': ['float'],
+        'value': ['float'],
+        'logderivmt': ['float'],
+        'vacuum': ['int'],
+        'vzir': ['float'],
+        'vzinf': ['float'],
+        'ikpt': ['int'],
         'k_x': ['float'],
         'k_y': ['float'],
         'k_z': ['float'],
-        'kinEnergy': ['float'],
-        'kpoint': ['int'],
-        'l': ['int'],
-        'lastCommitHash': ['string'],
-        'link': ['string'],
-        'lmaxd': ['int'],
-        'logDerivMT': ['float'],
-        'lostElectrons': ['float'],
-        'memoryPerNode': ['string'],
-        'moment': ['float'],
-        'mpiProcesses': ['string'],
-        'mtRadius': ['float'],
-        'mtSpheres': ['float'],
-        'mtVolume': ['float'],
-        'n': ['int'],
-        'n_hia': ['int'],
-        'n_u': ['int'],
-        'name': ['string'],
-        'nat': ['int'],
-        'ng2': ['int'],
-        'ng3': ['int'],
-        'nlotot': ['int'],
-        'ntype': ['int'],
-        'numbands': ['int'],
-        'numberForCurrentRun': ['int'],
-        'nvd': ['int'],
-        'occupation': ['float'],
-        'omegaTilda': ['float'],
-        'ompThreads': ['string'],
-        'overallNumber': ['int'],
-        'p': ['float'],
-        'phase': ['switch'],
-        'phi': ['float'],
-        'q': ['int', 'float'],
-        'qpoints': ['int'],
-        'qvectors': ['int'],
-        's': ['float'],
-        'sigma_x': ['float'],
-        'sigma_y': ['float'],
-        'sigma_z': ['float'],
-        'spin': ['int'],
-        'spinDownCharge': ['float'],
-        'spinUpCharge': ['float'],
-        'surfaceArea': ['float'],
-        'theta': ['float'],
-        'time': ['string'],
         'total': ['float'],
-        'type': ['string'],
-        'uIndex': ['int'],
-        'unitCell': ['float'],
-        'units': ['string'],
-        'user': ['string'],
-        'vacuum': ['int'],
+        's': ['float'],
+        'p': ['float'],
+        'd': ['float'],
+        'f': ['float'],
+        'mtspheres': ['float'],
         'vacuum1': ['float'],
         'vacuum2': ['float'],
-        'value': ['float'],
-        'version': ['string'],
-        'vzIR': ['float'],
-        'vzInf': ['float'],
+        'atomicnumber': ['int'],
+        'kinenergy': ['float'],
+        'eigvalsum': ['float'],
+        'lostelectrons': ['float'],
+        'moment': ['float'],
+        'spinupcharge': ['float'],
+        'spindowncharge': ['float'],
+        'l': ['int'],
+        'j': ['float'],
+        'energy': ['float'],
         'weight': ['float'],
-        'weightScale': ['float'],
         'x': ['float'],
         'y': ['float'],
         'z': ['float'],
-        'z1': ['float'],
-        'zone': ['string']
-    },
+        'f_x': ['float'],
+        'f_y': ['float'],
+        'f_z': ['float'],
+        'sigma_x': ['float'],
+        'sigma_y': ['float'],
+        'sigma_z': ['float'],
+        'delta': ['float'],
+        'uindex': ['int'],
+        'u': ['float'],
+        'kpoint': ['int'],
+        'index': ['int'],
+        'occupation': ['float'],
+        'comment': ['string'],
+        'distance': ['float'],
+        'name': ['string']
+    }),
     'input_tag':
     'fleurInput',
-    'iteration_other_attribs': {
-        'Delta': ['./onSiteExchangeSplitting/excSplit'],
-        'F_x': ['./totalForcesOnRepresentativeAtoms/forceTotal'],
-        'F_y': ['./totalForcesOnRepresentativeAtoms/forceTotal'],
-        'F_z': ['./totalForcesOnRepresentativeAtoms/forceTotal'],
-        'H_so': ['./Forcetheorem_DMI/allAtoms', './Forcetheorem_DMI/singleAtom'],
-        'J': ['./ldaUDensityMatrix/densityMatrixFor'],
-        'No': ['./Forcetheorem_Loop'],
-        'U': ['./ldaUDensityMatrix/densityMatrixFor'],
-        'atomType': [
-            './Forcetheorem_DMI/allAtoms', './Forcetheorem_DMI/singleAtom', './energyParameters/atomicEP',
-            './energyParameters/heAtomicEP', './energyParameters/loAtomicEP', './energyParameters/heloAtomicEP',
-            './valenceDensity/mtCharges/mtCharge', './allElectronCharges/mtCharges/mtCharge',
-            './valenceDensity/mtCharges/mtJcharge', './allElectronCharges/mtCharges/mtJcharge', './coreStates',
-            './magneticMomentsInMTSpheres/magneticMoment', './orbitalMagneticMomentsInMTSpheres/orbMagMoment',
-            './totalForcesOnRepresentativeAtoms/forceTotal', './noncollinearTorgue/torgue', './spinorbitTorgue/torgue',
-            './onSiteExchangeSplitting/excSplit', './ldaUDensityMatrix/densityMatrixFor',
-            './totalEnergy/atomTypeDependentContributions'
+    'iteration_other_attribs':
+    CaseInsensitiveDict({
+        'delta': ['./onSiteExchangeSplitting/excSplit/@Delta'],
+        'f_x': ['./totalForcesOnRepresentativeAtoms/forceTotal/@F_x'],
+        'f_y': ['./totalForcesOnRepresentativeAtoms/forceTotal/@F_y'],
+        'f_z': ['./totalForcesOnRepresentativeAtoms/forceTotal/@F_z'],
+        'h_so': ['./Forcetheorem_DMI/allAtoms/@H_so', './Forcetheorem_DMI/singleAtom/@H_so'],
+        'j': ['./coreStates/state/@j', './ldaUDensityMatrix/densityMatrixFor/@J'],
+        'no': ['./Forcetheorem_Loop/@No'],
+        'u': ['./ldaUDensityMatrix/densityMatrixFor/@U'],
+        'atomtype': [
+            './Forcetheorem_DMI/allAtoms/@atomType', './Forcetheorem_DMI/singleAtom/@atomType',
+            './allElectronCharges/mtCharges/mtCharge/@atomType', './allElectronCharges/mtCharges/mtJcharge/@atomType',
+            './coreStates/@atomType', './energyParameters/atomicEP/@atomType',
+            './energyParameters/heAtomicEP/@atomType', './energyParameters/heloAtomicEP/@atomType',
+            './energyParameters/loAtomicEP/@atomType', './ldaUDensityMatrix/densityMatrixFor/@atomType',
+            './magneticMomentsInMTSpheres/magneticMoment/@atomType', './noncollinearTorgue/torgue/@atomType',
+            './onSiteExchangeSplitting/excSplit/@atomType',
+            './orbitalMagneticMomentsInMTSpheres/orbMagMoment/@atomType', './spinorbitTorgue/torgue/@atomType',
+            './totalEnergy/atomTypeDependentContributions/@atomType',
+            './totalForcesOnRepresentativeAtoms/forceTotal/@atomType', './valenceDensity/mtCharges/mtCharge/@atomType',
+            './valenceDensity/mtCharges/mtJcharge/@atomType'
         ],
-        'atomicNumber': ['./coreStates'],
+        'atomicnumber': ['./coreStates/@atomicNumber'],
         'branch': [
-            './energyParameters/atomicEP', './energyParameters/heAtomicEP', './energyParameters/loAtomicEP',
-            './energyParameters/heloAtomicEP'
+            './energyParameters/atomicEP/@branch', './energyParameters/heAtomicEP/@branch',
+            './energyParameters/heloAtomicEP/@branch', './energyParameters/loAtomicEP/@branch'
         ],
-        'branchHighest': [
-            './energyParameters/atomicEP', './energyParameters/heAtomicEP', './energyParameters/loAtomicEP',
-            './energyParameters/heloAtomicEP'
+        'branchhighest': [
+            './energyParameters/atomicEP/@branchHighest', './energyParameters/heAtomicEP/@branchHighest',
+            './energyParameters/heloAtomicEP/@branchHighest', './energyParameters/loAtomicEP/@branchHighest'
         ],
-        'branchLowest': [
-            './energyParameters/atomicEP', './energyParameters/heAtomicEP', './energyParameters/loAtomicEP',
-            './energyParameters/heloAtomicEP'
+        'branchlowest': [
+            './energyParameters/atomicEP/@branchLowest', './energyParameters/heAtomicEP/@branchLowest',
+            './energyParameters/heloAtomicEP/@branchLowest', './energyParameters/loAtomicEP/@branchLowest'
         ],
-        'comment': ['./totalEnergy'],
+        'comment': ['./totalEnergy/@comment'],
         'd': [
-            './valenceDensity/mtCharges/mtCharge', './allElectronCharges/mtCharges/mtCharge',
-            './valenceDensity/mtCharges/mtJcharge/lowJ', './allElectronCharges/mtCharges/mtJcharge/lowJ',
-            './valenceDensity/mtCharges/mtJcharge/highJ', './allElectronCharges/mtCharges/mtJcharge/highJ'
+            './allElectronCharges/mtCharges/mtCharge/@d', './allElectronCharges/mtCharges/mtJcharge/highJ/@d',
+            './allElectronCharges/mtCharges/mtJcharge/lowJ/@d', './valenceDensity/mtCharges/mtCharge/@d',
+            './valenceDensity/mtCharges/mtJcharge/highJ/@d', './valenceDensity/mtCharges/mtJcharge/lowJ/@d'
         ],
-        'densityMatrixFor': ['./ldaUDensityMatrix/densityMatrixFor'],
         'distance': [
-            './ldaUDensityMatrixConvergence/distance', './densityConvergence/chargeDensity',
-            './densityConvergence/overallChargeDensity', './densityConvergence/spinDensity'
+            './densityConvergence/chargeDensity/@distance', './densityConvergence/overallChargeDensity/@distance',
+            './densityConvergence/spinDensity/@distance', './ldaUDensityMatrixConvergence/distance/@distance'
         ],
-        'eigValSum': ['./coreStates'],
-        'eigenvaluesAt': ['./eigenvalues/eigenvaluesAt'],
-        'energy': ['./coreStates/state', './rdmft', './rdmft/occupations/state'],
+        'eigvalsum': ['./coreStates/@eigValSum'],
+        'energy': ['./coreStates/state/@energy', './rdmft/@energy', './rdmft/occupations/state/@energy'],
         'ev-sum': [
-            './Forcetheorem_SSDISP/Entry', './Forcetheorem_MAE/Angle', './Forcetheorem_JIJ/Config',
-            './Forcetheorem_DMI/Entry'
+            './Forcetheorem_DMI/Entry/@ev-sum', './Forcetheorem_JIJ/Config/@ev-sum', './Forcetheorem_MAE/Angle/@ev-sum',
+            './Forcetheorem_SSDISP/Entry/@ev-sum'
         ],
         'f': [
-            './valenceDensity/mtCharges/mtCharge', './allElectronCharges/mtCharges/mtCharge',
-            './valenceDensity/mtCharges/mtJcharge/lowJ', './allElectronCharges/mtCharges/mtJcharge/lowJ',
-            './valenceDensity/mtCharges/mtJcharge/highJ', './allElectronCharges/mtCharges/mtJcharge/highJ'
+            './allElectronCharges/mtCharges/mtCharge/@f', './allElectronCharges/mtCharges/mtJcharge/highJ/@f',
+            './allElectronCharges/mtCharges/mtJcharge/lowJ/@f', './valenceDensity/mtCharges/mtCharge/@f',
+            './valenceDensity/mtCharges/mtJcharge/highJ/@f', './valenceDensity/mtCharges/mtJcharge/lowJ/@f'
         ],
-        'iatom': ['./Forcetheorem_JIJ/Config'],
-        'ikpt': ['./eigenvalues/eigenvaluesAt'],
-        'index': ['./rdmft/occupations/state'],
+        'iatom': ['./Forcetheorem_JIJ/Config/@iatom'],
+        'ikpt': ['./eigenvalues/eigenvaluesAt/@ikpt'],
+        'index': ['./rdmft/occupations/state/@index'],
         'interstitial': [
-            './valenceDensity/spinDependentCharge', './allElectronCharges/spinDependentCharge',
-            './valenceDensity/fixedCharges/spinDependentCharge', './allElectronCharges/fixedCharges/spinDependentCharge'
+            './allElectronCharges/fixedCharges/spinDependentCharge/@interstitial',
+            './allElectronCharges/spinDependentCharge/@interstitial',
+            './valenceDensity/fixedCharges/spinDependentCharge/@interstitial',
+            './valenceDensity/spinDependentCharge/@interstitial'
         ],
-        'j': ['./coreStates/state'],
-        'jatom': ['./Forcetheorem_JIJ/Config'],
-        'k_x': ['./eigenvalues/eigenvaluesAt'],
-        'k_y': ['./eigenvalues/eigenvaluesAt'],
-        'k_z': ['./eigenvalues/eigenvaluesAt'],
-        'kinEnergy': ['./coreStates'],
-        'kpoint': ['./rdmft/occupations'],
-        'l': ['./coreStates/state', './onSiteExchangeSplitting/excSplit', './ldaUDensityMatrix/densityMatrixFor'],
-        'lostElectrons': ['./coreStates'],
-        'moment': ['./magneticMomentsInMTSpheres/magneticMoment', './orbitalMagneticMomentsInMTSpheres/orbMagMoment'],
-        'mtSpheres': [
-            './valenceDensity/spinDependentCharge', './allElectronCharges/spinDependentCharge',
-            './valenceDensity/fixedCharges/spinDependentCharge', './allElectronCharges/fixedCharges/spinDependentCharge'
+        'jatom': ['./Forcetheorem_JIJ/Config/@jatom'],
+        'k_x': ['./eigenvalues/eigenvaluesAt/@k_x'],
+        'k_y': ['./eigenvalues/eigenvaluesAt/@k_y'],
+        'k_z': ['./eigenvalues/eigenvaluesAt/@k_z'],
+        'kinenergy': ['./coreStates/@kinEnergy'],
+        'kpoint': ['./rdmft/occupations/@kpoint'],
+        'l':
+        ['./coreStates/state/@l', './ldaUDensityMatrix/densityMatrixFor/@l', './onSiteExchangeSplitting/excSplit/@l'],
+        'lostelectrons': ['./coreStates/@lostElectrons'],
+        'moment': [
+            './magneticMomentsInMTSpheres/magneticMoment/@moment',
+            './orbitalMagneticMomentsInMTSpheres/orbMagMoment/@moment'
         ],
-        'n': ['./Forcetheorem_JIJ/Config', './coreStates/state'],
-        'name': ['./timing/timer'],
-        'occupation': ['./rdmft/occupations/state'],
+        'mtspheres': [
+            './allElectronCharges/fixedCharges/spinDependentCharge/@mtSpheres',
+            './allElectronCharges/spinDependentCharge/@mtSpheres',
+            './valenceDensity/fixedCharges/spinDependentCharge/@mtSpheres',
+            './valenceDensity/spinDependentCharge/@mtSpheres'
+        ],
+        'n': ['./Forcetheorem_JIJ/Config/@n', './coreStates/state/@n'],
+        'name': ['./timing/timer/@name'],
+        'occupation': ['./rdmft/occupations/state/@occupation'],
         'p': [
-            './valenceDensity/mtCharges/mtCharge', './allElectronCharges/mtCharges/mtCharge',
-            './valenceDensity/mtCharges/mtJcharge/lowJ', './allElectronCharges/mtCharges/mtJcharge/lowJ',
-            './valenceDensity/mtCharges/mtJcharge/highJ', './allElectronCharges/mtCharges/mtJcharge/highJ'
+            './allElectronCharges/mtCharges/mtCharge/@p', './allElectronCharges/mtCharges/mtJcharge/highJ/@p',
+            './allElectronCharges/mtCharges/mtJcharge/lowJ/@p', './valenceDensity/mtCharges/mtCharge/@p',
+            './valenceDensity/mtCharges/mtJcharge/highJ/@p', './valenceDensity/mtCharges/mtJcharge/lowJ/@p'
         ],
-        'phase': ['./Forcetheorem_JIJ/Config'],
+        'phase': ['./Forcetheorem_JIJ/Config/@phase'],
         'phi': [
-            './Forcetheorem_MAE/Angle', './Forcetheorem_DMI/Entry', './Forcetheorem_DMI/allAtoms',
-            './Forcetheorem_DMI/singleAtom'
+            './Forcetheorem_DMI/Entry/@phi', './Forcetheorem_DMI/allAtoms/@phi', './Forcetheorem_DMI/singleAtom/@phi',
+            './Forcetheorem_MAE/Angle/@phi'
         ],
         'q': [
-            './Forcetheorem_SSDISP/Entry', './Forcetheorem_JIJ/Config', './Forcetheorem_DMI/Entry',
-            './Forcetheorem_DMI/allAtoms', './Forcetheorem_DMI/singleAtom'
+            './Forcetheorem_DMI/Entry/@q', './Forcetheorem_DMI/allAtoms/@q', './Forcetheorem_DMI/singleAtom/@q',
+            './Forcetheorem_JIJ/Config/@q', './Forcetheorem_SSDISP/Entry/@q'
         ],
-        's': ['./valenceDensity/mtCharges/mtCharge', './allElectronCharges/mtCharges/mtCharge'],
-        'sigma_x': ['./noncollinearTorgue/torgue', './spinorbitTorgue/torgue'],
-        'sigma_y': ['./noncollinearTorgue/torgue', './spinorbitTorgue/torgue'],
-        'sigma_z': ['./noncollinearTorgue/torgue', './spinorbitTorgue/torgue'],
+        's': ['./allElectronCharges/mtCharges/mtCharge/@s', './valenceDensity/mtCharges/mtCharge/@s'],
+        'sigma_x': ['./noncollinearTorgue/torgue/@sigma_x', './spinorbitTorgue/torgue/@sigma_x'],
+        'sigma_y': ['./noncollinearTorgue/torgue/@sigma_y', './spinorbitTorgue/torgue/@sigma_y'],
+        'sigma_z': ['./noncollinearTorgue/torgue/@sigma_z', './spinorbitTorgue/torgue/@sigma_z'],
         'spin': [
-            './energyParameters/atomicEP', './energyParameters/heAtomicEP', './energyParameters/loAtomicEP',
-            './energyParameters/heloAtomicEP', './energyParameters/vacuumEP', './eigenvalues/eigenvaluesAt',
-            './valenceDensity/mtCharges', './allElectronCharges/mtCharges', './valenceDensity/spinDependentCharge',
-            './allElectronCharges/spinDependentCharge', './valenceDensity/fixedCharges/spinDependentCharge',
-            './allElectronCharges/fixedCharges/spinDependentCharge', './coreStates',
-            './ldaUDensityMatrix/densityMatrixFor', './rdmft/occupations', './ldaUDensityMatrixConvergence/distance',
-            './densityConvergence/chargeDensity', './densityConvergence/overallChargeDensity',
-            './densityConvergence/spinDensity'
+            './allElectronCharges/fixedCharges/spinDependentCharge/@spin', './allElectronCharges/mtCharges/@spin',
+            './allElectronCharges/spinDependentCharge/@spin', './coreStates/@spin',
+            './densityConvergence/chargeDensity/@spin', './densityConvergence/overallChargeDensity/@spin',
+            './densityConvergence/spinDensity/@spin', './eigenvalues/eigenvaluesAt/@spin',
+            './energyParameters/atomicEP/@spin', './energyParameters/heAtomicEP/@spin',
+            './energyParameters/heloAtomicEP/@spin', './energyParameters/loAtomicEP/@spin',
+            './energyParameters/vacuumEP/@spin', './ldaUDensityMatrix/densityMatrixFor/@spin',
+            './ldaUDensityMatrixConvergence/distance/@spin', './rdmft/occupations/@spin',
+            './valenceDensity/fixedCharges/spinDependentCharge/@spin', './valenceDensity/mtCharges/@spin',
+            './valenceDensity/spinDependentCharge/@spin'
         ],
-        'spinDownCharge':
-        ['./magneticMomentsInMTSpheres/magneticMoment', './orbitalMagneticMomentsInMTSpheres/orbMagMoment'],
-        'spinUpCharge':
-        ['./magneticMomentsInMTSpheres/magneticMoment', './orbitalMagneticMomentsInMTSpheres/orbMagMoment'],
+        'spindowncharge': [
+            './magneticMomentsInMTSpheres/magneticMoment/@spinDownCharge',
+            './orbitalMagneticMomentsInMTSpheres/orbMagMoment/@spinDownCharge'
+        ],
+        'spinupcharge': [
+            './magneticMomentsInMTSpheres/magneticMoment/@spinUpCharge',
+            './orbitalMagneticMomentsInMTSpheres/orbMagMoment/@spinUpCharge'
+        ],
         'theta': [
-            './Forcetheorem_MAE/Angle', './Forcetheorem_DMI/Entry', './Forcetheorem_DMI/allAtoms',
-            './Forcetheorem_DMI/singleAtom'
+            './Forcetheorem_DMI/Entry/@theta', './Forcetheorem_DMI/allAtoms/@theta',
+            './Forcetheorem_DMI/singleAtom/@theta', './Forcetheorem_MAE/Angle/@theta'
         ],
         'total': [
-            './valenceDensity/mtCharges/mtCharge', './allElectronCharges/mtCharges/mtCharge',
-            './valenceDensity/spinDependentCharge', './allElectronCharges/spinDependentCharge',
-            './valenceDensity/fixedCharges/spinDependentCharge', './allElectronCharges/fixedCharges/spinDependentCharge'
+            './allElectronCharges/fixedCharges/spinDependentCharge/@total',
+            './allElectronCharges/mtCharges/mtCharge/@total', './allElectronCharges/spinDependentCharge/@total',
+            './valenceDensity/fixedCharges/spinDependentCharge/@total', './valenceDensity/mtCharges/mtCharge/@total',
+            './valenceDensity/spinDependentCharge/@total'
         ],
-        'uIndex': ['./ldaUDensityMatrix/densityMatrixFor'],
+        'uindex': ['./ldaUDensityMatrix/densityMatrixFor/@uIndex'],
         'units': [
-            './energyParameters', './bandgap', './sumValenceSingleParticleEnergies', './FermiEnergy',
-            './valenceDensity/totalCharge', './allElectronCharges/totalCharge',
-            './valenceDensity/fixedCharges/totalCharge', './allElectronCharges/fixedCharges/totalCharge',
-            './totalEnergy/densityCoulombPotentialIntegral', './totalEnergy/densityEffectivePotentialIntegral',
-            './totalEnergy/chargeDenXCDenIntegral', './totalEnergy/FockExchangeEnergyValence',
-            './totalEnergy/FockExchangeEnergyCore', './totalEnergy/dftUCorrection', './totalEnergy/tkbTimesEntropy',
-            './totalEnergy/freeEnergy', './totalEnergy/extrapolationTo0K',
-            './totalEnergy/sumOfEigenvalues/coreElectrons', './totalEnergy/sumOfEigenvalues/valenceElectrons',
-            './totalEnergy/atomTypeDependentContributions/electronNucleiInteractionDifferentMTs',
-            './totalEnergy/atomTypeDependentContributions/MadelungTerm', './magneticMomentsInMTSpheres',
-            './orbitalMagneticMomentsInMTSpheres', './totalForcesOnRepresentativeAtoms',
-            './totalForcesOnRepresentativeAtoms/forceTotal', './noncollinearTorgue/torgue', './spinorbitTorgue/torgue',
-            './onSiteExchangeSplitting/excSplit', './totalEnergy', './totalEnergy/sumOfEigenvalues',
-            './densityConvergence', './densityConvergence/chargeDensity', './densityConvergence/overallChargeDensity',
-            './densityConvergence/spinDensity', './timing', './timing/timer'
+            './FermiEnergy/@units', './allElectronCharges/fixedCharges/totalCharge/@units',
+            './allElectronCharges/totalCharge/@units', './bandgap/@units', './densityConvergence/@units',
+            './densityConvergence/chargeDensity/@units', './densityConvergence/overallChargeDensity/@units',
+            './densityConvergence/spinDensity/@units', './energyParameters/@units',
+            './magneticMomentsInMTSpheres/@units', './noncollinearTorgue/torgue/@units',
+            './onSiteExchangeSplitting/excSplit/@units', './orbitalMagneticMomentsInMTSpheres/@units',
+            './spinorbitTorgue/torgue/@units', './sumValenceSingleParticleEnergies/@units', './timing/@units',
+            './timing/timer/@units', './totalEnergy/@units', './totalEnergy/FockExchangeEnergyCore/@units',
+            './totalEnergy/FockExchangeEnergyValence/@units',
+            './totalEnergy/atomTypeDependentContributions/MadelungTerm/@units',
+            './totalEnergy/atomTypeDependentContributions/electronNucleiInteractionDifferentMTs/@units',
+            './totalEnergy/chargeDenXCDenIntegral/@units', './totalEnergy/densityCoulombPotentialIntegral/@units',
+            './totalEnergy/densityEffectivePotentialIntegral/@units', './totalEnergy/dftUCorrection/@units',
+            './totalEnergy/extrapolationTo0K/@units', './totalEnergy/freeEnergy/@units',
+            './totalEnergy/sumOfEigenvalues/@units', './totalEnergy/sumOfEigenvalues/coreElectrons/@units',
+            './totalEnergy/sumOfEigenvalues/valenceElectrons/@units', './totalEnergy/tkbTimesEntropy/@units',
+            './totalForcesOnRepresentativeAtoms/@units', './totalForcesOnRepresentativeAtoms/forceTotal/@units',
+            './valenceDensity/fixedCharges/totalCharge/@units', './valenceDensity/totalCharge/@units'
         ],
-        'vacuum': ['./energyParameters/vacuumEP'],
+        'vacuum': ['./energyParameters/vacuumEP/@vacuum'],
         'vacuum1': [
-            './valenceDensity/spinDependentCharge', './allElectronCharges/spinDependentCharge',
-            './valenceDensity/fixedCharges/spinDependentCharge', './allElectronCharges/fixedCharges/spinDependentCharge'
+            './allElectronCharges/fixedCharges/spinDependentCharge/@vacuum1',
+            './allElectronCharges/spinDependentCharge/@vacuum1',
+            './valenceDensity/fixedCharges/spinDependentCharge/@vacuum1',
+            './valenceDensity/spinDependentCharge/@vacuum1'
         ],
         'vacuum2': [
-            './valenceDensity/spinDependentCharge', './allElectronCharges/spinDependentCharge',
-            './valenceDensity/fixedCharges/spinDependentCharge', './allElectronCharges/fixedCharges/spinDependentCharge'
+            './allElectronCharges/fixedCharges/spinDependentCharge/@vacuum2',
+            './allElectronCharges/spinDependentCharge/@vacuum2',
+            './valenceDensity/fixedCharges/spinDependentCharge/@vacuum2',
+            './valenceDensity/spinDependentCharge/@vacuum2'
         ],
         'value': [
-            './energyParameters/atomicEP', './energyParameters/heAtomicEP', './energyParameters/loAtomicEP',
-            './energyParameters/heloAtomicEP', './energyParameters/vacuumEP', './bandgap',
-            './sumValenceSingleParticleEnergies', './FermiEnergy', './valenceDensity/totalCharge',
-            './allElectronCharges/totalCharge', './valenceDensity/fixedCharges/totalCharge',
-            './allElectronCharges/fixedCharges/totalCharge', './totalEnergy/densityCoulombPotentialIntegral',
-            './totalEnergy/densityEffectivePotentialIntegral', './totalEnergy/chargeDenXCDenIntegral',
-            './totalEnergy/FockExchangeEnergyValence', './totalEnergy/FockExchangeEnergyCore',
-            './totalEnergy/dftUCorrection', './totalEnergy/tkbTimesEntropy', './totalEnergy/freeEnergy',
-            './totalEnergy/extrapolationTo0K', './totalEnergy/sumOfEigenvalues/coreElectrons',
-            './totalEnergy/sumOfEigenvalues/valenceElectrons',
-            './totalEnergy/atomTypeDependentContributions/electronNucleiInteractionDifferentMTs',
-            './totalEnergy/atomTypeDependentContributions/MadelungTerm', './totalEnergy',
-            './totalEnergy/sumOfEigenvalues', './timing/timer'
+            './FermiEnergy/@value', './allElectronCharges/fixedCharges/totalCharge/@value',
+            './allElectronCharges/totalCharge/@value', './bandgap/@value', './energyParameters/atomicEP/@value',
+            './energyParameters/heAtomicEP/@value', './energyParameters/heloAtomicEP/@value',
+            './energyParameters/loAtomicEP/@value', './energyParameters/vacuumEP/@value',
+            './sumValenceSingleParticleEnergies/@value', './timing/timer/@value', './totalEnergy/@value',
+            './totalEnergy/FockExchangeEnergyCore/@value', './totalEnergy/FockExchangeEnergyValence/@value',
+            './totalEnergy/atomTypeDependentContributions/MadelungTerm/@value',
+            './totalEnergy/atomTypeDependentContributions/electronNucleiInteractionDifferentMTs/@value',
+            './totalEnergy/chargeDenXCDenIntegral/@value', './totalEnergy/densityCoulombPotentialIntegral/@value',
+            './totalEnergy/densityEffectivePotentialIntegral/@value', './totalEnergy/dftUCorrection/@value',
+            './totalEnergy/extrapolationTo0K/@value', './totalEnergy/freeEnergy/@value',
+            './totalEnergy/sumOfEigenvalues/@value', './totalEnergy/sumOfEigenvalues/coreElectrons/@value',
+            './totalEnergy/sumOfEigenvalues/valenceElectrons/@value', './totalEnergy/tkbTimesEntropy/@value',
+            './valenceDensity/fixedCharges/totalCharge/@value', './valenceDensity/totalCharge/@value'
         ],
-        'vzIR': ['./energyParameters/vacuumEP'],
-        'vzInf': ['./energyParameters/vacuumEP'],
-        'weight': ['./coreStates/state'],
-        'x': ['./totalForcesOnRepresentativeAtoms/forceTotal'],
-        'y': ['./totalForcesOnRepresentativeAtoms/forceTotal'],
-        'z': ['./totalForcesOnRepresentativeAtoms/forceTotal']
-    },
+        'vzir': ['./energyParameters/vacuumEP/@vzIR'],
+        'vzinf': ['./energyParameters/vacuumEP/@vzInf'],
+        'weight': ['./coreStates/state/@weight'],
+        'x': ['./totalForcesOnRepresentativeAtoms/forceTotal/@x'],
+        'y': ['./totalForcesOnRepresentativeAtoms/forceTotal/@y'],
+        'z': ['./totalForcesOnRepresentativeAtoms/forceTotal/@z'],
+        'densitymatrixfor': ['./ldaUDensityMatrix/densityMatrixFor'],
+        'eigenvaluesat': ['./eigenvalues/eigenvaluesAt']
+    }),
     'iteration_tag_info': {
         './FermiEnergy': {
-            'attribs': ['value', 'units'],
-            'optional': [],
-            'optional_attribs': ['units'],
+            'attribs': CaseInsensitiveFrozenSet(['units', 'value']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './Forcetheorem_DMI': {
-            'attribs': ['Angles', 'qpoints'],
-            'optional': ['Entry', 'allAtoms', 'singleAtom'],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['Angles', 'qpoints']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet(['Entry', 'allAtoms', 'singleAtom']),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': ['Entry', 'allAtoms', 'singleAtom'],
-            'several': ['Entry', 'allAtoms', 'singleAtom'],
-            'simple': ['Entry', 'allAtoms', 'singleAtom'],
-            'text': []
+            'several': CaseInsensitiveFrozenSet(['Entry', 'allAtoms', 'singleAtom']),
+            'simple': CaseInsensitiveFrozenSet(['Entry', 'allAtoms', 'singleAtom']),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './Forcetheorem_DMI/Entry': {
-            'attribs': ['q', 'phi', 'theta', 'ev-sum'],
-            'optional': [],
-            'optional_attribs': ['phi', 'theta'],
+            'attribs': CaseInsensitiveFrozenSet(['ev-sum', 'phi', 'q', 'theta']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['phi', 'theta']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './Forcetheorem_DMI/allAtoms': {
-            'attribs': ['atomType', 'q', 'phi', 'theta', 'H_so'],
-            'optional': [],
-            'optional_attribs': ['atomType'],
+            'attribs': CaseInsensitiveFrozenSet(['H_so', 'atomType', 'phi', 'q', 'theta']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['atomType']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './Forcetheorem_DMI/singleAtom': {
-            'attribs': ['atomType', 'q', 'phi', 'theta', 'H_so'],
-            'optional': [],
-            'optional_attribs': ['atomType'],
+            'attribs': CaseInsensitiveFrozenSet(['H_so', 'atomType', 'phi', 'q', 'theta']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['atomType']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './Forcetheorem_JIJ': {
-            'attribs': ['Configs'],
-            'optional': ['Config'],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['Configs']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet(['Config']),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': ['Config'],
-            'several': ['Config'],
-            'simple': ['Config'],
-            'text': []
+            'several': CaseInsensitiveFrozenSet(['Config']),
+            'simple': CaseInsensitiveFrozenSet(['Config']),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './Forcetheorem_JIJ/Config': {
-            'attribs': ['n', 'q', 'iatom', 'jatom', 'phase', 'ev-sum'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['ev-sum', 'iatom', 'jatom', 'n', 'phase', 'q']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './Forcetheorem_Loop': {
-            'attribs': ['No'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs':
+            CaseInsensitiveFrozenSet(['No']),
+            'complex':
+            CaseInsensitiveFrozenSet([
+                'FermiEnergy', 'allElectronCharges', 'bandgap', 'coreStates', 'densityConvergence', 'eigenvalues',
+                'energyParameters', 'ldaUDensityMatrix', 'ldaUDensityMatrixConvergence', 'magneticMomentsInMTSpheres',
+                'noncollinearTorgue', 'onSiteExchangeSplitting', 'orbitalMagneticMomentsInMTSpheres', 'rdmft',
+                'spinorbitTorgue', 'sumValenceSingleParticleEnergies', 'timing', 'totalEnergy',
+                'totalForcesOnRepresentativeAtoms', 'valenceDensity'
+            ]),
+            'optional':
+            CaseInsensitiveFrozenSet([]),
+            'optional_attribs':
+            CaseInsensitiveFrozenSet([]),
             'order': [
                 'energyParameters', 'eigenvalues', 'bandgap', 'sumValenceSingleParticleEnergies', 'FermiEnergy',
                 'valenceDensity', 'onSiteExchangeSplitting', 'noncollinearTorgue', 'spinorbitTorgue', 'coreStates',
@@ -750,1132 +795,1310 @@ schema_dict = {
                 'totalEnergy', 'totalForcesOnRepresentativeAtoms', 'ldaUDensityMatrix', 'ldaUDensityMatrixConvergence',
                 'densityConvergence', 'timing'
             ],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several':
+            CaseInsensitiveFrozenSet([]),
+            'simple':
+            CaseInsensitiveFrozenSet([]),
+            'text':
+            CaseInsensitiveFrozenSet([])
         },
         './Forcetheorem_MAE': {
-            'attribs': ['Angles'],
-            'optional': ['Angle'],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['Angles']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet(['Angle']),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': ['Angle'],
-            'several': ['Angle'],
-            'simple': ['Angle'],
-            'text': []
+            'several': CaseInsensitiveFrozenSet(['Angle']),
+            'simple': CaseInsensitiveFrozenSet(['Angle']),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './Forcetheorem_MAE/Angle': {
-            'attribs': ['phi', 'theta', 'ev-sum'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['ev-sum', 'phi', 'theta']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './Forcetheorem_SSDISP': {
-            'attribs': ['qvectors'],
-            'optional': ['Entry'],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['qvectors']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet(['Entry']),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': ['Entry'],
-            'several': ['Entry'],
-            'simple': ['Entry'],
-            'text': []
+            'several': CaseInsensitiveFrozenSet(['Entry']),
+            'simple': CaseInsensitiveFrozenSet(['Entry']),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './Forcetheorem_SSDISP/Entry': {
-            'attribs': ['q', 'ev-sum'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['ev-sum', 'q']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './allElectronCharges': {
-            'attribs': [],
-            'optional': ['mtCharges', 'spinDependentCharge', 'totalCharge', 'fixedCharges'],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet([]),
+            'complex': CaseInsensitiveFrozenSet(['fixedCharges', 'mtCharges']),
+            'optional': CaseInsensitiveFrozenSet(['fixedCharges', 'mtCharges', 'spinDependentCharge', 'totalCharge']),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': ['mtCharges', 'spinDependentCharge', 'totalCharge', 'fixedCharges'],
-            'several': ['mtCharges', 'spinDependentCharge', 'totalCharge', 'fixedCharges'],
-            'simple': ['spinDependentCharge', 'totalCharge'],
-            'text': []
+            'several': CaseInsensitiveFrozenSet(['fixedCharges', 'mtCharges', 'spinDependentCharge', 'totalCharge']),
+            'simple': CaseInsensitiveFrozenSet(['spinDependentCharge', 'totalCharge']),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './allElectronCharges/fixedCharges': {
-            'attribs': [],
-            'optional': ['spinDependentCharge', 'totalCharge'],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet([]),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet(['spinDependentCharge', 'totalCharge']),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': ['spinDependentCharge', 'totalCharge'],
-            'several': ['spinDependentCharge', 'totalCharge'],
-            'simple': ['spinDependentCharge', 'totalCharge'],
-            'text': []
+            'several': CaseInsensitiveFrozenSet(['spinDependentCharge', 'totalCharge']),
+            'simple': CaseInsensitiveFrozenSet(['spinDependentCharge', 'totalCharge']),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './allElectronCharges/fixedCharges/spinDependentCharge': {
-            'attribs': ['spin', 'total', 'interstitial', 'mtSpheres', 'vacuum1', 'vacuum2'],
-            'optional': [],
-            'optional_attribs': ['spin', 'vacuum1', 'vacuum2'],
+            'attribs': CaseInsensitiveFrozenSet(['interstitial', 'mtSpheres', 'spin', 'total', 'vacuum1', 'vacuum2']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['spin', 'vacuum1', 'vacuum2']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './allElectronCharges/fixedCharges/totalCharge': {
-            'attribs': ['value', 'units'],
-            'optional': [],
-            'optional_attribs': ['units'],
+            'attribs': CaseInsensitiveFrozenSet(['units', 'value']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './allElectronCharges/mtCharges': {
-            'attribs': ['spin'],
-            'optional': ['mtCharge', 'mtJcharge'],
-            'optional_attribs': ['spin'],
+            'attribs': CaseInsensitiveFrozenSet(['spin']),
+            'complex': CaseInsensitiveFrozenSet(['mtJcharge']),
+            'optional': CaseInsensitiveFrozenSet(['mtCharge', 'mtJcharge']),
+            'optional_attribs': CaseInsensitiveFrozenSet(['spin']),
             'order': ['mtCharge', 'mtJcharge'],
-            'several': ['mtCharge', 'mtJcharge'],
-            'simple': ['mtCharge'],
-            'text': []
+            'several': CaseInsensitiveFrozenSet(['mtCharge', 'mtJcharge']),
+            'simple': CaseInsensitiveFrozenSet(['mtCharge']),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './allElectronCharges/mtCharges/mtCharge': {
-            'attribs': ['atomType', 'total', 's', 'p', 'd', 'f'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['atomType', 'd', 'f', 'p', 's', 'total']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './allElectronCharges/mtCharges/mtJcharge': {
-            'attribs': ['atomType'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['atomType']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': ['lowJ', 'highJ'],
-            'several': [],
-            'simple': ['lowJ', 'highJ'],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet(['highJ', 'lowJ']),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './allElectronCharges/mtCharges/mtJcharge/highJ': {
-            'attribs': ['p', 'd', 'f'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['d', 'f', 'p']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './allElectronCharges/mtCharges/mtJcharge/lowJ': {
-            'attribs': ['p', 'd', 'f'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['d', 'f', 'p']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './allElectronCharges/spinDependentCharge': {
-            'attribs': ['spin', 'total', 'interstitial', 'mtSpheres', 'vacuum1', 'vacuum2'],
-            'optional': [],
-            'optional_attribs': ['spin', 'vacuum1', 'vacuum2'],
+            'attribs': CaseInsensitiveFrozenSet(['interstitial', 'mtSpheres', 'spin', 'total', 'vacuum1', 'vacuum2']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['spin', 'vacuum1', 'vacuum2']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './allElectronCharges/totalCharge': {
-            'attribs': ['value', 'units'],
-            'optional': [],
-            'optional_attribs': ['units'],
+            'attribs': CaseInsensitiveFrozenSet(['units', 'value']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './bandgap': {
-            'attribs': ['value', 'units'],
-            'optional': [],
-            'optional_attribs': ['units'],
+            'attribs': CaseInsensitiveFrozenSet(['units', 'value']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './coreStates': {
-            'attribs': ['atomType', 'atomicNumber', 'spin', 'kinEnergy', 'eigValSum', 'lostElectrons'],
-            'optional': ['state'],
-            'optional_attribs': ['spin'],
+            'attribs':
+            CaseInsensitiveFrozenSet(['atomType', 'atomicNumber', 'eigValSum', 'kinEnergy', 'lostElectrons', 'spin']),
+            'complex':
+            CaseInsensitiveFrozenSet([]),
+            'optional':
+            CaseInsensitiveFrozenSet(['state']),
+            'optional_attribs':
+            CaseInsensitiveFrozenSet(['spin']),
             'order': ['state'],
-            'several': ['state'],
-            'simple': ['state'],
-            'text': []
+            'several':
+            CaseInsensitiveFrozenSet(['state']),
+            'simple':
+            CaseInsensitiveFrozenSet(['state']),
+            'text':
+            CaseInsensitiveFrozenSet([])
         },
         './coreStates/state': {
-            'attribs': ['n', 'l', 'j', 'energy', 'weight'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['energy', 'j', 'l', 'n', 'weight']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './densityConvergence': {
-            'attribs': ['units'],
-            'optional': ['chargeDensity', 'overallChargeDensity', 'spinDensity'],
-            'optional_attribs': ['units'],
+            'attribs': CaseInsensitiveFrozenSet(['units']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet(['chargeDensity', 'overallChargeDensity', 'spinDensity']),
+            'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': ['chargeDensity', 'overallChargeDensity', 'spinDensity'],
-            'several': ['chargeDensity', 'overallChargeDensity', 'spinDensity'],
-            'simple': ['chargeDensity', 'overallChargeDensity', 'spinDensity'],
-            'text': []
+            'several': CaseInsensitiveFrozenSet(['chargeDensity', 'overallChargeDensity', 'spinDensity']),
+            'simple': CaseInsensitiveFrozenSet(['chargeDensity', 'overallChargeDensity', 'spinDensity']),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './densityConvergence/chargeDensity': {
-            'attribs': ['spin', 'distance', 'units'],
-            'optional': [],
-            'optional_attribs': ['spin', 'units'],
+            'attribs': CaseInsensitiveFrozenSet(['distance', 'spin', 'units']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['spin', 'units']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './densityConvergence/overallChargeDensity': {
-            'attribs': ['spin', 'distance', 'units'],
-            'optional': [],
-            'optional_attribs': ['spin', 'units'],
+            'attribs': CaseInsensitiveFrozenSet(['distance', 'spin', 'units']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['spin', 'units']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './densityConvergence/spinDensity': {
-            'attribs': ['spin', 'distance', 'units'],
-            'optional': [],
-            'optional_attribs': ['spin', 'units'],
+            'attribs': CaseInsensitiveFrozenSet(['distance', 'spin', 'units']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['spin', 'units']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './eigenvalues': {
-            'attribs': [],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet([]),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': ['eigenvaluesAt'],
-            'several': ['eigenvaluesAt'],
-            'simple': ['eigenvaluesAt'],
-            'text': ['eigenvaluesAt']
+            'several': CaseInsensitiveFrozenSet(['eigenvaluesAt']),
+            'simple': CaseInsensitiveFrozenSet(['eigenvaluesAt']),
+            'text': CaseInsensitiveFrozenSet(['eigenvaluesAt'])
         },
         './eigenvalues/eigenvaluesAt': {
-            'attribs': ['spin', 'ikpt', 'k_x', 'k_y', 'k_z'],
-            'optional': [],
-            'optional_attribs': ['spin', 'k_x', 'k_y', 'k_z'],
+            'attribs': CaseInsensitiveFrozenSet(['ikpt', 'k_x', 'k_y', 'k_z', 'spin']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['k_x', 'k_y', 'k_z', 'spin']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './energyParameters': {
-            'attribs': ['units'],
-            'optional': ['atomicEP', 'heAtomicEP', 'loAtomicEP', 'heloAtomicEP', 'vacuumEP'],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['units']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet(['atomicEP', 'heAtomicEP', 'heloAtomicEP', 'loAtomicEP', 'vacuumEP']),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': ['atomicEP', 'heAtomicEP', 'loAtomicEP', 'heloAtomicEP', 'vacuumEP'],
-            'several': ['atomicEP', 'heAtomicEP', 'loAtomicEP', 'heloAtomicEP', 'vacuumEP'],
-            'simple': ['atomicEP', 'heAtomicEP', 'loAtomicEP', 'heloAtomicEP', 'vacuumEP'],
-            'text': []
+            'several': CaseInsensitiveFrozenSet(['atomicEP', 'heAtomicEP', 'heloAtomicEP', 'loAtomicEP', 'vacuumEP']),
+            'simple': CaseInsensitiveFrozenSet(['atomicEP', 'heAtomicEP', 'heloAtomicEP', 'loAtomicEP', 'vacuumEP']),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './energyParameters/atomicEP': {
-            'attribs': ['atomType', 'spin', 'branch', 'branchLowest', 'branchHighest', 'value'],
-            'optional': [],
-            'optional_attribs': ['spin', 'branchLowest', 'branchHighest'],
+            'attribs':
+            CaseInsensitiveFrozenSet(['atomType', 'branch', 'branchHighest', 'branchLowest', 'spin', 'value']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['branchHighest', 'branchLowest', 'spin']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './energyParameters/heAtomicEP': {
-            'attribs': ['atomType', 'spin', 'branch', 'branchLowest', 'branchHighest', 'value'],
-            'optional': [],
-            'optional_attribs': ['spin', 'branchLowest', 'branchHighest'],
+            'attribs':
+            CaseInsensitiveFrozenSet(['atomType', 'branch', 'branchHighest', 'branchLowest', 'spin', 'value']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['branchHighest', 'branchLowest', 'spin']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './energyParameters/heloAtomicEP': {
-            'attribs': ['atomType', 'spin', 'branch', 'branchLowest', 'branchHighest', 'value'],
-            'optional': [],
-            'optional_attribs': ['spin', 'branchLowest', 'branchHighest'],
+            'attribs':
+            CaseInsensitiveFrozenSet(['atomType', 'branch', 'branchHighest', 'branchLowest', 'spin', 'value']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['branchHighest', 'branchLowest', 'spin']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './energyParameters/loAtomicEP': {
-            'attribs': ['atomType', 'spin', 'branch', 'branchLowest', 'branchHighest', 'value'],
-            'optional': [],
-            'optional_attribs': ['spin', 'branchLowest', 'branchHighest'],
+            'attribs':
+            CaseInsensitiveFrozenSet(['atomType', 'branch', 'branchHighest', 'branchLowest', 'spin', 'value']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['branchHighest', 'branchLowest', 'spin']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './energyParameters/vacuumEP': {
-            'attribs': ['vacuum', 'spin', 'vzIR', 'vzInf', 'value'],
-            'optional': [],
-            'optional_attribs': ['spin', 'vzIR', 'vzInf'],
+            'attribs': CaseInsensitiveFrozenSet(['spin', 'vacuum', 'value', 'vzIR', 'vzInf']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['spin', 'vzIR', 'vzInf']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './ldaUDensityMatrix': {
-            'attribs': [],
-            'optional': ['densityMatrixFor'],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet([]),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet(['densityMatrixFor']),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': ['densityMatrixFor'],
-            'several': ['densityMatrixFor'],
-            'simple': ['densityMatrixFor'],
-            'text': ['densityMatrixFor']
+            'several': CaseInsensitiveFrozenSet(['densityMatrixFor']),
+            'simple': CaseInsensitiveFrozenSet(['densityMatrixFor']),
+            'text': CaseInsensitiveFrozenSet(['densityMatrixFor'])
         },
         './ldaUDensityMatrix/densityMatrixFor': {
-            'attribs': ['spin', 'atomType', 'uIndex', 'l', 'U', 'J'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['J', 'U', 'atomType', 'l', 'spin', 'uIndex']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './ldaUDensityMatrixConvergence': {
-            'attribs': [],
-            'optional': ['distance'],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet([]),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet(['distance']),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': ['distance'],
-            'several': ['distance'],
-            'simple': ['distance'],
-            'text': []
+            'several': CaseInsensitiveFrozenSet(['distance']),
+            'simple': CaseInsensitiveFrozenSet(['distance']),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './ldaUDensityMatrixConvergence/distance': {
-            'attribs': ['spin', 'distance'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['distance', 'spin']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './magneticMomentsInMTSpheres': {
-            'attribs': ['units'],
-            'optional': ['magneticMoment'],
-            'optional_attribs': ['units'],
+            'attribs': CaseInsensitiveFrozenSet(['units']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet(['magneticMoment']),
+            'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': ['magneticMoment'],
-            'several': ['magneticMoment'],
-            'simple': ['magneticMoment'],
-            'text': []
+            'several': CaseInsensitiveFrozenSet(['magneticMoment']),
+            'simple': CaseInsensitiveFrozenSet(['magneticMoment']),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './magneticMomentsInMTSpheres/magneticMoment': {
-            'attribs': ['atomType', 'moment', 'spinUpCharge', 'spinDownCharge'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['atomType', 'moment', 'spinDownCharge', 'spinUpCharge']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './noncollinearTorgue': {
-            'attribs': [],
-            'optional': ['torgue'],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet([]),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet(['torgue']),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': ['torgue'],
-            'several': ['torgue'],
-            'simple': ['torgue'],
-            'text': []
+            'several': CaseInsensitiveFrozenSet(['torgue']),
+            'simple': CaseInsensitiveFrozenSet(['torgue']),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './noncollinearTorgue/torgue': {
-            'attribs': ['atomType', 'sigma_x', 'sigma_y', 'sigma_z', 'units'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['atomType', 'sigma_x', 'sigma_y', 'sigma_z', 'units']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './onSiteExchangeSplitting': {
-            'attribs': [],
-            'optional': ['excSplit'],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet([]),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet(['excSplit']),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': ['excSplit'],
-            'several': ['excSplit'],
-            'simple': ['excSplit'],
-            'text': []
+            'several': CaseInsensitiveFrozenSet(['excSplit']),
+            'simple': CaseInsensitiveFrozenSet(['excSplit']),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './onSiteExchangeSplitting/excSplit': {
-            'attribs': ['atomType', 'l', 'Delta', 'units'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['Delta', 'atomType', 'l', 'units']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './orbitalMagneticMomentsInMTSpheres': {
-            'attribs': ['units'],
-            'optional': ['orbMagMoment'],
-            'optional_attribs': ['units'],
+            'attribs': CaseInsensitiveFrozenSet(['units']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet(['orbMagMoment']),
+            'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': ['orbMagMoment'],
-            'several': ['orbMagMoment'],
-            'simple': ['orbMagMoment'],
-            'text': []
+            'several': CaseInsensitiveFrozenSet(['orbMagMoment']),
+            'simple': CaseInsensitiveFrozenSet(['orbMagMoment']),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './orbitalMagneticMomentsInMTSpheres/orbMagMoment': {
-            'attribs': ['atomType', 'moment', 'spinUpCharge', 'spinDownCharge'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['atomType', 'moment', 'spinDownCharge', 'spinUpCharge']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './rdmft': {
-            'attribs': ['energy'],
-            'optional': ['occupations'],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['energy']),
+            'complex': CaseInsensitiveFrozenSet(['occupations']),
+            'optional': CaseInsensitiveFrozenSet(['occupations']),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': ['occupations'],
-            'several': ['occupations'],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet(['occupations']),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './rdmft/occupations': {
-            'attribs': ['spin', 'kpoint'],
-            'optional': ['state'],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['kpoint', 'spin']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet(['state']),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': ['state'],
-            'several': ['state'],
-            'simple': ['state'],
-            'text': []
+            'several': CaseInsensitiveFrozenSet(['state']),
+            'simple': CaseInsensitiveFrozenSet(['state']),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './rdmft/occupations/state': {
-            'attribs': ['index', 'energy', 'occupation'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['energy', 'index', 'occupation']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './spinorbitTorgue': {
-            'attribs': [],
-            'optional': ['torgue'],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet([]),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet(['torgue']),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': ['torgue'],
-            'several': ['torgue'],
-            'simple': ['torgue'],
-            'text': []
+            'several': CaseInsensitiveFrozenSet(['torgue']),
+            'simple': CaseInsensitiveFrozenSet(['torgue']),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './spinorbitTorgue/torgue': {
-            'attribs': ['atomType', 'sigma_x', 'sigma_y', 'sigma_z', 'units'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['atomType', 'sigma_x', 'sigma_y', 'sigma_z', 'units']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './sumValenceSingleParticleEnergies': {
-            'attribs': ['value', 'units'],
-            'optional': [],
-            'optional_attribs': ['units'],
+            'attribs': CaseInsensitiveFrozenSet(['units', 'value']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './timing': {
-            'attribs': ['units'],
-            'optional': ['compositeTimer', 'timer'],
-            'optional_attribs': ['units'],
+            'attribs': CaseInsensitiveFrozenSet(['units']),
+            'complex': CaseInsensitiveFrozenSet(['compositeTimer']),
+            'optional': CaseInsensitiveFrozenSet(['compositeTimer', 'timer']),
+            'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': ['compositeTimer', 'timer'],
-            'several': ['compositeTimer', 'timer'],
-            'simple': ['timer'],
-            'text': []
+            'several': CaseInsensitiveFrozenSet(['compositeTimer', 'timer']),
+            'simple': CaseInsensitiveFrozenSet(['timer']),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './timing/timer': {
-            'attribs': ['name', 'value', 'units'],
-            'optional': [],
-            'optional_attribs': ['units'],
+            'attribs': CaseInsensitiveFrozenSet(['name', 'units', 'value']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './totalEnergy': {
-            'attribs': ['value', 'units', 'comment'],
-            'optional': [
-                'sumOfEigenvalues', 'densityCoulombPotentialIntegral', 'densityEffectivePotentialIntegral',
-                'chargeDenXCDenIntegral', 'FockExchangeEnergyValence', 'FockExchangeEnergyCore',
-                'atomTypeDependentContributions', 'dftUCorrection', 'tkbTimesEntropy', 'freeEnergy', 'extrapolationTo0K'
-            ],
-            'optional_attribs': ['units', 'comment'],
+            'attribs':
+            CaseInsensitiveFrozenSet(['comment', 'units', 'value']),
+            'complex':
+            CaseInsensitiveFrozenSet(['atomTypeDependentContributions', 'sumOfEigenvalues']),
+            'optional':
+            CaseInsensitiveFrozenSet([
+                'FockExchangeEnergyCore', 'FockExchangeEnergyValence', 'atomTypeDependentContributions',
+                'chargeDenXCDenIntegral', 'densityCoulombPotentialIntegral', 'densityEffectivePotentialIntegral',
+                'dftUCorrection', 'extrapolationTo0K', 'freeEnergy', 'sumOfEigenvalues', 'tkbTimesEntropy'
+            ]),
+            'optional_attribs':
+            CaseInsensitiveFrozenSet(['comment', 'units']),
             'order': [
                 'sumOfEigenvalues', 'densityCoulombPotentialIntegral', 'densityEffectivePotentialIntegral',
                 'chargeDenXCDenIntegral', 'FockExchangeEnergyValence', 'FockExchangeEnergyCore',
                 'atomTypeDependentContributions', 'dftUCorrection', 'tkbTimesEntropy', 'freeEnergy', 'extrapolationTo0K'
             ],
-            'several': [
-                'sumOfEigenvalues', 'densityCoulombPotentialIntegral', 'densityEffectivePotentialIntegral',
-                'chargeDenXCDenIntegral', 'FockExchangeEnergyValence', 'FockExchangeEnergyCore',
-                'atomTypeDependentContributions', 'dftUCorrection', 'tkbTimesEntropy', 'freeEnergy', 'extrapolationTo0K'
-            ],
-            'simple': [
-                'densityCoulombPotentialIntegral', 'densityEffectivePotentialIntegral', 'chargeDenXCDenIntegral',
-                'FockExchangeEnergyValence', 'FockExchangeEnergyCore', 'dftUCorrection', 'tkbTimesEntropy',
-                'freeEnergy', 'extrapolationTo0K'
-            ],
-            'text': []
+            'several':
+            CaseInsensitiveFrozenSet([
+                'FockExchangeEnergyCore', 'FockExchangeEnergyValence', 'atomTypeDependentContributions',
+                'chargeDenXCDenIntegral', 'densityCoulombPotentialIntegral', 'densityEffectivePotentialIntegral',
+                'dftUCorrection', 'extrapolationTo0K', 'freeEnergy', 'sumOfEigenvalues', 'tkbTimesEntropy'
+            ]),
+            'simple':
+            CaseInsensitiveFrozenSet([
+                'FockExchangeEnergyCore', 'FockExchangeEnergyValence', 'chargeDenXCDenIntegral',
+                'densityCoulombPotentialIntegral', 'densityEffectivePotentialIntegral', 'dftUCorrection',
+                'extrapolationTo0K', 'freeEnergy', 'tkbTimesEntropy'
+            ]),
+            'text':
+            CaseInsensitiveFrozenSet([])
         },
         './totalEnergy/FockExchangeEnergyCore': {
-            'attribs': ['value', 'units'],
-            'optional': [],
-            'optional_attribs': ['units'],
+            'attribs': CaseInsensitiveFrozenSet(['units', 'value']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './totalEnergy/FockExchangeEnergyValence': {
-            'attribs': ['value', 'units'],
-            'optional': [],
-            'optional_attribs': ['units'],
+            'attribs': CaseInsensitiveFrozenSet(['units', 'value']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './totalEnergy/atomTypeDependentContributions': {
-            'attribs': ['atomType'],
-            'optional': ['electronNucleiInteractionDifferentMTs', 'MadelungTerm'],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['atomType']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet(['MadelungTerm', 'electronNucleiInteractionDifferentMTs']),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': ['electronNucleiInteractionDifferentMTs', 'MadelungTerm'],
-            'several': [],
-            'simple': ['electronNucleiInteractionDifferentMTs', 'MadelungTerm'],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet(['MadelungTerm', 'electronNucleiInteractionDifferentMTs']),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './totalEnergy/atomTypeDependentContributions/MadelungTerm': {
-            'attribs': ['value', 'units'],
-            'optional': [],
-            'optional_attribs': ['units'],
+            'attribs': CaseInsensitiveFrozenSet(['units', 'value']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './totalEnergy/atomTypeDependentContributions/electronNucleiInteractionDifferentMTs': {
-            'attribs': ['value', 'units'],
-            'optional': [],
-            'optional_attribs': ['units'],
+            'attribs': CaseInsensitiveFrozenSet(['units', 'value']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './totalEnergy/chargeDenXCDenIntegral': {
-            'attribs': ['value', 'units'],
-            'optional': [],
-            'optional_attribs': ['units'],
+            'attribs': CaseInsensitiveFrozenSet(['units', 'value']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './totalEnergy/densityCoulombPotentialIntegral': {
-            'attribs': ['value', 'units'],
-            'optional': [],
-            'optional_attribs': ['units'],
+            'attribs': CaseInsensitiveFrozenSet(['units', 'value']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './totalEnergy/densityEffectivePotentialIntegral': {
-            'attribs': ['value', 'units'],
-            'optional': [],
-            'optional_attribs': ['units'],
+            'attribs': CaseInsensitiveFrozenSet(['units', 'value']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './totalEnergy/dftUCorrection': {
-            'attribs': ['value', 'units'],
-            'optional': [],
-            'optional_attribs': ['units'],
+            'attribs': CaseInsensitiveFrozenSet(['units', 'value']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './totalEnergy/extrapolationTo0K': {
-            'attribs': ['value', 'units'],
-            'optional': [],
-            'optional_attribs': ['units'],
+            'attribs': CaseInsensitiveFrozenSet(['units', 'value']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './totalEnergy/freeEnergy': {
-            'attribs': ['value', 'units'],
-            'optional': [],
-            'optional_attribs': ['units'],
+            'attribs': CaseInsensitiveFrozenSet(['units', 'value']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './totalEnergy/sumOfEigenvalues': {
-            'attribs': ['value', 'units'],
-            'optional': ['coreElectrons', 'valenceElectrons'],
-            'optional_attribs': ['units'],
+            'attribs': CaseInsensitiveFrozenSet(['units', 'value']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet(['coreElectrons', 'valenceElectrons']),
+            'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': ['coreElectrons', 'valenceElectrons'],
-            'several': [],
-            'simple': ['coreElectrons', 'valenceElectrons'],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet(['coreElectrons', 'valenceElectrons']),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './totalEnergy/sumOfEigenvalues/coreElectrons': {
-            'attribs': ['value', 'units'],
-            'optional': [],
-            'optional_attribs': ['units'],
+            'attribs': CaseInsensitiveFrozenSet(['units', 'value']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './totalEnergy/sumOfEigenvalues/valenceElectrons': {
-            'attribs': ['value', 'units'],
-            'optional': [],
-            'optional_attribs': ['units'],
+            'attribs': CaseInsensitiveFrozenSet(['units', 'value']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './totalEnergy/tkbTimesEntropy': {
-            'attribs': ['value', 'units'],
-            'optional': [],
-            'optional_attribs': ['units'],
+            'attribs': CaseInsensitiveFrozenSet(['units', 'value']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './totalForcesOnRepresentativeAtoms': {
-            'attribs': ['units'],
-            'optional': ['forceTotal'],
-            'optional_attribs': ['units'],
+            'attribs': CaseInsensitiveFrozenSet(['units']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet(['forceTotal']),
+            'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': ['forceTotal'],
-            'several': ['forceTotal'],
-            'simple': ['forceTotal'],
-            'text': []
+            'several': CaseInsensitiveFrozenSet(['forceTotal']),
+            'simple': CaseInsensitiveFrozenSet(['forceTotal']),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './totalForcesOnRepresentativeAtoms/forceTotal': {
-            'attribs': ['atomType', 'x', 'y', 'z', 'F_x', 'F_y', 'F_z', 'units'],
-            'optional': [],
-            'optional_attribs': ['units'],
+            'attribs': CaseInsensitiveFrozenSet(['F_x', 'F_y', 'F_z', 'atomType', 'units', 'x', 'y', 'z']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './valenceDensity': {
-            'attribs': [],
-            'optional': ['mtCharges', 'spinDependentCharge', 'totalCharge', 'fixedCharges'],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet([]),
+            'complex': CaseInsensitiveFrozenSet(['fixedCharges', 'mtCharges']),
+            'optional': CaseInsensitiveFrozenSet(['fixedCharges', 'mtCharges', 'spinDependentCharge', 'totalCharge']),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': ['mtCharges', 'spinDependentCharge', 'totalCharge', 'fixedCharges'],
-            'several': ['mtCharges', 'spinDependentCharge', 'totalCharge', 'fixedCharges'],
-            'simple': ['spinDependentCharge', 'totalCharge'],
-            'text': []
+            'several': CaseInsensitiveFrozenSet(['fixedCharges', 'mtCharges', 'spinDependentCharge', 'totalCharge']),
+            'simple': CaseInsensitiveFrozenSet(['spinDependentCharge', 'totalCharge']),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './valenceDensity/fixedCharges': {
-            'attribs': [],
-            'optional': ['spinDependentCharge', 'totalCharge'],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet([]),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet(['spinDependentCharge', 'totalCharge']),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': ['spinDependentCharge', 'totalCharge'],
-            'several': ['spinDependentCharge', 'totalCharge'],
-            'simple': ['spinDependentCharge', 'totalCharge'],
-            'text': []
+            'several': CaseInsensitiveFrozenSet(['spinDependentCharge', 'totalCharge']),
+            'simple': CaseInsensitiveFrozenSet(['spinDependentCharge', 'totalCharge']),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './valenceDensity/fixedCharges/spinDependentCharge': {
-            'attribs': ['spin', 'total', 'interstitial', 'mtSpheres', 'vacuum1', 'vacuum2'],
-            'optional': [],
-            'optional_attribs': ['spin', 'vacuum1', 'vacuum2'],
+            'attribs': CaseInsensitiveFrozenSet(['interstitial', 'mtSpheres', 'spin', 'total', 'vacuum1', 'vacuum2']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['spin', 'vacuum1', 'vacuum2']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './valenceDensity/fixedCharges/totalCharge': {
-            'attribs': ['value', 'units'],
-            'optional': [],
-            'optional_attribs': ['units'],
+            'attribs': CaseInsensitiveFrozenSet(['units', 'value']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './valenceDensity/mtCharges': {
-            'attribs': ['spin'],
-            'optional': ['mtCharge', 'mtJcharge'],
-            'optional_attribs': ['spin'],
+            'attribs': CaseInsensitiveFrozenSet(['spin']),
+            'complex': CaseInsensitiveFrozenSet(['mtJcharge']),
+            'optional': CaseInsensitiveFrozenSet(['mtCharge', 'mtJcharge']),
+            'optional_attribs': CaseInsensitiveFrozenSet(['spin']),
             'order': ['mtCharge', 'mtJcharge'],
-            'several': ['mtCharge', 'mtJcharge'],
-            'simple': ['mtCharge'],
-            'text': []
+            'several': CaseInsensitiveFrozenSet(['mtCharge', 'mtJcharge']),
+            'simple': CaseInsensitiveFrozenSet(['mtCharge']),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './valenceDensity/mtCharges/mtCharge': {
-            'attribs': ['atomType', 'total', 's', 'p', 'd', 'f'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['atomType', 'd', 'f', 'p', 's', 'total']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './valenceDensity/mtCharges/mtJcharge': {
-            'attribs': ['atomType'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['atomType']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': ['lowJ', 'highJ'],
-            'several': [],
-            'simple': ['lowJ', 'highJ'],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet(['highJ', 'lowJ']),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './valenceDensity/mtCharges/mtJcharge/highJ': {
-            'attribs': ['p', 'd', 'f'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['d', 'f', 'p']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './valenceDensity/mtCharges/mtJcharge/lowJ': {
-            'attribs': ['p', 'd', 'f'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['d', 'f', 'p']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './valenceDensity/spinDependentCharge': {
-            'attribs': ['spin', 'total', 'interstitial', 'mtSpheres', 'vacuum1', 'vacuum2'],
-            'optional': [],
-            'optional_attribs': ['spin', 'vacuum1', 'vacuum2'],
+            'attribs': CaseInsensitiveFrozenSet(['interstitial', 'mtSpheres', 'spin', 'total', 'vacuum1', 'vacuum2']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['spin', 'vacuum1', 'vacuum2']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         './valenceDensity/totalCharge': {
-            'attribs': ['value', 'units'],
-            'optional': [],
-            'optional_attribs': ['units'],
+            'attribs': CaseInsensitiveFrozenSet(['units', 'value']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet(['units']),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         }
     },
-    'iteration_tag_paths': {
-        'Angle':
+    'iteration_tag_paths':
+    CaseInsensitiveDict({
+        'angle':
         './Forcetheorem_MAE/Angle',
-        'Config':
+        'config':
         './Forcetheorem_JIJ/Config',
-        'Entry': ['./Forcetheorem_DMI/Entry', './Forcetheorem_SSDISP/Entry'],
-        'FermiEnergy':
+        'error': [],
+        'entry': ['./Forcetheorem_DMI/Entry', './Forcetheorem_SSDISP/Entry'],
+        'fermienergy':
         './FermiEnergy',
-        'FockExchangeEnergyCore':
+        'fockexchangeenergycore':
         './totalEnergy/FockExchangeEnergyCore',
-        'FockExchangeEnergyValence':
+        'fockexchangeenergyvalence':
         './totalEnergy/FockExchangeEnergyValence',
-        'Forcetheorem_DMI':
+        'forcetheorem_dmi':
         './Forcetheorem_DMI',
-        'Forcetheorem_JIJ':
+        'forcetheorem_jij':
         './Forcetheorem_JIJ',
-        'Forcetheorem_Loop':
+        'forcetheorem_loop':
         './Forcetheorem_Loop',
-        'Forcetheorem_MAE':
+        'forcetheorem_mae':
         './Forcetheorem_MAE',
-        'Forcetheorem_SSDISP':
+        'forcetheorem_ssdisp':
         './Forcetheorem_SSDISP',
-        'MadelungTerm':
+        'madelungterm':
         './totalEnergy/atomTypeDependentContributions/MadelungTerm',
-        'allAtoms':
+        'additionalcompilerflags': [],
+        'allatoms':
         './Forcetheorem_DMI/allAtoms',
-        'allElectronCharges':
+        'allelectroncharges':
         './allElectronCharges',
-        'atomTypeDependentContributions':
+        'atomtypedependentcontributions':
         './totalEnergy/atomTypeDependentContributions',
-        'atomicEP':
+        'atomicep':
         './energyParameters/atomicEP',
+        'atomsincell': [],
         'bandgap':
         './bandgap',
-        'chargeDenXCDenIntegral':
+        'bands': [],
+        'basis': [],
+        'chargedenxcdenintegral':
         './totalEnergy/chargeDenXCDenIntegral',
-        'chargeDensity':
+        'chargedensity':
         './densityConvergence/chargeDensity',
-        'compositeTimer':
+        'compilationinfo': [],
+        'compositetimer':
         './timing/compositeTimer',
-        'coreElectrons':
+        'coreelectrons':
         './totalEnergy/sumOfEigenvalues/coreElectrons',
-        'coreStates':
+        'corestates':
         './coreStates',
-        'densityConvergence':
+        'density': [],
+        'densityconvergence':
         './densityConvergence',
-        'densityCoulombPotentialIntegral':
+        'densitycoulombpotentialintegral':
         './totalEnergy/densityCoulombPotentialIntegral',
-        'densityEffectivePotentialIntegral':
+        'densityeffectivepotentialintegral':
         './totalEnergy/densityEffectivePotentialIntegral',
-        'densityMatrixFor':
+        'densitymatrixfor':
         './ldaUDensityMatrix/densityMatrixFor',
-        'dftUCorrection':
+        'dftucorrection':
         './totalEnergy/dftUCorrection',
         'distance':
         './ldaUDensityMatrixConvergence/distance',
         'eigenvalues':
         './eigenvalues',
-        'eigenvaluesAt':
+        'eigenvaluesat':
         './eigenvalues/eigenvaluesAt',
-        'electronNucleiInteractionDifferentMTs':
+        'electronnucleiinteractiondifferentmts':
         './totalEnergy/atomTypeDependentContributions/electronNucleiInteractionDifferentMTs',
-        'energyParameters':
+        'enddateandtime': [],
+        'energyparameters':
         './energyParameters',
-        'excSplit':
+        'excsplit':
         './onSiteExchangeSplitting/excSplit',
-        'extrapolationTo0K':
+        'extrapolationto0k':
         './totalEnergy/extrapolationTo0K',
-        'fixedCharges': ['./valenceDensity/fixedCharges', './allElectronCharges/fixedCharges'],
-        'forceTotal':
+        'fixedcharges': ['./allElectronCharges/fixedCharges', './valenceDensity/fixedCharges'],
+        'fleurinput': [],
+        'fleuroutput': [],
+        'forcetotal':
         './totalForcesOnRepresentativeAtoms/forceTotal',
-        'freeEnergy':
+        'freeenergy':
         './totalEnergy/freeEnergy',
-        'heAtomicEP':
+        'gitinfo': [],
+        'heatomicep':
         './energyParameters/heAtomicEP',
-        'heloAtomicEP':
+        'heloatomicep':
         './energyParameters/heloAtomicEP',
-        'highJ': ['./valenceDensity/mtCharges/mtJcharge/highJ', './allElectronCharges/mtCharges/mtJcharge/highJ'],
-        'ldaUDensityMatrix':
+        'highj': ['./allElectronCharges/mtCharges/mtJcharge/highJ', './valenceDensity/mtCharges/mtJcharge/highJ'],
+        'iteration': [],
+        'kpoint': [],
+        'kpointlist': [],
+        'ldaudensitymatrix':
         './ldaUDensityMatrix',
-        'ldaUDensityMatrixConvergence':
+        'ldaudensitymatrixconvergence':
         './ldaUDensityMatrixConvergence',
-        'loAtomicEP':
+        'loatomicep':
         './energyParameters/loAtomicEP',
-        'lowJ': ['./valenceDensity/mtCharges/mtJcharge/lowJ', './allElectronCharges/mtCharges/mtJcharge/lowJ'],
-        'magneticMoment':
+        'lowj': ['./allElectronCharges/mtCharges/mtJcharge/lowJ', './valenceDensity/mtCharges/mtJcharge/lowJ'],
+        'magneticmoment':
         './magneticMomentsInMTSpheres/magneticMoment',
-        'magneticMomentsInMTSpheres':
+        'magneticmomentsinmtspheres':
         './magneticMomentsInMTSpheres',
-        'mtCharge': ['./valenceDensity/mtCharges/mtCharge', './allElectronCharges/mtCharges/mtCharge'],
-        'mtCharges': ['./valenceDensity/mtCharges', './allElectronCharges/mtCharges'],
-        'mtJcharge': ['./valenceDensity/mtCharges/mtJcharge', './allElectronCharges/mtCharges/mtJcharge'],
-        'noncollinearTorgue':
+        'mem': [],
+        'mpi': [],
+        'mtcharge': ['./allElectronCharges/mtCharges/mtCharge', './valenceDensity/mtCharges/mtCharge'],
+        'mtcharges': ['./allElectronCharges/mtCharges', './valenceDensity/mtCharges'],
+        'mtjcharge': ['./allElectronCharges/mtCharges/mtJcharge', './valenceDensity/mtCharges/mtJcharge'],
+        'mtvolume': [],
+        'noncollineartorgue':
         './noncollinearTorgue',
+        'numericalparameters': [],
         'occupations':
         './rdmft/occupations',
-        'onSiteExchangeSplitting':
+        'onsiteexchangesplitting':
         './onSiteExchangeSplitting',
-        'orbMagMoment':
+        'openmp': [],
+        'orbmagmoment':
         './orbitalMagneticMomentsInMTSpheres/orbMagMoment',
-        'orbitalMagneticMomentsInMTSpheres':
+        'orbitalmagneticmomentsinmtspheres':
         './orbitalMagneticMomentsInMTSpheres',
-        'overallChargeDensity':
+        'overallchargedensity':
         './densityConvergence/overallChargeDensity',
+        'parallelsetup': [],
+        'precision': [],
+        'programversion': [],
         'rdmft':
         './rdmft',
-        'singleAtom':
+        'scfloop': [],
+        'singleatom':
         './Forcetheorem_DMI/singleAtom',
-        'spinDensity':
+        'spindensity':
         './densityConvergence/spinDensity',
-        'spinDependentCharge': [
-            './valenceDensity/spinDependentCharge', './allElectronCharges/spinDependentCharge',
-            './valenceDensity/fixedCharges/spinDependentCharge', './allElectronCharges/fixedCharges/spinDependentCharge'
+        'spindependentcharge': [
+            './allElectronCharges/fixedCharges/spinDependentCharge', './allElectronCharges/spinDependentCharge',
+            './valenceDensity/fixedCharges/spinDependentCharge', './valenceDensity/spinDependentCharge'
         ],
-        'spinorbitTorgue':
+        'spinorbittorgue':
         './spinorbitTorgue',
+        'startdateandtime': [],
         'state': ['./coreStates/state', './rdmft/occupations/state'],
-        'sumOfEigenvalues':
+        'sumofeigenvalues':
         './totalEnergy/sumOfEigenvalues',
-        'sumValenceSingleParticleEnergies':
+        'sumvalencesingleparticleenergies':
         './sumValenceSingleParticleEnergies',
+        'targetcomputerarchitectures': [],
+        'targetstructureclass': [],
         'timer':
         './timing/timer',
         'timing':
         './timing',
-        'tkbTimesEntropy':
+        'tkbtimesentropy':
         './totalEnergy/tkbTimesEntropy',
         'torgue': ['./noncollinearTorgue/torgue', './spinorbitTorgue/torgue'],
-        'totalCharge': [
-            './valenceDensity/totalCharge', './allElectronCharges/totalCharge',
-            './valenceDensity/fixedCharges/totalCharge', './allElectronCharges/fixedCharges/totalCharge'
+        'totalcharge': [
+            './allElectronCharges/fixedCharges/totalCharge', './allElectronCharges/totalCharge',
+            './valenceDensity/fixedCharges/totalCharge', './valenceDensity/totalCharge'
         ],
-        'totalEnergy':
+        'totalenergy':
         './totalEnergy',
-        'totalForcesOnRepresentativeAtoms':
+        'totalforcesonrepresentativeatoms':
         './totalForcesOnRepresentativeAtoms',
-        'vacuumEP':
+        'vacuumep':
         './energyParameters/vacuumEP',
-        'valenceDensity':
+        'valencedensity':
         './valenceDensity',
-        'valenceElectrons':
-        './totalEnergy/sumOfEigenvalues/valenceElectrons'
-    },
-    'iteration_unique_attribs': {
-        'Configs': './Forcetheorem_JIJ',
-        'numberForCurrentRun': './',
-        'overallNumber': './',
-        'qpoints': './Forcetheorem_DMI',
-        'qvectors': './Forcetheorem_SSDISP'
-    },
-    'iteration_unique_path_attribs': {
-        'Angles': ['./Forcetheorem_DMI', './Forcetheorem_MAE']
-    },
+        'valenceelectrons':
+        './totalEnergy/sumOfEigenvalues/valenceElectrons',
+        'volumes': []
+    }),
+    'iteration_unique_attribs':
+    CaseInsensitiveDict({
+        'configs': './Forcetheorem_JIJ/@Configs',
+        'numberforcurrentrun': './@numberForCurrentRun',
+        'overallnumber': './@overallNumber',
+        'qpoints': './Forcetheorem_DMI/@qpoints',
+        'qvectors': './Forcetheorem_SSDISP/@qvectors'
+    }),
+    'iteration_unique_path_attribs':
+    CaseInsensitiveDict({'angles': ['./Forcetheorem_DMI/@Angles', './Forcetheorem_MAE/@Angles']}),
     'omitt_contained_tags': [
         'scfLoop', 'eigenvalues', 'onSiteExchangeSplitting', 'noncollinearTorgue', 'spinorbitTorgue',
         'ldaUDensityMatrix', 'ldaUDensityMatrixConvergence'
     ],
-    'other_attribs': {
-        'atomType': ['/fleurOutput/numericalParameters/volumes/mtVolume'],
-        'kPoint': ['/fleurOutput/numericalParameters/kPointList/kPoint'],
-        'mtRadius': ['/fleurOutput/numericalParameters/volumes/mtVolume'],
-        'mtVolume': ['/fleurOutput/numericalParameters/volumes/mtVolume']
-    },
+    'other_attribs':
+    CaseInsensitiveDict({
+        'atomtype': ['/fleurOutput/numericalParameters/volumes/mtVolume/@atomType'],
+        'mtradius': ['/fleurOutput/numericalParameters/volumes/mtVolume/@mtRadius'],
+        'mtvolume': ['/fleurOutput/numericalParameters/volumes/mtVolume/@mtVolume'],
+        'kpoint': ['/fleurOutput/numericalParameters/kPointList/kPoint']
+    }),
     'out_version':
     '0.33',
     'root_tag':
     'fleurOutput',
-    'simple_elements': {
-        'additionalCompilerFlags': [{
-            'length': 'unbounded',
-            'type': ['string']
+    'simple_elements':
+    CaseInsensitiveDict({
+        'targetcomputerarchitectures': [{
+            'type': ['string'],
+            'length': 1
         }],
-        'densityMatrixFor': [{
-            'length': 'unbounded',
-            'type': ['string']
+        'targetstructureclass': [{
+            'type': ['string'],
+            'length': 'unbounded'
         }],
-        'eigenvaluesAt': [{
-            'length': 'unbounded',
-            'type': ['float']
+        'additionalcompilerflags': [{
+            'type': ['string'],
+            'length': 'unbounded'
         }],
-        'kPoint': [{
-            'length': 3,
-            'type': ['float_expression']
+        'kpoint': [{
+            'type': ['float_expression'],
+            'length': 3
         }],
-        'targetComputerArchitectures': [{
-            'length': 1,
-            'type': ['string']
+        'eigenvaluesat': [{
+            'type': ['float'],
+            'length': 'unbounded'
         }],
-        'targetStructureClass': [{
-            'length': 'unbounded',
-            'type': ['string']
+        'densitymatrixfor': [{
+            'type': ['string'],
+            'length': 'unbounded'
         }]
-    },
+    }),
     'tag_info': {
         '/fleurOutput': {
-            'attribs': ['fleurOutputVersion'],
-            'optional': [
-                'programVersion', 'parallelSetup', 'startDateAndTime', 'fleurInput', 'numericalParameters', 'scfLoop',
-                'ERROR', 'endDateAndTime'
-            ],
-            'optional_attribs': [],
+            'attribs':
+            CaseInsensitiveFrozenSet(['fleurOutputVersion']),
+            'complex':
+            CaseInsensitiveFrozenSet(
+                ['fleurInput', 'numericalParameters', 'parallelSetup', 'programVersion', 'scfLoop']),
+            'optional':
+            CaseInsensitiveFrozenSet([
+                'ERROR', 'endDateAndTime', 'fleurInput', 'numericalParameters', 'parallelSetup', 'programVersion',
+                'scfLoop', 'startDateAndTime'
+            ]),
+            'optional_attribs':
+            CaseInsensitiveFrozenSet([]),
             'order': [
                 'programVersion', 'parallelSetup', 'startDateAndTime', 'fleurInput', 'numericalParameters', 'scfLoop',
                 'ERROR', 'endDateAndTime'
             ],
-            'several': [],
-            'simple': ['startDateAndTime', 'ERROR', 'endDateAndTime'],
-            'text': []
+            'several':
+            CaseInsensitiveFrozenSet([]),
+            'simple':
+            CaseInsensitiveFrozenSet(['ERROR', 'endDateAndTime', 'startDateAndTime']),
+            'text':
+            CaseInsensitiveFrozenSet([])
         },
         '/fleurOutput/ERROR': {
-            'attribs': ['Message'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['Message']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurOutput/endDateAndTime': {
-            'attribs': ['date', 'time', 'zone'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['date', 'time', 'zone']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurOutput/numericalParameters': {
-            'attribs': [],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet([]),
+            'complex': CaseInsensitiveFrozenSet(['kPointList', 'volumes']),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': ['atomsInCell', 'basis', 'density', 'bands', 'volumes', 'kPointList'],
-            'several': [],
-            'simple': ['atomsInCell', 'basis', 'density', 'bands'],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet(['atomsInCell', 'bands', 'basis', 'density']),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurOutput/numericalParameters/atomsInCell': {
-            'attribs': ['nat', 'ntype', 'jmtd', 'n_u', 'n_hia'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['jmtd', 'n_hia', 'n_u', 'nat', 'ntype']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurOutput/numericalParameters/bands': {
-            'attribs': ['numbands'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['numbands']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurOutput/numericalParameters/basis': {
-            'attribs': ['nvd', 'lmaxd', 'nlotot'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['lmaxd', 'nlotot', 'nvd']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurOutput/numericalParameters/density': {
-            'attribs': ['ng3', 'ng2'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['ng2', 'ng3']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurOutput/numericalParameters/kPointList': {
-            'attribs': ['weightScale', 'count'],
-            'optional': ['kPoint'],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['count', 'weightScale']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet(['kPoint']),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': ['kPoint'],
-            'several': ['kPoint'],
-            'simple': ['kPoint'],
-            'text': ['kPoint']
+            'several': CaseInsensitiveFrozenSet(['kPoint']),
+            'simple': CaseInsensitiveFrozenSet(['kPoint']),
+            'text': CaseInsensitiveFrozenSet(['kPoint'])
         },
         '/fleurOutput/numericalParameters/volumes': {
-            'attribs': ['unitCell', 'interstitial', 'omegaTilda', 'surfaceArea', 'z1'],
-            'optional': ['mtVolume'],
-            'optional_attribs': ['omegaTilda', 'surfaceArea', 'z1'],
+            'attribs': CaseInsensitiveFrozenSet(['interstitial', 'omegaTilda', 'surfaceArea', 'unitCell', 'z1']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet(['mtVolume']),
+            'optional_attribs': CaseInsensitiveFrozenSet(['omegaTilda', 'surfaceArea', 'z1']),
             'order': ['mtVolume'],
-            'several': ['mtVolume'],
-            'simple': ['mtVolume'],
-            'text': []
+            'several': CaseInsensitiveFrozenSet(['mtVolume']),
+            'simple': CaseInsensitiveFrozenSet(['mtVolume']),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurOutput/numericalParameters/volumes/mtVolume': {
-            'attribs': ['atomType', 'mtRadius', 'mtVolume'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['atomType', 'mtRadius', 'mtVolume']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurOutput/parallelSetup': {
-            'attribs': [],
-            'optional': ['openMP', 'mpi', 'mem'],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet([]),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet(['mem', 'mpi', 'openMP']),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': ['openMP', 'mpi', 'mem'],
-            'several': [],
-            'simple': ['openMP', 'mpi', 'mem'],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet(['mem', 'mpi', 'openMP']),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurOutput/parallelSetup/mem': {
-            'attribs': ['memoryPerNode'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['memoryPerNode']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurOutput/parallelSetup/mpi': {
-            'attribs': ['mpiProcesses'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['mpiProcesses']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurOutput/parallelSetup/openMP': {
-            'attribs': ['ompThreads'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['ompThreads']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurOutput/programVersion': {
-            'attribs': ['version'],
-            'optional': [
-                'compilationInfo', 'gitInfo', 'targetComputerArchitectures', 'precision', 'targetStructureClass',
-                'additionalCompilerFlags'
-            ],
-            'optional_attribs': [],
+            'attribs':
+            CaseInsensitiveFrozenSet(['version']),
+            'complex':
+            CaseInsensitiveFrozenSet([]),
+            'optional':
+            CaseInsensitiveFrozenSet([
+                'additionalCompilerFlags', 'compilationInfo', 'gitInfo', 'precision', 'targetComputerArchitectures',
+                'targetStructureClass'
+            ]),
+            'optional_attribs':
+            CaseInsensitiveFrozenSet([]),
             'order': [
                 'compilationInfo', 'gitInfo', 'targetComputerArchitectures', 'precision', 'targetStructureClass',
                 'additionalCompilerFlags'
             ],
-            'several': [],
-            'simple': [
-                'compilationInfo', 'gitInfo', 'targetComputerArchitectures', 'precision', 'targetStructureClass',
-                'additionalCompilerFlags'
-            ],
-            'text': ['targetComputerArchitectures', 'targetStructureClass', 'additionalCompilerFlags']
+            'several':
+            CaseInsensitiveFrozenSet([]),
+            'simple':
+            CaseInsensitiveFrozenSet([
+                'additionalCompilerFlags', 'compilationInfo', 'gitInfo', 'precision', 'targetComputerArchitectures',
+                'targetStructureClass'
+            ]),
+            'text':
+            CaseInsensitiveFrozenSet(['additionalCompilerFlags', 'targetComputerArchitectures', 'targetStructureClass'])
         },
         '/fleurOutput/programVersion/compilationInfo': {
-            'attribs': ['date', 'user', 'host', 'flag', 'link'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['date', 'flag', 'host', 'link', 'user']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurOutput/programVersion/gitInfo': {
-            'attribs': ['version', 'lastCommitHash', 'branch'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['branch', 'lastCommitHash', 'version']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurOutput/programVersion/precision': {
-            'attribs': ['type'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['type']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurOutput/scfLoop': {
-            'attribs': [],
-            'optional': ['iteration'],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet([]),
+            'complex': CaseInsensitiveFrozenSet(['iteration']),
+            'optional': CaseInsensitiveFrozenSet(['iteration']),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': ['iteration'],
-            'several': ['iteration'],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet(['iteration']),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         },
         '/fleurOutput/scfLoop/iteration': {
-            'attribs': ['numberForCurrentRun', 'overallNumber'],
+            'attribs':
+            CaseInsensitiveFrozenSet(['numberForCurrentRun', 'overallNumber']),
+            'complex':
+            CaseInsensitiveFrozenSet([
+                'FermiEnergy', 'Forcetheorem_DMI', 'Forcetheorem_JIJ', 'Forcetheorem_Loop', 'Forcetheorem_MAE',
+                'Forcetheorem_SSDISP', 'allElectronCharges', 'bandgap', 'coreStates', 'densityConvergence',
+                'eigenvalues', 'energyParameters', 'ldaUDensityMatrix', 'ldaUDensityMatrixConvergence',
+                'magneticMomentsInMTSpheres', 'noncollinearTorgue', 'onSiteExchangeSplitting',
+                'orbitalMagneticMomentsInMTSpheres', 'rdmft', 'spinorbitTorgue', 'sumValenceSingleParticleEnergies',
+                'timing', 'totalEnergy', 'totalForcesOnRepresentativeAtoms', 'valenceDensity'
+            ]),
             'optional':
-            ['Forcetheorem_Loop', 'Forcetheorem_SSDISP', 'Forcetheorem_DMI', 'Forcetheorem_MAE', 'Forcetheorem_JIJ'],
-            'optional_attribs': ['overallNumber'],
+            CaseInsensitiveFrozenSet([
+                'Forcetheorem_DMI', 'Forcetheorem_JIJ', 'Forcetheorem_Loop', 'Forcetheorem_MAE', 'Forcetheorem_SSDISP'
+            ]),
+            'optional_attribs':
+            CaseInsensitiveFrozenSet(['overallNumber']),
             'order': [
                 'energyParameters', 'eigenvalues', 'bandgap', 'sumValenceSingleParticleEnergies', 'FermiEnergy',
                 'valenceDensity', 'onSiteExchangeSplitting', 'noncollinearTorgue', 'spinorbitTorgue', 'coreStates',
@@ -1884,89 +2107,171 @@ schema_dict = {
                 'densityConvergence', 'timing', 'Forcetheorem_Loop', 'Forcetheorem_SSDISP', 'Forcetheorem_DMI',
                 'Forcetheorem_MAE', 'Forcetheorem_JIJ'
             ],
-            'several': ['Forcetheorem_Loop'],
-            'simple': [],
-            'text': []
+            'several':
+            CaseInsensitiveFrozenSet(['Forcetheorem_Loop']),
+            'simple':
+            CaseInsensitiveFrozenSet([]),
+            'text':
+            CaseInsensitiveFrozenSet([])
         },
         '/fleurOutput/startDateAndTime': {
-            'attribs': ['date', 'time', 'zone'],
-            'optional': [],
-            'optional_attribs': [],
+            'attribs': CaseInsensitiveFrozenSet(['date', 'time', 'zone']),
+            'complex': CaseInsensitiveFrozenSet([]),
+            'optional': CaseInsensitiveFrozenSet([]),
+            'optional_attribs': CaseInsensitiveFrozenSet([]),
             'order': [],
-            'several': [],
-            'simple': [],
-            'text': []
+            'several': CaseInsensitiveFrozenSet([]),
+            'simple': CaseInsensitiveFrozenSet([]),
+            'text': CaseInsensitiveFrozenSet([])
         }
     },
-    'tag_paths': {
-        'ERROR': '/fleurOutput/ERROR',
-        'additionalCompilerFlags': '/fleurOutput/programVersion/additionalCompilerFlags',
-        'atomsInCell': '/fleurOutput/numericalParameters/atomsInCell',
+    'tag_paths':
+    CaseInsensitiveDict({
+        'angle': [],
+        'config': [],
+        'error': '/fleurOutput/ERROR',
+        'entry': [],
+        'fermienergy': [],
+        'fockexchangeenergycore': [],
+        'fockexchangeenergyvalence': [],
+        'forcetheorem_dmi': [],
+        'forcetheorem_jij': [],
+        'forcetheorem_loop': [],
+        'forcetheorem_mae': [],
+        'forcetheorem_ssdisp': [],
+        'madelungterm': [],
+        'additionalcompilerflags': '/fleurOutput/programVersion/additionalCompilerFlags',
+        'allatoms': [],
+        'allelectroncharges': [],
+        'atomtypedependentcontributions': [],
+        'atomicep': [],
+        'atomsincell': '/fleurOutput/numericalParameters/atomsInCell',
+        'bandgap': [],
         'bands': '/fleurOutput/numericalParameters/bands',
         'basis': '/fleurOutput/numericalParameters/basis',
-        'compilationInfo': '/fleurOutput/programVersion/compilationInfo',
+        'chargedenxcdenintegral': [],
+        'chargedensity': [],
+        'compilationinfo': '/fleurOutput/programVersion/compilationInfo',
+        'compositetimer': [],
+        'coreelectrons': [],
+        'corestates': [],
         'density': '/fleurOutput/numericalParameters/density',
-        'endDateAndTime': '/fleurOutput/endDateAndTime',
-        'fleurInput': '/fleurOutput/fleurInput',
-        'fleurOutput': '/fleurOutput',
-        'gitInfo': '/fleurOutput/programVersion/gitInfo',
+        'densityconvergence': [],
+        'densitycoulombpotentialintegral': [],
+        'densityeffectivepotentialintegral': [],
+        'densitymatrixfor': [],
+        'dftucorrection': [],
+        'distance': [],
+        'eigenvalues': [],
+        'eigenvaluesat': [],
+        'electronnucleiinteractiondifferentmts': [],
+        'enddateandtime': '/fleurOutput/endDateAndTime',
+        'energyparameters': [],
+        'excsplit': [],
+        'extrapolationto0k': [],
+        'fixedcharges': [],
+        'fleurinput': '/fleurOutput/fleurInput',
+        'fleuroutput': '/fleurOutput',
+        'forcetotal': [],
+        'freeenergy': [],
+        'gitinfo': '/fleurOutput/programVersion/gitInfo',
+        'heatomicep': [],
+        'heloatomicep': [],
+        'highj': [],
         'iteration': '/fleurOutput/scfLoop/iteration',
-        'kPoint': '/fleurOutput/numericalParameters/kPointList/kPoint',
-        'kPointList': '/fleurOutput/numericalParameters/kPointList',
+        'kpoint': '/fleurOutput/numericalParameters/kPointList/kPoint',
+        'kpointlist': '/fleurOutput/numericalParameters/kPointList',
+        'ldaudensitymatrix': [],
+        'ldaudensitymatrixconvergence': [],
+        'loatomicep': [],
+        'lowj': [],
+        'magneticmoment': [],
+        'magneticmomentsinmtspheres': [],
         'mem': '/fleurOutput/parallelSetup/mem',
         'mpi': '/fleurOutput/parallelSetup/mpi',
-        'mtVolume': '/fleurOutput/numericalParameters/volumes/mtVolume',
-        'numericalParameters': '/fleurOutput/numericalParameters',
-        'openMP': '/fleurOutput/parallelSetup/openMP',
-        'parallelSetup': '/fleurOutput/parallelSetup',
+        'mtcharge': [],
+        'mtcharges': [],
+        'mtjcharge': [],
+        'mtvolume': '/fleurOutput/numericalParameters/volumes/mtVolume',
+        'noncollineartorgue': [],
+        'numericalparameters': '/fleurOutput/numericalParameters',
+        'occupations': [],
+        'onsiteexchangesplitting': [],
+        'openmp': '/fleurOutput/parallelSetup/openMP',
+        'orbmagmoment': [],
+        'orbitalmagneticmomentsinmtspheres': [],
+        'overallchargedensity': [],
+        'parallelsetup': '/fleurOutput/parallelSetup',
         'precision': '/fleurOutput/programVersion/precision',
-        'programVersion': '/fleurOutput/programVersion',
-        'scfLoop': '/fleurOutput/scfLoop',
-        'startDateAndTime': '/fleurOutput/startDateAndTime',
-        'targetComputerArchitectures': '/fleurOutput/programVersion/targetComputerArchitectures',
-        'targetStructureClass': '/fleurOutput/programVersion/targetStructureClass',
+        'programversion': '/fleurOutput/programVersion',
+        'rdmft': [],
+        'scfloop': '/fleurOutput/scfLoop',
+        'singleatom': [],
+        'spindensity': [],
+        'spindependentcharge': [],
+        'spinorbittorgue': [],
+        'startdateandtime': '/fleurOutput/startDateAndTime',
+        'state': [],
+        'sumofeigenvalues': [],
+        'sumvalencesingleparticleenergies': [],
+        'targetcomputerarchitectures': '/fleurOutput/programVersion/targetComputerArchitectures',
+        'targetstructureclass': '/fleurOutput/programVersion/targetStructureClass',
+        'timer': [],
+        'timing': [],
+        'tkbtimesentropy': [],
+        'torgue': [],
+        'totalcharge': [],
+        'totalenergy': [],
+        'totalforcesonrepresentativeatoms': [],
+        'vacuumep': [],
+        'valencedensity': [],
+        'valenceelectrons': [],
         'volumes': '/fleurOutput/numericalParameters/volumes'
-    },
-    'unique_attribs': {
-        'Message': '/fleurOutput/ERROR',
-        'additionalCompilerFlags': '/fleurOutput/programVersion/additionalCompilerFlags',
-        'branch': '/fleurOutput/programVersion/gitInfo',
-        'count': '/fleurOutput/numericalParameters/kPointList',
-        'flag': '/fleurOutput/programVersion/compilationInfo',
-        'fleurOutputVersion': '/fleurOutput',
-        'host': '/fleurOutput/programVersion/compilationInfo',
-        'interstitial': '/fleurOutput/numericalParameters/volumes',
-        'jmtd': '/fleurOutput/numericalParameters/atomsInCell',
-        'lastCommitHash': '/fleurOutput/programVersion/gitInfo',
-        'link': '/fleurOutput/programVersion/compilationInfo',
-        'lmaxd': '/fleurOutput/numericalParameters/basis',
-        'memoryPerNode': '/fleurOutput/parallelSetup/mem',
-        'mpiProcesses': '/fleurOutput/parallelSetup/mpi',
-        'n_hia': '/fleurOutput/numericalParameters/atomsInCell',
-        'n_u': '/fleurOutput/numericalParameters/atomsInCell',
-        'nat': '/fleurOutput/numericalParameters/atomsInCell',
-        'ng2': '/fleurOutput/numericalParameters/density',
-        'ng3': '/fleurOutput/numericalParameters/density',
-        'nlotot': '/fleurOutput/numericalParameters/basis',
-        'ntype': '/fleurOutput/numericalParameters/atomsInCell',
-        'numbands': '/fleurOutput/numericalParameters/bands',
-        'nvd': '/fleurOutput/numericalParameters/basis',
-        'omegaTilda': '/fleurOutput/numericalParameters/volumes',
-        'ompThreads': '/fleurOutput/parallelSetup/openMP',
-        'surfaceArea': '/fleurOutput/numericalParameters/volumes',
-        'targetComputerArchitectures': '/fleurOutput/programVersion/targetComputerArchitectures',
-        'targetStructureClass': '/fleurOutput/programVersion/targetStructureClass',
-        'type': '/fleurOutput/programVersion/precision',
-        'unitCell': '/fleurOutput/numericalParameters/volumes',
-        'user': '/fleurOutput/programVersion/compilationInfo',
-        'weightScale': '/fleurOutput/numericalParameters/kPointList',
-        'z1': '/fleurOutput/numericalParameters/volumes'
-    },
-    'unique_path_attribs': {
-        'date':
-        ['/fleurOutput/programVersion/compilationInfo', '/fleurOutput/startDateAndTime', '/fleurOutput/endDateAndTime'],
-        'time': ['/fleurOutput/startDateAndTime', '/fleurOutput/endDateAndTime'],
-        'version': ['/fleurOutput/programVersion', '/fleurOutput/programVersion/gitInfo'],
-        'zone': ['/fleurOutput/startDateAndTime', '/fleurOutput/endDateAndTime']
-    }
+    }),
+    'unique_attribs':
+    CaseInsensitiveDict({
+        'message': '/fleurOutput/ERROR/@Message',
+        'branch': '/fleurOutput/programVersion/gitInfo/@branch',
+        'count': '/fleurOutput/numericalParameters/kPointList/@count',
+        'flag': '/fleurOutput/programVersion/compilationInfo/@flag',
+        'fleuroutputversion': '/fleurOutput/@fleurOutputVersion',
+        'host': '/fleurOutput/programVersion/compilationInfo/@host',
+        'interstitial': '/fleurOutput/numericalParameters/volumes/@interstitial',
+        'jmtd': '/fleurOutput/numericalParameters/atomsInCell/@jmtd',
+        'lastcommithash': '/fleurOutput/programVersion/gitInfo/@lastCommitHash',
+        'link': '/fleurOutput/programVersion/compilationInfo/@link',
+        'lmaxd': '/fleurOutput/numericalParameters/basis/@lmaxd',
+        'memorypernode': '/fleurOutput/parallelSetup/mem/@memoryPerNode',
+        'mpiprocesses': '/fleurOutput/parallelSetup/mpi/@mpiProcesses',
+        'n_hia': '/fleurOutput/numericalParameters/atomsInCell/@n_hia',
+        'n_u': '/fleurOutput/numericalParameters/atomsInCell/@n_u',
+        'nat': '/fleurOutput/numericalParameters/atomsInCell/@nat',
+        'ng2': '/fleurOutput/numericalParameters/density/@ng2',
+        'ng3': '/fleurOutput/numericalParameters/density/@ng3',
+        'nlotot': '/fleurOutput/numericalParameters/basis/@nlotot',
+        'ntype': '/fleurOutput/numericalParameters/atomsInCell/@ntype',
+        'numbands': '/fleurOutput/numericalParameters/bands/@numbands',
+        'nvd': '/fleurOutput/numericalParameters/basis/@nvd',
+        'omegatilda': '/fleurOutput/numericalParameters/volumes/@omegaTilda',
+        'ompthreads': '/fleurOutput/parallelSetup/openMP/@ompThreads',
+        'surfacearea': '/fleurOutput/numericalParameters/volumes/@surfaceArea',
+        'type': '/fleurOutput/programVersion/precision/@type',
+        'unitcell': '/fleurOutput/numericalParameters/volumes/@unitCell',
+        'user': '/fleurOutput/programVersion/compilationInfo/@user',
+        'weightscale': '/fleurOutput/numericalParameters/kPointList/@weightScale',
+        'z1': '/fleurOutput/numericalParameters/volumes/@z1',
+        'additionalcompilerflags': '/fleurOutput/programVersion/additionalCompilerFlags',
+        'targetcomputerarchitectures': '/fleurOutput/programVersion/targetComputerArchitectures',
+        'targetstructureclass': '/fleurOutput/programVersion/targetStructureClass'
+    }),
+    'unique_path_attribs':
+    CaseInsensitiveDict({
+        'date': [
+            '/fleurOutput/endDateAndTime/@date', '/fleurOutput/programVersion/compilationInfo/@date',
+            '/fleurOutput/startDateAndTime/@date'
+        ],
+        'time': ['/fleurOutput/endDateAndTime/@time', '/fleurOutput/startDateAndTime/@time'],
+        'version': ['/fleurOutput/programVersion/@version', '/fleurOutput/programVersion/gitInfo/@version'],
+        'zone': ['/fleurOutput/endDateAndTime/@zone', '/fleurOutput/startDateAndTime/@zone']
+    })
 }
