@@ -313,7 +313,9 @@ def test_get_tag_info():
             'energyParameters', 'prodBasis', 'special', 'force', 'nocoParams', 'modInitDen', 'ldaU', 'ldaHIA',
             'greensfCalculation', 'torgueCalculation', 'lo'
         },
-        'optional_attribs': {'element'},
+        'optional_attribs': {
+            'element': None
+        },
         'order': [
             'mtSphere', 'atomicCutoffs', 'electronConfig', 'energyParameters', 'prodBasis', 'special', 'force',
             'nocoParams', 'modInitDen', 'ldaU', 'ldaHIA', 'greensfCalculation', 'torgueCalculation', 'lo'
@@ -343,7 +345,13 @@ def test_get_tag_info():
     EXPECTED_RESULT = {
         'attribs': {'l', 'U', 'J', 'phi', 'theta', 'l_amf', 'init_occ', 'kkintgrCutoff', 'label'},
         'optional': {'exc', 'cFCoeff', 'addArg'},
-        'optional_attribs': {'phi', 'theta', 'init_occ', 'kkintgrCutoff', 'label'},
+        'optional_attribs': {
+            'phi': '0.0',
+            'theta': '0.0',
+            'init_occ': 'calc',
+            'kkintgrcutoff': 'calc',
+            'label': 'default'
+        },
         'order': ['exc', 'cFCoeff', 'addArg'],
         'several': {'exc', 'cFCoeff', 'addArg'},
         'simple': {'exc', 'cFCoeff', 'addArg'},
@@ -363,8 +371,14 @@ def test_get_tag_info():
         },
         'optional': set(),
         'optional_attribs': {
-            'beta', 'minoccDistance', 'minmatDistance', 'n_occpm', 'dftspinpol', 'fullMatch', 'l_nonsphDC',
-            'l_correctEtot'
+            'beta': '100.0',
+            'minoccdistance': '0.01',
+            'minmatdistance': '0.001',
+            'n_occpm': '2',
+            'dftspinpol': 'F',
+            'fullmatch': 'T',
+            'l_nonsphdc': 'T',
+            'l_correctetot': 'T'
         },
         'order': [],
         'several': set(),
