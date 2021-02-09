@@ -16,11 +16,10 @@ Load all fleur schema related functions
 
 from .inpschema_todict import *
 from .outschema_todict import *
-from .update_schema_dicts import *
 from .add_fleur_schema import *
 from .schema_dict import *
 
 __all__ = [
-    'load_inpschema', 'load_outschema', 'create_inpschema_dict', 'create_outschema_dict', 'update_schema_dicts',
+    'load_inpschema', 'load_outschema', 'create_inpschema_dict', 'create_outschema_dict',
     'add_fleur_schema', 'InputSchemaDict', 'OutputSchemaDict'
 ]
