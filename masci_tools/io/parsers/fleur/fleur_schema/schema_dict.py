@@ -9,8 +9,8 @@ import tempfile
 import shutil
 from lxml import etree
 
-
 PACKAGE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
+
 
 def _get_latest_available_version(output_schema):
     latest_version = 0
@@ -18,9 +18,9 @@ def _get_latest_available_version(output_schema):
     for root, dirs, files in os.walk(PACKAGE_DIRECTORY):
         for folder in dirs:
             if '0.' in folder:
-                if output_schema and os.path.isfile(os.path.join(root,folder,'FleurOutputSchema.xsd')):
+                if output_schema and os.path.isfile(os.path.join(root, folder, 'FleurOutputSchema.xsd')):
                     latest_version = max(latest_version, int(folder.split('.')[1]))
-                elif not output_schema and os.path.isfile(os.path.join(root,folder,'FleurInputSchema.xsd')):
+                elif not output_schema and os.path.isfile(os.path.join(root, folder, 'FleurInputSchema.xsd')):
                     latest_version = max(latest_version, int(folder.split('.')[1]))
     return f'0.{latest_version}'
 
@@ -45,7 +45,6 @@ class SchemaDict(LockableDict):
 
     def get_tag_info(self, name, contains=None, not_contains=None):
         return get_tag_info(self, name, contains=contains, not_contains=not_contains)
-
 
 
 class InputSchemaDict(SchemaDict):
@@ -96,11 +95,11 @@ class InputSchemaDict(SchemaDict):
                     parser_info_out['parser_warnings'].append(
                         f"No Input Schema available for version '{version}'; falling back to '{latest_version}'")
                 else:
-                    warnings.warn(f"No Input Schema available for version '{version}'; falling back to '{latest_version}'")
+                    warnings.warn(
+                        f"No Input Schema available for version '{version}'; falling back to '{latest_version}'")
 
                 fleur_schema_path = f'./{latest_version}/FleurInputSchema.xsd'
                 schema_file_path = os.path.abspath(os.path.join(PACKAGE_DIRECTORY, fleur_schema_path))
-
 
         if version in cls.__schema_dict_cache:
             return cls.__schema_dict_cache[version]
@@ -118,8 +117,6 @@ class InputSchemaDict(SchemaDict):
         xmlschema = etree.XMLSchema(xmlschema_doc)
 
         return cls(schema_dict, xmlschema=xmlschema)
-
-
 
 
 class OutputSchemaDict(SchemaDict):
@@ -177,7 +174,6 @@ class OutputSchemaDict(SchemaDict):
         fleur_schema_path = f'./{version}/FleurOutputSchema.xsd'
         schema_file_path = os.path.abspath(os.path.join(PACKAGE_DIRECTORY, fleur_schema_path))
 
-
         if inp_version is None:
             inp_version = version
 
@@ -195,7 +191,8 @@ class OutputSchemaDict(SchemaDict):
                     parser_info_out['parser_warnings'].append(
                         f"No Output Schema available for version '{version}'; falling back to '{latest_version}'")
                 else:
-                    warnings.warn(f"No Output Schema available for version '{version}'; falling back to '{latest_version}'")
+                    warnings.warn(
+                        f"No Output Schema available for version '{version}'; falling back to '{latest_version}'")
 
                 fleur_schema_path = f'./{latest_version}/FleurOutputSchema.xsd'
                 schema_file_path = os.path.abspath(os.path.join(PACKAGE_DIRECTORY, fleur_schema_path))
@@ -212,7 +209,8 @@ class OutputSchemaDict(SchemaDict):
                     parser_info_out['parser_warnings'].append(
                         f"No Input Schema available for version '{inp_version}'; falling back to '{latest_inpversion}'")
                 else:
-                    warnings.warn(f"No Input Schema available for version '{inp_version}'; falling back to '{latest_inpversion}'")
+                    warnings.warn(
+                        f"No Input Schema available for version '{inp_version}'; falling back to '{latest_inpversion}'")
 
                 fleur_inpschema_path = f'./{latest_inpversion}/FleurInputSchema.xsd'
                 inpschema_file_path = os.path.abspath(os.path.join(PACKAGE_DIRECTORY, fleur_inpschema_path))
@@ -249,4 +247,3 @@ class OutputSchemaDict(SchemaDict):
             xmlschema = etree.XMLSchema(xmlschema_doc)
 
         return cls(schema_dict, xmlschema=xmlschema)
-

@@ -121,7 +121,9 @@ def load_inpschema(version, schema_return=False, create=True, parser_info_out=No
     :return: python dictionary with the schema information
     """
 
-    warnings.warn('load_inpschema is deprecated. Use masci_tools.io.parsers.fleur.fleur_schema.InputSchemaDict.fromVersion() instead', DeprecationWarning)
+    warnings.warn(
+        'load_inpschema is deprecated. Use masci_tools.io.parsers.fleur.fleur_schema.InputSchemaDict.fromVersion() instead',
+        DeprecationWarning)
     if parser_info_out is None:
         parser_info_out = {'parser_warnings': []}
 
@@ -161,7 +163,7 @@ def load_inpschema(version, schema_return=False, create=True, parser_info_out=No
         if create:
             parser_info_out['parser_warnings'].append(
                 f'Generating schema_dict file for given input schema: {schema_file_path}')
-            create_inpschema_dict(os.path.join(path,'FleurInputSchema.xsd'))
+            create_inpschema_dict(os.path.join(path, 'FleurInputSchema.xsd'))
         else:
             raise FileNotFoundError(f'No inpschema_dict generated for FleurInputSchema.xsd at {path}')
 

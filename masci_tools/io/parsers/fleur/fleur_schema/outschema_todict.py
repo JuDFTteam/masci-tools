@@ -168,7 +168,9 @@ def load_outschema(version, schema_return=False, create=True, inp_version=None, 
     :return: python dictionary with the schema information
     """
 
-    warnings.warn('load_outschema is deprecated. Use masci_tools.io.parsers.fleur.fleur_schema.OutputSchemaDict.fromVersion() instead', DeprecationWarning)
+    warnings.warn(
+        'load_outschema is deprecated. Use masci_tools.io.parsers.fleur.fleur_schema.OutputSchemaDict.fromVersion() instead',
+        DeprecationWarning)
     if parser_info_out is None:
         parser_info_out = {'parser_warnings': []}
 
@@ -211,7 +213,7 @@ def load_outschema(version, schema_return=False, create=True, inp_version=None, 
         if create:
             parser_info_out['parser_warnings'].append(
                 f'Generating schema_dict file for given output schema: {schema_file_path}')
-            create_outschema_dict(os.path.join(path,'FleurOutputSchema.xsd'))
+            create_outschema_dict(os.path.join(path, 'FleurOutputSchema.xsd'))
         else:
             raise FileNotFoundError(f'No inpschema_dict generated for FleurOutputSchema.xsd at {path}')
 
@@ -233,9 +235,11 @@ def load_outschema(version, schema_return=False, create=True, inp_version=None, 
             #Basic type defintions have changed so we create the output schema on the fly
             parser_info_out['parser_warnings'].append(
                 f'Basic type definitions differ (out: {version}; inp: {inp_version}), recreating outputschema dict')
-            schema_dict, version = create_outschema_dict(os.path.join(path,'FleurOutputSchema.xsd'),
+            schema_dict, version = create_outschema_dict(os.path.join(path, 'FleurOutputSchema.xsd'),
                                                          save_to_file=False,
-                                                         inp_path=os.path.abspath(os.path.join(PACKAGE_DIRECTORY, f'./{inp_version}/FleurInputSchema.xsd')))
+                                                         inp_path=os.path.abspath(
+                                                             os.path.join(PACKAGE_DIRECTORY,
+                                                                          f'./{inp_version}/FleurInputSchema.xsd')))
 
     if schema_return:
         if version == inp_version:

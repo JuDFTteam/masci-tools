@@ -127,7 +127,6 @@ def test_get_tag_xpath_notcontains():
                          not_contains='species') == '/fleurInput/atomGroups/atomGroup/ldaU'
 
 
-
 def test_get_tagattrib_xpath_case_insensitivity():
     """
     Test that the selection works with case insensitivity
@@ -144,7 +143,6 @@ def test_get_tagattrib_xpath_case_insensitivity():
     assert get_attrib_xpath(schema_dict, 'jspins') == '/fleurInput/calculationSetup/magnetism/@jspins'
     assert get_attrib_xpath(schema_dict, 'JSPINS') == '/fleurInput/calculationSetup/magnetism/@jspins'
     assert get_attrib_xpath(schema_dict, 'jSpInS') == '/fleurInput/calculationSetup/magnetism/@jspins'
-
 
 
 def test_get_attrib_xpath_input():
@@ -418,7 +416,6 @@ def test_read_contants():
         result = read_constants(root3, schema_dict)
 
 
-
 def test_evaluate_attribute():
     """
     Test of the evaluate_attribute function
@@ -563,7 +560,6 @@ def test_evaluate_text():
     parser_info_out = {'parser_warnings': []}
     assert evaluate_text(root, schema_dict, 'magnetism', FLEUR_DEFINED_CONSTANTS,
                          parser_info_out=parser_info_out) is None
-
 
 
 def test_evaluate_tag():
@@ -717,6 +713,7 @@ def test_single_value_tag():
                                             ignore=['units'])
     assert totalCharge == expected
 
+
 def test_evaluate_parent_tag():
     """
     Test of the evaluate_parent_tag function
@@ -797,7 +794,6 @@ def test_tag_exists():
         tag_exists(root, schema_dict, 'ldaU')
     with pytest.raises(ValueError, match='The tag ldaU has no possible paths with the current specification.'):
         tag_exists(root, schema_dict, 'ldaU', contains='group')
-
 
 
 def test_get_number_of_nodes():

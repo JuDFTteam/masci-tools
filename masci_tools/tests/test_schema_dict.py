@@ -19,7 +19,7 @@ for root, dirs, files in os.walk(os.path.abspath(os.path.join(CURRENT_DIR, SCHEM
 
 
 @pytest.mark.parametrize('schema_version', schema_versions['inp'])
-def test_inpschema_dict(data_regression,schema_version):
+def test_inpschema_dict(data_regression, schema_version):
     """
     Test the produced inputschema dicts
     """
@@ -32,7 +32,7 @@ def test_inpschema_dict(data_regression,schema_version):
 
 @pytest.mark.parametrize('inp_version', schema_versions['inp'])
 @pytest.mark.parametrize('out_version', schema_versions['out'])
-def test_outschema_dict(data_regression,inp_version, out_version):
+def test_outschema_dict(data_regression, inp_version, out_version):
     """
     Test the fleur_schema_parser_functions to make sure that they match the stored inputschema_dict
     """
@@ -41,7 +41,6 @@ def test_outschema_dict(data_regression,inp_version, out_version):
     outputschema = OutputSchemaDict.fromVersion(version=out_version, inp_version=inp_version)
 
     data_regression.check(clean_for_reg_dump(outputschema.get_unlocked()))
-
 
 
 def clean_for_reg_dump(dict_to_clean):

@@ -84,7 +84,7 @@ class CaseInsensitiveFrozenSet(frozenset):
 
     def __init__(self, iterable):
         self.original_case = self._get_new_original_case(iterable)
-        self._frozenset_iter = None #Used for customizing the iteration behaviour
+        self._frozenset_iter = None  #Used for customizing the iteration behaviour
         super().__init__()
 
     def _get_new_original_case(self, *iterables):
