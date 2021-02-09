@@ -141,9 +141,10 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
     ignore_validation = kwargs.get('ignore_validation', ignore_validation)
 
     #Load schema_dict (inp and out)
-    inpschema_dict = InputSchemaDict.fromVersion(inp_version, parser_info_out=parser_info_out)
     outschema_dict = OutputSchemaDict.fromVersion(out_version, inp_version=inp_version,
                                                   parser_info_out=parser_info_out)
+    dummy = {'parser_warnings': []}
+    inpschema_dict = InputSchemaDict.fromVersion(inp_version, parser_info_out=dummy)
 
     if outschema_dict['out_version'] != out_version or \
        inpschema_dict['inp_version'] != inp_version:

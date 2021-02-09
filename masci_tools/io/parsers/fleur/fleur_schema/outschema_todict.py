@@ -28,7 +28,7 @@ import shutil
 import warnings
 
 
-def create_outschema_dict(path, save_to_file=True, inp_version=None):
+def create_outschema_dict(path, save_to_file=True, inp_path=None):
     """
     Creates dictionary with information about the FleurOutputSchema.xsd and writes
     it to the same folder in a file called ```outschema_dict.py```. The FleurOutputSchema.xsd
@@ -62,21 +62,24 @@ def create_outschema_dict(path, save_to_file=True, inp_version=None):
         'omitt_contained_tags': get_omittable_tags,
     }
 
-    print(f'processing: {path}/FleurOutputSchema.xsd')
-    xmlschema = etree.parse(f'{path}/FleurOutputSchema.xsd')
+    #print(f'processing: {path}/FleurOutputSchema.xsd')
+    xmlschema = etree.parse(path)
     xmlschema = clear_xml(xmlschema)
 
     namespaces = {'xsd': 'http://www.w3.org/2001/XMLSchema'}
     out_version = str(xmlschema.xpath('/xsd:schema/@version', namespaces=namespaces)[0])
 
-    if inp_version is None:
-        inp_version = out_version
-    inpschema_dict = load_inpschema(inp_version)  #Used to make type definitions available without reparsing inputSchema
+    if inp_path is None:
+        inp_path = path.replace('FleurOutputSchema', 'FleurInputSchema')
+    #Parse type definitions from inputSchema
+    inpxmlschema = etree.parse(inp_path)
+    inpxmlschema = clear_xml(inpxmlschema)
+    input_basic_types = get_basic_types(inpxmlschema, namespaces)
 
     schema_dict = {}
     schema_dict['out_version'] = out_version
     for key, action in schema_actions.items():
-        addargs = {'input_basic_types': inpschema_dict['_basic_types']}
+        addargs = {'input_basic_types': input_basic_types}
         if key in ['unique_attribs', 'unique_path_attribs', 'other_attribs', 'tag_paths', 'tag_info']:
             addargs['stop_iteration'] = True
         elif key in [
@@ -87,7 +90,7 @@ def create_outschema_dict(path, save_to_file=True, inp_version=None):
             addargs['iteration'] = True
         schema_dict[key] = action(xmlschema, namespaces, **schema_dict, **addargs)
 
-    schema_dict['_input_basic_types'] = copy.deepcopy(inpschema_dict['_basic_types'])
+    schema_dict['_input_basic_types'] = input_basic_types
 
     #We cannot do the conversion to CaseInsensitiveDict before since we need the correct case
     #For these attributes in the attrib_path functions
@@ -164,6 +167,8 @@ def load_outschema(version, schema_return=False, create=True, inp_version=None, 
 
     :return: python dictionary with the schema information
     """
+
+    warnings.warn('load_outschema is deprecated. Use masci_tools.io.parsers.fleur.fleur_schema.OutputSchemaDict.fromVersion() instead', DeprecationWarning)
     if parser_info_out is None:
         parser_info_out = {'parser_warnings': []}
 
@@ -206,7 +211,7 @@ def load_outschema(version, schema_return=False, create=True, inp_version=None, 
         if create:
             parser_info_out['parser_warnings'].append(
                 f'Generating schema_dict file for given output schema: {schema_file_path}')
-            create_outschema_dict(path)
+            create_outschema_dict(os.path.join(path,'FleurOutputSchema.xsd'))
         else:
             raise FileNotFoundError(f'No inpschema_dict generated for FleurOutputSchema.xsd at {path}')
 
@@ -228,7 +233,9 @@ def load_outschema(version, schema_return=False, create=True, inp_version=None, 
             #Basic type defintions have changed so we create the output schema on the fly
             parser_info_out['parser_warnings'].append(
                 f'Basic type definitions differ (out: {version}; inp: {inp_version}), recreating outputschema dict')
-            schema_dict, version = create_outschema_dict(path, save_to_file=False, inp_version=inp_version)
+            schema_dict, version = create_outschema_dict(os.path.join(path,'FleurOutputSchema.xsd'),
+                                                         save_to_file=False,
+                                                         inp_path=os.path.abspath(os.path.join(PACKAGE_DIRECTORY, f'./{inp_version}/FleurInputSchema.xsd')))
 
     if schema_return:
         if version == inp_version:

@@ -5,18 +5,17 @@ both path finding and easy information extraction
 """
 import pytest
 import os
-import copy
 import numpy as np
-from masci_tools.io.parsers.fleur.fleur_schema import load_inpschema, load_outschema
+from masci_tools.io.parsers.fleur.fleur_schema import InputSchemaDict, OutputSchemaDict
 from masci_tools.util.constants import FLEUR_DEFINED_CONSTANTS
 from pprint import pprint
 
 #Load different schema versions (for now only input schemas)
-schema_dict_34 = load_inpschema('0.34')
-schema_dict_27 = load_inpschema('0.27')
-schema_dict_31 = load_inpschema('0.31')
-outschema_dict_34 = load_outschema('0.34')
-outschema_dict_31 = load_outschema('0.31')
+schema_dict_34 = InputSchemaDict.fromVersion('0.34')
+schema_dict_27 = InputSchemaDict.fromVersion('0.27')
+schema_dict_31 = InputSchemaDict.fromVersion('0.31')
+outschema_dict_34 = OutputSchemaDict.fromVersion('0.34')
+outschema_dict_31 = OutputSchemaDict.fromVersion('0.31')
 
 INPUT_TAG_34 = outschema_dict_34['tag_paths'][outschema_dict_34['input_tag']]
 
@@ -92,7 +91,7 @@ def test_get_tag_xpath_contains():
     """
     from masci_tools.util.schema_dict_util import get_tag_xpath
 
-    schema_dict = copy.deepcopy(schema_dict_34)
+    schema_dict = schema_dict_34
 
     with pytest.raises(ValueError, match='The tag ldaU has multiple possible paths with the current specification.'):
         get_tag_xpath(schema_dict, 'ldaU')
@@ -106,9 +105,6 @@ def test_get_tag_xpath_contains():
     with pytest.raises(ValueError, match='The tag ldaU has no possible paths with the current specification.'):
         get_tag_xpath(schema_dict, 'ldaU', contains='group')
 
-    #Make sure that this did not modify the schema dict
-    assert schema_dict == schema_dict_34
-
 
 def test_get_tag_xpath_notcontains():
     """
@@ -116,7 +112,7 @@ def test_get_tag_xpath_notcontains():
     """
     from masci_tools.util.schema_dict_util import get_tag_xpath
 
-    schema_dict = copy.deepcopy(schema_dict_34)
+    schema_dict = schema_dict_34
 
     with pytest.raises(ValueError, match='The tag ldaU has multiple possible paths with the current specification.'):
         get_tag_xpath(schema_dict, 'ldaU')
@@ -130,8 +126,6 @@ def test_get_tag_xpath_notcontains():
     assert get_tag_xpath(schema_dict, 'ldaU', contains='atom',
                          not_contains='species') == '/fleurInput/atomGroups/atomGroup/ldaU'
 
-    #Make sure that this did not modify the schema dict
-    assert schema_dict == schema_dict_34
 
 
 def test_get_tagattrib_xpath_case_insensitivity():
@@ -140,7 +134,7 @@ def test_get_tagattrib_xpath_case_insensitivity():
     """
     from masci_tools.util.schema_dict_util import get_tag_xpath, get_attrib_xpath
 
-    schema_dict = copy.deepcopy(schema_dict_34)
+    schema_dict = schema_dict_34
 
     assert get_tag_xpath(schema_dict, 'bzIntegration') == '/fleurInput/cell/bzIntegration'
     assert get_tag_xpath(schema_dict, 'BZINTEGRATION') == '/fleurInput/cell/bzIntegration'
@@ -151,8 +145,6 @@ def test_get_tagattrib_xpath_case_insensitivity():
     assert get_attrib_xpath(schema_dict, 'JSPINS') == '/fleurInput/calculationSetup/magnetism/@jspins'
     assert get_attrib_xpath(schema_dict, 'jSpInS') == '/fleurInput/calculationSetup/magnetism/@jspins'
 
-    #Make sure that this did not modify the schema dict
-    assert schema_dict == schema_dict_34
 
 
 def test_get_attrib_xpath_input():
@@ -208,7 +200,7 @@ def test_get_attrib_xpath_contains():
     """
     from masci_tools.util.schema_dict_util import get_attrib_xpath
 
-    schema_dict = copy.deepcopy(schema_dict_34)
+    schema_dict = schema_dict_34
 
     with pytest.raises(ValueError,
                        match='The attrib l_mperp has multiple possible paths with the current specification.'):
@@ -222,9 +214,6 @@ def test_get_attrib_xpath_contains():
     with pytest.raises(ValueError, match='The attrib l_mperp has no possible paths with the current specification.'):
         get_attrib_xpath(schema_dict, 'l_mperp', contains='atom')
 
-    #Make sure that this did not modify the schema dict
-    assert schema_dict == schema_dict_34
-
 
 def test_get_attrib_xpath_notcontains():
     """
@@ -232,7 +221,7 @@ def test_get_attrib_xpath_notcontains():
     """
     from masci_tools.util.schema_dict_util import get_attrib_xpath
 
-    schema_dict = copy.deepcopy(schema_dict_34)
+    schema_dict = schema_dict_34
 
     with pytest.raises(ValueError,
                        match='The attrib l_mperp has multiple possible paths with the current specification.'):
@@ -250,9 +239,6 @@ def test_get_attrib_xpath_notcontains():
     with pytest.raises(ValueError, match='The attrib l_mperp has no possible paths with the current specification.'):
         get_attrib_xpath(schema_dict, 'l_mperp', not_contains='calculationSetup')
 
-    #Make sure that this did not modify the schema dict
-    assert schema_dict == schema_dict_34
-
 
 def test_get_attrib_xpath_exclude():
     """
@@ -260,7 +246,7 @@ def test_get_attrib_xpath_exclude():
     """
     from masci_tools.util.schema_dict_util import get_attrib_xpath
 
-    schema_dict = copy.deepcopy(schema_dict_34)
+    schema_dict = schema_dict_34
 
     assert get_attrib_xpath(schema_dict, 'alpha') == '/fleurInput/calculationSetup/scfLoop/@alpha'
     assert get_attrib_xpath(schema_dict, 'alpha', exclude=['unique_path',
@@ -273,9 +259,6 @@ def test_get_attrib_xpath_exclude():
                             exclude=['unique'
                                      ]) == '/fleurInput/calculationSetup/greensFunction/contourSemicircle/@alpha'
 
-    #Make sure that this did not modify the schema dict
-    assert schema_dict == schema_dict_34
-
 
 def test_get_attrib_xpath_exclude_output():
     """
@@ -283,7 +266,7 @@ def test_get_attrib_xpath_exclude_output():
     """
     from masci_tools.util.schema_dict_util import get_attrib_xpath
 
-    schema_dict = copy.deepcopy(outschema_dict_34)
+    schema_dict = outschema_dict_34
 
     with pytest.raises(ValueError,
                        match='The attrib units has multiple possible paths with the current specification.'):
@@ -295,9 +278,6 @@ def test_get_attrib_xpath_exclude_output():
     with pytest.raises(ValueError, match='The attrib units has no possible paths with the current specification.'):
         get_attrib_xpath(schema_dict, 'units', exclude=['unique_path'], contains='DMI')
 
-    #Make sure that this did not modify the schema dict
-    assert schema_dict == outschema_dict_34
-
 
 def test_get_tag_info():
     """
@@ -305,7 +285,7 @@ def test_get_tag_info():
     """
     from masci_tools.util.schema_dict_util import get_tag_info
 
-    schema_dict = copy.deepcopy(schema_dict_34)
+    schema_dict = schema_dict_34
 
     EXPECTED_RESULT = {
         'attribs': {'name', 'element', 'atomicNumber'},
@@ -403,7 +383,7 @@ def test_read_contants():
     from lxml import etree
     from masci_tools.util.schema_dict_util import read_constants
 
-    schema_dict = copy.deepcopy(schema_dict_34)
+    schema_dict = schema_dict_34
 
     VALID_INP_CONSTANTS_PATH = os.path.join(FILE_PATH, 'files/fleur/inp_with_constants.xml')
     INVALID_INP_CONSTANTS_PATH = os.path.join(FILE_PATH, 'files/fleur/inp_invalid_constants.xml')
@@ -437,7 +417,6 @@ def test_read_contants():
     with pytest.raises(KeyError, match='Ambiguous definition of key Pi'):
         result = read_constants(root3, schema_dict)
 
-    assert schema_dict == schema_dict_34
 
 
 def test_evaluate_attribute():
@@ -447,7 +426,7 @@ def test_evaluate_attribute():
     from lxml import etree
     from masci_tools.util.schema_dict_util import evaluate_attribute
 
-    schema_dict = copy.deepcopy(schema_dict_34)
+    schema_dict = schema_dict_34
 
     parser = etree.XMLParser(attribute_defaults=True, recover=False, encoding='utf-8')
     xmltree = etree.parse(TEST_INPXML_PATH, parser)
@@ -528,7 +507,6 @@ def test_evaluate_attribute():
         root, schema_dict, 'radius', FLEUR_DEFINED_CONSTANTS, not_contains='species',
         parser_info_out=parser_info_out) is None
     assert parser_info_out == expected_info
-    assert schema_dict == schema_dict_34
 
 
 def test_evaluate_text():
@@ -538,7 +516,7 @@ def test_evaluate_text():
     from lxml import etree
     from masci_tools.util.schema_dict_util import evaluate_text
 
-    schema_dict = copy.deepcopy(schema_dict_34)
+    schema_dict = schema_dict_34
 
     parser = etree.XMLParser(attribute_defaults=True, recover=False, encoding='utf-8')
     xmltree = etree.parse(TEST_INPXML_PATH, parser)
@@ -586,7 +564,6 @@ def test_evaluate_text():
     assert evaluate_text(root, schema_dict, 'magnetism', FLEUR_DEFINED_CONSTANTS,
                          parser_info_out=parser_info_out) is None
 
-    assert schema_dict == schema_dict_34
 
 
 def test_evaluate_tag():
@@ -596,7 +573,7 @@ def test_evaluate_tag():
     from lxml import etree
     from masci_tools.util.schema_dict_util import evaluate_tag
 
-    schema_dict = copy.deepcopy(schema_dict_34)
+    schema_dict = schema_dict_34
 
     parser = etree.XMLParser(attribute_defaults=True, recover=False, encoding='utf-8')
     xmltree = etree.parse(TEST_INPXML_PATH, parser)
@@ -685,8 +662,6 @@ def test_evaluate_tag():
                               ignore=['alpha'])
     assert nocoParams == expected
 
-    assert schema_dict == schema_dict_34
-
 
 def test_single_value_tag():
     """
@@ -696,7 +671,7 @@ def test_single_value_tag():
     from masci_tools.util.schema_dict_util import evaluate_single_value_tag, get_tag_xpath
     from masci_tools.util.xml.common_xml_util import eval_xpath
 
-    schema_dict = copy.deepcopy(outschema_dict_34)
+    schema_dict = outschema_dict_34
 
     parser = etree.XMLParser(attribute_defaults=True, recover=False, encoding='utf-8')
     xmltree = etree.parse(TEST_OUTXML_PATH, parser)
@@ -742,9 +717,6 @@ def test_single_value_tag():
                                             ignore=['units'])
     assert totalCharge == expected
 
-    assert schema_dict == outschema_dict_34
-
-
 def test_evaluate_parent_tag():
     """
     Test of the evaluate_parent_tag function
@@ -752,7 +724,7 @@ def test_evaluate_parent_tag():
     from lxml import etree
     from masci_tools.util.schema_dict_util import evaluate_parent_tag
 
-    schema_dict = copy.deepcopy(schema_dict_34)
+    schema_dict = schema_dict_34
 
     parser = etree.XMLParser(attribute_defaults=True, recover=False, encoding='utf-8')
     xmltree = etree.parse(TEST_OUTXML_PATH, parser)
@@ -795,8 +767,6 @@ def test_evaluate_parent_tag():
     pprint(ldaU_species)
     assert ldaU_species == expected
 
-    assert schema_dict == schema_dict_34
-
 
 def test_tag_exists():
     """
@@ -805,7 +775,7 @@ def test_tag_exists():
     from lxml import etree
     from masci_tools.util.schema_dict_util import tag_exists
 
-    schema_dict = copy.deepcopy(schema_dict_34)
+    schema_dict = schema_dict_34
 
     parser = etree.XMLParser(attribute_defaults=True, recover=False, encoding='utf-8')
     xmltree = etree.parse(TEST_INPXML_PATH, parser)
@@ -828,7 +798,6 @@ def test_tag_exists():
     with pytest.raises(ValueError, match='The tag ldaU has no possible paths with the current specification.'):
         tag_exists(root, schema_dict, 'ldaU', contains='group')
 
-    assert schema_dict == schema_dict_34
 
 
 def test_get_number_of_nodes():
@@ -838,7 +807,7 @@ def test_get_number_of_nodes():
     from lxml import etree
     from masci_tools.util.schema_dict_util import get_number_of_nodes
 
-    schema_dict = copy.deepcopy(schema_dict_34)
+    schema_dict = schema_dict_34
 
     parser = etree.XMLParser(attribute_defaults=True, recover=False, encoding='utf-8')
     xmltree = etree.parse(TEST_INPXML_PATH, parser)
@@ -859,5 +828,3 @@ def test_get_number_of_nodes():
         get_number_of_nodes(root, schema_dict, 'ldaU')
     with pytest.raises(ValueError, match='The tag ldaU has no possible paths with the current specification.'):
         get_number_of_nodes(root, schema_dict, 'ldaU', contains='group')
-
-    assert schema_dict == schema_dict_34

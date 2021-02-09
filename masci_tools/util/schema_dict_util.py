@@ -110,7 +110,7 @@ def get_tag_info(schema_dict, name, contains=None, not_contains=None, path_retur
     from masci_tools.util.case_insensitive_dict import CaseInsensitiveFrozenSet
 
     tag_xpath = get_tag_xpath(schema_dict, name, contains=contains, not_contains=not_contains)
-    tag_info = schema_dict['tag_info'][tag_xpath].copy()
+    tag_info = copy.deepcopy(schema_dict['tag_info'][tag_xpath])
 
     if convert_to_builtin:
         tag_info = {

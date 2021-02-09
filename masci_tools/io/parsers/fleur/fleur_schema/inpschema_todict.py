@@ -21,6 +21,7 @@ from lxml import etree
 from pprint import pprint
 import importlib.util
 import os
+import warnings
 
 
 def create_inpschema_dict(path, save_to_file=True):
@@ -51,8 +52,8 @@ def create_inpschema_dict(path, save_to_file=True):
         'tag_info': get_tag_info,
     }
 
-    print(f'processing: {path}/FleurInputSchema.xsd')
-    xmlschema = etree.parse(f'{path}/FleurInputSchema.xsd')
+    #print(f'processing: {path}/FleurInputSchema.xsd')
+    xmlschema = etree.parse(path)
     xmlschema = clear_xml(xmlschema)
 
     namespaces = {'xsd': 'http://www.w3.org/2001/XMLSchema'}
@@ -119,6 +120,8 @@ def load_inpschema(version, schema_return=False, create=True, parser_info_out=No
 
     :return: python dictionary with the schema information
     """
+
+    warnings.warn('load_inpschema is deprecated. Use masci_tools.io.parsers.fleur.fleur_schema.InputSchemaDict.fromVersion() instead', DeprecationWarning)
     if parser_info_out is None:
         parser_info_out = {'parser_warnings': []}
 
@@ -158,7 +161,7 @@ def load_inpschema(version, schema_return=False, create=True, parser_info_out=No
         if create:
             parser_info_out['parser_warnings'].append(
                 f'Generating schema_dict file for given input schema: {schema_file_path}')
-            create_inpschema_dict(path)
+            create_inpschema_dict(os.path.join(path,'FleurInputSchema.xsd'))
         else:
             raise FileNotFoundError(f'No inpschema_dict generated for FleurInputSchema.xsd at {path}')
 
