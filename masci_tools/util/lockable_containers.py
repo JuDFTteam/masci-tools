@@ -1,11 +1,31 @@
 # -*- coding: utf-8 -*-
-
+###############################################################################
+# Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
+#                All rights reserved.                                         #
+# This file is part of the Masci-tools package.                               #
+# (Material science tools)                                                    #
+#                                                                             #
+# The code is hosted on GitHub at https://github.com/judftteam/masci-tools    #
+# For further information on the license, see the LICENSE.txt file            #
+# For further information please visit http://www.flapw.de or                 #
+#                                                                             #
+###############################################################################
+"""
+This module defines subclasses of UserDict and UserList to be able to prevent
+unintended modifications
+"""
 from collections import UserDict, UserList
 from contextlib import contextmanager
 
 
 @contextmanager
 def LockContainer(lock_object):
+    """
+    Contextmanager for temporarily locking a lockable object. Object is unfrozen
+    when exiting with block
+
+    :param lock_object: lockable container (not yet frzen)
+    """
 
     assert isinstance(lock_object, (LockableDict, LockableList)), f'Wrong type Got: {lock_object.__class__}'
 
@@ -23,6 +43,23 @@ def LockContainer(lock_object):
 
 
 class LockableDict(UserDict):
+    """
+    Subclass of UserDict, which can prevent modifications to itself.
+    Raises `RuntimeError` if modification is attempted.
+
+    Use :py:meth:`LockableDict.freeze()` to enforce. :py:meth:`LockableDict.get_unlocked()`
+    returns a copy of the locked object with builtin lists and dicts
+
+    :param recursive: bool if True (default) all subitems (lists or dicts) are converted into their
+                      lockable counterparts
+
+    All other args or kwargs will be passed on to initialize the `UserDict`
+
+    IMPORTANT NOTE:
+        This is not a direct subclass of dict. So isinstance(a, dict)
+        will be False if a is an LockableDict
+
+    """
 
     def __init__(self, *args, recursive=True, **kwargs):
         self._locked = False
@@ -47,6 +84,9 @@ class LockableDict(UserDict):
             super().__setitem__(key, value)
 
     def freeze(self):
+        """
+        Freezes the object. This prevents further modifications
+        """
         self.__freeze()
 
     def __freeze(self):
@@ -72,7 +112,9 @@ class LockableDict(UserDict):
         self._locked = False
 
     def get_unlocked(self):
-
+        """
+        Get copy of object with builtin lists and dicts
+        """
         if self._recursive:
             ret_dict = {}
             for key, value in self.items():
@@ -89,7 +131,23 @@ class LockableDict(UserDict):
 
 
 class LockableList(UserList):
+    """
+    Subclass of UserList, which can prevent modifications to itself.
+    Raises `RuntimeError` if modification is attempted.
 
+    Use :py:meth:`LockableList.freeze()` to enforce. :py:meth:`LockableList.get_unlocked()`
+    returns a copy of the locked object with builtin lists and dicts
+
+    :param recursive: bool if True (default) all subitems (lists or dicts) are converted into their
+                      lockable counterparts
+
+    All other args or kwargs will be passed on to initialize the `UserList`
+
+    IMPORTANT NOTE:
+        This is not a direct subclass of list. So isinstance(a, list)
+        will be False if a is an LockableList
+
+    """
     def __init__(self, *args, recursive=True, **kwargs):
         self._locked = False
         self._recursive = recursive
@@ -129,10 +187,16 @@ class LockableList(UserList):
         super().insert(i, item)
 
     def pop(self, i=-1):
+        """
+
+        """
         self.__check_lock()
         super().pop(i=i)
 
     def clear(self):
+        """
+
+        """
         self.__check_lock()
         super().clear()
 
@@ -149,6 +213,9 @@ class LockableList(UserList):
         super().extend(other)
 
     def freeze(self):
+        """
+        Freezes the object. This prevents further modifications
+        """
         self.__freeze()
 
     def __freeze(self):
@@ -173,7 +240,9 @@ class LockableList(UserList):
         self._locked = False
 
     def get_unlocked(self):
-
+        """
+        Get copy of object with builtin lists and dicts
+        """
         if self._recursive:
             ret_list = []
             for value in self:
