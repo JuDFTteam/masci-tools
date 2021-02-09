@@ -148,6 +148,7 @@ class LockableList(UserList):
         will be False if a is an LockableList
 
     """
+
     def __init__(self, *args, recursive=True, **kwargs):
         self._locked = False
         self._recursive = recursive
@@ -188,14 +189,14 @@ class LockableList(UserList):
 
     def pop(self, i=-1):
         """
-
+        return the value at index i (default last) and remove it from list
         """
         self.__check_lock()
         super().pop(i=i)
 
     def clear(self):
         """
-
+        Clear the list
         """
         self.__check_lock()
         super().clear()

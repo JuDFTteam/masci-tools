@@ -19,7 +19,4 @@ from .outschema_todict import *
 from .add_fleur_schema import *
 from .schema_dict import *
 
-__all__ = [
-    'load_inpschema', 'load_outschema', 'create_inpschema_dict', 'create_outschema_dict',
-    'add_fleur_schema', 'InputSchemaDict', 'OutputSchemaDict'
-]
+__all__ = ['create_inpschema_dict', 'create_outschema_dict', 'add_fleur_schema', 'InputSchemaDict', 'OutputSchemaDict']

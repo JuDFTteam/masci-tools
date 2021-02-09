@@ -119,7 +119,12 @@ class SchemaDict(LockableDict):
         :returns: dict, tag_info for the found xpath
         :returns: str, xpath to the tag if `path_return=True`
         """
-        return get_tag_info(self, name, contains=contains, not_contains=not_contains, path_return=path_return, convert_to_builtin=convert_to_builtin)
+        return get_tag_info(self,
+                            name,
+                            contains=contains,
+                            not_contains=not_contains,
+                            path_return=path_return,
+                            convert_to_builtin=convert_to_builtin)
 
 
 class InputSchemaDict(SchemaDict):
