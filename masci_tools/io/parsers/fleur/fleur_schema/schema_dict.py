@@ -13,6 +13,13 @@ PACKAGE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 
 
 def _get_latest_available_version(output_schema):
+    """
+    Determine the newest available version for the schema
+
+    :param output_schema: bool, if True search for FleurOutputSchema.xsd otherwise FleurInputSchema.xsd
+
+    :returns: version string of the latest version
+    """
     latest_version = 0
     #Get latest version available
     for root, dirs, files in os.walk(PACKAGE_DIRECTORY):
@@ -79,7 +86,14 @@ class InputSchemaDict(SchemaDict):
 
     @classmethod
     def fromVersion(cls, version, parser_info_out=None):
+        """
+        load the FleurInputSchema dict for the specified version
 
+        :param version: str with the desired version, e.g. '0.33'
+        :param parser_info_out: dict with warnings, errors and information, ...
+
+        :return: InputSchemaDict object with the information for the provided version
+        """
         fleur_schema_path = f'./{version}/FleurInputSchema.xsd'
         schema_file_path = os.path.abspath(os.path.join(PACKAGE_DIRECTORY, fleur_schema_path))
 
@@ -110,8 +124,15 @@ class InputSchemaDict(SchemaDict):
 
     @classmethod
     def fromPath(cls, path):
+        """
+        load the FleurInputSchema dict for the specified FleurInputSchema file
 
-        schema_dict, version = create_inpschema_dict(path, save_to_file=False)
+        :param path: path to the input schema file
+        :param parser_info_out: dict with warnings, errors and information, ...
+
+        :return: InputSchemaDict object with the information for the provided file
+        """
+        schema_dict = create_inpschema_dict(path)
 
         xmlschema_doc = etree.parse(path)
         xmlschema = etree.XMLSchema(xmlschema_doc)
@@ -170,7 +191,15 @@ class OutputSchemaDict(SchemaDict):
 
     @classmethod
     def fromVersion(cls, version, inp_version=None, parser_info_out=None):
+        """
+        load the FleurOutputSchema dict for the specified version
 
+        :param version: str with the desired version, e.g. '0.33'
+        :param inp_version: str with the desired input version, e.g. '0.33' (defaults to version)
+        :param parser_info_out: dict with warnings, errors and information, ...
+
+        :return: OutputSchemaDict object with the information for the provided versions
+        """
         fleur_schema_path = f'./{version}/FleurOutputSchema.xsd'
         schema_file_path = os.path.abspath(os.path.join(PACKAGE_DIRECTORY, fleur_schema_path))
 
@@ -231,11 +260,20 @@ class OutputSchemaDict(SchemaDict):
 
     @classmethod
     def fromPath(cls, path, inp_path=None):
+        """
+        load the FleurOutputSchema dict for the specified paths
+
+        :param path: str path to the FleurOutputSchema file
+        :param inp_path: str path to the FleurInputSchema file (defaults to same folder as path)
+        :param parser_info_out: dict with warnings, errors and information, ...
+
+        :return: OutputSchemaDict object with the information for the provided files
+        """
 
         if inp_path is None:
             inp_path = path.replace('FleurOutputSchema', 'FleurInputSchema')
 
-        schema_dict, version = create_outschema_dict(path, inp_path=inp_path, save_to_file=False)
+        schema_dict = create_outschema_dict(path, inp_path=inp_path)
 
         with tempfile.TemporaryDirectory() as td:
             temp_input_schema_path = os.path.join(td, 'FleurInputSchema.xsd')
