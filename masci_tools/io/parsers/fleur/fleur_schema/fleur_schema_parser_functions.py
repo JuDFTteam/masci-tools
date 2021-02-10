@@ -13,7 +13,6 @@
 """
 functions to extract information about the fleur schema input or output
 """
-from lxml import etree
 from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict, CaseInsensitiveFrozenSet
 from functools import wraps
 
