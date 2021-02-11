@@ -333,11 +333,16 @@ def eval_xpath(node, xpath, parser_info_out=None, list_return=False, namespaces=
     if parser_info_out is None:
         parser_info_out = {'parser_warnings': []}
 
+    assert isinstance(node, (etree._Element, etree._ElementTree)), f'Wrong Type for xpath eval; Got: {type(node)}'
+
     if isinstance(node, etree._Element):
         if node.tag != xpath.split('/')[1] and xpath.split('/')[0] != '.':
             #absolute path with a different root tag than node
             if node.tag in xpath:
-                xpath = xpath.replace(xpath.split(node.tag)[-1] + node.tag, '.')
+                if '@' not in xpath:
+                    xpath = xpath + '/'
+                xpath = xpath.replace('/'.join(xpath.split(node.tag + '/')[:-1]) + node.tag, '.')
+                xpath = xpath.rstrip('/')
 
     try:
         if namespaces is not None:
