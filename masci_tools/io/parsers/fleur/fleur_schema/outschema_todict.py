@@ -91,8 +91,18 @@ def create_outschema_dict(path, inp_path=None, inpschema_dict=None):
 
     return schema_dict
 
-def merge_schema_dicts(inputschema_dict, outputschema_dict):
 
+def merge_schema_dicts(inputschema_dict, outputschema_dict):
+    """
+    Merge the information from the input schema into the outputschema
+    This combines the type information and adjusts the paths from the inputschema
+    to be valid in the out.xml file
+
+    :param inputschema_dict: schema dict for the input schema
+    :param outputschema_dict: schema dict for the output schema
+
+    :returns: schema dictionary with the information merged
+    """
     merged_outschema_dict = copy.deepcopy(outputschema_dict)
     merged_outschema_dict['inp_version'] = inputschema_dict['inp_version']
 
@@ -124,9 +134,11 @@ def merge_schema_dicts(inputschema_dict, outputschema_dict):
     if input_root_tag != outputschema_dict['input_tag']:
         merged_outschema_dict['tag_paths'].pop(input_root_tag)
 
-
     #Insert tag_info paths
-    new_tag_info_entries = {f"{input_tag_path}{path.replace(f'/{input_root_tag}','')}":info for path, info in inputschema_dict['tag_info'].items()}
+    new_tag_info_entries = {
+        f"{input_tag_path}{path.replace(f'/{input_root_tag}','')}": info
+        for path, info in inputschema_dict['tag_info'].items()
+    }
     merged_outschema_dict['tag_info'].update(new_tag_info_entries)
 
     for attrib, types in inputschema_dict['attrib_types'].items():
@@ -156,8 +168,7 @@ def merge_schema_dicts(inputschema_dict, outputschema_dict):
         else:
             merged_outschema_dict['simple_elements'][name] = definition
 
-    merged_outschema_dict['omitt_contained_tags'] = sorted(set(merged_outschema_dict.get('omitt_contained_tags')).union(inputschema_dict.get('omitt_contained_tags')))
+    merged_outschema_dict['omitt_contained_tags'] = sorted(
+        set(merged_outschema_dict.get('omitt_contained_tags')).union(inputschema_dict.get('omitt_contained_tags')))
 
     return merged_outschema_dict
-
-

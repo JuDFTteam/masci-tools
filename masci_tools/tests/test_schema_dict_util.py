@@ -162,7 +162,7 @@ def test_get_attrib_xpath_input():
 
     #Non existent tag in old version
     assert get_attrib_xpath(schema_dict_34,
-                            'l_mtNocoPot') == '/fleurInput/calculationSetup/magnetism/mtNocoParams/@l_mtNocoPot'
+                            'l_mtNocoPot', exclude=['other']) == '/fleurInput/calculationSetup/magnetism/mtNocoParams/@l_mtNocoPot'
     with pytest.raises(ValueError,
                        match='The attrib l_mtNocoPot has no possible paths with the current specification.'):
         get_attrib_xpath(schema_dict_27, 'l_mtNocoPot')
@@ -246,7 +246,10 @@ def test_get_attrib_xpath_exclude():
 
     schema_dict = schema_dict_34
 
-    assert get_attrib_xpath(schema_dict, 'alpha') == '/fleurInput/calculationSetup/scfLoop/@alpha'
+    with pytest.raises(ValueError,
+                       match='The attrib alpha has multiple possible paths with the current specification.'):
+        get_attrib_xpath(schema_dict, 'alpha') == '/fleurInput/calculationSetup/scfLoop/@alpha'
+
     assert get_attrib_xpath(schema_dict, 'alpha', exclude=['unique_path',
                                                            'other']) == '/fleurInput/calculationSetup/scfLoop/@alpha'
     with pytest.raises(ValueError,
@@ -381,8 +384,6 @@ def test_read_contants():
     from lxml import etree
     from masci_tools.util.schema_dict_util import read_constants
 
-    schema_dict = schema_dict_34
-
     VALID_INP_CONSTANTS_PATH = os.path.join(FILE_PATH, 'files/fleur/inp_with_constants.xml')
     INVALID_INP_CONSTANTS_PATH = os.path.join(FILE_PATH, 'files/fleur/inp_invalid_constants.xml')
     VALID_OUT_CONSTANTS_PATH = os.path.join(FILE_PATH, 'files/fleur/out_with_constants.xml')
@@ -406,14 +407,14 @@ def test_read_contants():
         'notPi': 3.0,
         'pm': 0.01889726124772898
     }
-    result = read_constants(root1, schema_dict)
+    result = read_constants(root1, schema_dict_34)
     assert result == expected_constants
 
-    result = read_constants(root2, schema_dict, replace_root=INPUT_TAG_34)
+    result = read_constants(root2, outschema_dict_34)
     assert result == expected_constants
 
     with pytest.raises(KeyError, match='Ambiguous definition of key Pi'):
-        result = read_constants(root3, schema_dict)
+        result = read_constants(root3, schema_dict_34)
 
 
 def test_evaluate_attribute():
@@ -470,13 +471,12 @@ def test_evaluate_attribute():
 
     assert pytest.approx(
         evaluate_attribute(outroot,
-                           schema_dict,
+                           outschema_dict_34,
                            'beta',
                            FLEUR_DEFINED_CONSTANTS,
                            exclude=['unique'],
                            contains='nocoParams',
-                           not_contains='species',
-                           replace_root=INPUT_TAG_34)) == [np.pi / 2.0, np.pi / 2.0]
+                           not_contains='species')) == [np.pi / 2.0, np.pi / 2.0]
 
     iteration = outroot.xpath('//iteration')[0]
 
@@ -529,7 +529,7 @@ def test_evaluate_text():
         assert pytest.approx(val) == result
 
     positions = evaluate_text(root, schema_dict, 'filmPos', FLEUR_DEFINED_CONSTANTS)
-    positions_out = evaluate_text(outroot, schema_dict, 'filmPos', FLEUR_DEFINED_CONSTANTS, replace_root=INPUT_TAG_34)
+    positions_out = evaluate_text(outroot, outschema_dict_34, 'filmPos', FLEUR_DEFINED_CONSTANTS)
 
     expected = [[0.0, 0.0, -0.9964250044], [0.5, 0.5, 0.9964250044]]
     for val, result in zip(positions, expected):
@@ -560,6 +560,7 @@ def test_evaluate_text():
     parser_info_out = {'parser_warnings': []}
     assert evaluate_text(root, schema_dict, 'magnetism', FLEUR_DEFINED_CONSTANTS,
                          parser_info_out=parser_info_out) is None
+    assert parser_info_out == expected_info
 
 
 def test_evaluate_tag():
@@ -613,11 +614,10 @@ def test_evaluate_tag():
     assert mtRadii == expected
 
     mtRadii = evaluate_tag(outroot,
-                           schema_dict,
+                           outschema_dict_34,
                            'mtSphere',
                            FLEUR_DEFINED_CONSTANTS,
-                           contains='species',
-                           replace_root=INPUT_TAG_34)
+                           contains='species')
     assert mtRadii == expected
 
     expected = {
@@ -721,8 +721,6 @@ def test_evaluate_parent_tag():
     from lxml import etree
     from masci_tools.util.schema_dict_util import evaluate_parent_tag
 
-    schema_dict = schema_dict_34
-
     parser = etree.XMLParser(attribute_defaults=True, recover=False, encoding='utf-8')
     xmltree = etree.parse(TEST_OUTXML_PATH, parser)
     root = xmltree.getroot()
@@ -733,33 +731,30 @@ def test_evaluate_parent_tag():
         'name': ['Ga-1', 'Ga-1', 'As-2', 'As-2']
     }
     ldaU_species = evaluate_parent_tag(root,
-                                       schema_dict,
+                                       outschema_dict_34,
                                        'ldaU',
                                        FLEUR_DEFINED_CONSTANTS,
-                                       contains='species',
-                                       replace_root=INPUT_TAG_34)
+                                       contains='species')
     pprint(ldaU_species)
     assert ldaU_species == expected
 
     expected = {'atomicNumber': [31, 31, 33, 33], 'name': ['Ga-1', 'Ga-1', 'As-2', 'As-2']}
     ldaU_species = evaluate_parent_tag(root,
-                                       schema_dict,
+                                       outschema_dict_34,
                                        'ldaU',
                                        FLEUR_DEFINED_CONSTANTS,
                                        contains='species',
-                                       only_required=True,
-                                       replace_root=INPUT_TAG_34)
+                                       only_required=True)
     pprint(ldaU_species)
     assert ldaU_species == expected
 
     expected = {'name': ['Ga-1', 'Ga-1', 'As-2', 'As-2']}
     ldaU_species = evaluate_parent_tag(root,
-                                       schema_dict,
+                                       outschema_dict_34,
                                        'ldaU',
                                        FLEUR_DEFINED_CONSTANTS,
                                        contains='species',
                                        only_required=True,
-                                       replace_root=INPUT_TAG_34,
                                        ignore=['atomicNumber'])
     pprint(ldaU_species)
     assert ldaU_species == expected
@@ -787,8 +782,8 @@ def test_tag_exists():
     assert not tag_exists(root, schema_dict, 'ldaU', contains='species')
     assert tag_exists(root, schema_dict, 'ldaU', not_contains='atom')
 
-    assert not tag_exists(outroot, schema_dict, 'ldaU', contains='species', replace_root=INPUT_TAG_34)
-    assert tag_exists(outroot, schema_dict, 'ldaU', not_contains='atom', replace_root=INPUT_TAG_34)
+    assert not tag_exists(outroot, outschema_dict_34, 'ldaU', contains='species')
+    assert tag_exists(outroot, outschema_dict_34, 'ldaU', not_contains='atom')
 
     with pytest.raises(ValueError, match='The tag ldaU has multiple possible paths with the current specification.'):
         tag_exists(root, schema_dict, 'ldaU')
@@ -817,8 +812,8 @@ def test_get_number_of_nodes():
     assert get_number_of_nodes(root, schema_dict, 'ldaU', contains='species') == 0
     assert get_number_of_nodes(root, schema_dict, 'ldaU', not_contains='atom') == 1
 
-    assert get_number_of_nodes(outroot, schema_dict, 'filmPos', replace_root=INPUT_TAG_34) == 2
-    assert get_number_of_nodes(outroot, schema_dict, 'calculationSetup', replace_root=INPUT_TAG_34) == 1
+    assert get_number_of_nodes(outroot, outschema_dict_34, 'filmPos') == 2
+    assert get_number_of_nodes(outroot, outschema_dict_34, 'calculationSetup') == 1
 
     with pytest.raises(ValueError, match='The tag ldaU has multiple possible paths with the current specification.'):
         get_number_of_nodes(root, schema_dict, 'ldaU')

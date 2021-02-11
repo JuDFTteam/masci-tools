@@ -262,12 +262,7 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
     return out_dict
 
 
-def parse_general_information(root,
-                              parser,
-                              outschema_dict,
-                              iteration_to_parse=None,
-                              parser_info_out=None,
-                              **kwargs):
+def parse_general_information(root, parser, outschema_dict, iteration_to_parse=None, parser_info_out=None, **kwargs):
     """
     Parses the information from the out.xml outside scf iterations
 

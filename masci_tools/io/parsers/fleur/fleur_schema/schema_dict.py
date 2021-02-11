@@ -328,7 +328,9 @@ class OutputSchemaDict(SchemaDict):
             return cls.__schema_dict_cache[version_hash]
 
         inpschema_dict = InputSchemaDict.fromVersion(inp_version, no_cache=no_cache)
-        cls.__schema_dict_cache[version_hash] = cls.fromPath(schema_file_path, inp_path=inpschema_file_path, inpschema_dict=inpschema_dict)
+        cls.__schema_dict_cache[version_hash] = cls.fromPath(schema_file_path,
+                                                             inp_path=inpschema_file_path,
+                                                             inpschema_dict=inpschema_dict)
 
         return cls.__schema_dict_cache[version_hash]
 
