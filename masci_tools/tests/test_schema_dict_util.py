@@ -17,8 +17,6 @@ schema_dict_31 = InputSchemaDict.fromVersion('0.31')
 outschema_dict_34 = OutputSchemaDict.fromVersion('0.34')
 outschema_dict_31 = OutputSchemaDict.fromVersion('0.31')
 
-INPUT_TAG_34 = outschema_dict_34['tag_paths'][outschema_dict_34['input_tag']]
-
 FILE_PATH = os.path.dirname(os.path.abspath(__file__))
 TEST_INPXML_PATH = os.path.join(FILE_PATH, 'files/fleur/Max-R5/FePt_film_SSFT_LO/files/inp2.xml')
 TEST_OUTXML_PATH = os.path.join(FILE_PATH, 'files/fleur/Max-R5/GaAsMultiUForceXML/files/out.xml')

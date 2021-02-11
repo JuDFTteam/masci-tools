@@ -96,7 +96,11 @@ def merge_schema_dicts(inputschema_dict, outputschema_dict):
     """
     Merge the information from the input schema into the outputschema
     This combines the type information and adjusts the paths from the inputschema
-    to be valid in the out.xml file
+    to be valid in the out.xml file, i.e. `/fleurInput/cell` becomes `/fleurOutput/fleurInput/cell`
+    or `/fleurOutput/inputData/cell` (depending on the version of the output)
+
+    `_basic_types` and `_input_basic_types` stay untouched since they should not be used outside
+    of the construction and are merely a informational entry
 
     :param inputschema_dict: schema dict for the input schema
     :param outputschema_dict: schema dict for the output schema
@@ -109,9 +113,10 @@ def merge_schema_dicts(inputschema_dict, outputschema_dict):
     input_tag_path = outputschema_dict['tag_paths'][outputschema_dict['input_tag']]
     input_root_tag = inputschema_dict['root_tag']
 
-    #Merge path entries
+    #
+    # 1. Merge path entries and modify the input paths
+    #
     path_entries = {'tag_paths', 'unique_attribs', 'unique_path_attribs', 'other_attribs'}
-
     for entry in path_entries:
         for key, val in inputschema_dict[entry].items():
 
@@ -131,16 +136,23 @@ def merge_schema_dicts(inputschema_dict, outputschema_dict):
             else:
                 merged_outschema_dict[entry][key] = new_paths
 
+    #Remove the root_tag of the input if it is different from the input tag in the out.xml
     if input_root_tag != outputschema_dict['input_tag']:
         merged_outschema_dict['tag_paths'].pop(input_root_tag)
 
-    #Insert tag_info paths
+    #
+    # 2. Insert tag_info paths (There is no possibility for overlap here)
+    #
     new_tag_info_entries = {
         f"{input_tag_path}{path.replace(f'/{input_root_tag}','')}": info
         for path, info in inputschema_dict['tag_info'].items()
     }
     merged_outschema_dict['tag_info'].update(new_tag_info_entries)
 
+
+    #
+    # 3. Merge the attribute type information
+    #
     for attrib, types in inputschema_dict['attrib_types'].items():
         out_types = set(merged_outschema_dict['attrib_types'].get(attrib, []))
 
@@ -151,6 +163,9 @@ def merge_schema_dicts(inputschema_dict, outputschema_dict):
 
         merged_outschema_dict['attrib_types'][attrib] = new_types
 
+    #
+    # 4. Merge the definition information for text tags
+    #
     for name, definition in inputschema_dict['simple_elements'].items():
         if name in merged_outschema_dict['simple_elements']:
             new_types = merged_outschema_dict['simple_elements'].get(name)
@@ -168,6 +183,9 @@ def merge_schema_dicts(inputschema_dict, outputschema_dict):
         else:
             merged_outschema_dict['simple_elements'][name] = definition
 
+    #
+    # 5. Merge the omittable tags
+    #
     merged_outschema_dict['omitt_contained_tags'] = sorted(
         set(merged_outschema_dict.get('omitt_contained_tags')).union(inputschema_dict.get('omitt_contained_tags')))
 
