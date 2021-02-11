@@ -17,7 +17,7 @@ from the fleur input and output xsd schema files
 from masci_tools.util.lockable_containers import LockableDict
 from masci_tools.util.schema_dict_util import get_tag_xpath, get_attrib_xpath, get_tag_info
 from .inpschema_todict import create_inpschema_dict
-from .outschema_todict import create_outschema_dict
+from .outschema_todict import create_outschema_dict, merge_schema_dicts
 import os
 import warnings
 import tempfile
@@ -158,7 +158,7 @@ class InputSchemaDict(SchemaDict):
     __version__ = '0.1.0'
 
     @classmethod
-    def fromVersion(cls, version, parser_info_out=None):
+    def fromVersion(cls, version, parser_info_out=None, no_cache=False):
         """
         load the FleurInputSchema dict for the specified version
 
@@ -188,7 +188,7 @@ class InputSchemaDict(SchemaDict):
                 fleur_schema_path = f'./{latest_version}/FleurInputSchema.xsd'
                 schema_file_path = os.path.abspath(os.path.join(PACKAGE_DIRECTORY, fleur_schema_path))
 
-        if version in cls.__schema_dict_cache:
+        if version in cls.__schema_dict_cache and not no_cache:
             return cls.__schema_dict_cache[version]
 
         cls.__schema_dict_cache[version] = cls.fromPath(schema_file_path)
@@ -263,7 +263,7 @@ class OutputSchemaDict(SchemaDict):
     __version__ = '0.1.0'
 
     @classmethod
-    def fromVersion(cls, version, inp_version=None, parser_info_out=None):
+    def fromVersion(cls, version, inp_version=None, parser_info_out=None, no_cache=False):
         """
         load the FleurOutputSchema dict for the specified version
 
@@ -324,7 +324,7 @@ class OutputSchemaDict(SchemaDict):
 
         version_hash = hash((version, inp_version))
 
-        if version_hash in cls.__schema_dict_cache:
+        if version_hash in cls.__schema_dict_cache and not no_cache:
             return cls.__schema_dict_cache[version_hash]
 
         cls.__schema_dict_cache[version_hash] = cls.fromPath(schema_file_path, inp_path=inpschema_file_path)
@@ -347,6 +347,9 @@ class OutputSchemaDict(SchemaDict):
             inp_path = path.replace('FleurOutputSchema', 'FleurInputSchema')
 
         schema_dict = create_outschema_dict(path, inp_path=inp_path)
+        inpschema_dict = create_inpschema_dict(inp_path)
+
+        schema_dict = merge_schema_dicts(inpschema_dict, schema_dict)
 
         with tempfile.TemporaryDirectory() as td:
             temp_input_schema_path = os.path.join(td, 'FleurInputSchema.xsd')

@@ -15,9 +15,9 @@ This module contains functions to load an fleur out.xml file, parse it with a sc
 and convert its content to a dict, based on the tasks given
 """
 from masci_tools.util.parse_tasks import ParseTasks
-from masci_tools.util.schema_dict_util import get_tag_xpath, tag_exists, read_constants, eval_simple_xpath
+from masci_tools.util.schema_dict_util import tag_exists, read_constants, eval_simple_xpath
 from masci_tools.util.xml.common_xml_util import eval_xpath, clear_xml
-from masci_tools.io.parsers.fleur.fleur_schema.schema_dict import InputSchemaDict, OutputSchemaDict
+from masci_tools.io.parsers.fleur.fleur_schema.schema_dict import OutputSchemaDict
 from lxml import etree
 from itertools import groupby
 import copy
@@ -142,14 +142,12 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
 
     #Load schema_dict (inp and out)
     outschema_dict = OutputSchemaDict.fromVersion(out_version, inp_version=inp_version, parser_info_out=parser_info_out)
-    dummy = {'parser_warnings': []}
-    inpschema_dict = InputSchemaDict.fromVersion(inp_version, parser_info_out=dummy)
 
     if outschema_dict['out_version'] != out_version or \
-       inpschema_dict['inp_version'] != inp_version:
+       outschema_dict['inp_version'] != inp_version:
         ignore_validation = True
         out_version = outschema_dict['out_version']
-        inp_version = inpschema_dict['inp_version']
+        inp_version = outschema_dict['inp_version']
 
     xmltree = clear_xml(xmltree)
     root = xmltree.getroot()
@@ -190,7 +188,6 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
     out_dict, constants = parse_general_information(root,
                                                     parser,
                                                     outschema_dict,
-                                                    inpschema_dict,
                                                     parser_info_out=parser_info_out,
                                                     iteration_to_parse=iteration_to_parse,
                                                     **kwargs)
@@ -268,7 +265,6 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
 def parse_general_information(root,
                               parser,
                               outschema_dict,
-                              inpschema_dict,
                               iteration_to_parse=None,
                               parser_info_out=None,
                               **kwargs):
@@ -281,7 +277,6 @@ def parse_general_information(root,
         :param root: etree Element for the root of the out.xml
         :param parser: ParseTasks object with all defined tasks
         :param outschema_dict: dict with the information parsed from the OutputSchema
-        :param inpschema_dict: dict with the information parsed from the InputSchema
         :param parser_info_out: dict, with warnings, info, errors, ...
 
     Kwargs:
@@ -294,8 +289,7 @@ def parse_general_information(root,
     if iteration_to_parse is None:
         iteration_to_parse = 'last'
 
-    input_tag_path = get_tag_xpath(outschema_dict, outschema_dict['input_tag'])
-    constants = read_constants(root, inpschema_dict, replace_root=input_tag_path)
+    constants = read_constants(root, outschema_dict)
 
     fleurmode = {
         'jspin': 1,
@@ -310,10 +304,9 @@ def parse_general_information(root,
     fleurmode = parser.perform_task('fleur_modes',
                                     root,
                                     fleurmode,
-                                    inpschema_dict,
+                                    outschema_dict,
                                     constants,
                                     parser_info_out=parser_info_out,
-                                    replace_root=input_tag_path,
                                     use_lists=False)
     parser_info_out['fleur_modes'] = fleurmode
 
@@ -336,20 +329,12 @@ def parse_general_information(root,
 
     for task in parser.general_tasks:
 
-        if task == 'general_out_info':
-            schema_dict = outschema_dict
-            replace_root = None
-        else:
-            schema_dict = inpschema_dict
-            replace_root = input_tag_path
-
         out_dict = parser.perform_task(task,
                                        root,
                                        out_dict,
-                                       schema_dict,
+                                       outschema_dict,
                                        constants,
                                        parser_info_out=parser_info_out,
-                                       replace_root=replace_root,
                                        use_lists=False)
 
     return out_dict, constants

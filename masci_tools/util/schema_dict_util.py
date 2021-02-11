@@ -76,12 +76,11 @@ def get_tag_xpath(schema_dict, name, contains=None, not_contains=None):
             for invalid in invalid_paths:
                 paths.remove(invalid)
 
-            if len(paths) == 1:
-                return paths[0]
-
             all_paths += paths
 
-    if len(all_paths) == 0:
+    if len(all_paths) == 1:
+        return all_paths[0]
+    elif len(all_paths) == 0:
         raise ValueError(f'The tag {name} has no possible paths with the current specification.\n'
                          f'contains: {contains}, not_contains: {not_contains}')
     else:
@@ -206,7 +205,9 @@ def get_attrib_xpath(schema_dict, name, contains=None, not_contains=None, exclud
 
             all_paths += paths
 
-    if len(all_paths) == 0:
+    if len(all_paths) == 1:
+        return all_paths[0]
+    elif len(all_paths) == 0:
         raise ValueError(f'The attrib {name} has no possible paths with the current specification.\n'
                          f'contains: {contains}, not_contains: {not_contains}, exclude {exclude}')
     else:

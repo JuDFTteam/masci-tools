@@ -121,24 +121,24 @@ output_dict:
     As-2/33:
       d:
         double_counting: FLL
-        j: '.90000'
-        u: '5.50000'
+        j: 0.9
+        u: 5.5
         unit: eV
       p:
         double_counting: FLL
-        j: '.90000'
-        u: '-6.50000'
+        j: 0.9
+        u: -6.5
         unit: eV
     Ga-1/31:
       d:
         double_counting: FLL
-        j: '.90000'
-        u: '8.00000'
+        j: 0.9
+        u: 8.0
         unit: eV
       p:
         double_counting: FLL
-        j: '.90000'
-        u: '-5.00000'
+        j: 0.9
+        u: -5.0
         unit: eV
     ldau_energy_correction:
     - -2.6668736615
