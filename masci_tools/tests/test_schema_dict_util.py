@@ -117,7 +117,7 @@ def test_get_tag_xpath_notcontains():
     with pytest.raises(ValueError, match='The tag ldaU has multiple possible paths with the current specification.'):
         get_tag_xpath(schema_dict, 'ldaU')
     with pytest.raises(ValueError, match='The tag ldaU has multiple possible paths with the current specification.'):
-        path = get_tag_xpath(schema_dict, 'ldaU', not_contains='calculationSetup')
+        get_tag_xpath(schema_dict, 'ldaU', not_contains='calculationSetup')
 
     assert get_tag_xpath(schema_dict, 'ldaU', not_contains='atom') == '/fleurInput/calculationSetup/ldaU'
     with pytest.raises(ValueError, match='The tag ldaU has multiple possible paths with the current specification.'):
@@ -161,8 +161,8 @@ def test_get_attrib_xpath_input():
     assert get_attrib_xpath(schema_dict_34, 'mode') == '/fleurInput/cell/bzIntegration/@mode'
 
     #Non existent tag in old version
-    assert get_attrib_xpath(schema_dict_34,
-                            'l_mtNocoPot', exclude=['other']) == '/fleurInput/calculationSetup/magnetism/mtNocoParams/@l_mtNocoPot'
+    assert get_attrib_xpath(schema_dict_34, 'l_mtNocoPot',
+                            exclude=['other']) == '/fleurInput/calculationSetup/magnetism/mtNocoParams/@l_mtNocoPot'
     with pytest.raises(ValueError,
                        match='The attrib l_mtNocoPot has no possible paths with the current specification.'):
         get_attrib_xpath(schema_dict_27, 'l_mtNocoPot')
@@ -613,11 +613,7 @@ def test_evaluate_tag():
     mtRadii = evaluate_tag(root, schema_dict, 'mtSphere', FLEUR_DEFINED_CONSTANTS, contains='species')
     assert mtRadii == expected
 
-    mtRadii = evaluate_tag(outroot,
-                           outschema_dict_34,
-                           'mtSphere',
-                           FLEUR_DEFINED_CONSTANTS,
-                           contains='species')
+    mtRadii = evaluate_tag(outroot, outschema_dict_34, 'mtSphere', FLEUR_DEFINED_CONSTANTS, contains='species')
     assert mtRadii == expected
 
     expected = {
@@ -730,11 +726,7 @@ def test_evaluate_parent_tag():
         'element': ['Ga', 'Ga', 'As', 'As'],
         'name': ['Ga-1', 'Ga-1', 'As-2', 'As-2']
     }
-    ldaU_species = evaluate_parent_tag(root,
-                                       outschema_dict_34,
-                                       'ldaU',
-                                       FLEUR_DEFINED_CONSTANTS,
-                                       contains='species')
+    ldaU_species = evaluate_parent_tag(root, outschema_dict_34, 'ldaU', FLEUR_DEFINED_CONSTANTS, contains='species')
     pprint(ldaU_species)
     assert ldaU_species == expected
 
