@@ -127,7 +127,7 @@ jobs:
         run: |
           pip install wheel
           python setup.py sdist bdist_wheel
-      - name: Publish ot PyPi
+      - name: Publish to PyPi
         uses: pypa/gh-action-pypi-publish@v1.1.0
         with:
           user: __token__
