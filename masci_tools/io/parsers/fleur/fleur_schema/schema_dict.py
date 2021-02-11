@@ -327,12 +327,13 @@ class OutputSchemaDict(SchemaDict):
         if version_hash in cls.__schema_dict_cache and not no_cache:
             return cls.__schema_dict_cache[version_hash]
 
-        cls.__schema_dict_cache[version_hash] = cls.fromPath(schema_file_path, inp_path=inpschema_file_path)
+        inpschema_dict = InputSchemaDict.fromVersion(inp_version, no_cache=no_cache)
+        cls.__schema_dict_cache[version_hash] = cls.fromPath(schema_file_path, inp_path=inpschema_file_path, inpschema_dict=inpschema_dict)
 
         return cls.__schema_dict_cache[version_hash]
 
     @classmethod
-    def fromPath(cls, path, inp_path=None):
+    def fromPath(cls, path, inp_path=None, inpschema_dict=None):
         """
         load the FleurOutputSchema dict for the specified paths
 
@@ -346,9 +347,10 @@ class OutputSchemaDict(SchemaDict):
         if inp_path is None:
             inp_path = path.replace('FleurOutputSchema', 'FleurInputSchema')
 
-        schema_dict = create_outschema_dict(path, inp_path=inp_path)
-        inpschema_dict = create_inpschema_dict(inp_path)
+        if inpschema_dict is None:
+            inpschema_dict = create_inpschema_dict(inp_path)
 
+        schema_dict = create_outschema_dict(path, inpschema_dict=inpschema_dict)
         schema_dict = merge_schema_dicts(inpschema_dict, schema_dict)
 
         with tempfile.TemporaryDirectory() as td:
