@@ -153,6 +153,13 @@ class LockableList(UserList):
         self._locked = False
         self._recursive = recursive
         super().__init__(*args, **kwargs)
+        if self._recursive:
+            #Convert sublists and subdicts into Lockable counterparts (super__init__ just copies the values)
+            for indx, item in enumerate(self):
+                if isinstance(item, list):
+                    super().__setitem__(indx, LockableList(item, recursive=self._recursive))
+                elif isinstance(item, dict):
+                    super().__setitem__(indx, LockableDict(item, recursive=self._recursive))
 
     def __check_lock(self):
         if self._locked:
