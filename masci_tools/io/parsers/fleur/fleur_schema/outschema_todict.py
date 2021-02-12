@@ -149,7 +149,6 @@ def merge_schema_dicts(inputschema_dict, outputschema_dict):
     }
     merged_outschema_dict['tag_info'].update(new_tag_info_entries)
 
-
     #
     # 3. Merge the attribute type information
     #

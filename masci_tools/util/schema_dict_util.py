@@ -576,7 +576,7 @@ def evaluate_parent_tag(node, schema_dict, name, constants, parser_info_out=None
     else:
         attribs = sorted(list(attribs.original_case.values()))
 
-    elems = eval_xpath(node, tag_xpath, parser_info_out=parser_info_out)
+    elems = eval_xpath(node, tag_xpath, parser_info_out=parser_info_out, list_return=True)
 
     out_dict = dict.fromkeys(attribs)
     for attrib in attribs:
@@ -606,6 +606,9 @@ def evaluate_parent_tag(node, schema_dict, name, constants, parser_info_out=None
                                                           'Below are the warnings from convert_xml_attribute')
                 for warning in warnings:
                     parser_info_out['parser_warnings'].append(warning)
+
+    if all([len(x) == 1 for x in out_dict.values()]):
+        out_dict = {key: val[0] for key, val in out_dict.items()}
 
     return out_dict
 

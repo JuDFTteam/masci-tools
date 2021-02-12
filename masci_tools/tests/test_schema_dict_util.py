@@ -246,7 +246,7 @@ def test_get_attrib_xpath_exclude():
 
     with pytest.raises(ValueError,
                        match='The attrib alpha has multiple possible paths with the current specification.'):
-        get_attrib_xpath(schema_dict, 'alpha') == '/fleurInput/calculationSetup/scfLoop/@alpha'
+        get_attrib_xpath(schema_dict, 'alpha')
 
     assert get_attrib_xpath(schema_dict, 'alpha', exclude=['unique_path',
                                                            'other']) == '/fleurInput/calculationSetup/scfLoop/@alpha'
@@ -809,3 +809,42 @@ def test_get_number_of_nodes():
         get_number_of_nodes(root, schema_dict, 'ldaU')
     with pytest.raises(ValueError, match='The tag ldaU has no possible paths with the current specification.'):
         get_number_of_nodes(root, schema_dict, 'ldaU', contains='group')
+
+
+def test_schema_dict_util_abs_to_rel_path():
+    """
+    Test of the absolute to relative xpath conversion in schema_dict_util functions
+    """
+    from lxml import etree
+    from masci_tools.util.schema_dict_util import eval_simple_xpath, get_number_of_nodes, tag_exists, \
+                                                  evaluate_attribute, evaluate_tag, evaluate_parent_tag, \
+                                                  evaluate_text
+
+    schema_dict = schema_dict_34
+
+    parser = etree.XMLParser(attribute_defaults=True, recover=False, encoding='utf-8')
+    root = etree.parse(TEST_INPXML_PATH, parser).getroot()
+
+    species = eval_simple_xpath(root, schema_dict, 'species')
+
+    assert tag_exists(species[0], schema_dict, 'lo')
+    assert tag_exists(species[1], schema_dict, 'lo')
+
+    assert get_number_of_nodes(species[0], schema_dict, 'lo') == 2
+    assert get_number_of_nodes(species[1], schema_dict, 'lo') == 1
+
+    assert evaluate_attribute(species[0], schema_dict, 'name', constants=FLEUR_DEFINED_CONSTANTS) == 'Fe-1'
+
+    assert evaluate_text(species[0], schema_dict, 'coreConfig', constants=FLEUR_DEFINED_CONSTANTS) == ['[Ne]']
+
+    assert evaluate_tag(species[1], schema_dict, 'lo', constants=FLEUR_DEFINED_CONSTANTS) == {
+        'eDeriv': 0,
+        'l': 1,
+        'n': 5,
+        'type': 'SCLO'
+    }
+    assert evaluate_parent_tag(species[1], schema_dict, 'lo', constants=FLEUR_DEFINED_CONSTANTS) == {
+        'atomicNumber': 78,
+        'element': 'Pt',
+        'name': 'Pt-1'
+    }
