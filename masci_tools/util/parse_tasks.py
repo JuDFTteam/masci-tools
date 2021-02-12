@@ -289,15 +289,7 @@ class ParseTasks(object):
             else:
                 self._iteration_tasks.append(task_name)
 
-    def perform_task(self,
-                     task_name,
-                     node,
-                     out_dict,
-                     schema_dict,
-                     constants,
-                     parser_info_out=None,
-                     replace_root=None,
-                     use_lists=True):
+    def perform_task(self, task_name, node, out_dict, schema_dict, constants, parser_info_out=None, use_lists=True):
         """
         Evaluates the task given in the tasks_definition dict
 
@@ -331,9 +323,6 @@ class ParseTasks(object):
 
             args = spec['path_spec'].copy()
             args['constants'] = constants
-
-            if replace_root is not None:
-                args['replace_root'] = replace_root
 
             if 'only_required' in spec:
                 args['only_required'] = spec['only_required']

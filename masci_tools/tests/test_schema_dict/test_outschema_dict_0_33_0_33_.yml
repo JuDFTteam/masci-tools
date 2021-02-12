@@ -355,67 +355,279 @@ _input_basic_types:
     - string
     length: 1
 attrib_types:
+  all_atoms:
+  - switch
+  alpha:
+  - float
+  - float_expression
+  alpha_ex:
+  - float
+  analytical_cont:
+  - switch
   angles:
   - int
   atomicnumber:
   - int
+  atomlist:
+  - switch
   atomtype:
   - int
+  autocomp:
+  - switch
+  b_cons_x:
+  - float_expression
+  b_cons_y:
+  - float_expression
+  b_field:
+  - float_expression
+  b_field_mt:
+  - float_expression
+  band:
+  - switch
+  banddos:
+  - switch
+  bands:
+  - int
+  beta:
+  - float
+  - float_expression
+  beta_ex:
+  - float
+  bmt:
+  - switch
   branch:
   - string
   branchhighest:
   - float
   branchlowest:
   - float
+  bscomf:
+  - switch
+  calculate:
+  - switch
+  cartesian:
+  - switch
+  cdinf:
+  - switch
+  chargedensity:
+  - switch
+  chi:
+  - int
+  chng:
+  - float
   comment:
   - string
   configs:
   - int
+  corespec:
+  - switch
+  coretail_lmax:
+  - int
+  correlation:
+  - int
+  - string
   count:
   - int
+  ctail:
+  - switch
   d:
   - float
+  - int
+  - switch
+  d1:
+  - switch
   date:
   - string
   delta:
   - float
+  dftspinpol:
+  - switch
+  dirichlet:
+  - switch
+  disp:
+  - switch
   distance:
   - float
+  dos:
+  - switch
+  dtilda:
+  - float_expression
+  dvac:
+  - float_expression
+  eb:
+  - float
+  ederiv:
+  - int
+  edgetype:
+  - string
+  eig66:
+  - switch
   eigvalsum:
+  - float
+  ekin:
+  - float
+  element:
+  - string
+  ellow:
+  - float
+  elup:
+  - float
+  emax:
+  - float
+  emin:
   - float
   energy:
   - float
+  - float_expression
+  energylo:
+  - float
+  energyup:
+  - float
+  eonly:
+  - switch
+  epsdisp:
+  - float_expression
+  epsforce:
+  - float_expression
+  et:
+  - float
+  etot_correlation:
+  - int
+  - string
+  etot_exchange:
+  - int
+  - string
+  ev:
+  - switch
   ev-sum:
   - float
+  ewaldlambda:
+  - int
+  exchange:
+  - int
+  - string
   f:
   - float
+  - int
+  - switch
+  f_level:
+  - int
   f_x:
   - float
   f_y:
   - float
   f_z:
   - float
+  fermismearingenergy:
+  - float_expression
+  fermismearingtemp:
+  - float_expression
+  file:
+  - string
+  fixed_moment:
+  - float_expression
   flag:
+  - string
+  fleurinputversion:
   - string
   fleuroutputversion:
   - string
+  flipspinphi:
+  - float_expression
+  flipspinscale:
+  - switch
+  flipspintheta:
+  - float_expression
+  force_converged:
+  - float_expression
+  forcealpha:
+  - float_expression
+  forcemix:
+  - string
+  form66:
+  - switch
+  format:
+  - int
+  frcor:
+  - switch
+  fullmatch:
+  - switch
+  functional:
+  - string
+  gamma:
+  - float_expression
+  gcutm:
+  - float
+  gmax:
+  - float_expression
+  gmaxxc:
+  - float_expression
+  grid:
+  - string
+  gridpoints:
+  - int
+  gw:
+  - int
   h_so:
   - float
   host:
   - string
+  i_initial:
+  - float
   iatom:
+  - int
+  idsprs:
+  - int
+  idsprs0:
+  - int
+  idsprsi:
+  - int
+  idsprsl:
+  - int
+  idsprsv:
+  - float
+  iggachk:
+  - int
+  igrd:
   - int
   ikpt:
   - int
+  imix:
+  - string
   index:
   - int
+  init_mom:
+  - float
+  - string
+  init_occ:
+  - float
+  - string
+  integ:
+  - switch
   interstitial:
   - float
+  intfullradial:
+  - switch
+  invs1:
+  - switch
+  iplot:
+  - int
+  isec1:
+  - int
+  itmax:
+  - int
+  itmaxhubbard1:
+  - int
   j:
   - float
+  - float_expression
   jatom:
   - int
+  jdos:
+  - switch
   jmtd:
+  - int
+  jspins:
   - int
   k_x:
   - float
@@ -423,30 +635,180 @@ attrib_types:
   - float
   k_z:
   - float
+  kcrel:
+  - int
+  key:
+  - string
   kinenergy:
   - float
+  kkintgrcutoff:
+  - float
+  - string
+  kmax:
+  - float_expression
   kpoint:
   - int
   l:
   - int
+  l_adjenpara:
+  - switch
+  l_amf:
+  - switch
+  l_bloechl:
+  - switch
+  l_constrained:
+  - switch
+  l_core_confpot:
+  - switch
+  l_correctetot:
+  - switch
+  l_eigout:
+  - switch
+  l_f:
+  - switch
+  l_fermi:
+  - switch
+  l_j:
+  - switch
+  l_linmix:
+  - switch
+  l_magn:
+  - switch
+  l_mperp:
+  - switch
+  l_mtnocopot:
+  - switch
+  l_noco:
+  - switch
+  l_nonsphdc:
+  - switch
+  l_onlymtstden:
+  - switch
+  l_potout:
+  - switch
+  l_rdmft:
+  - switch
+  l_relaxsqa:
+  - switch
+  l_resolvent:
+  - switch
+  l_scalemag:
+  - switch
+  l_soc:
+  - switch
+  l_sourcefree:
+  - switch
+  l_sphavg:
+  - switch
+  l_ss:
+  - switch
+  label:
+  - string
   lastcommithash:
   - string
+  lcutm:
+  - int
+  lcutwf:
+  - int
+  lda:
+  - switch
+  lexp:
+  - int
+  lflip:
+  - switch
   link:
   - string
+  listname:
+  - string
+  lmax:
+  - int
+  lmaxapw:
+  - int
   lmaxd:
   - int
+  lnonsphr:
+  - int
+  locx1:
+  - float_expression
+  locx2:
+  - float_expression
+  locy1:
+  - float_expression
+  locy2:
+  - float_expression
   logderivmt:
   - float
+  logincrement:
+  - float_expression
   lostelectrons:
   - float
+  lpr:
+  - int
+  lwb:
+  - switch
+  m:
+  - float_expression
+  - int
+  m_cyl:
+  - int
+  mag_mixing_scheme:
+  - int
+  mag_scale:
+  - float_expression
+  magfield:
+  - float
+  magmom:
+  - float_expression
+  maxeigenval:
+  - float_expression
+  maxenergy:
+  - float_expression
+  maxiterbroyd:
+  - int
+  maxspindown:
+  - int
+  maxspinup:
+  - int
+  maxtimetostartiter:
+  - float_expression
+  mcd:
+  - switch
   memorypernode:
   - string
   message:
+  - string
+  mincalcdistance:
+  - float
+  mindistance:
+  - float_expression
+  mineigenval:
+  - float_expression
+  minenergy:
+  - float_expression
+  minmatdistance:
+  - float
+  minoccdistance:
+  - float
+  minspindown:
+  - int
+  minspinup:
+  - int
+  mix_constr:
+  - float_expression
+  mix_relaxweightoffd:
+  - float_expression
+  mixparam:
+  - float
+  mm:
+  - int
+  mode:
   - string
   moment:
   - float
   mpiprocesses:
   - string
+  ms:
+  - switch
   mtradius:
   - float
   mtspheres:
@@ -455,7 +817,15 @@ attrib_types:
   - float
   n:
   - int
+  n1:
+  - int
+  n2:
+  - int
+  n3:
+  - int
   n_hia:
+  - int
+  n_occpm:
   - int
   n_u:
   - int
@@ -463,93 +833,266 @@ attrib_types:
   - string
   nat:
   - int
+  ndvgrd:
+  - int
+  ne:
+  - int
   ng2:
   - int
   ng3:
   - int
   nlotot:
   - int
+  nmatsub:
+  - int
+  nnne:
+  - int
   'no':
+  - int
+  nqphi:
+  - int
+  nqr:
+  - int
+  nshells:
+  - int
+  nstars:
+  - int
+  nstm:
   - int
   ntype:
   - int
   numbands:
   - int
+  - string
   numberforcurrentrun:
+  - int
+  numberpoints:
+  - int
+  numkpt:
+  - int
+  numpoints:
   - int
   nvd:
   - int
+  nx:
+  - int
+  ny:
+  - int
+  nz:
+  - int
+  occeps:
+  - float
   occupation:
   - float
+  'off':
+  - switch
   omegatilda:
   - float
   ompthreads:
   - string
+  onlymt:
+  - switch
+  orbcomp:
+  - switch
+  outputsphavg:
+  - switch
   overallnumber:
   - int
   p:
   - float
+  - int
+  - switch
+  pallst:
+  - switch
   phase:
   - switch
   phi:
   - float
+  - float_expression
+  plot_charge:
+  - switch
+  plot_rho:
+  - switch
+  polar:
+  - switch
+  pot8:
+  - switch
+  potential:
+  - switch
+  precondparam:
+  - float_expression
+  purpose:
+  - string
   q:
   - int
   - float
+  qfix:
+  - int
   qpoints:
   - int
   qvectors:
   - int
+  qx:
+  - int
+  qy:
+  - int
+  qz:
+  - int
+  radius:
+  - float_expression
+  relativisticcorrections:
+  - switch
+  relaxxyz:
+  - string
+  remove4f:
+  - switch
+  rot:
+  - int
   s:
   - float
+  - int
+  - switch
+  scale:
+  - float_expression
+  secvar:
+  - switch
+  select:
+  - string
+  sgwf:
+  - switch
+  sig_b_1:
+  - float_expression
+  sig_b_2:
+  - float_expression
+  sigma:
+  - float
+  - float_expression
   sigma_x:
   - float
   sigma_y:
   - float
   sigma_z:
   - float
+  slice:
+  - switch
+  soc66:
+  - switch
+  socgwf:
+  - switch
+  socscale:
+  - float
+  spav:
+  - switch
+  species:
+  - string
   spin:
   - int
+  spindown:
+  - float_expression
   spindowncharge:
   - float
+  spinf:
+  - float
+  - float_expression
+  spinup:
+  - float_expression
   spinupcharge:
   - float
+  star:
+  - switch
+  state:
+  - string
+  statesabove:
+  - int
+  statesbelow:
+  - int
+  supercellx:
+  - int
+  supercelly:
+  - int
+  supercellz:
+  - int
   surfacearea:
   - float
+  swsp:
+  - switch
   theta:
   - float
+  - float_expression
+  thetaj:
+  - float_expression
   time:
   - string
+  tolerance:
+  - float
   total:
   - float
+  twod:
+  - switch
+  tworkf:
+  - float_expression
   type:
   - string
+  typemt:
+  - int
   u:
   - float
+  - float_expression
   uindex:
   - int
+  unfoldband:
+  - switch
   unitcell:
   - float
   units:
   - string
   user:
   - string
+  vacdos:
+  - switch
   vacuum:
   - int
   vacuum1:
   - float
   vacuum2:
   - float
+  valenceelectrons:
+  - float_expression
   value:
   - float
+  - float_expression
+  - string
+  vca_charge:
+  - float_expression
+  vcaaddcharge:
+  - float
+  vchk:
+  - switch
+  vec1:
+  - string
+  vec2:
+  - string
+  vec3:
+  - string
+  vecfield:
+  - switch
+  verbose:
+  - switch
   version:
   - string
+  vm:
+  - int
   vzinf:
   - float
   vzir:
   - float
+  wannier:
+  - switch
+  warp_factor:
+  - float_expression
   weight:
   - float
+  - float_expression
   weightscale:
   - float
   x:
@@ -560,8 +1103,15 @@ attrib_types:
   - float
   z1:
   - float
+  zero:
+  - string
   zone:
   - string
+  zrfs1:
+  - switch
+  zsigma:
+  - float_expression
+inp_version: '0.33'
 input_tag: fleurInput
 iteration_other_attribs:
   atomicnumber:
@@ -2374,46 +2924,464 @@ iteration_unique_path_attribs:
   - ./Forcetheorem_DMI/@Angles
   - ./Forcetheorem_MAE/@Angles
 omitt_contained_tags:
-- scfLoop
+- atomGroups
+- atomSpecies
+- constants
+- displacements
 - eigenvalues
-- onSiteExchangeSplitting
-- noncollinearTorgue
-- spinorbitTorgue
+- kPointLists
 - ldaUDensityMatrix
 - ldaUDensityMatrixConvergence
+- noncollinearTorgue
+- onSiteExchangeSplitting
+- qVectors
+- relaxation-history
+- scfLoop
+- spinSpiralDispersion
+- spinorbitTorgue
+- symmetryOperations
 other_attribs:
+  abspos: /fleurOutput/fleurInput/atomGroups/atomGroup/absPos
+  alpha:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/absPos/@alpha
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/filmPos/@alpha
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/nocoParams/@alpha
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/relPos/@alpha
+  - /fleurOutput/fleurInput/atomSpecies/species/nocoParams/@alpha
+  - /fleurOutput/fleurInput/calculationSetup/greensFunction/contourSemicircle/@alpha
+  analytical_cont: /fleurOutput/fleurInput/calculationSetup/greensFunction/contourDOS/@analytical_cont
+  atomicnumber: /fleurOutput/fleurInput/atomSpecies/species/@atomicNumber
   atomtype:
   - /fleurOutput/numericalParameters/volumes/mtVolume/@atomType
+  b_cons_x:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/nocoParams/@b_cons_x
+  - /fleurOutput/fleurInput/atomSpecies/species/nocoParams/@b_cons_x
+  b_cons_y:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/nocoParams/@b_cons_y
+  - /fleurOutput/fleurInput/atomSpecies/species/nocoParams/@b_cons_y
+  b_field_mt: /fleurOutput/fleurInput/atomSpecies/species/special/@b_field_mt
+  banddos:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/absPos/@banddos
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/filmPos/@banddos
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/relPos/@banddos
+  beta:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/absPos/@beta
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/filmPos/@beta
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/nocoParams/@beta
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/relPos/@beta
+  - /fleurOutput/fleurInput/atomSpecies/species/nocoParams/@beta
+  calculate:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/force/@calculate
+  - /fleurOutput/fleurInput/atomSpecies/species/force/@calculate
+  cartesian: /fleurOutput/fleurInput/output/plotting/plot/@cartesian
+  chargedensity: /fleurOutput/fleurInput/atomGroups/atomGroup/cFCoeffs/@chargeDensity
+  coreconfig: /fleurOutput/fleurInput/atomSpecies/species/electronConfig/coreConfig
+  count: /fleurOutput/fleurInput/cell/bzIntegration/kPointLists/kPointList/@count
+  d:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/energyParameters/@d
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/greensfCalculation/diagElements/@d
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/greensfCalculation/matrixElements/d
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/torgueCalculation/greensfElements/d
+  - /fleurOutput/fleurInput/atomSpecies/species/energyParameters/@d
+  - /fleurOutput/fleurInput/atomSpecies/species/greensfCalculation/diagElements/@d
+  - /fleurOutput/fleurInput/atomSpecies/species/greensfCalculation/matrixElements/d
+  - /fleurOutput/fleurInput/atomSpecies/species/torgueCalculation/greensfElements/d
+  displace: /fleurOutput/fleurInput/relaxation/displacements/displace
+  eb:
+  - /fleurOutput/fleurInput/calculationSetup/greensFunction/contourDOS/@eb
+  - /fleurOutput/fleurInput/calculationSetup/greensFunction/contourRectangle/@eb
+  - /fleurOutput/fleurInput/calculationSetup/greensFunction/contourSemicircle/@eb
+  ederiv:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/lo/@eDeriv
+  - /fleurOutput/fleurInput/atomSpecies/species/lo/@eDeriv
+  element: /fleurOutput/fleurInput/atomSpecies/species/@element
+  energy: /fleurOutput/fleurInput/relaxation/relaxation-history/step/@energy
+  et:
+  - /fleurOutput/fleurInput/calculationSetup/greensFunction/contourDOS/@et
+  - /fleurOutput/fleurInput/calculationSetup/greensFunction/contourSemicircle/@et
+  f:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/energyParameters/@f
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/greensfCalculation/diagElements/@f
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/greensfCalculation/matrixElements/f
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/torgueCalculation/greensfElements/f
+  - /fleurOutput/fleurInput/atomSpecies/species/energyParameters/@f
+  - /fleurOutput/fleurInput/atomSpecies/species/greensfCalculation/diagElements/@f
+  - /fleurOutput/fleurInput/atomSpecies/species/greensfCalculation/matrixElements/f
+  - /fleurOutput/fleurInput/atomSpecies/species/torgueCalculation/greensfElements/f
+  file: /fleurOutput/fleurInput/output/plotting/plot/@file
+  filmpos: /fleurOutput/fleurInput/atomGroups/atomGroup/filmPos
+  flipspinphi:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/modInitDen/@flipSpinPhi
+  - /fleurOutput/fleurInput/atomSpecies/species/modInitDen/@flipSpinPhi
+  flipspinscale:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/modInitDen/@flipSpinScale
+  - /fleurOutput/fleurInput/atomSpecies/species/modInitDen/@flipSpinScale
+  flipspintheta:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/modInitDen/@flipSpinTheta
+  - /fleurOutput/fleurInput/atomSpecies/species/modInitDen/@flipSpinTheta
+  gamma:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/absPos/@gamma
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/filmPos/@gamma
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/relPos/@gamma
+  grid: /fleurOutput/fleurInput/output/plotting/plot/@grid
+  gridpoints:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/mtSphere/@gridPoints
+  - /fleurOutput/fleurInput/atomSpecies/species/mtSphere/@gridPoints
+  init_mom:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/ldaHIA/exc/@init_mom
+  - /fleurOutput/fleurInput/atomSpecies/species/ldaHIA/exc/@init_mom
+  init_occ:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/ldaHIA/@init_occ
+  - /fleurOutput/fleurInput/atomSpecies/species/ldaHIA/@init_occ
+  j:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/ldaHIA/@J
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/ldaHIA/exc/@J
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/ldaU/@J
+  - /fleurOutput/fleurInput/atomSpecies/species/ldaHIA/@J
+  - /fleurOutput/fleurInput/atomSpecies/species/ldaHIA/exc/@J
+  - /fleurOutput/fleurInput/atomSpecies/species/ldaU/@J
+  key:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/ldaHIA/addArg/@key
+  - /fleurOutput/fleurInput/atomSpecies/species/ldaHIA/addArg/@key
+  kkintgrcutoff:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/greensfCalculation/@kkintgrCutoff
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/ldaHIA/@kkintgrCutoff
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/torgueCalculation/@kkintgrCutoff
+  - /fleurOutput/fleurInput/atomSpecies/species/greensfCalculation/@kkintgrCutoff
+  - /fleurOutput/fleurInput/atomSpecies/species/ldaHIA/@kkintgrCutoff
+  - /fleurOutput/fleurInput/atomSpecies/species/torgueCalculation/@kkintgrCutoff
   kpoint:
+  - /fleurOutput/fleurInput/cell/bzIntegration/kPointLists/kPointList/kPoint
   - /fleurOutput/numericalParameters/kPointList/kPoint
+  l:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/ldaHIA/@l
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/ldaHIA/cFCoeff/@l
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/ldaHIA/exc/@l
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/ldaU/@l
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/lo/@l
+  - /fleurOutput/fleurInput/atomSpecies/species/ldaHIA/@l
+  - /fleurOutput/fleurInput/atomSpecies/species/ldaHIA/cFCoeff/@l
+  - /fleurOutput/fleurInput/atomSpecies/species/ldaHIA/exc/@l
+  - /fleurOutput/fleurInput/atomSpecies/species/ldaU/@l
+  - /fleurOutput/fleurInput/atomSpecies/species/lo/@l
+  l_amf:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/ldaHIA/@l_amf
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/ldaU/@l_amf
+  - /fleurOutput/fleurInput/atomSpecies/species/ldaHIA/@l_amf
+  - /fleurOutput/fleurInput/atomSpecies/species/ldaU/@l_amf
+  l_constrained:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/nocoParams/@l_constrained
+  - /fleurOutput/fleurInput/atomSpecies/species/nocoParams/@l_constrained
+  l_fermi: /fleurOutput/fleurInput/calculationSetup/greensFunction/contourDOS/@l_fermi
+  l_magn:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/nocoParams/@l_magn
+  - /fleurOutput/fleurInput/atomSpecies/species/nocoParams/@l_magn
+  l_mtnocopot:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/nocoParams/@l_mtNocoPot
+  - /fleurOutput/fleurInput/atomSpecies/species/nocoParams/@l_mtNocoPot
+  l_relaxsqa:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/nocoParams/@l_relaxSQA
+  - /fleurOutput/fleurInput/atomSpecies/species/nocoParams/@l_relaxSQA
+  l_sphavg:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/greensfCalculation/@l_sphavg
+  - /fleurOutput/fleurInput/atomSpecies/species/greensfCalculation/@l_sphavg
+  label:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/absPos/@label
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/filmPos/@label
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/greensfCalculation/@label
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/ldaHIA/@label
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/relPos/@label
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/torgueCalculation/@label
+  - /fleurOutput/fleurInput/atomSpecies/species/greensfCalculation/@label
+  - /fleurOutput/fleurInput/atomSpecies/species/ldaHIA/@label
+  - /fleurOutput/fleurInput/atomSpecies/species/torgueCalculation/@label
+  - /fleurOutput/fleurInput/calculationSetup/greensFunction/contourDOS/@label
+  - /fleurOutput/fleurInput/calculationSetup/greensFunction/contourRectangle/@label
+  - /fleurOutput/fleurInput/calculationSetup/greensFunction/contourSemicircle/@label
+  - /fleurOutput/fleurInput/cell/bzIntegration/kPointLists/kPointList/kPoint/@label
+  layer: /fleurOutput/fleurInput/output/vacuumDOS/layer
+  lcutm: /fleurOutput/fleurInput/atomSpecies/species/prodBasis/@lcutm
+  lcutwf: /fleurOutput/fleurInput/atomSpecies/species/prodBasis/@lcutwf
+  lda: /fleurOutput/fleurInput/atomSpecies/species/special/@lda
+  lmax:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/atomicCutoffs/@lmax
+  - /fleurOutput/fleurInput/atomSpecies/species/atomicCutoffs/@lmax
+  lmaxapw:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/atomicCutoffs/@lmaxAPW
+  - /fleurOutput/fleurInput/atomSpecies/species/atomicCutoffs/@lmaxAPW
+  lnonsphr:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/atomicCutoffs/@lnonsphr
+  - /fleurOutput/fleurInput/atomSpecies/species/atomicCutoffs/@lnonsphr
+  logincrement:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/mtSphere/@logIncrement
+  - /fleurOutput/fleurInput/atomSpecies/species/mtSphere/@logIncrement
+  m:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/ldaHIA/cFCoeff/@m
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/nocoParams/@M
+  - /fleurOutput/fleurInput/atomSpecies/species/ldaHIA/cFCoeff/@m
+  - /fleurOutput/fleurInput/atomSpecies/species/nocoParams/@M
+  magfield: /fleurOutput/fleurInput/atomGroups/atomGroup/@magField
+  magmom:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/modInitDen/@magMom
+  - /fleurOutput/fleurInput/atomSpecies/species/modInitDen/@magMom
   mtradius:
   - /fleurOutput/numericalParameters/volumes/mtVolume/@mtRadius
   mtvolume:
   - /fleurOutput/numericalParameters/volumes/mtVolume/@mtVolume
+  n:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/lo/@n
+  - /fleurOutput/fleurInput/atomSpecies/species/lo/@n
+  - /fleurOutput/fleurInput/calculationSetup/greensFunction/contourDOS/@n
+  - /fleurOutput/fleurInput/calculationSetup/greensFunction/contourSemicircle/@n
+  n1: /fleurOutput/fleurInput/calculationSetup/greensFunction/contourRectangle/@n1
+  n2: /fleurOutput/fleurInput/calculationSetup/greensFunction/contourRectangle/@n2
+  n3: /fleurOutput/fleurInput/calculationSetup/greensFunction/contourRectangle/@n3
+  name:
+  - /fleurOutput/fleurInput/atomSpecies/species/@name
+  - /fleurOutput/fleurInput/cell/bzIntegration/kPointLists/kPointList/@name
+  - /fleurOutput/fleurInput/constants/constant/@name
+  nmatsub: /fleurOutput/fleurInput/calculationSetup/greensFunction/contourRectangle/@nmatsub
+  nshells:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/greensfCalculation/@nshells
+  - /fleurOutput/fleurInput/atomSpecies/species/greensfCalculation/@nshells
+  nx: /fleurOutput/fleurInput/cell/bzIntegration/kPointLists/kPointList/@nx
+  ny: /fleurOutput/fleurInput/cell/bzIntegration/kPointLists/kPointList/@ny
+  nz: /fleurOutput/fleurInput/cell/bzIntegration/kPointLists/kPointList/@nz
+  onlymt: /fleurOutput/fleurInput/output/plotting/plot/@onlyMT
+  orbcomprot: /fleurOutput/fleurInput/atomGroups/atomGroup/orbcomprot
+  p:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/energyParameters/@p
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/greensfCalculation/diagElements/@p
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/greensfCalculation/matrixElements/p
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/torgueCalculation/greensfElements/p
+  - /fleurOutput/fleurInput/atomSpecies/species/energyParameters/@p
+  - /fleurOutput/fleurInput/atomSpecies/species/greensfCalculation/diagElements/@p
+  - /fleurOutput/fleurInput/atomSpecies/species/greensfCalculation/matrixElements/p
+  - /fleurOutput/fleurInput/atomSpecies/species/torgueCalculation/greensfElements/p
+  phi:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/ldaHIA/@phi
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/ldaU/@phi
+  - /fleurOutput/fleurInput/atomSpecies/species/ldaHIA/@phi
+  - /fleurOutput/fleurInput/atomSpecies/species/ldaU/@phi
+  posforce: /fleurOutput/fleurInput/relaxation/relaxation-history/step/posforce
+  potential: /fleurOutput/fleurInput/atomGroups/atomGroup/cFCoeffs/@potential
+  q:
+  - /fleurOutput/fleurInput/forceTheorem/DMI/qVectors/q
+  - /fleurOutput/fleurInput/forceTheorem/Jij/qVectors/q
+  - /fleurOutput/fleurInput/forceTheorem/spinSpiralDispersion/q
+  radius:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/mtSphere/@radius
+  - /fleurOutput/fleurInput/atomSpecies/species/mtSphere/@radius
+  relaxxyz:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/force/@relaxXYZ
+  - /fleurOutput/fleurInput/atomSpecies/species/force/@relaxXYZ
+  relpos: /fleurOutput/fleurInput/atomGroups/atomGroup/relPos
+  remove4f: /fleurOutput/fleurInput/atomGroups/atomGroup/cFCoeffs/@remove4f
+  row-1: /fleurOutput/fleurInput/cell/symmetryOperations/symOp/row-1
+  row-2: /fleurOutput/fleurInput/cell/symmetryOperations/symOp/row-2
+  row-3: /fleurOutput/fleurInput/cell/symmetryOperations/symOp/row-3
+  s:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/energyParameters/@s
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/greensfCalculation/diagElements/@s
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/greensfCalculation/matrixElements/s
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/torgueCalculation/greensfElements/s
+  - /fleurOutput/fleurInput/atomSpecies/species/energyParameters/@s
+  - /fleurOutput/fleurInput/atomSpecies/species/greensfCalculation/diagElements/@s
+  - /fleurOutput/fleurInput/atomSpecies/species/greensfCalculation/matrixElements/s
+  - /fleurOutput/fleurInput/atomSpecies/species/torgueCalculation/greensfElements/s
+  select: /fleurOutput/fleurInput/atomSpecies/species/prodBasis/@select
+  shape: /fleurOutput/fleurInput/calculationSetup/fields/shape
+  sigma:
+  - /fleurOutput/fleurInput/calculationSetup/greensFunction/contourDOS/@sigma
+  - /fleurOutput/fleurInput/calculationSetup/greensFunction/contourRectangle/@sigma
+  socscale: /fleurOutput/fleurInput/atomSpecies/species/special/@socscale
+  species: /fleurOutput/fleurInput/atomGroups/atomGroup/@species
+  spindown:
+  - /fleurOutput/fleurInput/atomSpecies/species/electronConfig/stateOccupation/@spinDown
+  - /fleurOutput/fleurInput/cell/filmLattice/vacuumEnergyParameters/@spinDown
+  spinup:
+  - /fleurOutput/fleurInput/atomSpecies/species/electronConfig/stateOccupation/@spinUp
+  - /fleurOutput/fleurInput/cell/filmLattice/vacuumEnergyParameters/@spinUp
+  state: /fleurOutput/fleurInput/atomSpecies/species/electronConfig/stateOccupation/@state
+  theta:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/ldaHIA/@theta
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/ldaU/@theta
+  - /fleurOutput/fleurInput/atomSpecies/species/ldaHIA/@theta
+  - /fleurOutput/fleurInput/atomSpecies/species/ldaU/@theta
+  twod: /fleurOutput/fleurInput/output/plotting/plot/@TwoD
+  type:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/lo/@type
+  - /fleurOutput/fleurInput/atomSpecies/species/lo/@type
+  - /fleurOutput/fleurInput/cell/bzIntegration/kPointLists/kPointList/@type
+  typemt: /fleurOutput/fleurInput/output/plotting/plot/@typeMT
+  u:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/ldaHIA/@U
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/ldaU/@U
+  - /fleurOutput/fleurInput/atomSpecies/species/ldaHIA/@U
+  - /fleurOutput/fleurInput/atomSpecies/species/ldaU/@U
+  vacuum: /fleurOutput/fleurInput/cell/filmLattice/vacuumEnergyParameters/@vacuum
+  valenceconfig: /fleurOutput/fleurInput/atomSpecies/species/electronConfig/valenceConfig
+  value:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/ldaHIA/addArg/@value
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/ldaHIA/cFCoeff/@value
+  - /fleurOutput/fleurInput/atomSpecies/species/ldaHIA/addArg/@value
+  - /fleurOutput/fleurInput/atomSpecies/species/ldaHIA/cFCoeff/@value
+  - /fleurOutput/fleurInput/constants/constant/@value
+  vca_charge: /fleurOutput/fleurInput/atomSpecies/species/special/@vca_charge
+  vcaaddcharge: /fleurOutput/fleurInput/atomGroups/atomGroup/@vcaAddCharge
+  vec1: /fleurOutput/fleurInput/output/plotting/plot/@vec1
+  vec2: /fleurOutput/fleurInput/output/plotting/plot/@vec2
+  vec3: /fleurOutput/fleurInput/output/plotting/plot/@vec3
+  vecfield: /fleurOutput/fleurInput/output/plotting/plot/@vecField
+  wannier:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/absPos/@wannier
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/filmPos/@wannier
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/relPos/@wannier
+  weight: /fleurOutput/fleurInput/cell/bzIntegration/kPointLists/kPointList/kPoint/@weight
+  zero: /fleurOutput/fleurInput/output/plotting/plot/@zero
 out_version: '0.33'
 root_tag: fleurOutput
 simple_elements:
+  a1:
+  - length: 1
+    type:
+    - float_expression
+  a2:
+  - length: 1
+    type:
+    - float_expression
+  abspos:
+  - length: 3
+    type:
+    - float_expression
   additionalcompilerflags:
   - length: unbounded
     type:
     - string
+  c:
+  - length: 1
+    type:
+    - float_expression
+  comment:
+  - length: 1
+    type:
+    - string
+  coreconfig:
+  - length: unbounded
+    type:
+    - string
+  d:
+  - length: 4
+    type:
+    - switch
   densitymatrixfor:
   - length: unbounded
     type:
     - string
+  displace:
+  - length: 3
+    type:
+    - float
+  edgeindices:
+  - length: unbounded
+    type:
+    - int
   eigenvaluesat:
   - length: unbounded
     type:
     - float
+  f:
+  - length: 4
+    type:
+    - switch
+  filmpos:
+  - length: 3
+    type:
+    - float_expression
+  joblist:
+  - length: unbounded
+    type:
+    - string
   kpoint:
   - length: 3
     type:
     - float_expression
+  layer:
+  - length: 1
+    type:
+    - string
+  orbcomprot:
+  - length: 3
+    type:
+    - float
+  p:
+  - length: 4
+    type:
+    - switch
+  posforce:
+  - length: 1
+    type:
+    - string
+  q:
+  - length: 1
+    type:
+    - string
+  qsc:
+  - length: 3
+    type:
+    - float_expression
+  qss:
+  - length: 3
+    type:
+    - float_expression
+  relpos:
+  - length: 3
+    type:
+    - float_expression
+  row-1:
+  - length: 2
+    type:
+    - float_expression
+  - length: 3
+    type:
+    - float_expression
+  - length: 4
+    type:
+    - float
+  row-2:
+  - length: 2
+    type:
+    - float_expression
+  - length: 3
+    type:
+    - float_expression
+  - length: 4
+    type:
+    - float
+  row-3:
+  - length: 3
+    type:
+    - float_expression
+  - length: 4
+    type:
+    - float
+  s:
+  - length: 4
+    type:
+    - switch
+  shape:
+  - length: 1
+    type:
+    - string
   targetcomputerarchitectures:
   - length: 1
     type:
     - string
   targetstructureclass:
+  - length: unbounded
+    type:
+    - string
+  valenceconfig:
   - length: unbounded
     type:
     - string
@@ -2474,6 +3442,2227 @@ tag_info:
     several: !!set {}
     simple: !!set {}
     text: !!set {}
+  /fleurOutput/fleurInput:
+    attribs: !!set
+      fleurinputversion: null
+    complex: !!set
+      atomgroups: null
+      atomspecies: null
+      calculationsetup: null
+      cell: null
+      constants: null
+      forcetheorem: null
+      output: null
+      relaxation: null
+    optional: !!set
+      comment: null
+      constants: null
+      forcetheorem: null
+      output: null
+      relaxation: null
+    optional_attribs: {}
+    order:
+    - comment
+    - constants
+    - calculationSetup
+    - cell
+    - atomSpecies
+    - atomGroups
+    - output
+    - forceTheorem
+    - relaxation
+    several: !!set {}
+    simple: !!set
+      comment: null
+    text: !!set
+      comment: null
+  /fleurOutput/fleurInput/atomGroups:
+    attribs: !!set {}
+    complex: !!set
+      atomgroup: null
+    optional: !!set {}
+    optional_attribs: {}
+    order:
+    - atomGroup
+    several: !!set
+      atomgroup: null
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/atomGroups/atomGroup:
+    attribs: !!set
+      magfield: null
+      species: null
+      vcaaddcharge: null
+    complex: !!set
+      greensfcalculation: null
+      ldahia: null
+      torguecalculation: null
+    optional: !!set
+      atomiccutoffs: null
+      cfcoeffs: null
+      energyparameters: null
+      force: null
+      greensfcalculation: null
+      ldahia: null
+      ldau: null
+      lo: null
+      modinitden: null
+      mtsphere: null
+      nocoparams: null
+      orbcomprot: null
+      torguecalculation: null
+    optional_attribs:
+      magfield: null
+      vcaaddcharge: null
+    order:
+    - relPos
+    - absPos
+    - filmPos
+    - mtSphere
+    - atomicCutoffs
+    - energyParameters
+    - force
+    - nocoParams
+    - modInitDen
+    - ldaU
+    - ldaHIA
+    - greensfCalculation
+    - torgueCalculation
+    - lo
+    - orbcomprot
+    - cFCoeffs
+    several: !!set
+      abspos: null
+      filmpos: null
+      greensfcalculation: null
+      ldahia: null
+      ldau: null
+      lo: null
+      relpos: null
+    simple: !!set
+      abspos: null
+      atomiccutoffs: null
+      cfcoeffs: null
+      energyparameters: null
+      filmpos: null
+      force: null
+      ldau: null
+      lo: null
+      modinitden: null
+      mtsphere: null
+      nocoparams: null
+      orbcomprot: null
+      relpos: null
+    text: !!set
+      abspos: null
+      filmpos: null
+      orbcomprot: null
+      relpos: null
+  /fleurOutput/fleurInput/atomGroups/atomGroup/absPos:
+    attribs: !!set
+      alpha: null
+      banddos: null
+      beta: null
+      gamma: null
+      label: null
+      wannier: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      alpha: null
+      banddos: null
+      beta: null
+      gamma: null
+      label: ' '
+      wannier: F
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/atomGroups/atomGroup/atomicCutoffs:
+    attribs: !!set
+      lmax: null
+      lmaxapw: null
+      lnonsphr: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      lmaxapw: null
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/atomGroups/atomGroup/cFCoeffs:
+    attribs: !!set
+      chargedensity: null
+      potential: null
+      remove4f: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      remove4f: F
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/atomGroups/atomGroup/energyParameters:
+    attribs: !!set
+      d: null
+      f: null
+      p: null
+      s: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/atomGroups/atomGroup/filmPos:
+    attribs: !!set
+      alpha: null
+      banddos: null
+      beta: null
+      gamma: null
+      label: null
+      wannier: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      alpha: null
+      banddos: null
+      beta: null
+      gamma: null
+      label: ' '
+      wannier: F
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/atomGroups/atomGroup/force:
+    attribs: !!set
+      calculate: null
+      relaxxyz: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      relaxxyz: TTT
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/atomGroups/atomGroup/greensfCalculation:
+    attribs: !!set
+      kkintgrcutoff: null
+      l_sphavg: null
+      label: null
+      nshells: null
+    complex: !!set
+      matrixelements: null
+    optional: !!set {}
+    optional_attribs:
+      kkintgrcutoff: calc
+      label: default
+      nshells: '0'
+    order:
+    - matrixElements
+    - diagElements
+    several: !!set {}
+    simple: !!set
+      diagelements: null
+    text: !!set {}
+  /fleurOutput/fleurInput/atomGroups/atomGroup/greensfCalculation/diagElements:
+    attribs: !!set
+      d: null
+      f: null
+      p: null
+      s: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/atomGroups/atomGroup/greensfCalculation/matrixElements:
+    attribs: !!set {}
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order:
+    - s
+    - p
+    - d
+    - f
+    several: !!set {}
+    simple: !!set
+      d: null
+      f: null
+      p: null
+      s: null
+    text: !!set
+      d: null
+      f: null
+      p: null
+      s: null
+  /fleurOutput/fleurInput/atomGroups/atomGroup/ldaHIA:
+    attribs: !!set
+      init_occ: null
+      j: null
+      kkintgrcutoff: null
+      l: null
+      l_amf: null
+      label: null
+      phi: null
+      theta: null
+      u: null
+    complex: !!set {}
+    optional: !!set
+      addarg: null
+      cfcoeff: null
+      exc: null
+    optional_attribs:
+      init_occ: calc
+      kkintgrcutoff: calc
+      label: default
+      phi: '0.0'
+      theta: '0.0'
+    order:
+    - exc
+    - cFCoeff
+    - addArg
+    several: !!set
+      addarg: null
+      cfcoeff: null
+      exc: null
+    simple: !!set
+      addarg: null
+      cfcoeff: null
+      exc: null
+    text: !!set {}
+  /fleurOutput/fleurInput/atomGroups/atomGroup/ldaHIA/addArg:
+    attribs: !!set
+      key: null
+      value: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/atomGroups/atomGroup/ldaHIA/cFCoeff:
+    attribs: !!set
+      l: null
+      m: null
+      value: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/atomGroups/atomGroup/ldaHIA/exc:
+    attribs: !!set
+      init_mom: null
+      j: null
+      l: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      init_mom: calc
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/atomGroups/atomGroup/ldaU:
+    attribs: !!set
+      j: null
+      l: null
+      l_amf: null
+      phi: null
+      theta: null
+      u: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      phi: '0.0'
+      theta: '0.0'
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/atomGroups/atomGroup/lo:
+    attribs: !!set
+      ederiv: null
+      l: null
+      n: null
+      type: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      ederiv: '0'
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/atomGroups/atomGroup/modInitDen:
+    attribs: !!set
+      flipspinphi: null
+      flipspinscale: null
+      flipspintheta: null
+      magmom: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      flipspinphi: '0.0'
+      flipspinscale: F
+      flipspintheta: '0.0'
+      magmom: '0.0'
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/atomGroups/atomGroup/mtSphere:
+    attribs: !!set
+      gridpoints: null
+      logincrement: null
+      radius: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/atomGroups/atomGroup/nocoParams:
+    attribs: !!set
+      alpha: null
+      b_cons_x: null
+      b_cons_y: null
+      beta: null
+      l_constrained: null
+      l_magn: null
+      l_mtnocopot: null
+      l_relaxsqa: null
+      m: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      b_cons_x: null
+      b_cons_y: null
+      l_constrained: null
+      l_magn: F
+      l_mtnocopot: null
+      l_relaxsqa: null
+      m: '0.0'
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/atomGroups/atomGroup/relPos:
+    attribs: !!set
+      alpha: null
+      banddos: null
+      beta: null
+      gamma: null
+      label: null
+      wannier: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      alpha: null
+      banddos: null
+      beta: null
+      gamma: null
+      label: ' '
+      wannier: F
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/atomGroups/atomGroup/torgueCalculation:
+    attribs: !!set
+      kkintgrcutoff: null
+      label: null
+    complex: !!set
+      greensfelements: null
+    optional: !!set {}
+    optional_attribs:
+      kkintgrcutoff: calc
+      label: default
+    order:
+    - greensfElements
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/atomGroups/atomGroup/torgueCalculation/greensfElements:
+    attribs: !!set {}
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order:
+    - s
+    - p
+    - d
+    - f
+    several: !!set {}
+    simple: !!set
+      d: null
+      f: null
+      p: null
+      s: null
+    text: !!set
+      d: null
+      f: null
+      p: null
+      s: null
+  /fleurOutput/fleurInput/atomSpecies:
+    attribs: !!set {}
+    complex: !!set
+      species: null
+    optional: !!set {}
+    optional_attribs: {}
+    order:
+    - species
+    several: !!set
+      species: null
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/atomSpecies/species:
+    attribs: !!set
+      atomicnumber: null
+      element: null
+      name: null
+    complex: !!set
+      electronconfig: null
+      greensfcalculation: null
+      ldahia: null
+      torguecalculation: null
+    optional: !!set
+      energyparameters: null
+      force: null
+      greensfcalculation: null
+      ldahia: null
+      ldau: null
+      lo: null
+      modinitden: null
+      nocoparams: null
+      prodbasis: null
+      special: null
+      torguecalculation: null
+    optional_attribs:
+      element: null
+    order:
+    - mtSphere
+    - atomicCutoffs
+    - electronConfig
+    - energyParameters
+    - prodBasis
+    - special
+    - force
+    - nocoParams
+    - modInitDen
+    - ldaU
+    - ldaHIA
+    - greensfCalculation
+    - torgueCalculation
+    - lo
+    several: !!set
+      greensfcalculation: null
+      ldahia: null
+      ldau: null
+      lo: null
+    simple: !!set
+      atomiccutoffs: null
+      energyparameters: null
+      force: null
+      ldau: null
+      lo: null
+      modinitden: null
+      mtsphere: null
+      nocoparams: null
+      prodbasis: null
+      special: null
+    text: !!set {}
+  /fleurOutput/fleurInput/atomSpecies/species/atomicCutoffs:
+    attribs: !!set
+      lmax: null
+      lmaxapw: null
+      lnonsphr: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      lmaxapw: null
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/atomSpecies/species/electronConfig:
+    attribs: !!set {}
+    complex: !!set {}
+    optional: !!set
+      stateoccupation: null
+      valenceconfig: null
+    optional_attribs: {}
+    order:
+    - coreConfig
+    - valenceConfig
+    - stateOccupation
+    several: !!set
+      stateoccupation: null
+    simple: !!set
+      coreconfig: null
+      stateoccupation: null
+      valenceconfig: null
+    text: !!set
+      coreconfig: null
+      valenceconfig: null
+  /fleurOutput/fleurInput/atomSpecies/species/electronConfig/stateOccupation:
+    attribs: !!set
+      spindown: null
+      spinup: null
+      state: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/atomSpecies/species/energyParameters:
+    attribs: !!set
+      d: null
+      f: null
+      p: null
+      s: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/atomSpecies/species/force:
+    attribs: !!set
+      calculate: null
+      relaxxyz: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      relaxxyz: TTT
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/atomSpecies/species/greensfCalculation:
+    attribs: !!set
+      kkintgrcutoff: null
+      l_sphavg: null
+      label: null
+      nshells: null
+    complex: !!set
+      matrixelements: null
+    optional: !!set {}
+    optional_attribs:
+      kkintgrcutoff: calc
+      label: default
+      nshells: '0'
+    order:
+    - matrixElements
+    - diagElements
+    several: !!set {}
+    simple: !!set
+      diagelements: null
+    text: !!set {}
+  /fleurOutput/fleurInput/atomSpecies/species/greensfCalculation/diagElements:
+    attribs: !!set
+      d: null
+      f: null
+      p: null
+      s: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/atomSpecies/species/greensfCalculation/matrixElements:
+    attribs: !!set {}
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order:
+    - s
+    - p
+    - d
+    - f
+    several: !!set {}
+    simple: !!set
+      d: null
+      f: null
+      p: null
+      s: null
+    text: !!set
+      d: null
+      f: null
+      p: null
+      s: null
+  /fleurOutput/fleurInput/atomSpecies/species/ldaHIA:
+    attribs: !!set
+      init_occ: null
+      j: null
+      kkintgrcutoff: null
+      l: null
+      l_amf: null
+      label: null
+      phi: null
+      theta: null
+      u: null
+    complex: !!set {}
+    optional: !!set
+      addarg: null
+      cfcoeff: null
+      exc: null
+    optional_attribs:
+      init_occ: calc
+      kkintgrcutoff: calc
+      label: default
+      phi: '0.0'
+      theta: '0.0'
+    order:
+    - exc
+    - cFCoeff
+    - addArg
+    several: !!set
+      addarg: null
+      cfcoeff: null
+      exc: null
+    simple: !!set
+      addarg: null
+      cfcoeff: null
+      exc: null
+    text: !!set {}
+  /fleurOutput/fleurInput/atomSpecies/species/ldaHIA/addArg:
+    attribs: !!set
+      key: null
+      value: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/atomSpecies/species/ldaHIA/cFCoeff:
+    attribs: !!set
+      l: null
+      m: null
+      value: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/atomSpecies/species/ldaHIA/exc:
+    attribs: !!set
+      init_mom: null
+      j: null
+      l: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      init_mom: calc
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/atomSpecies/species/ldaU:
+    attribs: !!set
+      j: null
+      l: null
+      l_amf: null
+      phi: null
+      theta: null
+      u: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      phi: '0.0'
+      theta: '0.0'
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/atomSpecies/species/lo:
+    attribs: !!set
+      ederiv: null
+      l: null
+      n: null
+      type: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      ederiv: '0'
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/atomSpecies/species/modInitDen:
+    attribs: !!set
+      flipspinphi: null
+      flipspinscale: null
+      flipspintheta: null
+      magmom: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      flipspinphi: '0.0'
+      flipspinscale: F
+      flipspintheta: '0.0'
+      magmom: '0.0'
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/atomSpecies/species/mtSphere:
+    attribs: !!set
+      gridpoints: null
+      logincrement: null
+      radius: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/atomSpecies/species/nocoParams:
+    attribs: !!set
+      alpha: null
+      b_cons_x: null
+      b_cons_y: null
+      beta: null
+      l_constrained: null
+      l_magn: null
+      l_mtnocopot: null
+      l_relaxsqa: null
+      m: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      b_cons_x: null
+      b_cons_y: null
+      l_constrained: null
+      l_magn: F
+      l_mtnocopot: null
+      l_relaxsqa: null
+      m: '0.0'
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/atomSpecies/species/prodBasis:
+    attribs: !!set
+      lcutm: null
+      lcutwf: null
+      select: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      select: 4 0 4 2
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/atomSpecies/species/special:
+    attribs: !!set
+      b_field_mt: null
+      lda: null
+      socscale: null
+      vca_charge: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      b_field_mt: '0.0'
+      lda: F
+      socscale: '1.0'
+      vca_charge: '0.0'
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/atomSpecies/species/torgueCalculation:
+    attribs: !!set
+      kkintgrcutoff: null
+      label: null
+    complex: !!set
+      greensfelements: null
+    optional: !!set {}
+    optional_attribs:
+      kkintgrcutoff: calc
+      label: default
+    order:
+    - greensfElements
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/atomSpecies/species/torgueCalculation/greensfElements:
+    attribs: !!set {}
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order:
+    - s
+    - p
+    - d
+    - f
+    several: !!set {}
+    simple: !!set
+      d: null
+      f: null
+      p: null
+      s: null
+    text: !!set
+      d: null
+      f: null
+      p: null
+      s: null
+  /fleurOutput/fleurInput/calculationSetup:
+    attribs: !!set {}
+    complex: !!set
+      fields: null
+      greensfunction: null
+      magnetism: null
+      xcfunctional: null
+    optional: !!set
+      expertmodes: null
+      fields: null
+      geometryoptimization: null
+      greensfunction: null
+      ldahia: null
+      ldau: null
+      onedparams: null
+      prodbasis: null
+      rdmft: null
+      soc: null
+      spinspiralqpointmesh: null
+    optional_attribs: {}
+    order:
+    - cutoffs
+    - scfLoop
+    - coreElectrons
+    - xcFunctional
+    - magnetism
+    - prodBasis
+    - soc
+    - oneDParams
+    - expertModes
+    - geometryOptimization
+    - ldaU
+    - ldaHIA
+    - greensFunction
+    - rdmft
+    - spinSpiralQPointMesh
+    - fields
+    several: !!set {}
+    simple: !!set
+      coreelectrons: null
+      cutoffs: null
+      expertmodes: null
+      geometryoptimization: null
+      ldahia: null
+      ldau: null
+      onedparams: null
+      prodbasis: null
+      rdmft: null
+      scfloop: null
+      soc: null
+      spinspiralqpointmesh: null
+    text: !!set {}
+  /fleurOutput/fleurInput/calculationSetup/coreElectrons:
+    attribs: !!set
+      coretail_lmax: null
+      ctail: null
+      frcor: null
+      kcrel: null
+      l_core_confpot: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      coretail_lmax: '0'
+      frcor: F
+      kcrel: '0'
+      l_core_confpot: T
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/calculationSetup/cutoffs:
+    attribs: !!set
+      gmax: null
+      gmaxxc: null
+      kmax: null
+      numbands: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      gmaxxc: '0.0'
+      numbands: '0'
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/calculationSetup/expertModes:
+    attribs: !!set
+      eig66: null
+      gw: null
+      isec1: null
+      lpr: null
+      pot8: null
+      secvar: null
+      warp_factor: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      eig66: F
+      gw: '0'
+      isec1: '99'
+      lpr: '0'
+      pot8: F
+      secvar: F
+      warp_factor: '1.0'
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/calculationSetup/fields:
+    attribs: !!set
+      autocomp: null
+      b_field: null
+      dirichlet: null
+      ev: null
+      plot_charge: null
+      plot_rho: null
+      sig_b_1: null
+      sig_b_2: null
+      zsigma: null
+    complex: !!set {}
+    optional: !!set
+      shape: null
+    optional_attribs:
+      autocomp: T
+      b_field: '0.0'
+      dirichlet: F
+      ev: F
+      plot_charge: F
+      plot_rho: F
+      sig_b_1: '0.0'
+      sig_b_2: '0.0'
+      zsigma: '10.0'
+    order:
+    - shape
+    several: !!set
+      shape: null
+    simple: !!set
+      shape: null
+    text: !!set
+      shape: null
+  /fleurOutput/fleurInput/calculationSetup/geometryOptimization:
+    attribs: !!set
+      epsdisp: null
+      epsforce: null
+      f_level: null
+      force_converged: null
+      forcealpha: null
+      forcemix: null
+      l_f: null
+      qfix: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      epsdisp: '0.001'
+      epsforce: '0.001'
+      f_level: '0'
+      force_converged: '0.00001'
+      forcealpha: '0'
+      forcemix: BFGS
+      qfix: '0'
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/calculationSetup/greensFunction:
+    attribs: !!set
+      intfullradial: null
+      l_mperp: null
+      l_resolvent: null
+      mincalcdistance: null
+      outputsphavg: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      intfullradial: F
+      l_mperp: F
+      l_resolvent: F
+      mincalcdistance: '-1.0'
+      outputsphavg: F
+    order:
+    - realAxis
+    - contourRectangle
+    - contourSemicircle
+    - contourDOS
+    several: !!set
+      contourdos: null
+      contourrectangle: null
+      contoursemicircle: null
+    simple: !!set
+      contourdos: null
+      contourrectangle: null
+      contoursemicircle: null
+      realaxis: null
+    text: !!set {}
+  /fleurOutput/fleurInput/calculationSetup/greensFunction/contourDOS:
+    attribs: !!set
+      analytical_cont: null
+      eb: null
+      et: null
+      l_fermi: null
+      label: null
+      n: null
+      sigma: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      label: default
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/calculationSetup/greensFunction/contourRectangle:
+    attribs: !!set
+      eb: null
+      label: null
+      n1: null
+      n2: null
+      n3: null
+      nmatsub: null
+      sigma: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      label: default
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/calculationSetup/greensFunction/contourSemicircle:
+    attribs: !!set
+      alpha: null
+      eb: null
+      et: null
+      label: null
+      n: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      label: default
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/calculationSetup/greensFunction/realAxis:
+    attribs: !!set
+      ellow: null
+      elup: null
+      ne: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/calculationSetup/ldaHIA:
+    attribs: !!set
+      beta: null
+      dftspinpol: null
+      fullmatch: null
+      itmaxhubbard1: null
+      l_correctetot: null
+      l_nonsphdc: null
+      minmatdistance: null
+      minoccdistance: null
+      n_occpm: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      beta: '100.0'
+      dftspinpol: F
+      fullmatch: T
+      l_correctetot: T
+      l_nonsphdc: T
+      minmatdistance: '0.001'
+      minoccdistance: '0.01'
+      n_occpm: '2'
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/calculationSetup/ldaU:
+    attribs: !!set
+      l_adjenpara: null
+      l_linmix: null
+      mixparam: null
+      spinf: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      l_adjenpara: F
+      l_linmix: F
+      mixparam: '0.05'
+      spinf: '1.00'
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/calculationSetup/magnetism:
+    attribs: !!set
+      fixed_moment: null
+      jspins: null
+      l_j: null
+      l_noco: null
+      l_onlymtstden: null
+      l_ss: null
+      lflip: null
+      swsp: null
+    complex: !!set {}
+    optional: !!set
+      mtnocoparams: null
+      qsc: null
+      qss: null
+      sourcefreemag: null
+    optional_attribs:
+      fixed_moment: '0.0'
+      l_j: F
+      l_noco: F
+      l_onlymtstden: F
+      l_ss: F
+      lflip: F
+      swsp: F
+    order:
+    - qss
+    - qsc
+    - mtNocoParams
+    - sourceFreeMag
+    several: !!set {}
+    simple: !!set
+      mtnocoparams: null
+      qsc: null
+      qss: null
+      sourcefreemag: null
+    text: !!set
+      qsc: null
+      qss: null
+  /fleurOutput/fleurInput/calculationSetup/magnetism/mtNocoParams:
+    attribs: !!set
+      l_constrained: null
+      l_mperp: null
+      l_mtnocopot: null
+      l_relaxsqa: null
+      mag_mixing_scheme: null
+      mix_constr: null
+      mix_relaxweightoffd: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      l_constrained: F
+      l_mperp: F
+      l_mtnocopot: F
+      l_relaxsqa: F
+      mag_mixing_scheme: '0'
+      mix_constr: '1.0'
+      mix_relaxweightoffd: '1.0'
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/calculationSetup/magnetism/sourceFreeMag:
+    attribs: !!set
+      l_scalemag: null
+      l_sourcefree: null
+      mag_scale: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      l_scalemag: F
+      l_sourcefree: F
+      mag_scale: '1.0'
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/calculationSetup/oneDParams:
+    attribs: !!set
+      chi: null
+      d1: null
+      invs1: null
+      m_cyl: null
+      mm: null
+      rot: null
+      vm: null
+      zrfs1: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/calculationSetup/prodBasis:
+    attribs: !!set
+      bands: null
+      ewaldlambda: null
+      gcutm: null
+      lexp: null
+      tolerance: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      ewaldlambda: '3'
+      lexp: '16'
+      tolerance: '0.00001'
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/calculationSetup/rdmft:
+    attribs: !!set
+      functional: null
+      l_rdmft: null
+      occeps: null
+      statesabove: null
+      statesbelow: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      occeps: '0.00001'
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/calculationSetup/scfLoop:
+    attribs: !!set
+      alpha: null
+      imix: null
+      itmax: null
+      maxiterbroyd: null
+      maxtimetostartiter: null
+      mindistance: null
+      precondparam: null
+      spinf: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      maxiterbroyd: '99'
+      maxtimetostartiter: null
+      mindistance: '0.0'
+      precondparam: '0.0'
+      spinf: '2.0'
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/calculationSetup/soc:
+    attribs: !!set
+      l_soc: null
+      'off': null
+      phi: null
+      soc66: null
+      spav: null
+      theta: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      'off': F
+      soc66: T
+      spav: F
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/calculationSetup/spinSpiralQPointMesh:
+    attribs: !!set
+      qx: null
+      qy: null
+      qz: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/calculationSetup/xcFunctional:
+    attribs: !!set
+      name: null
+      relativisticcorrections: null
+    complex: !!set {}
+    optional: !!set
+      ggaprinting: null
+      libxcid: null
+      libxcname: null
+      xcparams: null
+    optional_attribs:
+      relativisticcorrections: F
+    order:
+    - LibXCID
+    - LibXCName
+    - xcParams
+    - ggaPrinting
+    several: !!set {}
+    simple: !!set
+      ggaprinting: null
+      libxcid: null
+      libxcname: null
+      xcparams: null
+    text: !!set {}
+  /fleurOutput/fleurInput/calculationSetup/xcFunctional/LibXCID:
+    attribs: !!set
+      correlation: null
+      etot_correlation: null
+      etot_exchange: null
+      exchange: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      etot_correlation: null
+      etot_exchange: null
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/calculationSetup/xcFunctional/LibXCName:
+    attribs: !!set
+      correlation: null
+      etot_correlation: null
+      etot_exchange: null
+      exchange: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      etot_correlation: null
+      etot_exchange: null
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/calculationSetup/xcFunctional/ggaPrinting:
+    attribs: !!set
+      idsprs0: null
+      idsprsi: null
+      idsprsl: null
+      idsprsv: null
+      iggachk: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/calculationSetup/xcFunctional/xcParams:
+    attribs: !!set
+      chng: null
+      idsprs: null
+      igrd: null
+      lwb: null
+      ndvgrd: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/cell:
+    attribs: !!set {}
+    complex: !!set
+      bulklattice: null
+      bzintegration: null
+      filmlattice: null
+      symmetryoperations: null
+    optional: !!set {}
+    optional_attribs: {}
+    order:
+    - bzIntegration
+    - symmetryOperations
+    - bulkLattice
+    - filmLattice
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/cell/bulkLattice:
+    attribs: !!set
+      scale: null
+    complex: !!set
+      bravaismatrix: null
+    optional: !!set
+      a2: null
+    optional_attribs: {}
+    order:
+    - a1
+    - a2
+    - c
+    - row-1
+    - row-2
+    - c
+    - bravaisMatrix
+    several: !!set {}
+    simple: !!set
+      a1: null
+      a2: null
+      c: null
+      row-1: null
+      row-2: null
+    text: !!set
+      a1: null
+      a2: null
+      c: null
+      row-1: null
+      row-2: null
+  /fleurOutput/fleurInput/cell/bulkLattice/a1:
+    attribs: !!set
+      scale: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      scale: '1.0'
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/cell/bulkLattice/a2:
+    attribs: !!set
+      scale: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      scale: '1.0'
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/cell/bulkLattice/bravaisMatrix:
+    attribs: !!set {}
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order:
+    - row-1
+    - row-2
+    - row-3
+    several: !!set {}
+    simple: !!set
+      row-1: null
+      row-2: null
+      row-3: null
+    text: !!set
+      row-1: null
+      row-2: null
+      row-3: null
+  /fleurOutput/fleurInput/cell/bulkLattice/c:
+    attribs: !!set
+      scale: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      scale: '1.0'
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/cell/bzIntegration:
+    attribs: !!set
+      fermismearingenergy: null
+      fermismearingtemp: null
+      l_bloechl: null
+      mode: null
+      valenceelectrons: null
+    complex: !!set
+      kpointlists: null
+    optional: !!set {}
+    optional_attribs:
+      fermismearingenergy: null
+      fermismearingtemp: null
+      l_bloechl: F
+      mode: hist
+      valenceelectrons: null
+    order:
+    - kPointListSelection
+    - kPointLists
+    several: !!set {}
+    simple: !!set
+      kpointlistselection: null
+    text: !!set {}
+  /fleurOutput/fleurInput/cell/bzIntegration/kPointListSelection:
+    attribs: !!set
+      listname: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/cell/bzIntegration/kPointLists:
+    attribs: !!set {}
+    complex: !!set
+      kpointlist: null
+    optional: !!set {}
+    optional_attribs: {}
+    order:
+    - kPointList
+    several: !!set
+      kpointlist: null
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/cell/bzIntegration/kPointLists/kPointList:
+    attribs: !!set
+      count: null
+      name: null
+      nx: null
+      ny: null
+      nz: null
+      type: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      count: null
+      nx: null
+      ny: null
+      nz: null
+      type: unspecified
+    order:
+    - kPoint
+    several: !!set
+      kpoint: null
+    simple: !!set
+      kpoint: null
+    text: !!set
+      kpoint: null
+  /fleurOutput/fleurInput/cell/bzIntegration/kPointLists/kPointList/kPoint:
+    attribs: !!set
+      label: null
+      weight: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      label: ''
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/cell/filmLattice:
+    attribs: !!set
+      dtilda: null
+      dvac: null
+      scale: null
+    complex: !!set
+      bravaismatrix: null
+    optional: !!set
+      a2: null
+      vacuumenergyparameters: null
+    optional_attribs: {}
+    order:
+    - a1
+    - a2
+    - row-1
+    - row-2
+    - bravaisMatrix
+    - vacuumEnergyParameters
+    several: !!set
+      vacuumenergyparameters: null
+    simple: !!set
+      a1: null
+      a2: null
+      row-1: null
+      row-2: null
+      vacuumenergyparameters: null
+    text: !!set
+      a1: null
+      a2: null
+      row-1: null
+      row-2: null
+  /fleurOutput/fleurInput/cell/filmLattice/a1:
+    attribs: !!set
+      scale: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      scale: '1.0'
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/cell/filmLattice/a2:
+    attribs: !!set
+      scale: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      scale: '1.0'
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/cell/filmLattice/bravaisMatrix:
+    attribs: !!set {}
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order:
+    - row-1
+    - row-2
+    - row-3
+    several: !!set {}
+    simple: !!set
+      row-1: null
+      row-2: null
+      row-3: null
+    text: !!set
+      row-1: null
+      row-2: null
+      row-3: null
+  /fleurOutput/fleurInput/cell/filmLattice/vacuumEnergyParameters:
+    attribs: !!set
+      spindown: null
+      spinup: null
+      vacuum: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      spindown: null
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/cell/symmetryOperations:
+    attribs: !!set {}
+    complex: !!set
+      symop: null
+    optional: !!set {}
+    optional_attribs: {}
+    order:
+    - symOp
+    several: !!set
+      symop: null
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/cell/symmetryOperations/symOp:
+    attribs: !!set {}
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order:
+    - row-1
+    - row-2
+    - row-3
+    several: !!set {}
+    simple: !!set
+      row-1: null
+      row-2: null
+      row-3: null
+    text: !!set
+      row-1: null
+      row-2: null
+      row-3: null
+  /fleurOutput/fleurInput/constants:
+    attribs: !!set {}
+    complex: !!set {}
+    optional: !!set
+      constant: null
+    optional_attribs: {}
+    order:
+    - constant
+    several: !!set
+      constant: null
+    simple: !!set
+      constant: null
+    text: !!set {}
+  /fleurOutput/fleurInput/constants/constant:
+    attribs: !!set
+      name: null
+      value: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/forceTheorem:
+    attribs: !!set {}
+    complex: !!set
+      dmi: null
+      jij: null
+      spinspiraldispersion: null
+    optional: !!set {}
+    optional_attribs: {}
+    order:
+    - MAE
+    - spinSpiralDispersion
+    - DMI
+    - Jij
+    several: !!set {}
+    simple: !!set
+      mae: null
+    text: !!set {}
+  /fleurOutput/fleurInput/forceTheorem/DMI:
+    attribs: !!set
+      phi: null
+      theta: null
+    complex: !!set
+      qvectors: null
+    optional: !!set {}
+    optional_attribs: {}
+    order:
+    - qVectors
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/forceTheorem/DMI/qVectors:
+    attribs: !!set {}
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order:
+    - q
+    several: !!set
+      q: null
+    simple: !!set
+      q: null
+    text: !!set
+      q: null
+  /fleurOutput/fleurInput/forceTheorem/Jij:
+    attribs: !!set
+      thetaj: null
+    complex: !!set
+      qvectors: null
+    optional: !!set {}
+    optional_attribs: {}
+    order:
+    - qVectors
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/forceTheorem/Jij/qVectors:
+    attribs: !!set {}
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order:
+    - q
+    several: !!set
+      q: null
+    simple: !!set
+      q: null
+    text: !!set
+      q: null
+  /fleurOutput/fleurInput/forceTheorem/MAE:
+    attribs: !!set
+      phi: null
+      theta: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/forceTheorem/spinSpiralDispersion:
+    attribs: !!set {}
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order:
+    - q
+    several: !!set
+      q: null
+    simple: !!set
+      q: null
+    text: !!set
+      q: null
+  /fleurOutput/fleurInput/output:
+    attribs: !!set
+      band: null
+      corespec: null
+      dos: null
+      eig66: null
+      slice: null
+      wannier: null
+    complex: !!set
+      corespectrum: null
+      plotting: null
+      vacuumdos: null
+      wannier: null
+    optional: !!set
+      banddos: null
+      chargedensityslicing: null
+      checks: null
+      corespectrum: null
+      juphon: null
+      magneticcirculardichroism: null
+      plotting: null
+      specialoutput: null
+      unfoldingband: null
+      vacuumdos: null
+      wannier: null
+    optional_attribs:
+      band: F
+      corespec: F
+      dos: F
+      eig66: F
+      slice: F
+      wannier: F
+    order:
+    - checks
+    - bandDOS
+    - vacuumDOS
+    - plotting
+    - chargeDensitySlicing
+    - specialOutput
+    - coreSpectrum
+    - wannier
+    - magneticCircularDichroism
+    - unfoldingBand
+    - juPhon
+    several: !!set {}
+    simple: !!set
+      banddos: null
+      chargedensityslicing: null
+      checks: null
+      juphon: null
+      magneticcirculardichroism: null
+      specialoutput: null
+      unfoldingband: null
+    text: !!set {}
+  /fleurOutput/fleurInput/output/bandDOS:
+    attribs: !!set
+      all_atoms: null
+      jdos: null
+      maxenergy: null
+      minenergy: null
+      numberpoints: null
+      orbcomp: null
+      sigma: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      all_atoms: T
+      jdos: F
+      maxenergy: '0.5'
+      minenergy: '-0.5'
+      numberpoints: '1321'
+      orbcomp: F
+      sigma: '0.01'
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/output/chargeDensitySlicing:
+    attribs: !!set
+      maxeigenval: null
+      mineigenval: null
+      nnne: null
+      numkpt: null
+      pallst: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/output/checks:
+    attribs: !!set
+      cdinf: null
+      disp: null
+      vchk: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      cdinf: F
+      disp: F
+      vchk: F
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/output/coreSpectrum:
+    attribs: !!set
+      alpha_ex: null
+      atomtype: null
+      beta_ex: null
+      edgetype: null
+      ekin: null
+      emax: null
+      emin: null
+      i_initial: null
+      lmax: null
+      nqphi: null
+      nqr: null
+      numpoints: null
+      verbose: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      alpha_ex: '0.024'
+      beta_ex: '0.05'
+      i_initial: '155'
+      nqphi: '10'
+      nqr: '10'
+      verbose: F
+    order:
+    - edgeIndices
+    several: !!set {}
+    simple: !!set
+      edgeindices: null
+    text: !!set
+      edgeindices: null
+  /fleurOutput/fleurInput/output/juPhon:
+    attribs: !!set
+      l_eigout: null
+      l_potout: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/output/magneticCircularDichroism:
+    attribs: !!set
+      energylo: null
+      energyup: null
+      mcd: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/output/plotting:
+    attribs: !!set
+      format: null
+      iplot: null
+      polar: null
+    complex: !!set {}
+    optional: !!set
+      plot: null
+    optional_attribs:
+      format: '1'
+      iplot: '0'
+      polar: F
+    order:
+    - plot
+    several: !!set
+      plot: null
+    simple: !!set
+      plot: null
+    text: !!set {}
+  /fleurOutput/fleurInput/output/plotting/plot:
+    attribs: !!set
+      cartesian: null
+      file: null
+      grid: null
+      onlymt: null
+      twod: null
+      typemt: null
+      vec1: null
+      vec2: null
+      vec3: null
+      vecfield: null
+      zero: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      cartesian: F
+      file: plot
+      grid: 30 30 30
+      onlymt: F
+      twod: T
+      typemt: '0'
+      vec1: 1.0 0.0 0.0
+      vec2: 0.0 1.0 0.0
+      vec3: 0.0 0.0 1.0
+      vecfield: F
+      zero: 0.0 0.0 0.0
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/output/specialOutput:
+    attribs: !!set
+      bmt: null
+      eonly: null
+      form66: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      bmt: F
+      eonly: F
+      form66: F
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/output/unfoldingBand:
+    attribs: !!set
+      supercellx: null
+      supercelly: null
+      supercellz: null
+      unfoldband: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/output/vacuumDOS:
+    attribs: !!set
+      integ: null
+      locx1: null
+      locx2: null
+      locy1: null
+      locy2: null
+      nstars: null
+      nstm: null
+      star: null
+      tworkf: null
+      vacdos: null
+    complex: !!set {}
+    optional: !!set
+      layer: null
+    optional_attribs:
+      integ: F
+      locx1: '0.0'
+      locx2: '1.0'
+      locy1: '0.0'
+      locy2: '1.0'
+      nstars: null
+      nstm: '0'
+      star: F
+      tworkf: '0.0'
+    order:
+    - layer
+    several: !!set
+      layer: null
+    simple: !!set
+      layer: null
+    text: !!set
+      layer: null
+  /fleurOutput/fleurInput/output/wannier:
+    attribs: !!set
+      atomlist: null
+      bscomf: null
+      ms: null
+      sgwf: null
+      socgwf: null
+    complex: !!set {}
+    optional: !!set
+      bandselection: null
+      joblist: null
+    optional_attribs:
+      atomlist: F
+      bscomf: F
+      ms: F
+      sgwf: F
+      socgwf: F
+    order:
+    - bandSelection
+    - jobList
+    several: !!set {}
+    simple: !!set
+      bandselection: null
+      joblist: null
+    text: !!set
+      joblist: null
+  /fleurOutput/fleurInput/output/wannier/bandSelection:
+    attribs: !!set
+      maxspindown: null
+      maxspinup: null
+      minspindown: null
+      minspinup: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      maxspindown: null
+      minspindown: null
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/relaxation:
+    attribs: !!set {}
+    complex: !!set
+      displacements: null
+      relaxation-history: null
+    optional: !!set
+      displacements: null
+      relaxation-history: null
+    optional_attribs: {}
+    order:
+    - displacements
+    - relaxation-history
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/relaxation/displacements:
+    attribs: !!set {}
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order:
+    - displace
+    several: !!set
+      displace: null
+    simple: !!set
+      displace: null
+    text: !!set
+      displace: null
+  /fleurOutput/fleurInput/relaxation/relaxation-history:
+    attribs: !!set {}
+    complex: !!set
+      step: null
+    optional: !!set {}
+    optional_attribs: {}
+    order:
+    - step
+    several: !!set
+      step: null
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/fleurInput/relaxation/relaxation-history/step:
+    attribs: !!set
+      energy: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order:
+    - posforce
+    several: !!set
+      posforce: null
+    simple: !!set
+      posforce: null
+    text: !!set
+      posforce: null
   /fleurOutput/numericalParameters:
     attribs: !!set {}
     complex: !!set
@@ -2800,45 +5989,117 @@ tag_info:
     simple: !!set {}
     text: !!set {}
 tag_paths:
+  a1:
+  - /fleurOutput/fleurInput/cell/bulkLattice/a1
+  - /fleurOutput/fleurInput/cell/filmLattice/a1
+  a2:
+  - /fleurOutput/fleurInput/cell/bulkLattice/a2
+  - /fleurOutput/fleurInput/cell/filmLattice/a2
+  abspos: /fleurOutput/fleurInput/atomGroups/atomGroup/absPos
+  addarg:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/ldaHIA/addArg
+  - /fleurOutput/fleurInput/atomSpecies/species/ldaHIA/addArg
   additionalcompilerflags: /fleurOutput/programVersion/additionalCompilerFlags
   allatoms: []
   allelectroncharges: []
   angle: []
+  atomgroup: /fleurOutput/fleurInput/atomGroups/atomGroup
+  atomgroups: /fleurOutput/fleurInput/atomGroups
+  atomiccutoffs:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/atomicCutoffs
+  - /fleurOutput/fleurInput/atomSpecies/species/atomicCutoffs
   atomicep: []
   atomsincell: /fleurOutput/numericalParameters/atomsInCell
+  atomspecies: /fleurOutput/fleurInput/atomSpecies
   atomtypedependentcontributions: []
+  banddos: /fleurOutput/fleurInput/output/bandDOS
   bandgap: []
   bands: /fleurOutput/numericalParameters/bands
+  bandselection: /fleurOutput/fleurInput/output/wannier/bandSelection
   basis: /fleurOutput/numericalParameters/basis
+  bravaismatrix:
+  - /fleurOutput/fleurInput/cell/bulkLattice/bravaisMatrix
+  - /fleurOutput/fleurInput/cell/filmLattice/bravaisMatrix
+  bulklattice: /fleurOutput/fleurInput/cell/bulkLattice
+  bzintegration: /fleurOutput/fleurInput/cell/bzIntegration
+  c: /fleurOutput/fleurInput/cell/bulkLattice/c
+  calculationsetup: /fleurOutput/fleurInput/calculationSetup
+  cell: /fleurOutput/fleurInput/cell
+  cfcoeff:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/ldaHIA/cFCoeff
+  - /fleurOutput/fleurInput/atomSpecies/species/ldaHIA/cFCoeff
+  cfcoeffs: /fleurOutput/fleurInput/atomGroups/atomGroup/cFCoeffs
   chargedensity: []
+  chargedensityslicing: /fleurOutput/fleurInput/output/chargeDensitySlicing
   chargedenxcdenintegral: []
+  checks: /fleurOutput/fleurInput/output/checks
+  comment: /fleurOutput/fleurInput/comment
   compilationinfo: /fleurOutput/programVersion/compilationInfo
   compositetimer: []
   config: []
-  coreelectrons: []
+  constant: /fleurOutput/fleurInput/constants/constant
+  constants: /fleurOutput/fleurInput/constants
+  contourdos: /fleurOutput/fleurInput/calculationSetup/greensFunction/contourDOS
+  contourrectangle: /fleurOutput/fleurInput/calculationSetup/greensFunction/contourRectangle
+  contoursemicircle: /fleurOutput/fleurInput/calculationSetup/greensFunction/contourSemicircle
+  coreconfig: /fleurOutput/fleurInput/atomSpecies/species/electronConfig/coreConfig
+  coreelectrons: /fleurOutput/fleurInput/calculationSetup/coreElectrons
+  corespectrum: /fleurOutput/fleurInput/output/coreSpectrum
   corestates: []
+  cutoffs: /fleurOutput/fleurInput/calculationSetup/cutoffs
+  d:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/greensfCalculation/matrixElements/d
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/torgueCalculation/greensfElements/d
+  - /fleurOutput/fleurInput/atomSpecies/species/greensfCalculation/matrixElements/d
+  - /fleurOutput/fleurInput/atomSpecies/species/torgueCalculation/greensfElements/d
   density: /fleurOutput/numericalParameters/density
   densityconvergence: []
   densitycoulombpotentialintegral: []
   densityeffectivepotentialintegral: []
   densitymatrixfor: []
   dftucorrection: []
+  diagelements:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/greensfCalculation/diagElements
+  - /fleurOutput/fleurInput/atomSpecies/species/greensfCalculation/diagElements
+  displace: /fleurOutput/fleurInput/relaxation/displacements/displace
+  displacements: /fleurOutput/fleurInput/relaxation/displacements
   distance: []
+  dmi: /fleurOutput/fleurInput/forceTheorem/DMI
+  edgeindices: /fleurOutput/fleurInput/output/coreSpectrum/edgeIndices
   eigenvalues: []
   eigenvaluesat: []
+  electronconfig: /fleurOutput/fleurInput/atomSpecies/species/electronConfig
   electronnucleiinteractiondifferentmts: []
   enddateandtime: /fleurOutput/endDateAndTime
-  energyparameters: []
+  energyparameters:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/energyParameters
+  - /fleurOutput/fleurInput/atomSpecies/species/energyParameters
   entry: []
   error: /fleurOutput/ERROR
+  exc:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/ldaHIA/exc
+  - /fleurOutput/fleurInput/atomSpecies/species/ldaHIA/exc
   excsplit: []
+  expertmodes: /fleurOutput/fleurInput/calculationSetup/expertModes
   extrapolationto0k: []
+  f:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/greensfCalculation/matrixElements/f
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/torgueCalculation/greensfElements/f
+  - /fleurOutput/fleurInput/atomSpecies/species/greensfCalculation/matrixElements/f
+  - /fleurOutput/fleurInput/atomSpecies/species/torgueCalculation/greensfElements/f
   fermienergy: []
+  fields: /fleurOutput/fleurInput/calculationSetup/fields
+  filmlattice: /fleurOutput/fleurInput/cell/filmLattice
+  filmpos: /fleurOutput/fleurInput/atomGroups/atomGroup/filmPos
   fixedcharges: []
   fleurinput: /fleurOutput/fleurInput
   fleuroutput: /fleurOutput
   fockexchangeenergycore: []
   fockexchangeenergyvalence: []
+  force:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/force
+  - /fleurOutput/fleurInput/atomSpecies/species/force
+  forcetheorem: /fleurOutput/fleurInput/forceTheorem
   forcetheorem_dmi: []
   forcetheorem_jij: []
   forcetheorem_loop: []
@@ -2846,99 +6107,471 @@ tag_paths:
   forcetheorem_ssdisp: []
   forcetotal: []
   freeenergy: []
+  geometryoptimization: /fleurOutput/fleurInput/calculationSetup/geometryOptimization
+  ggaprinting: /fleurOutput/fleurInput/calculationSetup/xcFunctional/ggaPrinting
   gitinfo: /fleurOutput/programVersion/gitInfo
+  greensfcalculation:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/greensfCalculation
+  - /fleurOutput/fleurInput/atomSpecies/species/greensfCalculation
+  greensfelements:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/torgueCalculation/greensfElements
+  - /fleurOutput/fleurInput/atomSpecies/species/torgueCalculation/greensfElements
+  greensfunction: /fleurOutput/fleurInput/calculationSetup/greensFunction
   heatomicep: []
   heloatomicep: []
   highj: []
   iteration: /fleurOutput/scfLoop/iteration
-  kpoint: /fleurOutput/numericalParameters/kPointList/kPoint
-  kpointlist: /fleurOutput/numericalParameters/kPointList
+  jij: /fleurOutput/fleurInput/forceTheorem/Jij
+  joblist: /fleurOutput/fleurInput/output/wannier/jobList
+  juphon: /fleurOutput/fleurInput/output/juPhon
+  kpoint:
+  - /fleurOutput/fleurInput/cell/bzIntegration/kPointLists/kPointList/kPoint
+  - /fleurOutput/numericalParameters/kPointList/kPoint
+  kpointlist:
+  - /fleurOutput/fleurInput/cell/bzIntegration/kPointLists/kPointList
+  - /fleurOutput/numericalParameters/kPointList
+  kpointlists: /fleurOutput/fleurInput/cell/bzIntegration/kPointLists
+  kpointlistselection: /fleurOutput/fleurInput/cell/bzIntegration/kPointListSelection
+  layer: /fleurOutput/fleurInput/output/vacuumDOS/layer
+  ldahia:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/ldaHIA
+  - /fleurOutput/fleurInput/atomSpecies/species/ldaHIA
+  - /fleurOutput/fleurInput/calculationSetup/ldaHIA
+  ldau:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/ldaU
+  - /fleurOutput/fleurInput/atomSpecies/species/ldaU
+  - /fleurOutput/fleurInput/calculationSetup/ldaU
   ldaudensitymatrix: []
   ldaudensitymatrixconvergence: []
+  libxcid: /fleurOutput/fleurInput/calculationSetup/xcFunctional/LibXCID
+  libxcname: /fleurOutput/fleurInput/calculationSetup/xcFunctional/LibXCName
+  lo:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/lo
+  - /fleurOutput/fleurInput/atomSpecies/species/lo
   loatomicep: []
   lowj: []
   madelungterm: []
+  mae: /fleurOutput/fleurInput/forceTheorem/MAE
+  magneticcirculardichroism: /fleurOutput/fleurInput/output/magneticCircularDichroism
   magneticmoment: []
   magneticmomentsinmtspheres: []
+  magnetism: /fleurOutput/fleurInput/calculationSetup/magnetism
+  matrixelements:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/greensfCalculation/matrixElements
+  - /fleurOutput/fleurInput/atomSpecies/species/greensfCalculation/matrixElements
   mem: /fleurOutput/parallelSetup/mem
+  modinitden:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/modInitDen
+  - /fleurOutput/fleurInput/atomSpecies/species/modInitDen
   mpi: /fleurOutput/parallelSetup/mpi
   mtcharge: []
   mtcharges: []
   mtjcharge: []
+  mtnocoparams: /fleurOutput/fleurInput/calculationSetup/magnetism/mtNocoParams
+  mtsphere:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/mtSphere
+  - /fleurOutput/fleurInput/atomSpecies/species/mtSphere
   mtvolume: /fleurOutput/numericalParameters/volumes/mtVolume
+  nocoparams:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/nocoParams
+  - /fleurOutput/fleurInput/atomSpecies/species/nocoParams
   noncollineartorgue: []
   numericalparameters: /fleurOutput/numericalParameters
   occupations: []
+  onedparams: /fleurOutput/fleurInput/calculationSetup/oneDParams
   onsiteexchangesplitting: []
   openmp: /fleurOutput/parallelSetup/openMP
+  orbcomprot: /fleurOutput/fleurInput/atomGroups/atomGroup/orbcomprot
   orbitalmagneticmomentsinmtspheres: []
   orbmagmoment: []
+  output: /fleurOutput/fleurInput/output
   overallchargedensity: []
+  p:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/greensfCalculation/matrixElements/p
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/torgueCalculation/greensfElements/p
+  - /fleurOutput/fleurInput/atomSpecies/species/greensfCalculation/matrixElements/p
+  - /fleurOutput/fleurInput/atomSpecies/species/torgueCalculation/greensfElements/p
   parallelsetup: /fleurOutput/parallelSetup
+  plot: /fleurOutput/fleurInput/output/plotting/plot
+  plotting: /fleurOutput/fleurInput/output/plotting
+  posforce: /fleurOutput/fleurInput/relaxation/relaxation-history/step/posforce
   precision: /fleurOutput/programVersion/precision
+  prodbasis:
+  - /fleurOutput/fleurInput/atomSpecies/species/prodBasis
+  - /fleurOutput/fleurInput/calculationSetup/prodBasis
   programversion: /fleurOutput/programVersion
-  rdmft: []
-  scfloop: /fleurOutput/scfLoop
+  q:
+  - /fleurOutput/fleurInput/forceTheorem/DMI/qVectors/q
+  - /fleurOutput/fleurInput/forceTheorem/Jij/qVectors/q
+  - /fleurOutput/fleurInput/forceTheorem/spinSpiralDispersion/q
+  qsc: /fleurOutput/fleurInput/calculationSetup/magnetism/qsc
+  qss: /fleurOutput/fleurInput/calculationSetup/magnetism/qss
+  qvectors:
+  - /fleurOutput/fleurInput/forceTheorem/DMI/qVectors
+  - /fleurOutput/fleurInput/forceTheorem/Jij/qVectors
+  rdmft: /fleurOutput/fleurInput/calculationSetup/rdmft
+  realaxis: /fleurOutput/fleurInput/calculationSetup/greensFunction/realAxis
+  relaxation: /fleurOutput/fleurInput/relaxation
+  relaxation-history: /fleurOutput/fleurInput/relaxation/relaxation-history
+  relpos: /fleurOutput/fleurInput/atomGroups/atomGroup/relPos
+  row-1:
+  - /fleurOutput/fleurInput/cell/bulkLattice/bravaisMatrix/row-1
+  - /fleurOutput/fleurInput/cell/bulkLattice/row-1
+  - /fleurOutput/fleurInput/cell/filmLattice/bravaisMatrix/row-1
+  - /fleurOutput/fleurInput/cell/filmLattice/row-1
+  - /fleurOutput/fleurInput/cell/symmetryOperations/symOp/row-1
+  row-2:
+  - /fleurOutput/fleurInput/cell/bulkLattice/bravaisMatrix/row-2
+  - /fleurOutput/fleurInput/cell/bulkLattice/row-2
+  - /fleurOutput/fleurInput/cell/filmLattice/bravaisMatrix/row-2
+  - /fleurOutput/fleurInput/cell/filmLattice/row-2
+  - /fleurOutput/fleurInput/cell/symmetryOperations/symOp/row-2
+  row-3:
+  - /fleurOutput/fleurInput/cell/bulkLattice/bravaisMatrix/row-3
+  - /fleurOutput/fleurInput/cell/filmLattice/bravaisMatrix/row-3
+  - /fleurOutput/fleurInput/cell/symmetryOperations/symOp/row-3
+  s:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/greensfCalculation/matrixElements/s
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/torgueCalculation/greensfElements/s
+  - /fleurOutput/fleurInput/atomSpecies/species/greensfCalculation/matrixElements/s
+  - /fleurOutput/fleurInput/atomSpecies/species/torgueCalculation/greensfElements/s
+  scfloop:
+  - /fleurOutput/fleurInput/calculationSetup/scfLoop
+  - /fleurOutput/scfLoop
+  shape: /fleurOutput/fleurInput/calculationSetup/fields/shape
   singleatom: []
+  soc: /fleurOutput/fleurInput/calculationSetup/soc
+  sourcefreemag: /fleurOutput/fleurInput/calculationSetup/magnetism/sourceFreeMag
+  special: /fleurOutput/fleurInput/atomSpecies/species/special
+  specialoutput: /fleurOutput/fleurInput/output/specialOutput
+  species: /fleurOutput/fleurInput/atomSpecies/species
   spindensity: []
   spindependentcharge: []
   spinorbittorgue: []
+  spinspiraldispersion: /fleurOutput/fleurInput/forceTheorem/spinSpiralDispersion
+  spinspiralqpointmesh: /fleurOutput/fleurInput/calculationSetup/spinSpiralQPointMesh
   startdateandtime: /fleurOutput/startDateAndTime
   state: []
+  stateoccupation: /fleurOutput/fleurInput/atomSpecies/species/electronConfig/stateOccupation
+  step: /fleurOutput/fleurInput/relaxation/relaxation-history/step
   sumofeigenvalues: []
   sumvalencesingleparticleenergies: []
+  symmetryoperations: /fleurOutput/fleurInput/cell/symmetryOperations
+  symop: /fleurOutput/fleurInput/cell/symmetryOperations/symOp
   targetcomputerarchitectures: /fleurOutput/programVersion/targetComputerArchitectures
   targetstructureclass: /fleurOutput/programVersion/targetStructureClass
   timer: []
   timing: []
   tkbtimesentropy: []
   torgue: []
+  torguecalculation:
+  - /fleurOutput/fleurInput/atomGroups/atomGroup/torgueCalculation
+  - /fleurOutput/fleurInput/atomSpecies/species/torgueCalculation
   totalcharge: []
   totalenergy: []
   totalforcesonrepresentativeatoms: []
+  unfoldingband: /fleurOutput/fleurInput/output/unfoldingBand
+  vacuumdos: /fleurOutput/fleurInput/output/vacuumDOS
+  vacuumenergyparameters: /fleurOutput/fleurInput/cell/filmLattice/vacuumEnergyParameters
   vacuumep: []
+  valenceconfig: /fleurOutput/fleurInput/atomSpecies/species/electronConfig/valenceConfig
   valencedensity: []
   valenceelectrons: []
   volumes: /fleurOutput/numericalParameters/volumes
+  wannier: /fleurOutput/fleurInput/output/wannier
+  xcfunctional: /fleurOutput/fleurInput/calculationSetup/xcFunctional
+  xcparams: /fleurOutput/fleurInput/calculationSetup/xcFunctional/xcParams
 unique_attribs:
   additionalcompilerflags: /fleurOutput/programVersion/additionalCompilerFlags
+  all_atoms: /fleurOutput/fleurInput/output/bandDOS/@all_atoms
+  alpha: /fleurOutput/fleurInput/calculationSetup/scfLoop/@alpha
+  alpha_ex: /fleurOutput/fleurInput/output/coreSpectrum/@alpha_Ex
+  atomlist: /fleurOutput/fleurInput/output/wannier/@atomList
+  atomtype: /fleurOutput/fleurInput/output/coreSpectrum/@atomType
+  autocomp: /fleurOutput/fleurInput/calculationSetup/fields/@autocomp
+  b_field: /fleurOutput/fleurInput/calculationSetup/fields/@b_field
+  band: /fleurOutput/fleurInput/output/@band
+  bands: /fleurOutput/fleurInput/calculationSetup/prodBasis/@bands
+  beta: /fleurOutput/fleurInput/calculationSetup/ldaHIA/@beta
+  beta_ex: /fleurOutput/fleurInput/output/coreSpectrum/@beta_Ex
+  bmt: /fleurOutput/fleurInput/output/specialOutput/@bmt
   branch: /fleurOutput/programVersion/gitInfo/@branch
+  bscomf: /fleurOutput/fleurInput/output/wannier/@bsComf
+  c: /fleurOutput/fleurInput/cell/bulkLattice/c
+  cdinf: /fleurOutput/fleurInput/output/checks/@cdinf
+  chi: /fleurOutput/fleurInput/calculationSetup/oneDParams/@chi
+  chng: /fleurOutput/fleurInput/calculationSetup/xcFunctional/xcParams/@chng
+  comment: /fleurOutput/fleurInput/comment
+  corespec: /fleurOutput/fleurInput/output/@coreSpec
+  coretail_lmax: /fleurOutput/fleurInput/calculationSetup/coreElectrons/@coretail_lmax
   count: /fleurOutput/numericalParameters/kPointList/@count
+  ctail: /fleurOutput/fleurInput/calculationSetup/coreElectrons/@ctail
+  d1: /fleurOutput/fleurInput/calculationSetup/oneDParams/@d1
+  dftspinpol: /fleurOutput/fleurInput/calculationSetup/ldaHIA/@dftspinpol
+  dirichlet: /fleurOutput/fleurInput/calculationSetup/fields/@dirichlet
+  disp: /fleurOutput/fleurInput/output/checks/@disp
+  dos: /fleurOutput/fleurInput/output/@dos
+  dtilda: /fleurOutput/fleurInput/cell/filmLattice/@dTilda
+  dvac: /fleurOutput/fleurInput/cell/filmLattice/@dVac
+  edgeindices: /fleurOutput/fleurInput/output/coreSpectrum/edgeIndices
+  edgetype: /fleurOutput/fleurInput/output/coreSpectrum/@edgeType
+  ekin: /fleurOutput/fleurInput/output/coreSpectrum/@eKin
+  ellow: /fleurOutput/fleurInput/calculationSetup/greensFunction/realAxis/@ellow
+  elup: /fleurOutput/fleurInput/calculationSetup/greensFunction/realAxis/@elup
+  emax: /fleurOutput/fleurInput/output/coreSpectrum/@eMax
+  emin: /fleurOutput/fleurInput/output/coreSpectrum/@eMin
+  energylo: /fleurOutput/fleurInput/output/magneticCircularDichroism/@energyLo
+  energyup: /fleurOutput/fleurInput/output/magneticCircularDichroism/@energyUp
+  eonly: /fleurOutput/fleurInput/output/specialOutput/@eonly
+  epsdisp: /fleurOutput/fleurInput/calculationSetup/geometryOptimization/@epsdisp
+  epsforce: /fleurOutput/fleurInput/calculationSetup/geometryOptimization/@epsforce
+  ev: /fleurOutput/fleurInput/calculationSetup/fields/@eV
+  ewaldlambda: /fleurOutput/fleurInput/calculationSetup/prodBasis/@ewaldlambda
+  f_level: /fleurOutput/fleurInput/calculationSetup/geometryOptimization/@f_level
+  fermismearingenergy: /fleurOutput/fleurInput/cell/bzIntegration/@fermiSmearingEnergy
+  fermismearingtemp: /fleurOutput/fleurInput/cell/bzIntegration/@fermiSmearingTemp
+  fixed_moment: /fleurOutput/fleurInput/calculationSetup/magnetism/@fixed_moment
   flag: /fleurOutput/programVersion/compilationInfo/@flag
+  fleurinputversion: /fleurOutput/fleurInput/@fleurInputVersion
   fleuroutputversion: /fleurOutput/@fleurOutputVersion
+  force_converged: /fleurOutput/fleurInput/calculationSetup/geometryOptimization/@force_converged
+  forcealpha: /fleurOutput/fleurInput/calculationSetup/geometryOptimization/@forcealpha
+  forcemix: /fleurOutput/fleurInput/calculationSetup/geometryOptimization/@forcemix
+  form66: /fleurOutput/fleurInput/output/specialOutput/@form66
+  format: /fleurOutput/fleurInput/output/plotting/@format
+  frcor: /fleurOutput/fleurInput/calculationSetup/coreElectrons/@frcor
+  fullmatch: /fleurOutput/fleurInput/calculationSetup/ldaHIA/@fullMatch
+  functional: /fleurOutput/fleurInput/calculationSetup/rdmft/@functional
+  gcutm: /fleurOutput/fleurInput/calculationSetup/prodBasis/@gcutm
+  gmax: /fleurOutput/fleurInput/calculationSetup/cutoffs/@Gmax
+  gmaxxc: /fleurOutput/fleurInput/calculationSetup/cutoffs/@GmaxXC
+  gw: /fleurOutput/fleurInput/calculationSetup/expertModes/@gw
   host: /fleurOutput/programVersion/compilationInfo/@host
+  i_initial: /fleurOutput/fleurInput/output/coreSpectrum/@I_initial
+  idsprs: /fleurOutput/fleurInput/calculationSetup/xcFunctional/xcParams/@idsprs
+  idsprs0: /fleurOutput/fleurInput/calculationSetup/xcFunctional/ggaPrinting/@idsprs0
+  idsprsi: /fleurOutput/fleurInput/calculationSetup/xcFunctional/ggaPrinting/@idsprsi
+  idsprsl: /fleurOutput/fleurInput/calculationSetup/xcFunctional/ggaPrinting/@idsprsl
+  idsprsv: /fleurOutput/fleurInput/calculationSetup/xcFunctional/ggaPrinting/@idsprsv
+  iggachk: /fleurOutput/fleurInput/calculationSetup/xcFunctional/ggaPrinting/@iggachk
+  igrd: /fleurOutput/fleurInput/calculationSetup/xcFunctional/xcParams/@igrd
+  imix: /fleurOutput/fleurInput/calculationSetup/scfLoop/@imix
+  integ: /fleurOutput/fleurInput/output/vacuumDOS/@integ
   interstitial: /fleurOutput/numericalParameters/volumes/@interstitial
+  intfullradial: /fleurOutput/fleurInput/calculationSetup/greensFunction/@intFullRadial
+  invs1: /fleurOutput/fleurInput/calculationSetup/oneDParams/@invs1
+  iplot: /fleurOutput/fleurInput/output/plotting/@iplot
+  isec1: /fleurOutput/fleurInput/calculationSetup/expertModes/@isec1
+  itmax: /fleurOutput/fleurInput/calculationSetup/scfLoop/@itmax
+  itmaxhubbard1: /fleurOutput/fleurInput/calculationSetup/ldaHIA/@itmaxHubbard1
+  jdos: /fleurOutput/fleurInput/output/bandDOS/@jDOS
   jmtd: /fleurOutput/numericalParameters/atomsInCell/@jmtd
+  joblist: /fleurOutput/fleurInput/output/wannier/jobList
+  jspins: /fleurOutput/fleurInput/calculationSetup/magnetism/@jspins
+  kcrel: /fleurOutput/fleurInput/calculationSetup/coreElectrons/@kcrel
+  kmax: /fleurOutput/fleurInput/calculationSetup/cutoffs/@Kmax
+  l_adjenpara: /fleurOutput/fleurInput/calculationSetup/ldaU/@l_adjEnpara
+  l_bloechl: /fleurOutput/fleurInput/cell/bzIntegration/@l_bloechl
+  l_constrained: /fleurOutput/fleurInput/calculationSetup/magnetism/mtNocoParams/@l_constrained
+  l_core_confpot: /fleurOutput/fleurInput/calculationSetup/coreElectrons/@l_core_confpot
+  l_correctetot: /fleurOutput/fleurInput/calculationSetup/ldaHIA/@l_correctEtot
+  l_eigout: /fleurOutput/fleurInput/output/juPhon/@l_eigout
+  l_f: /fleurOutput/fleurInput/calculationSetup/geometryOptimization/@l_f
+  l_j: /fleurOutput/fleurInput/calculationSetup/magnetism/@l_J
+  l_linmix: /fleurOutput/fleurInput/calculationSetup/ldaU/@l_linMix
+  l_mtnocopot: /fleurOutput/fleurInput/calculationSetup/magnetism/mtNocoParams/@l_mtNocoPot
+  l_noco: /fleurOutput/fleurInput/calculationSetup/magnetism/@l_noco
+  l_nonsphdc: /fleurOutput/fleurInput/calculationSetup/ldaHIA/@l_nonsphDC
+  l_onlymtstden: /fleurOutput/fleurInput/calculationSetup/magnetism/@l_onlyMtStDen
+  l_potout: /fleurOutput/fleurInput/output/juPhon/@l_potout
+  l_rdmft: /fleurOutput/fleurInput/calculationSetup/rdmft/@l_rdmft
+  l_relaxsqa: /fleurOutput/fleurInput/calculationSetup/magnetism/mtNocoParams/@l_relaxSQA
+  l_resolvent: /fleurOutput/fleurInput/calculationSetup/greensFunction/@l_resolvent
+  l_scalemag: /fleurOutput/fleurInput/calculationSetup/magnetism/sourceFreeMag/@l_scaleMag
+  l_soc: /fleurOutput/fleurInput/calculationSetup/soc/@l_soc
+  l_sourcefree: /fleurOutput/fleurInput/calculationSetup/magnetism/sourceFreeMag/@l_sourceFree
+  l_ss: /fleurOutput/fleurInput/calculationSetup/magnetism/@l_ss
   lastcommithash: /fleurOutput/programVersion/gitInfo/@lastCommitHash
+  lexp: /fleurOutput/fleurInput/calculationSetup/prodBasis/@lexp
+  lflip: /fleurOutput/fleurInput/calculationSetup/magnetism/@lflip
   link: /fleurOutput/programVersion/compilationInfo/@link
+  listname: /fleurOutput/fleurInput/cell/bzIntegration/kPointListSelection/@listName
+  lmax: /fleurOutput/fleurInput/output/coreSpectrum/@lmax
   lmaxd: /fleurOutput/numericalParameters/basis/@lmaxd
+  locx1: /fleurOutput/fleurInput/output/vacuumDOS/@locx1
+  locx2: /fleurOutput/fleurInput/output/vacuumDOS/@locx2
+  locy1: /fleurOutput/fleurInput/output/vacuumDOS/@locy1
+  locy2: /fleurOutput/fleurInput/output/vacuumDOS/@locy2
+  lpr: /fleurOutput/fleurInput/calculationSetup/expertModes/@lpr
+  lwb: /fleurOutput/fleurInput/calculationSetup/xcFunctional/xcParams/@lwb
+  m_cyl: /fleurOutput/fleurInput/calculationSetup/oneDParams/@m_cyl
+  mag_mixing_scheme: /fleurOutput/fleurInput/calculationSetup/magnetism/mtNocoParams/@mag_mixing_scheme
+  mag_scale: /fleurOutput/fleurInput/calculationSetup/magnetism/sourceFreeMag/@mag_scale
+  maxeigenval: /fleurOutput/fleurInput/output/chargeDensitySlicing/@maxEigenval
+  maxenergy: /fleurOutput/fleurInput/output/bandDOS/@maxEnergy
+  maxiterbroyd: /fleurOutput/fleurInput/calculationSetup/scfLoop/@maxIterBroyd
+  maxspindown: /fleurOutput/fleurInput/output/wannier/bandSelection/@maxSpinDown
+  maxspinup: /fleurOutput/fleurInput/output/wannier/bandSelection/@maxSpinUp
+  maxtimetostartiter: /fleurOutput/fleurInput/calculationSetup/scfLoop/@maxTimeToStartIter
+  mcd: /fleurOutput/fleurInput/output/magneticCircularDichroism/@mcd
   memorypernode: /fleurOutput/parallelSetup/mem/@memoryPerNode
   message: /fleurOutput/ERROR/@Message
+  mincalcdistance: /fleurOutput/fleurInput/calculationSetup/greensFunction/@minCalcDistance
+  mindistance: /fleurOutput/fleurInput/calculationSetup/scfLoop/@minDistance
+  mineigenval: /fleurOutput/fleurInput/output/chargeDensitySlicing/@minEigenval
+  minenergy: /fleurOutput/fleurInput/output/bandDOS/@minEnergy
+  minmatdistance: /fleurOutput/fleurInput/calculationSetup/ldaHIA/@minmatDistance
+  minoccdistance: /fleurOutput/fleurInput/calculationSetup/ldaHIA/@minoccDistance
+  minspindown: /fleurOutput/fleurInput/output/wannier/bandSelection/@minSpinDown
+  minspinup: /fleurOutput/fleurInput/output/wannier/bandSelection/@minSpinUp
+  mix_constr: /fleurOutput/fleurInput/calculationSetup/magnetism/mtNocoParams/@mix_constr
+  mix_relaxweightoffd: /fleurOutput/fleurInput/calculationSetup/magnetism/mtNocoParams/@mix_RelaxWeightOffD
+  mixparam: /fleurOutput/fleurInput/calculationSetup/ldaU/@mixParam
+  mm: /fleurOutput/fleurInput/calculationSetup/oneDParams/@MM
+  mode: /fleurOutput/fleurInput/cell/bzIntegration/@mode
   mpiprocesses: /fleurOutput/parallelSetup/mpi/@mpiProcesses
+  ms: /fleurOutput/fleurInput/output/wannier/@ms
   n_hia: /fleurOutput/numericalParameters/atomsInCell/@n_hia
+  n_occpm: /fleurOutput/fleurInput/calculationSetup/ldaHIA/@n_occpm
   n_u: /fleurOutput/numericalParameters/atomsInCell/@n_u
+  name: /fleurOutput/fleurInput/calculationSetup/xcFunctional/@name
   nat: /fleurOutput/numericalParameters/atomsInCell/@nat
+  ndvgrd: /fleurOutput/fleurInput/calculationSetup/xcFunctional/xcParams/@ndvgrd
+  ne: /fleurOutput/fleurInput/calculationSetup/greensFunction/realAxis/@ne
   ng2: /fleurOutput/numericalParameters/density/@ng2
   ng3: /fleurOutput/numericalParameters/density/@ng3
   nlotot: /fleurOutput/numericalParameters/basis/@nlotot
+  nnne: /fleurOutput/fleurInput/output/chargeDensitySlicing/@nnne
+  nqphi: /fleurOutput/fleurInput/output/coreSpectrum/@nqphi
+  nqr: /fleurOutput/fleurInput/output/coreSpectrum/@nqr
+  nstars: /fleurOutput/fleurInput/output/vacuumDOS/@nstars
+  nstm: /fleurOutput/fleurInput/output/vacuumDOS/@nstm
   ntype: /fleurOutput/numericalParameters/atomsInCell/@ntype
-  numbands: /fleurOutput/numericalParameters/bands/@numbands
+  numbands:
+  - /fleurOutput/fleurInput/calculationSetup/cutoffs/@numbands
+  - /fleurOutput/numericalParameters/bands/@numbands
+  numberpoints: /fleurOutput/fleurInput/output/bandDOS/@numberPoints
+  numkpt: /fleurOutput/fleurInput/output/chargeDensitySlicing/@numkpt
+  numpoints: /fleurOutput/fleurInput/output/coreSpectrum/@numPoints
   nvd: /fleurOutput/numericalParameters/basis/@nvd
+  occeps: /fleurOutput/fleurInput/calculationSetup/rdmft/@occEps
+  'off': /fleurOutput/fleurInput/calculationSetup/soc/@off
   omegatilda: /fleurOutput/numericalParameters/volumes/@omegaTilda
   ompthreads: /fleurOutput/parallelSetup/openMP/@ompThreads
+  orbcomp: /fleurOutput/fleurInput/output/bandDOS/@orbcomp
+  outputsphavg: /fleurOutput/fleurInput/calculationSetup/greensFunction/@outputSphavg
+  pallst: /fleurOutput/fleurInput/output/chargeDensitySlicing/@pallst
+  plot_charge: /fleurOutput/fleurInput/calculationSetup/fields/@plot_charge
+  plot_rho: /fleurOutput/fleurInput/calculationSetup/fields/@plot_rho
+  polar: /fleurOutput/fleurInput/output/plotting/@polar
+  pot8: /fleurOutput/fleurInput/calculationSetup/expertModes/@pot8
+  precondparam: /fleurOutput/fleurInput/calculationSetup/scfLoop/@precondParam
+  qfix: /fleurOutput/fleurInput/calculationSetup/geometryOptimization/@qfix
+  qsc: /fleurOutput/fleurInput/calculationSetup/magnetism/qsc
+  qss: /fleurOutput/fleurInput/calculationSetup/magnetism/qss
+  qx: /fleurOutput/fleurInput/calculationSetup/spinSpiralQPointMesh/@qx
+  qy: /fleurOutput/fleurInput/calculationSetup/spinSpiralQPointMesh/@qy
+  qz: /fleurOutput/fleurInput/calculationSetup/spinSpiralQPointMesh/@qz
+  relativisticcorrections: /fleurOutput/fleurInput/calculationSetup/xcFunctional/@relativisticCorrections
+  rot: /fleurOutput/fleurInput/calculationSetup/oneDParams/@rot
+  secvar: /fleurOutput/fleurInput/calculationSetup/expertModes/@secvar
+  sgwf: /fleurOutput/fleurInput/output/wannier/@sgwf
+  sig_b_1: /fleurOutput/fleurInput/calculationSetup/fields/@sig_b_1
+  sig_b_2: /fleurOutput/fleurInput/calculationSetup/fields/@sig_b_2
+  sigma: /fleurOutput/fleurInput/output/bandDOS/@sigma
+  slice: /fleurOutput/fleurInput/output/@slice
+  soc66: /fleurOutput/fleurInput/calculationSetup/soc/@soc66
+  socgwf: /fleurOutput/fleurInput/output/wannier/@socgwf
+  spav: /fleurOutput/fleurInput/calculationSetup/soc/@spav
+  star: /fleurOutput/fleurInput/output/vacuumDOS/@star
+  statesabove: /fleurOutput/fleurInput/calculationSetup/rdmft/@statesAbove
+  statesbelow: /fleurOutput/fleurInput/calculationSetup/rdmft/@statesBelow
+  supercellx: /fleurOutput/fleurInput/output/unfoldingBand/@supercellX
+  supercelly: /fleurOutput/fleurInput/output/unfoldingBand/@supercellY
+  supercellz: /fleurOutput/fleurInput/output/unfoldingBand/@supercellZ
   surfacearea: /fleurOutput/numericalParameters/volumes/@surfaceArea
+  swsp: /fleurOutput/fleurInput/calculationSetup/magnetism/@swsp
   targetcomputerarchitectures: /fleurOutput/programVersion/targetComputerArchitectures
   targetstructureclass: /fleurOutput/programVersion/targetStructureClass
+  thetaj: /fleurOutput/fleurInput/forceTheorem/Jij/@thetaj
+  tolerance: /fleurOutput/fleurInput/calculationSetup/prodBasis/@tolerance
+  tworkf: /fleurOutput/fleurInput/output/vacuumDOS/@tworkf
   type: /fleurOutput/programVersion/precision/@type
+  unfoldband: /fleurOutput/fleurInput/output/unfoldingBand/@unfoldBand
   unitcell: /fleurOutput/numericalParameters/volumes/@unitCell
   user: /fleurOutput/programVersion/compilationInfo/@user
+  vacdos: /fleurOutput/fleurInput/output/vacuumDOS/@vacdos
+  valenceelectrons: /fleurOutput/fleurInput/cell/bzIntegration/@valenceElectrons
+  vchk: /fleurOutput/fleurInput/output/checks/@vchk
+  verbose: /fleurOutput/fleurInput/output/coreSpectrum/@verbose
+  vm: /fleurOutput/fleurInput/calculationSetup/oneDParams/@vM
+  wannier: /fleurOutput/fleurInput/output/@wannier
+  warp_factor: /fleurOutput/fleurInput/calculationSetup/expertModes/@warp_factor
   weightscale: /fleurOutput/numericalParameters/kPointList/@weightScale
   z1: /fleurOutput/numericalParameters/volumes/@z1
+  zrfs1: /fleurOutput/fleurInput/calculationSetup/oneDParams/@zrfs1
+  zsigma: /fleurOutput/fleurInput/calculationSetup/fields/@zsigma
 unique_path_attribs:
+  a1:
+  - /fleurOutput/fleurInput/cell/bulkLattice/a1
+  - /fleurOutput/fleurInput/cell/filmLattice/a1
+  a2:
+  - /fleurOutput/fleurInput/cell/bulkLattice/a2
+  - /fleurOutput/fleurInput/cell/filmLattice/a2
+  correlation:
+  - /fleurOutput/fleurInput/calculationSetup/xcFunctional/LibXCID/@correlation
+  - /fleurOutput/fleurInput/calculationSetup/xcFunctional/LibXCName/@correlation
   date:
   - /fleurOutput/endDateAndTime/@date
   - /fleurOutput/programVersion/compilationInfo/@date
   - /fleurOutput/startDateAndTime/@date
+  eig66:
+  - /fleurOutput/fleurInput/calculationSetup/expertModes/@eig66
+  - /fleurOutput/fleurInput/output/@eig66
+  etot_correlation:
+  - /fleurOutput/fleurInput/calculationSetup/xcFunctional/LibXCID/@etot_correlation
+  - /fleurOutput/fleurInput/calculationSetup/xcFunctional/LibXCName/@etot_correlation
+  etot_exchange:
+  - /fleurOutput/fleurInput/calculationSetup/xcFunctional/LibXCID/@etot_exchange
+  - /fleurOutput/fleurInput/calculationSetup/xcFunctional/LibXCName/@etot_exchange
+  exchange:
+  - /fleurOutput/fleurInput/calculationSetup/xcFunctional/LibXCID/@exchange
+  - /fleurOutput/fleurInput/calculationSetup/xcFunctional/LibXCName/@exchange
+  l_mperp:
+  - /fleurOutput/fleurInput/calculationSetup/greensFunction/@l_mperp
+  - /fleurOutput/fleurInput/calculationSetup/magnetism/mtNocoParams/@l_mperp
+  phi:
+  - /fleurOutput/fleurInput/calculationSetup/soc/@phi
+  - /fleurOutput/fleurInput/forceTheorem/DMI/@phi
+  - /fleurOutput/fleurInput/forceTheorem/MAE/@phi
+  row-1:
+  - /fleurOutput/fleurInput/cell/bulkLattice/bravaisMatrix/row-1
+  - /fleurOutput/fleurInput/cell/bulkLattice/row-1
+  - /fleurOutput/fleurInput/cell/filmLattice/bravaisMatrix/row-1
+  - /fleurOutput/fleurInput/cell/filmLattice/row-1
+  row-2:
+  - /fleurOutput/fleurInput/cell/bulkLattice/bravaisMatrix/row-2
+  - /fleurOutput/fleurInput/cell/bulkLattice/row-2
+  - /fleurOutput/fleurInput/cell/filmLattice/bravaisMatrix/row-2
+  - /fleurOutput/fleurInput/cell/filmLattice/row-2
+  row-3:
+  - /fleurOutput/fleurInput/cell/bulkLattice/bravaisMatrix/row-3
+  - /fleurOutput/fleurInput/cell/filmLattice/bravaisMatrix/row-3
+  scale:
+  - /fleurOutput/fleurInput/cell/bulkLattice/@scale
+  - /fleurOutput/fleurInput/cell/bulkLattice/a1/@scale
+  - /fleurOutput/fleurInput/cell/bulkLattice/a2/@scale
+  - /fleurOutput/fleurInput/cell/bulkLattice/c/@scale
+  - /fleurOutput/fleurInput/cell/filmLattice/@scale
+  - /fleurOutput/fleurInput/cell/filmLattice/a1/@scale
+  - /fleurOutput/fleurInput/cell/filmLattice/a2/@scale
+  spinf:
+  - /fleurOutput/fleurInput/calculationSetup/ldaU/@spinf
+  - /fleurOutput/fleurInput/calculationSetup/scfLoop/@spinf
+  theta:
+  - /fleurOutput/fleurInput/calculationSetup/soc/@theta
+  - /fleurOutput/fleurInput/forceTheorem/DMI/@theta
+  - /fleurOutput/fleurInput/forceTheorem/MAE/@theta
   time:
   - /fleurOutput/endDateAndTime/@time
   - /fleurOutput/startDateAndTime/@time

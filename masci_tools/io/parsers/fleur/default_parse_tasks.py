@@ -432,7 +432,8 @@ TASKS_DEFINITION = {
         'energy_core_electrons': {
             'parse_type': 'singleValue',
             'path_spec': {
-                'name': 'coreElectrons'
+                'name': 'coreElectrons',
+                'contains': 'sumOfEigenvalues'
             },
             'only_required': True
         },

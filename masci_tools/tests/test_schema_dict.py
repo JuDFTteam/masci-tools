@@ -77,6 +77,7 @@ def test_outschema_dict_structure():
         'root_tag': str,
         'input_tag': str,
         'out_version': str,
+        'inp_version': str,
         'omitt_contained_tags': LockableList,
         'tag_info': LockableDict,
         'iteration_tag_info': LockableDict

@@ -76,12 +76,11 @@ def get_tag_xpath(schema_dict, name, contains=None, not_contains=None):
             for invalid in invalid_paths:
                 paths.remove(invalid)
 
-            if len(paths) == 1:
-                return paths[0]
-
             all_paths += paths
 
-    if len(all_paths) == 0:
+    if len(all_paths) == 1:
+        return all_paths[0]
+    elif len(all_paths) == 0:
         raise ValueError(f'The tag {name} has no possible paths with the current specification.\n'
                          f'contains: {contains}, not_contains: {not_contains}')
     else:
@@ -201,12 +200,11 @@ def get_attrib_xpath(schema_dict, name, contains=None, not_contains=None, exclud
             for invalid in invalid_paths:
                 paths.remove(invalid)
 
-            if len(paths) == 1:
-                return paths[0]
-
             all_paths += paths
 
-    if len(all_paths) == 0:
+    if len(all_paths) == 1:
+        return all_paths[0]
+    elif len(all_paths) == 0:
         raise ValueError(f'The attrib {name} has no possible paths with the current specification.\n'
                          f'contains: {contains}, not_contains: {not_contains}, exclude {exclude}')
     else:
@@ -215,15 +213,14 @@ def get_attrib_xpath(schema_dict, name, contains=None, not_contains=None, exclud
                          f'These are possible: {all_paths}')
 
 
-def read_constants(root, schema_dict, replace_root=None):
+def read_constants(root, schema_dict):
     """
     Reads in the constants defined in the inp.xml
     and returns them combined with the predefined constants from
     fleur as a dictionary
 
     :param root: root of the etree of the inp.xml file
-    :param schema_dict: schema_dictionary of the version of the inp.xml
-    :param replace_root: str, replaces the root tag (used for inserting output root to input paths)
+    :param schema_dict: schema_dictionary of the version of the file to read (inp.xml or out.xml)
 
     :return: a python dictionary with all defined constants
     """
@@ -232,7 +229,7 @@ def read_constants(root, schema_dict, replace_root=None):
 
     defined_constants = copy.deepcopy(FLEUR_DEFINED_CONSTANTS)
 
-    constants = evaluate_tag(root, schema_dict, 'constant', defined_constants, replace_root=replace_root)
+    constants = evaluate_tag(root, schema_dict, 'constant', defined_constants)
 
     if constants['name'] is not None:
         if not isinstance(constants['name'], list):
@@ -276,10 +273,9 @@ def evaluate_attribute(node, schema_dict, name, constants, parser_info_out=None,
     contains = kwargs.get('contains', None)
     not_contains = kwargs.get('not_contains', None)
     exclude = kwargs.get('exclude', None)
-    replace_root = kwargs.get('replace_root', None)
     tag_name = kwargs.get('tag_name', None)
 
-    if isinstance(node, etree._Element) and replace_root is None:
+    if isinstance(node, etree._Element):
         if node.tag != schema_dict['root_tag'] and node.tag != 'iteration':
             if contains is None:
                 contains = []
@@ -293,9 +289,6 @@ def evaluate_attribute(node, schema_dict, name, constants, parser_info_out=None,
                                     not_contains=not_contains,
                                     exclude=exclude,
                                     tag_name=tag_name)
-
-    if replace_root is not None:
-        attrib_xpath = attrib_xpath.replace(f"/{schema_dict['root_tag']}", replace_root)
 
     stringattribute = eval_xpath(node, attrib_xpath, parser_info_out=parser_info_out)
 
@@ -348,9 +341,8 @@ def evaluate_text(node, schema_dict, name, constants, parser_info_out=None, **kw
 
     contains = kwargs.get('contains', None)
     not_contains = kwargs.get('not_contains', None)
-    replace_root = kwargs.get('replace_root', None)
 
-    if isinstance(node, etree._Element) and replace_root is None:
+    if isinstance(node, etree._Element):
         if node.tag != schema_dict['root_tag'] and node.tag != 'iteration':
             if contains is None:
                 contains = []
@@ -359,9 +351,6 @@ def evaluate_text(node, schema_dict, name, constants, parser_info_out=None, **kw
             contains = list(contains)
 
     tag_xpath = get_tag_xpath(schema_dict, name, contains=contains, not_contains=not_contains)
-
-    if replace_root is not None:
-        tag_xpath = tag_xpath.replace(f"/{schema_dict['root_tag']}", replace_root)
 
     stringtext = eval_xpath(node, f'{tag_xpath}/text()', parser_info_out=parser_info_out)
 
@@ -421,9 +410,8 @@ def evaluate_tag(node, schema_dict, name, constants, parser_info_out=None, **kwa
     contains = kwargs.get('contains', None)
     not_contains = kwargs.get('not_contains', None)
     only_required = kwargs.get('only_required', False)
-    replace_root = kwargs.get('replace_root', None)
 
-    if isinstance(node, etree._Element) and replace_root is None:
+    if isinstance(node, etree._Element):
         if node.tag != schema_dict['root_tag'] and node.tag != 'iteration':
             if contains is None:
                 contains = []
@@ -455,9 +443,6 @@ def evaluate_tag(node, schema_dict, name, constants, parser_info_out=None, **kwa
                                                   'exist or it has no attributes')
     else:
         attribs = sorted(list(attribs.original_case.values()))
-
-    if replace_root is not None:
-        tag_xpath = tag_xpath.replace(f"/{schema_dict['root_tag']}", replace_root)
 
     out_dict = {}
 
@@ -555,9 +540,8 @@ def evaluate_parent_tag(node, schema_dict, name, constants, parser_info_out=None
     contains = kwargs.get('contains', None)
     not_contains = kwargs.get('not_contains', None)
     only_required = kwargs.get('only_required', False)
-    replace_root = kwargs.get('replace_root', None)
 
-    if isinstance(node, etree._Element) and replace_root is None:
+    if isinstance(node, etree._Element):
         if node.tag != schema_dict['root_tag'] and node.tag != 'iteration':
             if contains is None:
                 contains = []
@@ -592,10 +576,7 @@ def evaluate_parent_tag(node, schema_dict, name, constants, parser_info_out=None
     else:
         attribs = sorted(list(attribs.original_case.values()))
 
-    if replace_root is not None:
-        tag_xpath = tag_xpath.replace(f"/{schema_dict['root_tag']}", replace_root)
-
-    elems = eval_xpath(node, tag_xpath, parser_info_out=parser_info_out)
+    elems = eval_xpath(node, tag_xpath, parser_info_out=parser_info_out, list_return=True)
 
     out_dict = dict.fromkeys(attribs)
     for attrib in attribs:
@@ -625,6 +606,9 @@ def evaluate_parent_tag(node, schema_dict, name, constants, parser_info_out=None
                                                           'Below are the warnings from convert_xml_attribute')
                 for warning in warnings:
                     parser_info_out['parser_warnings'].append(warning)
+
+    if all([len(x) == 1 for x in out_dict.values()]):
+        out_dict = {key: val[0] for key, val in out_dict.items()}
 
     return out_dict
 
@@ -694,9 +678,8 @@ def eval_simple_xpath(node, schema_dict, name, parser_info_out=None, **kwargs):
     contains = kwargs.get('contains', None)
     not_contains = kwargs.get('not_contains', None)
     list_return = kwargs.get('list_return', False)
-    replace_root = kwargs.get('replace_root', None)
 
-    if isinstance(node, etree._Element) and replace_root is None:
+    if isinstance(node, etree._Element):
         if node.tag != schema_dict['root_tag'] and node.tag != 'iteration':
             if contains is None:
                 contains = []
@@ -705,8 +688,5 @@ def eval_simple_xpath(node, schema_dict, name, parser_info_out=None, **kwargs):
             contains = list(contains)
 
     tag_xpath = get_tag_xpath(schema_dict, name, contains=contains, not_contains=not_contains)
-
-    if replace_root is not None:
-        tag_xpath = tag_xpath.replace(f"/{schema_dict['root_tag']}", replace_root)
 
     return eval_xpath(node, tag_xpath, parser_info_out=parser_info_out, list_return=list_return)
