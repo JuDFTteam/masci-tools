@@ -11,15 +11,11 @@ Updating or adapting the Fleur Parsers
 Each input and output file for Fleur has a correspong XML-Schema, where the structure
 of these files are defined.
 
-To be able to parse such files efficiently and without hardcoding their structure we extract all necessary information about the schemas in :py:func:`~masci_tools.io.parsers.fleur.fleur_schema.create_inpschema_dict()` and :py:func:`~masci_tools.io.parsers.fleur.fleur_schema.create_outschema_dict()`. The resulting python dictionaries are stored in ```inpschema_dict.py``` or ```outschema_dict.py``` files next to the schema and can be loaded via the functions :py:func:`~masci_tools.io.parsers.fleur.fleur_schema.load_inpschema()`
-or :py:func:`~masci_tools.io.parsers.fleur.fleur_schema.load_outschema()` by providing the desired version string.
-
-To make maintenance of the plugin and the schemas easier, a couple of small utility functions are provided.
-All functions below can either be called in python scripts or from the commandline
+To be able to parse such files efficiently and without hardcoding their structure we extract all necessary information about the schemas in :py:func:`~masci_tools.io.parsers.fleur.fleur_schema.create_inpschema_dict()` and :py:func:`~masci_tools.io.parsers.fleur.fleur_schema.create_outschema_dict()`. The resulting python dictionaries can be accessed via the classes :py:class:`~masci_tools.io.parsers.fleur.fleur_schema.InputSchemaDict` and :py:class:`~masci_tools.io.parsers.fleur.fleur_schema.OutputSchemaDict`. The easiest way to instantiate one of these objects is to use the :py:meth:`~masci_tools.io.parsers.fleur.fleur_schema.InputSchemaDict.fromVersion()` or :py:meth:`~masci_tools.io.parsers.fleur.fleur_schema.OutputSchemaDict.fromVersion()` methods by providing the desired version string.
 
 .. topic:: Adding/modifying a Fleur Schema:
 
-  The :py:func:`~masci_tools.io.parsers.fleur.fleur_schema.add_fleur_schema()` function can be used if a new ```FleurInputSchema.xsd``` or ```FleurOutputSchema.xsd``` are to be added and parsed into their corresponding dictionaries. A usage example is provided below:
+  The :py:func:`~masci_tools.io.parsers.fleur.fleur_schema.add_fleur_schema()` function can be used if a new ```FleurInputSchema.xsd``` or ```FleurOutputSchema.xsd``` are to be added to the available versions:
 
   .. code-block:: python
 
@@ -32,18 +28,6 @@ All functions below can either be called in python scripts or from the commandli
     #If the schema with the found version is found the above call will raise an exception
     #use overwrite=True to replace the schemas
     add_fleur_schema('/path/to/folder/with/schema/', overwrite=True)
-
-.. topic:: Modifying the parsed Fleur Schema:
-
-  The :py:func:`~masci_tools.io.parsers.fleur.fleur_schema.update_schema_dicts()` function can be used if all available schemas should be be reparsed and all dictionaries updated, if the parsing functions are updated or a new key is added for example. This is really straightforward to use:
-
-  .. code-block:: python
-
-    from masci_tools.io.parsers.fleur.fleur_schema import update_schema_dicts
-
-    #This function goes through all .xsd files in the version subfolder of masci_tools/io/parsers/fleur/fleur_schema
-    #And creates a new dict and restores them
-    update_schema_dicts()
 
 .. topic:: Adapting the outxml_parser:
 

@@ -17,7 +17,7 @@ and convert its content to a dict, based on the tasks given
 from masci_tools.util.parse_tasks import ParseTasks
 from masci_tools.util.schema_dict_util import get_tag_xpath, tag_exists, read_constants, eval_simple_xpath
 from masci_tools.util.xml.common_xml_util import eval_xpath, clear_xml
-from masci_tools.io.parsers.fleur.fleur_schema import load_inpschema, load_outschema
+from masci_tools.io.parsers.fleur.fleur_schema.schema_dict import InputSchemaDict, OutputSchemaDict
 from lxml import etree
 from itertools import groupby
 import copy
@@ -141,11 +141,9 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
     ignore_validation = kwargs.get('ignore_validation', ignore_validation)
 
     #Load schema_dict (inp and out)
-    inpschema_dict = load_inpschema(inp_version, parser_info_out=parser_info_out)
-    outschema_dict, outxmlschema = load_outschema(out_version,
-                                                  schema_return=True,
-                                                  inp_version=inp_version,
-                                                  parser_info_out=parser_info_out)
+    outschema_dict = OutputSchemaDict.fromVersion(out_version, inp_version=inp_version, parser_info_out=parser_info_out)
+    dummy = {'parser_warnings': []}
+    inpschema_dict = InputSchemaDict.fromVersion(inp_version, parser_info_out=dummy)
 
     if outschema_dict['out_version'] != out_version or \
        inpschema_dict['inp_version'] != inp_version:
@@ -158,10 +156,10 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
 
     errmsg = ''
     try:
-        outxmlschema.assertValid(xmltree)
+        outschema_dict.xmlschema.assertValid(xmltree)
     except etree.DocumentInvalid as err:
 
-        error_log = sorted(outxmlschema.error_log, key=lambda x: x.message)
+        error_log = sorted(outschema_dict.xmlschema.error_log, key=lambda x: x.message)
         error_output = []
         first_occurence = []
         for message, group in groupby(error_log, key=lambda x: x.message):
@@ -179,7 +177,7 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
         if not ignore_validation:
             raise ValueError(errmsg) from err
 
-    if not outxmlschema.validate(xmltree) and errmsg == '':
+    if not outschema_dict.xmlschema.validate(xmltree) and errmsg == '':
         parser_info_out['parser_warnings'].append('Output file does not validate against the schema: Reason is unknown')
         if not ignore_validation:
             raise ValueError('Output file does not validate against the schema: Reason is unknown')

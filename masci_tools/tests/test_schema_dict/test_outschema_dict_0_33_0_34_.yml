@@ -1,0 +1,2950 @@
+_basic_types:
+  AdditionalCompilerFlagsType:
+    base_types:
+    - string
+    length: unbounded
+  AtomPosType:
+    base_types:
+    - float_expression
+    length: 3
+  BZIntegrationModeEnum:
+    base_types:
+    - string
+    length: 1
+  CoreConfigEnum:
+    base_types:
+    - string
+    length: 1
+  CoreSpecEdgeEnum:
+    base_types:
+    - string
+    length: 1
+  CoreStateListType:
+    base_types:
+    - string
+    length: unbounded
+  DensityMatrixForType:
+    base_types:
+    - string
+    length: unbounded
+  DisplaceType:
+    base_types:
+    - float
+    length: 3
+  Double3DVecType:
+    base_types:
+    - float
+    length: 3
+  Double4DVecType:
+    base_types:
+    - float
+    length: 4
+  DoubleVecType:
+    base_types:
+    - float
+    length: unbounded
+  EParamSelectionEnum:
+    base_types:
+    - string
+    length: 1
+  EigenvaluesAtType:
+    base_types:
+    - float
+    length: unbounded
+  ElectronStateEnum:
+    base_types:
+    - string
+    length: 1
+  FleurBool4DVecType:
+    base_types:
+    - switch
+    length: 4
+  FleurBoolVecType:
+    base_types:
+    - switch
+    length: unbounded
+  FleurDouble2DVecType:
+    base_types:
+    - float_expression
+    length: 2
+  FleurDouble3DVecType:
+    base_types:
+    - float_expression
+    length: 3
+  FleurDoubleVecType:
+    base_types:
+    - float_expression
+    length: unbounded
+  FleurVersionType:
+    base_types:
+    - string
+    length: 1
+  ForceMixEnum:
+    base_types:
+    - string
+    length: 1
+  ForceTheoremEnum:
+    base_types:
+    - string
+    length: 1
+  Integer3DVecType:
+    base_types:
+    - int
+    length: 3
+  Integer4DVecType:
+    base_types:
+    - int
+    length: 4
+  IntegerVecType:
+    base_types:
+    - int
+    length: unbounded
+  KPointListPurposeEnum:
+    base_types:
+    - string
+    length: 1
+  KPointType:
+    base_types:
+    - float_expression
+    length: 3
+  LatticeParameterType:
+    base_types:
+    - float_expression
+    length: 1
+  ManualCutoffType:
+    base_types:
+    - float
+    - string
+    length: 1
+  ManualKKintgrCutoffType:
+    base_types:
+    - float
+    - string
+    length: 1
+  MixingEnum:
+    base_types:
+    - string
+    length: 1
+  NobleGasConfigEnum:
+    base_types:
+    - string
+    length: 1
+  NumBandsType:
+    base_types:
+    - int
+    - string
+    length: 1
+  PositionType:
+    base_types:
+    - float
+    length: 3
+  RDMFTFunctionalEnum:
+    base_types:
+    - string
+    length: 1
+  SpecialPointType:
+    base_types:
+    - float_expression
+    length: 3
+  SpinNumberType:
+    base_types:
+    - int
+    length: 1
+  String2DVecType:
+    base_types:
+    - string
+    length: 2
+  String3DVecType:
+    base_types:
+    - string
+    length: 3
+  StringVecType:
+    base_types:
+    - string
+    length: unbounded
+  TargetStructureClassType:
+    base_types:
+    - string
+    length: unbounded
+  TripleFleurBool:
+    base_types:
+    - string
+    length: 1
+  ValenceStateListType:
+    base_types:
+    - string
+    length: unbounded
+  XCFunctionalEnum:
+    base_types:
+    - string
+    length: 1
+  ZeroToOneNumberType:
+    base_types:
+    - float
+    length: 1
+  kPointListTypeEnum:
+    base_types:
+    - string
+    length: 1
+_input_basic_types:
+  AtomPosType:
+    base_types:
+    - float_expression
+    length: 3
+  BZIntegrationModeEnum:
+    base_types:
+    - string
+    length: 1
+  CoreConfigEnum:
+    base_types:
+    - string
+    length: 1
+  CoreSpecEdgeEnum:
+    base_types:
+    - string
+    length: 1
+  CoreStateListType:
+    base_types:
+    - string
+    length: unbounded
+  DisplaceType:
+    base_types:
+    - float
+    length: 3
+  Double3DVecType:
+    base_types:
+    - float
+    length: 3
+  Double4DVecType:
+    base_types:
+    - float
+    length: 4
+  DoubleVecType:
+    base_types:
+    - float
+    length: unbounded
+  EParamSelectionEnum:
+    base_types:
+    - string
+    length: 1
+  ElectronStateEnum:
+    base_types:
+    - string
+    length: 1
+  FleurBool4DVecType:
+    base_types:
+    - switch
+    length: 4
+  FleurBoolVecType:
+    base_types:
+    - switch
+    length: unbounded
+  FleurDouble2DVecType:
+    base_types:
+    - float_expression
+    length: 2
+  FleurDouble3DVecType:
+    base_types:
+    - float_expression
+    length: 3
+  FleurDoubleVecType:
+    base_types:
+    - float_expression
+    length: unbounded
+  FleurVersionType:
+    base_types:
+    - string
+    length: 1
+  ForceMixEnum:
+    base_types:
+    - string
+    length: 1
+  Integer3DVecType:
+    base_types:
+    - int
+    length: 3
+  Integer4DVecType:
+    base_types:
+    - int
+    length: 4
+  IntegerVecType:
+    base_types:
+    - int
+    length: unbounded
+  KPointListPurposeEnum:
+    base_types:
+    - string
+    length: 1
+  KPointType:
+    base_types:
+    - float_expression
+    length: 3
+  LatticeParameterType:
+    base_types:
+    - float_expression
+    length: 1
+  ManualCutoffType:
+    base_types:
+    - float
+    - string
+    length: 1
+  ManualKKintgrCutoffType:
+    base_types:
+    - float
+    - string
+    length: 1
+  MixingEnum:
+    base_types:
+    - string
+    length: 1
+  NobleGasConfigEnum:
+    base_types:
+    - string
+    length: 1
+  NumBandsType:
+    base_types:
+    - int
+    - string
+    length: 1
+  PositionType:
+    base_types:
+    - float
+    length: 3
+  RDMFTFunctionalEnum:
+    base_types:
+    - string
+    length: 1
+  SpecialPointType:
+    base_types:
+    - float_expression
+    length: 3
+  SpinNumberType:
+    base_types:
+    - int
+    length: 1
+  String2DVecType:
+    base_types:
+    - string
+    length: 2
+  String3DVecType:
+    base_types:
+    - string
+    length: 3
+  StringVecType:
+    base_types:
+    - string
+    length: unbounded
+  TripleFleurBool:
+    base_types:
+    - string
+    length: 1
+  ValenceStateListType:
+    base_types:
+    - string
+    length: unbounded
+  XCFunctionalEnum:
+    base_types:
+    - string
+    length: 1
+  ZeroToOneNumberType:
+    base_types:
+    - float
+    length: 1
+  kPointListTypeEnum:
+    base_types:
+    - string
+    length: 1
+attrib_types:
+  angles:
+  - int
+  atomicnumber:
+  - int
+  atomtype:
+  - int
+  branch:
+  - string
+  branchhighest:
+  - float
+  branchlowest:
+  - float
+  comment:
+  - string
+  configs:
+  - int
+  count:
+  - int
+  d:
+  - float
+  date:
+  - string
+  delta:
+  - float
+  distance:
+  - float
+  eigvalsum:
+  - float
+  energy:
+  - float
+  ev-sum:
+  - float
+  f:
+  - float
+  f_x:
+  - float
+  f_y:
+  - float
+  f_z:
+  - float
+  flag:
+  - string
+  fleuroutputversion:
+  - string
+  h_so:
+  - float
+  host:
+  - string
+  iatom:
+  - int
+  ikpt:
+  - int
+  index:
+  - int
+  interstitial:
+  - float
+  j:
+  - float
+  jatom:
+  - int
+  jmtd:
+  - int
+  k_x:
+  - float
+  k_y:
+  - float
+  k_z:
+  - float
+  kinenergy:
+  - float
+  kpoint:
+  - int
+  l:
+  - int
+  lastcommithash:
+  - string
+  link:
+  - string
+  lmaxd:
+  - int
+  logderivmt:
+  - float
+  lostelectrons:
+  - float
+  memorypernode:
+  - string
+  message:
+  - string
+  moment:
+  - float
+  mpiprocesses:
+  - string
+  mtradius:
+  - float
+  mtspheres:
+  - float
+  mtvolume:
+  - float
+  n:
+  - int
+  n_hia:
+  - int
+  n_u:
+  - int
+  name:
+  - string
+  nat:
+  - int
+  ng2:
+  - int
+  ng3:
+  - int
+  nlotot:
+  - int
+  'no':
+  - int
+  ntype:
+  - int
+  numbands:
+  - int
+  numberforcurrentrun:
+  - int
+  nvd:
+  - int
+  occupation:
+  - float
+  omegatilda:
+  - float
+  ompthreads:
+  - string
+  overallnumber:
+  - int
+  p:
+  - float
+  phase:
+  - switch
+  phi:
+  - float
+  q:
+  - int
+  - float
+  qpoints:
+  - int
+  qvectors:
+  - int
+  s:
+  - float
+  sigma_x:
+  - float
+  sigma_y:
+  - float
+  sigma_z:
+  - float
+  spin:
+  - int
+  spindowncharge:
+  - float
+  spinupcharge:
+  - float
+  surfacearea:
+  - float
+  theta:
+  - float
+  time:
+  - string
+  total:
+  - float
+  type:
+  - string
+  u:
+  - float
+  uindex:
+  - int
+  unitcell:
+  - float
+  units:
+  - string
+  user:
+  - string
+  vacuum:
+  - int
+  vacuum1:
+  - float
+  vacuum2:
+  - float
+  value:
+  - float
+  version:
+  - string
+  vzinf:
+  - float
+  vzir:
+  - float
+  weight:
+  - float
+  weightscale:
+  - float
+  x:
+  - float
+  y:
+  - float
+  z:
+  - float
+  z1:
+  - float
+  zone:
+  - string
+input_tag: fleurInput
+iteration_other_attribs:
+  atomicnumber:
+  - ./coreStates/@atomicNumber
+  atomtype:
+  - ./Forcetheorem_DMI/allAtoms/@atomType
+  - ./Forcetheorem_DMI/singleAtom/@atomType
+  - ./allElectronCharges/mtCharges/mtCharge/@atomType
+  - ./allElectronCharges/mtCharges/mtJcharge/@atomType
+  - ./coreStates/@atomType
+  - ./energyParameters/atomicEP/@atomType
+  - ./energyParameters/heAtomicEP/@atomType
+  - ./energyParameters/heloAtomicEP/@atomType
+  - ./energyParameters/loAtomicEP/@atomType
+  - ./ldaUDensityMatrix/densityMatrixFor/@atomType
+  - ./magneticMomentsInMTSpheres/magneticMoment/@atomType
+  - ./noncollinearTorgue/torgue/@atomType
+  - ./onSiteExchangeSplitting/excSplit/@atomType
+  - ./orbitalMagneticMomentsInMTSpheres/orbMagMoment/@atomType
+  - ./spinorbitTorgue/torgue/@atomType
+  - ./totalEnergy/atomTypeDependentContributions/@atomType
+  - ./totalForcesOnRepresentativeAtoms/forceTotal/@atomType
+  - ./valenceDensity/mtCharges/mtCharge/@atomType
+  - ./valenceDensity/mtCharges/mtJcharge/@atomType
+  branch:
+  - ./energyParameters/atomicEP/@branch
+  - ./energyParameters/heAtomicEP/@branch
+  - ./energyParameters/heloAtomicEP/@branch
+  - ./energyParameters/loAtomicEP/@branch
+  branchhighest:
+  - ./energyParameters/atomicEP/@branchHighest
+  - ./energyParameters/heAtomicEP/@branchHighest
+  - ./energyParameters/heloAtomicEP/@branchHighest
+  - ./energyParameters/loAtomicEP/@branchHighest
+  branchlowest:
+  - ./energyParameters/atomicEP/@branchLowest
+  - ./energyParameters/heAtomicEP/@branchLowest
+  - ./energyParameters/heloAtomicEP/@branchLowest
+  - ./energyParameters/loAtomicEP/@branchLowest
+  comment:
+  - ./totalEnergy/@comment
+  d:
+  - ./allElectronCharges/mtCharges/mtCharge/@d
+  - ./allElectronCharges/mtCharges/mtJcharge/highJ/@d
+  - ./allElectronCharges/mtCharges/mtJcharge/lowJ/@d
+  - ./valenceDensity/mtCharges/mtCharge/@d
+  - ./valenceDensity/mtCharges/mtJcharge/highJ/@d
+  - ./valenceDensity/mtCharges/mtJcharge/lowJ/@d
+  delta:
+  - ./onSiteExchangeSplitting/excSplit/@Delta
+  densitymatrixfor:
+  - ./ldaUDensityMatrix/densityMatrixFor
+  distance:
+  - ./densityConvergence/chargeDensity/@distance
+  - ./densityConvergence/overallChargeDensity/@distance
+  - ./densityConvergence/spinDensity/@distance
+  - ./ldaUDensityMatrixConvergence/distance/@distance
+  eigenvaluesat:
+  - ./eigenvalues/eigenvaluesAt
+  eigvalsum:
+  - ./coreStates/@eigValSum
+  energy:
+  - ./coreStates/state/@energy
+  - ./rdmft/@energy
+  - ./rdmft/occupations/state/@energy
+  ev-sum:
+  - ./Forcetheorem_DMI/Entry/@ev-sum
+  - ./Forcetheorem_JIJ/Config/@ev-sum
+  - ./Forcetheorem_MAE/Angle/@ev-sum
+  - ./Forcetheorem_SSDISP/Entry/@ev-sum
+  f:
+  - ./allElectronCharges/mtCharges/mtCharge/@f
+  - ./allElectronCharges/mtCharges/mtJcharge/highJ/@f
+  - ./allElectronCharges/mtCharges/mtJcharge/lowJ/@f
+  - ./valenceDensity/mtCharges/mtCharge/@f
+  - ./valenceDensity/mtCharges/mtJcharge/highJ/@f
+  - ./valenceDensity/mtCharges/mtJcharge/lowJ/@f
+  f_x:
+  - ./totalForcesOnRepresentativeAtoms/forceTotal/@F_x
+  f_y:
+  - ./totalForcesOnRepresentativeAtoms/forceTotal/@F_y
+  f_z:
+  - ./totalForcesOnRepresentativeAtoms/forceTotal/@F_z
+  h_so:
+  - ./Forcetheorem_DMI/allAtoms/@H_so
+  - ./Forcetheorem_DMI/singleAtom/@H_so
+  iatom:
+  - ./Forcetheorem_JIJ/Config/@iatom
+  ikpt:
+  - ./eigenvalues/eigenvaluesAt/@ikpt
+  index:
+  - ./rdmft/occupations/state/@index
+  interstitial:
+  - ./allElectronCharges/fixedCharges/spinDependentCharge/@interstitial
+  - ./allElectronCharges/spinDependentCharge/@interstitial
+  - ./valenceDensity/fixedCharges/spinDependentCharge/@interstitial
+  - ./valenceDensity/spinDependentCharge/@interstitial
+  j:
+  - ./coreStates/state/@j
+  - ./ldaUDensityMatrix/densityMatrixFor/@J
+  jatom:
+  - ./Forcetheorem_JIJ/Config/@jatom
+  k_x:
+  - ./eigenvalues/eigenvaluesAt/@k_x
+  k_y:
+  - ./eigenvalues/eigenvaluesAt/@k_y
+  k_z:
+  - ./eigenvalues/eigenvaluesAt/@k_z
+  kinenergy:
+  - ./coreStates/@kinEnergy
+  kpoint:
+  - ./rdmft/occupations/@kpoint
+  l:
+  - ./coreStates/state/@l
+  - ./ldaUDensityMatrix/densityMatrixFor/@l
+  - ./onSiteExchangeSplitting/excSplit/@l
+  lostelectrons:
+  - ./coreStates/@lostElectrons
+  moment:
+  - ./magneticMomentsInMTSpheres/magneticMoment/@moment
+  - ./orbitalMagneticMomentsInMTSpheres/orbMagMoment/@moment
+  mtspheres:
+  - ./allElectronCharges/fixedCharges/spinDependentCharge/@mtSpheres
+  - ./allElectronCharges/spinDependentCharge/@mtSpheres
+  - ./valenceDensity/fixedCharges/spinDependentCharge/@mtSpheres
+  - ./valenceDensity/spinDependentCharge/@mtSpheres
+  n:
+  - ./Forcetheorem_JIJ/Config/@n
+  - ./coreStates/state/@n
+  name:
+  - ./timing/timer/@name
+  'no':
+  - ./Forcetheorem_Loop/@No
+  occupation:
+  - ./rdmft/occupations/state/@occupation
+  p:
+  - ./allElectronCharges/mtCharges/mtCharge/@p
+  - ./allElectronCharges/mtCharges/mtJcharge/highJ/@p
+  - ./allElectronCharges/mtCharges/mtJcharge/lowJ/@p
+  - ./valenceDensity/mtCharges/mtCharge/@p
+  - ./valenceDensity/mtCharges/mtJcharge/highJ/@p
+  - ./valenceDensity/mtCharges/mtJcharge/lowJ/@p
+  phase:
+  - ./Forcetheorem_JIJ/Config/@phase
+  phi:
+  - ./Forcetheorem_DMI/Entry/@phi
+  - ./Forcetheorem_DMI/allAtoms/@phi
+  - ./Forcetheorem_DMI/singleAtom/@phi
+  - ./Forcetheorem_MAE/Angle/@phi
+  q:
+  - ./Forcetheorem_DMI/Entry/@q
+  - ./Forcetheorem_DMI/allAtoms/@q
+  - ./Forcetheorem_DMI/singleAtom/@q
+  - ./Forcetheorem_JIJ/Config/@q
+  - ./Forcetheorem_SSDISP/Entry/@q
+  s:
+  - ./allElectronCharges/mtCharges/mtCharge/@s
+  - ./valenceDensity/mtCharges/mtCharge/@s
+  sigma_x:
+  - ./noncollinearTorgue/torgue/@sigma_x
+  - ./spinorbitTorgue/torgue/@sigma_x
+  sigma_y:
+  - ./noncollinearTorgue/torgue/@sigma_y
+  - ./spinorbitTorgue/torgue/@sigma_y
+  sigma_z:
+  - ./noncollinearTorgue/torgue/@sigma_z
+  - ./spinorbitTorgue/torgue/@sigma_z
+  spin:
+  - ./allElectronCharges/fixedCharges/spinDependentCharge/@spin
+  - ./allElectronCharges/mtCharges/@spin
+  - ./allElectronCharges/spinDependentCharge/@spin
+  - ./coreStates/@spin
+  - ./densityConvergence/chargeDensity/@spin
+  - ./densityConvergence/overallChargeDensity/@spin
+  - ./densityConvergence/spinDensity/@spin
+  - ./eigenvalues/eigenvaluesAt/@spin
+  - ./energyParameters/atomicEP/@spin
+  - ./energyParameters/heAtomicEP/@spin
+  - ./energyParameters/heloAtomicEP/@spin
+  - ./energyParameters/loAtomicEP/@spin
+  - ./energyParameters/vacuumEP/@spin
+  - ./ldaUDensityMatrix/densityMatrixFor/@spin
+  - ./ldaUDensityMatrixConvergence/distance/@spin
+  - ./rdmft/occupations/@spin
+  - ./valenceDensity/fixedCharges/spinDependentCharge/@spin
+  - ./valenceDensity/mtCharges/@spin
+  - ./valenceDensity/spinDependentCharge/@spin
+  spindowncharge:
+  - ./magneticMomentsInMTSpheres/magneticMoment/@spinDownCharge
+  - ./orbitalMagneticMomentsInMTSpheres/orbMagMoment/@spinDownCharge
+  spinupcharge:
+  - ./magneticMomentsInMTSpheres/magneticMoment/@spinUpCharge
+  - ./orbitalMagneticMomentsInMTSpheres/orbMagMoment/@spinUpCharge
+  theta:
+  - ./Forcetheorem_DMI/Entry/@theta
+  - ./Forcetheorem_DMI/allAtoms/@theta
+  - ./Forcetheorem_DMI/singleAtom/@theta
+  - ./Forcetheorem_MAE/Angle/@theta
+  total:
+  - ./allElectronCharges/fixedCharges/spinDependentCharge/@total
+  - ./allElectronCharges/mtCharges/mtCharge/@total
+  - ./allElectronCharges/spinDependentCharge/@total
+  - ./valenceDensity/fixedCharges/spinDependentCharge/@total
+  - ./valenceDensity/mtCharges/mtCharge/@total
+  - ./valenceDensity/spinDependentCharge/@total
+  u:
+  - ./ldaUDensityMatrix/densityMatrixFor/@U
+  uindex:
+  - ./ldaUDensityMatrix/densityMatrixFor/@uIndex
+  units:
+  - ./FermiEnergy/@units
+  - ./allElectronCharges/fixedCharges/totalCharge/@units
+  - ./allElectronCharges/totalCharge/@units
+  - ./bandgap/@units
+  - ./densityConvergence/@units
+  - ./densityConvergence/chargeDensity/@units
+  - ./densityConvergence/overallChargeDensity/@units
+  - ./densityConvergence/spinDensity/@units
+  - ./energyParameters/@units
+  - ./magneticMomentsInMTSpheres/@units
+  - ./noncollinearTorgue/torgue/@units
+  - ./onSiteExchangeSplitting/excSplit/@units
+  - ./orbitalMagneticMomentsInMTSpheres/@units
+  - ./spinorbitTorgue/torgue/@units
+  - ./sumValenceSingleParticleEnergies/@units
+  - ./timing/@units
+  - ./timing/timer/@units
+  - ./totalEnergy/@units
+  - ./totalEnergy/FockExchangeEnergyCore/@units
+  - ./totalEnergy/FockExchangeEnergyValence/@units
+  - ./totalEnergy/atomTypeDependentContributions/MadelungTerm/@units
+  - ./totalEnergy/atomTypeDependentContributions/electronNucleiInteractionDifferentMTs/@units
+  - ./totalEnergy/chargeDenXCDenIntegral/@units
+  - ./totalEnergy/densityCoulombPotentialIntegral/@units
+  - ./totalEnergy/densityEffectivePotentialIntegral/@units
+  - ./totalEnergy/dftUCorrection/@units
+  - ./totalEnergy/extrapolationTo0K/@units
+  - ./totalEnergy/freeEnergy/@units
+  - ./totalEnergy/sumOfEigenvalues/@units
+  - ./totalEnergy/sumOfEigenvalues/coreElectrons/@units
+  - ./totalEnergy/sumOfEigenvalues/valenceElectrons/@units
+  - ./totalEnergy/tkbTimesEntropy/@units
+  - ./totalForcesOnRepresentativeAtoms/@units
+  - ./totalForcesOnRepresentativeAtoms/forceTotal/@units
+  - ./valenceDensity/fixedCharges/totalCharge/@units
+  - ./valenceDensity/totalCharge/@units
+  vacuum:
+  - ./energyParameters/vacuumEP/@vacuum
+  vacuum1:
+  - ./allElectronCharges/fixedCharges/spinDependentCharge/@vacuum1
+  - ./allElectronCharges/spinDependentCharge/@vacuum1
+  - ./valenceDensity/fixedCharges/spinDependentCharge/@vacuum1
+  - ./valenceDensity/spinDependentCharge/@vacuum1
+  vacuum2:
+  - ./allElectronCharges/fixedCharges/spinDependentCharge/@vacuum2
+  - ./allElectronCharges/spinDependentCharge/@vacuum2
+  - ./valenceDensity/fixedCharges/spinDependentCharge/@vacuum2
+  - ./valenceDensity/spinDependentCharge/@vacuum2
+  value:
+  - ./FermiEnergy/@value
+  - ./allElectronCharges/fixedCharges/totalCharge/@value
+  - ./allElectronCharges/totalCharge/@value
+  - ./bandgap/@value
+  - ./energyParameters/atomicEP/@value
+  - ./energyParameters/heAtomicEP/@value
+  - ./energyParameters/heloAtomicEP/@value
+  - ./energyParameters/loAtomicEP/@value
+  - ./energyParameters/vacuumEP/@value
+  - ./sumValenceSingleParticleEnergies/@value
+  - ./timing/timer/@value
+  - ./totalEnergy/@value
+  - ./totalEnergy/FockExchangeEnergyCore/@value
+  - ./totalEnergy/FockExchangeEnergyValence/@value
+  - ./totalEnergy/atomTypeDependentContributions/MadelungTerm/@value
+  - ./totalEnergy/atomTypeDependentContributions/electronNucleiInteractionDifferentMTs/@value
+  - ./totalEnergy/chargeDenXCDenIntegral/@value
+  - ./totalEnergy/densityCoulombPotentialIntegral/@value
+  - ./totalEnergy/densityEffectivePotentialIntegral/@value
+  - ./totalEnergy/dftUCorrection/@value
+  - ./totalEnergy/extrapolationTo0K/@value
+  - ./totalEnergy/freeEnergy/@value
+  - ./totalEnergy/sumOfEigenvalues/@value
+  - ./totalEnergy/sumOfEigenvalues/coreElectrons/@value
+  - ./totalEnergy/sumOfEigenvalues/valenceElectrons/@value
+  - ./totalEnergy/tkbTimesEntropy/@value
+  - ./valenceDensity/fixedCharges/totalCharge/@value
+  - ./valenceDensity/totalCharge/@value
+  vzinf:
+  - ./energyParameters/vacuumEP/@vzInf
+  vzir:
+  - ./energyParameters/vacuumEP/@vzIR
+  weight:
+  - ./coreStates/state/@weight
+  x:
+  - ./totalForcesOnRepresentativeAtoms/forceTotal/@x
+  y:
+  - ./totalForcesOnRepresentativeAtoms/forceTotal/@y
+  z:
+  - ./totalForcesOnRepresentativeAtoms/forceTotal/@z
+iteration_tag_info:
+  ./FermiEnergy:
+    attribs: !!set
+      units: null
+      value: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      units: null
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./Forcetheorem_DMI:
+    attribs: !!set
+      angles: null
+      qpoints: null
+    complex: !!set {}
+    optional: !!set
+      allatoms: null
+      entry: null
+      singleatom: null
+    optional_attribs: {}
+    order:
+    - Entry
+    - allAtoms
+    - singleAtom
+    several: !!set
+      allatoms: null
+      entry: null
+      singleatom: null
+    simple: !!set
+      allatoms: null
+      entry: null
+      singleatom: null
+    text: !!set {}
+  ./Forcetheorem_DMI/Entry:
+    attribs: !!set
+      ev-sum: null
+      phi: null
+      q: null
+      theta: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      phi: null
+      theta: null
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./Forcetheorem_DMI/allAtoms:
+    attribs: !!set
+      atomtype: null
+      h_so: null
+      phi: null
+      q: null
+      theta: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      atomtype: null
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./Forcetheorem_DMI/singleAtom:
+    attribs: !!set
+      atomtype: null
+      h_so: null
+      phi: null
+      q: null
+      theta: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      atomtype: null
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./Forcetheorem_JIJ:
+    attribs: !!set
+      configs: null
+    complex: !!set {}
+    optional: !!set
+      config: null
+    optional_attribs: {}
+    order:
+    - Config
+    several: !!set
+      config: null
+    simple: !!set
+      config: null
+    text: !!set {}
+  ./Forcetheorem_JIJ/Config:
+    attribs: !!set
+      ev-sum: null
+      iatom: null
+      jatom: null
+      n: null
+      phase: null
+      q: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./Forcetheorem_Loop:
+    attribs: !!set
+      'no': null
+    complex: !!set
+      allelectroncharges: null
+      bandgap: null
+      corestates: null
+      densityconvergence: null
+      eigenvalues: null
+      energyparameters: null
+      fermienergy: null
+      ldaudensitymatrix: null
+      ldaudensitymatrixconvergence: null
+      magneticmomentsinmtspheres: null
+      noncollineartorgue: null
+      onsiteexchangesplitting: null
+      orbitalmagneticmomentsinmtspheres: null
+      rdmft: null
+      spinorbittorgue: null
+      sumvalencesingleparticleenergies: null
+      timing: null
+      totalenergy: null
+      totalforcesonrepresentativeatoms: null
+      valencedensity: null
+    optional: !!set {}
+    optional_attribs: {}
+    order:
+    - energyParameters
+    - eigenvalues
+    - bandgap
+    - sumValenceSingleParticleEnergies
+    - FermiEnergy
+    - valenceDensity
+    - onSiteExchangeSplitting
+    - noncollinearTorgue
+    - spinorbitTorgue
+    - coreStates
+    - allElectronCharges
+    - magneticMomentsInMTSpheres
+    - orbitalMagneticMomentsInMTSpheres
+    - rdmft
+    - totalEnergy
+    - totalForcesOnRepresentativeAtoms
+    - ldaUDensityMatrix
+    - ldaUDensityMatrixConvergence
+    - densityConvergence
+    - timing
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./Forcetheorem_MAE:
+    attribs: !!set
+      angles: null
+    complex: !!set {}
+    optional: !!set
+      angle: null
+    optional_attribs: {}
+    order:
+    - Angle
+    several: !!set
+      angle: null
+    simple: !!set
+      angle: null
+    text: !!set {}
+  ./Forcetheorem_MAE/Angle:
+    attribs: !!set
+      ev-sum: null
+      phi: null
+      theta: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./Forcetheorem_SSDISP:
+    attribs: !!set
+      qvectors: null
+    complex: !!set {}
+    optional: !!set
+      entry: null
+    optional_attribs: {}
+    order:
+    - Entry
+    several: !!set
+      entry: null
+    simple: !!set
+      entry: null
+    text: !!set {}
+  ./Forcetheorem_SSDISP/Entry:
+    attribs: !!set
+      ev-sum: null
+      q: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./allElectronCharges:
+    attribs: !!set {}
+    complex: !!set
+      fixedcharges: null
+      mtcharges: null
+    optional: !!set
+      fixedcharges: null
+      mtcharges: null
+      spindependentcharge: null
+      totalcharge: null
+    optional_attribs: {}
+    order:
+    - mtCharges
+    - spinDependentCharge
+    - totalCharge
+    - fixedCharges
+    several: !!set
+      fixedcharges: null
+      mtcharges: null
+      spindependentcharge: null
+      totalcharge: null
+    simple: !!set
+      spindependentcharge: null
+      totalcharge: null
+    text: !!set {}
+  ./allElectronCharges/fixedCharges:
+    attribs: !!set {}
+    complex: !!set {}
+    optional: !!set
+      spindependentcharge: null
+      totalcharge: null
+    optional_attribs: {}
+    order:
+    - spinDependentCharge
+    - totalCharge
+    several: !!set
+      spindependentcharge: null
+      totalcharge: null
+    simple: !!set
+      spindependentcharge: null
+      totalcharge: null
+    text: !!set {}
+  ./allElectronCharges/fixedCharges/spinDependentCharge:
+    attribs: !!set
+      interstitial: null
+      mtspheres: null
+      spin: null
+      total: null
+      vacuum1: null
+      vacuum2: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      spin: '1'
+      vacuum1: null
+      vacuum2: null
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./allElectronCharges/fixedCharges/totalCharge:
+    attribs: !!set
+      units: null
+      value: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      units: null
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./allElectronCharges/mtCharges:
+    attribs: !!set
+      spin: null
+    complex: !!set
+      mtjcharge: null
+    optional: !!set
+      mtcharge: null
+      mtjcharge: null
+    optional_attribs:
+      spin: '1'
+    order:
+    - mtCharge
+    - mtJcharge
+    several: !!set
+      mtcharge: null
+      mtjcharge: null
+    simple: !!set
+      mtcharge: null
+    text: !!set {}
+  ./allElectronCharges/mtCharges/mtCharge:
+    attribs: !!set
+      atomtype: null
+      d: null
+      f: null
+      p: null
+      s: null
+      total: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./allElectronCharges/mtCharges/mtJcharge:
+    attribs: !!set
+      atomtype: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order:
+    - lowJ
+    - highJ
+    several: !!set {}
+    simple: !!set
+      highj: null
+      lowj: null
+    text: !!set {}
+  ./allElectronCharges/mtCharges/mtJcharge/highJ:
+    attribs: !!set
+      d: null
+      f: null
+      p: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./allElectronCharges/mtCharges/mtJcharge/lowJ:
+    attribs: !!set
+      d: null
+      f: null
+      p: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./allElectronCharges/spinDependentCharge:
+    attribs: !!set
+      interstitial: null
+      mtspheres: null
+      spin: null
+      total: null
+      vacuum1: null
+      vacuum2: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      spin: '1'
+      vacuum1: null
+      vacuum2: null
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./allElectronCharges/totalCharge:
+    attribs: !!set
+      units: null
+      value: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      units: null
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./bandgap:
+    attribs: !!set
+      units: null
+      value: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      units: null
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./coreStates:
+    attribs: !!set
+      atomicnumber: null
+      atomtype: null
+      eigvalsum: null
+      kinenergy: null
+      lostelectrons: null
+      spin: null
+    complex: !!set {}
+    optional: !!set
+      state: null
+    optional_attribs:
+      spin: '1'
+    order:
+    - state
+    several: !!set
+      state: null
+    simple: !!set
+      state: null
+    text: !!set {}
+  ./coreStates/state:
+    attribs: !!set
+      energy: null
+      j: null
+      l: null
+      n: null
+      weight: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./densityConvergence:
+    attribs: !!set
+      units: null
+    complex: !!set {}
+    optional: !!set
+      chargedensity: null
+      overallchargedensity: null
+      spindensity: null
+    optional_attribs:
+      units: null
+    order:
+    - chargeDensity
+    - overallChargeDensity
+    - spinDensity
+    several: !!set
+      chargedensity: null
+      overallchargedensity: null
+      spindensity: null
+    simple: !!set
+      chargedensity: null
+      overallchargedensity: null
+      spindensity: null
+    text: !!set {}
+  ./densityConvergence/chargeDensity:
+    attribs: !!set
+      distance: null
+      spin: null
+      units: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      spin: null
+      units: null
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./densityConvergence/overallChargeDensity:
+    attribs: !!set
+      distance: null
+      spin: null
+      units: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      spin: null
+      units: null
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./densityConvergence/spinDensity:
+    attribs: !!set
+      distance: null
+      spin: null
+      units: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      spin: null
+      units: null
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./eigenvalues:
+    attribs: !!set {}
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order:
+    - eigenvaluesAt
+    several: !!set
+      eigenvaluesat: null
+    simple: !!set
+      eigenvaluesat: null
+    text: !!set
+      eigenvaluesat: null
+  ./eigenvalues/eigenvaluesAt:
+    attribs: !!set
+      ikpt: null
+      k_x: null
+      k_y: null
+      k_z: null
+      spin: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      k_x: null
+      k_y: null
+      k_z: null
+      spin: '1'
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./energyParameters:
+    attribs: !!set
+      units: null
+    complex: !!set {}
+    optional: !!set
+      atomicep: null
+      heatomicep: null
+      heloatomicep: null
+      loatomicep: null
+      vacuumep: null
+    optional_attribs: {}
+    order:
+    - atomicEP
+    - heAtomicEP
+    - loAtomicEP
+    - heloAtomicEP
+    - vacuumEP
+    several: !!set
+      atomicep: null
+      heatomicep: null
+      heloatomicep: null
+      loatomicep: null
+      vacuumep: null
+    simple: !!set
+      atomicep: null
+      heatomicep: null
+      heloatomicep: null
+      loatomicep: null
+      vacuumep: null
+    text: !!set {}
+  ./energyParameters/atomicEP:
+    attribs: !!set
+      atomtype: null
+      branch: null
+      branchhighest: null
+      branchlowest: null
+      spin: null
+      value: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      branchhighest: null
+      branchlowest: null
+      spin: '1'
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./energyParameters/heAtomicEP:
+    attribs: !!set
+      atomtype: null
+      branch: null
+      branchhighest: null
+      branchlowest: null
+      spin: null
+      value: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      branchhighest: null
+      branchlowest: null
+      spin: '1'
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./energyParameters/heloAtomicEP:
+    attribs: !!set
+      atomtype: null
+      branch: null
+      branchhighest: null
+      branchlowest: null
+      spin: null
+      value: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      branchhighest: null
+      branchlowest: null
+      spin: '1'
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./energyParameters/loAtomicEP:
+    attribs: !!set
+      atomtype: null
+      branch: null
+      branchhighest: null
+      branchlowest: null
+      spin: null
+      value: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      branchhighest: null
+      branchlowest: null
+      spin: '1'
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./energyParameters/vacuumEP:
+    attribs: !!set
+      spin: null
+      vacuum: null
+      value: null
+      vzinf: null
+      vzir: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      spin: '1'
+      vzinf: null
+      vzir: null
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./ldaUDensityMatrix:
+    attribs: !!set {}
+    complex: !!set {}
+    optional: !!set
+      densitymatrixfor: null
+    optional_attribs: {}
+    order:
+    - densityMatrixFor
+    several: !!set
+      densitymatrixfor: null
+    simple: !!set
+      densitymatrixfor: null
+    text: !!set
+      densitymatrixfor: null
+  ./ldaUDensityMatrix/densityMatrixFor:
+    attribs: !!set
+      atomtype: null
+      j: null
+      l: null
+      spin: null
+      u: null
+      uindex: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./ldaUDensityMatrixConvergence:
+    attribs: !!set {}
+    complex: !!set {}
+    optional: !!set
+      distance: null
+    optional_attribs: {}
+    order:
+    - distance
+    several: !!set
+      distance: null
+    simple: !!set
+      distance: null
+    text: !!set {}
+  ./ldaUDensityMatrixConvergence/distance:
+    attribs: !!set
+      distance: null
+      spin: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./magneticMomentsInMTSpheres:
+    attribs: !!set
+      units: null
+    complex: !!set {}
+    optional: !!set
+      magneticmoment: null
+    optional_attribs:
+      units: null
+    order:
+    - magneticMoment
+    several: !!set
+      magneticmoment: null
+    simple: !!set
+      magneticmoment: null
+    text: !!set {}
+  ./magneticMomentsInMTSpheres/magneticMoment:
+    attribs: !!set
+      atomtype: null
+      moment: null
+      spindowncharge: null
+      spinupcharge: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./noncollinearTorgue:
+    attribs: !!set {}
+    complex: !!set {}
+    optional: !!set
+      torgue: null
+    optional_attribs: {}
+    order:
+    - torgue
+    several: !!set
+      torgue: null
+    simple: !!set
+      torgue: null
+    text: !!set {}
+  ./noncollinearTorgue/torgue:
+    attribs: !!set
+      atomtype: null
+      sigma_x: null
+      sigma_y: null
+      sigma_z: null
+      units: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./onSiteExchangeSplitting:
+    attribs: !!set {}
+    complex: !!set {}
+    optional: !!set
+      excsplit: null
+    optional_attribs: {}
+    order:
+    - excSplit
+    several: !!set
+      excsplit: null
+    simple: !!set
+      excsplit: null
+    text: !!set {}
+  ./onSiteExchangeSplitting/excSplit:
+    attribs: !!set
+      atomtype: null
+      delta: null
+      l: null
+      units: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./orbitalMagneticMomentsInMTSpheres:
+    attribs: !!set
+      units: null
+    complex: !!set {}
+    optional: !!set
+      orbmagmoment: null
+    optional_attribs:
+      units: null
+    order:
+    - orbMagMoment
+    several: !!set
+      orbmagmoment: null
+    simple: !!set
+      orbmagmoment: null
+    text: !!set {}
+  ./orbitalMagneticMomentsInMTSpheres/orbMagMoment:
+    attribs: !!set
+      atomtype: null
+      moment: null
+      spindowncharge: null
+      spinupcharge: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./rdmft:
+    attribs: !!set
+      energy: null
+    complex: !!set
+      occupations: null
+    optional: !!set
+      occupations: null
+    optional_attribs: {}
+    order:
+    - occupations
+    several: !!set
+      occupations: null
+    simple: !!set {}
+    text: !!set {}
+  ./rdmft/occupations:
+    attribs: !!set
+      kpoint: null
+      spin: null
+    complex: !!set {}
+    optional: !!set
+      state: null
+    optional_attribs: {}
+    order:
+    - state
+    several: !!set
+      state: null
+    simple: !!set
+      state: null
+    text: !!set {}
+  ./rdmft/occupations/state:
+    attribs: !!set
+      energy: null
+      index: null
+      occupation: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./spinorbitTorgue:
+    attribs: !!set {}
+    complex: !!set {}
+    optional: !!set
+      torgue: null
+    optional_attribs: {}
+    order:
+    - torgue
+    several: !!set
+      torgue: null
+    simple: !!set
+      torgue: null
+    text: !!set {}
+  ./spinorbitTorgue/torgue:
+    attribs: !!set
+      atomtype: null
+      sigma_x: null
+      sigma_y: null
+      sigma_z: null
+      units: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./sumValenceSingleParticleEnergies:
+    attribs: !!set
+      units: null
+      value: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      units: null
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./timing:
+    attribs: !!set
+      units: null
+    complex: !!set
+      compositetimer: null
+    optional: !!set
+      compositetimer: null
+      timer: null
+    optional_attribs:
+      units: null
+    order:
+    - compositeTimer
+    - timer
+    several: !!set
+      compositetimer: null
+      timer: null
+    simple: !!set
+      timer: null
+    text: !!set {}
+  ./timing/timer:
+    attribs: !!set
+      name: null
+      units: null
+      value: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      units: null
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./totalEnergy:
+    attribs: !!set
+      comment: null
+      units: null
+      value: null
+    complex: !!set
+      atomtypedependentcontributions: null
+      sumofeigenvalues: null
+    optional: !!set
+      atomtypedependentcontributions: null
+      chargedenxcdenintegral: null
+      densitycoulombpotentialintegral: null
+      densityeffectivepotentialintegral: null
+      dftucorrection: null
+      extrapolationto0k: null
+      fockexchangeenergycore: null
+      fockexchangeenergyvalence: null
+      freeenergy: null
+      sumofeigenvalues: null
+      tkbtimesentropy: null
+    optional_attribs:
+      comment: null
+      units: null
+    order:
+    - sumOfEigenvalues
+    - densityCoulombPotentialIntegral
+    - densityEffectivePotentialIntegral
+    - chargeDenXCDenIntegral
+    - FockExchangeEnergyValence
+    - FockExchangeEnergyCore
+    - atomTypeDependentContributions
+    - dftUCorrection
+    - tkbTimesEntropy
+    - freeEnergy
+    - extrapolationTo0K
+    several: !!set
+      atomtypedependentcontributions: null
+      chargedenxcdenintegral: null
+      densitycoulombpotentialintegral: null
+      densityeffectivepotentialintegral: null
+      dftucorrection: null
+      extrapolationto0k: null
+      fockexchangeenergycore: null
+      fockexchangeenergyvalence: null
+      freeenergy: null
+      sumofeigenvalues: null
+      tkbtimesentropy: null
+    simple: !!set
+      chargedenxcdenintegral: null
+      densitycoulombpotentialintegral: null
+      densityeffectivepotentialintegral: null
+      dftucorrection: null
+      extrapolationto0k: null
+      fockexchangeenergycore: null
+      fockexchangeenergyvalence: null
+      freeenergy: null
+      tkbtimesentropy: null
+    text: !!set {}
+  ./totalEnergy/FockExchangeEnergyCore:
+    attribs: !!set
+      units: null
+      value: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      units: null
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./totalEnergy/FockExchangeEnergyValence:
+    attribs: !!set
+      units: null
+      value: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      units: null
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./totalEnergy/atomTypeDependentContributions:
+    attribs: !!set
+      atomtype: null
+    complex: !!set {}
+    optional: !!set
+      electronnucleiinteractiondifferentmts: null
+      madelungterm: null
+    optional_attribs: {}
+    order:
+    - electronNucleiInteractionDifferentMTs
+    - MadelungTerm
+    several: !!set {}
+    simple: !!set
+      electronnucleiinteractiondifferentmts: null
+      madelungterm: null
+    text: !!set {}
+  ./totalEnergy/atomTypeDependentContributions/MadelungTerm:
+    attribs: !!set
+      units: null
+      value: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      units: null
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./totalEnergy/atomTypeDependentContributions/electronNucleiInteractionDifferentMTs:
+    attribs: !!set
+      units: null
+      value: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      units: null
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./totalEnergy/chargeDenXCDenIntegral:
+    attribs: !!set
+      units: null
+      value: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      units: null
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./totalEnergy/densityCoulombPotentialIntegral:
+    attribs: !!set
+      units: null
+      value: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      units: null
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./totalEnergy/densityEffectivePotentialIntegral:
+    attribs: !!set
+      units: null
+      value: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      units: null
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./totalEnergy/dftUCorrection:
+    attribs: !!set
+      units: null
+      value: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      units: null
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./totalEnergy/extrapolationTo0K:
+    attribs: !!set
+      units: null
+      value: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      units: null
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./totalEnergy/freeEnergy:
+    attribs: !!set
+      units: null
+      value: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      units: null
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./totalEnergy/sumOfEigenvalues:
+    attribs: !!set
+      units: null
+      value: null
+    complex: !!set {}
+    optional: !!set
+      coreelectrons: null
+      valenceelectrons: null
+    optional_attribs:
+      units: null
+    order:
+    - coreElectrons
+    - valenceElectrons
+    several: !!set {}
+    simple: !!set
+      coreelectrons: null
+      valenceelectrons: null
+    text: !!set {}
+  ./totalEnergy/sumOfEigenvalues/coreElectrons:
+    attribs: !!set
+      units: null
+      value: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      units: null
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./totalEnergy/sumOfEigenvalues/valenceElectrons:
+    attribs: !!set
+      units: null
+      value: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      units: null
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./totalEnergy/tkbTimesEntropy:
+    attribs: !!set
+      units: null
+      value: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      units: null
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./totalForcesOnRepresentativeAtoms:
+    attribs: !!set
+      units: null
+    complex: !!set {}
+    optional: !!set
+      forcetotal: null
+    optional_attribs:
+      units: null
+    order:
+    - forceTotal
+    several: !!set
+      forcetotal: null
+    simple: !!set
+      forcetotal: null
+    text: !!set {}
+  ./totalForcesOnRepresentativeAtoms/forceTotal:
+    attribs: !!set
+      atomtype: null
+      f_x: null
+      f_y: null
+      f_z: null
+      units: null
+      x: null
+      y: null
+      z: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      units: null
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./valenceDensity:
+    attribs: !!set {}
+    complex: !!set
+      fixedcharges: null
+      mtcharges: null
+    optional: !!set
+      fixedcharges: null
+      mtcharges: null
+      spindependentcharge: null
+      totalcharge: null
+    optional_attribs: {}
+    order:
+    - mtCharges
+    - spinDependentCharge
+    - totalCharge
+    - fixedCharges
+    several: !!set
+      fixedcharges: null
+      mtcharges: null
+      spindependentcharge: null
+      totalcharge: null
+    simple: !!set
+      spindependentcharge: null
+      totalcharge: null
+    text: !!set {}
+  ./valenceDensity/fixedCharges:
+    attribs: !!set {}
+    complex: !!set {}
+    optional: !!set
+      spindependentcharge: null
+      totalcharge: null
+    optional_attribs: {}
+    order:
+    - spinDependentCharge
+    - totalCharge
+    several: !!set
+      spindependentcharge: null
+      totalcharge: null
+    simple: !!set
+      spindependentcharge: null
+      totalcharge: null
+    text: !!set {}
+  ./valenceDensity/fixedCharges/spinDependentCharge:
+    attribs: !!set
+      interstitial: null
+      mtspheres: null
+      spin: null
+      total: null
+      vacuum1: null
+      vacuum2: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      spin: '1'
+      vacuum1: null
+      vacuum2: null
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./valenceDensity/fixedCharges/totalCharge:
+    attribs: !!set
+      units: null
+      value: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      units: null
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./valenceDensity/mtCharges:
+    attribs: !!set
+      spin: null
+    complex: !!set
+      mtjcharge: null
+    optional: !!set
+      mtcharge: null
+      mtjcharge: null
+    optional_attribs:
+      spin: '1'
+    order:
+    - mtCharge
+    - mtJcharge
+    several: !!set
+      mtcharge: null
+      mtjcharge: null
+    simple: !!set
+      mtcharge: null
+    text: !!set {}
+  ./valenceDensity/mtCharges/mtCharge:
+    attribs: !!set
+      atomtype: null
+      d: null
+      f: null
+      p: null
+      s: null
+      total: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./valenceDensity/mtCharges/mtJcharge:
+    attribs: !!set
+      atomtype: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order:
+    - lowJ
+    - highJ
+    several: !!set {}
+    simple: !!set
+      highj: null
+      lowj: null
+    text: !!set {}
+  ./valenceDensity/mtCharges/mtJcharge/highJ:
+    attribs: !!set
+      d: null
+      f: null
+      p: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./valenceDensity/mtCharges/mtJcharge/lowJ:
+    attribs: !!set
+      d: null
+      f: null
+      p: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./valenceDensity/spinDependentCharge:
+    attribs: !!set
+      interstitial: null
+      mtspheres: null
+      spin: null
+      total: null
+      vacuum1: null
+      vacuum2: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      spin: '1'
+      vacuum1: null
+      vacuum2: null
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  ./valenceDensity/totalCharge:
+    attribs: !!set
+      units: null
+      value: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs:
+      units: null
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+iteration_tag_paths:
+  additionalcompilerflags: []
+  allatoms: ./Forcetheorem_DMI/allAtoms
+  allelectroncharges: ./allElectronCharges
+  angle: ./Forcetheorem_MAE/Angle
+  atomicep: ./energyParameters/atomicEP
+  atomsincell: []
+  atomtypedependentcontributions: ./totalEnergy/atomTypeDependentContributions
+  bandgap: ./bandgap
+  bands: []
+  basis: []
+  chargedensity: ./densityConvergence/chargeDensity
+  chargedenxcdenintegral: ./totalEnergy/chargeDenXCDenIntegral
+  compilationinfo: []
+  compositetimer: ./timing/compositeTimer
+  config: ./Forcetheorem_JIJ/Config
+  coreelectrons: ./totalEnergy/sumOfEigenvalues/coreElectrons
+  corestates: ./coreStates
+  density: []
+  densityconvergence: ./densityConvergence
+  densitycoulombpotentialintegral: ./totalEnergy/densityCoulombPotentialIntegral
+  densityeffectivepotentialintegral: ./totalEnergy/densityEffectivePotentialIntegral
+  densitymatrixfor: ./ldaUDensityMatrix/densityMatrixFor
+  dftucorrection: ./totalEnergy/dftUCorrection
+  distance: ./ldaUDensityMatrixConvergence/distance
+  eigenvalues: ./eigenvalues
+  eigenvaluesat: ./eigenvalues/eigenvaluesAt
+  electronnucleiinteractiondifferentmts: ./totalEnergy/atomTypeDependentContributions/electronNucleiInteractionDifferentMTs
+  enddateandtime: []
+  energyparameters: ./energyParameters
+  entry:
+  - ./Forcetheorem_DMI/Entry
+  - ./Forcetheorem_SSDISP/Entry
+  error: []
+  excsplit: ./onSiteExchangeSplitting/excSplit
+  extrapolationto0k: ./totalEnergy/extrapolationTo0K
+  fermienergy: ./FermiEnergy
+  fixedcharges:
+  - ./allElectronCharges/fixedCharges
+  - ./valenceDensity/fixedCharges
+  fleurinput: []
+  fleuroutput: []
+  fockexchangeenergycore: ./totalEnergy/FockExchangeEnergyCore
+  fockexchangeenergyvalence: ./totalEnergy/FockExchangeEnergyValence
+  forcetheorem_dmi: ./Forcetheorem_DMI
+  forcetheorem_jij: ./Forcetheorem_JIJ
+  forcetheorem_loop: ./Forcetheorem_Loop
+  forcetheorem_mae: ./Forcetheorem_MAE
+  forcetheorem_ssdisp: ./Forcetheorem_SSDISP
+  forcetotal: ./totalForcesOnRepresentativeAtoms/forceTotal
+  freeenergy: ./totalEnergy/freeEnergy
+  gitinfo: []
+  heatomicep: ./energyParameters/heAtomicEP
+  heloatomicep: ./energyParameters/heloAtomicEP
+  highj:
+  - ./allElectronCharges/mtCharges/mtJcharge/highJ
+  - ./valenceDensity/mtCharges/mtJcharge/highJ
+  iteration: []
+  kpoint: []
+  kpointlist: []
+  ldaudensitymatrix: ./ldaUDensityMatrix
+  ldaudensitymatrixconvergence: ./ldaUDensityMatrixConvergence
+  loatomicep: ./energyParameters/loAtomicEP
+  lowj:
+  - ./allElectronCharges/mtCharges/mtJcharge/lowJ
+  - ./valenceDensity/mtCharges/mtJcharge/lowJ
+  madelungterm: ./totalEnergy/atomTypeDependentContributions/MadelungTerm
+  magneticmoment: ./magneticMomentsInMTSpheres/magneticMoment
+  magneticmomentsinmtspheres: ./magneticMomentsInMTSpheres
+  mem: []
+  mpi: []
+  mtcharge:
+  - ./allElectronCharges/mtCharges/mtCharge
+  - ./valenceDensity/mtCharges/mtCharge
+  mtcharges:
+  - ./allElectronCharges/mtCharges
+  - ./valenceDensity/mtCharges
+  mtjcharge:
+  - ./allElectronCharges/mtCharges/mtJcharge
+  - ./valenceDensity/mtCharges/mtJcharge
+  mtvolume: []
+  noncollineartorgue: ./noncollinearTorgue
+  numericalparameters: []
+  occupations: ./rdmft/occupations
+  onsiteexchangesplitting: ./onSiteExchangeSplitting
+  openmp: []
+  orbitalmagneticmomentsinmtspheres: ./orbitalMagneticMomentsInMTSpheres
+  orbmagmoment: ./orbitalMagneticMomentsInMTSpheres/orbMagMoment
+  overallchargedensity: ./densityConvergence/overallChargeDensity
+  parallelsetup: []
+  precision: []
+  programversion: []
+  rdmft: ./rdmft
+  scfloop: []
+  singleatom: ./Forcetheorem_DMI/singleAtom
+  spindensity: ./densityConvergence/spinDensity
+  spindependentcharge:
+  - ./allElectronCharges/fixedCharges/spinDependentCharge
+  - ./allElectronCharges/spinDependentCharge
+  - ./valenceDensity/fixedCharges/spinDependentCharge
+  - ./valenceDensity/spinDependentCharge
+  spinorbittorgue: ./spinorbitTorgue
+  startdateandtime: []
+  state:
+  - ./coreStates/state
+  - ./rdmft/occupations/state
+  sumofeigenvalues: ./totalEnergy/sumOfEigenvalues
+  sumvalencesingleparticleenergies: ./sumValenceSingleParticleEnergies
+  targetcomputerarchitectures: []
+  targetstructureclass: []
+  timer: ./timing/timer
+  timing: ./timing
+  tkbtimesentropy: ./totalEnergy/tkbTimesEntropy
+  torgue:
+  - ./noncollinearTorgue/torgue
+  - ./spinorbitTorgue/torgue
+  totalcharge:
+  - ./allElectronCharges/fixedCharges/totalCharge
+  - ./allElectronCharges/totalCharge
+  - ./valenceDensity/fixedCharges/totalCharge
+  - ./valenceDensity/totalCharge
+  totalenergy: ./totalEnergy
+  totalforcesonrepresentativeatoms: ./totalForcesOnRepresentativeAtoms
+  vacuumep: ./energyParameters/vacuumEP
+  valencedensity: ./valenceDensity
+  valenceelectrons: ./totalEnergy/sumOfEigenvalues/valenceElectrons
+  volumes: []
+iteration_unique_attribs:
+  configs: ./Forcetheorem_JIJ/@Configs
+  numberforcurrentrun: ./@numberForCurrentRun
+  overallnumber: ./@overallNumber
+  qpoints: ./Forcetheorem_DMI/@qpoints
+  qvectors: ./Forcetheorem_SSDISP/@qvectors
+iteration_unique_path_attribs:
+  angles:
+  - ./Forcetheorem_DMI/@Angles
+  - ./Forcetheorem_MAE/@Angles
+omitt_contained_tags:
+- scfLoop
+- eigenvalues
+- onSiteExchangeSplitting
+- noncollinearTorgue
+- spinorbitTorgue
+- ldaUDensityMatrix
+- ldaUDensityMatrixConvergence
+other_attribs:
+  atomtype:
+  - /fleurOutput/numericalParameters/volumes/mtVolume/@atomType
+  kpoint:
+  - /fleurOutput/numericalParameters/kPointList/kPoint
+  mtradius:
+  - /fleurOutput/numericalParameters/volumes/mtVolume/@mtRadius
+  mtvolume:
+  - /fleurOutput/numericalParameters/volumes/mtVolume/@mtVolume
+out_version: '0.33'
+root_tag: fleurOutput
+simple_elements:
+  additionalcompilerflags:
+  - length: unbounded
+    type:
+    - string
+  densitymatrixfor:
+  - length: unbounded
+    type:
+    - string
+  eigenvaluesat:
+  - length: unbounded
+    type:
+    - float
+  kpoint:
+  - length: 3
+    type:
+    - float_expression
+  targetcomputerarchitectures:
+  - length: 1
+    type:
+    - string
+  targetstructureclass:
+  - length: unbounded
+    type:
+    - string
+tag_info:
+  /fleurOutput:
+    attribs: !!set
+      fleuroutputversion: null
+    complex: !!set
+      fleurinput: null
+      numericalparameters: null
+      parallelsetup: null
+      programversion: null
+      scfloop: null
+    optional: !!set
+      enddateandtime: null
+      error: null
+      fleurinput: null
+      numericalparameters: null
+      parallelsetup: null
+      programversion: null
+      scfloop: null
+      startdateandtime: null
+    optional_attribs: {}
+    order:
+    - programVersion
+    - parallelSetup
+    - startDateAndTime
+    - fleurInput
+    - numericalParameters
+    - scfLoop
+    - ERROR
+    - endDateAndTime
+    several: !!set {}
+    simple: !!set
+      enddateandtime: null
+      error: null
+      startdateandtime: null
+    text: !!set {}
+  /fleurOutput/ERROR:
+    attribs: !!set
+      message: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/endDateAndTime:
+    attribs: !!set
+      date: null
+      time: null
+      zone: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/numericalParameters:
+    attribs: !!set {}
+    complex: !!set
+      kpointlist: null
+      volumes: null
+    optional: !!set {}
+    optional_attribs: {}
+    order:
+    - atomsInCell
+    - basis
+    - density
+    - bands
+    - volumes
+    - kPointList
+    several: !!set {}
+    simple: !!set
+      atomsincell: null
+      bands: null
+      basis: null
+      density: null
+    text: !!set {}
+  /fleurOutput/numericalParameters/atomsInCell:
+    attribs: !!set
+      jmtd: null
+      n_hia: null
+      n_u: null
+      nat: null
+      ntype: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/numericalParameters/bands:
+    attribs: !!set
+      numbands: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/numericalParameters/basis:
+    attribs: !!set
+      lmaxd: null
+      nlotot: null
+      nvd: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/numericalParameters/density:
+    attribs: !!set
+      ng2: null
+      ng3: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/numericalParameters/kPointList:
+    attribs: !!set
+      count: null
+      weightscale: null
+    complex: !!set {}
+    optional: !!set
+      kpoint: null
+    optional_attribs: {}
+    order:
+    - kPoint
+    several: !!set
+      kpoint: null
+    simple: !!set
+      kpoint: null
+    text: !!set
+      kpoint: null
+  /fleurOutput/numericalParameters/volumes:
+    attribs: !!set
+      interstitial: null
+      omegatilda: null
+      surfacearea: null
+      unitcell: null
+      z1: null
+    complex: !!set {}
+    optional: !!set
+      mtvolume: null
+    optional_attribs:
+      omegatilda: null
+      surfacearea: null
+      z1: null
+    order:
+    - mtVolume
+    several: !!set
+      mtvolume: null
+    simple: !!set
+      mtvolume: null
+    text: !!set {}
+  /fleurOutput/numericalParameters/volumes/mtVolume:
+    attribs: !!set
+      atomtype: null
+      mtradius: null
+      mtvolume: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/parallelSetup:
+    attribs: !!set {}
+    complex: !!set {}
+    optional: !!set
+      mem: null
+      mpi: null
+      openmp: null
+    optional_attribs: {}
+    order:
+    - openMP
+    - mpi
+    - mem
+    several: !!set {}
+    simple: !!set
+      mem: null
+      mpi: null
+      openmp: null
+    text: !!set {}
+  /fleurOutput/parallelSetup/mem:
+    attribs: !!set
+      memorypernode: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/parallelSetup/mpi:
+    attribs: !!set
+      mpiprocesses: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/parallelSetup/openMP:
+    attribs: !!set
+      ompthreads: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/programVersion:
+    attribs: !!set
+      version: null
+    complex: !!set {}
+    optional: !!set
+      additionalcompilerflags: null
+      compilationinfo: null
+      gitinfo: null
+      precision: null
+      targetcomputerarchitectures: null
+      targetstructureclass: null
+    optional_attribs: {}
+    order:
+    - compilationInfo
+    - gitInfo
+    - targetComputerArchitectures
+    - precision
+    - targetStructureClass
+    - additionalCompilerFlags
+    several: !!set {}
+    simple: !!set
+      additionalcompilerflags: null
+      compilationinfo: null
+      gitinfo: null
+      precision: null
+      targetcomputerarchitectures: null
+      targetstructureclass: null
+    text: !!set
+      additionalcompilerflags: null
+      targetcomputerarchitectures: null
+      targetstructureclass: null
+  /fleurOutput/programVersion/compilationInfo:
+    attribs: !!set
+      date: null
+      flag: null
+      host: null
+      link: null
+      user: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/programVersion/gitInfo:
+    attribs: !!set
+      branch: null
+      lastcommithash: null
+      version: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/programVersion/precision:
+    attribs: !!set
+      type: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/scfLoop:
+    attribs: !!set {}
+    complex: !!set
+      iteration: null
+    optional: !!set
+      iteration: null
+    optional_attribs: {}
+    order:
+    - iteration
+    several: !!set
+      iteration: null
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/scfLoop/iteration:
+    attribs: !!set
+      numberforcurrentrun: null
+      overallnumber: null
+    complex: !!set
+      allelectroncharges: null
+      bandgap: null
+      corestates: null
+      densityconvergence: null
+      eigenvalues: null
+      energyparameters: null
+      fermienergy: null
+      forcetheorem_dmi: null
+      forcetheorem_jij: null
+      forcetheorem_loop: null
+      forcetheorem_mae: null
+      forcetheorem_ssdisp: null
+      ldaudensitymatrix: null
+      ldaudensitymatrixconvergence: null
+      magneticmomentsinmtspheres: null
+      noncollineartorgue: null
+      onsiteexchangesplitting: null
+      orbitalmagneticmomentsinmtspheres: null
+      rdmft: null
+      spinorbittorgue: null
+      sumvalencesingleparticleenergies: null
+      timing: null
+      totalenergy: null
+      totalforcesonrepresentativeatoms: null
+      valencedensity: null
+    optional: !!set
+      forcetheorem_dmi: null
+      forcetheorem_jij: null
+      forcetheorem_loop: null
+      forcetheorem_mae: null
+      forcetheorem_ssdisp: null
+    optional_attribs:
+      overallnumber: null
+    order:
+    - energyParameters
+    - eigenvalues
+    - bandgap
+    - sumValenceSingleParticleEnergies
+    - FermiEnergy
+    - valenceDensity
+    - onSiteExchangeSplitting
+    - noncollinearTorgue
+    - spinorbitTorgue
+    - coreStates
+    - allElectronCharges
+    - magneticMomentsInMTSpheres
+    - orbitalMagneticMomentsInMTSpheres
+    - rdmft
+    - totalEnergy
+    - totalForcesOnRepresentativeAtoms
+    - ldaUDensityMatrix
+    - ldaUDensityMatrixConvergence
+    - densityConvergence
+    - timing
+    - Forcetheorem_Loop
+    - Forcetheorem_SSDISP
+    - Forcetheorem_DMI
+    - Forcetheorem_MAE
+    - Forcetheorem_JIJ
+    several: !!set
+      forcetheorem_loop: null
+    simple: !!set {}
+    text: !!set {}
+  /fleurOutput/startDateAndTime:
+    attribs: !!set
+      date: null
+      time: null
+      zone: null
+    complex: !!set {}
+    optional: !!set {}
+    optional_attribs: {}
+    order: []
+    several: !!set {}
+    simple: !!set {}
+    text: !!set {}
+tag_paths:
+  additionalcompilerflags: /fleurOutput/programVersion/additionalCompilerFlags
+  allatoms: []
+  allelectroncharges: []
+  angle: []
+  atomicep: []
+  atomsincell: /fleurOutput/numericalParameters/atomsInCell
+  atomtypedependentcontributions: []
+  bandgap: []
+  bands: /fleurOutput/numericalParameters/bands
+  basis: /fleurOutput/numericalParameters/basis
+  chargedensity: []
+  chargedenxcdenintegral: []
+  compilationinfo: /fleurOutput/programVersion/compilationInfo
+  compositetimer: []
+  config: []
+  coreelectrons: []
+  corestates: []
+  density: /fleurOutput/numericalParameters/density
+  densityconvergence: []
+  densitycoulombpotentialintegral: []
+  densityeffectivepotentialintegral: []
+  densitymatrixfor: []
+  dftucorrection: []
+  distance: []
+  eigenvalues: []
+  eigenvaluesat: []
+  electronnucleiinteractiondifferentmts: []
+  enddateandtime: /fleurOutput/endDateAndTime
+  energyparameters: []
+  entry: []
+  error: /fleurOutput/ERROR
+  excsplit: []
+  extrapolationto0k: []
+  fermienergy: []
+  fixedcharges: []
+  fleurinput: /fleurOutput/fleurInput
+  fleuroutput: /fleurOutput
+  fockexchangeenergycore: []
+  fockexchangeenergyvalence: []
+  forcetheorem_dmi: []
+  forcetheorem_jij: []
+  forcetheorem_loop: []
+  forcetheorem_mae: []
+  forcetheorem_ssdisp: []
+  forcetotal: []
+  freeenergy: []
+  gitinfo: /fleurOutput/programVersion/gitInfo
+  heatomicep: []
+  heloatomicep: []
+  highj: []
+  iteration: /fleurOutput/scfLoop/iteration
+  kpoint: /fleurOutput/numericalParameters/kPointList/kPoint
+  kpointlist: /fleurOutput/numericalParameters/kPointList
+  ldaudensitymatrix: []
+  ldaudensitymatrixconvergence: []
+  loatomicep: []
+  lowj: []
+  madelungterm: []
+  magneticmoment: []
+  magneticmomentsinmtspheres: []
+  mem: /fleurOutput/parallelSetup/mem
+  mpi: /fleurOutput/parallelSetup/mpi
+  mtcharge: []
+  mtcharges: []
+  mtjcharge: []
+  mtvolume: /fleurOutput/numericalParameters/volumes/mtVolume
+  noncollineartorgue: []
+  numericalparameters: /fleurOutput/numericalParameters
+  occupations: []
+  onsiteexchangesplitting: []
+  openmp: /fleurOutput/parallelSetup/openMP
+  orbitalmagneticmomentsinmtspheres: []
+  orbmagmoment: []
+  overallchargedensity: []
+  parallelsetup: /fleurOutput/parallelSetup
+  precision: /fleurOutput/programVersion/precision
+  programversion: /fleurOutput/programVersion
+  rdmft: []
+  scfloop: /fleurOutput/scfLoop
+  singleatom: []
+  spindensity: []
+  spindependentcharge: []
+  spinorbittorgue: []
+  startdateandtime: /fleurOutput/startDateAndTime
+  state: []
+  sumofeigenvalues: []
+  sumvalencesingleparticleenergies: []
+  targetcomputerarchitectures: /fleurOutput/programVersion/targetComputerArchitectures
+  targetstructureclass: /fleurOutput/programVersion/targetStructureClass
+  timer: []
+  timing: []
+  tkbtimesentropy: []
+  torgue: []
+  totalcharge: []
+  totalenergy: []
+  totalforcesonrepresentativeatoms: []
+  vacuumep: []
+  valencedensity: []
+  valenceelectrons: []
+  volumes: /fleurOutput/numericalParameters/volumes
+unique_attribs:
+  additionalcompilerflags: /fleurOutput/programVersion/additionalCompilerFlags
+  branch: /fleurOutput/programVersion/gitInfo/@branch
+  count: /fleurOutput/numericalParameters/kPointList/@count
+  flag: /fleurOutput/programVersion/compilationInfo/@flag
+  fleuroutputversion: /fleurOutput/@fleurOutputVersion
+  host: /fleurOutput/programVersion/compilationInfo/@host
+  interstitial: /fleurOutput/numericalParameters/volumes/@interstitial
+  jmtd: /fleurOutput/numericalParameters/atomsInCell/@jmtd
+  lastcommithash: /fleurOutput/programVersion/gitInfo/@lastCommitHash
+  link: /fleurOutput/programVersion/compilationInfo/@link
+  lmaxd: /fleurOutput/numericalParameters/basis/@lmaxd
+  memorypernode: /fleurOutput/parallelSetup/mem/@memoryPerNode
+  message: /fleurOutput/ERROR/@Message
+  mpiprocesses: /fleurOutput/parallelSetup/mpi/@mpiProcesses
+  n_hia: /fleurOutput/numericalParameters/atomsInCell/@n_hia
+  n_u: /fleurOutput/numericalParameters/atomsInCell/@n_u
+  nat: /fleurOutput/numericalParameters/atomsInCell/@nat
+  ng2: /fleurOutput/numericalParameters/density/@ng2
+  ng3: /fleurOutput/numericalParameters/density/@ng3
+  nlotot: /fleurOutput/numericalParameters/basis/@nlotot
+  ntype: /fleurOutput/numericalParameters/atomsInCell/@ntype
+  numbands: /fleurOutput/numericalParameters/bands/@numbands
+  nvd: /fleurOutput/numericalParameters/basis/@nvd
+  omegatilda: /fleurOutput/numericalParameters/volumes/@omegaTilda
+  ompthreads: /fleurOutput/parallelSetup/openMP/@ompThreads
+  surfacearea: /fleurOutput/numericalParameters/volumes/@surfaceArea
+  targetcomputerarchitectures: /fleurOutput/programVersion/targetComputerArchitectures
+  targetstructureclass: /fleurOutput/programVersion/targetStructureClass
+  type: /fleurOutput/programVersion/precision/@type
+  unitcell: /fleurOutput/numericalParameters/volumes/@unitCell
+  user: /fleurOutput/programVersion/compilationInfo/@user
+  weightscale: /fleurOutput/numericalParameters/kPointList/@weightScale
+  z1: /fleurOutput/numericalParameters/volumes/@z1
+unique_path_attribs:
+  date:
+  - /fleurOutput/endDateAndTime/@date
+  - /fleurOutput/programVersion/compilationInfo/@date
+  - /fleurOutput/startDateAndTime/@date
+  time:
+  - /fleurOutput/endDateAndTime/@time
+  - /fleurOutput/startDateAndTime/@time
+  version:
+  - /fleurOutput/programVersion/@version
+  - /fleurOutput/programVersion/gitInfo/@version
+  zone:
+  - /fleurOutput/endDateAndTime/@zone
+  - /fleurOutput/startDateAndTime/@zone

@@ -14,15 +14,17 @@
 This module defines a small helper class to make case insensitive dictionary
 lookups available naturally
 """
-from collections import UserDict
+from masci_tools.util.lockable_containers import LockableDict
 
 
-class CaseInsensitiveDict(UserDict):
+class CaseInsensitiveDict(LockableDict):
     """
     Dict with case insensitive lookup. Used in Schema dicts to make finding
     paths for tags and attributes easier.
     Does not preserve the case of the inserted key.
     Does not support case insensitive lookups in nested dicts
+    Subclass of :py:class:`masci_tools.util.lockable_containers.LockableDict`. So
+    can be frozen via the`freeze()` method
 
     :param upper: bool if True the method `upper()` will be used instead of `lower()`
                   to normalize keys
@@ -82,7 +84,7 @@ class CaseInsensitiveFrozenSet(frozenset):
 
     def __init__(self, iterable):
         self.original_case = self._get_new_original_case(iterable)
-        self._frozenset_iter = None #Used for customizing the iteration behaviour
+        self._frozenset_iter = None  #Used for customizing the iteration behaviour
         super().__init__()
 
     def _get_new_original_case(self, *iterables):
@@ -94,6 +96,7 @@ class CaseInsensitiveFrozenSet(frozenset):
                         new_dict[key] = iterable.original_case[key]
                     else:
                         new_dict[key] = key
+        new_dict.freeze()
         return new_dict
 
     def __contains__(self, key):

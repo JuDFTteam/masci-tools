@@ -137,9 +137,9 @@ def test_outxml_incompatible_versions():
     Test the output parser against files with broken/wrong or unsupported version strings
     """
 
-    #output version does not exist (InputSchema is loaded first so this is the raised error)
+    #output version does not exist
     OUTXML_FILEPATH1 = os.path.join(outxmlfilefolder, 'files/fleur/broken_out_xml/non_existing_version.xml')
-    with pytest.raises(FileNotFoundError, match='No FleurInputSchema.xsd found'):
+    with pytest.raises(FileNotFoundError, match='No FleurOutputSchema.xsd found'):
         out_dict = outxml_parser(OUTXML_FILEPATH1, strict=True)
 
     #version string 0.27 and programVersion='fleur 27' not supported

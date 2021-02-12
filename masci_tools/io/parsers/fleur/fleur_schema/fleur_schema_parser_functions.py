@@ -1201,4 +1201,4 @@ def get_input_tag(xmlschema, namespaces, **kwargs):
 
     :return: name of the element with the type 'FleurInputType'
     """
-    return _xpath_eval(xmlschema, f"//xsd:element[@type='{_INPUT_TYPE}']/@name", namespaces=namespaces)[0]
+    return str(_xpath_eval(xmlschema, f"//xsd:element[@type='{_INPUT_TYPE}']/@name", namespaces=namespaces)[0])

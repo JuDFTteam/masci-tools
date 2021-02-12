@@ -72,8 +72,8 @@ warnings:
     soc: false
   parser_info: Masci-Tools Fleur out.xml Parser v0.3.0
   parser_warnings:
-  - No Input Schema available for version '0.36'; falling back to '0.34'
   - No Output Schema available for version '0.36'; falling back to '0.34'
+  - No Input Schema available for version '0.36'; falling back to '0.34'
   - "Output file does not validate against the schema: \nLine 2: Element 'fleurOutput',\
     \ attribute 'fleurOutputVersion': [facet 'enumeration'] The value '0.36' is not\
     \ an element of the set {'0.34'}. \nLine 16: Element 'fleurInput', attribute 'fleurInputVersion':\
