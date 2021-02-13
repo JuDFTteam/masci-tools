@@ -1,6 +1,9 @@
 Using the Fleur input/output parsers
 ====================================
 
+.. role:: raw-html(raw)
+   :format: html
+
 .. contents::
 
 Parser for the Fleur inp.xml file
@@ -20,7 +23,15 @@ For this purpose the :py:func:`~masci_tools.io.parsers.fleur.inpxml_parser()` is
    warnings = {'parser_warnings': []}
    input_dict = inpxml_parser('/path/to/random/inp.xml', parser_info_out=warnings)
 
-The conversion of each attribute or text is done according to the FleurInputSchema for the same version, which is stored in this repository for versions from ```0.27``` to ```0.33```
+The conversion of each attribute or text is done according to the FleurInputSchema for the same version, which is stored in this repository for versions from ```0.27``` to ```0.34```. The following table shows the version compatibility of the input parser.
+
++------------------+------------------------------------------------------------------------------+
+| File version     | Compatible?                                                                  |
++------------------+------------------------------------------------------------------------------+
+| `0.27` - `0.34`  | :raw-html:`<font color="green"> Yes </font>`                                 |
++------------------+------------------------------------------------------------------------------+
+| `0.35` -         | :raw-html:`<font color="#ffb733"> Fallback to <cite>0.34</cite> </font>`     |
++------------------+------------------------------------------------------------------------------+
 
 
 Parser for the Fleur out.xml file
@@ -46,6 +57,24 @@ For the ```out.xml``` file a similar parser is implemented. However, since the o
    output_dict = outxml_parser('/path/to/random/out.xml', parser_info_out=warnings)
 
 For each iteration the parser decides based on the type of fleur calculation, what things should be parsed. For a more detailed explanation refer to the :doc:`../../devel_guide/index`.
+
+The following table shows the version compatibility of the output parser. For versions before `0.34` the file version corresponds to the input version, since the output version is `0.27` for all versions before this point.
+
++------------------+-----------------------------------------------------------------------------------------------------+
+| File version     | Compatible?                                                                                         |
++------------------+-----------------------------------------------------------------------------------------------------+
+| `0.27` - `0.29`  | :raw-html:`<font color="#ffb733"> <cite>0.29</cite> version is assumed (no XML validation) </font>` |
++------------------+-----------------------------------------------------------------------------------------------------+
+| `0.30` - `0.31`  | :raw-html:`<font color="#ffb733"> Yes (no XML validation) </font>`                                  |
++------------------+-----------------------------------------------------------------------------------------------------+
+| `0.32`           | :raw-html:`<font color="red"> No (Does not exist for any release version of fleur) </font>`         |
++------------------+-----------------------------------------------------------------------------------------------------+
+| `0.33`           | :raw-html:`<font color="#ffb733"> Yes (no XML validation) </font>`                                  |
++------------------+-----------------------------------------------------------------------------------------------------+
+| `0.34`           | :raw-html:`<font color="green"> Yes </font>`                                                        |
++------------------+-----------------------------------------------------------------------------------------------------+
+| `0.35` -         | :raw-html:`<font color="#ffb733"> Fallback to <cite>0.34</cite> </font>`                            |
++------------------+-----------------------------------------------------------------------------------------------------+
 
 Using the :py:mod:`~masci_tools.util.schema_dict_util` functions
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
