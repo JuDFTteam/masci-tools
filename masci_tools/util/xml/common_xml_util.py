@@ -77,7 +77,7 @@ def clear_xml(tree):
     return cleared_tree
 
 
-def convert_xml_attribute(stringattribute, possible_types, constants, suc_return=True, conversion_warnings=None):
+def convert_xml_attribute(stringattribute, possible_types, constants=None, suc_return=True, conversion_warnings=None):
     """
     Tries to converts a given string attribute to the types given in possible_types.
     First succeeded conversion will be returned
@@ -106,6 +106,9 @@ def convert_xml_attribute(stringattribute, possible_types, constants, suc_return
             if value_type == 'float':
                 converted_value, suc = convert_to_float(attrib, conversion_warnings=conversion_warnings)
             elif value_type == 'float_expression':
+                if constants is None:
+                    raise ValueError(
+                        "For calculating attributes of the type 'float_expression' constants have to be given")
                 try:
                     converted_value = calculate_expression(attrib, constants)
                     suc = True
@@ -137,7 +140,7 @@ def convert_xml_attribute(stringattribute, possible_types, constants, suc_return
         return ret_value
 
 
-def convert_xml_text(tagtext, possible_definitions, constants, conversion_warnings=None, suc_return=True):
+def convert_xml_text(tagtext, possible_definitions, constants=None, conversion_warnings=None, suc_return=True):
     """
     Tries to converts a given string text based on the definitions (length and type).
     First succeeded conversion will be returned
@@ -192,7 +195,7 @@ def convert_xml_text(tagtext, possible_definitions, constants, conversion_warnin
             warnings = []
             converted_value, suc = convert_xml_attribute(value,
                                                          text_definition['type'],
-                                                         constants,
+                                                         constants=constants,
                                                          conversion_warnings=warnings)
             converted_text.append(converted_value)
             if not suc:

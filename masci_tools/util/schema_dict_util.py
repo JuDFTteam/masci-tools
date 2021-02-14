@@ -244,7 +244,7 @@ def read_constants(root, schema_dict):
 
 
 @register_parsing_function('attrib')
-def evaluate_attribute(node, schema_dict, name, constants, parser_info_out=None, **kwargs):
+def evaluate_attribute(node, schema_dict, name, constants=None, parser_info_out=None, **kwargs):
     """
     Evaluates the value of the attribute based on the given name
     and additional further specifications with the available type information
@@ -302,7 +302,7 @@ def evaluate_attribute(node, schema_dict, name, constants, parser_info_out=None,
     warnings = []
     converted_value, suc = convert_xml_attribute(stringattribute,
                                                  possible_types,
-                                                 constants,
+                                                 constants=constants,
                                                  conversion_warnings=warnings)
 
     if not suc:
@@ -370,7 +370,10 @@ def evaluate_text(node, schema_dict, name, constants, parser_info_out=None, **kw
     possible_definitions = schema_dict['simple_elements'][name]
 
     warnings = []
-    converted_value, suc = convert_xml_text(stringtext, possible_definitions, constants, conversion_warnings=warnings)
+    converted_value, suc = convert_xml_text(stringtext,
+                                            possible_definitions,
+                                            constants=constants,
+                                            conversion_warnings=warnings)
 
     if not suc:
         parser_info_out['parser_warnings'].append(f'Failed to evaluate text for tag {name}: '
@@ -382,7 +385,7 @@ def evaluate_text(node, schema_dict, name, constants, parser_info_out=None, **kw
 
 
 @register_parsing_function('allAttribs', all_attribs_keys=True)
-def evaluate_tag(node, schema_dict, name, constants, parser_info_out=None, **kwargs):
+def evaluate_tag(node, schema_dict, name, constants=None, parser_info_out=None, **kwargs):
     """
     Evaluates all attributes of the tag based on the given name
     and additional further specifications with the available type information
@@ -461,7 +464,7 @@ def evaluate_tag(node, schema_dict, name, constants, parser_info_out=None, **kwa
         warnings = []
         out_dict[attrib], suc = convert_xml_attribute(stringattribute,
                                                       possible_types,
-                                                      constants,
+                                                      constants=constants,
                                                       conversion_warnings=warnings)
 
         if not suc:
@@ -474,7 +477,7 @@ def evaluate_tag(node, schema_dict, name, constants, parser_info_out=None, **kwa
 
 
 @register_parsing_function('singleValue', all_attribs_keys=True)
-def evaluate_single_value_tag(node, schema_dict, name, constants, parser_info_out=None, **kwargs):
+def evaluate_single_value_tag(node, schema_dict, name, constants=None, parser_info_out=None, **kwargs):
     """
     Evaluates the value and unit attribute of the tag based on the given name
     and additional further specifications with the available type information
@@ -499,7 +502,7 @@ def evaluate_single_value_tag(node, schema_dict, name, constants, parser_info_ou
 
     only_required = kwargs.get('only_required', False)
 
-    value_dict = evaluate_tag(node, schema_dict, name, constants, parser_info_out=parser_info_out, **kwargs)
+    value_dict = evaluate_tag(node, schema_dict, name, constants=constants, parser_info_out=parser_info_out, **kwargs)
 
     if 'value' not in value_dict:
         parser_info_out['parser_warnings'].append(f'Failed to evaluate singleValue from tag {name}: '
@@ -512,7 +515,7 @@ def evaluate_single_value_tag(node, schema_dict, name, constants, parser_info_ou
 
 
 @register_parsing_function('parentAttribs', all_attribs_keys=True)
-def evaluate_parent_tag(node, schema_dict, name, constants, parser_info_out=None, **kwargs):
+def evaluate_parent_tag(node, schema_dict, name, constants=None, parser_info_out=None, **kwargs):
     """
     Evaluates all attributes of the parent tag based on the given name
     and additional further specifications with the available type information
@@ -597,7 +600,10 @@ def evaluate_parent_tag(node, schema_dict, name, constants, parser_info_out=None
             possible_types = schema_dict['attrib_types'][attrib]
 
             warnings = []
-            value, suc = convert_xml_attribute(stringattribute, possible_types, constants, conversion_warnings=warnings)
+            value, suc = convert_xml_attribute(stringattribute,
+                                               possible_types,
+                                               constants=constants,
+                                               conversion_warnings=warnings)
 
             out_dict[attrib].append(value)
 
