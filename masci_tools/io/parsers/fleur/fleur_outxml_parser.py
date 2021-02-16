@@ -309,7 +309,9 @@ def parse_general_information(root, parser, outschema_dict, iteration_to_parse=N
 
     #For certain fleur modes we need to overwrite the tasks
     if fleurmode['dos'] or fleurmode['band']:
-        parser.iteration_tasks = ['iteration_number', 'fermi_energy', 'bandgap']
+        parser.iteration_tasks = ['iteration_number', 'fermi_energy']
+        if fleurmode['bz_integration'] == 'hist':
+            parser.iteration_tasks = ['iteration_number', 'fermi_energy', 'bandgap']
 
     if fleurmode['relax'] and iteration_to_parse == 'last':
         if 'distances' in parser.iteration_tasks:
