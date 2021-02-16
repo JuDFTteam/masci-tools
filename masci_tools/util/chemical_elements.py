@@ -1,4 +1,19 @@
+# -*- coding: utf-8 -*-
+###############################################################################
+# Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
+#                All rights reserved.                                         #
+# This file is part of the Masci-tools package.                               #
+# (Material science tools)                                                    #
+#                                                                             #
+# The code is hosted on GitHub at https://github.com/judftteam/masci-tools    #
+# For further information on the license, see the LICENSE.txt file            #
+# For further information please visit http://www.flapw.de or                 #
+#                                                                             #
+###############################################################################
+"""This module contains a simple class for set-like chemical elements enumeration."""
 import dataclasses as dc
+
+import masci_tools.vis.plot_methods
 
 
 class ChemicalElements:
@@ -594,7 +609,7 @@ class ChemicalElements:
         if group_name not in self.__elmts:
             if not self.is_flat() and not group_name:
                 # generate a random group name and add elements
-                from aiida_utils_by_wasmer.util_python import random_string
+                from masci_tools.util.python_util import random_string
                 group_name = "UNNAMED_" + random_string(5)
                 print(f"Warning: adding nested and flat ChemicalElements, "
                       f"adding flat elements to new group '{group_name}'")
@@ -800,8 +815,6 @@ class ChemicalElements:
         import bokeh.plotting
         import mendeleev.plotting
 
-        from aiida_utils_by_wasmer import util_viz
-
         if output == "notebook":
             bokeh.plotting.output_notebook()
         else:
@@ -829,7 +842,7 @@ class ChemicalElements:
 
         # if there is more than one group, plot a legend
         if len(data_selection.keys()) > 2:
-            util_viz.plot_colortable(cmap, selection_name)
+            masci_tools.vis.plot_methods.plot_colortable(cmap, selection_name)
 
         colorby_attribute = f"{selection_name}_color"
         pte[colorby_attribute] = pte[selection_name].map(cmap)
@@ -904,17 +917,17 @@ class ChemicalElements:
 
 @dc.dataclass
 class PeriodicTable:
-    from aiida_utils_by_wasmer import util_python
+    from masci_tools.util import python_util
 
-    table: ChemicalElements = util_python.dataclass_default_field(ChemicalElements())
-    crystal: ChemicalElements = util_python.dataclass_default_field(ChemicalElements({
+    table: ChemicalElements = python_util.dataclass_default_field(ChemicalElements())
+    crystal: ChemicalElements = python_util.dataclass_default_field(ChemicalElements({
         'fcc': ['Ir', 'Pd', 'Pb', 'Pt', 'Al', 'Cu', 'Ca', 'Ag', 'Au', 'Sr', 'Mn', 'Ni'],
         'bcc': ['Ba', 'Cr', 'Cs', 'Fe', 'K', 'Mo', 'Nb', 'Rb', 'Ta', 'V', 'W'],
         'hcp': ['Be', 'Cd', 'Co', 'He', 'Hf', 'Mg', 'Os', 'Re', 'Ru', 'Sc', 'Tc', 'Ti', 'Tl', 'Y', 'Zn', 'Zr'],
         'diamond': ['Ge', 'Si', 'Sn'],
         'rhombohedral': ['As', 'Bi', 'Sb']
     }))
-    magnet: ChemicalElements = util_python.dataclass_default_field(ChemicalElements({
+    magnet: ChemicalElements = python_util.dataclass_default_field(ChemicalElements({
         'ferromagnetic': ['Fe', 'Co', 'Ni'],
         'antiferromagnetic': ['Cr', 'Mn', 'O']
     }))
