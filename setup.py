@@ -48,7 +48,8 @@ if __name__ == '__main__':
             'h5py',
             'bump2version',
             'future',
-            'lxml>=3.6.4'
+            'lxml>=3.6.4',
+            'mendeleev'
         ],
         extras_require={
             'pre-commit': [
