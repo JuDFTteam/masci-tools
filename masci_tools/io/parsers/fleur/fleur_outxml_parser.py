@@ -5,9 +5,9 @@
 # This file is part of the Masci-tools package.                               #
 # (Material science tools)                                                    #
 #                                                                             #
-# The code is hosted on GitHub at https://github.com/judftteam/masci-tools    #
-# For further information on the license, see the LICENSE.txt file            #
-# For further information please visit http://www.flapw.de or                 #
+# The code is hosted on GitHub at https://github.com/judftteam/masci-tools.   #
+# For further information on the license, see the LICENSE.txt file.           #
+# For further information please visit http://judft.de/.                      #
 #                                                                             #
 ###############################################################################
 """
@@ -15,9 +15,9 @@ This module contains functions to load an fleur out.xml file, parse it with a sc
 and convert its content to a dict, based on the tasks given
 """
 from masci_tools.util.parse_tasks import ParseTasks
-from masci_tools.util.schema_dict_util import get_tag_xpath, tag_exists, read_constants, eval_simple_xpath
+from masci_tools.util.schema_dict_util import tag_exists, read_constants, eval_simple_xpath
 from masci_tools.util.xml.common_xml_util import eval_xpath, clear_xml
-from masci_tools.io.parsers.fleur.fleur_schema import load_inpschema, load_outschema
+from masci_tools.io.parsers.fleur.fleur_schema.schema_dict import OutputSchemaDict
 from lxml import etree
 from itertools import groupby
 import copy
@@ -141,27 +141,23 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
     ignore_validation = kwargs.get('ignore_validation', ignore_validation)
 
     #Load schema_dict (inp and out)
-    inpschema_dict = load_inpschema(inp_version, parser_info_out=parser_info_out)
-    outschema_dict, outxmlschema = load_outschema(out_version,
-                                                  schema_return=True,
-                                                  inp_version=inp_version,
-                                                  parser_info_out=parser_info_out)
+    outschema_dict = OutputSchemaDict.fromVersion(out_version, inp_version=inp_version, parser_info_out=parser_info_out)
 
     if outschema_dict['out_version'] != out_version or \
-       inpschema_dict['inp_version'] != inp_version:
+       outschema_dict['inp_version'] != inp_version:
         ignore_validation = True
         out_version = outschema_dict['out_version']
-        inp_version = inpschema_dict['inp_version']
+        inp_version = outschema_dict['inp_version']
 
     xmltree = clear_xml(xmltree)
     root = xmltree.getroot()
 
     errmsg = ''
     try:
-        outxmlschema.assertValid(xmltree)
+        outschema_dict.xmlschema.assertValid(xmltree)
     except etree.DocumentInvalid as err:
 
-        error_log = sorted(outxmlschema.error_log, key=lambda x: x.message)
+        error_log = sorted(outschema_dict.xmlschema.error_log, key=lambda x: x.message)
         error_output = []
         first_occurence = []
         for message, group in groupby(error_log, key=lambda x: x.message):
@@ -179,7 +175,7 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
         if not ignore_validation:
             raise ValueError(errmsg) from err
 
-    if not outxmlschema.validate(xmltree) and errmsg == '':
+    if not outschema_dict.xmlschema.validate(xmltree) and errmsg == '':
         parser_info_out['parser_warnings'].append('Output file does not validate against the schema: Reason is unknown')
         if not ignore_validation:
             raise ValueError('Output file does not validate against the schema: Reason is unknown')
@@ -192,7 +188,6 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
     out_dict, constants = parse_general_information(root,
                                                     parser,
                                                     outschema_dict,
-                                                    inpschema_dict,
                                                     parser_info_out=parser_info_out,
                                                     iteration_to_parse=iteration_to_parse,
                                                     **kwargs)
@@ -267,13 +262,7 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
     return out_dict
 
 
-def parse_general_information(root,
-                              parser,
-                              outschema_dict,
-                              inpschema_dict,
-                              iteration_to_parse=None,
-                              parser_info_out=None,
-                              **kwargs):
+def parse_general_information(root, parser, outschema_dict, iteration_to_parse=None, parser_info_out=None, **kwargs):
     """
     Parses the information from the out.xml outside scf iterations
 
@@ -283,7 +272,6 @@ def parse_general_information(root,
         :param root: etree Element for the root of the out.xml
         :param parser: ParseTasks object with all defined tasks
         :param outschema_dict: dict with the information parsed from the OutputSchema
-        :param inpschema_dict: dict with the information parsed from the InputSchema
         :param parser_info_out: dict, with warnings, info, errors, ...
 
     Kwargs:
@@ -296,8 +284,7 @@ def parse_general_information(root,
     if iteration_to_parse is None:
         iteration_to_parse = 'last'
 
-    input_tag_path = get_tag_xpath(outschema_dict, outschema_dict['input_tag'])
-    constants = read_constants(root, inpschema_dict, replace_root=input_tag_path)
+    constants = read_constants(root, outschema_dict)
 
     fleurmode = {
         'jspin': 1,
@@ -312,10 +299,9 @@ def parse_general_information(root,
     fleurmode = parser.perform_task('fleur_modes',
                                     root,
                                     fleurmode,
-                                    inpschema_dict,
+                                    outschema_dict,
                                     constants,
                                     parser_info_out=parser_info_out,
-                                    replace_root=input_tag_path,
                                     use_lists=False)
     parser_info_out['fleur_modes'] = fleurmode
 
@@ -338,20 +324,12 @@ def parse_general_information(root,
 
     for task in parser.general_tasks:
 
-        if task == 'general_out_info':
-            schema_dict = outschema_dict
-            replace_root = None
-        else:
-            schema_dict = inpschema_dict
-            replace_root = input_tag_path
-
         out_dict = parser.perform_task(task,
                                        root,
                                        out_dict,
-                                       schema_dict,
+                                       outschema_dict,
                                        constants,
                                        parser_info_out=parser_info_out,
-                                       replace_root=replace_root,
                                        use_lists=False)
 
     return out_dict, constants

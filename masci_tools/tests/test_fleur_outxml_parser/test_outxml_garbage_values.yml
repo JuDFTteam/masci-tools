@@ -15,7 +15,7 @@ warnings:
     \ \nLine 624: Element 'magneticMoment', attribute 'moment': '********' is not\
     \ a valid value of the atomic type 'xs:double'. \n"
   - No text found for tag targetStructureClass
-  - No values found for attribute value at tag bandgap
   - No values found for attribute units at tag bandgap
+  - No values found for attribute value at tag bandgap
   - 'Failed to evaluate attribute moment: Below are the warnings from convert_xml_attribute'
   - 'Could not convert: ''********'' to float, ValueError'

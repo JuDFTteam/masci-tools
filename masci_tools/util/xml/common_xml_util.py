@@ -5,9 +5,9 @@
 # This file is part of the Masci-tools package.                               #
 # (Material science tools)                                                    #
 #                                                                             #
-# The code is hosted on GitHub at https://github.com/judftteam/masci-tools    #
-# For further information on the license, see the LICENSE.txt file            #
-# For further information please visit http://www.flapw.de or                 #
+# The code is hosted on GitHub at https://github.com/judftteam/masci-tools.   #
+# For further information on the license, see the LICENSE.txt file.           #
+# For further information please visit http://judft.de/.                      #
 #                                                                             #
 ###############################################################################
 """
@@ -77,7 +77,7 @@ def clear_xml(tree):
     return cleared_tree
 
 
-def convert_xml_attribute(stringattribute, possible_types, constants, suc_return=True, conversion_warnings=None):
+def convert_xml_attribute(stringattribute, possible_types, constants=None, suc_return=True, conversion_warnings=None):
     """
     Tries to converts a given string attribute to the types given in possible_types.
     First succeeded conversion will be returned
@@ -106,6 +106,9 @@ def convert_xml_attribute(stringattribute, possible_types, constants, suc_return
             if value_type == 'float':
                 converted_value, suc = convert_to_float(attrib, conversion_warnings=conversion_warnings)
             elif value_type == 'float_expression':
+                if constants is None:
+                    raise ValueError(
+                        "For calculating attributes of the type 'float_expression' constants have to be given")
                 try:
                     converted_value = calculate_expression(attrib, constants)
                     suc = True
@@ -137,7 +140,7 @@ def convert_xml_attribute(stringattribute, possible_types, constants, suc_return
         return ret_value
 
 
-def convert_xml_text(tagtext, possible_definitions, constants, conversion_warnings=None, suc_return=True):
+def convert_xml_text(tagtext, possible_definitions, constants=None, conversion_warnings=None, suc_return=True):
     """
     Tries to converts a given string text based on the definitions (length and type).
     First succeeded conversion will be returned
@@ -192,7 +195,7 @@ def convert_xml_text(tagtext, possible_definitions, constants, conversion_warnin
             warnings = []
             converted_value, suc = convert_xml_attribute(value,
                                                          text_definition['type'],
-                                                         constants,
+                                                         constants=constants,
                                                          conversion_warnings=warnings)
             converted_text.append(converted_value)
             if not suc:
@@ -333,11 +336,16 @@ def eval_xpath(node, xpath, parser_info_out=None, list_return=False, namespaces=
     if parser_info_out is None:
         parser_info_out = {'parser_warnings': []}
 
+    assert isinstance(node, (etree._Element, etree._ElementTree)), f'Wrong Type for xpath eval; Got: {type(node)}'
+
     if isinstance(node, etree._Element):
         if node.tag != xpath.split('/')[1] and xpath.split('/')[0] != '.':
             #absolute path with a different root tag than node
             if node.tag in xpath:
-                xpath = xpath.replace(xpath.split(node.tag)[-1] + node.tag, '.')
+                if '@' not in xpath:
+                    xpath = xpath + '/'
+                xpath = xpath.replace('/'.join(xpath.split(node.tag + '/')[:-1]) + node.tag, '.')
+                xpath = xpath.rstrip('/')
 
     try:
         if namespaces is not None:

@@ -154,19 +154,19 @@ warnings:
     \ Expected is ( volumes ). \nLine 73: Element 'atomsInCell': The attribute 'n_hia'\
     \ is required but missing. \n"
   - No text found for tag targetStructureClass
-  - No values found for attribute total at tag spinDependentCharge
   - No values found for attribute interstitial at tag spinDependentCharge
   - No values found for attribute mtSpheres at tag spinDependentCharge
+  - No values found for attribute total at tag spinDependentCharge
   - No values found for attribute value at tag totalCharge
-  - No values found for attribute total at tag spinDependentCharge
   - No values found for attribute interstitial at tag spinDependentCharge
   - No values found for attribute mtSpheres at tag spinDependentCharge
+  - No values found for attribute total at tag spinDependentCharge
   - No values found for attribute value at tag totalCharge
-  - No values found for attribute total at tag spinDependentCharge
   - No values found for attribute interstitial at tag spinDependentCharge
   - No values found for attribute mtSpheres at tag spinDependentCharge
+  - No values found for attribute total at tag spinDependentCharge
   - No values found for attribute value at tag totalCharge
-  - No values found for attribute total at tag spinDependentCharge
   - No values found for attribute interstitial at tag spinDependentCharge
   - No values found for attribute mtSpheres at tag spinDependentCharge
+  - No values found for attribute total at tag spinDependentCharge
   - No values found for attribute value at tag totalCharge

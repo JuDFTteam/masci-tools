@@ -4,6 +4,7 @@
 Jens Broeder j.broeder@fz-juelich.de
 Philipp Ruessmann p.ruessmann@fz-juelich.de 
 Henning Janssen he.janssen@fz-juelich.de
+Johannes Wasmer j.wasmer@fz-juelich.de
 
 
 We would also like to thank the following people for their contibution:

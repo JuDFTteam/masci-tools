@@ -5,9 +5,9 @@
 # This file is part of the Masci-tools package.                               #
 # (Material science tools)                                                    #
 #                                                                             #
-# The code is hosted on GitHub at https://github.com/judftteam/masci-tools    #
-# For further information on the license, see the LICENSE.txt file            #
-# For further information please visit http://www.flapw.de or                 #
+# The code is hosted on GitHub at https://github.com/judftteam/masci-tools.   #
+# For further information on the license, see the LICENSE.txt file.           #
+# For further information please visit http://judft.de/.                      #
 #                                                                             #
 ###############################################################################
 """
@@ -141,6 +141,12 @@ def convert_ldau_definitions(out_dict, parser_info_out=None):
     """
     parsed_ldau = out_dict['ldau_info'].pop('parsed_ldau')
     ldau_species = out_dict['ldau_info'].pop('ldau_species')
+
+    if isinstance(ldau_species['name'], str):
+        ldau_species = {key: [val] for key, val in ldau_species.items()}
+
+    if isinstance(parsed_ldau['l'], int):
+        parsed_ldau = {key: [val] for key, val in parsed_ldau.items()}
 
     ldau_definitions = zip(ldau_species['name'], ldau_species['atomic_number'], parsed_ldau['l'])
     for index, ldau_def in enumerate(ldau_definitions):

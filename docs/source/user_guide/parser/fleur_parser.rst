@@ -1,6 +1,9 @@
 Using the Fleur input/output parsers
 ====================================
 
+.. role:: raw-html(raw)
+   :format: html
+
 .. contents::
 
 Parser for the Fleur inp.xml file
@@ -20,13 +23,21 @@ For this purpose the :py:func:`~masci_tools.io.parsers.fleur.inpxml_parser()` is
    warnings = {'parser_warnings': []}
    input_dict = inpxml_parser('/path/to/random/inp.xml', parser_info_out=warnings)
 
-The conversion of each attribute or text is done according to the FleurInputSchema for the same version, which is stored in this repository for versions from ```0.27``` to ```0.33```
+The conversion of each attribute or text is done according to the FleurInputSchema for the same version, which is stored in this repository for versions from ```0.27``` to ```0.34```. The following table shows the version compatibility of the input parser.
+
++------------------+------------------------------------------------------------------------------+
+| File version     | Compatible?                                                                  |
++------------------+------------------------------------------------------------------------------+
+| `0.27` - `0.34`  | :raw-html:`<font color="green"> Yes </font>`                                 |
++------------------+------------------------------------------------------------------------------+
+| `0.35` -         | :raw-html:`<font color="#ffb733"> Fallback to <cite>0.34</cite> </font>`     |
++------------------+------------------------------------------------------------------------------+
 
 
 Parser for the Fleur out.xml file
 +++++++++++++++++++++++++++++++++
 
-For the ```out.xml``` file a similar parser is implemented. However, since the ouput file contains a lot more information, which is not always useful the :py:func:`~masci_tools.io.parsers.fleur.outxml_parser()` is defined a lot more selectively. But the usage is almost completely identical to the input file.
+For the ```out.xml``` file a similar parser is implemented. However, since the output file contains a lot more information, which is not always useful the :py:func:`~masci_tools.io.parsers.fleur.outxml_parser()` is defined a lot more selectively. But the usage is almost completely identical to the input file.
 
 .. code-block:: python
 
@@ -47,6 +58,24 @@ For the ```out.xml``` file a similar parser is implemented. However, since the o
 
 For each iteration the parser decides based on the type of fleur calculation, what things should be parsed. For a more detailed explanation refer to the :doc:`../../devel_guide/index`.
 
+The following table shows the version compatibility of the output parser. For versions before `0.34` the file version corresponds to the input version, since the output version is `0.27` for all versions before this point.
+
++------------------+-----------------------------------------------------------------------------------------------------+
+| File version     | Compatible?                                                                                         |
++------------------+-----------------------------------------------------------------------------------------------------+
+| `0.27` - `0.29`  | :raw-html:`<font color="#ffb733"> <cite>0.29</cite> version is assumed (no XML validation) </font>` |
++------------------+-----------------------------------------------------------------------------------------------------+
+| `0.30` - `0.31`  | :raw-html:`<font color="#ffb733"> Yes (no XML validation) </font>`                                  |
++------------------+-----------------------------------------------------------------------------------------------------+
+| `0.32`           | :raw-html:`<font color="red"> No (Does not exist for any release version of fleur) </font>`         |
++------------------+-----------------------------------------------------------------------------------------------------+
+| `0.33`           | :raw-html:`<font color="#ffb733"> Yes (no XML validation) </font>`                                  |
++------------------+-----------------------------------------------------------------------------------------------------+
+| `0.34`           | :raw-html:`<font color="green"> Yes </font>`                                                        |
++------------------+-----------------------------------------------------------------------------------------------------+
+| `0.35` -         | :raw-html:`<font color="#ffb733"> Fallback to <cite>0.34</cite> </font>`                            |
++------------------+-----------------------------------------------------------------------------------------------------+
+
 Using the :py:mod:`~masci_tools.util.schema_dict_util` functions
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -55,13 +84,13 @@ If only a small amount of information is required from the input or output files
 .. code-block:: python
 
    from lxml import etree
-   from masci_tools.io.parsers.fleur.fleur_schema import load_inpschema
+   from masci_tools.io.parsers.fleur.fleur_schema import InputSchemaDict
    from masci_tools.util.schema_dict_util import read_constants #Read in predefined constants
    from masci_tools.util.schema_dict_util import evaluate_attribute, eval_simple_xpath
 
    #First we create a xml-tree from the input file and load the desired input schema dictionary
    root = etree.parse('/path/to/inp.xml').getroot()
-   schema_dict = load_inpschema(root.xpath('//@fleurInputVersion')[0])
+   schema_dict = InputSchemaDict.fromVersion(root.xpath('//@fleurInputVersion')[0])
 
    #For the input file there can be predefined contants
    constants = read_constants(root, schema_dict)
@@ -72,8 +101,8 @@ If only a small amount of information is required from the input or output files
    #Number of spins
    spins = evaluate_attribute(root, schema_dict, 'jspins', constants)
 
-   #Planewave cutoff (notice the names are case-sensitive)
-   kmax = evaluate_attribute(root, schema_dict, 'Kmax', constants)
+   #Planewave cutoff (notice the names are case-insensitive, 'KMAX' would work as well)
+   kmax = evaluate_attribute(root, schema_dict, 'kmax', constants)
 
    #Some attributes need to be specified further for a distinct path
    #`radius` exists both for atom species and atom groups so we give a phrase to distinguish them
