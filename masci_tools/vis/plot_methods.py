@@ -27,6 +27,8 @@ from __future__ import absolute_import
 from __future__ import print_function
 import re
 import os
+import typing
+
 import numpy as np
 import matplotlib.pyplot as pp
 import matplotlib.mlab as mlab
@@ -2698,3 +2700,96 @@ def plot_fleur_bands(filename, limits=[None, [-15, 15]]):
     #    pp.savefig(savefilename, format=save_format_g, transparent=True)
 
     return ax1
+
+
+class PDF(object):
+    def __init__(self, pdf, size=(200, 200)):
+        """Display a PDF file inside a Jupyter notebook.
+
+        Note: alternative to using aiida.tools.visualization.Graph class.
+        Example: https://aiida-tutorials.readthedocs.io/en/latest/pages/2020_Intro_Week/notebooks/querybuilder-tutorial.html#generating-a-provenance-graph
+
+        Reference: https://stackoverflow.com/a/19470377/8116031
+
+        :example:
+
+        >>> # !verdi node graph generate 23
+        >>> PDF('23.dot.pdf',size=(800,600))
+
+        :param pdf:
+        :param size:
+        """
+        self.pdf = pdf
+        self.size = size
+
+    def _repr_html_(self):
+        return '<iframe src={0} width={1[0]} height={1[1]}></iframe>'.format(self.pdf, self.size)
+
+    def _repr_latex_(self):
+        return r'\includegraphics[width=1.0\textwidth]{{{0}}}'.format(self.pdf)
+
+
+def plot_colortable(colors: typing.Dict, title: str, sort_colors: bool = True, emptycols: int = 0):
+    """Plot a legend of named colors.
+
+    Reference: https://matplotlib.org/3.1.0/gallery/color/named_colors.html
+
+    :param colors: a dict color_name : color_value (hex str, rgb tuple, ...)
+    :param title: plot title
+    :param sort_colors: sort
+    :param emptycols:
+    :return: figure
+    """
+    import matplotlib.pyplot as plt
+    import matplotlib.colors as mcolors
+
+    cell_width = 212
+    cell_height = 22
+    swatch_width = 48
+    margin = 12
+    topmargin = 40
+
+    # Sort colors by hue, saturation, value and name.
+    if sort_colors is True:
+        by_hsv = sorted((tuple(mcolors.rgb_to_hsv(mcolors.to_rgb(color))),
+                         name)
+                        for name, color in colors.items())
+        names = [name for hsv, name in by_hsv]
+    else:
+        names = list(colors)
+
+    n = len(names)
+    ncols = 4 - emptycols
+    nrows = n // ncols + int(n % ncols > 0)
+
+    width = cell_width * 4 + 2 * margin
+    height = cell_height * nrows + margin + topmargin
+    dpi = 72
+
+    fig, ax = plt.subplots(figsize=(width / dpi, height / dpi), dpi=dpi)
+    fig.subplots_adjust(margin / width, margin / height,
+                        (width - margin) / width, (height - topmargin) / height)
+    ax.set_xlim(0, cell_width * 4)
+    ax.set_ylim(cell_height * (nrows - 0.5), -cell_height / 2.)
+    ax.yaxis.set_visible(False)
+    ax.xaxis.set_visible(False)
+    ax.set_axis_off()
+    ax.set_title(title, fontsize=24, loc="left", pad=10)
+
+    for i, name in enumerate(names):
+        row = i % nrows
+        col = i // nrows
+        y = row * cell_height
+
+        swatch_start_x = cell_width * col
+        swatch_end_x = cell_width * col + swatch_width
+        text_pos_x = cell_width * col + swatch_width + 7
+
+        ax.text(text_pos_x, y, name, fontsize=14,
+                horizontalalignment='left',
+                verticalalignment='center')
+
+        ax.hlines(y, swatch_start_x, swatch_end_x,
+                  color=colors[name], linewidth=18)
+
+    return fig
