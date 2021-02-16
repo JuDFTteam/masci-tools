@@ -143,12 +143,6 @@ TASKS_DEFINITION = {
                 'name': 'targetComputerArchitectures'
             }
         },
-        'creator_target_structure': {
-            'parse_type': 'text',
-            'path_spec': {
-                'name': 'targetStructureClass'
-            }
-        },
         'output_file_version': {
             'parse_type': 'attrib',
             'path_spec': {
