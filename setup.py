@@ -50,7 +50,8 @@ if __name__ == '__main__':
             'future',
             'lxml>=3.6.4',
             'mendeleev',
-            'humanfriendly'
+            'humanfriendly',
+            'seaborn'
         ],
         extras_require={
             'pre-commit': [
