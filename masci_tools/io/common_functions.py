@@ -61,18 +61,6 @@ def get_alat_from_bravais(bravais, is3D=True):
     return np.sqrt(np.sum(bravais_tmp**2, axis=1)).max()
 
 
-def get_Ang2aBohr():
-    return 1.8897261254578281
-
-
-def get_aBohr2Ang():
-    return 1 / get_Ang2aBohr()
-
-
-def get_Ry2eV():
-    return 13.605693009
-
-
 def search_string(searchkey, txt):
     iline = 0
     for line in txt:

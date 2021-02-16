@@ -94,7 +94,7 @@ direct_bravais_matrix:
   - 0.0
 direct_bravais_matrix_unit: alat
 dos_at_fermi_energy: 7.537613
-energy: -374811.44613886473
+energy: -374811.4492791866
 energy_contour_group:
   emin: -0.673499
   emin_unit: Rydberg
@@ -265,10 +265,10 @@ reciprocal_bravais_matrix:
   - 0.0
 reciprocal_bravais_matrix_unit: 2*pi / alat
 single_particle_energies:
-- 49.62180968957991
-- 49.62180968957991
-- 49.62180968957991
-- 49.62180968957991
+- 49.621810105331505
+- 49.621810105331505
+- 49.621810105331505
+- 49.621810105331505
 single_particle_energies_unit: eV
 symmetries_group:
   number_of_lattice_symmetries: 8

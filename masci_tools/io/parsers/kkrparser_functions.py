@@ -16,9 +16,10 @@ These functions do not need aiida and are therefore separated from the actual
 parser file where parse_kkr_outputfile is called
 """
 from numpy import ndarray, array, loadtxt, shape
-from masci_tools.io.common_functions import (search_string, get_version_info, get_Ry2eV, angles_to_vec,
+from masci_tools.io.common_functions import (search_string, get_version_info, angles_to_vec,
                                              get_corestates_from_potential, get_highest_core_state, open_general,
                                              convert_to_pystd)
+from masci_tools.util.constants import HTR_TO_EV
 import traceback
 
 __copyright__ = (u'Copyright (c), 2017, Forschungszentrum Jülich GmbH,' 'IAS-1/PGI-1, Germany. All rights reserved.')
@@ -545,7 +546,6 @@ def parse_kkr_outputfile(out_dict,
     Parser method for the kkr outfile. It returns a dictionary with results
     """
     # scaling factors etc. defined globally
-    Ry2eV = get_Ry2eV()
     doscalc = False
 
     # collection of parsing error messages
@@ -840,7 +840,7 @@ def parse_kkr_outputfile(out_dict,
 
         try:
             result = get_Etot(outfile)
-            out_dict['energy'] = result[-1] * Ry2eV
+            out_dict['energy'] = result[-1] * HTR_TO_EV/2.0
             out_dict['energy_unit'] = 'eV'
             out_dict['total_energy_Ry'] = result[-1]
             out_dict['total_energy_Ry_unit'] = 'Rydberg'
@@ -853,7 +853,7 @@ def parse_kkr_outputfile(out_dict,
 
         try:
             result = get_single_particle_energies(outfile_000)
-            out_dict['single_particle_energies'] = result * Ry2eV
+            out_dict['single_particle_energies'] = result * HTR_TO_EV/2.0
             out_dict['single_particle_energies_unit'] = 'eV'
         except:
             if not doscalc:

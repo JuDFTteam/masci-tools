@@ -485,7 +485,7 @@ class Test_read_inputfile(object):  # pylint: disable=missing-class-docstring
 
     def test_read_slab(self):
         from numpy import array
-        from masci_tools.io.common_functions import get_Ang2aBohr
+        from masci_tools.util.constants import BOHR_A
         p = kkrparams(params_type='kkr')
 
         # automatically read keywords from inpucard
@@ -495,7 +495,7 @@ class Test_read_inputfile(object):  # pylint: disable=missing-class-docstring
         rbr = p.get_value('<RBRIGHT>')
         zper_l = p.get_value('ZPERIODL')
         zper_r = p.get_value('ZPERIODR')
-        ang2alat = get_Ang2aBohr() / p.get_value('ALATBASIS')
+        ang2alat = 1 / (p.get_value('ALATBASIS')*BOHR_A)
         if rbl is not None:
             p.set_value('<RBLEFT>', array(rbl) * ang2alat)
         if rbr is not None:
