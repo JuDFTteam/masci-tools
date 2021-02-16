@@ -7,7 +7,6 @@ output_dict:
   - 5.4278279348
   creator_name: fleur 32
   creator_target_architecture: GEN
-  creator_target_structure: null
   density_convergence_units: me/bohr^3
   end_date:
     date: null
@@ -76,7 +75,6 @@ warnings:
   parser_info: Masci-Tools Fleur out.xml Parser v0.3.0
   parser_warnings:
   - The out.xml file is broken I try to repair it.
-  - No text found for tag targetStructureClass
   - No values found for attribute date at tag endDateAndTime
   - No values found for attribute time at tag endDateAndTime
   - Endtime was unparsed, inp.xml prob not complete, do not believe the walltime!

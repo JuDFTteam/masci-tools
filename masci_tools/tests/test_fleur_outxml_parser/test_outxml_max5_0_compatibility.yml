@@ -41,7 +41,6 @@ output_dict:
   - 0.0003416974
   creator_name: fleur 32
   creator_target_architecture: GEN
-  creator_target_structure: null
   density_convergence_units: me/bohr^3
   end_date:
     date: 2021/01/19
@@ -265,4 +264,3 @@ warnings:
     \ 'kPointList': The attribute 'weightScale' is required but missing. \nLine 135:\
     \ Element 'spinDependentCharge': This element is not expected. \n"
   - No values found for attribute l_f
-  - No text found for tag targetStructureClass

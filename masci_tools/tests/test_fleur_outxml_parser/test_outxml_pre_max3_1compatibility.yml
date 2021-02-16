@@ -21,7 +21,6 @@ output_dict:
     - 2.092207419
   creator_name: fleur 27
   creator_target_architecture: GEN
-  creator_target_structure: null
   density_convergence_units: me/bohr^3
   end_date:
     date: 2021/01/28
@@ -155,7 +154,6 @@ warnings:
     \ is not allowed. \nLine 72: Element 'numericalParameters': Missing child element(s).\
     \ Expected is ( volumes ). \nLine 73: Element 'atomsInCell': The attribute 'n_hia'\
     \ is required but missing. \n"
-  - No text found for tag targetStructureClass
   - No values found for attribute count
   - No values found for attribute interstitial at tag spinDependentCharge
   - No values found for attribute mtSpheres at tag spinDependentCharge

@@ -15,6 +15,5 @@ warnings:
     \ attribute 'value': 'NAN' is not a valid value of the atomic type 'xs:double'.\
     \ \nLine 624: Element 'magneticMoment', attribute 'moment': '********' is not\
     \ a valid value of the atomic type 'xs:double'. \n"
-  - No text found for tag targetStructureClass
   - 'Failed to evaluate attribute moment: Below are the warnings from convert_xml_attribute'
   - 'Could not convert: ''********'' to float, ValueError'

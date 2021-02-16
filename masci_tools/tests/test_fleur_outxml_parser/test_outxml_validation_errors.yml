@@ -5,7 +5,6 @@ output_dict:
   - 11.8289058385
   creator_name: fleur 32
   creator_target_architecture: GEN
-  creator_target_structure: null
   density_convergence_units: me/bohr^3
   end_date:
     date: 2020/12/10
@@ -69,4 +68,3 @@ warnings:
   - "Output file does not validate against the schema: \nLine 346: Element 'kPointList',\
     \ attribute 'weightSc': The attribute 'weightSc' is not allowed. \nLine 346: Element\
     \ 'kPointList': The attribute 'weightScale' is required but missing. \n"
-  - No text found for tag targetStructureClass

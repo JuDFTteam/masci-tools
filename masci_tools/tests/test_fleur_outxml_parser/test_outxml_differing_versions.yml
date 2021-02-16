@@ -7,7 +7,6 @@ output_dict:
   - 0.0037099809
   creator_name: fleur 32
   creator_target_architecture: GEN
-  creator_target_structure: null
   density_convergence_units: me/bohr^3
   end_date:
     date: 2021/01/22
@@ -84,4 +83,3 @@ warnings:
   parser_info: Masci-Tools Fleur out.xml Parser v0.3.0
   parser_warnings:
   - 'Creating OutputSchemaDict object for differing versions (out: 0.34; inp: 0.33)'
-  - No text found for tag targetStructureClass

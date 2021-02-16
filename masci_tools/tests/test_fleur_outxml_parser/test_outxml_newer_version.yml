@@ -7,7 +7,6 @@ output_dict:
   - 2.7205971142
   creator_name: fleur 32
   creator_target_architecture: GEN
-  creator_target_structure: null
   density_convergence_units: me/bohr^3
   end_date:
     date: 2020/12/10
@@ -81,4 +80,3 @@ warnings:
     \ an element of the set {'0.34'}. \nLine 16: Element 'fleurInput', attribute 'fleurInputVersion':\
     \ [facet 'enumeration'] The value '0.36' is not an element of the set {'0.34'}.\
     \ \n"
-  - No text found for tag targetStructureClass

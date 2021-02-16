@@ -29,7 +29,6 @@ output_dict:
   - null
   creator_name: fleur 32
   creator_target_architecture: GEN
-  creator_target_structure: null
   density_convergence_units: me/bohr^3
   end_date:
     date: 2020/12/10

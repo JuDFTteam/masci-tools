@@ -1,7 +1,6 @@
 output_dict:
   creator_name: fleur 32
   creator_target_architecture: GEN
-  creator_target_structure: null
   end_date:
     date: 2020/12/10
     time: '16:58:39'

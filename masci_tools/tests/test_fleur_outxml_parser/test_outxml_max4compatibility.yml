@@ -41,7 +41,6 @@ output_dict:
   - 0.0003274009
   creator_name: fleur 31
   creator_target_architecture: GEN
-  creator_target_structure: null
   density_convergence_units: me/bohr^3
   end_date:
     date: 2020/10/06
@@ -252,4 +251,3 @@ warnings:
     \ 'atomsInCell': The attribute 'n_hia' is required but missing. \nLine 100: Element\
     \ 'kPointList', attribute 'posScale': The attribute 'posScale' is not allowed.\
     \ \nLine 109: Element 'spinDependentCharge': This element is not expected. \n"
-  - No text found for tag targetStructureClass
