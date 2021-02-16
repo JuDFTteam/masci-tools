@@ -1,9 +1,9 @@
 output_dict:
   bandgap: -580.0645652222
   charge_den_xc_den_integral: -41.7653329254
-  charge_density: 0.026112816
   creator_name: fleur 32
   creator_target_architecture: GEN
+  density_convergence: 0.026112816
   density_convergence_units: me/bohr^3
   end_date:
     date: 2020/12/10

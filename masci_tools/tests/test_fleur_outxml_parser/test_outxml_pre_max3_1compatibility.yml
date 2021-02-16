@@ -10,7 +10,9 @@ output_dict:
   - -111.9237671976
   - -111.8007892626
   - -111.8137206932
-  charge_density:
+  creator_name: fleur 27
+  creator_target_architecture: GEN
+  density_convergence:
   - - 11.3070796811
     - 6.349138471
   - - 9.5004625695
@@ -19,8 +21,6 @@ output_dict:
     - 4.2692445478
   - - 2.564353547
     - 2.092207419
-  creator_name: fleur 27
-  creator_target_architecture: GEN
   density_convergence_units: me/bohr^3
   end_date:
     date: 2021/01/28
@@ -92,12 +92,12 @@ output_dict:
   number_of_spin_components: 2
   number_of_symmetries: 0
   output_file_version: '0.27'
-  overall_charge_density:
+  overall_density_convergence:
   - 14.2933028381
   - 11.5538575761
   - 3.3076624962
   - 1.4762736535
-  spin_density:
+  spin_density_convergence:
   - 11.4902008012
   - 10.5246537798
   - 6.3421007934

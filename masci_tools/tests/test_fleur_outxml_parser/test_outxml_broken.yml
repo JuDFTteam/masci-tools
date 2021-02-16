@@ -2,11 +2,11 @@ output_dict:
   bandgap: 0.0323610284
   bandgap_units: eV
   charge_den_xc_den_integral: -111.9182938603
-  charge_density:
-  - 9.2786635283
-  - 5.4278279348
   creator_name: fleur 32
   creator_target_architecture: GEN
+  density_convergence:
+  - 9.2786635283
+  - 5.4278279348
   density_convergence_units: me/bohr^3
   end_date:
     date: null
@@ -40,8 +40,8 @@ output_dict:
   number_of_spin_components: 2
   number_of_symmetries: 16
   output_file_version: '0.34'
-  overall_charge_density: 10.8914872112
-  spin_density: 10.6059102509
+  overall_density_convergence: 10.8914872112
+  spin_density_convergence: 10.6059102509
   spin_dependent_charge_interstitial:
   - 1.00491
   - 1.0077593

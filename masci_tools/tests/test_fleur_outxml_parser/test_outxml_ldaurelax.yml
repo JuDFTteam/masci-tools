@@ -24,11 +24,11 @@ output_dict:
   charge_den_xc_den_integral:
   - -159.6317907519
   - -159.6317901441
-  charge_density:
-  - 0.0003427664
-  - null
   creator_name: fleur 32
   creator_target_architecture: GEN
+  density_convergence:
+  - 0.0003427664
+  - null
   density_convergence_units: me/bohr^3
   end_date:
     date: 2020/12/10

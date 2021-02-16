@@ -1,10 +1,10 @@
 output_dict:
   charge_den_xc_den_integral: -55.9720588982
-  charge_density:
-  - 6.4966088913
-  - 11.8289058385
   creator_name: fleur 32
   creator_target_architecture: GEN
+  density_convergence:
+  - 6.4966088913
+  - 11.8289058385
   density_convergence_units: me/bohr^3
   end_date:
     date: 2020/12/10
@@ -32,8 +32,8 @@ output_dict:
   number_of_spin_components: 2
   number_of_symmetries: 48
   output_file_version: '0.34'
-  overall_charge_density: 16.4186207974
-  spin_density: 9.7307128187
+  overall_density_convergence: 16.4186207974
+  spin_density_convergence: 9.7307128187
   spin_dependent_charge_interstitial:
   - 0.6160276
   - 0.6242332

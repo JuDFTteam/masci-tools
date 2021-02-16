@@ -26,7 +26,9 @@ output_dict:
   - -159.6315020089
   - -159.6317756613
   - -159.6317889102
-  charge_density:
+  creator_name: fleur 32
+  creator_target_architecture: GEN
+  density_convergence:
   - 7.6594195508
   - 7.073203372
   - 4.0712886772
@@ -39,8 +41,6 @@ output_dict:
   - 0.0111727979
   - 0.0021412
   - 0.0003416974
-  creator_name: fleur 32
-  creator_target_architecture: GEN
   density_convergence_units: me/bohr^3
   end_date:
     date: 2021/01/19

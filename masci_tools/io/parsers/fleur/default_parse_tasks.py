@@ -391,7 +391,7 @@ TASKS_DEFINITION = {
     },
     'distances': {
         '_minimal': True,
-        'charge_density': {
+        'density_convergence': {
             'parse_type': 'attrib',
             'path_spec': {
                 'name': 'distance',
@@ -410,14 +410,14 @@ TASKS_DEFINITION = {
     'magnetic_distances': {
         '_minimal': True,
         '_modes': [('jspin', 2)],
-        'overall_charge_density': {
+        'overall_density_convergence': {
             'parse_type': 'attrib',
             'path_spec': {
                 'name': 'distance',
                 'tag_name': 'overallChargeDensity'
             }
         },
-        'spin_density': {
+        'spin_density_convergence': {
             'parse_type': 'attrib',
             'path_spec': {
                 'name': 'distance',

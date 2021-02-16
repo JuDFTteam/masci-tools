@@ -2,7 +2,6 @@ output_dict:
   bandgap: 2.2729704824
   bandgap_units: eV
   charge_den_xc_den_integral: -41.7653329254
-  charge_density: 0.026112816
   core_info:
     core_info_atom_type: 1
     core_info_atomic_number: 14
@@ -12,6 +11,7 @@ output_dict:
     core_info_spin: 1
   creator_name: fleur 32
   creator_target_architecture: GEN
+  density_convergence: 0.026112816
   density_convergence_units: me/bohr^3
   end_date:
     date: 2020/12/10
