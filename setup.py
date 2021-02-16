@@ -49,7 +49,8 @@ if __name__ == '__main__':
             'bump2version',
             'future',
             'lxml>=3.6.4',
-            'mendeleev'
+            'mendeleev',
+            'humanfriendly'
         ],
         extras_require={
             'pre-commit': [
