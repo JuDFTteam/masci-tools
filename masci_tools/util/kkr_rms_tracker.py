@@ -5,9 +5,9 @@
 # This file is part of the Masci-tools package.                               #
 # (Material science tools)                                                    #
 #                                                                             #
-# The code is hosted on GitHub at https://github.com/judftteam/masci-tools    #
-# For further information on the license, see the LICENSE.txt file            #
-# For further information please visit http://www.flapw.de or                 #
+# The code is hosted on GitHub at https://github.com/judftteam/masci-tools.   #
+# For further information on the license, see the LICENSE.txt file.           #
+# For further information please visit http://judft.de/.                      #
 #                                                                             #
 ###############################################################################
 
