@@ -110,6 +110,7 @@ output_dict:
   number_of_atoms: 2
   number_of_iterations: 2
   number_of_iterations_total: 15
+  number_of_kpoints: 1
   number_of_species: 2
   number_of_spin_components: 1
   number_of_symmetries: 6

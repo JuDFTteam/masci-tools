@@ -36,6 +36,7 @@ output_dict:
   number_of_atoms: 2
   number_of_iterations: 4
   number_of_iterations_total: 4
+  number_of_kpoints: 3
   number_of_species: 1
   number_of_spin_components: 2
   number_of_symmetries: 16
@@ -63,6 +64,7 @@ output_dict:
 warnings:
   fleur_modes:
     band: false
+    bz_integration: hist
     dos: false
     film: false
     jspin: 2

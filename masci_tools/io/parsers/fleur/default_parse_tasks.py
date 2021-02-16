@@ -119,6 +119,11 @@ TASKS_DEFINITION = {
                 'name': 'band'
             }
         },
+        'bz_integration': {
+            'parse_type': 'attrib',
+            'path_spec': {'name':'mode',
+                          'tag_name': 'bzIntegration'}
+        }
     },
     #--------Defintions for general info from outfile (start, endtime, number_iterations)--------
     'general_out_info': {
@@ -167,6 +172,11 @@ TASKS_DEFINITION = {
             'path_spec': {
                 'name': 'ntype'
             }
+        },
+        'number_of_kpoints': {
+            'parse_type': 'attrib',
+            'path_spec': {'name': 'count',
+                          'contains': 'numericalParameters'}
         },
         'start_date': {
             'parse_type': 'allAttribs',
@@ -484,6 +494,7 @@ TASKS_DEFINITION = {
         }
     },
     'bandgap': {
+        '_modes': [('bz_integration', 'hist')],
         'bandgap': {
             'parse_type': 'singleValue',
             'path_spec': {

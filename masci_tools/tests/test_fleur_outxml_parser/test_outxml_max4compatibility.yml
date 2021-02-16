@@ -157,6 +157,7 @@ output_dict:
   number_of_atoms: 2
   number_of_iterations: 12
   number_of_iterations_total: 12
+  number_of_kpoints: 6
   number_of_species: 2
   number_of_spin_components: 1
   number_of_symmetries: 0
@@ -235,6 +236,7 @@ output_dict:
 warnings:
   fleur_modes:
     band: false
+    bz_integration: hist
     dos: false
     film: false
     jspin: 1

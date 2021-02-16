@@ -88,6 +88,7 @@ output_dict:
   number_of_atoms: 2
   number_of_iterations: 4
   number_of_iterations_total: 4
+  number_of_kpoints: null
   number_of_species: 1
   number_of_spin_components: 2
   number_of_symmetries: 0
@@ -136,6 +137,7 @@ output_dict:
 warnings:
   fleur_modes:
     band: false
+    bz_integration: hist
     dos: false
     film: false
     jspin: 2
@@ -154,6 +156,7 @@ warnings:
     \ Expected is ( volumes ). \nLine 73: Element 'atomsInCell': The attribute 'n_hia'\
     \ is required but missing. \n"
   - No text found for tag targetStructureClass
+  - No values found for attribute count
   - No values found for attribute interstitial at tag spinDependentCharge
   - No values found for attribute mtSpheres at tag spinDependentCharge
   - No values found for attribute total at tag spinDependentCharge
