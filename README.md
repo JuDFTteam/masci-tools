@@ -41,7 +41,7 @@ These python packages are needed:
 * `humanfriendly`
 * `mendeleev`
 
-It should not depend on `aiida_core`!
+It should not depend on `aiida-core`!
 
 ## Layout of`masci-tools`
 
