@@ -36,6 +36,10 @@ These python packages are needed:
 * `lxml`
 * `matplotlib`
 * `h5py`
+* `seaborn`
+* `deepdiff`
+* `humanfriendly`
+* `mendeleev`
 
 It should not depend on `aiida_core`!
 
