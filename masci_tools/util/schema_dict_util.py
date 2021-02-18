@@ -39,12 +39,12 @@ def get_tag_xpath(schema_dict, name, contains=None, not_contains=None):
 
     if contains is None:
         contains = []
-    elif not isinstance(contains, (list,set)):
+    elif not isinstance(contains, (list, set)):
         contains = [contains]
 
     if not_contains is None:
         not_contains = []
-    elif not isinstance(not_contains, (list,set)):
+    elif not isinstance(not_contains, (list, set)):
         not_contains = [not_contains]
 
     possible_lists = ['tag_paths']
@@ -156,12 +156,12 @@ def get_attrib_xpath(schema_dict, name, contains=None, not_contains=None, exclud
 
     if contains is None:
         contains = []
-    elif not isinstance(contains, (list,set)):
+    elif not isinstance(contains, (list, set)):
         contains = [contains]
 
     if not_contains is None:
         not_contains = []
-    elif not isinstance(not_contains, (list,set)):
+    elif not isinstance(not_contains, (list, set)):
         not_contains = [not_contains]
 
     possible_lists = ['unique_attribs', 'unique_path_attribs', 'other_attribs']
@@ -274,8 +274,7 @@ def evaluate_attribute(node, schema_dict, name, constants=None, parser_info_out=
             kwargs['contains'] = set(kwargs.get('contains', []))
             kwargs['contains'].add(node.tag)
 
-    attrib_xpath = get_attrib_xpath(schema_dict,
-                                    name,**kwargs)
+    attrib_xpath = get_attrib_xpath(schema_dict, name, **kwargs)
 
     stringattribute = eval_xpath(node, attrib_xpath, parser_info_out=parser_info_out)
 
