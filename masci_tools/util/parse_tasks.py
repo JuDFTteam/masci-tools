@@ -322,7 +322,9 @@ class ParseTasks(object):
             action = self._parse_functions[spec['parse_type']]
 
             args = spec['path_spec'].copy()
-            args['constants'] = constants
+
+            if spec['parse_type'] in ['attrib', 'text', 'allAttribs', 'parentAttribs', 'singleValue']:
+                args['constants'] = constants
 
             if 'only_required' in spec:
                 args['only_required'] = spec['only_required']
