@@ -17,7 +17,13 @@ import masci_tools.vis.plot_methods
 
 
 class ChemicalElements:
-    def __init__(self, elements=None, empty=False, groups=None, distinct=False, special_elements: dict = None,
+
+    def __init__(self,
+                 elements=None,
+                 empty=False,
+                 groups=None,
+                 distinct=False,
+                 special_elements: dict = None,
                  filepath=None):
         """A container for safe chemical element enumeration.
 
@@ -67,6 +73,7 @@ class ChemicalElements:
         # periodic table, all elements; special element definitions not in actual periodic table
         # devnote: mendeleev.elements.get_all_elements() is very expensive (0.2s). hardcoded pte is faster.
         # self._pte = {el.symbol: el.atomic_number for el in mendeleev.elements.get_all_elements()}
+        #yapf: disable
         self._pte = {'H': 1, 'He': 2, 'Li': 3, 'Be': 4, 'B': 5, 'C': 6, 'N': 7, 'O': 8, 'F': 9, 'Ne': 10, 'Na': 11,
                      'Mg': 12, 'Al': 13, 'Si': 14, 'P': 15, 'S': 16, 'Cl': 17, 'Ar': 18, 'K': 19, 'Ca': 20, 'Sc': 21,
                      'Ti': 22, 'V': 23, 'Cr': 24, 'Mn': 25, 'Fe': 26, 'Co': 27, 'Ni': 28, 'Cu': 29, 'Zn': 30, 'Ga': 31,
@@ -79,6 +86,7 @@ class ChemicalElements:
                      'U': 92, 'Np': 93, 'Pu': 94, 'Am': 95, 'Cm': 96, 'Bk': 97, 'Cf': 98, 'Es': 99, 'Fm': 100,
                      'Md': 101, 'No': 102, 'Lr': 103, 'Rf': 104, 'Db': 105, 'Sg': 106, 'Bh': 107, 'Hs': 108, 'Mt': 109,
                      'Ds': 110, 'Rg': 111, 'Cn': 112, 'Nh': 113, 'Fl': 114, 'Mc': 115, 'Lv': 116, 'Ts': 117, 'Og': 118}
+        #yapf: enable
         self._pte_inv = {v: k for k, v in self._pte.items()}
 
         self._special_elements = {}
@@ -100,9 +108,9 @@ class ChemicalElements:
             if groups:
                 if not isinstance(groups, list) \
                         or not all([isinstance(group_name, str) for group_name in groups]):
-                    raise ValueError("If groups not None, must be a list of strings.")
+                    raise ValueError('If groups not None, must be a list of strings.')
                 if len(groups) < 2:
-                    raise ValueError("If groups not None, must be more than one group. "
+                    raise ValueError('If groups not None, must be more than one group. '
                                      "Else init with 'empty' or 'elements' instead.")
 
                 self.__elmts = {group_name: {} for group_name in groups}
@@ -113,11 +121,11 @@ class ChemicalElements:
                     list_types = (list, tuple, set)
                     if not elements:
                         # fill with whole periodic table
-                        self.__elmts = {"": copy.deepcopy(self._pte)}
+                        self.__elmts = {'': copy.deepcopy(self._pte)}
 
                     elif isinstance(elements, list_types):
                         # not nested
-                        self.__elmts = {"": self._chemical_element_list_to_dict(elements)}
+                        self.__elmts = {'': self._chemical_element_list_to_dict(elements)}
                     elif isinstance(elements, dict):
                         if not all([isinstance(v, list_types) for k, v in elements.items()]):
                             # flact dict
@@ -127,31 +135,31 @@ class ChemicalElements:
                             elmts = {v: k for k, v in elements.items()} if key_type_is_int else elements
                             assert (all([isinstance(k, str) for k in elmts.keys()]))
                             assert (all([isinstance(v, int) for v in elmts.values()]))
-                            self.__elmts = {"": self._sort(elements)}
+                            self.__elmts = {'': self._sort(elements)}
                         else:
                             # nested dict
                             new__elmts = {k: self._chemical_element_list_to_dict(v) for k, v in elements.items()}
                             if not self.__validate_distinctness(new__elmts):
-                                print("Warning: Chose distinctness, but supplied non-distinct groups. Not stored.")
-                                self.__elmts = {"": {}}
+                                print('Warning: Chose distinctness, but supplied non-distinct groups. Not stored.')
+                                self.__elmts = {'': {}}
                     else:
                         # try converting unknown types of 'elements' into a list
                         try:
-                            self.__elmts = {"": self._chemical_element_list_to_dict(list(elements))}
+                            self.__elmts = {'': self._chemical_element_list_to_dict(list(elements))}
                         except TypeError as err:
-                            raise err(f"Argument is a {type(elements)}, but must be a list, dict, tuple or set.")
+                            raise err(f'Argument is a {type(elements)}, but must be a list, dict, tuple or set.')
 
                 # init data: an object store associated with each elmt group
                 group_names = self.groups()
                 if not group_names:
-                    self.__data = {"": None}
+                    self.__data = {'': None}
                 else:
                     self.__data = {group_name: None for group_name in group_names}
 
     def is_flat(self):
         """True if 'elmts' is dict of chemical elements, False if a dict of groups of such.
         """
-        return (not list(self.__elmts.keys())) or (list(self.__elmts.keys()) == [""]) or (len(self.__elmts.keys()) == 1)
+        return (not list(self.__elmts.keys())) or (list(self.__elmts.keys()) == ['']) or (len(self.__elmts.keys()) == 1)
 
     @property
     def elmts(self):
@@ -199,7 +207,7 @@ class ChemicalElements:
             key = list(self.__elmts.keys())[0]
         else:
             if group_name not in self.groups():
-                raise KeyError("Supplied group name does not exist.")
+                raise KeyError('Supplied group name does not exist.')
             key = group_name
         dump = self.__data.pop(key, None)
         self.__data[key] = an_object
@@ -272,7 +280,7 @@ class ChemicalElements:
             if self.is_flat():
                 return self.invert()[group_name_or_symbol]
             else:
-                raise KeyError("Querying [atomic_number] not possible for nested elmts.")
+                raise KeyError('Querying [atomic_number] not possible for nested elmts.')
         else:
             raise KeyError(f"Unsupported key/value type '{type(group_name_or_symbol)}'.")
 
@@ -282,8 +290,7 @@ class ChemicalElements:
             elmt_count = 0
             for group_name, group in new__elmts.items():
                 elmt_count += len(group.keys())
-            distinct_count = len(set().union(*[set(group.keys())
-                                               for group_name, group in new__elmts.items()]))
+            distinct_count = len(set().union(*[set(group.keys()) for group_name, group in new__elmts.items()]))
             if elmt_count == distinct_count:
                 self.__elmts = copy.deepcopy(new__elmts)
                 return True
@@ -295,7 +302,7 @@ class ChemicalElements:
 
     def __setitem__(self, group_name, elements):
         """Overload '[]' operator, setter. Sets group of list of chemical elements.
-        
+
         Note: this overrides the current elmts in that group, or all if elmts is flat.
         For adding elements, use add_elements().
 
@@ -368,16 +375,16 @@ class ChemicalElements:
         :param delete_empty_groups: remove group_name key from elmts if group empty
         """
         if self.is_flat():
-            self.__elmts = {"": {}}
-            self.__data = {"": {}}
+            self.__elmts = {'': {}}
+            self.__data = {'': {}}
         else:
             if delete_empty_groups:
                 for group_name in selected_groups:
                     self.__elmts.pop(group_name, None)
                     self.__data.pop(group_name, None)
                 if not self.__elmts.keys():
-                    self.__elmts = {"": {}}
-                    self.__data = {"": {}}
+                    self.__elmts = {'': {}}
+                    self.__data = {'': {}}
             else:
                 for group_name in selected_groups:
                     if group_name in self.__elmts:
@@ -386,9 +393,9 @@ class ChemicalElements:
 
     def flatten(self, selected_groups: list = None, in_place: bool = False, as_dict=True):
         """Return flattened dict of group selection, or replace elmts with it in-place.
-        
+
         Note: if in_place, all objects stored in 'data' will be lost.
-        
+
         :param selected_groups: If nested and not specified, include all groups.
         :type selected_groups: list of strings
         :param in_place: True: replace elmts with flattened dict.
@@ -409,8 +416,8 @@ class ChemicalElements:
                 for sym, num in group.items():
                     flattened[sym] = num
             if in_place:
-                self.__elmts = {"": flattened}
-                self.__data = {"": None}
+                self.__elmts = {'': flattened}
+                self.__data = {'': None}
             else:
                 if as_dict:
                     return flattened
@@ -503,8 +510,11 @@ class ChemicalElements:
             else:
                 return self
         else:
-            a_dict = {data_group: elmts for data_group, elmts in elements.items()
-                      for selection_group in selected_groups if data_group == selection_group}
+            a_dict = {
+                data_group: elmts for data_group, elmts in elements.items()
+                for selection_group in selected_groups
+                if data_group == selection_group
+            }
             if as_dict:
                 return a_dict
             else:
@@ -533,7 +543,7 @@ class ChemicalElements:
         :rtype:
         """
         if self.is_flat():
-            raise KeyError("Elmts is flat, no groups to compare.")
+            raise KeyError('Elmts is flat, no groups to compare.')
         if not ((group_name1 in self.groups()) and (group_name2 in self.groups())):
             raise KeyError(f"Elmts has no groups '{group_name1}', '{group_name2}'.")
         distinct = self.distinct
@@ -555,7 +565,7 @@ class ChemicalElements:
     def compare_groups(self, group_name1, group_name2):
         from deepdiff import DeepDiff
         if self.is_flat():
-            raise KeyError("Elmts is flat, no groups to compare.")
+            raise KeyError('Elmts is flat, no groups to compare.')
         if not ((group_name1 in self.groups()) and (group_name2 in self.groups())):
             raise KeyError(f"Elmts has no groups '{group_name1}', '{group_name2}'.")
         return DeepDiff(self[group_name1], self[group_name2], ignore_order=True, ignore_numeric_type_changes=True)
@@ -572,7 +582,7 @@ class ChemicalElements:
             if group_name:
                 elmts = self.__elmts[group_name]
             else:
-                raise KeyError("Is nested, but did not supply group name.")
+                raise KeyError('Is nested, but did not supply group name.')
         return {v: k for k, v in elmts.items()}
 
     def get_groups_for(self, symbol: str):
@@ -589,7 +599,7 @@ class ChemicalElements:
             else:
                 return []
 
-    def add_elements(self, elements, group_name: str = ""):
+    def add_elements(self, elements, group_name: str = ''):
         """Add elements. Elmts get resorted afterwards.
 
         :param elements: list of symbols str or atomic numbers int
@@ -610,14 +620,14 @@ class ChemicalElements:
             if not self.is_flat() and not group_name:
                 # generate a random group name and add elements
                 from masci_tools.util.python_util import random_string
-                group_name = "UNNAMED_" + random_string(5)
-                print(f"Warning: adding nested and flat ChemicalElements, "
+                group_name = 'UNNAMED_' + random_string(5)
+                print(f'Warning: adding nested and flat ChemicalElements, '
                       f"adding flat elements to new group '{group_name}'")
             new__elmts[group_name] = {}
         for sym, num in elmts.items():
             new__elmts[group_name][sym] = num
         if not self.__validate_distinctness(new__elmts):
-            print("Warning: Chose distinctness, added elements would violate. Not added.")
+            print('Warning: Chose distinctness, added elements would violate. Not added.')
         else:
             self.__elmts[group_name] = self._sort(self.__elmts[group_name])
             if not group_name in self.__data:
@@ -632,8 +642,8 @@ class ChemicalElements:
         """
         assert isinstance(symbol, str) and isinstance(atomic_number, int)
 
-        info_msg_prefix = f"INFO: Requested to expand allowed elements definition by special element " \
-                          f"{{{symbol} : {atomic_number}}}. "
+        info_msg_prefix = f'INFO: Requested to expand allowed elements definition by special element ' \
+                          f'{{{symbol} : {atomic_number}}}. '
 
         def _remove_special_element_from_definition(symbol, atomic_number):
             self._special_elements.pop(symbol)
@@ -644,35 +654,31 @@ class ChemicalElements:
         # check symbol
         if symbol in self._pte:
             if symbol not in self._special_elements:
-                print(info_msg_prefix +
-                      f"Symbol is a standard element of the periodic table. "
-                      f"I will not expand definition by this element.")
+                print(info_msg_prefix + f'Symbol is a standard element of the periodic table. '
+                      f'I will not expand definition by this element.')
                 return
             else:
                 # now need to check if the stored special element with the same symbol has a different atomic number
                 # if so, remove it
                 stored_atomic_number = self._special_elements[symbol]
                 if atomic_number != stored_atomic_number:
-                    print(info_msg_prefix +
-                          f"Found stored special element '{stored_atomic_number}' with same symbol. "
-                          f"I will replace the latter with the former.")
+                    print(info_msg_prefix + f"Found stored special element '{stored_atomic_number}' with same symbol. "
+                          f'I will replace the latter with the former.')
                     _remove_special_element_from_definition(symbol=symbol, atomic_number=stored_atomic_number)
 
         # check atomic number
         if atomic_number in self._pte_inv:
             if atomic_number not in self._special_elements_inv:
-                print(info_msg_prefix +
-                      f"Atomic number is that of a standard element of the periodic table. "
-                      f"I will not expand definition by this element.")
+                print(info_msg_prefix + f'Atomic number is that of a standard element of the periodic table. '
+                      f'I will not expand definition by this element.')
                 return
             else:
                 # now need to check if the stored special element with the same atomic number has a different symbol
                 # if so, remove it
                 stored_symbol = self._special_elements_inv[atomic_number]
                 if symbol != stored_symbol:
-                    print(info_msg_prefix +
-                          f"Found stored special element '{stored_symbol}' with same atomic number. "
-                          f"I will replace the latter with the former.")
+                    print(info_msg_prefix + f"Found stored special element '{stored_symbol}' with same atomic number. "
+                          f'I will replace the latter with the former.')
                     _remove_special_element_from_definition(symbol=stored_symbol, atomic_number=atomic_number)
 
         # okay, now finally clear to expand allowed element definition
@@ -712,8 +718,8 @@ class ChemicalElements:
                 self.__elmts.pop(group_name, None)
                 self.__data.pop(group_name, None)
             if not self.__elmts.keys():
-                self.__elmts = {"": {}}
-                self.__data = {"": {}}
+                self.__elmts = {'': {}}
+                self.__data = {'': {}}
         else:
             print(f"Warning: no group '{group_name}' present in elmts. Nothing removed.")
 
@@ -796,8 +802,11 @@ class ChemicalElements:
         with open(filepath, 'w') as file:
             file.write(json.dumps(self.__elmts))
 
-    def plot(self, selected_groups: list = None, selection_name: str = None,
-             unselected_name: str = "Unspecified", output="notebook"):
+    def plot(self,
+             selected_groups: list = None,
+             selection_name: str = None,
+             unselected_name: str = 'Unspecified',
+             output='notebook'):
         """Plot a periodic table, elements optionally grouped by group colors.
         Element groups can either be None, that gives the normal periodic table. Or it can be a list of element symbols
         ('H', 'Ca' and so on), that will print the periodic table with those elements highlighted and the rest greyed
@@ -815,10 +824,10 @@ class ChemicalElements:
         import bokeh.plotting
         import mendeleev.plotting
 
-        if output == "notebook":
+        if output == 'notebook':
             bokeh.plotting.output_notebook()
         else:
-            raise NotImplementedError(f"Output for {output} not implemented.")
+            raise NotImplementedError(f'Output for {output} not implemented.')
 
         pte = mendeleev.get_table('elements')
         data_selection = self.select_groups(selected_groups, include_special_elements=False)
@@ -844,7 +853,7 @@ class ChemicalElements:
         if len(data_selection.keys()) > 2:
             masci_tools.vis.plot_methods.plot_colortable(cmap, selection_name)
 
-        colorby_attribute = f"{selection_name}_color"
+        colorby_attribute = f'{selection_name}_color'
         pte[colorby_attribute] = pte[selection_name].map(cmap)
         # and plot
         mendeleev.plotting.periodic_plot(pte, colorby=colorby_attribute, title=selection_name)
@@ -875,7 +884,7 @@ class ChemicalElements:
                 assert all([elem in self._pte_inv for elem in elements])
                 key_is_symbol = False
             else:
-                raise TypeError("received a list, but need list of all atom names or numbers")
+                raise TypeError('received a list, but need list of all atom names or numbers')
             return elements, key_is_symbol
         elif isinstance(elements, dict):
             # just assume it is a flat dict
@@ -893,9 +902,9 @@ class ChemicalElements:
                 key_is_symbol = True
                 return elements, key_is_symbol
             else:
-                raise TypeError("received a dict, but need chem.elmt. dict sym:num or num:sym")
+                raise TypeError('received a dict, but need chem.elmt. dict sym:num or num:sym')
         else:
-            raise TypeError("Elements list is not any of list,tuple,set,dict.")
+            raise TypeError('Elements list is not any of list,tuple,set,dict.')
 
     def _chemical_element_list_to_dict(self, elements, sort=True):
         """Converts list/set/tuple of chemical elements into dict symbol : atomic_number.
@@ -920,14 +929,16 @@ class PeriodicTable:
     from masci_tools.util import python_util
 
     table: ChemicalElements = python_util.dataclass_default_field(ChemicalElements())
-    crystal: ChemicalElements = python_util.dataclass_default_field(ChemicalElements({
-        'fcc': ['Ir', 'Pd', 'Pb', 'Pt', 'Al', 'Cu', 'Ca', 'Ag', 'Au', 'Sr', 'Mn', 'Ni'],
-        'bcc': ['Ba', 'Cr', 'Cs', 'Fe', 'K', 'Mo', 'Nb', 'Rb', 'Ta', 'V', 'W'],
-        'hcp': ['Be', 'Cd', 'Co', 'He', 'Hf', 'Mg', 'Os', 'Re', 'Ru', 'Sc', 'Tc', 'Ti', 'Tl', 'Y', 'Zn', 'Zr'],
-        'diamond': ['Ge', 'Si', 'Sn'],
-        'rhombohedral': ['As', 'Bi', 'Sb']
-    }))
-    magnet: ChemicalElements = python_util.dataclass_default_field(ChemicalElements({
-        'ferromagnetic': ['Fe', 'Co', 'Ni'],
-        'antiferromagnetic': ['Cr', 'Mn', 'O']
-    }))
+    crystal: ChemicalElements = python_util.dataclass_default_field(
+        ChemicalElements({
+            'fcc': ['Ir', 'Pd', 'Pb', 'Pt', 'Al', 'Cu', 'Ca', 'Ag', 'Au', 'Sr', 'Mn', 'Ni'],
+            'bcc': ['Ba', 'Cr', 'Cs', 'Fe', 'K', 'Mo', 'Nb', 'Rb', 'Ta', 'V', 'W'],
+            'hcp': ['Be', 'Cd', 'Co', 'He', 'Hf', 'Mg', 'Os', 'Re', 'Ru', 'Sc', 'Tc', 'Ti', 'Tl', 'Y', 'Zn', 'Zr'],
+            'diamond': ['Ge', 'Si', 'Sn'],
+            'rhombohedral': ['As', 'Bi', 'Sb']
+        }))
+    magnet: ChemicalElements = python_util.dataclass_default_field(
+        ChemicalElements({
+            'ferromagnetic': ['Fe', 'Co', 'Ni'],
+            'antiferromagnetic': ['Cr', 'Mn', 'O']
+        }))

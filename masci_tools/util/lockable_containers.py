@@ -201,6 +201,10 @@ class LockableList(UserList):
         self.__check_lock()
         super().pop(i=i)
 
+    def remove(self, item):
+        self.__check_lock()
+        super().remove(item)
+
     def clear(self):
         """
         Clear the list
