@@ -45,8 +45,9 @@ def enforce_minimum_python_version(minimum_version: tuple = (3, 7)):
     if current_version[0] == minimum_version[0] and current_version[1] >= minimum_version[1]:
         pass
     else:
-        sys.stderr.write('[%s] - Error: Your Python interpreter must be %d.%d or greater (within major version %d)\n' %
-                         (sys.argv[0], minimum_version[0], minimum_version[1], minimum_version[0]))
+        sys.stderr.write(
+            "[%s] - Error: Your Python interpreter must be %d.%d or greater (within major version %d)\n" % (
+                sys.argv[0], minimum_version[0], minimum_version[1], minimum_version[0]))
         sys.exit(-1)
     return 0
 
@@ -138,8 +139,8 @@ class JSONEncoderTailoredIndent(json.JSONEncoder):
         super(JSONEncoderTailoredIndent, self).__init__(**kwargs)
 
     def default(self, obj):
-        return (self.FORMAT_SPEC.format(id(obj)) if isinstance(obj, NoIndent) else super(
-            JSONEncoderTailoredIndent, self).default(obj))
+        return (self.FORMAT_SPEC.format(id(obj)) if isinstance(obj, NoIndent)
+                else super(JSONEncoderTailoredIndent, self).default(obj))
 
     def encode(self, obj):
         from _ctypes import PyObj_FromPtr
@@ -158,12 +159,13 @@ class JSONEncoderTailoredIndent(json.JSONEncoder):
 
             # Replace the matched id string with json formatted representation
             # of the corresponding Python object.
-            json_repr = json_repr.replace('"{}"'.format(format_spec.format(id)), json_obj_repr)
+            json_repr = json_repr.replace(
+                '"{}"'.format(format_spec.format(id)), json_obj_repr)
 
         return json_repr
 
 
-def dataclass_default_field(obj: typing.Any) -> typing.Any:
+def dataclass_default_field(obj: typing.Any, deepcopy=True) -> typing.Any:
     """Abbreviator for defining mutable types as default values for fields of dataclasses.
     References:
     - https://stackoverflow.com/a/53870411/8116031
@@ -172,10 +174,12 @@ def dataclass_default_field(obj: typing.Any) -> typing.Any:
     Use case for this: the default value is some class instance. If you just write,
     in dataclass X, y : Y = dc.field(default=Y()), all x, x2, ... instances of X's
     variables x.y will be the same object / instance of Y. Whereas with this method, all
-    x.y, x2.y, ... will be different objects / instances of Y. This allows you to also
-    define a non-default instance of Y (ie, non-empty constructor) like Y(foo='bar').
+    x.y, x2.y, ... will be different objects / instances of Y (if deepcopy). Apart from that,
+    this method allows you to also define a non-default instance of Y (ie, non-empty constructor)
+    like Y(foo='bar').
 
     :param obj: complex / mutable default value
+    :param deepcopy: default True: perform deepcopy, False: perform shallow copy.
     :return: dataclass field default value
 
     >>> import dataclasses as dc
@@ -185,11 +189,13 @@ def dataclass_default_field(obj: typing.Any) -> typing.Any:
     >>>     complex_attribute: Dict[str, Tuple[int, str]] = \
     >>>     dataclass_default_field({"a": (1, "x"), "b": (1, "y")})
     """
-    return field(default_factory=lambda: copy.deepcopy(obj))
+    if deepcopy:
+        return field(default_factory=lambda: copy.deepcopy(obj))
+    else:
+        return field(default_factory=lambda: copy.copy(obj))
 
 
 class SizeEstimator:
-
     def __init__(self):
         """Container for various python in-memory object size estimation methods.
 
