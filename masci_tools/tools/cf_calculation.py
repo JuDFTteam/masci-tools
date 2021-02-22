@@ -25,10 +25,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 from scipy.interpolate import interp1d
-from scipy.special import sph_harm
+from scipy.special import sph_harm  #pylint: disable=no-name-in-module
 from masci_tools.util.constants import HTR_TO_KELVIN
 from masci_tools.io.common_functions import skipHeader
-
 
 #This namedtuple is used as the return value for the crystal field calculation to have easy access
 #to all the necessary information
@@ -46,39 +45,20 @@ class CFcalculation:
         The read in quantities are interpolated from logarithmic meshes to equidistant meshes
 
         The function constructs an equidistant mesh between the muffin tin radius
-        defined in general['refRMT'] and with general['nsize'] points
+        defined in `self.reference_radius` and with `self.radial_points` points
 
     Parameters for constructor:
-        general (dict): Defines the general parameters of the calculation
-
-            valid keys:
-                nsize (int): number of radial points in the interpolated mesh
-                refRMT (str): Either 'pot' or 'cdn'. Defines which muffin-tin radius
-                              is used for the equidistant mesh.
-                IMPORTANT: If txt files are used the muffin-tin radius has to be provided explicitly
-                cutoff (float): Defines minimum value that has to appear in potentials to not be omitted
-                                (Only HDF)
-                onlyM0 (bool): Ignores coefficients with m!=0 if True
-
-    Attributes:
-        cdn (dict): Contains the data for the normed charge density (rmesh,data). cdn is expected as r^2n(r)
-        general (dict): General Configuration Parameters
-        int (dict): Contains the interpolated data
-        interpolated (bool): Switch which tells the program if the interpolation was performed
-        plotDetails (dict): Dictionary to define parameters for the plots
-        vlm (dict): Contains the data for the potentials (rmesh, and keys for (l,m) combinations)
+        :param radial_points: int, number of radial points in the interpolated mesh
+        :param reference_radius: stror float; Either 'pot' or 'cdn' or explicit number. Defines which muffin-tin radius
+                                 is used for the equidistant mesh.
+                                 IMPORTANT! If txt files are used the muffin-tin radius has to be provided explicitly
+        :param pot_cutoff: float Defines minimum value that has to appear in potentials to not be omitted (Only HDF)
+        :param only_m0: bool, Ignores coefficients with m!=0 if True
+        :param quiet: bool, supresses print statements if True
 
    """
 
     __version__ = '0.1.0'
-
-    _general_default = {
-        'nsize': 4000,  #Number of grid points in the interpolated mesh
-        'refRMT': 'pot',  #Which Muffin-Tin radius is used as reference for interpolation
-        'cutoff': 1e-3,  #Under this potentials are dismissed
-        'onlyM0': False,
-        'quiet': False,
-    }
 
     #prefactor for converting Blm to Alm<r^l>
     _alphalm = {
@@ -96,11 +76,7 @@ class CFcalculation:
         (6, 6): np.sqrt(231.0) / 16.0,
     }
 
-    def __init__(self, general=None):
-        """Initialize the CFcalculation object
-        and overwrite the default general dict with the given argument
-
-        """
+    def __init__(self, radial_points=4000, reference_radius='pot', pot_cutoff=1e-3, only_m0=False, quiet=False):
 
         self.vlm = {}
         self.cdn = {}
@@ -113,13 +89,11 @@ class CFcalculation:
         self.int = {}
         self.bravaisMat = {}
 
-        self.general = {}
-        self.general.update(self._general_default)
-        if general:
-            #Verify that there are no unknown keys
-            if general.keys().difference(self._general_default.keys()):
-                raise KeyError(f'Unknown Keys: {general.keys().difference(self._general_default.keys())}')
-            self.general.update(general)
+        self.radial_points = radial_points
+        self.reference_radius = reference_radius
+        self.pot_cutoff = pot_cutoff
+        self.only_m0 = only_m0
+        self.quiet = quiet
 
     def prefactor(self, l, m):
         """Gives the lm dependent prefactor for conversion between
@@ -137,39 +111,32 @@ class CFcalculation:
         else:
             return 0.0
 
-    def readPot(self, *args, lm=[], **kwargs):
+    def readPot(self, *args, lm=None, **kwargs):
         """Reads in the potentials for the CF coefficient calculation
         If hdf files are given also the muffin tin radius is read in
 
         Parameters:
-            *args: Expects string filenames for the potentials to read in
-                   The function expects either HDF files or txt files with the
-                   format (rmesh,vlmup,vlmdn)
-            lm (list of tuples): Defines the l and m indices for the given txt files
-            **kwargs:
-                    atomType (int): Defines the atomType to read in (only for HDF files)
-                    header (int):   Define how many lines to skip in the beginning of txt file
-                    complexData (bool): Define if the data in the text file is complex
+            :param args: Expects string filenames for the potentials to read in
+                         The function expects either HDF files or txt files with the
+                         format (rmesh,vlmup,vlmdn)
+            :param lm: list of tuples, Defines the l and m indices for the given txt files
+
+        kwargs:
+            :param atomType: int, Defines the atomType to read in (only for HDF files)
+            :param header: int, Define how many lines to skip in the beginning of txt file
+            :param complexData: bool, Define if the data in the text file is complex
 
         Raises:
             ValueError: lm indices list length has to match number of files read in
 
         """
 
-        if 'atomType' in kwargs:
-            atomType = kwargs['atomType']
-        else:
-            atomType = 1
+        if lm is None:
+            lm = []
 
-        if 'header' in kwargs:
-            header = kwargs['header']
-        else:
-            header = 0
-
-        if 'complexData' in kwargs:
-            complexData = kwargs['complexData']
-        else:
-            complexData = True
+        atomType = kwargs.pop('atomType', 1)
+        header = kwargs.pop('header', 0)
+        complexData = kwargs.pop('complexData', True)
 
         #Reads in the filenames given in args as potentials
         for index, file in enumerate(args):
@@ -190,25 +157,18 @@ class CFcalculation:
         If hdf files are given also the muffin tin radius is read in
 
         Parameters:
-            file: Expects string filename for the charge density to read in
-                  The function expects either HDF files or txt files with the
-                  format (rmesh,cdn).
-                  The charge density should be given as r^2n(r) and normed to 1
-            **kwargs:
-                atomType (int):  Defines the atomType to read in (only for HDF files)
-                header (int):    Define how many lines to skip in the beginning of txt file
+            :param file: Expects string filename for the charge density to read in
+                         The function expects either HDF files or txt files with the
+                         format (rmesh,cdn).
+                         The charge density should be given as r^2n(r) and normed to 1
+        kwargs:
+            :param atomType: int, Defines the atomType to read in (only for HDF files)
+            :param header: int, Define how many lines to skip in the beginning of txt file
 
         """
 
-        if 'atomType' in kwargs:
-            atomType = kwargs['atomType']
-        else:
-            atomType = 1
-
-        if 'header' in kwargs:
-            header = kwargs['header']
-        else:
-            header = 0
+        atomType = kwargs.pop('atomType', 1)
+        header = kwargs.pop('header', 0)
 
         if isinstance(file, str):
             basename, extension = os.path.splitext(file)
@@ -255,7 +215,7 @@ class CFcalculation:
         else:
             raise IOError('No potential for atomType {} found in {}'.format(atomType, hdffile))
 
-        if not self.general['quiet']:
+        if not self.quiet:
             print('readPOTHDF: Generated the following information: {}'.format(self.vlm.keys()))
 
     def __readpottxt(self, file, index, header=0, complexData=True):
@@ -276,7 +236,7 @@ class CFcalculation:
             self.vlm['rmesh'] = []
 
             for line in skipHeader(reader, header):
-                while ('' in line):
+                while '' in line:
                     line.remove('')
                 self.vlm['rmesh'].append(float(line[0]))
                 if complexData:
@@ -314,7 +274,7 @@ class CFcalculation:
         else:
             raise IOError('No charge density for atomType {} found in {}'.format(atomType, hdffile))
 
-        if not self.general['quiet']:
+        if not self.quiet:
             print('readcdnHDF: Generated the following information: {}'.format(self.cdn.keys()))
 
     def __readcdntxt(self, file, header=0):
@@ -333,7 +293,7 @@ class CFcalculation:
             self.cdn['rmesh'] = []
 
             for line in skipHeader(reader, header):
-                while ('' in line):
+                while '' in line:
                     line.remove('')
 
                 self.cdn['rmesh'].append(float(line[0]))
@@ -356,31 +316,30 @@ class CFcalculation:
 
         if 'cdn' in self.bravaisMat and 'pot' in self.bravaisMat:
             diffBravais = self.bravaisMat['cdn'] - self.bravaisMat['pot']
-            if np.any(np.abs(diffBravais) > 1e-12):
-                pass
-                #raise ValueError('Differing definitions of potentials and charge density bravais matrix')
+            if np.any(np.abs(diffBravais) > 1e-8):
+                raise ValueError('Differing definitions of potentials and charge density bravais matrix')
 
     def _interpolate(self):
         """Interpolate all quantities to a common equidistant radial mesh
 
         """
 
-        if self.general['refRMT'] == 'pot':
+        if self.reference_radius == 'pot':
             refRMT = self.vlm['RMT']
-        elif self.general['refRMT'] == 'cdn':
+        elif self.reference_radius == 'cdn':
             refRMT = self.cdn['RMT']
+        else:
+            refRMT = self.reference_radius
 
         self.int = defaultdict(dict)
 
-        self.int['rmesh'] = np.arange(0.0, refRMT, refRMT / self.general['nsize'])
+        self.int['rmesh'] = np.arange(0.0, refRMT, refRMT / self.radial_points)
         self.int['cdn'] = interp1d(self.cdn['rmesh'], self.cdn['data'], fill_value='extrapolate')
 
         for key, value in self.vlm.items():
-            if key != 'RMT' and key != 'rmesh':
+            if key not in ('RMT', 'rmesh'):
                 self.int[key]['spin-up'] = interp1d(self.vlm['rmesh'], self.vlm[key][0, :], fill_value='extrapolate')
-                self.int[key]['spin-down'] = interp1d(self.vlm['rmesh'],
-                                                         self.vlm[key][1, :],
-                                                         fill_value='extrapolate')
+                self.int[key]['spin-down'] = interp1d(self.vlm['rmesh'], self.vlm[key][1, :], fill_value='extrapolate')
         self.interpolated = True
 
     def performIntegration(self, convert=True):
@@ -389,11 +348,9 @@ class CFcalculation:
         be performed beforehand
 
         Parameters:
-            convert (bool): converts to Steven's coefficients (if True)
+            :param convert: bool, converts to Steven's coefficients (if True)
 
-        Returns:
-            dict: CF coeffients given as keys (l,m,'up') or (l,m,'dn') for different
-                  spin directions in K
+        :returns: list of CFCoefficient objects (namedtuple), with all the necessary information
 
         """
 
@@ -406,7 +363,7 @@ class CFcalculation:
             self.theta = np.arccos(c_vector[2] / (np.linalg.norm(c_vector)))
             self.phi = np.arccos(a_vector[0] / (np.linalg.norm(a_vector)))
 
-            if not self.general['quiet']:
+            if not self.quiet:
                 print(fr'Angle between lattice vector c and z-axis: {self.theta/np.pi:5.3f} $\pi$')
                 print(fr'Angle between lattice vector a and x-axis: {self.phi/np.pi:5.3f} $\pi$')
 
@@ -414,29 +371,40 @@ class CFcalculation:
             self._interpolate()
 
         self.denNorm = np.trapz(self.int['cdn'](self.int['rmesh']), self.int['rmesh'])
-        if not self.general['quiet']:
+        if not self.quiet:
             print(f'Density normalization = {self.denNorm}')
 
         result = []
-        for lmkey, vlm in [(key,val) for key, val in self.int.items() if isinstance(key, tuple)]:
+        for lmkey, vlm in [(key, val) for key, val in self.int.items() if isinstance(key, tuple)]:
             l, m = lmkey
-            if not self.general['onlyM0'] or m == 0:
+            if not self.only_m0 or m == 0:
                 integral = {}
                 for key, pot in vlm.items():
-                    integral[key] = np.trapz(pot(self.int['rmesh']) * self.int['cdn'](self.int['rmesh']), self.int['rmesh'])
+                    integral[key] = np.trapz(
+                        pot(self.int['rmesh']) * self.int['cdn'](self.int['rmesh']), self.int['rmesh'])
                     integral[key] *= np.sqrt((2.0 * l + 1.0) / (4.0 * np.pi)) * HTR_TO_KELVIN
 
                 if convert:
-                    integral = {key: val.real * self.prefactor(l, m) for key,val in integral.items()}
-                    coeff = CFCoefficient(l=l, m=m, spin_up=integral['spin-up'], spin_down=integral['spin-down'], unit='K',convention='Stevens')
+                    integral = {key: val.real * self.prefactor(l, m) for key, val in integral.items()}
+                    coeff = CFCoefficient(l=l,
+                                          m=m,
+                                          spin_up=integral['spin-up'],
+                                          spin_down=integral['spin-down'],
+                                          unit='K',
+                                          convention='Stevens')
                 else:
-                    coeff = CFCoefficient(l=l, m=m, spin_up=integral['spin-up'], spin_down=integral['spin-down'], unit='K',convention='Wybourne')
+                    coeff = CFCoefficient(l=l,
+                                          m=m,
+                                          spin_up=integral['spin-up'],
+                                          spin_down=integral['spin-down'],
+                                          unit='K',
+                                          convention='Wybourne')
 
                 result.append(coeff)
 
         result.sort(key=lambda item: (item.l, abs(item.m)))
 
-        if not self.general['quiet']:
+        if not self.quiet:
 
             print(f'\nThe following results were obtained with the {result[0].convention} convention:')
 
@@ -446,17 +414,29 @@ class CFcalculation:
                 print('l  m', '       $C^{up}_{lm}$ [K]', '       $C^{dn}_{lm}$ [K]')
             for coeff in result:
                 if isinstance(coeff.spin_up, complex):
-                    print(f'{coeff.l:d}{coeff.m:>-3d}{coeff.spin_up.real:>+25.8f}{coeff.spin_up.imag:>+11.8f} i {coeff.spin_down.real:>+25.8f}{coeff.spin_down.imag:>+11.8f} i ')
+                    print(
+                        f'{coeff.l:d}{coeff.m:>-3d}{coeff.spin_up.real:>+25.8f}{coeff.spin_up.imag:>+11.8f} i {coeff.spin_down.real:>+25.8f}{coeff.spin_down.imag:>+11.8f} i '
+                    )
                 else:
                     print(f'{coeff.l:d}{coeff.m:>-3d}{coeff.spin_up:>+25.8f}{coeff.spin_down:>+25.8f}')
 
         return result
 
 
-def plot_crystal_field_calculation(cfcalc, filename='crystal_field_calc', pot_title='Potential', cdn_title='Density', xlabel='$R$ (Bohr)',pot_ylabel='$Vpot$ (Hartree)',cdn_ylabel='Density', fontsize=12, labelsize=12, pot_colors=None):
-        """Plot the given potentials and charge densities
+def plot_crystal_field_calculation(cfcalc,
+                                   filename='crystal_field_calc',
+                                   pot_title='Potential',
+                                   cdn_title='Density',
+                                   xlabel='$R$ (Bohr)',
+                                   pot_ylabel='$Vpot$ (Hartree)',
+                                   cdn_ylabel='Density',
+                                   fontsize=12,
+                                   labelsize=12,
+                                   pot_colors=None):
+    """Plot the given potentials and charge densities
 
         Parameters:
+            :param cfcalc: CFcalculation containing the data to plot
             :param filename: str, Define the filename to save the figure
             :param pot_title: Title for the potential subplot
             :param cdn_title: Title for the charge density subplot
@@ -468,59 +448,59 @@ def plot_crystal_field_calculation(cfcalc, filename='crystal_field_calc', pot_ti
 
         """
 
-        cfcalc._validateInput()
+    cfcalc._validateInput()
 
-        if not cfcalc.interpolated:
-            cfcalc._interpolate()
+    if not cfcalc.interpolated:
+        cfcalc._interpolate()
 
-        if pot_colors is None:
-            pot_colors = ['black', 'red', 'blue', 'orange', 'green', 'purple']
+    if pot_colors is None:
+        pot_colors = ['black', 'red', 'blue', 'orange', 'green', 'purple']
 
-        color_iter = iter(pot_colors)
+    color_iter = iter(pot_colors)
 
-        fig, axs = plt.subplots(1, 2)
-        ax = axs[0]
+    fig, axs = plt.subplots(1, 2)
+    ax = axs[0]
 
+    for lmkey, vlm in [(key, val) for key, val in cfcalc.int.items() if isinstance(key, tuple)]:
+        l, m = lmkey
+        if not cfcalc.only_m0 or m == 0:
+            try:
+                color = next(color_iter)
+            except StopIteration:
+                color = None
+            line, = ax.plot(cfcalc.int['rmesh'],
+                            vlm['spin-up'](cfcalc.int['rmesh']).real,
+                            '-',
+                            color=color,
+                            label=rf'$V_{{{l}{m}}}$')
+            ax.plot(cfcalc.int['rmesh'], vlm['spin-down'](cfcalc.int['rmesh']).real, '--', color=line.get_color())
+    ax.set_xlabel(xlabel, fontsize=fontsize)
+    ax.set_ylabel(pot_ylabel, fontsize=fontsize)
+    ax.legend(loc=2, ncol=1, borderaxespad=0.0, fontsize=fontsize)
+    ax.tick_params(labelsize=labelsize)
+    ax.set_title(pot_title, fontsize=fontsize)
 
-        for lmkey, vlm in [(key,val) for key, val in cfcalc.int.items() if isinstance(key, tuple)]:
-            l, m = lmkey
-            if not cfcalc.general['onlyM0'] or m == 0:
-                try:
-                    color = next(color_iter)
-                except StopIteration:
-                    color = None
-                line, = ax.plot(cfcalc.int['rmesh'],
-                        vlm['spin-up'](cfcalc.int['rmesh']).real,
-                        '-',
-                        color=color,
-                        label=rf'$V_{{{l}{m}}}$')
-                ax.plot(cfcalc.int['rmesh'], vlm['spin-down'](cfcalc.int['rmesh']).real, '--', color=line.get_color())
-        ax.set_xlabel(xlabel, fontsize=fontsize)
-        ax.set_ylabel(pot_ylabel, fontsize=fontsize)
-        ax.legend(loc=2, ncol=1, borderaxespad=0.0, fontsize=fontsize)
-        ax.tick_params(labelsize=labelsize)
-        ax.set_title(pot_title, fontsize=fontsize)
+    ax = axs[1]
+    ax.plot(cfcalc.cdn['rmesh'], cfcalc.cdn['data'], '-', color='black', label=r'$n(r)$')
+    ax.plot(cfcalc.int['rmesh'], cfcalc.int['cdn'](cfcalc.int['rmesh']), '--', color='blue')
+    ax.set_xlabel(xlabel, fontsize=fontsize)
+    ax.set_ylabel(cdn_ylabel, fontsize=fontsize)
+    ax.legend(loc=2, ncol=1, borderaxespad=0.0, fontsize=fontsize)
+    ax.tick_params(labelsize=labelsize)
+    ax.set_title(cdn_title, fontsize=fontsize)
 
-        ax = axs[1]
-        ax.plot(cfcalc.cdn['rmesh'], cfcalc.cdn['data'], '-', color='black', label=r'$n(r)$')
-        ax.plot(cfcalc.int['rmesh'], cfcalc.int['cdn'](cfcalc.int['rmesh']), '--', color='blue')
-        ax.set_xlabel(xlabel, fontsize=fontsize)
-        ax.set_ylabel(cdn_ylabel, fontsize=fontsize)
-        ax.legend(loc=2, ncol=1, borderaxespad=0.0, fontsize=fontsize)
-        ax.tick_params(labelsize=labelsize)
-        ax.set_title(cdn_title, fontsize=fontsize)
-
-        fig.set_size_inches(14.0, 10.0)
-        fig.subplots_adjust(left=0.10, bottom=0.2, right=0.90, wspace=0.4, hspace=0.4)
-        plt.savefig(filename, format='png')
-        plt.show()
+    fig.set_size_inches(14.0, 10.0)
+    fig.subplots_adjust(left=0.10, bottom=0.2, right=0.90, wspace=0.4, hspace=0.4)
+    plt.savefig(filename, format='png')
+    plt.show()
 
 
 def plot_crystal_field_potential(cfcoeffs, filename='crystal_field_potential_areaplot', spin='avg', phi=0.0):
-        """Plots the angular dependence of the calculated CF potential as well
+    """Plots the angular dependence of the calculated CF potential as well
         as a plane defined by phi.
 
         Parameters:
+            :param cfcoeffs: list of CFCoefficients to construct the potential
             :param filename: str, defines the filename to save the figure
             :param spin: str; Either 'up', 'dn' or 'avg'. Which spin direction to plot
                          ('avg'-> ('up'+'dn')/2.0)
@@ -530,92 +510,91 @@ def plot_crystal_field_potential(cfcoeffs, filename='crystal_field_potential_are
 
         """
 
-        assert all([isinstance(coeff, CFCoefficient) for coeff in cfcoeffs]), \
-               'Only provide a list of CFCoefficients to plot_crystal_field_potential'
+    assert all([isinstance(coeff, CFCoefficient) for coeff in cfcoeffs]), \
+           'Only provide a list of CFCoefficients to plot_crystal_field_potential'
 
-        #generate the thetha phi meshgrid
-        theta_grid = np.linspace(0, np.pi, 181)
-        phi_grid = np.linspace(0.0, 2.0 * np.pi, 361)
-        xv, yv = np.meshgrid(phi_grid, theta_grid)
-        cf_grid = np.zeros((181, 361), dtype='complex')
+    #generate the thetha phi meshgrid
+    theta_grid = np.linspace(0, np.pi, 181)
+    phi_grid = np.linspace(0.0, 2.0 * np.pi, 361)
+    xv, yv = np.meshgrid(phi_grid, theta_grid)
+    cf_grid = np.zeros((181, 361), dtype='complex')
 
-
-        for coeff in cfcoeffs:
-            assert coeff.convention == 'Wybourne', 'Wrong convention for plotting in spherical harmonics basis'
-            if spin == 'avg':
-                value = 0.5 * (coeff.spin_up + coeff.spin_down)
-            elif spin == 'up':
-                value = coeff.spin_up
-            elif spin == 'down':
-                value = coeff.spin_down
-            else:
-                raise ValueError(f"Invalid Argument for spin: '{spin}'")
-            if coeff.m>=0:
-                cf_grid += value * sph_harm(coeff.m, coeff.l, xv, yv)
-
-        #Plot the angular dependence
-        maxv = max(cf_grid.real.max(), abs(cf_grid.real.min()))
-        tickFontsize = 14
-        labelFontsize = 20
-        #Angular dependence plot
-        fig = plt.figure(figsize=(15, 5))
-        gs = mpl.gridspec.GridSpec(1, 2, width_ratios=[2.0, 1.5])
-        ax = plt.subplot(gs[0])
-        plt.sca(ax)
-        plt.imshow(cf_grid.real, origin='upper', cmap='coolwarm', vmin=-maxv, vmax=maxv, aspect='auto')
-        ax.set_title('Angular Dependence', fontsize=labelFontsize)
-        ax.set_xlabel(r'$\phi$', fontsize=labelFontsize)
-        ax.set_xticks([0.0, 90.0, 180.0, 270.0, 360.0])
-        ax.set_xticklabels([r'0', r'$\pi/2$', r'$\pi$', r'$3\pi/2$', r'$2\pi$'], fontsize=tickFontsize)
-        ax.set_ylabel(r'$\theta$', fontsize=labelFontsize)
-        ax.set_yticks([0.0, 45.0, 90.0, 135.0, 180.0])
-        ax.set_yticklabels([r'$\pi/2$', r'$\pi/4$', r'$0.0$', r'$-\pi/4$', r'$-\pi/2$'], fontsize=tickFontsize)
-
-        if np.abs(phi_grid - phi).min() > 1e-5:
-            raise ValueError(f'Angle {phi} not found in grid')
+    for coeff in cfcoeffs:
+        assert coeff.convention == 'Wybourne', 'Wrong convention for plotting in spherical harmonics basis'
+        if spin == 'avg':
+            value = 0.5 * (coeff.spin_up + coeff.spin_down)
+        elif spin == 'up':
+            value = coeff.spin_up
+        elif spin == 'down':
+            value = coeff.spin_down
         else:
-            phi_ind = np.abs(phi_grid - phi).argmin()
+            raise ValueError(f"Invalid Argument for spin: '{spin}'")
+        if coeff.m >= 0:
+            cf_grid += value * sph_harm(coeff.m, coeff.l, xv, yv)
 
-        theta_grid_pm = list(-1.0 * theta_grid)
-        theta_cf = list(cf_grid[:, phi_ind])
-        for index, theta in enumerate(theta_grid):
-            theta_grid_pm.append(theta)
-            theta_cf.append(theta_cf[index])
+    #Plot the angular dependence
+    maxv = max(cf_grid.real.max(), abs(cf_grid.real.min()))
+    tickFontsize = 14
+    labelFontsize = 20
+    #Angular dependence plot
+    fig = plt.figure(figsize=(15, 5))
+    gs = mpl.gridspec.GridSpec(1, 2, width_ratios=[2.0, 1.5])
+    ax = plt.subplot(gs[0])
+    plt.sca(ax)
+    plt.imshow(cf_grid.real, origin='upper', cmap='coolwarm', vmin=-maxv, vmax=maxv, aspect='auto')
+    ax.set_title('Angular Dependence', fontsize=labelFontsize)
+    ax.set_xlabel(r'$\phi$', fontsize=labelFontsize)
+    ax.set_xticks([0.0, 90.0, 180.0, 270.0, 360.0])
+    ax.set_xticklabels([r'0', r'$\pi/2$', r'$\pi$', r'$3\pi/2$', r'$2\pi$'], fontsize=tickFontsize)
+    ax.set_ylabel(r'$\theta$', fontsize=labelFontsize)
+    ax.set_yticks([0.0, 45.0, 90.0, 135.0, 180.0])
+    ax.set_yticklabels([r'$\pi/2$', r'$\pi/4$', r'$0.0$', r'$-\pi/4$', r'$-\pi/2$'], fontsize=tickFontsize)
 
-        theta_grid = np.array(theta_grid)
-        theta_cf = np.array(theta_cf)
+    if np.abs(phi_grid - phi).min() > 1e-5:
+        raise ValueError(f'Angle {phi} not found in grid')
+    else:
+        phi_ind = np.abs(phi_grid - phi).argmin()
 
-        #interpolate
-        theta_cf = interp1d(theta_grid_pm, theta_cf.real, fill_value='extrapolate')
+    theta_grid_pm = list(-1.0 * theta_grid)
+    theta_cf = list(cf_grid[:, phi_ind])
+    for index, theta in enumerate(theta_grid):
+        theta_grid_pm.append(theta)
+        theta_cf.append(theta_cf[index])
 
-        nx = 200
-        ny = 200
-        #Define the cartesian grid between -1 and 1
-        x = np.linspace(-1, 1, nx)
-        y = np.linspace(-1, 1, ny)
-        xv, yv = np.meshgrid(x, y)
+    theta_grid = np.array(theta_grid)
+    theta_cf = np.array(theta_cf)
 
-        z = theta_cf(np.arctan(xv / yv))
+    #interpolate
+    theta_cf = interp1d(theta_grid_pm, theta_cf.real, fill_value='extrapolate')
 
-        phi_fract = phi / np.pi
+    nx = 200
+    ny = 200
+    #Define the cartesian grid between -1 and 1
+    x = np.linspace(-1, 1, nx)
+    y = np.linspace(-1, 1, ny)
+    xv, yv = np.meshgrid(x, y)
 
-        labelFontsize = 14
-        tickFontsize = 14
+    z = theta_cf(np.arctan(xv / yv))
 
-        ax = plt.subplot(gs[1])
-        plt.sca(ax)
-        plt.imshow(z, origin='upper', cmap='coolwarm', vmin=-maxv, vmax=maxv, aspect='auto')
-        cbar = plt.colorbar(shrink=0.8)
-        cbar.set_label(r'$V_{{CF}}$ [K]', fontsize=labelFontsize)
-        cbar.ax.tick_params(labelsize=14)
-        ax.set_title(r'Crystal Field potential for $\phi={{{:.2f}}}\pi$'.format(phi_fract), fontsize=labelFontsize)
-        ax.set_xlabel(r'x [Bohr]', fontsize=labelFontsize)
-        ax.set_xticks([0, nx / 4.0, nx / 2.0, 3.0 * nx / 4.0, nx - 1])
-        ax.set_xticklabels([r'-1.0', r'-0.5', r'0.0', r'0.5', r'1.0'], fontsize=tickFontsize)
-        ax.set_ylabel(r'y [Bohr]', fontsize=labelFontsize)
-        ax.set_yticks([0, ny / 4.0, ny / 2.0, 3.0 * ny / 4.0, ny - 1])
-        ax.set_yticklabels([r'1.0', r'0.5', r'0.0', r'-0.5', r'-1.0'], fontsize=tickFontsize)
-        fig.set_constrained_layout_pads(w_pad=0., h_pad=0.0, hspace=0., wspace=0.)
+    phi_fract = phi / np.pi
 
-        plt.savefig(filename, format='png')
-        plt.show()
+    labelFontsize = 14
+    tickFontsize = 14
+
+    ax = plt.subplot(gs[1])
+    plt.sca(ax)
+    plt.imshow(z, origin='upper', cmap='coolwarm', vmin=-maxv, vmax=maxv, aspect='auto')
+    cbar = plt.colorbar(shrink=0.8)
+    cbar.set_label(r'$V_{{CF}}$ [K]', fontsize=labelFontsize)
+    cbar.ax.tick_params(labelsize=14)
+    ax.set_title(r'Crystal Field potential for $\phi={{{:.2f}}}\pi$'.format(phi_fract), fontsize=labelFontsize)
+    ax.set_xlabel(r'x [Bohr]', fontsize=labelFontsize)
+    ax.set_xticks([0, nx / 4.0, nx / 2.0, 3.0 * nx / 4.0, nx - 1])
+    ax.set_xticklabels([r'-1.0', r'-0.5', r'0.0', r'0.5', r'1.0'], fontsize=tickFontsize)
+    ax.set_ylabel(r'y [Bohr]', fontsize=labelFontsize)
+    ax.set_yticks([0, ny / 4.0, ny / 2.0, 3.0 * ny / 4.0, ny - 1])
+    ax.set_yticklabels([r'1.0', r'0.5', r'0.0', r'-0.5', r'-1.0'], fontsize=tickFontsize)
+    fig.set_constrained_layout_pads(w_pad=0., h_pad=0.0, hspace=0., wspace=0.)
+
+    plt.savefig(filename, format='png')
+    plt.show()
