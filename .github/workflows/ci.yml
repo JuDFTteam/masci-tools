@@ -33,7 +33,6 @@ jobs:
       env:
         READTHEDOCS: 'True'
       run:
-        apt-get update -y && apt-get install -y pdflatex
         SPHINXOPTS='-nW -D imgmath_latex=pdflatex' make -C docs html
 
   pre-commit:
