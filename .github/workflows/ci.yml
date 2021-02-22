@@ -33,7 +33,7 @@ jobs:
       env:
         READTHEDOCS: 'True'
       run:
-        SPHINXOPTS='-nW' make -C docs html -D imgmath_latex=pdflatex
+        SPHINXOPTS='-nW -D imgmath_latex=pdflatex' make -C docs html
 
   pre-commit:
 
