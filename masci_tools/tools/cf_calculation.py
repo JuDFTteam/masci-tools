@@ -47,7 +47,7 @@ class CFcalculation:
         The function constructs an equidistant mesh between the muffin tin radius
         defined in `self.reference_radius` and with `self.radial_points` points
 
-    Parameters for constructor:
+    Parameters:
         :param radial_points: int, number of radial points in the interpolated mesh
         :param reference_radius: stror float; Either 'pot' or 'cdn' or explicit number. Defines which muffin-tin radius
                                  is used for the equidistant mesh.
@@ -100,16 +100,12 @@ class CFcalculation:
         Blm and Alm coefficients
 
         Args:
-            l (int): orbital quantum number
-            m (int): magnetic quantum number
+            :param l: int; orbital quantum number
+            :param m: int; magnetic quantum number
 
-        Returns:
-            float: Prefactor for conversion to Steven's Coefficients
+        :returns: float prefactor for conversion to Steven's Coefficients
         """
-        if (l, abs(m)) in self._alphalm:
-            return self._alphalm[(l, abs(m))]
-        else:
-            return 0.0
+        return self._alphalm.get((l, abs(m)), 0.0)
 
     def readPot(self, *args, lm=None, **kwargs):
         """Reads in the potentials for the CF coefficient calculation
