@@ -391,9 +391,8 @@ class CFcalculation:
 
         for key, value in self.vlm.items():
             if key != 'RMT' and key != 'rmesh':
-                l, m = key
-                self.int[(l, m)]['spin-up'] = interp1d(self.vlm['rmesh'], self.vlm[key][0, :], fill_value='extrapolate')
-                self.int[(l, m)]['spin-down'] = interp1d(self.vlm['rmesh'],
+                self.int[key]['spin-up'] = interp1d(self.vlm['rmesh'], self.vlm[key][0, :], fill_value='extrapolate')
+                self.int[key]['spin-down'] = interp1d(self.vlm['rmesh'],
                                                          self.vlm[key][1, :],
                                                          fill_value='extrapolate')
         self.interpolated = True
@@ -430,7 +429,7 @@ class CFcalculation:
 
         self.denNorm = np.trapz(self.int['cdn'](self.int['rmesh']), self.int['rmesh'])
         if not self.general['quiet']:
-            print('Density normalization = {}'.format(self.denNorm))
+            print(f'Density normalization = {self.denNorm}')
 
         result = []
         for lmkey, vlm in [(key,val) for key, val in self.int.items() if isinstance(key, tuple)]:
@@ -447,12 +446,22 @@ class CFcalculation:
                 else:
                     coeff = CFCoefficient(l=l, m=m, spin_up=integral['spin-up'], spin_down=integral['spin-down'], unit='K',convention='Wybourne')
 
-
                 result.append(coeff)
 
+        result.sort(key=lambda item: (item.l, abs(item.m)))
+
         if not self.general['quiet']:
-            print('\nl, m', '       $C^{dn}_{lm}$ [K]', '       $C^{up}_{lm}$ [K]')
+
+            print(f'\nThe following results were obtained with the {result[0].convention} convention:')
+
+            if any([isinstance(coeff.spin_up, complex) for coeff in result]):
+                print('l  m', '       $C^{up}_{lm}$ [K]              ', '       $C^{dn}_{lm}$ [K]')
+            else:
+                print('l  m', '       $C^{up}_{lm}$ [K]', '       $C^{dn}_{lm}$ [K]')
             for coeff in result:
-                print(f'{coeff.l:d}{coeff.m:>-3d}{coeff.spin_up:>+25.8f}{coeff.spin_down:>+25.8f}')
+                if isinstance(coeff.spin_up, complex):
+                    print(f'{coeff.l:d}{coeff.m:>-3d}{coeff.spin_up.real:>+25.8f}{coeff.spin_up.imag:>+11.8f} i {coeff.spin_down.real:>+25.8f}{coeff.spin_down.imag:>+11.8f} i ')
+                else:
+                    print(f'{coeff.l:d}{coeff.m:>-3d}{coeff.spin_up:>+25.8f}{coeff.spin_down:>+25.8f}')
 
         return result
