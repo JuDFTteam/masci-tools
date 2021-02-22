@@ -33,10 +33,6 @@ jobs:
       env:
         READTHEDOCS: 'True'
       run:
-        which latex
-        which xelatex
-        which pdflatex
-        which lualatex
         SPHINXOPTS='-nW' make -C docs html
 
   pre-commit:
