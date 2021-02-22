@@ -32,6 +32,7 @@ FLEUR_DEFINED_CONSTANTS = {
     'Bohr': 1.0
 }
 
+
 # NIST https://physics.nist.gov/cgi-bin/cuu/Value?hrev
 HTR_TO_EV = 27.211386245988  #(53)
 BOHR_A = 0.5291772108
@@ -52,3 +53,5 @@ BOHR_A = 0.5291772108
 #1.8897261258369282
 #aiida-core units:
 #bohr_to_ang = 0.52917720859
+
+HTR_TO_KELVIN = 315_775.02480407
