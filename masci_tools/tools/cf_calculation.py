@@ -30,6 +30,8 @@ from masci_tools.util.constants import HTR_TO_KELVIN
 from masci_tools.io.common_functions import skipHeader
 
 
+#This namedtuple is used as the return value for the crystal field calculation to have easy access
+#to all the necessary information
 CFCoefficient = namedtuple('CFCoefficient', ['l', 'm', 'spin_up', 'spin_down', 'unit', 'convention'])
 
 
@@ -76,22 +78,6 @@ class CFcalculation:
         'cutoff': 1e-3,  #Under this potentials are dismissed
         'onlyM0': False,
         'quiet': False,
-    }
-
-    _plot_default = {
-        'POTTitle': 'Potential',
-        'CDNTitle': 'Density',
-        'colors': ['black', 'red', 'blue', 'orange', 'green', 'purple'],
-        'xlabel': '$R$ (Bohr)',
-        'POTylabel': '$Vpot$ (Hartree)',
-        'CDNylabel': 'Density',
-        'Fontsize': 12,
-        'Labelsize': 12,
-    }
-
-    _plotCFpot_default = {
-        'Fontsize': 20,
-        'Labelsize': 14,
     }
 
     #prefactor for converting Blm to Alm<r^l>
@@ -357,7 +343,7 @@ class CFcalculation:
             self.cdn['rmesh'] = np.array(self.cdn['rmesh'])
             self.cdn['RMT'] = max(self.cdn['rmesh'])
 
-    def __validateInput(self):
+    def _validateInput(self):
         """Validate that the object can be used to execute the calculation
         Checks that the given bravais matrices are equal if given
         """
@@ -374,7 +360,7 @@ class CFcalculation:
                 pass
                 #raise ValueError('Differing definitions of potentials and charge density bravais matrix')
 
-    def __interp(self):
+    def _interpolate(self):
         """Interpolate all quantities to a common equidistant radial mesh
 
         """
@@ -411,7 +397,7 @@ class CFcalculation:
 
         """
 
-        self.__validateInput()
+        self._validateInput()
 
         if 'cdn' in self.bravaisMat and 'pot' in self.bravaisMat:
             a_vector = self.bravaisMat['pot'][0, :]
@@ -425,7 +411,7 @@ class CFcalculation:
                 print(fr'Angle between lattice vector a and x-axis: {self.phi/np.pi:5.3f} $\pi$')
 
         if not self.interpolated:
-            self.__interp()
+            self._interpolate()
 
         self.denNorm = np.trapz(self.int['cdn'](self.int['rmesh']), self.int['rmesh'])
         if not self.general['quiet']:
@@ -465,3 +451,171 @@ class CFcalculation:
                     print(f'{coeff.l:d}{coeff.m:>-3d}{coeff.spin_up:>+25.8f}{coeff.spin_down:>+25.8f}')
 
         return result
+
+
+def plot_crystal_field_calculation(cfcalc, filename='crystal_field_calc', pot_title='Potential', cdn_title='Density', xlabel='$R$ (Bohr)',pot_ylabel='$Vpot$ (Hartree)',cdn_ylabel='Density', fontsize=12, labelsize=12, pot_colors=None):
+        """Plot the given potentials and charge densities
+
+        Parameters:
+            :param filename: str, Define the filename to save the figure
+            :param pot_title: Title for the potential subplot
+            :param cdn_title: Title for the charge density subplot
+            :param xlabel: label for the x axis of both subplots
+            :param pot_ylabel: label for the y axis of the potential subplot
+            :param cdn_ylabel: label for the y axis f the charge density subplot
+            :param fontsize: fontsize for titles and labels on the axis
+            :param labelsize: fontsize for the ticks on the axis,
+
+        """
+
+        cfcalc._validateInput()
+
+        if not cfcalc.interpolated:
+            cfcalc._interpolate()
+
+        if pot_colors is None:
+            pot_colors = ['black', 'red', 'blue', 'orange', 'green', 'purple']
+
+        color_iter = iter(pot_colors)
+
+        fig, axs = plt.subplots(1, 2)
+        ax = axs[0]
+
+
+        for lmkey, vlm in [(key,val) for key, val in cfcalc.int.items() if isinstance(key, tuple)]:
+            l, m = lmkey
+            if not cfcalc.general['onlyM0'] or m == 0:
+                try:
+                    color = next(color_iter)
+                except StopIteration:
+                    color = None
+                line, = ax.plot(cfcalc.int['rmesh'],
+                        vlm['spin-up'](cfcalc.int['rmesh']).real,
+                        '-',
+                        color=color,
+                        label=rf'$V_{{{l}{m}}}$')
+                ax.plot(cfcalc.int['rmesh'], vlm['spin-down'](cfcalc.int['rmesh']).real, '--', color=line.get_color())
+        ax.set_xlabel(xlabel, fontsize=fontsize)
+        ax.set_ylabel(pot_ylabel, fontsize=fontsize)
+        ax.legend(loc=2, ncol=1, borderaxespad=0.0, fontsize=fontsize)
+        ax.tick_params(labelsize=labelsize)
+        ax.set_title(pot_title, fontsize=fontsize)
+
+        ax = axs[1]
+        ax.plot(cfcalc.cdn['rmesh'], cfcalc.cdn['data'], '-', color='black', label=r'$n(r)$')
+        ax.plot(cfcalc.int['rmesh'], cfcalc.int['cdn'](cfcalc.int['rmesh']), '--', color='blue')
+        ax.set_xlabel(xlabel, fontsize=fontsize)
+        ax.set_ylabel(cdn_ylabel, fontsize=fontsize)
+        ax.legend(loc=2, ncol=1, borderaxespad=0.0, fontsize=fontsize)
+        ax.tick_params(labelsize=labelsize)
+        ax.set_title(cdn_title, fontsize=fontsize)
+
+        fig.set_size_inches(14.0, 10.0)
+        fig.subplots_adjust(left=0.10, bottom=0.2, right=0.90, wspace=0.4, hspace=0.4)
+        plt.savefig(filename, format='png')
+        plt.show()
+
+
+def plot_crystal_field_potential(cfcoeffs, filename='crystal_field_potential_areaplot', spin='avg', phi=0.0):
+        """Plots the angular dependence of the calculated CF potential as well
+        as a plane defined by phi.
+
+        Parameters:
+            :param filename: str, defines the filename to save the figure
+            :param spin: str; Either 'up', 'dn' or 'avg'. Which spin direction to plot
+                         ('avg'-> ('up'+'dn')/2.0)
+            :param phi: float, defines the phi angle of the plane
+
+        :raises AssertionError: When coefficients are provided as wrong types or in the wrong convention
+
+        """
+
+        assert all([isinstance(coeff, CFCoefficient) for coeff in cfcoeffs]), \
+               'Only provide a list of CFCoefficients to plot_crystal_field_potential'
+
+        #generate the thetha phi meshgrid
+        theta_grid = np.linspace(0, np.pi, 181)
+        phi_grid = np.linspace(0.0, 2.0 * np.pi, 361)
+        xv, yv = np.meshgrid(phi_grid, theta_grid)
+        cf_grid = np.zeros((181, 361), dtype='complex')
+
+
+        for coeff in cfcoeffs:
+            assert coeff.convention == 'Wybourne', 'Wrong convention for plotting in spherical harmonics basis'
+            if spin == 'avg':
+                value = 0.5 * (coeff.spin_up + coeff.spin_down)
+            elif spin == 'up':
+                value = coeff.spin_up
+            elif spin == 'down':
+                value = coeff.spin_down
+            else:
+                raise ValueError(f"Invalid Argument for spin: '{spin}'")
+            if coeff.m>=0:
+                cf_grid += value * sph_harm(coeff.m, coeff.l, xv, yv)
+
+        #Plot the angular dependence
+        maxv = max(cf_grid.real.max(), abs(cf_grid.real.min()))
+        tickFontsize = 14
+        labelFontsize = 20
+        #Angular dependence plot
+        fig = plt.figure(figsize=(15, 5))
+        gs = mpl.gridspec.GridSpec(1, 2, width_ratios=[2.0, 1.5])
+        ax = plt.subplot(gs[0])
+        plt.sca(ax)
+        plt.imshow(cf_grid.real, origin='upper', cmap='coolwarm', vmin=-maxv, vmax=maxv, aspect='auto')
+        ax.set_title('Angular Dependence', fontsize=labelFontsize)
+        ax.set_xlabel(r'$\phi$', fontsize=labelFontsize)
+        ax.set_xticks([0.0, 90.0, 180.0, 270.0, 360.0])
+        ax.set_xticklabels([r'0', r'$\pi/2$', r'$\pi$', r'$3\pi/2$', r'$2\pi$'], fontsize=tickFontsize)
+        ax.set_ylabel(r'$\theta$', fontsize=labelFontsize)
+        ax.set_yticks([0.0, 45.0, 90.0, 135.0, 180.0])
+        ax.set_yticklabels([r'$\pi/2$', r'$\pi/4$', r'$0.0$', r'$-\pi/4$', r'$-\pi/2$'], fontsize=tickFontsize)
+
+        if np.abs(phi_grid - phi).min() > 1e-5:
+            raise ValueError(f'Angle {phi} not found in grid')
+        else:
+            phi_ind = np.abs(phi_grid - phi).argmin()
+
+        theta_grid_pm = list(-1.0 * theta_grid)
+        theta_cf = list(cf_grid[:, phi_ind])
+        for index, theta in enumerate(theta_grid):
+            theta_grid_pm.append(theta)
+            theta_cf.append(theta_cf[index])
+
+        theta_grid = np.array(theta_grid)
+        theta_cf = np.array(theta_cf)
+
+        #interpolate
+        theta_cf = interp1d(theta_grid_pm, theta_cf.real, fill_value='extrapolate')
+
+        nx = 200
+        ny = 200
+        #Define the cartesian grid between -1 and 1
+        x = np.linspace(-1, 1, nx)
+        y = np.linspace(-1, 1, ny)
+        xv, yv = np.meshgrid(x, y)
+
+        z = theta_cf(np.arctan(xv / yv))
+
+        phi_fract = phi / np.pi
+
+        labelFontsize = 14
+        tickFontsize = 14
+
+        ax = plt.subplot(gs[1])
+        plt.sca(ax)
+        plt.imshow(z, origin='upper', cmap='coolwarm', vmin=-maxv, vmax=maxv, aspect='auto')
+        cbar = plt.colorbar(shrink=0.8)
+        cbar.set_label(r'$V_{{CF}}$ [K]', fontsize=labelFontsize)
+        cbar.ax.tick_params(labelsize=14)
+        ax.set_title(r'Crystal Field potential for $\phi={{{:.2f}}}\pi$'.format(phi_fract), fontsize=labelFontsize)
+        ax.set_xlabel(r'x [Bohr]', fontsize=labelFontsize)
+        ax.set_xticks([0, nx / 4.0, nx / 2.0, 3.0 * nx / 4.0, nx - 1])
+        ax.set_xticklabels([r'-1.0', r'-0.5', r'0.0', r'0.5', r'1.0'], fontsize=tickFontsize)
+        ax.set_ylabel(r'y [Bohr]', fontsize=labelFontsize)
+        ax.set_yticks([0, ny / 4.0, ny / 2.0, 3.0 * ny / 4.0, ny - 1])
+        ax.set_yticklabels([r'1.0', r'0.5', r'0.0', r'-0.5', r'-1.0'], fontsize=tickFontsize)
+        fig.set_constrained_layout_pads(w_pad=0., h_pad=0.0, hspace=0., wspace=0.)
+
+        plt.savefig(filename, format='png')
+        plt.show()
