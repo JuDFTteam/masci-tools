@@ -52,6 +52,7 @@ def open_general(filename_or_handle, iomode=None):
             f.seek(0)
     return f
 
+
 def skipHeader(seq, n):
     """Iterate over a sequence skipping the first n elements
 
@@ -62,7 +63,7 @@ def skipHeader(seq, n):
     Yields:
         item: Elements in seq after the first n elements
     """
-    for i,item in enumerate(seq):
+    for i, item in enumerate(seq):
         if i >= n:
             yield item
 

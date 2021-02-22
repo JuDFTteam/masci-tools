@@ -32,7 +32,6 @@ FLEUR_DEFINED_CONSTANTS = {
     'Bohr': 1.0
 }
 
-
 # NIST https://physics.nist.gov/cgi-bin/cuu/Value?hrev
 HTR_TO_EV = 27.211386245988  #(53)
 BOHR_A = 0.5291772108
