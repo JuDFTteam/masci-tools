@@ -35,6 +35,7 @@ jobs:
       uses: xu-cheng/texlive-action/small@v1
       with:
         run:
+          apk add make
           SPHINXOPTS='-nW -D imgmath_latex=pdflatex' make -C docs html
 
   pre-commit:
