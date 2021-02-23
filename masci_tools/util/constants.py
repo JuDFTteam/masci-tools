@@ -34,6 +34,7 @@ FLEUR_DEFINED_CONSTANTS = {
 
 # NIST https://physics.nist.gov/cgi-bin/cuu/Value?hrev
 HTR_TO_EV = 27.211386245988  #(53)
+RY_TO_EV = 13.605693122994  #(26)
 BOHR_A = 0.5291772108
 #Scipy bohr 5.29177210903e-11 m
 #Scipy htr 27.211386245988 eV
