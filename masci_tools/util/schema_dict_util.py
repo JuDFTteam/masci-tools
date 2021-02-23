@@ -581,7 +581,7 @@ def evaluate_parent_tag(node, schema_dict, name, constants=None, parser_info_out
                 for warning in warnings:
                     parser_info_out['parser_warnings'].append(warning)
 
-    if all([len(x) == 1 for x in out_dict.values()]):
+    if all(len(x) == 1 for x in out_dict.values()):
         out_dict = {key: val[0] for key, val in out_dict.items()}
 
     return out_dict

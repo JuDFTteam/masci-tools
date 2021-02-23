@@ -34,7 +34,7 @@ from masci_tools.io.common_functions import skipHeader
 CFCoefficient = namedtuple('CFCoefficient', ['l', 'm', 'spin_up', 'spin_down', 'unit', 'convention'])
 
 
-class CFcalculation:
+class CFCalculation:
     r"""Class for calculating Crystal Field coefficients using the procedure
     described in C.E. Patrick, J.B. Staunton: J. Phys.: Condens. Matter 31, 305901 (2019)
 
@@ -44,7 +44,7 @@ class CFcalculation:
 
         The read in quantities are interpolated from logarithmic meshes to equidistant meshes
 
-        The function constructs an equidistant mesh between the muffin tin radius
+        The function constructs an equidistant mesh between 0 and the muffin tin radius
         defined in `self.reference_radius` and with `self.radial_points` points
 
     Parameters:
@@ -205,7 +205,7 @@ class CFcalculation:
 
                     _data = _vlm.get('vlm')
                     _data = np.array(_data[:, :, 0] + 1j * _data[:, :, 1])
-                    if abs(_data).max() >= self.general['cutoff']:
+                    if abs(_data).max() >= self.pot_cutoff:
                         self.vlm[(l, m)] = _data
 
         else:
@@ -404,7 +404,7 @@ class CFcalculation:
 
             print(f'\nThe following results were obtained with the {result[0].convention} convention:')
 
-            if any([isinstance(coeff.spin_up, complex) for coeff in result]):
+            if any(isinstance(coeff.spin_up, complex) for coeff in result):
                 print('l  m', '       $C^{up}_{lm}$ [K]              ', '       $C^{dn}_{lm}$ [K]')
             else:
                 print('l  m', '       $C^{up}_{lm}$ [K]', '       $C^{dn}_{lm}$ [K]')
@@ -506,7 +506,7 @@ def plot_crystal_field_potential(cfcoeffs, filename='crystal_field_potential_are
 
         """
 
-    assert all([isinstance(coeff, CFCoefficient) for coeff in cfcoeffs]), \
+    assert all(isinstance(coeff, CFCoefficient) for coeff in cfcoeffs), \
            'Only provide a list of CFCoefficients to plot_crystal_field_potential'
 
     #generate the thetha phi meshgrid
