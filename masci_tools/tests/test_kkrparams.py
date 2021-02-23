@@ -495,7 +495,7 @@ class Test_read_inputfile(object):  # pylint: disable=missing-class-docstring
         rbr = p.get_value('<RBRIGHT>')
         zper_l = p.get_value('ZPERIODL')
         zper_r = p.get_value('ZPERIODR')
-        ang2alat = 1 / (p.get_value('ALATBASIS')*BOHR_A)
+        ang2alat = 1 / (p.get_value('ALATBASIS') * BOHR_A)
         if rbl is not None:
             p.set_value('<RBLEFT>', array(rbl) * ang2alat)
         if rbr is not None:

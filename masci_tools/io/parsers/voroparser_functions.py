@@ -14,8 +14,7 @@
 Everything that is needed to parse the output of a voronoi calculation.
 """
 from masci_tools.io.common_functions import (get_corestates_from_potential, get_highest_core_state, search_string,
-                                             get_version_info, get_ef_from_potfile, open_general,
-                                             convert_to_pystd)
+                                             get_version_info, get_ef_from_potfile, open_general, convert_to_pystd)
 from masci_tools.io.parsers.kkrparser_functions import get_core_states
 from masci_tools.util.constants import RY_TO_EV
 import numpy as np
