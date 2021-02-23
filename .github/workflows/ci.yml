@@ -29,14 +29,15 @@ jobs:
       run:
         pip install -e .[docs]
 
+    - name: Install Latex compiler
+      run:
+        apt-get update -y && apt-get install -y latexmk
+
     - name: Build documentation
       env:
         READTHEDOCS: 'True'
-      uses: xu-cheng/texlive-action/small@v1
-      with:
-        run:
-          apk add make
-          SPHINXOPTS='-nW -D imgmath_latex=pdflatex' make -C docs html
+      run:
+        SPHINXOPTS='-nW -D imgmath_latex=pdflatex' make -C docs html
 
   pre-commit:
 
