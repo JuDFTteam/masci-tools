@@ -90,7 +90,7 @@ output:
     - 0
     - 0
   emin: -0.5
-  emin_minus_efermi: -12.370853917196168
+  emin_minus_efermi: -12.370854020844186
   emin_minus_efermi_Ry: -0.909241
   emin_minus_efermi_Ry_units: Ry
   emin_minus_efermi_units: eV
