@@ -31,7 +31,7 @@ jobs:
 
     - name: Install Latex compiler
       run:
-        apt-get update -y && apt-get install -y latexmk
+        sudo apt-get update -y && sudo apt-get install -y latexmk
 
     - name: Build documentation
       env:
