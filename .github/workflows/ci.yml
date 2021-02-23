@@ -32,8 +32,10 @@ jobs:
     - name: Build documentation
       env:
         READTHEDOCS: 'True'
-      run:
-        SPHINXOPTS='-nW -D imgmath_latex=pdflatex' make -C docs html
+      uses: xu-cheng/texlive-action/small@v1
+      with:
+        run:
+          SPHINXOPTS='-nW -D imgmath_latex=pdflatex' make -C docs html
 
   pre-commit:
 
