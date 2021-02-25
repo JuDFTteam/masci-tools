@@ -22,6 +22,16 @@ that way we ensure consistency
 """
 import numpy as np
 
+#Predefined constants in the Fleur Code (These are accepted in the inp.xml)
+FLEUR_DEFINED_CONSTANTS = {
+    'Pi': np.pi,
+    'Deg': 2 * np.pi / 360.0,
+    'Ang': 1.8897261247728981,
+    'nm': 18.897261247728981,
+    'pm': 0.018897261247728981,
+    'Bohr': 1.0
+}
+
 # NIST https://physics.nist.gov/cgi-bin/cuu/Value?hrev
 HTR_TO_EV = 27.211386245988  #(53)
 RY_TO_EV = 13.605693122994  #(26)
@@ -43,15 +53,3 @@ BOHR_A = 0.5291772108
 #1.8897261258369282
 #aiida-core units:
 #bohr_to_ang = 0.52917720859
-
-#Predefined constants in the Fleur Code (These are accepted in the inp.xml)
-FLEUR_DEFINED_CONSTANTS = {
-    'Pi': np.pi,
-    'Deg': 2 * np.pi / 360.0,
-    'Ang': 1.0 / BOHR_A,
-    'nm': 10.0 / BOHR_A,
-    'pm': 1.0 / (100.0 * BOHR_A),
-    'Bohr': 1.0
-}
-
-
