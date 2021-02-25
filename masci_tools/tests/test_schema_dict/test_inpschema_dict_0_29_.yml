@@ -947,17 +947,7 @@ tag_info:
       output: null
       relaxation: null
     optional_attribs: {}
-    order:
-    - comment
-    - constants
-    - calculationSetup
-    - cell
-    - xcFunctional
-    - atomSpecies
-    - atomGroups
-    - output
-    - forceTheorem
-    - relaxation
+    order: []
     several: !!set {}
     simple: !!set
       comment: null
@@ -1405,23 +1395,7 @@ tag_info:
       soc: null
       spinspiralqpointmesh: null
     optional_attribs: {}
-    order:
-    - cutoffs
-    - scfLoop
-    - coreElectrons
-    - magnetism
-    - bzIntegration
-    - prodBasis
-    - soc
-    - nocoParams
-    - oneDParams
-    - expertModes
-    - geometryOptimization
-    - ldaU
-    - rdmft
-    - spinSpiralQPointMesh
-    - fields
-    - energyParameterLimits
+    order: []
     several: !!set {}
     simple: !!set
       coreelectrons: null
@@ -2222,8 +2196,7 @@ tag_info:
       qvectors: null
     optional: !!set {}
     optional_attribs: {}
-    order:
-    - qVectors
+    order: []
     several: !!set {}
     simple: !!set {}
     text: !!set {}
@@ -2247,8 +2220,7 @@ tag_info:
       qvectors: null
     optional: !!set {}
     optional_attribs: {}
-    order:
-    - qVectors
+    order: []
     several: !!set {}
     simple: !!set {}
     text: !!set {}
@@ -2320,17 +2292,7 @@ tag_info:
       slice: F
       vacdos: F
       wannier: F
-    order:
-    - checks
-    - densityOfStates
-    - vacuumDOS
-    - plotting
-    - chargeDensitySlicing
-    - specialOutput
-    - coreSpectrum
-    - wannier
-    - magneticCircularDichroism
-    - unfoldingBand
+    order: []
     several: !!set {}
     simple: !!set
       chargedensityslicing: null
@@ -2505,9 +2467,7 @@ tag_info:
       ms: F
       sgwf: F
       socgwf: F
-    order:
-    - bandSelection
-    - jobList
+    order: []
     several: !!set {}
     simple: !!set
       bandselection: null
@@ -2538,9 +2498,7 @@ tag_info:
       displacements: null
       relaxation-history: null
     optional_attribs: {}
-    order:
-    - displacements
-    - relaxation-history
+    order: []
     several: !!set {}
     simple: !!set {}
     text: !!set {}
