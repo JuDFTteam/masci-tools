@@ -138,7 +138,6 @@ def set_inpchanges(xmltree, schema_dict, change_dict, path_spec=None):
     :returns: an etree of the xml-inp file with changes.
     """
     from masci_tools.util.xml.xml_setters_xpaths import xml_set_first_attrib_value, xml_set_text
-    from masci_tools.util.xml.common_xml_util import convert_to_fortran_bool
 
     if path_spec is None:
         path_spec = {}
@@ -153,11 +152,7 @@ def set_inpchanges(xmltree, schema_dict, change_dict, path_spec=None):
             raise ValueError(f"You try to set the key:'{key}' to : '{change_value}', but the key is unknown"
                              ' to the fleur plug-in')
 
-        text_attrib = False
-        if key in schema_dict['attrib_types']:
-            possible_types = schema_dict['attrib_types'][key]
-        else:
-            text_attrib = True
+        text_attrib = key not in schema_dict['attrib_types']
 
         key_spec = path_spec.get(key, {})
         #This method only support unique and unique_path attributes
@@ -175,25 +170,6 @@ def set_inpchanges(xmltree, schema_dict, change_dict, path_spec=None):
         if text_attrib:
             xml_set_text(xmltree, schema_dict, key_xpath, key_xpath, change_value)
         else:
-            if 'switch' in possible_types:
-                # TODO: a test here if path is plausible and if exist
-                # ggf. create tags and key.value is 'T' or 'F' if not convert,
-                # if garbage, exception
-                # convert user input into 'fleurbool'
-                fleur_bool = convert_to_fortran_bool(change_value)
-
-                # TODO: check if something in setup is inconsitent?
-                xml_set_first_attrib_value(xmltree, schema_dict, key_xpath, key_xpath, key, fleur_bool)
-            elif 'float' in possible_types:
-                newfloat = '{:.10f}'.format(change_value)
-                xml_set_first_attrib_value(xmltree, schema_dict, key_xpath, key_xpath, key, newfloat)
-            elif 'float_expression' in possible_types:
-                try:
-                    newfloat = '{:.10f}'.format(change_value)
-                except ValueError:
-                    newfloat = change_value
-                xml_set_first_attrib_value(xmltree, schema_dict, key_xpath, key_xpath, key, newfloat)
-            else:
-                xml_set_first_attrib_value(xmltree, schema_dict, key_xpath, key_xpath, key, change_value)
+            xml_set_first_attrib_value(xmltree, schema_dict, key_xpath, key_xpath, key, change_value)
 
     return xmltree

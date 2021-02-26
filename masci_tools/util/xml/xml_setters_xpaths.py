@@ -78,9 +78,8 @@ def xml_set_attrib_value(xmltree,
                          occurences=None,
                          create=False):
 
-    #TODO: Convert attrbutes according to their type and the allowed types
-
     from masci_tools.util.xml.xml_setters_basic import xml_set_attrib_value_no_create
+    from masci_tools.util.xml.common_xml_util import convert_attribute_to_xml
 
     if create:
         nodes = eval_xpath_create(xmltree, schema_dict, xpath, base_xpath, create_parents=True)
@@ -99,7 +98,14 @@ def xml_set_attrib_value(xmltree,
             f'Allowed attributes are: {attribs.original_case.values()}')
     attributename = attribs.original_case[attributename]
 
-    return xml_set_attrib_value_no_create(xmltree, xpath, attributename, attribv, occurrences=occurences)
+    warnings = []
+    converted_attribv, suc = convert_attribute_to_xml(attribv, schema_dict['attrib_types'][attributename], conversion_warnings=warnings)
+
+    if not suc:
+        raise ValueError(f"Failed to convert attribute values '{attribv}': \n"
+                         '\n'.join(warnings))
+
+    return xml_set_attrib_value_no_create(xmltree, xpath, attributename, converted_attribv, occurrences=occurences)
 
 
 def xml_set_first_attrib_value(xmltree, schema_dict, xpath, base_xpath, attributename, attribv, create=False):
@@ -116,8 +122,8 @@ def xml_set_first_attrib_value(xmltree, schema_dict, xpath, base_xpath, attribut
 
 def xml_set_text(xmltree, schema_dict, xpath, base_xpath, text, occurences=None, create=False):
 
-    #TODO: Convert text according to their type and the allowed types
     from masci_tools.util.xml.xml_setters_basic import xml_set_text_no_create
+    from masci_tools.util.xml.common_xml_util import convert_text_to_xml
 
     if create:
         nodes = eval_xpath_create(xmltree, schema_dict, xpath, base_xpath, create_parents=True)
@@ -128,7 +134,16 @@ def xml_set_text(xmltree, schema_dict, xpath, base_xpath, text, occurences=None,
         raise ValueError(f"Could not set text on path '{xpath}' because atleast one subtag is missing. "
                          'Use create=True to create the subtags')
 
-    return xml_set_text_no_create(xmltree, xpath, text, occurrences=occurences)
+    print(text)
+    possible_definitions = schema_dict['simple_elements'][base_xpath.split('/')[-1]]
+    warnings = []
+    converted_text, suc = convert_text_to_xml(text, possible_definitions , conversion_warnings=warnings)
+
+    if not suc:
+        raise ValueError(f"Failed to convert text values '{text}': \n"
+                         '\n'.join(warnings))
+
+    return xml_set_text_no_create(xmltree, xpath, converted_text, occurrences=occurences)
 
 
 def xml_set_first_text(xmltree, schema_dict, xpath, base_xpath, text, create=False):
