@@ -318,6 +318,37 @@ def convert_from_fortran_bool(stringbool, conversion_warnings=None, suc_return=T
         return converted_value
 
 
+def convert_to_fortran_bool(boolean):
+    """
+    Converts a Boolean as string to the format defined in the input
+
+    :param boolean: either a boolean or a string ('True', 'False', 'F', 'T')
+
+    :return: a string (either 't' or 'f')
+    """
+
+    if isinstance(boolean, bool):
+        if boolean:
+            new_string = 'T'
+            return new_string
+        else:
+            new_string = 'F'
+            return new_string
+    elif isinstance(boolean, str):  # basestring):
+        if boolean in ('True', 't', 'T'):
+            new_string = 'T'
+            return new_string
+        elif boolean in ('False', 'f', 'F'):
+            new_string = 'F'
+            return new_string
+        else:
+            raise ValueError("A string: {} for a boolean was given, which is not 'True',"
+                             "'False', 't', 'T', 'F' or 'f'".format(boolean))
+    else:
+        raise TypeError('convert_to_fortran_bool accepts only a string or '
+                        'bool as argument, given {} '.format(boolean))
+
+
 def eval_xpath(node, xpath, parser_info_out=None, list_return=False, namespaces=None):
     """
     Tries to evaluate an xpath expression. If it fails it logs it.
