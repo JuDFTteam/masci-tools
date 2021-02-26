@@ -27,9 +27,15 @@ def create_tag(xmltree, schema_dict, tag_name, complex_xpath=None, create_parent
     if complex_xpath is None:
         complex_xpath = parent_xpath
 
-    xmltree = create_tag_schema_dict(xmltree, schema_dict, complex_xpath, tag_name, parent_xpath, create_parents=create_parents)
+    xmltree = create_tag_schema_dict(xmltree,
+                                     schema_dict,
+                                     complex_xpath,
+                                     tag_name,
+                                     parent_xpath,
+                                     create_parents=create_parents)
 
     return xmltree
+
 
 def get_tag_or_create(xmltree, schema_dict, tag_name, create_parents=False, complex_xpath=None, **kwargs):
 

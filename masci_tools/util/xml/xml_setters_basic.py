@@ -19,6 +19,7 @@ to do these operations robustly
 from lxml import etree
 from masci_tools.util.xml.common_xml_util import eval_xpath
 
+
 def replace_tag(xmltree, xpath, newelement):
     """
     replaces a xml tag by another tag on an xmletree in place
@@ -27,6 +28,7 @@ def replace_tag(xmltree, xpath, newelement):
     :param xpathn: a path to the tag to be replaced
     :param newelement: a new tag
     """
+    import copy
     root = xmltree.getroot()
 
     nodes = eval_xpath(root, xpath, list_return=True)
@@ -34,9 +36,10 @@ def replace_tag(xmltree, xpath, newelement):
         parent = node.getparent()
         index = parent.index(node)
         parent.remove(node)
-        parent.insert(index, newelement)
+        parent.insert(index, copy.deepcopy(newelement))
 
     return xmltree
+
 
 def delete_att(xmltree, xpath, attrib):
     """
@@ -70,6 +73,7 @@ def delete_tag(xmltree, xpath):
         parent.remove(node)
     return xmltree
 
+
 def create_tag_xpath(xmltree, xpath, element, place_index=None, tag_order=None):
     """
     This method evaluates an xpath expresion and creates tag in an xmltree under the
@@ -98,10 +102,9 @@ def create_tag_xpath(xmltree, xpath, element, place_index=None, tag_order=None):
 
     parent_nodes = eval_xpath(xmltree, xpath, list_return=True)
 
-    if len(parent_nodes)==0:
+    if len(parent_nodes) == 0:
         raise ValueError(f"Could not create tag '{element_name}' because atleast one subtag is missing. "
-                          'Use create=True to create the subtags')
-
+                         'Use create=True to create the subtags')
 
     for parent in parent_nodes:
         element_to_write = copy.deepcopy(element)
@@ -109,7 +112,7 @@ def create_tag_xpath(xmltree, xpath, element, place_index=None, tag_order=None):
             try:
                 tag_index = tag_order.index(element_name)
             except ValueError as exc:
-                raise ValueError(f"The tag '{element_name}' was not found in the order list"
+                raise ValueError(f"The tag '{element_name}' was not found in the order list. "
                                  f'Allowed tags are: {tag_order}') from exc
 
             behind_tags = tag_order[:tag_index]
@@ -163,6 +166,7 @@ def create_tag_xpath(xmltree, xpath, element, place_index=None, tag_order=None):
 
     return xmltree
 
+
 def xml_set_attrib_value_no_create(xmltree, xpath, attributename, attribv, occurrences=None):
 
     from masci_tools.io.common_functions import is_sequence
@@ -179,11 +183,11 @@ def xml_set_attrib_value_no_create(xmltree, xpath, attributename, attribv, occur
         try:
             nodes = [nodes[occ] for occ in occurrences]
         except IndexError as exc:
-            raise ValueError("Wrong value for occurrences") from exc
+            raise ValueError('Wrong value for occurrences') from exc
 
     if is_sequence(attribv):
         if len(attribv) != len(nodes):
-            raise ValueError(f"Wrong length for attribute values. Expected {len(nodes)} items. Got: {attribv}")
+            raise ValueError(f'Wrong length for attribute values. Expected {len(nodes)} items. Got: {attribv}')
     else:
         attribv = [attribv] * len(nodes)
 
@@ -193,6 +197,7 @@ def xml_set_attrib_value_no_create(xmltree, xpath, attributename, attribv, occur
         node.set(attributename, value)
 
     return xmltree
+
 
 def xml_set_text_no_create(xmltree, xpath, text, occurrences=None):
 
@@ -210,11 +215,11 @@ def xml_set_text_no_create(xmltree, xpath, text, occurrences=None):
         try:
             nodes = [nodes[occ] for occ in occurrences]
         except IndexError as exc:
-            raise ValueError("Wrong value for occurrences") from exc
+            raise ValueError('Wrong value for occurrences') from exc
 
     if is_sequence(text):
         if len(text) != len(nodes):
-            raise ValueError(f"Wrong length for attribute values. Expected {len(nodes)} items. Got: {text}")
+            raise ValueError(f'Wrong length for text values. Expected {len(nodes)} items. Got: {text}')
     else:
         text = [text] * len(nodes)
 
@@ -222,8 +227,3 @@ def xml_set_text_no_create(xmltree, xpath, text, occurrences=None):
         node.text = text_val
 
     return xmltree
-
-
-
-
-
