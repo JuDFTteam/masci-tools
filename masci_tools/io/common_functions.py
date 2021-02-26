@@ -363,3 +363,17 @@ def camel_to_snake(name):
     """
     name = name.replace('-', '')
     return ''.join(['_' + c.lower() if c.isupper() else c for c in name]).lstrip('_')
+
+
+def is_sequence(arg):
+    """
+    Checks if arg is a sequence
+    """
+    if isinstance(arg, str):
+        return False
+    elif hasattr(arg, '__iter__'):
+        return True
+    elif not hasattr(arg, 'strip') and hasattr(arg, '__getitem__'):
+        return True
+    else:
+        return False
