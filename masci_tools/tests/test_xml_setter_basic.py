@@ -38,6 +38,7 @@ def test_xml_set_attrib_value_no_create_not_str(load_inpxml):
 
     assert str(eval_xpath(root, '/fleurInput/@TEST_ATT')) == '2145'
 
+
 def test_xml_set_attrib_value_no_create_errors(load_inpxml):
 
     from masci_tools.util.xml.common_xml_util import eval_xpath
@@ -47,13 +48,19 @@ def test_xml_set_attrib_value_no_create_errors(load_inpxml):
     root = xmltree.getroot()
 
     with pytest.raises(ValueError, match='Wrong value for occurrences'):
-        xml_set_attrib_value_no_create(xmltree, '/fleurInput/atomSpecies/species/mtSphere', 'radius', 'test', occurrences=5)
+        xml_set_attrib_value_no_create(xmltree,
+                                       '/fleurInput/atomSpecies/species/mtSphere',
+                                       'radius',
+                                       'test',
+                                       occurrences=5)
 
     with pytest.raises(ValueError, match='Wrong length for attribute values'):
-        xml_set_attrib_value_no_create(xmltree, '/fleurInput/atomSpecies/species/mtSphere', 'radius', ['test', 'too_much'], occurrences=[1])
+        xml_set_attrib_value_no_create(xmltree,
+                                       '/fleurInput/atomSpecies/species/mtSphere',
+                                       'radius', ['test', 'too_much'],
+                                       occurrences=[1])
 
     assert eval_xpath(root, '/fleurInput/atomSpecies/species/mtSphere/@radius') == ['2.20000000', '2.20000000']
-
 
 
 TEST_ATTRIB_RESULTS = [['test', 'test'], ['test', 'test2'], ['test', '2214'], ['test', '2.20000000'],
@@ -96,6 +103,7 @@ def test_xml_set_text_no_create(load_inpxml):
     xmltree = xml_set_text_no_create(xmltree, '/fleurInput', 'TEST_TEXT')
 
     assert eval_xpath(root, '/fleurInput').text == 'TEST_TEXT'
+
 
 def test_xml_set_text_no_create_errors(load_inpxml):
 
@@ -217,7 +225,6 @@ def test_replace_tag_single(load_inpxml):
     from masci_tools.util.xml.xml_setters_basic import replace_tag
     from lxml import etree
 
-
     replace_element = etree.Element('test_tag')
     replace_element.attrib['test_attrib'] = 'test'
 
@@ -226,7 +233,7 @@ def test_replace_tag_single(load_inpxml):
 
     assert len(eval_xpath(root, '/fleurInput/calculationSetup/cutoffs', list_return=True)) == 1
 
-    xmltree = replace_tag(xmltree,  '/fleurInput/calculationSetup/cutoffs', replace_element)
+    xmltree = replace_tag(xmltree, '/fleurInput/calculationSetup/cutoffs', replace_element)
 
     assert len(eval_xpath(root, '/fleurInput/calculationSetup/cutoffs', list_return=True)) == 0
 
@@ -242,7 +249,6 @@ def test_replace_tag_multiple(load_inpxml):
     from masci_tools.util.xml.xml_setters_basic import replace_tag
     from lxml import etree
 
-
     replace_element = etree.Element('test_tag')
     replace_element.attrib['test_attrib'] = 'test'
 
@@ -251,7 +257,7 @@ def test_replace_tag_multiple(load_inpxml):
 
     assert len(eval_xpath(root, '/fleurInput/atomSpecies/species/mtSphere', list_return=True)) == 2
 
-    xmltree = replace_tag(xmltree,  '/fleurInput/atomSpecies/species/mtSphere', replace_element)
+    xmltree = replace_tag(xmltree, '/fleurInput/atomSpecies/species/mtSphere', replace_element)
 
     assert len(eval_xpath(root, '/fleurInput/atomSpecies/species/mtSphere', list_return=True)) == 0
 
@@ -261,6 +267,7 @@ def test_replace_tag_multiple(load_inpxml):
     assert nodes[0].attrib.items() == [('test_attrib', 'test')]
     assert nodes[1].attrib.items() == [('test_attrib', 'test')]
 
+
 def test_create_tag_xpath_string_append(load_inpxml):
 
     from masci_tools.util.xml.common_xml_util import eval_xpath
@@ -269,7 +276,10 @@ def test_create_tag_xpath_string_append(load_inpxml):
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
     root = xmltree.getroot()
 
-    tags =  ['cutoffs', 'scfLoop', 'coreElectrons', 'xcFunctional', 'magnetism', 'soc', 'prodBasis', 'expertModes', 'geometryOptimization', 'ldaU']
+    tags = [
+        'cutoffs', 'scfLoop', 'coreElectrons', 'xcFunctional', 'magnetism', 'soc', 'prodBasis', 'expertModes',
+        'geometryOptimization', 'ldaU'
+    ]
 
     node = eval_xpath(root, '/fleurInput/calculationSetup')
 
@@ -281,6 +291,7 @@ def test_create_tag_xpath_string_append(load_inpxml):
 
     tags.append('test_tag')
     assert [child.tag for child in node.iterchildren()] == tags
+
 
 def test_create_tag_xpath_element_append(load_inpxml):
 
@@ -294,7 +305,10 @@ def test_create_tag_xpath_element_append(load_inpxml):
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
     root = xmltree.getroot()
 
-    tags =  ['cutoffs', 'scfLoop', 'coreElectrons', 'xcFunctional', 'magnetism', 'soc', 'prodBasis', 'expertModes', 'geometryOptimization', 'ldaU']
+    tags = [
+        'cutoffs', 'scfLoop', 'coreElectrons', 'xcFunctional', 'magnetism', 'soc', 'prodBasis', 'expertModes',
+        'geometryOptimization', 'ldaU'
+    ]
 
     node = eval_xpath(root, '/fleurInput/calculationSetup')
 
@@ -306,7 +320,8 @@ def test_create_tag_xpath_element_append(load_inpxml):
 
     tags.append('test_tag')
     assert [child.tag for child in node.iterchildren()] == tags
-    assert [child for child in node.iterchildren()][-1].attrib.items() == [('test_attrib', 'test')]
+    assert [child.attrib.items() for child in node.iterchildren()][-1] == [('test_attrib', 'test')]
+
 
 def test_create_tag_xpath_insert_first(load_inpxml):
 
@@ -316,7 +331,10 @@ def test_create_tag_xpath_insert_first(load_inpxml):
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
     root = xmltree.getroot()
 
-    tags =  ['cutoffs', 'scfLoop', 'coreElectrons', 'xcFunctional', 'magnetism', 'soc', 'prodBasis', 'expertModes', 'geometryOptimization', 'ldaU']
+    tags = [
+        'cutoffs', 'scfLoop', 'coreElectrons', 'xcFunctional', 'magnetism', 'soc', 'prodBasis', 'expertModes',
+        'geometryOptimization', 'ldaU'
+    ]
 
     node = eval_xpath(root, '/fleurInput/calculationSetup')
 
@@ -326,7 +344,10 @@ def test_create_tag_xpath_insert_first(load_inpxml):
 
     node = eval_xpath(root, '/fleurInput/calculationSetup')
 
-    assert [child.tag for child in node.iterchildren()] == ['test_tag', 'cutoffs', 'scfLoop', 'coreElectrons', 'xcFunctional', 'magnetism', 'soc', 'prodBasis', 'expertModes', 'geometryOptimization', 'ldaU']
+    assert [child.tag for child in node.iterchildren()] == [
+        'test_tag', 'cutoffs', 'scfLoop', 'coreElectrons', 'xcFunctional', 'magnetism', 'soc', 'prodBasis',
+        'expertModes', 'geometryOptimization', 'ldaU'
+    ]
 
 
 def test_create_tag_xpath_insert_middle(load_inpxml):
@@ -337,7 +358,10 @@ def test_create_tag_xpath_insert_middle(load_inpxml):
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
     root = xmltree.getroot()
 
-    tags =  ['cutoffs', 'scfLoop', 'coreElectrons', 'xcFunctional', 'magnetism', 'soc', 'prodBasis', 'expertModes', 'geometryOptimization', 'ldaU']
+    tags = [
+        'cutoffs', 'scfLoop', 'coreElectrons', 'xcFunctional', 'magnetism', 'soc', 'prodBasis', 'expertModes',
+        'geometryOptimization', 'ldaU'
+    ]
 
     node = eval_xpath(root, '/fleurInput/calculationSetup')
 
@@ -347,7 +371,11 @@ def test_create_tag_xpath_insert_middle(load_inpxml):
 
     node = eval_xpath(root, '/fleurInput/calculationSetup')
 
-    assert [child.tag for child in node.iterchildren()] == ['cutoffs', 'scfLoop', 'coreElectrons', 'xcFunctional', 'magnetism', 'test_tag', 'soc', 'prodBasis', 'expertModes', 'geometryOptimization', 'ldaU']
+    assert [child.tag for child in node.iterchildren()] == [
+        'cutoffs', 'scfLoop', 'coreElectrons', 'xcFunctional', 'magnetism', 'test_tag', 'soc', 'prodBasis',
+        'expertModes', 'geometryOptimization', 'ldaU'
+    ]
+
 
 def test_create_tag_xpath_tag_order_all_single(load_inpxml):
 
@@ -357,13 +385,19 @@ def test_create_tag_xpath_tag_order_all_single(load_inpxml):
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
     root = xmltree.getroot()
 
-    tags =  ['cutoffs', 'scfLoop', 'coreElectrons', 'xcFunctional', 'magnetism', 'soc', 'prodBasis', 'expertModes', 'geometryOptimization', 'ldaU']
+    tags = [
+        'cutoffs', 'scfLoop', 'coreElectrons', 'xcFunctional', 'magnetism', 'soc', 'prodBasis', 'expertModes',
+        'geometryOptimization', 'ldaU'
+    ]
 
     node = eval_xpath(root, '/fleurInput/calculationSetup')
 
     assert [child.tag for child in node.iterchildren()] == tags
 
-    order = ['cutoffs', 'scfLoop', 'coreElectrons', 'xcFunctional', 'magnetism', 'test_tag', 'soc', 'prodBasis', 'expertModes', 'geometryOptimization', 'ldaU']
+    order = [
+        'cutoffs', 'scfLoop', 'coreElectrons', 'xcFunctional', 'magnetism', 'test_tag', 'soc', 'prodBasis',
+        'expertModes', 'geometryOptimization', 'ldaU'
+    ]
     xmltree = create_tag_xpath(xmltree, '/fleurInput/calculationSetup', 'test_tag', tag_order=order)
 
     node = eval_xpath(root, '/fleurInput/calculationSetup')
@@ -379,7 +413,14 @@ def test_create_tag_xpath_tag_order_multiple(load_inpxml):
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
     root = xmltree.getroot()
 
-    tags =  [['mtSphere', 'atomicCutoffs', 'electronConfig', 'energyParameters', 'lo', 'lo',],[ 'mtSphere', 'atomicCutoffs', 'electronConfig', 'energyParameters', 'lo']]
+    tags = [[
+        'mtSphere',
+        'atomicCutoffs',
+        'electronConfig',
+        'energyParameters',
+        'lo',
+        'lo',
+    ], ['mtSphere', 'atomicCutoffs', 'electronConfig', 'energyParameters', 'lo']]
 
     nodes = eval_xpath(root, '/fleurInput/atomSpecies/species')
 
@@ -388,7 +429,15 @@ def test_create_tag_xpath_tag_order_multiple(load_inpxml):
     order = ['mtSphere', 'atomicCutoffs', 'electronConfig', 'test_tag', 'energyParameters', 'lo']
     xmltree = create_tag_xpath(xmltree, '/fleurInput/atomSpecies/species', 'test_tag', tag_order=order)
 
-    tags =  [['mtSphere', 'atomicCutoffs', 'electronConfig', 'test_tag', 'energyParameters', 'lo', 'lo',],[ 'mtSphere', 'atomicCutoffs', 'electronConfig', 'test_tag', 'energyParameters', 'lo']]
+    tags = [[
+        'mtSphere',
+        'atomicCutoffs',
+        'electronConfig',
+        'test_tag',
+        'energyParameters',
+        'lo',
+        'lo',
+    ], ['mtSphere', 'atomicCutoffs', 'electronConfig', 'test_tag', 'energyParameters', 'lo']]
 
     nodes = eval_xpath(root, '/fleurInput/atomSpecies/species')
 
@@ -403,7 +452,14 @@ def test_create_tag_xpath_tag_order_multiple_selection(load_inpxml):
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
     root = xmltree.getroot()
 
-    tags =  [['mtSphere', 'atomicCutoffs', 'electronConfig', 'energyParameters', 'lo', 'lo',],[ 'mtSphere', 'atomicCutoffs', 'electronConfig', 'energyParameters', 'lo']]
+    tags = [[
+        'mtSphere',
+        'atomicCutoffs',
+        'electronConfig',
+        'energyParameters',
+        'lo',
+        'lo',
+    ], ['mtSphere', 'atomicCutoffs', 'electronConfig', 'energyParameters', 'lo']]
 
     nodes = eval_xpath(root, '/fleurInput/atomSpecies/species')
 
@@ -412,11 +468,20 @@ def test_create_tag_xpath_tag_order_multiple_selection(load_inpxml):
     order = ['mtSphere', 'atomicCutoffs', 'electronConfig', 'test_tag', 'energyParameters', 'lo']
     xmltree = create_tag_xpath(xmltree, "/fleurInput/atomSpecies/species[@name='Fe-1']", 'test_tag', tag_order=order)
 
-    tags =  [['mtSphere', 'atomicCutoffs', 'electronConfig', 'test_tag', 'energyParameters', 'lo', 'lo',],[ 'mtSphere', 'atomicCutoffs', 'electronConfig', 'energyParameters', 'lo']]
+    tags = [[
+        'mtSphere',
+        'atomicCutoffs',
+        'electronConfig',
+        'test_tag',
+        'energyParameters',
+        'lo',
+        'lo',
+    ], ['mtSphere', 'atomicCutoffs', 'electronConfig', 'energyParameters', 'lo']]
 
     nodes = eval_xpath(root, '/fleurInput/atomSpecies/species')
 
     assert [[child.tag for child in node.iterchildren()] for node in nodes] == tags
+
 
 def test_create_tag_xpath_tag_order_multiple_beginning(load_inpxml):
 
@@ -426,20 +491,36 @@ def test_create_tag_xpath_tag_order_multiple_beginning(load_inpxml):
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
     root = xmltree.getroot()
 
-    tags =  [['mtSphere', 'atomicCutoffs', 'electronConfig', 'energyParameters', 'lo', 'lo',],[ 'mtSphere', 'atomicCutoffs', 'electronConfig', 'energyParameters', 'lo']]
+    tags = [[
+        'mtSphere',
+        'atomicCutoffs',
+        'electronConfig',
+        'energyParameters',
+        'lo',
+        'lo',
+    ], ['mtSphere', 'atomicCutoffs', 'electronConfig', 'energyParameters', 'lo']]
 
     nodes = eval_xpath(root, '/fleurInput/atomSpecies/species')
 
     assert [[child.tag for child in node.iterchildren()] for node in nodes] == tags
 
-    order = ['test_tag','mtSphere', 'atomicCutoffs', 'electronConfig', 'energyParameters', 'lo']
-    xmltree = create_tag_xpath(xmltree, "/fleurInput/atomSpecies/species", 'test_tag', tag_order=order)
+    order = ['test_tag', 'mtSphere', 'atomicCutoffs', 'electronConfig', 'energyParameters', 'lo']
+    xmltree = create_tag_xpath(xmltree, '/fleurInput/atomSpecies/species', 'test_tag', tag_order=order)
 
-    tags =  [['test_tag', 'mtSphere', 'atomicCutoffs', 'electronConfig', 'energyParameters', 'lo', 'lo',],['test_tag', 'mtSphere', 'atomicCutoffs', 'electronConfig', 'energyParameters', 'lo']]
+    tags = [[
+        'test_tag',
+        'mtSphere',
+        'atomicCutoffs',
+        'electronConfig',
+        'energyParameters',
+        'lo',
+        'lo',
+    ], ['test_tag', 'mtSphere', 'atomicCutoffs', 'electronConfig', 'energyParameters', 'lo']]
 
     nodes = eval_xpath(root, '/fleurInput/atomSpecies/species')
 
     assert [[child.tag for child in node.iterchildren()] for node in nodes] == tags
+
 
 def test_create_tag_errors(load_inpxml):
 
@@ -447,13 +528,13 @@ def test_create_tag_errors(load_inpxml):
 
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
 
-    with pytest.raises(ValueError,match=r"Could not create tag 'test_tag' because atleast one subtag is missing."):
-        create_tag_xpath(xmltree, "/fleurInput/calculationSetup/not_existent", 'test_tag')
+    with pytest.raises(ValueError, match=r"Could not create tag 'test_tag' because atleast one subtag is missing."):
+        create_tag_xpath(xmltree, '/fleurInput/calculationSetup/not_existent', 'test_tag')
 
     order = ['mtSphere', 'atomicCutoffs', 'electronConfig', 'energyParameters', 'lo']
-    with pytest.raises(ValueError,match=r"The tag 'test_tag' was not found in the order list"):
-        create_tag_xpath(xmltree, "/fleurInput/atomSpecies/species", 'test_tag', tag_order=order)
+    with pytest.raises(ValueError, match=r"The tag 'test_tag' was not found in the order list"):
+        create_tag_xpath(xmltree, '/fleurInput/atomSpecies/species', 'test_tag', tag_order=order)
 
     order = ['atomicCutoffs', 'electronConfig', 'energyParameters', 'lo']
-    with pytest.raises(ValueError,match=r"Did not find existing elements in the tag_order list: {'mtSphere'}"):
-        create_tag_xpath(xmltree, "/fleurInput/atomSpecies/species", 'lo', tag_order=order)
+    with pytest.raises(ValueError, match=r"Did not find existing elements in the tag_order list: {'mtSphere'}"):
+        create_tag_xpath(xmltree, '/fleurInput/atomSpecies/species', 'lo', tag_order=order)

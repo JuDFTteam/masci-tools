@@ -98,7 +98,14 @@ def xml_set_attrib_value(xmltree,
 
 def xml_set_first_attrib_value(xmltree, schema_dict, xpath, base_xpath, attributename, attribv, create=False):
 
-    return xml_set_attrib_value(xmltree, schema_dict, xpath, base_xpath, attributename, attribv, create=create, occurences=0)
+    return xml_set_attrib_value(xmltree,
+                                schema_dict,
+                                xpath,
+                                base_xpath,
+                                attributename,
+                                attribv,
+                                create=create,
+                                occurences=0)
 
 
 def xml_set_text(xmltree, schema_dict, xpath, base_xpath, text, occurences=None, create=False):
