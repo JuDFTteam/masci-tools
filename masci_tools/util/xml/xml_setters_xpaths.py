@@ -275,3 +275,62 @@ def xml_set_complex_tag(xmltree, schema_dict, xpath, base_xpath, attributedict, 
                                                   create=create)
 
     return xmltree
+
+def xml_add_number_to_attrib(xmltree, schema_dict, xpath, base_xpath, attributename, add_number, mode='abs', occurrences=None):
+
+    from masci_tools.util.schema_dict_util import read_constants
+    from masci_tools.util.xml.common_xml_util import convert_xml_attribute
+
+    if attributename not in schema_dict['attrib_types']:
+        raise ValueError(f"You try to shift the attribute:'{attributename}' , but the key is unknown to the fleur plug-in")
+
+    possible_types = schema_dict['attrib_types'][attributename]
+
+
+    if not etree.iselement(xmltree):
+        constants = read_constants(xmltree.getroot(), schema_dict)
+    else:
+        constants = read_constants(xmltree, schema_dict)
+
+    if 'float' not in possible_types and \
+       'float_expression' not in possible_types and \
+       'int' not in possible_types:
+        raise ValueError(f"Given attribute name '{attributename}' is not float or int")
+
+    if not xpath.endswith(f'/@{attributename}'):
+        xpath = '/@'.join([xpath, attributename])
+
+    stringattribute = eval_xpath(xmltree, xpath)
+
+    if isinstance(stringattribute, list):
+        if len(stringattribute) == 0:
+            raise ValueError(f"No attribute values found for '{attributename}'. Cannot add number")
+
+    attribvalues, suc = convert_xml_attribute(stringattribute,
+                                              possible_types,
+                                              constants=constants)
+
+    if not suc or any(value is None for value in attribvalues):
+        raise ValueError(f"Something went wrong finding values found for '{attributename}'. Cannot add number")
+
+    if not isinstance(attribvalues, list):
+        attribvalues = [attribvalues]
+
+    if mode == 'abs':
+        attribvalues = [value + float(add_number) for value in attribvalues]
+    elif mode == 'rel':
+        attribvalues = [value * float(add_number) for value in attribvalues]
+
+    if 'float' in possible_types or 'float_expression' in possible_types:
+        pass
+    elif 'int' in possible_types:
+        if any(not value.is_integer() for value in attribvalues):
+            raise ValueError('You are trying to write a float to an integer attribute')
+        attribvalues = [int(value) for value in attribvalues]
+
+    xmltree = xml_set_attrib_value(xmltree, schema_dict, xpath, base_xpath, attributename, attribvalues, occurences=occurrences)
+
+    return xmltree
+
+def xml_add_number_to_first_attrib(xmltree, schema_dict, xpath, attributename, add_number, mode='abs'):
+    return xml_add_number_to_attrib(xmltree, schema_dict, xpath, attributename, add_number, mode=mode, occurrences=0)

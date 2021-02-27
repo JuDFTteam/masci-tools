@@ -37,21 +37,55 @@ def create_tag(xmltree, schema_dict, tag_name, complex_xpath=None, create_parent
 
     return xmltree
 
+def add_number_to_attrib(xmltree, schema_dict, attributename, add_number, mode='abs', occurrences=None, **kwargs):
 
-def get_tag_or_create(xmltree, schema_dict, tag_name, create_parents=False, complex_xpath=None, **kwargs):
+    from masci_tools.util.xml.xml_setters_xpaths import xml_add_number_to_attrib
 
-    from masci_tools.util.xml.xml_setters_xpaths import eval_xpath_create
+    attrib_xpath = get_attrib_xpath(schema_dict, attributename, **kwargs)
 
-    base_xpath = get_tag_xpath(schema_dict, tag_name, **kwargs)
+    base_xpath, attributename = tuple(attrib_xpath.split('/@'))
 
-    parent_xpath, tag_name = '/'.join(base_xpath.split('/')[:-1]), base_xpath.split('/')[-1]
+    xmltree = xml_add_number_to_attrib(xmltree, schema_dict, attrib_xpath, base_xpath, attributename, add_number, mode=mode, occurrences=occurrences)
+
+def add_number_to_first_attrib(xmltree, schema_dict, attributename, add_number, mode='abs', **kwargs):
+
+    return add_number_to_attrib(xmltree, schema_dict, attributename, add_number, mode='abs', occurrences=0, **kwargs)
+
+
+def set_attrib_value(xmltree, schema_dict, attributename, attribv, complex_xpath=None, occurrences=None, create=False, **kwargs):
+
+    from masci_tools.util.xml.xml_setters_xpaths import xml_set_attrib_value
+
+    base_xpath = get_attrib_xpath(schema_dict, attributename, **kwargs)
+
+    base_xpath, attributename = tuple(base_xpath.split('@'))
+
     if complex_xpath is None:
-        complex_xpath = parent_xpath
+        complex_xpath = base_xpath
 
-    xmltree = eval_xpath_create(xmltree, schema_dict, complex_xpath, base_xpath, create_parents=create_parents)
+    xmltree = xml_set_attrib_value(xmltree, schema_dict, complex_xpath, base_xpath, attributename, attribv, occurrences=occurrences, create=create)
 
     return xmltree
 
+def set_first_attrib_value(xmltree, schema_dict, attributename, attribv, complex_xpath=None, create=False, **kwargs):
+
+    return set_attrib_value(xmltree, schema_dict, attributename, attribv, complex_xpath=complex_xpath, create=create, occurrences=0, **kwargs)
+
+def set_text(xmltree, schema_dict, tag_name, text, complex_xpath=None, occurrences=None, create=False, **kwargs):
+
+    from masci_tools.util.xml.xml_setters_xpaths import xml_set_text
+
+    base_xpath = get_tag_xpath(schema_dict, tag_name, **kwargs)
+
+    if complex_xpath is None:
+        complex_xpath = base_xpath
+
+    xmltree = xml_set_text(xmltree, schema_dict, complex_xpath, base_xpath, tag_name, text, occurrences=occurrences, create=create)
+
+    return xmltree
+
+def set_first_text(xmltree, schema_dict, attributename, attribv, complex_xpath=None, create=False, **kwargs):
+    return set_text(xmltree, schema_dict, attributename, attribv, complex_xpath=complex_xpath, create=create, occurrences=0, **kwargs)
 
 def set_simple_tag(xmltree, schema_dict, tag_name, changes, create_parents=False, **kwargs):
 
@@ -81,11 +115,51 @@ def set_complex_tag(xmltree, schema_dict, tag_name, changes, create=False, **kwa
     return xml_set_complex_tag(xmltree, schema_dict, base_xpath, base_xpath, changes, create=create)
 
 
+def set_species_label(xmltree, schema_dict, atom_label, attributedict, create=False):
+    """
+    This method calls :func:`~masci_tools.util.xml.xml_setters_names.set_species()`
+    method for a certain atom species that corresponds to an atom with a given label
+
+    :param xmltree: xml etree of the inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
+    :param atom_label: string, a label of the atom which specie will be changed. 'all' to change all the species
+    :param attributedict: a python dict specifying what you want to change.
+    :param create: bool, if species does not exist create it and all subtags?
+    """
+    from masci_tools.util.schema_dict_util import tag_exists, eval_simple_xpath
+    from masci_tools.util.xml.common_xml_util import get_xml_attribute
+
+    if atom_label == 'all':
+        return set_species(xmltree, schema_dict, 'all', attributedict, create=create)
+
+    atom_label = '{: >20}'.format(atom_label)
+    all_groups = eval_simple_xpath(xmltree, schema_dict, 'atomGroup', list_return=True)
+
+    species_to_set = set()
+
+    # set all species, where given label is present
+    for group in all_groups:
+        if tag_exists(group, schema_dict, 'filmPos'):
+            atoms = eval_simple_xpath(group, 'filmPos')
+        else:
+            atoms = eval_simple_xpath(group, 'relPos')
+        for atom in atoms:
+            label = get_xml_attribute(atom, 'label')
+            if label == atom_label:
+                species_to_set.add(get_xml_attribute(group, 'species'))
+
+    for species_name in species_to_set:
+        xmltree = set_species(xmltree, schema_dict, species_name, attributedict, create=create)
+
+    return xmltree
+
+
 def set_species(xmltree, schema_dict, species_name, attributedict, create=False):
     """
     Method to set parameters of a species tag of the fleur inp.xml file.
 
-    :param fleurinp_tree_copy: xml etree of the inp.xml
+    :param xmltree: xml etree of the inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
     :param species_name: string, name of the specie you want to change
     :param attributedict: a python dict specifying what you want to change.
     :param create: bool, if species does not exist create it and all subtags?
@@ -93,7 +167,7 @@ def set_species(xmltree, schema_dict, species_name, attributedict, create=False)
     :raises ValueError: if species name is non existent in inp.xml and should not be created.
                         also if other given tags are garbage. (errors from eval_xpath() methods)
 
-    :return fleurinp_tree_copy: xml etree of the new inp.xml
+    :return xmltree: xml etree of the new inp.xml
 
     **attributedict** is a python dictionary containing dictionaries that specify attributes
     to be set inside the certain specie. For example, if one wants to set a MT radius it
@@ -125,6 +199,209 @@ def set_species(xmltree, schema_dict, species_name, attributedict, create=False)
         xpath_species = f'{base_xpath_species}[@name = "{species_name}"]'
 
     return xml_set_complex_tag(xmltree, schema_dict, xpath_species, base_xpath_species, attributedict, create=create)
+
+def shift_value_species_label(xmltree,
+                              schema_dict,
+                              atom_label,
+                              attributename,
+                              value_given,
+                              mode='abs',
+                              **kwargs):
+    """
+    Shifts value of a specie by label
+    if at_label contains 'all' then applies to all species
+
+    :param fleurinp_tree_copy: xml etree of the inp.xml
+    :param at_label: string, a label of the atom which specie will be changed. 'all' if set up all species
+    :param attr_name: name of the attribute to change
+    :param value_given: value to add or to multiply by
+    :param mode: 'rel' for multiplication or 'abs' for addition
+    """
+    from masci_tools.util.schema_dict_util import get_tag_xpath, get_attrib_xpath
+    from masci_tools.util.schema_dic_util import tag_exists, eval_simple_xpath
+    from masci_tools.util.xml.common_xml_util import get_xml_attribute
+    from masci_tools.util.xml.xml_setters_xpaths import xml_add_number_to_attrib
+
+    if 'contains' in kwargs:
+        contains = kwargs.get('contains')
+        if not isinstance(contains, list):
+            contains = [contains]
+        contains.append('species')
+        kwargs['contains'] = contains
+    else:
+        kwargs['contains'] = 'species'
+
+    if 'exclude' not in kwargs:
+        kwargs['exclude'] = ['other']
+    elif 'other' not in kwargs['exclude']:
+        kwargs['exclude'].append('other')
+
+
+    species_base_path = get_tag_xpath(schema_dict, 'species')
+    attr_base_path = get_attrib_xpath(schema_dict,
+                                      attributename,
+                                      **kwargs)
+    attrib_base_xpath, attributename = tuple(attr_base_path.split('/@'))
+
+    specie = ''
+    if atom_label != 'all':
+        atom_label = '{: >20}'.format(atom_label)
+    all_groups = eval_simple_xpath(xmltree, schema_dict, 'atomGroup', list_return=True)
+
+    species_to_set = set()
+
+    for group in all_groups:
+        if tag_exists(group, schema_dict, 'filmPos'):
+            atoms = eval_simple_xpath(group, 'filmPos')
+        else:
+            atoms = eval_simple_xpath(group, 'relPos')
+        for atom in atoms:
+            label = get_xml_attribute(atom, 'label')
+            if atom_label in ('all', label):
+                species_to_set.add(get_xml_attribute(group, 'species'))
+
+    for species_name in species_to_set:
+
+        xpath_species = f'{species_base_path}[@name = "{specie}"]'
+        attrib_xpath = attr_base_path.replace(species_base_path, xpath_species)
+
+        xmltree = xml_add_number_to_attrib(xmltree, schema_dict, attrib_xpath, attrib_base_xpath, attributename, value_given, mode=mode)
+
+    return xmltree
+
+
+def set_atomgroup_label(xmltree, schema_dict, atom_label, attributedict, create=False):
+    """
+    This method calls :func:`~aiida_fleur.tools.xml_util.change_atomgr_att()`
+    method for a certain atom specie that corresponds to an atom with a given label.
+
+    :param fleurinp_tree_copy: xml etree of the inp.xml
+    :param at_label: string, a label of the atom which specie will be changed. 'all' to change all the species
+    :param attributedict: a python dict specifying what you want to change.
+
+    :return fleurinp_tree_copy: xml etree of the new inp.xml
+
+    **attributedict** is a python dictionary containing dictionaries that specify attributes
+    to be set inside the certain specie. For example, if one wants to set a beta noco parameter it
+    can be done via::
+
+        'attributedict': {'nocoParams': [('beta', val)]}
+
+    ``force`` and ``nocoParams`` keys are supported.
+    To find possible keys of the inner dictionary please refer to the FLEUR documentation flapw.de
+    """
+    from masci_tools.util.schema_dict_util import tag_exists, eval_simple_xpath
+    from masci_tools.util.xml.common_xml_util import get_xml_attribute
+
+    if atom_label == 'all':
+        xmltree = set_atomgroup(xmltree,
+                                schema_dict,
+                                attributedict,
+                                position=None,
+                                species='all')
+        return xmltree
+
+    atom_label = '{: >20}'.format(atom_label)
+    all_groups = eval_simple_xpath(xmltree, schema_dict, 'atomGroup', list_return=True)
+
+    species_to_set = set()
+
+    # set all species, where given label is present
+    for group in all_groups:
+        if tag_exists(group, schema_dict, 'filmPos'):
+            atoms = eval_simple_xpath(group, 'filmPos')
+        else:
+            atoms = eval_simple_xpath(group, 'relPos')
+        for atom in atoms:
+            label = get_xml_attribute(atom, 'label')
+            if label == atom_label:
+                species_to_set.add(get_xml_attribute(group, 'species'))
+
+    for species_name in species_to_set:
+        xmltree = set_atomgroup(xmltree,
+                                schema_dict,
+                                attributedict,
+                                position=None,
+                                species=species_name)
+
+    return xmltree
+
+
+def set_atomgroup(xmltree, schema_dict, attributedict, position=None, species=None, create=False):
+    """
+    Method to set parameters of an atom group of the fleur inp.xml file.
+
+    :param fleurinp_tree_copy: xml etree of the inp.xml
+    :param attributedict: a python dict specifying what you want to change.
+    :param position: position of an atom group to be changed. If equals to 'all', all species will be changed
+    :param species: atom groups, corresponding to the given specie will be changed
+    :param create: bool, if species does not exist create it and all subtags?
+
+    :return fleurinp_tree_copy: xml etree of the new inp.xml
+
+    **attributedict** is a python dictionary containing dictionaries that specify attributes
+    to be set inside the certain specie. For example, if one wants to set a beta noco parameter it
+    can be done via::
+
+        'attributedict': {'nocoParams': {'beta': val]}
+
+    ``force`` and ``nocoParams`` keys are supported.
+    To find possible keys of the inner dictionary please refer to the FLEUR documentation flapw.de
+    """
+    from masci_tools.util.schema_dict_util import get_tag_xpath
+    from masci_tools.util.xml.xml_setters_xpaths import xml_set_complex_tag
+
+    atomgroup_base_path = get_tag_xpath(schema_dict, 'atomGroup')
+    atomgroup_xpath = atomgroup_base_path
+
+    if not position and not species:  # not specfied what to change
+        return xmltree
+
+    if position:
+        if not position == 'all':
+            atomgroup_xpath = f'{atomgroup_base_path}[{position}]'
+    if species:
+        if not species == 'all':
+            atomgroup_xpath = f'{atomgroup_base_path}[@species = "{species}"]'
+
+    xmltree = xml_set_complex_tag(xmltree, schema_dict, atomgroup_xpath, atomgroup_base_path,
+                                  attributedict, create=create)
+
+    return xmltree
+
+
+
+def shift_value(xmltree, schema_dict, change_dict, mode='abs', path_spec=None):
+    """
+    Shifts numertical values of some tags directly in the inp.xml file.
+
+    :param fleurinp_tree_copy: a lxml tree that represents inp.xml
+    :param change_dict: a python dictionary with the keys to shift.
+    :param mode: 'abs' if change given is absolute, 'rel' if relative
+
+    :returns new_tree: a lxml tree with shifted values
+
+    An example of change_dict::
+
+            change_dict = {'itmax' : 1, 'dVac': -0.123}
+    """
+
+    if path_spec is None:
+        path_spec = {}
+
+    for key, value_given in change_dict.items():
+
+        key_spec = path_spec.get(key, {})
+        #This method only support unique and unique_path attributes
+        if 'exclude' not in key_spec:
+            key_spec['exclude'] = ['other']
+        elif 'other' not in key_spec['exclude']:
+            key_spec['exclude'].append('other')
+
+        xmltree = add_number_to_first_attrib(xmltree, schema_dict, key, value_given, mode=mode, **key_spec)
+
+
+    return xmltree
 
 
 def set_inpchanges(xmltree, schema_dict, change_dict, path_spec=None):
