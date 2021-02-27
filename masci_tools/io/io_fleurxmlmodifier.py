@@ -101,10 +101,10 @@ class FleurXMLModifier:
             'set_first_attrib_value': self.set_first_attrib_value,
             'add_number_to_attrib': self.add_number_to_attrib,
             'add_number_to_first_attrib': self.add_number_to_first_attrib,
-            'create_tag_xpath': self.create_tag_xpath,
-            'replace_tag': self.replace_tag,
-            'delete_tag': self.delete_tag,
-            'delete_att': self.delete_att,
+            'xml_create_tag': self.xml_create_tag,
+            'xml_replace_tag': self.xml_replace_tag,
+            'xml_delete_tag': self.xml_delete_tag,
+            'xml_delete_att': self.xml_delete_att,
             'xml_set_attrib_value_no_create': self.xml_set_attrib_value_no_create,
             'xml_set_text_no_create': self.xml_set_text_no_create,
             'set_nmmpmat': self.set_nmmpmat,
@@ -173,17 +173,17 @@ class FleurXMLModifier:
     def add_number_to_first_attrib(self, *args, **kwargs):
         self._tasks.append(ModifierTask('add_number_to_first_attrib', args, kwargs))
 
-    def create_tag_xpath(self, *args, **kwargs):
-        self._tasks.append(ModifierTask('create_tag_xpath', args, kwargs))
+    def xml_create_tag(self, *args, **kwargs):
+        self._tasks.append(ModifierTask('xml_create_tag', args, kwargs))
 
-    def replace_tag(self, *args, **kwargs):
-        self._tasks.append(ModifierTask('replace_tag', args, kwargs))
+    def xml_replace_tag(self, *args, **kwargs):
+        self._tasks.append(ModifierTask('xml_replace_tag', args, kwargs))
 
-    def delete_tag(self, *args, **kwargs):
-        self._tasks.append(ModifierTask('delete_tag', args, kwargs))
+    def xml_delete_tag(self, *args, **kwargs):
+        self._tasks.append(ModifierTask('xml_delete_tag', args, kwargs))
 
-    def delete_att(self, *args, **kwargs):
-        self._tasks.append(ModifierTask('delete_att', args, kwargs))
+    def xml_delete_att(self, *args, **kwargs):
+        self._tasks.append(ModifierTask('xml_delete_att', args, kwargs))
 
     def xml_set_attrib_value_no_create(self, *args, **kwargs):
         self._tasks.append(ModifierTask('xml_set_attrib_value_no_create', args, kwargs))

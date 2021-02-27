@@ -19,7 +19,7 @@ from masci_tools.util.schema_dict_util import get_attrib_xpath
 
 def create_tag(xmltree, schema_dict, tag_name, complex_xpath=None, create_parents=False, **kwargs):
 
-    from masci_tools.util.xml.xml_setters_xpaths import create_tag_schema_dict
+    from masci_tools.util.xml.xml_setters_xpaths import xml_create_tag_schema_dict
 
     base_xpath = get_tag_xpath(schema_dict, tag_name, **kwargs)
 
@@ -28,7 +28,7 @@ def create_tag(xmltree, schema_dict, tag_name, complex_xpath=None, create_parent
     if complex_xpath is None:
         complex_xpath = parent_xpath
 
-    xmltree = create_tag_schema_dict(xmltree,
+    xmltree = xml_create_tag_schema_dict(xmltree,
                                      schema_dict,
                                      complex_xpath,
                                      parent_xpath,
@@ -452,7 +452,7 @@ def set_inpchanges(xmltree, schema_dict, change_dict, path_spec=None):
 
     :returns: an etree of the xml-inp file with changes.
     """
-    from masci_tools.util.xml.xml_setters_xpaths import xml_set_first_attrib_value, xml_set_text
+    from masci_tools.util.xml.xml_setters_xpaths import xml_set_first_attrib_value, xml_set_first_text
 
     if path_spec is None:
         path_spec = {}
@@ -483,7 +483,7 @@ def set_inpchanges(xmltree, schema_dict, change_dict, path_spec=None):
             key_xpath, key = tuple(key_xpath.split('/@'))
 
         if text_attrib:
-            xml_set_text(xmltree, schema_dict, key_xpath, key_xpath, change_value)
+            xml_set_first_text(xmltree, schema_dict, key_xpath, key_xpath, change_value)
         else:
             xml_set_first_attrib_value(xmltree, schema_dict, key_xpath, key_xpath, key, change_value)
 

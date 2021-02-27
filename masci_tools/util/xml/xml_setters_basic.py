@@ -20,7 +20,7 @@ from lxml import etree
 from masci_tools.util.xml.common_xml_util import eval_xpath
 
 
-def replace_tag(xmltree, xpath, newelement):
+def xml_replace_tag(xmltree, xpath, newelement):
     """
     replaces a xml tag by another tag on an xmletree in place
 
@@ -41,7 +41,7 @@ def replace_tag(xmltree, xpath, newelement):
     return xmltree
 
 
-def delete_att(xmltree, xpath, attrib):
+def xml_delete_att(xmltree, xpath, attrib):
     """
     Deletes an xml attribute in an xmletree.
 
@@ -59,7 +59,7 @@ def delete_att(xmltree, xpath, attrib):
     return xmltree
 
 
-def delete_tag(xmltree, xpath):
+def xml_delete_tag(xmltree, xpath):
     """
     Deletes an xml tag in an xmletree.
 
@@ -74,7 +74,7 @@ def delete_tag(xmltree, xpath):
     return xmltree
 
 
-def create_tag_xpath(xmltree, xpath, element, place_index=None, tag_order=None):
+def xml_create_tag(xmltree, xpath, element, place_index=None, tag_order=None):
     """
     This method evaluates an xpath expresion and creates tag in an xmltree under the
     returned nodes. If the path does exist things will be overwritten, or created.
