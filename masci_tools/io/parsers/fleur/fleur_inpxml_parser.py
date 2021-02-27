@@ -72,10 +72,10 @@ def inpxml_parser(inpxmlfile, version=None, parser_info_out=None):
     try:
         validate_xml(xmltree, schema_dict.xmlschema, error_header='Input file does not validate against the schema')
     except etree.DocumentInvalid as err:
-
-        parser_info_out['parser_warnings'].append(str(err))
+        errmsg = str(err)
+        parser_info_out['parser_warnings'].append(errmsg)
         if not ignore_validation:
-            raise ValueError from err
+            raise ValueError(errmsg) from err
 
     if schema_dict.xmlschema.validate(xmltree) or ignore_validation:
         inp_dict = inpxml_todict(root, schema_dict, constants, parser_info_out=parser_info_out)

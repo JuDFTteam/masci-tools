@@ -156,9 +156,9 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
         validate_xml(xmltree, outschema_dict.xmlschema, error_header='Output file does not validate against the schema')
     except etree.DocumentInvalid as err:
         errmsg = str(err)
-        parser_info_out['parser_warnings'].append()
+        parser_info_out['parser_warnings'].append(errmsg)
         if not ignore_validation:
-            raise ValueError from err
+            raise ValueError(errmsg) from err
 
     if not outschema_dict.xmlschema.validate(xmltree) and errmsg == '':
         parser_info_out['parser_warnings'].append('Output file does not validate against the schema: Reason is unknown')
