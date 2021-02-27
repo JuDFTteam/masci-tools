@@ -16,10 +16,9 @@ and convert its content to a dict, based on the tasks given
 """
 from masci_tools.util.parse_tasks import ParseTasks
 from masci_tools.util.schema_dict_util import tag_exists, read_constants, eval_simple_xpath
-from masci_tools.util.xml.common_xml_util import eval_xpath, clear_xml
+from masci_tools.util.xml.common_xml_util import eval_xpath, clear_xml, validate_xml
 from masci_tools.io.parsers.fleur.fleur_schema.schema_dict import OutputSchemaDict
 from lxml import etree
-from itertools import groupby
 import copy
 import warnings
 
@@ -154,26 +153,12 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
 
     errmsg = ''
     try:
-        outschema_dict.xmlschema.assertValid(xmltree)
+        validate_xml(xmltree, outschema_dict.xmlschema, error_header='Output file does not validate against the schema')
     except etree.DocumentInvalid as err:
-
-        error_log = sorted(outschema_dict.xmlschema.error_log, key=lambda x: x.message)
-        error_output = []
-        first_occurence = []
-        for message, group in groupby(error_log, key=lambda x: x.message):
-            err_occurences = list(group)
-            error_message = f'Line {err_occurences[0].line}: {message}'
-            error_lines = ''
-            if len(err_occurences) > 1:
-                error_lines = f"; This error also occured on the lines {', '.join([str(x.line) for x in err_occurences[1:]])}"
-            error_output.append(f'{error_message}{error_lines} \n')
-            first_occurence.append(err_occurences[0].line)
-
-        error_output = [line for _, line in sorted(zip(first_occurence, error_output))]
-        errmsg = f"Output file does not validate against the schema: \n{''.join(error_output)}"
-        parser_info_out['parser_warnings'].append(errmsg)
+        errmsg = str(err)
+        parser_info_out['parser_warnings'].append()
         if not ignore_validation:
-            raise ValueError(errmsg) from err
+            raise ValueError from err
 
     if not outschema_dict.xmlschema.validate(xmltree) and errmsg == '':
         parser_info_out['parser_warnings'].append('Output file does not validate against the schema: Reason is unknown')

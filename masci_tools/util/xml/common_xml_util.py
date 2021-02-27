@@ -76,6 +76,28 @@ def clear_xml(tree):
 
     return cleared_tree
 
+def validate_xml(xmltree, schema, error_header='File does not validate'):
+
+    from itertools import groupby
+
+    try:
+        schema.assertValid(clear_xml(xmltree))
+    except etree.DocumentInvalid as exc:
+        error_log = sorted(schema.error_log, key=lambda x: x.message)
+        error_output = []
+        first_occurence = []
+        for message, group in groupby(error_log, key=lambda x: x.message):
+            err_occurences = list(group)
+            error_message = f'Line {err_occurences[0].line}: {message}'
+            error_lines = ''
+            if len(err_occurences) > 1:
+                error_lines = f"; This error also occured on the lines {', '.join([str(x.line) for x in err_occurences[1:]])}"
+            error_output.append(f'{error_message}{error_lines} \n')
+            first_occurence.append(err_occurences[0].line)
+
+        error_output = [line for _, line in sorted(zip(first_occurence, error_output))]
+        errmsg = f"{error_header}: \n{''.join(error_output)}"
+        raise etree.DocumentInvalid(errmsg) from exc
 
 def convert_xml_attribute(stringattribute, possible_types, constants=None, suc_return=True, conversion_warnings=None):
     """
