@@ -1,8 +1,21 @@
+# -*- coding: utf-8 -*-
+###############################################################################
+# Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
+#                All rights reserved.                                         #
+# This file is part of the Masci-tools package.                               #
+# (Material science tools)                                                    #
+#                                                                             #
+# The code is hosted on GitHub at https://github.com/judftteam/masci-tools.   #
+# For further information on the license, see the LICENSE.txt file.           #
+# For further information please visit http://judft.de/.                      #
+#                                                                             #
+###############################################################################
 from collections import namedtuple
 from lxml import etree
 import copy
 
 ModifierTask = namedtuple('ModifierTask', ['name', 'args', 'kwargs'])
+
 
 class FleurXMLModifier:
 
@@ -24,9 +37,10 @@ class FleurXMLModifier:
         """
         from masci_tools.util.xml.collect_xml_setters import XPATH_SETTERS, SCHEMA_DICT_SETTERS, NMMPMAT_SETTERS
         from masci_tools.util.xml.common_xml_util import validate_xml, eval_xpath
+        from masci_tools.util.xml.xml_setters_nmmpmat import validate_nmmpmat
         from masci_tools.io.parsers.fleur.fleur_schema import InputSchemaDict
 
-        version = eval_xpath(new_xmltree, '//@fleurInputVersion')
+        version = eval_xpath(xmltree, '//@fleurInputVersion')
         version = str(version)
         if version is None:
             raise ValueError('Failed to extract inputVersion')
@@ -219,7 +233,7 @@ class FleurXMLModifier:
                 raise ValueError(f'Failed to parse input file: {msg}') from msg
 
         if original_nmmp_file is not None:
-            if isinstance(original_nmmp_file, str)
+            if isinstance(original_nmmp_file, str):
                 with open(original_nmmp_file, mode='r') as n_mmp_file:
                     original_nmmp_lines = n_mmp_file.read().split('\n')
             else:
@@ -228,9 +242,6 @@ class FleurXMLModifier:
         new_xmltree = copy.deepcopy(original_xmltree)
         new_nmmp_lines = copy.deepcopy(original_nmmp_lines)
 
-        self.apply_modifications(new_xmltree, new_nmmp_lines, self._tasks, inpschema)
+        self.apply_modifications(new_xmltree, new_nmmp_lines, self._tasks)
 
         return new_xmltree, new_nmmp_lines
-
-
-

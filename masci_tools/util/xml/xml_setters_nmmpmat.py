@@ -91,7 +91,7 @@ def set_nmmpmat(xmltree, nmmplines, schema_dict, species_name, orbital, spin,\
         ldau_index = None
         for index, ldau in enumerate(all_ldau):
             ldau_species = get_xml_attribute(ldau.getparent(), 'name')
-            ldau_orbital = evaluate_attribute(ldau,schema_dict,'l', contains='species')
+            ldau_orbital = evaluate_attribute(ldau, schema_dict, 'l', contains='species')
             if current_name == ldau_species and ldau_orbital == orbital:
                 ldau_index = index
 
@@ -143,6 +143,7 @@ def set_nmmpmat(xmltree, nmmplines, schema_dict, species_name, orbital, spin,\
 
     return nmmplines
 
+
 def rotate_nmmpmat(xmltree, nmmplines, schema_dict, species_name, orbital, phi, theta):
     """
     Rotate the density matrix with the given angles phi and theta
@@ -192,7 +193,7 @@ def rotate_nmmpmat(xmltree, nmmplines, schema_dict, species_name, orbital, phi, 
                              'the inp.xml file. Either remove the existing file before making modifications '+\
                              'and only use set_nmmpmat after all modifications to the inp.xml')
     else:
-        raise ValueError("rotate_nmmpmat has to be called with a initialized density matrix")
+        raise ValueError('rotate_nmmpmat has to be called with a initialized density matrix')
 
     d_wigner = get_wigner_matrix(orbital, phi, theta)
 
@@ -203,13 +204,12 @@ def rotate_nmmpmat(xmltree, nmmplines, schema_dict, species_name, orbital, phi, 
         ldau_index = None
         for index, ldau in enumerate(all_ldau):
             ldau_species = get_xml_attribute(ldau.getparent(), 'name')
-            ldau_orbital = evaluate_attribute(ldau,schema_dict,'l', contains='species')
+            ldau_orbital = evaluate_attribute(ldau, schema_dict, 'l', contains='species')
             if current_name == ldau_species and ldau_orbital == orbital:
                 ldau_index = index
 
         if ldau_index is None:
             raise KeyError(f'No LDA+U procedure found on species {current_name} with l={orbital}')
-
 
         denmat = [np.zeros((7, 7), dtype=complex) for spin in range(nspins)]
 
@@ -222,9 +222,8 @@ def rotate_nmmpmat(xmltree, nmmplines, schema_dict, species_name, orbital, phi, 
                     rowData = [float(x) for x in line.split()]
                 else:
                     rowData.extend([float(x) for x in line.split()])
-                    rowData = [x+1j*y for x, y in zip(rowData[:-1], rowData[1:])]
-                    denmat[spin][currentRow,:] += np.array(rowData)
-
+                    rowData = [x + 1j * y for x, y in zip(rowData[:-1], rowData[1:])]
+                    denmat[spin][currentRow, :] += np.array(rowData)
 
         #Rotate the density matrix
         denmat = [d_wigner.T.conj().dot(denmat_spin.dot(d_wigner)) for denmat_spin in denmat]
@@ -247,7 +246,6 @@ def rotate_nmmpmat(xmltree, nmmplines, schema_dict, species_name, orbital, phi, 
                                                                for x in denmatrot[currentRow, 4:]]))
 
     return nmmplines
-
 
 
 def validate_nmmpmat(xmltree, nmmplines, schema_dict):
@@ -297,7 +295,7 @@ def validate_nmmpmat(xmltree, nmmplines, schema_dict):
     #(no numbers outside the valid area and no nonsensical occupations)
     for ldau_index, ldau in enumerate(all_ldau):
 
-        orbital = evaluate_attribute(ldau,schema_dict,'l', contains='species')
+        orbital = evaluate_attribute(ldau, schema_dict, 'l', contains='species')
         species_name = get_xml_attribute(ldau.getparent(), 'name')
 
         for spin in range(nspins):

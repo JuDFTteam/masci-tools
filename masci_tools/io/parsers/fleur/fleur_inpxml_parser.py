@@ -69,7 +69,6 @@ def inpxml_parser(inpxmlfile, version=None, parser_info_out=None):
 
     constants = read_constants(root, schema_dict)
 
-
     try:
         validate_xml(xmltree, schema_dict.xmlschema, error_header='Input file does not validate against the schema')
     except etree.DocumentInvalid as err:

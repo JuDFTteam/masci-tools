@@ -37,6 +37,7 @@ def create_tag(xmltree, schema_dict, tag_name, complex_xpath=None, create_parent
 
     return xmltree
 
+
 def add_number_to_attrib(xmltree, schema_dict, attributename, add_number, mode='abs', occurrences=None, **kwargs):
 
     from masci_tools.util.xml.xml_setters_xpaths import xml_add_number_to_attrib
@@ -45,14 +46,29 @@ def add_number_to_attrib(xmltree, schema_dict, attributename, add_number, mode='
 
     base_xpath, attributename = tuple(attrib_xpath.split('/@'))
 
-    xmltree = xml_add_number_to_attrib(xmltree, schema_dict, attrib_xpath, base_xpath, attributename, add_number, mode=mode, occurrences=occurrences)
+    xmltree = xml_add_number_to_attrib(xmltree,
+                                       schema_dict,
+                                       attrib_xpath,
+                                       base_xpath,
+                                       attributename,
+                                       add_number,
+                                       mode=mode,
+                                       occurrences=occurrences)
+
 
 def add_number_to_first_attrib(xmltree, schema_dict, attributename, add_number, mode='abs', **kwargs):
 
     return add_number_to_attrib(xmltree, schema_dict, attributename, add_number, mode='abs', occurrences=0, **kwargs)
 
 
-def set_attrib_value(xmltree, schema_dict, attributename, attribv, complex_xpath=None, occurrences=None, create=False, **kwargs):
+def set_attrib_value(xmltree,
+                     schema_dict,
+                     attributename,
+                     attribv,
+                     complex_xpath=None,
+                     occurrences=None,
+                     create=False,
+                     **kwargs):
 
     from masci_tools.util.xml.xml_setters_xpaths import xml_set_attrib_value
 
@@ -63,13 +79,29 @@ def set_attrib_value(xmltree, schema_dict, attributename, attribv, complex_xpath
     if complex_xpath is None:
         complex_xpath = base_xpath
 
-    xmltree = xml_set_attrib_value(xmltree, schema_dict, complex_xpath, base_xpath, attributename, attribv, occurrences=occurrences, create=create)
+    xmltree = xml_set_attrib_value(xmltree,
+                                   schema_dict,
+                                   complex_xpath,
+                                   base_xpath,
+                                   attributename,
+                                   attribv,
+                                   occurrences=occurrences,
+                                   create=create)
 
     return xmltree
 
+
 def set_first_attrib_value(xmltree, schema_dict, attributename, attribv, complex_xpath=None, create=False, **kwargs):
 
-    return set_attrib_value(xmltree, schema_dict, attributename, attribv, complex_xpath=complex_xpath, create=create, occurrences=0, **kwargs)
+    return set_attrib_value(xmltree,
+                            schema_dict,
+                            attributename,
+                            attribv,
+                            complex_xpath=complex_xpath,
+                            create=create,
+                            occurrences=0,
+                            **kwargs)
+
 
 def set_text(xmltree, schema_dict, tag_name, text, complex_xpath=None, occurrences=None, create=False, **kwargs):
 
@@ -80,12 +112,28 @@ def set_text(xmltree, schema_dict, tag_name, text, complex_xpath=None, occurrenc
     if complex_xpath is None:
         complex_xpath = base_xpath
 
-    xmltree = xml_set_text(xmltree, schema_dict, complex_xpath, base_xpath, tag_name, text, occurrences=occurrences, create=create)
+    xmltree = xml_set_text(xmltree,
+                           schema_dict,
+                           complex_xpath,
+                           base_xpath,
+                           tag_name,
+                           text,
+                           occurrences=occurrences,
+                           create=create)
 
     return xmltree
 
+
 def set_first_text(xmltree, schema_dict, attributename, attribv, complex_xpath=None, create=False, **kwargs):
-    return set_text(xmltree, schema_dict, attributename, attribv, complex_xpath=complex_xpath, create=create, occurrences=0, **kwargs)
+    return set_text(xmltree,
+                    schema_dict,
+                    attributename,
+                    attribv,
+                    complex_xpath=complex_xpath,
+                    create=create,
+                    occurrences=0,
+                    **kwargs)
+
 
 def set_simple_tag(xmltree, schema_dict, tag_name, changes, create_parents=False, **kwargs):
 
@@ -140,9 +188,9 @@ def set_species_label(xmltree, schema_dict, atom_label, attributedict, create=Fa
     # set all species, where given label is present
     for group in all_groups:
         if tag_exists(group, schema_dict, 'filmPos'):
-            atoms = eval_simple_xpath(group, 'filmPos')
+            atoms = eval_simple_xpath(group, schema_dict, 'filmPos')
         else:
-            atoms = eval_simple_xpath(group, 'relPos')
+            atoms = eval_simple_xpath(group, schema_dict, 'relPos')
         for atom in atoms:
             label = get_xml_attribute(atom, 'label')
             if label == atom_label:
@@ -200,13 +248,8 @@ def set_species(xmltree, schema_dict, species_name, attributedict, create=False)
 
     return xml_set_complex_tag(xmltree, schema_dict, xpath_species, base_xpath_species, attributedict, create=create)
 
-def shift_value_species_label(xmltree,
-                              schema_dict,
-                              atom_label,
-                              attributename,
-                              value_given,
-                              mode='abs',
-                              **kwargs):
+
+def shift_value_species_label(xmltree, schema_dict, atom_label, attributename, value_given, mode='abs', **kwargs):
     """
     Shifts value of a specie by label
     if at_label contains 'all' then applies to all species
@@ -217,8 +260,7 @@ def shift_value_species_label(xmltree,
     :param value_given: value to add or to multiply by
     :param mode: 'rel' for multiplication or 'abs' for addition
     """
-    from masci_tools.util.schema_dict_util import get_tag_xpath, get_attrib_xpath
-    from masci_tools.util.schema_dic_util import tag_exists, eval_simple_xpath
+    from masci_tools.util.schema_dict_util import tag_exists, eval_simple_xpath
     from masci_tools.util.xml.common_xml_util import get_xml_attribute
     from masci_tools.util.xml.xml_setters_xpaths import xml_add_number_to_attrib
 
@@ -236,11 +278,8 @@ def shift_value_species_label(xmltree,
     elif 'other' not in kwargs['exclude']:
         kwargs['exclude'].append('other')
 
-
     species_base_path = get_tag_xpath(schema_dict, 'species')
-    attr_base_path = get_attrib_xpath(schema_dict,
-                                      attributename,
-                                      **kwargs)
+    attr_base_path = get_attrib_xpath(schema_dict, attributename, **kwargs)
     attrib_base_xpath, attributename = tuple(attr_base_path.split('/@'))
 
     specie = ''
@@ -252,9 +291,9 @@ def shift_value_species_label(xmltree,
 
     for group in all_groups:
         if tag_exists(group, schema_dict, 'filmPos'):
-            atoms = eval_simple_xpath(group, 'filmPos')
+            atoms = eval_simple_xpath(group, schema_dict, 'filmPos')
         else:
-            atoms = eval_simple_xpath(group, 'relPos')
+            atoms = eval_simple_xpath(group, schema_dict, 'relPos')
         for atom in atoms:
             label = get_xml_attribute(atom, 'label')
             if atom_label in ('all', label):
@@ -265,7 +304,13 @@ def shift_value_species_label(xmltree,
         xpath_species = f'{species_base_path}[@name = "{specie}"]'
         attrib_xpath = attr_base_path.replace(species_base_path, xpath_species)
 
-        xmltree = xml_add_number_to_attrib(xmltree, schema_dict, attrib_xpath, attrib_base_xpath, attributename, value_given, mode=mode)
+        xmltree = xml_add_number_to_attrib(xmltree,
+                                           schema_dict,
+                                           attrib_xpath,
+                                           attrib_base_xpath,
+                                           attributename,
+                                           value_given,
+                                           mode=mode)
 
     return xmltree
 
@@ -294,11 +339,7 @@ def set_atomgroup_label(xmltree, schema_dict, atom_label, attributedict, create=
     from masci_tools.util.xml.common_xml_util import get_xml_attribute
 
     if atom_label == 'all':
-        xmltree = set_atomgroup(xmltree,
-                                schema_dict,
-                                attributedict,
-                                position=None,
-                                species='all')
+        xmltree = set_atomgroup(xmltree, schema_dict, attributedict, position=None, species='all')
         return xmltree
 
     atom_label = '{: >20}'.format(atom_label)
@@ -309,20 +350,16 @@ def set_atomgroup_label(xmltree, schema_dict, atom_label, attributedict, create=
     # set all species, where given label is present
     for group in all_groups:
         if tag_exists(group, schema_dict, 'filmPos'):
-            atoms = eval_simple_xpath(group, 'filmPos')
+            atoms = eval_simple_xpath(group, schema_dict, 'filmPos')
         else:
-            atoms = eval_simple_xpath(group, 'relPos')
+            atoms = eval_simple_xpath(group, schema_dict, 'relPos')
         for atom in atoms:
             label = get_xml_attribute(atom, 'label')
             if label == atom_label:
                 species_to_set.add(get_xml_attribute(group, 'species'))
 
     for species_name in species_to_set:
-        xmltree = set_atomgroup(xmltree,
-                                schema_dict,
-                                attributedict,
-                                position=None,
-                                species=species_name)
+        xmltree = set_atomgroup(xmltree, schema_dict, attributedict, position=None, species=species_name)
 
     return xmltree
 
@@ -348,7 +385,6 @@ def set_atomgroup(xmltree, schema_dict, attributedict, position=None, species=No
     ``force`` and ``nocoParams`` keys are supported.
     To find possible keys of the inner dictionary please refer to the FLEUR documentation flapw.de
     """
-    from masci_tools.util.schema_dict_util import get_tag_xpath
     from masci_tools.util.xml.xml_setters_xpaths import xml_set_complex_tag
 
     atomgroup_base_path = get_tag_xpath(schema_dict, 'atomGroup')
@@ -364,11 +400,14 @@ def set_atomgroup(xmltree, schema_dict, attributedict, position=None, species=No
         if not species == 'all':
             atomgroup_xpath = f'{atomgroup_base_path}[@species = "{species}"]'
 
-    xmltree = xml_set_complex_tag(xmltree, schema_dict, atomgroup_xpath, atomgroup_base_path,
-                                  attributedict, create=create)
+    xmltree = xml_set_complex_tag(xmltree,
+                                  schema_dict,
+                                  atomgroup_xpath,
+                                  atomgroup_base_path,
+                                  attributedict,
+                                  create=create)
 
     return xmltree
-
 
 
 def shift_value(xmltree, schema_dict, change_dict, mode='abs', path_spec=None):
@@ -399,7 +438,6 @@ def shift_value(xmltree, schema_dict, change_dict, mode='abs', path_spec=None):
             key_spec['exclude'].append('other')
 
         xmltree = add_number_to_first_attrib(xmltree, schema_dict, key, value_given, mode=mode, **key_spec)
-
 
     return xmltree
 

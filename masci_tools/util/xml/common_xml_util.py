@@ -76,6 +76,7 @@ def clear_xml(tree):
 
     return cleared_tree
 
+
 def validate_xml(xmltree, schema, error_header='File does not validate'):
 
     from itertools import groupby
@@ -98,6 +99,7 @@ def validate_xml(xmltree, schema, error_header='File does not validate'):
         error_output = [line for _, line in sorted(zip(first_occurence, error_output))]
         errmsg = f"{error_header}: \n{''.join(error_output)}"
         raise etree.DocumentInvalid(errmsg) from exc
+
 
 def convert_xml_attribute(stringattribute, possible_types, constants=None, suc_return=True, conversion_warnings=None):
     """
@@ -160,6 +162,7 @@ def convert_xml_attribute(stringattribute, possible_types, constants=None, suc_r
         return ret_value, all_success
     else:
         return ret_value
+
 
 def convert_attribute_to_xml(attributevalue, possible_types, suc_return=True, conversion_warnings=None):
     """
@@ -308,6 +311,7 @@ def convert_xml_text(tagtext, possible_definitions, constants=None, conversion_w
         return ret_value, all_success
     else:
         return ret_value
+
 
 def convert_text_to_xml(textvalue, possible_definitions, conversion_warnings=None, suc_return=True):
 
@@ -493,7 +497,7 @@ def convert_to_fortran_bool(boolean, conversion_warnings=None, suc_return=True):
         else:
             suc = False
             conversion_warnings.append(f"A string: {boolean} for a boolean was given, which is not 'True',"
-                                        "'False', 't', 'T', 'F' or 'f'")
+                                       "'False', 't', 'T', 'F' or 'f'")
     else:
         suc = False
         conversion_warnings.append('convert_to_fortran_bool accepts only a string or '

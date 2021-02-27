@@ -99,11 +99,12 @@ def xml_set_attrib_value(xmltree,
     attributename = attribs.original_case[attributename]
 
     warnings = []
-    converted_attribv, suc = convert_attribute_to_xml(attribv, schema_dict['attrib_types'][attributename], conversion_warnings=warnings)
+    converted_attribv, suc = convert_attribute_to_xml(attribv,
+                                                      schema_dict['attrib_types'][attributename],
+                                                      conversion_warnings=warnings)
 
     if not suc:
-        raise ValueError(f"Failed to convert attribute values '{attribv}': \n"
-                         '\n'.join(warnings))
+        raise ValueError(f"Failed to convert attribute values '{attribv}': \n" '\n'.join(warnings))
 
     return xml_set_attrib_value_no_create(xmltree, xpath, attributename, converted_attribv, occurrences=occurences)
 
@@ -137,11 +138,10 @@ def xml_set_text(xmltree, schema_dict, xpath, base_xpath, text, occurences=None,
     print(text)
     possible_definitions = schema_dict['simple_elements'][base_xpath.split('/')[-1]]
     warnings = []
-    converted_text, suc = convert_text_to_xml(text, possible_definitions , conversion_warnings=warnings)
+    converted_text, suc = convert_text_to_xml(text, possible_definitions, conversion_warnings=warnings)
 
     if not suc:
-        raise ValueError(f"Failed to convert text values '{text}': \n"
-                         '\n'.join(warnings))
+        raise ValueError(f"Failed to convert text values '{text}': \n" '\n'.join(warnings))
 
     return xml_set_text_no_create(xmltree, xpath, converted_text, occurrences=occurences)
 
@@ -276,16 +276,24 @@ def xml_set_complex_tag(xmltree, schema_dict, xpath, base_xpath, attributedict, 
 
     return xmltree
 
-def xml_add_number_to_attrib(xmltree, schema_dict, xpath, base_xpath, attributename, add_number, mode='abs', occurrences=None):
+
+def xml_add_number_to_attrib(xmltree,
+                             schema_dict,
+                             xpath,
+                             base_xpath,
+                             attributename,
+                             add_number,
+                             mode='abs',
+                             occurrences=None):
 
     from masci_tools.util.schema_dict_util import read_constants
     from masci_tools.util.xml.common_xml_util import convert_xml_attribute
 
     if attributename not in schema_dict['attrib_types']:
-        raise ValueError(f"You try to shift the attribute:'{attributename}' , but the key is unknown to the fleur plug-in")
+        raise ValueError(
+            f"You try to shift the attribute:'{attributename}' , but the key is unknown to the fleur plug-in")
 
     possible_types = schema_dict['attrib_types'][attributename]
-
 
     if not etree.iselement(xmltree):
         constants = read_constants(xmltree.getroot(), schema_dict)
@@ -306,9 +314,7 @@ def xml_add_number_to_attrib(xmltree, schema_dict, xpath, base_xpath, attributen
         if len(stringattribute) == 0:
             raise ValueError(f"No attribute values found for '{attributename}'. Cannot add number")
 
-    attribvalues, suc = convert_xml_attribute(stringattribute,
-                                              possible_types,
-                                              constants=constants)
+    attribvalues, suc = convert_xml_attribute(stringattribute, possible_types, constants=constants)
 
     if not suc or any(value is None for value in attribvalues):
         raise ValueError(f"Something went wrong finding values found for '{attributename}'. Cannot add number")
@@ -328,9 +334,23 @@ def xml_add_number_to_attrib(xmltree, schema_dict, xpath, base_xpath, attributen
             raise ValueError('You are trying to write a float to an integer attribute')
         attribvalues = [int(value) for value in attribvalues]
 
-    xmltree = xml_set_attrib_value(xmltree, schema_dict, xpath, base_xpath, attributename, attribvalues, occurences=occurrences)
+    xmltree = xml_set_attrib_value(xmltree,
+                                   schema_dict,
+                                   xpath,
+                                   base_xpath,
+                                   attributename,
+                                   attribvalues,
+                                   occurences=occurrences)
 
     return xmltree
 
-def xml_add_number_to_first_attrib(xmltree, schema_dict, xpath, attributename, add_number, mode='abs'):
-    return xml_add_number_to_attrib(xmltree, schema_dict, xpath, attributename, add_number, mode=mode, occurrences=0)
+
+def xml_add_number_to_first_attrib(xmltree, schema_dict, xpath, base_xpath, attributename, add_number, mode='abs'):
+    return xml_add_number_to_attrib(xmltree,
+                                    schema_dict,
+                                    xpath,
+                                    base_xpath,
+                                    attributename,
+                                    add_number,
+                                    mode=mode,
+                                    occurrences=0)
