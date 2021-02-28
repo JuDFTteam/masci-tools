@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-
+"""
+Configurations for masci_tools tests
+"""
 import pytest
 
 
