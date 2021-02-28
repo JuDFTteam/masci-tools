@@ -22,7 +22,8 @@ from .xml_setters_basic import xml_create_tag, xml_set_attrib_value_no_create, x
 from .xml_setters_nmmpmat import set_nmmpmat, rotate_nmmpmat
 
 __XPATH_SET = {
-    xml_create_tag, xml_set_text_no_create, xml_set_attrib_value_no_create, xml_replace_tag, xml_delete_att, xml_delete_tag
+    xml_create_tag, xml_set_text_no_create, xml_set_attrib_value_no_create, xml_replace_tag, xml_delete_att,
+    xml_delete_tag
 }
 
 __SCHEMA_DICT_SET = {

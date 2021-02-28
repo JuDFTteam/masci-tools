@@ -17,6 +17,7 @@ fleur and providing a parsed xml etree together with its corresponding schema di
 from lxml import etree
 import warnings
 
+
 def load_inpxml(inpxmlfile):
     """
     Loads a inp.xml file for fleur together with its corresponding schema dictionary
@@ -61,7 +62,6 @@ def load_outxml(outxmlfile):
     """
     from masci_tools.util.xml.common_xml_util import eval_xpath
     from masci_tools.io.parsers.fleur.fleur_schema import OutputSchemaDict
-
 
     if isinstance(outxmlfile, etree._ElementTree):
         xmltree = outxmlfile
@@ -108,8 +108,7 @@ def load_outxml(outxmlfile):
             #Max3.1 release
             out_version = '0.29'
             inp_version = '0.29'
-            warnings.warn(
-                "Found version before MaX3.1 release falling back to file version '0.29'")
+            warnings.warn("Found version before MaX3.1 release falling back to file version '0.29'")
         else:
             raise ValueError(f"Unknown fleur version: File-version '{out_version}' Program-version '{program_version}'")
 

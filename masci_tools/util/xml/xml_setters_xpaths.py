@@ -63,7 +63,7 @@ def xml_create_tag_schema_dict(xmltree, schema_dict, xpath, base_xpath, element,
         if create_parents:
             parent_xpath, parent_name = '/'.join(base_xpath.split('/')[:-1]), base_xpath.split('/')[-1]
             xmltree = xml_create_tag_schema_dict(xmltree, schema_dict, '/'.join(xpath.split('/')[:-1]), parent_xpath,
-                                             parent_name)
+                                                 parent_name)
         else:
             raise ValueError(f"Could not create tag '{element_name}' because atleast one subtag is missing. "
                              'Use create=True to create the subtags')
@@ -89,11 +89,11 @@ def eval_xpath_create(xmltree, schema_dict, xpath, base_xpath, create_parents=Fa
     if len(nodes) == 0:
         parent_xpath, tag_name = '/'.join(base_xpath.split('/')[:-1]), base_xpath.split('/')[-1]
         xmltree = xml_create_tag_schema_dict(xmltree,
-                                         schema_dict,
-                                         '/'.join(xpath.split('/')[:-1]),
-                                         parent_xpath,
-                                         tag_name,
-                                         create_parents=create_parents)
+                                             schema_dict,
+                                             '/'.join(xpath.split('/')[:-1]),
+                                             parent_xpath,
+                                             tag_name,
+                                             create_parents=create_parents)
         nodes = eval_xpath(xmltree, xpath, list_return=True)
 
     return nodes
@@ -261,6 +261,7 @@ def xml_set_first_text(xmltree, schema_dict, xpath, base_xpath, text, create=Fal
     """
     return xml_set_text(xmltree, schema_dict, xpath, base_xpath, text, create=create, occurences=0)
 
+
 def xml_add_number_to_attrib(xmltree,
                              schema_dict,
                              xpath,
@@ -352,7 +353,7 @@ def xml_add_number_to_attrib(xmltree,
 
 def xml_add_number_to_first_attrib(xmltree, schema_dict, xpath, base_xpath, attributename, add_number, mode='abs'):
     """
-    Adds a given number to the first occurrence of a attribute value in a xmltree. 
+    Adds a given number to the first occurrence of a attribute value in a xmltree.
     If there are no nodes under the specified xpath an error is raised
 
     :param xmltree: an xmltree that represents inp.xml

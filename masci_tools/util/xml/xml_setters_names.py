@@ -29,11 +29,11 @@ def create_tag(xmltree, schema_dict, tag_name, complex_xpath=None, create_parent
         complex_xpath = parent_xpath
 
     xmltree = xml_create_tag_schema_dict(xmltree,
-                                     schema_dict,
-                                     complex_xpath,
-                                     parent_xpath,
-                                     tag_name,
-                                     create_parents=create_parents)
+                                         schema_dict,
+                                         complex_xpath,
+                                         parent_xpath,
+                                         tag_name,
+                                         create_parents=create_parents)
 
     return xmltree
 
