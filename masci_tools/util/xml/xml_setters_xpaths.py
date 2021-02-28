@@ -21,7 +21,26 @@ from masci_tools.util.xml.common_xml_util import eval_xpath
 
 
 def xml_create_tag_schema_dict(xmltree, schema_dict, xpath, base_xpath, element, create_parents=False):
+    """
+    This method evaluates an xpath expression and creates a tag in a xmltree under the
+    returned nodes.
+    If there are no nodes evaluated the subtags can be created with `create_parents=True`
 
+    The tag is appended by default, but can be inserted at a certain index (`place_index`)
+    or can be inserted according to a given order of tags
+
+    :param xmltree: an xmltree that represents inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
+    :param xpath: a path where to place a new tag
+    :param base_xpath: path where to place a new tag without complex syntax ([] conditions and so on)
+    :param element: a tag name or etree Element to be created
+    :param create_parents: bool optional (default False), if True and the given xpath has no results the
+                           the parent tags are created recursively
+
+    :raises ValueError: If the nodes are missing and `create_parents=False`
+
+    :returns: xmltree with created tags
+    """
     from masci_tools.util.xml.xml_setters_basic import xml_create_tag
 
     if not etree.iselement(element):
@@ -53,7 +72,18 @@ def xml_create_tag_schema_dict(xmltree, schema_dict, xpath, base_xpath, element,
 
 
 def eval_xpath_create(xmltree, schema_dict, xpath, base_xpath, create_parents=False):
+    """
+    Evaluates and xpath and creates tag if the result is empty
 
+    :param xmltree: an xmltree that represents inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
+    :param xpath: a path where to place a new tag
+    :param base_xpath: path where to place a new tag without complex syntax ([] conditions and so on)
+    :param create_parents: bool optional (default False), if True also the parents of the tag are created
+                           if they are missing
+
+    :returns: list of nodes from the result of the xpath expression
+    """
     nodes = eval_xpath(xmltree, xpath, list_return=True)
 
     if len(nodes) == 0:
@@ -77,6 +107,29 @@ def xml_set_attrib_value(xmltree,
                          attribv,
                          occurences=None,
                          create=False):
+    """
+    Sets an attribute in a xmltree to a given value. By default the attribute will be set
+    on all nodes returned for the specified xpath.
+    If there are no nodes under the specified xpath a tag can be created with `create=True`.
+    The attribute values are converted automatically according to the types of the attribute
+    with :py:func:`~masci_tools.util.xml.common_xml_util.convert_attribute_to_xml()` if they
+    are not `str` already.
+
+    :param xmltree: an xmltree that represents inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
+    :param xpath: a path where to set the attributes
+    :param base_xpath: path where to place a new tag without complex syntax ([] conditions and so on)
+    :param attributename: the attribute name to set
+    :param attribv: value or list of values to set
+    :param occurrences: int or list of int. Which occurence of the node to set. By default all are set.
+    :param create: bool optional (default False), if True the tag is created if is missing
+
+    :raises ValueError: If the conversion to string failed
+    :raises ValueError: If the tag is missing and `create=False`
+    :raises ValueError: If the attributename is not allowed on the base_xpath
+
+    :returns: xmltree with set attribute
+    """
 
     from masci_tools.util.xml.xml_setters_basic import xml_set_attrib_value_no_create
     from masci_tools.util.xml.common_xml_util import convert_attribute_to_xml
@@ -110,6 +163,27 @@ def xml_set_attrib_value(xmltree,
 
 
 def xml_set_first_attrib_value(xmltree, schema_dict, xpath, base_xpath, attributename, attribv, create=False):
+    """
+    Sets the first occurrence attribute in a xmltree to a given value.
+    If there are no nodes under the specified xpath a tag can be created with `create=True`.
+    The attribute values are converted automatically according to the types of the attribute
+    with :py:func:`~masci_tools.util.xml.common_xml_util.convert_attribute_to_xml()` if they
+    are not `str` already.
+
+    :param xmltree: an xmltree that represents inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
+    :param xpath: a path where to set the attribute
+    :param base_xpath: path where to place a new tag without complex syntax ([] conditions and so on)
+    :param attributename: the attribute name to set
+    :param attribv: value or list of values to set
+    :param create: bool optional (default False), if True the tag is created if is missing
+
+    :raises ValueError: If the conversion to string failed
+    :raises ValueError: If the tag is missing and `create=False`
+    :raises ValueError: If the attributename is not allowed on the base_xpath
+
+    :returns: xmltree with set attribute
+    """
 
     return xml_set_attrib_value(xmltree,
                                 schema_dict,
@@ -122,7 +196,27 @@ def xml_set_first_attrib_value(xmltree, schema_dict, xpath, base_xpath, attribut
 
 
 def xml_set_text(xmltree, schema_dict, xpath, base_xpath, text, occurences=None, create=False):
+    """
+    Sets the text on tags in a xmltree to a given value. By default the text will be set
+    on all nodes returned for the specified xpath.
+    If there are no nodes under the specified xpath a tag can be created with `create=True`.
+    The text values are converted automatically according to the types
+    with :py:func:`~masci_tools.util.xml.common_xml_util.convert_text_to_xml()` if they
+    are not `str` already.
 
+    :param xmltree: an xmltree that represents inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
+    :param xpath: a path where to set the text
+    :param base_xpath: path where to place a new tag without complex syntax ([] conditions and so on)
+    :param text: value or list of values to set
+    :param occurrences: int or list of int. Which occurence of the node to set. By default all are set.
+    :param create: bool optional (default False), if True the tag is created if is missing
+
+    :raises ValueError: If the conversion to string failed
+    :raises ValueError: If the tag is missing and `create=False`
+
+    :returns: xmltree with set text
+    """
     from masci_tools.util.xml.xml_setters_basic import xml_set_text_no_create
     from masci_tools.util.xml.common_xml_util import convert_text_to_xml
 
@@ -135,7 +229,6 @@ def xml_set_text(xmltree, schema_dict, xpath, base_xpath, text, occurences=None,
         raise ValueError(f"Could not set text on path '{xpath}' because atleast one subtag is missing. "
                          'Use create=True to create the subtags')
 
-    print(text)
     possible_definitions = schema_dict['simple_elements'][base_xpath.split('/')[-1]]
     warnings = []
     converted_text, suc = convert_text_to_xml(text, possible_definitions, conversion_warnings=warnings)
@@ -147,7 +240,25 @@ def xml_set_text(xmltree, schema_dict, xpath, base_xpath, text, occurences=None,
 
 
 def xml_set_first_text(xmltree, schema_dict, xpath, base_xpath, text, create=False):
+    """
+    Sets the text on the first occurrence of a tag in a xmltree to a given value.
+    If there are no nodes under the specified xpath a tag can be created with `create=True`.
+    The text values are converted automatically according to the types
+    with :py:func:`~masci_tools.util.xml.common_xml_util.convert_text_to_xml()` if they
+    are not `str` already.
 
+    :param xmltree: an xmltree that represents inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
+    :param xpath: a path where to set the text
+    :param base_xpath: path where to place a new tag without complex syntax ([] conditions and so on)
+    :param text: value or list of values to set
+    :param create: bool optional (default False), if True the tag is created if is missing
+
+    :raises ValueError: If the conversion to string failed
+    :raises ValueError: If the tag is missing and `create=False`
+
+    :returns: xmltree with set text
+    """
     return xml_set_text(xmltree, schema_dict, xpath, base_xpath, text, create=create, occurences=0)
 
 def xml_add_number_to_attrib(xmltree,
@@ -158,7 +269,28 @@ def xml_add_number_to_attrib(xmltree,
                              add_number,
                              mode='abs',
                              occurrences=None):
+    """
+    Adds a given number to the attribute value in a xmltree. By default the attribute will be shifted
+    on all nodes returned for the specified xpath.
+    If there are no nodes under the specified xpath an error is raised
 
+    :param xmltree: an xmltree that represents inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
+    :param xpath: a path where to set the attributes
+    :param base_xpath: path where to place a new tag without complex syntax ([] conditions and so on)
+    :param attributename: the attribute name to change
+    :param add_number: number to add/multiply with the old attribute value
+    :param mode: str (either `rel` or `abs`).
+                 `rel` multiplies the old value with `add_number`
+                 `abs` adds the old value and `add_number`
+    :param occurrences: int or list of int. Which occurence of the node to set. By default all are set.
+
+    :raises ValueError: If the attribute is unknown or cannot be float or int
+    :raises ValueError: If the evaluation of the old values failed
+    :raises ValueError: If a float result is written to a integer attribute
+
+    :returns: xmltree with shifted attribute
+    """
     from masci_tools.util.schema_dict_util import read_constants
     from masci_tools.util.xml.common_xml_util import convert_xml_attribute
 
@@ -219,6 +351,26 @@ def xml_add_number_to_attrib(xmltree,
 
 
 def xml_add_number_to_first_attrib(xmltree, schema_dict, xpath, base_xpath, attributename, add_number, mode='abs'):
+    """
+    Adds a given number to the first occurrence of a attribute value in a xmltree. 
+    If there are no nodes under the specified xpath an error is raised
+
+    :param xmltree: an xmltree that represents inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
+    :param xpath: a path where to set the attributes
+    :param base_xpath: path where to place a new tag without complex syntax ([] conditions and so on)
+    :param attributename: the attribute name to change
+    :param add_number: number to add/multiply with the old attribute value
+    :param mode: str (either `rel` or `abs`).
+                 `rel` multiplies the old value with `add_number`
+                 `abs` adds the old value and `add_number`
+
+    :raises ValueError: If the attribute is unknown or cannot be float or int
+    :raises ValueError: If the evaluation of the old values failed
+    :raises ValueError: If a float result is written to a integer attribute
+
+    :returns: xmltree with shifted attribute
+    """
     return xml_add_number_to_attrib(xmltree,
                                     schema_dict,
                                     xpath,
@@ -230,7 +382,24 @@ def xml_add_number_to_first_attrib(xmltree, schema_dict, xpath, base_xpath, attr
 
 
 def xml_set_simple_tag(xmltree, schema_dict, xpath, base_xpath, tag_name, changes, create_parents=False):
+    """
+    Sets one or multiple `simple` tag(s) in an xmltree. A simple tag can only hold attributes and has no
+    subtags.
+    If the tag can occur multiple times all existing tags are DELETED and new ones are written.
+    If the tag only occurs once it will automatically be created if its missing.
 
+    :param xmltree: an xmltree that represents inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
+    :param xpath: a path where to set the attributes
+    :param base_xpath: path where to place a new tag without complex syntax ([] conditions and so on)
+    :param tag_name: name of the tag to set
+    :param changes: list of dicts or dict with the changes. Elements in list describe multiple tags.
+                    Keys in the dictionary correspond to {'attributename': attributevalue}
+    :param create_parents: bool optional (default False), if True and the path, where the simple tags are
+                           set does not exist it is created
+
+    :returns: xmltree with set simple tags
+    """
     from masci_tools.util.xml.xml_setters_basic import xml_delete_tag
 
     tag_info = schema_dict['tag_info'][base_xpath]
@@ -283,18 +452,22 @@ def xml_set_complex_tag(xmltree, schema_dict, xpath, base_xpath, attributedict, 
 
     Supports:
 
-        - attributes (no type checking)
+        - attributes
         - tags with text only
         - simple tags, i.e. only attributes (can be optional single/multiple)
         - complex tags, will recursively create/modify them
 
-    :param xmltree: xml etree of the inp.xml
-    :param schema_dict: dict, represents the inputschema
-    :param base_xpath: string, xpath of the tag to set without complex syntax (to get info from the schema_dict)
-    :param xpath: string, actual xpath to use
-    :param attributedict: dict, changes to be made
+    :param xmltree: an xmltree that represents inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
+    :param xpath: a path where to set the attributes
+    :param base_xpath: path where to place a new tag without complex syntax ([] conditions and so on)
+    :param tag_name: name of the tag to set
+    :param attributedict: Keys in the dictionary correspond to names of tags and the values are the modifications
+                          to do on this tag (attributename, subdict with changes to the subtag, ...)
+    :param create: bool optional (default False), if True and the path, where the complex tag is
+                   set does not exist it is created
 
-    :return xmltree: xml etree of the new inp.xml
+    :returns: xmltree with changes to the complex tag
     """
     from masci_tools.util.xml.xml_setters_basic import xml_delete_tag
 

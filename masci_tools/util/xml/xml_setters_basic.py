@@ -22,11 +22,13 @@ from masci_tools.util.xml.common_xml_util import eval_xpath
 
 def xml_replace_tag(xmltree, xpath, newelement):
     """
-    replaces a xml tag by another tag on an xmletree in place
+    replaces xml tags by another tag on an xmletree in place
 
     :param xmltree: an xmltree that represents inp.xml
-    :param xpathn: a path to the tag to be replaced
+    :param xpath: a path to the tag to be replaced
     :param newelement: a new tag
+
+    :returns: xmltree with replaced tag
     """
     import copy
     root = xmltree.getroot()
@@ -46,8 +48,10 @@ def xml_delete_att(xmltree, xpath, attrib):
     Deletes an xml attribute in an xmletree.
 
     :param xmltree: an xmltree that represents inp.xml
-    :param xpathn: a path to the attribute to be deleted
+    :param xpath: a path to the attribute to be deleted
     :param attrib: the name of an attribute
+
+    :returns: xmltree with deleted attribute
     """
     root = xmltree.getroot()
     nodes = eval_xpath(root, xpath, list_return=True)
@@ -61,10 +65,12 @@ def xml_delete_att(xmltree, xpath, attrib):
 
 def xml_delete_tag(xmltree, xpath):
     """
-    Deletes an xml tag in an xmletree.
+    Deletes a xml tag in an xmletree.
 
     :param xmltree: an xmltree that represents inp.xml
-    :param xpathn: a path to the tag to be deleted
+    :param xpath: a path to the tag to be deleted
+
+    :returns: xmltree with deleted tag
     """
     root = xmltree.getroot()
     nodes = eval_xpath(root, xpath, list_return=True)
@@ -76,17 +82,22 @@ def xml_delete_tag(xmltree, xpath):
 
 def xml_create_tag(xmltree, xpath, element, place_index=None, tag_order=None):
     """
-    This method evaluates an xpath expresion and creates tag in an xmltree under the
-    returned nodes. If the path does exist things will be overwritten, or created.
-    Per default the new element is appended to the elements, but it can also be
-    inserted in a certain position or after certain other tags.
+    This method evaluates an xpath expression and creates a tag in a xmltree under the
+    returned nodes.
+    If there are no nodes under the specified xpath an error is raised.
 
-    :param xmlnode: an xmltree that represents inp.xml
-    :param xpathn: a path where to place a new tag
-    :param newelement: a tag name to be created
-    :param create: if True and there is no given xpath in the FleurinpData, creates it
+    The tag is appended by default, but can be inserted at a certain index (`place_index`)
+    or can be inserted according to a given order of tags
+
+    :param xmltree: an xmltree that represents inp.xml
+    :param xpath: a path where to place a new tag
+    :param element: a tag name or etree Element to be created
     :param place_index: defines the place where to put a created tag
     :param tag_order: defines a tag order
+
+    :raises ValueError: If the insertion failed in any way (tag_order does not match, failed to insert, ...)
+
+    :returns: xmltree with created tags
     """
     import copy
     from more_itertools import unique_justseen
@@ -168,7 +179,20 @@ def xml_create_tag(xmltree, xpath, element, place_index=None, tag_order=None):
 
 
 def xml_set_attrib_value_no_create(xmltree, xpath, attributename, attribv, occurrences=None):
+    """
+    Sets an attribute in a xmltree to a given value. By default the attribute will be set
+    on all nodes returned for the specified xpath.
 
+    :param xmltree: an xmltree that represents inp.xml
+    :param xpath: a path where to set the attributes
+    :param attributename: the attribute name to set
+    :param attribv: value or list of values to set (if not str they will be converted with `str(value)`)
+    :param occurrences: int or list of int. Which occurence of the node to set. By default all are set.
+
+    :raises ValueError: If the lengths of attribv or occurrences do not match number of nodes
+
+    :returns: xmltree with set attribute
+    """
     from masci_tools.io.common_functions import is_sequence
 
     root = xmltree.getroot()
@@ -200,7 +224,19 @@ def xml_set_attrib_value_no_create(xmltree, xpath, attributename, attribv, occur
 
 
 def xml_set_text_no_create(xmltree, xpath, text, occurrences=None):
+    """
+    Sets the text of a tag in a xmltree to a given value.
+    By default the text will be set on all nodes returned for the specified xpath.
 
+    :param xmltree: an xmltree that represents inp.xml
+    :param xpath: a path where to set the text
+    :param text: value or list of values to set (if not str they will be converted with `str(value)`)
+    :param occurrences: int or list of int. Which occurrence of the node to set. By default all are set.
+
+    :raises ValueError: If the lengths of text or occurrences do not match number of nodes
+
+    :returns: xmltree with set text
+    """
     from masci_tools.io.common_functions import is_sequence
 
     root = xmltree.getroot()
