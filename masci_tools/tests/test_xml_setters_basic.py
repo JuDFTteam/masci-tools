@@ -10,7 +10,9 @@ TEST_INPXML_PATH = os.path.join(FILE_PATH, 'files/fleur/Max-R5/FePt_film_SSFT_LO
 
 
 def test_xml_set_attrib_value_no_create(load_inpxml):
-
+    """
+    Basic test of the functionality of xml_set_attrib_value_no_create
+    """
     from masci_tools.util.xml.common_xml_util import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_set_attrib_value_no_create
 
@@ -25,7 +27,9 @@ def test_xml_set_attrib_value_no_create(load_inpxml):
 
 
 def test_xml_set_attrib_value_no_create_not_str(load_inpxml):
-
+    """
+    Test of the automatic conversion to string xml_set_attrib_value_no_create
+    """
     from masci_tools.util.xml.common_xml_util import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_set_attrib_value_no_create
 
@@ -40,7 +44,9 @@ def test_xml_set_attrib_value_no_create_not_str(load_inpxml):
 
 
 def test_xml_set_attrib_value_no_create_errors(load_inpxml):
-
+    """
+    Test of the error messages in xml_set_attrib_value_no_create
+    """
     from masci_tools.util.xml.common_xml_util import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_set_attrib_value_no_create
 
@@ -72,7 +78,10 @@ TEST_OCCURENCES = [None, None, None, 0, [-1]]
 @pytest.mark.parametrize('attribv, expected_result,occurrences', zip(TEST_ATTRIBV, TEST_ATTRIB_RESULTS,
                                                                      TEST_OCCURENCES))
 def test_xml_set_attrib_value_no_create_all(load_inpxml, attribv, expected_result, occurrences):
-
+    """
+    Test of the functionality of xml_set_attrib_value_no_create with multiple occurrences
+    of the sttribute and different values for occurrences
+    """
     from masci_tools.util.xml.common_xml_util import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_set_attrib_value_no_create
 

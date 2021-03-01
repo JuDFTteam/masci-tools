@@ -43,19 +43,22 @@ def xml_create_tag_schema_dict(xmltree, schema_dict, xpath, base_xpath, element,
     """
     from masci_tools.util.xml.xml_setters_basic import xml_create_tag
 
+    tag_info = schema_dict['tag_info'][base_xpath]
+
     if not etree.iselement(element):
-        element_name = element
+        #Get original case of the tag
+        element_name = (tag_info['simple'] | tag_info['complex']).original_case[element]
         try:
-            element = etree.Element(element)
+            element = etree.Element(element_name)
         except ValueError as exc:
             raise ValueError(f"Failed to construct etree Element from '{element_name}'") from exc
     else:
         element_name = element.tag
 
-    tag_order = schema_dict['tag_info'][base_xpath]['order']
-
-    if len(tag_order) == 0:
+    if len(tag_info['order']) == 0:
         tag_order = None
+    else:
+        tag_order = tag_info['order']
 
     parent_nodes = eval_xpath(xmltree, xpath, list_return=True)
 
