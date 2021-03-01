@@ -71,7 +71,7 @@ Module reference (API)
 .. toctree::
    :maxdepth: 4
 
-   module_guide/code
+   module_guide/mg_index
       
 
 

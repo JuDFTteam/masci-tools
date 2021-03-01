@@ -1,8 +1,4 @@
 
-Source code Documentation (API reference)
-=========================================
-
-
 Visualisation and Plotting
 ++++++++++++++++++++++++++
 
@@ -22,17 +18,11 @@ Visualisation and Plotting
    :members:
 
 
-I/O helper and output file parsers
+IO helper and file parsers
 ++++++++++++++++++++++++++++++++++
 
-.. automodule:: masci_tools.io.common_functions
-   :members:
-
-.. automodule:: masci_tools.io.io_fleur_bands
-   :members:
-
-.. automodule:: masci_tools.io.io_hdf5
-   :members:
+KKR related IO
+----------------
 
 .. automodule:: masci_tools.io.kkr_params
    :members:
@@ -49,32 +39,39 @@ I/O helper and output file parsers
 .. automodule:: masci_tools.io.parsers.kkrimp_parser_functions
    :members:
 
-.. automodule:: masci_tools.io.io_fleurxml
-   :members:
+Fleur related IO
+------------------
 
-.. automodule:: masci_tools.io.fleurxmlmodifier
-   :members:
+Input/Output Parser
+^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: masci_tools.io.parsers.fleur
    :members:
 
-.. automodule:: masci_tools.io.parsers.fleur.outxml_conversions
+Functions for modifying the input file
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: masci_tools.io.fleurxmlmodifier
    :members:
+
+Functions/Classes for loading/validating fleur XML files
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. autoclass:: masci_tools.io.parsers.fleur.fleur_schema.schema_dict.SchemaDict
    :members:
 
-.. automodule:: masci_tools.io.parsers.fleur.fleur_schema
+.. automodule:: masci_tools.io.io_fleurxml
    :members:
 
-Fleur Schema parser functions
-++++++++++++++++++++++++++++++++++
+Miscelleanous fleur IO functions
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: masci_tools.io.parsers.fleur.fleur_schema.fleur_schema_parser_functions
+.. automodule:: masci_tools.io.io_fleur_bands
    :members:
 
-Definition of default parsing tasks for out.xml
-+++++++++++++++++++++++++++++++++++++++++++++++
+
+Definition of default parsing tasks for fleur out.xml
+-----------------------------------------------------
 
 .. automodule:: masci_tools.io.parsers.fleur.default_parse_tasks
    :members:
@@ -82,43 +79,3 @@ Definition of default parsing tasks for out.xml
 .. automodule:: masci_tools.io.parsers.fleur.task_migrations
    :members:
 
-Utility functions
-+++++++++++++++++++++
-
-.. automodule:: masci_tools.util.case_insensitive_dict
-   :members:
-
-.. automodule:: masci_tools.util.lockable_containers
-   :members:
-
-.. automodule:: masci_tools.util.xml.common_xml_util
-   :members:
-
-.. automodule:: masci_tools.util.xml.xml_setters_names
-   :members:
-
-.. automodule:: masci_tools.util.xml.xml_setters_nmmpmat
-   :members:
-
-.. automodule:: masci_tools.util.xml.xml_setters_xpaths
-   :members:
-
-.. automodule:: masci_tools.util.xml.xml_setters_basic
-   :members:
-
-.. automodule:: masci_tools.util.schema_dict_util
-   :members:
-
-.. automodule:: masci_tools.util.fleur_calculate_expression
-   :members:
-
-.. automodule:: masci_tools.util.parse_tasks
-   :members:
-
-.. automodule:: masci_tools.util.parse_tasks_decorators
-   :members:
-
-Defined constants
-++++++++++++++++++++
-
-.. automodule:: masci_tools.util.constants
