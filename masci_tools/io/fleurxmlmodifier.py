@@ -10,14 +10,55 @@
 # For further information please visit http://judft.de/.                      #
 #                                                                             #
 ###############################################################################
+"""
+This module contains a class for organizing and grouping changes to a input file
+of fleur in a robust way.
+
+Essentially a low-level version of the FleurinpModifier in aiida_fleur.
+"""
 from collections import namedtuple
 from lxml import etree
 import copy
+#Enable warnings for missing docstrings
+#pylint: enable=missing-function-docstring
 
 ModifierTask = namedtuple('ModifierTask', ['name', 'args', 'kwargs'])
 
 
 class FleurXMLModifier:
+    """
+    Class for grouping and organizing changes to a inp.xml file of fleur via the
+    xml setting methods in :py:mod:`~masci_tools.util.xml.xml_setters_names` and
+    :py:mod:`~masci_tools.util.xml.xml_setters_basic`
+
+    The basic usage is shown below
+    .. code-block:: python
+        from masci_tools.io.fleurxmlmodifier import FleurXMLModifier
+
+        fmode = FleurXMLModifier()
+
+        #Add changes by calling the methods on this class
+        #(names correspond to the setting methods in the xml_setters modules)
+        #They are not modifying a input file directly
+        #Instead all the tasks are collected and performed in one go
+
+        fmode.set_inpchanges({'Kmax': 4.0}) #Set Kmax to 4.0
+        fmode.shift_value({'Gmax': 5.0}) #Add 5 to the current value of Gmax
+
+        #Set the local orbital configuration on all iron atoms to '3s 3p'
+        fmode.set_species('all-Fe', {'lo': [{'n':3, 'l': 's', 'type': 'SCLO'},
+                                            {'n':3, 'l': 'p', 'type': 'SCLO'}]})
+
+        #To undo the last change call undo
+        #fmode.undo()
+
+        #revert_all=True resets all added tasks
+        #fmode.undo(revert_all=True)
+
+        #To apply the changes to an input file use the modify_xmlfile method
+        new_xmltree = fmode.modify_xmlfile('/path/to/input/file/inp.xml')
+
+    """
 
     def __init__(self):
         self._tasks = []
@@ -238,6 +279,8 @@ class FleurXMLModifier:
                     original_nmmp_lines = n_mmp_file.read().split('\n')
             else:
                 original_nmmp_lines = original_nmmp_file
+        else:
+            original_nmmp_lines = None
 
         new_xmltree = copy.deepcopy(original_xmltree)
         new_nmmp_lines = copy.deepcopy(original_nmmp_lines)

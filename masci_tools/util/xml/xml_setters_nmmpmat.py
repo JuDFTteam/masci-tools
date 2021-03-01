@@ -55,7 +55,7 @@ def set_nmmpmat(xmltree, nmmplines, schema_dict, species_name, orbital, spin,\
 
     nspins = evaluate_attribute(xmltree, schema_dict, 'jspins')
     if 'l_mtnocoPot' in schema_dict['attrib_types']:
-        if evaluate_attribute(xmltree, schema_dict, 'l_mtnocoPot'):
+        if evaluate_attribute(xmltree, schema_dict, 'l_mtnocoPot', contains='Setup'):
             nspins = 3
 
     if spin > nspins:
@@ -174,7 +174,7 @@ def rotate_nmmpmat(xmltree, nmmplines, schema_dict, species_name, orbital, phi, 
 
     nspins = evaluate_attribute(xmltree, schema_dict, 'jspins')
     if 'l_mtnocoPot' in schema_dict['attrib_types']:
-        if evaluate_attribute(xmltree, schema_dict, 'l_mtnocoPot'):
+        if evaluate_attribute(xmltree, schema_dict, 'l_mtnocoPot', contains='Setup'):
             nspins = 3
 
     all_ldau = eval_simple_xpath(xmltree, schema_dict, 'ldaU', contains='species', list_return=True)
@@ -268,7 +268,7 @@ def validate_nmmpmat(xmltree, nmmplines, schema_dict):
 
     nspins = evaluate_attribute(xmltree, schema_dict, 'jspins')
     if 'l_mtnocoPot' in schema_dict['attrib_types']:
-        if evaluate_attribute(xmltree, schema_dict, 'l_mtnocoPot'):
+        if evaluate_attribute(xmltree, schema_dict, 'l_mtnocoPot', contains='Setup'):
             nspins = 3
 
     all_ldau = eval_simple_xpath(xmltree, schema_dict, 'ldaU', contains='species', list_return=True)
