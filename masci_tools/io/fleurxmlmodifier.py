@@ -519,9 +519,31 @@ class FleurXMLModifier:
         self._tasks.append(ModifierTask('xml_set_text_no_create', args, kwargs))
 
     def set_nmmpmat(self, *args, **kwargs):
+        """
+        Appends a :py:func:`~masci_tools.util.xml.xml_setters_nmmpmat.set_nmmpmat()` to
+        the list of tasks that will be done on the xmltree.
+
+        :param species_name: string, name of the species you want to change
+        :param orbital: integer, orbital quantum number of the LDA+U procedure to be modified
+        :param spin: integer, specifies which spin block should be modified
+        :param occStates: list, sets the diagonal elements of the density matrix and everything
+                          else to zero
+        :param denmat: matrix, specify the density matrix explicitely
+        :param phi: float, optional angle (radian), by which to rotate the density matrix before writing it
+        :param theta: float, optional angle (radian), by which to rotate the density matrix before writing it
+        """
         self._tasks.append(ModifierTask('set_nmmpmat', args, kwargs))
 
     def rotate_nmmpmat(self, *args, **kwargs):
+        """
+        Appends a :py:func:`~masci_tools.util.xml.xml_setters_nmmpmat.rotate_nmmpmat()` to
+        the list of tasks that will be done on the xmltree.
+
+        :param species_name: string, name of the species you want to change
+        :param orbital: integer, orbital quantum number of the LDA+U procedure to be modified
+        :param phi: float, angle (radian), by which to rotate the density matrix
+        :param theta: float, angle (radian), by which to rotate the density matrix
+        """
         self._tasks.append(ModifierTask('rotate_nmmpmat', args, kwargs))
 
     def undo(self, revert_all=False):
