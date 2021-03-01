@@ -31,7 +31,6 @@ def test_convert_to_float():
     assert ret_val == {}
     assert warnings == ["Could not convert: '{}' to float, TypeError"]
 
-
     warnings = []
     ret_val, suc = convert_to_float('1,23', conversion_warnings=warnings)
     assert not suc
@@ -55,7 +54,7 @@ def test_convert_to_int():
     assert suc
     assert ret_val == 1241412
 
-    ret_val , suc = convert_to_int('-9999999999999999999999')
+    ret_val, suc = convert_to_int('-9999999999999999999999')
     assert suc
     assert ret_val == -9999999999999999999999
 

@@ -65,8 +65,12 @@ def xml_create_tag_schema_dict(xmltree, schema_dict, xpath, base_xpath, element,
     if len(parent_nodes) == 0:
         if create_parents:
             parent_xpath, parent_name = '/'.join(base_xpath.split('/')[:-1]), base_xpath.split('/')[-1]
-            xmltree = xml_create_tag_schema_dict(xmltree, schema_dict, '/'.join(xpath.split('/')[:-1]), parent_xpath,
-                                                 parent_name)
+            xmltree = xml_create_tag_schema_dict(xmltree,
+                                                 schema_dict,
+                                                 '/'.join(xpath.split('/')[:-1]),
+                                                 parent_xpath,
+                                                 parent_name,
+                                                 create_parents=create_parents)
         else:
             raise ValueError(f"Could not create tag '{element_name}' because atleast one subtag is missing. "
                              'Use create=True to create the subtags')
@@ -108,7 +112,7 @@ def xml_set_attrib_value(xmltree,
                          base_xpath,
                          attributename,
                          attribv,
-                         occurences=None,
+                         occurrences=None,
                          create=False):
     """
     Sets an attribute in a xmltree to a given value. By default the attribute will be set
@@ -143,7 +147,7 @@ def xml_set_attrib_value(xmltree,
         nodes = eval_xpath(xmltree, xpath, list_return=True)
 
     if len(nodes) == 0:
-        raise ValueError(f"Could not set attribute '{attributename}' on path '{xpath}'"
+        raise ValueError(f"Could not set attribute '{attributename}' on path '{xpath}' "
                          'because atleast one subtag is missing. '
                          'Use create=True to create the subtags')
 
@@ -162,7 +166,7 @@ def xml_set_attrib_value(xmltree,
     if not suc:
         raise ValueError(f"Failed to convert attribute values '{attribv}': \n" '\n'.join(warnings))
 
-    return xml_set_attrib_value_no_create(xmltree, xpath, attributename, converted_attribv, occurrences=occurences)
+    return xml_set_attrib_value_no_create(xmltree, xpath, attributename, converted_attribv, occurrences=occurrences)
 
 
 def xml_set_first_attrib_value(xmltree, schema_dict, xpath, base_xpath, attributename, attribv, create=False):
@@ -195,10 +199,10 @@ def xml_set_first_attrib_value(xmltree, schema_dict, xpath, base_xpath, attribut
                                 attributename,
                                 attribv,
                                 create=create,
-                                occurences=0)
+                                occurrences=0)
 
 
-def xml_set_text(xmltree, schema_dict, xpath, base_xpath, text, occurences=None, create=False):
+def xml_set_text(xmltree, schema_dict, xpath, base_xpath, text, occurrences=None, create=False):
     """
     Sets the text on tags in a xmltree to a given value. By default the text will be set
     on all nodes returned for the specified xpath.
@@ -239,7 +243,7 @@ def xml_set_text(xmltree, schema_dict, xpath, base_xpath, text, occurences=None,
     if not suc:
         raise ValueError(f"Failed to convert text values '{text}': \n" '\n'.join(warnings))
 
-    return xml_set_text_no_create(xmltree, xpath, converted_text, occurrences=occurences)
+    return xml_set_text_no_create(xmltree, xpath, converted_text, occurrences=occurrences)
 
 
 def xml_set_first_text(xmltree, schema_dict, xpath, base_xpath, text, create=False):
@@ -262,7 +266,7 @@ def xml_set_first_text(xmltree, schema_dict, xpath, base_xpath, text, create=Fal
 
     :returns: xmltree with set text
     """
-    return xml_set_text(xmltree, schema_dict, xpath, base_xpath, text, create=create, occurences=0)
+    return xml_set_text(xmltree, schema_dict, xpath, base_xpath, text, create=create, occurrences=0)
 
 
 def xml_add_number_to_attrib(xmltree,
@@ -314,6 +318,13 @@ def xml_add_number_to_attrib(xmltree,
        'int' not in possible_types:
         raise ValueError(f"Given attribute name '{attributename}' is not float or int")
 
+    attribs = schema_dict['tag_info'][base_xpath]['attribs']
+    if attributename not in attribs:
+        raise ValueError(
+            f"The key '{attributename}' is not expected for this version of the input for the '{base_xpath.split('/')[-1]}' tag. "
+            f'Allowed attributes are: {attribs.original_case.values()}')
+    attributename = attribs.original_case[attributename]
+
     if not xpath.endswith(f'/@{attributename}'):
         xpath = '/@'.join([xpath, attributename])
 
@@ -325,11 +336,11 @@ def xml_add_number_to_attrib(xmltree,
 
     attribvalues, suc = convert_xml_attribute(stringattribute, possible_types, constants=constants)
 
-    if not suc or any(value is None for value in attribvalues):
-        raise ValueError(f"Something went wrong finding values found for '{attributename}'. Cannot add number")
-
     if not isinstance(attribvalues, list):
         attribvalues = [attribvalues]
+
+    if not suc or any(value is None for value in attribvalues):
+        raise ValueError(f"Something went wrong finding values found for '{attributename}'. Cannot add number")
 
     if mode == 'abs':
         attribvalues = [value + float(add_number) for value in attribvalues]
@@ -345,11 +356,11 @@ def xml_add_number_to_attrib(xmltree,
 
     xmltree = xml_set_attrib_value(xmltree,
                                    schema_dict,
-                                   xpath,
+                                   xpath.split('/@')[0],
                                    base_xpath,
                                    attributename,
                                    attribvalues,
-                                   occurences=occurrences)
+                                   occurrences=occurrences)
 
     return xmltree
 

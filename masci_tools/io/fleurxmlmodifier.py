@@ -73,6 +73,10 @@ class FleurXMLModifier:
         :param xmltree: a lxml tree to be modified (IS MODIFIED INPLACE)
         :param nmmp_lines: a n_mmp_mat file to be modified (IS MODIFIED INPLACE)
         :param modification_tasks: a list of modification tuples
+        :param validate_changes: bool optional (default True), if True after all tasks are performed
+                                 both the xmltree and nmmp_lines are checked for consistency
+        :param extra_funcs: dict of callables in 'xpath', 'schema_dict', 'nmmpmat' subdicts for extra allowed
+                            modification functions
 
         :returns: a modified lxml tree and a modified n_mmp_mat file
         """
@@ -215,21 +219,68 @@ class FleurXMLModifier:
         self._tasks.append(ModifierTask('add_number_to_first_attrib', args, kwargs))
 
     def xml_create_tag(self, *args, **kwargs):
+        """
+        Appends a :py:func:`~masci_tools.util.xml.xml_setters_basic.xml_create_tag()` to
+        the list of tasks that will be done on the xmltree.
+
+        :param xmltree: an xmltree that represents inp.xml
+        :param xpath: a path where to place a new tag
+        :param element: a tag name or etree Element to be created
+        :param place_index: defines the place where to put a created tag
+        :param tag_order: defines a tag order
+        """
         self._tasks.append(ModifierTask('xml_create_tag', args, kwargs))
 
     def xml_replace_tag(self, *args, **kwargs):
+        """
+        Appends a :py:func:`~masci_tools.util.xml.xml_setters_basic.xml_replace_tag()` to
+        the list of tasks that will be done on the xmltree.
+
+        :param xpath: a path to the tag to be replaced
+        :param newelement: a new tag
+        """
         self._tasks.append(ModifierTask('xml_replace_tag', args, kwargs))
 
     def xml_delete_tag(self, *args, **kwargs):
+        """
+        Appends a :py:func:`~masci_tools.util.xml.xml_setters_basic.xml_delete_tag()` to
+        the list of tasks that will be done on the xmltree.
+
+        :param xpath: a path to the tag to be deleted
+        """
         self._tasks.append(ModifierTask('xml_delete_tag', args, kwargs))
 
     def xml_delete_att(self, *args, **kwargs):
+        """
+        Appends a :py:func:`~masci_tools.util.xml.xml_setters_basic.xml_delete_att()` to
+        the list of tasks that will be done on the xmltree.
+
+        :param xpath: a path to the attribute to be deleted
+        :param attrib: the name of an attribute
+        """
         self._tasks.append(ModifierTask('xml_delete_att', args, kwargs))
 
     def xml_set_attrib_value_no_create(self, *args, **kwargs):
+        """
+        Appends a :py:func:`~masci_tools.util.xml.xml_setters_basic.xml_set_attrib_value_no_create()` to
+        the list of tasks that will be done on the xmltree.
+
+        :param xpath: a path where to set the attributes
+        :param attributename: the attribute name to set
+        :param attribv: value or list of values to set (if not str they will be converted with `str(value)`)
+        :param occurrences: int or list of int. Which occurence of the node to set. By default all are set.
+        """
         self._tasks.append(ModifierTask('xml_set_attrib_value_no_create', args, kwargs))
 
     def xml_set_text_no_create(self, *args, **kwargs):
+        """
+        Appends a :py:func:`~masci_tools.util.xml.xml_setters_basic.xml_set_text_no_create()` to
+        the list of tasks that will be done on the xmltree.
+
+        :param xpath: a path where to set the attributes
+        :param text: value or list of values to set (if not str they will be converted with `str(value)`)
+        :param occurrences: int or list of int. Which occurence of the node to set. By default all are set.
+        """
         self._tasks.append(ModifierTask('xml_set_text_no_create', args, kwargs))
 
     def set_nmmpmat(self, *args, **kwargs):
@@ -263,7 +314,18 @@ class FleurXMLModifier:
         return self._tasks
 
     def modify_xmlfile(self, original_inpxmlfile, original_nmmp_file=None):
+        """
+        Applies the registered modifications to a given inputfile
 
+        :param original_inpxmlfile: either path to the inp.xml file, opened file handle
+                                    or a xml etree to be parsed
+        :param original_nmmp_file: path or list of str to a corresponding density matrix
+                                   file
+
+        :raises ValueError: if the parsing of the input file
+
+        :returns: a modified xmltree and if existent a modified density matrix file
+        """
         if isinstance(original_inpxmlfile, etree._ElementTree):
             original_xmltree = original_inpxmlfile
         else:

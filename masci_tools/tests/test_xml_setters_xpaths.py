@@ -196,3 +196,266 @@ def test_xml_set_attrib_value(load_inpxml, attribname, attribvalue, result):
                          '/fleurInput/calculationSetup/cutoffs', attribname, attribvalue)
 
     assert str(eval_xpath(root, '/fleurInput/calculationSetup/cutoffs/@Kmax')) == result
+
+
+#The integer argument is converted to float since the arguemnt radius is float_expression (either float or str)
+TEST_ATTRIB_RESULTS = [['test', 'test'], ['test', 'test2'], ['test', '2214.0000000000'], ['test', '2.20000000'],
+                       ['2.20000000', 'test']]
+TEST_ATTRIBV = ['test', ['test', 'test2'], ['test', 2214], 'test', ['test']]
+TEST_OCCURENCES = [None, None, None, 0, [-1]]
+
+
+@pytest.mark.parametrize('attribv, expected_result,occurrences', zip(TEST_ATTRIBV, TEST_ATTRIB_RESULTS,
+                                                                     TEST_OCCURENCES))
+def test_xml_set_attrib_value_all(load_inpxml, attribv, expected_result, occurrences):
+    """
+    Test of the functionality of xml_set_attrib_value_no_create with multiple occurrences
+    of the sttribute and different values for occurrences
+    """
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_xpaths import xml_set_attrib_value
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/mtSphere/@radius') == ['2.20000000', '2.20000000']
+
+    xmltree = xml_set_attrib_value(xmltree,
+                                   schema_dict,
+                                   '/fleurInput/atomSpecies/species/mtSphere',
+                                   '/fleurInput/atomSpecies/species/mtSphere',
+                                   'radius',
+                                   attribv,
+                                   occurrences=occurrences)
+
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/mtSphere/@radius') == expected_result
+
+
+def test_xml_set_attrib_value_differing_xpaths(load_inpxml):
+    """
+    Test of the functionality of xml_set_attrib_value_no_create with multiple occurrences
+    of the attribute and different values for occurrences
+    """
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_xpaths import xml_set_attrib_value
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/mtSphere/@radius') == ['2.20000000', '2.20000000']
+
+    xmltree = xml_set_attrib_value(xmltree, schema_dict, "/fleurInput/atomSpecies/species[@name='Fe-1']/mtSphere",
+                                   '/fleurInput/atomSpecies/species/mtSphere', 'radius', 'TEST')
+
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/mtSphere/@radius') == ['TEST', '2.20000000']
+
+
+def test_xml_set_attrib_value_create(load_inpxml):
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_xpaths import xml_set_attrib_value
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    with pytest.raises(ValueError, match="Could not set attribute 'key' on path "):
+        xml_set_attrib_value(xmltree, schema_dict, "/fleurInput/atomSpecies/species[@name='Fe-1']/ldaHIA/addArg",
+                             '/fleurInput/atomSpecies/species/ldaHIA/addArg', 'key', 'TEST')
+
+    xml_set_attrib_value(xmltree,
+                         schema_dict,
+                         "/fleurInput/atomSpecies/species[@name='Fe-1']/ldaHIA/addArg",
+                         '/fleurInput/atomSpecies/species/ldaHIA/addArg',
+                         'key',
+                         'TEST',
+                         create=True)
+
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/ldaHIA/addArg/@key') == 'TEST'
+
+
+def test_xml_set_first_attrib_value(load_inpxml):
+    """
+    Test of the functionality of xml_set_attrib_value_no_create with multiple occurrences
+    of the sttribute and different values for occurrences
+    """
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_xpaths import xml_set_first_attrib_value
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/mtSphere/@radius') == ['2.20000000', '2.20000000']
+
+    xmltree = xml_set_first_attrib_value(xmltree, schema_dict, '/fleurInput/atomSpecies/species/mtSphere',
+                                         '/fleurInput/atomSpecies/species/mtSphere', 'radius', 'TEST')
+
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/mtSphere/@radius') == ['TEST', '2.20000000']
+
+
+def test_xml_set_first_attrib_value_create(load_inpxml):
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_xpaths import xml_set_first_attrib_value
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    with pytest.raises(ValueError, match="Could not set attribute 'key' on path "):
+        xml_set_first_attrib_value(xmltree, schema_dict, "/fleurInput/atomSpecies/species[@name='Fe-1']/ldaHIA/addArg",
+                                   '/fleurInput/atomSpecies/species/ldaHIA/addArg', 'key', 'TEST')
+
+    xml_set_first_attrib_value(xmltree,
+                               schema_dict,
+                               "/fleurInput/atomSpecies/species[@name='Fe-1']/ldaHIA/addArg",
+                               '/fleurInput/atomSpecies/species/ldaHIA/addArg',
+                               'key',
+                               'TEST',
+                               create=True)
+
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/ldaHIA/addArg/@key') == 'TEST'
+
+
+def test_xml_set_text(load_inpxml):
+
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_xpaths import xml_set_text
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    xml_set_text(xmltree, schema_dict, '/fleurInput/comment', '/fleurInput/comment', 'TEST_COMMENT')
+
+    assert str(eval_xpath(root, '/fleurInput/comment/text()')) == 'TEST_COMMENT'
+
+
+TEST_TEXT_RESULTS = [['1.0000000000 1.0000000000 1.0000000000', '1.0000000000 1.0000000000 1.0000000000'],
+                     ['1.0 1.0 1.0', '1.0 1.0 1.0'],
+                     ['1.0000000000 1.0000000000 1.0000000000', '2.0000000000 2.0000000000 2.0000000000'],
+                     ['   -0.250000     0.250000     0.000000', '-20 30 40']]
+TEST_TEXTS = [[1.0, 1.0, 1.0], ['1.0', '1.0', '1.0'], [[1.0, 1.0, 1.0], [2.0, 2.0, 2.0]], ['-20', '30', '40']]
+TEST_TEXT_OCCURENCES = [None, None, None, [-1]]
+
+
+@pytest.mark.parametrize('text, expected_result,occurrences', zip(TEST_TEXTS, TEST_TEXT_RESULTS, TEST_TEXT_OCCURENCES))
+def test_xml_set_text_all(load_inpxml, text, expected_result, occurrences):
+
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_xpaths import xml_set_text
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    kpoints_xpath = '/fleurInput/cell/bzIntegration/kPointLists/kPointList/kPoint'
+
+    assert eval_xpath(root, f'{kpoints_xpath}/text()') == [
+        '   -0.250000     0.250000     0.000000', '    0.250000     0.250000     0.000000'
+    ]
+
+    xmltree = xml_set_text(xmltree, schema_dict, kpoints_xpath, kpoints_xpath, text, occurrences=occurrences)
+
+    assert eval_xpath(root, f'{kpoints_xpath}/text()') == expected_result
+
+
+def test_xml_set_text_differing_xpaths(load_inpxml):
+
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_xpaths import xml_set_text
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    kpoints_xpath = '/fleurInput/cell/bzIntegration/kPointLists/kPointList/kPoint'
+
+    assert eval_xpath(root, f'{kpoints_xpath}/text()') == [
+        '   -0.250000     0.250000     0.000000', '    0.250000     0.250000     0.000000'
+    ]
+
+    xmltree = xml_set_text(xmltree, schema_dict, f'{kpoints_xpath}[2]', kpoints_xpath, ['1.0', '1.0', '1.0'])
+
+    assert eval_xpath(root, f'{kpoints_xpath}/text()') == ['   -0.250000     0.250000     0.000000', '1.0 1.0 1.0']
+
+
+def test_xml_set_text_create(load_inpxml):
+
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_xpaths import xml_set_text
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    with pytest.raises(ValueError, match='Could not set text on path'):
+        xml_set_text(xmltree, schema_dict,
+                     "/fleurInput/atomSpecies/species[@name='Fe-1']/torgueCalculation/greensfElements/s",
+                     '/fleurInput/atomSpecies/species/torgueCalculation/greensfElements/s', [False, False, True, False])
+
+    xml_set_text(xmltree,
+                 schema_dict,
+                 "/fleurInput/atomSpecies/species[@name='Fe-1']/torgueCalculation/greensfElements/s",
+                 '/fleurInput/atomSpecies/species/torgueCalculation/greensfElements/s', [False, False, True, False],
+                 create=True)
+
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/torgueCalculation/greensfElements/s/text()') == 'F F T F'
+
+
+def test_xml_set_first_text(load_inpxml):
+
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_xpaths import xml_set_first_text
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    kpoints_xpath = '/fleurInput/cell/bzIntegration/kPointLists/kPointList/kPoint'
+
+    assert eval_xpath(root, f'{kpoints_xpath}/text()') == [
+        '   -0.250000     0.250000     0.000000', '    0.250000     0.250000     0.000000'
+    ]
+
+    xmltree = xml_set_first_text(xmltree, schema_dict, kpoints_xpath, kpoints_xpath, [1.0, 1.0, 1.0])
+
+    assert eval_xpath(root, f'{kpoints_xpath}/text()') == [
+        '1.0000000000 1.0000000000 1.0000000000', '    0.250000     0.250000     0.000000'
+    ]
+
+
+def test_xml_set_first_text_create(load_inpxml):
+
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_xpaths import xml_set_first_text
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    with pytest.raises(ValueError, match='Could not set text on path'):
+        xml_set_first_text(xmltree, schema_dict,
+                           "/fleurInput/atomSpecies/species[@name='Fe-1']/torgueCalculation/greensfElements/s",
+                           '/fleurInput/atomSpecies/species/torgueCalculation/greensfElements/s',
+                           [False, False, True, False])
+
+    xml_set_first_text(xmltree,
+                       schema_dict,
+                       "/fleurInput/atomSpecies/species[@name='Fe-1']/torgueCalculation/greensfElements/s",
+                       '/fleurInput/atomSpecies/species/torgueCalculation/greensfElements/s',
+                       [False, False, True, False],
+                       create=True)
+
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/torgueCalculation/greensfElements/s/text()') == 'F F T F'
+
+
+TEST_SHIFT_ATTRIB_NAME = ['Kmax', 'kmax', 'KMAX']
+TEST_SHIFT_VALUES = ['9.000000', 5.321, '9.000000']
+TEST_SHIFT_RESULTS = ['13.0000000000', '9.3210000000', '13.0000000000']
+
+
+@pytest.mark.parametrize('attribname, shift_value, result',
+                         zip(TEST_SHIFT_ATTRIB_NAME, TEST_SHIFT_VALUES, TEST_SHIFT_RESULTS))
+def test_xml_add_number_to_attrib(load_inpxml, attribname, shift_value, result):
+
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_xpaths import xml_add_number_to_attrib
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    xml_add_number_to_attrib(xmltree, schema_dict, '/fleurInput/calculationSetup/cutoffs',
+                             '/fleurInput/calculationSetup/cutoffs', attribname, shift_value)
+
+    assert str(eval_xpath(root, '/fleurInput/calculationSetup/cutoffs/@Kmax')) == result

@@ -116,7 +116,6 @@ def set_text(xmltree, schema_dict, tag_name, text, complex_xpath=None, occurrenc
                            schema_dict,
                            complex_xpath,
                            base_xpath,
-                           tag_name,
                            text,
                            occurrences=occurrences,
                            create=create)

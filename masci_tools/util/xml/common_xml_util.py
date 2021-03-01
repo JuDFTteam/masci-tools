@@ -350,7 +350,11 @@ def convert_text_to_xml(textvalue, possible_definitions, conversion_warnings=Non
 
         converted_list.append(' '.join(converted_text))
 
-    return converted_list, all_success
+    ret_value = converted_list
+    if len(converted_list) == 1:
+        ret_value = converted_list[0]
+
+    return ret_value, all_success
 
 
 def convert_to_float(value_string, conversion_warnings=None):
@@ -375,7 +379,6 @@ def convert_to_float(value_string, conversion_warnings=None):
         return value_string, False
 
     return value, True
-
 
 
 def convert_to_int(value_string, conversion_warnings=None):
@@ -434,9 +437,7 @@ def convert_from_fortran_bool(stringbool, conversion_warnings=None):
         converted_value = stringbool
         conversion_warnings.append(f"Could not convert: '{stringbool}' to boolean, " 'only accepts str or boolean')
 
-
     return converted_value, suc
-
 
 
 def convert_to_fortran_bool(boolean, conversion_warnings=None):
