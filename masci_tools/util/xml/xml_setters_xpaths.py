@@ -301,6 +301,7 @@ def xml_add_number_to_attrib(xmltree,
     """
     from masci_tools.util.schema_dict_util import read_constants
     from masci_tools.util.xml.common_xml_util import convert_xml_attribute
+    from masci_tools.io.common_functions import is_sequence
 
     if attributename not in schema_dict['attrib_types']:
         raise ValueError(
@@ -341,6 +342,14 @@ def xml_add_number_to_attrib(xmltree,
 
     if not suc or any(value is None for value in attribvalues):
         raise ValueError(f"Something went wrong finding values found for '{attributename}'. Cannot add number")
+
+    if occurrences is not None:
+        if not is_sequence(occurrences):
+            occurrences = [occurrences]
+        try:
+            attribvalues = [attribvalues[occ] for occ in occurrences]
+        except IndexError as exc:
+            raise ValueError('Wrong value for occurrences') from exc
 
     if mode == 'abs':
         attribvalues = [value + float(add_number) for value in attribvalues]
@@ -445,7 +454,7 @@ def xml_set_simple_tag(xmltree, schema_dict, xpath, base_xpath, tag_name, change
                                      tag_base_xpath,
                                      attrib,
                                      value,
-                                     occurences=occurrences)
+                                     occurrences=occurrences)
     else:
         if not isinstance(changes, dict):
             raise ValueError(f"Tag '{tag_name}' can only occur once. But 'set_simple_tag' got a list")
@@ -518,7 +527,7 @@ def xml_set_complex_tag(xmltree, schema_dict, xpath, base_xpath, attributedict, 
             # eval and ggf create tag at right place.
             eval_xpath_create(xmltree, schema_dict, sub_xpath, sub_base_xpath, create_parents=create)
 
-            xmltree = xml_set_complex_tag(xmltree, schema_dict, sub_xpath, sub_base_xpath, val)
+            xmltree = xml_set_complex_tag(xmltree, schema_dict, sub_xpath, sub_base_xpath, val, create=create)
 
         else:
             # policy: we DELETE all existing tags, and create new ones from the given parameters.
@@ -526,13 +535,13 @@ def xml_set_complex_tag(xmltree, schema_dict, xpath, base_xpath, attributedict, 
 
             if isinstance(val, dict):
                 val = [val]
-
+            print(len(val))
             for indx in range(0, len(val)):
                 xml_create_tag_schema_dict(xmltree, schema_dict, xpath, base_xpath, key, create_parents=create)
 
             for indx, tagdict in enumerate(val):
                 for k in range(len(eval_xpath(xmltree, sub_xpath, list_return=True)) // len(val)):
-                    current_elem_xpath = f'{sub_xpath}[{k*len(val)+indx}]'
+                    current_elem_xpath = f'{sub_xpath}[{k*len(val)+indx+1}]'
                     xmltree = xml_set_complex_tag(xmltree,
                                                   schema_dict,
                                                   current_elem_xpath,
