@@ -24,8 +24,9 @@ def set_nmmpmat(xmltree, nmmplines, schema_dict, species_name, orbital, spin,\
     """Routine sets the block in the n_mmp_mat file specified by species_name, orbital and spin
     to the desired density matrix
 
-    :param fleurinp_tree_copy: an xmltree that represents inp.xml
-    :param nmmp_lines_copy: list of lines in the n_mmp_mat file
+    :param xmltree: an xmltree that represents inp.xml
+    :param nmmplines: list of lines in the n_mmp_mat file
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
     :param species_name: string, name of the species you want to change
     :param orbital: integer, orbital quantum number of the LDA+U procedure to be modified
     :param spin: integer, specifies which spin block should be modified
@@ -37,6 +38,8 @@ def set_nmmpmat(xmltree, nmmplines, schema_dict, species_name, orbital, spin,\
 
     :raises ValueError: If something in the input is wrong
     :raises KeyError: If no LDA+U procedure is found on a species
+
+    :returns: list with modified nmmplines
     """
     from masci_tools.util.xml.common_xml_util import eval_xpath, get_xml_attribute
     from masci_tools.util.schema_dict_util import evaluate_attribute, eval_simple_xpath
@@ -148,8 +151,9 @@ def rotate_nmmpmat(xmltree, nmmplines, schema_dict, species_name, orbital, phi, 
     """
     Rotate the density matrix with the given angles phi and theta
 
-    :param fleurinp_tree_copy: an xmltree that represents inp.xml
-    :param nmmp_lines_copy: list of lines in the n_mmp_mat file
+    :param xmltree: an xmltree that represents inp.xml
+    :param nmmplines: list of lines in the n_mmp_mat file
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
     :param species_name: string, name of the species you want to change
     :param orbital: integer, orbital quantum number of the LDA+U procedure to be modified
     :param phi: float, angle (radian), by which to rotate the density matrix
@@ -157,6 +161,8 @@ def rotate_nmmpmat(xmltree, nmmplines, schema_dict, species_name, orbital, phi, 
 
     :raises ValueError: If something in the input is wrong
     :raises KeyError: If no LDA+U procedure is found on a species
+
+    :returns: list with modified nmmplines
     """
     from masci_tools.util.xml.common_xml_util import eval_xpath, get_xml_attribute
     from masci_tools.util.schema_dict_util import evaluate_attribute, eval_simple_xpath
@@ -250,7 +256,7 @@ def rotate_nmmpmat(xmltree, nmmplines, schema_dict, species_name, orbital, phi, 
 
 def validate_nmmpmat(xmltree, nmmplines, schema_dict):
     """
-    Checks that the given nmmp_lines is valid with the given fleurinp_tree
+    Checks that the given nmmp_lines is valid with the given xmltree
 
     Checks that the number of blocks is as expected from the inp.xml and each
     block does not contain non-zero elements outside their size given by the
@@ -258,8 +264,8 @@ def validate_nmmpmat(xmltree, nmmplines, schema_dict):
     diagonal elements are checked that they are in between 0 and the maximum
     possible occupation
 
-    :param fleurinp_tree_copy: an xmltree that represents inp.xml
-    :param nmmp_lines_copy: list of lines in the n_mmp_mat file
+    :param xmltree: an xmltree that represents inp.xml
+    :param nmmplines: list of lines in the n_mmp_mat file
 
     :raises ValueError: if any of the above checks are violated.
     """

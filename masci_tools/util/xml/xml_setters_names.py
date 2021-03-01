@@ -12,13 +12,31 @@
 ###############################################################################
 """
 Functions for modifying the xml input file of Fleur utilizing the schema dict
+and as little knowledge of the concrete xpaths as possible
 """
 from masci_tools.util.schema_dict_util import get_tag_xpath
 from masci_tools.util.schema_dict_util import get_attrib_xpath
 
 
 def create_tag(xmltree, schema_dict, tag_name, complex_xpath=None, create_parents=False, **kwargs):
+    """
+    This method creates a tag with a uniquely identified xpath under the nodes of its parent.
+    If there are no nodes evaluated the subtags can be created with `create_parents=True`
 
+    The tag is always inserted in the correct place if a order is enforced by the schema
+
+    :param xmltree: an xmltree that represents inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
+    :param tag_name: str of the tag to create
+    :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+    :param create_parents: bool optional (default False), if True and the given xpath has no results the
+                           the parent tags are created recursively
+    Kwargs:
+        :param contains: str, this string has to be in the final path
+        :param not_contains: str, this string has to NOT be in the final path
+
+    :returns: xmltree with created tags
+    """
     from masci_tools.util.xml.xml_setters_xpaths import xml_create_tag_schema_dict
 
     base_xpath = get_tag_xpath(schema_dict, tag_name, **kwargs)
@@ -38,17 +56,43 @@ def create_tag(xmltree, schema_dict, tag_name, complex_xpath=None, create_parent
     return xmltree
 
 
-def add_number_to_attrib(xmltree, schema_dict, attributename, add_number, mode='abs', occurrences=None, **kwargs):
+def add_number_to_attrib(xmltree, schema_dict, attributename, add_number, complex_xpath=None, mode='abs', occurrences=None, **kwargs):
+    """
+    Adds a given number to the attribute value in a xmltree specified by the name of the attribute
+    and optional further specification
+    If there are no nodes under the specified xpath an error is raised
 
+    :param xmltree: an xmltree that represents inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
+    :param attributename: the attribute name to change
+    :param add_number: number to add/multiply with the old attribute value
+    :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+    :param mode: str (either `rel` or `abs`).
+                 `rel` multiplies the old value with `add_number`
+                 `abs` adds the old value and `add_number`
+    :param occurrences: int or list of int. Which occurence of the node to set. By default all are set.
+
+    Kwargs:
+        :param tag_name: str, name of the tag where the attribute should be parsed
+        :param contains: str, this string has to be in the final path
+        :param not_contains: str, this string has to NOT be in the final path
+        :param exclude: list of str, here specific types of attributes can be excluded
+                        valid values are: settable, settable_contains, other
+
+    :returns: xmltree with shifted attribute
+    """
     from masci_tools.util.xml.xml_setters_xpaths import xml_add_number_to_attrib
 
     attrib_xpath = get_attrib_xpath(schema_dict, attributename, **kwargs)
+
+    if complex_xpath is None:
+        complex_xpath = attrib_xpath
 
     base_xpath, attributename = tuple(attrib_xpath.split('/@'))
 
     xmltree = xml_add_number_to_attrib(xmltree,
                                        schema_dict,
-                                       attrib_xpath,
+                                       complex_xpath,
                                        base_xpath,
                                        attributename,
                                        add_number,
@@ -56,9 +100,31 @@ def add_number_to_attrib(xmltree, schema_dict, attributename, add_number, mode='
                                        occurrences=occurrences)
 
 
-def add_number_to_first_attrib(xmltree, schema_dict, attributename, add_number, mode='abs', **kwargs):
+def add_number_to_first_attrib(xmltree, schema_dict, attributename, add_number, complex_xpath=None, mode='abs', **kwargs):
+    """
+    Adds a given number to the first occurrence of an attribute value in a xmltree specified by the name of the attribute
+    and optional further specification
+    If there are no nodes under the specified xpath an error is raised
 
-    return add_number_to_attrib(xmltree, schema_dict, attributename, add_number, mode='abs', occurrences=0, **kwargs)
+    :param xmltree: an xmltree that represents inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
+    :param attributename: the attribute name to change
+    :param add_number: number to add/multiply with the old attribute value
+    :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+    :param mode: str (either `rel` or `abs`).
+                 `rel` multiplies the old value with `add_number`
+                 `abs` adds the old value and `add_number`
+
+    Kwargs:
+        :param tag_name: str, name of the tag where the attribute should be parsed
+        :param contains: str, this string has to be in the final path
+        :param not_contains: str, this string has to NOT be in the final path
+        :param exclude: list of str, here specific types of attributes can be excluded
+                        valid values are: settable, settable_contains, other
+
+    :returns: xmltree with shifted attribute
+    """
+    return add_number_to_attrib(xmltree, schema_dict, attributename, add_number, complex_xpath=complex_xpath, mode='abs', occurrences=0, **kwargs)
 
 
 def set_attrib_value(xmltree,
@@ -69,7 +135,31 @@ def set_attrib_value(xmltree,
                      occurrences=None,
                      create=False,
                      **kwargs):
+    """
+    Sets an attribute in a xmltree to a given value, specified by its name and further
+    specifications.
+    If there are no nodes under the specified xpath a tag can be created with `create=True`.
+    The attribute values are converted automatically according to the types of the attribute
+    with :py:func:`~masci_tools.util.xml.common_xml_util.convert_attribute_to_xml()` if they
+    are not `str` already.
 
+    :param xmltree: an xmltree that represents inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
+    :param attributename: the attribute name to set
+    :param attribv: value or list of values to set
+    :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+    :param occurrences: int or list of int. Which occurence of the node to set. By default all are set.
+    :param create: bool optional (default False), if True the tag is created if is missing
+
+    Kwargs:
+        :param tag_name: str, name of the tag where the attribute should be parsed
+        :param contains: str, this string has to be in the final path
+        :param not_contains: str, this string has to NOT be in the final path
+        :param exclude: list of str, here specific types of attributes can be excluded
+                        valid values are: settable, settable_contains, other
+
+    :returns: xmltree with set attribute
+    """
     from masci_tools.util.xml.xml_setters_xpaths import xml_set_attrib_value
 
     base_xpath = get_attrib_xpath(schema_dict, attributename, **kwargs)
@@ -92,7 +182,30 @@ def set_attrib_value(xmltree,
 
 
 def set_first_attrib_value(xmltree, schema_dict, attributename, attribv, complex_xpath=None, create=False, **kwargs):
+    """
+    Sets the first occurrence of an attribute in a xmltree to a given value, specified by its name and further
+    specifications.
+    If there are no nodes under the specified xpath a tag can be created with `create=True`.
+    The attribute values are converted automatically according to the types of the attribute
+    with :py:func:`~masci_tools.util.xml.common_xml_util.convert_attribute_to_xml()` if they
+    are not `str` already.
 
+    :param xmltree: an xmltree that represents inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
+    :param attributename: the attribute name to set
+    :param attribv: value or list of values to set
+    :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+    :param create: bool optional (default False), if True the tag is created if is missing
+
+    Kwargs:
+        :param tag_name: str, name of the tag where the attribute should be parsed
+        :param contains: str, this string has to be in the final path
+        :param not_contains: str, this string has to NOT be in the final path
+        :param exclude: list of str, here specific types of attributes can be excluded
+                        valid values are: settable, settable_contains, other
+
+    :returns: xmltree with set attribute
+    """
     return set_attrib_value(xmltree,
                             schema_dict,
                             attributename,
@@ -104,7 +217,28 @@ def set_first_attrib_value(xmltree, schema_dict, attributename, attribv, complex
 
 
 def set_text(xmltree, schema_dict, tag_name, text, complex_xpath=None, occurrences=None, create=False, **kwargs):
+    """
+    Sets the text on tags in a xmltree to a given value, specified by the name of the tag and
+    further specifications. By default the text will be set on all nodes returned for the specified xpath.
+    If there are no nodes under the specified xpath a tag can be created with `create=True`.
+    The text values are converted automatically according to the types
+    with :py:func:`~masci_tools.util.xml.common_xml_util.convert_text_to_xml()` if they
+    are not `str` already.
 
+    :param xmltree: an xmltree that represents inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
+    :param tag_name: str name of the tag, where the text should be set
+    :param text: value or list of values to set
+    :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+    :param occurrences: int or list of int. Which occurence of the node to set. By default all are set.
+    :param create: bool optional (default False), if True the tag is created if is missing
+
+    Kwargs:
+        :param contains: str, this string has to be in the final path
+        :param not_contains: str, this string has to NOT be in the final path
+
+    :returns: xmltree with set text
+    """
     from masci_tools.util.xml.xml_setters_xpaths import xml_set_text
 
     base_xpath = get_tag_xpath(schema_dict, tag_name, **kwargs)
@@ -124,6 +258,27 @@ def set_text(xmltree, schema_dict, tag_name, text, complex_xpath=None, occurrenc
 
 
 def set_first_text(xmltree, schema_dict, attributename, attribv, complex_xpath=None, create=False, **kwargs):
+    """
+    Sets the text the first occurrence of a tag in a xmltree to a given value, specified by the name of the tag and
+    further specifications. By default the text will be set on all nodes returned for the specified xpath.
+    If there are no nodes under the specified xpath a tag can be created with `create=True`.
+    The text values are converted automatically according to the types
+    with :py:func:`~masci_tools.util.xml.common_xml_util.convert_text_to_xml()` if they
+    are not `str` already.
+
+    :param xmltree: an xmltree that represents inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
+    :param tag_name: str name of the tag, where the text should be set
+    :param text: value or list of values to set
+    :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+    :param create: bool optional (default False), if True the tag is created if is missing
+
+    Kwargs:
+        :param contains: str, this string has to be in the final path
+        :param not_contains: str, this string has to NOT be in the final path
+
+    :returns: xmltree with set text
+    """
     return set_text(xmltree,
                     schema_dict,
                     attributename,
@@ -134,8 +289,28 @@ def set_first_text(xmltree, schema_dict, attributename, attribv, complex_xpath=N
                     **kwargs)
 
 
-def set_simple_tag(xmltree, schema_dict, tag_name, changes, create_parents=False, **kwargs):
+def set_simple_tag(xmltree, schema_dict, tag_name, changes, complex_xpath=None, create_parents=False, **kwargs):
+    """
+    Sets one or multiple `simple` tag(s) in an xmltree. A simple tag can only hold attributes and has no
+    subtags. The tag is specified by its name and further specification
+    If the tag can occur multiple times all existing tags are DELETED and new ones are written.
+    If the tag only occurs once it will automatically be created if its missing.
 
+    :param xmltree: an xmltree that represents inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
+    :param tag_name: str name of the tag to modify/set
+    :param changes: list of dicts or dict with the changes. Elements in list describe multiple tags.
+                    Keys in the dictionary correspond to {'attributename': attributevalue}
+    :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+    :param create_parents: bool optional (default False), if True and the path, where the simple tags are
+                           set does not exist it is created
+
+    Kwargs:
+        :param contains: str, this string has to be in the final path
+        :param not_contains: str, this string has to NOT be in the final path
+
+    :returns: xmltree with set simple tags
+    """
     from masci_tools.util.xml.xml_setters_xpaths import xml_set_simple_tag
 
     base_xpath = get_tag_xpath(schema_dict, tag_name, **kwargs)
@@ -144,22 +319,55 @@ def set_simple_tag(xmltree, schema_dict, tag_name, changes, create_parents=False
 
     assert len(tag_info['simple'] | tag_info['complex']) == 0, f"Given tag '{tag_name}' is not simple"
 
+    if complex_xpath is None:
+        complex_xpath = base_xpath
+
     return xml_set_simple_tag(xmltree,
                               schema_dict,
-                              base_xpath,
+                              complex_xpath,
                               base_xpath,
                               tag_name,
                               changes,
                               create_parents=create_parents)
 
 
-def set_complex_tag(xmltree, schema_dict, tag_name, changes, create=False, **kwargs):
+def set_complex_tag(xmltree, schema_dict, tag_name, changes, complex_xpath=None, create=False, **kwargs):
+    """
+    Function to correctly set tags/attributes for a given tag.
+    Goes through the attributedict and decides based on the schema_dict, how the corresponding
+    key has to be handled.
+    The tag is specified via its name and evtl. further specification
 
+    Supports:
+
+        - attributes
+        - tags with text only
+        - simple tags, i.e. only attributes (can be optional single/multiple)
+        - complex tags, will recursively create/modify them
+
+    :param xmltree: an xmltree that represents inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
+    :param tag_name: name of the tag to set
+    :param attributedict: Keys in the dictionary correspond to names of tags and the values are the modifications
+                          to do on this tag (attributename, subdict with changes to the subtag, ...)
+    :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+    :param create: bool optional (default False), if True and the path, where the complex tag is
+                   set does not exist it is created
+
+    Kwargs:
+        :param contains: str, this string has to be in the final path
+        :param not_contains: str, this string has to NOT be in the final path
+
+    :returns: xmltree with changes to the complex tag
+    """
     from masci_tools.util.xml.xml_setters_xpaths import xml_set_complex_tag
 
     base_xpath = get_tag_xpath(schema_dict, tag_name, **kwargs)
 
-    return xml_set_complex_tag(xmltree, schema_dict, base_xpath, base_xpath, changes, create=create)
+    if complex_xpath is None:
+        complex_xpath = base_xpath
+
+    return xml_set_complex_tag(xmltree, schema_dict, complex_xpath, base_xpath, changes, create=create)
 
 
 def set_species_label(xmltree, schema_dict, atom_label, attributedict, create=False):
@@ -172,6 +380,8 @@ def set_species_label(xmltree, schema_dict, atom_label, attributedict, create=Fa
     :param atom_label: string, a label of the atom which specie will be changed. 'all' to change all the species
     :param attributedict: a python dict specifying what you want to change.
     :param create: bool, if species does not exist create it and all subtags?
+
+    :returns: xml etree of the new inp.xml
     """
     from masci_tools.util.schema_dict_util import tag_exists, eval_simple_xpath
     from masci_tools.util.xml.common_xml_util import get_xml_attribute
@@ -208,6 +418,7 @@ def set_species(xmltree, schema_dict, species_name, attributedict, create=False)
     :param xmltree: xml etree of the inp.xml
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
     :param species_name: string, name of the specie you want to change
+                         Can be name of the species, 'all' or 'all-<string>' (sets species with the string in the species name)
     :param attributedict: a python dict specifying what you want to change.
     :param create: bool, if species does not exist create it and all subtags?
 
@@ -250,14 +461,21 @@ def set_species(xmltree, schema_dict, species_name, attributedict, create=False)
 
 def shift_value_species_label(xmltree, schema_dict, atom_label, attributename, value_given, mode='abs', **kwargs):
     """
-    Shifts value of a specie by label
-    if at_label contains 'all' then applies to all species
+    Shifts the value of an attribute on a species by label
+    if atom_label contains 'all' then applies to all species
 
-    :param fleurinp_tree_copy: xml etree of the inp.xml
-    :param at_label: string, a label of the atom which specie will be changed. 'all' if set up all species
-    :param attr_name: name of the attribute to change
+    :param xmltree: xml etree of the inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
+    :param atom_label: string, a label of the atom which specie will be changed. 'all' if set up all species
+    :param attributename: name of the attribute to change
     :param value_given: value to add or to multiply by
     :param mode: 'rel' for multiplication or 'abs' for addition
+
+    Kwargs if the attributename does not correspond to a unique path:
+        :param contains: str, this string has to be in the final path
+        :param not_contains: str, this string has to NOT be in the final path
+
+    :returns: xml etree of the new inp.xml
     """
     from masci_tools.util.schema_dict_util import tag_exists, eval_simple_xpath
     from masci_tools.util.xml.common_xml_util import get_xml_attribute
@@ -316,23 +534,23 @@ def shift_value_species_label(xmltree, schema_dict, atom_label, attributename, v
 
 def set_atomgroup_label(xmltree, schema_dict, atom_label, attributedict, create=False):
     """
-    This method calls :func:`~aiida_fleur.tools.xml_util.change_atomgr_att()`
-    method for a certain atom specie that corresponds to an atom with a given label.
+    This method calls :func:`~aiida_fleur.tools.xml_util.set_atomgroup()`
+    method for a certain atom species that corresponds to an atom with a given label.
 
-    :param fleurinp_tree_copy: xml etree of the inp.xml
-    :param at_label: string, a label of the atom which specie will be changed. 'all' to change all the species
+    :param xmltree: xml etree of the inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
+    :param atom_label: string, a label of the atom which specie will be changed. 'all' to change all the species
     :param attributedict: a python dict specifying what you want to change.
+    :param create: bool, if species does not exist create it and all subtags?
 
-    :return fleurinp_tree_copy: xml etree of the new inp.xml
+    :returns: xml etree of the new inp.xml
 
     **attributedict** is a python dictionary containing dictionaries that specify attributes
     to be set inside the certain specie. For example, if one wants to set a beta noco parameter it
     can be done via::
 
-        'attributedict': {'nocoParams': [('beta', val)]}
+        'attributedict': {'nocoParams': {'beta': val}}
 
-    ``force`` and ``nocoParams`` keys are supported.
-    To find possible keys of the inner dictionary please refer to the FLEUR documentation flapw.de
     """
     from masci_tools.util.schema_dict_util import tag_exists, eval_simple_xpath
     from masci_tools.util.xml.common_xml_util import get_xml_attribute
@@ -367,22 +585,21 @@ def set_atomgroup(xmltree, schema_dict, attributedict, position=None, species=No
     """
     Method to set parameters of an atom group of the fleur inp.xml file.
 
-    :param fleurinp_tree_copy: xml etree of the inp.xml
+    :param xmltree: xml etree of the inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
     :param attributedict: a python dict specifying what you want to change.
     :param position: position of an atom group to be changed. If equals to 'all', all species will be changed
-    :param species: atom groups, corresponding to the given specie will be changed
+    :param species: atom groups, corresponding to the given species will be changed
     :param create: bool, if species does not exist create it and all subtags?
 
-    :return fleurinp_tree_copy: xml etree of the new inp.xml
+    :returns: xml etree of the new inp.xml
 
     **attributedict** is a python dictionary containing dictionaries that specify attributes
     to be set inside the certain specie. For example, if one wants to set a beta noco parameter it
     can be done via::
 
-        'attributedict': {'nocoParams': {'beta': val]}
+        'attributedict': {'nocoParams': {'beta': val}}
 
-    ``force`` and ``nocoParams`` keys are supported.
-    To find possible keys of the inner dictionary please refer to the FLEUR documentation flapw.de
     """
     from masci_tools.util.xml.xml_setters_xpaths import xml_set_complex_tag
 
@@ -411,13 +628,17 @@ def set_atomgroup(xmltree, schema_dict, attributedict, position=None, species=No
 
 def shift_value(xmltree, schema_dict, change_dict, mode='abs', path_spec=None):
     """
-    Shifts numertical values of some tags directly in the inp.xml file.
+    Shifts numerical values of attributes directly in the inp.xml file.
 
-    :param fleurinp_tree_copy: a lxml tree that represents inp.xml
-    :param change_dict: a python dictionary with the keys to shift.
+    The first occurrence of the attribute is shifted
+
+    :param xmltree: xml tree that represents inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
+    :param change_dict: a python dictionary with the keys to shift and the shift values.
     :param mode: 'abs' if change given is absolute, 'rel' if relative
+    :param path_spec: dict, with ggf. necessary further specifications for the path of the attribute
 
-    :returns new_tree: a lxml tree with shifted values
+    :returns: a xml tree with shifted values
 
     An example of change_dict::
 
@@ -443,13 +664,23 @@ def shift_value(xmltree, schema_dict, change_dict, mode='abs', path_spec=None):
 
 def set_inpchanges(xmltree, schema_dict, change_dict, path_spec=None):
     """
-    This modifies the xml-inp file. Makes all the changes wanted by
-    the user or sets some default values for certain modes
+    This method sets all the attribute and texts provided in the change_dict.
 
-    :params xmltree: xml-tree of the xml-inp file
+    The first occurrence of the attribute/tag is set
+
+    :param xmltree: xml tree that represents inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
     :params change_dict: dictionary {attrib_name : value} with all the wanted changes.
+    :param path_spec: dict, with ggf. necessary further specifications for the path of the attribute
 
-    :returns: an etree of the xml-inp file with changes.
+    An example of change_dict::
+
+            change_dict = {'itmax' : 1,
+                           'l_noco': True,
+                           'ctail': False,
+                           'l_ss': True}
+
+    :returns: an xmltree of the inp.xml file with changes.
     """
     from masci_tools.util.xml.xml_setters_xpaths import xml_set_first_attrib_value, xml_set_first_text
 

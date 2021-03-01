@@ -26,8 +26,7 @@ def xml_create_tag_schema_dict(xmltree, schema_dict, xpath, base_xpath, element,
     returned nodes.
     If there are no nodes evaluated the subtags can be created with `create_parents=True`
 
-    The tag is appended by default, but can be inserted at a certain index (`place_index`)
-    or can be inserted according to a given order of tags
+    The tag is always inserted in the correct place if a order is enforced by the schema
 
     :param xmltree: an xmltree that represents inp.xml
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
