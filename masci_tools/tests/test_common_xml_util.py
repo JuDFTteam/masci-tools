@@ -21,10 +21,7 @@ def test_convert_to_float():
     assert suc
     assert pytest.approx(ret_val) == 0.45
 
-    ret_val = convert_to_float('-99999231.2143543', suc_return=False)
-    assert pytest.approx(ret_val) == -99999231.2143543
-
-    ret_val, suc = convert_to_float('1.5324324e-9', suc_return=True)
+    ret_val, suc = convert_to_float('1.5324324e-9')
     assert suc
     assert pytest.approx(ret_val) == 1.5324324e-9
 
@@ -34,19 +31,10 @@ def test_convert_to_float():
     assert ret_val == {}
     assert warnings == ["Could not convert: '{}' to float, TypeError"]
 
-    warnings = []
-    ret_val = convert_to_float({}, suc_return=False, conversion_warnings=warnings)
-    assert ret_val == {}
-    assert warnings == ["Could not convert: '{}' to float, TypeError"]
 
     warnings = []
     ret_val, suc = convert_to_float('1,23', conversion_warnings=warnings)
     assert not suc
-    assert ret_val == '1,23'
-    assert warnings == ["Could not convert: '1,23' to float, ValueError"]
-
-    warnings = []
-    ret_val = convert_to_float('1,23', suc_return=False, conversion_warnings=warnings)
     assert ret_val == '1,23'
     assert warnings == ["Could not convert: '1,23' to float, ValueError"]
 
@@ -67,10 +55,11 @@ def test_convert_to_int():
     assert suc
     assert ret_val == 1241412
 
-    ret_val = convert_to_int('-9999999999999999999999', suc_return=False)
+    ret_val , suc = convert_to_int('-9999999999999999999999')
+    assert suc
     assert ret_val == -9999999999999999999999
 
-    ret_val, suc = convert_to_int('12031', suc_return=True)
+    ret_val, suc = convert_to_int('12031')
     assert suc
     assert ret_val == 12031
 
@@ -81,18 +70,8 @@ def test_convert_to_int():
     assert warnings == ["Could not convert: '()' to int, TypeError"]
 
     warnings = []
-    ret_val = convert_to_int((), conversion_warnings=warnings, suc_return=False)
-    assert ret_val == ()
-    assert warnings == ["Could not convert: '()' to int, TypeError"]
-
-    warnings = []
     ret_val, suc = convert_to_int('1.231', conversion_warnings=warnings)
     assert not suc
-    assert ret_val == '1.231'
-    assert warnings == ["Could not convert: '1.231' to int, ValueError"]
-
-    warnings = []
-    ret_val = convert_to_int('1.231', conversion_warnings=warnings, suc_return=False)
     assert ret_val == '1.231'
     assert warnings == ["Could not convert: '1.231' to int, ValueError"]
 
@@ -121,12 +100,6 @@ def test_convert_from_fortran_bool():
         ret_val, suc = convert_from_fortran_bool(false_item)
         assert suc
         assert not ret_val
-
-    ret_val = convert_from_fortran_bool('T', suc_return=False)
-    assert ret_val
-    ret_val, suc = convert_from_fortran_bool('f', suc_return=True)
-    assert suc
-    assert not ret_val
 
     warnings = []
     ret_val, suc = convert_from_fortran_bool('TEST', conversion_warnings=warnings)
@@ -304,19 +277,6 @@ def test_convert_xml_attribute(string_attr, types, results):
     assert suc == expected_suc
 
 
-@pytest.mark.parametrize('string_attr,types,results', zip(TEST_STRINGS, TEST_TYPES, TEST_RESULTS))
-def test_convert_xml_attribute_nosucreturn(string_attr, types, results):
-    """
-    Test of the convert_xml_attribute function
-    """
-    from masci_tools.util.xml.common_xml_util import convert_xml_attribute
-
-    expected_val, expected_suc = results
-
-    ret_val = convert_xml_attribute(string_attr, types, FLEUR_DEFINED_CONSTANTS, suc_return=False)
-    assert ret_val == expected_val
-
-
 @pytest.mark.parametrize('string_attr,types,results, warnings',
                          zip(TEST_STRINGS, TEST_TYPES, TEST_RESULTS, TEST_WARNINGS))
 def test_convert_xml_attribute_warnings(string_attr, types, results, warnings):
@@ -406,19 +366,6 @@ def test_convert_xml_text(string_text, definitions, results):
     ret_val, suc = convert_xml_text(string_text, definitions, FLEUR_DEFINED_CONSTANTS)
     assert ret_val == expected_val
     assert suc == expected_suc
-
-
-@pytest.mark.parametrize('string_text,definitions,results', zip(TEST_TEXT_STRINGS, TEST_DEFINITIONS, TEST_TEXT_RESULTS))
-def test_convert_xml_text_nosucreturn(string_text, definitions, results):
-    """
-    Test of the convert_xml_attribute function
-    """
-    from masci_tools.util.xml.common_xml_util import convert_xml_text
-
-    expected_val, expected_suc = results
-
-    ret_val = convert_xml_text(string_text, definitions, FLEUR_DEFINED_CONSTANTS, suc_return=False)
-    assert ret_val == expected_val
 
 
 @pytest.mark.parametrize('string_text,definitions,results,warnings',
