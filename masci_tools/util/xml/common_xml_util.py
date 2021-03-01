@@ -21,9 +21,9 @@ def clear_xml(tree):
     Removes comments and executes xinclude tags of an
     xml tree.
 
-    :param tree: an xml-tree which will be processes
-    :return: cleared_tree, an xml-tree without comments and with replaced xinclude tags
+    :param tree: an xml-tree which will be processed
 
+    :returns: cleared_tree, an xmltree without comments and with replaced xinclude tags
     """
     import copy
 
@@ -78,7 +78,16 @@ def clear_xml(tree):
 
 
 def validate_xml(xmltree, schema, error_header='File does not validate'):
+    """
+    Checks a given xmltree against a schema and produces a nice error message
+    with all the validation errors collected
 
+    :param xmltree: xmltree of the file to validate
+    :param schema: etree.XMLSchema to validate against
+    :param error_header: str to lead a evtl error message with
+
+    :raises: etree.DocumentInvalid if the schema does not validate
+    """
     from itertools import groupby
 
     try:
@@ -162,16 +171,15 @@ def convert_xml_attribute(stringattribute, possible_types, constants=None, conve
 
 def convert_attribute_to_xml(attributevalue, possible_types, conversion_warnings=None):
     """
-    Tries to converts a given string attribute to the types given in possible_types.
+    Tries to converts a given attributevalue to a string for a xml file according
+    to the types given in possible_types.
     First succeeded conversion will be returned
 
-    :param stringattribute: str, Attribute to convert.
-    :param possible_types: list of str What types it will try to convert to
-    :param constants: dict, of constants defined in fleur input
-    :param suc_return: bool, if True next to the value a bool indicating conversion success is returned
+    :param attributevalue: value to convert.
+    :param possible_types: list of str What types it will try to convert from
     :param conversion_warnings: dict with warings about failed conversions
 
-    :return: The converted value of the first succesful conversion
+    :return: The converted str of the value of the first succesful conversion
     """
 
     if not isinstance(attributevalue, list):
@@ -303,7 +311,16 @@ def convert_xml_text(tagtext, possible_definitions, constants=None, conversion_w
 
 
 def convert_text_to_xml(textvalue, possible_definitions, conversion_warnings=None):
+    """
+    Tries to convert a given list of values to str for a xml file based on the definitions (length and type).
+    First succeeded conversion will be returned
 
+    :param textvalue: value to convert
+    :param possible_definitions: list of dicts What types it will try to convert to
+    :param conversion_warnings: dict with warings about failed conversions
+
+    :return: The converted value of the first succesful conversion
+    """
     if not isinstance(textvalue, list):
         textvalue = [textvalue]
     elif not isinstance(textvalue[0], list):
@@ -363,6 +380,8 @@ def convert_to_float(value_string, conversion_warnings=None):
     and returns True or False if convertion worked or not.
 
     :param value_string: a string
+    :param conversion_warnings: list with warings about failed conversions
+
     :return: value the new float or value_string: the string given
     :return: True if convertion was successfull, False otherwise
     """
@@ -387,6 +406,8 @@ def convert_to_int(value_string, conversion_warnings=None):
     and returns True or False if convertion worked or not.
 
     :param value_string: a string
+    :param conversion_warnings: list with warings about failed conversions
+
     :return: value the new int or value_string: the string given
     :return: True or False
     """
@@ -410,6 +431,7 @@ def convert_from_fortran_bool(stringbool, conversion_warnings=None):
     Converts a string in this case ('T', 'F', or 't', 'f') to True or False
 
     :param stringbool: a string ('t', 'f', 'F', 'T')
+    :param conversion_warnings: list with warings about failed conversions
 
     :return: boolean  (either True or False)
     """
@@ -445,6 +467,7 @@ def convert_to_fortran_bool(boolean, conversion_warnings=None):
     Converts a Boolean as string to the format defined in the input
 
     :param boolean: either a boolean or a string ('True', 'False', 'F', 'T')
+    :param conversion_warnings: list with warings about failed conversions
 
     :return: a string (either 't' or 'f')
     """

@@ -382,10 +382,10 @@ def is_sequence(arg):
 def get_wigner_matrix(l, phi, theta):
     """Produces the wigner rotation matrix for the density matrix
 
-   :param l: int, orbital quantum number
-   :param phi: float, angle (radian) corresponds to euler angle alpha
-   :param theta: float, angle (radian) corresponds to euler angle beta
-   """
+    :param l: int, orbital quantum number
+    :param phi: float, angle (radian) corresponds to euler angle alpha
+    :param theta: float, angle (radian) corresponds to euler angle beta
+    """
     d_wigner = np.zeros((7, 7), dtype=complex)
     for m in range(-l, l + 1):
         for mp in range(-l, l + 1):

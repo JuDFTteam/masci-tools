@@ -56,7 +56,14 @@ def create_tag(xmltree, schema_dict, tag_name, complex_xpath=None, create_parent
     return xmltree
 
 
-def add_number_to_attrib(xmltree, schema_dict, attributename, add_number, complex_xpath=None, mode='abs', occurrences=None, **kwargs):
+def add_number_to_attrib(xmltree,
+                         schema_dict,
+                         attributename,
+                         add_number,
+                         complex_xpath=None,
+                         mode='abs',
+                         occurrences=None,
+                         **kwargs):
     """
     Adds a given number to the attribute value in a xmltree specified by the name of the attribute
     and optional further specification
@@ -100,7 +107,13 @@ def add_number_to_attrib(xmltree, schema_dict, attributename, add_number, comple
                                        occurrences=occurrences)
 
 
-def add_number_to_first_attrib(xmltree, schema_dict, attributename, add_number, complex_xpath=None, mode='abs', **kwargs):
+def add_number_to_first_attrib(xmltree,
+                               schema_dict,
+                               attributename,
+                               add_number,
+                               complex_xpath=None,
+                               mode='abs',
+                               **kwargs):
     """
     Adds a given number to the first occurrence of an attribute value in a xmltree specified by the name of the attribute
     and optional further specification
@@ -124,7 +137,14 @@ def add_number_to_first_attrib(xmltree, schema_dict, attributename, add_number, 
 
     :returns: xmltree with shifted attribute
     """
-    return add_number_to_attrib(xmltree, schema_dict, attributename, add_number, complex_xpath=complex_xpath, mode='abs', occurrences=0, **kwargs)
+    return add_number_to_attrib(xmltree,
+                                schema_dict,
+                                attributename,
+                                add_number,
+                                complex_xpath=complex_xpath,
+                                mode='abs',
+                                occurrences=0,
+                                **kwargs)
 
 
 def set_attrib_value(xmltree,

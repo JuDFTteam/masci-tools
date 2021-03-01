@@ -174,48 +174,283 @@ class FleurXMLModifier:
         self._tasks.append(ModifierTask('set_inpchanges', args, kwargs))
 
     def shift_value(self, *args, **kwargs):
+        """
+        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.shift_value()` to
+        the list of tasks that will be done on the xmltree.
+
+        :param change_dict: a python dictionary with the keys to shift and the shift values.
+        :param mode: 'abs' if change given is absolute, 'rel' if relative
+        :param path_spec: dict, with ggf. necessary further specifications for the path of the attribute
+
+        An example of change_dict::
+
+                change_dict = {'itmax' : 1, 'dVac': -0.123}
+        """
         self._tasks.append(ModifierTask('shift_value', args, kwargs))
 
     def set_species(self, *args, **kwargs):
+        """
+        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_species()` to
+        the list of tasks that will be done on the xmltree.
+
+        :param species_name: string, name of the specie you want to change
+                             Can be name of the species, 'all' or 'all-<string>' (sets species with the string in the species name)
+        :param attributedict: a python dict specifying what you want to change.
+        :param create: bool, if species does not exist create it and all subtags?
+
+        **attributedict** is a python dictionary containing dictionaries that specify attributes
+        to be set inside the certain specie. For example, if one wants to set a MT radius it
+        can be done via::
+
+            attributedict = {'mtSphere' : {'radius' : 2.2}}
+
+        Another example::
+
+            'attributedict': {'special': {'socscale': 0.0}}
+
+        that switches SOC terms on a sertain specie. ``mtSphere``, ``atomicCutoffs``,
+        ``energyParameters``, ``lo``, ``electronConfig``, ``nocoParams``, ``ldaU`` and
+        ``special`` keys are supported. To find possible
+        keys of the inner dictionary please refer to the FLEUR documentation flapw.de
+        """
         self._tasks.append(ModifierTask('set_species', args, kwargs))
 
     def set_species_label(self, *args, **kwargs):
+        """
+        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_species_label()` to
+        the list of tasks that will be done on the xmltree.
+
+        :param atom_label: string, a label of the atom which specie will be changed. 'all' to change all the species
+        :param attributedict: a python dict specifying what you want to change.
+
+        """
         self._tasks.append(ModifierTask('set_species_label', args, kwargs))
 
     def shift_value_species_label(self, *args, **kwargs):
+        """
+        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.shift_value_species_label()` to
+        the list of tasks that will be done on the xmltree.
+
+        :param atom_label: string, a label of the atom which specie will be changed. 'all' if set up all species
+        :param attributename: name of the attribute to change
+        :param value_given: value to add or to multiply by
+        :param mode: 'rel' for multiplication or 'abs' for addition
+
+        Kwargs if the attributename does not correspond to a unique path:
+            :param contains: str, this string has to be in the final path
+            :param not_contains: str, this string has to NOT be in the final path
+
+        """
         self._tasks.append(ModifierTask('shift_value_species_label', args, kwargs))
 
     def set_atomgroup(self, *args, **kwargs):
+        """
+        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_atomgroup()` to
+        the list of tasks that will be done on the xmltree.
+
+        :param attributedict: a python dict specifying what you want to change.
+        :param position: position of an atom group to be changed. If equals to 'all', all species will be changed
+        :param species: atom groups, corresponding to the given species will be changed
+        :param create: bool, if species does not exist create it and all subtags?
+
+        **attributedict** is a python dictionary containing dictionaries that specify attributes
+        to be set inside the certain specie. For example, if one wants to set a beta noco parameter it
+        can be done via::
+
+            'attributedict': {'nocoParams': {'beta': val}}
+
+        """
         self._tasks.append(ModifierTask('set_atomgroup', args, kwargs))
 
     def set_atomgroup_label(self, *args, **kwargs):
+        """
+        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_atomgroup_label()` to
+        the list of tasks that will be done on the xmltree.
+
+        :param atom_label: string, a label of the atom which specie will be changed. 'all' to change all the species
+        :param attributedict: a python dict specifying what you want to change.
+        :param create: bool, if species does not exist create it and all subtags?
+
+        **attributedict** is a python dictionary containing dictionaries that specify attributes
+        to be set inside the certain specie. For example, if one wants to set a beta noco parameter it
+        can be done via::
+
+            'attributedict': {'nocoParams': {'beta': val}}
+
+        """
         self._tasks.append(ModifierTask('set_atomgroup_label', args, kwargs))
 
     def create_tag(self, *args, **kwargs):
+        """
+        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.create_tag()` to
+        the list of tasks that will be done on the xmltree.
+
+        :param tag_name: str of the tag to create
+        :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+        :param create_parents: bool optional (default False), if True and the given xpath has no results the
+                               the parent tags are created recursively
+        Kwargs:
+            :param contains: str, this string has to be in the final path
+            :param not_contains: str, this string has to NOT be in the final path
+        """
         self._tasks.append(ModifierTask('create_tag', args, kwargs))
 
     def set_complex_tag(self, *args, **kwargs):
+        """
+        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_complex_tag()` to
+        the list of tasks that will be done on the xmltree.
+
+        :param tag_name: name of the tag to set
+        :param attributedict: Keys in the dictionary correspond to names of tags and the values are the modifications
+                              to do on this tag (attributename, subdict with changes to the subtag, ...)
+        :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+        :param create: bool optional (default False), if True and the path, where the complex tag is
+                       set does not exist it is created
+
+        Kwargs:
+            :param contains: str, this string has to be in the final path
+            :param not_contains: str, this string has to NOT be in the final path
+
+        """
         self._tasks.append(ModifierTask('set_complex_tag', args, kwargs))
 
     def set_simple_tag(self, *args, **kwargs):
+        """
+        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_simple_tag()` to
+        the list of tasks that will be done on the xmltree.
+
+        :param tag_name: str name of the tag to modify/set
+        :param changes: list of dicts or dict with the changes. Elements in list describe multiple tags.
+                        Keys in the dictionary correspond to {'attributename': attributevalue}
+        :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+        :param create_parents: bool optional (default False), if True and the path, where the simple tags are
+                               set does not exist it is created
+
+        Kwargs:
+            :param contains: str, this string has to be in the final path
+            :param not_contains: str, this string has to NOT be in the final path
+        """
         self._tasks.append(ModifierTask('set_simple_tag', args, kwargs))
 
     def set_text(self, *args, **kwargs):
+        """
+        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_text()` to
+        the list of tasks that will be done on the xmltree.
+
+        :param tag_name: str name of the tag, where the text should be set
+        :param text: value or list of values to set
+        :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+        :param occurrences: int or list of int. Which occurence of the node to set. By default all are set.
+        :param create: bool optional (default False), if True the tag is created if is missing
+
+        Kwargs:
+            :param contains: str, this string has to be in the final path
+            :param not_contains: str, this string has to NOT be in the final path
+
+        """
         self._tasks.append(ModifierTask('set_text', args, kwargs))
 
     def set_first_text(self, *args, **kwargs):
+        """
+        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_first_text()` to
+        the list of tasks that will be done on the xmltree.
+
+        :param tag_name: str name of the tag, where the text should be set
+        :param text: value or list of values to set
+        :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+        :param create: bool optional (default False), if True the tag is created if is missing
+
+        Kwargs:
+            :param contains: str, this string has to be in the final path
+            :param not_contains: str, this string has to NOT be in the final path
+
+        """
         self._tasks.append(ModifierTask('set_first_text', args, kwargs))
 
     def set_attrib_value(self, *args, **kwargs):
+        """
+        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_attrib_value()` to
+        the list of tasks that will be done on the xmltree.
+
+        :param attributename: the attribute name to set
+        :param attribv: value or list of values to set
+        :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+        :param occurrences: int or list of int. Which occurence of the node to set. By default all are set.
+        :param create: bool optional (default False), if True the tag is created if is missing
+
+        Kwargs:
+            :param tag_name: str, name of the tag where the attribute should be parsed
+            :param contains: str, this string has to be in the final path
+            :param not_contains: str, this string has to NOT be in the final path
+            :param exclude: list of str, here specific types of attributes can be excluded
+                            valid values are: settable, settable_contains, other
+
+        """
         self._tasks.append(ModifierTask('set_attrib_value', args, kwargs))
 
     def set_first_attrib_value(self, *args, **kwargs):
+        """
+        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_first_attrib_value()` to
+        the list of tasks that will be done on the xmltree.
+
+        :param attributename: the attribute name to set
+        :param attribv: value or list of values to set
+        :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+        :param create: bool optional (default False), if True the tag is created if is missing
+
+        Kwargs:
+            :param tag_name: str, name of the tag where the attribute should be parsed
+            :param contains: str, this string has to be in the final path
+            :param not_contains: str, this string has to NOT be in the final path
+            :param exclude: list of str, here specific types of attributes can be excluded
+                            valid values are: settable, settable_contains, other
+
+        """
         self._tasks.append(ModifierTask('set_first_attrib_value', args, kwargs))
 
     def add_number_to_attrib(self, *args, **kwargs):
+        """
+        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.add_number_to_attrib()` to
+        the list of tasks that will be done on the xmltree.
+
+        :param attributename: the attribute name to change
+        :param add_number: number to add/multiply with the old attribute value
+        :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+        :param mode: str (either `rel` or `abs`).
+                     `rel` multiplies the old value with `add_number`
+                     `abs` adds the old value and `add_number`
+        :param occurrences: int or list of int. Which occurence of the node to set. By default all are set.
+
+        Kwargs:
+            :param tag_name: str, name of the tag where the attribute should be parsed
+            :param contains: str, this string has to be in the final path
+            :param not_contains: str, this string has to NOT be in the final path
+            :param exclude: list of str, here specific types of attributes can be excluded
+                            valid values are: settable, settable_contains, other
+
+        """
         self._tasks.append(ModifierTask('add_number_to_attrib', args, kwargs))
 
     def add_number_to_first_attrib(self, *args, **kwargs):
+        """
+        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.add_number_to_first_attrib()` to
+        the list of tasks that will be done on the xmltree.
+
+        :param attributename: the attribute name to change
+        :param add_number: number to add/multiply with the old attribute value
+        :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+        :param mode: str (either `rel` or `abs`).
+                     `rel` multiplies the old value with `add_number`
+                     `abs` adds the old value and `add_number`
+
+        Kwargs:
+            :param tag_name: str, name of the tag where the attribute should be parsed
+            :param contains: str, this string has to be in the final path
+            :param not_contains: str, this string has to NOT be in the final path
+            :param exclude: list of str, here specific types of attributes can be excluded
+                            valid values are: settable, settable_contains, other
+
+        """
         self._tasks.append(ModifierTask('add_number_to_first_attrib', args, kwargs))
 
     def xml_create_tag(self, *args, **kwargs):
