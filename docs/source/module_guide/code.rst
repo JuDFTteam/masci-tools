@@ -49,6 +49,12 @@ I/O helper and output file parsers
 .. automodule:: masci_tools.io.parsers.kkrimp_parser_functions
    :members:
 
+.. automodule:: masci_tools.io.io_fleurxml
+   :members:
+
+.. automodule:: masci_tools.io.fleurxmlmodifier
+   :members:
+
 .. automodule:: masci_tools.io.parsers.fleur
    :members:
 
@@ -86,6 +92,18 @@ Utility functions
    :members:
 
 .. automodule:: masci_tools.util.xml.common_xml_util
+   :members:
+
+.. automodule:: masci_tools.util.xml.xml_setters_names
+   :members:
+
+.. automodule:: masci_tools.util.xml.xml_setters_nmmpmat
+   :members:
+
+.. automodule:: masci_tools.util.xml.xml_setters_xpaths
+   :members:
+
+.. automodule:: masci_tools.util.xml.xml_setters_basic
    :members:
 
 .. automodule:: masci_tools.util.schema_dict_util

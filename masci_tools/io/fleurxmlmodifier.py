@@ -32,7 +32,9 @@ class FleurXMLModifier:
     :py:mod:`~masci_tools.util.xml.xml_setters_basic`
 
     The basic usage is shown below
+
     .. code-block:: python
+
         from masci_tools.io.fleurxmlmodifier import FleurXMLModifier
 
         fmode = FleurXMLModifier()
@@ -289,6 +291,7 @@ class FleurXMLModifier:
         :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
         :param create_parents: bool optional (default False), if True and the given xpath has no results the
                                the parent tags are created recursively
+
         Kwargs:
             :param contains: str, this string has to be in the final path
             :param not_contains: str, this string has to NOT be in the final path
@@ -563,8 +566,7 @@ class FleurXMLModifier:
 
     def changes(self):
         """
-        Prints out all changes given in a
-        :class:`~masci_tools.io.io_fleurxmlmodifier.FleurXMLModifier` instance.
+        Prints out all changes currently registered on this instance
         """
         from pprint import pprint
         pprint(self._tasks)

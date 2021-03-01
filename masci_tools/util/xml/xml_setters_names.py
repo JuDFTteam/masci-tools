@@ -31,6 +31,7 @@ def create_tag(xmltree, schema_dict, tag_name, complex_xpath=None, create_parent
     :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
     :param create_parents: bool optional (default False), if True and the given xpath has no results the
                            the parent tags are created recursively
+
     Kwargs:
         :param contains: str, this string has to be in the final path
         :param not_contains: str, this string has to NOT be in the final path
@@ -554,7 +555,7 @@ def shift_value_species_label(xmltree, schema_dict, atom_label, attributename, v
 
 def set_atomgroup_label(xmltree, schema_dict, atom_label, attributedict, create=False):
     """
-    This method calls :func:`~aiida_fleur.tools.xml_util.set_atomgroup()`
+    This method calls :func:`~masci_tools.util.xml.xml_setters_names.set_atomgroup()`
     method for a certain atom species that corresponds to an atom with a given label.
 
     :param xmltree: xml etree of the inp.xml
