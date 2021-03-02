@@ -78,4 +78,3 @@ Definition of default parsing tasks for fleur out.xml
 
 .. automodule:: masci_tools.io.parsers.fleur.task_migrations
    :members:
-
