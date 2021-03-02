@@ -114,7 +114,7 @@ an initial guess for the density matrix.
   fm.set_nmmpmat('Nd-1', orbital=3, spin=1, occStates=[1,1,1,1,0,0,0]) # Initialize n_mmp_mat file with the states
                                                                        # m = -3 to m = 0 occupied for spin up
                                                                        # spin down is initialized with 0 by default
-  new_xmltree = fm.modify_xmlfile('/path/to/original/inp.xml')         # Apply
+  new_xmltree, nmmp_content = fm.modify_xmlfile('/path/to/original/inp.xml')         # Apply
 
 .. note::
     The ``n_mmp_mat`` file is a simple text file with no knowledge of which density matrix block corresponds to which
