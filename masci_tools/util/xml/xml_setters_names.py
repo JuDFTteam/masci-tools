@@ -18,7 +18,7 @@ from masci_tools.util.schema_dict_util import get_tag_xpath
 from masci_tools.util.schema_dict_util import get_attrib_xpath
 
 
-def create_tag(xmltree, schema_dict, tag_name, complex_xpath=None, create_parents=False, **kwargs):
+def create_tag(xmltree, schema_dict, tag_name, complex_xpath=None, create_parents=False, occurrences=None, **kwargs):
     """
     This method creates a tag with a uniquely identified xpath under the nodes of its parent.
     If there are no nodes evaluated the subtags can be created with `create_parents=True`
@@ -31,6 +31,8 @@ def create_tag(xmltree, schema_dict, tag_name, complex_xpath=None, create_parent
     :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
     :param create_parents: bool optional (default False), if True and the given xpath has no results the
                            the parent tags are created recursively
+    :param occurrences: int or list of int. Which occurence of the parent nodes to create a tag.
+                        By default all nodes are used.
 
     Kwargs:
         :param contains: str, this string has to be in the final path
@@ -52,7 +54,8 @@ def create_tag(xmltree, schema_dict, tag_name, complex_xpath=None, create_parent
                                          complex_xpath,
                                          parent_xpath,
                                          tag_name,
-                                         create_parents=create_parents)
+                                         create_parents=create_parents,
+                                         occurrences=occurrences)
 
     return xmltree
 
@@ -185,7 +188,7 @@ def set_attrib_value(xmltree,
 
     base_xpath = get_attrib_xpath(schema_dict, attributename, **kwargs)
 
-    base_xpath, attributename = tuple(base_xpath.split('@'))
+    base_xpath, attributename = tuple(base_xpath.split('/@'))
 
     if complex_xpath is None:
         complex_xpath = base_xpath

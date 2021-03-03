@@ -20,7 +20,7 @@ from masci_tools.util.xml.common_xml_util import eval_xpath
 ######################CREATING/DELETING TAGS###############################################
 
 
-def xml_create_tag_schema_dict(xmltree, schema_dict, xpath, base_xpath, element, create_parents=False):
+def xml_create_tag_schema_dict(xmltree, schema_dict, xpath, base_xpath, element, create_parents=False, occurrences=None):
     """
     This method evaluates an xpath expression and creates a tag in a xmltree under the
     returned nodes.
@@ -35,6 +35,8 @@ def xml_create_tag_schema_dict(xmltree, schema_dict, xpath, base_xpath, element,
     :param element: a tag name or etree Element to be created
     :param create_parents: bool optional (default False), if True and the given xpath has no results the
                            the parent tags are created recursively
+    :param occurrences: int or list of int. Which occurence of the parent nodes to create a tag.
+                        By default all nodes are used.
 
     :raises ValueError: If the nodes are missing and `create_parents=False`
 
@@ -74,10 +76,10 @@ def xml_create_tag_schema_dict(xmltree, schema_dict, xpath, base_xpath, element,
             raise ValueError(f"Could not create tag '{element_name}' because atleast one subtag is missing. "
                              'Use create=True to create the subtags')
 
-    return xml_create_tag(xmltree, xpath, element, tag_order=tag_order)
+    return xml_create_tag(xmltree, xpath, element, tag_order=tag_order, occurrences=occurrences)
 
 
-def eval_xpath_create(xmltree, schema_dict, xpath, base_xpath, create_parents=False):
+def eval_xpath_create(xmltree, schema_dict, xpath, base_xpath, create_parents=False, occurrences=None):
     """
     Evaluates and xpath and creates tag if the result is empty
 
@@ -87,6 +89,8 @@ def eval_xpath_create(xmltree, schema_dict, xpath, base_xpath, create_parents=Fa
     :param base_xpath: path where to place a new tag without complex syntax ([] conditions and so on)
     :param create_parents: bool optional (default False), if True also the parents of the tag are created
                            if they are missing
+    :param occurrences: int or list of int. Which occurence of the parent nodes to create a tag if the tag is missing.
+                        By default all nodes are used.
 
     :returns: list of nodes from the result of the xpath expression
     """
@@ -99,7 +103,8 @@ def eval_xpath_create(xmltree, schema_dict, xpath, base_xpath, create_parents=Fa
                                              '/'.join(xpath.split('/')[:-1]),
                                              parent_xpath,
                                              tag_name,
-                                             create_parents=create_parents)
+                                             create_parents=create_parents,
+                                             occurrences=occurrences)
         nodes = eval_xpath(xmltree, xpath, list_return=True)
 
     return nodes
@@ -141,7 +146,7 @@ def xml_set_attrib_value(xmltree,
     from masci_tools.util.xml.common_xml_util import convert_attribute_to_xml
 
     if create:
-        nodes = eval_xpath_create(xmltree, schema_dict, xpath, base_xpath, create_parents=True)
+        nodes = eval_xpath_create(xmltree, schema_dict, xpath, base_xpath, create_parents=True, occurrences=occurrences)
     else:
         nodes = eval_xpath(xmltree, xpath, list_return=True)
 
@@ -227,7 +232,7 @@ def xml_set_text(xmltree, schema_dict, xpath, base_xpath, text, occurrences=None
     from masci_tools.util.xml.common_xml_util import convert_text_to_xml
 
     if create:
-        nodes = eval_xpath_create(xmltree, schema_dict, xpath, base_xpath, create_parents=True)
+        nodes = eval_xpath_create(xmltree, schema_dict, xpath, base_xpath, create_parents=True, occurrences=occurrences)
     else:
         nodes = eval_xpath(xmltree, xpath, list_return=True)
 

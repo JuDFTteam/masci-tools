@@ -80,7 +80,7 @@ def xml_delete_tag(xmltree, xpath):
     return xmltree
 
 
-def xml_create_tag(xmltree, xpath, element, place_index=None, tag_order=None):
+def xml_create_tag(xmltree, xpath, element, place_index=None, tag_order=None, occurrences=None):
     """
     This method evaluates an xpath expression and creates a tag in a xmltree under the
     returned nodes.
@@ -94,6 +94,8 @@ def xml_create_tag(xmltree, xpath, element, place_index=None, tag_order=None):
     :param element: a tag name or etree Element to be created
     :param place_index: defines the place where to put a created tag
     :param tag_order: defines a tag order
+    :param occurrences: int or list of int. Which occurence of the parent nodes to create a tag.
+                        By default all nodes are used.
 
     :raises ValueError: If the insertion failed in any way (tag_order does not match, failed to insert, ...)
 
@@ -101,6 +103,7 @@ def xml_create_tag(xmltree, xpath, element, place_index=None, tag_order=None):
     """
     import copy
     from more_itertools import unique_justseen
+    from masci_tools.io.common_functions import is_sequence
 
     if not etree.iselement(element):
         element_name = element
@@ -116,6 +119,14 @@ def xml_create_tag(xmltree, xpath, element, place_index=None, tag_order=None):
     if len(parent_nodes) == 0:
         raise ValueError(f"Could not create tag '{element_name}' because atleast one subtag is missing. "
                          'Use create=True to create the subtags')
+
+    if occurrences is not None:
+        if not is_sequence(occurrences):
+            occurrences = [occurrences]
+        try:
+            parent_nodes = [parent_nodes[occ] for occ in occurrences]
+        except IndexError as exc:
+            raise ValueError('Wrong value for occurrences') from exc
 
     for parent in parent_nodes:
         element_to_write = copy.deepcopy(element)
