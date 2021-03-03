@@ -1904,14 +1904,16 @@ def plot_corelevel_spectra(coreleveldict,
                            scale_to=-1,
                            show_single=True,
                            show_ref=True,
-                           energy_range=[None, None],
+                           energy_range=(None, None),
                            title='',
                            fwhm_g=0.6,
                            fwhm_l=0.1,
                            energy_grid=0.2,
                            peakfunction='voigt',
-                           linetyp_spec='o-',
-                           limits=[None, None],
+                           linestyle_spec='-',
+                           marker_spec='o',
+                           color_spec='k',
+                           color_single='g',
                            xlabel='Binding energy [eV]',
                            ylabel='Intensity [arb] (natoms*nelectrons)',
                            saveas=None,
@@ -1968,6 +1970,10 @@ def plot_corelevel_spectra(coreleveldict,
     xdata = xdata_all
     ydata = ydata_all
     ymax2 = max(ydata_spec) + 1
+    ymin = -0.3
+    ymax = max(ydata) + 1
+    limits = {'x': (xmin, xmax), 'y': (ymin, ymax)}
+    limits_spec = {'x': (xmin, xmax), 'y': (ymin, ymax2)}
     title = title  #'Spectrum of {}'.format(compound)
     """
     # ToDo redesign to use multiple_scatterplot
@@ -1979,13 +1985,12 @@ def plot_corelevel_spectra(coreleveldict,
     """
 
     #print len(xdata), len(ydata)
-    plotlabel = 'corelevel shifts'
-    linetyp = 'o'
-    linetyp1 = linetyp_spec  #'-'
-    linewidth_g1 = linewidth_g
 
-    ymin = -0.3
-    ymax = max(ydata) + 1
+    if 'plot_label' not in kwargs:
+        kwargs['plot_label'] = 'corelevel shifts'
+
+    if 'linestyle' not in kwargs:
+        kwargs['linestyle'] = ''
 
     if saveas is None:
         saveas = 'XPS_theo_{}_{}'.format(fwhm_g, title)
@@ -1994,51 +1999,37 @@ def plot_corelevel_spectra(coreleveldict,
         saveas1 = saveas[1]
         saveas = saveas[0]
 
-    color = 'k'
-    scale = [None, None]
-    font = {
-        'family': 'serif',
-        'color': 'darkred',
-        'weight': 'normal',
-        'size': 16,
-    }
     ####################################
     ##### PLOT 1, plot raw datapoints
 
-    if not show_g:
+    if not plot_params['show']:
         return [xdata_spec, ydata_spec, ydata_single_all, xdata_all, ydata_all, xdatalabel]
 
-    fig = plt.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
-    ax = fig.add_subplot(111)
-    for axis in ['top', 'bottom', 'left', 'right']:
-        ax.spines[axis].set_linewidth(axis_linewidth_g)
-    ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
-    ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
-    ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
-    ax.yaxis.set_tick_params(size=tick_paramsy_g.get('size', 4.0),
-                             width=tick_paramsy_g.get('width', 1.0),
-                             labelsize=tick_paramsy_g.get('labelsize', 14),
-                             length=tick_paramsy_g.get('length', 5))
-    ax.xaxis.set_tick_params(size=tick_paramsx_g.get('size', 4.0),
-                             width=tick_paramsx_g.get('width', 1.0),
-                             labelsize=tick_paramsx_g.get('labelsize', 14),
-                             length=tick_paramsx_g.get('length', 5))
-    ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
-    ax.yaxis.get_major_formatter().set_useOffset(False)
-    p1 = ax.plot(xdata_all,
-                 ydata_all,
-                 linetyp,
-                 label=plotlabel,
-                 color=color,
-                 linewidth=linewidth_g,
-                 markersize=markersize_g)
-
+    states = []
     if show_ref and exp_references:
         for elm, ref_list_dict in exp_references.items():
             for state, ref_list in ref_list_dict.items():
-                for ref in ref_list:
-                    plt.axvline(ymin=0, ymax=0.1, x=ref, linewidth=linewidth_g, color='k')
-    '''
+                states.extend(ref_list)
+
+    ax = single_scatterplot(ydata_all,
+                            xdata_all,
+                            xlabel,
+                            ylabel,
+                            title,
+                            line_options={
+                                'color': 'k',
+                                'linestyle': '-',
+                                'linewidth': 2
+                            },
+                            lines={'vertical': {
+                                'pos': states,
+                                'ymin': 0,
+                                'ymax': 0.1
+                            }},
+                            limits=limits,
+                            saveas=saveas,
+                            **kwargs)
+    ''' TODO
     for j,y in enumerate(ydata_all):
         for i,x in enumerate(xdata):
             lenx = xmax-xmin
@@ -2051,110 +2042,61 @@ def plot_corelevel_spectra(coreleveldict,
             plt.text(x-0.25, y[i]+0.3, text, fontdict=font)
     '''
 
-    if scale:
-        if scale[0]:
-            ax.set_xscale(scale[0])
-        elif scale[1]:
-            ax.set_yscale(scale[1])
-        else:
-            pass
-
-    if limits:
-        if limits[0] is not None:
-            xmin = limits[0][0]
-            xmax = limits[0][1]
-        if limits[1] is not None:
-            ymin = limits[1][0]
-            ymax = limits[1][1]
-
-    ax.set_xlim(xmax, xmin)  #flip x axes
-    ax.set_ylim(ymin, ymax)
-
-    if save_plots_g:
-        savefilename = '{}.{}'.format(saveas, save_format_g)
-        print(('save plot to: {}'.format(savefilename)))
-        plt.savefig(savefilename, format=save_format_g, transparent=True)
-    else:
-        plt.show()
-
     ##############################################################
     ##### PLOT 2, plot spectra, voigts around datapoints #########
 
-    fig1 = plt.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
-    ax1 = fig1.add_subplot(111)
-    for axis in ['top', 'bottom', 'left', 'right']:
-        ax1.spines[axis].set_linewidth(axis_linewidth_g)
-    ax1.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
-    ax1.set_xlabel(xlabel, fontsize=labelfonstsize_g)
-    ax1.set_ylabel(ylabel, fontsize=labelfonstsize_g)
-    ax1.yaxis.set_tick_params(size=tick_paramsy_g.get('size', 4.0),
-                              width=tick_paramsy_g.get('width', 1.0),
-                              labelsize=tick_paramsy_g.get('labelsize', 14),
-                              length=tick_paramsy_g.get('length', 5))
-    ax1.xaxis.set_tick_params(size=tick_paramsx_g.get('size', 4.0),
-                              width=tick_paramsx_g.get('width', 1.0),
-                              labelsize=tick_paramsx_g.get('labelsize', 14),
-                              length=tick_paramsx_g.get('length', 5))
-    ax1.yaxis.get_major_formatter().set_powerlimits((0, 3))
-    ax1.yaxis.get_major_formatter().set_useOffset(False)
+    kwargs.pop('linestyle', None)
+    kwargs.pop('marker', None)
+    kwargs.pop('color', None)
+    kwargs.pop('save', None)
+    kwargs.pop('save_plots', None)
 
-    p11 = ax1.plot(xdata_spec,
-                   ydata_spec,
-                   linetyp1,
-                   label=plotlabel,
-                   color=color,
-                   linewidth=linewidth_g1,
-                   markersize=markersize_g)
+    ax2 = single_scatterplot(ydata_spec,
+                             xdata_spec,
+                             xlabel,
+                             ylabel,
+                             title,
+                             marker=marker_spec,
+                             linestyle=linestyle_spec,
+                             color=color_spec,
+                             line_options={
+                                 'color': 'k',
+                                 'linestyle': '-',
+                                 'linewidth': 2
+                             },
+                             lines={'vertical': {
+                                 'pos': states,
+                                 'ymin': 0,
+                                 'ymax': 0.1
+                             }},
+                             show=False,
+                             save_plots=False,
+                             limits=limits_spec,
+                             **kwargs)
 
     if show_single:
-        for single_peek in ydata_single_all:
-            #xdatalabel
-            plt.plot(xdata_spec,
-                     single_peek,
-                     '-',
-                     label=plotlabel,
-                     color='g',
-                     linewidth=linewidth_g1,
-                     markersize=markersize_g)
-
-    if show_ref and exp_references:
-        for elm, ref_list_dict in exp_references.items():
-            for state, ref_list in ref_list_dict.items():
-                for ref in ref_list:
-                    plt.axvline(ymin=0, ymax=0.1, x=ref, linewidth=2, color='k')
-    '''
+        ax2 = multiple_scatterplots(ydata_single_all, [xdata_spec] * len(ydata_single_all),
+                                    xlabel,
+                                    ylabel,
+                                    title,
+                                    show=False,
+                                    save_plots=False,
+                                    axis=ax2,
+                                    linestyle='-',
+                                    color=color_single,
+                                    limits=limits_spec,
+                                    **kwargs)
+    '''TODO
     if show_compound and compound_info:
         for i,compound_data in enumerate(ydata_compound):
             plotlabel = compound_plot_label[i]
             plt.plot(xdata_spec, compound_data, '-', label=plotlabel, color = color,
                  linewidth=linewidth_g1, markersize = markersize_g)
     '''
-    if scale:
-        if scale[0]:
-            ax1.set_xscale(scale[0])
-        elif scale[1]:
-            ax1.set_yscale(scale[1])
-        else:
-            pass
-    if limits:
-        if limits[0]:
-            xmin = limits[0][0]
-            xmax = limits[0][1]
-        if limits[1]:
-            ymin = limits[1][0]
-            ymax2 = limits[1][1]
-    ax1.set_xlim(xmax, xmin)  #flip x axes
-    ax1.set_ylim(ymin, ymax2)
-
-    if save_plots_g:
-        savefilename = '{}.{}'.format(saveas1, save_format_g)
-        print(('save plot to: {}'.format(savefilename)))
-        plt.savefig(savefilename, format=save_format_g, transparent=True)
-    else:
-        plt.show()
+    plot_params.save_plot(saveas1)
 
     # for plotting or file writting
-    return [xdata_spec, ydata_spec, ydata_single_all, xdata_all, ydata_all, xdatalabel, fig, fig1]
+    return [xdata_spec, ydata_spec, ydata_single_all, xdata_all, ydata_all, xdatalabel, ax, ax2]
 
 
 def asymmetric_lorentz(x, fwhm, mu, alpha=1.0, beta=1.5):
