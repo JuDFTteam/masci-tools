@@ -189,7 +189,6 @@ class MatplotlibPlotter(Plotter):
         if extra_keys is not None:
             kwargs_keys = kwargs_keys | extra_keys
 
-
         #Insert custom keys to retrieve
         kwargs_keys = kwargs_keys.copy()
         for key, replace_key in kwargs.items():
@@ -407,8 +406,6 @@ class MatplotlibPlotter(Plotter):
                     mappable.set_clim(cmin, cmax)
 
             plt.colorbar(mappable, ax=ax, pad=0.1)
-
-
 
     def save_plot(self, saveas):
         """

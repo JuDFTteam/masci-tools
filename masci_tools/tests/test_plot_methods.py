@@ -779,8 +779,7 @@ class TestWaterFallPlot(object):  #pylint: disable=missing-class-docstring
 
 class TestSurfacePlot(object):  #pylint: disable=missing-class-docstring
 
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/surface_plot/',
-                                   filename='defaults.png')
+    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/surface_plot/', filename='defaults.png')
     def test_default(self):
         """
         Mulitplot_moved with default parameters

@@ -638,7 +638,6 @@ def waterfall_plot(xdata,
         zmin = min(zdata)
         zmax = max(zdata)
 
-
     clim = None
     if 'limits' in kwargs:
         clim = kwargs['limits'].get('color', None)
@@ -648,14 +647,17 @@ def waterfall_plot(xdata,
         clim = (kwargs.get('vmin', zmin), kwargs.get('vmax', zmax))
     kwargs['limits']['color'] = clim
 
-
     if not isinstance(ydata[0], (list, np.ndarray)):
         xdata, ydata, zdata = [xdata], [ydata], [zdata]
 
     plot_params.single_plot = False
     plot_params.num_plots = len(ydata)
 
-    kwargs = plot_params.set_parameters(continue_on_error=True, area_plot=False, markersize=markersize, linewidth=linewidth, **kwargs)
+    kwargs = plot_params.set_parameters(continue_on_error=True,
+                                        area_plot=False,
+                                        markersize=markersize,
+                                        linewidth=linewidth,
+                                        **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, zlabel=zlabel, axis=axis, projection='3d')
 
     plot_kwargs = plot_params.plot_kwargs(ignore=['markersize'], extra_keys={'cmap'})
@@ -675,7 +677,17 @@ def waterfall_plot(xdata,
 
 
 @ensure_plotter_consistency(plot_params)
-def surface_plot(xdata, ydata, zdata, xlabel, ylabel, zlabel, title, saveas='surface_plot', axis=None, linewidth=0, **kwargs):
+def surface_plot(xdata,
+                 ydata,
+                 zdata,
+                 xlabel,
+                 ylabel,
+                 zlabel,
+                 title,
+                 saveas='surface_plot',
+                 axis=None,
+                 linewidth=0,
+                 **kwargs):
     """
     Create a standard waterfall plot (this should be flexible enough) to do all the
     basic plots.
@@ -706,7 +718,6 @@ def surface_plot(xdata, ydata, zdata, xlabel, ylabel, zlabel, title, saveas='sur
     else:
         zmin = min(zdata)
         zmax = max(zdata)
-
 
     clim = None
     if 'limits' in kwargs:
@@ -1728,7 +1739,7 @@ def plot_corelevels(coreleveldict, compound='', axis=None, saveas='scatterplot',
 
     return axis
 
-
+@ensure_plotter_consistency(plot_params)
 def plot_one_element_corelv(corelevel_dict,
                             element,
                             compound='',
@@ -1932,6 +1943,7 @@ def construct_corelevel_spectrum(coreleveldict,
     return [xdata_spec, ydata_spec, ydata_single_all, xdata_all, ydata_all, xdatalabel]
 
 
+@ensure_plotter_consistency(plot_params)
 def plot_corelevel_spectra(coreleveldict,
                            natom_typesdict,
                            exp_references={},
