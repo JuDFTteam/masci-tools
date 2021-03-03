@@ -154,12 +154,23 @@ class MatplotlibPlotter(Plotter):
     def __init__(self, **kwargs):
         super().__init__(self._MATPLOTLIB_DEFAULTS, list_arguments=self._MATPLOTLIB_LIST_ARGS, **kwargs)
 
-    def plot_kwargs(self, ignore=None):
+    def plot_kwargs(self, ignore=None, **kwargs):
         """
         Creates a dict or list of dicts (for multiple plots) with the defined parameters
         for the plotting calls fo matplotlib
 
         :param ignore: str or list of str (optional), defines keys to ignore in the creation of the dict
+
+        Kwargs are used to replace values by custom parameters:
+
+        Example for using a custom markersize::
+
+            p = MatplotlibPlotter()
+            p.add_parameter('marker_custom', default_from='marker')
+            p.plot_kwargs(marker='marker_custom')
+
+        This code snippet will return the standard parameters for a plot, but the value
+        for the marker will be taken from the key `marker_custom`
         """
         if self.plot_type == 'default':
             kwargs_keys = self._PLOT_KWARGS
@@ -168,7 +179,18 @@ class MatplotlibPlotter(Plotter):
         elif self.plot_type == 'histogram':
             kwargs_keys = self._PLOT_KWARGS_HIST
 
+        #Insert custom keys to retrieve
+        kwargs_keys = kwargs_keys.copy()
+        for key, replace_key in kwargs.items():
+            kwargs_keys.remove(key)
+            kwargs_keys.add(replace_key)
+
         plot_kwargs = self.get_multiple_kwargs(kwargs_keys, ignore=ignore)
+
+        #Rename replaced keys back to standard names
+        for key, replace_key in kwargs.items():
+            custom_val = plot_kwargs.pop(replace_key)
+            plot_kwargs[key] = custom_val
 
         any_list = any([isinstance(val, list) for val in plot_kwargs.values()])
 
