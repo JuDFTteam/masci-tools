@@ -43,6 +43,7 @@ from pprint import pprint
 
 plot_params = MatplotlibPlotter()
 
+
 def set_plot_defaults_new(**kwargs):
     plot_params.set_defaults(**kwargs)
 
@@ -285,9 +286,9 @@ def single_scatterplot(ydata,
     area_curve = kwargs.pop('area_curve', 0)
 
     if plot_params['area_plot']:
-        p1 = ax.fill_between(xdata, ydata, y2=area_curve, **plot_kwargs, **kwargs)
+        ax.fill_between(xdata, ydata, y2=area_curve, **plot_kwargs, **kwargs)
     else:
-        p1 = ax.errorbar(xdata, ydata, yerr=yerr, xerr=xerr, **plot_kwargs, **kwargs)
+        ax.errorbar(xdata, ydata, yerr=yerr, xerr=xerr, **plot_kwargs, **kwargs)
 
     plot_params.set_scale(ax)
     plot_params.set_limits(ax)
@@ -421,9 +422,9 @@ def multiple_scatterplots(ydata,
             shift = 0
 
         if plot_params[('area_plot', indx)]:
-            p1 = ax.fill_between(x, y, y2=shift, **plot_kw, **kwargs)
+            ax.fill_between(x, y, y2=shift, **plot_kw, **kwargs)
         else:
-            p1 = ax.errorbar(x, y, yerr=yerrt, xerr=xerrt, **plot_kw, **kwargs)
+            ax.errorbar(x, y, yerr=yerrt, xerr=xerrt, **plot_kw, **kwargs)
 
     plot_params.set_scale(ax)
     plot_params.set_limits(ax)
@@ -591,7 +592,7 @@ def colormesh_plot(xdata,
 
     plot_kwargs = plot_params.plot_kwargs()
 
-    p = ax.pcolormesh(xdata, ydata, cdata, **plot_kwargs, **kwargs)
+    ax.pcolormesh(xdata, ydata, cdata, **plot_kwargs, **kwargs)
 
     plot_params.set_scale(ax)
     plot_params.set_limits(ax)
@@ -829,9 +830,9 @@ def histogram(xdata,
         sigma = np.std(xdata)
         y = norm.pdf(bins, mu, sigma)
         if orientation == 'horizontal':
-            b = ax.plot(y, bins, '--')
+            ax.plot(y, bins, '--')
         else:
-            b = ax.plot(bins, y, '--')
+            ax.plot(bins, y, '--')
 
     plot_params.set_limits(ax)
     plot_params.draw_lines(ax)
@@ -968,7 +969,7 @@ def barchart(ydata,
         else:
             xerrt = xerr
 
-        p1 = ax.bar(x, y, width, bottom=datab, **plot_kw, **kwargs)
+        ax.bar(x, y, width, bottom=datab, **plot_kw, **kwargs)
 
         datab = datab + np.array(y)
 
@@ -1082,24 +1083,13 @@ def multiaxis_scatterplot(xdata,
 ###############################################################################
 
 
+@ensure_plotter_consistency(plot_params)
 def plot_convex_hull2d(hull,
                        title='Convex Hull',
                        xlabel='Atomic Procentage',
                        ylabel='Formation energy / atom [eV]',
-                       linestyle='-',
-                       marker='o',
-                       legend=legend_g,
-                       legend_option={},
                        saveas='convex_hull',
-                       limits=[None, None],
-                       scale=[None, None],
                        axis=None,
-                       color='k',
-                       color_line='k',
-                       linewidth=linewidth_g,
-                       markersize=markersize_g,
-                       marker_hull='o',
-                       markersize_hull=markersize_g,
                        **kwargs):
     """
     Plot method for a 2d convex hull diagramm
@@ -1107,80 +1097,48 @@ def plot_convex_hull2d(hull,
     :param hull: pyhull.Convexhull #scipy.spatial.ConvexHull
     """
 
+    #DEPRECATE: color_line
+    if 'color_line' in kwargs:
+        warnings.warn('Please use color instead of color_line', DeprecationWarning)
+        kwargs['color'] = kwargs.pop('colors')
+
     #Define function wide custom parameters
-    #plot_params.add_parameter('marker_hull', default_from='marker')
-    #plot_params.add_parameter('markersize_hull', default_from='markersize')
-    #plot_params.add_parameter('color_line', default_from='color')
+    plot_params.add_parameter('marker_hull', default_from='marker')
+    plot_params.add_parameter('markersize_hull', default_from='markersize')
+    plot_params.add_parameter('color_hull', default_from='color')
 
-    #TODO: the upper lines, part of the hull should not be connected/plottet
-    if axis:
-        ax = axis
-    else:
-        fig = plt.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
-        ax = fig.add_subplot(111)
-
-    for axis in ['top', 'bottom', 'left', 'right']:
-        ax.spines[axis].set_linewidth(axis_linewidth_g)
-    ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
-    ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
-    ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
-    ax.yaxis.set_tick_params(size=tick_paramsy_g.get('size', 4.0),
-                             width=tick_paramsy_g.get('width', 1.0),
-                             labelsize=tick_paramsy_g.get('labelsize', 14),
-                             length=tick_paramsy_g.get('length', 5))
-    ax.xaxis.set_tick_params(size=tick_paramsx_g.get('size', 4.0),
-                             width=tick_paramsx_g.get('width', 1.0),
-                             labelsize=tick_paramsx_g.get('labelsize', 14),
-                             length=tick_paramsx_g.get('length', 5))
-    #ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
-    ax.yaxis.get_major_formatter().set_useOffset(False)
+    kwargs = plot_params.set_parameters(continue_on_error=True,
+                                        return_unprocessed_kwargs=True,
+                                        set_powerlimits=False,
+                                        **kwargs)
+    ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
     points = hull.points
 
-    a = ax.plot(points[:, 0], points[:, 1], marker=marker, markersize=markersize, linestyle='', color=color, **kwargs)
+    plot_kw = plot_params.plot_kwargs()
+    plot_hull_kw = plot_params.plot_kwargs(marker='marker_hull', markersize='markersize_hull', color='color_hull')
+    plot_hull_kw['linestyle'] = ''
+    linestyle = plot_kw['linestyle']
+    plot_kw['linestyle'] = ''
+
+    ax.plot(points[:, 0], points[:, 1], **plot_kw, **kwargs)
     for simplex in hull.simplices:
         # TODO leave out some lines, the ones about [0,0 -1,0]
         data = simplex.coords
-        ax.plot(data[:, 0],
-                data[:, 1],
-                linestyle=linestyle,
-                color=color_line,
-                linewidth=linewidth,
-                markersize=markersize,
-                **kwargs)
-        ax.plot(data[:, 0],
-                data[:, 1],
-                linestyle='',
-                color=color,
-                markersize=markersize_hull,
-                marker=marker_hull,
-                **kwargs)
+        ax.plot(data[:, 0], data[:, 1], linestyle=linestyle, **plot_kw, **kwargs)
+        ax.plot(data[:, 0], data[:, 1], **plot_hull_kw, **kwargs)
         # this section is from scipy.spatial.Convexhull interface
         #ax.plot(points[simplex, 0], points[simplex, 1], linestyle=linestyle,
         #        color=color_line, linewidth=linewidth, markersize=markersize, **kwargs)
         #ax.plot(points[simplex, 0], points[simplex, 1], linestyle='',
         #        color=color, markersize=markersize_hull, marker=marker_hull, **kwargs)
 
-    if limits:
-        if limits[0]:
-            xmin = limits[0][0]
-            xmax = limits[0][1]
-            ax.set_xlim(xmin, xmax)
-        if limits[1]:
-            ymin = limits[1][0]
-            ymax = limits[1][1]
-            ax.set_ylim(ymin, ymax)
-    #ax1.set_ylim(-0.5, 0.5)
-    #plt.plot(points[hull.vertices[0],0], points[hull.vertices[0],1], 'r--', lw=2)
-    #plt.plot(points[hull.vertices[2:],0], points[hull.vertices[2:],1], 'r--', lw=2)
-    if save_plots_g:
-        savefilename = '{}.{}'.format(saveas, save_format_g)
-        print(('save plot to: {}'.format(savefilename)))
-        plt.savefig(savefilename, format=save_format_g, transparent=True)
-    elif show_g:
-        plt.show()
-    else:
-        pass
+    plot_params.set_scale(ax)
+    plot_params.set_limits(ax)
+    plot_params.draw_lines(ax)
+    plot_params.show_legend(ax)
+    plot_params.save_plot(saveas)
+
     return ax
 
 
@@ -1415,18 +1373,20 @@ def plot_convergence_results_m(distances,
     return p1, p2
 
 
-def plot_lattice_constant(Total_energy,
+@ensure_plotter_consistency(plot_params)
+def plot_lattice_constant(total_energy,
                           scaling,
                           fit_y=None,
                           relative=True,
                           ref_const=None,
                           multi=False,
-                          plotlables=[r'simulation data', r'fit results'],
+                          plot_label=r'simulation data',
+                          plot_label_fit=r'fit results',
                           title=r'Equation of states',
-                          saveas='Lattice_constant',
+                          saveas='lattice_constant',
                           axis=None,
-                          show=True,
-                          **kwags):
+                          marker_fit='s',
+                          **kwargs):
     """
     Plot a lattice constant versus Total energy
     Plot also the fit.
@@ -1445,74 +1405,116 @@ def plot_lattice_constant(Total_energy,
     # TODO: make box which shows fit results. (fit resuls have to be past)
     # TODO: multiple plots in one use mulit_scatter_plot for this...
 
+    if 'plotlables' in kwargs:
+        warnings.warn('plotlables is deprecated. Use plot_label and plot_label_fit instead', DeprecationWarning)
+        if multi:
+            plot_label = []
+            plot_label_fit = []
+            for indx in range(len(scaling)):
+                plot_label.append(kwargs['plotlables'][2 * indx])
+                plot_label_fit.append(kwargs['plotlables'][2 * indx + 1])
+            kwargs['plot_label'] = plot_label
+            kwargs['plot_label_fit'] = plot_label_fit
+        else:
+            kwargs['plot_label'] = kwargs['plotlables'][0]
+            kwargs['plot_label_fit'] = kwargs['plotlables'][1]
+
     #print markersize_g
     if relative:
         if ref_const:
-            xlabel = r'Relative Volume [a/{}$\AA$]'.format(ref_const)
+            xlabel = rf'Relative Volume [a/{ref_const}$\AA$]'
         else:
             xlabel = r'Relative Volume'
     else:
         xlabel = r'Volume [$\AA$]'
 
-    if axis:
-        ax = axis
+    if multi:
+        ylabel = r'Total energy norm[0] [eV]'
     else:
-        fig = plt.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
-        ax = fig.add_subplot(111)
-    for axis in ['top', 'bottom', 'left', 'right']:
-        ax.spines[axis].set_linewidth(axis_linewidth_g)
-    ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
-    ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
-    ax.set_ylabel(r'Total energy [eV]', fontsize=labelfonstsize_g)
-    ax.yaxis.set_tick_params(size=tick_paramsy_g.get('size', 4.0),
-                             width=tick_paramsy_g.get('width', 1.0),
-                             labelsize=tick_paramsy_g.get('labelsize', 14),
-                             length=tick_paramsy_g.get('length', 5))
-    ax.xaxis.set_tick_params(size=tick_paramsx_g.get('size', 4.0),
-                             width=tick_paramsx_g.get('width', 1.0),
-                             labelsize=tick_paramsx_g.get('labelsize', 14),
-                             length=tick_paramsx_g.get('length', 5))
-    ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
-    ax.yaxis.get_major_formatter().set_useOffset(False)
+        ylabel = r'Total energy [eV]'
+
+    #Add custom parameters for fit
+    plot_params.add_parameter('marker_fit', default_from='marker')
+    plot_params.add_parameter('markersize_fit', default_from='markersize')
+    plot_params.add_parameter('linewidth_fit', default_from='linewidth')
+    plot_params.add_parameter('plot_label_fit')
+
+    general_keys = set(plot_params['figure_kwargs']) | {'show', 'save_plots'}
+    general_info = {key: val for key, val in kwargs.items() if key in general_keys}
+    kwargs = {key: val for key, val in kwargs.items() if key not in general_keys}
+
+    plot_params.set_parameters(**general_info)
+    kwargs = plot_params.set_parameters(continue_on_error=True,
+                                        return_unprocessed_kwargs=True,
+                                        marker_fit=marker_fit,
+                                        plot_label=plot_label,
+                                        plot_label_fit=plot_label_fit,
+                                        **kwargs)
+    ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
+
+    if multi:
+        plot_params.single_plot = False
+        plot_params.num_plots = len(scaling)
+
+    plot_kw = plot_params.plot_kwargs()
+    plot_fit_kw = plot_params.plot_kwargs(marker='marker_fit',
+                                          markersize='markersize_fit',
+                                          linewidth='linewidth_fit',
+                                          plot_label='plot_label_fit')
+
     if multi:
         # TODO test if dim of total_e = dim of scaling, dim plot lables...
         # or parse on scaling?
-        ax.set_ylabel(r'Total energy norm[0] [eV]', fontsize=labelfonstsize_g)
 
-        for i, scale in enumerate(scaling):
-            #print i
-            p1 = plt.plot(scale,
-                          Total_energy[i],
-                          'o-',
-                          label=plotlables[2 * i],
-                          linewidth=linewidth_g,
-                          markersize=markersize_g)
-            if fit_y:
-                p2 = plt.plot(scale,
-                              fit_y[i],
-                              's-',
-                              label=plotlables[2 * i + 1],
-                              linewidth=linewidth_g,
-                              markersize=markersize_g)
-    else:
-        p1 = plt.plot(scaling, Total_energy, 'o-', label=plotlables[0], linewidth=linewidth_g, markersize=markersize_g)
+        ax = multiple_scatterplots(total_energy,
+                                   scaling,
+                                   xlabel,
+                                   ylabel,
+                                   title,
+                                   axis=ax,
+                                   show=False,
+                                   save_plots=False,
+                                   **plot_kw,
+                                   **kwargs)
         if fit_y:
-            p2 = plt.plot(scaling, fit_y, r'-', label=plotlables[1], linewidth=linewidth_g, markersize=markersize_g)
-    if legend_g:
-        plt.legend(bbox_to_anchor=(0.85, 1), loc=2, borderaxespad=0., fancybox=True)
-        plt.legend(loc='best', borderaxespad=0., fancybox=True)  #, framealpha=0.5) #loc='upper right')
-        #lg = plt.legend(bbox_to_anchor=(0.76, 0.400), loc=2, borderaxespad=0., borderpad=1, fancybox=True, title =r'K-pts in $\bf{k_{x,y,z}}$',fontsize=14)#loc='best', fancybox=True) #, framealpha=0.5) #loc='upper right')
-        #lg.get_frame().set_linewidth(2.0)
-        #lg.get_title().set_fontsize('16') #legend 'Title' fontsize
+            ax = multiple_scatterplots(fit_y,
+                                       scaling,
+                                       xlabel,
+                                       ylabel,
+                                       title,
+                                       axis=ax,
+                                       show=False,
+                                       save_plots=False,
+                                       **plot_fit_kw,
+                                       **kwargs)
 
-    #print save_plots_g
-    if save_plots_g:
-        # TODO override or not, better title?
-        savefilename = '{}.{}'.format(saveas, save_format_g)
-        print(('save plot to: {}'.format(savefilename)))
-        plt.savefig(savefilename, format=save_format_g, transparent=True)
-    if show:
-        plt.show()
+    else:
+        ax = single_scatterplot(scaling,
+                                total_energy,
+                                xlabel,
+                                ylabel,
+                                title,
+                                axis=ax,
+                                show=False,
+                                save_plots=False,
+                                **plot_kw,
+                                **kwargs)
+        if fit_y:
+            ax = single_scatterplot(scaling,
+                                    fit_y,
+                                    xlabel,
+                                    ylabel,
+                                    title,
+                                    axis=ax,
+                                    show=False,
+                                    save_plots=False,
+                                    **plot_fit_kw,
+                                    **kwargs)
+
+    plot_params.set_parameters(**general_info)
+
+    plot_params.draw_lines(ax)
+    plot_params.save_plot(saveas)
 
     return ax
 
