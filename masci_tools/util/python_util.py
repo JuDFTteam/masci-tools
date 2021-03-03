@@ -165,7 +165,7 @@ class JSONEncoderTailoredIndent(json.JSONEncoder):
         return json_repr
 
 
-def dataclass_default_field(obj: typing.Any) -> typing.Any:
+def dataclass_default_field(obj: typing.Any, deepcopy=True) -> typing.Any:
     """Abbreviator for defining mutable types as default values for fields of dataclasses.
     References:
     - https://stackoverflow.com/a/53870411/8116031
@@ -174,10 +174,12 @@ def dataclass_default_field(obj: typing.Any) -> typing.Any:
     Use case for this: the default value is some class instance. If you just write,
     in dataclass X, y : Y = dc.field(default=Y()), all x, x2, ... instances of X's
     variables x.y will be the same object / instance of Y. Whereas with this method, all
-    x.y, x2.y, ... will be different objects / instances of Y. This allows you to also
-    define a non-default instance of Y (ie, non-empty constructor) like Y(foo='bar').
+    x.y, x2.y, ... will be different objects / instances of Y (if deepcopy). Apart from that,
+    this method allows you to also define a non-default instance of Y (ie, non-empty constructor)
+    like Y(foo='bar').
 
     :param obj: complex / mutable default value
+    :param deepcopy: default True: perform deepcopy, False: perform shallow copy.
     :return: dataclass field default value
 
     >>> import dataclasses as dc
@@ -187,7 +189,10 @@ def dataclass_default_field(obj: typing.Any) -> typing.Any:
     >>>     complex_attribute: Dict[str, Tuple[int, str]] = \
     >>>     dataclass_default_field({"a": (1, "x"), "b": (1, "y")})
     """
-    return field(default_factory=lambda: copy.deepcopy(obj))
+    if deepcopy:
+        return field(default_factory=lambda: copy.deepcopy(obj))
+    else:
+        return field(default_factory=lambda: copy.copy(obj))
 
 
 class SizeEstimator:

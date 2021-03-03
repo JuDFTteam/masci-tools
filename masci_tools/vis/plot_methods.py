@@ -2723,6 +2723,7 @@ def plot_fleur_bands(filename, limits=[None, [-15, 15]]):
 
 
 class PDF(object):
+
     def __init__(self, pdf, size=(200, 200)):
         """Display a PDF file inside a Jupyter notebook.
 
@@ -2771,9 +2772,7 @@ def plot_colortable(colors: typing.Dict, title: str, sort_colors: bool = True, e
 
     # Sort colors by hue, saturation, value and name.
     if sort_colors is True:
-        by_hsv = sorted((tuple(mcolors.rgb_to_hsv(mcolors.to_rgb(color))),
-                         name)
-                        for name, color in colors.items())
+        by_hsv = sorted((tuple(mcolors.rgb_to_hsv(mcolors.to_rgb(color))), name) for name, color in colors.items())
         names = [name for hsv, name in by_hsv]
     else:
         names = list(colors)
@@ -2787,14 +2786,13 @@ def plot_colortable(colors: typing.Dict, title: str, sort_colors: bool = True, e
     dpi = 72
 
     fig, ax = plt.subplots(figsize=(width / dpi, height / dpi), dpi=dpi)
-    fig.subplots_adjust(margin / width, margin / height,
-                        (width - margin) / width, (height - topmargin) / height)
+    fig.subplots_adjust(margin / width, margin / height, (width - margin) / width, (height - topmargin) / height)
     ax.set_xlim(0, cell_width * 4)
     ax.set_ylim(cell_height * (nrows - 0.5), -cell_height / 2.)
     ax.yaxis.set_visible(False)
     ax.xaxis.set_visible(False)
     ax.set_axis_off()
-    ax.set_title(title, fontsize=24, loc="left", pad=10)
+    ax.set_title(title, fontsize=24, loc='left', pad=10)
 
     for i, name in enumerate(names):
         row = i % nrows
@@ -2805,11 +2803,8 @@ def plot_colortable(colors: typing.Dict, title: str, sort_colors: bool = True, e
         swatch_end_x = cell_width * col + swatch_width
         text_pos_x = cell_width * col + swatch_width + 7
 
-        ax.text(text_pos_x, y, name, fontsize=14,
-                horizontalalignment='left',
-                verticalalignment='center')
+        ax.text(text_pos_x, y, name, fontsize=14, horizontalalignment='left', verticalalignment='center')
 
-        ax.hlines(y, swatch_start_x, swatch_end_x,
-                  color=colors[name], linewidth=18)
+        ax.hlines(y, swatch_start_x, swatch_end_x, color=colors[name], linewidth=18)
 
     return fig

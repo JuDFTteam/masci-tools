@@ -2170,9 +2170,7 @@ iteration_tag_info:
       electronnucleiinteractiondifferentmts: null
       madelungterm: null
     optional_attribs: {}
-    order:
-    - electronNucleiInteractionDifferentMTs
-    - MadelungTerm
+    order: []
     several: !!set {}
     simple: !!set
       electronnucleiinteractiondifferentmts: null
@@ -2284,9 +2282,7 @@ iteration_tag_info:
       valenceelectrons: null
     optional_attribs:
       units: null
-    order:
-    - coreElectrons
-    - valenceElectrons
+    order: []
     several: !!set {}
     simple: !!set
       coreelectrons: null
@@ -3086,14 +3082,7 @@ tag_info:
       scfloop: null
       startdateandtime: null
     optional_attribs: {}
-    order:
-    - programVersion
-    - parallelSetup
-    - startDateAndTime
-    - inputData
-    - numericalParameters
-    - scfLoop
-    - endDateAndTime
+    order: []
     several: !!set {}
     simple: !!set
       enddateandtime: null
@@ -3130,16 +3119,7 @@ tag_info:
       output: null
       relaxation: null
     optional_attribs: {}
-    order:
-    - comment
-    - constants
-    - calculationSetup
-    - cell
-    - atomSpecies
-    - atomGroups
-    - output
-    - forceTheorem
-    - relaxation
+    order: []
     several: !!set {}
     simple: !!set
       comment: null
@@ -4021,23 +4001,7 @@ tag_info:
       soc: null
       spinspiralqpointmesh: null
     optional_attribs: {}
-    order:
-    - cutoffs
-    - scfLoop
-    - coreElectrons
-    - xcFunctional
-    - magnetism
-    - prodBasis
-    - soc
-    - oneDParams
-    - expertModes
-    - geometryOptimization
-    - ldaU
-    - ldaHIA
-    - greensFunction
-    - rdmft
-    - spinSpiralQPointMesh
-    - fields
+    order: []
     several: !!set {}
     simple: !!set
       coreelectrons: null
@@ -4323,11 +4287,7 @@ tag_info:
       l_ss: F
       lflip: F
       swsp: F
-    order:
-    - qss
-    - qsc
-    - mtNocoParams
-    - sourceFreeMag
+    order: []
     several: !!set {}
     simple: !!set
       mtnocoparams: null
@@ -4899,8 +4859,7 @@ tag_info:
       qvectors: null
     optional: !!set {}
     optional_attribs: {}
-    order:
-    - qVectors
+    order: []
     several: !!set {}
     simple: !!set {}
     text: !!set {}
@@ -4924,8 +4883,7 @@ tag_info:
       qvectors: null
     optional: !!set {}
     optional_attribs: {}
-    order:
-    - qVectors
+    order: []
     several: !!set {}
     simple: !!set {}
     text: !!set {}
@@ -4998,18 +4956,7 @@ tag_info:
       eig66: F
       slice: F
       wannier: F
-    order:
-    - checks
-    - bandDOS
-    - vacuumDOS
-    - plotting
-    - chargeDensitySlicing
-    - specialOutput
-    - coreSpectrum
-    - wannier
-    - magneticCircularDichroism
-    - unfoldingBand
-    - juPhon
+    order: []
     several: !!set {}
     simple: !!set
       banddos: null
@@ -5254,9 +5201,7 @@ tag_info:
       ms: F
       sgwf: F
       socgwf: F
-    order:
-    - bandSelection
-    - jobList
+    order: []
     several: !!set {}
     simple: !!set
       bandselection: null
@@ -5287,9 +5232,7 @@ tag_info:
       displacements: null
       relaxation-history: null
     optional_attribs: {}
-    order:
-    - displacements
-    - relaxation-history
+    order: []
     several: !!set {}
     simple: !!set {}
     text: !!set {}
@@ -5509,13 +5452,7 @@ tag_info:
       targetcomputerarchitectures: null
       targetstructureclass: null
     optional_attribs: {}
-    order:
-    - compilationInfo
-    - gitInfo
-    - targetComputerArchitectures
-    - precision
-    - targetStructureClass
-    - additionalCompilerFlags
+    order: []
     several: !!set {}
     simple: !!set
       additionalcompilerflags: null

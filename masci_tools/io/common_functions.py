@@ -16,6 +16,7 @@ without a database) are collected.
 """
 import io
 import numpy as np
+import warnings
 ####################################################################################
 
 #helper functions used in calculation, parser etc.
@@ -59,18 +60,6 @@ def get_alat_from_bravais(bravais, is3D=True):
         #take only in-plane lattice to find maximum as alat
         bravais_tmp = bravais[:2, :2]
     return np.sqrt(np.sum(bravais_tmp**2, axis=1)).max()
-
-
-def get_Ang2aBohr():
-    return 1.8897261254578281
-
-
-def get_aBohr2Ang():
-    return 1 / get_Ang2aBohr()
-
-
-def get_Ry2eV():
-    return 13.605693009
 
 
 def search_string(searchkey, txt):
@@ -123,6 +112,30 @@ def angles_to_vec(magnitude, theta, phi):
         vec = vec[0]
 
     return vec
+
+
+def get_Ang2aBohr():
+    from masci_tools.util.constants import BOHR_A
+    warnings.warn(
+        'get_Ang2aBohr is deprecated. Use 1/BOHR_A with the BOHR_A constant from the module masci_tools.util.constants instead',
+        DeprecationWarning)
+    return 1.0 / BOHR_A
+
+
+def get_aBohr2Ang():
+    from masci_tools.util.constants import BOHR_A
+    warnings.warn(
+        'get_aBohr2Ang is deprecated. Use the BOHR_A constant from the module masci_tools.util.constants instead',
+        DeprecationWarning)
+    return BOHR_A
+
+
+def get_Ry2eV():
+    from masci_tools.util.constants import RY_TO_EV
+    warnings.warn(
+        'get_Ry2eV is deprecated. Use the RY_TO_EV constant from the module masci_tools.util.constants instead',
+        DeprecationWarning)
+    return RY_TO_EV
 
 
 def vec_to_angles(vec):

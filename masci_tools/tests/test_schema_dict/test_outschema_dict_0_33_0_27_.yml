@@ -2040,9 +2040,7 @@ iteration_tag_info:
       electronnucleiinteractiondifferentmts: null
       madelungterm: null
     optional_attribs: {}
-    order:
-    - electronNucleiInteractionDifferentMTs
-    - MadelungTerm
+    order: []
     several: !!set {}
     simple: !!set
       electronnucleiinteractiondifferentmts: null
@@ -2154,9 +2152,7 @@ iteration_tag_info:
       valenceelectrons: null
     optional_attribs:
       units: null
-    order:
-    - coreElectrons
-    - valenceElectrons
+    order: []
     several: !!set {}
     simple: !!set
       coreelectrons: null
@@ -2807,15 +2803,7 @@ tag_info:
       scfloop: null
       startdateandtime: null
     optional_attribs: {}
-    order:
-    - programVersion
-    - parallelSetup
-    - startDateAndTime
-    - fleurInput
-    - numericalParameters
-    - scfLoop
-    - ERROR
-    - endDateAndTime
+    order: []
     several: !!set {}
     simple: !!set
       enddateandtime: null
@@ -2860,15 +2848,7 @@ tag_info:
       constants: null
       output: null
     optional_attribs: {}
-    order:
-    - comment
-    - constants
-    - calculationSetup
-    - cell
-    - xcFunctional
-    - atomSpecies
-    - atomGroups
-    - output
+    order: []
     several: !!set {}
     simple: !!set
       comment: null
@@ -3229,20 +3209,7 @@ tag_info:
       soc: null
       spinspiralqpointmesh: null
     optional_attribs: {}
-    order:
-    - cutoffs
-    - scfLoop
-    - coreElectrons
-    - magnetism
-    - bzIntegration
-    - soc
-    - nocoParams
-    - oneDParams
-    - expertModes
-    - geometryOptimization
-    - spinSpiralQPointMesh
-    - eField
-    - energyParameterLimits
+    order: []
     several: !!set {}
     simple: !!set
       coreelectrons: null
@@ -3779,13 +3746,7 @@ tag_info:
       dos: F
       slice: F
       vacdos: F
-    order:
-    - checks
-    - densityOfStates
-    - vacuumDOS
-    - plotting
-    - chargeDensitySlicing
-    - specialOutput
+    order: []
     several: !!set {}
     simple: !!set
       chargedensityslicing: null
@@ -4109,13 +4070,7 @@ tag_info:
       targetcomputerarchitectures: null
       targetstructureclass: null
     optional_attribs: {}
-    order:
-    - compilationInfo
-    - gitInfo
-    - targetComputerArchitectures
-    - precision
-    - targetStructureClass
-    - additionalCompilerFlags
+    order: []
     several: !!set {}
     simple: !!set
       additionalcompilerflags: null

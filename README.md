@@ -31,13 +31,17 @@ pip install masci-tools
 ## Dependencies
 
 These python packages are needed:
-* `pymatgen`
-* `ase`
 * `lxml`
-* `matplotlib`
 * `h5py`
+* `deepdiff`
+* `humanfriendly`  
+* `matplotlib`
+* `seaborn`
+* `ase`
+* `pymatgen`
+* `mendeleev`
 
-It should not depend on `aiida_core`!
+It should not depend on `aiida-core`!
 
 ## Layout of`masci-tools`
 

@@ -30,7 +30,6 @@ if __name__ == '__main__':
             'Intended Audience :: Science/Research',
             'License :: OSI Approved :: MIT License',
             'Programming Language :: Python :: 3',
-            'Programming Language :: Python :: 3.6',
             'Programming Language :: Python :: 3.7',
             'Programming Language :: Python :: 3.8',
             'Programming Language :: Python :: 3.9',
@@ -49,9 +48,10 @@ if __name__ == '__main__':
             'bump2version',
             'future',
             'lxml>=3.6.4',
-            'mendeleev',
+            'seaborn',
+            'deepdiff',
             'humanfriendly',
-            'seaborn'
+            'mendeleev',
         ],
         extras_require={
             'pre-commit': [
