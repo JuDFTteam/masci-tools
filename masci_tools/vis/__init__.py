@@ -192,7 +192,7 @@ class Plotter(object):
             if not isinstance(ignore, list):
                 ignore = [ignore]
             for key in ignore:
-                keys_used.remove(key)
+                keys_used.discard(key)
 
         ret_dict = {}
         for key in keys_used:
