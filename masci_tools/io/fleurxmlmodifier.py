@@ -165,6 +165,7 @@ class FleurXMLModifier:
         the list of tasks that will be done on the xmltree.
 
         :param change_dict: a dictionary with changes
+        :param path_spec: dict, with ggf. necessary further specifications for the path of the attribute
 
         An example of change_dict::
 
@@ -291,6 +292,8 @@ class FleurXMLModifier:
         :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
         :param create_parents: bool optional (default False), if True and the given xpath has no results the
                                the parent tags are created recursively
+        :param occurrences: int or list of int. Which occurence of the parent nodes to create a tag.
+                            By default all nodes are used.
 
         Kwargs:
             :param contains: str, this string has to be in the final path
@@ -461,11 +464,12 @@ class FleurXMLModifier:
         Appends a :py:func:`~masci_tools.util.xml.xml_setters_basic.xml_create_tag()` to
         the list of tasks that will be done on the xmltree.
 
-        :param xmltree: an xmltree that represents inp.xml
         :param xpath: a path where to place a new tag
         :param element: a tag name or etree Element to be created
         :param place_index: defines the place where to put a created tag
         :param tag_order: defines a tag order
+        :param occurrences: int or list of int. Which occurence of the parent nodes to create a tag.
+                            By default all nodes are used.
         """
         self._tasks.append(ModifierTask('xml_create_tag', args, kwargs))
 
