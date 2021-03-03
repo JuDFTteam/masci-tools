@@ -751,6 +751,57 @@ class TestMultiPlotMoved(object):
         return gcf()
 
 
+class TestWaterFallPlot(object):  #pylint: disable=missing-class-docstring
+
+    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/waterfall_plot/',
+                                   filename='defaults.png')
+    def test_default(self):
+        """
+        Mulitplot_moved with default parameters
+        """
+        import numpy as np
+        from masci_tools.vis.plot_methods import waterfall_plot
+
+        x = np.linspace(-1, 1, 100)
+        y = np.linspace(-1, 1, 100)
+
+        xv, yv = np.meshgrid(x, y)
+        z = 10 * np.exp(-xv**2 - yv**2)
+        xv, yv, z = xv.flatten(), yv.flatten(), z.flatten()
+
+        gcf().clear()
+
+        waterfall_plot(xv, yv, z, 'X', 'Y', 'Z', 'Plot Test', show=False)
+        # need to return the figure in order for mpl checks to work
+
+        return gcf()
+
+
+class TestSurfacePlot(object):  #pylint: disable=missing-class-docstring
+
+    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/surface_plot/',
+                                   filename='defaults.png')
+    def test_default(self):
+        """
+        Mulitplot_moved with default parameters
+        """
+        import numpy as np
+        from masci_tools.vis.plot_methods import surface_plot
+
+        x = np.linspace(-1, 1, 100)
+        y = np.linspace(-1, 1, 100)
+
+        xv, yv = np.meshgrid(x, y)
+        z = 10 * np.exp(-xv**2 - yv**2)
+
+        gcf().clear()
+
+        surface_plot(xv, yv, z, 'X', 'Y', 'Z', 'Plot Test', show=False)
+        # need to return the figure in order for mpl checks to work
+
+        return gcf()
+
+
 class TestMultiAxisScatterPlot(object):  #pylint: disable=missing-class-docstring
 
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiaxis/', filename='defaults.png')

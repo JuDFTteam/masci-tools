@@ -592,6 +592,7 @@ def colormesh_plot(xdata,
     return ax
 
 
+@ensure_plotter_consistency(plot_params)
 def waterfall_plot(xdata,
                    ydata,
                    zdata,
@@ -599,18 +600,28 @@ def waterfall_plot(xdata,
                    ylabel,
                    zlabel,
                    title,
-                   plot_labels,
-                   linetyp='o-',
-                   legend=legend_g,
-                   legend_option={},
-                   saveas='mscatterplot',
-                   limits=[None, None],
-                   scale=[None, None]):  #TODO: convert to new system
+                   saveas='waterfallplot',
+                   axis=None,
+                   markersize=30,
+                   linewidth=0,
+                   **kwargs):
     """
     Create a standard waterfall plot (this should be flexible enough) to do all the
     basic plots.
+
+    :param xdata: arraylike, data for the x coordinate
+    :param ydata: arraylike, data for the y coordinate
+    :param zdata: arraylike, data for the z coordinate
+    :param xlabel: str, label written on the x axis
+    :param ylabel: str, label written on the y axis
+    :param zlabel: str, label written on the z axis
+    :param title: str, title of the figure
+    :param axis: Axes object, if given the plot will be applied to this object
+    :param saveas: str specifying the filename (without file format)
+
     """
-    from mpl_toolkits.mplot3d.axes3d import Axes3D
+
+    #TODO Deprecation: plot_labels, linetyp, limits, scale, legend_option
 
     nplots = len(ydata)
     if nplots != len(xdata):  # todo check dimention not len, without moving to special datatype.
@@ -620,82 +631,105 @@ def waterfall_plot(xdata,
         print('ydata and zdata must have the same dimension')
         return
 
-    # TODO allow plotlabels to have different dimension
-    pl = []
-
-    fig = plt.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
-    ax = fig.add_subplot(111, projection='3d')
-    for axis in ['top', 'bottom', 'left', 'right']:
-        ax.spines[axis].set_linewidth(axis_linewidth_g)
-    ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
-    ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
-    ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
-    ax.yaxis.set_tick_params(size=tick_paramsy_g.get('size', 4.0),
-                             width=tick_paramsy_g.get('width', 1.0),
-                             labelsize=tick_paramsy_g.get('labelsize', 14),
-                             length=tick_paramsy_g.get('length', 5))
-    ax.xaxis.set_tick_params(size=tick_paramsx_g.get('size', 4.0),
-                             width=tick_paramsx_g.get('width', 1.0),
-                             labelsize=tick_paramsx_g.get('labelsize', 14),
-                             length=tick_paramsx_g.get('length', 5))
-
-    ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
-    ax.yaxis.get_major_formatter().set_useOffset(False)
-
-    for i, data in enumerate(ydata):
-        p1 = ax.plot3D(xdata[i],
-                       data,
-                       zdata[i],
-                       linetyp,
-                       label=plot_labels[i],
-                       linewidth=linewidth_g,
-                       markersize=markersize_g)
-    if scale:
-        if scale[0]:
-            ax.set_xscale(scale[0])
-        if scale[1]:
-            ax.set_yscale(scale[1])
-
-    if limits:
-        if limits[0]:
-            xmin = limits[0][0]
-            xmax = limits[0][1]
-            ax.set_xlim(xmin, xmax)
-        if limits[1]:
-            ymin = limits[1][0]
-            ymax = limits[1][1]
-            ax.set_ylim(ymin, ymax)
-
-    #TODO legend
-    if legend:
-        #print legend
-        #{anchor, title, fontsize, linewith, borderaxespad}
-        # defaults 'anchor' : (0.75, 0.97), 'title' : 'Legend', 'fontsize' : 17, 'linewith' : 1.5, 'borderaxespad' : },
-        legends_defaults = {
-            'bbox_to_anchor': (0.70, 0.97),
-            'fontsize': 12,
-            'linewidth': 1.5,
-            'borderaxespad': 0,
-            'loc': 2,
-            'fancybox': True
-        }  #'title' : 'Legend',
-        loptions = legends_defaults.copy()
-        loptions.update(legend_option)
-        linewidth = loptions.pop('linewidth', 1.5)
-        #title_font_size = loptions.pop('title_font_size', 15)
-        leg = plt.legend(
-            **loptions
-        )  #bbox_to_anchor=loptions['anchor'],loc=loptions['loc'], title=legend_title, borderaxespad=0., fancybox=True)
-        leg.get_frame().set_linewidth(linewidth)
-        #leg.get_title().set_fontsize(title_font_size) #legend 'Title' fontsize
-    if save_plots_g:
-        savefilename = '{}.{}'.format(saveas, save_format_g)
-        print(('save plot to: {}'.format(savefilename)))
-        plt.savefig(savefilename, format=save_format_g, transparent=True)
-    elif show_g:
-        plt.show()
+    if isinstance(zdata, np.ndarray):
+        zmin = zdata.min()
+        zmax = zdata.max()
     else:
-        pass
+        zmin = min(zdata)
+        zmax = max(zdata)
+
+
+    clim = None
+    if 'limits' in kwargs:
+        clim = kwargs['limits'].get('color', None)
+    else:
+        kwargs['limits'] = {}
+    if clim is None:
+        clim = (kwargs.get('vmin', zmin), kwargs.get('vmax', zmax))
+    kwargs['limits']['color'] = clim
+
+
+    if not isinstance(ydata[0], (list, np.ndarray)):
+        xdata, ydata, zdata = [xdata], [ydata], [zdata]
+
+    plot_params.single_plot = False
+    plot_params.num_plots = len(ydata)
+
+    kwargs = plot_params.set_parameters(continue_on_error=True, area_plot=False, markersize=markersize, linewidth=linewidth, **kwargs)
+    ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, zlabel=zlabel, axis=axis, projection='3d')
+
+    plot_kwargs = plot_params.plot_kwargs(ignore=['markersize'], extra_keys={'cmap'})
+
+    for indx, data in enumerate(zip(xdata, ydata, zdata, plot_kwargs)):
+
+        x, y, z, plot_kw = data
+        ax.scatter3D(x, y, z, c=z, s=plot_params[('markersize', indx)], **plot_kw, **kwargs)
+
+    plot_params.set_scale(ax)
+    plot_params.set_limits(ax)
+    plot_params.show_legend(ax)
+    plot_params.show_colorbar(ax)
+    plot_params.save_plot(saveas)
+
+    return ax
+
+
+@ensure_plotter_consistency(plot_params)
+def surface_plot(xdata, ydata, zdata, xlabel, ylabel, zlabel, title, saveas='surface_plot', axis=None, linewidth=0, **kwargs):
+    """
+    Create a standard waterfall plot (this should be flexible enough) to do all the
+    basic plots.
+
+    :param xdata: arraylike, data for the x coordinate
+    :param ydata: arraylike, data for the y coordinate
+    :param zdata: arraylike, data for the z coordinate
+    :param xlabel: str, label written on the x axis
+    :param ylabel: str, label written on the y axis
+    :param zlabel: str, label written on the z axis
+    :param title: str, title of the figure
+    :param axis: Axes object, if given the plot will be applied to this object
+    :param saveas: str specifying the filename (without file format)
+
+    """
+
+    nplots = len(ydata)
+    if nplots != len(xdata):  # todo check dimention not len, without moving to special datatype.
+        print('ydata and xdata must have the same dimension')
+        return
+    if nplots != len(zdata):  # todo check dimention not len, without moving to special datatype.
+        print('ydata and zdata must have the same dimension')
+        return
+
+    if isinstance(zdata, np.ndarray):
+        zmin = zdata.min()
+        zmax = zdata.max()
+    else:
+        zmin = min(zdata)
+        zmax = max(zdata)
+
+
+    clim = None
+    if 'limits' in kwargs:
+        clim = kwargs['limits'].get('color', None)
+    else:
+        kwargs['limits'] = {}
+    if clim is None:
+        clim = (kwargs.get('vmin', zmin), kwargs.get('vmax', zmax))
+    kwargs['limits']['color'] = clim
+
+    kwargs = plot_params.set_parameters(continue_on_error=True, area_plot=False, linewidth=linewidth, **kwargs)
+    ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, zlabel=zlabel, axis=axis, projection='3d')
+
+    plot_kwargs = plot_params.plot_kwargs(ignore=['markersize', 'marker'], extra_keys={'cmap'})
+    ax.plot_surface(xdata, ydata, zdata, **plot_kwargs, **kwargs)
+
+    plot_params.set_scale(ax)
+    plot_params.set_limits(ax)
+    plot_params.show_legend(ax)
+    plot_params.show_colorbar(ax)
+    plot_params.save_plot(saveas)
+
+    return ax
 
 
 @ensure_plotter_consistency(plot_params)
@@ -1974,7 +2008,7 @@ def plot_corelevel_spectra(coreleveldict,
     ymax = max(ydata) + 1
     limits = {'x': (xmin, xmax), 'y': (ymin, ymax)}
     limits_spec = {'x': (xmin, xmax), 'y': (ymin, ymax2)}
-    title = title  #'Spectrum of {}'.format(compound)
+    #title = title  #'Spectrum of {}'.format(compound)
     """
     # ToDo redesign to use multiple_scatterplot
     axis = multiple_scatterplots(ydata, xdata, xlabel, ylabel, title, plot_labels,
@@ -2670,7 +2704,6 @@ def plot_colortable(colors: typing.Dict, title: str, sort_colors: bool = True, e
     :param emptycols:
     :return: figure
     """
-    import matplotlib.pyplot as plt
     import matplotlib.colors as mcolors
 
     cell_width = 212
