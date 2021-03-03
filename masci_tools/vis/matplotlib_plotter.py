@@ -160,12 +160,13 @@ class MatplotlibPlotter(Plotter):
     def __init__(self, **kwargs):
         super().__init__(self._MATPLOTLIB_DEFAULTS, list_arguments=self._MATPLOTLIB_LIST_ARGS, **kwargs)
 
-    def plot_kwargs(self, ignore=None, **kwargs):
+    def plot_kwargs(self, ignore=None, extra_keys=None, **kwargs):
         """
         Creates a dict or list of dicts (for multiple plots) with the defined parameters
         for the plotting calls fo matplotlib
 
         :param ignore: str or list of str (optional), defines keys to ignore in the creation of the dict
+        :param extra_keys: optional set for addtional keys to retrieve
 
         Kwargs are used to replace values by custom parameters:
 
@@ -184,6 +185,10 @@ class MatplotlibPlotter(Plotter):
             kwargs_keys = self._PLOT_KWARGS_COLORMESH
         elif self.plot_type == 'histogram':
             kwargs_keys = self._PLOT_KWARGS_HIST
+
+        if extra_keys is not None:
+            kwargs_keys = kwargs_keys | extra_keys
+
 
         #Insert custom keys to retrieve
         kwargs_keys = kwargs_keys.copy()
@@ -324,10 +329,6 @@ class MatplotlibPlotter(Plotter):
                 zmin = self['limits']['z'][0]
                 zmax = self['limits']['z'][1]
                 ax.set_zlim(zmin, zmax)
-            if 'color' in self['limits']:
-                cmin = self['limits'][0]
-                cmax = self['limits'][1]
-                ax.set_clim(cmin, cmax)
 
     def draw_lines(self, ax):
         """
@@ -398,7 +399,16 @@ class MatplotlibPlotter(Plotter):
         """
 
         if self['colorbar']:
-            plt.colorbar(cm.ScalarMappable(cmap=self['cmap'], norm=self['norm']), ax=ax)
+            mappable = cm.ScalarMappable(cmap=self['cmap'], norm=self['norm'])
+            if self['limits'] is not None:
+                if 'color' in self['limits']:
+                    cmin = self['limits']['color'][0]
+                    cmax = self['limits']['color'][1]
+                    mappable.set_clim(cmin, cmax)
+
+            plt.colorbar(mappable, ax=ax, pad=0.1)
+
+
 
     def save_plot(self, saveas):
         """
