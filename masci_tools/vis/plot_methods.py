@@ -1706,17 +1706,27 @@ def plot_bands_and_dos():
     pass
 
 
-def plot_corelevels(coreleveldict, compound=''):
+def plot_corelevels(coreleveldict, compound='', axis=None, saveas='scatterplot', **kwargs):
     """
     Ploting function to visualize corelevels and corelevel shifts
     """
 
     for elem, corelevel_dict in coreleveldict.items():
         # one plot for each element
-        plot_one_element_corelv(corelevel_dict, elem, compound=compound)
+        axis = plot_one_element_corelv(corelevel_dict, elem, compound=compound, axis=axis, saveas=saveas, **kwargs)
+
+    return axis
 
 
-def plot_one_element_corelv(corelevel_dict, element, compound=''):
+def plot_one_element_corelv(corelevel_dict,
+                            element,
+                            compound='',
+                            axis=None,
+                            linewidth=2,
+                            color='k',
+                            font_options=None,
+                            saveas='scatterplot',
+                            **kwargs):
     """
     This routine creates a plot which visualizes all the binding energies of one
     element (and currenlty one corelevel) for different atomtypes.
@@ -1750,62 +1760,37 @@ def plot_one_element_corelv(corelevel_dict, element, compound=''):
     xmax = xdata[-1] + 0.5
     ymin = min(ydata) - 1
     ymax = max(ydata) + 1
-    #limits=[(xmin, xmax), (ymin, ymax)],
-    saveas = 'scatterplot'
-    #color = 'k'
-    scale = [None, None]
-    font = {
-        'family': 'serif',
-        'color': 'darkred',
-        'weight': 'normal',
-        'size': 16,
-    }
+    limits = {'x': (xmin, xmax), 'y': (ymin, ymax)}
 
-    fig = plt.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
-    ax = fig.add_subplot(111)
-    for axis in ['top', 'bottom', 'left', 'right']:
-        ax.spines[axis].set_linewidth(axis_linewidth_g)
-    ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
-    ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
-    ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
-    ax.yaxis.set_tick_params(size=tick_paramsy_g.get('size', 4.0),
-                             width=tick_paramsy_g.get('width', 1.0),
-                             labelsize=tick_paramsy_g.get('labelsize', 14),
-                             length=tick_paramsy_g.get('length', 5))
-    ax.xaxis.set_tick_params(size=tick_paramsx_g.get('size', 4.0),
-                             width=tick_paramsx_g.get('width', 1.0),
-                             labelsize=tick_paramsx_g.get('labelsize', 14),
-                             length=tick_paramsx_g.get('length', 5))
-    ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
-    ax.yaxis.get_major_formatter().set_useOffset(False)
+    if font_options is None:
+        font_options = {'color': 'darkred'}
 
-    for j, y in enumerate(ydata_all):
-        for i, x in enumerate(xdata):
+    kwargs = plot_params.set_parameters(continue_on_error=True,
+                                        return_unprocessed_kwargs=True,
+                                        linewidth=linewidth,
+                                        color=color,
+                                        font_options=font_options,
+                                        limits=limits**kwargs)
+    ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
+
+    for y in ydata_all:
+        for x, y in zip(xdata, y):
             lenx = xmax - xmin
             length = 0.5 / lenx
             offset = 0.5 / lenx
             xminline = x / lenx + offset - length / 2
             xmaxline = x / lenx + offset + length / 2
-            plt.axhline(y=y[i], xmin=xminline, xmax=xmaxline, linewidth=2, color='k')
-            text = r'{}'.format(y[i])
-            plt.text(x - 0.25, y[i] + 0.3, text, fontdict=font)
+            ax.axhline(y=y, xmin=xminline, xmax=xmaxline, linewidth=plot_params['linewidth'], color='k')
+            text = r'{}'.format(y)
+            ax.text(x - 0.25, y + 0.3, text, fontdict=plot_params['font_options'])
 
-    if scale:
-        if scale[0]:
-            ax.set_xscale(scale[0])
-        elif scale[1]:
-            ax.set_yscale(scale[1])
-        else:
-            pass
+    plot_params.set_scale(ax)
+    plot_params.set_limits(ax)
+    plot_params.draw_lines(ax)
+    plot_params.show_legend(ax)
+    plot_params.save_plot(saveas)
 
-    plt.xlim(xmin, xmax)
-    plt.ylim(ymin, ymax)
-    if save_plots_g:
-        savefilename = '{}.{}'.format(saveas, save_format_g)
-        print(('save plot to: {}'.format(savefilename)))
-        plt.savefig(savefilename, format=save_format_g, transparent=True)
-    else:
-        plt.show()
+    return ax
 
 
 def construct_corelevel_spectrum(coreleveldict,

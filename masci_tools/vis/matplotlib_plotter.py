@@ -86,6 +86,12 @@ class MatplotlibPlotter(Plotter):
             'color': 'k',
             'linewidth': 1.0
         },
+        'font_options': {
+            'family': 'serif',
+            'color': 'black',
+            'weight': 'normal',
+            'size': 16,
+        },
 
         # ticks
         'ticklabelsizex': 14,
