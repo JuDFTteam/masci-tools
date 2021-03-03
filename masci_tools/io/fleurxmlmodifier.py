@@ -77,7 +77,7 @@ class FleurXMLModifier:
         :param modification_tasks: a list of modification tuples
         :param validate_changes: bool optional (default True), if True after all tasks are performed
                                  both the xmltree and nmmp_lines are checked for consistency
-        :param extra_funcs: dict of callables in 'xpath', 'schema_dict', 'nmmpmat' subdicts for extra allowed
+        :param extra_funcs: dict of callables in 'basic', 'schema_dict', 'nmmpmat' subdicts for extra allowed
                             modification functions
 
         :returns: a modified lxml tree and a modified n_mmp_mat file
@@ -99,7 +99,7 @@ class FleurXMLModifier:
         nmmpmat_functions = copy.deepcopy(NMMPMAT_SETTERS)
 
         if extra_funcs is not None:
-            xpath_functions.update(extra_funcs.get('xpath'))
+            xpath_functions.update(extra_funcs.get('basic'))
             schema_dict_functions.update(extra_funcs.get('schema_dict'))
             nmmpmat_functions.update(extra_funcs.get('nmmpmat'))
 
