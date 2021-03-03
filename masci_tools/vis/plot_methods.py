@@ -266,11 +266,7 @@ def single_scatterplot(ydata,
                 limits_new['y'] = limits[1]
             kwargs['limits'] = limits_new
 
-    kwargs = plot_params.set_parameters(continue_on_error=True,
-                                        return_unprocessed_kwargs=True,
-                                        color=color,
-                                        plot_label=plot_label,
-                                        **kwargs)
+    kwargs = plot_params.set_parameters(continue_on_error=True, color=color, plot_label=plot_label, **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
     #ax.xaxis.set_major_formatter(DateFormatter("%b %y"))
@@ -381,7 +377,7 @@ def multiple_scatterplots(ydata,
             kwargs['xticklabels'] = xticks[0]
             kwargs['xticks'] = xticks[1]
 
-    kwargs = plot_params.set_parameters(continue_on_error=True, return_unprocessed_kwargs=True, **kwargs)
+    kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
     # TODO good checks for input and setting of internals before plotting
@@ -529,11 +525,7 @@ def multi_scatter_plot(
             elif value is None:
                 color[index] = 'k'
 
-    kwargs = plot_params.set_parameters(continue_on_error=True,
-                                        return_unprocessed_kwargs=True,
-                                        color=color,
-                                        area_plot=False,
-                                        **kwargs)
+    kwargs = plot_params.set_parameters(continue_on_error=True, color=color, area_plot=False, **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
     plot_kwargs = plot_params.plot_kwargs(ignore='markersize')
@@ -583,11 +575,7 @@ def colormesh_plot(xdata,
 
     plot_params.plot_type = 'colormesh'
 
-    kwargs = plot_params.set_parameters(continue_on_error=True,
-                                        return_unprocessed_kwargs=True,
-                                        area_plot=False,
-                                        edgecolor=edgecolor,
-                                        **kwargs)
+    kwargs = plot_params.set_parameters(continue_on_error=True, area_plot=False, edgecolor=edgecolor, **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
     plot_kwargs = plot_params.plot_kwargs()
@@ -803,11 +791,7 @@ def histogram(xdata,
                 limits_new['y'] = limits[1]
             kwargs['limits'] = limits_new
 
-    kwargs = plot_params.set_parameters(continue_on_error=True,
-                                        return_unprocessed_kwargs=True,
-                                        set_powerlimits=not log,
-                                        area_plot=False,
-                                        **kwargs)
+    kwargs = plot_params.set_parameters(continue_on_error=True, set_powerlimits=not log, area_plot=False, **kwargs)
 
     if orientation == 'horizontal':
         if xlabel == 'bins' and ylabel == 'counts':
@@ -934,10 +918,7 @@ def barchart(ydata,
             kwargs['xticklabels'] = xticks[0]
             kwargs['xticks'] = xticks[1]
 
-    kwargs = plot_params.set_parameters(continue_on_error=True,
-                                        return_unprocessed_kwargs=True,
-                                        linewidth=linewidth,
-                                        **kwargs)
+    kwargs = plot_params.set_parameters(continue_on_error=True, linewidth=linewidth, **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
     # TODO good checks for input and setting of internals before plotting
@@ -1107,10 +1088,7 @@ def plot_convex_hull2d(hull,
     plot_params.add_parameter('markersize_hull', default_from='markersize')
     plot_params.add_parameter('color_hull', default_from='color')
 
-    kwargs = plot_params.set_parameters(continue_on_error=True,
-                                        return_unprocessed_kwargs=True,
-                                        set_powerlimits=False,
-                                        **kwargs)
+    kwargs = plot_params.set_parameters(continue_on_error=True, set_powerlimits=False, **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
     points = hull.points
@@ -1445,7 +1423,6 @@ def plot_lattice_constant(total_energy,
 
     plot_params.set_parameters(**general_info)
     kwargs = plot_params.set_parameters(continue_on_error=True,
-                                        return_unprocessed_kwargs=True,
                                         marker_fit=marker_fit,
                                         plot_label=plot_label,
                                         plot_label_fit=plot_label_fit,
@@ -1766,7 +1743,6 @@ def plot_one_element_corelv(corelevel_dict,
         font_options = {'color': 'darkred'}
 
     kwargs = plot_params.set_parameters(continue_on_error=True,
-                                        return_unprocessed_kwargs=True,
                                         linewidth=linewidth,
                                         color=color,
                                         font_options=font_options,
@@ -1780,7 +1756,11 @@ def plot_one_element_corelv(corelevel_dict,
             offset = 0.5 / lenx
             xminline = x / lenx + offset - length / 2
             xmaxline = x / lenx + offset + length / 2
-            ax.axhline(y=y, xmin=xminline, xmax=xmaxline, linewidth=plot_params['linewidth'], color='k')
+            ax.axhline(y=y,
+                       xmin=xminline,
+                       xmax=xmaxline,
+                       linewidth=plot_params['linewidth'],
+                       color=plot_params['color'])
             text = r'{}'.format(y)
             ax.text(x - 0.25, y + 0.3, text, fontdict=plot_params['font_options'])
 

@@ -299,12 +299,11 @@ class Plotter(object):
         if return_unprocessed_kwargs:
             return kwargs_unprocessed
 
-    def set_parameters(self, continue_on_error=False, return_unprocessed_kwargs=False, **kwargs):
+    def set_parameters(self, continue_on_error=False, **kwargs):
         """
         Set the current parameters.
 
-        :param continue_on_error: bool, if True unknown key are simply skipped
-        :param return_unprocessed_kwargs: bool, if True the unknown keys are returned
+        :param continue_on_error: bool, if True unknown key are simply skipped and returned
 
         Special Kwargs:
             :param force: bool, if True checks are skipped in setting the key
@@ -328,8 +327,7 @@ class Plotter(object):
             extra_kwargs = kwargs_unprocessed.pop('extra_kwargs')
             kwargs_unprocessed.update(extra_kwargs)
 
-        if return_unprocessed_kwargs:
-            return kwargs_unprocessed
+        return kwargs_unprocessed
 
     def add_parameter(self, name, default_from=None):
         """
