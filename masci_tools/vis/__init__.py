@@ -240,28 +240,15 @@ class Plotter(object):
 
         return ret_value
 
-    def _set_default(self, key, value, default_type='global'):
+    def set_single_default(self, key, value, default_type='global'):
+
+        if key not in self._params:
+            raise KeyError(f'Unknown parameter: {key}')
 
         if default_type == 'global':
-            print(self._params.parents.parents)
-            if isinstance(self._params.parents.parents[key], dict):
-                dict_before = copy.deepcopy(self._params.parents.parents[key])
-                if not isinstance(value, dict):
-                    raise ValueError(f"Expected a dict for key {key} got '{value}'")
-                else:
-                    dict_before.update(value)
-                    self._params.parents.parents[key] = dict_before
-            else:
-                self._params.parents.parents[key] = value
+            self.__update_map(self._params.parents.parents,key, value)
         elif default_type == 'function':
-            if isinstance(self._params.parents[key], dict):
-                dict_before = copy.deepcopy(self._params.parents[key])
-                if not isinstance(value, dict):
-                    raise ValueError(f"Expected a dict for key {key} got '{value}'")
-                else:
-                    self._params.parents[key] = dict_before.update(value)
-            else:
-                self._params.parents[key] = value
+            self.__update_map(self._params.parents,key, value)
 
 
     def __setitem__(self, key, value):
@@ -276,17 +263,19 @@ class Plotter(object):
                                       default=self._params.parents[key],
                                       key=key)
 
+        self.__update_map(self._params, key, value)
 
-        if isinstance(self._params[key], dict):
-            dict_before = copy.deepcopy(self._params[key])
+    @staticmethod
+    def __update_map(map_to_change, key, value):
+        if isinstance(map_to_change[key], dict):
+            dict_before = copy.deepcopy(map_to_change[key])
             if not isinstance(value, dict):
                 raise ValueError(f"Expected a dict for key {key} got '{value}'")
             else:
                 dict_before.update(value)
-                self._params[key] = dict_before
+                map_to_change[key] = dict_before
         else:
-            self._params[key] = value
-
+            map_to_change[key] = value
 
     def set_defaults(self, continue_on_error=False, default_type='global', **kwargs):
         """
@@ -305,7 +294,7 @@ class Plotter(object):
         for key, value in kwargs.items():
 
             try:
-                self._set_default(key, value, default_type=default_type)
+                self.set_single_default(key, value, default_type=default_type)
                 kwargs_unprocessed.pop(key)
             except KeyError as err:
                 if not continue_on_error:
