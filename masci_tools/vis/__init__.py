@@ -299,11 +299,6 @@ class Plotter(object):
 
         Kwargs are used to set the defaults.
         """
-        assert self.single_plot, 'Changing the defaults will reset changes to single_plot property'
-        assert self.num_plots == 1, 'Changing the defaults will reset changes to num_plots property'
-
-        self.single_plot = True
-        self.num_plots = 1
 
         kwargs_unprocessed = copy.deepcopy(kwargs)
         defaults_before = copy.deepcopy(self._params.maps[2])
@@ -382,15 +377,8 @@ class Plotter(object):
         if the parameters or properties differ from the defaults and will raise an error if this
         is the case
         """
-        assert self.single_plot, 'Changing the defaults will reset changes to single_plot property'
-        assert self.num_plots == 1, 'Changing the defaults will reset changes to num_plots property'
-        assert self.plot_type == 'default', 'Changing the defaults will reset changes to plot_type property'
-
         self._params = ChainMap({},{},{}, self._PLOT_DEFAULTS)
 
-        self.single_plot = True
-        self.num_plots = 1
-        self.plot_type = 'default'
 
     def reset_parameters(self):
         """

@@ -212,8 +212,6 @@ def single_scatterplot(ydata,
                        xlabel,
                        ylabel,
                        title,
-                       plot_label='scatterplot',
-                       color='k',
                        saveas='scatterplot',
                        axis=None,
                        xerr=None,
@@ -242,7 +240,7 @@ def single_scatterplot(ydata,
     #DEPRECATION WARNINGS
     if 'plotlabel' in kwargs:
         warnings.warn('Please use plot_label instead of plotlabel', DeprecationWarning)
-        plot_label = kwargs.pop('plotlabel')
+        kwargs['plot_label'] = kwargs.pop('plotlabel')
 
     if 'scale' in kwargs:
         scale = kwargs.get('scale')
@@ -266,7 +264,8 @@ def single_scatterplot(ydata,
                 limits_new['y'] = limits[1]
             kwargs['limits'] = limits_new
 
-    kwargs = plot_params.set_parameters(continue_on_error=True, color=color, plot_label=plot_label, **kwargs)
+    plot_params.set_defaults(default_type='function', color='k', plot_label='scatterplot')
+    kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
     #ax.xaxis.set_major_formatter(DateFormatter("%b %y"))
@@ -439,8 +438,6 @@ def multi_scatter_plot(
         xlabel='',
         ylabel='',
         title='',
-        linestyle='',  #By default no line
-        color='k',  #By default black
         saveas='mscatterplot',
         axis=None,
         **kwargs):
@@ -517,15 +514,8 @@ def multi_scatter_plot(
             kwargs['xticklabels'] = xticks[0]
             kwargs['xticks'] = xticks[1]
 
-    #Override default color None in plotter
-    if isinstance(color, list):
-        for index, value in enumerate(color):
-            if isinstance(value, list):
-                color[index] = [c if c is not None else 'k' for c in color[index]]
-            elif value is None:
-                color[index] = 'k'
-
-    kwargs = plot_params.set_parameters(continue_on_error=True, color=color, area_plot=False, **kwargs)
+    plot_params.set_defaults(default_type='function', color='k', linestyle=None, area_plot=False)
+    kwargs = plot_params.set_parameters(continue_on_error=True,  **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
     plot_kwargs = plot_params.plot_kwargs(ignore='markersize')
@@ -556,7 +546,6 @@ def colormesh_plot(xdata,
                    ylabel,
                    title,
                    saveas='colormesh',
-                   edgecolor='face',
                    axis=None,
                    **kwargs):
     """
@@ -575,7 +564,9 @@ def colormesh_plot(xdata,
 
     plot_params.plot_type = 'colormesh'
 
-    kwargs = plot_params.set_parameters(continue_on_error=True, area_plot=False, edgecolor=edgecolor, **kwargs)
+
+    plot_params.set_defaults(default_type='function', edgecolor='face')
+    kwargs = plot_params.set_parameters(continue_on_error=True, area_plot=False, **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
     plot_kwargs = plot_params.plot_kwargs()
@@ -602,8 +593,6 @@ def waterfall_plot(xdata,
                    title,
                    saveas='waterfallplot',
                    axis=None,
-                   markersize=30,
-                   linewidth=0,
                    **kwargs):
     """
     Create a standard waterfall plot (this should be flexible enough) to do all the
@@ -653,11 +642,8 @@ def waterfall_plot(xdata,
     plot_params.single_plot = False
     plot_params.num_plots = len(ydata)
 
-    kwargs = plot_params.set_parameters(continue_on_error=True,
-                                        area_plot=False,
-                                        markersize=markersize,
-                                        linewidth=linewidth,
-                                        **kwargs)
+    plot_params.set_defaults(default_type='function', markersize=30, linewidth=0,area_plot=False)
+    kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, zlabel=zlabel, axis=axis, projection='3d')
 
     plot_kwargs = plot_params.plot_kwargs(ignore=['markersize'], extra_keys={'cmap'})
@@ -686,7 +672,6 @@ def surface_plot(xdata,
                  title,
                  saveas='surface_plot',
                  axis=None,
-                 linewidth=0,
                  **kwargs):
     """
     Create a standard waterfall plot (this should be flexible enough) to do all the
@@ -728,7 +713,8 @@ def surface_plot(xdata,
         clim = (kwargs.get('vmin', zmin), kwargs.get('vmax', zmax))
     kwargs['limits']['color'] = clim
 
-    kwargs = plot_params.set_parameters(continue_on_error=True, area_plot=False, linewidth=linewidth, **kwargs)
+    plot_params.set_defaults(default_type='function', linewidth=0, area_plot=False)
+    kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, zlabel=zlabel, axis=axis, projection='3d')
 
     plot_kwargs = plot_params.plot_kwargs(ignore=['markersize', 'marker'], extra_keys={'cmap'})
@@ -899,7 +885,6 @@ def barchart(ydata,
              axis=None,
              xerr=None,
              yerr=None,
-             linewidth=None,
              **kwargs):
     """
     Create a standard bar chart plot (this should be flexible enough) to do all the
@@ -963,7 +948,8 @@ def barchart(ydata,
             kwargs['xticklabels'] = xticks[0]
             kwargs['xticks'] = xticks[1]
 
-    kwargs = plot_params.set_parameters(continue_on_error=True, linewidth=linewidth, **kwargs)
+    plot_params.set_defaults(default_type='function', linewidth=None)
+    kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
     # TODO good checks for input and setting of internals before plotting
