@@ -14,9 +14,7 @@ def test_plotter_access():
    """
     p = Plotter(TEST_DICT)
 
-    assert p._PLOT_DEFAULTS == TEST_DICT
-    assert p._current_defaults == TEST_DICT
-    assert p._plot_parameters == TEST_DICT
+    assert dict(p._params) == TEST_DICT
 
     #Test basic getitem method
     for key, value in TEST_DICT.items():
@@ -31,23 +29,22 @@ def test_plotter_set_parameters():
 
     p['B'] = 0
 
-    assert p._plot_parameters['B'] == 0
+    assert p['B'] == 0
 
     with pytest.raises(KeyError):
         p['D'] = 'not a key'
 
     p['A'] = {'test3': 'extra'}
 
-    assert p._plot_parameters['A'] == {'test1': 12, 'test2': 4, 'test3': 'extra'}
+    assert p['A'] == {'test1': 12, 'test2': 4, 'test3': 'extra'}
 
     with pytest.raises(ValueError):
         p['A'] = 2.0
 
-    assert p._current_defaults == TEST_DICT
+    assert dict(p._params.parents) == TEST_DICT
     p.reset_parameters()
 
-    assert p._plot_parameters == TEST_DICT
-    assert p._current_defaults == TEST_DICT
+    assert dict(p._params) == TEST_DICT
 
 
 def test_plotter_set_parameters_function():
@@ -58,15 +55,14 @@ def test_plotter_set_parameters_function():
 
     p.set_parameters(continue_on_error=True, **{'B': 0, 'A': {'test3': 'extra'}, 'D': 'not a key'})
 
-    assert p._plot_parameters == {'A': {'test1': 12, 'test2': 4, 'test3': 'extra'}, 'B': 0, 'C': 'title'}
-    assert p._current_defaults == TEST_DICT
+    assert dict(p._params) == {'A': {'test1': 12, 'test2': 4, 'test3': 'extra'}, 'B': 0, 'C': 'title'}
 
     p.reset_parameters()
 
     with pytest.raises(KeyError):
         p.set_parameters(**{'B': 0, 'A': {'test3': 'extra'}, 'D': 'not a key'})
 
-    assert p._plot_parameters == TEST_DICT
+    assert dict(p._params) == TEST_DICT
 
 
 def test_plotter_set_defaults():
@@ -79,19 +75,18 @@ def test_plotter_set_defaults():
     p.set_defaults(continue_on_error=True, **{'B': 0, 'A': {'test3': 'extra'}, 'D': 'not a key'})
 
     expected_result = {'A': {'test1': 12, 'test2': 4, 'test3': 'extra'}, 'B': 0, 'C': 'title'}
-    assert p._current_defaults == expected_result
-    assert p._plot_parameters == expected_result
-    assert p._PLOT_DEFAULTS == TEST_DICT
+
+    assert dict(p._params) == expected_result
+    assert dict(p._params.parents) == expected_result
 
     p.reset_defaults()
-    assert p._current_defaults == TEST_DICT
-    assert p._plot_parameters == TEST_DICT
-    assert p._PLOT_DEFAULTS == TEST_DICT
+
+    assert dict(p._params) == TEST_DICT
 
     with pytest.raises(KeyError):
         p.set_defaults(**{'B': 0, 'A': {'test3': 'extra'}, 'D': 'not a key'})
 
-    assert p._current_defaults == TEST_DICT
+    assert dict(p._params) == TEST_DICT
 
 
 def test_plotter_init_defaults():
@@ -101,9 +96,9 @@ def test_plotter_init_defaults():
     p = Plotter(TEST_DICT, **{'B': 0, 'A': {'test3': 'extra'}, 'D': 'not a key'})
 
     expected_result = {'A': {'test1': 12, 'test2': 4, 'test3': 'extra'}, 'B': 0, 'C': 'title'}
-    assert p._current_defaults == expected_result
-    assert p._plot_parameters == expected_result
-    assert p._PLOT_DEFAULTS == TEST_DICT
+
+    assert dict(p._params) == expected_result
+    assert dict(p._params.parents) == expected_result
 
 
 def test_plotter_add_parameter():
@@ -124,8 +119,7 @@ def test_plotter_add_parameter():
     p.remove_added_parameters()
     p.reset_parameters()
 
-    assert p._plot_parameters == TEST_DICT
-    assert p._current_defaults == TEST_DICT
+    assert dict(p._params) == TEST_DICT
 
 
 def test_plotter_decorator_working():
@@ -141,8 +135,7 @@ def test_plotter_decorator_working():
 
     test_function()
 
-    assert p._plot_parameters == TEST_DICT
-    assert p._current_defaults == TEST_DICT
+    assert dict(p._params) == TEST_DICT
 
 
 def test_plotter_decorator_raised_error():
@@ -160,8 +153,7 @@ def test_plotter_decorator_raised_error():
     with pytest.raises(ValueError, match='Test'):
         test_function()
 
-    assert p._plot_parameters == TEST_DICT
-    assert p._current_defaults == TEST_DICT
+    assert dict(p._params) == TEST_DICT
 
 
 def test_plotter_decorator_set_defaults():
@@ -179,8 +171,7 @@ def test_plotter_decorator_set_defaults():
     with pytest.raises(ValueError):
         test_function()
 
-    assert p._plot_parameters == TEST_DICT
-    assert p._current_defaults == TEST_DICT
+    assert dict(p._params) == TEST_DICT
 
 
 def test_plotter_decorator_add_parameter():
@@ -197,8 +188,7 @@ def test_plotter_decorator_add_parameter():
 
     test_function()
 
-    assert p._plot_parameters == TEST_DICT
-    assert p._current_defaults == TEST_DICT
+    assert dict(p._params) == TEST_DICT
 
 
 def test_plotter_decorator_add_parameter_raised_error():
@@ -217,8 +207,7 @@ def test_plotter_decorator_add_parameter_raised_error():
     with pytest.raises(ValueError, match='Test'):
         test_function()
 
-    assert p._plot_parameters == TEST_DICT
-    assert p._current_defaults == TEST_DICT
+    assert dict(p._params) == TEST_DICT
 
 
 WORKING_VALUES = [[None, 3, None], 'Test', [1, 2, 3, 4, 5], {4: 'Test2'}, [5.0], {'NotAList': 'Test2'}]

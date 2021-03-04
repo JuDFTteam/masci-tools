@@ -17,9 +17,10 @@ and ensuring consitent values for these
 
 import copy
 from functools import wraps
+from collections import ChainMap
 
 
-def ensure_plotter_consistency(plotter_object):
+def ensure_plotter_consistency(plotter_object, function_defaults=None):
     """
     Decorator for plot functions to ensure that the
     Parameters are reset even if an error occurs in the function
@@ -46,27 +47,30 @@ def ensure_plotter_consistency(plotter_object):
             Also after execution the defaults and parameters are checked to make sure
             they are consistent
             """
-            defaults_before = copy.deepcopy(plotter_object._current_defaults)
+            if function_defaults is not None:
+                plotter_object.set_defaults(default_type='function', **function_defaults)
+
+            defaults_before = copy.deepcopy(plotter_object._params.maps[2])
 
             try:
                 res = func(*args, **kwargs)
             except Exception:
                 plotter_object.remove_added_parameters()
                 plotter_object.reset_parameters()
+                plotter_object._params.maps[1] = {}
                 raise  #We do not want to erase the exception only wedge in the call to reset_parameters
             else:
                 plotter_object.remove_added_parameters()
                 plotter_object.reset_parameters()
+                plotter_object._params.maps[1] = {}
 
-            if plotter_object._current_defaults != defaults_before:
+            if plotter_object._params.maps[2] != defaults_before:
                 #Reset the changes
-                plotter_object._current_defaults = defaults_before
+                plotter_object._params.maps[2] = defaults_before
                 plotter_object.remove_added_parameters()
                 plotter_object.reset_parameters()
+                plotter_object._params.maps[1] = {}
                 raise ValueError(f"Defaults have changed inside the plotting function '{func.__name__}'")
-
-            assert plotter_object._plot_parameters == plotter_object._current_defaults, \
-                  f"Parameters are not consistent with defaults after call to '{func.__name__}'"
 
             return res
 
@@ -140,8 +144,13 @@ class Plotter(object):
     def __init__(self, default_parameters, list_arguments=None, **kwargs):
 
         self._PLOT_DEFAULTS = copy.deepcopy(default_parameters)
-        self._current_defaults = copy.deepcopy(default_parameters)
-        self._plot_parameters = copy.deepcopy(default_parameters)
+
+        #ChainMap with three dictionaries on top
+        # 1. function parameters
+        # 2. function defaults
+        # 3. global defaults
+        # 4. Hardcoded defaults
+        self._params = ChainMap({}, {}, {}, self._PLOT_DEFAULTS)
 
         self._single_plot = True
         self._num_plots = 1
@@ -165,7 +174,7 @@ class Plotter(object):
             index = None
 
         try:
-            value = self._plot_parameters[key]
+            value = self._params[key]
             if isinstance(value, list):
                 if index is None:
                     return value
@@ -231,33 +240,55 @@ class Plotter(object):
 
         return ret_value
 
-    def _setkey(self, key, value, dict_to_change, force=False):
+    def _set_default(self, key, value, default_type='global'):
 
-        if key not in dict_to_change and not force:
-            raise KeyError(f'The key {key} is not a parameter key')
-        elif key not in dict_to_change:
-            dict_to_change[key] = None
-        value = self.convert_to_complete_list(value,
-                                              self.single_plot,
-                                              self.num_plots,
-                                              list_allowed=key in self._LIST_ARGS,
-                                              default=self._current_defaults[key],
-                                              key=key)
-
-        if isinstance(dict_to_change[key], dict):
-            if not isinstance(value, dict):
-                if not force:
+        if default_type == 'global':
+            print(self._params.parents.parents)
+            if isinstance(self._params.parents.parents[key], dict):
+                dict_before = copy.deepcopy(self._params.parents.parents[key])
+                if not isinstance(value, dict):
                     raise ValueError(f"Expected a dict for key {key} got '{value}'")
-                dict_to_change[key] = value
+                else:
+                    dict_before.update(value)
+                    self._params.parents.parents[key] = dict_before
             else:
-                dict_to_change[key].update(value)
-        else:
-            dict_to_change[key] = value
+                self._params.parents.parents[key] = value
+        elif default_type == 'function':
+            if isinstance(self._params.parents[key], dict):
+                dict_before = copy.deepcopy(self._params.parents[key])
+                if not isinstance(value, dict):
+                    raise ValueError(f"Expected a dict for key {key} got '{value}'")
+                else:
+                    self._params.parents[key] = dict_before.update(value)
+            else:
+                self._params.parents[key] = value
+
 
     def __setitem__(self, key, value):
-        self._setkey(key, value, self._plot_parameters)
 
-    def set_defaults(self, continue_on_error=False, return_unprocessed_kwargs=False, **kwargs):
+        if key not in self._params:
+            raise KeyError(f'Unknown parameter: {key}')
+
+        value = self.convert_to_complete_list(value,
+                                      self.single_plot,
+                                      self.num_plots,
+                                      list_allowed=key in self._LIST_ARGS,
+                                      default=self._params.parents[key],
+                                      key=key)
+
+
+        if isinstance(self._params[key], dict):
+            dict_before = copy.deepcopy(self._params[key])
+            if not isinstance(value, dict):
+                raise ValueError(f"Expected a dict for key {key} got '{value}'")
+            else:
+                dict_before.update(value)
+                self._params[key] = dict_before
+        else:
+            self._params[key] = value
+
+
+    def set_defaults(self, continue_on_error=False, default_type='global', **kwargs):
         """
         Set the current defaults. This method will only work if the parameters
         are not changed from the defaults. Otherwise a error is raised. This is because
@@ -265,39 +296,32 @@ class Plotter(object):
         consistency.
 
         :param continue_on_error: bool, if True unknown key are simply skipped
-        :param return_unprocessed_kwargs: bool, if True the unknown keys are returned
-
-        Special Kwargs:
-            :param force: bool, if True checks are skipped in setting the key
 
         Kwargs are used to set the defaults.
         """
-        assert self._plot_parameters == self._current_defaults, \
-               'Changing the defaults will reset changes to the current parameters'
         assert self.single_plot, 'Changing the defaults will reset changes to single_plot property'
         assert self.num_plots == 1, 'Changing the defaults will reset changes to num_plots property'
 
-        kwargs_unprocessed = copy.deepcopy(kwargs)
-        defaults_before = copy.deepcopy(self._current_defaults)
-        force = kwargs.pop('force', False)
-        for key, value in kwargs.items():
-            try:
-                self._setkey(key, value, self._current_defaults, force=force)
-                kwargs_unprocessed.pop(key)
-            except KeyError:
-                if not continue_on_error:
-                    self._current_defaults = defaults_before
-                    raise
+        self.single_plot = True
+        self.num_plots = 1
 
-        #Propagate changes to the parameters
-        self.reset_parameters()
+        kwargs_unprocessed = copy.deepcopy(kwargs)
+        defaults_before = copy.deepcopy(self._params.maps[2])
+        for key, value in kwargs.items():
+
+            try:
+                self._set_default(key, value, default_type=default_type)
+                kwargs_unprocessed.pop(key)
+            except KeyError as err:
+                if not continue_on_error:
+                    self._params.maps[2] = defaults_before
+                    raise KeyError(f'Unknown parameter: {key}') from err
 
         if 'extra_kwargs' in kwargs_unprocessed:
             extra_kwargs = kwargs_unprocessed.pop('extra_kwargs')
             kwargs_unprocessed.update(extra_kwargs)
 
-        if return_unprocessed_kwargs:
-            return kwargs_unprocessed
+        return kwargs_unprocessed
 
     def set_parameters(self, continue_on_error=False, **kwargs):
         """
@@ -305,22 +329,18 @@ class Plotter(object):
 
         :param continue_on_error: bool, if True unknown key are simply skipped and returned
 
-        Special Kwargs:
-            :param force: bool, if True checks are skipped in setting the key
-
         Kwargs are used to set the defaults.
         """
-        params_before = copy.deepcopy(self._plot_parameters)
-        force = kwargs.pop('force', False)
-
+        params_before = copy.deepcopy(self._params.maps[0])
         kwargs_unprocessed = copy.deepcopy(kwargs)
+
         for key, value in kwargs.items():
             try:
-                self._setkey(key, value, self._plot_parameters, force=force)
+                self[key] = value
                 kwargs_unprocessed.pop(key)
             except KeyError:
                 if not continue_on_error:
-                    self._plot_parameters = params_before
+                    self._params.maps[0] = params_before
                     raise
 
         if 'extra_kwargs' in kwargs_unprocessed:
@@ -340,14 +360,12 @@ class Plotter(object):
         """
         default_val = None
         if default_from is not None:
-            default_val = self._current_defaults[default_from]
+            default_val = self._params.parents[default_from]
             if isinstance(default_val, (dict, list)):
                 default_val = copy.deepcopy(default_val)
 
-        self._setkey(name, default_val, self._current_defaults, force=True)
         self._added_parameters.add(name)
-
-        self._setkey(name, default_val, self._plot_parameters, force=True)
+        self._params.maps[1][name] = default_val
 
     def remove_added_parameters(self):
         """
@@ -355,9 +373,8 @@ class Plotter(object):
         """
 
         for key in copy.deepcopy(self._added_parameters):
-            self._current_defaults.pop(key, None)
-            self._plot_parameters.pop(key, None)
-            self._added_parameters.remove(key)
+            self._params.maps[1].pop(key, None)
+            self._params.maps[0].pop(key, None)
 
     def reset_defaults(self):
         """
@@ -365,14 +382,15 @@ class Plotter(object):
         if the parameters or properties differ from the defaults and will raise an error if this
         is the case
         """
-        assert self._plot_parameters == self._current_defaults, \
-               'Changing the defaults will reset changes to the current parameters'
         assert self.single_plot, 'Changing the defaults will reset changes to single_plot property'
         assert self.num_plots == 1, 'Changing the defaults will reset changes to num_plots property'
         assert self.plot_type == 'default', 'Changing the defaults will reset changes to plot_type property'
 
-        self._current_defaults = copy.deepcopy(self._PLOT_DEFAULTS)
-        self._plot_parameters = copy.deepcopy(self._current_defaults)
+        self._params = ChainMap({},{},{}, self._PLOT_DEFAULTS)
+
+        self.single_plot = True
+        self.num_plots = 1
+        self.plot_type = 'default'
 
     def reset_parameters(self):
         """
@@ -380,7 +398,7 @@ class Plotter(object):
         are also set to default values
         """
 
-        self._plot_parameters = copy.deepcopy(self._current_defaults)
+        self._params.maps[0] = {}
         #Reset number of plots properties
         self.single_plot = True
         self.num_plots = 1
@@ -390,7 +408,7 @@ class Plotter(object):
         """
         Return the dictionary of the current defaults. For use of printing
         """
-        return self._plot_parameters
+        return dict(self._params)
 
     @property
     def single_plot(self):
