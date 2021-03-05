@@ -1502,100 +1502,101 @@ def plot_relaxation_results():
     """
     pass
 
-
-def plot_dos(path_to_dosfile,
-             only_total=False,
-             saveas=r'dos_plot',
+@ensure_plotter_consistency(plot_params)
+def plot_dos(dos_data,
+             energy_grid,
+             saveas='dos_plot',
+             xlabel=r'$E-E_F$ [eV]',
+             ylabel=r'DOS [1/eV]',
              title=r'Density of states',
-             linestyle='-',
-             marker=None,
-             legend=legend_g,
-             limits=[None, None]):
+             xyswitch=False,
+             e_fermi=0,
+             **kwargs):
     """
-    Plot the total density of states from a FLEUR DOS.1 file
+    Plot the provided data for a density of states (not spin-polarized)
 
-    params:
     """
-    doses = []
-    energies = []
-    #dosmt_total = np.zeros(nData, "d")
-    #totaldos = np.zeros(nData, "d")
 
-    #read data from file
-    datafile = path_to_dosfile  #'DOS.1'
-    data = np.loadtxt(datafile, skiprows=0)
+    lines = {'horizontal': 0}
+    lines['vertical'] = e_fermi
 
-    energy = data[..., 0]
-    totaldos = data[:, 1]
-    interstitialdos = data[:, 2]
-    dosmt_total = totaldos - interstitialdos
+    if xyswitch:
+        lines['vertical'], lines['horizontal'] = lines['horizontal'], lines['vertical']
 
-    doses = [totaldos, interstitialdos, dosmt_total]
-    energies = [energy, energy, energy]
-    #xlabel = r'E - E$_F$ [eV]'
-    xlabel = r'Energy [eV]'
-    ylabel = r'DOS [eV$^{-1}$]'
+    plot_params.set_defaults(default_type='function', marker=None, lines=lines)
 
-    if only_total:
-        single_scatterplot(totaldos,
-                           energy,
-                           xlabel,
-                           ylabel,
-                           title,
-                           plotlabel='total dos',
-                           linestyle=linestyle,
-                           marker=marker,
-                           limits=limits,
-                           saveas=saveas)
+    if isinstance(dos_data[0], (list, np.ndarray)) and \
+       not isinstance(energy_grid[0], (list, np.ndarray)):
+        energy_grid = [energy_grid] * len(dos_data)
+
+    if xyswitch:
+        x, y = dos_data, energy_grid
+        xlabel, ylabel = ylabel, xlabel
     else:
-        multiple_scatterplots(doses,
-                              energies,
-                              xlabel,
-                              ylabel,
-                              title,
-                              plot_labels=['Total', 'Interstitial', 'Muffin-Tin'],
-                              linestyle=linestyle,
-                              marker=marker,
-                              legend=legend,
-                              limits=limits,
-                              saveas=saveas)
+        x, y = energy_grid, dos_data
+
+    ax = multiple_scatterplots(y, x, xlabel, ylabel, title, saveas=saveas, **kwargs)
+
+    return ax
 
 
-def plot_dos_total_atom_resolved():
+@ensure_plotter_consistency(plot_params)
+def plot_spinpol_dos(spin_up_data,
+                     spin_dn_data,
+                     energy_grid,
+                     saveas='spinpol_dos_plot',
+                     xlabel=r'$E-E_F$ [eV]',
+                     ylabel=r'DOS [1/eV]',
+                     title=r'Density of states',
+                     xyswitch=False,
+                     energy_grid_dn=None,
+                     e_fermi=0,
+                     spin_dn_negative=True,
+                     **kwargs):
     """
-    Plot the density of states from a FLEUR DOS.1 file
+    Plot the provided data for a density of states (spin-polarized)
 
-    params:
     """
-    pass
+    if isinstance(spin_up_data[0], (list, np.ndarray)):
+        if len(spin_up_data) != len(spin_dn_data):
+            raise ValueError(f'Dimensions do not match: Spin-up: {len(spin_up_data)} Spin-dn: {len(spin_dn_data)}')
 
+    if spin_dn_negative:
+        if isinstance(spin_dn_data, np.ndarray):
+            spin_dn_data *= -1
+        elif isinstance(spin_up_data[0], list):
+            spin_dn_data = [-value for data in spin_dn_data for value in data]
+        else:
+            spin_dn_data = [-value for value in spin_dn_data]
 
-def plot_dos_total_l_resolved():
-    """
-    Plot the density of states from a FLEUR DOS.1 file
+    dos_data = spin_up_data
+    if not isinstance(spin_up_data[0], (list, np.ndarray)):
+        dos_data = [dos_data, spin_dn_data]
+    else:
+        dos_data = np.concatenate((dos_data, spin_dn_data), axis=0)
 
-    params:
-    """
-    pass
+    lines = {'horizontal': 0}
+    lines['vertical'] = e_fermi
 
+    if xyswitch:
+        lines['vertical'], lines['horizontal'] = lines['horizontal'], lines['vertical']
 
-def plot_dos_atom_resolved():
-    """
-    Plot the density of states from a FLEUR DOS.1 file
+    plot_params.set_defaults(default_type='function', marker=None, lines=lines)
 
-    params:
-    """
-    pass
+    if isinstance(dos_data[0], (list, np.ndarray)) and \
+       not isinstance(energy_grid[0], (list, np.ndarray)):
+        energy_grid = [energy_grid] * len(dos_data)
 
+    if xyswitch:
+        x, y = dos_data, energy_grid
+        xlabel, ylabel = ylabel, xlabel
+    else:
+        x, y = energy_grid, dos_data
 
-def plot_spin_dos():
-    """
-    Plot a spin density of states from FLEUR DOS.1, DOS.2 files together in one
-    plot.
+    ax = multiple_scatterplots(y, x, xlabel, ylabel, title, saveas=saveas, **kwargs)
 
-    params:
-    """
-    pass
+    return ax
+
 
 
 def plot_bands(path_to_bands_file,
