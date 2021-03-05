@@ -55,7 +55,7 @@ def fleur_plot_dos(path_to_dosfile,
                 dos_data[f'MT:{atom}'] = sum(value for key, value in dos_data.items() if f'jDOS:{atom}' in key)
         elif hdf_group == 'Orbcomp':
             for atom in range(1, natoms + 1):
-                dos_data[f'MT:{atom}'] = sum(value for key, value in dos_data.items() if f'Orbcomp:{atom}' in key)
+                dos_data[f'MT:{atom}'] = sum(value for key, value in dos_data.items() if f'ORB:{atom}' in key)
 
 
         if not spinpol:
@@ -70,11 +70,14 @@ def fleur_plot_dos(path_to_dosfile,
 
     if hdf_group == 'Local':
         interstitial = kwargs.pop('interstitial',True)
-        atoms = kwargs.pop('interstitial','all')
+        atoms = kwargs.pop('atoms','all')
         l_resolved = kwargs.pop('l_resolved',None)
         dos_data_up, dos_data_dn, keys_to_plot = select_from_Local(dos_data_up, dos_data_dn, natoms, interstitial, atoms, l_resolved)
     else:
-        keys_to_plot = list(dos_data_up.keys())
+        keys_to_plot= list(dos_data_up.keys())
+        dos_data_up = list(dos_data_up.values())
+        if dos_data_dn is not None:
+            dos_data_dn = list(dos_data_dn.values())
 
 
     if spinpol:
