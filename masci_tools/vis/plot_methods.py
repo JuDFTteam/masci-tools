@@ -1524,7 +1524,7 @@ def plot_dos(dos_data,
     if xyswitch:
         lines['vertical'], lines['horizontal'] = lines['horizontal'], lines['vertical']
 
-    plot_params.set_defaults(default_type='function', marker=None, lines=lines)
+    plot_params.set_defaults(default_type='function', marker=None, legend=True, lines=lines)
 
     if isinstance(dos_data[0], (list, np.ndarray)) and \
        not isinstance(energy_grid[0], (list, np.ndarray)):
@@ -1582,7 +1582,7 @@ def plot_spinpol_dos(spin_up_data,
     if xyswitch:
         lines['vertical'], lines['horizontal'] = lines['horizontal'], lines['vertical']
 
-    plot_params.set_defaults(default_type='function', marker=None, lines=lines)
+    plot_params.set_defaults(default_type='function', marker=None, legend=True, lines=lines)
 
     if isinstance(dos_data[0], (list, np.ndarray)) and \
        not isinstance(energy_grid[0], (list, np.ndarray)):
