@@ -1502,6 +1502,7 @@ def plot_relaxation_results():
     """
     pass
 
+
 @ensure_plotter_consistency(plot_params)
 def plot_dos(dos_data,
              energy_grid,
@@ -1596,7 +1597,6 @@ def plot_spinpol_dos(spin_up_data,
     ax = multiple_scatterplots(y, x, xlabel, ylabel, title, saveas=saveas, **kwargs)
 
     return ax
-
 
 
 def plot_bands(path_to_bands_file,
