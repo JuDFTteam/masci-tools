@@ -23,6 +23,7 @@ def fleur_plot_dos(path_to_dosfile,
                    atoms='all',
                    atoms_lresolved=None,
                    atoms_area=False,
+                   spinpol=True,
                    **kwargs):
     """
     Plot the density of states either from a `banddos.hdf` or text output
@@ -39,6 +40,7 @@ def fleur_plot_dos(path_to_dosfile,
         data, attrs = read_hdf(path_to_dosfile)
 
         natoms = attrs['atoms']['nTypes']
+        spinpol = attrs['general']['spins']==2 and spinpol
 
         dos_data = data[hdf_group].get('DOS')
 
@@ -50,13 +52,11 @@ def fleur_plot_dos(path_to_dosfile,
 
         #Compute atom sums
         for atom in range(1, natoms + 1):
-            dos_data[f'MT:{atom}'] = sum(dos_data[f'MT:{atom}{orbital}'] for orbital in 'spdf')
+            dos_data[f'MT:{atom}'] = sum(value for key, value in dos_data.items() if f'MT:{atom}' in key)
 
-        if dos_data[list(dos_data.keys())[0]].shape[0] == 1:
-            spin_pol = False
+        if not spinpol:
             dos_data_up = {key: data[0, ...] / HTR_TO_EV for key, data in dos_data.items()}
         else:
-            spin_pol = True
             dos_data_up = {key: data[0, ...] / HTR_TO_EV for key, data in dos_data.items()}
             dos_data_dn = {key: data[1, ...] / HTR_TO_EV for key, data in dos_data.items()}
 
@@ -92,7 +92,7 @@ def fleur_plot_dos(path_to_dosfile,
     if dos_data_dn is not None:
         dos_data_dn = [dos_data_dn[key] for key in keys_to_plot]
 
-    if spin_pol:
+    if spinpol:
         plot_spinpol_dos(dos_data_up, dos_data_dn, energy_grid, plot_label=keys_to_plot, **kwargs)
     else:
         plot_dos(dos_data_up, energy_grid, plot_label=keys_to_plot, **kwargs)
