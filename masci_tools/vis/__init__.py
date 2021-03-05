@@ -246,10 +246,9 @@ class Plotter(object):
             raise KeyError(f'Unknown parameter: {key}')
 
         if default_type == 'global':
-            self.__update_map(self._params.parents.parents,key, value)
+            self.__update_map(self._params.parents.parents, key, value)
         elif default_type == 'function':
-            self.__update_map(self._params.parents,key, value)
-
+            self.__update_map(self._params.parents, key, value)
 
     def __setitem__(self, key, value):
 
@@ -257,11 +256,11 @@ class Plotter(object):
             raise KeyError(f'Unknown parameter: {key}')
 
         value = self.convert_to_complete_list(value,
-                                      self.single_plot,
-                                      self.num_plots,
-                                      list_allowed=key in self._LIST_ARGS,
-                                      default=self._params.parents[key],
-                                      key=key)
+                                              self.single_plot,
+                                              self.num_plots,
+                                              list_allowed=key in self._LIST_ARGS,
+                                              default=self._params.parents[key],
+                                              key=key)
 
         self.__update_map(self._params, key, value)
 
@@ -366,8 +365,7 @@ class Plotter(object):
         if the parameters or properties differ from the defaults and will raise an error if this
         is the case
         """
-        self._params = ChainMap({},{},{}, self._PLOT_DEFAULTS)
-
+        self._params = ChainMap({}, {}, {}, self._PLOT_DEFAULTS)
 
     def reset_parameters(self):
         """

@@ -431,16 +431,7 @@ def multiple_scatterplots(ydata,
 
 
 @ensure_plotter_consistency(plot_params)
-def multi_scatter_plot(
-        xdata,
-        ydata,
-        sdata,
-        xlabel='',
-        ylabel='',
-        title='',
-        saveas='mscatterplot',
-        axis=None,
-        **kwargs):
+def multi_scatter_plot(xdata, ydata, sdata, xlabel='', ylabel='', title='', saveas='mscatterplot', axis=None, **kwargs):
     """
     Create a scatter plot with varying marker size
     Info: x, y and s data must have the same dimensions.
@@ -515,7 +506,7 @@ def multi_scatter_plot(
             kwargs['xticks'] = xticks[1]
 
     plot_params.set_defaults(default_type='function', color='k', linestyle=None, area_plot=False)
-    kwargs = plot_params.set_parameters(continue_on_error=True,  **kwargs)
+    kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
     plot_kwargs = plot_params.plot_kwargs(ignore='markersize')
@@ -539,15 +530,7 @@ def multi_scatter_plot(
 
 
 @ensure_plotter_consistency(plot_params)
-def colormesh_plot(xdata,
-                   ydata,
-                   cdata,
-                   xlabel,
-                   ylabel,
-                   title,
-                   saveas='colormesh',
-                   axis=None,
-                   **kwargs):
+def colormesh_plot(xdata, ydata, cdata, xlabel, ylabel, title, saveas='colormesh', axis=None, **kwargs):
     """
     Create plot with pcolormesh
 
@@ -563,7 +546,6 @@ def colormesh_plot(xdata,
     kwargs['limits'] = limits
 
     plot_params.plot_type = 'colormesh'
-
 
     plot_params.set_defaults(default_type='function', edgecolor='face')
     kwargs = plot_params.set_parameters(continue_on_error=True, area_plot=False, **kwargs)
@@ -584,16 +566,7 @@ def colormesh_plot(xdata,
 
 
 @ensure_plotter_consistency(plot_params)
-def waterfall_plot(xdata,
-                   ydata,
-                   zdata,
-                   xlabel,
-                   ylabel,
-                   zlabel,
-                   title,
-                   saveas='waterfallplot',
-                   axis=None,
-                   **kwargs):
+def waterfall_plot(xdata, ydata, zdata, xlabel, ylabel, zlabel, title, saveas='waterfallplot', axis=None, **kwargs):
     """
     Create a standard waterfall plot (this should be flexible enough) to do all the
     basic plots.
@@ -642,7 +615,7 @@ def waterfall_plot(xdata,
     plot_params.single_plot = False
     plot_params.num_plots = len(ydata)
 
-    plot_params.set_defaults(default_type='function', markersize=30, linewidth=0,area_plot=False)
+    plot_params.set_defaults(default_type='function', markersize=30, linewidth=0, area_plot=False)
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, zlabel=zlabel, axis=axis, projection='3d')
 
@@ -663,16 +636,7 @@ def waterfall_plot(xdata,
 
 
 @ensure_plotter_consistency(plot_params)
-def surface_plot(xdata,
-                 ydata,
-                 zdata,
-                 xlabel,
-                 ylabel,
-                 zlabel,
-                 title,
-                 saveas='surface_plot',
-                 axis=None,
-                 **kwargs):
+def surface_plot(xdata, ydata, zdata, xlabel, ylabel, zlabel, title, saveas='surface_plot', axis=None, **kwargs):
     """
     Create a standard waterfall plot (this should be flexible enough) to do all the
     basic plots.
@@ -1724,6 +1688,7 @@ def plot_corelevels(coreleveldict, compound='', axis=None, saveas='scatterplot',
         axis = plot_one_element_corelv(corelevel_dict, elem, compound=compound, axis=axis, saveas=saveas, **kwargs)
 
     return axis
+
 
 @ensure_plotter_consistency(plot_params)
 def plot_one_element_corelv(corelevel_dict,
