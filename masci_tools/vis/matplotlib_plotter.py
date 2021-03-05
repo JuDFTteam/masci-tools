@@ -33,7 +33,7 @@ class MatplotlibPlotter(Plotter):
 
     .. literalinclude:: ../../../masci_tools/vis/matplotlib_plotter.py
        :language: python
-       :lines: 39-124
+       :lines: 40-148
        :linenos:
 
     """
@@ -125,6 +125,7 @@ class MatplotlibPlotter(Plotter):
             'length': 2.5
         },
         'colorbar': True,
+        'colorbar_padding': 0.1,
         # legend properties
         'legend': False,
         'legend_options': {
@@ -202,7 +203,7 @@ class MatplotlibPlotter(Plotter):
             custom_val = plot_kwargs.pop(replace_key)
             plot_kwargs[key] = custom_val
 
-        any_list = any([isinstance(val, list) for val in plot_kwargs.values()])
+        any_list = any(isinstance(val, list) for val in plot_kwargs.values())
 
         if any_list:
             for key, val in plot_kwargs.items():
@@ -212,12 +213,10 @@ class MatplotlibPlotter(Plotter):
             plot_kwargs = {key: [value] for key, value in plot_kwargs.items()}
 
         if 'plot_label' in plot_kwargs:
-            plot_kwargs['label'] = plot_kwargs['plot_label']
-            plot_kwargs.pop('plot_label')
+            plot_kwargs['label'] = plot_kwargs.pop('plot_label')
 
         if 'plot_alpha' in plot_kwargs:
-            plot_kwargs['alpha'] = plot_kwargs['plot_alpha']
-            plot_kwargs.pop('plot_alpha')
+            plot_kwargs['alpha'] = plot_kwargs.pop('plot_alpha')
 
         if not self.single_plot:
             plot_kwargs = [{key: value[index]
@@ -405,7 +404,7 @@ class MatplotlibPlotter(Plotter):
                     cmax = self['limits']['color'][1]
                     mappable.set_clim(cmin, cmax)
 
-            plt.colorbar(mappable, ax=ax, pad=0.1)
+            plt.colorbar(mappable, ax=ax, pad=self['colorbar_padding'])
 
     def save_plot(self, saveas):
         """
