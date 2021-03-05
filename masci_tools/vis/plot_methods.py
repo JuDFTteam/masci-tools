@@ -1051,11 +1051,10 @@ def multiaxis_scatterplot(xdata,
         subplot_kwargs.update(params)
 
         ax = plt.subplot2grid(plot_shape, location, **subplot_kwargs.pop('axes_kwargs', {}))
-        ax = multiple_scatterplots(y, x, axis=ax, **subplot_kwargs, save_plots=False, show=False)
+        ax = multiple_scatterplots(y, x, axis=ax, **subplot_kwargs, save_plots=False, show=False, restore_on_success=True)
 
         axis.append(ax)
 
-    plot_params.set_parameters(**general_info)
     plot_params.save_plot(saveas)
 
     return axis
@@ -1194,6 +1193,7 @@ def plot_residuen(xdata,
                              save_plots=False,
                              xerr=errors.get('x', None),
                              yerr=errors.get('y', None),
+                             restore_on_success=True,
                              **kwargs)
 
     if hist:
@@ -1205,9 +1205,9 @@ def plot_residuen(xdata,
                         density=True,
                         show=False,
                         save_plots=False,
+                        restore_on_success=True,
                         **hist_kwargs)
 
-    plot_params.set_parameters(**general_info)
     plot_params.save_plot(saveas)
 
     if return_residuen_data:
@@ -1453,6 +1453,7 @@ def plot_lattice_constant(total_energy,
                                    axis=ax,
                                    show=False,
                                    save_plots=False,
+                                   restore_on_success=True,
                                    **plot_kw,
                                    **kwargs)
         if fit_y:
@@ -1464,6 +1465,7 @@ def plot_lattice_constant(total_energy,
                                        axis=ax,
                                        show=False,
                                        save_plots=False,
+                                       restore_on_success=True,
                                        **plot_fit_kw,
                                        **kwargs)
 
@@ -1476,6 +1478,7 @@ def plot_lattice_constant(total_energy,
                                 axis=ax,
                                 show=False,
                                 save_plots=False,
+                                restore_on_success=True,
                                 **plot_kw,
                                 **kwargs)
         if fit_y:
@@ -1487,10 +1490,9 @@ def plot_lattice_constant(total_energy,
                                     axis=ax,
                                     show=False,
                                     save_plots=False,
+                                    restore_on_success=True,
                                     **plot_fit_kw,
                                     **kwargs)
-
-    plot_params.set_parameters(**general_info)
 
     plot_params.draw_lines(ax)
     plot_params.save_plot(saveas)

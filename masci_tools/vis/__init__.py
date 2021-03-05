@@ -39,7 +39,7 @@ def ensure_plotter_consistency(plotter_object, function_defaults=None):
         """
 
         @wraps(func)
-        def ensure_consistency(*args, **kwargs):
+        def ensure_consistency(*args, restore_on_success=False, **kwargs):
             """
             If an error is encountered in the decorated function the parameters
             of the plotter object are reset to avoid unintended sideeffects
@@ -50,7 +50,11 @@ def ensure_plotter_consistency(plotter_object, function_defaults=None):
             if function_defaults is not None:
                 plotter_object.set_defaults(default_type='function', **function_defaults)
 
-            defaults_before = copy.deepcopy(plotter_object._params.maps[2])
+            global_defaults_before = copy.deepcopy(plotter_object._params.maps[2])
+
+            function_defaults_before = copy.deepcopy(plotter_object._params.maps[1])
+            parameters_before = copy.deepcopy(plotter_object._params.maps[1])
+
 
             try:
                 res = func(*args, **kwargs)
@@ -60,13 +64,17 @@ def ensure_plotter_consistency(plotter_object, function_defaults=None):
                 plotter_object._params.maps[1] = {}
                 raise  #We do not want to erase the exception only wedge in the call to reset_parameters
             else:
-                plotter_object.remove_added_parameters()
-                plotter_object.reset_parameters()
-                plotter_object._params.maps[1] = {}
+                if not restore_on_success:
+                    plotter_object.remove_added_parameters()
+                    plotter_object.reset_parameters()
+                    plotter_object._params.maps[1] = {}
+                else:
+                    plotter_object._params.maps[1] = function_defaults_before
+                    plotter_object._params.maps[0] = parameters_before
 
-            if plotter_object._params.maps[2] != defaults_before:
+            if plotter_object._params.maps[2] != global_defaults_before:
                 #Reset the changes
-                plotter_object._params.maps[2] = defaults_before
+                plotter_object._params.maps[2] = global_defaults_before
                 plotter_object.remove_added_parameters()
                 plotter_object.reset_parameters()
                 plotter_object._params.maps[1] = {}
