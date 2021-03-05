@@ -129,11 +129,9 @@ class MatplotlibPlotter(Plotter):
         # legend properties
         'legend': False,
         'legend_options': {
-            'bbox_to_anchor': (0.65, 0.97),
             'fontsize': 16,
             'linewidth': 3.0,
-            'borderaxespad': 0,
-            'loc': 2,
+            'loc': 'best',
             'fancybox': True
         },
 
