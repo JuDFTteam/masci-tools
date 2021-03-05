@@ -53,8 +53,7 @@ def ensure_plotter_consistency(plotter_object, function_defaults=None):
             global_defaults_before = copy.deepcopy(plotter_object._params.maps[2])
 
             function_defaults_before = copy.deepcopy(plotter_object._params.maps[1])
-            parameters_before = copy.deepcopy(plotter_object._params.maps[1])
-
+            parameters_before = copy.deepcopy(plotter_object._params.maps[0])
 
             try:
                 res = func(*args, **kwargs)
