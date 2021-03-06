@@ -289,10 +289,16 @@ def single_scatterplot(ydata,
         if plot_params['area_enclosing_line']:
             if linecolor is None:
                 linecolor = result.get_facecolor()[0]
-            ax.errorbar(xdata, ydata, yerr=yerr, xerr=xerr, alpha=plot_params['plot_alpha'], color=linecolor,**plot_kwargs, **kwargs)
+            ax.errorbar(xdata,
+                        ydata,
+                        yerr=yerr,
+                        xerr=xerr,
+                        alpha=plot_params['plot_alpha'],
+                        color=linecolor,
+                        **plot_kwargs,
+                        **kwargs)
     else:
         ax.errorbar(xdata, ydata, yerr=yerr, xerr=xerr, **plot_kwargs, **kwargs)
-
 
     plot_params.set_scale(ax)
     plot_params.set_limits(ax)
@@ -434,7 +440,14 @@ def multiple_scatterplots(ydata,
             if plot_params[('area_enclosing_line', indx)]:
                 if linecolor is None:
                     linecolor = result.get_facecolor()[0]
-                ax.errorbar(x, y, yerr=yerrt, xerr=xerrt, alpha=plot_params[('plot_alpha', indx)], color=linecolor,**plot_kw, **kwargs)
+                ax.errorbar(x,
+                            y,
+                            yerr=yerrt,
+                            xerr=xerrt,
+                            alpha=plot_params[('plot_alpha', indx)],
+                            color=linecolor,
+                            **plot_kw,
+                            **kwargs)
         else:
             ax.errorbar(x, y, yerr=yerrt, xerr=xerrt, **plot_kw, **kwargs)
 
@@ -1061,7 +1074,13 @@ def multiaxis_scatterplot(xdata,
         subplot_kwargs.update(params)
 
         ax = plt.subplot2grid(plot_shape, location, **subplot_kwargs.pop('axes_kwargs', {}))
-        ax = multiple_scatterplots(y, x, axis=ax, **subplot_kwargs, save_plots=False, show=False, restore_on_success=True)
+        ax = multiple_scatterplots(y,
+                                   x,
+                                   axis=ax,
+                                   **subplot_kwargs,
+                                   save_plots=False,
+                                   show=False,
+                                   restore_on_success=True)
 
         axis.append(ax)
 

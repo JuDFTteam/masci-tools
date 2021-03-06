@@ -233,12 +233,11 @@ class Plotter(object):
         elif not single_plot:
             dict_of_lists = {key: [value] for key, value in dict_of_lists.items()}
 
-
-        list_of_dicts = dict_of_lists #For single plot these are equivalent
+        list_of_dicts = dict_of_lists  #For single plot these are equivalent
         if not single_plot:
             list_of_dicts = [{key: value[index]
-                                for key, value in dict_of_lists.items()}
-                                for index in range(max(map(len, dict_of_lists.values())))]
+                              for key, value in dict_of_lists.items()}
+                             for index in range(max(map(len, dict_of_lists.values())))]
             if len(list_of_dicts) != num_plots:
                 if len(list_of_dicts) == 1:
                     list_of_dicts = [copy.deepcopy(list_of_dicts[0]) for i in range(num_plots)]

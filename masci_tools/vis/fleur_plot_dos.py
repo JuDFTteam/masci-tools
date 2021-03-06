@@ -16,11 +16,7 @@ Plotting routines for fleur density of states with and without hdf
 import warnings
 
 
-def fleur_plot_dos(path_to_dosfile,
-                   path_to_dosfile_dn=None,
-                   hdf_group='Local',
-                   spinpol=True,
-                   **kwargs):
+def fleur_plot_dos(path_to_dosfile, path_to_dosfile_dn=None, hdf_group='Local', spinpol=True, **kwargs):
     """
     Plot the density of states either from a `banddos.hdf` or text output
     """
@@ -36,7 +32,7 @@ def fleur_plot_dos(path_to_dosfile,
         data, attrs = read_hdf(path_to_dosfile)
 
         natoms = attrs['atoms']['nTypes']
-        spinpol = attrs['general']['spins']==2 and spinpol
+        spinpol = attrs['general']['spins'] == 2 and spinpol
 
         dos_data = data[hdf_group].get('DOS')
 
@@ -57,7 +53,6 @@ def fleur_plot_dos(path_to_dosfile,
             for atom in range(1, natoms + 1):
                 dos_data[f'MT:{atom}'] = sum(value for key, value in dos_data.items() if f'ORB:{atom}' in key)
 
-
         if not spinpol:
             dos_data_up = {key: data[0, ...] / HTR_TO_EV for key, data in dos_data.items()}
         else:
@@ -69,16 +64,16 @@ def fleur_plot_dos(path_to_dosfile,
         raise NotImplementedError
 
     if hdf_group == 'Local':
-        interstitial = kwargs.pop('interstitial',True)
-        atoms = kwargs.pop('atoms','all')
-        l_resolved = kwargs.pop('l_resolved',None)
-        dos_data_up, dos_data_dn, keys_to_plot = select_from_Local(dos_data_up, dos_data_dn, natoms, interstitial, atoms, l_resolved)
+        interstitial = kwargs.pop('interstitial', True)
+        atoms = kwargs.pop('atoms', 'all')
+        l_resolved = kwargs.pop('l_resolved', None)
+        dos_data_up, dos_data_dn, keys_to_plot = select_from_Local(dos_data_up, dos_data_dn, natoms, interstitial,
+                                                                   atoms, l_resolved)
     else:
-        keys_to_plot= list(dos_data_up.keys())
+        keys_to_plot = list(dos_data_up.keys())
         dos_data_up = list(dos_data_up.values())
         if dos_data_dn is not None:
             dos_data_dn = list(dos_data_dn.values())
-
 
     if spinpol:
         plot_spinpol_dos(dos_data_up, dos_data_dn, energy_grid, plot_label=keys_to_plot, **kwargs)
