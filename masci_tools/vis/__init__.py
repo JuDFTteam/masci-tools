@@ -218,6 +218,36 @@ class Plotter(object):
         return ret_dict
 
     @staticmethod
+    def dict_of_lists_to_list_of_dicts(dict_of_lists, single_plot, num_plots):
+        """
+        Converts dict of lists and single values to list of length num_plots
+        or single dict for single_plot=True
+        """
+        any_list = any(isinstance(val, list) for val in dict_of_lists.values())
+
+        #Make sure that every entry is actually a list
+        if any_list:
+            for key, val in dict_of_lists.items():
+                if not isinstance(val, list):
+                    dict_of_lists[key] = [val] * num_plots
+        elif not single_plot:
+            dict_of_lists = {key: [value] for key, value in dict_of_lists.items()}
+
+
+        list_of_dicts = dict_of_lists #For single plot these are equivalent
+        if not single_plot:
+            list_of_dicts = [{key: value[index]
+                                for key, value in dict_of_lists.items()}
+                                for index in range(max(map(len, dict_of_lists.values())))]
+            if len(list_of_dicts) != num_plots:
+                if len(list_of_dicts) == 1:
+                    list_of_dicts = [copy.deepcopy(list_of_dicts[0]) for i in range(num_plots)]
+                else:
+                    raise ValueError('Length does not match number of plots')
+
+        return list_of_dicts
+
+    @staticmethod
     def convert_to_complete_list(given_value, single_plot, num_plots, list_allowed=False, default=None, key=''):
         """
         Converts given value to list with length num_plots with None for the non-specified values
