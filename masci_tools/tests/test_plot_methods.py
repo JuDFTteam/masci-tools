@@ -199,7 +199,7 @@ class TestSingleScatterPlot(object):
                            'Plot Test',
                            show=False,
                            area_plot=True,
-                           plot_alpha=0.3,
+                           area_alpha=0.3,
                            marker=None,
                            color='darkblue')
         # need to return the figure in order for mpl checks to work
@@ -746,7 +746,7 @@ class TestMultiPlotMoved(object):
 
         gcf().clear()
 
-        multiplot_moved(y, x, 'X', 'Y', 'Plot Test', area_plot={2: True}, show=False)
+        multiplot_moved(y, x, 'X', 'Y', 'Plot Test', area_plot={2: True}, area_linecolor='k', show=False)
         # need to return the figure in order for mpl checks to work
         return gcf()
 

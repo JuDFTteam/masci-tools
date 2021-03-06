@@ -281,11 +281,15 @@ def single_scatterplot(ydata,
     area_curve = kwargs.pop('area_curve', 0)
 
     if plot_params['area_plot']:
+        linecolor = plot_kwargs.pop('area_linecolor', None)
         result = ax.fill_between(xdata, ydata, y2=area_curve, **plot_kwargs, **kwargs)
         plot_kwargs.pop('alpha', None)
         plot_kwargs.pop('label', None)
-        color = plot_kwargs.pop('color', result.get_facecolor()[0])
-        ax.errorbar(xdata, ydata, yerr=yerr, xerr=xerr, alpha=1.0, color=color,**plot_kwargs, **kwargs)
+        plot_kwargs.pop('color', None)
+        if plot_params['area_enclosing_line']:
+            if linecolor is None:
+                linecolor = result.get_facecolor()[0]
+            ax.errorbar(xdata, ydata, yerr=yerr, xerr=xerr, alpha=plot_params['plot_alpha'], color=linecolor,**plot_kwargs, **kwargs)
     else:
         ax.errorbar(xdata, ydata, yerr=yerr, xerr=xerr, **plot_kwargs, **kwargs)
 
@@ -422,11 +426,15 @@ def multiple_scatterplots(ydata,
             shift = 0
 
         if plot_params[('area_plot', indx)]:
+            linecolor = plot_kw.pop('area_linecolor', None)
             result = ax.fill_between(x, y, y2=shift, **plot_kw, **kwargs)
             plot_kw.pop('alpha', None)
             plot_kw.pop('label', None)
-            color = plot_kw.pop('color', result.get_facecolor()[0])
-            ax.errorbar(x, y, yerr=yerrt, xerr=xerrt, alpha=1.0, color=color,**plot_kw, **kwargs)
+            plot_kw.pop('color', None)
+            if plot_params[('area_enclosing_line', indx)]:
+                if linecolor is None:
+                    linecolor = result.get_facecolor()[0]
+                ax.errorbar(x, y, yerr=yerrt, xerr=xerrt, alpha=plot_params[('plot_alpha', indx)], color=linecolor,**plot_kw, **kwargs)
         else:
             ax.errorbar(x, y, yerr=yerrt, xerr=xerrt, **plot_kw, **kwargs)
 

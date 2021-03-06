@@ -68,6 +68,9 @@ class MatplotlibPlotter(Plotter):
         'facecolor': None,
         'plot_label': None,
         'area_plot': False,
+        'area_enclosing_line': True,
+        'area_alpha': 1.0,
+        'area_linecolor': None,
         'plot_alpha': 1.0,
         'cmap': 'viridis',
         'norm': None,
@@ -150,6 +153,7 @@ class MatplotlibPlotter(Plotter):
     #Sets of keys with special purposes
 
     _PLOT_KWARGS = {'linewidth', 'linestyle', 'marker', 'markersize', 'color', 'plot_label', 'plot_alpha'}
+    _PLOT_KWARGS_AREA = {'area_linecolor', 'area_alpha'}
     _PLOT_KWARGS_COLORMESH = {
         'linewidth', 'linestyle', 'shading', 'rasterized', 'cmap', 'norm', 'edgecolor', 'facecolor', 'plot_label',
         'plot_alpha'
@@ -184,6 +188,14 @@ class MatplotlibPlotter(Plotter):
             kwargs_keys = self._PLOT_KWARGS_COLORMESH
         elif self.plot_type == 'histogram':
             kwargs_keys = self._PLOT_KWARGS_HIST
+
+        if self.single_plot:
+            any_area = self['area_plot']
+        else:
+            any_area = any(self[('area_plot', indx)] for indx in range(self.num_plots))
+
+        if any_area:
+            kwargs_keys = kwargs_keys | self._PLOT_KWARGS_AREA
 
         if extra_keys is not None:
             kwargs_keys = kwargs_keys | extra_keys
@@ -229,11 +241,18 @@ class MatplotlibPlotter(Plotter):
                 if self[('area_plot', index)]:
                     value.pop('marker', None)
                     value.pop('markersize', None)
-                    plot_kwargs[index] = value
+                    value['alpha'] = value.pop('area_alpha')
+                else:
+                    value.pop('area_alpha', None)
+                    value.pop('area_linecolor', None)
         else:
             if self['area_plot']:
                 plot_kwargs.pop('marker', None)
                 plot_kwargs.pop('markersize', None)
+                plot_kwargs['alpha'] = plot_kwargs.pop('area_alpha')
+            else:
+                plot_kwargs.pop('area_alpha', None)
+                plot_kwargs.pop('area_linecolor', None)
 
         return plot_kwargs
 
