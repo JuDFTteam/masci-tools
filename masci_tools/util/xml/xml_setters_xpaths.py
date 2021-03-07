@@ -68,7 +68,7 @@ def xml_create_tag_schema_dict(xmltree, schema_dict, xpath, base_xpath, element,
 
     if len(parent_nodes) == 0:
         if create_parents:
-            parent_xpath, tag_name = split_off_tag(base_xpath)
+            parent_xpath, parent_name = split_off_tag(base_xpath)
             complex_parent_xpath, _ = split_off_tag(xpath)
             xmltree = xml_create_tag_schema_dict(xmltree,
                                                  schema_dict,
