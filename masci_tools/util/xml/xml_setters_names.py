@@ -41,10 +41,11 @@ def create_tag(xmltree, schema_dict, tag_name, complex_xpath=None, create_parent
     :returns: xmltree with created tags
     """
     from masci_tools.util.xml.xml_setters_xpaths import xml_create_tag_schema_dict
+    from masci_tools.util.xml.common_xml_util import split_off_tag
 
     base_xpath = get_tag_xpath(schema_dict, tag_name, **kwargs)
 
-    parent_xpath, tag_name = '/'.join(base_xpath.split('/')[:-1]), base_xpath.split('/')[-1]
+    parent_xpath, tag_name = split_off_tag(base_xpath)
 
     if complex_xpath is None:
         complex_xpath = parent_xpath
@@ -93,13 +94,14 @@ def add_number_to_attrib(xmltree,
     :returns: xmltree with shifted attribute
     """
     from masci_tools.util.xml.xml_setters_xpaths import xml_add_number_to_attrib
+    from masci_tools.util.common_xml_util import split_off_attrib
 
     attrib_xpath = get_attrib_xpath(schema_dict, attributename, **kwargs)
 
     if complex_xpath is None:
         complex_xpath = attrib_xpath
 
-    base_xpath, attributename = tuple(attrib_xpath.split('/@'))
+    base_xpath, attributename = split_off_attrib(attrib_xpath)
 
     xmltree = xml_add_number_to_attrib(xmltree,
                                        schema_dict,
@@ -185,10 +187,11 @@ def set_attrib_value(xmltree,
     :returns: xmltree with set attribute
     """
     from masci_tools.util.xml.xml_setters_xpaths import xml_set_attrib_value
+    from masci_tools.util.common_xml_util import split_off_attrib
 
     base_xpath = get_attrib_xpath(schema_dict, attributename, **kwargs)
 
-    base_xpath, attributename = tuple(base_xpath.split('/@'))
+    base_xpath, attributename = split_off_attrib(base_xpath)
 
     if complex_xpath is None:
         complex_xpath = base_xpath
@@ -504,6 +507,7 @@ def shift_value_species_label(xmltree, schema_dict, atom_label, attributename, v
     from masci_tools.util.schema_dict_util import tag_exists, eval_simple_xpath
     from masci_tools.util.xml.common_xml_util import get_xml_attribute
     from masci_tools.util.xml.xml_setters_xpaths import xml_add_number_to_attrib
+    from masci_tools.util.common_xml_util import split_off_attrib
 
     if 'contains' in kwargs:
         contains = kwargs.get('contains')
@@ -521,7 +525,7 @@ def shift_value_species_label(xmltree, schema_dict, atom_label, attributename, v
 
     species_base_path = get_tag_xpath(schema_dict, 'species')
     attr_base_path = get_attrib_xpath(schema_dict, attributename, **kwargs)
-    attrib_base_xpath, attributename = tuple(attr_base_path.split('/@'))
+    attrib_base_xpath, attributename = split_off_attrib(attr_base_path)
 
     specie = ''
     if atom_label != 'all':
@@ -707,6 +711,7 @@ def set_inpchanges(xmltree, schema_dict, change_dict, path_spec=None):
     :returns: an xmltree of the inp.xml file with changes.
     """
     from masci_tools.util.xml.xml_setters_xpaths import xml_set_first_attrib_value, xml_set_first_text
+    from masci_tools.util.common_xml_util import split_off_attrib
 
     if path_spec is None:
         path_spec = {}
@@ -734,7 +739,7 @@ def set_inpchanges(xmltree, schema_dict, change_dict, path_spec=None):
 
         if not text_attrib:
             #Split up path into tag path and attribute name (original name of key could have different cases)
-            key_xpath, key = tuple(key_xpath.split('/@'))
+            key_xpath, key = split_off_attrib(key_xpath)
 
         if text_attrib:
             xml_set_first_text(xmltree, schema_dict, key_xpath, key_xpath, change_value)
