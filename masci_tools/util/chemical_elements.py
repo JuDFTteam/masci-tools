@@ -323,7 +323,7 @@ class ChemicalElements:
         elif isinstance(item, (list, dict)):
             _item = ChemicalElements(elements=_item)
         if isinstance(_item, ChemicalElements):
-            return _item < self
+            return _item <= self
         return False
 
     def __add__(self, other):
@@ -442,13 +442,13 @@ class ChemicalElements:
         :type group_name: str
         :return: if not return_dict: 0 if absent, >0 if present
         """
-        if not item:
+        if item is None:
             if group_name in self.__elmts:
                 return len(self.__elmts[group_name].keys())
-            elif not group_name:
+            elif group_name is None:
                 return len(self.flatten().keys())
             else:  # group_name but not in self.__elmts
-                raise KeyError(f"Group '{group_name}' does not in elmts.")
+                raise KeyError(f"Group '{group_name}' is not in elmts.")
 
         def contains_item(a_dict):
             if isinstance(item, str):
@@ -460,7 +460,7 @@ class ChemicalElements:
 
         if self.is_flat():
             return contains_item(self.elmts)
-        elif not group_name:  # and nested
+        elif group_name is None:  # and nested
             # check all groups
             count = 0
             for group in self.elmts.values():
