@@ -572,3 +572,45 @@ def get_xml_attribute(node, attributename, parser_info_out=None):
                                                   'because node is not an element of etree.'
                                                   ''.format(attributename, type(node)))
         return None
+
+
+def split_off_tag(xpath):
+    """
+    Splits off the last part of the given xpath
+
+    :param xpath: str of the xpath to split up
+    """
+    split_xpath = xpath.split('/')
+    if split_xpath[-1] == '':
+        return '/'.join(split_xpath[:-2]), split_xpath[-2]
+    else:
+        return '/'.join(split_xpath[:-1]), split_xpath[-1]
+
+def split_off_attrib(xpath):
+    """
+    Splits off attribute of the given xpath (part after @)
+
+    :param xpath: str of the xpath to split up
+    """
+    split_xpath = xpath.split('/@')
+    assert len(split_xpath) == 2, f"Splitting off attribute failed for: '{split_xpath}'"
+    return tuple(split_xpath)
+
+def check_complex_xpath(node, base_xpath, complex_xpath):
+    """
+    Check that the given complex xpath produces a subset of the results
+    for the simple xpath
+
+    :param node: root node of an etree
+    :param base_xpath: str of the xpath without complex syntax
+    :param complex_xpath: str of the xpath to check
+
+    :raises ValueError: If the complex_xpath does not produce a subset of the results
+                        of the base_xpath
+    """
+
+    results_base = set(eval_xpath(node, base_xpath, list_return=True))
+    results_complex = set(eval_xpath(node, complex_xpath, list_return=True))
+
+    if not results_base.issuperset(results_complex):
+        raise ValueError(f"Complex xpath '{complex_xpath}' is not compatible with the base_xpath '{base_xpath}'")

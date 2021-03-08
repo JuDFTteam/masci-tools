@@ -43,6 +43,9 @@ def xml_create_tag_schema_dict(xmltree, schema_dict, xpath, base_xpath, element,
     :returns: xmltree with created tags
     """
     from masci_tools.util.xml.xml_setters_basic import xml_create_tag
+    from masci_tools.util.xml.common_xml_util import check_complex_xpath, split_off_tag
+
+    check_complex_xpath(xmltree, base_xpath, xpath)
 
     tag_info = schema_dict['tag_info'][base_xpath]
 
@@ -65,10 +68,11 @@ def xml_create_tag_schema_dict(xmltree, schema_dict, xpath, base_xpath, element,
 
     if len(parent_nodes) == 0:
         if create_parents:
-            parent_xpath, parent_name = '/'.join(base_xpath.split('/')[:-1]), base_xpath.split('/')[-1]
+            parent_xpath, parent_name = split_off_tag(base_xpath)
+            complex_parent_xpath, _ = split_off_tag(xpath)
             xmltree = xml_create_tag_schema_dict(xmltree,
                                                  schema_dict,
-                                                 '/'.join(xpath.split('/')[:-1]),
+                                                 complex_parent_xpath,
                                                  parent_xpath,
                                                  parent_name,
                                                  create_parents=create_parents)
@@ -94,13 +98,18 @@ def eval_xpath_create(xmltree, schema_dict, xpath, base_xpath, create_parents=Fa
 
     :returns: list of nodes from the result of the xpath expression
     """
+    from masci_tools.util.xml.common_xml_util import check_complex_xpath, split_off_tag
+
+    check_complex_xpath(xmltree, base_xpath, xpath)
+
     nodes = eval_xpath(xmltree, xpath, list_return=True)
 
     if len(nodes) == 0:
-        parent_xpath, tag_name = '/'.join(base_xpath.split('/')[:-1]), base_xpath.split('/')[-1]
+        parent_xpath, tag_name = split_off_tag(base_xpath)
+        complex_parent_xpath, _ = split_off_tag(xpath)
         xmltree = xml_create_tag_schema_dict(xmltree,
                                              schema_dict,
-                                             '/'.join(xpath.split('/')[:-1]),
+                                             complex_parent_xpath,
                                              parent_xpath,
                                              tag_name,
                                              create_parents=create_parents,
@@ -144,6 +153,9 @@ def xml_set_attrib_value(xmltree,
 
     from masci_tools.util.xml.xml_setters_basic import xml_set_attrib_value_no_create
     from masci_tools.util.xml.common_xml_util import convert_attribute_to_xml
+    from masci_tools.util.xml.common_xml_util import check_complex_xpath, split_off_tag
+
+    check_complex_xpath(xmltree, base_xpath, xpath)
 
     if create:
         nodes = eval_xpath_create(xmltree, schema_dict, xpath, base_xpath, create_parents=True, occurrences=occurrences)
@@ -155,10 +167,12 @@ def xml_set_attrib_value(xmltree,
                          'because atleast one subtag is missing. '
                          'Use create=True to create the subtags')
 
+    _, tag_name = split_off_tag(base_xpath)
+
     attribs = schema_dict['tag_info'][base_xpath]['attribs']
     if attributename not in attribs:
         raise ValueError(
-            f"The key '{attributename}' is not expected for this version of the input for the '{base_xpath.split('/')[-1]}' tag. "
+            f"The key '{attributename}' is not expected for this version of the input for the '{tag_name}' tag. "
             f'Allowed attributes are: {attribs.original_case.values()}')
     attributename = attribs.original_case[attributename]
 
@@ -230,6 +244,9 @@ def xml_set_text(xmltree, schema_dict, xpath, base_xpath, text, occurrences=None
     """
     from masci_tools.util.xml.xml_setters_basic import xml_set_text_no_create
     from masci_tools.util.xml.common_xml_util import convert_text_to_xml
+    from masci_tools.util.xml.common_xml_util import check_complex_xpath, split_off_tag
+
+    check_complex_xpath(xmltree, base_xpath, xpath)
 
     if create:
         nodes = eval_xpath_create(xmltree, schema_dict, xpath, base_xpath, create_parents=True, occurrences=occurrences)
@@ -240,7 +257,9 @@ def xml_set_text(xmltree, schema_dict, xpath, base_xpath, text, occurrences=None
         raise ValueError(f"Could not set text on path '{xpath}' because atleast one subtag is missing. "
                          'Use create=True to create the subtags')
 
-    possible_definitions = schema_dict['simple_elements'][base_xpath.split('/')[-1]]
+    _, tag_name = split_off_tag(base_xpath)
+
+    possible_definitions = schema_dict['simple_elements'][tag_name]
     warnings = []
     converted_text, suc = convert_text_to_xml(text, possible_definitions, conversion_warnings=warnings)
 
@@ -306,6 +325,9 @@ def xml_add_number_to_attrib(xmltree,
     from masci_tools.util.schema_dict_util import read_constants
     from masci_tools.util.xml.common_xml_util import convert_xml_attribute
     from masci_tools.io.common_functions import is_sequence
+    from masci_tools.util.xml.common_xml_util import check_complex_xpath, split_off_attrib, split_off_tag
+
+    check_complex_xpath(xmltree, base_xpath, xpath)
 
     if attributename not in schema_dict['attrib_types']:
         raise ValueError(
@@ -324,9 +346,10 @@ def xml_add_number_to_attrib(xmltree,
         raise ValueError(f"Given attribute name '{attributename}' is not float or int")
 
     attribs = schema_dict['tag_info'][base_xpath]['attribs']
+    _, tag_name = split_off_tag(base_xpath)
     if attributename not in attribs:
         raise ValueError(
-            f"The key '{attributename}' is not expected for this version of the input for the '{base_xpath.split('/')[-1]}' tag. "
+            f"The key '{attributename}' is not expected for this version of the input for the '{tag_name}' tag. "
             f'Allowed attributes are: {attribs.original_case.values()}')
     attributename = attribs.original_case[attributename]
 
@@ -334,6 +357,8 @@ def xml_add_number_to_attrib(xmltree,
         xpath = '/@'.join([xpath, attributename])
 
     stringattribute = eval_xpath(xmltree, xpath)
+
+    tag_xpath, attributename = split_off_attrib(xpath)
 
     if isinstance(stringattribute, list):
         if len(stringattribute) == 0:
@@ -369,7 +394,7 @@ def xml_add_number_to_attrib(xmltree,
 
     xmltree = xml_set_attrib_value(xmltree,
                                    schema_dict,
-                                   xpath.split('/@')[0],
+                                   tag_xpath,
                                    base_xpath,
                                    attributename,
                                    attribvalues,
@@ -429,6 +454,9 @@ def xml_set_simple_tag(xmltree, schema_dict, xpath, base_xpath, tag_name, change
     :returns: xmltree with set simple tags
     """
     from masci_tools.util.xml.xml_setters_basic import xml_delete_tag
+    from masci_tools.util.xml.common_xml_util import check_complex_xpath
+
+    check_complex_xpath(xmltree, base_xpath, xpath)
 
     tag_info = schema_dict['tag_info'][base_xpath]
 
@@ -498,8 +526,12 @@ def xml_set_complex_tag(xmltree, schema_dict, xpath, base_xpath, attributedict, 
     :returns: xmltree with changes to the complex tag
     """
     from masci_tools.util.xml.xml_setters_basic import xml_delete_tag
+    from masci_tools.util.xml.common_xml_util import check_complex_xpath, split_off_tag
+
+    check_complex_xpath(xmltree, base_xpath, xpath)
 
     tag_info = schema_dict['tag_info'][base_xpath]
+    _, tag_name = split_off_tag(base_xpath)
 
     if create:
         #eval complex tag and ggf create
@@ -509,7 +541,7 @@ def xml_set_complex_tag(xmltree, schema_dict, xpath, base_xpath, attributedict, 
 
         if key not in tag_info['complex'] | tag_info['simple'] | tag_info['attribs']:
             raise ValueError(
-                f"The key '{key}' is not expected for this version of the input for the '{base_xpath.split('/')[-1]}' tag. "
+                f"The key '{key}' is not expected for this version of the input for the '{tag_name}' tag. "
                 f"Allowed tags are: {sorted((tag_info['complex']|tag_info['simple']).original_case.values())}"
                 f"Allowed attributes are: {sorted(tag_info['attribs'].original_case.values())}")
 
