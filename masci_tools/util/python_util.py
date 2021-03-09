@@ -28,10 +28,26 @@ def now():
     # not same as: datetime.now(tz=timezone.utc)
 
 
-def random_string(length):
+def random_string(length: int, ascii_uppercase: bool = True, ascii_lowercase: bool = True,
+                  digits: bool = True, whitespace: bool = False) -> str:
+    """Generate a random string of length.
+
+    :param length: random string length.
+    :param ascii_uppercase: True: include ASCII uppercase letters.
+    :param ascii_lowercase: True: include ASCII lowercase letters.
+    :param digits: True: include digits.
+    :param whitespace: True: include whitespaces `\t\n\r\x0b\x0c`.
+    :return: random string of length.
+    """
     import string
     import random
-    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=length))
+
+    character_sets = {string.ascii_uppercase: ascii_uppercase,
+                      string.ascii_lowercase: ascii_lowercase,
+                      string.digits: digits,
+                      string.whitespace: whitespace}
+    population = ''.join([characters for characters, included in character_sets.items() if included])
+    return ''.join(random.choices(population=population, k=length))
 
 
 def enforce_minimum_python_version(minimum_version: tuple = (3, 7)):

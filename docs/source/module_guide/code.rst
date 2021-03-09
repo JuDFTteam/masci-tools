@@ -18,8 +18,14 @@ Visualisation and Plotting
    :members:
 
 
-IO helper and file parsers
-++++++++++++++++++++++++++++++++++
+Calculation tools
++++++++++++++++++++++++++++
+
+.. automodule:: masci_tools.tools.cf_calculation
+   :members:
+
+IO helper functions and file parsers
++++++++++++++++++++++++++++++++++++++
 
 KKR related IO
 ----------------
