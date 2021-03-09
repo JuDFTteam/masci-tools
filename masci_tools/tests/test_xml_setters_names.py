@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 """
 Tests for the functions in xml_setters_names
+
+These tests do not extensively test all possible functionality. this is done in the
+tests for the underlying functions in xml_setters_xpaths and xml_setters_basic
 """
 import os
 from lxml import etree
@@ -259,3 +262,134 @@ def test_set_first_attrib_value_create(load_inpxml):
     ldaU_node = eval_xpath(root, '/fleurInput/atomSpecies/species/ldaU')
 
     assert ldaU_node.attrib == {'U': '42.0000000000'}
+
+
+def test_set_text(load_inpxml):
+
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_text
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    set_text(xmltree, schema_dict, 'comment', 'This is a test comment')
+
+    res = eval_xpath(root, '/fleurInput/comment/text()')
+
+    assert res == 'This is a test comment'
+
+
+def test_set_text_specification_create(load_inpxml):
+
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_text
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    with pytest.raises(ValueError, match='The tag s has multiple possible paths with the current specification'):
+        set_text(xmltree, schema_dict, 's', [False, False, False, True])
+
+    with pytest.raises(
+            ValueError,
+            match=
+            "Could not set text on path '/fleurInput/atomSpecies/species/torgueCalculation/greensfElements/s' because atleast one subtag is missing."
+    ):
+        set_text(xmltree, schema_dict, 's', [False, False, False, True], contains={'species', 'torgue'})
+
+    set_text(xmltree, schema_dict, 's', [False, False, False, True], contains={'species', 'torgue'}, create=True)
+
+    res = eval_xpath(root, '/fleurInput/atomSpecies/species/torgueCalculation/greensfElements/s/text()')
+
+    assert res == ['F F F T', 'F F F T']
+
+
+def test_set_text_specification_complex_xpath(load_inpxml):
+
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_text
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    set_text(xmltree,
+             schema_dict,
+             'kPoint', [10.0, 10.0, 10.0],
+             complex_xpath='/fleurInput/cell/bzIntegration/kPointLists/kPointList/kPoint[1]')
+
+    res = eval_xpath(root, '/fleurInput/cell/bzIntegration/kPointLists/kPointList/kPoint/text()')
+
+    assert res == ['10.0000000000 10.0000000000 10.0000000000', '    0.250000     0.250000     0.000000']
+
+
+def test_set_text_specification_occurrences(load_inpxml):
+
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_text
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    set_text(xmltree, schema_dict, 'kPoint', [10.0, 10.0, 10.0], occurrences=-1)
+
+    res = eval_xpath(root, '/fleurInput/cell/bzIntegration/kPointLists/kPointList/kPoint/text()')
+
+    assert res == ['   -0.250000     0.250000     0.000000', '10.0000000000 10.0000000000 10.0000000000']
+
+
+def test_set_first_text(load_inpxml):
+
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_first_text
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    set_first_text(xmltree, schema_dict, 'kPoint', [10.0, 10.0, 10.0])
+
+    res = eval_xpath(root, '/fleurInput/cell/bzIntegration/kPointLists/kPointList/kPoint/text()')
+
+    assert res == ['10.0000000000 10.0000000000 10.0000000000', '    0.250000     0.250000     0.000000']
+
+
+def test_set_first_text_complex_xpath(load_inpxml):
+
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_first_text
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    set_first_text(xmltree,
+                   schema_dict,
+                   'kPoint', [10.0, 10.0, 10.0],
+                   complex_xpath='/fleurInput/cell/bzIntegration/kPointLists/kPointList/kPoint[2]')
+
+    res = eval_xpath(root, '/fleurInput/cell/bzIntegration/kPointLists/kPointList/kPoint/text()')
+
+    assert res == ['   -0.250000     0.250000     0.000000', '10.0000000000 10.0000000000 10.0000000000']
+
+
+def test_set_first_text_create(load_inpxml):
+
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_first_text
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    with pytest.raises(ValueError, match='The tag s has multiple possible paths with the current specification'):
+        set_first_text(xmltree, schema_dict, 's', [False, False, False, True])
+
+    with pytest.raises(
+            ValueError,
+            match=
+            "Could not set text on path '/fleurInput/atomSpecies/species/torgueCalculation/greensfElements/s' because atleast one subtag is missing."
+    ):
+        set_first_text(xmltree, schema_dict, 's', [False, False, False, True], contains={'species', 'torgue'})
+
+    set_first_text(xmltree, schema_dict, 's', [False, False, False, True], contains={'species', 'torgue'}, create=True)
+
+    res = eval_xpath(root, '/fleurInput/atomSpecies/species/torgueCalculation/greensfElements/s/text()')
+
+    assert res == 'F F F T'
