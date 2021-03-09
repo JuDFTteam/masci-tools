@@ -530,6 +530,7 @@ def test_xml_create_tag_tag_order_multiple_beginning(load_inpxml):
 
     assert [[child.tag for child in node.iterchildren()] for node in nodes] == tags
 
+
 def test_xml_create_tag_tag_order_multiple_occurrences_single(load_inpxml):
 
     from masci_tools.util.xml.common_xml_util import eval_xpath

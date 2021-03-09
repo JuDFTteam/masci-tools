@@ -586,6 +586,7 @@ def split_off_tag(xpath):
     else:
         return '/'.join(split_xpath[:-1]), split_xpath[-1]
 
+
 def split_off_attrib(xpath):
     """
     Splits off attribute of the given xpath (part after @)
@@ -595,6 +596,7 @@ def split_off_attrib(xpath):
     split_xpath = xpath.split('/@')
     assert len(split_xpath) == 2, f"Splitting off attribute failed for: '{split_xpath}'"
     return tuple(split_xpath)
+
 
 def check_complex_xpath(node, base_xpath, complex_xpath):
     """

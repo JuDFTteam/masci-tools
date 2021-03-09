@@ -20,7 +20,13 @@ from masci_tools.util.xml.common_xml_util import eval_xpath
 ######################CREATING/DELETING TAGS###############################################
 
 
-def xml_create_tag_schema_dict(xmltree, schema_dict, xpath, base_xpath, element, create_parents=False, occurrences=None):
+def xml_create_tag_schema_dict(xmltree,
+                               schema_dict,
+                               xpath,
+                               base_xpath,
+                               element,
+                               create_parents=False,
+                               occurrences=None):
     """
     This method evaluates an xpath expression and creates a tag in a xmltree under the
     returned nodes.
