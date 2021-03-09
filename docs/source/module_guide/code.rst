@@ -22,6 +22,12 @@ Visualisation and Plotting
    :members:
 
 
+Calculation tools
++++++++++++++++++++++++++++
+
+.. automodule:: masci_tools.tools.cf_calculation
+   :members:
+
 I/O helper and output file parsers
 ++++++++++++++++++++++++++++++++++
 

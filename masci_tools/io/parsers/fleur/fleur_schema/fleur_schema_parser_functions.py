@@ -45,7 +45,7 @@ def _cache_xpath_construction(func):
         root_tag = str(xmlschema.xpath('/xsd:schema/xsd:element/@name', namespaces=namespaces)[0])
 
         arg_tuple = (version,root_tag,name, kwargs.get('enforce_end_type', ''), kwargs.get('ref', '')) + \
-                    tuple([key for key in kwargs if kwargs.get(key, False)])
+                    tuple(key for key in kwargs if kwargs.get(key, False))
 
         hash_args = hash(arg_tuple)
         if version not in results:
@@ -738,6 +738,7 @@ def _get_sequence_order(xmlschema, namespaces, sequence_elem):
 
     return elem_order
 
+
 def _get_valid_tags(xmlschema, namespaces, sequence_elem):
     """
     Extract all allowed elements in the given sequence element
@@ -1208,7 +1209,7 @@ def get_tag_info(xmlschema, namespaces, **kwargs):
         info_dict['complex'] = CaseInsensitiveFrozenSet(valid_tags).difference(info_dict['simple'])
         info_dict['text'] = _get_text_tags(xmlschema, namespaces, type_elem, kwargs['simple_elements'])
 
-        if any([len(elem) != 0 for elem in info_dict.values()]):
+        if any(len(elem) != 0 for elem in info_dict.values()):
             for path in tag_path:
                 tag_info[path] = info_dict
 

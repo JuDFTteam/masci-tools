@@ -54,6 +54,21 @@ def open_general(filename_or_handle, iomode=None):
     return f
 
 
+def skipHeader(seq, n):
+    """Iterate over a sequence skipping the first n elements
+
+    Args:
+        seq (iterable): Iterable sequence
+        n (int): Number of Elements to skip in the beginning of the sequence
+
+    Yields:
+        item: Elements in seq after the first n elements
+    """
+    for i, item in enumerate(seq):
+        if i >= n:
+            yield item
+
+
 def get_alat_from_bravais(bravais, is3D=True):
     bravais_tmp = bravais
     if not is3D:
