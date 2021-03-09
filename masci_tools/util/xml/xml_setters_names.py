@@ -339,20 +339,24 @@ def set_simple_tag(xmltree, schema_dict, tag_name, changes, complex_xpath=None, 
     :returns: xmltree with set simple tags
     """
     from masci_tools.util.xml.xml_setters_xpaths import xml_set_simple_tag
+    from masci_tools.util.xml.common_xml_util import split_off_tag
 
     base_xpath = get_tag_xpath(schema_dict, tag_name, **kwargs)
+
+    #Since we can set multiple simple tags we need to provide the path for the parent
+    parent_xpath, tag_name = split_off_tag(base_xpath)
 
     tag_info = schema_dict['tag_info'][base_xpath]
 
     assert len(tag_info['simple'] | tag_info['complex']) == 0, f"Given tag '{tag_name}' is not simple"
 
     if complex_xpath is None:
-        complex_xpath = base_xpath
+        complex_xpath = parent_xpath
 
     return xml_set_simple_tag(xmltree,
                               schema_dict,
                               complex_xpath,
-                              base_xpath,
+                              parent_xpath,
                               tag_name,
                               changes,
                               create_parents=create_parents)

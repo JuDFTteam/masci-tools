@@ -546,3 +546,129 @@ def test_add_number_to_first_attrib_complex_xpath(load_inpxml):
     res = eval_xpath(root, '/fleurInput/atomSpecies/species/mtSphere/@radius')
 
     assert res == ['2.20000000', '2.7000000000']
+
+
+def test_set_simple_tag(load_inpxml):
+
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_simple_tag
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    set_simple_tag(xmltree, schema_dict, 'cutoffs', {'gmax': 34.0, 'gmaxxc': 40.0})
+
+    node = eval_xpath(root, '/fleurInput/calculationSetup/cutoffs')
+
+    assert node.attrib == {'Kmax': '4.00000000', 'Gmax': '34.0000000000', 'GmaxXC': '40.0000000000', 'numbands': '0'}
+
+
+def test_set_simple_tag_specification(load_inpxml):
+
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_simple_tag
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    with pytest.raises(ValueError, match='The tag lo has multiple possible paths with the current specification.'):
+        set_simple_tag(xmltree, schema_dict, 'lo', [{'type': 'TEST', 'n': 12}, {'type': 'TEST', 'n': 15}])
+
+    set_simple_tag(xmltree,
+                   schema_dict,
+                   'lo', [{
+                       'type': 'TEST',
+                       'n': 12
+                   }, {
+                       'type': 'TEST',
+                       'n': 15
+                   }],
+                   contains='species')
+
+    nodes = eval_xpath(root, '/fleurInput/atomSpecies/species/lo')
+
+    assert [node.getparent().attrib['name'] for node in nodes] == ['Fe-1', 'Fe-1', 'Pt-1', 'Pt-1']
+    assert [node.attrib.items() for node in nodes] == [
+        [('type', 'TEST'), ('n', '12')],
+        [('type', 'TEST'), ('n', '15')],
+        [('type', 'TEST'), ('n', '12')],
+        [('type', 'TEST'), ('n', '15')],
+    ]
+
+
+def test_set_simple_tag_create(load_inpxml):
+
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_simple_tag
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    with pytest.raises(ValueError, match="Could not create tag 'realAxis' because atleast one subtag is missing."):
+        set_simple_tag(xmltree, schema_dict, 'realAxis', {'ne': 100000, 'ellow': -13})
+
+    set_simple_tag(xmltree, schema_dict, 'realAxis', {'ne': 100000, 'ellow': -13}, create_parents=True)
+
+    node = eval_xpath(root, '/fleurInput/calculationSetup/greensFunction/realAxis')
+
+    assert node.attrib == {'ne': '100000', 'ellow': '-13.0000000000'}
+
+
+def test_set_simple_tag_create_multiple(load_inpxml):
+
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_simple_tag
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    with pytest.raises(ValueError,
+                       match="Could not create tag 'contourSemicircle' because atleast one subtag is missing."):
+        set_simple_tag(xmltree, schema_dict, 'contourSemicircle', [{'n': 12, 'eb': -13}, {'n': 12, 'eb': 55}])
+
+    set_simple_tag(xmltree,
+                   schema_dict,
+                   'contourSemicircle', [{
+                       'n': 12,
+                       'eb': -13
+                   }, {
+                       'n': 12,
+                       'eb': 55
+                   }],
+                   create_parents=True)
+
+    nodes = eval_xpath(root, '/fleurInput/calculationSetup/greensFunction/contourSemicircle')
+
+    assert [node.attrib.items() for node in nodes] == [[('n', '12'), ('eb', '-13.0000000000')],
+                                                       [('n', '12'), ('eb', '55.0000000000')]]
+
+
+def test_set_simple_tag_complex_xpath(load_inpxml):
+
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_simple_tag
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    set_simple_tag(xmltree,
+                   schema_dict,
+                   'lo', [{
+                       'type': 'TEST',
+                       'n': 12
+                   }, {
+                       'type': 'TEST',
+                       'n': 15
+                   }],
+                   contains='species',
+                   complex_xpath="/fleurInput/atomSpecies/species[@name='Pt-1']")
+
+    nodes = eval_xpath(root, '/fleurInput/atomSpecies/species/lo')
+
+    assert [node.getparent().attrib['name'] for node in nodes] == ['Fe-1', 'Fe-1', 'Pt-1', 'Pt-1']
+    assert [node.attrib.items() for node in nodes] == [
+        [('type', 'SCLO'), ('l', '0'), ('n', '3'), ('eDeriv', '0')],
+        [('type', 'SCLO'), ('l', '1'), ('n', '3'), ('eDeriv', '0')],
+        [('type', 'TEST'), ('n', '12')],
+        [('type', 'TEST'), ('n', '15')],
+    ]
