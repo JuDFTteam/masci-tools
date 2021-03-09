@@ -672,3 +672,84 @@ def test_set_simple_tag_complex_xpath(load_inpxml):
         [('type', 'TEST'), ('n', '12')],
         [('type', 'TEST'), ('n', '15')],
     ]
+
+
+def test_set_complex_tag(load_inpxml):
+
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_complex_tag
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    changes = {'jspins': 4, 'mtNocoParams': {'l_mtNocoPot': True}, 'qss': [0.0, 1.0, 2.0]}
+
+    set_complex_tag(
+        xmltree,
+        schema_dict,
+        'magnetism',
+        changes,
+    )
+
+    assert str(eval_xpath(root, '/fleurInput/calculationSetup/magnetism/@jspins')) == '4'
+    assert str(eval_xpath(root, '/fleurInput/calculationSetup/magnetism/mtNocoParams/@l_mtNocoPot')) == 'T'
+    assert str(eval_xpath(
+        root, '/fleurInput/calculationSetup/magnetism/qss/text()')) == '0.0000000000 1.0000000000 2.0000000000'
+
+
+def test_set_complex_tag_create_specification(load_inpxml):
+
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_complex_tag
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    changes = {'kkintgrcutoff': 'd', 'greensfElements': {'s': [False, True, False, True]}}
+
+    with pytest.raises(ValueError,
+                       match='The tag torgueCalculation has multiple possible paths with the current specification.'):
+        set_complex_tag(
+            xmltree,
+            schema_dict,
+            'torgueCalculation',
+            changes,
+        )
+
+    with pytest.raises(
+            ValueError,
+            match=
+            "Could not set attribute 'kkintgrCutoff' on path '/fleurInput/atomSpecies/species/torgueCalculation' because atleast one subtag is missing."
+    ):
+        set_complex_tag(xmltree, schema_dict, 'torgueCalculation', changes, not_contains='Group')
+
+    set_complex_tag(xmltree, schema_dict, 'torgueCalculation', changes, not_contains='Group', create=True)
+
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/torgueCalculation/@kkintgrCutoff') == ['d', 'd']
+    assert eval_xpath(
+        root, '/fleurInput/atomSpecies/species/torgueCalculation/greensfElements/s/text()') == ['F T F T', 'F T F T']
+
+
+def test_set_complex_tag_complex_xpath(load_inpxml):
+
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_complex_tag
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    changes = {'kkintgrcutoff': 'd', 'greensfElements': {'s': [False, True, False, True]}}
+
+    set_complex_tag(xmltree,
+                    schema_dict,
+                    'torgueCalculation',
+                    changes,
+                    not_contains='Group',
+                    create=True,
+                    complex_xpath="/fleurInput/atomSpecies/species[@name='Pt-1']/torgueCalculation")
+
+    node = eval_xpath(root, '/fleurInput/atomSpecies/species/torgueCalculation')
+
+    assert node.getparent().attrib['name'] == 'Pt-1'
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/torgueCalculation/@kkintgrCutoff') == 'd'
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/torgueCalculation/greensfElements/s/text()') == 'F T F T'
