@@ -130,9 +130,9 @@ class CFCalculation:
         if lm is None:
             lm = []
 
-        atomType = kwargs.pop('atomType', 1)
-        header = kwargs.pop('header', 0)
-        complexData = kwargs.pop('complexData', True)
+        atomType = kwargs.get('atomType')
+        header = kwargs.get('header', 0)
+        complexData = kwargs.get('complexData', True)
 
         #Reads in the filenames given in args as potentials
         for index, file in enumerate(args):
@@ -140,7 +140,7 @@ class CFCalculation:
                 basename, extension = os.path.splitext(file)
                 if extension == '.hdf':
                     with h5py.File(file, 'r') as hdffile:
-                        self.__readpotHDF(hdffile, atomType)
+                        self.__readpotHDF(hdffile, atomType=atomType)
                 else:
                     if index >= len(lm):
                         raise ValueError('Not enough lm indices for the given files')
@@ -163,36 +163,47 @@ class CFCalculation:
 
         """
 
-        atomType = kwargs.pop('atomType', 1)
-        header = kwargs.pop('header', 0)
+        atomType = kwargs.get('atomType')
+        header = kwargs.get('header', 0)
 
         if isinstance(file, str):
             basename, extension = os.path.splitext(file)
             if extension == '.hdf':
                 with h5py.File(file, 'r') as hdffile:
-                    self.__readcdnHDF(hdffile, atomType)
+                    self.__readcdnHDF(hdffile, atomType=atomType)
             else:
                 self.__readcdntxt(file, header=header)
         else:
             self.__readcdnHDF(file, atomType)
 
-    def __readpotHDF(self, hdffile, atomType):
+    def __readpotHDF(self, hdffile, atomType=None):
         """Read in the potential from a HDF file
 
         """
 
         info = hdffile.get('general')
-        numPOT = info.attrs.__getitem__('numPOT')[0]
+        numPOT = info.attrs['numPOT'][0]
         if 'bravaisMatrix' in info:
             self.bravaisMat['pot'] = np.array(info.get('bravaisMatrix'))
 
         if numPOT == 0:
-            raise IOError('No potentials found in {}'.format(hdffile))
+            raise IOError(f'No potentials found in {hdffile}')
 
-        if 'pot-{}'.format(atomType) in hdffile:
-            _pot = hdffile.get('pot-{}'.format(atomType))
+        potential_groups = {key for key in hdffile if 'pot-' in key}
 
-            self.vlm['RMT'] = _pot.attrs.__getitem__('RMT')[0]
+        if len(potential_groups) != 1 and atomType is None:
+            raise ValueError('Multiple possibilities for calculated potentials. '
+                             f'Select the desired atomType: {potential_groups}')
+
+        if atomType is not None:
+            pot_group = f'pot-{atomType}'
+        else:
+            pot_group = potential_groups.pop()
+
+        if pot_group in hdffile:
+            _pot = hdffile.get(pot_group)
+
+            self.vlm['RMT'] = _pot.attrs['RMT'][0]
             for key in _pot.keys():
 
                 if key == 'rmesh':
@@ -200,8 +211,8 @@ class CFCalculation:
                     self.vlm['rmesh'] = np.array(_rmesh)
                 else:
                     _vlm = _pot.get(key)
-                    l = _vlm.attrs.__getitem__('l')[0]
-                    m = _vlm.attrs.__getitem__('m')[0]
+                    l = _vlm.attrs['l'][0]
+                    m = _vlm.attrs['m'][0]
 
                     _data = _vlm.get('vlm')
                     _data = np.array(_data[:, :, 0] + 1j * _data[:, :, 1])
@@ -209,10 +220,10 @@ class CFCalculation:
                         self.vlm[(l, m)] = _data
 
         else:
-            raise IOError('No potential for atomType {} found in {}'.format(atomType, hdffile))
+            raise IOError(f'No potential for atomType {atomType} found in {hdffile}')
 
         if not self.quiet:
-            print('readPOTHDF: Generated the following information: {}'.format(self.vlm.keys()))
+            print(f'readPOTHDF: Generated the following information: {self.vlm.keys()}')
 
     def __readpottxt(self, file, index, header=0, complexData=True):
         """Read in the potential for the (l,m) tuple 'index' from a txt file
@@ -227,7 +238,7 @@ class CFCalculation:
                 self.vlm[index].append([])
                 self.vlm[index].append([])
             else:
-                raise KeyError('Multiple definitions for potential {}'.format(index))
+                raise KeyError(f'Multiple definitions for potential {index}')
 
             self.vlm['rmesh'] = []
 
@@ -246,32 +257,43 @@ class CFCalculation:
             self.vlm['rmesh'] = np.array(self.vlm['rmesh'])
             self.vlm['RMT'] = max(self.vlm['rmesh'])
 
-    def __readcdnHDF(self, hdffile, atomType):
+    def __readcdnHDF(self, hdffile, atomType=None):
         """Read in the charge density from a HDF file
 
         """
 
         info = hdffile.get('general')
-        numCDN = info.attrs.__getitem__('numCDN')[0]
+        numCDN = info.attrs['numCDN'][0]
         if 'bravaisMatrix' in info:
             self.bravaisMat['cdn'] = np.array(info.get('bravaisMatrix'))
 
         if numCDN == 0:
             raise IOError('No charge densities found in {}'.format(hdffile))
 
-        if 'cdn-{}'.format(atomType) in hdffile:
-            _cdn = hdffile.get('cdn-{}'.format(atomType))
-            self.cdn['RMT'] = _cdn.attrs.__getitem__('RMT')[0]
+        cdn_groups = {key for key in hdffile if 'cdn-' in key}
+
+        if len(cdn_groups) != 1 and atomType is None:
+            raise ValueError('Multiple possibilities for calculated charge densities. '
+                             f'Select the desired atomType: {cdn_groups}')
+
+        if atomType is not None:
+            cdn_group = f'cdn-{atomType}'
+        else:
+            cdn_group = cdn_groups.pop()
+
+        if cdn_group in hdffile:
+            _cdn = hdffile.get(cdn_group)
+            self.cdn['RMT'] = _cdn.attrs['RMT'][0]
             _rmesh = _cdn.get('rmesh')
             self.cdn['rmesh'] = np.array(_rmesh)
             _data = _cdn.get('cdn')
             self.cdn['data'] = np.array(_data)
 
         else:
-            raise IOError('No charge density for atomType {} found in {}'.format(atomType, hdffile))
+            raise IOError(f'No charge density for atomType {atomType} found in {hdffile}')
 
         if not self.quiet:
-            print('readcdnHDF: Generated the following information: {}'.format(self.cdn.keys()))
+            print(f'readcdnHDF: Generated the following information: {self.cdn.keys()}')
 
     def __readcdntxt(self, file, header=0):
         """Read in the charge density from a txt file
