@@ -454,7 +454,9 @@ def plot_crystal_field_calculation(cfcalc,
                                    cdn_ylabel='Density',
                                    fontsize=12,
                                    labelsize=12,
-                                   pot_colors=None):
+                                   pot_colors=None,
+                                   save=False,
+                                   show=True):
     """Plot the given potentials and charge densities
 
         Parameters:
@@ -513,11 +515,13 @@ def plot_crystal_field_calculation(cfcalc,
 
     fig.set_size_inches(14.0, 10.0)
     fig.subplots_adjust(left=0.10, bottom=0.2, right=0.90, wspace=0.4, hspace=0.4)
-    plt.savefig(filename, format='png')
-    plt.show()
+    if save:
+        plt.savefig(filename, format='png')
+    if show:
+        plt.show()
 
 
-def plot_crystal_field_potential(cfcoeffs, filename='crystal_field_potential_areaplot', spin='avg', phi=0.0):
+def plot_crystal_field_potential(cfcoeffs, filename='crystal_field_potential_areaplot', spin='avg', phi=0.0, save=False, show=True):
     """Plots the angular dependence of the calculated CF potential as well
         as a plane defined by phi.
 
@@ -618,5 +622,7 @@ def plot_crystal_field_potential(cfcoeffs, filename='crystal_field_potential_are
     ax.set_yticklabels([r'1.0', r'0.5', r'0.0', r'-0.5', r'-1.0'], fontsize=tickFontsize)
     fig.set_constrained_layout_pads(w_pad=0., h_pad=0.0, hspace=0., wspace=0.)
 
-    plt.savefig(filename, format='png')
-    plt.show()
+    if save:
+        plt.savefig(filename, format='png')
+    if show:
+        plt.show()
