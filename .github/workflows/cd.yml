@@ -32,17 +32,17 @@ jobs:
           pip-docs-
 
     - name: Install python dependencies
-      run:
+      run: |
         pip install -e .[docs]
     
     - name: Install Latex compiler
-      run:
+      run: |
         sudo apt-get update -y && sudo apt-get install -y latexmk dvipng texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended
 
     - name: Build documentation
       env:
         READTHEDOCS: 'True'
-      run:
+      run: |
         SPHINXOPTS='-nW' make -C docs html
 
 
@@ -68,12 +68,12 @@ jobs:
         python-version: 3.7
 
     - name: Install python dependencies
-      run:
+      run: |
         pip install .[pre-commit,bokeh-plots]
         pip freeze
 
     - name: Run pre-commit
-      run:
+      run: |
         pre-commit run --all-files || (git status --short; git diff ; exit 1)
 
   tests:
