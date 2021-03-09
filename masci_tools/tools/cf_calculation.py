@@ -356,8 +356,9 @@ class CFCalculation:
 
         for key, value in self.vlm.items():
             if key not in ('RMT', 'rmesh'):
-                self.int[key]['spin-up'] = interp1d(self.vlm['rmesh'], self.vlm[key][0, :], fill_value='extrapolate')
-                self.int[key]['spin-down'] = interp1d(self.vlm['rmesh'], self.vlm[key][1, :], fill_value='extrapolate')
+                self.int[key]['spin-up'] = interp1d(self.vlm['rmesh'], value[0, :], fill_value='extrapolate')
+                if value.shape[0] == 2:
+                    self.int[key]['spin-down'] = interp1d(self.vlm['rmesh'], value[1, :], fill_value='extrapolate')
         self.interpolated = True
 
     def performIntegration(self, convert=True):
@@ -401,6 +402,9 @@ class CFCalculation:
                     integral[key] = np.trapz(
                         pot(self.int['rmesh']) * self.int['cdn'](self.int['rmesh']), self.int['rmesh'])
                     integral[key] *= np.sqrt((2.0 * l + 1.0) / (4.0 * np.pi)) * HTR_TO_KELVIN
+
+                if 'spin-down' not in integral:
+                    integral['spin-down'] = integral['spin-up']
 
                 if convert:
                     integral = {key: val.real * self.prefactor(l, m) for key, val in integral.items()}
