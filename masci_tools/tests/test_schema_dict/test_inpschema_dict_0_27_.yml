@@ -687,15 +687,7 @@ tag_info:
       constants: null
       output: null
     optional_attribs: {}
-    order:
-    - comment
-    - constants
-    - calculationSetup
-    - cell
-    - xcFunctional
-    - atomSpecies
-    - atomGroups
-    - output
+    order: []
     several: !!set {}
     simple: !!set
       comment: null
@@ -1056,20 +1048,7 @@ tag_info:
       soc: null
       spinspiralqpointmesh: null
     optional_attribs: {}
-    order:
-    - cutoffs
-    - scfLoop
-    - coreElectrons
-    - magnetism
-    - bzIntegration
-    - soc
-    - nocoParams
-    - oneDParams
-    - expertModes
-    - geometryOptimization
-    - spinSpiralQPointMesh
-    - eField
-    - energyParameterLimits
+    order: []
     several: !!set {}
     simple: !!set
       coreelectrons: null
@@ -1606,13 +1585,7 @@ tag_info:
       dos: F
       slice: F
       vacdos: F
-    order:
-    - checks
-    - densityOfStates
-    - vacuumDOS
-    - plotting
-    - chargeDensitySlicing
-    - specialOutput
+    order: []
     several: !!set {}
     simple: !!set
       chargedensityslicing: null

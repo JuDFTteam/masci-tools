@@ -720,7 +720,7 @@ def _get_sequence_order(xmlschema, namespaces, sequence_elem):
 
         if child_type == 'element':
             elem_order.append(child.attrib['name'])
-        elif child_type in ['choice', 'sequence', 'all']:
+        elif child_type in ['choice', 'sequence']:
             new_order = _get_sequence_order(xmlschema, namespaces, child)
             for elem in new_order:
                 elem_order.append(elem)
@@ -731,12 +731,46 @@ def _get_sequence_order(xmlschema, namespaces, sequence_elem):
             new_order = _get_sequence_order(xmlschema, namespaces, group[0])
             for elem in new_order:
                 elem_order.append(elem)
-        elif child_type in ['attribute', 'simpleContent']:
+        elif child_type in ['attribute', 'simpleContent', 'all']:
             continue
         else:
             raise KeyError(f'Dont know what to do with {child_type}')
 
     return elem_order
+
+def _get_valid_tags(xmlschema, namespaces, sequence_elem):
+    """
+    Extract all allowed elements in the given sequence element
+
+    :param xmlschema: xmltree representing the schema
+    :param namespaces: dictionary with the defined namespaces
+    :param sequence_elem: element of the sequence to analyse
+
+    :return: list of tags, in the order they have to occur in
+    """
+    elems = []
+    for child in sequence_elem:
+        child_type = _remove_xsd_namespace(child.tag, namespaces)
+
+        if child_type == 'element':
+            elems.append(child.attrib['name'])
+        elif child_type in ['choice', 'sequence', 'all']:
+            new_elems = _get_valid_tags(xmlschema, namespaces, child)
+            for elem in new_elems:
+                elems.append(elem)
+        elif child_type == 'group':
+            group = _xpath_eval(xmlschema,
+                                f"//xsd:group[@name='{child.attrib['ref']}']/xsd:sequence",
+                                namespaces=namespaces)
+            new_elems = _get_valid_tags(xmlschema, namespaces, group[0])
+            for elem in new_elems:
+                elems.append(elem)
+        elif child_type in ['attribute', 'simpleContent']:
+            continue
+        else:
+            raise KeyError(f'Dont know what to do with {child_type}')
+
+    return elems
 
 
 def extract_attribute_types(xmlschema, namespaces, **kwargs):
@@ -1170,7 +1204,8 @@ def get_tag_info(xmlschema, namespaces, **kwargs):
                                                namespaces,
                                                type_elem,
                                                input_mapping=kwargs.get('_input_basic_types', None))
-        info_dict['complex'] = CaseInsensitiveFrozenSet(info_dict['order']).difference(info_dict['simple'])
+        valid_tags = _get_valid_tags(xmlschema, namespaces, type_elem)
+        info_dict['complex'] = CaseInsensitiveFrozenSet(valid_tags).difference(info_dict['simple'])
         info_dict['text'] = _get_text_tags(xmlschema, namespaces, type_elem, kwargs['simple_elements'])
 
         if any(len(elem) != 0 for elem in info_dict.values()):
