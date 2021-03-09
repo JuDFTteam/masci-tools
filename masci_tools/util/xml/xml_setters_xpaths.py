@@ -571,7 +571,7 @@ def xml_set_complex_tag(xmltree, schema_dict, xpath, base_xpath, attributedict, 
 
             if isinstance(val, dict):
                 val = [val]
-            print(len(val))
+
             for indx in range(0, len(val)):
                 xml_create_tag_schema_dict(xmltree, schema_dict, xpath, base_xpath, key, create_parents=create)
 
