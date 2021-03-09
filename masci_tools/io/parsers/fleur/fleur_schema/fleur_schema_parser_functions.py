@@ -738,6 +738,7 @@ def _get_sequence_order(xmlschema, namespaces, sequence_elem):
 
     return elem_order
 
+
 def _get_valid_tags(xmlschema, namespaces, sequence_elem):
     """
     Extract all allowed elements in the given sequence element

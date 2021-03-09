@@ -521,7 +521,12 @@ def plot_crystal_field_calculation(cfcalc,
         plt.show()
 
 
-def plot_crystal_field_potential(cfcoeffs, filename='crystal_field_potential_areaplot', spin='avg', phi=0.0, save=False, show=True):
+def plot_crystal_field_potential(cfcoeffs,
+                                 filename='crystal_field_potential_areaplot',
+                                 spin='avg',
+                                 phi=0.0,
+                                 save=False,
+                                 show=True):
     """Plots the angular dependence of the calculated CF potential as well
         as a plane defined by phi.
 
