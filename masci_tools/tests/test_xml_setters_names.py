@@ -393,3 +393,156 @@ def test_set_first_text_create(load_inpxml):
     res = eval_xpath(root, '/fleurInput/atomSpecies/species/torgueCalculation/greensfElements/s/text()')
 
     assert res == 'F F F T'
+
+
+def test_add_number_to_attrib(load_inpxml):
+
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import add_number_to_attrib
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    add_number_to_attrib(xmltree, schema_dict, 'kmax', 10)
+
+    res = eval_xpath(root, '/fleurInput/calculationSetup/cutoffs/@Kmax')
+
+    assert res == '14.0000000000'
+
+
+def test_add_number_to_attrib_rel(load_inpxml):
+
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import add_number_to_attrib
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    add_number_to_attrib(xmltree, schema_dict, 'kmax', 10, mode='rel')
+
+    res = eval_xpath(root, '/fleurInput/calculationSetup/cutoffs/@Kmax')
+
+    assert res == '40.0000000000'
+
+
+def test_add_number_to_attrib_specification(load_inpxml):
+
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import add_number_to_attrib
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    with pytest.raises(ValueError,
+                       match='The attrib radius has multiple possible paths with the current specification.'):
+        add_number_to_attrib(xmltree, schema_dict, 'radius', 0.5)
+
+    add_number_to_attrib(xmltree, schema_dict, 'radius', 0.5, not_contains='Group')
+
+    res = eval_xpath(root, '/fleurInput/atomSpecies/species/mtSphere/@radius')
+
+    assert res == ['2.7000000000', '2.7000000000']
+
+
+def test_add_number_to_attrib_complex_xpath(load_inpxml):
+
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import add_number_to_attrib
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    add_number_to_attrib(xmltree,
+                         schema_dict,
+                         'radius',
+                         0.5,
+                         not_contains='Group',
+                         complex_xpath="/fleurInput/atomSpecies/species[@name='Pt-1']/mtSphere")
+
+    res = eval_xpath(root, '/fleurInput/atomSpecies/species/mtSphere/@radius')
+
+    assert res == ['2.20000000', '2.7000000000']
+
+
+def test_add_number_to_attrib_occurrences(load_inpxml):
+
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import add_number_to_attrib
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    add_number_to_attrib(xmltree, schema_dict, 'radius', 0.5, not_contains='Group', occurrences=[0])
+
+    res = eval_xpath(root, '/fleurInput/atomSpecies/species/mtSphere/@radius')
+
+    assert res == ['2.7000000000', '2.20000000']
+
+
+def test_add_number_to_first_attrib(load_inpxml):
+
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import add_number_to_first_attrib
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    add_number_to_first_attrib(xmltree, schema_dict, 'kmax', 10)
+
+    res = eval_xpath(root, '/fleurInput/calculationSetup/cutoffs/@Kmax')
+
+    assert res == '14.0000000000'
+
+
+def test_add_number_to_first_attrib_rel(load_inpxml):
+
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import add_number_to_first_attrib
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    add_number_to_first_attrib(xmltree, schema_dict, 'kmax', 10, mode='rel')
+
+    res = eval_xpath(root, '/fleurInput/calculationSetup/cutoffs/@Kmax')
+
+    assert res == '40.0000000000'
+
+
+def test_add_number_to_first_attrib_specification(load_inpxml):
+
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import add_number_to_first_attrib
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    with pytest.raises(ValueError,
+                       match='The attrib radius has multiple possible paths with the current specification.'):
+        add_number_to_first_attrib(xmltree, schema_dict, 'radius', 0.5)
+
+    add_number_to_first_attrib(xmltree, schema_dict, 'radius', 0.5, not_contains='Group')
+
+    res = eval_xpath(root, '/fleurInput/atomSpecies/species/mtSphere/@radius')
+
+    assert res == ['2.7000000000', '2.20000000']
+
+
+def test_add_number_to_first_attrib_complex_xpath(load_inpxml):
+
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import add_number_to_first_attrib
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    add_number_to_first_attrib(xmltree,
+                               schema_dict,
+                               'radius',
+                               0.5,
+                               not_contains='Group',
+                               complex_xpath="/fleurInput/atomSpecies/species[@name='Pt-1']/mtSphere")
+
+    res = eval_xpath(root, '/fleurInput/atomSpecies/species/mtSphere/@radius')
+
+    assert res == ['2.20000000', '2.7000000000']

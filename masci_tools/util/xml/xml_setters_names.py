@@ -98,10 +98,10 @@ def add_number_to_attrib(xmltree,
 
     attrib_xpath = get_attrib_xpath(schema_dict, attributename, **kwargs)
 
-    if complex_xpath is None:
-        complex_xpath = attrib_xpath
-
     base_xpath, attributename = split_off_attrib(attrib_xpath)
+
+    if complex_xpath is None:
+        complex_xpath = base_xpath
 
     xmltree = xml_add_number_to_attrib(xmltree,
                                        schema_dict,
@@ -148,7 +148,7 @@ def add_number_to_first_attrib(xmltree,
                                 attributename,
                                 add_number,
                                 complex_xpath=complex_xpath,
-                                mode='abs',
+                                mode=mode,
                                 occurrences=0,
                                 **kwargs)
 
