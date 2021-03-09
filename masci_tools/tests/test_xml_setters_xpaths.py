@@ -531,6 +531,25 @@ def test_xml_add_number_to_attrib_differing_xpaths(load_inpxml):
 
     assert [str(val) for val in radius] == ['4.2000000000', '2.20000000']
 
+def test_xml_add_number_to_attrib_differing_int(load_inpxml):
+
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_xpaths import xml_add_number_to_attrib
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    xml_add_number_to_attrib(xmltree, schema_dict, "/fleurInput/calculationSetup/cutoffs",
+                             '/fleurInput/calculationSetup/cutoffs', 'numbands', 100)
+
+    numbands = eval_xpath(root, '/fleurInput/calculationSetup/cutoffs/@numbands')
+
+    assert numbands == '100'
+
+    with pytest.raises(ValueError, match='You are trying to write a float to an integer attribute'):
+        xml_add_number_to_attrib(xmltree, schema_dict, "/fleurInput/calculationSetup/cutoffs",
+                             '/fleurInput/calculationSetup/cutoffs', 'numbands', 55.5)
+
 
 def test_xml_add_number_to_first_attrib(load_inpxml):
 
