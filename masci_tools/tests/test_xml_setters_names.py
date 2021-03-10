@@ -135,6 +135,20 @@ def test_set_attrib_value(load_inpxml):
     assert kmax == '5.3210000000'
 
 
+def test_set_attrib_value_xcFunctional(load_inpxml):
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_attrib_value
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    set_attrib_value(xmltree, schema_dict, 'xcFunctional', 'TEST')
+
+    res = eval_xpath(root, '/fleurInput/calculationSetup/xcFunctional/@name')
+
+    assert res == 'TEST'
+
+
 def test_set_attrib_value_specification(load_inpxml):
     from masci_tools.util.xml.common_xml_util import eval_xpath
     from masci_tools.util.xml.xml_setters_names import set_attrib_value

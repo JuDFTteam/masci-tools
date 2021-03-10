@@ -189,6 +189,15 @@ def set_attrib_value(xmltree,
     from masci_tools.util.xml.xml_setters_xpaths import xml_set_attrib_value
     from masci_tools.util.xml.common_xml_util import split_off_attrib
 
+    #Special case for xcFunctional
+    #(Also implemented here to not confuse users since it would only work in set_inpchanges otherwise)
+    if attributename == 'xcFunctional':
+        attributename = 'name'
+        if 'exclude' not in kwargs:
+            kwargs['exclude'] = ['other']
+        elif 'other' not in kwargs['exclude']:
+            kwargs['exclude'].append('other')
+
     base_xpath = get_attrib_xpath(schema_dict, attributename, **kwargs)
 
     base_xpath, attributename = split_off_attrib(base_xpath)
