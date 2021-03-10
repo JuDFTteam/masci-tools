@@ -227,7 +227,9 @@ def rotate_nmmpmat(xmltree, nmmplines, schema_dict, species_name, orbital, phi, 
                     rowData = [float(x) for x in line.split()]
                 else:
                     rowData.extend([float(x) for x in line.split()])
-                    rowData = [num[0] + 1j * num[1] for indx, num in enumerate(zip(rowData[:-1], rowData[1:])) if indx % 2 == 0]
+                    rowData = [
+                        num[0] + 1j * num[1] for indx, num in enumerate(zip(rowData[:-1], rowData[1:])) if indx % 2 == 0
+                    ]
                     denmat[spin][currentRow, :] += np.array(rowData)
 
         #Rotate the density matrix

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Tests for the load functions in io_fleurxml
 """
@@ -6,6 +7,7 @@ import os
 import pytest
 
 FILE_PATH = os.path.dirname(os.path.abspath(__file__))
+
 
 def test_load_inpxml():
     from masci_tools.io.io_fleurxml import load_inpxml
@@ -27,10 +29,11 @@ def test_load_inpxml():
 
     #Pass file handle
     with open(TEST_INPXML_PATH, 'r') as inpfile:
-        xmltree, schema_dict  = load_inpxml(inpfile)
+        xmltree, schema_dict = load_inpxml(inpfile)
 
     assert xmltree is not None
     assert schema_dict['inp_version'] == '0.34'
+
 
 def test_load_outxml():
     from masci_tools.io.io_fleurxml import load_outxml
@@ -54,11 +57,12 @@ def test_load_outxml():
 
     #Pass file handle
     with open(TEST_OUTXML_PATH, 'r') as inpfile:
-        xmltree, schema_dict  = load_outxml(inpfile)
+        xmltree, schema_dict = load_outxml(inpfile)
 
     assert xmltree is not None
     assert schema_dict['out_version'] == '0.34'
     assert schema_dict['inp_version'] == '0.34'
+
 
 def test_loadoutxml_mixedversions():
     from masci_tools.io.io_fleurxml import load_outxml
@@ -84,6 +88,7 @@ def test_loadoutxml_max50():
     assert schema_dict['out_version'] == '0.33'
     assert schema_dict['inp_version'] == '0.33'
 
+
 def test_loadoutxml_max40():
     from masci_tools.io.io_fleurxml import load_outxml
 
@@ -96,6 +101,7 @@ def test_loadoutxml_max40():
     assert schema_dict['out_version'] == '0.31'
     assert schema_dict['inp_version'] == '0.31'
 
+
 def test_loadoutxml_max31():
     from masci_tools.io.io_fleurxml import load_outxml
 
@@ -107,6 +113,7 @@ def test_loadoutxml_max31():
     assert xmltree is not None
     assert schema_dict['out_version'] == '0.30'
     assert schema_dict['inp_version'] == '0.30'
+
 
 def test_loadoutxml_premax31():
     from masci_tools.io.io_fleurxml import load_outxml

@@ -1,9 +1,9 @@
+# -*- coding: utf-8 -*-
 """
 Test for the FleurXMLModifier calss
 """
 import os
 import pytest
-
 
 FILE_PATH = os.path.dirname(os.path.abspath(__file__))
 TEST_INPXML_PATH = os.path.join(FILE_PATH, 'files/fleur/Max-R5/FePt_film_SSFT_LO/files/inp2.xml')
@@ -45,16 +45,34 @@ def test_fleurxml_modifier_modify_xmlfile_simple():
     fm.shift_value_species_label('                 222', 'radius', 3, mode='abs')
     fm.set_species('all', {'mtSphere': {'radius': 3.333}})
 
-    assert fm.changes() == [ModifierTask(name='set_inpchanges', args=({'dos': True, 'Kmax': 3.9},), kwargs={}),
-                           ModifierTask(name='shift_value', args=({'Kmax': 0.1},'rel'), kwargs={}),
-                           ModifierTask(name='shift_value_species_label', args=('                 222', 'radius', 3,), kwargs={'mode':'abs'}),
-                           ModifierTask(name='set_species', args=('all', {'mtSphere': {'radius': 3.333}}), kwargs={})]
+    assert fm.changes() == [
+        ModifierTask(name='set_inpchanges', args=({
+            'dos': True,
+            'Kmax': 3.9
+        },), kwargs={}),
+        ModifierTask(name='shift_value', args=({
+            'Kmax': 0.1
+        }, 'rel'), kwargs={}),
+        ModifierTask(name='shift_value_species_label',
+                     args=(
+                         '                 222',
+                         'radius',
+                         3,
+                     ),
+                     kwargs={'mode': 'abs'}),
+        ModifierTask(name='set_species', args=('all', {
+            'mtSphere': {
+                'radius': 3.333
+            }
+        }), kwargs={})
+    ]
 
     #The underlying methods are tested in the specific tests for the setters
     #We only want to ensure that the procedure finishes without error
     xmltree = fm.modify_xmlfile(TEST_INPXML_PATH)
 
     assert xmltree is not None
+
 
 def test_fleurxml_modifier_modify_xmlfile_undo():
     """Tests if fleurinp_modifier with various modifations on species"""
@@ -68,15 +86,29 @@ def test_fleurxml_modifier_modify_xmlfile_undo():
 
     fm.undo()
 
-    assert fm.changes() == [ModifierTask(name='set_inpchanges', args=({'dos': True, 'Kmax': 3.9},), kwargs={}),
-                           ModifierTask(name='shift_value', args=({'Kmax': 0.1},'rel'), kwargs={}),
-                           ModifierTask(name='shift_value_species_label', args=('                 222', 'radius', 3,), kwargs={'mode':'abs'})]
+    assert fm.changes() == [
+        ModifierTask(name='set_inpchanges', args=({
+            'dos': True,
+            'Kmax': 3.9
+        },), kwargs={}),
+        ModifierTask(name='shift_value', args=({
+            'Kmax': 0.1
+        }, 'rel'), kwargs={}),
+        ModifierTask(name='shift_value_species_label',
+                     args=(
+                         '                 222',
+                         'radius',
+                         3,
+                     ),
+                     kwargs={'mode': 'abs'})
+    ]
 
     #The underlying methods are tested in the specific tests for the setters
     #We only want to ensure that the procedure finishes without error
     xmltree = fm.modify_xmlfile(TEST_INPXML_PATH)
 
     assert xmltree is not None
+
 
 def test_fleurxml_modifier_modify_xmlfile_undo_revert_all():
     """Tests if fleurinp_modifier with various modifations on species"""
@@ -98,6 +130,7 @@ def test_fleurxml_modifier_modify_xmlfile_undo_revert_all():
 
     assert xmltree is not None
 
+
 def test_fleurxmlmodifier_nmmpmat():
     """Tests if set_nmmpmat works on fleurinp modifier works, with right interface"""
     from masci_tools.io.fleurxmlmodifier import FleurXMLModifier
@@ -115,10 +148,9 @@ def test_fleurxmlmodifier_nmmpmat():
     assert xmltree is not None
     assert nmmpmat is not None
 
-    xmltree, nmmpmat = fm.modify_xmlfile(TEST_INPXML_LDAU_PATH, original_nmmp_file=TEST_NMMPMAT_PATH, validate_changes=False)
+    xmltree, nmmpmat = fm.modify_xmlfile(TEST_INPXML_LDAU_PATH,
+                                         original_nmmp_file=TEST_NMMPMAT_PATH,
+                                         validate_changes=False)
 
     assert xmltree is not None
     assert nmmpmat is not None
-
-
-

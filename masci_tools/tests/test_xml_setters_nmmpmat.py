@@ -9,6 +9,7 @@ FILE_PATH = os.path.dirname(os.path.abspath(__file__))
 TEST_INPXML_LDAU_PATH = os.path.join(FILE_PATH, 'files/fleur/Max-R5/GaAsMultiUForceXML/files/inp.xml')
 TEST_NMMPMAT_PATH = os.path.join(FILE_PATH, 'files/fleur/input_nmmpmat.txt')
 
+
 def test_set_nmmpmat_nofile(load_inpxml, file_regression):
     """Test setting of nmmpmat with no initial nmmpmat file given"""
     from masci_tools.util.xml.xml_setters_nmmpmat import set_nmmpmat
@@ -88,6 +89,7 @@ def test_set_nmmpmat_file_get_wigner_matrix(load_inpxml, file_regression):
 
     file_regression.check(prepare_for_file_dump(nmmp_lines))
 
+
 def test_rotate_nmmpmat(load_inpxml, file_regression):
     """Test get_wigner_matrix by calling set_nmmpmat_file with theta, or phi != None"""
     from masci_tools.util.xml.xml_setters_nmmpmat import set_nmmpmat, rotate_nmmpmat
@@ -110,8 +112,8 @@ def test_rotate_nmmpmat(load_inpxml, file_regression):
                              spin=1,
                              denmat=[[1, 0, 1], [0, 0, 0], [1, 0, 1]])
 
-    nmmp_lines = rotate_nmmpmat(xmltree, nmmp_lines, schema_dict, 'Ga-1', orbital=1, phi=0.0, theta=np.pi/2.0)
-    nmmp_lines = rotate_nmmpmat(xmltree, nmmp_lines, schema_dict, 'As-2', orbital=1, theta=np.pi/2.0, phi= np.pi/4.0)
+    nmmp_lines = rotate_nmmpmat(xmltree, nmmp_lines, schema_dict, 'Ga-1', orbital=1, phi=0.0, theta=np.pi / 2.0)
+    nmmp_lines = rotate_nmmpmat(xmltree, nmmp_lines, schema_dict, 'As-2', orbital=1, theta=np.pi / 2.0, phi=np.pi / 4.0)
 
     file_regression.check(prepare_for_file_dump(nmmp_lines))
 
