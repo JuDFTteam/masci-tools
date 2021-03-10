@@ -519,7 +519,7 @@ def shift_value_species_label(xmltree, schema_dict, atom_label, attributename, v
     """
     from masci_tools.util.schema_dict_util import tag_exists, eval_simple_xpath
     from masci_tools.util.xml.common_xml_util import get_xml_attribute
-    from masci_tools.util.xml.xml_setters_xpaths import xml_add_number_to_attrib
+    from masci_tools.util.xml.xml_setters_xpaths import xml_add_number_to_first_attrib
     from masci_tools.util.xml.common_xml_util import split_off_attrib
 
     if 'contains' in kwargs:
@@ -531,16 +531,10 @@ def shift_value_species_label(xmltree, schema_dict, atom_label, attributename, v
     else:
         kwargs['contains'] = 'species'
 
-    if 'exclude' not in kwargs:
-        kwargs['exclude'] = ['other']
-    elif 'other' not in kwargs['exclude']:
-        kwargs['exclude'].append('other')
-
     species_base_path = get_tag_xpath(schema_dict, 'species')
     attr_base_path = get_attrib_xpath(schema_dict, attributename, **kwargs)
-    attrib_base_xpath, attributename = split_off_attrib(attr_base_path)
+    tag_base_xpath, attributename = split_off_attrib(attr_base_path)
 
-    specie = ''
     if atom_label != 'all':
         atom_label = '{: >20}'.format(atom_label)
     all_groups = eval_simple_xpath(xmltree, schema_dict, 'atomGroup', list_return=True)
@@ -549,9 +543,9 @@ def shift_value_species_label(xmltree, schema_dict, atom_label, attributename, v
 
     for group in all_groups:
         if tag_exists(group, schema_dict, 'filmPos'):
-            atoms = eval_simple_xpath(group, schema_dict, 'filmPos')
+            atoms = eval_simple_xpath(group, schema_dict, 'filmPos', list_return=True)
         else:
-            atoms = eval_simple_xpath(group, schema_dict, 'relPos')
+            atoms = eval_simple_xpath(group, schema_dict, 'relPos', list_return=True)
         for atom in atoms:
             label = get_xml_attribute(atom, 'label')
             if atom_label in ('all', label):
@@ -559,16 +553,16 @@ def shift_value_species_label(xmltree, schema_dict, atom_label, attributename, v
 
     for species_name in species_to_set:
 
-        xpath_species = f'{species_base_path}[@name = "{specie}"]'
-        attrib_xpath = attr_base_path.replace(species_base_path, xpath_species)
+        xpath_species = f'{species_base_path}[@name="{species_name}"]'
+        tag_xpath = tag_base_xpath.replace(species_base_path, xpath_species)
 
-        xmltree = xml_add_number_to_attrib(xmltree,
-                                           schema_dict,
-                                           attrib_xpath,
-                                           attrib_base_xpath,
-                                           attributename,
-                                           value_given,
-                                           mode=mode)
+        xmltree = xml_add_number_to_first_attrib(xmltree,
+                                                 schema_dict,
+                                                 tag_xpath,
+                                                 tag_base_xpath,
+                                                 attributename,
+                                                 value_given,
+                                                 mode=mode)
 
     return xmltree
 

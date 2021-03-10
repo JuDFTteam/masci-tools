@@ -1105,3 +1105,60 @@ def test_set_atomgroup_label_all(load_inpxml):
     assert eval_xpath(root, '/fleurInput/atomGroups/atomGroup/force/@relaxXYZ') == ['FFF', 'FFF']
     assert eval_xpath(root, '/fleurInput/atomGroups/atomGroup/nocoParams/@beta') == ['7.0000000000', '7.0000000000']
     assert eval_xpath(root, '/fleurInput/atomGroups/atomGroup/cFCoeffs/@potential') == ['T', 'T']
+
+
+def test_shift_value_species_label(load_inpxml):
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import shift_value_species_label
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    shift_value_species_label(xmltree, schema_dict, '222', 'lmax', 15)
+
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/atomicCutoffs/@lmax') == ['25', '10']
+
+
+def test_shift_value_species_label_rel(load_inpxml):
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import shift_value_species_label
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    shift_value_species_label(xmltree, schema_dict, '222', 'lmax', 15, mode='rel')
+
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/atomicCutoffs/@lmax') == ['150', '10']
+
+
+def test_shift_value_species_label_all(load_inpxml):
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import shift_value_species_label
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    shift_value_species_label(
+        xmltree,
+        schema_dict,
+        'all',
+        'lmax',
+        15,
+    )
+
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/atomicCutoffs/@lmax') == ['25', '25']
+
+
+def test_shift_value_species_label_specification(load_inpxml):
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import shift_value_species_label
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    with pytest.raises(ValueError, match='The attrib s has multiple possible paths with the current specification.'):
+        shift_value_species_label(xmltree, schema_dict, '222', 's', 3)
+
+    shift_value_species_label(xmltree, schema_dict, '222', 's', 3, contains='energyParameters')
+
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/energyParameters/@s') == ['7', '6']
