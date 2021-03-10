@@ -599,9 +599,9 @@ def set_atomgroup_label(xmltree, schema_dict, atom_label, attributedict, create=
     # set all species, where given label is present
     for group in all_groups:
         if tag_exists(group, schema_dict, 'filmPos'):
-            atoms = eval_simple_xpath(group, schema_dict, 'filmPos')
+            atoms = eval_simple_xpath(group, schema_dict, 'filmPos', list_return=True)
         else:
-            atoms = eval_simple_xpath(group, schema_dict, 'relPos')
+            atoms = eval_simple_xpath(group, schema_dict, 'relPos', list_return=True)
         for atom in atoms:
             label = get_xml_attribute(atom, 'label')
             if label == atom_label:

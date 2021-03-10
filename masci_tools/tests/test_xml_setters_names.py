@@ -976,9 +976,6 @@ def test_set_species_all_search_string(load_inpxml):
 
     los = eval_xpath(root, '/fleurInput/atomSpecies/species/lo')
 
-    print(eval_xpath(root, '/fleurInput/atomSpecies/species/electronConfig/stateOccupation/@state'))
-    print([lo.attrib for lo in los])
-
     assert eval_xpath(root, '/fleurInput/atomSpecies/species/mtSphere/@radius') == ['2.20000000', '10.0000000000']
     assert eval_xpath(root, '/fleurInput/atomSpecies/species/electronConfig/stateOccupation/@state') == [
         '(3d3/2)', '(3d5/2)', 'state', 'state2'
@@ -998,3 +995,99 @@ def test_set_species_all_search_string(load_inpxml):
         'n': '5',
         'l': '12'
     }]
+
+
+def test_set_atomgroup(load_inpxml):
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_atomgroup
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    changes = {'force': {'relaxXYZ': 'FFF'}, 'nocoParams': {'beta': 7.0}, 'cFCoeffs': {'potential': True}}
+
+    set_atomgroup(xmltree, schema_dict, changes, position=1)
+
+    assert eval_xpath(root, '/fleurInput/atomGroups/atomGroup/force/@relaxXYZ') == ['FFF', 'TTT']
+    assert eval_xpath(root, '/fleurInput/atomGroups/atomGroup/nocoParams/@beta') == ['7.0000000000', '1.570796326']
+    assert eval_xpath(root, '/fleurInput/atomGroups/atomGroup/cFCoeffs/@potential') == 'T'
+
+
+def test_set_atomgroup_species(load_inpxml):
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_atomgroup
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    changes = {'force': {'relaxXYZ': 'FFF'}, 'nocoParams': {'beta': 7.0}, 'cFCoeffs': {'potential': True}}
+
+    set_atomgroup(xmltree, schema_dict, changes, species='Fe-1')
+
+    assert eval_xpath(root, '/fleurInput/atomGroups/atomGroup/force/@relaxXYZ') == ['FFF', 'TTT']
+    assert eval_xpath(root, '/fleurInput/atomGroups/atomGroup/nocoParams/@beta') == ['7.0000000000', '1.570796326']
+    assert eval_xpath(root, '/fleurInput/atomGroups/atomGroup/cFCoeffs/@potential') == 'T'
+
+
+def test_set_atomgroup_all(load_inpxml):
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_atomgroup
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    changes = {'force': {'relaxXYZ': 'FFF'}, 'nocoParams': {'beta': 7.0}, 'cFCoeffs': {'potential': True}}
+
+    set_atomgroup(xmltree, schema_dict, changes, species='all')
+
+    assert eval_xpath(root, '/fleurInput/atomGroups/atomGroup/force/@relaxXYZ') == ['FFF', 'FFF']
+    assert eval_xpath(root, '/fleurInput/atomGroups/atomGroup/nocoParams/@beta') == ['7.0000000000', '7.0000000000']
+    assert eval_xpath(root, '/fleurInput/atomGroups/atomGroup/cFCoeffs/@potential') == ['T', 'T']
+
+
+def test_set_atomgroup_all_position(load_inpxml):
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_atomgroup
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    changes = {'force': {'relaxXYZ': 'FFF'}, 'nocoParams': {'beta': 7.0}, 'cFCoeffs': {'potential': True}}
+
+    set_atomgroup(xmltree, schema_dict, changes, position='all')
+
+    assert eval_xpath(root, '/fleurInput/atomGroups/atomGroup/force/@relaxXYZ') == ['FFF', 'FFF']
+    assert eval_xpath(root, '/fleurInput/atomGroups/atomGroup/nocoParams/@beta') == ['7.0000000000', '7.0000000000']
+    assert eval_xpath(root, '/fleurInput/atomGroups/atomGroup/cFCoeffs/@potential') == ['T', 'T']
+
+
+def test_set_atomgroup_label(load_inpxml):
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_atomgroup_label
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    changes = {'force': {'relaxXYZ': 'FFF'}, 'nocoParams': {'beta': 7.0}, 'cFCoeffs': {'potential': True}}
+
+    set_atomgroup_label(xmltree, schema_dict, '                 222', changes)
+
+    assert eval_xpath(root, '/fleurInput/atomGroups/atomGroup/force/@relaxXYZ') == ['FFF', 'TTT']
+    assert eval_xpath(root, '/fleurInput/atomGroups/atomGroup/nocoParams/@beta') == ['7.0000000000', '1.570796326']
+    assert eval_xpath(root, '/fleurInput/atomGroups/atomGroup/cFCoeffs/@potential') == 'T'
+
+
+def test_set_atomgroup_label_all(load_inpxml):
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_atomgroup_label
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    changes = {'force': {'relaxXYZ': 'FFF'}, 'nocoParams': {'beta': 7.0}, 'cFCoeffs': {'potential': True}}
+
+    set_atomgroup_label(xmltree, schema_dict, 'all', changes)
+
+    assert eval_xpath(root, '/fleurInput/atomGroups/atomGroup/force/@relaxXYZ') == ['FFF', 'FFF']
+    assert eval_xpath(root, '/fleurInput/atomGroups/atomGroup/nocoParams/@beta') == ['7.0000000000', '7.0000000000']
+    assert eval_xpath(root, '/fleurInput/atomGroups/atomGroup/cFCoeffs/@potential') == ['T', 'T']
