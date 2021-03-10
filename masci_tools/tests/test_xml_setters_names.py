@@ -753,3 +753,248 @@ def test_set_complex_tag_complex_xpath(load_inpxml):
     assert node.getparent().attrib['name'] == 'Pt-1'
     assert eval_xpath(root, '/fleurInput/atomSpecies/species/torgueCalculation/@kkintgrCutoff') == 'd'
     assert eval_xpath(root, '/fleurInput/atomSpecies/species/torgueCalculation/greensfElements/s/text()') == 'F T F T'
+
+
+def test_set_species(load_inpxml):
+    """
+    Test of the set_species function (underlying functionality is tested in tests for xml_set_complex_tag)
+
+    Here only the species selection is tested extensively
+    """
+
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_species
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    changes = {
+        'mtSphere': {
+            'radius': 10.0
+        },
+        'lo': {
+            'type': 'TEST',
+            'n': 5,
+            'l': 12
+        },
+        'electronConfig': {
+            'stateOccupation': [{
+                'state': 'state'
+            }, {
+                'state': 'state2'
+            }]
+        }
+    }
+
+    set_species(xmltree, schema_dict, 'Fe-1', changes)
+
+    los = eval_xpath(root, '/fleurInput/atomSpecies/species/lo')
+
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/mtSphere/@radius') == ['10.0000000000', '2.20000000']
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/electronConfig/stateOccupation/@state') == [
+        'state', 'state2', '(6s1/2)', '(5d5/2)'
+    ]
+    assert [lo.attrib for lo in los] == [{
+        'type': 'TEST',
+        'n': '5',
+        'l': '12'
+    }, {
+        'type': 'SCLO',
+        'l': '1',
+        'n': '5',
+        'eDeriv': '0'
+    }]
+
+
+def test_set_species_label(load_inpxml):
+    """
+    Test of the set_species function (underlying functionality is tested in tests for xml_set_complex_tag)
+
+    Here only the species selection is tested extensively
+    """
+
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_species_label
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    changes = {
+        'mtSphere': {
+            'radius': 10.0
+        },
+        'lo': {
+            'type': 'TEST',
+            'n': 5,
+            'l': 12
+        },
+        'electronConfig': {
+            'stateOccupation': [{
+                'state': 'state'
+            }, {
+                'state': 'state2'
+            }]
+        }
+    }
+
+    set_species_label(xmltree, schema_dict, '                 222', changes)
+
+    los = eval_xpath(root, '/fleurInput/atomSpecies/species/lo')
+
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/mtSphere/@radius') == ['10.0000000000', '2.20000000']
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/electronConfig/stateOccupation/@state') == [
+        'state', 'state2', '(6s1/2)', '(5d5/2)'
+    ]
+    assert [lo.attrib for lo in los] == [{
+        'type': 'TEST',
+        'n': '5',
+        'l': '12'
+    }, {
+        'type': 'SCLO',
+        'l': '1',
+        'n': '5',
+        'eDeriv': '0'
+    }]
+
+
+def test_set_species_all(load_inpxml):
+    """
+    Test of the set_species function (underlying functionality is tested in tests for xml_set_complex_tag)
+
+    Here only the species selection is tested extensively
+    """
+
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_species
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    changes = {
+        'mtSphere': {
+            'radius': 10.0
+        },
+        'lo': {
+            'type': 'TEST',
+            'n': 5,
+            'l': 12
+        },
+        'electronConfig': {
+            'stateOccupation': [{
+                'state': 'state'
+            }, {
+                'state': 'state2'
+            }]
+        }
+    }
+
+    set_species(xmltree, schema_dict, 'all', changes)
+
+    los = eval_xpath(root, '/fleurInput/atomSpecies/species/lo')
+
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/mtSphere/@radius') == ['10.0000000000', '10.0000000000']
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/electronConfig/stateOccupation/@state') == [
+        'state', 'state2', 'state', 'state2'
+    ]
+    assert [lo.attrib for lo in los] == [{'type': 'TEST', 'n': '5', 'l': '12'}, {'type': 'TEST', 'l': '12', 'n': '5'}]
+
+
+def test_set_species_label_all(load_inpxml):
+    """
+    Test of the set_species function (underlying functionality is tested in tests for xml_set_complex_tag)
+
+    Here only the species selection is tested extensively
+    """
+
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_species_label
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    changes = {
+        'mtSphere': {
+            'radius': 10.0
+        },
+        'lo': {
+            'type': 'TEST',
+            'n': 5,
+            'l': 12
+        },
+        'electronConfig': {
+            'stateOccupation': [{
+                'state': 'state'
+            }, {
+                'state': 'state2'
+            }]
+        }
+    }
+
+    set_species_label(xmltree, schema_dict, 'all', changes)
+
+    los = eval_xpath(root, '/fleurInput/atomSpecies/species/lo')
+
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/mtSphere/@radius') == ['10.0000000000', '10.0000000000']
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/electronConfig/stateOccupation/@state') == [
+        'state', 'state2', 'state', 'state2'
+    ]
+    assert [lo.attrib for lo in los] == [{'type': 'TEST', 'n': '5', 'l': '12'}, {'type': 'TEST', 'l': '12', 'n': '5'}]
+
+
+def test_set_species_all_search_string(load_inpxml):
+    """
+    Test of the set_species function (underlying functionality is tested in tests for xml_set_complex_tag)
+
+    Here only the species selection is tested extensively
+    """
+
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_species
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    changes = {
+        'mtSphere': {
+            'radius': 10.0
+        },
+        'lo': {
+            'type': 'TEST',
+            'n': 5,
+            'l': 12
+        },
+        'electronConfig': {
+            'stateOccupation': [{
+                'state': 'state'
+            }, {
+                'state': 'state2'
+            }]
+        }
+    }
+
+    set_species(xmltree, schema_dict, 'all-Pt', changes)
+
+    los = eval_xpath(root, '/fleurInput/atomSpecies/species/lo')
+
+    print(eval_xpath(root, '/fleurInput/atomSpecies/species/electronConfig/stateOccupation/@state'))
+    print([lo.attrib for lo in los])
+
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/mtSphere/@radius') == ['2.20000000', '10.0000000000']
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/electronConfig/stateOccupation/@state') == [
+        '(3d3/2)', '(3d5/2)', 'state', 'state2'
+    ]
+    assert [lo.attrib for lo in los] == [{
+        'type': 'SCLO',
+        'l': '0',
+        'n': '3',
+        'eDeriv': '0'
+    }, {
+        'type': 'SCLO',
+        'l': '1',
+        'n': '3',
+        'eDeriv': '0'
+    }, {
+        'type': 'TEST',
+        'n': '5',
+        'l': '12'
+    }]
