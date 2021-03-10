@@ -222,13 +222,12 @@ def rotate_nmmpmat(xmltree, nmmplines, schema_dict, species_name, orbital, phi, 
         for spin in range(nspins):
             startRow = (spin * len(all_ldau) + ldau_index) * 14
             for index, line in enumerate(nmmplines[startRow:startRow + 14]):
-                currentLine = index - startRow
-                currentRow = currentLine // 2
-                if currentLine % 2 == 0:
+                currentRow = index // 2
+                if index % 2 == 0:
                     rowData = [float(x) for x in line.split()]
                 else:
                     rowData.extend([float(x) for x in line.split()])
-                    rowData = [x + 1j * y for x, y in zip(rowData[:-1], rowData[1:])]
+                    rowData = [num[0] + 1j * num[1] for indx, num in enumerate(zip(rowData[:-1], rowData[1:])) if indx % 2 == 0]
                     denmat[spin][currentRow, :] += np.array(rowData)
 
         #Rotate the density matrix

@@ -8,6 +8,8 @@ import pytest
 FILE_PATH = os.path.dirname(os.path.abspath(__file__))
 TEST_INPXML_PATH = os.path.join(FILE_PATH, 'files/fleur/Max-R5/FePt_film_SSFT_LO/files/inp2.xml')
 TEST_INPXML_LDAU_PATH = os.path.join(FILE_PATH, 'files/fleur/Max-R5/GaAsMultiUForceXML/files/inp.xml')
+TEST_NMMPMAT_PATH = os.path.join(FILE_PATH, 'files/fleur/input_nmmpmat.txt')
+
 
 def test_fleurxmlmodifier_facade_methods():
     """
@@ -109,6 +111,11 @@ def test_fleurxmlmodifier_nmmpmat():
     with pytest.raises(ValueError, match=r'Changes were not valid \(n_mmp_mat file is not compatible\)'):
         fm.modify_xmlfile(TEST_INPXML_LDAU_PATH)
     xmltree, nmmpmat = fm.modify_xmlfile(TEST_INPXML_LDAU_PATH, validate_changes=False)
+
+    assert xmltree is not None
+    assert nmmpmat is not None
+
+    xmltree, nmmpmat = fm.modify_xmlfile(TEST_INPXML_LDAU_PATH, original_nmmp_file=TEST_NMMPMAT_PATH, validate_changes=False)
 
     assert xmltree is not None
     assert nmmpmat is not None
