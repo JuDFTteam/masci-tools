@@ -14,7 +14,7 @@ for root, dirs, files in os.walk(os.path.abspath(os.path.join(CURRENT_DIR, SCHEM
     for folder in dirs:
         if '0.' in folder:
             schema_versions['inp'].append(folder)
-            if int(folder.split('.')[1]) >= 33 or folder == '0.31':
+            if int(folder.split('.')[1]) >= 33 or folder in ('0.31','0.30','0.29'):
                 schema_versions['out'].append(folder)
 
 

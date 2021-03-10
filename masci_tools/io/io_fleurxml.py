@@ -63,6 +63,8 @@ def load_outxml(outxmlfile):
     from masci_tools.util.xml.common_xml_util import eval_xpath
     from masci_tools.io.parsers.fleur.fleur_schema import OutputSchemaDict
 
+    outfile_broken = False
+
     if isinstance(outxmlfile, etree._ElementTree):
         xmltree = outxmlfile
     else:
@@ -111,6 +113,11 @@ def load_outxml(outxmlfile):
             warnings.warn("Found version before MaX3.1 release falling back to file version '0.29'")
         else:
             raise ValueError(f"Unknown fleur version: File-version '{out_version}' Program-version '{program_version}'")
+    else:
+        inp_version = eval_xpath(xmltree, '//@fleurInputVersion')
+        inp_version = str(inp_version)
+        if inp_version is None:
+            raise ValueError('Failed to extract inputVersion')
 
     schema_dict = OutputSchemaDict.fromVersion(out_version, inp_version=inp_version)
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" version="0.30">
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" version="0.29">
 
    <!--Here the FleurInputSchema is included since the out.xml contains a complete dump of the inp.xml!-->
    <xsd:include schemaLocation="FleurInputSchema.xsd"/>
