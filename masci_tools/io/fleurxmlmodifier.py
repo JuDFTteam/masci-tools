@@ -114,7 +114,7 @@ class FleurXMLModifier:
 
             elif task.name in nmmpmat_functions:
                 action = nmmpmat_functions[task.name]
-                xmltree = action(xmltree, nmmp_lines, schema_dict, *task.args, **task.kwargs)
+                nmmp_lines = action(xmltree, nmmp_lines, schema_dict, *task.args, **task.kwargs)
 
             else:
                 raise ValueError(f'Unknown task {task.name}')
@@ -127,6 +127,8 @@ class FleurXMLModifier:
             except ValueError as exc:
                 msg = f'Changes were not valid (n_mmp_mat file is not compatible): {modification_tasks}'
                 raise ValueError(msg) from exc
+
+        return xmltree, nmmp_lines
 
     def get_avail_actions(self):
         """
@@ -576,7 +578,7 @@ class FleurXMLModifier:
         pprint(self._tasks)
         return self._tasks
 
-    def modify_xmlfile(self, original_inpxmlfile, original_nmmp_file=None):
+    def modify_xmlfile(self, original_inpxmlfile, original_nmmp_file=None, validate_changes=True):
         """
         Applies the registered modifications to a given inputfile
 
@@ -607,10 +609,10 @@ class FleurXMLModifier:
         else:
             original_nmmp_lines = None
 
-        new_xmltree = copy.deepcopy(original_xmltree)
-        new_nmmp_lines = copy.deepcopy(original_nmmp_lines)
-
-        self.apply_modifications(new_xmltree, new_nmmp_lines, self._tasks)
+        new_xmltree, new_nmmp_lines = self.apply_modifications(original_xmltree,
+                                                               original_nmmp_lines,
+                                                               self._tasks,
+                                                               validate_changes=validate_changes)
 
         if new_nmmp_lines is None:
             return new_xmltree
