@@ -1244,3 +1244,103 @@ def test_shift_value_specification(load_inpxml):
     assert eval_xpath(root, '/fleurInput/calculationSetup/scfLoop/@itmax') == '2'
     assert eval_xpath(root, '/fleurInput/calculationSetup/cutoffs/@Kmax') == '20.0000000000'
     assert eval_xpath(root, '/fleurInput/calculationSetup/scfLoop/@spinf') == '1.0000000000'
+
+
+def test_set_inpchanges_single(load_inpxml):
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_inpchanges
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    set_inpchanges(xmltree, schema_dict, {'itmax': 20})
+
+    assert eval_xpath(root, '/fleurInput/calculationSetup/scfLoop/@itmax') == '20'
+
+
+def test_set_inpchanges_single_text(load_inpxml):
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_inpchanges
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    set_inpchanges(xmltree, schema_dict, {'qss': [10, 10, 10]})
+
+    assert eval_xpath(
+        root, '/fleurInput/calculationSetup/magnetism/qss/text()') == '10.0000000000 10.0000000000 10.0000000000'
+
+
+def test_set_inpchanges_multiple(load_inpxml):
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_inpchanges
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    set_inpchanges(xmltree, schema_dict, {'itmax': 20, 'qss': [10, 10, 10], 'xcFunctional': 'TEST', 'l_linmix': True})
+
+    assert eval_xpath(root, '/fleurInput/calculationSetup/scfLoop/@itmax') == '20'
+    assert eval_xpath(
+        root, '/fleurInput/calculationSetup/magnetism/qss/text()') == '10.0000000000 10.0000000000 10.0000000000'
+    assert eval_xpath(root, '/fleurInput/calculationSetup/xcFunctional/@name') == 'TEST'
+    assert eval_xpath(root, '/fleurInput/calculationSetup/ldaU/@l_linMix') == 'T'
+
+
+def test_set_inpchanges_specification(load_inpxml):
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_inpchanges
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    with pytest.raises(ValueError,
+                       match='The attrib spinf has multiple possible paths with the current specification.'):
+        set_inpchanges(xmltree, schema_dict, {
+            'itmax': 20,
+            'qss': [10, 10, 10],
+            'xcFunctional': 'TEST',
+            'l_linmix': True,
+            'spinf': 10.0
+        })
+
+    set_inpchanges(xmltree,
+                   schema_dict, {
+                       'itmax': 20,
+                       'qss': [10, 10, 10],
+                       'xcFunctional': 'TEST',
+                       'l_linmix': True,
+                       'spinf': 10.0
+                   },
+                   path_spec={
+                       'qss': {
+                           'contains': 'magnetism'
+                       },
+                       'SPINF': {
+                           'not_contains': 'scfLoop'
+                       }
+                   })
+
+    assert eval_xpath(root, '/fleurInput/calculationSetup/scfLoop/@itmax') == '20'
+    assert eval_xpath(
+        root, '/fleurInput/calculationSetup/magnetism/qss/text()') == '10.0000000000 10.0000000000 10.0000000000'
+    assert eval_xpath(root, '/fleurInput/calculationSetup/xcFunctional/@name') == 'TEST'
+    assert eval_xpath(root, '/fleurInput/calculationSetup/ldaU/@l_linMix') == 'T'
+    assert eval_xpath(root, '/fleurInput/calculationSetup/ldaU/@spinf') == '10.0000000000'
+
+
+def test_set_inpchanges_error(load_inpxml):
+    from masci_tools.util.xml.xml_setters_names import set_inpchanges
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+
+    with pytest.raises(
+            ValueError,
+            match="You try to set the key:'does_not_exist' to : 'TEST', but the key is unknown to the fleur plug-in"):
+        set_inpchanges(xmltree, schema_dict, {
+            'itmax': 20,
+            'qss': [10, 10, 10],
+            'does_not_exist': 'TEST',
+            'xcFunctional': 'TEST',
+            'l_linmix': True
+        })
