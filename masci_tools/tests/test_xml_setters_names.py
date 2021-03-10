@@ -577,6 +577,15 @@ def test_set_simple_tag(load_inpxml):
     assert node.attrib == {'Kmax': '4.00000000', 'Gmax': '34.0000000000', 'GmaxXC': '40.0000000000', 'numbands': '0'}
 
 
+def test_set_simple_tag_error(load_inpxml):
+    from masci_tools.util.xml.xml_setters_names import set_simple_tag
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+
+    with pytest.raises(AssertionError, match="Given tag 'species' is not simple"):
+        set_simple_tag(xmltree, schema_dict, 'species', {'mtSphere': {'radius': 10}})
+
+
 def test_set_simple_tag_specification(load_inpxml):
 
     from masci_tools.util.xml.common_xml_util import eval_xpath
@@ -1162,3 +1171,76 @@ def test_shift_value_species_label_specification(load_inpxml):
     shift_value_species_label(xmltree, schema_dict, '222', 's', 3, contains='energyParameters')
 
     assert eval_xpath(root, '/fleurInput/atomSpecies/species/energyParameters/@s') == ['7', '6']
+
+
+def test_shift_value_single(load_inpxml):
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import shift_value
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    shift_value(xmltree, schema_dict, {'itmax': 2})
+
+    assert eval_xpath(root, '/fleurInput/calculationSetup/scfLoop/@itmax') == '3'
+
+
+def test_shift_value_multiple(load_inpxml):
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import shift_value
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    shift_value(xmltree, schema_dict, {'itmax': 2, 'kmax': 5.0})
+
+    assert eval_xpath(root, '/fleurInput/calculationSetup/scfLoop/@itmax') == '3'
+    assert eval_xpath(root, '/fleurInput/calculationSetup/cutoffs/@Kmax') == '9.0000000000'
+
+
+def test_shift_value_rel(load_inpxml):
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import shift_value
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    shift_value(xmltree, schema_dict, {'itmax': 2, 'kmax': 5.0}, mode='rel')
+
+    assert eval_xpath(root, '/fleurInput/calculationSetup/scfLoop/@itmax') == '2'
+    assert eval_xpath(root, '/fleurInput/calculationSetup/cutoffs/@Kmax') == '20.0000000000'
+
+
+def test_shift_value_specification(load_inpxml):
+    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import shift_value
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    with pytest.raises(ValueError,
+                       match='The attrib spinf has multiple possible paths with the current specification.'):
+        shift_value(xmltree, schema_dict, {'itmax': 2, 'kmax': 5.0, 'spinf': 0.5}, mode='rel')
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    shift_value(xmltree,
+                schema_dict, {
+                    'itmax': 2,
+                    'kmax': 5.0,
+                    'spinf': 0.5
+                },
+                mode='rel',
+                path_spec={
+                    'spinf': {
+                        'contains': 'scfLoop'
+                    },
+                    'KMAX': {
+                        'not_contains': 'species'
+                    }
+                })
+
+    assert eval_xpath(root, '/fleurInput/calculationSetup/scfLoop/@itmax') == '2'
+    assert eval_xpath(root, '/fleurInput/calculationSetup/cutoffs/@Kmax') == '20.0000000000'
+    assert eval_xpath(root, '/fleurInput/calculationSetup/scfLoop/@spinf') == '1.0000000000'

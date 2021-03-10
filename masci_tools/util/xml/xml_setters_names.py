@@ -112,6 +112,8 @@ def add_number_to_attrib(xmltree,
                                        mode=mode,
                                        occurrences=occurrences)
 
+    return xmltree
+
 
 def add_number_to_first_attrib(xmltree,
                                schema_dict,
@@ -679,9 +681,11 @@ def shift_value(xmltree, schema_dict, change_dict, mode='abs', path_spec=None):
 
             change_dict = {'itmax' : 1, 'dVac': -0.123}
     """
+    from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict
 
     if path_spec is None:
         path_spec = {}
+    path_spec = CaseInsensitiveDict(path_spec)
 
     for key, value_given in change_dict.items():
 
@@ -719,9 +723,11 @@ def set_inpchanges(xmltree, schema_dict, change_dict, path_spec=None):
     """
     from masci_tools.util.xml.xml_setters_xpaths import xml_set_first_attrib_value, xml_set_first_text
     from masci_tools.util.xml.common_xml_util import split_off_attrib
+    from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict
 
     if path_spec is None:
         path_spec = {}
+    path_spec = CaseInsensitiveDict(path_spec)
 
     for key, change_value in change_dict.items():
 
