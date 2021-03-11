@@ -324,6 +324,10 @@ def convert_text_to_xml(textvalue, possible_definitions, conversion_warnings=Non
 
     :return: The converted value of the first succesful conversion
     """
+
+    if conversion_warnings is None:
+        conversion_warnings = []
+
     if not isinstance(textvalue, list):
         textvalue = [textvalue]
     elif not isinstance(textvalue[0], list):
@@ -332,9 +336,6 @@ def convert_text_to_xml(textvalue, possible_definitions, conversion_warnings=Non
     converted_list = []
     all_success = True
     for text in textvalue:
-        if isinstance(text, str):
-            converted_list.append(text)
-            continue
 
         if not isinstance(text, list):
             text = [text]
@@ -346,13 +347,15 @@ def convert_text_to_xml(textvalue, possible_definitions, conversion_warnings=Non
 
         if text_definition is None:
             for definition in possible_definitions:
-                if definition['length'] == 'unbounded' or \
-                   definition['length'] == 1:
+                if definition['length'] == 'unbounded':
                     text_definition = definition
 
         if text_definition is None:
             conversion_warnings.append(f"Failed to convert '{text}', no matching definition found ")
-            converted_list.append(text)
+            if isinstance(text, str):
+                converted_list.append(text)
+                continue
+            converted_list.append('')
             all_success = False
             continue
 
@@ -364,6 +367,9 @@ def convert_text_to_xml(textvalue, possible_definitions, conversion_warnings=Non
                                                             conversion_warnings=warnings)
             converted_text.append(converted_value)
             if not suc:
+                if isinstance(value, str):
+                    converted_list.append(value)
+                    continue
                 all_success = False
                 for warning in warnings:
                     conversion_warnings.append(warning)

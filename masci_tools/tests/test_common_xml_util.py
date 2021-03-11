@@ -475,3 +475,48 @@ def test_convert_xml_text_warnings(string_text, definitions, results, warnings):
     assert ret_val == expected_val
     assert suc == expected_suc
     assert conversion_warnings == warnings
+
+
+TEST_TEXT_VALUES = [[0.0, 'Pi/4.0', 6.3121], [0.0, 'Pi/4.0', 6.3121], [0.0, 'Pi/4.0', 6.3121], [0.0, 'Pi/4.0', 6.3121],
+                    [[0.0, 'Pi/4.0', 6.3121], ['Bohr', 'Pi/4.0', 'all']], [[False, 'asd'], 'T'],
+                    [[12, '213', 4215, 412], [12, '213', 4215, '412', 123, 14124]]]
+
+TEST_TEXT_XML_STRINGS = [('0.0000000000 Pi/4.0 6.3121000000', True), ('', False),
+                         ('0.0000000000 Pi/4.0 6.3121000000', True), ('', False),
+                         (['0.0000000000 Pi/4.0 6.3121000000', 'Bohr Pi/4.0 all'], True), (['F asd', 'T'], True),
+                         (['12 213 4215 412', '12 213 4215 412 123 14124'], True)]
+
+TEST_TEXT_XML_WARNINGS = [[], ["Failed to convert '[0.0, 'Pi/4.0', 6.3121]', no matching definition found "], [],
+                          ["Failed to convert '[0.0, 'Pi/4.0', 6.3121]', no matching definition found "], [], [], []]
+
+
+@pytest.mark.parametrize('text_value,definitions, results',
+                         zip(TEST_TEXT_VALUES, TEST_DEFINITIONS, TEST_TEXT_XML_STRINGS))
+def test_convert_text_to_xml(text_value, definitions, results):
+    """
+    Test of the convert_xml_attribute function
+    """
+    from masci_tools.util.xml.common_xml_util import convert_text_to_xml
+
+    expected_val, expected_suc = results
+
+    ret_val, suc = convert_text_to_xml(text_value, definitions)
+    assert ret_val == expected_val
+    assert suc == expected_suc
+
+
+@pytest.mark.parametrize('text_value,definitions, results, warnings',
+                         zip(TEST_TEXT_VALUES, TEST_DEFINITIONS, TEST_TEXT_XML_STRINGS, TEST_TEXT_XML_WARNINGS))
+def test_convert_text_to_xml_warnings(text_value, definitions, results, warnings):
+    """
+    Test of the convert_xml_attribute function
+    """
+    from masci_tools.util.xml.common_xml_util import convert_text_to_xml
+
+    expected_val, expected_suc = results
+
+    conversion_warnings = []
+    ret_val, suc = convert_text_to_xml(text_value, definitions, conversion_warnings=conversion_warnings)
+    assert ret_val == expected_val
+    assert suc == expected_suc
+    assert conversion_warnings == warnings
