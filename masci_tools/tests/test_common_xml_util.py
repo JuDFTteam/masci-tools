@@ -335,6 +335,55 @@ def test_convert_xml_attribute_warnings(string_attr, types, results, warnings):
     assert conversion_warnings == warnings
 
 
+TEST_ATTR_VALUES = [1.2134, 'all', ['all', 213, '-12'], ['3.14', 'NOT_PI', 1.2], [False, 'True']]
+
+TEST_ATTR_TYPES = [['float'], ['int', 'string'], ['int', 'string'], ['float', 'float_expression'], ['int', 'switch']]
+
+TEST_ATTR_RESULTS = [('1.2134000000', True), ('all', True), (['all', '213', '-12'], True),
+                     (['3.14', 'NOT_PI', '1.2000000000'], True), (['F', 'T'], True)]
+
+TEST_ATTR_WARNINGS = [
+    [], [], [],
+    [
+        "Could not convert to float string '3.14' The following error was raised: Unknown format code 'f' for object of type 'str'",
+        "Could not convert to float string '3.14' The following error was raised: Unknown format code 'f' for object of type 'str'",
+        "Could not convert to float string 'NOT_PI' The following error was raised: Unknown format code 'f' for object of type 'str'",
+        "Could not convert to float string 'NOT_PI' The following error was raised: Unknown format code 'f' for object of type 'str'"
+    ], []
+]
+
+
+@pytest.mark.parametrize('attr_value,types,results', zip(TEST_ATTR_VALUES, TEST_ATTR_TYPES, TEST_ATTR_RESULTS))
+def test_convert_attribute_to_xml(attr_value, types, results):
+    """
+    Test of the convert_xml_attribute function
+    """
+    from masci_tools.util.xml.common_xml_util import convert_attribute_to_xml
+
+    expected_val, expected_suc = results
+
+    ret_val, suc = convert_attribute_to_xml(attr_value, types)
+    assert ret_val == expected_val
+    assert suc == expected_suc
+
+
+@pytest.mark.parametrize('attr_value,types,results,warnings',
+                         zip(TEST_ATTR_VALUES, TEST_ATTR_TYPES, TEST_ATTR_RESULTS, TEST_ATTR_WARNINGS))
+def test_convert_attribute_to_xml_warnings(attr_value, types, results, warnings):
+    """
+    Test of the convert_xml_attribute function
+    """
+    from masci_tools.util.xml.common_xml_util import convert_attribute_to_xml
+
+    expected_val, expected_suc = results
+
+    conversion_warnings = []
+    ret_val, suc = convert_attribute_to_xml(attr_value, types, conversion_warnings=conversion_warnings)
+    assert ret_val == expected_val
+    assert suc == expected_suc
+    assert conversion_warnings == warnings
+
+
 TEST_TEXT_STRINGS = [
     '0.0 Pi/4.0 6.3121', '0.0 Pi/4.0 6.3121', '0.0 Pi/4.0 6.3121', '0.0 Pi/4.0 6.3121',
     ['0.0 Pi/4.0 6.3121', 'Bohr Pi/4.0 all', '0.0 Pi/*4.0 0.0'], ['F asd', 'T'],

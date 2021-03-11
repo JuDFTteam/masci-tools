@@ -190,13 +190,17 @@ def convert_attribute_to_xml(attributevalue, possible_types, conversion_warnings
 
     possible_types = possible_types.copy()
 
+    if 'int' in possible_types:  #Since it just converts to string
+        possible_types.remove('int')
+        possible_types.append('int')
+
+    if 'string' in possible_types:
+        possible_types.remove('string')
+    possible_types.append('string')  #Always try string
+
     converted_list = []
     all_success = True
     for value in attributevalue:
-        if isinstance(value, str):
-            #we are already done
-            converted_list.append(value)
-            continue
 
         suc = False
         for value_type in possible_types:
@@ -214,9 +218,8 @@ def convert_attribute_to_xml(attributevalue, possible_types, conversion_warnings
                     suc = True
                 except ValueError as errmsg:
                     suc = False
-                    conversion_warnings.append(f"Could not convert to float string '{value}'. Falling back to string "
+                    conversion_warnings.append(f"Could not convert to float string '{value}' "
                                                f'The following error was raised: {errmsg}')
-                    possible_types.append('string')
             elif value_type == 'switch':
                 converted_value, suc = convert_to_fortran_bool(value, conversion_warnings=conversion_warnings)
             elif value_type in ('string', 'int'):
