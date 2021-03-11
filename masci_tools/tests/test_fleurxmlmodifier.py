@@ -44,6 +44,7 @@ def test_fleurxml_modifier_modify_xmlfile_simple():
     fm.shift_value({'Kmax': 0.1}, 'rel')
     fm.shift_value_species_label('                 222', 'radius', 3, mode='abs')
     fm.set_species('all', {'mtSphere': {'radius': 3.333}})
+    fm.xml_set_attrib_value_no_create('/fleurInput/calculationSetup/cutoffs', 'Gmax', '14.0')
 
     assert fm.changes() == [
         ModifierTask(name='set_inpchanges', args=({
@@ -64,7 +65,14 @@ def test_fleurxml_modifier_modify_xmlfile_simple():
             'mtSphere': {
                 'radius': 3.333
             }
-        }), kwargs={})
+        }), kwargs={}),
+        ModifierTask(name='xml_set_attrib_value_no_create',
+                     args=(
+                         '/fleurInput/calculationSetup/cutoffs',
+                         'Gmax',
+                         '14.0',
+                     ),
+                     kwargs={})
     ]
 
     #The underlying methods are tested in the specific tests for the setters
