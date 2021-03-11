@@ -119,6 +119,46 @@ def test_convert_from_fortran_bool():
     assert warnings == []
 
 
+def test_convert_to_fortran_bool():
+    """
+    Test of the function convert_to_fortran_bool
+    """
+    from masci_tools.util.xml.common_xml_util import convert_to_fortran_bool
+
+    TRUE_ITEMS = (True, 'True', 't', 'T')
+    FALSE_ITEMS = (False, 'False', 'f', 'F')
+
+    for item in TRUE_ITEMS:
+        res, suc = convert_to_fortran_bool(item)
+        assert suc
+        assert res == 'T'
+
+    for item in FALSE_ITEMS:
+        res, suc = convert_to_fortran_bool(item)
+        assert suc
+        assert res == 'F'
+
+    warnings = []
+    res, suc = convert_to_fortran_bool('True', conversion_warnings=warnings)
+    assert suc
+    assert res == 'T'
+    assert warnings == []
+
+    warnings = []
+    res, suc = convert_to_fortran_bool('NOT_A_BOOL', conversion_warnings=warnings)
+    assert not suc
+    assert res is None
+    assert warnings == [
+        "A string: NOT_A_BOOL for a boolean was given, which is not 'True','False', 't', 'T', 'F' or 'f'"
+    ]
+
+    warnings = []
+    res, suc = convert_to_fortran_bool((), conversion_warnings=warnings)
+    assert not suc
+    assert res is None
+    assert warnings == ['convert_to_fortran_bool accepts only a string or bool as argument, given () ']
+
+
 def test_eval_xpath():
     """
     Test of the eval_xpath function

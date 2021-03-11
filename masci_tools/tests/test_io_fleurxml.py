@@ -123,7 +123,6 @@ def test_loadoutxml_premax31():
     with pytest.warns(UserWarning):
         xmltree, schema_dict = load_outxml(TEST_OUTXML_PATH)
 
-    print(schema_dict['out_version'])
     assert xmltree is not None
     assert schema_dict['out_version'] == '0.29'
     assert schema_dict['inp_version'] == '0.29'
