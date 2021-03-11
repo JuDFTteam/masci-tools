@@ -520,3 +520,56 @@ def test_convert_text_to_xml_warnings(text_value, definitions, results, warnings
     assert ret_val == expected_val
     assert suc == expected_suc
     assert conversion_warnings == warnings
+
+
+def test_split_off_tag():
+    """
+    Test of the split_off_tag function
+    """
+    from masci_tools.util.xml.common_xml_util import split_off_tag
+
+    assert split_off_tag('/fleurInput/calculationSetup/cutoffs') == ('/fleurInput/calculationSetup', 'cutoffs')
+    assert split_off_tag('/fleurInput/calculationSetup/cutoffs/') == ('/fleurInput/calculationSetup', 'cutoffs')
+    assert split_off_tag('./calculationSetup/cutoffs') == ('./calculationSetup', 'cutoffs')
+
+
+def test_split_off_attrib():
+    """
+    Test of the split_off_tag function
+    """
+    from masci_tools.util.xml.common_xml_util import split_off_attrib
+
+    assert split_off_attrib('/fleurInput/calculationSetup/cutoffs/@Kmax') == ('/fleurInput/calculationSetup/cutoffs',
+                                                                              'Kmax')
+    with pytest.raises(AssertionError):
+        split_off_attrib('/fleurInput/calculationSetup/cutoffs')
+    with pytest.raises(AssertionError):
+        split_off_attrib("/fleurInput/atomSpecies/species[@name='TEST']")
+    assert split_off_attrib('./calculationSetup/cutoffs/@Kmax') == ('./calculationSetup/cutoffs', 'Kmax')
+
+
+def test_check_complex_xpath(load_inpxml):
+    """
+    Test of the check_complex_xpath function
+    """
+    from masci_tools.util.xml.common_xml_util import check_complex_xpath
+
+    FILE_PATH = os.path.dirname(os.path.abspath(__file__))
+    TEST_INPXML_PATH = os.path.join(FILE_PATH, 'files/fleur/Max-R5/FePt_film_SSFT_LO/files/inp2.xml')
+
+    xmltree, _ = load_inpxml(TEST_INPXML_PATH)
+
+    check_complex_xpath(xmltree, '/fleurInput/atomSpecies/species', "/fleurInput/atomSpecies/species[@name='Fe-1']")
+
+    with pytest.raises(ValueError):
+        check_complex_xpath(xmltree, '/fleurInput/atomSpecies/species',
+                            "/fleurInput/atomSpecies/species[@name='Fe-1']/lo")
+
+    with pytest.raises(ValueError):
+        check_complex_xpath(xmltree, '/fleurInput/atomSpecies/species',
+                            "/fleurInput/atomSpecies/species[@name='Fe-1']/@name")
+
+    check_complex_xpath(xmltree, '/fleurInput/atomSpecies/species', '/fleurInput/atomSpecies/species')
+    check_complex_xpath(xmltree, '/fleurInput/atomSpecies/species',
+                        "/fleurInput/atomSpecies/species[@name='does_not_exist']")
+    check_complex_xpath(xmltree, '/fleurInput/atomSpecies/species/lo', "//species[@name='Pt-1']/lo")
