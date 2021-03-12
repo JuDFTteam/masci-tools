@@ -420,6 +420,7 @@ class kkrparams(object):
                 'Superconductivity: Scaling factor for lambda_BdG (e.g. used to deactivate BdG coupling in some layers by setting the value to 0)'
             ]),
             ('<MIXFAC_BDG>', [None, '%f', False, 'Superconductivity: Mixing factor used in the mixing of the BdG Delta (defaults to 0.1)']),
+            ('<MIXFAC_BDG_BRY>', [None, '%f', False, 'Superconductivity: Mixing factor used in the Broyden mixing of the BdG Delta (defaults to value of <MIXFAC_BDG>)']),
             ('<NINIT_BROYDEN_BDG>', [None, '%i', False, 'Superconductivity: Number of simple mixing steps before Broyden for BdG Delta starts (defaults to 1).']),
             ('<MEMLEN_BROYDEN_BDG>', [None, '%i', False, 'Superconductivity: Memory length of Broyden mixing (defaults to 20)']),
             ('<TEMP_BDG>', [None, '%f', False, 'Superconductivity: Smearing temperature for the calculation of the anomalous density (used to calculate Tc, defaults to 0).']),
@@ -487,6 +488,10 @@ class kkrparams(object):
             ('<FORMATTED_FILE>', [
                 None, '%l', False,
                 "Run option: write files ascii-format. only effective with some other write-options (former: 'fileverb')"
+            ]),
+            ('<FORCE_BZ_SYMM>', [
+                None, '%l', False,
+                "Run option: force using symmetries of the Brillouin zone (effective only for the Chebychev solver, should not be used with SOC!)"
             ]),
             ('<IMPURITY_OPERATOR_ONLY>', [
                 None, '%l', False,
