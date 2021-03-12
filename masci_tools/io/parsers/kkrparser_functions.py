@@ -15,6 +15,7 @@ Here I collect all functions needed to parse the output of a KKR calculation.
 These functions do not need aiida and are therefore separated from the actual
 parser file where parse_kkr_outputfile is called
 """
+import numpy as np
 from numpy import ndarray, array, loadtxt, shape
 from masci_tools.io.common_functions import (search_string, get_version_info, get_Ry2eV, angles_to_vec,
                                              get_corestates_from_potential, get_highest_core_state, open_general,
@@ -508,7 +509,7 @@ def get_spinmom_per_atom(outfile, natom, nonco_out_file=None):
         angles = loadtxt(nonco_out_file, usecols=[0, 1])  # make sure only theta and phi are read in
         if len(shape(angles)) == 1:
             angles = array([angles])
-        vec = angles_to_vec(result[-1], angles[:, 0], angles[:, 1])
+        vec = angles_to_vec(result[-1], angles[:, 0]/180.*np.pi, angles[:, 1]/180.*np.pi)
     else:
         vec, angles = [], []
 
@@ -739,7 +740,7 @@ def parse_kkr_outputfile(out_dict,
             traceback.print_exc()
 
     # this is skipped for qdos run for example
-    if not skip_readin:
+    if not skip_readin and not doscalc:
         try:
             ncore, emax, lmax, descr_max = get_core_states(potfile_out)
             tmp_dict = {}
@@ -904,11 +905,10 @@ def parse_kkr_outputfile(out_dict,
             out_dict['single_particle_energies'] = result * Ry2eV
             out_dict['single_particle_energies_unit'] = 'eV'
         except:
-            if not doscalc:
-                msg = 'Error parsing output of KKR: single particle energies'
-                msg_list.append(msg)
-                if debug:
-                    traceback.print_exc()
+            msg = 'Error parsing output of KKR: single particle energies'
+            msg_list.append(msg)
+            if debug:
+                traceback.print_exc()
 
         try:
             result_WS, result_tot, result_C = get_charges_per_atom(outfile_000)
@@ -923,11 +923,10 @@ def parse_kkr_outputfile(out_dict,
             out_dict['charge_core_states_per_atom_unit'] = 'electron charge'
             out_dict['charge_valence_states_per_atom_unit'] = 'electron charge'
         except:
-            if not doscalc:
-                msg = 'Error parsing output of KKR: charges'
-                msg_list.append(msg)
-                if debug:
-                    traceback.print_exc()
+            msg = 'Error parsing output of KKR: charges'
+            msg_list.append(msg)
+            if debug:
+                traceback.print_exc()
 
         try:
             try:
