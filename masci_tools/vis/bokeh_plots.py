@@ -14,6 +14,10 @@
 Here are general and special bokeh plots to use
 
 """
+from masci_tools.vis.bokeh_plotter import BokehPlotter
+from masci_tools.vis import ensure_plotter_consistency
+
+
 import math
 import numpy as np
 import pandas as pd
@@ -29,6 +33,8 @@ from matplotlib.cm import plasma, inferno, magma, viridis  #pylint: disable=no-n
 from matplotlib.cm import ScalarMappable
 
 ################## Helpers     ################
+
+plot_params = BokehPlotter()
 
 
 def get_colormap(colormap, N_cols):
@@ -101,23 +107,14 @@ def prepare_plot(data, figure_options):
 tooltips_def_scatter = [('X value', '@x'), ('Y value', '@y')]
 
 
+@ensure_plotter_consistency(plot_params)
 def bokeh_scatter(source,
                   xdata='x',
                   ydata='y',
-                  figure=None,
-                  scale=['linear', 'linear'],
                   xlabel='x',
                   ylabel='y',
-                  legend_labels=None,
                   title='',
-                  outfilename='scatter.html',
-                  tools='hover',
-                  tooltips=tooltips_def_scatter,
-                  toolbar_location=None,
-                  background_fill_color='#ffffff',
-                  figure_kwargs={},
-                  show=True,
-                  bounds=None,
+                  figure=None,
                   **kwargs):
     """
     create an interactive scatter plot with bokeh
@@ -126,42 +123,16 @@ def bokeh_scatter(source,
     """
     # create figure if needed
 
-    if figure is None:
-        fig_kwargs = {
-            'title': title,
-            'tools': tools,
-            'y_axis_type': scale[1],
-            'x_axis_type': scale[0],
-            'tooltips': tooltips,
-            'toolbar_location': toolbar_location
-        }
-        fig_kwargs.update(figure_kwargs)
-        p = bokeh_fig(**fig_kwargs)
-    else:
-        p = figure
-        if background_fill_color is not None:
-            p.background_fill_color = background_fill_color
-        if title is not None:
-            p.title = Title(text=title)
-    if xlabel is not None:
-        p.xaxis.axis_label = xlabel
-    if ylabel is not None:
-        p.yaxis.axis_label = ylabel
+    kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
 
-    p.yaxis.axis_line_width = 2
-    p.xaxis.axis_line_width = 2
-    p.xaxis.axis_label_text_font_size = '18pt'
-    p.yaxis.axis_label_text_font_size = '18pt'
-    p.yaxis.major_label_text_font_size = '16pt'
-    p.xaxis.major_label_text_font_size = '16pt'
+    p = plot_params.prepare_figure(title, xlabel, ylabel)
 
     # choose color map
     # draw scatter plot
     p.scatter(x=xdata, y=ydata, source=source, **kwargs)
 
     # source.plot_bokeh.scatter(x='pt_number', y='mean', category='mean', colormap='Plasma', show_figure=False
-    if show:
-        bshow(p)
+    plot_params.save_plot(p)
 
     return p
 
