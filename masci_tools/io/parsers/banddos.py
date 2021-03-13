@@ -1,4 +1,20 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+###############################################################################
+# Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
+#                All rights reserved.                                         #
+# This file is part of the Masci-tools package.                               #
+# (Material science tools)                                                    #
+#                                                                             #
+# The code is hosted on GitHub at https://github.com/judftteam/masci-tools    #
+# For further information on the license, see the LICENSE.txt file            #
+# For further information please visit http://www.flapw.de or                 #
+#                                                                             #
+###############################################################################
+
+"""
+Parser for the FLEUR (MaX_R5) `banddos.hdf`  file
+"""
 
 import numpy as np
 import h5py
@@ -84,4 +100,6 @@ def writeBand(inpFile, outFile1, outFile2):
             f3.write(f'{val},{kpts[val-1]:.5f},{specialPointLabels[i]}\n')
 
 
-writeBand('banddos.hdf','band1.csv','band2.csv')
+if __name__ == '__main__':
+    pass
+    # writeBand('banddos.hdf','band1.csv','band2.csv')
