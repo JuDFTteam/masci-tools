@@ -175,6 +175,15 @@ class Plotter(object):
             self.set_defaults(continue_on_error=True, **kwargs)
 
     def __getitem__(self, indices):
+        """
+        Get the current value for the key
+
+        :param indices: either str (specifies the key) or
+                        tuple of str and int (specifies the key and index to access)
+
+        :returns: the current parameter for the given specification. If tuple is given
+                  and the paramter is a list the second item is used for the list index
+        """
         if isinstance(indices, tuple):
             if len(indices) != 2:
                 raise ValueError('Only Key or (Key, Index) Indexing supported!')
@@ -306,6 +315,17 @@ class Plotter(object):
             self.__update_map(self._params.parents, key, value)
 
     def __setitem__(self, key, value):
+        """
+        Set the given key value pair on the `Plotter._params` ChainMap
+        (Always to the top layer).
+
+        Unknown keys are forbidden.
+        Keys allowed for multiple plot sets are converted to complete
+        lists
+
+        :param key: key to update
+        :param value: value to use for updating
+        """
 
         if key not in self._params:
             raise KeyError(f'Unknown parameter: {key}')
@@ -321,6 +341,15 @@ class Plotter(object):
 
     @staticmethod
     def __update_map(map_to_change, key, value):
+        """
+        Updates the given map with the given key value pair
+        If the value is a dict it will be merged
+
+        :param map_to_change: Mapping to change
+        :param key: key to change
+        :param value: value for updating the key
+
+        """
         if isinstance(map_to_change[key], dict):
             dict_before = copy.deepcopy(map_to_change[key])
             if not isinstance(value, dict):
