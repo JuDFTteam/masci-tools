@@ -93,20 +93,23 @@ class Plotter(object):
 
     Args:
         :param default_parameters: dict with hardcoded default parameters
-        :param list_arguments: set of str optional, defines parameters which
-                               can be lists for single plots
+        :param general_keys: set of str optional, defines parameters which are
+                             not allowed to change for each entry in the plot data
 
     Kwargs in the __init__ method are forwarded to :py:func:`Plotter.set_defaults()`
     to change the current defaults away from the hardcoded parameters.
 
-    The Plotter class creates 3 copies of the given parameter dict:
-        :param _PLOT_DEFAULTS: exact copy of the given parameter dict. Will never be changed
-        :param _current_defaults: represents defaults with applied changes via :py:func:`Plotter.set_defaults()`.
-                                  Always corresponds to a single parameter set
-        :param _plot_parameters: based on _current_defaults, can be changed via :py:func:`Plotter.set_parameters()`
-                                 and is the dict from where the actual used parameters are provided. Can also contain
-                                 multiple parameter sets if the single_plot and num_plots properties were set before
+    The Plotter class creates a hierachy of dictionaries for lookups on this object
+    utilizing the `ChainMap` from the `collections` module.
 
+    The hierachy is as follows (First entries take precedence over later entries):
+        - `parameters`: set by :py:func:`~Plotter.set_parameters()` (usually arguments passed into function)
+        - `function defaults`: set by :py:func:`~Plotter.set_defaults()` with `default_type='function'`
+        - `user defaults`: set by :py:func:`~Plotter.set_defaults()`
+        - `global defaults`: Hardcoded as fallback
+
+    Only the `parameters` can represent parameters for multiple sets of plot calls.
+    All others are used as fallback for specifying non-specified values for single plots
 
     The current parameters can be accessed by bracket indexing the class. A example of this is shown below.
 
@@ -222,6 +225,12 @@ class Plotter(object):
         """
         Converts dict of lists and single values to list of length num_plots
         or single dict for single_plot=True
+
+        :param dict_of_lists: dict to be converted
+        :param single_plot: boolean, if True only a single parameter set is allowed
+        :param num_plots: int of the number of allowed plots
+
+        :returns: list of dicts
         """
         any_list = any(isinstance(val, list) for val in dict_of_lists.values())
 
@@ -254,6 +263,8 @@ class Plotter(object):
         :param given_value: value passed in, for multiple plots either list or dict with integer keys
         :param single_plot: bool, if True only a single parameter is allowed
         :param num_plots: int, if single_plot is False this defines the number of plots
+        :param default: default value for unspecified entries
+        :param key: str of the key to process
         """
 
         if not isinstance(given_value, dict) and not isinstance(given_value, list):
@@ -277,7 +288,15 @@ class Plotter(object):
         return ret_value
 
     def set_single_default(self, key, value, default_type='global'):
+        """
+        Set default value for a single key/value pair
 
+        :param key: str of the key to set
+        :param value: value to set the key to
+        :default_type: either 'global' or 'function'. Specifies, whether to
+                       set the global defaults (not reset after function)
+                       or the function defaults
+        """
         if key not in self._params:
             raise KeyError(f'Unknown parameter: {key}')
 
@@ -320,6 +339,9 @@ class Plotter(object):
         consistency.
 
         :param continue_on_error: bool, if True unknown key are simply skipped
+        :default_type: either 'global' or 'function'. Specifies, whether to
+                       set the global defaults (not reset after function)
+                       or the function defaults
 
         Kwargs are used to set the defaults.
         """
