@@ -251,19 +251,3 @@ def test_plotter_convert_to_complete_list_single_plot_no_list_allowed(given_valu
         res = Plotter.convert_to_complete_list(given_value, True, 1)
 
         assert res == expected_result
-
-
-@pytest.mark.parametrize('given_value, error_expected, expected_result',
-                         zip(WORKING_VALUES, SINGLE_PLOT_ERROR, EXPECTED_RESULTS))
-def test_plotter_convert_to_complete_list_single_plot_list_allowed(given_value, error_expected, expected_result):
-
-    if error_expected and not isinstance(given_value, list):
-        with pytest.raises(ValueError):
-            res = Plotter.convert_to_complete_list(given_value, True, 1, list_allowed=True)
-    else:
-        res = Plotter.convert_to_complete_list(given_value, True, 1, list_allowed=True)
-
-        if isinstance(given_value, list):
-            assert res == given_value
-        else:
-            assert res == expected_result

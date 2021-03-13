@@ -97,8 +97,6 @@ class MatplotlibPlotter(Plotter):
         },
 
         # ticks
-        'ticklabelsizex': 14,
-        'ticklabelsizey': 14,
         'tick_paramsx': {
             'size': 4.0,
             'width': 1.0,
@@ -113,8 +111,6 @@ class MatplotlibPlotter(Plotter):
             'length': 5,
             'labelrotation': 0
         },
-        'ticklabelsizex_minor': 0,
-        'ticklabelsizey_minor': 0,
         'tick_paramsx_minor': {
             'size': 2.0,
             'width': 1.0,
@@ -148,7 +144,12 @@ class MatplotlibPlotter(Plotter):
         'raw_plot_data_format': 'txt'
     }
 
-    _MATPLOTLIB_LIST_ARGS = {'xticks', 'xticklabels', 'yticks', 'yticklabels'}
+    _MATPLOTLIB_GENERAL_ARGS = {
+        'save_plots', 'save_format', 'tightlayout', 'save_raw_plot_data', 'raw_plot_data_format', 'show', 'legend',
+        'legend_options', 'colorbar', 'colorbar_padding', 'tick_paramsy', 'tick_paramsx', 'tick_paramsy_minor',
+        'tick_paramsx_minor', 'font_options', 'line_options', 'labelfontsize', 'lines', 'scale', 'limits', 'xticks',
+        'xticklabels', 'yticks', 'yticklabels', 'figure_kwargs', 'title_font_size'
+    }
 
     #Sets of keys with special purposes
 
@@ -161,7 +162,7 @@ class MatplotlibPlotter(Plotter):
     _PLOT_KWARGS_HIST = {'linewidth', 'linestyle', 'color', 'plot_label', 'plot_alpha', 'edgecolor', 'facecolor'}
 
     def __init__(self, **kwargs):
-        super().__init__(self._MATPLOTLIB_DEFAULTS, list_arguments=self._MATPLOTLIB_LIST_ARGS, **kwargs)
+        super().__init__(self._MATPLOTLIB_DEFAULTS, general_keys=self._MATPLOTLIB_GENERAL_ARGS, **kwargs)
 
     def plot_kwargs(self, ignore=None, extra_keys=None, **kwargs):
         """

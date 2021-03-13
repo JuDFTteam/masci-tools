@@ -148,7 +148,7 @@ class Plotter(object):
 
     """
 
-    def __init__(self, default_parameters, list_arguments=None, **kwargs):
+    def __init__(self, default_parameters, general_keys=None, **kwargs):
 
         self._PLOT_DEFAULTS = copy.deepcopy(default_parameters)
 
@@ -164,9 +164,9 @@ class Plotter(object):
         self._plot_type = 'default'
         self._added_parameters = set()
 
-        self._LIST_ARGS = set()
-        if list_arguments is not None:
-            self._LIST_ARGS = list_arguments
+        self._GENERAL_KEYS = set()
+        if general_keys is not None:
+            self._GENERAL_KEYS = general_keys
 
         if kwargs:
             self.set_defaults(continue_on_error=True, **kwargs)
@@ -247,7 +247,7 @@ class Plotter(object):
         return list_of_dicts
 
     @staticmethod
-    def convert_to_complete_list(given_value, single_plot, num_plots, list_allowed=False, default=None, key=''):
+    def convert_to_complete_list(given_value, single_plot, num_plots, default=None, key=''):
         """
         Converts given value to list with length num_plots with None for the non-specified values
 
@@ -266,7 +266,7 @@ class Plotter(object):
             #Convert to list with defaults for not specified keys
             ret_value = [ret_value[indx] if indx in ret_value else None for indx in range(num_plots)]
 
-        if isinstance(ret_value, list) and not list_allowed:
+        if isinstance(ret_value, list):
             if single_plot:
                 raise ValueError(f"Got list for key '{key}' but only a single plot is allowed")
 
@@ -291,12 +291,12 @@ class Plotter(object):
         if key not in self._params:
             raise KeyError(f'Unknown parameter: {key}')
 
-        value = self.convert_to_complete_list(value,
-                                              self.single_plot,
-                                              self.num_plots,
-                                              list_allowed=key in self._LIST_ARGS,
-                                              default=self._params.parents[key],
-                                              key=key)
+        if key not in self._GENERAL_KEYS:
+            value = self.convert_to_complete_list(value,
+                                                  self.single_plot,
+                                                  self.num_plots,
+                                                  default=self._params.parents[key],
+                                                  key=key)
 
         self.__update_map(self._params, key, value)
 

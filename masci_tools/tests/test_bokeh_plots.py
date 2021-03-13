@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Tests of the bokeh visualization. Since the concrete visualization is difficult
 to test we check the content of the underlying json for correctness
@@ -5,6 +6,7 @@ to test we check the content of the underlying json for correctness
 from bokeh.io import curdoc
 import numpy as np
 import pandas as pd
+
 
 def prepare_for_regression(data):
     """
@@ -27,20 +29,21 @@ def prepare_for_regression(data):
                 if isinstance(entry, dict):
                     val[index] = prepare_for_regression(entry)
             if all(isinstance(x, dict) for x in val):
-                data[key] = sorted(val, key=lambda x: (x['type'], *x.get('attributes',{}).items()))
+                data[key] = sorted(val, key=lambda x: (x['type'], *x.get('attributes', {}).items()))
             else:
                 data[key] = val
 
     return data
 
+
 class TestBokehScatter:
 
-    def test_default(self,data_regression):
+    def test_default(self, data_regression):
         """
         Test with default values
         """
         from masci_tools.vis.bokeh_plots import bokeh_scatter
-        x = np.linspace(-10,10,100)
+        x = np.linspace(-10, 10, 100)
         y = x**2
 
         source = pd.DataFrame(data={'x': x, 'y': y})
