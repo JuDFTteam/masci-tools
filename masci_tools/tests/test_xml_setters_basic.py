@@ -656,7 +656,7 @@ def test_xml_create_tag_misaligned_order(load_inpxml):
         'lo',
         'lo',
         'lo'
-    ], ['test_tag', 'mtSphere', 'atomicCutoffs', 'electronConfig', 'energyParameters', 'ldaU',
+    ], ['mtSphere', 'atomicCutoffs', 'electronConfig', 'energyParameters', 'ldaU',
         'ldaU','lo', 'lo']]
 
     nodes = eval_xpath(root, '/fleurInput/atomSpecies/species')
