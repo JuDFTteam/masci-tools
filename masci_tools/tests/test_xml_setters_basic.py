@@ -637,7 +637,7 @@ def test_xml_create_tag_misaligned_order(load_inpxml):
     xml_create_tag(xmltree, '/fleurInput/atomSpecies/species', 'ldaU') #This creates an invalid order
     xml_create_tag(xmltree, '/fleurInput/atomSpecies/species', 'lo')
 
-    order = ['mtSphere', 'atomicCutoffs', 'electronConfig', 'energyParameters', 'lo']
+    order = ['mtSphere', 'atomicCutoffs', 'electronConfig', 'energyParameters', 'ldaU', 'lo']
     with pytest.raises(ValueError, match=r'Existing order does not correspond to tag_order list'):
         xml_create_tag(xmltree, '/fleurInput/atomSpecies/species', 'ldaU', tag_order=order, correct_order=False)
 
