@@ -182,6 +182,7 @@ def xml_create_tag(xmltree, xpath, element, place_index=None, tag_order=None, oc
                     index = parent_of_parent.index(parent)
                     parent_of_parent.remove(parent)
                     parent_of_parent.insert(index, new_tag)
+                    parent = new_tag
 
 
             for tag in reversed(behind_tags):
