@@ -18,6 +18,7 @@ to do these operations robustly
 """
 from lxml import etree
 from masci_tools.util.xml.common_xml_util import eval_xpath
+import warnings
 
 
 def xml_replace_tag(xmltree, xpath, newelement):
@@ -80,7 +81,7 @@ def xml_delete_tag(xmltree, xpath):
     return xmltree
 
 
-def xml_create_tag(xmltree, xpath, element, place_index=None, tag_order=None, occurrences=None):
+def xml_create_tag(xmltree, xpath, element, place_index=None, tag_order=None, occurrences=None, correct_order=True):
     """
     This method evaluates an xpath expression and creates a tag in a xmltree under the
     returned nodes.
@@ -96,6 +97,9 @@ def xml_create_tag(xmltree, xpath, element, place_index=None, tag_order=None, oc
     :param tag_order: defines a tag order
     :param occurrences: int or list of int. Which occurence of the parent nodes to create a tag.
                         By default all nodes are used.
+    :param correct_order: bool, if True (default) and a tag_order is given, that does not correspond to the given order
+                          in the xmltree (only order wrong no unknown tags) it will be corrected and a warning is given
+                          This is necessary for some edge cases of the xml schemas of fleur
 
     :raises ValueError: If the insertion failed in any way (tag_order does not match, failed to insert, ...)
 
@@ -152,7 +156,33 @@ def xml_create_tag(xmltree, xpath, element, place_index=None, tag_order=None, oc
 
             #Is the existing order in line with the given tag_order
             if sorted(existing_order, key=tag_order.index) != existing_order:
-                raise ValueError('Existing order does not correspond to tag_order list')
+                if not correct_order:
+                    raise ValueError('Existing order does not correspond to tag_order list\n'
+                                     f'Expected order: {tag_order}\n'
+                                     f'Actual order: {existing_order}')
+                else:
+                    #Here we know that there are no unexpected tags in the order, so we can 'repair' the order
+                    warnings.warn('Existing order does not correspond to tag_order list. Correcting it\n'
+                                 f'Expected order: {tag_order}\n'
+                                 f'Actual order: {existing_order}')
+
+                    new_tag = copy.deepcopy(parent)
+
+                    #Remove all child nodes from new_tag (deepcopied so they are still on parent)
+                    for node in new_tag.iterchildren():
+                        new_tag.remove(node)
+
+                    for tag in tag_order:
+                        #Iterate over all children with the given tag on the parent and append to the new_tag
+                        for node in parent.iterchildren(tag=tag):
+                            new_tag.append(node)
+
+                    #Now replace the parent node with the reordered node
+                    parent_of_parent = parent.getparent()
+                    index = parent_of_parent.index(parent)
+                    parent_of_parent.remove(parent)
+                    parent_of_parent.insert(index, new_tag)
+
 
             for tag in reversed(behind_tags):
                 existing_tags = list(parent.iterchildren(tag=tag))
