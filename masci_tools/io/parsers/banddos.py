@@ -19,6 +19,7 @@ Parser for the FLEUR (MaX_R5) `banddos.hdf`  file
 import numpy as np
 import h5py
 
+
 def hdfList(obj, sep="\t"):
     """
     Iterate through groups in a HDF5 file and prints...
@@ -41,8 +42,7 @@ def h5dump(path, group='/'):
         hdfList(f[group])
 
 
-
-def kpath(kcoord,reciprocalCell):
+def kpath(kcoord, reciprocalCell):
     """
     Construct k-point path from the k point coordinate array 
     """
