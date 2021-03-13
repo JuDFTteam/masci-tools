@@ -613,7 +613,6 @@ def test_xml_create_tag_errors(load_inpxml):
     from masci_tools.util.xml.xml_setters_basic import xml_create_tag
 
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
-    root = xmltree.getroot()
 
     with pytest.raises(ValueError, match=r"Could not create tag 'test_tag' because atleast one subtag is missing."):
         xml_create_tag(xmltree, '/fleurInput/calculationSetup/not_existent', 'test_tag')
@@ -635,6 +634,7 @@ def test_xml_create_tag_misaligned_order(load_inpxml):
     from masci_tools.util.xml.common_xml_util import eval_xpath
 
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
 
     xml_create_tag(xmltree, '/fleurInput/atomSpecies/species', 'ldaU') #This creates an invalid order
     xml_create_tag(xmltree, '/fleurInput/atomSpecies/species', 'lo')
