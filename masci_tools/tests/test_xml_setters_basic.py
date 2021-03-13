@@ -631,6 +631,7 @@ def test_xml_create_tag_misaligned_order(load_inpxml):
     """
 
     from masci_tools.util.xml.xml_setters_basic import xml_create_tag
+    from masci_tools.util.xml.common_xml_util import eval_xpath
 
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
 
