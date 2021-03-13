@@ -11,10 +11,16 @@
 # For further information please visit http://www.flapw.de or                 #
 #                                                                             #
 ###############################################################################
-#
+
+"""
+Independent utility script to convert cif file formats to input for the inpgen code
+Usage: `python cif2inp_ase.py <filename.cif>`
+"""
+
 import sys
 import ase.io
 import numpy as np
+
 cifFilename = sys.argv[1]
 structure = ase.io.read(cifFilename)
 
