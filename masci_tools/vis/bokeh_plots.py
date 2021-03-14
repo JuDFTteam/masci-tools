@@ -37,48 +37,6 @@ from matplotlib.cm import ScalarMappable
 plot_params = BokehPlotter()
 
 
-def get_colormap(colormap, N_cols):
-    """
-    Returns a colormap with <N_cols> colors. <colormap> can be either None,
-    a string with the name of a Bokeh color palette or a list/tuple of colors.
-
-    copied from https://github.com/PatrikHlobil/Pandas-Bokeh/blob/master/pandas_bokeh/plot.py
-    credits to PatrikHlobil
-    """
-    from bokeh.palettes import all_palettes
-
-    if colormap is None:
-        if N_cols <= 10:
-            colormap = all_palettes['Category10'][10][:N_cols]
-        elif N_cols <= 20:
-            colormap = all_palettes['Category20'][N_cols]
-        else:
-            colormap = all_palettes['Category20'][20] * int(N_cols / 20 + 1)
-            colormap = colormap[:N_cols]
-    elif isinstance(colormap, str):
-        if colormap in all_palettes:
-            colormap = all_palettes[colormap]
-            max_key = max(colormap.keys())
-            if N_cols <= max_key:
-                colormap = colormap[N_cols]
-            else:
-                colormap = colormap[max_key]
-                colormap = colormap * int(N_cols / len(colormap) + 1)
-                colormap = colormap[:N_cols]
-        else:
-            raise ValueError(
-                'Could not find <colormap> with name %s. The following predefined colormaps are '
-                'supported (see also https://bokeh.pydata.org/en/latest/docs/reference/palettes.html ): %s' %
-                (colormap, list(all_palettes.keys())))
-    elif isinstance(colormap, (list, tuple)):
-        colormap = colormap * int(N_cols / len(colormap) + 1)
-        colormap = colormap[:N_cols]
-    else:
-        raise ValueError('<colormap> can only be None, a name of a colorpalette as string( see '
-                         'https://bokeh.pydata.org/en/latest/docs/reference/palettes.html ) or a list/tuple of colors.')
-
-    return colormap
-
 
 def prepare_plot(data, figure_options):
     """
@@ -103,8 +61,6 @@ def prepare_plot(data, figure_options):
 
 
 ##################################### general plots ##########################
-
-tooltips_def_scatter = [('X value', '@x'), ('Y value', '@y')]
 
 
 @ensure_plotter_consistency(plot_params)
@@ -136,85 +92,40 @@ def bokeh_scatter(source,
 
     return p
 
-
-# line plot
-tooltips_def_line = [('X value', '@x'), ('Y value', '@y')]
-
-
+@ensure_plotter_consistency(plot_params)
 def bokeh_line(source,
                xdata=['x'],
                ydata=['y'],
                figure=None,
-               scale=['linear', 'linear'],
                xlabel='x',
                ylabel='y',
-               legend_labels=None,
                title='',
                outfilename='scatter.html',
-               tools='hover',
-               tooltips=tooltips_def_line,
-               toolbar_location=None,
-               background_fill_color='#ffffff',
-               colormap=None,
-               color=None,
-               marker='circle',
-               marker_size=6,
-               figure_kwargs={},
-               show=True,
                plot_points=False,
                bounds=None,
-               name='line plot',
-               legend_layout_location='center',
                **kwargs):
     """
     Create an interactive multi line plot with bokeh, while also showing points
 
     Per default all ydata use the same x, if xdata is list it has to have the same length as ydata
     """
-    # create figure if needed
-    if figure is None:
-        fig_kwargs = {
-            'title': title,
-            'tools': tools,
-            'y_axis_type': scale[1],
-            'x_axis_type': scale[0],
-            'tooltips': tooltips,
-            'toolbar_location': 'above'
-        }
-        fig_kwargs.update(figure_kwargs)
-        p = bokeh_fig(**fig_kwargs)
-    else:
-        p = figure
-        if background_fill_color is not None:
-            p.background_fill_color = background_fill_color
-        if title is not None:
-            p.title = Title(text=title)
 
-    if xlabel is not None:
-        p.xaxis.axis_label = xlabel
-    if ylabel is not None:
-        p.yaxis.axis_label = ylabel
-
-    p.yaxis.axis_line_width = 2
-    p.xaxis.axis_line_width = 2
-    p.xaxis.axis_label_text_font_size = '18pt'
-    p.yaxis.axis_label_text_font_size = '18pt'
-    p.yaxis.major_label_text_font_size = '16pt'
-    p.xaxis.major_label_text_font_size = '16pt'
+    plot_params.set_defaults(default_type='function', name='line plot')
 
     if isinstance(xdata, list):
         if len(xdata) != len(ydata):
             xdata = xdata[0]
 
-    N_col = len(ydata)
+    plot_params.single_plot = False
+    plot_params.num_plots = len(ydata)
 
-    # choose color map
-    colormap = get_colormap(colormap, N_col)
-    if color is not None:
-        colormap = get_colormap([color], N_col)
+    kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
+    p = plot_params.prepare_figure(title, xlabel, ylabel)
+
+    #Process the given color arguments
+    plot_params.set_color_palette_by_num_plots()
 
     # prepare ColumnDataSource for plot
-
     if source is None:  # create columndatasources from data given
         # Columns need to have same length
         source = []
@@ -240,68 +151,45 @@ def bokeh_line(source,
     # draw line plot
     # dataframe and column data source expect all entries to be same length...
     # therefore we parse data to plot routines directly... might make other things harder
-    legitems = []
 
-    for i, yname, in enumerate(ydatad):
-        color = colormap[i]
+    plot_params.plot_type = 'line'
+    plot_kw_line = plot_params.plot_kwargs()
+    plot_params.plot_type = 'scatter' #Kind of ugly :(
+    plot_kw_scatter = plot_params.plot_kwargs()
+
+    for indx, data in enumerate(zip(ydatad, plot_kw_line, plot_kw_scatter)):
+
+        yname, kw_line, kw_scatter = data
+
         if isinstance(xdatad, list):
-            xdat = xdatad[i]
+            xdat = xdatad[indx]
         else:
             xdat = xdatad
 
-        if isinstance(name, list):
-            namet = name[i]
-        else:
-            namet = name
-
         if isinstance(source, list):
-            sourcet = source[i]
+            sourcet = source[indx]
         else:
             sourcet = source
 
-        if legend_labels is None:
-            leg_label = yname
-        else:
-            leg_label = legend_labels[i]
+        if 'legend_label' not in kw_line:
+            kw_line['legend_label'] = yname
+            kw_scatter['legend_label'] = yname
 
-        l1 = p.line(
+        p.line(
             x=xdat,
             y=yname,
-            source=sourcet,  #legend_label=" " + leg_label,
-            color=color,
-            name=namet,
+            source=sourcet,
+            **kw_line,
             **kwargs)
-        s1 = None
         if plot_points:
-            s1 = p.scatter(
+            p.scatter(
                 x=xdat,
                 y=yname,
                 source=sourcet,
-                #legend_label=" " + leg_label,
-                color=color,
-                marker=marker,
-                size=marker_size)
-        if s1:
-            legitems.append((leg_label, [l1, s1]))
-        else:
-            legitems.append((leg_label, [l1]))
+                **kw_scatter)
 
-    # TODO do not hardcode.
-    legend = Legend(items=legitems,
-                    location='top_right',
-                    background_fill_color=background_fill_color,
-                    click_policy='hide',
-                    orientation='vertical',
-                    label_text_font_size='14pt')
-
-    p.add_layout(legend, legend_layout_location)
-    #p.legend.location = "top_right"
-    #p.legend.background_fill_color = background_fill_color
-    #p.legend.click_policy = "hide"  # "mute"#"hide"
-    #p.legend.orientation = "vertical"
-    #p.legend.label_text_font_size = "14pt"
-    if show:
-        bshow(p)
+    plot_params.set_legend(p)
+    plot_params.save_plot(p)
 
     return p
 
