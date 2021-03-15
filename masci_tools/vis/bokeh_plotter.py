@@ -15,7 +15,7 @@ Here are all plot varaiables/constants,
 
 """
 from masci_tools.vis import Plotter
-
+import copy
 
 class BokehPlotter(Plotter):
 
@@ -31,10 +31,14 @@ class BokehPlotter(Plotter):
         'label_fontsize': '18pt',
         'tick_label_fontsize': '16pt',
         'background_fill_color': '#ffffff',
+
+        #legend options
         'legend_location': 'top_right',
         'legend_click_policy': 'hide',  # "mute"#"hide"
         'legend_orientation': 'vertical',
         'legend_font_size': '14pt',
+
+        #plot parameters
         'color_palette': None,
         'color': None,
         'legend_label': None,
@@ -46,17 +50,30 @@ class BokehPlotter(Plotter):
         'line_width': 2.0,
         'marker': 'circle',
         'marker_size': 6,
+        'area_plot': False,
+        'area_vertical': False,
+        'fill_alpha': 1.0,
+        'fill_color': None,
+
+        'straight_lines': None,
+        'straight_line_options': {'line_color': 'black',
+                                  'line_width': 1.0,
+                                  'line_dash': 'dashed'},
+
+        #output control
         'show': True,
     }
 
     _BOKEH_GENERAL_ARGS = {
         'show', 'colormap', 'legend_location', 'legend_click_policy', 'legend_font_size', 'legend_orientation',
-        'background_fill_color', 'tick_label_fontsize', 'label_fontsize', 'axis_linewidth', 'figure_kwargs'
+        'background_fill_color', 'tick_label_fontsize', 'label_fontsize', 'axis_linewidth', 'figure_kwargs', 'straight_lines',
     }
 
     _PLOT_KWARGS = {'color', 'alpha', 'legend_label', 'name'}
     _PLOT_KWARGS_LINE = {'line_color', 'line_alpha', 'line_dash', 'line_width'}
-    _PLOT_KWARGS_SCATTER = {'marker', '´marker_size'}
+    _PLOT_KWARGS_SCATTER = {'marker', 'marker_size'}
+    _PLOT_KWARGS_AREA = {'fill_alpha', 'fill_color'}
+
 
     def __init__(self, **kwargs):
 
@@ -87,6 +104,8 @@ class BokehPlotter(Plotter):
             kwargs_keys = self._PLOT_KWARGS | self._PLOT_KWARGS_LINE
         elif self.plot_type == 'scatter':
             kwargs_keys = self._PLOT_KWARGS | self._PLOT_KWARGS_SCATTER
+        elif self.plot_type == 'area':
+            kwargs_keys = self._PLOT_KWARGS | self._PLOT_KWARGS_AREA
 
         if extra_keys is not None:
             kwargs_keys = kwargs_keys | extra_keys
@@ -180,6 +199,56 @@ class BokehPlotter(Plotter):
                 color = color[:self.num_plots]
 
         self['color'] = color
+
+    def draw_straight_lines(self, fig):
+        """
+        Draw horizontal and vertical lines specified in the lines argument
+
+        :param ax: Axes object on which to perform the operation
+        """
+        from bokeh.models import Span
+
+        if self['straight_lines'] is not None:
+            added_lines = []
+            if 'horizontal' in self['straight_lines']:
+                lines = copy.deepcopy(self['straight_lines']['horizontal'])
+                if not isinstance(lines, list):
+                    lines = [lines]
+
+                for line_def in lines:
+                    options = copy.deepcopy(self['straight_line_options'])
+                    if isinstance(line_def, dict):
+                        positions = line_def.pop('pos')
+                        if not isinstance(positions, list):
+                            positions = [positions]
+                        options.update(line_def)
+                    elif isinstance(line_def, list):
+                        positions = line_def
+                    else:
+                        positions = [line_def]
+
+                    for pos in positions:
+                        added_lines.append(Span(location=pos, dimension='width', **options))
+            if 'vertical' in self['straight_lines']:
+                lines = copy.deepcopy(self['straight_lines']['vertical'])
+                if not isinstance(lines, list):
+                    lines = [lines]
+
+                for line_def in lines:
+                    options = copy.deepcopy(self['straight_line_options'])
+                    if isinstance(line_def, dict):
+                        positions = line_def.pop('pos')
+                        if not isinstance(positions, list):
+                            positions = [positions]
+                        options.update(line_def)
+                    elif isinstance(line_def, list):
+                        positions = line_def
+                    else:
+                        positions = [line_def]
+
+                    for pos in positions:
+                        added_lines.append(Span(location=pos, dimension='height', **options))
+            fig.renderers.extend(added_lines)
 
     def set_legend(self, fig):
 
