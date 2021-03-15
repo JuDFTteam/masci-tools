@@ -105,6 +105,14 @@ def bokeh_line(source,
 
     plot_params.set_defaults(default_type='function', name='line plot')
 
+    default_legend_label = ydata
+    if source is not None:
+        if not isinstance(ydata, list):
+            if not isinstance(xdata, list):
+                xdata = [xdata]
+            ydata = [ydata] * len(xdata)
+            default_legend_label = xdata
+
     if isinstance(xdata, list):
         if len(xdata) != len(ydata):
             xdata = xdata[0]
@@ -168,10 +176,15 @@ def bokeh_line(source,
         else:
             sourcet = source
 
+        if isinstance(default_legend_label, list):
+            leg_label = default_legend_label[indx]
+        else:
+            leg_label = default_legend_label
+
         if 'legend_label' not in kw_line:
-            kw_line['legend_label'] = yname
-            kw_scatter['legend_label'] = yname
-            kw_area['legend_label'] = yname
+            kw_line['legend_label'] = leg_label
+            kw_scatter['legend_label'] = leg_label
+            kw_area['legend_label'] = leg_label
 
         if area_curve is not None:
             if isinstance(area_curve, list):
@@ -186,7 +199,7 @@ def bokeh_line(source,
 
         if plot_params[('area_plot', indx)]:
             if plot_params[('area_vertical', indx)]:
-                p.harea(x=yname, x1=xdat, x2=shift, **kw_area, source=sourcet)
+                p.harea(y=yname, x1=xdat, x2=shift, **kw_area, source=sourcet)
             else:
                 p.varea(x=xdat, y1=yname, y2=shift, **kw_area, source=sourcet)
 
