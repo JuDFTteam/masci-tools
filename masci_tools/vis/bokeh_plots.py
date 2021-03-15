@@ -72,7 +72,7 @@ def bokeh_scatter(source, xdata='x', ydata='y', xlabel='x', ylabel='y', title=''
 
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
 
-    p = plot_params.prepare_figure(title, xlabel, ylabel)
+    p = plot_params.prepare_figure(title, xlabel, ylabel, figure=figure)
 
     # choose color map
     # draw scatter plot
@@ -122,7 +122,7 @@ def bokeh_line(source,
     plot_params.num_plots = len(ydata)
 
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
-    p = plot_params.prepare_figure(title, xlabel, ylabel)
+    p = plot_params.prepare_figure(title, xlabel, ylabel, figure=figure)
 
     #Process the given color arguments
     plot_params.set_color_palette_by_num_plots()
