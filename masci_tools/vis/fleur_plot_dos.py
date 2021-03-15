@@ -16,13 +16,15 @@ Plotting routines for fleur density of states with and without hdf
 import warnings
 
 
-def fleur_plot_dos(path_to_dosfile, path_to_dosfile_dn=None, hdf_group='Local', spinpol=True, **kwargs):
+def fleur_plot_dos(path_to_dosfile, path_to_dosfile_dn=None, hdf_group='Local', spinpol=True, bokeh_plot=False, **kwargs):
     """
     Plot the density of states either from a `banddos.hdf` or text output
     """
     from masci_tools.io.io_hdf5 import read_hdf
     from masci_tools.vis.plot_methods import plot_dos, plot_spinpol_dos
+    from masci_tools.vis.bokeh_plots import bokeh_dos
     from masci_tools.util.constants import HTR_TO_EV
+    import pandas as pd
 
     dos_data_dn = None
 
@@ -75,10 +77,20 @@ def fleur_plot_dos(path_to_dosfile, path_to_dosfile_dn=None, hdf_group='Local', 
         if dos_data_dn is not None:
             dos_data_dn = list(dos_data_dn.values())
 
-    if spinpol:
-        plot_spinpol_dos(dos_data_up, dos_data_dn, energy_grid, plot_label=keys_to_plot, **kwargs)
+
+    if bokeh_plot:
+        if spinpol:
+            raise NotImplementedError
+        else:
+            dos_data = {key: data for key, data in zip(keys_to_plot, dos_data_up)}
+            dos_data['energy'] = energy_grid
+            data = pd.DataFrame(data=dos_data)
+            bokeh_dos(data, **kwargs)
     else:
-        plot_dos(dos_data_up, energy_grid, plot_label=keys_to_plot, **kwargs)
+        if spinpol:
+            plot_spinpol_dos(dos_data_up, dos_data_dn, energy_grid, plot_label=keys_to_plot, **kwargs)
+        else:
+            plot_dos(dos_data_up, energy_grid, plot_label=keys_to_plot, **kwargs)
 
 
 def select_from_Local(dos_data_up, dos_data_dn, natoms, interstitial, atoms, l_resolved):

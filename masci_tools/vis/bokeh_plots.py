@@ -214,6 +214,37 @@ def bokeh_line(source,
     return p
 
 
+@ensure_plotter_consistency(plot_params)
+def bokeh_dos(dosdata, energy='energy', ynames=None, xlabel=r'E-E_F [eV]',
+             ylabel=r'DOS [1/eV]',
+             title=r'Density of states',
+             xyswitch=False,
+             e_fermi=0,**kwargs):
+
+    lines = {'horizontal': 0}
+    lines['vertical'] = e_fermi
+
+    if xyswitch:
+        lines['vertical'], lines['horizontal'] = lines['horizontal'], lines['vertical']
+
+    plot_params.set_defaults(default_type='function', straight_lines=lines)
+
+    if ynames is None:
+        ynames = set(dosdata.keys()) - set([energy] if isinstance(energy, str) else energy)
+        ynames = sorted(ynames)
+
+    if xyswitch:
+        x, y = ynames, energy
+        xlabel, ylabel = ylabel, xlabel
+        plot_params.set_defaults(default_type='function', area_vertical=True)
+    else:
+        x, y = energy, ynames
+
+    p = bokeh_line(dosdata, xdata=x, ydata=y, xlabel=xlabel, ylabel=ylabel, title=title, **kwargs)
+
+    return p
+
+
 ####################################################################################################
 ##################################### special plots ################################################
 ####################################################################################################
