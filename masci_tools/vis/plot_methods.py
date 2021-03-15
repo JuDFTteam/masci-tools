@@ -1551,8 +1551,8 @@ def plot_relaxation_results():
 def plot_dos(dos_data,
              energy_grid,
              saveas='dos_plot',
-             xlabel=r'$E-E_F$ [eV]',
-             ylabel=r'DOS [1/eV]',
+             energy_label=r'$E-E_F$ [eV]',
+             dos_label=r'DOS [1/eV]',
              title=r'Density of states',
              xyswitch=False,
              e_fermi=0,
@@ -1561,6 +1561,14 @@ def plot_dos(dos_data,
     Plot the provided data for a density of states (not spin-polarized)
 
     """
+
+    if 'limits' in kwargs:
+        limits = kwargs.pop('limits')
+        if xyswitch:
+            limits['x'], limits['y'] = limits.pop('dos', None), limits.pop('energy', None)
+        else:
+            limits['x'], limits['y'] = limits.pop('energy', None), limits.pop('dos', None)
+        kwargs['limits'] = {k: v for k, v in limits.items() if v is not None}
 
     lines = {'horizontal': 0}
     lines['vertical'] = e_fermi
@@ -1576,9 +1584,10 @@ def plot_dos(dos_data,
 
     if xyswitch:
         x, y = dos_data, energy_grid
-        xlabel, ylabel = ylabel, xlabel
+        xlabel, ylabel = dos_label, energy_label
         plot_params.set_defaults(default_type='function', area_vertical=True)
     else:
+        xlabel, ylabel = energy_label, dos_label
         x, y = energy_grid, dos_data
 
     ax = multiple_scatterplots(y, x, xlabel, ylabel, title, saveas=saveas, **kwargs)
@@ -1591,8 +1600,8 @@ def plot_spinpol_dos(spin_up_data,
                      spin_dn_data,
                      energy_grid,
                      saveas='spinpol_dos_plot',
-                     xlabel=r'$E-E_F$ [eV]',
-                     ylabel=r'DOS [1/eV]',
+                     energy_label=r'$E-E_F$ [eV]',
+                     dos_label=r'DOS [1/eV]',
                      title=r'Density of states',
                      xyswitch=False,
                      energy_grid_dn=None,
@@ -1603,6 +1612,14 @@ def plot_spinpol_dos(spin_up_data,
     Plot the provided data for a density of states (spin-polarized)
 
     """
+    if 'limits' in kwargs:
+        limits = kwargs.pop('limits')
+        if xyswitch:
+            limits['x'], limits['y'] = limits.pop('dos', None), limits.pop('energy', None)
+        else:
+            limits['x'], limits['y'] = limits.pop('energy', None), limits.pop('dos', None)
+        kwargs['limits'] = {k: v for k, v in limits.items() if v is not None}
+
     if isinstance(spin_up_data[0], (list, np.ndarray)):
         if len(spin_up_data) != len(spin_dn_data):
             raise ValueError(f'Dimensions do not match: Spin-up: {len(spin_up_data)} Spin-dn: {len(spin_dn_data)}')
@@ -1635,9 +1652,10 @@ def plot_spinpol_dos(spin_up_data,
 
     if xyswitch:
         x, y = dos_data, energy_grid
-        xlabel, ylabel = ylabel, xlabel
+        xlabel, ylabel = dos_label, energy_label
         plot_params.set_defaults(default_type='function', area_vertical=True)
     else:
+        xlabel, ylabel = energy_label, dos_label
         x, y = energy_grid, dos_data
 
     ax = multiple_scatterplots(y, x, xlabel, ylabel, title, saveas=saveas, **kwargs)

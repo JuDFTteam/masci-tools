@@ -98,6 +98,7 @@ def fleur_plot_dos(path_to_dosfile,
 
     return fig
 
+
 def select_from_Local(dos_data_up, dos_data_dn, natoms, interstitial, atoms, l_resolved):
 
     keys_to_plot = {'Total'}

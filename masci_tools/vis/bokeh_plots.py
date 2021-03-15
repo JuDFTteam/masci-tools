@@ -88,8 +88,8 @@ def bokeh_scatter(source, xdata='x', ydata='y', xlabel='x', ylabel='y', title=''
 
 @ensure_plotter_consistency(plot_params)
 def bokeh_line(source,
-               xdata=['x'],
-               ydata=['y'],
+               xdata='x',
+               ydata='y',
                figure=None,
                xlabel='x',
                ylabel='y',
@@ -220,12 +220,20 @@ def bokeh_line(source,
 def bokeh_dos(dosdata,
               energy='energy',
               ynames=None,
-              xlabel=r'E-E_F [eV]',
-              ylabel=r'DOS [1/eV]',
+              energy_label=r'E-E_F [eV]',
+              dos_label=r'DOS [1/eV]',
               title=r'Density of states',
               xyswitch=False,
               e_fermi=0,
               **kwargs):
+
+    if 'limits' in kwargs:
+        limits = kwargs.pop('limits')
+        if xyswitch:
+            limits['x'], limits['y'] = limits.pop('dos', None), limits.pop('energy', None)
+        else:
+            limits['x'], limits['y'] = limits.pop('energy', None), limits.pop('dos', None)
+        kwargs['limits'] = {k: v for k, v in limits.items() if v is not None}
 
     lines = {'horizontal': 0}
     lines['vertical'] = e_fermi
@@ -233,7 +241,10 @@ def bokeh_dos(dosdata,
     if xyswitch:
         lines['vertical'], lines['horizontal'] = lines['horizontal'], lines['vertical']
 
-    plot_params.set_defaults(default_type='function', straight_lines=lines)
+    plot_params.set_defaults(
+        default_type='function',
+        straight_lines=lines,
+        figure_kwargs={'tooltips': [('Name', '$name'), ('Energy', '@energy'), ('DOS value', '@$name')]})
 
     if ynames is None:
         ynames = set(dosdata.keys()) - set([energy] if isinstance(energy, str) else energy)
@@ -241,12 +252,13 @@ def bokeh_dos(dosdata,
 
     if xyswitch:
         x, y = ynames, energy
-        xlabel, ylabel = ylabel, xlabel
+        xlabel, ylabel = dos_label, energy_label
         plot_params.set_defaults(default_type='function', area_vertical=True)
     else:
+        xlabel, ylabel = energy_label, dos_label
         x, y = energy, ynames
 
-    p = bokeh_line(dosdata, xdata=x, ydata=y, xlabel=xlabel, ylabel=ylabel, title=title, **kwargs)
+    p = bokeh_line(dosdata, xdata=x, ydata=y, xlabel=xlabel, ylabel=ylabel, title=title, name=ynames, **kwargs)
 
     return p
 
