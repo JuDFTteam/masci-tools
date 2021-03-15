@@ -16,7 +16,12 @@ Plotting routines for fleur density of states with and without hdf
 import warnings
 
 
-def fleur_plot_dos(path_to_dosfile, path_to_dosfile_dn=None, hdf_group='Local', spinpol=True, bokeh_plot=False, **kwargs):
+def fleur_plot_dos(path_to_dosfile,
+                   path_to_dosfile_dn=None,
+                   hdf_group='Local',
+                   spinpol=True,
+                   bokeh_plot=False,
+                   **kwargs):
     """
     Plot the density of states either from a `banddos.hdf` or text output
     """
@@ -76,7 +81,6 @@ def fleur_plot_dos(path_to_dosfile, path_to_dosfile_dn=None, hdf_group='Local', 
         dos_data_up = list(dos_data_up.values())
         if dos_data_dn is not None:
             dos_data_dn = list(dos_data_dn.values())
-
 
     if bokeh_plot:
         if spinpol:

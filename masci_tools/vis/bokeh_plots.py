@@ -215,11 +215,15 @@ def bokeh_line(source,
 
 
 @ensure_plotter_consistency(plot_params)
-def bokeh_dos(dosdata, energy='energy', ynames=None, xlabel=r'E-E_F [eV]',
-             ylabel=r'DOS [1/eV]',
-             title=r'Density of states',
-             xyswitch=False,
-             e_fermi=0,**kwargs):
+def bokeh_dos(dosdata,
+              energy='energy',
+              ynames=None,
+              xlabel=r'E-E_F [eV]',
+              ylabel=r'DOS [1/eV]',
+              title=r'Density of states',
+              xyswitch=False,
+              e_fermi=0,
+              **kwargs):
 
     lines = {'horizontal': 0}
     lines['vertical'] = e_fermi
