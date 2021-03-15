@@ -32,6 +32,11 @@ class BokehPlotter(Plotter):
         'label_fontsize': '18pt',
         'tick_label_fontsize': '16pt',
         'background_fill_color': '#ffffff',
+        'x_axis_formatter': None,
+        'y_axis_formatter': None,
+        'x_ticks': None,
+        'y_ticks': None,
+
         'limits': None,
 
         #legend options
@@ -167,6 +172,16 @@ class BokehPlotter(Plotter):
         p.yaxis.axis_label_text_font_size = self['label_fontsize']
         p.yaxis.major_label_text_font_size = self['tick_label_fontsize']
         p.xaxis.major_label_text_font_size = self['tick_label_fontsize']
+
+        if self['y_axis_formatter'] is not None:
+            p.yaxis.formatter = self['y_axis_formatter']
+        if self['x_axis_formatter'] is not None:
+            p.xaxis.formatter = self['x_axis_formatter']
+
+        if self['x_ticks'] is not None:
+            p.xaxis.ticker = self['x_ticks']
+        if self['y_ticks'] is not None:
+            p.xaxis.ticker = self['y_ticks']
 
         return p
 
