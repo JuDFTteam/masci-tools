@@ -80,6 +80,7 @@ def bokeh_scatter(source, xdata='x', ydata='y', xlabel='x', ylabel='y', title=''
 
     # source.plot_bokeh.scatter(x='pt_number', y='mean', category='mean', colormap='Plasma', show_figure=False
     plot_params.draw_straight_lines(p)
+    plot_params.set_limits(p)
     plot_params.save_plot(p)
 
     return p
@@ -208,6 +209,7 @@ def bokeh_line(source,
             p.scatter(x=xdat, y=yname, source=sourcet, **kw_scatter)
 
     plot_params.draw_straight_lines(p)
+    plot_params.set_limits(p)
     plot_params.set_legend(p)
     plot_params.save_plot(p)
 

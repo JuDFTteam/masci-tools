@@ -32,6 +32,7 @@ class BokehPlotter(Plotter):
         'label_fontsize': '18pt',
         'tick_label_fontsize': '16pt',
         'background_fill_color': '#ffffff',
+        'limits': None,
 
         #legend options
         'legend_location': 'top_right',
@@ -260,6 +261,24 @@ class BokehPlotter(Plotter):
                     for pos in positions:
                         added_lines.append(Span(location=pos, dimension='height', **options))
             fig.renderers.extend(added_lines)
+
+    def set_limits(self, fig):
+        """
+        Set limits of the axis
+
+        :param ax: Axes object on which to perform the operation
+        """
+        from bokeh.models import Range1d
+
+        if self['limits'] is not None:
+            if 'x' in self['limits']:
+                xmin = self['limits']['x'][0]
+                xmax = self['limits']['x'][1]
+                fig.x_range = Range1d(xmin, xmax)
+            if 'y' in self['limits']:
+                ymin = self['limits']['y'][0]
+                ymax = self['limits']['y'][1]
+                fig.y_range = Range1d(ymin, ymax)
 
     def set_legend(self, fig):
 
