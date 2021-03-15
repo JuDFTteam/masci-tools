@@ -17,6 +17,7 @@ Here are all plot varaiables/constants,
 from masci_tools.vis import Plotter
 import copy
 
+
 class BokehPlotter(Plotter):
 
     _BOKEH_DEFAULTS = {
@@ -54,26 +55,36 @@ class BokehPlotter(Plotter):
         'area_vertical': False,
         'fill_alpha': 1.0,
         'fill_color': None,
-
         'straight_lines': None,
-        'straight_line_options': {'line_color': 'black',
-                                  'line_width': 1.0,
-                                  'line_dash': 'dashed'},
+        'straight_line_options': {
+            'line_color': 'black',
+            'line_width': 1.0,
+            'line_dash': 'dashed'
+        },
 
         #output control
         'show': True,
     }
 
     _BOKEH_GENERAL_ARGS = {
-        'show', 'colormap', 'legend_location', 'legend_click_policy', 'legend_font_size', 'legend_orientation',
-        'background_fill_color', 'tick_label_fontsize', 'label_fontsize', 'axis_linewidth', 'figure_kwargs', 'straight_lines',
+        'show',
+        'colormap',
+        'legend_location',
+        'legend_click_policy',
+        'legend_font_size',
+        'legend_orientation',
+        'background_fill_color',
+        'tick_label_fontsize',
+        'label_fontsize',
+        'axis_linewidth',
+        'figure_kwargs',
+        'straight_lines',
     }
 
     _PLOT_KWARGS = {'color', 'alpha', 'legend_label', 'name'}
     _PLOT_KWARGS_LINE = {'line_color', 'line_alpha', 'line_dash', 'line_width'}
     _PLOT_KWARGS_SCATTER = {'marker', 'marker_size'}
     _PLOT_KWARGS_AREA = {'fill_alpha', 'fill_color'}
-
 
     def __init__(self, **kwargs):
 

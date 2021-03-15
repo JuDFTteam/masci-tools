@@ -241,12 +241,12 @@ class Plotter(object):
 
         :returns: list of dicts
         """
-        any_list = any(isinstance(val, (list,tuple)) for val in dict_of_lists.values())
+        any_list = any(isinstance(val, (list, tuple)) for val in dict_of_lists.values())
 
         #Make sure that every entry is actually a list
         if any_list:
             for key, val in dict_of_lists.items():
-                if not isinstance(val, (list,tuple)):
+                if not isinstance(val, (list, tuple)):
                     dict_of_lists[key] = [val] * num_plots
         elif not single_plot:
             dict_of_lists = {key: [value] for key, value in dict_of_lists.items()}

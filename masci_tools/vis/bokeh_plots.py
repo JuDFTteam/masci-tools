@@ -186,9 +186,9 @@ def bokeh_line(source,
 
         if plot_params[('area_plot', indx)]:
             if plot_params[('area_vertical', indx)]:
-                p.harea(x=yname, x1=xdat, x2=shift, **kw_area,source=sourcet)
+                p.harea(x=yname, x1=xdat, x2=shift, **kw_area, source=sourcet)
             else:
-                p.varea(x=xdat, y1=yname, y2=shift, **kw_area,source=sourcet)
+                p.varea(x=xdat, y1=yname, y2=shift, **kw_area, source=sourcet)
 
         p.line(x=xdat, y=yname, source=sourcet, **kw_line, **kwargs)
         if plot_points:
