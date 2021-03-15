@@ -282,7 +282,10 @@ def single_scatterplot(ydata,
 
     if plot_params['area_plot']:
         linecolor = plot_kwargs.pop('area_linecolor', None)
-        result = ax.fill_between(xdata, ydata, y2=area_curve, **plot_kwargs, **kwargs)
+        if plot_params['area_vertical']:
+            result = ax.fill_betweenx(ydata, xdata, x2=area_curve, **plot_kwargs, **kwargs)
+        else:
+            result = ax.fill_between(xdata, ydata, y2=area_curve, **plot_kwargs, **kwargs)
         plot_kwargs.pop('alpha', None)
         plot_kwargs.pop('label', None)
         plot_kwargs.pop('color', None)
@@ -433,7 +436,10 @@ def multiple_scatterplots(ydata,
 
         if plot_params[('area_plot', indx)]:
             linecolor = plot_kw.pop('area_linecolor', None)
-            result = ax.fill_between(x, y, y2=shift, **plot_kw, **kwargs)
+            if plot_params[('area_vertical', indx)]:
+                result = ax.fill_betweenx(y, x, x2=shift, **plot_kw, **kwargs)
+            else:
+                result = ax.fill_between(x, y, y2=shift, **plot_kw, **kwargs)
             plot_kw.pop('alpha', None)
             plot_kw.pop('label', None)
             plot_kw.pop('color', None)
@@ -1571,6 +1577,7 @@ def plot_dos(dos_data,
     if xyswitch:
         x, y = dos_data, energy_grid
         xlabel, ylabel = ylabel, xlabel
+        plot_params.set_defaults(default_type='function', area_vertical=True)
     else:
         x, y = energy_grid, dos_data
 
@@ -1629,6 +1636,7 @@ def plot_spinpol_dos(spin_up_data,
     if xyswitch:
         x, y = dos_data, energy_grid
         xlabel, ylabel = ylabel, xlabel
+        plot_params.set_defaults(default_type='function', area_vertical=True)
     else:
         x, y = energy_grid, dos_data
 

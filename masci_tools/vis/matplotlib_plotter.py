@@ -68,6 +68,7 @@ class MatplotlibPlotter(Plotter):
         'facecolor': None,
         'plot_label': None,
         'area_plot': False,
+        'area_vertical': False,
         'area_enclosing_line': True,
         'area_alpha': 1.0,
         'area_linecolor': None,
