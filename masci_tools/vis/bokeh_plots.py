@@ -244,7 +244,7 @@ def bokeh_dos(dosdata,
     plot_params.set_defaults(
         default_type='function',
         straight_lines=lines,
-        figure_kwargs={'tooltips': [('Name', '$name'), ('Energy', '@energy'), ('DOS value', '@$name')]})
+        figure_kwargs={'tooltips': [('Name', '$name'), ('Energy', '@energy{0.0[00]}'), ('DOS value', '@$name{0.00}')]})
 
     if ynames is None:
         ynames = set(dosdata.keys()) - set([energy] if isinstance(energy, str) else energy)
@@ -274,9 +274,10 @@ def bokeh_spinpol_dos(dosdata,
                       title=r'Density of states',
                       xyswitch=False,
                       e_fermi=0,
+                      spin_arrows=True,
                       **kwargs):
 
-    from bokeh.models import NumeralTickFormatter
+    from bokeh.models import NumeralTickFormatter, Arrow, NormalHead
 
     if 'limits' in kwargs:
         limits = kwargs.pop('limits')
@@ -305,8 +306,8 @@ def bokeh_spinpol_dos(dosdata,
     plot_params.set_defaults(default_type='function',
                              straight_lines=lines,
                              figure_kwargs={
-                                 'tooltips': [('Name', '$name'), ('Energy', '@energy{(0,0.00)}'),
-                                              ('DOS value', '@$name{(0,0.00)}')]
+                                 'tooltips': [('DOS Name', '$name'), ('Energy', '@energy{0.0[00]}'),
+                                              ('Value', '@$name{(0,0.00)}')]
                              })
 
     if xyswitch:
@@ -341,7 +342,52 @@ def bokeh_spinpol_dos(dosdata,
 
     ynames.extend([f'{key} Spin-Down' for key in ynames])
 
-    p = bokeh_line(dosdata, xdata=x, ydata=y, xlabel=xlabel, ylabel=ylabel, title=title, name=ynames, **kwargs)
+    if 'show' in kwargs:
+        plot_params.set_parameters(show=kwargs['show'])
+
+    p = bokeh_line(dosdata,
+                   xdata=x,
+                   ydata=y,
+                   xlabel=xlabel,
+                   ylabel=ylabel,
+                   title=title,
+                   name=ynames,
+                   show=False,
+                   restore_on_success=True,
+                   **kwargs)
+
+    if spin_arrows:
+
+        #These are hardcoded because the parameters are not
+        #reused anywhere (for now)
+        x_pos = 50
+        length = 70
+        pad = 30
+        height = p.plot_height - 100
+        alpha = 0.5
+
+        p.add_layout(
+            Arrow(x_start=x_pos,
+                  x_end=x_pos,
+                  y_start=height - pad - length,
+                  y_end=height - pad,
+                  start_units='screen',
+                  end_units='screen',
+                  line_width=2,
+                  line_alpha=alpha,
+                  end=NormalHead(line_width=2, size=10, fill_alpha=alpha, line_alpha=alpha)))
+        p.add_layout(
+            Arrow(x_start=x_pos,
+                  x_end=x_pos,
+                  y_start=pad + length,
+                  y_end=pad,
+                  start_units='screen',
+                  end_units='screen',
+                  line_width=2,
+                  line_alpha=alpha,
+                  end=NormalHead(line_width=2, size=10, fill_alpha=alpha, line_alpha=alpha)))
+
+    plot_params.save_plot(p)
 
     return p
 
