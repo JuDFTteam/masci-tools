@@ -64,6 +64,7 @@ class BokehPlotter(Plotter):
         },
 
         #output control
+        'save_plots': False,
         'show': True,
     }
 

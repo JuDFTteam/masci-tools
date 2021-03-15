@@ -89,13 +89,14 @@ def fleur_plot_dos(path_to_dosfile,
             dos_data = {key: data for key, data in zip(keys_to_plot, dos_data_up)}
             dos_data['energy'] = energy_grid
             data = pd.DataFrame(data=dos_data)
-            bokeh_dos(data, **kwargs)
+            fig = bokeh_dos(data, **kwargs)
     else:
         if spinpol:
-            plot_spinpol_dos(dos_data_up, dos_data_dn, energy_grid, plot_label=keys_to_plot, **kwargs)
+            fig = plot_spinpol_dos(dos_data_up, dos_data_dn, energy_grid, plot_label=keys_to_plot, **kwargs)
         else:
-            plot_dos(dos_data_up, energy_grid, plot_label=keys_to_plot, **kwargs)
+            fig = plot_dos(dos_data_up, energy_grid, plot_label=keys_to_plot, **kwargs)
 
+    return fig
 
 def select_from_Local(dos_data_up, dos_data_dn, natoms, interstitial, atoms, l_resolved):
 
