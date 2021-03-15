@@ -79,6 +79,7 @@ def bokeh_scatter(source, xdata='x', ydata='y', xlabel='x', ylabel='y', title=''
     p.scatter(x=xdata, y=ydata, source=source, **kwargs)
 
     # source.plot_bokeh.scatter(x='pt_number', y='mean', category='mean', colormap='Plasma', show_figure=False
+    plot_params.draw_straight_lines(p)
     plot_params.save_plot(p)
 
     return p
@@ -148,10 +149,14 @@ def bokeh_line(source,
     plot_kw_line = plot_params.plot_kwargs()
     plot_params.plot_type = 'scatter'  #Kind of ugly :(
     plot_kw_scatter = plot_params.plot_kwargs()
+    plot_params.plot_type = 'area'
+    plot_kw_area = plot_params.plot_kwargs()
 
-    for indx, data in enumerate(zip(ydatad, plot_kw_line, plot_kw_scatter)):
+    area_curve = kwargs.pop('area_curve', None)
 
-        yname, kw_line, kw_scatter = data
+    for indx, data in enumerate(zip(ydatad, plot_kw_line, plot_kw_scatter, plot_kw_area)):
+
+        yname, kw_line, kw_scatter, kw_area = data
 
         if isinstance(xdatad, list):
             xdat = xdatad[indx]
@@ -166,11 +171,30 @@ def bokeh_line(source,
         if 'legend_label' not in kw_line:
             kw_line['legend_label'] = yname
             kw_scatter['legend_label'] = yname
+            kw_area['legend_label'] = yname
+
+        if area_curve is not None:
+            if isinstance(area_curve, list):
+                try:
+                    shift = area_curve[indx]
+                except IndexError:
+                    shift = area_curve[0]
+            else:
+                shift = area_curve
+        else:
+            shift = 0
+
+        if plot_params[('area_plot', indx)]:
+            if plot_params[('area_vertical', indx)]:
+                p.harea(x=yname, x1=xdat, x2=shift, **kw_area,source=sourcet)
+            else:
+                p.varea(x=xdat, y1=yname, y2=shift, **kw_area,source=sourcet)
 
         p.line(x=xdat, y=yname, source=sourcet, **kw_line, **kwargs)
         if plot_points:
             p.scatter(x=xdat, y=yname, source=sourcet, **kw_scatter)
 
+    plot_params.draw_straight_lines(p)
     plot_params.set_legend(p)
     plot_params.save_plot(p)
 
