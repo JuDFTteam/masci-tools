@@ -16,48 +16,47 @@ Here are all plot varaiables/constants,
 """
 from masci_tools.vis import Plotter
 
+
 class BokehPlotter(Plotter):
 
     _BOKEH_DEFAULTS = {
-      'figure_kwargs': {'tools': 'hover',
-                        'y_axis_type': 'linear',
-                        'x_axis_type': 'linear',
-                        'toolbar_location': None,
-                        'tooltips': [('X value', '@x'), ('Y value', '@y')]},
-      'axis_linewidth': 2,
-      'label_fontsize': '18pt',
-      'tick_label_fontsize': '16pt',
-      'background_fill_color': '#ffffff',
-
-      'legend_location': "top_right",
-      'legend_click_policy': "hide",  # "mute"#"hide"
-      'legend_orientation': "vertical",
-      'legend_font_size': '14pt',
-
-      'color_palette': None,
-      'color': None,
-      'legend_label': None,
-      'alpha': 1.0,
-      'name': None,
-      'line_color': None,
-      'line_alpha': 1.0,
-      'line_dash': None,
-      'line_width': 2.0,
-      'marker': 'circle',
-      'marker_size': 6,
-
-      'show': True,
-
+        'figure_kwargs': {
+            'tools': 'hover',
+            'y_axis_type': 'linear',
+            'x_axis_type': 'linear',
+            'toolbar_location': None,
+            'tooltips': [('X value', '@x'), ('Y value', '@y')]
+        },
+        'axis_linewidth': 2,
+        'label_fontsize': '18pt',
+        'tick_label_fontsize': '16pt',
+        'background_fill_color': '#ffffff',
+        'legend_location': 'top_right',
+        'legend_click_policy': 'hide',  # "mute"#"hide"
+        'legend_orientation': 'vertical',
+        'legend_font_size': '14pt',
+        'color_palette': None,
+        'color': None,
+        'legend_label': None,
+        'alpha': 1.0,
+        'name': None,
+        'line_color': None,
+        'line_alpha': 1.0,
+        'line_dash': None,
+        'line_width': 2.0,
+        'marker': 'circle',
+        'marker_size': 6,
+        'show': True,
     }
 
-    _BOKEH_GENERAL_ARGS = {'show', 'colormap', 'legend_location', 'legend_click_policy', 'legend_font_size',
-                           'legend_orientation', 'background_fill_color', 'tick_label_fontsize', 'label_fontsize',
-                           'axis_linewidth', 'figure_kwargs'}
+    _BOKEH_GENERAL_ARGS = {
+        'show', 'colormap', 'legend_location', 'legend_click_policy', 'legend_font_size', 'legend_orientation',
+        'background_fill_color', 'tick_label_fontsize', 'label_fontsize', 'axis_linewidth', 'figure_kwargs'
+    }
 
-    _PLOT_KWARGS = {'color', 'alpha' , 'legend_label', 'name'}
+    _PLOT_KWARGS = {'color', 'alpha', 'legend_label', 'name'}
     _PLOT_KWARGS_LINE = {'line_color', 'line_alpha', 'line_dash', 'line_width'}
     _PLOT_KWARGS_SCATTER = {'marker', '´marker_size'}
-
 
     def __init__(self, **kwargs):
 
@@ -112,7 +111,6 @@ class BokehPlotter(Plotter):
 
         return plot_kwargs
 
-
     def prepare_figure(self, title, xlabel, ylabel, figure=None):
         from bokeh.plotting import figure as bokeh_fig
         from bokeh.models import Title
@@ -149,7 +147,6 @@ class BokehPlotter(Plotter):
         modified for use in this Plotter class
         """
         from bokeh.palettes import all_palettes
-
 
         if self['color'] is not None:
             color = self['color']

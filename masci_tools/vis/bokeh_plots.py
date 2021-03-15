@@ -17,7 +17,6 @@ Here are general and special bokeh plots to use
 from masci_tools.vis.bokeh_plotter import BokehPlotter
 from masci_tools.vis import ensure_plotter_consistency
 
-
 import math
 import numpy as np
 import pandas as pd
@@ -35,7 +34,6 @@ from matplotlib.cm import ScalarMappable
 ################## Helpers     ################
 
 plot_params = BokehPlotter()
-
 
 
 def prepare_plot(data, figure_options):
@@ -64,14 +62,7 @@ def prepare_plot(data, figure_options):
 
 
 @ensure_plotter_consistency(plot_params)
-def bokeh_scatter(source,
-                  xdata='x',
-                  ydata='y',
-                  xlabel='x',
-                  ylabel='y',
-                  title='',
-                  figure=None,
-                  **kwargs):
+def bokeh_scatter(source, xdata='x', ydata='y', xlabel='x', ylabel='y', title='', figure=None, **kwargs):
     """
     create an interactive scatter plot with bokeh
 
@@ -91,6 +82,7 @@ def bokeh_scatter(source,
     plot_params.save_plot(p)
 
     return p
+
 
 @ensure_plotter_consistency(plot_params)
 def bokeh_line(source,
@@ -154,7 +146,7 @@ def bokeh_line(source,
 
     plot_params.plot_type = 'line'
     plot_kw_line = plot_params.plot_kwargs()
-    plot_params.plot_type = 'scatter' #Kind of ugly :(
+    plot_params.plot_type = 'scatter'  #Kind of ugly :(
     plot_kw_scatter = plot_params.plot_kwargs()
 
     for indx, data in enumerate(zip(ydatad, plot_kw_line, plot_kw_scatter)):
@@ -175,18 +167,9 @@ def bokeh_line(source,
             kw_line['legend_label'] = yname
             kw_scatter['legend_label'] = yname
 
-        p.line(
-            x=xdat,
-            y=yname,
-            source=sourcet,
-            **kw_line,
-            **kwargs)
+        p.line(x=xdat, y=yname, source=sourcet, **kw_line, **kwargs)
         if plot_points:
-            p.scatter(
-                x=xdat,
-                y=yname,
-                source=sourcet,
-                **kw_scatter)
+            p.scatter(x=xdat, y=yname, source=sourcet, **kw_scatter)
 
     plot_params.set_legend(p)
     plot_params.save_plot(p)
