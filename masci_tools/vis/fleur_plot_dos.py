@@ -27,7 +27,7 @@ def fleur_plot_dos(path_to_dosfile,
     """
     from masci_tools.io.io_hdf5 import read_hdf
     from masci_tools.vis.plot_methods import plot_dos, plot_spinpol_dos
-    from masci_tools.vis.bokeh_plots import bokeh_dos
+    from masci_tools.vis.bokeh_plots import bokeh_dos, bokeh_spinpol_dos
     from masci_tools.util.constants import HTR_TO_EV
     import pandas as pd
 
@@ -84,7 +84,13 @@ def fleur_plot_dos(path_to_dosfile,
 
     if bokeh_plot:
         if spinpol:
-            raise NotImplementedError
+            dos_data = {key: data for key, data in zip(keys_to_plot, dos_data_up)}
+            dos_data['energy'] = energy_grid
+            dos_data_dn = {key: data for key, data in zip(keys_to_plot, dos_data_dn)}
+            dos_data_dn['energy'] = energy_grid
+            data = pd.DataFrame(data=dos_data)
+            data_dn = pd.DataFrame(data=dos_data_dn)
+            fig = bokeh_spinpol_dos(data, data_dn, **kwargs)
         else:
             dos_data = {key: data for key, data in zip(keys_to_plot, dos_data_up)}
             dos_data['energy'] = energy_grid

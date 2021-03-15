@@ -263,6 +263,89 @@ def bokeh_dos(dosdata,
     return p
 
 
+@ensure_plotter_consistency(plot_params)
+def bokeh_spinpol_dos(dosdata,
+                      dosdata_dn,
+                      spin_dn_negative=True,
+                      energy='energy',
+                      ynames=None,
+                      energy_label=r'E-E_F [eV]',
+                      dos_label=r'DOS [1/eV]',
+                      title=r'Density of states',
+                      xyswitch=False,
+                      e_fermi=0,
+                      **kwargs):
+
+    from bokeh.models import NumeralTickFormatter
+
+    if 'limits' in kwargs:
+        limits = kwargs.pop('limits')
+        if xyswitch:
+            limits['x'], limits['y'] = limits.pop('dos', None), limits.pop('energy', None)
+        else:
+            limits['x'], limits['y'] = limits.pop('energy', None), limits.pop('dos', None)
+        kwargs['limits'] = {k: v for k, v in limits.items() if v is not None}
+
+    lines = {'horizontal': 0}
+    lines['vertical'] = e_fermi
+
+    if ynames is None:
+        ynames = set(dosdata.keys()) - set([energy] if isinstance(energy, str) else energy)
+        ynames = sorted(ynames)
+
+    if spin_dn_negative:
+        dosdata_dn[ynames] = -dosdata_dn[ynames]
+
+    dosdata_dn = dosdata_dn.drop(set([energy] if isinstance(energy, str) else energy), axis=1)
+    dosdata_dn.rename(columns={key: f'{key} Spin-Down' for key in ynames}, inplace=True)
+
+    if xyswitch:
+        lines['vertical'], lines['horizontal'] = lines['horizontal'], lines['vertical']
+
+    plot_params.set_defaults(default_type='function',
+                             straight_lines=lines,
+                             figure_kwargs={
+                                 'tooltips': [('Name', '$name'), ('Energy', '@energy{(0,0.00)}'),
+                                              ('DOS value', '@$name{(0,0.00)}')]
+                             })
+
+    if xyswitch:
+        x, y = ynames, energy
+        xlabel, ylabel = dos_label, energy_label
+        plot_params.set_defaults(default_type='function',
+                                 area_vertical=True,
+                                 x_axis_formatter=NumeralTickFormatter(format='(0,0)'))
+    else:
+        xlabel, ylabel = energy_label, dos_label
+        x, y = energy, ynames
+        plot_params.set_defaults(default_type='function',
+                                 area_vertical=True,
+                                 y_axis_formatter=NumeralTickFormatter(format='(0,0)'))
+
+    plot_params.single_plot = False
+    plot_params.num_plots = len(ynames)
+    plot_params.set_parameters(color=kwargs.pop('color', None), color_palette=kwargs.pop('color_palette', None))
+    plot_params.set_color_palette_by_num_plots()
+
+    #Double the colors for spin up and down
+    kwargs['color'] = list(plot_params['color'].copy())
+    kwargs['color'].extend(kwargs['color'])
+    dosdata = pd.concat([dosdata, dosdata_dn], axis=1)
+
+    if 'legend_label' not in kwargs:
+        kwargs['legend_label'] = list(ynames.copy())
+        kwargs['legend_label'].extend(kwargs['legend_label'])
+    else:
+        if isinstance(kwargs['legend_label'], list):
+            kwargs['legend_label'].extend(kwargs['legend_label'])
+
+    ynames.extend([f'{key} Spin-Down' for key in ynames])
+
+    p = bokeh_line(dosdata, xdata=x, ydata=y, xlabel=xlabel, ylabel=ylabel, title=title, name=ynames, **kwargs)
+
+    return p
+
+
 ####################################################################################################
 ##################################### special plots ################################################
 ####################################################################################################

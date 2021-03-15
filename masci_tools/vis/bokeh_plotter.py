@@ -36,7 +36,6 @@ class BokehPlotter(Plotter):
         'y_axis_formatter': None,
         'x_ticks': None,
         'y_ticks': None,
-
         'limits': None,
 
         #legend options
