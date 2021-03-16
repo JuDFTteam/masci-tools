@@ -169,7 +169,7 @@ def convert_xml_attribute(stringattribute, possible_types, constants=None, conve
     return ret_value, all_success
 
 
-def convert_attribute_to_xml(attributevalue, possible_types, conversion_warnings=None):
+def convert_attribute_to_xml(attributevalue, possible_types, conversion_warnings=None, float_format='.10'):
     """
     Tries to converts a given attributevalue to a string for a xml file according
     to the types given in possible_types.
@@ -206,7 +206,7 @@ def convert_attribute_to_xml(attributevalue, possible_types, conversion_warnings
         for value_type in possible_types:
             if value_type == 'float':
                 try:
-                    converted_value = f'{value:.10f}'
+                    converted_value = f'{value:{float_format}f}'
                     suc = True
                 except ValueError as errmsg:
                     suc = False
@@ -214,7 +214,7 @@ def convert_attribute_to_xml(attributevalue, possible_types, conversion_warnings
                                                f'The following error was raised: {errmsg}')
             elif value_type == 'float_expression':
                 try:
-                    converted_value = f'{value:.10f}'
+                    converted_value = f'{value:{float_format}f}'
                     suc = True
                 except ValueError as errmsg:
                     suc = False
@@ -313,7 +313,7 @@ def convert_xml_text(tagtext, possible_definitions, constants=None, conversion_w
     return ret_value, all_success
 
 
-def convert_text_to_xml(textvalue, possible_definitions, conversion_warnings=None):
+def convert_text_to_xml(textvalue, possible_definitions, conversion_warnings=None, float_format='16.13'):
     """
     Tries to convert a given list of values to str for a xml file based on the definitions (length and type).
     First succeeded conversion will be returned
@@ -364,7 +364,8 @@ def convert_text_to_xml(textvalue, possible_definitions, conversion_warnings=Non
             warnings = []
             converted_value, suc = convert_attribute_to_xml(value,
                                                             text_definition['type'],
-                                                            conversion_warnings=warnings)
+                                                            conversion_warnings=warnings,
+                                                            float_format=float_format)
             converted_text.append(converted_value)
             if not suc:
                 if isinstance(value, str):

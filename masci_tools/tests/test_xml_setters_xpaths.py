@@ -326,9 +326,9 @@ def test_xml_set_text(load_inpxml):
     assert str(eval_xpath(root, '/fleurInput/comment/text()')) == 'TEST_COMMENT'
 
 
-TEST_TEXT_RESULTS = [['1.0000000000 1.0000000000 1.0000000000', '1.0000000000 1.0000000000 1.0000000000'],
+TEST_TEXT_RESULTS = [[' 1.0000000000000  1.0000000000000  1.0000000000000', ' 1.0000000000000  1.0000000000000  1.0000000000000'],
                      ['1.0 1.0 1.0', '1.0 1.0 1.0'],
-                     ['1.0000000000 1.0000000000 1.0000000000', '2.0000000000 2.0000000000 2.0000000000'],
+                     [' 1.0000000000000  1.0000000000000  1.0000000000000', ' 2.0000000000000  2.0000000000000  2.0000000000000'],
                      ['   -0.250000     0.250000     0.000000', '-20 30 40']]
 TEST_TEXTS = [[1.0, 1.0, 1.0], ['1.0', '1.0', '1.0'], [[1.0, 1.0, 1.0], [2.0, 2.0, 2.0]], ['-20', '30', '40']]
 TEST_TEXT_OCCURENCES = [None, None, None, [-1]]
@@ -412,7 +412,7 @@ def test_xml_set_first_text(load_inpxml):
     xmltree = xml_set_first_text(xmltree, schema_dict, kpoints_xpath, kpoints_xpath, [1.0, 1.0, 1.0])
 
     assert eval_xpath(root, f'{kpoints_xpath}/text()') == [
-        '1.0000000000 1.0000000000 1.0000000000', '    0.250000     0.250000     0.000000'
+        ' 1.0000000000000  1.0000000000000  1.0000000000000', '    0.250000     0.250000     0.000000'
     ]
 
 
@@ -712,7 +712,7 @@ def test_xml_set_complex_tag(load_inpxml):
     assert str(eval_xpath(root, '/fleurInput/calculationSetup/magnetism/@jspins')) == '4'
     assert str(eval_xpath(root, '/fleurInput/calculationSetup/magnetism/mtNocoParams/@l_mtNocoPot')) == 'T'
     assert str(eval_xpath(
-        root, '/fleurInput/calculationSetup/magnetism/qss/text()')) == '0.0000000000 1.0000000000 2.0000000000'
+        root, '/fleurInput/calculationSetup/magnetism/qss/text()')) == ' 0.0000000000000  1.0000000000000  2.0000000000000'
 
 
 def test_xml_set_complex_tag_differing_xpaths_recursive_complex_single(load_inpxml):
