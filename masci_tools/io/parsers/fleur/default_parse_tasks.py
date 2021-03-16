@@ -121,8 +121,10 @@ TASKS_DEFINITION = {
         },
         'bz_integration': {
             'parse_type': 'attrib',
-            'path_spec': {'name':'mode',
-                          'tag_name': 'bzIntegration'}
+            'path_spec': {
+                'name': 'mode',
+                'tag_name': 'bzIntegration'
+            }
         }
     },
     #--------Defintions for general info from outfile (start, endtime, number_iterations)--------
@@ -169,8 +171,10 @@ TASKS_DEFINITION = {
         },
         'number_of_kpoints': {
             'parse_type': 'attrib',
-            'path_spec': {'name': 'count',
-                          'contains': 'numericalParameters'}
+            'path_spec': {
+                'name': 'count',
+                'contains': 'numericalParameters'
+            }
         },
         'start_date': {
             'parse_type': 'allAttribs',
