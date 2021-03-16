@@ -419,7 +419,7 @@ class Plotter(object):
 
         return kwargs_unprocessed
 
-    def add_parameter(self, name, default_from=None):
+    def add_parameter(self, name, default_from=None, default_val=None):
         """
         Add a new parameter to the parameters dictionary.
 
@@ -428,8 +428,11 @@ class Plotter(object):
                              with the name and the default value of the key `default_from`
 
         """
-        default_val = None
-        if default_from is not None:
+
+        if default_val is not None:
+            if default_from is not None:
+                raise ValueError('Default value speciefied via default_val and default_from. Please choose one option')
+        elif default_from is not None:
             default_val = self._params.parents[default_from]
             if isinstance(default_val, (dict, list)):
                 default_val = copy.deepcopy(default_val)
