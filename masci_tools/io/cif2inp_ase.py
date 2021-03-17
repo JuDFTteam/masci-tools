@@ -28,12 +28,13 @@ structureFormula = structure.get_chemical_formula()
 inpFilename = 'inp_'+structureFormula
 
 Binv = np.linalg.inv(structure.cell)
+# I = C.B^(-1)
 frac_coordinates = structure.arrays['positions'].dot(Binv)
 
 with open(inpFilename, "w+") as f:
     natoms = len(structure.arrays['numbers'])
     f.write(structureFormula+"\r\n")
-    f.write("&input film=F /\r\n")
+    f.write("&input film='F' /\r\n")
     for i in range(3):
         f.write(' '.join(map("{:.12f}".format, structure.cell[i]))+"\r\n")
     f.write("1.8897    !lattice const scaled as(1.0*bohr)\r\n1.0000 1.0000 1.0000    !scaling\r\n\r\n")
