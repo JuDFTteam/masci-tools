@@ -2510,7 +2510,7 @@ def pseudo_voigt_profile(x, fwhm_g, fwhm_l, mu, mix=0.5):
     return mix * gaus + (1 - mix) * lorentz
 
 
-"""
+
 def plot_bands2(xs, ys, ss, axis=None, linestyle='-', markersize_scaling=20, **kwargs):
     """
     """
@@ -2530,16 +2530,17 @@ def plot_bands2(xs, ys, ss, axis=None, linestyle='-', markersize_scaling=20, **k
                         linewidth=linewidth,
                         color='k',
                         markeredgewidth=0.0)
-"""
-"""
-def plot_fleur_bands(filename, limits=[None, [-15, 15]]):
 
+
+
+def plot_fleur_bands(filename, limits=[None, [-15, 15]]):
+    """
     plot a fleur bandstructure
 
     # TODO: performance has to be increased.
     Maybe allow to specify a procentage of the kpoints to read in and plot.
     Therefore enable a partially read in of the dos_band.hdf
-
+    """
 
     from masci_tools.io.io_fleur_bands import read_fleur_banddos_hdf
 
@@ -2666,7 +2667,7 @@ def plot_fleur_bands(filename, limits=[None, [-15, 15]]):
     #    plt.savefig(savefilename, format=save_format_g, transparent=True)
 
     return ax1
-"""
+
 
 class PDF(object):
 
