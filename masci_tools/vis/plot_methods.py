@@ -44,7 +44,7 @@ from pprint import pprint
 plot_params = MatplotlibPlotter()
 
 
-def set_plot_defaults_new(**kwargs):
+def set_plot_defaults(**kwargs):
     plot_params.set_defaults(**kwargs)
 
 
@@ -54,151 +54,6 @@ def reset_plot_defaults():
 
 def show_plot_defaults():
     pprint(plot_params.get_dict())
-
-
-###############################################################################
-################ GLOBAL MODULE VARIABLES setting properties ###################
-###############################################################################
-
-# maintain this and set method for them
-# convention they are the property ending with '_g'
-# TODO: There is prob a better way to do this, gff go with classes,
-# currenlty things blow up a bit...
-
-# figure properties
-title_fontsize_g = 16
-figsize_g = (8, 6)
-dpi_g = 80
-facecolor_g = 'w'
-edgecolor_g = 'k'
-
-# axis properties
-alpha_g = 1
-axis_linewidth_g = 1.5
-use_axis_fromatter_g = False
-
-# plot properties
-linewidth_g = 2.0
-markersize_g = 4.0
-
-# x, y label
-labelfonstsize_g = 15
-
-# ticks
-ticklabelsizex_g = 14
-ticklabelsizey_g = 14
-tick_paramsx_g = {'size': 4.0, 'width': 1.0, 'labelsize': ticklabelsizex_g, 'length': 5, 'labelrotation': 0}
-tick_paramsy_g = {'size': 4.0, 'width': 1.0, 'labelsize': ticklabelsizey_g, 'length': 5, 'labelrotation': 0}
-ticklabelsizex_minor_g = 0
-ticklabelsizey_minor_g = 0
-tick_paramsx_minor_g = {'size': 2.0, 'width': 1.0, 'labelsize': ticklabelsizex_minor_g, 'length': 2.5}
-tick_paramsy_minor_g = {'size': 2.0, 'width': 1.0, 'labelsize': ticklabelsizey_minor_g, 'length': 2.5}
-# legend properties
-legend_g = False
-
-# save all plots?
-save_plots_g = False  # True
-save_format_g = 'png'  #'pdf'
-tightlayout_g = False
-
-show_g = True
-# write data to file
-save_raw_plot_data_g = False
-raw_plot_data_format_g = 'txt'
-##############
-
-
-def set_plot_defaults(
-        title_fontsize=16,
-        linewidth=2.0,
-        markersize=4.0,
-        labelfonstsize=15,
-        ticklabelsize=14,
-        ticklabelsize_minor=0,
-        axis_linewidth=2.0,
-        tick_paramsx={
-            'size': 4.0,
-            'width': 1.0,
-            'labelsize': ticklabelsizex_g,
-            'length': 5,
-            'labelrotation': 0
-        },
-        tick_paramsy={
-            'size': 4.0,
-            'width': 1.0,
-            'labelsize': ticklabelsizey_g,
-            'length': 5,
-            'labelrotation': 0
-        },
-        tick_paramsx_minor={
-            'size': 2.0,
-            'width': 1.0,
-            'labelsize': ticklabelsizex_minor_g,
-            'length': 2.5
-        },
-        tick_paramsy_minor={
-            'size': 2.0,
-            'width': 1.0,
-            'labelsize': ticklabelsizey_minor_g,
-            'length': 2.5
-        },
-        figsize=(8, 6),
-        save_plots=False,  #True,
-        save_format='pdf',
-        legend=True,
-        save_raw_plot_data=False,
-        raw_plot_data_format='txt',
-        show=True,
-        use_axis_fromatter=True,
-        **kwargs):
-    """
-    Try to use this to set some global default values.
-
-    Set some evironment variable with or global variables.
-    """
-    global linewidth_g, markersize_g, labelfonstsize_g, title_fontsize_g, axis_linewidth_g
-    global ticklabelsize_g, tick_paramsx_g, tick_paramsy_g, save_plots_g, save_format_g, legend_g, figsize_g
-    global raw_plot_data_format_g, save_raw_plot_data_g, show_g, use_axis_fromatter_g
-    global ticklabelsize_minor_g, tick_paramsx_minor_g, tick_paramsy_minor_g
-
-    title_fontsize_g = title_fontsize
-
-    # plot properties
-    linewidth_g = linewidth
-    markersize_g = markersize
-    axis_linewidth_g = axis_linewidth
-    use_axis_fromatter_g = use_axis_fromatter
-
-    # x, y label
-    labelfonstsize_g = labelfonstsize
-
-    # ticks
-    ticklabelsizex_g = ticklabelsize
-    ticklabelsizey_g = ticklabelsize
-    tick_paramsx_g.update(tick_paramsx)
-    tick_paramsy_g.update(tick_paramsy)
-
-    ticklabelsizex_minor_g = ticklabelsize_minor
-    tick_paramsx_minor_g.update(tick_paramsx_minor)
-    tick_paramsy_minor_g.update(tick_paramsy_minor)
-
-    # save all plots?
-    save_plots_g = save_plots
-    save_format_g = save_format
-    #print markersize_g
-
-    legend_g = legend
-    figsize_g = figsize
-
-    #save/export data
-    save_raw_plot_data_g = save_raw_plot_data
-    raw_plot_data_format_g = raw_plot_data_format
-
-    # TODO generalilze
-    # for kwarg in kwargs:
-    # set_global(val)
-
-    show_g = show
 
 
 ###############################################################################
@@ -471,7 +326,16 @@ def multiple_scatterplots(ydata,
 
 
 @ensure_plotter_consistency(plot_params)
-def multi_scatter_plot(xdata, ydata, sdata, xlabel='', ylabel='', title='', saveas='mscatterplot', axis=None, **kwargs):
+def multi_scatter_plot(xdata,
+                       ydata,
+                       sdata,
+                       xlabel='',
+                       ylabel='',
+                       title='',
+                       saveas='mscatterplot',
+                       axis=None,
+                       cdata=None,
+                       **kwargs):
     """
     Create a scatter plot with varying marker size
     Info: x, y and s data must have the same dimensions.
@@ -1812,8 +1676,8 @@ def plot_one_element_corelv(corelevel_dict, element, compound='', axis=None, sav
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
-    for y in ydata_all:
-        for x, y in zip(xdata, y):
+    for ydata in ydata_all:
+        for x, y in zip(xdata, ydata):
             lenx = xmax - xmin
             length = 0.5 / lenx
             offset = 0.5 / lenx
@@ -2536,163 +2400,6 @@ def pseudo_voigt_profile(x, fwhm_g, fwhm_l, mu, mix=0.5):
     gaus = gaussian(x, fwhm_g, mu)
     lorentz = lorentzian(x, fwhm_l, mu)
     return mix * gaus + (1 - mix) * lorentz
-
-
-def plot_bands2(xs, ys, ss, axis=None, linestyle='-', markersize_scaling=20, **kwargs):
-    """
-    """
-    markersize_band = 5
-    ax = multi_scatter_plot(xs, ys, markersize_band)
-
-    if linestyle is not None:
-        for j, data in enumerate(ys):
-            for i, entry in enumerate(data[1:]):
-                ynew = [data[i], entry]
-                xnew = [xs[j][i], xs[j][i + 1]]
-                linewidth = np.sqrt(markersize_scaling * (ss[j][i] + ss[j][i + 1]) / 4.0)
-                ax.plot(xnew,
-                        ynew,
-                        linestyle=linestyle,
-                        markersize=0.0,
-                        linewidth=linewidth,
-                        color='k',
-                        markeredgewidth=0.0)
-
-
-def plot_fleur_bands(filename, limits=[None, [-15, 15]]):
-    """
-    plot a fleur bandstructure
-
-    # TODO: performance has to be increased.
-    Maybe allow to specify a procentage of the kpoints to read in and plot.
-    Therefore enable a partially read in of the dos_band.hdf
-    """
-
-    from masci_tools.io.io_fleur_bands import read_fleur_banddos_hdf
-
-    xcoord, bands, xlabels, band_character, band_char_label, kts, wghts, rcell, cell, pos, atomn, spp = read_fleur_banddos_hdf(
-        filename)
-
-    tllike = [band_character[0].transpose()]
-    if len(tllike) == 2:
-        tllike.append(band_character[1].transpose())
-
-    markersize_scaling = 10.0
-    markersize_atomindependent = []  #np.array([])
-    markersize_like_s = []
-
-    # TODO there has to be a better way to do this, ... and faster with np.arrays
-    for s, tllike_s in enumerate(tllike):
-        markersize_like = []
-        for n, llike in enumerate(tllike_s):
-            markersize = []  #np.array([])
-            for i, atomtype in enumerate(llike):
-                markersize_band = []  #np.array([])
-                for j, band in enumerate(atomtype):
-                    markersize_temp = []  #np.array([])
-                    for m, kpoint in enumerate(band):
-                        #total = 0
-                        #print kpoint
-                        #for spin in kpoint:
-                        #    total = total + spin
-                        markersize_temp.append((kpoint * markersize_scaling)**2)  # scatter needs size squared
-                    markersize_band.append(markersize_temp)
-                markersize.append(markersize_band)
-                # always make the last one the total of all atomtypes
-            markersize_like.append(markersize)
-        markersize_like_s.append(markersize_like_s)
-
-    xticks = [[], []]
-    for label, pos in xlabels:
-        if label == 'Gamma':
-            label = r'$\Gamma$'
-        xticks[1].append(label)
-        xticks[0].append(pos)
-
-    # TODO spin is not treated right yet
-    x = [xcoord for i in bands[0]]
-    y = bands[0]
-    y2 = None
-    if len(bands) == 2:
-        y2 = bands[1]
-        print((len(y2)))
-    print((len(x), len(y)))
-
-    limits[0] = [min(xcoord), max(xcoord)]
-
-    for i, marker_likes in enumerate(markersize_like):
-        ax = multi_scatter_plot(x,
-                                y,
-                                marker_likes[0],
-                                ylabel=u'Energy [eV]',
-                                title='{}'.format(i),
-                                xticks=xticks,
-                                limits=limits,
-                                saveas='bandstru_{}'.format(i))
-        for label, pos in xlabels:
-            ax.axvline(
-                ymin=0,
-                ymax=1,
-                x=pos,  #1.0/10.93,
-                linewidth=1.0,
-                linestyle='-',
-                color='k')
-        #ax.hxvline(xmin==0, xmax=1.0, linestyle='-', color='g')
-
-        saveas = 'bandstruc_{}'.format(i)
-        if save_plots_g:
-            savefilename = '{}.{}'.format(saveas, save_format_g)
-            print(('save plot to: {}'.format(savefilename)))
-            plt.savefig(savefilename, format=save_format_g, transparent=True)
-
-    ax1 = multiple_scatterplots(y,
-                                x,
-                                ylabel=u'Energy [eV]',
-                                xlabel='',
-                                title='',
-                                plot_labels=None,
-                                xticks=xticks,
-                                limits=limits,
-                                saveas='bandstructure',
-                                marker=None)
-    #print ax1
-    for label, pos in xlabels:
-        ax1.axvline(
-            ymin=0,
-            ymax=1,
-            x=pos,  #1.0/10.93,
-            linewidth=1.0,
-            linestyle='-',
-            color='k')
-
-    if y2:
-        ax2 = multiple_scatterplots(y2,
-                                    x,
-                                    ylabel=u'Energy [eV]',
-                                    xlabel='',
-                                    title='',
-                                    plot_labels=None,
-                                    xticks=xticks,
-                                    limits=limits,
-                                    saveas='bandstructure',
-                                    marker=None)
-        #print ax1
-        for label, pos in xlabels:
-            ax2.axvline(
-                ymin=0,
-                ymax=1,
-                x=pos,  #1.0/10.93,
-                linewidth=1.0,
-                linestyle='-',
-                color='k')
-
-    #saveas='bandstructure'
-    #if save_plots_g:
-    #    savefilename = '{}.{}'.format(saveas, save_format_g)
-    #    print('save plot to: {}'.format(savefilename))
-    #    plt.savefig(savefilename, format=save_format_g, transparent=True)
-
-    return ax1
 
 
 class PDF(object):

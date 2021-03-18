@@ -10,7 +10,7 @@ import pytest
 # this needs to go *before* pyplot imports
 import matplotlib
 matplotlib.use('Agg')
-from matplotlib.pyplot import gcf, title
+from matplotlib.pyplot import gcf
 import matplotlib.pyplot as plt
 #from masci_tools.io.kkr_read_shapefun_info import read_shapefun
 #from masci_tools.vis.kkr_plot_shapefun import plot_shapefun
@@ -23,7 +23,7 @@ def test_plot_methods_imports():
     """
     Test that all expected functions are still there
     """
-    from masci_tools.vis.plot_methods import set_plot_defaults_new
+    from masci_tools.vis.plot_methods import set_plot_defaults
     from masci_tools.vis.plot_methods import reset_plot_defaults
     from masci_tools.vis.plot_methods import show_plot_defaults
     from masci_tools.vis.plot_methods import single_scatterplot
@@ -31,10 +31,11 @@ def test_plot_methods_imports():
     from masci_tools.vis.plot_methods import multi_scatter_plot
     from masci_tools.vis.plot_methods import colormesh_plot
     from masci_tools.vis.plot_methods import waterfall_plot
+    from masci_tools.vis.plot_methods import surface_plot
     from masci_tools.vis.plot_methods import multiplot_moved
     from masci_tools.vis.plot_methods import multiaxis_scatterplot
     from masci_tools.vis.plot_methods import histogram
-    from masci_tools.vis.plot_methods import default_histogram
+    from masci_tools.vis.plot_methods import barchart
     from masci_tools.vis.plot_methods import plot_convex_hull2d
     from masci_tools.vis.plot_methods import plot_residuen
     from masci_tools.vis.plot_methods import plot_convergence_results
@@ -42,11 +43,13 @@ def test_plot_methods_imports():
     from masci_tools.vis.plot_methods import plot_lattice_constant
     from masci_tools.vis.plot_methods import plot_relaxation_results
     from masci_tools.vis.plot_methods import plot_dos
+    from masci_tools.vis.plot_methods import plot_spinpol_dos
     from masci_tools.vis.plot_methods import plot_bands
+    from masci_tools.vis.plot_methods import plot_spinpol_bands
     from masci_tools.vis.plot_methods import plot_one_element_corelv
     from masci_tools.vis.plot_methods import construct_corelevel_spectrum
     from masci_tools.vis.plot_methods import plot_corelevel_spectra
-    from masci_tools.vis.plot_methods import plot_fleur_bands
+    #from masci_tools.vis.plot_methods import plot_fleur_bands
 
 
 TEST_CHANGES = [{'markersize': 50}, {'show': False}, {'tick_paramsx': {'labelsize': 100}}]
@@ -72,14 +75,14 @@ def test_set_defaults(change_dict, result):
     Test the setting of default values
     """
     from masci_tools.vis.plot_methods import plot_params
-    from masci_tools.vis.plot_methods import set_plot_defaults_new  #_new because the old routine is not yet removed
+    from masci_tools.vis.plot_methods import set_plot_defaults
     from masci_tools.vis.plot_methods import reset_plot_defaults
 
     value_before = {}
     for key in change_dict:
         value_before[key] = plot_params[key]
 
-    set_plot_defaults_new(**change_dict)
+    set_plot_defaults(**change_dict)
 
     for key, val in result.items():
         assert plot_params[key] == val
