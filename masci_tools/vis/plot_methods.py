@@ -1554,7 +1554,9 @@ def plot_bands(kpath,
         xticks.append(pos)
 
     lines = {'vertical': xticks, 'horizontal': e_fermi}
-    plot_params.set_defaults(default_type='function', lines=lines, xticks=xticks, xticklabels=xticklabels, color='k')
+
+    limits = {'x': (min(kpath), max(kpath)), 'y': (-15,15)}
+    plot_params.set_defaults(default_type='function', lines=lines, limits=limits, xticks=xticks, xticklabels=xticklabels, color='k')
     ax = multi_scatter_plot(kpath, bands, size_data, xlabel=xlabel, ylabel=ylabel, title=title, saveas=saveas, **kwargs)
 
     return ax
@@ -1590,7 +1592,8 @@ def plot_spinpol_bands(kpath,
     else:
         color = 'k'
 
-    plot_params.set_defaults(default_type='function', lines=lines, xticks=xticks, xticklabels=xticklabels, color=color)
+    limits = {'x': (min(kpath), max(kpath)), 'y': (-15,15)}
+    plot_params.set_defaults(default_type='function', lines=lines, limits=limits, xticks=xticks, xticklabels=xticklabels, color=color)
     ax = multi_scatter_plot(kpath, [bands_up, bands_dn],
                             size_data,
                             xlabel=xlabel,
