@@ -1666,7 +1666,17 @@ def plot_spinpol_dos(spin_up_data,
 
     return ax
 
-def plot_bands(kpath, bands, size_data=None, special_kpoints=None, e_fermi=0, xlabel='', ylabel='Energy [eV]',  title='', saveas='bandstructure', **kwargs):
+
+def plot_bands(kpath,
+               bands,
+               size_data=None,
+               special_kpoints=None,
+               e_fermi=0,
+               xlabel='',
+               ylabel='Energy [eV]',
+               title='',
+               saveas='bandstructure',
+               **kwargs):
 
     if special_kpoints is None:
         special_kpoints = {}
@@ -1685,7 +1695,19 @@ def plot_bands(kpath, bands, size_data=None, special_kpoints=None, e_fermi=0, xl
 
     return ax
 
-def plot_spinpol_bands(kpath, bands_up, bands_dn, size_data=None, show_spin_pol=True, special_kpoints=None, e_fermi=0, xlabel='', ylabel='Energy [eV]',  title='', saveas='bandstructure', **kwargs):
+
+def plot_spinpol_bands(kpath,
+                       bands_up,
+                       bands_dn,
+                       size_data=None,
+                       show_spin_pol=True,
+                       special_kpoints=None,
+                       e_fermi=0,
+                       xlabel='',
+                       ylabel='Energy [eV]',
+                       title='',
+                       saveas='bandstructure',
+                       **kwargs):
 
     if special_kpoints is None:
         special_kpoints = {}
@@ -1705,7 +1727,13 @@ def plot_spinpol_bands(kpath, bands_up, bands_dn, size_data=None, show_spin_pol=
         color = 'k'
 
     plot_params.set_defaults(default_type='function', lines=lines, xticks=xticks, xticklabels=xticklabels, color=color)
-    ax = multi_scatter_plot(kpath, [bands_up, bands_dn], size_data, xlabel=xlabel, ylabel=ylabel, title=title, saveas=saveas, **kwargs)
+    ax = multi_scatter_plot(kpath, [bands_up, bands_dn],
+                            size_data,
+                            xlabel=xlabel,
+                            ylabel=ylabel,
+                            title=title,
+                            saveas=saveas,
+                            **kwargs)
 
     return ax
 
@@ -1737,12 +1765,7 @@ def plot_corelevels(coreleveldict, compound='', axis=None, saveas='scatterplot',
 
 
 @ensure_plotter_consistency(plot_params)
-def plot_one_element_corelv(corelevel_dict,
-                            element,
-                            compound='',
-                            axis=None,
-                            saveas='scatterplot',
-                            **kwargs):
+def plot_one_element_corelv(corelevel_dict, element, compound='', axis=None, saveas='scatterplot', **kwargs):
     """
     This routine creates a plot which visualizes all the binding energies of one
     element (and currenlty one corelevel) for different atomtypes.
@@ -1777,8 +1800,14 @@ def plot_one_element_corelv(corelevel_dict,
     ymin = min(ydata) - 1
     ymax = max(ydata) + 1
 
-    plot_params.set_defaults(default_type='function', font_options={'color': 'darkred'},
-                             color='k', linewidth=2, limits={'x': (xmin, xmax), 'y': (ymin, ymax)})
+    plot_params.set_defaults(default_type='function',
+                             font_options={'color': 'darkred'},
+                             color='k',
+                             linewidth=2,
+                             limits={
+                                 'x': (xmin, xmax),
+                                 'y': (ymin, ymax)
+                             })
 
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
@@ -2509,7 +2538,6 @@ def pseudo_voigt_profile(x, fwhm_g, fwhm_l, mu, mix=0.5):
     return mix * gaus + (1 - mix) * lorentz
 
 
-
 def plot_bands2(xs, ys, ss, axis=None, linestyle='-', markersize_scaling=20, **kwargs):
     """
     """
@@ -2529,7 +2557,6 @@ def plot_bands2(xs, ys, ss, axis=None, linestyle='-', markersize_scaling=20, **k
                         linewidth=linewidth,
                         color='k',
                         markeredgewidth=0.0)
-
 
 
 def plot_fleur_bands(filename, limits=[None, [-15, 15]]):
