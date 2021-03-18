@@ -406,7 +406,6 @@ def multiple_scatterplots(ydata,
     # allow all arguments as value then use for all or as lists with the righ length.
 
     plot_kwargs = plot_params.plot_kwargs()
-    area_curve = kwargs.pop('area_curve', None)
 
     for indx, data in enumerate(zip(xdata, ydata, plot_kwargs)):
 
