@@ -209,13 +209,14 @@ def set_plot_defaults(
 @ensure_plotter_consistency(plot_params)
 def single_scatterplot(ydata,
                        xdata,
-                       xlabel,
-                       ylabel,
-                       title,
+                       xlabel='',
+                       ylabel='',
+                       title='',
                        saveas='scatterplot',
                        axis=None,
                        xerr=None,
                        yerr=None,
+                       area_curve=None,
                        **kwargs):
     """
     Create a standard scatter plot (this should be flexible enough) to do all the
@@ -278,14 +279,17 @@ def single_scatterplot(ydata,
     # TODO customizable error bars fmt='o', ecolor='g', capthick=2, ...
     # there the if is prob better...
     plot_kwargs = plot_params.plot_kwargs()
-    area_curve = kwargs.pop('area_curve', 0)
+    if area_curve is None:
+        shift = 0
+    else:
+        shift = area_curve
 
     if plot_params['area_plot']:
         linecolor = plot_kwargs.pop('area_linecolor', None)
         if plot_params['area_vertical']:
-            result = ax.fill_betweenx(ydata, xdata, x2=area_curve, **plot_kwargs, **kwargs)
+            result = ax.fill_betweenx(ydata, xdata, x2=shift, **plot_kwargs, **kwargs)
         else:
-            result = ax.fill_between(xdata, ydata, y2=area_curve, **plot_kwargs, **kwargs)
+            result = ax.fill_between(xdata, ydata, y2=shift, **plot_kwargs, **kwargs)
         plot_kwargs.pop('alpha', None)
         plot_kwargs.pop('label', None)
         plot_kwargs.pop('color', None)
@@ -321,6 +325,7 @@ def multiple_scatterplots(ydata,
                           axis=None,
                           xerr=None,
                           yerr=None,
+                          area_curve=None,
                           **kwargs):
     """
     Create a standard scatter plot with multiple sets of data (this should be flexible enough)
@@ -1220,9 +1225,9 @@ def plot_residuen(xdata,
 
     ax1 = single_scatterplot(ydata,
                              xdata,
-                             xlabel,
-                             ylabel,
-                             title,
+                             xlabel=xlabel,
+                             ylabel=ylabel,
+                             title=title,
                              axis=ax1,
                              show=False,
                              save_plots=False,
@@ -1288,9 +1293,9 @@ def plot_convergence_results(distance,
 
     p1 = single_scatterplot(total_energy_abs_diff,
                             iteration[1:],
-                            xlabel,
-                            ylabel1,
-                            title1,
+                            xlabel=xlabel,
+                            ylabel=ylabel1,
+                            title=title1,
                             plot_label='delta total energy',
                             saveas=saveas1,
                             scale={'y': 'log'},
@@ -1299,9 +1304,9 @@ def plot_convergence_results(distance,
     #single_scatterplot(total_energy, iteration, xlabel, ylabel1, title1, plotlabel='total energy', saveas=saveas3)
     p2 = single_scatterplot(distance,
                             iteration,
-                            xlabel,
-                            ylabel2,
-                            title2,
+                            xlabel=xlabel,
+                            ylabel=ylabel2,
+                            title=title2,
                             plot_label='distance',
                             saveas=saveas2,
                             scale={'y': 'log'},
@@ -1662,71 +1667,48 @@ def plot_spinpol_dos(spin_up_data,
 
     return ax
 
+def plot_bands(kpath, bands, size_data=None, special_kpoints=None, e_fermi=0, xlabel='', ylabel='Energy [eV]',  title='', saveas='bandstructure', **kwargs):
 
-def plot_bands(path_to_bands_file,
-               kpath,
-               title='Bandstructure',
-               plotlabel='bands',
-               linetyp='o',
-               limits=[None, None],
-               saveas='bandstructure',
-               color='k'):
-    r"""
-    Plot a band structure from a bands.1 file from FLEUR
-    params: kpath: dict: {r"$\Gamma$": 0.00000, r"$H$" : 1.04590, r"$N$" : 1.78546, r"$P$": 2.30841, r"$\Gamma$" : 3.21419, r"$N$" 3.95375 }
+    if special_kpoints is None:
+        special_kpoints = {}
 
-    """
+    xticks = []
+    xticklabels = []
+    for label, pos in special_kpoints.items():
+        if label == 'Gamma':
+            label = r'$\Gamma$'
+        xticklabels.append(label)
+        xticks.append(pos)
 
-    xpos = list(kpath.values())
-    xNames = list(kpath.keys())
-    data = np.loadtxt(path_to_bands_file, skiprows=0)
-    xdata = data[..., 0]
-    ydata = data[..., 1]
-    xmin = min(xdata) - 0.01
-    xmax = max(xdata) + 0.01
-    ymin = 0
-    ymax = max(ydata)
-    xlabel = ''
-    ylabel = r'$E - E_F$ [eV]'
-    fig = plt.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
-    ax = fig.add_subplot(111)
-    for axis in ['top', 'bottom', 'left', 'right']:
-        ax.spines[axis].set_linewidth(axis_linewidth_g)
+    lines = {'vertical': xticks, 'horizontal': e_fermi}
+    plot_params.set_defaults(default_type='function', lines=lines, xticks=xticks, xticklabels=xticklabels, color='k')
+    ax = multi_scatter_plot(kpath, bands, size_data, xlabel=xlabel, ylabel=ylabel, title=title, saveas=saveas, **kwargs)
 
-    plt.xticks(xpos, xNames)
-    ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
-    ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
-    ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
-    ax.yaxis.set_tick_params(size=tick_paramsy_g.get('size', 4.0),
-                             width=tick_paramsy_g.get('width', 1.0),
-                             labelsize=tick_paramsy_g.get('labelsize', 14),
-                             length=tick_paramsy_g.get('length', 5))
-    ax.xaxis.set_tick_params(size=tick_paramsx_g.get('size', 4.0),
-                             width=tick_paramsx_g.get('width', 1.0),
-                             labelsize=tick_paramsx_g.get('labelsize', 14),
-                             length=tick_paramsx_g.get('length', 5))
-    ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
-    ax.yaxis.get_major_formatter().set_useOffset(False)
-    p1 = plt.plot(xdata, ydata, linetyp, label=plotlabel, color=color, linewidth=linewidth_g, markersize=markersize_g)
+    return ax
 
-    if limits:
-        if limits[0]:
-            xmin = limits[0][0]
-            xmax = limits[0][1]
-            plt.xlim(xmin, xmax)
-        if limits[1]:
-            ymin = limits[1][0]
-            ymax = limits[1][1]
-            plt.ylim(ymin, ymax)
-    for i in xpos:
-        plt.axvline(x=i, ymin=ymin, ymax=ymax, linewidth=1, color='k')
+def plot_spinpol_bands(kpath, bands_up, bands_dn, size_data=None, show_spin_pol=True, special_kpoints=None, e_fermi=0, xlabel='', ylabel='Energy [eV]',  title='', saveas='bandstructure', **kwargs):
 
-    if save_plots_g:
-        savefilename = '{}.{}'.format(saveas, save_format_g)
-        print(('save plot to: {}'.format(savefilename)))
-        plt.savefig(savefilename, format=save_format_g, transparent=True)
+    if special_kpoints is None:
+        special_kpoints = {}
+
+    xticks = []
+    xticklabels = []
+    for label, pos in special_kpoints.items():
+        if label == 'Gamma':
+            label = r'$\Gamma$'
+        xticklabels.append(label)
+        xticks.append(pos)
+
+    lines = {'vertical': xticks, 'horizontal': e_fermi}
+    if show_spin_pol:
+        color = ['blue', 'red']
     else:
-        plt.show()
+        color = 'k'
+
+    plot_params.set_defaults(default_type='function', lines=lines, xticks=xticks, xticklabels=xticklabels, color=color)
+    ax = multi_scatter_plot(kpath, [bands_up, bands_dn], size_data, xlabel=xlabel, ylabel=ylabel, title=title, saveas=saveas, **kwargs)
+
+    return ax
 
 
 def plot_certain_bands():
@@ -1760,9 +1742,6 @@ def plot_one_element_corelv(corelevel_dict,
                             element,
                             compound='',
                             axis=None,
-                            linewidth=2,
-                            color='k',
-                            font_options=None,
                             saveas='scatterplot',
                             **kwargs):
     """
@@ -1798,16 +1777,11 @@ def plot_one_element_corelv(corelevel_dict,
     xmax = xdata[-1] + 0.5
     ymin = min(ydata) - 1
     ymax = max(ydata) + 1
-    limits = {'x': (xmin, xmax), 'y': (ymin, ymax)}
 
-    if font_options is None:
-        font_options = {'color': 'darkred'}
+    plot_params.set_defaults(default_type='function', font_options={'color': 'darkred'},
+                             color='k', linewidth=2, limits={'x': (xmin, xmax), 'y': (ymin, ymax)})
 
-    kwargs = plot_params.set_parameters(continue_on_error=True,
-                                        linewidth=linewidth,
-                                        color=color,
-                                        font_options=font_options,
-                                        limits=limits**kwargs)
+    kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
     for y in ydata_all:
@@ -2536,6 +2510,7 @@ def pseudo_voigt_profile(x, fwhm_g, fwhm_l, mu, mix=0.5):
     return mix * gaus + (1 - mix) * lorentz
 
 
+"""
 def plot_bands2(xs, ys, ss, axis=None, linestyle='-', markersize_scaling=20, **kwargs):
     """
     """
@@ -2691,7 +2666,7 @@ def plot_fleur_bands(filename, limits=[None, [-15, 15]]):
     #    plt.savefig(savefilename, format=save_format_g, transparent=True)
 
     return ax1
-
+"""
 
 class PDF(object):
 

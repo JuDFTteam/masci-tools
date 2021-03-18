@@ -109,7 +109,7 @@ class TestSingleScatterPlot(object):
 
         gcf().clear()
 
-        single_scatterplot(y, x, 'X', 'Y', 'Plot Test', show=False)
+        single_scatterplot(y, x, xlabel='X', ylabel='Y', title='Plot Test', show=False)
         # need to return the figure in order for mpl checks to work
         return gcf()
 
@@ -129,9 +129,7 @@ class TestSingleScatterPlot(object):
 
         single_scatterplot(y,
                            x,
-                           'X',
-                           'Y',
-                           'Plot Test',
+                           xlabel='X', ylabel='Y', title='Plot Test',
                            title_fontsize=30,
                            plot_label='Test',
                            color='darkred',
@@ -156,7 +154,7 @@ class TestSingleScatterPlot(object):
 
         gcf().clear()
 
-        single_scatterplot(y, x, 'X', 'Y', 'Plot Test', scale={'y': 'log'}, show=False)
+        single_scatterplot(y, x, xlabel='X', ylabel='Y', title='Plot Test', scale={'y': 'log'}, show=False)
         # need to return the figure in order for mpl checks to work
         return gcf()
 
@@ -174,7 +172,7 @@ class TestSingleScatterPlot(object):
 
         gcf().clear()
 
-        single_scatterplot(y, x, 'X', 'Y', 'Plot Test', limits={'y': (-100, 100), 'x': (0, 10)}, show=False)
+        single_scatterplot(y, x, xlabel='X', ylabel='Y', title='Plot Test', limits={'y': (-100, 100), 'x': (0, 10)}, show=False)
         # need to return the figure in order for mpl checks to work
         return gcf()
 
@@ -194,9 +192,7 @@ class TestSingleScatterPlot(object):
 
         single_scatterplot(y,
                            x,
-                           'X',
-                           'Y',
-                           'Plot Test',
+                           xlabel='X', ylabel='Y', title='Plot Test',
                            show=False,
                            area_plot=True,
                            area_alpha=0.3,
@@ -219,7 +215,7 @@ class TestSingleScatterPlot(object):
 
         gcf().clear()
 
-        single_scatterplot(y, x, 'X', 'Y', 'Plot Test', lines={'horizontal': 50, 'vertical': [-5, 5]}, show=False)
+        single_scatterplot(y, x, xlabel='X', ylabel='Y', title='Plot Test', lines={'horizontal': 50, 'vertical': [-5, 5]}, show=False)
         # need to return the figure in order for mpl checks to work
         return gcf()
 
@@ -239,9 +235,7 @@ class TestSingleScatterPlot(object):
 
         single_scatterplot(y,
                            x,
-                           'X',
-                           'Y',
-                           'Plot Test',
+                           xlabel='X', ylabel='Y', title='Plot Test',
                            lines={
                                'horizontal': 50,
                                'vertical': [-5, {
@@ -269,7 +263,7 @@ class TestSingleScatterPlot(object):
 
         gcf().clear()
         with pytest.deprecated_call():
-            single_scatterplot(y, x, 'X', 'Y', 'Plot Test', limits=[(0, 10), (-100, 100)], show=False)
+            single_scatterplot(y, x, xlabel='X', ylabel='Y', title='Plot Test', limits=[(0, 10), (-100, 100)], show=False)
         # need to return the figure in order for mpl checks to work
         return gcf()
 
@@ -287,7 +281,7 @@ class TestSingleScatterPlot(object):
 
         gcf().clear()
         with pytest.deprecated_call():
-            single_scatterplot(y, x, 'X', 'Y', 'Plot Test', scale=[None, 'log'], show=False)
+            single_scatterplot(y, x, xlabel='X', ylabel='Y', title='Plot Test', scale=[None, 'log'], show=False)
         # need to return the figure in order for mpl checks to work
         return gcf()
 
@@ -305,7 +299,7 @@ class TestSingleScatterPlot(object):
 
         gcf().clear()
         with pytest.deprecated_call():
-            single_scatterplot(y, x, 'X', 'Y', 'Plot Test', plotlabel='Test', show=False)
+            single_scatterplot(y, x, xlabel='X', ylabel='Y', title='Plot Test', plotlabel='Test', show=False)
         # need to return the figure in order for mpl checks to work
         return gcf()
 
@@ -329,7 +323,7 @@ class TestMultipleScatterPlot(object):
 
         gcf().clear()
 
-        multiple_scatterplots(y, x, 'X', 'Y', 'Plot Test', show=False)
+        multiple_scatterplots(y, x, xlabel='X', ylabel='Y', title='Plot Test', show=False)
         # need to return the figure in order for mpl checks to work
         return gcf()
 
@@ -349,9 +343,7 @@ class TestMultipleScatterPlot(object):
 
         multiple_scatterplots(y,
                               x,
-                              'X',
-                              'Y',
-                              'Plot Test',
+                              xlabel='X', ylabel='Y', title='Plot Test',
                               title_fontsize=30,
                               plot_label=['Parabola', 'Line', None, 'cosine'],
                               marker='^',
@@ -377,9 +369,7 @@ class TestMultipleScatterPlot(object):
 
         multiple_scatterplots(y,
                               x,
-                              'X',
-                              'Y',
-                              'Plot Test',
+                              xlabel='X', ylabel='Y', title='Plot Test',
                               plot_label=['Parabola', 'Line', None, 'cosine'],
                               legend=True,
                               legend_options={'fontsize': 17},
@@ -403,9 +393,7 @@ class TestMultipleScatterPlot(object):
 
         multiple_scatterplots(y,
                               x,
-                              'X',
-                              'Y',
-                              'Plot Test',
+                              xlabel='X', ylabel='Y', title='Plot Test',
                               scale={'y': 'log'},
                               limits={
                                   'y': (0.01, 100),
@@ -431,9 +419,7 @@ class TestMultipleScatterPlot(object):
 
         multiple_scatterplots(y,
                               x,
-                              'X',
-                              'Y',
-                              'Plot Test',
+                              xlabel='X', ylabel='Y', title='Plot Test',
                               xticks=[-10, 3, 3, 10, 20],
                               xticklabels=[r'$\pi$', '4', 'TEST', r'$\Omega$', r'$\frac{{1}}{{4}}$'],
                               show=False)
