@@ -523,6 +523,7 @@ TASKS_DEFINITION = {
         }
     },
     'forces': {
+        '_minimal': True,
         '_modes': [('relax', True)],
         '_conversions': ['convert_forces'],
         'force_units': {
