@@ -2,7 +2,7 @@
 import h5py
 import numpy as np
 from functools import wraps
-from masci_tools.util.hdf5.reader import HDF5Reader
+from masci_tools.io.parsers.hdf5 import HDF5Reader
 
 
 def hdf5_transformation(func):

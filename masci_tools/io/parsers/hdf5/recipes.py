@@ -3,6 +3,7 @@
 This module defines commonly used recipes for the HDF5Reader
 """
 
+
 def dos_recipe_format(group):
     from masci_tools.util.constants import HTR_TO_EV
 
@@ -15,7 +16,9 @@ def dos_recipe_format(group):
             'energy_grid': {
                 'h5path': f'/{group}/DOS/energyGrid',
                 'transforms': [('scale_with_constant', HTR_TO_EV)]
-            },
+            }
+        },
+        'attributes': {
             'fermi_energy': {
                 'h5path': '/general',
                 'description': 'fermi_energy of the system',
@@ -28,6 +31,7 @@ def dos_recipe_format(group):
             }
         }
     }
+
 
 #DOS Recipes
 FleurDOSRecipe = dos_recipe_format('Local')

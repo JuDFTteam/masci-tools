@@ -16,6 +16,7 @@ class HDF5Reader:
                            all leftover h5py.Datasets are moved into np.arrays
 
     """
+
     def __init__(self, file, move_to_memory=True):
 
         self._file = file
@@ -61,6 +62,18 @@ class HDF5Reader:
             raise ValueError(f'HDF5 input file {self._file} has no Dataset at {h5path}.')
         return None
 
+    def _transform_dataset(self, transforms, dataset):
+
+        transformed_dset = dataset
+        for spec in transforms:
+            if isinstance(spec, tuple):
+                action_name, args = spec[0], spec[1:]
+            else:
+                action_name, args = spec, ()
+            transformed_dset = self._transforms[action_name](transformed_dset, *args)
+
+        return transformed_dset
+
     def read(self, recipe):
         """Extracts datasets from HDF5 file, transforms them and puts all into a namedtuple.
 
@@ -68,35 +81,32 @@ class HDF5Reader:
 
         :returns: dict with the data read in and transformed according to the recipe
         """
+        from itertools import chain
 
-        extract = recipe['datasets']
+        datasets = recipe.get('datasets', {})
+        attributes = recipe.get('attributes', {})
 
         # remove entries whose key is an empty string
-        extract = {key: val for key, val in extract.items() if key}
-
-        # get h5 datasets
-        h5paths = set(item['h5path'] for item in extract.values())
-        datasets = {h5path: self._read_dataset(h5path, strict=False) for h5path in h5paths}
+        h5paths = {item['h5path'] for item in chain(datasets.values(), attributes.values())}
+        extracted_datasets = {h5path: self._read_dataset(h5path, strict=False) for h5path in h5paths}
 
         output_data = {}
-
-        for key, val in extract.items():
+        for key, val in datasets.items():
             transforms = val.get('transforms', [])
-            dset = datasets[val['h5path']]
+            output_data[key] = self._transform_dataset(transforms, extracted_datasets[val['h5path']])
 
-            transformed_dset = dset
-            for spec in transforms:
-                if isinstance(spec, tuple):
-                    action_name, args = spec[0], spec[1:]
-                else:
-                    action_name, args = spec, ()
-                transformed_dset = self._transforms[action_name](transformed_dset, *args)
-
-            output_data[key] = transformed_dset
+        output_attrs = {}
+        for key, val in attributes.items():
+            transforms = val.get('transforms', [])
+            output_attrs[key] = self._transform_dataset(transforms, extracted_datasets[val['h5path']])
 
         if self._move_to_memory:
             for key, val in output_data.items():
                 if isinstance(val, h5py.Dataset):
                     output_data[key] = np.array(val)
 
-        return output_data
+            for key, val in output_attrs.items():
+                if isinstance(val, h5py.Dataset):
+                    output_data[key] = np.array(val)
+
+        return output_data, output_attrs
