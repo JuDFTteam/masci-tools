@@ -9,7 +9,7 @@ warnings:
     noco: false
     relax: false
     soc: false
-  parser_info: Masci-Tools Fleur out.xml Parser v0.3.0
+  parser_info: Masci-Tools Fleur out.xml Parser v0.4.0
   parser_warnings:
   - "Output file does not validate against the schema: \nLine 591: Element 'FermiEnergy',\
     \ attribute 'value': 'NAN' is not a valid value of the atomic type 'xs:double'.\

@@ -144,7 +144,7 @@ warnings:
     noco: true
     relax: false
     soc: false
-  parser_info: Masci-Tools Fleur out.xml Parser v0.3.0
+  parser_info: Masci-Tools Fleur out.xml Parser v0.4.0
   parser_warnings:
   - Found version before MaX3.1 release falling back to file version '0.29'
   - "Output file does not validate against the schema: \nLine 14: Element 'inputData':\

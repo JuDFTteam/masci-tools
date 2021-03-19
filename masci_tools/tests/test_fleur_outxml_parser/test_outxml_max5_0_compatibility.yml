@@ -256,7 +256,7 @@ warnings:
     noco: false
     relax: false
     soc: false
-  parser_info: Masci-Tools Fleur out.xml Parser v0.3.0
+  parser_info: Masci-Tools Fleur out.xml Parser v0.4.0
   parser_warnings:
   - Ignoring '0.27' outputVersion for MaX5.0 release
   - "Output file does not validate against the schema: \nLine 131: Element 'kPointList',\

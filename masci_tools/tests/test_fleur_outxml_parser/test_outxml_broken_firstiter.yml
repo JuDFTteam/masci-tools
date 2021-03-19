@@ -57,7 +57,7 @@ warnings:
     relax: false
     soc: false
   last_iteration_parsed: 1
-  parser_info: Masci-Tools Fleur out.xml Parser v0.3.0
+  parser_info: Masci-Tools Fleur out.xml Parser v0.4.0
   parser_warnings:
   - The out.xml file is broken I try to repair it.
   - No values found for attribute date at tag endDateAndTime
