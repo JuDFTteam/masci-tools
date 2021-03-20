@@ -214,6 +214,24 @@ def multiply_by_attribute(dataset, attribute_value, reverse_order=False, by_elem
     return transformed
 
 
+@hdf5_transformation(attribute_needed=True)
+def add_partial_sums(dataset, attribute_value, pattern_format):
+
+    if not isinstance(dataset, dict):
+        raise ValueError('add_partial_sums only available for dict datasets')
+
+    if not isinstance(attribute_value, (list, np.ndarray)):
+        raise ValueError('attribute_value has be a list or array')
+
+    transformed = dataset.copy()
+    for val in attribute_value:
+        pattern = pattern_format(val)
+
+        transformed[pattern] = np.sum([entry for key, entry in transformed.items() if pattern in key], axis=0)
+
+    return transformed
+
+
 @hdf5_transformation(attribute_needed=False)
 def convert_to_str(dataset):
 

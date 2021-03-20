@@ -8,12 +8,28 @@ from masci_tools.util.constants import HTR_TO_EV
 
 def dos_recipe_format(group):
 
+    if group == 'Local':
+        atom_prefix = 'MT'
+    elif group == 'jDOS':
+        atom_prefix = 'jDOS'
+    elif group == 'Orbcomp':
+        atom_prefix = 'ORBCOMP'
+    elif group == 'mcd':
+        atom_prefix = 'MCD'
+    else:
+        raise ValueError(f'Unknown group: {group}')
+
     return {
         'datasets': {
             'dos': {
-                'h5path': f'/{group}/DOS',
-                'transforms': [('get_all_child_datasets', 'energyGrid'), ('scale_with_constant', 1.0 / HTR_TO_EV)],
-                'unpack_dict': True,
+                'h5path':
+                f'/{group}/DOS',
+                'transforms':
+                [('get_all_child_datasets', 'energyGrid'),
+                 ('add_partial_sums', 'atom_groups', '{atom_prefix}:{{}}'.format(atom_prefix=atom_prefix).format),
+                 ('scale_with_constant', 1.0 / HTR_TO_EV)],
+                'unpack_dict':
+                True,
             },
             'energy_grid': {
                 'h5path': f'/{group}/DOS/energyGrid',
@@ -21,6 +37,10 @@ def dos_recipe_format(group):
             }
         },
         'attributes': {
+            'atom_groups': {
+                'h5path': '/atoms/equivAtomsGroup',
+                'transforms': ['move_to_memory']
+            },
             'fermi_energy': {
                 'h5path': '/general',
                 'description': 'fermi_energy of the system',
@@ -44,9 +64,12 @@ FleurMCD = dos_recipe_format('mcd')
 FleurBands = {
     'datasets': {
         'weights': {
-            'h5path': '/Local/BS',
-            'transforms': [('get_all_child_datasets', ['eigenvalues', 'kpts'])],
-            'unpack_dict': True
+            'h5path':
+            '/Local/BS',
+            'transforms': [('get_all_child_datasets', ['eigenvalues', 'kpts']),
+                           ('add_partial_sums', 'atom_groups', 'MT:{}'.format)],
+            'unpack_dict':
+            True
         },
         'eigenvalues': {
             'h5path': '/Local/BS/eigenvalues',
@@ -61,7 +84,8 @@ FleurBands = {
     },
     'attributes': {
         'atom_groups': {
-            'h5path': '/atoms/equivAtomsGroup'
+            'h5path': '/atoms/equivAtomsGroup',
+            'transforms': ['move_to_memory']
         },
         'reciprocal_cell': {
             'h5path': 'cell/reciprocalCell',
