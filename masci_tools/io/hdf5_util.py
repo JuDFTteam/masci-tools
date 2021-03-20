@@ -18,6 +18,7 @@ complete file structure into a python dictionary
 import h5py
 import numpy as np
 
+
 def hdfList(name, obj):
     """
     Print the name of the current object (indented to create a nice tree structure)
@@ -39,6 +40,7 @@ def hdfList(name, obj):
                 attr_val = attr_val[0]
             print(f'{attr_name:>{ref_length+len(attr_name)}}: {attr_val}')
         print('')
+
 
 def h5dump(file, group='/'):
     """
