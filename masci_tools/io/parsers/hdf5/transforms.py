@@ -31,7 +31,10 @@ def hdf5_transformation(*, attribute_needed):
 
 
 @hdf5_transformation(attribute_needed=False)
-def get_all_child_datasets(dataset, ignore):
+def get_all_child_datasets(dataset, ignore=None):
+
+    if ignore is None:
+        ignore = set()
 
     if isinstance(ignore, str):
         ignore = set([ignore])

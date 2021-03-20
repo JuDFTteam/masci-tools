@@ -4,6 +4,7 @@ This module defines commonly used recipes for the HDF5Reader
 """
 
 from masci_tools.util.constants import HTR_TO_EV
+from masci_tools.io.parsers.hdf5.reader import Transformation, AttribTransformation
 
 
 def dos_recipe_format(group):
@@ -24,32 +25,44 @@ def dos_recipe_format(group):
             'dos': {
                 'h5path':
                 f'/{group}/DOS',
-                'transforms':
-                [('get_all_child_datasets', 'energyGrid'),
-                 ('add_partial_sums', 'atom_groups', '{atom_prefix}:{{}}'.format(atom_prefix=atom_prefix).format),
-                 ('scale_with_constant', 1.0 / HTR_TO_EV)],
+                'transforms': [
+                    Transformation(name='get_all_child_datasets', kwargs={'ignore': 'energyGrid'}),
+                    AttribTransformation(name='add_partial_sums',
+                                         attrib_name='atom_groups',
+                                         args=('{atom_prefix}:{{}}'.format(atom_prefix=atom_prefix).format,)),
+                    Transformation(name='scale_with_constant', args=(1.0 / HTR_TO_EV,))
+                ],
                 'unpack_dict':
                 True,
             },
             'energy_grid': {
                 'h5path': f'/{group}/DOS/energyGrid',
-                'transforms': [('scale_with_constant', HTR_TO_EV)]
+                'transforms': [Transformation(name='scale_with_constant', args=(HTR_TO_EV,))]
             }
         },
         'attributes': {
             'atom_groups': {
                 'h5path': '/atoms/equivAtomsGroup',
-                'transforms': ['move_to_memory']
+                'transforms': [Transformation(name='move_to_memory')]
             },
             'fermi_energy': {
-                'h5path': '/general',
-                'description': 'fermi_energy of the system',
-                'transforms': [('get_attribute', 'lastFermiEnergy'), 'get_first_element']
+                'h5path':
+                '/general',
+                'description':
+                'fermi_energy of the system',
+                'transforms': [
+                    Transformation(name='get_attribute', args=('lastFermiEnergy',)),
+                    Transformation(name='get_first_element')
+                ]
             },
             'spins': {
-                'h5path': '/general',
-                'description': 'number of distinct spin directions in the system',
-                'transforms': [('get_attribute', 'spins'), 'get_first_element']
+                'h5path':
+                '/general',
+                'description':
+                'number of distinct spin directions in the system',
+                'transforms':
+                [Transformation(name='get_attribute', args=('spins',)),
+                 Transformation(name='get_first_element')]
             }
         }
     }
@@ -66,47 +79,64 @@ FleurBands = {
         'weights': {
             'h5path':
             '/Local/BS',
-            'transforms': [('get_all_child_datasets', ['eigenvalues', 'kpts']),
-                           ('add_partial_sums', 'atom_groups', 'MT:{}'.format)],
+            'transforms': [
+                Transformation(name='get_all_child_datasets', kwargs={'ignore': ['eigenvalues', 'kpts']}),
+                AttribTransformation(name='add_partial_sums', attrib_name='atom_groups', args=('MT:{}'.format,)),
+                Transformation(name='scale_with_constant', args=(1.0 / HTR_TO_EV,))
+            ],
             'unpack_dict':
             True
         },
         'eigenvalues': {
             'h5path': '/Local/BS/eigenvalues',
-            'transforms': [('scale_with_constant', HTR_TO_EV)]
+            'transforms': [Transformation(name='scale_with_constant', args=(HTR_TO_EV,))]
         },
         'kpoints': {
             'h5path':
             'Local/BS/kpts',
-            'transforms': [('multiply_by_attribute', 'reciprocal_cell', True, True), ('calculate_norm', True),
-                           'cumulative_sum']
+            'transforms': [
+                AttribTransformation(name='multiply_by_attribute',
+                                     attrib_name='reciprocal_cell',
+                                     kwargs={
+                                         'reverse_order': True,
+                                         'by_element': True
+                                     }),
+                Transformation(name='calculate_norm', kwargs={'between_neighbours': True}),
+                Transformation(name='cumulative_sum')
+            ]
         }
     },
     'attributes': {
         'atom_groups': {
             'h5path': '/atoms/equivAtomsGroup',
-            'transforms': ['move_to_memory']
+            'transforms': [Transformation(name='move_to_memory')]
         },
         'reciprocal_cell': {
             'h5path': 'cell/reciprocalCell',
-            'transforms': ['move_to_memory']
+            'transforms': [Transformation(name='move_to_memory')]
         },
         'special_kpoint_indices': {
             'h5path': 'kpts/specialPointIndices'
         },
         'special_kpoint_labels': {
             'h5path': 'kpts/specialPointLabels',
-            'transforms': ['convert_to_str']
+            'transforms': [Transformation(name='convert_to_str')]
         },
         'fermi_energy': {
-            'h5path': '/general',
-            'description': 'fermi_energy of the system',
-            'transforms': [('get_attribute', 'lastFermiEnergy'), 'get_first_element']
+            'h5path':
+            '/general',
+            'description':
+            'fermi_energy of the system',
+            'transforms':
+            [Transformation(name='get_attribute', args=('lastFermiEnergy',)),
+             Transformation(name='get_first_element')]
         },
         'spins': {
             'h5path': '/general',
             'description': 'number of distinct spin directions in the system',
-            'transforms': [('get_attribute', 'spins'), 'get_first_element']
+            'transforms':
+            [Transformation(name='get_attribute', args=('spins',)),
+             Transformation(name='get_first_element')]
         }
     }
 }

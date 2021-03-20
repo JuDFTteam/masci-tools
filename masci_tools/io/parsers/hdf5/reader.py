@@ -4,6 +4,11 @@ This module contains a generic HDF5 reader
 """
 import io
 import h5py
+from collections import namedtuple
+
+Transformation = namedtuple('Transformation', ['name', 'args', 'kwargs'], defaults=(None, (), {}))
+AttribTransformation = namedtuple('AttribTransformation', ['name', 'attrib_name', 'args', 'kwargs'],
+                                  defaults=(None, None, (), {}))
 
 
 class HDF5Reader:
@@ -65,18 +70,15 @@ class HDF5Reader:
 
         transformed_dset = dataset
         for spec in transforms:
-            if isinstance(spec, tuple):
-                action_name, args = spec[0], spec[1:]
-            else:
-                action_name, args = spec, ()
 
-            if action_name in self._attribute_transforms:
+            args = spec.args
+            if spec.name in self._attribute_transforms:
                 if attributes is None:
                     raise ValueError('Attribute transform not allowed for attributes')
-                attrib_value = attributes[args[0]]
-                args = attrib_value, *args[1:]
+                attrib_value = attributes[spec.attrib_name]
+                args = attrib_value, *args
 
-            transformed_dset = self._transforms[action_name](transformed_dset, *args)
+            transformed_dset = self._transforms[spec.name](transformed_dset, *args, **spec.kwargs)
 
         return transformed_dset
 
