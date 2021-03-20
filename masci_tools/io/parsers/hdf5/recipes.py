@@ -3,7 +3,7 @@
 This module defines commonly used recipes for the HDF5Reader
 """
 
-from masci_tools.util.constants import HTR_TO_EV
+from masci_tools.util.constants import HTR_TO_EV, BOHR_A
 from masci_tools.io.parsers.hdf5.reader import Transformation, AttribTransformation
 
 
@@ -90,9 +90,9 @@ FleurBands = {
             'h5path': '/Local/BS/eigenvalues',
             'transforms': [Transformation(name='scale_with_constant', args=(HTR_TO_EV,))]
         },
-        'kpoints': {
+        'kpath': {
             'h5path':
-            'Local/BS/kpts',
+            '/Local/BS/kpts',
             'transforms': [
                 AttribTransformation(name='multiply_by_attribute',
                                      attrib_name='reciprocal_cell',
@@ -103,22 +103,39 @@ FleurBands = {
                 Transformation(name='calculate_norm', kwargs={'between_neighbours': True}),
                 Transformation(name='cumulative_sum')
             ]
+        },
+        'kpoints': {
+            'h5path':
+            'Local/BS/kpts',
         }
     },
     'attributes': {
+        "atoms_elements":{
+              "h5path": "/atoms/atomicNumbers",
+                "description": "Atomic numbers"
+            },
+            "atoms_position": {
+                "h5path": "/atoms/positions",
+                "description": "Atom coordinates per atom",
+            },
         'atom_groups': {
             'h5path': '/atoms/equivAtomsGroup',
             'transforms': [Transformation(name='move_to_memory')]
         },
+        "bravaisMatrix": {
+                "h5path": "/cell/bravaisMatrix",
+                "description": "Coordinate transformation internal to physical for atoms",
+                "transforms": [Transformation(name='scale_with_constant', args=(BOHR_A,))]
+            },
         'reciprocal_cell': {
-            'h5path': 'cell/reciprocalCell',
+            'h5path': '/cell/reciprocalCell',
             'transforms': [Transformation(name='move_to_memory')]
         },
         'special_kpoint_indices': {
-            'h5path': 'kpts/specialPointIndices'
+            'h5path': '/kpts/specialPointIndices'
         },
         'special_kpoint_labels': {
-            'h5path': 'kpts/specialPointLabels',
+            'h5path': '/kpts/specialPointLabels',
             'transforms': [Transformation(name='convert_to_str')]
         },
         'fermi_energy': {
