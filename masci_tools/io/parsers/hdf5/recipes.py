@@ -105,28 +105,27 @@ FleurBands = {
             ]
         },
         'kpoints': {
-            'h5path':
-            'Local/BS/kpts',
+            'h5path': 'Local/BS/kpts',
         }
     },
     'attributes': {
-        "atoms_elements":{
-              "h5path": "/atoms/atomicNumbers",
-                "description": "Atomic numbers"
-            },
-            "atoms_position": {
-                "h5path": "/atoms/positions",
-                "description": "Atom coordinates per atom",
-            },
+        'atoms_elements': {
+            'h5path': '/atoms/atomicNumbers',
+            'description': 'Atomic numbers'
+        },
+        'atoms_position': {
+            'h5path': '/atoms/positions',
+            'description': 'Atom coordinates per atom',
+        },
         'atom_groups': {
             'h5path': '/atoms/equivAtomsGroup',
             'transforms': [Transformation(name='move_to_memory')]
         },
-        "bravaisMatrix": {
-                "h5path": "/cell/bravaisMatrix",
-                "description": "Coordinate transformation internal to physical for atoms",
-                "transforms": [Transformation(name='scale_with_constant', args=(BOHR_A,))]
-            },
+        'bravais_matrix': {
+            'h5path': '/cell/bravaisMatrix',
+            'description': 'Coordinate transformation internal to physical for atoms',
+            'transforms': [Transformation(name='scale_with_constant', args=(BOHR_A,))]
+        },
         'reciprocal_cell': {
             'h5path': '/cell/reciprocalCell',
             'transforms': [Transformation(name='move_to_memory')]
