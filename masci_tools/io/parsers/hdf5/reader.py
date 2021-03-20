@@ -4,7 +4,6 @@ This module contains a generic HDF5 reader
 """
 import io
 import h5py
-import numpy as np
 
 
 class HDF5Reader:
@@ -49,7 +48,7 @@ class HDF5Reader:
 
         :raises: ValueError if no dataset is at path and strict is True
         """
-        if h5path == '/' or h5path == '':
+        if h5path in ('/', ''):
             if strict:
                 return None
             else:
@@ -62,7 +61,7 @@ class HDF5Reader:
             raise ValueError(f'HDF5 input file {self._file} has no Dataset at {h5path}.')
         return None
 
-    def _transform_dataset(self, transforms, dataset):
+    def _transform_dataset(self, transforms, dataset, attributes=None):
 
         transformed_dset = dataset
         for spec in transforms:
@@ -70,6 +69,13 @@ class HDF5Reader:
                 action_name, args = spec[0], spec[1:]
             else:
                 action_name, args = spec, ()
+
+            if action_name in self._attribute_transforms:
+                if attributes is None:
+                    raise ValueError('Attribute transform not allowed for attributes')
+                attrib_value = attributes[args[0]]
+                args = attrib_value, *args[1:]
+
             transformed_dset = self._transforms[action_name](transformed_dset, *args)
 
         return transformed_dset
@@ -90,23 +96,41 @@ class HDF5Reader:
         h5paths = {item['h5path'] for item in chain(datasets.values(), attributes.values())}
         extracted_datasets = {h5path: self._read_dataset(h5path, strict=False) for h5path in h5paths}
 
-        output_data = {}
-        for key, val in datasets.items():
-            transforms = val.get('transforms', [])
-            output_data[key] = self._transform_dataset(transforms, extracted_datasets[val['h5path']])
-
         output_attrs = {}
         for key, val in attributes.items():
             transforms = val.get('transforms', [])
             output_attrs[key] = self._transform_dataset(transforms, extracted_datasets[val['h5path']])
+            if val.get('unpack_dict', False):
+                if not isinstance(output_attrs[key], dict):
+                    raise ValueError(f'{key} cannot be unpacked: Got {type(output_attrs[key])}')
+
+                unpack_dict = output_attrs.pop(key)
+
+                if unpack_dict.keys() & output_attrs.keys():
+                    raise ValueError('Unpacking would result in lost information: \n'
+                                     f"Intersection of keys: '{unpack_dict.keys().intersection(output_attrs.keys())}'")
+
+                output_attrs = {**output_attrs, **unpack_dict}
+
+        output_data = {}
+        for key, val in datasets.items():
+            transforms = val.get('transforms', [])
+            output_data[key] = self._transform_dataset(transforms,
+                                                       extracted_datasets[val['h5path']],
+                                                       attributes=output_attrs)
+            if val.get('unpack_dict', False):
+                if not isinstance(output_data[key], dict):
+                    raise ValueError(f'{key} cannot be unpacked: Got {type(output_data[key])}')
+
+                unpack_dict = output_data.pop(key)
+                if unpack_dict.keys() & output_data.keys():
+                    raise ValueError('Unpacking would result in lost information: \n'
+                                     f"Intersection of keys: '{unpack_dict.keys().intersection(output_data.keys())}'")
+
+                output_data = {**output_data, **unpack_dict}
 
         if self._move_to_memory:
-            for key, val in output_data.items():
-                if isinstance(val, h5py.Dataset):
-                    output_data[key] = np.array(val)
-
-            for key, val in output_attrs.items():
-                if isinstance(val, h5py.Dataset):
-                    output_data[key] = np.array(val)
+            self._transforms['move_to_memory'](output_data)
+            self._transforms['move_to_memory'](output_attrs)
 
         return output_data, output_attrs
