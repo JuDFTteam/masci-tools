@@ -81,8 +81,7 @@ FleurBands = {
             '/Local/BS',
             'transforms': [
                 Transformation(name='get_all_child_datasets', kwargs={'ignore': ['eigenvalues', 'kpts']}),
-                AttribTransformation(name='add_partial_sums', attrib_name='atom_groups', args=('MT:{}'.format,)),
-                Transformation(name='scale_with_constant', args=(1.0 / HTR_TO_EV,))
+                AttribTransformation(name='add_partial_sums', attrib_name='atom_groups', args=('MT:{}'.format,))
             ],
             'unpack_dict':
             True
