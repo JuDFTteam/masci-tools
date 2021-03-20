@@ -1,8 +1,64 @@
 # -*- coding: utf-8 -*-
+###############################################################################
+# Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
+#                All rights reserved.                                         #
+# This file is part of the Masci-tools package.                               #
+# (Material science tools)                                                    #
+#                                                                             #
+# The code is hosted on GitHub at https://github.com/judftteam/masci-tools.   #
+# For further information on the license, see the LICENSE.txt file.           #
+# For further information please visit http://judft.de/.                      #
+#                                                                             #
+###############################################################################
 """
-This module defines commonly used recipes for the HDF5Reader
-"""
+This module defines commonly used recipes for the :py:class:`~masci_tools.io.parsers.hdf5.reader.HDF5Reader`
 
+Available are:
+    - Recipe for bandstructure calculations with Fleur
+    - Recipes for almost all DOS calculation modes of Fleur
+
+A Recipe is a python dictionary in a specific format.
+
+A Template Example:
+
+.. code-block:: python
+
+    from masci_tools.io.parser.hdf5.readers import Transformation, AttribTransformation
+
+    RecipeExample = {
+        'datasets': {
+            'example_dataset': {
+                'h5path': '/path/in/hdf/file',
+                'transforms': [Transformation(name='get_first_element')]
+            },
+            'example_attrib_transform': {
+                'h5path': '/other/path/in/hdf/file',
+                'transforms': [AttribTransformation(name='multiply_by_attribute', attrib_name='example_attribute')]
+            }
+        },
+        'attributes': {
+            'example_attribute': {
+                'h5path':
+                '/path/in/hdf/file',
+                'transforms':
+                [Transformation(name='get_attribute', args=('attribName',)),
+                 Transformation(name='get_first_element')]
+            }
+        }
+    }
+
+The Recipe consists of two sections 'datasets' and 'attributes'. All data from these two sections will be returned
+in separate python dictionaries by the :py:class:`~masci_tools.io.parsers.hdf5.reader.HDF5Reader` class
+
+Each entry in those sections has to have a `h5path` entry, which will specify the dataset to initially
+read from the hdf file. Then each entry can define a entry `transforms` with a list of the namedtuples
+imported at the top of the code example. These correponds to function calls to functions in
+:py:mod:`~masci_tools.io.parsers.hdf5.transforms` to transform the read in data
+
+Entries in the `attributes` section are read and transformed first and can subsequently be used in transformations
+for the `datasets`. These correpsond to the transforms created with the :py:class:`~masci_tools.io.parsers.hdf5.reader.AttribTransformation`
+namedtuple instead of :py:class:`~masci_tools.io.parsers.hdf5.reader.Transformation`.
+"""
 from masci_tools.util.constants import HTR_TO_EV, BOHR_A
 from masci_tools.io.parsers.hdf5.reader import Transformation, AttribTransformation
 
@@ -30,20 +86,23 @@ def dos_recipe_format(group):
                     AttribTransformation(name='add_partial_sums',
                                          attrib_name='atom_groups',
                                          args=('{atom_prefix}:{{}}'.format(atom_prefix=atom_prefix).format,)),
-                    Transformation(name='scale_with_constant', args=(1.0 / HTR_TO_EV,))
+                    Transformation(name='multiply_scalar', args=(1.0 / HTR_TO_EV,))
                 ],
                 'unpack_dict':
                 True,
             },
             'energy_grid': {
                 'h5path': f'/{group}/DOS/energyGrid',
-                'transforms': [Transformation(name='scale_with_constant', args=(HTR_TO_EV,))]
+                'transforms': [Transformation(name='multiply_scalar', args=(HTR_TO_EV,))]
             }
         },
         'attributes': {
+            'atoms_elements': {
+                'h5path': '/atoms/atomicNumbers',
+                'description': 'Atomic numbers'
+            },
             'atom_groups': {
-                'h5path': '/atoms/equivAtomsGroup',
-                'transforms': [Transformation(name='move_to_memory')]
+                'h5path': '/atoms/equivAtomsGroup'
             },
             'fermi_energy': {
                 'h5path':
@@ -74,6 +133,7 @@ FleurJDOS = dos_recipe_format('jDOS')
 FleurORBCOMP = dos_recipe_format('Orbcomp')
 FleurMCD = dos_recipe_format('mcd')
 
+#Recipe for bandstructures
 FleurBands = {
     'datasets': {
         'weights': {
@@ -88,7 +148,7 @@ FleurBands = {
         },
         'eigenvalues': {
             'h5path': '/Local/BS/eigenvalues',
-            'transforms': [Transformation(name='scale_with_constant', args=(HTR_TO_EV,))]
+            'transforms': [Transformation(name='multiply_scalar', args=(HTR_TO_EV,))]
         },
         'kpath': {
             'h5path':
@@ -118,17 +178,15 @@ FleurBands = {
             'description': 'Atom coordinates per atom',
         },
         'atom_groups': {
-            'h5path': '/atoms/equivAtomsGroup',
-            'transforms': [Transformation(name='move_to_memory')]
+            'h5path': '/atoms/equivAtomsGroup'
         },
         'bravais_matrix': {
             'h5path': '/cell/bravaisMatrix',
             'description': 'Coordinate transformation internal to physical for atoms',
-            'transforms': [Transformation(name='scale_with_constant', args=(BOHR_A,))]
+            'transforms': [Transformation(name='multiply_scalar', args=(BOHR_A,))]
         },
         'reciprocal_cell': {
-            'h5path': '/cell/reciprocalCell',
-            'transforms': [Transformation(name='move_to_memory')]
+            'h5path': '/cell/reciprocalCell'
         },
         'special_kpoint_indices': {
             'h5path': '/kpts/specialPointIndices'

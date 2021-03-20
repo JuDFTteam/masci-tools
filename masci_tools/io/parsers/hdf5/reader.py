@@ -1,4 +1,15 @@
 # -*- coding: utf-8 -*-
+###############################################################################
+# Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
+#                All rights reserved.                                         #
+# This file is part of the Masci-tools package.                               #
+# (Material science tools)                                                    #
+#                                                                             #
+# The code is hosted on GitHub at https://github.com/judftteam/masci-tools.   #
+# For further information on the license, see the LICENSE.txt file.           #
+# For further information please visit http://judft.de/.                      #
+#                                                                             #
+###############################################################################
 """
 This module contains a generic HDF5 reader
 """
@@ -12,12 +23,32 @@ AttribTransformation = namedtuple('AttribTransformation', ['name', 'attrib_name'
 
 
 class HDF5Reader:
-    """Class for reading in data from hdf5 files
-
+    """Class for reading in data from hdf5 files using a specified recipe
 
     :param file: filepath to hdf file or opened file handle (mode 'rb')
     :param move_to_memory: bool if True after reading and transforming the data
                            all leftover h5py.Datasets are moved into np.arrays
+
+    The recipe is passed to the :py:meth:`HDF5Reader.read()` method and consists
+    of a dict specifiying which attributes and datasets to read in and how to transform them
+
+    Each attribute/dataset entry corresponds to one entry point in the given `.hdf` file
+    Available transformations can either be found in :py:mod:`~masci_tools.io.parsers.hdf5.transforms`
+    or can be defined by the user with the :py:func:`~masci_tools.io.parsers.hdf5.transforms.hdf5_transformation`
+    decorator
+
+    Basic Usage:
+
+    .. code-block:: python
+
+        from masci_tools.io.parsers.hdf5 import HDF5Reader
+        import masci_tools.io.parsers.hdf5.recipes as recipes
+
+        #This example shows the usage for producing data from a bandstructure calculation
+        #in Fleur
+        with HDF5Reader('/path/to/hdf/banddos.hdf') as h5reader:
+            data, attributes = h5reader.read(recipe=recipes.FleurBands)
+        print(data, attributes)
 
     """
 
@@ -67,7 +98,18 @@ class HDF5Reader:
         return None
 
     def _transform_dataset(self, transforms, dataset, attributes=None):
+        """
+        Transforms the given dataset with the given list of tasks
 
+        :param transforms: list of namedtuples defining the tasks to perform
+        :param dataset: h5py.Dataset, on which to perform the operations
+        :param attributes: dict of previously processed attributes.
+                           Only available to the entries in the datasets
+                           section of the recipe. This allows for operations with
+                           the previously parsed attributes
+
+        :returns: the dataset with all the transformations applied
+        """
         transformed_dset = dataset
         for spec in transforms:
 
@@ -85,9 +127,9 @@ class HDF5Reader:
     def read(self, recipe):
         """Extracts datasets from HDF5 file, transforms them and puts all into a namedtuple.
 
-        :param recipe: dict with the format given in :py:mod:`~masci_tools.recipes.py`
+        :param recipe: dict with the format given in :py:mod:`~masci_tools.io.parsers.hdf5.recipes`
 
-        :returns: dict with the data read in and transformed according to the recipe
+        :returns: two dicts with the datasets/attributes read in and transformed according to the recipe
         """
         from itertools import chain
 
@@ -96,7 +138,7 @@ class HDF5Reader:
 
         # remove entries whose key is an empty string
         h5paths = {item['h5path'] for item in chain(datasets.values(), attributes.values())}
-        extracted_datasets = {h5path: self._read_dataset(h5path, strict=False) for h5path in h5paths}
+        extracted_datasets = {h5path: self._read_dataset(h5path) for h5path in h5paths}
 
         output_attrs = {}
         for key, val in attributes.items():

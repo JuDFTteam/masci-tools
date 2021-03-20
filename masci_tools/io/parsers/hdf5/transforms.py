@@ -1,4 +1,27 @@
 # -*- coding: utf-8 -*-
+###############################################################################
+# Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
+#                All rights reserved.                                         #
+# This file is part of the Masci-tools package.                               #
+# (Material science tools)                                                    #
+#                                                                             #
+# The code is hosted on GitHub at https://github.com/judftteam/masci-tools.   #
+# For further information on the license, see the LICENSE.txt file.           #
+# For further information please visit http://judft.de/.                      #
+#                                                                             #
+###############################################################################
+"""
+Collection of predefined transformations for the :py:class:`~masci_tools.io.parsers.hdf5.reader.HDF5Reader` class
+
+All Transformation have to be able to handle (or fail gracefully with a clear error)
+for the following 3 cases:
+
+    1. The dataset is still a h5py.Dataset and might need to be transformed to a numpy array
+    2. The dataset is a numpy array
+    3. The dataset is a dict. This is needed to read arbitrary child dataset, where not all labels
+       are known. Two options can be chosen apply the transformation to all keys in the dict
+       or throw an error
+"""
 import h5py
 import numpy as np
 from functools import wraps
@@ -6,24 +29,34 @@ from masci_tools.io.parsers.hdf5 import HDF5Reader
 
 
 def hdf5_transformation(*, attribute_needed):
+    """
+    Decorator for registering a function as a transformation functions
+    on the :py:class:`~masci_tools.io.parsers.hdf5.reader.HDF5Reader` class
+
+    :param attribute_needed: bool if True this function takes a previously processed
+                             attribute value and is therefore only available for the entries in datasets
+    """
 
     def hdf5_transformation_decorator(func):
         """
-
+        Return decorated HDF5Reader object with _transforms dict and
+        _attribute_transforms set attribute
+        Here all registered transforms are inserted
         """
 
         @wraps(func)
         def transform_func(*args, **kwargs):
+            """Decorator for transformation function"""
             return func(*args, **kwargs)
 
         if getattr(HDF5Reader, '_transforms', None) is None:
             HDF5Reader._transforms = {}  # pylint: disable=protected-access
-            HDF5Reader._attribute_transforms = set()
+            HDF5Reader._attribute_transforms = set()  # pylint: disable=protected-access
 
         HDF5Reader._transforms[func.__name__] = transform_func  # pylint: disable=protected-access
 
         if attribute_needed:
-            HDF5Reader._attribute_transforms.add(func.__name__)
+            HDF5Reader._attribute_transforms.add(func.__name__)  # pylint: disable=protected-access
 
         return transform_func
 
@@ -31,38 +64,26 @@ def hdf5_transformation(*, attribute_needed):
 
 
 @hdf5_transformation(attribute_needed=False)
-def get_all_child_datasets(dataset, ignore=None):
-
-    if ignore is None:
-        ignore = set()
-
-    if isinstance(ignore, str):
-        ignore = set([ignore])
-
-    transformed = {}
-
-    for key, val in dataset.items():
-        if key in ignore:
-            continue
-        if isinstance(val, h5py.Dataset):
-            transformed[key] = val
-
-    return transformed
-
-
-@hdf5_transformation(attribute_needed=False)
 def get_first_element(dataset):
     """
+    Get the first element of the dataset.
 
-   """
+    :param dataset: dataset to transform
 
+    :returns: first element of the dataset
+    """
     return slice_dataset(dataset, 0)
 
 
 @hdf5_transformation(attribute_needed=False)
 def slice_dataset(dataset, slice_arg):
     """
+    Slice the dataset with the given slice argument.
 
+    :param dataset: dataset to transform
+    :param slice_arg: slice to apply to the dataset
+
+    :returns: first element of the dataset
     """
     if isinstance(dataset, dict):
         transformed = {key: data[slice_arg] for key, data in dataset.items()}
@@ -73,9 +94,42 @@ def slice_dataset(dataset, slice_arg):
 
 
 @hdf5_transformation(attribute_needed=False)
-def scale_with_constant(dataset, scalar_value):
+def get_all_child_datasets(group, ignore=None):
     """
+    Get all datasets contained in the given group
 
+    :param group: h5py object to extract from
+    :param ignore: str or iterable of str (optional). These
+                   keys will be ignored
+
+    :returns: a dict with the contained dataset entered with their names as keys
+    """
+    if ignore is None:
+        ignore = set()
+
+    if isinstance(ignore, str):
+        ignore = set([ignore])
+
+    transformed = {}
+    for key, val in group.items():
+        if key in ignore:
+            continue
+        if isinstance(val, h5py.Dataset):
+            transformed[key] = val
+
+    return transformed
+
+
+@hdf5_transformation(attribute_needed=False)
+def multiply_scalar(dataset, scalar_value):
+    """
+    Multiply the given dataset with a scalar_value
+
+    :param dataset: dataset to transform
+    :param scalar_value: value to mutiply the dataset by
+
+    :returns: the dataset multiplied by the scalar
+              if it is a dict all entries are multiplied
     """
     transformed = dataset
 
@@ -93,10 +147,19 @@ def scale_with_constant(dataset, scalar_value):
 
 
 @hdf5_transformation(attribute_needed=False)
-def multiply_by_array(dataset, matrix, reverse_order=False, by_element=False):
+def multiply_array(dataset, matrix, reverse_order=False, by_element=False):
+    """
+    Multiply the given dataset with a matrix
+
+    :param dataset: dataset to multiply
+    :param matrix: matrix to multiply by
+    :param reverse_order: bool if True the Matrix order is reversed
+                          default: dataset x matrix reversed: matrix x dataset
+    :param by_element: bool, if True the matrix will be multiplied with each row of the dataset
+
+    :returns: dataset multiplied with the given matrix
     """
 
-    """
     transformed = dataset
 
     if isinstance(transformed, dict):
@@ -134,10 +197,20 @@ def multiply_by_array(dataset, matrix, reverse_order=False, by_element=False):
 
 @hdf5_transformation(attribute_needed=False)
 def calculate_norm(dataset, between_neighbours=False):
+    """
+    Calculate norms on the given dataset. Calculates the norm of each row in the dataset
 
+    :param dataset: dataset to transform
+    :param between_neighbours: bool, if True the distance between subsequent entries in the dataset is calculated
+
+    :returns: norms of the given dataset
+    """
     transformed = dataset
     if isinstance(dataset, h5py.Dataset):
         transformed = np.array(dataset)
+
+    if isinstance(dataset, dict):
+        raise NotImplementedError
 
     if between_neighbours:
         transformed = np.array([np.linalg.norm(ki - kj) for ki, kj in zip(transformed[1:], transformed[:-1])])
@@ -149,6 +222,16 @@ def calculate_norm(dataset, between_neighbours=False):
 
 @hdf5_transformation(attribute_needed=False)
 def cumulative_sum(dataset):
+    """
+    Calculate the cumultaive sum of the dataset
+
+    :param dataset: dataset to transform
+
+    :returns: cumulative sum of the dataset
+    """
+
+    if isinstance(dataset, dict):
+        raise NotImplementedError
 
     transformed = dataset
     if isinstance(dataset, h5py.Dataset):
@@ -163,11 +246,14 @@ def cumulative_sum(dataset):
 def get_attribute(dataset, attribute_name):
     """Extracts a specified attribute's value.
 
-     :param name:
-     :type dataset: Dataset
-     :param attribute: attribute name
-     :return:
-   """
+    :param dataset: dataset to transform
+    :param attribute_name: str of the attribute to extract from the dataset
+
+    :returns: value of the attribute on the dataset
+    """
+    if isinstance(dataset, (np.ndarray, dict)):
+        raise NotImplementedError
+
     transformed = dataset.attrs[attribute_name]
 
     return transformed
@@ -175,12 +261,14 @@ def get_attribute(dataset, attribute_name):
 
 @hdf5_transformation(attribute_needed=False)
 def attributes(dataset):
-    """Extracts attributes of a dataset as a dict.
+    """Extracts all attributes of the dataset
 
-   :param name:
-   :type dataset: Dataset
-   :return: attributes dict
-   """
+    :param dataset: dataset to transform
+
+    :returns: dict with all the set attributes on the dataset
+    """
+    if isinstance(dataset, (np.ndarray, dict)):
+        raise NotImplementedError
 
     transformed = dict(dataset.attrs)
 
@@ -189,11 +277,12 @@ def attributes(dataset):
 
 @hdf5_transformation(attribute_needed=False)
 def move_to_memory(dataset):
-    """Extracts attributes of a dataset as a dict.
+    """Moves the given dataset to memory, if it's not already there
+    Creates numpy arrays for each dataset it finds
 
-    :param name:
-    :type dataset: Dataset
-    :return: attributes dict
+    :param dataset: dataset to transform
+
+    :returns: dataset with h5py.Datasets converted to numpy arrays
     """
 
     transformed = dataset
@@ -206,19 +295,68 @@ def move_to_memory(dataset):
     return transformed
 
 
+@hdf5_transformation(attribute_needed=False)
+def convert_to_str(dataset):
+    """Converts the given dataset to a numpy array of type string
+
+    :param dataset: dataset to transform
+
+    :returns: numpy array of dtype str
+    """
+
+    transformed = np.array(dataset).astype(str)
+
+    return transformed
+
+
+#Functions that can use an attribute value (These are passed in from _transform_dataset)
+#The transformation don't have access to all the attributes
+
+
 @hdf5_transformation(attribute_needed=True)
 def multiply_by_attribute(dataset, attribute_value, reverse_order=False, by_element=False):
+    """
+    Multiply the given dataset with a previously parsed attribute, either scalar or matrix like
+
+    :param dataset: dataset to transform
+    :param attribute_value: value to multiply by (attribute value passed in from `_transform_dataset`)
+
+    Only relevant for matrix multiplication:
+        :param reverse_order: bool if True the Matrix order is reversed
+                              default: dataset x matrix reversed: matrix x dataset
+        :param by_element: bool, if True the matrix will be multiplied with each row of the dataset
+
+    :returns: dataset multiplied with the given attribute_value
+    """
+    if isinstance(attribute_value, h5py.Dataset):
+        attribute_value = np.array(attribute_value)
 
     if isinstance(attribute_value, np.ndarray):
-        transformed = multiply_by_array(dataset, attribute_value, reverse_order=reverse_order, by_element=by_element)
+        transformed = multiply_array(dataset, attribute_value, reverse_order=reverse_order, by_element=by_element)
     else:
-        transformed = scale_with_constant(dataset, attribute_value)
+        transformed = multiply_scalar(dataset, attribute_value)
 
     return transformed
 
 
 @hdf5_transformation(attribute_needed=True)
 def add_partial_sums(dataset, attribute_value, pattern_format):
+    """
+    Add entries to the dataset dict (Only avalaible for dict datasets) with sums
+    over entries containing a given pattern formatted with a attribute_value
+
+    Used for example in the FleurBands recipe to calculate total atom weights
+    with the pattern_format `'MT:{}'.format` and the atomtype as the attribute_value
+
+    :param dataset: dataset to transform
+    :param attribute_value: value to multiply by (attribute value passed in from `_transform_dataset`)
+    :param pattern_format: callable returning a formatted string
+                           This will be called with every entry in the attribute_value list
+
+    :returns: dataset with new entries containing the sums over entries matching the given pattern
+    """
+    if isinstance(attribute_value, h5py.Dataset):
+        attribute_value = np.array(attribute_value)
 
     if not isinstance(dataset, dict):
         raise ValueError('add_partial_sums only available for dict datasets')
@@ -231,13 +369,5 @@ def add_partial_sums(dataset, attribute_value, pattern_format):
         pattern = pattern_format(val)
 
         transformed[pattern] = np.sum([entry for key, entry in transformed.items() if pattern in key], axis=0)
-
-    return transformed
-
-
-@hdf5_transformation(attribute_needed=False)
-def convert_to_str(dataset):
-
-    transformed = np.array(dataset).astype(str)
 
     return transformed
