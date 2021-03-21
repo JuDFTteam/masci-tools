@@ -132,16 +132,49 @@ def multiply_scalar(dataset, scalar_value):
               if it is a dict all entries are multiplied
     """
     transformed = dataset
+    if isinstance(transformed, dict):
+        transformed = {
+            key: np.array(data) if isinstance(data, h5py.Dataset) else data
+            for key, data in transformed.items()
+        }
+    elif isinstance(transformed, h5py.Dataset):
+        transformed = np.array(transformed)
 
     if isinstance(transformed, dict):
         transformed = {
-            key: data * scalar_value if not isinstance(data, h5py.Dataset) else np.array(data) * scalar_value
-            for key, data in dataset.items()
+            key: data * scalar_value for key, data in dataset.items()
         }
     else:
-        if isinstance(dataset, h5py.Dataset):
-            transformed = np.array(dataset)
         transformed = transformed * scalar_value
+
+    return transformed
+
+@hdf5_transformation(attribute_needed=False)
+def convert_to_complex_array(dataset):
+    """
+    Converts the given dataset of real numbers into
+    dataset of complex numbers. This follows the convention of
+    how complex numbers are normally written out by Fleur
+    (last index 0 real part, last index 1 imag part)
+
+    :param dataset: dataset to transform
+
+    :returns: dataset with complex values
+    """
+    transformed = dataset
+    if isinstance(transformed, dict):
+        transformed = {
+            key: np.array(entry) if isinstance(entry, h5py.Dataset) else entry for key, entry in transformed.items()
+        }
+    elif isinstance(transformed, h5py.Dataset):
+        transformed = np.array(transformed)
+
+    if isinstance(transformed, dict):
+        transformed = {
+            key: entry[...,0] + 1j entry[...,1] for key, entry in transformed.items()
+        }
+    else:
+        transformed = transformed[...,0] + 1j transformed[...,1]
 
     return transformed
 
@@ -327,14 +360,22 @@ def flatten_array(dataset, order='C'):
 @hdf5_transformation(attribute_needed=False)
 def split_array(dataset, suffixes=None, name=None):
     """
-    Split the arrays in a dict dataset into multiple entries
+    Split the arrays in a dataset into multiple entries
     by their first index
 
-    :param dataset: to transform (has to be a dict)
+    If the dataset is a dict the entries will be split up.
+    If the dataset is not a dict a dict is created with the dataset
+    entered under `name` and this will be split up
+
+    :param dataset: dataset to transform
     :param suffix: Optional list of str to use for suffixes
                    for the split up entries. by default it is
                    the value of the first index of the original
                    array
+    :param name: str for the case of the dataset not being a
+                 dict. Key for the entry in the new dict for
+                 the original dataset. The returned dataset will only
+                 contain the split up entries
 
     :param dataset: dict with the entries split up
     """
