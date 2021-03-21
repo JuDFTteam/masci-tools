@@ -296,6 +296,76 @@ def move_to_memory(dataset):
 
 
 @hdf5_transformation(attribute_needed=False)
+def flatten_array(dataset, order='C'):
+    """
+    Flattens the given dataset to one dimensional array.
+    Copies the array !!
+
+    :param dataset: dataset to transform
+    :param order: str {‘C’, ‘F’, ‘A’, ‘K’} flatten in column major
+                  or row-major order (see numpy.flatten documentation)
+
+    :returns: flattened dataset
+    """
+
+    transformed = dataset
+    if isinstance(transformed, dict):
+        transformed = {
+            key: np.array(entry) if isinstance(entry, h5py.Dataset) else entry for key, entry in transformed.items()
+        }
+    elif isinstance(transformed, h5py.Dataset):
+        transformed = np.array(transformed)
+
+    if isinstance(transformed, dict):
+        transformed = {key: entry.flatten(order=order) for key, entry in transformed.items()}
+    else:
+        transformed = transformed.flatten(order=order)
+
+    return transformed
+
+
+@hdf5_transformation(attribute_needed=False)
+def split_arrays(dataset, suffixes=None, name=None):
+    """
+    Split the arrays in a dict dataset into multiple entries
+    by their first index
+
+    :param dataset: to transform (has to be a dict)
+    :param suffix: Optional list of str to use for suffixes
+                   for the split up entries. by default it is
+                   the value of the first index of the original
+                   array
+
+    :param dataset: dict with the entries split up
+    """
+
+    if not isinstance(dataset, dict) and name is None:
+        raise ValueError('split_arrays has to be given a name if the dataset is not a dict')
+
+    transformed = dataset
+    if not isinstance(dataset, dict):
+        transformed = {name: dataset}
+
+    transformed = {
+        key: np.array(entry) if isinstance(entry, h5py.Dataset) else entry for key, entry in transformed.items()
+    }
+    max_length = max(len(entry) for entry in transformed.values())
+
+    if suffixes is None:
+        suffixes = list(range(max_length))
+
+    if len(suffixes) < max_length:
+        raise ValueError(f'Too few suffixes provided: Expected {max_length} Got: {len(suffixes)}')
+
+    for key in list(transformed.keys()):
+        val = transformed.pop(key)
+        for suffix, entry in zip(suffixes, val):
+            transformed[f'{key}_{suffix}'] = entry
+
+    return transformed
+
+
+@hdf5_transformation(attribute_needed=False)
 def convert_to_str(dataset):
     """Converts the given dataset to a numpy array of type string
 

@@ -86,7 +86,8 @@ def dos_recipe_format(group):
                     AttribTransformation(name='add_partial_sums',
                                          attrib_name='atom_groups',
                                          args=('{atom_prefix}:{{}}'.format(atom_prefix=atom_prefix).format,)),
-                    Transformation(name='multiply_scalar', args=(1.0 / HTR_TO_EV,))
+                    Transformation(name='multiply_scalar', args=(1.0 / HTR_TO_EV,)),
+                    Transformation(name='split_arrays', kwargs={'suffixes': ['up', 'down']})
                 ],
                 'unpack_dict':
                 True,
@@ -142,14 +143,24 @@ FleurBands = {
             '/Local/BS',
             'transforms': [
                 Transformation(name='get_all_child_datasets', kwargs={'ignore': ['eigenvalues', 'kpts']}),
-                AttribTransformation(name='add_partial_sums', attrib_name='atom_groups', args=('MT:{}'.format,))
+                AttribTransformation(name='add_partial_sums', attrib_name='atom_groups', args=('MT:{}'.format,)),
+                Transformation(name='split_arrays', kwargs={'suffixes': ['up', 'down']})
             ],
             'unpack_dict':
             True
         },
         'eigenvalues': {
-            'h5path': '/Local/BS/eigenvalues',
-            'transforms': [Transformation(name='multiply_scalar', args=(HTR_TO_EV,))]
+            'h5path':
+            '/Local/BS/eigenvalues',
+            'transforms': [
+                Transformation(name='multiply_scalar', args=(HTR_TO_EV,)),
+                Transformation(name='split_arrays', kwargs={
+                    'suffixes': ['up', 'down'],
+                    'name': 'eigenvalues'
+                })
+            ],
+            'unpack_dict':
+            True
         },
         'kpath': {
             'h5path':
