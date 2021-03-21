@@ -171,10 +171,10 @@ def convert_to_complex_array(dataset):
 
     if isinstance(transformed, dict):
         transformed = {
-            key: entry[...,0] + 1j entry[...,1] for key, entry in transformed.items()
+            key: entry[...,0] + 1j * entry[...,1] for key, entry in transformed.items()
         }
     else:
-        transformed = transformed[...,0] + 1j transformed[...,1]
+        transformed = transformed[...,0] + 1j * transformed[...,1]
 
     return transformed
 
