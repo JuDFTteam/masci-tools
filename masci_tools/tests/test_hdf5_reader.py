@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Regression tests for the HDF5Reader class
 """
@@ -5,7 +6,8 @@ from masci_tools.io.common_functions import convert_to_pystd
 import os
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-HDFTEST_DIR = os.path.join(CURRENT_DIR,'files/hdf5_reader')
+HDFTEST_DIR = os.path.join(CURRENT_DIR, 'files/hdf5_reader')
+
 
 def test_hdf5_reader_bands(data_regression):
     """
@@ -19,8 +21,8 @@ def test_hdf5_reader_bands(data_regression):
     with HDF5Reader(TEST_BANDDOS_FILE) as reader:
         data, attrs = reader.read(recipe=FleurBands)
 
-    data_regression.check({'datasets': convert_to_pystd(data),
-                           'attributes': convert_to_pystd(attrs)})
+    data_regression.check({'datasets': convert_to_pystd(data), 'attributes': convert_to_pystd(attrs)})
+
 
 def test_hdf5_reader_dos(data_regression):
     """
@@ -35,8 +37,8 @@ def test_hdf5_reader_dos(data_regression):
         with HDF5Reader(file) as reader:
             data, attrs = reader.read(recipe=FleurDOS)
 
-    data_regression.check({'datasets': convert_to_pystd(data),
-                           'attributes': convert_to_pystd(attrs)})
+    data_regression.check({'datasets': convert_to_pystd(data), 'attributes': convert_to_pystd(attrs)})
+
 
 def test_hdf5_reader_spinpol_dos(data_regression):
     """
@@ -50,8 +52,8 @@ def test_hdf5_reader_spinpol_dos(data_regression):
     with HDF5Reader(TEST_BANDDOS_FILE) as reader:
         data, attrs = reader.read(recipe=FleurDOS)
 
-    data_regression.check({'datasets': convert_to_pystd(data),
-                           'attributes': convert_to_pystd(attrs)})
+    data_regression.check({'datasets': convert_to_pystd(data), 'attributes': convert_to_pystd(attrs)})
+
 
 def test_hdf5_reader_jdos(data_regression):
     """
@@ -65,5 +67,4 @@ def test_hdf5_reader_jdos(data_regression):
     with HDF5Reader(TEST_BANDDOS_FILE) as reader:
         data, attrs = reader.read(recipe=FleurJDOS)
 
-    data_regression.check({'datasets': convert_to_pystd(data),
-                           'attributes': convert_to_pystd(attrs)})
+    data_regression.check({'datasets': convert_to_pystd(data), 'attributes': convert_to_pystd(attrs)})
