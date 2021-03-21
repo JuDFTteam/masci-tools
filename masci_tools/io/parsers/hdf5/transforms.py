@@ -325,7 +325,7 @@ def flatten_array(dataset, order='C'):
 
 
 @hdf5_transformation(attribute_needed=False)
-def split_arrays(dataset, suffixes=None, name=None):
+def split_array(dataset, suffixes=None, name=None):
     """
     Split the arrays in a dict dataset into multiple entries
     by their first index
