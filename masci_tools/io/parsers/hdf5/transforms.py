@@ -134,15 +134,14 @@ def multiply_scalar(dataset, scalar_value):
     transformed = dataset
     if isinstance(transformed, dict):
         transformed = {
-            key: np.array(data) if isinstance(data, h5py.Dataset) else data
-            for key, data in transformed.items()
+            key: np.array(entry) if isinstance(entry, h5py.Dataset) else entry for key, entry in transformed.items()
         }
     elif isinstance(transformed, h5py.Dataset):
         transformed = np.array(transformed)
 
     if isinstance(transformed, dict):
         transformed = {
-            key: data * scalar_value for key, data in dataset.items()
+            key: entry * scalar_value for key, entry in transformed.items()
         }
     else:
         transformed = transformed * scalar_value
