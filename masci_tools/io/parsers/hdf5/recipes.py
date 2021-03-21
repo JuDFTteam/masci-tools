@@ -99,7 +99,8 @@ def dos_recipe_format(group):
         'attributes': {
             'atoms_elements': {
                 'h5path': '/atoms/atomicNumbers',
-                'description': 'Atomic numbers'
+                'description': 'Atomic numbers',
+                'transforms': [Transformation(name='periodic_elements')]
             },
             'atom_groups': {
                 'h5path': '/atoms/equivAtomsGroup'
@@ -171,7 +172,8 @@ FleurBands = {
     'attributes': {
         'atoms_elements': {
             'h5path': '/atoms/atomicNumbers',
-            'description': 'Atomic numbers'
+            'description': 'Atomic numbers',
+            'transforms': [Transformation(name='periodic_elements')]
         },
         'atoms_position': {
             'h5path': '/atoms/positions',

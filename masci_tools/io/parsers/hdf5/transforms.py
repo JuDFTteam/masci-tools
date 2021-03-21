@@ -309,6 +309,28 @@ def convert_to_str(dataset):
     return transformed
 
 
+@hdf5_transformation(attribute_needed=False)
+def periodic_elements(dataset):
+    """Converts the given dataset (int or list of ints)
+       To the atomic symbols corresponding to the atomic number
+
+    :param dataset: dataset to transform
+
+    :returns: str or array of str with the atomic elements
+    """
+    from masci_tools.util.constants import PERIODIC_TABLE_ELEMENTS
+
+    if isinstance(dataset, dict):
+        raise NotImplementedError
+
+    if isinstance(dataset, int):
+        transformed = PERIODIC_TABLE_ELEMENTS[dataset]['symbol']
+    else:
+        transformed = np.array([PERIODIC_TABLE_ELEMENTS[entry]['symbol'] for entry in dataset], dtype=str)
+
+    return transformed
+
+
 #Functions that can use an attribute value (These are passed in from _transform_dataset)
 #The transformation don't have access to all the attributes
 
