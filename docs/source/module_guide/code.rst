@@ -75,9 +75,6 @@ HDF5 parsers and utility
 .. automodule:: masci_tools.io.parsers.hdf5.reader
    :members:
 
-.. automodule:: masci_tools.io.hdf5_util
-   :members:
-
 .. automodule:: masci_tools.io.parsers.hdf5.recipes
    :members:
 
