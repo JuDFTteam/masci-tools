@@ -38,6 +38,8 @@ The following pre-defined recipes are stored in :py:mod:`~masci_tools.io.parsers
    - Recipe for ``banddos.hdf`` for standard density of states calculations
    - Different DOS modes are also supported (``jDOS``, ``orbcomp``, ``mcd``)
 
+If no recipe is provided to the :py:class:`~masci_tools.io.parsers.hdf5.reader.HDF5Reader`, it will create the ``datasets`` and ``attributes`` as two nested dictionaries, exactly mirroring the structure of the ``.hdf`` file and converting datasets into numpy arrays.
+
 For big datasets it might be useful to keep the dataset as a reference to the file and not load the
 dataset into memory. To achieve this you can pass ``move_to_memory=False``, when initializing the reader.
 Notice that most of the transformations will still implicitly create numpy arrays and after the hdf file is closed the datasets will no longer be available.
@@ -82,4 +84,4 @@ Custom transformation functions can be defined using the :py:func:`~masci_tools.
 To perform transformations a list of namedtuples (:py:class:`~masci_tools.io.parsers.hdf5.reader.Transformation` for general transformations; :py:class:`~masci_tools.io.parsers.hdf5.reader.AttribTransformation` for attribute transformations) can be defined. Each namedtuple takes the ``name`` of the transformation function and the positional (``args``), and keyword arguments (``kwargs``). Attribute transformations take the name of the attribute, whose value should be passed to the transformation
 in ``attrib_name``.
 
-For some transformation, e.g. :py:func:`~masci_tools.io.parsers.hdf5.transforms.get_all_child_datasets()`, the result will be a subdictionary in the ``datasets`` or ``attributes`` dictionary. If this is not desired The entry can include ``'unpack_dict': True``. With this all keys from the resulting dict will be extracted after all transformations and put into the root dictionary.
+For some transformation, e.g. :py:func:`~masci_tools.io.parsers.hdf5.transforms.get_all_child_datasets()`, the result will be a subdictionary in the ``datasets`` or ``attributes`` dictionary. If this is not desired the entry can include ``'unpack_dict': True``. With this all keys from the resulting dict will be extracted after all transformations and put into the root dictionary.
