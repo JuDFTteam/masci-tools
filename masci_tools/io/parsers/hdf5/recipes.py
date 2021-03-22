@@ -237,7 +237,8 @@ FleurBands = {
             'h5path': '/cell/reciprocalCell'
         },
         'special_kpoint_indices': {
-            'h5path': '/kpts/specialPointIndices'
+            'h5path': '/kpts/specialPointIndices',
+            'transforms': [Transformation(name='shift_dataset', args=(-1,), kwargs={})]
         },
         'special_kpoint_labels': {
             'h5path': '/kpts/specialPointLabels',
