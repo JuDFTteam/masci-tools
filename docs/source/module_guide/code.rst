@@ -69,7 +69,7 @@ Functions/Classes for loading/validating fleur XML files
 .. automodule:: masci_tools.io.io_fleurxml
    :members:
 
-HDF5 parsers and utility
+General HDF5 parser
 -------------------------
 
 .. automodule:: masci_tools.io.parsers.hdf5.reader
