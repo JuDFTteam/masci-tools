@@ -2,12 +2,11 @@ output_dict:
   bandgap: 0.0572228408
   bandgap_units: eV
   charge_den_xc_den_integral: -111.8088374177
-  charge_density:
-  - 2.4271463257
-  - 2.7205971142
   creator_name: fleur 32
   creator_target_architecture: GEN
-  creator_target_structure: null
+  density_convergence:
+  - 2.4271463257
+  - 2.7205971142
   density_convergence_units: me/bohr^3
   end_date:
     date: 2020/12/10
@@ -36,12 +35,13 @@ output_dict:
   number_of_atoms: 2
   number_of_iterations: 4
   number_of_iterations_total: 4
+  number_of_kpoints: 3
   number_of_species: 1
   number_of_spin_components: 2
   number_of_symmetries: 16
   output_file_version: '0.36'
-  overall_charge_density: 1.5936155801
-  spin_density: 4.9036481595
+  overall_density_convergence: 1.5936155801
+  spin_density_convergence: 4.9036481595
   spin_dependent_charge_interstitial:
   - 0.953185
   - 0.9525573
@@ -63,6 +63,7 @@ output_dict:
 warnings:
   fleur_modes:
     band: false
+    bz_integration: hist
     dos: false
     film: false
     jspin: 2
@@ -70,7 +71,7 @@ warnings:
     noco: true
     relax: false
     soc: false
-  parser_info: Masci-Tools Fleur out.xml Parser v0.3.0
+  parser_info: Masci-Tools Fleur out.xml Parser v0.4.0
   parser_warnings:
   - No Output Schema available for version '0.36'; falling back to '0.34'
   - No Input Schema available for version '0.36'; falling back to '0.34'
@@ -79,4 +80,3 @@ warnings:
     \ an element of the set {'0.34'}. \nLine 16: Element 'fleurInput', attribute 'fleurInputVersion':\
     \ [facet 'enumeration'] The value '0.36' is not an element of the set {'0.34'}.\
     \ \n"
-  - No text found for tag targetStructureClass

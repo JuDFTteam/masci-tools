@@ -26,7 +26,9 @@ output_dict:
   - -159.6221456328
   - -159.6223715446
   - -159.6223536715
-  charge_density:
+  creator_name: fleur 31
+  creator_target_architecture: GEN
+  density_convergence:
   - 6.6846995052
   - 6.1435434886
   - 3.8085569559
@@ -39,9 +41,6 @@ output_dict:
   - 0.0074941641
   - 0.0017151783
   - 0.0003274009
-  creator_name: fleur 31
-  creator_target_architecture: GEN
-  creator_target_structure: null
   density_convergence_units: me/bohr^3
   end_date:
     date: 2020/10/06
@@ -157,6 +156,7 @@ output_dict:
   number_of_atoms: 2
   number_of_iterations: 12
   number_of_iterations_total: 12
+  number_of_kpoints: 6
   number_of_species: 2
   number_of_spin_components: 1
   number_of_symmetries: 0
@@ -235,6 +235,7 @@ output_dict:
 warnings:
   fleur_modes:
     band: false
+    bz_integration: hist
     dos: false
     film: false
     jspin: 1
@@ -242,7 +243,7 @@ warnings:
     noco: false
     relax: false
     soc: false
-  parser_info: Masci-Tools Fleur out.xml Parser v0.3.0
+  parser_info: Masci-Tools Fleur out.xml Parser v0.4.0
   parser_warnings:
   - Ignoring '0.27' outputVersion for MaX4.0 release
   - "Output file does not validate against the schema: \nLine 17: Element 'inputData':\
@@ -250,4 +251,3 @@ warnings:
     \ 'atomsInCell': The attribute 'n_hia' is required but missing. \nLine 100: Element\
     \ 'kPointList', attribute 'posScale': The attribute 'posScale' is not allowed.\
     \ \nLine 109: Element 'spinDependentCharge': This element is not expected. \n"
-  - No text found for tag targetStructureClass

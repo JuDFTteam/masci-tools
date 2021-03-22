@@ -10,7 +10,9 @@ output_dict:
   - -111.9237671976
   - -111.8007892626
   - -111.8137206932
-  charge_density:
+  creator_name: fleur 27
+  creator_target_architecture: GEN
+  density_convergence:
   - - 11.3070796811
     - 6.349138471
   - - 9.5004625695
@@ -19,9 +21,6 @@ output_dict:
     - 4.2692445478
   - - 2.564353547
     - 2.092207419
-  creator_name: fleur 27
-  creator_target_architecture: GEN
-  creator_target_structure: null
   density_convergence_units: me/bohr^3
   end_date:
     date: 2021/01/28
@@ -88,16 +87,17 @@ output_dict:
   number_of_atoms: 2
   number_of_iterations: 4
   number_of_iterations_total: 4
+  number_of_kpoints: null
   number_of_species: 1
   number_of_spin_components: 2
   number_of_symmetries: 0
   output_file_version: '0.27'
-  overall_charge_density:
+  overall_density_convergence:
   - 14.2933028381
   - 11.5538575761
   - 3.3076624962
   - 1.4762736535
-  spin_density:
+  spin_density_convergence:
   - 11.4902008012
   - 10.5246537798
   - 6.3421007934
@@ -136,6 +136,7 @@ output_dict:
 warnings:
   fleur_modes:
     band: false
+    bz_integration: hist
     dos: false
     film: false
     jspin: 2
@@ -143,7 +144,7 @@ warnings:
     noco: true
     relax: false
     soc: false
-  parser_info: Masci-Tools Fleur out.xml Parser v0.3.0
+  parser_info: Masci-Tools Fleur out.xml Parser v0.4.0
   parser_warnings:
   - Found version before MaX3.1 release falling back to file version '0.29'
   - "Output file does not validate against the schema: \nLine 14: Element 'inputData':\
@@ -153,7 +154,7 @@ warnings:
     \ is not allowed. \nLine 72: Element 'numericalParameters': Missing child element(s).\
     \ Expected is ( volumes ). \nLine 73: Element 'atomsInCell': The attribute 'n_hia'\
     \ is required but missing. \n"
-  - No text found for tag targetStructureClass
+  - No values found for attribute count
   - No values found for attribute interstitial at tag spinDependentCharge
   - No values found for attribute mtSpheres at tag spinDependentCharge
   - No values found for attribute total at tag spinDependentCharge

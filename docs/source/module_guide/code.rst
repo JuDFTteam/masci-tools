@@ -69,10 +69,19 @@ Functions/Classes for loading/validating fleur XML files
 .. automodule:: masci_tools.io.io_fleurxml
    :members:
 
-Miscelleanous fleur IO functions
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+HDF5 parsers and utility
+-------------------------
 
-.. automodule:: masci_tools.io.io_fleur_bands
+.. automodule:: masci_tools.io.parsers.hdf5.reader
+   :members:
+
+.. automodule:: masci_tools.io.hdf5_util
+   :members:
+
+.. automodule:: masci_tools.io.parsers.hdf5.recipes
+   :members:
+
+.. automodule:: masci_tools.io.parsers.hdf5.transforms
    :members:
 
 

@@ -26,7 +26,9 @@ output_dict:
   - -159.6315020089
   - -159.6317756613
   - -159.6317889102
-  charge_density:
+  creator_name: fleur 32
+  creator_target_architecture: GEN
+  density_convergence:
   - 7.6594195508
   - 7.073203372
   - 4.0712886772
@@ -39,9 +41,6 @@ output_dict:
   - 0.0111727979
   - 0.0021412
   - 0.0003416974
-  creator_name: fleur 32
-  creator_target_architecture: GEN
-  creator_target_structure: null
   density_convergence_units: me/bohr^3
   end_date:
     date: 2021/01/19
@@ -170,6 +169,7 @@ output_dict:
   number_of_atoms: 2
   number_of_iterations: 12
   number_of_iterations_total: 12
+  number_of_kpoints: 1
   number_of_species: 2
   number_of_spin_components: 1
   number_of_symmetries: 6
@@ -248,6 +248,7 @@ output_dict:
 warnings:
   fleur_modes:
     band: false
+    bz_integration: hist
     dos: false
     film: false
     jspin: 1
@@ -255,7 +256,7 @@ warnings:
     noco: false
     relax: false
     soc: false
-  parser_info: Masci-Tools Fleur out.xml Parser v0.3.0
+  parser_info: Masci-Tools Fleur out.xml Parser v0.4.0
   parser_warnings:
   - Ignoring '0.27' outputVersion for MaX5.0 release
   - "Output file does not validate against the schema: \nLine 131: Element 'kPointList',\
@@ -263,4 +264,3 @@ warnings:
     \ 'kPointList': The attribute 'weightScale' is required but missing. \nLine 135:\
     \ Element 'spinDependentCharge': This element is not expected. \n"
   - No values found for attribute l_f
-  - No text found for tag targetStructureClass
