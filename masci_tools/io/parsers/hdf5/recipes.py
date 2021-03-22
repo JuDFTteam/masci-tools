@@ -88,7 +88,11 @@ def dos_recipe_format(group):
                                          args=('{atom_prefix}:{{}}'.format(atom_prefix=atom_prefix).format,),
                                          kwargs={}),
                     Transformation(name='multiply_scalar', args=(1.0 / HTR_TO_EV,), kwargs={}),
-                    Transformation(name='split_array', args=(), kwargs={'suffixes': ['up', 'down']})
+                    Transformation(
+                        name='split_array',
+                        args=(),
+                        kwargs={'suffixes': ['up', 'down']},
+                    )
                 ],
                 'unpack_dict':
                 True,
@@ -149,7 +153,8 @@ FleurBands = {
                                      attrib_name='atom_groups',
                                      args=('MT:{}'.format,),
                                      kwargs={}),
-                Transformation(name='split_array', args=(), kwargs={'suffixes': ['up', 'down']})
+                Transformation(name='split_array', args=(), kwargs={'suffixes': ['up', 'down']}),
+                Transformation(name='flatten_array', args=(), kwargs={})
             ],
             'unpack_dict':
             True
@@ -162,7 +167,8 @@ FleurBands = {
                 Transformation(name='split_array', args=(), kwargs={
                     'suffixes': ['up', 'down'],
                     'name': 'eigenvalues'
-                })
+                }),
+                Transformation(name='flatten_array', args=(), kwargs={})
             ],
             'unpack_dict':
             True
@@ -179,14 +185,31 @@ FleurBands = {
                                          'by_element': True
                                      }),
                 Transformation(name='calculate_norm', args=(), kwargs={'between_neighbours': True}),
-                Transformation(name='cumulative_sum', args=(), kwargs={})
+                Transformation(name='cumulative_sum', args=(), kwargs={}),
+                AttribTransformation(name='repeat_array_by_attribute', attrib_name='nbands', args=(), kwargs={}),
             ]
         },
-        'kpoints': {
-            'h5path': 'Local/BS/kpts',
-        }
     },
     'attributes': {
+        'kpoints': {
+            'h5path': 'Local/BS/kpts',
+        },
+        'nkpts': {
+            'h5path':
+            '/Local/BS/eigenvalues',
+            'transforms': [
+                Transformation(name='get_shape', args=(), kwargs={}),
+                Transformation(name='index_dataset', args=(1,), kwargs={})
+            ]
+        },
+        'nbands': {
+            'h5path':
+            '/Local/BS/eigenvalues',
+            'transforms': [
+                Transformation(name='get_shape', args=(), kwargs={}),
+                Transformation(name='index_dataset', args=(2,), kwargs={})
+            ]
+        },
         'atoms_elements': {
             'h5path': '/atoms/atomicNumbers',
             'description': 'Atomic numbers',

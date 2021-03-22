@@ -21,12 +21,13 @@ The specifications of what to extract and how to transform the data are given in
 The method :py:meth:`~masci_tools.io.parsers.hdf5.reader.HDF5Reader.read` produces two python dictionaries. In the case of the ``FleurBands`` recipe these contain the following information.
 
    - `datasets`
-      - Eigenvalues converted to eV and split up into spin-up/down
-      - The coordinates of the used kpoints
-      - The kpath projected to 1D
-      - The weights of the interstitial region, each atom, each orbital on each atom for all eigenvalues
+      - Eigenvalues converted to eV and split up into spin-up/down and flattened to one dimension
+      - The kpath projected to 1D and reshaped to same length as weights/eigenvalues
+      - The weights (flattened) of the interstitial region, each atom, each orbital on each atom for all eigenvalues
    - `attributes`
+      - The coordinates of the used kpoints
       - Positions, atomic symbols and indices of symmetry equivalent atoms
+      - Dimensions of eigenvalues (``nkpts`` and ``nbands``)
       - Bravais matrix/Reciprocal cell of the system
       - Indices and labels of special k-points
       - Fermi energy
@@ -47,7 +48,7 @@ Notice that most of the transformations will still implicitly create numpy array
 Structure of recipes for the :py:class:`~masci_tools.io.parsers.hdf5.reader.HDF5Reader`
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-The recipe for extarcting bandstructure information form the ``banddos.hdf`` looks like this:
+The recipe for extracting bandstructure information form the ``banddos.hdf`` looks like this:
 
 .. literalinclude:: ../../../masci_tools/io/parsers/hdf5/recipes.py
    :language: python
@@ -60,7 +61,10 @@ If the dataset should be transformed in some way after reading it, there are a n
 
 General Transformations:
    - :py:func:`~masci_tools.io.parsers.hdf5.transforms.get_first_element()`: Get the index ``0`` of the dataset
+   - :py:func:`~masci_tools.io.parsers.hdf5.transforms.index_dataset()`: Get the index ``index`` of the dataset
    - :py:func:`~masci_tools.io.parsers.hdf5.transforms.slice_dataset()`: Slice the given dataset with the given argument
+   - :py:func:`~masci_tools.io.parsers.hdf5.transforms.get_shape()`: Get the shape of the dataset
+   - :py:func:`~masci_tools.io.parsers.hdf5.transforms.repeat_array()`: Use np.tile to repeat dataset a given amount of times
    - :py:func:`~masci_tools.io.parsers.hdf5.transforms.get_all_child_datasets()`: extract all datasets contained in the current hdf group and enter them into a dict
    - :py:func:`~masci_tools.io.parsers.hdf5.transforms.multiply_scalar()`: Multiply the given dataset with a scalar value
    - :py:func:`~masci_tools.io.parsers.hdf5.transforms.multiply_array()`: Mutiply the given dataset with a given array
@@ -77,6 +81,7 @@ General Transformations:
 
 Transformations using an attribute:
    - :py:func:`~masci_tools.io.parsers.hdf5.transforms.multiply_by_attribute()`: Multiply dataset by value of attribute (both scalar and matrix)
+   - :py:func:`~masci_tools.io.parsers.hdf5.transforms.repeat_array_by_attribute()`: Call :py:func:`~masci_tools.io.parsers.hdf5.transforms.repeat_array()` with the value of an attribute as argument
    - :py:func:`~masci_tools.io.parsers.hdf5.transforms.add_partial_sums()`: Sum over entries in dictionary datasets with given patterns in the key (Pattern is formatted with given attribute value)
 
 Custom transformation functions can be defined using the :py:func:`~masci_tools.io.parsers.hdf5.transforms.hdf5_transformation()` decorator. General Transformations can be used in all entries. Transformations using an attribute can only be used in the ``datasets`` entries.
