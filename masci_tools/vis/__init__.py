@@ -17,10 +17,32 @@ and ensuring consitent values for these
 
 import copy
 from functools import wraps
+from contextlib import contextmanager
 from collections import ChainMap
 
+@contextmanager
+def NestedPlotParameters(plotter_object):
+    """
+    Contextmanager for nested plot function calls
+    Will reset function defaults and parameters to previous
+    values after exiting
 
-def ensure_plotter_consistency(plotter_object, function_defaults=None):
+    :param plotter_object: Plotter instance
+    """
+    assert isinstance(plotter_object, Plotter), \
+           'The NestedPlotParameters contextmanager should only be used for Plotter objects'
+
+    function_defaults_before = copy.deepcopy(plotter_object._params.maps[1])
+    parameters_before = copy.deepcopy(plotter_object._params.maps[0])
+
+    try:
+        yield
+    finally: #Also performed if exception is thrown??
+        plotter_object._params.maps[1] = function_defaults_before
+        plotter_object._params.maps[0] = parameters_before
+
+
+def ensure_plotter_consistency(plotter_object):
     """
     Decorator for plot functions to ensure that the
     Parameters are reset even if an error occurs in the function
@@ -39,7 +61,7 @@ def ensure_plotter_consistency(plotter_object, function_defaults=None):
         """
 
         @wraps(func)
-        def ensure_consistency(*args, restore_on_success=False, **kwargs):
+        def ensure_consistency(*args, **kwargs):
             """
             If an error is encountered in the decorated function the parameters
             of the plotter object are reset to avoid unintended sideeffects
@@ -47,13 +69,8 @@ def ensure_plotter_consistency(plotter_object, function_defaults=None):
             Also after execution the defaults and parameters are checked to make sure
             they are consistent
             """
-            if function_defaults is not None:
-                plotter_object.set_defaults(default_type='function', **function_defaults)
 
             global_defaults_before = copy.deepcopy(plotter_object._params.maps[2])
-
-            function_defaults_before = copy.deepcopy(plotter_object._params.maps[1])
-            parameters_before = copy.deepcopy(plotter_object._params.maps[0])
 
             try:
                 res = func(*args, **kwargs)
@@ -63,13 +80,9 @@ def ensure_plotter_consistency(plotter_object, function_defaults=None):
                 plotter_object._params.maps[1] = {}
                 raise  #We do not want to erase the exception only wedge in the call to reset_parameters
             else:
-                if not restore_on_success:
-                    plotter_object.remove_added_parameters()
-                    plotter_object.reset_parameters()
-                    plotter_object._params.maps[1] = {}
-                else:
-                    plotter_object._params.maps[1] = function_defaults_before
-                    plotter_object._params.maps[0] = parameters_before
+                plotter_object.remove_added_parameters()
+                plotter_object.reset_parameters()
+                plotter_object._params.maps[1] = {}
 
             if plotter_object._params.maps[2] != global_defaults_before:
                 #Reset the changes

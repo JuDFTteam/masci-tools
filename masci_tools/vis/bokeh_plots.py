@@ -15,7 +15,7 @@ Here are general and special bokeh plots to use
 
 """
 from masci_tools.vis.bokeh_plotter import BokehPlotter
-from masci_tools.vis import ensure_plotter_consistency
+from masci_tools.vis import ensure_plotter_consistency, NestedPlotParameters
 
 import math
 import numpy as np
@@ -345,16 +345,16 @@ def bokeh_spinpol_dos(dosdata,
     if 'show' in kwargs:
         plot_params.set_parameters(show=kwargs['show'])
 
-    p = bokeh_line(dosdata,
-                   xdata=x,
-                   ydata=y,
-                   xlabel=xlabel,
-                   ylabel=ylabel,
-                   title=title,
-                   name=ynames,
-                   show=False,
-                   restore_on_success=True,
-                   **kwargs)
+    with NestedPlotParameters(plot_params):
+        p = bokeh_line(dosdata,
+                       xdata=x,
+                       ydata=y,
+                       xlabel=xlabel,
+                       ylabel=ylabel,
+                       title=title,
+                       name=ynames,
+                       show=False,
+                       **kwargs)
 
     if spin_arrows:
 

@@ -31,7 +31,7 @@ For the definition of the defaults refer to :py:class:`~masci_tools.vis.matplotl
 # Write/export data to file for all methods
 
 from .matplotlib_plotter import MatplotlibPlotter
-from masci_tools.vis import ensure_plotter_consistency
+from masci_tools.vis import ensure_plotter_consistency, NestedPlotParameters
 import warnings
 import copy
 import typing
@@ -948,13 +948,13 @@ def multiaxis_scatterplot(xdata,
         subplot_kwargs.update(params)
 
         ax = plt.subplot2grid(plot_shape, location, **subplot_kwargs.pop('axes_kwargs', {}))
-        ax = multiple_scatterplots(y,
-                                   x,
-                                   axis=ax,
-                                   **subplot_kwargs,
-                                   save_plots=False,
-                                   show=False,
-                                   restore_on_success=True)
+        with NestedPlotParameters(plot_params):
+            ax = multiple_scatterplots(y,
+                                       x,
+                                       axis=ax,
+                                       **subplot_kwargs,
+                                       save_plots=False,
+                                       show=False)
 
         axis.append(ax)
 
@@ -1086,30 +1086,30 @@ def plot_residuen(xdata,
         ax1 = plt.subplot2grid((1, 1), (0, 0))
         axes = ax1
 
-    ax1 = single_scatterplot(ydata,
-                             xdata,
-                             xlabel=xlabel,
-                             ylabel=ylabel,
-                             title=title,
-                             axis=ax1,
-                             show=False,
-                             save_plots=False,
-                             xerr=errors.get('x', None),
-                             yerr=errors.get('y', None),
-                             restore_on_success=True,
-                             **kwargs)
+    with NestedPlotParameters(plot_params):
+        ax1 = single_scatterplot(ydata,
+                                 xdata,
+                                 xlabel=xlabel,
+                                 ylabel=ylabel,
+                                 title=title,
+                                 axis=ax1,
+                                 show=False,
+                                 save_plots=False,
+                                 xerr=errors.get('x', None),
+                                 yerr=errors.get('y', None),
+                                 **kwargs)
 
     if hist:
-        ax2 = histogram(ydata,
-                        bins=20,
-                        axis=ax2,
-                        orientation='horizontal',
-                        title='Residuen distribution',
-                        density=True,
-                        show=False,
-                        save_plots=False,
-                        restore_on_success=True,
-                        **hist_kwargs)
+        with NestedPlotParameters(plot_params):
+            ax2 = histogram(ydata,
+                            bins=20,
+                            axis=ax2,
+                            orientation='horizontal',
+                            title='Residuen distribution',
+                            density=True,
+                            show=False,
+                            save_plots=False,
+                            **hist_kwargs)
 
     plot_params.save_plot(saveas)
 
@@ -1348,19 +1348,8 @@ def plot_lattice_constant(total_energy,
         # TODO test if dim of total_e = dim of scaling, dim plot lables...
         # or parse on scaling?
 
-        ax = multiple_scatterplots(total_energy,
-                                   scaling,
-                                   xlabel,
-                                   ylabel,
-                                   title,
-                                   axis=ax,
-                                   show=False,
-                                   save_plots=False,
-                                   restore_on_success=True,
-                                   **plot_kw,
-                                   **kwargs)
-        if fit_y:
-            ax = multiple_scatterplots(fit_y,
+        with NestedPlotParameters(plot_params):
+            ax = multiple_scatterplots(total_energy,
                                        scaling,
                                        xlabel,
                                        ylabel,
@@ -1368,34 +1357,45 @@ def plot_lattice_constant(total_energy,
                                        axis=ax,
                                        show=False,
                                        save_plots=False,
-                                       restore_on_success=True,
-                                       **plot_fit_kw,
+                                       **plot_kw,
                                        **kwargs)
+        if fit_y:
+            with NestedPlotParameters(plot_params):
+                ax = multiple_scatterplots(fit_y,
+                                           scaling,
+                                           xlabel,
+                                           ylabel,
+                                           title,
+                                           axis=ax,
+                                           show=False,
+                                           save_plots=False,
+                                           **plot_fit_kw,
+                                           **kwargs)
 
     else:
-        ax = single_scatterplot(scaling,
-                                total_energy,
-                                xlabel,
-                                ylabel,
-                                title,
-                                axis=ax,
-                                show=False,
-                                save_plots=False,
-                                restore_on_success=True,
-                                **plot_kw,
-                                **kwargs)
-        if fit_y:
+        with NestedPlotParameters(plot_params):
             ax = single_scatterplot(scaling,
-                                    fit_y,
+                                    total_energy,
                                     xlabel,
                                     ylabel,
                                     title,
                                     axis=ax,
                                     show=False,
                                     save_plots=False,
-                                    restore_on_success=True,
-                                    **plot_fit_kw,
+                                    **plot_kw,
                                     **kwargs)
+        if fit_y:
+            with NestedPlotParameters(plot_params):
+                ax = single_scatterplot(scaling,
+                                        fit_y,
+                                        xlabel,
+                                        ylabel,
+                                        title,
+                                        axis=ax,
+                                        show=False,
+                                        save_plots=False,
+                                        **plot_fit_kw,
+                                        **kwargs)
 
     plot_params.draw_lines(ax)
     plot_params.save_plot(saveas)
