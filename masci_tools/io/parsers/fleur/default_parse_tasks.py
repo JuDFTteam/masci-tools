@@ -119,6 +119,13 @@ TASKS_DEFINITION = {
                 'name': 'band'
             }
         },
+        'bz_integration': {
+            'parse_type': 'attrib',
+            'path_spec': {
+                'name': 'mode',
+                'tag_name': 'bzIntegration'
+            }
+        }
     },
     #--------Defintions for general info from outfile (start, endtime, number_iterations)--------
     'general_out_info': {
@@ -136,12 +143,6 @@ TASKS_DEFINITION = {
             'parse_type': 'text',
             'path_spec': {
                 'name': 'targetComputerArchitectures'
-            }
-        },
-        'creator_target_structure': {
-            'parse_type': 'text',
-            'path_spec': {
-                'name': 'targetStructureClass'
             }
         },
         'output_file_version': {
@@ -166,6 +167,13 @@ TASKS_DEFINITION = {
             'parse_type': 'attrib',
             'path_spec': {
                 'name': 'ntype'
+            }
+        },
+        'number_of_kpoints': {
+            'parse_type': 'attrib',
+            'path_spec': {
+                'name': 'count',
+                'contains': 'numericalParameters'
             }
         },
         'start_date': {
@@ -387,7 +395,7 @@ TASKS_DEFINITION = {
     },
     'distances': {
         '_minimal': True,
-        'charge_density': {
+        'density_convergence': {
             'parse_type': 'attrib',
             'path_spec': {
                 'name': 'distance',
@@ -406,14 +414,14 @@ TASKS_DEFINITION = {
     'magnetic_distances': {
         '_minimal': True,
         '_modes': [('jspin', 2)],
-        'overall_charge_density': {
+        'overall_density_convergence': {
             'parse_type': 'attrib',
             'path_spec': {
                 'name': 'distance',
                 'tag_name': 'overallChargeDensity'
             }
         },
-        'spin_density': {
+        'spin_density_convergence': {
             'parse_type': 'attrib',
             'path_spec': {
                 'name': 'distance',
@@ -484,6 +492,7 @@ TASKS_DEFINITION = {
         }
     },
     'bandgap': {
+        '_modes': [('bz_integration', 'hist')],
         'bandgap': {
             'parse_type': 'singleValue',
             'path_spec': {
@@ -514,6 +523,7 @@ TASKS_DEFINITION = {
         }
     },
     'forces': {
+        '_minimal': True,
         '_modes': [('relax', True)],
         '_conversions': ['convert_forces'],
         'force_units': {

@@ -42,7 +42,9 @@ output_dict:
   - -111.7975545789
   - -111.7975806104
   - -111.7975941179
-  charge_density:
+  creator_name: fleur 30
+  creator_target_architecture: GEN
+  density_convergence:
   - - 11.684486802
     - 6.3875950921
   - - 9.4214389223
@@ -83,9 +85,6 @@ output_dict:
     - 0.0116592241
   - - 0.0105072076
     - 0.0140933041
-  creator_name: fleur 30
-  creator_target_architecture: GEN
-  creator_target_structure: null
   density_convergence_units: me/bohr^3
   end_date:
     date: 2021/01/28
@@ -328,6 +327,7 @@ output_dict:
   number_of_atoms: 2
   number_of_iterations: 20
   number_of_iterations_total: 20
+  number_of_kpoints: 3
   number_of_species: 1
   number_of_spin_components: 2
   number_of_symmetries: 0
@@ -455,7 +455,7 @@ output_dict:
   - - -0.0313809925
     - -0.0314064963
   output_file_version: '0.27'
-  overall_charge_density:
+  overall_density_convergence:
   - 14.8354961984
   - 11.3962275632
   - 3.0483883255
@@ -476,7 +476,7 @@ output_dict:
   - 0.0138998442
   - 0.0148527535
   - 0.0191738425
-  spin_density:
+  spin_density_convergence:
   - 11.6002266495
   - 10.4813152765
   - 7.0781929774
@@ -692,6 +692,7 @@ output_dict:
 warnings:
   fleur_modes:
     band: false
+    bz_integration: hist
     dos: false
     film: false
     jspin: 2
@@ -699,7 +700,7 @@ warnings:
     noco: true
     relax: false
     soc: true
-  parser_info: Masci-Tools Fleur out.xml Parser v0.3.0
+  parser_info: Masci-Tools Fleur out.xml Parser v0.4.0
   parser_warnings:
   - Ignoring '0.27' outputVersion for MaX3.1 release
   - "Output file does not validate against the schema: \nLine 16: Element 'inputData':\
@@ -709,4 +710,3 @@ warnings:
     \ \nLine 85: Element 'kPointList', attribute 'posScale': The attribute 'posScale'\
     \ is not allowed. \nLine 91: Element 'spinDependentCharge': This element is not\
     \ expected. \n"
-  - No text found for tag targetStructureClass

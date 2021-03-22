@@ -40,10 +40,7 @@ I/O helper and output file parsers
 .. automodule:: masci_tools.io.common_functions
    :members:
 
-.. automodule:: masci_tools.io.io_fleur_bands
-   :members:
-
-.. automodule:: masci_tools.io.io_hdf5
+.. automodule:: masci_tools.io.hdf5_util
    :members:
 
 .. automodule:: masci_tools.io.kkr_params
@@ -86,6 +83,18 @@ Definition of default parsing tasks for out.xml
    :members:
 
 .. automodule:: masci_tools.io.parsers.fleur.task_migrations
+   :members:
+
+HDF5 parser
+++++++++++++
+
+.. automodule:: masci_tools.io.parsers.hdf5.reader
+   :members:
+
+.. automodule:: masci_tools.io.parsers.hdf5.recipes
+   :members:
+
+.. automodule:: masci_tools.io.parsers.hdf5.transforms
    :members:
 
 Utility functions

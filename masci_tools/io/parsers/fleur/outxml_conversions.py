@@ -196,7 +196,7 @@ def convert_relax_info(out_dict, parser_info_out=None):
 
     out_dict['relax_atomtype_info'] = []
     for specie in species:
-        out_dict['relax_atomtype_info'].append([specie, species_info[specie]])
+        out_dict['relax_atomtype_info'].append((specie, species_info[specie]))
 
     return out_dict
 
@@ -210,26 +210,29 @@ def convert_forces(out_dict, parser_info_out=None):
     """
     parsed_forces = out_dict.pop('parsed_forces')
 
-    if 'force_largest' not in out_dict:
-        out_dict['force_largest'] = []
+    if 'force_largest_component' not in out_dict:
+        out_dict['force_largest_component'] = []
+        out_dict['force_atoms'] = []
+        out_dict['abspos_atoms'] = []
 
     if isinstance(parsed_forces['atom_type'], int):
         parsed_forces = {key: [val] for key, val in parsed_forces.items()}
 
     largest_force = 0.0
+    forces = []
+    abspos = []
     for index, atomType in enumerate(parsed_forces['atom_type']):
-
-        if f'force_x_type{atomType}' not in out_dict:
-            out_dict[f'force_x_type{atomType}'] = []
-            out_dict[f'force_y_type{atomType}'] = []
-            out_dict[f'force_z_type{atomType}'] = []
-            out_dict[f'abspos_x_type{atomType}'] = []
-            out_dict[f'abspos_y_type{atomType}'] = []
-            out_dict[f'abspos_z_type{atomType}'] = []
 
         force_x = parsed_forces['f_x'][index]
         force_y = parsed_forces['f_y'][index]
         force_z = parsed_forces['f_z'][index]
+
+        x = parsed_forces['x'][index]
+        y = parsed_forces['y'][index]
+        z = parsed_forces['z'][index]
+
+        forces.append((atomType, [force_x, force_y, force_z]))
+        abspos.append((atomType, [x, y, z]))
 
         if abs(force_x) > largest_force:
             largest_force = abs(force_x)
@@ -238,14 +241,8 @@ def convert_forces(out_dict, parser_info_out=None):
         if abs(force_z) > largest_force:
             largest_force = abs(force_z)
 
-        out_dict[f'force_x_type{atomType}'].append(force_x)
-        out_dict[f'force_y_type{atomType}'].append(force_y)
-        out_dict[f'force_z_type{atomType}'].append(force_z)
-
-        out_dict[f'abspos_x_type{atomType}'].append(parsed_forces['x'][index])
-        out_dict[f'abspos_y_type{atomType}'].append(parsed_forces['y'][index])
-        out_dict[f'abspos_z_type{atomType}'].append(parsed_forces['z'][index])
-
-    out_dict['force_largest'].append(largest_force)
+    out_dict['force_largest_component'].append(largest_force)
+    out_dict['force_atoms'].append(forces)
+    out_dict['abspos_atoms'].append(abspos)
 
     return out_dict

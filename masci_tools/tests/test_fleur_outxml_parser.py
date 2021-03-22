@@ -465,7 +465,9 @@ def test_outxml_magnetic(data_regression):
     OUTXML_FILEPATH = os.path.join(outxmlfilefolder_valid[0], 'Fe_bct_LOXML/files/out.xml')
 
     out_dict = outxml_parser(OUTXML_FILEPATH, iteration_to_parse='all', strict=True)
-    data_regression.check({})
+    data_regression.check({
+        'output_dict': out_dict,
+    })
 
 
 def test_outxml_ldaurelax(data_regression):

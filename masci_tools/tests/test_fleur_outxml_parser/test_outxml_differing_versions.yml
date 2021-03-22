@@ -2,12 +2,11 @@ output_dict:
   bandgap: 0.1480235793
   bandgap_units: eV
   charge_den_xc_den_integral: -111.7983059673
-  charge_density:
-  - 0.0056284998
-  - 0.0037099809
   creator_name: fleur 32
   creator_target_architecture: GEN
-  creator_target_structure: null
+  density_convergence:
+  - 0.0056284998
+  - 0.0037099809
   density_convergence_units: me/bohr^3
   end_date:
     date: 2021/01/22
@@ -36,6 +35,7 @@ output_dict:
   number_of_atoms: 2
   number_of_iterations: 20
   number_of_iterations_total: 20
+  number_of_kpoints: 3
   number_of_species: 2
   number_of_spin_components: 2
   number_of_symmetries: 16
@@ -49,8 +49,8 @@ output_dict:
   - -0.0297277809
   - -0.0297267268
   output_file_version: '0.34'
-  overall_charge_density: 0.0060794373
-  spin_density: 0.0073435944
+  overall_density_convergence: 0.0060794373
+  spin_density_convergence: 0.0073435944
   spin_dependent_charge_interstitial:
   - 0.9585356
   - 0.9585064
@@ -72,6 +72,7 @@ output_dict:
 warnings:
   fleur_modes:
     band: false
+    bz_integration: hist
     dos: false
     film: false
     jspin: 2
@@ -79,7 +80,6 @@ warnings:
     noco: true
     relax: false
     soc: true
-  parser_info: Masci-Tools Fleur out.xml Parser v0.3.0
+  parser_info: Masci-Tools Fleur out.xml Parser v0.4.0
   parser_warnings:
   - 'Creating OutputSchemaDict object for differing versions (out: 0.34; inp: 0.33)'
-  - No text found for tag targetStructureClass

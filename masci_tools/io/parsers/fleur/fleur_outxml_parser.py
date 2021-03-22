@@ -61,7 +61,7 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
     if parser_info_out is None:
         parser_info_out = {'parser_warnings': [], 'fleur_modes': {}, 'debug_info': {}}
 
-    parser_version = '0.3.0'
+    parser_version = '0.4.0'
     parser_info_out['parser_info'] = f'Masci-Tools Fleur out.xml Parser v{parser_version}'
 
     outfile_broken = False
@@ -309,7 +309,9 @@ def parse_general_information(root, parser, outschema_dict, iteration_to_parse=N
 
     #For certain fleur modes we need to overwrite the tasks
     if fleurmode['dos'] or fleurmode['band']:
-        parser.iteration_tasks = ['iteration_number', 'fermi_energy', 'bandgap']
+        parser.iteration_tasks = ['iteration_number', 'fermi_energy']
+        if fleurmode['bz_integration'] == 'hist':
+            parser.iteration_tasks = ['iteration_number', 'fermi_energy', 'bandgap']
 
     if fleurmode['relax'] and iteration_to_parse == 'last':
         if 'distances' in parser.iteration_tasks:
