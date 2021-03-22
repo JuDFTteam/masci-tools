@@ -16,6 +16,7 @@ This module contains a generic HDF5 reader
 import io
 import h5py
 from collections import namedtuple
+import warnings
 
 Transformation = namedtuple('Transformation', ['name', 'args', 'kwargs'])
 AttribTransformation = namedtuple('AttribTransformation', ['name', 'attrib_name', 'args', 'kwargs'])
@@ -123,7 +124,7 @@ class HDF5Reader:
 
         return transformed_dset
 
-    def read(self, recipe):
+    def read(self, recipe=None):
         """Extracts datasets from HDF5 file, transforms them and puts all into a namedtuple.
 
         :param recipe: dict with the format given in :py:mod:`~masci_tools.io.parsers.hdf5.recipes`
@@ -131,6 +132,11 @@ class HDF5Reader:
         :returns: two dicts with the datasets/attributes read in and transformed according to the recipe
         """
         from itertools import chain
+        from masci_tools.io.hdf5_util import read_hdf_simple
+
+        if recipe is None:
+            warnings.warn('You are using the HDF5Reader without a recipe' 'falling back to simple HDF reader')
+            return read_hdf_simple(self._file)
 
         datasets = recipe.get('datasets', {})
         attributes = recipe.get('attributes', {})
