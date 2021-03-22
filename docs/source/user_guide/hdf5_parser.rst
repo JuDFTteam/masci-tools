@@ -49,7 +49,7 @@ Structure of recipes for the :py:class:`~masci_tools.io.parsers.hdf5.reader.HDF5
 
 The recipe for extarcting bandstructure information form the ``banddos.hdf`` looks like this:
 
-.. literalinclude:: ../../../../masci_tools/io/parsers/hdf5/recipes.py
+.. literalinclude:: ../../../masci_tools/io/parsers/hdf5/recipes.py
    :language: python
    :lines: 141-
    :linenos:

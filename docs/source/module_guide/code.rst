@@ -1,8 +1,4 @@
 
-Source code Documentation (API reference)
-=========================================
-
-
 Visualisation and Plotting
 ++++++++++++++++++++++++++
 
@@ -34,14 +30,11 @@ Calculation tools
 .. automodule:: masci_tools.tools.cf_calculation
    :members:
 
-I/O helper and output file parsers
-++++++++++++++++++++++++++++++++++
+IO helper functions and file parsers
++++++++++++++++++++++++++++++++++++++
 
-.. automodule:: masci_tools.io.common_functions
-   :members:
-
-.. automodule:: masci_tools.io.hdf5_util
-   :members:
+KKR related IO
+----------------
 
 .. automodule:: masci_tools.io.kkr_params
    :members:
@@ -58,35 +51,32 @@ I/O helper and output file parsers
 .. automodule:: masci_tools.io.parsers.kkrimp_parser_functions
    :members:
 
+Fleur related IO
+------------------
+
+Input/Output Parser
+^^^^^^^^^^^^^^^^^^^^
+
 .. automodule:: masci_tools.io.parsers.fleur
    :members:
 
-.. automodule:: masci_tools.io.parsers.fleur.outxml_conversions
+Functions for modifying the input file
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: masci_tools.io.fleurxmlmodifier
    :members:
+
+Functions/Classes for loading/validating fleur XML files
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. autoclass:: masci_tools.io.parsers.fleur.fleur_schema.schema_dict.SchemaDict
    :members:
 
-.. automodule:: masci_tools.io.parsers.fleur.fleur_schema
+.. automodule:: masci_tools.io.io_fleurxml
    :members:
 
-Fleur Schema parser functions
-++++++++++++++++++++++++++++++++++
-
-.. automodule:: masci_tools.io.parsers.fleur.fleur_schema.fleur_schema_parser_functions
-   :members:
-
-Definition of default parsing tasks for out.xml
-+++++++++++++++++++++++++++++++++++++++++++++++
-
-.. automodule:: masci_tools.io.parsers.fleur.default_parse_tasks
-   :members:
-
-.. automodule:: masci_tools.io.parsers.fleur.task_migrations
-   :members:
-
-HDF5 parser
-++++++++++++
+General HDF5 parser
+-------------------------
 
 .. automodule:: masci_tools.io.parsers.hdf5.reader
    :members:
@@ -97,31 +87,12 @@ HDF5 parser
 .. automodule:: masci_tools.io.parsers.hdf5.transforms
    :members:
 
-Utility functions
-+++++++++++++++++++++
 
-.. automodule:: masci_tools.util.case_insensitive_dict
+Definition of default parsing tasks for fleur out.xml
+-----------------------------------------------------
+
+.. automodule:: masci_tools.io.parsers.fleur.default_parse_tasks
    :members:
 
-.. automodule:: masci_tools.util.lockable_containers
+.. automodule:: masci_tools.io.parsers.fleur.task_migrations
    :members:
-
-.. automodule:: masci_tools.util.xml.common_xml_util
-   :members:
-
-.. automodule:: masci_tools.util.schema_dict_util
-   :members:
-
-.. automodule:: masci_tools.util.fleur_calculate_expression
-   :members:
-
-.. automodule:: masci_tools.util.parse_tasks
-   :members:
-
-.. automodule:: masci_tools.util.parse_tasks_decorators
-   :members:
-
-Defined constants
-++++++++++++++++++++
-
-.. automodule:: masci_tools.util.constants
