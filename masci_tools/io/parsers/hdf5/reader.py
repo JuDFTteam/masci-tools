@@ -135,7 +135,7 @@ class HDF5Reader:
         from masci_tools.io.hdf5_util import read_hdf_simple
 
         if recipe is None:
-            warnings.warn('You are using the HDF5Reader without a recipe' 'falling back to simple HDF reader')
+            warnings.warn('You are using the HDF5Reader without a recipe falling back to simple HDF reader')
             return read_hdf_simple(self._file)
 
         datasets = recipe.get('datasets', {})
