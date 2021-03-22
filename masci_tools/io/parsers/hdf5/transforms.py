@@ -72,7 +72,24 @@ def get_first_element(dataset):
 
     :returns: first element of the dataset
     """
-    return slice_dataset(dataset, 0)
+    return index_dataset(dataset, 0)
+
+
+@hdf5_transformation(attribute_needed=False)
+def index_dataset(dataset, index):
+    """
+    Get the n-th element of the dataset.
+
+    :param dataset: dataset to transform
+
+    :returns: first element of the dataset
+    """
+    if isinstance(dataset, dict):
+        transformed = {key: data[index] for key, data in dataset.items()}
+    else:
+        transformed = dataset[index]
+
+    return transformed
 
 
 @hdf5_transformation(attribute_needed=False)
@@ -89,6 +106,42 @@ def slice_dataset(dataset, slice_arg):
         transformed = {key: data[slice_arg] for key, data in dataset.items()}
     else:
         transformed = dataset[slice_arg]
+
+    return transformed
+
+
+@hdf5_transformation(attribute_needed=False)
+def get_shape(dataset):
+    """
+    Get the shape of the dataset.
+
+    :param dataset: dataset to get the shape
+
+    :returns: shape of the dataset
+    """
+
+    if isinstance(dataset, dict):
+        transformed = {key: data.shape for key, data in dataset.items()}
+    else:
+        transformed = dataset.shape
+
+    return transformed
+
+
+@hdf5_transformation(attribute_needed=False)
+def repeat_array(dataset, n_repeats):
+    """
+    Use numpy.tile to repeat array n-times (given by attribute_value)
+
+    :param dataset: dataset to transform
+    :param attribute_shape: int, time sto repeat the given array
+
+    :returns: dataset repeated n-times
+    """
+    if isinstance(dataset, dict):
+        transformed = {key: np.tile(dataset, n_repeats) for key, data in dataset.items()}
+    else:
+        transformed = np.tile(dataset, n_repeats)
 
     return transformed
 
@@ -250,9 +303,9 @@ def calculate_norm(dataset, between_neighbours=False):
 
 
 @hdf5_transformation(attribute_needed=False)
-def cumulative_sum(dataset):
+def cumulative_sum(dataset, beginning_zero=True):
     """
-    Calculate the cumultaive sum of the dataset
+    Calculate the cumulative sum of the dataset
 
     :param dataset: dataset to transform
 
@@ -265,6 +318,9 @@ def cumulative_sum(dataset):
     transformed = dataset
     if isinstance(dataset, h5py.Dataset):
         transformed = np.array(dataset)
+
+    if beginning_zero:
+        transformed = np.insert(transformed, 0, 0.0)
 
     transformed = np.cumsum(transformed)
 
@@ -500,3 +556,16 @@ def add_partial_sums(dataset, attribute_value, pattern_format):
         transformed[pattern] = np.sum([entry for key, entry in transformed.items() if pattern in key], axis=0)
 
     return transformed
+
+
+@hdf5_transformation(attribute_needed=True)
+def repeat_array_by_attribute(dataset, attribute_value):
+    """
+    Use numpy.tile to repeat array n-times (given by attribute_value)
+
+    :param dataset: dataset to transform
+    :param attribute_shape: int, time sto repeat the given array
+
+    :returns: dataset repeated n-times
+    """
+    return repeat_array(dataset, attribute_value)
