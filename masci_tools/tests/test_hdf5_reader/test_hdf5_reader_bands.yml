@@ -97,8 +97,8 @@ attributes:
     - 0.0
     - 0.9511763033712685
   special_kpoint_indices:
-  - 1
-  - 20
+  - 0
+  - 19
   special_kpoint_labels:
   - great
   - path
