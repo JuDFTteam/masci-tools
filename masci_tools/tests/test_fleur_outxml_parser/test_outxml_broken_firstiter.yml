@@ -2,10 +2,9 @@ output_dict:
   bandgap: null
   bandgap_units: null
   charge_den_xc_den_integral: null
-  charge_density: null
   creator_name: fleur 32
   creator_target_architecture: GEN
-  creator_target_structure: null
+  density_convergence: null
   density_convergence_units: null
   end_date:
     date: null
@@ -28,12 +27,13 @@ output_dict:
   number_of_atoms: 2
   number_of_iterations: 1
   number_of_iterations_total: 1
+  number_of_kpoints: 3
   number_of_species: 1
   number_of_spin_components: 2
   number_of_symmetries: 16
   output_file_version: '0.34'
-  overall_charge_density: null
-  spin_density: null
+  overall_density_convergence: null
+  spin_density_convergence: null
   spin_dependent_charge_interstitial: null
   spin_dependent_charge_mt_spheres: null
   spin_dependent_charge_total: null
@@ -48,6 +48,7 @@ output_dict:
 warnings:
   fleur_modes:
     band: false
+    bz_integration: hist
     dos: false
     film: false
     jspin: 2
@@ -56,10 +57,9 @@ warnings:
     relax: false
     soc: false
   last_iteration_parsed: 1
-  parser_info: Masci-Tools Fleur out.xml Parser v0.3.0
+  parser_info: Masci-Tools Fleur out.xml Parser v0.4.0
   parser_warnings:
   - The out.xml file is broken I try to repair it.
-  - No text found for tag targetStructureClass
   - No values found for attribute date at tag endDateAndTime
   - No values found for attribute time at tag endDateAndTime
   - Endtime was unparsed, inp.xml prob not complete, do not believe the walltime!

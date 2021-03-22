@@ -2,10 +2,9 @@ output_dict:
   bandgap: 2.5515073686
   bandgap_units: eV
   charge_den_xc_den_integral: -41.7144813139
-  charge_density: 8.7379598265
   creator_name: fleur 32
   creator_target_architecture: GEN
-  creator_target_structure: null
+  density_convergence: 8.7379598265
   density_convergence_units: me/bohr^3
   end_date:
     date: 2020/12/10
@@ -25,6 +24,7 @@ output_dict:
   number_of_atoms: 2
   number_of_iterations: 6
   number_of_iterations_total: 1
+  number_of_kpoints: 2
   number_of_species: 1
   number_of_spin_components: 1
   number_of_symmetries: 48
