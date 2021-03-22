@@ -66,6 +66,7 @@ General Transformations:
    - :py:func:`~masci_tools.io.parsers.hdf5.transforms.get_shape()`: Get the shape of the dataset
    - :py:func:`~masci_tools.io.parsers.hdf5.transforms.repeat_array()`: Use np.tile to repeat dataset a given amount of times
    - :py:func:`~masci_tools.io.parsers.hdf5.transforms.get_all_child_datasets()`: extract all datasets contained in the current hdf group and enter them into a dict
+   - :py:func:`~masci_tools.io.parsers.hdf5.transforms.shift_dataset()`: Shift the given dataset with a scalar value
    - :py:func:`~masci_tools.io.parsers.hdf5.transforms.multiply_scalar()`: Multiply the given dataset with a scalar value
    - :py:func:`~masci_tools.io.parsers.hdf5.transforms.multiply_array()`: Mutiply the given dataset with a given array
    - :py:func:`~masci_tools.io.parsers.hdf5.transforms.convert_to_complex_array()`: Convert real dataset to complex array
@@ -81,6 +82,7 @@ General Transformations:
 
 Transformations using an attribute:
    - :py:func:`~masci_tools.io.parsers.hdf5.transforms.multiply_by_attribute()`: Multiply dataset by value of attribute (both scalar and matrix)
+   - :py:func:`~masci_tools.io.parsers.hdf5.transforms.shift_by_attribute()`: Shift the given dataset with the value of an attribute
    - :py:func:`~masci_tools.io.parsers.hdf5.transforms.repeat_array_by_attribute()`: Call :py:func:`~masci_tools.io.parsers.hdf5.transforms.repeat_array()` with the value of an attribute as argument
    - :py:func:`~masci_tools.io.parsers.hdf5.transforms.add_partial_sums()`: Sum over entries in dictionary datasets with given patterns in the key (Pattern is formatted with given attribute value)
 

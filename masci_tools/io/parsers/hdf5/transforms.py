@@ -174,6 +174,40 @@ def get_all_child_datasets(group, ignore=None):
 
 
 @hdf5_transformation(attribute_needed=False)
+def shift_dataset(dataset, scalar_value, negative=False):
+    """
+    Shift the dataset by the given scalar_value
+
+    :param dataset: dataset to transform
+    :param scalar_value: value to shift the dataset by
+    :param negative: bool, if True the scalar_value will be substracted
+
+    :returns: the dataset shifted by the scalar
+              if it is a dict all entries are shifted
+    """
+    transformed = dataset
+    if isinstance(transformed, dict):
+        transformed = {
+            key: np.array(entry) if isinstance(entry, h5py.Dataset) else entry for key, entry in transformed.items()
+        }
+    elif isinstance(transformed, h5py.Dataset):
+        transformed = np.array(transformed)
+
+    if isinstance(transformed, dict):
+        if negative:
+            transformed = {key: entry - scalar_value for key, entry in transformed.items()}
+        else:
+            transformed = {key: entry + scalar_value for key, entry in transformed.items()}
+    else:
+        if negative:
+            transformed = transformed - scalar_value
+        else:
+            transformed = transformed + scalar_value
+
+    return transformed
+
+
+@hdf5_transformation(attribute_needed=False)
 def multiply_scalar(dataset, scalar_value):
     """
     Multiply the given dataset with a scalar_value
@@ -522,6 +556,21 @@ def multiply_by_attribute(dataset, attribute_value, reverse_order=False, by_elem
         transformed = multiply_scalar(dataset, attribute_value)
 
     return transformed
+
+
+@hdf5_transformation(attribute_needed=True)
+def shift_by_attribute(dataset, attribute_value, negative=False):
+    """
+    Shift the dataset by the given value of the attribute
+
+    :param dataset: dataset to transform
+    :param attribute_value: value to shift the dataset by
+    :param negative: bool, if True the scalar_value will be substracted
+
+    :returns: the dataset shifted by the scalar
+              if it is a dict all entries are shifted
+    """
+    return shift_dataset(dataset, attribute_value, negative=negative)
 
 
 @hdf5_transformation(attribute_needed=True)
