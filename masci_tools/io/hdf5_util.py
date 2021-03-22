@@ -11,18 +11,58 @@
 #                                                                             #
 ###############################################################################
 """
-IO routines for hdf files
+Small utility functions for inspecting hdf files and converting the
+complete file structure into a python dictionary
 """
 
 import h5py
 import numpy as np
 
 
-def read_hdf(filepath, flatten=False):
+def hdfList(name, obj):
+    """
+    Print the name of the current object (indented to create a nice tree structure)
+
+    Also prints attribute values and dataset shapes and datatypes
+    """
+    print(f"{name.split('/')[-1]:>{len(name)-1}}: {type(obj)}")
+
+    ref_length = len(name) - len(name.split('/')[-1]) + 4
+
+    if isinstance(obj, h5py.Dataset):
+        print(f"{'Datatype:':>{ref_length+9}} {obj.dtype}")
+        print(f"{'Shape:':>{ref_length+6}} {obj.shape}\n")
+
+    if obj.attrs:
+        print(f"{'Attributes:':>{ref_length+9}}")
+        for attr_name, attr_val in obj.attrs.items():
+            if len(attr_val) == 1:
+                attr_val = attr_val[0]
+            print(f'{attr_name:>{ref_length+len(attr_name)}}: {attr_val}')
+        print('')
+
+
+def h5dump(file, group='/'):
+    """
+    Shows the overall filestructure of an hdf file
+    Goes through all groups and subgroups and prints the attributes
+    or the shape and datatype of the datasets
+
+    :param filepath: path to the hdf file
+    """
+    with h5py.File(file, 'r') as file_hdf:
+        if group != '/':
+            print(f'Starting from path {group}')
+            hdfList(group, file_hdf[group])
+            print('This path contains: \n')
+        file_hdf[group].visititems(hdfList)
+
+
+def read_hdf_simple(file, flatten=False):
     """
     Reads in an hdf file and returns its context in a nested dictionary
 
-    :param filepath: path to the hdf file
+    :param filepath: path or filehandle to the hdf file
     :param flatten: bool, if True the dictionary will be flattened (does not check for lost information)
 
     :returns: two dictionaries, one with the datasets the other
@@ -34,7 +74,7 @@ def read_hdf(filepath, flatten=False):
     datasets = {}
     group_attrs = {}
 
-    with h5py.File(filepath, 'r') as file_hdf:
+    with h5py.File(file, 'r') as file_hdf:
         datasets, group_attrs = read_groups(file_hdf, flatten=flatten)
 
     return datasets, group_attrs
@@ -75,35 +115,3 @@ def read_groups(hdfdata, flatten=False):
                 attrs.update(new_attrs)
 
     return datasets, attrs
-
-
-def get_name_and_attributes(name, obj):
-    """
-    Print the name of the current object (indented to create a nice tree structure)
-
-    Also prints attribute values and dataset shapes and datatypes
-    """
-    print(f"{name.split('/')[-1]:>{len(name)-1}}")
-
-    if isinstance(obj, h5py.Dataset):
-        print(f"{'Datatype:':>{len(name)+9}} {obj.dtype}")
-        print(f"{'Shape:':>{len(name)+6}} {obj.shape}")
-
-    if obj.attrs:
-        print(f"{'Attributes:':>{len(name)+11}}")
-        for attr_name, attr_val in obj.attrs.items():
-            if len(attr_val) == 1:
-                attr_val = attr_val[0]
-            print(f'{attr_name:>{len(name)+len(attr_name)+1}}: {attr_val}')
-
-
-def show_file_structure(filepath):
-    """
-    Shows the overall filestructure of an hdf file
-    Goes through all groups and subgroups and prints the attributes
-    or the shape and datatype of the datasets
-
-    :param filepath: path to the hdf file
-    """
-    with h5py.File(filepath, 'r') as file_hdf:
-        file_hdf.visititems(get_name_and_attributes)
