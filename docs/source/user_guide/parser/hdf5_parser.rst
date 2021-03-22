@@ -6,7 +6,7 @@ Fleur uses the HDF5 library for output files containing large datasets. The masc
 Basic Usage
 ++++++++++++
 
-The specifications of what to extract and how to transform the data are given in the form of a python dictionary. Let us look at a usage example; xxtracting data for a bandstructure calculation from the `banddos.hdf` file produced by Fleur.
+The specifications of what to extract and how to transform the data are given in the form of a python dictionary. Let us look at a usage example; extracting data for a bandstructure calculation from the ``banddos.hdf`` file produced by Fleur.
 
 .. code-block:: python
 
@@ -34,8 +34,8 @@ The method :py:meth:`~masci_tools.io.parsers.hdf5.reader.HDF5Reader.read` produc
 
 The following pre-defined recipes are stored in :py:mod:`~masci_tools.io.parsers.hdf5.recipes`:
 
-   - Recipe for `banddos.hdf` for bandstructure calculations
-   - Recipe for `banddos.hdf` for standard density of states calculations
+   - Recipe for ``banddos.hdf`` for bandstructure calculations
+   - Recipe for ``banddos.hdf`` for standard density of states calculations
    - Different DOS modes are also supported (``jDOS``, ``orbcomp``, ``mcd``)
 
 For big datasets it might be useful to keep the dataset as a reference to the file and not load the
