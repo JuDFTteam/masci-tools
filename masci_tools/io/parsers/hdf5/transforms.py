@@ -140,13 +140,12 @@ def multiply_scalar(dataset, scalar_value):
         transformed = np.array(transformed)
 
     if isinstance(transformed, dict):
-        transformed = {
-            key: entry * scalar_value for key, entry in transformed.items()
-        }
+        transformed = {key: entry * scalar_value for key, entry in transformed.items()}
     else:
         transformed = transformed * scalar_value
 
     return transformed
+
 
 @hdf5_transformation(attribute_needed=False)
 def convert_to_complex_array(dataset):
@@ -169,11 +168,9 @@ def convert_to_complex_array(dataset):
         transformed = np.array(transformed)
 
     if isinstance(transformed, dict):
-        transformed = {
-            key: entry[...,0] + 1j * entry[...,1] for key, entry in transformed.items()
-        }
+        transformed = {key: entry[..., 0] + 1j * entry[..., 1] for key, entry in transformed.items()}
     else:
-        transformed = transformed[...,0] + 1j * transformed[...,1]
+        transformed = transformed[..., 0] + 1j * transformed[..., 1]
 
     return transformed
 

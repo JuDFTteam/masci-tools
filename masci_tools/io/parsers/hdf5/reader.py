@@ -17,9 +17,8 @@ import io
 import h5py
 from collections import namedtuple
 
-Transformation = namedtuple('Transformation', ['name', 'args', 'kwargs'], defaults=(None, (), {}))
-AttribTransformation = namedtuple('AttribTransformation', ['name', 'attrib_name', 'args', 'kwargs'],
-                                  defaults=(None, None, (), {}))
+Transformation = namedtuple('Transformation', ['name', 'args', 'kwargs'])
+AttribTransformation = namedtuple('AttribTransformation', ['name', 'attrib_name', 'args', 'kwargs'])
 
 
 class HDF5Reader:

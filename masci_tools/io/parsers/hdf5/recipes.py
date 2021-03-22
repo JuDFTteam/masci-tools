@@ -82,26 +82,27 @@ def dos_recipe_format(group):
                 'h5path':
                 f'/{group}/DOS',
                 'transforms': [
-                    Transformation(name='get_all_child_datasets', kwargs={'ignore': 'energyGrid'}),
+                    Transformation(name='get_all_child_datasets', args=(), kwargs={'ignore': 'energyGrid'}),
                     AttribTransformation(name='add_partial_sums',
                                          attrib_name='atom_groups',
-                                         args=('{atom_prefix}:{{}}'.format(atom_prefix=atom_prefix).format,)),
-                    Transformation(name='multiply_scalar', args=(1.0 / HTR_TO_EV,)),
-                    Transformation(name='split_array', kwargs={'suffixes': ['up', 'down']})
+                                         args=('{atom_prefix}:{{}}'.format(atom_prefix=atom_prefix).format,),
+                                         kwargs={}),
+                    Transformation(name='multiply_scalar', args=(1.0 / HTR_TO_EV,), kwargs={}),
+                    Transformation(name='split_array', args=(), kwargs={'suffixes': ['up', 'down']})
                 ],
                 'unpack_dict':
                 True,
             },
             'energy_grid': {
                 'h5path': f'/{group}/DOS/energyGrid',
-                'transforms': [Transformation(name='multiply_scalar', args=(HTR_TO_EV,))]
+                'transforms': [Transformation(name='multiply_scalar', args=(HTR_TO_EV,), kwargs={})]
             }
         },
         'attributes': {
             'atoms_elements': {
                 'h5path': '/atoms/atomicNumbers',
                 'description': 'Atomic numbers',
-                'transforms': [Transformation(name='periodic_elements')]
+                'transforms': [Transformation(name='periodic_elements', args=(), kwargs={})]
             },
             'atom_groups': {
                 'h5path': '/atoms/equivAtomsGroup'
@@ -112,8 +113,8 @@ def dos_recipe_format(group):
                 'description':
                 'fermi_energy of the system',
                 'transforms': [
-                    Transformation(name='get_attribute', args=('lastFermiEnergy',)),
-                    Transformation(name='get_first_element')
+                    Transformation(name='get_attribute', args=('lastFermiEnergy',), kwargs={}),
+                    Transformation(name='get_first_element', args=(), kwargs={})
                 ]
             },
             'spins': {
@@ -121,9 +122,10 @@ def dos_recipe_format(group):
                 '/general',
                 'description':
                 'number of distinct spin directions in the system',
-                'transforms':
-                [Transformation(name='get_attribute', args=('spins',)),
-                 Transformation(name='get_first_element')]
+                'transforms': [
+                    Transformation(name='get_attribute', args=('spins',), kwargs={}),
+                    Transformation(name='get_first_element', args=(), kwargs={})
+                ]
             }
         }
     }
@@ -142,9 +144,12 @@ FleurBands = {
             'h5path':
             '/Local/BS',
             'transforms': [
-                Transformation(name='get_all_child_datasets', kwargs={'ignore': ['eigenvalues', 'kpts']}),
-                AttribTransformation(name='add_partial_sums', attrib_name='atom_groups', args=('MT:{}'.format,)),
-                Transformation(name='split_array', kwargs={'suffixes': ['up', 'down']})
+                Transformation(name='get_all_child_datasets', args=(), kwargs={'ignore': ['eigenvalues', 'kpts']}),
+                AttribTransformation(name='add_partial_sums',
+                                     attrib_name='atom_groups',
+                                     args=('MT:{}'.format,),
+                                     kwargs={}),
+                Transformation(name='split_array', args=(), kwargs={'suffixes': ['up', 'down']})
             ],
             'unpack_dict':
             True
@@ -153,8 +158,8 @@ FleurBands = {
             'h5path':
             '/Local/BS/eigenvalues',
             'transforms': [
-                Transformation(name='multiply_scalar', args=(HTR_TO_EV,)),
-                Transformation(name='split_array', kwargs={
+                Transformation(name='multiply_scalar', args=(HTR_TO_EV,), kwargs={}),
+                Transformation(name='split_array', args=(), kwargs={
                     'suffixes': ['up', 'down'],
                     'name': 'eigenvalues'
                 })
@@ -168,12 +173,13 @@ FleurBands = {
             'transforms': [
                 AttribTransformation(name='multiply_by_attribute',
                                      attrib_name='reciprocal_cell',
+                                     args=(),
                                      kwargs={
                                          'reverse_order': True,
                                          'by_element': True
                                      }),
-                Transformation(name='calculate_norm', kwargs={'between_neighbours': True}),
-                Transformation(name='cumulative_sum')
+                Transformation(name='calculate_norm', args=(), kwargs={'between_neighbours': True}),
+                Transformation(name='cumulative_sum', args=(), kwargs={})
             ]
         },
         'kpoints': {
@@ -184,7 +190,7 @@ FleurBands = {
         'atoms_elements': {
             'h5path': '/atoms/atomicNumbers',
             'description': 'Atomic numbers',
-            'transforms': [Transformation(name='periodic_elements')]
+            'transforms': [Transformation(name='periodic_elements', args=(), kwargs={})]
         },
         'atoms_position': {
             'h5path': '/atoms/positions',
@@ -196,7 +202,7 @@ FleurBands = {
         'bravais_matrix': {
             'h5path': '/cell/bravaisMatrix',
             'description': 'Coordinate transformation internal to physical for atoms',
-            'transforms': [Transformation(name='multiply_scalar', args=(BOHR_A,))]
+            'transforms': [Transformation(name='multiply_scalar', args=(BOHR_A,), kwargs={})]
         },
         'reciprocal_cell': {
             'h5path': '/cell/reciprocalCell'
@@ -206,23 +212,27 @@ FleurBands = {
         },
         'special_kpoint_labels': {
             'h5path': '/kpts/specialPointLabels',
-            'transforms': [Transformation(name='convert_to_str')]
+            'transforms': [Transformation(name='convert_to_str', args=(), kwargs={})]
         },
         'fermi_energy': {
             'h5path':
             '/general',
             'description':
             'fermi_energy of the system',
-            'transforms':
-            [Transformation(name='get_attribute', args=('lastFermiEnergy',)),
-             Transformation(name='get_first_element')]
+            'transforms': [
+                Transformation(name='get_attribute', args=('lastFermiEnergy',), kwargs={}),
+                Transformation(name='get_first_element', args=(), kwargs={})
+            ]
         },
         'spins': {
-            'h5path': '/general',
-            'description': 'number of distinct spin directions in the system',
-            'transforms':
-            [Transformation(name='get_attribute', args=('spins',)),
-             Transformation(name='get_first_element')]
+            'h5path':
+            '/general',
+            'description':
+            'number of distinct spin directions in the system',
+            'transforms': [
+                Transformation(name='get_attribute', args=('spins',), kwargs={}),
+                Transformation(name='get_first_element', args=(), kwargs={})
+            ]
         }
     }
 }
