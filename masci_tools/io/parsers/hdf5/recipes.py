@@ -163,6 +163,12 @@ FleurBands = {
             'h5path':
             '/Local/BS/eigenvalues',
             'transforms': [
+                AttribTransformation(name='shift_by_attribute',
+                                     attrib_name='fermi_energy',
+                                     args=(),
+                                     kwargs={
+                                         'negative': True,
+                                     }),
                 Transformation(name='multiply_scalar', args=(HTR_TO_EV,), kwargs={}),
                 Transformation(name='split_array', args=(), kwargs={
                     'suffixes': ['up', 'down'],
