@@ -218,7 +218,7 @@ def bokeh_line(source,
 
 @ensure_plotter_consistency(plot_params)
 def bokeh_dos(dosdata,
-              energy='energy',
+              energy='energy_grid',
               ynames=None,
               energy_label=r'E-E_F [eV]',
               dos_label=r'DOS [1/eV]',
@@ -241,10 +241,14 @@ def bokeh_dos(dosdata,
     if xyswitch:
         lines['vertical'], lines['horizontal'] = lines['horizontal'], lines['vertical']
 
-    plot_params.set_defaults(
-        default_type='function',
-        straight_lines=lines,
-        figure_kwargs={'tooltips': [('Name', '$name'), ('Energy', '@energy{0.0[00]}'), ('DOS value', '@$name{0.00}')]})
+    plot_params.set_defaults(default_type='function',
+                             straight_lines=lines,
+                             figure_kwargs={
+                                 'tooltips': [('Name', '$name'), ('Energy', '@energy_grid{0.0[00]}'),
+                                              ('DOS value', '@$name{0.00}')],
+                                 'width':
+                                 1000,
+                             })
 
     if ynames is None:
         ynames = set(dosdata.keys()) - set([energy] if isinstance(energy, str) else energy)
@@ -265,9 +269,8 @@ def bokeh_dos(dosdata,
 
 @ensure_plotter_consistency(plot_params)
 def bokeh_spinpol_dos(dosdata,
-                      dosdata_dn,
                       spin_dn_negative=True,
-                      energy='energy',
+                      energy='energy_grid',
                       ynames=None,
                       energy_label=r'E-E_F [eV]',
                       dos_label=r'DOS [1/eV]',
@@ -293,12 +296,10 @@ def bokeh_spinpol_dos(dosdata,
     if ynames is None:
         ynames = set(dosdata.keys()) - set([energy] if isinstance(energy, str) else energy)
         ynames = sorted(ynames)
+        ynames.extend([f'{key} Spin-Down' for key in ynames])
 
     if spin_dn_negative:
-        dosdata_dn[ynames] = -dosdata_dn[ynames]
-
-    dosdata_dn = dosdata_dn.drop(set([energy] if isinstance(energy, str) else energy), axis=1)
-    dosdata_dn.rename(columns={key: f'{key} Spin-Down' for key in ynames}, inplace=True)
+        dosdata[[key for key in ynames if '_down' in key]] = -dosdata[[key for key in ynames if '_down' in key]]
 
     if xyswitch:
         lines['vertical'], lines['horizontal'] = lines['horizontal'], lines['vertical']
@@ -306,8 +307,10 @@ def bokeh_spinpol_dos(dosdata,
     plot_params.set_defaults(default_type='function',
                              straight_lines=lines,
                              figure_kwargs={
-                                 'tooltips': [('DOS Name', '$name'), ('Energy', '@energy{0.0[00]}'),
-                                              ('Value', '@$name{(0,0.00)}')]
+                                 'tooltips': [('DOS Name', '$name'), ('Energy', '@energy_grid{0.0[00]}'),
+                                              ('Value', '@$name{(0,0.00)}')],
+                                 'width':
+                                 1000
                              })
 
     if xyswitch:
@@ -324,23 +327,20 @@ def bokeh_spinpol_dos(dosdata,
                                  y_axis_formatter=NumeralTickFormatter(format='(0,0)'))
 
     plot_params.single_plot = False
-    plot_params.num_plots = len(ynames)
+    plot_params.num_plots = len(ynames) // 2  #We want the same colors for opposite spin-directions
     plot_params.set_parameters(color=kwargs.pop('color', None), color_palette=kwargs.pop('color_palette', None))
     plot_params.set_color_palette_by_num_plots()
 
     #Double the colors for spin up and down
     kwargs['color'] = list(plot_params['color'].copy())
     kwargs['color'].extend(kwargs['color'])
-    dosdata = pd.concat([dosdata, dosdata_dn], axis=1)
 
     if 'legend_label' not in kwargs:
         kwargs['legend_label'] = list(ynames.copy())
-        kwargs['legend_label'].extend(kwargs['legend_label'])
     else:
         if isinstance(kwargs['legend_label'], list):
-            kwargs['legend_label'].extend(kwargs['legend_label'])
-
-    ynames.extend([f'{key} Spin-Down' for key in ynames])
+            if len(kwargs['legend_label']) == len(ynames) // 2:
+                kwargs['legend_label'].extend(kwargs['legend_label'])
 
     if 'show' in kwargs:
         plot_params.set_parameters(show=kwargs['show'])

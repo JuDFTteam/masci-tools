@@ -483,7 +483,8 @@ TEST_TEXT_VALUES = [[0.0, 'Pi/4.0', 6.3121], [0.0, 'Pi/4.0', 6.3121], [0.0, 'Pi/
 
 TEST_TEXT_XML_STRINGS = [(' 0.0000000000000 Pi/4.0  6.3121000000000', True), ('', False),
                          (' 0.0000000000000 Pi/4.0  6.3121000000000', True), ('', False),
-                         ([' 0.0000000000000 Pi/4.0  6.3121000000000', 'Bohr Pi/4.0 all'], True), (['F asd', 'T'], True),
+                         ([' 0.0000000000000 Pi/4.0  6.3121000000000', 'Bohr Pi/4.0 all'], True), (['F asd',
+                                                                                                    'T'], True),
                          (['12 213 4215 412', '12 213 4215 412 123 14124'], True)]
 
 TEST_TEXT_XML_WARNINGS = [[], ["Failed to convert '[0.0, 'Pi/4.0', 6.3121]', no matching definition found "], [],

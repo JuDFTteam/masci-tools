@@ -20,6 +20,7 @@ from functools import wraps
 from contextlib import contextmanager
 from collections import ChainMap
 
+
 @contextmanager
 def NestedPlotParameters(plotter_object):
     """
@@ -37,7 +38,7 @@ def NestedPlotParameters(plotter_object):
 
     try:
         yield
-    finally: #Also performed if exception is thrown??
+    finally:  #Also performed if exception is thrown??
         plotter_object._params.maps[1] = function_defaults_before
         plotter_object._params.maps[0] = parameters_before
 

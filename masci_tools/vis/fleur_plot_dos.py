@@ -14,95 +14,143 @@
 Plotting routines for fleur density of states with and without hdf
 """
 import warnings
+import io
 
 
-def fleur_plot_dos(path_to_dosfile,
-                   path_to_dosfile_dn=None,
-                   hdf_group='Local',
-                   spinpol=True,
-                   bokeh_plot=False,
-                   **kwargs):
+def fleur_plot_dos(dosfile, dosfile_dn=None, hdf_group='Local', spinpol=True, bokeh_plot=False, **kwargs):
     """
     Plot the density of states either from a `banddos.hdf` or text output
     """
-    from masci_tools.io.io_hdf5 import read_hdf
+    from masci_tools.io.parsers.hdf5 import HDF5Reader
+    from masci_tools.io.parsers.hdf5.recipes import dos_recipe_format
     from masci_tools.vis.plot_methods import plot_dos, plot_spinpol_dos
     from masci_tools.vis.bokeh_plots import bokeh_dos, bokeh_spinpol_dos
-    from masci_tools.util.constants import HTR_TO_EV
     import pandas as pd
 
-    dos_data_dn = None
+    if isinstance(dosfile, io.IOBase):
+        filename = dosfile._file.name
+    else:
+        filename = dosfile
 
-    if path_to_dosfile.endswith('.hdf'):
-        if path_to_dosfile_dn is not None:
+    if filename.endswith('.hdf'):
+        if dosfile_dn is not None:
             warnings.warn('path_to_dosfile_dn is ignored for hdf files')
-        data, attrs = read_hdf(path_to_dosfile)
 
-        natoms = attrs['atoms']['nTypes']
-        spinpol = attrs['general']['spins'] == 2 and spinpol
+        dos_recipe = dos_recipe_format(hdf_group)
 
-        dos_data = data[hdf_group].get('DOS')
+        with HDF5Reader(dosfile) as h5reader:
+            dosdata, attrs = h5reader.read(recipe=dos_recipe)
+        dosdata = pd.DataFrame(data=dosdata)
 
-        if dos_data is None:
-            raise ValueError(f"DOS entry is missing in {hdf_group} for file '{path_to_dosfile}'."
-                             ' Are you sure this is a DOS calculation?')
-
-        energy_grid = dos_data.pop('energyGrid') * HTR_TO_EV
-
-        #Compute atom sums
-        if hdf_group == 'Local':
-            for atom in range(1, natoms + 1):
-                dos_data[f'MT:{atom}'] = sum(value for key, value in dos_data.items() if f'MT:{atom}' in key)
-        elif hdf_group == 'jDOS':
-            for atom in range(1, natoms + 1):
-                dos_data[f'MT:{atom}'] = sum(value for key, value in dos_data.items() if f'jDOS:{atom}' in key)
-        elif hdf_group == 'Orbcomp':
-            for atom in range(1, natoms + 1):
-                dos_data[f'MT:{atom}'] = sum(value for key, value in dos_data.items() if f'ORB:{atom}' in key)
-
-        if not spinpol:
-            dos_data_up = {key: data[0, ...] / HTR_TO_EV for key, data in dos_data.items()}
-        else:
-            dos_data_up = {key: data[0, ...] / HTR_TO_EV for key, data in dos_data.items()}
-            dos_data_dn = {key: data[1, ...] / HTR_TO_EV for key, data in dos_data.items()}
+        spinpol = attrs['spins'] == 2 and spinpol
+        legend_labels, keys = generate_dos_labels(dosdata, attrs, spinpol)
 
     else:
         #TODO: txt input
         raise NotImplementedError
 
-    if hdf_group == 'Local':
-        interstitial = kwargs.pop('interstitial', True)
-        atoms = kwargs.pop('atoms', 'all')
-        l_resolved = kwargs.pop('l_resolved', None)
-        dos_data_up, dos_data_dn, keys_to_plot = select_from_Local(dos_data_up, dos_data_dn, natoms, interstitial,
-                                                                   atoms, l_resolved)
-    else:
-        keys_to_plot = list(dos_data_up.keys())
-        dos_data_up = list(dos_data_up.values())
-        if dos_data_dn is not None:
-            dos_data_dn = list(dos_data_dn.values())
-
     if bokeh_plot:
         if spinpol:
-            dos_data = {key: data for key, data in zip(keys_to_plot, dos_data_up)}
-            dos_data['energy'] = energy_grid
-            dos_data_dn = {key: data for key, data in zip(keys_to_plot, dos_data_dn)}
-            dos_data_dn['energy'] = energy_grid
-            data = pd.DataFrame(data=dos_data)
-            data_dn = pd.DataFrame(data=dos_data_dn)
-            fig = bokeh_spinpol_dos(data, data_dn, **kwargs)
+            fig = bokeh_spinpol_dos(dosdata, ynames=keys, legend_label=legend_labels, **kwargs)
         else:
-            dos_data = {key: data for key, data in zip(keys_to_plot, dos_data_up)}
-            dos_data['energy'] = energy_grid
-            data = pd.DataFrame(data=dos_data)
-            fig = bokeh_dos(data, **kwargs)
+            fig = bokeh_dos(dosdata, ynames=keys, legend_label=legend_labels, **kwargs)
     else:
         if spinpol:
-            fig = plot_spinpol_dos(dos_data_up, dos_data_dn, energy_grid, plot_label=keys_to_plot, **kwargs)
+            dosdata_up = [dosdata[key].to_numpy() for key in keys if '_up' in key]
+            dosdata_dn = [dosdata[key].to_numpy() for key in keys if '_down' in key]
+            fig = plot_spinpol_dos(dosdata_up, dosdata_dn, dosdata['energy_grid'], plot_label=legend_labels, **kwargs)
         else:
-            fig = plot_dos(dos_data_up, energy_grid, plot_label=keys_to_plot, **kwargs)
+            dosdata_up = [dosdata[key].to_numpy() for key in keys if '_up' in key]
+            fig = plot_dos(dosdata_up, dosdata['energy_grid'], plot_label=legend_labels, **kwargs)
 
     return fig
+
+
+def dos_order(key):
+
+    if key == 'energy_grid':
+        return (-1,)
+
+    if '_up' in key:
+        key = key.split('_up')[0]
+        spin = 0
+    else:
+        key = key.split('_down')[0]
+        spin = 1
+
+    general = ('Total', 'INT', 'Sym')
+    orbital_order = ('', 's', 'p', 'd', 'f')
+
+    if key in general:
+        return (spin, general.index(key))
+    elif ':' in key:
+        before, after = key.split(':')
+
+        tail = after.lstrip('0123456789')
+        atom_type = int(after[:-len(tail)]) if len(tail) > 0 else int(after[0])
+
+        if tail in orbital_order:
+            return (spin, len(general) + atom_type, orbital_order.index(tail))
+        else:
+            return (spin, len(general) + atom_type, orbital_order)
+
+    return None
+
+
+def generate_dos_labels(dosdata, attributes, spinpol):
+
+    labels = []
+    plot_order = []
+
+    atom_elements = list(attributes['atoms_elements'])
+
+    for key in sorted(dosdata.keys(), key=dos_order):
+        if key == 'energy_grid':
+            continue
+
+        plot_order.append(key)
+        if 'INT' in key:
+            key = 'Interstitial'
+            if spinpol:
+                key = 'Interstitial up/down'
+            labels.append(key)
+        elif ':' in key:  #Atom specific DOS
+
+            before, after = key.split(':')
+
+            tail = after.lstrip('0123456789')
+            atom_type = int(after[:-len(tail)])
+
+            atom_label = attributes['atoms_elements'][atom_type - 1]
+
+            if atom_elements.count(atom_label) != 1:
+                atom_occ = atom_elements[:atom_type].count(atom_label)
+
+                atom_label = f'{atom_label}-{atom_occ}'
+
+            if '_up' in tail:
+                tail = tail.split('_up')[0]
+                if spinpol:
+                    tail = f'{tail} up/down'
+            else:
+                tail = tail.split('_down')[0]
+                if spinpol:
+                    tail = f'{tail} up/down'
+
+            labels.append(f'{atom_label} {tail}')
+
+        else:
+            if '_up' in key:
+                key = key.split('_up')[0]
+                if spinpol:
+                    key = f'{key} up/down'
+            elif '_down' in key:
+                key = key.split('_down')[0]
+                if spinpol:
+                    key = f'{key} up/down'
+            labels.append(key)
+
+    return labels, plot_order
 
 
 def select_from_Local(dos_data_up, dos_data_dn, natoms, interstitial, atoms, l_resolved):

@@ -717,7 +717,8 @@ def test_set_complex_tag(load_inpxml):
     assert str(eval_xpath(root, '/fleurInput/calculationSetup/magnetism/@jspins')) == '4'
     assert str(eval_xpath(root, '/fleurInput/calculationSetup/magnetism/mtNocoParams/@l_mtNocoPot')) == 'T'
     assert str(eval_xpath(
-        root, '/fleurInput/calculationSetup/magnetism/qss/text()')) == ' 0.0000000000000  1.0000000000000  2.0000000000000'
+        root,
+        '/fleurInput/calculationSetup/magnetism/qss/text()')) == ' 0.0000000000000  1.0000000000000  2.0000000000000'
 
 
 def test_set_complex_tag_create_specification(load_inpxml):
@@ -1268,7 +1269,8 @@ def test_set_inpchanges_single_text(load_inpxml):
     set_inpchanges(xmltree, schema_dict, {'qss': [10, 10, 10]})
 
     assert eval_xpath(
-        root, '/fleurInput/calculationSetup/magnetism/qss/text()') == '10.0000000000000 10.0000000000000 10.0000000000000'
+        root,
+        '/fleurInput/calculationSetup/magnetism/qss/text()') == '10.0000000000000 10.0000000000000 10.0000000000000'
 
 
 def test_set_inpchanges_multiple(load_inpxml):
@@ -1282,7 +1284,8 @@ def test_set_inpchanges_multiple(load_inpxml):
 
     assert eval_xpath(root, '/fleurInput/calculationSetup/scfLoop/@itmax') == '20'
     assert eval_xpath(
-        root, '/fleurInput/calculationSetup/magnetism/qss/text()') == '10.0000000000000 10.0000000000000 10.0000000000000'
+        root,
+        '/fleurInput/calculationSetup/magnetism/qss/text()') == '10.0000000000000 10.0000000000000 10.0000000000000'
     assert eval_xpath(root, '/fleurInput/calculationSetup/xcFunctional/@name') == 'TEST'
     assert eval_xpath(root, '/fleurInput/calculationSetup/ldaU/@l_linMix') == 'T'
 
@@ -1323,7 +1326,8 @@ def test_set_inpchanges_specification(load_inpxml):
 
     assert eval_xpath(root, '/fleurInput/calculationSetup/scfLoop/@itmax') == '20'
     assert eval_xpath(
-        root, '/fleurInput/calculationSetup/magnetism/qss/text()') == '10.0000000000000 10.0000000000000 10.0000000000000'
+        root,
+        '/fleurInput/calculationSetup/magnetism/qss/text()') == '10.0000000000000 10.0000000000000 10.0000000000000'
     assert eval_xpath(root, '/fleurInput/calculationSetup/xcFunctional/@name') == 'TEST'
     assert eval_xpath(root, '/fleurInput/calculationSetup/ldaU/@l_linMix') == 'T'
     assert eval_xpath(root, '/fleurInput/calculationSetup/ldaU/@spinf') == '10.0000000000'

@@ -43,6 +43,7 @@ class BokehPlotter(Plotter):
         'legend_click_policy': 'hide',  # "mute"#"hide"
         'legend_orientation': 'vertical',
         'legend_font_size': '14pt',
+        'legend_outside_plot_area': False,
 
         #plot parameters
         'color_palette': None,
@@ -79,6 +80,7 @@ class BokehPlotter(Plotter):
         'legend_click_policy',
         'legend_font_size',
         'legend_orientation',
+        'legend_outside_plot_area',
         'background_fill_color',
         'tick_label_fontsize',
         'label_fontsize',
@@ -302,6 +304,9 @@ class BokehPlotter(Plotter):
         fig.legend.click_policy = self['legend_click_policy']
         fig.legend.orientation = self['legend_orientation']
         fig.legend.label_text_font_size = self['legend_font_size']
+
+        if self['legend_outside_plot_area']:
+            fig.add_layout(fig.legend[0], 'right')
 
     def save_plot(self, figure):
         from bokeh.io import show as bokeh_show

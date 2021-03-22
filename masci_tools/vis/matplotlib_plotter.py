@@ -64,6 +64,7 @@ class MatplotlibPlotter(Plotter):
         'marker': 'o',
         'markersize': 4.0,
         'color': None,
+        'repeat_colors_after': None,
         'edgecolor': None,
         'facecolor': None,
         'plot_label': None,
@@ -149,7 +150,7 @@ class MatplotlibPlotter(Plotter):
         'save_plots', 'save_format', 'tightlayout', 'save_raw_plot_data', 'raw_plot_data_format', 'show', 'legend',
         'legend_options', 'colorbar', 'colorbar_padding', 'tick_paramsy', 'tick_paramsx', 'tick_paramsy_minor',
         'tick_paramsx_minor', 'font_options', 'line_options', 'labelfontsize', 'lines', 'scale', 'limits', 'xticks',
-        'xticklabels', 'yticks', 'yticklabels', 'figure_kwargs', 'title_font_size'
+        'xticklabels', 'yticks', 'yticklabels', 'figure_kwargs', 'title_font_size', 'repeat_colors_after'
     }
 
     #Sets of keys with special purposes

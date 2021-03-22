@@ -261,10 +261,15 @@ def multiple_scatterplots(ydata,
     # allow all arguments as value then use for all or as lists with the righ length.
 
     plot_kwargs = plot_params.plot_kwargs()
+    colors = []
 
     for indx, data in enumerate(zip(xdata, ydata, plot_kwargs)):
 
         x, y, plot_kw = data
+
+        if plot_params['repeat_colors_after'] is not None:
+            if indx >= plot_params['repeat_colors_after']:
+                plot_kw['color'] = colors[indx % plot_params['repeat_colors_after']]
 
         if isinstance(yerr, list):
             try:
@@ -299,6 +304,7 @@ def multiple_scatterplots(ydata,
                 result = ax.fill_betweenx(y, x, x2=shift, **plot_kw, **kwargs)
             else:
                 result = ax.fill_between(x, y, y2=shift, **plot_kw, **kwargs)
+            colors.append(result.get_facecolor()[0])
             plot_kw.pop('alpha', None)
             plot_kw.pop('label', None)
             plot_kw.pop('color', None)
@@ -314,7 +320,8 @@ def multiple_scatterplots(ydata,
                             **plot_kw,
                             **kwargs)
         else:
-            ax.errorbar(x, y, yerr=yerrt, xerr=xerrt, **plot_kw, **kwargs)
+            result = ax.errorbar(x, y, yerr=yerrt, xerr=xerrt, **plot_kw, **kwargs)
+            colors.append(result.lines[0].get_color())
 
     plot_params.set_scale(ax)
     plot_params.set_limits(ax)
@@ -949,12 +956,7 @@ def multiaxis_scatterplot(xdata,
 
         ax = plt.subplot2grid(plot_shape, location, **subplot_kwargs.pop('axes_kwargs', {}))
         with NestedPlotParameters(plot_params):
-            ax = multiple_scatterplots(y,
-                                       x,
-                                       axis=ax,
-                                       **subplot_kwargs,
-                                       save_plots=False,
-                                       show=False)
+            ax = multiple_scatterplots(y, x, axis=ax, **subplot_kwargs, save_plots=False, show=False)
 
         axis.append(ax)
 
@@ -1499,6 +1501,22 @@ def plot_spinpol_dos(spin_up_data,
             spin_dn_data = [-value for data in spin_dn_data for value in data]
         else:
             spin_dn_data = [-value for value in spin_dn_data]
+    lines = {'horizontal': 0}
+    lines['vertical'] = e_fermi
+
+    if xyswitch:
+        lines['vertical'], lines['horizontal'] = lines['horizontal'], lines['vertical']
+
+    if isinstance(spin_up_data[0], (list, np.ndarray)):
+        num_plots = len(spin_up_data)
+    else:
+        num_plots = 1
+
+    plot_params.set_defaults(default_type='function',
+                             marker=None,
+                             legend=True,
+                             lines=lines,
+                             repeat_colors_after=num_plots)
 
     dos_data = spin_up_data
     if not isinstance(spin_up_data[0], (list, np.ndarray)):
@@ -1506,13 +1524,7 @@ def plot_spinpol_dos(spin_up_data,
     else:
         dos_data = np.concatenate((dos_data, spin_dn_data), axis=0)
 
-    lines = {'horizontal': 0}
-    lines['vertical'] = e_fermi
 
-    if xyswitch:
-        lines['vertical'], lines['horizontal'] = lines['horizontal'], lines['vertical']
-
-    plot_params.set_defaults(default_type='function', marker=None, legend=True, lines=lines)
 
     if isinstance(dos_data[0], (list, np.ndarray)) and \
        not isinstance(energy_grid[0], (list, np.ndarray)):
@@ -1555,8 +1567,13 @@ def plot_bands(kpath,
 
     lines = {'vertical': xticks, 'horizontal': e_fermi}
 
-    limits = {'x': (min(kpath), max(kpath)), 'y': (-15,15)}
-    plot_params.set_defaults(default_type='function', lines=lines, limits=limits, xticks=xticks, xticklabels=xticklabels, color='k')
+    limits = {'x': (min(kpath), max(kpath)), 'y': (-15, 15)}
+    plot_params.set_defaults(default_type='function',
+                             lines=lines,
+                             limits=limits,
+                             xticks=xticks,
+                             xticklabels=xticklabels,
+                             color='k')
     ax = multi_scatter_plot(kpath, bands, size_data, xlabel=xlabel, ylabel=ylabel, title=title, saveas=saveas, **kwargs)
 
     return ax
@@ -1592,8 +1609,13 @@ def plot_spinpol_bands(kpath,
     else:
         color = 'k'
 
-    limits = {'x': (min(kpath), max(kpath)), 'y': (-15,15)}
-    plot_params.set_defaults(default_type='function', lines=lines, limits=limits, xticks=xticks, xticklabels=xticklabels, color=color)
+    limits = {'x': (min(kpath), max(kpath)), 'y': (-15, 15)}
+    plot_params.set_defaults(default_type='function',
+                             lines=lines,
+                             limits=limits,
+                             xticks=xticks,
+                             xticklabels=xticklabels,
+                             color=color)
     ax = multi_scatter_plot(kpath, [bands_up, bands_dn],
                             size_data,
                             xlabel=xlabel,
