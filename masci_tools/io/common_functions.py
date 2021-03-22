@@ -378,3 +378,47 @@ def camel_to_snake(name):
     """
     name = name.replace('-', '')
     return ''.join(['_' + c.lower() if c.isupper() else c for c in name]).lstrip('_')
+
+
+def is_sequence(arg):
+    """
+    Checks if arg is a sequence
+    """
+    if isinstance(arg, str):
+        return False
+    elif hasattr(arg, '__iter__'):
+        return True
+    elif not hasattr(arg, 'strip') and hasattr(arg, '__getitem__'):
+        return True
+    else:
+        return False
+
+
+def get_wigner_matrix(l, phi, theta):
+    """Produces the wigner rotation matrix for the density matrix
+
+    :param l: int, orbital quantum number
+    :param phi: float, angle (radian) corresponds to euler angle alpha
+    :param theta: float, angle (radian) corresponds to euler angle beta
+    """
+    d_wigner = np.zeros((7, 7), dtype=complex)
+    for m in range(-l, l + 1):
+        for mp in range(-l, l + 1):
+            base = np.sqrt(fac(l + m) * fac(l - m) * fac(l + mp) * fac(l - mp))
+            base *= np.exp(-1j * phi * mp)
+
+            for x in range(max(0, m - mp), min(l - mp, l + m) + 1):
+                denom = fac(l - mp - x) * fac(l + m - x) * fac(x) * fac(x + mp - m)
+
+                d_wigner[m + 3, mp + 3] += base/denom * (-1)**x * np.cos(theta/2.0)**(2*l+m-mp-2*x) \
+                                          * np.sin(theta/2.0)**(2*x+mp-m)
+
+    return d_wigner
+
+
+def fac(n):
+    """Returns the factorial of n"""
+    if n < 2:
+        return 1
+    else:
+        return n * fac(n - 1)

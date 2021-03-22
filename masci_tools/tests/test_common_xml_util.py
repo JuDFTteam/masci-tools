@@ -21,10 +21,7 @@ def test_convert_to_float():
     assert suc
     assert pytest.approx(ret_val) == 0.45
 
-    ret_val = convert_to_float('-99999231.2143543', suc_return=False)
-    assert pytest.approx(ret_val) == -99999231.2143543
-
-    ret_val, suc = convert_to_float('1.5324324e-9', suc_return=True)
+    ret_val, suc = convert_to_float('1.5324324e-9')
     assert suc
     assert pytest.approx(ret_val) == 1.5324324e-9
 
@@ -35,18 +32,8 @@ def test_convert_to_float():
     assert warnings == ["Could not convert: '{}' to float, TypeError"]
 
     warnings = []
-    ret_val = convert_to_float({}, suc_return=False, conversion_warnings=warnings)
-    assert ret_val == {}
-    assert warnings == ["Could not convert: '{}' to float, TypeError"]
-
-    warnings = []
     ret_val, suc = convert_to_float('1,23', conversion_warnings=warnings)
     assert not suc
-    assert ret_val == '1,23'
-    assert warnings == ["Could not convert: '1,23' to float, ValueError"]
-
-    warnings = []
-    ret_val = convert_to_float('1,23', suc_return=False, conversion_warnings=warnings)
     assert ret_val == '1,23'
     assert warnings == ["Could not convert: '1,23' to float, ValueError"]
 
@@ -67,10 +54,11 @@ def test_convert_to_int():
     assert suc
     assert ret_val == 1241412
 
-    ret_val = convert_to_int('-9999999999999999999999', suc_return=False)
+    ret_val, suc = convert_to_int('-9999999999999999999999')
+    assert suc
     assert ret_val == -9999999999999999999999
 
-    ret_val, suc = convert_to_int('12031', suc_return=True)
+    ret_val, suc = convert_to_int('12031')
     assert suc
     assert ret_val == 12031
 
@@ -81,18 +69,8 @@ def test_convert_to_int():
     assert warnings == ["Could not convert: '()' to int, TypeError"]
 
     warnings = []
-    ret_val = convert_to_int((), conversion_warnings=warnings, suc_return=False)
-    assert ret_val == ()
-    assert warnings == ["Could not convert: '()' to int, TypeError"]
-
-    warnings = []
     ret_val, suc = convert_to_int('1.231', conversion_warnings=warnings)
     assert not suc
-    assert ret_val == '1.231'
-    assert warnings == ["Could not convert: '1.231' to int, ValueError"]
-
-    warnings = []
-    ret_val = convert_to_int('1.231', conversion_warnings=warnings, suc_return=False)
     assert ret_val == '1.231'
     assert warnings == ["Could not convert: '1.231' to int, ValueError"]
 
@@ -122,12 +100,6 @@ def test_convert_from_fortran_bool():
         assert suc
         assert not ret_val
 
-    ret_val = convert_from_fortran_bool('T', suc_return=False)
-    assert ret_val
-    ret_val, suc = convert_from_fortran_bool('f', suc_return=True)
-    assert suc
-    assert not ret_val
-
     warnings = []
     ret_val, suc = convert_from_fortran_bool('TEST', conversion_warnings=warnings)
     assert not suc
@@ -145,6 +117,46 @@ def test_convert_from_fortran_bool():
     assert suc
     assert ret_val
     assert warnings == []
+
+
+def test_convert_to_fortran_bool():
+    """
+    Test of the function convert_to_fortran_bool
+    """
+    from masci_tools.util.xml.common_xml_util import convert_to_fortran_bool
+
+    TRUE_ITEMS = (True, 'True', 't', 'T')
+    FALSE_ITEMS = (False, 'False', 'f', 'F')
+
+    for item in TRUE_ITEMS:
+        res, suc = convert_to_fortran_bool(item)
+        assert suc
+        assert res == 'T'
+
+    for item in FALSE_ITEMS:
+        res, suc = convert_to_fortran_bool(item)
+        assert suc
+        assert res == 'F'
+
+    warnings = []
+    res, suc = convert_to_fortran_bool('True', conversion_warnings=warnings)
+    assert suc
+    assert res == 'T'
+    assert warnings == []
+
+    warnings = []
+    res, suc = convert_to_fortran_bool('NOT_A_BOOL', conversion_warnings=warnings)
+    assert not suc
+    assert res is None
+    assert warnings == [
+        "A string: NOT_A_BOOL for a boolean was given, which is not 'True','False', 't', 'T', 'F' or 'f'"
+    ]
+
+    warnings = []
+    res, suc = convert_to_fortran_bool((), conversion_warnings=warnings)
+    assert not suc
+    assert res is None
+    assert warnings == ['convert_to_fortran_bool accepts only a string or bool as argument, given () ']
 
 
 def test_eval_xpath():
@@ -304,19 +316,6 @@ def test_convert_xml_attribute(string_attr, types, results):
     assert suc == expected_suc
 
 
-@pytest.mark.parametrize('string_attr,types,results', zip(TEST_STRINGS, TEST_TYPES, TEST_RESULTS))
-def test_convert_xml_attribute_nosucreturn(string_attr, types, results):
-    """
-    Test of the convert_xml_attribute function
-    """
-    from masci_tools.util.xml.common_xml_util import convert_xml_attribute
-
-    expected_val, expected_suc = results
-
-    ret_val = convert_xml_attribute(string_attr, types, FLEUR_DEFINED_CONSTANTS, suc_return=False)
-    assert ret_val == expected_val
-
-
 @pytest.mark.parametrize('string_attr,types,results, warnings',
                          zip(TEST_STRINGS, TEST_TYPES, TEST_RESULTS, TEST_WARNINGS))
 def test_convert_xml_attribute_warnings(string_attr, types, results, warnings):
@@ -331,6 +330,55 @@ def test_convert_xml_attribute_warnings(string_attr, types, results, warnings):
                                          types,
                                          FLEUR_DEFINED_CONSTANTS,
                                          conversion_warnings=conversion_warnings)
+    assert ret_val == expected_val
+    assert suc == expected_suc
+    assert conversion_warnings == warnings
+
+
+TEST_ATTR_VALUES = [1.2134, 'all', ['all', 213, '-12'], ['3.14', 'NOT_PI', 1.2], [False, 'True']]
+
+TEST_ATTR_TYPES = [['float'], ['int', 'string'], ['int', 'string'], ['float', 'float_expression'], ['int', 'switch']]
+
+TEST_ATTR_RESULTS = [('1.2134000000', True), ('all', True), (['all', '213', '-12'], True),
+                     (['3.14', 'NOT_PI', '1.2000000000'], True), (['F', 'T'], True)]
+
+TEST_ATTR_WARNINGS = [
+    [], [], [],
+    [
+        "Could not convert to float string '3.14' The following error was raised: Unknown format code 'f' for object of type 'str'",
+        "Could not convert to float string '3.14' The following error was raised: Unknown format code 'f' for object of type 'str'",
+        "Could not convert to float string 'NOT_PI' The following error was raised: Unknown format code 'f' for object of type 'str'",
+        "Could not convert to float string 'NOT_PI' The following error was raised: Unknown format code 'f' for object of type 'str'"
+    ], []
+]
+
+
+@pytest.mark.parametrize('attr_value,types,results', zip(TEST_ATTR_VALUES, TEST_ATTR_TYPES, TEST_ATTR_RESULTS))
+def test_convert_attribute_to_xml(attr_value, types, results):
+    """
+    Test of the convert_xml_attribute function
+    """
+    from masci_tools.util.xml.common_xml_util import convert_attribute_to_xml
+
+    expected_val, expected_suc = results
+
+    ret_val, suc = convert_attribute_to_xml(attr_value, types)
+    assert ret_val == expected_val
+    assert suc == expected_suc
+
+
+@pytest.mark.parametrize('attr_value,types,results,warnings',
+                         zip(TEST_ATTR_VALUES, TEST_ATTR_TYPES, TEST_ATTR_RESULTS, TEST_ATTR_WARNINGS))
+def test_convert_attribute_to_xml_warnings(attr_value, types, results, warnings):
+    """
+    Test of the convert_xml_attribute function
+    """
+    from masci_tools.util.xml.common_xml_util import convert_attribute_to_xml
+
+    expected_val, expected_suc = results
+
+    conversion_warnings = []
+    ret_val, suc = convert_attribute_to_xml(attr_value, types, conversion_warnings=conversion_warnings)
     assert ret_val == expected_val
     assert suc == expected_suc
     assert conversion_warnings == warnings
@@ -408,19 +456,6 @@ def test_convert_xml_text(string_text, definitions, results):
     assert suc == expected_suc
 
 
-@pytest.mark.parametrize('string_text,definitions,results', zip(TEST_TEXT_STRINGS, TEST_DEFINITIONS, TEST_TEXT_RESULTS))
-def test_convert_xml_text_nosucreturn(string_text, definitions, results):
-    """
-    Test of the convert_xml_attribute function
-    """
-    from masci_tools.util.xml.common_xml_util import convert_xml_text
-
-    expected_val, expected_suc = results
-
-    ret_val = convert_xml_text(string_text, definitions, FLEUR_DEFINED_CONSTANTS, suc_return=False)
-    assert ret_val == expected_val
-
-
 @pytest.mark.parametrize('string_text,definitions,results,warnings',
                          zip(TEST_TEXT_STRINGS, TEST_DEFINITIONS, TEST_TEXT_RESULTS, TEST_TEXT_WARNINGS))
 def test_convert_xml_text_warnings(string_text, definitions, results, warnings):
@@ -440,3 +475,101 @@ def test_convert_xml_text_warnings(string_text, definitions, results, warnings):
     assert ret_val == expected_val
     assert suc == expected_suc
     assert conversion_warnings == warnings
+
+
+TEST_TEXT_VALUES = [[0.0, 'Pi/4.0', 6.3121], [0.0, 'Pi/4.0', 6.3121], [0.0, 'Pi/4.0', 6.3121], [0.0, 'Pi/4.0', 6.3121],
+                    [[0.0, 'Pi/4.0', 6.3121], ['Bohr', 'Pi/4.0', 'all']], [[False, 'asd'], 'T'],
+                    [[12, '213', 4215, 412], [12, '213', 4215, '412', 123, 14124]]]
+
+TEST_TEXT_XML_STRINGS = [(' 0.0000000000000 Pi/4.0  6.3121000000000', True), ('', False),
+                         (' 0.0000000000000 Pi/4.0  6.3121000000000', True), ('', False),
+                         ([' 0.0000000000000 Pi/4.0  6.3121000000000', 'Bohr Pi/4.0 all'], True), (['F asd', 'T'], True),
+                         (['12 213 4215 412', '12 213 4215 412 123 14124'], True)]
+
+TEST_TEXT_XML_WARNINGS = [[], ["Failed to convert '[0.0, 'Pi/4.0', 6.3121]', no matching definition found "], [],
+                          ["Failed to convert '[0.0, 'Pi/4.0', 6.3121]', no matching definition found "], [], [], []]
+
+
+@pytest.mark.parametrize('text_value,definitions, results',
+                         zip(TEST_TEXT_VALUES, TEST_DEFINITIONS, TEST_TEXT_XML_STRINGS))
+def test_convert_text_to_xml(text_value, definitions, results):
+    """
+    Test of the convert_xml_attribute function
+    """
+    from masci_tools.util.xml.common_xml_util import convert_text_to_xml
+
+    expected_val, expected_suc = results
+
+    ret_val, suc = convert_text_to_xml(text_value, definitions)
+    assert ret_val == expected_val
+    assert suc == expected_suc
+
+
+@pytest.mark.parametrize('text_value,definitions, results, warnings',
+                         zip(TEST_TEXT_VALUES, TEST_DEFINITIONS, TEST_TEXT_XML_STRINGS, TEST_TEXT_XML_WARNINGS))
+def test_convert_text_to_xml_warnings(text_value, definitions, results, warnings):
+    """
+    Test of the convert_xml_attribute function
+    """
+    from masci_tools.util.xml.common_xml_util import convert_text_to_xml
+
+    expected_val, expected_suc = results
+
+    conversion_warnings = []
+    ret_val, suc = convert_text_to_xml(text_value, definitions, conversion_warnings=conversion_warnings)
+    assert ret_val == expected_val
+    assert suc == expected_suc
+    assert conversion_warnings == warnings
+
+
+def test_split_off_tag():
+    """
+    Test of the split_off_tag function
+    """
+    from masci_tools.util.xml.common_xml_util import split_off_tag
+
+    assert split_off_tag('/fleurInput/calculationSetup/cutoffs') == ('/fleurInput/calculationSetup', 'cutoffs')
+    assert split_off_tag('/fleurInput/calculationSetup/cutoffs/') == ('/fleurInput/calculationSetup', 'cutoffs')
+    assert split_off_tag('./calculationSetup/cutoffs') == ('./calculationSetup', 'cutoffs')
+
+
+def test_split_off_attrib():
+    """
+    Test of the split_off_tag function
+    """
+    from masci_tools.util.xml.common_xml_util import split_off_attrib
+
+    assert split_off_attrib('/fleurInput/calculationSetup/cutoffs/@Kmax') == ('/fleurInput/calculationSetup/cutoffs',
+                                                                              'Kmax')
+    with pytest.raises(AssertionError):
+        split_off_attrib('/fleurInput/calculationSetup/cutoffs')
+    with pytest.raises(AssertionError):
+        split_off_attrib("/fleurInput/atomSpecies/species[@name='TEST']")
+    assert split_off_attrib('./calculationSetup/cutoffs/@Kmax') == ('./calculationSetup/cutoffs', 'Kmax')
+
+
+def test_check_complex_xpath(load_inpxml):
+    """
+    Test of the check_complex_xpath function
+    """
+    from masci_tools.util.xml.common_xml_util import check_complex_xpath
+
+    FILE_PATH = os.path.dirname(os.path.abspath(__file__))
+    TEST_INPXML_PATH = os.path.join(FILE_PATH, 'files/fleur/Max-R5/FePt_film_SSFT_LO/files/inp2.xml')
+
+    xmltree, _ = load_inpxml(TEST_INPXML_PATH)
+
+    check_complex_xpath(xmltree, '/fleurInput/atomSpecies/species', "/fleurInput/atomSpecies/species[@name='Fe-1']")
+
+    with pytest.raises(ValueError):
+        check_complex_xpath(xmltree, '/fleurInput/atomSpecies/species',
+                            "/fleurInput/atomSpecies/species[@name='Fe-1']/lo")
+
+    with pytest.raises(ValueError):
+        check_complex_xpath(xmltree, '/fleurInput/atomSpecies/species',
+                            "/fleurInput/atomSpecies/species[@name='Fe-1']/@name")
+
+    check_complex_xpath(xmltree, '/fleurInput/atomSpecies/species', '/fleurInput/atomSpecies/species')
+    check_complex_xpath(xmltree, '/fleurInput/atomSpecies/species',
+                        "/fleurInput/atomSpecies/species[@name='does_not_exist']")
+    check_complex_xpath(xmltree, '/fleurInput/atomSpecies/species/lo', "//species[@name='Pt-1']/lo")

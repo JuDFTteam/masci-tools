@@ -21,9 +21,9 @@ def clear_xml(tree):
     Removes comments and executes xinclude tags of an
     xml tree.
 
-    :param tree: an xml-tree which will be processes
-    :return: cleared_tree, an xml-tree without comments and with replaced xinclude tags
+    :param tree: an xml-tree which will be processed
 
+    :returns: cleared_tree, an xmltree without comments and with replaced xinclude tags
     """
     import copy
 
@@ -77,7 +77,40 @@ def clear_xml(tree):
     return cleared_tree
 
 
-def convert_xml_attribute(stringattribute, possible_types, constants=None, suc_return=True, conversion_warnings=None):
+def validate_xml(xmltree, schema, error_header='File does not validate'):
+    """
+    Checks a given xmltree against a schema and produces a nice error message
+    with all the validation errors collected
+
+    :param xmltree: xmltree of the file to validate
+    :param schema: etree.XMLSchema to validate against
+    :param error_header: str to lead a evtl error message with
+
+    :raises: etree.DocumentInvalid if the schema does not validate
+    """
+    from itertools import groupby
+
+    try:
+        schema.assertValid(clear_xml(xmltree))
+    except etree.DocumentInvalid as exc:
+        error_log = sorted(schema.error_log, key=lambda x: x.message)
+        error_output = []
+        first_occurence = []
+        for message, group in groupby(error_log, key=lambda x: x.message):
+            err_occurences = list(group)
+            error_message = f'Line {err_occurences[0].line}: {message}'
+            error_lines = ''
+            if len(err_occurences) > 1:
+                error_lines = f"; This error also occured on the lines {', '.join([str(x.line) for x in err_occurences[1:]])}"
+            error_output.append(f'{error_message}{error_lines} \n')
+            first_occurence.append(err_occurences[0].line)
+
+        error_output = [line for _, line in sorted(zip(first_occurence, error_output))]
+        errmsg = f"{error_header}: \n{''.join(error_output)}"
+        raise etree.DocumentInvalid(errmsg) from exc
+
+
+def convert_xml_attribute(stringattribute, possible_types, constants=None, conversion_warnings=None):
     """
     Tries to converts a given string attribute to the types given in possible_types.
     First succeeded conversion will be returned
@@ -85,7 +118,6 @@ def convert_xml_attribute(stringattribute, possible_types, constants=None, suc_r
     :param stringattribute: str, Attribute to convert.
     :param possible_types: list of str What types it will try to convert to
     :param constants: dict, of constants defined in fleur input
-    :param suc_return: bool, if True next to the value a bool indicating conversion success is returned
     :param conversion_warnings: dict with warings about failed conversions
 
     :return: The converted value of the first succesful conversion
@@ -134,13 +166,80 @@ def convert_xml_attribute(stringattribute, possible_types, constants=None, suc_r
     if len(converted_list) == 1:
         ret_value = converted_list[0]
 
-    if suc_return:
-        return ret_value, all_success
-    else:
-        return ret_value
+    return ret_value, all_success
 
 
-def convert_xml_text(tagtext, possible_definitions, constants=None, conversion_warnings=None, suc_return=True):
+def convert_attribute_to_xml(attributevalue, possible_types, conversion_warnings=None, float_format='.10'):
+    """
+    Tries to converts a given attributevalue to a string for a xml file according
+    to the types given in possible_types.
+    First succeeded conversion will be returned
+
+    :param attributevalue: value to convert.
+    :param possible_types: list of str What types it will try to convert from
+    :param conversion_warnings: dict with warings about failed conversions
+
+    :return: The converted str of the value of the first succesful conversion
+    """
+
+    if not isinstance(attributevalue, list):
+        attributevalue = [attributevalue]
+
+    if conversion_warnings is None:
+        conversion_warnings = []
+
+    possible_types = possible_types.copy()
+
+    if 'int' in possible_types:  #Since it just converts to string
+        possible_types.remove('int')
+        possible_types.append('int')
+
+    if 'string' in possible_types:
+        possible_types.remove('string')
+    possible_types.append('string')  #Always try string
+
+    converted_list = []
+    all_success = True
+    for value in attributevalue:
+
+        suc = False
+        for value_type in possible_types:
+            if value_type == 'float':
+                try:
+                    converted_value = f'{value:{float_format}f}'
+                    suc = True
+                except ValueError as errmsg:
+                    suc = False
+                    conversion_warnings.append(f"Could not convert to float string '{value}' "
+                                               f'The following error was raised: {errmsg}')
+            elif value_type == 'float_expression':
+                try:
+                    converted_value = f'{value:{float_format}f}'
+                    suc = True
+                except ValueError as errmsg:
+                    suc = False
+                    conversion_warnings.append(f"Could not convert to float string '{value}' "
+                                               f'The following error was raised: {errmsg}')
+            elif value_type == 'switch':
+                converted_value, suc = convert_to_fortran_bool(value, conversion_warnings=conversion_warnings)
+            elif value_type in ('string', 'int'):
+                suc = True
+                converted_value = str(value)
+            if suc:
+                converted_list.append(converted_value)
+                break
+        if not suc:
+            converted_list.append(value)
+            all_success = False
+
+    ret_value = converted_list
+    if len(converted_list) == 1:
+        ret_value = converted_list[0]
+
+    return ret_value, all_success
+
+
+def convert_xml_text(tagtext, possible_definitions, constants=None, conversion_warnings=None):
     """
     Tries to converts a given string text based on the definitions (length and type).
     First succeeded conversion will be returned
@@ -148,7 +247,6 @@ def convert_xml_text(tagtext, possible_definitions, constants=None, conversion_w
     :param tagtext: str, text to convert.
     :param possible_defintions: list of dicts What types it will try to convert to
     :param constants: dict, of constants defined in fleur input
-    :param suc_return: bool, if True next to the value a bool indicating conversion success is returned
     :param conversion_warnings: dict with warings about failed conversions
 
     :return: The converted value of the first succesful conversion
@@ -212,18 +310,88 @@ def convert_xml_text(tagtext, possible_definitions, constants=None, conversion_w
     if len(converted_list) == 1:
         ret_value = converted_list[0]
 
-    if suc_return:
-        return ret_value, all_success
-    else:
-        return ret_value
+    return ret_value, all_success
 
 
-def convert_to_float(value_string, conversion_warnings=None, suc_return=True):
+def convert_text_to_xml(textvalue, possible_definitions, conversion_warnings=None, float_format='16.13'):
+    """
+    Tries to convert a given list of values to str for a xml file based on the definitions (length and type).
+    First succeeded conversion will be returned
+
+    :param textvalue: value to convert
+    :param possible_definitions: list of dicts What types it will try to convert to
+    :param conversion_warnings: dict with warings about failed conversions
+
+    :return: The converted value of the first succesful conversion
+    """
+
+    if conversion_warnings is None:
+        conversion_warnings = []
+
+    if not isinstance(textvalue, list):
+        textvalue = [textvalue]
+    elif not isinstance(textvalue[0], list):
+        textvalue = [textvalue]
+
+    converted_list = []
+    all_success = True
+    for text in textvalue:
+
+        if not isinstance(text, list):
+            text = [text]
+
+        text_definition = None
+        for definition in possible_definitions:
+            if definition['length'] == len(text):
+                text_definition = definition
+
+        if text_definition is None:
+            for definition in possible_definitions:
+                if definition['length'] == 'unbounded':
+                    text_definition = definition
+
+        if text_definition is None:
+            conversion_warnings.append(f"Failed to convert '{text}', no matching definition found ")
+            if isinstance(text, str):
+                converted_list.append(text)
+                continue
+            converted_list.append('')
+            all_success = False
+            continue
+
+        converted_text = []
+        for value in text:
+            warnings = []
+            converted_value, suc = convert_attribute_to_xml(value,
+                                                            text_definition['type'],
+                                                            conversion_warnings=warnings,
+                                                            float_format=float_format)
+            converted_text.append(converted_value)
+            if not suc:
+                if isinstance(value, str):
+                    converted_list.append(value)
+                    continue
+                all_success = False
+                for warning in warnings:
+                    conversion_warnings.append(warning)
+
+        converted_list.append(' '.join(converted_text))
+
+    ret_value = converted_list
+    if len(converted_list) == 1:
+        ret_value = converted_list[0]
+
+    return ret_value, all_success
+
+
+def convert_to_float(value_string, conversion_warnings=None):
     """
     Tries to make a float out of a string. If it can't it logs a warning
     and returns True or False if convertion worked or not.
 
     :param value_string: a string
+    :param conversion_warnings: list with warings about failed conversions
+
     :return: value the new float or value_string: the string given
     :return: True if convertion was successfull, False otherwise
     """
@@ -233,28 +401,23 @@ def convert_to_float(value_string, conversion_warnings=None, suc_return=True):
         value = float(value_string)
     except TypeError:
         conversion_warnings.append(f"Could not convert: '{value_string}' to float, TypeError")
-        if suc_return:
-            return value_string, False
-        else:
-            return value_string
+        return value_string, False
+
     except ValueError:
         conversion_warnings.append(f"Could not convert: '{value_string}' to float, ValueError")
-        if suc_return:
-            return value_string, False
-        else:
-            return value_string
-    if suc_return:
-        return value, True
-    else:
-        return value
+        return value_string, False
+
+    return value, True
 
 
-def convert_to_int(value_string, conversion_warnings=None, suc_return=True):
+def convert_to_int(value_string, conversion_warnings=None):
     """
     Tries to make a int out of a string. If it can't it logs a warning
     and returns True or False if convertion worked or not.
 
     :param value_string: a string
+    :param conversion_warnings: list with warings about failed conversions
+
     :return: value the new int or value_string: the string given
     :return: True or False
     """
@@ -264,27 +427,21 @@ def convert_to_int(value_string, conversion_warnings=None, suc_return=True):
         value = int(value_string)
     except TypeError:
         conversion_warnings.append(f"Could not convert: '{value_string}' to int, TypeError")
-        if suc_return:
-            return value_string, False
-        else:
-            return value_string
+        return value_string, False
+
     except ValueError:
         conversion_warnings.append(f"Could not convert: '{value_string}' to int, ValueError")
-        if suc_return:
-            return value_string, False
-        else:
-            return value_string
-    if suc_return:
-        return value, True
-    else:
-        return value
+        return value_string, False
+
+    return value, True
 
 
-def convert_from_fortran_bool(stringbool, conversion_warnings=None, suc_return=True):
+def convert_from_fortran_bool(stringbool, conversion_warnings=None):
     """
     Converts a string in this case ('T', 'F', or 't', 'f') to True or False
 
     :param stringbool: a string ('t', 'f', 'F', 'T')
+    :param conversion_warnings: list with warings about failed conversions
 
     :return: boolean  (either True or False)
     """
@@ -312,10 +469,47 @@ def convert_from_fortran_bool(stringbool, conversion_warnings=None, suc_return=T
         converted_value = stringbool
         conversion_warnings.append(f"Could not convert: '{stringbool}' to boolean, " 'only accepts str or boolean')
 
-    if suc_return:
-        return converted_value, suc
+    return converted_value, suc
+
+
+def convert_to_fortran_bool(boolean, conversion_warnings=None):
+    """
+    Converts a Boolean as string to the format defined in the input
+
+    :param boolean: either a boolean or a string ('True', 'False', 'F', 'T')
+    :param conversion_warnings: list with warings about failed conversions
+
+    :return: a string (either 't' or 'f')
+    """
+    if conversion_warnings is None:
+        conversion_warnings = []
+
+    suc = False
+    new_string = None
+    if isinstance(boolean, bool):
+        if boolean:
+            new_string = 'T'
+            suc = True
+        else:
+            new_string = 'F'
+            suc = True
+    elif isinstance(boolean, str):  # basestring):
+        if boolean in ('True', 't', 'T'):
+            new_string = 'T'
+            suc = True
+        elif boolean in ('False', 'f', 'F'):
+            new_string = 'F'
+            suc = True
+        else:
+            suc = False
+            conversion_warnings.append(f"A string: {boolean} for a boolean was given, which is not 'True',"
+                                       "'False', 't', 'T', 'F' or 'f'")
     else:
-        return converted_value
+        suc = False
+        conversion_warnings.append('convert_to_fortran_bool accepts only a string or '
+                                   f'bool as argument, given {boolean} ')
+
+    return new_string, suc
 
 
 def eval_xpath(node, xpath, parser_info_out=None, list_return=False, namespaces=None):
@@ -388,3 +582,47 @@ def get_xml_attribute(node, attributename, parser_info_out=None):
                                                   'because node is not an element of etree.'
                                                   ''.format(attributename, type(node)))
         return None
+
+
+def split_off_tag(xpath):
+    """
+    Splits off the last part of the given xpath
+
+    :param xpath: str of the xpath to split up
+    """
+    split_xpath = xpath.split('/')
+    if split_xpath[-1] == '':
+        return '/'.join(split_xpath[:-2]), split_xpath[-2]
+    else:
+        return '/'.join(split_xpath[:-1]), split_xpath[-1]
+
+
+def split_off_attrib(xpath):
+    """
+    Splits off attribute of the given xpath (part after @)
+
+    :param xpath: str of the xpath to split up
+    """
+    split_xpath = xpath.split('/@')
+    assert len(split_xpath) == 2, f"Splitting off attribute failed for: '{split_xpath}'"
+    return tuple(split_xpath)
+
+
+def check_complex_xpath(node, base_xpath, complex_xpath):
+    """
+    Check that the given complex xpath produces a subset of the results
+    for the simple xpath
+
+    :param node: root node of an etree
+    :param base_xpath: str of the xpath without complex syntax
+    :param complex_xpath: str of the xpath to check
+
+    :raises ValueError: If the complex_xpath does not produce a subset of the results
+                        of the base_xpath
+    """
+
+    results_base = set(eval_xpath(node, base_xpath, list_return=True))
+    results_complex = set(eval_xpath(node, complex_xpath, list_return=True))
+
+    if not results_base.issuperset(results_complex):
+        raise ValueError(f"Complex xpath '{complex_xpath}' is not compatible with the base_xpath '{base_xpath}'")

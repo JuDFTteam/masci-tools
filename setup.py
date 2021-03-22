@@ -48,6 +48,7 @@ if __name__ == '__main__':
             'bump2version',
             'future',
             'lxml>=3.6.4',
+            'more_itertools',
             'seaborn',
             'deepdiff',
             'humanfriendly',
