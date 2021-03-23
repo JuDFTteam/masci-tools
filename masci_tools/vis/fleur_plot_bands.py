@@ -14,38 +14,9 @@
 Plotting routine for fleur density of states with and without hdf
 """
 
-import io
-import warnings
-
-
-def fleur_plot_bands(bandsfile, bandsfile_dn=None, **kwargs):
+def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, bokeh_plot=False, weight=None, **kwargs):
     """
-    Plot the bandstructure either from a `banddos.hdf` or text output
-    """
-    from masci_tools.io.parsers.hdf5 import HDF5Reader
-    from masci_tools.io.parsers.hdf5.recipes import FleurBands
-
-    if isinstance(bandsfile, io.IOBase):
-        filename = bandsfile.name
-    else:
-        filename = bandsfile
-
-    if filename.endswith('.hdf'):
-        if bandsfile_dn is not None:
-            warnings.warn('bandsfile_dn is ignored for hdf input')
-
-        with HDF5Reader(bandsfile) as h5reader:
-            bandsdata, bandsattributes = h5reader.read(recipe=FleurBands)
-
-    else:
-        raise NotImplementedError
-
-    return plot_fleur_bandsdata(bandsdata, bandsattributes, **kwargs)
-
-
-def plot_fleur_bandsdata(bandsdata, bandsattributes, spinpol=True, bokeh_plot=False, weight=None, **kwargs):
-    """
-    Plot the data extracted from a `banddos.hdf` file
+    Plot the data previously extracted from a `banddos.hdf` file vie the HDF5Reader
     """
     from masci_tools.vis.plot_methods import plot_bands, plot_spinpol_bands
     from masci_tools.vis.bokeh_plots import bokeh_bands, bokeh_spinpol_bands
