@@ -417,7 +417,7 @@ def multi_scatter_plot(xdata,
             kwargs['xticklabels'] = xticks[0]
             kwargs['xticks'] = xticks[1]
 
-    plot_params.set_defaults(default_type='function', color='k', linestyle=None, area_plot=False)
+    plot_params.set_defaults(default_type='function', linestyle=None, area_plot=False)
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
@@ -1564,6 +1564,7 @@ def plot_spinpol_dos(spin_up_data,
     return ax
 
 
+@ensure_plotter_consistency(plot_params)
 def plot_bands(kpath,
                bands,
                size_data=None,
@@ -1618,6 +1619,7 @@ def plot_bands(kpath,
     return ax
 
 
+@ensure_plotter_consistency(plot_params)
 def plot_spinpol_bands(kpath,
                        bands_up,
                        bands_dn,
@@ -1671,6 +1673,7 @@ def plot_spinpol_bands(kpath,
                              color=color,
                              cmap=cmaps,
                              line_options={'zorder': -1})
+
     ax = multi_scatter_plot([kpath, kpath], [bands_up, bands_dn],
                             size_data=size_data,
                             color_data=color_data,
