@@ -187,8 +187,7 @@ FleurBands = {
                                      attrib_name='reciprocal_cell',
                                      args=(),
                                      kwargs={
-                                         'reverse_order': True,
-                                         'by_element': True
+                                         'transpose': True
                                      }),
                 Transformation(name='calculate_norm', args=(), kwargs={'between_neighbours': True}),
                 Transformation(name='cumulative_sum', args=(), kwargs={}),
