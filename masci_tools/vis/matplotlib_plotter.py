@@ -379,18 +379,20 @@ class MatplotlibPlotter(Plotter):
                     for pos in positions:
                         ax.axvline(pos, **options)
 
-    def show_legend(self, ax):
+    def show_legend(self, ax, leg_elems=None):
         """
         Print a legend for the plot
 
         :param ax: Axes object on which to perform the operation
         """
+        if leg_elems is None:
+            leg_elems = ()
 
         if self['legend']:
             loptions = copy.deepcopy(self['legend_options'])
             linewidth = loptions.pop('linewidth', 1.5)
             title_font_size = loptions.pop('fontsize', 15)
-            leg = ax.legend(**loptions)
+            leg = ax.legend(*leg_elems,**loptions)
             leg.get_frame().set_linewidth(linewidth)
             leg.get_title().set_fontsize(title_font_size)  #legend 'Title' fontsize
 

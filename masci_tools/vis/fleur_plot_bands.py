@@ -85,7 +85,7 @@ def plot_fleur_bandsdata(bandsdata, bandsattributes, spinpol=True, bokeh_plot=Fa
                                      bandsdata['eigenvalues_up'],
                                      bandsdata['eigenvalues_down'],
                                      weight,
-                                     special_kpoints=special_kpoints_dict,
+                                     special_kpoints=special_kpoints,
                                      plot_label=plot_label,
                                      **kwargs)
         else:

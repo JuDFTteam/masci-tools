@@ -423,6 +423,8 @@ def multi_scatter_plot(xdata,
 
     plot_kwargs = plot_params.plot_kwargs(ignore='markersize', extra_keys={'cmap'})
 
+    legend_elements = []
+    legend_labels = []
     for indx, data in enumerate(zip(xdata, ydata, size_data, color_data, plot_kwargs)):
 
         x, y, size, color, plot_kw = data
@@ -433,12 +435,19 @@ def multi_scatter_plot(xdata,
         if color is not None:
             plot_kw.pop('color')
 
-        ax.scatter(x, y=y, s=size, c=color, **plot_kw)
+        res = ax.scatter(x, y=y, s=size, c=color, **plot_kw)
+        if plot_kw['label'] is not None:
+            legend_elements.append(res.legend_elements(num=1)[0][0])
+            legend_labels.append(plot_kw['label'])
+
+    legend_elements = None
+    if any(c is not None for c in color_data):
+        legend_elements = (legend_elements, legend_labels)
 
     plot_params.set_scale(ax)
     plot_params.set_limits(ax)
     plot_params.draw_lines(ax)
-    plot_params.show_legend(ax)
+    plot_params.show_legend(ax, leg_elems=legend_elements)
     plot_params.save_plot(saveas)
 
     return ax
@@ -1629,7 +1638,7 @@ def plot_spinpol_bands(kpath,
 
     xticks = []
     xticklabels = []
-    for label, pos in special_kpoints.items():
+    for label, pos in special_kpoints:
         if label in ('Gamma', 'g'):
             label = r'$\Gamma$'
         xticklabels.append(label)
@@ -1638,8 +1647,8 @@ def plot_spinpol_bands(kpath,
     lines = {'vertical': xticks, 'horizontal': e_fermi}
 
     if show_spin_pol:
-        color = ['red', 'blue']
-        cmaps = ['Reds', 'Blues']
+        color = ['blue', 'red']
+        cmaps = ['Blues', 'Reds']
     else:
         color = 'k'
         cmaps = 'Blues'
@@ -1659,7 +1668,6 @@ def plot_spinpol_bands(kpath,
                             ylabel=ylabel,
                             title=title,
                             saveas=saveas,
-                            color=color,
                             **kwargs)
 
     return ax
