@@ -112,7 +112,7 @@ class TestSingleScatterPlot(object):
 
         gcf().clear()
 
-        single_scatterplot(y, x, xlabel='X', ylabel='Y', title='Plot Test', show=False)
+        single_scatterplot(x, y, xlabel='X', ylabel='Y', title='Plot Test', show=False)
         # need to return the figure in order for mpl checks to work
         return gcf()
 
@@ -130,8 +130,8 @@ class TestSingleScatterPlot(object):
 
         gcf().clear()
 
-        single_scatterplot(y,
-                           x,
+        single_scatterplot(x,
+                           y,
                            xlabel='X',
                            ylabel='Y',
                            title='Plot Test',
@@ -159,7 +159,7 @@ class TestSingleScatterPlot(object):
 
         gcf().clear()
 
-        single_scatterplot(y, x, xlabel='X', ylabel='Y', title='Plot Test', scale={'y': 'log'}, show=False)
+        single_scatterplot(x, y, xlabel='X', ylabel='Y', title='Plot Test', scale={'y': 'log'}, show=False)
         # need to return the figure in order for mpl checks to work
         return gcf()
 
@@ -177,8 +177,8 @@ class TestSingleScatterPlot(object):
 
         gcf().clear()
 
-        single_scatterplot(y,
-                           x,
+        single_scatterplot(x,
+                           y,
                            xlabel='X',
                            ylabel='Y',
                            title='Plot Test',
@@ -204,8 +204,8 @@ class TestSingleScatterPlot(object):
 
         gcf().clear()
 
-        single_scatterplot(y,
-                           x,
+        single_scatterplot(x,
+                           y,
                            xlabel='X',
                            ylabel='Y',
                            title='Plot Test',
@@ -231,8 +231,8 @@ class TestSingleScatterPlot(object):
 
         gcf().clear()
 
-        single_scatterplot(y,
-                           x,
+        single_scatterplot(x,
+                           y,
                            xlabel='X',
                            ylabel='Y',
                            title='Plot Test',
@@ -258,8 +258,8 @@ class TestSingleScatterPlot(object):
 
         gcf().clear()
 
-        single_scatterplot(y,
-                           x,
+        single_scatterplot(x,
+                           y,
                            xlabel='X',
                            ylabel='Y',
                            title='Plot Test',
@@ -290,8 +290,8 @@ class TestSingleScatterPlot(object):
 
         gcf().clear()
         with pytest.deprecated_call():
-            single_scatterplot(y,
-                               x,
+            single_scatterplot(x,
+                               y,
                                xlabel='X',
                                ylabel='Y',
                                title='Plot Test',
@@ -314,7 +314,7 @@ class TestSingleScatterPlot(object):
 
         gcf().clear()
         with pytest.deprecated_call():
-            single_scatterplot(y, x, xlabel='X', ylabel='Y', title='Plot Test', scale=[None, 'log'], show=False)
+            single_scatterplot(x, y, xlabel='X', ylabel='Y', title='Plot Test', scale=[None, 'log'], show=False)
         # need to return the figure in order for mpl checks to work
         return gcf()
 
@@ -332,7 +332,7 @@ class TestSingleScatterPlot(object):
 
         gcf().clear()
         with pytest.deprecated_call():
-            single_scatterplot(y, x, xlabel='X', ylabel='Y', title='Plot Test', plotlabel='Test', show=False)
+            single_scatterplot(x, y, xlabel='X', ylabel='Y', title='Plot Test', plotlabel='Test', show=False)
         # need to return the figure in order for mpl checks to work
         return gcf()
 
@@ -356,7 +356,7 @@ class TestMultipleScatterPlot(object):
 
         gcf().clear()
 
-        multiple_scatterplots(y, x, xlabel='X', ylabel='Y', title='Plot Test', show=False)
+        multiple_scatterplots(x, y, xlabel='X', ylabel='Y', title='Plot Test', show=False)
         # need to return the figure in order for mpl checks to work
         return gcf()
 
@@ -374,8 +374,8 @@ class TestMultipleScatterPlot(object):
 
         gcf().clear()
 
-        multiple_scatterplots(y,
-                              x,
+        multiple_scatterplots(x,
+                              y,
                               xlabel='X',
                               ylabel='Y',
                               title='Plot Test',
@@ -402,8 +402,8 @@ class TestMultipleScatterPlot(object):
 
         gcf().clear()
 
-        multiple_scatterplots(y,
-                              x,
+        multiple_scatterplots(x,
+                              y,
                               xlabel='X',
                               ylabel='Y',
                               title='Plot Test',
@@ -428,8 +428,8 @@ class TestMultipleScatterPlot(object):
 
         gcf().clear()
 
-        multiple_scatterplots(y,
-                              x,
+        multiple_scatterplots(x,
+                              y,
                               xlabel='X',
                               ylabel='Y',
                               title='Plot Test',
@@ -456,8 +456,8 @@ class TestMultipleScatterPlot(object):
 
         gcf().clear()
 
-        multiple_scatterplots(y,
-                              x,
+        multiple_scatterplots(x,
+                              y,
                               xlabel='X',
                               ylabel='Y',
                               title='Plot Test',
@@ -481,8 +481,8 @@ class TestMultipleScatterPlot(object):
 
         gcf().clear()
 
-        multiple_scatterplots(y,
-                              x,
+        multiple_scatterplots(x,
+                              y,
                               xlabel='X',
                               ylabel='Y',
                               title='Plot Test',
@@ -513,8 +513,8 @@ class TestMultipleScatterPlot(object):
 
         gcf().clear()
 
-        multiple_scatterplots(y,
-                              x,
+        multiple_scatterplots(x,
+                              y,
                               xlabel='X',
                               ylabel='Y',
                               title='Plot Test',
@@ -549,8 +549,8 @@ class TestMultipleScatterPlot(object):
 
         gcf().clear()
         with pytest.deprecated_call():
-            multiple_scatterplots(y,
-                                  x,
+            multiple_scatterplots(x,
+                                  y,
                                   xlabel='X',
                                   ylabel='Y',
                                   title='Plot Test',
@@ -574,8 +574,8 @@ class TestMultipleScatterPlot(object):
 
         gcf().clear()
         with pytest.deprecated_call():
-            multiple_scatterplots(y,
-                                  x,
+            multiple_scatterplots(x,
+                                  y,
                                   xlabel='X',
                                   ylabel='Y',
                                   title='Plot Test',
@@ -599,8 +599,8 @@ class TestMultipleScatterPlot(object):
 
         gcf().clear()
         with pytest.deprecated_call():
-            multiple_scatterplots(y,
-                                  x,
+            multiple_scatterplots(x,
+                                  y,
                                   xlabel='X',
                                   ylabel='Y',
                                   title='Plot Test',
@@ -625,8 +625,8 @@ class TestMultipleScatterPlot(object):
 
         gcf().clear()
         with pytest.deprecated_call():
-            multiple_scatterplots(y,
-                                  x,
+            multiple_scatterplots(x,
+                                  y,
                                   xlabel='X',
                                   ylabel='Y',
                                   title='Plot Test',
@@ -651,8 +651,8 @@ class TestMultipleScatterPlot(object):
 
         gcf().clear()
         with pytest.deprecated_call():
-            multiple_scatterplots(y,
-                                  x,
+            multiple_scatterplots(x,
+                                  y,
                                   xlabel='X',
                                   ylabel='Y',
                                   title='Plot Test',
@@ -734,7 +734,7 @@ class TestMultiPlotMoved(object):
 
         gcf().clear()
 
-        multiplot_moved(y, x, xlabel='X', ylabel='Y', title='Plot Test', scale_move=2.0, show=False)
+        multiplot_moved(x, y, xlabel='X', ylabel='Y', title='Plot Test', scale_move=2.0, show=False)
         # need to return the figure in order for mpl checks to work
         return gcf()
 
@@ -752,8 +752,8 @@ class TestMultiPlotMoved(object):
 
         gcf().clear()
 
-        multiplot_moved(y,
-                        x,
+        multiplot_moved(x,
+                        y,
                         xlabel='X',
                         ylabel='Y',
                         title='Plot Test',
@@ -779,8 +779,8 @@ class TestMultiPlotMoved(object):
 
         gcf().clear()
 
-        multiplot_moved(y,
-                        x,
+        multiplot_moved(x,
+                        y,
                         xlabel='X',
                         ylabel='Y',
                         title='Plot Test',
@@ -1063,7 +1063,7 @@ class TestBarchartPlot(object):  #pylint: disable=missing-class-docstring
         y = [x[0]**2, [50] * 11]
         gcf().clear()
 
-        barchart(y, x, show=False)
+        barchart(x, y, show=False)
 
         # need to return the figure in order for mpl checks to work
         return gcf()
@@ -1222,7 +1222,7 @@ class TestPlotConvergenceResults(object):  #pylint: disable=missing-class-docstr
         #plot_convergence produces two figures, for testing we merge them into one
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 6))
 
-        plot_convergence_results(self.distances, self.energies, self.iteration, show=False, axis1=ax1, axis2=ax2)
+        plot_convergence_results(self.iteration, self.distances, self.energies, show=False, axis1=ax1, axis2=ax2)
 
         # need to return the figure in order for mpl checks to work
         return fig
@@ -1240,9 +1240,9 @@ class TestPlotConvergenceResults(object):  #pylint: disable=missing-class-docstr
         #plot_convergence produces two figures, for testing we merge them into one
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 6))
 
-        plot_convergence_results(self.distances,
+        plot_convergence_results(self.iteration,
+                                 self.distances,
                                  self.energies,
-                                 self.iteration,
                                  show=False,
                                  axis1=ax1,
                                  axis2=ax2,
@@ -1294,7 +1294,7 @@ class TestPlotConvergenceMulti(object):  #pylint: disable=missing-class-docstrin
         #plot_convergence produces two figures, for testing we merge them into one
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 6))
 
-        plot_convergence_results_m(distances, energies, iteration, show=False, axis1=ax1, axis2=ax2, modes=[])
+        plot_convergence_results_m(iteration, distances, energies, show=False, axis1=ax1, axis2=ax2, modes=[])
 
         # need to return the figure in order for mpl checks to work
         return fig

@@ -662,8 +662,8 @@ def surface_plot(xdata,
 
 
 @ensure_plotter_consistency(plot_params)
-def multiplot_moved(ydata,
-                    xdata,
+def multiplot_moved(xdata,
+                    ydata,
                     *,
                     xlabel='',
                     ylabel='',
