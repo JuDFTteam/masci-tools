@@ -17,6 +17,7 @@ Plotting routine for fleur density of states with and without hdf
 import io
 import warnings
 
+
 def fleur_plot_bands(bandsfile, bandsfile_dn=None, **kwargs):
     """
     Plot the bandstructure either from a `banddos.hdf` or text output
@@ -42,7 +43,6 @@ def fleur_plot_bands(bandsfile, bandsfile_dn=None, **kwargs):
     return plot_fleur_bandsdata(bandsdata, bandsattributes, **kwargs)
 
 
-
 def plot_fleur_bandsdata(bandsdata, bandsattributes, spinpol=True, bokeh_plot=False, weight=None, **kwargs):
     """
     Plot the data extracted from a `banddos.hdf` file
@@ -55,8 +55,8 @@ def plot_fleur_bandsdata(bandsdata, bandsattributes, spinpol=True, bokeh_plot=Fa
 
     bandsdata = pd.DataFrame(data=bandsdata)
     special_kpoints = []
-    for k_index, label in zip(bandsattributes['special_kpoint_indices'],bandsattributes['special_kpoint_labels']):
-        special_kpoints.append((label, bandsdata['kpath'][(k_index*nbands)+1]))
+    for k_index, label in zip(bandsattributes['special_kpoint_indices'], bandsattributes['special_kpoint_labels']):
+        special_kpoints.append((label, bandsdata['kpath'][(k_index * nbands) + 1]))
 
     if weight is not None:
         if not bokeh_plot:
@@ -66,7 +66,7 @@ def plot_fleur_bandsdata(bandsdata, bandsattributes, spinpol=True, bokeh_plot=Fa
                 weight = bandsdata[f'{weight}_up']
         else:
             if bandsattributes['spins'] == 2:
-                weight = [f'{weight}_up',f'{weight}_down']
+                weight = [f'{weight}_up', f'{weight}_down']
             else:
                 weight = f'{weight}_up'
 
@@ -81,8 +81,18 @@ def plot_fleur_bandsdata(bandsdata, bandsattributes, spinpol=True, bokeh_plot=Fa
             fig = bokeh_bands(bandsdata, weight=weight, special_kpoints=special_kpoints, **kwargs)
     else:
         if bandsattributes['spins'] == 2:
-            fig = plot_spinpol_bands(bandsdata['kpath'], bandsdata['eigenvalues_up'], bandsdata['eigenvalues_down'], weight, special_kpoints=special_kpoints_dict, plot_label=plot_label, **kwargs)
+            fig = plot_spinpol_bands(bandsdata['kpath'],
+                                     bandsdata['eigenvalues_up'],
+                                     bandsdata['eigenvalues_down'],
+                                     weight,
+                                     special_kpoints=special_kpoints_dict,
+                                     plot_label=plot_label,
+                                     **kwargs)
         else:
-            fig = plot_bands(bandsdata['kpath'], bandsdata['eigenvalues_up'], weight, special_kpoints=special_kpoints, **kwargs)
+            fig = plot_bands(bandsdata['kpath'],
+                             bandsdata['eigenvalues_up'],
+                             weight,
+                             special_kpoints=special_kpoints,
+                             **kwargs)
 
     return fig

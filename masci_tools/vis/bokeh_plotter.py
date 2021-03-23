@@ -38,6 +38,8 @@ class BokehPlotter(Plotter):
         'x_ticklabels_overwrite': None,
         'y_ticks': None,
         'y_ticklabels_overwrite': None,
+        'x_range_padding': None,
+        'y_range_padding': None,
         'limits': None,
 
         #legend options
@@ -95,6 +97,8 @@ class BokehPlotter(Plotter):
         'y_ticks',
         'y_ticklabels_overwrite',
         'x_ticklabels_overwrite',
+        'x_range_padding',
+        'y_range_padding',
     }
 
     _PLOT_KWARGS = {'color', 'alpha', 'legend_label', 'name'}
@@ -197,6 +201,12 @@ class BokehPlotter(Plotter):
 
         if self['y_ticklabels_overwrite'] is not None:
             p.yaxis.major_label_overrides = self['y_ticklabels_overwrite']
+
+        if self['x_range_padding'] is not None:
+            p.x_range.range_padding = self['x_range_padding']
+
+        if self['y_range_padding'] is not None:
+            p.y_range.range_padding = self['y_range_padding']
 
         return p
 

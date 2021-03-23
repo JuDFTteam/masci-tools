@@ -186,9 +186,7 @@ FleurBands = {
                 AttribTransformation(name='multiply_by_attribute',
                                      attrib_name='reciprocal_cell',
                                      args=(),
-                                     kwargs={
-                                         'transpose': True
-                                     }),
+                                     kwargs={'transpose': True}),
                 Transformation(name='calculate_norm', args=(), kwargs={'between_neighbours': True}),
                 Transformation(name='cumulative_sum', args=(), kwargs={}),
                 AttribTransformation(name='repeat_array_by_attribute', attrib_name='nbands', args=(), kwargs={}),

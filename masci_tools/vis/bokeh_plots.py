@@ -177,7 +177,6 @@ def bokeh_multi_scatter(source,
         if 'legend_label' not in plot_kw:
             plot_kw['legend_label'] = leg_label
 
-        print(plot_kw)
         p.scatter(x=xdat, y=yname, source=sourcet, **plot_kw)
 
     plot_params.draw_straight_lines(p)
@@ -497,6 +496,9 @@ def bokeh_spinpol_dos(dosdata,
 def bokeh_bands(bandsdata,
                 k_label='kpath',
                 eigenvalues='eigenvalues_up',
+                xlabel='',
+                ylabel=r'E-E_F [eV]',
+                title='',
                 special_kpoints=None,
                 weight=None,
                 size_min=1.0,
@@ -533,10 +535,18 @@ def bokeh_bands(bandsdata,
                              figure_kwargs={
                                  'width': 1280,
                                  'height': 720
-                             })
+                             },
+                             x_range_padding=0.0,
+                             y_range_padding=0.0)
 
     if weight is None:
-        return bokeh_multi_scatter(bandsdata, xdata=k_label, ydata=eigenvalues, xlabel='', **kwargs)
+        return bokeh_multi_scatter(bandsdata,
+                                   xdata=k_label,
+                                   ydata=eigenvalues,
+                                   xlabel='',
+                                   ylabel=ylabel,
+                                   title=title,
+                                   **kwargs)
     else:
         return bokeh_multi_scatter(bandsdata,
                                    xdata=k_label,
@@ -544,6 +554,8 @@ def bokeh_bands(bandsdata,
                                    xlabel='',
                                    marker_size='weight_size',
                                    color=color,
+                                   ylabel=ylabel,
+                                   title=title,
                                    **kwargs)
 
 
