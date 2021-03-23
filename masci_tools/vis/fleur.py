@@ -69,6 +69,7 @@ def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, bokeh_plot=False,
 
     return fig
 
+
 def plot_fleur_dos(dosdata, attributes, spinpol=True, bokeh_plot=False, **kwargs):
     """
     Plot the density of states previously extracted from a `banddos.hdf` via the HDF5reader
@@ -97,6 +98,7 @@ def plot_fleur_dos(dosdata, attributes, spinpol=True, bokeh_plot=False, **kwargs
             fig = plot_dos(dosdata_up, dosdata['energy_grid'], plot_label=legend_labels, **kwargs)
 
     return fig
+
 
 def dos_order(key):
     """
@@ -222,4 +224,3 @@ def select_from_Local(dos_data_up, dos_data_dn, natoms, interstitial, atoms, l_r
         dos_data_dn = [dos_data_dn[key] for key in keys_to_plot]
 
     return dos_data_up, dos_data_dn, keys_to_plot
-
