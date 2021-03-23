@@ -181,7 +181,7 @@ FleurBands = {
         },
         'kpath': {
             'h5path':
-            '/Local/BS/kpts',
+            '/kpts/coordinates',
             'transforms': [
                 AttribTransformation(name='multiply_by_attribute',
                                      attrib_name='reciprocal_cell',
@@ -195,7 +195,7 @@ FleurBands = {
     },
     'attributes': {
         'kpoints': {
-            'h5path': 'Local/BS/kpts',
+            'h5path': '/kpts/coordinates',
         },
         'nkpts': {
             'h5path':
