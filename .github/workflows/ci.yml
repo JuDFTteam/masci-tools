@@ -27,7 +27,7 @@ jobs:
 
     - name: Install python dependencies
       run: |
-        pip install -e .[docs, bokeh-plots]
+        pip install -e .[docs]
 
     - name: Install Latex compiler
       run: |

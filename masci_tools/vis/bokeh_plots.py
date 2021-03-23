@@ -19,20 +19,6 @@ from masci_tools.vis import ensure_plotter_consistency, NestedPlotParameters
 
 import pandas as pd
 
-from bokeh.models import (
-    ColumnDataSource,
-    LinearColorMapper,
-    LogColorMapper,
-    ColorBar,
-    BasicTicker,
-)
-from bokeh.layouts import gridplot
-from bokeh.io import show as bshow
-from bokeh.plotting import figure as bokeh_fig
-from matplotlib.colors import Normalize, LogNorm, to_hex
-from matplotlib.cm import plasma, inferno, magma, viridis  #pylint: disable=no-name-in-module
-from matplotlib.cm import ScalarMappable
-
 ################## Helpers     ################
 
 plot_params = BokehPlotter()
@@ -81,6 +67,7 @@ def bokeh_multi_scatter(source,
 
     Per default all ydata use the same x, if xdata is list it has to have the same length as ydata
     """
+    from bokeh.models import ColumnDataSource
 
     plot_params.set_defaults(default_type='function', name='scatter plot')
 
@@ -185,6 +172,7 @@ def bokeh_line(source,
 
     Per default all ydata use the same x, if xdata is list it has to have the same length as ydata
     """
+    from bokeh.models import ColumnDataSource
 
     plot_params.set_defaults(default_type='function', name='line plot')
 
@@ -624,7 +612,7 @@ def periodic_table_plot(source,
                         outfilename='periodictable.html',
                         value_color_range=[None, None],
                         log_scale=0,
-                        color_map=plasma,
+                        color_map=None,
                         bokeh_palette='Plasma256',
                         toolbar_location=None,
                         tools='hover',
@@ -671,6 +659,17 @@ def periodic_table_plot(source,
     from bokeh.transform import dodge, factor_cmap
     from bokeh.models import Arrow, OpenHead, NormalHead, VeeHead
     from bokeh.models import Range1d, LabelSet, Label
+    from bokeh.models import LinearColorMapper, LogColorMapper, ColorBar
+    from bokeh.models import BasicTicker
+
+    from bokeh.io import show as bshow
+    from bokeh.plotting import figure as bokeh_fig
+    from matplotlib.colors import Normalize, LogNorm, to_hex
+    from matplotlib.cm import plasma  #pylint: disable=no-name-in-module
+    from matplotlib.cm import ScalarMappable
+
+    if color_map is None:
+        color_map = plasma
 
     if len(display_values) != len(display_positions):
         raise ValueError(
@@ -910,6 +909,8 @@ def plot_convergence_results(distance,
 
     :returns grid: bokeh grid with figures
     """
+    from bokeh.layouts import gridplot
+    from bokeh.io import show as bshow
 
     xlabel = r'Iteration'
     ylabel1 = r'Total energy difference [Htr]'
@@ -998,6 +999,9 @@ def plot_convergence_results_m(distances,
 
     :returns grid: bokeh grid with figures
     """
+    from bokeh.models import ColumnDataSource
+    from bokeh.layouts import gridplot
+    from bokeh.io import show as bshow
 
     xlabel = r'Iteration'
     ylabel1 = r'Total energy difference [Htr]'
