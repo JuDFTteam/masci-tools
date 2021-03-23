@@ -13,41 +13,19 @@
 """
 Plotting routines for fleur density of states with and without hdf
 """
-import warnings
-import io
 
-
-def fleur_plot_dos(dosfile, dosfile_dn=None, hdf_group='Local', spinpol=True, bokeh_plot=False, **kwargs):
+def plot_fleur_dos(dosdata, attributes,spinpol=True, bokeh_plot=False, **kwargs):
     """
-    Plot the density of states either from a `banddos.hdf` or text output
+    Plot the density of states previously extracted from a `banddos.hdf` via the HDF5reader
     """
-    from masci_tools.io.parsers.hdf5 import HDF5Reader
-    from masci_tools.io.parsers.hdf5.recipes import dos_recipe_format
     from masci_tools.vis.plot_methods import plot_dos, plot_spinpol_dos
     from masci_tools.vis.bokeh_plots import bokeh_dos, bokeh_spinpol_dos
     import pandas as pd
 
-    if isinstance(dosfile, io.IOBase):
-        filename = dosfile._file.name
-    else:
-        filename = dosfile
+    dosdata = pd.DataFrame(data=dosdata)
 
-    if filename.endswith('.hdf'):
-        if dosfile_dn is not None:
-            warnings.warn('path_to_dosfile_dn is ignored for hdf files')
-
-        dos_recipe = dos_recipe_format(hdf_group)
-
-        with HDF5Reader(dosfile) as h5reader:
-            dosdata, attrs = h5reader.read(recipe=dos_recipe)
-        dosdata = pd.DataFrame(data=dosdata)
-
-        spinpol = attrs['spins'] == 2 and spinpol
-        legend_labels, keys = generate_dos_labels(dosdata, attrs, spinpol)
-
-    else:
-        #TODO: txt input
-        raise NotImplementedError
+    spinpol = attributes['spins'] == 2 and spinpol
+    legend_labels, keys = generate_dos_labels(dosdata, attributes, spinpol)
 
     if bokeh_plot:
         if spinpol:
