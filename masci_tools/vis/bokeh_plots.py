@@ -87,6 +87,108 @@ def bokeh_scatter(source, xdata='x', ydata='y', xlabel='x', ylabel='y', title=''
 
 
 @ensure_plotter_consistency(plot_params)
+def bokeh_multi_scatter(source,
+                        xdata='x',
+                        ydata='y',
+                        figure=None,
+                        xlabel='x',
+                        ylabel='y',
+                        title='',
+                        outfilename='scatter.html',
+                        **kwargs):
+    """
+    Create an interactive multi line plot with bokeh, while also showing points
+
+    Per default all ydata use the same x, if xdata is list it has to have the same length as ydata
+    """
+
+    plot_params.set_defaults(default_type='function', name='scatter plot')
+
+    default_legend_label = ydata
+    if source is not None:
+        if not isinstance(ydata, list):
+            if not isinstance(xdata, list):
+                xdata = [xdata]
+            ydata = [ydata] * len(xdata)
+            default_legend_label = xdata
+
+    if isinstance(xdata, list):
+        if len(xdata) != len(ydata):
+            xdata = xdata[0]
+
+    plot_params.single_plot = False
+    plot_params.num_plots = len(ydata)
+    plot_params.plot_type = 'scatter'
+
+    kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
+    p = plot_params.prepare_figure(title, xlabel, ylabel, figure=figure)
+
+    #Process the given color arguments
+    plot_params.set_color_palette_by_num_plots()
+
+    # prepare ColumnDataSource for plot
+    if source is None:  # create columndatasources from data given
+        # Columns need to have same length
+        source = []
+        if isinstance(ydata[0], list):
+            ydatad = []
+            xdatad = []
+            for i, ydat in enumerate(ydata):
+                label = 'y{}'.format(i)
+                ydatad.append(label)
+                xdatad.append('x{}'.format(i))
+                if isinstance(xdata[0], list):
+                    xdat = xdata[i]
+                else:
+                    xdat = xdata[0]
+                source.append(ColumnDataSource({'x': xdat, 'y': ydata}))
+        else:
+            raise ValueError('If no source dataframe or ColumnData is given, ydata has to be a list'
+                             ' of lists, not of type: {}'.format(type(ydata[0])))
+    else:
+        xdatad = xdata
+        ydatad = ydata
+
+    # draw line plot
+    # dataframe and column data source expect all entries to be same length...
+    # therefore we parse data to plot routines directly... might make other things harder
+
+    plot_kwargs = plot_params.plot_kwargs()
+
+    for indx, data in enumerate(zip(ydatad, plot_kwargs)):
+
+        yname, plot_kw = data
+
+        if isinstance(xdatad, list):
+            xdat = xdatad[indx]
+        else:
+            xdat = xdatad
+
+        if isinstance(source, list):
+            sourcet = source[indx]
+        else:
+            sourcet = source
+
+        if isinstance(default_legend_label, list):
+            leg_label = default_legend_label[indx]
+        else:
+            leg_label = default_legend_label
+
+        if 'legend_label' not in plot_kw:
+            plot_kw['legend_label'] = leg_label
+
+        print(plot_kw)
+        p.scatter(x=xdat, y=yname, source=sourcet, **plot_kw)
+
+    plot_params.draw_straight_lines(p)
+    plot_params.set_limits(p)
+    plot_params.set_legend(p)
+    plot_params.save_plot(p)
+
+    return p
+
+
+@ensure_plotter_consistency(plot_params)
 def bokeh_line(source,
                xdata='x',
                ydata='y',
@@ -390,6 +492,59 @@ def bokeh_spinpol_dos(dosdata,
     plot_params.save_plot(p)
 
     return p
+
+
+def bokeh_bands(bandsdata,
+                k_label='kpath',
+                eigenvalues='eigenvalues_up',
+                special_kpoints=None,
+                weight=None,
+                size_min=1.0,
+                size_scaling=10.0,
+                **kwargs):
+    from bokeh.models import LinearColorMapper
+
+    color = kwargs.pop('color', None)
+    if weight is not None:
+        color_mapper = LinearColorMapper(palette='Plasma256', low=min(bandsdata[weight]), high=max(bandsdata[weight]))
+        color = {'field': weight, 'transform': color_mapper}
+        bandsdata['weight_size'] = size_min + size_scaling * bandsdata[weight] / bandsdata[weight].max()
+
+    if special_kpoints is None:
+        special_kpoints = {}
+
+    xticks = []
+    xticklabels = {}
+    for label, pos in special_kpoints.items():
+        xticklabels[pos] = label
+        xticks.append(pos)
+
+    lines = {'horizontal': 0}
+    lines['vertical'] = xticks
+
+    plot_params.set_defaults(default_type='function',
+                             straight_lines=lines,
+                             x_ticks=xticks,
+                             x_ticklabels_overwrite=xticklabels,
+                             figure_kwargs={
+                                 'width': 1280,
+                                 'height': 720
+                             })
+
+    if weight is None:
+        return bokeh_multi_scatter(bandsdata, xdata=k_label, ydata=eigenvalues, xlabel='', **kwargs)
+    else:
+        return bokeh_multi_scatter(bandsdata,
+                                   xdata=k_label,
+                                   ydata=eigenvalues,
+                                   xlabel='',
+                                   marker_size='weight_size',
+                                   color=color,
+                                   **kwargs)
+
+
+def bokeh_spinpol_bands(*args, **kwargs):
+    pass
 
 
 ####################################################################################################

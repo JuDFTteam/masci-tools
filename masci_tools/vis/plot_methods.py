@@ -40,6 +40,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import norm
 from pprint import pprint
+import pandas as pd
 
 plot_params = MatplotlibPlotter()
 
@@ -335,13 +336,13 @@ def multiple_scatterplots(ydata,
 @ensure_plotter_consistency(plot_params)
 def multi_scatter_plot(xdata,
                        ydata,
-                       sdata,
+                       size_data=None,
+                       color_data=None,
                        xlabel='',
                        ylabel='',
                        title='',
                        saveas='mscatterplot',
                        axis=None,
-                       cdata=None,
                        **kwargs):
     """
     Create a scatter plot with varying marker size
@@ -367,8 +368,8 @@ def multi_scatter_plot(xdata,
         print('ydata and xdata must have the same dimension')
         return
 
-    if not isinstance(ydata[0], (list, np.ndarray)):
-        xdata, ydata = [xdata], [ydata]
+    if not isinstance(ydata[0], (list, np.ndarray, pd.Series)):
+        xdata, ydata, size_data, color_data = [xdata], [ydata], [size_data], [color_data]
 
     plot_params.single_plot = False
     plot_params.num_plots = len(ydata)
@@ -420,16 +421,19 @@ def multi_scatter_plot(xdata,
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
-    plot_kwargs = plot_params.plot_kwargs(ignore='markersize')
+    plot_kwargs = plot_params.plot_kwargs(ignore='markersize', extra_keys={'cmap'})
 
-    for indx, data in enumerate(zip(xdata, ydata, sdata, plot_kwargs)):
+    for indx, data in enumerate(zip(xdata, ydata, size_data, color_data, plot_kwargs)):
 
-        x, y, size, plot_kw = data
+        x, y, size, color, plot_kw = data
 
         if size is None:
             size = plot_params['markersize']
 
-        ax.scatter(x, y=y, s=size, **plot_kw)
+        if color is not None:
+            plot_kw.pop('color')
+
+        ax.scatter(x, y=y, s=size, c=color, **plot_kw)
 
     plot_params.set_scale(ax)
     plot_params.set_limits(ax)
@@ -1549,9 +1553,11 @@ def plot_bands(kpath,
                special_kpoints=None,
                e_fermi=0,
                xlabel='',
-               ylabel='Energy [eV]',
+               ylabel=r'$E-E_F$ [eV]',
                title='',
                saveas='bandstructure',
+               markersize_min=1.0,
+               markersize_scaling=10.0,
                **kwargs):
 
     if special_kpoints is None:
@@ -1560,10 +1566,16 @@ def plot_bands(kpath,
     xticks = []
     xticklabels = []
     for label, pos in special_kpoints.items():
-        if label == 'Gamma':
+        if label in ('Gamma', 'g'):
             label = r'$\Gamma$'
         xticklabels.append(label)
         xticks.append(pos)
+
+    color_data = None
+    if size_data is not None:
+        color_data = copy.copy(size_data)
+        size_data = (markersize_min + markersize_scaling * size_data / max(size_data))**2
+        plot_params.set_defaults(default_type='function', cmap='Blues', colorbar=False)
 
     lines = {'vertical': xticks, 'horizontal': e_fermi}
 
@@ -1574,7 +1586,16 @@ def plot_bands(kpath,
                              xticks=xticks,
                              xticklabels=xticklabels,
                              color='k')
-    ax = multi_scatter_plot(kpath, bands, size_data, xlabel=xlabel, ylabel=ylabel, title=title, saveas=saveas, **kwargs)
+
+    ax = multi_scatter_plot(kpath,
+                            bands,
+                            size_data=size_data,
+                            color_data=color_data,
+                            xlabel=xlabel,
+                            ylabel=ylabel,
+                            title=title,
+                            saveas=saveas,
+                            **kwargs)
 
     return ax
 
@@ -1587,27 +1608,41 @@ def plot_spinpol_bands(kpath,
                        special_kpoints=None,
                        e_fermi=0,
                        xlabel='',
-                       ylabel='Energy [eV]',
+                       ylabel=r'$E-E_F$ [eV]',
                        title='',
                        saveas='bandstructure',
+                       markersize_min=1.0,
+                       markersize_scaling=10.0,
                        **kwargs):
 
     if special_kpoints is None:
         special_kpoints = {}
 
+    if size_data is None:
+        size_data = [None, None]
+        color_data = [None, None]
+    else:
+        color_data = []
+        for indx, data in enumerate(size_data):
+            color_data.append(copy.copy(data))
+            size_data[indx] = (markersize_min + markersize_scaling * data / max(data))**2
+
     xticks = []
     xticklabels = []
     for label, pos in special_kpoints.items():
-        if label == 'Gamma':
+        if label in ('Gamma', 'g'):
             label = r'$\Gamma$'
         xticklabels.append(label)
         xticks.append(pos)
 
     lines = {'vertical': xticks, 'horizontal': e_fermi}
+
     if show_spin_pol:
-        color = ['blue', 'red']
+        color = ['red', 'blue']
+        cmaps = ['Reds', 'Blues']
     else:
         color = 'k'
+        cmaps = 'Blues'
 
     limits = {'x': (min(kpath), max(kpath)), 'y': (-15, 15)}
     plot_params.set_defaults(default_type='function',
@@ -1615,13 +1650,16 @@ def plot_spinpol_bands(kpath,
                              limits=limits,
                              xticks=xticks,
                              xticklabels=xticklabels,
-                             color=color)
-    ax = multi_scatter_plot(kpath, [bands_up, bands_dn],
-                            size_data,
+                             color=color,
+                             cmap=cmaps)
+    ax = multi_scatter_plot([kpath, kpath], [bands_up, bands_dn],
+                            size_data=size_data,
+                            color_data=color_data,
                             xlabel=xlabel,
                             ylabel=ylabel,
                             title=title,
                             saveas=saveas,
+                            color=color,
                             **kwargs)
 
     return ax

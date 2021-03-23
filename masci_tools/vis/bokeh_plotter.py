@@ -35,7 +35,9 @@ class BokehPlotter(Plotter):
         'x_axis_formatter': None,
         'y_axis_formatter': None,
         'x_ticks': None,
+        'x_ticklabels_overwrite': None,
         'y_ticks': None,
+        'y_ticklabels_overwrite': None,
         'limits': None,
 
         #legend options
@@ -75,7 +77,7 @@ class BokehPlotter(Plotter):
 
     _BOKEH_GENERAL_ARGS = {
         'show',
-        'colormap',
+        'color_palette',
         'legend_location',
         'legend_click_policy',
         'legend_font_size',
@@ -87,11 +89,17 @@ class BokehPlotter(Plotter):
         'axis_linewidth',
         'figure_kwargs',
         'straight_lines',
+        'x_axis_formatter',
+        'y_axis_formatter',
+        'x_ticks',
+        'y_ticks',
+        'y_ticklabels_overwrite',
+        'x_ticklabels_overwrite',
     }
 
     _PLOT_KWARGS = {'color', 'alpha', 'legend_label', 'name'}
     _PLOT_KWARGS_LINE = {'line_color', 'line_alpha', 'line_dash', 'line_width'}
-    _PLOT_KWARGS_SCATTER = {'marker', 'marker_size'}
+    _PLOT_KWARGS_SCATTER = {'marker', 'marker_size', 'fill_alpha', 'fill_color'}
     _PLOT_KWARGS_AREA = {'fill_alpha', 'fill_color'}
 
     def __init__(self, **kwargs):
@@ -184,6 +192,12 @@ class BokehPlotter(Plotter):
         if self['y_ticks'] is not None:
             p.xaxis.ticker = self['y_ticks']
 
+        if self['x_ticklabels_overwrite'] is not None:
+            p.xaxis.major_label_overrides = self['x_ticklabels_overwrite']
+
+        if self['y_ticklabels_overwrite'] is not None:
+            p.yaxis.major_label_overrides = self['y_ticklabels_overwrite']
+
         return p
 
     def set_color_palette_by_num_plots(self):
@@ -217,7 +231,7 @@ class BokehPlotter(Plotter):
                 raise ValueError(
                     'Could not find <colormap> with name %s. The following predefined colormaps are '
                     'supported (see also https://bokeh.pydata.org/en/latest/docs/reference/palettes.html ): %s' %
-                    (self['colormap'], list(all_palettes.keys())))
+                    (self['color_palette'], list(all_palettes.keys())))
         else:
             if self.num_plots <= 10:
                 color = all_palettes['Category10'][10][:self.num_plots]
