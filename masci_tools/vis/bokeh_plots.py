@@ -493,6 +493,7 @@ def bokeh_spinpol_dos(dosdata,
     return p
 
 
+@ensure_plotter_consistency(plot_params)
 def bokeh_bands(bandsdata,
                 k_label='kpath',
                 eigenvalues='eigenvalues_up',
@@ -501,15 +502,15 @@ def bokeh_bands(bandsdata,
                 title='',
                 special_kpoints=None,
                 weight=None,
-                size_min=1.0,
+                size_min=3.0,
                 size_scaling=10.0,
                 **kwargs):
     from bokeh.models import LinearColorMapper
 
-    color = kwargs.pop('color', None)
     if weight is not None:
-        color_mapper = LinearColorMapper(palette='Plasma256', low=min(bandsdata[weight]), high=max(bandsdata[weight]))
-        color = {'field': weight, 'transform': color_mapper}
+        color_mapper = LinearColorMapper(palette='Blues256', low=max(bandsdata[weight]), high=min(bandsdata[weight]))
+        kwargs['color'] = {'field': weight, 'transform': color_mapper}
+        kwargs['marker_size'] = 'weight_size'
         bandsdata['weight_size'] = size_min + size_scaling * bandsdata[weight] / bandsdata[weight].max()
 
     if special_kpoints is None:
@@ -537,30 +538,78 @@ def bokeh_bands(bandsdata,
                                  'height': 720
                              },
                              x_range_padding=0.0,
-                             y_range_padding=0.0)
+                             y_range_padding=0.0,
+                             color='black')
 
-    if weight is None:
-        return bokeh_multi_scatter(bandsdata,
-                                   xdata=k_label,
-                                   ydata=eigenvalues,
-                                   xlabel='',
-                                   ylabel=ylabel,
-                                   title=title,
-                                   **kwargs)
-    else:
-        return bokeh_multi_scatter(bandsdata,
-                                   xdata=k_label,
-                                   ydata=eigenvalues,
-                                   xlabel='',
-                                   marker_size='weight_size',
-                                   color=color,
-                                   ylabel=ylabel,
-                                   title=title,
-                                   **kwargs)
+    return bokeh_multi_scatter(bandsdata,
+                               xdata=k_label,
+                               ydata=eigenvalues,
+                               xlabel='',
+                               ylabel=ylabel,
+                               title=title,
+                               **kwargs)
 
 
-def bokeh_spinpol_bands(*args, **kwargs):
-    pass
+@ensure_plotter_consistency(plot_params)
+def bokeh_spinpol_bands(bandsdata,
+                        k_label='kpath',
+                        eigenvalues=None,
+                        xlabel='',
+                        ylabel=r'E-E_F [eV]',
+                        title='',
+                        special_kpoints=None,
+                        weight=None,
+                        size_min=3.0,
+                        size_scaling=10.0,
+                        **kwargs):
+    from bokeh.models import LinearColorMapper
+
+    if weight is not None:
+        cmaps = ['Blues256', 'Reds256']
+        kwargs['color'] = []
+        for indx, (w, cmap) in enumerate(zip(weight, cmaps)):
+            color_mapper = LinearColorMapper(palette=cmap, low=max(bandsdata[w]), high=min(bandsdata[w]))
+            kwargs['color'].append({'field': w, 'transform': color_mapper})
+            kwargs['marker_size'] = f'weight_size_{indx}'
+            bandsdata[f'weight_size_{indx}'] = size_min + size_scaling * bandsdata[w] / bandsdata[w].max()
+
+    if special_kpoints is None:
+        special_kpoints = []
+
+    xticks = []
+    xticklabels = {}
+    for label, pos in special_kpoints:
+        #if label in ('Gamma', 'g'): Latex label missing for bokeh
+        #    label = r'$\Gamma$'
+        if pos.is_integer():
+            xticklabels[int(pos)] = label
+        xticklabels[pos] = label
+        xticks.append(pos)
+
+    lines = {'horizontal': 0}
+    lines['vertical'] = xticks
+
+    plot_params.set_defaults(default_type='function',
+                             straight_lines=lines,
+                             x_ticks=xticks,
+                             x_ticklabels_overwrite=xticklabels,
+                             figure_kwargs={
+                                 'width': 1280,
+                                 'height': 720
+                             },
+                             x_range_padding=0.0,
+                             y_range_padding=0.0,
+                             color=['blue', 'red'])
+
+    eigenvalues = ['eigenvalues_up', 'eigenvalues_down']
+
+    return bokeh_multi_scatter(bandsdata,
+                               xdata=k_label,
+                               ydata=eigenvalues,
+                               xlabel='',
+                               ylabel=ylabel,
+                               title=title,
+                               **kwargs)
 
 
 ####################################################################################################

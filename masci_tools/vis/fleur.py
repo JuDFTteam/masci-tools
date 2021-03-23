@@ -48,7 +48,11 @@ def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, bokeh_plot=False,
 
     if bokeh_plot:
         if bandsattributes['spins'] == 2:
-            fig = bokeh_spinpol_bands(bandsdata, **kwargs)
+            fig = bokeh_spinpol_bands(bandsdata,
+                                      weight=weight,
+                                      special_kpoints=special_kpoints,
+                                      legend_label=plot_label,
+                                      **kwargs)
         else:
             fig = bokeh_bands(bandsdata, weight=weight, special_kpoints=special_kpoints, **kwargs)
     else:
