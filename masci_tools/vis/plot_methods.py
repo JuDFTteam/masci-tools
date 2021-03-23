@@ -207,7 +207,7 @@ def multiple_scatterplots(ydata,
         print('ydata and xdata must have the same dimension')
         return
 
-    if not isinstance(ydata[0], (list, np.ndarray)):
+    if not isinstance(ydata[0], (list, np.ndarray, pd.Series)):
         xdata, ydata = [xdata], [ydata]
 
     plot_params.single_plot = False
@@ -542,7 +542,7 @@ def waterfall_plot(xdata, ydata, zdata, xlabel, ylabel, zlabel, title, saveas='w
         clim = (kwargs.get('vmin', zmin), kwargs.get('vmax', zmax))
     kwargs['limits']['color'] = clim
 
-    if not isinstance(ydata[0], (list, np.ndarray)):
+    if not isinstance(ydata[0], (list, np.ndarray, pd.Series)):
         xdata, ydata, zdata = [xdata], [ydata], [zdata]
 
     plot_params.single_plot = False
@@ -796,7 +796,7 @@ def barchart(ydata,
         print('ydata and xdata must have the same dimension')
         return
 
-    if not isinstance(ydata[0], (list, np.ndarray)):
+    if not isinstance(ydata[0], (list, np.ndarray, pd.Series)):
         xdata, ydata = [xdata], [ydata]
 
     plot_params.single_plot = False
