@@ -452,7 +452,6 @@ def multi_scatter_plot(xdata,
     else:
         legend_elements = None
 
-
     plot_params.set_scale(ax)
     plot_params.set_limits(ax)
     plot_params.draw_lines(ax)

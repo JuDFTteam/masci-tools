@@ -11,10 +11,65 @@
 #                                                                             #
 ###############################################################################
 """
-Plotting routines for fleur density of states with and without hdf
+Plotting routine for fleur density of states and bandstructures
 """
 
-def plot_fleur_dos(dosdata, attributes,spinpol=True, bokeh_plot=False, **kwargs):
+
+def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, bokeh_plot=False, weight=None, **kwargs):
+    """
+    Plot the data previously extracted from a `banddos.hdf` file vie the HDF5Reader
+    """
+    from masci_tools.vis.plot_methods import plot_bands, plot_spinpol_bands
+    from masci_tools.vis.bokeh_plots import bokeh_bands, bokeh_spinpol_bands
+    import pandas as pd
+
+    nbands = bandsattributes['nbands']
+
+    bandsdata = pd.DataFrame(data=bandsdata)
+    special_kpoints = []
+    for k_index, label in zip(bandsattributes['special_kpoint_indices'], bandsattributes['special_kpoint_labels']):
+        special_kpoints.append((label, bandsdata['kpath'][(k_index * nbands) + 1]))
+
+    if weight is not None:
+        if not bokeh_plot:
+            if bandsattributes['spins'] == 2:
+                weight = [bandsdata[f'{weight}_up'], bandsdata[f'{weight}_down']]
+            else:
+                weight = bandsdata[f'{weight}_up']
+        else:
+            if bandsattributes['spins'] == 2:
+                weight = [f'{weight}_up', f'{weight}_down']
+            else:
+                weight = f'{weight}_up'
+
+    plot_label = None
+    if spinpol:
+        plot_label = ['Spin-Up', 'Spin-Down']
+
+    if bokeh_plot:
+        if bandsattributes['spins'] == 2:
+            fig = bokeh_spinpol_bands(bandsdata, **kwargs)
+        else:
+            fig = bokeh_bands(bandsdata, weight=weight, special_kpoints=special_kpoints, **kwargs)
+    else:
+        if bandsattributes['spins'] == 2:
+            fig = plot_spinpol_bands(bandsdata['kpath'],
+                                     bandsdata['eigenvalues_up'],
+                                     bandsdata['eigenvalues_down'],
+                                     weight,
+                                     special_kpoints=special_kpoints,
+                                     plot_label=plot_label,
+                                     **kwargs)
+        else:
+            fig = plot_bands(bandsdata['kpath'],
+                             bandsdata['eigenvalues_up'],
+                             weight,
+                             special_kpoints=special_kpoints,
+                             **kwargs)
+
+    return fig
+
+def plot_fleur_dos(dosdata, attributes, spinpol=True, bokeh_plot=False, **kwargs):
     """
     Plot the density of states previously extracted from a `banddos.hdf` via the HDF5reader
     """
@@ -43,8 +98,13 @@ def plot_fleur_dos(dosdata, attributes,spinpol=True, bokeh_plot=False, **kwargs)
 
     return fig
 
-
 def dos_order(key):
+    """
+    Key function for sorting DOS entries in predictable order:
+        1. Energy Grid
+        2. General keys (Total, interstitial, ...)
+        3. Atom contribution (total, orbital resolved)
+    """
 
     if key == 'energy_grid':
         return (-1,)
@@ -162,3 +222,4 @@ def select_from_Local(dos_data_up, dos_data_dn, natoms, interstitial, atoms, l_r
         dos_data_dn = [dos_data_dn[key] for key in keys_to_plot]
 
     return dos_data_up, dos_data_dn, keys_to_plot
+
