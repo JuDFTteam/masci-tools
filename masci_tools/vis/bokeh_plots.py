@@ -511,14 +511,17 @@ def bokeh_bands(bandsdata,
         bandsdata['weight_size'] = size_min + size_scaling * bandsdata[weight] / bandsdata[weight].max()
 
     if special_kpoints is None:
-        special_kpoints = {}
+        special_kpoints = []
 
     xticks = []
     xticklabels = {}
-    for label, pos in special_kpoints.items():
-        for x in pos:
-            xticklabels[x] = label
-            xticks.append(x)
+    for label, pos in special_kpoints:
+        #if label in ('Gamma', 'g'): Latex label missing for bokeh
+        #    label = r'$\Gamma$'
+        if pos.is_integer():
+            xticklabels[int(pos)] = label
+        xticklabels[pos] = label
+        xticks.append(pos)
 
     lines = {'horizontal': 0}
     lines['vertical'] = xticks

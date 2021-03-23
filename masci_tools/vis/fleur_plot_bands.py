@@ -50,14 +50,13 @@ def plot_fleur_bandsdata(bandsdata, bandsattributes, spinpol=True, bokeh_plot=Fa
     from masci_tools.vis.plot_methods import plot_bands, plot_spinpol_bands
     from masci_tools.vis.bokeh_plots import bokeh_bands, bokeh_spinpol_bands
     import pandas as pd
-    from collections import defaultdict
 
     nbands = bandsattributes['nbands']
 
     bandsdata = pd.DataFrame(data=bandsdata)
-    special_kpoints_dict = defaultdict(list)
+    special_kpoints = []
     for k_index, label in zip(bandsattributes['special_kpoint_indices'],bandsattributes['special_kpoint_labels']):
-        special_kpoints_dict[label].append(bandsdata['kpath'][(k_index*nbands)+1])
+        special_kpoints.append((label, bandsdata['kpath'][(k_index*nbands)+1]))
 
     if weight is not None:
         if not bokeh_plot:
@@ -79,11 +78,11 @@ def plot_fleur_bandsdata(bandsdata, bandsattributes, spinpol=True, bokeh_plot=Fa
         if bandsattributes['spins'] == 2:
             fig = bokeh_spinpol_bands(bandsdata, **kwargs)
         else:
-            fig = bokeh_bands(bandsdata, weight=weight, special_kpoints=special_kpoints_dict, **kwargs)
+            fig = bokeh_bands(bandsdata, weight=weight, special_kpoints=special_kpoints, **kwargs)
     else:
         if bandsattributes['spins'] == 2:
             fig = plot_spinpol_bands(bandsdata['kpath'], bandsdata['eigenvalues_up'], bandsdata['eigenvalues_down'], weight, special_kpoints=special_kpoints_dict, plot_label=plot_label, **kwargs)
         else:
-            fig = plot_bands(bandsdata['kpath'], bandsdata['eigenvalues_up'], weight, special_kpoints=special_kpoints_dict, **kwargs)
+            fig = plot_bands(bandsdata['kpath'], bandsdata['eigenvalues_up'], weight, special_kpoints=special_kpoints, **kwargs)
 
     return fig

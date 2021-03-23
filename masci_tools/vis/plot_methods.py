@@ -1561,15 +1561,15 @@ def plot_bands(kpath,
                **kwargs):
 
     if special_kpoints is None:
-        special_kpoints = {}
+        special_kpoints = []
 
     xticks = []
     xticklabels = []
-    for label, pos in special_kpoints.items():
+    for label, pos in special_kpoints:
         if label in ('Gamma', 'g'):
             label = r'$\Gamma$'
-        xticklabels.extend([label]*len(pos))
-        xticks.extend(pos)
+        xticklabels.append(label)
+        xticks.append(pos)
 
     color_data = None
     if size_data is not None:
