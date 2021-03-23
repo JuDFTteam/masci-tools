@@ -51,10 +51,10 @@ def plot_fleur_bandsdata(bandsdata, bandsattributes, spinpol=True, bokeh_plot=Fa
     from masci_tools.vis.bokeh_plots import bokeh_bands, bokeh_spinpol_bands
     import pandas as pd
 
+    nbands = bandsattributes['nbands']
 
     bandsdata = pd.DataFrame(data=bandsdata)
-    special_kpoints_dict = {label: bandsdata['kpath'][k_index] for k_index, label in zip(bandsattributes['special_kpoint_indices'],bandsattributes['special_kpoint_labels'])}
-
+    special_kpoints_dict = {label: bandsdata['kpath'][(k_index*nbands)+1] for k_index, label in zip(bandsattributes['special_kpoint_indices'],bandsattributes['special_kpoint_labels'])}
 
     if weight is not None:
         if not bokeh_plot:
