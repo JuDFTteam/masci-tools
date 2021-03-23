@@ -605,7 +605,8 @@ def bokeh_spinpol_bands(bandsdata,
         y_range_padding=0.0,
     )
 
-    eigenvalues = ['eigenvalues_up', 'eigenvalues_down']
+    if eigenvalues is None:
+        eigenvalues = ['eigenvalues_up', 'eigenvalues_down']
 
     return bokeh_multi_scatter(bandsdata,
                                xdata=k_label,
