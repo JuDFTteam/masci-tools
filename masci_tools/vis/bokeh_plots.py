@@ -516,8 +516,9 @@ def bokeh_bands(bandsdata,
     xticks = []
     xticklabels = {}
     for label, pos in special_kpoints.items():
-        xticklabels[pos] = label
-        xticks.append(pos)
+        for x in pos:
+            xticklabels[x] = label
+            xticks.append(x)
 
     lines = {'horizontal': 0}
     lines['vertical'] = xticks

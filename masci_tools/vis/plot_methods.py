@@ -1568,8 +1568,8 @@ def plot_bands(kpath,
     for label, pos in special_kpoints.items():
         if label in ('Gamma', 'g'):
             label = r'$\Gamma$'
-        xticklabels.append(label)
-        xticks.append(pos)
+        xticklabels.extend([label]*len(pos))
+        xticks.extend(pos)
 
     color_data = None
     if size_data is not None:
