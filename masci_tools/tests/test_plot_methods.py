@@ -676,7 +676,7 @@ class TestMultiScatterPlot(object):
 
         gcf().clear()
 
-        multi_scatter_plot(x, y, s, 'X', 'Y', 'Plot Test', show=False)
+        multi_scatter_plot(x, y, size_data=s, xlabel='X', ylabel='Y', title='Plot Test', show=False)
         # need to return the figure in order for mpl checks to work
         return gcf()
 
@@ -697,10 +697,10 @@ class TestMultiScatterPlot(object):
 
         multi_scatter_plot(x,
                            y,
-                           s,
-                           'X',
-                           'Y',
-                           'Plot Test',
+                           size_data=s,
+                           xlabel='X',
+                           ylabel='Y',
+                           title='Plot Test',
                            color=['darkred', 'darkorange'],
                            marker='^',
                            plot_alpha=0.6,
@@ -728,7 +728,7 @@ class TestMultiPlotMoved(object):
 
         gcf().clear()
 
-        multiplot_moved(y, x, 'X', 'Y', 'Plot Test', scale_move=2.0, show=False)
+        multiplot_moved(y, x, xlabel='X', ylabel='Y', title='Plot Test', scale_move=2.0, show=False)
         # need to return the figure in order for mpl checks to work
         return gcf()
 
@@ -748,9 +748,9 @@ class TestMultiPlotMoved(object):
 
         multiplot_moved(y,
                         x,
-                        'X',
-                        'Y',
-                        'Plot Test',
+                        xlabel='X',
+                        ylabel='Y',
+                        title='Plot Test',
                         plot_label=['Line', None, 'cosine'],
                         legend=True,
                         min_add=20,
@@ -773,7 +773,14 @@ class TestMultiPlotMoved(object):
 
         gcf().clear()
 
-        multiplot_moved(y, x, 'X', 'Y', 'Plot Test', area_plot={2: True}, area_linecolor='k', show=False)
+        multiplot_moved(y,
+                        x,
+                        xlabel='X',
+                        ylabel='Y',
+                        title='Plot Test',
+                        area_plot={2: True},
+                        area_linecolor='k',
+                        show=False)
         # need to return the figure in order for mpl checks to work
         return gcf()
 

@@ -425,6 +425,13 @@ def multi_scatter_plot(xdata,
 
     legend_elements = []
     legend_labels = []
+
+    if size_data is None:
+        size_data = [None] * plot_params.num_plots
+
+    if color_data is None:
+        color_data = [None] * plot_params.num_plots
+
     for indx, data in enumerate(zip(xdata, ydata, size_data, color_data, plot_kwargs)):
 
         x, y, size, color, plot_kw = data
@@ -436,7 +443,7 @@ def multi_scatter_plot(xdata,
             plot_kw.pop('color')
 
         res = ax.scatter(x, y=y, s=size, c=color, **plot_kw)
-        if plot_kw['label'] is not None:
+        if plot_kw.get('label', None) is not None and color is not None:
             legend_elements.append(res.legend_elements(num=1)[0][0])
             legend_labels.append(plot_kw['label'])
 

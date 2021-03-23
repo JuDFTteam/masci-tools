@@ -367,8 +367,10 @@ class Plotter(object):
         if isinstance(map_to_change[key], dict):
             dict_before = copy.deepcopy(map_to_change[key])
             if not isinstance(value, dict):
-                map_to_change[key] = dict_before
-                #raise ValueError(f"Expected a dict for key {key} got '{value}'")
+                if isinstance(value, list):
+                    map_to_change[key] = dict_before
+                else:
+                    raise ValueError(f"Expected a dict for key {key} got '{value}'")
             else:
                 dict_before.update(value)
                 map_to_change[key] = dict_before
