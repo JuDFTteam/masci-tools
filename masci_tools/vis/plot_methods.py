@@ -440,9 +440,11 @@ def multi_scatter_plot(xdata,
             legend_elements.append(res.legend_elements(num=1)[0][0])
             legend_labels.append(plot_kw['label'])
 
-    legend_elements = None
     if any(c is not None for c in color_data):
         legend_elements = (legend_elements, legend_labels)
+    else:
+        legend_elements = None
+
 
     plot_params.set_scale(ax)
     plot_params.set_limits(ax)
