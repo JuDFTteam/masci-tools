@@ -18,7 +18,7 @@ Plotting routine for fleur density of states and bandstructures
 def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, bokeh_plot=False, weight=None, **kwargs):
     """
     Plot the bandstructure previously extracted from a `banddos.hdf` via the
-    :py:class:`~masci_tools.io.parsers.hdf5.reader.HDF5reader`
+    :py:class:`~masci_tools.io.parsers.hdf5.reader.HDF5Reader`
 
     This routine expects datasets and attributes read in with the `FleurBands`
     recipe from :py:mod:`~masci_tools.io.parsers.hdf5.recipes` or something
@@ -32,7 +32,7 @@ def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, bokeh_plot=False,
 
     All other Kwargs are passed on to the underlying plot routines
         - Matplotlib: :py:func:`~masci_tools.vis.plot_methods.plot_bands()`, :py:func:`~masci_tools.vis.plot_methods.plot_spinpol_bands()`
-        - Bokeh: :py:func:`~masci_tools.vis.plot_methods.bokeh_bands()`, :py:func:`~masci_tools.vis.plot_methods.bokeh_spinpol_bands()`
+        - Bokeh: :py:func:`~masci_tools.vis.bokeh_plots.bokeh_bands()`, :py:func:`~masci_tools.vis.bokeh_plots.bokeh_spinpol_bands()`
     """
     from masci_tools.vis.plot_methods import plot_bands, plot_spinpol_bands
     from masci_tools.vis.bokeh_plots import bokeh_bands, bokeh_spinpol_bands
@@ -92,7 +92,7 @@ def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, bokeh_plot=False,
 def plot_fleur_dos(dosdata, attributes, spinpol=True, bokeh_plot=False, **kwargs):
     """
     Plot the density of states previously extracted from a `banddos.hdf` via the
-    :py:class:`~masci_tools.io.parsers.hdf5.reader.HDF5reader`
+    :py:class:`~masci_tools.io.parsers.hdf5.reader.HDF5Reader`
 
     This routine expects datasets and attributes read in with the `FleurDOS` (Or related DOS modes)
     recipe from :py:mod:`~masci_tools.io.parsers.hdf5.recipes` or something
@@ -105,7 +105,7 @@ def plot_fleur_dos(dosdata, attributes, spinpol=True, bokeh_plot=False, **kwargs
 
     All other Kwargs are passed on to the underlying plot routines
         - Matplotlib: :py:func:`~masci_tools.vis.plot_methods.plot_dos()`, :py:func:`~masci_tools.vis.plot_methods.plot_spinpol_dos()`
-        - Bokeh: :py:func:`~masci_tools.vis.plot_methods.bokeh_dos()`, :py:func:`~masci_tools.vis.plot_methods.bokeh_spinpol_dos()`
+        - Bokeh: :py:func:`~masci_tools.vis.bokeh_plots.bokeh_dos()`, :py:func:`~masci_tools.vis.bokeh_plots.bokeh_spinpol_dos()`
     """
     from masci_tools.vis.plot_methods import plot_dos, plot_spinpol_dos
     from masci_tools.vis.bokeh_plots import bokeh_dos, bokeh_spinpol_dos

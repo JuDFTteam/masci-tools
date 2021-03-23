@@ -43,6 +43,9 @@ Bokeh
 .. automodule:: masci_tools.vis.bokeh_plotter
    :members:
 
+.. automodule:: masci_tools.vis.bokeh_plots
+   :members:
+
 Calculation tools
 +++++++++++++++++++++++++++
 
