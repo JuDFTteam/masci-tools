@@ -129,9 +129,9 @@ def get_shape(dataset):
 
 
 @hdf5_transformation(attribute_needed=False)
-def repeat_array(dataset, n_repeats):
+def tile_array(dataset, n_repeats):
     """
-    Use numpy.tile to repeat array n-times (given by attribute_value)
+    Use numpy.tile to repeat array n-times
 
     :param dataset: dataset to transform
     :param attribute_shape: int, time sto repeat the given array
@@ -142,6 +142,23 @@ def repeat_array(dataset, n_repeats):
         transformed = {key: np.tile(dataset, n_repeats) for key, data in dataset.items()}
     else:
         transformed = np.tile(dataset, n_repeats)
+
+    return transformed
+
+@hdf5_transformation(attribute_needed=False)
+def repeat_array(dataset, n_repeats):
+    """
+    Use numpy.repeat to repeat each element in array n-times
+
+    :param dataset: dataset to transform
+    :param n_repeats: int, time to repeat each element
+
+    :returns: dataset with elements repeated n-times
+    """
+    if isinstance(dataset, dict):
+        transformed = {key: np.repeat(dataset, n_repeats) for key, data in dataset.items()}
+    else:
+        transformed = np.repeat(dataset, n_repeats)
 
     return transformed
 
@@ -263,15 +280,13 @@ def convert_to_complex_array(dataset):
 
 
 @hdf5_transformation(attribute_needed=False)
-def multiply_array(dataset, matrix, reverse_order=False, by_element=False):
+def multiply_array(dataset, matrix, transpose=False):
     """
     Multiply the given dataset with a matrix
 
     :param dataset: dataset to multiply
     :param matrix: matrix to multiply by
-    :param reverse_order: bool if True the Matrix order is reversed
-                          default: dataset x matrix reversed: matrix x dataset
-    :param by_element: bool, if True the matrix will be multiplied with each row of the dataset
+    :param transpose: bool, if True the given matrix is transposed
 
     :returns: dataset multiplied with the given matrix
     """
@@ -285,28 +300,13 @@ def multiply_array(dataset, matrix, reverse_order=False, by_element=False):
     elif isinstance(transformed, h5py.Dataset):
         transformed = np.array(dataset)
 
+    if transpose:
+        matrix = matrix.T
+
     if isinstance(transformed, dict):
-        if reverse_order:
-            if by_element:
-                transformed = {key: np.array([matrix.dot(row) for row in entry]) for key, entry in transformed.items()}
-            else:
-                transformed = {key: matrix.dot(entry) for key, entry in transformed.items()}
-        else:
-            if by_element:
-                transformed = {key: np.array([row.dot(matrix) for row in entry]) for key, entry in transformed.items()}
-            else:
-                transformed = {key: entry.dot(matrix) for key, entry in transformed.items()}
+        transformed = {key: entry.dot(matrix) for key, entry in transformed.items()}
     else:
-        if reverse_order:
-            if by_element:
-                transformed = np.array([matrix.dot(row) for row in transformed])
-            else:
-                transformed = matrix.dot(transformed)
-        else:
-            if by_element:
-                transformed = np.array([row.dot(matrix) for row in transformed])
-            else:
-                transformed = transformed.dot(matrix)
+        transformed = transformed.dot(matrix)
 
     return transformed
 
@@ -533,7 +533,7 @@ def periodic_elements(dataset):
 
 
 @hdf5_transformation(attribute_needed=True)
-def multiply_by_attribute(dataset, attribute_value, reverse_order=False, by_element=False):
+def multiply_by_attribute(dataset, attribute_value, transpose=False):
     """
     Multiply the given dataset with a previously parsed attribute, either scalar or matrix like
 
@@ -541,9 +541,7 @@ def multiply_by_attribute(dataset, attribute_value, reverse_order=False, by_elem
     :param attribute_value: value to multiply by (attribute value passed in from `_transform_dataset`)
 
     Only relevant for matrix multiplication:
-        :param reverse_order: bool if True the Matrix order is reversed
-                              default: dataset x matrix reversed: matrix x dataset
-        :param by_element: bool, if True the matrix will be multiplied with each row of the dataset
+        :param transpose: bool if True the Matrix order is transposed before multiplying
 
     :returns: dataset multiplied with the given attribute_value
     """
@@ -551,7 +549,7 @@ def multiply_by_attribute(dataset, attribute_value, reverse_order=False, by_elem
         attribute_value = np.array(attribute_value)
 
     if isinstance(attribute_value, np.ndarray):
-        transformed = multiply_array(dataset, attribute_value, reverse_order=reverse_order, by_element=by_element)
+        transformed = multiply_array(dataset, attribute_value, transpose=transpose)
     else:
         transformed = multiply_scalar(dataset, attribute_value)
 
@@ -610,6 +608,19 @@ def add_partial_sums(dataset, attribute_value, pattern_format):
 @hdf5_transformation(attribute_needed=True)
 def repeat_array_by_attribute(dataset, attribute_value):
     """
+    Use numpy.repeat to repeat each element in array n-times (given by attribute_value)
+
+    :param dataset: dataset to transform
+    :param attribute_shape: int, time to repeat the elements in the given array
+
+    :returns: dataset with elements repeated n-times
+    """
+    return repeat_array(dataset, attribute_value)
+
+
+@hdf5_transformation(attribute_needed=True)
+def tile_array_by_attribute(dataset, attribute_value):
+    """
     Use numpy.tile to repeat array n-times (given by attribute_value)
 
     :param dataset: dataset to transform
@@ -617,4 +628,4 @@ def repeat_array_by_attribute(dataset, attribute_value):
 
     :returns: dataset repeated n-times
     """
-    return repeat_array(dataset, attribute_value)
+    return tile_array(dataset, attribute_value)
