@@ -1596,7 +1596,8 @@ def plot_bands(kpath,
                              limits=limits,
                              xticks=xticks,
                              xticklabels=xticklabels,
-                             color='k')
+                             color='k',
+                             line_options={'zorder': -1})
 
     ax = multi_scatter_plot(kpath,
                             bands,
@@ -1662,7 +1663,8 @@ def plot_spinpol_bands(kpath,
                              xticks=xticks,
                              xticklabels=xticklabels,
                              color=color,
-                             cmap=cmaps)
+                             cmap=cmaps,
+                             line_options={'zorder': -1})
     ax = multi_scatter_plot([kpath, kpath], [bands_up, bands_dn],
                             size_data=size_data,
                             color_data=color_data,
