@@ -17,7 +17,22 @@ Plotting routine for fleur density of states and bandstructures
 
 def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, bokeh_plot=False, weight=None, **kwargs):
     """
-    Plot the data previously extracted from a `banddos.hdf` file vie the HDF5Reader
+    Plot the bandstructure previously extracted from a `banddos.hdf` via the
+    :py:class:`~masci_tools.io.parsers.hdf5.reader.HDF5reader`
+
+    This routine expects datasets and attributes read in with the `FleurBands`
+    recipe from :py:mod:`~masci_tools.io.parsers.hdf5.recipes` or something
+    producing equivalent data
+
+    :param dosdata: dataset dict produced by the `FleurBands` recipe
+    :param attributes: attributes dict produced by the `FleurBands` recipe
+    :param spinpol: bool, if True (default) use the plot for spin-polarized bands if the data is spin-polarized
+    :param bokeh_plot: bool (default False), if True use the bokeh routines for plotting
+    :param weight: str, name of the weight (without spin suffix `_up` or `_dn`) you want to emphasize
+
+    All other Kwargs are passed on to the underlying plot routines
+        - Matplotlib: :py:func:`~masci_tools.vis.plot_methods.plot_bands()`, :py:func:`~masci_tools.vis.plot_methods.plot_spinpol_bands()`
+        - Bokeh: :py:func:`~masci_tools.vis.plot_methods.bokeh_bands()`, :py:func:`~masci_tools.vis.plot_methods.bokeh_spinpol_bands()`
     """
     from masci_tools.vis.plot_methods import plot_bands, plot_spinpol_bands
     from masci_tools.vis.bokeh_plots import bokeh_bands, bokeh_spinpol_bands
@@ -60,14 +75,14 @@ def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, bokeh_plot=False,
             fig = plot_spinpol_bands(bandsdata['kpath'],
                                      bandsdata['eigenvalues_up'],
                                      bandsdata['eigenvalues_down'],
-                                     weight,
+                                     size_data=weight,
                                      special_kpoints=special_kpoints,
                                      plot_label=plot_label,
                                      **kwargs)
         else:
             fig = plot_bands(bandsdata['kpath'],
                              bandsdata['eigenvalues_up'],
-                             weight,
+                             size_data=weight,
                              special_kpoints=special_kpoints,
                              **kwargs)
 
@@ -76,7 +91,21 @@ def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, bokeh_plot=False,
 
 def plot_fleur_dos(dosdata, attributes, spinpol=True, bokeh_plot=False, **kwargs):
     """
-    Plot the density of states previously extracted from a `banddos.hdf` via the HDF5reader
+    Plot the density of states previously extracted from a `banddos.hdf` via the
+    :py:class:`~masci_tools.io.parsers.hdf5.reader.HDF5reader`
+
+    This routine expects datasets and attributes read in with the `FleurDOS` (Or related DOS modes)
+    recipe from :py:mod:`~masci_tools.io.parsers.hdf5.recipes` or something
+    producing equivalent data
+
+    :param dosdata: dataset dict produced by the `FleurDOS` recipe
+    :param attributes: attributes dict produced by the `FleurDOS` recipe
+    :param spinpol: bool, if True (default) use the plot for spin-polarized dos if the data is spin-polarized
+    :param bokeh_plot: bool (default False), if True use the bokeh routines for plotting
+
+    All other Kwargs are passed on to the underlying plot routines
+        - Matplotlib: :py:func:`~masci_tools.vis.plot_methods.plot_dos()`, :py:func:`~masci_tools.vis.plot_methods.plot_spinpol_dos()`
+        - Bokeh: :py:func:`~masci_tools.vis.plot_methods.bokeh_dos()`, :py:func:`~masci_tools.vis.plot_methods.bokeh_spinpol_dos()`
     """
     from masci_tools.vis.plot_methods import plot_dos, plot_spinpol_dos
     from masci_tools.vis.bokeh_plots import bokeh_dos, bokeh_spinpol_dos
@@ -85,7 +114,7 @@ def plot_fleur_dos(dosdata, attributes, spinpol=True, bokeh_plot=False, **kwargs
     dosdata = pd.DataFrame(data=dosdata)
 
     spinpol = attributes['spins'] == 2 and spinpol
-    legend_labels, keys = generate_dos_labels(dosdata, attributes, spinpol)
+    legend_labels, keys = _generate_dos_labels(dosdata, attributes, spinpol)
 
     if bokeh_plot:
         if spinpol:
@@ -96,15 +125,15 @@ def plot_fleur_dos(dosdata, attributes, spinpol=True, bokeh_plot=False, **kwargs
         if spinpol:
             dosdata_up = [dosdata[key].to_numpy() for key in keys if '_up' in key]
             dosdata_dn = [dosdata[key].to_numpy() for key in keys if '_down' in key]
-            fig = plot_spinpol_dos(dosdata_up, dosdata_dn, dosdata['energy_grid'], plot_label=legend_labels, **kwargs)
+            fig = plot_spinpol_dos(dosdata['energy_grid'], dosdata_up, dosdata_dn, plot_label=legend_labels, **kwargs)
         else:
             dosdata_up = [dosdata[key].to_numpy() for key in keys if '_up' in key]
-            fig = plot_dos(dosdata_up, dosdata['energy_grid'], plot_label=legend_labels, **kwargs)
+            fig = plot_dos(dosdata['energy_grid'], dosdata_up, plot_label=legend_labels, **kwargs)
 
     return fig
 
 
-def dos_order(key):
+def _dos_order(key):
     """
     Key function for sorting DOS entries in predictable order:
         1. Energy Grid
@@ -141,14 +170,14 @@ def dos_order(key):
     return None
 
 
-def generate_dos_labels(dosdata, attributes, spinpol):
+def _generate_dos_labels(dosdata, attributes, spinpol):
 
     labels = []
     plot_order = []
 
     atom_elements = list(attributes['atoms_elements'])
 
-    for key in sorted(dosdata.keys(), key=dos_order):
+    for key in sorted(dosdata.keys(), key=_dos_order):
         if key == 'energy_grid':
             continue
 
@@ -197,7 +226,7 @@ def generate_dos_labels(dosdata, attributes, spinpol):
     return labels, plot_order
 
 
-def select_from_Local(dos_data_up, dos_data_dn, natoms, interstitial, atoms, l_resolved):
+def _select_from_Local(dos_data_up, dos_data_dn, natoms, interstitial, atoms, l_resolved):
 
     keys_to_plot = {'Total'}
 

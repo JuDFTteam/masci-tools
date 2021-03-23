@@ -483,9 +483,9 @@ class TestMultipleScatterPlot(object):
 
         multiple_scatterplots(y,
                               x,
-                              'X',
-                              'Y',
-                              'Plot Test',
+                              xlabel='X',
+                              ylabel='Y',
+                              title='Plot Test',
                               marker='^',
                               color={4: 'k'},
                               plot_label={
@@ -515,9 +515,9 @@ class TestMultipleScatterPlot(object):
 
         multiple_scatterplots(y,
                               x,
-                              'X',
-                              'Y',
-                              'Plot Test',
+                              xlabel='X',
+                              ylabel='Y',
+                              title='Plot Test',
                               marker='^',
                               color={
                                   4: 'k',
@@ -551,9 +551,9 @@ class TestMultipleScatterPlot(object):
         with pytest.deprecated_call():
             multiple_scatterplots(y,
                                   x,
-                                  'X',
-                                  'Y',
-                                  'Plot Test',
+                                  xlabel='X',
+                                  ylabel='Y',
+                                  title='Plot Test',
                                   scale=[None, 'log'],
                                   limits=[(0, 10), (0.01, 100)],
                                   show=False)
@@ -576,9 +576,9 @@ class TestMultipleScatterPlot(object):
         with pytest.deprecated_call():
             multiple_scatterplots(y,
                                   x,
-                                  'X',
-                                  'Y',
-                                  'Plot Test',
+                                  xlabel='X',
+                                  ylabel='Y',
+                                  title='Plot Test',
                                   xticks=[[r'$\pi$', '4', 'TEST', r'$\Omega$', r'$\frac{{1}}{{4}}$'],
                                           [-10, 3, 3, 10, 20]],
                                   show=False)
@@ -601,9 +601,9 @@ class TestMultipleScatterPlot(object):
         with pytest.deprecated_call():
             multiple_scatterplots(y,
                                   x,
-                                  'X',
-                                  'Y',
-                                  'Plot Test',
+                                  xlabel='X',
+                                  ylabel='Y',
+                                  title='Plot Test',
                                   plot_labels=['Parabola', 'Line', None, 'cosine'],
                                   legend=True,
                                   legend_options={'fontsize': 20},
@@ -627,9 +627,9 @@ class TestMultipleScatterPlot(object):
         with pytest.deprecated_call():
             multiple_scatterplots(y,
                                   x,
-                                  'X',
-                                  'Y',
-                                  'Plot Test',
+                                  xlabel='X',
+                                  ylabel='Y',
+                                  title='Plot Test',
                                   plot_label=['Parabola', 'Line', None, 'cosine'],
                                   legend=True,
                                   legend_option={'fontsize': 20},
@@ -651,7 +651,13 @@ class TestMultipleScatterPlot(object):
 
         gcf().clear()
         with pytest.deprecated_call():
-            multiple_scatterplots(y, x, 'X', 'Y', 'Plot Test', colors=['darkred', 'darkblue', 'limegreen'], show=False)
+            multiple_scatterplots(y,
+                                  x,
+                                  xlabel='X',
+                                  ylabel='Y',
+                                  title='Plot Test',
+                                  colors=['darkred', 'darkblue', 'limegreen'],
+                                  show=False)
         # need to return the figure in order for mpl checks to work
         return gcf()
 
@@ -805,7 +811,7 @@ class TestWaterFallPlot(object):  #pylint: disable=missing-class-docstring
 
         gcf().clear()
 
-        waterfall_plot(xv, yv, z, 'X', 'Y', 'Z', 'Plot Test', show=False)
+        waterfall_plot(xv, yv, z, xlabel='X', ylabel='Y', zlabel='Z', title='Plot Test', show=False)
         # need to return the figure in order for mpl checks to work
 
         return gcf()
@@ -829,7 +835,7 @@ class TestSurfacePlot(object):  #pylint: disable=missing-class-docstring
 
         gcf().clear()
 
-        surface_plot(xv, yv, z, 'X', 'Y', 'Z', 'Plot Test', show=False)
+        surface_plot(xv, yv, z, xlabel='X', ylabel='Y', zlabel='Z', title='Plot Test', show=False)
         # need to return the figure in order for mpl checks to work
 
         return gcf()
@@ -983,7 +989,7 @@ class TestColormeshPlot(object):  #pylint: disable=missing-class-docstring
 
         gcf().clear()
 
-        colormesh_plot(x, y, data, 'X', 'Y', 'sin', show=False)
+        colormesh_plot(x, y, data, xlabel='X', ylabel='Y', title='sin', show=False)
 
         # need to return the figure in order for mpl checks to work
         return gcf()

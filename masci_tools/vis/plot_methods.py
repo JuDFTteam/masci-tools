@@ -63,8 +63,9 @@ def show_plot_defaults():
 
 
 @ensure_plotter_consistency(plot_params)
-def single_scatterplot(ydata,
-                       xdata,
+def single_scatterplot(xdata,
+                       ydata,
+                       *,
                        xlabel='',
                        ylabel='',
                        title='',
@@ -83,12 +84,12 @@ def single_scatterplot(ydata,
     :param xlabel: str, label written on the x axis
     :param ylabel: str, label written on the y axis
     :param title: str, title of the figure
-    :param plot_label: str, label for the plot
     :param saveas: str specifying the filename (without file format)
-    :param color: str specifying the color of the lines and points
     :param axis: Axes object, if given the plot will be applied to this object
     :param xerr: optional data for errorbar in x-direction
     :param yerr: optional data for errorbar in y-direction
+    :param area_curve: if an area plot is made this arguments defines the other enclosing line
+                       defaults to 0
 
     Kwargs will be passed on to :py:class:`masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`.
     If the arguments are not recognized they are passed on to the matplotlib functions
@@ -172,11 +173,12 @@ def single_scatterplot(ydata,
 
 
 @ensure_plotter_consistency(plot_params)
-def multiple_scatterplots(ydata,
-                          xdata,
-                          xlabel,
-                          ylabel,
-                          title,
+def multiple_scatterplots(xdata,
+                          ydata,
+                          *,
+                          xlabel='',
+                          ylabel='',
+                          title='',
                           saveas='mscatterplot',
                           axis=None,
                           xerr=None,
@@ -196,6 +198,8 @@ def multiple_scatterplots(ydata,
     :param axis: Axes object, if given the plot will be applied to this object
     :param xerr: optional data for errorbar in x-direction
     :param yerr: optional data for errorbar in y-direction
+    :param area_curve: if an area plot is made this arguments defines the other enclosing line
+                       defaults to 0
 
     Kwargs will be passed on to :py:class:`masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`.
     If the arguments are not recognized they are passed on to the matplotlib functions
@@ -336,6 +340,7 @@ def multiple_scatterplots(ydata,
 @ensure_plotter_consistency(plot_params)
 def multi_scatter_plot(xdata,
                        ydata,
+                       *,
                        size_data=None,
                        color_data=None,
                        xlabel='',
@@ -346,11 +351,12 @@ def multi_scatter_plot(xdata,
                        **kwargs):
     """
     Create a scatter plot with varying marker size
-    Info: x, y and s data must have the same dimensions.
+    Info: x, y, size and color data must have the same dimensions.
 
     :param xdata: arraylike, data for the x coordinate
     :param ydata: arraylike, data for the y coordinate
-    :param sdata: arraylike, data for the markersizes
+    :param size_data: arraylike, data for the markersizes (optional)
+    :param color_data: arraylike, data for the color values with a colormap (optional)
     :param xlabel: str, label written on the x axis
     :param ylabel: str, label written on the y axis
     :param title: str, title of the figure
@@ -462,11 +468,21 @@ def multi_scatter_plot(xdata,
 
 
 @ensure_plotter_consistency(plot_params)
-def colormesh_plot(xdata, ydata, cdata, xlabel, ylabel, title, saveas='colormesh', axis=None, **kwargs):
+def colormesh_plot(xdata, ydata, cdata, *, xlabel='', ylabel='', title='', saveas='colormesh', axis=None, **kwargs):
     """
     Create plot with pcolormesh
 
-    TODO
+    :param xdata: arraylike, data for the x coordinate
+    :param ydata: arraylike, data for the y coordinate
+    :param cdata: arraylike, data for the color values with a colormap
+    :param xlabel: str, label written on the x axis
+    :param ylabel: str, label written on the y axis
+    :param title: str, title of the figure
+    :param saveas: str specifying the filename (without file format)
+    :param axis: Axes object, if given the plot will be applied to this object
+
+    Kwargs will be passed on to :py:class:`masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`.
+    If the arguments are not recognized they are passed on to the matplotlib function `pcolormesh`
     """
 
     #Set default limits (not setting them leaves empty border)
@@ -498,10 +514,19 @@ def colormesh_plot(xdata, ydata, cdata, xlabel, ylabel, title, saveas='colormesh
 
 
 @ensure_plotter_consistency(plot_params)
-def waterfall_plot(xdata, ydata, zdata, xlabel, ylabel, zlabel, title, saveas='waterfallplot', axis=None, **kwargs):
+def waterfall_plot(xdata,
+                   ydata,
+                   zdata,
+                   *,
+                   xlabel='',
+                   ylabel='',
+                   zlabel='',
+                   title='',
+                   saveas='waterfallplot',
+                   axis=None,
+                   **kwargs):
     """
-    Create a standard waterfall plot (this should be flexible enough) to do all the
-    basic plots.
+    Create a standard waterfall plot
 
     :param xdata: arraylike, data for the x coordinate
     :param ydata: arraylike, data for the y coordinate
@@ -513,9 +538,9 @@ def waterfall_plot(xdata, ydata, zdata, xlabel, ylabel, zlabel, title, saveas='w
     :param axis: Axes object, if given the plot will be applied to this object
     :param saveas: str specifying the filename (without file format)
 
+    Kwargs will be passed on to :py:class:`masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`.
+    If the arguments are not recognized they are passed on to the matplotlib function `scatter3D`
     """
-
-    #TODO Deprecation: plot_labels, linetyp, limits, scale, legend_option
 
     nplots = len(ydata)
     if nplots != len(xdata):  # todo check dimention not len, without moving to special datatype.
@@ -568,10 +593,19 @@ def waterfall_plot(xdata, ydata, zdata, xlabel, ylabel, zlabel, title, saveas='w
 
 
 @ensure_plotter_consistency(plot_params)
-def surface_plot(xdata, ydata, zdata, xlabel, ylabel, zlabel, title, saveas='surface_plot', axis=None, **kwargs):
+def surface_plot(xdata,
+                 ydata,
+                 zdata,
+                 *,
+                 xlabel='',
+                 ylabel='',
+                 zlabel='',
+                 title='',
+                 saveas='surface_plot',
+                 axis=None,
+                 **kwargs):
     """
-    Create a standard waterfall plot (this should be flexible enough) to do all the
-    basic plots.
+    Create a standard surface plot
 
     :param xdata: arraylike, data for the x coordinate
     :param ydata: arraylike, data for the y coordinate
@@ -583,6 +617,8 @@ def surface_plot(xdata, ydata, zdata, xlabel, ylabel, zlabel, title, saveas='sur
     :param axis: Axes object, if given the plot will be applied to this object
     :param saveas: str specifying the filename (without file format)
 
+    Kwargs will be passed on to :py:class:`masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`.
+    If the arguments are not recognized they are passed on to the matplotlib function `plot_surface`
     """
 
     nplots = len(ydata)
@@ -626,10 +662,19 @@ def surface_plot(xdata, ydata, zdata, xlabel, ylabel, zlabel, title, saveas='sur
 
 
 @ensure_plotter_consistency(plot_params)
-def multiplot_moved(ydata, xdata, xlabel, ylabel, title, scale_move=1.0, min_add=0, saveas='mscatterplot', **kwargs):
+def multiplot_moved(ydata,
+                    xdata,
+                    *,
+                    xlabel='',
+                    ylabel='',
+                    title='',
+                    scale_move=1.0,
+                    min_add=0,
+                    saveas='mscatterplot',
+                    **kwargs):
     """
-    Plots all the scater plots above each other. It adds an arbitray offset to the ydata to do this and
-    calls multi scatter plot. Therefore you might not want to show the yaxis ticks
+    Plots all the scatter plots above each other. It adds an arbitrary offset to the ydata to do this and
+    calls `multiple_scatterplots`. Therefore you might not want to show the yaxis ticks
 
     :param xdata: arraylike, data for the x coordinate
     :param ydata: arraylike, data for the y coordinate
@@ -657,7 +702,14 @@ def multiplot_moved(ydata, xdata, xlabel, ylabel, title, scale_move=1.0, min_add
         shifts.append(ymax)
         ymax = ymax + max(data) * scale_move + min_add
 
-    ax = multiple_scatterplots(ydatanew, xdata, xlabel, ylabel, title, saveas=saveas, area_curve=shifts, **kwargs)
+    ax = multiple_scatterplots(xdata,
+                               ydatanew,
+                               xlabel=xlabel,
+                               ylabel=ylabel,
+                               title=title,
+                               saveas=saveas,
+                               area_curve=shifts,
+                               **kwargs)
 
     return ax
 
@@ -770,8 +822,9 @@ def default_histogram(*args, **kwargs):
 
 
 @ensure_plotter_consistency(plot_params)
-def barchart(ydata,
-             xdata,
+def barchart(xdata,
+             ydata,
+             *,
              width=0.35,
              xlabel='x',
              ylabel='y',
@@ -785,9 +838,23 @@ def barchart(ydata,
     """
     Create a standard bar chart plot (this should be flexible enough) to do all the
     basic bar chart plots.
-    Has to be overworked, was quickly adjusted from scatterplots, some things not used or not needed
 
-    TODO: docstring, grouped barchart (meaing not stacked)
+    :param xdata: arraylike data for the x coordinates of the bars
+    :param ydata: arraylike data for the heights of the bars
+    :param width: float determines the width of the bars
+    :param axis: Axes object where to add the plot
+    :param title: str, Title of the plot
+    :param xlabel: str, label for the x-axis
+    :param ylabel: str, label for the y-axis
+    :param saveas: str, filename for the saved plot
+    :param xerr: optional data for errorbar in x-direction
+    :param yerr: optional data for errorbar in y-direction
+    :param bottom: bottom values for the lowest end of the bars
+
+    Kwargs will be passed on to :py:class:`masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`.
+    If the arguments are not recognized they are passed on to the matplotlib function `bar`
+
+    TODO: grouped barchart (meaing not stacked)
     """
 
     nplots = len(ydata)
@@ -893,6 +960,7 @@ def barchart(ydata,
 @ensure_plotter_consistency(plot_params)
 def multiaxis_scatterplot(xdata,
                           ydata,
+                          *,
                           axes_loc,
                           xlabel,
                           ylabel,
@@ -977,7 +1045,7 @@ def multiaxis_scatterplot(xdata,
 
         ax = plt.subplot2grid(plot_shape, location, **subplot_kwargs.pop('axes_kwargs', {}))
         with NestedPlotParameters(plot_params):
-            ax = multiple_scatterplots(y, x, axis=ax, **subplot_kwargs, save_plots=False, show=False)
+            ax = multiple_scatterplots(x, y, axis=ax, **subplot_kwargs, save_plots=False, show=False)
 
         axis.append(ax)
 
@@ -993,6 +1061,7 @@ def multiaxis_scatterplot(xdata,
 
 @ensure_plotter_consistency(plot_params)
 def plot_convex_hull2d(hull,
+                       *,
                        title='Convex Hull',
                        xlabel='Atomic Procentage',
                        ylabel='Formation energy / atom [eV]',
@@ -1003,6 +1072,19 @@ def plot_convex_hull2d(hull,
     Plot method for a 2d convex hull diagramm
 
     :param hull: pyhull.Convexhull #scipy.spatial.ConvexHull
+    :param axis: Axes object where to add the plot
+    :param title: str, Title of the plot
+    :param xlabel: str, label for the x-axis
+    :param ylabel: str, label for the y-axis
+    :param saveas: str, filename for the saved plot
+
+    Function specific parameters:
+        :param marker_hull: defaults to `marker`, marker type for the hull plot
+        :param markersize_hull: defaults to `markersize`, markersize for the hull plot
+        :param color_hull: defaults to `color`, color for the hull plot
+
+    Kwargs will be passed on to :py:class:`masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`.
+    If the arguments are not recognized they are passed on to the matplotlib functions `plot`
     """
 
     #DEPRECATE: color_line
@@ -1051,6 +1133,7 @@ def plot_convex_hull2d(hull,
 def plot_residuen(xdata,
                   fitdata,
                   realdata,
+                  *,
                   errors=None,
                   xlabel=r'Energy [eV]',
                   ylabel=r'cts/s [arb]',
@@ -1110,8 +1193,8 @@ def plot_residuen(xdata,
         axes = ax1
 
     with NestedPlotParameters(plot_params):
-        ax1 = single_scatterplot(ydata,
-                                 xdata,
+        ax1 = single_scatterplot(xdata,
+                                 ydata,
                                  xlabel=xlabel,
                                  ylabel=ylabel,
                                  title=title,
@@ -1143,9 +1226,10 @@ def plot_residuen(xdata,
 
 
 @ensure_plotter_consistency(plot_params)
-def plot_convergence_results(distance,
+def plot_convergence_results(iteration,
+                             distance,
                              total_energy,
-                             iteration,
+                             *,
                              saveas1='t_energy_convergence',
                              axis1=None,
                              saveas2='distance_convergence',
@@ -1155,9 +1239,9 @@ def plot_convergence_results(distance,
     Plot the total energy versus the scf iteration
     and plot the distance of the density versus iterations.
 
+    :param iteration: array for the number of iterations
     :param distance: array of distances
     :param total_energy: array of total energies
-    :param iteration: array for the number of iterations
     :param saveas1: str, filename for the energy convergence plot
     :param axis1: Axes object for the energy convergence plot
     :param saveas2: str, filename for the distance plot
@@ -1177,8 +1261,8 @@ def plot_convergence_results(distance,
         total_energy_abs_diff.append(abs(en1 - en0))
     #saveas3 ='t_energy_convergence2'
 
-    p1 = single_scatterplot(total_energy_abs_diff,
-                            iteration[1:],
+    p1 = single_scatterplot(iteration[1:],
+                            total_energy_abs_diff,
                             xlabel=xlabel,
                             ylabel=ylabel1,
                             title=title1,
@@ -1188,8 +1272,8 @@ def plot_convergence_results(distance,
                             axis=axis1,
                             **kwargs)
     #single_scatterplot(total_energy, iteration, xlabel, ylabel1, title1, plotlabel='total energy', saveas=saveas3)
-    p2 = single_scatterplot(distance,
-                            iteration,
+    p2 = single_scatterplot(iteration,
+                            distance,
                             xlabel=xlabel,
                             ylabel=ylabel2,
                             title=title2,
@@ -1203,9 +1287,10 @@ def plot_convergence_results(distance,
 
 
 @ensure_plotter_consistency(plot_params)
-def plot_convergence_results_m(distances,
+def plot_convergence_results_m(iterations,
+                               distances,
                                total_energies,
-                               iterations,
+                               *,
                                modes,
                                saveas1='t_energy_convergence',
                                saveas2='distance_convergence',
@@ -1215,6 +1300,17 @@ def plot_convergence_results_m(distances,
     """
     Plot the total energy versus the scf iteration
     and plot the distance of the density versus iterations.
+
+    :param iterations: array for the number of iterations
+    :param distances: array of distances
+    :param total_energies: array of total energies
+    :param modes: list of convergence modes (if 'force' is in the list the last distance is removed)
+    :param saveas1: str, filename for the energy convergence plot
+    :param axis1: Axes object for the energy convergence plot
+    :param saveas2: str, filename for the distance plot
+    :param axis2: Axes object for the distance plot
+
+    Other Kwargs will be passed on to all :py:func:`single_scatterplot()` calls
     """
     xlabel = r'Iteration'
     ylabel1 = r'Total energy difference [Htr]'
@@ -1250,11 +1346,11 @@ def plot_convergence_results_m(distances,
         plot_labels1 = [label if label is not None else plot_labels1[indx] for indx, label in enumerate(plot_label)]
         plot_labels2 = [label if label is not None else plot_labels2[indx] for indx, label in enumerate(plot_label)]
 
-    p1 = multiple_scatterplots(total_energy_abs_diffs,
-                               iterations1,
-                               xlabel,
-                               ylabel1,
-                               title1,
+    p1 = multiple_scatterplots(iterations1,
+                               total_energy_abs_diffs,
+                               xlabel=xlabel,
+                               ylabel=ylabel1,
+                               title=title1,
                                plot_label=plot_labels1,
                                saveas=saveas1,
                                scale={'y': 'log'},
@@ -1265,11 +1361,11 @@ def plot_convergence_results_m(distances,
             iterations[i].pop()
             print('Drop the last iteration because there was no charge distance, mode=force')
 
-    p2 = multiple_scatterplots(distances,
-                               iterations,
-                               xlabel,
-                               ylabel2,
-                               title2,
+    p2 = multiple_scatterplots(iterations,
+                               distances,
+                               xlabel=xlabel,
+                               ylabel=ylabel2,
+                               title=title2,
                                plot_label=plot_labels2,
                                saveas=saveas2,
                                scale={'y': 'log'},
@@ -1280,36 +1376,39 @@ def plot_convergence_results_m(distances,
 
 
 @ensure_plotter_consistency(plot_params)
-def plot_lattice_constant(total_energy,
-                          scaling,
+def plot_lattice_constant(scaling,
+                          total_energy,
+                          *,
                           fit_y=None,
                           relative=True,
                           ref_const=None,
                           multi=False,
-                          plot_label=r'simulation data',
-                          plot_label_fit=r'fit results',
                           title=r'Equation of states',
                           saveas='lattice_constant',
                           axis=None,
-                          marker_fit='s',
                           **kwargs):
     """
     Plot a lattice constant versus Total energy
     Plot also the fit.
     On the x axis is the scaling, it
 
-    params: Total_energy, list with floats, or list of lists of floats
-    params: scaling, list with floats, or list of lists of floats
-    params: fit_y, list with floats, evaluated fit, or list of lists of floats
-    params: relative = True, (optional), scaling factor given, or lattice constants given?
-    params: ref_const = None, (optional), float, or list of floats, lattice constant for scaling 1.0
-    params: multi = False, (optional), bool, multiple plots?
-    params: plotlables, list of strings, for lableling of the plots.
-    params: title
+    :param scaling: arraylike, data for the scaling factor
+    :param total_energy: arraylike, data for the total energy
+    :param fit_y: arraylike, optional data of fitted data
+    :param relative: bool, scaling factor given (True), or lattice constants given?
+    :param ref_const: float (optional), or list of floats, lattice constant for scaling 1.0
+    :param multi: bool default False are they multiple plots?
 
+    Function specific parameters:
+        :param marker_fit: defaults to `marker`, marker type for the fit data
+        :param markersize_fit: defaults to `markersize`, markersize for the fit data
+        :param linewidth_fit: defaults to `linewidth`, linewidth for the fit data
+        :param plotlabel_fit: str label for the fit data
+
+    Other Kwargs will be passed on to all :py:func:`single_scatterplot()` or :py:func:`multiple_scatterplot()` calls
     """
     # TODO: make box which shows fit results. (fit resuls have to be past)
-    # TODO: multiple plots in one use mulit_scatter_plot for this...
+    # TODO: multiple plots in one use multi_scatter_plot for this...
 
     if 'plotlables' in kwargs:
         warnings.warn('plotlables is deprecated. Use plot_label and plot_label_fit instead', DeprecationWarning)
@@ -1345,16 +1444,17 @@ def plot_lattice_constant(total_energy,
     plot_params.add_parameter('linewidth_fit', default_from='linewidth')
     plot_params.add_parameter('plot_label_fit')
 
+    plot_params.set_defaults(default_type='function',
+                             marker_fit='s',
+                             plot_label='simulation data',
+                             plot_label_fit='fit results')
+
     general_keys = set(plot_params['figure_kwargs']) | {'show', 'save_plots'}
     general_info = {key: val for key, val in kwargs.items() if key in general_keys}
     kwargs = {key: val for key, val in kwargs.items() if key not in general_keys}
 
     plot_params.set_parameters(**general_info)
-    kwargs = plot_params.set_parameters(continue_on_error=True,
-                                        marker_fit=marker_fit,
-                                        plot_label=plot_label,
-                                        plot_label_fit=plot_label_fit,
-                                        **kwargs)
+    kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
     if multi:
@@ -1372,11 +1472,11 @@ def plot_lattice_constant(total_energy,
         # or parse on scaling?
 
         with NestedPlotParameters(plot_params):
-            ax = multiple_scatterplots(total_energy,
-                                       scaling,
-                                       xlabel,
-                                       ylabel,
-                                       title,
+            ax = multiple_scatterplots(scaling,
+                                       total_energy,
+                                       xlabel=xlabel,
+                                       ylabel=ylabel,
+                                       title=title,
                                        axis=ax,
                                        show=False,
                                        save_plots=False,
@@ -1384,11 +1484,11 @@ def plot_lattice_constant(total_energy,
                                        **kwargs)
         if fit_y:
             with NestedPlotParameters(plot_params):
-                ax = multiple_scatterplots(fit_y,
-                                           scaling,
-                                           xlabel,
-                                           ylabel,
-                                           title,
+                ax = multiple_scatterplots(scaling,
+                                           fit_y,
+                                           xlabel=xlabel,
+                                           ylabel=ylabel,
+                                           title=title,
                                            axis=ax,
                                            show=False,
                                            save_plots=False,
@@ -1399,9 +1499,9 @@ def plot_lattice_constant(total_energy,
         with NestedPlotParameters(plot_params):
             ax = single_scatterplot(scaling,
                                     total_energy,
-                                    xlabel,
-                                    ylabel,
-                                    title,
+                                    xlabel=xlabel,
+                                    ylabel=ylabel,
+                                    title=title,
                                     axis=ax,
                                     show=False,
                                     save_plots=False,
@@ -1439,8 +1539,9 @@ def plot_relaxation_results():
 
 
 @ensure_plotter_consistency(plot_params)
-def plot_dos(dos_data,
-             energy_grid,
+def plot_dos(energy_grid,
+             dos_data,
+             *,
              saveas='dos_plot',
              energy_label=r'$E-E_F$ [eV]',
              dos_label=r'DOS [1/eV]',
@@ -1449,8 +1550,19 @@ def plot_dos(dos_data,
              e_fermi=0,
              **kwargs):
     """
-    Plot the provided data for a density of states (not spin-polarized)
+    Plot the provided data for a density of states (not spin-polarized). Can be done
+    horizontally or vertical via the switch `xyswitch`
 
+    :param energy_grid: arraylike data for the energy grid of the DOS
+    :param dos_data: arraylike data for all the DOS components to plot
+    :param title: str, Title of the plot
+    :param energy_label: str, label for the energy-axis
+    :param dos_label: str, label for the DOS-axis
+    :param saveas: str, filename for the saved plot
+    :param e_fermi: float (default 0), place the line for the fermi energy at this value
+    :param xyswitch: bool if True, the enrgy axis will be plotted vertically
+
+    All other Kwargs are passed on to the :py:func:`multiple_scatterplots()` call
     """
 
     if 'limits' in kwargs:
@@ -1481,15 +1593,16 @@ def plot_dos(dos_data,
         xlabel, ylabel = energy_label, dos_label
         x, y = energy_grid, dos_data
 
-    ax = multiple_scatterplots(y, x, xlabel, ylabel, title, saveas=saveas, **kwargs)
+    ax = multiple_scatterplots(x, y, xlabel=xlabel, ylabel=ylabel, title=title, saveas=saveas, **kwargs)
 
     return ax
 
 
 @ensure_plotter_consistency(plot_params)
-def plot_spinpol_dos(spin_up_data,
+def plot_spinpol_dos(energy_grid,
+                     spin_up_data,
                      spin_dn_data,
-                     energy_grid,
+                     *,
                      saveas='spinpol_dos_plot',
                      energy_label=r'$E-E_F$ [eV]',
                      dos_label=r'DOS [1/eV]',
@@ -1500,9 +1613,25 @@ def plot_spinpol_dos(spin_up_data,
                      spin_dn_negative=True,
                      **kwargs):
     """
-    Plot the provided data for a density of states (spin-polarized)
+    Plot the provided data for a density of states (spin-polarized). Can be done
+    horizontally or vertical via the switch `xyswitch`
 
+    :param energy_grid: arraylike data for the energy grid of the DOS
+    :param spin_up_data: arraylike data for all the DOS spin-up components to plot
+    :param spin_dn_data: arraylike data for all the DOS spin-down components to plot
+    :param title: str, Title of the plot
+    :param energy_label: str, label for the energy-axis
+    :param dos_label: str, label for the DOS-axis
+    :param saveas: str, filename for the saved plot
+    :param e_fermi: float (default 0), place the line for the fermi energy at this value
+    :param xyswitch: bool if True, the enrgy axis will be plotted vertically
+    :param energy_grid_dn: arraylike data for the energy grid of the DOS of the spin-down component
+                           (optional)
+    :param spin_dn_negative: bool, if True (default) the spin-down components are plotted downwards
+
+    All other Kwargs are passed on to the :py:func:`multiple_scatterplots()` call
     """
+
     if 'limits' in kwargs:
         limits = kwargs.pop('limits')
         if xyswitch:
@@ -1545,8 +1674,6 @@ def plot_spinpol_dos(spin_up_data,
     else:
         dos_data = np.concatenate((dos_data, spin_dn_data), axis=0)
 
-
-
     if isinstance(dos_data[0], (list, np.ndarray)) and \
        not isinstance(energy_grid[0], (list, np.ndarray)):
         energy_grid = [energy_grid] * len(dos_data)
@@ -1559,7 +1686,7 @@ def plot_spinpol_dos(spin_up_data,
         xlabel, ylabel = energy_label, dos_label
         x, y = energy_grid, dos_data
 
-    ax = multiple_scatterplots(y, x, xlabel, ylabel, title, saveas=saveas, **kwargs)
+    ax = multiple_scatterplots(x, y, xlabel=xlabel, ylabel=ylabel, title=title, saveas=saveas, **kwargs)
 
     return ax
 
@@ -1567,6 +1694,7 @@ def plot_spinpol_dos(spin_up_data,
 @ensure_plotter_consistency(plot_params)
 def plot_bands(kpath,
                bands,
+               *,
                size_data=None,
                special_kpoints=None,
                e_fermi=0,
@@ -1577,6 +1705,25 @@ def plot_bands(kpath,
                markersize_min=1.0,
                markersize_scaling=10.0,
                **kwargs):
+    """
+    Plot the provided data for a bandstrucuture (non spin-polarized). Can be used
+    to illustrate weights on bands via `size_data`
+
+    :param kpath: arraylike data for the kpoint data
+    :param bands: arraylike data for the eigenvalues
+    :param size_data: arraylike data the weights to emphasize (optional)
+    :param title: str, Title of the plot
+    :param xlabel: str, label for the x-axis
+    :param ylabel: str, label for the y-axis
+    :param saveas: str, filename for the saved plot
+    :param e_fermi: float (default 0), place the line for the fermi energy at this value
+    :param special_kpoints: list of tuples (str, float), place vertical lines at the given values
+                            and mark them on the x-axis with the given label
+    :param markersize_min: minimum value used in scaling points for weight
+    :param markersize_scaling: factor used in scaling points for weight
+
+    All other Kwargs are passed on to the :py:func:`multi_scatter_plot()` call
+    """
 
     if special_kpoints is None:
         special_kpoints = []
@@ -1623,6 +1770,7 @@ def plot_bands(kpath,
 def plot_spinpol_bands(kpath,
                        bands_up,
                        bands_dn,
+                       *,
                        size_data=None,
                        show_spin_pol=True,
                        special_kpoints=None,
@@ -1634,6 +1782,28 @@ def plot_spinpol_bands(kpath,
                        markersize_min=1.0,
                        markersize_scaling=10.0,
                        **kwargs):
+    """
+    Plot the provided data for a bandstrucuture (spin-polarized). Can be used
+    to illustrate weights on bands via `size_data`
+
+    :param kpath: arraylike data for the kpoint data
+    :param bands_up: arraylike data for the eigenvalues (spin-up)
+    :param bands_dn: arraylike data for the eigenvalues (spin-dn)
+    :param size_data: arraylike data the weights to emphasize BOTH SPINS (optional)
+    :param title: str, Title of the plot
+    :param xlabel: str, label for the x-axis
+    :param ylabel: str, label for the y-axis
+    :param saveas: str, filename for the saved plot
+    :param e_fermi: float (default 0), place the line for the fermi energy at this value
+    :param special_kpoints: list of tuples (str, float), place vertical lines at the given values
+                            and mark them on the x-axis with the given label
+    :param markersize_min: minimum value used in scaling points for weight
+    :param markersize_scaling: factor used in scaling points for weight
+    :param show_spin_pol: bool, if True (default) the two different spin channles will be shown in blue
+                          and red by default
+
+    All other Kwargs are passed on to the :py:func:`multi_scatter_plot()` call
+    """
 
     if special_kpoints is None:
         special_kpoints = {}
@@ -2023,11 +2193,11 @@ def plot_corelevel_spectra(coreleveldict,
             for state, ref_list in ref_list_dict.items():
                 states.extend(ref_list)
 
-    ax = single_scatterplot(ydata_all,
-                            xdata_all,
-                            xlabel,
-                            ylabel,
-                            title,
+    ax = single_scatterplot(xdata_all,
+                            ydata_all,
+                            xlabel=xlabel,
+                            ylabel=ylabel,
+                            title=title,
                             line_options={
                                 'color': 'k',
                                 'linestyle': '-',
@@ -2063,11 +2233,11 @@ def plot_corelevel_spectra(coreleveldict,
     kwargs.pop('save', None)
     kwargs.pop('save_plots', None)
 
-    ax2 = single_scatterplot(ydata_spec,
-                             xdata_spec,
-                             xlabel,
-                             ylabel,
-                             title,
+    ax2 = single_scatterplot(xdata_spec,
+                             ydata_spec,
+                             xlabel=xlabel,
+                             ylabel=ylabel,
+                             title=title,
                              marker=marker_spec,
                              linestyle=linestyle_spec,
                              color=color_spec,
@@ -2087,10 +2257,11 @@ def plot_corelevel_spectra(coreleveldict,
                              **kwargs)
 
     if show_single:
-        ax2 = multiple_scatterplots(ydata_single_all, [xdata_spec] * len(ydata_single_all),
-                                    xlabel,
-                                    ylabel,
-                                    title,
+        ax2 = multiple_scatterplots([xdata_spec] * len(ydata_single_all),
+                                    ydata_single_all,
+                                    xlabel=xlabel,
+                                    ylabel=ylabel,
+                                    title=title,
                                     show=False,
                                     save_plots=False,
                                     axis=ax2,

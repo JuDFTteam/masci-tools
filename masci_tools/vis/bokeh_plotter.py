@@ -19,7 +19,23 @@ import copy
 
 
 class BokehPlotter(Plotter):
+    """
+    Class for plotting parameters and standard code snippets for plotting with the
+    bokeh backend.
 
+    Kwargs in the __init__ method are forwarded to setting default values for the instance
+
+    For specific documentation about the parameter/defaults handling refer to
+    :py:class:`~masci_tools.vis.Plotter`.
+
+    Below the current defined default values are shown
+
+    .. literalinclude:: ../../../masci_tools/vis/bokeh_plotter.py
+       :language: python
+       :lines: 39-94
+       :linenos:
+
+    """
     _BOKEH_DEFAULTS = {
         'figure_kwargs': {
             'tools': 'hover',
@@ -218,7 +234,7 @@ class BokehPlotter(Plotter):
         credits to PatrikHlobil
         modified for use in this Plotter class
         """
-        from bokeh.palettes import all_palettes
+        from bokeh.palettes import all_palettes  #pylint: disable=no-name-in-module
 
         if self['color'] is not None:
             color = self['color']

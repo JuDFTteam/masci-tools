@@ -36,7 +36,7 @@ def prepare_for_regression(data):
     return data
 
 
-class TestBokehScatter:
+class TestBokehScatter:  #pylint: disable=missing-class-docstring
 
     def test_default(self, data_regression):
         """

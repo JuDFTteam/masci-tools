@@ -17,14 +17,16 @@ Here are general and special bokeh plots to use
 from masci_tools.vis.bokeh_plotter import BokehPlotter
 from masci_tools.vis import ensure_plotter_consistency, NestedPlotParameters
 
-import math
-import numpy as np
 import pandas as pd
-import json
 
-from bokeh.models import (ColumnDataSource, LinearColorMapper, LogColorMapper, ColorBar, BasicTicker, Title, Legend)
+from bokeh.models import (
+    ColumnDataSource,
+    LinearColorMapper,
+    LogColorMapper,
+    ColorBar,
+    BasicTicker,
+)
 from bokeh.layouts import gridplot
-from bokeh.core.properties import FontSize
 from bokeh.io import show as bshow
 from bokeh.plotting import figure as bokeh_fig
 from matplotlib.colors import Normalize, LogNorm, to_hex
@@ -35,34 +37,11 @@ from matplotlib.cm import ScalarMappable
 
 plot_params = BokehPlotter()
 
-
-def prepare_plot(data, figure_options):
-    """
-    used to set some default options.
-    """
-
-    # get updated default figure option, data from columns
-    figure_options_defaults = {
-        'title': '',
-        'toolbar_location': 'below',
-        'active_scroll': 'wheel_zoom',
-        'plot_width': 600,
-        'plot_height': 400,
-        'output_backend': 'webgl',
-        'sizing_mode': 'fixed',
-        'x_axis_location': 'below'
-    }
-
-    figure_opt = figure_options_defaults.update(figure_options)
-    # this output is what every routine should use.
-    return data, figure_opt
-
-
 ##################################### general plots ##########################
 
 
 @ensure_plotter_consistency(plot_params)
-def bokeh_scatter(source, xdata='x', ydata='y', xlabel='x', ylabel='y', title='', figure=None, **kwargs):
+def bokeh_scatter(source, *, xdata='x', ydata='y', xlabel='x', ylabel='y', title='', figure=None, **kwargs):
     """
     create an interactive scatter plot with bokeh
 
@@ -88,6 +67,7 @@ def bokeh_scatter(source, xdata='x', ydata='y', xlabel='x', ylabel='y', title=''
 
 @ensure_plotter_consistency(plot_params)
 def bokeh_multi_scatter(source,
+                        *,
                         xdata='x',
                         ydata='y',
                         figure=None,
@@ -189,6 +169,7 @@ def bokeh_multi_scatter(source,
 
 @ensure_plotter_consistency(plot_params)
 def bokeh_line(source,
+               *,
                xdata='x',
                ydata='y',
                figure=None,
@@ -319,6 +300,7 @@ def bokeh_line(source,
 
 @ensure_plotter_consistency(plot_params)
 def bokeh_dos(dosdata,
+              *,
               energy='energy_grid',
               ynames=None,
               energy_label=r'E-E_F [eV]',
@@ -370,6 +352,7 @@ def bokeh_dos(dosdata,
 
 @ensure_plotter_consistency(plot_params)
 def bokeh_spinpol_dos(dosdata,
+                      *,
                       spin_dn_negative=True,
                       energy='energy_grid',
                       ynames=None,
@@ -495,6 +478,7 @@ def bokeh_spinpol_dos(dosdata,
 
 @ensure_plotter_consistency(plot_params)
 def bokeh_bands(bandsdata,
+                *,
                 k_label='kpath',
                 eigenvalues='eigenvalues_up',
                 xlabel='',
@@ -553,6 +537,7 @@ def bokeh_bands(bandsdata,
 
 @ensure_plotter_consistency(plot_params)
 def bokeh_spinpol_bands(bandsdata,
+                        *,
                         k_label='kpath',
                         eigenvalues=None,
                         xlabel='',
@@ -658,21 +643,22 @@ def periodic_table_plot(source,
     param tooltips: what is shown with hover tool. values have to be in source
     example:
 
-    source.
-    Keys of panda DF. group, period symbol and atomic number or required...
-    Index([u'atomic number', u'symbol', u'name', u'atomic mass', u'CPK',
-       u'electronic configuration', u'electronegativity', u'atomic radius',
-       u'ion radius', u'van der Waals radius', u'IE-1', u'EA',
-       u'standard state', u'bonding type', u'melting point', u'boiling point',
-       u'density', u'metal', u'year discovered', u'group', u'period',
-       u'rmt_mean', u'rmt_std', u'number_of_occ', u'type_color', u'c_value'],
-      dtype='object')
+    .. code-block:: python
 
-    tooltips_def = [("Name", "@name"),
-                ("Atomic number", "@{atomic number}"),
-                ("Atomic mass", "@{atomic mass}"),
-                ("CPK color", "$color[hex, swatch]:CPK"),
-                ("Electronic configuration", "@{electronic configuration}")]
+        Keys of panda DF. group, period symbol and atomic number or required...
+        Index([u'atomic number', u'symbol', u'name', u'atomic mass', u'CPK',
+           u'electronic configuration', u'electronegativity', u'atomic radius',
+           u'ion radius', u'van der Waals radius', u'IE-1', u'EA',
+           u'standard state', u'bonding type', u'melting point', u'boiling point',
+           u'density', u'metal', u'year discovered', u'group', u'period',
+           u'rmt_mean', u'rmt_std', u'number_of_occ', u'type_color', u'c_value'],
+          dtype='object')
+
+        tooltips_def = [("Name", "@name"),
+                    ("Atomic number", "@{atomic number}"),
+                    ("Atomic mass", "@{atomic mass}"),
+                    ("CPK color", "$color[hex, swatch]:CPK"),
+                    ("Electronic configuration", "@{electronic configuration}")]
 
     param display_values: list of strings, have to match source. Values to be displayed on the element rectangles
     example:["rmt_mean", "rmt_std", "number_of_occ"]
@@ -919,8 +905,8 @@ def plot_convergence_results(distance,
     :param saveas1: str, optional default='t_energy_convergence', save first figure as
     :param saveas2: str, optional default='distance_convergence', save second figure as
     :param figure_kwargs: dict, optional default={'plot_width': 800, 'plot_height': 450}, gets parsed
-    to bokeh_line
-    :param **kwargs: further key-word arguments for bokeh_line
+                          to bokeh_line
+    :param kwargs: further key-word arguments for bokeh_line
 
     :returns grid: bokeh grid with figures
     """
@@ -1007,8 +993,8 @@ def plot_convergence_results_m(distances,
     :param saveas1: str, optional default='t_energy_convergence', save first figure as
     :param saveas2: str, optional default='distance_convergence', save second figure as
     :param figure_kwargs: dict, optional default={'plot_width': 600, 'plot_height': 450}, gets parsed
-    to bokeh_line
-    :param **kwargs: further key-word arguments for bokeh_line
+                          to bokeh_line
+    :param kwargs: further key-word arguments for bokeh_line
 
     :returns grid: bokeh grid with figures
     """
