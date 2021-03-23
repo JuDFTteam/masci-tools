@@ -505,13 +505,15 @@ def bokeh_bands(bandsdata,
                 size_min=3.0,
                 size_scaling=10.0,
                 **kwargs):
-    from bokeh.models import LinearColorMapper
+    from bokeh.transform import linear_cmap
 
     if weight is not None:
-        color_mapper = LinearColorMapper(palette='Blues256', low=max(bandsdata[weight]), high=min(bandsdata[weight]))
-        kwargs['color'] = {'field': weight, 'transform': color_mapper}
-        kwargs['marker_size'] = 'weight_size'
-        bandsdata['weight_size'] = size_min + size_scaling * bandsdata[weight] / bandsdata[weight].max()
+        bandsdata['weight_size'] = size_min + size_scaling * bandsdata[weight] / max(bandsdata[weight])
+        plot_params.set_defaults(default_type='function',
+                                 color=linear_cmap(weight, 'Blues256', max(bandsdata[weight]), min(bandsdata[weight])),
+                                 marker_size='weight_size')
+    else:
+        plot_params.set_defaults(default_type='function', color='black')
 
     if special_kpoints is None:
         special_kpoints = []
@@ -538,8 +540,7 @@ def bokeh_bands(bandsdata,
                                  'height': 720
                              },
                              x_range_padding=0.0,
-                             y_range_padding=0.0,
-                             color='black')
+                             y_range_padding=0.0)
 
     return bokeh_multi_scatter(bandsdata,
                                xdata=k_label,
@@ -562,16 +563,18 @@ def bokeh_spinpol_bands(bandsdata,
                         size_min=3.0,
                         size_scaling=10.0,
                         **kwargs):
-    from bokeh.models import LinearColorMapper
+    from bokeh.transform import linear_cmap
 
     if weight is not None:
         cmaps = ['Blues256', 'Reds256']
-        kwargs['color'] = []
+        color = []
         for indx, (w, cmap) in enumerate(zip(weight, cmaps)):
-            color_mapper = LinearColorMapper(palette=cmap, low=max(bandsdata[w]), high=min(bandsdata[w]))
-            kwargs['color'].append({'field': w, 'transform': color_mapper})
-            kwargs['marker_size'] = f'weight_size_{indx}'
-            bandsdata[f'weight_size_{indx}'] = size_min + size_scaling * bandsdata[w] / bandsdata[w].max()
+            color.append(linear_cmap(w, cmap, max(bandsdata[w]), min(bandsdata[w])))
+            bandsdata[f'weight_size_{indx}'] = size_min + size_scaling * bandsdata[w] / max(bandsdata[w])
+        plot_params.set_defaults(default_type='function', color=color, marker_size=['weight_size_0', 'weight_size_1'])
+    else:
+        color = ['blue', 'red']
+        plot_params.set_defaults(default_type='function', color=color)
 
     if special_kpoints is None:
         special_kpoints = []
@@ -589,17 +592,18 @@ def bokeh_spinpol_bands(bandsdata,
     lines = {'horizontal': 0}
     lines['vertical'] = xticks
 
-    plot_params.set_defaults(default_type='function',
-                             straight_lines=lines,
-                             x_ticks=xticks,
-                             x_ticklabels_overwrite=xticklabels,
-                             figure_kwargs={
-                                 'width': 1280,
-                                 'height': 720
-                             },
-                             x_range_padding=0.0,
-                             y_range_padding=0.0,
-                             color=['blue', 'red'])
+    plot_params.set_defaults(
+        default_type='function',
+        straight_lines=lines,
+        x_ticks=xticks,
+        x_ticklabels_overwrite=xticklabels,
+        figure_kwargs={
+            'width': 1280,
+            'height': 720
+        },
+        x_range_padding=0.0,
+        y_range_padding=0.0,
+    )
 
     eigenvalues = ['eigenvalues_up', 'eigenvalues_down']
 
