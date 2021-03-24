@@ -57,6 +57,7 @@ class MatplotlibPlotter(Plotter):
         'xticklabels': None,
         'yticks': None,
         'yticklabels': None,
+        'color_cycle': None,
 
         # plot properties
         'linewidth': 2.0,
@@ -150,7 +151,7 @@ class MatplotlibPlotter(Plotter):
         'save_plots', 'save_format', 'tightlayout', 'save_raw_plot_data', 'raw_plot_data_format', 'show', 'legend',
         'legend_options', 'colorbar', 'colorbar_padding', 'tick_paramsy', 'tick_paramsx', 'tick_paramsy_minor',
         'tick_paramsx_minor', 'font_options', 'line_options', 'labelfontsize', 'lines', 'scale', 'limits', 'xticks',
-        'xticklabels', 'yticks', 'yticklabels', 'figure_kwargs', 'title_font_size', 'repeat_colors_after'
+        'xticklabels', 'yticks', 'yticklabels', 'figure_kwargs', 'title_font_size', 'repeat_colors_after', 'color_cycle'
     }
 
     #Sets of keys with special purposes
@@ -259,6 +260,8 @@ class MatplotlibPlotter(Plotter):
 
         :returns: the created or modified axis object
         """
+        from cycler import cycler, Cycler
+
         if axis is not None:
             ax = axis
         else:
@@ -295,6 +298,14 @@ class MatplotlibPlotter(Plotter):
                 ax.xaxis.get_major_formatter().set_powerlimits((0, 3))
             ax.yaxis.get_major_formatter().set_useOffset(False)
             ax.xaxis.get_major_formatter().set_useOffset(False)
+
+        if self['color_cycle'] is not None:
+            if isinstance(self['color_cycle'], str):
+                ax.set_prop_cycle(cycler(color=plt.get_cmap(self['color_cycle']).colors))
+            elif isinstance(self['color_cycle'], Cycler):
+                ax.set_prop_cycle(self['color_cycle'])
+            else:
+                ax.set_prop_cycle(cycler(color=self['color_cycle']))
 
         return ax
 

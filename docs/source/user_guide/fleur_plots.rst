@@ -24,10 +24,10 @@ Bandstructures
 
 Compatible Recipes: ``FleurBands``
 
-The bandstructure visualization :py:func:`~masci_tools.vis.fleur.plot_fleur_bands()` can be used to
+The bandstructure visualization :py:func:`~masci_tools.vis.fleur.plot_fleur_bands()` can be used to plot
 
    1. Non-spinpolarized/spinpolarized bandstructures
-   2. Emphasizing weights on all eigenvalues (Also non-spinpolarized and spinpolarized)
+   2. Bandstructures with emphasized weights on all eigenvalues (Also non-spinpolarized and spinpolarized)
 
 Standard bandstructure
 ^^^^^^^^^^^^^^^^^^^^^^^^

@@ -89,7 +89,18 @@ def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, bokeh_plot=False,
     return fig
 
 
-def plot_fleur_dos(dosdata, attributes, spinpol=True, bokeh_plot=False, **kwargs):
+def plot_fleur_dos(dosdata,
+                   attributes,
+                   spinpol=True,
+                   bokeh_plot=False,
+                   plot_keys=None,
+                   show_total=True,
+                   show_interstitial=True,
+                   show_sym=False,
+                   show_atoms='all',
+                   show_lresolved=None,
+                   key_mask=None,
+                   **kwargs):
     """
     Plot the density of states previously extracted from a `banddos.hdf` via the
     :py:class:`~masci_tools.io.parsers.hdf5.reader.HDF5Reader`
@@ -103,6 +114,15 @@ def plot_fleur_dos(dosdata, attributes, spinpol=True, bokeh_plot=False, **kwargs
     :param spinpol: bool, if True (default) use the plot for spin-polarized dos if the data is spin-polarized
     :param bokeh_plot: bool (default False), if True use the bokeh routines for plotting
 
+    Arguments for selecting the DOS components to plot:
+        :param plot_keys: optional str list of str, defines the labels you want to plot
+        :param show_total: bool, if True (default) the total DOS is shown
+        :param show_interstitial: bool, if True (default) the interstitial DOS is shown
+        :param show_atoms: either 'all', None, or int or list of ints, defines, which total atom projections to show
+        :param show_atoms: either 'all', None, or int or list of ints, defines, which total atom projections to show
+        :param key_mask: list of bools of the same length as the number of datasets, alternative way
+                         to specify, which entries to plot
+
     All other Kwargs are passed on to the underlying plot routines
         - Matplotlib: :py:func:`~masci_tools.vis.plot_methods.plot_dos()`, :py:func:`~masci_tools.vis.plot_methods.plot_spinpol_dos()`
         - Bokeh: :py:func:`~masci_tools.vis.bokeh_plots.bokeh_dos()`, :py:func:`~masci_tools.vis.bokeh_plots.bokeh_spinpol_dos()`
@@ -110,11 +130,25 @@ def plot_fleur_dos(dosdata, attributes, spinpol=True, bokeh_plot=False, **kwargs
     from masci_tools.vis.plot_methods import plot_dos, plot_spinpol_dos
     from masci_tools.vis.bokeh_plots import bokeh_dos, bokeh_spinpol_dos
     import pandas as pd
+    import numpy as np
 
     dosdata = pd.DataFrame(data=dosdata)
 
     spinpol = attributes['spins'] == 2 and spinpol and any('_down' in key for key in dosdata.keys())
     legend_labels, keys = _generate_dos_labels(dosdata, attributes, spinpol)
+
+    if key_mask is None:
+        key_mask = _select_from_Local(keys,
+                                      plot_keys,
+                                      spinpol,
+                                      show_total=show_total,
+                                      show_interstitial=show_interstitial,
+                                      show_sym=show_sym,
+                                      show_atoms=show_atoms,
+                                      show_lresolved=show_lresolved)
+
+    #Select the keys
+    legend_labels, keys = np.array(legend_labels)[key_mask].tolist(), np.array(keys)[key_mask].tolist()
 
     if bokeh_plot:
         if spinpol:
@@ -123,6 +157,9 @@ def plot_fleur_dos(dosdata, attributes, spinpol=True, bokeh_plot=False, **kwargs
             fig = bokeh_dos(dosdata, ynames=keys, legend_label=legend_labels, **kwargs)
     else:
         if spinpol:
+            #Remove second half of legend labels
+            legend_labels[len(legend_labels) // 2:] = [None] * (len(legend_labels) // 2)
+
             dosdata_up = [dosdata[key].to_numpy() for key in keys if '_up' in key]
             dosdata_dn = [dosdata[key].to_numpy() for key in keys if '_down' in key]
             fig = plot_spinpol_dos(dosdata['energy_grid'], dosdata_up, dosdata_dn, plot_label=legend_labels, **kwargs)
@@ -226,34 +263,47 @@ def _generate_dos_labels(dosdata, attributes, spinpol):
     return labels, plot_order
 
 
-def _select_from_Local(dos_data_up, dos_data_dn, natoms, interstitial, atoms, l_resolved):
+def _select_from_Local(keys, plot_keys, spinpol, show_total, show_interstitial, show_sym, show_atoms, show_lresolved):
 
-    keys_to_plot = {'Total'}
+    #TODO: How do we do other dos modes
 
-    if interstitial:
-        keys_to_plot.add('INT')
+    if not isinstance(show_atoms, list) and show_atoms != 'all':
+        if show_atoms is not None:
+            show_atoms = [show_atoms]
 
-    if atoms == 'all':
-        atoms = range(1, natoms + 1)
-    elif atoms is not None:
-        if not isinstance(atoms, list):
-            atoms = [atoms]
+    if not isinstance(show_lresolved, list) and show_lresolved != 'all':
+        if show_lresolved is not None:
+            show_lresolved = [show_lresolved]
 
-    if atoms is not None:
-        keys_to_plot.update(f'MT:{atom}' for atom in atoms)
+    #initialize mask
+    if spinpol:
+        mask = [False] * (len(keys) // 2)
+    else:
+        mask = [False] * len(keys)
 
-    if l_resolved == 'all':
-        l_resolved = range(1, natoms + 1)
-    elif l_resolved is not None:
-        if not isinstance(l_resolved, list):
-            l_resolved = [l_resolved]
+    mask[0] = show_total
+    mask[1] = show_interstitial
+    mask[2] = show_sym
 
-    if l_resolved is not None:
-        keys_to_plot.update(f'MT:{atom}{orbital}' for atom in l_resolved for orbital in 'spdf')
+    natoms = (len(mask) - 3) // 5
 
-    keys_to_plot = sorted(keys_to_plot)
-    dos_data_up = [dos_data_up[key] for key in keys_to_plot]
-    if dos_data_dn is not None:
-        dos_data_dn = [dos_data_dn[key] for key in keys_to_plot]
+    if show_atoms is not None:
+        for iatom in range(natoms):
+            mask[3 + iatom * 5] = show_atoms == 'all' or iatom in show_atoms
 
-    return dos_data_up, dos_data_dn, keys_to_plot
+    if show_lresolved is not None:
+        for iatom in range(natoms):
+            if show_lresolved == 'all' or iatom in show_lresolved:
+                mask[3 + iatom * 5 + 1:3 + (iatom + 1) * 5] = [True, True, True, True]
+
+    if plot_keys is not None:
+        if not isinstance(plot_keys, list):
+            plot_keys = [plot_keys]
+
+        for key in plot_keys:
+            mask[keys.index(f'{key}_up')] = True
+
+    if spinpol:
+        mask.extend(mask)
+
+    return mask

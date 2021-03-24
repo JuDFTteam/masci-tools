@@ -1559,6 +1559,7 @@ def plot_dos(energy_grid,
 
     All other Kwargs are passed on to the :py:func:`multiple_scatterplots()` call
     """
+    import seaborn as sns
 
     if 'limits' in kwargs:
         limits = kwargs.pop('limits')
@@ -1574,7 +1575,8 @@ def plot_dos(energy_grid,
     if xyswitch:
         lines['vertical'], lines['horizontal'] = lines['horizontal'], lines['vertical']
 
-    plot_params.set_defaults(default_type='function', marker=None, legend=True, lines=lines)
+    color_cycle = ('black',) + tuple(sns.color_palette('muted'))
+    plot_params.set_defaults(default_type='function', marker=None, legend=True, lines=lines, color_cycle=color_cycle)
 
     if isinstance(dos_data[0], (list, np.ndarray)) and \
        not isinstance(energy_grid[0], (list, np.ndarray)):
@@ -1626,6 +1628,7 @@ def plot_spinpol_dos(energy_grid,
 
     All other Kwargs are passed on to the :py:func:`multiple_scatterplots()` call
     """
+    import seaborn as sns
 
     if 'limits' in kwargs:
         limits = kwargs.pop('limits')
@@ -1657,11 +1660,13 @@ def plot_spinpol_dos(energy_grid,
     else:
         num_plots = 1
 
+    color_cycle = ('black',) + tuple(sns.color_palette('muted'))
     plot_params.set_defaults(default_type='function',
                              marker=None,
                              legend=True,
                              lines=lines,
-                             repeat_colors_after=num_plots)
+                             repeat_colors_after=num_plots,
+                             color_cycle=color_cycle)
 
     dos_data = spin_up_data
     if not isinstance(spin_up_data[0], (list, np.ndarray)):
