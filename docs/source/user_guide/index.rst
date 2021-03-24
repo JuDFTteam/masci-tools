@@ -4,7 +4,7 @@ User guide
 This is the masci-tools user’s guide.
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 2
 
    fleur_parser
    fleurxmlmodifier

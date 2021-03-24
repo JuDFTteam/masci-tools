@@ -1,3 +1,5 @@
+.. _hdf5_parser:
+
 General ``HDF5`` file reader
 +++++++++++++++++++++++++++++
 

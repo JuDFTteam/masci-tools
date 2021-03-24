@@ -305,7 +305,7 @@ You might have situations, where you want to have some function specific paramet
 
 The :py:meth:`~masci_tools.vis.Plotter.add_parameter()` method is implemented exactly for this purpose. It creates a new key to be handled by the plotter class and with the arguments ``default_from`` or ``default_value`` we can specify what the defaults should be. ``default_value`` sets a specific value, ``default_from`` specifies a key from the plotter class from which to take the default value.
 
-The :py:meth:`~masci_tools.vis.MatplotlibPlotter.plot_kwargs()` method then can take keyword arguments to replace the arguments to take with your custom parameters
+The :py:meth:`~masci_tools.vis.matplotlib_plotter.MatplotlibPlotter.plot_kwargs()` method then can take keyword arguments to replace the arguments to take with your custom parameters
 
 .. note::
    These added parameters live on the function defaults and parameters level, meaning they will be removed by the :py:func:`~masci_tools.vis.ensure_plotter_consistency()` decorator after the function finishes
@@ -365,7 +365,7 @@ The :py:meth:`~masci_tools.vis.MatplotlibPlotter.plot_kwargs()` method then can 
 Nested plotting functions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-More complex plotting routines might want to call other plotting routines to simplify their structure. However, this has a side-effect when working with the :py:class:`~masci_tools.vis.Plotter` class and the :py:func:`~masci_tools.vis.Plotter.ensure_plotter_consistency()` decorator. Since the decorator resets the parameters and function defaults after a plotting function has been called you lose everything that you might have modified in the enclosing plotting function.
+More complex plotting routines might want to call other plotting routines to simplify their structure. However, this has a side-effect when working with the :py:class:`~masci_tools.vis.Plotter` class and the :py:func:`~masci_tools.vis.ensure_plotter_consistency()` decorator. Since the decorator resets the parameters and function defaults after a plotting function has been called you lose everything that you might have modified in the enclosing plotting function.
 
 If you do need access to these parameters after calling a nested plotting function the :py:func:`~masci_tools.vis.NestedPlotParameters()` contextmanager is implemented. It defines a local scope, in which a plotting function can change the parameters and function defaults. After exiting the local scope the parameters and function defaults are always in the same state as when the ``with`` block was entered (Even if an error is raised). The nested plotting function will also start with the state that was set before.
 
