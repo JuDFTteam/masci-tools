@@ -429,6 +429,3 @@ Usage is shown here:
 
    nested_plot_function(x, y)
    nested_plot_function(x, y, linewidth=1)
-
-
-

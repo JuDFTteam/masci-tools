@@ -1,5 +1,5 @@
 Using the Fleur input/output parsers
-====================================
++++++++++++++++++++++++++++++++++++++
 
 .. role:: raw-html(raw)
    :format: html
@@ -7,7 +7,7 @@ Using the Fleur input/output parsers
 .. contents::
 
 Parser for the Fleur inp.xml file
-+++++++++++++++++++++++++++++++++
+----------------------------------
 
 The fleur ```inp.xml``` contains all the information about the setup of a fleur calculation. To use this information in external scripts or aiida-fleur, the information needs to be parsed from the ```.xml``` format somehow.
 
@@ -35,7 +35,7 @@ The conversion of each attribute or text is done according to the FleurInputSche
 
 
 Parser for the Fleur out.xml file
-+++++++++++++++++++++++++++++++++
+----------------------------------
 
 For the ```out.xml``` file a similar parser is implemented. However, since the output file contains a lot more information, which is not always useful the :py:func:`~masci_tools.io.parsers.fleur.outxml_parser()` is defined a lot more selectively. But the usage is almost completely identical to the input file.
 
@@ -77,7 +77,7 @@ The following table shows the version compatibility of the output parser. For ve
 +------------------+-----------------------------------------------------------------------------------------------------+
 
 Using the :py:mod:`~masci_tools.util.schema_dict_util` functions
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-----------------------------------------------------------------
 
 If only a small amount of information is required from the input or output files of fleur the full parsers might be overkill. But there are a number of utility functions allowing easy access to information from the ```.xml``` files without knowing the exact xpath expressions for each version of the input/output. A code example extracting information from a input file is given below.
 

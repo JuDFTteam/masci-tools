@@ -1,7 +1,7 @@
 .. _fleurxml_mod:
 
 FleurXMLModifier
-================
++++++++++++++++++
 
 Description
 -----------

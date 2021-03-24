@@ -1,10 +1,10 @@
 General ``HDF5`` file reader
-=============================
++++++++++++++++++++++++++++++
 
 Fleur uses the HDF5 library for output files containing large datasets. The masci-tools library provides the :py:class:`~masci_tools.io.parsers.hdf5.reader.HDF5Reader` class to extract and transform information from these files. The ``h5py`` library is used to get information from ``.hdf`` files
 
 Basic Usage
-++++++++++++
+------------
 
 The specifications of what to extract and how to transform the data are given in the form of a python dictionary. Let us look at a usage example; extracting data for a bandstructure calculation from the ``banddos.hdf`` file produced by Fleur.
 
@@ -46,7 +46,7 @@ dataset into memory. To achieve this you can pass ``move_to_memory=False``, when
 Notice that most of the transformations will still implicitly create numpy arrays and after the hdf file is closed the datasets will no longer be available.
 
 Structure of recipes for the :py:class:`~masci_tools.io.parsers.hdf5.reader.HDF5Reader`
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-------------------------------------------------------------------------------------------
 
 The recipe for extracting bandstructure information form the ``banddos.hdf`` looks like this:
 
