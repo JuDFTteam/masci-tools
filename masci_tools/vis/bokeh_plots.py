@@ -27,7 +27,16 @@ plot_params = BokehPlotter()
 
 
 @ensure_plotter_consistency(plot_params)
-def bokeh_scatter(source, *, xdata='x', ydata='y', xlabel='x', ylabel='y', title='', figure=None, outfilename='scatter.html',**kwargs):
+def bokeh_scatter(source,
+                  *,
+                  xdata='x',
+                  ydata='y',
+                  xlabel='x',
+                  ylabel='y',
+                  title='',
+                  figure=None,
+                  outfilename='scatter.html',
+                  **kwargs):
     """
     Create an interactive scatter plot with bokeh
 

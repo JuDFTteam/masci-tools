@@ -17,6 +17,7 @@ is defined with default values and many helper methods
 from masci_tools.vis import Plotter
 import copy
 
+
 class BokehPlotter(Plotter):
     """
     Class for plotting parameters and standard code snippets for plotting with the

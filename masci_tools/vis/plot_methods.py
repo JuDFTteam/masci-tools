@@ -1837,6 +1837,7 @@ def plot_spinpol_bands(kpath,
                              xticklabels=xticklabels,
                              color=color,
                              cmap=cmaps,
+                             legend=True,
                              line_options={'zorder': -1})
 
     ax = multi_scatter_plot([kpath, kpath], [bands_up, bands_dn],
