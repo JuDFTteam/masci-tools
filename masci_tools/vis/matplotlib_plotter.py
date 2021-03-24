@@ -257,6 +257,7 @@ class MatplotlibPlotter(Plotter):
         :param minor: bool, if True minor tick parameters are set
         :param projection: str, passed on to the add_subplot call
 
+        :returns: the created or modified axis object
         """
         if axis is not None:
             ax = axis

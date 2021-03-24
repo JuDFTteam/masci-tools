@@ -113,7 +113,7 @@ def plot_fleur_dos(dosdata, attributes, spinpol=True, bokeh_plot=False, **kwargs
 
     dosdata = pd.DataFrame(data=dosdata)
 
-    spinpol = attributes['spins'] == 2 and spinpol
+    spinpol = attributes['spins'] == 2 and spinpol and any('_down' in key for key in dosdata.keys())
     legend_labels, keys = _generate_dos_labels(dosdata, attributes, spinpol)
 
     if bokeh_plot:
@@ -163,9 +163,9 @@ def _dos_order(key):
         atom_type = int(after[:-len(tail)]) if len(tail) > 0 else int(after[0])
 
         if tail in orbital_order:
-            return (spin, len(general) + atom_type, orbital_order.index(tail))
+            return (spin, len(general) + atom_type, str(orbital_order.index(tail)))
         else:
-            return (spin, len(general) + atom_type, orbital_order)
+            return (spin, len(general) + atom_type, tail)
 
     return None
 

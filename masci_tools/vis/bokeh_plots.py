@@ -27,23 +27,29 @@ plot_params = BokehPlotter()
 
 
 @ensure_plotter_consistency(plot_params)
-def bokeh_scatter(source, *, xdata='x', ydata='y', xlabel='x', ylabel='y', title='', figure=None, **kwargs):
+def bokeh_scatter(source, *, xdata='x', ydata='y', xlabel='x', ylabel='y', title='', figure=None, outfilename='scatter.html',**kwargs):
     """
-    create an interactive scatter plot with bokeh
+    Create an interactive scatter plot with bokeh
 
+    :param source: source for the data of the plot (pandas Dataframe for example)
+    :param xdata: key from which to pull the data for the x-axis
+    :param ydata: key from which to pull the data for the y-axis
+    :param xlabel: label for the x-axis
+    :param ylabel: label for the y-axis
+    :param title: title of the figure
+    :param figure: bokeh figure (optional), if provided the plot will be added to this figure
+    :param outfilename: filename of the output file
 
+    Kwargs will be passed on to :py:class:`masci_tools.vis.bokeh_plotter.BokehPlotter`.
+    If the arguments are not recognized they are passed on to the bokeh function `scatter`
     """
-    # create figure if needed
 
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
 
     p = plot_params.prepare_figure(title, xlabel, ylabel, figure=figure)
 
-    # choose color map
-    # draw scatter plot
     p.scatter(x=xdata, y=ydata, source=source, **kwargs)
 
-    # source.plot_bokeh.scatter(x='pt_number', y='mean', category='mean', colormap='Plasma', show_figure=False
     plot_params.draw_straight_lines(p)
     plot_params.set_limits(p)
     plot_params.save_plot(p)
@@ -63,9 +69,19 @@ def bokeh_multi_scatter(source,
                         outfilename='scatter.html',
                         **kwargs):
     """
-    Create an interactive multi line plot with bokeh, while also showing points
+    Create an interactive scatter (muliple data sets possible) plot with bokeh
 
-    Per default all ydata use the same x, if xdata is list it has to have the same length as ydata
+    :param source: source for the data of the plot (pandas Dataframe for example)
+    :param xdata: key from which to pull the data for the x-axis (or if source is None list with data for x-axis)
+    :param ydata: key from which to pull the data for the y-axis (or if source is None list with data for y-axis)
+    :param xlabel: label for the x-axis
+    :param ylabel: label for the y-axis
+    :param title: title of the figure
+    :param figure: bokeh figure (optional), if provided the plot will be added to this figure
+    :param outfilename: filename of the output file
+
+    Kwargs will be passed on to :py:class:`masci_tools.vis.bokeh_plotter.BokehPlotter`.
+    If the arguments are not recognized they are passed on to the bokeh function `scatter`
     """
     from bokeh.models import ColumnDataSource
 
@@ -164,12 +180,22 @@ def bokeh_line(source,
                title='',
                outfilename='scatter.html',
                plot_points=False,
-               bounds=None,
                **kwargs):
     """
-    Create an interactive multi line plot with bokeh, while also showing points
+    Create an interactive multi-line plot with bokeh
 
-    Per default all ydata use the same x, if xdata is list it has to have the same length as ydata
+    :param source: source for the data of the plot (pandas Dataframe for example)
+    :param xdata: key from which to pull the data for the x-axis (or if source is None list with data for x-axis)
+    :param ydata: key from which to pull the data for the y-axis (or if source is None list with data for y-axis)
+    :param xlabel: label for the x-axis
+    :param ylabel: label for the y-axis
+    :param title: title of the figure
+    :param figure: bokeh figure (optional), if provided the plot will be added to this figure
+    :param outfilename: filename of the output file
+    :param plot_points: bool, if True also plot the points with a scatterplot on top
+
+    Kwargs will be passed on to :py:class:`masci_tools.vis.bokeh_plotter.BokehPlotter`.
+    If the arguments are not recognized they are passed on to the bokeh function `line`
     """
     from bokeh.models import ColumnDataSource
 
@@ -292,7 +318,24 @@ def bokeh_dos(dosdata,
               title=r'Density of states',
               xyswitch=False,
               e_fermi=0,
+              outfilename='dos_plot.html',
               **kwargs):
+    """
+    Create an interactive dos plot (non-spinpolarized) with bokeh
+    Both horizontal or vertical orientation are possible
+
+    :param dosdata: source for the dosdata of the plot (pandas Dataframe for example)
+    :param energy: key from which to pull the data for the energy grid
+    :param ynames: keys from which to pull the data for dos components
+    :param energy_label: label for the energy-axis
+    :param dos_label: label for the dos-axis
+    :param title: title of the figure
+    :param xyswitch: bool if True, the energy will be plotted along the y-direction
+    :param e_fermi: float, determines, where to put the line for the fermi energy
+    :param outfilename: filename of the output file
+
+    Kwargs will be passed on to :py:func:`bokeh_line()`
+    """
 
     if 'limits' in kwargs:
         limits = kwargs.pop('limits')
@@ -346,8 +389,27 @@ def bokeh_spinpol_dos(dosdata,
                       xyswitch=False,
                       e_fermi=0,
                       spin_arrows=True,
+                      outfilename='dos_plot.html',
                       **kwargs):
+    """
+    Create an interactive dos plot (spinpolarized) with bokeh
+    Both horizontal or vertical orientation are possible
 
+    :param dosdata: source for the dosdata of the plot (pandas Dataframe for example)
+    :param energy: key from which to pull the data for the energy grid
+    :param ynames: keys from which to pull the data for dos components
+    :param spin_dn_negative: bool, if True (default), the spin down components are plotted downwards
+    :param energy_label: label for the energy-axis
+    :param dos_label: label for the dos-axis
+    :param title: title of the figure
+    :param xyswitch: bool if True, the energy will be plotted along the y-direction
+    :param e_fermi: float, determines, where to put the line for the fermi energy
+    :param spin_arrows: bool, if True (default) small arrows will be plotted on the left side of the plot indicating
+                        the spin directions (if spin_dn_negative is True)
+    :param outfilename: filename of the output file
+
+    Kwargs will be passed on to :py:func:`bokeh_line()`
+    """
     from bokeh.models import NumeralTickFormatter, Arrow, NormalHead
 
     if 'limits' in kwargs:
@@ -424,7 +486,7 @@ def bokeh_spinpol_dos(dosdata,
                        show=False,
                        **kwargs)
 
-    if spin_arrows:
+    if spin_arrows and spin_dn_negative:
 
         #These are hardcoded because the parameters are not
         #reused anywhere (for now)
@@ -465,14 +527,36 @@ def bokeh_bands(bandsdata,
                 *,
                 k_label='kpath',
                 eigenvalues='eigenvalues_up',
+                weight=None,
                 xlabel='',
                 ylabel=r'E-E_F [eV]',
                 title='',
                 special_kpoints=None,
-                weight=None,
                 size_min=3.0,
                 size_scaling=10.0,
+                outfilename='bands_plot.html',
                 **kwargs):
+    """
+    Create an interactive bandstructure plot (non-spinpolarized) with bokeh
+    Can make a simple plot or weight the size and color of the points against a given weight
+
+    :param bandsdata: source for the bandsdata of the plot (pandas Dataframe for example)
+    :param k_label: key from which to pull the data for the kpoints
+    :param eigenvalues: key from which to pull the data for eigenvalues
+    :param weight: optional key from the bandsdata. If given the size and color of each point
+                   are adjusted to show the weights
+    :param xlabel: label for the x-axis (default no label)
+    :param ylabel: label for the y-axis
+    :param title: title of the figure
+    :param special_kpoints: list of tuples (str, float), place vertical lines at the given values
+                            and mark them on the x-axis with the given label
+    :param e_fermi: float, determines, where to put the line for the fermi energy
+    :param size_min: minimum value used in scaling points for weight
+    :param size_scaling: factor used in scaling points for weight
+    :param outfilename: filename of the output file
+
+    Kwargs will be passed on to :py:func:`bokeh_multi_scatter()`
+    """
     from bokeh.transform import linear_cmap
 
     if weight is not None:
@@ -524,14 +608,36 @@ def bokeh_spinpol_bands(bandsdata,
                         *,
                         k_label='kpath',
                         eigenvalues=None,
+                        weight=None,
                         xlabel='',
                         ylabel=r'E-E_F [eV]',
                         title='',
                         special_kpoints=None,
-                        weight=None,
                         size_min=3.0,
                         size_scaling=10.0,
+                        outfilename='bands_plot.html',
                         **kwargs):
+    """
+    Create an interactive bandstructure plot (spinpolarized) with bokeh
+    Can make a simple plot or weight the size and color of the points against a given weight
+
+    :param bandsdata: source for the bandsdata of the plot (pandas Dataframe for example)
+    :param k_label: key from which to pull the data for the kpoints
+    :param eigenvalues: keys from which to pull the data for eigenvalues (default ['eigenvalues_up','eigenvalues_down'])
+    :param weight: optional key from the bandsdata. If given the size and color of each point
+                   are adjusted to show the weights
+    :param xlabel: label for the x-axis (default no label)
+    :param ylabel: label for the y-axis
+    :param title: title of the figure
+    :param special_kpoints: list of tuples (str, float), place vertical lines at the given values
+                            and mark them on the x-axis with the given label
+    :param e_fermi: float, determines, where to put the line for the fermi energy
+    :param size_min: minimum value used in scaling points for weight
+    :param size_scaling: factor used in scaling points for weight
+    :param outfilename: filename of the output file
+
+    Kwargs will be passed on to :py:func:`bokeh_multi_scatter()`
+    """
     from bokeh.transform import linear_cmap
 
     if weight is not None:

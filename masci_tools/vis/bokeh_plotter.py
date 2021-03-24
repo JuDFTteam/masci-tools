@@ -11,12 +11,11 @@
 #                                                                             #
 ###############################################################################
 """
-Here are all plot varaiables/constants,
-
+Here the :py:class:`masci_tools.vis.Plotter` subclass for the bokeh plotting backend
+is defined with default values and many helper methods
 """
 from masci_tools.vis import Plotter
 import copy
-
 
 class BokehPlotter(Plotter):
     """
@@ -138,7 +137,7 @@ class BokehPlotter(Plotter):
 
         Example for using a custom markersize::
 
-            p = MatplotlibPlotter()
+            p = BokehPlotter()
             p.add_parameter('marker_custom', default_from='marker')
             p.plot_kwargs(marker='marker_custom')
 
@@ -178,6 +177,17 @@ class BokehPlotter(Plotter):
         return plot_kwargs
 
     def prepare_figure(self, title, xlabel, ylabel, figure=None):
+        """
+        Create a bokeh figure according to the set parameters or modify an existing one
+
+        :param title: title of the figure
+        :param xlabel: label on the x-axis
+        :param ylabel: label on the y-axis
+        :param figure: bokeh figure, optional, if given the operations are performed on the object
+                       otherwise a new figure is created
+
+        :returns: the created or modified bokeh figure
+        """
         from bokeh.plotting import figure as bokeh_fig
         from bokeh.models import Title
 
@@ -273,7 +283,7 @@ class BokehPlotter(Plotter):
         """
         Draw horizontal and vertical lines specified in the lines argument
 
-        :param ax: Axes object on which to perform the operation
+        :param fig: bokeh figure on which to perform the operation
         """
         from bokeh.models import Span
 
@@ -321,9 +331,9 @@ class BokehPlotter(Plotter):
 
     def set_limits(self, fig):
         """
-        Set limits of the axis
+        Set limits of the figure
 
-        :param ax: Axes object on which to perform the operation
+        :param fig: bokeh figure on which to perform the operation
         """
         from bokeh.models import Range1d
 
@@ -338,6 +348,11 @@ class BokehPlotter(Plotter):
                 fig.y_range = Range1d(ymin, ymax)
 
     def set_legend(self, fig):
+        """
+        Set legend options for the figure
+
+        :param fig: bokeh figure on which to perform the operation
+        """
 
         fig.legend.location = self['legend_location']
         fig.legend.background_fill_color = self['background_fill_color']
@@ -349,6 +364,11 @@ class BokehPlotter(Plotter):
             fig.add_layout(fig.legend[0], 'right')
 
     def save_plot(self, figure):
+        """
+        Show/save the bokeh figure (atm only show)
+
+        :param figure: bokeh figure on which to perform the operation
+        """
         from bokeh.io import show as bokeh_show
         if self['show']:
             bokeh_show(figure)
