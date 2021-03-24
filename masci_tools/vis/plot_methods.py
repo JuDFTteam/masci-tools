@@ -493,13 +493,11 @@ def colormesh_plot(xdata, ydata, cdata, *, xlabel='', ylabel='', title='', savea
         limits['y'] = (ydata.min(), ydata.max())
     kwargs['limits'] = limits
 
-    plot_params.plot_type = 'colormesh'
-
     plot_params.set_defaults(default_type='function', edgecolor='face')
     kwargs = plot_params.set_parameters(continue_on_error=True, area_plot=False, **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
-    plot_kwargs = plot_params.plot_kwargs()
+    plot_kwargs = plot_params.plot_kwargs(plot_type='colormesh')
 
     ax.pcolormesh(xdata, ydata, cdata, **plot_kwargs, **kwargs)
 
@@ -749,8 +747,6 @@ def histogram(xdata,
     If the arguments are not recognized they are passed on to the matplotlib function `hist`
     """
 
-    plot_params.plot_type = 'histogram'
-
     if 'label' in kwargs:
         warnings.warn('Please use plot_label instead of label', DeprecationWarning)
         kwargs['plot_label'] = kwargs.pop('label')
@@ -778,7 +774,7 @@ def histogram(xdata,
 
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis, minor=True)
 
-    plot_kwargs = plot_params.plot_kwargs()
+    plot_kwargs = plot_params.plot_kwargs(plot_type='histogram')
     n, bins, patches = ax.hist(xdata,
                                density=density,
                                histtype=histtype,
@@ -867,7 +863,6 @@ def barchart(xdata,
 
     plot_params.single_plot = False
     plot_params.num_plots = len(ydata)
-    plot_params.plot_type = 'histogram'
 
     #DEPRECATION WARNINGS
     if 'plot_labels' in kwargs:
@@ -922,7 +917,7 @@ def barchart(xdata,
     else:
         datab = np.zeros(len(ydata[0]))
 
-    plot_kwargs = plot_params.plot_kwargs()
+    plot_kwargs = plot_params.plot_kwargs(plot_type='histogram')
 
     for indx, data in enumerate(zip(xdata, ydata, plot_kwargs)):
 

@@ -85,7 +85,6 @@ def bokeh_multi_scatter(source,
 
     plot_params.single_plot = False
     plot_params.num_plots = len(ydata)
-    plot_params.plot_type = 'scatter'
 
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
     p = plot_params.prepare_figure(title, xlabel, ylabel, figure=figure)
@@ -120,7 +119,7 @@ def bokeh_multi_scatter(source,
     # dataframe and column data source expect all entries to be same length...
     # therefore we parse data to plot routines directly... might make other things harder
 
-    plot_kwargs = plot_params.plot_kwargs()
+    plot_kwargs = plot_params.plot_kwargs(plot_type='scatter')
 
     for indx, data in enumerate(zip(ydatad, plot_kwargs)):
 
@@ -224,12 +223,9 @@ def bokeh_line(source,
     # dataframe and column data source expect all entries to be same length...
     # therefore we parse data to plot routines directly... might make other things harder
 
-    plot_params.plot_type = 'line'
-    plot_kw_line = plot_params.plot_kwargs()
-    plot_params.plot_type = 'scatter'  #Kind of ugly :(
-    plot_kw_scatter = plot_params.plot_kwargs()
-    plot_params.plot_type = 'area'
-    plot_kw_area = plot_params.plot_kwargs()
+    plot_kw_line = plot_params.plot_kwargs(plot_type='line')
+    plot_kw_scatter = plot_params.plot_kwargs(plot_type='scatter')
+    plot_kw_area = plot_params.plot_kwargs(plot_type='area')
 
     area_curve = kwargs.pop('area_curve', None)
 

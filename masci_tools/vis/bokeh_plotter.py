@@ -126,7 +126,7 @@ class BokehPlotter(Plotter):
 
         super().__init__(self._BOKEH_DEFAULTS, general_keys=self._BOKEH_GENERAL_ARGS, **kwargs)
 
-    def plot_kwargs(self, ignore=None, extra_keys=None, **kwargs):
+    def plot_kwargs(self, ignore=None, extra_keys=None, plot_type='default', **kwargs):
         """
         Creates a dict or list of dicts (for multiple plots) with the defined parameters
         for the plotting calls fo matplotlib
@@ -145,13 +145,13 @@ class BokehPlotter(Plotter):
         This code snippet will return the standard parameters for a plot, but the value
         for the marker will be taken from the key `marker_custom`
         """
-        if self.plot_type == 'default':
+        if plot_type == 'default':
             kwargs_keys = self._PLOT_KWARGS
-        elif self.plot_type == 'line':
+        elif plot_type == 'line':
             kwargs_keys = self._PLOT_KWARGS | self._PLOT_KWARGS_LINE
-        elif self.plot_type == 'scatter':
+        elif plot_type == 'scatter':
             kwargs_keys = self._PLOT_KWARGS | self._PLOT_KWARGS_SCATTER
-        elif self.plot_type == 'area':
+        elif plot_type == 'area':
             kwargs_keys = self._PLOT_KWARGS | self._PLOT_KWARGS_AREA
 
         if extra_keys is not None:

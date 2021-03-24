@@ -166,7 +166,7 @@ class MatplotlibPlotter(Plotter):
     def __init__(self, **kwargs):
         super().__init__(self._MATPLOTLIB_DEFAULTS, general_keys=self._MATPLOTLIB_GENERAL_ARGS, **kwargs)
 
-    def plot_kwargs(self, ignore=None, extra_keys=None, **kwargs):
+    def plot_kwargs(self, ignore=None, extra_keys=None, plot_type='default', **kwargs):
         """
         Creates a dict or list of dicts (for multiple plots) with the defined parameters
         for the plotting calls fo matplotlib
@@ -185,11 +185,11 @@ class MatplotlibPlotter(Plotter):
         This code snippet will return the standard parameters for a plot, but the value
         for the marker will be taken from the key `marker_custom`
         """
-        if self.plot_type == 'default':
+        if plot_type == 'default':
             kwargs_keys = self._PLOT_KWARGS
-        elif self.plot_type == 'colormesh':
+        elif plot_type == 'colormesh':
             kwargs_keys = self._PLOT_KWARGS_COLORMESH
-        elif self.plot_type == 'histogram':
+        elif plot_type == 'histogram':
             kwargs_keys = self._PLOT_KWARGS_HIST
 
         if self.single_plot:
