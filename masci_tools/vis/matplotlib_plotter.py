@@ -42,7 +42,7 @@ class MatplotlibPlotter(Plotter):
         'title_fontsize': 16,
         'figure_kwargs': {
             'figsize': (8, 6),
-            'dpi': 80,
+            'dpi': 600,
             'facecolor': 'w',
             'edgecolor': 'k',
             'constrained_layout': False,
