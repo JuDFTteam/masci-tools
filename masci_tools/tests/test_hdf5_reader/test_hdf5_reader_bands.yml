@@ -1,10 +1,10 @@
 attributes:
-  atom_groups:
-  - 1
-  - 2
   atoms_elements:
   - Cu
   - Cu
+  atoms_groups:
+  - 1
+  - 2
   atoms_position:
   - - 0.0
     - 0.0
@@ -84,6 +84,7 @@ attributes:
   - - 0.475
     - 0.0
     - 0.0
+  n_types: 2
   nbands: 18
   nkpts: 20
   reciprocal_cell:
