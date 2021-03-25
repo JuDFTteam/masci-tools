@@ -118,8 +118,8 @@ class Plotter(object):
 
     The hierachy is as follows (First entries take precedence over later entries):
         - `parameters`: set by :py:func:`~Plotter.set_parameters()` (usually arguments passed into function)
-        - `function defaults`: set by :py:func:`~Plotter.set_defaults()` with `default_type='function'`
         - `user defaults`: set by :py:func:`~Plotter.set_defaults()`
+        - `function defaults`: set by :py:func:`~Plotter.set_defaults()` with `default_type='function'`
         - `global defaults`: Hardcoded as fallback
 
     Only the `parameters` can represent parameters for multiple sets of plot calls.
@@ -171,8 +171,8 @@ class Plotter(object):
 
         #ChainMap with three dictionaries on top
         # 1. function parameters
-        # 2. function defaults
-        # 3. global defaults
+        # 2. global defaults
+        # 3. function defaults
         # 4. Hardcoded defaults
         self._params = ChainMap({}, {}, {}, self._PLOT_DEFAULTS)
 
