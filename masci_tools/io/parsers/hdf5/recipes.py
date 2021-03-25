@@ -84,9 +84,9 @@ def dos_recipe_format(group):
                 'transforms': [
                     Transformation(name='get_all_child_datasets', args=(), kwargs={'ignore': 'energyGrid'}),
                     AttribTransformation(name='add_partial_sums',
-                                         attrib_name='atom_groups',
+                                         attrib_name='atoms_groups',
                                          args=('{atom_prefix}:{{}}'.format(atom_prefix=atom_prefix).format,),
-                                         kwargs={}),
+                                         kwargs={'make_set': True}),
                     Transformation(name='multiply_scalar', args=(1.0 / HTR_TO_EV,), kwargs={}),
                     Transformation(
                         name='split_array',
@@ -103,12 +103,18 @@ def dos_recipe_format(group):
             }
         },
         'attributes': {
+            'n_types': {
+                'h5path': '/atoms',
+                'description': 'Number of atom types',
+                'transforms': [Transformation(name='get_attribute', args=('nTypes',), kwargs={}),
+                               Transformation(name='get_first_element', args=(), kwargs={})]
+            },
             'atoms_elements': {
                 'h5path': '/atoms/atomicNumbers',
                 'description': 'Atomic numbers',
                 'transforms': [Transformation(name='periodic_elements', args=(), kwargs={})]
             },
-            'atom_groups': {
+            'atoms_groups': {
                 'h5path': '/atoms/equivAtomsGroup'
             },
             'fermi_energy': {
@@ -150,9 +156,9 @@ FleurBands = {
             'transforms': [
                 Transformation(name='get_all_child_datasets', args=(), kwargs={'ignore': ['eigenvalues', 'kpts']}),
                 AttribTransformation(name='add_partial_sums',
-                                     attrib_name='atom_groups',
+                                     attrib_name='atoms_groups',
                                      args=('MT:{}'.format,),
-                                     kwargs={}),
+                                     kwargs={'make_set': True}),
                 Transformation(name='split_array', args=(), kwargs={'suffixes': ['up', 'down']}),
                 Transformation(name='flatten_array', args=(), kwargs={})
             ],
@@ -196,6 +202,12 @@ FleurBands = {
         },
     },
     'attributes': {
+        'n_types': {
+                'h5path': '/atoms',
+                'description': 'Number of atom types',
+                'transforms': [Transformation(name='get_attribute', args=('nTypes',), kwargs={}),
+                               Transformation(name='get_first_element', args=(), kwargs={})]
+        },
         'kpoints': {
             'h5path': '/kpts/coordinates',
         },
@@ -224,7 +236,7 @@ FleurBands = {
             'h5path': '/atoms/positions',
             'description': 'Atom coordinates per atom',
         },
-        'atom_groups': {
+        'atoms_groups': {
             'h5path': '/atoms/equivAtomsGroup'
         },
         'bravais_matrix': {
