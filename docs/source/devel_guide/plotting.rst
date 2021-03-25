@@ -1,3 +1,5 @@
+.. _devguideplotting:
+
 Using the :py:class:`~masci_tools.vis.Plotter` class
 ++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -120,7 +122,7 @@ Let us take the previous example and convert it to use a global instance
    plot_with_defaults(x, y, limits={'x': (0,1)})
    plot_with_defaults(x, y)
 
-The :py:meth:`masci_tools.vis.Plotter.set_defaults()` method is exposed in the two main modules for plotting :py:mod:`masci_tools.vis.plot_methods` :py:mod:`masci_tools.vis.bokeh_plots` as the function ``set_plot_defaults()`` specific to the plotter instance that is used in these modules.
+The :py:meth:`masci_tools.vis.Plotter.set_defaults()` method is exposed in the two main modules for plotting :py:mod:`masci_tools.vis.plot_methods` :py:mod:`masci_tools.vis.bokeh_plots` as the functions :py:func:`masci_tools.vis.plot_methods.set_mpl_plot_defaults()` and  :py:func:`masci_tools.vis.bokeh_plots.set_bokeh_plot_defaults()` specific to the plotter instance that is used in these modules.
 
 Function defaults
 ^^^^^^^^^^^^^^^^^^
