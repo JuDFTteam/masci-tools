@@ -223,7 +223,10 @@ def _generate_dos_labels(dosdata, attributes, spinpol):
     labels = []
     plot_order = []
 
-    atom_elements = list(attributes['atoms_elements'])
+    types_elements = []
+    for itype in range(1,attributes['n_types']+1):
+        ind = list(attributes['atoms_groups']).index(itype)
+        types_elements.append(attributes['atoms_elements'][ind])
 
     for key in sorted(dosdata.keys(), key=_dos_order):
         if key == 'energy_grid':
@@ -244,8 +247,8 @@ def _generate_dos_labels(dosdata, attributes, spinpol):
 
             atom_label = attributes['atoms_elements'][atom_type - 1]
 
-            if atom_elements.count(atom_label) != 1:
-                atom_occ = atom_elements[:atom_type].count(atom_label)
+            if types_elements.count(atom_label) != 1:
+                atom_occ = types_elements[:atom_type].count(atom_label)
 
                 atom_label = f'{atom_label}-{atom_occ}'
 
