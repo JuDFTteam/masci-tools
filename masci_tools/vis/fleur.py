@@ -93,6 +93,7 @@ def plot_fleur_dos(dosdata,
                    attributes,
                    spinpol=True,
                    bokeh_plot=False,
+                   multiply_by_equiv_atoms=False,
                    plot_keys=None,
                    show_total=True,
                    show_interstitial=True,
@@ -131,8 +132,18 @@ def plot_fleur_dos(dosdata,
     from masci_tools.vis.bokeh_plots import bokeh_dos, bokeh_spinpol_dos
     import pandas as pd
     import numpy as np
+    from collections import Counter
 
     dosdata = pd.DataFrame(data=dosdata)
+
+    if multiply_by_equiv_atoms:
+        n_equiv = Counter(attributes['atoms_groups'])
+        for natom in range(1,attributes['n_types']+1):
+            for key in dosdata.keys():
+                if f'MT:{natom}' in key:
+                    dosdata[key] *= n_equiv[natom]
+
+
 
     spinpol = attributes['spins'] == 2 and spinpol and any('_down' in key for key in dosdata.keys())
     legend_labels, keys = _generate_dos_labels(dosdata, attributes, spinpol)
@@ -288,13 +299,13 @@ def _select_from_Local(keys, plot_keys, spinpol, show_total, show_interstitial, 
     natoms = (len(mask) - 3) // 5
 
     if show_atoms is not None:
-        for iatom in range(natoms):
-            mask[3 + iatom * 5] = show_atoms == 'all' or iatom in show_atoms
+        for iatom in range(1,natoms+1):
+            mask[3 + (iatom-1) * 5] = show_atoms == 'all' or iatom in show_atoms
 
     if show_lresolved is not None:
-        for iatom in range(natoms):
+        for iatom in range(1,natoms+1):
             if show_lresolved == 'all' or iatom in show_lresolved:
-                mask[3 + iatom * 5 + 1:3 + (iatom + 1) * 5] = [True, True, True, True]
+                mask[3 + (iatom-1) * 5 + 1:3 + iatom * 5] = [True, True, True, True]
 
     if plot_keys is not None:
         if not isinstance(plot_keys, list):
