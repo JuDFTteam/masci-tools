@@ -107,3 +107,90 @@ Spinpolarized bandstructure (weights for d-orbital)
 
 Density of States
 ------------------
+
+Compatible Recipes: ``FleurDOS``, ``FleurJDOS``, ``FleurORBCOMP``, ``FleurMCD``
+
+The dos visualization :py:func:`~masci_tools.vis.fleur.plot_fleur_dos()` can be used to plot
+non spinpolarized and spinpolarized DOS, with selection of which components to plot.
+
+Standard density of states plot
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+   from masci_tools.io.parsers.hdf5 import HDF5Reader
+   from masci_tools.io.parsers.hdf5.recipes FleurDOS
+   from masci_tools.vis.fleur import plot_fleur_dos
+
+   #Read in data
+   with HDF5Reader('/path/to/banddos.hdf') as h5reader:
+      data, attributes = h5reader.read(recipe=FleurDOS)
+
+   #Plot the data
+   #Notice that you get the axis object of this plot is returned
+   #if you want to make any special additions
+   ax = plot_fleur_dos(data, attributes)
+
+Non spinpolarized DOS
+""""""""""""""""""""""
+
+.. image:: ../images/dos_non_spinpol_standard.png
+    :width: 100%
+    :align: center
+
+Spinpolarized DOS
+""""""""""""""""""""""
+
+.. image:: ../images/dos_spinpol_standard.png
+    :width: 100%
+    :align: center
+
+Plotting options for DOS plots
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The :py:func:`~masci_tools.vis.fleur.plot_fleur_dos()` function has a couple of options to modify, what is being displayed from the ``banddos.hdf`` file. Below we show a few examples of ways to use these options, together with examples of resulting plots.
+
+DOS with atom components scaled with equivalent atoms
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+When you look at the example plot for the non spin-polarized DOS, you might notice that the interstitial component and the atom projected components do not add up to the total density of states. This system has two symmetry equivalent `Si` atoms. By default the atom projected density of states corresponds to only one of these atoms.
+
+If you wish to show the atom projected components of the DOS scaled with the number of symmetry equivalent atoms you can provide the option ``multiply_by_equiv_atoms=True`` option to the plotting function.
+
+.. code-block:: python
+
+   ax = plot_fleur_dos(data, attributes, multiply_by_equiv_atoms=True)
+
+.. image:: ../images/dos_non_spinpol_multiplied.png
+    :width: 100%
+    :align: center
+
+Selecting specific DOS components
+""""""""""""""""""""""""""""""""""
+
+The DOS is made up of a lot of contributions that can be displayed separately.
+
+Here we list the options that are available and show exmaple plots for only selecting the atom projected compinents of the density of states
+
+   - :plot_keys: Can be used to provide a explicit list of keys you want to display (Same format as in the ``banddos.hdf``)
+   - :show_total: Control, whether to show the total density of states (default ``True``)
+   - :show_interstitial: Control, whether to show the interstitial contribution of the density of states (default ``True``)
+   - :show_atoms: Control, which total atom projected DOS to show. Can be either the string ``all`` (All components are shown), the value ``None`` (no components are shown) or a list of the integer indices of the atom types that should be displayed (default ``all``)
+   - :show_lresolved: Control, on which atoms to show the orbital projected DOS. Can be either the string ``all`` (All components are shown), the value ``None`` (no components are shown) or a list of the integer indices of the atom types for which to display the orbital components (default ``None``)
+
+Below an example of only displaying the atom projected DOS together with their orbital contributions is shown.
+
+.. code-block:: python
+
+   ax = plot_fleur_dos(data, attributes,
+                       show_total=False,
+                       show_interstitial=False,
+                       show_lresolved='all')
+
+.. image:: ../images/dos_non_spinpol_selection.png
+    :width: 100%
+    :align: center
+
+.. image:: ../images/dos_spinpol_selection.png
+    :width: 100%
+    :align: center
