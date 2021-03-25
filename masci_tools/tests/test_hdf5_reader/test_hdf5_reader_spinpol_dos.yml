@@ -1,9 +1,10 @@
 attributes:
-  atom_groups:
-  - 1
   atoms_elements:
   - Sm
+  atoms_groups:
+  - 1
   fermi_energy: -0.08601086958086933
+  n_types: 1
   spins: 2
 datasets:
   INT_down:

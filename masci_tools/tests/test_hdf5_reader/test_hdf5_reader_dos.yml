@@ -1,11 +1,12 @@
 attributes:
-  atom_groups:
-  - 1
-  - 2
   atoms_elements:
   - Cu
   - Cu
+  atoms_groups:
+  - 1
+  - 2
   fermi_energy: 0.4239195362843491
+  n_types: 2
   spins: 1
 datasets:
   INT_up:

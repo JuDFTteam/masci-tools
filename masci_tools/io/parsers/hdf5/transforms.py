@@ -573,7 +573,7 @@ def shift_by_attribute(dataset, attribute_value, negative=False):
 
 
 @hdf5_transformation(attribute_needed=True)
-def add_partial_sums(dataset, attribute_value, pattern_format):
+def add_partial_sums(dataset, attribute_value, pattern_format, make_set=False):
     """
     Add entries to the dataset dict (Only avalaible for dict datasets) with sums
     over entries containing a given pattern formatted with a attribute_value
@@ -596,6 +596,9 @@ def add_partial_sums(dataset, attribute_value, pattern_format):
 
     if not isinstance(attribute_value, (list, np.ndarray)):
         raise ValueError('attribute_value has be a list or array')
+
+    if make_set:
+        attribute_value = set(attribute_value)
 
     transformed = dataset.copy()
     for val in attribute_value:
