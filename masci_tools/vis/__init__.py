@@ -33,13 +33,13 @@ def NestedPlotParameters(plotter_object):
     assert isinstance(plotter_object, Plotter), \
            'The NestedPlotParameters contextmanager should only be used for Plotter objects'
 
-    function_defaults_before = copy.deepcopy(plotter_object._params.maps[1])
+    function_defaults_before = copy.deepcopy(plotter_object._params.maps[2])
     parameters_before = copy.deepcopy(plotter_object._params.maps[0])
 
     try:
         yield
     finally:  #Also performed if exception is thrown??
-        plotter_object._params.maps[1] = function_defaults_before
+        plotter_object._params.maps[2] = function_defaults_before
         plotter_object._params.maps[0] = parameters_before
 
 
@@ -71,26 +71,26 @@ def ensure_plotter_consistency(plotter_object):
             they are consistent
             """
 
-            global_defaults_before = copy.deepcopy(plotter_object._params.maps[2])
+            global_defaults_before = copy.deepcopy(plotter_object._params.maps[1])
 
             try:
                 res = func(*args, **kwargs)
             except Exception:
                 plotter_object.remove_added_parameters()
                 plotter_object.reset_parameters()
-                plotter_object._params.maps[1] = {}
+                plotter_object._params.maps[2] = {}
                 raise  #We do not want to erase the exception only wedge in the call to reset_parameters
             else:
                 plotter_object.remove_added_parameters()
                 plotter_object.reset_parameters()
-                plotter_object._params.maps[1] = {}
+                plotter_object._params.maps[2] = {}
 
-            if plotter_object._params.maps[2] != global_defaults_before:
+            if plotter_object._params.maps[1] != global_defaults_before:
                 #Reset the changes
-                plotter_object._params.maps[2] = global_defaults_before
+                plotter_object._params.maps[1] = global_defaults_before
                 plotter_object.remove_added_parameters()
                 plotter_object.reset_parameters()
-                plotter_object._params.maps[1] = {}
+                plotter_object._params.maps[2] = {}
                 raise ValueError(f"Defaults have changed inside the plotting function '{func.__name__}'")
 
             return res
@@ -323,9 +323,9 @@ class Plotter(object):
             raise KeyError(f'Unknown parameter: {key}')
 
         if default_type == 'global':
-            self.__update_map(self._params.parents.parents, key, value)
-        elif default_type == 'function':
             self.__update_map(self._params.parents, key, value)
+        elif default_type == 'function':
+            self.__update_map(self._params.parents.parents, key, value)
 
     def __setitem__(self, key, value):
         """
@@ -392,7 +392,11 @@ class Plotter(object):
         """
 
         kwargs_unprocessed = copy.deepcopy(kwargs)
-        defaults_before = copy.deepcopy(self._params.maps[2])
+        if default_type == 'global':
+            defaults_before = copy.deepcopy(self._params.maps[1])
+        elif default_type == 'function':
+            defaults_before = copy.deepcopy(self._params.maps[2])
+
         for key, value in kwargs.items():
 
             try:
@@ -400,7 +404,10 @@ class Plotter(object):
                 kwargs_unprocessed.pop(key)
             except KeyError as err:
                 if not continue_on_error:
-                    self._params.maps[2] = defaults_before
+                    if default_type == 'global':
+                        self._params.maps[1] = defaults_before
+                    elif default_type == 'function':
+                        self._params.maps[2] = defaults_before
                     raise KeyError(f'Unknown parameter: {key}') from err
 
         if 'extra_kwargs' in kwargs_unprocessed:
@@ -454,7 +461,7 @@ class Plotter(object):
                 default_val = copy.deepcopy(default_val)
 
         self._added_parameters.add(name)
-        self._params.maps[1][name] = default_val
+        self._params.maps[2][name] = default_val
 
     def remove_added_parameters(self):
         """
@@ -462,7 +469,7 @@ class Plotter(object):
         """
 
         for key in copy.deepcopy(self._added_parameters):
-            self._params.maps[1].pop(key, None)
+            self._params.maps[2].pop(key, None)
             self._params.maps[0].pop(key, None)
 
     def reset_defaults(self):

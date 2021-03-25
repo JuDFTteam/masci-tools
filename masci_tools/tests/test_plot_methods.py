@@ -23,9 +23,9 @@ def test_plot_methods_imports():
     """
     Test that all expected functions are still there
     """
-    from masci_tools.vis.plot_methods import set_plot_defaults
-    from masci_tools.vis.plot_methods import reset_plot_defaults
-    from masci_tools.vis.plot_methods import show_plot_defaults
+    from masci_tools.vis.plot_methods import set_mpl_plot_defaults
+    from masci_tools.vis.plot_methods import reset_mpl_plot_defaults
+    from masci_tools.vis.plot_methods import show_mpl_plot_defaults
     from masci_tools.vis.plot_methods import single_scatterplot
     from masci_tools.vis.plot_methods import multiple_scatterplots
     from masci_tools.vis.plot_methods import multi_scatter_plot
@@ -75,19 +75,19 @@ def test_set_defaults(change_dict, result):
     Test the setting of default values
     """
     from masci_tools.vis.plot_methods import plot_params
-    from masci_tools.vis.plot_methods import set_plot_defaults
-    from masci_tools.vis.plot_methods import reset_plot_defaults
+    from masci_tools.vis.plot_methods import set_mpl_plot_defaults
+    from masci_tools.vis.plot_methods import reset_mpl_plot_defaults
 
     value_before = {}
     for key in change_dict:
         value_before[key] = plot_params[key]
 
-    set_plot_defaults(**change_dict)
+    set_mpl_plot_defaults(**change_dict)
 
     for key, val in result.items():
         assert plot_params[key] == val
 
-    reset_plot_defaults()
+    reset_mpl_plot_defaults()
 
     for key, val in value_before.items():
         assert plot_params[key] == val

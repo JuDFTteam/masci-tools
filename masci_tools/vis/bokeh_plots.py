@@ -18,10 +18,40 @@ from masci_tools.vis.bokeh_plotter import BokehPlotter
 from masci_tools.vis import ensure_plotter_consistency, NestedPlotParameters
 
 import pandas as pd
+from pprint import pprint
 
 ################## Helpers     ################
 
 plot_params = BokehPlotter()
+
+def set_bokeh_plot_defaults(**kwargs):
+    """
+    Set defaults for bokeh backend
+    according to the given keyword arguments
+
+    Available defaults can be seen in :py:class:`~masci_tools.vis.bokeh_plotter.BokehPlotter`
+    """
+    plot_params.set_defaults(**kwargs)
+
+
+def reset_bokeh_plot_defaults():
+    """
+    Reset the defaults for bokeh backend
+    to the hardcoded defaults
+
+    Available defaults can be seen in :py:class:`~masci_tools.vis.bokeh_plotter.BokehPlotter`
+    """
+    plot_params.reset_defaults()
+
+
+def show_bokeh_plot_defaults():
+    """
+    Show the currently set defaults for bokeh backend
+
+    Available defaults can be seen in :py:class:`~masci_tools.vis.bokeh_plotter.BokehPlotter`
+    """
+    pprint(plot_params.get_dict())
+
 
 ##################################### general plots ##########################
 

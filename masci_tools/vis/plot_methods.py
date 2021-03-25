@@ -45,15 +45,31 @@ import pandas as pd
 plot_params = MatplotlibPlotter()
 
 
-def set_plot_defaults(**kwargs):
+def set_mpl_plot_defaults(**kwargs):
+    """
+    Set defaults for matplotib backend
+    according to the given keyword arguments
+
+    Available defaults can be seen in :py:class:`~masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`
+    """
     plot_params.set_defaults(**kwargs)
 
+def reset_mpl_plot_defaults():
+    """
+    Reset the defaults for matplotib backend
+    to the hardcoded defaults
 
-def reset_plot_defaults():
+    Available defaults can be seen in :py:class:`~masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`
+    """
     plot_params.reset_defaults()
 
+def show_mpl_plot_defaults():
+    """
+    Show the currently set defaults for matplotib backend
+    to the hardcoded defaults
 
-def show_plot_defaults():
+    Available defaults can be seen in :py:class:`~masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`
+    """
     pprint(plot_params.get_dict())
 
 
