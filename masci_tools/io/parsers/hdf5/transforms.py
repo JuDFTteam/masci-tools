@@ -127,6 +127,7 @@ def get_shape(dataset):
 
     return transformed
 
+@hdf5_transformation(attribute_needed=False)
 def get_name(dataset, full_path=False):
     """
     Get the name of the dataset.

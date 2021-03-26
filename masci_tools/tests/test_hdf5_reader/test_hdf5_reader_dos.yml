@@ -5,6 +5,7 @@ attributes:
   atoms_groups:
   - 1
   - 2
+  dos_group: Local
   fermi_energy: 0.4239195362843491
   n_types: 2
   spins: 1
