@@ -245,7 +245,7 @@ The plotter classes also provide support for multiple plotting calls with differ
 Unspecified values are replaced with the previously set defaults.
 
 .. note::
-   The ``num_plots`` and ``single_plot`` properties are also rest by the :py:func:`~masci_tools.vis.ensure_plotter_consistency()`
+   The ``num_plots`` and ``single_plot`` properties are also reset by the :py:func:`~masci_tools.vis.ensure_plotter_consistency()`
 
 .. code-block:: python
 
