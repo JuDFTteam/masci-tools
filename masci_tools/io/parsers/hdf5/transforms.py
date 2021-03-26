@@ -127,6 +127,30 @@ def get_shape(dataset):
 
     return transformed
 
+def get_name(dataset, full_path=False):
+    """
+    Get the name of the dataset.
+
+    :param dataset: dataset to get the shape
+    :param full_path: bool, if True the full path to the dataset is returned
+
+    :returns: name of the dataset
+    """
+
+    if isinstance(dataset, (list,np.ndarray)):
+        raise ValueError("Dataset has to be a h5py.Dataset for get_name")
+
+    if isinstance(dataset, dict):
+        if full_path:
+            transformed = {key: data.name for key, data in dataset.items()}
+        else:
+            transformed = {key: data.name.split('/')[-1] for key, data in dataset.items()}
+    elif full_path:
+        transformed = dataset.name
+    else:
+        transformed = dataset.name.split('/')[-1]
+
+    return transformed
 
 @hdf5_transformation(attribute_needed=False)
 def tile_array(dataset, n_repeats):

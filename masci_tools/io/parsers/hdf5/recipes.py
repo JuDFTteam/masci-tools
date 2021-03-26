@@ -103,6 +103,11 @@ def dos_recipe_format(group):
             }
         },
         'attributes': {
+            'dos_group':{'h5path': f'/{group}',
+                'transforms': [
+                    Transformation(name='get_name', args=(), kwargs={}),
+                ],
+            },
             'n_types': {
                 'h5path': '/atoms',
                 'description': 'Number of atom types',
