@@ -10,7 +10,7 @@ The process here is divided in two parts. First we extract and transform the dat
    #Example: Bandstructure calculation
 
    from masci_tools.io.parsers.hdf5 import HDF5Reader
-   from masci_tools.io.parsers.hdf5.recipes FleurBands
+   from masci_tools.io.parsers.hdf5.recipes import FleurBands
 
    with HDF5Reader('/path/to/banddos.hdf') as h5reader:
       data, attributes = h5reader.read(recipe=FleurBands)
@@ -39,7 +39,7 @@ The two exmaples below show the resulting plots for a non-psinpolarized system (
 .. code-block:: python
 
    from masci_tools.io.parsers.hdf5 import HDF5Reader
-   from masci_tools.io.parsers.hdf5.recipes FleurBands
+   from masci_tools.io.parsers.hdf5.recipes import FleurBands
    from masci_tools.vis.fleur import plot_fleur_bands
 
    #Read in data
@@ -78,7 +78,7 @@ The two exmaples below show the resulting plots for a non-psinpolarized system (
 .. code-block:: python
 
    from masci_tools.io.parsers.hdf5 import HDF5Reader
-   from masci_tools.io.parsers.hdf5.recipes FleurBands
+   from masci_tools.io.parsers.hdf5.recipes import FleurBands
    from masci_tools.vis.fleur import plot_fleur_bands
 
    #Read in data
@@ -119,7 +119,7 @@ Standard density of states plot
 .. code-block:: python
 
    from masci_tools.io.parsers.hdf5 import HDF5Reader
-   from masci_tools.io.parsers.hdf5.recipes FleurDOS
+   from masci_tools.io.parsers.hdf5.recipes import FleurDOS
    from masci_tools.vis.fleur import plot_fleur_dos
 
    #Read in data
