@@ -8,8 +8,6 @@ TEST_INIT = ['ABC', 'abC', 'RanDomEntry5', 'snake_case_entry', 'camelCaseEntry',
 TEST_MEMBER = [('randomentry5', True, 'RanDomEntry5'), ('snakecaseentry', False, None),
                ('camelcaseentry', True, 'camelCaseEntry'), ('aBc', True, 'ABC'), ('not_existent', False, None)]
 
-EXPECTED_REPR = "CaseInsensitiveFrozenSet(['ABC', 'RanDomEntry5', 'camelCaseEntry', 'snake_case_entry'])"
-
 
 @pytest.mark.parametrize('key,is_member,original_case', TEST_MEMBER)
 def test_case_insensitive_frozenset_member(key, is_member, original_case):
@@ -25,8 +23,6 @@ def test_case_insensitive_frozenset_member(key, is_member, original_case):
         assert s.original_case[key] == original_case
     else:
         assert key not in s
-
-    assert repr(s) == EXPECTED_REPR
 
 
 TEST_SET = [{'ABC', 'abC', 'RanDomEntry5', 'snake_case_entry', 'camelCaseEntry', 'camelcaseentry'},

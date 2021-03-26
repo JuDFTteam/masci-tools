@@ -15,6 +15,7 @@ This module defines a small helper class to make case insensitive dictionary
 lookups available naturally
 """
 from masci_tools.util.lockable_containers import LockableDict
+import pprint
 
 
 class CaseInsensitiveDict(LockableDict):
@@ -79,11 +80,17 @@ class CaseInsensitiveFrozenSet(frozenset):
 
     """
 
-    def __new__(cls, iterable):
-        return super().__new__(cls, [key.lower() for key in iterable])
+    def __new__(cls, iterable=None):
+        if iterable is not None:
+            return super().__new__(cls, [key.lower() for key in iterable])
+        else:
+            return super().__new__(cls, [])
 
-    def __init__(self, iterable):
-        self.original_case = self._get_new_original_case(iterable)
+    def __init__(self, iterable=None):
+        if iterable is not None:
+            self.original_case = self._get_new_original_case(iterable)
+        else:
+            self.original_case = {}
         self._frozenset_iter = None  #Used for customizing the iteration behaviour
         super().__init__()
 
@@ -104,7 +111,10 @@ class CaseInsensitiveFrozenSet(frozenset):
 
     def __repr__(self):
         """Returns the repr with the orinal case of the entered keys (first encounter)"""
-        return f'{self.__class__.__name__}({sorted(list(self.original_case.values()))})'
+        if self.original_case:
+            return f'{self.__class__.__name__}({set(self.original_case.values())})'
+        else:
+            return f'{self.__class__.__name__}()'
 
     def __sub__(self, other):
         return self.difference(other)
@@ -163,3 +173,35 @@ class CaseInsensitiveFrozenSet(frozenset):
 
     def issuperset(self, other):
         return super().issuperset({key.lower() for key in other})
+
+
+#Define custom pretty printers for these classes
+#since pprint only support UserDict subclasses if they have no custom repr
+
+
+def _pprint_case_insensitive_dict(self, object, stream, indent, allowance, context, level):  #pylint: disable=redefined-builtin
+    """
+    Modified from pprint dict https://github.com/python/cpython/blob/3.7/Lib/pprint.py#L194
+    """
+    cls = object.__class__
+    stream.write(cls.__name__ + '(')
+    self._pprint_dict(object, stream, indent + len(cls.__name__), allowance + 1, context, level)
+    stream.write(')')
+
+
+pprint.PrettyPrinter._dispatch[CaseInsensitiveDict.__repr__] = _pprint_case_insensitive_dict
+
+
+def _pprint_case_insensitive_frozenset(self, object, stream, indent, allowance, context, level):  #pylint: disable=redefined-builtin
+    """
+    Modified from pprint dict https://github.com/python/cpython/blob/3.7/Lib/pprint.py#L194
+    """
+    cls = object.__class__
+    stream.write(cls.__name__ + '(')
+    if object:
+        self._pprint_set(set(object.original_case.values()), stream, indent + len(cls.__name__), allowance + 1, context,
+                         level)
+    stream.write(')')
+
+
+pprint.PrettyPrinter._dispatch[CaseInsensitiveFrozenSet.__repr__] = _pprint_case_insensitive_frozenset
