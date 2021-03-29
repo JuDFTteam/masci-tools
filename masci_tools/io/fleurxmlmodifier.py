@@ -536,7 +536,7 @@ class FleurXMLModifier:
         :param species_name: string, name of the species you want to change
         :param orbital: integer, orbital quantum number of the LDA+U procedure to be modified
         :param spin: integer, specifies which spin block should be modified
-        :param occStates: list, sets the diagonal elements of the density matrix and everything
+        :param state_occupations: list, sets the diagonal elements of the density matrix and everything
                           else to zero
         :param denmat: matrix, specify the density matrix explicitely
         :param phi: float, optional angle (radian), by which to rotate the density matrix before writing it

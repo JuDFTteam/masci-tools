@@ -69,6 +69,13 @@ Functions/Classes for loading/validating fleur XML files
 .. automodule:: masci_tools.io.io_fleurxml
    :members:
 
+Helper functions for the ``n_mmp_mat`` file
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: masci_tools.io.io_nmmpmat
+   :members:
+
+
 General HDF5 parser
 -------------------------
 
