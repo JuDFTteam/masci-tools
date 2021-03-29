@@ -23,7 +23,7 @@ def test_set_nmmpmat_nofile(load_inpxml, file_regression):
                              species_name='Ga-1',
                              orbital=2,
                              spin=1,
-                             occStates=[1, 2, 3, 4, 5])
+                             state_occupations=[1, 2, 3, 4, 5])
     nmmp_lines = set_nmmpmat(xmltree,
                              nmmp_lines,
                              schema_dict,
@@ -50,7 +50,7 @@ def test_set_nmmpmat_file(load_inpxml, file_regression):
                              species_name='Ga-1',
                              orbital=2,
                              spin=1,
-                             occStates=[1, 2, 3, 4, 5])
+                             state_occupations=[1, 2, 3, 4, 5])
     nmmp_lines = set_nmmpmat(xmltree,
                              nmmp_lines,
                              schema_dict,
@@ -75,7 +75,7 @@ def test_set_nmmpmat_file_get_wigner_matrix(load_inpxml, file_regression):
                              species_name='Ga-1',
                              orbital=1,
                              spin=1,
-                             occStates=[1, 0, 1],
+                             state_occupations=[1, 0, 1],
                              theta=np.pi / 2.0)
     nmmp_lines = set_nmmpmat(xmltree,
                              nmmp_lines,
@@ -103,7 +103,7 @@ def test_rotate_nmmpmat(load_inpxml, file_regression):
                              species_name='Ga-1',
                              orbital=1,
                              spin=1,
-                             occStates=[1, 0, 1])
+                             state_occupations=[1, 0, 1])
     nmmp_lines = set_nmmpmat(xmltree,
                              nmmp_lines,
                              schema_dict,
@@ -144,7 +144,7 @@ def test_validate_nmmpmat(load_inpxml):
                              species_name='Ga-1',
                              orbital=2,
                              spin=1,
-                             occStates=[1, 2, 3, 4, 5])
+                             state_occupations=[1, 2, 3, 4, 5])
     nmmp_lines = set_nmmpmat(xmltree,
                              nmmp_lines,
                              schema_dict,

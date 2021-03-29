@@ -144,7 +144,7 @@ def test_fleurxmlmodifier_nmmpmat():
     from masci_tools.io.fleurxmlmodifier import FleurXMLModifier
 
     fm = FleurXMLModifier()
-    fm.set_nmmpmat('Ga-1', orbital=2, spin=1, occStates=[1, 2, 3, 4, 5])
+    fm.set_nmmpmat('Ga-1', orbital=2, spin=1, state_occupations=[1, 2, 3, 4, 5])
     fm.set_nmmpmat('As-2', orbital=1, spin=1, denmat=[[1, -2, 3], [4, -5, 6], [7, -8, 9]])
 
     # Does not validate

@@ -16,11 +16,11 @@ for LDA+U
 """
 
 from masci_tools.util.schema_dict_util import get_tag_xpath
-from masci_tools.io.common_functions import get_wigner_matrix
+from masci_tools.io.io_nmmpmat import write_nmmpmat, write_nmmpmat_from_states
 import numpy as np
 
 def set_nmmpmat(xmltree, nmmplines, schema_dict, species_name, orbital, spin,\
-                occStates=None, denmat=None, phi=None, theta=None):
+                state_occupations=None, denmat=None, phi=None, theta=None):
     """Routine sets the block in the n_mmp_mat file specified by species_name, orbital and spin
     to the desired density matrix
 
@@ -30,8 +30,8 @@ def set_nmmpmat(xmltree, nmmplines, schema_dict, species_name, orbital, spin,\
     :param species_name: string, name of the species you want to change
     :param orbital: integer, orbital quantum number of the LDA+U procedure to be modified
     :param spin: integer, specifies which spin block should be modified
-    :param occStates: list, sets the diagonal elements of the density matrix and everything
-                      else to zero
+    :param state_occupations: list, sets the diagonal elements of the density matrix and everything
+                              else to zero
     :param denmat: matrix, specify the density matrix explicitely
     :param phi: float, optional angle (radian), by which to rotate the density matrix before writing it
     :param theta: float, optional angle (radian), by which to rotate the density matrix before writing it
@@ -67,6 +67,11 @@ def set_nmmpmat(xmltree, nmmplines, schema_dict, species_name, orbital, spin,\
     all_ldau = eval_simple_xpath(xmltree, schema_dict, 'ldaU', contains='species', list_return=True)
     numRows = nspins * 14 * len(all_ldau)
 
+    if state_occupations is not None:
+        new_nmmpmat_entry = write_nmmpmat_from_states(orbital, state_occupations, phi=phi, theta=theta)
+    elif denmat is not None:
+        new_nmmpmat_entry = write_nmmpmat(orbital, denmat, phi=phi, theta=theta)
+
     #Check that numRows matches the number of lines in nmmp_lines_copy
     #If not either there was an n_mmp_mat file present in Fleurinp before and a lda+u calculation
     #was added or removed or the n_mmp_mat file was initialized and after the fact lda+u procedures were added
@@ -79,13 +84,6 @@ def set_nmmpmat(xmltree, nmmplines, schema_dict, species_name, orbital, spin,\
             raise ValueError('The number of lines in n_mmp_mat does not match the number expected from '+\
                              'the inp.xml file. Either remove the existing file before making modifications '+\
                              'and only use set_nmmpmat after all modifications to the inp.xml')
-
-    if phi is not None or theta is not None:
-        if phi is None:
-            phi = 0.0
-        if theta is None:
-            theta = 0.0
-        d_wigner = get_wigner_matrix(orbital, phi, theta)
 
     for species in all_species:
         current_name = get_xml_attribute(species, 'name')
@@ -101,27 +99,6 @@ def set_nmmpmat(xmltree, nmmplines, schema_dict, species_name, orbital, spin,\
         if ldau_index is None:
             raise KeyError(f'No LDA+U procedure found on species {current_name} with l={orbital}')
 
-        if occStates is not None:
-            #diagonal density matrix
-            denmatpad = np.zeros((7, 7), dtype=complex)
-
-            #Fill out the outer states with zero
-            occStatespad = np.zeros(7, dtype=complex)
-            occStatespad[3 - orbital:4 + orbital] = occStates[:]
-
-            for i, occ in enumerate(occStatespad):
-                denmatpad[i, i] = occ
-        elif denmat is not None:
-            #density matrix is completely specified
-            denmatpad = np.zeros((7, 7), dtype=complex)
-            denmatpad[3 - orbital:4 + orbital, 3 - orbital:4 + orbital] = denmat
-        else:
-            raise ValueError('Invalid definition of density matrix. Provide either occStates or denmat')
-
-        if phi is not None and theta is not None:
-            #Rotate the density matrix
-            denmatpad = d_wigner.T.conj().dot(denmatpad.dot(d_wigner))
-
         #check if fleurinp has a specified n_mmp_mat file if not initialize it with 0
         if nmmplines is None:
             nmmplines = []
@@ -130,19 +107,8 @@ def set_nmmpmat(xmltree, nmmplines, schema_dict, species_name, orbital, spin,\
 
         #Select the right block from n_mmp_mat and overwrite it with denmatpad
         startRow = ((spin - 1) * len(all_ldau) + ldau_index) * 14
-        for index in range(startRow, startRow + 14):
-            currentLine = index - startRow
-            currentRow = currentLine // 2
-            if currentLine % 2 == 0:
-                #Line ends with a real part
-                nmmplines[index] = ''.join(map(str, [f'{x.real:20.13f}{x.imag:20.13f}'\
-                                                           for x in denmatpad[currentRow, :3]])) +\
-                                         f'{denmatpad[currentRow, 3].real:20.13f}'
-            else:
-                #Line begins with a imaginary part
-                nmmplines[index] = f'{denmatpad[currentRow, 3].imag:20.13f}' +\
-                                         ''.join(map(str, [f'{x.real:20.13f}{x.imag:20.13f}'\
-                                                           for x in denmatpad[currentRow, 4:]]))
+
+        nmmplines[startRow:startRow + 14] = new_nmmpmat_entry
 
     return nmmplines
 
@@ -166,6 +132,7 @@ def rotate_nmmpmat(xmltree, nmmplines, schema_dict, species_name, orbital, phi, 
     """
     from masci_tools.util.xml.common_xml_util import eval_xpath, get_xml_attribute
     from masci_tools.util.schema_dict_util import evaluate_attribute, eval_simple_xpath
+    from masci_tools.io.io_nmmpmat import read_nmmpmat_block, rotate_nmmpmat_block, format_nmmpmat
 
     species_base_path = get_tag_xpath(schema_dict, 'species')
 
@@ -201,8 +168,6 @@ def rotate_nmmpmat(xmltree, nmmplines, schema_dict, species_name, orbital, phi, 
     else:
         raise ValueError('rotate_nmmpmat has to be called with a initialized density matrix')
 
-    d_wigner = get_wigner_matrix(orbital, phi, theta)
-
     for species in all_species:
         current_name = get_xml_attribute(species, 'name')
 
@@ -217,40 +182,16 @@ def rotate_nmmpmat(xmltree, nmmplines, schema_dict, species_name, orbital, phi, 
         if ldau_index is None:
             raise KeyError(f'No LDA+U procedure found on species {current_name} with l={orbital}')
 
-        denmat = [np.zeros((7, 7), dtype=complex) for spin in range(nspins)]
+        denmat = []
 
         for spin in range(nspins):
-            startRow = (spin * len(all_ldau) + ldau_index) * 14
-            for index, line in enumerate(nmmplines[startRow:startRow + 14]):
-                currentRow = index // 2
-                if index % 2 == 0:
-                    rowData = [float(x) for x in line.split()]
-                else:
-                    rowData.extend([float(x) for x in line.split()])
-                    rowData = [
-                        num[0] + 1j * num[1] for indx, num in enumerate(zip(rowData[:-1], rowData[1:])) if indx % 2 == 0
-                    ]
-                    denmat[spin][currentRow, :] += np.array(rowData)
 
-        #Rotate the density matrix
-        denmat = [d_wigner.T.conj().dot(denmat_spin.dot(d_wigner)) for denmat_spin in denmat]
-
-        #Select the right block from n_mmp_mat and overwrite it with denmatpad
-        for spin, denmatrot in enumerate(denmat):
             startRow = (spin * len(all_ldau) + ldau_index) * 14
-            for index in range(startRow, startRow + 14):
-                currentLine = index - startRow
-                currentRow = currentLine // 2
-                if currentLine % 2 == 0:
-                    #Line ends with a real part
-                    nmmplines[index] = ''.join(map(str, [f'{x.real:20.13f}{x.imag:20.13f}'\
-                                                               for x in denmatrot[currentRow, :3]])) +\
-                                             f'{denmatrot[currentRow, 3].real:20.13f}'
-                else:
-                    #Line begins with a imaginary part
-                    nmmplines[index] = f'{denmatrot[currentRow, 3].imag:20.13f}' +\
-                                             ''.join(map(str, [f'{x.real:20.13f}{x.imag:20.13f}'\
-                                                               for x in denmatrot[currentRow, 4:]]))
+            denmat = read_nmmpmat_block(nmmplines, spin * len(all_ldau) + ldau_index)
+
+            denmat = rotate_nmmpmat_block(denmat, orbital, phi=phi, theta=theta)
+
+            nmmplines[startRow:startRow + 14] = format_nmmpmat(denmat)
 
     return nmmplines
 
