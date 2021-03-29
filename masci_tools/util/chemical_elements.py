@@ -47,6 +47,7 @@ class ChemicalElements:
         :param filepath: if not None, init from JSON file. Must have been written with ChemicalElements.to_file().
         :type filepath: pathlib.Path
 
+        >>> from masci_tools.util.chemical_elements import ChemicalElements
         >>> a = ChemicalElements([11, 2, 118, 78])
         >>> b = ChemicalElements(['Na', 'He', 'Og', 'Pt'])
         >>> c = ChemicalElements({'Na' : 11, 'He' : 2, 'Og' : 118, 'Pt' : 78})
