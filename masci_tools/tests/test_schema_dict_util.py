@@ -346,7 +346,7 @@ def test_get_tag_info():
     EXPECTED_RESULT = {
         'attribs': {
             'itmaxHubbard1', 'beta', 'minoccDistance', 'minmatDistance', 'n_occpm', 'dftspinpol', 'fullMatch',
-            'l_nonsphDC', 'l_correctEtot'
+            'l_nonsphDC', 'l_correctEtot', 'l_forceHIAiteration'
         },
         'optional': set(),
         'optional_attribs': {
@@ -357,7 +357,8 @@ def test_get_tag_info():
             'dftspinpol': 'F',
             'fullmatch': 'T',
             'l_nonsphdc': 'T',
-            'l_correctetot': 'T'
+            'l_correctetot': 'T',
+            'l_forcehiaiteration': 'F',
         },
         'order': [],
         'several': set(),
