@@ -16,11 +16,10 @@ for LDA+U
 """
 
 from masci_tools.util.schema_dict_util import get_tag_xpath
-from masci_tools.io.io_nmmpmat import write_nmmpmat, write_nmmpmat_from_states
 import numpy as np
 
 def set_nmmpmat(xmltree, nmmplines, schema_dict, species_name, orbital, spin,\
-                state_occupations=None, denmat=None, phi=None, theta=None):
+                state_occupations=None, orbital_occupations=None, denmat=None, phi=None, theta=None):
     """Routine sets the block in the n_mmp_mat file specified by species_name, orbital and spin
     to the desired density matrix
 
@@ -43,6 +42,7 @@ def set_nmmpmat(xmltree, nmmplines, schema_dict, species_name, orbital, spin,\
     """
     from masci_tools.util.xml.common_xml_util import eval_xpath, get_xml_attribute
     from masci_tools.util.schema_dict_util import evaluate_attribute, eval_simple_xpath
+    from masci_tools.io.io_nmmpmat import write_nmmpmat, write_nmmpmat_from_states, write_nmmpmat_from_orbitals
 
     #All lda+U procedures have to be considered since we need to keep the order
     species_base_path = get_tag_xpath(schema_dict, 'species')
@@ -69,8 +69,13 @@ def set_nmmpmat(xmltree, nmmplines, schema_dict, species_name, orbital, spin,\
 
     if state_occupations is not None:
         new_nmmpmat_entry = write_nmmpmat_from_states(orbital, state_occupations, phi=phi, theta=theta)
+    elif orbital_occupations is not None:
+        new_nmmpmat_entry = write_nmmpmat_from_orbitals(orbital, orbital_occupations, phi=phi, theta=theta)
     elif denmat is not None:
         new_nmmpmat_entry = write_nmmpmat(orbital, denmat, phi=phi, theta=theta)
+    else:
+        raise ValueError('Invalid definition of density matrix. Provide either state_occupations, '
+                         'orbital_occupations or denmat')
 
     #Check that numRows matches the number of lines in nmmp_lines_copy
     #If not either there was an n_mmp_mat file present in Fleurinp before and a lda+u calculation
