@@ -12,8 +12,8 @@
          <xsd:element name="atomSpecies" type="AtomSpeciesType"/>
          <xsd:element name="atomGroups" type="AtomGroupsType"/>
          <xsd:element maxOccurs="1" minOccurs="0" name="output" type="OutputType"/>
-          <xsd:element maxOccurs="1" minOccurs="0" name="forceTheorem" type="ForcetheoremType"/>
-          <xsd:element maxOccurs="1" minOccurs="0" name="relaxation" type="RelaxationType"/>
+	       <xsd:element maxOccurs="1" minOccurs="0" name="forceTheorem" type="ForcetheoremType"/>
+	       <xsd:element maxOccurs="1" minOccurs="0" name="relaxation" type="RelaxationType"/>
       </xsd:all>
       <xsd:attribute name="fleurInputVersion" type="FleurVersionType" use="required"/>
    </xsd:complexType>
@@ -353,13 +353,13 @@
          <xsd:enumeration value="rpbe"/>
          <xsd:enumeration value="Rpbe"/>
          <xsd:enumeration value="wc"/>
-    <xsd:enumeration value="PBEs"/>
-    <xsd:enumeration value="pbe0"/>
-    <xsd:enumeration value="hse"/>
-    <xsd:enumeration value="vhse"/>
-    <xsd:enumeration value="lhse"/>
-    <xsd:enumeration value="hf"/>
-    <xsd:enumeration value="LibXC"/>
+	 <xsd:enumeration value="PBEs"/>
+	 <xsd:enumeration value="pbe0"/>
+	 <xsd:enumeration value="hse"/>
+	 <xsd:enumeration value="vhse"/>
+	 <xsd:enumeration value="lhse"/>
+	 <xsd:enumeration value="hf"/>
+	 <xsd:enumeration value="LibXC"/>
       </xsd:restriction>
    </xsd:simpleType>
    <xsd:complexType name="XCLibXCIDType">
@@ -411,7 +411,7 @@
 
    <xsd:complexType name="SpecialType">
      <xsd:attribute name="lda" type="FleurBool" use="optional" default="F"/>
-     <xsd:attribute name="socscale" type="ZeroToOneNumberType" use="optional" default="1.0"/>
+     <xsd:attribute name="socscale" type="FleurDouble" use="optional" default="1.0"/>
      <xsd:attribute name="b_field_mt" type="FleurDouble" use="optional" default="0.0"/>
      <xsd:attribute name="vca_charge" type="FleurDouble" use="optional" default="0.0"/>
    </xsd:complexType>
@@ -782,6 +782,7 @@
       <xsd:attribute default="T" name="fullMatch" type="FleurBool" use="optional"/>
       <xsd:attribute default="T" name="l_nonsphDC" type="FleurBool" use="optional"/>
       <xsd:attribute default="T" name="l_correctEtot" type="FleurBool" use="optional"/>
+      <xsd:attribute default="F" name="l_forceHIAiteration" type="FleurBool" use="optional"/>
    </xsd:complexType>
 
    <xsd:complexType name="cFCoeffsOutputType">
@@ -851,6 +852,7 @@
    </xsd:complexType>
 
    <xsd:complexType name="DOSOutputType">
+      <xsd:attribute name="storeEVData" type="FleurBool" use="optional" default="T"/>
       <xsd:attribute name="all_atoms" type="FleurBool" use="optional" default="T"/>
       <xsd:attribute name="orbcomp" type="FleurBool" use="optional" default="F"/>
       <xsd:attribute name="jDOS" type="FleurBool" use="optional" default="F"/>
@@ -894,7 +896,8 @@
          <xsd:enumeration value="path"/>
          <xsd:enumeration value="tria-bulk"/>
          <xsd:enumeration value="tria"/>
-         <xsd:enumeration value="SPEX-mesh"/>
+         <xsd:enumeration value="SPEX-mesh"/> <!-- This is deprecated. Use 'spex-mesh' -->
+         <xsd:enumeration value="spex-mesh"/>
          <xsd:enumeration value="unspecified"/>
       </xsd:restriction>
    </xsd:simpleType>
@@ -931,7 +934,8 @@
    </xsd:complexType>
 
    <xsd:complexType name="ExpertModeType">
-      <xsd:attribute default="0" name="gw" type="xsd:integer" use="optional"/>
+      <xsd:attribute name="gw" type="xsd:integer" use="optional"/>
+      <xsd:attribute name="spex" type="xsd:integer" use="optional"/>
       <xsd:attribute default="F" name="pot8" type="FleurBool" use="optional"/>
       <xsd:attribute default="F" name="eig66" type="FleurBool" use="optional"/>
       <xsd:attribute default="0" name="lpr" type="xsd:integer" use="optional"/>
@@ -1051,6 +1055,7 @@
      </xsd:all>
      <xsd:attribute name="theta" type="FleurDouble" use="required"/>
      <xsd:attribute name="phi" type="FleurDouble" use="required"/>
+     <xsd:attribute name="ef_shift" type="FleurDouble" use="optional"/>
    </xsd:complexType>
 
    <xsd:complexType name="JijType">
@@ -1106,6 +1111,7 @@
          <xsd:element maxOccurs="1" minOccurs="0" name="valenceConfig" type="ValenceStateListType"/>
          <xsd:element maxOccurs="unbounded" minOccurs="0" name="stateOccupation" type="ElectronStateOccupationType"/>
       </xsd:sequence>
+      <xsd:attribute default="F" name="flipSpins" type="FleurBool" use="optional"/>
    </xsd:complexType>
 
    <xsd:simpleType name="ValenceStateListType">

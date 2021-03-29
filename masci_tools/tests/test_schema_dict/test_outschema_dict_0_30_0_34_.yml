@@ -454,6 +454,8 @@ attrib_types:
   - int
   edgetype:
   - string
+  ef_shift:
+  - float_expression
   eig66:
   - switch
   eigvalsum:
@@ -530,6 +532,8 @@ attrib_types:
   - string
   flipspinphi:
   - float_expression
+  flipspins:
+  - switch
   flipspinscale:
   - switch
   flipspintheta:
@@ -661,6 +665,8 @@ attrib_types:
   l_f:
   - switch
   l_fermi:
+  - switch
+  l_forcehiaiteration:
   - switch
   l_j:
   - switch
@@ -970,11 +976,13 @@ attrib_types:
   socgwf:
   - switch
   socscale:
-  - float
+  - float_expression
   spav:
   - switch
   species:
   - string
+  spex:
+  - int
   spin:
   - int
   spindown:
@@ -996,6 +1004,8 @@ attrib_types:
   - int
   statesbelow:
   - int
+  storeevdata:
+  - switch
   supercellx:
   - int
   supercelly:
@@ -2695,6 +2705,7 @@ other_attribs:
   flipspinphi:
   - /fleurOutput/inputData/atomGroups/atomGroup/modInitDen/@flipSpinPhi
   - /fleurOutput/inputData/atomSpecies/species/modInitDen/@flipSpinPhi
+  flipspins: /fleurOutput/inputData/atomSpecies/species/electronConfig/@flipSpins
   flipspinscale:
   - /fleurOutput/inputData/atomGroups/atomGroup/modInitDen/@flipSpinScale
   - /fleurOutput/inputData/atomSpecies/species/modInitDen/@flipSpinScale
@@ -3654,12 +3665,14 @@ tag_info:
     simple: !!set {}
     text: !!set {}
   /fleurOutput/inputData/atomSpecies/species/electronConfig:
-    attribs: !!set {}
+    attribs: !!set
+      flipspins: null
     complex: !!set {}
     optional: !!set
       stateoccupation: null
       valenceconfig: null
-    optional_attribs: {}
+    optional_attribs:
+      flipspins: F
     order:
     - coreConfig
     - valenceConfig
@@ -4063,16 +4076,18 @@ tag_info:
       lpr: null
       pot8: null
       secvar: null
+      spex: null
       warp_factor: null
     complex: !!set {}
     optional: !!set {}
     optional_attribs:
       eig66: F
-      gw: '0'
+      gw: null
       isec1: '99'
       lpr: '0'
       pot8: F
       secvar: F
+      spex: null
       warp_factor: '1.0'
     order: []
     several: !!set {}
@@ -4232,6 +4247,7 @@ tag_info:
       fullmatch: null
       itmaxhubbard1: null
       l_correctetot: null
+      l_forcehiaiteration: null
       l_nonsphdc: null
       minmatdistance: null
       minoccdistance: null
@@ -4243,6 +4259,7 @@ tag_info:
       dftspinpol: F
       fullmatch: T
       l_correctetot: T
+      l_forcehiaiteration: F
       l_nonsphdc: T
       minmatdistance: '0.001'
       minoccdistance: '0.01'
@@ -4862,12 +4879,14 @@ tag_info:
     text: !!set {}
   /fleurOutput/inputData/forceTheorem/DMI:
     attribs: !!set
+      ef_shift: null
       phi: null
       theta: null
     complex: !!set
       qvectors: null
     optional: !!set {}
-    optional_attribs: {}
+    optional_attribs:
+      ef_shift: null
     order: []
     several: !!set {}
     simple: !!set {}
@@ -4985,6 +5004,7 @@ tag_info:
       numberpoints: null
       orbcomp: null
       sigma: null
+      storeevdata: null
     complex: !!set {}
     optional: !!set {}
     optional_attribs:
@@ -4995,6 +5015,7 @@ tag_info:
       numberpoints: '1321'
       orbcomp: F
       sigma: '0.01'
+      storeevdata: T
     order: []
     several: !!set {}
     simple: !!set {}
@@ -5909,6 +5930,7 @@ unique_attribs:
   dvac: /fleurOutput/inputData/cell/filmLattice/@dVac
   edgeindices: /fleurOutput/inputData/output/coreSpectrum/edgeIndices
   edgetype: /fleurOutput/inputData/output/coreSpectrum/@edgeType
+  ef_shift: /fleurOutput/inputData/forceTheorem/DMI/@ef_shift
   ekin: /fleurOutput/inputData/output/coreSpectrum/@eKin
   ellow: /fleurOutput/inputData/calculationSetup/greensFunction/realAxis/@ellow
   elup: /fleurOutput/inputData/calculationSetup/greensFunction/realAxis/@elup
@@ -5972,6 +5994,7 @@ unique_attribs:
   l_correctetot: /fleurOutput/inputData/calculationSetup/ldaHIA/@l_correctEtot
   l_eigout: /fleurOutput/inputData/output/juPhon/@l_eigout
   l_f: /fleurOutput/inputData/calculationSetup/geometryOptimization/@l_f
+  l_forcehiaiteration: /fleurOutput/inputData/calculationSetup/ldaHIA/@l_forceHIAiteration
   l_j: /fleurOutput/inputData/calculationSetup/magnetism/@l_J
   l_linmix: /fleurOutput/inputData/calculationSetup/ldaU/@l_linMix
   l_mtnocopot: /fleurOutput/inputData/calculationSetup/magnetism/mtNocoParams/@l_mtNocoPot
@@ -6077,9 +6100,11 @@ unique_attribs:
   soc66: /fleurOutput/inputData/calculationSetup/soc/@soc66
   socgwf: /fleurOutput/inputData/output/wannier/@socgwf
   spav: /fleurOutput/inputData/calculationSetup/soc/@spav
+  spex: /fleurOutput/inputData/calculationSetup/expertModes/@spex
   star: /fleurOutput/inputData/output/vacuumDOS/@star
   statesabove: /fleurOutput/inputData/calculationSetup/rdmft/@statesAbove
   statesbelow: /fleurOutput/inputData/calculationSetup/rdmft/@statesBelow
+  storeevdata: /fleurOutput/inputData/output/bandDOS/@storeEVData
   supercellx: /fleurOutput/inputData/output/unfoldingBand/@supercellX
   supercelly: /fleurOutput/inputData/output/unfoldingBand/@supercellY
   supercellz: /fleurOutput/inputData/output/unfoldingBand/@supercellZ

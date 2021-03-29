@@ -466,6 +466,10 @@ attrib_types:
   - int
   edgetype:
   - string
+  ef:
+  - int
+  ef-shift:
+  - float
   eig66:
   - switch
   eigvalsum:
@@ -1177,6 +1181,10 @@ iteration_other_attribs:
   - ./densityConvergence/overallChargeDensity/@distance
   - ./densityConvergence/spinDensity/@distance
   - ./ldaUDensityMatrixConvergence/distance/@distance
+  ef-shift:
+  - ./Forcetheorem_DMI/Entry/@ef-shift
+  - ./Forcetheorem_DMI/allAtoms/@ef-shift
+  - ./Forcetheorem_DMI/singleAtom/@ef-shift
   eigenvaluesat:
   - ./eigenvalues/eigenvaluesAt
   eigvalsum:
@@ -1435,6 +1443,7 @@ iteration_tag_info:
   ./Forcetheorem_DMI:
     attribs: !!set
       angles: null
+      ef: null
       qpoints: null
       units: null
     complex: !!set {}
@@ -1458,6 +1467,7 @@ iteration_tag_info:
     text: !!set {}
   ./Forcetheorem_DMI/Entry:
     attribs: !!set
+      ef-shift: null
       ev-sum: null
       phi: null
       q: null
@@ -1474,6 +1484,7 @@ iteration_tag_info:
   ./Forcetheorem_DMI/allAtoms:
     attribs: !!set
       atomtype: null
+      ef-shift: null
       h_so: null
       phi: null
       q: null
@@ -1489,6 +1500,7 @@ iteration_tag_info:
   ./Forcetheorem_DMI/singleAtom:
     attribs: !!set
       atomtype: null
+      ef-shift: null
       h_so: null
       phi: null
       q: null
@@ -2924,6 +2936,7 @@ iteration_tag_paths:
   volumes: []
 iteration_unique_attribs:
   configs: ./Forcetheorem_JIJ/@Configs
+  ef: ./Forcetheorem_DMI/@ef
   numberforcurrentrun: ./@numberForCurrentRun
   overallnumber: ./@overallNumber
   qpoints: ./Forcetheorem_DMI/@qpoints
