@@ -65,6 +65,7 @@ class MatplotlibPlotter(Plotter):
         'marker': 'o',
         'markersize': 4.0,
         'color': None,
+        'zorder': None,
         'repeat_colors_after': None,
         'edgecolor': None,
         'facecolor': None,
@@ -156,13 +157,13 @@ class MatplotlibPlotter(Plotter):
 
     #Sets of keys with special purposes
 
-    _PLOT_KWARGS = {'linewidth', 'linestyle', 'marker', 'markersize', 'color', 'plot_label', 'plot_alpha'}
-    _PLOT_KWARGS_AREA = {'area_linecolor', 'area_alpha'}
+    _PLOT_KWARGS = {'linewidth', 'linestyle', 'marker', 'markersize', 'color', 'plot_label', 'plot_alpha', 'zorder'}
+    _PLOT_KWARGS_AREA = {'area_linecolor', 'area_alpha', 'zorder'}
     _PLOT_KWARGS_COLORMESH = {
         'linewidth', 'linestyle', 'shading', 'rasterized', 'cmap', 'norm', 'edgecolor', 'facecolor', 'plot_label',
-        'plot_alpha'
+        'plot_alpha', 'zorder'
     }
-    _PLOT_KWARGS_HIST = {'linewidth', 'linestyle', 'color', 'plot_label', 'plot_alpha', 'edgecolor', 'facecolor'}
+    _PLOT_KWARGS_HIST = {'linewidth', 'linestyle', 'color', 'plot_label', 'plot_alpha', 'edgecolor', 'facecolor', 'zorder'}
 
     def __init__(self, **kwargs):
         super().__init__(self._MATPLOTLIB_DEFAULTS, general_keys=self._MATPLOTLIB_GENERAL_ARGS, **kwargs)
