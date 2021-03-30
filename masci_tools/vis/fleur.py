@@ -222,6 +222,7 @@ def _generate_dos_labels(dosdata, attributes, spinpol):
 
     labels = []
     plot_order = []
+    only_spin_up = not spinpol and any('_down' in key for key in dosdata.keys())
 
     types_elements = []
     for itype in range(1,attributes['n_types']+1):
@@ -230,6 +231,9 @@ def _generate_dos_labels(dosdata, attributes, spinpol):
 
     for key in sorted(dosdata.keys(), key=_dos_order):
         if key == 'energy_grid':
+            continue
+
+        if only_spin_up and '_down' in key:
             continue
 
         plot_order.append(key)
