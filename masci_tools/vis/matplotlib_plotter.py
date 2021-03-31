@@ -172,13 +172,14 @@ class MatplotlibPlotter(Plotter):
     def __init__(self, **kwargs):
         super().__init__(self._MATPLOTLIB_DEFAULTS, general_keys=self._MATPLOTLIB_GENERAL_ARGS, **kwargs)
 
-    def plot_kwargs(self, ignore=None, extra_keys=None, plot_type='default', **kwargs):
+    def plot_kwargs(self, ignore=None, extra_keys=None, plot_type='default', post_process=True, **kwargs):
         """
         Creates a dict or list of dicts (for multiple plots) with the defined parameters
         for the plotting calls fo matplotlib
 
         :param ignore: str or list of str (optional), defines keys to ignore in the creation of the dict
         :param extra_keys: optional set for addtional keys to retrieve
+        :param post_process: bool, if True the parameters are cleaned up for inserting them directly into matplotlib plitting functions
 
         Kwargs are used to replace values by custom parameters:
 
@@ -221,6 +222,9 @@ class MatplotlibPlotter(Plotter):
         for key, replace_key in kwargs.items():
             custom_val = plot_kwargs.pop(replace_key)
             plot_kwargs[key] = custom_val
+
+        if not post_process:
+            return plot_kwargs
 
         if 'plot_label' in plot_kwargs:
             plot_kwargs['label'] = plot_kwargs.pop('plot_label')

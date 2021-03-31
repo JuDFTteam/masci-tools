@@ -1324,7 +1324,7 @@ def plot_convergence_results_m(iterations,
     :param saveas2: str, filename for the distance plot
     :param axis2: Axes object for the distance plot
 
-    Other Kwargs will be passed on to all :py:func:`single_scatterplot()` calls
+    Other Kwargs will be passed on to all :py:func:`multiple_scatterplots()` calls
     """
     xlabel = r'Iteration'
     ylabel1 = r'Total energy difference [Htr]'
@@ -1475,8 +1475,9 @@ def plot_lattice_constant(scaling,
         plot_params.single_plot = False
         plot_params.num_plots = len(scaling)
 
-    plot_kw = plot_params.plot_kwargs()
-    plot_fit_kw = plot_params.plot_kwargs(marker='marker_fit',
+    plot_kw = plot_params.plot_kwargs(post_process=False)
+    plot_fit_kw = plot_params.plot_kwargs(post_process=False,
+                                          marker='marker_fit',
                                           markersize='markersize_fit',
                                           linewidth='linewidth_fit',
                                           plot_label='plot_label_fit')
