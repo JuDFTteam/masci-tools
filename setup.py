@@ -43,7 +43,7 @@ if __name__ == '__main__':
         install_requires=[
             'numpy',
             'scipy',
-            'matplotlib<3.4.0',
+            'matplotlib',
             'h5py',
             'pandas',
             'bump2version',
