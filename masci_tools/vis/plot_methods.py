@@ -54,6 +54,7 @@ def set_mpl_plot_defaults(**kwargs):
     """
     plot_params.set_defaults(**kwargs)
 
+
 def reset_mpl_plot_defaults():
     """
     Reset the defaults for matplotib backend
@@ -62,6 +63,7 @@ def reset_mpl_plot_defaults():
     Available defaults can be seen in :py:class:`~masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`
     """
     plot_params.reset_defaults()
+
 
 def show_mpl_plot_defaults():
     """
@@ -1742,7 +1744,6 @@ def plot_bands(kpath,
     All other Kwargs are passed on to the :py:func:`multi_scatter_plot()` call
     """
 
-
     if special_kpoints is None:
         special_kpoints = []
 
@@ -1761,7 +1762,7 @@ def plot_bands(kpath,
         plot_params.set_defaults(default_type='function', cmap='Blues')
         if 'cmap' not in kwargs:
             #Cut off the white end of the Blues/Reds colormap
-            plot_params.set_defaults(default_type='function',sub_colormap=(0.15,1.0))
+            plot_params.set_defaults(default_type='function', sub_colormap=(0.15, 1.0))
 
     lines = {'vertical': xticks, 'horizontal': e_fermi}
 
@@ -1870,7 +1871,7 @@ def plot_spinpol_bands(kpath,
 
     if 'cmap' not in kwargs:
         #Cut off the white end of the Blues/Reds colormap
-        plot_params.set_defaults(default_type='function',sub_colormap=(0.15,1.0))
+        plot_params.set_defaults(default_type='function', sub_colormap=(0.15, 1.0))
 
     ax = multi_scatter_plot([kpath, kpath], [bands_up, bands_dn],
                             size_data=size_data,

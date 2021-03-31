@@ -103,16 +103,21 @@ def dos_recipe_format(group):
             }
         },
         'attributes': {
-            'dos_group':{'h5path': f'/{group}',
+            'dos_group': {
+                'h5path': f'/{group}',
                 'transforms': [
                     Transformation(name='get_name', args=(), kwargs={}),
                 ],
             },
             'n_types': {
-                'h5path': '/atoms',
-                'description': 'Number of atom types',
-                'transforms': [Transformation(name='get_attribute', args=('nTypes',), kwargs={}),
-                               Transformation(name='get_first_element', args=(), kwargs={})]
+                'h5path':
+                '/atoms',
+                'description':
+                'Number of atom types',
+                'transforms': [
+                    Transformation(name='get_attribute', args=('nTypes',), kwargs={}),
+                    Transformation(name='get_first_element', args=(), kwargs={})
+                ]
             },
             'atoms_elements': {
                 'h5path': '/atoms/atomicNumbers',
@@ -206,10 +211,14 @@ FleurBands = {
     },
     'attributes': {
         'n_types': {
-                'h5path': '/atoms',
-                'description': 'Number of atom types',
-                'transforms': [Transformation(name='get_attribute', args=('nTypes',), kwargs={}),
-                               Transformation(name='get_first_element', args=(), kwargs={})]
+            'h5path':
+            '/atoms',
+            'description':
+            'Number of atom types',
+            'transforms': [
+                Transformation(name='get_attribute', args=('nTypes',), kwargs={}),
+                Transformation(name='get_first_element', args=(), kwargs={})
+            ]
         },
         'kpoints': {
             'h5path': '/kpts/coordinates',

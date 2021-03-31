@@ -138,12 +138,10 @@ def plot_fleur_dos(dosdata,
 
     if multiply_by_equiv_atoms:
         n_equiv = Counter(attributes['atoms_groups'])
-        for natom in range(1,attributes['n_types']+1):
+        for natom in range(1, attributes['n_types'] + 1):
             for key in dosdata.keys():
                 if f'MT:{natom}' in key:
                     dosdata[key] *= n_equiv[natom]
-
-
 
     spinpol = attributes['spins'] == 2 and spinpol and any('_down' in key for key in dosdata.keys())
     legend_labels, keys = _generate_dos_labels(dosdata, attributes, spinpol)
@@ -225,7 +223,7 @@ def _generate_dos_labels(dosdata, attributes, spinpol):
     only_spin_up = not spinpol and any('_down' in key for key in dosdata.keys())
 
     types_elements = []
-    for itype in range(1,attributes['n_types']+1):
+    for itype in range(1, attributes['n_types'] + 1):
         ind = list(attributes['atoms_groups']).index(itype)
         types_elements.append(attributes['atoms_elements'][ind])
 
@@ -306,13 +304,13 @@ def _select_from_Local(keys, plot_keys, spinpol, show_total, show_interstitial, 
     natoms = (len(mask) - 3) // 5
 
     if show_atoms is not None:
-        for iatom in range(1,natoms+1):
-            mask[3 + (iatom-1) * 5] = show_atoms == 'all' or iatom in show_atoms
+        for iatom in range(1, natoms + 1):
+            mask[3 + (iatom - 1) * 5] = show_atoms == 'all' or iatom in show_atoms
 
     if show_lresolved is not None:
-        for iatom in range(1,natoms+1):
+        for iatom in range(1, natoms + 1):
             if show_lresolved == 'all' or iatom in show_lresolved:
-                mask[3 + (iatom-1) * 5 + 1:3 + iatom * 5] = [True, True, True, True]
+                mask[3 + (iatom - 1) * 5 + 1:3 + iatom * 5] = [True, True, True, True]
 
     if plot_keys is not None:
         if not isinstance(plot_keys, list):

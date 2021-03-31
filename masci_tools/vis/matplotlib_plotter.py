@@ -153,8 +153,8 @@ class MatplotlibPlotter(Plotter):
         'save_plots', 'save_format', 'tightlayout', 'save_raw_plot_data', 'raw_plot_data_format', 'show', 'legend',
         'legend_options', 'colorbar', 'colorbar_padding', 'tick_paramsy', 'tick_paramsx', 'tick_paramsy_minor',
         'tick_paramsx_minor', 'font_options', 'line_options', 'labelfontsize', 'lines', 'scale', 'limits', 'xticks',
-        'xticklabels', 'yticks', 'yticklabels', 'figure_kwargs', 'title_font_size', 'repeat_colors_after', 'color_cycle',
-        'sub_colormap'
+        'xticklabels', 'yticks', 'yticklabels', 'figure_kwargs', 'title_font_size', 'repeat_colors_after',
+        'color_cycle', 'sub_colormap'
     }
 
     #Sets of keys with special purposes
@@ -165,7 +165,9 @@ class MatplotlibPlotter(Plotter):
         'linewidth', 'linestyle', 'shading', 'rasterized', 'cmap', 'norm', 'edgecolor', 'facecolor', 'plot_label',
         'plot_alpha', 'zorder'
     }
-    _PLOT_KWARGS_HIST = {'linewidth', 'linestyle', 'color', 'plot_label', 'plot_alpha', 'edgecolor', 'facecolor', 'zorder'}
+    _PLOT_KWARGS_HIST = {
+        'linewidth', 'linestyle', 'color', 'plot_label', 'plot_alpha', 'edgecolor', 'facecolor', 'zorder'
+    }
 
     def __init__(self, **kwargs):
         super().__init__(self._MATPLOTLIB_DEFAULTS, general_keys=self._MATPLOTLIB_GENERAL_ARGS, **kwargs)
@@ -227,7 +229,7 @@ class MatplotlibPlotter(Plotter):
             plot_kwargs['alpha'] = plot_kwargs.pop('plot_alpha')
 
         if 'cmap' in plot_kwargs and self['sub_colormap'] is not None:
-            if not isinstance(self['sub_colormap'], (tuple,list)):
+            if not isinstance(self['sub_colormap'], (tuple, list)):
                 raise ValueError('sub_colormap has to be a tuple of two numbers')
 
             if isinstance(plot_kwargs['cmap'], list):
@@ -246,8 +248,6 @@ class MatplotlibPlotter(Plotter):
                     plot_kwargs['cmap'] = plt.get_cmap(plot_kwargs['cmap'])
 
                 plot_kwargs['cmap'] = self.truncate_colormap(plot_kwargs['cmap'], *self['sub_colormap'])
-
-
 
         plot_kwargs = self.dict_of_lists_to_list_of_dicts(plot_kwargs, self.single_plot, self.num_plots)
 
@@ -469,11 +469,9 @@ class MatplotlibPlotter(Plotter):
         import numpy as np
 
         new_cmap = colors.LinearSegmentedColormap.from_list(
-            'trunc({n},{a:.2f},{b:.2f})'.format(n=cmap.name, a=minval, b=maxval),
-            cmap(np.linspace(minval, maxval, n)))
+            'trunc({n},{a:.2f},{b:.2f})'.format(n=cmap.name, a=minval, b=maxval), cmap(np.linspace(minval, maxval, n)))
 
         return new_cmap
-
 
     def save_plot(self, saveas):
         """

@@ -24,6 +24,7 @@ from pprint import pprint
 
 plot_params = BokehPlotter()
 
+
 def set_bokeh_plot_defaults(**kwargs):
     """
     Set defaults for bokeh backend
