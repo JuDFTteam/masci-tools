@@ -127,6 +127,7 @@ def get_shape(dataset):
 
     return transformed
 
+
 @hdf5_transformation(attribute_needed=False)
 def get_name(dataset, full_path=False):
     """
@@ -138,8 +139,8 @@ def get_name(dataset, full_path=False):
     :returns: name of the dataset
     """
 
-    if isinstance(dataset, (list,np.ndarray)):
-        raise ValueError("Dataset has to be a h5py.Dataset for get_name")
+    if isinstance(dataset, (list, np.ndarray)):
+        raise ValueError('Dataset has to be a h5py.Dataset for get_name')
 
     if isinstance(dataset, dict):
         if full_path:
@@ -152,6 +153,7 @@ def get_name(dataset, full_path=False):
         transformed = dataset.name.split('/')[-1]
 
     return transformed
+
 
 @hdf5_transformation(attribute_needed=False)
 def tile_array(dataset, n_repeats):
@@ -169,6 +171,7 @@ def tile_array(dataset, n_repeats):
         transformed = np.tile(dataset, n_repeats)
 
     return transformed
+
 
 @hdf5_transformation(attribute_needed=False)
 def repeat_array(dataset, n_repeats):

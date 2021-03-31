@@ -163,8 +163,8 @@ def xml_create_tag(xmltree, xpath, element, place_index=None, tag_order=None, oc
                 else:
                     #Here we know that there are no unexpected tags in the order, so we can 'repair' the order
                     warnings.warn('Existing order does not correspond to tag_order list. Correcting it\n'
-                                 f'Expected order: {tag_order}\n'
-                                 f'Actual order: {existing_order}')
+                                  f'Expected order: {tag_order}\n'
+                                  f'Actual order: {existing_order}')
 
                     new_tag = copy.deepcopy(parent)
 
@@ -183,7 +183,6 @@ def xml_create_tag(xmltree, xpath, element, place_index=None, tag_order=None, oc
                     parent_of_parent.remove(parent)
                     parent_of_parent.insert(index, new_tag)
                     parent = new_tag
-
 
             for tag in reversed(behind_tags):
                 existing_tags = list(parent.iterchildren(tag=tag))

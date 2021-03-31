@@ -625,6 +625,7 @@ def test_xml_create_tag_errors(load_inpxml):
     with pytest.raises(ValueError, match=r"Did not find existing elements in the tag_order list: {'mtSphere'}"):
         xml_create_tag(xmltree, '/fleurInput/atomSpecies/species', 'lo', tag_order=order)
 
+
 def test_xml_create_tag_misaligned_order(load_inpxml):
     """
     Test automatic correction of order
@@ -636,7 +637,7 @@ def test_xml_create_tag_misaligned_order(load_inpxml):
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
     root = xmltree.getroot()
 
-    xml_create_tag(xmltree, '/fleurInput/atomSpecies/species', 'ldaU') #This creates an invalid order
+    xml_create_tag(xmltree, '/fleurInput/atomSpecies/species', 'ldaU')  #This creates an invalid order
     xml_create_tag(xmltree, '/fleurInput/atomSpecies/species', 'lo')
 
     order = ['mtSphere', 'atomicCutoffs', 'electronConfig', 'energyParameters', 'ldaU', 'lo']
@@ -646,18 +647,8 @@ def test_xml_create_tag_misaligned_order(load_inpxml):
     with pytest.warns(UserWarning, match=r'Existing order does not correspond to tag_order list. Correcting it'):
         xml_create_tag(xmltree, '/fleurInput/atomSpecies/species', 'ldaU', tag_order=order)
 
-    tags = [[
-        'mtSphere',
-        'atomicCutoffs',
-        'electronConfig',
-        'energyParameters',
-        'ldaU',
-        'ldaU',
-        'lo',
-        'lo',
-        'lo'
-    ], ['mtSphere', 'atomicCutoffs', 'electronConfig', 'energyParameters', 'ldaU',
-        'ldaU','lo', 'lo']]
+    tags = [['mtSphere', 'atomicCutoffs', 'electronConfig', 'energyParameters', 'ldaU', 'ldaU', 'lo', 'lo', 'lo'],
+            ['mtSphere', 'atomicCutoffs', 'electronConfig', 'energyParameters', 'ldaU', 'ldaU', 'lo', 'lo']]
 
     nodes = eval_xpath(root, '/fleurInput/atomSpecies/species')
 

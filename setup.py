@@ -45,6 +45,7 @@ if __name__ == '__main__':
             'scipy',
             'matplotlib',
             'h5py',
+            'pandas',
             'bump2version',
             'future',
             'lxml>=3.6.4',
@@ -73,7 +74,6 @@ if __name__ == '__main__':
                 'pytest-regressions>=1.0'
             ],
             'bokeh-plots': [
-                'pandas',
                 'bokeh<=1.4.0' # versions beyond 1.4.0 require a tornardo version not compatible with aiida-core /circus
             ]
         },

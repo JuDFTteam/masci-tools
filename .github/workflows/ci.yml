@@ -99,7 +99,7 @@ jobs:
 
     - name: Install python dependencies
       run: |
-        pip install .[testing]
+        pip install .[testing,bokeh-plots]
 
     - name: Run pytest
       run: |

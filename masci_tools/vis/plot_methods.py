@@ -17,171 +17,62 @@ ouput nodes from certain workflows with matplot lib.
 Comment: Do not use any aiida methods, otherwise the methods in here can become
 tricky to use inside a virtual environment. Make the user extract thing out of
 aiida objects before hand or write something on top. Since usually parameter nodes,
-or files are ploted, parse a dict or filepath.
+or files are plotted, parse a dict or filepath.
+
+Each of the plot_methods can take keyword arguments to modify parameters of the plots
+There are keywords that are handled by a special class for defaults. All other arguments
+will be passed on to the matplotlib plotting calls
+
+For the definition of the defaults refer to :py:class:`~masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`
+
 """
 # TODO but allow to optional parse information for saving and title,
 #  (that user can put pks or structure formulas in there)
 # Write/export data to file for all methods
 
-from __future__ import absolute_import
-from __future__ import print_function
-import re
-import os
+from .matplotlib_plotter import MatplotlibPlotter
+from masci_tools.vis import ensure_plotter_consistency, NestedPlotParameters
+import warnings
+import copy
 import typing
 
 import numpy as np
-import matplotlib.pyplot as pp
-import matplotlib.mlab as mlab
-from matplotlib.patches import Rectangle
-from cycler import cycler
-from masci_tools.vis import *  # import all global variables
-import six
-from six.moves import range
-from six.moves import zip
+import matplotlib.pyplot as plt
+from scipy.stats import norm
+from pprint import pprint
+import pandas as pd
 
-###############################################################################
-################ GLOBAL MODULE VARIABLES setting properties ###################
-###############################################################################
-
-# maintain this and set method for them
-# convention they are the property ending with '_g'
-# TODO: There is prob a better way to do this, gff go with classes,
-# currenlty things blow up a bit...
-
-# figure properties
-title_fontsize_g = 16
-figsize_g = (8, 6)
-dpi_g = 80
-facecolor_g = 'w'
-edgecolor_g = 'k'
-
-# axis properties
-alpha_g = 1
-axis_linewidth_g = 1.5
-use_axis_fromatter_g = False
-
-# plot properties
-linewidth_g = 2.0
-markersize_g = 4.0
-
-# x, y label
-labelfonstsize_g = 15
-
-# ticks
-ticklabelsizex_g = 14
-ticklabelsizey_g = 14
-tick_paramsx_g = {'size': 4.0, 'width': 1.0, 'labelsize': ticklabelsizex_g, 'length': 5, 'labelrotation': 0}
-tick_paramsy_g = {'size': 4.0, 'width': 1.0, 'labelsize': ticklabelsizey_g, 'length': 5, 'labelrotation': 0}
-ticklabelsizex_minor_g = 0
-ticklabelsizey_minor_g = 0
-tick_paramsx_minor_g = {'size': 2.0, 'width': 1.0, 'labelsize': ticklabelsizex_minor_g, 'length': 2.5}
-tick_paramsy_minor_g = {'size': 2.0, 'width': 1.0, 'labelsize': ticklabelsizey_minor_g, 'length': 2.5}
-# legend properties
-legend_g = False
-
-# save all plots?
-save_plots_g = False  # True
-save_format_g = 'png'  #'pdf'
-tightlayout_g = False
-
-show_g = True
-# write data to file
-save_raw_plot_data_g = False
-raw_plot_data_format_g = 'txt'
-##############
+plot_params = MatplotlibPlotter()
 
 
-def set_plot_defaults(
-        title_fontsize=16,
-        linewidth=2.0,
-        markersize=4.0,
-        labelfonstsize=15,
-        ticklabelsize=14,
-        ticklabelsize_minor=0,
-        axis_linewidth=2.0,
-        tick_paramsx={
-            'size': 4.0,
-            'width': 1.0,
-            'labelsize': ticklabelsizex_g,
-            'length': 5,
-            'labelrotation': 0
-        },
-        tick_paramsy={
-            'size': 4.0,
-            'width': 1.0,
-            'labelsize': ticklabelsizey_g,
-            'length': 5,
-            'labelrotation': 0
-        },
-        tick_paramsx_minor={
-            'size': 2.0,
-            'width': 1.0,
-            'labelsize': ticklabelsizex_minor_g,
-            'length': 2.5
-        },
-        tick_paramsy_minor={
-            'size': 2.0,
-            'width': 1.0,
-            'labelsize': ticklabelsizey_minor_g,
-            'length': 2.5
-        },
-        figsize=(8, 6),
-        save_plots=False,  #True,
-        save_format='pdf',
-        legend=True,
-        save_raw_plot_data=False,
-        raw_plot_data_format='txt',
-        show=True,
-        use_axis_fromatter=True,
-        **kwargs):
+def set_mpl_plot_defaults(**kwargs):
     """
-    Try to use this to set some global default values.
+    Set defaults for matplotib backend
+    according to the given keyword arguments
 
-    Set some evironment variable with or global variables.
+    Available defaults can be seen in :py:class:`~masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`
     """
-    global linewidth_g, markersize_g, labelfonstsize_g, title_fontsize_g, axis_linewidth_g
-    global ticklabelsize_g, tick_paramsx_g, tick_paramsy_g, save_plots_g, save_format_g, legend_g, figsize_g
-    global raw_plot_data_format_g, save_raw_plot_data_g, show_g, use_axis_fromatter_g
-    global ticklabelsize_minor_g, tick_paramsx_minor_g, tick_paramsy_minor_g
+    plot_params.set_defaults(**kwargs)
 
-    title_fontsize_g = title_fontsize
 
-    # plot properties
-    linewidth_g = linewidth
-    markersize_g = markersize
-    axis_linewidth_g = axis_linewidth
-    use_axis_fromatter_g = use_axis_fromatter
+def reset_mpl_plot_defaults():
+    """
+    Reset the defaults for matplotib backend
+    to the hardcoded defaults
 
-    # x, y label
-    labelfonstsize_g = labelfonstsize
+    Available defaults can be seen in :py:class:`~masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`
+    """
+    plot_params.reset_defaults()
 
-    # ticks
-    ticklabelsizex_g = ticklabelsize
-    ticklabelsizey_g = ticklabelsize
-    tick_paramsx_g.update(tick_paramsx)
-    tick_paramsy_g.update(tick_paramsy)
 
-    ticklabelsizex_minor_g = ticklabelsize_minor
-    tick_paramsx_minor_g.update(tick_paramsx_minor)
-    tick_paramsy_minor_g.update(tick_paramsy_minor)
+def show_mpl_plot_defaults():
+    """
+    Show the currently set defaults for matplotib backend
+    to the hardcoded defaults
 
-    # save all plots?
-    save_plots_g = save_plots
-    save_format_g = save_format
-    #print markersize_g
-
-    legend_g = legend
-    figsize_g = figsize
-
-    #save/export data
-    save_raw_plot_data_g = save_raw_plot_data
-    raw_plot_data_format_g = raw_plot_data_format
-
-    # TODO generalilze
-    # for kwarg in kwargs:
-    # set_global(val)
-
-    show_g = show
+    Available defaults can be seen in :py:class:`~masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`
+    """
+    pprint(plot_params.get_dict())
 
 
 ###############################################################################
@@ -189,52 +80,70 @@ def set_plot_defaults(
 ###############################################################################
 
 
-def single_scatterplot(ydata,
-                       xdata,
-                       xlabel,
-                       ylabel,
-                       title,
-                       plotlabel='scatterplot',
-                       linestyle='-',
-                       marker='o',
-                       limits=[None, None],
+@ensure_plotter_consistency(plot_params)
+def single_scatterplot(xdata,
+                       ydata,
+                       *,
+                       xlabel='',
+                       ylabel='',
+                       title='',
                        saveas='scatterplot',
-                       color='k',
-                       scale=[None, None],
                        axis=None,
                        xerr=None,
                        yerr=None,
-                       markersize=markersize_g,
+                       area_curve=None,
                        **kwargs):
     """
     Create a standard scatter plot (this should be flexible enough) to do all the
     basic plots.
+
+    :param xdata: arraylike, data for the x coordinate
+    :param ydata: arraylike, data for the y coordinate
+    :param xlabel: str, label written on the x axis
+    :param ylabel: str, label written on the y axis
+    :param title: str, title of the figure
+    :param saveas: str specifying the filename (without file format)
+    :param axis: Axes object, if given the plot will be applied to this object
+    :param xerr: optional data for errorbar in x-direction
+    :param yerr: optional data for errorbar in y-direction
+    :param area_curve: if an area plot is made this arguments defines the other enclosing line
+                       defaults to 0
+
+    Kwargs will be passed on to :py:class:`masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`.
+    If the arguments are not recognized they are passed on to the matplotlib functions
+    (`errorbar` or `fill_between`)
     """
-    if axis:
-        ax = axis
-    else:
-        fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
-        ax = fig.add_subplot(111)
-    for axis in ['top', 'bottom', 'left', 'right']:
-        ax.spines[axis].set_linewidth(axis_linewidth_g)
-    ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
-    ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
-    ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
-    ax.yaxis.set_tick_params(size=tick_paramsy_g.get('size', 4.0),
-                             width=tick_paramsy_g.get('width', 1.0),
-                             labelsize=tick_paramsy_g.get('labelsize', 14),
-                             length=tick_paramsy_g.get('length', 5),
-                             labelrotation=tick_paramsy_g.get('labelrotation', 0))
-    ax.xaxis.set_tick_params(size=tick_paramsx_g.get('size', 4.0),
-                             width=tick_paramsx_g.get('width', 1.0),
-                             labelsize=tick_paramsx_g.get('labelsize', 14),
-                             length=tick_paramsx_g.get('length', 5),
-                             labelrotation=tick_paramsx_g.get('labelrotation', 0))
-    if use_axis_fromatter_g:
-        ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
-        ax.yaxis.get_major_formatter().set_useOffset(False)
-        ax.xaxis.get_major_formatter().set_powerlimits((0, 3))
-        ax.xaxis.get_major_formatter().set_useOffset(False)
+    #DEPRECATION WARNINGS
+    if 'plotlabel' in kwargs:
+        warnings.warn('Please use plot_label instead of plotlabel', DeprecationWarning)
+        kwargs['plot_label'] = kwargs.pop('plotlabel')
+
+    if 'scale' in kwargs:
+        scale = kwargs.get('scale')
+        if isinstance(scale, list):
+            warnings.warn("Please provide scale as dict in the form {'x': value, 'y': value2}", DeprecationWarning)
+            scale_new = {}
+            if scale[0] is not None:
+                scale_new['x'] = scale[0]
+            if scale[1] is not None:
+                scale_new['y'] = scale[1]
+            kwargs['scale'] = scale_new
+
+    if 'limits' in kwargs:
+        limits = kwargs.get('limits')
+        if isinstance(limits, list):
+            warnings.warn("Please provide limits as dict in the form {'x': value, 'y': value2}", DeprecationWarning)
+            limits_new = {}
+            if limits[0] is not None:
+                limits_new['x'] = limits[0]
+            if limits[1] is not None:
+                limits_new['y'] = limits[1]
+            kwargs['limits'] = limits_new
+
+    plot_params.set_defaults(default_type='function', color='k', plot_label='scatterplot')
+    kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
+    ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
+
     #ax.xaxis.set_major_formatter(DateFormatter("%b %y"))
     #if yerr or xerr:
     #    p1 = ax.errorbar(xdata, ydata, linetyp, label=plotlabel, color=color,
@@ -244,237 +153,238 @@ def single_scatterplot(ydata,
     #                 linewidth=linewidth_g, markersize=markersize_g)
     # TODO customizable error bars fmt='o', ecolor='g', capthick=2, ...
     # there the if is prob better...
-    p1 = ax.errorbar(xdata,
-                     ydata,
-                     linestyle=linestyle,
-                     label=plotlabel,
-                     color=color,
-                     linewidth=linewidth_g,
-                     marker=marker,
-                     markersize=markersize,
-                     yerr=yerr,
-                     xerr=xerr,
-                     **kwargs)
-
-    if scale:
-        if scale[0]:
-            ax.set_xscale(scale[0])
-        if scale[1]:
-            ax.set_yscale(scale[1])
-
-    if limits:
-        if limits[0]:
-            xmin = limits[0][0]
-            xmax = limits[0][1]
-            ax.set_xlim(xmin, xmax)
-        if limits[1]:
-            ymin = limits[1][0]
-            ymax = limits[1][1]
-            ax.set_ylim(ymin, ymax)
-
-    if save_plots_g:
-        savefilename = '{}.{}'.format(saveas, save_format_g)
-        print(('save plot to: {}'.format(savefilename)))
-        pp.savefig(savefilename, format=save_format_g, transparent=True)
-    elif show_g:
-        pp.show()
+    plot_kwargs = plot_params.plot_kwargs()
+    if area_curve is None:
+        shift = 0
     else:
-        pass
+        shift = area_curve
+
+    if plot_params['area_plot']:
+        linecolor = plot_kwargs.pop('area_linecolor', None)
+        if plot_params['area_vertical']:
+            result = ax.fill_betweenx(ydata, xdata, x2=shift, **plot_kwargs, **kwargs)
+        else:
+            result = ax.fill_between(xdata, ydata, y2=shift, **plot_kwargs, **kwargs)
+        plot_kwargs.pop('alpha', None)
+        plot_kwargs.pop('label', None)
+        plot_kwargs.pop('color', None)
+        if plot_params['area_enclosing_line']:
+            if linecolor is None:
+                linecolor = result.get_facecolor()[0]
+            ax.errorbar(xdata,
+                        ydata,
+                        yerr=yerr,
+                        xerr=xerr,
+                        alpha=plot_params['plot_alpha'],
+                        color=linecolor,
+                        **plot_kwargs,
+                        **kwargs)
+    else:
+        ax.errorbar(xdata, ydata, yerr=yerr, xerr=xerr, **plot_kwargs, **kwargs)
+
+    plot_params.set_scale(ax)
+    plot_params.set_limits(ax)
+    plot_params.draw_lines(ax)
+    plot_params.save_plot(saveas)
+
     return ax
 
 
-def multiple_scatterplots(ydata,
-                          xdata,
-                          xlabel,
-                          ylabel,
-                          title,
-                          plot_labels=None,
-                          linestyle='-',
-                          marker='o',
-                          markersize=markersize_g,
-                          legend=legend_g,
-                          legend_option={},
+@ensure_plotter_consistency(plot_params)
+def multiple_scatterplots(xdata,
+                          ydata,
+                          *,
+                          xlabel='',
+                          ylabel='',
+                          title='',
                           saveas='mscatterplot',
-                          limits=[None, None],
-                          scale=[None, None],
                           axis=None,
                           xerr=None,
                           yerr=None,
-                          colors=None,
-                          linewidth=[],
-                          xticks=[],
+                          area_curve=None,
                           **kwargs):
     """
-    Create a standard scatter plot (this should be flexible enough) to do all the
-    basic plots.
+    Create a standard scatter plot with multiple sets of data (this should be flexible enough)
+    to do all the basic plots.
+
+    :param xdata: arraylike, data for the x coordinate
+    :param ydata: arraylike, data for the y coordinate
+    :param xlabel: str, label written on the x axis
+    :param ylabel: str, label written on the y axis
+    :param title: str, title of the figure
+    :param saveas: str specifying the filename (without file format)
+    :param axis: Axes object, if given the plot will be applied to this object
+    :param xerr: optional data for errorbar in x-direction
+    :param yerr: optional data for errorbar in y-direction
+    :param area_curve: if an area plot is made this arguments defines the other enclosing line
+                       defaults to 0
+
+    Kwargs will be passed on to :py:class:`masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`.
+    If the arguments are not recognized they are passed on to the matplotlib functions
+    (`errorbar` or `fill_between`)
     """
+
     nplots = len(ydata)
     if nplots != len(xdata):  # todo check dimention not len, without moving to special datatype.
         print('ydata and xdata must have the same dimension')
         return
 
-    # TODO allow plotlabels to have different dimension
-    pl = []
-    if axis:
-        ax = axis
-    else:
-        fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
-        ax = fig.add_subplot(111)
-    for axis in ['top', 'bottom', 'left', 'right']:
-        ax.spines[axis].set_linewidth(axis_linewidth_g)
-    ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
-    ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
-    ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
-    ax.yaxis.set_tick_params(size=tick_paramsy_g.get('size', 4.0),
-                             width=tick_paramsy_g.get('width', 1.0),
-                             labelsize=tick_paramsy_g.get('labelsize', 14),
-                             length=tick_paramsy_g.get('length', 5))
-    ax.xaxis.set_tick_params(size=tick_paramsx_g.get('size', 4.0),
-                             width=tick_paramsx_g.get('width', 1.0),
-                             labelsize=tick_paramsx_g.get('labelsize', 14),
-                             length=tick_paramsx_g.get('length', 5))
-    if len(xticks) != 0:
-        ax.xaxis.set_ticks(xticks[0])
-        ax.xaxis.set_ticklabels(xticks[1])
-    if use_axis_fromatter_g:
-        ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
-        ax.yaxis.get_major_formatter().set_useOffset(False)
-        ax.xaxis.get_major_formatter().set_powerlimits((0, 3))
-        ax.xaxis.get_major_formatter().set_useOffset(False)
+    if not isinstance(ydata[0], (list, np.ndarray, pd.Series)):
+        xdata, ydata = [xdata], [ydata]
+
+    plot_params.single_plot = False
+    plot_params.num_plots = len(ydata)
+
+    #DEPRECATION WARNINGS
+    if 'plot_labels' in kwargs:
+        warnings.warn('Please use plot_label instead of plot_labels', DeprecationWarning)
+        kwargs['plot_label'] = kwargs.pop('plot_labels')
+
+    if 'colors' in kwargs:
+        warnings.warn('Please use color instead of colors', DeprecationWarning)
+        kwargs['color'] = kwargs.pop('colors')
+
+    if 'legend_option' in kwargs:
+        warnings.warn('Please use legend_options instead of legend_option', DeprecationWarning)
+        kwargs['legend_options'] = kwargs.pop('legend_option')
+
+    if 'scale' in kwargs:
+        scale = kwargs.get('scale')
+        if isinstance(scale, list):
+            warnings.warn("Please provide scale as dict in the form {'x': value, 'y': value2}", DeprecationWarning)
+            scale_new = {}
+            if scale[0] is not None:
+                scale_new['x'] = scale[0]
+            if scale[1] is not None:
+                scale_new['y'] = scale[1]
+            kwargs['scale'] = scale_new
+
+    if 'limits' in kwargs:
+        limits = kwargs.get('limits')
+        if isinstance(limits, list):
+            warnings.warn("Please provide limits as dict in the form {'x': value, 'y': value2}", DeprecationWarning)
+            limits_new = {}
+            if limits[0] is not None:
+                limits_new['x'] = limits[0]
+            if limits[1] is not None:
+                limits_new['y'] = limits[1]
+            kwargs['limits'] = limits_new
+
+    if 'xticks' in kwargs:
+        xticks = kwargs.get('xticks')
+        if isinstance(xticks[0], list):
+            warnings.warn('Please provide xticks and xticklabels seperately as two lists', DeprecationWarning)
+            kwargs['xticklabels'] = xticks[0]
+            kwargs['xticks'] = xticks[1]
+
+    kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
+    ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
+
     # TODO good checks for input and setting of internals before plotting
     # allow all arguments as value then use for all or as lists with the righ length.
-    for i, data in enumerate(ydata):
+
+    plot_kwargs = plot_params.plot_kwargs()
+    colors = []
+
+    for indx, data in enumerate(zip(xdata, ydata, plot_kwargs)):
+
+        x, y, plot_kw = data
+
+        if plot_params['repeat_colors_after'] is not None:
+            if indx >= plot_params['repeat_colors_after']:
+                plot_kw['color'] = colors[indx % plot_params['repeat_colors_after']]
 
         if isinstance(yerr, list):
             try:
-                yerrt = yerr[i]
-            except KeyError:
+                yerrt = yerr[indx]
+            except IndexError:
                 yerrt = yerr[0]
         else:
             yerrt = yerr
 
         if isinstance(xerr, list):
             try:
-                xerrt = xerr[i]
-            except KeyError:
+                xerrt = xerr[indx]
+            except IndexError:
                 xerrt = xerr[0]
         else:
             xerrt = xerr
-        if isinstance(colors, list):
-            color = colors[i]
+
+        if area_curve is not None:
+            if isinstance(area_curve, list):
+                try:
+                    shift = area_curve[indx]
+                except IndexError:
+                    shift = area_curve[0]
+            else:
+                shift = area_curve
         else:
-            color = None
-        if not linewidth:
-            linewidth_p = linewidth_g
+            shift = 0
+
+        if plot_params[('area_plot', indx)]:
+            linecolor = plot_kw.pop('area_linecolor', None)
+            if plot_params[('area_vertical', indx)]:
+                result = ax.fill_betweenx(y, x, x2=shift, **plot_kw, **kwargs)
+            else:
+                result = ax.fill_between(x, y, y2=shift, **plot_kw, **kwargs)
+            colors.append(result.get_facecolor()[0])
+            plot_kw.pop('alpha', None)
+            plot_kw.pop('label', None)
+            plot_kw.pop('color', None)
+            if plot_params[('area_enclosing_line', indx)]:
+                if linecolor is None:
+                    linecolor = result.get_facecolor()[0]
+                ax.errorbar(x,
+                            y,
+                            yerr=yerrt,
+                            xerr=xerrt,
+                            alpha=plot_params[('plot_alpha', indx)],
+                            color=linecolor,
+                            **plot_kw,
+                            **kwargs)
         else:
-            linewidth_p = linewidth[i]
+            result = ax.errorbar(x, y, yerr=yerrt, xerr=xerrt, **plot_kw, **kwargs)
+            colors.append(result.lines[0].get_color())
 
-        if isinstance(linestyle, list):
-            linestyle_t = linestyle[i]
-        else:
-            linestyle_t = linestyle
-
-        if isinstance(marker, list):
-            marker_t = marker[i]
-        else:
-            marker_t = marker
-
-        if isinstance(markersize, list):
-            markersize_t = markersize[i]
-        else:
-            markersize_t = markersize_g
-
-        if plot_labels is None:
-            plot_label = ''
-        else:
-            plot_label = plot_labels[i]
-
-        p1 = ax.errorbar(xdata[i],
-                         data,
-                         linestyle=linestyle_t,
-                         label=plot_label,
-                         linewidth=linewidth_p,
-                         marker=marker_t,
-                         markersize=markersize_t,
-                         yerr=yerrt,
-                         xerr=xerrt,
-                         color=color,
-                         **kwargs)
-    if scale:
-        if scale[0]:
-            ax.set_xscale(scale[0])
-        if scale[1]:
-            ax.set_yscale(scale[1])
-
-    if limits:
-        if limits[0]:
-            xmin = limits[0][0]
-            xmax = limits[0][1]
-            ax.set_xlim(xmin, xmax)
-        if limits[1]:
-            ymin = limits[1][0]
-            ymax = limits[1][1]
-            ax.set_ylim(ymin, ymax)
-
-    #TODO nice legend
-    if legend:
-        #print legend
-        #{anchor, title, fontsize, linewith, borderaxespad}
-        # defaults 'anchor' : (0.75, 0.97), 'title' : 'Legend', 'fontsize' : 17, 'linewith' : 1.5, 'borderaxespad' : },
-        legends_defaults = {
-            'bbox_to_anchor': (0.65, 0.97),
-            'fontsize': 16,
-            'linewidth': 3.0,
-            'borderaxespad': 0,
-            'loc': 2,
-            'fancybox': True
-        }  #'title' : 'Legend',
-        loptions = legends_defaults.copy()
-        loptions.update(legend_option)
-        linewidth = loptions.pop('linewidth', 1.5)
-        title_font_size = loptions.pop('title_font_size', 15)
-        leg = ax.legend(
-            **loptions
-        )  #bbox_to_anchor=loptions['anchor'],loc=loptions['loc'], title=legend_title, borderaxespad=0., fancybox=True)
-        leg.get_frame().set_linewidth(linewidth)
-        leg.get_title().set_fontsize(title_font_size)  #legend 'Title' fontsize
-    if save_plots_g:
-        savefilename = '{}.{}'.format(saveas, save_format_g)
-        print(('save plot to: {}'.format(savefilename)))
-        pp.savefig(savefilename, format=save_format_g, transparent=True)
-    elif show_g:
-        pp.show()
-    else:
-        pass
+    plot_params.set_scale(ax)
+    plot_params.set_limits(ax)
+    plot_params.draw_lines(ax)
+    plot_params.show_legend(ax)
+    plot_params.save_plot(saveas)
 
     return ax
 
 
+@ensure_plotter_consistency(plot_params)
 def multi_scatter_plot(xdata,
                        ydata,
-                       sdata,
+                       *,
+                       size_data=None,
+                       color_data=None,
                        xlabel='',
                        ylabel='',
                        title='',
-                       plot_labels=[],
-                       marker='o',
-                       legend=legend_g,
-                       legend_option={},
                        saveas='mscatterplot',
-                       limits=[None, None],
-                       scale=[None, None],
                        axis=None,
-                       color=[],
-                       xticks=[],
-                       alpha=1.0,
-                       label=None,
                        **kwargs):
     """
-    xdata : list or array
-    ydata : list or array
-    sdata: marker size list or array
-    Info: x, y and s data must have the same dimensions.
-    ...
+    Create a scatter plot with varying marker size
+    Info: x, y, size and color data must have the same dimensions.
+
+    :param xdata: arraylike, data for the x coordinate
+    :param ydata: arraylike, data for the y coordinate
+    :param size_data: arraylike, data for the markersizes (optional)
+    :param color_data: arraylike, data for the color values with a colormap (optional)
+    :param xlabel: str, label written on the x axis
+    :param ylabel: str, label written on the y axis
+    :param title: str, title of the figure
+    :param saveas: str specifying the filename (without file format)
+    :param axis: Axes object, if given the plot will be applied to this object
+    :param xerr: optional data for errorbar in x-direction
+    :param yerr: optional data for errorbar in y-direction
+
+    Kwargs will be passed on to :py:class:`masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`.
+    If the arguments are not recognized they are passed on to the matplotlib function `scatter`
     """
 
     nplots = len(ydata)
@@ -482,118 +392,172 @@ def multi_scatter_plot(xdata,
         print('ydata and xdata must have the same dimension')
         return
 
-    # TODO allow plotlabels to have different dimension
-    pl = []
-    if axis:
-        ax = axis
+    if not isinstance(ydata[0], (list, np.ndarray, pd.Series)):
+        xdata, ydata, size_data, color_data = [xdata], [ydata], [size_data], [color_data]
+
+    plot_params.single_plot = False
+    plot_params.num_plots = len(ydata)
+
+    #DEPRECATION WARNINGS: label/plot_labels, alpha, limits, scale, legend_option, xticks
+
+    if 'label' in kwargs:
+        warnings.warn('Please use plot_label instead of label', DeprecationWarning)
+        kwargs['plot_label'] = kwargs.pop('label')
+
+    if 'alpha' in kwargs:
+        warnings.warn('Please use plot_alpha instead of alpha', DeprecationWarning)
+        kwargs['plot_alpha'] = kwargs.pop('alpha')
+
+    if 'legend_option' in kwargs:
+        warnings.warn('Please use legend_options instead of legend_option', DeprecationWarning)
+        kwargs['legend_options'] = kwargs.pop('legend_option')
+
+    if 'scale' in kwargs:
+        scale = kwargs.get('scale')
+        if isinstance(scale, list):
+            warnings.warn("Please provide scale as dict in the form {'x': value, 'y': value2}", DeprecationWarning)
+            scale_new = {}
+            if scale[0] is not None:
+                scale_new['x'] = scale[0]
+            if scale[1] is not None:
+                scale_new['y'] = scale[1]
+            kwargs['scale'] = scale_new
+
+    if 'limits' in kwargs:
+        limits = kwargs.get('limits')
+        if isinstance(limits, list):
+            warnings.warn("Please provide limits as dict in the form {'x': value, 'y': value2}", DeprecationWarning)
+            limits_new = {}
+            if limits[0] is not None:
+                limits_new['x'] = limits[0]
+            if limits[1] is not None:
+                limits_new['y'] = limits[1]
+            kwargs['limits'] = limits_new
+
+    if 'xticks' in kwargs:
+        xticks = kwargs.get('xticks')
+        if isinstance(xticks[0], list):
+            warnings.warn('Please provide xticks and xticklabels seperately as two lists', DeprecationWarning)
+            kwargs['xticklabels'] = xticks[0]
+            kwargs['xticks'] = xticks[1]
+
+    plot_params.set_defaults(default_type='function', linestyle=None, area_plot=False, colorbar=False)
+    kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
+    ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
+
+    plot_kwargs = plot_params.plot_kwargs(ignore='markersize', extra_keys={'cmap'})
+
+    legend_elements = []
+    legend_labels = []
+
+    if size_data is None:
+        size_data = [None] * plot_params.num_plots
+
+    if color_data is None:
+        color_data = [None] * plot_params.num_plots
+
+    for indx, data in enumerate(zip(xdata, ydata, size_data, color_data, plot_kwargs)):
+
+        x, y, size, color, plot_kw = data
+
+        if size is None:
+            size = plot_params['markersize']
+
+        if color is not None:
+            plot_kw.pop('color')
+
+        res = ax.scatter(x, y=y, s=size, c=color, **plot_kw, **kwargs)
+        if plot_kw.get('label', None) is not None and color is not None:
+            legend_elements.append(res.legend_elements(num=1)[0][0])
+            legend_labels.append(plot_kw['label'])
+
+    if any(c is not None for c in color_data):
+        legend_elements = (legend_elements, legend_labels)
     else:
-        fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
-        ax = fig.add_subplot(111)
-    for axis in ['top', 'bottom', 'left', 'right']:
-        ax.spines[axis].set_linewidth(axis_linewidth_g)
-    ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
-    ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
-    ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
-    ax.yaxis.set_tick_params(size=tick_paramsy_g.get('size', 4.0),
-                             width=tick_paramsy_g.get('width', 1.0),
-                             labelsize=tick_paramsy_g.get('labelsize', 14),
-                             length=tick_paramsy_g.get('length', 5))
-    ax.xaxis.set_tick_params(size=tick_paramsx_g.get('size', 4.0),
-                             width=tick_paramsx_g.get('width', 1.0),
-                             labelsize=tick_paramsx_g.get('labelsize', 14),
-                             length=tick_paramsx_g.get('length', 5))
-    if len(xticks) != 0:
-        ax.xaxis.set_ticks(xticks[0])
-        ax.xaxis.set_ticklabels(xticks[1])
-    if use_axis_fromatter_g:
-        ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
-        ax.yaxis.get_major_formatter().set_useOffset(False)
-        ax.xaxis.get_major_formatter().set_powerlimits((0, 3))
-        ax.xaxis.get_major_formatter().set_useOffset(False)
+        legend_elements = None
 
-    if scale:
-        if scale[1]:
-            ax.set_yscale(scale[0])
-        if scale[0]:
-            ax.set_xscale(scale[1])
-
-    if limits:
-        if limits[0]:
-            xmin = limits[0][0]
-            xmax = limits[0][1]
-            ax.set_xlim(xmin, xmax)
-        if limits[1]:
-            ymin = limits[1][0]
-            ymax = limits[1][1]
-            ax.set_ylim(ymin, ymax)
-
-    for i, y in enumerate(ydata):
-        if sdata[i] is not None:
-            s = sdata[i]
-        else:
-            s = 1.0  # maybe list with one or marker size
-        if color is None:
-            if isinstance(y, list):
-                color1 = ['k' for i in y]
-            else:
-                color1 = ['k']
-        else:
-            color1 = color[i]
-        if isinstance(marker, list):
-            marker1 = marker[i]
-        else:
-            marker1 = marker
-        ax.scatter(xdata[i], y=y, s=s, c=color1, alpha=alpha, marker=marker1, label=label)
-
-    #TODO nice legend
-    if legend:
-        #print legend
-        #{anchor, title, fontsize, linewith, borderaxespad}
-        # defaults 'anchor' : (0.75, 0.97), 'title' : 'Legend', 'fontsize' : 17, 'linewith' : 1.5, 'borderaxespad' : },
-        legends_defaults = {
-            'bbox_to_anchor': (0.65, 0.97),
-            'fontsize': 16,
-            'linewidth': 3.0,
-            'borderaxespad': 0,
-            'loc': 2,
-            'fancybox': True
-        }  #'title' : 'Legend',
-        loptions = legends_defaults.copy()
-        loptions.update(legend_option)
-        linewidth = loptions.pop('linewidth', 1.5)
-        #title_font_size = loptions.pop('title_font_size', 15)
-        leg = ax.legend(
-            **loptions
-        )  #bbox_to_anchor=loptions['anchor'],loc=loptions['loc'], title=legend_title, borderaxespad=0., fancybox=True)
-        leg.get_frame().set_linewidth(linewidth)
-        #leg.get_title().set_fontsize(title_font_size) #legend 'Title' fontsize
-    if save_plots_g:
-        savefilename = '{}.{}'.format(saveas, save_format_g)
-        print(('save plot to: {}'.format(savefilename)))
-        pp.savefig(savefilename, format=save_format_g, transparent=True)
+    plot_params.set_scale(ax)
+    plot_params.set_limits(ax)
+    plot_params.draw_lines(ax)
+    plot_params.show_legend(ax, leg_elems=legend_elements)
+    plot_params.show_colorbar(ax)
+    plot_params.save_plot(saveas)
 
     return ax
 
 
+@ensure_plotter_consistency(plot_params)
+def colormesh_plot(xdata, ydata, cdata, *, xlabel='', ylabel='', title='', saveas='colormesh', axis=None, **kwargs):
+    """
+    Create plot with pcolormesh
+
+    :param xdata: arraylike, data for the x coordinate
+    :param ydata: arraylike, data for the y coordinate
+    :param cdata: arraylike, data for the color values with a colormap
+    :param xlabel: str, label written on the x axis
+    :param ylabel: str, label written on the y axis
+    :param title: str, title of the figure
+    :param saveas: str specifying the filename (without file format)
+    :param axis: Axes object, if given the plot will be applied to this object
+
+    Kwargs will be passed on to :py:class:`masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`.
+    If the arguments are not recognized they are passed on to the matplotlib function `pcolormesh`
+    """
+
+    #Set default limits (not setting them leaves empty border)
+    limits = kwargs.pop('limits', {})
+    if 'x' not in limits:
+        limits['x'] = (xdata.min(), xdata.max())
+    if 'y' not in limits:
+        limits['y'] = (ydata.min(), ydata.max())
+    kwargs['limits'] = limits
+
+    plot_params.set_defaults(default_type='function', edgecolor='face')
+    kwargs = plot_params.set_parameters(continue_on_error=True, area_plot=False, **kwargs)
+    ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
+
+    plot_kwargs = plot_params.plot_kwargs(plot_type='colormesh')
+
+    ax.pcolormesh(xdata, ydata, cdata, **plot_kwargs, **kwargs)
+
+    plot_params.set_scale(ax)
+    plot_params.set_limits(ax)
+    plot_params.show_legend(ax)
+    plot_params.show_colorbar(ax)
+    plot_params.draw_lines(ax)
+    plot_params.save_plot(saveas)
+
+    return ax
+
+
+@ensure_plotter_consistency(plot_params)
 def waterfall_plot(xdata,
                    ydata,
                    zdata,
-                   xlabel,
-                   ylabel,
-                   zlabel,
-                   title,
-                   plot_labels,
-                   linetyp='o-',
-                   legend=legend_g,
-                   legend_option={},
-                   saveas='mscatterplot',
-                   limits=[None, None],
-                   scale=[None, None]):
+                   *,
+                   xlabel='',
+                   ylabel='',
+                   zlabel='',
+                   title='',
+                   saveas='waterfallplot',
+                   axis=None,
+                   **kwargs):
     """
-    Create a standard waterfall plot (this should be flexible enough) to do all the
-    basic plots.
+    Create a standard waterfall plot
+
+    :param xdata: arraylike, data for the x coordinate
+    :param ydata: arraylike, data for the y coordinate
+    :param zdata: arraylike, data for the z coordinate
+    :param xlabel: str, label written on the x axis
+    :param ylabel: str, label written on the y axis
+    :param zlabel: str, label written on the z axis
+    :param title: str, title of the figure
+    :param axis: Axes object, if given the plot will be applied to this object
+    :param saveas: str specifying the filename (without file format)
+
+    Kwargs will be passed on to :py:class:`masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`.
+    If the arguments are not recognized they are passed on to the matplotlib function `scatter3D`
     """
-    from mpl_toolkits.mplot3d.axes3d import Axes3D
 
     nplots = len(ydata)
     if nplots != len(xdata):  # todo check dimention not len, without moving to special datatype.
@@ -603,271 +567,255 @@ def waterfall_plot(xdata,
         print('ydata and zdata must have the same dimension')
         return
 
-    # TODO allow plotlabels to have different dimension
-    pl = []
-
-    fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
-    ax = fig.add_subplot(111, projection='3d')
-    for axis in ['top', 'bottom', 'left', 'right']:
-        ax.spines[axis].set_linewidth(axis_linewidth_g)
-    ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
-    ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
-    ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
-    ax.yaxis.set_tick_params(size=tick_paramsy_g.get('size', 4.0),
-                             width=tick_paramsy_g.get('width', 1.0),
-                             labelsize=tick_paramsy_g.get('labelsize', 14),
-                             length=tick_paramsy_g.get('length', 5))
-    ax.xaxis.set_tick_params(size=tick_paramsx_g.get('size', 4.0),
-                             width=tick_paramsx_g.get('width', 1.0),
-                             labelsize=tick_paramsx_g.get('labelsize', 14),
-                             length=tick_paramsx_g.get('length', 5))
-
-    ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
-    ax.yaxis.get_major_formatter().set_useOffset(False)
-
-    for i, data in enumerate(ydata):
-        p1 = ax.plot3D(xdata[i],
-                       data,
-                       zdata[i],
-                       linetyp,
-                       label=plot_labels[i],
-                       linewidth=linewidth_g,
-                       markersize=markersize_g)
-    if scale:
-        if scale[0]:
-            ax.set_xscale(scale[0])
-        if scale[1]:
-            ax.set_yscale(scale[1])
-
-    if limits:
-        if limits[0]:
-            xmin = limits[0][0]
-            xmax = limits[0][1]
-            ax.set_xlim(xmin, xmax)
-        if limits[1]:
-            ymin = limits[1][0]
-            ymax = limits[1][1]
-            ax.set_ylim(ymin, ymax)
-
-    #TODO legend
-    if legend:
-        #print legend
-        #{anchor, title, fontsize, linewith, borderaxespad}
-        # defaults 'anchor' : (0.75, 0.97), 'title' : 'Legend', 'fontsize' : 17, 'linewith' : 1.5, 'borderaxespad' : },
-        legends_defaults = {
-            'bbox_to_anchor': (0.70, 0.97),
-            'fontsize': 12,
-            'linewidth': 1.5,
-            'borderaxespad': 0,
-            'loc': 2,
-            'fancybox': True
-        }  #'title' : 'Legend',
-        loptions = legends_defaults.copy()
-        loptions.update(legend_option)
-        linewidth = loptions.pop('linewidth', 1.5)
-        #title_font_size = loptions.pop('title_font_size', 15)
-        leg = pp.legend(
-            **loptions
-        )  #bbox_to_anchor=loptions['anchor'],loc=loptions['loc'], title=legend_title, borderaxespad=0., fancybox=True)
-        leg.get_frame().set_linewidth(linewidth)
-        #leg.get_title().set_fontsize(title_font_size) #legend 'Title' fontsize
-    if save_plots_g:
-        savefilename = '{}.{}'.format(saveas, save_format_g)
-        print(('save plot to: {}'.format(savefilename)))
-        pp.savefig(savefilename, format=save_format_g, transparent=True)
-    elif show_g:
-        pp.show()
+    if isinstance(zdata, np.ndarray):
+        zmin = zdata.min()
+        zmax = zdata.max()
     else:
-        pass
+        zmin = min(zdata)
+        zmax = max(zdata)
+
+    clim = None
+    if 'limits' in kwargs:
+        clim = kwargs['limits'].get('color', None)
+    else:
+        kwargs['limits'] = {}
+    if clim is None:
+        clim = (kwargs.get('vmin', zmin), kwargs.get('vmax', zmax))
+    kwargs['limits']['color'] = clim
+
+    if not isinstance(ydata[0], (list, np.ndarray, pd.Series)):
+        xdata, ydata, zdata = [xdata], [ydata], [zdata]
+
+    plot_params.single_plot = False
+    plot_params.num_plots = len(ydata)
+
+    plot_params.set_defaults(default_type='function', markersize=30, linewidth=0, area_plot=False)
+    kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
+    ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, zlabel=zlabel, axis=axis, projection='3d')
+
+    plot_kwargs = plot_params.plot_kwargs(ignore=['markersize'], extra_keys={'cmap'})
+
+    for indx, data in enumerate(zip(xdata, ydata, zdata, plot_kwargs)):
+
+        x, y, z, plot_kw = data
+        ax.scatter3D(x, y, z, c=z, s=plot_params[('markersize', indx)], **plot_kw, **kwargs)
+
+    plot_params.set_scale(ax)
+    plot_params.set_limits(ax)
+    plot_params.show_legend(ax)
+    plot_params.show_colorbar(ax)
+    plot_params.save_plot(saveas)
+
+    return ax
 
 
-def multiplot_moved(ydata,
-                    xdata,
-                    xlabel,
-                    ylabel,
-                    title,
-                    plot_labels,
+@ensure_plotter_consistency(plot_params)
+def surface_plot(xdata,
+                 ydata,
+                 zdata,
+                 *,
+                 xlabel='',
+                 ylabel='',
+                 zlabel='',
+                 title='',
+                 saveas='surface_plot',
+                 axis=None,
+                 **kwargs):
+    """
+    Create a standard surface plot
+
+    :param xdata: arraylike, data for the x coordinate
+    :param ydata: arraylike, data for the y coordinate
+    :param zdata: arraylike, data for the z coordinate
+    :param xlabel: str, label written on the x axis
+    :param ylabel: str, label written on the y axis
+    :param zlabel: str, label written on the z axis
+    :param title: str, title of the figure
+    :param axis: Axes object, if given the plot will be applied to this object
+    :param saveas: str specifying the filename (without file format)
+
+    Kwargs will be passed on to :py:class:`masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`.
+    If the arguments are not recognized they are passed on to the matplotlib function `plot_surface`
+    """
+
+    nplots = len(ydata)
+    if nplots != len(xdata):  # todo check dimention not len, without moving to special datatype.
+        print('ydata and xdata must have the same dimension')
+        return
+    if nplots != len(zdata):  # todo check dimention not len, without moving to special datatype.
+        print('ydata and zdata must have the same dimension')
+        return
+
+    if isinstance(zdata, np.ndarray):
+        zmin = zdata.min()
+        zmax = zdata.max()
+    else:
+        zmin = min(zdata)
+        zmax = max(zdata)
+
+    clim = None
+    if 'limits' in kwargs:
+        clim = kwargs['limits'].get('color', None)
+    else:
+        kwargs['limits'] = {}
+    if clim is None:
+        clim = (kwargs.get('vmin', zmin), kwargs.get('vmax', zmax))
+    kwargs['limits']['color'] = clim
+
+    plot_params.set_defaults(default_type='function', linewidth=0, area_plot=False)
+    kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
+    ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, zlabel=zlabel, axis=axis, projection='3d')
+
+    plot_kwargs = plot_params.plot_kwargs(ignore=['markersize', 'marker'], extra_keys={'cmap'})
+    ax.plot_surface(xdata, ydata, zdata, **plot_kwargs, **kwargs)
+
+    plot_params.set_scale(ax)
+    plot_params.set_limits(ax)
+    plot_params.show_legend(ax)
+    plot_params.show_colorbar(ax)
+    plot_params.save_plot(saveas)
+
+    return ax
+
+
+@ensure_plotter_consistency(plot_params)
+def multiplot_moved(xdata,
+                    ydata,
+                    *,
+                    xlabel='',
+                    ylabel='',
+                    title='',
                     scale_move=1.0,
-                    linestyle='-',
-                    marker='o',
-                    legend=legend_g,
-                    legend_option={},
                     min_add=0,
                     saveas='mscatterplot',
-                    limits=[None, None],
-                    scale=[None, None],
                     **kwargs):
     """
-    Plots all the scater plots above each other. It adds an arbitray offset to the ydata to do this and
-    calls multi scatter plot. Therefore you might not want to show the yaxis ticks
+    Plots all the scatter plots above each other. It adds an arbitrary offset to the ydata to do this and
+    calls `multiple_scatterplots`. Therefore you might not want to show the yaxis ticks
+
+    :param xdata: arraylike, data for the x coordinate
+    :param ydata: arraylike, data for the y coordinate
+    :param xlabel: str, label written on the x axis
+    :param ylabel: str, label written on the y axis
+    :param title: str, title of the figure
+    :param scale_move: float, max*scale_move determines size of the shift
+    :param min_add: float, minimum shift
+    :param saveas: str specifying the filename (without file format)
+
+    Kwargs are passed on to the :py:func:`multiple_scatterplots()` call
     """
 
+    if 'yticks' not in kwargs:
+        kwargs['yticks'] = []
+    if 'yticklabels' not in kwargs:
+        kwargs['yticklabels'] = []
+
     ydatanew = []
+    shifts = []
 
     ymax = 0
     for data in ydata:
         ydatanew.append(np.array(data) + ymax)
+        shifts.append(ymax)
         ymax = ymax + max(data) * scale_move + min_add
 
-    ax = multiple_scatterplots(ydatanew,
-                               xdata,
-                               xlabel,
-                               ylabel,
-                               title,
-                               plot_labels,
-                               linestyle=linestyle,
-                               marker=marker,
-                               legend=legend,
-                               legend_option=legend_option,
+    ax = multiple_scatterplots(xdata,
+                               ydatanew,
+                               xlabel=xlabel,
+                               ylabel=ylabel,
+                               title=title,
                                saveas=saveas,
-                               limits=limits,
-                               scale=scale,
+                               area_curve=shifts,
                                **kwargs)
 
     return ax
 
 
+@ensure_plotter_consistency(plot_params)
 def histogram(xdata,
-              bins=None,
-              range=None,
-              density=None,
-              weights=None,
-              cumulative=False,
-              bottom=None,
+              density=False,
               histtype='bar',
               align='mid',
               orientation='vertical',
-              rwidth=None,
               log=False,
-              color=None,
-              label=None,
-              stacked=False,
-              normed=None,
-              data=None,
               axis=None,
               title='hist',
               xlabel='bins',
               ylabel='counts',
-              limits=[None, None],
-              legend=legend_g,
-              legend_option={},
               saveas='histogram',
               return_hist_output=False,
               **kwargs):
     """
     Create a standard looking histogram
+
+    :param xdata: arraylike, Data for the histogram
+    :param density: bool, if True the histogram is normed and a normal distribution is plotted with
+                    the same mu and sigma as the data
+    :param histtype: str, type of the histogram
+    :param align: str, defines where the bars for the bins are aligned
+    :param orientation: str, is the histogram vertical or horizontal
+    :param log: bool, if True a logarithmic scale is used for the counts
+    :param axis: Axes object where to add the plot
+    :param title: str, Title of the plot
+    :param xlabel: str, label for the x-axis
+    :param ylabel: str, label for the y-axis
+    :param saveas: str, filename for the saved plot
+    :param return_hist_output: bool, if True the data output from hist will be returned
+
+    Kwargs will be passed on to :py:class:`masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`.
+    If the arguments are not recognized they are passed on to the matplotlib function `hist`
     """
 
-    if axis:
-        ax = axis
-    else:
-        fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
-        ax = fig.add_subplot(111)
+    if 'label' in kwargs:
+        warnings.warn('Please use plot_label instead of label', DeprecationWarning)
+        kwargs['plot_label'] = kwargs.pop('label')
 
-    for axis in ['top', 'bottom', 'left', 'right']:
-        ax.spines[axis].set_linewidth(axis_linewidth_g)
-    ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
-    ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
-    ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
-    ax.yaxis.set_tick_params(size=tick_paramsy_g.get('size', 4.0),
-                             width=tick_paramsy_g.get('width', 1.0),
-                             labelsize=tick_paramsy_g.get('labelsize', 14),
-                             length=tick_paramsy_g.get('length', 5),
-                             which='major')
-    ax.xaxis.set_tick_params(size=tick_paramsx_g.get('size', 4.0),
-                             width=tick_paramsx_g.get('width', 1.0),
-                             labelsize=tick_paramsx_g.get('labelsize', 14),
-                             length=tick_paramsx_g.get('length', 5),
-                             which='major')
+    if 'legend_option' in kwargs:
+        warnings.warn('Please use legend_options instead of legend_option', DeprecationWarning)
+        kwargs['legend_options'] = kwargs.pop('legend_option')
 
-    ax.yaxis.set_tick_params(size=tick_paramsy_minor_g.get('size', 2.0),
-                             width=tick_paramsy_minor_g.get('width', 1.0),
-                             labelsize=tick_paramsy_minor_g.get('labelsize', 0),
-                             length=tick_paramsy_minor_g.get('length', 2.5),
-                             which='minor')
-    ax.xaxis.set_tick_params(size=tick_paramsx_minor_g.get('size', 2.0),
-                             width=tick_paramsx_minor_g.get('width', 1.0),
-                             labelsize=tick_paramsx_minor_g.get('labelsize', 0),
-                             length=tick_paramsx_minor_g.get('length', 2.5),
-                             which='minor')
+    if 'limits' in kwargs:
+        limits = kwargs.get('limits')
+        if isinstance(limits, list):
+            warnings.warn("Please provide limits as dict in the form {'x': value, 'y': value2}", DeprecationWarning)
+            limits_new = {}
+            if limits[0] is not None:
+                limits_new['x'] = limits[0]
+            if limits[1] is not None:
+                limits_new['y'] = limits[1]
+            kwargs['limits'] = limits_new
 
-    if use_axis_fromatter_g:
-        if not log:
-            ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
-            ax.xaxis.get_major_formatter().set_powerlimits((0, 3))
-        ax.yaxis.get_major_formatter().set_useOffset(False)
-        ax.xaxis.get_major_formatter().set_useOffset(False)
+    kwargs = plot_params.set_parameters(continue_on_error=True, set_powerlimits=not log, area_plot=False, **kwargs)
 
-    #matplotlib.pyplot.hist(x, bins=None, range=None, density=None, weights=None, cumulative=False, bottom=None, histtype='bar', align='mid', orientation='vertical', rwidth=None, log=False, color=None, label=None, stacked=False, normed=None, hold=None, data=None, **kwargs)
+    if orientation == 'horizontal':
+        if xlabel == 'bins' and ylabel == 'counts':
+            xlabel, ylabel = ylabel, xlabel
+
+    ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis, minor=True)
+
+    plot_kwargs = plot_params.plot_kwargs(plot_type='histogram')
     n, bins, patches = ax.hist(xdata,
-                               bins=bins,
-                               range=range,
                                density=density,
-                               weights=weights,
-                               cumulative=cumulative,
-                               bottom=bottom,
                                histtype=histtype,
                                align=align,
                                orientation=orientation,
-                               rwidth=rwidth,
                                log=log,
-                               color=color,
-                               label=label,
-                               stacked=stacked,
-                               normed=normed,
-                               data=data,
+                               **plot_kwargs,
                                **kwargs)
 
-    if limits:
-        if limits[0]:
-            xmin = limits[0][0]
-            xmax = limits[0][1]
-            ax.set_xlim(xmin, xmax)
-        if limits[1]:
-            ymin = limits[1][0]
-            ymax = limits[1][1]
-            ax.set_ylim(ymin, ymax)
-
-    if normed:
+    if density:
         mu = np.mean(xdata)
         sigma = np.std(xdata)
-        y = mlab.normpdf(bins, mu, sigma)
+        y = norm.pdf(bins, mu, sigma)
         if orientation == 'horizontal':
-            b = ax.plot(y, bins, '--')
+            ax.plot(y, bins, '--')
         else:
-            b = ax.plot(bins, y, '--')
+            ax.plot(bins, y, '--')
 
-    #TODO legend
-    if legend:
-        #print legend
-        #{anchor, title, fontsize, linewith, borderaxespad}
-        # defaults 'anchor' : (0.75, 0.97), 'title' : 'Legend', 'fontsize' : 17, 'linewith' : 1.5, 'borderaxespad' : },
-        legends_defaults = {
-            'bbox_to_anchor': (0.70, 0.97),
-            'fontsize': 12,
-            'borderaxespad': 0,
-            'loc': 2,
-            'fancybox': True
-        }  #'linewidth' : 1.5,, 'title' : 'Legend',
-        loptions = legends_defaults.copy()
-        loptions.update(legend_option)
-        linewidth = loptions.pop('linewidth', 1.5)
-        title_font_size = loptions.pop('title_fontsize', 15)
-        leg = ax.legend(
-            **loptions
-        )  #bbox_to_anchor=loptions['anchor'],loc=loptions['loc'], title=legend_title, borderaxespad=0., fancybox=True)
-        leg.get_frame().set_linewidth(linewidth)
-        leg.get_title().set_fontsize(title_font_size)  #legend 'Title' fontsize
-
-    if save_plots_g:
-        savefilename = '{}.{}'.format(saveas, save_format_g)
-        print(('save plot to: {}'.format(savefilename)))
-        pp.savefig(savefilename, format=save_format_g, transparent=True)
-
-    if show_g:
-        pp.show()
-    else:
-        pass
+    plot_params.set_limits(ax)
+    plot_params.draw_lines(ax)
+    plot_params.show_legend(ax)
+    plot_params.save_plot(saveas)
 
     if return_hist_output:
         return ax, n, bins, patches
@@ -876,155 +824,111 @@ def histogram(xdata,
 
 
 # todo remove default histogramm, replace it in all code by histogramm
-def default_histogram(xdata,
-                      bins=None,
-                      range=None,
-                      density=None,
-                      weights=None,
-                      cumulative=False,
-                      bottom=None,
-                      histtype='bar',
-                      align='mid',
-                      orientation='vertical',
-                      rwidth=None,
-                      log=False,
-                      color=None,
-                      label=None,
-                      stacked=False,
-                      normed=None,
-                      data=None,
-                      axis=None,
-                      title='hist',
-                      xlabel='bins',
-                      ylabel='counts',
-                      **kwargs):
+def default_histogram(*args, **kwargs):
     """
-    Create a standard looking histogram
+    Create a standard looking histogram (DEPRECATED)
     """
 
-    if axis:
-        ax = axis
-    else:
-        fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
-        ax = fig.add_subplot(111)
+    warnings.warn('Use histogram instead of default_histogram', DeprecationWarning)
 
-    for axis in ['top', 'bottom', 'left', 'right']:
-        ax.spines[axis].set_linewidth(axis_linewidth_g)
-    ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
-    ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
-    ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
-    ax.yaxis.set_tick_params(size=tick_paramsy_g.get('size', 4.0),
-                             width=tick_paramsy_g.get('width', 1.0),
-                             labelsize=tick_paramsy_g.get('labelsize', 14),
-                             length=tick_paramsy_g.get('length', 5))
-    ax.xaxis.set_tick_params(size=tick_paramsx_g.get('size', 4.0),
-                             width=tick_paramsx_g.get('width', 1.0),
-                             labelsize=tick_paramsx_g.get('labelsize', 14),
-                             length=tick_paramsx_g.get('length', 5))
-    ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
-    ax.yaxis.get_major_formatter().set_useOffset(False)
+    res = histogram(*args, **kwargs)
 
-    #matplotlib.pyplot.hist(x, bins=None, range=None, density=None, weights=None, cumulative=False, bottom=None, histtype='bar', align='mid', orientation='vertical', rwidth=None, log=False, color=None, label=None, stacked=False, normed=None, hold=None, data=None, **kwargs)
-    n, bins, patches = ax.hist(xdata,
-                               bins=bins,
-                               range=range,
-                               density=density,
-                               weights=weights,
-                               cumulative=cumulative,
-                               bottom=bottom,
-                               histtype=histtype,
-                               align=align,
-                               orientation=orientation,
-                               rwidth=rwidth,
-                               log=log,
-                               color=color,
-                               label=label,
-                               stacked=stacked,
-                               normed=normed,
-                               data=data,
-                               **kwargs)
-
-    if normed:
-        mu = np.mean(xdata)
-        sigma = np.std(xdata)
-        y = mlab.normpdf(bins, mu, sigma)
-        if orientation == 'horizontal':
-            b = ax.plot(y, bins, '--')
-
-        else:
-            b = ax.plot(bins, y, '--')
-
-    if show_g:
-        pp.show()
-    else:
-        pass
-
-    return ax
+    return res
 
 
-def barchart(ydata,
-             xdata,
+@ensure_plotter_consistency(plot_params)
+def barchart(xdata,
+             ydata,
+             *,
              width=0.35,
              xlabel='x',
              ylabel='y',
              title='',
-             plot_labels=None,
              bottom=None,
-             linestyle='-',
-             marker='o',
-             markersize=markersize_g,
-             legend=legend_g,
-             legend_option={},
-             saveas='mscatterplot',
-             limits=[None, None],
-             scale=[None, None],
+             saveas='barchart',
              axis=None,
              xerr=None,
              yerr=None,
-             colors=[],
-             linewidth=[],
-             xticks=[],
              **kwargs):
     """
     Create a standard bar chart plot (this should be flexible enough) to do all the
     basic bar chart plots.
-    Has to be overworked, was quickly adjusted from scatterplots, some things not used or not needed
+
+    :param xdata: arraylike data for the x coordinates of the bars
+    :param ydata: arraylike data for the heights of the bars
+    :param width: float determines the width of the bars
+    :param axis: Axes object where to add the plot
+    :param title: str, Title of the plot
+    :param xlabel: str, label for the x-axis
+    :param ylabel: str, label for the y-axis
+    :param saveas: str, filename for the saved plot
+    :param xerr: optional data for errorbar in x-direction
+    :param yerr: optional data for errorbar in y-direction
+    :param bottom: bottom values for the lowest end of the bars
+
+    Kwargs will be passed on to :py:class:`masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`.
+    If the arguments are not recognized they are passed on to the matplotlib function `bar`
+
+    TODO: grouped barchart (meaing not stacked)
     """
+
     nplots = len(ydata)
     if nplots != len(xdata):  # todo check dimention not len, without moving to special datatype.
         print('ydata and xdata must have the same dimension')
         return
 
-    # TODO allow plotlabels to have different dimension
-    pl = []
-    if axis:
-        ax = axis
-    else:
-        fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
-        ax = fig.add_subplot(111)
-    for axis in ['top', 'bottom', 'left', 'right']:
-        ax.spines[axis].set_linewidth(axis_linewidth_g)
-    ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
-    ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
-    ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
-    ax.yaxis.set_tick_params(size=tick_paramsy_g.get('size', 4.0),
-                             width=tick_paramsy_g.get('width', 1.0),
-                             labelsize=tick_paramsy_g.get('labelsize', 14),
-                             length=tick_paramsy_g.get('length', 5),
-                             labelrotation=tick_paramsy_g.get('labelrotation', 0))
-    ax.xaxis.set_tick_params(size=tick_paramsx_g.get('size', 4.0),
-                             width=tick_paramsx_g.get('width', 1.0),
-                             labelsize=tick_paramsx_g.get('labelsize', 14),
-                             length=tick_paramsx_g.get('length', 5),
-                             labelrotation=tick_paramsx_g.get('labelrotation', 0))
-    if len(xticks) != 0:
-        ax.xaxis.set_ticks(xticks[0])
-        ax.xaxis.set_ticklabels(xticks[1])
-    if use_axis_fromatter_g:
-        ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
-        ax.yaxis.get_major_formatter().set_useOffset(False)
-        ax.xaxis.get_major_formatter().set_powerlimits((0, 3))
-        ax.xaxis.get_major_formatter().set_useOffset(False)
+    if not isinstance(ydata[0], (list, np.ndarray, pd.Series)):
+        xdata, ydata = [xdata], [ydata]
+
+    plot_params.single_plot = False
+    plot_params.num_plots = len(ydata)
+
+    #DEPRECATION WARNINGS
+    if 'plot_labels' in kwargs:
+        warnings.warn('Please use plot_label instead of plot_labels', DeprecationWarning)
+        kwargs['plot_label'] = kwargs.pop('plot_labels')
+
+    if 'colors' in kwargs:
+        warnings.warn('Please use color instead of colors', DeprecationWarning)
+        kwargs['color'] = kwargs.pop('colors')
+
+    if 'legend_option' in kwargs:
+        warnings.warn('Please use legend_options instead of legend_option', DeprecationWarning)
+        kwargs['legend_options'] = kwargs.pop('legend_option')
+
+    if 'scale' in kwargs:
+        scale = kwargs.get('scale')
+        if isinstance(scale, list):
+            warnings.warn("Please provide scale as dict in the form {'x': value, 'y': value2}", DeprecationWarning)
+            scale_new = {}
+            if scale[0] is not None:
+                scale_new['x'] = scale[0]
+            if scale[1] is not None:
+                scale_new['y'] = scale[1]
+            kwargs['scale'] = scale_new
+
+    if 'limits' in kwargs:
+        limits = kwargs.get('limits')
+        if isinstance(limits, list):
+            warnings.warn("Please provide limits as dict in the form {'x': value, 'y': value2}", DeprecationWarning)
+            limits_new = {}
+            if limits[0] is not None:
+                limits_new['x'] = limits[0]
+            if limits[1] is not None:
+                limits_new['y'] = limits[1]
+            kwargs['limits'] = limits_new
+
+    if 'xticks' in kwargs:
+        xticks = kwargs.get('xticks')
+        if isinstance(xticks[0], list):
+            warnings.warn('Please provide xticks and xticklabels seperately as two lists', DeprecationWarning)
+            kwargs['xticklabels'] = xticks[0]
+            kwargs['xticks'] = xticks[1]
+
+    plot_params.set_defaults(default_type='function', linewidth=None)
+    kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
+    ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
+
     # TODO good checks for input and setting of internals before plotting
     # allow all arguments as value then use for all or as lists with the righ length.
     if bottom:
@@ -1032,10 +936,15 @@ def barchart(ydata,
     else:
         datab = np.zeros(len(ydata[0]))
 
-    for i, data in enumerate(ydata):
+    plot_kwargs = plot_params.plot_kwargs(plot_type='histogram')
+
+    for indx, data in enumerate(zip(xdata, ydata, plot_kwargs)):
+
+        x, y, plot_kw = data
+
         if isinstance(yerr, list):
             try:
-                yerrt = yerr[i]
+                yerrt = yerr[indx]
             except KeyError:
                 yerrt = yerr[0]
         else:
@@ -1043,107 +952,120 @@ def barchart(ydata,
 
         if isinstance(xerr, list):
             try:
-                xerrt = xerr[i]
+                xerrt = xerr[indx]
             except KeyError:
                 xerrt = xerr[0]
         else:
             xerrt = xerr
-        if isinstance(colors, list):
-            color = colors[i]
-        else:
-            color = None
-        if not linewidth:
-            linewidth_p = linewidth_g
-        else:
-            linewidth_p = linewidth[i]
 
-        if isinstance(linestyle, list):
-            linestyle_t = linestyle[i]
-        else:
-            linestyle_t = linestyle
+        ax.bar(x, y, width, bottom=datab, **plot_kw, **kwargs)
 
-        if isinstance(marker, list):
-            marker_t = marker[i]
-        else:
-            marker_t = marker
+        datab = datab + np.array(y)
 
-        if isinstance(markersize, list):
-            markersize_t = markersize[i]
-        else:
-            markersize_t = markersize_g
-
-        if plot_labels is None:
-            plot_label = ''
-        else:
-            plot_label = plot_labels[i]
-        p1 = ax.bar(xdata[i], data, width, bottom=datab, color=color, **kwargs)
-        #p2 = pp.bar(ind, womenMeans, width, bottom=menMeans)
-        #p1 = ax.errorbar(xdata[i], data, linestyle=linestyle_t, label=plot_label,
-        #                 linewidth=linewidth_p, marker=marker_t, markersize=markersize_t,
-        #                 yerr=yerrt, xerr=xerrt, color=color, **kwargs)
-        datab = datab + np.array(data)
-    if scale:
-        if scale[0]:
-            ax.set_xscale(scale[0])
-        if scale[1]:
-            ax.set_yscale(scale[1])
-
-    if limits:
-        if limits[0]:
-            xmin = limits[0][0]
-            xmax = limits[0][1]
-            ax.set_xlim(xmin, xmax)
-        if limits[1]:
-            ymin = limits[1][0]
-            ymax = limits[1][1]
-            ax.set_ylim(ymin, ymax)
-
-    #TODO nice legend
-    if legend:
-        #print legend
-        #{anchor, title, fontsize, linewith, borderaxespad}
-        # defaults 'anchor' : (0.75, 0.97), 'title' : 'Legend', 'fontsize' : 17, 'linewith' : 1.5, 'borderaxespad' : },
-        legends_defaults = {
-            'bbox_to_anchor': (0.65, 0.97),
-            'fontsize': 16,
-            'linewidth': 3.0,
-            'borderaxespad': 0,
-            'loc': 2,
-            'fancybox': True
-        }  #'title' : 'Legend',
-        loptions = legends_defaults.copy()
-        loptions.update(legend_option)
-        linewidth = loptions.pop('linewidth', 1.5)
-        title_font_size = loptions.pop('title_font_size', 15)
-        leg = ax.legend(
-            **loptions
-        )  #bbox_to_anchor=loptions['anchor'],loc=loptions['loc'], title=legend_title, borderaxespad=0., fancybox=True)
-        leg.get_frame().set_linewidth(linewidth)
-        leg.get_title().set_fontsize(title_font_size)  #legend 'Title' fontsize
-    if save_plots_g:
-        savefilename = '{}.{}'.format(saveas, save_format_g)
-        print(('save plot to: {}'.format(savefilename)))
-        pp.savefig(savefilename, format=save_format_g, transparent=True)
-    elif show_g:
-        pp.show()
-    else:
-        pass
+    plot_params.set_scale(ax)
+    plot_params.set_limits(ax)
+    plot_params.draw_lines(ax)
+    plot_params.show_legend(ax)
+    plot_params.save_plot(saveas)
 
     return ax
 
 
-def multiaxis_scatterplot():
+@ensure_plotter_consistency(plot_params)
+def multiaxis_scatterplot(xdata,
+                          ydata,
+                          *,
+                          axes_loc,
+                          xlabel,
+                          ylabel,
+                          title,
+                          num_cols=1,
+                          num_rows=1,
+                          saveas='mscatterplot',
+                          **kwargs):
     """
-    Create a scatter plot with multiple axes
-    """
-    pass
+    Create a scatter plot with multiple axes.
 
+    :param xdata: list of arraylikes, passed on to the plotting functions for each axis (x-axis)
+    :param ydata: list of arraylikes, passed on to the plotting functions for each axis (y-axis)
+    :param axes_loc: list of tuples of two integers, location of each axis
+    :param xlabel: str or list of str, labels for the x axis
+    :param ylabel: str or list of str, labels for the y-axis
+    :param title: str or list of str, titles for the subplots
+    :param num_rows: int, how many rows of axis are created
+    :param num_cols: int, how many columns of axis are created
+    :param saveas: str filename of the saved file
 
-def surface_plot():
+    Special Kwargs:
+        :param subplot_params: dict with integer keys, can contain all valid kwargs for :py:func:`multiple_scatterplots()`
+                               with the integer key denoting to which subplot the changes are applied
+        :param axes_kwargs: dict with integer keys, additional arguments to pass on to `subplot2grid` for the creation
+                            of each axis (e.g colspan, rowspan)
+
+    Other Kwargs will be passed on to all :py:func:`multiple_scatterplots()` calls
+    (If they are not overwritten by parameters in `subplot_params`).
     """
-    Create a standard 3D surface plot
-    """
-    pass
+
+    #convert parameters to list of parameters for subplots
+    subplot_params = kwargs.pop('subplot_params', {})
+    axes_kwargs = kwargs.pop('axes_kwargs', {})
+
+    param_list = [None] * len(axes_loc)
+    for indx, val in enumerate(param_list):
+        if indx in subplot_params:
+            param_list[indx] = subplot_params[indx]
+        else:
+            param_list[indx] = {}
+
+        if indx in axes_kwargs:
+            param_list[indx]['axes_kwargs'] = axes_kwargs[indx]
+
+        if not isinstance(xlabel, list):
+            param_list[indx]['xlabel'] = xlabel
+        else:
+            param_list[indx]['xlabel'] = xlabel[indx]
+
+        if not isinstance(ylabel, list):
+            param_list[indx]['ylabel'] = ylabel
+        else:
+            param_list[indx]['ylabel'] = ylabel[indx]
+
+        if not isinstance(title, list):
+            param_list[indx]['title'] = title
+        else:
+            param_list[indx]['title'] = title[indx]
+
+    general_keys = set(plot_params['figure_kwargs']) | {'show', 'save_plots'}
+    general_info = {key: val for key, val in kwargs.items() if key in general_keys}
+    kwargs = {key: val for key, val in kwargs.items() if key not in general_keys}
+
+    plot_params.set_parameters(**general_info)
+
+    #figsize is automatically scaled with the shape of the plot
+    plot_shape = (num_rows, num_cols)
+    plot_params['figure_kwargs'] = {
+        'figsize': ([plot_shape[indx] * size for indx, size in enumerate(plot_params['figure_kwargs']['figsize'])])
+    }
+
+    plt.figure(**plot_params['figure_kwargs'])
+
+    axis = []
+    for indx, subplot_data in enumerate(zip(axes_loc, xdata, ydata, param_list)):
+
+        location, x, y, params = subplot_data
+
+        subplot_kwargs = copy.deepcopy(kwargs)
+        subplot_kwargs.update(params)
+
+        ax = plt.subplot2grid(plot_shape, location, **subplot_kwargs.pop('axes_kwargs', {}))
+        with NestedPlotParameters(plot_params):
+            ax = multiple_scatterplots(x, y, axis=ax, **subplot_kwargs, save_plots=False, show=False)
+
+        axis.append(ax)
+
+    plot_params.save_plot(saveas)
+
+    return axis
 
 
 ###############################################################################
@@ -1151,146 +1073,195 @@ def surface_plot():
 ###############################################################################
 
 
+@ensure_plotter_consistency(plot_params)
 def plot_convex_hull2d(hull,
+                       *,
                        title='Convex Hull',
                        xlabel='Atomic Procentage',
                        ylabel='Formation energy / atom [eV]',
-                       linestyle='-',
-                       marker='o',
-                       legend=legend_g,
-                       legend_option={},
                        saveas='convex_hull',
-                       limits=[None, None],
-                       scale=[None, None],
                        axis=None,
-                       color='k',
-                       color_line='k',
-                       linewidth=linewidth_g,
-                       markersize=markersize_g,
-                       marker_hull='o',
-                       markersize_hull=markersize_g,
                        **kwargs):
     """
     Plot method for a 2d convex hull diagramm
 
     :param hull: pyhull.Convexhull #scipy.spatial.ConvexHull
+    :param axis: Axes object where to add the plot
+    :param title: str, Title of the plot
+    :param xlabel: str, label for the x-axis
+    :param ylabel: str, label for the y-axis
+    :param saveas: str, filename for the saved plot
+
+    Function specific parameters:
+        :param marker_hull: defaults to `marker`, marker type for the hull plot
+        :param markersize_hull: defaults to `markersize`, markersize for the hull plot
+        :param color_hull: defaults to `color`, color for the hull plot
+
+    Kwargs will be passed on to :py:class:`masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`.
+    If the arguments are not recognized they are passed on to the matplotlib functions `plot`
     """
 
-    #TODO: the upper lines, part of the hull should not be connected/plottet
-    if axis:
-        ax = axis
-    else:
-        fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
-        ax = fig.add_subplot(111)
+    #DEPRECATE: color_line
+    if 'color_line' in kwargs:
+        warnings.warn('Please use color instead of color_line', DeprecationWarning)
+        kwargs['color'] = kwargs.pop('colors')
 
-    for axis in ['top', 'bottom', 'left', 'right']:
-        ax.spines[axis].set_linewidth(axis_linewidth_g)
-    ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
-    ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
-    ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
-    ax.yaxis.set_tick_params(size=tick_paramsy_g.get('size', 4.0),
-                             width=tick_paramsy_g.get('width', 1.0),
-                             labelsize=tick_paramsy_g.get('labelsize', 14),
-                             length=tick_paramsy_g.get('length', 5))
-    ax.xaxis.set_tick_params(size=tick_paramsx_g.get('size', 4.0),
-                             width=tick_paramsx_g.get('width', 1.0),
-                             labelsize=tick_paramsx_g.get('labelsize', 14),
-                             length=tick_paramsx_g.get('length', 5))
-    #ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
-    ax.yaxis.get_major_formatter().set_useOffset(False)
+    #Define function wide custom parameters
+    plot_params.add_parameter('marker_hull', default_from='marker')
+    plot_params.add_parameter('markersize_hull', default_from='markersize')
+    plot_params.add_parameter('color_hull', default_from='color')
+
+    kwargs = plot_params.set_parameters(continue_on_error=True, set_powerlimits=False, **kwargs)
+    ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
     points = hull.points
 
-    a = ax.plot(points[:, 0], points[:, 1], marker=marker, markersize=markersize, linestyle='', color=color, **kwargs)
+    plot_kw = plot_params.plot_kwargs()
+    plot_hull_kw = plot_params.plot_kwargs(marker='marker_hull', markersize='markersize_hull', color='color_hull')
+    plot_hull_kw['linestyle'] = ''
+    linestyle = plot_kw['linestyle']
+    plot_kw['linestyle'] = ''
+
+    ax.plot(points[:, 0], points[:, 1], **plot_kw, **kwargs)
     for simplex in hull.simplices:
         # TODO leave out some lines, the ones about [0,0 -1,0]
         data = simplex.coords
-        ax.plot(data[:, 0],
-                data[:, 1],
-                linestyle=linestyle,
-                color=color_line,
-                linewidth=linewidth,
-                markersize=markersize,
-                **kwargs)
-        ax.plot(data[:, 0],
-                data[:, 1],
-                linestyle='',
-                color=color,
-                markersize=markersize_hull,
-                marker=marker_hull,
-                **kwargs)
+        ax.plot(data[:, 0], data[:, 1], linestyle=linestyle, **plot_kw, **kwargs)
+        ax.plot(data[:, 0], data[:, 1], **plot_hull_kw, **kwargs)
         # this section is from scipy.spatial.Convexhull interface
         #ax.plot(points[simplex, 0], points[simplex, 1], linestyle=linestyle,
         #        color=color_line, linewidth=linewidth, markersize=markersize, **kwargs)
         #ax.plot(points[simplex, 0], points[simplex, 1], linestyle='',
         #        color=color, markersize=markersize_hull, marker=marker_hull, **kwargs)
 
-    if limits:
-        if limits[0]:
-            xmin = limits[0][0]
-            xmax = limits[0][1]
-            ax.set_xlim(xmin, xmax)
-        if limits[1]:
-            ymin = limits[1][0]
-            ymax = limits[1][1]
-            ax.set_ylim(ymin, ymax)
-    #ax1.set_ylim(-0.5, 0.5)
-    #plt.plot(points[hull.vertices[0],0], points[hull.vertices[0],1], 'r--', lw=2)
-    #plt.plot(points[hull.vertices[2:],0], points[hull.vertices[2:],1], 'r--', lw=2)
-    if save_plots_g:
-        savefilename = '{}.{}'.format(saveas, save_format_g)
-        print(('save plot to: {}'.format(savefilename)))
-        pp.savefig(savefilename, format=save_format_g, transparent=True)
-    elif show_g:
-        pp.show()
-    else:
-        pass
+    plot_params.set_scale(ax)
+    plot_params.set_limits(ax)
+    plot_params.draw_lines(ax)
+    plot_params.show_legend(ax)
+    plot_params.save_plot(saveas)
+
     return ax
 
 
+@ensure_plotter_consistency(plot_params)
 def plot_residuen(xdata,
                   fitdata,
                   realdata,
+                  *,
                   errors=None,
                   xlabel=r'Energy [eV]',
                   ylabel=r'cts/s [arb]',
                   title=r'Residuen',
-                  hist=True):
+                  saveas='residuen',
+                  hist=True,
+                  return_residuen_data=True,
+                  **kwargs):
     """
-    Calculates and Plots the residuen for given xdata fit results and the real data.
+    Calculates and plots the residuen for given xdata fit results and the real data.
 
     If hist=True also the normed residual distribution is ploted with a normal distribution.
-    """
-    global show_g
 
-    show_g = False
+    :param xdata: arraylike data for the x-coordinate
+    :param fitdata: arraylike fitted data for the y-coordinate
+    :param realdata: arraylike data to plot residuen against the fit
+    :param errors: dict, can be used to provide errordata for the x and y direction
+    :param xlabel: str, label for the x-axis
+    :param ylabel: str, label for the y-axis
+    :param title: str, title for the plot
+    :param saveas: str, filename for the saved plot
+    :param hist: bool, if True a normed residual distribution is ploted with a normal distribution.
+    :param return_residuen_data: bool, if True in addition to the produced axis object also
+                                 the residuen data is returned
+
+    Special Kwargs:
+        :param hist_kwargs: dict, these arguments will be passed on to the
+                            :py:func:`histogram()` call (if hist=True)
+
+    Other Kwargs will be passed on to all :py:func:`single_scatterplot()` call
+    """
+
+    if errors is None:
+        errors = {}
+
     ydata = realdata - fitdata
-    #TODO single scatter error plot....
-    fig = pp.figure(num=None,
-                    figsize=(figsize_g[0] * 2, figsize_g[1]),
-                    dpi=dpi_g,
-                    facecolor=facecolor_g,
-                    edgecolor=edgecolor_g)
-    ax2 = pp.subplot2grid((1, 2), (0, 0))
-    ax3 = pp.subplot2grid((1, 2), (0, 1))  #, sharex = ax2, sharey = ax2)
-    a = single_scatterplot(ydata, xdata, xlabel, ylabel, title, axis=ax2)
+    hist_kwargs = kwargs.pop('hist_kwargs', {})
+
+    general_keys = set(plot_params['figure_kwargs']) | {'show', 'save_plots'}
+    general_info = {key: val for key, val in kwargs.items() if key in general_keys}
+    kwargs = {key: val for key, val in kwargs.items() if key not in general_keys}
+    plot_params.set_parameters(**general_info)
 
     if hist:
-        default_histogram(ydata, bins=20, axis=ax3, orientation='horizontal', title='Residuen distribution', normed=1)
-    show_g = True
-    return ydata
+        figsize = plot_params['figure_kwargs']['figsize']
+        #figsize is automatically scaled with the shape of the plot
+        plot_params['figure_kwargs'] = {'figsize': (figsize[0] * 2, figsize[1])}
+
+    plt.figure(**plot_params['figure_kwargs'])
+
+    if hist:
+        ax1 = plt.subplot2grid((1, 2), (0, 0))
+        ax2 = plt.subplot2grid((1, 2), (0, 1), sharey=ax1)
+        axes = [ax1, ax2]
+    else:
+        ax1 = plt.subplot2grid((1, 1), (0, 0))
+        axes = ax1
+
+    with NestedPlotParameters(plot_params):
+        ax1 = single_scatterplot(xdata,
+                                 ydata,
+                                 xlabel=xlabel,
+                                 ylabel=ylabel,
+                                 title=title,
+                                 axis=ax1,
+                                 show=False,
+                                 save_plots=False,
+                                 xerr=errors.get('x', None),
+                                 yerr=errors.get('y', None),
+                                 **kwargs)
+
+    if hist:
+        with NestedPlotParameters(plot_params):
+            ax2 = histogram(ydata,
+                            bins=20,
+                            axis=ax2,
+                            orientation='horizontal',
+                            title='Residuen distribution',
+                            density=True,
+                            show=False,
+                            save_plots=False,
+                            **hist_kwargs)
+
+    plot_params.save_plot(saveas)
+
+    if return_residuen_data:
+        return axes, ydata
+    else:
+        return axes
 
 
-def plot_convergence_results(distance,
+@ensure_plotter_consistency(plot_params)
+def plot_convergence_results(iteration,
+                             distance,
                              total_energy,
-                             iteration,
+                             *,
                              saveas1='t_energy_convergence',
-                             show=True,
+                             axis1=None,
                              saveas2='distance_convergence',
+                             axis2=None,
                              **kwargs):
     """
     Plot the total energy versus the scf iteration
     and plot the distance of the density versus iterations.
+
+    :param iteration: array for the number of iterations
+    :param distance: array of distances
+    :param total_energy: array of total energies
+    :param saveas1: str, filename for the energy convergence plot
+    :param axis1: Axes object for the energy convergence plot
+    :param saveas2: str, filename for the distance plot
+    :param axis2: Axes object for the distance plot
+
+    Other Kwargs will be passed on to all :py:func:`single_scatterplot()` calls
     """
     xlabel = r'Iteration'
     ylabel1 = r'Total energy difference [Htr]'
@@ -1304,42 +1275,56 @@ def plot_convergence_results(distance,
         total_energy_abs_diff.append(abs(en1 - en0))
     #saveas3 ='t_energy_convergence2'
 
-    p1 = single_scatterplot(total_energy_abs_diff,
-                            iteration[1:],
-                            xlabel,
-                            ylabel1,
-                            title1,
-                            plotlabel='delta total energy',
+    p1 = single_scatterplot(iteration[1:],
+                            total_energy_abs_diff,
+                            xlabel=xlabel,
+                            ylabel=ylabel1,
+                            title=title1,
+                            plot_label='delta total energy',
                             saveas=saveas1,
-                            scale=[None, 'log'])
+                            scale={'y': 'log'},
+                            axis=axis1,
+                            **kwargs)
     #single_scatterplot(total_energy, iteration, xlabel, ylabel1, title1, plotlabel='total energy', saveas=saveas3)
-    p2 = single_scatterplot(distance,
-                            iteration,
-                            xlabel,
-                            ylabel2,
-                            title2,
-                            plotlabel='distance',
+    p2 = single_scatterplot(iteration,
+                            distance,
+                            xlabel=xlabel,
+                            ylabel=ylabel2,
+                            title=title2,
+                            plot_label='distance',
                             saveas=saveas2,
-                            scale=[None, 'log'])
+                            scale={'y': 'log'},
+                            axis=axis2,
+                            **kwargs)
 
-    if show:
-        pp.show(p1)
-        pp.show(p2)
-    return [p1, p2]
+    return p1, p2
 
 
-def plot_convergence_results_m(distances,
+@ensure_plotter_consistency(plot_params)
+def plot_convergence_results_m(iterations,
+                               distances,
                                total_energies,
-                               iterations,
+                               *,
                                modes,
-                               plot_labels=[],
-                               show=True,
                                saveas1='t_energy_convergence',
                                saveas2='distance_convergence',
+                               axis1=None,
+                               axis2=None,
                                **kwargs):
     """
     Plot the total energy versus the scf iteration
     and plot the distance of the density versus iterations.
+
+    :param iterations: array for the number of iterations
+    :param distances: array of distances
+    :param total_energies: array of total energies
+    :param modes: list of convergence modes (if 'force' is in the list the last distance is removed)
+    :param saveas1: str, filename for the energy convergence plot
+    :param axis1: Axes object for the energy convergence plot
+    :param saveas2: str, filename for the distance plot
+    :param axis2: Axes object for the distance plot
+
+    Other Kwargs will be passed on to all :py:func:`single_scatterplot()` calls
     """
     xlabel = r'Iteration'
     ylabel1 = r'Total energy difference [Htr]'
@@ -1347,6 +1332,10 @@ def plot_convergence_results_m(distances,
     title1 = r'Total energy difference over scf-Iterations'
     #title2 = r'Distance over scf-Iterations'
     title2 = r'Convergence (log)'
+
+    if 'plot_labels' in kwargs:
+        warnings.warn('Please use plot_label instead of plot_labels', DeprecationWarning)
+        kwargs['plot_label'] = kwargs.pop('plot_labels')
 
     iterations1 = []
     plot_labels1 = []
@@ -1363,136 +1352,190 @@ def plot_convergence_results_m(distances,
         plot_labels1.append('delta total energy {}'.format(i))
         plot_labels2.append('distance {}'.format(i))
     #saveas3 ='t_energy_convergence2'
-    if plot_labels:
-        plot_labels1 = plot_labels
-        plot_labels2 = plot_labels
-    p1 = multiple_scatterplots(total_energy_abs_diffs,
-                               iterations1,
-                               xlabel,
-                               ylabel1,
-                               title1,
-                               plot_labels1,
+    if 'plot_label' in kwargs:
+        plot_label = plot_params.convert_to_complete_list(kwargs.pop('plot_label'),
+                                                          single_plot=False,
+                                                          num_plots=len(plot_labels1),
+                                                          key='plot_label')
+        plot_labels1 = [label if label is not None else plot_labels1[indx] for indx, label in enumerate(plot_label)]
+        plot_labels2 = [label if label is not None else plot_labels2[indx] for indx, label in enumerate(plot_label)]
+
+    p1 = multiple_scatterplots(iterations1,
+                               total_energy_abs_diffs,
+                               xlabel=xlabel,
+                               ylabel=ylabel1,
+                               title=title1,
+                               plot_label=plot_labels1,
                                saveas=saveas1,
-                               scale=[None, 'log'])
+                               scale={'y': 'log'},
+                               axis=axis1,
+                               **kwargs)
     for i, mode in enumerate(modes):
         if mode == 'force':
             iterations[i].pop()
             print('Drop the last iteration because there was no charge distance, mode=force')
 
-    p2 = multiple_scatterplots(distances,
-                               iterations,
-                               xlabel,
-                               ylabel2,
-                               title2,
-                               plot_labels2,
+    p2 = multiple_scatterplots(iterations,
+                               distances,
+                               xlabel=xlabel,
+                               ylabel=ylabel2,
+                               title=title2,
+                               plot_label=plot_labels2,
                                saveas=saveas2,
-                               scale=[None, 'log'])
-
-    if show:
-        pp.show(p1)
-        pp.show(p2)
+                               scale={'y': 'log'},
+                               axis=axis2,
+                               **kwargs)
 
     return p1, p2
 
 
-def plot_lattice_constant(Total_energy,
-                          scaling,
+@ensure_plotter_consistency(plot_params)
+def plot_lattice_constant(scaling,
+                          total_energy,
+                          *,
                           fit_y=None,
                           relative=True,
                           ref_const=None,
                           multi=False,
-                          plotlables=[r'simulation data', r'fit results'],
                           title=r'Equation of states',
-                          saveas='Lattice_constant',
+                          saveas='lattice_constant',
                           axis=None,
-                          show=True,
-                          **kwags):
+                          **kwargs):
     """
     Plot a lattice constant versus Total energy
     Plot also the fit.
     On the x axis is the scaling, it
 
-    params: Total_energy, list with floats, or list of lists of floats
-    params: scaling, list with floats, or list of lists of floats
-    params: fit_y, list with floats, evaluated fit, or list of lists of floats
-    params: relative = True, (optional), scaling factor given, or lattice constants given?
-    params: ref_const = None, (optional), float, or list of floats, lattice constant for scaling 1.0
-    params: multi = False, (optional), bool, multiple plots?
-    params: plotlables, list of strings, for lableling of the plots.
-    params: title
+    :param scaling: arraylike, data for the scaling factor
+    :param total_energy: arraylike, data for the total energy
+    :param fit_y: arraylike, optional data of fitted data
+    :param relative: bool, scaling factor given (True), or lattice constants given?
+    :param ref_const: float (optional), or list of floats, lattice constant for scaling 1.0
+    :param multi: bool default False are they multiple plots?
 
+    Function specific parameters:
+        :param marker_fit: defaults to `marker`, marker type for the fit data
+        :param markersize_fit: defaults to `markersize`, markersize for the fit data
+        :param linewidth_fit: defaults to `linewidth`, linewidth for the fit data
+        :param plotlabel_fit: str label for the fit data
+
+    Other Kwargs will be passed on to all :py:func:`single_scatterplot()` or :py:func:`multiple_scatterplots()` calls
     """
     # TODO: make box which shows fit results. (fit resuls have to be past)
-    # TODO: multiple plots in one use mulit_scatter_plot for this...
+    # TODO: multiple plots in one use multi_scatter_plot for this...
+
+    if 'plotlables' in kwargs:
+        warnings.warn('plotlables is deprecated. Use plot_label and plot_label_fit instead', DeprecationWarning)
+        if multi:
+            plot_label = []
+            plot_label_fit = []
+            for indx in range(len(scaling)):
+                plot_label.append(kwargs['plotlables'][2 * indx])
+                plot_label_fit.append(kwargs['plotlables'][2 * indx + 1])
+            kwargs['plot_label'] = plot_label
+            kwargs['plot_label_fit'] = plot_label_fit
+        else:
+            kwargs['plot_label'] = kwargs['plotlables'][0]
+            kwargs['plot_label_fit'] = kwargs['plotlables'][1]
 
     #print markersize_g
     if relative:
         if ref_const:
-            xlabel = r'Relative Volume [a/{}$\AA$]'.format(ref_const)
+            xlabel = rf'Relative Volume [a/{ref_const}$\AA$]'
         else:
             xlabel = r'Relative Volume'
     else:
         xlabel = r'Volume [$\AA$]'
 
-    if axis:
-        ax = axis
+    if multi:
+        ylabel = r'Total energy norm[0] [eV]'
     else:
-        fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
-        ax = fig.add_subplot(111)
-    for axis in ['top', 'bottom', 'left', 'right']:
-        ax.spines[axis].set_linewidth(axis_linewidth_g)
-    ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
-    ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
-    ax.set_ylabel(r'Total energy [eV]', fontsize=labelfonstsize_g)
-    ax.yaxis.set_tick_params(size=tick_paramsy_g.get('size', 4.0),
-                             width=tick_paramsy_g.get('width', 1.0),
-                             labelsize=tick_paramsy_g.get('labelsize', 14),
-                             length=tick_paramsy_g.get('length', 5))
-    ax.xaxis.set_tick_params(size=tick_paramsx_g.get('size', 4.0),
-                             width=tick_paramsx_g.get('width', 1.0),
-                             labelsize=tick_paramsx_g.get('labelsize', 14),
-                             length=tick_paramsx_g.get('length', 5))
-    ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
-    ax.yaxis.get_major_formatter().set_useOffset(False)
+        ylabel = r'Total energy [eV]'
+
+    #Add custom parameters for fit
+    plot_params.add_parameter('marker_fit', default_from='marker')
+    plot_params.add_parameter('markersize_fit', default_from='markersize')
+    plot_params.add_parameter('linewidth_fit', default_from='linewidth')
+    plot_params.add_parameter('plot_label_fit')
+
+    plot_params.set_defaults(default_type='function',
+                             marker_fit='s',
+                             plot_label='simulation data',
+                             plot_label_fit='fit results')
+
+    general_keys = set(plot_params['figure_kwargs']) | {'show', 'save_plots'}
+    general_info = {key: val for key, val in kwargs.items() if key in general_keys}
+    kwargs = {key: val for key, val in kwargs.items() if key not in general_keys}
+
+    plot_params.set_parameters(**general_info)
+    kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
+    ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
+
+    if multi:
+        plot_params.single_plot = False
+        plot_params.num_plots = len(scaling)
+
+    plot_kw = plot_params.plot_kwargs()
+    plot_fit_kw = plot_params.plot_kwargs(marker='marker_fit',
+                                          markersize='markersize_fit',
+                                          linewidth='linewidth_fit',
+                                          plot_label='plot_label_fit')
+
     if multi:
         # TODO test if dim of total_e = dim of scaling, dim plot lables...
         # or parse on scaling?
-        ax.set_ylabel(r'Total energy norm[0] [eV]', fontsize=labelfonstsize_g)
 
-        for i, scale in enumerate(scaling):
-            #print i
-            p1 = pp.plot(scale,
-                         Total_energy[i],
-                         'o-',
-                         label=plotlables[2 * i],
-                         linewidth=linewidth_g,
-                         markersize=markersize_g)
-            if fit_y:
-                p2 = pp.plot(scale,
-                             fit_y[i],
-                             's-',
-                             label=plotlables[2 * i + 1],
-                             linewidth=linewidth_g,
-                             markersize=markersize_g)
-    else:
-        p1 = pp.plot(scaling, Total_energy, 'o-', label=plotlables[0], linewidth=linewidth_g, markersize=markersize_g)
+        with NestedPlotParameters(plot_params):
+            ax = multiple_scatterplots(scaling,
+                                       total_energy,
+                                       xlabel=xlabel,
+                                       ylabel=ylabel,
+                                       title=title,
+                                       axis=ax,
+                                       show=False,
+                                       save_plots=False,
+                                       **plot_kw,
+                                       **kwargs)
         if fit_y:
-            p2 = pp.plot(scaling, fit_y, r'-', label=plotlables[1], linewidth=linewidth_g, markersize=markersize_g)
-    if legend_g:
-        pp.legend(bbox_to_anchor=(0.85, 1), loc=2, borderaxespad=0., fancybox=True)
-        pp.legend(loc='best', borderaxespad=0., fancybox=True)  #, framealpha=0.5) #loc='upper right')
-        #lg = pp.legend(bbox_to_anchor=(0.76, 0.400), loc=2, borderaxespad=0., borderpad=1, fancybox=True, title =r'K-pts in $\bf{k_{x,y,z}}$',fontsize=14)#loc='best', fancybox=True) #, framealpha=0.5) #loc='upper right')
-        #lg.get_frame().set_linewidth(2.0)
-        #lg.get_title().set_fontsize('16') #legend 'Title' fontsize
+            with NestedPlotParameters(plot_params):
+                ax = multiple_scatterplots(scaling,
+                                           fit_y,
+                                           xlabel=xlabel,
+                                           ylabel=ylabel,
+                                           title=title,
+                                           axis=ax,
+                                           show=False,
+                                           save_plots=False,
+                                           **plot_fit_kw,
+                                           **kwargs)
 
-    #print save_plots_g
-    if save_plots_g:
-        # TODO override or not, better title?
-        savefilename = '{}.{}'.format(saveas, save_format_g)
-        print(('save plot to: {}'.format(savefilename)))
-        pp.savefig(savefilename, format=save_format_g, transparent=True)
-    if show:
-        pp.show()
+    else:
+        with NestedPlotParameters(plot_params):
+            ax = single_scatterplot(scaling,
+                                    total_energy,
+                                    xlabel=xlabel,
+                                    ylabel=ylabel,
+                                    title=title,
+                                    axis=ax,
+                                    show=False,
+                                    save_plots=False,
+                                    **plot_kw,
+                                    **kwargs)
+        if fit_y:
+            with NestedPlotParameters(plot_params):
+                ax = single_scatterplot(scaling,
+                                        fit_y,
+                                        xlabel,
+                                        ylabel,
+                                        title,
+                                        axis=ax,
+                                        show=False,
+                                        save_plots=False,
+                                        **plot_fit_kw,
+                                        **kwargs)
+
+    plot_params.draw_lines(ax)
+    plot_params.save_plot(saveas)
 
     return ax
 
@@ -1509,165 +1552,337 @@ def plot_relaxation_results():
     pass
 
 
-def plot_dos(path_to_dosfile,
-             only_total=False,
-             saveas=r'dos_plot',
+@ensure_plotter_consistency(plot_params)
+def plot_dos(energy_grid,
+             dos_data,
+             *,
+             saveas='dos_plot',
+             energy_label=r'$E-E_F$ [eV]',
+             dos_label=r'DOS [1/eV]',
              title=r'Density of states',
-             linestyle='-',
-             marker=None,
-             legend=legend_g,
-             limits=[None, None]):
+             xyswitch=False,
+             e_fermi=0,
+             **kwargs):
     """
-    Plot the total density of states from a FLEUR DOS.1 file
+    Plot the provided data for a density of states (not spin-polarized). Can be done
+    horizontally or vertical via the switch `xyswitch`
 
-    params:
+    :param energy_grid: arraylike data for the energy grid of the DOS
+    :param dos_data: arraylike data for all the DOS components to plot
+    :param title: str, Title of the plot
+    :param energy_label: str, label for the energy-axis
+    :param dos_label: str, label for the DOS-axis
+    :param saveas: str, filename for the saved plot
+    :param e_fermi: float (default 0), place the line for the fermi energy at this value
+    :param xyswitch: bool if True, the enrgy axis will be plotted vertically
+
+    All other Kwargs are passed on to the :py:func:`multiple_scatterplots()` call
     """
-    doses = []
-    energies = []
-    #dosmt_total = np.zeros(nData, "d")
-    #totaldos = np.zeros(nData, "d")
+    import seaborn as sns
 
-    #read data from file
-    datafile = path_to_dosfile  #'DOS.1'
-    data = np.loadtxt(datafile, skiprows=0)
+    if 'limits' in kwargs:
+        limits = kwargs.pop('limits')
+        if xyswitch:
+            limits['x'], limits['y'] = limits.pop('dos', None), limits.pop('energy', None)
+        else:
+            limits['x'], limits['y'] = limits.pop('energy', None), limits.pop('dos', None)
+        kwargs['limits'] = {k: v for k, v in limits.items() if v is not None}
 
-    energy = data[..., 0]
-    totaldos = data[:, 1]
-    interstitialdos = data[:, 2]
-    dosmt_total = totaldos - interstitialdos
+    lines = {'horizontal': 0}
+    lines['vertical'] = e_fermi
 
-    doses = [totaldos, interstitialdos, dosmt_total]
-    energies = [energy, energy, energy]
-    #xlabel = r'E - E$_F$ [eV]'
-    xlabel = r'Energy [eV]'
-    ylabel = r'DOS [eV$^{-1}$]'
+    if xyswitch:
+        lines['vertical'], lines['horizontal'] = lines['horizontal'], lines['vertical']
 
-    if only_total:
-        single_scatterplot(totaldos,
-                           energy,
-                           xlabel,
-                           ylabel,
-                           title,
-                           plotlabel='total dos',
-                           linestyle=linestyle,
-                           marker=marker,
-                           limits=limits,
-                           saveas=saveas)
+    color_cycle = ('black',) + tuple(sns.color_palette('muted'))
+    plot_params.set_defaults(default_type='function', marker=None, legend=True, lines=lines, color_cycle=color_cycle)
+
+    if isinstance(dos_data[0], (list, np.ndarray)) and \
+       not isinstance(energy_grid[0], (list, np.ndarray)):
+        energy_grid = [energy_grid] * len(dos_data)
+
+    if xyswitch:
+        x, y = dos_data, energy_grid
+        xlabel, ylabel = dos_label, energy_label
+        plot_params.set_defaults(default_type='function', area_vertical=True)
     else:
-        multiple_scatterplots(doses,
-                              energies,
-                              xlabel,
-                              ylabel,
-                              title,
-                              plot_labels=['Total', 'Interstitial', 'Muffin-Tin'],
-                              linestyle=linestyle,
-                              marker=marker,
-                              legend=legend,
-                              limits=limits,
-                              saveas=saveas)
+        xlabel, ylabel = energy_label, dos_label
+        x, y = energy_grid, dos_data
+
+    ax = multiple_scatterplots(x, y, xlabel=xlabel, ylabel=ylabel, title=title, saveas=saveas, **kwargs)
+
+    return ax
 
 
-def plot_dos_total_atom_resolved():
+@ensure_plotter_consistency(plot_params)
+def plot_spinpol_dos(energy_grid,
+                     spin_up_data,
+                     spin_dn_data,
+                     *,
+                     saveas='spinpol_dos_plot',
+                     energy_label=r'$E-E_F$ [eV]',
+                     dos_label=r'DOS [1/eV]',
+                     title=r'Density of states',
+                     xyswitch=False,
+                     energy_grid_dn=None,
+                     e_fermi=0,
+                     spin_dn_negative=True,
+                     **kwargs):
     """
-    Plot the density of states from a FLEUR DOS.1 file
+    Plot the provided data for a density of states (spin-polarized). Can be done
+    horizontally or vertical via the switch `xyswitch`
 
-    params:
+    :param energy_grid: arraylike data for the energy grid of the DOS
+    :param spin_up_data: arraylike data for all the DOS spin-up components to plot
+    :param spin_dn_data: arraylike data for all the DOS spin-down components to plot
+    :param title: str, Title of the plot
+    :param energy_label: str, label for the energy-axis
+    :param dos_label: str, label for the DOS-axis
+    :param saveas: str, filename for the saved plot
+    :param e_fermi: float (default 0), place the line for the fermi energy at this value
+    :param xyswitch: bool if True, the enrgy axis will be plotted vertically
+    :param energy_grid_dn: arraylike data for the energy grid of the DOS of the spin-down component
+                           (optional)
+    :param spin_dn_negative: bool, if True (default) the spin-down components are plotted downwards
+
+    All other Kwargs are passed on to the :py:func:`multiple_scatterplots()` call
     """
-    pass
+    import seaborn as sns
+
+    if 'limits' in kwargs:
+        limits = kwargs.pop('limits')
+        if xyswitch:
+            limits['x'], limits['y'] = limits.pop('dos', None), limits.pop('energy', None)
+        else:
+            limits['x'], limits['y'] = limits.pop('energy', None), limits.pop('dos', None)
+        kwargs['limits'] = {k: v for k, v in limits.items() if v is not None}
+
+    if isinstance(spin_up_data[0], (list, np.ndarray)):
+        if len(spin_up_data) != len(spin_dn_data):
+            raise ValueError(f'Dimensions do not match: Spin-up: {len(spin_up_data)} Spin-dn: {len(spin_dn_data)}')
+
+    if spin_dn_negative:
+        if isinstance(spin_dn_data, np.ndarray):
+            spin_dn_data *= -1
+        elif isinstance(spin_up_data[0], list):
+            spin_dn_data = [-value for data in spin_dn_data for value in data]
+        else:
+            spin_dn_data = [-value for value in spin_dn_data]
+    lines = {'horizontal': 0}
+    lines['vertical'] = e_fermi
+
+    if xyswitch:
+        lines['vertical'], lines['horizontal'] = lines['horizontal'], lines['vertical']
+
+    if isinstance(spin_up_data[0], (list, np.ndarray)):
+        num_plots = len(spin_up_data)
+    else:
+        num_plots = 1
+
+    color_cycle = ('black',) + tuple(sns.color_palette('muted'))
+    plot_params.set_defaults(default_type='function',
+                             marker=None,
+                             legend=True,
+                             lines=lines,
+                             repeat_colors_after=num_plots,
+                             color_cycle=color_cycle)
+
+    dos_data = spin_up_data
+    if not isinstance(spin_up_data[0], (list, np.ndarray)):
+        dos_data = [dos_data, spin_dn_data]
+    else:
+        dos_data = np.concatenate((dos_data, spin_dn_data), axis=0)
+
+    if isinstance(dos_data[0], (list, np.ndarray)) and \
+       not isinstance(energy_grid[0], (list, np.ndarray)):
+        energy_grid = [energy_grid] * len(dos_data)
+
+    if xyswitch:
+        x, y = dos_data, energy_grid
+        xlabel, ylabel = dos_label, energy_label
+        plot_params.set_defaults(default_type='function', area_vertical=True)
+    else:
+        xlabel, ylabel = energy_label, dos_label
+        x, y = energy_grid, dos_data
+
+    ax = multiple_scatterplots(x, y, xlabel=xlabel, ylabel=ylabel, title=title, saveas=saveas, **kwargs)
+
+    return ax
 
 
-def plot_dos_total_l_resolved():
-    """
-    Plot the density of states from a FLEUR DOS.1 file
-
-    params:
-    """
-    pass
-
-
-def plot_dos_atom_resolved():
-    """
-    Plot the density of states from a FLEUR DOS.1 file
-
-    params:
-    """
-    pass
-
-
-def plot_spin_dos():
-    """
-    Plot a spin density of states from FLEUR DOS.1, DOS.2 files together in one
-    plot.
-
-    params:
-    """
-    pass
-
-
-def plot_bands(path_to_bands_file,
-               kpath,
-               title='Bandstructure',
-               plotlabel='bands',
-               linetyp='o',
-               limits=[None, None],
+@ensure_plotter_consistency(plot_params)
+def plot_bands(kpath,
+               bands,
+               *,
+               size_data=None,
+               special_kpoints=None,
+               e_fermi=0,
+               xlabel='',
+               ylabel=r'$E-E_F$ [eV]',
+               title='',
                saveas='bandstructure',
-               color='k'):
-    r"""
-    Plot a band structure from a bands.1 file from FLEUR
-    params: kpath: dict: {r"$\Gamma$": 0.00000, r"$H$" : 1.04590, r"$N$" : 1.78546, r"$P$": 2.30841, r"$\Gamma$" : 3.21419, r"$N$" 3.95375 }
+               markersize_min=1.0,
+               markersize_scaling=10.0,
+               **kwargs):
+    """
+    Plot the provided data for a bandstrucuture (non spin-polarized). Can be used
+    to illustrate weights on bands via `size_data`
 
+    :param kpath: arraylike data for the kpoint data
+    :param bands: arraylike data for the eigenvalues
+    :param size_data: arraylike data the weights to emphasize (optional)
+    :param title: str, Title of the plot
+    :param xlabel: str, label for the x-axis
+    :param ylabel: str, label for the y-axis
+    :param saveas: str, filename for the saved plot
+    :param e_fermi: float (default 0), place the line for the fermi energy at this value
+    :param special_kpoints: list of tuples (str, float), place vertical lines at the given values
+                            and mark them on the x-axis with the given label
+    :param markersize_min: minimum value used in scaling points for weight
+    :param markersize_scaling: factor used in scaling points for weight
+
+    All other Kwargs are passed on to the :py:func:`multi_scatter_plot()` call
     """
 
-    xpos = list(kpath.values())
-    xNames = list(kpath.keys())
-    data = np.loadtxt(path_to_bands_file, skiprows=0)
-    xdata = data[..., 0]
-    ydata = data[..., 1]
-    xmin = min(xdata) - 0.01
-    xmax = max(xdata) + 0.01
-    ymin = 0
-    ymax = max(ydata)
-    xlabel = ''
-    ylabel = r'$E - E_F$ [eV]'
-    fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
-    ax = fig.add_subplot(111)
-    for axis in ['top', 'bottom', 'left', 'right']:
-        ax.spines[axis].set_linewidth(axis_linewidth_g)
+    if special_kpoints is None:
+        special_kpoints = []
 
-    pp.xticks(xpos, xNames)
-    ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
-    ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
-    ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
-    ax.yaxis.set_tick_params(size=tick_paramsy_g.get('size', 4.0),
-                             width=tick_paramsy_g.get('width', 1.0),
-                             labelsize=tick_paramsy_g.get('labelsize', 14),
-                             length=tick_paramsy_g.get('length', 5))
-    ax.xaxis.set_tick_params(size=tick_paramsx_g.get('size', 4.0),
-                             width=tick_paramsx_g.get('width', 1.0),
-                             labelsize=tick_paramsx_g.get('labelsize', 14),
-                             length=tick_paramsx_g.get('length', 5))
-    ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
-    ax.yaxis.get_major_formatter().set_useOffset(False)
-    p1 = pp.plot(xdata, ydata, linetyp, label=plotlabel, color=color, linewidth=linewidth_g, markersize=markersize_g)
+    xticks = []
+    xticklabels = []
+    for label, pos in special_kpoints:
+        if label in ('Gamma', 'g'):
+            label = r'$\Gamma$'
+        xticklabels.append(label)
+        xticks.append(pos)
 
-    if limits:
-        if limits[0]:
-            xmin = limits[0][0]
-            xmax = limits[0][1]
-            pp.xlim(xmin, xmax)
-        if limits[1]:
-            ymin = limits[1][0]
-            ymax = limits[1][1]
-            pp.ylim(ymin, ymax)
-    for i in xpos:
-        pp.axvline(x=i, ymin=ymin, ymax=ymax, linewidth=1, color='k')
+    color_data = None
+    if size_data is not None:
+        color_data = copy.copy(size_data)
+        size_data = (markersize_min + markersize_scaling * size_data / max(size_data))**2
+        plot_params.set_defaults(default_type='function', cmap='Blues')
+        if 'cmap' not in kwargs:
+            #Cut off the white end of the Blues/Reds colormap
+            plot_params.set_defaults(default_type='function', sub_colormap=(0.15, 1.0))
 
-    if save_plots_g:
-        savefilename = '{}.{}'.format(saveas, save_format_g)
-        print(('save plot to: {}'.format(savefilename)))
-        pp.savefig(savefilename, format=save_format_g, transparent=True)
+    lines = {'vertical': xticks, 'horizontal': e_fermi}
+
+    limits = {'x': (min(kpath), max(kpath)), 'y': (-15, 15)}
+    plot_params.set_defaults(default_type='function',
+                             lines=lines,
+                             limits=limits,
+                             xticks=xticks,
+                             xticklabels=xticklabels,
+                             color='k',
+                             line_options={'zorder': -1},
+                             colorbar=False)
+
+    ax = multi_scatter_plot(kpath,
+                            bands,
+                            size_data=size_data,
+                            color_data=color_data,
+                            xlabel=xlabel,
+                            ylabel=ylabel,
+                            title=title,
+                            saveas=saveas,
+                            **kwargs)
+
+    return ax
+
+
+@ensure_plotter_consistency(plot_params)
+def plot_spinpol_bands(kpath,
+                       bands_up,
+                       bands_dn,
+                       *,
+                       size_data=None,
+                       show_spin_pol=True,
+                       special_kpoints=None,
+                       e_fermi=0,
+                       xlabel='',
+                       ylabel=r'$E-E_F$ [eV]',
+                       title='',
+                       saveas='bandstructure',
+                       markersize_min=1.0,
+                       markersize_scaling=10.0,
+                       **kwargs):
+    """
+    Plot the provided data for a bandstrucuture (spin-polarized). Can be used
+    to illustrate weights on bands via `size_data`
+
+    :param kpath: arraylike data for the kpoint data
+    :param bands_up: arraylike data for the eigenvalues (spin-up)
+    :param bands_dn: arraylike data for the eigenvalues (spin-dn)
+    :param size_data: arraylike data the weights to emphasize BOTH SPINS (optional)
+    :param title: str, Title of the plot
+    :param xlabel: str, label for the x-axis
+    :param ylabel: str, label for the y-axis
+    :param saveas: str, filename for the saved plot
+    :param e_fermi: float (default 0), place the line for the fermi energy at this value
+    :param special_kpoints: list of tuples (str, float), place vertical lines at the given values
+                            and mark them on the x-axis with the given label
+    :param markersize_min: minimum value used in scaling points for weight
+    :param markersize_scaling: factor used in scaling points for weight
+    :param show_spin_pol: bool, if True (default) the two different spin channles will be shown in blue
+                          and red by default
+
+    All other Kwargs are passed on to the :py:func:`multi_scatter_plot()` call
+    """
+
+    if special_kpoints is None:
+        special_kpoints = {}
+
+    if size_data is None:
+        size_data = [None, None]
+        color_data = [None, None]
     else:
-        pp.show()
+        color_data = []
+        for indx, data in enumerate(size_data):
+            color_data.append(copy.copy(data))
+            size_data[indx] = (markersize_min + markersize_scaling * data / max(data))**2
+
+    xticks = []
+    xticklabels = []
+    for label, pos in special_kpoints:
+        if label in ('Gamma', 'g'):
+            label = r'$\Gamma$'
+        xticklabels.append(label)
+        xticks.append(pos)
+
+    lines = {'vertical': xticks, 'horizontal': e_fermi}
+
+    if show_spin_pol:
+        color = ['blue', 'red']
+        cmaps = ['Blues', 'Reds']
+    else:
+        color = 'k'
+        cmaps = 'Blues'
+
+    limits = {'x': (min(kpath), max(kpath)), 'y': (-15, 15)}
+    plot_params.set_defaults(default_type='function',
+                             lines=lines,
+                             limits=limits,
+                             xticks=xticks,
+                             xticklabels=xticklabels,
+                             color=color,
+                             cmap=cmaps,
+                             legend=True,
+                             line_options={'zorder': -1},
+                             colorbar=False)
+
+    if 'cmap' not in kwargs:
+        #Cut off the white end of the Blues/Reds colormap
+        plot_params.set_defaults(default_type='function', sub_colormap=(0.15, 1.0))
+
+    ax = multi_scatter_plot([kpath, kpath], [bands_up, bands_dn],
+                            size_data=size_data,
+                            color_data=color_data,
+                            xlabel=xlabel,
+                            ylabel=ylabel,
+                            title=title,
+                            saveas=saveas,
+                            **kwargs)
+
+    return ax
 
 
 def plot_certain_bands():
@@ -1684,17 +1899,20 @@ def plot_bands_and_dos():
     pass
 
 
-def plot_corelevels(coreleveldict, compound=''):
+def plot_corelevels(coreleveldict, compound='', axis=None, saveas='scatterplot', **kwargs):
     """
     Ploting function to visualize corelevels and corelevel shifts
     """
 
-    for elem, corelevel_dict in six.iteritems(coreleveldict):
+    for elem, corelevel_dict in coreleveldict.items():
         # one plot for each element
-        plot_one_element_corelv(corelevel_dict, elem, compound=compound)
+        axis = plot_one_element_corelv(corelevel_dict, elem, compound=compound, axis=axis, saveas=saveas, **kwargs)
+
+    return axis
 
 
-def plot_one_element_corelv(corelevel_dict, element, compound=''):
+@ensure_plotter_consistency(plot_params)
+def plot_one_element_corelv(corelevel_dict, element, compound='', axis=None, saveas='scatterplot', **kwargs):
     """
     This routine creates a plot which visualizes all the binding energies of one
     element (and currenlty one corelevel) for different atomtypes.
@@ -1707,7 +1925,7 @@ def plot_one_element_corelv(corelevel_dict, element, compound=''):
     xdata_all = []
     ydata_all = []
 
-    for corelevel, corelevel_list in six.iteritems(corelevel_dict):
+    for corelevel, corelevel_list in corelevel_dict.items():
         #print corelevel
         n_atom = len(corelevel_list)
         x_axis = list(range(0, n_atom, 1))
@@ -1728,62 +1946,41 @@ def plot_one_element_corelv(corelevel_dict, element, compound=''):
     xmax = xdata[-1] + 0.5
     ymin = min(ydata) - 1
     ymax = max(ydata) + 1
-    #limits=[(xmin, xmax), (ymin, ymax)],
-    saveas = 'scatterplot'
-    #color = 'k'
-    scale = [None, None]
-    font = {
-        'family': 'serif',
-        'color': 'darkred',
-        'weight': 'normal',
-        'size': 16,
-    }
 
-    fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
-    ax = fig.add_subplot(111)
-    for axis in ['top', 'bottom', 'left', 'right']:
-        ax.spines[axis].set_linewidth(axis_linewidth_g)
-    ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
-    ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
-    ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
-    ax.yaxis.set_tick_params(size=tick_paramsy_g.get('size', 4.0),
-                             width=tick_paramsy_g.get('width', 1.0),
-                             labelsize=tick_paramsy_g.get('labelsize', 14),
-                             length=tick_paramsy_g.get('length', 5))
-    ax.xaxis.set_tick_params(size=tick_paramsx_g.get('size', 4.0),
-                             width=tick_paramsx_g.get('width', 1.0),
-                             labelsize=tick_paramsx_g.get('labelsize', 14),
-                             length=tick_paramsx_g.get('length', 5))
-    ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
-    ax.yaxis.get_major_formatter().set_useOffset(False)
+    plot_params.set_defaults(default_type='function',
+                             font_options={'color': 'darkred'},
+                             color='k',
+                             linewidth=2,
+                             limits={
+                                 'x': (xmin, xmax),
+                                 'y': (ymin, ymax)
+                             })
 
-    for j, y in enumerate(ydata_all):
-        for i, x in enumerate(xdata):
+    kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
+    ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
+
+    for ydata in ydata_all:
+        for x, y in zip(xdata, ydata):
             lenx = xmax - xmin
             length = 0.5 / lenx
             offset = 0.5 / lenx
             xminline = x / lenx + offset - length / 2
             xmaxline = x / lenx + offset + length / 2
-            pp.axhline(y=y[i], xmin=xminline, xmax=xmaxline, linewidth=2, color='k')
-            text = r'{}'.format(y[i])
-            pp.text(x - 0.25, y[i] + 0.3, text, fontdict=font)
+            ax.axhline(y=y,
+                       xmin=xminline,
+                       xmax=xmaxline,
+                       linewidth=plot_params['linewidth'],
+                       color=plot_params['color'])
+            text = r'{}'.format(y)
+            ax.text(x - 0.25, y + 0.3, text, fontdict=plot_params['font_options'])
 
-    if scale:
-        if scale[0]:
-            ax.set_xscale(scale[0])
-        elif scale[1]:
-            ax.set_yscale(scale[1])
-        else:
-            pass
+    plot_params.set_scale(ax)
+    plot_params.set_limits(ax)
+    plot_params.draw_lines(ax)
+    plot_params.show_legend(ax)
+    plot_params.save_plot(saveas)
 
-    pp.xlim(xmin, xmax)
-    pp.ylim(ymin, ymax)
-    if save_plots_g:
-        savefilename = '{}.{}'.format(saveas, save_format_g)
-        print(('save plot to: {}'.format(savefilename)))
-        pp.savefig(savefilename, format=save_format_g, transparent=True)
-    else:
-        pp.show()
+    return ax
 
 
 def construct_corelevel_spectrum(coreleveldict,
@@ -1814,10 +2011,10 @@ def construct_corelevel_spectrum(coreleveldict,
     #count = 0
     #compound_info_new = compound_info
 
-    for elem, corelevel_dict in six.iteritems(coreleveldict):
+    for elem, corelevel_dict in coreleveldict.items():
         natom = natom_typesdict.get(elem, 0)
         #elem_count = 0
-        for corelevel_name, corelevel_list in six.iteritems(corelevel_dict):
+        for corelevel_name, corelevel_list in corelevel_dict.items():
             # get number of electron if fully occ:
             nelectrons = 1
             if 's' in corelevel_name:
@@ -1825,7 +2022,7 @@ def construct_corelevel_spectrum(coreleveldict,
             else:
                 max_state_occ_spin = {'1/2': 2, '3/2': 4, '5/2': 6, '7/2': 8}
                 # check if spin in name
-                for key, val in six.iteritems(max_state_occ_spin):
+                for key, val in max_state_occ_spin.items():
                     if key in corelevel_name:
                         nelectrons = val
             for i, corelevel in enumerate(corelevel_list):
@@ -1911,20 +2108,23 @@ def construct_corelevel_spectrum(coreleveldict,
     return [xdata_spec, ydata_spec, ydata_single_all, xdata_all, ydata_all, xdatalabel]
 
 
+@ensure_plotter_consistency(plot_params)
 def plot_corelevel_spectra(coreleveldict,
                            natom_typesdict,
                            exp_references={},
                            scale_to=-1,
                            show_single=True,
                            show_ref=True,
-                           energy_range=[None, None],
+                           energy_range=(None, None),
                            title='',
                            fwhm_g=0.6,
                            fwhm_l=0.1,
                            energy_grid=0.2,
                            peakfunction='voigt',
-                           linetyp_spec='o-',
-                           limits=[None, None],
+                           linestyle_spec='-',
+                           marker_spec='o',
+                           color_spec='k',
+                           color_single='g',
                            xlabel='Binding energy [eV]',
                            ylabel='Intensity [arb] (natoms*nelectrons)',
                            saveas=None,
@@ -1981,7 +2181,11 @@ def plot_corelevel_spectra(coreleveldict,
     xdata = xdata_all
     ydata = ydata_all
     ymax2 = max(ydata_spec) + 1
-    title = title  #'Spectrum of {}'.format(compound)
+    ymin = -0.3
+    ymax = max(ydata) + 1
+    limits = {'x': (xmin, xmax), 'y': (ymin, ymax)}
+    limits_spec = {'x': (xmin, xmax), 'y': (ymin, ymax2)}
+    #title = title  #'Spectrum of {}'.format(compound)
     """
     # ToDo redesign to use multiple_scatterplot
     axis = multiple_scatterplots(ydata, xdata, xlabel, ylabel, title, plot_labels,
@@ -1992,13 +2196,12 @@ def plot_corelevel_spectra(coreleveldict,
     """
 
     #print len(xdata), len(ydata)
-    plotlabel = 'corelevel shifts'
-    linetyp = 'o'
-    linetyp1 = linetyp_spec  #'-'
-    linewidth_g1 = linewidth_g
 
-    ymin = -0.3
-    ymax = max(ydata) + 1
+    if 'plot_label' not in kwargs:
+        kwargs['plot_label'] = 'corelevel shifts'
+
+    if 'linestyle' not in kwargs:
+        kwargs['linestyle'] = ''
 
     if saveas is None:
         saveas = 'XPS_theo_{}_{}'.format(fwhm_g, title)
@@ -2007,51 +2210,37 @@ def plot_corelevel_spectra(coreleveldict,
         saveas1 = saveas[1]
         saveas = saveas[0]
 
-    color = 'k'
-    scale = [None, None]
-    font = {
-        'family': 'serif',
-        'color': 'darkred',
-        'weight': 'normal',
-        'size': 16,
-    }
     ####################################
     ##### PLOT 1, plot raw datapoints
 
-    if not show_g:
+    if not plot_params['show']:
         return [xdata_spec, ydata_spec, ydata_single_all, xdata_all, ydata_all, xdatalabel]
 
-    fig = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
-    ax = fig.add_subplot(111)
-    for axis in ['top', 'bottom', 'left', 'right']:
-        ax.spines[axis].set_linewidth(axis_linewidth_g)
-    ax.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
-    ax.set_xlabel(xlabel, fontsize=labelfonstsize_g)
-    ax.set_ylabel(ylabel, fontsize=labelfonstsize_g)
-    ax.yaxis.set_tick_params(size=tick_paramsy_g.get('size', 4.0),
-                             width=tick_paramsy_g.get('width', 1.0),
-                             labelsize=tick_paramsy_g.get('labelsize', 14),
-                             length=tick_paramsy_g.get('length', 5))
-    ax.xaxis.set_tick_params(size=tick_paramsx_g.get('size', 4.0),
-                             width=tick_paramsx_g.get('width', 1.0),
-                             labelsize=tick_paramsx_g.get('labelsize', 14),
-                             length=tick_paramsx_g.get('length', 5))
-    ax.yaxis.get_major_formatter().set_powerlimits((0, 3))
-    ax.yaxis.get_major_formatter().set_useOffset(False)
-    p1 = ax.plot(xdata_all,
-                 ydata_all,
-                 linetyp,
-                 label=plotlabel,
-                 color=color,
-                 linewidth=linewidth_g,
-                 markersize=markersize_g)
-
+    states = []
     if show_ref and exp_references:
-        for elm, ref_list_dict in six.iteritems(exp_references):
-            for state, ref_list in six.iteritems(ref_list_dict):
-                for ref in ref_list:
-                    pp.axvline(ymin=0, ymax=0.1, x=ref, linewidth=linewidth_g, color='k')
-    '''
+        for elm, ref_list_dict in exp_references.items():
+            for state, ref_list in ref_list_dict.items():
+                states.extend(ref_list)
+
+    ax = single_scatterplot(xdata_all,
+                            ydata_all,
+                            xlabel=xlabel,
+                            ylabel=ylabel,
+                            title=title,
+                            line_options={
+                                'color': 'k',
+                                'linestyle': '-',
+                                'linewidth': 2
+                            },
+                            lines={'vertical': {
+                                'pos': states,
+                                'ymin': 0,
+                                'ymax': 0.1
+                            }},
+                            limits=limits,
+                            saveas=saveas,
+                            **kwargs)
+    ''' TODO
     for j,y in enumerate(ydata_all):
         for i,x in enumerate(xdata):
             lenx = xmax-xmin
@@ -2064,110 +2253,62 @@ def plot_corelevel_spectra(coreleveldict,
             plt.text(x-0.25, y[i]+0.3, text, fontdict=font)
     '''
 
-    if scale:
-        if scale[0]:
-            ax.set_xscale(scale[0])
-        elif scale[1]:
-            ax.set_yscale(scale[1])
-        else:
-            pass
-
-    if limits:
-        if limits[0] is not None:
-            xmin = limits[0][0]
-            xmax = limits[0][1]
-        if limits[1] is not None:
-            ymin = limits[1][0]
-            ymax = limits[1][1]
-
-    ax.set_xlim(xmax, xmin)  #flip x axes
-    ax.set_ylim(ymin, ymax)
-
-    if save_plots_g:
-        savefilename = '{}.{}'.format(saveas, save_format_g)
-        print(('save plot to: {}'.format(savefilename)))
-        pp.savefig(savefilename, format=save_format_g, transparent=True)
-    else:
-        pp.show()
-
     ##############################################################
     ##### PLOT 2, plot spectra, voigts around datapoints #########
 
-    fig1 = pp.figure(num=None, figsize=figsize_g, dpi=dpi_g, facecolor=facecolor_g, edgecolor=edgecolor_g)
-    ax1 = fig1.add_subplot(111)
-    for axis in ['top', 'bottom', 'left', 'right']:
-        ax1.spines[axis].set_linewidth(axis_linewidth_g)
-    ax1.set_title(title, fontsize=title_fontsize_g, alpha=alpha_g, ha='center')
-    ax1.set_xlabel(xlabel, fontsize=labelfonstsize_g)
-    ax1.set_ylabel(ylabel, fontsize=labelfonstsize_g)
-    ax1.yaxis.set_tick_params(size=tick_paramsy_g.get('size', 4.0),
-                              width=tick_paramsy_g.get('width', 1.0),
-                              labelsize=tick_paramsy_g.get('labelsize', 14),
-                              length=tick_paramsy_g.get('length', 5))
-    ax1.xaxis.set_tick_params(size=tick_paramsx_g.get('size', 4.0),
-                              width=tick_paramsx_g.get('width', 1.0),
-                              labelsize=tick_paramsx_g.get('labelsize', 14),
-                              length=tick_paramsx_g.get('length', 5))
-    ax1.yaxis.get_major_formatter().set_powerlimits((0, 3))
-    ax1.yaxis.get_major_formatter().set_useOffset(False)
+    kwargs.pop('linestyle', None)
+    kwargs.pop('marker', None)
+    kwargs.pop('color', None)
+    kwargs.pop('save', None)
+    kwargs.pop('save_plots', None)
 
-    p11 = ax1.plot(xdata_spec,
-                   ydata_spec,
-                   linetyp1,
-                   label=plotlabel,
-                   color=color,
-                   linewidth=linewidth_g1,
-                   markersize=markersize_g)
+    ax2 = single_scatterplot(xdata_spec,
+                             ydata_spec,
+                             xlabel=xlabel,
+                             ylabel=ylabel,
+                             title=title,
+                             marker=marker_spec,
+                             linestyle=linestyle_spec,
+                             color=color_spec,
+                             line_options={
+                                 'color': 'k',
+                                 'linestyle': '-',
+                                 'linewidth': 2
+                             },
+                             lines={'vertical': {
+                                 'pos': states,
+                                 'ymin': 0,
+                                 'ymax': 0.1
+                             }},
+                             show=False,
+                             save_plots=False,
+                             limits=limits_spec,
+                             **kwargs)
 
     if show_single:
-        for single_peek in ydata_single_all:
-            #xdatalabel
-            pp.plot(xdata_spec,
-                    single_peek,
-                    '-',
-                    label=plotlabel,
-                    color='g',
-                    linewidth=linewidth_g1,
-                    markersize=markersize_g)
-
-    if show_ref and exp_references:
-        for elm, ref_list_dict in six.iteritems(exp_references):
-            for state, ref_list in six.iteritems(ref_list_dict):
-                for ref in ref_list:
-                    pp.axvline(ymin=0, ymax=0.1, x=ref, linewidth=2, color='k')
-    '''
+        ax2 = multiple_scatterplots([xdata_spec] * len(ydata_single_all),
+                                    ydata_single_all,
+                                    xlabel=xlabel,
+                                    ylabel=ylabel,
+                                    title=title,
+                                    show=False,
+                                    save_plots=False,
+                                    axis=ax2,
+                                    linestyle='-',
+                                    color=color_single,
+                                    limits=limits_spec,
+                                    **kwargs)
+    '''TODO
     if show_compound and compound_info:
         for i,compound_data in enumerate(ydata_compound):
             plotlabel = compound_plot_label[i]
-            pp.plot(xdata_spec, compound_data, '-', label=plotlabel, color = color,
+            plt.plot(xdata_spec, compound_data, '-', label=plotlabel, color = color,
                  linewidth=linewidth_g1, markersize = markersize_g)
     '''
-    if scale:
-        if scale[0]:
-            ax1.set_xscale(scale[0])
-        elif scale[1]:
-            ax1.set_yscale(scale[1])
-        else:
-            pass
-    if limits:
-        if limits[0]:
-            xmin = limits[0][0]
-            xmax = limits[0][1]
-        if limits[1]:
-            ymin = limits[1][0]
-            ymax2 = limits[1][1]
-    ax1.set_xlim(xmax, xmin)  #flip x axes
-    ax1.set_ylim(ymin, ymax2)
-
-    if save_plots_g:
-        savefilename = '{}.{}'.format(saveas1, save_format_g)
-        print(('save plot to: {}'.format(savefilename)))
-        pp.savefig(savefilename, format=save_format_g, transparent=True)
-    else:
-        pp.show()
+    plot_params.save_plot(saveas1)
 
     # for plotting or file writting
-    return [xdata_spec, ydata_spec, ydata_single_all, xdata_all, ydata_all, xdatalabel, fig, fig1]
+    return [xdata_spec, ydata_spec, ydata_single_all, xdata_all, ydata_all, xdatalabel, ax, ax2]
 
 
 def asymmetric_lorentz(x, fwhm, mu, alpha=1.0, beta=1.5):
@@ -2545,163 +2686,6 @@ def pseudo_voigt_profile(x, fwhm_g, fwhm_l, mu, mix=0.5):
     return mix * gaus + (1 - mix) * lorentz
 
 
-def plot_bands2(xs, ys, ss, axis=None, linestyle='-', markersize_scaling=20, **kwargs):
-    """
-    """
-    markersize_band = 5
-    ax = multi_scatter_plot(xs, ys, markersize_band)
-
-    if linestyle is not None:
-        for j, data in enumerate(ys):
-            for i, entry in enumerate(data[1:]):
-                ynew = [data[i], entry]
-                xnew = [xs[j][i], xs[j][i + 1]]
-                linewidth = np.sqrt(markersize_scaling * (ss[j][i] + ss[j][i + 1]) / 4.0)
-                ax.plot(xnew,
-                        ynew,
-                        linestyle=linestyle,
-                        markersize=0.0,
-                        linewidth=linewidth,
-                        color='k',
-                        markeredgewidth=0.0)
-
-
-def plot_fleur_bands(filename, limits=[None, [-15, 15]]):
-    """
-    plot a fleur bandstructure
-
-    # TODO: performance has to be increased.
-    Maybe allow to specify a procentage of the kpoints to read in and plot.
-    Therefore enable a partially read in of the dos_band.hdf
-    """
-
-    from masci_tools.io.io_fleur_bands import read_fleur_banddos_hdf
-
-    xcoord, bands, xlabels, band_character, band_char_label, kts, wghts, rcell, cell, pos, atomn, spp = read_fleur_banddos_hdf(
-        filename)
-
-    tllike = [band_character[0].transpose()]
-    if len(tllike) == 2:
-        tllike.append(band_character[1].transpose())
-
-    markersize_scaling = 10.0
-    markersize_atomindependent = []  #np.array([])
-    markersize_like_s = []
-
-    # TODO there has to be a better way to do this, ... and faster with np.arrays
-    for s, tllike_s in enumerate(tllike):
-        markersize_like = []
-        for n, llike in enumerate(tllike_s):
-            markersize = []  #np.array([])
-            for i, atomtype in enumerate(llike):
-                markersize_band = []  #np.array([])
-                for j, band in enumerate(atomtype):
-                    markersize_temp = []  #np.array([])
-                    for m, kpoint in enumerate(band):
-                        #total = 0
-                        #print kpoint
-                        #for spin in kpoint:
-                        #    total = total + spin
-                        markersize_temp.append((kpoint * markersize_scaling)**2)  # scatter needs size squared
-                    markersize_band.append(markersize_temp)
-                markersize.append(markersize_band)
-                # always make the last one the total of all atomtypes
-            markersize_like.append(markersize)
-        markersize_like_s.append(markersize_like_s)
-
-    xticks = [[], []]
-    for label, pos in xlabels:
-        if label == 'Gamma':
-            label = r'$\Gamma$'
-        xticks[1].append(label)
-        xticks[0].append(pos)
-
-    # TODO spin is not treated right yet
-    x = [xcoord for i in bands[0]]
-    y = bands[0]
-    y2 = None
-    if len(bands) == 2:
-        y2 = bands[1]
-        print((len(y2)))
-    print((len(x), len(y)))
-
-    limits[0] = [min(xcoord), max(xcoord)]
-
-    for i, marker_likes in enumerate(markersize_like):
-        ax = multi_scatter_plot(x,
-                                y,
-                                marker_likes[0],
-                                ylabel=u'Energy [eV]',
-                                title='{}'.format(i),
-                                xticks=xticks,
-                                limits=limits,
-                                saveas='bandstru_{}'.format(i))
-        for label, pos in xlabels:
-            ax.axvline(
-                ymin=0,
-                ymax=1,
-                x=pos,  #1.0/10.93,
-                linewidth=1.0,
-                linestyle='-',
-                color='k')
-        #ax.hxvline(xmin==0, xmax=1.0, linestyle='-', color='g')
-
-        saveas = 'bandstruc_{}'.format(i)
-        if save_plots_g:
-            savefilename = '{}.{}'.format(saveas, save_format_g)
-            print(('save plot to: {}'.format(savefilename)))
-            pp.savefig(savefilename, format=save_format_g, transparent=True)
-
-    ax1 = multiple_scatterplots(y,
-                                x,
-                                ylabel=u'Energy [eV]',
-                                xlabel='',
-                                title='',
-                                plot_labels=None,
-                                xticks=xticks,
-                                limits=limits,
-                                saveas='bandstructure',
-                                marker=None)
-    #print ax1
-    for label, pos in xlabels:
-        ax1.axvline(
-            ymin=0,
-            ymax=1,
-            x=pos,  #1.0/10.93,
-            linewidth=1.0,
-            linestyle='-',
-            color='k')
-
-    if y2:
-        ax2 = multiple_scatterplots(y2,
-                                    x,
-                                    ylabel=u'Energy [eV]',
-                                    xlabel='',
-                                    title='',
-                                    plot_labels=None,
-                                    xticks=xticks,
-                                    limits=limits,
-                                    saveas='bandstructure',
-                                    marker=None)
-        #print ax1
-        for label, pos in xlabels:
-            ax2.axvline(
-                ymin=0,
-                ymax=1,
-                x=pos,  #1.0/10.93,
-                linewidth=1.0,
-                linestyle='-',
-                color='k')
-
-    #saveas='bandstructure'
-    #if save_plots_g:
-    #    savefilename = '{}.{}'.format(saveas, save_format_g)
-    #    print('save plot to: {}'.format(savefilename))
-    #    pp.savefig(savefilename, format=save_format_g, transparent=True)
-
-    return ax1
-
-
 class PDF(object):
 
     def __init__(self, pdf, size=(200, 200)):
@@ -2741,7 +2725,6 @@ def plot_colortable(colors: typing.Dict, title: str, sort_colors: bool = True, e
     :param emptycols:
     :return: figure
     """
-    import matplotlib.pyplot as plt
     import matplotlib.colors as mcolors
 
     cell_width = 212

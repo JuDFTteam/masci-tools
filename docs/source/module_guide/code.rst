@@ -2,9 +2,14 @@
 Visualisation and Plotting
 ++++++++++++++++++++++++++
 
-.. automodule:: masci_tools.vis.plot_methods
+Fleur specific Plotting
+------------------------
+
+.. automodule:: masci_tools.vis.fleur
    :members:
 
+KKR specific Plotting
+----------------------
 .. automodule:: masci_tools.vis.kkr_plot_FS_qdos
    :members:
 
@@ -17,6 +22,29 @@ Visualisation and Plotting
 .. automodule:: masci_tools.vis.kkr_plot_shapefun
    :members:
 
+General Plotting
+-----------------
+
+.. automodule:: masci_tools.vis
+   :members:
+
+Matplotlib
+^^^^^^^^^^^
+
+.. automodule:: masci_tools.vis.matplotlib_plotter
+   :members:
+
+.. automodule:: masci_tools.vis.plot_methods
+   :members:
+
+Bokeh
+^^^^^^^^^^^
+
+.. automodule:: masci_tools.vis.bokeh_plotter
+   :members:
+
+.. automodule:: masci_tools.vis.bokeh_plots
+   :members:
 
 Calculation tools
 +++++++++++++++++++++++++++
