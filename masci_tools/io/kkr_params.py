@@ -1,13 +1,15 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
-from __future__ import unicode_literals
-from builtins import object
-from builtins import str
-from six.moves import range
+###############################################################################
+# Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
+#                All rights reserved.                                         #
+# This file is part of the Masci-tools package.                               #
+# (Material science tools)                                                    #
+#                                                                             #
+# The code is hosted on GitHub at https://github.com/judftteam/masci-tools.   #
+# For further information on the license, see the LICENSE.txt file.           #
+# For further information please visit http://judft.de/.                      #
+#                                                                             #
+###############################################################################
 from masci_tools.io.common_functions import open_general
 """
 In this module you find the kkrparams class that helps defining the KKR input parameters
@@ -1501,7 +1503,7 @@ class kkrparams(object):
         :note: converts '<RBLEFT>', '<RBRIGHT>', 'ZPERIODL', and 'ZPERIODR' automatically to Ang. units!
         """
         from numpy import shape, array
-        from masci_tools.io.common_functions import get_aBohr2Ang
+        from masci_tools.util.constants import BOHR_A
 
         # some print statements with debug info
         debug = False
@@ -1698,7 +1700,7 @@ class kkrparams(object):
         rbr = self.get_value('<RBRIGHT>')
         zper_l = self.get_value('ZPERIODL')
         zper_r = self.get_value('ZPERIODR')
-        alat2ang = self.get_value('ALATBASIS') * get_aBohr2Ang()
+        alat2ang = self.get_value('ALATBASIS') * BOHR_A
         if rbl is not None:
             self.set_value('<RBLEFT>', array(rbl) * alat2ang)
         if rbr is not None:

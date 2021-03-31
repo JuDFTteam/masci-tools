@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<fleurInput fleurInputVersion="0.34">
+   <comment>
+      hcp Gadolinium                                                                  
+   </comment>
+   <calculationSetup>
+      <cutoffs Kmax="3.00000000" Gmax="10.00000000" GmaxXC="10.00000000" numbands="125"/>
+      <scfLoop itmax="2" minDistance=".00001000" maxIterBroyd="99" imix="Anderson" alpha=".05000000" precondParam="0.0" spinf="2.00000000"/>
+      <coreElectrons ctail="T" frcor="F" kcrel="0" coretail_lmax="0"/>
+      <magnetism jspins="2" l_noco="F" swsp="F" lflip="F" l_onlyMtStDen="F"/>
+      <soc theta=".00000000" phi=".00000000" l_soc="T" spav="F"/>
+      <expertModes gw="0" secvar="F"/>
+      <geometryOptimization l_f="F" forcealpha="1.00000000" forcemix="BFGS" epsdisp=".00001000" epsforce=".00001000"/>
+      <ldaU l_linMix="F" mixParam=".050000" spinf="1.000000"/>
+      <greensFunction minCalcDistance="0.00005">
+         <realAxis ne="5400" ellow="-1.0" elup="1.0"/>
+         <contourSemicircle n="128" eb="-0.5" et="0.0" alpha="1.0"/>
+      </greensFunction>
+      <xcFunctional name="pbe" relativisticCorrections="F"/>
+   </calculationSetup>
+   <cell>
+      <bzIntegration valenceElectrons="36.00000000" mode="tetra" fermiSmearingEnergy=".00100000">
+         <kPointListSelection listName="default" />
+         <kPointLists>
+            <kPointList name="default" count="10" type="mesh" nx="5" ny="5" nz="3">
+               <kPoint weight="    12.0000000000000">-0.4000000000000 -0.4000000000000  0.3333333333333</kPoint>
+               <kPoint weight="    12.0000000000000">-0.2000000000000 -0.4000000000000  0.3333333333333</kPoint>
+               <kPoint weight="    12.0000000000000">-0.4000000000000 -0.6000000000000  0.3333333333333</kPoint>
+               <kPoint weight="    12.0000000000000">-0.2000000000000 -0.2000000000000  0.3333333333333</kPoint>
+               <kPoint weight="     2.0000000000000"> 0.0000000000000  0.0000000000000  0.3333333333333</kPoint>
+               <kPoint weight="     6.0000000000000">-0.4000000000000 -0.4000000000000  0.0000000000000</kPoint>
+               <kPoint weight="     6.0000000000000">-0.2000000000000 -0.4000000000000  0.0000000000000</kPoint>
+               <kPoint weight="     6.0000000000000">-0.4000000000000 -0.6000000000000  0.0000000000000</kPoint>
+               <kPoint weight="     6.0000000000000">-0.2000000000000 -0.2000000000000  0.0000000000000</kPoint>
+               <kPoint weight="     1.0000000000000"> 0.0000000000000  0.0000000000000  0.0000000000000</kPoint>
+            </kPointList>
+         </kPointLists>
+      </bzIntegration>
+      <symmetryOperations>
+         <symOp>
+            <row-1>1 0 0 .0000000000</row-1>
+            <row-2>0 1 0 .0000000000</row-2>
+            <row-3>0 0 1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>-1 0 0 .0000000000</row-1>
+            <row-2>0 -1 0 .0000000000</row-2>
+            <row-3>0 0 1 .5000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 1 0 .0000000000</row-1>
+            <row-2>-1 -1 0 .0000000000</row-2>
+            <row-3>0 0 1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>-1 -1 0 .0000000000</row-1>
+            <row-2>1 0 0 .0000000000</row-2>
+            <row-3>0 0 1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>1 1 0 .0000000000</row-1>
+            <row-2>-1 0 0 .0000000000</row-2>
+            <row-3>0 0 1 .5000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 -1 0 .0000000000</row-1>
+            <row-2>1 1 0 .0000000000</row-2>
+            <row-3>0 0 1 .5000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>1 0 0 .0000000000</row-1>
+            <row-2>0 1 0 .0000000000</row-2>
+            <row-3>0 0 -1 .5000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>-1 0 0 .0000000000</row-1>
+            <row-2>0 -1 0 .0000000000</row-2>
+            <row-3>0 0 -1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 1 0 .0000000000</row-1>
+            <row-2>-1 -1 0 .0000000000</row-2>
+            <row-3>0 0 -1 .5000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>-1 -1 0 .0000000000</row-1>
+            <row-2>1 0 0 .0000000000</row-2>
+            <row-3>0 0 -1 .5000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>1 1 0 .0000000000</row-1>
+            <row-2>-1 0 0 .0000000000</row-2>
+            <row-3>0 0 -1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 -1 0 .0000000000</row-1>
+            <row-2>1 1 0 .0000000000</row-2>
+            <row-3>0 0 -1 .0000000000</row-3>
+         </symOp>
+      </symmetryOperations>
+      <bulkLattice scale="1.0000000000">
+         <bravaisMatrix>
+            <row-1>   -5.9406819509     3.4298543235     0.0000000000</row-1>
+            <row-2>   -5.9406819509    -3.4298543235     0.0000000000</row-2>
+            <row-3>    0.0000000000     0.0000000000    10.9549358120</row-3>
+         </bravaisMatrix>
+      </bulkLattice>
+   </cell>
+   <atomSpecies>
+      <species name="Gd-1" element="Gd" atomicNumber="64">
+         <mtSphere radius="2.80000000" gridPoints="925" logIncrement=".01400000"/>
+         <atomicCutoffs lmax="8" lnonsphr="6"/>
+         <electronConfig>
+            <coreConfig>(1s1/2) (2s1/2) (2p1/2) (2p3/2) (3s1/2) (3p1/2) (3p3/2) (4s1/2) (3d3/2) (3d5/2) (4p1/2) (4p3/2) (4d3/2) (4d5/2)</coreConfig>
+            <valenceConfig>(5s1/2) (5p1/2) (5p3/2) (6s1/2) (4f5/2) (4f7/2) (5d3/2) (5d5/2)</valenceConfig>
+            <stateOccupation state="(4f5/2)" spinUp="2.55000000" spinDown=".45000000"/>
+            <stateOccupation state="(4f7/2)" spinUp="4.00000000" spinDown=".00000000"/>
+            <stateOccupation state="(5d3/2)" spinUp=".40000000" spinDown=".00000000"/>
+            <stateOccupation state="(5d5/2)" spinUp=".60000000" spinDown=".00000000"/>
+         </electronConfig>
+         <energyParameters s="6" p="6" d="5" f="4"/>
+         <ldaHIA l="3" U="6.7" J="0.7" l_amf="F" init_occ="7.0">
+            <exc l="2" J="0.0952" init_mom="0.5"/>
+         </ldaHIA>
+         <lo type="SCLO" l="0" n="5" eDeriv="0"/>
+         <lo type="SCLO" l="1" n="5" eDeriv="0"/>
+      </species>
+   </atomSpecies>
+   <atomGroups>
+      <atomGroup species="Gd-1">
+         <relPos label="                   1">1.000/3.000 1.000/3.000 1.000/4.000</relPos>
+         <relPos label="                   2">-1.000/3.000 -1.000/3.000 -1.000/4.000</relPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+      </atomGroup>
+   </atomGroups>
+   <output dos="F" band="F"  slice="F" >
+      <checks vchk="F" cdinf="F"/>
+      <unfoldingBand unfoldBand="F" supercellX="1" supercellY="1" supercellZ="1"/>
+      <plotting iplot="0"/>
+      <chargeDensitySlicing numkpt="0" minEigenval=".00000000" maxEigenval=".00000000" nnne="0" pallst="F"/>
+      <specialOutput eonly="F" bmt="F"/>
+   </output>
+  <!-- We include the file relax.inp here to enable relaxations (see documentation) -->
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="relax.xml"> <xi:fallback/> </xi:include>
+</fleurInput>

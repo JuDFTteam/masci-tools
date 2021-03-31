@@ -10,8 +10,6 @@
 #                                                                             #
 ###############################################################################
 
-from __future__ import absolute_import
-from six.moves import range
 __version__ = 0.1
 
 
@@ -63,8 +61,8 @@ def read_shapefun(path='.'):
     with open(path + 'inputcard') as file:
         inp = file.readlines()
         # convert to uppercase
-        for iline in range(len(inp)):
-            inp[iline] = inp[iline].upper()
+        for index, line in enumerate(inp):
+            inp[index] = line.upper()
         # search number of atoms in inputcard
         iline = search_string('NAEZ', inp)
         if iline < 0:

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<fleurInput fleurInputVersion="0.27">
+   <comment>
+      Cu bulk                                                                         
+   </comment>
+   <calculationSetup>
+      <cutoffs Kmax="3.50000000" Gmax="15.00000000" GmaxXC="10.00000000" numbands="0"/>
+      <scfLoop itmax="1" maxIterBroyd="99" imix="Anderson" alpha=".05000000" spinf="2.00000000"/>
+      <coreElectrons ctail="T" frcor="F" kcrel="0"/>
+      <magnetism jspins="1" l_noco="F" l_J="F" swsp="F" lflip="F"/>
+      <soc theta=".00000000" phi=".00000000" l_soc="F" spav="F" off="F" soc66="T"/>
+      <expertModes gw="0" pot8="F" eig66="F" lpr="0" isec1="99" secvar="F"/>
+      <geometryOptimization l_f="F" xa="2.00000000" thetad="330.00000000" epsdisp=".00001000" epsforce=".00001000"/>
+      <bzIntegration valenceElectrons="22.00000000" mode="tria" fermiSmearingEnergy=".00100000">
+         <kPointCount count="20" gamma="F"/>
+      </bzIntegration>
+      <energyParameterLimits ellow="-0.80000000" elup="0.50000000"/>
+   </calculationSetup>
+   <cell>
+      <symmetry spgrp="p4m" invs="T" zrfs="T"/>
+      <bulkLattice scale="0.970000000000" latnam="squ">
+         <a1>4.815397</a1>
+         <c>6.81</c>
+      </bulkLattice>
+   </cell>
+   <xcFunctional name="pz" relativisticCorrections="F"/>
+   <atomSpecies>
+      <species name="Cu-1" element="Cu" atomicNumber="29" coreStates="7" magMom=".00000000" flipSpin="T">
+         <mtSphere radius="2.20000000" gridPoints="935" logIncrement=".01300000"/>
+         <atomicCutoffs lmax="12" lnonsphr="8"/>
+         <energyParameters s="4" p="4" d="3" f="4"/>
+      </species>
+   </atomSpecies>
+   <atomGroups>
+      <atomGroup species="Cu-1">
+         <relPos>0.0 0.0 1.0/2.0</relPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+      </atomGroup>
+      <atomGroup species="Cu-1">
+         <relPos>1.0/2.0 1.0/2.0 0.0</relPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+      </atomGroup>                           
+   </atomGroups>
+   <output dos="T" band="F" vacdos="F" slice="F">
+      <checks vchk="F" cdinf="F" disp="F"/>
+      <densityOfStates ndir="-1" minEnergy="-.50000000" maxEnergy=".50000000" sigma=".01500000"/>
+      <vacuumDOS layers="0" integ="F" star="F" nstars="0" locx1=".00000000" locy1=".00000000" locx2=".00000000" locy2=".00000000" nstm="0" tworkf=".00000000"/>
+      <plotting iplot="F" score="F" plplot="F"/>
+      <chargeDensitySlicing numkpt="0" minEigenval=".00000000" maxEigenval=".00000000" nnne="0" pallst="F"/>
+      <specialOutput form66="F" eonly="F" bmt="F"/>
+   </output>
+</fleurInput>

@@ -1,18 +1,25 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
+###############################################################################
+# Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
+#                All rights reserved.                                         #
+# This file is part of the Masci-tools package.                               #
+# (Material science tools)                                                    #
+#                                                                             #
+# The code is hosted on GitHub at https://github.com/judftteam/masci-tools.   #
+# For further information on the license, see the LICENSE.txt file.           #
+# For further information please visit http://judft.de/.                      #
+#                                                                             #
+###############################################################################
 """
 Everything that is needed to parse the output of a voronoi calculation.
 """
-
-from __future__ import print_function
-from __future__ import absolute_import
-import io, sys
 from masci_tools.io.common_functions import (get_corestates_from_potential, get_highest_core_state, search_string,
-                                             get_version_info, get_Ry2eV, get_ef_from_potfile, open_general,
-                                             convert_to_pystd)
+                                             get_version_info, get_ef_from_potfile, open_general, convert_to_pystd)
 from masci_tools.io.parsers.kkrparser_functions import get_core_states
-from six.moves import range
+from masci_tools.util.constants import RY_TO_EV
 import numpy as np
+import io
+import sys
 import traceback
 
 __copyright__ = (u'Copyright (c), 2018, Forschungszentrum Jülich GmbH,' 'IAS-1/PGI-1, Germany. All rights reserved.')
@@ -85,7 +92,7 @@ def parse_voronoi_output(out_dict, outfile, potfile, atominfo, radii, inputfile,
         out_dict['emin_units'] = 'Ry'
         diff_emin_ef = emin - get_ef_from_potfile(potfile)
         out_dict['emin_minus_efermi_Ry'] = diff_emin_ef
-        out_dict['emin_minus_efermi'] = diff_emin_ef * get_Ry2eV()
+        out_dict['emin_minus_efermi'] = diff_emin_ef * RY_TO_EV
         out_dict['emin_minus_efermi_Ry_units'] = 'Ry'
         out_dict['emin_minus_efermi_units'] = 'eV'
     except:

@@ -1,0 +1,104 @@
+<fleurInput fleurInputVersion="0.31">
+  <comment>
+      A Fleur input generator calculation with aiida
+   </comment>
+  <calculationSetup>
+    <cutoffs Kmax="4.40000000" Gmax="10.90000000" GmaxXC="9.10000000" numbands="0"/>
+    <scfLoop itmax="60" minDistance="0.0000200000" maxIterBroyd="99" imix="Anderson" alpha=".05000000" precondParam="0.0" spinf="2.00000000"/>
+    <coreElectrons ctail="F" frcor="F" kcrel="0" coretail_lmax="0"/>
+    <magnetism jspins="2" l_noco="T" swsp="F" lflip="F"/>
+    <soc theta=".00000000" phi=".00000000" l_soc="F" spav="F"/>
+    <prodBasis gcutm="2.90000000" tolerance=".00010000" ewaldlambda="3" lexp="16" bands="0"/>
+    <nocoParams l_ss="T" l_mperp="F" l_constr="F" mix_b=".00000000">
+      <qss>0.0 0.0 0.0</qss>
+    </nocoParams>
+    <expertModes gw="0" pot8="F" eig66="F" lpr="0" isec1="99" secvar="F"/>
+    <geometryOptimization l_f="F" forcealpha="1.00000000" forcemix="BFGS" epsdisp=".00001000" epsforce=".00001000" force_converged="0.00001" qfix="0"/>
+    <ldaU l_linMix="F" mixParam=".050000" spinf="1.000000"/>
+    <bzIntegration valenceElectrons="18.00000000" mode="hist" fermiSmearingEnergy=".00100000">
+      <kPointList posScale="1.00000000" weightScale="1.00000000" count="1">
+        <kPoint weight="    0.004167">   0.000000     0.000000     0.000000</kPoint>
+      </kPointList>
+      <altKPointSet purpose="bands">
+        <kPointCount count="   240" gamma="F"/>
+      </altKPointSet>
+    </bzIntegration>
+    <energyParameterLimits ellow="-.80000000" elup=".50000000"/>
+  </calculationSetup>
+  <cell>
+    <symmetryOperations>
+      <symOp>
+        <row-1>1 0 0 .0000000000</row-1>
+        <row-2>0 1 0 .0000000000</row-2>
+        <row-3>0 0 1 .0000000000</row-3>
+      </symOp>
+      <symOp>
+        <row-1>1 0 0 .0000000000</row-1>
+        <row-2>0 -1 0 .0000000000</row-2>
+        <row-3>0 0 1 .0000000000</row-3>
+      </symOp>
+    </symmetryOperations>
+    <filmLattice scale="1.00000000" latnam="any" dVac="7.35000000" dTilda="10.91000000">
+      <bravaisMatrix>
+        <row-1>5.301179702900000 .000000000000000 .000000000000000</row-1>
+        <row-2>.000000000000000 7.497000033000000 .000000000000000</row-2>
+        <row-3>.000000000000000 .000000000000000 7.992850008800000</row-3>
+      </bravaisMatrix>
+      <vacuumEnergyParameters vacuum="1" spinUp="-.25000000" spinDown="-.25000000"/>
+      <vacuumEnergyParameters vacuum="2" spinUp="-.25000000" spinDown="-.25000000"/>
+    </filmLattice>
+  </cell>
+  <xcFunctional name="vwn" relativisticCorrections="F"/>
+  <atomSpecies>
+    <species name="Fe-1" element="Fe" atomicNumber="26" coreStates="7" magMom="2.20000000" flipSpin="T">
+      <mtSphere radius="2.20000000" gridPoints="787" logIncrement=".01600000"/>
+      <atomicCutoffs lmax="10" lnonsphr="6"/>
+      <energyParameters s="4" p="4" d="3" f="4"/>
+      <prodBasis lcutm="4" lcutwf="9" select="4 0 4 2"/>
+      <electronConfig>
+        <coreConfig>[Ar]</coreConfig>
+        <valenceConfig>(4s1/2) (3d3/2) (3d5/2)</valenceConfig>
+        <stateOccupation state="(3d3/2)" spinUp="2.00000000" spinDown="1.00000000"/>
+        <stateOccupation state="(3d5/2)" spinUp="3.00000000" spinDown=".00000000"/>
+      </electronConfig>
+    </species>
+    <species name="Pt-1" element="Pt" atomicNumber="78" coreStates="19" magMom=".00000000" flipSpin="T">
+      <mtSphere radius="2.30000000" gridPoints="787" logIncrement=".01700000"/>
+      <atomicCutoffs lmax="10" lnonsphr="6"/>
+      <energyParameters s="6" p="6" d="5" f="5"/>
+      <prodBasis lcutm="4" lcutwf="9" select="4 0 4 2"/>
+      <electronConfig>
+        <coreConfig>[Xe] (4f5/2) (4f7/2)</coreConfig>
+        <valenceConfig>(6s1/2) (5d3/2) (5d5/2)</valenceConfig>
+        <stateOccupation state="(6s1/2)" spinUp=".50000000" spinDown=".50000000"/>
+        <stateOccupation state="(5d5/2)" spinUp="3.00000000" spinDown="2.00000000"/>
+      </electronConfig>
+    </species>
+  </atomSpecies>
+  <atomGroups>
+    <atomGroup species="Fe-1">
+      <filmPos label="                 222">.0000000000 .0000000000 -.9964250044</filmPos>
+      <force calculate="T" relaxXYZ="TTT"/>
+      <nocoParams l_relax="F" alpha=".00000000" beta="1.570796326" b_cons_x=".00000000" b_cons_y=".00000000"/>
+    </atomGroup>
+    <atomGroup species="Pt-1">
+      <filmPos label="                   2">1.000/2.000 1.000/2.000 .9964250044</filmPos>
+      <force calculate="T" relaxXYZ="TTT"/>
+      <nocoParams l_relax="F" alpha=".00000000" beta="1.570796326" b_cons_x=".00000000" b_cons_y=".00000000"/>
+    </atomGroup>
+  </atomGroups>
+  <output dos="F" band="F" vacdos="F" slice="F" mcd="F">
+    <checks vchk="F" cdinf="F"/>
+    <densityOfStates ndir="0" minEnergy="-.50000000" maxEnergy=".50000000" sigma=".01500000"/>
+    <vacuumDOS layers="0" integ="F" star="F" nstars="0" locx1=".00000" locy1=".00000" locx2=".00000" locy2=".00000" nstm="0" tworkf=".00000"/>
+    <unfoldingBand unfoldBand="F" supercellX="1" supercellY="1" supercellZ="1"/>
+    <plotting iplot="0" score="F" plplot="F"/>
+    <chargeDensitySlicing numkpt="0" minEigenval=".00000000" maxEigenval=".00000000" nnne="0" pallst="F"/>
+    <specialOutput eonly="F" bmt="F"/>
+    <magneticCircularDichroism energyLo="-10.00000000" energyUp=".00000000"/>
+  </output>
+  <!-- We include the file relax.inp here to enable relaxations (see documentation) -->
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="relax.xml">
+    <xi:fallback/>
+  </xi:include>
+</fleurInput>

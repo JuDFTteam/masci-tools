@@ -1,0 +1,48 @@
+output_dict:
+  creator_name: fleur 32
+  creator_target_architecture: GEN
+  density_convergence:
+  - 8.7379598265
+  - 8.2515493263
+  - 1.0238480245
+  - 0.5765372317
+  - 0.2277277793
+  - 0.026112816
+  density_convergence_units: me/bohr^3
+  end_date:
+    date: 2020/12/10
+    time: '16:51:35'
+  energy:
+  - -15784.558593305843
+  - -15784.531125868616
+  - -15784.361484489378
+  - -15784.357509447353
+  - -15784.359833871176
+  - -15784.360931872383
+  energy_hartree:
+  - -580.0718291459
+  - -580.0708197362
+  - -580.0645855305
+  - -580.0644394504
+  - -580.0645248714
+  - -580.0645652222
+  energy_hartree_units: Htr
+  energy_units: eV
+  film: false
+  gmax: 11.1
+  kmax: 3.5
+  number_of_atom_types: 1
+  number_of_atoms: 2
+  number_of_iterations: 6
+  number_of_iterations_total: 6
+  number_of_kpoints: 2
+  number_of_species: 1
+  number_of_spin_components: 1
+  number_of_symmetries: 48
+  output_file_version: '0.34'
+  start_date:
+    date: 2020/12/10
+    time: '16:51:33'
+  title: Si bulk
+  walltime: 2
+  walltime_units: seconds

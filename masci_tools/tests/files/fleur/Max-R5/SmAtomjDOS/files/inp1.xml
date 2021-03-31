@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<fleurInput fleurInputVersion="0.34">
+   <comment>
+      fcc Sama
+   </comment>
+   <calculationSetup>
+      <cutoffs Kmax="2.60000000" Gmax="7.00000000" GmaxXC="7.00000000" numbands="0"/>
+      <scfLoop itmax="15" minDistance=".00001000" maxIterBroyd="99" imix="Anderson" alpha=".05000000" precondParam="0.0" spinf="2.00000000"/>
+      <coreElectrons ctail="F" frcor="F" kcrel="0" coretail_lmax="0"/>
+      <magnetism jspins="1" l_noco="F" swsp="F" lflip="F"/>
+      <soc theta=".00000000" phi=".00000000" l_soc="T" spav="F"/>
+      <expertModes gw="0" secvar="F"/>
+      <geometryOptimization l_f="F" forcealpha="1.00000000" forcemix="BFGS" epsdisp=".00001000" epsforce=".00001000"/>
+      <ldaU l_linMix="F" mixParam=".050000" spinf="1.000000"/>
+      <xcFunctional name="pbe" relativisticCorrections="F"/>
+   </calculationSetup>
+   <cell>
+      <bzIntegration valenceElectrons="14.00000000" mode="hist" fermiSmearingEnergy=".00100000">
+         <kPointListSelection listName="default" />
+         <kPointLists>
+         <kPointList name="default" count="1" type="mesh">
+            <kPoint weight="     1.0000000000000"> 0.0000000000000  0.0000000000000  0.0000000000000</kPoint>
+         </kPointList>
+         </kPointLists>
+      </bzIntegration>
+      <symmetryOperations>
+         <symOp>
+            <row-1>1 0 0 .0000000000</row-1>
+            <row-2>0 1 0 .0000000000</row-2>
+            <row-3>0 0 1 .0000000000</row-3>
+         </symOp>
+      </symmetryOperations>
+      <bulkLattice scale="1.0000000000">
+         <bravaisMatrix>
+            <row-1>    0.0000000000     9.4486345000     9.4486345000</row-1>
+            <row-2>    9.4486345000     0.0000000000     9.4486345000</row-2>
+            <row-3>    9.4486345000     9.4486345000     0.0000000000</row-3>
+         </bravaisMatrix>
+      </bulkLattice>
+   </cell>
+   <atomSpecies>
+      <species name="Sm-1" element="Sm" atomicNumber="62">
+         <mtSphere radius="2.80000000" gridPoints="925" logIncrement=".01400000"/>
+         <atomicCutoffs lmax="10" lnonsphr="8"/>
+         <electronConfig>
+            <coreConfig>(1s1/2) (2s1/2) (2p1/2) (2p3/2) (3s1/2) (3p1/2) (3p3/2) (4s1/2) (3d3/2) (3d5/2) (4p1/2) (4p3/2) (5s1/2) (4d3/2) (4d5/2)</coreConfig>
+            <valenceConfig>(5p1/2) (5p3/2) (6s1/2) (4f5/2) (4f7/2)</valenceConfig>
+            <stateOccupation state="(4f5/2)" spinUp="1.28571429" spinDown="1.28571429"/>
+            <stateOccupation state="(4f7/2)" spinUp="1.71428571" spinDown="1.71428571"/>
+         </electronConfig>
+         <energyParameters s="6" p="6" d="5" f="4"/>
+         <lo type="SCLO" l="1" n="5" eDeriv="0"/>
+      </species>
+   </atomSpecies>
+   <atomGroups>
+      <atomGroup species="Sm-1">
+         <relPos label="                   1">.0000000000 .0000000000 .0000000000</relPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+         <nocoParams alpha=".00000000" beta=".00000000"/>
+      </atomGroup>
+   </atomGroups>
+   <output dos="F" band="F" >
+      <checks vchk="F" cdinf="F"/>
+   </output>
+  <!-- We include the file relax.inp here to enable relaxations (see documentation) -->
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="relax.xml"> <xi:fallback/> </xi:include>
+</fleurInput>

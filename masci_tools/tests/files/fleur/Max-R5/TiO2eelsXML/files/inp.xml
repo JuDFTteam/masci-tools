@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<fleurInput fleurInputVersion="0.28">
+   <comment>
+      TiO2 Rutile                                                                     
+   </comment>
+   <calculationSetup>
+      <cutoffs Kmax="3.80000000" Gmax="9.0" GmaxXC="8.00000000" numbands="40"/>
+      <scfLoop itmax="1" minDistance=".00000000" maxIterBroyd="99" imix="Anderson" alpha=".05000000" spinf="2.00000000"/>
+      <coreElectrons ctail="T" frcor="F" kcrel="0" coretail_lmax="99"/>
+      <magnetism jspins="1" l_noco="F" l_J="F" swsp="F" lflip="F"/>
+      <soc theta=".00000000" phi=".00000000" l_soc="F" spav="F" off="F"/>
+      <nocoParams l_ss="F" l_mperp="F" l_constr="F" l_disp="F" sso_opt="FFF" mix_b=".00000000" thetaJ=".00000000" nsh="0">
+         <qss>.0000000000 .0000000000 .0000000000</qss>
+      </nocoParams>
+      <expertModes gw="0" pot8="F" isec1="99" secvar="F"/>
+      <geometryOptimization l_f="F" xa="2.00000000" thetad="330.00000000" epsdisp=".00001000" epsforce=".00001000"/>
+      <bzIntegration valenceElectrons="44.00000000" mode="hist" fermiSmearingEnergy=".00100000">
+         <kPointListSelection listName="default" />
+         <kPointLists>
+         <kPointList posScale="1.00000000" weightScale="1.00000000" count="2" name="default">
+            <kPoint weight="    0.500000">    0.250000     0.250000     0.375000</kPoint>
+            <kPoint weight="    0.500000">    0.250000     0.250000     0.125000</kPoint>
+         </kPointList>
+         </kPointLists>
+      </bzIntegration>
+   </calculationSetup>
+   <cell>
+      <symmetryOperations>
+         <symOp>
+            <row-1>1 0 0 .0000000000</row-1>
+            <row-2>0 1 0 .0000000000</row-2>
+            <row-3>0 0 1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>-1 0 0 .0000000000</row-1>
+            <row-2>0 -1 0 .0000000000</row-2>
+            <row-3>0 0 -1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>-1 0 0 .5000000000</row-1>
+            <row-2>0 1 0 .5000000000</row-2>
+            <row-3>0 0 -1 .5000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>1 0 0 .5000000000</row-1>
+            <row-2>0 -1 0 .5000000000</row-2>
+            <row-3>0 0 1 .5000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 -1 0 .5000000000</row-1>
+            <row-2>1 0 0 .5000000000</row-2>
+            <row-3>0 0 1 .5000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>-1 0 0 .0000000000</row-1>
+            <row-2>0 -1 0 .0000000000</row-2>
+            <row-3>0 0 1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 1 0 .5000000000</row-1>
+            <row-2>-1 0 0 .5000000000</row-2>
+            <row-3>0 0 1 .5000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 1 0 .5000000000</row-1>
+            <row-2>-1 0 0 .5000000000</row-2>
+            <row-3>0 0 -1 .5000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 -1 0 .0000000000</row-1>
+            <row-2>-1 0 0 .0000000000</row-2>
+            <row-3>0 0 -1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 1 0 .0000000000</row-1>
+            <row-2>1 0 0 .0000000000</row-2>
+            <row-3>0 0 1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>1 0 0 .0000000000</row-1>
+            <row-2>0 1 0 .0000000000</row-2>
+            <row-3>0 0 -1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>1 0 0 .5000000000</row-1>
+            <row-2>0 -1 0 .5000000000</row-2>
+            <row-3>0 0 -1 .5000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>-1 0 0 .5000000000</row-1>
+            <row-2>0 1 0 .5000000000</row-2>
+            <row-3>0 0 1 .5000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 -1 0 .5000000000</row-1>
+            <row-2>1 0 0 .5000000000</row-2>
+            <row-3>0 0 -1 .5000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 1 0 .0000000000</row-1>
+            <row-2>1 0 0 .0000000000</row-2>
+            <row-3>0 0 -1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 -1 0 .0000000000</row-1>
+            <row-2>-1 0 0 .0000000000</row-2>
+            <row-3>0 0 1 .0000000000</row-3>
+         </symOp>
+      </symmetryOperations>
+      <bulkLattice scale="1.0000000000" latnam="squ">
+         <a1>8.6814053800</a1>
+         <c>5.5917019000</c>
+      </bulkLattice>
+   </cell>
+   <xcFunctional name="pw91" relativisticCorrections="F"/>
+   <atomSpecies>
+      <species name="Ti-1" element="Ti" atomicNumber="22" coreStates="5" magMom=".00000000" >
+         <mtSphere radius="2.28000000" gridPoints="757" logIncrement=".01500000"/>
+         <atomicCutoffs lmax="8" lnonsphr="6"/>
+         <energyParameters s="4" p="4" d="3" f="4"/>
+         <lo type="SCLO" l="1" n="3" eDeriv="0"/>
+      </species>
+      <species name="O-2" element="O" atomicNumber="8" coreStates="1" magMom=".00000000" >
+         <mtSphere radius="1.29000000" gridPoints="429" logIncrement=".02400000"/>
+         <atomicCutoffs lmax="6" lnonsphr="4"/>
+         <energyParameters s="2" p="2" d="3" f="4"/>
+      </species>
+   </atomSpecies>
+   <atomGroups>
+      <atomGroup species="Ti-1">
+         <relPos label="                   1">.0000000000 .0000000000 .0000000000</relPos>
+         <relPos label="                   2">1.000/2.000 1.000/2.000 1.000/2.000</relPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+         <nocoParams l_relax="F" l_magn="F" M=".00000000" alpha=".00000000" beta=".00000000" b_cons_x=".00000000" b_cons_y=".00000000"/>
+      </atomGroup>
+      <atomGroup species="O-2">
+         <relPos label="                   3">.3060000000 .3060000000 .0000000000</relPos>
+         <relPos label="                   4">-.3060000000 -.3060000000 .0000000000</relPos>
+         <relPos label="                   5">.1940000000 -.1940000000 1.000/2.000</relPos>
+         <relPos label="                   6">-.1940000000 .1940000000 1.000/2.000</relPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+         <nocoParams l_relax="F" l_magn="F" M=".00000000" alpha=".00000000" beta=".00000000" b_cons_x=".00000000" b_cons_y=".00000000"/>
+      </atomGroup>
+   </atomGroups>
+   <output dos="T" band="F"  slice="F" coreSpec="F">
+      <checks vchk="F" cdinf="F" disp="F"/>
+      <plotting iplot="0"/>
+      <chargeDensitySlicing numkpt="0" minEigenval=".00000000" maxEigenval=".00000000" nnne="0" pallst="F"/>
+      <specialOutput eonly="F" bmt="F"/>
+      <coreSpectrum eKin="300.0" atomType="1" lmax="2" edgeType="L" eMin="-1.0" eMax="15.0" numPoints="17" verbose="F">
+         <edgeIndices> 3 </edgeIndices>
+      </coreSpectrum>
+   </output>
+</fleurInput>

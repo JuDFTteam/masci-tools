@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<fleurInput fleurInputVersion="0.31">
+   <comment>
+      Si bulk
+   </comment>
+   <calculationSetup>
+      <cutoffs Kmax="3.70000000" Gmax="11.10000000" GmaxXC="9.20000000" numbands="0"/>
+      <scfLoop itmax="1" minDistance=".00001000" maxIterBroyd="99" imix="Anderson" alpha=".05000000" precondParam="0.0" spinf="2.00000000"/>
+      <coreElectrons ctail="T" frcor="F" kcrel="0" coretail_lmax="0"/>
+      <magnetism jspins="1" l_noco="F" swsp="F" lflip="F" />
+      <soc theta=".00000000" phi=".00000000" l_soc="F" spav="F"/>
+      <expertModes gw="2" secvar="F"/>
+      <geometryOptimization l_f="F" forcealpha="1.00000000" forcemix="BFGS" epsdisp=".00001000" epsforce=".00001000"/>
+      <ldaU l_linMix="F" mixParam=".050000" spinf="1.000000"/>
+      <bzIntegration valenceElectrons="8.00000000" mode="hist" fermiSmearingEnergy=".00100000">
+         <kPointCount count="17" gamma="F"/>
+         <altKPointSet purpose="bands">
+            <kPointCount count="   240" gamma="F"/>
+         </altKPointSet>
+         <altKPointSet purpose="GW">
+            <kPointListFile filename="kpts_gw"/>
+         </altKPointSet>
+      </bzIntegration>
+   </calculationSetup>
+   <cell>
+      <symmetryFile filename="sym.out"/>
+      <bulkLattice scale="1.0000000000" latnam="any">
+         <bravaisMatrix>
+            <row-1>.000000000000000 5.130608533500000 5.130608533500000</row-1>
+            <row-2>5.130608533500000 .000000000000000 5.130608533500000</row-2>
+            <row-3>5.130608533500000 5.130608533500000 .000000000000000</row-3>
+         </bravaisMatrix>
+      </bulkLattice>
+   </cell>
+   <xcFunctional name="pbe" relativisticCorrections="F"/>
+   <atomSpecies>
+      <species name="Si-1" element="Si" atomicNumber="14" coreStates="4" magMom=".00000000" flipSpinPhi=".00000000" flipSpinTheta=".00000000" flipSpinScale="F">
+         <mtSphere radius="2.17000000" gridPoints="717" logIncrement=".01600000"/>
+         <atomicCutoffs lmax="8" lnonsphr="6"/>
+         <energyParameters s="3" p="3" d="3" f="4"/>
+      </species>
+   </atomSpecies>
+   <atomGroups>
+      <atomGroup species="Si-1">
+         <relPos label="                   1">1.000/8.000 1.000/8.000 1.000/8.000</relPos>
+         <relPos label="                   2">-1.000/8.000 -1.000/8.000 -1.000/8.000</relPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+      </atomGroup>
+   </atomGroups>
+   <output dos="F" band="F"  slice="F" >
+      <checks vchk="F" cdinf="F"/>
+      <unfoldingBand unfoldBand="F" supercellX="1" supercellY="1" supercellZ="1"/>
+      <plotting iplot="0"/>
+      <chargeDensitySlicing numkpt="0" minEigenval=".00000000" maxEigenval=".00000000" nnne="0" pallst="F"/>
+      <specialOutput eonly="F" bmt="F"/>
+   </output>
+ <!-- We include the file relax.inp here to enable relaxations (see documentation) -->
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="relax.xml"> <xi:fallback/> </xi:include>
+</fleurInput>

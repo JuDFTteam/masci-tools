@@ -3,7 +3,8 @@ publish_to_pypi.sh
 
 
 # test files
-masci_tools/tests
+#masci_tools/tests
+*.npy
 
 #editors etc
 .pytest_cache

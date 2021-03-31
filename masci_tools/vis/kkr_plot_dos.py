@@ -1,7 +1,15 @@
 # -*- coding: utf-8 -*-
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
+###############################################################################
+# Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
+#                All rights reserved.                                         #
+# This file is part of the Masci-tools package.                               #
+# (Material science tools)                                                    #
+#                                                                             #
+# The code is hosted on GitHub at https://github.com/judftteam/masci-tools.   #
+# For further information on the license, see the LICENSE.txt file.           #
+# For further information please visit http://judft.de/.                      #
+#                                                                             #
+###############################################################################
 from matplotlib import cm
 
 
@@ -37,15 +45,15 @@ def dosplot(p0='./',
             spins=2):
     """ plotting routine for dos files """
     # import dependencies
-    from numpy import loadtxt, sort, array, sum
-    from matplotlib.pyplot import figure, plot, axvline, xlabel, ylabel, ion, title, figure, fill_between, axhline
+    import numpy as np
+    import matplotlib.pyplot as plt
     from os import listdir
     from os.path import isdir
 
-    ion()
+    plt.ion()
 
     # deal with input of file handle instead of path (see plot_kkr of aiida_kkr)
-    if type(p0) != str:
+    if not isinstance(p0, str):
         pathname_with_file = p0.name
         p0 = pathname_with_file.replace('/dos.atom1', '')
 
@@ -55,7 +63,7 @@ def dosplot(p0='./',
     #if 'rel' in units: ef = float(open(p0+'potential').readlines()[3].split()[1])
     ef = float(open(p0 + 'potential').readlines()[3].split()[1])
     first = True
-    for i in sort(listdir(p0)):
+    for i in np.sort(listdir(p0)):
         if (((i[:8] == 'dos.atom' and 'interpol' not in i) and not interpol) or
             (interpol and i[:17] == 'dos.interpol.atom')) or ('out_ldos.atom' in i and 'out_lmdos.atom' not in i and
                                                               not interpol) or ('out_ldos.interpol.atom' in i and
@@ -71,7 +79,7 @@ def dosplot(p0='./',
                                                                                           '').replace('m',
                                                                                                       '').split('_')[0]
                 if atoms == [] or int(iatom) in atoms:
-                    tmp = loadtxt(p0 + i)
+                    tmp = np.loadtxt(p0 + i)
                     print(p0 + i)
 
                     # set units
@@ -93,30 +101,30 @@ def dosplot(p0='./',
                             if color == '':
                                 if first:
                                     if not nofig:
-                                        figure()
-                                plot(tmp[:, 0], sgn * tmp[:, 1], marker + ls, label=label + str(i), lw=lw, ms=ms)
+                                        plt.figure()
+                                plt.plot(tmp[:, 0], sgn * tmp[:, 1], marker + ls, label=label + str(i), lw=lw, ms=ms)
                             else:
                                 if not nofig:
-                                    figure()
+                                    plt.figure()
                                 if filled:
-                                    fill_between(tmp[:, 0], sgn * tmp[:, 1], color=color, label=label)
+                                    plt.fill_between(tmp[:, 0], sgn * tmp[:, 1], color=color, label=label)
                                 else:
-                                    plot(tmp[:, 0],
-                                         sgn * tmp[:, 1],
-                                         marker + ls,
-                                         color=color,
-                                         label=label,
-                                         lw=lw,
-                                         ms=ms)
+                                    plt.plot(tmp[:, 0],
+                                             sgn * tmp[:, 1],
+                                             marker + ls,
+                                             color=color,
+                                             label=label,
+                                             lw=lw,
+                                             ms=ms)
                         else:
                             if not nofig and sgn == 1:
-                                figure()
+                                plt.figure()
                             if color == '':
                                 if lm == []:
                                     if filled:
-                                        fill_between(tmp[:, 0], sgn * tmp[:, 1:])
+                                        plt.fill_between(tmp[:, 0], sgn * tmp[:, 1:])
                                     else:
-                                        plot(tmp[:, 0], sgn * tmp[:, 1:], marker + ls, lw=lw, ms=ms)
+                                        plt.plot(tmp[:, 0], sgn * tmp[:, 1:], marker + ls, lw=lw, ms=ms)
                                 else:
                                     for ilm in lm:
                                         lmname = label + ' '
@@ -152,13 +160,18 @@ def dosplot(p0='./',
                                             lmname += 'f_{2}'
                                         if ilm == 16:
                                             lmname += 'f_{3}'
-                                        plot(tmp[:, 0], sgn * tmp[:, 1 + ilm], marker + ls, lw=lw, ms=ms, label=lmname)
+                                        plt.plot(tmp[:, 0],
+                                                 sgn * tmp[:, 1 + ilm],
+                                                 marker + ls,
+                                                 lw=lw,
+                                                 ms=ms,
+                                                 label=lmname)
                             else:
                                 if lm == []:
                                     if filled:
-                                        fill_between(tmp[:, 0], sgn * tmp[:, 1:], color=color)
+                                        plt.fill_between(tmp[:, 0], sgn * tmp[:, 1:], color=color)
                                     else:
-                                        plot(tmp[:, 0], sgn * tmp[:, 1:], marker + ls, color=color, lw=lw, ms=ms)
+                                        plt.plot(tmp[:, 0], sgn * tmp[:, 1:], marker + ls, color=color, lw=lw, ms=ms)
                                 else:
                                     for ilm in lm:
                                         lmname = label + ' '
@@ -194,14 +207,14 @@ def dosplot(p0='./',
                                             lmname += 'f_{2}'
                                         if ilm == 16:
                                             lmname += 'f_{3}'
-                                        plot(tmp[:, 0],
-                                             sgn * tmp[:, 1 + ilm],
-                                             marker + ls,
-                                             lw=lw,
-                                             ms=ms,
-                                             label=lmname,
-                                             color=color)
-                            title(label + ' ' + i)
+                                        plt.plot(tmp[:, 0],
+                                                 sgn * tmp[:, 1 + ilm],
+                                                 marker + ls,
+                                                 lw=lw,
+                                                 ms=ms,
+                                                 label=lmname,
+                                                 color=color)
+                            plt.title(label + ' ' + i)
 
                     #sum data
                     if first:
@@ -219,11 +232,11 @@ def dosplot(p0='./',
 
     #if lmdos:
     #   if lm<>[]:
-    #      d = d[:,[0,1]+list(array(lm)+1)]
-    #   d[:,1] = sum(d[:,2:], axis=1)
+    #      d = d[:,[0,1]+list(np.array(lm)+1)]
+    #   d[:,1] = np.sum(d[:,2:], axis=1)
     if lm != []:
-        d = d[:, [0, 1] + list(array(lm) + 1)]
-    d[:, 1] = sum(d[:, 2:], axis=1)
+        d = d[:, [0, 1] + list(np.array(lm) + 1)]
+    d[:, 1] = np.sum(d[:, 2:], axis=1)
 
     if normalized:
         d[:, 1:] = d[:, 1:] / (d[:, 1:]).max()
@@ -245,39 +258,39 @@ def dosplot(p0='./',
         if totonly:
             if color == '':
                 if xyswitch:
-                    plot(d[:, 1], d[:, 0] + shift, marker + ls, label=label, lw=lw, ms=ms)
+                    plt.plot(d[:, 1], d[:, 0] + shift, marker + ls, label=label, lw=lw, ms=ms)
                 else:
-                    plot(d[:, 0] + shift, d[:, 1], marker + ls, label=label, lw=lw, ms=ms)
+                    plt.plot(d[:, 0] + shift, d[:, 1], marker + ls, label=label, lw=lw, ms=ms)
             else:
                 if xyswitch:
                     if filled:
-                        fill_between(d[:, 1], d[:, 0] + shift, color=color, label=label)
+                        plt.fill_between(d[:, 1], d[:, 0] + shift, color=color, label=label)
                     else:
-                        plot(d[:, 1], d[:, 0] + shift, marker + ls, color=color, label=label, lw=lw, ms=ms)
+                        plt.plot(d[:, 1], d[:, 0] + shift, marker + ls, color=color, label=label, lw=lw, ms=ms)
                 else:
                     if filled:
-                        fill_between(d[:, 0] + shift, d[:, 1], color=color, label=label)
+                        plt.fill_between(d[:, 0] + shift, d[:, 1], color=color, label=label)
                     else:
-                        plot(d[:, 0] + shift, d[:, 1], marker + ls, color=color, label=label, lw=lw, ms=ms)
+                        plt.plot(d[:, 0] + shift, d[:, 1], marker + ls, color=color, label=label, lw=lw, ms=ms)
 
         else:
             if color == '':
                 if xyswitch:
-                    plot(d[:, 1:], d[:, 0] + shift, marker + ls, lw=lw, ms=ms)
+                    plt.plot(d[:, 1:], d[:, 0] + shift, marker + ls, lw=lw, ms=ms)
                 else:
-                    plot(d[:, 0] + shift, d[:, 1:], marker + ls, lw=lw, ms=ms)
+                    plt.plot(d[:, 0] + shift, d[:, 1:], marker + ls, lw=lw, ms=ms)
             else:
                 if xyswitch:
                     if filled:
-                        fill_between(d[:, 1], d[:, 0] + shift, color=color)
+                        plt.fill_between(d[:, 1], d[:, 0] + shift, color=color)
                     else:
-                        plot(d[:, 1:], d[:, 0] + shift, marker + ls, color=color, lw=lw, ms=ms)
+                        plt.plot(d[:, 1:], d[:, 0] + shift, marker + ls, color=color, lw=lw, ms=ms)
                 else:
                     if filled:
-                        fill_between(d[:, 0] + shift, d[:, 1], color=color)
+                        plt.fill_between(d[:, 0] + shift, d[:, 1], color=color)
                     else:
-                        plot(d[:, 0] + shift, d[:, 1:], marker + ls, color=color, lw=lw, ms=ms)
-            title(label)
+                        plt.plot(d[:, 0] + shift, d[:, 1:], marker + ls, color=color, lw=lw, ms=ms)
+            plt.title(label)
 
     # plot fermi level
     if not noefline:
@@ -285,22 +298,22 @@ def dosplot(p0='./',
             efcolor = color
         if efcolor == '':
             if xyswitch:
-                axhline(ef, ls=ls_ef, lw=lw_ef, color='grey')
+                plt.axhline(ef, ls=ls_ef, lw=lw_ef, color='grey')
             else:
-                axvline(ef, ls=ls_ef, lw=lw_ef, color='grey')
+                plt.axvline(ef, ls=ls_ef, lw=lw_ef, color='grey')
         else:
             if xyswitch:
-                axhline(ef, color=efcolor, ls=ls_ef, lw=lw_ef)
+                plt.axhline(ef, color=efcolor, ls=ls_ef, lw=lw_ef)
             else:
-                axvline(ef, color=efcolor, ls=ls_ef, lw=lw_ef)
+                plt.axvline(ef, color=efcolor, ls=ls_ef, lw=lw_ef)
 
     # set axis labels
     if xyswitch:
-        ylabel(xlab)
-        xlabel(ylab)
+        plt.ylabel(xlab)
+        plt.xlabel(ylab)
     else:
-        xlabel(xlab)
-        ylabel(ylab)
+        plt.xlabel(xlab)
+        plt.ylabel(ylab)
 
     if return_data:
         return d, ef

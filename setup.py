@@ -16,8 +16,8 @@ with io.open(path.join(this_directory, 'README.md'), encoding='utf8') as f:
 if __name__ == '__main__':
     setup(
         name='masci_tools',
-        version='0.3.12',
-        description='Tools for Materials science. Vis contains wrapers of matplotlib functionality to visualalize common material science data. Plus wrapers of visualisation for aiida-fleur workflow nodes',
+        version='0.4.0',
+        description='Tools for Materials science. Vis contains wrappers of matplotlib functionality to visualize common material science data. Plus wrappers of visualisation for aiida-fleur workflow nodes',
         # add long_description from readme.md:
         long_description = long_description, # add contents of README.md
         long_description_content_type ='text/markdown',  # This is important to activate markdown!
@@ -30,7 +30,6 @@ if __name__ == '__main__':
             'Intended Audience :: Science/Research',
             'License :: OSI Approved :: MIT License',
             'Programming Language :: Python :: 3',
-            'Programming Language :: Python :: 3.6',
             'Programming Language :: Python :: 3.7',
             'Programming Language :: Python :: 3.8',
             'Programming Language :: Python :: 3.9',
@@ -46,17 +45,22 @@ if __name__ == '__main__':
             'scipy',
             'matplotlib',
             'h5py',
+            'pandas',
             'bump2version',
-            'pytest>=4.3.1',
-            'pytest-cov',
-            'pytest-mpl',
             'future',
+            'lxml>=3.6.4',
+            'more_itertools',
+            'seaborn',
+            'deepdiff',
+            'humanfriendly',
+            'mendeleev',
         ],
         extras_require={
             'pre-commit': [
                 'pre-commit>=2.6.0',
                 'yapf>=0.30.0',
-                'pylint>=2.5.2'
+                'pylint>=2.5.2',
+                'pytest>=4.3.1'
             ],
             'docs': [
                 'Sphinx',
@@ -66,7 +70,11 @@ if __name__ == '__main__':
             'testing': [
                 'pytest>=4.3.1',
                 'pytest-cov',
-                'pytest-mpl'
+                'pytest-mpl',
+                'pytest-regressions>=1.0'
+            ],
+            'bokeh-plots': [
+                'bokeh<=1.4.0' # versions beyond 1.4.0 require a tornardo version not compatible with aiida-core /circus
             ]
         },
     )

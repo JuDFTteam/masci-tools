@@ -1,16 +1,19 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+###############################################################################
+# Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
+#                All rights reserved.                                         #
+# This file is part of the Masci-tools package.                               #
+# (Material science tools)                                                    #
+#                                                                             #
+# The code is hosted on GitHub at https://github.com/judftteam/masci-tools.   #
+# For further information on the license, see the LICENSE.txt file.           #
+# For further information please visit http://judft.de/.                      #
+#                                                                             #
+###############################################################################
 """
 Tools for the impurity caluclation plugin and its workflows
 """
-#use print('message') instead of print 'message' in python 2.7 as well:
-from __future__ import print_function
-# redefine raw_input for python 3/2.7 compatilbility
-from __future__ import absolute_import
-from builtins import object
 from sys import version_info
-from six.moves import range
-from six.moves import input
 if version_info[0] >= 3:
 
     def raw_input(msg):
@@ -98,7 +101,7 @@ class modify_potential(object):
         filedata = open(scoefpath).readlines()[1:natomtemp + 1]
         listnew = []
         for line in filedata:
-            if (len(line.split()) > 1):
+            if len(line.split()) > 1:
                 listnew.append(atom2shapes[int(line.split()[3]) - 1] - 1)
         order = listnew
 

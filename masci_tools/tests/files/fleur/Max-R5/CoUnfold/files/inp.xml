@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<fleurInput fleurInputVersion="0.34">
+   <comment>
+      Cobalt bulk in hcp structure exp:a=b=250.71pm,c=406.95pm 2x2x1 super-cell C defe
+   </comment>
+   <calculationSetup>
+      <cutoffs Kmax="3.00000000" Gmax="9.40000000" GmaxXC="7.70000000" numbands="0"/>
+      <scfLoop itmax="1" minDistance=".00001000" maxIterBroyd="99" imix="Anderson" alpha=".05000000" precondParam="0.0" spinf="2.00000000"/>
+      <coreElectrons ctail="T" frcor="F" kcrel="0" coretail_lmax="0"/>
+      <magnetism jspins="2" l_noco="F" swsp="F" lflip="F"/>
+      <soc theta=".00000000" phi=".00000000" l_soc="F" spav="F"/>
+      <expertModes gw="0" secvar="F"/>
+      <geometryOptimization l_f="F" forcealpha="1.00000000" forcemix="BFGS" epsdisp=".00001000" epsforce=".00001000"/>
+      <ldaU l_linMix="F" mixParam=".050000" spinf="1.000000"/>
+      <bzIntegration valenceElectrons="105.00000000" mode="hist" fermiSmearingEnergy=".00100000">
+        <kPointList name="default" count="   15">
+         <kPoint weight="0.066667">0.000000            0.000000            0.000000</kPoint>
+         <kPoint weight="0.066667">0.000000            0.500000            0.000000</kPoint>
+         <kPoint weight="0.066667">0.000000            1.000000            0.000000</kPoint>
+         <kPoint weight="0.066667">0.333333            0.833333            0.000000</kPoint>
+         <kPoint weight="0.066667">0.666667            0.666667            0.000000</kPoint>
+         <kPoint weight="0.066667">0.333333            0.333333            0.000000</kPoint>
+         <kPoint weight="0.066667">0.000000            0.000000            0.000000</kPoint>
+         <kPoint weight="0.066667">0.000000            0.000000            0.250000</kPoint>
+         <kPoint weight="0.066667">0.000000            0.000000            0.500000</kPoint>
+         <kPoint weight="0.066667">0.000000            0.500000            0.500000</kPoint>
+         <kPoint weight="0.066667">0.000000            1.000000            0.500000</kPoint>
+         <kPoint weight="0.066667">0.333333            0.833333            0.500000</kPoint>
+         <kPoint weight="0.066667">0.666667            0.666667            0.500000</kPoint>
+         <kPoint weight="0.066667">0.333333            0.333333            0.500000</kPoint>
+         <kPoint weight="0.066667">0.000000            0.000000            0.500000</kPoint>
+     	</kPointList>
+      </bzIntegration>
+   </calculationSetup>
+   <cell>
+      <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="sym.xml"/> 
+      <bulkLattice scale="1.0000000000">
+	<bravaisMatrix>
+            <row-1>4.7377000000 -8.205937111 .0000000000</row-1>
+            <row-2>4.737700000  8.205937111  .0000000000</row-2>
+            <row-3>.0000000000 .0000000000  7.6902000000</row-3>
+         </bravaisMatrix>
+       </bulkLattice>
+   </cell>
+   <xcFunctional name="pbe" relativisticCorrections="F"/>
+   <atomSpecies>
+      <species name="Co-1" element="Co" atomicNumber="27"  flipSpinPhi="0.0" flipSpinTheta="Pi" flipSpinScale="F">
+         <mtSphere radius="2.30000000" gridPoints="761" logIncrement=".01600000"/>
+         <atomicCutoffs lmax="8" lnonsphr="6"/>
+	 <electronConfig>
+            <coreConfig>(1s1/2) (2s1/2) (2p1/2) (2p3/2) (3s1/2) </coreConfig>
+            <valenceConfig>(3p1/2) (3p3/2) (4s1/2) (3d3/2) (3d5/2)</valenceConfig>
+            <stateOccupation state="(3d5/2)" spinUp="2.30000000" spinDown="0.70000000"/>
+         </electronConfig>
+         <energyParameters s="4" p="4" d="3" f="4"/>
+         <lo type="SCLO" l="1" n="3" eDeriv="0"/>
+      </species>
+   </atomSpecies>
+   <atomGroups>
+      <atomGroup species="Co-1">
+         <relPos label="                   1">1.000/3.000 1.000/6.000 1.000/2.000</relPos>
+         <relPos label="                   3">-1.000/6.000 1.000/6.000 1.000/2.000</relPos>
+         <relPos label="                   7">-1.000/6.000 -1.000/3.000 1.000/2.000</relPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+      </atomGroup>
+      <atomGroup species="Co-1">
+         <relPos label="                   2">1.000/2.000 .0000000000 .0000000000</relPos>
+         <relPos label="                   4">.0000000000 1.000/2.000 .0000000000</relPos>
+         <relPos label="                   6">1.000/2.000 1.000/2.000 .0000000000</relPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+      </atomGroup>
+      <atomGroup species="Co-1">
+         <relPos label="                   5">1.000/3.000 -1.000/3.000 1.000/2.000</relPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+      </atomGroup>
+   </atomGroups>
+   <output dos="F" band="T"  slice="F" >
+      <checks vchk="F" cdinf="F"/>
+      <unfoldingBand unfoldBand="T" supercellX="2" supercellY="2" supercellZ="1"/>
+      <plotting iplot="0"/>
+      <chargeDensitySlicing numkpt="0" minEigenval=".00000000" maxEigenval=".00000000" nnne="0" pallst="F"/>
+      <specialOutput eonly="F" bmt="F"/>
+   </output>
+ <!-- We include the file relax.inp here to enable relaxations (see documentation) -->
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="relax.xml"> <xi:fallback/> </xi:include>
+</fleurInput>
