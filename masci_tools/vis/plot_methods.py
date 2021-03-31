@@ -439,7 +439,7 @@ def multi_scatter_plot(xdata,
             kwargs['xticklabels'] = xticks[0]
             kwargs['xticks'] = xticks[1]
 
-    plot_params.set_defaults(default_type='function', linestyle=None, area_plot=False)
+    plot_params.set_defaults(default_type='function', linestyle=None, area_plot=False, colorbar=False)
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
