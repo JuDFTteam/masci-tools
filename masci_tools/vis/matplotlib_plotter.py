@@ -58,6 +58,7 @@ class MatplotlibPlotter(Plotter):
         'yticks': None,
         'yticklabels': None,
         'color_cycle': None,
+        'sub_colormap': None,
 
         # plot properties
         'linewidth': 2.0,
@@ -152,7 +153,8 @@ class MatplotlibPlotter(Plotter):
         'save_plots', 'save_format', 'tightlayout', 'save_raw_plot_data', 'raw_plot_data_format', 'show', 'legend',
         'legend_options', 'colorbar', 'colorbar_padding', 'tick_paramsy', 'tick_paramsx', 'tick_paramsy_minor',
         'tick_paramsx_minor', 'font_options', 'line_options', 'labelfontsize', 'lines', 'scale', 'limits', 'xticks',
-        'xticklabels', 'yticks', 'yticklabels', 'figure_kwargs', 'title_font_size', 'repeat_colors_after', 'color_cycle'
+        'xticklabels', 'yticks', 'yticklabels', 'figure_kwargs', 'title_font_size', 'repeat_colors_after', 'color_cycle',
+        'sub_colormap'
     }
 
     #Sets of keys with special purposes
@@ -223,6 +225,29 @@ class MatplotlibPlotter(Plotter):
 
         if 'plot_alpha' in plot_kwargs:
             plot_kwargs['alpha'] = plot_kwargs.pop('plot_alpha')
+
+        if 'cmap' in plot_kwargs and self['sub_colormap'] is not None:
+            if not isinstance(self['sub_colormap'], (tuple,list)):
+                raise ValueError('sub_colormap has to be a tuple of two numbers')
+
+            if isinstance(plot_kwargs['cmap'], list):
+                for indx, cmap in enumerate(plot_kwargs['cmap']):
+                    if isinstance(cmap, str):
+                        cmap = plt.get_cmap(cmap)
+
+                    if isinstance(self['sub_colormap'], list):
+                        limits = self['sub_colormap'][indx]
+                    else:
+                        limits = self['sub_colormap']
+
+                    plot_kwargs['cmap'][indx] = self.truncate_colormap(cmap, *limits)
+            else:
+                if isinstance(plot_kwargs['cmap'], str):
+                    plot_kwargs['cmap'] = plt.get_cmap(plot_kwargs['cmap'])
+
+                plot_kwargs['cmap'] = self.truncate_colormap(plot_kwargs['cmap'], *self['sub_colormap'])
+
+
 
         plot_kwargs = self.dict_of_lists_to_list_of_dicts(plot_kwargs, self.single_plot, self.num_plots)
 
@@ -417,6 +442,8 @@ class MatplotlibPlotter(Plotter):
         """
 
         if self['colorbar']:
+            if isinstance(self['cmap'], list):
+                raise ValueError('show_colorbar only available for single colormaps')
             mappable = cm.ScalarMappable(cmap=self['cmap'], norm=self['norm'])
             if self['limits'] is not None:
                 if 'color' in self['limits']:
@@ -425,6 +452,28 @@ class MatplotlibPlotter(Plotter):
                     mappable.set_clim(cmin, cmax)
 
             plt.colorbar(mappable, ax=ax, pad=self['colorbar_padding'])
+
+    @staticmethod
+    def truncate_colormap(cmap, minval=0.0, maxval=1.0, n=256):
+        """
+        Cut off parts of colormap
+
+        :param cmap: cmap to truncate
+        :param minval: minimum value of new colormap
+        :param maxval: maximum value of new colormap
+        :param n: number of colors in new colormap
+
+        :returns: colormap truncated to only hold colors between minval and maxval from old colormap
+        """
+        import matplotlib.colors as colors
+        import numpy as np
+
+        new_cmap = colors.LinearSegmentedColormap.from_list(
+            'trunc({n},{a:.2f},{b:.2f})'.format(n=cmap.name, a=minval, b=maxval),
+            cmap(np.linspace(minval, maxval, n)))
+
+        return new_cmap
+
 
     def save_plot(self, saveas):
         """

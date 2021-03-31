@@ -464,7 +464,7 @@ def multi_scatter_plot(xdata,
         if color is not None:
             plot_kw.pop('color')
 
-        res = ax.scatter(x, y=y, s=size, c=color, **plot_kw)
+        res = ax.scatter(x, y=y, s=size, c=color, **plot_kw, **kwargs)
         if plot_kw.get('label', None) is not None and color is not None:
             legend_elements.append(res.legend_elements(num=1)[0][0])
             legend_labels.append(plot_kw['label'])
@@ -478,6 +478,7 @@ def multi_scatter_plot(xdata,
     plot_params.set_limits(ax)
     plot_params.draw_lines(ax)
     plot_params.show_legend(ax, leg_elems=legend_elements)
+    plot_params.show_colorbar(ax)
     plot_params.save_plot(saveas)
 
     return ax
@@ -1741,6 +1742,7 @@ def plot_bands(kpath,
     All other Kwargs are passed on to the :py:func:`multi_scatter_plot()` call
     """
 
+
     if special_kpoints is None:
         special_kpoints = []
 
@@ -1756,7 +1758,10 @@ def plot_bands(kpath,
     if size_data is not None:
         color_data = copy.copy(size_data)
         size_data = (markersize_min + markersize_scaling * size_data / max(size_data))**2
-        plot_params.set_defaults(default_type='function', cmap='Blues', colorbar=False)
+        plot_params.set_defaults(default_type='function', cmap='Blues')
+        if 'cmap' not in kwargs:
+            #Cut off the white end of the Blues/Reds colormap
+            plot_params.set_defaults(default_type='function',sub_colormap=(0.15,1.0))
 
     lines = {'vertical': xticks, 'horizontal': e_fermi}
 
@@ -1767,7 +1772,8 @@ def plot_bands(kpath,
                              xticks=xticks,
                              xticklabels=xticklabels,
                              color='k',
-                             line_options={'zorder': -1})
+                             line_options={'zorder': -1},
+                             colorbar=False)
 
     ax = multi_scatter_plot(kpath,
                             bands,
@@ -1859,7 +1865,12 @@ def plot_spinpol_bands(kpath,
                              color=color,
                              cmap=cmaps,
                              legend=True,
-                             line_options={'zorder': -1})
+                             line_options={'zorder': -1},
+                             colorbar=False)
+
+    if 'cmap' not in kwargs:
+        #Cut off the white end of the Blues/Reds colormap
+        plot_params.set_defaults(default_type='function',sub_colormap=(0.15,1.0))
 
     ax = multi_scatter_plot([kpath, kpath], [bands_up, bands_dn],
                             size_data=size_data,
