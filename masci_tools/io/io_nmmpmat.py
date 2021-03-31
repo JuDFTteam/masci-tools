@@ -15,7 +15,8 @@ Simple IO routines for creating text for nmmp_mat files
 """
 import numpy as np
 
-def format_nmmpmat(denmat, orbital=None ,phi=None, theta=None):
+
+def format_nmmpmat(denmat, orbital=None, phi=None, theta=None):
     """
     Format a given 7x7 complex numpy array into the format for the n_mmp_mat file
 
@@ -29,7 +30,7 @@ def format_nmmpmat(denmat, orbital=None ,phi=None, theta=None):
     :returns: list of str formatted in lines for the n_mmp_mat file
     """
 
-    if denmat.shape != (7,7):
+    if denmat.shape != (7, 7):
         raise ValueError(f'Matrix has wrong shape for formatting: {denmat.shape}')
 
     if denmat.dtype != complex:
@@ -43,6 +44,7 @@ def format_nmmpmat(denmat, orbital=None ,phi=None, theta=None):
         nmmp_lines.append(f'{row[3].imag:20.13f}' + ''.join([f'{x.real:20.13f}{x.imag:20.13f}' for x in row[4:]]))
 
     return nmmp_lines
+
 
 def rotate_nmmpmat_block(denmat, orbital, phi=None, theta=None):
     """
@@ -93,6 +95,7 @@ def write_nmmpmat(orbital, denmat, phi=None, theta=None):
 
     return format_nmmpmat(denmat_padded, orbital=orbital, phi=phi, theta=theta)
 
+
 def write_nmmpmat_from_states(orbital, state_occupations, phi=None, theta=None):
     """
     Generate list of str for n_mmp_mat file from diagonal occupations
@@ -106,7 +109,7 @@ def write_nmmpmat_from_states(orbital, state_occupations, phi=None, theta=None):
     """
 
     #diagonal density matrix
-    denmat = np.zeros((2*orbital+1, 2*orbital+1), dtype=complex)
+    denmat = np.zeros((2 * orbital + 1, 2 * orbital + 1), dtype=complex)
 
     for i, occ in enumerate(state_occupations):
         denmat[i, i] = occ
@@ -136,25 +139,24 @@ def write_nmmpmat_from_orbitals(orbital, orbital_occupations, phi=None, theta=No
     :returns: list of str formatted in lines for the n_mmp_mat file
     """
 
-    denmat = np.zeros((2*orbital+1, 2*orbital+1), dtype=complex)
+    denmat = np.zeros((2 * orbital + 1, 2 * orbital + 1), dtype=complex)
 
     for index, occ in enumerate(orbital_occupations):
 
         if index == 0:
             denmat[orbital, orbital] = occ
         else:
-            m = (index+1)//2
+            m = (index + 1) // 2
             if index % 2 == 1:
-                denmat[orbital - m, orbital - m] += 1/2 * occ
-                denmat[orbital + m, orbital + m] += 1/2 * occ
-                denmat[orbital + m, orbital - m] += 1/2 * occ
-                denmat[orbital - m, orbital + m] += 1/2 * occ
+                denmat[orbital - m, orbital - m] += 1 / 2 * occ
+                denmat[orbital + m, orbital + m] += 1 / 2 * occ
+                denmat[orbital + m, orbital - m] += 1 / 2 * occ
+                denmat[orbital - m, orbital + m] += 1 / 2 * occ
             else:
-                denmat[orbital - m, orbital - m] += 1/2 * occ
-                denmat[orbital + m, orbital + m] += 1/2 * occ
-                denmat[orbital + m, orbital - m] -= 1/2 * occ
-                denmat[orbital - m, orbital + m] -= 1/2 * occ
-
+                denmat[orbital - m, orbital - m] += 1 / 2 * occ
+                denmat[orbital + m, orbital + m] += 1 / 2 * occ
+                denmat[orbital + m, orbital - m] -= 1 / 2 * occ
+                denmat[orbital - m, orbital + m] -= 1 / 2 * occ
 
     return write_nmmpmat(orbital, denmat, phi=phi, theta=theta)
 
@@ -168,7 +170,7 @@ def read_nmmpmat_block(nmmp_lines, block_index):
 
     :returns: 7x7 complex numpy array of the numbers in the given block
     """
-    denmat = np.zeros((7,7), dtype=complex)
+    denmat = np.zeros((7, 7), dtype=complex)
 
     start_row = block_index * 14
 
@@ -178,9 +180,7 @@ def read_nmmpmat_block(nmmp_lines, block_index):
             rowData = [float(x) for x in line.split()]
         else:
             rowData.extend([float(x) for x in line.split()])
-            rowData = [
-                num[0] + 1j * num[1] for indx, num in enumerate(zip(rowData[:-1], rowData[1:])) if indx % 2 == 0
-            ]
+            rowData = [num[0] + 1j * num[1] for indx, num in enumerate(zip(rowData[:-1], rowData[1:])) if indx % 2 == 0]
             denmat[currentRow, :] += np.array(rowData)
 
     return denmat

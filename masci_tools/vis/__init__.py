@@ -293,7 +293,7 @@ class Plotter(object):
             return given_value
 
         ret_value = copy.copy(given_value)
-        if isinstance(given_value, dict) and all([isinstance(key, int) for key in given_value]):
+        if isinstance(given_value, dict) and all(isinstance(key, int) for key in given_value):
             if single_plot:
                 raise ValueError(f"Got dict with integer indices for '{key}' but only a single plot is allowed")
             #Convert to list with defaults for not specified keys
