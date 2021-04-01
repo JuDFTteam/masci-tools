@@ -29,7 +29,8 @@ class ChemicalElements:
         Class checks validity and prevents duplicate entries (within one group, not across groups).
         Class provides convenience methods: add/remove, set operations including overloaded operators
         '+' (union) and '-' (left difference), plot periodic table,
-        container access methods: 'in' operator, []-operator for element (if flat) or group (if nested) access.
+        container access methods: 'in' operator, []-operator for element (if flat) or group (if nested) access,
+        relational operators (<, <=, ...).
 
         Additionally, 'data' and 'set_data()' arbitrary object storage for each group of chemical elements.
 
@@ -794,7 +795,7 @@ class ChemicalElements:
         with open(filepath, 'w') as file:
             file.write(json.dumps(self.__elmts))
 
-    def plot(self, selected_groups: list = None, selection_name: str = None,
+    def plot(self, selected_groups: list = [], selection_name: str = "",
              unselected_name: str = "Unspecified", output="notebook"):
         """Plot a periodic table, elements optionally grouped by group colors.
         Element groups can either be None, that gives the normal periodic table. Or it can be a list of element symbols
