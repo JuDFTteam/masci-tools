@@ -1021,38 +1021,22 @@ def periodic_table_plot(source,
 ######### plot convergence results plot ########
 
 
-def plot_convergence_results(distance,
-                             total_energy,
-                             iteration,
-                             link=False,
-                             nodes=[],
-                             saveas1='t_energy_convergence',
-                             saveas2='distance_convergence',
-                             figure_kwargs={
-                                 'plot_width': 800,
-                                 'plot_height': 450
-                             },
-                             show=True,
-                             **kwargs):
+@ensure_plotter_consistency(plot_params)
+def plot_convergence_results(iteration, distance, total_energy, *, show=True, **kwargs):
     """
     Plot the total energy versus the scf iteration
     and plot the distance of the density versus iterations. Uses bokeh_line and bokeh_scatter
 
+    :param iteration: list of Int
     :param distance: list of floats
     :total_energy: list of floats
-    :param iteration: list of Int
-    :param link: bool, optional default=False:
-    :param nodes: list of node uuids or pks important for links
-    :param saveas1: str, optional default='t_energy_convergence', save first figure as
-    :param saveas2: str, optional default='distance_convergence', save second figure as
-    :param figure_kwargs: dict, optional default={'plot_width': 800, 'plot_height': 450}, gets parsed
-                          to bokeh_line
-    :param kwargs: further key-word arguments for bokeh_line
+    :param show: bool, if True call show
+
+    Kwargs will be passed on to :py:func:`bokeh_line()`
 
     :returns grid: bokeh grid with figures
     """
     from bokeh.layouts import gridplot
-    from bokeh.io import show as bshow
 
     xlabel = r'Iteration'
     ylabel1 = r'Total energy difference [Htr]'
@@ -1068,61 +1052,65 @@ def plot_convergence_results(distance,
     source1 = pd.DataFrame({'total_energy_delta': total_energy_abs_diff, 'iterations': iteration[1:]})
     source2 = pd.DataFrame({'distance': distance, 'iterations': iteration})
 
-    tools = 'hover,tap,box_zoom,zoom_out,crosshair,reset,save'
-    active_tools = 'hover'
-    tooltips_def_scatter1 = [('Iteration', '@x'), ('Total energy distance', '@y')]
-    tooltips_def_scatter2 = [('Iteration', '@x'), ('Charge distance', '@y')]
-    figure_kwargs.update({'active_inspect': 'hover'})
+    plot_params.set_defaults(default_type='function',
+                             figure_kwargs={
+                                 'tools': 'hover,tap,box_zoom,zoom_out,crosshair,reset,save',
+                                 'tooltips': [('Iteration', '@x'), ('Total energy distance', '@y')],
+                                 'active_inspect': 'hover',
+                                 'plot_width': 800,
+                                 'plot_height': 450,
+                                 'y_axis_type': 'log',
+                                 'x_axis_type': 'linear',
+                             })
 
-    # plot
-    p1 = bokeh_line(source=source1,
-                    ydata=['total_energy_delta'],
-                    xdata=['iterations'],
-                    xlabel=xlabel,
-                    ylabel=ylabel1,
-                    title=title1,
-                    name='delta total energy',
-                    scale=['linear', 'log'],
-                    plot_points=True,
-                    tools=tools,
-                    tooltips=tooltips_def_scatter1,
-                    figure_kwargs=figure_kwargs,
-                    **kwargs)
+    plot_params.set_parameters(show=show)
 
-    p2 = bokeh_line(source=source2,
-                    ydata=['distance'],
-                    xdata=['iterations'],
-                    xlabel=xlabel,
-                    ylabel=ylabel2,
-                    title=title2,
-                    name='distance',
-                    scale=['linear', 'log'],
-                    plot_points=True,
-                    tools=tools,
-                    tooltips=tooltips_def_scatter2,
-                    figure_kwargs=figure_kwargs,
-                    **kwargs)
+    with NestedPlotParameters(plot_params):
+        p1 = bokeh_line(source=source1,
+                        ydata='total_energy_delta',
+                        xdata='iterations',
+                        xlabel=xlabel,
+                        ylabel=ylabel1,
+                        title=title1,
+                        name='delta total energy',
+                        plot_points=True,
+                        show=False,
+                        **kwargs)
+
+    plot_params.set_defaults(default_type='function',
+                             figure_kwargs={'tooltips': [('Iteration', '@x'), ('Charge distance', '@y')]})
+
+    with NestedPlotParameters(plot_params):
+        p2 = bokeh_line(source=source2,
+                        ydata='distance',
+                        xdata='iterations',
+                        xlabel=xlabel,
+                        ylabel=ylabel2,
+                        title=title2,
+                        name='distance',
+                        plot_points=True,
+                        show=False,
+                        **kwargs)
+
     grid = gridplot([p1, p2], ncols=2)
 
-    if show:
-        bshow(grid)
+    plot_params.save_plot(grid)
 
     return grid
 
 
-def plot_convergence_results_m(distances,
+@ensure_plotter_consistency(plot_params)
+def plot_convergence_results_m(iterations,
+                               distances,
                                total_energies,
-                               iterations,
+                               *,
                                link=False,
-                               nodes=[],
-                               plot_labels=[],
+                               nodes=None,
+                               modes=None,
+                               plot_label=None,
                                saveas1='t_energy_convergence',
                                saveas2='distance_convergence',
                                show=True,
-                               figure_kwargs={
-                                   'plot_width': 600,
-                                   'plot_height': 450
-                               },
                                **kwargs):
     """
     Plot the total energy versus the scf iteration
@@ -1143,7 +1131,6 @@ def plot_convergence_results_m(distances,
     """
     from bokeh.models import ColumnDataSource
     from bokeh.layouts import gridplot
-    from bokeh.io import show as bshow
 
     xlabel = r'Iteration'
     ylabel1 = r'Total energy difference [Htr]'
@@ -1151,115 +1138,114 @@ def plot_convergence_results_m(distances,
     title1 = r'Total energy difference over scf-Iterations'
     title2 = r'Convergence (log)'
 
-    iterations1 = []
+    if nodes is not None:
+        if not isinstance(nodes, list):
+            nodes = [nodes]
+
+    if plot_label is not None:
+        if not isinstance(plot_label, list):
+            plot_label = [plot_label]
+
     plot_labels1 = []
     plot_labels2 = []
 
-    data_dict1 = {}
-    data_dict2 = {}
-
-    xdatal_all = []
-    ydata1l_all = []
-    ydata2l_all = []
     data_sources = []
     data_sources2 = []
 
-    tools = 'hover,tap,box_zoom,zoom_out,crosshair,reset,save,pan'
-    tooltips_def_scatter1 = [('Calculation id', '@id'), ('Iteration', '@x'), ('Total energy difference', '@y')]
+    tooltips_scatter1 = [('Calculation id', '@id'), ('Iteration', '@x'), ('Total energy difference', '@y')]
+    tooltips_scatter2 = [('Calculation id', '@id'), ('Iteration', '@x'), ('Charge distance', '@y')]
 
-    tooltips_def_scatter2 = [('Calculation id', '@id'), ('Iteration', '@x'), ('Charge distance', '@y')]
-    figure_kwargs.update({'active_inspect': 'hover'})
+    xdata = ['x'] * len(total_energies)
+    ydata = ['y'] * len(total_energies)
 
     # since we make a log plot of the total_energy make sure to plot the absolute total energy
-    for i, total_energy in enumerate(total_energies):
-        if nodes:
-            id = nodes[i]
+    for i, (iters, total_energy, distance) in enumerate(zip(iterations, total_energies, distances)):
+        if nodes is not None:
+            node_id = nodes[i]
         else:
-            id = i
+            node_id = i
 
-        xdatal = 'iterations_{}'.format(id)
-        xdatal_all.append('x')
         total_energy_abs_diff = []
         for en0, en1 in zip(total_energy[:-1], total_energy[1:]):
             total_energy_abs_diff.append(abs(en1 - en0))
-        ydata1l = '{}'.format(id)
-        ydata2l = '{}'.format(id)
-        ydata1l_all.append('y')
-        ydata2l_all.append('y')
 
-        plot_labels1.append('{}'.format(id))
-        plot_labels2.append('{}'.format(id))
-        #print('lengths1 : y {} x {}'.format(len(total_energy_abs_diff), len(iterations[i][1:])))
-
-        data = {
-            'y': total_energy_abs_diff,
-            'x': iterations[i][1:],
-            'id': [id for j in range(len(total_energy_abs_diff))]
-        }
-        if nodes:
-            data.update({'nodes_pk': [str(nodes[i]) for j in range(len(total_energy_abs_diff))]})
-        if plot_labels:
-            data.update({'process_label': [plot_labels[i] for j in range(len(total_energy_abs_diff))]})
+        plot_labels1.append(f'{node_id}')
+        plot_labels2.append(f'{node_id}')
+        data = {'y': total_energy_abs_diff, 'x': iters[1:], 'id': [node_id] * len(total_energy_abs_diff)}
+        if nodes is not None:
+            data['nodes_pk'] = [str(nodes[i])] * len(total_energy_abs_diff)
+        if plot_label is not None:
+            data['process_label'] = [plot_label[i]] * len(total_energy_abs_diff)
 
         datasrc = ColumnDataSource(data)
         data_sources.append(datasrc)
-        #print('lengths2 : y {} x {}'.format(len(distances[i]), len(iterations[i])))
-        data = {'y': distances[i], 'x': iterations[i], 'id': [id for j in range(len(distances[i]))]}
-        if nodes:
-            data.update({'nodes_pk': [str(nodes[i]) for j in range(len(distances[i]))]})
-        if plot_labels:
-            data.update({'process_label': [plot_labels[i] for j in range(len(distances[i]))]})
+        data = {'y': distance, 'x': iters, 'id': [node_id] * len(distance)}
+        if nodes is not None:
+            data['nodes_pk'] = [str(nodes[i])] * len(distance)
+        if plot_label is not None:
+            data['process_label'] = [plot_label[i]] * len(distance)
 
         datasrc = ColumnDataSource(data)
         data_sources2.append(datasrc)
 
-    if plot_labels:
-        if not nodes:
-            plot_labels1 = plot_labels
-            plot_labels2 = plot_labels
-        tooltips_def_scatter2.append(('process label', '@process_label'))
-        tooltips_def_scatter1.append(('process label', '@process_label'))
+    if plot_label is not None:
+        if nodes is None:
+            plot_labels1 = plot_label
+            plot_labels2 = plot_label
+        tooltips_scatter1.append(('process label', '@process_label'))
+        tooltips_scatter2.append(('process label', '@process_label'))
 
-    if nodes:
-        tooltips_def_scatter2.append(('outpara pk', '@nodes_pk'))
-        tooltips_def_scatter1.append(('outpara pk', '@nodes_pk'))
+    if nodes is not None:
+        tooltips_scatter1.append(('outpara pk', '@nodes_pk'))
+        tooltips_scatter2.append(('outpara pk', '@nodes_pk'))
+
+    plot_params.set_defaults(default_type='function',
+                             figure_kwargs={
+                                 'tools': 'hover,tap,box_zoom,zoom_out,crosshair,reset,save,pan',
+                                 'tooltips': tooltips_scatter1,
+                                 'active_inspect': 'hover',
+                                 'plot_width': 800,
+                                 'plot_height': 450,
+                                 'y_axis_type': 'log',
+                                 'x_axis_type': 'linear',
+                             },
+                             legend_outside_plot_area=True)
+    plot_params.set_parameters(show=show)
 
     # plot
-    p1 = bokeh_line(source=data_sources,
-                    ydata=ydata1l_all,
-                    xdata=xdatal_all,
-                    xlabel=xlabel,
-                    ylabel=ylabel1,
-                    title=title1,
-                    name=plot_labels1,
-                    legend_labels=plot_labels1,
-                    scale=['linear', 'log'],
-                    plot_points=True,
-                    tools=tools,
-                    tooltips=tooltips_def_scatter1,
-                    figure_kwargs=figure_kwargs,
-                    show=False,
-                    legend_layout_location='right')
+    with NestedPlotParameters(plot_params):
+        p1 = bokeh_line(source=data_sources,
+                        ydata=ydata,
+                        xdata=xdata,
+                        xlabel=xlabel,
+                        ylabel=ylabel1,
+                        title=title1,
+                        name=plot_labels1,
+                        legend_label=plot_labels1,
+                        plot_points=True,
+                        show=False,
+                        **kwargs)
 
-    p2 = bokeh_line(source=data_sources2,
-                    ydata=ydata2l_all,
-                    xdata=xdatal_all,
-                    xlabel=xlabel,
-                    ylabel=ylabel2,
-                    name=plot_labels2,
-                    scale=['linear', 'log'],
-                    legend_labels=plot_labels2,
-                    plot_points=True,
-                    tools=tools,
-                    title=title2,
-                    tooltips=tooltips_def_scatter2,
-                    figure_kwargs=figure_kwargs,
-                    show=False,
-                    legend_layout_location='right')
+    plot_params.set_defaults(default_type='function', figure_kwargs={
+        'tooltips': tooltips_scatter2,
+    })
+
+    with NestedPlotParameters(plot_params):
+        p2 = bokeh_line(source=data_sources2,
+                        ydata=ydata,
+                        xdata=xdata,
+                        xlabel=xlabel,
+                        ylabel=ylabel2,
+                        title=title2,
+                        name=plot_labels2,
+                        legend_label=plot_labels2,
+                        plot_points=True,
+                        show=False,
+                        **kwargs)
+
     grid = gridplot([p1, p2], ncols=2)
 
-    if show:
-        bshow(grid)
+    plot_params.save_plot(grid)
 
     return grid
 
