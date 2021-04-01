@@ -1020,13 +1020,9 @@ def periodic_table_plot(source,
 
 ######### plot convergence results plot ########
 
+
 @ensure_plotter_consistency(plot_params)
-def plot_convergence_results(iteration,
-                             distance,
-                             total_energy,
-                             *,
-                             show=True,
-                             **kwargs):
+def plot_convergence_results(iteration, distance, total_energy, *, show=True, **kwargs):
     """
     Plot the total energy versus the scf iteration
     and plot the distance of the density versus iterations. Uses bokeh_line and bokeh_scatter
@@ -1082,9 +1078,7 @@ def plot_convergence_results(iteration,
                         **kwargs)
 
     plot_params.set_defaults(default_type='function',
-                             figure_kwargs={
-                                 'tooltips': [('Iteration', '@x'), ('Charge distance', '@y')]
-                             })
+                             figure_kwargs={'tooltips': [('Iteration', '@x'), ('Charge distance', '@y')]})
 
     with NestedPlotParameters(plot_params):
         p2 = bokeh_line(source=source2,
@@ -1103,6 +1097,7 @@ def plot_convergence_results(iteration,
     plot_params.save_plot(grid)
 
     return grid
+
 
 @ensure_plotter_consistency(plot_params)
 def plot_convergence_results_m(iterations,
@@ -1151,7 +1146,6 @@ def plot_convergence_results_m(iterations,
         if not isinstance(plot_label, list):
             plot_label = [plot_label]
 
-
     plot_labels1 = []
     plot_labels2 = []
 
@@ -1177,15 +1171,11 @@ def plot_convergence_results_m(iterations,
 
         plot_labels1.append(f'{node_id}')
         plot_labels2.append(f'{node_id}')
-        data = {
-            'y': total_energy_abs_diff,
-            'x': iters[1:],
-            'id': [node_id] * len(total_energy_abs_diff)
-        }
+        data = {'y': total_energy_abs_diff, 'x': iters[1:], 'id': [node_id] * len(total_energy_abs_diff)}
         if nodes is not None:
             data['nodes_pk'] = [str(nodes[i])] * len(total_energy_abs_diff)
         if plot_label is not None:
-            data['process_label'] =  [plot_label[i]] * len(total_energy_abs_diff)
+            data['process_label'] = [plot_label[i]] * len(total_energy_abs_diff)
 
         datasrc = ColumnDataSource(data)
         data_sources.append(datasrc)
@@ -1193,8 +1183,7 @@ def plot_convergence_results_m(iterations,
         if nodes is not None:
             data['nodes_pk'] = [str(nodes[i])] * len(distance)
         if plot_label is not None:
-            data['process_label'] =  [plot_label[i]] * len(distance)
-
+            data['process_label'] = [plot_label[i]] * len(distance)
 
         datasrc = ColumnDataSource(data)
         data_sources2.append(datasrc)
@@ -1219,9 +1208,9 @@ def plot_convergence_results_m(iterations,
                                  'plot_height': 450,
                                  'y_axis_type': 'log',
                                  'x_axis_type': 'linear',
-                             },legend_outside_plot_area=True)
+                             },
+                             legend_outside_plot_area=True)
     plot_params.set_parameters(show=show)
-
 
     # plot
     with NestedPlotParameters(plot_params):
@@ -1237,10 +1226,9 @@ def plot_convergence_results_m(iterations,
                         show=False,
                         **kwargs)
 
-    plot_params.set_defaults(default_type='function',
-                             figure_kwargs={
-                                 'tooltips': tooltips_scatter2,
-                             })
+    plot_params.set_defaults(default_type='function', figure_kwargs={
+        'tooltips': tooltips_scatter2,
+    })
 
     with NestedPlotParameters(plot_params):
         p2 = bokeh_line(source=data_sources2,
