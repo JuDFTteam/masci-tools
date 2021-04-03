@@ -1723,8 +1723,8 @@ def plot_bands(kpath,
                ylabel=r'$E-E_F$ [eV]',
                title='',
                saveas='bandstructure',
-               markersize_min=1.0,
-               markersize_scaling=10.0,
+               markersize_min=0.5,
+               markersize_scaling=5.0,
                **kwargs):
     """
     Plot the provided data for a bandstrucuture (non spin-polarized). Can be used
@@ -1759,8 +1759,17 @@ def plot_bands(kpath,
 
     color_data = None
     if size_data is not None:
+        ylimits = (-15,15)
+        if 'limits' in kwargs:
+            if 'y' in kwargs['limits']:
+                ylimits = kwargs['limits']['y']
+
+        weight_max = max(size_data[np.logical_and(bands > ylimits[0], bands < ylimits[1])])
+        if 'vmax' not in kwargs:
+            kwargs['vmax'] = weight_max
+
         color_data = copy.copy(size_data)
-        size_data = (markersize_min + markersize_scaling * size_data / max(size_data))**2
+        size_data = (markersize_min + markersize_scaling * size_data / weight_max)**2
         plot_params.set_defaults(default_type='function', cmap='Blues')
         if 'cmap' not in kwargs:
             #Cut off the white end of the Blues/Reds colormap
@@ -1804,8 +1813,8 @@ def plot_spinpol_bands(kpath,
                        ylabel=r'$E-E_F$ [eV]',
                        title='',
                        saveas='bandstructure',
-                       markersize_min=1.0,
-                       markersize_scaling=10.0,
+                       markersize_min=0.5,
+                       markersize_scaling=5.0,
                        **kwargs):
     """
     Plot the provided data for a bandstrucuture (spin-polarized). Can be used
@@ -1837,10 +1846,21 @@ def plot_spinpol_bands(kpath,
         size_data = [None, None]
         color_data = [None, None]
     else:
+        ylimits = (-15,15)
+        if 'limits' in kwargs:
+            if 'y' in kwargs['limits']:
+                ylimits = kwargs['limits']['y']
+
+        weight_max = max(size_data[0][np.logical_and(bands_up > ylimits[0], bands_up < ylimits[1])])
+        weight_max = max(weight_max, max(size_data[1][np.logical_and(bands_dn > ylimits[0], bands_dn < ylimits[1])]))
+
+        if 'vmax' not in kwargs:
+            kwargs['vmax'] = weight_max
+
         color_data = []
         for indx, data in enumerate(size_data):
             color_data.append(copy.copy(data))
-            size_data[indx] = (markersize_min + markersize_scaling * data / max(data))**2
+            size_data[indx] = (markersize_min + markersize_scaling * data / weight_max)**2
 
     xticks = []
     xticklabels = []
