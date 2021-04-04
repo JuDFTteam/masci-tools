@@ -1599,6 +1599,10 @@ def plot_dos(energy_grid,
     color_cycle = ('black',) + tuple(sns.color_palette('muted'))
     plot_params.set_defaults(default_type='function', marker=None, legend=True, lines=lines, color_cycle=color_cycle)
 
+    if xyswitch:
+        figsize = plot_params['figure_kwargs']['figsize']
+        plot_params.set_defaults(default_type='function', figure_kwargs={'figsize': figsize[::-1]})
+
     if isinstance(dos_data[0], (list, np.ndarray)) and \
        not isinstance(energy_grid[0], (list, np.ndarray)):
         energy_grid = [energy_grid] * len(dos_data)
@@ -1698,6 +1702,11 @@ def plot_spinpol_dos(energy_grid,
                              limits=limits,
                              repeat_colors_after=num_plots,
                              color_cycle=color_cycle)
+
+    if xyswitch:
+        figsize = plot_params['figure_kwargs']['figsize']
+        plot_params.set_defaults(default_type='function', figure_kwargs={'figsize': figsize[::-1]})
+
 
     save_keys = {'show', 'save_plots', 'save_format', 'save_options'}
     save_options = {key: val for key, val in kwargs.items() if key in save_keys}
