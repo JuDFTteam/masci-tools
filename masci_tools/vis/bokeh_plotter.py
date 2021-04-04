@@ -81,6 +81,7 @@ class BokehPlotter(Plotter):
         'area_vertical': False,
         'fill_alpha': 1.0,
         'fill_color': None,
+        'level': None,
         'straight_lines': None,
         'straight_line_options': {
             'line_color': 'black',

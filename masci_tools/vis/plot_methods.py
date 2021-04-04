@@ -1895,7 +1895,7 @@ def plot_spinpol_bands(kpath,
         #Cut off the white end of the Blues/Reds colormap
         plot_params.set_defaults(default_type='function', sub_colormap=(0.15, 1.0))
 
-    ax = multi_scatter_plot([kpath, kpath], [bands_up, bands_dn],
+    ax = multi_scatter_plot([kpath, kpath], [bands_dn, bands_up],
                             size_data=size_data,
                             color_data=color_data,
                             xlabel=xlabel,

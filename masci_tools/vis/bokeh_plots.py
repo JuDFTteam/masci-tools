@@ -88,7 +88,10 @@ def bokeh_scatter(source,
 
     p = plot_params.prepare_figure(title, xlabel, ylabel, figure=figure)
 
-    p.scatter(x=xdata, y=ydata, source=source, **kwargs)
+    res = p.scatter(x=xdata, y=ydata, source=source, **kwargs)
+
+    if plot_params['level'] is not None:
+        res.level = plot_params['level']
 
     plot_params.draw_straight_lines(p)
     plot_params.set_limits(p)
@@ -199,7 +202,10 @@ def bokeh_multi_scatter(source,
         if 'legend_label' not in plot_kw:
             plot_kw['legend_label'] = leg_label
 
-        p.scatter(x=xdat, y=yname, source=sourcet, **plot_kw)
+        res = p.scatter(x=xdat, y=yname, source=sourcet, **plot_kw)
+
+        if plot_params[('level', indx)] is not None:
+            res.level = plot_params[('level', indx)]
 
     plot_params.draw_straight_lines(p)
     plot_params.set_limits(p)
@@ -336,9 +342,15 @@ def bokeh_line(source,
             else:
                 p.varea(x=xdat, y1=yname, y2=shift, **kw_area, source=sourcet)
 
-        p.line(x=xdat, y=yname, source=sourcet, **kw_line, **kwargs)
+        res = p.line(x=xdat, y=yname, source=sourcet, **kw_line, **kwargs)
+        res2 = None
         if plot_points:
-            p.scatter(x=xdat, y=yname, source=sourcet, **kw_scatter)
+            res2 = p.scatter(x=xdat, y=yname, source=sourcet, **kw_scatter)
+
+        if plot_params[('level', indx)] is not None:
+            res.level = plot_params[('level', indx)]
+            if res2 is not None:
+                res2.level = plot_params[('level', indx)]
 
     plot_params.draw_straight_lines(p)
     plot_params.set_limits(p)
@@ -694,6 +706,9 @@ def bokeh_spinpol_bands(bandsdata,
     if eigenvalues is None:
         eigenvalues = ['eigenvalues_up', 'eigenvalues_down']
 
+    plot_params.single_plot = False
+    plot_params.num_plots = 2
+
     if weight is not None:
         cmaps = ['Blues256', 'Reds256']
         color = []
@@ -744,7 +759,8 @@ def bokeh_spinpol_bands(bandsdata,
                              },
                              x_range_padding=0.0,
                              y_range_padding=0.0,
-                             limits=limits)
+                             limits=limits,
+                             level=[None, 'underlay'])
 
     return bokeh_multi_scatter(bandsdata,
                                xdata=k_label,
