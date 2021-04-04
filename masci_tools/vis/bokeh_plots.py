@@ -600,9 +600,18 @@ def bokeh_bands(bandsdata,
     from bokeh.transform import linear_cmap
 
     if weight is not None:
-        bandsdata['weight_size'] = size_min + size_scaling * bandsdata[weight] / max(bandsdata[weight])
+
+        ylimits = (-15, 15)
+        if 'limits' in kwargs:
+            if 'y' in kwargs['limits']:
+                ylimits = kwargs['limits']['y']
+
+        weight_max = bandsdata[weight].loc[(bandsdata[eigenvalues] > ylimits[0]) &
+                                           (bandsdata[eigenvalues] < ylimits[1])].max()
+
+        bandsdata['weight_size'] = size_min + size_scaling * bandsdata[weight] / weight_max
         plot_params.set_defaults(default_type='function',
-                                 color=linear_cmap(weight, 'Blues256', max(bandsdata[weight]), min(bandsdata[weight])),
+                                 color=linear_cmap(weight, 'Blues256', weight_max, -0.05),
                                  marker_size='weight_size')
     else:
         plot_params.set_defaults(default_type='function', color='black')
@@ -623,6 +632,7 @@ def bokeh_bands(bandsdata,
     lines = {'horizontal': 0}
     lines['vertical'] = xticks
 
+    limits = {'y': (-15, 15)}
     plot_params.set_defaults(default_type='function',
                              straight_lines=lines,
                              x_ticks=xticks,
@@ -632,7 +642,8 @@ def bokeh_bands(bandsdata,
                                  'height': 720
                              },
                              x_range_padding=0.0,
-                             y_range_padding=0.0)
+                             y_range_padding=0.0,
+                             limits=limits)
 
     return bokeh_multi_scatter(bandsdata,
                                xdata=k_label,
@@ -680,12 +691,27 @@ def bokeh_spinpol_bands(bandsdata,
     """
     from bokeh.transform import linear_cmap
 
+    if eigenvalues is None:
+        eigenvalues = ['eigenvalues_up', 'eigenvalues_down']
+
     if weight is not None:
         cmaps = ['Blues256', 'Reds256']
         color = []
+
+        ylimits = (-15, 15)
+        if 'limits' in kwargs:
+            if 'y' in kwargs['limits']:
+                ylimits = kwargs['limits']['y']
+
+        weight_max = bandsdata[weight[0]].loc[(bandsdata[eigenvalues[0]] > ylimits[0]) &
+                                              (bandsdata[eigenvalues[0]] < ylimits[1])].max()
+        weight_max = max(
+            weight_max, bandsdata[weight[1]].loc[(bandsdata[eigenvalues[1]] > ylimits[0]) &
+                                                 (bandsdata[eigenvalues[1]] < ylimits[1])].max())
+
         for indx, (w, cmap) in enumerate(zip(weight, cmaps)):
-            color.append(linear_cmap(w, cmap, max(bandsdata[w]), min(bandsdata[w])))
-            bandsdata[f'weight_size_{indx}'] = size_min + size_scaling * bandsdata[w] / max(bandsdata[w])
+            color.append(linear_cmap(w, cmap, weight_max, -0.05))
+            bandsdata[f'weight_size_{indx}'] = size_min + size_scaling * bandsdata[w] / weight_max
         plot_params.set_defaults(default_type='function', color=color, marker_size=['weight_size_0', 'weight_size_1'])
     else:
         color = ['blue', 'red']
@@ -707,21 +733,18 @@ def bokeh_spinpol_bands(bandsdata,
     lines = {'horizontal': 0}
     lines['vertical'] = xticks
 
-    plot_params.set_defaults(
-        default_type='function',
-        straight_lines=lines,
-        x_ticks=xticks,
-        x_ticklabels_overwrite=xticklabels,
-        figure_kwargs={
-            'width': 1280,
-            'height': 720
-        },
-        x_range_padding=0.0,
-        y_range_padding=0.0,
-    )
-
-    if eigenvalues is None:
-        eigenvalues = ['eigenvalues_up', 'eigenvalues_down']
+    limits = {'y': (-15, 15)}
+    plot_params.set_defaults(default_type='function',
+                             straight_lines=lines,
+                             x_ticks=xticks,
+                             x_ticklabels_overwrite=xticklabels,
+                             figure_kwargs={
+                                 'width': 1280,
+                                 'height': 720
+                             },
+                             x_range_padding=0.0,
+                             y_range_padding=0.0,
+                             limits=limits)
 
     return bokeh_multi_scatter(bandsdata,
                                xdata=k_label,

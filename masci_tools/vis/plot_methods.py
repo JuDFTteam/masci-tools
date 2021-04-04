@@ -1759,7 +1759,7 @@ def plot_bands(kpath,
 
     color_data = None
     if size_data is not None:
-        ylimits = (-15,15)
+        ylimits = (-15, 15)
         if 'limits' in kwargs:
             if 'y' in kwargs['limits']:
                 ylimits = kwargs['limits']['y']
@@ -1846,7 +1846,7 @@ def plot_spinpol_bands(kpath,
         size_data = [None, None]
         color_data = [None, None]
     else:
-        ylimits = (-15,15)
+        ylimits = (-15, 15)
         if 'limits' in kwargs:
             if 'y' in kwargs['limits']:
                 ylimits = kwargs['limits']['y']
