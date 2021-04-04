@@ -142,6 +142,9 @@ class MatplotlibPlotter(Plotter):
         # save all plots?
         'save_plots': False,  # True
         'save_format': 'png',  #'pdf'
+        'save_options': {
+            'transparent': True
+        },
         'tightlayout': False,
         'show': True,
         # write data to file
@@ -154,7 +157,7 @@ class MatplotlibPlotter(Plotter):
         'legend_options', 'colorbar', 'colorbar_padding', 'tick_paramsy', 'tick_paramsx', 'tick_paramsy_minor',
         'tick_paramsx_minor', 'font_options', 'line_options', 'labelfontsize', 'lines', 'scale', 'limits', 'xticks',
         'xticklabels', 'yticks', 'yticklabels', 'figure_kwargs', 'title_font_size', 'repeat_colors_after',
-        'color_cycle', 'sub_colormap'
+        'color_cycle', 'sub_colormap', 'save_options'
     }
 
     #Sets of keys with special purposes
@@ -484,8 +487,14 @@ class MatplotlibPlotter(Plotter):
         :param saveas: str, filename for the resulting file
         """
         if self['save_plots']:
-            savefilename = f"{saveas}.{self['save_format']}"
-            print(f'Save plot to: {savefilename}')
-            plt.savefig(savefilename, format=self['save_format'], transparent=True)
+            if isinstance(self['save_format'], list):
+                formats = self['save_format']
+            else:
+                formats = [self['save_format']]
+
+            for save_format in formats:
+                savefilename = f'{saveas}.{save_format}'
+                print(f'Save plot to: {savefilename}')
+                plt.savefig(savefilename, format=save_format, **self['save_options'])
         if self['show']:
             plt.show()
