@@ -57,6 +57,8 @@ class MatplotlibPlotter(Plotter):
         'xticklabels': None,
         'yticks': None,
         'yticklabels': None,
+        'invert_xaxis': False,
+        'invert_yaxis': False,
         'color_cycle': None,
         'sub_colormap': None,
 
@@ -340,6 +342,12 @@ class MatplotlibPlotter(Plotter):
             else:
                 ax.set_prop_cycle(cycler(color=self['color_cycle']))
 
+        if self['invert_xaxis']:
+            ax.invert_xaxis()
+
+        if self['invert_yaxis']:
+            ax.invert_yaxis()
+
         return ax
 
     def set_scale(self, ax):
@@ -368,11 +376,17 @@ class MatplotlibPlotter(Plotter):
             if 'x' in self['limits']:
                 xmin = self['limits']['x'][0]
                 xmax = self['limits']['x'][1]
-                ax.set_xlim(xmin, xmax)
+                if self['invert_xaxis']:
+                    ax.set_xlim(xmax, xmin)
+                else:
+                    ax.set_xlim(xmin, xmax)
             if 'y' in self['limits']:
                 ymin = self['limits']['y'][0]
                 ymax = self['limits']['y'][1]
-                ax.set_ylim(ymin, ymax)
+                if self['invert_yaxis']:
+                    ax.set_ylim(ymax, ymin)
+                else:
+                    ax.set_ylim(ymin, ymax)
             if 'z' in self['limits']:
                 zmin = self['limits']['z'][0]
                 zmax = self['limits']['z'][1]

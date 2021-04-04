@@ -1663,6 +1663,10 @@ def plot_spinpol_dos(energy_grid,
         if len(spin_up_data) != len(spin_dn_data):
             raise ValueError(f'Dimensions do not match: Spin-up: {len(spin_up_data)} Spin-dn: {len(spin_dn_data)}')
 
+    max_dos = max(data.max() for data in spin_up_data)
+    max_dos = max(max_dos, max(data.max() for data in spin_dn_data))
+    max_dos *= 1.1
+
     if spin_dn_negative:
         if isinstance(spin_dn_data, np.ndarray):
             spin_dn_data *= -1
@@ -1676,6 +1680,11 @@ def plot_spinpol_dos(energy_grid,
     if xyswitch:
         lines['vertical'], lines['horizontal'] = lines['horizontal'], lines['vertical']
 
+    if xyswitch:
+        limits = {'x': (-max_dos, max_dos)}
+    else:
+        limits = {'y': (-max_dos, max_dos)}
+
     if isinstance(spin_up_data[0], (list, np.ndarray)):
         num_plots = len(spin_up_data)
     else:
@@ -1686,8 +1695,18 @@ def plot_spinpol_dos(energy_grid,
                              marker=None,
                              legend=True,
                              lines=lines,
+                             limits=limits,
                              repeat_colors_after=num_plots,
                              color_cycle=color_cycle)
+
+    save_keys = {'show', 'save_plots', 'save_format', 'save_options'}
+    save_options = {key: val for key, val in kwargs.items() if key in save_keys}
+    kwargs = {key: val for key, val in kwargs.items() if key not in save_keys}
+
+    plot_params.set_parameters(**save_options)
+
+    if xyswitch:
+        plot_params.set_defaults(default_type='function', invert_xaxis=True)
 
     dos_data = spin_up_data
     if not isinstance(spin_up_data[0], (list, np.ndarray)):
@@ -1707,7 +1726,24 @@ def plot_spinpol_dos(energy_grid,
         xlabel, ylabel = energy_label, dos_label
         x, y = energy_grid, dos_data
 
-    ax = multiple_scatterplots(x, y, xlabel=xlabel, ylabel=ylabel, title=title, saveas=saveas, **kwargs)
+    with NestedPlotParameters(plot_params):
+        ax = multiple_scatterplots(x,
+                                   y,
+                                   xlabel=xlabel,
+                                   ylabel=ylabel,
+                                   title=title,
+                                   save_plots=False,
+                                   show=False,
+                                   **kwargs)
+
+    if xyswitch:
+        ax.annotate(r'$\uparrow$', xy=(0.125, 0.9), xycoords='axes fraction', ha='center', va='center', size=40)
+        ax.annotate(r'$\downarrow$', xy=(0.875, 0.9), xycoords='axes fraction', ha='center', va='center', size=40)
+    else:
+        ax.annotate(r'$\uparrow$', xy=(0.05, 0.875), xycoords='axes fraction', ha='center', va='center', size=40)
+        ax.annotate(r'$\downarrow$', xy=(0.05, 0.125), xycoords='axes fraction', ha='center', va='center', size=40)
+
+    plot_params.save_plot(saveas)
 
     return ax
 
