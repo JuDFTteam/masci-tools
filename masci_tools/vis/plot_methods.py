@@ -1707,7 +1707,6 @@ def plot_spinpol_dos(energy_grid,
         figsize = plot_params['figure_kwargs']['figsize']
         plot_params.set_defaults(default_type='function', figure_kwargs={'figsize': figsize[::-1]})
 
-
     save_keys = {'show', 'save_plots', 'save_format', 'save_options'}
     save_options = {key: val for key, val in kwargs.items() if key in save_keys}
     kwargs = {key: val for key, val in kwargs.items() if key not in save_keys}
