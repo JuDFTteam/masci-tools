@@ -101,6 +101,29 @@ def ensure_plotter_consistency(plotter_object):
     return ensure_plotter_consistency_decorator
 
 
+def _generate_plot_parameters_table(defaults, descriptions):
+    """
+    Generate a table for the plotting parameters for the docstrings
+    """
+
+    table = [
+        '.. list-table:: Plot Parameters', '       :widths: 15 60 25', '       :header-rows: 1', '', '       * - Name',
+        '         - Description', '         - Default value'
+    ]
+
+    for key, value in defaults.items():
+        if value is None:
+            value = 'No Default'
+
+        descr = descriptions.get(key, 'No Description available')
+
+        table.extend([f'       * - {key}', f'         - {descr}', f'         - {value}'])
+
+    table.append('')
+
+    return '\n'.join(table)
+
+
 class Plotter(object):
     """
     Base class for handling parameters for plotting methods. For different plotting backends

@@ -14,7 +14,7 @@
 Here the :py:class:`masci_tools.vis.Plotter` subclass for the bokeh plotting backend
 is defined with default values and many helper methods
 """
-from masci_tools.vis import Plotter
+from masci_tools.vis import Plotter, _generate_plot_parameters_table
 import copy
 
 
@@ -28,12 +28,7 @@ class BokehPlotter(Plotter):
     For specific documentation about the parameter/defaults handling refer to
     :py:class:`~masci_tools.vis.Plotter`.
 
-    Below the current defined default values are shown
-
-    .. literalinclude:: ../../../masci_tools/vis/bokeh_plotter.py
-       :language: python
-       :lines: 39-94
-       :linenos:
+    Below the current defined default values are shown:
 
     """
     _BOKEH_DEFAULTS = {
@@ -213,6 +208,8 @@ class BokehPlotter(Plotter):
     _PLOT_KWARGS_LINE = {'line_color', 'line_alpha', 'line_dash', 'line_width'}
     _PLOT_KWARGS_SCATTER = {'marker', 'marker_size', 'fill_alpha', 'fill_color'}
     _PLOT_KWARGS_AREA = {'fill_alpha', 'fill_color'}
+
+    __doc__ = __doc__ + _generate_plot_parameters_table(_BOKEH_DEFAULTS, _BOKEH_DESCRIPTIONS)
 
     def __init__(self, **kwargs):
 

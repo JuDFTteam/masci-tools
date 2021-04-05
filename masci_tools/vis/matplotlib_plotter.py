@@ -13,7 +13,7 @@
 """
 This module contains a subclass of :py:class:`~masci_tools.vis.Plotter` for the matplotlib library
 """
-from masci_tools.vis import Plotter
+from masci_tools.vis import Plotter, _generate_plot_parameters_table
 import matplotlib.pyplot as plt
 from matplotlib import cm
 import copy
@@ -29,12 +29,7 @@ class MatplotlibPlotter(Plotter):
     For specific documentation about the parameter/defaults handling refer to
     :py:class:`~masci_tools.vis.Plotter`.
 
-    Below the current defined default values are shown
-
-    .. literalinclude:: ../../../masci_tools/vis/matplotlib_plotter.py
-       :language: python
-       :lines: 40-148
-       :linenos:
+    Below the current defined default values are shown:
 
     """
     _MATPLOTLIB_DEFAULTS = {
@@ -309,6 +304,8 @@ class MatplotlibPlotter(Plotter):
     _PLOT_KWARGS_HIST = {
         'linewidth', 'linestyle', 'color', 'plot_label', 'plot_alpha', 'edgecolor', 'facecolor', 'zorder'
     }
+
+    __doc__ = __doc__ + _generate_plot_parameters_table(_MATPLOTLIB_DEFAULTS, _MATPLOTLIB_DESCRIPTIONS)
 
     def __init__(self, **kwargs):
         super().__init__(self._MATPLOTLIB_DEFAULTS,
