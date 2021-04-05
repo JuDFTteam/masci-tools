@@ -54,6 +54,15 @@ def show_bokeh_plot_defaults():
     pprint(plot_params.get_dict())
 
 
+def get_bokeh_help(key):
+    """
+    Print the decription of the given key in the bokeh backend
+
+    Available defaults can be seen in :py:class:`~masci_tools.vis.bokeh_plotter.BokehPlotter`
+    """
+    plot_params.get_description(key)
+
+
 ##################################### general plots ##########################
 
 

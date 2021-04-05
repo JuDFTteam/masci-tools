@@ -154,6 +154,142 @@ class MatplotlibPlotter(Plotter):
         'raw_plot_data_format': 'txt'
     }
 
+    _MATPLOTLIB_DESCRIPTIONS = {
+        # figure properties
+        'title_fontsize':
+        'Fontsize for the title of the figure',
+        'figure_kwargs':
+        'Arguments passed to `plt.figure` when creating the figure. '
+        'Includes things like figsize, dpi, background color, ...',
+
+        # axis properties
+        'alpha':
+        'Float specifying the transparency of the title',
+        'axis_linewidth':
+        'Linewidth of the lines for the axis',
+        'use_axis_formatter':
+        'If True the labels will always not be formatted '
+        'with an additive constant at the top',
+        'set_powerlimits':
+        'If True the threshold for switching to scientific notation is adjusted to 0,3',
+        'xticks':
+        'Positions of the ticks on the x axis',
+        'xticklabels':
+        'Labels for the ticks on the x-axis',
+        'yticks':
+        'Positions for the ticks on the y-axis',
+        'yticklabels':
+        'Labels for the ticks on the y-axis',
+        'invert_xaxis':
+        'If True the direction of the x-axis is inverted',
+        'invert_yaxis':
+        'If True the direction of the y-axis is inverted',
+        'color_cycle':
+        'If set this will override the default color cycle of matplotlib. '
+        'Can be given as name of a colormap cycle or list of colors',
+        'sub_colormap':
+        'If a colormap is used this can be used to cut out a part of the colormap. '
+        'For example (0.5,1.0) will only use the upper half of the colormap',
+
+        # plot properties
+        'linewidth':
+        'Linewidth for the plot(s)',
+        'linestyle':
+        'Linestyle for the plot(s)',
+        'marker':
+        'Shape of the marker to use for the plot(s)',
+        'markersize':
+        'Size of the markers to use in the plot(s)',
+        'color':
+        'Color to use in the plot(s)',
+        'zorder':
+        'z-position to use for the plot(s) (Is used to define fore- and background)',
+        'repeat_colors_after':
+        'If set the colors will be repeated after the given number of plots. '
+        'Only implemented for multiple_scatterplots',
+        'edgecolor':
+        'Edgecolor to use in the plot(s)',
+        'facecolor':
+        'Facecolor to use in the plot(s)',
+        'plot_label':
+        'Label to use in the plot(s) for the legend',
+        'area_plot':
+        'If True fill_between(x) will be used to produce the plot(s)',
+        'area_vertical':
+        'Determines, whether to use fill_between or fill_betweenx for area plots',
+        'area_enclosing_line':
+        'If True a enclosing line will be drawn around the area',
+        'area_alpha':
+        'Transparency to use for the area in the area plot(s)',
+        'area_linecolor':
+        'Color for the enclosing line in the area plot(s)',
+        'plot_alpha':
+        'Transparency to use for the plot(s)',
+        'cmap':
+        'Colormap to use for scatter/pcolormesh or 3D plots',
+        'norm':
+        'If set this norm will be used to normalize data for the colormapping',
+        'shading':
+        'Shading to use for pcolormesh plots',
+        'rasterized':
+        'Rasterize the pcolormesh when drawing vector graphics.',
+
+        #scale and limits placeholder
+        'scale':
+        "Dict specifying the scales of the axis, e.g {'y': 'log'}"
+        'will create a logarithmic scale on the y-axis',
+        'limits':
+        "Dict specifying the limits of the axis, e.g {'x': (-5,5)}",
+
+        # x, y label
+        'labelfontsize':
+        'Fontsize for the labels on the axis',
+        'lines':
+        'Dict specifying straight help-lines to draw. '
+        "For example {'vertical': 0, 'horizontal': [-1,1]} will draw a vertical line at 0 "
+        'and two horizontal at -1 and 1',
+        'line_options':
+        'Color, width, and more options for the help-lines',
+        'font_options':
+        'Default font options that can be used for text annotations',
+
+        # ticks
+        'tick_paramsx':
+        'Parameters for major ticks on the x-axis (Size, fontsize, ...)',
+        'tick_paramsy':
+        'Parameters for major ticks on the y-axis (Size, fontsize, ...)',
+        'tick_paramsx_minor':
+        'Parameters for minor ticks on the x-axis (Size, fontsize, ...)',
+        'tick_paramsy_minor':
+        'Parameters for minor ticks on the y-axis (Size, fontsize, ...)',
+        'colorbar':
+        'If True and the function implements color mapping, a colorbar is shown',
+        'colorbar_padding':
+        'Specifies the space between plot and colorbar',
+        # legend properties
+        'legend':
+        'If True a legend for the plot is shown',
+        'legend_options':
+        'Parameters for displaying the legend (Fontsize, location, ...)',
+
+        # save all plots?
+        'save_plots':
+        'if True the plots will be saved to file',
+        'save_format':
+        'Formats to save the plots to, can be single or list of formats',
+        'save_options':
+        'Additional options for saving the plots to file',
+        'tightlayout':
+        'If True the tight layout will be used (NOT IMPLEMENTED)',
+        'show':
+        'If True plt.show will be called at the end of the routine',
+        # write data to file
+        'save_raw_plot_data':
+        'If True the data for the plot is saved to file (NOT IMPLEMENTED)',
+        'raw_plot_data_format':
+        'Format in which to save the data for the plot (NOT IMPLEMENTED)'
+    }
+
     _MATPLOTLIB_GENERAL_ARGS = {
         'save_plots', 'save_format', 'tightlayout', 'save_raw_plot_data', 'raw_plot_data_format', 'show', 'legend',
         'legend_options', 'colorbar', 'colorbar_padding', 'tick_paramsy', 'tick_paramsx', 'tick_paramsy_minor',
@@ -175,7 +311,10 @@ class MatplotlibPlotter(Plotter):
     }
 
     def __init__(self, **kwargs):
-        super().__init__(self._MATPLOTLIB_DEFAULTS, general_keys=self._MATPLOTLIB_GENERAL_ARGS, **kwargs)
+        super().__init__(self._MATPLOTLIB_DEFAULTS,
+                         general_keys=self._MATPLOTLIB_GENERAL_ARGS,
+                         key_descriptions=self._MATPLOTLIB_DESCRIPTIONS,
+                         **kwargs)
 
     def plot_kwargs(self, ignore=None, extra_keys=None, plot_type='default', post_process=True, **kwargs):
         """

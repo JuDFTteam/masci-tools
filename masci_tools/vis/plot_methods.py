@@ -75,6 +75,15 @@ def show_mpl_plot_defaults():
     pprint(plot_params.get_dict())
 
 
+def get_mpl_help(key):
+    """
+    Print the decription of the given key in the matplotlib backend
+
+    Available defaults can be seen in :py:class:`~masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`
+    """
+    plot_params.get_description(key)
+
+
 ###############################################################################
 ########################## general plot routines ##############################
 ###############################################################################

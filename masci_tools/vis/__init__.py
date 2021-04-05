@@ -19,6 +19,7 @@ import copy
 from functools import wraps
 from contextlib import contextmanager
 from collections import ChainMap
+import warnings
 
 
 @contextmanager
@@ -165,7 +166,7 @@ class Plotter(object):
 
     """
 
-    def __init__(self, default_parameters, general_keys=None, **kwargs):
+    def __init__(self, default_parameters, general_keys=None, key_descriptions=None, **kwargs):
 
         self._PLOT_DEFAULTS = copy.deepcopy(default_parameters)
 
@@ -183,6 +184,10 @@ class Plotter(object):
         self._GENERAL_KEYS = set()
         if general_keys is not None:
             self._GENERAL_KEYS = general_keys
+
+        self._DESCRIPTIONS = {}
+        if key_descriptions is not None:
+            self._DESCRIPTIONS = key_descriptions
 
         if kwargs:
             self.set_defaults(continue_on_error=True, **kwargs)
@@ -496,6 +501,20 @@ class Plotter(object):
         Return the dictionary of the current defaults. For use of printing
         """
         return dict(self._params)
+
+    def get_description(self, key):
+        """
+        Get the description of the given key
+
+        :param key: str of the key, for which the description should be printed
+        """
+
+        if key in self._DESCRIPTIONS:
+            print(f'{key}:\n\n{self._DESCRIPTIONS[key]}')
+        elif key in self._params:
+            print(f'{key}:\n\nNo Description available')
+        else:
+            warnings.warn(f'{key} is not a known parameter')
 
     @property
     def single_plot(self):
