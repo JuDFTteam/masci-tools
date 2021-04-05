@@ -104,11 +104,20 @@ def ensure_plotter_consistency(plotter_object):
 def _generate_plot_parameters_table(defaults, descriptions):
     """
     Generate a table for the plotting parameters for the docstrings
+
+    :param defaults: dict/chainmap with the defined defaults
+    :param descriptions: dict with the description of the keys in defaults
     """
 
+    #yapf: disable
     table = [
-        '.. list-table:: Plot Parameters', '       :widths: 15 60 25', '       :header-rows: 1', '', '       * - Name',
-        '         - Description', '         - Default value'
+        '.. list-table:: Plot Parameters',
+        '       :widths: 15 60 25',
+        '       :header-rows: 1',
+        '',
+        '       * - Name',
+        '         - Description',
+        '         - Default value'
     ]
 
     for key, value in defaults.items():
@@ -119,9 +128,12 @@ def _generate_plot_parameters_table(defaults, descriptions):
 
         descr = descriptions.get(key, 'No Description available')
 
-        table.extend([f'       * - ``{key}``', f'         - {descr}', f'         - {value}'])
+        table.extend([f'       * - ``{key}``',
+                      f'         - {descr}',
+                      f'         - {value}'])
 
     table.append('')
+    #yapf: enable
 
     return '\n'.join(table)
 
