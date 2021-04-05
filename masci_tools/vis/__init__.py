@@ -114,6 +114,7 @@ def _generate_plot_parameters_table(defaults, descriptions):
         '.. list-table:: Plot Parameters',
         '       :widths: 15 60 25',
         '       :header-rows: 1',
+        '       :class: tight-table',
         '',
         '       * - Name',
         '         - Description',
