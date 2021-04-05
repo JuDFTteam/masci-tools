@@ -192,7 +192,7 @@ def repeat_array(dataset, n_repeats):
 
 
 @hdf5_transformation(attribute_needed=False)
-def get_all_child_datasets(group, ignore=None):
+def get_all_child_datasets(group, ignore=None, contains=None):
     """
     Get all datasets contained in the given group
 
@@ -212,6 +212,9 @@ def get_all_child_datasets(group, ignore=None):
     for key, val in group.items():
         if key in ignore:
             continue
+        if contains is not None:
+            if contains not in key:
+                continue
         if isinstance(val, h5py.Dataset):
             transformed[key] = val
 
@@ -554,6 +557,29 @@ def periodic_elements(dataset):
         transformed = np.array([PERIODIC_TABLE_ELEMENTS[entry]['symbol'] for entry in dataset], dtype=str)
 
     return transformed
+
+
+@hdf5_transformation(attribute_needed=False)
+def sum_over_dict_entries(dataset, overwrite_dict=False):
+    """
+    Sum the datasets contained in the given dict dataset
+
+    :param dataset: dataset to transform
+    :param overwrite_dict: bool if True, the result will overwrite the dictionary
+                           if False it is entered under `sum` in the dict
+
+    :returns: dataset with summed entries
+    """
+
+    if not isinstance(dataset, dict):
+        raise ValueError('sum_over_dict_entries is only available for dict datasets')
+
+    if overwrite_dict:
+        dataset = np.sum(dataset.values())
+    else:
+        dataset['sum'] = np.sum(dataset.values())
+
+    return dataset
 
 
 #Functions that can use an attribute value (These are passed in from _transform_dataset)

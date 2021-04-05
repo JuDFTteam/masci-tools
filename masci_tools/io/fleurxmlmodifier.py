@@ -162,6 +162,70 @@ class FleurXMLModifier:
         }
         return outside_actions
 
+    def undo(self, revert_all=False):
+        """
+        Cancels the last change or all of them
+
+        :param revert_all: set True if need to cancel all the changes, False if the last one.
+        """
+        if revert_all:
+            self._tasks = []
+        else:
+            if self._tasks:
+                self._tasks.pop()
+                #TODO delete nodes from other nodes
+                #del self._tasks[-1]
+        return self._tasks
+
+    def changes(self):
+        """
+        Prints out all changes currently registered on this instance
+        """
+        from pprint import pprint
+        pprint(self._tasks)
+        return self._tasks
+
+    def modify_xmlfile(self, original_inpxmlfile, original_nmmp_file=None, validate_changes=True):
+        """
+        Applies the registered modifications to a given inputfile
+
+        :param original_inpxmlfile: either path to the inp.xml file, opened file handle
+                                    or a xml etree to be parsed
+        :param original_nmmp_file: path or list of str to a corresponding density matrix
+                                   file
+
+        :raises ValueError: if the parsing of the input file
+
+        :returns: a modified xmltree and if existent a modified density matrix file
+        """
+        if isinstance(original_inpxmlfile, etree._ElementTree):
+            original_xmltree = original_inpxmlfile
+        else:
+            parser = etree.XMLParser(attribute_defaults=True, encoding='utf-8')
+            try:
+                original_xmltree = etree.parse(original_inpxmlfile, parser)
+            except etree.XMLSyntaxError as msg:
+                raise ValueError(f'Failed to parse input file: {msg}') from msg
+
+        if original_nmmp_file is not None:
+            if isinstance(original_nmmp_file, str):
+                with open(original_nmmp_file, mode='r') as n_mmp_file:
+                    original_nmmp_lines = n_mmp_file.read().split('\n')
+            else:
+                original_nmmp_lines = original_nmmp_file
+        else:
+            original_nmmp_lines = None
+
+        new_xmltree, new_nmmp_lines = self.apply_modifications(original_xmltree,
+                                                               original_nmmp_lines,
+                                                               self._tasks,
+                                                               validate_changes=validate_changes)
+
+        if new_nmmp_lines is None:
+            return new_xmltree
+        else:
+            return new_xmltree, new_nmmp_lines
+
     def set_inpchanges(self, *args, **kwargs):
         """
         Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_inpchanges()` to
@@ -555,67 +619,3 @@ class FleurXMLModifier:
         :param theta: float, angle (radian), by which to rotate the density matrix
         """
         self._tasks.append(ModifierTask('rotate_nmmpmat', args, kwargs))
-
-    def undo(self, revert_all=False):
-        """
-        Cancels the last change or all of them
-
-        :param revert_all: set True if need to cancel all the changes, False if the last one.
-        """
-        if revert_all:
-            self._tasks = []
-        else:
-            if self._tasks:
-                self._tasks.pop()
-                #TODO delete nodes from other nodes
-                #del self._tasks[-1]
-        return self._tasks
-
-    def changes(self):
-        """
-        Prints out all changes currently registered on this instance
-        """
-        from pprint import pprint
-        pprint(self._tasks)
-        return self._tasks
-
-    def modify_xmlfile(self, original_inpxmlfile, original_nmmp_file=None, validate_changes=True):
-        """
-        Applies the registered modifications to a given inputfile
-
-        :param original_inpxmlfile: either path to the inp.xml file, opened file handle
-                                    or a xml etree to be parsed
-        :param original_nmmp_file: path or list of str to a corresponding density matrix
-                                   file
-
-        :raises ValueError: if the parsing of the input file
-
-        :returns: a modified xmltree and if existent a modified density matrix file
-        """
-        if isinstance(original_inpxmlfile, etree._ElementTree):
-            original_xmltree = original_inpxmlfile
-        else:
-            parser = etree.XMLParser(attribute_defaults=True, encoding='utf-8')
-            try:
-                original_xmltree = etree.parse(original_inpxmlfile, parser)
-            except etree.XMLSyntaxError as msg:
-                raise ValueError(f'Failed to parse input file: {msg}') from msg
-
-        if original_nmmp_file is not None:
-            if isinstance(original_nmmp_file, str):
-                with open(original_nmmp_file, mode='r') as n_mmp_file:
-                    original_nmmp_lines = n_mmp_file.read().split('\n')
-            else:
-                original_nmmp_lines = original_nmmp_file
-        else:
-            original_nmmp_lines = None
-
-        new_xmltree, new_nmmp_lines = self.apply_modifications(original_xmltree,
-                                                               original_nmmp_lines,
-                                                               self._tasks,
-                                                               validate_changes=validate_changes)
-
-        if new_nmmp_lines is None:
-            return new_xmltree
-        else:
-            return new_xmltree, new_nmmp_lines

@@ -289,3 +289,267 @@ FleurBands = {
         }
     }
 }
+
+#Recipe for bandstructures without reading in weights
+FleurSimpleBands = {
+    'datasets': {
+        'eigenvalues': {
+            'h5path':
+            '/Local/BS/eigenvalues',
+            'transforms': [
+                AttribTransformation(name='shift_by_attribute',
+                                     attrib_name='fermi_energy',
+                                     args=(),
+                                     kwargs={
+                                         'negative': True,
+                                     }),
+                Transformation(name='multiply_scalar', args=(HTR_TO_EV,), kwargs={}),
+                Transformation(name='split_array', args=(), kwargs={
+                    'suffixes': ['up', 'down'],
+                    'name': 'eigenvalues'
+                }),
+                Transformation(name='flatten_array', args=(), kwargs={})
+            ],
+            'unpack_dict':
+            True
+        },
+        'kpath': {
+            'h5path':
+            '/kpts/coordinates',
+            'transforms': [
+                AttribTransformation(name='multiply_by_attribute',
+                                     attrib_name='reciprocal_cell',
+                                     args=(),
+                                     kwargs={'transpose': True}),
+                Transformation(name='calculate_norm', args=(), kwargs={'between_neighbours': True}),
+                Transformation(name='cumulative_sum', args=(), kwargs={}),
+                AttribTransformation(name='repeat_array_by_attribute', attrib_name='nbands', args=(), kwargs={}),
+            ]
+        },
+    },
+    'attributes': {
+        'kpoints': {
+            'h5path': '/kpts/coordinates',
+        },
+        'nkpts': {
+            'h5path':
+            '/Local/BS/eigenvalues',
+            'transforms': [
+                Transformation(name='get_shape', args=(), kwargs={}),
+                Transformation(name='index_dataset', args=(1,), kwargs={})
+            ]
+        },
+        'nbands': {
+            'h5path':
+            '/Local/BS/eigenvalues',
+            'transforms': [
+                Transformation(name='get_shape', args=(), kwargs={}),
+                Transformation(name='index_dataset', args=(2,), kwargs={})
+            ]
+        },
+        'bravais_matrix': {
+            'h5path': '/cell/bravaisMatrix',
+            'description': 'Coordinate transformation internal to physical for atoms',
+            'transforms': [Transformation(name='multiply_scalar', args=(BOHR_A,), kwargs={})]
+        },
+        'reciprocal_cell': {
+            'h5path': '/cell/reciprocalCell'
+        },
+        'special_kpoint_indices': {
+            'h5path': '/kpts/specialPointIndices',
+            'transforms': [Transformation(name='shift_dataset', args=(-1,), kwargs={})]
+        },
+        'special_kpoint_labels': {
+            'h5path': '/kpts/specialPointLabels',
+            'transforms': [Transformation(name='convert_to_str', args=(), kwargs={})]
+        },
+        'fermi_energy': {
+            'h5path':
+            '/general',
+            'description':
+            'fermi_energy of the system',
+            'transforms': [
+                Transformation(name='get_attribute', args=('lastFermiEnergy',), kwargs={}),
+                Transformation(name='get_first_element', args=(), kwargs={})
+            ]
+        },
+        'spins': {
+            'h5path':
+            '/general',
+            'description':
+            'number of distinct spin directions in the system',
+            'transforms': [
+                Transformation(name='get_attribute', args=('spins',), kwargs={}),
+                Transformation(name='get_first_element', args=(), kwargs={})
+            ]
+        }
+    }
+}
+
+
+def get_fleur_bands_specific_weights(weight_name):
+    """
+    Recipe for bandstructure calculations only retrieving one
+    additional weight besides the eigenvalues and kpath
+
+    :param weight_name: key or list of keys of the weight(s) to retrieve
+
+    :returns: dict of the recipe to retrieve a simple bandstructure
+              plus the one specified weight
+    """
+    recipe = {
+        'datasets': {
+            'eigenvalues': {
+                'h5path':
+                '/Local/BS/eigenvalues',
+                'transforms': [
+                    AttribTransformation(name='shift_by_attribute',
+                                         attrib_name='fermi_energy',
+                                         args=(),
+                                         kwargs={
+                                             'negative': True,
+                                         }),
+                    Transformation(name='multiply_scalar', args=(HTR_TO_EV,), kwargs={}),
+                    Transformation(name='split_array',
+                                   args=(),
+                                   kwargs={
+                                       'suffixes': ['up', 'down'],
+                                       'name': 'eigenvalues'
+                                   }),
+                    Transformation(name='flatten_array', args=(), kwargs={})
+                ],
+                'unpack_dict':
+                True
+            },
+            'kpath': {
+                'h5path':
+                '/kpts/coordinates',
+                'transforms': [
+                    AttribTransformation(name='multiply_by_attribute',
+                                         attrib_name='reciprocal_cell',
+                                         args=(),
+                                         kwargs={'transpose': True}),
+                    Transformation(name='calculate_norm', args=(), kwargs={'between_neighbours': True}),
+                    Transformation(name='cumulative_sum', args=(), kwargs={}),
+                    AttribTransformation(name='repeat_array_by_attribute', attrib_name='nbands', args=(), kwargs={}),
+                ]
+            },
+        },
+        'attributes': {
+            'n_types': {
+                'h5path':
+                '/atoms',
+                'description':
+                'Number of atom types',
+                'transforms': [
+                    Transformation(name='get_attribute', args=('nTypes',), kwargs={}),
+                    Transformation(name='get_first_element', args=(), kwargs={})
+                ]
+            },
+            'kpoints': {
+                'h5path': '/kpts/coordinates',
+            },
+            'nkpts': {
+                'h5path':
+                '/Local/BS/eigenvalues',
+                'transforms': [
+                    Transformation(name='get_shape', args=(), kwargs={}),
+                    Transformation(name='index_dataset', args=(1,), kwargs={})
+                ]
+            },
+            'nbands': {
+                'h5path':
+                '/Local/BS/eigenvalues',
+                'transforms': [
+                    Transformation(name='get_shape', args=(), kwargs={}),
+                    Transformation(name='index_dataset', args=(2,), kwargs={})
+                ]
+            },
+            'atoms_elements': {
+                'h5path': '/atoms/atomicNumbers',
+                'description': 'Atomic numbers',
+                'transforms': [Transformation(name='periodic_elements', args=(), kwargs={})]
+            },
+            'atoms_position': {
+                'h5path': '/atoms/positions',
+                'description': 'Atom coordinates per atom',
+            },
+            'atoms_groups': {
+                'h5path': '/atoms/equivAtomsGroup'
+            },
+            'bravais_matrix': {
+                'h5path': '/cell/bravaisMatrix',
+                'description': 'Coordinate transformation internal to physical for atoms',
+                'transforms': [Transformation(name='multiply_scalar', args=(BOHR_A,), kwargs={})]
+            },
+            'reciprocal_cell': {
+                'h5path': '/cell/reciprocalCell'
+            },
+            'special_kpoint_indices': {
+                'h5path': '/kpts/specialPointIndices',
+                'transforms': [Transformation(name='shift_dataset', args=(-1,), kwargs={})]
+            },
+            'special_kpoint_labels': {
+                'h5path': '/kpts/specialPointLabels',
+                'transforms': [Transformation(name='convert_to_str', args=(), kwargs={})]
+            },
+            'fermi_energy': {
+                'h5path':
+                '/general',
+                'description':
+                'fermi_energy of the system',
+                'transforms': [
+                    Transformation(name='get_attribute', args=('lastFermiEnergy',), kwargs={}),
+                    Transformation(name='get_first_element', args=(), kwargs={})
+                ]
+            },
+            'spins': {
+                'h5path':
+                '/general',
+                'description':
+                'number of distinct spin directions in the system',
+                'transforms': [
+                    Transformation(name='get_attribute', args=('spins',), kwargs={}),
+                    Transformation(name='get_first_element', args=(), kwargs={})
+                ]
+            }
+        }
+    }
+
+    if isinstance(weight_name, str):
+        weight_name = [weight_name]
+
+    for name in weight_name:
+        if 'MT:' in name and not any(c in name for c in ('s', 'p', 'd', 'f')):
+            #We need to get all orbitals and calculate the atom sum
+            recipe['datasets'][name] = {
+                'h5path':
+                '/Local/BS',
+                'transforms': [
+                    Transformation(name='get_all_child_datasets', args=(), kwargs={'contains': name}),
+                    Transformation(name='sum_over_dict_entries', args=(), kwargs={'overwrite_dict': True}),
+                    Transformation(name='split_array', args=(), kwargs={
+                        'suffixes': ['up', 'down'],
+                        'name': name
+                    }),
+                    Transformation(name='flatten_array', args=(), kwargs={})
+                ],
+                'unpack_dict':
+                True
+            }
+        else:
+            recipe['datasets'][name] = {
+                'h5path':
+                f'/Local/BS/{name}',
+                'transforms': [
+                    Transformation(name='split_array', args=(), kwargs={
+                        'suffixes': ['up', 'down'],
+                        'name': name
+                    }),
+                    Transformation(name='flatten_array', args=(), kwargs={})
+                ],
+                'unpack_dict':
+                True
+            }
+
+    return recipe

@@ -9,10 +9,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
 
     - name: Set up Python 3.7
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v2
       with:
         python-version: 3.7
 
@@ -45,7 +45,7 @@ jobs:
     timeout-minutes: 30
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
 
     - name: Cache python dependencies
       id: cache-pip
@@ -57,7 +57,7 @@ jobs:
           pip-pre-commit-
 
     - name: Set up Python 3.7
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v2
       with:
         python-version: 3.7
 
@@ -80,7 +80,7 @@ jobs:
         python-version: ['3.9', '3.8', '3.7', '3.6']
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
 
     - name: Cache python dependencies
       id: cache-pip
@@ -92,7 +92,7 @@ jobs:
           pip-${{ matrix.python-version }}-tests
 
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
 
@@ -104,7 +104,7 @@ jobs:
     - name: Run pytest
       run: |
         cd masci_tools/tests/ && ./run_all_cov.sh
-    
+
     - name: Upload code coverage report
       run: |
         pip install codecov

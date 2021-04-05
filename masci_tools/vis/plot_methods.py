@@ -75,6 +75,15 @@ def show_mpl_plot_defaults():
     pprint(plot_params.get_dict())
 
 
+def get_mpl_help(key):
+    """
+    Print the decription of the given key in the matplotlib backend
+
+    Available defaults can be seen in :py:class:`~masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`
+    """
+    plot_params.get_description(key)
+
+
 ###############################################################################
 ########################## general plot routines ##############################
 ###############################################################################
@@ -1599,6 +1608,10 @@ def plot_dos(energy_grid,
     color_cycle = ('black',) + tuple(sns.color_palette('muted'))
     plot_params.set_defaults(default_type='function', marker=None, legend=True, lines=lines, color_cycle=color_cycle)
 
+    if xyswitch:
+        figsize = plot_params['figure_kwargs']['figsize']
+        plot_params.set_defaults(default_type='function', figure_kwargs={'figsize': figsize[::-1]})
+
     if isinstance(dos_data[0], (list, np.ndarray)) and \
        not isinstance(energy_grid[0], (list, np.ndarray)):
         energy_grid = [energy_grid] * len(dos_data)
@@ -1663,6 +1676,10 @@ def plot_spinpol_dos(energy_grid,
         if len(spin_up_data) != len(spin_dn_data):
             raise ValueError(f'Dimensions do not match: Spin-up: {len(spin_up_data)} Spin-dn: {len(spin_dn_data)}')
 
+    max_dos = max(data.max() for data in spin_up_data)
+    max_dos = max(max_dos, max(data.max() for data in spin_dn_data))
+    max_dos *= 1.1
+
     if spin_dn_negative:
         if isinstance(spin_dn_data, np.ndarray):
             spin_dn_data *= -1
@@ -1676,6 +1693,11 @@ def plot_spinpol_dos(energy_grid,
     if xyswitch:
         lines['vertical'], lines['horizontal'] = lines['horizontal'], lines['vertical']
 
+    if xyswitch:
+        limits = {'x': (-max_dos, max_dos)}
+    else:
+        limits = {'y': (-max_dos, max_dos)}
+
     if isinstance(spin_up_data[0], (list, np.ndarray)):
         num_plots = len(spin_up_data)
     else:
@@ -1686,8 +1708,22 @@ def plot_spinpol_dos(energy_grid,
                              marker=None,
                              legend=True,
                              lines=lines,
+                             limits=limits,
                              repeat_colors_after=num_plots,
                              color_cycle=color_cycle)
+
+    if xyswitch:
+        figsize = plot_params['figure_kwargs']['figsize']
+        plot_params.set_defaults(default_type='function', figure_kwargs={'figsize': figsize[::-1]})
+
+    save_keys = {'show', 'save_plots', 'save_format', 'save_options'}
+    save_options = {key: val for key, val in kwargs.items() if key in save_keys}
+    kwargs = {key: val for key, val in kwargs.items() if key not in save_keys}
+
+    plot_params.set_parameters(**save_options)
+
+    if xyswitch:
+        plot_params.set_defaults(default_type='function', invert_xaxis=True)
 
     dos_data = spin_up_data
     if not isinstance(spin_up_data[0], (list, np.ndarray)):
@@ -1707,7 +1743,24 @@ def plot_spinpol_dos(energy_grid,
         xlabel, ylabel = energy_label, dos_label
         x, y = energy_grid, dos_data
 
-    ax = multiple_scatterplots(x, y, xlabel=xlabel, ylabel=ylabel, title=title, saveas=saveas, **kwargs)
+    with NestedPlotParameters(plot_params):
+        ax = multiple_scatterplots(x,
+                                   y,
+                                   xlabel=xlabel,
+                                   ylabel=ylabel,
+                                   title=title,
+                                   save_plots=False,
+                                   show=False,
+                                   **kwargs)
+
+    if xyswitch:
+        ax.annotate(r'$\uparrow$', xy=(0.125, 0.9), xycoords='axes fraction', ha='center', va='center', size=40)
+        ax.annotate(r'$\downarrow$', xy=(0.875, 0.9), xycoords='axes fraction', ha='center', va='center', size=40)
+    else:
+        ax.annotate(r'$\uparrow$', xy=(0.05, 0.875), xycoords='axes fraction', ha='center', va='center', size=40)
+        ax.annotate(r'$\downarrow$', xy=(0.05, 0.125), xycoords='axes fraction', ha='center', va='center', size=40)
+
+    plot_params.save_plot(saveas)
 
     return ax
 
@@ -1723,8 +1776,8 @@ def plot_bands(kpath,
                ylabel=r'$E-E_F$ [eV]',
                title='',
                saveas='bandstructure',
-               markersize_min=1.0,
-               markersize_scaling=10.0,
+               markersize_min=0.5,
+               markersize_scaling=5.0,
                **kwargs):
     """
     Plot the provided data for a bandstrucuture (non spin-polarized). Can be used
@@ -1759,8 +1812,17 @@ def plot_bands(kpath,
 
     color_data = None
     if size_data is not None:
+        ylimits = (-15, 15)
+        if 'limits' in kwargs:
+            if 'y' in kwargs['limits']:
+                ylimits = kwargs['limits']['y']
+
+        weight_max = max(size_data[np.logical_and(bands > ylimits[0], bands < ylimits[1])])
+        if 'vmax' not in kwargs:
+            kwargs['vmax'] = weight_max
+
         color_data = copy.copy(size_data)
-        size_data = (markersize_min + markersize_scaling * size_data / max(size_data))**2
+        size_data = (markersize_min + markersize_scaling * size_data / weight_max)**2
         plot_params.set_defaults(default_type='function', cmap='Blues')
         if 'cmap' not in kwargs:
             #Cut off the white end of the Blues/Reds colormap
@@ -1804,8 +1866,8 @@ def plot_spinpol_bands(kpath,
                        ylabel=r'$E-E_F$ [eV]',
                        title='',
                        saveas='bandstructure',
-                       markersize_min=1.0,
-                       markersize_scaling=10.0,
+                       markersize_min=0.5,
+                       markersize_scaling=5.0,
                        **kwargs):
     """
     Plot the provided data for a bandstrucuture (spin-polarized). Can be used
@@ -1837,10 +1899,21 @@ def plot_spinpol_bands(kpath,
         size_data = [None, None]
         color_data = [None, None]
     else:
+        ylimits = (-15, 15)
+        if 'limits' in kwargs:
+            if 'y' in kwargs['limits']:
+                ylimits = kwargs['limits']['y']
+
+        weight_max = max(size_data[0][np.logical_and(bands_up > ylimits[0], bands_up < ylimits[1])])
+        weight_max = max(weight_max, max(size_data[1][np.logical_and(bands_dn > ylimits[0], bands_dn < ylimits[1])]))
+
+        if 'vmax' not in kwargs:
+            kwargs['vmax'] = weight_max
+
         color_data = []
         for indx, data in enumerate(size_data):
             color_data.append(copy.copy(data))
-            size_data[indx] = (markersize_min + markersize_scaling * data / max(data))**2
+            size_data[indx] = (markersize_min + markersize_scaling * data / weight_max)**2
 
     xticks = []
     xticklabels = []
@@ -1875,7 +1948,7 @@ def plot_spinpol_bands(kpath,
         #Cut off the white end of the Blues/Reds colormap
         plot_params.set_defaults(default_type='function', sub_colormap=(0.15, 1.0))
 
-    ax = multi_scatter_plot([kpath, kpath], [bands_up, bands_dn],
+    ax = multi_scatter_plot([kpath, kpath], [bands_dn, bands_up],
                             size_data=size_data,
                             color_data=color_data,
                             xlabel=xlabel,

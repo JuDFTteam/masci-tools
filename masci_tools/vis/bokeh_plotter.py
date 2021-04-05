@@ -14,7 +14,7 @@
 Here the :py:class:`masci_tools.vis.Plotter` subclass for the bokeh plotting backend
 is defined with default values and many helper methods
 """
-from masci_tools.vis import Plotter
+from masci_tools.vis import Plotter, _generate_plot_parameters_table
 import copy
 
 
@@ -28,12 +28,7 @@ class BokehPlotter(Plotter):
     For specific documentation about the parameter/defaults handling refer to
     :py:class:`~masci_tools.vis.Plotter`.
 
-    Below the current defined default values are shown
-
-    .. literalinclude:: ../../../masci_tools/vis/bokeh_plotter.py
-       :language: python
-       :lines: 39-94
-       :linenos:
+    Below the current defined default values are shown:
 
     """
     _BOKEH_DEFAULTS = {
@@ -81,6 +76,7 @@ class BokehPlotter(Plotter):
         'area_vertical': False,
         'fill_alpha': 1.0,
         'fill_color': None,
+        'level': None,
         'straight_lines': None,
         'straight_line_options': {
             'line_color': 'black',
@@ -91,6 +87,97 @@ class BokehPlotter(Plotter):
         #output control
         'save_plots': False,
         'show': True,
+    }
+
+    _BOKEH_DESCRIPTIONS = {
+        'figure_kwargs':
+        'Parameters for creating the bokeh figure. '
+        'Includes things like axis type (x and y), tools, tooltips, '
+        'plot width/height',
+        'axis_linewidth':
+        'Linewidth for the lines of the axis',
+        'label_fontsize':
+        'Fontsize for the labels of the axis',
+        'tick_label_fontsize':
+        'fontsize for the ticks on the axis',
+        'background_fill_color':
+        'Color of the background of the plot',
+        'x_axis_formatter':
+        'If set this formatter will be used for the ticks on the x-axis',
+        'y_axis_formatter':
+        'If set this formatter will be used for the ticks on the y-axis',
+        'x_ticks':
+        'Tick specification for the x-axis',
+        'x_ticklabels_overwrite':
+        'Overrides the labels for the ticks on the x-axis',
+        'y_ticks':
+        'Tick specification for the y-axis',
+        'y_ticklabels_overwrite':
+        'Overrides the labels for the ticks on the y-axis',
+        'x_range_padding':
+        'Specifies the amount of padding on the edges of the x-axis',
+        'y_range_padding':
+        'Specifies the amount of padding on the edges of the y-axis',
+        'limits':
+        "Dict specifying the limits of the axis, e.g {'x': (-5,5)}",
+
+        #legend options
+        'legend_location':
+        'Location of the legend inside the plot area',
+        'legend_click_policy':
+        'Policy for what happens when labels are clicked in the legend',
+        'legend_orientation':
+        'Orientation of the legend',
+        'legend_font_size':
+        'Fontsize for the labels inside the legend',
+        'legend_outside_plot_area':
+        'If True the legend will be placed outside of the plot area',
+
+        #plot parameters
+        'color_palette':
+        'Color palette to use for the plot(s)',
+        'color':
+        'Specific colors to use for the plot(s)',
+        'legend_label':
+        'Labels to use for the legend of the plot(s)',
+        'alpha':
+        'Transparency to use for the plot(s)',
+        'name':
+        'Name used for identifying elements in the plot (not shown only internally)',
+        'line_color':
+        'Color to use for line plot(s)',
+        'line_alpha':
+        'Transparency to use for line plot(s)',
+        'line_dash':
+        'Dash styles to use for line plot(s)',
+        'line_width':
+        'Line width to use for line plot(s)',
+        'marker':
+        'Type of marker to use for scatter plot(s)',
+        'marker_size':
+        'Marker size to use for scatter plot(s)',
+        'area_plot':
+        'If True h(v)area will be used to produce the plot(s)',
+        'area_vertical':
+        'Determines, whether to use harea (False) or varea (True) for area plots',
+        'fill_alpha':
+        'Transparency to use for the area in area plot(s)',
+        'fill_color':
+        'Color to use for the area in area plot(s)',
+        'level':
+        'Can be used to specified, which elements are fore- or background',
+        'straight_lines':
+        'Dict specifying straight help-lines to draw. '
+        "For example {'vertical': 0, 'horizontal': [-1,1]} will draw a vertical line at 0 "
+        'and two horizontal at -1 and 1',
+        'straight_line_options':
+        'Color, width, and more options for the help-lines',
+
+        #output control
+        'save_plots':
+        'If True plots will be saved to file (NOT IMPLEMENTED)',
+        'show':
+        'If True bokeh.io.show will be called after the plotting routine',
     }
 
     _BOKEH_GENERAL_ARGS = {
@@ -122,9 +209,14 @@ class BokehPlotter(Plotter):
     _PLOT_KWARGS_SCATTER = {'marker', 'marker_size', 'fill_alpha', 'fill_color'}
     _PLOT_KWARGS_AREA = {'fill_alpha', 'fill_color'}
 
+    __doc__ = __doc__ + _generate_plot_parameters_table(_BOKEH_DEFAULTS, _BOKEH_DESCRIPTIONS)
+
     def __init__(self, **kwargs):
 
-        super().__init__(self._BOKEH_DEFAULTS, general_keys=self._BOKEH_GENERAL_ARGS, **kwargs)
+        super().__init__(self._BOKEH_DEFAULTS,
+                         general_keys=self._BOKEH_GENERAL_ARGS,
+                         key_descriptions=self._BOKEH_DESCRIPTIONS,
+                         **kwargs)
 
     def plot_kwargs(self, ignore=None, extra_keys=None, plot_type='default', post_process=True, **kwargs):
         """

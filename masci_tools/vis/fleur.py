@@ -46,6 +46,15 @@ def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, bokeh_plot=False,
         special_kpoints.append((label, bandsdata['kpath'][(k_index * nbands) + 1]))
 
     if weight is not None:
+        if isinstance(weight, list):
+            if all(w in bandsdata for w in weight):
+                if not bokeh_plot:
+                    weight = [bandsdata[w] for w in weight]
+            else:
+                raise ValueError(f'List of weights provided but not all weights are present in bandsdata: {weight}')
+        elif weight in bandsdata:
+            if not bokeh_plot:
+                weight = bandsdata[weight]
         if not bokeh_plot:
             if bandsattributes['spins'] == 2:
                 weight = [bandsdata[f'{weight}_up'], bandsdata[f'{weight}_down']]
