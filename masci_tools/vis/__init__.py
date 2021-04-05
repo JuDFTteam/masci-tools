@@ -114,10 +114,12 @@ def _generate_plot_parameters_table(defaults, descriptions):
     for key, value in defaults.items():
         if value is None:
             value = 'No Default'
+        elif not isinstance(value, dict):
+            value = f'``{value}``'
 
         descr = descriptions.get(key, 'No Description available')
 
-        table.extend([f'       * - {key}', f'         - {descr}', f'         - {value}'])
+        table.extend([f'       * - ``{key}``', f'         - {descr}', f'         - {value}'])
 
     table.append('')
 
