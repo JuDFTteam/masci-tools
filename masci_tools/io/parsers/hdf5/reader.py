@@ -17,10 +17,12 @@ import io
 import h5py
 from collections import namedtuple
 import warnings
+import logging
 
 Transformation = namedtuple('Transformation', ['name', 'args', 'kwargs'])
 AttribTransformation = namedtuple('AttribTransformation', ['name', 'attrib_name', 'args', 'kwargs'])
 
+logger = logging.getLogger(__name__)
 
 class HDF5Reader:
     """Class for reading in data from hdf5 files using a specified recipe
@@ -57,21 +59,27 @@ class HDF5Reader:
         self._file = file
 
         if isinstance(self._file, io.IOBase):
-            filename = self._file.name
+            self._filename = self._file.name
         else:
-            filename = self._file
+            self._filename = self._file
 
-        assert filename.endswith('.hdf'), f'Wrong File Type for {self.__class__}: Got {filename}'
+        if not self._filename.endswith('.hdf'):
+            logger.exception('Wrong File Type for %s: Got %s', self.__class__.__name__, self._filename)
+            raise ValueError(f'Wrong File Type for {self.__class__.__name__}: Got {self._filename}')
+
+        logger.info('Instantiated %s with file %s', self.__class__.__name__, self._filename)
 
         self._move_to_memory = move_to_memory
         self._h5_file = None
 
     def __enter__(self):
         self._h5_file = h5py.File(self._file, 'r')
+        logger.debug('Opened h5py.File with id %s', self._h5_file.id)
         return self
 
     def __exit__(self, exc_type, exc_value, exc_traceback):
         self._h5_file.close()
+        logger.debug('Closed h5py.File with id %s', self._h5_file.id)
 
     def _read_dataset(self, h5path, strict=True):
         """Return in the dataset specified by the given h5path
@@ -90,14 +98,17 @@ class HDF5Reader:
             else:
                 pass
 
+        logger.debug('Reading dataset from path %s', h5path)
+
         dset = self._h5_file.get(h5path)
         if dset is not None:
             return dset
         elif strict:
+            logger.exception('HDF5 input file %s has no Dataset at %s.', self._file, h5path)
             raise ValueError(f'HDF5 input file {self._file} has no Dataset at {h5path}.')
         return None
 
-    def _transform_dataset(self, transforms, dataset, attributes=None):
+    def _transform_dataset(self, transforms, dataset, attributes=None, dataset_name=None):
         """
         Transforms the given dataset with the given list of tasks
 
@@ -120,9 +131,41 @@ class HDF5Reader:
                 attrib_value = attributes[spec.attrib_name]
                 args = attrib_value, *args
 
-            transformed_dset = self._transforms[spec.name](transformed_dset, *args, **spec.kwargs)
+            logger.debug('Applying transformation %s to dataset %s of type %s', spec.name, dataset_name,
+                         type(transformed_dset))
+
+            try:
+                transformed_dset = self._transforms[spec.name](transformed_dset, *args, **spec.kwargs)
+            except Exception as err:
+                logger.exception(str(err))
+                raise
 
         return transformed_dset
+
+    @staticmethod
+    def _unpack_dataset(output_dict, dataset_name):
+        """
+        Unpack the entires of the dictionary dataset in the entry dataset_name into the
+        output_dict
+
+        :param output_dict: dict with the dataset entries
+        :param dataset_name: key of the dataset to unpack into output_dict
+
+        :returns: output_dict with the entries of dataset_name unpacked
+        """
+
+        logger.debug('Unpacking dict dataset %s after transformations', dataset_name)
+
+        if not isinstance(output_dict[dataset_name], dict):
+            raise ValueError(f'{dataset_name} cannot be unpacked: Got {type(output_dict[dataset_name])}')
+
+        unpack_dict = output_dict.pop(dataset_name)
+
+        if unpack_dict.keys() & output_dict.keys():
+            raise ValueError('Unpacking would result in lost information: \n'
+                             f"Intersection of keys: '{unpack_dict.keys().intersection(output_dict.keys())}'")
+
+        return {**output_dict, **unpack_dict}
 
     def read(self, recipe=None):
         """Extracts datasets from HDF5 file, transforms them and puts all into a namedtuple.
@@ -134,9 +177,15 @@ class HDF5Reader:
         from itertools import chain
         from masci_tools.io.hdf5_util import read_hdf_simple
 
+        logger.info('Started reading HDF file: %s', self._filename)
+
         if recipe is None:
-            warnings.warn('You are using the HDF5Reader without a recipe falling back to simple HDF reader')
-            return read_hdf_simple(self._file)
+            msg = 'Using the HDF5Reader without a recipe falling back to simple HDF reader'
+            logging.warn(msg)
+            warnings.warn(msg)
+            res = read_hdf_simple(self._file)
+            logger.info('Finished reading .hdf file')
+            return res
 
         datasets = recipe.get('datasets', {})
         attributes = recipe.get('attributes', {})
@@ -148,38 +197,37 @@ class HDF5Reader:
         output_attrs = {}
         for key, val in attributes.items():
             transforms = val.get('transforms', [])
-            output_attrs[key] = self._transform_dataset(transforms, extracted_datasets[val['h5path']])
+            output_attrs[key] = self._transform_dataset(transforms, extracted_datasets[val['h5path']], dataset_name=key)
             if val.get('unpack_dict', False):
-                if not isinstance(output_attrs[key], dict):
-                    raise ValueError(f'{key} cannot be unpacked: Got {type(output_attrs[key])}')
-
-                unpack_dict = output_attrs.pop(key)
-
-                if unpack_dict.keys() & output_attrs.keys():
-                    raise ValueError('Unpacking would result in lost information: \n'
-                                     f"Intersection of keys: '{unpack_dict.keys().intersection(output_attrs.keys())}'")
-
-                output_attrs = {**output_attrs, **unpack_dict}
+                try:
+                    output_attrs = self._unpack_dataset(output_attrs, dataset_name=key)
+                except Exception as err:
+                    logger.exception(str(err))
+                    raise
 
         output_data = {}
         for key, val in datasets.items():
             transforms = val.get('transforms', [])
             output_data[key] = self._transform_dataset(transforms,
                                                        extracted_datasets[val['h5path']],
-                                                       attributes=output_attrs)
+                                                       attributes=output_attrs,
+                                                       dataset_name=key)
             if val.get('unpack_dict', False):
-                if not isinstance(output_data[key], dict):
-                    raise ValueError(f'{key} cannot be unpacked: Got {type(output_data[key])}')
-
-                unpack_dict = output_data.pop(key)
-                if unpack_dict.keys() & output_data.keys():
-                    raise ValueError('Unpacking would result in lost information: \n'
-                                     f"Intersection of keys: '{unpack_dict.keys().intersection(output_data.keys())}'")
-
-                output_data = {**output_data, **unpack_dict}
+                try:
+                    output_data = self._unpack_dataset(output_data, dataset_name=key)
+                except Exception as err:
+                    logger.exception(str(err))
+                    raise
 
         if self._move_to_memory:
-            self._transforms['move_to_memory'](output_data)
-            self._transforms['move_to_memory'](output_attrs)
+            logger.debug('Moving remaining h5py.Datasets to memory')
+            try:
+                self._transforms['move_to_memory'](output_data)
+                self._transforms['move_to_memory'](output_attrs)
+            except Exception as err:
+                logger.exception(str(err))
+                raise
+
+        logger.info('Finished reading HDF file: %s', self._filename)
 
         return output_data, output_attrs
