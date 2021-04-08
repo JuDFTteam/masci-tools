@@ -99,9 +99,9 @@ class FleurXMLModifier:
         nmmpmat_functions = copy.deepcopy(NMMPMAT_SETTERS)
 
         if extra_funcs is not None:
-            xpath_functions.update(extra_funcs.get('basic'))
-            schema_dict_functions.update(extra_funcs.get('schema_dict'))
-            nmmpmat_functions.update(extra_funcs.get('nmmpmat'))
+            xpath_functions.update(extra_funcs.get('basic', {}))
+            schema_dict_functions.update(extra_funcs.get('schema_dict', {}))
+            nmmpmat_functions.update(extra_funcs.get('nmmpmat', {}))
 
         for task in modification_tasks:
             if task.name in xpath_functions:
