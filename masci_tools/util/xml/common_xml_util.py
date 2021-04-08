@@ -29,6 +29,20 @@ def clear_xml(tree):
 
     cleared_tree = copy.deepcopy(tree)
 
+    #Remove comments outside the root element (Since they have no parents this would lead to a crash)
+    root = cleared_tree.getroot()
+    prev_sibling = root.getprevious()
+    while prev_sibling is not None:
+        root.append(prev_sibling)
+        root.remove(prev_sibling)
+        prev_sibling = root.getprevious()
+
+    next_sibling = root.getnext()
+    while next_sibling is not None:
+        root.append(next_sibling)
+        root.remove(next_sibling)
+        next_sibling = root.getnext()
+
     #find any include tags
     include_tags = eval_xpath(cleared_tree,
                               '//xi:include',
