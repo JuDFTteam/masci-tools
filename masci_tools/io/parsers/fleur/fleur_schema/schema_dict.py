@@ -23,9 +23,88 @@ import warnings
 import tempfile
 import shutil
 from lxml import etree
+from functools import update_wrapper
 
 PACKAGE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 
+def schema_dict_version_dispatch(output_schema=False):
+    """
+    Decorator for creating variations of functions based on the inp/out
+    version of the schema_dict. All functions here need to have the signature::
+
+        def f(node, schema_dict, *args, **kwargs):
+            pass
+
+    So schema_dict is the second positional argument
+
+    Inspired by singledispatch in the functools module
+    """
+
+    def schema_dict_version_dispatch_dec(func):
+
+        registry = {}
+
+        def dispatch(version):
+
+            default_match = None
+            matches = []
+            for condition, func in registry.items():
+
+                if isinstance(condition, str):
+                    default_match = func
+                elif condition(version):
+                    matches.append(func)
+
+            matches.append(default_match)
+
+            if len(matches) > 2:
+                raise ValueError('Ambiguous possibilites for schema_dict_version_dispatch for version {version}')
+
+            return matches[0]
+
+        def register(min_version=None, max_version=None):
+
+            def register_dec(func):
+
+                if min_version is None and max_version is None:
+                    raise ValueError('Either a minimum or maximum version has to be given')
+
+                if min_version is not None and max_version is not None:
+                    cond_func = lambda version: version >= min_version and version <= max_version
+                elif min_version is not None:
+                    cond_func = lambda version: version >= min_version
+                else:
+                    cond_func = lambda version: version <= max_version
+
+                registry[cond_func] = func
+
+                return func
+
+            return register_dec
+
+        def wrapper(node, schema_dict, *args, **kwargs):
+
+            if not isinstance(schema_dict, SchemaDict):
+                raise ValueError('Second positional argument is not a SchemaDict')
+
+            if output_schema:
+                if not isinstance(schema_dict, OutputSchemaDict):
+                    raise ValueError('Second positional argument is not a OutputSchemaDict')
+                version = schema_dict.out_version
+            else:
+                version = schema_dict.inp_version
+
+            return dispatch(version)(node, schema_dict, *args, **kwargs)
+
+        registry['default'] = func
+        wrapper.register = register
+        wrapper.dispatch = dispatch
+        wrapper.registry = registry
+        update_wrapper(wrapper, func)
+
+        return wrapper
+
+    return schema_dict_version_dispatch_dec
 
 def _get_latest_available_version(output_schema):
     """
