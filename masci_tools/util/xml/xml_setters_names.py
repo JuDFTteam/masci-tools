@@ -16,6 +16,7 @@ and as little knowledge of the concrete xpaths as possible
 """
 from masci_tools.util.schema_dict_util import get_tag_xpath
 from masci_tools.util.schema_dict_util import get_attrib_xpath
+from masci_tools.io.parsers.fleur.fleur_schema import schema_dict_version_dispatch
 
 
 def create_tag(xmltree, schema_dict, tag_name, complex_xpath=None, create_parents=False, occurrences=None, **kwargs):
@@ -758,5 +759,48 @@ def set_inpchanges(xmltree, schema_dict, change_dict, path_spec=None):
             xml_set_first_text(xmltree, schema_dict, key_xpath, key_xpath, change_value)
         else:
             xml_set_first_attrib_value(xmltree, schema_dict, key_xpath, key_xpath, key, change_value)
+
+    return xmltree
+
+@schema_dict_version_dispatch(output_schema=False)
+def set_nkpts(xmltree, schema_dict, count, gamma):
+    """
+    Sets a k-point mesh directly into inp.xml
+
+    :param fleurinp_tree_copy: a lxml tree that represents inp.xml
+    :param count: number of k-points
+    :param gamma: bool that controls if the gamma-point should be included
+                  in the k-point mesh
+
+    :returns: an xmltree of the inp.xml file with changes.
+    """
+
+    raise NotImplementedError(f"'set_npkts' is not implemented for inputs of version '{schema_dict['inp_version']}'")
+
+@set_nkpts.register(max_version=31)
+def set_nkpts_max4(xmltree, schema_dict, count, gamma):
+    """
+    Sets a k-point mesh directly into inp.xml
+
+    :param fleurinp_tree_copy: a lxml tree that represents inp.xml
+    :param count: number of k-points
+    :param gamma: bool that controls if the gamma-point should be included
+                  in the k-point mesh
+
+    :returns: an xmltree of the inp.xml file with changes.
+    """
+    from masci_tools.util.schema_dict_util import eval_simple_xpath, tag_exists
+
+    if not tag_exists(xmltree, schema_dict, 'kPointCount', not_contains='altKPoint'):
+        bzintegration_tag = eval_simple_xpath(xmltree, schema_dict, 'bzIntegration')
+
+        for child in bzintegration_tag.iterchildren():
+            if 'kPoint' in child.tag:
+                bzintegration_tag.remove(child)
+
+        xmltree = create_tag(xmltree, schema_dict, 'kPointCount', not_contains='altKPoint')
+
+    xmltree = set_attrib_value(xmltree, schema_dict, 'count', count, contains='kPointCount', not_contains='altKPoint')
+    xmltree = set_attrib_value(xmltree, schema_dict, 'gamma', gamma, contains='kPointCount', not_contains='altKPoint')
 
     return xmltree
