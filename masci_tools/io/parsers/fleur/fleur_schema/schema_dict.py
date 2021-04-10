@@ -27,6 +27,7 @@ from functools import update_wrapper
 
 PACKAGE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 
+
 def schema_dict_version_dispatch(output_schema=False):
     """
     Decorator for creating variations of functions based on the inp/out
@@ -70,7 +71,7 @@ def schema_dict_version_dispatch(output_schema=False):
                     raise ValueError('Either a minimum or maximum version has to be given')
 
                 if min_version is not None and max_version is not None:
-                    cond_func = lambda version: version >= min_version and version <= max_version
+                    cond_func = lambda version: min_version <= version <= max_version
                 elif min_version is not None:
                     cond_func = lambda version: version >= min_version
                 else:
@@ -106,6 +107,7 @@ def schema_dict_version_dispatch(output_schema=False):
 
     return schema_dict_version_dispatch_dec
 
+
 def _get_latest_available_version(output_schema):
     """
     Determine the newest available version for the schema
@@ -122,10 +124,10 @@ def _get_latest_available_version(output_schema):
             if '.' in folder:
                 if output_schema and not os.path.isfile(os.path.join(root, folder, 'FleurOutputSchema.xsd')):
                     continue
-                elif not output_schema and not os.path.isfile(os.path.join(root, folder, 'FleurInputSchema.xsd')):
+                if not output_schema and not os.path.isfile(os.path.join(root, folder, 'FleurInputSchema.xsd')):
                     continue
 
-                version_number = int(folder.split('.')[0]+folder.split('.')[1])
+                version_number = int(folder.split('.')[0] + folder.split('.')[1])
                 if version_number > latest_version_number:
                     latest_version_number = version_number
                     latest_version = folder
@@ -306,12 +308,13 @@ class InputSchemaDict(SchemaDict):
         """
         Returns the input version as an integer for comparisons (`>` or `<`)
         """
-        version_numbers = self.get('inp_version','').split('.')
+        version_numbers = self.get('inp_version', '').split('.')
 
         if len(version_numbers) != 2:
             raise ValueError(f"inp_version is malformed: '{self.get('inp_version','')}'")
 
-        return int(version_numbers[0]+version_numbers[1])
+        return int(version_numbers[0] + version_numbers[1])
+
 
 class OutputSchemaDict(SchemaDict):
     """
@@ -469,21 +472,21 @@ class OutputSchemaDict(SchemaDict):
         """
         Returns the input version as an integer for comparisons (`>` or `<`)
         """
-        version_numbers = self.get('inp_version','').split('.')
+        version_numbers = self.get('inp_version', '').split('.')
 
         if len(version_numbers) != 2:
             raise ValueError(f"inp_version is malformed: '{self.get('inp_version','')}'")
 
-        return int(version_numbers[0]+version_numbers[1])
+        return int(version_numbers[0] + version_numbers[1])
 
     @property
     def out_version(self):
         """
         Returns the output version as an integer for comparisons (`>` or `<`)
         """
-        version_numbers = self.get('out_version','').split('.')
+        version_numbers = self.get('out_version', '').split('.')
 
         if len(version_numbers) != 2:
             raise ValueError(f"out_version is malformed: '{self.get('out_version','')}'")
 
-        return int(version_numbers[0]+version_numbers[1])
+        return int(version_numbers[0] + version_numbers[1])
