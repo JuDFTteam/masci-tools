@@ -232,7 +232,7 @@ class InputSchemaDict(SchemaDict):
         if len(version_numbers) != 2:
             raise ValueError(f"inp_version is malformed: '{self.get('inp_version','')}'")
 
-        return int(version_numbers[0]+version_numbers[0])
+        return int(version_numbers[0]+version_numbers[1])
 
 class OutputSchemaDict(SchemaDict):
     """
@@ -395,7 +395,7 @@ class OutputSchemaDict(SchemaDict):
         if len(version_numbers) != 2:
             raise ValueError(f"inp_version is malformed: '{self.get('inp_version','')}'")
 
-        return int(version_numbers[0]+version_numbers[0])
+        return int(version_numbers[0]+version_numbers[1])
 
     @property
     def out_version(self):
@@ -407,4 +407,4 @@ class OutputSchemaDict(SchemaDict):
         if len(version_numbers) != 2:
             raise ValueError(f"out_version is malformed: '{self.get('out_version','')}'")
 
-        return int(version_numbers[0]+version_numbers[0])
+        return int(version_numbers[0]+version_numbers[1])
