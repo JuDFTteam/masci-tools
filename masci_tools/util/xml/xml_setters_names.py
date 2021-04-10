@@ -765,9 +765,10 @@ def set_inpchanges(xmltree, schema_dict, change_dict, path_spec=None):
 @schema_dict_version_dispatch(output_schema=False)
 def set_nkpts(xmltree, schema_dict, count, gamma):
     """
-    Sets a k-point mesh directly into inp.xml
+    Sets a k-point mesh directly into inp.xml (Only available for inputs before Max4)
 
-    :param fleurinp_tree_copy: a lxml tree that represents inp.xml
+    :param xmltree: xml tree that represents inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
     :param count: number of k-points
     :param gamma: bool that controls if the gamma-point should be included
                   in the k-point mesh
@@ -780,9 +781,10 @@ def set_nkpts(xmltree, schema_dict, count, gamma):
 @set_nkpts.register(max_version=31)
 def set_nkpts_max4(xmltree, schema_dict, count, gamma):
     """
-    Sets a k-point mesh directly into inp.xml
+    Sets a k-point mesh directly into inp.xml specific for inputs of version Max4
 
-    :param fleurinp_tree_copy: a lxml tree that represents inp.xml
+    :param xmltree: xml tree that represents inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
     :param count: number of k-points
     :param gamma: bool that controls if the gamma-point should be included
                   in the k-point mesh
