@@ -35,16 +35,26 @@ def _get_latest_available_version(output_schema):
 
     :returns: version string of the latest version
     """
-    latest_version = 0
+    latest_version_number = 0
+    latest_version = None
     #Get latest version available
     for root, dirs, files in os.walk(PACKAGE_DIRECTORY):
         for folder in dirs:
-            if '0.' in folder:
-                if output_schema and os.path.isfile(os.path.join(root, folder, 'FleurOutputSchema.xsd')):
-                    latest_version = max(latest_version, int(folder.split('.')[1]))
-                elif not output_schema and os.path.isfile(os.path.join(root, folder, 'FleurInputSchema.xsd')):
-                    latest_version = max(latest_version, int(folder.split('.')[1]))
-    return f'0.{latest_version}'
+            if '.' in folder:
+                if output_schema and not os.path.isfile(os.path.join(root, folder, 'FleurOutputSchema.xsd')):
+                    continue
+                elif not output_schema and not os.path.isfile(os.path.join(root, folder, 'FleurInputSchema.xsd')):
+                    continue
+
+                version_number = int(folder.split('.')[0]+folder.split('.')[1])
+                if version_number > latest_version_number:
+                    latest_version_number = version_number
+                    latest_version = folder
+
+    if latest_version is None:
+        raise ValueError('Failed to extract latest version')
+
+    return latest_version
 
 
 class SchemaDict(LockableDict):
@@ -212,6 +222,17 @@ class InputSchemaDict(SchemaDict):
 
         return cls(schema_dict, xmlschema=xmlschema)
 
+    @property
+    def inp_version(self):
+        """
+        Returns the input version as an integer for comparisons (`>` or `<`)
+        """
+        version_numbers = self.get('inp_version','').split('.')
+
+        if len(version_numbers) != 2:
+            raise ValueError(f"inp_version is malformed: '{self.get('inp_version','')}'")
+
+        return int(version_numbers[0]+version_numbers[0])
 
 class OutputSchemaDict(SchemaDict):
     """
@@ -363,3 +384,27 @@ class OutputSchemaDict(SchemaDict):
             xmlschema = etree.XMLSchema(xmlschema_doc)
 
         return cls(schema_dict, xmlschema=xmlschema)
+
+    @property
+    def inp_version(self):
+        """
+        Returns the input version as an integer for comparisons (`>` or `<`)
+        """
+        version_numbers = self.get('inp_version','').split('.')
+
+        if len(version_numbers) != 2:
+            raise ValueError(f"inp_version is malformed: '{self.get('inp_version','')}'")
+
+        return int(version_numbers[0]+version_numbers[0])
+
+    @property
+    def out_version(self):
+        """
+        Returns the output version as an integer for comparisons (`>` or `<`)
+        """
+        version_numbers = self.get('out_version','').split('.')
+
+        if len(version_numbers) != 2:
+            raise ValueError(f"out_version is malformed: '{self.get('out_version','')}'")
+
+        return int(version_numbers[0]+version_numbers[0])
