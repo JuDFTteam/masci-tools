@@ -640,3 +640,19 @@ def check_complex_xpath(node, base_xpath, complex_xpath):
 
     if not results_base.issuperset(results_complex):
         raise ValueError(f"Complex xpath '{complex_xpath}' is not compatible with the base_xpath '{base_xpath}'")
+
+def convert_str_version_number(version_str):
+    """
+    Convert the version number as a integer for easy comparisons
+
+    :param version_str: str of the version number, e.g. '0.33'
+
+    :returns: tuple of ints representing the version str
+    """
+
+    version_numbers = version_str.split('.')
+
+    if len(version_numbers) != 2:
+        raise ValueError(f"Version number is malformed: '{version_str}'")
+
+    return tuple(int(part) for part in version_numbers)

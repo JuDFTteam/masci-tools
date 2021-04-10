@@ -64,6 +64,13 @@ def schema_dict_version_dispatch(output_schema=False):
             return matches[0]
 
         def register(min_version=None, max_version=None):
+            from masci_tools.util.xml.common_xml_util import convert_str_version_number
+
+            if min_version is not None:
+                min_version = convert_str_version_number(min_version)
+
+            if max_version is not None:
+                max_version = convert_str_version_number(max_version)
 
             def register_dec(func):
 
@@ -116,8 +123,9 @@ def _get_latest_available_version(output_schema):
 
     :returns: version string of the latest version
     """
-    latest_version_number = 0
-    latest_version = None
+    from masci_tools.util.xml.common_xml_util import convert_str_version_number
+
+    latest_version = (0, 0)
     #Get latest version available
     for root, dirs, files in os.walk(PACKAGE_DIRECTORY):
         for folder in dirs:
@@ -127,15 +135,9 @@ def _get_latest_available_version(output_schema):
                 if not output_schema and not os.path.isfile(os.path.join(root, folder, 'FleurInputSchema.xsd')):
                     continue
 
-                version_number = int(folder.split('.')[0] + folder.split('.')[1])
-                if version_number > latest_version_number:
-                    latest_version_number = version_number
-                    latest_version = folder
+                latest_version = max(latest_version, convert_str_version_number(folder))
 
-    if latest_version is None:
-        raise ValueError('Failed to extract latest version')
-
-    return latest_version
+    return '.'.join(map(str,latest_version))
 
 
 class SchemaDict(LockableDict):
@@ -308,12 +310,9 @@ class InputSchemaDict(SchemaDict):
         """
         Returns the input version as an integer for comparisons (`>` or `<`)
         """
-        version_numbers = self.get('inp_version', '').split('.')
+        from masci_tools.util.xml.common_xml_util import convert_str_version_number
 
-        if len(version_numbers) != 2:
-            raise ValueError(f"inp_version is malformed: '{self.get('inp_version','')}'")
-
-        return int(version_numbers[0] + version_numbers[1])
+        return convert_str_version_number(self.get('inp_version',''))
 
 
 class OutputSchemaDict(SchemaDict):
@@ -472,21 +471,15 @@ class OutputSchemaDict(SchemaDict):
         """
         Returns the input version as an integer for comparisons (`>` or `<`)
         """
-        version_numbers = self.get('inp_version', '').split('.')
+        from masci_tools.util.xml.common_xml_util import convert_str_version_number
 
-        if len(version_numbers) != 2:
-            raise ValueError(f"inp_version is malformed: '{self.get('inp_version','')}'")
-
-        return int(version_numbers[0] + version_numbers[1])
+        return convert_str_version_number(self.get('inp_version',''))
 
     @property
     def out_version(self):
         """
         Returns the output version as an integer for comparisons (`>` or `<`)
         """
-        version_numbers = self.get('out_version', '').split('.')
+        from masci_tools.util.xml.common_xml_util import convert_str_version_number
 
-        if len(version_numbers) != 2:
-            raise ValueError(f"out_version is malformed: '{self.get('out_version','')}'")
-
-        return int(version_numbers[0] + version_numbers[1])
+        return convert_str_version_number(self.get('out_version',''))

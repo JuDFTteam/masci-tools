@@ -778,7 +778,7 @@ def set_nkpts(xmltree, schema_dict, count, gamma):
 
     raise NotImplementedError(f"'set_npkts' is not implemented for inputs of version '{schema_dict['inp_version']}'")
 
-@set_nkpts.register(max_version=31)
+@set_nkpts.register(max_version='0.31')
 def set_nkpts_max4(xmltree, schema_dict, count, gamma):
     """
     Sets a k-point mesh directly into inp.xml specific for inputs of version Max4
