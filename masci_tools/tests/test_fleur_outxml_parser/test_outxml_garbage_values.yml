@@ -13,4 +13,4 @@ warnings:
     \ a valid value of the atomic type 'xs:double'. \n"
   - 'Could not convert ''********''. The following errors occurred:'
   - '   could not convert string to float: ''********'''
-  - 'Failed to evaluate attribute moment, Got value: ********'
+  - 'Failed to evaluate attribute moment, Got value: [''********'']'

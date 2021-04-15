@@ -124,7 +124,7 @@ def validate_xml(xmltree, schema, error_header='File does not validate'):
         raise etree.DocumentInvalid(errmsg) from exc
 
 
-def convert_xml_attribute(stringattribute, possible_types, constants=None, logger=None):
+def convert_xml_attribute(stringattribute, possible_types, constants=None, logger=None, list_return=False):
     """
     Tries to converts a given string attribute to the types given in possible_types.
     First succeeded conversion will be returned
@@ -137,8 +137,9 @@ def convert_xml_attribute(stringattribute, possible_types, constants=None, logge
     :param logger: logger object for logging warnings
                    if given the errors are logged and the list is returned with the unconverted values
                    otherwise a error is raised, when the first conversion fails
+    :param list_return: if True, the returned quantity is always a list even if only one element is in it
 
-    :return: The converted value of the first succesful conversion
+    :return: The converted value of the first successful conversion
     """
     from masci_tools.util.fleur_calculate_expression import calculate_expression
 
@@ -202,13 +203,13 @@ def convert_xml_attribute(stringattribute, possible_types, constants=None, logge
             all_success = False
 
     ret_value = converted_list
-    if len(converted_list) == 1:
+    if len(converted_list) == 1 and not list_return:
         ret_value = converted_list[0]
 
     return ret_value, all_success
 
 
-def convert_attribute_to_xml(attributevalue, possible_types, logger=None, float_format='.10'):
+def convert_attribute_to_xml(attributevalue, possible_types, logger=None, float_format='.10', list_return=False):
     """
     Tries to converts a given attributevalue to a string for a xml file according
     to the types given in possible_types.
@@ -219,6 +220,7 @@ def convert_attribute_to_xml(attributevalue, possible_types, logger=None, float_
     :param logger: logger object for logging warnings
                    if given the errors are logged and the list is returned with the unconverted values
                    otherwise a error is raised, when the first conversion fails
+    :param list_return: if True, the returned quantity is always a list even if only one element is in it
 
     :return: The converted str of the value of the first succesful conversion
     """
@@ -277,13 +279,13 @@ def convert_attribute_to_xml(attributevalue, possible_types, logger=None, float_
             all_success = False
 
     ret_value = converted_list
-    if len(converted_list) == 1:
+    if len(converted_list) == 1 and not list_return:
         ret_value = converted_list[0]
 
     return ret_value, all_success
 
 
-def convert_xml_text(tagtext, possible_definitions, constants=None, logger=None):
+def convert_xml_text(tagtext, possible_definitions, constants=None, logger=None, list_return=False):
     """
     Tries to converts a given string text based on the definitions (length and type).
     First succeeded conversion will be returned
@@ -294,6 +296,7 @@ def convert_xml_text(tagtext, possible_definitions, constants=None, logger=None)
     :param logger: logger object for logging warnings
                    if given the errors are logged and the list is returned with the unconverted values
                    otherwise a error is raised, when the first conversion fails
+    :param list_return: if True, the returned quantity is always a list even if only one element is in it
 
     :return: The converted value of the first succesful conversion
     """
@@ -350,13 +353,13 @@ def convert_xml_text(tagtext, possible_definitions, constants=None, logger=None)
         converted_list.append(converted_text)
 
     ret_value = converted_list
-    if len(converted_list) == 1:
+    if len(converted_list) == 1 and not list_return:
         ret_value = converted_list[0]
 
     return ret_value, all_success
 
 
-def convert_text_to_xml(textvalue, possible_definitions, logger=None, float_format='16.13'):
+def convert_text_to_xml(textvalue, possible_definitions, logger=None, float_format='16.13', list_return=False):
     """
     Tries to convert a given list of values to str for a xml file based on the definitions (length and type).
     First succeeded conversion will be returned
@@ -366,6 +369,7 @@ def convert_text_to_xml(textvalue, possible_definitions, logger=None, float_form
     :param logger: logger object for logging warnings
                    if given the errors are logged and the list is returned with the unconverted values
                    otherwise a error is raised, when the first conversion fails
+    :param list_return: if True, the returned quantity is always a list even if only one element is in it
 
     :return: The converted value of the first succesful conversion
     """
@@ -422,7 +426,7 @@ def convert_text_to_xml(textvalue, possible_definitions, logger=None, float_form
         converted_list.append(' '.join(converted_text))
 
     ret_value = converted_list
-    if len(converted_list) == 1:
+    if len(converted_list) == 1 and not list_return:
         ret_value = converted_list[0]
 
     return ret_value, all_success

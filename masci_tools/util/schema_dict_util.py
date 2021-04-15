@@ -267,10 +267,14 @@ def evaluate_attribute(node, schema_dict, name, constants=None, logger=None, **k
         :param not_contains: str, this string has to NOT be in the final path
         :param exclude: list of str, here specific types of attributes can be excluded
                         valid values are: settable, settable_contains, other
+        :param list_return: if True, the returned quantity is always a list even if only one element is in it
 
     :returns: list or single value, converted in convert_xml_attribute
     """
     from masci_tools.util.xml.common_xml_util import eval_xpath, convert_xml_attribute
+
+    list_return = kwargs.pop('list_return', False)
+    optional = kwargs.pop('optional', False)
 
     if isinstance(node, etree._Element):
         if node.tag != schema_dict['root_tag'] and node.tag != 'iteration':
@@ -279,19 +283,19 @@ def evaluate_attribute(node, schema_dict, name, constants=None, logger=None, **k
 
     attrib_xpath = get_attrib_xpath(schema_dict, name, **kwargs)
 
-    stringattribute = eval_xpath(node, attrib_xpath, logger=logger)
+    stringattribute = eval_xpath(node, attrib_xpath, logger=logger, list_return=True)
 
-    if isinstance(stringattribute, list):
-        if len(stringattribute) == 0:
-            if logger is None:
+    if len(stringattribute) == 0:
+        if logger is None:
+            if not optional:
                 raise ValueError(f'No values found for attribute {name}')
-            else:
-                logger.warning('No values found for attribute %s', name)
-                return None
+        else:
+            logger.warning('No values found for attribute %s', name)
+        return None
 
     possible_types = schema_dict['attrib_types'][name]
 
-    converted_value, suc = convert_xml_attribute(stringattribute, possible_types, constants=constants, logger=logger)
+    converted_value, suc = convert_xml_attribute(stringattribute, possible_types, constants=constants, logger=logger, list_return=list_return)
 
     if not suc:
         if logger is None:
@@ -317,11 +321,14 @@ def evaluate_text(node, schema_dict, name, constants, logger=None, **kwargs):
     Kwargs:
         :param contains: str, this string has to be in the final path
         :param not_contains: str, this string has to NOT be in the final path
-
+        :param list_return: if True, the returned quantity is always a list even if only one element is in it
 
     :returns: list or single value, converted in convert_xml_text
     """
     from masci_tools.util.xml.common_xml_util import eval_xpath, convert_xml_text
+
+    list_return = kwargs.pop('list_return', False)
+    optional = kwargs.pop('optional', False)
 
     if isinstance(node, etree._Element):
         if node.tag != schema_dict['root_tag'] and node.tag != 'iteration':
@@ -330,27 +337,24 @@ def evaluate_text(node, schema_dict, name, constants, logger=None, **kwargs):
 
     tag_xpath = get_tag_xpath(schema_dict, name, **kwargs)
 
-    stringtext = eval_xpath(node, f'{tag_xpath}/text()', logger=logger)
+    stringtext = eval_xpath(node, f'{tag_xpath}/text()', logger=logger, list_return=True)
 
-    if isinstance(stringtext, list):
-        for text in stringtext.copy():
-            if text.strip() == '':
-                stringtext.remove(text)
-    else:
-        if stringtext.strip() == '':
-            stringtext = []
 
-    if isinstance(stringtext, list):
-        if len(stringtext) == 0:
-            if logger is None:
+    for text in stringtext.copy():
+        if text.strip() == '':
+            stringtext.remove(text)
+
+    if len(stringtext) == 0:
+        if logger is None:
+            if not optional:
                 raise ValueError(f'No text found for tag {name}')
-            else:
-                logger.warning('No text found for tag %s', name)
-                return None
+        else:
+            logger.warning('No text found for tag %s', name)
+        return None
 
     possible_definitions = schema_dict['simple_elements'][name]
 
-    converted_value, suc = convert_xml_text(stringtext, possible_definitions, constants=constants, logger=logger)
+    converted_value, suc = convert_xml_text(stringtext, possible_definitions, constants=constants, logger=logger, list_return=list_return)
 
     if not suc:
         if logger is None:
@@ -378,6 +382,8 @@ def evaluate_tag(node, schema_dict, name, constants=None, logger=None, **kwargs)
         :param not_contains: str, this string has to NOT be in the final path
         :param only_required: bool (optional, default False), if True only required attributes are parsed
         :param ignore: list of str (optional), attributes not to parse
+        :param list_return: if True, the returned quantity is always a list even if only one element is in it
+        :param strict_missing_error: if True, and no logger is given an error is raised if any attribute is not found
 
     :returns: dict, with attribute values converted via convert_xml_attribute
     """
@@ -386,6 +392,7 @@ def evaluate_tag(node, schema_dict, name, constants=None, logger=None, **kwargs)
     only_required = kwargs.pop('only_required', False)
     strict_missing_error = kwargs.pop('strict_missing_error', False)
     ignore = kwargs.pop('ignore', None)
+    list_return = kwargs.pop('list_return', False)
 
     if isinstance(node, etree._Element):
         if node.tag != schema_dict['root_tag'] and node.tag != 'iteration':
@@ -427,24 +434,24 @@ def evaluate_tag(node, schema_dict, name, constants=None, logger=None, **kwargs)
 
     for attrib in attribs:
 
-        stringattribute = eval_xpath(node, f'{tag_xpath}/@{attrib}', logger=logger)
+        stringattribute = eval_xpath(node, f'{tag_xpath}/@{attrib}', logger=logger, list_return=True)
 
-        if isinstance(stringattribute, list):
-            if len(stringattribute) == 0:
-                if logger is None:
-                    if strict_missing_error and attrib not in optional:
-                        raise ValueError(f'No values found for attribute {attrib} at tag {name}')
-                else:
-                    logger.warning('No values found for attribute %s at tag %s', attrib, name)
-                out_dict[attrib] = None
-                continue
+        if len(stringattribute) == 0:
+            if logger is None:
+                if strict_missing_error and attrib not in optional:
+                    raise ValueError(f'No values found for attribute {attrib} at tag {name}')
+            else:
+                logger.warning('No values found for attribute %s at tag %s', attrib, name)
+            out_dict[attrib] = None
+            continue
 
         possible_types = schema_dict['attrib_types'][attrib]
 
         out_dict[attrib], suc = convert_xml_attribute(stringattribute,
                                                       possible_types,
                                                       constants=constants,
-                                                      logger=logger)
+                                                      logger=logger,
+                                                      list_return=list_return)
 
         if not suc:
             if logger is None:
@@ -472,6 +479,8 @@ def evaluate_single_value_tag(node, schema_dict, name, constants=None, logger=No
         :param not_contains: str, this string has to NOT be in the final path
         :param only_required: bool (optional, default False), if True only required attributes are parsed
         :param ignore: list of str (optional), attributes not to parse
+        :param list_return: if True, the returned quantity is always a list even if only one element is in it
+        :param strict_missing_error: if True, and no logger is given an error is raised if any attribute is not found
 
     :returns: value and unit, both converted in convert_xml_attribute
     """
@@ -513,11 +522,15 @@ def evaluate_parent_tag(node, schema_dict, name, constants=None, logger=None, **
         :param not_contains: str, this string has to NOT be in the final path
         :param only_required: bool (optional, default False), if True only required attributes are parsed
         :param ignore: list of str (optional), attributes not to parse
+        :param list_return: if True, the returned quantity is always a list even if only one element is in it
+        :param strict_missing_error: if True, and no logger is given an error is raised if any attribute is not found
 
     :returns: dict, with attribute values converted via convert_xml_attribute
     """
     from masci_tools.util.xml.common_xml_util import eval_xpath, convert_xml_attribute, get_xml_attribute
 
+    strict_missing_error = kwargs.pop('strict_missing_error', False)
+    list_return = kwargs.pop('list_return', False)
     only_required = kwargs.pop('only_required', False)
     ignore = kwargs.pop('ignore', None)
 
@@ -561,7 +574,7 @@ def evaluate_parent_tag(node, schema_dict, name, constants=None, logger=None, **
 
     elems = eval_xpath(node, tag_xpath, logger=logger, list_return=True)
 
-    out_dict = dict.fromkeys(attribs)
+    out_dict = {}
     for attrib in attribs:
         out_dict[attrib] = []
 
@@ -569,15 +582,16 @@ def evaluate_parent_tag(node, schema_dict, name, constants=None, logger=None, **
         parent = elem.getparent()
         for attrib in attribs:
 
-            stringattribute = get_xml_attribute(parent, attrib)
+            stringattribute = get_xml_attribute(parent, attrib, logger=logger)
 
-            if stringattribute == '':
+            if stringattribute is None:
                 if logger is None:
-                    raise ValueError(f'No values found for attribute {attrib} for parent tag of {name}')
+                    if strict_missing_error and attrib not in optional:
+                        raise ValueError(f'No values found for attribute {attrib} for parent tag of {name}')
                 else:
                     logger.warning('No values found for attribute %s for parent tag of %s', attrib, name)
-                    out_dict[attrib].append(None)
-                    continue
+                out_dict[attrib].append(None)
+                continue
 
             possible_types = schema_dict['attrib_types'][attrib]
 
@@ -591,7 +605,7 @@ def evaluate_parent_tag(node, schema_dict, name, constants=None, logger=None, **
                 else:
                     logger.warning('Failed to evaluate attribute %s, Got value: %s', attrib, stringattribute)
 
-    if all(len(x) == 1 for x in out_dict.values()):
+    if all(len(x) == 1 for x in out_dict.values()) and not list_return:
         out_dict = {key: val[0] for key, val in out_dict.items()}
 
     return out_dict
