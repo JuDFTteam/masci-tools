@@ -9,6 +9,9 @@ import numpy as np
 from masci_tools.io.parsers.fleur.fleur_schema import InputSchemaDict, OutputSchemaDict
 from masci_tools.util.constants import FLEUR_DEFINED_CONSTANTS
 from pprint import pprint
+import logging
+
+LOGGER = logging.getLogger(__name__)
 
 #Load different schema versions (for now only input schemas)
 schema_dict_34 = InputSchemaDict.fromVersion('0.34')
@@ -376,7 +379,7 @@ def test_get_tag_info():
         res = get_tag_info(schema_dict, 'ldaHIA', not_contains='atom', contains='species')
 
 
-def test_read_contants():
+def test_read_constants():
     """
     Test of the read_constants function
     """
@@ -412,11 +415,11 @@ def test_read_contants():
     result = read_constants(root2, outschema_dict_34)
     assert result == expected_constants
 
-    with pytest.raises(KeyError, match='Ambiguous definition of key Pi'):
+    with pytest.raises(KeyError, match='Ambiguous definition of constant Pi'):
         result = read_constants(root3, schema_dict_34)
 
 
-def test_evaluate_attribute():
+def test_evaluate_attribute(caplog):
     """
     Test of the evaluate_attribute function
     """
@@ -496,16 +499,16 @@ def test_evaluate_attribute():
                        match='The attrib spinf has multiple possible paths with the current specification.'):
         evaluate_attribute(root, schema_dict, 'spinf', FLEUR_DEFINED_CONSTANTS)
 
-    expected_info = {'parser_warnings': ['No values found for attribute radius']}
+    with pytest.raises(ValueError, match='No values found for attribute radius'):
+        evaluate_attribute(root, schema_dict, 'radius', FLEUR_DEFINED_CONSTANTS, not_contains='species')
 
-    parser_info_out = {'parser_warnings': []}
-    assert evaluate_attribute(
-        root, schema_dict, 'radius', FLEUR_DEFINED_CONSTANTS, not_contains='species',
-        parser_info_out=parser_info_out) is None
-    assert parser_info_out == expected_info
+    with caplog.at_level(logging.WARNING):
+        assert evaluate_attribute(
+            root, schema_dict, 'radius', FLEUR_DEFINED_CONSTANTS, not_contains='species', logger=LOGGER) is None
+    assert 'No values found for attribute radius' in caplog.text
 
 
-def test_evaluate_text():
+def test_evaluate_text(caplog):
     """
     Test of the evaluate_text function
     """
@@ -555,14 +558,16 @@ def test_evaluate_text():
     with pytest.raises(ValueError, match='The tag TEST has no possible paths with the current specification.'):
         evaluate_text(root, schema_dict, 'TEST', FLEUR_DEFINED_CONSTANTS)
 
-    expected_info = {'parser_warnings': ['No text found for tag magnetism']}
-    parser_info_out = {'parser_warnings': []}
-    assert evaluate_text(root, schema_dict, 'magnetism', FLEUR_DEFINED_CONSTANTS,
-                         parser_info_out=parser_info_out) is None
-    assert parser_info_out == expected_info
+    with pytest.raises(ValueError, match='No text found for tag magnetism'):
+        evaluate_text(root, schema_dict, 'magnetism', FLEUR_DEFINED_CONSTANTS, not_contains='species')
+
+    with caplog.at_level(logging.WARNING):
+        assert evaluate_text(
+            root, schema_dict, 'magnetism', FLEUR_DEFINED_CONSTANTS, not_contains='species', logger=LOGGER) is None
+    assert 'No text found for tag magnetism' in caplog.text
 
 
-def test_evaluate_tag():
+def test_evaluate_tag(caplog):
     """
     Test of the evaluate_tag function
     """
@@ -597,16 +602,12 @@ def test_evaluate_tag():
                        match='The tag mtSphere has multiple possible paths with the current specification.'):
         evaluate_tag(root, schema_dict, 'mtSphere', FLEUR_DEFINED_CONSTANTS)
 
-    expected_info = {
-        'parser_warnings': [
-            'Failed to evaluate attributes from tag qss: '
-            'No attributes to parse either the tag does not '
-            'exist or it has no attributes'
-        ]
-    }
-    parser_info_out = {'parser_warnings': []}
-    assert evaluate_tag(root, schema_dict, 'qss', FLEUR_DEFINED_CONSTANTS, parser_info_out=parser_info_out) == {}
-    assert parser_info_out == expected_info
+    with pytest.raises(ValueError, match='Failed to evaluate attributes from tag qss'):
+        evaluate_tag(root, schema_dict, 'qss', FLEUR_DEFINED_CONSTANTS)
+
+    with caplog.at_level(logging.WARNING):
+        assert evaluate_tag(root, schema_dict, 'qss', FLEUR_DEFINED_CONSTANTS, logger=LOGGER) == {}
+    assert 'Failed to evaluate attributes from tag qss' in caplog.text
 
     expected = {'radius': [2.2, 2.2], 'gridPoints': [787, 787], 'logIncrement': [0.016, 0.017]}
     mtRadii = evaluate_tag(root, schema_dict, 'mtSphere', FLEUR_DEFINED_CONSTANTS, contains='species')
@@ -654,7 +655,7 @@ def test_evaluate_tag():
     assert nocoParams == expected
 
 
-def test_single_value_tag():
+def test_single_value_tag(caplog):
     """
     Test of the evaluate_single_value_tag function
     """
@@ -690,13 +691,25 @@ def test_single_value_tag():
         evaluate_single_value_tag(root, schema_dict, 'totalCharge', FLEUR_DEFINED_CONSTANTS)
 
     expected = {'units': None, 'value': 63.9999999893}
-    totalCharge = evaluate_single_value_tag(iteration,
-                                            schema_dict,
-                                            'totalCharge',
-                                            FLEUR_DEFINED_CONSTANTS,
-                                            contains='allElectronCharges',
-                                            not_contains='fixed')
+    with pytest.raises(ValueError,
+                       match="Failed to evaluate singleValue from tag totalCharge: Has no 'units' attribute"):
+        evaluate_single_value_tag(iteration,
+                                  schema_dict,
+                                  'totalCharge',
+                                  FLEUR_DEFINED_CONSTANTS,
+                                  contains='allElectronCharges',
+                                  not_contains='fixed')
+
+    with caplog.at_level(logging.WARNING):
+        totalCharge = evaluate_single_value_tag(iteration,
+                                                schema_dict,
+                                                'totalCharge',
+                                                FLEUR_DEFINED_CONSTANTS,
+                                                contains='allElectronCharges',
+                                                not_contains='fixed',
+                                                logger=LOGGER)
     assert totalCharge == expected
+    assert "Failed to evaluate singleValue from tag totalCharge: Has no 'units' attribute" in caplog.text
 
     expected = {'value': 63.9999999893}
     totalCharge = evaluate_single_value_tag(iteration,
@@ -780,6 +793,35 @@ def test_tag_exists():
         tag_exists(root, schema_dict, 'ldaU')
     with pytest.raises(ValueError, match='The tag ldaU has no possible paths with the current specification.'):
         tag_exists(root, schema_dict, 'ldaU', contains='group')
+
+
+def test_attrib_exists():
+    """
+    Test of the tag_exists function
+    """
+    from lxml import etree
+    from masci_tools.util.schema_dict_util import attrib_exists
+
+    schema_dict = schema_dict_34
+
+    parser = etree.XMLParser(attribute_defaults=True, recover=False, encoding='utf-8')
+    xmltree = etree.parse(TEST_INPXML_PATH, parser)
+    outxmltree = etree.parse(TEST_OUTXML_PATH2, parser)
+
+    outroot = outxmltree.getroot()
+    root = xmltree.getroot()
+
+    assert attrib_exists(root, schema_dict, 'itmax')
+    assert attrib_exists(root, schema_dict, 'jspins')
+
+    assert not attrib_exists(root, schema_dict, 'radius', contains='atomGroup')
+    assert not attrib_exists(outroot, schema_dict, 'radius', contains='atomGroup')
+
+    with pytest.raises(ValueError,
+                       match='The attrib spinf has multiple possible paths with the current specification.'):
+        attrib_exists(root, schema_dict, 'spinf')
+    with pytest.raises(ValueError, match='The attrib spinf has no possible paths with the current specification.'):
+        attrib_exists(root, schema_dict, 'spinf', contains='group')
 
 
 def test_get_number_of_nodes():

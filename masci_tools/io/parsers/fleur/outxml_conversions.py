@@ -23,7 +23,7 @@ from masci_tools.io.common_functions import convert_to_pystd
 
 
 @conversion_function
-def convert_total_energy(out_dict, parser_info_out=None):
+def convert_total_energy(out_dict, logger):
     """
     Convert total energy to eV
     """
@@ -32,6 +32,7 @@ def convert_total_energy(out_dict, parser_info_out=None):
 
     if total_energy is None:
         if 'energy_hartree' in out_dict:
+            logger.warning('convert_total_energy cannot convert None to eV')
             out_dict['energy'] = None
             out_dict['energy_units'] = 'eV'
         return out_dict
@@ -45,13 +46,14 @@ def convert_total_energy(out_dict, parser_info_out=None):
     if total_energy is not None:
         out_dict['energy'].append(total_energy * HTR_TO_EV)
     else:
+        logger.warning('convert_total_energy cannot convert None to eV')
         out_dict['energy'].append(None)
 
     return out_dict
 
 
 @conversion_function
-def calculate_total_magnetic_moment(out_dict, parser_info_out=None):
+def calculate_total_magnetic_moment(out_dict, logger):
     """
     Calculate the the total magnetic moment per cell
 
@@ -60,6 +62,7 @@ def calculate_total_magnetic_moment(out_dict, parser_info_out=None):
     total_charge = out_dict.get('spin_dependent_charge_total', None)
 
     if total_charge is None:
+        logger.warning('calculate_total_magnetic_moment got None')
         return out_dict
 
     total_charge = total_charge[-1]
@@ -73,43 +76,41 @@ def calculate_total_magnetic_moment(out_dict, parser_info_out=None):
 
 
 @conversion_function
-def calculate_walltime(out_dict, parser_info_out=None):
+def calculate_walltime(out_dict, logger):
     """
     Calculate the walltime from start and end time
 
     :param out_dict: dict with the already parsed information
-    :param parser_info_out: dict, with warnings, info, errors, ...
+    :param logger: logger object for logging warnings, errors, if not provided all errors will be raised
     """
-    if parser_info_out is None:
-        parser_info_out = {'parser_warnings': []}
 
     if out_dict['start_date']['time'] is not None:
         starttimes = out_dict['start_date']['time'].split(':')
     else:
         starttimes = [0, 0, 0]
         msg = 'Starttime was unparsed, inp.xml prob not complete, do not believe the walltime!'
-        parser_info_out['parser_warnings'].append(msg)
+        logger.warning(msg)
 
     if out_dict['end_date']['time'] is not None:
         endtimes = out_dict['end_date']['time'].split(':')
     else:
         endtimes = [0, 0, 0]
         msg = 'Endtime was unparsed, inp.xml prob not complete, do not believe the walltime!'
-        parser_info_out['parser_warnings'].append(msg)
+        logger.warning(msg)
 
     if out_dict['start_date']['date'] is not None:
         start_date = out_dict['start_date']['date']
     else:
         start_date = None
         msg = 'Startdate was unparsed, inp.xml prob not complete, do not believe the walltime!'
-        parser_info_out['parser_warnings'].append(msg)
+        logger.warning(msg)
 
     if out_dict['end_date']['date'] is not None:
         end_date = out_dict['end_date']['date']
     else:
         end_date = None
         msg = 'Enddate was unparsed, inp.xml prob not complete, do not believe the walltime!'
-        parser_info_out['parser_warnings'].append(msg)
+        logger.warning(msg)
 
     offset = 0
     if start_date is not None and end_date is not None:
@@ -130,7 +131,7 @@ def calculate_walltime(out_dict, parser_info_out=None):
 
 
 @conversion_function
-def convert_ldau_definitions(out_dict, parser_info_out=None):
+def convert_ldau_definitions(out_dict, logger):
     """
     Convert the parsed information from LDA+U into a more readable dict
 
@@ -174,7 +175,7 @@ def convert_ldau_definitions(out_dict, parser_info_out=None):
 
 
 @conversion_function
-def convert_relax_info(out_dict, parser_info_out=None):
+def convert_relax_info(out_dict, logger):
     """
     Convert the general relaxation information
 
@@ -202,7 +203,7 @@ def convert_relax_info(out_dict, parser_info_out=None):
 
 
 @conversion_function
-def convert_forces(out_dict, parser_info_out=None):
+def convert_forces(out_dict, logger):
     """
     Convert the parsed forces from a iteration
 

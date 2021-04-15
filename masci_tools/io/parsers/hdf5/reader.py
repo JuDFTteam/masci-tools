@@ -24,6 +24,7 @@ AttribTransformation = namedtuple('AttribTransformation', ['name', 'attrib_name'
 
 logger = logging.getLogger(__name__)
 
+
 class HDF5Reader:
     """Class for reading in data from hdf5 files using a specified recipe
 
@@ -181,7 +182,7 @@ class HDF5Reader:
 
         if recipe is None:
             msg = 'Using the HDF5Reader without a recipe falling back to simple HDF reader'
-            logging.warn(msg)
+            logging.warning(msg)
             warnings.warn(msg)
             res = read_hdf_simple(self._file)
             logger.info('Finished reading .hdf file')

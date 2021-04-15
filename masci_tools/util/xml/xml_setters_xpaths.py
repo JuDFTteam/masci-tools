@@ -182,13 +182,7 @@ def xml_set_attrib_value(xmltree,
             f'Allowed attributes are: {attribs.original_case.values()}')
     attributename = attribs.original_case[attributename]
 
-    warnings = []
-    converted_attribv, suc = convert_attribute_to_xml(attribv,
-                                                      schema_dict['attrib_types'][attributename],
-                                                      conversion_warnings=warnings)
-
-    if not suc:
-        raise ValueError(f"Failed to convert attribute values '{attribv}': \n" '\n'.join(warnings))
+    converted_attribv, suc = convert_attribute_to_xml(attribv, schema_dict['attrib_types'][attributename])
 
     return xml_set_attrib_value_no_create(xmltree, xpath, attributename, converted_attribv, occurrences=occurrences)
 
@@ -266,11 +260,8 @@ def xml_set_text(xmltree, schema_dict, xpath, base_xpath, text, occurrences=None
     _, tag_name = split_off_tag(base_xpath)
 
     possible_definitions = schema_dict['simple_elements'][tag_name]
-    warnings = []
-    converted_text, suc = convert_text_to_xml(text, possible_definitions, conversion_warnings=warnings)
 
-    if not suc:
-        raise ValueError(f"Failed to convert text values '{text}': \n" '\n'.join(warnings))
+    converted_text, suc = convert_text_to_xml(text, possible_definitions)
 
     return xml_set_text_no_create(xmltree, xpath, converted_text, occurrences=occurrences)
 

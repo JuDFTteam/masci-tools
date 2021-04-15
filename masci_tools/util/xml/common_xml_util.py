@@ -124,15 +124,19 @@ def validate_xml(xmltree, schema, error_header='File does not validate'):
         raise etree.DocumentInvalid(errmsg) from exc
 
 
-def convert_xml_attribute(stringattribute, possible_types, constants=None, conversion_warnings=None):
+def convert_xml_attribute(stringattribute, possible_types, constants=None, logger=None):
     """
     Tries to converts a given string attribute to the types given in possible_types.
     First succeeded conversion will be returned
 
+    If no logger is given and a attribute cannot be converted an error is raised
+
     :param stringattribute: str, Attribute to convert.
     :param possible_types: list of str What types it will try to convert to
     :param constants: dict, of constants defined in fleur input
-    :param conversion_warnings: dict with warings about failed conversions
+    :param logger: logger object for logging warnings
+                   if given the errors are logged and the list is returned with the unconverted values
+                   otherwise a error is raised, when the first conversion fails
 
     :return: The converted value of the first succesful conversion
     """
@@ -141,38 +145,59 @@ def convert_xml_attribute(stringattribute, possible_types, constants=None, conve
     if not isinstance(stringattribute, list):
         stringattribute = [stringattribute]
 
-    if conversion_warnings is None:
-        conversion_warnings = []
+    exceptions = []
 
     converted_list = []
     all_success = True
     for attrib in stringattribute:
-        suc = False
         for value_type in possible_types:
             if value_type == 'float':
-                converted_value, suc = convert_to_float(attrib, conversion_warnings=conversion_warnings)
+                try:
+                    converted_value = float(attrib)
+                except (ValueError, TypeError) as exc:
+                    exceptions.append(exc)
+                    continue
+
             elif value_type == 'float_expression':
                 if constants is None:
                     raise ValueError(
                         "For calculating attributes of the type 'float_expression' constants have to be given")
                 try:
                     converted_value = calculate_expression(attrib, constants)
-                    suc = True
-                except ValueError as errmsg:
-                    suc = False
-                    conversion_warnings.append(f"Could not evaluate expression '{attrib}' "
-                                               f'The following error was raised: {errmsg}')
+                except ValueError as exc:
+                    exceptions.append(exc)
+                    continue
+
             elif value_type == 'int':
-                converted_value, suc = convert_to_int(attrib, conversion_warnings=conversion_warnings)
+                try:
+                    converted_value = int(attrib)
+                except (ValueError, TypeError) as exc:
+                    exceptions.append(exc)
+                    continue
+
             elif value_type == 'switch':
-                converted_value, suc = convert_from_fortran_bool(attrib, conversion_warnings=conversion_warnings)
+                try:
+                    converted_value = convert_from_fortran_bool(attrib)
+                except (ValueError, TypeError) as exc:
+                    exceptions.append(exc)
+                    continue
+
             elif value_type == 'string':
-                suc = True
                 converted_value = str(attrib)
-            if suc:
-                converted_list.append(converted_value)
-                break
-        if not suc:
+
+            converted_list.append(converted_value)
+            break
+        else:
+            if logger is None:
+                raise ValueError(f"Could not convert '{attrib}'. Tried: {possible_types}.\n"
+                                 'The following errors occurred:\n   ' + '\n   '.join([str(exc) for exc in exceptions]))
+            else:
+                logger.warning("Could not convert '%s'. The following errors occurred:", attrib)
+
+                for exc in exceptions:
+                    logger.warning('   %s', str(exc))
+                    logger.debug(exc, exc_info=exc)
+
             converted_list.append(attrib)
             all_success = False
 
@@ -183,7 +208,7 @@ def convert_xml_attribute(stringattribute, possible_types, constants=None, conve
     return ret_value, all_success
 
 
-def convert_attribute_to_xml(attributevalue, possible_types, conversion_warnings=None, float_format='.10'):
+def convert_attribute_to_xml(attributevalue, possible_types, logger=None, float_format='.10'):
     """
     Tries to converts a given attributevalue to a string for a xml file according
     to the types given in possible_types.
@@ -191,7 +216,9 @@ def convert_attribute_to_xml(attributevalue, possible_types, conversion_warnings
 
     :param attributevalue: value to convert.
     :param possible_types: list of str What types it will try to convert from
-    :param conversion_warnings: dict with warings about failed conversions
+    :param logger: logger object for logging warnings
+                   if given the errors are logged and the list is returned with the unconverted values
+                   otherwise a error is raised, when the first conversion fails
 
     :return: The converted str of the value of the first succesful conversion
     """
@@ -199,50 +226,53 @@ def convert_attribute_to_xml(attributevalue, possible_types, conversion_warnings
     if not isinstance(attributevalue, list):
         attributevalue = [attributevalue]
 
-    if conversion_warnings is None:
-        conversion_warnings = []
-
     possible_types = possible_types.copy()
 
     if 'int' in possible_types:  #Since it just converts to string
         possible_types.remove('int')
         possible_types.append('int')
 
-    if 'string' in possible_types:
+    if 'string' in possible_types:  #Move string to back
         possible_types.remove('string')
+
     possible_types.append('string')  #Always try string
 
     converted_list = []
+    exceptions = []
     all_success = True
     for value in attributevalue:
 
-        suc = False
         for value_type in possible_types:
-            if value_type == 'float':
+            if value_type in ('float', 'float_expression'):
                 try:
                     converted_value = f'{value:{float_format}f}'
-                    suc = True
-                except ValueError as errmsg:
-                    suc = False
-                    conversion_warnings.append(f"Could not convert to float string '{value}' "
-                                               f'The following error was raised: {errmsg}')
-            elif value_type == 'float_expression':
-                try:
-                    converted_value = f'{value:{float_format}f}'
-                    suc = True
-                except ValueError as errmsg:
-                    suc = False
-                    conversion_warnings.append(f"Could not convert to float string '{value}' "
-                                               f'The following error was raised: {errmsg}')
+                except ValueError as exc:
+                    exceptions.append(exc)
+                    continue
+
             elif value_type == 'switch':
-                converted_value, suc = convert_to_fortran_bool(value, conversion_warnings=conversion_warnings)
+                try:
+                    converted_value = convert_to_fortran_bool(value)
+                except (ValueError, TypeError) as exc:
+                    exceptions.append(exc)
+                    continue
+
             elif value_type in ('string', 'int'):
-                suc = True
                 converted_value = str(value)
-            if suc:
-                converted_list.append(converted_value)
-                break
-        if not suc:
+
+            converted_list.append(converted_value)
+            break
+        else:
+            if logger is None:
+                raise ValueError(f"Could not convert '{value}' to text. Tried: {possible_types}.\n"
+                                 'The following errors occurred:\n   ' + '\n   '.join([str(exc) for exc in exceptions]))
+            else:
+                logger.warning("Could not convert '%s' to text. The following errors occurred:", value)
+
+                for exc in exceptions:
+                    logger.warning('   %s', str(exc))
+                    logger.debug(exc, exc_info=exc)
+
             converted_list.append(value)
             all_success = False
 
@@ -253,7 +283,7 @@ def convert_attribute_to_xml(attributevalue, possible_types, conversion_warnings
     return ret_value, all_success
 
 
-def convert_xml_text(tagtext, possible_definitions, constants=None, conversion_warnings=None):
+def convert_xml_text(tagtext, possible_definitions, constants=None, logger=None):
     """
     Tries to converts a given string text based on the definitions (length and type).
     First succeeded conversion will be returned
@@ -261,13 +291,12 @@ def convert_xml_text(tagtext, possible_definitions, constants=None, conversion_w
     :param tagtext: str, text to convert.
     :param possible_defintions: list of dicts What types it will try to convert to
     :param constants: dict, of constants defined in fleur input
-    :param conversion_warnings: dict with warings about failed conversions
+    :param logger: logger object for logging warnings
+                   if given the errors are logged and the list is returned with the unconverted values
+                   otherwise a error is raised, when the first conversion fails
 
     :return: The converted value of the first succesful conversion
     """
-
-    if conversion_warnings is None:
-        conversion_warnings = []
 
     if not isinstance(tagtext, list):
         tagtext = [tagtext]
@@ -293,7 +322,10 @@ def convert_xml_text(tagtext, possible_definitions, constants=None, conversion_w
                     text_definition = definition
 
         if text_definition is None:
-            conversion_warnings.append(f"Failed to convert '{text}', no matching definition found ")
+            if logger is None:
+                raise ValueError(f"Failed to convert '{text}', no matching definition found")
+            else:
+                logger.warning("Failed to convert '%s', no matching definition found", text)
             converted_list.append(text)
             all_success = False
             continue
@@ -304,16 +336,13 @@ def convert_xml_text(tagtext, possible_definitions, constants=None, conversion_w
 
         converted_text = []
         for value in split_text:
-            warnings = []
             converted_value, suc = convert_xml_attribute(value,
                                                          text_definition['type'],
                                                          constants=constants,
-                                                         conversion_warnings=warnings)
+                                                         logger=logger)
             converted_text.append(converted_value)
             if not suc:
                 all_success = False
-                for warning in warnings:
-                    conversion_warnings.append(warning)
 
         if len(converted_text) == 1 and text_definition['length'] != 'unbounded':
             converted_text = converted_text[0]
@@ -327,20 +356,19 @@ def convert_xml_text(tagtext, possible_definitions, constants=None, conversion_w
     return ret_value, all_success
 
 
-def convert_text_to_xml(textvalue, possible_definitions, conversion_warnings=None, float_format='16.13'):
+def convert_text_to_xml(textvalue, possible_definitions, logger=None, float_format='16.13'):
     """
     Tries to convert a given list of values to str for a xml file based on the definitions (length and type).
     First succeeded conversion will be returned
 
     :param textvalue: value to convert
     :param possible_definitions: list of dicts What types it will try to convert to
-    :param conversion_warnings: dict with warings about failed conversions
+    :param logger: logger object for logging warnings
+                   if given the errors are logged and the list is returned with the unconverted values
+                   otherwise a error is raised, when the first conversion fails
 
     :return: The converted value of the first succesful conversion
     """
-
-    if conversion_warnings is None:
-        conversion_warnings = []
 
     if not isinstance(textvalue, list):
         textvalue = [textvalue]
@@ -365,20 +393,24 @@ def convert_text_to_xml(textvalue, possible_definitions, conversion_warnings=Non
                     text_definition = definition
 
         if text_definition is None:
-            conversion_warnings.append(f"Failed to convert '{text}', no matching definition found ")
             if isinstance(text, str):
                 converted_list.append(text)
                 continue
+
+            if logger is None:
+                raise ValueError(f"Failed to convert '{text}', no matching definition found")
+            else:
+                logger.warning("Failed to convert '%s', no matching definition found", text)
+
             converted_list.append('')
             all_success = False
             continue
 
         converted_text = []
         for value in text:
-            warnings = []
             converted_value, suc = convert_attribute_to_xml(value,
                                                             text_definition['type'],
-                                                            conversion_warnings=warnings,
+                                                            logger=logger,
                                                             float_format=float_format)
             converted_text.append(converted_value)
             if not suc:
@@ -386,8 +418,6 @@ def convert_text_to_xml(textvalue, possible_definitions, conversion_warnings=Non
                     converted_list.append(value)
                     continue
                 all_success = False
-                for warning in warnings:
-                    conversion_warnings.append(warning)
 
         converted_list.append(' '.join(converted_text))
 
@@ -398,135 +428,58 @@ def convert_text_to_xml(textvalue, possible_definitions, conversion_warnings=Non
     return ret_value, all_success
 
 
-def convert_to_float(value_string, conversion_warnings=None):
-    """
-    Tries to make a float out of a string. If it can't it logs a warning
-    and returns True or False if convertion worked or not.
-
-    :param value_string: a string
-    :param conversion_warnings: list with warings about failed conversions
-
-    :return: value the new float or value_string: the string given
-    :return: True if convertion was successfull, False otherwise
-    """
-    if conversion_warnings is None:
-        conversion_warnings = []
-    try:
-        value = float(value_string)
-    except TypeError:
-        conversion_warnings.append(f"Could not convert: '{value_string}' to float, TypeError")
-        return value_string, False
-
-    except ValueError:
-        conversion_warnings.append(f"Could not convert: '{value_string}' to float, ValueError")
-        return value_string, False
-
-    return value, True
-
-
-def convert_to_int(value_string, conversion_warnings=None):
-    """
-    Tries to make a int out of a string. If it can't it logs a warning
-    and returns True or False if convertion worked or not.
-
-    :param value_string: a string
-    :param conversion_warnings: list with warings about failed conversions
-
-    :return: value the new int or value_string: the string given
-    :return: True or False
-    """
-    if conversion_warnings is None:
-        conversion_warnings = []
-    try:
-        value = int(value_string)
-    except TypeError:
-        conversion_warnings.append(f"Could not convert: '{value_string}' to int, TypeError")
-        return value_string, False
-
-    except ValueError:
-        conversion_warnings.append(f"Could not convert: '{value_string}' to int, ValueError")
-        return value_string, False
-
-    return value, True
-
-
-def convert_from_fortran_bool(stringbool, conversion_warnings=None):
+def convert_from_fortran_bool(stringbool):
     """
     Converts a string in this case ('T', 'F', or 't', 'f') to True or False
 
     :param stringbool: a string ('t', 'f', 'F', 'T')
-    :param conversion_warnings: list with warings about failed conversions
 
     :return: boolean  (either True or False)
     """
-    if conversion_warnings is None:
-        conversion_warnings = []
+
     true_items = ['True', 't', 'T']
     false_items = ['False', 'f', 'F']
     if isinstance(stringbool, str):
         if stringbool in false_items:
-            converted_value = False
-            suc = True
+            return False
         elif stringbool in true_items:
-            converted_value = True
-            suc = True
+            return True
         else:
-            suc = False
-            converted_value = stringbool
-            conversion_warnings.append(f"Could not convert: '{stringbool}' to boolean, "
-                                       "which is not 'True', 'False', 't', 'T', 'F' or 'f'")
+            raise ValueError(f"Could not convert: '{stringbool}' to boolean, "
+                             "which is not 'True', 'False', 't', 'T', 'F' or 'f'")
     elif isinstance(stringbool, bool):
-        converted_value = stringbool  # no conversion needed...
-        suc = True
-    else:
-        suc = False
-        converted_value = stringbool
-        conversion_warnings.append(f"Could not convert: '{stringbool}' to boolean, " 'only accepts str or boolean')
+        return stringbool  # no conversion needed...
 
-    return converted_value, suc
+    raise TypeError(f"Could not convert: '{stringbool}' to boolean, " 'only accepts str or boolean')
 
 
-def convert_to_fortran_bool(boolean, conversion_warnings=None):
+def convert_to_fortran_bool(boolean):
     """
     Converts a Boolean as string to the format defined in the input
 
     :param boolean: either a boolean or a string ('True', 'False', 'F', 'T')
-    :param conversion_warnings: list with warings about failed conversions
 
     :return: a string (either 't' or 'f')
     """
-    if conversion_warnings is None:
-        conversion_warnings = []
 
-    suc = False
-    new_string = None
     if isinstance(boolean, bool):
         if boolean:
-            new_string = 'T'
-            suc = True
+            return 'T'
         else:
-            new_string = 'F'
-            suc = True
+            return 'F'
     elif isinstance(boolean, str):  # basestring):
         if boolean in ('True', 't', 'T'):
-            new_string = 'T'
-            suc = True
+            return 'T'
         elif boolean in ('False', 'f', 'F'):
-            new_string = 'F'
-            suc = True
+            return 'F'
         else:
-            suc = False
-            conversion_warnings.append(f"A string: {boolean} for a boolean was given, which is not 'True',"
-                                       "'False', 't', 'T', 'F' or 'f'")
-    else:
-        suc = False
-        conversion_warnings.append('convert_to_fortran_bool accepts only a string or '
-                                   f'bool as argument, given {boolean} ')
+            raise ValueError(f"A string: {boolean} for a boolean was given, which is not 'True',"
+                             "'False', 't', 'T', 'F' or 'f'")
 
-    return new_string, suc
+    raise TypeError('convert_to_fortran_bool accepts only a string or ' f'bool as argument, given {boolean} ')
 
 
-def eval_xpath(node, xpath, parser_info_out=None, list_return=False, namespaces=None):
+def eval_xpath(node, xpath, logger=None, list_return=False, namespaces=None):
     """
     Tries to evaluate an xpath expression. If it fails it logs it.
     If a absolute path is given (starting with '/') and the tag of the node
@@ -535,16 +488,17 @@ def eval_xpath(node, xpath, parser_info_out=None, list_return=False, namespaces=
 
     :param node: root node of an etree
     :param xpath: xpath expression (relative, or absolute)
-    :param parser_info_out: dict with warnings, info, errors, ...
+    :param logger: logger object for logging warnings, errors, if not provided all errors will be raised
     :param list_return: if True, the returned quantity is always a list even if only one element is in it
     :param namespaces: dict, passed to namespaces argument in xpath call
 
     :returns: text, attribute or a node list
     """
-    if parser_info_out is None:
-        parser_info_out = {'parser_warnings': []}
 
-    assert isinstance(node, (etree._Element, etree._ElementTree)), f'Wrong Type for xpath eval; Got: {type(node)}'
+    if not isinstance(node, (etree._Element, etree._ElementTree)):
+        if logger is not None:
+            logger.error('Wrong Type for xpath eval; Got: %s', type(node))
+        raise TypeError(f'Wrong Type for xpath eval; Got: {type(node)}')
 
     if isinstance(node, etree._Element):
         if node.tag != xpath.split('/')[1] and xpath.split('/')[0] != '.':
@@ -556,46 +510,52 @@ def eval_xpath(node, xpath, parser_info_out=None, list_return=False, namespaces=
                 xpath = xpath.rstrip('/')
 
     try:
-        if namespaces is not None:
-            return_value = node.xpath(xpath, namespaces=namespaces)
-        else:
-            return_value = node.xpath(xpath)
-    except etree.XPathEvalError:
-        parser_info_out['parser_warnings'].append(f'There was a XpathEvalError on the xpath: {xpath} \n Either it does '
-                                                  'not exist, or something is wrong with the expression.')
-        return []  # or rather None?
+        return_value = node.xpath(xpath, namespaces=namespaces)
+    except etree.XPathEvalError as err:
+        if logger is not None:
+            logger.exception(
+                'There was a XpathEvalError on the xpath: %s \n'
+                'Either it does not exist, or something is wrong with the expression.', xpath)
+        raise ValueError(f'There was a XpathEvalError on the xpath: {xpath} \n'
+                         'Either it does not exist, or something is wrong with the expression.') from err
     if len(return_value) == 1 and not list_return:
         return return_value[0]
     else:
         return return_value
 
 
-def get_xml_attribute(node, attributename, parser_info_out=None):
+def get_xml_attribute(node, attributename, logger=None):
     """
     Get an attribute value from a node.
 
     :param node: a node from etree
     :param attributename: a string with the attribute name.
-    :param parser_info_out: dict with warnings, info, errors, ...
+    :param logger: logger object for logging warnings, errors, if not provided all errors will be raised
     :returns: either attributevalue, or None
     """
-    if parser_info_out is None:
-        parser_info_out = {'parser_warnings': []}
 
     if etree.iselement(node):
         attrib_value = node.get(attributename)
         if attrib_value:
             return attrib_value
         else:
-            parser_info_out['parser_warnings'].append('Tried to get attribute: "{}" from element {}.\n '
-                                                      'I recieved "{}", maybe the attribute does not exist'
-                                                      ''.format(attributename, node.tag, attrib_value))
-            return None
+            if logger is not None:
+                logger.warning(
+                    'Tried to get attribute: "%s" from element %s.\n '
+                    'I received "%s", maybe the attribute does not exist', attributename, node.tag, attrib_value)
+            else:
+                raise ValueError(f'Tried to get attribute: "{attributename}" from element {node.tag}.\n '
+                                 f'I received "{attrib_value}", maybe the attribute does not exist')
     else:  # something doesn't work here, some nodes get through here
-        parser_info_out['parser_warnings'].append('Can not get attributename: "{}" from node of type {}, '
-                                                  'because node is not an element of etree.'
-                                                  ''.format(attributename, type(node)))
-        return None
+        if logger is not None:
+            logger.error(
+                'Can not get attributename: "%s" from node of type %s, '
+                'because node is not an element of etree.', attributename, type(node))
+        else:
+            raise TypeError(f'Can not get attributename: "{attributename}" from node of type {type(node)}, '
+                            f'because node is not an element of etree.')
+
+    return None
 
 
 def split_off_tag(xpath):

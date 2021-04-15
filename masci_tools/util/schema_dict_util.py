@@ -213,7 +213,7 @@ def get_attrib_xpath(schema_dict, name, contains=None, not_contains=None, exclud
                          f'These are possible: {all_paths}')
 
 
-def read_constants(root, schema_dict):
+def read_constants(root, schema_dict, logger=None):
     """
     Reads in the constants defined in the inp.xml
     and returns them combined with the predefined constants from
@@ -221,6 +221,7 @@ def read_constants(root, schema_dict):
 
     :param root: root of the etree of the inp.xml file
     :param schema_dict: schema_dictionary of the version of the file to read (inp.xml or out.xml)
+    :param logger: logger object for logging warnings, errors
 
     :return: a python dictionary with all defined constants
     """
@@ -229,7 +230,10 @@ def read_constants(root, schema_dict):
 
     defined_constants = copy.deepcopy(FLEUR_DEFINED_CONSTANTS)
 
-    constants = evaluate_tag(root, schema_dict, 'constant', defined_constants)
+    if not tag_exists(root, schema_dict, 'constant', logger=logger):  #Avoid warnings for empty constants
+        return defined_constants
+
+    constants = evaluate_tag(root, schema_dict, 'constant', defined_constants, logger=logger)
 
     if constants['name'] is not None:
         if not isinstance(constants['name'], list):
@@ -238,13 +242,15 @@ def read_constants(root, schema_dict):
             if name not in defined_constants:
                 defined_constants[name] = value
             else:
-                raise KeyError(f'Ambiguous definition of key {name}')
+                if logger is not None:
+                    logger.error('Ambiguous definition of constant %s', name)
+                raise KeyError(f'Ambiguous definition of constant {name}')
 
     return defined_constants
 
 
 @register_parsing_function('attrib')
-def evaluate_attribute(node, schema_dict, name, constants=None, parser_info_out=None, **kwargs):
+def evaluate_attribute(node, schema_dict, name, constants=None, logger=None, **kwargs):
     """
     Evaluates the value of the attribute based on the given name
     and additional further specifications with the available type information
@@ -253,7 +259,7 @@ def evaluate_attribute(node, schema_dict, name, constants=None, parser_info_out=
     :param schema_dict: dict, containing all the path information and more
     :param name: str, name of the attribute
     :param constants: dict, contains the defined constants
-    :param parser_info_out: dict, with warnings, info, errors, ...
+    :param logger: logger object for logging warnings, errors, if not provided all errors will be raised
 
     Kwargs:
         :param tag_name: str, name of the tag where the attribute should be parsed
@@ -266,9 +272,6 @@ def evaluate_attribute(node, schema_dict, name, constants=None, parser_info_out=
     """
     from masci_tools.util.xml.common_xml_util import eval_xpath, convert_xml_attribute
 
-    if parser_info_out is None:
-        parser_info_out = {'parser_warnings': []}
-
     if isinstance(node, etree._Element):
         if node.tag != schema_dict['root_tag'] and node.tag != 'iteration':
             kwargs['contains'] = set(kwargs.get('contains', []))
@@ -276,32 +279,31 @@ def evaluate_attribute(node, schema_dict, name, constants=None, parser_info_out=
 
     attrib_xpath = get_attrib_xpath(schema_dict, name, **kwargs)
 
-    stringattribute = eval_xpath(node, attrib_xpath, parser_info_out=parser_info_out)
+    stringattribute = eval_xpath(node, attrib_xpath, logger=logger)
 
     if isinstance(stringattribute, list):
         if len(stringattribute) == 0:
-            parser_info_out['parser_warnings'].append(f'No values found for attribute {name}')
-            return None
+            if logger is None:
+                raise ValueError(f'No values found for attribute {name}')
+            else:
+                logger.warning('No values found for attribute %s', name)
+                return None
 
     possible_types = schema_dict['attrib_types'][name]
 
-    warnings = []
-    converted_value, suc = convert_xml_attribute(stringattribute,
-                                                 possible_types,
-                                                 constants=constants,
-                                                 conversion_warnings=warnings)
+    converted_value, suc = convert_xml_attribute(stringattribute, possible_types, constants=constants, logger=logger)
 
     if not suc:
-        parser_info_out['parser_warnings'].append(f'Failed to evaluate attribute {name}: '
-                                                  'Below are the warnings from convert_xml_attribute')
-        for warning in warnings:
-            parser_info_out['parser_warnings'].append(warning)
+        if logger is None:
+            raise ValueError(f'Failed to evaluate attribute {name}, Got value: {stringattribute}')
+        else:
+            logger.warning('Failed to evaluate attribute %s, Got value: %s', name, stringattribute)
 
     return converted_value
 
 
 @register_parsing_function('text')
-def evaluate_text(node, schema_dict, name, constants, parser_info_out=None, **kwargs):
+def evaluate_text(node, schema_dict, name, constants, logger=None, **kwargs):
     """
     Evaluates the text of the tag based on the given name
     and additional further specifications with the available type information
@@ -310,7 +312,7 @@ def evaluate_text(node, schema_dict, name, constants, parser_info_out=None, **kw
     :param schema_dict: dict, containing all the path information and more
     :param name: str, name of the tag
     :param constants: dict, contains the defined constants
-    :param parser_info_out: dict, with warnings, info, errors, ...
+    :param logger: logger object for logging warnings, errors, if not provided all errors will be raised
 
     Kwargs:
         :param contains: str, this string has to be in the final path
@@ -321,9 +323,6 @@ def evaluate_text(node, schema_dict, name, constants, parser_info_out=None, **kw
     """
     from masci_tools.util.xml.common_xml_util import eval_xpath, convert_xml_text
 
-    if parser_info_out is None:
-        parser_info_out = {'parser_warnings': []}
-
     if isinstance(node, etree._Element):
         if node.tag != schema_dict['root_tag'] and node.tag != 'iteration':
             kwargs['contains'] = set(kwargs.get('contains', []))
@@ -331,7 +330,7 @@ def evaluate_text(node, schema_dict, name, constants, parser_info_out=None, **kw
 
     tag_xpath = get_tag_xpath(schema_dict, name, **kwargs)
 
-    stringtext = eval_xpath(node, f'{tag_xpath}/text()', parser_info_out=parser_info_out)
+    stringtext = eval_xpath(node, f'{tag_xpath}/text()', logger=logger)
 
     if isinstance(stringtext, list):
         for text in stringtext.copy():
@@ -343,28 +342,27 @@ def evaluate_text(node, schema_dict, name, constants, parser_info_out=None, **kw
 
     if isinstance(stringtext, list):
         if len(stringtext) == 0:
-            parser_info_out['parser_warnings'].append(f'No text found for tag {name}')
-            return None
+            if logger is None:
+                raise ValueError(f'No text found for tag {name}')
+            else:
+                logger.warning('No text found for tag %s', name)
+                return None
 
     possible_definitions = schema_dict['simple_elements'][name]
 
-    warnings = []
-    converted_value, suc = convert_xml_text(stringtext,
-                                            possible_definitions,
-                                            constants=constants,
-                                            conversion_warnings=warnings)
+    converted_value, suc = convert_xml_text(stringtext, possible_definitions, constants=constants, logger=logger)
 
     if not suc:
-        parser_info_out['parser_warnings'].append(f'Failed to evaluate text for tag {name}: '
-                                                  'Below are the warnings from convert_xml_text')
-        for warning in warnings:
-            parser_info_out['parser_warnings'].append(warning)
+        if logger is None:
+            raise ValueError(f'Failed to evaluate text for tag {name}, Got text: {stringtext}')
+        else:
+            logger.warning('Failed to evaluate text for tag %s, Got text: %s', name, stringtext)
 
     return converted_value
 
 
 @register_parsing_function('allAttribs', all_attribs_keys=True)
-def evaluate_tag(node, schema_dict, name, constants=None, parser_info_out=None, **kwargs):
+def evaluate_tag(node, schema_dict, name, constants=None, logger=None, **kwargs):
     """
     Evaluates all attributes of the tag based on the given name
     and additional further specifications with the available type information
@@ -373,7 +371,7 @@ def evaluate_tag(node, schema_dict, name, constants=None, parser_info_out=None, 
     :param schema_dict: dict, containing all the path information and more
     :param name: str, name of the tag
     :param constants: dict, contains the defined constants
-    :param parser_info_out: dict, with warnings, info, errors, ...
+    :param logger: logger object for logging warnings, errors, if not provided all errors will be raised
 
     Kwargs:
         :param contains: str, this string has to be in the final path
@@ -385,10 +383,8 @@ def evaluate_tag(node, schema_dict, name, constants=None, parser_info_out=None, 
     """
     from masci_tools.util.xml.common_xml_util import eval_xpath, convert_xml_attribute
 
-    if parser_info_out is None:
-        parser_info_out = {'parser_warnings': []}
-
     only_required = kwargs.pop('only_required', False)
+    strict_missing_error = kwargs.pop('strict_missing_error', False)
     ignore = kwargs.pop('ignore', None)
 
     if isinstance(node, etree._Element):
@@ -415,9 +411,15 @@ def evaluate_tag(node, schema_dict, name, constants=None, parser_info_out=None, 
         attribs = attribs.difference(ignore)
 
     if not attribs:
-        parser_info_out['parser_warnings'].append(f'Failed to evaluate attributes from tag {name}: '
-                                                  'No attributes to parse either the tag does not '
-                                                  'exist or it has no attributes')
+        if logger is None:
+            raise ValueError(f'Failed to evaluate attributes from tag {name}: '
+                             'No attributes to parse either the tag does not '
+                             'exist or it has no attributes')
+        else:
+            logger.error(
+                'Failed to evaluate attributes from tag %s: '
+                'No attributes to parse either the tag does not '
+                'exist or it has no attributes', name)
     else:
         attribs = sorted(list(attribs.original_case.values()))
 
@@ -425,33 +427,36 @@ def evaluate_tag(node, schema_dict, name, constants=None, parser_info_out=None, 
 
     for attrib in attribs:
 
-        stringattribute = eval_xpath(node, f'{tag_xpath}/@{attrib}', parser_info_out=parser_info_out)
+        stringattribute = eval_xpath(node, f'{tag_xpath}/@{attrib}', logger=logger)
 
         if isinstance(stringattribute, list):
             if len(stringattribute) == 0:
-                parser_info_out['parser_warnings'].append(f'No values found for attribute {attrib} at tag {name}')
+                if logger is None:
+                    if strict_missing_error and attrib not in optional:
+                        raise ValueError(f'No values found for attribute {attrib} at tag {name}')
+                else:
+                    logger.warning('No values found for attribute %s at tag %s', attrib, name)
                 out_dict[attrib] = None
                 continue
 
         possible_types = schema_dict['attrib_types'][attrib]
 
-        warnings = []
         out_dict[attrib], suc = convert_xml_attribute(stringattribute,
                                                       possible_types,
                                                       constants=constants,
-                                                      conversion_warnings=warnings)
+                                                      logger=logger)
 
         if not suc:
-            parser_info_out['parser_warnings'].append(f'Failed to evaluate attribute {attrib}: '
-                                                      'Below are the warnings from convert_xml_attribute')
-            for warning in warnings:
-                parser_info_out['parser_warnings'].append(warning)
+            if logger is None:
+                raise ValueError(f'Failed to evaluate attribute {attrib}, Got value: {stringattribute}')
+            else:
+                logger.warning('Failed to evaluate attribute %s, Got value: %s', attrib, stringattribute)
 
     return out_dict
 
 
 @register_parsing_function('singleValue', all_attribs_keys=True)
-def evaluate_single_value_tag(node, schema_dict, name, constants=None, parser_info_out=None, **kwargs):
+def evaluate_single_value_tag(node, schema_dict, name, constants=None, logger=None, **kwargs):
     """
     Evaluates the value and unit attribute of the tag based on the given name
     and additional further specifications with the available type information
@@ -460,7 +465,7 @@ def evaluate_single_value_tag(node, schema_dict, name, constants=None, parser_in
     :param schema_dict: dict, containing all the path information and more
     :param name: str, name of the tag
     :param constants: dict, contains the defined constants
-    :param parser_info_out: dict, with warnings, info, errors, ...
+    :param logger: logger object for logging warnings, errors, if not provided all errors will be raised
 
     Kwargs:
         :param contains: str, this string has to be in the final path
@@ -470,25 +475,29 @@ def evaluate_single_value_tag(node, schema_dict, name, constants=None, parser_in
 
     :returns: value and unit, both converted in convert_xml_attribute
     """
-    if parser_info_out is None:
-        parser_info_out = {'parser_warnings': []}
 
     only_required = kwargs.get('only_required', False)
+    ignore = kwargs.get('ignore', [])
 
-    value_dict = evaluate_tag(node, schema_dict, name, constants=constants, parser_info_out=parser_info_out, **kwargs)
+    value_dict = evaluate_tag(node, schema_dict, name, constants=constants, logger=logger, **kwargs)
 
-    if 'value' not in value_dict:
-        parser_info_out['parser_warnings'].append(f'Failed to evaluate singleValue from tag {name}: '
-                                                  "Has no 'value' attribute")
-    if 'units' not in value_dict and not only_required:
-        parser_info_out['parser_warnings'].append(f'Failed to evaluate singleValue from tag {name}: '
-                                                  "Has no 'units' attribute")
+    if value_dict.get('value') is None:
+        if logger is None:
+            raise ValueError(f'Failed to evaluate singleValue from tag {name}: ' "Has no 'value' attribute")
+        else:
+            logger.warning('Failed to evaluate singleValue from tag %s: ' "Has no 'value' attribute", name)
+
+    if value_dict.get('units') is None and not only_required and 'units' not in ignore:
+        if logger is None:
+            raise ValueError(f'Failed to evaluate singleValue from tag {name}: ' "Has no 'units' attribute")
+        else:
+            logger.warning('Failed to evaluate singleValue from tag %s: ' "Has no 'units' attribute", name)
 
     return value_dict
 
 
 @register_parsing_function('parentAttribs', all_attribs_keys=True)
-def evaluate_parent_tag(node, schema_dict, name, constants=None, parser_info_out=None, **kwargs):
+def evaluate_parent_tag(node, schema_dict, name, constants=None, logger=None, **kwargs):
     """
     Evaluates all attributes of the parent tag based on the given name
     and additional further specifications with the available type information
@@ -497,7 +506,7 @@ def evaluate_parent_tag(node, schema_dict, name, constants=None, parser_info_out
     :param schema_dict: dict, containing all the path information and more
     :param name: str, name of the tag
     :param constants: dict, contains the defined constants
-    :param parser_info_out: dict, with warnings, info, errors, ...
+    :param logger: logger object for logging warnings, errors, if not provided all errors will be raised
 
     Kwargs:
         :param contains: str, this string has to be in the final path
@@ -508,9 +517,6 @@ def evaluate_parent_tag(node, schema_dict, name, constants=None, parser_info_out
     :returns: dict, with attribute values converted via convert_xml_attribute
     """
     from masci_tools.util.xml.common_xml_util import eval_xpath, convert_xml_attribute, get_xml_attribute
-
-    if parser_info_out is None:
-        parser_info_out = {'parser_warnings': []}
 
     only_required = kwargs.pop('only_required', False)
     ignore = kwargs.pop('ignore', None)
@@ -541,13 +547,19 @@ def evaluate_parent_tag(node, schema_dict, name, constants=None, parser_info_out
         attribs = attribs.difference(ignore)
 
     if not attribs:
-        parser_info_out['parser_warnings'].append(f'Failed to evaluate attributes from parent tag of {name}: '
-                                                  'No attributes to parse either the tag does not '
-                                                  'exist or it has no attributes')
+        if logger is None:
+            raise ValueError(f'Failed to evaluate attributes from parent tag of {name}: '
+                             'No attributes to parse either the tag does not '
+                             'exist or it has no attributes')
+        else:
+            logger.error(
+                'Failed to evaluate attributes from parent tag of %s: '
+                'No attributes to parse either the tag does not '
+                'exist or it has no attributes', name)
     else:
         attribs = sorted(list(attribs.original_case.values()))
 
-    elems = eval_xpath(node, tag_xpath, parser_info_out=parser_info_out, list_return=True)
+    elems = eval_xpath(node, tag_xpath, logger=logger, list_return=True)
 
     out_dict = dict.fromkeys(attribs)
     for attrib in attribs:
@@ -560,26 +572,24 @@ def evaluate_parent_tag(node, schema_dict, name, constants=None, parser_info_out
             stringattribute = get_xml_attribute(parent, attrib)
 
             if stringattribute == '':
-                parser_info_out['parser_warnings'].append(
-                    f'No values found for attribute {attrib} for parent tag of {name}')
-                out_dict[attrib].append(None)
-                continue
+                if logger is None:
+                    raise ValueError(f'No values found for attribute {attrib} for parent tag of {name}')
+                else:
+                    logger.warning('No values found for attribute %s for parent tag of %s', attrib, name)
+                    out_dict[attrib].append(None)
+                    continue
 
             possible_types = schema_dict['attrib_types'][attrib]
 
-            warnings = []
-            value, suc = convert_xml_attribute(stringattribute,
-                                               possible_types,
-                                               constants=constants,
-                                               conversion_warnings=warnings)
+            value, suc = convert_xml_attribute(stringattribute, possible_types, constants=constants, logger=logger)
 
             out_dict[attrib].append(value)
 
             if not suc:
-                parser_info_out['parser_warnings'].append(f'Failed to evaluate attribute {attrib}: '
-                                                          'Below are the warnings from convert_xml_attribute')
-                for warning in warnings:
-                    parser_info_out['parser_warnings'].append(warning)
+                if logger is None:
+                    raise ValueError(f'Failed to evaluate attribute {attrib}, Got value: {stringattribute}')
+                else:
+                    logger.warning('Failed to evaluate attribute %s, Got value: %s', attrib, stringattribute)
 
     if all(len(x) == 1 for x in out_dict.values()):
         out_dict = {key: val[0] for key, val in out_dict.items()}
@@ -587,8 +597,38 @@ def evaluate_parent_tag(node, schema_dict, name, constants=None, parser_info_out
     return out_dict
 
 
+@register_parsing_function('attrib_exists')
+def attrib_exists(node, schema_dict, name, logger=None, **kwargs):
+    """
+    Evaluates whether the attribute exists in the xmltree based on the given name
+    and additional further specifications with the available type information
+
+    :param node: etree Element, on which to execute the xpath evaluations
+    :param schema_dict: dict, containing all the path information and more
+    :param name: str, name of the tag
+    :param logger: logger object for logging warnings, errors, if not provided all errors will be raised
+
+    Kwargs:
+        :param tag_name: str, name of the tag where the attribute should be parsed
+        :param contains: str, this string has to be in the final path
+        :param not_contains: str, this string has to NOT be in the final path
+        :param exclude: list of str, here specific types of attributes can be excluded
+                        valid values are: settable, settable_contains, other
+
+    :returns: bool, True if any tag with the attribute exists
+    """
+    from masci_tools.util.xml.common_xml_util import eval_xpath, split_off_attrib
+
+    attrib_xpath = get_attrib_xpath(schema_dict, name, **kwargs)
+    tag_xpath, attrib_name = split_off_attrib(attrib_xpath)
+
+    tags = eval_xpath(node, tag_xpath, logger=logger, list_return=True)
+
+    return any(attrib_name in tag.attrib for tag in tags)
+
+
 @register_parsing_function('exists')
-def tag_exists(node, schema_dict, name, parser_info_out=None, **kwargs):
+def tag_exists(node, schema_dict, name, logger=None, **kwargs):
     """
     Evaluates whether the tag exists in the xmltree based on the given name
     and additional further specifications with the available type information
@@ -596,7 +636,7 @@ def tag_exists(node, schema_dict, name, parser_info_out=None, **kwargs):
     :param node: etree Element, on which to execute the xpath evaluations
     :param schema_dict: dict, containing all the path information and more
     :param name: str, name of the tag
-    :param parser_info_out: dict, with warnings, info, errors, ...
+    :param logger: logger object for logging warnings, errors, if not provided all errors will be raised
 
     Kwargs:
         :param contains: str, this string has to be in the final path
@@ -604,11 +644,11 @@ def tag_exists(node, schema_dict, name, parser_info_out=None, **kwargs):
 
     :returns: bool, True if any nodes with the path exist
     """
-    return get_number_of_nodes(node, schema_dict, name, parser_info_out=parser_info_out, **kwargs) != 0
+    return get_number_of_nodes(node, schema_dict, name, logger=logger, **kwargs) != 0
 
 
 @register_parsing_function('numberNodes')
-def get_number_of_nodes(node, schema_dict, name, parser_info_out=None, **kwargs):
+def get_number_of_nodes(node, schema_dict, name, logger=None, **kwargs):
     """
     Evaluates the number of occurences of the tag in the xmltree based on the given name
     and additional further specifications with the available type information
@@ -616,7 +656,7 @@ def get_number_of_nodes(node, schema_dict, name, parser_info_out=None, **kwargs)
     :param node: etree Element, on which to execute the xpath evaluations
     :param schema_dict: dict, containing all the path information and more
     :param name: str, name of the tag
-    :param parser_info_out: dict, with warnings, info, errors, ...
+    :param logger: logger object for logging warnings, errors, if not provided all errors will be raised
 
     Kwargs:
         :param contains: str, this string has to be in the final path
@@ -624,10 +664,10 @@ def get_number_of_nodes(node, schema_dict, name, parser_info_out=None, **kwargs)
 
     :returns: bool, True if any nodes with the path exist
     """
-    return len(eval_simple_xpath(node, schema_dict, name, parser_info_out=parser_info_out, list_return=True, **kwargs))
+    return len(eval_simple_xpath(node, schema_dict, name, logger=logger, list_return=True, **kwargs))
 
 
-def eval_simple_xpath(node, schema_dict, name, parser_info_out=None, **kwargs):
+def eval_simple_xpath(node, schema_dict, name, logger=None, **kwargs):
     """
     Evaluates a simple xpath expression of the tag in the xmltree based on the given name
     and additional further specifications with the available type information
@@ -635,7 +675,7 @@ def eval_simple_xpath(node, schema_dict, name, parser_info_out=None, **kwargs):
     :param node: etree Element, on which to execute the xpath evaluations
     :param schema_dict: dict, containing all the path information and more
     :param name: str, name of the tag
-    :param parser_info_out: dict, with warnings, info, errors, ...
+    :param logger: logger object for logging warnings, errors, if not provided all errors will be raised
 
     Kwargs:
         :param contains: str, this string has to be in the final path
@@ -655,4 +695,4 @@ def eval_simple_xpath(node, schema_dict, name, parser_info_out=None, **kwargs):
 
     tag_xpath = get_tag_xpath(schema_dict, name, **kwargs)
 
-    return eval_xpath(node, tag_xpath, parser_info_out=parser_info_out, list_return=list_return)
+    return eval_xpath(node, tag_xpath, logger=logger, list_return=list_return)
