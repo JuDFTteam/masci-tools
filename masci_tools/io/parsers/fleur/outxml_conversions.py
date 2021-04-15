@@ -32,7 +32,8 @@ def convert_total_energy(out_dict, logger):
 
     if total_energy is None:
         if 'energy_hartree' in out_dict:
-            logger.warning('convert_total_energy cannot convert None to eV')
+            if logger is not None:
+                logger.warning('convert_total_energy cannot convert None to eV')
             out_dict['energy'] = None
             out_dict['energy_units'] = 'eV'
         return out_dict
@@ -46,7 +47,8 @@ def convert_total_energy(out_dict, logger):
     if total_energy is not None:
         out_dict['energy'].append(total_energy * HTR_TO_EV)
     else:
-        logger.warning('convert_total_energy cannot convert None to eV')
+        if logger is not None:
+            logger.warning('convert_total_energy cannot convert None to eV')
         out_dict['energy'].append(None)
 
     return out_dict
@@ -62,7 +64,8 @@ def calculate_total_magnetic_moment(out_dict, logger):
     total_charge = out_dict.get('spin_dependent_charge_total', None)
 
     if total_charge is None:
-        logger.warning('calculate_total_magnetic_moment got None')
+        if logger is not None:
+            logger.warning('calculate_total_magnetic_moment got None')
         return out_dict
 
     total_charge = total_charge[-1]
@@ -89,28 +92,32 @@ def calculate_walltime(out_dict, logger):
     else:
         starttimes = [0, 0, 0]
         msg = 'Starttime was unparsed, inp.xml prob not complete, do not believe the walltime!'
-        logger.warning(msg)
+        if logger is not None:
+            logger.warning(msg)
 
     if out_dict['end_date']['time'] is not None:
         endtimes = out_dict['end_date']['time'].split(':')
     else:
         endtimes = [0, 0, 0]
         msg = 'Endtime was unparsed, inp.xml prob not complete, do not believe the walltime!'
-        logger.warning(msg)
+        if logger is not None:
+            logger.warning(msg)
 
     if out_dict['start_date']['date'] is not None:
         start_date = out_dict['start_date']['date']
     else:
         start_date = None
         msg = 'Startdate was unparsed, inp.xml prob not complete, do not believe the walltime!'
-        logger.warning(msg)
+        if logger is not None:
+            logger.warning(msg)
 
     if out_dict['end_date']['date'] is not None:
         end_date = out_dict['end_date']['date']
     else:
         end_date = None
         msg = 'Enddate was unparsed, inp.xml prob not complete, do not believe the walltime!'
-        logger.warning(msg)
+        if logger is not None:
+            logger.warning(msg)
 
     offset = 0
     if start_date is not None and end_date is not None:

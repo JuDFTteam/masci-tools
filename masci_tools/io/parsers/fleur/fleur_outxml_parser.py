@@ -18,12 +18,20 @@ from masci_tools.util.parse_tasks import ParseTasks
 from masci_tools.util.schema_dict_util import tag_exists, read_constants, eval_simple_xpath
 from masci_tools.util.xml.common_xml_util import eval_xpath, clear_xml, validate_xml
 from masci_tools.io.parsers.fleur.fleur_schema.schema_dict import OutputSchemaDict
+from masci_tools.util.logging_util import DictHandler
 from lxml import etree
 import copy
 import warnings
+import logging
 
 
-def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_parse=None, **kwargs):
+def outxml_parser(outxmlfile,
+                  version=None,
+                  parser_info_out=None,
+                  iteration_to_parse=None,
+                  strict=False,
+                  debug=False,
+                  **kwargs):
     """
     Parses the out.xml file to a dictionary based on the version and the given tasks
 
@@ -33,10 +41,10 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
     :param iteration_to_parse: either str or int, (optional, default 'last')
                                determines which iteration should be parsed.
                                Accepted are 'all', 'first', 'last' or an index for the iteration
+    :param strict: bool if True  and no parser_info_out is provided any encountered error will immediately be raised
+    :param debug: bool if True additional information is printed out in the logs
 
     Kwargs:
-        :param strict: bool, if True an error will be raised if an unknown task is encountered
-                       otherwise a warning is written to parser_info_out
         :param ignore_validation: bool, if True schema validation errors are only logged
         :param minimal_mode: bool, if True only total Energy, iteration number and distances are parsed
         :param list_return: bool, if True one-item lists in the output dict are not converted to simple values
@@ -57,14 +65,37 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
 
     """
 
-    if parser_info_out is None:
-        parser_info_out = {'parser_warnings': [], 'fleur_modes': {}, 'debug_info': {}}
+    __parser_version__ = '0.5.0'
 
-    parser_version = '0.4.0'
-    parser_info_out['parser_info'] = f'Masci-Tools Fleur out.xml Parser v{parser_version}'
+    logger = logging.getLogger(__name__)
+
+    parser_log_handler = None
+    if parser_info_out is not None or not strict:
+        if parser_info_out is None:
+            parser_info_out = {}
+
+        logging_level = logging.INFO
+        if debug:
+            logging_level = logging.DEBUG
+        logger.setLevel(logging_level)
+
+        parser_log_handler = DictHandler(parser_info_out,
+                                         WARNING='parser_warnings',
+                                         ERROR='parser_errors',
+                                         INFO='parser_info',
+                                         DEBUG='parser_debug',
+                                         CRITICAL='parser_critical',
+                                         level=logging_level)
+
+        logger.addHandler(parser_log_handler)
+
+    if strict:
+        logger = None
+
+    if logger is not None:
+        logger.info('Masci-Tools Fleur out.xml Parser v%s', __parser_version__)
 
     outfile_broken = False
-    parse_xml = True
 
     if isinstance(outxmlfile, etree._ElementTree):
         xmltree = outxmlfile
@@ -75,7 +106,10 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
             xmltree = etree.parse(outxmlfile, parser)
         except etree.XMLSyntaxError:
             outfile_broken = True
-            parser_info_out['parser_warnings'].append('The out.xml file is broken I try to repair it.')
+            if logger is None:
+                warnings.warn('The out.xml file is broken I try to repair it.')
+            else:
+                logger.warning('The out.xml file is broken I try to repair it.')
 
         if outfile_broken:
             # repair xmlfile and try to parse what is possible.
@@ -83,70 +117,87 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
             try:
                 xmltree = etree.parse(outxmlfile, parser)
             except etree.XMLSyntaxError:
-                parse_xml = False
-                parser_info_out['parser_warnings'].append('Skipping the parsing of the xml file. '
-                                                          'Repairing was not possible.')
-
-    if not parse_xml:
-        return {}
+                if logger is None:
+                    raise
+                else:
+                    logger.exception('Skipping the parsing of the xml file. ' 'Repairing was not possible.')
+                    return {}
 
     if version is None:
-        out_version = eval_xpath(xmltree, '//@fleurOutputVersion', parser_info_out=parser_info_out)
+        out_version = eval_xpath(xmltree, '//@fleurOutputVersion', logger=logger)
         out_version = str(out_version)
         if out_version is None:
+            logger.error('Failed to extract outputVersion')
             raise ValueError('Failed to extract outputVersion')
     else:
         out_version = version
 
     if out_version == '0.27':
-        program_version = eval_xpath(xmltree, '//programVersion/@version', parser_info_out=parser_info_out)
+        program_version = eval_xpath(xmltree, '//programVersion/@version', logger=logger)
         if program_version == 'fleur 32':
             #Max5 release (before bugfix)
             out_version = '0.33'
             inp_version = '0.33'
             ignore_validation = True
-            parser_info_out['parser_warnings'].append("Ignoring '0.27' outputVersion for MaX5.0 release")
+            if logger is not None:
+                logger.warning("Ignoring '0.27' outputVersion for MaX5.0 release")
+            else:
+                warnings.warn("Ignoring '0.27' outputVersion for MaX5.0 release")
         elif program_version == 'fleur 31':
             #Max4 release
             out_version = '0.31'
             inp_version = '0.31'
             ignore_validation = True
-            parser_info_out['parser_warnings'].append("Ignoring '0.27' outputVersion for MaX4.0 release")
+            if logger is not None:
+                logger.warning("Ignoring '0.27' outputVersion for MaX4.0 release")
+            else:
+                warnings.warn("Ignoring '0.27' outputVersion for MaX4.0 release")
         elif program_version == 'fleur 30':
             #Max3.1 release
             out_version = '0.30'
             inp_version = '0.30'
             ignore_validation = True
-            parser_info_out['parser_warnings'].append("Ignoring '0.27' outputVersion for MaX3.1 release")
+            if logger is not None:
+                logger.warning("Ignoring '0.27' outputVersion for MaX3.1 release")
+            else:
+                warnings.warn("Ignoring '0.27' outputVersion for MaX3.1 release")
         elif program_version == 'fleur 27':
             #Max3.1 release
             out_version = '0.29'
             inp_version = '0.29'
             ignore_validation = True
-            parser_info_out['parser_warnings'].append(
-                "Found version before MaX3.1 release falling back to file version '0.29'")
+            if logger is not None:
+                logger.warning("Found version before MaX3.1 release falling back to file version '0.29'")
             warnings.warn(
                 'out.xml files before the MaX3.1 release are not explicitely supported.'
                 ' No guarantee is given that the parser will work without error', UserWarning)
         else:
+            if logger is not None:
+                logger.error("Unknown fleur version: File-version '%s' Program-version '%s'", out_version,
+                             program_version)
             raise ValueError(f"Unknown fleur version: File-version '{out_version}' Program-version '{program_version}'")
     else:
         ignore_validation = False
-        inp_version = eval_xpath(xmltree, '//@fleurInputVersion', parser_info_out=parser_info_out)
+        inp_version = eval_xpath(xmltree, '//@fleurInputVersion', logger=logger)
         inp_version = str(inp_version)
         if inp_version is None:
-            raise ValueError('Failed to extract InputVersion')
+            if logger is not None:
+                logger.error('Failed to extract inputVersion')
+            raise ValueError('Failed to extract inputVersion')
 
     ignore_validation = kwargs.get('ignore_validation', ignore_validation)
 
     #Load schema_dict (inp and out)
-    outschema_dict = OutputSchemaDict.fromVersion(out_version, inp_version=inp_version, parser_info_out=parser_info_out)
+    outschema_dict = OutputSchemaDict.fromVersion(out_version, inp_version=inp_version, logger=logger)
 
     if outschema_dict['out_version'] != out_version or \
        outschema_dict['inp_version'] != inp_version:
         ignore_validation = True
         out_version = outschema_dict['out_version']
         inp_version = outschema_dict['inp_version']
+
+    if logger is not None:
+        logger.info('Found fleur out file with the versions out: %s; inp: %s', out_version, inp_version)
 
     xmltree = clear_xml(xmltree)
     root = xmltree.getroot()
@@ -156,14 +207,21 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
         validate_xml(xmltree, outschema_dict.xmlschema, error_header='Output file does not validate against the schema')
     except etree.DocumentInvalid as err:
         errmsg = str(err)
-        parser_info_out['parser_warnings'].append(errmsg)
+        if logger is not None:
+            logger.warning(errmsg)
         if not ignore_validation:
+            if logger is not None:
+                logger.exception(errmsg)
             raise ValueError(errmsg) from err
 
     if not outschema_dict.xmlschema.validate(xmltree) and errmsg == '':
-        parser_info_out['parser_warnings'].append('Output file does not validate against the schema: Reason is unknown')
+        msg = 'Output file does not validate against the schema: Reason is unknown'
+        if logger is not None:
+            logger.warning(msg)
         if not ignore_validation:
-            raise ValueError('Output file does not validate against the schema: Reason is unknown')
+            if logger is not None:
+                logger.exception(msg)
+            raise ValueError(msg)
 
     parser = ParseTasks(out_version)
     additional_tasks = kwargs.pop('additional_tasks', {})
@@ -173,33 +231,34 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
     out_dict, constants = parse_general_information(root,
                                                     parser,
                                                     outschema_dict,
-                                                    parser_info_out=parser_info_out,
+                                                    logger=logger,
                                                     iteration_to_parse=iteration_to_parse,
                                                     **kwargs)
 
     # get all iterations in out.xml file
-    iteration_nodes = eval_simple_xpath(root,
-                                        outschema_dict,
-                                        'iteration',
-                                        parser_info_out=parser_info_out,
-                                        list_return=True)
+    iteration_nodes = eval_simple_xpath(root, outschema_dict, 'iteration', logger=logger, list_return=True)
     n_iters = len(iteration_nodes)
 
     # parse only last stable interation
     # (if modes (dos and co) maybe parse anyway if broken?)
     if outfile_broken and (n_iters >= 2):
         iteration_nodes = iteration_nodes[:-2]
-        parser_info_out['last_iteration_parsed'] = n_iters - 2
+        if logger is not None:
+            logger.info('The last parsed iteration is %s', n_iters - 2)
     elif outfile_broken and (n_iters == 1):
         iteration_nodes = [iteration_nodes[0]]
-        parser_info_out['last_iteration_parsed'] = n_iters
+        if logger is not None:
+            logger.info('The last parsed iteration is %s', n_iters)
     elif not outfile_broken and (n_iters >= 1):
         pass
     else:  # there was no iteration found.
         # only the starting charge density could be generated
-        parser_info_out['parser_warnings'].append('There was no iteration found in the outfile, either just a '
-                                                  'starting density was generated or something went wrong.')
-        iteration_nodes = None
+        msg = 'There was no iteration found in the outfile, either just a ' \
+              'starting density was generated or something went wrong.'
+        if logger is None:
+            raise ValueError(msg)
+        else:
+            logger.error(msg)
 
     if iteration_to_parse is None:
         iteration_to_parse = 'last'  #This is the default from the aiida_fleur parser
@@ -214,9 +273,15 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
         try:
             iteration_nodes = iteration_nodes[iteration_to_parse]
         except IndexError as exc:
+            if logger is not None:
+                logger.exception(exc)
             raise ValueError(f"Invalid value for iteration_to_parse: Got '{iteration_to_parse}'"
                              f"; but only '{len(iteration_nodes)}' iterations are available") from exc
     else:
+        if logger is not None:
+            logger.error(
+                "Invalid value for iteration_to_parse: Got '%s' "
+                "Valid values are: 'first', 'last', 'all', or int", iteration_to_parse)
         raise ValueError(f"Invalid value for iteration_to_parse: Got '{iteration_to_parse}' "
                          "Valid values are: 'first', 'last', 'all', or int")
 
@@ -224,13 +289,7 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
         iteration_nodes = [iteration_nodes]
 
     for node in iteration_nodes:
-        out_dict = parse_iteration(node,
-                                   parser,
-                                   outschema_dict,
-                                   out_dict,
-                                   constants,
-                                   parser_info_out=parser_info_out,
-                                   **kwargs)
+        out_dict = parse_iteration(node, parser, outschema_dict, out_dict, constants, logger=logger, **kwargs)
 
     if not kwargs.get('list_return', False):
         #Convert one item lists to simple values
@@ -244,10 +303,14 @@ def outxml_parser(outxmlfile, version=None, parser_info_out=None, iteration_to_p
                         if len(subvalue) == 1:
                             out_dict[key][subkey] = subvalue[0]
 
+    if parser_log_handler is not None:
+        if logger is not None:
+            logger.removeHandler(parser_log_handler)
+
     return out_dict
 
 
-def parse_general_information(root, parser, outschema_dict, iteration_to_parse=None, parser_info_out=None, **kwargs):
+def parse_general_information(root, parser, outschema_dict, logger, iteration_to_parse=None, **kwargs):
     """
     Parses the information from the out.xml outside scf iterations
 
@@ -265,11 +328,10 @@ def parse_general_information(root, parser, outschema_dict, iteration_to_parse=N
     """
 
     minimal_mode = kwargs.get('minimal_mode', False)
-    debug = kwargs.get('debug', False)
     if iteration_to_parse is None:
         iteration_to_parse = 'last'
 
-    constants = read_constants(root, outschema_dict)
+    constants = read_constants(root, outschema_dict, logger=logger)
 
     fleurmode = {
         'jspin': 1,
@@ -286,9 +348,11 @@ def parse_general_information(root, parser, outschema_dict, iteration_to_parse=N
                                     fleurmode,
                                     outschema_dict,
                                     constants,
-                                    parser_info_out=parser_info_out,
+                                    logger=logger,
                                     use_lists=False)
-    parser_info_out['fleur_modes'] = fleurmode
+
+    if logger is not None:
+        logger.info('The following Fleur modes were found: %s', fleurmode)
 
     parser.determine_tasks(fleurmode, minimal=minimal_mode)
 
@@ -304,25 +368,21 @@ def parse_general_information(root, parser, outschema_dict, iteration_to_parse=N
         if 'magnetic_distances' in parser.iteration_tasks:
             parser.iteration_tasks.remove('magnetic_distances')
 
-    if debug:
-        parser_info_out['debug_info']['general_tasks'] = parser.general_tasks
+    if logger is not None:
+        logger.debug('The following tasks are performed on the root: %s', parser.general_tasks)
 
     out_dict = {}
 
     for task in parser.general_tasks:
 
-        out_dict = parser.perform_task(task,
-                                       root,
-                                       out_dict,
-                                       outschema_dict,
-                                       constants,
-                                       parser_info_out=parser_info_out,
-                                       use_lists=False)
+        if logger is not None:
+            logger.debug('Performing task: %s', task)
+        out_dict = parser.perform_task(task, root, out_dict, outschema_dict, constants, logger=logger, use_lists=False)
 
     return out_dict, constants
 
 
-def parse_iteration(iteration_node, parser, outschema_dict, out_dict, constants, parser_info_out=None, **kwargs):
+def parse_iteration(iteration_node, parser, outschema_dict, out_dict, constants, logger, **kwargs):
     """
     Parses an scf iteration node. Which tasks to perform is stored in parser.iteration_tasks
 
@@ -340,9 +400,7 @@ def parse_iteration(iteration_node, parser, outschema_dict, out_dict, constants,
         :param minimal_mode: bool, if True only total Energy, iteration number and distances are parsed
     """
 
-    strict = kwargs.get('strict', False)
     minimal_mode = kwargs.get('minimal_mode', False)
-    debug = kwargs.get('debug', False)
 
     iteration_tasks = copy.deepcopy(parser.iteration_tasks)
     #If the iteration is a forcetheorem calculation
@@ -357,20 +415,19 @@ def parse_iteration(iteration_node, parser, outschema_dict, out_dict, constants,
                 iteration_tasks = [tag.lower()]
             break
 
-    if debug:
-        parser_info_out['debug_info']['iteration_tasks'] = iteration_tasks
+    if logger is not None:
+        logger.debug('The following tasks are performed for the iteration: %s', iteration_tasks)
 
     for task in iteration_tasks:
+
+        if logger is not None:
+            logger.debug('Performing task: %s', task)
+
         try:
-            out_dict = parser.perform_task(task,
-                                           iteration_node,
-                                           out_dict,
-                                           outschema_dict,
-                                           constants,
-                                           parser_info_out=parser_info_out)
+            out_dict = parser.perform_task(task, iteration_node, out_dict, outschema_dict, constants, logger=logger)
         except KeyError:
-            parser_info_out['parser_warnings'].append(f"Unknown task: '{task}'. Skipping this one")
-            if strict:
-                raise
+            if logger is not None:
+                logger.exception("Unknown task: '%s'. Skipping this one", task)
+            raise
 
     return out_dict

@@ -70,16 +70,12 @@ output_dict:
   walltime: 5
   walltime_units: seconds
 warnings:
-  fleur_modes:
-    band: false
-    bz_integration: hist
-    dos: false
-    film: false
-    jspin: 2
-    ldau: false
-    noco: true
-    relax: false
-    soc: true
-  parser_info: Masci-Tools Fleur out.xml Parser v0.4.0
-  parser_warnings:
+  parser_errors: []
+  parser_info:
+  - Masci-Tools Fleur out.xml Parser v0.5.0
   - 'Creating OutputSchemaDict object for differing versions (out: 0.34; inp: 0.33)'
+  - 'Found fleur out file with the versions out: 0.34; inp: 0.33'
+  - 'The following Fleur modes were found: {''jspin'': 2, ''relax'': False, ''ldau'':
+    False, ''soc'': True, ''noco'': True, ''film'': False, ''dos'': False, ''band'':
+    False, ''bz_integration'': ''hist''}'
+  parser_warnings: []

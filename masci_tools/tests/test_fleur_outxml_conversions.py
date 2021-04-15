@@ -83,29 +83,21 @@ TEST_DICTS = [{
 
 TEST_WALLTIMES = [14, 448, 20446, 86400, 1786884, -60681, 60695, 0]
 
-TEST_WARNINGS = [
-    [],
-    [],
-    [],
-    [],
-    [],
-    [
-            'Endtime was unparsed, inp.xml prob not complete, do not believe the walltime!',
-            'Enddate was unparsed, inp.xml prob not complete, do not believe the walltime!'
-        ]
-    ,
-    [
-            'Starttime was unparsed, inp.xml prob not complete, do not believe the walltime!',
-            'Startdate was unparsed, inp.xml prob not complete, do not believe the walltime!'
-        ]
-    ,
-    [
-            'Starttime was unparsed, inp.xml prob not complete, do not believe the walltime!',
-            'Endtime was unparsed, inp.xml prob not complete, do not believe the walltime!',
-            'Startdate was unparsed, inp.xml prob not complete, do not believe the walltime!',
-            'Enddate was unparsed, inp.xml prob not complete, do not believe the walltime!'
-        ]
-]
+TEST_WARNINGS = [[], [], [], [], [],
+                 [
+                     'Endtime was unparsed, inp.xml prob not complete, do not believe the walltime!',
+                     'Enddate was unparsed, inp.xml prob not complete, do not believe the walltime!'
+                 ],
+                 [
+                     'Starttime was unparsed, inp.xml prob not complete, do not believe the walltime!',
+                     'Startdate was unparsed, inp.xml prob not complete, do not believe the walltime!'
+                 ],
+                 [
+                     'Starttime was unparsed, inp.xml prob not complete, do not believe the walltime!',
+                     'Endtime was unparsed, inp.xml prob not complete, do not believe the walltime!',
+                     'Startdate was unparsed, inp.xml prob not complete, do not believe the walltime!',
+                     'Enddate was unparsed, inp.xml prob not complete, do not believe the walltime!'
+                 ]]
 
 
 @pytest.mark.parametrize('input_dict, walltime, warnings', zip(TEST_DICTS, TEST_WALLTIMES, TEST_WARNINGS))
