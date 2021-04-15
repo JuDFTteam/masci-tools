@@ -268,6 +268,7 @@ def evaluate_attribute(node, schema_dict, name, constants=None, logger=None, **k
         :param exclude: list of str, here specific types of attributes can be excluded
                         valid values are: settable, settable_contains, other
         :param list_return: if True, the returned quantity is always a list even if only one element is in it
+        :param optional: bool, if True and no logger given none or an empty list is returned
 
     :returns: list or single value, converted in convert_xml_attribute
     """
@@ -329,6 +330,7 @@ def evaluate_text(node, schema_dict, name, constants, logger=None, **kwargs):
         :param contains: str, this string has to be in the final path
         :param not_contains: str, this string has to NOT be in the final path
         :param list_return: if True, the returned quantity is always a list even if only one element is in it
+        :param optional: bool, if True and no logger given none or an empty list is returned
 
     :returns: list or single value, converted in convert_xml_text
     """
