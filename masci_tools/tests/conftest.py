@@ -37,7 +37,7 @@ def clean_parser_log():
     return _clean_parser_log
 
 
-@pytest.fixture(scope='session', autouse=True)
+@pytest.yield_fixture(scope='session', autouse=True)
 def disable_parser_tracebacks():
     """Disable logging of tracebacks in parser logs Thanks to
        https://stackoverflow.com/questions/54605699/python-logging-disable-stack-trace"""
@@ -55,5 +55,11 @@ def disable_parser_tracebacks():
     inp_logger = logging.getLogger('masci_tools.io.parsers.fleur.fleur_inpxml_parser')
     out_logger = logging.getLogger('masci_tools.io.parsers.fleur.fleur_outxml_parser')
 
-    inp_logger.addFilter(TracebackInfoFilter())
-    out_logger.addFilter(TracebackInfoFilter())
+    traceback_filter = TracebackInfoFilter()
+    inp_logger.addFilter(traceback_filter)
+    out_logger.addFilter(traceback_filter)
+
+    yield #Now all tests run
+
+    inp_logger.removeFilter(traceback_filter)
+    out_logger.removeFilter(traceback_filter)
