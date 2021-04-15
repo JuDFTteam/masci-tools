@@ -69,6 +69,21 @@ def skipHeader(seq, n):
             yield item
 
 
+def filter_out_empty_dict_entries(dict_to_filter):
+    """
+    Filter out entries in a given dict that correspond to empty values.
+    At the moment this is empty lists, dicts and None
+
+    :param dict_to_filter: dict to filter
+
+    :returns: dict without empty entries
+    """
+
+    EMPTY_VALUES = (None, [])
+
+    return {key: val for key, val in dict_to_filter.items() if val not in EMPTY_VALUES}
+
+
 def get_alat_from_bravais(bravais, is3D=True):
     bravais_tmp = bravais
     if not is3D:
@@ -390,6 +405,98 @@ def is_sequence(arg):
         return True
     elif not hasattr(arg, 'strip') and hasattr(arg, '__getitem__'):
         return True
+    else:
+        return False
+
+
+def abs_to_rel(vector, cell):
+    """
+    Converts a position vector in absolute coordinates to relative coordinates.
+
+    :param vector: list or np.array of length 3, vector to be converted
+    :param cell: Bravais matrix of a crystal 3x3 Array, List of list or np.array
+    :return: list of legth 3 of scaled vector, or False if vector was not length 3
+    """
+
+    if len(vector) == 3:
+        cell_np = np.array(cell)
+        inv_cell_np = np.linalg.inv(cell_np)
+        postionR = np.array(vector)
+        # np.matmul(inv_cell_np, postionR)#
+        new_rel_post = np.matmul(postionR, inv_cell_np)
+        new_rel_pos = list(new_rel_post)
+        return new_rel_pos
+    else:
+        return False
+
+
+def abs_to_rel_f(vector, cell, pbc):
+    """
+    Converts a position vector in absolute coordinates to relative coordinates
+    for a film system.
+
+    :param vector: list or np.array of length 3, vector to be converted
+    :param cell: Bravais matrix of a crystal 3x3 Array, List of list or np.array
+    :param pbc: Boundary conditions, List or Tuple of 3 Boolean
+    :return: list of legth 3 of scaled vector, or False if vector was not length 3
+    """
+    # TODO this currently only works if the z-coordinate is the one with no pbc
+    # Therefore if a structure with x non pbc is given this should also work.
+    # maybe write a 'tranform film to fleur_film routine'?
+    if len(vector) == 3:
+        if not pbc[2]:
+            # leave z coordinate absolute
+            # convert only x and y.
+            postionR = np.array(vector)
+            postionR_f = np.array(postionR[:2])
+            cell_np = np.array(cell)
+            cell_np = np.array(cell_np[0:2, 0:2])
+            inv_cell_np = np.linalg.inv(cell_np)
+            # np.matmul(inv_cell_np, postionR_f)]
+            new_xy = np.matmul(postionR_f, inv_cell_np)
+            new_rel_pos_f = [new_xy[0], new_xy[1], postionR[2]]
+            return new_rel_pos_f
+        else:
+            print('FLEUR can not handle this type of film coordinate')
+    else:
+        return False
+
+
+def rel_to_abs(vector, cell):
+    """
+    Converts a position vector in internal coordinates to absolute coordinates
+    in Angstrom.
+
+    :param vector: list or np.array of length 3, vector to be converted
+    :param cell: Bravais matrix of a crystal 3x3 Array, List of list or np.array
+    :return: list of legth 3 of scaled vector, or False if vector was not lenth 3
+    """
+    if len(vector) == 3:
+        cell_np = np.array(cell)
+        postionR = np.array(vector)
+        new_abs_post = np.matmul(postionR, cell_np)
+        new_abs_pos = list(new_abs_post)
+        return new_abs_pos
+    else:
+        return False
+
+
+def rel_to_abs_f(vector, cell):
+    """
+    Converts a position vector in internal coordinates to absolute coordinates
+    in Angstrom for a film structure (2D).
+    """
+    # TODO this currently only works if the z-coordinate is the one with no pbc
+    # Therefore if a structure with x non pbc is given this should also work.
+    # maybe write a 'tranform film to fleur_film routine'?
+    if len(vector) == 3:
+        postionR = np.array(vector)
+        postionR_f = np.array(postionR[:2])
+        cell_np = np.array(cell)
+        cell_np = np.array(cell_np[0:2, 0:2])
+        new_xy = np.matmul(postionR_f, cell_np)
+        new_abs_pos_f = [new_xy[0], new_xy[1], postionR[2]]
+        return new_abs_pos_f
     else:
         return False
 

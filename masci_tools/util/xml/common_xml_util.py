@@ -483,6 +483,27 @@ def convert_to_fortran_bool(boolean):
     raise TypeError('convert_to_fortran_bool accepts only a string or ' f'bool as argument, given {boolean} ')
 
 
+def convert_fleur_lo(loelements):
+    """
+    Converts lo xml elements from the inp.xml file into a lo string for the inpgen
+    """
+    # Developer hint: Be careful with using '' and "", basestring and str are not the same...
+    # therefore other conversion methods might fail, or the wrong format could be written.
+    from aiida_fleur.tools.element_econfig_list import shell_map
+
+    lo_string = ''
+    for element in loelements:
+        lo_type = get_xml_attribute(element, 'type')
+        if lo_type != 'SCLO':  # non standard los not supported for now
+            continue
+        l_num = get_xml_attribute(element, 'l')
+        n_num = get_xml_attribute(element, 'n')
+        l_char = shell_map.get(int(l_num), '')
+        lostr = '{}{}'.format(n_num, l_char)
+        lo_string = lo_string + ' ' + lostr
+    return lo_string.strip()
+
+
 def eval_xpath(node, xpath, logger=None, list_return=False, namespaces=None):
     """
     Tries to evaluate an xpath expression. If it fails it logs it.
