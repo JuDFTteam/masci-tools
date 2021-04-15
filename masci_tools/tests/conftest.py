@@ -59,7 +59,7 @@ def disable_parser_tracebacks():
     inp_logger.addFilter(traceback_filter)
     out_logger.addFilter(traceback_filter)
 
-    yield #Now all tests run
+    yield  #Now all tests run
 
     inp_logger.removeFilter(traceback_filter)
     out_logger.removeFilter(traceback_filter)

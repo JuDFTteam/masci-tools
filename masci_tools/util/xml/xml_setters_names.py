@@ -762,6 +762,7 @@ def set_inpchanges(xmltree, schema_dict, change_dict, path_spec=None):
 
     return xmltree
 
+
 @schema_dict_version_dispatch(output_schema=False)
 def set_nkpts(xmltree, schema_dict, count, gamma):
     """
@@ -777,6 +778,7 @@ def set_nkpts(xmltree, schema_dict, count, gamma):
     """
 
     raise NotImplementedError(f"'set_npkts' is not implemented for inputs of version '{schema_dict['inp_version']}'")
+
 
 @set_nkpts.register(max_version='0.31')
 def set_nkpts_max4(xmltree, schema_dict, count, gamma):

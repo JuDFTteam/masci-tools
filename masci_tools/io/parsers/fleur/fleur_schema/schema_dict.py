@@ -137,7 +137,7 @@ def _get_latest_available_version(output_schema):
 
                 latest_version = max(latest_version, convert_str_version_number(folder))
 
-    return '.'.join(map(str,latest_version))
+    return '.'.join(map(str, latest_version))
 
 
 class SchemaDict(LockableDict):
@@ -311,7 +311,7 @@ class InputSchemaDict(SchemaDict):
         """
         from masci_tools.util.xml.common_xml_util import convert_str_version_number
 
-        return convert_str_version_number(self.get('inp_version',''))
+        return convert_str_version_number(self.get('inp_version', ''))
 
 
 class OutputSchemaDict(SchemaDict):
@@ -471,7 +471,7 @@ class OutputSchemaDict(SchemaDict):
         """
         from masci_tools.util.xml.common_xml_util import convert_str_version_number
 
-        return convert_str_version_number(self.get('inp_version',''))
+        return convert_str_version_number(self.get('inp_version', ''))
 
     @property
     def out_version(self):
@@ -480,4 +480,4 @@ class OutputSchemaDict(SchemaDict):
         """
         from masci_tools.util.xml.common_xml_util import convert_str_version_number
 
-        return convert_str_version_number(self.get('out_version',''))
+        return convert_str_version_number(self.get('out_version', ''))

@@ -605,6 +605,7 @@ def check_complex_xpath(node, base_xpath, complex_xpath):
     if not results_base.issuperset(results_complex):
         raise ValueError(f"Complex xpath '{complex_xpath}' is not compatible with the base_xpath '{base_xpath}'")
 
+
 def convert_str_version_number(version_str):
     """
     Convert the version number as a integer for easy comparisons

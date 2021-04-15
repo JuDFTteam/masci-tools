@@ -291,11 +291,18 @@ def evaluate_attribute(node, schema_dict, name, constants=None, logger=None, **k
                 raise ValueError(f'No values found for attribute {name}')
         else:
             logger.warning('No values found for attribute %s', name)
-        return None
+        if list_return:
+            return []
+        else:
+            return None
 
     possible_types = schema_dict['attrib_types'][name]
 
-    converted_value, suc = convert_xml_attribute(stringattribute, possible_types, constants=constants, logger=logger, list_return=list_return)
+    converted_value, suc = convert_xml_attribute(stringattribute,
+                                                 possible_types,
+                                                 constants=constants,
+                                                 logger=logger,
+                                                 list_return=list_return)
 
     if not suc:
         if logger is None:
@@ -339,7 +346,6 @@ def evaluate_text(node, schema_dict, name, constants, logger=None, **kwargs):
 
     stringtext = eval_xpath(node, f'{tag_xpath}/text()', logger=logger, list_return=True)
 
-
     for text in stringtext.copy():
         if text.strip() == '':
             stringtext.remove(text)
@@ -350,11 +356,18 @@ def evaluate_text(node, schema_dict, name, constants, logger=None, **kwargs):
                 raise ValueError(f'No text found for tag {name}')
         else:
             logger.warning('No text found for tag %s', name)
-        return None
+        if list_return:
+            return []
+        else:
+            return None
 
     possible_definitions = schema_dict['simple_elements'][name]
 
-    converted_value, suc = convert_xml_text(stringtext, possible_definitions, constants=constants, logger=logger, list_return=list_return)
+    converted_value, suc = convert_xml_text(stringtext,
+                                            possible_definitions,
+                                            constants=constants,
+                                            logger=logger,
+                                            list_return=list_return)
 
     if not suc:
         if logger is None:
@@ -442,7 +455,10 @@ def evaluate_tag(node, schema_dict, name, constants=None, logger=None, **kwargs)
                     raise ValueError(f'No values found for attribute {attrib} at tag {name}')
             else:
                 logger.warning('No values found for attribute %s at tag %s', attrib, name)
-            out_dict[attrib] = None
+            if list_return:
+                out_dict[attrib] = []
+            else:
+                out_dict[attrib] = None
             continue
 
         possible_types = schema_dict['attrib_types'][attrib]
