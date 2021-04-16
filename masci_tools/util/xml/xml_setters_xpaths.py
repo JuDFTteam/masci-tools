@@ -89,7 +89,13 @@ def xml_create_tag_schema_dict(xmltree,
     return xml_create_tag(xmltree, xpath, element, tag_order=tag_order, occurrences=occurrences)
 
 
-def eval_xpath_create(xmltree, schema_dict, xpath, base_xpath, create_parents=False, occurrences=None):
+def eval_xpath_create(xmltree,
+                      schema_dict,
+                      xpath,
+                      base_xpath,
+                      create_parents=False,
+                      occurrences=None,
+                      list_return=False):
     """
     Evaluates and xpath and creates tag if the result is empty
 
@@ -101,6 +107,7 @@ def eval_xpath_create(xmltree, schema_dict, xpath, base_xpath, create_parents=Fa
                            if they are missing
     :param occurrences: int or list of int. Which occurence of the parent nodes to create a tag if the tag is missing.
                         By default all nodes are used.
+    :param list_return: if True, the returned quantity is always a list even if only one element is in it
 
     :returns: list of nodes from the result of the xpath expression
     """
@@ -121,6 +128,9 @@ def eval_xpath_create(xmltree, schema_dict, xpath, base_xpath, create_parents=Fa
                                              create_parents=create_parents,
                                              occurrences=occurrences)
         nodes = eval_xpath(xmltree, xpath, list_return=True)
+
+    if len(nodes) == 1 and not list_return:
+        nodes = nodes[0]
 
     return nodes
 
@@ -164,7 +174,13 @@ def xml_set_attrib_value(xmltree,
     check_complex_xpath(xmltree, base_xpath, xpath)
 
     if create:
-        nodes = eval_xpath_create(xmltree, schema_dict, xpath, base_xpath, create_parents=True, occurrences=occurrences)
+        nodes = eval_xpath_create(xmltree,
+                                  schema_dict,
+                                  xpath,
+                                  base_xpath,
+                                  create_parents=True,
+                                  occurrences=occurrences,
+                                  list_return=True)
     else:
         nodes = eval_xpath(xmltree, xpath, list_return=True)
 
@@ -249,7 +265,13 @@ def xml_set_text(xmltree, schema_dict, xpath, base_xpath, text, occurrences=None
     check_complex_xpath(xmltree, base_xpath, xpath)
 
     if create:
-        nodes = eval_xpath_create(xmltree, schema_dict, xpath, base_xpath, create_parents=True, occurrences=occurrences)
+        nodes = eval_xpath_create(xmltree,
+                                  schema_dict,
+                                  xpath,
+                                  base_xpath,
+                                  create_parents=True,
+                                  occurrences=occurrences,
+                                  list_return=True)
     else:
         nodes = eval_xpath(xmltree, xpath, list_return=True)
 
@@ -353,21 +375,14 @@ def xml_add_number_to_attrib(xmltree,
     if not xpath.endswith(f'/@{attributename}'):
         xpath = '/@'.join([xpath, attributename])
 
-    stringattribute = eval_xpath(xmltree, xpath)
+    stringattribute = eval_xpath(xmltree, xpath, list_return=True)
 
     tag_xpath, attributename = split_off_attrib(xpath)
 
-    if isinstance(stringattribute, list):
-        if len(stringattribute) == 0:
-            raise ValueError(f"No attribute values found for '{attributename}'. Cannot add number")
+    if len(stringattribute) == 0:
+        raise ValueError(f"No attribute values found for '{attributename}'. Cannot add number")
 
-    attribvalues, suc = convert_xml_attribute(stringattribute, possible_types, constants=constants)
-
-    if not isinstance(attribvalues, list):
-        attribvalues = [attribvalues]
-
-    if not suc or any(value is None for value in attribvalues):
-        raise ValueError(f"Something went wrong finding values found for '{attributename}'. Cannot add number")
+    attribvalues, _ = convert_xml_attribute(stringattribute, possible_types, constants=constants, list_return=True)
 
     if occurrences is not None:
         if not is_sequence(occurrences):
