@@ -272,7 +272,8 @@ def evaluate_attribute(node, schema_dict, name, constants=None, logger=None, **k
 
     :returns: list or single value, converted in convert_xml_attribute
     """
-    from masci_tools.util.xml.common_xml_util import eval_xpath, convert_xml_attribute
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.converters import convert_xml_attribute
 
     list_return = kwargs.pop('list_return', False)
     optional = kwargs.pop('optional', False)
@@ -334,7 +335,8 @@ def evaluate_text(node, schema_dict, name, constants, logger=None, **kwargs):
 
     :returns: list or single value, converted in convert_xml_text
     """
-    from masci_tools.util.xml.common_xml_util import eval_xpath, convert_xml_text
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.converters import convert_xml_text
 
     list_return = kwargs.pop('list_return', False)
     optional = kwargs.pop('optional', False)
@@ -402,7 +404,8 @@ def evaluate_tag(node, schema_dict, name, constants=None, logger=None, **kwargs)
 
     :returns: dict, with attribute values converted via convert_xml_attribute
     """
-    from masci_tools.util.xml.common_xml_util import eval_xpath, convert_xml_attribute
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.converters import convert_xml_attribute
 
     only_required = kwargs.pop('only_required', False)
     strict_missing_error = kwargs.pop('strict_missing_error', False)
@@ -545,7 +548,8 @@ def evaluate_parent_tag(node, schema_dict, name, constants=None, logger=None, **
 
     :returns: dict, with attribute values converted via convert_xml_attribute
     """
-    from masci_tools.util.xml.common_xml_util import eval_xpath, convert_xml_attribute, get_xml_attribute
+    from masci_tools.util.xml.common_functions import eval_xpath, get_xml_attribute
+    from masci_tools.util.xml.converters import convert_xml_attribute
 
     strict_missing_error = kwargs.pop('strict_missing_error', False)
     list_return = kwargs.pop('list_return', False)
@@ -649,7 +653,7 @@ def attrib_exists(node, schema_dict, name, logger=None, **kwargs):
 
     :returns: bool, True if any tag with the attribute exists
     """
-    from masci_tools.util.xml.common_xml_util import eval_xpath, split_off_attrib
+    from masci_tools.util.xml.common_functions import eval_xpath, split_off_attrib
 
     attrib_xpath = get_attrib_xpath(schema_dict, name, **kwargs)
     tag_xpath, attrib_name = split_off_attrib(attrib_xpath)
@@ -716,7 +720,7 @@ def eval_simple_xpath(node, schema_dict, name, logger=None, **kwargs):
 
     :returns: etree Elements obtained via the simple xpath expression
     """
-    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.common_functions import eval_xpath
 
     list_return = kwargs.pop('list_return', False)
 

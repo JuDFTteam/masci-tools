@@ -13,7 +13,7 @@ def test_xml_set_attrib_value_no_create(load_inpxml):
     """
     Basic test of the functionality of xml_set_attrib_value_no_create
     """
-    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_set_attrib_value_no_create
 
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
@@ -30,7 +30,7 @@ def test_xml_set_attrib_value_no_create_not_str(load_inpxml):
     """
     Test of the automatic conversion to string xml_set_attrib_value_no_create
     """
-    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_set_attrib_value_no_create
 
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
@@ -47,7 +47,7 @@ def test_xml_set_attrib_value_no_create_errors(load_inpxml):
     """
     Test of the error messages in xml_set_attrib_value_no_create
     """
-    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_set_attrib_value_no_create
 
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
@@ -82,7 +82,7 @@ def test_xml_set_attrib_value_no_create_all(load_inpxml, attribv, expected_resul
     Test of the functionality of xml_set_attrib_value_no_create with multiple occurrences
     of the sttribute and different values for occurrences
     """
-    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_set_attrib_value_no_create
 
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
@@ -101,7 +101,7 @@ def test_xml_set_attrib_value_no_create_all(load_inpxml, attribv, expected_resul
 
 def test_xml_set_text_no_create(load_inpxml):
 
-    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_set_text_no_create
 
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
@@ -116,7 +116,7 @@ def test_xml_set_text_no_create(load_inpxml):
 
 def test_xml_set_text_no_create_errors(load_inpxml):
 
-    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_set_text_no_create
 
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
@@ -144,7 +144,7 @@ TEST_TEXT_OCCURENCES = [None, None, 0, [-1]]
 @pytest.mark.parametrize('text, expected_result,occurrences', zip(TEST_TEXTS, TEST_TEXT_RESULTS, TEST_TEXT_OCCURENCES))
 def test_xml_set_text_no_create_all(load_inpxml, text, expected_result, occurrences):
 
-    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_set_text_no_create
 
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
@@ -163,7 +163,7 @@ def test_xml_set_text_no_create_all(load_inpxml, text, expected_result, occurren
 
 def test_xml_delete_tag_single(load_inpxml):
 
-    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_delete_tag
 
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
@@ -178,7 +178,7 @@ def test_xml_delete_tag_single(load_inpxml):
 
 def test_xml_delete_tag_multiple(load_inpxml):
 
-    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_delete_tag
 
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
@@ -193,7 +193,7 @@ def test_xml_delete_tag_multiple(load_inpxml):
 
 def test_xml_delete_att_single(load_inpxml):
 
-    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_delete_att
 
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
@@ -215,7 +215,7 @@ def test_xml_delete_att_single(load_inpxml):
 
 def test_xml_delete_att_multiple(load_inpxml):
 
-    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_delete_att
 
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
@@ -230,7 +230,7 @@ def test_xml_delete_att_multiple(load_inpxml):
 
 def test_xml_replace_tag_single(load_inpxml):
 
-    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_replace_tag
     from lxml import etree
 
@@ -254,7 +254,7 @@ def test_xml_replace_tag_single(load_inpxml):
 
 def test_xml_replace_tag_multiple(load_inpxml):
 
-    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_replace_tag
     from lxml import etree
 
@@ -279,7 +279,7 @@ def test_xml_replace_tag_multiple(load_inpxml):
 
 def test_xml_create_tag_string_append(load_inpxml):
 
-    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_create_tag
 
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
@@ -304,7 +304,7 @@ def test_xml_create_tag_string_append(load_inpxml):
 
 def test_xml_create_tag_element_append(load_inpxml):
 
-    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_create_tag
     from lxml import etree
 
@@ -334,7 +334,7 @@ def test_xml_create_tag_element_append(load_inpxml):
 
 def test_xml_create_tag_insert_first(load_inpxml):
 
-    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_create_tag
 
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
@@ -361,7 +361,7 @@ def test_xml_create_tag_insert_first(load_inpxml):
 
 def test_xml_create_tag_insert_middle(load_inpxml):
 
-    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_create_tag
 
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
@@ -388,7 +388,7 @@ def test_xml_create_tag_insert_middle(load_inpxml):
 
 def test_xml_create_tag_tag_order_all_single(load_inpxml):
 
-    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_create_tag
 
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
@@ -416,7 +416,7 @@ def test_xml_create_tag_tag_order_all_single(load_inpxml):
 
 def test_xml_create_tag_tag_order_multiple(load_inpxml):
 
-    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_create_tag
 
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
@@ -455,7 +455,7 @@ def test_xml_create_tag_tag_order_multiple(load_inpxml):
 
 def test_xml_create_tag_tag_order_multiple_selection(load_inpxml):
 
-    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_create_tag
 
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
@@ -494,7 +494,7 @@ def test_xml_create_tag_tag_order_multiple_selection(load_inpxml):
 
 def test_xml_create_tag_tag_order_multiple_beginning(load_inpxml):
 
-    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_create_tag
 
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
@@ -533,7 +533,7 @@ def test_xml_create_tag_tag_order_multiple_beginning(load_inpxml):
 
 def test_xml_create_tag_tag_order_multiple_occurrences_single(load_inpxml):
 
-    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_create_tag
 
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
@@ -572,7 +572,7 @@ def test_xml_create_tag_tag_order_multiple_occurrences_single(load_inpxml):
 
 def test_xml_create_tag_tag_order_multiple_occurrences_list(load_inpxml):
 
-    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_create_tag
 
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
@@ -632,7 +632,7 @@ def test_xml_create_tag_misaligned_order(load_inpxml):
     """
 
     from masci_tools.util.xml.xml_setters_basic import xml_create_tag
-    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.common_functions import eval_xpath
 
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
     root = xmltree.getroot()

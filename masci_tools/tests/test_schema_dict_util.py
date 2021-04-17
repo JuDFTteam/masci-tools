@@ -661,7 +661,7 @@ def test_single_value_tag(caplog):
     """
     from lxml import etree
     from masci_tools.util.schema_dict_util import evaluate_single_value_tag, get_tag_xpath
-    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.common_functions import eval_xpath
 
     schema_dict = outschema_dict_34
 

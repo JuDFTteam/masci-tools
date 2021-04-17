@@ -21,7 +21,7 @@ def get_fleur_modes(xmltree, schema_dict):
 
     from masci_tools.util.schema_dict_util import read_constants
     from masci_tools.util.schema_dict_util import evaluate_attribute, tag_exists
-    from masci_tools.util.xml.common_xml_util import clear_xml
+    from masci_tools.util.xml.common_functions import clear_xml
 
     xmltree = clear_xml(xmltree)
     root = xmltree.getroot()
@@ -70,7 +70,8 @@ def get_cell(xmltree, schema_dict):
 
     from masci_tools.util.schema_dict_util import read_constants, eval_simple_xpath
     from masci_tools.util.schema_dict_util import evaluate_text, tag_exists
-    from masci_tools.util.xml.common_xml_util import convert_xml_attribute, clear_xml
+    from masci_tools.util.xml.common_functions import clear_xml
+    from masci_tools.util.xml.converters import convert_xml_attribute
     from masci_tools.util.constants import BOHR_A
     import numpy as np
 
@@ -141,7 +142,8 @@ def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True):
     """
     from masci_tools.util.schema_dict_util import read_constants, eval_simple_xpath
     from masci_tools.util.schema_dict_util import evaluate_attribute, evaluate_text
-    from masci_tools.util.xml.common_xml_util import clear_xml, convert_fleur_lo
+    from masci_tools.util.xml.common_functions import clear_xml
+    from masci_tools.util.xml.converters import convert_fleur_lo
     from masci_tools.io.common_functions import filter_out_empty_dict_entries
 
     # TODO: convert econfig
@@ -255,7 +257,8 @@ def get_structure_data(xmltree, schema_dict):
 
     from masci_tools.util.schema_dict_util import read_constants, eval_simple_xpath
     from masci_tools.util.schema_dict_util import evaluate_text, evaluate_attribute
-    from masci_tools.util.xml.common_xml_util import convert_xml_attribute, clear_xml
+    from masci_tools.util.xml.common_functions import clear_xml
+    from masci_tools.util.xml.converters import convert_xml_attribute
     from masci_tools.io.common_functions import rel_to_abs, rel_to_abs_f
 
     xmltree = clear_xml(xmltree)
@@ -339,7 +342,8 @@ def get_kpoints_data(xmltree, schema_dict, name=None):
 
     from masci_tools.util.schema_dict_util import read_constants, eval_simple_xpath
     from masci_tools.util.schema_dict_util import evaluate_text, evaluate_attribute
-    from masci_tools.util.xml.common_xml_util import convert_xml_attribute, clear_xml
+    from masci_tools.util.xml.common_functions import clear_xml
+    from masci_tools.util.xml.converters import convert_xml_attribute
 
     xmltree = clear_xml(xmltree)
 
@@ -394,7 +398,8 @@ def get_kpoints_data_max4(xmltree, schema_dict):
 
     from masci_tools.util.schema_dict_util import read_constants, eval_simple_xpath
     from masci_tools.util.schema_dict_util import evaluate_text, evaluate_attribute
-    from masci_tools.util.xml.common_xml_util import convert_xml_attribute, clear_xml
+    from masci_tools.util.xml.common_functions import clear_xml
+    from masci_tools.util.xml.converters import convert_xml_attribute
 
     xmltree = clear_xml(xmltree)
 

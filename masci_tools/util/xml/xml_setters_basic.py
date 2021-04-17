@@ -17,7 +17,7 @@ in :py:mod:`~masci_tools.util.xml.xml_setters_xpaths` since we need the schema d
 to do these operations robustly
 """
 from lxml import etree
-from masci_tools.util.xml.common_xml_util import eval_xpath
+from masci_tools.util.xml.common_functions import eval_xpath
 import warnings
 
 

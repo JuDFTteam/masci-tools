@@ -15,7 +15,7 @@ Functions for modifying the xml input file of Fleur with explicit xpath argument
 These can still use the schema dict for finding information about the xpath
 """
 from lxml import etree
-from masci_tools.util.xml.common_xml_util import eval_xpath
+from masci_tools.util.xml.common_functions import eval_xpath
 
 ######################CREATING/DELETING TAGS###############################################
 
@@ -49,7 +49,7 @@ def xml_create_tag_schema_dict(xmltree,
     :returns: xmltree with created tags
     """
     from masci_tools.util.xml.xml_setters_basic import xml_create_tag
-    from masci_tools.util.xml.common_xml_util import check_complex_xpath, split_off_tag
+    from masci_tools.util.xml.common_functions import check_complex_xpath, split_off_tag
 
     check_complex_xpath(xmltree, base_xpath, xpath)
 
@@ -111,7 +111,7 @@ def eval_xpath_create(xmltree,
 
     :returns: list of nodes from the result of the xpath expression
     """
-    from masci_tools.util.xml.common_xml_util import check_complex_xpath, split_off_tag
+    from masci_tools.util.xml.common_functions import check_complex_xpath, split_off_tag
 
     check_complex_xpath(xmltree, base_xpath, xpath)
 
@@ -148,7 +148,7 @@ def xml_set_attrib_value(xmltree,
     on all nodes returned for the specified xpath.
     If there are no nodes under the specified xpath a tag can be created with `create=True`.
     The attribute values are converted automatically according to the types of the attribute
-    with :py:func:`~masci_tools.util.xml.common_xml_util.convert_attribute_to_xml()` if they
+    with :py:func:`~masci_tools.util.xml.common_functions.convert_attribute_to_xml()` if they
     are not `str` already.
 
     :param xmltree: an xmltree that represents inp.xml
@@ -168,8 +168,8 @@ def xml_set_attrib_value(xmltree,
     """
 
     from masci_tools.util.xml.xml_setters_basic import xml_set_attrib_value_no_create
-    from masci_tools.util.xml.common_xml_util import convert_attribute_to_xml
-    from masci_tools.util.xml.common_xml_util import check_complex_xpath, split_off_tag
+    from masci_tools.util.xml.converters import convert_attribute_to_xml
+    from masci_tools.util.xml.common_functions import check_complex_xpath, split_off_tag
 
     check_complex_xpath(xmltree, base_xpath, xpath)
 
@@ -208,7 +208,7 @@ def xml_set_first_attrib_value(xmltree, schema_dict, xpath, base_xpath, attribut
     Sets the first occurrence attribute in a xmltree to a given value.
     If there are no nodes under the specified xpath a tag can be created with `create=True`.
     The attribute values are converted automatically according to the types of the attribute
-    with :py:func:`~masci_tools.util.xml.common_xml_util.convert_attribute_to_xml()` if they
+    with :py:func:`~masci_tools.util.xml.converters.convert_attribute_to_xml()` if they
     are not `str` already.
 
     :param xmltree: an xmltree that represents inp.xml
@@ -242,7 +242,7 @@ def xml_set_text(xmltree, schema_dict, xpath, base_xpath, text, occurrences=None
     on all nodes returned for the specified xpath.
     If there are no nodes under the specified xpath a tag can be created with `create=True`.
     The text values are converted automatically according to the types
-    with :py:func:`~masci_tools.util.xml.common_xml_util.convert_text_to_xml()` if they
+    with :py:func:`~masci_tools.util.xml.converters.convert_text_to_xml()` if they
     are not `str` already.
 
     :param xmltree: an xmltree that represents inp.xml
@@ -259,8 +259,8 @@ def xml_set_text(xmltree, schema_dict, xpath, base_xpath, text, occurrences=None
     :returns: xmltree with set text
     """
     from masci_tools.util.xml.xml_setters_basic import xml_set_text_no_create
-    from masci_tools.util.xml.common_xml_util import convert_text_to_xml
-    from masci_tools.util.xml.common_xml_util import check_complex_xpath, split_off_tag
+    from masci_tools.util.xml.converters import convert_text_to_xml
+    from masci_tools.util.xml.common_functions import check_complex_xpath, split_off_tag
 
     check_complex_xpath(xmltree, base_xpath, xpath)
 
@@ -293,7 +293,7 @@ def xml_set_first_text(xmltree, schema_dict, xpath, base_xpath, text, create=Fal
     Sets the text on the first occurrence of a tag in a xmltree to a given value.
     If there are no nodes under the specified xpath a tag can be created with `create=True`.
     The text values are converted automatically according to the types
-    with :py:func:`~masci_tools.util.xml.common_xml_util.convert_text_to_xml()` if they
+    with :py:func:`~masci_tools.util.xml.converters.convert_text_to_xml()` if they
     are not `str` already.
 
     :param xmltree: an xmltree that represents inp.xml
@@ -342,9 +342,9 @@ def xml_add_number_to_attrib(xmltree,
     :returns: xmltree with shifted attribute
     """
     from masci_tools.util.schema_dict_util import read_constants
-    from masci_tools.util.xml.common_xml_util import convert_xml_attribute
+    from masci_tools.util.xml.converters import convert_xml_attribute
     from masci_tools.io.common_functions import is_sequence
-    from masci_tools.util.xml.common_xml_util import check_complex_xpath, split_off_attrib, split_off_tag
+    from masci_tools.util.xml.common_functions import check_complex_xpath, split_off_attrib, split_off_tag
 
     check_complex_xpath(xmltree, base_xpath, xpath)
 
@@ -466,7 +466,7 @@ def xml_set_simple_tag(xmltree, schema_dict, xpath, base_xpath, tag_name, change
     :returns: xmltree with set simple tags
     """
     from masci_tools.util.xml.xml_setters_basic import xml_delete_tag
-    from masci_tools.util.xml.common_xml_util import check_complex_xpath
+    from masci_tools.util.xml.common_functions import check_complex_xpath
 
     check_complex_xpath(xmltree, base_xpath, xpath)
 
@@ -538,7 +538,7 @@ def xml_set_complex_tag(xmltree, schema_dict, xpath, base_xpath, attributedict, 
     :returns: xmltree with changes to the complex tag
     """
     from masci_tools.util.xml.xml_setters_basic import xml_delete_tag
-    from masci_tools.util.xml.common_xml_util import check_complex_xpath, split_off_tag
+    from masci_tools.util.xml.common_functions import check_complex_xpath, split_off_tag
 
     check_complex_xpath(xmltree, base_xpath, xpath)
 

@@ -64,7 +64,7 @@ def schema_dict_version_dispatch(output_schema=False):
             return matches[0]
 
         def register(min_version=None, max_version=None):
-            from masci_tools.util.xml.common_xml_util import convert_str_version_number
+            from masci_tools.util.xml.converters import convert_str_version_number
 
             if min_version is not None:
                 min_version = convert_str_version_number(min_version)
@@ -124,7 +124,7 @@ def _get_latest_available_version(output_schema):
 
     :returns: version string of the latest version
     """
-    from masci_tools.util.xml.common_xml_util import convert_str_version_number
+    from masci_tools.util.xml.converters import convert_str_version_number
 
     latest_version = (0, 0)
     #Get latest version available
@@ -310,7 +310,7 @@ class InputSchemaDict(SchemaDict):
         """
         Returns the input version as an integer for comparisons (`>` or `<`)
         """
-        from masci_tools.util.xml.common_xml_util import convert_str_version_number
+        from masci_tools.util.xml.converters import convert_str_version_number
 
         return convert_str_version_number(self.get('inp_version', ''))
 
@@ -470,7 +470,7 @@ class OutputSchemaDict(SchemaDict):
         """
         Returns the input version as an integer for comparisons (`>` or `<`)
         """
-        from masci_tools.util.xml.common_xml_util import convert_str_version_number
+        from masci_tools.util.xml.converters import convert_str_version_number
 
         return convert_str_version_number(self.get('inp_version', ''))
 
@@ -479,6 +479,6 @@ class OutputSchemaDict(SchemaDict):
         """
         Returns the output version as an integer for comparisons (`>` or `<`)
         """
-        from masci_tools.util.xml.common_xml_util import convert_str_version_number
+        from masci_tools.util.xml.converters import convert_str_version_number
 
         return convert_str_version_number(self.get('out_version', ''))

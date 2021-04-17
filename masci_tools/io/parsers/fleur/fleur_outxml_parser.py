@@ -16,7 +16,7 @@ and convert its content to a dict, based on the tasks given
 """
 from masci_tools.util.parse_tasks import ParseTasks
 from masci_tools.util.schema_dict_util import tag_exists, read_constants, eval_simple_xpath, evaluate_attribute
-from masci_tools.util.xml.common_xml_util import eval_xpath, clear_xml, validate_xml
+from masci_tools.util.xml.common_functions import eval_xpath, clear_xml, validate_xml
 from masci_tools.io.parsers.fleur.fleur_schema.schema_dict import OutputSchemaDict
 from masci_tools.util.logging_util import DictHandler, OutParserLogAdapter
 from lxml import etree
