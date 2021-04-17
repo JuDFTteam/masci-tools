@@ -60,37 +60,47 @@ warnings:
   - No values found for attribute time at tag endDateAndTime
   - Endtime was unparsed, inp.xml prob not complete, do not believe the walltime!
   - Enddate was unparsed, inp.xml prob not complete, do not believe the walltime!
-  - No values found for attribute units at tag totalEnergy
-  - No values found for attribute value at tag totalEnergy
-  - 'Failed to evaluate singleValue from tag totalEnergy: Has no ''value'' attribute'
-  - 'Failed to evaluate singleValue from tag totalEnergy: Has no ''units'' attribute'
-  - convert_total_energy cannot convert None to eV
-  - No values found for attribute distance
-  - No values found for attribute units
-  - No values found for attribute distance
-  - No values found for attribute distance
-  - No values found for attribute value at tag sumOfEigenvalues
-  - 'Failed to evaluate singleValue from tag sumOfEigenvalues: Has no ''value'' attribute'
-  - No values found for attribute value at tag coreElectrons
-  - 'Failed to evaluate singleValue from tag coreElectrons: Has no ''value'' attribute'
-  - No values found for attribute value at tag valenceElectrons
-  - 'Failed to evaluate singleValue from tag valenceElectrons: Has no ''value'' attribute'
-  - No values found for attribute value at tag chargeDenXCDenIntegral
-  - 'Failed to evaluate singleValue from tag chargeDenXCDenIntegral: Has no ''value''
+  - '[Iteration 1] No values found for attribute units at tag totalEnergy'
+  - '[Iteration 1] No values found for attribute value at tag totalEnergy'
+  - '[Iteration 1] Failed to evaluate singleValue from tag totalEnergy: Has no ''value''
     attribute'
-  - No values found for attribute units at tag FermiEnergy
-  - No values found for attribute value at tag FermiEnergy
-  - 'Failed to evaluate singleValue from tag FermiEnergy: Has no ''value'' attribute'
-  - 'Failed to evaluate singleValue from tag FermiEnergy: Has no ''units'' attribute'
-  - No values found for attribute units at tag bandgap
-  - No values found for attribute value at tag bandgap
-  - 'Failed to evaluate singleValue from tag bandgap: Has no ''value'' attribute'
-  - 'Failed to evaluate singleValue from tag bandgap: Has no ''units'' attribute'
-  - No values found for attribute moment at tag magneticMoment
-  - No values found for attribute spinDownCharge at tag magneticMoment
-  - No values found for attribute spinUpCharge at tag magneticMoment
-  - No values found for attribute interstitial at tag spinDependentCharge
-  - No values found for attribute mtSpheres at tag spinDependentCharge
-  - No values found for attribute total at tag spinDependentCharge
-  - No values found for attribute value at tag totalCharge
-  - 'Failed to evaluate singleValue from tag totalCharge: Has no ''value'' attribute'
+  - '[Iteration 1] Failed to evaluate singleValue from tag totalEnergy: Has no ''units''
+    attribute'
+  - '[Iteration 1] convert_total_energy cannot convert None to eV'
+  - '[Iteration 1] No values found for attribute distance'
+  - '[Iteration 1] No values found for attribute units'
+  - '[Iteration 1] No values found for attribute distance'
+  - '[Iteration 1] No values found for attribute distance'
+  - '[Iteration 1] No values found for attribute value at tag sumOfEigenvalues'
+  - '[Iteration 1] Failed to evaluate singleValue from tag sumOfEigenvalues: Has no
+    ''value'' attribute'
+  - '[Iteration 1] No values found for attribute value at tag coreElectrons'
+  - '[Iteration 1] Failed to evaluate singleValue from tag coreElectrons: Has no ''value''
+    attribute'
+  - '[Iteration 1] No values found for attribute value at tag valenceElectrons'
+  - '[Iteration 1] Failed to evaluate singleValue from tag valenceElectrons: Has no
+    ''value'' attribute'
+  - '[Iteration 1] No values found for attribute value at tag chargeDenXCDenIntegral'
+  - '[Iteration 1] Failed to evaluate singleValue from tag chargeDenXCDenIntegral:
+    Has no ''value'' attribute'
+  - '[Iteration 1] No values found for attribute units at tag FermiEnergy'
+  - '[Iteration 1] No values found for attribute value at tag FermiEnergy'
+  - '[Iteration 1] Failed to evaluate singleValue from tag FermiEnergy: Has no ''value''
+    attribute'
+  - '[Iteration 1] Failed to evaluate singleValue from tag FermiEnergy: Has no ''units''
+    attribute'
+  - '[Iteration 1] No values found for attribute units at tag bandgap'
+  - '[Iteration 1] No values found for attribute value at tag bandgap'
+  - '[Iteration 1] Failed to evaluate singleValue from tag bandgap: Has no ''value''
+    attribute'
+  - '[Iteration 1] Failed to evaluate singleValue from tag bandgap: Has no ''units''
+    attribute'
+  - '[Iteration 1] No values found for attribute moment at tag magneticMoment'
+  - '[Iteration 1] No values found for attribute spinDownCharge at tag magneticMoment'
+  - '[Iteration 1] No values found for attribute spinUpCharge at tag magneticMoment'
+  - '[Iteration 1] No values found for attribute interstitial at tag spinDependentCharge'
+  - '[Iteration 1] No values found for attribute mtSpheres at tag spinDependentCharge'
+  - '[Iteration 1] No values found for attribute total at tag spinDependentCharge'
+  - '[Iteration 1] No values found for attribute value at tag totalCharge'
+  - '[Iteration 1] Failed to evaluate singleValue from tag totalCharge: Has no ''value''
+    attribute'

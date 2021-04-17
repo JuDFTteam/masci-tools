@@ -293,7 +293,7 @@ def outxml_parser(outxmlfile,
     iteration_logger = OutParserLogAdapter(logger, logger_info)
 
     for node in iteration_nodes:
-        iteration_number = evaluate_attribute(node, outschema_dict, 'overallNumber', optional=True)
+        iteration_number = evaluate_attribute(node, outschema_dict, 'numberForCurrentRun', optional=True)
 
         if iteration_number is not None:
             logger_info['iteration'] = iteration_number

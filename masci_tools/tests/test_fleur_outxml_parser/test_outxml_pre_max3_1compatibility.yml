@@ -151,23 +151,27 @@ warnings:
     \ Expected is ( volumes ). \nLine 73: Element 'atomsInCell': The attribute 'n_hia'\
     \ is required but missing. \n"
   - No values found for attribute count
-  - No values found for attribute interstitial at tag spinDependentCharge
-  - No values found for attribute mtSpheres at tag spinDependentCharge
-  - No values found for attribute total at tag spinDependentCharge
-  - No values found for attribute value at tag totalCharge
-  - 'Failed to evaluate singleValue from tag totalCharge: Has no ''value'' attribute'
-  - No values found for attribute interstitial at tag spinDependentCharge
-  - No values found for attribute mtSpheres at tag spinDependentCharge
-  - No values found for attribute total at tag spinDependentCharge
-  - No values found for attribute value at tag totalCharge
-  - 'Failed to evaluate singleValue from tag totalCharge: Has no ''value'' attribute'
-  - No values found for attribute interstitial at tag spinDependentCharge
-  - No values found for attribute mtSpheres at tag spinDependentCharge
-  - No values found for attribute total at tag spinDependentCharge
-  - No values found for attribute value at tag totalCharge
-  - 'Failed to evaluate singleValue from tag totalCharge: Has no ''value'' attribute'
-  - No values found for attribute interstitial at tag spinDependentCharge
-  - No values found for attribute mtSpheres at tag spinDependentCharge
-  - No values found for attribute total at tag spinDependentCharge
-  - No values found for attribute value at tag totalCharge
-  - 'Failed to evaluate singleValue from tag totalCharge: Has no ''value'' attribute'
+  - '[Iteration 1] No values found for attribute interstitial at tag spinDependentCharge'
+  - '[Iteration 1] No values found for attribute mtSpheres at tag spinDependentCharge'
+  - '[Iteration 1] No values found for attribute total at tag spinDependentCharge'
+  - '[Iteration 1] No values found for attribute value at tag totalCharge'
+  - '[Iteration 1] Failed to evaluate singleValue from tag totalCharge: Has no ''value''
+    attribute'
+  - '[Iteration 2] No values found for attribute interstitial at tag spinDependentCharge'
+  - '[Iteration 2] No values found for attribute mtSpheres at tag spinDependentCharge'
+  - '[Iteration 2] No values found for attribute total at tag spinDependentCharge'
+  - '[Iteration 2] No values found for attribute value at tag totalCharge'
+  - '[Iteration 2] Failed to evaluate singleValue from tag totalCharge: Has no ''value''
+    attribute'
+  - '[Iteration 3] No values found for attribute interstitial at tag spinDependentCharge'
+  - '[Iteration 3] No values found for attribute mtSpheres at tag spinDependentCharge'
+  - '[Iteration 3] No values found for attribute total at tag spinDependentCharge'
+  - '[Iteration 3] No values found for attribute value at tag totalCharge'
+  - '[Iteration 3] Failed to evaluate singleValue from tag totalCharge: Has no ''value''
+    attribute'
+  - '[Iteration 4] No values found for attribute interstitial at tag spinDependentCharge'
+  - '[Iteration 4] No values found for attribute mtSpheres at tag spinDependentCharge'
+  - '[Iteration 4] No values found for attribute total at tag spinDependentCharge'
+  - '[Iteration 4] No values found for attribute value at tag totalCharge'
+  - '[Iteration 4] Failed to evaluate singleValue from tag totalCharge: Has no ''value''
+    attribute'
