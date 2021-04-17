@@ -15,10 +15,10 @@ This module contains functions to load an fleur out.xml file, parse it with a sc
 and convert its content to a dict, based on the tasks given
 """
 from masci_tools.util.parse_tasks import ParseTasks
-from masci_tools.util.schema_dict_util import tag_exists, read_constants, eval_simple_xpath
+from masci_tools.util.schema_dict_util import tag_exists, read_constants, eval_simple_xpath, evaluate_attribute
 from masci_tools.util.xml.common_xml_util import eval_xpath, clear_xml, validate_xml
 from masci_tools.io.parsers.fleur.fleur_schema.schema_dict import OutputSchemaDict
-from masci_tools.util.logging_util import DictHandler
+from masci_tools.util.logging_util import DictHandler, OutParserLogAdapter
 from lxml import etree
 import copy
 import warnings
@@ -289,8 +289,18 @@ def outxml_parser(outxmlfile,
     if not isinstance(iteration_nodes, list):
         iteration_nodes = [iteration_nodes]
 
+    logger_info = {'iteration': 'unknown'}
+    iteration_logger = OutParserLogAdapter(logger, logger_info)
+
     for node in iteration_nodes:
-        out_dict = parse_iteration(node, parser, outschema_dict, out_dict, constants, logger=logger, **kwargs)
+        iteration_number = evaluate_attribute(node, outschema_dict, 'overallNumber', optional=True)
+
+        if iteration_number is not None:
+            logger_info['iteration'] = iteration_number
+
+        out_dict = parse_iteration(node, parser, outschema_dict, out_dict, constants, logger=iteration_logger, **kwargs)
+
+        logger_info['iteration'] = 'unknown'
 
     if not kwargs.get('list_return', False):
         #Convert one item lists to simple values

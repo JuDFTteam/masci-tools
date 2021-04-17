@@ -12,7 +12,7 @@
 """
 This module defines useful utility for logging related functionality
 """
-from logging import Handler
+from logging import Handler, LoggerAdapter
 
 
 class DictHandler(Handler):
@@ -63,3 +63,13 @@ class DictHandler(Handler):
         from logging import getLevelName
         level = getLevelName(self.level)
         return '<%s (%s)>' % (self.__class__.__name__, level)
+
+
+class OutParserLogAdapter(LoggerAdapter):
+    """
+    This adapter expects the passed in dict-like object to have a
+    'iteration' key, whose value is prepended as [Iteration i] to the message
+    """
+
+    def process(self, msg, kwargs):
+        return '[Iteration %s] %s' % (self.extra['iteration'], msg), kwargs
