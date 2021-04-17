@@ -137,7 +137,7 @@ def _get_latest_available_version(output_schema):
 
                 latest_version = max(latest_version, convert_str_version_number(folder))
 
-    return '.'.join(map(str,latest_version))
+    return '.'.join(map(str, latest_version))
 
 
 class SchemaDict(LockableDict):
@@ -251,12 +251,12 @@ class InputSchemaDict(SchemaDict):
     __version__ = '0.1.0'
 
     @classmethod
-    def fromVersion(cls, version, parser_info_out=None, no_cache=False):
+    def fromVersion(cls, version, logger=None, no_cache=False):
         """
         load the FleurInputSchema dict for the specified version
 
         :param version: str with the desired version, e.g. '0.33'
-        :param parser_info_out: dict with warnings, errors and information, ...
+        :param logger: logger object for warnings, errors and information, ...
 
         :return: InputSchemaDict object with the information for the provided version
         """
@@ -271,9 +271,9 @@ class InputSchemaDict(SchemaDict):
                 message = f'No FleurInputSchema.xsd found at {schema_file_path}'
                 raise FileNotFoundError(message)
             else:
-                if parser_info_out is not None:
-                    parser_info_out['parser_warnings'].append(
-                        f"No Input Schema available for version '{version}'; falling back to '{latest_version}'")
+                if logger is not None:
+                    logger.warning("No Input Schema available for version '%s'; falling back to '%s'", version,
+                                   latest_version)
                 else:
                     warnings.warn(
                         f"No Input Schema available for version '{version}'; falling back to '{latest_version}'")
@@ -294,7 +294,6 @@ class InputSchemaDict(SchemaDict):
         load the FleurInputSchema dict for the specified FleurInputSchema file
 
         :param path: path to the input schema file
-        :param parser_info_out: dict with warnings, errors and information, ...
 
         :return: InputSchemaDict object with the information for the provided file
         """
@@ -312,7 +311,7 @@ class InputSchemaDict(SchemaDict):
         """
         from masci_tools.util.xml.common_xml_util import convert_str_version_number
 
-        return convert_str_version_number(self.get('inp_version',''))
+        return convert_str_version_number(self.get('inp_version', ''))
 
 
 class OutputSchemaDict(SchemaDict):
@@ -365,13 +364,13 @@ class OutputSchemaDict(SchemaDict):
     __version__ = '0.1.0'
 
     @classmethod
-    def fromVersion(cls, version, inp_version=None, parser_info_out=None, no_cache=False):
+    def fromVersion(cls, version, inp_version=None, logger=None, no_cache=False):
         """
         load the FleurOutputSchema dict for the specified version
 
         :param version: str with the desired version, e.g. '0.33'
         :param inp_version: str with the desired input version, e.g. '0.33' (defaults to version)
-        :param parser_info_out: dict with warnings, errors and information, ...
+        :param logger: logger object for warnings, errors and information, ...
 
         :return: OutputSchemaDict object with the information for the provided versions
         """
@@ -391,9 +390,9 @@ class OutputSchemaDict(SchemaDict):
                 message = f'No FleurOutputSchema.xsd found at {schema_file_path}'
                 raise FileNotFoundError(message)
             else:
-                if parser_info_out is not None:
-                    parser_info_out['parser_warnings'].append(
-                        f"No Output Schema available for version '{version}'; falling back to '{latest_version}'")
+                if logger is not None:
+                    logger.warning("No Output Schema available for version '%s'; falling back to '%s'", version,
+                                   latest_version)
                 else:
                     warnings.warn(
                         f"No Output Schema available for version '{version}'; falling back to '{latest_version}'")
@@ -409,9 +408,9 @@ class OutputSchemaDict(SchemaDict):
                 message = f'No FleurInputSchema.xsd found at {inpschema_file_path}'
                 raise FileNotFoundError(message)
             else:
-                if parser_info_out is not None:
-                    parser_info_out['parser_warnings'].append(
-                        f"No Input Schema available for version '{inp_version}'; falling back to '{latest_inpversion}'")
+                if logger is not None:
+                    logger.warning("No Input Schema available for version '%s'; falling back to '%s'", inp_version,
+                                   latest_inpversion)
                 else:
                     warnings.warn(
                         f"No Input Schema available for version '{inp_version}'; falling back to '{latest_inpversion}'")
@@ -420,9 +419,9 @@ class OutputSchemaDict(SchemaDict):
                 inpschema_file_path = os.path.abspath(os.path.join(PACKAGE_DIRECTORY, fleur_inpschema_path))
                 inp_version = latest_inpversion
 
-        if inp_version != version and parser_info_out is not None:
-            parser_info_out['parser_warnings'].append(
-                f'Creating OutputSchemaDict object for differing versions (out: {version}; inp: {inp_version})')
+        if inp_version != version and logger is not None:
+            logger.info('Creating OutputSchemaDict object for differing versions (out: %s; inp: %s)', version,
+                        inp_version)
 
         if (version, inp_version) in cls.__schema_dict_cache and not no_cache:
             return cls.__schema_dict_cache[(version, inp_version)]
@@ -441,7 +440,6 @@ class OutputSchemaDict(SchemaDict):
 
         :param path: str path to the FleurOutputSchema file
         :param inp_path: str path to the FleurInputSchema file (defaults to same folder as path)
-        :param parser_info_out: dict with warnings, errors and information, ...
 
         :return: OutputSchemaDict object with the information for the provided files
         """
@@ -473,7 +471,7 @@ class OutputSchemaDict(SchemaDict):
         """
         from masci_tools.util.xml.common_xml_util import convert_str_version_number
 
-        return convert_str_version_number(self.get('inp_version',''))
+        return convert_str_version_number(self.get('inp_version', ''))
 
     @property
     def out_version(self):
@@ -482,4 +480,4 @@ class OutputSchemaDict(SchemaDict):
         """
         from masci_tools.util.xml.common_xml_util import convert_str_version_number
 
-        return convert_str_version_number(self.get('out_version',''))
+        return convert_str_version_number(self.get('out_version', ''))

@@ -246,17 +246,13 @@ output_dict:
   walltime: 4
   walltime_units: seconds
 warnings:
-  fleur_modes:
-    band: false
-    bz_integration: hist
-    dos: false
-    film: false
-    jspin: 1
-    ldau: true
-    noco: false
-    relax: false
-    soc: false
-  parser_info: Masci-Tools Fleur out.xml Parser v0.4.0
+  parser_errors: []
+  parser_info:
+  - Masci-Tools Fleur out.xml Parser v0.5.0
+  - 'Found fleur out file with the versions out: 0.33; inp: 0.33'
+  - 'The following Fleur modes were found: {''jspin'': 1, ''relax'': False, ''ldau'':
+    True, ''soc'': False, ''noco'': False, ''film'': False, ''dos'': False, ''band'':
+    False, ''bz_integration'': ''hist''}'
   parser_warnings:
   - Ignoring '0.27' outputVersion for MaX5.0 release
   - "Output file does not validate against the schema: \nLine 131: Element 'kPointList',\

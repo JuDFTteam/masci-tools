@@ -44,7 +44,7 @@ def _cache_xpath_construction(func):
         version = str(xmlschema.xpath('/xsd:schema/@version', namespaces=namespaces)[0])
         root_tag = str(xmlschema.xpath('/xsd:schema/xsd:element/@name', namespaces=namespaces)[0])
 
-        arg_tuple = (version,root_tag,name, kwargs.get('enforce_end_type', ''), kwargs.get('ref', '')) + \
+        arg_tuple = (version, root_tag, name, kwargs.get('enforce_end_type', ''), kwargs.get('ref', '')) + \
                     tuple(key for key in kwargs if kwargs.get(key, False))
 
         hash_args = hash(arg_tuple)

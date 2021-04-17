@@ -152,8 +152,11 @@ def test_eval_xpath_create_differing_xpaths(load_inpxml):
 
     assert len(eval_xpath(root, '/fleurInput/atomSpecies/species/ldaU')) == 0
 
-    nodes = eval_xpath_create(xmltree, schema_dict, "/fleurInput/atomSpecies/species[@name='Fe-1']/ldaU",
-                              '/fleurInput/atomSpecies/species/ldaU')
+    nodes = eval_xpath_create(xmltree,
+                              schema_dict,
+                              "/fleurInput/atomSpecies/species[@name='Fe-1']/ldaU",
+                              '/fleurInput/atomSpecies/species/ldaU',
+                              list_return=True)
 
     assert len(nodes) == 1
     assert [node.getparent().attrib['name'] for node in nodes] == ['Fe-1']
@@ -173,7 +176,8 @@ def test_eval_xpath_create_create_parents(load_inpxml):
                               schema_dict,
                               "/fleurInput/atomSpecies/species[@name='Fe-1']/ldaHIA/addArg",
                               '/fleurInput/atomSpecies/species/ldaHIA/addArg',
-                              create_parents=True)
+                              create_parents=True,
+                              list_return=True)
 
     assert len(nodes) == 1
 
