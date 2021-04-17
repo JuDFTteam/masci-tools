@@ -37,7 +37,7 @@ def clean_parser_log():
     return _clean_parser_log
 
 
-@pytest.yield_fixture(scope='session', autouse=True)
+@pytest.fixture(scope='session', autouse=True)
 def disable_parser_tracebacks():
     """Disable logging of tracebacks in parser logs Thanks to
        https://stackoverflow.com/questions/54605699/python-logging-disable-stack-trace"""
