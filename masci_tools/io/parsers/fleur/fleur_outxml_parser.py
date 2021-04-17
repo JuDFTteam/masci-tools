@@ -85,6 +85,7 @@ def outxml_parser(outxmlfile,
                                          INFO='parser_info',
                                          DEBUG='parser_debug',
                                          CRITICAL='parser_critical',
+                                         ignore_unknown_levels=True,
                                          level=logging_level)
 
         logger.addHandler(parser_log_handler)

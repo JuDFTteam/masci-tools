@@ -60,6 +60,7 @@ def inpxml_parser(inpxmlfile, version=None, parser_info_out=None, strict=False, 
                                          INFO='parser_info',
                                          DEBUG='parser_debug',
                                          CRITICAL='parser_critical',
+                                         ignore_unknown_levels=True,
                                          level=logging_level)
 
         logger.addHandler(parser_log_handler)

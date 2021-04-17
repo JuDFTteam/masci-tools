@@ -24,7 +24,7 @@ class DictHandler(Handler):
     Keyword arguments can be used to modify the keys for the different levels
     """
 
-    def __init__(self, log_dict, **kwargs):
+    def __init__(self, log_dict, ignore_unknown_levels=False, **kwargs):
         from logging import _levelToName
         import copy
 
@@ -33,7 +33,12 @@ class DictHandler(Handler):
         levels = copy.copy(list(_levelToName.values()))
         levels.remove('NOTSET')
 
-        self.level_names = {name: name if name not in kwargs else kwargs[name] for name in levels}
+        self.level_names = {name: kwargs[name] for name in levels if name in kwargs}
+
+        if not ignore_unknown_levels:
+            for name in levels:
+                if name not in self.level_names:
+                    self.level_names[name] = name
 
         for name in self.level_names.values():
             self.log_dict[name] = []
