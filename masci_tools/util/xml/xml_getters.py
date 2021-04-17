@@ -310,13 +310,13 @@ def get_structure_data(xmltree, schema_dict):
 
         if schema_dict.inp_version < (0, 33):
             for indx, pos in enumerate(absolute_positions):
-                absolute_positions[indx] = convert_xml_attribute(pos, ['float', 'float_expression'],
+                absolute_positions[indx], suc = convert_xml_attribute(pos, ['float', 'float_expression'],
                                                                  constants=constants)
             for indx, pos in enumerate(relative_positions):
-                relative_positions[indx] = convert_xml_attribute(pos, ['float', 'float_expression'],
+                relative_positions[indx], suc = convert_xml_attribute(pos, ['float', 'float_expression'],
                                                                  constants=constants)
             for indx, pos in enumerate(film_positions):
-                film_positions[indx] = convert_xml_attribute(pos, ['float', 'float_expression'], constants=constants)
+                film_positions[indx], suc = convert_xml_attribute(pos, ['float', 'float_expression'], constants=constants)
 
         atom_positions = absolute_positions
 
@@ -373,7 +373,7 @@ def get_kpoints_data(xmltree, schema_dict, name=None):
         if schema_dict.inp_version == (0, 32):
             for indx, kpoint in enumerate(kpoints):
                 kpoints[indx], suc = convert_xml_attribute(kpoint, ['float', 'float_expression'], constants=constants)
-            weights, suc = convert_xml_attribute(weights, ['float', 'float_expression'], constants=constants)
+            weights, suc = convert_xml_attribute(weights, ['float', 'float_expression'], constants=constants, list_return=True)
 
         if not isinstance(kpoints[0], list):
             kpoints = [kpoints]
@@ -426,6 +426,6 @@ def get_kpoints_data_max4(xmltree, schema_dict):
 
     for indx, kpoint in enumerate(kpoints):
         kpoints[indx], suc = convert_xml_attribute(kpoint, ['float', 'float_expression'], constants=constants)
-    weights, suc = convert_xml_attribute(weights, ['float', 'float_expression'], constants=constants)
+    weights, suc = convert_xml_attribute(weights, ['float', 'float_expression'], constants=constants, list_return=True)
 
     return kpoints, weights, cell, pbc

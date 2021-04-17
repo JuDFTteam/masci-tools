@@ -23,7 +23,7 @@ import warnings
 import tempfile
 import shutil
 from lxml import etree
-from functools import update_wrapper
+from functools import update_wrapper, wraps
 
 PACKAGE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 
@@ -90,6 +90,7 @@ def schema_dict_version_dispatch(output_schema=False):
 
             return register_dec
 
+        @wraps(func)
         def wrapper(node, schema_dict, *args, **kwargs):
 
             if not isinstance(schema_dict, SchemaDict):
