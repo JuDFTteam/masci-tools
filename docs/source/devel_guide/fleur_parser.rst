@@ -56,6 +56,7 @@ The following are possible:
   :text: Will parse the text of the given tag
   :numberNodes: Will return the number of nodes for the given tag
   :exists: Will return, whether the given tag exists
+  :attrib_exists: Will return, whether the given attribute exists
   :allAttribs: Will parse all known attributes at the given tag
                into a dictionary
   :parentAttribs: Will parse all known attributes at the given tag

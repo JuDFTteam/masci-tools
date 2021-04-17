@@ -41,6 +41,12 @@ Basic IO helper functions
 .. automodule:: masci_tools.io.hdf5_util
    :members:
 
+Logging Utility
+----------------
+
+.. automodule:: masci_tools.util.logging_util
+   :members:
+
 Fleur parser utility
 ----------------------
 
