@@ -52,7 +52,11 @@ def get_fleur_modes(xmltree, schema_dict):
         gw = gw != 0
     fleur_modes['gw'] = gw
 
-    fleur_modes['force_theorem'] = tag_exists(root, schema_dict, 'forceTheorem')
+    if schema_dict.inp_version > (0,27):
+        fleur_modes['force_theorem'] = tag_exists(root, schema_dict, 'forceTheorem')
+    else:
+        fleur_modes['force_theorem'] = False
+
     fleur_modes['film'] = tag_exists(root, schema_dict, 'filmPos')
     fleur_modes['ldau'] = tag_exists(root, schema_dict, 'ldaU', contains='species')
     fleur_modes['dos'] = evaluate_attribute(root, schema_dict, 'dos', constants=constants)

@@ -7,13 +7,13 @@ Tests of the xml_getters
 import pytest
 import os
 
-file_path1 = 'files/fleur/aiida_fleur/inpxml'
+#file_path1 = 'files/fleur/aiida_fleur/inpxml'
 file_path2 = 'files/fleur/Max-R5'
 
 inpxmlfilefolder = os.path.dirname(os.path.abspath(__file__))
 
 inpxmlfilefolder_valid = [
-    os.path.abspath(os.path.join(inpxmlfilefolder, file_path1)),
+#    os.path.abspath(os.path.join(inpxmlfilefolder, file_path1)),
     os.path.abspath(os.path.join(inpxmlfilefolder, file_path2))
 ]
 
