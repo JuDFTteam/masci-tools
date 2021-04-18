@@ -79,7 +79,7 @@ def filter_out_empty_dict_entries(dict_to_filter):
     :returns: dict without empty entries
     """
 
-    EMPTY_VALUES = (None, [])
+    EMPTY_VALUES = (None, [], {})
 
     return {key: val for key, val in dict_to_filter.items() if val not in EMPTY_VALUES}
 

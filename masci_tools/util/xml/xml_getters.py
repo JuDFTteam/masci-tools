@@ -197,7 +197,7 @@ def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True):
                 atom_dict['id'] = atom_id
 
         if schema_dict.inp_version <= (0,31):
-                atom_dict['ncst'] = evaluate_attribute(species, schema_dict, 'coreStates', constants)
+            atom_dict['ncst'] = evaluate_attribute(species, schema_dict, 'coreStates', constants)
         atom_dict['rmt'] = evaluate_attribute(species, schema_dict, 'radius', constants=constants)
         atom_dict['dx'] = evaluate_attribute(species, schema_dict, 'logIncrement', constants=constants)
         atom_dict['jri'] = evaluate_attribute(species, schema_dict, 'gridPoints', constants=constants)
