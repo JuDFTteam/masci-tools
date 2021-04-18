@@ -211,11 +211,11 @@ def get_attrib_xpath(schema_dict, name, contains=None, not_contains=None, exclud
 
 def get_relative_attrib_xpath(schema_dict, name, root_tag, contains=None, not_contains=None, exclude=None, tag_name=None):
     """
-    Tries to find a unique path from the schema_dict based on the given name of the tag
-    and additional further specifications
+    Tries to find a unique relative path from the schema_dict based on the given name of the attribute
+    name of the root, from which the path should be relative and additional further specifications
 
     :param schema_dict: dict, containing all the path information and more
-    :param name: str, name of the tag
+    :param name: str, name of the attribute
     :param contains: str or list of str, this string has to be in the final path
     :param not_contains: str or list of str, this string has to NOT be in the final path
     :param exclude: list of str, here specific types of attributes can be excluded
