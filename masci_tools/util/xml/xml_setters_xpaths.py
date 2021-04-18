@@ -148,7 +148,7 @@ def xml_set_attrib_value(xmltree,
     on all nodes returned for the specified xpath.
     If there are no nodes under the specified xpath a tag can be created with `create=True`.
     The attribute values are converted automatically according to the types of the attribute
-    with :py:func:`~masci_tools.util.xml.common_functions.convert_attribute_to_xml()` if they
+    with :py:func:`~masci_tools.util.xml.converters.convert_attribute_to_xml()` if they
     are not `str` already.
 
     :param xmltree: an xmltree that represents inp.xml
