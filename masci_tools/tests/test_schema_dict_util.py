@@ -815,7 +815,7 @@ def test_attrib_exists():
     assert attrib_exists(root, schema_dict, 'jspins')
 
     assert not attrib_exists(root, schema_dict, 'radius', contains='atomGroup')
-    assert not attrib_exists(outroot, schema_dict, 'radius', contains='atomGroup')
+    assert not attrib_exists(outroot, outschema_dict_34, 'radius', contains='atomGroup')
 
     with pytest.raises(ValueError,
                        match='The attrib spinf has multiple possible paths with the current specification.'):
