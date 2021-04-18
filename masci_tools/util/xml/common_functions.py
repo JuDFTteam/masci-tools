@@ -145,15 +145,6 @@ def eval_xpath(node, xpath, logger=None, list_return=False, namespaces=None):
             logger.error('Wrong Type for xpath eval; Got: %s', type(node))
         raise TypeError(f'Wrong Type for xpath eval; Got: {type(node)}')
 
-    if isinstance(node, etree._Element):
-        if node.tag != xpath.split('/')[1] and xpath.split('/')[0] != '.':
-            #absolute path with a different root tag than node
-            if node.tag in xpath:
-                if '@' not in xpath:
-                    xpath = xpath + '/'
-                xpath = xpath.replace('/'.join(xpath.split(node.tag + '/')[:-1]) + node.tag, '.')
-                xpath = xpath.rstrip('/')
-
     try:
         return_value = node.xpath(xpath, namespaces=namespaces)
     except etree.XPathEvalError as err:
@@ -245,3 +236,26 @@ def check_complex_xpath(node, base_xpath, complex_xpath):
 
     if not results_base.issuperset(results_complex):
         raise ValueError(f"Complex xpath '{complex_xpath}' is not compatible with the base_xpath '{base_xpath}'")
+
+def abs_to_rel_xpath(xpath, new_root):
+    """
+    Convert a given xpath to be relative from a tag appearing in the
+    original xpath.
+
+    :param xpath: str of the xpath to convert
+    :param new_root: str of the tag from which the new xpath should be relative
+
+    :returns: str of the relative xpath
+    """
+    if new_root in xpath:
+        if '@' not in xpath:
+            xpath = xpath + '/'
+
+        xpath_to_root = '/'.join(xpath.split(new_root + '/')[:-1]) + new_root
+        xpath = xpath.replace(xpath_to_root, '.')
+        if xpath != './':
+            xpath = xpath.rstrip('/')
+    else:
+        raise ValueError(f'New root element {new_root} does not appear in xpath {xpath}')
+
+    return xpath
