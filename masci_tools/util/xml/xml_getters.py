@@ -130,8 +130,6 @@ def get_cell(xmltree, schema_dict):
 
     return cell, pbc
 
-
-@schema_dict_version_dispatch(output_schema=False)
 def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True):
     """
     This routine returns an python dictionary produced from the inp.xml
@@ -157,9 +155,7 @@ def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True):
     parameters = {}
 
     xmltree = clear_xml(xmltree)
-
     root = xmltree.getroot()
-
     constants = read_constants(root, schema_dict)
 
     # Create the cards
@@ -194,14 +190,14 @@ def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True):
         atom_z = evaluate_attribute(species, schema_dict, 'atomicNumber', constants)
         if not inpgen_ready:
             atom_dict['z'] = atom_z
-            #atom_dict['name'] = evaluate_attribute(species, schema_dict, 'name', constants)
-            #atom_dict['ncst'] = evaluate_attribute(species, schema_dict, 'ncst', constants) (deprecated)
         species_count[atom_z] = species_count.get(atom_z, 0) + 1
         atom_id = f'{atom_z}.{species_count[atom_z]}'
         if write_ids:
             if species_several[atom_z] > 1:
                 atom_dict['id'] = atom_id
 
+        if schema_dict.inp_version <= (0,31):
+                atom_dict['ncst'] = evaluate_attribute(species, schema_dict, 'coreStates', constants)
         atom_dict['rmt'] = evaluate_attribute(species, schema_dict, 'radius', constants=constants)
         atom_dict['dx'] = evaluate_attribute(species, schema_dict, 'logIncrement', constants=constants)
         atom_dict['jri'] = evaluate_attribute(species, schema_dict, 'gridPoints', constants=constants)
