@@ -14,7 +14,10 @@ Custom Datatypes
 Common XML utility
 ------------------
 
-.. automodule:: masci_tools.util.xml.common_xml_util
+.. automodule:: masci_tools.util.xml.common_functions
+   :members:
+
+.. automodule:: masci_tools.util.xml.converters
    :members:
 
 XML Setter functions
@@ -32,6 +35,12 @@ XML Setter functions
 .. automodule:: masci_tools.util.xml.xml_setters_basic
    :members:
 
+XML Getter functions
+---------------------
+
+.. automodule:: masci_tools.util.xml.xml_getters
+   :members:
+
 Basic IO helper functions
 ---------------------------
 
@@ -39,6 +48,12 @@ Basic IO helper functions
    :members:
 
 .. automodule:: masci_tools.io.hdf5_util
+   :members:
+
+Logging Utility
+----------------
+
+.. automodule:: masci_tools.util.logging_util
    :members:
 
 Fleur parser utility

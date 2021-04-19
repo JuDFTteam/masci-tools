@@ -16,6 +16,7 @@ and as little knowledge of the concrete xpaths as possible
 """
 from masci_tools.util.schema_dict_util import get_tag_xpath
 from masci_tools.util.schema_dict_util import get_attrib_xpath
+from masci_tools.io.parsers.fleur.fleur_schema import schema_dict_version_dispatch
 
 
 def create_tag(xmltree, schema_dict, tag_name, complex_xpath=None, create_parents=False, occurrences=None, **kwargs):
@@ -41,7 +42,7 @@ def create_tag(xmltree, schema_dict, tag_name, complex_xpath=None, create_parent
     :returns: xmltree with created tags
     """
     from masci_tools.util.xml.xml_setters_xpaths import xml_create_tag_schema_dict
-    from masci_tools.util.xml.common_xml_util import split_off_tag
+    from masci_tools.util.xml.common_functions import split_off_tag
 
     base_xpath = get_tag_xpath(schema_dict, tag_name, **kwargs)
 
@@ -94,7 +95,7 @@ def add_number_to_attrib(xmltree,
     :returns: xmltree with shifted attribute
     """
     from masci_tools.util.xml.xml_setters_xpaths import xml_add_number_to_attrib
-    from masci_tools.util.xml.common_xml_util import split_off_attrib
+    from masci_tools.util.xml.common_functions import split_off_attrib
 
     attrib_xpath = get_attrib_xpath(schema_dict, attributename, **kwargs)
 
@@ -168,7 +169,7 @@ def set_attrib_value(xmltree,
     specifications.
     If there are no nodes under the specified xpath a tag can be created with `create=True`.
     The attribute values are converted automatically according to the types of the attribute
-    with :py:func:`~masci_tools.util.xml.common_xml_util.convert_attribute_to_xml()` if they
+    with :py:func:`~masci_tools.util.xml.converters.convert_attribute_to_xml()` if they
     are not `str` already.
 
     :param xmltree: an xmltree that represents inp.xml
@@ -189,7 +190,7 @@ def set_attrib_value(xmltree,
     :returns: xmltree with set attribute
     """
     from masci_tools.util.xml.xml_setters_xpaths import xml_set_attrib_value
-    from masci_tools.util.xml.common_xml_util import split_off_attrib
+    from masci_tools.util.xml.common_functions import split_off_attrib
 
     #Special case for xcFunctional
     #(Also implemented here to not confuse users since it would only work in set_inpchanges otherwise)
@@ -225,7 +226,7 @@ def set_first_attrib_value(xmltree, schema_dict, attributename, attribv, complex
     specifications.
     If there are no nodes under the specified xpath a tag can be created with `create=True`.
     The attribute values are converted automatically according to the types of the attribute
-    with :py:func:`~masci_tools.util.xml.common_xml_util.convert_attribute_to_xml()` if they
+    with :py:func:`~masci_tools.util.xml.converters.convert_attribute_to_xml()` if they
     are not `str` already.
 
     :param xmltree: an xmltree that represents inp.xml
@@ -260,7 +261,7 @@ def set_text(xmltree, schema_dict, tag_name, text, complex_xpath=None, occurrenc
     further specifications. By default the text will be set on all nodes returned for the specified xpath.
     If there are no nodes under the specified xpath a tag can be created with `create=True`.
     The text values are converted automatically according to the types
-    with :py:func:`~masci_tools.util.xml.common_xml_util.convert_text_to_xml()` if they
+    with :py:func:`~masci_tools.util.xml.converters.convert_text_to_xml()` if they
     are not `str` already.
 
     :param xmltree: an xmltree that represents inp.xml
@@ -301,7 +302,7 @@ def set_first_text(xmltree, schema_dict, attributename, attribv, complex_xpath=N
     further specifications. By default the text will be set on all nodes returned for the specified xpath.
     If there are no nodes under the specified xpath a tag can be created with `create=True`.
     The text values are converted automatically according to the types
-    with :py:func:`~masci_tools.util.xml.common_xml_util.convert_text_to_xml()` if they
+    with :py:func:`~masci_tools.util.xml.converters.convert_text_to_xml()` if they
     are not `str` already.
 
     :param xmltree: an xmltree that represents inp.xml
@@ -350,7 +351,7 @@ def set_simple_tag(xmltree, schema_dict, tag_name, changes, complex_xpath=None, 
     :returns: xmltree with set simple tags
     """
     from masci_tools.util.xml.xml_setters_xpaths import xml_set_simple_tag
-    from masci_tools.util.xml.common_xml_util import split_off_tag
+    from masci_tools.util.xml.common_functions import split_off_tag
 
     base_xpath = get_tag_xpath(schema_dict, tag_name, **kwargs)
 
@@ -426,7 +427,7 @@ def set_species_label(xmltree, schema_dict, atom_label, attributedict, create=Fa
     :returns: xml etree of the new inp.xml
     """
     from masci_tools.util.schema_dict_util import tag_exists, eval_simple_xpath
-    from masci_tools.util.xml.common_xml_util import get_xml_attribute
+    from masci_tools.util.xml.common_functions import get_xml_attribute
 
     if atom_label == 'all':
         return set_species(xmltree, schema_dict, 'all', attributedict, create=create)
@@ -520,9 +521,9 @@ def shift_value_species_label(xmltree, schema_dict, atom_label, attributename, v
     :returns: xml etree of the new inp.xml
     """
     from masci_tools.util.schema_dict_util import tag_exists, eval_simple_xpath
-    from masci_tools.util.xml.common_xml_util import get_xml_attribute
+    from masci_tools.util.xml.common_functions import get_xml_attribute
     from masci_tools.util.xml.xml_setters_xpaths import xml_add_number_to_first_attrib
-    from masci_tools.util.xml.common_xml_util import split_off_attrib
+    from masci_tools.util.xml.common_functions import split_off_attrib
 
     if 'contains' in kwargs:
         contains = kwargs.get('contains')
@@ -590,7 +591,7 @@ def set_atomgroup_label(xmltree, schema_dict, atom_label, attributedict, create=
 
     """
     from masci_tools.util.schema_dict_util import tag_exists, eval_simple_xpath
-    from masci_tools.util.xml.common_xml_util import get_xml_attribute
+    from masci_tools.util.xml.common_functions import get_xml_attribute
 
     if atom_label == 'all':
         xmltree = set_atomgroup(xmltree, schema_dict, attributedict, position=None, species='all')
@@ -722,7 +723,7 @@ def set_inpchanges(xmltree, schema_dict, change_dict, path_spec=None):
     :returns: an xmltree of the inp.xml file with changes.
     """
     from masci_tools.util.xml.xml_setters_xpaths import xml_set_first_attrib_value, xml_set_first_text
-    from masci_tools.util.xml.common_xml_util import split_off_attrib
+    from masci_tools.util.xml.common_functions import split_off_attrib
     from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict
 
     if path_spec is None:
@@ -758,5 +759,52 @@ def set_inpchanges(xmltree, schema_dict, change_dict, path_spec=None):
             xml_set_first_text(xmltree, schema_dict, key_xpath, key_xpath, change_value)
         else:
             xml_set_first_attrib_value(xmltree, schema_dict, key_xpath, key_xpath, key, change_value)
+
+    return xmltree
+
+
+@schema_dict_version_dispatch(output_schema=False)
+def set_nkpts(xmltree, schema_dict, count, gamma):
+    """
+    Sets a k-point mesh directly into inp.xml (Only available for inputs before Max4)
+
+    :param xmltree: xml tree that represents inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
+    :param count: number of k-points
+    :param gamma: bool that controls if the gamma-point should be included
+                  in the k-point mesh
+
+    :returns: an xmltree of the inp.xml file with changes.
+    """
+
+    raise NotImplementedError(f"'set_npkts' is not implemented for inputs of version '{schema_dict['inp_version']}'")
+
+
+@set_nkpts.register(max_version='0.31')
+def set_nkpts_max4(xmltree, schema_dict, count, gamma):
+    """
+    Sets a k-point mesh directly into inp.xml specific for inputs of version Max4
+
+    :param xmltree: xml tree that represents inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
+    :param count: number of k-points
+    :param gamma: bool that controls if the gamma-point should be included
+                  in the k-point mesh
+
+    :returns: an xmltree of the inp.xml file with changes.
+    """
+    from masci_tools.util.schema_dict_util import eval_simple_xpath, tag_exists
+
+    if not tag_exists(xmltree, schema_dict, 'kPointCount', not_contains='altKPoint'):
+        bzintegration_tag = eval_simple_xpath(xmltree, schema_dict, 'bzIntegration')
+
+        for child in bzintegration_tag.iterchildren():
+            if 'kPoint' in child.tag:
+                bzintegration_tag.remove(child)
+
+        xmltree = create_tag(xmltree, schema_dict, 'kPointCount', not_contains='altKPoint')
+
+    xmltree = set_attrib_value(xmltree, schema_dict, 'count', count, contains='kPointCount', not_contains='altKPoint')
+    xmltree = set_attrib_value(xmltree, schema_dict, 'gamma', gamma, contains='kPointCount', not_contains='altKPoint')
 
     return xmltree

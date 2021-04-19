@@ -1,0 +1,27 @@
+atom0:
+  dx: 0.016
+  element: Fe
+  jri: 787
+  lmax: 10
+  lnonsph: 6
+  lo: 3s 3p
+  rmt: 2.2
+atom1:
+  dx: 0.017
+  element: Pt
+  jri: 787
+  lmax: 10
+  lnonsph: 6
+  lo: 5p
+  rmt: 2.2
+comp:
+  ctail: false
+  frcor: false
+  gmax: 10.0
+  gmaxxc: 8.7
+  jspins: 2
+  kcrel: 0
+  kmax: 4.0
+exco:
+  xctyp: vwn
+title: A Fleur input generator calculation with aiida

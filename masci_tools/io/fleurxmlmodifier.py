@@ -83,7 +83,7 @@ class FleurXMLModifier:
         :returns: a modified lxml tree and a modified n_mmp_mat file
         """
         from masci_tools.util.xml.collect_xml_setters import XPATH_SETTERS, SCHEMA_DICT_SETTERS, NMMPMAT_SETTERS
-        from masci_tools.util.xml.common_xml_util import validate_xml, eval_xpath
+        from masci_tools.util.xml.common_functions import validate_xml, eval_xpath
         from masci_tools.util.xml.xml_setters_nmmpmat import validate_nmmpmat
         from masci_tools.io.parsers.fleur.fleur_schema import InputSchemaDict
 
@@ -99,9 +99,9 @@ class FleurXMLModifier:
         nmmpmat_functions = copy.deepcopy(NMMPMAT_SETTERS)
 
         if extra_funcs is not None:
-            xpath_functions.update(extra_funcs.get('basic'))
-            schema_dict_functions.update(extra_funcs.get('schema_dict'))
-            nmmpmat_functions.update(extra_funcs.get('nmmpmat'))
+            xpath_functions.update(extra_funcs.get('basic', {}))
+            schema_dict_functions.update(extra_funcs.get('schema_dict', {}))
+            nmmpmat_functions.update(extra_funcs.get('nmmpmat', {}))
 
         for task in modification_tasks:
             if task.name in xpath_functions:

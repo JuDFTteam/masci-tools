@@ -28,7 +28,7 @@ def load_inpxml(inpxmlfile):
     :returns: parsed xmltree of the inpxmlfile and the schema dictionary
               for the corresponding input version
     """
-    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.io.parsers.fleur.fleur_schema import InputSchemaDict
 
     if isinstance(inpxmlfile, etree._ElementTree):
@@ -60,7 +60,7 @@ def load_outxml(outxmlfile):
     :returns: parsed xmltree of the outxmlfile and the schema dictionary
               for the corresponding output version
     """
-    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.io.parsers.fleur.fleur_schema import OutputSchemaDict
 
     outfile_broken = False

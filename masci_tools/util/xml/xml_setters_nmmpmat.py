@@ -40,8 +40,8 @@ def set_nmmpmat(xmltree, nmmplines, schema_dict, species_name, orbital, spin,\
 
     :returns: list with modified nmmplines
     """
-    from masci_tools.util.xml.common_xml_util import eval_xpath, get_xml_attribute
-    from masci_tools.util.schema_dict_util import evaluate_attribute, eval_simple_xpath
+    from masci_tools.util.xml.common_functions import eval_xpath, get_xml_attribute
+    from masci_tools.util.schema_dict_util import evaluate_attribute, eval_simple_xpath, attrib_exists
     from masci_tools.io.io_nmmpmat import write_nmmpmat, write_nmmpmat_from_states, write_nmmpmat_from_orbitals
 
     #All lda+U procedures have to be considered since we need to keep the order
@@ -58,8 +58,9 @@ def set_nmmpmat(xmltree, nmmplines, schema_dict, species_name, orbital, spin,\
 
     nspins = evaluate_attribute(xmltree, schema_dict, 'jspins')
     if 'l_mtnocoPot' in schema_dict['attrib_types']:
-        if evaluate_attribute(xmltree, schema_dict, 'l_mtnocoPot', contains='Setup'):
-            nspins = 3
+        if attrib_exists(xmltree, schema_dict, 'l_mtnocoPot', contains='Setup'):
+            if evaluate_attribute(xmltree, schema_dict, 'l_mtnocoPot', contains='Setup'):
+                nspins = 3
 
     if spin > nspins:
         raise ValueError(f'Invalid input: spin {spin} requested, but input has only {nspins} spins')
@@ -135,8 +136,8 @@ def rotate_nmmpmat(xmltree, nmmplines, schema_dict, species_name, orbital, phi, 
 
     :returns: list with modified nmmplines
     """
-    from masci_tools.util.xml.common_xml_util import eval_xpath, get_xml_attribute
-    from masci_tools.util.schema_dict_util import evaluate_attribute, eval_simple_xpath
+    from masci_tools.util.xml.common_functions import eval_xpath, get_xml_attribute
+    from masci_tools.util.schema_dict_util import evaluate_attribute, eval_simple_xpath, attrib_exists
     from masci_tools.io.io_nmmpmat import read_nmmpmat_block, rotate_nmmpmat_block, format_nmmpmat
 
     species_base_path = get_tag_xpath(schema_dict, 'species')
@@ -152,8 +153,9 @@ def rotate_nmmpmat(xmltree, nmmplines, schema_dict, species_name, orbital, phi, 
 
     nspins = evaluate_attribute(xmltree, schema_dict, 'jspins')
     if 'l_mtnocoPot' in schema_dict['attrib_types']:
-        if evaluate_attribute(xmltree, schema_dict, 'l_mtnocoPot', contains='Setup'):
-            nspins = 3
+        if attrib_exists(xmltree, schema_dict, 'l_mtnocoPot', contains='Setup'):
+            if evaluate_attribute(xmltree, schema_dict, 'l_mtnocoPot', contains='Setup'):
+                nspins = 3
 
     all_ldau = eval_simple_xpath(xmltree, schema_dict, 'ldaU', contains='species', list_return=True)
     numRows = nspins * 14 * len(all_ldau)
@@ -216,13 +218,14 @@ def validate_nmmpmat(xmltree, nmmplines, schema_dict):
 
     :raises ValueError: if any of the above checks are violated.
     """
-    from masci_tools.util.xml.common_xml_util import get_xml_attribute
-    from masci_tools.util.schema_dict_util import evaluate_attribute, eval_simple_xpath
+    from masci_tools.util.xml.common_functions import get_xml_attribute
+    from masci_tools.util.schema_dict_util import evaluate_attribute, eval_simple_xpath, attrib_exists
 
     nspins = evaluate_attribute(xmltree, schema_dict, 'jspins')
     if 'l_mtnocoPot' in schema_dict['attrib_types']:
-        if evaluate_attribute(xmltree, schema_dict, 'l_mtnocoPot', contains='Setup'):
-            nspins = 3
+        if attrib_exists(xmltree, schema_dict, 'l_mtnocoPot', contains='Setup'):
+            if evaluate_attribute(xmltree, schema_dict, 'l_mtnocoPot', contains='Setup'):
+                nspins = 3
 
     all_ldau = eval_simple_xpath(xmltree, schema_dict, 'ldaU', contains='species', list_return=True)
     numRows = nspins * 14 * len(all_ldau)

@@ -23,8 +23,97 @@ import warnings
 import tempfile
 import shutil
 from lxml import etree
+from functools import update_wrapper, wraps
 
 PACKAGE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
+
+
+def schema_dict_version_dispatch(output_schema=False):
+    """
+    Decorator for creating variations of functions based on the inp/out
+    version of the schema_dict. All functions here need to have the signature::
+
+        def f(node, schema_dict, *args, **kwargs):
+            pass
+
+    So schema_dict is the second positional argument
+
+    Inspired by singledispatch in the functools module
+    """
+
+    def schema_dict_version_dispatch_dec(func):
+
+        registry = {}
+
+        def dispatch(version):
+
+            default_match = None
+            matches = []
+            for condition, func in registry.items():
+
+                if isinstance(condition, str):
+                    default_match = func
+                elif condition(version):
+                    matches.append(func)
+
+            matches.append(default_match)
+
+            if len(matches) > 2:
+                raise ValueError('Ambiguous possibilites for schema_dict_version_dispatch for version {version}')
+
+            return matches[0]
+
+        def register(min_version=None, max_version=None):
+            from masci_tools.util.xml.converters import convert_str_version_number
+
+            if min_version is not None:
+                min_version = convert_str_version_number(min_version)
+
+            if max_version is not None:
+                max_version = convert_str_version_number(max_version)
+
+            def register_dec(func):
+
+                if min_version is None and max_version is None:
+                    raise ValueError('Either a minimum or maximum version has to be given')
+
+                if min_version is not None and max_version is not None:
+                    cond_func = lambda version: min_version <= version <= max_version
+                elif min_version is not None:
+                    cond_func = lambda version: version >= min_version
+                else:
+                    cond_func = lambda version: version <= max_version
+
+                registry[cond_func] = func
+
+                return func
+
+            return register_dec
+
+        @wraps(func)
+        def wrapper(node, schema_dict, *args, **kwargs):
+
+            if not isinstance(schema_dict, SchemaDict):
+                raise ValueError('Second positional argument is not a SchemaDict')
+
+            if output_schema:
+                if not isinstance(schema_dict, OutputSchemaDict):
+                    raise ValueError('Second positional argument is not a OutputSchemaDict')
+                version = schema_dict.out_version
+            else:
+                version = schema_dict.inp_version
+
+            return dispatch(version)(node, schema_dict, *args, **kwargs)
+
+        registry['default'] = func
+        wrapper.register = register
+        wrapper.dispatch = dispatch
+        wrapper.registry = registry
+        update_wrapper(wrapper, func)
+
+        return wrapper
+
+    return schema_dict_version_dispatch_dec
 
 
 def _get_latest_available_version(output_schema):
@@ -35,16 +124,21 @@ def _get_latest_available_version(output_schema):
 
     :returns: version string of the latest version
     """
-    latest_version = 0
+    from masci_tools.util.xml.converters import convert_str_version_number
+
+    latest_version = (0, 0)
     #Get latest version available
     for root, dirs, files in os.walk(PACKAGE_DIRECTORY):
         for folder in dirs:
-            if '0.' in folder:
-                if output_schema and os.path.isfile(os.path.join(root, folder, 'FleurOutputSchema.xsd')):
-                    latest_version = max(latest_version, int(folder.split('.')[1]))
-                elif not output_schema and os.path.isfile(os.path.join(root, folder, 'FleurInputSchema.xsd')):
-                    latest_version = max(latest_version, int(folder.split('.')[1]))
-    return f'0.{latest_version}'
+            if '.' in folder:
+                if output_schema and not os.path.isfile(os.path.join(root, folder, 'FleurOutputSchema.xsd')):
+                    continue
+                if not output_schema and not os.path.isfile(os.path.join(root, folder, 'FleurInputSchema.xsd')):
+                    continue
+
+                latest_version = max(latest_version, convert_str_version_number(folder))
+
+    return '.'.join(map(str, latest_version))
 
 
 class SchemaDict(LockableDict):
@@ -158,12 +252,12 @@ class InputSchemaDict(SchemaDict):
     __version__ = '0.1.0'
 
     @classmethod
-    def fromVersion(cls, version, parser_info_out=None, no_cache=False):
+    def fromVersion(cls, version, logger=None, no_cache=False):
         """
         load the FleurInputSchema dict for the specified version
 
         :param version: str with the desired version, e.g. '0.33'
-        :param parser_info_out: dict with warnings, errors and information, ...
+        :param logger: logger object for warnings, errors and information, ...
 
         :return: InputSchemaDict object with the information for the provided version
         """
@@ -178,9 +272,9 @@ class InputSchemaDict(SchemaDict):
                 message = f'No FleurInputSchema.xsd found at {schema_file_path}'
                 raise FileNotFoundError(message)
             else:
-                if parser_info_out is not None:
-                    parser_info_out['parser_warnings'].append(
-                        f"No Input Schema available for version '{version}'; falling back to '{latest_version}'")
+                if logger is not None:
+                    logger.warning("No Input Schema available for version '%s'; falling back to '%s'", version,
+                                   latest_version)
                 else:
                     warnings.warn(
                         f"No Input Schema available for version '{version}'; falling back to '{latest_version}'")
@@ -201,7 +295,6 @@ class InputSchemaDict(SchemaDict):
         load the FleurInputSchema dict for the specified FleurInputSchema file
 
         :param path: path to the input schema file
-        :param parser_info_out: dict with warnings, errors and information, ...
 
         :return: InputSchemaDict object with the information for the provided file
         """
@@ -211,6 +304,15 @@ class InputSchemaDict(SchemaDict):
         xmlschema = etree.XMLSchema(xmlschema_doc)
 
         return cls(schema_dict, xmlschema=xmlschema)
+
+    @property
+    def inp_version(self):
+        """
+        Returns the input version as an integer for comparisons (`>` or `<`)
+        """
+        from masci_tools.util.xml.converters import convert_str_version_number
+
+        return convert_str_version_number(self.get('inp_version', ''))
 
 
 class OutputSchemaDict(SchemaDict):
@@ -263,13 +365,13 @@ class OutputSchemaDict(SchemaDict):
     __version__ = '0.1.0'
 
     @classmethod
-    def fromVersion(cls, version, inp_version=None, parser_info_out=None, no_cache=False):
+    def fromVersion(cls, version, inp_version=None, logger=None, no_cache=False):
         """
         load the FleurOutputSchema dict for the specified version
 
         :param version: str with the desired version, e.g. '0.33'
         :param inp_version: str with the desired input version, e.g. '0.33' (defaults to version)
-        :param parser_info_out: dict with warnings, errors and information, ...
+        :param logger: logger object for warnings, errors and information, ...
 
         :return: OutputSchemaDict object with the information for the provided versions
         """
@@ -289,9 +391,9 @@ class OutputSchemaDict(SchemaDict):
                 message = f'No FleurOutputSchema.xsd found at {schema_file_path}'
                 raise FileNotFoundError(message)
             else:
-                if parser_info_out is not None:
-                    parser_info_out['parser_warnings'].append(
-                        f"No Output Schema available for version '{version}'; falling back to '{latest_version}'")
+                if logger is not None:
+                    logger.warning("No Output Schema available for version '%s'; falling back to '%s'", version,
+                                   latest_version)
                 else:
                     warnings.warn(
                         f"No Output Schema available for version '{version}'; falling back to '{latest_version}'")
@@ -307,9 +409,9 @@ class OutputSchemaDict(SchemaDict):
                 message = f'No FleurInputSchema.xsd found at {inpschema_file_path}'
                 raise FileNotFoundError(message)
             else:
-                if parser_info_out is not None:
-                    parser_info_out['parser_warnings'].append(
-                        f"No Input Schema available for version '{inp_version}'; falling back to '{latest_inpversion}'")
+                if logger is not None:
+                    logger.warning("No Input Schema available for version '%s'; falling back to '%s'", inp_version,
+                                   latest_inpversion)
                 else:
                     warnings.warn(
                         f"No Input Schema available for version '{inp_version}'; falling back to '{latest_inpversion}'")
@@ -318,9 +420,9 @@ class OutputSchemaDict(SchemaDict):
                 inpschema_file_path = os.path.abspath(os.path.join(PACKAGE_DIRECTORY, fleur_inpschema_path))
                 inp_version = latest_inpversion
 
-        if inp_version != version and parser_info_out is not None:
-            parser_info_out['parser_warnings'].append(
-                f'Creating OutputSchemaDict object for differing versions (out: {version}; inp: {inp_version})')
+        if inp_version != version and logger is not None:
+            logger.info('Creating OutputSchemaDict object for differing versions (out: %s; inp: %s)', version,
+                        inp_version)
 
         if (version, inp_version) in cls.__schema_dict_cache and not no_cache:
             return cls.__schema_dict_cache[(version, inp_version)]
@@ -339,7 +441,6 @@ class OutputSchemaDict(SchemaDict):
 
         :param path: str path to the FleurOutputSchema file
         :param inp_path: str path to the FleurInputSchema file (defaults to same folder as path)
-        :param parser_info_out: dict with warnings, errors and information, ...
 
         :return: OutputSchemaDict object with the information for the provided files
         """
@@ -363,3 +464,21 @@ class OutputSchemaDict(SchemaDict):
             xmlschema = etree.XMLSchema(xmlschema_doc)
 
         return cls(schema_dict, xmlschema=xmlschema)
+
+    @property
+    def inp_version(self):
+        """
+        Returns the input version as an integer for comparisons (`>` or `<`)
+        """
+        from masci_tools.util.xml.converters import convert_str_version_number
+
+        return convert_str_version_number(self.get('inp_version', ''))
+
+    @property
+    def out_version(self):
+        """
+        Returns the output version as an integer for comparisons (`>` or `<`)
+        """
+        from masci_tools.util.xml.converters import convert_str_version_number
+
+        return convert_str_version_number(self.get('out_version', ''))

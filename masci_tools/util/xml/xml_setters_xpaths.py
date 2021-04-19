@@ -15,7 +15,7 @@ Functions for modifying the xml input file of Fleur with explicit xpath argument
 These can still use the schema dict for finding information about the xpath
 """
 from lxml import etree
-from masci_tools.util.xml.common_xml_util import eval_xpath
+from masci_tools.util.xml.common_functions import eval_xpath
 
 ######################CREATING/DELETING TAGS###############################################
 
@@ -49,7 +49,7 @@ def xml_create_tag_schema_dict(xmltree,
     :returns: xmltree with created tags
     """
     from masci_tools.util.xml.xml_setters_basic import xml_create_tag
-    from masci_tools.util.xml.common_xml_util import check_complex_xpath, split_off_tag
+    from masci_tools.util.xml.common_functions import check_complex_xpath, split_off_tag
 
     check_complex_xpath(xmltree, base_xpath, xpath)
 
@@ -89,7 +89,13 @@ def xml_create_tag_schema_dict(xmltree,
     return xml_create_tag(xmltree, xpath, element, tag_order=tag_order, occurrences=occurrences)
 
 
-def eval_xpath_create(xmltree, schema_dict, xpath, base_xpath, create_parents=False, occurrences=None):
+def eval_xpath_create(xmltree,
+                      schema_dict,
+                      xpath,
+                      base_xpath,
+                      create_parents=False,
+                      occurrences=None,
+                      list_return=False):
     """
     Evaluates and xpath and creates tag if the result is empty
 
@@ -101,10 +107,11 @@ def eval_xpath_create(xmltree, schema_dict, xpath, base_xpath, create_parents=Fa
                            if they are missing
     :param occurrences: int or list of int. Which occurence of the parent nodes to create a tag if the tag is missing.
                         By default all nodes are used.
+    :param list_return: if True, the returned quantity is always a list even if only one element is in it
 
     :returns: list of nodes from the result of the xpath expression
     """
-    from masci_tools.util.xml.common_xml_util import check_complex_xpath, split_off_tag
+    from masci_tools.util.xml.common_functions import check_complex_xpath, split_off_tag
 
     check_complex_xpath(xmltree, base_xpath, xpath)
 
@@ -122,6 +129,9 @@ def eval_xpath_create(xmltree, schema_dict, xpath, base_xpath, create_parents=Fa
                                              occurrences=occurrences)
         nodes = eval_xpath(xmltree, xpath, list_return=True)
 
+    if len(nodes) == 1 and not list_return:
+        nodes = nodes[0]
+
     return nodes
 
 
@@ -138,7 +148,7 @@ def xml_set_attrib_value(xmltree,
     on all nodes returned for the specified xpath.
     If there are no nodes under the specified xpath a tag can be created with `create=True`.
     The attribute values are converted automatically according to the types of the attribute
-    with :py:func:`~masci_tools.util.xml.common_xml_util.convert_attribute_to_xml()` if they
+    with :py:func:`~masci_tools.util.xml.converters.convert_attribute_to_xml()` if they
     are not `str` already.
 
     :param xmltree: an xmltree that represents inp.xml
@@ -158,13 +168,19 @@ def xml_set_attrib_value(xmltree,
     """
 
     from masci_tools.util.xml.xml_setters_basic import xml_set_attrib_value_no_create
-    from masci_tools.util.xml.common_xml_util import convert_attribute_to_xml
-    from masci_tools.util.xml.common_xml_util import check_complex_xpath, split_off_tag
+    from masci_tools.util.xml.converters import convert_attribute_to_xml
+    from masci_tools.util.xml.common_functions import check_complex_xpath, split_off_tag
 
     check_complex_xpath(xmltree, base_xpath, xpath)
 
     if create:
-        nodes = eval_xpath_create(xmltree, schema_dict, xpath, base_xpath, create_parents=True, occurrences=occurrences)
+        nodes = eval_xpath_create(xmltree,
+                                  schema_dict,
+                                  xpath,
+                                  base_xpath,
+                                  create_parents=True,
+                                  occurrences=occurrences,
+                                  list_return=True)
     else:
         nodes = eval_xpath(xmltree, xpath, list_return=True)
 
@@ -182,13 +198,7 @@ def xml_set_attrib_value(xmltree,
             f'Allowed attributes are: {attribs.original_case.values()}')
     attributename = attribs.original_case[attributename]
 
-    warnings = []
-    converted_attribv, suc = convert_attribute_to_xml(attribv,
-                                                      schema_dict['attrib_types'][attributename],
-                                                      conversion_warnings=warnings)
-
-    if not suc:
-        raise ValueError(f"Failed to convert attribute values '{attribv}': \n" '\n'.join(warnings))
+    converted_attribv, suc = convert_attribute_to_xml(attribv, schema_dict['attrib_types'][attributename])
 
     return xml_set_attrib_value_no_create(xmltree, xpath, attributename, converted_attribv, occurrences=occurrences)
 
@@ -198,7 +208,7 @@ def xml_set_first_attrib_value(xmltree, schema_dict, xpath, base_xpath, attribut
     Sets the first occurrence attribute in a xmltree to a given value.
     If there are no nodes under the specified xpath a tag can be created with `create=True`.
     The attribute values are converted automatically according to the types of the attribute
-    with :py:func:`~masci_tools.util.xml.common_xml_util.convert_attribute_to_xml()` if they
+    with :py:func:`~masci_tools.util.xml.converters.convert_attribute_to_xml()` if they
     are not `str` already.
 
     :param xmltree: an xmltree that represents inp.xml
@@ -232,7 +242,7 @@ def xml_set_text(xmltree, schema_dict, xpath, base_xpath, text, occurrences=None
     on all nodes returned for the specified xpath.
     If there are no nodes under the specified xpath a tag can be created with `create=True`.
     The text values are converted automatically according to the types
-    with :py:func:`~masci_tools.util.xml.common_xml_util.convert_text_to_xml()` if they
+    with :py:func:`~masci_tools.util.xml.converters.convert_text_to_xml()` if they
     are not `str` already.
 
     :param xmltree: an xmltree that represents inp.xml
@@ -249,13 +259,19 @@ def xml_set_text(xmltree, schema_dict, xpath, base_xpath, text, occurrences=None
     :returns: xmltree with set text
     """
     from masci_tools.util.xml.xml_setters_basic import xml_set_text_no_create
-    from masci_tools.util.xml.common_xml_util import convert_text_to_xml
-    from masci_tools.util.xml.common_xml_util import check_complex_xpath, split_off_tag
+    from masci_tools.util.xml.converters import convert_text_to_xml
+    from masci_tools.util.xml.common_functions import check_complex_xpath, split_off_tag
 
     check_complex_xpath(xmltree, base_xpath, xpath)
 
     if create:
-        nodes = eval_xpath_create(xmltree, schema_dict, xpath, base_xpath, create_parents=True, occurrences=occurrences)
+        nodes = eval_xpath_create(xmltree,
+                                  schema_dict,
+                                  xpath,
+                                  base_xpath,
+                                  create_parents=True,
+                                  occurrences=occurrences,
+                                  list_return=True)
     else:
         nodes = eval_xpath(xmltree, xpath, list_return=True)
 
@@ -266,11 +282,8 @@ def xml_set_text(xmltree, schema_dict, xpath, base_xpath, text, occurrences=None
     _, tag_name = split_off_tag(base_xpath)
 
     possible_definitions = schema_dict['simple_elements'][tag_name]
-    warnings = []
-    converted_text, suc = convert_text_to_xml(text, possible_definitions, conversion_warnings=warnings)
 
-    if not suc:
-        raise ValueError(f"Failed to convert text values '{text}': \n" '\n'.join(warnings))
+    converted_text, suc = convert_text_to_xml(text, possible_definitions)
 
     return xml_set_text_no_create(xmltree, xpath, converted_text, occurrences=occurrences)
 
@@ -280,7 +293,7 @@ def xml_set_first_text(xmltree, schema_dict, xpath, base_xpath, text, create=Fal
     Sets the text on the first occurrence of a tag in a xmltree to a given value.
     If there are no nodes under the specified xpath a tag can be created with `create=True`.
     The text values are converted automatically according to the types
-    with :py:func:`~masci_tools.util.xml.common_xml_util.convert_text_to_xml()` if they
+    with :py:func:`~masci_tools.util.xml.converters.convert_text_to_xml()` if they
     are not `str` already.
 
     :param xmltree: an xmltree that represents inp.xml
@@ -329,9 +342,9 @@ def xml_add_number_to_attrib(xmltree,
     :returns: xmltree with shifted attribute
     """
     from masci_tools.util.schema_dict_util import read_constants
-    from masci_tools.util.xml.common_xml_util import convert_xml_attribute
+    from masci_tools.util.xml.converters import convert_xml_attribute
     from masci_tools.io.common_functions import is_sequence
-    from masci_tools.util.xml.common_xml_util import check_complex_xpath, split_off_attrib, split_off_tag
+    from masci_tools.util.xml.common_functions import check_complex_xpath, split_off_attrib, split_off_tag
 
     check_complex_xpath(xmltree, base_xpath, xpath)
 
@@ -362,21 +375,14 @@ def xml_add_number_to_attrib(xmltree,
     if not xpath.endswith(f'/@{attributename}'):
         xpath = '/@'.join([xpath, attributename])
 
-    stringattribute = eval_xpath(xmltree, xpath)
+    stringattribute = eval_xpath(xmltree, xpath, list_return=True)
 
     tag_xpath, attributename = split_off_attrib(xpath)
 
-    if isinstance(stringattribute, list):
-        if len(stringattribute) == 0:
-            raise ValueError(f"No attribute values found for '{attributename}'. Cannot add number")
+    if len(stringattribute) == 0:
+        raise ValueError(f"No attribute values found for '{attributename}'. Cannot add number")
 
-    attribvalues, suc = convert_xml_attribute(stringattribute, possible_types, constants=constants)
-
-    if not isinstance(attribvalues, list):
-        attribvalues = [attribvalues]
-
-    if not suc or any(value is None for value in attribvalues):
-        raise ValueError(f"Something went wrong finding values found for '{attributename}'. Cannot add number")
+    attribvalues, _ = convert_xml_attribute(stringattribute, possible_types, constants=constants, list_return=True)
 
     if occurrences is not None:
         if not is_sequence(occurrences):
@@ -460,7 +466,7 @@ def xml_set_simple_tag(xmltree, schema_dict, xpath, base_xpath, tag_name, change
     :returns: xmltree with set simple tags
     """
     from masci_tools.util.xml.xml_setters_basic import xml_delete_tag
-    from masci_tools.util.xml.common_xml_util import check_complex_xpath
+    from masci_tools.util.xml.common_functions import check_complex_xpath
 
     check_complex_xpath(xmltree, base_xpath, xpath)
 
@@ -532,7 +538,7 @@ def xml_set_complex_tag(xmltree, schema_dict, xpath, base_xpath, attributedict, 
     :returns: xmltree with changes to the complex tag
     """
     from masci_tools.util.xml.xml_setters_basic import xml_delete_tag
-    from masci_tools.util.xml.common_xml_util import check_complex_xpath, split_off_tag
+    from masci_tools.util.xml.common_functions import check_complex_xpath, split_off_tag
 
     check_complex_xpath(xmltree, base_xpath, xpath)
 

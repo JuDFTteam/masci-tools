@@ -83,14 +83,13 @@ If only a small amount of information is required from the input or output files
 
 .. code-block:: python
 
-   from lxml import etree
-   from masci_tools.io.parsers.fleur.fleur_schema import InputSchemaDict
+   from masci_tools.io.io_fleurxml import load_inpxml
    from masci_tools.util.schema_dict_util import read_constants #Read in predefined constants
    from masci_tools.util.schema_dict_util import evaluate_attribute, eval_simple_xpath
 
    #First we create a xml-tree from the input file and load the desired input schema dictionary
-   root = etree.parse('/path/to/inp.xml').getroot()
-   schema_dict = InputSchemaDict.fromVersion(root.xpath('//@fleurInputVersion')[0])
+   xmltree, schema_dict = load_inpxml('/path/to/inp.xml')
+   root = xmltree.getroot()
 
    #For the input file there can be predefined contants
    constants = read_constants(root, schema_dict)

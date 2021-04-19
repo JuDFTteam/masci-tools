@@ -105,26 +105,26 @@ def test_inpxml_todict(data_regression, inpxmlfilepath):
     data_regression.check(inp_dict)
 
 
-def test_inpxml_todict_warnings(data_regression):
+def test_inpxml_todict_warnings(data_regression, clean_parser_log):
     """
     test if valid inp.xml files are translated to the correct inp_dict
     """
 
     input_invalid_attr = os.path.abspath(os.path.join(inpxmlfilefolder, 'files/fleur/inp_invalid_attributes.xml'))
-    warnings = {'parser_warnings': []}
+    warnings = {}
 
     #The parser shoul not raise and just log all the failed conversions
     inp_dict = inpxml_parser(input_invalid_attr, parser_info_out=warnings)
-    data_regression.check({'input_dict': inp_dict, 'warnings': warnings})
+    data_regression.check({'input_dict': inp_dict, 'warnings': clean_parser_log(warnings)})
 
 
-def test_inpxml_newer_version(data_regression):
+def test_inpxml_newer_version(data_regression, clean_parser_log):
     """
     test if valid inp.xml files with not yet existent versions are parsed correctly (fall back to latest available)
     """
 
     INPXML_FILEPATH = os.path.abspath(os.path.join(inpxmlfilefolder, 'files/fleur/input_newer_version.xml'))
-    warnings = {'parser_warnings': []}
+    warnings = {}
     #The parser shoul not raise and just log all the failed conversions
     inp_dict = inpxml_parser(INPXML_FILEPATH, parser_info_out=warnings)
-    data_regression.check({'input_dict': inp_dict, 'warnings': warnings})
+    data_regression.check({'input_dict': inp_dict, 'warnings': clean_parser_log(warnings)})

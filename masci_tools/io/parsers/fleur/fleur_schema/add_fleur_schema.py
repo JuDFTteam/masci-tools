@@ -13,7 +13,7 @@
 """
 Contains utility to add new pairs of input/output schemas.
 """
-from masci_tools.util.xml.common_xml_util import clear_xml
+from masci_tools.util.xml.common_functions import clear_xml
 import os
 import sys
 import shutil

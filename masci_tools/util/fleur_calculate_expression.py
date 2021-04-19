@@ -54,6 +54,13 @@ def calculate_expression(expression, constants, prevCommand=None, exp_return=Fal
 
     stop_loop = False
     loop_count = 0
+
+    if expression is None:
+        raise ValueError('Invalid expression: Got None for expression')
+
+    if isinstance(expression, (float, int)):
+        return expression
+
     expression = expression.replace(' ', '')
     value = None
     while not stop_loop and len(expression) != 0:
