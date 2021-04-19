@@ -83,7 +83,7 @@ class FleurXMLModifier:
         :returns: a modified lxml tree and a modified n_mmp_mat file
         """
         from masci_tools.util.xml.collect_xml_setters import XPATH_SETTERS, SCHEMA_DICT_SETTERS, NMMPMAT_SETTERS
-        from masci_tools.util.xml.common_xml_util import validate_xml, eval_xpath
+        from masci_tools.util.xml.common_functions import validate_xml, eval_xpath
         from masci_tools.util.xml.xml_setters_nmmpmat import validate_nmmpmat
         from masci_tools.io.parsers.fleur.fleur_schema import InputSchemaDict
 

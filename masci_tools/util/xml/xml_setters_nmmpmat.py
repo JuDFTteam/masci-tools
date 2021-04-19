@@ -40,7 +40,7 @@ def set_nmmpmat(xmltree, nmmplines, schema_dict, species_name, orbital, spin,\
 
     :returns: list with modified nmmplines
     """
-    from masci_tools.util.xml.common_xml_util import eval_xpath, get_xml_attribute
+    from masci_tools.util.xml.common_functions import eval_xpath, get_xml_attribute
     from masci_tools.util.schema_dict_util import evaluate_attribute, eval_simple_xpath, attrib_exists
     from masci_tools.io.io_nmmpmat import write_nmmpmat, write_nmmpmat_from_states, write_nmmpmat_from_orbitals
 
@@ -136,7 +136,7 @@ def rotate_nmmpmat(xmltree, nmmplines, schema_dict, species_name, orbital, phi, 
 
     :returns: list with modified nmmplines
     """
-    from masci_tools.util.xml.common_xml_util import eval_xpath, get_xml_attribute
+    from masci_tools.util.xml.common_functions import eval_xpath, get_xml_attribute
     from masci_tools.util.schema_dict_util import evaluate_attribute, eval_simple_xpath, attrib_exists
     from masci_tools.io.io_nmmpmat import read_nmmpmat_block, rotate_nmmpmat_block, format_nmmpmat
 
@@ -218,7 +218,7 @@ def validate_nmmpmat(xmltree, nmmplines, schema_dict):
 
     :raises ValueError: if any of the above checks are violated.
     """
-    from masci_tools.util.xml.common_xml_util import get_xml_attribute
+    from masci_tools.util.xml.common_functions import get_xml_attribute
     from masci_tools.util.schema_dict_util import evaluate_attribute, eval_simple_xpath, attrib_exists
 
     nspins = evaluate_attribute(xmltree, schema_dict, 'jspins')

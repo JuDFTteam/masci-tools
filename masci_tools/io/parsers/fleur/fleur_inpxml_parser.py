@@ -17,7 +17,8 @@ and convert its content to a dict
 from lxml import etree
 from pprint import pprint
 from masci_tools.io.parsers.fleur.fleur_schema.schema_dict import InputSchemaDict
-from masci_tools.util.xml.common_xml_util import clear_xml, validate_xml, convert_xml_attribute, convert_xml_text, eval_xpath
+from masci_tools.util.xml.common_functions import clear_xml, validate_xml, eval_xpath
+from masci_tools.util.xml.converters import convert_xml_attribute, convert_xml_text
 from masci_tools.util.schema_dict_util import read_constants
 from masci_tools.util.logging_util import DictHandler
 import logging

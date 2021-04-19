@@ -661,7 +661,7 @@ def test_single_value_tag(caplog):
     """
     from lxml import etree
     from masci_tools.util.schema_dict_util import evaluate_single_value_tag, get_tag_xpath
-    from masci_tools.util.xml.common_xml_util import eval_xpath
+    from masci_tools.util.xml.common_functions import eval_xpath
 
     schema_dict = outschema_dict_34
 
@@ -815,7 +815,7 @@ def test_attrib_exists():
     assert attrib_exists(root, schema_dict, 'jspins')
 
     assert not attrib_exists(root, schema_dict, 'radius', contains='atomGroup')
-    assert not attrib_exists(outroot, schema_dict, 'radius', contains='atomGroup')
+    assert not attrib_exists(outroot, outschema_dict_34, 'radius', contains='atomGroup')
 
     with pytest.raises(ValueError,
                        match='The attrib spinf has multiple possible paths with the current specification.'):

@@ -42,7 +42,7 @@ def create_tag(xmltree, schema_dict, tag_name, complex_xpath=None, create_parent
     :returns: xmltree with created tags
     """
     from masci_tools.util.xml.xml_setters_xpaths import xml_create_tag_schema_dict
-    from masci_tools.util.xml.common_xml_util import split_off_tag
+    from masci_tools.util.xml.common_functions import split_off_tag
 
     base_xpath = get_tag_xpath(schema_dict, tag_name, **kwargs)
 
@@ -95,7 +95,7 @@ def add_number_to_attrib(xmltree,
     :returns: xmltree with shifted attribute
     """
     from masci_tools.util.xml.xml_setters_xpaths import xml_add_number_to_attrib
-    from masci_tools.util.xml.common_xml_util import split_off_attrib
+    from masci_tools.util.xml.common_functions import split_off_attrib
 
     attrib_xpath = get_attrib_xpath(schema_dict, attributename, **kwargs)
 
@@ -169,7 +169,7 @@ def set_attrib_value(xmltree,
     specifications.
     If there are no nodes under the specified xpath a tag can be created with `create=True`.
     The attribute values are converted automatically according to the types of the attribute
-    with :py:func:`~masci_tools.util.xml.common_xml_util.convert_attribute_to_xml()` if they
+    with :py:func:`~masci_tools.util.xml.converters.convert_attribute_to_xml()` if they
     are not `str` already.
 
     :param xmltree: an xmltree that represents inp.xml
@@ -190,7 +190,7 @@ def set_attrib_value(xmltree,
     :returns: xmltree with set attribute
     """
     from masci_tools.util.xml.xml_setters_xpaths import xml_set_attrib_value
-    from masci_tools.util.xml.common_xml_util import split_off_attrib
+    from masci_tools.util.xml.common_functions import split_off_attrib
 
     #Special case for xcFunctional
     #(Also implemented here to not confuse users since it would only work in set_inpchanges otherwise)
@@ -226,7 +226,7 @@ def set_first_attrib_value(xmltree, schema_dict, attributename, attribv, complex
     specifications.
     If there are no nodes under the specified xpath a tag can be created with `create=True`.
     The attribute values are converted automatically according to the types of the attribute
-    with :py:func:`~masci_tools.util.xml.common_xml_util.convert_attribute_to_xml()` if they
+    with :py:func:`~masci_tools.util.xml.converters.convert_attribute_to_xml()` if they
     are not `str` already.
 
     :param xmltree: an xmltree that represents inp.xml
@@ -261,7 +261,7 @@ def set_text(xmltree, schema_dict, tag_name, text, complex_xpath=None, occurrenc
     further specifications. By default the text will be set on all nodes returned for the specified xpath.
     If there are no nodes under the specified xpath a tag can be created with `create=True`.
     The text values are converted automatically according to the types
-    with :py:func:`~masci_tools.util.xml.common_xml_util.convert_text_to_xml()` if they
+    with :py:func:`~masci_tools.util.xml.converters.convert_text_to_xml()` if they
     are not `str` already.
 
     :param xmltree: an xmltree that represents inp.xml
@@ -302,7 +302,7 @@ def set_first_text(xmltree, schema_dict, attributename, attribv, complex_xpath=N
     further specifications. By default the text will be set on all nodes returned for the specified xpath.
     If there are no nodes under the specified xpath a tag can be created with `create=True`.
     The text values are converted automatically according to the types
-    with :py:func:`~masci_tools.util.xml.common_xml_util.convert_text_to_xml()` if they
+    with :py:func:`~masci_tools.util.xml.converters.convert_text_to_xml()` if they
     are not `str` already.
 
     :param xmltree: an xmltree that represents inp.xml
@@ -351,7 +351,7 @@ def set_simple_tag(xmltree, schema_dict, tag_name, changes, complex_xpath=None, 
     :returns: xmltree with set simple tags
     """
     from masci_tools.util.xml.xml_setters_xpaths import xml_set_simple_tag
-    from masci_tools.util.xml.common_xml_util import split_off_tag
+    from masci_tools.util.xml.common_functions import split_off_tag
 
     base_xpath = get_tag_xpath(schema_dict, tag_name, **kwargs)
 
@@ -427,7 +427,7 @@ def set_species_label(xmltree, schema_dict, atom_label, attributedict, create=Fa
     :returns: xml etree of the new inp.xml
     """
     from masci_tools.util.schema_dict_util import tag_exists, eval_simple_xpath
-    from masci_tools.util.xml.common_xml_util import get_xml_attribute
+    from masci_tools.util.xml.common_functions import get_xml_attribute
 
     if atom_label == 'all':
         return set_species(xmltree, schema_dict, 'all', attributedict, create=create)
@@ -521,9 +521,9 @@ def shift_value_species_label(xmltree, schema_dict, atom_label, attributename, v
     :returns: xml etree of the new inp.xml
     """
     from masci_tools.util.schema_dict_util import tag_exists, eval_simple_xpath
-    from masci_tools.util.xml.common_xml_util import get_xml_attribute
+    from masci_tools.util.xml.common_functions import get_xml_attribute
     from masci_tools.util.xml.xml_setters_xpaths import xml_add_number_to_first_attrib
-    from masci_tools.util.xml.common_xml_util import split_off_attrib
+    from masci_tools.util.xml.common_functions import split_off_attrib
 
     if 'contains' in kwargs:
         contains = kwargs.get('contains')
@@ -591,7 +591,7 @@ def set_atomgroup_label(xmltree, schema_dict, atom_label, attributedict, create=
 
     """
     from masci_tools.util.schema_dict_util import tag_exists, eval_simple_xpath
-    from masci_tools.util.xml.common_xml_util import get_xml_attribute
+    from masci_tools.util.xml.common_functions import get_xml_attribute
 
     if atom_label == 'all':
         xmltree = set_atomgroup(xmltree, schema_dict, attributedict, position=None, species='all')
@@ -723,7 +723,7 @@ def set_inpchanges(xmltree, schema_dict, change_dict, path_spec=None):
     :returns: an xmltree of the inp.xml file with changes.
     """
     from masci_tools.util.xml.xml_setters_xpaths import xml_set_first_attrib_value, xml_set_first_text
-    from masci_tools.util.xml.common_xml_util import split_off_attrib
+    from masci_tools.util.xml.common_functions import split_off_attrib
     from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict
 
     if path_spec is None:
