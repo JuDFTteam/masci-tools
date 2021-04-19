@@ -396,6 +396,42 @@ def camel_to_snake(name):
     name = name.replace('-', '')
     return ''.join(['_' + c.lower() if c.isupper() else c for c in name]).lstrip('_')
 
+def convert_to_fortran(val, quote_strings=True):
+    """
+    :param val: the value to be read and converted to a Fortran-friendly string.
+    """
+    # Note that bool should come before integer, because a boolean matches also
+    # isinstance(...,int)
+    import numpy
+    import numbers
+
+    if isinstance(val, (bool, numpy.bool_)):
+        if val:
+            val_str = '.true.'
+        else:
+            val_str = '.false.'
+    elif isinstance(val, numbers.Integral):
+        val_str = '{:d}'.format(val)
+    elif isinstance(val, numbers.Real):
+        val_str = ('{:18.10e}'.format(val)).replace('e', 'd')
+    elif isinstance(val, str):
+        if quote_strings:
+            val_str = "'{!s}'".format(val)
+        else:
+            val_str = '{!s}'.format(val)
+    else:
+        raise ValueError(f"Invalid value '{val}' of type '{type(val)}' passed, accepts only booleans, ints, "
+                         'floats and strings')
+
+    return val_str
+
+def convert_to_fortran_string(string):
+    """
+    converts some parameter strings to the format for the inpgen
+    :param string: some string
+    :returns: string in right format (extra "")
+    """
+    return f'"{string}"'
 
 def is_sequence(arg):
     """
