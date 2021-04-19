@@ -181,3 +181,16 @@ def test_check_complex_xpath(load_inpxml):
     check_complex_xpath(xmltree, '/fleurInput/atomSpecies/species',
                         "/fleurInput/atomSpecies/species[@name='does_not_exist']")
     check_complex_xpath(xmltree, '/fleurInput/atomSpecies/species/lo', "//species[@name='Pt-1']/lo")
+
+
+def test_abs_to_rel_xpath():
+
+    from masci_tools.util.xml.common_functions import abs_to_rel_xpath
+
+    assert abs_to_rel_xpath('/test/new_root/relative/path', 'new_root') == './relative/path'
+    assert abs_to_rel_xpath('/test/new_root/relative/path/@attrib', 'new_root') == './relative/path/@attrib'
+    assert abs_to_rel_xpath('/test/new_root/relative/path', 'path') == './'
+    assert abs_to_rel_xpath('/test/new_root/relative/path/@attrib', 'path') == './@attrib'
+
+    with pytest.raises(ValueError):
+        abs_to_rel_xpath('/test/new_root/relative/path/@attrib', 'non_existent')

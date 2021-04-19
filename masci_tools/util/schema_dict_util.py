@@ -22,19 +22,17 @@ from masci_tools.util.lockable_containers import LockableList
 from lxml import etree
 
 
-def get_tag_xpath(schema_dict, name, contains=None, not_contains=None):
+def _find_paths(schema_dict, name, entries, contains=None, not_contains=None):
     """
-    Tries to find a unique path from the schema_dict based on the given name of the tag
-    and additional further specifications
+    Find all paths in the schema_dict in the given entries for the given name
+    and matching the contains/not_contains criteria
 
     :param schema_dict: dict, containing all the path information and more
     :param name: str, name of the tag
     :param contains: str or list of str, this string has to be in the final path
     :param not_contains: str or list of str, this string has to NOT be in the final path
 
-    :returns: str, xpath to the given tag
-
-    :raises ValueError: If no unique path could be found
+    :returns: list of str, found xpaths matching the criteria
     """
 
     if contains is None:
@@ -47,80 +45,112 @@ def get_tag_xpath(schema_dict, name, contains=None, not_contains=None):
     elif not isinstance(not_contains, (list, set)):
         not_contains = [not_contains]
 
-    possible_lists = ['tag_paths']
+    path_list = []
+    for entry in entries:
+        if name in schema_dict[entry]:
+            entry_paths = schema_dict[entry][name]
 
-    if 'iteration_tag_paths' in schema_dict:
-        possible_lists += ['iteration_tag_paths']
-
-    all_paths = []
-    for list_name in possible_lists:
-        if name in schema_dict[list_name]:
-            paths = schema_dict[list_name][name]
-
-            if not isinstance(paths, LockableList):
-                paths = [paths]
+            if not isinstance(entry_paths, LockableList):
+                entry_paths = [entry_paths]
             else:
-                paths = paths.get_unlocked()
+                entry_paths = entry_paths.get_unlocked()
 
             invalid_paths = set()
             for phrase in contains:
-                for xpath in paths:
+                for xpath in entry_paths:
                     if phrase not in xpath:
                         invalid_paths.add(xpath)
 
             for phrase in not_contains:
-                for xpath in paths:
+                for xpath in entry_paths:
                     if phrase in xpath:
                         invalid_paths.add(xpath)
 
             for invalid in invalid_paths:
-                paths.remove(invalid)
+                entry_paths.remove(invalid)
 
-            all_paths += paths
+            path_list += entry_paths
 
-    if len(all_paths) == 1:
-        return all_paths[0]
-    elif len(all_paths) == 0:
-        raise ValueError(f'The tag {name} has no possible paths with the current specification.\n'
-                         f'contains: {contains}, not_contains: {not_contains}')
-    else:
-        raise ValueError(f'The tag {name} has multiple possible paths with the current specification.\n'
-                         f'contains: {contains}, not_contains: {not_contains} \n'
-                         f'These are possible: {all_paths}')
+    return path_list
 
 
-def get_tag_info(schema_dict, name, contains=None, not_contains=None, path_return=True, convert_to_builtin=False):
+def get_tag_xpath(schema_dict, name, contains=None, not_contains=None):
     """
     Tries to find a unique path from the schema_dict based on the given name of the tag
-    and additional further specifications and returns the tag_info entry for this tag
+    and additional further specifications
 
     :param schema_dict: dict, containing all the path information and more
     :param name: str, name of the tag
     :param contains: str or list of str, this string has to be in the final path
     :param not_contains: str or list of str, this string has to NOT be in the final path
-    :param path_return: bool, if True the found path will be returned alongside the tag_info
-    :param convert_to_builtin: bool, if True the CaseInsensitiveFrozenSets are converetd to normal sets
-                               with the rigth case of the attributes
 
-    :returns: dict, tag_info for the found xpath
-    :returns: str, xpath to the tag if `path_return=True`
+    :returns: str, xpath for the given tag
+
+    :raises ValueError: If no unique path could be found
     """
-    import copy
-    from masci_tools.util.case_insensitive_dict import CaseInsensitiveFrozenSet
 
-    tag_xpath = get_tag_xpath(schema_dict, name, contains=contains, not_contains=not_contains)
-    tag_info = copy.deepcopy(schema_dict['tag_info'][tag_xpath])
+    possible_lists = ['tag_paths']
 
-    if convert_to_builtin:
-        tag_info = {
-            key: set(val.original_case.values()) if isinstance(val, CaseInsensitiveFrozenSet) else val
-            for key, val in tag_info.items()
-        }
+    if 'iteration_tag_paths' in schema_dict:
+        possible_lists += ['iteration_tag_paths']
 
-    if path_return:
-        return tag_info, tag_xpath
+    paths = _find_paths(schema_dict, name, possible_lists, contains=contains, not_contains=not_contains)
+
+    if len(paths) == 1:
+        return paths[0]
+    elif len(paths) == 0:
+        raise ValueError(f'The tag {name} has no possible paths with the current specification.\n'
+                         f'contains: {contains}, not_contains: {not_contains}')
     else:
-        return tag_info
+        raise ValueError(f'The tag {name} has multiple possible paths with the current specification.\n'
+                         f'contains: {contains}, not_contains: {not_contains} \n'
+                         f'These are possible: {paths}')
+
+
+def get_relative_tag_xpath(schema_dict, name, root_tag, contains=None, not_contains=None):
+    """
+    Tries to find a unique relative path from the schema_dict based on the given name of the tag
+    name of the root, from which the path should be relative and additional further specifications
+
+    :param schema_dict: dict, containing all the path information and more
+    :param name: str, name of the tag
+    :param root_tag: str, name of the tag from which the path should be relative
+    :param contains: str or list of str, this string has to be in the final path
+    :param not_contains: str or list of str, this string has to NOT be in the final path
+
+    :returns: str, xpath for the given tag
+
+    :raises ValueError: If no unique path could be found
+    """
+    from masci_tools.util.xml.common_functions import abs_to_rel_xpath
+
+    possible_lists = ['tag_paths']
+
+    if 'iteration_tag_paths' in schema_dict:
+        possible_lists += ['iteration_tag_paths']
+
+    #The paths have to include the root_tag
+    if contains is None:
+        contains = [root_tag]
+    else:
+        contains = set(contains)
+        contains.add(root_tag)
+
+    paths = _find_paths(schema_dict, name, possible_lists, contains=contains, not_contains=not_contains)
+
+    rel_paths = set()
+    for xpath in paths:
+        rel_paths.add(abs_to_rel_xpath(xpath, root_tag))
+
+    if len(rel_paths) == 1:
+        return rel_paths.pop()
+    elif len(rel_paths) == 0:
+        raise ValueError(f'The tag {name} has no possible relative paths with the current specification.\n'
+                         f'contains: {contains}, not_contains: {not_contains}, root_tag {root_tag}')
+    else:
+        raise ValueError(f'The tag {name} has multiple possible relative paths with the current specification.\n'
+                         f'contains: {contains}, not_contains: {not_contains}, root_tag {root_tag} \n'
+                         f'These are possible: {rel_paths}')
 
 
 def get_attrib_xpath(schema_dict, name, contains=None, not_contains=None, exclude=None, tag_name=None):
@@ -130,6 +160,7 @@ def get_attrib_xpath(schema_dict, name, contains=None, not_contains=None, exclud
 
     :param schema_dict: dict, containing all the path information and more
     :param name: str, name of the attribute
+    :param root_tag: str, name of the tag from which the path should be relative
     :param contains: str or list of str, this string has to be in the final path
     :param not_contains: str or list of str, this string has to NOT be in the final path
     :param exclude: list of str, here specific types of attributes can be excluded
@@ -154,15 +185,80 @@ def get_attrib_xpath(schema_dict, name, contains=None, not_contains=None, exclud
                 raise ValueError(err_msg)
         return f'{tag_xpath}/@{name}'
 
-    if contains is None:
-        contains = []
-    elif not isinstance(contains, (list, set)):
-        contains = [contains]
+    possible_lists = ['unique_attribs', 'unique_path_attribs', 'other_attribs']
+    output = False
+    if 'iteration_unique_attribs' in schema_dict:
+        #outputschema
+        output = True
+        possible_lists += ['iteration_unique_attribs', 'iteration_unique_path_attribs', 'iteration_other_attribs']
 
-    if not_contains is None:
-        not_contains = []
-    elif not isinstance(not_contains, (list, set)):
-        not_contains = [not_contains]
+    if exclude is not None:
+        for list_name in exclude:
+            possible_lists.remove(f'{list_name}_attribs')
+            if output:
+                possible_lists.remove(f'iteration_{list_name}_attribs')
+
+    paths = _find_paths(schema_dict, name, possible_lists, contains=contains, not_contains=not_contains)
+
+    if len(paths) == 1:
+        return paths[0]
+    elif len(paths) == 0:
+        raise ValueError(f'The attrib {name} has no possible paths with the current specification.\n'
+                         f'contains: {contains}, not_contains: {not_contains}, exclude {exclude}')
+    else:
+        raise ValueError(f'The attrib {name} has multiple possible paths with the current specification.\n'
+                         f'contains: {contains}, not_contains: {not_contains}, exclude {exclude}\n'
+                         f'These are possible: {paths}')
+
+
+def get_relative_attrib_xpath(schema_dict,
+                              name,
+                              root_tag,
+                              contains=None,
+                              not_contains=None,
+                              exclude=None,
+                              tag_name=None):
+    """
+    Tries to find a unique relative path from the schema_dict based on the given name of the attribute
+    name of the root, from which the path should be relative and additional further specifications
+
+    :param schema_dict: dict, containing all the path information and more
+    :param name: str, name of the attribute
+    :param contains: str or list of str, this string has to be in the final path
+    :param not_contains: str or list of str, this string has to NOT be in the final path
+    :param exclude: list of str, here specific types of attributes can be excluded
+                    valid values are: settable, settable_contains, other
+    :param tag_name: str, if given this name will be used to find a path to a tag with the
+                     same name in :py:func:`get_relative_tag_xpath()`
+
+    :returns: str, xpath for the given tag
+
+    :raises ValueError: If no unique path could be found
+    """
+    from masci_tools.util.xml.common_functions import abs_to_rel_xpath
+
+    if tag_name is not None:
+        tag_xpath = get_relative_tag_xpath(schema_dict,
+                                           tag_name,
+                                           root_tag,
+                                           contains=contains,
+                                           not_contains=not_contains)
+
+        tag_info = get_tag_info(schema_dict,
+                                tag_name,
+                                path_return=False,
+                                multiple_paths=True,
+                                contains=contains,
+                                not_contains=not_contains)
+
+        err_msg = f'No attribute {name} found at tag {tag_name}'
+        if name not in tag_info['attribs']:
+            raise ValueError(err_msg)
+
+        if tag_xpath.endswith('/'):
+            return f'{tag_xpath}@{name}'
+        else:
+            return f'{tag_xpath}/@{name}'
 
     possible_lists = ['unique_attribs', 'unique_path_attribs', 'other_attribs']
     output = False
@@ -176,41 +272,106 @@ def get_attrib_xpath(schema_dict, name, contains=None, not_contains=None, exclud
             possible_lists.remove(f'{list_name}_attribs')
             if output:
                 possible_lists.remove(f'iteration_{list_name}_attribs')
-    all_paths = []
-    for list_name in possible_lists:
-        if name in schema_dict[list_name]:
-            paths = schema_dict[list_name][name]
 
-            if not isinstance(paths, LockableList):
-                paths = [paths]
-            else:
-                paths = paths.get_unlocked()
-
-            invalid_paths = set()
-            for phrase in contains:
-                for xpath in paths:
-                    if phrase not in xpath:
-                        invalid_paths.add(xpath)
-
-            for phrase in not_contains:
-                for xpath in paths:
-                    if phrase in xpath:
-                        invalid_paths.add(xpath)
-
-            for invalid in invalid_paths:
-                paths.remove(invalid)
-
-            all_paths += paths
-
-    if len(all_paths) == 1:
-        return all_paths[0]
-    elif len(all_paths) == 0:
-        raise ValueError(f'The attrib {name} has no possible paths with the current specification.\n'
-                         f'contains: {contains}, not_contains: {not_contains}, exclude {exclude}')
+    #The paths have to include the root_tag
+    if contains is None:
+        contains = [root_tag]
     else:
-        raise ValueError(f'The attrib {name} has multiple possible paths with the current specification.\n'
-                         f'contains: {contains}, not_contains: {not_contains}, exclude {exclude}\n'
-                         f'These are possible: {all_paths}')
+        contains = set(contains)
+        contains.add(root_tag)
+
+    paths = _find_paths(schema_dict, name, possible_lists, contains=contains, not_contains=not_contains)
+
+    rel_paths = set()
+    for xpath in paths:
+        rel_paths.add(abs_to_rel_xpath(xpath, root_tag))
+
+    if len(rel_paths) == 1:
+        return rel_paths.pop()
+    elif len(rel_paths) == 0:
+        raise ValueError(f'The attrib {name} has no possible relative paths with the current specification.\n'
+                         f'contains: {contains}, not_contains: {not_contains}, root_tag {root_tag}')
+    else:
+        raise ValueError(f'The attrib {name} has multiple possible relative paths with the current specification.\n'
+                         f'contains: {contains}, not_contains: {not_contains}, root_tag {root_tag} \n'
+                         f'These are possible: {rel_paths}')
+
+
+def get_tag_info(schema_dict,
+                 name,
+                 contains=None,
+                 not_contains=None,
+                 path_return=True,
+                 convert_to_builtin=False,
+                 multiple_paths=False,
+                 parent=False):
+    """
+    Tries to find a unique path from the schema_dict based on the given name of the tag
+    and additional further specifications and returns the tag_info entry for this tag
+
+    :param schema_dict: dict, containing all the path information and more
+    :param name: str, name of the tag
+    :param contains: str or list of str, this string has to be in the final path
+    :param not_contains: str or list of str, this string has to NOT be in the final path
+    :param path_return: bool, if True the found path will be returned alongside the tag_info
+    :param convert_to_builtin: bool, if True the CaseInsensitiveFrozenSets are converetd to normal sets
+                               with the rigth case of the attributes
+    :param multiple_paths: bool, if True mulitple paths are allowed to match as long as they have the same tag_info
+    :param parent: bool, if True the tag_info for the parent of the tag is returned
+
+    :returns: dict, tag_info for the found xpath
+    :returns: str, xpath to the tag if `path_return=True`
+    """
+    import copy
+    from masci_tools.util.case_insensitive_dict import CaseInsensitiveFrozenSet
+    from masci_tools.util.xml.common_functions import split_off_tag
+
+    if multiple_paths:
+        possible_lists = ['tag_paths']
+
+        if 'iteration_tag_paths' in schema_dict:
+            possible_lists += ['iteration_tag_paths']
+
+        paths = _find_paths(schema_dict, name, possible_lists, contains=contains, not_contains=not_contains)
+    else:
+        paths = [get_tag_xpath(schema_dict, name, contains=contains, not_contains=not_contains)]
+
+    tag_info = None
+    for path in paths:
+
+        if parent:
+            path, _ = split_off_tag(path)
+
+        err_msg = f'Could not fing tag_info for {path}'
+        if path in schema_dict['tag_info']:
+            entry = schema_dict['tag_info'][path]
+        elif 'iteration_tag_info' in schema_dict:
+            if path in schema_dict['iteration_tag_info']:
+                entry = schema_dict['iteration_tag_info'][path]
+            else:
+                raise ValueError(err_msg)
+        else:
+            raise ValueError(err_msg)
+
+        if tag_info is not None:
+            if entry != tag_info:
+                raise ValueError(f'Differing tag_info for the found paths {paths}')
+        else:
+            tag_info = entry
+
+    if not multiple_paths:
+        paths = paths[0]
+
+    if convert_to_builtin:
+        tag_info = {
+            key: set(val.original_case.values()) if isinstance(val, CaseInsensitiveFrozenSet) else val
+            for key, val in tag_info.items()
+        }
+
+    if path_return:
+        return tag_info, paths
+    else:
+        return tag_info
 
 
 def read_constants(root, schema_dict, logger=None):
@@ -278,12 +439,13 @@ def evaluate_attribute(node, schema_dict, name, constants=None, logger=None, **k
     list_return = kwargs.pop('list_return', False)
     optional = kwargs.pop('optional', False)
 
+    attrib_xpath = None
     if isinstance(node, etree._Element):
         if node.tag != schema_dict['root_tag'] and node.tag != 'iteration':
-            kwargs['contains'] = set(kwargs.get('contains', []))
-            kwargs['contains'].add(node.tag)
+            attrib_xpath = get_relative_attrib_xpath(schema_dict, name, node.tag, **kwargs)
 
-    attrib_xpath = get_attrib_xpath(schema_dict, name, **kwargs)
+    if attrib_xpath is None:
+        attrib_xpath = get_attrib_xpath(schema_dict, name, **kwargs)
 
     stringattribute = eval_xpath(node, attrib_xpath, logger=logger, list_return=True)
 
@@ -341,12 +503,13 @@ def evaluate_text(node, schema_dict, name, constants, logger=None, **kwargs):
     list_return = kwargs.pop('list_return', False)
     optional = kwargs.pop('optional', False)
 
+    tag_xpath = None
     if isinstance(node, etree._Element):
         if node.tag != schema_dict['root_tag'] and node.tag != 'iteration':
-            kwargs['contains'] = set(kwargs.get('contains', []))
-            kwargs['contains'].add(node.tag)
+            tag_xpath = get_relative_tag_xpath(schema_dict, name, node.tag, **kwargs)
 
-    tag_xpath = get_tag_xpath(schema_dict, name, **kwargs)
+    if tag_xpath is None:
+        tag_xpath = get_tag_xpath(schema_dict, name, **kwargs)
 
     stringtext = eval_xpath(node, f'{tag_xpath}/text()', logger=logger, list_return=True)
 
@@ -412,22 +575,33 @@ def evaluate_tag(node, schema_dict, name, constants=None, logger=None, **kwargs)
     ignore = kwargs.pop('ignore', None)
     list_return = kwargs.pop('list_return', False)
 
+    tag_xpath = None
     if isinstance(node, etree._Element):
         if node.tag != schema_dict['root_tag'] and node.tag != 'iteration':
             kwargs['contains'] = set(kwargs.get('contains', []))
             kwargs['contains'].add(node.tag)
+            tag_xpath = get_relative_tag_xpath(schema_dict, name, node.tag, **kwargs)
 
-    tag_xpath = get_tag_xpath(schema_dict, name, **kwargs)
+    if tag_xpath is None:
+        tag_xpath = get_tag_xpath(schema_dict, name, **kwargs)
 
     #Which attributes are expected
-    attribs = set()
-    if tag_xpath in schema_dict['tag_info']:
-        attribs = schema_dict['tag_info'][tag_xpath]['attribs']
-        optional = schema_dict['tag_info'][tag_xpath]['optional_attribs']
-    elif 'iteration_tag_info' in schema_dict:
-        if tag_xpath in schema_dict['iteration_tag_info']:
-            attribs = schema_dict['iteration_tag_info'][tag_xpath]['attribs']
-            optional = schema_dict['iteration_tag_info'][tag_xpath]['optional_attribs']
+    try:
+        tag_info = get_tag_info(schema_dict, name, path_return=False, multiple_paths=True, **kwargs)
+        attribs = tag_info['attribs']
+        optional = tag_info['optional_attribs']
+    except ValueError as err:
+        if logger is None:
+            raise ValueError(f'Failed to evaluate attributes from tag {name}: '
+                             'No attributes to parse either the tag does not '
+                             'exist or it has no attributes') from err
+        else:
+            logger.exception(
+                'Failed to evaluate attributes from tag %s: '
+                'No attributes to parse either the tag does not '
+                'exist or it has no attributes', name)
+        attribs = set()
+        optional = set()
 
     if only_required:
         attribs = attribs.difference(optional)
@@ -556,24 +730,33 @@ def evaluate_parent_tag(node, schema_dict, name, constants=None, logger=None, **
     only_required = kwargs.pop('only_required', False)
     ignore = kwargs.pop('ignore', None)
 
+    tag_xpath = None
     if isinstance(node, etree._Element):
         if node.tag != schema_dict['root_tag'] and node.tag != 'iteration':
             kwargs['contains'] = set(kwargs.get('contains', []))
             kwargs['contains'].add(node.tag)
+            tag_xpath = get_relative_tag_xpath(schema_dict, name, node.tag, **kwargs)
 
-    tag_xpath = get_tag_xpath(schema_dict, name, **kwargs)
-
-    parent_xpath = '/'.join(tag_xpath.split('/')[:-1])
+    if tag_xpath is None:
+        tag_xpath = get_tag_xpath(schema_dict, name, **kwargs)
 
     #Which attributes are expected
-    attribs = set()
-    if parent_xpath in schema_dict['tag_info']:
-        attribs = schema_dict['tag_info'][parent_xpath]['attribs']
-        optional = schema_dict['tag_info'][parent_xpath]['optional_attribs']
-    elif 'iteration_tag_info' in schema_dict:
-        if parent_xpath in schema_dict['iteration_tag_info']:
-            attribs = schema_dict['iteration_tag_info'][parent_xpath]['attribs']
-            optional = schema_dict['iteration_tag_info'][parent_xpath]['optional_attribs']
+    try:
+        tag_info = get_tag_info(schema_dict, name, path_return=False, multiple_paths=True, parent=True, **kwargs)
+        attribs = tag_info['attribs']
+        optional = tag_info['optional_attribs']
+    except ValueError as err:
+        if logger is None:
+            raise ValueError(f'Failed to evaluate attributes from parent tag of {name}: '
+                             'No attributes to parse either the tag does not '
+                             'exist or it has no attributes') from err
+        else:
+            logger.exception(
+                'Failed to evaluate attributes from parent tag of %s: '
+                'No attributes to parse either the tag does not '
+                'exist or it has no attributes', name)
+        attribs = set()
+        optional = set()
 
     if only_required:
         attribs = attribs.difference(optional)
@@ -655,7 +838,14 @@ def attrib_exists(node, schema_dict, name, logger=None, **kwargs):
     """
     from masci_tools.util.xml.common_functions import eval_xpath, split_off_attrib
 
-    attrib_xpath = get_attrib_xpath(schema_dict, name, **kwargs)
+    attrib_xpath = None
+    if isinstance(node, etree._Element):
+        if node.tag != schema_dict['root_tag'] and node.tag != 'iteration':
+            attrib_xpath = get_relative_attrib_xpath(schema_dict, name, node.tag, **kwargs)
+
+    if attrib_xpath is None:
+        attrib_xpath = get_attrib_xpath(schema_dict, name, **kwargs)
+
     tag_xpath, attrib_name = split_off_attrib(attrib_xpath)
 
     tags = eval_xpath(node, tag_xpath, logger=logger, list_return=True)
@@ -724,11 +914,12 @@ def eval_simple_xpath(node, schema_dict, name, logger=None, **kwargs):
 
     list_return = kwargs.pop('list_return', False)
 
+    tag_xpath = None
     if isinstance(node, etree._Element):
         if node.tag != schema_dict['root_tag'] and node.tag != 'iteration':
-            kwargs['contains'] = set(kwargs.get('contains', []))
-            kwargs['contains'].add(node.tag)
+            tag_xpath = get_relative_tag_xpath(schema_dict, name, node.tag, **kwargs)
 
-    tag_xpath = get_tag_xpath(schema_dict, name, **kwargs)
+    if tag_xpath is None:
+        tag_xpath = get_tag_xpath(schema_dict, name, **kwargs)
 
     return eval_xpath(node, tag_xpath, logger=logger, list_return=list_return)
