@@ -282,10 +282,10 @@ def get_relative_attrib_xpath(schema_dict,
     if len(rel_paths) == 1:
         return rel_paths.pop()
     elif len(rel_paths) == 0:
-        raise ValueError(f'The tag {name} has no possible relative paths with the current specification.\n'
+        raise ValueError(f'The attrib {name} has no possible relative paths with the current specification.\n'
                          f'contains: {contains}, not_contains: {not_contains}, root_tag {root_tag}')
     else:
-        raise ValueError(f'The tag {name} has multiple possible relative paths with the current specification.\n'
+        raise ValueError(f'The attrib {name} has multiple possible relative paths with the current specification.\n'
                          f'contains: {contains}, not_contains: {not_contains}, root_tag {root_tag} \n'
                          f'These are possible: {rel_paths}')
 

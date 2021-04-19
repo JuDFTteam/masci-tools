@@ -53,6 +53,42 @@ def test_get_tag_xpath_input():
         get_tag_xpath(schema_dict_34, 'ldaU')
 
 
+def test_get_relative_tag_xpath_input():
+    """
+    Test the path finding for tags for the input schema without additional options
+    And verify with different version of the schema
+    """
+    from masci_tools.util.schema_dict_util import get_relative_tag_xpath
+
+    assert get_relative_tag_xpath(schema_dict_34, 'magnetism', 'calculationSetup') == './magnetism'
+    assert get_relative_tag_xpath(schema_dict_34, 'magnetism', 'magnetism') == './'
+
+    assert get_relative_tag_xpath(schema_dict_34, 'DMI', 'forceTheorem') == './DMI'
+    with pytest.raises(ValueError, match='The tag DMI has no possible relative paths with the current specification.'):
+        get_relative_tag_xpath(schema_dict_27, 'DMI', 'forceTheorem')
+
+    with pytest.raises(ValueError,
+                       match='The tag ldaU has multiple possible relative paths with the current specification.'):
+        get_relative_tag_xpath(schema_dict_34, 'ldaU', 'fleurInput')
+
+    assert get_relative_tag_xpath(schema_dict_34, 'ldaU', 'fleurInput',
+                                  contains='species') == './atomSpecies/species/ldaU'
+    assert get_relative_tag_xpath(schema_dict_34, 'ldaU', 'species') == './ldaU'
+
+
+def test_get_relative_tag_xpath_output():
+    """
+    Test the path finding for tags for the input schema without additional options
+    And verify with different version of the schema
+    """
+    from masci_tools.util.schema_dict_util import get_relative_tag_xpath
+
+    assert get_relative_tag_xpath(outschema_dict_34, 'iteration', 'scfLoop') == './iteration'
+    assert get_relative_tag_xpath(outschema_dict_34, 'iteration', 'iteration') == './'
+
+    assert get_relative_tag_xpath(outschema_dict_34, 'densityMatrixFor', 'ldaUDensityMatrix') == './densityMatrixFor'
+
+
 def test_get_tag_xpath_output():
     """
     Test the path finding for tags for the output schema without additional options
@@ -177,6 +213,38 @@ def test_get_attrib_xpath_input():
         get_attrib_xpath(schema_dict_34, 'l_amf')
 
 
+def test_get_relative_attrib_xpath_input():
+    """
+    Test the path finding for tags for the input schema without additional options
+    And verify with different version of the schema
+    """
+    from masci_tools.util.schema_dict_util import get_relative_attrib_xpath
+
+    #First example easy (magnetism tag is unique and should not differ between the versions)
+    assert get_relative_attrib_xpath(schema_dict_34, 'jspins', 'calculationSetup') == './magnetism/@jspins'
+    assert get_relative_attrib_xpath(schema_dict_34, 'jspins', 'magnetism') == './@jspins'
+
+    #Non existent tag in old version
+    assert get_relative_attrib_xpath(schema_dict_34, 'l_mtNocoPot', 'magnetism') == './mtNocoParams/@l_mtNocoPot'
+    with pytest.raises(
+            ValueError,
+            match='The attrib l_mtNocoPot has multiple possible relative paths with the current specification.'):
+        get_relative_attrib_xpath(schema_dict_34, 'l_mtNocoPot', 'fleurInput')
+
+    with pytest.raises(ValueError,
+                       match='The attrib l_mtNocoPot has no possible relative paths with the current specification.'):
+        get_relative_attrib_xpath(schema_dict_34, 'l_mtNocoPot', 'output')
+
+    #Multiple possible paths
+    with pytest.raises(ValueError,
+                       match='The attrib l_amf has multiple possible relative paths with the current specification.'):
+        get_relative_attrib_xpath(schema_dict_34, 'l_amf', 'fleurInput')
+
+    assert get_relative_attrib_xpath(schema_dict_34, 'l_amf', 'fleurInput', contains='species',
+                                     not_contains='ldaHIA') == './atomSpecies/species/ldaU/@l_amf'
+    assert get_relative_attrib_xpath(schema_dict_34, 'l_amf', 'ldaU') == './@l_amf'
+
+
 def test_get_attrib_xpath_output():
     """
     Test the path finding for tags for the input schema without additional options
@@ -191,6 +259,20 @@ def test_get_attrib_xpath_output():
     #relative
     assert get_attrib_xpath(outschema_dict_31, 'qvectors') == './Forcetheorem_SSDISP/@qvectors'
     assert get_attrib_xpath(outschema_dict_34, 'qvectors') == './Forcetheorem_SSDISP/@qvectors'
+
+
+def test_get_relative_attrib_xpath_output():
+    """
+    Test the path finding for tags for the input schema without additional options
+    And verify with different version of the schema
+    """
+    from masci_tools.util.schema_dict_util import get_relative_attrib_xpath
+
+    assert get_relative_attrib_xpath(outschema_dict_34, 'nat', 'numericalParameters') == './atomsInCell/@nat'
+    assert get_relative_attrib_xpath(outschema_dict_34, 'nat', 'atomsInCell') == './@nat'
+
+    assert get_relative_attrib_xpath(outschema_dict_34, 'qvectors', '.') == './Forcetheorem_SSDISP/@qvectors'
+    assert get_relative_attrib_xpath(outschema_dict_34, 'qvectors', 'Forcetheorem_SSDISP') == './@qvectors'
 
 
 def test_get_attrib_xpath_contains():
