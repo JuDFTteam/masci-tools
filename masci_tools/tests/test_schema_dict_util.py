@@ -224,6 +224,11 @@ def test_get_relative_attrib_xpath_input():
     assert get_relative_attrib_xpath(schema_dict_34, 'jspins', 'calculationSetup') == './magnetism/@jspins'
     assert get_relative_attrib_xpath(schema_dict_34, 'jspins', 'magnetism') == './@jspins'
 
+    assert get_relative_attrib_xpath(schema_dict_34, 'jspins', 'magnetism', tag_name='magnetism') == './@jspins'
+
+    with pytest.raises(ValueError, match='No attribute jspins found at tag calculationSetup'):
+        get_relative_attrib_xpath(schema_dict_34, 'jspins', 'calculationSetup', tag_name='calculationSetup')
+
     #Non existent tag in old version
     assert get_relative_attrib_xpath(schema_dict_34, 'l_mtNocoPot', 'magnetism') == './mtNocoParams/@l_mtNocoPot'
     with pytest.raises(

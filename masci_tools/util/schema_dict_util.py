@@ -244,14 +244,21 @@ def get_relative_attrib_xpath(schema_dict,
                                            contains=contains,
                                            not_contains=not_contains)
 
+        tag_info = get_tag_info(schema_dict,
+                                tag_name,
+                                path_return=False,
+                                multiple_paths=True,
+                                contains=contains,
+                                not_contains=not_contains)
+
         err_msg = f'No attribute {name} found at tag {tag_name}'
-        if tag_xpath in schema_dict['tag_info']:
-            if name not in schema_dict['tag_info'][tag_xpath]['attribs']:
-                raise ValueError(err_msg)
+        if name not in tag_info['attribs']:
+            raise ValueError(err_msg)
+
+        if tag_xpath.endswith('/'):
+            return f'{tag_xpath}@{name}'
         else:
-            if name not in schema_dict['iteration_tag_info'][tag_xpath]['attribs']:
-                raise ValueError(err_msg)
-        return f'{tag_xpath}/@{name}'
+            return f'{tag_xpath}/@{name}'
 
     possible_lists = ['unique_attribs', 'unique_path_attribs', 'other_attribs']
     output = False
