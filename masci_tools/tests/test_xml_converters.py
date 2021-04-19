@@ -13,6 +13,7 @@ CLEAR_XML_TEST_FILE = os.path.abspath(os.path.join(TEST_FOLDER, 'files/fleur/tes
 
 LOGGER = logging.getLogger(__name__)
 
+
 def test_convert_from_fortran_bool():
     """
     Test of the convert_from_fortran_bool function
@@ -55,6 +56,7 @@ def test_convert_to_fortran_bool():
 
     with pytest.raises(TypeError, match='convert_to_fortran_bool accepts only a string or bool as argument'):
         convert_to_fortran_bool(())
+
 
 TEST_STRINGS = ['1.2314', 'all', ['all', '213', '-12'], ['PI', 'NOT_PI', '1.2'], ['F', 'T'], ['F', 'T']]
 

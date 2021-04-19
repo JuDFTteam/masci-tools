@@ -374,6 +374,8 @@ def convert_to_pystd(value):
     elif isinstance(value, list):
         for index, val in enumerate(value):
             value[index] = convert_to_pystd(val)
+    elif isinstance(value, tuple):
+        value = tuple(convert_to_pystd(val) for val in value)
     elif isinstance(value, np.integer):
         value = int(value)
     elif isinstance(value, np.floating):
@@ -415,7 +417,7 @@ def abs_to_rel(vector, cell):
 
     :param vector: list or np.array of length 3, vector to be converted
     :param cell: Bravais matrix of a crystal 3x3 Array, List of list or np.array
-    :return: list of legth 3 of scaled vector, or False if vector was not length 3
+    :return: list of length 3 of scaled vector, or False if vector was not length 3
     """
 
     if len(vector) == 3:
@@ -438,7 +440,7 @@ def abs_to_rel_f(vector, cell, pbc):
     :param vector: list or np.array of length 3, vector to be converted
     :param cell: Bravais matrix of a crystal 3x3 Array, List of list or np.array
     :param pbc: Boundary conditions, List or Tuple of 3 Boolean
-    :return: list of legth 3 of scaled vector, or False if vector was not length 3
+    :return: list of length 3 of scaled vector, or False if vector was not length 3
     """
     # TODO this currently only works if the z-coordinate is the one with no pbc
     # Therefore if a structure with x non pbc is given this should also work.

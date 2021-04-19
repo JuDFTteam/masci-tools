@@ -14,6 +14,7 @@
 Common functions for converting types to and from XML files
 """
 
+
 def convert_xml_attribute(stringattribute, possible_types, constants=None, logger=None, list_return=False):
     """
     Tries to converts a given string attribute to the types given in possible_types.
@@ -381,7 +382,7 @@ def convert_fleur_lo(loelements):
     # therefore other conversion methods might fail, or the wrong format could be written.
     from masci_tools.util.xml.common_functions import get_xml_attribute
 
-    shell_map = {0: 's',1: 'p',2: 'd',3: 'f'}
+    shell_map = {0: 's', 1: 'p', 2: 'd', 3: 'f'}
 
     lo_string = ''
     for element in loelements:
@@ -393,6 +394,7 @@ def convert_fleur_lo(loelements):
         lostr = f'{n_num}{shell_map[int(l_num)]}'
         lo_string = lo_string + ' ' + lostr
     return lo_string.strip()
+
 
 def convert_str_version_number(version_str):
     """

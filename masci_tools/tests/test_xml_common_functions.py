@@ -12,6 +12,7 @@ CLEAR_XML_TEST_FILE = os.path.abspath(os.path.join(TEST_FOLDER, 'files/fleur/tes
 
 LOGGER = logging.getLogger(__name__)
 
+
 def test_eval_xpath(caplog):
     """
     Test of the eval_xpath function
@@ -127,6 +128,7 @@ def test_get_xml_attribute(caplog):
     with caplog.at_level(logging.WARNING):
         assert get_xml_attribute(xmltree, 'TEST', logger=LOGGER) is None
     assert 'Can not get attributename: "TEST" from node of type <class \'lxml.etree._ElementTree\'>' in caplog.text
+
 
 def test_split_off_tag():
     """

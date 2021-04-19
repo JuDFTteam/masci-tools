@@ -52,7 +52,7 @@ def get_fleur_modes(xmltree, schema_dict):
         gw = gw != 0
     fleur_modes['gw'] = gw
 
-    if schema_dict.inp_version > (0,27):
+    if schema_dict.inp_version > (0, 27):
         fleur_modes['force_theorem'] = tag_exists(root, schema_dict, 'forceTheorem')
     else:
         fleur_modes['force_theorem'] = False
@@ -130,6 +130,7 @@ def get_cell(xmltree, schema_dict):
 
     return cell, pbc
 
+
 def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True):
     """
     This routine returns an python dictionary produced from the inp.xml
@@ -145,7 +146,7 @@ def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True):
     from masci_tools.util.schema_dict_util import read_constants, eval_simple_xpath
     from masci_tools.util.schema_dict_util import evaluate_attribute, evaluate_text
     from masci_tools.util.xml.common_functions import clear_xml
-    from masci_tools.util.xml.converters import convert_fleur_lo
+    from masci_tools.util.xml.converters import convert_fleur_lo, convert_xml_attribute
     from masci_tools.io.common_functions import filter_out_empty_dict_entries
 
     # TODO: convert econfig
@@ -173,6 +174,15 @@ def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True):
     comp_dict['gmax'] = evaluate_attribute(root, schema_dict, 'gmax', constants=constants)
     comp_dict['gmaxxc'] = evaluate_attribute(root, schema_dict, 'gmaxxc', constants=constants)
     comp_dict['kmax'] = evaluate_attribute(root, schema_dict, 'kmax', constants=constants)
+
+    if schema_dict.inp_version <= (0, 31):
+        comp_dict['gmax'], _ = convert_xml_attribute(comp_dict['gmax'], ['float', 'float_expression'],
+                                                     constants=constants)
+        comp_dict['gmaxxc'], _ = convert_xml_attribute(comp_dict['gmaxxc'], ['float', 'float_expression'],
+                                                       constants=constants)
+        comp_dict['kmax'], _ = convert_xml_attribute(comp_dict['kmax'], ['float', 'float_expression'],
+                                                     constants=constants)
+
     parameters['comp'] = filter_out_empty_dict_entries(comp_dict)
 
     # &atoms
@@ -196,7 +206,7 @@ def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True):
             if species_several[atom_z] > 1:
                 atom_dict['id'] = atom_id
 
-        if schema_dict.inp_version <= (0,31):
+        if schema_dict.inp_version <= (0, 31):
             atom_dict['ncst'] = evaluate_attribute(species, schema_dict, 'coreStates', constants)
         atom_dict['rmt'] = evaluate_attribute(species, schema_dict, 'radius', constants=constants)
         atom_dict['dx'] = evaluate_attribute(species, schema_dict, 'logIncrement', constants=constants)
@@ -214,6 +224,14 @@ def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True):
         if len(atom_lo) != 0:
             atom_dict['lo'] = convert_fleur_lo(atom_lo)
 
+        if schema_dict.inp_version <= (0, 31):
+            atom_dict['bmu'], _ = convert_xml_attribute(atom_dict['bmu'], ['float', 'float_expression'],
+                                                        constants=constants)
+            atom_dict['dx'], _ = convert_xml_attribute(atom_dict['dx'], ['float', 'float_expression'],
+                                                       constants=constants)
+            atom_dict['rmt'], _ = convert_xml_attribute(atom_dict['rmt'], ['float', 'float_expression'],
+                                                        constants=constants)
+
         parameters[atoms_name] = filter_out_empty_dict_entries(atom_dict)
 
     # &soc
@@ -221,6 +239,10 @@ def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True):
     theta = evaluate_attribute(root, schema_dict, 'theta', constants=constants, contains='soc', optional=True)
     phi = evaluate_attribute(root, schema_dict, 'phi', constants=constants, contains='soc', optional=True)
     if soc is not None and soc:
+        if schema_dict.inp_version <= (0, 31):
+            theta, _ = convert_xml_attribute(theta, ['float', 'float_expression'], constants=constants)
+            phi, _ = convert_xml_attribute(phi, ['float', 'float_expression'], constants=constants)
+
         parameters['soc'] = {'theta': theta, 'phi': phi}
 
     # &kpt
@@ -314,12 +336,13 @@ def get_structure_data(xmltree, schema_dict):
         if schema_dict.inp_version < (0, 33):
             for indx, pos in enumerate(absolute_positions):
                 absolute_positions[indx], suc = convert_xml_attribute(pos, ['float', 'float_expression'],
-                                                                 constants=constants)
+                                                                      constants=constants)
             for indx, pos in enumerate(relative_positions):
                 relative_positions[indx], suc = convert_xml_attribute(pos, ['float', 'float_expression'],
-                                                                 constants=constants)
+                                                                      constants=constants)
             for indx, pos in enumerate(film_positions):
-                film_positions[indx], suc = convert_xml_attribute(pos, ['float', 'float_expression'], constants=constants)
+                film_positions[indx], suc = convert_xml_attribute(pos, ['float', 'float_expression'],
+                                                                  constants=constants)
 
         atom_positions = absolute_positions
 
@@ -377,7 +400,9 @@ def get_kpoints_data(xmltree, schema_dict, name=None):
         if schema_dict.inp_version == (0, 32):
             for indx, kpoint in enumerate(kpoints):
                 kpoints[indx], suc = convert_xml_attribute(kpoint, ['float', 'float_expression'], constants=constants)
-            weights, suc = convert_xml_attribute(weights, ['float', 'float_expression'], constants=constants, list_return=True)
+            weights, suc = convert_xml_attribute(weights, ['float', 'float_expression'],
+                                                 constants=constants,
+                                                 list_return=True)
 
         if not isinstance(kpoints[0], list):
             kpoints = [kpoints]
