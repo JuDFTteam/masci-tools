@@ -21,6 +21,7 @@ from masci_tools.util.parse_tasks_decorators import register_parsing_function
 from masci_tools.util.lockable_containers import LockableList
 from lxml import etree
 
+
 def _find_paths(schema_dict, name, entries, contains=None, not_contains=None):
     """
     Find all paths in the schema_dict in the given entries for the given name
@@ -105,6 +106,7 @@ def get_tag_xpath(schema_dict, name, contains=None, not_contains=None):
                          f'contains: {contains}, not_contains: {not_contains} \n'
                          f'These are possible: {paths}')
 
+
 def get_relative_tag_xpath(schema_dict, name, root_tag, contains=None, not_contains=None):
     """
     Tries to find a unique relative path from the schema_dict based on the given name of the tag
@@ -150,6 +152,7 @@ def get_relative_tag_xpath(schema_dict, name, root_tag, contains=None, not_conta
                          f'contains: {contains}, not_contains: {not_contains}, root_tag {root_tag} \n'
                          f'These are possible: {rel_paths}')
 
+
 def get_attrib_xpath(schema_dict, name, contains=None, not_contains=None, exclude=None, tag_name=None):
     """
     Tries to find a unique path from the schema_dict based on the given name of the attribute
@@ -182,7 +185,6 @@ def get_attrib_xpath(schema_dict, name, contains=None, not_contains=None, exclud
                 raise ValueError(err_msg)
         return f'{tag_xpath}/@{name}'
 
-
     possible_lists = ['unique_attribs', 'unique_path_attribs', 'other_attribs']
     output = False
     if 'iteration_unique_attribs' in schema_dict:
@@ -196,7 +198,6 @@ def get_attrib_xpath(schema_dict, name, contains=None, not_contains=None, exclud
             if output:
                 possible_lists.remove(f'iteration_{list_name}_attribs')
 
-
     paths = _find_paths(schema_dict, name, possible_lists, contains=contains, not_contains=not_contains)
 
     if len(paths) == 1:
@@ -209,7 +210,14 @@ def get_attrib_xpath(schema_dict, name, contains=None, not_contains=None, exclud
                          f'contains: {contains}, not_contains: {not_contains}, exclude {exclude}\n'
                          f'These are possible: {paths}')
 
-def get_relative_attrib_xpath(schema_dict, name, root_tag, contains=None, not_contains=None, exclude=None, tag_name=None):
+
+def get_relative_attrib_xpath(schema_dict,
+                              name,
+                              root_tag,
+                              contains=None,
+                              not_contains=None,
+                              exclude=None,
+                              tag_name=None):
     """
     Tries to find a unique relative path from the schema_dict based on the given name of the attribute
     name of the root, from which the path should be relative and additional further specifications
@@ -230,7 +238,11 @@ def get_relative_attrib_xpath(schema_dict, name, root_tag, contains=None, not_co
     from masci_tools.util.xml.common_functions import abs_to_rel_xpath
 
     if tag_name is not None:
-        tag_xpath = get_relative_tag_xpath(schema_dict, tag_name, root_tag, contains=contains, not_contains=not_contains)
+        tag_xpath = get_relative_tag_xpath(schema_dict,
+                                           tag_name,
+                                           root_tag,
+                                           contains=contains,
+                                           not_contains=not_contains)
 
         err_msg = f'No attribute {name} found at tag {tag_name}'
         if tag_xpath in schema_dict['tag_info']:
@@ -240,7 +252,6 @@ def get_relative_attrib_xpath(schema_dict, name, root_tag, contains=None, not_co
             if name not in schema_dict['iteration_tag_info'][tag_xpath]['attribs']:
                 raise ValueError(err_msg)
         return f'{tag_xpath}/@{name}'
-
 
     possible_lists = ['unique_attribs', 'unique_path_attribs', 'other_attribs']
     output = False
@@ -279,7 +290,14 @@ def get_relative_attrib_xpath(schema_dict, name, root_tag, contains=None, not_co
                          f'These are possible: {rel_paths}')
 
 
-def get_tag_info(schema_dict, name, contains=None, not_contains=None, path_return=True, convert_to_builtin=False, multiple_paths=False, parent=False):
+def get_tag_info(schema_dict,
+                 name,
+                 contains=None,
+                 not_contains=None,
+                 path_return=True,
+                 convert_to_builtin=False,
+                 multiple_paths=False,
+                 parent=False):
     """
     Tries to find a unique path from the schema_dict based on the given name of the tag
     and additional further specifications and returns the tag_info entry for this tag
@@ -336,7 +354,6 @@ def get_tag_info(schema_dict, name, contains=None, not_contains=None, path_retur
 
     if not multiple_paths:
         paths = paths[0]
-
 
     if convert_to_builtin:
         tag_info = {
@@ -560,7 +577,6 @@ def evaluate_tag(node, schema_dict, name, constants=None, logger=None, **kwargs)
 
     if tag_xpath is None:
         tag_xpath = get_tag_xpath(schema_dict, name, **kwargs)
-
 
     #Which attributes are expected
     try:

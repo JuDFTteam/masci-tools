@@ -237,6 +237,7 @@ def check_complex_xpath(node, base_xpath, complex_xpath):
     if not results_base.issuperset(results_complex):
         raise ValueError(f"Complex xpath '{complex_xpath}' is not compatible with the base_xpath '{base_xpath}'")
 
+
 def abs_to_rel_xpath(xpath, new_root):
     """
     Convert a given xpath to be relative from a tag appearing in the
