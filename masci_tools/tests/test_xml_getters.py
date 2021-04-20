@@ -131,6 +131,21 @@ def test_get_kpoints_data(load_inpxml, inpxmlfilepath):
     assert len(pbc) == 3
 
 
+@pytest.mark.parametrize('inpxmlfilepath', inpxmlfilelist)
+def test_get_nkpts(load_inpxml, inpxmlfilepath):
+    """
+    Test that get_nkpts works for all input files
+    """
+    from masci_tools.util.xml.xml_getters import get_nkpts
+
+    xmltree, schema_dict = load_inpxml(inpxmlfilepath)
+
+    nkpts = get_nkpts(xmltree, schema_dict)
+
+    assert isinstance(nkpts, int)
+    assert nkpts != 0
+
+
 def test_get_cell_film(load_inpxml, data_regression):
 
     from masci_tools.util.xml.xml_getters import get_cell
@@ -326,7 +341,6 @@ def test_get_structure_max4(load_inpxml, data_regression):
 
     atoms, cell, pbc = get_structure_data(xmltree, schema_dict)
 
-    print(type(atoms[0][0][0]))
     data_regression.check({'atoms': convert_to_pystd(atoms), 'cell': convert_to_pystd(cell), 'pbc': pbc})
 
 
@@ -340,3 +354,55 @@ def test_get_cell_max4(load_inpxml, data_regression):
     cell, pbc = get_cell(xmltree, schema_dict)
 
     data_regression.check({'cell': convert_to_pystd(cell), 'pbc': pbc})
+
+
+def test_get_nkpts_single(load_inpxml, data_regression):
+
+    from masci_tools.util.xml.xml_getters import get_nkpts
+
+    xmltree, schema_dict = load_inpxml(TEST_SINGLE_KPOINT_PATH)
+
+    nkpts = get_nkpts(xmltree, schema_dict)
+
+    assert isinstance(nkpts, int)
+    assert nkpts == 1
+
+
+def test_get_nkpts_multiple(load_inpxml, data_regression):
+
+    from masci_tools.util.xml.xml_getters import get_nkpts
+
+    xmltree, schema_dict = load_inpxml(TEST_MULTIPLE_KPOINT_SETS_PATH)
+
+    nkpts = get_nkpts(xmltree, schema_dict)
+
+    assert isinstance(nkpts, int)
+    assert nkpts == 20
+
+
+def test_get_nkpts_max4(load_inpxml, data_regression):
+
+    from masci_tools.util.xml.xml_getters import get_nkpts
+
+    xmltree, schema_dict = load_inpxml(TEST_MAX4_INPXML_PATH)
+
+    nkpts = get_nkpts(xmltree, schema_dict)
+
+    assert isinstance(nkpts, int)
+    assert nkpts == 1
+
+
+def test_get_nkpts_max4_altkpoint(load_inpxml, data_regression):
+
+    from masci_tools.util.xml.xml_getters import get_nkpts
+    from masci_tools.util.xml.xml_setters_names import set_inpchanges
+
+    xmltree, schema_dict = load_inpxml(TEST_MAX4_INPXML_PATH)
+
+    #Activate band calculations
+    xmltree = set_inpchanges(xmltree, schema_dict, {'band': True})
+
+    nkpts = get_nkpts(xmltree, schema_dict)
+
+    assert isinstance(nkpts, int)
+    assert nkpts == 240

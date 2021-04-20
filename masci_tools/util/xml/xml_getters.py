@@ -94,6 +94,113 @@ def get_fleur_modes(xmltree, schema_dict):
     return fleur_modes
 
 
+@schema_dict_version_dispatch(output_schema=False)
+def get_nkpts(xmltree, schema_dict):
+    """
+    Get the number of kpoints that will be used in the calculation specified in the given
+    fleur XMl file.
+
+    .. warning::
+        For file versions before Max5 only kPointList or kPointCount tags will work. However,
+        for kPointCount there is no real guarantee that for every occasion it will correspond
+        to the number of kpoints. So a warning is written out
+
+    :param xmltree: etree representing the fleur xml file
+    :param schema_dict: schema dictionary corresponding to the file version
+                        of the xmltree
+
+    :returns: int with the number of kpoints
+    """
+    from masci_tools.util.schema_dict_util import eval_simple_xpath
+    from masci_tools.util.schema_dict_util import evaluate_attribute
+    from masci_tools.util.xml.common_functions import clear_xml
+
+    xmltree = clear_xml(xmltree)
+    root = xmltree.getroot()
+
+    #Get the name of the current selected kPointSet
+    list_name = evaluate_attribute(root, schema_dict, 'listName')
+
+    kpointlists = eval_simple_xpath(root, schema_dict, 'kPointList', list_return=True)
+
+    if len(kpointlists) == 0:
+        raise ValueError('No Kpoint lists found in the given inp.xml')
+
+    labels = [kpoint_set.attrib.get('name') for kpoint_set in kpointlists]
+    if list_name not in labels:
+        raise ValueError(f'Selected Kpoint list with the name: {list_name} does not exist'
+                         f'Available list names: {labels}')
+
+    kpoint_index = labels.index(list_name)
+
+    kpoint_set = kpointlists[kpoint_index]
+
+    nkpts = evaluate_attribute(kpoint_set, schema_dict, 'count')
+
+    return nkpts
+
+
+@get_nkpts.register(max_version='0.31')
+def get_nkpts_max4(xmltree, schema_dict):
+    """
+    Get the number of kpoints that will be used in the calculation specified in the given
+    fleur XMl file. Version specific for Max4 versions or older
+
+    .. warning::
+        For file versions before Max5 only kPointList or kPointCount tags will work. However,
+        for kPointCount there is no real guarantee that for every occasion it will correspond
+        to the number of kpoints. So a warning is written out
+
+    :param xmltree: etree representing the fleur xml file
+    :param schema_dict: schema dictionary corresponding to the file version
+                        of the xmltree
+
+    :returns: int with the number of kpoints
+    """
+    from masci_tools.util.schema_dict_util import evaluate_attribute, eval_simple_xpath
+    from masci_tools.util.xml.common_functions import clear_xml
+    import warnings
+
+    xmltree = clear_xml(xmltree)
+    root = xmltree.getroot()
+
+    modes = get_fleur_modes(xmltree, schema_dict)
+
+    alt_kpt_set = None
+    if modes['band'] or modes['gw']:
+        expected_mode = 'bands' if modes['band'] else 'gw'
+        alt_kpts = eval_simple_xpath(root, schema_dict, 'altKPointSet', list_return=True)
+        for kpt_set in alt_kpts:
+            if evaluate_attribute(kpt_set, schema_dict, 'purpose') == expected_mode:
+                alt_kpt_set = kpt_set
+                break
+
+    kpt_tag = None
+    if alt_kpt_set is not None:
+        kpt_tag = eval_simple_xpath(alt_kpt_set, schema_dict, 'kPointList', list_return=True)
+        if len(kpt_tag) == 0:
+            kpt_tag = eval_simple_xpath(alt_kpt_set, schema_dict, 'kPointCount', list_return=True)
+            if len(kpt_tag) == 0:
+                kpt_tag = None
+            else:
+                warnings.warn('kPointCount is not guaranteed to result in the given number of kpoints')
+
+    if kpt_tag is None:
+        kpt_tag = eval_simple_xpath(root, schema_dict, 'kPointList', not_contains='altKPointSet', list_return=True)
+        if len(kpt_tag) == 0:
+            kpt_tag = eval_simple_xpath(root, schema_dict, 'kPointCount', not_contains='altKPointSet', list_return=True)
+            if len(kpt_tag) == 0:
+                raise ValueError('No kPointList or kPointCount found')
+            else:
+                warnings.warn('kPointCount is not guaranteed to result in the given number of kpoints')
+
+    kpt_tag = kpt_tag[0]
+
+    nkpts = evaluate_attribute(kpt_tag, schema_dict, 'count')
+
+    return nkpts
+
+
 def get_cell(xmltree, schema_dict):
     """
     Get the Bravais matrix from the given fleur xml file. In addition a list
@@ -119,9 +226,7 @@ def get_cell(xmltree, schema_dict):
     import numpy as np
 
     xmltree = clear_xml(xmltree)
-
     root = xmltree.getroot()
-
     constants = read_constants(root, schema_dict)
 
     cell = None

@@ -82,10 +82,11 @@ XML getter functions
 There are a number of functions for extracting specific parts of the XML files in the :py:mod:`~masci_tools.util.xml.xml_getters` module. The following are available:
 
    * :py:func:`~masci_tools.util.xml.xml_getters.get_fleur_modes()`: Get information about the mode of the fleur calculation
+   * :py:func:`~masci_tools.util.xml.xml_getters.get_nkpts()`: Get the (for older versions approximate if not `kPointList` is used) number of kpoints to be used in the calculation
    * :py:func:`~masci_tools.util.xml.xml_getters.get_cell()`: Get the Bravais matrix of the system
    * :py:func:`~masci_tools.util.xml.xml_getters.get_parameter_data()`: Get the information about the calculation parameters needed to reproduce a calculation starting from the inpgen
    * :py:func:`~masci_tools.util.xml.xml_getters.get_structure_data()`: Get the structure from the xml file (atom positions + unit cell)
-   * :py:func:`~masci_tools.util.xml.xml_getters.get_structure_data()`: Get the defined kpoint sets (single/multiple) from the xml file (kpoints + weights + unit cell)
+   * :py:func:`~masci_tools.util.xml.xml_getters.get_kpoints_data()`: Get the defined kpoint sets (single/multiple) from the xml file (kpoints + weights + unit cell)
 
 All of these are used in the same way::
 
