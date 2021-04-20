@@ -18,7 +18,31 @@ from masci_tools.io.parsers.fleur.fleur_schema import schema_dict_version_dispat
 
 
 def get_fleur_modes(xmltree, schema_dict):
+    """
+    Determine the calculation modes of fleur for the given xml file. Calculation modes
+    are things that change the produced files or output in the out.xml files
 
+    :param xmltree: etree representing the fleur xml file
+    :param schema_dict: schema dictionary corresponding to the file version
+                        of the xmltree
+
+    :returns: dictionary with all the extracted calculation modes
+
+    The following modes are inspected:
+
+        - `jspin`: How many spins are considered in the calculation
+        - `noco`: Is the calculation non-collinear?
+        - `soc`: Is spin-orbit coupling included?
+        - `forces`: Is the calculation a structure relaxation?
+        - `gw`: Special mode for GW/Spex calculations
+        - `force_theorem`: Is a Force theorem calculation performed?
+        - `film`: Is the structure a film system
+        - `ldau`: Is LDA+U included?
+        - `dos`: Is it a density of states calculation?
+        - `band`: Is it a bandstructure calculation?
+        - `bz_integration`: How is the integration over the Brillouin-Zone performed?
+
+    """
     from masci_tools.util.schema_dict_util import read_constants
     from masci_tools.util.schema_dict_util import evaluate_attribute, tag_exists
     from masci_tools.util.xml.common_functions import clear_xml
@@ -71,7 +95,22 @@ def get_fleur_modes(xmltree, schema_dict):
 
 
 def get_cell(xmltree, schema_dict):
+    """
+    Get the Bravais matrix from the given fleur xml file. In addition a list
+    determining in, which directions there are periodic boundary conditions
+    in the system.
 
+    .. warning::
+        Only the explicit definition of the Bravais matrix is supported.
+        Old inputs containing the `latnam` definitions are not supported
+
+    :param xmltree: etree representing the fleur xml file
+    :param schema_dict: schema dictionary corresponding to the file version
+                        of the xmltree
+
+    :returns: numpy array of the bravais matrix and list of boolean values for
+              periodic boundary conditions
+    """
     from masci_tools.util.schema_dict_util import read_constants, eval_simple_xpath
     from masci_tools.util.schema_dict_util import evaluate_text, tag_exists
     from masci_tools.util.xml.common_functions import clear_xml
@@ -134,13 +173,17 @@ def get_cell(xmltree, schema_dict):
 def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True):
     """
     This routine returns an python dictionary produced from the inp.xml
-    file, which can be used as a calc_parameters node by inpgen.
-    Be aware that inpgen does not take all information that is contained in an inp.xml file
+    file, which contains all the parameters needed to setup a new inp.xml from a inpgen
+    input file to produce the same input (for parameters that the inpgen can control)
 
-    :param inpxmlfile: and xml etree of a inp.xml file
+    :param xmltree: etree representing the fleur xml file
+    :param schema_dict: schema dictionary corresponding to the file version
+                        of the xmltree
     :param inpgen_ready: Bool, return a dict which can be inputed into inpgen while setting atoms
-    :return new_parameters: A Dict, which will lead to the same inp.xml (in case if other defaults,
-                            which can not be controlled by input for inpgen, were changed)
+    :param write_ids: Bool, if True the atom ids are added to the atom namelists
+
+    :returns: dict, which will lead to the same inp.xml (in case if other defaults,
+              which can not be controlled by input for inpgen, were changed)
 
     """
     from masci_tools.util.schema_dict_util import read_constants, eval_simple_xpath
@@ -276,7 +319,26 @@ def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True):
 
 
 def get_structure_data(xmltree, schema_dict):
+    """
+    Get the structure defined in the given fleur xml file.
 
+    .. warning::
+        Only the explicit definition of the Bravais matrix is supported.
+        Old inputs containing the `latnam` definitions are not supported
+
+    :param xmltree: etree representing the fleur xml file
+    :param schema_dict: schema dictionary corresponding to the file version
+                        of the xmltree
+
+    :returns: tuple containing the structure information
+
+    The tuple contains the following entries:
+
+        1. :atom_data: list of tuples containing the absolute positions and symbols of the atoms
+        2. :cell: numpy array, bravais matrix of the given system
+        3. :pbc: list of booleans, determines in which directions periodic boundary conditions are applicable
+
+    """
     from masci_tools.util.schema_dict_util import read_constants, eval_simple_xpath
     from masci_tools.util.schema_dict_util import evaluate_text, evaluate_attribute
     from masci_tools.util.xml.common_functions import clear_xml
@@ -362,7 +424,30 @@ def get_structure_data(xmltree, schema_dict):
 
 @schema_dict_version_dispatch(output_schema=False)
 def get_kpoints_data(xmltree, schema_dict, name=None):
+    """
+    Get the kpoint sets defined in the given fleur xml file.
 
+    .. warning::
+        For file versions before Max5 the name argument is not valid
+
+    :param xmltree: etree representing the fleur xml file
+    :param schema_dict: schema dictionary corresponding to the file version
+                        of the xmltree
+    :param name: str, optional, if given only the kpoint set with the given name
+                 is returned
+
+    :returns: tuple containing the kpoint information
+
+    The tuple contains the following entries:
+
+        1. :kpoints: dict or list (list if there is only one kpoint set),
+                     containing the coordinates of the kpoints
+        2. :weights: dict or list (list if there is only one kpoint set),
+                     containing the weights of the kpoints
+        3. :cell: numpy array, bravais matrix of the given system
+        4. :pbc: list of booleans, determines in which directions periodic boundary conditions are applicable
+
+    """
     from masci_tools.util.schema_dict_util import read_constants, eval_simple_xpath
     from masci_tools.util.schema_dict_util import evaluate_text, evaluate_attribute
     from masci_tools.util.xml.common_functions import clear_xml
@@ -420,7 +505,27 @@ def get_kpoints_data(xmltree, schema_dict, name=None):
 
 @get_kpoints_data.register(max_version='0.31')
 def get_kpoints_data_max4(xmltree, schema_dict):
+    """
+    Get the kpoint sets defined in the given fleur xml file.
 
+    .. note::
+        This function is specific to file version before and including the
+        Max4 release of fleur
+
+    :param xmltree: etree representing the fleur xml file
+    :param schema_dict: schema dictionary corresponding to the file version
+                        of the xmltree
+
+    :returns: tuple containing the kpoint information
+
+    The tuple contains the following entries:
+
+        1. :kpoints: list containing the coordinates of the kpoints
+        2. :weights: list containing the weights of the kpoints
+        3. :cell: numpy array, bravais matrix of the given system
+        4. :pbc: list of booleans, determines in which directions periodic boundary conditions are applicable
+
+    """
     from masci_tools.util.schema_dict_util import read_constants, eval_simple_xpath
     from masci_tools.util.schema_dict_util import evaluate_text, evaluate_attribute
     from masci_tools.util.xml.common_functions import clear_xml
