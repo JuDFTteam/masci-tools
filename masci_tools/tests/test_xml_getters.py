@@ -402,7 +402,8 @@ def test_get_nkpts_max4_altkpoint(load_inpxml, data_regression):
     #Activate band calculations
     xmltree = set_inpchanges(xmltree, schema_dict, {'band': True})
 
-    nkpts = get_nkpts(xmltree, schema_dict)
+    with pytest.warns(UserWarning):
+        nkpts = get_nkpts(xmltree, schema_dict)
 
     assert isinstance(nkpts, int)
     assert nkpts == 240
