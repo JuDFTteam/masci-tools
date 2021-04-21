@@ -355,7 +355,7 @@ class FleurXMLModifier:
         Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.create_tag()` to
         the list of tasks that will be done on the xmltree.
 
-        :param tag_name: str of the tag to create
+        :param tag: str of the tag to create or etree Element with the same name
         :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
         :param create_parents: bool optional (default False), if True and the given xpath has no results the
                                the parent tags are created recursively

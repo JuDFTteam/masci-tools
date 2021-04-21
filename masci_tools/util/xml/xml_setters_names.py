@@ -19,7 +19,7 @@ from masci_tools.util.schema_dict_util import get_attrib_xpath
 from masci_tools.io.parsers.fleur.fleur_schema import schema_dict_version_dispatch
 
 
-def create_tag(xmltree, schema_dict, tag_name, complex_xpath=None, create_parents=False, occurrences=None, **kwargs):
+def create_tag(xmltree, schema_dict, tag, complex_xpath=None, create_parents=False, occurrences=None, **kwargs):
     """
     This method creates a tag with a uniquely identified xpath under the nodes of its parent.
     If there are no nodes evaluated the subtags can be created with `create_parents=True`
@@ -28,7 +28,7 @@ def create_tag(xmltree, schema_dict, tag_name, complex_xpath=None, create_parent
 
     :param xmltree: an xmltree that represents inp.xml
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
-    :param tag_name: str of the tag to create
+    :param tag: str of the tag to create or etree Element with the same name to insert
     :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
     :param create_parents: bool optional (default False), if True and the given xpath has no results the
                            the parent tags are created recursively
@@ -43,6 +43,12 @@ def create_tag(xmltree, schema_dict, tag_name, complex_xpath=None, create_parent
     """
     from masci_tools.util.xml.xml_setters_xpaths import xml_create_tag_schema_dict
     from masci_tools.util.xml.common_functions import split_off_tag
+    from lxml import etree
+
+    if etree.iselement(tag):
+        tag_name = tag.tag
+    else:
+        tag_name = tag
 
     base_xpath = get_tag_xpath(schema_dict, tag_name, **kwargs)
 
@@ -55,7 +61,7 @@ def create_tag(xmltree, schema_dict, tag_name, complex_xpath=None, create_parent
                                          schema_dict,
                                          complex_xpath,
                                          parent_xpath,
-                                         tag_name,
+                                         tag,
                                          create_parents=create_parents,
                                          occurrences=occurrences)
 

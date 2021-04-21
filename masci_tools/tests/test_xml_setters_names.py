@@ -32,6 +32,25 @@ def test_create_tag(load_inpxml):
 
     assert [child.tag for child in node.iterchildren()] == tags
 
+def test_create_tag_element(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import create_tag
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    node = eval_xpath(root, '/fleurInput/calculationSetup')
+
+    tags = [child.tag for child in node.iterchildren()]
+    tags.append('greensFunction')
+
+    create_tag(xmltree, schema_dict, etree.Element('greensFunction'))
+
+    node = eval_xpath(root, '/fleurInput/calculationSetup')
+
+    assert [child.tag for child in node.iterchildren()] == tags
+
 
 def test_create_tag_specification(load_inpxml):
 
