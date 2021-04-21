@@ -637,9 +637,7 @@ def get_kpoints_data_max4(xmltree, schema_dict):
     from masci_tools.util.xml.converters import convert_xml_attribute
 
     xmltree = clear_xml(xmltree)
-
     root = xmltree.getroot()
-
     constants = read_constants(root, schema_dict)
 
     cell, pbc = get_cell(xmltree, schema_dict)
@@ -669,3 +667,69 @@ def get_kpoints_data_max4(xmltree, schema_dict):
     weights, suc = convert_xml_attribute(weights, ['float', 'float_expression'], constants=constants, list_return=True)
 
     return kpoints, weights, cell, pbc
+
+
+@schema_dict_version_dispatch(output_schema=False)
+def get_relaxation_information(xmltree, schema_dict):
+    """
+    Get the relaxation information from the given fleur XML file. This includes the current
+    displacements, energy and posforce evolution
+
+    :param xmltree: etree representing the fleur xml file
+    :param schema_dict: schema dictionary corresponding to the file version
+                        of the xmltree
+
+    :returns: dict with the relaxation information
+
+    :raises ValueError: If no relaxation section is included in the xml tree
+    """
+    from masci_tools.util.schema_dict_util import tag_exists, read_constants, evaluate_text, eval_simple_xpath
+    from masci_tools.util.schema_dict_util import evaluate_attribute
+    from masci_tools.util.xml.converters import convert_xml_attribute, convert_xml_text
+    from masci_tools.util.xml.common_functions import clear_xml
+
+    xmltree = clear_xml(xmltree)
+    root = xmltree.getroot()
+    constants = read_constants(root, schema_dict)
+
+    if not tag_exists(root, schema_dict, 'relaxation'):
+        raise ValueError('No relaxation information included in the given XML file')
+
+    relax_tag = eval_simple_xpath(root, schema_dict, 'relaxation')
+
+    out_dict = {}
+    out_dict['displacements'] = evaluate_text(relax_tag, schema_dict, 'displace', list_return=True, constants=constants)
+
+    energies = evaluate_attribute(relax_tag, schema_dict, 'energy', list_return=True, constants=constants)
+    out_dict['energies'], _ = convert_xml_attribute(energies, ['float', 'float_expression'], list_return=True)
+
+    out_dict['posforces'] = []
+    relax_iters = eval_simple_xpath(relax_tag, schema_dict, 'step', list_return=True)
+    for step in relax_iters:
+        posforces = evaluate_text(step, schema_dict, 'posforce', list_return=True, constants=constants)
+        posforces, _ = convert_xml_text(posforces, [{
+            'length': 6,
+            'type': ['float', 'float_expression']
+        }],
+                                        list_return=True)
+        out_dict['posforces'].append(posforces)
+
+    return out_dict
+
+
+@get_relaxation_information.register(max_version='0.28')
+def get_relaxation_information_pre029(xmltree, schema_dict):
+    """
+    Get the relaxation information from the given fleur XML file. This includes the current
+    displacements, energy and posforce evolution
+
+    :param xmltree: etree representing the fleur xml file
+    :param schema_dict: schema dictionary corresponding to the file version
+                        of the xmltree
+
+    :returns: dict with the relaxation information
+
+    :raises ValueError: If no relaxation section is included in the xml tree
+    """
+    raise NotImplementedError(
+        f"'get_relaxation_information' is not implemented for inputs of version '{schema_dict['inp_version']}'")

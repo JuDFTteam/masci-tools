@@ -28,6 +28,9 @@ TEST_BULK_INPXML_PATH = os.path.join(inpxmlfilefolder, 'files/fleur/Max-R5/SiLOX
 TEST_SINGLE_KPOINT_PATH = os.path.join(inpxmlfilefolder, 'files/fleur/Max-R5/SmAtomjDOS/files/inp.xml')
 TEST_MULTIPLE_KPOINT_SETS_PATH = os.path.join(inpxmlfilefolder, 'files/fleur/test_multiple_ksets.xml')
 TEST_MAX4_INPXML_PATH = os.path.join(inpxmlfilefolder, 'files/fleur/aiida_fleur/inpxml/FePt/inp.xml')
+TEST_RELAX_INPXML_PATH = os.path.join(inpxmlfilefolder, 'files/fleur/Max-R5/GaAsMultiUForceXML/files/inp-3.xml')
+TEST_RELAX_OUTXML_PATH = os.path.join(inpxmlfilefolder, 'files/fleur/Max-R5/GaAsMultiUForceXML/files/out.xml')
+TEST_RELAX_RELAXXML_PATH = os.path.join(inpxmlfilefolder, 'files/fleur/Max-R5/GaAsMultiUForceXML/files/relax.xml')
 
 inpxmlfilelist = []
 inpxmlfilelist_content = []
@@ -407,3 +410,39 @@ def test_get_nkpts_max4_altkpoint(load_inpxml, data_regression):
 
     assert isinstance(nkpts, int)
     assert nkpts == 240
+
+
+def test_get_relaxation_information_inpxml(load_inpxml, data_regression):
+
+    from masci_tools.util.xml.xml_getters import get_relaxation_information
+
+    xmltree, schema_dict = load_inpxml(TEST_RELAX_INPXML_PATH)
+
+    relax_dict = get_relaxation_information(xmltree, schema_dict)
+
+    data_regression.check(relax_dict)
+
+
+def test_get_relaxation_information_outxml(load_outxml, data_regression):
+
+    from masci_tools.util.xml.xml_getters import get_relaxation_information
+
+    xmltree, schema_dict = load_outxml(TEST_RELAX_OUTXML_PATH)
+
+    relax_dict = get_relaxation_information(xmltree, schema_dict)
+
+    data_regression.check(relax_dict)
+
+
+def test_get_relaxation_information_relaxxml(load_inpxml, data_regression):
+
+    from masci_tools.util.xml.xml_getters import get_relaxation_information
+    from lxml import etree
+
+    xmltree, schema_dict = load_inpxml(TEST_RELAX_INPXML_PATH)  #schema_dict has to come from somewhere
+    xmltree = etree.parse(TEST_RELAX_RELAXXML_PATH)
+
+    with pytest.warns(UserWarning, match='Cannot extract custom constants'):
+        relax_dict = get_relaxation_information(xmltree, schema_dict)
+
+    data_regression.check(relax_dict)

@@ -10,15 +10,23 @@ def load_inpxml():
     """Returns the etree and schema_dict generator"""
 
     def _load_inpxml(path):
-        from lxml import etree
-        from masci_tools.io.parsers.fleur.fleur_schema import InputSchemaDict
+        from masci_tools.io.io_fleurxml import load_inpxml
         with open(path, 'r') as inpxmlfile:
-            tree = etree.parse(inpxmlfile)
-            version = str(tree.xpath('//@fleurInputVersion')[0])
-            schema_dict = InputSchemaDict.fromVersion(version)
-        return tree, schema_dict
+            return load_inpxml(inpxmlfile)
 
     return _load_inpxml
+
+
+@pytest.fixture
+def load_outxml():
+    """Returns the etree and schema_dict generator"""
+
+    def _load_outxml(path):
+        from masci_tools.io.io_fleurxml import load_outxml
+        with open(path, 'r') as outxmlfile:
+            return load_outxml(outxmlfile)
+
+    return _load_outxml
 
 
 @pytest.fixture

@@ -254,8 +254,7 @@ def abs_to_rel_xpath(xpath, new_root):
 
         xpath_to_root = '/'.join(xpath.split(new_root + '/')[:-1]) + new_root
         xpath = xpath.replace(xpath_to_root, '.')
-        if xpath != './':
-            xpath = xpath.rstrip('/')
+        xpath = xpath.rstrip('/')
     else:
         raise ValueError(f'New root element {new_root} does not appear in xpath {xpath}')
 

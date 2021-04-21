@@ -104,4 +104,6 @@
       <chargeDensitySlicing numkpt="0" minEigenval=".00000000" maxEigenval=".00000000" nnne="0" pallst="F"/>
       <specialOutput eonly="F" bmt="F"/>
    </output>
+   <!-- We include the file relax.inp here to enable relaxations (see documentation) -->
+   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="relax.xml"> <xi:fallback/> </xi:include>
 </fleurInput>
