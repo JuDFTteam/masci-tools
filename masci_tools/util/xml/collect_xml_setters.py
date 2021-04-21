@@ -14,7 +14,8 @@ and classify them according to their interface. This makes extending functionali
 
 from .xml_setters_names import set_inpchanges, shift_value, set_species, set_species_label, shift_value_species_label,\
                                set_complex_tag, set_simple_tag, create_tag, set_text, set_first_text, set_attrib_value,\
-                               set_first_attrib_value, set_atomgroup, set_atomgroup_label, add_number_to_attrib, add_number_to_first_attrib
+                               set_first_attrib_value, set_atomgroup, set_atomgroup_label, add_number_to_attrib, add_number_to_first_attrib, \
+                               set_nkpts, set_kpath
 
 from .xml_setters_basic import xml_create_tag, xml_set_attrib_value_no_create, xml_set_text_no_create, \
                                xml_replace_tag, xml_delete_tag, xml_delete_att
@@ -29,7 +30,7 @@ __XPATH_SET = {
 __SCHEMA_DICT_SET = {
     set_inpchanges, shift_value, set_species, set_species_label, shift_value_species_label, set_complex_tag,
     set_simple_tag, create_tag, set_text, set_first_text, set_attrib_value, set_first_attrib_value, set_atomgroup,
-    set_atomgroup_label, add_number_to_attrib, add_number_to_first_attrib
+    set_atomgroup_label, add_number_to_attrib, add_number_to_first_attrib, set_nkpts, set_kpath
 }
 
 __NMMPMAT_SET = {set_nmmpmat, rotate_nmmpmat}

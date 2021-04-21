@@ -619,3 +619,32 @@ class FleurXMLModifier:
         :param theta: float, angle (radian), by which to rotate the density matrix
         """
         self._tasks.append(ModifierTask('rotate_nmmpmat', args, kwargs))
+
+    def set_nkpts(self, *args, **kwargs):
+        """
+        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_nkpts()` to
+        the list of tasks that will be done on the xmltree.
+
+        .. warning::
+            This method is only supported for input versions before the Max5 release
+
+        :param count: number of k-points
+        :param gamma: bool that controls if the gamma-point should be included
+                      in the k-point mesh
+        """
+        self._tasks.append(ModifierTask('set_nkpts', args, kwargs))
+
+    def set_kpath(self, *args, **kwargs):
+        """
+        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_kpath()` to
+        the list of tasks that will be done on the xmltree.
+
+        .. warning::
+            This method is only supported for input versions before the Max5 release
+
+        :param kpath: a dictionary with kpoint name as key and k point coordinate as value
+        :param count: number of k-points
+        :param gamma: bool that controls if the gamma-point should be included
+                      in the k-point mesh
+        """
+        self._tasks.append(ModifierTask('set_kpath', args, kwargs))

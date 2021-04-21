@@ -10,9 +10,9 @@ def load_inpxml():
     """Returns the etree and schema_dict generator"""
 
     def _load_inpxml(path):
-        from masci_tools.io.io_fleurxml import load_inpxml
+        import masci_tools.io.io_fleurxml as fleur_io
         with open(path, 'r') as inpxmlfile:
-            return load_inpxml(inpxmlfile)
+            return fleur_io.load_inpxml(inpxmlfile)
 
     return _load_inpxml
 
@@ -22,9 +22,9 @@ def load_outxml():
     """Returns the etree and schema_dict generator"""
 
     def _load_outxml(path):
-        from masci_tools.io.io_fleurxml import load_outxml
+        import masci_tools.io.io_fleurxml as fleur_io
         with open(path, 'r') as outxmlfile:
-            return load_outxml(outxmlfile)
+            return fleur_io.load_outxml(outxmlfile)
 
     return _load_outxml
 

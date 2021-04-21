@@ -766,7 +766,10 @@ def set_inpchanges(xmltree, schema_dict, change_dict, path_spec=None):
 @schema_dict_version_dispatch(output_schema=False)
 def set_nkpts(xmltree, schema_dict, count, gamma):
     """
-    Sets a k-point mesh directly into inp.xml (Only available for inputs before Max4)
+    Sets a k-point mesh directly into inp.xml
+
+    .. warning::
+        This method is only supported for input versions before the Max5 release
 
     :param xmltree: xml tree that represents inp.xml
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
@@ -806,5 +809,64 @@ def set_nkpts_max4(xmltree, schema_dict, count, gamma):
 
     xmltree = set_attrib_value(xmltree, schema_dict, 'count', count, contains='kPointCount', not_contains='altKPoint')
     xmltree = set_attrib_value(xmltree, schema_dict, 'gamma', gamma, contains='kPointCount', not_contains='altKPoint')
+
+    return xmltree
+
+
+@schema_dict_version_dispatch(output_schema=False)
+def set_kpath(xmltree, schema_dict, kpath, count, gamma):
+    """
+    Sets a k-path directly into inp.xml  as a alternative kpoint set with purpose 'bands'
+
+    .. warning::
+        This method is only supported for input versions before the Max5 release
+
+    :param xmltree: xml tree that represents inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
+    :param kpath: a dictionary with kpoint name as key and k point coordinate as value
+    :param count: number of k-points
+    :param gamma: bool that controls if the gamma-point should be included
+                  in the k-point mesh
+
+    :returns: an xmltree of the inp.xml file with changes.
+    """
+
+    raise NotImplementedError(f"'set_kpath' is not implemented for inputs of version '{schema_dict['inp_version']}'")
+
+
+@set_kpath.register(max_version='0.31')
+def set_kpath_max4(xmltree, schema_dict, kpath, count, gamma):
+    """
+    Sets a k-path directly into inp.xml as a alternative kpoint set with purpose 'bands'
+
+    :param xmltree: xml tree that represents inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
+    :param kpath: a dictionary with kpoint name as key and k point coordinate as value
+    :param count: number of k-points
+    :param gamma: bool that controls if the gamma-point should be included
+                  in the k-point mesh
+
+    :returns: an xmltree of the inp.xml file with changes.
+    """
+    from masci_tools.util.schema_dict_util import tag_exists
+    from masci_tools.util.xml.converters import convert_to_fortran_bool, convert_text_to_xml
+    from masci_tools.util.xml.xml_setters_basic import xml_replace_tag
+    from lxml import etree
+
+    alt_kpt_set_xpath = get_tag_xpath(schema_dict, 'altKPointSet')
+
+    if not tag_exists(xmltree, schema_dict, 'kPointCount', contains='altKPoint'):
+        xmltree = create_tag(xmltree, schema_dict, 'kPointCount', contains='altKPoint', create_parents=True)
+        xmltree = set_first_attrib_value(xmltree, schema_dict, 'purpose', 'bands')
+
+    new_kpo = etree.Element('kPointCount', count='{}'.format(count), gamma='{}'.format(convert_to_fortran_bool(gamma)))
+    for label, coord in kpath.items():
+        new_k = etree.Element('specialPoint', name='{}'.format(label))
+        new_k.text = convert_text_to_xml(coord, [{'type': ['float', 'float_expression'], 'length': 3}])
+        new_kpo.append(new_k)
+
+    kpath_xpath = f"{alt_kpt_set_xpath}[@purpose='bands']"
+
+    xmltree = xml_replace_tag(xmltree, kpath_xpath, new_kpo)
 
     return xmltree
