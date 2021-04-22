@@ -114,6 +114,18 @@ output_dict:
   - 0.1917221493
   fermi_energy_units: Htr
   film: false
+  fleur_modes:
+    band: false
+    bz_integration: hist
+    dos: false
+    film: false
+    force_theorem: false
+    gw: false
+    jspin: 1
+    ldau: true
+    noco: false
+    relax: false
+    soc: false
   gmax: '10.80000000'
   kmax: '3.60000000'
   ldau_info:
@@ -237,9 +249,12 @@ warnings:
   parser_info:
   - Masci-Tools Fleur out.xml Parser v0.5.0
   - 'Found fleur out file with the versions out: 0.31; inp: 0.31'
-  - 'The following Fleur modes were found: {''jspin'': 1, ''relax'': False, ''ldau'':
-    True, ''soc'': False, ''noco'': False, ''film'': False, ''dos'': False, ''band'':
-    False, ''bz_integration'': ''hist''}'
+  - 'The following defined constants were found: {''Pi'': 3.141592653589793, ''Deg'':
+    0.017453292519943295, ''Ang'': 1.889726124772898, ''nm'': 18.89726124772898, ''pm'':
+    0.01889726124772898, ''Bohr'': 1.0}'
+  - 'The following Fleur modes were found: {''jspin'': 1, ''noco'': False, ''soc'':
+    False, ''relax'': False, ''gw'': False, ''force_theorem'': False, ''film'': False,
+    ''ldau'': True, ''dos'': False, ''band'': False, ''bz_integration'': ''hist''}'
   parser_warnings:
   - Ignoring '0.27' outputVersion for MaX4.0 release
   - "Output file does not validate against the schema: \nLine 17: Element 'inputData':\

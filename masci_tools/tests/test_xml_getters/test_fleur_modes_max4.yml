@@ -3,9 +3,9 @@ bz_integration: hist
 dos: false
 film: true
 force_theorem: false
-forces: false
 gw: false
 jspin: 2
 ldau: false
 noco: true
+relax: false
 soc: false

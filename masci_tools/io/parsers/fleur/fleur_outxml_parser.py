@@ -337,31 +337,17 @@ def parse_general_information(root, parser, outschema_dict, logger, iteration_to
         :param minimal_mode: bool, if True only total Energy, iteration number and distances are parsed
 
     """
+    from masci_tools.util.xml.xml_getters import get_fleur_modes
 
     minimal_mode = kwargs.get('minimal_mode', False)
     if iteration_to_parse is None:
         iteration_to_parse = 'last'
 
     constants = read_constants(root, outschema_dict, logger=logger)
+    if logger is not None:
+        logger.info('The following defined constants were found: %s', constants)
 
-    fleurmode = {
-        'jspin': 1,
-        'relax': False,
-        'ldau': False,
-        'soc': False,
-        'noco': False,
-        'film': False,
-        'dos': False,
-        'band': False
-    }
-    fleurmode = parser.perform_task('fleur_modes',
-                                    root,
-                                    fleurmode,
-                                    outschema_dict,
-                                    constants,
-                                    logger=logger,
-                                    use_lists=False)
-
+    fleurmode = get_fleur_modes(root, outschema_dict, logger=logger)
     if logger is not None:
         logger.info('The following Fleur modes were found: %s', fleurmode)
 
@@ -382,7 +368,7 @@ def parse_general_information(root, parser, outschema_dict, logger, iteration_to
     if logger is not None:
         logger.debug('The following tasks are performed on the root: %s', parser.general_tasks)
 
-    out_dict = {}
+    out_dict = {'fleur_modes': fleurmode}
 
     for task in parser.general_tasks:
 

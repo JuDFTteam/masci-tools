@@ -51,6 +51,18 @@ output_dict:
   - 0.1259314083
   fermi_energy_units: Htr
   film: false
+  fleur_modes:
+    band: false
+    bz_integration: hist
+    dos: false
+    film: false
+    force_theorem: false
+    gw: false
+    jspin: 1
+    ldau: true
+    noco: false
+    relax: true
+    soc: false
   force_atoms:
   - - - 1
       - - 0.01798072

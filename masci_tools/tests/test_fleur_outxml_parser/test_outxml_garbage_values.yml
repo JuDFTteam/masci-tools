@@ -3,9 +3,12 @@ warnings:
   parser_info:
   - Masci-Tools Fleur out.xml Parser v0.5.0
   - 'Found fleur out file with the versions out: 0.34; inp: 0.34'
-  - 'The following Fleur modes were found: {''jspin'': 2, ''relax'': False, ''ldau'':
-    False, ''soc'': False, ''noco'': False, ''film'': False, ''dos'': False, ''band'':
-    False, ''bz_integration'': ''tetra''}'
+  - 'The following defined constants were found: {''Pi'': 3.141592653589793, ''Deg'':
+    0.017453292519943295, ''Ang'': 1.889726124772898, ''nm'': 18.89726124772898, ''pm'':
+    0.01889726124772898, ''Bohr'': 1.0}'
+  - 'The following Fleur modes were found: {''jspin'': 2, ''noco'': False, ''soc'':
+    False, ''relax'': False, ''gw'': False, ''force_theorem'': False, ''film'': False,
+    ''ldau'': False, ''dos'': False, ''band'': False, ''bz_integration'': ''tetra''}'
   parser_warnings:
   - "Output file does not validate against the schema: \nLine 591: Element 'FermiEnergy',\
     \ attribute 'value': 'NAN' is not a valid value of the atomic type 'xs:double'.\
