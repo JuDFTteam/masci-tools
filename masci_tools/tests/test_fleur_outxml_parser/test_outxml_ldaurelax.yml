@@ -85,6 +85,7 @@ output_dict:
   - 0.01798072
   force_units: Htr/bohr
   gmax: 10.8
+  input_file_version: '0.34'
   kmax: 3.6
   ldau_info:
     As-2/33:

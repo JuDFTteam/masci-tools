@@ -31,6 +31,7 @@ output_dict:
     relax: false
     soc: false
   gmax: 10.0
+  input_file_version: '0.34'
   kmax: 3.0
   magnetic_moments: 2.1699434793
   magnetic_moments_spin_down_charge: 6.2948978468

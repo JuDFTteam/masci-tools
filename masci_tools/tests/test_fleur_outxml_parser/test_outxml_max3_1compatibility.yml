@@ -211,6 +211,7 @@ output_dict:
     relax: false
     soc: true
   gmax: '10.20000000'
+  input_file_version: '0.30'
   kmax: '3.40000000'
   magnetic_moments:
   - - 1.9133653688

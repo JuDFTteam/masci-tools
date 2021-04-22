@@ -236,6 +236,8 @@ def outxml_parser(outxmlfile,
                                                     iteration_to_parse=iteration_to_parse,
                                                     **kwargs)
 
+
+    out_dict['input_file_version'] = outschema_dict['inp_version']
     # get all iterations in out.xml file
     iteration_nodes = eval_simple_xpath(root, outschema_dict, 'iteration', logger=logger, list_return=True)
     n_iters = len(iteration_nodes)
