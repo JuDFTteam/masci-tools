@@ -87,6 +87,7 @@ There are a number of functions for extracting specific parts of the XML files i
    * :py:func:`~masci_tools.util.xml.xml_getters.get_parameter_data()`: Get the information about the calculation parameters needed to reproduce a calculation starting from the inpgen
    * :py:func:`~masci_tools.util.xml.xml_getters.get_structure_data()`: Get the structure from the xml file (atom positions + unit cell)
    * :py:func:`~masci_tools.util.xml.xml_getters.get_kpoints_data()`: Get the defined kpoint sets (single/multiple) from the xml file (kpoints + weights + unit cell)
+   * :py:func:`~masci_tools.util.xml.xml_getters.get_relaxation_information()`: Get the relaxation history and current displacements
 
 All of these are used in the same way::
 
