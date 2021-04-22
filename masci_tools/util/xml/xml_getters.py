@@ -35,7 +35,7 @@ def get_fleur_modes(xmltree, schema_dict, logger=None):
         - `jspin`: How many spins are considered in the calculation
         - `noco`: Is the calculation non-collinear?
         - `soc`: Is spin-orbit coupling included?
-        - `forces`: Is the calculation a structure relaxation?
+        - `relax`: Is the calculation a structure relaxation?
         - `gw`: Special mode for GW/Spex calculations
         - `force_theorem`: Is a Force theorem calculation performed?
         - `film`: Is the structure a film system

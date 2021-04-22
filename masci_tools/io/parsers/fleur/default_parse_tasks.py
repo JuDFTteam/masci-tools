@@ -58,7 +58,7 @@ Following is the current specification of tasks
 
 .. literalinclude:: ../../../masci_tools/io/parsers/fleur/default_parse_tasks.py
    :language: python
-   :lines: 67-
+   :lines: 66-
    :linenos:
 
 """
