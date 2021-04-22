@@ -17,6 +17,7 @@ for easy versioning and reuse
 from masci_tools.io.parsers.fleur.fleur_schema import schema_dict_version_dispatch
 from lxml import etree
 
+
 def get_fleur_modes(xmltree, schema_dict, logger=None):
     """
     Determine the calculation modes of fleur for the given xml file. Calculation modes
@@ -199,9 +200,19 @@ def get_nkpts_max4(xmltree, schema_dict, logger=None):
                 warnings.warn('kPointCount is not guaranteed to result in the given number of kpoints')
 
     if kpt_tag is None:
-        kpt_tag = eval_simple_xpath(root, schema_dict, 'kPointList', not_contains='altKPointSet', list_return=True, logger=logger)
+        kpt_tag = eval_simple_xpath(root,
+                                    schema_dict,
+                                    'kPointList',
+                                    not_contains='altKPointSet',
+                                    list_return=True,
+                                    logger=logger)
         if len(kpt_tag) == 0:
-            kpt_tag = eval_simple_xpath(root, schema_dict, 'kPointCount', not_contains='altKPointSet', list_return=True, logger=logger)
+            kpt_tag = eval_simple_xpath(root,
+                                        schema_dict,
+                                        'kPointCount',
+                                        not_contains='altKPointSet',
+                                        list_return=True,
+                                        logger=logger)
             if len(kpt_tag) == 0:
                 raise ValueError('No kPointList or kPointCount found')
             else:
@@ -339,20 +350,33 @@ def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True, 
     # &comp
     comp_dict = {}
     comp_dict['jspins'] = evaluate_attribute(root, schema_dict, 'jspins', constants=constants, logger=logger)
-    comp_dict['frcor'] = evaluate_attribute(root, schema_dict, 'frcor', constants=constants, logger=logger, optional=True)
+    comp_dict['frcor'] = evaluate_attribute(root,
+                                            schema_dict,
+                                            'frcor',
+                                            constants=constants,
+                                            logger=logger,
+                                            optional=True)
     comp_dict['ctail'] = evaluate_attribute(root, schema_dict, 'ctail', constants=constants, logger=logger)
-    comp_dict['kcrel'] = evaluate_attribute(root, schema_dict, 'kcrel', constants=constants, logger=logger, optional=True)
+    comp_dict['kcrel'] = evaluate_attribute(root,
+                                            schema_dict,
+                                            'kcrel',
+                                            constants=constants,
+                                            logger=logger,
+                                            optional=True)
     comp_dict['gmax'] = evaluate_attribute(root, schema_dict, 'gmax', constants=constants, logger=logger)
     comp_dict['gmaxxc'] = evaluate_attribute(root, schema_dict, 'gmaxxc', constants=constants, logger=logger)
     comp_dict['kmax'] = evaluate_attribute(root, schema_dict, 'kmax', constants=constants, logger=logger)
 
     if schema_dict.inp_version <= (0, 31):
         comp_dict['gmax'], _ = convert_xml_attribute(comp_dict['gmax'], ['float', 'float_expression'],
-                                                     constants=constants, logger=logger)
+                                                     constants=constants,
+                                                     logger=logger)
         comp_dict['gmaxxc'], _ = convert_xml_attribute(comp_dict['gmaxxc'], ['float', 'float_expression'],
-                                                       constants=constants, logger=logger)
+                                                       constants=constants,
+                                                       logger=logger)
         comp_dict['kmax'], _ = convert_xml_attribute(comp_dict['kmax'], ['float', 'float_expression'],
-                                                     constants=constants, logger=logger)
+                                                     constants=constants,
+                                                     logger=logger)
 
     parameters['comp'] = filter_out_empty_dict_entries(comp_dict)
 
@@ -397,18 +421,33 @@ def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True, 
 
         if schema_dict.inp_version <= (0, 31):
             atom_dict['bmu'], _ = convert_xml_attribute(atom_dict['bmu'], ['float', 'float_expression'],
-                                                        constants=constants, logger=logger)
+                                                        constants=constants,
+                                                        logger=logger)
             atom_dict['dx'], _ = convert_xml_attribute(atom_dict['dx'], ['float', 'float_expression'],
-                                                       constants=constants, logger=logger)
+                                                       constants=constants,
+                                                       logger=logger)
             atom_dict['rmt'], _ = convert_xml_attribute(atom_dict['rmt'], ['float', 'float_expression'],
-                                                        constants=constants, logger=logger)
+                                                        constants=constants,
+                                                        logger=logger)
 
         parameters[atoms_name] = filter_out_empty_dict_entries(atom_dict)
 
     # &soc
     soc = evaluate_attribute(root, schema_dict, 'l_soc', constants=constants, logger=logger, optional=True)
-    theta = evaluate_attribute(root, schema_dict, 'theta', constants=constants, contains='soc', logger=logger, optional=True)
-    phi = evaluate_attribute(root, schema_dict, 'phi', constants=constants, contains='soc', logger=logger, optional=True)
+    theta = evaluate_attribute(root,
+                               schema_dict,
+                               'theta',
+                               constants=constants,
+                               contains='soc',
+                               logger=logger,
+                               optional=True)
+    phi = evaluate_attribute(root,
+                             schema_dict,
+                             'phi',
+                             constants=constants,
+                             contains='soc',
+                             logger=logger,
+                             optional=True)
     if soc is not None and soc:
         if schema_dict.inp_version <= (0, 31):
             theta, _ = convert_xml_attribute(theta, ['float', 'float_expression'], constants=constants, logger=logger)
@@ -432,7 +471,12 @@ def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True, 
     # &exco
     #TODO, easy
     exco_dict = {}
-    exco_dict['xctyp'] = evaluate_attribute(root, schema_dict, 'name', constants, contains='xcFunctional', logger=logger)
+    exco_dict['xctyp'] = evaluate_attribute(root,
+                                            schema_dict,
+                                            'name',
+                                            constants,
+                                            contains='xcFunctional',
+                                            logger=logger)
     # 'exco' : ['xctyp', 'relxc'],
     parameters['exco'] = filter_out_empty_dict_entries(exco_dict)
     # &film
@@ -482,8 +526,18 @@ def get_structure_data(xmltree, schema_dict, logger=None):
     constants = read_constants(root, schema_dict, logger=logger)
     cell, pbc = get_cell(root, schema_dict, logger=logger)
 
-    species_names = evaluate_attribute(root, schema_dict, 'name', constants=constants, contains='species', logger=logger)
-    species_elements = evaluate_attribute(root, schema_dict, 'element', constants=constants, contains='species', logger=logger)
+    species_names = evaluate_attribute(root,
+                                       schema_dict,
+                                       'name',
+                                       constants=constants,
+                                       contains='species',
+                                       logger=logger)
+    species_elements = evaluate_attribute(root,
+                                          schema_dict,
+                                          'element',
+                                          constants=constants,
+                                          contains='species',
+                                          logger=logger)
 
     if not isinstance(species_names, list):
         species_names = [species_names]
@@ -530,13 +584,16 @@ def get_structure_data(xmltree, schema_dict, logger=None):
         if schema_dict.inp_version < (0, 33):
             for indx, pos in enumerate(absolute_positions):
                 absolute_positions[indx], suc = convert_xml_attribute(pos, ['float', 'float_expression'],
-                                                                      constants=constants, logger=logger)
+                                                                      constants=constants,
+                                                                      logger=logger)
             for indx, pos in enumerate(relative_positions):
                 relative_positions[indx], suc = convert_xml_attribute(pos, ['float', 'float_expression'],
-                                                                      constants=constants, logger=logger)
+                                                                      constants=constants,
+                                                                      logger=logger)
             for indx, pos in enumerate(film_positions):
                 film_positions[indx], suc = convert_xml_attribute(pos, ['float', 'float_expression'],
-                                                                  constants=constants, logger=logger)
+                                                                  constants=constants,
+                                                                  logger=logger)
 
         atom_positions = absolute_positions
 
@@ -615,11 +672,18 @@ def get_kpoints_data(xmltree, schema_dict, name=None, logger=None):
             continue
 
         kpoints = evaluate_text(kpointlist, schema_dict, 'kPoint', constants=constants, list_return=True, logger=logger)
-        weights = evaluate_attribute(kpointlist, schema_dict, 'weight', constants=constants, list_return=True, logger=logger)
+        weights = evaluate_attribute(kpointlist,
+                                     schema_dict,
+                                     'weight',
+                                     constants=constants,
+                                     list_return=True,
+                                     logger=logger)
 
         if schema_dict.inp_version == (0, 32):
             for indx, kpoint in enumerate(kpoints):
-                kpoints[indx], suc = convert_xml_attribute(kpoint, ['float', 'float_expression'], constants=constants, logger=logger)
+                kpoints[indx], suc = convert_xml_attribute(kpoint, ['float', 'float_expression'],
+                                                           constants=constants,
+                                                           logger=logger)
             weights, suc = convert_xml_attribute(weights, ['float', 'float_expression'],
                                                  constants=constants,
                                                  list_return=True,
@@ -678,7 +742,12 @@ def get_kpoints_data_max4(xmltree, schema_dict, logger=None):
 
     cell, pbc = get_cell(root, schema_dict, logger=logger)
 
-    kpointlist = eval_simple_xpath(root, schema_dict, 'kPointList', list_return=True, not_contains='altKPoint', logger=logger)
+    kpointlist = eval_simple_xpath(root,
+                                   schema_dict,
+                                   'kPointList',
+                                   list_return=True,
+                                   not_contains='altKPoint',
+                                   logger=logger)
 
     if len(kpointlist) == 0:
         raise ValueError('No Kpoint lists found in the given inp.xml')
@@ -701,8 +770,13 @@ def get_kpoints_data_max4(xmltree, schema_dict, logger=None):
                                  logger=logger)
 
     for indx, kpoint in enumerate(kpoints):
-        kpoints[indx], suc = convert_xml_attribute(kpoint, ['float', 'float_expression'], constants=constants, logger=logger)
-    weights, suc = convert_xml_attribute(weights, ['float', 'float_expression'], constants=constants, list_return=True, logger=logger)
+        kpoints[indx], suc = convert_xml_attribute(kpoint, ['float', 'float_expression'],
+                                                   constants=constants,
+                                                   logger=logger)
+    weights, suc = convert_xml_attribute(weights, ['float', 'float_expression'],
+                                         constants=constants,
+                                         list_return=True,
+                                         logger=logger)
 
     return kpoints, weights, cell, pbc
 
@@ -740,20 +814,33 @@ def get_relaxation_information(xmltree, schema_dict, logger=None):
     relax_tag = eval_simple_xpath(root, schema_dict, 'relaxation', logger=logger)
 
     out_dict = {}
-    out_dict['displacements'] = evaluate_text(relax_tag, schema_dict, 'displace', list_return=True, constants=constants, logger=logger)
+    out_dict['displacements'] = evaluate_text(relax_tag,
+                                              schema_dict,
+                                              'displace',
+                                              list_return=True,
+                                              constants=constants,
+                                              logger=logger)
 
-    energies = evaluate_attribute(relax_tag, schema_dict, 'energy', list_return=True, constants=constants, logger=logger)
-    out_dict['energies'], _ = convert_xml_attribute(energies, ['float', 'float_expression'], list_return=True, logger=logger)
+    energies = evaluate_attribute(relax_tag,
+                                  schema_dict,
+                                  'energy',
+                                  list_return=True,
+                                  constants=constants,
+                                  logger=logger)
+    out_dict['energies'], _ = convert_xml_attribute(energies, ['float', 'float_expression'],
+                                                    list_return=True,
+                                                    logger=logger)
 
     out_dict['posforces'] = []
     relax_iters = eval_simple_xpath(relax_tag, schema_dict, 'step', list_return=True, logger=logger)
     for step in relax_iters:
         posforces = evaluate_text(step, schema_dict, 'posforce', list_return=True, constants=constants, logger=logger)
         posforces, _ = convert_xml_text(posforces, [{
-                                            'length': 6,
-                                            'type': ['float', 'float_expression']
-                                        }],
-                                        list_return=True, logger=logger)
+            'length': 6,
+            'type': ['float', 'float_expression']
+        }],
+                                        list_return=True,
+                                        logger=logger)
         out_dict['posforces'].append(posforces)
 
     return out_dict
