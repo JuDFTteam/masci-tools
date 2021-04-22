@@ -68,10 +68,10 @@ def get_fleur_modes(xmltree, schema_dict, logger=None):
         soc = False
     fleur_modes['soc'] = soc
 
-    forces = evaluate_attribute(root, schema_dict, 'l_f', constants=constants, logger=logger, optional=True)
-    if forces is None:
-        forces = False
-    fleur_modes['forces'] = forces
+    relax = evaluate_attribute(root, schema_dict, 'l_f', constants=constants, logger=logger, optional=True)
+    if relax is None:
+        relax = False
+    fleur_modes['relax'] = relax
 
     gw = evaluate_attribute(root, schema_dict, 'gw', constants=constants, logger=logger, optional=True)
     if gw is None:
