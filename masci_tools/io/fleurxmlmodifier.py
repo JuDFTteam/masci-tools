@@ -159,6 +159,10 @@ class FleurXMLModifier:
             'xml_set_text_no_create': self.xml_set_text_no_create,
             'set_nmmpmat': self.set_nmmpmat,
             'rotate_nmmpmat': self.rotate_nmmpmat,
+            'set_nkpts': self.set_nkpts,
+            'set_kpath': self.set_kpath,
+            'set_kpointlist': self.set_kpointlist,
+            'switch_kpointset': self.switch_kpointset,
         }
         return outside_actions
 
@@ -619,6 +623,38 @@ class FleurXMLModifier:
         :param theta: float, angle (radian), by which to rotate the density matrix
         """
         self._tasks.append(ModifierTask('rotate_nmmpmat', args, kwargs))
+
+    def set_kpointlist(self, *args, **kwargs):
+        """
+        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_kpointlist()` to
+        the list of tasks that will be done on the xmltree.
+
+        .. warning::
+            For input versions Max4 and older **all** keyword arguments are not valid (`name`, `kpoint_type`,
+            `special_labels`, `switch` and `overwrite`)
+
+        :param kpoints: list or array containing the **relative** coordinates of the kpoints
+        :param weights: list or array containing the weights of the kpoints
+        :param name: str for the name of the list, if not given a default name is generated
+        :param kpoint_type: str specifying the type of the kPointList ('path', 'mesh', 'spex', 'tria', ...)
+        :param special_labels: dict mapping indices to labels. The labels will be inserted for the kpoints
+                               corresponding to the given index
+        :param switch: bool, if True the kPointlist will be used by Fleur when starting the next calculation
+        :param overwrite: bool, if True and a kPointlist with the given name already exists it will be overwritten
+        """
+        self._tasks.append(ModifierTask('set_kpointlist', args, kwargs))
+
+    def switch_kpointset(self, *args, **kwargs):
+        """
+        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.switch_kpointset()` to
+        the list of tasks that will be done on the xmltree.
+
+        .. warning::
+            This method is only supported for input versions after the Max5 release
+
+        :param list_name: name of the kPoint set to use
+        """
+        self._tasks.append(ModifierTask('switch_kpointset', args, kwargs))
 
     def set_nkpts(self, *args, **kwargs):
         """
