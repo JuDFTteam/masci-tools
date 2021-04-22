@@ -839,7 +839,7 @@ def get_tag_paths(xmlschema, namespaces, **kwargs):
         paths = _get_xpath(xmlschema, namespaces, tag, stop_iteration=stop_iteration, iteration_root=iteration_root)
         if len(paths) == 1:
             tag_paths[tag] = paths.pop()
-        else:
+        elif len(paths) != 0:
             tag_paths[tag] = sorted(paths)
     return tag_paths
 

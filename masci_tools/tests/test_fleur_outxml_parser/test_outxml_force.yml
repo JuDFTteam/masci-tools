@@ -5,7 +5,20 @@ output_dict:
     date: 2020/12/10
     time: '16:58:39'
   film: true
+  fleur_modes:
+    band: false
+    bz_integration: hist
+    dos: false
+    film: true
+    force_theorem: true
+    gw: false
+    jspin: 2
+    ldau: false
+    noco: true
+    relax: false
+    soc: false
   gmax: 10.0
+  input_file_version: '0.34'
   kmax: 4.0
   number_of_atom_types: 2
   number_of_atoms: 2

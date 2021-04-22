@@ -18,7 +18,20 @@ output_dict:
   fermi_energy: 0.1848170588
   fermi_energy_units: Htr
   film: false
+  fleur_modes:
+    band: false
+    bz_integration: hist
+    dos: false
+    film: false
+    force_theorem: false
+    gw: false
+    jspin: 1
+    ldau: false
+    noco: false
+    relax: false
+    soc: false
   gmax: 11.1
+  input_file_version: '0.34'
   kmax: 3.5
   number_of_atom_types: Si bulk
   number_of_atoms: 2

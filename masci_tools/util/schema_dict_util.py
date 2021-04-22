@@ -388,8 +388,18 @@ def read_constants(root, schema_dict, logger=None):
     """
     from masci_tools.util.constants import FLEUR_DEFINED_CONSTANTS
     import copy
+    import warnings
 
     defined_constants = copy.deepcopy(FLEUR_DEFINED_CONSTANTS)
+
+    try:
+        tag_exists(root, schema_dict, 'constant')
+    except ValueError as err:
+        if 'no possible' in str(err):
+            warnings.warn('Cannot extract custom constants for the given root. Assuming defaults')
+            return defined_constants
+        else:
+            raise
 
     if not tag_exists(root, schema_dict, 'constant', logger=logger):  #Avoid warnings for empty constants
         return defined_constants

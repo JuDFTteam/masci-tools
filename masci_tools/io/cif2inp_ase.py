@@ -11,7 +11,6 @@
 # For further information please visit http://www.flapw.de or                 #
 #                                                                             #
 ###############################################################################
-
 """
 Independent utility script to convert cif file formats to input for the inpgen code
 Usage: `python cif2inp_ase.py <filename.cif>`
@@ -25,20 +24,20 @@ cifFilename = sys.argv[1]
 structure = ase.io.read(cifFilename)
 
 structureFormula = structure.get_chemical_formula()
-inpFilename = 'inp_'+structureFormula
+inpFilename = 'inp_' + structureFormula
 
 Binv = np.linalg.inv(structure.cell)
 frac_coordinates = structure.arrays['positions'].dot(Binv)
 
-with open(inpFilename, "w+") as f:
+with open(inpFilename, 'w+') as f:
     natoms = len(structure.arrays['numbers'])
-    f.write(structureFormula+"\r\n")
-    f.write("&input film=F /\r\n")
+    f.write(structureFormula + '\r\n')
+    f.write('&input film=F /\r\n')
     for i in range(3):
-        f.write(' '.join(map("{:.12f}".format, structure.cell[i]))+"\r\n")
-    f.write("1.8897    !lattice const scaled as(1.0*bohr)\r\n1.0000 1.0000 1.0000    !scaling\r\n\r\n")
-    f.write(str(natoms)+"\r\n")
+        f.write(' '.join(map('{:.12f}'.format, structure.cell[i])) + '\r\n')
+    f.write('1.8897    !lattice const scaled as(1.0*bohr)\r\n1.0000 1.0000 1.0000    !scaling\r\n\r\n')
+    f.write(str(natoms) + '\r\n')
     for i in range(natoms):
-        f.write(str(structure.arrays['numbers'][i])+" "
-                + " ".join(map("{:.12f}".format, frac_coordinates[i]))+"\r\n")
-    f.write("\r\n")
+        f.write(
+            str(structure.arrays['numbers'][i]) + ' ' + ' '.join(map('{:.12f}'.format, frac_coordinates[i])) + '\r\n')
+    f.write('\r\n')

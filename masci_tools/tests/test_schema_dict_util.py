@@ -61,7 +61,7 @@ def test_get_relative_tag_xpath_input():
     from masci_tools.util.schema_dict_util import get_relative_tag_xpath
 
     assert get_relative_tag_xpath(schema_dict_34, 'magnetism', 'calculationSetup') == './magnetism'
-    assert get_relative_tag_xpath(schema_dict_34, 'magnetism', 'magnetism') == './'
+    assert get_relative_tag_xpath(schema_dict_34, 'magnetism', 'magnetism') == '.'
 
     assert get_relative_tag_xpath(schema_dict_34, 'DMI', 'forceTheorem') == './DMI'
     with pytest.raises(ValueError, match='The tag DMI has no possible relative paths with the current specification.'):
@@ -84,7 +84,7 @@ def test_get_relative_tag_xpath_output():
     from masci_tools.util.schema_dict_util import get_relative_tag_xpath
 
     assert get_relative_tag_xpath(outschema_dict_34, 'iteration', 'scfLoop') == './iteration'
-    assert get_relative_tag_xpath(outschema_dict_34, 'iteration', 'iteration') == './'
+    assert get_relative_tag_xpath(outschema_dict_34, 'iteration', 'iteration') == '.'
 
     assert get_relative_tag_xpath(outschema_dict_34, 'densityMatrixFor', 'ldaUDensityMatrix') == './densityMatrixFor'
 

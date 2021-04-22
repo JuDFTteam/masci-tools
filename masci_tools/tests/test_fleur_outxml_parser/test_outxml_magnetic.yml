@@ -54,7 +54,20 @@ output_dict:
   - 0.3477025411
   fermi_energy_units: Htr
   film: false
+  fleur_modes:
+    band: false
+    bz_integration: hist
+    dos: false
+    film: false
+    force_theorem: false
+    gw: false
+    jspin: 2
+    ldau: false
+    noco: true
+    relax: false
+    soc: false
   gmax: 10.2
+  input_file_version: '0.34'
   kmax: 3.4
   magnetic_moments:
   - - 1.9248831159

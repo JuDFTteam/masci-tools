@@ -11,6 +11,8 @@ import pytest
 
 FILE_PATH = os.path.dirname(os.path.abspath(__file__))
 TEST_INPXML_PATH = os.path.join(FILE_PATH, 'files/fleur/Max-R5/FePt_film_SSFT_LO/files/inp2.xml')
+TEST_MAX4_INPXML_PATH = os.path.join(FILE_PATH, 'files/fleur/aiida_fleur/inpxml/FePt/inp.xml')
+TEST_MULTIPLE_KPOINT_SETS_PATH = os.path.join(FILE_PATH, 'files/fleur/test_multiple_ksets.xml')
 
 
 def test_create_tag(load_inpxml):
@@ -27,6 +29,26 @@ def test_create_tag(load_inpxml):
     tags.append('greensFunction')
 
     create_tag(xmltree, schema_dict, 'greensFunction')
+
+    node = eval_xpath(root, '/fleurInput/calculationSetup')
+
+    assert [child.tag for child in node.iterchildren()] == tags
+
+
+def test_create_tag_element(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import create_tag
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    node = eval_xpath(root, '/fleurInput/calculationSetup')
+
+    tags = [child.tag for child in node.iterchildren()]
+    tags.append('greensFunction')
+
+    create_tag(xmltree, schema_dict, etree.Element('greensFunction'))
 
     node = eval_xpath(root, '/fleurInput/calculationSetup')
 
@@ -1348,3 +1370,289 @@ def test_set_inpchanges_error(load_inpxml):
             'xcFunctional': 'TEST',
             'l_linmix': True
         })
+
+
+def test_set_nkpts_max5(load_inpxml):
+
+    from masci_tools.util.xml.xml_setters_names import set_nkpts
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+
+    with pytest.raises(NotImplementedError):
+        set_nkpts(xmltree, schema_dict, 1337)
+
+
+def test_set_nkpts_max4(load_inpxml):
+
+    from masci_tools.util.xml.xml_setters_names import set_nkpts
+    from masci_tools.util.xml.common_functions import eval_xpath
+
+    xmltree, schema_dict = load_inpxml(TEST_MAX4_INPXML_PATH)
+    root = xmltree.getroot()
+
+    xmltree = set_nkpts(xmltree, schema_dict, 1337)
+
+    assert eval_xpath(root, '/fleurInput/calculationSetup/bzIntegration/kPointList') == []
+    assert eval_xpath(root, '/fleurInput/calculationSetup/bzIntegration/kPointCount/@count') == '1337'
+    assert eval_xpath(root, '/fleurInput/calculationSetup/bzIntegration/kPointCount/@gamma') == 'F'
+
+    xmltree = set_nkpts(xmltree, schema_dict, 666, gamma=True)
+
+    assert eval_xpath(root, '/fleurInput/calculationSetup/bzIntegration/kPointList') == []
+    assert eval_xpath(root, '/fleurInput/calculationSetup/bzIntegration/kPointCount/@count') == '666'
+    assert eval_xpath(root, '/fleurInput/calculationSetup/bzIntegration/kPointCount/@gamma') == 'T'
+
+
+def test_set_kpath_max5(load_inpxml):
+
+    from masci_tools.util.xml.xml_setters_names import set_kpath
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+
+    with pytest.raises(NotImplementedError):
+        set_kpath(xmltree, schema_dict, {'Test': [0, 0, 0]}, 120)
+
+
+def test_set_kpath_max4(load_inpxml):
+
+    from masci_tools.util.xml.xml_setters_names import set_kpath
+    from masci_tools.util.xml.common_functions import eval_xpath
+
+    xmltree, schema_dict = load_inpxml(TEST_MAX4_INPXML_PATH)
+    root = xmltree.getroot()
+
+    xmltree = set_kpath(xmltree, schema_dict, {'Test': [0, 0, 0]}, 120)
+
+    assert eval_xpath(root, '/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointCount/@count') == '120'
+    assert eval_xpath(
+        root, '/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointCount/specialPoint/@name') == 'Test'
+    assert eval_xpath(root, '/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointCount/specialPoint/text()'
+                      ) == ' 0.0000000000000  0.0000000000000  0.0000000000000'
+    assert eval_xpath(root, '/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointCount/@gamma') == 'F'
+
+    xmltree = set_kpath(xmltree, schema_dict, {'Test': [0, 0, 0], 'Test2': [1, 1, 1]}, 500, gamma=True)
+
+    assert eval_xpath(root, '/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointCount/@count') == '500'
+    assert eval_xpath(
+        root,
+        '/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointCount/specialPoint/@name') == ['Test', 'Test2']
+    assert eval_xpath(root,
+                      '/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointCount/specialPoint/text()') == [
+                          ' 0.0000000000000  0.0000000000000  0.0000000000000',
+                          ' 1.0000000000000  1.0000000000000  1.0000000000000'
+                      ]
+    assert eval_xpath(root, '/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointCount/@gamma') == 'T'
+
+
+def test_switch_kpointset_max4(load_inpxml):
+    from masci_tools.util.xml.xml_setters_names import switch_kpointset
+
+    xmltree, schema_dict = load_inpxml(TEST_MAX4_INPXML_PATH)
+
+    with pytest.raises(NotImplementedError):
+        switch_kpointset(xmltree, schema_dict, 'Test')
+
+
+def test_switch_kpointset_max5(load_inpxml):
+    from masci_tools.util.xml.xml_setters_names import switch_kpointset
+    from masci_tools.util.xml.common_functions import eval_xpath
+
+    xmltree, schema_dict = load_inpxml(TEST_MULTIPLE_KPOINT_SETS_PATH)
+    root = xmltree.getroot()
+
+    xmltree = switch_kpointset(xmltree, schema_dict, 'second-set')
+
+    assert eval_xpath(root, '/fleurInput/cell/bzIntegration/kPointListSelection/@listName') == 'second-set'
+
+    with pytest.raises(ValueError, match='The given kPointList non_existent does not exist'):
+        switch_kpointset(xmltree, schema_dict, 'non_existent')
+
+
+def test_set_kpointlist_max5(load_inpxml):
+    from masci_tools.util.xml.xml_setters_names import set_kpointlist
+    from masci_tools.util.xml.common_functions import eval_xpath
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    kpoints = [[0, 0, 0], [1, 1, 1]]
+    weights = [1, 2]
+
+    xmltree = set_kpointlist(xmltree, schema_dict, kpoints, weights, name='second-set')
+
+    assert eval_xpath(root, "/fleurInput/cell/bzIntegration/kPointLists/kPointList[@name='default']/kPoint/text()") == [
+        '   -0.250000     0.250000     0.000000', '    0.250000     0.250000     0.000000'
+    ]
+    assert eval_xpath(root,
+                      "/fleurInput/cell/bzIntegration/kPointLists/kPointList[@name='second-set']/kPoint/text()") == [
+                          ' 0.0000000000000  0.0000000000000  0.0000000000000',
+                          ' 1.0000000000000  1.0000000000000  1.0000000000000'
+                      ]
+    assert eval_xpath(root,
+                      "/fleurInput/cell/bzIntegration/kPointLists/kPointList[@name='second-set']/kPoint/@weight") == [
+                          '1.0000000000', '2.0000000000'
+                      ]
+    assert eval_xpath(root, "/fleurInput/cell/bzIntegration/kPointLists/kPointList[@name='second-set']/@count") == '2'
+
+
+def test_set_kpointlist_max5_special_labels_and_type(load_inpxml):
+    from masci_tools.util.xml.xml_setters_names import set_kpointlist
+    from masci_tools.util.xml.common_functions import eval_xpath
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    kpoints = [[0, 0, 0], [1, 1, 1]]
+    weights = [1, 2]
+
+    xmltree = set_kpointlist(xmltree,
+                             schema_dict,
+                             kpoints,
+                             weights,
+                             name='second-set',
+                             kpoint_type='mesh',
+                             special_labels={1: 'TEST'})
+
+    assert eval_xpath(root, "/fleurInput/cell/bzIntegration/kPointLists/kPointList[@name='default']/kPoint/text()") == [
+        '   -0.250000     0.250000     0.000000', '    0.250000     0.250000     0.000000'
+    ]
+    assert eval_xpath(root,
+                      "/fleurInput/cell/bzIntegration/kPointLists/kPointList[@name='second-set']/kPoint/text()") == [
+                          ' 0.0000000000000  0.0000000000000  0.0000000000000',
+                          ' 1.0000000000000  1.0000000000000  1.0000000000000'
+                      ]
+    assert eval_xpath(root,
+                      "/fleurInput/cell/bzIntegration/kPointLists/kPointList[@name='second-set']/kPoint/@weight") == [
+                          '1.0000000000', '2.0000000000'
+                      ]
+    assert eval_xpath(root, "/fleurInput/cell/bzIntegration/kPointLists/kPointList[@name='second-set']/@count") == '2'
+    assert eval_xpath(
+        root, "/fleurInput/cell/bzIntegration/kPointLists/kPointList[@name='second-set']/kPoint[2]/@label") == 'TEST'
+    assert eval_xpath(root, "/fleurInput/cell/bzIntegration/kPointLists/kPointList[@name='second-set']/@type") == 'mesh'
+
+
+def test_set_kpointlist_max5_default_name(load_inpxml):
+    from masci_tools.util.xml.xml_setters_names import set_kpointlist
+    from masci_tools.util.xml.common_functions import eval_xpath
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    kpoints = [[0, 0, 0], [1, 1, 1]]
+    weights = [1, 2]
+
+    xmltree = set_kpointlist(xmltree, schema_dict, kpoints, weights)
+
+    assert eval_xpath(root, "/fleurInput/cell/bzIntegration/kPointLists/kPointList[@name='default']/kPoint/text()") == [
+        '   -0.250000     0.250000     0.000000', '    0.250000     0.250000     0.000000'
+    ]
+    assert eval_xpath(root,
+                      "/fleurInput/cell/bzIntegration/kPointLists/kPointList[@name='default-2']/kPoint/text()") == [
+                          ' 0.0000000000000  0.0000000000000  0.0000000000000',
+                          ' 1.0000000000000  1.0000000000000  1.0000000000000'
+                      ]
+    assert eval_xpath(root, "/fleurInput/cell/bzIntegration/kPointLists/kPointList[@name='default-2']/@count") == '2'
+    assert eval_xpath(root,
+                      "/fleurInput/cell/bzIntegration/kPointLists/kPointList[@name='default-2']/kPoint/@weight") == [
+                          '1.0000000000', '2.0000000000'
+                      ]
+
+
+def test_set_kpointlist_max5_switch(load_inpxml):
+    from masci_tools.util.xml.xml_setters_names import set_kpointlist
+    from masci_tools.util.xml.common_functions import eval_xpath
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    kpoints = [[0, 0, 0], [1, 1, 1]]
+    weights = [1, 2]
+
+    xmltree = set_kpointlist(xmltree, schema_dict, kpoints, weights, switch=True)
+
+    assert eval_xpath(root, "/fleurInput/cell/bzIntegration/kPointLists/kPointList[@name='default']/kPoint/text()") == [
+        '   -0.250000     0.250000     0.000000', '    0.250000     0.250000     0.000000'
+    ]
+    assert eval_xpath(root,
+                      "/fleurInput/cell/bzIntegration/kPointLists/kPointList[@name='default-2']/kPoint/text()") == [
+                          ' 0.0000000000000  0.0000000000000  0.0000000000000',
+                          ' 1.0000000000000  1.0000000000000  1.0000000000000'
+                      ]
+    assert eval_xpath(root,
+                      "/fleurInput/cell/bzIntegration/kPointLists/kPointList[@name='default-2']/kPoint/@weight") == [
+                          '1.0000000000', '2.0000000000'
+                      ]
+    assert eval_xpath(root, "/fleurInput/cell/bzIntegration/kPointLists/kPointList[@name='default-2']/@count") == '2'
+    assert eval_xpath(root, '/fleurInput/cell/bzIntegration/kPointListSelection/@listName') == 'default-2'
+
+
+def test_set_kpointlist_max5_overwrite(load_inpxml):
+    from masci_tools.util.xml.xml_setters_names import set_kpointlist
+    from masci_tools.util.xml.common_functions import eval_xpath
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    kpoints = [[0, 0, 0], [1, 1, 1]]
+    weights = [1, 2]
+
+    with pytest.raises(ValueError, match='kPointList named default already exists'):
+        xmltree = set_kpointlist(xmltree, schema_dict, kpoints, weights, name='default')
+
+    xmltree = set_kpointlist(xmltree, schema_dict, kpoints, weights, name='default', overwrite=True)
+
+    assert eval_xpath(root, '/fleurInput/cell/bzIntegration/kPointLists/kPointList/kPoint/text()') == [
+        ' 0.0000000000000  0.0000000000000  0.0000000000000', ' 1.0000000000000  1.0000000000000  1.0000000000000'
+    ]
+    assert eval_xpath(root, '/fleurInput/cell/bzIntegration/kPointLists/kPointList/kPoint/@weight') == [
+        '1.0000000000', '2.0000000000'
+    ]
+    assert eval_xpath(root, '/fleurInput/cell/bzIntegration/kPointLists/kPointList/@count') == '2'
+    assert eval_xpath(root, '/fleurInput/cell/bzIntegration/kPointLists/kPointList/@name') == 'default'
+    assert eval_xpath(root, '/fleurInput/cell/bzIntegration/kPointLists/kPointList/@type') == 'path'
+
+
+def test_set_kpointlist_max4(load_inpxml):
+    from masci_tools.util.xml.xml_setters_names import set_kpointlist
+    from masci_tools.util.xml.common_functions import eval_xpath
+
+    xmltree, schema_dict = load_inpxml(TEST_MAX4_INPXML_PATH)
+    root = xmltree.getroot()
+
+    kpoints = [[0, 0, 0], [1, 1, 1]]
+    weights = [1, 2]
+
+    xmltree = set_kpointlist(xmltree, schema_dict, kpoints, weights)
+
+    assert eval_xpath(root, '/fleurInput/calculationSetup/bzIntegration/kPointList/kPoint/text()') == [
+        ' 0.0000000000000  0.0000000000000  0.0000000000000', ' 1.0000000000000  1.0000000000000  1.0000000000000'
+    ]
+    assert eval_xpath(root, '/fleurInput/calculationSetup/bzIntegration/kPointList/kPoint/@weight') == [
+        '1.0000000000', '2.0000000000'
+    ]
+    assert eval_xpath(root, '/fleurInput/calculationSetup/bzIntegration/kPointList/@count') == '2'
+
+
+def test_set_kpointlist_max4_overwrite_kpointcount(load_inpxml):
+    from masci_tools.util.xml.xml_setters_names import set_kpointlist, set_nkpts
+    from masci_tools.util.xml.common_functions import eval_xpath
+
+    xmltree, schema_dict = load_inpxml(TEST_MAX4_INPXML_PATH)
+    root = xmltree.getroot()
+
+    kpoints = [[0, 0, 0], [1, 1, 1]]
+    weights = [1, 2]
+
+    xmltree = set_nkpts(xmltree, schema_dict, 240)
+
+    assert eval_xpath(root, '/fleurInput/calculationSetup/bzIntegration/kPointCount/@count') == '240'
+
+    xmltree = set_kpointlist(xmltree, schema_dict, kpoints, weights)
+
+    assert eval_xpath(root, '/fleurInput/calculationSetup/bzIntegration/kPointList/kPoint/text()') == [
+        ' 0.0000000000000  0.0000000000000  0.0000000000000', ' 1.0000000000000  1.0000000000000  1.0000000000000'
+    ]
+    assert eval_xpath(root, '/fleurInput/calculationSetup/bzIntegration/kPointList/kPoint/@weight') == [
+        '1.0000000000', '2.0000000000'
+    ]
+    assert eval_xpath(root, '/fleurInput/calculationSetup/bzIntegration/kPointList/@count') == '2'

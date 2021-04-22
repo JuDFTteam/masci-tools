@@ -58,7 +58,7 @@ Following is the current specification of tasks
 
 .. literalinclude:: ../../../masci_tools/io/parsers/fleur/default_parse_tasks.py
    :language: python
-   :lines: 67-
+   :lines: 66-
    :linenos:
 
 """
@@ -67,67 +67,7 @@ __working_out_versions__ = {'0.34'}
 __base_version__ = '0.34'
 
 TASKS_DEFINITION = {
-    #--------Definitions for Fleur calculation modes--------
-    'fleur_modes': {
-        '_special': True,
-        'jspin': {
-            'parse_type': 'attrib',
-            'path_spec': {
-                'name': 'jspins'
-            }
-        },
-        'relax': {
-            'parse_type': 'attrib',
-            'path_spec': {
-                'name': 'l_f'
-            }
-        },
-        'ldau': {
-            'parse_type': 'exists',
-            'path_spec': {
-                'name': 'ldaU',
-                'contains': 'species'
-            }
-        },
-        'soc': {
-            'parse_type': 'attrib',
-            'path_spec': {
-                'name': 'l_soc'
-            }
-        },
-        'noco': {
-            'parse_type': 'attrib',
-            'path_spec': {
-                'name': 'l_noco'
-            }
-        },
-        'film': {
-            'parse_type': 'exists',
-            'path_spec': {
-                'name': 'filmPos'
-            }
-        },
-        'dos': {
-            'parse_type': 'attrib',
-            'path_spec': {
-                'name': 'dos'
-            }
-        },
-        'band': {
-            'parse_type': 'attrib',
-            'path_spec': {
-                'name': 'band'
-            }
-        },
-        'bz_integration': {
-            'parse_type': 'attrib',
-            'path_spec': {
-                'name': 'mode',
-                'tag_name': 'bzIntegration'
-            }
-        }
-    },
-    #--------Defintions for general info from outfile (start, endtime, number_iterations)--------
+    #--------Definitions for general info from outfile (start, endtime, number_iterations)--------
     'general_out_info': {
         '_general': True,
         '_minimal': True,

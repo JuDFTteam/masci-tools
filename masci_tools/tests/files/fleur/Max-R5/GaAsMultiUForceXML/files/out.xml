@@ -118,6 +118,19 @@
          <chargeDensitySlicing numkpt="0" minEigenval=".00000000" maxEigenval=".00000000" nnne="0" pallst="F"/>
          <specialOutput eonly="F" bmt="F" form66="F"/>
       </output>
+      <!-- Attention, absolute coordinates used here -->
+      <relaxation>
+         <displacements>
+          <displace>   0.0179807237    0.0179807237    0.0179807237 </displace>
+          <displace>  -0.0179715806   -0.0179715806   -0.0179715806 </displace>
+        </displacements>
+         <relaxation-history>
+          <step energy="    -4204.7140482784">
+            <posforce>  -1.3806000000   -1.3806000000   -1.3806000000    0.0179807237    0.0179807237    0.0179807237 </posforce>
+            <posforce>   1.3806000000    1.3806000000    1.3806000000   -0.0179715806   -0.0179715806   -0.0179715806 </posforce>
+          </step>
+         </relaxation-history>
+       </relaxation>
    </fleurInput>
    <!-- END of dump of the inp.xml file -->
    <numericalParameters>

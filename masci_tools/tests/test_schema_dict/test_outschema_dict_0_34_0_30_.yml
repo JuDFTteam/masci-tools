@@ -2637,24 +2637,18 @@ iteration_tag_info:
     simple: !!set {}
     text: !!set {}
 iteration_tag_paths:
-  additionalcompilerflags: []
   allatoms: ./Forcetheorem_DMI/allAtoms
   allelectroncharges: ./allElectronCharges
   angle: ./Forcetheorem_MAE/Angle
   atomicep: ./energyParameters/atomicEP
-  atomsincell: []
   atomtypedependentcontributions: ./totalEnergy/atomTypeDependentContributions
   bandgap: ./bandgap
-  bands: []
-  basis: []
   chargedensity: ./densityConvergence/chargeDensity
   chargedenxcdenintegral: ./totalEnergy/chargeDenXCDenIntegral
-  compilationinfo: []
   compositetimer: ./timing/compositeTimer
   config: ./Forcetheorem_JIJ/Config
   coreelectrons: ./totalEnergy/sumOfEigenvalues/coreElectrons
   corestates: ./coreStates
-  density: []
   densityconvergence: ./densityConvergence
   densitycoulombpotentialintegral: ./totalEnergy/densityCoulombPotentialIntegral
   densityeffectivepotentialintegral: ./totalEnergy/densityEffectivePotentialIntegral
@@ -2664,20 +2658,16 @@ iteration_tag_paths:
   eigenvalues: ./eigenvalues
   eigenvaluesat: ./eigenvalues/eigenvaluesAt
   electronnucleiinteractiondifferentmts: ./totalEnergy/atomTypeDependentContributions/electronNucleiInteractionDifferentMTs
-  enddateandtime: []
   energyparameters: ./energyParameters
   entry:
   - ./Forcetheorem_DMI/Entry
   - ./Forcetheorem_SSDISP/Entry
-  error: []
   excsplit: ./onSiteExchangeSplitting/excSplit
   extrapolationto0k: ./totalEnergy/extrapolationTo0K
   fermienergy: ./FermiEnergy
   fixedcharges:
   - ./allElectronCharges/fixedCharges
   - ./valenceDensity/fixedCharges
-  fleurinput: []
-  fleuroutput: []
   fockexchangeenergycore: ./totalEnergy/FockExchangeEnergyCore
   fockexchangeenergyvalence: ./totalEnergy/FockExchangeEnergyValence
   forcetheorem_dmi: ./Forcetheorem_DMI
@@ -2687,15 +2677,11 @@ iteration_tag_paths:
   forcetheorem_ssdisp: ./Forcetheorem_SSDISP
   forcetotal: ./totalForcesOnRepresentativeAtoms/forceTotal
   freeenergy: ./totalEnergy/freeEnergy
-  gitinfo: []
   heatomicep: ./energyParameters/heAtomicEP
   heloatomicep: ./energyParameters/heloAtomicEP
   highj:
   - ./allElectronCharges/mtCharges/mtJcharge/highJ
   - ./valenceDensity/mtCharges/mtJcharge/highJ
-  iteration: []
-  kpoint: []
-  kpointlist: []
   ldaudensitymatrix: ./ldaUDensityMatrix
   ldaudensitymatrixconvergence: ./ldaUDensityMatrixConvergence
   loatomicep: ./energyParameters/loAtomicEP
@@ -2705,8 +2691,6 @@ iteration_tag_paths:
   madelungterm: ./totalEnergy/atomTypeDependentContributions/MadelungTerm
   magneticmoment: ./magneticMomentsInMTSpheres/magneticMoment
   magneticmomentsinmtspheres: ./magneticMomentsInMTSpheres
-  mem: []
-  mpi: []
   mtcharge:
   - ./allElectronCharges/mtCharges/mtCharge
   - ./valenceDensity/mtCharges/mtCharge
@@ -2716,20 +2700,13 @@ iteration_tag_paths:
   mtjcharge:
   - ./allElectronCharges/mtCharges/mtJcharge
   - ./valenceDensity/mtCharges/mtJcharge
-  mtvolume: []
   noncollineartorgue: ./noncollinearTorgue
-  numericalparameters: []
   occupations: ./rdmft/occupations
   onsiteexchangesplitting: ./onSiteExchangeSplitting
-  openmp: []
   orbitalmagneticmomentsinmtspheres: ./orbitalMagneticMomentsInMTSpheres
   orbmagmoment: ./orbitalMagneticMomentsInMTSpheres/orbMagMoment
   overallchargedensity: ./densityConvergence/overallChargeDensity
-  parallelsetup: []
-  precision: []
-  programversion: []
   rdmft: ./rdmft
-  scfloop: []
   singleatom: ./Forcetheorem_DMI/singleAtom
   spindensity: ./densityConvergence/spinDensity
   spindependentcharge:
@@ -2738,14 +2715,11 @@ iteration_tag_paths:
   - ./valenceDensity/fixedCharges/spinDependentCharge
   - ./valenceDensity/spinDependentCharge
   spinorbittorgue: ./spinorbitTorgue
-  startdateandtime: []
   state:
   - ./coreStates/state
   - ./rdmft/occupations/state
   sumofeigenvalues: ./totalEnergy/sumOfEigenvalues
   sumvalencesingleparticleenergies: ./sumValenceSingleParticleEnergies
-  targetcomputerarchitectures: []
-  targetstructureclass: []
   timer: ./timing/timer
   timing: ./timing
   tkbtimesentropy: ./totalEnergy/tkbTimesEntropy
@@ -2762,7 +2736,6 @@ iteration_tag_paths:
   vacuumep: ./energyParameters/vacuumEP
   valencedensity: ./valenceDensity
   valenceelectrons: ./totalEnergy/sumOfEigenvalues/valenceElectrons
-  volumes: []
 iteration_unique_attribs:
   configs: ./Forcetheorem_JIJ/@Configs
   ef: ./Forcetheorem_DMI/@ef
@@ -5188,20 +5161,14 @@ tag_paths:
   - /fleurOutput/fleurInput/cell/filmLattice/a2
   abspos: /fleurOutput/fleurInput/atomGroups/atomGroup/absPos
   additionalcompilerflags: /fleurOutput/programVersion/additionalCompilerFlags
-  allatoms: []
-  allelectroncharges: []
   altkpointset: /fleurOutput/fleurInput/calculationSetup/bzIntegration/altKPointSet
-  angle: []
   atomgroup: /fleurOutput/fleurInput/atomGroups/atomGroup
   atomgroups: /fleurOutput/fleurInput/atomGroups
   atomiccutoffs:
   - /fleurOutput/fleurInput/atomGroups/atomGroup/atomicCutoffs
   - /fleurOutput/fleurInput/atomSpecies/species/atomicCutoffs
-  atomicep: []
   atomsincell: /fleurOutput/numericalParameters/atomsInCell
   atomspecies: /fleurOutput/fleurInput/atomSpecies
-  atomtypedependentcontributions: []
-  bandgap: []
   bands: /fleurOutput/numericalParameters/bands
   bandselection: /fleurOutput/fleurInput/output/wannier/bandSelection
   basis: /fleurOutput/numericalParameters/basis
@@ -5213,73 +5180,42 @@ tag_paths:
   c: /fleurOutput/fleurInput/cell/bulkLattice/c
   calculationsetup: /fleurOutput/fleurInput/calculationSetup
   cell: /fleurOutput/fleurInput/cell
-  chargedensity: []
   chargedensityslicing: /fleurOutput/fleurInput/output/chargeDensitySlicing
-  chargedenxcdenintegral: []
   checks: /fleurOutput/fleurInput/output/checks
   comment: /fleurOutput/fleurInput/comment
   compilationinfo: /fleurOutput/programVersion/compilationInfo
-  compositetimer: []
-  config: []
   constant: /fleurOutput/fleurInput/constants/constant
   constants: /fleurOutput/fleurInput/constants
   coreconfig: /fleurOutput/fleurInput/atomSpecies/species/electronConfig/coreConfig
   coreelectrons: /fleurOutput/fleurInput/calculationSetup/coreElectrons
   corespectrum: /fleurOutput/fleurInput/output/coreSpectrum
-  corestates: []
   cutoffs: /fleurOutput/fleurInput/calculationSetup/cutoffs
   density: /fleurOutput/numericalParameters/density
-  densityconvergence: []
-  densitycoulombpotentialintegral: []
-  densityeffectivepotentialintegral: []
-  densitymatrixfor: []
   densityofstates: /fleurOutput/fleurInput/output/densityOfStates
-  dftucorrection: []
   displace: /fleurOutput/fleurInput/relaxation/displacements/displace
   displacements: /fleurOutput/fleurInput/relaxation/displacements
-  distance: []
   dmi: /fleurOutput/fleurInput/forceTheorem/DMI
   edgeindices: /fleurOutput/fleurInput/output/coreSpectrum/edgeIndices
-  eigenvalues: []
-  eigenvaluesat: []
   electronconfig: /fleurOutput/fleurInput/atomSpecies/species/electronConfig
-  electronnucleiinteractiondifferentmts: []
   enddateandtime: /fleurOutput/endDateAndTime
   energyparameterlimits: /fleurOutput/fleurInput/calculationSetup/energyParameterLimits
   energyparameters:
   - /fleurOutput/fleurInput/atomGroups/atomGroup/energyParameters
   - /fleurOutput/fleurInput/atomSpecies/species/energyParameters
-  entry: []
   error: /fleurOutput/ERROR
-  excsplit: []
   expertmodes: /fleurOutput/fleurInput/calculationSetup/expertModes
-  extrapolationto0k: []
-  fermienergy: []
   fields: /fleurOutput/fleurInput/calculationSetup/fields
   filmlattice: /fleurOutput/fleurInput/cell/filmLattice
   filmpos: /fleurOutput/fleurInput/atomGroups/atomGroup/filmPos
-  fixedcharges: []
   fleurinput: /fleurOutput/fleurInput
   fleuroutput: /fleurOutput
-  fockexchangeenergycore: []
-  fockexchangeenergyvalence: []
   force:
   - /fleurOutput/fleurInput/atomGroups/atomGroup/force
   - /fleurOutput/fleurInput/atomSpecies/species/force
   forcetheorem: /fleurOutput/fleurInput/forceTheorem
-  forcetheorem_dmi: []
-  forcetheorem_jij: []
-  forcetheorem_loop: []
-  forcetheorem_mae: []
-  forcetheorem_ssdisp: []
-  forcetotal: []
-  freeenergy: []
   geometryoptimization: /fleurOutput/fleurInput/calculationSetup/geometryOptimization
   ggaprinting: /fleurOutput/fleurInput/xcFunctional/ggaPrinting
   gitinfo: /fleurOutput/programVersion/gitInfo
-  heatomicep: []
-  heloatomicep: []
-  highj: []
   iteration: /fleurOutput/scfLoop/iteration
   jij: /fleurOutput/fleurInput/forceTheorem/Jij
   joblist: /fleurOutput/fleurInput/output/wannier/jobList
@@ -5305,26 +5241,16 @@ tag_paths:
   - /fleurOutput/fleurInput/atomGroups/atomGroup/ldaU
   - /fleurOutput/fleurInput/atomSpecies/species/ldaU
   - /fleurOutput/fleurInput/calculationSetup/ldaU
-  ldaudensitymatrix: []
-  ldaudensitymatrixconvergence: []
   libxcid: /fleurOutput/fleurInput/xcFunctional/LibXCID
   libxcname: /fleurOutput/fleurInput/xcFunctional/LibXCName
   lo:
   - /fleurOutput/fleurInput/atomGroups/atomGroup/lo
   - /fleurOutput/fleurInput/atomSpecies/species/lo
-  loatomicep: []
-  lowj: []
-  madelungterm: []
   mae: /fleurOutput/fleurInput/forceTheorem/MAE
   magneticcirculardichroism: /fleurOutput/fleurInput/output/magneticCircularDichroism
-  magneticmoment: []
-  magneticmomentsinmtspheres: []
   magnetism: /fleurOutput/fleurInput/calculationSetup/magnetism
   mem: /fleurOutput/parallelSetup/mem
   mpi: /fleurOutput/parallelSetup/mpi
-  mtcharge: []
-  mtcharges: []
-  mtjcharge: []
   mtsphere:
   - /fleurOutput/fleurInput/atomGroups/atomGroup/mtSphere
   - /fleurOutput/fleurInput/atomSpecies/species/mtSphere
@@ -5333,17 +5259,11 @@ tag_paths:
   - /fleurOutput/fleurInput/atomGroups/atomGroup/nocoParams
   - /fleurOutput/fleurInput/atomSpecies/species/nocoParams
   - /fleurOutput/fleurInput/calculationSetup/nocoParams
-  noncollineartorgue: []
   numericalparameters: /fleurOutput/numericalParameters
-  occupations: []
   onedparams: /fleurOutput/fleurInput/calculationSetup/oneDParams
-  onsiteexchangesplitting: []
   openmp: /fleurOutput/parallelSetup/openMP
   orbcomprot: /fleurOutput/fleurInput/atomGroups/atomGroup/orbcomprot
-  orbitalmagneticmomentsinmtspheres: []
-  orbmagmoment: []
   output: /fleurOutput/fleurInput/output
-  overallchargedensity: []
   parallelsetup: /fleurOutput/parallelSetup
   plotting: /fleurOutput/fleurInput/output/plotting
   posforce: /fleurOutput/fleurInput/relaxation/relaxation-history/step/posforce
@@ -5385,7 +5305,6 @@ tag_paths:
   - /fleurOutput/fleurInput/calculationSetup/scfLoop
   - /fleurOutput/scfLoop
   shape: /fleurOutput/fleurInput/calculationSetup/fields/shape
-  singleatom: []
   soc: /fleurOutput/fleurInput/calculationSetup/soc
   special: /fleurOutput/fleurInput/atomSpecies/species/special
   specialoutput: /fleurOutput/fleurInput/output/specialOutput
@@ -5393,37 +5312,21 @@ tag_paths:
   - /fleurOutput/fleurInput/calculationSetup/bzIntegration/altKPointSet/kPointCount/specialPoint
   - /fleurOutput/fleurInput/calculationSetup/bzIntegration/kPointCount/specialPoint
   species: /fleurOutput/fleurInput/atomSpecies/species
-  spindensity: []
-  spindependentcharge: []
-  spinorbittorgue: []
   spinspiraldispersion: /fleurOutput/fleurInput/forceTheorem/spinSpiralDispersion
   spinspiralqpointmesh: /fleurOutput/fleurInput/calculationSetup/spinSpiralQPointMesh
   startdateandtime: /fleurOutput/startDateAndTime
-  state: []
   stateoccupation: /fleurOutput/fleurInput/atomSpecies/species/electronConfig/stateOccupation
   step: /fleurOutput/fleurInput/relaxation/relaxation-history/step
-  sumofeigenvalues: []
-  sumvalencesingleparticleenergies: []
   symmetry: /fleurOutput/fleurInput/cell/symmetry
   symmetryfile: /fleurOutput/fleurInput/cell/symmetryFile
   symmetryoperations: /fleurOutput/fleurInput/cell/symmetryOperations
   symop: /fleurOutput/fleurInput/cell/symmetryOperations/symOp
   targetcomputerarchitectures: /fleurOutput/programVersion/targetComputerArchitectures
   targetstructureclass: /fleurOutput/programVersion/targetStructureClass
-  timer: []
-  timing: []
-  tkbtimesentropy: []
-  torgue: []
-  totalcharge: []
-  totalenergy: []
-  totalforcesonrepresentativeatoms: []
   unfoldingband: /fleurOutput/fleurInput/output/unfoldingBand
   vacuumdos: /fleurOutput/fleurInput/output/vacuumDOS
   vacuumenergyparameters: /fleurOutput/fleurInput/cell/filmLattice/vacuumEnergyParameters
-  vacuumep: []
   valenceconfig: /fleurOutput/fleurInput/atomSpecies/species/electronConfig/valenceConfig
-  valencedensity: []
-  valenceelectrons: []
   volumes: /fleurOutput/numericalParameters/volumes
   wannier: /fleurOutput/fleurInput/output/wannier
   xcfunctional: /fleurOutput/fleurInput/xcFunctional

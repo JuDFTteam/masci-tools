@@ -41,6 +41,7 @@ def xml_replace_tag(xmltree, xpath, newelement):
         parent.remove(node)
         parent.insert(index, copy.deepcopy(newelement))
 
+    etree.indent(xmltree)
     return xmltree
 
 
@@ -78,6 +79,8 @@ def xml_delete_tag(xmltree, xpath):
     for node in nodes:
         parent = node.getparent()
         parent.remove(node)
+
+    etree.indent(xmltree)
     return xmltree
 
 
@@ -216,6 +219,7 @@ def xml_create_tag(xmltree, xpath, element, place_index=None, tag_order=None, oc
             except ValueError as exc:
                 raise ValueError(f"Failed to append element '{element_name}' to the parent '{parent.tag}'") from exc
 
+    etree.indent(xmltree)
     return xmltree
 
 

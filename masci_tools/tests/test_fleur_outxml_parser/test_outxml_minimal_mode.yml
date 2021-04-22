@@ -29,7 +29,20 @@ output_dict:
   energy_hartree_units: Htr
   energy_units: eV
   film: false
+  fleur_modes:
+    band: false
+    bz_integration: hist
+    dos: false
+    film: false
+    force_theorem: false
+    gw: false
+    jspin: 1
+    ldau: false
+    noco: false
+    relax: false
+    soc: false
   gmax: 11.1
+  input_file_version: '0.34'
   kmax: 3.5
   number_of_atom_types: 1
   number_of_atoms: 2

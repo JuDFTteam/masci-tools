@@ -28,6 +28,9 @@ TEST_BULK_INPXML_PATH = os.path.join(inpxmlfilefolder, 'files/fleur/Max-R5/SiLOX
 TEST_SINGLE_KPOINT_PATH = os.path.join(inpxmlfilefolder, 'files/fleur/Max-R5/SmAtomjDOS/files/inp.xml')
 TEST_MULTIPLE_KPOINT_SETS_PATH = os.path.join(inpxmlfilefolder, 'files/fleur/test_multiple_ksets.xml')
 TEST_MAX4_INPXML_PATH = os.path.join(inpxmlfilefolder, 'files/fleur/aiida_fleur/inpxml/FePt/inp.xml')
+TEST_RELAX_INPXML_PATH = os.path.join(inpxmlfilefolder, 'files/fleur/Max-R5/GaAsMultiUForceXML/files/inp-3.xml')
+TEST_RELAX_OUTXML_PATH = os.path.join(inpxmlfilefolder, 'files/fleur/Max-R5/GaAsMultiUForceXML/files/out.xml')
+TEST_RELAX_RELAXXML_PATH = os.path.join(inpxmlfilefolder, 'files/fleur/Max-R5/GaAsMultiUForceXML/files/relax.xml')
 
 inpxmlfilelist = []
 inpxmlfilelist_content = []
@@ -129,6 +132,21 @@ def test_get_kpoints_data(load_inpxml, inpxmlfilepath):
     assert cell.shape == (3, 3)
     assert isinstance(pbc, list)
     assert len(pbc) == 3
+
+
+@pytest.mark.parametrize('inpxmlfilepath', inpxmlfilelist)
+def test_get_nkpts(load_inpxml, inpxmlfilepath):
+    """
+    Test that get_nkpts works for all input files
+    """
+    from masci_tools.util.xml.xml_getters import get_nkpts
+
+    xmltree, schema_dict = load_inpxml(inpxmlfilepath)
+
+    nkpts = get_nkpts(xmltree, schema_dict)
+
+    assert isinstance(nkpts, int)
+    assert nkpts != 0
 
 
 def test_get_cell_film(load_inpxml, data_regression):
@@ -326,7 +344,6 @@ def test_get_structure_max4(load_inpxml, data_regression):
 
     atoms, cell, pbc = get_structure_data(xmltree, schema_dict)
 
-    print(type(atoms[0][0][0]))
     data_regression.check({'atoms': convert_to_pystd(atoms), 'cell': convert_to_pystd(cell), 'pbc': pbc})
 
 
@@ -340,3 +357,92 @@ def test_get_cell_max4(load_inpxml, data_regression):
     cell, pbc = get_cell(xmltree, schema_dict)
 
     data_regression.check({'cell': convert_to_pystd(cell), 'pbc': pbc})
+
+
+def test_get_nkpts_single(load_inpxml, data_regression):
+
+    from masci_tools.util.xml.xml_getters import get_nkpts
+
+    xmltree, schema_dict = load_inpxml(TEST_SINGLE_KPOINT_PATH)
+
+    nkpts = get_nkpts(xmltree, schema_dict)
+
+    assert isinstance(nkpts, int)
+    assert nkpts == 1
+
+
+def test_get_nkpts_multiple(load_inpxml, data_regression):
+
+    from masci_tools.util.xml.xml_getters import get_nkpts
+
+    xmltree, schema_dict = load_inpxml(TEST_MULTIPLE_KPOINT_SETS_PATH)
+
+    nkpts = get_nkpts(xmltree, schema_dict)
+
+    assert isinstance(nkpts, int)
+    assert nkpts == 20
+
+
+def test_get_nkpts_max4(load_inpxml, data_regression):
+
+    from masci_tools.util.xml.xml_getters import get_nkpts
+
+    xmltree, schema_dict = load_inpxml(TEST_MAX4_INPXML_PATH)
+
+    nkpts = get_nkpts(xmltree, schema_dict)
+
+    assert isinstance(nkpts, int)
+    assert nkpts == 1
+
+
+def test_get_nkpts_max4_altkpoint(load_inpxml, data_regression):
+
+    from masci_tools.util.xml.xml_getters import get_nkpts
+    from masci_tools.util.xml.xml_setters_names import set_inpchanges
+
+    xmltree, schema_dict = load_inpxml(TEST_MAX4_INPXML_PATH)
+
+    #Activate band calculations
+    xmltree = set_inpchanges(xmltree, schema_dict, {'band': True})
+
+    with pytest.warns(UserWarning):
+        nkpts = get_nkpts(xmltree, schema_dict)
+
+    assert isinstance(nkpts, int)
+    assert nkpts == 240
+
+
+def test_get_relaxation_information_inpxml(load_inpxml, data_regression):
+
+    from masci_tools.util.xml.xml_getters import get_relaxation_information
+
+    xmltree, schema_dict = load_inpxml(TEST_RELAX_INPXML_PATH)
+
+    relax_dict = get_relaxation_information(xmltree, schema_dict)
+
+    data_regression.check(relax_dict)
+
+
+def test_get_relaxation_information_outxml(load_outxml, data_regression):
+
+    from masci_tools.util.xml.xml_getters import get_relaxation_information
+
+    xmltree, schema_dict = load_outxml(TEST_RELAX_OUTXML_PATH)
+
+    relax_dict = get_relaxation_information(xmltree, schema_dict)
+
+    data_regression.check(relax_dict)
+
+
+def test_get_relaxation_information_relaxxml(load_inpxml, data_regression):
+
+    from masci_tools.util.xml.xml_getters import get_relaxation_information
+    from lxml import etree
+
+    xmltree, schema_dict = load_inpxml(TEST_RELAX_INPXML_PATH)  #schema_dict has to come from somewhere
+    xmltree = etree.parse(TEST_RELAX_RELAXXML_PATH)
+
+    with pytest.warns(UserWarning, match='Cannot extract custom constants'):
+        relax_dict = get_relaxation_information(xmltree, schema_dict)
+
+    data_regression.check(relax_dict)

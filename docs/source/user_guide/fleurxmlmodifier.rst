@@ -68,6 +68,10 @@ On the other hand, there are shortcut methods that already know some paths:
       user-friendly method to change a species of an atom with a certain label.
     * :py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.set_atomgroup_label()`:  Specific
       method to change atom group parameters of an atom with a certain label.
+    * :py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.set_nkpts()`: user-friendly method for setting the `kPointCount` (**Only for MaX4 and older**)
+    * :py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.set_kpath()`: user-friendly method for setting the path for a bandstructure calculations (**Only for MaX4 and older**)
+    * :py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.set_kpointlist()`: user-friendly method for setting/creating a `kPointlist` from lists
+    * :py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.switch_kpointset()`: user-friendly method for switching the used kpoint set in a calculation (**Only for MaX5 and newer**)
     * :py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.set_inpchanges()`: Specific
       user-friendly method for easy changes of attribute key value type.
     * :py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.shift_value()`: Specific

@@ -18,7 +18,7 @@ from lxml import etree
 import warnings
 
 
-def load_inpxml(inpxmlfile):
+def load_inpxml(inpxmlfile, **kwargs):
     """
     Loads a inp.xml file for fleur together with its corresponding schema dictionary
 
@@ -34,7 +34,7 @@ def load_inpxml(inpxmlfile):
     if isinstance(inpxmlfile, etree._ElementTree):
         xmltree = inpxmlfile
     else:
-        parser = etree.XMLParser(attribute_defaults=True, encoding='utf-8')
+        parser = etree.XMLParser(attribute_defaults=True, encoding='utf-8', **kwargs)
         try:
             xmltree = etree.parse(inpxmlfile, parser)
         except etree.XMLSyntaxError as msg:
@@ -50,7 +50,7 @@ def load_inpxml(inpxmlfile):
     return xmltree, schema_dict
 
 
-def load_outxml(outxmlfile):
+def load_outxml(outxmlfile, **kwargs):
     """
     Loads a out.xml file for fleur together with its corresponding schema dictionary
 
@@ -68,7 +68,7 @@ def load_outxml(outxmlfile):
     if isinstance(outxmlfile, etree._ElementTree):
         xmltree = outxmlfile
     else:
-        parser = etree.XMLParser(attribute_defaults=True, recover=False, encoding='utf-8')
+        parser = etree.XMLParser(attribute_defaults=True, recover=False, encoding='utf-8', **kwargs)
 
         try:
             xmltree = etree.parse(outxmlfile, parser)
@@ -78,7 +78,7 @@ def load_outxml(outxmlfile):
 
         if outfile_broken:
             # repair xmlfile and try to parse what is possible.
-            parser = etree.XMLParser(attribute_defaults=True, recover=True, encoding='utf-8')
+            parser = etree.XMLParser(attribute_defaults=True, recover=True, encoding='utf-8', **kwargs)
             try:
                 xmltree = etree.parse(outxmlfile, parser)
             except etree.XMLSyntaxError as err:
