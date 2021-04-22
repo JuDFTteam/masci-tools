@@ -48,7 +48,7 @@ if __name__ == '__main__':
             'pandas',
             'bump2version',
             'future',
-            'lxml>=3.6.4',
+            'lxml>=4.5',
             'more_itertools',
             'seaborn',
             'deepdiff',
