@@ -770,7 +770,175 @@ def set_inpchanges(xmltree, schema_dict, change_dict, path_spec=None):
 
 
 @schema_dict_version_dispatch(output_schema=False)
-def set_nkpts(xmltree, schema_dict, count, gamma):
+def set_kpointlist(xmltree,
+                   schema_dict,
+                   kpoints,
+                   weights,
+                   name=None,
+                   kpoint_type='path',
+                   special_labels=None,
+                   switch=False,
+                   overwrite=False):
+    """
+    Explicitely create a kPointList from the given kpoints and weights. This routine will add the
+    specified kPointList with the given name.
+
+    .. warning::
+        For input versions Max4 and older **all** keyword arguments are not valid (`name`, `kpoint_type`,
+        `special_labels`, `switch` and `overwrite`)
+
+    :param xmltree: xml tree that represents inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
+    :param kpoints: list or array containing the **relative** coordinates of the kpoints
+    :param weights: list or array containing the weights of the kpoints
+    :param name: str for the name of the list, if not given a default name is generated
+    :param kpoint_type: str specifying the type of the kPointList ('path', 'mesh', 'spex', 'tria', ...)
+    :param special_labels: dict mapping indices to labels. The labels will be inserted for the kpoints
+                           corresponding to the given index
+    :param switch: bool, if True the kPointlist will be used by Fleur when starting the next calculation
+    :param overwrite: bool, if True and a kPointlist with the given name already exists it will be overwritten
+
+    :returns: an xmltree of the inp.xml file with changes.
+    """
+    from masci_tools.util.schema_dict_util import evaluate_attribute
+    from masci_tools.util.xml.converters import convert_text_to_xml, convert_attribute_to_xml
+    from masci_tools.util.xml.xml_setters_basic import xml_delete_tag
+    from lxml import etree
+    import numpy as np
+
+    if not isinstance(kpoints, (list, np.ndarray)) or not isinstance(weights, (list, np.ndarray)):
+        raise ValueError('kPoints and weights have to be given as a list or array')
+
+    if len(kpoints) != len(weights):
+        raise ValueError('kPoints and weights do not have the same length')
+
+    kpointlist_xpath = get_tag_xpath(schema_dict, 'kPointList')
+    nkpts = len(kpoints)
+
+    if special_labels is None:
+        special_labels = {}
+
+    existing_labels = evaluate_attribute(xmltree, schema_dict, 'name', contains='kPointList', list_return=True)
+
+    if name is None:
+        name = f'default-{len(existing_labels)+1}'
+
+    if name in existing_labels:
+        if not overwrite:
+            raise ValueError(f'kPointList named {name} already exists. Use overwrite=True to ignore')
+
+        xmltree = xml_delete_tag(xmltree, f"{kpointlist_xpath}[@name='{name}']")
+
+    new_kpo = etree.Element('kPointList', name=name, count=f'{nkpts:d}', type=kpoint_type)
+    for indx, (kpoint, weight) in enumerate(zip(kpoints, weights)):
+        weight, _ = convert_attribute_to_xml(weight, ['float', 'float_expression'])
+        if indx in special_labels:
+            new_k = etree.Element('kPoint', weight=weight, label=special_labels[indx])
+        else:
+            new_k = etree.Element('kPoint', weight=weight)
+        text, _ = convert_text_to_xml(kpoint, [{'type': ['float', 'float_expression'], 'length': 3}])
+        new_k.text = text
+        new_kpo.append(new_k)
+
+    xmltree = create_tag(xmltree, schema_dict, new_kpo)
+
+    if switch:
+        xmltree = switch_kpointset(xmltree, schema_dict, name)
+
+    return xmltree
+
+
+@set_kpointlist.register(max_version='0.31')
+def set_kpointlist_max4(xmltree, schema_dict, kpoints, weights):
+    """
+    Explicitely create a kPointList from the given kpoints and weights. This
+    routine is specific to input versions Max4 and before and will replace any
+    existing kPointCount, kPointMesh, ... with the specified kPointList
+
+    :param xmltree: xml tree that represents inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
+    :param kpoints: list or array containing the **relative** coordinates of the kpoints
+    :param weights: list or array containing the weights of the kpoints
+
+    :returns: an xmltree of the inp.xml file with changes.
+    """
+    from masci_tools.util.schema_dict_util import eval_simple_xpath
+    from masci_tools.util.xml.converters import convert_text_to_xml, convert_attribute_to_xml
+    from lxml import etree
+    import numpy as np
+
+    if not isinstance(kpoints, (list, np.ndarray)) or not isinstance(weights, (list, np.ndarray)):
+        raise ValueError('kPoints and weights have to be given as a list or array')
+
+    if len(kpoints) != len(weights):
+        raise ValueError('kPoints and weights do not have the same length')
+
+    nkpts = len(kpoints)
+
+    bzintegration_tag = eval_simple_xpath(xmltree, schema_dict, 'bzIntegration')
+
+    for child in bzintegration_tag.iterchildren():
+        if 'kPoint' in child.tag:
+            bzintegration_tag.remove(child)
+
+    new_kpo = etree.Element('kPointList', posScale='1.0', weightScale='1.0', count=f'{nkpts:d}')
+    for kpoint, weight in zip(kpoints, weights):
+        weight, _ = convert_attribute_to_xml(weight, ['float', 'float_expression'])
+        new_k = etree.Element('kPoint', weight=weight)
+        text, _ = convert_text_to_xml(kpoint, [{'type': ['float', 'float_expression'], 'length': 3}])
+        new_k.text = text
+        new_kpo.append(new_k)
+
+    xmltree = create_tag(xmltree, schema_dict, new_kpo, not_contains='altKPoint')
+
+    return xmltree
+
+
+@schema_dict_version_dispatch(output_schema=False)
+def switch_kpointset(xmltree, schema_dict, list_name):
+    """
+    Switch the used k-point set
+
+    .. warning::
+        This method is only supported for input versions after the Max5 release
+
+    :param xmltree: xml tree that represents inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
+    :param list_name: name of the kPoint set to use
+
+    :returns: an xmltree of the inp.xml file with changes.
+    """
+    from masci_tools.util.schema_dict_util import evaluate_attribute
+
+    existing_labels = evaluate_attribute(xmltree, schema_dict, 'name', contains='kPointList', list_return=True)
+
+    if list_name not in existing_labels:
+        raise ValueError(f'The given kPointList {list_name} does not exist',
+                         f'Available kPointLists: {existing_labels}')
+
+    return set_first_attrib_value(xmltree, schema_dict, 'listName', list_name)
+
+
+@switch_kpointset.register(max_version='0.31')
+def switch_kpointset_max4(xmltree, schema_dict, list_name):
+    """
+    Sets a k-point mesh directly into inp.xml specific for inputs of version Max4
+
+    .. warning::
+        This method is only supported for input versions after the Max5 release
+
+    :param xmltree: xml tree that represents inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
+    :param list_name: name of the kPoint set to use
+
+    :returns: an xmltree of the inp.xml file with changes.
+    """
+    raise NotImplementedError(
+        f"'switch_kpointset' is not implemented for inputs of version '{schema_dict['inp_version']}'")
+
+
+@schema_dict_version_dispatch(output_schema=False)
+def set_nkpts(xmltree, schema_dict, count, gamma=False):
     """
     Sets a k-point mesh directly into inp.xml
 
@@ -790,7 +958,7 @@ def set_nkpts(xmltree, schema_dict, count, gamma):
 
 
 @set_nkpts.register(max_version='0.31')
-def set_nkpts_max4(xmltree, schema_dict, count, gamma):
+def set_nkpts_max4(xmltree, schema_dict, count, gamma=False):
     """
     Sets a k-point mesh directly into inp.xml specific for inputs of version Max4
 
@@ -820,7 +988,7 @@ def set_nkpts_max4(xmltree, schema_dict, count, gamma):
 
 
 @schema_dict_version_dispatch(output_schema=False)
-def set_kpath(xmltree, schema_dict, kpath, count, gamma):
+def set_kpath(xmltree, schema_dict, kpath, count, gamma=False):
     """
     Sets a k-path directly into inp.xml  as a alternative kpoint set with purpose 'bands'
 
@@ -837,11 +1005,13 @@ def set_kpath(xmltree, schema_dict, kpath, count, gamma):
     :returns: an xmltree of the inp.xml file with changes.
     """
 
-    raise NotImplementedError(f"'set_kpath' is not implemented for inputs of version '{schema_dict['inp_version']}'")
+    raise NotImplementedError(
+        f"'set_kpath' is not implemented for inputs of version '{schema_dict['inp_version']}. Use 'set_kpointlist' instead'"
+    )
 
 
 @set_kpath.register(max_version='0.31')
-def set_kpath_max4(xmltree, schema_dict, kpath, count, gamma):
+def set_kpath_max4(xmltree, schema_dict, kpath, count, gamma=False):
     """
     Sets a k-path directly into inp.xml as a alternative kpoint set with purpose 'bands'
 
@@ -868,10 +1038,11 @@ def set_kpath_max4(xmltree, schema_dict, kpath, count, gamma):
     new_kpo = etree.Element('kPointCount', count='{}'.format(count), gamma='{}'.format(convert_to_fortran_bool(gamma)))
     for label, coord in kpath.items():
         new_k = etree.Element('specialPoint', name='{}'.format(label))
-        new_k.text = convert_text_to_xml(coord, [{'type': ['float', 'float_expression'], 'length': 3}])
+        text, _ = convert_text_to_xml(coord, [{'type': ['float', 'float_expression'], 'length': 3}])
+        new_k.text = text
         new_kpo.append(new_k)
 
-    kpath_xpath = f"{alt_kpt_set_xpath}[@purpose='bands']"
+    kpath_xpath = f"{alt_kpt_set_xpath}[@purpose='bands']/kPointCount"
 
     xmltree = xml_replace_tag(xmltree, kpath_xpath, new_kpo)
 
