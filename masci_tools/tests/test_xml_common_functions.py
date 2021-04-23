@@ -128,6 +128,8 @@ def test_reverse_xinclude(load_inpxml):
                               namespaces={'xi': 'http://www.w3.org/2001/XInclude'},
                               list_return=True)
     assert len(include_tags) == 2
+    assert [tag.attrib['href'] for tag in include_tags] == ['sym.xml', 'relax.xml']
+
 
     symmetry_tags = eval_xpath(cleared_root, '//symOp', list_return=True)
     assert len(symmetry_tags) == 16

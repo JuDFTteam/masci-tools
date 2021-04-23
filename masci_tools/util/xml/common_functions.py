@@ -168,7 +168,7 @@ def reverse_xinclude(xmltree, schema_dict, included_tags, **kwargs):
 
     if 'relax.xml' not in included_trees:
         #The relax.xml include should always be there
-        xinclude_elem = etree.Element(INCLUDE_TAG, href=file_name, nsmap=INCLUDE_NSMAP)
+        xinclude_elem = etree.Element(INCLUDE_TAG, href='relax.xml', nsmap=INCLUDE_NSMAP)
         xinclude_elem.append(etree.Element(FALLBACK_TAG))
         root.append(xinclude_elem)
 
