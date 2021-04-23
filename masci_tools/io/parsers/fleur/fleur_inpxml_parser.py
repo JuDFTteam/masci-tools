@@ -97,7 +97,7 @@ def inpxml_parser(inpxmlfile, version=None, parser_info_out=None, strict=False, 
 
     ignore_validation = schema_dict['inp_version'] != version
 
-    xmltree = clear_xml(xmltree)
+    xmltree, _ = clear_xml(xmltree)
     root = xmltree.getroot()
 
     constants = read_constants(root, schema_dict, logger=logger)

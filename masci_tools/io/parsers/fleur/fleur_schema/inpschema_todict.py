@@ -46,7 +46,7 @@ def create_inpschema_dict(path):
 
     #print(f'processing: {path}/FleurInputSchema.xsd')
     xmlschema = etree.parse(path)
-    xmlschema = clear_xml(xmlschema)
+    xmlschema, _ = clear_xml(xmlschema)
 
     namespaces = {'xsd': 'http://www.w3.org/2001/XMLSchema'}
     inp_version = str(xmlschema.xpath('/xsd:schema/@version', namespaces=namespaces)[0])

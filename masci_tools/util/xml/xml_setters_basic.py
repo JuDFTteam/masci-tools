@@ -84,7 +84,14 @@ def xml_delete_tag(xmltree, xpath):
     return xmltree
 
 
-def xml_create_tag(xmltree, xpath, element, place_index=None, tag_order=None, occurrences=None, correct_order=True, several=True):
+def xml_create_tag(xmltree,
+                   xpath,
+                   element,
+                   place_index=None,
+                   tag_order=None,
+                   occurrences=None,
+                   correct_order=True,
+                   several=True):
     """
     This method evaluates an xpath expression and creates a tag in a xmltree under the
     returned nodes.

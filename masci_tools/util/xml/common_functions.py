@@ -14,6 +14,7 @@
 Common functions for parsing input/output files or XMLschemas from FLEUR
 """
 from lxml import etree
+import warnings
 
 
 def clear_xml(tree):
@@ -60,6 +61,7 @@ def clear_xml(tree):
     if len(include_tags) != 0:
         cleared_tree.xinclude()
 
+    all_included_tags = set()
     # get rid of xml:base attribute in the included parts
     for parent, old_tags in zip(parents, known_tags):
         new_tags = {elem.tag for elem in parent}
@@ -72,6 +74,7 @@ def clear_xml(tree):
         if not included_tag_names:
             continue
 
+        all_included_tags = all_included_tags.union(included_tag_names)
         for tag_name in included_tag_names:
             for elem in parent:
                 if elem.tag == tag_name:
@@ -88,7 +91,92 @@ def clear_xml(tree):
         com_parent = comment.getparent()
         com_parent.remove(comment)
 
-    return cleared_tree
+    etree.indent(cleared_tree)
+
+    return cleared_tree, all_included_tags
+
+
+def reverse_xinclude(xmltree, schema_dict, included_tags, **kwargs):
+    """
+    Split the xmltree back up according to the given included tags.
+    The original xmltree will be returned with the corresponding xinclude tags
+    and the included trees are returned in a dict mapping the inserted filename
+    to the extracted tree
+
+    Tags for which no known filename is known are returned under unknown-1.xml, ...
+    The following tags have known filenames:
+
+        - `relaxation`: ``relax.xml``
+        - `kPointLists`: ``kpts.xml``
+        - `symmetryOperations`: ``sym.xml``
+
+    Additional mappings can be given in the keyword arguments
+
+    :param xmltree: an xml-tree which will be processed
+    :param schema_dict: Schema dictionary containing all the necessary information
+    :param included_tags: Iterable of str, containing the names of the tags to be excluded
+
+    :returns: xmltree with the inseerted xinclude tags and a dict mapping the filenames
+              to the excluded trees
+
+    :raises ValueError: if the tag can not be found in teh given xmltree
+    """
+    from masci_tools.util.schema_dict_util import get_tag_xpath
+    import copy
+
+    INCLUDE_NSMAP = {'xi': 'http://www.w3.org/2001/XInclude'}
+    INCLUDE_TAG = etree.QName(INCLUDE_NSMAP['xi'], 'include')
+    FALLBACK_TAG = etree.QName(INCLUDE_NSMAP['xi'], 'fallback')
+
+    excluded_tree = copy.deepcopy(xmltree)
+
+    include_file_names = {'relaxation': 'relax.xml', 'kPointLists': 'kpts.xml', 'symmetryOperations': 'sym.xml'}
+
+    include_file_names = {**include_file_names, **kwargs}
+
+    unknown_file_names = 0
+    included_trees = {}
+    root = excluded_tree.getroot()
+
+    for tag in included_tags:
+        if tag in include_file_names:
+            file_name = include_file_names[tag]
+        else:
+            warnings.warn(f'No filename known for tag {tag}')
+            unknown_file_names += 1
+            file_name = f'unknown-{unknown_file_names}.xml'
+
+        try:
+            tag_xpath = get_tag_xpath(schema_dict, tag)
+        except ValueError as exc:
+            raise ValueError(f'Cannot determine place of included tag {tag}') from exc
+
+        included_tag = eval_xpath(root, tag_xpath, list_return=True)
+
+        if len(included_tag) != 1:
+            raise ValueError(f'Cannot determine place of included tag {tag}')
+        included_tag = included_tag[0]
+
+        included_trees[file_name] = etree.ElementTree(included_tag)
+
+        parent = included_tag.getparent()
+
+        xinclude_elem = etree.Element(INCLUDE_TAG, href=file_name, nsmap=INCLUDE_NSMAP)
+        xinclude_elem.append(etree.Element(FALLBACK_TAG))
+
+        parent.replace(included_tag, xinclude_elem)
+
+    if 'relax.xml' not in included_trees:
+        #The relax.xml include should always be there
+        xinclude_elem = etree.Element(INCLUDE_TAG, href=file_name, nsmap=INCLUDE_NSMAP)
+        xinclude_elem.append(etree.Element(FALLBACK_TAG))
+        root.append(xinclude_elem)
+
+    etree.indent(excluded_tree)
+    for tree in included_trees.values():
+        etree.indent(tree)
+
+    return excluded_tree, included_trees
 
 
 def validate_xml(xmltree, schema, error_header='File does not validate'):
@@ -105,7 +193,8 @@ def validate_xml(xmltree, schema, error_header='File does not validate'):
     from itertools import groupby
 
     try:
-        schema.assertValid(clear_xml(xmltree))
+        cleared_tree, _ = clear_xml(xmltree)
+        schema.assertValid(cleared_tree)
     except etree.DocumentInvalid as exc:
         error_log = sorted(schema.error_log, key=lambda x: x.message)
         error_output = []

@@ -200,7 +200,7 @@ def outxml_parser(outxmlfile,
     if logger is not None:
         logger.info('Found fleur out file with the versions out: %s; inp: %s', out_version, inp_version)
 
-    xmltree = clear_xml(xmltree)
+    xmltree, _ = clear_xml(xmltree)
     root = xmltree.getroot()
 
     errmsg = ''
@@ -235,7 +235,6 @@ def outxml_parser(outxmlfile,
                                                     logger=logger,
                                                     iteration_to_parse=iteration_to_parse,
                                                     **kwargs)
-
 
     out_dict['input_file_version'] = outschema_dict['inp_version']
     # get all iterations in out.xml file

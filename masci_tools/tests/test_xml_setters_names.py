@@ -170,6 +170,7 @@ def test_set_attrib_value_xcFunctional(load_inpxml):
 
     assert res == 'TEST'
 
+
 def test_set_attrib_forcetheorem_angles(load_inpxml):
     from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_names import set_attrib_value
@@ -179,7 +180,7 @@ def test_set_attrib_forcetheorem_angles(load_inpxml):
 
     set_attrib_value(xmltree, schema_dict, 'theta', 5.321, contains='DMI', create=True)
     assert eval_xpath(root, '/fleurInput/forceTheorem/DMI/@theta') == '5.3210000000'
-    set_attrib_value(xmltree, schema_dict, 'phi', [1,2,3.14], contains='DMI', create=True)
+    set_attrib_value(xmltree, schema_dict, 'phi', [1, 2, 3.14], contains='DMI', create=True)
     assert eval_xpath(root, '/fleurInput/forceTheorem/DMI/@phi') == '1.0000000000 2.0000000000 3.1400000000'
     set_attrib_value(xmltree, schema_dict, 'ef_shift', [10.0], contains='DMI', create=True)
     assert eval_xpath(root, '/fleurInput/forceTheorem/DMI/@ef_shift') == '10.0000000000'

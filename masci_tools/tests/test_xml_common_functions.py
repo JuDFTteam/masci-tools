@@ -77,10 +77,11 @@ def test_clear_xml():
     symmetry_tags = eval_xpath(root, '//symOp', list_return=True)
     assert len(symmetry_tags) == 0
 
-    cleared_tree = clear_xml(xmltree)
+    cleared_tree, all_include_tags = clear_xml(xmltree)
     cleared_root = cleared_tree.getroot()
     old_root = xmltree.getroot()
 
+    assert all_include_tags == {'symmetryOperations'}
     #Make sure that the original tree was not modified
     comments = eval_xpath(old_root, '//comment()', list_return=True)
     assert len(comments) == 3
@@ -96,6 +97,45 @@ def test_clear_xml():
     assert len(include_tags) == 0
 
     symmetry_tags = eval_xpath(cleared_root, '//symOp', list_return=True)
+    assert len(symmetry_tags) == 16
+
+
+def test_reverse_xinclude(load_inpxml):
+    """
+    Test of the reverse_xinclude function
+    """
+    from masci_tools.util.xml.common_functions import eval_xpath, reverse_xinclude, clear_xml
+
+    xmltree, schema_dict = load_inpxml(CLEAR_XML_TEST_FILE)
+
+    cleared_tree, all_include_tags = clear_xml(xmltree)
+    cleared_root = cleared_tree.getroot()
+
+    reexcluded_tree, included_trees = reverse_xinclude(cleared_tree, schema_dict, all_include_tags)
+    reexcluded_root = reexcluded_tree.getroot()
+
+    assert list(included_trees.keys()) == ['sym.xml']
+    sym_root = included_trees['sym.xml'].getroot()
+
+    include_tags = eval_xpath(cleared_root,
+                              '//xi:include',
+                              namespaces={'xi': 'http://www.w3.org/2001/XInclude'},
+                              list_return=True)
+    assert len(include_tags) == 0
+
+    include_tags = eval_xpath(reexcluded_root,
+                              '//xi:include',
+                              namespaces={'xi': 'http://www.w3.org/2001/XInclude'},
+                              list_return=True)
+    assert len(include_tags) == 2
+
+    symmetry_tags = eval_xpath(cleared_root, '//symOp', list_return=True)
+    assert len(symmetry_tags) == 16
+
+    symmetry_tags = eval_xpath(reexcluded_root, '//symOp', list_return=True)
+    assert len(symmetry_tags) == 0
+
+    symmetry_tags = eval_xpath(sym_root, 'symOp', list_return=True)
     assert len(symmetry_tags) == 16
 
 
