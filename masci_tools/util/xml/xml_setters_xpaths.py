@@ -202,6 +202,14 @@ def xml_set_attrib_value(xmltree,
 
     converted_attribv, suc = convert_attribute_to_xml(attribv, schema_dict['attrib_types'][attributename])
 
+    if '/fleurInput/forceTheorem/' in base_xpath and attributename in ('theta', 'phi', 'ef_shift'):
+        #Special case for theta and phi attributes on forceTheorem tags
+        #In Max5/5.1 They are entered as FleurDouble but can be a list. Since
+        #the attribute setting so far does not support this we convert the values explicitely
+        #here
+        if isinstance(converted_attribv, list):
+            converted_attribv = ' '.join(converted_attribv)
+
     return xml_set_attrib_value_no_create(xmltree, xpath, attributename, converted_attribv, occurrences=occurrences)
 
 
