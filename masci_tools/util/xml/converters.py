@@ -115,8 +115,9 @@ def convert_attribute_to_xml(attributevalue, possible_types, logger=None, float_
 
     :return: The converted str of the value of the first succesful conversion
     """
+    import numpy as np
 
-    if not isinstance(attributevalue, list):
+    if not isinstance(attributevalue, (list, np.ndarray)):
         attributevalue = [attributevalue]
 
     possible_types = possible_types.copy()
@@ -264,17 +265,18 @@ def convert_text_to_xml(textvalue, possible_definitions, logger=None, float_form
 
     :return: The converted value of the first succesful conversion
     """
+    import numpy as np
 
-    if not isinstance(textvalue, list):
+    if not isinstance(textvalue, (list, np.ndarray)):
         textvalue = [textvalue]
-    elif not isinstance(textvalue[0], list):
+    elif not isinstance(textvalue[0], (list, np.ndarray)):
         textvalue = [textvalue]
 
     converted_list = []
     all_success = True
     for text in textvalue:
 
-        if not isinstance(text, list):
+        if not isinstance(text, (list, np.ndarray)):
             text = [text]
 
         text_definition = None
