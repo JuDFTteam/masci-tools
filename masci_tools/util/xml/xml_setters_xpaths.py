@@ -70,6 +70,8 @@ def xml_create_tag_schema_dict(xmltree,
     else:
         tag_order = tag_info['order']
 
+    several_tags = element_name in tag_info['several']
+
     parent_nodes = eval_xpath(xmltree, xpath, list_return=True)
 
     if len(parent_nodes) == 0:
@@ -86,7 +88,7 @@ def xml_create_tag_schema_dict(xmltree,
             raise ValueError(f"Could not create tag '{element_name}' because atleast one subtag is missing. "
                              'Use create=True to create the subtags')
 
-    return xml_create_tag(xmltree, xpath, element, tag_order=tag_order, occurrences=occurrences)
+    return xml_create_tag(xmltree, xpath, element, tag_order=tag_order, occurrences=occurrences, several=several_tags)
 
 
 def eval_xpath_create(xmltree,

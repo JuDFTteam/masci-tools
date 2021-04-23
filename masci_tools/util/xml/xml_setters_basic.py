@@ -84,7 +84,7 @@ def xml_delete_tag(xmltree, xpath):
     return xmltree
 
 
-def xml_create_tag(xmltree, xpath, element, place_index=None, tag_order=None, occurrences=None, correct_order=True):
+def xml_create_tag(xmltree, xpath, element, place_index=None, tag_order=None, occurrences=None, correct_order=True, several=True):
     """
     This method evaluates an xpath expression and creates a tag in a xmltree under the
     returned nodes.
@@ -103,6 +103,7 @@ def xml_create_tag(xmltree, xpath, element, place_index=None, tag_order=None, oc
     :param correct_order: bool, if True (default) and a tag_order is given, that does not correspond to the given order
                           in the xmltree (only order wrong no unknown tags) it will be corrected and a warning is given
                           This is necessary for some edge cases of the xml schemas of fleur
+    :param several: bool, if True multiple tags od the given name are allowed
 
     :raises ValueError: If the insertion failed in any way (tag_order does not match, failed to insert, ...)
 
@@ -156,6 +157,9 @@ def xml_create_tag(xmltree, xpath, element, place_index=None, tag_order=None, oc
             extra_tags = set(existing_order).difference(set(tag_order))
             if extra_tags:
                 raise ValueError(f'Did not find existing elements in the tag_order list: {extra_tags}')
+
+            if element_name in existing_order and not several:
+                raise ValueError(f'The given tag {element_name} is not allowed to appear multiple times')
 
             #Is the existing order in line with the given tag_order
             if sorted(existing_order, key=tag_order.index) != existing_order:
@@ -256,7 +260,7 @@ def xml_set_attrib_value_no_create(xmltree, xpath, attributename, attribv, occur
 
     if is_sequence(attribv):
         if len(attribv) != len(nodes):
-            raise ValueError(f'Wrong length for attribute values. Expected {len(nodes)} items. Got: {attribv}')
+            raise ValueError(f'Wrong length for attribute values. Expected {len(nodes)} items. Got: {len(attribv)}')
     else:
         attribv = [attribv] * len(nodes)
 
