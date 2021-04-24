@@ -201,6 +201,7 @@ output_dict:
   fleur_modes:
     band: false
     bz_integration: hist
+    cf_coeff: false
     dos: false
     film: false
     force_theorem: false
@@ -711,8 +712,9 @@ warnings:
     0.017453292519943295, ''Ang'': 1.889726124772898, ''nm'': 18.89726124772898, ''pm'':
     0.01889726124772898, ''Bohr'': 1.0}'
   - 'The following Fleur modes were found: {''jspin'': 2, ''noco'': True, ''soc'':
-    True, ''relax'': False, ''gw'': False, ''force_theorem'': False, ''film'': False,
-    ''ldau'': False, ''dos'': False, ''band'': False, ''bz_integration'': ''hist''}'
+    True, ''relax'': False, ''gw'': False, ''force_theorem'': False, ''cf_coeff'':
+    False, ''film'': False, ''ldau'': False, ''dos'': False, ''band'': False, ''bz_integration'':
+    ''hist''}'
   parser_warnings:
   - Ignoring '0.27' outputVersion for MaX3.1 release
   - "Output file does not validate against the schema: \nLine 16: Element 'inputData':\

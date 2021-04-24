@@ -7,13 +7,16 @@ warnings:
     0.017453292519943295, ''Ang'': 1.889726124772898, ''nm'': 18.89726124772898, ''pm'':
     0.01889726124772898, ''Bohr'': 1.0}'
   - 'The following Fleur modes were found: {''jspin'': 2, ''noco'': False, ''soc'':
-    False, ''relax'': False, ''gw'': False, ''force_theorem'': False, ''film'': False,
-    ''ldau'': False, ''dos'': False, ''band'': False, ''bz_integration'': ''tetra''}'
+    False, ''relax'': False, ''gw'': False, ''force_theorem'': False, ''cf_coeff'':
+    False, ''film'': False, ''ldau'': False, ''dos'': False, ''band'': False, ''bz_integration'':
+    ''tetra''}'
   parser_warnings:
   - "Output file does not validate against the schema: \nLine 591: Element 'FermiEnergy',\
     \ attribute 'value': 'NAN' is not a valid value of the atomic type 'xs:double'.\
     \ \nLine 624: Element 'magneticMoment', attribute 'moment': '********' is not\
     \ a valid value of the atomic type 'xs:double'. \n"
+  - No values found for attribute potential
+  - No values found for attribute chargeDensity
   - '[Iteration 1] Could not convert ''********''. The following errors occurred:'
   - '[Iteration 1]    could not convert string to float: ''********'''
   - '[Iteration 1] Failed to evaluate attribute moment, Got value: [''********'']'

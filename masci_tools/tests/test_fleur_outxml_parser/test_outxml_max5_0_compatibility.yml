@@ -117,6 +117,7 @@ output_dict:
   fleur_modes:
     band: false
     bz_integration: hist
+    cf_coeff: false
     dos: false
     film: false
     force_theorem: false
@@ -267,8 +268,9 @@ warnings:
     0.017453292519943295, ''Ang'': 1.889726124772898, ''nm'': 18.89726124772898, ''pm'':
     0.01889726124772898, ''Bohr'': 1.0}'
   - 'The following Fleur modes were found: {''jspin'': 1, ''noco'': False, ''soc'':
-    False, ''relax'': False, ''gw'': False, ''force_theorem'': False, ''film'': False,
-    ''ldau'': True, ''dos'': False, ''band'': False, ''bz_integration'': ''hist''}'
+    False, ''relax'': False, ''gw'': False, ''force_theorem'': False, ''cf_coeff'':
+    False, ''film'': False, ''ldau'': True, ''dos'': False, ''band'': False, ''bz_integration'':
+    ''hist''}'
   parser_warnings:
   - Ignoring '0.27' outputVersion for MaX5.0 release
   - "Output file does not validate against the schema: \nLine 131: Element 'kPointList',\
@@ -276,3 +278,5 @@ warnings:
     \ 'kPointList': The attribute 'weightScale' is required but missing. \nLine 135:\
     \ Element 'spinDependentCharge': This element is not expected. \n"
   - No values found for attribute l_f
+  - No values found for attribute potential
+  - No values found for attribute chargeDensity

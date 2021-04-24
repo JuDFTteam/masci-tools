@@ -23,6 +23,7 @@ output_dict:
   fleur_modes:
     band: false
     bz_integration: hist
+    cf_coeff: false
     dos: false
     film: false
     force_theorem: false
@@ -82,8 +83,9 @@ warnings:
     0.017453292519943295, ''Ang'': 1.889726124772898, ''nm'': 18.89726124772898, ''pm'':
     0.01889726124772898, ''Bohr'': 1.0}'
   - 'The following Fleur modes were found: {''jspin'': 2, ''noco'': True, ''soc'':
-    False, ''relax'': False, ''gw'': False, ''force_theorem'': False, ''film'': False,
-    ''ldau'': False, ''dos'': False, ''band'': False, ''bz_integration'': ''hist''}'
+    False, ''relax'': False, ''gw'': False, ''force_theorem'': False, ''cf_coeff'':
+    False, ''film'': False, ''ldau'': False, ''dos'': False, ''band'': False, ''bz_integration'':
+    ''hist''}'
   parser_warnings:
   - No Output Schema available for version '0.36'; falling back to '0.34'
   - No Input Schema available for version '0.36'; falling back to '0.34'
@@ -92,3 +94,5 @@ warnings:
     \ an element of the set {'0.34'}. \nLine 16: Element 'fleurInput', attribute 'fleurInputVersion':\
     \ [facet 'enumeration'] The value '0.36' is not an element of the set {'0.34'}.\
     \ \n"
+  - No values found for attribute potential
+  - No values found for attribute chargeDensity

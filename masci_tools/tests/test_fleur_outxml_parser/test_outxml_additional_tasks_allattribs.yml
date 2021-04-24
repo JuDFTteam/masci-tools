@@ -28,6 +28,7 @@ output_dict:
   fleur_modes:
     band: false
     bz_integration: hist
+    cf_coeff: false
     dos: false
     film: false
     force_theorem: false
