@@ -338,9 +338,7 @@ def abs_to_rel_xpath(xpath, new_root):
     :returns: str of the relative xpath
     """
     if new_root in xpath:
-        if '@' not in xpath:
-            xpath = xpath + '/'
-
+        xpath = xpath + '/'
         xpath_to_root = '/'.join(xpath.split(new_root + '/')[:-1]) + new_root
         xpath = xpath.replace(xpath_to_root, '.')
         xpath = xpath.rstrip('/')
