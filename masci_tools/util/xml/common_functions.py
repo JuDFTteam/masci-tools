@@ -109,6 +109,8 @@ def reverse_xinclude(xmltree, schema_dict, included_tags, **kwargs):
         - `relaxation`: ``relax.xml``
         - `kPointLists`: ``kpts.xml``
         - `symmetryOperations`: ``sym.xml``
+        - `atomSpecies`: ``species.xml``
+        - `atomGroups`: ``atoms.xml``
 
     Additional mappings can be given in the keyword arguments
 
@@ -130,7 +132,13 @@ def reverse_xinclude(xmltree, schema_dict, included_tags, **kwargs):
 
     excluded_tree = copy.deepcopy(xmltree)
 
-    include_file_names = {'relaxation': 'relax.xml', 'kPointLists': 'kpts.xml', 'symmetryOperations': 'sym.xml'}
+    include_file_names = {
+        'relaxation': 'relax.xml',
+        'kPointLists': 'kpts.xml',
+        'symmetryOperations': 'sym.xml',
+        'atomSpecies': 'species.xml',
+        'atomGroups': 'atoms.xml'
+    }
 
     include_file_names = {**include_file_names, **kwargs}
 
