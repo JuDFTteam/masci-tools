@@ -70,6 +70,8 @@ def xml_create_tag_schema_dict(xmltree,
     else:
         tag_order = tag_info['order']
 
+    several_tags = element_name in tag_info['several']
+
     parent_nodes = eval_xpath(xmltree, xpath, list_return=True)
 
     if len(parent_nodes) == 0:
@@ -86,7 +88,7 @@ def xml_create_tag_schema_dict(xmltree,
             raise ValueError(f"Could not create tag '{element_name}' because atleast one subtag is missing. "
                              'Use create=True to create the subtags')
 
-    return xml_create_tag(xmltree, xpath, element, tag_order=tag_order, occurrences=occurrences)
+    return xml_create_tag(xmltree, xpath, element, tag_order=tag_order, occurrences=occurrences, several=several_tags)
 
 
 def eval_xpath_create(xmltree,
@@ -199,6 +201,14 @@ def xml_set_attrib_value(xmltree,
     attributename = attribs.original_case[attributename]
 
     converted_attribv, suc = convert_attribute_to_xml(attribv, schema_dict['attrib_types'][attributename])
+
+    if '/fleurInput/forceTheorem/' in base_xpath and attributename in ('theta', 'phi', 'ef_shift'):
+        #Special case for theta and phi attributes on forceTheorem tags
+        #In Max5/5.1 They are entered as FleurDouble but can be a list. Since
+        #the attribute setting so far does not support this we convert the values explicitely
+        #here
+        if isinstance(converted_attribv, list):
+            converted_attribv = ' '.join(converted_attribv)
 
     return xml_set_attrib_value_no_create(xmltree, xpath, attributename, converted_attribv, occurrences=occurrences)
 

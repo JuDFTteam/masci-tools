@@ -35,7 +35,7 @@ def add_fleur_schema(path, overwrite=False):
     schema_path = os.path.join(path, 'FleurInputSchema.xsd')
     if os.path.isfile(schema_path):
         xmlschema = etree.parse(schema_path)
-        xmlschema = clear_xml(xmlschema)
+        xmlschema, _ = clear_xml(xmlschema)
 
         namespaces = {'xsd': 'http://www.w3.org/2001/XMLSchema'}
         inp_version = xmlschema.xpath('/xsd:schema/@version', namespaces=namespaces)[0]
@@ -55,7 +55,7 @@ def add_fleur_schema(path, overwrite=False):
     schema_path = os.path.join(path, 'FleurOutputSchema.xsd')
     if os.path.isfile(schema_path):
         xmlschema = etree.parse(schema_path)
-        xmlschema = clear_xml(xmlschema)
+        xmlschema, _ = clear_xml(xmlschema)
 
         namespaces = {'xsd': 'http://www.w3.org/2001/XMLSchema'}
         out_version = xmlschema.xpath('/xsd:schema/@version', namespaces=namespaces)[0]

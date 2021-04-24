@@ -54,7 +54,7 @@ def create_outschema_dict(path, inp_path=None, inpschema_dict=None):
 
     #print(f'processing: {path}/FleurOutputSchema.xsd')
     xmlschema = etree.parse(path)
-    xmlschema = clear_xml(xmlschema)
+    xmlschema, _ = clear_xml(xmlschema)
 
     namespaces = {'xsd': 'http://www.w3.org/2001/XMLSchema'}
     out_version = str(xmlschema.xpath('/xsd:schema/@version', namespaces=namespaces)[0])
@@ -66,7 +66,7 @@ def create_outschema_dict(path, inp_path=None, inpschema_dict=None):
             inp_path = path.replace('FleurOutputSchema', 'FleurInputSchema')
         #Parse type definitions directly from inputSchema
         inpxmlschema = etree.parse(inp_path)
-        inpxmlschema = clear_xml(inpxmlschema)
+        inpxmlschema, _ = clear_xml(inpxmlschema)
         input_basic_types = get_basic_types(inpxmlschema, namespaces)
 
     schema_dict = {}

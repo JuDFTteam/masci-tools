@@ -50,7 +50,7 @@ def get_fleur_modes(xmltree, schema_dict, logger=None):
     from masci_tools.util.xml.common_functions import clear_xml
 
     if isinstance(xmltree, etree._ElementTree):
-        xmltree = clear_xml(xmltree)
+        xmltree, _ = clear_xml(xmltree)
         root = xmltree.getroot()
     else:
         root = xmltree
@@ -123,7 +123,7 @@ def get_nkpts(xmltree, schema_dict, logger=None):
     from masci_tools.util.xml.common_functions import clear_xml
 
     if isinstance(xmltree, etree._ElementTree):
-        xmltree = clear_xml(xmltree)
+        xmltree, _ = clear_xml(xmltree)
         root = xmltree.getroot()
     else:
         root = xmltree
@@ -173,7 +173,7 @@ def get_nkpts_max4(xmltree, schema_dict, logger=None):
     import warnings
 
     if isinstance(xmltree, etree._ElementTree):
-        xmltree = clear_xml(xmltree)
+        xmltree, _ = clear_xml(xmltree)
         root = xmltree.getroot()
     else:
         root = xmltree
@@ -251,7 +251,7 @@ def get_cell(xmltree, schema_dict, logger=None):
     import numpy as np
 
     if isinstance(xmltree, etree._ElementTree):
-        xmltree = clear_xml(xmltree)
+        xmltree, _ = clear_xml(xmltree)
         root = xmltree.getroot()
     else:
         root = xmltree
@@ -335,7 +335,7 @@ def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True, 
     ########
     parameters = {}
     if isinstance(xmltree, etree._ElementTree):
-        xmltree = clear_xml(xmltree)
+        xmltree, _ = clear_xml(xmltree)
         root = xmltree.getroot()
     else:
         root = xmltree
@@ -519,7 +519,7 @@ def get_structure_data(xmltree, schema_dict, logger=None):
     from masci_tools.io.common_functions import rel_to_abs, rel_to_abs_f
 
     if isinstance(xmltree, etree._ElementTree):
-        xmltree = clear_xml(xmltree)
+        xmltree, _ = clear_xml(xmltree)
         root = xmltree.getroot()
     else:
         root = xmltree
@@ -644,7 +644,7 @@ def get_kpoints_data(xmltree, schema_dict, name=None, logger=None):
     from masci_tools.util.xml.converters import convert_xml_attribute
 
     if isinstance(xmltree, etree._ElementTree):
-        xmltree = clear_xml(xmltree)
+        xmltree, _ = clear_xml(xmltree)
         root = xmltree.getroot()
     else:
         root = xmltree
@@ -733,7 +733,7 @@ def get_kpoints_data_max4(xmltree, schema_dict, logger=None):
     from masci_tools.util.xml.converters import convert_xml_attribute
 
     if isinstance(xmltree, etree._ElementTree):
-        xmltree = clear_xml(xmltree)
+        xmltree, _ = clear_xml(xmltree)
         root = xmltree.getroot()
     else:
         root = xmltree
@@ -802,7 +802,7 @@ def get_relaxation_information(xmltree, schema_dict, logger=None):
     from masci_tools.util.xml.common_functions import clear_xml
 
     if isinstance(xmltree, etree._ElementTree):
-        xmltree = clear_xml(xmltree)
+        xmltree, _ = clear_xml(xmltree)
         root = xmltree.getroot()
     else:
         root = xmltree
