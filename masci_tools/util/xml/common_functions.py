@@ -34,15 +34,17 @@ def clear_xml(tree):
     root = cleared_tree.getroot()
     prev_sibling = root.getprevious()
     while prev_sibling is not None:
-        root.append(prev_sibling)
-        root.remove(prev_sibling)
-        prev_sibling = root.getprevious()
+        if prev_sibling.tag is etree.Comment:
+            root.append(prev_sibling)
+            root.remove(prev_sibling)
+        prev_sibling = prev_sibling.getprevious()
 
     next_sibling = root.getnext()
     while next_sibling is not None:
-        root.append(next_sibling)
-        root.remove(next_sibling)
-        next_sibling = root.getnext()
+        if next_sibling.tag is etree.Comment:
+            root.append(next_sibling)
+            root.remove(next_sibling)
+        next_sibling = next_sibling.getnext()
 
     #find any include tags
     include_tags = eval_xpath(cleared_tree,
@@ -55,7 +57,7 @@ def clear_xml(tree):
     for tag in include_tags:
         parent = tag.getparent()
         parents.append(parent)
-        known_tags.append({elem.tag for elem in parent})
+        known_tags.append({elem.tag for elem in parent if isinstance(elem.tag, str)})
 
     # replace XInclude parts to validate against schema
     if len(include_tags) != 0:
@@ -64,7 +66,7 @@ def clear_xml(tree):
     all_included_tags = set()
     # get rid of xml:base attribute in the included parts
     for parent, old_tags in zip(parents, known_tags):
-        new_tags = {elem.tag for elem in parent}
+        new_tags = {elem.tag for elem in parent if isinstance(elem.tag, str)}
 
         #determine the elements not in old_tags, which are in tags
         #so what should have been included
@@ -145,6 +147,9 @@ def reverse_xinclude(xmltree, schema_dict, included_tags, **kwargs):
     unknown_file_names = 0
     included_trees = {}
     root = excluded_tree.getroot()
+
+    if not all(isinstance(tag, str) for tag in included_tags):
+        raise ValueError(f'included_tags is not made up of strings: {included_tags}')
 
     for tag in included_tags:
         if tag in include_file_names:
