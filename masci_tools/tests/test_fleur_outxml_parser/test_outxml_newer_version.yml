@@ -94,5 +94,3 @@ warnings:
     \ an element of the set {'0.34'}. \nLine 16: Element 'fleurInput', attribute 'fleurInputVersion':\
     \ [facet 'enumeration'] The value '0.36' is not an element of the set {'0.34'}.\
     \ \n"
-  - No values found for attribute potential
-  - No values found for attribute chargeDensity

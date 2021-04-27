@@ -15,8 +15,6 @@ warnings:
     \ attribute 'value': 'NAN' is not a valid value of the atomic type 'xs:double'.\
     \ \nLine 624: Element 'magneticMoment', attribute 'moment': '********' is not\
     \ a valid value of the atomic type 'xs:double'. \n"
-  - No values found for attribute potential
-  - No values found for attribute chargeDensity
   - '[Iteration 1] Could not convert ''********''. The following errors occurred:'
   - '[Iteration 1]    could not convert string to float: ''********'''
   - '[Iteration 1] Failed to evaluate attribute moment, Got value: [''********'']'

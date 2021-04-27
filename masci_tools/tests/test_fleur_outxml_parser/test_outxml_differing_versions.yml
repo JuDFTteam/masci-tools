@@ -96,6 +96,4 @@ warnings:
     True, ''relax'': False, ''gw'': False, ''force_theorem'': False, ''cf_coeff'':
     False, ''film'': False, ''ldau'': False, ''dos'': False, ''band'': False, ''bz_integration'':
     ''hist''}'
-  parser_warnings:
-  - No values found for attribute potential
-  - No values found for attribute chargeDensity
+  parser_warnings: []

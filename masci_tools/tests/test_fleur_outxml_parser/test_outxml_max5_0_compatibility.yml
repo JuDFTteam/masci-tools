@@ -278,5 +278,3 @@ warnings:
     \ 'kPointList': The attribute 'weightScale' is required but missing. \nLine 135:\
     \ Element 'spinDependentCharge': This element is not expected. \n"
   - No values found for attribute l_f
-  - No values found for attribute potential
-  - No values found for attribute chargeDensity

@@ -89,8 +89,6 @@ warnings:
   - The last parsed iteration is 2
   parser_warnings:
   - The out.xml file is broken I try to repair it.
-  - No values found for attribute potential
-  - No values found for attribute chargeDensity
   - No values found for attribute date at tag endDateAndTime
   - No values found for attribute time at tag endDateAndTime
   - Endtime was unparsed, inp.xml prob not complete, do not believe the walltime!
