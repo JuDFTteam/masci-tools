@@ -107,7 +107,7 @@ class FleurXMLModifier:
         Validate that the given arguments to the registration
         method can be used to call the corresponding XML modifying function
         """
-        from inspect import getcallargs
+        from inspect import signature
 
         if self.validate_signatures:
 
@@ -127,7 +127,8 @@ class FleurXMLModifier:
                 func = func.registry['default']
 
             try:
-                getcallargs(func, *prefix, *args, **kwargs)
+                sig = signature(func)
+                sig.bind(*prefix, *args, **kwargs)
             except TypeError as exc:
                 raise TypeError(
                     f"The given arguments for the registration method '{name}' are not valid for the XML modifying function"
