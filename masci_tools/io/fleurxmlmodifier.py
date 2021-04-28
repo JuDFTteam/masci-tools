@@ -66,7 +66,6 @@ class FleurXMLModifier:
     _xpath_functions = XPATH_SETTERS
     _schema_dict_functions = SCHEMA_DICT_SETTERS
     _nmmpmat_functions = NMMPMAT_SETTERS
-    _no_xmltree_functions = {}
 
     _extra_functions = {}
 
@@ -76,7 +75,6 @@ class FleurXMLModifier:
             cls.xpath_functions = {**cls._xpath_functions, **cls._extra_functions.get('xpath', {})}
             cls.schema_dict_functions = {**cls._schema_dict_functions, **cls._extra_functions.get('schema_dict', {})}
             cls.nmmpmat_functions = {**cls._nmmpmat_functions, **cls._extra_functions.get('nmmpmat', {})}
-            cls.no_xmltree_functions = {**cls._no_xmltree_functions, **cls._extra_functions.get('no_xmltree', {})}
 
         return super().__new__(cls)
 
@@ -158,8 +156,6 @@ class FleurXMLModifier:
         :param modification_tasks: a list of modification tuples
         :param validate_changes: bool optional (default True), if True after all tasks are performed
                                  both the xmltree and nmmp_lines are checked for consistency
-        :param extra_funcs: dict of callables in 'basic', 'schema_dict', 'nmmpmat' subdicts for extra allowed
-                            modification functions
 
         :returns: a modified lxml tree and a modified n_mmp_mat file
         """
