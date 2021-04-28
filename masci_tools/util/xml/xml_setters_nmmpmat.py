@@ -18,8 +18,18 @@ for LDA+U
 from masci_tools.util.schema_dict_util import get_tag_xpath
 import numpy as np
 
-def set_nmmpmat(xmltree, nmmplines, schema_dict, species_name, orbital, spin,\
-                state_occupations=None, orbital_occupations=None, denmat=None, phi=None, theta=None):
+
+def set_nmmpmat(xmltree,
+                nmmplines,
+                schema_dict,
+                species_name,
+                orbital,
+                spin,
+                state_occupations=None,
+                orbital_occupations=None,
+                denmat=None,
+                phi=None,
+                theta=None):
     """Routine sets the block in the n_mmp_mat file specified by species_name, orbital and spin
     to the desired density matrix
 

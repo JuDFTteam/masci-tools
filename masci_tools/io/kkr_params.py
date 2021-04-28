@@ -1503,7 +1503,7 @@ class kkrparams(object):
         :note: converts '<RBLEFT>', '<RBRIGHT>', 'ZPERIODL', and 'ZPERIODR' automatically to Ang. units!
         """
         from numpy import shape, array
-        from masci_tools.util.constants import BOHR_A
+        from masci_tools.io.common_functions import get_aBohr2Ang
 
         # some print statements with debug info
         debug = False
@@ -1700,7 +1700,7 @@ class kkrparams(object):
         rbr = self.get_value('<RBRIGHT>')
         zper_l = self.get_value('ZPERIODL')
         zper_r = self.get_value('ZPERIODR')
-        alat2ang = self.get_value('ALATBASIS') * BOHR_A
+        alat2ang = self.get_value('ALATBASIS') * get_aBohr2Ang()
         if rbl is not None:
             self.set_value('<RBLEFT>', array(rbl) * alat2ang)
         if rbr is not None:

@@ -19,6 +19,7 @@ Essentially a low-level version of the FleurinpModifier in aiida_fleur.
 from collections import namedtuple
 from lxml import etree
 import copy
+from masci_tools.util.xml.collect_xml_setters import XPATH_SETTERS, SCHEMA_DICT_SETTERS, NMMPMAT_SETTERS
 #Enable warnings for missing docstrings
 #pylint: enable=missing-function-docstring
 
@@ -62,11 +63,86 @@ class FleurXMLModifier:
 
     """
 
-    def __init__(self):
-        self._tasks = []
+    _xpath_functions = XPATH_SETTERS
+    _schema_dict_functions = SCHEMA_DICT_SETTERS
+    _nmmpmat_functions = NMMPMAT_SETTERS
 
-    @staticmethod
-    def apply_modifications(xmltree, nmmp_lines, modification_tasks, validate_changes=True, extra_funcs=None):
+    _extra_functions = {}
+
+    def __new__(cls, validate_signatures=True):
+
+        if getattr(cls, 'xpath_functions', None) is None:
+            cls.xpath_functions = {**cls._xpath_functions, **cls._extra_functions.get('xpath', {})}
+            cls.schema_dict_functions = {**cls._schema_dict_functions, **cls._extra_functions.get('schema_dict', {})}
+            cls.nmmpmat_functions = {**cls._nmmpmat_functions, **cls._extra_functions.get('nmmpmat', {})}
+
+        return super().__new__(cls)
+
+    def __init__(self, validate_signatures=True):
+
+        self._tasks = []
+        self.validate_signatures = validate_signatures
+
+
+    @classmethod
+    def fromList(cls, task_list, *args, **kwargs):
+        """
+        Instantiate the FleurXMLModifier from a list of tasks to be added immediately
+
+        :param task_list: list of tuples first index is the name of the method
+                          second is defining the arguments by keyword in a dict
+
+        Other arguments are passed on to the __init__ method
+
+        :returns: class with the task list instantiated
+        """
+
+        fm = cls(*args, **kwargs)
+
+        facade_methods = fm.get_avail_actions()
+
+        for name, kwargs in task_list:
+            try:
+                facade_methods[name](**kwargs)
+            except KeyError as exc:
+                raise ValueError(f"Unknown modification method '{name}'") from exc
+
+        return fm
+
+    def _validate_signature(self, name, *args, **kwargs):
+        """
+        Validate that the given arguments to the registration
+        method can be used to call the corresponding XML modifying function
+        """
+        from inspect import signature
+
+        if self.validate_signatures:
+
+            if name in self.xpath_functions:
+                func = self.xpath_functions[name]
+                prefix = ('xmltree',)
+            elif name in self.schema_dict_functions:
+                func = self.schema_dict_functions[name]
+                prefix = ('xmltree', 'schema_dict')
+            elif name in self.nmmpmat_functions:
+                func = self.nmmpmat_functions[name]
+                prefix = ('xmltree', 'schema_dict', 'n_mmp_mat')
+
+            #For functions decorated with the schema_dict_version_dispatch
+            #We check only the default (This function should have a compatible signature for all registered functions)
+            if getattr(func, 'registry', None) is not None:
+                func = func.registry['default']
+
+            try:
+                sig = signature(func)
+                sig.bind(*prefix, *args, **kwargs)
+            except TypeError as exc:
+                raise TypeError(
+                    f"The given arguments for the registration method '{name}' are not valid for the XML modifying function"
+                ) from exc
+
+    @classmethod
+    def apply_modifications(cls, xmltree, nmmp_lines, modification_tasks, validate_changes=True):
         """
         Applies given modifications to the fleurinp lxml tree.
         It also checks if a new lxml tree is validated against schema.
@@ -77,12 +153,9 @@ class FleurXMLModifier:
         :param modification_tasks: a list of modification tuples
         :param validate_changes: bool optional (default True), if True after all tasks are performed
                                  both the xmltree and nmmp_lines are checked for consistency
-        :param extra_funcs: dict of callables in 'basic', 'schema_dict', 'nmmpmat' subdicts for extra allowed
-                            modification functions
 
         :returns: a modified lxml tree and a modified n_mmp_mat file
         """
-        from masci_tools.util.xml.collect_xml_setters import XPATH_SETTERS, SCHEMA_DICT_SETTERS, NMMPMAT_SETTERS
         from masci_tools.util.xml.common_functions import validate_xml, eval_xpath
         from masci_tools.util.xml.xml_setters_nmmpmat import validate_nmmpmat
         from masci_tools.io.parsers.fleur.fleur_schema import InputSchemaDict
@@ -94,26 +167,21 @@ class FleurXMLModifier:
 
         schema_dict = InputSchemaDict.fromVersion(version)
 
-        xpath_functions = copy.deepcopy(XPATH_SETTERS)
-        schema_dict_functions = copy.deepcopy(SCHEMA_DICT_SETTERS)
-        nmmpmat_functions = copy.deepcopy(NMMPMAT_SETTERS)
-
-        if extra_funcs is not None:
-            xpath_functions.update(extra_funcs.get('basic', {}))
-            schema_dict_functions.update(extra_funcs.get('schema_dict', {}))
-            nmmpmat_functions.update(extra_funcs.get('nmmpmat', {}))
-
         for task in modification_tasks:
-            if task.name in xpath_functions:
-                action = xpath_functions[task.name]
+            if task.name in cls.xpath_functions:
+                action = cls.xpath_functions[task.name]
                 xmltree = action(xmltree, *task.args, **task.kwargs)
 
-            elif task.name in schema_dict_functions:
-                action = schema_dict_functions[task.name]
+            elif task.name in cls.schema_dict_functions:
+                action = cls.schema_dict_functions[task.name]
                 xmltree = action(xmltree, schema_dict, *task.args, **task.kwargs)
 
-            elif task.name in nmmpmat_functions:
-                action = nmmpmat_functions[task.name]
+            elif task.name in cls.nmmpmat_functions:
+                action = cls.nmmpmat_functions[task.name]
+                nmmp_lines = action(xmltree, nmmp_lines, schema_dict, *task.args, **task.kwargs)
+
+            elif task.name in cls.no_xmltree_functions:
+                action = cls.nmmpmat_functions[task.name]
                 nmmp_lines = action(xmltree, nmmp_lines, schema_dict, *task.args, **task.kwargs)
 
             else:
@@ -145,6 +213,9 @@ class FleurXMLModifier:
             'set_complex_tag': self.set_complex_tag,
             'set_simple_tag': self.set_simple_tag,
             'create_tag': self.create_tag,
+            'delete_tag': self.delete_tag,
+            'delete_att': self.delete_att,
+            'replace_tag': self.replace_tag,
             'set_text': self.set_text,
             'set_first_text': self.set_first_text,
             'set_attrib_value': self.set_attrib_value,
@@ -245,6 +316,7 @@ class FleurXMLModifier:
                            'ctail': False,
                            'l_ss': True}
         """
+        self._validate_signature('set_inpchanges', *args, **kwargs)
         self._tasks.append(ModifierTask('set_inpchanges', args, kwargs))
 
     def shift_value(self, *args, **kwargs):
@@ -260,6 +332,7 @@ class FleurXMLModifier:
 
                 change_dict = {'itmax' : 1, 'dVac': -0.123}
         """
+        self._validate_signature('shift_value', *args, **kwargs)
         self._tasks.append(ModifierTask('shift_value', args, kwargs))
 
     def set_species(self, *args, **kwargs):
@@ -287,6 +360,7 @@ class FleurXMLModifier:
         ``special`` keys are supported. To find possible
         keys of the inner dictionary please refer to the FLEUR documentation flapw.de
         """
+        self._validate_signature('set_species', *args, **kwargs)
         self._tasks.append(ModifierTask('set_species', args, kwargs))
 
     def set_species_label(self, *args, **kwargs):
@@ -298,6 +372,7 @@ class FleurXMLModifier:
         :param attributedict: a python dict specifying what you want to change.
 
         """
+        self._validate_signature('set_species_label', *args, **kwargs)
         self._tasks.append(ModifierTask('set_species_label', args, kwargs))
 
     def shift_value_species_label(self, *args, **kwargs):
@@ -315,6 +390,7 @@ class FleurXMLModifier:
             :param not_contains: str, this string has to NOT be in the final path
 
         """
+        self._validate_signature('shift_value_species_label', *args, **kwargs)
         self._tasks.append(ModifierTask('shift_value_species_label', args, kwargs))
 
     def set_atomgroup(self, *args, **kwargs):
@@ -334,6 +410,7 @@ class FleurXMLModifier:
             'attributedict': {'nocoParams': {'beta': val}}
 
         """
+        self._validate_signature('set_atomgroup', *args, **kwargs)
         self._tasks.append(ModifierTask('set_atomgroup', args, kwargs))
 
     def set_atomgroup_label(self, *args, **kwargs):
@@ -352,6 +429,7 @@ class FleurXMLModifier:
             'attributedict': {'nocoParams': {'beta': val}}
 
         """
+        self._validate_signature('set_atomgroup_label', *args, **kwargs)
         self._tasks.append(ModifierTask('set_atomgroup_label', args, kwargs))
 
     def create_tag(self, *args, **kwargs):
@@ -370,7 +448,63 @@ class FleurXMLModifier:
             :param contains: str, this string has to be in the final path
             :param not_contains: str, this string has to NOT be in the final path
         """
+        self._validate_signature('create_tag', *args, **kwargs)
         self._tasks.append(ModifierTask('create_tag', args, kwargs))
+
+    def delete_tag(self, *args, **kwargs):
+        """
+        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.delete_tag()` to
+        the list of tasks that will be done on the xmltree.
+
+        :param tag: str of the tag to delete
+        :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+        :param occurrences: int or list of int. Which occurence of the parent nodes to delete a tag.
+                            By default all nodes are used.
+
+        Kwargs:
+            :param contains: str, this string has to be in the final path
+            :param not_contains: str, this string has to NOT be in the final path
+        """
+        self._validate_signature('delete_tag', *args, **kwargs)
+        self._tasks.append(ModifierTask('delete_tag', args, kwargs))
+
+    def delete_att(self, *args, **kwargs):
+        """
+        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.delete_att()` to
+        the list of tasks that will be done on the xmltree.
+
+        :param tag: str of the attribute to delete
+        :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+        :param occurrences: int or list of int. Which occurence of the parent nodes to delete a attribute.
+                            By default all nodes are used.
+
+        Kwargs:
+            :param tag_name: str, name of the tag where the attribute should be parsed
+            :param contains: str, this string has to be in the final path
+            :param not_contains: str, this string has to NOT be in the final path
+            :param exclude: list of str, here specific types of attributes can be excluded
+                            valid values are: settable, settable_contains, other
+        """
+        self._validate_signature('delete_att', *args, **kwargs)
+        self._tasks.append(ModifierTask('delete_att', args, kwargs))
+
+    def replace_tag(self, *args, **kwargs):
+        """
+        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.replace_tag()` to
+        the list of tasks that will be done on the xmltree.
+
+        :param tag: str of the tag to replace
+        :param newelement: a new tag
+        :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+        :param occurrences: int or list of int. Which occurence of the parent nodes to replace a tag.
+                            By default all nodes are used.
+
+        Kwargs:
+            :param contains: str, this string has to be in the final path
+            :param not_contains: str, this string has to NOT be in the final path
+        """
+        self._validate_signature('replace_tag', *args, **kwargs)
+        self._tasks.append(ModifierTask('replace_tag', args, kwargs))
 
     def set_complex_tag(self, *args, **kwargs):
         """
@@ -389,6 +523,7 @@ class FleurXMLModifier:
             :param not_contains: str, this string has to NOT be in the final path
 
         """
+        self._validate_signature('set_complex_tag', *args, **kwargs)
         self._tasks.append(ModifierTask('set_complex_tag', args, kwargs))
 
     def set_simple_tag(self, *args, **kwargs):
@@ -407,6 +542,7 @@ class FleurXMLModifier:
             :param contains: str, this string has to be in the final path
             :param not_contains: str, this string has to NOT be in the final path
         """
+        self._validate_signature('set_simple_tag', *args, **kwargs)
         self._tasks.append(ModifierTask('set_simple_tag', args, kwargs))
 
     def set_text(self, *args, **kwargs):
@@ -425,6 +561,7 @@ class FleurXMLModifier:
             :param not_contains: str, this string has to NOT be in the final path
 
         """
+        self._validate_signature('set_text', *args, **kwargs)
         self._tasks.append(ModifierTask('set_text', args, kwargs))
 
     def set_first_text(self, *args, **kwargs):
@@ -442,6 +579,7 @@ class FleurXMLModifier:
             :param not_contains: str, this string has to NOT be in the final path
 
         """
+        self._validate_signature('set_first_text', *args, **kwargs)
         self._tasks.append(ModifierTask('set_first_text', args, kwargs))
 
     def set_attrib_value(self, *args, **kwargs):
@@ -463,6 +601,7 @@ class FleurXMLModifier:
                             valid values are: settable, settable_contains, other
 
         """
+        self._validate_signature('set_attrib_value', *args, **kwargs)
         self._tasks.append(ModifierTask('set_attrib_value', args, kwargs))
 
     def set_first_attrib_value(self, *args, **kwargs):
@@ -483,6 +622,7 @@ class FleurXMLModifier:
                             valid values are: settable, settable_contains, other
 
         """
+        self._validate_signature('set_first_attrib_value', *args, **kwargs)
         self._tasks.append(ModifierTask('set_first_attrib_value', args, kwargs))
 
     def add_number_to_attrib(self, *args, **kwargs):
@@ -506,6 +646,7 @@ class FleurXMLModifier:
                             valid values are: settable, settable_contains, other
 
         """
+        self._validate_signature('add_number_to_attrib', *args, **kwargs)
         self._tasks.append(ModifierTask('add_number_to_attrib', args, kwargs))
 
     def add_number_to_first_attrib(self, *args, **kwargs):
@@ -528,6 +669,7 @@ class FleurXMLModifier:
                             valid values are: settable, settable_contains, other
 
         """
+        self._validate_signature('add_number_to_first_attrib', *args, **kwargs)
         self._tasks.append(ModifierTask('add_number_to_first_attrib', args, kwargs))
 
     def xml_create_tag(self, *args, **kwargs):
@@ -542,6 +684,7 @@ class FleurXMLModifier:
         :param occurrences: int or list of int. Which occurence of the parent nodes to create a tag.
                             By default all nodes are used.
         """
+        self._validate_signature('xml_create_tag', *args, **kwargs)
         self._tasks.append(ModifierTask('xml_create_tag', args, kwargs))
 
     def xml_replace_tag(self, *args, **kwargs):
@@ -551,7 +694,10 @@ class FleurXMLModifier:
 
         :param xpath: a path to the tag to be replaced
         :param newelement: a new tag
+        :param occurrences: int or list of int. Which occurence of the parent nodes to create a tag.
+                            By default all nodes are used.
         """
+        self._validate_signature('xml_replace_tag', *args, **kwargs)
         self._tasks.append(ModifierTask('xml_replace_tag', args, kwargs))
 
     def xml_delete_tag(self, *args, **kwargs):
@@ -560,7 +706,10 @@ class FleurXMLModifier:
         the list of tasks that will be done on the xmltree.
 
         :param xpath: a path to the tag to be deleted
+        :param occurrences: int or list of int. Which occurence of the parent nodes to create a tag.
+                            By default all nodes are used.
         """
+        self._validate_signature('xml_delete_tag', *args, **kwargs)
         self._tasks.append(ModifierTask('xml_delete_tag', args, kwargs))
 
     def xml_delete_att(self, *args, **kwargs):
@@ -570,7 +719,10 @@ class FleurXMLModifier:
 
         :param xpath: a path to the attribute to be deleted
         :param attrib: the name of an attribute
+        :param occurrences: int or list of int. Which occurence of the parent nodes to create a tag.
+                            By default all nodes are used.
         """
+        self._validate_signature('xml_delete_att', *args, **kwargs)
         self._tasks.append(ModifierTask('xml_delete_att', args, kwargs))
 
     def xml_set_attrib_value_no_create(self, *args, **kwargs):
@@ -583,6 +735,7 @@ class FleurXMLModifier:
         :param attribv: value or list of values to set (if not str they will be converted with `str(value)`)
         :param occurrences: int or list of int. Which occurence of the node to set. By default all are set.
         """
+        self._validate_signature('xml_set_attrib_value_no_create', *args, **kwargs)
         self._tasks.append(ModifierTask('xml_set_attrib_value_no_create', args, kwargs))
 
     def xml_set_text_no_create(self, *args, **kwargs):
@@ -594,6 +747,7 @@ class FleurXMLModifier:
         :param text: value or list of values to set (if not str they will be converted with `str(value)`)
         :param occurrences: int or list of int. Which occurence of the node to set. By default all are set.
         """
+        self._validate_signature('xml_set_text_no_create', *args, **kwargs)
         self._tasks.append(ModifierTask('xml_set_text_no_create', args, kwargs))
 
     def set_nmmpmat(self, *args, **kwargs):
@@ -610,6 +764,7 @@ class FleurXMLModifier:
         :param phi: float, optional angle (radian), by which to rotate the density matrix before writing it
         :param theta: float, optional angle (radian), by which to rotate the density matrix before writing it
         """
+        self._validate_signature('set_nmmpmat', *args, **kwargs)
         self._tasks.append(ModifierTask('set_nmmpmat', args, kwargs))
 
     def rotate_nmmpmat(self, *args, **kwargs):
@@ -622,6 +777,7 @@ class FleurXMLModifier:
         :param phi: float, angle (radian), by which to rotate the density matrix
         :param theta: float, angle (radian), by which to rotate the density matrix
         """
+        self._validate_signature('rotate_nmmpmat', *args, **kwargs)
         self._tasks.append(ModifierTask('rotate_nmmpmat', args, kwargs))
 
     def set_kpointlist(self, *args, **kwargs):
@@ -642,6 +798,7 @@ class FleurXMLModifier:
         :param switch: bool, if True the kPointlist will be used by Fleur when starting the next calculation
         :param overwrite: bool, if True and a kPointlist with the given name already exists it will be overwritten
         """
+        self._validate_signature('set_kpointlist', *args, **kwargs)
         self._tasks.append(ModifierTask('set_kpointlist', args, kwargs))
 
     def switch_kpointset(self, *args, **kwargs):
@@ -654,6 +811,7 @@ class FleurXMLModifier:
 
         :param list_name: name of the kPoint set to use
         """
+        self._validate_signature('switch_kpointset', *args, **kwargs)
         self._tasks.append(ModifierTask('switch_kpointset', args, kwargs))
 
     def set_nkpts(self, *args, **kwargs):
@@ -668,6 +826,7 @@ class FleurXMLModifier:
         :param gamma: bool that controls if the gamma-point should be included
                       in the k-point mesh
         """
+        self._validate_signature('set_nkpts', *args, **kwargs)
         self._tasks.append(ModifierTask('set_nkpts', args, kwargs))
 
     def set_kpath(self, *args, **kwargs):
@@ -683,4 +842,5 @@ class FleurXMLModifier:
         :param gamma: bool that controls if the gamma-point should be included
                       in the k-point mesh
         """
+        self._validate_signature('set_kpath', *args, **kwargs)
         self._tasks.append(ModifierTask('set_kpath', args, kwargs))

@@ -14,23 +14,19 @@
 Here we collect physical constants which are used throughout the code
 that way we ensure consistency
 
+.. note::
+    For masci-tools versions after ``0.4.6`` the constants used in the KKR functions are replaced
+    by the NIST values by default. If you still want to use the old values
+    you can set the environment variable MASCI_TOOLS_USE_OLD_CONSTANTS to True
+
 .. literalinclude:: ../../../masci_tools/util/constants.py
    :language: python
-   :lines: 23-
+   :lines: 28-
    :linenos:
 
 """
 import numpy as np
-
-#Predefined constants in the Fleur Code (These are accepted in the inp.xml)
-FLEUR_DEFINED_CONSTANTS = {
-    'Pi': np.pi,
-    'Deg': 2 * np.pi / 360.0,
-    'Ang': 1.8897261247728981,
-    'nm': 18.897261247728981,
-    'pm': 0.018897261247728981,
-    'Bohr': 1.0
-}
+import os
 
 # NIST https://physics.nist.gov/cgi-bin/cuu/Value?hrev
 HTR_TO_EV = 27.211386245988  #(53)
@@ -41,6 +37,15 @@ HTR_TO_KELVIN = 315_775.02480407
 #Scipy htr 27.211386245988 eV
 # NIST BOHR 0.529177210903 #(80)
 #https://physics.nist.gov/cgi-bin/cuu/Value?bohrrada0
+
+#KKR constants
+if os.environ.get('MASCI_TOOLS_USE_OLD_CONSTANTS', False) == 'True':
+    ANG_BOHR_KKR = 1.8897261254578281
+    RY_TO_EV_KKR = 13.605693009
+else:
+    #Set the constants to the NIST values
+    RY_TO_EV_KKR = RY_TO_EV
+    ANG_BOHR_KKR = 1.8897261246257702
 
 #Fleur
 #htr_eV   = 27.21138602
@@ -54,6 +59,19 @@ HTR_TO_KELVIN = 315_775.02480407
 #1.8897261258369282
 #aiida-core units:
 #bohr_to_ang = 0.52917720859
+
+#Predefined constants in the Fleur Code (These are accepted in the inp.xml)
+FLEUR_DEFINED_CONSTANTS = {
+    'Pi': np.pi,
+    'Deg': 2 * np.pi / 360.0,
+    'Ang': 1.8897261247728981,
+    'nm': 18.897261247728981,
+    'pm': 0.018897261247728981,
+    'Bohr': 1.0,
+    'Htr': 1.0,
+    'eV': 1.0 / HTR_TO_EV,
+    'Ry': 0.5
+}
 
 PERIODIC_TABLE_ELEMENTS = {
     0: {  # This is for empty spheres etc.

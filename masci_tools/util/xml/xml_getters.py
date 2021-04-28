@@ -87,18 +87,25 @@ def get_fleur_modes(xmltree, schema_dict, logger=None):
         fleur_modes['force_theorem'] = False
 
     if schema_dict.inp_version >= (0, 33):
-        cf_coeff = any(
-            evaluate_attribute(root,
-                               schema_dict,
-                               'potential',
-                               contains='cFCoeffs',
-                               logger=logger,
-                               list_return=True,
-                               optional=True))
-        cf_coeff = cf_coeff or any(
-            evaluate_attribute(
-                root, schema_dict, 'chargeDensity', contains='cFCoeffs', logger=logger, list_return=True,
-                optional=True))
+        if tag_exists(root, schema_dict, 'cFCoeffs', logger=logger):
+            cf_coeff = any(
+                evaluate_attribute(root,
+                                   schema_dict,
+                                   'potential',
+                                   contains='cFCoeffs',
+                                   logger=logger,
+                                   list_return=True,
+                                   optional=True))
+            cf_coeff = cf_coeff or any(
+                evaluate_attribute(root,
+                                   schema_dict,
+                                   'chargeDensity',
+                                   contains='cFCoeffs',
+                                   logger=logger,
+                                   list_return=True,
+                                   optional=True))
+        else:
+            cf_coeff = False
         fleur_modes['cf_coeff'] = cf_coeff
     else:
         fleur_modes['cf_coeff'] = False
