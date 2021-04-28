@@ -89,7 +89,7 @@ On the other hand, there are shortcut methods that already know some paths:
     * :py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.create_tag()`: User-friendly method for inserting a tag in the right place by specifying it's name
     * :py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.delete_tag()`: User-friendly method for delete a tag by specifying it's name
     * :py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.delete_att()`: User-friendly method for deleting an attribute from a tag by specifying it's name
-    * :py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.repalce_tag()`: User-friendly method for replacing a tag by another by specifying its name
+    * :py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.replace_tag()`: User-friendly method for replacing a tag by another by specifying its name
     * :py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.set_nmmpmat()`: Specific 
       method for initializing or modifying the density matrix file for a LDA+U calculation (details see below)
     * :py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.rotate_nmmpmat()`: Specific 
