@@ -494,7 +494,10 @@ def test_read_constants():
         'Pi': 3.141592653589793,
         'nm': 18.89726124772898,
         'notPi': 3.0,
-        'pm': 0.01889726124772898
+        'pm': 0.01889726124772898,
+        'Htr': 1.0,
+        'Ry': 0.5,
+        'eV': 0.03674932217565499
     }
     result = read_constants(root1, schema_dict_34)
     assert result == expected_constants
