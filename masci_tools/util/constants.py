@@ -14,24 +14,38 @@
 Here we collect physical constants which are used throughout the code
 that way we ensure consistency
 
+.. note::
+    For masci-tools versions after 0.4.6 the constants used in KKR are replaced
+    are replaced by the NIST values by default. If you still want to use the old values
+    you can set the environment variable MASCI_TOOLS_USE_OLD_CONSTANTS to True
+
 .. literalinclude:: ../../../masci_tools/util/constants.py
    :language: python
-   :lines: 23-
+   :lines: 28-
    :linenos:
 
 """
 import numpy as np
+import os
 
 # NIST https://physics.nist.gov/cgi-bin/cuu/Value?hrev
 HTR_TO_EV = 27.211386245988  #(53)
 RY_TO_EV = 13.605693122994  #(26)
 BOHR_A = 0.5291772108
-ANG_BOHR_KKR = 1.8897261254578281  #Used in common_functions get_Ang2aBohr and get_aBohr2Ang
 HTR_TO_KELVIN = 315_775.02480407
 #Scipy bohr 5.29177210903e-11 m
 #Scipy htr 27.211386245988 eV
 # NIST BOHR 0.529177210903 #(80)
 #https://physics.nist.gov/cgi-bin/cuu/Value?bohrrada0
+
+#KKR constants
+if os.environ.get('MASCI_TOOLS_USE_OLD_CONSTANTS', False) == 'True':
+    ANG_BOHR_KKR = 1.8897261254578281
+    RY_TO_EV_KKR = 13.605693009
+else:
+    #Set the constants to the NIST values
+    RY_TO_EV_KKR = RY_TO_EV
+    ANG_BOHR_KKR = 1.8897261246257702
 
 #Fleur
 #htr_eV   = 27.21138602

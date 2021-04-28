@@ -16,7 +16,7 @@ Everything that is needed to parse the output of a voronoi calculation.
 from masci_tools.io.common_functions import (get_corestates_from_potential, get_highest_core_state, search_string,
                                              get_version_info, get_ef_from_potfile, open_general, convert_to_pystd)
 from masci_tools.io.parsers.kkrparser_functions import get_core_states
-from masci_tools.util.constants import RY_TO_EV
+from masci_tools.io.common_functions import get_Ry2eV
 import numpy as np
 import io
 import sys
@@ -92,7 +92,7 @@ def parse_voronoi_output(out_dict, outfile, potfile, atominfo, radii, inputfile,
         out_dict['emin_units'] = 'Ry'
         diff_emin_ef = emin - get_ef_from_potfile(potfile)
         out_dict['emin_minus_efermi_Ry'] = diff_emin_ef
-        out_dict['emin_minus_efermi'] = diff_emin_ef * RY_TO_EV
+        out_dict['emin_minus_efermi'] = diff_emin_ef * get_Ry2eV()
         out_dict['emin_minus_efermi_Ry_units'] = 'Ry'
         out_dict['emin_minus_efermi_units'] = 'eV'
     except:

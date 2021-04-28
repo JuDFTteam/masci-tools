@@ -161,11 +161,11 @@ def get_aBohr2Ang():
 
 
 def get_Ry2eV():
-    from masci_tools.util.constants import RY_TO_EV
-    warnings.warn(
-        'get_Ry2eV is deprecated. Use the RY_TO_EV constant from the module masci_tools.util.constants instead',
-        DeprecationWarning)
-    return RY_TO_EV
+    from masci_tools.util.constants import RY_TO_EV_KKR
+    #warnings.warn(
+    #    'get_Ry2eV is deprecated. Use the RY_TO_EV constant from the module masci_tools.util.constants instead',
+    #    DeprecationWarning)
+    return RY_TO_EV_KKR
 
 
 def vec_to_angles(vec):

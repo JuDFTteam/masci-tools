@@ -19,7 +19,7 @@ from numpy import ndarray, array, loadtxt, shape
 from masci_tools.io.common_functions import (search_string, get_version_info, angles_to_vec,
                                              get_corestates_from_potential, get_highest_core_state, open_general,
                                              convert_to_pystd)
-from masci_tools.util.constants import RY_TO_EV
+from masci_tools.io.common_functions import get_Ry2eV
 import traceback
 
 __copyright__ = (u'Copyright (c), 2017, Forschungszentrum Jülich GmbH,' 'IAS-1/PGI-1, Germany. All rights reserved.')
@@ -840,7 +840,7 @@ def parse_kkr_outputfile(out_dict,
 
         try:
             result = get_Etot(outfile)
-            out_dict['energy'] = result[-1] * RY_TO_EV
+            out_dict['energy'] = result[-1] * get_Ry2eV()
             out_dict['energy_unit'] = 'eV'
             out_dict['total_energy_Ry'] = result[-1]
             out_dict['total_energy_Ry_unit'] = 'Rydberg'
@@ -853,7 +853,7 @@ def parse_kkr_outputfile(out_dict,
 
         try:
             result = get_single_particle_energies(outfile_000)
-            out_dict['single_particle_energies'] = result * RY_TO_EV
+            out_dict['single_particle_energies'] = result * get_Ry2eV()
             out_dict['single_particle_energies_unit'] = 'eV'
         except:
             if not doscalc:
