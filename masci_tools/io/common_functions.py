@@ -145,19 +145,19 @@ def angles_to_vec(magnitude, theta, phi):
 
 
 def get_Ang2aBohr():
-    from masci_tools.util.constants import BOHR_A
-    warnings.warn(
-        'get_Ang2aBohr is deprecated. Use 1/BOHR_A with the BOHR_A constant from the module masci_tools.util.constants instead',
-        DeprecationWarning)
-    return 1.0 / BOHR_A
+    from masci_tools.util.constants import ANG_BOHR_KKR
+    #warnings.warn(
+    #    'get_Ang2aBohr is deprecated. Use 1/BOHR_A with the BOHR_A constant from the module masci_tools.util.constants instead',
+    #    DeprecationWarning)
+    return ANG_BOHR_KKR
 
 
 def get_aBohr2Ang():
-    from masci_tools.util.constants import BOHR_A
-    warnings.warn(
-        'get_aBohr2Ang is deprecated. Use the BOHR_A constant from the module masci_tools.util.constants instead',
-        DeprecationWarning)
-    return BOHR_A
+    from masci_tools.util.constants import ANG_BOHR_KKR
+    #warnings.warn(
+    #    'get_aBohr2Ang is deprecated. Use the BOHR_A constant from the module masci_tools.util.constants instead',
+    #    DeprecationWarning)
+    return 1.0 / ANG_BOHR_KKR
 
 
 def get_Ry2eV():
