@@ -69,7 +69,7 @@ class FleurXMLModifier:
 
     _extra_functions = {}
 
-    def __new__(cls):
+    def __new__(cls, validate_signatures=True):
 
         if getattr(cls, 'xpath_functions', None) is None:
             cls.xpath_functions = {**cls._xpath_functions, **cls._extra_functions.get('xpath', {})}
