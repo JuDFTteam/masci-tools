@@ -15,8 +15,8 @@ Here we collect physical constants which are used throughout the code
 that way we ensure consistency
 
 .. note::
-    For masci-tools versions after 0.4.6 the constants used in KKR are replaced
-    are replaced by the NIST values by default. If you still want to use the old values
+    For masci-tools versions after ``0.4.6`` the constants used in the KKR functions are replaced
+    by the NIST values by default. If you still want to use the old values
     you can set the environment variable MASCI_TOOLS_USE_OLD_CONSTANTS to True
 
 .. literalinclude:: ../../../masci_tools/util/constants.py

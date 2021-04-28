@@ -86,6 +86,10 @@ On the other hand, there are shortcut methods that already know some paths:
     * :py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.set_first_text()`: user-friendly method for setting the text on the first occurrence of an xml element in the xml file by specifying its name
     * :py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.set_simple_tag()`: user-friendly method for creating and setting attributes on simple xml elements (only attributes) in the xml file by specifying its name
     * :py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.set_complex_tag()`: user-friendly method for creating complex tags in the xml file by specifying its name
+    * :py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.create_tag()`: User-friendly method for inserting a tag in the right place by specifying it's name
+    * :py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.delete_tag()`: User-friendly method for delete a tag by specifying it's name
+    * :py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.delete_att()`: User-friendly method for deleting an attribute from a tag by specifying it's name
+    * :py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.repalce_tag()`: User-friendly method for replacing a tag by another by specifying its name
     * :py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.set_nmmpmat()`: Specific 
       method for initializing or modifying the density matrix file for a LDA+U calculation (details see below)
     * :py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.rotate_nmmpmat()`: Specific 

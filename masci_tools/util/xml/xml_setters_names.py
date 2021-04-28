@@ -68,6 +68,108 @@ def create_tag(xmltree, schema_dict, tag, complex_xpath=None, create_parents=Fal
     return xmltree
 
 
+def delete_tag(xmltree, schema_dict, tag_name, complex_xpath=None, occurrences=None, **kwargs):
+    """
+    This method deletes a tag with a uniquely identified xpath.
+
+    :param xmltree: an xmltree that represents inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
+    :param tag: str of the tag to delete
+    :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+    :param occurrences: int or list of int. Which occurence of the parent nodes to delete a tag.
+                        By default all nodes are used.
+
+    Kwargs:
+        :param contains: str, this string has to be in the final path
+        :param not_contains: str, this string has to NOT be in the final path
+
+    :returns: xmltree with deleted tags
+    """
+    from masci_tools.util.xml.xml_setters_basic import xml_delete_tag
+    from masci_tools.util.xml.common_functions import check_complex_xpath
+
+    base_xpath = get_tag_xpath(schema_dict, tag_name, **kwargs)
+
+    if complex_xpath is None:
+        complex_xpath = base_xpath
+
+    check_complex_xpath(xmltree, base_xpath, complex_xpath)
+
+    xmltree = xml_delete_tag(xmltree, complex_xpath, occurrences=occurrences)
+
+    return xmltree
+
+
+def delete_att(xmltree, schema_dict, attrib_name, complex_xpath=None, occurrences=None, **kwargs):
+    """
+    This method deletes a attribute with a uniquely identified xpath.
+
+    :param xmltree: an xmltree that represents inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
+    :param tag: str of the attribute to delete
+    :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+    :param occurrences: int or list of int. Which occurence of the parent nodes to delete a attribute.
+                        By default all nodes are used.
+
+    Kwargs:
+        :param tag_name: str, name of the tag where the attribute should be parsed
+        :param contains: str, this string has to be in the final path
+        :param not_contains: str, this string has to NOT be in the final path
+        :param exclude: list of str, here specific types of attributes can be excluded
+                        valid values are: settable, settable_contains, other
+
+    :returns: xmltree with deleted attributes
+    """
+    from masci_tools.util.xml.xml_setters_basic import xml_delete_att
+    from masci_tools.util.xml.common_functions import check_complex_xpath, split_off_attrib
+
+    base_xpath = get_attrib_xpath(schema_dict, attrib_name, **kwargs)
+
+    tag_xpath, attrib_name = split_off_attrib(base_xpath)
+
+    if complex_xpath is None:
+        complex_xpath = tag_xpath
+
+    check_complex_xpath(xmltree, tag_xpath, complex_xpath)
+
+    xmltree = xml_delete_att(xmltree, complex_xpath, attrib_name, occurrences=occurrences)
+
+    return xmltree
+
+
+def replace_tag(xmltree, schema_dict, tag_name, newelement, complex_xpath=None, occurrences=None, **kwargs):
+    """
+    This method deletes a tag with a uniquely identified xpath.
+
+    :param xmltree: an xmltree that represents inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
+    :param tag: str of the tag to replace
+    :param newelement: etree Element to replace the tag
+    :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+    :param occurrences: int or list of int. Which occurence of the parent nodes to replace a tag.
+                        By default all nodes are used.
+
+    Kwargs:
+        :param contains: str, this string has to be in the final path
+        :param not_contains: str, this string has to NOT be in the final path
+
+    :returns: xmltree with replaced tags
+    """
+    from masci_tools.util.xml.xml_setters_basic import xml_replace_tag
+    from masci_tools.util.xml.common_functions import check_complex_xpath
+
+    base_xpath = get_tag_xpath(schema_dict, tag_name, **kwargs)
+
+    if complex_xpath is None:
+        complex_xpath = base_xpath
+
+    check_complex_xpath(xmltree, base_xpath, complex_xpath)
+
+    xmltree = xml_replace_tag(xmltree, complex_xpath, newelement, occurrences=occurrences)
+
+    return xmltree
+
+
 def add_number_to_attrib(xmltree,
                          schema_dict,
                          attributename,

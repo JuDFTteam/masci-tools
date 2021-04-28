@@ -204,6 +204,9 @@ class FleurXMLModifier:
             'set_complex_tag': self.set_complex_tag,
             'set_simple_tag': self.set_simple_tag,
             'create_tag': self.create_tag,
+            'delete_tag': self.delete_tag,
+            'delete_att': self.delete_att,
+            'replace_tag': self.replace_tag,
             'set_text': self.set_text,
             'set_first_text': self.set_first_text,
             'set_attrib_value': self.set_attrib_value,
@@ -438,6 +441,61 @@ class FleurXMLModifier:
         """
         self._validate_signature('create_tag', *args, **kwargs)
         self._tasks.append(ModifierTask('create_tag', args, kwargs))
+
+    def delete_tag(self, *args, **kwargs):
+        """
+        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.delete_tag()` to
+        the list of tasks that will be done on the xmltree.
+
+        :param tag: str of the tag to delete
+        :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+        :param occurrences: int or list of int. Which occurence of the parent nodes to delete a tag.
+                            By default all nodes are used.
+
+        Kwargs:
+            :param contains: str, this string has to be in the final path
+            :param not_contains: str, this string has to NOT be in the final path
+        """
+        self._validate_signature('delete_tag', *args, **kwargs)
+        self._tasks.append(ModifierTask('delete_tag', args, kwargs))
+
+    def delete_att(self, *args, **kwargs):
+        """
+        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.delete_att()` to
+        the list of tasks that will be done on the xmltree.
+
+        :param tag: str of the attribute to delete
+        :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+        :param occurrences: int or list of int. Which occurence of the parent nodes to delete a attribute.
+                            By default all nodes are used.
+
+        Kwargs:
+            :param tag_name: str, name of the tag where the attribute should be parsed
+            :param contains: str, this string has to be in the final path
+            :param not_contains: str, this string has to NOT be in the final path
+            :param exclude: list of str, here specific types of attributes can be excluded
+                            valid values are: settable, settable_contains, other
+        """
+        self._validate_signature('delete_att', *args, **kwargs)
+        self._tasks.append(ModifierTask('delete_att', args, kwargs))
+
+    def replace_tag(self, *args, **kwargs):
+        """
+        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.replace_tag()` to
+        the list of tasks that will be done on the xmltree.
+
+        :param tag: str of the tag to replace
+        :param newelement: a new tag
+        :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+        :param occurrences: int or list of int. Which occurence of the parent nodes to replace a tag.
+                            By default all nodes are used.
+
+        Kwargs:
+            :param contains: str, this string has to be in the final path
+            :param not_contains: str, this string has to NOT be in the final path
+        """
+        self._validate_signature('replace_tag', *args, **kwargs)
+        self._tasks.append(ModifierTask('replace_tag', args, kwargs))
 
     def set_complex_tag(self, *args, **kwargs):
         """

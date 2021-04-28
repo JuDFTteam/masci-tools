@@ -48,7 +48,7 @@ def test_fleurxmlmodifier_facade_methods_validation():
     actions = fm.get_avail_actions()
 
     for name, action in actions.items():
-        if name not in ('create_tag',):  #Create tag actually accepts this
+        if name not in ('create_tag', 'delete_tag', 'delete_att'):  #Create tag actually accepts this
             #(since random_kwarg is packed into the kwargs of that function)
             with pytest.raises(TypeError):
                 action('TEST_ARG', random_kwarg='TEST2')

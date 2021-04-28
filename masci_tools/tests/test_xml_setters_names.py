@@ -143,6 +143,242 @@ def test_create_tag_occurrences(load_inpxml):
                                                            [('type', 'SCLO'), ('l', '1'), ('n', '5'), ('eDeriv', '0')]]
 
 
+def test_delete_tag(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import delete_tag
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    assert len(eval_xpath(root, '/fleurInput/atomSpecies/species', list_return=True)) == 2
+
+    delete_tag(xmltree, schema_dict, 'species')
+
+    assert len(eval_xpath(root, '/fleurInput/atomSpecies/species', list_return=True)) == 0
+
+
+def test_delete_tag_specification(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import delete_tag
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    assert len(eval_xpath(root, '/fleurInput/atomSpecies/species/lo', list_return=True)) == 3
+
+    with pytest.raises(ValueError, match='The tag lo has multiple possible paths with the current specification.'):
+        delete_tag(xmltree, schema_dict, 'lo')
+
+    delete_tag(xmltree, schema_dict, 'lo', contains='species')
+
+    assert len(eval_xpath(root, '/fleurInput/atomSpecies/species/lo', list_return=True)) == 0
+
+
+def test_delete_tag_complex_xpath(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import delete_tag
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    assert len(eval_xpath(root, '/fleurInput/atomSpecies/species/lo', list_return=True)) == 3
+
+    delete_tag(xmltree,
+               schema_dict,
+               'lo',
+               contains='species',
+               complex_xpath="/fleurInput/atomSpecies/species[@name='Fe-1']/lo")
+
+    nodes = eval_xpath(root, '/fleurInput/atomSpecies/species/lo', list_return=True)
+
+    assert len(nodes) == 1
+    assert [node.getparent().attrib['name'] for node in nodes] == ['Pt-1']
+
+
+def test_delete_tag_occurrences(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import delete_tag
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    assert len(eval_xpath(root, '/fleurInput/atomSpecies/species/lo', list_return=True)) == 3
+
+    delete_tag(xmltree, schema_dict, 'lo', contains='species', occurrences=[0, 2])
+
+    nodes = eval_xpath(root, '/fleurInput/atomSpecies/species/lo', list_return=True)
+
+    assert len(nodes) == 1
+    assert [node.getparent().attrib['name'] for node in nodes] == ['Fe-1']
+
+
+def test_delete_att(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import delete_att
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    assert eval_xpath(root, '/fleurInput/calculationSetup/cutoffs/@Kmax') == '4.00000000'
+
+    delete_att(xmltree, schema_dict, 'kmax')
+
+    assert eval_xpath(root, '/fleurInput/calculationSetup/cutoffs/@Kmax') == []
+
+
+def test_delete_att_specification(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import delete_att
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/mtSphere/@radius',
+                      list_return=True) == ['2.20000000', '2.20000000']
+
+    with pytest.raises(ValueError,
+                       match='The attrib radius has multiple possible paths with the current specification.'):
+        delete_att(xmltree, schema_dict, 'radius')
+
+    delete_att(xmltree, schema_dict, 'radius', contains='species')
+
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/mtSphere/@radius', list_return=True) == []
+
+
+def test_delete_att_complex_xpath(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import delete_att
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/mtSphere/@radius',
+                      list_return=True) == ['2.20000000', '2.20000000']
+
+    delete_att(xmltree,
+               schema_dict,
+               'radius',
+               contains='species',
+               complex_xpath="/fleurInput/atomSpecies/species[@name='Fe-1']/mtSphere")
+
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/mtSphere/@radius') == '2.20000000'
+    assert eval_xpath(root, "/fleurInput/atomSpecies/species[@name='Pt-1']/mtSphere/@radius") == '2.20000000'
+
+
+def test_delete_att_occurrences(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import delete_att
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/mtSphere/@radius',
+                      list_return=True) == ['2.20000000', '2.20000000']
+
+    delete_att(xmltree, schema_dict, 'radius', contains='species', occurrences=[1])
+
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/mtSphere/@radius') == '2.20000000'
+    assert eval_xpath(root, "/fleurInput/atomSpecies/species[@name='Fe-1']/mtSphere/@radius") == '2.20000000'
+
+
+def test_replace_tag(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import replace_tag
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    new_elem = etree.Element('test_tag')
+
+    assert len(eval_xpath(root, '/fleurInput/atomSpecies/species', list_return=True)) == 2
+
+    replace_tag(xmltree, schema_dict, 'species', new_elem)
+
+    assert len(eval_xpath(root, '/fleurInput/atomSpecies/species', list_return=True)) == 0
+    assert len(eval_xpath(root, '/fleurInput/atomSpecies/test_tag', list_return=True)) == 2
+
+
+def test_replace_tag_specification(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import replace_tag
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    new_elem = etree.Element('test_tag')
+
+    assert len(eval_xpath(root, '/fleurInput/atomSpecies/species/lo', list_return=True)) == 3
+
+    with pytest.raises(ValueError, match='The tag lo has multiple possible paths with the current specification.'):
+        replace_tag(xmltree, schema_dict, 'lo', new_elem)
+
+    replace_tag(xmltree, schema_dict, 'lo', new_elem, contains='species')
+
+    assert len(eval_xpath(root, '/fleurInput/atomSpecies/species/lo', list_return=True)) == 0
+    assert len(eval_xpath(root, '/fleurInput/atomSpecies/species/test_tag', list_return=True)) == 3
+
+
+def test_replace_tag_complex_xpath(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import replace_tag
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    new_elem = etree.Element('test_tag')
+
+    assert len(eval_xpath(root, '/fleurInput/atomSpecies/species/lo', list_return=True)) == 3
+
+    replace_tag(xmltree,
+                schema_dict,
+                'lo',
+                new_elem,
+                contains='species',
+                complex_xpath="/fleurInput/atomSpecies/species[@name='Fe-1']/lo")
+
+    lo_nodes = eval_xpath(root, '/fleurInput/atomSpecies/species/lo', list_return=True)
+    replaced_nodes = eval_xpath(root, '/fleurInput/atomSpecies/species/test_tag', list_return=True)
+
+    assert len(lo_nodes) == 1
+    assert [node.getparent().attrib['name'] for node in lo_nodes] == ['Pt-1']
+    assert len(replaced_nodes) == 2
+    assert [node.getparent().attrib['name'] for node in replaced_nodes] == ['Fe-1', 'Fe-1']
+
+
+def test_replace_tag_occurrences(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import replace_tag
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    root = xmltree.getroot()
+
+    new_elem = etree.Element('test_tag')
+
+    assert len(eval_xpath(root, '/fleurInput/atomSpecies/species/lo', list_return=True)) == 3
+
+    replace_tag(xmltree, schema_dict, 'lo', new_elem, contains='species', occurrences=[0, 2])
+
+    lo_nodes = eval_xpath(root, '/fleurInput/atomSpecies/species/lo', list_return=True)
+    replaced_nodes = eval_xpath(root, '/fleurInput/atomSpecies/species/test_tag', list_return=True)
+
+    assert len(lo_nodes) == 1
+    assert [node.getparent().attrib['name'] for node in lo_nodes] == ['Fe-1']
+    assert len(replaced_nodes) == 2
+    assert [node.getparent().attrib['name'] for node in replaced_nodes] == ['Fe-1', 'Pt-1']
+
+
 def test_set_attrib_value(load_inpxml):
     from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_names import set_attrib_value
