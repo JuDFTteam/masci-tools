@@ -63,19 +63,28 @@ class FleurXMLModifier:
 
     """
 
-    xpath_functions = copy.deepcopy(XPATH_SETTERS)
-    schema_dict_functions = copy.deepcopy(SCHEMA_DICT_SETTERS)
-    nmmpmat_functions = copy.deepcopy(NMMPMAT_SETTERS)
+    _xpath_functions = XPATH_SETTERS
+    _schema_dict_functions = SCHEMA_DICT_SETTERS
+    _nmmpmat_functions = NMMPMAT_SETTERS
+    _no_xmltree_functions = {}
 
-    def __init__(self, extra_funcs=None, validate_signatures=True):
+    _extra_functions = {}
+
+    def __new__(cls):
+
+        if getattr(cls, 'xpath_functions', None) is None:
+            cls.xpath_functions = {**cls._xpath_functions, **cls._extra_functions.get('xpath', {})}
+            cls.schema_dict_functions = {**cls._schema_dict_functions, **cls._extra_functions.get('schema_dict', {})}
+            cls.nmmpmat_functions = {**cls._nmmpmat_functions, **cls._extra_functions.get('nmmpmat', {})}
+            cls.no_xmltree_functions = {**cls._no_xmltree_functions, **cls._extra_functions.get('no_xmltree', {})}
+
+        return super().__new__(cls)
+
+    def __init__(self, validate_signatures=True):
 
         self._tasks = []
         self.validate_signatures = validate_signatures
 
-        if extra_funcs is not None:
-            self.xpath_functions.update(extra_funcs.get('basic', {}))
-            self.schema_dict_functions.update(extra_funcs.get('schema_dict', {}))
-            self.nmmpmat_functions.update(extra_funcs.get('nmmpmat', {}))
 
     @classmethod
     def fromList(cls, task_list, *args, **kwargs):
@@ -120,6 +129,9 @@ class FleurXMLModifier:
             elif name in self.nmmpmat_functions:
                 func = self.nmmpmat_functions[name]
                 prefix = ('xmltree', 'schema_dict', 'n_mmp_mat')
+            elif name in self.no_xmltree_functions:
+                func = self.no_xmltree_functions[name]
+                prefix = tuple()
 
             #For functions decorated with the schema_dict_version_dispatch
             #We check only the default (This function should have a compatible signature for all registered functions)
@@ -172,6 +184,10 @@ class FleurXMLModifier:
                 xmltree = action(xmltree, schema_dict, *task.args, **task.kwargs)
 
             elif task.name in cls.nmmpmat_functions:
+                action = cls.nmmpmat_functions[task.name]
+                nmmp_lines = action(xmltree, nmmp_lines, schema_dict, *task.args, **task.kwargs)
+
+            elif task.name in cls.no_xmltree_functions:
                 action = cls.nmmpmat_functions[task.name]
                 nmmp_lines = action(xmltree, nmmp_lines, schema_dict, *task.args, **task.kwargs)
 
