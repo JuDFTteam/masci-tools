@@ -76,6 +76,31 @@ class FleurXMLModifier:
             self.nmmpmat_functions.update(extra_funcs.get('nmmpmat', {}))
 
     @classmethod
+    def fromList(cls, task_list, *args, **kwargs):
+        """
+        Instantiate the FleurXMLModifier from a list of tasks to be added immediately
+
+        :param task_list: list of tuples first index is the name of the method
+                          second is defining the arguments by keyword in a dict
+
+        Other arguments are passed on to the __init__ method
+
+        :returns: class with the task list instantiated
+        """
+
+        fm = cls(*args, **kwargs)
+
+        facade_methods = fm.get_avail_actions()
+
+        for name, kwargs in task_list:
+            try:
+                facade_methods[name](**kwargs)
+            except KeyError as exc:
+                raise ValueError(f"Unknown modification method '{name}'") from exc
+
+        return fm
+
+    @classmethod
     def apply_modifications(cls, xmltree, nmmp_lines, modification_tasks, validate_changes=True):
         """
         Applies given modifications to the fleurinp lxml tree.
