@@ -67,8 +67,10 @@ class FleurXMLModifier:
     schema_dict_functions = copy.deepcopy(SCHEMA_DICT_SETTERS)
     nmmpmat_functions = copy.deepcopy(NMMPMAT_SETTERS)
 
-    def __init__(self, extra_funcs=None):
+    def __init__(self, extra_funcs=None, validate_signatures=True):
+
         self._tasks = []
+        self.validate_signatures = validate_signatures
 
         if extra_funcs is not None:
             self.xpath_functions.update(extra_funcs.get('basic', {}))
@@ -99,6 +101,37 @@ class FleurXMLModifier:
                 raise ValueError(f"Unknown modification method '{name}'") from exc
 
         return fm
+
+    def _validate_signature(self, name, *args, **kwargs):
+        """
+        Validate that the given arguments to the registration
+        method can be used to call the corresponding XML modifying function
+        """
+        from inspect import getcallargs
+
+        if self.validate_signatures:
+
+            if name in self.xpath_functions:
+                func = self.xpath_functions[name]
+                prefix = ('xmltree',)
+            elif name in self.schema_dict_functions:
+                func = self.schema_dict_functions[name]
+                prefix = ('xmltree', 'schema_dict')
+            elif name in self.nmmpmat_functions:
+                func = self.nmmpmat_functions[name]
+                prefix = ('xmltree', 'schema_dict', 'n_mmp_mat')
+
+            #For functions decorated with the schema_dict_version_dispatch
+            #We check only the default (This function should have a compatible signature for all registered functions)
+            if getattr(func, 'registry', None) is not None:
+                func = func.registry['default']
+
+            try:
+                getcallargs(func, *prefix, *args, **kwargs)
+            except TypeError as exc:
+                raise TypeError(
+                    f"The given arguments for the registration method '{name}' are not valid for the XML modifying function"
+                ) from exc
 
     @classmethod
     def apply_modifications(cls, xmltree, nmmp_lines, modification_tasks, validate_changes=True):
@@ -270,6 +303,7 @@ class FleurXMLModifier:
                            'ctail': False,
                            'l_ss': True}
         """
+        self._validate_signature('set_inpchanges', *args, **kwargs)
         self._tasks.append(ModifierTask('set_inpchanges', args, kwargs))
 
     def shift_value(self, *args, **kwargs):
@@ -285,6 +319,7 @@ class FleurXMLModifier:
 
                 change_dict = {'itmax' : 1, 'dVac': -0.123}
         """
+        self._validate_signature('shift_value', *args, **kwargs)
         self._tasks.append(ModifierTask('shift_value', args, kwargs))
 
     def set_species(self, *args, **kwargs):
@@ -312,6 +347,7 @@ class FleurXMLModifier:
         ``special`` keys are supported. To find possible
         keys of the inner dictionary please refer to the FLEUR documentation flapw.de
         """
+        self._validate_signature('set_species', *args, **kwargs)
         self._tasks.append(ModifierTask('set_species', args, kwargs))
 
     def set_species_label(self, *args, **kwargs):
@@ -323,6 +359,7 @@ class FleurXMLModifier:
         :param attributedict: a python dict specifying what you want to change.
 
         """
+        self._validate_signature('set_species_label', *args, **kwargs)
         self._tasks.append(ModifierTask('set_species_label', args, kwargs))
 
     def shift_value_species_label(self, *args, **kwargs):
@@ -340,6 +377,7 @@ class FleurXMLModifier:
             :param not_contains: str, this string has to NOT be in the final path
 
         """
+        self._validate_signature('shift_value_species_label', *args, **kwargs)
         self._tasks.append(ModifierTask('shift_value_species_label', args, kwargs))
 
     def set_atomgroup(self, *args, **kwargs):
@@ -359,6 +397,7 @@ class FleurXMLModifier:
             'attributedict': {'nocoParams': {'beta': val}}
 
         """
+        self._validate_signature('set_atomgroup', *args, **kwargs)
         self._tasks.append(ModifierTask('set_atomgroup', args, kwargs))
 
     def set_atomgroup_label(self, *args, **kwargs):
@@ -377,6 +416,7 @@ class FleurXMLModifier:
             'attributedict': {'nocoParams': {'beta': val}}
 
         """
+        self._validate_signature('set_atomgroup_label', *args, **kwargs)
         self._tasks.append(ModifierTask('set_atomgroup_label', args, kwargs))
 
     def create_tag(self, *args, **kwargs):
@@ -395,6 +435,7 @@ class FleurXMLModifier:
             :param contains: str, this string has to be in the final path
             :param not_contains: str, this string has to NOT be in the final path
         """
+        self._validate_signature('create_tag', *args, **kwargs)
         self._tasks.append(ModifierTask('create_tag', args, kwargs))
 
     def set_complex_tag(self, *args, **kwargs):
@@ -414,6 +455,7 @@ class FleurXMLModifier:
             :param not_contains: str, this string has to NOT be in the final path
 
         """
+        self._validate_signature('set_complex_tag', *args, **kwargs)
         self._tasks.append(ModifierTask('set_complex_tag', args, kwargs))
 
     def set_simple_tag(self, *args, **kwargs):
@@ -432,6 +474,7 @@ class FleurXMLModifier:
             :param contains: str, this string has to be in the final path
             :param not_contains: str, this string has to NOT be in the final path
         """
+        self._validate_signature('set_simple_tag', *args, **kwargs)
         self._tasks.append(ModifierTask('set_simple_tag', args, kwargs))
 
     def set_text(self, *args, **kwargs):
@@ -450,6 +493,7 @@ class FleurXMLModifier:
             :param not_contains: str, this string has to NOT be in the final path
 
         """
+        self._validate_signature('set_text', *args, **kwargs)
         self._tasks.append(ModifierTask('set_text', args, kwargs))
 
     def set_first_text(self, *args, **kwargs):
@@ -467,6 +511,7 @@ class FleurXMLModifier:
             :param not_contains: str, this string has to NOT be in the final path
 
         """
+        self._validate_signature('set_first_text', *args, **kwargs)
         self._tasks.append(ModifierTask('set_first_text', args, kwargs))
 
     def set_attrib_value(self, *args, **kwargs):
@@ -488,6 +533,7 @@ class FleurXMLModifier:
                             valid values are: settable, settable_contains, other
 
         """
+        self._validate_signature('set_attrib_value', *args, **kwargs)
         self._tasks.append(ModifierTask('set_attrib_value', args, kwargs))
 
     def set_first_attrib_value(self, *args, **kwargs):
@@ -508,6 +554,7 @@ class FleurXMLModifier:
                             valid values are: settable, settable_contains, other
 
         """
+        self._validate_signature('set_first_attrib_value', *args, **kwargs)
         self._tasks.append(ModifierTask('set_first_attrib_value', args, kwargs))
 
     def add_number_to_attrib(self, *args, **kwargs):
@@ -531,6 +578,7 @@ class FleurXMLModifier:
                             valid values are: settable, settable_contains, other
 
         """
+        self._validate_signature('add_number_to_attrib', *args, **kwargs)
         self._tasks.append(ModifierTask('add_number_to_attrib', args, kwargs))
 
     def add_number_to_first_attrib(self, *args, **kwargs):
@@ -553,6 +601,7 @@ class FleurXMLModifier:
                             valid values are: settable, settable_contains, other
 
         """
+        self._validate_signature('add_number_to_first_attrib', *args, **kwargs)
         self._tasks.append(ModifierTask('add_number_to_first_attrib', args, kwargs))
 
     def xml_create_tag(self, *args, **kwargs):
@@ -567,6 +616,7 @@ class FleurXMLModifier:
         :param occurrences: int or list of int. Which occurence of the parent nodes to create a tag.
                             By default all nodes are used.
         """
+        self._validate_signature('xml_create_tag', *args, **kwargs)
         self._tasks.append(ModifierTask('xml_create_tag', args, kwargs))
 
     def xml_replace_tag(self, *args, **kwargs):
@@ -579,6 +629,7 @@ class FleurXMLModifier:
         :param occurrences: int or list of int. Which occurence of the parent nodes to create a tag.
                             By default all nodes are used.
         """
+        self._validate_signature('xml_replace_tag', *args, **kwargs)
         self._tasks.append(ModifierTask('xml_replace_tag', args, kwargs))
 
     def xml_delete_tag(self, *args, **kwargs):
@@ -590,6 +641,7 @@ class FleurXMLModifier:
         :param occurrences: int or list of int. Which occurence of the parent nodes to create a tag.
                             By default all nodes are used.
         """
+        self._validate_signature('xml_delete_tag', *args, **kwargs)
         self._tasks.append(ModifierTask('xml_delete_tag', args, kwargs))
 
     def xml_delete_att(self, *args, **kwargs):
@@ -602,6 +654,7 @@ class FleurXMLModifier:
         :param occurrences: int or list of int. Which occurence of the parent nodes to create a tag.
                             By default all nodes are used.
         """
+        self._validate_signature('xml_delete_att', *args, **kwargs)
         self._tasks.append(ModifierTask('xml_delete_att', args, kwargs))
 
     def xml_set_attrib_value_no_create(self, *args, **kwargs):
@@ -614,6 +667,7 @@ class FleurXMLModifier:
         :param attribv: value or list of values to set (if not str they will be converted with `str(value)`)
         :param occurrences: int or list of int. Which occurence of the node to set. By default all are set.
         """
+        self._validate_signature('xml_set_attrib_value_no_create', *args, **kwargs)
         self._tasks.append(ModifierTask('xml_set_attrib_value_no_create', args, kwargs))
 
     def xml_set_text_no_create(self, *args, **kwargs):
@@ -625,6 +679,7 @@ class FleurXMLModifier:
         :param text: value or list of values to set (if not str they will be converted with `str(value)`)
         :param occurrences: int or list of int. Which occurence of the node to set. By default all are set.
         """
+        self._validate_signature('xml_set_text_no_create', *args, **kwargs)
         self._tasks.append(ModifierTask('xml_set_text_no_create', args, kwargs))
 
     def set_nmmpmat(self, *args, **kwargs):
@@ -641,6 +696,7 @@ class FleurXMLModifier:
         :param phi: float, optional angle (radian), by which to rotate the density matrix before writing it
         :param theta: float, optional angle (radian), by which to rotate the density matrix before writing it
         """
+        self._validate_signature('set_nmmpmat', *args, **kwargs)
         self._tasks.append(ModifierTask('set_nmmpmat', args, kwargs))
 
     def rotate_nmmpmat(self, *args, **kwargs):
@@ -653,6 +709,7 @@ class FleurXMLModifier:
         :param phi: float, angle (radian), by which to rotate the density matrix
         :param theta: float, angle (radian), by which to rotate the density matrix
         """
+        self._validate_signature('rotate_nmmpmat', *args, **kwargs)
         self._tasks.append(ModifierTask('rotate_nmmpmat', args, kwargs))
 
     def set_kpointlist(self, *args, **kwargs):
@@ -673,6 +730,7 @@ class FleurXMLModifier:
         :param switch: bool, if True the kPointlist will be used by Fleur when starting the next calculation
         :param overwrite: bool, if True and a kPointlist with the given name already exists it will be overwritten
         """
+        self._validate_signature('set_kpointlist', *args, **kwargs)
         self._tasks.append(ModifierTask('set_kpointlist', args, kwargs))
 
     def switch_kpointset(self, *args, **kwargs):
@@ -685,6 +743,7 @@ class FleurXMLModifier:
 
         :param list_name: name of the kPoint set to use
         """
+        self._validate_signature('switch_kpointset', *args, **kwargs)
         self._tasks.append(ModifierTask('switch_kpointset', args, kwargs))
 
     def set_nkpts(self, *args, **kwargs):
@@ -699,6 +758,7 @@ class FleurXMLModifier:
         :param gamma: bool that controls if the gamma-point should be included
                       in the k-point mesh
         """
+        self._validate_signature('set_nkpts', *args, **kwargs)
         self._tasks.append(ModifierTask('set_nkpts', args, kwargs))
 
     def set_kpath(self, *args, **kwargs):
@@ -714,4 +774,5 @@ class FleurXMLModifier:
         :param gamma: bool that controls if the gamma-point should be included
                       in the k-point mesh
         """
+        self._validate_signature('set_kpath', *args, **kwargs)
         self._tasks.append(ModifierTask('set_kpath', args, kwargs))

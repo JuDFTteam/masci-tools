@@ -16,8 +16,9 @@ def test_fleurxmlmodifier_facade_methods():
     Make sure that adding all facade methods results in the right task list
     """
     from masci_tools.io.fleurxmlmodifier import FleurXMLModifier, ModifierTask
+    from masci_tools.util.xml.collect_xml_setters import XPATH_SETTERS, SCHEMA_DICT_SETTERS, NMMPMAT_SETTERS
 
-    fm = FleurXMLModifier()
+    fm = FleurXMLModifier(validate_signatures=False)
 
     actions = fm.get_avail_actions()
 
@@ -27,12 +28,32 @@ def test_fleurxmlmodifier_facade_methods():
         action('TEST_ARG', random_kwarg='TEST2')
 
     assert len(actions) == len(fm._tasks)
+    assert set(actions.keys()) == XPATH_SETTERS.keys() | SCHEMA_DICT_SETTERS.keys() | NMMPMAT_SETTERS.keys()
 
     for task, action in zip(fm._tasks, actions.values()):
         assert isinstance(task, ModifierTask)
         assert task.name == action.__name__
         assert task.args == ('TEST_ARG',)
         assert task.kwargs == {'random_kwarg': 'TEST2'}
+
+
+def test_fleurxmlmodifier_facade_methods_validation():
+    """
+    Make sure that adding all facade methods results in the right task list
+    """
+    from masci_tools.io.fleurxmlmodifier import FleurXMLModifier
+
+    fm = FleurXMLModifier()
+
+    actions = fm.get_avail_actions()
+
+    for name, action in actions.items():
+        if name not in ('create_tag',):  #Create tag actually accepts this
+            #(since random_kwarg is packed into the kwargs of that function)
+            with pytest.raises(TypeError):
+                action('TEST_ARG', random_kwarg='TEST2')
+        else:
+            action('TEST_ARG', random_kwarg='TEST2')
 
 
 def test_fleurxml_modifier_modify_xmlfile_simple():
