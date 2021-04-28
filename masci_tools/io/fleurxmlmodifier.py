@@ -127,9 +127,6 @@ class FleurXMLModifier:
             elif name in self.nmmpmat_functions:
                 func = self.nmmpmat_functions[name]
                 prefix = ('xmltree', 'schema_dict', 'n_mmp_mat')
-            elif name in self.no_xmltree_functions:
-                func = self.no_xmltree_functions[name]
-                prefix = tuple()
 
             #For functions decorated with the schema_dict_version_dispatch
             #We check only the default (This function should have a compatible signature for all registered functions)
