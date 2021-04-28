@@ -97,9 +97,13 @@ def get_fleur_modes(xmltree, schema_dict, logger=None):
                                    list_return=True,
                                    optional=True))
             cf_coeff = cf_coeff or any(
-                evaluate_attribute(
-                    root, schema_dict, 'chargeDensity', contains='cFCoeffs', logger=logger, list_return=True,
-                    optional=True))
+                evaluate_attribute(root,
+                                   schema_dict,
+                                   'chargeDensity',
+                                   contains='cFCoeffs',
+                                   logger=logger,
+                                   list_return=True,
+                                   optional=True))
         else:
             cf_coeff = False
         fleur_modes['cf_coeff'] = cf_coeff

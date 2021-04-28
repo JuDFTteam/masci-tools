@@ -551,6 +551,8 @@ class FleurXMLModifier:
 
         :param xpath: a path to the tag to be replaced
         :param newelement: a new tag
+        :param occurrences: int or list of int. Which occurence of the parent nodes to create a tag.
+                            By default all nodes are used.
         """
         self._tasks.append(ModifierTask('xml_replace_tag', args, kwargs))
 
@@ -560,6 +562,8 @@ class FleurXMLModifier:
         the list of tasks that will be done on the xmltree.
 
         :param xpath: a path to the tag to be deleted
+        :param occurrences: int or list of int. Which occurence of the parent nodes to create a tag.
+                            By default all nodes are used.
         """
         self._tasks.append(ModifierTask('xml_delete_tag', args, kwargs))
 
@@ -570,6 +574,8 @@ class FleurXMLModifier:
 
         :param xpath: a path to the attribute to be deleted
         :param attrib: the name of an attribute
+        :param occurrences: int or list of int. Which occurence of the parent nodes to create a tag.
+                            By default all nodes are used.
         """
         self._tasks.append(ModifierTask('xml_delete_att', args, kwargs))
 
