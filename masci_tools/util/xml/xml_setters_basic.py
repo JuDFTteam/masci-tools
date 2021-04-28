@@ -21,20 +21,33 @@ from masci_tools.util.xml.common_functions import eval_xpath
 import warnings
 
 
-def xml_replace_tag(xmltree, xpath, newelement):
+def xml_replace_tag(xmltree, xpath, newelement, occurrences=None):
     """
     replaces xml tags by another tag on an xmletree in place
 
     :param xmltree: an xmltree that represents inp.xml
     :param xpath: a path to the tag to be replaced
     :param newelement: a new tag
+    :param occurrences: int or list of int. Which occurence of the parent nodes to create a tag.
+                        By default all nodes are used.
 
     :returns: xmltree with replaced tag
     """
     import copy
+    from masci_tools.io.common_functions import is_sequence
+
     root = xmltree.getroot()
 
     nodes = eval_xpath(root, xpath, list_return=True)
+
+    if occurrences is not None:
+        if not is_sequence(occurrences):
+            occurrences = [occurrences]
+        try:
+            nodes = [nodes[occ] for occ in occurrences]
+        except IndexError as exc:
+            raise ValueError('Wrong value for occurrences') from exc
+
     for node in nodes:
         parent = node.getparent()
         index = parent.index(node)
@@ -45,37 +58,61 @@ def xml_replace_tag(xmltree, xpath, newelement):
     return xmltree
 
 
-def xml_delete_att(xmltree, xpath, attrib):
+def xml_delete_att(xmltree, xpath, attrib, occurrences=None):
     """
     Deletes an xml attribute in an xmletree.
 
     :param xmltree: an xmltree that represents inp.xml
     :param xpath: a path to the attribute to be deleted
     :param attrib: the name of an attribute
+    :param occurrences: int or list of int. Which occurence of the parent nodes to create a tag.
+                        By default all nodes are used.
 
     :returns: xmltree with deleted attribute
     """
+    from masci_tools.io.common_functions import is_sequence
+
     root = xmltree.getroot()
     nodes = eval_xpath(root, xpath, list_return=True)
-    for node in nodes:
+
+    if occurrences is not None:
+        if not is_sequence(occurrences):
+            occurrences = [occurrences]
         try:
-            del node.attrib[attrib]
-        except BaseException:
-            pass
+            nodes = [nodes[occ] for occ in occurrences]
+        except IndexError as exc:
+            raise ValueError('Wrong value for occurrences') from exc
+
+    for node in nodes:
+        node.attrib.pop(attrib, None)
+
     return xmltree
 
 
-def xml_delete_tag(xmltree, xpath):
+def xml_delete_tag(xmltree, xpath, occurrences=None):
     """
     Deletes a xml tag in an xmletree.
 
     :param xmltree: an xmltree that represents inp.xml
     :param xpath: a path to the tag to be deleted
+    :param occurrences: int or list of int. Which occurence of the parent nodes to create a tag.
+                        By default all nodes are used.
 
     :returns: xmltree with deleted tag
     """
+    from masci_tools.io.common_functions import is_sequence
+
     root = xmltree.getroot()
     nodes = eval_xpath(root, xpath, list_return=True)
+
+    if occurrences is not None:
+        if not is_sequence(occurrences):
+            occurrences = [occurrences]
+        try:
+            nodes = [nodes[occ] for occ in occurrences]
+        except IndexError as exc:
+            raise ValueError('Wrong value for occurrences') from exc
+
     for node in nodes:
         parent = node.getparent()
         parent.remove(node)
