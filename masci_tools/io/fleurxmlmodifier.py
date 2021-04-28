@@ -19,6 +19,7 @@ Essentially a low-level version of the FleurinpModifier in aiida_fleur.
 from collections import namedtuple
 from lxml import etree
 import copy
+from masci_tools.util.xml.collect_xml_setters import XPATH_SETTERS, SCHEMA_DICT_SETTERS, NMMPMAT_SETTERS
 #Enable warnings for missing docstrings
 #pylint: enable=missing-function-docstring
 
@@ -62,11 +63,20 @@ class FleurXMLModifier:
 
     """
 
-    def __init__(self):
+    xpath_functions = copy.deepcopy(XPATH_SETTERS)
+    schema_dict_functions = copy.deepcopy(SCHEMA_DICT_SETTERS)
+    nmmpmat_functions = copy.deepcopy(NMMPMAT_SETTERS)
+
+    def __init__(self, extra_funcs=None):
         self._tasks = []
 
-    @staticmethod
-    def apply_modifications(xmltree, nmmp_lines, modification_tasks, validate_changes=True, extra_funcs=None):
+        if extra_funcs is not None:
+            self.xpath_functions.update(extra_funcs.get('basic', {}))
+            self.schema_dict_functions.update(extra_funcs.get('schema_dict', {}))
+            self.nmmpmat_functions.update(extra_funcs.get('nmmpmat', {}))
+
+    @classmethod
+    def apply_modifications(cls, xmltree, nmmp_lines, modification_tasks, validate_changes=True):
         """
         Applies given modifications to the fleurinp lxml tree.
         It also checks if a new lxml tree is validated against schema.
@@ -82,7 +92,6 @@ class FleurXMLModifier:
 
         :returns: a modified lxml tree and a modified n_mmp_mat file
         """
-        from masci_tools.util.xml.collect_xml_setters import XPATH_SETTERS, SCHEMA_DICT_SETTERS, NMMPMAT_SETTERS
         from masci_tools.util.xml.common_functions import validate_xml, eval_xpath
         from masci_tools.util.xml.xml_setters_nmmpmat import validate_nmmpmat
         from masci_tools.io.parsers.fleur.fleur_schema import InputSchemaDict
@@ -94,26 +103,17 @@ class FleurXMLModifier:
 
         schema_dict = InputSchemaDict.fromVersion(version)
 
-        xpath_functions = copy.deepcopy(XPATH_SETTERS)
-        schema_dict_functions = copy.deepcopy(SCHEMA_DICT_SETTERS)
-        nmmpmat_functions = copy.deepcopy(NMMPMAT_SETTERS)
-
-        if extra_funcs is not None:
-            xpath_functions.update(extra_funcs.get('basic', {}))
-            schema_dict_functions.update(extra_funcs.get('schema_dict', {}))
-            nmmpmat_functions.update(extra_funcs.get('nmmpmat', {}))
-
         for task in modification_tasks:
-            if task.name in xpath_functions:
-                action = xpath_functions[task.name]
+            if task.name in cls.xpath_functions:
+                action = cls.xpath_functions[task.name]
                 xmltree = action(xmltree, *task.args, **task.kwargs)
 
-            elif task.name in schema_dict_functions:
-                action = schema_dict_functions[task.name]
+            elif task.name in cls.schema_dict_functions:
+                action = cls.schema_dict_functions[task.name]
                 xmltree = action(xmltree, schema_dict, *task.args, **task.kwargs)
 
-            elif task.name in nmmpmat_functions:
-                action = nmmpmat_functions[task.name]
+            elif task.name in cls.nmmpmat_functions:
+                action = cls.nmmpmat_functions[task.name]
                 nmmp_lines = action(xmltree, nmmp_lines, schema_dict, *task.args, **task.kwargs)
 
             else:
