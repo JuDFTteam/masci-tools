@@ -353,8 +353,7 @@ def get_ef_from_potfile(potfile):
     """
     extract fermi energy from potfile
     """
-    f = open_general(potfile)
-    with f:
+    with open_general(potfile) as f:
         txt = f.readlines()
     ef = float(txt[3].split()[1])
     return ef
