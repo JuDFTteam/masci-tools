@@ -819,7 +819,6 @@ class ChemicalElements:
         else:
             raise NotImplementedError(f"Output for {output} not implemented.")
 
-        pte = mendeleev.get_table('elements')
         data_selection = self.select_groups(selected_groups, include_special_elements=False)
 
         # first make another group with all ungrouped elements, to draw them greyed out
@@ -828,6 +827,16 @@ class ChemicalElements:
         selected_elements = [element for group in list(data_selection.values()) for element in group]
         unselected_elements = self._chemical_element_list_to_dict(set(all_elements) - set(selected_elements))
         data_selection[unselected_name] = unselected_elements
+
+        # get full periodic table pandas dataframe from mendeleev
+        # DEVNOTE: breaking change in mendeleev v0.7.0: replaced get_table with fetch.fetch_table.
+        version = mendeleev.__version__
+        version_info = tuple([int(num) for num in version.split(".")])
+        if version_info < (0, 7, 0):
+            pte = mendeleev.get_table('elements')
+        else:
+            from mendeleev.fetch import fetch_table
+            pte = fetch_table('elements')
 
         # now make a new attribute(column) and label each element according to group
         for group_name, group in data_selection.items():
