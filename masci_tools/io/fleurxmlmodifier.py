@@ -180,10 +180,6 @@ class FleurXMLModifier:
                 action = cls.nmmpmat_functions[task.name]
                 nmmp_lines = action(xmltree, nmmp_lines, schema_dict, *task.args, **task.kwargs)
 
-            elif task.name in cls.no_xmltree_functions:
-                action = cls.nmmpmat_functions[task.name]
-                nmmp_lines = action(xmltree, nmmp_lines, schema_dict, *task.args, **task.kwargs)
-
             else:
                 raise ValueError(f'Unknown task {task.name}')
 
