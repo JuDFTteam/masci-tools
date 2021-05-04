@@ -290,10 +290,6 @@ def convert_text_to_xml(textvalue, possible_definitions, logger=None, float_form
                     text_definition = definition
 
         if text_definition is None:
-            if isinstance(text, str):
-                converted_list.append(text)
-                continue
-
             if len(text) == 1 and isinstance(text[0], str):
                 converted_list.append(text[0])
                 continue

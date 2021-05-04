@@ -83,7 +83,6 @@ class FleurXMLModifier:
         self._tasks = []
         self.validate_signatures = validate_signatures
 
-
     @classmethod
     def fromList(cls, task_list, *args, **kwargs):
         """
