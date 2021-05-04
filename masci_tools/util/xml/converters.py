@@ -294,6 +294,10 @@ def convert_text_to_xml(textvalue, possible_definitions, logger=None, float_form
                 converted_list.append(text)
                 continue
 
+            if len(text) == 1 and isinstance(text[0], str):
+                converted_list.append(text[0])
+                continue
+
             if logger is None:
                 raise ValueError(f"Failed to convert '{text}', no matching definition found")
             else:
