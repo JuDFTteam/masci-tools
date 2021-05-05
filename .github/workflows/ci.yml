@@ -73,7 +73,6 @@ jobs:
   pylint-warnings:
 
     runs-on: ubuntu-latest
-    needs: [pre-commit]
     continue-on-error: true
     timeout-minutes: 30
 
