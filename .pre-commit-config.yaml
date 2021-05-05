@@ -10,9 +10,12 @@ repos:
       types: [python]
     - id: trailing-whitespace
       types: [python]
+    - id: check-yaml
+    - id: check-added-large-files
+    - id: forbid-new-submodules
 
 - repo: git://github.com/pre-commit/mirrors-yapf
-  rev: v0.30.0
+  rev: v0.31.0
   hooks:
   - id: yapf
     name: yapf

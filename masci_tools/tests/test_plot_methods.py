@@ -9,6 +9,7 @@ import pytest
 # prevent issue with not having a display on travis-ci
 # this needs to go *before* pyplot imports
 import matplotlib
+
 matplotlib.use('Agg')
 from matplotlib.pyplot import gcf
 import matplotlib.pyplot as plt
