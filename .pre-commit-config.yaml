@@ -41,6 +41,8 @@ repos:
   - id: pylint
     name: pylint
     entry: pylint
+    args: [-d, W, -d, R, -d, C]
+    verbose: true
     types: [python]
     language: system
     exclude: '^(docs/)|(examples/)'

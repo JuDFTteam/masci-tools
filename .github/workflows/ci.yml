@@ -70,6 +70,39 @@ jobs:
       run: |
         pre-commit run --all-files || (git status --short; git diff ; exit 1)
 
+  pylint-warnings:
+
+    runs-on: ubuntu-latest
+    needs: [pre-commit]
+    continue-on-error: true
+    timeout-minutes: 30
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Cache python dependencies
+      id: cache-pip
+      uses: actions/cache@v1
+      with:
+        path: ~/.cache/pip
+        key: pip-pre-commit-${{ hashFiles('**/setup.json') }}
+        restore-keys: |
+          pip-pre-commit-
+
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.7
+
+    - name: Install python dependencies
+      run: |
+        pip install .[pre-commit,bokeh-plots]
+        pip freeze
+
+    - name: Run pylint
+      run: |
+        pylint masci_tools/
+
   tests:
 
     runs-on: ubuntu-latest
