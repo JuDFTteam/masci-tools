@@ -51,9 +51,13 @@ jobs:
 
     strategy:
       matrix:
-        name: ['pre-commit errors', 'pre-commit strict']
-        skip-hooks: ['pylint-warnings', '']
-        strict: [false, true]
+        include:
+          - name: pre-commit-errors
+            skip-hooks: pylint-warnings
+            strict: false
+          - name: pre-commit-warnings
+            skip-hooks: ''
+            strict: true
 
     name: ${{ matrix.name }}
     continue-on-error: ${{ matrix.strict }}
