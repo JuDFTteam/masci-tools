@@ -636,7 +636,7 @@ def get_structure_data(xmltree, schema_dict, logger=None):
 
 
 @schema_dict_version_dispatch(output_schema=False)
-def get_kpoints_data(xmltree, schema_dict, name=None, logger=None):
+def get_kpoints_data(xmltree, schema_dict, name=None, index=None, logger=None):
     """
     Get the kpoint sets defined in the given fleur xml file.
 
@@ -648,6 +648,8 @@ def get_kpoints_data(xmltree, schema_dict, name=None, logger=None):
                         of the xmltree
     :param name: str, optional, if given only the kpoint set with the given name
                  is returned
+    :param index: int, optional, if given only the kpoint set with the given index
+                  is returned
     :param logger: logger object for logging warnings, errors
 
     :returns: tuple containing the kpoint information
@@ -667,6 +669,9 @@ def get_kpoints_data(xmltree, schema_dict, name=None, logger=None):
     from masci_tools.util.xml.common_functions import clear_xml
     from masci_tools.util.xml.converters import convert_xml_attribute
 
+    if name is not None and index is not None:
+        raise ValueError('Only provide one of index or name to select kpoint lists')
+
     if isinstance(xmltree, etree._ElementTree):
         xmltree, _ = clear_xml(xmltree)
         root = xmltree.getroot()
@@ -685,6 +690,12 @@ def get_kpoints_data(xmltree, schema_dict, name=None, logger=None):
     labels = [kpoint_set.attrib.get('name') for kpoint_set in kpointlists]
     if name is not None and name not in labels:
         raise ValueError(f'Found no Kpoint list with the name: {name}' f'Available list names: {labels}')
+
+    if index is not None:
+        try:
+            kpointlists = [kpointlists[index]]
+        except IndexError as exc:
+            raise ValueError(f'No kPointList with index {index} found.' f' Only {len(kpointlists)} available') from exc
 
     kpoints_data = {}
     weights_data = {}
