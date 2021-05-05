@@ -47,6 +47,7 @@ if __name__ == '__main__':
             'matplotlib',
             'h5py',
             'pandas',
+            'ase',
             'bump2version',
             'future',
             'lxml>=4.5',

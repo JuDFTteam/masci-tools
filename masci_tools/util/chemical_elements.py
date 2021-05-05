@@ -149,7 +149,8 @@ class ChemicalElements:
                         try:
                             self.__elmts = {'': self._chemical_element_list_to_dict(list(elements))}
                         except TypeError as err:
-                            raise TypeError(f'Argument is a {type(elements)}, but must be a list, dict, tuple or set.') from err
+                            raise TypeError(
+                                f'Argument is a {type(elements)}, but must be a list, dict, tuple or set.') from err
 
                 # init data: an object store associated with each elmt group
                 group_names = self.groups()
