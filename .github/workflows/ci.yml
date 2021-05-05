@@ -40,9 +40,17 @@ jobs:
         SPHINXOPTS='-nW' make -C docs html
 
   pre-commit:
-
     runs-on: ubuntu-latest
     timeout-minutes: 30
+
+    strategy:
+      matrix:
+        name: ['pre-commit (Errors)', 'pre-commit (Strict)']
+        skip-hooks: ['pylint-warnings', '']
+        strict: [false, true]
+
+    name: ${{ matrix.name }}
+    continue-on-error: ${{ matrix.strict }}
 
     steps:
     - uses: actions/checkout@v2
@@ -68,39 +76,8 @@ jobs:
 
     - name: Run pre-commit
       run: |
-        pre-commit run --all-files || (git status --short; git diff ; exit 1)
+        SKIP=${{ matrix.skip-hooks }} pre-commit run --all-files || (git status --short; git diff ; exit 1)
 
-  pylint-warnings:
-
-    runs-on: ubuntu-latest
-    continue-on-error: true
-    timeout-minutes: 30
-
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: Cache python dependencies
-      id: cache-pip
-      uses: actions/cache@v1
-      with:
-        path: ~/.cache/pip
-        key: pip-pre-commit-${{ hashFiles('**/setup.json') }}
-        restore-keys: |
-          pip-pre-commit-
-
-    - name: Set up Python 3.7
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.7
-
-    - name: Install python dependencies
-      run: |
-        pip install .[pre-commit,bokeh-plots]
-        pip freeze
-
-    - name: Run pylint
-      run: |
-        pylint masci_tools/
 
   tests:
 

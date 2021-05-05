@@ -39,9 +39,17 @@ repos:
   hooks:
 
   - id: pylint
-    name: pylint
+    name: pylint-errors
     entry: pylint
     args: [-d, W, -d, R, -d, C]
+    verbose: true
+    types: [python]
+    language: system
+    exclude: '^(docs/)|(examples/)'
+
+  - id: pylint
+    name: pylint-warnings
+    entry: pylint
     verbose: true
     types: [python]
     language: system
