@@ -38,7 +38,7 @@ repos:
 - repo: local
   hooks:
 
-  - id: pylint
+  - id: pylint-errors
     name: pylint-errors
     entry: pylint
     args: [-d, W, -d, R, -d, C]
@@ -47,7 +47,7 @@ repos:
     language: system
     exclude: '^(docs/)|(examples/)'
 
-  - id: pylint
+  - id: pylint-warnings
     name: pylint-warnings
     entry: pylint
     verbose: true

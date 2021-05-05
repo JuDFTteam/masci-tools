@@ -56,7 +56,7 @@ jobs:
             skip-hooks: pylint-warnings
             strict: false
           - name: pre-commit-warnings
-            skip-hooks: ''
+            skip-hooks: pylint-errors
             strict: true
 
     name: ${{ matrix.name }}
