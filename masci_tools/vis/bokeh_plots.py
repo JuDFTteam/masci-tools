@@ -168,9 +168,9 @@ def bokeh_multi_scatter(source,
             ydatad = []
             xdatad = []
             for i, ydat in enumerate(ydata):
-                label = 'y{}'.format(i)
+                label = f'y{i}'
                 ydatad.append(label)
-                xdatad.append('x{}'.format(i))
+                xdatad.append(f'x{i}')
                 if isinstance(xdata[0], list):
                     xdat = xdata[i]
                 else:
@@ -285,9 +285,9 @@ def bokeh_line(source,
             ydatad = []
             xdatad = []
             for i, ydat in enumerate(ydata):
-                label = 'y{}'.format(i)
+                label = f'y{i}'
                 ydatad.append(label)
-                xdatad.append('x{}'.format(i))
+                xdatad.append(f'x{i}')
                 if isinstance(xdata[0], list):
                     xdat = xdata[i]
                 else:

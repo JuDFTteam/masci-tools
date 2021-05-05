@@ -415,7 +415,7 @@ def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True, 
     species_count = {}
     for indx, species in enumerate(species_list):
         atom_dict = {}
-        atoms_name = 'atom{}'.format(indx)
+        atoms_name = f'atom{indx}'
         atom_z = evaluate_attribute(species, schema_dict, 'atomicNumber', constants=constants, logger=logger)
         if not inpgen_ready:
             atom_dict['z'] = atom_z

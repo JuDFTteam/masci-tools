@@ -85,7 +85,7 @@ def dos_recipe_format(group):
                     Transformation(name='get_all_child_datasets', args=(), kwargs={'ignore': 'energyGrid'}),
                     AttribTransformation(name='add_partial_sums',
                                          attrib_name='atoms_groups',
-                                         args=('{atom_prefix}:{{}}'.format(atom_prefix=atom_prefix).format,),
+                                         args=(f'{atom_prefix}:{{}}'.format,),
                                          kwargs={'make_set': True}),
                     Transformation(name='multiply_scalar', args=(1.0 / HTR_TO_EV,), kwargs={}),
                     Transformation(

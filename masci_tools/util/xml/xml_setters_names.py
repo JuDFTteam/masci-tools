@@ -540,7 +540,7 @@ def set_species_label(xmltree, schema_dict, atom_label, attributedict, create=Fa
     if atom_label == 'all':
         return set_species(xmltree, schema_dict, 'all', attributedict, create=create)
 
-    atom_label = '{: >20}'.format(atom_label)
+    atom_label = f'{atom_label: >20}'
     all_groups = eval_simple_xpath(xmltree, schema_dict, 'atomGroup', list_return=True)
 
     species_to_set = set()
@@ -647,7 +647,7 @@ def shift_value_species_label(xmltree, schema_dict, atom_label, attributename, v
     tag_base_xpath, attributename = split_off_attrib(attr_base_path)
 
     if atom_label != 'all':
-        atom_label = '{: >20}'.format(atom_label)
+        atom_label = f'{atom_label: >20}'
     all_groups = eval_simple_xpath(xmltree, schema_dict, 'atomGroup', list_return=True)
 
     species_to_set = set()
@@ -705,7 +705,7 @@ def set_atomgroup_label(xmltree, schema_dict, atom_label, attributedict, create=
         xmltree = set_atomgroup(xmltree, schema_dict, attributedict, position=None, species='all')
         return xmltree
 
-    atom_label = '{: >20}'.format(atom_label)
+    atom_label = f'{atom_label: >20}'
     all_groups = eval_simple_xpath(xmltree, schema_dict, 'atomGroup', list_return=True)
 
     species_to_set = set()
@@ -1137,9 +1137,9 @@ def set_kpath_max4(xmltree, schema_dict, kpath, count, gamma=False):
         xmltree = create_tag(xmltree, schema_dict, 'kPointCount', contains='altKPoint', create_parents=True)
         xmltree = set_first_attrib_value(xmltree, schema_dict, 'purpose', 'bands')
 
-    new_kpo = etree.Element('kPointCount', count='{}'.format(count), gamma='{}'.format(convert_to_fortran_bool(gamma)))
+    new_kpo = etree.Element('kPointCount', count=f'{count}', gamma=f'{convert_to_fortran_bool(gamma)}')
     for label, coord in kpath.items():
-        new_k = etree.Element('specialPoint', name='{}'.format(label))
+        new_k = etree.Element('specialPoint', name=f'{label}')
         text, _ = convert_text_to_xml(coord, [{'type': ['float', 'float_expression'], 'length': 3}])
         new_k.text = text
         new_kpo.append(new_k)

@@ -626,7 +626,7 @@ class MatplotlibPlotter(Plotter):
         import numpy as np
 
         new_cmap = colors.LinearSegmentedColormap.from_list(
-            'trunc({n},{a:.2f},{b:.2f})'.format(n=cmap.name, a=minval, b=maxval), cmap(np.linspace(minval, maxval, n)))
+            f'trunc({cmap.name},{minval:.2f},{maxval:.2f})', cmap(np.linspace(minval, maxval, n)))
 
         return new_cmap
 

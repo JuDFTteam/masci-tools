@@ -33,13 +33,13 @@ with open(os.path.join(ROOT_DIR, '.bumpversion.cfg')) as f:
     VERSION_BUMPVERSION = re.search(MATCH_EXPR, f.read()).group(1).strip()  # type: ignore
 
 if VERSION_INIT != VERSION_SETUP:
-    print("Version numbers don't match: init:'{}', setup:'{}' ".format(VERSION_INIT, VERSION_SETUP))
+    print(f"Version numbers don't match: init:'{VERSION_INIT}', setup:'{VERSION_SETUP}' ")
     sys.exit(1)
 
 if VERSION_INIT != VERSION_PYPROJECT:
-    print("Version numbers don't match: init:'{}', pyproject:'{}' ".format(VERSION_INIT, VERSION_PYPROJECT))
+    print(f"Version numbers don't match: init:'{VERSION_INIT}', pyproject:'{VERSION_PYPROJECT}' ")
     sys.exit(1)
 
 if VERSION_INIT != VERSION_BUMPVERSION:
-    print("Version numbers don't match: init:'{}', bumpversion:'{}' ".format(VERSION_INIT, VERSION_BUMPVERSION))
+    print(f"Version numbers don't match: init:'{VERSION_INIT}', bumpversion:'{VERSION_BUMPVERSION}' ")
     sys.exit(1)

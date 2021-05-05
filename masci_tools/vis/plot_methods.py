@@ -1359,8 +1359,8 @@ def plot_convergence_results_m(iterations,
         for en0, en1 in zip(total_energy[:-1], total_energy[1:]):
             total_energy_abs_diff.append(abs(en1 - en0))
         total_energy_abs_diffs.append(total_energy_abs_diff)
-        plot_labels1.append('delta total energy {}'.format(i))
-        plot_labels2.append('distance {}'.format(i))
+        plot_labels1.append(f'delta total energy {i}')
+        plot_labels2.append(f'distance {i}')
     #saveas3 ='t_energy_convergence2'
     if 'plot_label' in kwargs:
         plot_label = plot_params.convert_to_complete_list(kwargs.pop('plot_label'),
@@ -2012,9 +2012,9 @@ def plot_one_element_corelv(corelevel_dict, element, compound='', axis=None, sav
     elem = element
     xdata = xdata_all[0]
     ydata = ydata_all[0]
-    xlabel = '{} atomtype'.format(elem)
+    xlabel = f'{elem} atomtype'
     ylabel = 'energy in eV'
-    title = 'Element: {} from {} cl {}'.format(elem, compound, corelevels_names)
+    title = f'Element: {elem} from {compound} cl {corelevels_names}'
     #plotlabel ='corelevel shifts'
     #linetyp='o-'
     xmin = xdata[0] - 0.5
@@ -2279,8 +2279,8 @@ def plot_corelevel_spectra(coreleveldict,
         kwargs['linestyle'] = ''
 
     if saveas is None:
-        saveas = 'XPS_theo_{}_{}'.format(fwhm_g, title)
-        saveas1 = 'XPS_theo_2_{}_{}'.format(fwhm_g, title)
+        saveas = f'XPS_theo_{fwhm_g}_{title}'
+        saveas1 = f'XPS_theo_2_{fwhm_g}_{title}'
     else:
         saveas1 = saveas[1]
         saveas = saveas[0]

@@ -268,7 +268,7 @@ class CFCalculation:
             self.bravaisMat['cdn'] = np.array(info.get('bravaisMatrix'))
 
         if numCDN == 0:
-            raise IOError('No charge densities found in {}'.format(hdffile))
+            raise IOError(f'No charge densities found in {hdffile}')
 
         cdn_groups = {key for key in hdffile if 'cdn-' in key}
 
