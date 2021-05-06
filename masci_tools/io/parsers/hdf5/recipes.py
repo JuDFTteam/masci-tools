@@ -70,8 +70,8 @@ def dos_recipe_format(group):
     elif group == 'jDOS':
         atom_prefix = 'jDOS'
     elif group == 'Orbcomp':
-        atom_prefix = 'ORBCOMP'
-    elif group == 'mcd':
+        atom_prefix = 'ORB'
+    elif group == 'MCD':
         atom_prefix = 'MCD'
     else:
         raise ValueError(f'Unknown group: {group}')
@@ -155,7 +155,7 @@ def dos_recipe_format(group):
 FleurDOS = dos_recipe_format('Local')
 FleurJDOS = dos_recipe_format('jDOS')
 FleurORBCOMP = dos_recipe_format('Orbcomp')
-FleurMCD = dos_recipe_format('mcd')
+FleurMCD = dos_recipe_format('MCD')
 
 #Recipe for bandstructures
 FleurBands = {
