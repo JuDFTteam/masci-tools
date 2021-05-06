@@ -18,7 +18,7 @@ Essentially a low-level version of the FleurinpModifier in aiida_fleur.
 """
 from collections import namedtuple
 from lxml import etree
-import copy
+
 from masci_tools.util.xml.collect_xml_setters import XPATH_SETTERS, SCHEMA_DICT_SETTERS, NMMPMAT_SETTERS
 #Enable warnings for missing docstrings
 #pylint: enable=missing-function-docstring
@@ -138,6 +138,7 @@ class FleurXMLModifier:
             except TypeError as exc:
                 raise TypeError(
                     f"The given arguments for the registration method '{name}' are not valid for the XML modifying function"
+                    f"The following error was raised: {exc}"
                 ) from exc
 
     @classmethod
