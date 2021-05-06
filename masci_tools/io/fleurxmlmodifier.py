@@ -138,8 +138,7 @@ class FleurXMLModifier:
             except TypeError as exc:
                 raise TypeError(
                     f"The given arguments for the registration method '{name}' are not valid for the XML modifying function"
-                    f"The following error was raised: {exc}"
-                ) from exc
+                    f'The following error was raised: {exc}') from exc
 
     @classmethod
     def apply_modifications(cls, xmltree, nmmp_lines, modification_tasks, validate_changes=True):
