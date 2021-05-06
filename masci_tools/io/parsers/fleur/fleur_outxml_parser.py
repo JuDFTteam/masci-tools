@@ -361,8 +361,8 @@ def parse_general_information(root, parser, outschema_dict, logger, iteration_to
             parser.iteration_tasks = ['iteration_number', 'fermi_energy', 'bandgap']
 
     if fleurmode['plot']:
-        parser.iteration_tasks = [] #In this case there are multiple possibilities where fleur terminates
-                                    #So we discard all the iteration tasks
+        parser.iteration_tasks = []  #In this case there are multiple possibilities where fleur terminates
+        #So we discard all the iteration tasks
 
     if fleurmode['relax'] and iteration_to_parse == 'last':
         if 'distances' in parser.iteration_tasks:

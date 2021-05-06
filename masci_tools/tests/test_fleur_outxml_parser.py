@@ -496,6 +496,7 @@ def test_outxml_force(data_regression):
         'output_dict': out_dict,
     })
 
+
 def test_outxml_plot(data_regression):
     """
     Test the outxml_parser for a forcetheorem calculation
