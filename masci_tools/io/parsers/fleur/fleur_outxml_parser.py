@@ -369,6 +369,8 @@ def parse_general_information(root, parser, outschema_dict, logger, iteration_to
             parser.iteration_tasks.remove('distances')
         if 'magnetic_distances' in parser.iteration_tasks:
             parser.iteration_tasks.remove('magnetic_distances')
+        if 'nmmp_distances' in parser.iteration_tasks:
+            parser.iteration_tasks.remove('nmmp_distances')
 
     if logger is not None:
         logger.debug('The following tasks are performed on the root: %s', parser.general_tasks)
