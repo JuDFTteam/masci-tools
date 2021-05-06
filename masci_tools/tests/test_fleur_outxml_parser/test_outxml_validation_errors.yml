@@ -29,6 +29,7 @@ output_dict:
     jspin: 2
     ldau: false
     noco: false
+    plot: false
     relax: false
     soc: false
   gmax: 10.0
@@ -77,8 +78,8 @@ warnings:
     ''Ry'': 0.5}'
   - 'The following Fleur modes were found: {''jspin'': 2, ''noco'': False, ''soc'':
     False, ''relax'': False, ''gw'': False, ''force_theorem'': False, ''cf_coeff'':
-    False, ''film'': False, ''ldau'': False, ''dos'': False, ''band'': False, ''bz_integration'':
-    ''tetra''}'
+    False, ''plot'': False, ''film'': False, ''ldau'': False, ''dos'': False, ''band'':
+    False, ''bz_integration'': ''tetra''}'
   parser_warnings:
   - "Output file does not validate against the schema: \nLine 346: Element 'kPointList',\
     \ attribute 'weightSc': The attribute 'weightSc' is not allowed. \nLine 346: Element\

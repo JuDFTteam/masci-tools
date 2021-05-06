@@ -8,5 +8,6 @@ gw: false
 jspin: 2
 ldau: false
 noco: true
+plot: false
 relax: false
 soc: false

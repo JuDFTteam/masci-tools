@@ -65,6 +65,7 @@ output_dict:
     jspin: 2
     ldau: false
     noco: true
+    plot: false
     relax: false
     soc: false
   gmax: '10.17596029'
@@ -158,8 +159,8 @@ warnings:
     ''Ry'': 0.5}'
   - 'The following Fleur modes were found: {''jspin'': 2, ''noco'': True, ''soc'':
     False, ''relax'': False, ''gw'': False, ''force_theorem'': False, ''cf_coeff'':
-    False, ''film'': False, ''ldau'': False, ''dos'': False, ''band'': False, ''bz_integration'':
-    ''hist''}'
+    False, ''plot'': False, ''film'': False, ''ldau'': False, ''dos'': False, ''band'':
+    False, ''bz_integration'': ''hist''}'
   parser_warnings:
   - Found version before MaX3.1 release falling back to file version '0.29'
   - "Output file does not validate against the schema: \nLine 14: Element 'inputData':\

@@ -62,6 +62,7 @@ output_dict:
     jspin: 1
     ldau: true
     noco: false
+    plot: false
     relax: true
     soc: false
   force_atoms:

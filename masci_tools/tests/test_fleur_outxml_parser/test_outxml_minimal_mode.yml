@@ -40,6 +40,7 @@ output_dict:
     jspin: 1
     ldau: false
     noco: false
+    plot: false
     relax: false
     soc: false
   gmax: 11.1

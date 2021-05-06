@@ -31,6 +31,7 @@ output_dict:
     jspin: 2
     ldau: false
     noco: true
+    plot: false
     relax: false
     soc: true
   gmax: 10.2
@@ -95,6 +96,6 @@ warnings:
     ''Ry'': 0.5}'
   - 'The following Fleur modes were found: {''jspin'': 2, ''noco'': True, ''soc'':
     True, ''relax'': False, ''gw'': False, ''force_theorem'': False, ''cf_coeff'':
-    False, ''film'': False, ''ldau'': False, ''dos'': False, ''band'': False, ''bz_integration'':
-    ''hist''}'
+    False, ''plot'': False, ''film'': False, ''ldau'': False, ''dos'': False, ''band'':
+    False, ''bz_integration'': ''hist''}'
   parser_warnings: []

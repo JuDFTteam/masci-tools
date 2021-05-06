@@ -110,6 +110,17 @@ def get_fleur_modes(xmltree, schema_dict, logger=None):
     else:
         fleur_modes['cf_coeff'] = False
 
+    plot = None
+    if tag_exists(root, schema_dict, 'plotting', logger=logger):
+        plot = evaluate_attribute(root, schema_dict, 'iplot', logger=logger, optional=True)
+
+    if schema_dict.inp_version >= (0, 29) and plot is not None:
+        plot = isinstance(plot,int) and plot != 0
+
+    if plot is None:
+        plot = False
+    fleur_modes['plot'] = plot
+
     fleur_modes['film'] = tag_exists(root, schema_dict, 'filmPos', logger=logger)
     fleur_modes['ldau'] = tag_exists(root, schema_dict, 'ldaU', contains='species', logger=logger)
     fleur_modes['dos'] = evaluate_attribute(root, schema_dict, 'dos', constants=constants, logger=logger)

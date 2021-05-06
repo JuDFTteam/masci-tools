@@ -495,3 +495,16 @@ def test_outxml_force(data_regression):
     data_regression.check({
         'output_dict': out_dict,
     })
+
+def test_outxml_plot(data_regression):
+    """
+    Test the outxml_parser for a forcetheorem calculation
+    """
+
+    OUTXML_FILEPATH = os.path.join(outxmlfilefolder_valid[0], 'SiFilmSlicePlotXML/files/out.xml')
+
+    out_dict = outxml_parser(OUTXML_FILEPATH)
+
+    data_regression.check({
+        'output_dict': out_dict,
+    })

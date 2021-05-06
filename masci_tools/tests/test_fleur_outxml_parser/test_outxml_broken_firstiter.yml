@@ -29,6 +29,7 @@ output_dict:
     jspin: 2
     ldau: false
     noco: true
+    plot: false
     relax: false
     soc: false
   gmax: 10.2
@@ -70,8 +71,8 @@ warnings:
     ''Ry'': 0.5}'
   - 'The following Fleur modes were found: {''jspin'': 2, ''noco'': True, ''soc'':
     False, ''relax'': False, ''gw'': False, ''force_theorem'': False, ''cf_coeff'':
-    False, ''film'': False, ''ldau'': False, ''dos'': False, ''band'': False, ''bz_integration'':
-    ''hist''}'
+    False, ''plot'': False, ''film'': False, ''ldau'': False, ''dos'': False, ''band'':
+    False, ''bz_integration'': ''hist''}'
   - The last parsed iteration is 1
   parser_warnings:
   - The out.xml file is broken I try to repair it.

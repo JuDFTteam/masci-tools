@@ -209,6 +209,7 @@ output_dict:
     jspin: 2
     ldau: false
     noco: true
+    plot: false
     relax: false
     soc: true
   gmax: '10.20000000'
@@ -714,8 +715,8 @@ warnings:
     ''Ry'': 0.5}'
   - 'The following Fleur modes were found: {''jspin'': 2, ''noco'': True, ''soc'':
     True, ''relax'': False, ''gw'': False, ''force_theorem'': False, ''cf_coeff'':
-    False, ''film'': False, ''ldau'': False, ''dos'': False, ''band'': False, ''bz_integration'':
-    ''hist''}'
+    False, ''plot'': False, ''film'': False, ''ldau'': False, ''dos'': False, ''band'':
+    False, ''bz_integration'': ''hist''}'
   parser_warnings:
   - Ignoring '0.27' outputVersion for MaX3.1 release
   - "Output file does not validate against the schema: \nLine 16: Element 'inputData':\
@@ -725,3 +726,6 @@ warnings:
     \ \nLine 85: Element 'kPointList', attribute 'posScale': The attribute 'posScale'\
     \ is not allowed. \nLine 91: Element 'spinDependentCharge': This element is not\
     \ expected. \n"
+  - 'Could not convert ''F''. The following errors occurred:'
+  - '   invalid literal for int() with base 10: ''F'''
+  - 'Failed to evaluate attribute iplot, Got value: [''F'']'
