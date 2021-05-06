@@ -66,13 +66,13 @@ from masci_tools.io.parsers.hdf5.reader import Transformation, AttribTransformat
 def dos_recipe_format(group):
 
     if group == 'Local':
-        atom_prefix = 'MT'
+        atom_prefix = 'MT:'
     elif group == 'jDOS':
-        atom_prefix = 'jDOS'
+        atom_prefix = 'jDOS:'
     elif group == 'Orbcomp':
-        atom_prefix = 'ORB'
+        atom_prefix = 'ORB:'
     elif group == 'MCD':
-        atom_prefix = 'MCD'
+        atom_prefix = 'At'
     else:
         raise ValueError(f'Unknown group: {group}')
 
@@ -85,7 +85,7 @@ def dos_recipe_format(group):
                     Transformation(name='get_all_child_datasets', args=(), kwargs={'ignore': 'energyGrid'}),
                     AttribTransformation(name='add_partial_sums',
                                          attrib_name='atoms_groups',
-                                         args=(f'{atom_prefix}:{{}}'.format,),
+                                         args=(f'{atom_prefix}{{}}'.format,),
                                          kwargs={'make_set': True}),
                     Transformation(name='multiply_scalar', args=(1.0 / HTR_TO_EV,), kwargs={}),
                     Transformation(
