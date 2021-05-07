@@ -51,6 +51,32 @@ def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, bokeh_plot=False,
 
     spinpol  = bandsattributes['spins'] == 2 and spinpol and any('_down' in key for key in bandsdata.keys())
 
+    if weight is not None:
+        if isinstance(weight, list):
+            if len(weight) != 2:
+                raise ValueError(f'Expected 2 weight names. Got: {len(weight)}')
+            if all(w in bandsdata for w in weight):
+                if not bokeh_plot:
+                    weight = [bandsdata[w] for w in weight]
+            else:
+                raise ValueError(f'List of weights provided but not all weights are present in bandsdata: {weight}')
+        elif weight in bandsdata:
+            if spinpol:
+                raise ValueError('For spin-polarized bandstructure two weights have to be given for spin-up and down')
+            if not bokeh_plot:
+                weight = bandsdata[weight]
+        else:
+            if not bokeh_plot:
+                if spinpol:
+                    weight = [bandsdata[f'{weight}_up'], bandsdata[f'{weight}_down']]
+                else:
+                    weight = bandsdata[f'{weight}_up']
+            else:
+                if spinpol:
+                    weight = [f'{weight}_up', f'{weight}_down']
+                else:
+                    weight = f'{weight}_up'
+
     if not spinpol and bandsattributes['spins'] == 2:
         #Concatenate the _up and _down columns
         spin_up = bandsdata[[label for label in bandsdata.columns if label.endswith('_up') ]]
@@ -66,27 +92,9 @@ def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, bokeh_plot=False,
         #And now add the new kpath and overwrite bandsdata
         bandsdata = pd.concat([spin_up, kpath], axis=1)
 
-    if weight is not None:
         if isinstance(weight, list):
-            if all(w in bandsdata for w in weight):
-                if not bokeh_plot:
-                    weight = [bandsdata[w] for w in weight]
-            else:
-                raise ValueError(f'List of weights provided but not all weights are present in bandsdata: {weight}')
-        elif weight in bandsdata:
-            if not bokeh_plot:
-                weight = bandsdata[weight]
-        else:
-            if not bokeh_plot:
-                if spinpol:
-                    weight = [bandsdata[f'{weight}_up'], bandsdata[f'{weight}_down']]
-                else:
-                    weight = bandsdata[f'{weight}_up']
-            else:
-                if spinpol:
-                    weight = [f'{weight}_up', f'{weight}_down']
-                else:
-                    weight = f'{weight}_up'
+            if isinstance(weight[0], pd.Series):
+                weight = weight[0].append(weight[1], ignore_index=True)
 
     if bokeh_plot:
         if spinpol:
