@@ -90,7 +90,9 @@ def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, bokeh_plot=False,
         spin_up = pd.concat([spin_up, spin_dn], ignore_index=True)
 
         #And now add the new kpath and overwrite bandsdata
-        bandsdata = pd.concat([spin_up, kpath], axis=1)
+        new_bandsdata = pd.concat([spin_up, kpath], axis=1)
+        bandsdata = new_bandsdata
+
 
         if isinstance(weight, list):
             if isinstance(weight[0], pd.Series):
