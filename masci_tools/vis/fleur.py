@@ -45,6 +45,27 @@ def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, bokeh_plot=False,
     for k_index, label in zip(bandsattributes['special_kpoint_indices'], bandsattributes['special_kpoint_labels']):
         special_kpoints.append((label, bandsdata['kpath'][(k_index * nbands) + 1]))
 
+    plot_label = None
+    if spinpol:
+        plot_label = ['Spin-Up', 'Spin-Down']
+
+    spinpol  = bandsattributes['spins'] == 2 and spinpol and any('_down' in key for key in bandsdata.keys())
+
+    if not spinpol and bandsattributes['spins'] == 2:
+        #Concatenate the _up and _down columns
+        spin_up = bandsdata[[label for label in bandsdata.columns if label.endswith('_up') ]]
+        spin_dn = bandsdata[[label for label in bandsdata.columns if label.endswith('_down') ]]
+        kpath = bandsdata['kpath']
+
+        spin_dn.rename(columns={key: key.replace('_down', '_up') for key in spin_dn.columns}, inplace=True)
+
+        #Double kpath and extend spin up data
+        kpath = kpath.append(kpath, ignore_index=True)
+        spin_up = pd.concat([spin_up, spin_dn], ignore_index=True)
+
+        #And now add the new kpath and overwrite bandsdata
+        bandsdata = pd.concat([spin_up, kpath], axis=1)
+
     if weight is not None:
         if isinstance(weight, list):
             if all(w in bandsdata for w in weight):
@@ -57,22 +78,18 @@ def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, bokeh_plot=False,
                 weight = bandsdata[weight]
         else:
             if not bokeh_plot:
-                if bandsattributes['spins'] == 2:
+                if spinpol:
                     weight = [bandsdata[f'{weight}_up'], bandsdata[f'{weight}_down']]
                 else:
                     weight = bandsdata[f'{weight}_up']
             else:
-                if bandsattributes['spins'] == 2:
+                if spinpol:
                     weight = [f'{weight}_up', f'{weight}_down']
                 else:
                     weight = f'{weight}_up'
 
-    plot_label = None
-    if spinpol:
-        plot_label = ['Spin-Up', 'Spin-Down']
-
     if bokeh_plot:
-        if bandsattributes['spins'] == 2:
+        if spinpol:
             fig = bokeh_spinpol_bands(bandsdata,
                                       weight=weight,
                                       special_kpoints=special_kpoints,
@@ -81,7 +98,7 @@ def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, bokeh_plot=False,
         else:
             fig = bokeh_bands(bandsdata, weight=weight, special_kpoints=special_kpoints, **kwargs)
     else:
-        if bandsattributes['spins'] == 2:
+        if spinpol:
             fig = plot_spinpol_bands(bandsdata['kpath'],
                                      bandsdata['eigenvalues_up'],
                                      bandsdata['eigenvalues_down'],
