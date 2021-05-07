@@ -16,17 +16,19 @@ FleurInputSchema.xsd
 """
 from .fleur_schema_parser_functions import *  #pylint: disable=unused-wildcard-import
 from masci_tools.util.xml.common_functions import clear_xml
+from masci_tools.util.xml.converters import convert_str_version_number
 from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict
 from lxml import etree
 
 
-def create_inpschema_dict(path):
+def create_inpschema_dict(path, apply_patches=True):
     """
     Creates dictionary with information about the FleurInputSchema.xsd.
     The functions, whose results are added to the schema_dict and the corresponding keys
     are defined in schema_actions
 
     :param path: str path to the folder containing the FleurInputSchema.xsd file
+    :param apply_patches: bool if True (default) the registered patching functions are applied after creation
 
     """
 
@@ -43,6 +45,7 @@ def create_inpschema_dict(path):
         'omitt_contained_tags': get_omittable_tags,
         'tag_info': get_tag_info,
     }
+    schema_patches = [convert_string_to_float_expr]
 
     #print(f'processing: {path}/FleurInputSchema.xsd')
     xmlschema = etree.parse(path)
@@ -60,4 +63,82 @@ def create_inpschema_dict(path):
     #For these attributes in the attrib_path functions
     schema_dict['simple_elements'] = CaseInsensitiveDict(schema_dict['simple_elements'])
 
+    if apply_patches:
+        inp_version = convert_str_version_number(inp_version)
+        for patch_func in schema_patches:
+            patch_func(schema_dict, inp_version)
+
     return schema_dict
+
+
+def convert_string_to_float_expr(schema_dict, inp_version):
+    """
+    Converts specified string attributes to float_expression for schema_dicts of versions
+    0.32 and before.
+
+    This enables the usage of the converted attributes in more xml modifying functions (shift_value) for example
+
+    :param schema_dict: dictionary produced by the fleur_schema_parser_functions (modified in-place)
+    :param inp_version: input version converted to tuple of ints
+    """
+
+    TYPES_ENTRY = 'attrib_types'
+    EXPR_NAME = 'float_expression'
+
+    CHANGE_TYPES = {
+        (0, 32): {
+            'replace': {'mag_scale', 'mix_b', 'mix_relaxweightoffd', 'vol', 'warp_factor'}
+        },
+        (0, 30): {
+            'replace': {'precondparam'}
+        },
+        (0, 29): {
+            'replace':
+            {'vca_charge', 'energy', 'force_converged', 'forcealpha', 'fixed_moment', 'b_field', 'b_field_mt'}
+        },
+        (0, 27): {
+            'replace': {
+                'Kmax', 'Gmax', 'GmaxXC', 'alpha', 'beta', 'b_cons_x', 'b_cons_y', 'dtilda', 'dvac', 'epsdisp',
+                'epsforce', 'fermismearingenergy', 'fermismearingtemp', 'U', 'J', 'locx1', 'locx2', 'locy1', 'locy2',
+                'logincrement', 'm', 'magmom', 'maxeigenval', 'mineigenval', 'maxenergy', 'minenergy',
+                'maxtimetostartiter', 'ellow', 'elup', 'minDistance', 'phi', 'theta', 'radius', 'scale', 'sig_b_1',
+                'sig_b_2', 'sigma', 'spindown', 'spinup', 'spinf', 'theta', 'thetaJ', 'tworkf', 'valenceelectrons',
+                'weight', 'zsigma'
+            },
+            'add': {'value'}
+        }
+    }
+
+    if inp_version >= (0, 33):
+        #After this version the issue was solved
+        return
+
+    replace_set = set()
+    add_set = set()
+
+    for version, changes in CHANGE_TYPES.items():
+
+        if inp_version < version:
+            continue
+
+        version_replace_set = changes.get('replace', set())
+        version_add_set = changes.get('add', set())
+        version_remove_set = changes.get('remove', set())
+
+        replace_set = (replace_set | version_replace_set) - version_remove_set
+        add_set = (add_set | version_add_set) - version_remove_set
+
+    for name in replace_set:
+        if name not in schema_dict[TYPES_ENTRY]:
+            raise ValueError(f'convert_string_to_float_expr failed. Attribute {name} does not exist')
+        if 'string' not in schema_dict[TYPES_ENTRY][name] and 'float' not in schema_dict[TYPES_ENTRY][name]:
+            raise ValueError(
+                f'convert_string_to_float_expr failed. Attribute {name} does not have string or float type')
+        schema_dict[TYPES_ENTRY][name] = [EXPR_NAME]
+
+    for name in add_set:
+        if name not in schema_dict[TYPES_ENTRY]:
+            raise ValueError(f'convert_string_to_float_expr failed. Attribute {name} does not exist')
+        if 'string' not in schema_dict[TYPES_ENTRY][name]:
+            raise ValueError(f'convert_string_to_float_expr failed. Attribute {name} does not have string type')
+        schema_dict[TYPES_ENTRY][name].insert(0, EXPR_NAME)

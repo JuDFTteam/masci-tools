@@ -212,9 +212,9 @@ output_dict:
     plot: false
     relax: false
     soc: true
-  gmax: '10.20000000'
+  gmax: 10.2
   input_file_version: '0.30'
-  kmax: '3.40000000'
+  kmax: 3.4
   magnetic_moments:
   - - 1.9133653688
     - 1.9134157142

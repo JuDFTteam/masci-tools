@@ -130,7 +130,7 @@ _basic_types:
     length: 1
 attrib_types:
   alpha:
-  - string
+  - float_expression
   alpha_ex:
   - float
   atomicnumber:
@@ -142,19 +142,19 @@ attrib_types:
   autocomp:
   - switch
   b_cons_x:
-  - string
+  - float_expression
   b_cons_y:
-  - string
+  - float_expression
   b_field:
-  - string
+  - float_expression
   b_field_mt:
-  - string
+  - float_expression
   band:
   - switch
   bands:
   - int
   beta:
-  - string
+  - float_expression
   beta_ex:
   - float
   bmt:
@@ -199,9 +199,9 @@ attrib_types:
   dos:
   - switch
   dtilda:
-  - string
+  - float_expression
   dvac:
-  - string
+  - float_expression
   ederiv:
   - int
   edgetype:
@@ -213,15 +213,15 @@ attrib_types:
   element:
   - string
   ellow:
-  - string
+  - float_expression
   elup:
-  - string
+  - float_expression
   emax:
   - float
   emin:
   - float
   energy:
-  - string
+  - float_expression
   energylo:
   - float
   energyup:
@@ -229,9 +229,9 @@ attrib_types:
   eonly:
   - switch
   epsdisp:
-  - string
+  - float_expression
   epsforce:
-  - string
+  - float_expression
   ev:
   - switch
   ewaldlambda:
@@ -242,21 +242,21 @@ attrib_types:
   f:
   - int
   fermismearingenergy:
-  - string
+  - float_expression
   fermismearingtemp:
-  - string
+  - float_expression
   filename:
   - string
   fixed_moment:
-  - string
+  - float_expression
   fleurinputversion:
   - string
   flipspin:
   - switch
   force_converged:
-  - string
+  - float_expression
   forcealpha:
-  - string
+  - float_expression
   forcemix:
   - int
   form66:
@@ -270,9 +270,9 @@ attrib_types:
   gcutm:
   - float
   gmax:
-  - string
+  - float_expression
   gmaxxc:
-  - string
+  - float_expression
   gridpoints:
   - int
   gw:
@@ -308,13 +308,13 @@ attrib_types:
   itmax:
   - int
   j:
-  - string
+  - float_expression
   jspins:
   - int
   kcrel:
   - int
   kmax:
-  - string
+  - float_expression
   l:
   - int
   l_amf:
@@ -368,31 +368,31 @@ attrib_types:
   lnonsphr:
   - int
   locx1:
-  - string
+  - float_expression
   locx2:
-  - string
+  - float_expression
   locy1:
-  - string
+  - float_expression
   locy2:
-  - string
+  - float_expression
   logincrement:
-  - string
+  - float_expression
   lpr:
   - int
   lwb:
   - switch
   m:
-  - string
+  - float_expression
   m_cyl:
   - int
   magfield:
   - float
   magmom:
-  - string
+  - float_expression
   maxeigenval:
-  - string
+  - float_expression
   maxenergy:
-  - string
+  - float_expression
   maxiterbroyd:
   - int
   maxspindown:
@@ -400,15 +400,15 @@ attrib_types:
   maxspinup:
   - int
   maxtimetostartiter:
-  - string
+  - float_expression
   mcd:
   - switch
   mindistance:
-  - string
+  - float_expression
   mineigenval:
-  - string
+  - float_expression
   minenergy:
-  - string
+  - float_expression
   minspindown:
   - int
   minspinup:
@@ -467,7 +467,7 @@ attrib_types:
   pallst:
   - switch
   phi:
-  - string
+  - float_expression
   plot_charge:
   - switch
   plot_rho:
@@ -491,7 +491,7 @@ attrib_types:
   qz:
   - int
   radius:
-  - string
+  - float_expression
   relativisticcorrections:
   - switch
   relaxxyz:
@@ -501,7 +501,7 @@ attrib_types:
   s:
   - int
   scale:
-  - string
+  - float_expression
   score:
   - switch
   secvar:
@@ -511,11 +511,11 @@ attrib_types:
   sgwf:
   - switch
   sig_b_1:
-  - string
+  - float_expression
   sig_b_2:
-  - string
+  - float_expression
   sigma:
-  - string
+  - float_expression
   slice:
   - switch
   soc66:
@@ -531,12 +531,11 @@ attrib_types:
   spgrp:
   - string
   spindown:
-  - string
+  - float_expression
   spinf:
-  - float
-  - string
+  - float_expression
   spinup:
-  - string
+  - float_expression
   sso_opt:
   - string
   star:
@@ -556,17 +555,17 @@ attrib_types:
   swsp:
   - switch
   theta:
-  - string
+  - float_expression
   thetaj:
-  - string
+  - float_expression
   tolerance:
   - float
   tworkf:
-  - string
+  - float_expression
   type:
   - string
   u:
-  - string
+  - float_expression
   unfoldband:
   - switch
   vacdos:
@@ -574,11 +573,12 @@ attrib_types:
   vacuum:
   - int
   valenceelectrons:
-  - string
+  - float_expression
   value:
+  - float_expression
   - string
   vca_charge:
-  - string
+  - float_expression
   vcaaddcharge:
   - float
   vchk:
@@ -590,7 +590,7 @@ attrib_types:
   wannier:
   - switch
   weight:
-  - string
+  - float_expression
   weightscale:
   - string
   zrfs:
@@ -598,7 +598,7 @@ attrib_types:
   zrfs1:
   - switch
   zsigma:
-  - string
+  - float_expression
 inp_version: '0.29'
 omitt_contained_tags:
 - constants
