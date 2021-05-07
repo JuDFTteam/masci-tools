@@ -71,3 +71,68 @@ def disable_parser_tracebacks():
 
     inp_logger.removeFilter(traceback_filter)
     out_logger.removeFilter(traceback_filter)
+
+
+@pytest.fixture(scope='function', name='clean_bokeh_json')
+def fixture_clean_bokeh_json():
+    """
+    Make the dict form the produced json data
+    suitable for data_regression
+
+    - remove any reference to ids
+    - sort lists after types and given attributes for reproducible order
+
+    :param data: dict with the json data produced for the bokeh figure
+    """
+
+    def _clean_bokeh_json(data):
+        """
+        Make the dict form the produced json data
+        suitable for data_regression
+
+        - remove any reference to ids
+        - sort lists after types and given attributes for reproducible order
+
+        :param data: dict with the json data produced for the bokeh figure
+        """
+
+        for key, val in list(data.items()):
+            if key in ('id', 'root_ids'):
+                del data[key]
+            elif isinstance(val, dict):
+                data[key] = _clean_bokeh_json(val)
+            elif isinstance(val, list):
+                for index, entry in enumerate(val):
+                    if isinstance(entry, dict):
+                        val[index] = _clean_bokeh_json(entry)
+                if all(isinstance(x, dict) for x in val):
+                    data[key] = sorted(val, key=lambda x: (x['type'], *x.get('attributes', {}).items()))
+                else:
+                    data[key] = val
+
+        return data
+
+    return _clean_bokeh_json
+
+
+@pytest.fixture(scope='function')
+def check_bokeh_plot(data_regression, clean_bokeh_json):
+    current_bokeh_version = '1.4.0'  #For now we only test bokeh plots if the right version is available
+
+    try:
+        import bokeh
+        test_bokeh = current_bokeh_version == bokeh.__version__
+    except ImportError:
+        test_bokeh = False
+
+    def _regression_bokeh_plot(bokeh_fig):
+        if not test_bokeh:
+            pytest.skip(
+                f'Bokeh regression tests are skipped (Only executed if bokeh {current_bokeh_version} is installed')
+        from bokeh.io import curdoc
+
+        curdoc().clear()
+        curdoc().add_root(bokeh_fig)
+        data_regression.check(clean_bokeh_json(curdoc().to_json()))
+
+    return _regression_bokeh_plot
