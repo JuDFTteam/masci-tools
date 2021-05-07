@@ -55,16 +55,17 @@ def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, bokeh_plot=False,
         elif weight in bandsdata:
             if not bokeh_plot:
                 weight = bandsdata[weight]
-        if not bokeh_plot:
-            if bandsattributes['spins'] == 2:
-                weight = [bandsdata[f'{weight}_up'], bandsdata[f'{weight}_down']]
-            else:
-                weight = bandsdata[f'{weight}_up']
         else:
-            if bandsattributes['spins'] == 2:
-                weight = [f'{weight}_up', f'{weight}_down']
+            if not bokeh_plot:
+                if bandsattributes['spins'] == 2:
+                    weight = [bandsdata[f'{weight}_up'], bandsdata[f'{weight}_down']]
+                else:
+                    weight = bandsdata[f'{weight}_up']
             else:
-                weight = f'{weight}_up'
+                if bandsattributes['spins'] == 2:
+                    weight = [f'{weight}_up', f'{weight}_down']
+                else:
+                    weight = f'{weight}_up'
 
     plot_label = None
     if spinpol:
