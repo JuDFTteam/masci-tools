@@ -49,7 +49,7 @@ def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, bokeh_plot=False,
     if spinpol:
         plot_label = ['Spin-Up', 'Spin-Down']
 
-    spinpol  = bandsattributes['spins'] == 2 and spinpol and any('_down' in key for key in bandsdata.keys())
+    spinpol = bandsattributes['spins'] == 2 and spinpol and any('_down' in key for key in bandsdata.keys())
 
     if weight is not None:
         if isinstance(weight, list):
@@ -79,8 +79,8 @@ def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, bokeh_plot=False,
 
     if not spinpol and bandsattributes['spins'] == 2:
         #Concatenate the _up and _down columns
-        spin_up = bandsdata[[label for label in bandsdata.columns if label.endswith('_up') ]]
-        spin_dn = bandsdata[[label for label in bandsdata.columns if label.endswith('_down') ]]
+        spin_up = bandsdata[[label for label in bandsdata.columns if label.endswith('_up')]]
+        spin_dn = bandsdata[[label for label in bandsdata.columns if label.endswith('_down')]]
         kpath = bandsdata['kpath']
 
         spin_dn.rename(columns={key: key.replace('_down', '_up') for key in spin_dn.columns}, inplace=True)
@@ -92,7 +92,6 @@ def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, bokeh_plot=False,
         #And now add the new kpath and overwrite bandsdata
         new_bandsdata = pd.concat([spin_up, kpath], axis=1)
         bandsdata = new_bandsdata
-
 
         if isinstance(weight, list):
             if isinstance(weight[0], pd.Series):

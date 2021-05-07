@@ -1837,6 +1837,7 @@ def plot_bands(kpath,
                              xticks=xticks,
                              xticklabels=xticklabels,
                              color='k',
+                             linewidth=0,
                              line_options={'zorder': -1},
                              colorbar=False)
 
@@ -1940,6 +1941,7 @@ def plot_spinpol_bands(kpath,
                              xticklabels=xticklabels,
                              color=color,
                              cmap=cmaps,
+                             linewidth=0,
                              legend=True,
                              line_options={'zorder': -1},
                              colorbar=False)
