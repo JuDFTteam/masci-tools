@@ -5,7 +5,7 @@ _basic_types:
     length: unbounded
   AtomPosType:
     base_types:
-    - string
+    - float_expression
     length: 3
   BZIntegrationModeEnum:
     base_types:
@@ -89,11 +89,11 @@ _basic_types:
     length: 1
   KPointType:
     base_types:
-    - string
+    - float_expression
     length: 3
   LatticeParameterType:
     base_types:
-    - string
+    - float_expression
     length: 1
   ManualCutoffType:
     base_types:
@@ -128,7 +128,7 @@ _basic_types:
     length: 1
   SpecialPointType:
     base_types:
-    - string
+    - float_expression
     length: 3
   SpinNumberType:
     base_types:
@@ -181,7 +181,7 @@ _basic_types:
 _input_basic_types:
   AtomPosType:
     base_types:
-    - string
+    - float_expression
     length: 3
   BZIntegrationModeEnum:
     base_types:
@@ -257,11 +257,11 @@ _input_basic_types:
     length: 1
   KPointType:
     base_types:
-    - string
+    - float_expression
     length: 3
   LatticeParameterType:
     base_types:
-    - string
+    - float_expression
     length: 1
   ManualCutoffType:
     base_types:
@@ -296,7 +296,7 @@ _input_basic_types:
     length: 1
   SpecialPointType:
     base_types:
-    - string
+    - float_expression
     length: 3
   SpinNumberType:
     base_types:
@@ -2873,15 +2873,15 @@ simple_elements:
   a1:
   - length: 1
     type:
-    - string
+    - float_expression
   a2:
   - length: 1
     type:
-    - string
+    - float_expression
   abspos:
   - length: 3
     type:
-    - string
+    - float_expression
   additionalcompilerflags:
   - length: unbounded
     type:
@@ -2889,7 +2889,7 @@ simple_elements:
   c:
   - length: 1
     type:
-    - string
+    - float_expression
   comment:
   - length: 1
     type:
@@ -2925,7 +2925,7 @@ simple_elements:
   filmpos:
   - length: 3
     type:
-    - string
+    - float_expression
   joblist:
   - length: unbounded
     type:
@@ -2933,7 +2933,7 @@ simple_elements:
   kpoint:
   - length: 3
     type:
-    - string
+    - float_expression
   layer:
   - length: 1
     type:
@@ -2947,13 +2947,13 @@ simple_elements:
     type:
     - switch
   posforce:
-  - length: 1
+  - length: 6
     type:
-    - string
+    - float_expression
   q:
-  - length: 1
+  - length: 3
     type:
-    - string
+    - float_expression
   qsc:
   - length: 3
     type:
@@ -2965,31 +2965,31 @@ simple_elements:
   relpos:
   - length: 3
     type:
-    - string
+    - float_expression
   row-1:
   - length: 2
     type:
-    - string
+    - float_expression
   - length: 3
     type:
-    - string
+    - float_expression
   - length: 4
     type:
     - float
   row-2:
   - length: 2
     type:
-    - string
+    - float_expression
   - length: 3
     type:
-    - string
+    - float_expression
   - length: 4
     type:
     - float
   row-3:
   - length: 3
     type:
-    - string
+    - float_expression
   - length: 4
     type:
     - float

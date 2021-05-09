@@ -2353,7 +2353,7 @@ simple_elements:
   abspos:
   - length: 3
     type:
-    - string
+    - float_expression
   additionalcompilerflags:
   - length: unbounded
     type:
@@ -2381,7 +2381,7 @@ simple_elements:
   filmpos:
   - length: 3
     type:
-    - string
+    - float_expression
   kpoint:
   - length: 3
     type:
@@ -2401,31 +2401,31 @@ simple_elements:
   relpos:
   - length: 3
     type:
-    - string
+    - float_expression
   row-1:
   - length: 2
     type:
-    - string
+    - float_expression
   - length: 3
     type:
-    - string
+    - float_expression
   - length: 4
     type:
     - float
   row-2:
   - length: 2
     type:
-    - string
+    - float_expression
   - length: 3
     type:
-    - string
+    - float_expression
   - length: 4
     type:
     - float
   row-3:
   - length: 3
     type:
-    - string
+    - float_expression
   - length: 4
     type:
     - float

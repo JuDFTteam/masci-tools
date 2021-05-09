@@ -3288,13 +3288,13 @@ simple_elements:
     type:
     - switch
   posforce:
-  - length: 1
+  - length: 6
     type:
-    - string
+    - float_expression
   q:
-  - length: 1
+  - length: 3
     type:
-    - string
+    - float_expression
   qsc:
   - length: 3
     type:

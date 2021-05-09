@@ -45,7 +45,7 @@ def create_inpschema_dict(path, apply_patches=True):
         'omitt_contained_tags': get_omittable_tags,
         'tag_info': get_tag_info,
     }
-    schema_patches = [convert_string_to_float_expr]
+    schema_patches = [convert_string_to_float_expr, patch_simple_elements]
 
     #print(f'processing: {path}/FleurInputSchema.xsd')
     xmlschema = etree.parse(path)
@@ -53,20 +53,23 @@ def create_inpschema_dict(path, apply_patches=True):
 
     namespaces = {'xsd': 'http://www.w3.org/2001/XMLSchema'}
     inp_version = str(xmlschema.xpath('/xsd:schema/@version', namespaces=namespaces)[0])
+    inp_version_tuple = convert_str_version_number(inp_version)
 
     schema_dict = {}
     schema_dict['inp_version'] = inp_version
     for key, action in schema_actions.items():
         schema_dict[key] = action(xmlschema, namespaces, **schema_dict)
 
+        if key == '_basic_types' and apply_patches:
+            schema_dict[key] = patch_basic_types(schema_dict[key], inp_version_tuple)
+
     #We cannot do the conversion to CaseInsensitiveDict before since we need the correct case
     #For these attributes in the attrib_path functions
     schema_dict['simple_elements'] = CaseInsensitiveDict(schema_dict['simple_elements'])
 
     if apply_patches:
-        inp_version = convert_str_version_number(inp_version)
         for patch_func in schema_patches:
-            patch_func(schema_dict, inp_version)
+            patch_func(schema_dict, inp_version_tuple)
 
     return schema_dict
 
@@ -116,7 +119,7 @@ def convert_string_to_float_expr(schema_dict, inp_version):
     replace_set = set()
     add_set = set()
 
-    for version, changes in CHANGE_TYPES.items():
+    for version, changes in sorted(CHANGE_TYPES.items(), key=lambda x: x[0]):
 
         if inp_version < version:
             continue
@@ -142,3 +145,160 @@ def convert_string_to_float_expr(schema_dict, inp_version):
         if 'string' not in schema_dict[TYPES_ENTRY][name]:
             raise ValueError(f'convert_string_to_float_expr failed. Attribute {name} does not have string type')
         schema_dict[TYPES_ENTRY][name].insert(0, EXPR_NAME)
+
+
+def patch_basic_types(basic_types, inp_version):
+    """
+    Patch the _basic_types entry to correct ambigouities
+
+    :param schema_dict: dictionary produced by the fleur_schema_parser_functions (modified in-place)
+    :param inp_version: input version converted to tuple of ints
+    """
+
+    if inp_version >= (0, 33):
+        #After this version the issue was solved
+        return basic_types
+
+    CHANGE_TYPES = {
+        (0, 32): {
+            'add': {
+                'KPointType': {
+                    'base_types': ['float_expression'],
+                    'length': 3
+                },
+            }
+        },
+        (0, 28): {
+            'add': {
+                'AtomPosType': {
+                    'base_types': ['float_expression'],
+                    'length': 3
+                },
+                'LatticeParameterType': {
+                    'base_types': ['float_expression'],
+                    'length': 1
+                },
+                'SpecialPointType': {
+                    'base_types': ['float_expression'],
+                    'length': 3
+                }
+            }
+        },
+    }
+
+    all_changes = {}
+
+    for version, changes in sorted(CHANGE_TYPES.items(), key=lambda x: x[0]):
+
+        if inp_version < version:
+            continue
+
+        version_add = changes.get('add', {})
+        version_remove = changes.get('remove', set())
+
+        all_changes = {key: val for key, val in {**all_changes, **version_add}.items() if key not in version_remove}
+
+    for name, new_definition in all_changes.items():
+        if name not in basic_types:
+            raise ValueError(f'patch_basic_types failed. Type {name} does not exist')
+        basic_types[name] = new_definition
+
+    return basic_types
+
+
+def patch_simple_elements(schema_dict, inp_version):
+    """
+    Patch the simple_elememnts entry to correct ambigouities
+
+    :param schema_dict: dictionary produced by the fleur_schema_parser_functions (modified in-place)
+    :param inp_version: input version converted to tuple of ints
+    """
+
+    ELEMENTS_ENTRY = 'simple_elements'
+
+    if inp_version >= (0, 35):
+        #After this version the issue was solved
+        return
+
+    CHANGE_TYPES = {
+        (0, 33): {
+            'remove': {'row-1', 'row-2', 'row-3'}
+        },
+        (0, 29): {
+            'add': {
+                'posforce': [{
+                    'type': ['float_expression'],
+                    'length': 6
+                }],
+            }
+        },
+        (0, 28): {
+            'add': {
+                'q': [{
+                    'type': ['float_expression'],
+                    'length': 3
+                }],
+            },
+            'remove': {'abspos', 'relpos', 'filmpos'}
+        },
+        (0, 27): {
+            'add': {
+                'abspos': [{
+                    'type': ['float_expression'],
+                    'length': 3
+                }],
+                'relpos': [{
+                    'type': ['float_expression'],
+                    'length': 3
+                }],
+                'filmpos': [{
+                    'type': ['float_expression'],
+                    'length': 3
+                }],
+                'row-1': [{
+                    'type': ['float_expression'],
+                    'length': 2
+                }, {
+                    'type': ['float_expression'],
+                    'length': 3
+                }, {
+                    'type': ['float'],
+                    'length': 4
+                }],
+                'row-2': [{
+                    'type': ['float_expression'],
+                    'length': 2
+                }, {
+                    'type': ['float_expression'],
+                    'length': 3
+                }, {
+                    'type': ['float'],
+                    'length': 4
+                }],
+                'row-3': [{
+                    'type': ['float_expression'],
+                    'length': 3
+                }, {
+                    'type': ['float'],
+                    'length': 4
+                }],
+            }
+        }
+    }
+
+    all_changes = {}
+
+    for version, changes in sorted(CHANGE_TYPES.items(), key=lambda x: x[0]):
+
+        if inp_version < version:
+            continue
+
+        version_add = changes.get('add', {})
+        version_remove = changes.get('remove', set())
+
+        all_changes = {key: val for key, val in {**all_changes, **version_add}.items() if key not in version_remove}
+
+    for name, new_definition in all_changes.items():
+        if name not in schema_dict[ELEMENTS_ENTRY]:
+            raise ValueError(f'patch_simple_elements failed. Type {name} does not exist')
+        schema_dict[ELEMENTS_ENTRY][name] = new_definition

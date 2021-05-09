@@ -250,8 +250,12 @@ input_dict:
   fleurInputVersion: '0.33'
   forceTheorem:
     spinSpiralDispersion:
-    - 0.0 0.0 0.0
-    - 0.2 0.0 0.0
+    - - 0.0
+      - 0.0
+      - 0.0
+    - - 0.2
+      - 0.0
+      - 0.0
   output:
     band: false
     chargeDensitySlicing:
