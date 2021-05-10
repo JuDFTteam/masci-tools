@@ -507,7 +507,7 @@ class Test_read_inputfile(object):  # pylint: disable=missing-class-docstring
 
         # check all values, replace arrays by lists to make data-regression work
         d_check = p.get_dict()
-        for k,v in d_check.items():
+        for k, v in d_check.items():
             if type(v) == ndarray:
                 d_check[k] = v.tolist()
         data_regression.check(d_check)

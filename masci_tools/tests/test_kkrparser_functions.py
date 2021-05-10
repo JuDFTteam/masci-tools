@@ -228,4 +228,3 @@ class Test_kkr_parser_functions(object):
         assert success
         assert msg_list == []
         data_regression.check(out_dict)
-
