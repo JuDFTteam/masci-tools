@@ -133,6 +133,7 @@ class Test_kkr_parser_functions(object):
             'Error parsing output of KKR: ewald summation for madelung poterntial',
             'Error parsing output of KKR: lattice vectors (direct/reciprocal)',
             'Error parsing output of KKR: noco angles rms value',
+            'Error parsing output of KKR: BdG',
         ])
 
     def test_missing_outfile000(self):
@@ -227,28 +228,3 @@ class Test_kkr_parser_functions(object):
         assert success
         assert msg_list == []
         data_regression.check(out_dict)
-
-    def test_Nan_output(self):
-        """
-        Parse output of a dos calculation in 3D (used to fail due to symmetries reading)
-        """
-        p = './files/kkr/parser_3Dsymmetries/'
-        success, msg_list, out_dict = parse_kkr_outputfile({}, p + 'out_kkr', p + 'output.0.txt', p + 'output.000.txt',
-                                                           p + 'out_timing.000.txt', p + 'out_potential',
-                                                           p + 'nonco_angle_out.dat', p + 'output.2.txt')
-        from numpy import isnan
-        captured_nan = False
-        for key, val in out_dict['convergence_group'].items():
-            if key in ['charge_neutrality', 'rms']:
-                if isnan(val):
-                    captured_nan = True
-            elif key in [
-                    'charge_neutrality_all_iterations', 'dos_at_fermi_energy_all_iterations',
-                    'fermi_energy_all_iterations', 'rms_all_iterations', 'total_energy_Ry_all_iterations',
-                    'rms_per_atom'
-            ]:
-                for isub in val:
-                    if isnan(isub):
-                        captured_nan = True
-        assert success
-        assert not captured_nan

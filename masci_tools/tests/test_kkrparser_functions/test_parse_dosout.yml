@@ -1,67 +1,9 @@
 alat_internal: 7.869273
 alat_internal_unit: a_Bohr
-charge_core_states_per_atom: []
-charge_core_states_per_atom_unit: electron charge
-charge_valence_states_per_atom_unit: electron charge
 code_info_group:
   calculation_serial_number: kkrjm_v2.2-22-g4f8f5ff_openmp-mac_20171214102522
   code_version: v2.2-22-g4f8f5ff
   compile_options: openmp-mac
-convergence_group:
-  brymix: 0.01
-  calculation_converged: false
-  charge_neutrality: -137.449522
-  charge_neutrality_all_iterations:
-  - -137.449522
-  charge_neutrality_unit: electrons
-  dos_at_fermi_energy_all_iterations:
-  - 3.672746
-  fcm: 20.0
-  fermi_energy_all_iterations:
-  - 1.05
-  fermi_energy_all_iterations_units: Ry
-  idtbry: 40
-  imix: 0
-  nsteps_exhausted: true
-  number_of_iterations: 1
-  number_of_iterations_max: 1
-  qbound: 0.0
-  rms: 12.977
-  rms_all_iterations:
-  - 12.977
-  rms_per_atom:
-  - 12.977
-  - 12.977
-  - 12.977
-  - 12.977
-  rms_spin: null
-  rms_spin_all_iterations: []
-  rms_spin_per_atom:
-  - 12.977
-  - 12.977
-  - 12.977
-  - 12.977
-  rms_unit: unitless
-  strmix: 0.0
-  total_energy_Ry_all_iterations:
-  - -28679.93406508
-core_states_group:
-  descr_highest_lying_core_state_per_atom:
-  - 4p
-  - 4p
-  - 4p
-  - 4p
-  energy_highest_lying_core_state_per_atom:
-  - -3.83243200276
-  - -3.83243200276
-  - -3.83243200276
-  - -3.83243200276
-  energy_highest_lying_core_state_per_atom_unit: Rydberg
-  number_of_core_states_per_atom:
-  - 8
-  - 8
-  - 8
-  - 8
 direct_bravais_matrix:
 - - 1.0
   - 0.0
@@ -73,8 +15,6 @@ direct_bravais_matrix:
   - 0.0
   - 0.0
 direct_bravais_matrix_unit: alat
-dos_at_fermi_energy: 3.672746
-energy: -390210.3816771803
 energy_contour_group:
   emin: -1.0
   emin_unit: Rydberg
@@ -85,9 +25,6 @@ energy_contour_group:
   number_of_energy_points: 21
   temperature: 200.0
   temperature_unit: Kelvin
-energy_unit: eV
-fermi_energy: 1.05
-fermi_energy_units: Ry
 kmesh_group:
   kmesh_energypoint:
   - 1
@@ -135,12 +72,6 @@ reciprocal_bravais_matrix:
   - 0.0
   - 0.0
 reciprocal_bravais_matrix_unit: 2*pi / alat
-single_particle_energies:
-- 489.07123168944986
-- 489.07123168944986
-- 489.07123168944986
-- 489.07123168944986
-single_particle_energies_unit: eV
 symmetries_group:
   number_of_lattice_symmetries: 8
   number_of_used_symmetries: 8
@@ -212,12 +143,9 @@ timings_group:
   main1c - serial part: 0.0054
   main2: 0.2291
 timings_unit: seconds
-total_charge_per_atom: []
-total_charge_per_atom_unit: electron charge
-total_energy_Ry: -28679.93406508
-total_energy_Ry_unit: Rydberg
 two_pi_over_alat_internal: 0.79844546
 two_pi_over_alat_internal_unit: 1/a_Bohr
+use_BdG: false
 use_newsosol: false
 warnings_group:
   number_of_warnings: 0

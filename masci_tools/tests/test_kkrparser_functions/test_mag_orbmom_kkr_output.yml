@@ -492,6 +492,7 @@ total_energy_Ry: -5081.95840149
 total_energy_Ry_unit: Rydberg
 two_pi_over_alat_internal: 1.15850818
 two_pi_over_alat_internal_unit: 1/a_Bohr
+use_BdG: false
 use_newsosol: true
 warnings_group:
   number_of_warnings: 1
