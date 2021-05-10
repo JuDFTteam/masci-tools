@@ -97,8 +97,18 @@ class FleurXMLModifier:
         """
 
         fm = cls(*args, **kwargs)
+        fm.add_task_list(task_list)
+        return fm
 
-        facade_methods = fm.get_avail_actions()
+    def add_task_list(self, task_list):
+        """
+        Add a list of tasks to be added
+
+        :param task_list: list of tuples first index is the name of the method
+                          second is defining the arguments by keyword in a dict
+        """
+
+        facade_methods = self.get_avail_actions()
 
         for name, kwargs in task_list:
             try:
@@ -106,7 +116,6 @@ class FleurXMLModifier:
             except KeyError as exc:
                 raise ValueError(f"Unknown modification method '{name}'") from exc
 
-        return fm
 
     def _validate_signature(self, name, *args, **kwargs):
         """
