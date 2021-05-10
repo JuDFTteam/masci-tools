@@ -116,7 +116,6 @@ class FleurXMLModifier:
             except KeyError as exc:
                 raise ValueError(f"Unknown modification method '{name}'") from exc
 
-
     def _validate_signature(self, name, *args, **kwargs):
         """
         Validate that the given arguments to the registration
