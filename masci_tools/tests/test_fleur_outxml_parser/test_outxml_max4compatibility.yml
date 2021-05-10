@@ -128,9 +128,9 @@ output_dict:
     plot: false
     relax: false
     soc: false
-  gmax: '10.80000000'
+  gmax: 10.8
   input_file_version: '0.31'
-  kmax: '3.60000000'
+  kmax: 3.6
   ldau_info:
     As-2/33:
       d:

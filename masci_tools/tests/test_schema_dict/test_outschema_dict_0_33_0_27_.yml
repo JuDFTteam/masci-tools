@@ -216,7 +216,7 @@ _input_basic_types:
     length: 1
 attrib_types:
   alpha:
-  - float
+  - float_expression
   angles:
   - int
   atomicnumber:
@@ -226,13 +226,13 @@ attrib_types:
   autocomp:
   - switch
   b_cons_x:
-  - float
+  - float_expression
   b_cons_y:
-  - float
+  - float_expression
   band:
   - switch
   beta:
-  - float
+  - float_expression
   bmt:
   - switch
   branch:
@@ -277,9 +277,9 @@ attrib_types:
   dos:
   - switch
   dtilda:
-  - float
+  - float_expression
   dvac:
-  - float
+  - float_expression
   ederiv:
   - int
   eig66:
@@ -289,17 +289,17 @@ attrib_types:
   element:
   - string
   ellow:
-  - float
+  - float_expression
   elup:
-  - float
+  - float_expression
   energy:
   - float
   eonly:
   - switch
   epsdisp:
-  - float
+  - float_expression
   epsforce:
-  - float
+  - float_expression
   ev:
   - switch
   ev-sum:
@@ -314,9 +314,9 @@ attrib_types:
   f_z:
   - float
   fermismearingenergy:
-  - float
+  - float_expression
   fermismearingtemp:
-  - float
+  - float_expression
   filename:
   - string
   flag:
@@ -334,9 +334,9 @@ attrib_types:
   gamma:
   - switch
   gmax:
-  - float
+  - float_expression
   gmaxxc:
-  - float
+  - float_expression
   gridpoints:
   - int
   gw:
@@ -383,6 +383,7 @@ attrib_types:
   - int
   j:
   - float
+  - float_expression
   jatom:
   - int
   jmtd:
@@ -400,7 +401,7 @@ attrib_types:
   kinenergy:
   - float
   kmax:
-  - float
+  - float_expression
   kpoint:
   - int
   l:
@@ -446,17 +447,17 @@ attrib_types:
   lnonsphr:
   - int
   locx1:
-  - float
+  - float_expression
   locx2:
-  - float
+  - float_expression
   locy1:
-  - float
+  - float_expression
   locy2:
-  - float
+  - float_expression
   logderivmt:
   - float
   logincrement:
-  - float
+  - float_expression
   lostelectrons:
   - float
   lpr:
@@ -464,31 +465,31 @@ attrib_types:
   lwb:
   - switch
   m:
-  - float
+  - float_expression
   m_cyl:
   - int
   magfield:
   - float
   magmom:
-  - float
+  - float_expression
   maxeigenval:
-  - float
+  - float_expression
   maxenergy:
-  - float
+  - float_expression
   maxiterbroyd:
   - int
   maxtimetostartiter:
-  - float
+  - float_expression
   memorypernode:
   - string
   message:
   - string
   mindistance:
-  - float
+  - float_expression
   mineigenval:
-  - float
+  - float_expression
   minenergy:
-  - float
+  - float_expression
   mix_b:
   - float
   mm:
@@ -573,6 +574,7 @@ attrib_types:
   - switch
   phi:
   - float
+  - float_expression
   plot_charge:
   - switch
   plot_rho:
@@ -599,7 +601,7 @@ attrib_types:
   qz:
   - int
   radius:
-  - float
+  - float_expression
   relativisticcorrections:
   - switch
   relaxxyz:
@@ -610,17 +612,17 @@ attrib_types:
   - float
   - int
   scale:
-  - float
+  - float_expression
   score:
   - switch
   secvar:
   - switch
   sig_b_1:
-  - float
+  - float_expression
   sig_b_2:
-  - float
+  - float_expression
   sigma:
-  - float
+  - float_expression
   sigma_x:
   - float
   sigma_y:
@@ -640,13 +642,13 @@ attrib_types:
   spin:
   - int
   spindown:
-  - float
+  - float_expression
   spindowncharge:
   - float
   spinf:
-  - float
+  - float_expression
   spinup:
-  - float
+  - float_expression
   spinupcharge:
   - float
   sso_opt:
@@ -661,20 +663,22 @@ attrib_types:
   - switch
   theta:
   - float
+  - float_expression
   thetad:
   - float
   thetaj:
-  - float
+  - float_expression
   time:
   - string
   total:
   - float
   tworkf:
-  - float
+  - float_expression
   type:
   - string
   u:
   - float
+  - float_expression
   uindex:
   - int
   unitcell:
@@ -692,9 +696,10 @@ attrib_types:
   vacuum2:
   - float
   valenceelectrons:
-  - float
+  - float_expression
   value:
   - float
+  - float_expression
   - string
   vcaaddcharge:
   - float
@@ -710,6 +715,7 @@ attrib_types:
   - float
   weight:
   - float
+  - float_expression
   weightscale:
   - float
   x:
@@ -729,7 +735,7 @@ attrib_types:
   zrfs1:
   - switch
   zsigma:
-  - float
+  - float_expression
 inp_version: '0.27'
 input_tag: fleurInput
 iteration_other_attribs:
@@ -2664,7 +2670,7 @@ simple_elements:
   abspos:
   - length: 3
     type:
-    - string
+    - float_expression
   additionalcompilerflags:
   - length: unbounded
     type:
@@ -2692,7 +2698,7 @@ simple_elements:
   filmpos:
   - length: 3
     type:
-    - string
+    - float_expression
   kpoint:
   - length: 3
     type:
@@ -2712,31 +2718,31 @@ simple_elements:
   relpos:
   - length: 3
     type:
-    - string
+    - float_expression
   row-1:
   - length: 2
     type:
-    - string
+    - float_expression
   - length: 3
     type:
-    - string
+    - float_expression
   - length: 4
     type:
     - float
   row-2:
   - length: 2
     type:
-    - string
+    - float_expression
   - length: 3
     type:
-    - string
+    - float_expression
   - length: 4
     type:
     - float
   row-3:
   - length: 3
     type:
-    - string
+    - float_expression
   - length: 4
     type:
     - float

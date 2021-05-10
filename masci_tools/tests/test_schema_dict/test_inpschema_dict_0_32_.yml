@@ -1,7 +1,7 @@
 _basic_types:
   AtomPosType:
     base_types:
-    - string
+    - float_expression
     length: 3
   BZIntegrationModeEnum:
     base_types:
@@ -77,11 +77,11 @@ _basic_types:
     length: 1
   KPointType:
     base_types:
-    - string
+    - float_expression
     length: 3
   LatticeParameterType:
     base_types:
-    - string
+    - float_expression
     length: 1
   ManualCutoffType:
     base_types:
@@ -116,7 +116,7 @@ _basic_types:
     length: 1
   SpecialPointType:
     base_types:
-    - string
+    - float_expression
     length: 3
   SpinNumberType:
     base_types:
@@ -166,8 +166,7 @@ attrib_types:
   all_atoms:
   - switch
   alpha:
-  - float
-  - string
+  - float_expression
   alpha_ex:
   - float
   analytical_cont:
@@ -181,13 +180,13 @@ attrib_types:
   autocomp:
   - switch
   b_cons_x:
-  - string
+  - float_expression
   b_cons_y:
-  - string
+  - float_expression
   b_field:
-  - string
+  - float_expression
   b_field_mt:
-  - string
+  - float_expression
   band:
   - switch
   banddos:
@@ -195,8 +194,7 @@ attrib_types:
   bands:
   - int
   beta:
-  - float
-  - string
+  - float_expression
   beta_ex:
   - float
   bmt:
@@ -240,9 +238,9 @@ attrib_types:
   dos:
   - switch
   dtilda:
-  - string
+  - float_expression
   dvac:
-  - string
+  - float_expression
   eb:
   - float
   ederiv:
@@ -256,17 +254,15 @@ attrib_types:
   element:
   - string
   ellow:
-  - float
-  - string
+  - float_expression
   elup:
-  - float
-  - string
+  - float_expression
   emax:
   - float
   emin:
   - float
   energy:
-  - string
+  - float_expression
   energylo:
   - float
   energyup:
@@ -274,9 +270,9 @@ attrib_types:
   eonly:
   - switch
   epsdisp:
-  - string
+  - float_expression
   epsforce:
-  - string
+  - float_expression
   et:
   - float
   etot_correlation:
@@ -296,13 +292,13 @@ attrib_types:
   - switch
   - int
   fermismearingenergy:
-  - string
+  - float_expression
   fermismearingtemp:
-  - string
+  - float_expression
   file:
   - string
   fixed_moment:
-  - string
+  - float_expression
   fleurinputversion:
   - string
   flipspinphi:
@@ -312,9 +308,9 @@ attrib_types:
   flipspintheta:
   - string
   force_converged:
-  - string
+  - float_expression
   forcealpha:
-  - string
+  - float_expression
   forcemix:
   - string
   form66:
@@ -330,9 +326,9 @@ attrib_types:
   gcutm:
   - float
   gmax:
-  - string
+  - float_expression
   gmaxxc:
-  - string
+  - float_expression
   grid:
   - string
   gridpoints:
@@ -376,7 +372,7 @@ attrib_types:
   itmax:
   - int
   j:
-  - string
+  - float_expression
   jdos:
   - switch
   jspins:
@@ -389,7 +385,7 @@ attrib_types:
   - float
   - string
   kmax:
-  - string
+  - float_expression
   l:
   - int
   l_adjenpara:
@@ -467,33 +463,33 @@ attrib_types:
   lnonsphr:
   - int
   locx1:
-  - string
+  - float_expression
   locx2:
-  - string
+  - float_expression
   locy1:
-  - string
+  - float_expression
   locy2:
-  - string
+  - float_expression
   logincrement:
-  - string
+  - float_expression
   lpr:
   - int
   lwb:
   - switch
   m:
-  - string
+  - float_expression
   m_cyl:
   - int
   mag_scale:
-  - string
+  - float_expression
   magfield:
   - float
   magmom:
-  - string
+  - float_expression
   maxeigenval:
-  - string
+  - float_expression
   maxenergy:
-  - string
+  - float_expression
   maxiterbroyd:
   - int
   maxspindown:
@@ -501,17 +497,17 @@ attrib_types:
   maxspinup:
   - int
   maxtimetostartiter:
-  - string
+  - float_expression
   mcd:
   - switch
   mincalcdistance:
   - float
   mindistance:
-  - string
+  - float_expression
   mineigenval:
-  - string
+  - float_expression
   minenergy:
-  - string
+  - float_expression
   minmatdistance:
   - float
   minoccdistance:
@@ -521,9 +517,9 @@ attrib_types:
   minspinup:
   - int
   mix_b:
-  - string
+  - float_expression
   mix_relaxweightoffd:
-  - string
+  - float_expression
   mixparam:
   - float
   mm:
@@ -599,7 +595,7 @@ attrib_types:
   pallst:
   - switch
   phi:
-  - string
+  - float_expression
   plot_charge:
   - switch
   plot_rho:
@@ -611,7 +607,7 @@ attrib_types:
   potential:
   - switch
   precondparam:
-  - string
+  - float_expression
   purpose:
   - string
   qfix:
@@ -623,7 +619,7 @@ attrib_types:
   qz:
   - int
   radius:
-  - string
+  - float_expression
   relativisticcorrections:
   - switch
   relaxxyz:
@@ -636,7 +632,7 @@ attrib_types:
   - switch
   - int
   scale:
-  - string
+  - float_expression
   secvar:
   - switch
   select:
@@ -644,12 +640,11 @@ attrib_types:
   sgwf:
   - switch
   sig_b_1:
-  - string
+  - float_expression
   sig_b_2:
-  - string
+  - float_expression
   sigma:
-  - float
-  - string
+  - float_expression
   slice:
   - switch
   soc66:
@@ -663,12 +658,11 @@ attrib_types:
   species:
   - string
   spindown:
-  - string
+  - float_expression
   spinf:
-  - float
-  - string
+  - float_expression
   spinup:
-  - string
+  - float_expression
   sso_opt:
   - string
   star:
@@ -688,21 +682,21 @@ attrib_types:
   swsp:
   - switch
   theta:
-  - string
+  - float_expression
   thetaj:
-  - string
+  - float_expression
   tolerance:
   - float
   twod:
   - switch
   tworkf:
-  - string
+  - float_expression
   type:
   - string
   typemt:
   - int
   u:
-  - string
+  - float_expression
   unfoldband:
   - switch
   vacdos:
@@ -710,11 +704,12 @@ attrib_types:
   vacuum:
   - int
   valenceelectrons:
-  - string
+  - float_expression
   value:
+  - float_expression
   - string
   vca_charge:
-  - string
+  - float_expression
   vcaaddcharge:
   - float
   vchk:
@@ -732,19 +727,19 @@ attrib_types:
   vm:
   - int
   vol:
-  - string
+  - float_expression
   wannier:
   - switch
   warp_factor:
-  - string
+  - float_expression
   weight:
-  - string
+  - float_expression
   zero:
   - string
   zrfs1:
   - switch
   zsigma:
-  - string
+  - float_expression
 inp_version: '0.32'
 omitt_contained_tags:
 - constants
@@ -1099,19 +1094,19 @@ simple_elements:
   a1:
   - length: 1
     type:
-    - string
+    - float_expression
   a2:
   - length: 1
     type:
-    - string
+    - float_expression
   abspos:
   - length: 3
     type:
-    - string
+    - float_expression
   c:
   - length: 1
     type:
-    - string
+    - float_expression
   comment:
   - length: 1
     type:
@@ -1139,7 +1134,7 @@ simple_elements:
   filmpos:
   - length: 3
     type:
-    - string
+    - float_expression
   joblist:
   - length: unbounded
     type:
@@ -1147,7 +1142,7 @@ simple_elements:
   kpoint:
   - length: 3
     type:
-    - string
+    - float_expression
   layer:
   - length: 1
     type:
@@ -1161,13 +1156,13 @@ simple_elements:
     type:
     - switch
   posforce:
-  - length: 1
+  - length: 6
     type:
-    - string
+    - float_expression
   q:
-  - length: 1
+  - length: 3
     type:
-    - string
+    - float_expression
   qsc:
   - length: 3
     type:
@@ -1179,31 +1174,31 @@ simple_elements:
   relpos:
   - length: 3
     type:
-    - string
+    - float_expression
   row-1:
   - length: 2
     type:
-    - string
+    - float_expression
   - length: 3
     type:
-    - string
+    - float_expression
   - length: 4
     type:
     - float
   row-2:
   - length: 2
     type:
-    - string
+    - float_expression
   - length: 3
     type:
-    - string
+    - float_expression
   - length: 4
     type:
     - float
   row-3:
   - length: 3
     type:
-    - string
+    - float_expression
   - length: 4
     type:
     - float

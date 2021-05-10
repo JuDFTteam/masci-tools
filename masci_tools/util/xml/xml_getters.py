@@ -281,7 +281,6 @@ def get_cell(xmltree, schema_dict, logger=None):
     from masci_tools.util.schema_dict_util import read_constants, eval_simple_xpath
     from masci_tools.util.schema_dict_util import evaluate_text, tag_exists
     from masci_tools.util.xml.common_functions import clear_xml
-    from masci_tools.util.xml.converters import convert_xml_attribute
     from masci_tools.util.constants import BOHR_A
     import numpy as np
 
@@ -325,12 +324,6 @@ def get_cell(xmltree, schema_dict, logger=None):
                              optional=True)
 
         if all(x is not None and x != [] for x in [row1, row2, row3]):
-            #Explicit Conversion to float for versions Max4 and before
-            if schema_dict.inp_version < (0, 33):
-                row1, suc = convert_xml_attribute(row1, ['float_expression'], constants=constants, logger=logger)
-                row2, suc = convert_xml_attribute(row2, ['float_expression'], constants=constants, logger=logger)
-                row3, suc = convert_xml_attribute(row3, ['float_expression'], constants=constants, logger=logger)
-
             cell = np.array([row1, row2, row3]) * BOHR_A
 
     if cell is None:
@@ -361,7 +354,7 @@ def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True, 
     from masci_tools.util.schema_dict_util import read_constants, eval_simple_xpath
     from masci_tools.util.schema_dict_util import evaluate_attribute, evaluate_text
     from masci_tools.util.xml.common_functions import clear_xml
-    from masci_tools.util.xml.converters import convert_fleur_lo, convert_xml_attribute
+    from masci_tools.util.xml.converters import convert_fleur_lo
     from masci_tools.io.common_functions import filter_out_empty_dict_entries
 
     # TODO: convert econfig
@@ -401,18 +394,6 @@ def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True, 
     comp_dict['gmax'] = evaluate_attribute(root, schema_dict, 'gmax', constants=constants, logger=logger)
     comp_dict['gmaxxc'] = evaluate_attribute(root, schema_dict, 'gmaxxc', constants=constants, logger=logger)
     comp_dict['kmax'] = evaluate_attribute(root, schema_dict, 'kmax', constants=constants, logger=logger)
-
-    if schema_dict.inp_version <= (0, 31):
-        comp_dict['gmax'], _ = convert_xml_attribute(comp_dict['gmax'], ['float', 'float_expression'],
-                                                     constants=constants,
-                                                     logger=logger)
-        comp_dict['gmaxxc'], _ = convert_xml_attribute(comp_dict['gmaxxc'], ['float', 'float_expression'],
-                                                       constants=constants,
-                                                       logger=logger)
-        comp_dict['kmax'], _ = convert_xml_attribute(comp_dict['kmax'], ['float', 'float_expression'],
-                                                     constants=constants,
-                                                     logger=logger)
-
     parameters['comp'] = filter_out_empty_dict_entries(comp_dict)
 
     # &atoms
@@ -453,18 +434,6 @@ def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True, 
 
         if len(atom_lo) != 0:
             atom_dict['lo'] = convert_fleur_lo(atom_lo)
-
-        if schema_dict.inp_version <= (0, 31):
-            atom_dict['bmu'], _ = convert_xml_attribute(atom_dict['bmu'], ['float', 'float_expression'],
-                                                        constants=constants,
-                                                        logger=logger)
-            atom_dict['dx'], _ = convert_xml_attribute(atom_dict['dx'], ['float', 'float_expression'],
-                                                       constants=constants,
-                                                       logger=logger)
-            atom_dict['rmt'], _ = convert_xml_attribute(atom_dict['rmt'], ['float', 'float_expression'],
-                                                        constants=constants,
-                                                        logger=logger)
-
         parameters[atoms_name] = filter_out_empty_dict_entries(atom_dict)
 
     # &soc
@@ -484,10 +453,6 @@ def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True, 
                              logger=logger,
                              optional=True)
     if soc is not None and soc:
-        if schema_dict.inp_version <= (0, 31):
-            theta, _ = convert_xml_attribute(theta, ['float', 'float_expression'], constants=constants, logger=logger)
-            phi, _ = convert_xml_attribute(phi, ['float', 'float_expression'], constants=constants, logger=logger)
-
         parameters['soc'] = {'theta': theta, 'phi': phi}
 
     # &kpt
@@ -550,7 +515,6 @@ def get_structure_data(xmltree, schema_dict, logger=None):
     from masci_tools.util.schema_dict_util import read_constants, eval_simple_xpath
     from masci_tools.util.schema_dict_util import evaluate_text, evaluate_attribute
     from masci_tools.util.xml.common_functions import clear_xml
-    from masci_tools.util.xml.converters import convert_xml_attribute
     from masci_tools.io.common_functions import rel_to_abs, rel_to_abs_f
 
     if isinstance(xmltree, etree._ElementTree):
@@ -616,20 +580,6 @@ def get_structure_data(xmltree, schema_dict, logger=None):
                                        logger=logger,
                                        optional=True)
 
-        if schema_dict.inp_version < (0, 33):
-            for indx, pos in enumerate(absolute_positions):
-                absolute_positions[indx], suc = convert_xml_attribute(pos, ['float', 'float_expression'],
-                                                                      constants=constants,
-                                                                      logger=logger)
-            for indx, pos in enumerate(relative_positions):
-                relative_positions[indx], suc = convert_xml_attribute(pos, ['float', 'float_expression'],
-                                                                      constants=constants,
-                                                                      logger=logger)
-            for indx, pos in enumerate(film_positions):
-                film_positions[indx], suc = convert_xml_attribute(pos, ['float', 'float_expression'],
-                                                                  constants=constants,
-                                                                  logger=logger)
-
         atom_positions = absolute_positions
 
         for rel_pos in relative_positions:
@@ -678,7 +628,6 @@ def get_kpoints_data(xmltree, schema_dict, name=None, index=None, logger=None):
     from masci_tools.util.schema_dict_util import read_constants, eval_simple_xpath
     from masci_tools.util.schema_dict_util import evaluate_text, evaluate_attribute
     from masci_tools.util.xml.common_functions import clear_xml
-    from masci_tools.util.xml.converters import convert_xml_attribute
 
     if name is not None and index is not None:
         raise ValueError('Only provide one of index or name to select kpoint lists')
@@ -725,16 +674,6 @@ def get_kpoints_data(xmltree, schema_dict, name=None, index=None, logger=None):
                                      list_return=True,
                                      logger=logger)
 
-        if schema_dict.inp_version == (0, 32):
-            for indx, kpoint in enumerate(kpoints):
-                kpoints[indx], suc = convert_xml_attribute(kpoint, ['float', 'float_expression'],
-                                                           constants=constants,
-                                                           logger=logger)
-            weights, suc = convert_xml_attribute(weights, ['float', 'float_expression'],
-                                                 constants=constants,
-                                                 list_return=True,
-                                                 logger=logger)
-
         if not isinstance(kpoints[0], list):
             kpoints = [kpoints]
             weights = [weights]
@@ -776,7 +715,6 @@ def get_kpoints_data_max4(xmltree, schema_dict, logger=None):
     from masci_tools.util.schema_dict_util import read_constants, eval_simple_xpath
     from masci_tools.util.schema_dict_util import evaluate_text, evaluate_attribute
     from masci_tools.util.xml.common_functions import clear_xml
-    from masci_tools.util.xml.converters import convert_xml_attribute
 
     if isinstance(xmltree, etree._ElementTree):
         xmltree, _ = clear_xml(xmltree)
@@ -815,15 +753,6 @@ def get_kpoints_data_max4(xmltree, schema_dict, logger=None):
                                  list_return=True,
                                  logger=logger)
 
-    for indx, kpoint in enumerate(kpoints):
-        kpoints[indx], suc = convert_xml_attribute(kpoint, ['float', 'float_expression'],
-                                                   constants=constants,
-                                                   logger=logger)
-    weights, suc = convert_xml_attribute(weights, ['float', 'float_expression'],
-                                         constants=constants,
-                                         list_return=True,
-                                         logger=logger)
-
     return kpoints, weights, cell, pbc
 
 
@@ -844,7 +773,6 @@ def get_relaxation_information(xmltree, schema_dict, logger=None):
     """
     from masci_tools.util.schema_dict_util import tag_exists, read_constants, evaluate_text, eval_simple_xpath
     from masci_tools.util.schema_dict_util import evaluate_attribute
-    from masci_tools.util.xml.converters import convert_xml_attribute, convert_xml_text
     from masci_tools.util.xml.common_functions import clear_xml
 
     if isinstance(xmltree, etree._ElementTree):
@@ -867,26 +795,17 @@ def get_relaxation_information(xmltree, schema_dict, logger=None):
                                               constants=constants,
                                               logger=logger)
 
-    energies = evaluate_attribute(relax_tag,
-                                  schema_dict,
-                                  'energy',
-                                  list_return=True,
-                                  constants=constants,
-                                  logger=logger)
-    out_dict['energies'], _ = convert_xml_attribute(energies, ['float', 'float_expression'],
-                                                    list_return=True,
-                                                    logger=logger)
+    out_dict['energies'] = evaluate_attribute(relax_tag,
+                                              schema_dict,
+                                              'energy',
+                                              list_return=True,
+                                              constants=constants,
+                                              logger=logger)
 
     out_dict['posforces'] = []
     relax_iters = eval_simple_xpath(relax_tag, schema_dict, 'step', list_return=True, logger=logger)
     for step in relax_iters:
         posforces = evaluate_text(step, schema_dict, 'posforce', list_return=True, constants=constants, logger=logger)
-        posforces, _ = convert_xml_text(posforces, [{
-            'length': 6,
-            'type': ['float', 'float_expression']
-        }],
-                                        list_return=True,
-                                        logger=logger)
         out_dict['posforces'].append(posforces)
 
     return out_dict

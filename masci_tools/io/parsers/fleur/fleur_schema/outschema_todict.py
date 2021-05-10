@@ -22,7 +22,7 @@ import copy
 from collections import UserList
 
 
-def create_outschema_dict(path, inp_path=None, inpschema_dict=None):
+def create_outschema_dict(path, inpschema_dict):
     """
     Creates dictionary with information about the FleurOutputSchema.xsd.
     The functions, whose results are added to the schema_dict and the corresponding keys
@@ -59,15 +59,7 @@ def create_outschema_dict(path, inp_path=None, inpschema_dict=None):
     namespaces = {'xsd': 'http://www.w3.org/2001/XMLSchema'}
     out_version = str(xmlschema.xpath('/xsd:schema/@version', namespaces=namespaces)[0])
 
-    if inpschema_dict is not None:
-        input_basic_types = inpschema_dict.get('_basic_types').get_unlocked()
-    else:
-        if inp_path is None:
-            inp_path = path.replace('FleurOutputSchema', 'FleurInputSchema')
-        #Parse type definitions directly from inputSchema
-        inpxmlschema = etree.parse(inp_path)
-        inpxmlschema, _ = clear_xml(inpxmlschema)
-        input_basic_types = get_basic_types(inpxmlschema, namespaces)
+    input_basic_types = inpschema_dict.get('_basic_types').get_unlocked()
 
     schema_dict = {}
     schema_dict['out_version'] = out_version
