@@ -3,6 +3,9 @@
 Tests for fleur outxml_parser specific conversion functions
 """
 import pytest
+import logging
+
+LOGGER = logging.getLogger(__name__)
 
 TEST_DICTS = [{
     'end_date': {
@@ -80,56 +83,38 @@ TEST_DICTS = [{
 
 TEST_WALLTIMES = [14, 448, 20446, 86400, 1786884, -60681, 60695, 0]
 
-TEST_WARNINGS = [
-    {
-        'parser_warnings': []
-    },
-    {
-        'parser_warnings': []
-    },
-    {
-        'parser_warnings': []
-    },
-    {
-        'parser_warnings': []
-    },
-    {
-        'parser_warnings': []
-    },
-    {
-        'parser_warnings': [
-            'Endtime was unparsed, inp.xml prob not complete, do not believe the walltime!',
-            'Enddate was unparsed, inp.xml prob not complete, do not believe the walltime!'
-        ]
-    },
-    {
-        'parser_warnings': [
-            'Starttime was unparsed, inp.xml prob not complete, do not believe the walltime!',
-            'Startdate was unparsed, inp.xml prob not complete, do not believe the walltime!'
-        ]
-    },
-    {
-        'parser_warnings': [
-            'Starttime was unparsed, inp.xml prob not complete, do not believe the walltime!',
-            'Endtime was unparsed, inp.xml prob not complete, do not believe the walltime!',
-            'Startdate was unparsed, inp.xml prob not complete, do not believe the walltime!',
-            'Enddate was unparsed, inp.xml prob not complete, do not believe the walltime!'
-        ]
-    },
-]
+TEST_WARNINGS = [[], [], [], [], [],
+                 [
+                     'Endtime was unparsed, inp.xml prob not complete, do not believe the walltime!',
+                     'Enddate was unparsed, inp.xml prob not complete, do not believe the walltime!'
+                 ],
+                 [
+                     'Starttime was unparsed, inp.xml prob not complete, do not believe the walltime!',
+                     'Startdate was unparsed, inp.xml prob not complete, do not believe the walltime!'
+                 ],
+                 [
+                     'Starttime was unparsed, inp.xml prob not complete, do not believe the walltime!',
+                     'Endtime was unparsed, inp.xml prob not complete, do not believe the walltime!',
+                     'Startdate was unparsed, inp.xml prob not complete, do not believe the walltime!',
+                     'Enddate was unparsed, inp.xml prob not complete, do not believe the walltime!'
+                 ]]
 
 
 @pytest.mark.parametrize('input_dict, walltime, warnings', zip(TEST_DICTS, TEST_WALLTIMES, TEST_WARNINGS))
-def test_calculate_walltime(input_dict, walltime, warnings):
+def test_calculate_walltime(caplog, input_dict, walltime, warnings):
     """
    Test of the calculate_walltime function
    """
     from masci_tools.io.parsers.fleur.outxml_conversions import calculate_walltime
 
-    parser_warnings = {'parser_warnings': []}
-    out_dict = calculate_walltime(input_dict, parser_info_out=parser_warnings)
+    with caplog.at_level(logging.WARNING):
+        out_dict = calculate_walltime(input_dict, logger=LOGGER)
 
-    assert out_dict['walltime_units'] == 'seconds'
-    assert out_dict['walltime'] == walltime
-    print(parser_warnings)
-    assert parser_warnings == warnings
+        assert out_dict['walltime_units'] == 'seconds'
+        assert out_dict['walltime'] == walltime
+
+    if len(warnings) == 0:
+        assert caplog.text == ''
+    else:
+        for expected_warning in warnings:
+            assert expected_warning in caplog.text

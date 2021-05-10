@@ -59,9 +59,9 @@ class Test_KkrimpParserFunctions(object):
         files['out_orbmoms'] = path + 'out_magneticmoments.txt'
         s, m, o = KkrimpParserFunctions().parse_kkrimp_outputfile({}, files, debug=True)
         print('files:', files)
-        print('\nsuccess?\n{}\n'.format(s))
-        print('\nmessages?\n{}\n'.format(m))
-        print('\nout_dict?\n{}\n'.format(o))
+        print(f'\nsuccess?\n{s}\n')
+        print(f'\nmessages?\n{m}\n')
+        print(f'\nout_dict?\n{o}\n')
 
         assert s
         assert m == []
@@ -82,9 +82,9 @@ class Test_KkrimpParserFunctions(object):
         files['out_orbmoms'] = open(path + 'out_timing.000.txt')  # file not there yet and not parsed
         s, m, o = KkrimpParserFunctions().parse_kkrimp_outputfile({}, files)
         print('files:', files)
-        print('\nsuccess?\n{}\n'.format(s))
-        print('\nmessages?\n{}\n'.format(m))
-        print('\nout_dict?\n{}\n'.format(o))
+        print(f'\nsuccess?\n{s}\n')
+        print(f'\nmessages?\n{m}\n')
+        print(f'\nout_dict?\n{o}\n')
 
         assert s
         assert m == []
@@ -103,9 +103,9 @@ class Test_KkrimpParserFunctions(object):
         files['out_spinmoms'] = 'no_file_there'
         files['out_orbmoms'] = 'no_file_there'
         s, m, o = KkrimpParserFunctions().parse_kkrimp_outputfile({}, files, debug=True)
-        print('\nsuccess?\n{}\n'.format(s))
-        print('\nmessages?\n{}\n'.format(m))
-        print('\nout_dict?\n{}\n'.format(o))
+        print(f'\nsuccess?\n{s}\n')
+        print(f'\nmessages?\n{m}\n')
+        print(f'\nout_dict?\n{o}\n')
         assert not s
         assert set(m) == set([
             'Error parsing output of KKRimp: Version Info', 'Error parsing output of KKRimp: rms-error',

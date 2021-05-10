@@ -5,18 +5,19 @@
 # This file is part of the Masci-tools package.                               #
 # (Material science tools)                                                    #
 #                                                                             #
-# The code is hosted on GitHub at https://github.com/judftteam/masci-tools    #
-# For further information on the license, see the LICENSE.txt file            #
-# For further information please visit http://www.flapw.de or                 #
+# The code is hosted on GitHub at https://github.com/judftteam/masci-tools.   #
+# For further information on the license, see the LICENSE.txt file.           #
+# For further information please visit http://judft.de/.                      #
 #                                                                             #
 ###############################################################################
 """
 Tools for the impurity caluclation plugin and its workflows
 """
 from numpy import array, ndarray, loadtxt
-from masci_tools.io.common_functions import search_string, open_general, get_version_info, get_Ry2eV, convert_to_pystd
+from masci_tools.io.common_functions import search_string, open_general, get_version_info, convert_to_pystd
 from masci_tools.io.parsers.kkrparser_functions import get_rms, find_warnings, get_charges_per_atom, get_core_states
 import traceback
+from masci_tools.io.common_functions import get_Ry2eV
 
 __copyright__ = (u'Copyright (c), 2018, Forschungszentrum Jülich GmbH,' 'IAS-1/PGI-1, Germany. All rights reserved.')
 __license__ = 'MIT license, see LICENSE.txt file'
@@ -357,7 +358,6 @@ class KkrimpParserFunctions(object):
 
         """
 
-        Ry2eV = get_Ry2eV()
         msg_list = []
         files = file_dict
 
@@ -470,7 +470,7 @@ class KkrimpParserFunctions(object):
 
         try:
             result = self._get_Etot(files['out_log'])
-            out_dict['energy'] = result[-1] * Ry2eV
+            out_dict['energy'] = result[-1] * get_Ry2eV()
             out_dict['energy_unit'] = 'eV'
             out_dict['total_energy_Ry'] = result[-1]
             out_dict['total_energy_Ry_unit'] = 'Rydberg'
@@ -505,9 +505,9 @@ class KkrimpParserFunctions(object):
 
         try:
             esp_at, etot_at = self._get_energies_atom(files['out_enersp_at'], files['out_enertot_at'], natom)
-            out_dict['single_particle_energies'] = esp_at * Ry2eV
+            out_dict['single_particle_energies'] = esp_at * get_Ry2eV()
             out_dict['single_particle_energies_unit'] = 'eV'
-            out_dict['total_energies_atom'] = etot_at * Ry2eV
+            out_dict['total_energies_atom'] = etot_at * get_Ry2eV()
             out_dict['total_energies_atom_unit'] = 'eV'
         except:
             msg = 'Error parsing output of KKRimp: single particle energies'

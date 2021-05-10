@@ -5,9 +5,9 @@
 # This file is part of the Masci-tools package.                               #
 # (Material science tools)                                                    #
 #                                                                             #
-# The code is hosted on GitHub at https://github.com/judftteam/masci-tools    #
-# For further information on the license, see the LICENSE.txt file            #
-# For further information please visit http://www.flapw.de or                 #
+# The code is hosted on GitHub at https://github.com/judftteam/masci-tools.   #
+# For further information on the license, see the LICENSE.txt file.           #
+# For further information please visit http://judft.de/.                      #
 #                                                                             #
 ###############################################################################
 """
@@ -17,9 +17,10 @@ parser file where parse_kkr_outputfile is called
 """
 import numpy as np
 from numpy import ndarray, array, loadtxt, shape
-from masci_tools.io.common_functions import (search_string, get_version_info, get_Ry2eV, angles_to_vec,
+from masci_tools.io.common_functions import (search_string, get_version_info, angles_to_vec,
                                              get_corestates_from_potential, get_highest_core_state, open_general,
                                              convert_to_pystd)
+from masci_tools.io.common_functions import get_Ry2eV
 import traceback
 
 __copyright__ = (u'Copyright (c), 2017, Forschungszentrum Jülich GmbH,' 'IAS-1/PGI-1, Germany. All rights reserved.')
@@ -233,11 +234,11 @@ def get_econt_info(outfile_0init):
 
     doscalc = search_string('Density-of-States calculation', tmptxt)
     semi_circ = search_string('integration on semi-circle contour', tmptxt)
-    
+
     # dummy values
     N1, N2, N3, Npol = None, None, None, None
     Nsemi_circ, im_e_min = None, None
-    
+
     # for DOS contour
     if doscalc == -1:
         # scf contour
@@ -509,7 +510,7 @@ def get_spinmom_per_atom(outfile, natom, nonco_out_file=None):
         angles = loadtxt(nonco_out_file, usecols=[0, 1])  # make sure only theta and phi are read in
         if len(shape(angles)) == 1:
             angles = array([angles])
-        vec = angles_to_vec(result[-1], angles[:, 0]/180.*np.pi, angles[:, 1]/180.*np.pi)
+        vec = angles_to_vec(result[-1], angles[:, 0] / 180. * np.pi, angles[:, 1] / 180. * np.pi)
     else:
         vec, angles = [], []
 
@@ -578,7 +579,6 @@ def parse_kkr_outputfile(out_dict,
     Parser method for the kkr outfile. It returns a dictionary with results
     """
     # scaling factors etc. defined globally
-    Ry2eV = get_Ry2eV()
     doscalc = False
 
     # collection of parsing error messages
@@ -889,7 +889,7 @@ def parse_kkr_outputfile(out_dict,
 
         try:
             result = get_Etot(outfile)
-            out_dict['energy'] = result[-1] * Ry2eV
+            out_dict['energy'] = result[-1] * get_Ry2eV()
             out_dict['energy_unit'] = 'eV'
             out_dict['total_energy_Ry'] = result[-1]
             out_dict['total_energy_Ry_unit'] = 'Rydberg'
@@ -902,7 +902,7 @@ def parse_kkr_outputfile(out_dict,
 
         try:
             result = get_single_particle_energies(outfile_000)
-            out_dict['single_particle_energies'] = result * Ry2eV
+            out_dict['single_particle_energies'] = result * get_Ry2eV()
             out_dict['single_particle_energies_unit'] = 'eV'
         except:
             msg = 'Error parsing output of KKR: single particle energies'

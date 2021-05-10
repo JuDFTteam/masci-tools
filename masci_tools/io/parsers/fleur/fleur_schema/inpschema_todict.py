@@ -5,9 +5,9 @@
 # This file is part of the Masci-tools package.                               #
 # (Material science tools)                                                    #
 #                                                                             #
-# The code is hosted on GitHub at https://github.com/judftteam/masci-tools    #
-# For further information on the license, see the LICENSE.txt file            #
-# For further information please visit http://www.flapw.de or                 #
+# The code is hosted on GitHub at https://github.com/judftteam/masci-tools.   #
+# For further information on the license, see the LICENSE.txt file.           #
+# For further information please visit http://judft.de/.                      #
 #                                                                             #
 ###############################################################################
 """
@@ -15,25 +15,21 @@ This module provides the functionality to create/load the schema_dict for the
 FleurInputSchema.xsd
 """
 from .fleur_schema_parser_functions import *  #pylint: disable=unused-wildcard-import
-from masci_tools.util.xml.common_xml_util import clear_xml
+from masci_tools.util.xml.common_functions import clear_xml
+from masci_tools.util.xml.converters import convert_str_version_number
+from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict
 from lxml import etree
-from pprint import pprint
-import importlib.util
-import os
 
 
-def create_inpschema_dict(path, save_to_file=True):
+def create_inpschema_dict(path, apply_patches=True):
     """
-    Creates dictionary with information about the FleurInputSchema.xsd and writes
-    it to the same folder in a file called ```inpschema_dict.py```. The FleurInputSchema.xsd
-    corresponding to the same version is expected to be in the same folder.
-
+    Creates dictionary with information about the FleurInputSchema.xsd.
     The functions, whose results are added to the schema_dict and the corresponding keys
     are defined in schema_actions
 
     :param path: str path to the folder containing the FleurInputSchema.xsd file
-    :param save_to_file: bool, if True the schema_dict is saved to a ```inpschema_dict.py```
-                         file in the folder with the corresponding version number
+    :param apply_patches: bool if True (default) the registered patching functions are applied after creation
+
     """
 
     #Add new functionality to this dictionary here
@@ -49,126 +45,260 @@ def create_inpschema_dict(path, save_to_file=True):
         'omitt_contained_tags': get_omittable_tags,
         'tag_info': get_tag_info,
     }
+    schema_patches = [convert_string_to_float_expr, patch_simple_elements]
 
-    print(f'processing: {path}/FleurInputSchema.xsd')
-    xmlschema = etree.parse(f'{path}/FleurInputSchema.xsd')
-    xmlschema = clear_xml(xmlschema)
+    #print(f'processing: {path}/FleurInputSchema.xsd')
+    xmlschema = etree.parse(path)
+    xmlschema, _ = clear_xml(xmlschema)
 
     namespaces = {'xsd': 'http://www.w3.org/2001/XMLSchema'}
     inp_version = str(xmlschema.xpath('/xsd:schema/@version', namespaces=namespaces)[0])
+    inp_version_tuple = convert_str_version_number(inp_version)
 
     schema_dict = {}
     schema_dict['inp_version'] = inp_version
     for key, action in schema_actions.items():
         schema_dict[key] = action(xmlschema, namespaces, **schema_dict)
 
-    docstring = '\n'\
-                'This file contains information parsed from the FleurInputSchema.xsd\n'\
-                f'for version {inp_version}\n'\
-                '\n'\
-                'The keys contain the following information:\n'\
-                '\n'\
-                "    - 'inp_version': Version string of the input schema represented in this file\n"\
-                "    - 'tag_paths': simple xpath expressions to all valid tag names\n"\
-                '                   Multiple paths or ambiguous tag names are parsed as a list\n'\
-                "    - '_basic_types': Parsed definitions of all simple Types with their respective\n"\
-                '                      base type (int, float, ...) and evtl. length restrictions\n'\
-                '                     (Only used in the schema construction itself)\n'\
-                "    - 'attrib_types': All possible base types for all valid attributes. If multiple are\n"\
-                "                      possible a list, with 'string' always last (if possible)\n"\
-                "    - 'simple_elements': All elements with simple types and their type definition\n"\
-                '                         with the additional attributes\n'\
-                "    - 'unique_attribs': All attributes and their paths, which occur only once and\n"\
-                '                        have a unique path\n'\
-                "    - 'unique_path_attribs': All attributes and their paths, which have a unique path\n"\
-                '                             but occur in multiple places\n'\
-                "    - 'other_attribs': All attributes and their paths, which are not in 'unique_attribs' or\n"\
-                "                       'unique_path_attribs'\n"\
-                "    - 'omitt_contained_tags': All tags, which only contain a list of one other tag\n"\
-                "    - 'tag_info': For each tag (path), the valid attributes and tags (optional, several,\n"\
-                '                  order, simple, text)\n'
+        if key == '_basic_types' and apply_patches:
+            schema_dict[key] = patch_basic_types(schema_dict[key], inp_version_tuple)
 
-    if save_to_file:
-        with open(f'{path}/inpschema_dict.py', 'w') as f:
-            f.write('# -*- coding: utf-8 -*-\n')
-            f.write(f'"""{docstring}"""\n')
-            f.write(f"__inp_version__ = '{inp_version}'\n")
-            f.write('schema_dict = ')
-            pprint(schema_dict, f)
-    else:
-        return schema_dict, inp_version
+    #We cannot do the conversion to CaseInsensitiveDict before since we need the correct case
+    #For these attributes in the attrib_path functions
+    schema_dict['simple_elements'] = CaseInsensitiveDict(schema_dict['simple_elements'])
+
+    if apply_patches:
+        for patch_func in schema_patches:
+            patch_func(schema_dict, inp_version_tuple)
+
+    return schema_dict
 
 
-def load_inpschema(version, schema_return=False, create=True, parser_info_out=None, show_help=False):
+def convert_string_to_float_expr(schema_dict, inp_version):
     """
-    load the FleurInputSchema dict for the specified version
+    Converts specified string attributes to float_expression for schema_dicts of versions
+    0.32 and before.
 
-    :param version: str with the desired version, e.g. '0.33'
-    :param schema_return: bool, if True also a etree XMLSchema object is returned
-    :param create: bool, if True and the schema_dict does not exist it is created
-                   via :py:func:`~masci_tools.io.parsers.fleur.fleur_schema.create_inpschema_dict()`
-    :param parser_info_out: dict with warnings, errors and information, ...
-    :param show_help: bool, if True a explanation of the keys in the schema dictionary is printed
+    This enables the usage of the converted attributes in more xml modifying functions (shift_value) for example
 
-    :return: python dictionary with the schema information
+    :param schema_dict: dictionary produced by the fleur_schema_parser_functions (modified in-place)
+    :param inp_version: input version converted to tuple of ints
     """
-    if parser_info_out is None:
-        parser_info_out = {'parser_warnings': []}
 
-    PACKAGE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
+    TYPES_ENTRY = 'attrib_types'
+    EXPR_NAME = 'float_expression'
 
-    fleur_schema_path = f'./{version}'
+    CHANGE_TYPES = {
+        (0, 32): {
+            'replace': {'mag_scale', 'mix_b', 'mix_relaxweightoffd', 'vol', 'warp_factor'}
+        },
+        (0, 30): {
+            'replace': {'precondparam'}
+        },
+        (0, 29): {
+            'replace':
+            {'vca_charge', 'energy', 'force_converged', 'forcealpha', 'fixed_moment', 'b_field', 'b_field_mt'}
+        },
+        (0, 27): {
+            'replace': {
+                'Kmax', 'Gmax', 'GmaxXC', 'alpha', 'beta', 'b_cons_x', 'b_cons_y', 'dtilda', 'dvac', 'epsdisp',
+                'epsforce', 'fermismearingenergy', 'fermismearingtemp', 'U', 'J', 'locx1', 'locx2', 'locy1', 'locy2',
+                'logincrement', 'm', 'magmom', 'maxeigenval', 'mineigenval', 'maxenergy', 'minenergy',
+                'maxtimetostartiter', 'ellow', 'elup', 'minDistance', 'phi', 'theta', 'radius', 'scale', 'sig_b_1',
+                'sig_b_2', 'sigma', 'spindown', 'spinup', 'spinf', 'theta', 'thetaJ', 'tworkf', 'valenceelectrons',
+                'weight', 'zsigma'
+            },
+            'add': {'value'}
+        }
+    }
 
-    path = os.path.abspath(os.path.join(PACKAGE_DIRECTORY, fleur_schema_path))
+    if inp_version >= (0, 33):
+        #After this version the issue was solved
+        return
 
-    schema_file_path = os.path.join(path, 'FleurInputSchema.xsd')
-    schema_dict_path = os.path.join(path, 'inpschema_dict.py')
+    replace_set = set()
+    add_set = set()
 
-    if not os.path.isfile(schema_file_path):
-        latest_version = 0
-        #Get latest version available
-        for root, dirs, files in os.walk(PACKAGE_DIRECTORY):
-            for folder in dirs:
-                if '0.' in folder:
-                    latest_version = max(latest_version, int(folder.split('.')[1]))
+    for version, changes in sorted(CHANGE_TYPES.items(), key=lambda x: x[0]):
 
-        if int(version.split('.')[1]) < latest_version:
-            message = f'No FleurInputSchema.xsd found at {path}'
-            raise FileNotFoundError(message)
-        else:
-            latest_version = f'0.{latest_version}'
-            parser_info_out['parser_warnings'].append(
-                f"No Input Schema available for version '{version}'; falling back to '{latest_version}'")
+        if inp_version < version:
+            continue
 
-            fleur_schema_path = f'./{latest_version}'
+        version_replace_set = changes.get('replace', set())
+        version_add_set = changes.get('add', set())
+        version_remove_set = changes.get('remove', set())
 
-            path = os.path.abspath(os.path.join(PACKAGE_DIRECTORY, fleur_schema_path))
+        replace_set = (replace_set | version_replace_set) - version_remove_set
+        add_set = (add_set | version_add_set) - version_remove_set
 
-            schema_file_path = os.path.join(path, 'FleurInputSchema.xsd')
-            schema_dict_path = os.path.join(path, 'inpschema_dict.py')
+    for name in replace_set:
+        if name not in schema_dict[TYPES_ENTRY]:
+            raise ValueError(f'convert_string_to_float_expr failed. Attribute {name} does not exist')
+        if 'string' not in schema_dict[TYPES_ENTRY][name] and 'float' not in schema_dict[TYPES_ENTRY][name]:
+            raise ValueError(
+                f'convert_string_to_float_expr failed. Attribute {name} does not have string or float type')
+        schema_dict[TYPES_ENTRY][name] = [EXPR_NAME]
 
-    if not os.path.isfile(schema_dict_path):
-        if create:
-            parser_info_out['parser_warnings'].append(
-                f'Generating schema_dict file for given input schema: {schema_file_path}')
-            create_inpschema_dict(path)
-        else:
-            raise FileNotFoundError(f'No inpschema_dict generated for FleurInputSchema.xsd at {path}')
+    for name in add_set:
+        if name not in schema_dict[TYPES_ENTRY]:
+            raise ValueError(f'convert_string_to_float_expr failed. Attribute {name} does not exist')
+        if 'string' not in schema_dict[TYPES_ENTRY][name]:
+            raise ValueError(f'convert_string_to_float_expr failed. Attribute {name} does not have string type')
+        schema_dict[TYPES_ENTRY][name].insert(0, EXPR_NAME)
 
-    #import schema_dict
-    spec = importlib.util.spec_from_file_location('schema', schema_dict_path)
-    schema = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(schema)
-    schema_dict = schema.schema_dict
 
-    if show_help:
-        help(schema)
+def patch_basic_types(basic_types, inp_version):
+    """
+    Patch the _basic_types entry to correct ambigouities
 
-    if schema_return:
-        xmlschema_doc = etree.parse(schema_file_path)
-        xmlschema = etree.XMLSchema(xmlschema_doc)
+    :param schema_dict: dictionary produced by the fleur_schema_parser_functions (modified in-place)
+    :param inp_version: input version converted to tuple of ints
+    """
 
-    if schema_return:
-        return schema_dict, xmlschema
-    else:
-        return schema_dict
+    if inp_version >= (0, 33):
+        #After this version the issue was solved
+        return basic_types
+
+    CHANGE_TYPES = {
+        (0, 32): {
+            'add': {
+                'KPointType': {
+                    'base_types': ['float_expression'],
+                    'length': 3
+                },
+            }
+        },
+        (0, 28): {
+            'add': {
+                'AtomPosType': {
+                    'base_types': ['float_expression'],
+                    'length': 3
+                },
+                'LatticeParameterType': {
+                    'base_types': ['float_expression'],
+                    'length': 1
+                },
+                'SpecialPointType': {
+                    'base_types': ['float_expression'],
+                    'length': 3
+                }
+            }
+        },
+    }
+
+    all_changes = {}
+
+    for version, changes in sorted(CHANGE_TYPES.items(), key=lambda x: x[0]):
+
+        if inp_version < version:
+            continue
+
+        version_add = changes.get('add', {})
+        version_remove = changes.get('remove', set())
+
+        all_changes = {key: val for key, val in {**all_changes, **version_add}.items() if key not in version_remove}
+
+    for name, new_definition in all_changes.items():
+        if name not in basic_types:
+            raise ValueError(f'patch_basic_types failed. Type {name} does not exist')
+        basic_types[name] = new_definition
+
+    return basic_types
+
+
+def patch_simple_elements(schema_dict, inp_version):
+    """
+    Patch the simple_elememnts entry to correct ambigouities
+
+    :param schema_dict: dictionary produced by the fleur_schema_parser_functions (modified in-place)
+    :param inp_version: input version converted to tuple of ints
+    """
+
+    ELEMENTS_ENTRY = 'simple_elements'
+
+    if inp_version >= (0, 35):
+        #After this version the issue was solved
+        return
+
+    CHANGE_TYPES = {
+        (0, 33): {
+            'remove': {'row-1', 'row-2', 'row-3'}
+        },
+        (0, 29): {
+            'add': {
+                'posforce': [{
+                    'type': ['float_expression'],
+                    'length': 6
+                }],
+            }
+        },
+        (0, 28): {
+            'add': {
+                'q': [{
+                    'type': ['float_expression'],
+                    'length': 3
+                }],
+            },
+            'remove': {'abspos', 'relpos', 'filmpos'}
+        },
+        (0, 27): {
+            'add': {
+                'abspos': [{
+                    'type': ['float_expression'],
+                    'length': 3
+                }],
+                'relpos': [{
+                    'type': ['float_expression'],
+                    'length': 3
+                }],
+                'filmpos': [{
+                    'type': ['float_expression'],
+                    'length': 3
+                }],
+                'row-1': [{
+                    'type': ['float_expression'],
+                    'length': 2
+                }, {
+                    'type': ['float_expression'],
+                    'length': 3
+                }, {
+                    'type': ['float'],
+                    'length': 4
+                }],
+                'row-2': [{
+                    'type': ['float_expression'],
+                    'length': 2
+                }, {
+                    'type': ['float_expression'],
+                    'length': 3
+                }, {
+                    'type': ['float'],
+                    'length': 4
+                }],
+                'row-3': [{
+                    'type': ['float_expression'],
+                    'length': 3
+                }, {
+                    'type': ['float'],
+                    'length': 4
+                }],
+            }
+        }
+    }
+
+    all_changes = {}
+
+    for version, changes in sorted(CHANGE_TYPES.items(), key=lambda x: x[0]):
+
+        if inp_version < version:
+            continue
+
+        version_add = changes.get('add', {})
+        version_remove = changes.get('remove', set())
+
+        all_changes = {key: val for key, val in {**all_changes, **version_add}.items() if key not in version_remove}
+
+    for name, new_definition in all_changes.items():
+        if name not in schema_dict[ELEMENTS_ENTRY]:
+            raise ValueError(f'patch_simple_elements failed. Type {name} does not exist')
+        schema_dict[ELEMENTS_ENTRY][name] = new_definition

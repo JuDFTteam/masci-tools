@@ -1,6 +1,8 @@
 output_dict: {}
 warnings:
-  parser_info: Masci-Tools Fleur out.xml Parser v0.3.0
+  parser_errors:
+  - Skipping the parsing of the xml file. Repairing was not possible.
+  parser_info:
+  - Masci-Tools Fleur out.xml Parser v0.5.0
   parser_warnings:
   - The out.xml file is broken I try to repair it.
-  - Skipping the parsing of the xml file. Repairing was not possible.

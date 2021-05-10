@@ -250,8 +250,12 @@ input_dict:
   fleurInputVersion: '0.36'
   forceTheorem:
     spinSpiralDispersion:
-    - 0.0 0.0 0.0
-    - 0.2 0.0 0.0
+    - - 0.0
+      - 0.0
+      - 0.0
+    - - 0.2
+      - 0.0
+      - 0.0
   output:
     band: false
     chargeDensitySlicing:
@@ -276,8 +280,10 @@ input_dict:
       supercellZ: 1
       unfoldBand: false
 warnings:
-  fleur_inp_version: '0.36'
-  parser_info: Masci-Tools Fleur inp.xml Parser v0.2.0
+  parser_errors: []
+  parser_info:
+  - Masci-Tools Fleur inp.xml Parser v0.3.0
+  - Got Fleur input file with file version 0.36
   parser_warnings:
   - No Input Schema available for version '0.36'; falling back to '0.34'
   - "Input file does not validate against the schema: \nLine 2: Element 'fleurInput',\

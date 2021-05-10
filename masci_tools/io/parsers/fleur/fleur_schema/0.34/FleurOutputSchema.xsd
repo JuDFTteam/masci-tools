@@ -217,6 +217,7 @@
       </xsd:sequence>
       <xsd:attribute name="Angles" type="xsd:integer" use="required"/>
       <xsd:attribute name="qpoints" type="xsd:integer" use="required"/>
+      <xsd:attribute name="ef" type="xsd:integer" use="required"/>
       <xsd:attribute name="units" type="xsd:string" use="required"/>
    </xsd:complexType>
 
@@ -266,6 +267,7 @@
 
    <xsd:complexType name="Entry_DMI_Type">
       <xsd:attribute name="q" type="xsd:integer" use="required"/>
+      <xsd:attribute name="ef-shift" type="xsd:double" use="required"/>
       <xsd:attribute name="phi" type="xsd:double" use="optional"/>
       <xsd:attribute name="theta" type="xsd:double" use="optional"/>
       <xsd:attribute name="ev-sum" type="xsd:double" use="required"/>
@@ -273,6 +275,7 @@
 
    <xsd:complexType name="Entry_DMIATOMS_Type">
       <xsd:attribute name="atomType" type="xsd:integer" use="optional"/>
+      <xsd:attribute name="ef-shift" type="xsd:double" use="required"/>
       <xsd:attribute name="q" type="xsd:integer" use="required"/>
       <xsd:attribute name="phi" type="xsd:double" use="required"/>
       <xsd:attribute name="theta" type="xsd:double" use="required"/>

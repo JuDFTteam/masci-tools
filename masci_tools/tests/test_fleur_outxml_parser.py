@@ -39,7 +39,7 @@ def test_outxml_valid_outxml(outxmlfilepath):
     #Parse before
     parser = etree.XMLParser(attribute_defaults=True, encoding='utf-8')
     xmltree = etree.parse(outxmlfilepath, parser)
-    out_dict = outxml_parser(xmltree, strict=True)
+    out_dict = outxml_parser(xmltree)
 
     assert out_dict is not None
     assert isinstance(out_dict, dict)
@@ -47,14 +47,14 @@ def test_outxml_valid_outxml(outxmlfilepath):
 
     #call with contextmanager
     with open(outxmlfilepath, 'r') as outfile:
-        out_dict = outxml_parser(outfile, strict=True)
+        out_dict = outxml_parser(outfile)
 
     assert out_dict is not None
     assert isinstance(out_dict, dict)
     assert out_dict != {}
 
 
-def test_outxml_validation_errors(data_regression):
+def test_outxml_validation_errors(data_regression, clean_parser_log):
     """
     Test the output parser against files for detecting validation
     """
@@ -62,58 +62,58 @@ def test_outxml_validation_errors(data_regression):
     OUTXML_FILEPATH1 = os.path.join(outxmlfilefolder, 'files/fleur/broken_out_xml/simple_validation_error.xml')
 
     with pytest.raises(ValueError, match='Output file does not validate against the schema:'):
-        out_dict = outxml_parser(OUTXML_FILEPATH1, strict=True)
+        out_dict = outxml_parser(OUTXML_FILEPATH1)
 
-    result_warnings = {'parser_warnings': []}
-    out_dict = outxml_parser(OUTXML_FILEPATH1, strict=True, ignore_validation=True, parser_info_out=result_warnings)
+    warnings = {}
+    out_dict = outxml_parser(OUTXML_FILEPATH1, ignore_validation=True, parser_info_out=warnings)
 
-    data_regression.check({'output_dict': out_dict, 'warnings': result_warnings})
+    data_regression.check({'output_dict': out_dict, 'warnings': clean_parser_log(warnings)})
 
 
-def test_outxml_empty_out(data_regression):
+def test_outxml_empty_out(data_regression, clean_parser_log):
     """
     Test the output parser against empty file
     """
 
     OUTXML_FILEPATH = os.path.join(outxmlfilefolder, 'files/fleur/broken_out_xml/empty_out.xml')
 
-    result_warnings = {'parser_warnings': []}
-    out_dict = outxml_parser(OUTXML_FILEPATH, strict=True, parser_info_out=result_warnings)
+    warnings = {}
+    out_dict = outxml_parser(OUTXML_FILEPATH, parser_info_out=warnings)
 
-    data_regression.check({'output_dict': out_dict, 'warnings': result_warnings})
+    data_regression.check({'output_dict': out_dict, 'warnings': clean_parser_log(warnings)})
 
 
-def test_outxml_broken(data_regression):
+def test_outxml_broken(data_regression, clean_parser_log):
     """
     Test the output parser against a file which terminates after some iterations
     """
 
     OUTXML_FILEPATH = os.path.join(outxmlfilefolder, 'files/fleur/broken_out_xml/terminated.xml')
 
-    result_warnings = {'parser_warnings': []}
-    out_dict = outxml_parser(OUTXML_FILEPATH, strict=True, parser_info_out=result_warnings)
+    warnings = {}
+    out_dict = outxml_parser(OUTXML_FILEPATH, parser_info_out=warnings)
 
     data_regression.check({
         'output_dict': out_dict,
-        'warnings': result_warnings,
+        'warnings': clean_parser_log(warnings),
     })
 
 
-def test_outxml_broken_firstiter(data_regression):
+def test_outxml_broken_firstiter(data_regression, clean_parser_log):
     """
     Test the output parser against a file which terminates in the first iteration
     """
     OUTXML_FILEPATH = os.path.join(outxmlfilefolder, 'files/fleur/broken_out_xml/terminated_firstit.xml')
-    result_warnings = {'parser_warnings': []}
-    out_dict = outxml_parser(OUTXML_FILEPATH, strict=True, parser_info_out=result_warnings)
+    warnings = {}
+    out_dict = outxml_parser(OUTXML_FILEPATH, parser_info_out=warnings)
 
     data_regression.check({
         'output_dict': out_dict,
-        'warnings': result_warnings,
+        'warnings': clean_parser_log(warnings),
     })
 
 
-def test_outxml_garbage_values(data_regression):
+def test_outxml_garbage_values(data_regression, clean_parser_log):
     """
     Test the behaviour of the ouput parser when encountering NaN, Inf or fortran formatting errors ****
     """
@@ -122,14 +122,14 @@ def test_outxml_garbage_values(data_regression):
     def isNaN(num):
         return math.isnan(num)  #num != num
 
-    result_warnings = {'parser_warnings': []}
-    out_dict = outxml_parser(OUTXML_FILEPATH, strict=True, ignore_validation=True, parser_info_out=result_warnings)
+    warnings = {}
+    out_dict = outxml_parser(OUTXML_FILEPATH, ignore_validation=True, parser_info_out=warnings)
 
     assert isNaN(out_dict['fermi_energy'])
     assert out_dict['magnetic_moments'] == '********'
     assert out_dict['total_charge'] == float('Inf')
 
-    data_regression.check({'warnings': result_warnings})
+    data_regression.check({'warnings': clean_parser_log(warnings)})
 
 
 def test_outxml_incompatible_versions():
@@ -137,15 +137,30 @@ def test_outxml_incompatible_versions():
     Test the output parser against files with broken/wrong or unsupported version strings
     """
 
-    #output version does not exist (InputSchema is loaded first so this is the raised error)
+    #output version does not exist
     OUTXML_FILEPATH1 = os.path.join(outxmlfilefolder, 'files/fleur/broken_out_xml/non_existing_version.xml')
-    with pytest.raises(FileNotFoundError, match='No FleurInputSchema.xsd found'):
-        out_dict = outxml_parser(OUTXML_FILEPATH1, strict=True)
+    with pytest.raises(FileNotFoundError, match='No FleurOutputSchema.xsd found'):
+        out_dict = outxml_parser(OUTXML_FILEPATH1)
 
     #version string 0.27 and programVersion='fleur 27' not supported
     OUTXML_FILEPATH1 = os.path.join(outxmlfilefolder, 'files/fleur/broken_out_xml/non_supported_version.xml')
-    with pytest.raises(ValueError, match='Versions before fleur MaX4.0 are not supported'):
-        out_dict = outxml_parser(OUTXML_FILEPATH1, strict=True)
+    with pytest.raises(ValueError, match="Unknown fleur version: File-version '0.27' Program-version 'fleur 20'"):
+        out_dict = outxml_parser(OUTXML_FILEPATH1)
+
+
+def test_outxml_invalid_iteration():
+    """
+    Test the output parser with invaid iteration to parse arguments
+    """
+
+    #output version does not exist (InputSchema is loaded first so this is the raised error)
+    OUTXML_FILEPATH = os.path.join(outxmlfilefolder_valid[0], 'SiLOXML/files/out.xml')
+    with pytest.raises(ValueError, match=r"Valid values are: 'first', 'last', 'all', or int"):
+        out_dict = outxml_parser(OUTXML_FILEPATH, iteration_to_parse=('Test', 3))
+        pprint(out_dict)
+
+    with pytest.raises(ValueError, match=r"Got '999'; but only '6' iterations are available"):
+        out_dict = outxml_parser(OUTXML_FILEPATH, iteration_to_parse=999)
 
 
 def test_outxml_additional_tasks_simple(data_regression):
@@ -286,63 +301,94 @@ def test_outxml_add_tasks_append(data_regression):
     })
 
 
-def test_outxml_max4compatibility(data_regression):
+def test_outxml_pre_max3_1compatibility(data_regression, clean_parser_log):
+    """
+    Test if older than Max3.1 output files are processed correctly (and a warning should be shown for this case)
+    """
+
+    OUTXML_FILEPATH = os.path.abspath(os.path.join(outxmlfilefolder, 'files/fleur/old_versions/Max3_0_test_out.xml'))
+
+    warnings = {}
+    with pytest.warns(UserWarning):
+        out_dict = outxml_parser(OUTXML_FILEPATH, parser_info_out=warnings, iteration_to_parse='all')
+    data_regression.check({
+        'output_dict': out_dict,
+        'warnings': clean_parser_log(warnings),
+    })
+
+
+def test_outxml_max3_1compatibility(data_regression, clean_parser_log):
+    """
+    Test if Max3.1 output files are processed correctly
+    """
+
+    OUTXML_FILEPATH = os.path.abspath(os.path.join(outxmlfilefolder, 'files/fleur/old_versions/Max3_1_test_out.xml'))
+
+    warnings = {}
+    out_dict = outxml_parser(OUTXML_FILEPATH, parser_info_out=warnings, iteration_to_parse='all')
+    data_regression.check({
+        'output_dict': out_dict,
+        'warnings': clean_parser_log(warnings),
+    })
+
+
+def test_outxml_max4compatibility(data_regression, clean_parser_log):
     """
     Test if Max4 output files are processed correctly
     """
 
-    OUTXML_FILEPATH = os.path.abspath(os.path.join(outxmlfilefolder, 'files/fleur/Max-R4/Max4_test_out.xml'))
+    OUTXML_FILEPATH = os.path.abspath(os.path.join(outxmlfilefolder, 'files/fleur/old_versions/Max4_test_out.xml'))
 
-    warnings = {'parser_warnings': []}
+    warnings = {}
     out_dict = outxml_parser(OUTXML_FILEPATH, parser_info_out=warnings, iteration_to_parse='all')
     data_regression.check({
         'output_dict': out_dict,
-        'warnings': warnings,
+        'warnings': clean_parser_log(warnings),
     })
 
 
-def test_outxml_max5_0_compatibility(data_regression):
+def test_outxml_max5_0_compatibility(data_regression, clean_parser_log):
     """
     Test if Max5.0 output files are processed correctly
     """
 
-    OUTXML_FILEPATH = os.path.abspath(os.path.join(outxmlfilefolder, 'files/fleur/Max-R5/Max5_0_test_out.xml'))
+    OUTXML_FILEPATH = os.path.abspath(os.path.join(outxmlfilefolder, 'files/fleur/old_versions/Max5_0_test_out.xml'))
 
-    warnings = {'parser_warnings': []}
+    warnings = {}
     out_dict = outxml_parser(OUTXML_FILEPATH, parser_info_out=warnings, iteration_to_parse='all')
     data_regression.check({
         'output_dict': out_dict,
-        'warnings': warnings,
+        'warnings': clean_parser_log(warnings),
     })
 
 
-def test_outxml_differing_versions(data_regression):
+def test_outxml_differing_versions(data_regression, clean_parser_log):
     """
     Test if files with different input/output versions are parsed correctly
     """
     OUTXML_FILEPATH = os.path.abspath(os.path.join(outxmlfilefolder, 'files/fleur/output_mixed_versions.xml'))
 
-    warnings = {'parser_warnings': []}
+    warnings = {}
     out_dict = outxml_parser(OUTXML_FILEPATH, parser_info_out=warnings)
 
     data_regression.check({
         'output_dict': out_dict,
-        'warnings': warnings,
+        'warnings': clean_parser_log(warnings),
     })
 
 
-def test_outxml_newer_version(data_regression):
+def test_outxml_newer_version(data_regression, clean_parser_log):
     """
     Test if files with not yet existent versions are parsed correctly (fallback to last available)
     """
     OUTXML_FILEPATH = os.path.abspath(os.path.join(outxmlfilefolder, 'files/fleur/output_newer_version.xml'))
 
-    warnings = {'parser_warnings': []}
+    warnings = {}
     out_dict = outxml_parser(OUTXML_FILEPATH, parser_info_out=warnings)
 
     data_regression.check({
         'output_dict': out_dict,
-        'warnings': warnings,
+        'warnings': clean_parser_log(warnings),
     })
 
 
@@ -353,7 +399,7 @@ def test_outxml_lastiter(data_regression):
 
     OUTXML_FILEPATH = os.path.join(outxmlfilefolder_valid[0], 'SiLOXML/files/out.xml')
 
-    out_dict = outxml_parser(OUTXML_FILEPATH, strict=True)
+    out_dict = outxml_parser(OUTXML_FILEPATH)
     data_regression.check({
         'output_dict': out_dict,
     })
@@ -366,7 +412,7 @@ def test_outxml_firstiter(data_regression):
 
     OUTXML_FILEPATH = os.path.join(outxmlfilefolder_valid[0], 'SiLOXML/files/out.xml')
 
-    out_dict = outxml_parser(OUTXML_FILEPATH, iteration_to_parse='first', strict=True)
+    out_dict = outxml_parser(OUTXML_FILEPATH, iteration_to_parse='first')
     data_regression.check({
         'output_dict': out_dict,
     })
@@ -379,7 +425,7 @@ def test_outxml_alliter(data_regression):
 
     OUTXML_FILEPATH = os.path.join(outxmlfilefolder_valid[0], 'SiLOXML/files/out.xml')
 
-    out_dict = outxml_parser(OUTXML_FILEPATH, iteration_to_parse='all', strict=True)
+    out_dict = outxml_parser(OUTXML_FILEPATH, iteration_to_parse='all')
     data_regression.check({
         'output_dict': out_dict,
     })
@@ -392,7 +438,7 @@ def test_outxml_indexiter(data_regression):
 
     OUTXML_FILEPATH = os.path.join(outxmlfilefolder_valid[0], 'SiLOXML/files/out.xml')
 
-    out_dict = outxml_parser(OUTXML_FILEPATH, iteration_to_parse=3, strict=True)
+    out_dict = outxml_parser(OUTXML_FILEPATH, iteration_to_parse=3)
     data_regression.check({
         'output_dict': out_dict,
     })
@@ -405,7 +451,7 @@ def test_outxml_minimal_mode(data_regression):
 
     OUTXML_FILEPATH = os.path.join(outxmlfilefolder_valid[0], 'SiLOXML/files/out.xml')
 
-    out_dict = outxml_parser(OUTXML_FILEPATH, iteration_to_parse='all', minimal_mode=True, strict=True)
+    out_dict = outxml_parser(OUTXML_FILEPATH, iteration_to_parse='all', minimal_mode=True)
     data_regression.check({
         'output_dict': out_dict,
     })
@@ -418,8 +464,10 @@ def test_outxml_magnetic(data_regression):
 
     OUTXML_FILEPATH = os.path.join(outxmlfilefolder_valid[0], 'Fe_bct_LOXML/files/out.xml')
 
-    out_dict = outxml_parser(OUTXML_FILEPATH, iteration_to_parse='all', strict=True)
-    data_regression.check({})
+    out_dict = outxml_parser(OUTXML_FILEPATH, iteration_to_parse='all')
+    data_regression.check({
+        'output_dict': out_dict,
+    })
 
 
 def test_outxml_ldaurelax(data_regression):
@@ -429,7 +477,7 @@ def test_outxml_ldaurelax(data_regression):
 
     OUTXML_FILEPATH = os.path.join(outxmlfilefolder_valid[0], 'GaAsMultiUForceXML/files/out.xml')
 
-    out_dict = outxml_parser(OUTXML_FILEPATH, iteration_to_parse='all', strict=True)
+    out_dict = outxml_parser(OUTXML_FILEPATH, iteration_to_parse='all')
     data_regression.check({
         'output_dict': out_dict,
     })
@@ -442,7 +490,21 @@ def test_outxml_force(data_regression):
 
     OUTXML_FILEPATH = os.path.join(outxmlfilefolder_valid[0], 'FePt_film_SSFT_LO/files/out.xml')
 
-    out_dict = outxml_parser(OUTXML_FILEPATH, iteration_to_parse='all', strict=True)
+    out_dict = outxml_parser(OUTXML_FILEPATH, iteration_to_parse='all')
+
+    data_regression.check({
+        'output_dict': out_dict,
+    })
+
+
+def test_outxml_plot(data_regression):
+    """
+    Test the outxml_parser for a forcetheorem calculation
+    """
+
+    OUTXML_FILEPATH = os.path.join(outxmlfilefolder_valid[0], 'SiFilmSlicePlotXML/files/out.xml')
+
+    out_dict = outxml_parser(OUTXML_FILEPATH)
 
     data_regression.check({
         'output_dict': out_dict,

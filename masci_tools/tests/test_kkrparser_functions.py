@@ -194,7 +194,7 @@ class Test_kkr_parser_functions(object):
         Check check_error_category function used in parser after parse_kkr_outputfile is used
         """
         fname = 'nonco_angles_out.dat'
-        err_cat, err_msg = (2, 'Error! NONCO_ANGLES_OUT not found {}'.format(fname))
+        err_cat, err_msg = (2, f'Error! NONCO_ANGLES_OUT not found {fname}')
         assert not check_error_category(err_cat, err_msg, {'use_newsosol': False})
         assert check_error_category(err_cat, err_msg, {'use_newsosol': True})
 

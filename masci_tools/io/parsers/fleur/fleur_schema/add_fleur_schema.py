@@ -5,22 +5,15 @@
 # This file is part of the Masci-tools package.                               #
 # (Material science tools)                                                    #
 #                                                                             #
-# The code is hosted on GitHub at https://github.com/judftteam/masci-tools    #
-# For further information on the license, see the LICENSE.txt file            #
-# For further information please visit http://www.flapw.de or                 #
+# The code is hosted on GitHub at https://github.com/judftteam/masci-tools.   #
+# For further information on the license, see the LICENSE.txt file.           #
+# For further information please visit http://judft.de/.                      #
 #                                                                             #
 ###############################################################################
 """
 Contains utility to add new pairs of input/output schemas.
 """
-try:
-    from .inpschema_todict import create_inpschema_dict
-    from .outschema_todict import create_outschema_dict
-except ImportError:
-    #These are here so that the scripts can be used from the commandline
-    from masci_tools.io.parsers.fleur.fleur_schema import create_inpschema_dict  # pylint: disable=cyclic-import
-    from masci_tools.io.parsers.fleur.fleur_schema import create_outschema_dict  # pylint: disable=cyclic-import
-from masci_tools.util.xml.common_xml_util import clear_xml
+from masci_tools.util.xml.common_functions import clear_xml
 import os
 import sys
 import shutil
@@ -42,7 +35,7 @@ def add_fleur_schema(path, overwrite=False):
     schema_path = os.path.join(path, 'FleurInputSchema.xsd')
     if os.path.isfile(schema_path):
         xmlschema = etree.parse(schema_path)
-        xmlschema = clear_xml(xmlschema)
+        xmlschema, _ = clear_xml(xmlschema)
 
         namespaces = {'xsd': 'http://www.w3.org/2001/XMLSchema'}
         inp_version = xmlschema.xpath('/xsd:schema/@version', namespaces=namespaces)[0]
@@ -58,12 +51,11 @@ def add_fleur_schema(path, overwrite=False):
             with open(os.path.abspath(os.path.join(copy_schema_folder, '__init__.py')), 'w') as f:
                 pass
         shutil.copy(schema_path, copy_schema_file)
-        create_inpschema_dict(copy_schema_folder)
 
     schema_path = os.path.join(path, 'FleurOutputSchema.xsd')
     if os.path.isfile(schema_path):
         xmlschema = etree.parse(schema_path)
-        xmlschema = clear_xml(xmlschema)
+        xmlschema, _ = clear_xml(xmlschema)
 
         namespaces = {'xsd': 'http://www.w3.org/2001/XMLSchema'}
         out_version = xmlschema.xpath('/xsd:schema/@version', namespaces=namespaces)[0]
@@ -79,7 +71,6 @@ def add_fleur_schema(path, overwrite=False):
             with open(os.path.abspath(os.path.join(copy_schema_folder, '__init__.py')), 'w') as f:
                 pass
         shutil.copy(schema_path, copy_schema_file)
-        create_outschema_dict(copy_schema_folder)
 
 
 if __name__ == '__main__':

@@ -5,9 +5,9 @@
 # This file is part of the Masci-tools package.                               #
 # (Material science tools)                                                    #
 #                                                                             #
-# The code is hosted on GitHub at https://github.com/judftteam/masci-tools    #
-# For further information on the license, see the LICENSE.txt file            #
-# For further information please visit http://www.flapw.de or                 #
+# The code is hosted on GitHub at https://github.com/judftteam/masci-tools.   #
+# For further information on the license, see the LICENSE.txt file.           #
+# For further information please visit http://judft.de/.                      #
 #                                                                             #
 ###############################################################################
 """
@@ -48,8 +48,6 @@ def register_migration(base_version, target_version):
             """Decorator for migration function"""
             return func(*args)
 
-        setattr(ParseTasks, func.__name__, migration)
-
         if not hasattr(ParseTasks, '_migrations'):
             ParseTasks._migrations = {}  # pylint: disable=protected-access
         if not base_version in ParseTasks._migrations:
@@ -59,16 +57,19 @@ def register_migration(base_version, target_version):
         if not isinstance(target_version_list, list):
             target_version_list = [target_version_list]
         for valid_version in target_version_list:
-            ParseTasks._migrations[base_version][valid_version] = getattr(ParseTasks, func.__name__)  # pylint: disable=protected-access
+            ParseTasks._migrations[base_version][valid_version] = migration  # pylint: disable=protected-access
+
             for valid_version_2 in target_version_list:
                 if valid_version == valid_version_2:
                     continue
-                if valid_version not in ParseTasks._migrations:
-                    ParseTasks._migrations[valid_version] = {}
-                if valid_version_2 not in ParseTasks._migrations:
-                    ParseTasks._migrations[valid_version_2] = {}
-                ParseTasks._migrations[valid_version][valid_version_2] = 'compatible'
-                ParseTasks._migrations[valid_version_2][valid_version] = 'compatible'
+                if int(valid_version.split('.')[1]) > int(valid_version_2.split('.')[1]):
+                    if valid_version not in ParseTasks._migrations:
+                        ParseTasks._migrations[valid_version] = {}
+                    ParseTasks._migrations[valid_version][valid_version_2] = 'compatible'
+                else:
+                    if valid_version_2 not in ParseTasks._migrations:
+                        ParseTasks._migrations[valid_version_2] = {}
+                    ParseTasks._migrations[valid_version_2][valid_version] = 'compatible'
 
         return migration
 
@@ -104,13 +105,11 @@ def register_parsing_function(parse_type_name, all_attribs_keys=False):
             """Decorator for parse_type function"""
             return func(*args, **kwargs)
 
-        setattr(ParseTasks, func.__name__, parse_type)
-
         if not hasattr(ParseTasks, '_parse_functions'):
             ParseTasks._parse_functions = {}  # pylint: disable=protected-access
             ParseTasks._all_attribs_function = set()
 
-        ParseTasks._parse_functions[parse_type_name] = getattr(ParseTasks, func.__name__)  # pylint: disable=protected-access
+        ParseTasks._parse_functions[parse_type_name] = parse_type  # pylint: disable=protected-access
         if all_attribs_keys:
             ParseTasks._all_attribs_function.add(parse_type_name)
 
@@ -137,11 +136,9 @@ def conversion_function(func):
         """Decorator for parse_type function"""
         return func(*args, **kwargs)
 
-    setattr(ParseTasks, func.__name__, convert_func)
-
     if not hasattr(ParseTasks, '_conversion_functions'):
         ParseTasks._conversion_functions = {}  # pylint: disable=protected-access
 
-    ParseTasks._conversion_functions[func.__name__] = getattr(ParseTasks, func.__name__)  # pylint: disable=protected-access
+    ParseTasks._conversion_functions[func.__name__] = convert_func  # pylint: disable=protected-access
 
     return convert_func

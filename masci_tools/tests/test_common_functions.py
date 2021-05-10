@@ -180,3 +180,18 @@ class Test_common_functions(object):
             np.float128
         ]
         assert out == [list, int, int, int, list, int, int, int, list, int, int, int, int, float, int, float]
+
+
+TEST_PYTHON_VALUES = [True, False, 3.14, 4, 'str', 'TEST_STRING']
+TEST_QUOTE_STRINGS = [False, False, False, False, False, True]
+TEST_FORTRAN_STRING = ['.true.', '.false.', '  3.1400000000d+00', '4', 'str', "'TEST_STRING'"]
+
+
+@pytest.mark.parametrize('value,expected_result,quote', zip(TEST_PYTHON_VALUES, TEST_FORTRAN_STRING,
+                                                            TEST_QUOTE_STRINGS))
+def test_convert_to_fortran(value, expected_result, quote):
+    from masci_tools.io.common_functions import convert_to_fortran
+
+    res = convert_to_fortran(value, quote_strings=quote)
+
+    assert res == expected_result

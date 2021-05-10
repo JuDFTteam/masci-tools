@@ -5,9 +5,9 @@
 # This file is part of the Masci-tools package.                               #
 # (Material science tools)                                                    #
 #                                                                             #
-# The code is hosted on GitHub at https://github.com/judftteam/masci-tools    #
-# For further information on the license, see the LICENSE.txt file            #
-# For further information please visit http://www.flapw.de or                 #
+# The code is hosted on GitHub at https://github.com/judftteam/masci-tools.   #
+# For further information on the license, see the LICENSE.txt file.           #
+# For further information please visit http://judft.de/.                      #
 #                                                                             #
 ###############################################################################
 """
@@ -58,7 +58,7 @@ Following is the current specification of tasks
 
 .. literalinclude:: ../../../masci_tools/io/parsers/fleur/default_parse_tasks.py
    :language: python
-   :lines: 67-
+   :lines: 66-
    :linenos:
 
 """
@@ -67,60 +67,7 @@ __working_out_versions__ = {'0.34'}
 __base_version__ = '0.34'
 
 TASKS_DEFINITION = {
-    #--------Definitions for Fleur calculation modes--------
-    'fleur_modes': {
-        '_special': True,
-        'jspin': {
-            'parse_type': 'attrib',
-            'path_spec': {
-                'name': 'jspins'
-            }
-        },
-        'relax': {
-            'parse_type': 'attrib',
-            'path_spec': {
-                'name': 'l_f'
-            }
-        },
-        'ldau': {
-            'parse_type': 'exists',
-            'path_spec': {
-                'name': 'ldaU',
-                'contains': 'species'
-            }
-        },
-        'soc': {
-            'parse_type': 'attrib',
-            'path_spec': {
-                'name': 'l_soc'
-            }
-        },
-        'noco': {
-            'parse_type': 'attrib',
-            'path_spec': {
-                'name': 'l_noco'
-            }
-        },
-        'film': {
-            'parse_type': 'exists',
-            'path_spec': {
-                'name': 'filmPos'
-            }
-        },
-        'dos': {
-            'parse_type': 'attrib',
-            'path_spec': {
-                'name': 'dos'
-            }
-        },
-        'band': {
-            'parse_type': 'attrib',
-            'path_spec': {
-                'name': 'band'
-            }
-        },
-    },
-    #--------Defintions for general info from outfile (start, endtime, number_iterations)--------
+    #--------Definitions for general info from outfile (start, endtime, number_iterations)--------
     'general_out_info': {
         '_general': True,
         '_minimal': True,
@@ -136,12 +83,6 @@ TASKS_DEFINITION = {
             'parse_type': 'text',
             'path_spec': {
                 'name': 'targetComputerArchitectures'
-            }
-        },
-        'creator_target_structure': {
-            'parse_type': 'text',
-            'path_spec': {
-                'name': 'targetStructureClass'
             }
         },
         'output_file_version': {
@@ -166,6 +107,13 @@ TASKS_DEFINITION = {
             'parse_type': 'attrib',
             'path_spec': {
                 'name': 'ntype'
+            }
+        },
+        'number_of_kpoints': {
+            'parse_type': 'attrib',
+            'path_spec': {
+                'name': 'count',
+                'contains': 'numericalParameters'
             }
         },
         'start_date': {
@@ -387,7 +335,7 @@ TASKS_DEFINITION = {
     },
     'distances': {
         '_minimal': True,
-        'charge_density': {
+        'density_convergence': {
             'parse_type': 'attrib',
             'path_spec': {
                 'name': 'distance',
@@ -406,14 +354,14 @@ TASKS_DEFINITION = {
     'magnetic_distances': {
         '_minimal': True,
         '_modes': [('jspin', 2)],
-        'overall_charge_density': {
+        'overall_density_convergence': {
             'parse_type': 'attrib',
             'path_spec': {
                 'name': 'distance',
                 'tag_name': 'overallChargeDensity'
             }
         },
-        'spin_density': {
+        'spin_density_convergence': {
             'parse_type': 'attrib',
             'path_spec': {
                 'name': 'distance',
@@ -432,7 +380,8 @@ TASKS_DEFINITION = {
         'energy_core_electrons': {
             'parse_type': 'singleValue',
             'path_spec': {
-                'name': 'coreElectrons'
+                'name': 'coreElectrons',
+                'contains': 'sumOfEigenvalues'
             },
             'only_required': True
         },
@@ -483,6 +432,7 @@ TASKS_DEFINITION = {
         }
     },
     'bandgap': {
+        '_modes': [('bz_integration', 'hist')],
         'bandgap': {
             'parse_type': 'singleValue',
             'path_spec': {
@@ -513,6 +463,7 @@ TASKS_DEFINITION = {
         }
     },
     'forces': {
+        '_minimal': True,
         '_modes': [('relax', True)],
         '_conversions': ['convert_forces'],
         'force_units': {

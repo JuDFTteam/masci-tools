@@ -5,9 +5,9 @@
 # This file is part of the Masci-tools package.                               #
 # (Material science tools)                                                    #
 #                                                                             #
-# The code is hosted on GitHub at https://github.com/judftteam/masci-tools    #
-# For further information on the license, see the LICENSE.txt file            #
-# For further information please visit http://www.flapw.de or                 #
+# The code is hosted on GitHub at https://github.com/judftteam/masci-tools.   #
+# For further information on the license, see the LICENSE.txt file.           #
+# For further information please visit http://judft.de/.                      #
 #                                                                             #
 ###############################################################################
 """
@@ -16,6 +16,7 @@ without a database) are collected.
 """
 import io
 import numpy as np
+import warnings
 ####################################################################################
 
 #helper functions used in calculation, parser etc.
@@ -53,24 +54,42 @@ def open_general(filename_or_handle, iomode=None):
     return f
 
 
+def skipHeader(seq, n):
+    """Iterate over a sequence skipping the first n elements
+
+    Args:
+        seq (iterable): Iterable sequence
+        n (int): Number of Elements to skip in the beginning of the sequence
+
+    Yields:
+        item: Elements in seq after the first n elements
+    """
+    for i, item in enumerate(seq):
+        if i >= n:
+            yield item
+
+
+def filter_out_empty_dict_entries(dict_to_filter):
+    """
+    Filter out entries in a given dict that correspond to empty values.
+    At the moment this is empty lists, dicts and None
+
+    :param dict_to_filter: dict to filter
+
+    :returns: dict without empty entries
+    """
+
+    EMPTY_VALUES = (None, [], {})
+
+    return {key: val for key, val in dict_to_filter.items() if val not in EMPTY_VALUES}
+
+
 def get_alat_from_bravais(bravais, is3D=True):
     bravais_tmp = bravais
     if not is3D:
         #take only in-plane lattice to find maximum as alat
         bravais_tmp = bravais[:2, :2]
     return np.sqrt(np.sum(bravais_tmp**2, axis=1)).max()
-
-
-def get_Ang2aBohr():
-    return 1.8897261254578281
-
-
-def get_aBohr2Ang():
-    return 1 / get_Ang2aBohr()
-
-
-def get_Ry2eV():
-    return 13.605693009
 
 
 def search_string(searchkey, txt):
@@ -123,6 +142,30 @@ def angles_to_vec(magnitude, theta, phi):
         vec = vec[0]
 
     return vec
+
+
+def get_Ang2aBohr():
+    from masci_tools.util.constants import ANG_BOHR_KKR
+    #warnings.warn(
+    #    'get_Ang2aBohr is deprecated. Use 1/BOHR_A with the BOHR_A constant from the module masci_tools.util.constants instead',
+    #    DeprecationWarning)
+    return ANG_BOHR_KKR
+
+
+def get_aBohr2Ang():
+    from masci_tools.util.constants import ANG_BOHR_KKR
+    #warnings.warn(
+    #    'get_aBohr2Ang is deprecated. Use the BOHR_A constant from the module masci_tools.util.constants instead',
+    #    DeprecationWarning)
+    return 1.0 / ANG_BOHR_KKR
+
+
+def get_Ry2eV():
+    from masci_tools.util.constants import RY_TO_EV_KKR
+    #warnings.warn(
+    #    'get_Ry2eV is deprecated. Use the RY_TO_EV constant from the module masci_tools.util.constants instead',
+    #    DeprecationWarning)
+    return RY_TO_EV_KKR
 
 
 def vec_to_angles(vec):
@@ -310,8 +353,7 @@ def get_ef_from_potfile(potfile):
     """
     extract fermi energy from potfile
     """
-    f = open_general(potfile)
-    with f:
+    with open_general(potfile) as f:
         txt = f.readlines()
     ef = float(txt[3].split()[1])
     return ef
@@ -331,6 +373,8 @@ def convert_to_pystd(value):
     elif isinstance(value, list):
         for index, val in enumerate(value):
             value[index] = convert_to_pystd(val)
+    elif isinstance(value, tuple):
+        value = tuple(convert_to_pystd(val) for val in value)
     elif isinstance(value, np.integer):
         value = int(value)
     elif isinstance(value, np.floating):
@@ -350,3 +394,177 @@ def camel_to_snake(name):
     """
     name = name.replace('-', '')
     return ''.join(['_' + c.lower() if c.isupper() else c for c in name]).lstrip('_')
+
+
+def convert_to_fortran(val, quote_strings=True):
+    """
+    :param val: the value to be read and converted to a Fortran-friendly string.
+    """
+    # Note that bool should come before integer, because a boolean matches also
+    # isinstance(...,int)
+    import numbers
+
+    if isinstance(val, (bool, np.bool_)):
+        if val:
+            val_str = '.true.'
+        else:
+            val_str = '.false.'
+    elif isinstance(val, numbers.Integral):
+        val_str = f'{val:d}'
+    elif isinstance(val, numbers.Real):
+        val_str = f'{val:18.10e}'.replace('e', 'd')
+    elif isinstance(val, str):
+        if quote_strings:
+            val_str = f"'{val!s}'"
+        else:
+            val_str = f'{val!s}'
+    else:
+        raise ValueError(f"Invalid value '{val}' of type '{type(val)}' passed, accepts only booleans, ints, "
+                         'floats and strings')
+
+    return val_str
+
+
+def convert_to_fortran_string(string):
+    """
+    converts some parameter strings to the format for the inpgen
+    :param string: some string
+    :returns: string in right format (extra "")
+    """
+    return f'"{string}"'
+
+
+def is_sequence(arg):
+    """
+    Checks if arg is a sequence
+    """
+    if isinstance(arg, str):
+        return False
+    elif hasattr(arg, '__iter__'):
+        return True
+    elif not hasattr(arg, 'strip') and hasattr(arg, '__getitem__'):
+        return True
+    else:
+        return False
+
+
+def abs_to_rel(vector, cell):
+    """
+    Converts a position vector in absolute coordinates to relative coordinates.
+
+    :param vector: list or np.array of length 3, vector to be converted
+    :param cell: Bravais matrix of a crystal 3x3 Array, List of list or np.array
+    :return: list of length 3 of scaled vector, or False if vector was not length 3
+    """
+
+    if len(vector) == 3:
+        cell_np = np.array(cell)
+        inv_cell_np = np.linalg.inv(cell_np)
+        postionR = np.array(vector)
+        # np.matmul(inv_cell_np, postionR)#
+        new_rel_post = np.matmul(postionR, inv_cell_np)
+        new_rel_pos = list(new_rel_post)
+        return new_rel_pos
+    else:
+        return False
+
+
+def abs_to_rel_f(vector, cell, pbc):
+    """
+    Converts a position vector in absolute coordinates to relative coordinates
+    for a film system.
+
+    :param vector: list or np.array of length 3, vector to be converted
+    :param cell: Bravais matrix of a crystal 3x3 Array, List of list or np.array
+    :param pbc: Boundary conditions, List or Tuple of 3 Boolean
+    :return: list of length 3 of scaled vector, or False if vector was not length 3
+    """
+    # TODO this currently only works if the z-coordinate is the one with no pbc
+    # Therefore if a structure with x non pbc is given this should also work.
+    # maybe write a 'tranform film to fleur_film routine'?
+    if len(vector) == 3:
+        if not pbc[2]:
+            # leave z coordinate absolute
+            # convert only x and y.
+            postionR = np.array(vector)
+            postionR_f = np.array(postionR[:2])
+            cell_np = np.array(cell)
+            cell_np = np.array(cell_np[0:2, 0:2])
+            inv_cell_np = np.linalg.inv(cell_np)
+            # np.matmul(inv_cell_np, postionR_f)]
+            new_xy = np.matmul(postionR_f, inv_cell_np)
+            new_rel_pos_f = [new_xy[0], new_xy[1], postionR[2]]
+            return new_rel_pos_f
+        else:
+            print('FLEUR can not handle this type of film coordinate')
+    else:
+        return False
+
+
+def rel_to_abs(vector, cell):
+    """
+    Converts a position vector in internal coordinates to absolute coordinates
+    in Angstrom.
+
+    :param vector: list or np.array of length 3, vector to be converted
+    :param cell: Bravais matrix of a crystal 3x3 Array, List of list or np.array
+    :return: list of legth 3 of scaled vector, or False if vector was not lenth 3
+    """
+    if len(vector) == 3:
+        cell_np = np.array(cell)
+        postionR = np.array(vector)
+        new_abs_post = np.matmul(postionR, cell_np)
+        new_abs_pos = list(new_abs_post)
+        return new_abs_pos
+    else:
+        return False
+
+
+def rel_to_abs_f(vector, cell):
+    """
+    Converts a position vector in internal coordinates to absolute coordinates
+    in Angstrom for a film structure (2D).
+    """
+    # TODO this currently only works if the z-coordinate is the one with no pbc
+    # Therefore if a structure with x non pbc is given this should also work.
+    # maybe write a 'tranform film to fleur_film routine'?
+    if len(vector) == 3:
+        postionR = np.array(vector)
+        postionR_f = np.array(postionR[:2])
+        cell_np = np.array(cell)
+        cell_np = np.array(cell_np[0:2, 0:2])
+        new_xy = np.matmul(postionR_f, cell_np)
+        new_abs_pos_f = [new_xy[0], new_xy[1], postionR[2]]
+        return new_abs_pos_f
+    else:
+        return False
+
+
+def get_wigner_matrix(l, phi, theta):
+    """Produces the wigner rotation matrix for the density matrix
+
+    :param l: int, orbital quantum number
+    :param phi: float, angle (radian) corresponds to euler angle alpha
+    :param theta: float, angle (radian) corresponds to euler angle beta
+    """
+    d_wigner = np.zeros((7, 7), dtype=complex)
+    for m in range(-l, l + 1):
+        for mp in range(-l, l + 1):
+            base = np.sqrt(fac(l + m) * fac(l - m) * fac(l + mp) * fac(l - mp))
+            base *= np.exp(-1j * phi * mp)
+
+            for x in range(max(0, m - mp), min(l - mp, l + m) + 1):
+                denom = fac(l - mp - x) * fac(l + m - x) * fac(x) * fac(x + mp - m)
+
+                d_wigner[m + 3, mp + 3] += base/denom * (-1)**x * np.cos(theta/2.0)**(2*l+m-mp-2*x) \
+                                          * np.sin(theta/2.0)**(2*x+mp-m)
+
+    return d_wigner
+
+
+def fac(n):
+    """Returns the factorial of n"""
+    if n < 2:
+        return 1
+    else:
+        return n * fac(n - 1)

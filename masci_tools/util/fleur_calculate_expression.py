@@ -5,9 +5,9 @@
 # This file is part of the Masci-tools package.                               #
 # (Material science tools)                                                    #
 #                                                                             #
-# The code is hosted on GitHub at https://github.com/judftteam/masci-tools    #
-# For further information on the license, see the LICENSE.txt file            #
-# For further information please visit http://www.flapw.de or                 #
+# The code is hosted on GitHub at https://github.com/judftteam/masci-tools.   #
+# For further information on the license, see the LICENSE.txt file.           #
+# For further information please visit http://judft.de/.                      #
 #                                                                             #
 ###############################################################################
 """
@@ -54,6 +54,13 @@ def calculate_expression(expression, constants, prevCommand=None, exp_return=Fal
 
     stop_loop = False
     loop_count = 0
+
+    if expression is None:
+        raise ValueError('Invalid expression: Got None for expression')
+
+    if isinstance(expression, (float, int)):
+        return expression
+
     expression = expression.replace(' ', '')
     value = None
     while not stop_loop and len(expression) != 0:

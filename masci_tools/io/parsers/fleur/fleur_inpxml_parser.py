@@ -5,9 +5,9 @@
 # This file is part of the Masci-tools package.                               #
 # (Material science tools)                                                    #
 #                                                                             #
-# The code is hosted on GitHub at https://github.com/judftteam/masci-tools    #
-# For further information on the license, see the LICENSE.txt file            #
-# For further information please visit http://www.flapw.de or                 #
+# The code is hosted on GitHub at https://github.com/judftteam/masci-tools.   #
+# For further information on the license, see the LICENSE.txt file.           #
+# For further information please visit http://judft.de/.                      #
 #                                                                             #
 ###############################################################################
 """
@@ -16,12 +16,15 @@ and convert its content to a dict
 """
 from lxml import etree
 from pprint import pprint
-from masci_tools.io.parsers.fleur.fleur_schema import load_inpschema
-from masci_tools.util.xml.common_xml_util import clear_xml, convert_xml_attribute, convert_xml_text, eval_xpath
+from masci_tools.io.parsers.fleur.fleur_schema.schema_dict import InputSchemaDict
+from masci_tools.util.xml.common_functions import clear_xml, validate_xml, eval_xpath
+from masci_tools.util.xml.converters import convert_xml_attribute, convert_xml_text
 from masci_tools.util.schema_dict_util import read_constants
+from masci_tools.util.logging_util import DictHandler
+import logging
 
 
-def inpxml_parser(inpxmlfile, version=None, parser_info_out=None):
+def inpxml_parser(inpxmlfile, version=None, parser_info_out=None, strict=False, debug=False):
     """
     Parses the given inp.xml file to a python dictionary utilizing the schema
     defined by the version number to validate and corretly convert to the dictionary
@@ -29,6 +32,7 @@ def inpxml_parser(inpxmlfile, version=None, parser_info_out=None):
     :param inpxmlfile: either path to the inp.xml file, opened file handle or a xml etree to be parsed
     :param version: version string to enforce that a given schema is used
     :param parser_info_out: dict, with warnings, info, errors, ...
+    :param strict: bool if True  and no parser_info_out is provided any encountered error will immediately be raised
 
     :return: python dictionary with the parsed inp.xml
 
@@ -38,11 +42,35 @@ def inpxml_parser(inpxmlfile, version=None, parser_info_out=None):
 
     """
 
-    if parser_info_out is None:
-        parser_info_out = {'parser_warnings': []}
+    __parser_version__ = '0.3.0'
+    logger = logging.getLogger(__name__)
 
-    parser_version = '0.2.0'
-    parser_info_out['parser_info'] = f'Masci-Tools Fleur inp.xml Parser v{parser_version}'
+    parser_log_handler = None
+    if parser_info_out is not None or not strict:
+        if parser_info_out is None:
+            parser_info_out = {}
+
+        logging_level = logging.INFO
+        if debug:
+            logging_level = logging.DEBUG
+        logger.setLevel(logging_level)
+
+        parser_log_handler = DictHandler(parser_info_out,
+                                         WARNING='parser_warnings',
+                                         ERROR='parser_errors',
+                                         INFO='parser_info',
+                                         DEBUG='parser_debug',
+                                         CRITICAL='parser_critical',
+                                         ignore_unknown_levels=True,
+                                         level=logging_level)
+
+        logger.addHandler(parser_log_handler)
+
+    if strict:
+        logger = None
+
+    if logger is not None:
+        logger.info('Masci-Tools Fleur inp.xml Parser v%s', __parser_version__)
 
     if isinstance(inpxmlfile, etree._ElementTree):
         xmltree = inpxmlfile
@@ -51,44 +79,58 @@ def inpxml_parser(inpxmlfile, version=None, parser_info_out=None):
         try:
             xmltree = etree.parse(inpxmlfile, parser)
         except etree.XMLSyntaxError as msg:
+            if logger is not None:
+                logger.exception('Failed to parse input file')
             raise ValueError(f'Failed to parse input file: {msg}') from msg
 
     if version is None:
-        version = eval_xpath(xmltree, '//@fleurInputVersion', parser_info_out=parser_info_out)
+        version = eval_xpath(xmltree, '//@fleurInputVersion', logger=logger)
         version = str(version)
         if version is None:
+            if logger is not None:
+                logger.error('Failed to extract inputVersion')
             raise ValueError('Failed to extract inputVersion')
 
-    parser_info_out['fleur_inp_version'] = version
-    schema_dict, xmlschema = load_inpschema(version, schema_return=True, parser_info_out=parser_info_out)
+    if logger is not None:
+        logger.info('Got Fleur input file with file version %s', version)
+    schema_dict = InputSchemaDict.fromVersion(version, logger=logger)
 
     ignore_validation = schema_dict['inp_version'] != version
 
-    xmltree = clear_xml(xmltree)
+    xmltree, _ = clear_xml(xmltree)
     root = xmltree.getroot()
 
-    constants = read_constants(root, schema_dict)
+    constants = read_constants(root, schema_dict, logger=logger)
 
     try:
-        xmlschema.assertValid(xmltree)
+        validate_xml(xmltree, schema_dict.xmlschema, error_header='Input file does not validate against the schema')
     except etree.DocumentInvalid as err:
-        validation_errors = ''.join([f'Line {error.line}: {error.message} \n' for error in xmlschema.error_log])
-        parser_info_out['parser_warnings'].append(
-            f'Input file does not validate against the schema: \n{validation_errors}')
+        errmsg = str(err)
+        logger.warning(errmsg)
         if not ignore_validation:
-            raise ValueError(f'Input file does not validate against the schema: \n{validation_errors}') from err
+            if logger is not None:
+                logger.exception(errmsg)
+            raise ValueError(errmsg) from err
 
-    if xmlschema.validate(xmltree) or ignore_validation:
-        inp_dict = inpxml_todict(root, schema_dict, constants, parser_info_out=parser_info_out)
+    if schema_dict.xmlschema.validate(xmltree) or ignore_validation:
+        inp_dict = inpxml_todict(root, schema_dict, constants, logger=logger)
     else:
-        parser_info_out['parser_warnings'].append('Input file does not validate against the schema: Reason is unknown')
+        msg = 'Input file does not validate against the schema: Reason is unknown'
+        if logger is not None:
+            logger.warning(msg)
         if not ignore_validation:
-            raise ValueError('Input file does not validate against the schema: Reason is unknown')
+            if logger is not None:
+                logger.exception(msg)
+            raise ValueError(msg)
+
+    if parser_log_handler is not None:
+        if logger is not None:
+            logger.removeHandler(parser_log_handler)
 
     return inp_dict
 
 
-def inpxml_todict(parent, schema_dict, constants, omitted_tags=False, base_xpath=None, parser_info_out=None):
+def inpxml_todict(parent, schema_dict, constants, omitted_tags=False, base_xpath=None, logger=None):
     """
     Recursive operation which transforms an xml etree to
     python nested dictionaries and lists.
@@ -106,9 +148,6 @@ def inpxml_todict(parent, schema_dict, constants, omitted_tags=False, base_xpath
     :return: a python dictionary
     """
 
-    if parser_info_out is None:
-        parser_info_out = {'parser_warnings': []}
-
     #Check if this is the first call to this routine
     if base_xpath is None:
         base_xpath = f'/{parent.tag}'
@@ -119,34 +158,29 @@ def inpxml_todict(parent, schema_dict, constants, omitted_tags=False, base_xpath
         # Now we have to convert lazy fortan style into pretty things for the Database
         for key in return_dict:
             if key in schema_dict['attrib_types']:
-                conversion_warnings = []
                 return_dict[key], suc = convert_xml_attribute(return_dict[key],
                                                               schema_dict['attrib_types'][key],
                                                               constants,
-                                                              conversion_warnings=conversion_warnings)
-                if not suc:
-                    parser_info_out['parser_warnings'].append(
-                        f"Failed to convert attribute '{key}': "
-                        'Below are the warnings raised from convert_xml_attribute')
-                    for warning in conversion_warnings:
-                        parser_info_out['parser_warnings'].append(warning)
+                                                              logger=logger)
+                if not suc and logger is not None:
+                    logger.warning("Failed to convert attribute '%s' Got: '%s'", key, return_dict[key])
 
     if parent.text:
         # has text, but we don't want all the '\n' s and empty stings in the database
         if parent.text.strip() != '':  # might not be the best solutions
             if parent.tag not in schema_dict['simple_elements']:
+                if logger is not None:
+                    logger.error('Something is wrong in the schema_dict: %s is not in simple_elements, but it has text',
+                                 parent.tag)
                 raise ValueError(
                     f'Something is wrong in the schema_dict: {parent.tag} is not in simple_elements, but it has text')
-            conversion_warnings = []
+
             converted_text, suc = convert_xml_text(parent.text,
                                                    schema_dict['simple_elements'][parent.tag],
                                                    constants,
-                                                   conversion_warnings=conversion_warnings)
-            if not suc:
-                parser_info_out['parser_warnings'].append(f"Failed to convert text of '{parent.tag}': "
-                                                          'Below are the warnings raised from convert_xml_text')
-                for warning in conversion_warnings:
-                    parser_info_out['parser_warnings'].append(warning)
+                                                   logger=logger)
+            if not suc and logger is not None:
+                logger.warning("Failed to text of '%s' Got: '%s'", parent.tag, parent.text)
 
             if not return_dict:
                 return_dict = converted_text
@@ -170,7 +204,7 @@ def inpxml_todict(parent, schema_dict, constants, omitted_tags=False, base_xpath
                                         constants,
                                         base_xpath=new_base_xpath,
                                         omitted_tags=omitt_contained_tags,
-                                        parser_info_out=parser_info_out)
+                                        logger=logger)
 
         if element.tag in tag_info['several']:
             # make a list, otherwise the tag will be overwritten in the dict
@@ -194,12 +228,17 @@ def inpxml_todict(parent, schema_dict, constants, omitted_tags=False, base_xpath
                         if key not in return_dict:
                             return_dict[key] = []
                         elif not isinstance(return_dict[key], list):  #Key seems to be defined already
+                            if logger is not None:
+                                logger.error('%s cannot be extracted to the next level', key)
                             raise ValueError(f'{key} cannot be extracted to the next level')
                         return_dict[key].append(value)
                 for key in new_return_dict.keys():
                     if key in ['text_value', 'text_label']:
                         continue
                     if len(return_dict[key]) != len(return_dict[element.tag]):
+                        if logger is not None:
+                            logger.error(
+                                'Extracted optional argument %s at the moment only label is supported correctly', key)
                         raise ValueError(
                             f'Extracted optional argument {key} at the moment only label is supported correctly')
             else:

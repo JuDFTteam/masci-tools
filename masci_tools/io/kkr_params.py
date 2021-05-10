@@ -5,9 +5,9 @@
 # This file is part of the Masci-tools package.                               #
 # (Material science tools)                                                    #
 #                                                                             #
-# The code is hosted on GitHub at https://github.com/judftteam/masci-tools    #
-# For further information on the license, see the LICENSE.txt file            #
-# For further information please visit http://www.flapw.de or                 #
+# The code is hosted on GitHub at https://github.com/judftteam/masci-tools.   #
+# For further information on the license, see the LICENSE.txt file.           #
+# For further information please visit http://judft.de/.                      #
 #                                                                             #
 ###############################################################################
 from masci_tools.io.common_functions import open_general
@@ -404,17 +404,18 @@ class kkrparams(object):
                 None, '%i', False,
                 'Exchange coupling: allow for the selection of specific sites in j in the unit cell, which should be considered in the calculation (default: all sites)'
             ]),
-            ('EFSET', [
-                None, '%f', False,
-                'Set Fermi level (in voronoi of the jellium starting potential) to this value.'
-            ]),
+            ('EFSET',
+             [None, '%f', False, 'Set Fermi level (in voronoi of the jellium starting potential) to this value.']),
             # Bogoliubov de Gennes mode:
             ('<USE_BDG>', [
                 None, '%l', False,
                 'Superconductivity: Activate Bogoliubov de Gennes (BdG) mode. Attention: needs Chebychev solver!'
             ]),
-            ('<DELTA_BDG>', [None, '%f', False, 'Superconductivity: Starting value of BdG coupling constant in Ry (defaults to 1e-4)']),
-            ('<LAMBDA_BDG>', [None, '%f', False, 'Superconductivity: Electron-phonon coupling parameter in Ry (defaults to 1.0)']),
+            ('<DELTA_BDG>',
+             [None, '%f', False,
+              'Superconductivity: Starting value of BdG coupling constant in Ry (defaults to 1e-4)']),
+            ('<LAMBDA_BDG>',
+             [None, '%f', False, 'Superconductivity: Electron-phonon coupling parameter in Ry (defaults to 1.0)']),
             ('<LM_SCALE_BDG>', [
                 None, '%f', False,
                 'Superconductivity: Scaling factor for lambda_BdG on some L channels (e.g. used to get more structure into BdG matrix. Defaults to 1.0)'
@@ -423,12 +424,28 @@ class kkrparams(object):
                 None, '%f', False,
                 'Superconductivity: Scaling factor for lambda_BdG (e.g. used to deactivate BdG coupling in some layers by setting the value to 0)'
             ]),
-            ('<MIXFAC_BDG>', [None, '%f', False, 'Superconductivity: Mixing factor used in the mixing of the BdG Delta (defaults to 0.1)']),
-            ('<MIXFAC_BDG_BRY>', [None, '%f', False, 'Superconductivity: Mixing factor used in the Broyden mixing of the BdG Delta (defaults to value of <MIXFAC_BDG>)']),
-            ('<NINIT_BROYDEN_BDG>', [None, '%i', False, 'Superconductivity: Number of simple mixing steps before Broyden for BdG Delta starts (defaults to 1).']),
-            ('<MEMLEN_BROYDEN_BDG>', [None, '%i', False, 'Superconductivity: Memory length of Broyden mixing (defaults to 20)']),
-            ('<TEMP_BDG>', [None, '%f', False, 'Superconductivity: Smearing temperature for the calculation of the anomalous density (used to calculate Tc, defaults to 0).']),
-            ('<USE_E_SYMM_BDG>', [None, '%l', False, 'Superconductivity: Use only the ee block in the contour integration and mirror the results for the hh block (works only for Temp_BdG=0, defaults to False)']),
+            ('<MIXFAC_BDG>', [
+                None, '%f', False,
+                'Superconductivity: Mixing factor used in the mixing of the BdG Delta (defaults to 0.1)'
+            ]),
+            ('<MIXFAC_BDG_BRY>', [
+                None, '%f', False,
+                'Superconductivity: Mixing factor used in the Broyden mixing of the BdG Delta (defaults to value of <MIXFAC_BDG>)'
+            ]),
+            ('<NINIT_BROYDEN_BDG>', [
+                None, '%i', False,
+                'Superconductivity: Number of simple mixing steps before Broyden for BdG Delta starts (defaults to 1).'
+            ]),
+            ('<MEMLEN_BROYDEN_BDG>',
+             [None, '%i', False, 'Superconductivity: Memory length of Broyden mixing (defaults to 20)']),
+            ('<TEMP_BDG>', [
+                None, '%f', False,
+                'Superconductivity: Smearing temperature for the calculation of the anomalous density (used to calculate Tc, defaults to 0).'
+            ]),
+            ('<USE_E_SYMM_BDG>', [
+                None, '%l', False,
+                'Superconductivity: Use only the ee block in the contour integration and mirror the results for the hh block (works only for Temp_BdG=0, defaults to False)'
+            ]),
             ('<CUSTOM_TESTSTRING>',
              [None, '%s', False, 'Superconductivity: String input for some test options with BdG']),
             # misc
@@ -500,7 +517,7 @@ class kkrparams(object):
             ]),
             ('<FORCE_BZ_SYMM>', [
                 None, '%l', False,
-                "Run option: force using symmetries of the Brillouin zone (effective only for the Chebychev solver, should not be used with SOC!)"
+                'Run option: force using symmetries of the Brillouin zone (effective only for the Chebychev solver, should not be used with SOC!)'
             ]),
             ('<IMPURITY_OPERATOR_ONLY>', [
                 None, '%l', False,
@@ -616,7 +633,8 @@ class kkrparams(object):
                 "Run option: keep the Fermi energy fixed during self-consistency (former: 'rigid-ef')"
             ]),
             ('<USE_SEMICORE>', [None, '%l', False, "Run option: use semicore contour (former: 'SEMICORE')"]),
-            ('<USE_SEMI_CIRCLE_CONTOUR>', [None, '%l', False, "Run option: use semi-circular energy contour (set number of points with NPT1)"]),
+            ('<USE_SEMI_CIRCLE_CONTOUR>',
+             [None, '%l', False, 'Run option: use semi-circular energy contour (set number of points with NPT1)']),
             ('<USE_SPHERICAL_POTENTIAL_ONLY>',
              [None, '%l', False, "Run option: keeping only spherical component of potential (former: 'Vspher')"]),
             ('<USE_VIRTUAL_ATOMS>', [None, '%l', False, "Run option: add virtual atoms (former: 'VIRATOMS')"]),
@@ -795,7 +813,7 @@ class kkrparams(object):
             self.__params_type = 'kkr'  #default value, also possible: 'voronoi', 'kkrimp'
         valid_types = ['kkr', 'voronoi', 'kkrimp']
         if self.__params_type not in valid_types:
-            raise ValueError('params_type can only be one of {} but got {}'.format(valid_types, self.__params_type))
+            raise ValueError(f'params_type can only be one of {valid_types} but got {self.__params_type}')
 
         # initialize keywords dict
         if self.__params_type == 'kkrimp':
@@ -869,7 +887,7 @@ class kkrparams(object):
             ]
         }
         if group in ['lattice', 'chemistry', 'accuracy', 'external fields', 'scf cycle', 'other']:
-            print('Returning only values belonging to group %s' % group)
+            print(f'Returning only values belonging to group {group}')
             tmp_dict = {}
             for key in list(out_dict.keys()):
                 desc = self.__description[key]
@@ -886,7 +904,7 @@ class kkrparams(object):
             #check for subgrouping and overwrite tmp_dict accordingly
             if group in ['lattice', 'chemistry', 'accuracy']:
                 if subgroup in subgroups_all[group]:
-                    print('Restrict keys additionally to subgroup %s' % subgroup)
+                    print(f'Restrict keys additionally to subgroup {subgroup}')
                     tmp_dict2 = {}
                     for key in list(tmp_dict.keys()):
                         desc = self.__description[key]
@@ -914,7 +932,7 @@ class kkrparams(object):
             keytype = str
         else:
             print('Error: type of keyvalue not found:', fmtstr)
-            raise TypeError('Type not found for format string: {}'.format(fmtstr))
+            raise TypeError(f'Type not found for format string: {fmtstr}')
         return keytype
 
     def get_type(self, key):
@@ -997,7 +1015,7 @@ class kkrparams(object):
     def get_value(self, key):
         """Gets value of keyword 'key'"""
         if key not in list(self.values.keys()):
-            print('Error key ({}) not found in values dict! {}'.format(key, self.values))
+            print(f'Error key ({key}) not found in values dict! {self.values}')
             raise KeyError
         else:
             # deal with special cases of runopt and testopt (lists of codewords)
@@ -1011,7 +1029,7 @@ class kkrparams(object):
         if value is None:
             if not silent:
                 print('Warning setting value None is not permitted!')
-                print('Use remove_value funciton instead! Ignore keyword {}'.format(key))
+                print(f'Use remove_value funciton instead! Ignore keyword {key}')
         else:
             key = key.upper()  # make case insensitive
             if self.__params_type == 'kkrimp' and key == 'XC':
@@ -1156,7 +1174,7 @@ class kkrparams(object):
                 set_of_mandatory = set(self.get_all_mandatory())
                 set_of_keys = set([key[0] for key in self.get_set_values()])
                 print(set_of_mandatory - set_of_keys, 'missing')
-                raise ValueError('Missing mandatory key(s): {}'.format(set_of_mandatory - set_of_keys))
+                raise ValueError(f'Missing mandatory key(s): {set_of_mandatory - set_of_keys}')
 
     def _check_array_consistency(self):
         """Check all keys in __listargs if they match their specification (mostly 1D array, except for special cases e.g. <RBASIS>)"""
@@ -1177,19 +1195,18 @@ class kkrparams(object):
                     # automatically convert if naez==1 and only 1D array is given
                     if self.__listargs[key] == 1 and len(array(
                             self.values[key]).shape) == 1 and key not in ['ZPERIODL', 'ZPERIODR']:
-                        print('Warning: expected 2D array for %s but got 1D array, converting automatically' % key)
+                        print(f'Warning: expected 2D array for {key} but got 1D array, converting automatically')
                         self.values[key] = array([self.values[key]])
                 tmpdims = array(self.values[key]).shape
                 if tmpdims[0] != cmpdims[0]:
                     tmpsuccess = False
-                if len(tmpdims) == 2:
-                    if tmpdims[1] != cmpdims[1]:
-                        tmpsuccess = False
+                if len(tmpdims) == 2 and tmpdims[1] != cmpdims[1]:
+                    tmpsuccess = False
                 #success.append(tmpsuccess)
 
                 if not tmpsuccess:
                     print('check consistency:', key, self.values[key], cmpdims, tmpdims, tmpsuccess)
-                    raise TypeError('Error: array input not consistent for key {}'.format(key))
+                    raise TypeError(f'Error: array input not consistent for key {key}')
 
     def _check_input_consistency(self, set_lists_only=False, verbose=False):
         """Check consistency of input, to be done before wrinting to inputcard"""
@@ -1217,39 +1234,16 @@ class kkrparams(object):
                 nrbasis = 1
             lmax = keywords['LMAX']
 
-            listargs = dict([
-                ['<RBASIS>', naez],
-                ['<RBLEFT>', nlbasis],
-                ['<RBRIGHT>', nrbasis],
-                ['<SHAPE>', natyp],
-                ['<ZATOM>', natyp],
-                ['<SOCSCL>', natyp],
-                ['<SITE>', natyp],
-                ['<CPA-CONC>', natyp],
-                ['<KAOEZL>', nlbasis],
-                ['<KAOEZR>', nrbasis],
-                ['XINIPOL', natyp],
-                ['<RMTREF>', natyp],
-                ['<RMTREFL>', nlbasis],
-                ['<RMTREFR>', nrbasis],
-                ['<FPRADIUS>', natyp],
-                ['BZDIVIDE', 3],
-                ['<RBLEFT>', nrbasis],
-                ['ZPERIODL', 3],
-                ['<RBRIGHT>', nrbasis],
-                ['ZPERIODR', 3],
-                ['LDAU_PARA', 5],
-                ['CPAINFO', 2],
-                ['<DELTAE>', 2],
-                ['FILES', 2],
-                ['DECIFILES', 2],
-                ['<RMTCORE>', natyp],
-                ['<AT_SCALE_BDG>', natyp],
-                ['<LM_SCALE_BDG>', (lmax+1)**2]
-            ])
+            listargs = dict([['<RBASIS>', naez], ['<RBLEFT>', nlbasis], ['<RBRIGHT>', nrbasis], ['<SHAPE>', natyp],
+                             ['<ZATOM>', natyp], ['<SOCSCL>', natyp], ['<SITE>', natyp], ['<CPA-CONC>', natyp],
+                             ['<KAOEZL>', nlbasis], ['<KAOEZR>', nrbasis], ['XINIPOL', natyp], ['<RMTREF>', natyp],
+                             ['<RMTREFL>', nlbasis], ['<RMTREFR>', nrbasis], ['<FPRADIUS>', natyp], ['BZDIVIDE', 3],
+                             ['<RBLEFT>', nrbasis], ['ZPERIODL', 3], ['<RBRIGHT>', nrbasis], ['ZPERIODR', 3],
+                             ['LDAU_PARA', 5], ['CPAINFO', 2], ['<DELTAE>', 2], ['FILES', 2], ['DECIFILES', 2],
+                             ['<RMTCORE>', naez], ['<AT_SCALE_BDG>', natyp], ['<LM_SCALE_BDG>', (lmax + 1)**2]])
             # deal with special stuff for voronoi:
             if self.__params_type == 'voronoi':
-                listargs['<RMTCORE>'] = natyp
+                listargs['<RMTCORE>'] = naez
                 self.update_to_voronoi()
             special_formatting = ['BRAVAIS', 'RUNOPT', 'TESTOPT', 'FILES', 'DECIFILES', 'JIJSITEI', 'JIJSITEJ']
         else:
@@ -1282,10 +1276,10 @@ class kkrparams(object):
             # WARNING: KSHAPE should be 2*INS !!!
             if 'INS' not in set_values and 'KSHAPE' in set_values:
                 self.set_value('INS', self.get_value('KSHAPE') // 2)
-                print('setting INS automatically with KSHAPE value ({})'.format(self.get_value('KSHAPE') // 2))
+                print(f"setting INS automatically with KSHAPE value ({self.get_value('KSHAPE') // 2})")
             elif 'INS' in set_values and 'KSHAPE' not in set_values:
                 self.set_value('KSHAPE', self.get_value('INS') * 2)
-                print('setting KSHAPE automatically with INS value ({})'.format(self.get_value('INS') * 2))
+                print(f"setting KSHAPE automatically with INS value ({self.get_value('INS') * 2})")
             elif 'INS' in set_values and 'KSHAPE' in set_values:
                 ins = self.get_value('INS')
                 kshape = self.get_value('KSHAPE')
@@ -1439,7 +1433,7 @@ class kkrparams(object):
                         repltxt = ''
                         for i in range(len(tmpfmt)):
                             repltxt += ' ' + tmpfmt[i] % (keywords[key][i])
-                    tmpl += '%s= %s\n' % (key, repltxt)
+                    tmpl += f'{key}= {repltxt}\n'
                 elif key == 'BRAVAIS':
                     self.values[key] = array(self.values[key])
                     tmpl += ('BRAVAIS\n' + keyfmts[key] +
@@ -1453,8 +1447,8 @@ class kkrparams(object):
                         repltxt = runops[iop]
                         nblanks = 8 - len(repltxt)
                         if nblanks < 0:
-                            print('WARNING for replacement of RUNOPTION %s: too long?' % repltxt)
-                            print('RUNOPT %s is ignored and was not set!' % repltxt)
+                            print(f'WARNING for replacement of RUNOPTION {repltxt}: too long?')
+                            print(f'RUNOPT {repltxt} is ignored and was not set!')
                         else:
                             repltxt = repltxt + ' ' * nblanks
                         tmpl += repltxt
@@ -1466,8 +1460,8 @@ class kkrparams(object):
                         repltxt = testops[iop]
                         nblanks = 8 - len(repltxt)
                         if nblanks < 0:
-                            print('WARNING for replacement of TESTOPTION %s: too long?' % repltxt)
-                            print('TESTOPT %s is ignored and was not set!' % repltxt)
+                            print(f'WARNING for replacement of TESTOPTION {repltxt}: too long?')
+                            print(f'TESTOPT {repltxt} is ignored and was not set!')
                         else:
                             repltxt = repltxt + ' ' * nblanks
                         tmpl += repltxt
@@ -1475,9 +1469,9 @@ class kkrparams(object):
                             tmpl += '\n'
                     tmpl += '\n'
                 elif key == 'XINIPOL':
-                    tmpl += '%s=' % key
+                    tmpl += f'{key}='
                     for ival in range(len(self.values[key])):
-                        tmpl += (' %s' % keyfmts[key]) % self.values[key][ival]
+                        tmpl += f' {keyfmts[key]}' % self.values[key][ival]
                     tmpl += '\n'
                 elif key == 'FILES':
                     files_changed = 0
@@ -1496,20 +1490,20 @@ class kkrparams(object):
                                 % (self.values[key][0], self.values[key][1]))
                         tmpl += 'FILES\n'
                         tmpl += '\n'
-                        tmpl += '%s\n' % self.values[key][0]
+                        tmpl += f'{self.values[key][0]}\n'
                         tmpl += '\n'
-                        tmpl += '%s\n' % self.values[key][1]
+                        tmpl += f'{self.values[key][1]}\n'
                         tmpl += 'scoef\n'
                 elif key == 'DECIFILES':
                     tmpl += 'DECIFILES\n'
-                    tmpl += '%s\n' % self.values[key][0]
-                    tmpl += '%s\n' % self.values[key][1]
+                    tmpl += f'{self.values[key][0]}\n'
+                    tmpl += f'{self.values[key][1]}\n'
                 elif key in ['JIJSITEI', 'JIJSITEJ']:
-                    tmpl += '%s= '%key
+                    tmpl += f'{key}= '
                     jijsite = self.values[key]
-                    tmpl += '%i '%jijsite[0]
+                    tmpl += '%i ' % jijsite[0]
                     for isite in range(jijsite[0]):
-                        tmpl += '%i '%jijsite[1+isite]
+                        tmpl += '%i ' % jijsite[1 + isite]
                     tmpl += '\n'
                 elif self.__params_type == 'kkrimp' and key == 'RUNFLAG' or key == 'TESTFLAG':
                     # for kkrimp
@@ -1523,30 +1517,30 @@ class kkrparams(object):
                     # keys that have array values
                     if key in ['<RBASIS>', '<RBLEFT>',
                                '<RBRIGHT>']:  # RBASIS needs special formatting since three numbers are filled per line
-                        tmpl += '%s\n' % key
+                        tmpl += f'{key}\n'
                         for ival in range(self.__listargs[key]):
                             tmpl += (keyfmts[key] + '\n') % (self.values[key][ival][0], self.values[key][ival][1],
                                                              self.values[key][ival][2])
                     elif key in ['CPAINFO', '<DELTAE>']:
-                        tmpl += '%s= ' % key
+                        tmpl += f'{key}= '
                         tmpl += (keyfmts[key] + '\n') % (self.values[key][0], self.values[key][1])
                     elif key in ['BZDIVIDE', 'ZPERIODL', 'ZPERIODR']:
-                        tmpl += '%s= ' % key
+                        tmpl += f'{key}= '
                         tmpl += (keyfmts[key] + '\n') % (self.values[key][0], self.values[key][1], self.values[key][2])
                     elif key in ['LDAU_PARA']:
-                        tmpl += '%s= ' % key
+                        tmpl += f'{key}= '
                         tmpl += (keyfmts[key] + '\n') % (self.values[key][0], self.values[key][1], self.values[key][2],
                                                          self.values[key][3], self.values[key][4])
                     elif self.__params_type == 'kkrimp' and key in ['HFIELD']:  # for kkrimp
-                        tmpl += '%s= ' % key
+                        tmpl += f'{key}= '
                         tmpl += (keyfmts[key] + '\n') % (self.values[key][0], self.values[key][1])
                     else:
                         #print(key, self.__listargs[key], len(self.values[key]))
-                        tmpl += '%s\n' % key
+                        tmpl += f'{key}\n'
                         for ival in range(self.__listargs[key]):
                             tmpl += (keyfmts[key] + '\n') % (self.values[key][ival])
                 else:
-                    print('Error trying to write keyword %s but writing failed!' % key)
+                    print(f'Error trying to write keyword {key} but writing failed!')
                     raise ValueError
 
                 # to make inputcard more readable insert some blank lines after certain keys
@@ -1577,7 +1571,7 @@ class kkrparams(object):
 
         debug = False
         if verbose:
-            print('start reading {}'.format(inputcard))
+            print(f'start reading {inputcard}')
             debug = True
 
         txt = open_general(inputcard, 'r').readlines()
@@ -1689,12 +1683,14 @@ class kkrparams(object):
         # finally check if some input of the old style was given and read it in
         natyp = self.get_value('NATYP')
         if natyp is None:
-            if debug: print('set NATYP=NAEZ')
+            if debug:
+                print('set NATYP=NAEZ')
             natyp = self.get_value('NAEZ')
 
         # look for old RBASIS input style
         if self.get_value('<RBASIS>') is None:
-            if debug: print('look for RBASIS instead of <RBASIS>')
+            if debug:
+                print('look for RBASIS instead of <RBASIS>')
             rbasis = []
             for iatom in range(natyp):
                 rbasis.append([float(i) for i in self._find_value('RBASIS', txt, 1 + iatom, 1, 3, debug=debug)])
@@ -1713,11 +1709,13 @@ class kkrparams(object):
             atominfo = True
         tmp = []
         if atominfo_c:
-            if debug: print('read ATOMINFOC')
+            if debug:
+                print('read ATOMINFOC')
             for iatom in range(natyp):
                 tmp.append(self._find_value('ATOMINFOC', txt, 2 + iatom, 1, 14, debug=debug))
         elif atominfo:
-            if debug: print('read ATOMINFO')
+            if debug:
+                print('read ATOMINFO')
             for iatom in range(natyp):
                 tmp.append(self._find_value('ATOMINFO', txt, 2 + iatom, 1, 12, debug=debug))
         if atominfo_c or atominfo:
@@ -1787,7 +1785,7 @@ class kkrparams(object):
             self.set_value('ZPERIODR', array(zper_r) * alat2ang)
 
         if debug:
-            print('extracted parameters: {}'.format(self.get_set_values()))
+            print(f'extracted parameters: {self.get_set_values()}')
 
     def _find_value(self, charkey, txt, line=1, item=1, num=1, debug=False):
         """
@@ -1802,7 +1800,7 @@ class kkrparams(object):
         returns :: valtxt                   string or list of strings depending on num setting
         """
         if debug:
-            print('find_value: {}'.format(charkey))
+            print(f'find_value: {charkey}')
         try:
             iline = [ii for ii in range(len(txt)) if charkey in txt[ii]][0]
         except IndexError:
@@ -1817,7 +1815,7 @@ class kkrparams(object):
                 startpos = txtline.index(charkey)
                 valtxt = nextline[startpos:].split()[item - 1:item - 1 + num]
             if debug:
-                print('find_value found {}'.format(valtxt))
+                print(f'find_value found {valtxt}')
             if num == 1:
                 return valtxt[0]
             else:

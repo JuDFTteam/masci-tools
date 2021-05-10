@@ -5,9 +5,9 @@
 # This file is part of the Masci-tools package.                               #
 # (Material science tools)                                                    #
 #                                                                             #
-# The code is hosted on GitHub at https://github.com/judftteam/masci-tools    #
-# For further information on the license, see the LICENSE.txt file            #
-# For further information please visit http://www.flapw.de or                 #
+# The code is hosted on GitHub at https://github.com/judftteam/masci-tools.   #
+# For further information on the license, see the LICENSE.txt file.           #
+# For further information please visit http://judft.de/.                      #
 #                                                                             #
 ###############################################################################
 """
@@ -17,7 +17,7 @@ import copy
 from masci_tools.util.parse_tasks_decorators import register_migration
 
 
-@register_migration(base_version='0.33', target_version='0.31')
+@register_migration(base_version='0.33', target_version=['0.31', '0.30', '0.29'])
 def migrate_033_to_031(definition_dict):
     """
     Migrate definitions for MaX5 release to MaX4 release

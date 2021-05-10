@@ -2,12 +2,11 @@ output_dict:
   bandgap: 0.0323610284
   bandgap_units: eV
   charge_den_xc_den_integral: -111.9182938603
-  charge_density:
-  - 9.2786635283
-  - 5.4278279348
   creator_name: fleur 32
   creator_target_architecture: GEN
-  creator_target_structure: null
+  density_convergence:
+  - 9.2786635283
+  - 5.4278279348
   density_convergence_units: me/bohr^3
   end_date:
     date: null
@@ -21,7 +20,22 @@ output_dict:
   fermi_energy: 0.3782147185
   fermi_energy_units: Htr
   film: false
+  fleur_modes:
+    band: false
+    bz_integration: hist
+    cf_coeff: false
+    dos: false
+    film: false
+    force_theorem: false
+    gw: false
+    jspin: 2
+    ldau: false
+    noco: true
+    plot: false
+    relax: false
+    soc: false
   gmax: 10.2
+  input_file_version: '0.34'
   kmax: 3.4
   magnetic_moments:
   - 1.9333985458
@@ -36,12 +50,13 @@ output_dict:
   number_of_atoms: 2
   number_of_iterations: 4
   number_of_iterations_total: 2
+  number_of_kpoints: 3
   number_of_species: 1
   number_of_spin_components: 2
   number_of_symmetries: 16
   output_file_version: '0.34'
-  overall_charge_density: 10.8914872112
-  spin_density: 10.6059102509
+  overall_density_convergence: 10.8914872112
+  spin_density_convergence: 10.6059102509
   spin_dependent_charge_interstitial:
   - 1.00491
   - 1.0077593
@@ -61,20 +76,21 @@ output_dict:
   walltime: -60787
   walltime_units: seconds
 warnings:
-  fleur_modes:
-    band: false
-    dos: false
-    film: false
-    jspin: 2
-    ldau: false
-    noco: true
-    relax: false
-    soc: false
-  last_iteration_parsed: 2
-  parser_info: Masci-Tools Fleur out.xml Parser v0.3.0
+  parser_errors: []
+  parser_info:
+  - Masci-Tools Fleur out.xml Parser v0.5.0
+  - 'Found fleur out file with the versions out: 0.34; inp: 0.34'
+  - 'The following defined constants were found: {''Pi'': 3.141592653589793, ''Deg'':
+    0.017453292519943295, ''Ang'': 1.889726124772898, ''nm'': 18.89726124772898, ''pm'':
+    0.01889726124772898, ''Bohr'': 1.0, ''Htr'': 1.0, ''eV'': 0.03674932217565499,
+    ''Ry'': 0.5}'
+  - 'The following Fleur modes were found: {''jspin'': 2, ''noco'': True, ''soc'':
+    False, ''relax'': False, ''gw'': False, ''force_theorem'': False, ''cf_coeff'':
+    False, ''plot'': False, ''film'': False, ''ldau'': False, ''dos'': False, ''band'':
+    False, ''bz_integration'': ''hist''}'
+  - The last parsed iteration is 2
   parser_warnings:
   - The out.xml file is broken I try to repair it.
-  - No text found for tag targetStructureClass
   - No values found for attribute date at tag endDateAndTime
   - No values found for attribute time at tag endDateAndTime
   - Endtime was unparsed, inp.xml prob not complete, do not believe the walltime!

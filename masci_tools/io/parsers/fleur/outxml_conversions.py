@@ -5,9 +5,9 @@
 # This file is part of the Masci-tools package.                               #
 # (Material science tools)                                                    #
 #                                                                             #
-# The code is hosted on GitHub at https://github.com/judftteam/masci-tools    #
-# For further information on the license, see the LICENSE.txt file            #
-# For further information please visit http://www.flapw.de or                 #
+# The code is hosted on GitHub at https://github.com/judftteam/masci-tools.   #
+# For further information on the license, see the LICENSE.txt file.           #
+# For further information please visit http://judft.de/.                      #
 #                                                                             #
 ###############################################################################
 """
@@ -23,7 +23,7 @@ from masci_tools.io.common_functions import convert_to_pystd
 
 
 @conversion_function
-def convert_total_energy(out_dict, parser_info_out=None):
+def convert_total_energy(out_dict, logger):
     """
     Convert total energy to eV
     """
@@ -32,6 +32,8 @@ def convert_total_energy(out_dict, parser_info_out=None):
 
     if total_energy is None:
         if 'energy_hartree' in out_dict:
+            if logger is not None:
+                logger.warning('convert_total_energy cannot convert None to eV')
             out_dict['energy'] = None
             out_dict['energy_units'] = 'eV'
         return out_dict
@@ -45,13 +47,15 @@ def convert_total_energy(out_dict, parser_info_out=None):
     if total_energy is not None:
         out_dict['energy'].append(total_energy * HTR_TO_EV)
     else:
+        if logger is not None:
+            logger.warning('convert_total_energy cannot convert None to eV')
         out_dict['energy'].append(None)
 
     return out_dict
 
 
 @conversion_function
-def calculate_total_magnetic_moment(out_dict, parser_info_out=None):
+def calculate_total_magnetic_moment(out_dict, logger):
     """
     Calculate the the total magnetic moment per cell
 
@@ -60,6 +64,8 @@ def calculate_total_magnetic_moment(out_dict, parser_info_out=None):
     total_charge = out_dict.get('spin_dependent_charge_total', None)
 
     if total_charge is None:
+        if logger is not None:
+            logger.warning('calculate_total_magnetic_moment got None')
         return out_dict
 
     total_charge = total_charge[-1]
@@ -73,43 +79,45 @@ def calculate_total_magnetic_moment(out_dict, parser_info_out=None):
 
 
 @conversion_function
-def calculate_walltime(out_dict, parser_info_out=None):
+def calculate_walltime(out_dict, logger):
     """
     Calculate the walltime from start and end time
 
     :param out_dict: dict with the already parsed information
-    :param parser_info_out: dict, with warnings, info, errors, ...
+    :param logger: logger object for logging warnings, errors, if not provided all errors will be raised
     """
-    if parser_info_out is None:
-        parser_info_out = {'parser_warnings': []}
 
     if out_dict['start_date']['time'] is not None:
         starttimes = out_dict['start_date']['time'].split(':')
     else:
         starttimes = [0, 0, 0]
         msg = 'Starttime was unparsed, inp.xml prob not complete, do not believe the walltime!'
-        parser_info_out['parser_warnings'].append(msg)
+        if logger is not None:
+            logger.warning(msg)
 
     if out_dict['end_date']['time'] is not None:
         endtimes = out_dict['end_date']['time'].split(':')
     else:
         endtimes = [0, 0, 0]
         msg = 'Endtime was unparsed, inp.xml prob not complete, do not believe the walltime!'
-        parser_info_out['parser_warnings'].append(msg)
+        if logger is not None:
+            logger.warning(msg)
 
     if out_dict['start_date']['date'] is not None:
         start_date = out_dict['start_date']['date']
     else:
         start_date = None
         msg = 'Startdate was unparsed, inp.xml prob not complete, do not believe the walltime!'
-        parser_info_out['parser_warnings'].append(msg)
+        if logger is not None:
+            logger.warning(msg)
 
     if out_dict['end_date']['date'] is not None:
         end_date = out_dict['end_date']['date']
     else:
         end_date = None
         msg = 'Enddate was unparsed, inp.xml prob not complete, do not believe the walltime!'
-        parser_info_out['parser_warnings'].append(msg)
+        if logger is not None:
+            logger.warning(msg)
 
     offset = 0
     if start_date is not None and end_date is not None:
@@ -130,7 +138,7 @@ def calculate_walltime(out_dict, parser_info_out=None):
 
 
 @conversion_function
-def convert_ldau_definitions(out_dict, parser_info_out=None):
+def convert_ldau_definitions(out_dict, logger):
     """
     Convert the parsed information from LDA+U into a more readable dict
 
@@ -141,6 +149,12 @@ def convert_ldau_definitions(out_dict, parser_info_out=None):
     """
     parsed_ldau = out_dict['ldau_info'].pop('parsed_ldau')
     ldau_species = out_dict['ldau_info'].pop('ldau_species')
+
+    if isinstance(ldau_species['name'], str):
+        ldau_species = {key: [val] for key, val in ldau_species.items()}
+
+    if isinstance(parsed_ldau['l'], int):
+        parsed_ldau = {key: [val] for key, val in parsed_ldau.items()}
 
     ldau_definitions = zip(ldau_species['name'], ldau_species['atomic_number'], parsed_ldau['l'])
     for index, ldau_def in enumerate(ldau_definitions):
@@ -168,7 +182,7 @@ def convert_ldau_definitions(out_dict, parser_info_out=None):
 
 
 @conversion_function
-def convert_relax_info(out_dict, parser_info_out=None):
+def convert_relax_info(out_dict, logger):
     """
     Convert the general relaxation information
 
@@ -190,13 +204,13 @@ def convert_relax_info(out_dict, parser_info_out=None):
 
     out_dict['relax_atomtype_info'] = []
     for specie in species:
-        out_dict['relax_atomtype_info'].append([specie, species_info[specie]])
+        out_dict['relax_atomtype_info'].append((specie, species_info[specie]))
 
     return out_dict
 
 
 @conversion_function
-def convert_forces(out_dict, parser_info_out=None):
+def convert_forces(out_dict, logger):
     """
     Convert the parsed forces from a iteration
 
@@ -204,26 +218,29 @@ def convert_forces(out_dict, parser_info_out=None):
     """
     parsed_forces = out_dict.pop('parsed_forces')
 
-    if 'force_largest' not in out_dict:
-        out_dict['force_largest'] = []
+    if 'force_largest_component' not in out_dict:
+        out_dict['force_largest_component'] = []
+        out_dict['force_atoms'] = []
+        out_dict['abspos_atoms'] = []
 
     if isinstance(parsed_forces['atom_type'], int):
         parsed_forces = {key: [val] for key, val in parsed_forces.items()}
 
     largest_force = 0.0
+    forces = []
+    abspos = []
     for index, atomType in enumerate(parsed_forces['atom_type']):
-
-        if f'force_x_type{atomType}' not in out_dict:
-            out_dict[f'force_x_type{atomType}'] = []
-            out_dict[f'force_y_type{atomType}'] = []
-            out_dict[f'force_z_type{atomType}'] = []
-            out_dict[f'abspos_x_type{atomType}'] = []
-            out_dict[f'abspos_y_type{atomType}'] = []
-            out_dict[f'abspos_z_type{atomType}'] = []
 
         force_x = parsed_forces['f_x'][index]
         force_y = parsed_forces['f_y'][index]
         force_z = parsed_forces['f_z'][index]
+
+        x = parsed_forces['x'][index]
+        y = parsed_forces['y'][index]
+        z = parsed_forces['z'][index]
+
+        forces.append((atomType, [force_x, force_y, force_z]))
+        abspos.append((atomType, [x, y, z]))
 
         if abs(force_x) > largest_force:
             largest_force = abs(force_x)
@@ -232,14 +249,8 @@ def convert_forces(out_dict, parser_info_out=None):
         if abs(force_z) > largest_force:
             largest_force = abs(force_z)
 
-        out_dict[f'force_x_type{atomType}'].append(force_x)
-        out_dict[f'force_y_type{atomType}'].append(force_y)
-        out_dict[f'force_z_type{atomType}'].append(force_z)
-
-        out_dict[f'abspos_x_type{atomType}'].append(parsed_forces['x'][index])
-        out_dict[f'abspos_y_type{atomType}'].append(parsed_forces['y'][index])
-        out_dict[f'abspos_z_type{atomType}'].append(parsed_forces['z'][index])
-
-    out_dict['force_largest'].append(largest_force)
+    out_dict['force_largest_component'].append(largest_force)
+    out_dict['force_atoms'].append(forces)
+    out_dict['abspos_atoms'].append(abspos)
 
     return out_dict

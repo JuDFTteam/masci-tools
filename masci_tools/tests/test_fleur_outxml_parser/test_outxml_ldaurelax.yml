@@ -1,22 +1,21 @@
 output_dict:
-  abspos_x_type1:
-  - -1.3806
-  - -1.3806
-  abspos_x_type2:
-  - 1.3806
-  - 1.3806
-  abspos_y_type1:
-  - -1.3806
-  - -1.3806
-  abspos_y_type2:
-  - 1.3806
-  - 1.3806
-  abspos_z_type1:
-  - -1.3806
-  - -1.3806
-  abspos_z_type2:
-  - 1.3806
-  - 1.3806
+  abspos_atoms:
+  - - - 1
+      - - -1.3806
+        - -1.3806
+        - -1.3806
+    - - 2
+      - - 1.3806
+        - 1.3806
+        - 1.3806
+  - - - 1
+      - - -1.3806
+        - -1.3806
+        - -1.3806
+    - - 2
+      - - 1.3806
+        - 1.3806
+        - 1.3806
   bandgap:
   - 4.1667073913
   - 4.1667065775
@@ -24,12 +23,11 @@ output_dict:
   charge_den_xc_den_integral:
   - -159.6317907519
   - -159.6317901441
-  charge_density:
-  - 0.0003427664
-  - null
   creator_name: fleur 32
   creator_target_architecture: GEN
-  creator_target_structure: null
+  density_convergence:
+  - 0.0003427664
+  - null
   density_convergence_units: me/bohr^3
   end_date:
     date: 2020/12/10
@@ -53,29 +51,43 @@ output_dict:
   - 0.1259314083
   fermi_energy_units: Htr
   film: false
-  force_largest:
+  fleur_modes:
+    band: false
+    bz_integration: hist
+    cf_coeff: false
+    dos: false
+    film: false
+    force_theorem: false
+    gw: false
+    jspin: 1
+    ldau: true
+    noco: false
+    plot: false
+    relax: true
+    soc: false
+  force_atoms:
+  - - - 1
+      - - 0.01798072
+        - 0.01798072
+        - 0.01798072
+    - - 2
+      - - -0.01797115
+        - -0.01797115
+        - -0.01797115
+  - - - 1
+      - - 0.01798072
+        - 0.01798072
+        - 0.01798072
+    - - 2
+      - - -0.01797158
+        - -0.01797158
+        - -0.01797158
+  force_largest_component:
   - 0.01798072
   - 0.01798072
   force_units: Htr/bohr
-  force_x_type1:
-  - 0.01798072
-  - 0.01798072
-  force_x_type2:
-  - -0.01797115
-  - -0.01797158
-  force_y_type1:
-  - 0.01798072
-  - 0.01798072
-  force_y_type2:
-  - -0.01797115
-  - -0.01797158
-  force_z_type1:
-  - 0.01798072
-  - 0.01798072
-  force_z_type2:
-  - -0.01797115
-  - -0.01797158
   gmax: 10.8
+  input_file_version: '0.34'
   kmax: 3.6
   ldau_info:
     As-2/33:
@@ -110,6 +122,7 @@ output_dict:
   number_of_atoms: 2
   number_of_iterations: 2
   number_of_iterations_total: 15
+  number_of_kpoints: 1
   number_of_species: 2
   number_of_spin_components: 1
   number_of_symmetries: 6

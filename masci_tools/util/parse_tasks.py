@@ -5,9 +5,9 @@
 # This file is part of the Masci-tools package.                               #
 # (Material science tools)                                                    #
 #                                                                             #
-# The code is hosted on GitHub at https://github.com/judftteam/masci-tools    #
-# For further information on the license, see the LICENSE.txt file            #
-# For further information please visit http://www.flapw.de or                 #
+# The code is hosted on GitHub at https://github.com/judftteam/masci-tools.   #
+# For further information on the license, see the LICENSE.txt file.           #
+# For further information please visit http://judft.de/.                      #
 #                                                                             #
 ###############################################################################
 """
@@ -289,15 +289,7 @@ class ParseTasks(object):
             else:
                 self._iteration_tasks.append(task_name)
 
-    def perform_task(self,
-                     task_name,
-                     node,
-                     out_dict,
-                     schema_dict,
-                     constants,
-                     parser_info_out=None,
-                     replace_root=None,
-                     use_lists=True):
+    def perform_task(self, task_name, node, out_dict, schema_dict, constants, logger=None, use_lists=True):
         """
         Evaluates the task given in the tasks_definition dict
 
@@ -307,15 +299,12 @@ class ParseTasks(object):
         :param schema_dict: dict, here all paths and attributes are stored according to the
                             outputschema
         :param constants: dict with all the defined mathematical constants
-        :param parser_info_out: dict, with warnings, info, errors, ...
+        :param logger: logger object for logging warnings, errors
         :param root_tag: str, this string will be appended in front of any xpath before it is evaluated
         :param use_lists: bool, if True lists are created for each key if not otherwise specified
 
         """
         from masci_tools.io.common_functions import camel_to_snake
-
-        if parser_info_out is None:
-            parser_info_out = {'parser_warnings': []}
 
         try:
             tasks_definition = self.tasks[task_name]
@@ -330,10 +319,9 @@ class ParseTasks(object):
             action = self._parse_functions[spec['parse_type']]
 
             args = spec['path_spec'].copy()
-            args['constants'] = constants
 
-            if replace_root is not None:
-                args['replace_root'] = replace_root
+            if spec['parse_type'] in ['attrib', 'text', 'allAttribs', 'parentAttribs', 'singleValue']:
+                args['constants'] = constants
 
             if 'only_required' in spec:
                 args['only_required'] = spec['only_required']
@@ -347,7 +335,7 @@ class ParseTasks(object):
             if 'subdict' in spec:
                 parsed_dict = out_dict.get(spec['subdict'], {})
 
-            parsed_value = action(node, schema_dict, parser_info_out=parser_info_out, **args)
+            parsed_value = action(node, schema_dict, logger=logger, **args)
 
             if isinstance(parsed_value, dict):
 
@@ -405,7 +393,7 @@ class ParseTasks(object):
         conversions = tasks_definition.get('_conversions', [])
         for conversion in conversions:
             action = self._conversion_functions[conversion]
-            out_dict = action(out_dict, parser_info_out=parser_info_out)
+            out_dict = action(out_dict, logger=logger)
 
         return out_dict
 

@@ -250,8 +250,12 @@ input_dict:
   fleurInputVersion: '0.33'
   forceTheorem:
     spinSpiralDispersion:
-    - 0.0 0.0 0.0
-    - 0.2 0.0 0.0
+    - - 0.0
+      - 0.0
+      - 0.0
+    - - 0.2
+      - 0.0
+      - 0.0
   output:
     band: false
     chargeDensitySlicing:
@@ -276,20 +280,21 @@ input_dict:
       supercellZ: 1
       unfoldBand: false
 warnings:
-  fleur_inp_version: '0.33'
-  parser_info: Masci-Tools Fleur inp.xml Parser v0.2.0
+  parser_errors: []
+  parser_info:
+  - Masci-Tools Fleur inp.xml Parser v0.3.0
+  - Got Fleur input file with file version 0.33
   parser_warnings:
-  - 'Failed to convert attribute ''GmaxXC'': Below are the warnings raised from convert_xml_attribute'
-  - 'Could not evaluate expression ''2..041'' The following error was raised: Cannot
-    parse number: Found two decimal points'
-  - 'Failed to convert attribute ''minDistance'': Below are the warnings raised from
-    convert_xml_attribute'
-  - 'Could not evaluate expression ''1e5'' The following error was raised: Unknown
-    string expression: e'
-  - 'Failed to convert text of ''qss'': Below are the warnings raised from convert_xml_text'
-  - 'Could not evaluate expression ''pi*2.0'' The following error was raised: Unknown
-    string expression: pi'
-  - 'Could not evaluate expression ''cos1.0)'' The following error was raised: Invalid
-    expression: Expected Bracket after function name'
-  - 'Could not evaluate expression ''Pi/(3.0-3.0)'' The following error was raised:
-    Undefined Expression: Division by zero'
+  - 'Could not convert ''2..041''. The following errors occurred:'
+  - '   Cannot parse number: Found two decimal points'
+  - 'Failed to convert attribute ''GmaxXC'' Got: ''2..041'''
+  - 'Could not convert ''1e5''. The following errors occurred:'
+  - '   Unknown string expression: e'
+  - 'Failed to convert attribute ''minDistance'' Got: ''1e5'''
+  - 'Could not convert ''pi*2.0''. The following errors occurred:'
+  - '   Unknown string expression: pi'
+  - 'Could not convert ''cos1.0)''. The following errors occurred:'
+  - '   Invalid expression: Expected Bracket after function name'
+  - 'Could not convert ''Pi/(3.0-3.0)''. The following errors occurred:'
+  - '   Undefined Expression: Division by zero'
+  - 'Failed to text of ''qss'' Got: '' pi*2.0 cos1.0) Pi/(3.0-3.0) '''

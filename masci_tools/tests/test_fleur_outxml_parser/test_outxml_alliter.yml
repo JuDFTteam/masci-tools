@@ -14,16 +14,15 @@ output_dict:
   - -41.7699610697
   - -41.7648027154
   - -41.7653329254
-  charge_density:
+  creator_name: fleur 32
+  creator_target_architecture: GEN
+  density_convergence:
   - 8.7379598265
   - 8.2515493263
   - 1.0238480245
   - 0.5765372317
   - 0.2277277793
   - 0.026112816
-  creator_name: fleur 32
-  creator_target_architecture: GEN
-  creator_target_structure: null
   density_convergence_units: me/bohr^3
   end_date:
     date: 2020/12/10
@@ -67,12 +66,28 @@ output_dict:
   - 0.1848170588
   fermi_energy_units: Htr
   film: false
+  fleur_modes:
+    band: false
+    bz_integration: hist
+    cf_coeff: false
+    dos: false
+    film: false
+    force_theorem: false
+    gw: false
+    jspin: 1
+    ldau: false
+    noco: false
+    plot: false
+    relax: false
+    soc: false
   gmax: 11.1
+  input_file_version: '0.34'
   kmax: 3.5
   number_of_atom_types: 1
   number_of_atoms: 2
   number_of_iterations: 6
   number_of_iterations_total: 6
+  number_of_kpoints: 2
   number_of_species: 1
   number_of_spin_components: 1
   number_of_symmetries: 48
