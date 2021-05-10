@@ -21,6 +21,7 @@ publish_to_pypi.sh
 __pycache__/
 *.py[cod]
 *$py.class
+*.py.bak
 
 # C extensions
 *.so
