@@ -11,4 +11,8 @@
 '''
 masci-tools
 '''
-__version__ = '0.3.12-dev5'
+import logging
+
+__version__ = '0.4.8-dev4'
+
+logging.getLogger(__name__).addHandler(logging.NullHandler())

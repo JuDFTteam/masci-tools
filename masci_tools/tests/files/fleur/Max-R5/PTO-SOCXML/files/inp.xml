@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<fleurInput fleurInputVersion="0.34">
+   <comment>
+      FLEUR in
+   </comment>
+   <calculationSetup>
+      <cutoffs Kmax="4.50000000" Gmax="12.00000000" GmaxXC="10.00000000" numbands="0"/>
+      <scfLoop itmax="1" minDistance=".00001000" maxIterBroyd="99" imix="Anderson" alpha=".05000000" precondParam="0.0" spinf="2.00000000"/>
+      <coreElectrons ctail="T" frcor="F" kcrel="0" coretail_lmax="99"/>
+      <xcFunctional name="wc" relativisticCorrections="F"/>
+      <magnetism jspins="1" l_noco="F" swsp="F" lflip="F"/>
+      <soc theta=".00000000" phi=".00000000" l_soc="T" spav="F"/>
+      <expertModes gw="0" secvar="F"/>
+      <geometryOptimization l_f="F" forcealpha="1.00000000" forcemix="BFGS" epsdisp=".00001000" epsforce=".00001000"/>
+      <ldaU l_linMix="F" mixParam=".100000" spinf="2.000000"/>
+   </calculationSetup>
+   <cell>
+      <bzIntegration valenceElectrons="42.00000000" mode="hist" fermiSmearingEnergy=".00331000">
+         <kPointListSelection listName="default" />
+         <kPointLists>
+            <kPointList name="default" count="2">
+               <kPoint weight="0.500000">0.250000            0.250000           -0.250000</kPoint>
+               <kPoint weight="0.500000">0.250000            0.250000            0.250000</kPoint>
+            </kPointList>
+         </kPointLists>
+      </bzIntegration>
+      <symmetryOperations>
+         <symOp>
+            <row-1>1 0 0 .0000000000</row-1>
+            <row-2>0 1 0 .0000000000</row-2>
+            <row-3>0 0 1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>-1 0 0 .0000000000</row-1>
+            <row-2>0 1 0 .0000000000</row-2>
+            <row-3>0 0 1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>1 0 0 .0000000000</row-1>
+            <row-2>0 -1 0 .0000000000</row-2>
+            <row-3>0 0 1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>-1 0 0 .0000000000</row-1>
+            <row-2>0 -1 0 .0000000000</row-2>
+            <row-3>0 0 1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 -1 0 .0000000000</row-1>
+            <row-2>-1 0 0 .0000000000</row-2>
+            <row-3>0 0 1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 -1 0 .0000000000</row-1>
+            <row-2>1 0 0 .0000000000</row-2>
+            <row-3>0 0 1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 1 0 .0000000000</row-1>
+            <row-2>-1 0 0 .0000000000</row-2>
+            <row-3>0 0 1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 1 0 .0000000000</row-1>
+            <row-2>1 0 0 .0000000000</row-2>
+            <row-3>0 0 1 .0000000000</row-3>
+         </symOp>
+      </symmetryOperations>
+      <bulkLattice scale="1.0000000000">
+         <bravaisMatrix>
+            <row-1>7.4785616800 .0000000000 .0000000000</row-1>
+            <row-2>.0000000000 7.4785616800 .0000000000</row-2>
+            <row-3>.0000000000 .0000000000 7.9871060800</row-3>
+         </bravaisMatrix>
+      </bulkLattice>
+   </cell>
+   <atomSpecies>
+      <species name="Pb-1" element="Pb" atomicNumber="82" >
+         <mtSphere radius="2.10000000" gridPoints="853" logIncrement=".01600000"/>
+         <atomicCutoffs lmax="12" lnonsphr="8"/>
+         <electronConfig>
+            <coreConfig>(1s1/2) (2s1/2) (2p1/2) (2p3/2) (3s1/2) (3p1/2) (3p3/2) (4s1/2) (3d3/2) (3d5/2) (4p1/2) (4p3/2) (5s1/2) (4d3/2) (4d5/2) (4f5/2) (4f7/2) (5p1/2) (5p3/2)</coreConfig>
+            <valenceConfig>(6s1/2) (5d3/2) (5d5/2) (6p1/2) (6p3/2)</valenceConfig>
+            <stateOccupation state="(6p1/2)" spinUp=".33333333" spinDown=".33333333"/>
+            <stateOccupation state="(6p3/2)" spinUp=".66666667" spinDown=".66666667"/>
+         </electronConfig>
+         <energyParameters s="6" p="6" d="6" f="5"/>
+         <lo type="SCLO" l="2" n="5" eDeriv="0"/>
+      </species>
+      <species name="Ti-2" element="Ti" atomicNumber="22" >
+         <mtSphere radius="1.95000000" gridPoints="517" logIncrement=".02300000"/>
+         <atomicCutoffs lmax="8" lnonsphr="6"/>
+         <electronConfig>
+            <coreConfig>(1s1/2) (2s1/2) (2p1/2) (2p3/2) (3s1/2)</coreConfig>
+            <valenceConfig>(3p1/2) (3p3/2) (4s1/2) (3d3/2) (3d5/2)</valenceConfig>
+            <stateOccupation state="(3d3/2)" spinUp=".40000000" spinDown=".40000000"/>
+            <stateOccupation state="(3d5/2)" spinUp=".60000000" spinDown=".60000000"/>
+         </electronConfig>
+         <energyParameters s="4" p="4" d="3" f="4"/>
+         <lo type="SCLO" l="1" n="3" eDeriv="0"/>
+      </species>
+      <species name="O-3" element="O" atomicNumber="8" >
+         <mtSphere radius="1.35000000" gridPoints="293" logIncrement=".03500000"/>
+         <atomicCutoffs lmax="6" lnonsphr="4"/>
+         <electronConfig>
+            <coreConfig>(1s1/2)</coreConfig>
+            <valenceConfig>(2s1/2) (2p1/2) (2p3/2)</valenceConfig>
+            <stateOccupation state="(2p1/2)" spinUp=".66666667" spinDown=".66666667"/>
+            <stateOccupation state="(2p3/2)" spinUp="1.33333333" spinDown="1.33333333"/>
+         </electronConfig>
+         <energyParameters s="2" p="2" d="3" f="4"/>
+      </species>
+      <species name="O-4" element="O" atomicNumber="8" >
+         <mtSphere radius="1.35000000" gridPoints="293" logIncrement=".03500000"/>
+         <atomicCutoffs lmax="6" lnonsphr="4"/>
+         <electronConfig>
+            <coreConfig>(1s1/2)</coreConfig>
+            <valenceConfig>(2s1/2) (2p1/2) (2p3/2)</valenceConfig>
+            <stateOccupation state="(2p1/2)" spinUp=".66666667" spinDown=".66666667"/>
+            <stateOccupation state="(2p3/2)" spinUp="1.33333333" spinDown="1.33333333"/>
+         </electronConfig>
+         <energyParameters s="2" p="2" d="3" f="4"/>
+      </species>
+   </atomSpecies>
+   <atomGroups>
+      <atomGroup species="Pb-1">
+         <relPos label="                    ">.0000000000 .0000000000 1.000/2.000</relPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+      </atomGroup>
+      <atomGroup species="Ti-2">
+         <relPos label="                    ">1.000/2.000 1.000/2.000 .0350000000</relPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+      </atomGroup>
+      <atomGroup species="O-3">
+         <relPos label="                    ">1.000/2.000 .0000000000 .1130000000</relPos>
+         <relPos label="                    ">.0000000000 1.000/2.000 .1130000000</relPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+      </atomGroup>
+      <atomGroup species="O-4">
+         <relPos label="                    ">1.000/2.000 1.000/2.000 -.3960000000</relPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+      </atomGroup>
+   </atomGroups>
+   <output dos="F" band="F">
+      <checks vchk="F" cdinf="F"/>
+   </output>
+  <!-- We include the file relax.inp here to enable relaxations (see documentation) -->
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="relax.xml"> <xi:fallback/> </xi:include>
+</fleurInput>

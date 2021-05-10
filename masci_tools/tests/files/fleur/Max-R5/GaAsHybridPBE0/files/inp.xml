@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<fleurInput fleurInputVersion="0.34">
+   <comment>
+      Ga1As1  
+   </comment>
+   <calculationSetup>
+      <cutoffs Kmax="3.23330000" Gmax="10.73330000" GmaxXC="8.93330000" numbands="60"/>
+      <scfLoop itmax="2" minDistance=".00001000" maxIterBroyd="25" imix="Anderson" alpha=".05000000" precondParam="0.0" spinf="2.00000000"/>
+      <coreElectrons ctail="F" frcor="F" kcrel="0" coretail_lmax="99"/>
+      <xcFunctional name="pbe0" relativisticCorrections="F"/>
+      <magnetism jspins="1" l_noco="F" swsp="F" lflip="F"/>
+      <soc theta=".00000000" phi=".00000000" l_soc="F" spav="F"/>
+      <prodBasis gcutm="3.09900000" tolerance=".00010000" ewaldlambda="3" lexp="16" bands="50"/>
+      <expertModes gw="0" secvar="F"/>
+      <geometryOptimization l_f="F" forcealpha="1.00000000" forcemix="BFGS" epsdisp=".00001000" epsforce=".00001000"/>
+      <ldaU l_linMix="F" mixParam=".050000" spinf="1.000000"/>
+   </calculationSetup>
+   <cell>
+      <bzIntegration valenceElectrons="28.00000000" mode="hist" fermiSmearingEnergy=".00100000">
+         <kPointListSelection listName="default" />
+         <kPointLists>
+         <kPointList name="default" count="3">
+            <kPoint weight="     1.0000000000000"> 0.0000000000000  0.0000000000000  0.0000000000000</kPoint>
+            <kPoint weight="     4.0000000000000"> 0.0000000000000  0.0000000000000  0.5000000000000</kPoint>
+            <kPoint weight="     3.0000000000000"> 0.0000000000000  0.5000000000000  0.5000000000000</kPoint>
+         </kPointList>
+         </kPointLists>
+      </bzIntegration>
+      <symmetryOperations>
+         <symOp>
+            <row-1>1 0 0 .0000000000</row-1>
+            <row-2>0 1 0 .0000000000</row-2>
+            <row-3>0 0 1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 1 0 .0000000000</row-1>
+            <row-2>1 0 0 .0000000000</row-2>
+            <row-3>0 0 1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 1 0 .0000000000</row-1>
+            <row-2>1 0 0 .0000000000</row-2>
+            <row-3>-1 -1 -1 .5000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>1 0 0 .0000000000</row-1>
+            <row-2>0 1 0 .0000000000</row-2>
+            <row-3>-1 -1 -1 .5000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 0 1 .0000000000</row-1>
+            <row-2>1 0 0 .0000000000</row-2>
+            <row-3>-1 -1 -1 .5000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 0 1 .0000000000</row-1>
+            <row-2>0 1 0 .0000000000</row-2>
+            <row-3>-1 -1 -1 .5000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>1 0 0 .0000000000</row-1>
+            <row-2>0 0 1 .0000000000</row-2>
+            <row-3>-1 -1 -1 .5000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 1 0 .0000000000</row-1>
+            <row-2>0 0 1 .0000000000</row-2>
+            <row-3>-1 -1 -1 .5000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 1 0 .0000000000</row-1>
+            <row-2>-1 -1 -1 .5000000000</row-2>
+            <row-3>1 0 0 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>1 0 0 .0000000000</row-1>
+            <row-2>-1 -1 -1 .5000000000</row-2>
+            <row-3>0 1 0 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 0 1 .0000000000</row-1>
+            <row-2>-1 -1 -1 .5000000000</row-2>
+            <row-3>1 0 0 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 0 1 .0000000000</row-1>
+            <row-2>-1 -1 -1 .5000000000</row-2>
+            <row-3>0 1 0 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>-1 -1 -1 .5000000000</row-1>
+            <row-2>0 1 0 .0000000000</row-2>
+            <row-3>1 0 0 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>-1 -1 -1 .5000000000</row-1>
+            <row-2>1 0 0 .0000000000</row-2>
+            <row-3>0 1 0 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 0 1 .0000000000</row-1>
+            <row-2>0 1 0 .0000000000</row-2>
+            <row-3>1 0 0 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 0 1 .0000000000</row-1>
+            <row-2>1 0 0 .0000000000</row-2>
+            <row-3>0 1 0 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>-1 -1 -1 .5000000000</row-1>
+            <row-2>0 0 1 .0000000000</row-2>
+            <row-3>1 0 0 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>-1 -1 -1 .5000000000</row-1>
+            <row-2>0 0 1 .0000000000</row-2>
+            <row-3>0 1 0 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 1 0 .0000000000</row-1>
+            <row-2>0 0 1 .0000000000</row-2>
+            <row-3>1 0 0 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>1 0 0 .0000000000</row-1>
+            <row-2>0 0 1 .0000000000</row-2>
+            <row-3>0 1 0 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>1 0 0 .0000000000</row-1>
+            <row-2>-1 -1 -1 .5000000000</row-2>
+            <row-3>0 0 1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 1 0 .0000000000</row-1>
+            <row-2>-1 -1 -1 .5000000000</row-2>
+            <row-3>0 0 1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>-1 -1 -1 .5000000000</row-1>
+            <row-2>1 0 0 .0000000000</row-2>
+            <row-3>0 0 1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>-1 -1 -1 .5000000000</row-1>
+            <row-2>0 1 0 .0000000000</row-2>
+            <row-3>0 0 1 .0000000000</row-3>
+         </symOp>
+      </symmetryOperations>
+      <bulkLattice scale="1.0000000000">
+         <bravaisMatrix>
+            <row-1>    0.0000000000     5.3100000000     5.3100000000</row-1>
+            <row-2>    5.3100000000     0.0000000000     5.3100000000</row-2>
+            <row-3>    5.3100000000     5.3100000000     0.0000000000</row-3>
+         </bravaisMatrix>
+      </bulkLattice>
+   </cell>
+   <atomSpecies>
+      <species name="Ga-1" element="Ga" atomicNumber="31">
+         <mtSphere radius="2.24000000" gridPoints="741" logIncrement=".01700000"/>
+         <atomicCutoffs lmax="8" lnonsphr="8"/>
+         <electronConfig>
+            <coreConfig>(1s1/2) (2s1/2) (2p1/2) (2p3/2) (3s1/2) (3p1/2) (3p3/2)</coreConfig>
+            <valenceConfig>(4s1/2) (3d3/2) (3d5/2) (4p1/2)</valenceConfig>
+            <stateOccupation state="(4p1/2)" spinUp="0.5" spinDown="0.5"/>
+         </electronConfig>
+         <energyParameters s="4" p="4" d="4" f="4"/>
+         <prodBasis lcutm="4" lcutwf="8" select="4 0 4 2"/>
+         <lo type="SCLO" l="2" n="3" eDeriv="0"/>
+      </species>
+      <species name="As-1" element="As" atomicNumber="33">
+         <mtSphere radius="2.24000000" gridPoints="741" logIncrement=".01700000"/>
+         <atomicCutoffs lmax="8" lnonsphr="8"/>
+         <electronConfig>
+            <coreConfig>(1s1/2) (2s1/2) (2p1/2) (2p3/2) (3s1/2) (3p1/2) (3p3/2)</coreConfig>
+            <valenceConfig>(4s1/2) (3d3/2) (3d5/2) (4p1/2) (4p3/2)</valenceConfig>
+            <stateOccupation state="(4p1/2)" spinUp="1.0000000" spinDown="1.0000000"/>
+            <stateOccupation state="(4p3/2)" spinUp="0.500000" spinDown="0.500000"/>
+         </electronConfig>
+         <energyParameters s="4" p="4" d="4" f="4"/>
+         <prodBasis lcutm="4" lcutwf="8" select="4 0 4 2"/>
+         <lo type="SCLO" l="2" n="3" eDeriv="0"/>
+      </species>
+   </atomSpecies>
+   <atomGroups>
+      <atomGroup species="Ga-1">
+         <relPos label="                   1">-1.000/8.000 -1.000/8.000 -1.000/8.000</relPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+      </atomGroup>
+      <atomGroup species="As-1">
+         <relPos label="                   2">1.000/8.000 1.000/8.000 1.000/8.000</relPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+      </atomGroup>
+   </atomGroups>
+   <output dos="F" band="F"  slice="F" >
+      <checks vchk="F" cdinf="F"/>
+      <unfoldingBand unfoldBand="F" supercellX="1" supercellY="1" supercellZ="1"/>
+      <plotting iplot="0"/>
+      <chargeDensitySlicing numkpt="0" minEigenval=".00000000" maxEigenval=".00000000" nnne="0" pallst="F"/>
+      <specialOutput eonly="F" bmt="F"/>
+   </output>
+  <!-- We include the file relax.inp here to enable relaxations (see documentation) -->
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="relax.xml"> <xi:fallback/> </xi:include>
+</fleurInput>

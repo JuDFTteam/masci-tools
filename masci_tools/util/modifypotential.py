@@ -1,10 +1,18 @@
-#!/usr/bin/env ipython
 # -*- coding: utf-8 -*-
-
+###############################################################################
+# Copyright (c), 2018 Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.    #
+#                All rights reserved.                                         #
+# This file is part of the Masci-tools package.                               #
+# (Material science tools)                                                    #
+#                                                                             #
+# The code is hosted on GitHub at https://github.com/judftteam/masci-tools    #
+# For further information on the license, see the LICENSE.txt file            #
+#                                                                             #
+###############################################################################
 # by David Bauer 2012
 # edited by Philipp Ruessmann 2014
 # added averaging of spin up/down by Philipp Sep. 2015
-
+# pylint: skip-file
 from __future__ import print_function
 from __future__ import division
 from __future__ import absolute_import

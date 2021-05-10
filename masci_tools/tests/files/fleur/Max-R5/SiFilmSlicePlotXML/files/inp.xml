@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<fleurInput fleurInputVersion="0.34">
+   <comment>
+      Si (111) film 6 layers
+   </comment>
+   <calculationSetup>
+      <cutoffs Kmax="3.60000000" Gmax="11.00000000" GmaxXC="9.20000000" numbands="0"/>
+      <scfLoop itmax="1" minDistance=".00000000" maxIterBroyd="99" imix="Anderson" alpha=".05000000" spinf="2.00000000"/>
+      <coreElectrons ctail="T" frcor="F" kcrel="0" coretail_lmax="0"/>
+      <xcFunctional name="pbe" relativisticCorrections="F"/>
+      <magnetism jspins="1" l_noco="F" l_J="F" swsp="F" lflip="F"/>
+      <soc theta=".00000000" phi=".00000000" l_soc="F" spav="F" off="F"/>
+      <expertModes gw="0" pot8="F" isec1="99" secvar="F"/>
+   </calculationSetup>
+   <cell>
+      <bzIntegration valenceElectrons="24.00000000" mode="hist" fermiSmearingEnergy=".00100000">
+         <kPointListSelection listName="default" />
+         <kPointLists>
+         <kPointList name="default" count="3" >
+         <kPoint weight="0.222222">0.333333            0.333333            0.000000</kPoint>
+         <kPoint weight="0.666667">-0.000000            0.333333            0.000000</kPoint>
+         <kPoint weight="0.111111">0.000000            0.000000            0.000000</kPoint>
+         </kPointList>
+         </kPointLists>
+      </bzIntegration>
+     <symmetryOperations>
+         <symOp>
+            <row-1>1 0 0 .0000000000</row-1>
+            <row-2>0 1 0 .0000000000</row-2>
+            <row-3>0 0 1 .0000000000</row-3>
+         </symOp>
+<symOp>
+<row-1>0   -1    0        0.00000</row-1>
+<row-2>1   -1    0        0.00000</row-2>
+<row-3>0    0    1        0.00000</row-3>
+</symOp><symOp>
+<row-1>1    0    0        0.00000</row-1>
+<row-2>1   -1    0        0.00000</row-2>
+<row-3>0    0    1        0.00000</row-3>
+</symOp><symOp>
+<row-1>0   -1    0        0.00000</row-1>
+   <row-2>-1 0    0        0.00000</row-2>
+<row-3>0    0    1        0.00000</row-3>
+</symOp><symOp>
+   <row-1>-1  1    0        0.00000</row-1>
+   <row-2>-1  0    0        0.00000</row-2>
+<row-3>0    0    1        0.00000</row-3>
+</symOp><symOp>
+   <row-1>-1  1    0        0.00000</row-1>
+<row-2>0    1    0        0.00000</row-2>
+<row-3>0    0    1        0.00000</row-3>
+</symOp><symOp>
+   <row-1>-1  0    0        0.00000</row-1>
+<row-2>0   -1    0        0.00000</row-2>
+<row-3>0    0   -1        0.00000</row-3>
+</symOp><symOp>
+<row-1>0    1    0        0.00000</row-1>
+   <row-2>-1  1    0        0.00000</row-2>
+<row-3>0    0   -1        0.00000</row-3>
+</symOp><symOp>
+<row-1>-1  0    0        0.00000</row-1>
+   <row-2>-1  1    0        0.00000</row-2>
+<row-3>0    0   -1        0.00000</row-3>
+</symOp><symOp>
+<row-1>0    1    0        0.00000</row-1>
+<row-2>1    0    0        0.00000</row-2>
+<row-3>0    0   -1        0.00000</row-3>
+</symOp><symOp>
+<row-1>1   -1    0        0.00000</row-1>
+<row-2>1    0    0        0.00000</row-2>
+<row-3>0    0   -1        0.00000</row-3>
+</symOp><symOp>
+<row-1>1   -1    0        0.00000</row-1>
+<row-2>0   -1    0        0.00000</row-2>
+<row-3>0    0   -1        0.00000</row-3>
+</symOp>
+   </symmetryOperations>
+      <filmLattice scale="1.00000000"  dVac="18.28000000" dTilda="21.47000000">
+        <bravaisMatrix>
+           <row-1>3.655100   -6.330819    0.000000</row-1>
+           <row-2>3.655100    6.330819    0.000000</row-2>
+           <row-3>0.000000    0.000000   21.470000</row-3>
+         </bravaisMatrix>
+         <vacuumEnergyParameters vacuum="1" spinUp="-.25000000" spinDown="-.25000000"/>
+      </filmLattice>
+   </cell>
+   <atomSpecies>
+      <species name="Si-1" element="Si" atomicNumber="14">
+         <mtSphere radius="2.16000000" gridPoints="521" logIncrement=".02200000"/>
+         <atomicCutoffs lmax="8" lnonsphr="6"/>
+          <electronConfig>
+            <coreConfig>(1s1/2) (2s1/2) (2p1/2) (2p3/2) </coreConfig>
+            <valenceConfig>(3s1/2) (3p1/2)</valenceConfig>
+         </electronConfig>
+         <energyParameters s="3" p="3" d="3" f="4"/>
+      </species>
+   </atomSpecies>
+   <atomGroups>
+      <atomGroup species="Si-1">
+         <filmPos label="                   1">.0000000000 .0000000000 6.7148425000</filmPos>
+         <filmPos label="                   6">.0000000000 .0000000000 -6.7148425000</filmPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+      </atomGroup>
+      <atomGroup species="Si-1">
+         <filmPos label="                   2">-1.000/3.000 1.000/3.000 5.2226555000</filmPos>
+         <filmPos label="                   5">1.000/3.000 -1.000/3.000 -5.2226555000</filmPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+      </atomGroup>
+      <atomGroup species="Si-1">
+         <filmPos label="                   3">-1.000/3.000 1.000/3.000 .7460935000</filmPos>
+         <filmPos label="                   4">1.000/3.000 -1.000/3.000 -.7460935000</filmPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+      </atomGroup>
+   </atomGroups>
+   <output dos="F" band="F"  slice="F">
+      <checks vchk="F" cdinf="F" disp="F"/>
+      <plotting iplot="0" polar="F" format="1">
+         <plot cartesian="f" TwoD="F" grid="10 10 30" vec1="1.0 0.0 0.0" vec2="0.0 1.0 0.0" vec3="0.0 0.0 1.0" zero="0.0 0.0 -0.5" file='plot1' vecField='F'/>
+      </plotting>
+      <chargeDensitySlicing numkpt="0" minEigenval=".00000000" maxEigenval=".00000000" nnne="0" pallst="F"/>
+      <specialOutput eonly="F" bmt="F"/>
+   </output>
+</fleurInput>

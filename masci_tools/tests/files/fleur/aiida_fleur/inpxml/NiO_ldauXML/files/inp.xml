@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<fleurInput fleurInputVersion="0.27">
+   <comment>
+      NiO bct uc (AFM1)                                                               
+   </comment>
+   <calculationSetup>
+      <cutoffs Kmax="4.20000000" Gmax="12.80000000" GmaxXC="10.70000000" numbands="0"/>
+      <scfLoop itmax="9" maxIterBroyd="99" imix="Anderson" alpha=".05000000" spinf="2.00000000"/>
+      <coreElectrons ctail="T" frcor="F" kcrel="0"/>
+      <magnetism jspins="2" l_noco="F" l_J="F" swsp="F" lflip="F"/>
+      <soc theta=".00000000" phi=".00000000" l_soc="F" spav="F" off="F" soc66="T"/>
+      <expertModes gw="0" pot8="F" eig66="F" lpr="0" isec1="99" secvar="F"/>
+      <geometryOptimization l_f="F" xa="2.00000000" thetad="330.00000000" epsdisp=".00001000" epsforce=".00001000"/>
+      <bzIntegration valenceElectrons="32.00000000" mode="hist" fermiSmearingEnergy=".00100000">
+         <kPointCount count="5" gamma="F"/>
+      </bzIntegration>
+      <energyParameterLimits ellow="-.80000000" elup="1.00000000"/>
+   </calculationSetup>
+   <cell>
+      <symmetryFile filename="sym.out"/>
+      <bulkLattice scale="1.000000000000" latnam="squ">
+         <a1>5.605235603600</a1>
+         <c>7.927000000000</c>
+      </bulkLattice>
+   </cell>
+   <xcFunctional name="pbe" relativisticCorrections="F"/>
+   <atomSpecies>
+      <species name="Ni-1" element="Ni" atomicNumber="28" coreStates="7" magMom="1.10000000" flipSpin="T">
+         <mtSphere radius="2.46000000" gridPoints="817" logIncrement=".01500000"/>
+         <atomicCutoffs lmax="10" lnonsphr="8"/>
+         <energyParameters s="4" p="4" d="3" f="4"/>
+         <ldaU l="2" U="8.0" J="0.9" l_amf="F"/>
+      </species>
+      <species name="Ni-2" element="Ni" atomicNumber="28" coreStates="7" magMom="-1.10000000" flipSpin="T">
+         <mtSphere radius="2.46000000" gridPoints="817" logIncrement=".01500000"/>
+         <atomicCutoffs lmax="10" lnonsphr="8"/>
+         <energyParameters s="4" p="4" d="3" f="4"/>
+         <ldaU l="2" U="8.0" J="0.9" l_amf="F"/>
+      </species>
+      <species name="O-2" element="O" atomicNumber="8" coreStates="1" magMom=".00000000" flipSpin="T">
+         <mtSphere radius="1.39000000" gridPoints="463" logIncrement=".02200000"/>
+         <atomicCutoffs lmax="6" lnonsphr="4"/>
+         <energyParameters s="2" p="2" d="3" f="4"/>
+      </species>
+   </atomSpecies>
+   <atomGroups>
+      <atomGroup species="Ni-1">
+         <relPos>.000000000000 .000000000000 .000000000000</relPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+      </atomGroup>
+      <atomGroup species="O-2">
+         <relPos>1.000000000000/2.000000000000 1.000000000000/2.000000000000 .000000000000/2.000000000000</relPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+      </atomGroup>
+      <atomGroup species="Ni-2">
+         <relPos>1.000000000000/2.000000000000 1.000000000000/2.000000000000 1.000000000000/2.000000000000</relPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+      </atomGroup>
+      <atomGroup species="O-2">
+         <relPos>.000000000000/2.000000000000 .000000000000/2.000000000000 1.000000000000/2.000000000000</relPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+      </atomGroup>
+   </atomGroups>
+   <output dos="F" band="F" vacdos="F" slice="F">
+      <checks vchk="F" cdinf="F" disp="F"/>
+      <densityOfStates ndir="0" minEnergy="-.50000000" maxEnergy=".50000000" sigma=".01500000"/>
+      <vacuumDOS layers="0" integ="F" star="F" nstars="0" locx1=".00000000" locy1=".00000000" locx2=".00000000" locy2=".00000000" nstm="0" tworkf=".00000000"/>
+      <plotting iplot="F" score="F" plplot="F"/>
+      <chargeDensitySlicing numkpt="0" minEigenval=".00000000" maxEigenval=".00000000" nnne="0" pallst="F"/>
+      <specialOutput form66="F" eonly="F" bmt="F"/>
+   </output>
+</fleurInput>

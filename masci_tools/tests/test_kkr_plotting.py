@@ -3,15 +3,12 @@
 """
 Tests for kkr-specific plotting functions
 """
-
-from __future__ import absolute_import
-from builtins import object  # pylint: disable=redefined-builtin
 import pytest
 
 # prevent issue with not having a display on travis-ci
 # this needs to go *before* pyplot imports
 import matplotlib
-from six.moves import range  # pylint: disable=redefined-builtin
+
 matplotlib.use('Agg')
 from matplotlib.pyplot import gcf, title
 from masci_tools.io.kkr_read_shapefun_info import read_shapefun

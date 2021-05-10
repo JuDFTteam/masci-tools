@@ -1,19 +1,25 @@
-#!/usr/bin/env python2
 # -*- coding: utf-8 -*-
+###############################################################################
+# Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
+#                All rights reserved.                                         #
+# This file is part of the Masci-tools package.                               #
+# (Material science tools)                                                    #
+#                                                                             #
+# The code is hosted on GitHub at https://github.com/judftteam/masci-tools.   #
+# For further information on the license, see the LICENSE.txt file.           #
+# For further information please visit http://judft.de/.                      #
+#                                                                             #
+###############################################################################
 """
 Here I collect all functions needed to parse the output of a KKR calculation.
 These functions do not need aiida and are therefore separated from the actual
 parser file where parse_kkr_outputfile is called
 """
-
-from __future__ import division
-from __future__ import absolute_import
-from __future__ import print_function
 from numpy import ndarray, array, loadtxt, shape
-from masci_tools.io.common_functions import (search_string, get_version_info, get_Ry2eV, angles_to_vec,
+from masci_tools.io.common_functions import (search_string, get_version_info, angles_to_vec,
                                              get_corestates_from_potential, get_highest_core_state, open_general,
                                              convert_to_pystd)
-from six.moves import range
+from masci_tools.io.common_functions import get_Ry2eV
 import traceback
 
 __copyright__ = (u'Copyright (c), 2017, Forschungszentrum Jülich GmbH,' 'IAS-1/PGI-1, Germany. All rights reserved.')
@@ -439,10 +445,10 @@ def use_newsosol(outfile_0init):
         newsosol = True
     itmp = search_string('<use_Chebychev_solver>=', tmptxt)
     # new style: check for output of runoptions
-    if itmp>=0 :
-        if tmptxt[itmp].split()[1][:1].upper()=='T':
+    if itmp >= 0:
+        if tmptxt[itmp].split()[1][:1].upper() == 'T':
             newsosol = True
-        if tmptxt[itmp].split()[1][:1].upper()=='F':
+        if tmptxt[itmp].split()[1][:1].upper() == 'F':
             newsosol = False
     return newsosol
 
@@ -540,7 +546,6 @@ def parse_kkr_outputfile(out_dict,
     Parser method for the kkr outfile. It returns a dictionary with results
     """
     # scaling factors etc. defined globally
-    Ry2eV = get_Ry2eV()
     doscalc = False
 
     # collection of parsing error messages
@@ -835,7 +840,7 @@ def parse_kkr_outputfile(out_dict,
 
         try:
             result = get_Etot(outfile)
-            out_dict['energy'] = result[-1] * Ry2eV
+            out_dict['energy'] = result[-1] * get_Ry2eV()
             out_dict['energy_unit'] = 'eV'
             out_dict['total_energy_Ry'] = result[-1]
             out_dict['total_energy_Ry_unit'] = 'Rydberg'
@@ -848,7 +853,7 @@ def parse_kkr_outputfile(out_dict,
 
         try:
             result = get_single_particle_energies(outfile_000)
-            out_dict['single_particle_energies'] = result * Ry2eV
+            out_dict['single_particle_energies'] = result * get_Ry2eV()
             out_dict['single_particle_energies_unit'] = 'eV'
         except:
             if not doscalc:
@@ -901,10 +906,7 @@ def parse_kkr_outputfile(out_dict,
     out_dict = convert_to_pystd(out_dict)
 
     # return output with error messages if there are any
-    if len(msg_list) > 0:
-        return False, msg_list, out_dict
-    else:
-        return True, [], out_dict
+    return len(msg_list) == 0, msg_list, out_dict
 
 
 def check_error_category(err_cat, err_msg, out_dict):
@@ -921,16 +923,10 @@ def check_error_category(err_cat, err_msg, out_dict):
     # check special cases:
     # 1. nonco_angle_file not present, but newsosol==False anyways
     if 'NONCO_ANGLES_OUT' in err_msg:
-        if 'use_newsosol' in list(out_dict.keys()):
-            if out_dict['use_newsosol']:
-                return True
-            else:
-                return False
+        if 'use_newsosol' in out_dict:
+            return out_dict['use_newsosol']
         else:
             return True
 
     # default behavior
-    if err_cat == 1:
-        return True
-    else:
-        return False
+    return err_cat == 1

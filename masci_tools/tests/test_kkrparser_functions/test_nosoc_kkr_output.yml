@@ -1,0 +1,462 @@
+alat_internal: 5.423514
+alat_internal_unit: a_Bohr
+charge_core_states_per_atom:
+- 0.0
+- 0.0
+- 18.0
+- 18.0
+- 0.0
+- 0.0
+charge_core_states_per_atom_unit: electron charge
+charge_valence_states_per_atom:
+- 0.004028
+- 0.229975
+- 7.628074000000002
+- 7.628074000000002
+- 0.229975
+- 0.004028
+charge_valence_states_per_atom_unit: electron charge
+code_info_group:
+  calculation_serial_number: kkrjm_v2.2-22-g4f8f5ff_openmp_20171208160428
+  code_version: v2.2-22-g4f8f5ff
+  compile_options: openmp
+convergence_group:
+  brymix: 0.01
+  calculation_converged: false
+  charge_neutrality: -0.275844
+  charge_neutrality_all_iterations:
+  - -4.90193
+  - -0.576195
+  - -0.303203
+  - -0.369647
+  - -0.330104
+  - -0.324371
+  - -0.309302
+  - -0.298009
+  - -0.286475
+  - -0.275844
+  charge_neutrality_unit: electrons
+  dos_at_fermi_energy_all_iterations:
+  - 10.260433
+  - 15.367202
+  - 15.427578
+  - 15.336628
+  - 15.293781
+  - 15.239316
+  - 15.191993
+  - 15.145917
+  - 15.102739
+  - 15.061817
+  fcm: 20.0
+  fermi_energy_all_iterations:
+  - 0.459241
+  - 0.4654901812
+  - 0.4687657284
+  - 0.472782771
+  - 0.476380134
+  - 0.4799276602
+  - 0.4833209134
+  - 0.4866002281
+  - 0.4897616294
+  - 0.4928139832
+  fermi_energy_all_iterations_units: Ry
+  idtbry: 40
+  imix: 0
+  nsteps_exhausted: true
+  number_of_iterations: 10
+  number_of_iterations_max: 10
+  qbound: 0.0
+  rms: 0.23827
+  rms_all_iterations:
+  - 2.3414
+  - 0.23344
+  - 0.23332
+  - 0.2346
+  - 0.23535
+  - 0.23618
+  - 0.23686
+  - 0.23745
+  - 0.23792
+  - 0.23827
+  rms_per_atom:
+  - 0.31264
+  - 0.092533
+  - 0.15846
+  - 0.15846
+  - 0.092533
+  - 0.31264
+  rms_spin: 3.4092e-07
+  rms_spin_all_iterations:
+  - 2.54e-06
+  - 2.032e-06
+  - 1.6256e-06
+  - 1.3005e-06
+  - 1.0404e-06
+  - 8.3232e-07
+  - 6.6585e-07
+  - 5.3268e-07
+  - 4.2615e-07
+  - 3.4092e-07
+  rms_spin_per_atom:
+  - 0.31264
+  - 0.092533
+  - 0.15846
+  - 0.15846
+  - 0.092533
+  - 0.31264
+  rms_unit: unitless
+  spin_moment_per_atom_all_iterations:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 0.0
+    - 0.0
+    - -0.0
+    - -0.0
+    - 0.0
+    - 0.0
+  - - 0.0
+    - 0.0
+    - -0.0
+    - -0.0
+    - 0.0
+    - 0.0
+  - - 0.0
+    - 0.0
+    - -0.0
+    - -0.0
+    - 0.0
+    - 0.0
+  - - 0.0
+    - 0.0
+    - -0.0
+    - -0.0
+    - 0.0
+    - 0.0
+  - - 0.0
+    - 0.0
+    - -0.0
+    - -0.0
+    - 0.0
+    - 0.0
+  - - 0.0
+    - 0.0
+    - -0.0
+    - -0.0
+    - 0.0
+    - 0.0
+  - - 0.0
+    - 0.0
+    - -0.0
+    - -0.0
+    - 0.0
+    - 0.0
+  - - 0.0
+    - 0.0
+    - -0.0
+    - -0.0
+    - 0.0
+    - 0.0
+  - - 0.0
+    - 0.0
+    - -0.0
+    - -0.0
+    - 0.0
+    - 0.0
+  strmix: 0.01
+  total_energy_Ry_all_iterations:
+  - -5079.95660683
+  - -5081.8656148
+  - -5081.87192003
+  - -5081.88104897
+  - -5081.88827002
+  - -5081.89505638
+  - -5081.90107597
+  - -5081.90651978
+  - -5081.91141803
+  - -5081.91583836
+  total_spin_moment_all_iterations:
+  - 0.0
+  - 0.0
+  - -0.0
+  - -0.0
+  - -0.0
+  - -0.0
+  - -0.0
+  - -0.0
+  - -0.0
+  - -0.0
+core_states_group:
+  descr_highest_lying_core_state_per_atom:
+  - no core states
+  - no core states
+  - no core states
+  - no core states
+  - 3p
+  - 3p
+  - 3p
+  - 3p
+  - no core states
+  - no core states
+  - no core states
+  - no core states
+  energy_highest_lying_core_state_per_atom:
+  - null
+  - null
+  - null
+  - null
+  - -3.3808088817
+  - -3.3808088774
+  - -3.3808088817
+  - -3.3808088774
+  - null
+  - null
+  - null
+  - null
+  energy_highest_lying_core_state_per_atom_unit: Rydberg
+  number_of_core_states_per_atom:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 5
+  - 5
+  - 5
+  - 5
+  - 0
+  - 0
+  - 0
+  - 0
+direct_bravais_matrix:
+- - 1.0
+  - 0.0
+- - 0.5
+  - 0.707107
+direct_bravais_matrix_unit: alat
+dos_at_fermi_energy: 15.061817
+energy: -69142.98737360894
+energy_contour_group:
+  emin: -0.6
+  emin_unit: Rydberg
+  n1: 3
+  n2: 32
+  n3: 3
+  npol: 7
+  number_of_energy_points: 45
+  temperature: 800.0
+  temperature_unit: Kelvin
+energy_unit: eV
+ewald_sum_group:
+  ewald_summation_mode: 3D
+  gsum_cutoff: 11.98427
+  gsum_cutoff_unit: 1/a_Bohr
+  gsum_number_of_shells: 1496
+  gsum_number_of_vectors: 16167
+  rsum_cutoff: 37.9646
+  rsum_cutoff_unit: a_Bohr
+  rsum_number_of_shells: 74
+  rsum_number_of_vectors: 425
+fermi_energy: 0.4928139832
+fermi_energy_units: Ry
+kmesh_group:
+  kmesh_energypoint:
+  - 4
+  - 3
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 3
+  - 3
+  - 2
+  - 1
+  - 4
+  - 3
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 3
+  - 3
+  - 2
+  - 1
+  number_different_kmeshes: 4
+  number_kpoints_per_kmesh:
+    n_kx:
+    - 10
+    - 7
+    - 5
+    - 3
+    n_ky:
+    - 10
+    - 7
+    - 5
+    - 3
+    n_kz:
+    - 10
+    - 7
+    - 5
+    - 3
+    number_of_kpts:
+    - 310
+    - 112
+    - 45
+    - 12
+magnetism_group:
+  spin_moment_per_atom:
+  - 0.0
+  - 0.0
+  - -0.0
+  - -0.0
+  - 0.0
+  - 0.0
+  spin_moment_unit: mu_Bohr
+  total_spin_moment: -0.0
+  total_spin_moment_unit: mu_Bohr
+nspin: 2
+number_of_atoms_in_unit_cell: 6
+parser_warnings: []
+reciprocal_bravais_matrix:
+- - 1.0
+  - -0.707107
+- - 0.0
+  - 1.414214
+reciprocal_bravais_matrix_unit: 2*pi / alat
+single_particle_energies:
+- 0.33005280320612657
+- 1.5175235514124428
+- 38.20540900017228
+- 38.20540900017228
+- 1.5175235514124428
+- 0.33005280320612657
+single_particle_energies_unit: eV
+symmetries_group:
+  number_of_lattice_symmetries: 4
+  number_of_used_symmetries: 4
+  symmetry_description:
+    C2z:
+      euler_angles:
+      - 180.0
+      - 0.0
+      - 0.0
+      has_inversion: 0
+      is_unitary: 1
+    E:
+      euler_angles:
+      - 0.0
+      - 0.0
+      - 0.0
+      has_inversion: 0
+      is_unitary: 1
+    IC2x:
+      euler_angles:
+      - 180.0
+      - 180.0
+      - 0.0
+      has_inversion: 1
+      is_unitary: 1
+    IC2y:
+      euler_angles:
+      - 0.0
+      - 180.0
+      - 0.0
+      has_inversion: 1
+      is_unitary: 1
+timings_group:
+  Time in Iteration: 17.4351
+  main0: 0.976
+  'main1a  ': 4.7957
+  'main1b  ': 1.562
+  'main1c  ': 10.57
+  main2: 0.5074
+timings_unit: seconds
+total_charge_per_atom:
+- 0.0
+- 0.0
+- 26.0
+- 26.0
+- 0.0
+- 0.0
+total_charge_per_atom_unit: electron charge
+total_energy_Ry: -5081.91583836
+total_energy_Ry_unit: Rydberg
+two_pi_over_alat_internal: 1.15850818
+two_pi_over_alat_internal_unit: 1/a_Bohr
+use_newsosol: false
+warnings_group:
+  number_of_warnings: 1
+  warnings_list:
+  - 'WARNING: HFIELD>0.0 found, set KHFIELD to 1'

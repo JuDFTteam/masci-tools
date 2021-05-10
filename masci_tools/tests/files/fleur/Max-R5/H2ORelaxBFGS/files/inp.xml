@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<fleurInput fleurInputVersion="0.34">
+   <comment>
+      H2O Test
+   </comment>
+   <calculationSetup>
+      <cutoffs Kmax="3.70000000" Gmax="13.10000000" GmaxXC="10.10000000" numbands="0"/>
+      <scfLoop itmax="80" minDistance=".00001000" maxIterBroyd="99" imix="Anderson" alpha=".05000000" precondParam="0.0" spinf="2.00000000"/>
+      <coreElectrons ctail="T" frcor="F" kcrel="0" coretail_lmax="0"/>
+      <xcFunctional name="pbe" relativisticCorrections="F"/>
+      <magnetism jspins="1" l_noco="F" swsp="F" lflip="F"/>
+      <soc theta=".00000000" phi=".00000000" l_soc="F" spav="F"/>
+      <expertModes gw="0" secvar="F"/>
+      <geometryOptimization l_f="T" forcealpha="1.00000000" forcemix="BFGS" epsdisp=".00001000" epsforce=".00001000"/>
+      <ldaU l_linMix="F" mixParam=".050000" spinf="1.000000"/>
+   </calculationSetup>
+   <cell>
+      <bzIntegration valenceElectrons="8.00000000" mode="hist" fermiSmearingEnergy=".00100000">
+         <!-- k-points included here -->
+         <kPointListSelection listName="default" />
+         <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="kpts.xml"> </xi:include>
+      </bzIntegration>
+      <!-- symmetry operations included here -->
+      <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="sym.xml"> </xi:include>
+      <filmLattice scale="1.00000000" dVac="3.19000000" dTilda="5.13000000">
+         <bravaisMatrix>
+            <row-1>   10.0000000000     0.0000000000     0.0000000000</row-1>
+            <row-2>    0.0000000000     8.0000000000     0.0000000000</row-2>
+            <row-3>    0.0000000000     0.0000000000     5.2800000000</row-3>
+         </bravaisMatrix>
+         <vacuumEnergyParameters vacuum="1" spinUp="-.25000000" spinDown="-.25000000"/>
+      </filmLattice>
+   </cell>
+   <atomSpecies>
+      <species name="O-1" element="O" atomicNumber="8">
+         <mtSphere radius="1.05000000" gridPoints="429" logIncrement=".02400000"/>
+         <atomicCutoffs lmax="6" lnonsphr="4"/>
+         <electronConfig>
+            <coreConfig>(1s1/2)</coreConfig>
+            <valenceConfig>(2s1/2) (2p1/2) (2p3/2)</valenceConfig>
+            <stateOccupation state="(2p1/2)" spinUp="1.0" spinDown="1.0"/>
+            <stateOccupation state="(2p3/2)" spinUp="1.0" spinDown="1.0"/>
+         </electronConfig>
+         <energyParameters s="2" p="2" d="3" f="4"/>
+      </species>
+      <species name="H-1" element="H" atomicNumber="1">
+         <mtSphere radius=".70000000" gridPoints="329" logIncrement=".02500000"/>
+         <atomicCutoffs lmax="6" lnonsphr="4"/>
+         <electronConfig>
+            <coreConfig></coreConfig>
+            <valenceConfig>(1s1/2)</valenceConfig>
+            <stateOccupation state="(1s1/2)" spinUp=".50000000" spinDown=".50000000"/>
+         </electronConfig>
+         <energyParameters s="1" p="2" d="3" f="4"/>
+      </species>
+   </atomSpecies>
+   <atomGroups>
+      <atomGroup species="O-1">
+         <filmPos label="                   1">.0000000000 1.000/10.000 .0000000000</filmPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+      </atomGroup>
+      <atomGroup species="H-1">
+         <filmPos label="                   2">-1.200/10.000 -1.000/10.000 .0000000000</filmPos>
+         <filmPos label="                   3">1.200/10.000 -1.000/10.000 .0000000000</filmPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+      </atomGroup>
+   </atomGroups>
+   <output dos="F" band="F" >
+      <checks vchk="F" cdinf="F"/>
+       </output>
+  <!-- We include the file relax.inp here to enable relaxations (see documentation) -->
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="relax.xml"> <xi:fallback/> </xi:include>
+</fleurInput>

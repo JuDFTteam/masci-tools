@@ -1,0 +1,167 @@
+output_dict:
+  bandgap:
+  - 0.0349628152
+  - 0.0323610284
+  - 0.021741434
+  - 0.0572228408
+  bandgap_units: eV
+  charge_den_xc_den_integral:
+  - -111.944467235
+  - -111.9182938603
+  - -111.8007620588
+  - -111.8088374177
+  creator_name: fleur 32
+  creator_target_architecture: GEN
+  density_convergence:
+  - - 10.9851472966
+    - 6.0389329792
+  - - 9.2786635283
+    - 5.4278279348
+  - - 2.682660905
+    - 4.3593512086
+  - - 2.4271463257
+    - 2.7205971142
+  density_convergence_units: me/bohr^3
+  end_date:
+    date: 2020/12/10
+    time: '16:53:09'
+  energy:
+  - -69269.26280231532
+  - -69269.20160971185
+  - -69269.16186641826
+  - -69269.20227600168
+  energy_core_electrons:
+  - -1455.1337167156
+  - -1455.4152321083
+  - -1456.700254102
+  - -1456.7494708632
+  energy_hartree:
+  - -2545.5984555924
+  - -2545.5962068057
+  - -2545.5947462666
+  - -2545.5962312914
+  energy_hartree_units: Htr
+  energy_units: eV
+  energy_valence_electrons:
+  - -14.3239528838
+  - -14.4723754179
+  - -15.168729029
+  - -15.3104862098
+  fermi_energy:
+  - 0.3836568571
+  - 0.3782147185
+  - 0.3527552733
+  - 0.3477025411
+  fermi_energy_units: Htr
+  film: false
+  fleur_modes:
+    band: false
+    bz_integration: hist
+    cf_coeff: false
+    dos: false
+    film: false
+    force_theorem: false
+    gw: false
+    jspin: 2
+    ldau: false
+    noco: true
+    plot: false
+    relax: false
+    soc: false
+  gmax: 10.2
+  input_file_version: '0.34'
+  kmax: 3.4
+  magnetic_moments:
+  - - 1.9248831159
+    - 1.9271597822
+  - - 1.9333985458
+    - 1.9345705319
+  - - 1.9618319469
+    - 1.9642032919
+  - - 1.921322941
+    - 1.9069167578
+  magnetic_moments_spin_down_charge:
+  - - 5.5287872657
+    - 5.526614088
+  - - 5.5306467297
+    - 5.5301342089
+  - - 5.5471397772
+    - 5.5448063511
+  - - 5.5571226156
+    - 5.5769454898
+  magnetic_moments_spin_up_charge:
+  - - 7.4536703815
+    - 7.4537738701
+  - - 7.4640452754
+    - 7.4647047409
+  - - 7.5089717241
+    - 7.509009643
+  - - 7.4784455566
+    - 7.4838622476
+  number_of_atom_types: 2
+  number_of_atoms: 2
+  number_of_iterations: 4
+  number_of_iterations_total: 4
+  number_of_kpoints: 3
+  number_of_species: 1
+  number_of_spin_components: 2
+  number_of_symmetries: 16
+  output_file_version: '0.34'
+  overall_density_convergence:
+  - 13.455846664
+  - 10.8914872112
+  - 3.3253791756
+  - 1.5936155801
+  spin_density_convergence:
+  - 11.5422933539
+  - 10.6059102509
+  - 6.4298583438
+  - 4.9036481595
+  spin_dependent_charge_interstitial:
+  - - 1.0181605
+    - 1.0212141
+  - - 1.00491
+    - 1.0077593
+  - - 0.9449583
+    - 0.9472272
+  - - 0.953185
+    - 0.9525573
+  spin_dependent_charge_mt_spheres:
+  - - 26.9063802
+    - 23.0542457
+  - - 26.927695
+    - 23.059636
+  - - 27.0169661
+    - 23.0908487
+  - - 26.961288
+    - 23.1329699
+  spin_dependent_charge_total:
+  - - 27.9245407
+    - 24.0754597
+  - - 27.932605
+    - 24.0673954
+  - - 27.9619244
+    - 24.0380759
+  - - 27.914473
+    - 24.0855272
+  start_date:
+    date: 2020/12/10
+    time: '16:53:07'
+  sum_of_eigenvalues:
+  - -1469.4576695994
+  - -1469.8876075262
+  - -1471.8689831309
+  - -1472.059957073
+  title: Fe fcc 2
+  total_charge:
+  - 52.0000004
+  - 52.0000003806
+  - 52.0000002753
+  - 52.0000001251
+  total_magnetic_moment_cell:
+  - 3.8490810000000018
+  - 3.8652096
+  - 3.923848500000002
+  - 3.8289457999999996
+  walltime: 2
+  walltime_units: seconds

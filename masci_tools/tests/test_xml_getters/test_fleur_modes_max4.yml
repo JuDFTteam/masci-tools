@@ -1,0 +1,13 @@
+band: false
+bz_integration: hist
+cf_coeff: false
+dos: false
+film: true
+force_theorem: false
+gw: false
+jspin: 2
+ldau: false
+noco: true
+plot: false
+relax: false
+soc: false

@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<fleurInput fleurInputVersion="0.34">
+   <comment>
+      FLEUR in
+   </comment>
+   <calculationSetup>
+      <cutoffs Kmax="3.50000000" Gmax="15.00000000" GmaxXC="10.00000000" numbands="0"/>
+      <scfLoop itmax="1" minDistance=".00001000" maxIterBroyd="99" imix="Anderson" alpha=".05000000" precondParam="0.0" spinf="2.00000000"/>
+      <coreElectrons ctail="T" frcor="F" kcrel="0" coretail_lmax="99"/>
+      <xcFunctional name="pz" relativisticCorrections="F"/>
+      <magnetism jspins="1" l_noco="F" swsp="F" lflip="F"/>
+      <soc theta=".00000000" phi=".00000000" l_soc="F" spav="F"/>
+      <expertModes gw="0" secvar="F"/>
+      <geometryOptimization l_f="F" forcealpha="1.00000000" forcemix="BFGS" epsdisp=".00001000" epsforce=".00001000"/>
+      <ldaU l_linMix="F" mixParam=".100000" spinf="2.000000"/>
+   </calculationSetup>
+   <cell>
+      <bzIntegration valenceElectrons="22.00000000" mode="tria" fermiSmearingEnergy=".00100000">
+         <kPointListSelection listName="default" />
+         <kPointLists>
+         <kPointList name="default" count="20" type="tria-bulk">
+            <kPoint weight="    1.000000">    0.500000     0.500000     0.000000</kPoint>
+            <kPoint weight="    1.000000">    0.500000     0.500000     0.500000</kPoint>
+            <kPoint weight="    1.000000">    0.500000     0.000000     0.500000</kPoint>
+            <kPoint weight="    1.000000">    0.500000     0.000000     0.000000</kPoint>
+            <kPoint weight="    1.000000">    0.000000     0.000000     0.000000</kPoint>
+            <kPoint weight="    1.000000">    0.000000     0.000000     0.500000</kPoint>
+            <kPoint weight="    1.000000">    0.375000     0.125000     0.500000</kPoint>
+            <kPoint weight="    1.000000">    0.349019     0.349019     0.349019</kPoint>
+            <kPoint weight="    1.000000">    0.208334     0.208334     0.500000</kPoint>
+            <kPoint weight="    1.000000">    0.375000     0.125000     0.000000</kPoint>
+            <kPoint weight="    1.000000">    0.416666     0.416666     0.235294</kPoint>
+            <kPoint weight="    1.000000">    0.399510     0.100490     0.200981</kPoint>
+            <kPoint weight="    1.000000">    0.333334     0.333334     0.000000</kPoint>
+            <kPoint weight="    1.000000">    0.166666     0.166666     0.000000</kPoint>
+            <kPoint weight="    1.000000">    0.083334     0.083334     0.235294</kPoint>
+            <kPoint weight="    1.000000">    0.500000     0.250000     0.500000</kPoint>
+            <kPoint weight="    1.000000">    0.250000     0.000000     0.500000</kPoint>
+            <kPoint weight="    1.000000">    0.500000     0.250000     0.117647</kPoint>
+            <kPoint weight="    1.000000">    0.250000     0.000000     0.117647</kPoint>
+            <kPoint weight="    1.000000">    0.247059     0.247059     0.247059</kPoint>
+         </kPointList>
+         </kPointLists>
+      </bzIntegration>
+      <symmetryOperations>
+         <symOp>
+            <row-1>1 0 0 .0000000000</row-1>
+            <row-2>0 1 0 .0000000000</row-2>
+            <row-3>0 0 1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>-1 0 0 .0000000000</row-1>
+            <row-2>0 -1 0 .0000000000</row-2>
+            <row-3>0 0 1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>-1 0 0 .0000000000</row-1>
+            <row-2>0 1 0 .0000000000</row-2>
+            <row-3>0 0 1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 1 0 .0000000000</row-1>
+            <row-2>-1 0 0 .0000000000</row-2>
+            <row-3>0 0 1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>1 0 0 .0000000000</row-1>
+            <row-2>0 -1 0 .0000000000</row-2>
+            <row-3>0 0 1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 -1 0 .0000000000</row-1>
+            <row-2>1 0 0 .0000000000</row-2>
+            <row-3>0 0 1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 -1 0 .0000000000</row-1>
+            <row-2>-1 0 0 .0000000000</row-2>
+            <row-3>0 0 1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 1 0 .0000000000</row-1>
+            <row-2>1 0 0 .0000000000</row-2>
+            <row-3>0 0 1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>-1 0 0 .0000000000</row-1>
+            <row-2>0 -1 0 .0000000000</row-2>
+            <row-3>0 0 -1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>1 0 0 .0000000000</row-1>
+            <row-2>0 1 0 .0000000000</row-2>
+            <row-3>0 0 -1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>1 0 0 .0000000000</row-1>
+            <row-2>0 -1 0 .0000000000</row-2>
+            <row-3>0 0 -1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>-1 0 0 .0000000000</row-1>
+            <row-2>0 1 0 .0000000000</row-2>
+            <row-3>0 0 -1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 -1 0 .0000000000</row-1>
+            <row-2>1 0 0 .0000000000</row-2>
+            <row-3>0 0 -1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 1 0 .0000000000</row-1>
+            <row-2>-1 0 0 .0000000000</row-2>
+            <row-3>0 0 -1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 1 0 .0000000000</row-1>
+            <row-2>1 0 0 .0000000000</row-2>
+            <row-3>0 0 -1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>0 -1 0 .0000000000</row-1>
+            <row-2>-1 0 0 .0000000000</row-2>
+            <row-3>0 0 -1 .0000000000</row-3>
+         </symOp>
+      </symmetryOperations>
+      <bulkLattice scale="1.0000000000">
+         <bravaisMatrix>
+            <row-1>4.6709350900 .0000000000 .0000000000</row-1>
+            <row-2>.0000000000 4.6709350900 .0000000000</row-2>
+            <row-3>.0000000000 .0000000000 6.6057000000</row-3>
+         </bravaisMatrix>
+      </bulkLattice>
+   </cell>
+   <atomSpecies>
+      <species name="Cu-1" element="Cu" atomicNumber="29" >
+         <mtSphere radius="2.20000000" gridPoints="935" logIncrement=".01300000"/>
+         <atomicCutoffs lmax="12" lnonsphr="8"/>
+         <electronConfig>
+            <coreConfig>(1s1/2) (2s1/2) (2p1/2) (2p3/2) (3s1/2) (3p1/2) (3p3/2)</coreConfig>
+            <valenceConfig>(4s1/2) (3d3/2) (3d5/2)</valenceConfig>
+            <stateOccupation state="(4s1/2)" spinUp=".50000000" spinDown=".50000000"/>
+         </electronConfig>
+         <energyParameters s="0" p="0" d="0" f="0"/>
+      </species>
+      <species name="Cu-2" element="Cu" atomicNumber="29" >
+         <mtSphere radius="2.20000000" gridPoints="935" logIncrement=".01300000"/>
+         <atomicCutoffs lmax="12" lnonsphr="8"/>
+         <electronConfig>
+            <coreConfig>(1s1/2) (2s1/2) (2p1/2) (2p3/2) (3s1/2) (3p1/2) (3p3/2)</coreConfig>
+            <valenceConfig>(4s1/2) (3d3/2) (3d5/2)</valenceConfig>
+            <stateOccupation state="(4s1/2)" spinUp=".50000000" spinDown=".50000000"/>
+         </electronConfig>
+         <energyParameters s="0" p="0" d="0" f="0"/>
+      </species>
+   </atomSpecies>
+   <atomGroups>
+      <atomGroup species="Cu-1">
+         <relPos label="                    ">.0000000000 .0000000000 1.000/2.000</relPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+      </atomGroup>
+      <atomGroup species="Cu-2">
+         <relPos label="                    ">1.000/2.000 1.000/2.000 .0000000000</relPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+      </atomGroup>
+   </atomGroups>
+   <output dos="T" band="F"  slice="F" >
+      <checks vchk="T" cdinf="F"/>
+      <bandDOS minEnergy="-.50000000" maxEnergy=".50000000" sigma=".01500000" orbcomp="T" />
+      <plotting iplot="0"/>
+      <chargeDensitySlicing numkpt="0" minEigenval=".00000000" maxEigenval=".00000000" nnne="0" pallst="F"/>
+      <specialOutput eonly="F" bmt="F"/>
+   </output>
+  <!-- We include the file relax.inp here to enable relaxations (see documentation) -->
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="relax.xml"> <xi:fallback/> </xi:include>
+</fleurInput>

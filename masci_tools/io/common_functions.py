@@ -5,21 +5,18 @@
 # This file is part of the Masci-tools package.                               #
 # (Material science tools)                                                    #
 #                                                                             #
-# The code is hosted on GitHub at https://github.com/judftteam/masci-tools    #
-# For further information on the license, see the LICENSE.txt file            #
-# For further information please visit http://www.flapw.de or                 #
+# The code is hosted on GitHub at https://github.com/judftteam/masci-tools.   #
+# For further information on the license, see the LICENSE.txt file.           #
+# For further information please visit http://judft.de/.                      #
 #                                                                             #
 ###############################################################################
 """
 Here commonly used functions that do not need aiida-stuff (i.e. can be tested
 without a database) are collected.
 """
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
 import io
-from six.moves import range
-
+import numpy as np
+import warnings
 ####################################################################################
 
 #helper functions used in calculation, parser etc.
@@ -37,12 +34,8 @@ def open_general(filename_or_handle, iomode=None):
     """
     reopen_file = False
     # this is needed in order to make python2 and 3 work (in py3 file does not exist anymore)
-    import six
-    #if six.PY2:
-    #    if type(filename_or_handle)!=io.TextIOWrapper and type(filename_or_handle)!=file:
-    #        reopen_file = True
-    #else:
-    if type(filename_or_handle) != io.TextIOWrapper:
+
+    if not isinstance(filename_or_handle, io.IOBase):
         reopen_file = True
 
     if reopen_file:
@@ -61,25 +54,42 @@ def open_general(filename_or_handle, iomode=None):
     return f
 
 
+def skipHeader(seq, n):
+    """Iterate over a sequence skipping the first n elements
+
+    Args:
+        seq (iterable): Iterable sequence
+        n (int): Number of Elements to skip in the beginning of the sequence
+
+    Yields:
+        item: Elements in seq after the first n elements
+    """
+    for i, item in enumerate(seq):
+        if i >= n:
+            yield item
+
+
+def filter_out_empty_dict_entries(dict_to_filter):
+    """
+    Filter out entries in a given dict that correspond to empty values.
+    At the moment this is empty lists, dicts and None
+
+    :param dict_to_filter: dict to filter
+
+    :returns: dict without empty entries
+    """
+
+    EMPTY_VALUES = (None, [], {})
+
+    return {key: val for key, val in dict_to_filter.items() if val not in EMPTY_VALUES}
+
+
 def get_alat_from_bravais(bravais, is3D=True):
-    from numpy import sqrt, sum
     bravais_tmp = bravais
     if not is3D:
         #take only in-plane lattice to find maximum as alat
         bravais_tmp = bravais[:2, :2]
-    return sqrt(sum(bravais_tmp**2, axis=1)).max()
-
-
-def get_Ang2aBohr():
-    return 1.8897261254578281
-
-
-def get_aBohr2Ang():
-    return 1 / get_Ang2aBohr()
-
-
-def get_Ry2eV():
-    return 13.605693009
+    return np.sqrt(np.sum(bravais_tmp**2, axis=1)).max()
 
 
 def search_string(searchkey, txt):
@@ -100,34 +110,33 @@ def angles_to_vec(magnitude, theta, phi):
     Input can be single number, list of numpy.ndarray data
     Returns x,y,z vector
     """
-    from numpy import ndarray, array, cos, sin
 
     # correct data type if necessary
-    if type(magnitude) == list:
-        magnitude = array(magnitude)
-    if type(theta) == list:
-        theta = array(theta)
-    if type(phi) == list:
-        phi = array(phi)
+    if isinstance(magnitude, list):
+        magnitude = np.array(magnitude)
+    if isinstance(theta, list):
+        theta = np.array(theta)
+    if isinstance(phi, list):
+        phi = np.array(phi)
     single_value_input = False
-    if type(magnitude) != ndarray:
-        magnitude = array([magnitude])
+    if not isinstance(magnitude, np.ndarray):
+        magnitude = np.array([magnitude])
         single_value_input = True
-    if type(theta) != ndarray:
-        theta = array([theta])
+    if not isinstance(theta, np.ndarray):
+        theta = np.array([theta])
         single_value_input = True
-    if type(phi) != ndarray:
-        phi = array([phi])
+    if not isinstance(phi, np.ndarray):
+        phi = np.array([phi])
         single_value_input = True
 
     vec = []
-    for ivec in range(len(magnitude)):
-        r_inplane = magnitude[ivec] * sin(theta[ivec])
-        x = r_inplane * cos(phi[ivec])
-        y = r_inplane * sin(phi[ivec])
-        z = cos(theta[ivec]) * magnitude[ivec]
+    for mag_i, phi_i, theta_i in zip(magnitude, phi, theta):
+        r_inplane = mag_i * np.sin(theta_i)
+        x = r_inplane * np.cos(phi_i)
+        y = r_inplane * np.sin(phi_i)
+        z = np.cos(theta_i) * mag_i
         vec.append([x, y, z])
-    vec = array(vec)
+    vec = np.array(vec)
 
     if single_value_input:
         vec = vec[0]
@@ -135,25 +144,48 @@ def angles_to_vec(magnitude, theta, phi):
     return vec
 
 
+def get_Ang2aBohr():
+    from masci_tools.util.constants import ANG_BOHR_KKR
+    #warnings.warn(
+    #    'get_Ang2aBohr is deprecated. Use 1/BOHR_A with the BOHR_A constant from the module masci_tools.util.constants instead',
+    #    DeprecationWarning)
+    return ANG_BOHR_KKR
+
+
+def get_aBohr2Ang():
+    from masci_tools.util.constants import ANG_BOHR_KKR
+    #warnings.warn(
+    #    'get_aBohr2Ang is deprecated. Use the BOHR_A constant from the module masci_tools.util.constants instead',
+    #    DeprecationWarning)
+    return 1.0 / ANG_BOHR_KKR
+
+
+def get_Ry2eV():
+    from masci_tools.util.constants import RY_TO_EV_KKR
+    #warnings.warn(
+    #    'get_Ry2eV is deprecated. Use the RY_TO_EV constant from the module masci_tools.util.constants instead',
+    #    DeprecationWarning)
+    return RY_TO_EV_KKR
+
+
 def vec_to_angles(vec):
     """
     converts vector (x,y,z) to (magnitude, theta, phi)
     """
-    from numpy import array, arctan2, sqrt, shape
     magnitude, theta, phi = [], [], []
-    if len(vec) == 3 and len(shape(vec)) < 2:
-        vec = array([vec])
+    if len(vec) == 3 and len(np.shape(vec)) < 2:
+        vec = np.array([vec])
         multiple_entries = False
     else:
         multiple_entries = True
 
-    for ivec in range(len(vec)):
-        phi.append(arctan2(vec[ivec, 1], vec[ivec, 0]))
-        r_inplane = sqrt(vec[ivec, 0]**2 + vec[ivec, 1]**2)
-        theta.append(arctan2(r_inplane, vec[ivec, 2]))
-        magnitude.append(sqrt(r_inplane**2 + vec[ivec, 2]**2))
+    for vec_i in vec:
+        phi.append(np.arctan2(vec_i[1], vec_i[0]))
+        r_inplane = np.sqrt(vec_i[0]**2 + vec_i[1]**2)
+        theta.append(np.arctan2(r_inplane, vec_i[2]))
+        magnitude.append(np.sqrt(r_inplane**2 + vec_i[2]**2))
     if multiple_entries:
-        magnitude, theta, phi = array(magnitude), array(theta), array(phi)
+        magnitude, theta, phi = np.array(magnitude), np.array(theta), np.array(phi)
     else:
         magnitude, theta, phi = magnitude[0], theta[0], phi[0]
     return magnitude, theta, phi
@@ -180,7 +212,6 @@ def get_version_info(outfile):
 
 def get_corestates_from_potential(potfile='potential'):
     """Read core states from potential file"""
-    from numpy import zeros
     f = open_general(potfile)
     with f:
         txt = f.readlines()
@@ -192,15 +223,15 @@ def get_corestates_from_potential(potfile='potential'):
     n_core_states = []  #number of core states per potential
     e_core_states = []  #energies of core states
     l_core_states = []  #angular momentum index, i.e. 0=s, 1=p etc...
-    for ipot in range(len(istarts)):
-        line = txt[istarts[ipot] + 6]
+    for pot_index, start_index in enumerate(istarts):
+        line = txt[start_index + 6]
         n = int(line.split()[0])
-        print(ipot, n)
+        print(pot_index, n)
         n_core_states.append(n)
-        elevels = zeros(n)  #temp array for energies
-        langmom = zeros(n, dtype=int)  #temp array for angular momentum index
+        elevels = np.zeros(n)  #temp array for energies
+        langmom = np.zeros(n, dtype=int)  #temp array for angular momentum index
         for icore in range(n):
-            line = txt[istarts[ipot] + 7 + icore].split()
+            line = txt[start_index + 7 + icore].split()
             langmom[icore] = int(line[0])
             elevels[icore] = float(line[1].replace('D', 'E'))
         e_core_states.append(elevels)
@@ -223,7 +254,7 @@ def interpolate_dos(
     dosfile,
     return_original=False,
 ):
-    """
+    r"""
     interpolation function copied from complexdos3 fortran code
 
     Principle of DOS here: Two-point contour integration
@@ -245,7 +276,6 @@ def interpolate_dos(
 
     :note: output units are in Ry!
     """
-    from numpy import array, real, imag
 
     f = open_general(dosfile)
     with f:
@@ -280,18 +310,18 @@ def interpolate_dos(
                 dostmp_complex += [[tmpline[iline], tmpline[iline + 1]] for iline in range(2, len(tmpline) - 2, 2)]
                 dostmp = [ez] + [float(ds[0]) + 1j * float(ds[1]) for ds in dostmp_complex]
                 dos_l_cmplx.append(dostmp)
-            dos_l_cmplx = array(dos_l_cmplx)
-            dos_l = imag(dos_l_cmplx.copy())
-            dos_l[:, 0] = real(dos_l_cmplx.copy()[:, 0])
+            dos_l_cmplx = np.array(dos_l_cmplx)
+            dos_l = np.imag(dos_l_cmplx.copy())
+            dos_l[:, 0] = np.real(dos_l_cmplx.copy()[:, 0])
             dos_all_atoms.append(dos_l)
 
             # Compute and write out corrected dos at new (middle) energy points:
             dosnew = []
             ez = dos_l_cmplx[:, 0]
             for ie in range(1, iemax - 1):
-                deltae = real(ez[ie + 1] - ez[ie])
-                eim = imag(ez[ie])
-                enew = real(ez[ie])  # Real quantity
+                deltae = np.real(ez[ie + 1] - ez[ie])
+                eim = np.imag(ez[ie])
+                enew = np.real(ez[ie])  # Real quantity
 
                 tmpdos = [enew]
                 for ll in range(1, lmax + 3):
@@ -299,9 +329,9 @@ def interpolate_dos(
                     #print ie+1, ll,  dos_l_cmplx[ie, ll], deltae, eim, t, shape(dos_l_cmplx[ie]), lmax
                     #tmpdos.append(dos_l_cmplx[ie, ll] + 0.5*(dos_l_cmplx[ie-1, ll]-dos_l_cmplx[ie+1, ll])*(0.+1j*eim)/deltae)
                     tmpdos.append(dos_l_cmplx[ie, ll] + t)
-                tmpdos = array(tmpdos)
+                tmpdos = np.array(tmpdos)
                 # build imaginary part (factor -1/2pi is already included)
-                tmpdos = array([real(tmpdos[0])] + [imag(ds) for ds in tmpdos[1:]])
+                tmpdos = np.array([np.real(tmpdos[0])] + [np.imag(ds) for ds in tmpdos[1:]])
                 dosnew.append(tmpdos)
 
             # save to big array with all atoms
@@ -310,8 +340,8 @@ def interpolate_dos(
             if i1 != npot:
                 text = f.readline()  # dummy line
 
-        dosnew_all_atoms = array(dosnew_all_atoms)
-        dos_all_atoms = array(dos_all_atoms)
+        dosnew_all_atoms = np.array(dosnew_all_atoms)
+        dos_all_atoms = np.array(dos_all_atoms)
 
     if return_original:
         return ef, dos_all_atoms, dosnew_all_atoms
@@ -323,8 +353,7 @@ def get_ef_from_potfile(potfile):
     """
     extract fermi energy from potfile
     """
-    f = open_general(potfile)
-    with f:
+    with open_general(potfile) as f:
         txt = f.readlines()
     ef = float(txt[3].split()[1])
     return ef
@@ -338,18 +367,204 @@ def convert_to_pystd(value):
 
     where `to_convert` can be a dict, array, list, or single valued variable
     """
-    import numpy as np
     if isinstance(value, np.ndarray):
         value = list(value)
         value = convert_to_pystd(value)
     elif isinstance(value, list):
-        for item in range(len(value)):
-            value[item] = convert_to_pystd(value[item])
+        for index, val in enumerate(value):
+            value[index] = convert_to_pystd(val)
+    elif isinstance(value, tuple):
+        value = tuple(convert_to_pystd(val) for val in value)
     elif isinstance(value, np.integer):
         value = int(value)
     elif isinstance(value, np.floating):
         value = float(value)
+    elif isinstance(value, np.str):
+        value = str(value)
     elif isinstance(value, dict):
         for key, val in value.items():
             value[key] = convert_to_pystd(val)
     return value
+
+
+def camel_to_snake(name):
+    """
+    Converts camelCase to snake_case variable names
+    Used in the Fleur parser to convert attribute names from the xml files
+    """
+    name = name.replace('-', '')
+    return ''.join(['_' + c.lower() if c.isupper() else c for c in name]).lstrip('_')
+
+
+def convert_to_fortran(val, quote_strings=True):
+    """
+    :param val: the value to be read and converted to a Fortran-friendly string.
+    """
+    # Note that bool should come before integer, because a boolean matches also
+    # isinstance(...,int)
+    import numbers
+
+    if isinstance(val, (bool, np.bool_)):
+        if val:
+            val_str = '.true.'
+        else:
+            val_str = '.false.'
+    elif isinstance(val, numbers.Integral):
+        val_str = f'{val:d}'
+    elif isinstance(val, numbers.Real):
+        val_str = f'{val:18.10e}'.replace('e', 'd')
+    elif isinstance(val, str):
+        if quote_strings:
+            val_str = f"'{val!s}'"
+        else:
+            val_str = f'{val!s}'
+    else:
+        raise ValueError(f"Invalid value '{val}' of type '{type(val)}' passed, accepts only booleans, ints, "
+                         'floats and strings')
+
+    return val_str
+
+
+def convert_to_fortran_string(string):
+    """
+    converts some parameter strings to the format for the inpgen
+    :param string: some string
+    :returns: string in right format (extra "")
+    """
+    return f'"{string}"'
+
+
+def is_sequence(arg):
+    """
+    Checks if arg is a sequence
+    """
+    if isinstance(arg, str):
+        return False
+    elif hasattr(arg, '__iter__'):
+        return True
+    elif not hasattr(arg, 'strip') and hasattr(arg, '__getitem__'):
+        return True
+    else:
+        return False
+
+
+def abs_to_rel(vector, cell):
+    """
+    Converts a position vector in absolute coordinates to relative coordinates.
+
+    :param vector: list or np.array of length 3, vector to be converted
+    :param cell: Bravais matrix of a crystal 3x3 Array, List of list or np.array
+    :return: list of length 3 of scaled vector, or False if vector was not length 3
+    """
+
+    if len(vector) == 3:
+        cell_np = np.array(cell)
+        inv_cell_np = np.linalg.inv(cell_np)
+        postionR = np.array(vector)
+        # np.matmul(inv_cell_np, postionR)#
+        new_rel_post = np.matmul(postionR, inv_cell_np)
+        new_rel_pos = list(new_rel_post)
+        return new_rel_pos
+    else:
+        return False
+
+
+def abs_to_rel_f(vector, cell, pbc):
+    """
+    Converts a position vector in absolute coordinates to relative coordinates
+    for a film system.
+
+    :param vector: list or np.array of length 3, vector to be converted
+    :param cell: Bravais matrix of a crystal 3x3 Array, List of list or np.array
+    :param pbc: Boundary conditions, List or Tuple of 3 Boolean
+    :return: list of length 3 of scaled vector, or False if vector was not length 3
+    """
+    # TODO this currently only works if the z-coordinate is the one with no pbc
+    # Therefore if a structure with x non pbc is given this should also work.
+    # maybe write a 'tranform film to fleur_film routine'?
+    if len(vector) == 3:
+        if not pbc[2]:
+            # leave z coordinate absolute
+            # convert only x and y.
+            postionR = np.array(vector)
+            postionR_f = np.array(postionR[:2])
+            cell_np = np.array(cell)
+            cell_np = np.array(cell_np[0:2, 0:2])
+            inv_cell_np = np.linalg.inv(cell_np)
+            # np.matmul(inv_cell_np, postionR_f)]
+            new_xy = np.matmul(postionR_f, inv_cell_np)
+            new_rel_pos_f = [new_xy[0], new_xy[1], postionR[2]]
+            return new_rel_pos_f
+        else:
+            print('FLEUR can not handle this type of film coordinate')
+    else:
+        return False
+
+
+def rel_to_abs(vector, cell):
+    """
+    Converts a position vector in internal coordinates to absolute coordinates
+    in Angstrom.
+
+    :param vector: list or np.array of length 3, vector to be converted
+    :param cell: Bravais matrix of a crystal 3x3 Array, List of list or np.array
+    :return: list of legth 3 of scaled vector, or False if vector was not lenth 3
+    """
+    if len(vector) == 3:
+        cell_np = np.array(cell)
+        postionR = np.array(vector)
+        new_abs_post = np.matmul(postionR, cell_np)
+        new_abs_pos = list(new_abs_post)
+        return new_abs_pos
+    else:
+        return False
+
+
+def rel_to_abs_f(vector, cell):
+    """
+    Converts a position vector in internal coordinates to absolute coordinates
+    in Angstrom for a film structure (2D).
+    """
+    # TODO this currently only works if the z-coordinate is the one with no pbc
+    # Therefore if a structure with x non pbc is given this should also work.
+    # maybe write a 'tranform film to fleur_film routine'?
+    if len(vector) == 3:
+        postionR = np.array(vector)
+        postionR_f = np.array(postionR[:2])
+        cell_np = np.array(cell)
+        cell_np = np.array(cell_np[0:2, 0:2])
+        new_xy = np.matmul(postionR_f, cell_np)
+        new_abs_pos_f = [new_xy[0], new_xy[1], postionR[2]]
+        return new_abs_pos_f
+    else:
+        return False
+
+
+def get_wigner_matrix(l, phi, theta):
+    """Produces the wigner rotation matrix for the density matrix
+
+    :param l: int, orbital quantum number
+    :param phi: float, angle (radian) corresponds to euler angle alpha
+    :param theta: float, angle (radian) corresponds to euler angle beta
+    """
+    d_wigner = np.zeros((7, 7), dtype=complex)
+    for m in range(-l, l + 1):
+        for mp in range(-l, l + 1):
+            base = np.sqrt(fac(l + m) * fac(l - m) * fac(l + mp) * fac(l - mp))
+            base *= np.exp(-1j * phi * mp)
+
+            for x in range(max(0, m - mp), min(l - mp, l + m) + 1):
+                denom = fac(l - mp - x) * fac(l + m - x) * fac(x) * fac(x + mp - m)
+
+                d_wigner[m + 3, mp + 3] += base/denom * (-1)**x * np.cos(theta/2.0)**(2*l+m-mp-2*x) \
+                                          * np.sin(theta/2.0)**(2*x+mp-m)
+
+    return d_wigner
+
+
+def fac(n):
+    """Returns the factorial of n"""
+    if n < 2:
+        return 1
+    else:
+        return n * fac(n - 1)

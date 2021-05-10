@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<fleurInput fleurInputVersion="0.31">
+   <comment>
+      A Fleur input generator calculation with aiida                                  
+   </comment>
+   <calculationSetup>
+      <cutoffs Kmax="4.00000000" Gmax="10.00000000" GmaxXC="8.70000000" numbands="0"/>
+      <scfLoop itmax="22" minDistance=".00001000" maxIterBroyd="99" imix="Anderson" alpha=".1000000" precondParam="0.0" spinf="2.00000000"/>
+      <coreElectrons ctail="F" frcor="F" kcrel="0" coretail_lmax="0"/>
+      <magnetism jspins="2" l_noco="T" swsp="F" lflip="F"/>
+      <soc theta=".00000000" phi=".00000000" l_soc="F" spav="F"/>
+      <prodBasis gcutm="3.50000000" tolerance=".00010000" ewaldlambda="3" lexp="16" bands="0"/>
+      <nocoParams l_ss="T" l_mperp="F" l_constr="F" mix_b=".00000000">
+         <qss>.20000000000 .0000000000 .0000000000</qss>
+      </nocoParams>
+      <expertModes gw="0" secvar="F"/>
+      <geometryOptimization l_f="F" forcealpha="1.00000000" forcemix="BFGS" epsdisp=".00001000" epsforce=".00001000"/>
+      <ldaU l_linMix="F" mixParam=".050000" spinf="1.000000"/>
+      <bzIntegration valenceElectrons="8.00000000" mode="hist" fermiSmearingEnergy=".00100000">
+         <kPointListSelection listName="default" />
+         <kPointLists>
+         <kPointList posScale="1.00000000" weightScale="1.00000000" count="1" name="default">
+            <kPoint weight="    1.00000">   0.000000     0.000000     0.000000</kPoint>
+         </kPointList>
+         </kPointLists>
+      </bzIntegration>
+   </calculationSetup>
+   <cell>
+      <symmetryOperations>
+         <symOp>
+            <row-1>1 0 0 .0000000000</row-1>
+            <row-2>0 1 0 .0000000000</row-2>
+            <row-3>0 0 1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>1 0 0 .0000000000</row-1>
+            <row-2>0 -1 0 .0000000000</row-2>
+            <row-3>0 0 1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>1 0 0 .0000000000</row-1>
+            <row-2>0 -1 0 .0000000000</row-2>
+            <row-3>0 0 -1 .0000000000</row-3>
+         </symOp>
+         <symOp>
+            <row-1>1 0 0 .0000000000</row-1>
+            <row-2>0 1 0 .0000000000</row-2>
+            <row-3>0 0 -1 .0000000000</row-3>
+         </symOp>
+      </symmetryOperations>
+      <filmLattice scale="1.00000000" latnam="any" dVac="5.64000000" dTilda="9.41000000">
+         <bravaisMatrix>
+            <row-1>5.301179702900000 .000000000000000 .000000000000000</row-1>
+            <row-2>.000000000000000 7.497000033000000 .000000000000000</row-2>
+            <row-3>.000000000000000 .000000000000000 6.000000000000000</row-3>
+         </bravaisMatrix>
+         <vacuumEnergyParameters vacuum="1" spinUp="-.25000000" spinDown="-.25000000"/>
+      </filmLattice>
+   </cell>
+   <xcFunctional name="vwn" relativisticCorrections="F"/>
+   <atomSpecies>
+      <species name="Fe-1" element="Fe" atomicNumber="26" coreStates="7">
+         <mtSphere radius="2.20000000" gridPoints="833" logIncrement=".01500000"/>
+         <atomicCutoffs lmax="10" lnonsphr="6"/>
+         <energyParameters s="4" p="4" d="3" f="4"/>
+         <prodBasis lcutm="4" lcutwf="9" select="4 0 4 2"/>
+         <electronConfig>
+            <coreConfig>[Ar]</coreConfig>
+            <valenceConfig>(4s1/2) (3d3/2) (3d5/2)</valenceConfig>
+            <stateOccupation state="(3d3/2)" spinUp="2.00000000" spinDown="1.00000000"/>
+            <stateOccupation state="(3d5/2)" spinUp="3.00000000" spinDown=".00000000"/>
+         </electronConfig>
+      </species>
+   </atomSpecies>
+   <atomGroups>
+      <atomGroup species="Fe-1">
+         <filmPos label="                 222">.0000000000 .0000000000 .0000000000</filmPos>
+         <force calculate="T" relaxXYZ="TTT"/>
+         <nocoParams l_relax="F" alpha=".00000000" beta="1.5707963267948966" b_cons_x=".00000000" b_cons_y=".00000000"/>
+      </atomGroup>
+   </atomGroups>
+   <output dos="F" band="F"  slice="F" >
+      <checks vchk="F" cdinf="F"/>
+      <unfoldingBand unfoldBand="F" supercellX="1" supercellY="1" supercellZ="1"/>
+      <plotting iplot="0"/>
+      <chargeDensitySlicing numkpt="0" minEigenval=".00000000" maxEigenval=".00000000" nnne="0" pallst="F"/>
+      <specialOutput eonly="F" bmt="F"/>
+   </output>
+ <!-- We include the file relax.inp here to enable relaxations (see documentation) -->
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="relax.xml"> <xi:fallback/> </xi:include>
+</fleurInput>
