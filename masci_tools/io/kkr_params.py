@@ -347,6 +347,10 @@ class kkrparams(object):
                 None, '%i', False,
                 'Self-consistency control: Number of simple mixing steps to do before starting more aggressive mixing scheme (only has effect for IMIX>3).'
             ]),
+            ('DENEF_MIXSCALE', [
+                None, '%f', False,
+                'Self-consistency control: Inverse scaling factor for charge neutrality mixing, should nirmally be set to the value the denisty at EF (used only with semi-circle contour integration).'
+            ]),
             # mixing of noco angles
             ('SPINMIXQBOUND', [
                 None, '%e', False,
