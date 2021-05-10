@@ -66,7 +66,7 @@ if __name__ == '__main__':
             ],
             'docs': [
                 'Sphinx',
-                'docutils<0.17',
+                'docutils',
                 'sphinx_rtd_theme'
             ],
             'testing': [
