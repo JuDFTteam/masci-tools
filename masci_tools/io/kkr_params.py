@@ -1138,19 +1138,18 @@ class kkrparams(object):
                     # automatically convert if naez==1 and only 1D array is given
                     if self.__listargs[key] == 1 and len(array(
                             self.values[key]).shape) == 1 and key not in ['ZPERIODL', 'ZPERIODR']:
-                        print('Warning: expected 2D array for %s but got 1D array, converting automatically' % key)
+                        print('Warning: expected 2D array for {key:s} but got 1D array, converting automatically')
                         self.values[key] = array([self.values[key]])
                 tmpdims = array(self.values[key]).shape
                 if tmpdims[0] != cmpdims[0]:
                     tmpsuccess = False
-                if len(tmpdims) == 2:
-                    if tmpdims[1] != cmpdims[1]:
-                        tmpsuccess = False
+                if len(tmpdims) == 2 and tmpdims[1] != cmpdims[1]:
+                    tmpsuccess = False
                 #success.append(tmpsuccess)
 
                 if not tmpsuccess:
                     print('check consistency:', key, self.values[key], cmpdims, tmpdims, tmpsuccess)
-                    raise TypeError('Error: array input not consistent for key {}'.format(key))
+                    raise TypeError(f'Error: array input not consistent for key {key}')
 
     def _check_input_consistency(self, set_lists_only=False):
         """Check consistency of input, to be done before wrinting to inputcard"""
@@ -1183,10 +1182,10 @@ class kkrparams(object):
                              ['<RMTREFL>', nlbasis], ['<RMTREFR>', nrbasis], ['<FPRADIUS>', natyp], ['BZDIVIDE', 3],
                              ['<RBLEFT>', nrbasis], ['ZPERIODL', 3], ['<RBRIGHT>', nrbasis], ['ZPERIODR', 3],
                              ['LDAU_PARA', 5], ['CPAINFO', 2], ['<DELTAE>', 2], ['FILES', 2], ['DECIFILES', 2],
-                             ['<RMTCORE>', natyp], ['<AT_SCALE_BDG>', natyp]])
+                             ['<RMTCORE>', naez], ['<AT_SCALE_BDG>', natyp]])
             # deal with special stuff for voronoi:
             if self.__params_type == 'voronoi':
-                listargs['<RMTCORE>'] = natyp
+                listargs['<RMTCORE>'] = naez
                 self.update_to_voronoi()
             special_formatting = ['BRAVAIS', 'RUNOPT', 'TESTOPT', 'FILES', 'DECIFILES']
         else:
