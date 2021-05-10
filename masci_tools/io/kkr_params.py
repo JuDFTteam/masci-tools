@@ -1145,9 +1145,8 @@ class kkrparams(object):
                 tmpdims = array(self.values[key]).shape
                 if tmpdims[0] != cmpdims[0]:
                     tmpsuccess = False
-                if len(tmpdims) == 2:
-                    if tmpdims[1] != cmpdims[1]:
-                        tmpsuccess = False
+                if len(tmpdims) == 2 and tmpdims[1] != cmpdims[1]:
+                    tmpsuccess = False
                 #success.append(tmpsuccess)
 
                 if not tmpsuccess:
@@ -1185,10 +1184,10 @@ class kkrparams(object):
                              ['<RMTREFL>', nlbasis], ['<RMTREFR>', nrbasis], ['<FPRADIUS>', natyp], ['BZDIVIDE', 3],
                              ['<RBLEFT>', nrbasis], ['ZPERIODL', 3], ['<RBRIGHT>', nrbasis], ['ZPERIODR', 3],
                              ['LDAU_PARA', 5], ['CPAINFO', 2], ['<DELTAE>', 2], ['FILES', 2], ['DECIFILES', 2],
-                             ['<RMTCORE>', natyp], ['<AT_SCALE_BDG>', natyp]])
+                             ['<RMTCORE>', naez], ['<AT_SCALE_BDG>', natyp]])
             # deal with special stuff for voronoi:
             if self.__params_type == 'voronoi':
-                listargs['<RMTCORE>'] = natyp
+                listargs['<RMTCORE>'] = naez
                 self.update_to_voronoi()
             special_formatting = ['BRAVAIS', 'RUNOPT', 'TESTOPT', 'FILES', 'DECIFILES']
         else:
