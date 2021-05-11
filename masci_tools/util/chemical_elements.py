@@ -17,6 +17,7 @@ import masci_tools.vis.plot_methods
 
 
 class ChemicalElements:
+    """A container for safe chemical element enumeration."""
 
     def __init__(self,
                  elements=None,
@@ -135,8 +136,8 @@ class ChemicalElements:
                             # lazy type checking for sym:num
                             key_type_is_int = isinstance(list(elements.keys())[0], int)
                             elmts = {v: k for k, v in elements.items()} if key_type_is_int else elements
-                            assert (all([isinstance(k, str) for k in elmts.keys()]))
-                            assert (all([isinstance(v, int) for v in elmts.values()]))
+                            assert all([isinstance(k, str) for k in elmts.keys()])
+                            assert all([isinstance(v, int) for v in elmts.values()])
                             self.__elmts = {'': self._sort(elements)}
                         else:
                             # nested dict
@@ -654,8 +655,8 @@ class ChemicalElements:
         # check symbol
         if symbol in self._pte:
             if symbol not in self._special_elements:
-                print(info_msg_prefix + f'Symbol is a standard element of the periodic table. '
-                      f'I will not expand definition by this element.')
+                print(info_msg_prefix + 'Symbol is a standard element of the periodic table. '
+                      'I will not expand definition by this element.')
                 return
             else:
                 # now need to check if the stored special element with the same symbol has a different atomic number
@@ -669,8 +670,8 @@ class ChemicalElements:
         # check atomic number
         if atomic_number in self._pte_inv:
             if atomic_number not in self._special_elements_inv:
-                print(info_msg_prefix + f'Atomic number is that of a standard element of the periodic table. '
-                      f'I will not expand definition by this element.')
+                print(info_msg_prefix + 'Atomic number is that of a standard element of the periodic table. '
+                      'I will not expand definition by this element.')
                 return
             else:
                 # now need to check if the stored special element with the same atomic number has a different symbol
@@ -803,7 +804,7 @@ class ChemicalElements:
             file.write(json.dumps(self.__elmts))
 
     def plot(self,
-             selected_groups: list = [],
+             selected_groups: list = None,
              selection_name: str = '',
              unselected_name: str = 'Unspecified',
              output='notebook'):
@@ -877,8 +878,7 @@ class ChemicalElements:
         :return: sorted dict
         :rtype: dict
         """
-        for_k0_for_v1 = not int(by_key)
-        return {k: v for k, v in sorted(a_dict.items(), key=lambda item: item[for_k0_for_v1])}
+        return dict(sorted(a_dict.items(), key=lambda item: item[not by_key]))
 
     def _validate(self, elements):
         """Checks that no non-valid elements are present.
@@ -935,6 +935,10 @@ class ChemicalElements:
 
 @dc.dataclass
 class PeriodicTable:
+    """Periodic tables for different properties. Properties may be incomplete.
+
+    Current properties: elemental crystal structure, agnetic elements.
+    """
     from masci_tools.util import python_util
 
     table: ChemicalElements = python_util.dataclass_default_field(ChemicalElements())
