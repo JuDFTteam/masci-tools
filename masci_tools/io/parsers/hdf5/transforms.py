@@ -586,7 +586,7 @@ def sum_over_dict_entries(dataset, overwrite_dict=False, entries=None, dict_entr
     else:
         transformed[dict_entry] = np.sum([entry for key, entry in dataset.items() if key in entries], axis=0)
 
-    return dataset
+    return transformed
 
 @hdf5_transformation(attribute_needed=False)
 def add_partial_sums_fixed(dataset, patterns, replace_entries=None):
@@ -695,7 +695,7 @@ def add_partial_sums(dataset, attribute_value, pattern_format, make_set=False, r
     if make_set:
         attribute_value = set(attribute_value)
 
-    return add_partial_sums_fixed(dataset, (pattern_format(val) for val in attribute_value), replace_entries=replace_entries)
+    return add_partial_sums_fixed(dataset, [pattern_format(val) for val in attribute_value], replace_entries=replace_entries)
 
 
 @hdf5_transformation(attribute_needed=True)
