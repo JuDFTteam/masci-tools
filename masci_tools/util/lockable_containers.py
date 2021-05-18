@@ -17,7 +17,7 @@ unintended modifications
 from collections import UserDict, UserList
 from contextlib import contextmanager
 
-from typing import Union, Any, Generator, Mapping, Iterable, cast, overload
+from typing import Union, Any, Generator, Mapping, Iterable, cast
 
 
 @contextmanager
