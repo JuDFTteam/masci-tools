@@ -581,6 +581,34 @@ def sum_over_dict_entries(dataset, overwrite_dict=False):
 
     return dataset
 
+@hdf5_transformation(attribute_needed=False)
+def add_partial_sums_fixed(dataset, patterns):
+    """
+    Add entries to the dataset dict (Only avalaible for dict datasets) with sums
+    over entries containing a given pattern
+
+    Used for example in the FleurBands recipe to calculate total atom weights
+    with the patterns `['MT:1', 'MT:2', ...]`
+
+    :param dataset: dataset to transform
+    :param patterns: list of str to sum entries over
+
+    :returns: dataset with new entries containing the sums over entries matching the given pattern
+    """
+    from collections.abc import Iterable
+
+    if not isinstance(dataset, dict):
+        raise ValueError('add_partial_sums_fixed only available for dict datasets')
+
+    if not isinstance(patterns, Iterable) and not isinstance(patterns, str):
+        raise ValueError('patterns has be an Iterable')
+
+    transformed = dataset.copy()
+    for pattern in patterns:
+        transformed[pattern] = np.sum([entry for key, entry in transformed.items() if pattern in key], axis=0)
+
+    return transformed
+
 
 #Functions that can use an attribute value (These are passed in from _transform_dataset)
 #The transformation don't have access to all the attributes
@@ -653,13 +681,7 @@ def add_partial_sums(dataset, attribute_value, pattern_format, make_set=False):
     if make_set:
         attribute_value = set(attribute_value)
 
-    transformed = dataset.copy()
-    for val in attribute_value:
-        pattern = pattern_format(val)
-
-        transformed[pattern] = np.sum([entry for key, entry in transformed.items() if pattern in key], axis=0)
-
-    return transformed
+    return add_partial_sums_fixed(dataset, (pattern_format(val) for val in attribute_value))
 
 
 @hdf5_transformation(attribute_needed=True)
