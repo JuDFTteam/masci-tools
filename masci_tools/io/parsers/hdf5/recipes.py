@@ -230,27 +230,27 @@ def bands_recipe_format(group, simple=False):
                 ]
             },
             'atoms_elements': {
-            'h5path': '/atoms/atomicNumbers',
-            'description': 'Atomic numbers',
-            'transforms': [Transformation(name='periodic_elements', args=(), kwargs={})]
-        },
-        'n_types': {
-            'h5path':
-            '/atoms',
-            'description':
-            'Number of atom types',
-            'transforms': [
-                Transformation(name='get_attribute', args=('nTypes',), kwargs={}),
-                Transformation(name='get_first_element', args=(), kwargs={})
-            ]
-        },
-        'atoms_position': {
-            'h5path': '/atoms/positions',
-            'description': 'Atom coordinates per atom',
-        },
-        'atoms_groups': {
-            'h5path': '/atoms/equivAtomsGroup'
-        },
+                'h5path': '/atoms/atomicNumbers',
+                'description': 'Atomic numbers',
+                'transforms': [Transformation(name='periodic_elements', args=(), kwargs={})]
+            },
+            'n_types': {
+                'h5path':
+                '/atoms',
+                'description':
+                'Number of atom types',
+                'transforms': [
+                    Transformation(name='get_attribute', args=('nTypes',), kwargs={}),
+                    Transformation(name='get_first_element', args=(), kwargs={})
+                ]
+            },
+            'atoms_position': {
+                'h5path': '/atoms/positions',
+                'description': 'Atom coordinates per atom',
+            },
+            'atoms_groups': {
+                'h5path': '/atoms/equivAtomsGroup'
+            },
             'reciprocal_cell': {
                 'h5path': '/cell/reciprocalCell'
             },
