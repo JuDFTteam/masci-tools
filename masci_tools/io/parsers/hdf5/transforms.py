@@ -582,7 +582,7 @@ def sum_over_dict_entries(dataset, overwrite_dict=False):
     return dataset
 
 @hdf5_transformation(attribute_needed=False)
-def add_partial_sums_fixed(dataset, patterns):
+def add_partial_sums_fixed(dataset, patterns, replace_entries=None):
     """
     Add entries to the dataset dict (Only avalaible for dict datasets) with sums
     over entries containing a given pattern
@@ -592,6 +592,7 @@ def add_partial_sums_fixed(dataset, patterns):
 
     :param dataset: dataset to transform
     :param patterns: list of str to sum entries over
+    :param replace_entries: list of str under which to enter the entries back
 
     :returns: dataset with new entries containing the sums over entries matching the given pattern
     """
@@ -603,9 +604,12 @@ def add_partial_sums_fixed(dataset, patterns):
     if not isinstance(patterns, Iterable) and not isinstance(patterns, str):
         raise ValueError('patterns has be an Iterable')
 
+    if replace_entries is None:
+        replace_entries = patterns
+
     transformed = dataset.copy()
-    for pattern in patterns:
-        transformed[pattern] = np.sum([entry for key, entry in transformed.items() if pattern in key], axis=0)
+    for pattern, replace_entry in zip(patterns, replace_entries):
+        transformed[replace_entry] = np.sum([entry for key, entry in transformed.items() if pattern in key], axis=0)
 
     return transformed
 
@@ -654,7 +658,7 @@ def shift_by_attribute(dataset, attribute_value, negative=False):
 
 
 @hdf5_transformation(attribute_needed=True)
-def add_partial_sums(dataset, attribute_value, pattern_format, make_set=False):
+def add_partial_sums(dataset, attribute_value, pattern_format, make_set=False, replace_entries=None):
     """
     Add entries to the dataset dict (Only avalaible for dict datasets) with sums
     over entries containing a given pattern formatted with a attribute_value
@@ -666,6 +670,7 @@ def add_partial_sums(dataset, attribute_value, pattern_format, make_set=False):
     :param attribute_value: value to multiply by (attribute value passed in from `_transform_dataset`)
     :param pattern_format: callable returning a formatted string
                            This will be called with every entry in the attribute_value list
+    :param replace_entries: list of str under which to enter the entries back
 
     :returns: dataset with new entries containing the sums over entries matching the given pattern
     """
@@ -681,7 +686,7 @@ def add_partial_sums(dataset, attribute_value, pattern_format, make_set=False):
     if make_set:
         attribute_value = set(attribute_value)
 
-    return add_partial_sums_fixed(dataset, (pattern_format(val) for val in attribute_value))
+    return add_partial_sums_fixed(dataset, (pattern_format(val) for val in attribute_value), replace_entries=replace_entries)
 
 
 @hdf5_transformation(attribute_needed=True)
