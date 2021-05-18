@@ -560,7 +560,7 @@ def periodic_elements(dataset):
 
 
 @hdf5_transformation(attribute_needed=False)
-def sum_over_dict_entries(dataset, overwrite_dict=False):
+def sum_over_dict_entries(dataset, overwrite_dict=False, entries=None, dict_entry='sum', entry_format=None):
     """
     Sum the datasets contained in the given dict dataset
 
@@ -574,10 +574,17 @@ def sum_over_dict_entries(dataset, overwrite_dict=False):
     if not isinstance(dataset, dict):
         raise ValueError('sum_over_dict_entries is only available for dict datasets')
 
+    if entries is None:
+        entries = dataset.keys()
+
+    if entry_format is not None:
+        entries = [entry_format(entry) for entry in entries]
+
+    transformed = dataset
     if overwrite_dict:
-        dataset = np.sum(dataset.values())
+        transformed = np.sum([entry for key, entry in dataset.items() if key in entries], axis=0)
     else:
-        dataset['sum'] = np.sum(dataset.values())
+        transformed[dict_entry] = np.sum([entry for key, entry in dataset.items() if key in entries], axis=0)
 
     return dataset
 
@@ -609,7 +616,9 @@ def add_partial_sums_fixed(dataset, patterns, replace_entries=None):
 
     transformed = dataset.copy()
     for pattern, replace_entry in zip(patterns, replace_entries):
-        transformed[replace_entry] = np.sum([entry for key, entry in transformed.items() if pattern in key], axis=0)
+        entries = [key for key in transformed.keys() if pattern in key]
+
+        transformed[replace_entry] = sum_over_dict_entries(dataset, overwrite_dict=True, entries=entries)
 
     return transformed
 
