@@ -64,6 +64,13 @@ from masci_tools.io.parsers.hdf5.reader import Transformation, AttribTransformat
 
 
 def dos_recipe_format(group):
+    """
+    Format for denisty of states calculations retrieving the DOS from the given group
+
+    :param group: str of the group the DOS should be taken from
+
+    :returns: dict of the recipe to retrieve a DOS calculation
+    """
 
     if group == 'Local':
         atom_prefix = 'MT:'
@@ -159,6 +166,14 @@ FleurMCD = dos_recipe_format('MCD')
 
 
 def bands_recipe_format(group, simple=False):
+    """
+    Format for bandstructure calculations retrieving weights from the given group
+
+    :param group: str of the group the weights should be taken from
+    :param simple: bool, if True no additional weights are retrieved with the produced recipe
+
+    :returns: dict of the recipe to retrieve a bandstructure calculation
+    """
 
     if group == 'Local':
         atom_prefix = 'MT:'
@@ -318,6 +333,7 @@ def get_fleur_bands_specific_weights(weight_name, group='Local'):
     additional weight besides the eigenvalues and kpath
 
     :param weight_name: key or list of keys of the weight(s) to retrieve
+    :param group: optional str (default Local) name of the group from where to take the weights
 
     :returns: dict of the recipe to retrieve a simple bandstructure
               plus the one specified weight

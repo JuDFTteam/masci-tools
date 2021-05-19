@@ -538,6 +538,27 @@ def convert_to_str(dataset):
 
 
 @hdf5_transformation(attribute_needed=False)
+def apply_lambda(dataset, lambda_func, move):
+    """Applies a given lambda function to the dataset
+       This should be used with care. One possible example is
+       converting to a boolean with lambda x: x==1
+
+    :param dataset: dataset to transform
+    :param lambda_func: lambda function to apply to the dataset
+
+    :returns: return value of the lambda function
+    """
+
+    transformed = dataset
+    if isinstance(transformed, dict):
+        transformed = {key: lambda_func(entry) for key, entry in transformed.items()}
+    else:
+        transformed = lambda_func(dataset)
+
+    return transformed
+
+
+@hdf5_transformation(attribute_needed=False)
 def periodic_elements(dataset):
     """Converts the given dataset (int or list of ints)
        To the atomic symbols corresponding to the atomic number
