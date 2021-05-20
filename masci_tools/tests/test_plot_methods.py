@@ -410,7 +410,7 @@ class TestMultipleScatterPlot(object):
                               title='Plot Test',
                               plot_label=['Parabola', 'Line', None, 'cosine'],
                               legend=True,
-                              legend_options={'fontsize': 17},
+                              legend_options={'fontsize': 20},
                               show=False)
         # need to return the figure in order for mpl checks to work
         return gcf()

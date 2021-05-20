@@ -130,7 +130,7 @@ class MatplotlibPlotter(Plotter):
         # legend properties
         'legend': False,
         'legend_options': {
-            'fontsize': 16,
+            'fontsize': 'large',
             'linewidth': 3.0,
             'loc': 'best',
             'fancybox': True
@@ -586,7 +586,7 @@ class MatplotlibPlotter(Plotter):
         if self['legend']:
             loptions = copy.deepcopy(self['legend_options'])
             linewidth = loptions.pop('linewidth', 1.5)
-            title_font_size = loptions.pop('fontsize', 15)
+            title_font_size = loptions.get('fontsize', 15)
             leg = ax.legend(*leg_elems, **loptions)
             leg.get_frame().set_linewidth(linewidth)
             leg.get_title().set_fontsize(title_font_size)  #legend 'Title' fontsize
