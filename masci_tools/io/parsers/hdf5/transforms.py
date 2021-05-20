@@ -538,7 +538,7 @@ def convert_to_str(dataset):
 
 
 @hdf5_transformation(attribute_needed=False)
-def apply_lambda(dataset, lambda_func, move):
+def apply_lambda(dataset, lambda_func):
     """Applies a given lambda function to the dataset
        This should be used with care. One possible example is
        converting to a boolean with lambda x: x==1

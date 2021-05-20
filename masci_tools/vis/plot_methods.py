@@ -985,9 +985,9 @@ def multiaxis_scatterplot(xdata,
                           ydata,
                           *,
                           axes_loc,
-                          xlabel,
-                          ylabel,
-                          title,
+                          xlabel='',
+                          ylabel='',
+                          title='',
                           num_cols=1,
                           num_rows=1,
                           saveas='mscatterplot',
@@ -1044,19 +1044,19 @@ def multiaxis_scatterplot(xdata,
         else:
             param_list[indx]['title'] = title[indx]
 
-    general_keys = set(plot_params['figure_kwargs']) | {'show', 'save_plots'}
+    general_keys = {'figure_kwargs', 'show', 'save_plots'}
     general_info = {key: val for key, val in kwargs.items() if key in general_keys}
     kwargs = {key: val for key, val in kwargs.items() if key not in general_keys}
-
     plot_params.set_parameters(**general_info)
 
     #figsize is automatically scaled with the shape of the plot
-    plot_shape = (num_rows, num_cols)
+    plot_shape = (num_cols, num_rows)
     plot_params['figure_kwargs'] = {
         'figsize': ([plot_shape[indx] * size for indx, size in enumerate(plot_params['figure_kwargs']['figsize'])])
     }
+    plot_shape = tuple(reversed(plot_shape))
 
-    plt.figure(**plot_params['figure_kwargs'])
+    fig = plt.figure(**plot_params['figure_kwargs'])
 
     axis = []
     for indx, subplot_data in enumerate(zip(axes_loc, xdata, ydata, param_list)):
@@ -1066,7 +1066,7 @@ def multiaxis_scatterplot(xdata,
         subplot_kwargs = copy.deepcopy(kwargs)
         subplot_kwargs.update(params)
 
-        ax = plt.subplot2grid(plot_shape, location, **subplot_kwargs.pop('axes_kwargs', {}))
+        ax = plt.subplot2grid(plot_shape, location, fig=fig, **subplot_kwargs.pop('axes_kwargs', {}))
         with NestedPlotParameters(plot_params):
             ax = multiple_scatterplots(x, y, axis=ax, **subplot_kwargs, save_plots=False, show=False)
 
@@ -1195,7 +1195,7 @@ def plot_residuen(xdata,
     ydata = realdata - fitdata
     hist_kwargs = kwargs.pop('hist_kwargs', {})
 
-    general_keys = set(plot_params['figure_kwargs']) | {'show', 'save_plots'}
+    general_keys = {'figure_kwargs', 'show', 'save_plots'}
     general_info = {key: val for key, val in kwargs.items() if key in general_keys}
     kwargs = {key: val for key, val in kwargs.items() if key not in general_keys}
     plot_params.set_parameters(**general_info)
@@ -1473,7 +1473,7 @@ def plot_lattice_constant(scaling,
                              plot_label='simulation data',
                              plot_label_fit='fit results')
 
-    general_keys = set(plot_params['figure_kwargs']) | {'show', 'save_plots'}
+    general_keys = {'figure_kwargs', 'show', 'save_plots'}
     general_info = {key: val for key, val in kwargs.items() if key in general_keys}
     kwargs = {key: val for key, val in kwargs.items() if key not in general_keys}
 
@@ -2062,11 +2062,11 @@ def plot_one_element_corelv(corelevel_dict, element, compound='', axis=None, sav
 
 def construct_corelevel_spectrum(coreleveldict,
                                  natom_typesdict,
-                                 exp_references={},
+                                 exp_references=None,
                                  scale_to=-1,
                                  fwhm_g=0.6,
                                  fwhm_l=0.1,
-                                 energy_range=[None, None],
+                                 energy_range=None,
                                  xspec=None,
                                  energy_grid=0.2,
                                  peakfunction='voigt',
@@ -2079,6 +2079,10 @@ def construct_corelevel_spectrum(coreleveldict,
 
     :returns: list: [xdata_spec, ydata_spec, ydata_single_all, xdata_all, ydata_all, xdatalabel]
     """
+
+    if energy_range is None:
+        energy_range = (None, None)
+
     xdata_all = []
     ydata_all = []
     ydata_spec = []
@@ -2188,11 +2192,11 @@ def construct_corelevel_spectrum(coreleveldict,
 @ensure_plotter_consistency(plot_params)
 def plot_corelevel_spectra(coreleveldict,
                            natom_typesdict,
-                           exp_references={},
+                           exp_references=None,
                            scale_to=-1,
                            show_single=True,
                            show_ref=True,
-                           energy_range=(None, None),
+                           energy_range=None,
                            title='',
                            fwhm_g=0.6,
                            fwhm_l=0.1,
@@ -2234,6 +2238,13 @@ def plot_corelevel_spectra(coreleveldict,
     """
     #show_compound=True, , compound_info={} compound_info dict: dict that can be used to specify what component should be shown together     compound_info = {'Be12Ti' : {'Be' : 4, 'Ti' : 1}, 'BeTi' : {'Be' : 1, 'Ti' : 1}}
     # TODO feature to make singles of different compounds a different color
+
+    if energy_range is None:
+        energy_range = (None, None)
+
+    if exp_references is None:
+        exp_references = {}
+
     [xdata_spec, ydata_spec, ydata_single_all, xdata_all, ydata_all,
      xdatalabel] = construct_corelevel_spectrum(coreleveldict,
                                                 natom_typesdict,
