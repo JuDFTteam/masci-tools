@@ -177,3 +177,26 @@ def test_plot_dos_selection_mpl():
                    plot_keys='MT:1p')
 
     return gcf()
+
+
+@pytest.mark.mpl_image_compare(baseline_dir='files/fleur_vis/', filename='bands_character.png')
+def test_plot_bands_characterize_mpl():
+    from masci_tools.io.parsers.hdf5 import HDF5Reader
+    from masci_tools.io.parsers.hdf5.recipes import FleurBands
+    from masci_tools.vis.fleur import plot_fleur_bands_characterize
+
+    TEST_BANDDOS_FILE = os.path.join(HDFTEST_DIR, 'banddos_spinpol_bands.hdf')
+
+    with HDF5Reader(TEST_BANDDOS_FILE) as h5reader:
+        data, attributes = h5reader.read(recipe=FleurBands)
+
+    gcf().clear()
+
+    plot_fleur_bands_characterize(data,
+                                  attributes, ['MT:1s', 'MT:1p', 'MT:1d', 'MT:1f'],
+                                  ['darkblue', 'darkred', 'darkgreen', 'darkorange'],
+                                  show=False,
+                                  markersize=30,
+                                  only_spin='up')
+
+    return gcf()

@@ -1955,7 +1955,7 @@ def plot_spinpol_bands(kpath,
                              linewidth=0,
                              legend=True,
                              line_options={'zorder': -1},
-                             zorder=[2,1],
+                             zorder=[2, 1],
                              colorbar=False)
 
     if 'cmap' not in kwargs:
