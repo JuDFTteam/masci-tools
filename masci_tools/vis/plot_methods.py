@@ -1798,6 +1798,7 @@ def plot_bands(kpath,
                             and mark them on the x-axis with the given label
     :param markersize_min: minimum value used in scaling points for weight
     :param markersize_scaling: factor used in scaling points for weight
+    :param scale_color: bool, if True (default) the weight will be additionally shown via a colormapping
 
     All other Kwargs are passed on to the :py:func:`multi_scatter_plot()` call
     """
@@ -1893,6 +1894,7 @@ def plot_spinpol_bands(kpath,
     :param markersize_scaling: factor used in scaling points for weight
     :param show_spin_pol: bool, if True (default) the two different spin channles will be shown in blue
                           and red by default
+    :param scale_color: bool, if True (default) the weight will be additionally shown via a colormapping
 
     All other Kwargs are passed on to the :py:func:`multi_scatter_plot()` call
     """

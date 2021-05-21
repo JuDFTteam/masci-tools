@@ -16,31 +16,31 @@ Plotting routine for fleur density of states and bandstructures
 import pandas as pd
 
 
-def sum_weights_over_atoms(data, atoms_to_sum, entry_name, group_name='Local'):
+def sum_weights_over_atoms(data, attributes, atoms_to_sum, entry_name):
     """
     Create sums of atom components over specified atoms. They are entered with the same
     suffixes as in the original data, but with the given entry_name as prefix
 
-    :param data: dict produced by the HDF5Reader with a recipe for DOS or bandstructure
+    :param data: datasets dict produced by the HDF5Reader with a recipe for DOS or bandstructure
+    :param attributes: attributes dict produced by the HDF5Reader with a recipe for DOS or bandstructure
     :param atoms_to_sum: list of ints for the atoms, which should be summed
     :param entry_name: str prefix to be entered for the summed entries
-    :param group_name: str of the group in the 'banddos.hdf' the weights are taken from
 
     :returns: dict with the summed entries
     """
     import re
     import numpy as np
 
-    if group_name == 'Local':
+    if attributes['group_name'] == 'Local':
         atom_prefix = 'MT:'
-    elif group_name == 'jDOS':
+    elif attributes['group_name'] == 'jDOS':
         atom_prefix = 'jDOS:'
-    elif group_name == 'Orbcomp':
+    elif attributes['group_name'] == 'Orbcomp':
         atom_prefix = 'ORB:'
-    elif group_name == 'MCD':
+    elif attributes['group_name'] == 'MCD':
         atom_prefix = 'At'
     else:
-        raise ValueError(f'Unknown group: {group_name}')
+        raise ValueError(f"Unknown group: {attributes['group_name']}")
 
     split_keys = [re.split(f'{atom_prefix}+[1-9]', key) for key in data.keys() if atom_prefix in key]
     component_keys = {split[1] for split in split_keys if len(split) == 2}
@@ -419,7 +419,17 @@ def _dos_order(key):
 
 
 def _generate_dos_labels(dosdata, attributes, spinpol):
+    """
+    Generate nice labels for the weights in the dictionary. Only
+    processes standard names
 
+    :param dosdata: dict with the datasets from the HDF5Reader
+    :param attributes: dict with the attributes from the HDF5Reader
+    :param spinpol: bool, whether to include spin direction in the labels
+
+    :returns: tuple of two lists, the first with the labels the second with the
+              corresponding keys in the data dict
+    """
     labels = []
     plot_order = []
     only_spin_up = not spinpol and any('_down' in key for key in dosdata.keys())

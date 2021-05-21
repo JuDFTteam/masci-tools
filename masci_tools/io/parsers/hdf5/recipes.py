@@ -110,7 +110,7 @@ def dos_recipe_format(group):
             }
         },
         'attributes': {
-            'dos_group': {
+            'group_name': {
                 'h5path': f'/{group}',
                 'transforms': [
                     Transformation(name='get_name', args=(), kwargs={}),
@@ -225,6 +225,12 @@ def bands_recipe_format(group, simple=False):
             },
         },
         'attributes': {
+            'group_name': {
+                'h5path': f'/{group}',
+                'transforms': [
+                    Transformation(name='get_name', args=(), kwargs={}),
+                ],
+            },
             'kpoints': {
                 'h5path': '/kpts/coordinates',
             },

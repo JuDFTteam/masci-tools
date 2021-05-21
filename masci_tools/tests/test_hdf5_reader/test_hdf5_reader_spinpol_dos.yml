@@ -3,8 +3,8 @@ attributes:
   - Sm
   atoms_groups:
   - 1
-  dos_group: Local
   fermi_energy: -0.08601086958086933
+  group_name: Local
   n_types: 1
   spins: 2
 datasets:

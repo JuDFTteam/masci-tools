@@ -23,6 +23,7 @@ attributes:
     - 0.0
     - 3.49558590138156
   fermi_energy: 0.0
+  group_name: Local
   kpoints:
   - - 0.0
     - 0.0

@@ -616,6 +616,7 @@ def bokeh_bands(bandsdata,
     :param size_min: minimum value used in scaling points for weight
     :param size_scaling: factor used in scaling points for weight
     :param outfilename: filename of the output file
+    :param scale_color: bool, if True (default) the weight will be additionally shown via a colormapping
 
     Kwargs will be passed on to :py:func:`bokeh_multi_scatter()`
     """
@@ -709,6 +710,7 @@ def bokeh_spinpol_bands(bandsdata,
     :param size_min: minimum value used in scaling points for weight
     :param size_scaling: factor used in scaling points for weight
     :param outfilename: filename of the output file
+    :param scale_color: bool, if True (default) the weight will be additionally shown via a colormapping
 
     Kwargs will be passed on to :py:func:`bokeh_multi_scatter()`
     """
