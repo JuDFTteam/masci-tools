@@ -16,6 +16,49 @@ Plotting routine for fleur density of states and bandstructures
 import pandas as pd
 
 
+def sum_weights_over_atoms(data, atoms_to_sum, entry_name, group_name='Local'):
+    """
+    Create sums of atom components over specified atoms. They are entered with the same
+    suffixes as in the original data, but with the given entry_name as prefix
+
+    :param data: dict produced by the HDF5Reader with a recipe for DOS or bandstructure
+    :param atoms_to_sum: list of ints for the atoms, which should be summed
+    :param entry_name: str prefix to be entered for the summed entries
+    :param group_name: str of the group in the 'banddos.hdf' the weights are taken from
+
+    :returns: dict with the summed entries
+    """
+    import re
+    import numpy as np
+
+    if group_name == 'Local':
+        atom_prefix = 'MT:'
+    elif group_name == 'jDOS':
+        atom_prefix = 'jDOS:'
+    elif group_name == 'Orbcomp':
+        atom_prefix = 'ORB:'
+    elif group_name == 'MCD':
+        atom_prefix = 'At'
+    else:
+        raise ValueError(f'Unknown group: {group_name}')
+
+    split_keys = [re.split(f'{atom_prefix}+[1-9]', key) for key in data.keys() if atom_prefix in key]
+    component_keys = {split[1] for split in split_keys if len(split) == 2}
+
+    if len(component_keys) == 0:
+        raise ValueError('No matching components found. Are you sure you provided the right group name?')
+
+    for component in component_keys:
+        for atom in atoms_to_sum:
+            current_key = f'{atom_prefix}{atom}{component}'
+
+            if f'{entry_name}{component}' not in data:
+                data[f'{entry_name}{component}'] = np.zeros(data[current_key].shape)
+            data[f'{entry_name}{component}'] += data[current_key]
+
+    return data
+
+
 def plot_fleur_bands_characterize(bandsdata,
                                   bandsattributes,
                                   weight_names,
