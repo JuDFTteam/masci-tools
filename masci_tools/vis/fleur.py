@@ -160,6 +160,9 @@ def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, only_spin=None, b
 
         bandsdata = bandsdata[[key for key in bandsdata.keys() if f'_{only_spin}' in key or key == 'kpath']]
 
+        if only_spin == 'down':
+            bandsdata = bandsdata.rename(columns={key: key.replace('_down', '_up') for key in bandsdata.columns})
+
     spinpol_data = bandsattributes['spins'] == 2 and any('_down' in key for key in bandsdata.keys())
 
     if weight is not None:

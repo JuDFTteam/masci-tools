@@ -477,7 +477,7 @@ def multi_scatter_plot(xdata,
 
         res = ax.scatter(x, y=y, s=size, c=color, **plot_kw, **kwargs)
         if plot_kw.get('label', None) is not None and color is not None:
-            if isinstance(color, (list, np.ndarray)):
+            if isinstance(color, (list, np.ndarray, pd.Series)):
                 if not isinstance(color[0], str):
                     legend_elements.append(res.legend_elements(num=1)[0][0])
                     legend_labels.append(plot_kw['label'])
@@ -1955,13 +1955,14 @@ def plot_spinpol_bands(kpath,
                              linewidth=0,
                              legend=True,
                              line_options={'zorder': -1},
+                             zorder=[2,1],
                              colorbar=False)
 
     if 'cmap' not in kwargs:
         #Cut off the white end of the Blues/Reds colormap
         plot_params.set_defaults(default_type='function', sub_colormap=(0.15, 1.0))
 
-    ax = multi_scatter_plot([kpath, kpath], [bands_dn, bands_up],
+    ax = multi_scatter_plot([kpath, kpath], [bands_up, bands_dn],
                             size_data=size_data,
                             xlabel=xlabel,
                             ylabel=ylabel,

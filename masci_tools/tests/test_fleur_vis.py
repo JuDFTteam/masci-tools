@@ -46,6 +46,78 @@ def test_plot_bands_weighted_non_spinpol_mpl():
     return gcf()
 
 
+@pytest.mark.mpl_image_compare(baseline_dir='files/fleur_vis/', filename='bands_defaults_spinpol.png')
+def test_plot_bands_spinpol_defaults_mpl():
+    from masci_tools.io.parsers.hdf5 import HDF5Reader
+    from masci_tools.io.parsers.hdf5.recipes import FleurBands
+    from masci_tools.vis.fleur import plot_fleur_bands
+
+    TEST_BANDDOS_FILE = os.path.join(HDFTEST_DIR, 'banddos_spinpol_bands.hdf')
+
+    with HDF5Reader(TEST_BANDDOS_FILE) as h5reader:
+        data, attributes = h5reader.read(recipe=FleurBands)
+
+    gcf().clear()
+
+    plot_fleur_bands(data, attributes, show=False, markersize=30)
+
+    return gcf()
+
+
+@pytest.mark.mpl_image_compare(baseline_dir='files/fleur_vis/', filename='bands_weighted_spinpol.png')
+def test_plot_bands_weighted_spinpol_mpl():
+    from masci_tools.io.parsers.hdf5 import HDF5Reader
+    from masci_tools.io.parsers.hdf5.recipes import FleurBands
+    from masci_tools.vis.fleur import plot_fleur_bands
+
+    TEST_BANDDOS_FILE = os.path.join(HDFTEST_DIR, 'banddos_spinpol_bands.hdf')
+
+    with HDF5Reader(TEST_BANDDOS_FILE) as h5reader:
+        data, attributes = h5reader.read(recipe=FleurBands)
+
+    gcf().clear()
+
+    plot_fleur_bands(data, attributes, show=False, weight='MT:1d')
+
+    return gcf()
+
+
+@pytest.mark.mpl_image_compare(baseline_dir='files/fleur_vis/', filename='bands_spinpol_hide.png')
+def test_plot_bands_spinpol_no_spinpol_mpl():
+    from masci_tools.io.parsers.hdf5 import HDF5Reader
+    from masci_tools.io.parsers.hdf5.recipes import FleurBands
+    from masci_tools.vis.fleur import plot_fleur_bands
+
+    TEST_BANDDOS_FILE = os.path.join(HDFTEST_DIR, 'banddos_spinpol_bands.hdf')
+
+    with HDF5Reader(TEST_BANDDOS_FILE) as h5reader:
+        data, attributes = h5reader.read(recipe=FleurBands)
+
+    gcf().clear()
+
+    plot_fleur_bands(data, attributes, show=False, markersize=30, spinpol=False)
+
+    return gcf()
+
+
+@pytest.mark.mpl_image_compare(baseline_dir='files/fleur_vis/', filename='bands_only_spin.png')
+def test_plot_bands_spinpol_only_spin_mpl():
+    from masci_tools.io.parsers.hdf5 import HDF5Reader
+    from masci_tools.io.parsers.hdf5.recipes import FleurBands
+    from masci_tools.vis.fleur import plot_fleur_bands
+
+    TEST_BANDDOS_FILE = os.path.join(HDFTEST_DIR, 'banddos_spinpol_bands.hdf')
+
+    with HDF5Reader(TEST_BANDDOS_FILE) as h5reader:
+        data, attributes = h5reader.read(recipe=FleurBands)
+
+    gcf().clear()
+
+    plot_fleur_bands(data, attributes, show=False, markersize=30, only_spin='up')
+
+    return gcf()
+
+
 @pytest.mark.mpl_image_compare(baseline_dir='files/fleur_vis/', filename='dos_defaults.png')
 def test_plot_dos_defaults_mpl():
     from masci_tools.io.parsers.hdf5 import HDF5Reader

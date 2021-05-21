@@ -24,6 +24,21 @@ def test_hdf5_reader_bands(data_regression):
     data_regression.check({'datasets': convert_to_pystd(data), 'attributes': convert_to_pystd(attrs)})
 
 
+def test_hdf5_reader_spinpol_bands(data_regression):
+    """
+    Tests of the bands recipe
+    """
+    from masci_tools.io.parsers.hdf5 import HDF5Reader
+    from masci_tools.io.parsers.hdf5.recipes import FleurBands
+
+    TEST_BANDDOS_FILE = os.path.join(HDFTEST_DIR, 'banddos_spinpol_bands.hdf')
+
+    with HDF5Reader(TEST_BANDDOS_FILE) as reader:
+        data, attrs = reader.read(recipe=FleurBands)
+
+    data_regression.check({'datasets': convert_to_pystd(data), 'attributes': convert_to_pystd(attrs)})
+
+
 def test_hdf5_reader_dos(data_regression):
     """
     Tests of the dos recipe (also pass opened file handle)
