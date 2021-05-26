@@ -4,8 +4,10 @@ cf_coeff: false
 dos: false
 film: true
 force_theorem: true
+greensf: false
 gw: false
 jspin: 2
+ldahia: false
 ldau: false
 noco: true
 plot: false

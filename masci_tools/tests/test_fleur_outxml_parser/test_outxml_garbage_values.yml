@@ -10,7 +10,7 @@ warnings:
   - 'The following Fleur modes were found: {''jspin'': 2, ''noco'': False, ''soc'':
     False, ''relax'': False, ''gw'': False, ''force_theorem'': False, ''cf_coeff'':
     False, ''plot'': False, ''film'': False, ''ldau'': False, ''dos'': False, ''band'':
-    False, ''bz_integration'': ''tetra''}'
+    False, ''bz_integration'': ''tetra'', ''greensf'': True, ''ldahia'': False}'
   parser_warnings:
   - "Output file does not validate against the schema: \nLine 591: Element 'FermiEnergy',\
     \ attribute 'value': 'NAN' is not a valid value of the atomic type 'xs:double'.\

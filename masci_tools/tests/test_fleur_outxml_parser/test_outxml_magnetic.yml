@@ -61,8 +61,10 @@ output_dict:
     dos: false
     film: false
     force_theorem: false
+    greensf: false
     gw: false
     jspin: 2
+    ldahia: false
     ldau: false
     noco: true
     plot: false

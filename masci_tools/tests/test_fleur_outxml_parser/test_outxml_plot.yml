@@ -12,8 +12,10 @@ output_dict:
     dos: false
     film: true
     force_theorem: false
+    greensf: false
     gw: false
     jspin: 1
+    ldahia: false
     ldau: false
     noco: false
     plot: true
