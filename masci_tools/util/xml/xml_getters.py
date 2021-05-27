@@ -133,7 +133,7 @@ def get_fleur_modes(xmltree, schema_dict, logger=None):
                                                        logger=logger)
 
     greensf = False
-    if schema_dict.inp_version >= (0,32):
+    if schema_dict.inp_version >= (0, 32):
         #We make the assumption that the existence of a greensfCalculation
         #tag implies the existence of a greens function calculation
         greensf = tag_exists(root, schema_dict, 'greensfCalculation', contains='species', logger=logger)
@@ -141,7 +141,7 @@ def get_fleur_modes(xmltree, schema_dict, logger=None):
     fleur_modes['greensf'] = greensf
 
     ldahia = False
-    if schema_dict.inp_version >= (0,32):
+    if schema_dict.inp_version >= (0, 32):
         ldahia = tag_exists(root, schema_dict, 'ldaHIA', contains='species', logger=logger)
     fleur_modes['ldahia'] = ldahia
 

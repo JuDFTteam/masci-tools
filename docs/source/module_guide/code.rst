@@ -52,6 +52,9 @@ Calculation tools
 .. automodule:: masci_tools.tools.cf_calculation
    :members:
 
+.. automodule:: masci_tools.tools.greensfunction
+   :members:
+
 IO helper functions and file parsers
 +++++++++++++++++++++++++++++++++++++
 
