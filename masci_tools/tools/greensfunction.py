@@ -62,8 +62,12 @@ def _get_sphavg_recipe(group_name, index, contour):
                 ]
             },
             'energy_weights': {
-                'h5path': f'/EnergyContours/contour-{contour}/IntegrationWeights',
-                'transforms': [Transformation(name='convert_to_complex_array', args=(), kwargs={})]
+                'h5path':
+                f'/EnergyContours/contour-{contour}/IntegrationWeights',
+                'transforms': [
+                    Transformation(name='convert_to_complex_array', args=(), kwargs={}),
+                    Transformation(name='multiply_scalar', args=(HTR_TO_EV,), kwargs={})
+                ]
             }
         },
         'attributes': {
