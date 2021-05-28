@@ -552,7 +552,8 @@ def intersite_shells(hdffile, refAtom, return_greensf=True, show=False):
                         continue
                     #here we have found a pair
                     #Plus 1 because the indexing starts at 1 in the hdf file
-                    if (indexji + 1, indexij + 1) not in jijPairsShell:
+                    if (indexji + 1, indexij + 1) not in jijPairsShell or \
+                       elemij.atomType == elemij.atomTypep:
                         jijPairsShell.append((indexij + 1, indexji + 1))
             if len(jijPairsShell) > 0:
                 jijPairs.append((dist, jijPairsShell))
