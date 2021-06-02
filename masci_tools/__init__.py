@@ -13,6 +13,6 @@ masci-tools
 '''
 import logging
 
-__version__ = '0.4.8-dev6'
+__version__ = '0.4.8'
 
 logging.getLogger(__name__).addHandler(logging.NullHandler())
