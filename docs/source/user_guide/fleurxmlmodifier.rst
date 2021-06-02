@@ -81,7 +81,7 @@ On the other hand, there are shortcut methods that already know some paths:
     * :py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.set_attrib_value()`: user-friendly method for setting attributes in the xml file by specifying their name
     * :py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.set_first_attrib_value()`: user-friendly method for setting the first occurrence of an attribute in the xml file by specifying its name
     * :py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.add_number_to_attrib()`: user-friendly method for adding to or multiplying values of attributes in the xml file by specifying their name
-    * :py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.set_first_attrib_value()`: user-friendly method for adding to or multiplying values of the first occurrence of an attribute in the xml file by specifying its name
+    * :py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.add_number_to_first_attrib()`: user-friendly method for adding to or multiplying values of the first occurrence of the attribute in the xml file by specifying their name
     * :py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.set_text()`: user-friendly method for setting text on xml elements in the xml file by specifying their name
     * :py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.set_first_text()`: user-friendly method for setting the text on the first occurrence of an xml element in the xml file by specifying its name
     * :py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.set_simple_tag()`: user-friendly method for creating and setting attributes on simple xml elements (only attributes) in the xml file by specifying its name

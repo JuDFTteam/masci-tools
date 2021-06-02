@@ -17,9 +17,11 @@ unintended modifications
 from collections import UserDict, UserList
 from contextlib import contextmanager
 
+from typing import Union, Any, Generator, Mapping, Iterable, cast
+
 
 @contextmanager
-def LockContainer(lock_object):
+def LockContainer(lock_object: Union['LockableList', 'LockableDict']) -> Generator:
     """
     Contextmanager for temporarily locking a lockable object. Object is unfrozen
     when exiting with block
@@ -37,9 +39,9 @@ def LockContainer(lock_object):
         yield
     finally:
         if isinstance(lock_object, LockableDict):
-            lock_object._LockableDict__unfreeze()
+            lock_object._LockableDict__unfreeze()  #type: ignore
         elif isinstance(lock_object, LockableList):
-            lock_object._LockableList__unfreeze()
+            lock_object._LockableList__unfreeze()  #type: ignore
 
 
 class LockableDict(UserDict):
@@ -61,20 +63,20 @@ class LockableDict(UserDict):
 
     """
 
-    def __init__(self, *args, recursive=True, **kwargs):
+    def __init__(self, *args: Mapping[Any, Any], recursive: bool = True, **kwargs: object) -> None:
         self._locked = False
         self._recursive = recursive
         super().__init__(*args, **kwargs)
 
-    def __check_lock(self):
+    def __check_lock(self) -> None:
         if self._locked:
             raise RuntimeError('Modification not allowed')
 
-    def __delitem__(self, key):
+    def __delitem__(self, key: object) -> None:
         self.__check_lock()
         super().__delitem__(key)
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key: object, value: object):
         self.__check_lock()
         if isinstance(value, list):
             super().__setitem__(key, LockableList(value, recursive=self._recursive))
@@ -83,35 +85,35 @@ class LockableDict(UserDict):
         else:
             super().__setitem__(key, value)
 
-    def freeze(self):
+    def freeze(self) -> None:
         """
         Freezes the object. This prevents further modifications
         """
         self.__freeze()
 
-    def __freeze(self):
+    def __freeze(self) -> None:
 
         if self._recursive:
             for key, val in self.items():
                 if isinstance(val, LockableDict):
                     val.__freeze()
                 elif isinstance(val, LockableList):
-                    val._LockableList__freeze()
+                    val._LockableList__freeze()  #type: ignore
 
         self._locked = True
 
-    def __unfreeze(self):
+    def __unfreeze(self) -> None:
 
         if self._recursive:
             for key, val in self.items():
                 if isinstance(val, LockableDict):
                     val.__unfreeze()
                 elif isinstance(val, LockableList):
-                    val._LockableList__unfreeze()
+                    val._LockableList__unfreeze()  #type: ignore
 
         self._locked = False
 
-    def get_unlocked(self):
+    def get_unlocked(self) -> Mapping[Any, Any]:
         """
         Get copy of object with builtin lists and dicts
         """
@@ -121,7 +123,7 @@ class LockableDict(UserDict):
                 if isinstance(value, LockableDict):
                     ret_dict[key] = value.get_unlocked()
                 elif isinstance(value, LockableList):
-                    ret_dict[key] = value.get_unlocked()
+                    ret_dict[key] = cast(Any, value.get_unlocked())
                 else:
                     ret_dict[key] = value
         else:
@@ -149,7 +151,7 @@ class LockableList(UserList):
 
     """
 
-    def __init__(self, *args, recursive=True, **kwargs):
+    def __init__(self, *args: Iterable[Any], recursive: bool = True, **kwargs: Iterable[Any]) -> None:
         self._locked = False
         self._recursive = recursive
         super().__init__(*args, **kwargs)
@@ -161,97 +163,97 @@ class LockableList(UserList):
                 elif isinstance(item, dict):
                     super().__setitem__(indx, LockableDict(item, recursive=self._recursive))
 
-    def __check_lock(self):
+    def __check_lock(self) -> None:
         if self._locked:
             raise RuntimeError('Modification not allowed')
 
-    def __delitem__(self, i):
+    def __delitem__(self, i: Union[int, slice]) -> None:
         self.__check_lock()
         super().__delitem__(i)
 
-    def __setitem__(self, i, item):
+    def __setitem__(self, i: Union[int, slice], item: object) -> None:
         self.__check_lock()
         if isinstance(item, list):
             super().__setitem__(i, LockableList(item, recursive=self._recursive))
         elif isinstance(item, dict):
             super().__setitem__(i, LockableDict(item, recursive=self._recursive))
         else:
-            super().__setitem__(i, item)
+            super().__setitem__(i, item)  # type: ignore
 
-    def __iadd__(self, other):
+    def __iadd__(self, other: Iterable[Any]) -> 'LockableList':
         self.__check_lock()
         return super().__iadd__(other)
 
-    def __imul__(self, n):
+    def __imul__(self, n: int) -> 'LockableList':
         self.__check_lock()
         return super().__imul__(n)
 
-    def append(self, item):
+    def append(self, item: object) -> None:
         self.__check_lock()
         super().append(item)
 
-    def insert(self, i, item):
+    def insert(self, i: int, item: object) -> None:
         self.__check_lock()
         super().insert(i, item)
 
-    def pop(self, i=-1):
+    def pop(self, i: int = -1) -> object:
         """
         return the value at index i (default last) and remove it from list
         """
         self.__check_lock()
-        super().pop(i=i)
+        return super().pop(i=i)
 
-    def remove(self, item):
+    def remove(self, item: object) -> None:
         self.__check_lock()
         super().remove(item)
 
-    def clear(self):
+    def clear(self) -> None:
         """
         Clear the list
         """
         self.__check_lock()
         super().clear()
 
-    def reverse(self):
+    def reverse(self) -> None:
         self.__check_lock()
         super().reverse()
 
-    def sort(self, *args, **kwargs):
+    def sort(self, *args: object, **kwargs: object) -> None:
         self.__check_lock()
         super().sort(*args, **kwargs)
 
-    def extend(self, other):
+    def extend(self, other: Iterable[object]) -> None:
         self.__check_lock()
         super().extend(other)
 
-    def freeze(self):
+    def freeze(self) -> None:
         """
         Freezes the object. This prevents further modifications
         """
         self.__freeze()
 
-    def __freeze(self):
+    def __freeze(self) -> None:
 
         if self._recursive:
             for val in self:
                 if isinstance(val, LockableList):
                     val.__freeze()
                 elif isinstance(val, LockableDict):
-                    val._LockableDict__freeze()
+                    val._LockableDict__freeze()  #type: ignore
 
         self._locked = True
 
-    def __unfreeze(self):
+    def __unfreeze(self) -> None:
 
         if self._recursive:
             for val in self:
                 if isinstance(val, LockableList):
                     val.__unfreeze()
                 elif isinstance(val, LockableDict):
-                    val._LockableDict__unfreeze()
+                    val._LockableDict__unfreeze()  #type: ignore
         self._locked = False
 
-    def get_unlocked(self):
+    def get_unlocked(self) -> Iterable[Any]:
         """
         Get copy of object with builtin lists and dicts
         """
@@ -259,7 +261,7 @@ class LockableList(UserList):
             ret_list = []
             for value in self:
                 if isinstance(value, LockableDict):
-                    ret_list.append(value.get_unlocked())
+                    ret_list.append(cast(Any, value.get_unlocked()))
                 elif isinstance(value, LockableList):
                     ret_list.append(value.get_unlocked())
                 else:

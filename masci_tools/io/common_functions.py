@@ -353,8 +353,7 @@ def get_ef_from_potfile(potfile):
     """
     extract fermi energy from potfile
     """
-    f = open_general(potfile)
-    with f:
+    with open_general(potfile) as f:
         txt = f.readlines()
     ef = float(txt[3].split()[1])
     return ef
@@ -411,14 +410,14 @@ def convert_to_fortran(val, quote_strings=True):
         else:
             val_str = '.false.'
     elif isinstance(val, numbers.Integral):
-        val_str = '{:d}'.format(val)
+        val_str = f'{val:d}'
     elif isinstance(val, numbers.Real):
-        val_str = ('{:18.10e}'.format(val)).replace('e', 'd')
+        val_str = f'{val:18.10e}'.replace('e', 'd')
     elif isinstance(val, str):
         if quote_strings:
-            val_str = "'{!s}'".format(val)
+            val_str = f"'{val!s}'"
         else:
-            val_str = '{!s}'.format(val)
+            val_str = f'{val!s}'
     else:
         raise ValueError(f"Invalid value '{val}' of type '{type(val)}' passed, accepts only booleans, ints, "
                          'floats and strings')

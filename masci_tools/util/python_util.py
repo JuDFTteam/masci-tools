@@ -181,7 +181,7 @@ class JSONEncoderTailoredIndent(json.JSONEncoder):
 
             # Replace the matched id string with json formatted representation
             # of the corresponding Python object.
-            json_repr = json_repr.replace('"{}"'.format(format_spec.format(id_obj)), json_obj_repr)
+            json_repr = json_repr.replace(f'"{format_spec.format(id_obj)}"', json_obj_repr)
 
         return json_repr
 

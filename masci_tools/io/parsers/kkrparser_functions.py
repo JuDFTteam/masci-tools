@@ -15,6 +15,7 @@ Here I collect all functions needed to parse the output of a KKR calculation.
 These functions do not need aiida and are therefore separated from the actual
 parser file where parse_kkr_outputfile is called
 """
+import numpy as np
 from numpy import ndarray, array, loadtxt, shape
 from masci_tools.io.common_functions import (search_string, get_version_info, angles_to_vec,
                                              get_corestates_from_potential, get_highest_core_state, open_general,
@@ -25,7 +26,7 @@ import traceback
 __copyright__ = (u'Copyright (c), 2017, Forschungszentrum Jülich GmbH,' 'IAS-1/PGI-1, Germany. All rights reserved.')
 __license__ = 'MIT license, see LICENSE.txt file'
 __contributors__ = u'Philipp Rüßmann'
-__version__ = '1.8'
+__version__ = '1.8.1'
 
 ####################################################################################
 
@@ -232,20 +233,35 @@ def get_econt_info(outfile_0init):
     Nepts = int(tmptxt[itmp].split(':')[1].split()[0])
 
     doscalc = search_string('Density-of-States calculation', tmptxt)
+    semi_circ = search_string('integration on semi-circle contour', tmptxt)
+
+    # dummy values
+    N1, N2, N3, Npol = None, None, None, None
+    Nsemi_circ, im_e_min = None, None
+
+    # for DOS contour
     if doscalc == -1:
-        # npol
-        itmp = search_string('poles =', tmptxt)
-        Npol = int(tmptxt[itmp].split('=')[1].split()[0])
-        # npt1, npt2, npt3
-        itmp = search_string('contour:', tmptxt)
-        tmp = tmptxt[itmp].replace(',', '').replace('=', '= ').split(':')[1].split()
-        N1 = int(tmp[2])
-        N2 = int(tmp[5])
-        N3 = int(tmp[8])
+        # scf contour
+        if semi_circ == -1:
+            # npol
+            itmp = search_string('poles =', tmptxt)
+            Npol = int(tmptxt[itmp].split('=')[1].split()[0])
+            # npt1, npt2, npt3
+            itmp = search_string('contour:', tmptxt)
+            tmp = tmptxt[itmp].replace(',', '').replace('=', '= ').split(':')[1].split()
+            N1 = int(tmp[2])
+            N2 = int(tmp[5])
+            N3 = int(tmp[8])
+        else:
+            # semi-circular contour
+            Nsemi_circ = Nepts
+            itmp = search_string('smallest imaginary part ', tmptxt)
+            im_e_min = tmptxt[itmp].split('=')[1].split()[0]
     else:
+        # DOS contour
         Npol, N1, N2, N3 = 0, 0, Nepts, 0
 
-    return emin, tempr, Nepts, Npol, N1, N2, N3
+    return emin, tempr, Nepts, Npol, N1, N2, N3, Nsemi_circ, im_e_min
 
 
 def get_core_states(potfile):
@@ -453,6 +469,23 @@ def use_newsosol(outfile_0init):
     return newsosol
 
 
+def use_BdG(outfile_0init):
+    """
+    extract BdG run info from output.0.txt
+    """
+    f = open_general(outfile_0init)
+    tmptxt = f.readlines()
+    f.close()
+    use_BdG = False
+    itmp = search_string('<use_BdG>=', tmptxt)
+    if itmp >= 0:
+        if tmptxt[itmp].split()[1][:1].upper() == 'T':
+            use_BdG = True
+        if tmptxt[itmp].split()[1][:1].upper() == 'F':
+            use_BdG = False
+    return use_BdG
+
+
 def get_spinmom_per_atom(outfile, natom, nonco_out_file=None):
     """
     Extract spin moment information from outfile and nonco_angles_out (if given)
@@ -477,7 +510,7 @@ def get_spinmom_per_atom(outfile, natom, nonco_out_file=None):
         angles = loadtxt(nonco_out_file, usecols=[0, 1])  # make sure only theta and phi are read in
         if len(shape(angles)) == 1:
             angles = array([angles])
-        vec = angles_to_vec(result[-1], angles[:, 0], angles[:, 1])
+        vec = angles_to_vec(result[-1], angles[:, 0] / 180. * np.pi, angles[:, 1] / 180. * np.pi)
     else:
         vec, angles = [], []
 
@@ -578,6 +611,15 @@ def parse_kkr_outputfile(out_dict,
             traceback.print_exc()
 
     try:
+        # extract some BdG infos
+        out_dict['use_BdG'] = use_BdG(outfile_0init)
+    except:
+        msg = 'Error parsing output of KKR: BdG'
+        msg_list.append(msg)
+        if debug:
+            traceback.print_exc()
+
+    try:
         result = find_warnings(outfile)
         tmp_dict = {}
         tmp_dict['number_of_warnings'] = len(result)
@@ -600,17 +642,24 @@ def parse_kkr_outputfile(out_dict,
             traceback.print_exc()
 
     try:
-        emin, tempr, Nepts, Npol, N1, N2, N3 = get_econt_info(outfile_0init)
+        emin, tempr, Nepts, Npol, N1, N2, N3, Nsemi_circ, im_e_min = get_econt_info(outfile_0init)
         tmp_dict = {}
         tmp_dict['emin'] = emin
         tmp_dict['emin_unit'] = 'Rydberg'
         tmp_dict['number_of_energy_points'] = Nepts
-        tmp_dict['temperature'] = tempr
-        tmp_dict['temperature_unit'] = 'Kelvin'
-        tmp_dict['npol'] = Npol
-        tmp_dict['n1'] = N1
-        tmp_dict['n2'] = N2
-        tmp_dict['n3'] = N3
+        if Nsemi_circ is None:
+            # normal scf or DOS contour
+            tmp_dict['temperature'] = tempr
+            tmp_dict['temperature_unit'] = 'Kelvin'
+            tmp_dict['npol'] = Npol
+            tmp_dict['n1'] = N1
+            tmp_dict['n2'] = N2
+            tmp_dict['n3'] = N3
+        else:
+            # semi-circle contour
+            tmp_dict['im_e_min'] = im_e_min
+            tmp_dict['im_e_min_unit'] = 'Ry'
+        # now fill energy contour group
         out_dict['energy_contour_group'] = tmp_dict
         if Npol == 0:
             doscalc = True
@@ -691,7 +740,7 @@ def parse_kkr_outputfile(out_dict,
             traceback.print_exc()
 
     # this is skipped for qdos run for example
-    if not skip_readin:
+    if not skip_readin and not doscalc:
         try:
             ncore, emax, lmax, descr_max = get_core_states(potfile_out)
             tmp_dict = {}
@@ -856,11 +905,10 @@ def parse_kkr_outputfile(out_dict,
             out_dict['single_particle_energies'] = result * get_Ry2eV()
             out_dict['single_particle_energies_unit'] = 'eV'
         except:
-            if not doscalc:
-                msg = 'Error parsing output of KKR: single particle energies'
-                msg_list.append(msg)
-                if debug:
-                    traceback.print_exc()
+            msg = 'Error parsing output of KKR: single particle energies'
+            msg_list.append(msg)
+            if debug:
+                traceback.print_exc()
 
         try:
             result_WS, result_tot, result_C = get_charges_per_atom(outfile_000)
@@ -875,11 +923,10 @@ def parse_kkr_outputfile(out_dict,
             out_dict['charge_core_states_per_atom_unit'] = 'electron charge'
             out_dict['charge_valence_states_per_atom_unit'] = 'electron charge'
         except:
-            if not doscalc:
-                msg = 'Error parsing output of KKR: charges'
-                msg_list.append(msg)
-                if debug:
-                    traceback.print_exc()
+            msg = 'Error parsing output of KKR: charges'
+            msg_list.append(msg)
+            if debug:
+                traceback.print_exc()
 
         try:
             try:

@@ -11,10 +11,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Set up Python 3.7
+    - name: Set up Python 3.8
       uses: actions/setup-python@v2
       with:
-        python-version: 3.7
+        python-version: 3.8
 
     - name: Cache python dependencies
       id: cache-pip
@@ -40,9 +40,21 @@ jobs:
         SPHINXOPTS='-nW' make -C docs html
 
   pre-commit:
-
     runs-on: ubuntu-latest
     timeout-minutes: 30
+
+    strategy:
+      matrix:
+        include:
+          - name: pre-commit-errors
+            skip-hooks: pylint-warnings
+            strict: false
+          - name: pre-commit-warnings
+            skip-hooks: pylint-errors
+            strict: true
+
+    name: ${{ matrix.name }}
+    continue-on-error: ${{ matrix.strict }}
 
     steps:
     - uses: actions/checkout@v2
@@ -56,10 +68,10 @@ jobs:
         restore-keys: |
           pip-pre-commit-
 
-    - name: Set up Python 3.7
+    - name: Set up Python 3.8
       uses: actions/setup-python@v2
       with:
-        python-version: 3.7
+        python-version: 3.8
 
     - name: Install python dependencies
       run: |
@@ -68,7 +80,8 @@ jobs:
 
     - name: Run pre-commit
       run: |
-        pre-commit run --all-files || (git status --short; git diff ; exit 1)
+        SKIP=${{ matrix.skip-hooks }} pre-commit run --all-files || (git status --short; git diff ; exit 1)
+
 
   tests:
 
@@ -103,7 +116,7 @@ jobs:
 
     - name: Run pytest
       run: |
-        cd masci_tools/tests/ && ./run_all_cov.sh
+        cd tests/ && ./run_all_cov.sh
 
     - name: Upload code coverage report
       run: |

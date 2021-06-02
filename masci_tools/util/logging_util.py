@@ -62,7 +62,7 @@ class DictHandler(Handler):
     def __repr__(self):
         from logging import getLevelName
         level = getLevelName(self.level)
-        return '<%s (%s)>' % (self.__class__.__name__, level)
+        return f'<{self.__class__.__name__} ({level})>'
 
 
 class OutParserLogAdapter(LoggerAdapter):
@@ -72,4 +72,4 @@ class OutParserLogAdapter(LoggerAdapter):
     """
 
     def process(self, msg, kwargs):
-        return '[Iteration %s] %s' % (self.extra['iteration'], msg), kwargs
+        return f"[Iteration {self.extra['iteration']}] {msg}", kwargs

@@ -1,0 +1,40 @@
+output_dict:
+  creator_name: fleur 32
+  creator_target_architecture: GEN
+  end_date:
+    date: 2020/12/10
+    time: '16:53:14'
+  film: true
+  fleur_modes:
+    band: false
+    bz_integration: hist
+    cf_coeff: false
+    dos: false
+    film: true
+    force_theorem: false
+    greensf: false
+    gw: false
+    jspin: 1
+    ldahia: false
+    ldau: false
+    noco: false
+    plot: true
+    relax: false
+    soc: false
+  gmax: 11.0
+  input_file_version: '0.34'
+  kmax: 3.6
+  number_of_atom_types: 3
+  number_of_atoms: 6
+  number_of_iterations: 1
+  number_of_kpoints: 3
+  number_of_species: 1
+  number_of_spin_components: 1
+  number_of_symmetries: 12
+  output_file_version: '0.34'
+  start_date:
+    date: 2020/12/10
+    time: '16:53:13'
+  title: Si (111) film 6 layers
+  walltime: 1
+  walltime_units: seconds

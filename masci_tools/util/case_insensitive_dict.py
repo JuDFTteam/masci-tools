@@ -17,6 +17,8 @@ lookups available naturally
 from masci_tools.util.lockable_containers import LockableDict
 import pprint
 
+from typing import Mapping, Any, Union, Iterable, Iterator
+
 
 class CaseInsensitiveDict(LockableDict):
     """
@@ -38,31 +40,34 @@ class CaseInsensitiveDict(LockableDict):
 
     """
 
-    def __init__(self, *args, upper=False, **kwargs):
+    def __init__(self, *args: Mapping[Any, Any], upper: bool = False, **kwargs: Union[bool, object]):
         self._upper = upper
-        super().__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)  #type: ignore
 
-    def _norm_key(self, key):
-        if self._upper:
-            return key.upper()
+    def _norm_key(self, key: object) -> object:
+        if isinstance(key, str):
+            if self._upper:
+                return key.upper()
+            else:
+                return key.lower()
         else:
-            return key.lower()
+            return key
 
     #Here we modify the methods needed to make the lookups case insensitive
     #Since we use UserDict these methods should be enough to modify all behaviour
-    def __delitem__(self, key):
+    def __delitem__(self, key: object) -> None:
         super().__delitem__(self._norm_key(key))
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key: object, value: object) -> None:
         super().__setitem__(self._norm_key(key), value)
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: object) -> None:
         return super().__getitem__(self._norm_key(key))
 
-    def __contains__(self, key):
+    def __contains__(self, key: object) -> bool:
         return super().__contains__(self._norm_key(key))
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f'{self.__class__.__name__}({super().__repr__()})'
 
 
@@ -80,22 +85,23 @@ class CaseInsensitiveFrozenSet(frozenset):
 
     """
 
-    def __new__(cls, iterable=None):
+    def __new__(cls, iterable: Iterable[Any] = None, upper: bool = False) -> 'CaseInsensitiveFrozenSet':
         if iterable is not None:
-            return super().__new__(cls, [key.lower() for key in iterable])
+            return super().__new__(cls, [key.lower() for key in iterable])  #type: ignore
         else:
-            return super().__new__(cls, [])
+            return super().__new__(cls, [])  #type: ignore
 
-    def __init__(self, iterable=None):
+    def __init__(self, iterable: Iterable[Any] = None, upper: bool = False) -> None:
+        self._upper = upper
         if iterable is not None:
             self.original_case = self._get_new_original_case(iterable)
         else:
-            self.original_case = {}
-        self._frozenset_iter = None  #Used for customizing the iteration behaviour
+            self.original_case = CaseInsensitiveDict(upper=self._upper)
+        self._frozenset_iter: Iterator[Any] = None  #Used for customizing the iteration behaviour
         super().__init__()
 
-    def _get_new_original_case(self, *iterables):
-        new_dict = CaseInsensitiveDict()
+    def _get_new_original_case(self, *iterables: Iterable[Any]) -> 'CaseInsensitiveDict':
+        new_dict = CaseInsensitiveDict(upper=self._upper)
         for iterable in iterables:
             for key in iterable:
                 if key not in new_dict:
@@ -106,10 +112,19 @@ class CaseInsensitiveFrozenSet(frozenset):
         new_dict.freeze()
         return new_dict
 
-    def __contains__(self, key):
-        return super().__contains__(key.lower())
+    def _norm_key(self, key: object) -> object:
+        if isinstance(key, str):
+            if self._upper:
+                return key.upper()
+            else:
+                return key.lower()
+        else:
+            return key
 
-    def __repr__(self):
+    def __contains__(self, key: object) -> bool:
+        return super().__contains__(self._norm_key(key))
+
+    def __repr__(self) -> str:
         """Returns the repr with the orinal case of the entered keys (first encounter)"""
         if self.original_case:
             return f'{self.__class__.__name__}({set(self.original_case.values())})'
@@ -134,45 +149,45 @@ class CaseInsensitiveFrozenSet(frozenset):
     def __ne__(self, other):
         return super().__ne__({key.lower() for key in other})
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[Any]:
         self._frozenset_iter = super().__iter__()
         return self
 
-    def __next__(self):
+    def __next__(self) -> object:
         try:
             return self.original_case[next(self._frozenset_iter)]
         except StopIteration:
             self._frozenset_iter = None
             raise
 
-    def difference(self, *others):
-        new_frozenset = super().difference(*[{key.lower() for key in other} for other in others])
+    def difference(self, *others: Iterable[Any]) -> 'CaseInsensitiveFrozenSet':
+        new_frozenset = super().difference(*[{self._norm_key(key) for key in other} for other in others])
         new_case_dict = self._get_new_original_case(self.original_case.values(), *others)
-        return self.__class__({new_case_dict[key] for key in new_frozenset})
+        return self.__class__({new_case_dict[key] for key in new_frozenset}, upper=self._upper)
 
-    def symmetric_difference(self, other):
-        new_frozenset = super().symmetric_difference({key.lower() for key in other})
+    def symmetric_difference(self, other: Iterable[Any]) -> 'CaseInsensitiveFrozenSet':
+        new_frozenset = super().symmetric_difference({self._norm_key(key) for key in other})
         new_case_dict = self._get_new_original_case(self.original_case.values(), other)
-        return self.__class__({new_case_dict[key] for key in new_frozenset})
+        return self.__class__({new_case_dict[key] for key in new_frozenset}, upper=self._upper)
 
-    def union(self, *others):
-        new_frozenset = super().union(*[{key.lower() for key in other} for other in others])
+    def union(self, *others: Iterable[Any]) -> 'CaseInsensitiveFrozenSet':
+        new_frozenset = super().union(*[{self._norm_key(key) for key in other} for other in others])
         new_case_dict = self._get_new_original_case(self.original_case.values(), *others)
-        return self.__class__({new_case_dict[key] for key in new_frozenset})
+        return self.__class__({new_case_dict[key] for key in new_frozenset}, upper=self._upper)
 
-    def intersection(self, *others):
-        new_frozenset = super().intersection(*[{key.lower() for key in other} for other in others])
+    def intersection(self, *others: Iterable[Any]) -> 'CaseInsensitiveFrozenSet':
+        new_frozenset = super().intersection(*[{self._norm_key(key) for key in other} for other in others])
         new_case_dict = self._get_new_original_case(self.original_case.values(), *others)
-        return self.__class__({new_case_dict[key] for key in new_frozenset})
+        return self.__class__({new_case_dict[key] for key in new_frozenset}, upper=self._upper)
 
-    def isdisjoint(self, other):
-        return super().isdisjoint({key.lower() for key in other})
+    def isdisjoint(self, other: Iterable[Any]) -> bool:
+        return super().isdisjoint({self._norm_key(key) for key in other})
 
-    def issubset(self, other):
-        return super().issubset({key.lower() for key in other})
+    def issubset(self, other: Iterable[Any]) -> bool:
+        return super().issubset({self._norm_key(key) for key in other})
 
-    def issuperset(self, other):
-        return super().issuperset({key.lower() for key in other})
+    def issuperset(self, other: Iterable[Any]) -> bool:
+        return super().issuperset({self._norm_key(key) for key in other})
 
 
 #Define custom pretty printers for these classes
@@ -189,7 +204,7 @@ def _pprint_case_insensitive_dict(self, object, stream, indent, allowance, conte
     stream.write(')')
 
 
-pprint.PrettyPrinter._dispatch[CaseInsensitiveDict.__repr__] = _pprint_case_insensitive_dict
+pprint.PrettyPrinter._dispatch[CaseInsensitiveDict.__repr__] = _pprint_case_insensitive_dict  #type: ignore
 
 
 def _pprint_case_insensitive_frozenset(self, object, stream, indent, allowance, context, level):  #pylint: disable=redefined-builtin
@@ -204,4 +219,4 @@ def _pprint_case_insensitive_frozenset(self, object, stream, indent, allowance, 
     stream.write(')')
 
 
-pprint.PrettyPrinter._dispatch[CaseInsensitiveFrozenSet.__repr__] = _pprint_case_insensitive_frozenset
+pprint.PrettyPrinter._dispatch[CaseInsensitiveFrozenSet.__repr__] = _pprint_case_insensitive_frozenset  #type: ignore

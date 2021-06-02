@@ -477,8 +477,10 @@ def multi_scatter_plot(xdata,
 
         res = ax.scatter(x, y=y, s=size, c=color, **plot_kw, **kwargs)
         if plot_kw.get('label', None) is not None and color is not None:
-            legend_elements.append(res.legend_elements(num=1)[0][0])
-            legend_labels.append(plot_kw['label'])
+            if isinstance(color, (list, np.ndarray, pd.Series)):
+                if not isinstance(color[0], str):
+                    legend_elements.append(res.legend_elements(num=1)[0][0])
+                    legend_labels.append(plot_kw['label'])
 
     if any(c is not None for c in color_data):
         legend_elements = (legend_elements, legend_labels)
@@ -985,9 +987,9 @@ def multiaxis_scatterplot(xdata,
                           ydata,
                           *,
                           axes_loc,
-                          xlabel,
-                          ylabel,
-                          title,
+                          xlabel='',
+                          ylabel='',
+                          title='',
                           num_cols=1,
                           num_rows=1,
                           saveas='mscatterplot',
@@ -1044,19 +1046,19 @@ def multiaxis_scatterplot(xdata,
         else:
             param_list[indx]['title'] = title[indx]
 
-    general_keys = set(plot_params['figure_kwargs']) | {'show', 'save_plots'}
+    general_keys = {'figure_kwargs', 'show', 'save_plots'}
     general_info = {key: val for key, val in kwargs.items() if key in general_keys}
     kwargs = {key: val for key, val in kwargs.items() if key not in general_keys}
-
     plot_params.set_parameters(**general_info)
 
     #figsize is automatically scaled with the shape of the plot
-    plot_shape = (num_rows, num_cols)
+    plot_shape = (num_cols, num_rows)
     plot_params['figure_kwargs'] = {
         'figsize': ([plot_shape[indx] * size for indx, size in enumerate(plot_params['figure_kwargs']['figsize'])])
     }
+    plot_shape = tuple(reversed(plot_shape))
 
-    plt.figure(**plot_params['figure_kwargs'])
+    fig = plt.figure(**plot_params['figure_kwargs'])
 
     axis = []
     for indx, subplot_data in enumerate(zip(axes_loc, xdata, ydata, param_list)):
@@ -1066,7 +1068,7 @@ def multiaxis_scatterplot(xdata,
         subplot_kwargs = copy.deepcopy(kwargs)
         subplot_kwargs.update(params)
 
-        ax = plt.subplot2grid(plot_shape, location, **subplot_kwargs.pop('axes_kwargs', {}))
+        ax = plt.subplot2grid(plot_shape, location, fig=fig, **subplot_kwargs.pop('axes_kwargs', {}))
         with NestedPlotParameters(plot_params):
             ax = multiple_scatterplots(x, y, axis=ax, **subplot_kwargs, save_plots=False, show=False)
 
@@ -1195,7 +1197,7 @@ def plot_residuen(xdata,
     ydata = realdata - fitdata
     hist_kwargs = kwargs.pop('hist_kwargs', {})
 
-    general_keys = set(plot_params['figure_kwargs']) | {'show', 'save_plots'}
+    general_keys = {'figure_kwargs', 'show', 'save_plots'}
     general_info = {key: val for key, val in kwargs.items() if key in general_keys}
     kwargs = {key: val for key, val in kwargs.items() if key not in general_keys}
     plot_params.set_parameters(**general_info)
@@ -1359,8 +1361,8 @@ def plot_convergence_results_m(iterations,
         for en0, en1 in zip(total_energy[:-1], total_energy[1:]):
             total_energy_abs_diff.append(abs(en1 - en0))
         total_energy_abs_diffs.append(total_energy_abs_diff)
-        plot_labels1.append('delta total energy {}'.format(i))
-        plot_labels2.append('distance {}'.format(i))
+        plot_labels1.append(f'delta total energy {i}')
+        plot_labels2.append(f'distance {i}')
     #saveas3 ='t_energy_convergence2'
     if 'plot_label' in kwargs:
         plot_label = plot_params.convert_to_complete_list(kwargs.pop('plot_label'),
@@ -1473,7 +1475,7 @@ def plot_lattice_constant(scaling,
                              plot_label='simulation data',
                              plot_label_fit='fit results')
 
-    general_keys = set(plot_params['figure_kwargs']) | {'show', 'save_plots'}
+    general_keys = {'figure_kwargs', 'show', 'save_plots'}
     general_info = {key: val for key, val in kwargs.items() if key in general_keys}
     kwargs = {key: val for key, val in kwargs.items() if key not in general_keys}
 
@@ -1778,6 +1780,7 @@ def plot_bands(kpath,
                saveas='bandstructure',
                markersize_min=0.5,
                markersize_scaling=5.0,
+               scale_color=True,
                **kwargs):
     """
     Plot the provided data for a bandstrucuture (non spin-polarized). Can be used
@@ -1795,6 +1798,7 @@ def plot_bands(kpath,
                             and mark them on the x-axis with the given label
     :param markersize_min: minimum value used in scaling points for weight
     :param markersize_scaling: factor used in scaling points for weight
+    :param scale_color: bool, if True (default) the weight will be additionally shown via a colormapping
 
     All other Kwargs are passed on to the :py:func:`multi_scatter_plot()` call
     """
@@ -1810,7 +1814,6 @@ def plot_bands(kpath,
         xticklabels.append(label)
         xticks.append(pos)
 
-    color_data = None
     if size_data is not None:
         ylimits = (-15, 15)
         if 'limits' in kwargs:
@@ -1821,12 +1824,14 @@ def plot_bands(kpath,
         if 'vmax' not in kwargs:
             kwargs['vmax'] = weight_max
 
-        color_data = copy.copy(size_data)
+        if scale_color:
+            kwargs['color_data'] = copy.copy(size_data)
+            plot_params.set_defaults(default_type='function', cmap='Blues')
+            if 'cmap' not in kwargs:
+                #Cut off the white end of the Blues/Reds colormap
+                plot_params.set_defaults(default_type='function', sub_colormap=(0.15, 1.0))
+
         size_data = (markersize_min + markersize_scaling * size_data / weight_max)**2
-        plot_params.set_defaults(default_type='function', cmap='Blues')
-        if 'cmap' not in kwargs:
-            #Cut off the white end of the Blues/Reds colormap
-            plot_params.set_defaults(default_type='function', sub_colormap=(0.15, 1.0))
 
     lines = {'vertical': xticks, 'horizontal': e_fermi}
 
@@ -1837,13 +1842,13 @@ def plot_bands(kpath,
                              xticks=xticks,
                              xticklabels=xticklabels,
                              color='k',
+                             linewidth=0,
                              line_options={'zorder': -1},
                              colorbar=False)
 
     ax = multi_scatter_plot(kpath,
                             bands,
                             size_data=size_data,
-                            color_data=color_data,
                             xlabel=xlabel,
                             ylabel=ylabel,
                             title=title,
@@ -1868,6 +1873,7 @@ def plot_spinpol_bands(kpath,
                        saveas='bandstructure',
                        markersize_min=0.5,
                        markersize_scaling=5.0,
+                       scale_color=True,
                        **kwargs):
     """
     Plot the provided data for a bandstrucuture (spin-polarized). Can be used
@@ -1888,6 +1894,7 @@ def plot_spinpol_bands(kpath,
     :param markersize_scaling: factor used in scaling points for weight
     :param show_spin_pol: bool, if True (default) the two different spin channles will be shown in blue
                           and red by default
+    :param scale_color: bool, if True (default) the weight will be additionally shown via a colormapping
 
     All other Kwargs are passed on to the :py:func:`multi_scatter_plot()` call
     """
@@ -1895,10 +1902,11 @@ def plot_spinpol_bands(kpath,
     if special_kpoints is None:
         special_kpoints = {}
 
-    if size_data is None:
-        size_data = [None, None]
-        color_data = [None, None]
-    else:
+    if size_data is not None:
+
+        if len(size_data) != 2:
+            raise ValueError('size_data has to be a list of length 2')
+
         ylimits = (-15, 15)
         if 'limits' in kwargs:
             if 'y' in kwargs['limits']:
@@ -1915,6 +1923,9 @@ def plot_spinpol_bands(kpath,
             color_data.append(copy.copy(data))
             size_data[indx] = (markersize_min + markersize_scaling * data / weight_max)**2
 
+        if scale_color:
+            kwargs['color_data'] = color_data
+
     xticks = []
     xticklabels = []
     for label, pos in special_kpoints:
@@ -1925,12 +1936,15 @@ def plot_spinpol_bands(kpath,
 
     lines = {'vertical': xticks, 'horizontal': e_fermi}
 
+    cmaps = None
     if show_spin_pol:
         color = ['blue', 'red']
-        cmaps = ['Blues', 'Reds']
+        if scale_color:
+            cmaps = ['Blues', 'Reds']
     else:
         color = 'k'
-        cmaps = 'Blues'
+        if scale_color:
+            cmaps = 'Blues'
 
     limits = {'x': (min(kpath), max(kpath)), 'y': (-15, 15)}
     plot_params.set_defaults(default_type='function',
@@ -1940,17 +1954,18 @@ def plot_spinpol_bands(kpath,
                              xticklabels=xticklabels,
                              color=color,
                              cmap=cmaps,
+                             linewidth=0,
                              legend=True,
                              line_options={'zorder': -1},
+                             zorder=[2, 1],
                              colorbar=False)
 
     if 'cmap' not in kwargs:
         #Cut off the white end of the Blues/Reds colormap
         plot_params.set_defaults(default_type='function', sub_colormap=(0.15, 1.0))
 
-    ax = multi_scatter_plot([kpath, kpath], [bands_dn, bands_up],
+    ax = multi_scatter_plot([kpath, kpath], [bands_up, bands_dn],
                             size_data=size_data,
-                            color_data=color_data,
                             xlabel=xlabel,
                             ylabel=ylabel,
                             title=title,
@@ -2012,9 +2027,9 @@ def plot_one_element_corelv(corelevel_dict, element, compound='', axis=None, sav
     elem = element
     xdata = xdata_all[0]
     ydata = ydata_all[0]
-    xlabel = '{} atomtype'.format(elem)
+    xlabel = f'{elem} atomtype'
     ylabel = 'energy in eV'
-    title = 'Element: {} from {} cl {}'.format(elem, compound, corelevels_names)
+    title = f'Element: {elem} from {compound} cl {corelevels_names}'
     #plotlabel ='corelevel shifts'
     #linetyp='o-'
     xmin = xdata[0] - 0.5
@@ -2060,11 +2075,11 @@ def plot_one_element_corelv(corelevel_dict, element, compound='', axis=None, sav
 
 def construct_corelevel_spectrum(coreleveldict,
                                  natom_typesdict,
-                                 exp_references={},
+                                 exp_references=None,
                                  scale_to=-1,
                                  fwhm_g=0.6,
                                  fwhm_l=0.1,
-                                 energy_range=[None, None],
+                                 energy_range=None,
                                  xspec=None,
                                  energy_grid=0.2,
                                  peakfunction='voigt',
@@ -2077,6 +2092,10 @@ def construct_corelevel_spectrum(coreleveldict,
 
     :returns: list: [xdata_spec, ydata_spec, ydata_single_all, xdata_all, ydata_all, xdatalabel]
     """
+
+    if energy_range is None:
+        energy_range = (None, None)
+
     xdata_all = []
     ydata_all = []
     ydata_spec = []
@@ -2186,11 +2205,11 @@ def construct_corelevel_spectrum(coreleveldict,
 @ensure_plotter_consistency(plot_params)
 def plot_corelevel_spectra(coreleveldict,
                            natom_typesdict,
-                           exp_references={},
+                           exp_references=None,
                            scale_to=-1,
                            show_single=True,
                            show_ref=True,
-                           energy_range=(None, None),
+                           energy_range=None,
                            title='',
                            fwhm_g=0.6,
                            fwhm_l=0.1,
@@ -2232,6 +2251,13 @@ def plot_corelevel_spectra(coreleveldict,
     """
     #show_compound=True, , compound_info={} compound_info dict: dict that can be used to specify what component should be shown together     compound_info = {'Be12Ti' : {'Be' : 4, 'Ti' : 1}, 'BeTi' : {'Be' : 1, 'Ti' : 1}}
     # TODO feature to make singles of different compounds a different color
+
+    if energy_range is None:
+        energy_range = (None, None)
+
+    if exp_references is None:
+        exp_references = {}
+
     [xdata_spec, ydata_spec, ydata_single_all, xdata_all, ydata_all,
      xdatalabel] = construct_corelevel_spectrum(coreleveldict,
                                                 natom_typesdict,
@@ -2279,8 +2305,8 @@ def plot_corelevel_spectra(coreleveldict,
         kwargs['linestyle'] = ''
 
     if saveas is None:
-        saveas = 'XPS_theo_{}_{}'.format(fwhm_g, title)
-        saveas1 = 'XPS_theo_2_{}_{}'.format(fwhm_g, title)
+        saveas = f'XPS_theo_{fwhm_g}_{title}'
+        saveas1 = f'XPS_theo_2_{fwhm_g}_{title}'
     else:
         saveas1 = saveas[1]
         saveas = saveas[0]

@@ -168,9 +168,9 @@ def bokeh_multi_scatter(source,
             ydatad = []
             xdatad = []
             for i, ydat in enumerate(ydata):
-                label = 'y{}'.format(i)
+                label = f'y{i}'
                 ydatad.append(label)
-                xdatad.append('x{}'.format(i))
+                xdatad.append(f'x{i}')
                 if isinstance(xdata[0], list):
                     xdat = xdata[i]
                 else:
@@ -285,9 +285,9 @@ def bokeh_line(source,
             ydatad = []
             xdatad = []
             for i, ydat in enumerate(ydata):
-                label = 'y{}'.format(i)
+                label = f'y{i}'
                 ydatad.append(label)
-                xdatad.append('x{}'.format(i))
+                xdatad.append(f'x{i}')
                 if isinstance(xdata[0], list):
                     xdat = xdata[i]
                 else:
@@ -596,6 +596,7 @@ def bokeh_bands(bandsdata,
                 size_min=3.0,
                 size_scaling=10.0,
                 outfilename='bands_plot.html',
+                scale_color=True,
                 **kwargs):
     """
     Create an interactive bandstructure plot (non-spinpolarized) with bokeh
@@ -615,6 +616,7 @@ def bokeh_bands(bandsdata,
     :param size_min: minimum value used in scaling points for weight
     :param size_scaling: factor used in scaling points for weight
     :param outfilename: filename of the output file
+    :param scale_color: bool, if True (default) the weight will be additionally shown via a colormapping
 
     Kwargs will be passed on to :py:func:`bokeh_multi_scatter()`
     """
@@ -631,9 +633,9 @@ def bokeh_bands(bandsdata,
                                            (bandsdata[eigenvalues] < ylimits[1])].max()
 
         bandsdata['weight_size'] = size_min + size_scaling * bandsdata[weight] / weight_max
-        plot_params.set_defaults(default_type='function',
-                                 color=linear_cmap(weight, 'Blues256', weight_max, -0.05),
-                                 marker_size='weight_size')
+        plot_params.set_defaults(default_type='function', marker_size='weight_size')
+        if scale_color:
+            plot_params.set_defaults(default_type='function', color=linear_cmap(weight, 'Blues256', weight_max, -0.05))
     else:
         plot_params.set_defaults(default_type='function', color='black')
 
@@ -688,6 +690,7 @@ def bokeh_spinpol_bands(bandsdata,
                         size_min=3.0,
                         size_scaling=10.0,
                         outfilename='bands_plot.html',
+                        scale_color=True,
                         **kwargs):
     """
     Create an interactive bandstructure plot (spinpolarized) with bokeh
@@ -707,6 +710,7 @@ def bokeh_spinpol_bands(bandsdata,
     :param size_min: minimum value used in scaling points for weight
     :param size_scaling: factor used in scaling points for weight
     :param outfilename: filename of the output file
+    :param scale_color: bool, if True (default) the weight will be additionally shown via a colormapping
 
     Kwargs will be passed on to :py:func:`bokeh_multi_scatter()`
     """
@@ -736,7 +740,9 @@ def bokeh_spinpol_bands(bandsdata,
         for indx, (w, cmap) in enumerate(zip(weight, cmaps)):
             color.append(linear_cmap(w, cmap, weight_max, -0.05))
             bandsdata[f'weight_size_{indx}'] = size_min + size_scaling * bandsdata[w] / weight_max
-        plot_params.set_defaults(default_type='function', color=color, marker_size=['weight_size_0', 'weight_size_1'])
+        plot_params.set_defaults(default_type='function', marker_size=['weight_size_0', 'weight_size_1'])
+        if scale_color:
+            plot_params.set_defaults(default_type='function', color=color)
     else:
         color = ['blue', 'red']
         plot_params.set_defaults(default_type='function', color=color)

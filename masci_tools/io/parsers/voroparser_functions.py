@@ -318,7 +318,7 @@ def get_shape_array(outfile, atominfo):
     elif natyp == -1 and naez > 0:
         natyp = naez
     elif natyp == -1 and naez == -1:
-        raise ValueError('Neither NAEZ nor NATYP found in %s' % outfile)
+        raise ValueError(f'Neither NAEZ nor NATYP found in {outfile}')
 
     # read shape index from atominfo file
     f = open_general(atominfo)

@@ -1,0 +1,66 @@
+output_dict:
+  bandgap: 2.2729704824
+  bandgap_units: eV
+  charge_den_xc_den_integral: -41.7653329254
+  core_info:
+    core_info_atom_type: 1
+    core_info_atomic_number: 14
+    core_info_eig_val_sum: -130.3854013875
+    core_info_kin_energy: 185.6353434326
+    core_info_lost_electrons: 0.0
+    core_info_spin: 1
+  creator_name: fleur 32
+  creator_target_architecture: GEN
+  density_convergence: 0.026112816
+  density_convergence_units: me/bohr^3
+  end_date:
+    date: 2020/12/10
+    time: '16:51:35'
+  energy: -15784.360931872383
+  energy_core_electrons: -260.7708027749
+  energy_hartree: -580.0645652222
+  energy_hartree_units: Htr
+  energy_units: eV
+  energy_valence_electrons: -55.6062832263
+  fermi_energy: 0.1848170588
+  fermi_energy_units: Htr
+  film: false
+  fleur_modes:
+    band: false
+    bz_integration: hist
+    cf_coeff: false
+    dos: false
+    film: false
+    force_theorem: false
+    greensf: false
+    gw: false
+    jspin: 1
+    ldahia: false
+    ldau: false
+    noco: false
+    plot: false
+    relax: false
+    soc: false
+  gmax: 11.1
+  input_file_version: '0.34'
+  kmax: 3.5
+  number_of_atom_types: 1
+  number_of_atoms: 2
+  number_of_iterations: 6
+  number_of_iterations_total: 6
+  number_of_kpoints: 2
+  number_of_species: 1
+  number_of_spin_components: 1
+  number_of_symmetries: 48
+  output_file_version: '0.34'
+  spin_dependent_charge_interstitial: 3.5380095
+  spin_dependent_charge_mt_spheres: 24.4619905
+  spin_dependent_charge_total: 28.0
+  start_date:
+    date: 2020/12/10
+    time: '16:51:33'
+  sum_of_eigenvalues: -316.3770860013
+  title: Si bulk
+  total_charge: 28.0000000002
+  walltime: 2
+  walltime_units: seconds

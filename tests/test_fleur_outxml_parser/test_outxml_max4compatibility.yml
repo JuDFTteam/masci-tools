@@ -1,0 +1,271 @@
+output_dict:
+  bandgap:
+  - 1.3671390119
+  - 1.3341446719
+  - 1.1725600149
+  - 1.136110714
+  - 1.1383711154
+  - 1.1580445476
+  - 1.1570757373
+  - 1.1587843949
+  - 1.1591243246
+  - 1.1591599197
+  - 1.1595103368
+  - 1.1595203164
+  bandgap_units: eV
+  charge_den_xc_den_integral:
+  - -159.6108627524
+  - -159.608143368
+  - -159.5968507089
+  - -159.6201917108
+  - -159.6195069649
+  - -159.6202132752
+  - -159.6226215528
+  - -159.6226784424
+  - -159.6221642527
+  - -159.6221456328
+  - -159.6223715446
+  - -159.6223536715
+  creator_name: fleur 31
+  creator_target_architecture: GEN
+  density_convergence:
+  - 6.6846995052
+  - 6.1435434886
+  - 3.8085569559
+  - 1.5022505446
+  - 1.1966656324
+  - 0.1744441686
+  - 0.0783968429
+  - 0.0676815659
+  - 0.0073448451
+  - 0.0074941641
+  - 0.0017151783
+  - 0.0003274009
+  density_convergence_units: me/bohr^3
+  end_date:
+    date: 2020/10/06
+    time: '16:22:41'
+  energy:
+  - -114418.28813409281
+  - -114418.2416312841
+  - -114418.07855395791
+  - -114417.96901029118
+  - -114417.96796882982
+  - -114417.96030159452
+  - -114417.95761833688
+  - -114417.95749452234
+  - -114417.9569591873
+  - -114417.95697407736
+  - -114417.95683158495
+  - -114417.95686445085
+  energy_core_electrons:
+  - -2406.3435230507
+  - -2406.3719624068
+  - -2406.5005612744
+  - -2406.2641219962
+  - -2406.2791532601
+  - -2406.3090185232
+  - -2406.2866789832
+  - -2406.2871785243
+  - -2406.2994218003
+  - -2406.2996596243
+  - -2406.2966508604
+  - -2406.2969462048
+  energy_hartree:
+  - -4204.7945334267
+  - -4204.79282448
+  - -4204.7868314988
+  - -4204.7828058433
+  - -4204.7827675703
+  - -4204.7824858046
+  - -4204.7823871967
+  - -4204.7823826466
+  - -4204.7823629734
+  - -4204.7823635206
+  - -4204.7823582841
+  - -4204.7823594919
+  energy_hartree_units: Htr
+  energy_units: eV
+  energy_valence_electrons:
+  - -16.5285399527
+  - -16.5148324097
+  - -16.4366229366
+  - -16.2281141845
+  - -16.2328070912
+  - -16.2374913212
+  - -16.2297135943
+  - -16.2307033297
+  - -16.234943278
+  - -16.2350670416
+  - -16.233189153
+  - -16.2333719434
+  fermi_energy:
+  - 0.1697563351
+  - 0.1716954719
+  - 0.1818386315
+  - 0.1915835539
+  - 0.1915565426
+  - 0.1916482733
+  - 0.1918086098
+  - 0.1917270596
+  - 0.1916908871
+  - 0.1916872665
+  - 0.1917224914
+  - 0.1917221493
+  fermi_energy_units: Htr
+  film: false
+  fleur_modes:
+    band: false
+    bz_integration: hist
+    cf_coeff: false
+    dos: false
+    film: false
+    force_theorem: false
+    greensf: false
+    gw: false
+    jspin: 1
+    ldahia: false
+    ldau: true
+    noco: false
+    plot: false
+    relax: false
+    soc: false
+  gmax: 10.8
+  input_file_version: '0.31'
+  kmax: 3.6
+  ldau_info:
+    As-2/33:
+      d:
+        double_counting: FLL
+        j: 0.9
+        u: 5.5
+        unit: eV
+      p:
+        double_counting: FLL
+        j: 0.9
+        u: -6.5
+        unit: eV
+    Ga-1/31:
+      d:
+        double_counting: FLL
+        j: 0.9
+        u: 8.0
+        unit: eV
+      p:
+        double_counting: FLL
+        j: 0.9
+        u: -5.0
+        unit: eV
+    ldau_energy_correction:
+    - -2.6668736615
+    - -2.6669739165
+    - -2.6678997359
+    - -2.6762544932
+    - -2.676507527
+    - -2.6784724471
+    - -2.6786181053
+    - -2.6786635252
+    - -2.678697582
+    - -2.6786986961
+    - -2.6786859063
+    - -2.6786833877
+  number_of_atom_types: 2
+  number_of_atoms: 2
+  number_of_iterations: 12
+  number_of_iterations_total: 12
+  number_of_kpoints: 6
+  number_of_species: 2
+  number_of_spin_components: 1
+  number_of_symmetries: 0
+  output_file_version: '0.27'
+  spin_dependent_charge_interstitial:
+  - 3.4533627
+  - 3.4589912
+  - 3.4877185
+  - 3.5187111
+  - 3.5180895
+  - 3.5161369
+  - 3.5165755
+  - 3.5163206
+  - 3.5159416
+  - 3.5159289
+  - 3.5160586
+  - 3.5160452
+  spin_dependent_charge_mt_spheres:
+  - 60.546636
+  - 60.5410076
+  - 60.5122807
+  - 60.4812887
+  - 60.4819103
+  - 60.483863
+  - 60.4834245
+  - 60.4836793
+  - 60.4840584
+  - 60.484071
+  - 60.4839414
+  - 60.4839548
+  spin_dependent_charge_total:
+  - 63.9999987
+  - 63.9999988
+  - 63.9999991
+  - 63.9999998
+  - 63.9999998
+  - 64.0
+  - 64.0
+  - 64.0
+  - 64.0
+  - 64.0
+  - 64.0
+  - 64.0
+  start_date:
+    date: 2020/10/06
+    time: '16:22:35'
+  sum_of_eigenvalues:
+  - -2422.8720630034
+  - -2422.8867948166
+  - -2422.9371842111
+  - -2422.4922361807
+  - -2422.5119603513
+  - -2422.5465098444
+  - -2422.5163925774
+  - -2422.5178818539
+  - -2422.5343650784
+  - -2422.5347266659
+  - -2422.5298400133
+  - -2422.5303181483
+  title: GaAs bulk zinc-blende structure
+  total_charge:
+  - 63.9999987457
+  - 63.9999988065
+  - 63.9999991427
+  - 63.9999998198
+  - 63.9999998376
+  - 63.9999999648
+  - 63.9999999816
+  - 63.9999999829
+  - 63.9999999894
+  - 63.9999999893
+  - 63.9999999893
+  - 63.9999999893
+  walltime: 6
+  walltime_units: seconds
+warnings:
+  parser_errors: []
+  parser_info:
+  - Masci-Tools Fleur out.xml Parser v0.5.0
+  - 'Found fleur out file with the versions out: 0.31; inp: 0.31'
+  - 'The following defined constants were found: {''Pi'': 3.141592653589793, ''Deg'':
+    0.017453292519943295, ''Ang'': 1.889726124772898, ''nm'': 18.89726124772898, ''pm'':
+    0.01889726124772898, ''Bohr'': 1.0, ''Htr'': 1.0, ''eV'': 0.03674932217565499,
+    ''Ry'': 0.5}'
+  - 'The following Fleur modes were found: {''jspin'': 1, ''noco'': False, ''soc'':
+    False, ''relax'': False, ''gw'': False, ''force_theorem'': False, ''cf_coeff'':
+    False, ''plot'': False, ''film'': False, ''ldau'': True, ''dos'': False, ''band'':
+    False, ''bz_integration'': ''hist'', ''greensf'': False, ''ldahia'': False}'
+  parser_warnings:
+  - Ignoring '0.27' outputVersion for MaX4.0 release
+  - "Output file does not validate against the schema: \nLine 17: Element 'inputData':\
+    \ The attribute 'fleurInputVersion' is required but missing. \nLine 92: Element\
+    \ 'atomsInCell': The attribute 'n_hia' is required but missing. \nLine 100: Element\
+    \ 'kPointList', attribute 'posScale': The attribute 'posScale' is not allowed.\
+    \ \nLine 109: Element 'spinDependentCharge': This element is not expected. \n"

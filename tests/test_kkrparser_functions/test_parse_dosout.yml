@@ -1,0 +1,152 @@
+alat_internal: 7.869273
+alat_internal_unit: a_Bohr
+code_info_group:
+  calculation_serial_number: kkrjm_v2.2-22-g4f8f5ff_openmp-mac_20171214102522
+  code_version: v2.2-22-g4f8f5ff
+  compile_options: openmp-mac
+direct_bravais_matrix:
+- - 1.0
+  - 0.0
+  - 0.0
+- - 0.0
+  - 1.0
+  - 1.0
+- - 0.0
+  - 0.0
+  - 0.0
+direct_bravais_matrix_unit: alat
+energy_contour_group:
+  emin: -1.0
+  emin_unit: Rydberg
+  n1: 0
+  n2: 21
+  n3: 0
+  npol: 0
+  number_of_energy_points: 21
+  temperature: 200.0
+  temperature_unit: Kelvin
+kmesh_group:
+  kmesh_energypoint:
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  number_different_kmeshes: 1
+  number_kpoints_per_kmesh:
+    n_kx:
+    - 10
+    n_ky:
+    - 10
+    n_kz:
+    - 10
+    number_of_kpts:
+    - 216
+nspin: 1
+number_of_atoms_in_unit_cell: 4
+parser_warnings: []
+reciprocal_bravais_matrix:
+- - 1.0
+  - 0.0
+  - 0.0
+- - 0.0
+  - 1.0
+  - 1.0
+- - 0.0
+  - 0.0
+  - 0.0
+reciprocal_bravais_matrix_unit: 2*pi / alat
+symmetries_group:
+  number_of_lattice_symmetries: 8
+  number_of_used_symmetries: 8
+  symmetry_description:
+    C2x:
+      euler_angles:
+      - 180.0
+      - 180.0
+      - 0.0
+      has_inversion: 0
+      is_unitary: 1
+    C2y:
+      euler_angles:
+      - 0.0
+      - 180.0
+      - 0.0
+      has_inversion: 0
+      is_unitary: 1
+    C2z:
+      euler_angles:
+      - 180.0
+      - 0.0
+      - 0.0
+      has_inversion: 0
+      is_unitary: 1
+    E:
+      euler_angles:
+      - 0.0
+      - 0.0
+      - 0.0
+      has_inversion: 0
+      is_unitary: 1
+    IC2x:
+      euler_angles:
+      - 180.0
+      - 180.0
+      - 0.0
+      has_inversion: 1
+      is_unitary: 1
+    IC2y:
+      euler_angles:
+      - 0.0
+      - 180.0
+      - 0.0
+      has_inversion: 1
+      is_unitary: 1
+    IC2z:
+      euler_angles:
+      - 180.0
+      - 0.0
+      - 0.0
+      has_inversion: 1
+      is_unitary: 1
+    IE:
+      euler_angles:
+      - 0.0
+      - 0.0
+      - 0.0
+      has_inversion: 1
+      is_unitary: 1
+timings_group:
+  Time in Iteration: 5.9128
+  main0: 0.136
+  'main1a  ': 1.4302
+  main1a - tbref: 0.9809
+  'main1b  ': 3.537
+  main1b - calctref13: 0.1511
+  'main1c  ': 0.7165
+  main1c - serial part: 0.0054
+  main2: 0.2291
+timings_unit: seconds
+two_pi_over_alat_internal: 0.79844546
+two_pi_over_alat_internal_unit: 1/a_Bohr
+use_BdG: false
+use_newsosol: false
+warnings_group:
+  number_of_warnings: 0
+  warnings_list: []

@@ -18,7 +18,7 @@ Essentially a low-level version of the FleurinpModifier in aiida_fleur.
 """
 from collections import namedtuple
 from lxml import etree
-import copy
+
 from masci_tools.util.xml.collect_xml_setters import XPATH_SETTERS, SCHEMA_DICT_SETTERS, NMMPMAT_SETTERS
 #Enable warnings for missing docstrings
 #pylint: enable=missing-function-docstring
@@ -83,7 +83,6 @@ class FleurXMLModifier:
         self._tasks = []
         self.validate_signatures = validate_signatures
 
-
     @classmethod
     def fromList(cls, task_list, *args, **kwargs):
         """
@@ -98,16 +97,24 @@ class FleurXMLModifier:
         """
 
         fm = cls(*args, **kwargs)
+        fm.add_task_list(task_list)
+        return fm
 
-        facade_methods = fm.get_avail_actions()
+    def add_task_list(self, task_list):
+        """
+        Add a list of tasks to be added
+
+        :param task_list: list of tuples first index is the name of the method
+                          second is defining the arguments by keyword in a dict
+        """
+
+        facade_methods = self.get_avail_actions()
 
         for name, kwargs in task_list:
             try:
                 facade_methods[name](**kwargs)
             except KeyError as exc:
                 raise ValueError(f"Unknown modification method '{name}'") from exc
-
-        return fm
 
     def _validate_signature(self, name, *args, **kwargs):
         """
@@ -139,7 +146,7 @@ class FleurXMLModifier:
             except TypeError as exc:
                 raise TypeError(
                     f"The given arguments for the registration method '{name}' are not valid for the XML modifying function"
-                ) from exc
+                    f'The following error was raised: {exc}') from exc
 
     @classmethod
     def apply_modifications(cls, xmltree, nmmp_lines, modification_tasks, validate_changes=True):
@@ -177,10 +184,6 @@ class FleurXMLModifier:
                 xmltree = action(xmltree, schema_dict, *task.args, **task.kwargs)
 
             elif task.name in cls.nmmpmat_functions:
-                action = cls.nmmpmat_functions[task.name]
-                nmmp_lines = action(xmltree, nmmp_lines, schema_dict, *task.args, **task.kwargs)
-
-            elif task.name in cls.no_xmltree_functions:
                 action = cls.nmmpmat_functions[task.name]
                 nmmp_lines = action(xmltree, nmmp_lines, schema_dict, *task.args, **task.kwargs)
 

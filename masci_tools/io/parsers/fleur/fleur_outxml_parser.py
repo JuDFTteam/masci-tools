@@ -355,16 +355,22 @@ def parse_general_information(root, parser, outschema_dict, logger, iteration_to
     parser.determine_tasks(fleurmode, minimal=minimal_mode)
 
     #For certain fleur modes we need to overwrite the tasks
-    if fleurmode['dos'] or fleurmode['band']:
+    if fleurmode['dos'] or fleurmode['band'] or fleurmode['cf_coeff']:
         parser.iteration_tasks = ['iteration_number', 'fermi_energy']
         if fleurmode['bz_integration'] == 'hist':
             parser.iteration_tasks = ['iteration_number', 'fermi_energy', 'bandgap']
+
+    if fleurmode['plot']:
+        parser.iteration_tasks = []  #In this case there are multiple possibilities where fleur terminates
+        #So we discard all the iteration tasks
 
     if fleurmode['relax'] and iteration_to_parse == 'last':
         if 'distances' in parser.iteration_tasks:
             parser.iteration_tasks.remove('distances')
         if 'magnetic_distances' in parser.iteration_tasks:
             parser.iteration_tasks.remove('magnetic_distances')
+        if 'nmmp_distances' in parser.iteration_tasks:
+            parser.iteration_tasks.remove('nmmp_distances')
 
     if logger is not None:
         logger.debug('The following tasks are performed on the root: %s', parser.general_tasks)

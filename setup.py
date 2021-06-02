@@ -9,6 +9,7 @@ import io  # needed to have `open` with encoding option
 
 # read the contents of your README file
 from os import path
+
 this_directory = path.abspath(path.dirname(__file__))
 with io.open(path.join(this_directory, 'README.md'), encoding='utf8') as f:
     long_description = f.read()
@@ -16,7 +17,7 @@ with io.open(path.join(this_directory, 'README.md'), encoding='utf8') as f:
 if __name__ == '__main__':
     setup(
         name='masci_tools',
-        version='0.4.7',
+        version='0.4.8',
         description='Tools for Materials science. Vis contains wrappers of matplotlib functionality to visualize common material science data. Plus wrappers of visualisation for aiida-fleur workflow nodes',
         # add long_description from readme.md:
         long_description = long_description, # add contents of README.md
@@ -46,6 +47,7 @@ if __name__ == '__main__':
             'matplotlib',
             'h5py',
             'pandas',
+            'ase',
             'bump2version',
             'future',
             'lxml>=4.5',
@@ -64,7 +66,7 @@ if __name__ == '__main__':
             ],
             'docs': [
                 'Sphinx',
-                'docutils<0.17',
+                'docutils',
                 'sphinx_rtd_theme'
             ],
             'testing': [
