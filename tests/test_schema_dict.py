@@ -6,7 +6,7 @@ import pytest
 import os
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-SCHEMA_DIR = '../io/parsers/fleur/fleur_schema'
+SCHEMA_DIR = '../masci_tools/io/parsers/fleur/fleur_schema'
 
 #Collect all schemas from the folder
 schema_versions = {'inp': [], 'out': []}
