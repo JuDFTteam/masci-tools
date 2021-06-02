@@ -37,7 +37,7 @@ if __name__ == '__main__':
             'Topic :: Scientific/Engineering :: Physics'
         ],
         keywords='material science plots fitting visualization aiida dft all-electron',
-        packages=find_packages(),
+        packages=find_packages(exclude=['tests*']),
         #['src', 'tests'],
         include_package_data=True,
 
