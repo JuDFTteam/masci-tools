@@ -807,17 +807,25 @@ class ChemicalElements:
              selected_groups: list = None,
              selection_name: str = '',
              unselected_name: str = 'Unspecified',
+             color_palette_name: str = 'deep',
              output='notebook'):
         """Plot a periodic table, elements optionally grouped by group colors.
+
         Element groups can either be None, that gives the normal periodic table. Or it can be a list of element symbols
         ('H', 'Ca' and so on), that will print the periodic table with those elements highlighted and the rest greyed
         out. Or it can be a dict of element groups, where the key serves as group name. Then each group gets its own
         color in the periodic table, and a color legend is printed.
 
+        For available color palette names, see:
+
+        - https://seaborn.pydata.org/tutorial/color_palettes.html
+        - https://matplotlib.org/stable/tutorials/colors/colormaps.html
+
         :param selected_groups: If flat and not specified, use all elements in flat elmts, else if nested, a group subset.
         :type selected_groups: list of strings
         :param selection_name: name for the whole element selection
         :param unselected_name: legend name for group of unselected, greyed out elements
+        :param color_palette_name: seaborn or matplotlib color palette name
         :param output: bokeh plotting output. supported: 'notebook'.
         :return: legend (matplotlib figure) if there is there is more than one selected group, else None.
         """
@@ -855,8 +863,10 @@ class ChemicalElements:
             for symbol in group.keys():
                 pte.loc[pte['symbol'] == symbol, [selection_name]] = group_name
         # now make another attribute and map the newly created attribute to a respective color
-        group_names = list(data_selection.keys())
-        cmap = {g: colors.rgb2hex(c) for g, c in zip(group_names, sns.color_palette('deep'))}
+        group_names = sorted(list(data_selection.keys()))
+
+        cmap = {g: colors.rgb2hex(c) for g, c in zip(group_names, sns.color_palette(color_palette_name))}
+
         grey = '#bfbfbf'
         cmap[unselected_name] = grey
 
@@ -867,7 +877,7 @@ class ChemicalElements:
 
         # if there is more than one group, plot a legend
         if len(data_selection.keys()) > 1:
-            fig = masci_tools.vis.plot_methods.plot_colortable(cmap, selection_name)
+            fig = masci_tools.vis.plot_methods.plot_colortable(colors=cmap, title=selection_name, sort_colors=False)
             return fig
         else:
             return None

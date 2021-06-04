@@ -2788,11 +2788,13 @@ def pseudo_voigt_profile(x, fwhm_g, fwhm_l, mu, mix=0.5):
 
 
 class PDF(object):
+    """Display a PDF file inside a Jupyter notebook."""
 
-    def __init__(self, pdf, size=(200, 200)):
+    def __init__(self, pdf: str, size: tuple = (200, 200)):
         """Display a PDF file inside a Jupyter notebook.
 
         Note: alternative to using aiida.tools.visualization.Graph class.
+
         Example: https://aiida-tutorials.readthedocs.io/en/latest/pages/2020_Intro_Week/notebooks/querybuilder-tutorial.html#generating-a-provenance-graph
 
         Reference: https://stackoverflow.com/a/19470377/8116031
@@ -2802,8 +2804,8 @@ class PDF(object):
         >>> # !verdi node graph generate 23
         >>> PDF('23.dot.pdf',size=(800,600))
 
-        :param pdf:
-        :param size:
+        :param pdf: relative filepath of input PDF file.
+        :param size: tuple (width, height) in pixels for HTML rendering of PDF file, e.g. within in a notebook.
         """
         self.pdf = pdf
         self.size = size
@@ -2815,14 +2817,14 @@ class PDF(object):
         return r'\includegraphics[width=1.0\textwidth]{{{0}}}'.format(self.pdf)
 
 
-def plot_colortable(colors: typing.Dict, title: str, sort_colors: bool = True, emptycols: int = 0):
+def plot_colortable(colors: typing.Dict, title: str, sort_colors: bool = False, emptycols: int = 0):
     """Plot a legend of named colors.
 
     Reference: https://matplotlib.org/3.1.0/gallery/color/named_colors.html
 
     :param colors: a dict color_name : color_value (hex str, rgb tuple, ...)
     :param title: plot title
-    :param sort_colors: sort
+    :param sort_colors: True: sort legend entries not by dict position, but by color hue, staturation, value.
     :param emptycols:
     :return: figure
     """
