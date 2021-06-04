@@ -110,7 +110,7 @@ class ChemicalElements:
             import copy
             if groups:
                 if not isinstance(groups, list) \
-                        or not all([isinstance(group_name, str) for group_name in groups]):
+                        or not all(isinstance(group_name, str) for group_name in groups):
                     raise ValueError('If groups not None, must be a list of strings.')
                 if len(groups) < 2:
                     raise ValueError('If groups not None, must be more than one group. '
@@ -130,14 +130,14 @@ class ChemicalElements:
                         # not nested
                         self.__elmts = {'': self._chemical_element_list_to_dict(elements)}
                     elif isinstance(elements, dict):
-                        if not all([isinstance(v, list_types) for k, v in elements.items()]):
+                        if not all(isinstance(v, list_types) for (k, v) in elements.items()):
                             # flact dict
                             elements, _ = self._validate(elements)
                             # lazy type checking for sym:num
                             key_type_is_int = isinstance(list(elements.keys())[0], int)
                             elmts = {v: k for k, v in elements.items()} if key_type_is_int else elements
-                            assert all([isinstance(k, str) for k in elmts.keys()])
-                            assert all([isinstance(v, int) for v in elmts.values()])
+                            assert all(isinstance(k, str) for k in elmts.keys())
+                            assert all(isinstance(v, int) for v in elmts.values())
                             self.__elmts = {'': self._sort(elements)}
                         else:
                             # nested dict
@@ -819,6 +819,7 @@ class ChemicalElements:
         :param selection_name: name for the whole element selection
         :param unselected_name: legend name for group of unselected, greyed out elements
         :param output: bokeh plotting output. supported: 'notebook'.
+        :return: legend (matplotlib figure) if there is there is more than one selected group, else None.
         """
         from matplotlib import colors
         import seaborn as sns
@@ -842,7 +843,7 @@ class ChemicalElements:
         # get full periodic table pandas dataframe from mendeleev
         # DEVNOTE: breaking change in mendeleev v0.7.0: replaced get_table with fetch.fetch_table.
         version = mendeleev.__version__
-        version_info = tuple([int(num) for num in version.split('.')])
+        version_info = tuple(int(num) for num in version.split('.'))
         if version_info < (0, 7, 0):
             pte = mendeleev.get_table('elements')
         else:
@@ -859,14 +860,17 @@ class ChemicalElements:
         grey = '#bfbfbf'
         cmap[unselected_name] = grey
 
-        # if there is more than one group, plot a legend
-        if len(data_selection.keys()) > 2:
-            masci_tools.vis.plot_methods.plot_colortable(cmap, selection_name)
-
         colorby_attribute = f'{selection_name}_color'
         pte[colorby_attribute] = pte[selection_name].map(cmap)
         # and plot
         mendeleev.plotting.periodic_plot(pte, colorby=colorby_attribute, title=selection_name)
+
+        # if there is more than one group, plot a legend
+        if len(data_selection.keys()) > 1:
+            fig = masci_tools.vis.plot_methods.plot_colortable(cmap, selection_name)
+            return fig
+        else:
+            return None
 
     def _sort(self, a_dict, by_key=False):
         """Sorts chemical element dict by atomic number.
@@ -886,11 +890,11 @@ class ChemicalElements:
         list_types = (list, tuple, set)
         if isinstance(elements, list_types):
             key_is_symbol = None
-            if all([isinstance(sym, str) for sym in elements]):
-                assert all([elem in self._pte for elem in elements])
+            if all(elem in self._pte for elem in elements):
+                assert all(elem in self._pte for elem in elements)
                 key_is_symbol = True
-            elif all([isinstance(num, int) for num in elements]):
-                assert all([elem in self._pte_inv for elem in elements])
+            elif all(isinstance(num, int) for num in elements):
+                assert all(elem in self._pte_inv for elem in elements)
                 key_is_symbol = False
             else:
                 raise TypeError('received a list, but need list of all atom names or numbers')
@@ -900,14 +904,14 @@ class ChemicalElements:
             # i know this is not the most efficient way to test this
 
             # first, invert dict if needed to simplify cases
-            if any([isinstance(k, int) for k in elements.keys()]):
-                assert all([isinstance(k, int) for k in elements.keys()])
+            if any(isinstance(k, int) for k in elements.keys()):
+                assert all(isinstance(k, int) for k in elements.keys())
                 elements = {v: k for k, v in elements.items()}
 
             # now assume dict is sym:num, else raise error
-            if any([isinstance(k, str) for k in elements.keys()]):
-                assert all([isinstance(k, str) for k in elements.keys()])
-                assert all([isinstance(v, int) for v in elements.values()])
+            if any(isinstance(k, str) for k in elements.keys()):
+                assert all(isinstance(k, str) for k in elements.keys())
+                assert all(isinstance(v, int) for v in elements.values())
                 key_is_symbol = True
                 return elements, key_is_symbol
             else:
