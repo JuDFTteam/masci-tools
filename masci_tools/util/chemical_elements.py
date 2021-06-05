@@ -829,9 +829,9 @@ class ChemicalElements:
              title: str = '',
              colorby: str = 'group',
              attribute: str = 'atomic_weight',
-             missing_name: str = 'Missing',
-             missing_color: str = '#bfbfbf',
              missing_value=None,
+             missing_color: str = '#bfbfbf',
+             missing_name: str = 'Missing',
              colormap: str = 'plasma',
              size: tuple = (1000, 800),
              output: str = 'notebook',
@@ -860,10 +860,10 @@ class ChemicalElements:
         :param title: Title to appear above the periodic table
         :param colorby: 'group': by selected groups, 'attribute': by mendeleev periodic table attribute.
         :param attribute: mendeleev periodic table attribute, corresponding value displayed below each element.
-        :param missing_name: Name to be used for missing values in the legend
+        :param missing_value: Replaces NaN values, e.g. for custom coloring.
+        :type missing_value: str or numeric. Prefer same type as coloring input (group names or attribute).
         :param missing_color: Hex code of the color to be used for the missing values (#ffffff white, #bfbfbf gray)
-        :param missing_value: Value to be used for missing values. If None and numeric group values, will be NaN.
-        :type missing_value: str or numeric
+        :param missing_name: Name to be used for missing values in the legend. If empty, will use missing_value.
         :param colormap: seaborn or matplotlib color palette name
         :param size: tuple (width, height) of the table figure in pixels
         :param output: bokeh plotting output. supported: 'notebook', 'my_table.html' for file output.
@@ -906,7 +906,6 @@ class ChemicalElements:
         ptable = self._get_mendeleev_periodic_table()
 
         # check some conditionals
-        is_group_keys_numeric = all(isinstance(gkey, numbers.Number) for gkey in groups.keys())
         is_missing_value_numeric = isinstance(missing_value, numbers.Number)
 
         def _create_column_from_groups():
@@ -925,7 +924,10 @@ class ChemicalElements:
             is_numeric = all(isinstance(item, numbers.Number) for item in ptable[title].to_list())
 
             if missing_value is not None:
-                if is_numeric:
+                if _missing_value in ptable[title].to_list():
+                    print(f'Warning: Specified missing value {_missing_value} would overwrite existing value in '
+                          f"column '{title}'. Will not replace NaN values with it.")
+                elif is_numeric:
                     fill_in = is_missing_value_numeric
                 else:
                     fill_in = True
@@ -963,14 +965,10 @@ class ChemicalElements:
             group_keys = sorted(list(groups.keys()))
             cmap = {key: colors.rgb2hex(rgb) for key, rgb in zip(group_keys, sns.color_palette(colormap))}
             if filled_in:
-                # prepend missing value to dict
-                import copy
-                cmap_copy = copy.copy(cmap)
-                cmap = {missing_value: missing_color}
-                for key, hexcolor in cmap_copy.items():
-                    cmap[key] = hexcolor
-                    if hexcolor == missing_color:
-                        print(f'Warning: color map value for group key {key} overrides missing value color {hexcolor}.')
+                if missing_color in cmap.values():
+                    print(f"Warning: Specified missing color value '{missing_color}' overwrites existing "
+                          f'color value. Better choose another one.')
+                cmap[missing_value] = missing_color
 
             # set internal variables
             _colorby, _attribute = f'{title}_color', attribute
@@ -979,6 +977,18 @@ class ChemicalElements:
             ptable[_colorby] = ptable[title].map(cmap)
 
             if with_legend:
+                # for the legend color map, we want to use the missing_name instead of the missing_value,
+                # and put it first. So, got to repopultate the custom colormap.
+                if filled_in:
+                    _missing_name = missing_name if missing_name else missing_value
+                    # prepend missing name to dict
+                    import copy
+                    cmap.pop(missing_value)
+                    cmap_copy = copy.copy(cmap)
+                    cmap = {_missing_name: missing_color}
+                    for key, hexcolor in cmap_copy.items():
+                        cmap[key] = hexcolor
+
                 _legend_title = legend_title if legend_title else title
                 legend_figure = masci_tools.vis.plot_methods.plot_colortable(colors=cmap,
                                                                              title=_legend_title,
