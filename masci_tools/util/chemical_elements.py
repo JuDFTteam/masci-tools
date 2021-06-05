@@ -938,17 +938,6 @@ class ChemicalElements:
 
         legend_figure = None
 
-        # if attribute == title:
-        #     if not is_group_keys_numeric:
-        #         raise ValueError(f"Chose attribute='{title}', but group names are not numeric.")
-        #     else:
-        #         #  make a new attribute (column) and label each element according to group
-        #         _create_column_from_groups()
-        #         filled_in = _deal_with_missing_values()
-        #
-        #         # set internal variables
-        #         _colorby, _attribute = 'attribute', title
-
         if colorby == 'attribute':
             # DEV note: don't need to check if numeric, mendeleev will complain on its own
 
