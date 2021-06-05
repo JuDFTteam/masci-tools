@@ -13,6 +13,8 @@
 """This module contains a simple class for set-like chemical elements enumeration."""
 import dataclasses as dc
 
+import numpy
+
 import masci_tools.vis.plot_methods
 
 
@@ -53,7 +55,7 @@ class ChemicalElements:
         :param distinct: True: disallow same element in different groups.
         :param special_elements: dict symbol:atomic_number of special elements (eg {'X':0} for vacuum)
         :param filepath: if not None, init from JSON file. Must have been written with ChemicalElements.to_file().
-        :type filepath: pathlib.Path
+        :type filepath: str or pathlib.Path
 
         >>> from masci_tools.util.chemical_elements import ChemicalElements
         >>> a = ChemicalElements([11, 2, 118, 78])
@@ -76,7 +78,7 @@ class ChemicalElements:
         # periodic table, all elements; special element definitions not in actual periodic table
         # devnote: mendeleev.elements.get_all_elements() is very expensive (0.2s). hardcoded pte is faster.
         # self._pte = {el.symbol: el.atomic_number for el in mendeleev.elements.get_all_elements()}
-        #yapf: disable
+        # yapf: disable
         self._pte = {'H': 1, 'He': 2, 'Li': 3, 'Be': 4, 'B': 5, 'C': 6, 'N': 7, 'O': 8, 'F': 9, 'Ne': 10, 'Na': 11,
                      'Mg': 12, 'Al': 13, 'Si': 14, 'P': 15, 'S': 16, 'Cl': 17, 'Ar': 18, 'K': 19, 'Ca': 20, 'Sc': 21,
                      'Ti': 22, 'V': 23, 'Cr': 24, 'Mn': 25, 'Fe': 26, 'Co': 27, 'Ni': 28, 'Cu': 29, 'Zn': 30, 'Ga': 31,
@@ -89,7 +91,7 @@ class ChemicalElements:
                      'U': 92, 'Np': 93, 'Pu': 94, 'Am': 95, 'Cm': 96, 'Bk': 97, 'Cf': 98, 'Es': 99, 'Fm': 100,
                      'Md': 101, 'No': 102, 'Lr': 103, 'Rf': 104, 'Db': 105, 'Sg': 106, 'Bh': 107, 'Hs': 108, 'Mt': 109,
                      'Ds': 110, 'Rg': 111, 'Cn': 112, 'Nh': 113, 'Fl': 114, 'Mc': 115, 'Lv': 116, 'Ts': 117, 'Og': 118}
-        #yapf: enable
+        # yapf: enable
         self._pte_inv = {v: k for k, v in self._pte.items()}
 
         self._special_elements = {}
@@ -797,59 +799,17 @@ class ChemicalElements:
         """Save elements to file. 'data' is ignored.
 
         :param filepath: filepath
-        :type filepath: pathlib.Path
+        :type filepath: str or pathlib.Path
         """
         import json
         with open(filepath, 'w') as file:
             file.write(json.dumps(self.__elmts))
 
-    def plot(self,
-             selected_groups: list = None,
-             selection_name: str = '',
-             unselected_name: str = 'Unspecified',
-             color_palette_name: str = 'deep',
-             output='notebook'):
-        """Plot a periodic table, elements optionally grouped by group colors.
+    def _get_mendeleev_periodic_table(self):
+        """Get full periodic table pandas dataframe from mendeleev."""
 
-        Element groups can either be None, that gives the normal periodic table. Or it can be a list of element symbols
-        ('H', 'Ca' and so on), that will print the periodic table with those elements highlighted and the rest greyed
-        out. Or it can be a dict of element groups, where the key serves as group name. Then each group gets its own
-        color in the periodic table, and a color legend is printed.
-
-        For available color palette names, see:
-
-        - https://seaborn.pydata.org/tutorial/color_palettes.html
-        - https://matplotlib.org/stable/tutorials/colors/colormaps.html
-
-        :param selected_groups: If flat and not specified, use all elements in flat elmts, else if nested, a group subset.
-        :type selected_groups: list of strings
-        :param selection_name: name for the whole element selection
-        :param unselected_name: legend name for group of unselected, greyed out elements
-        :param color_palette_name: seaborn or matplotlib color palette name
-        :param output: bokeh plotting output. supported: 'notebook'.
-        :return: legend (matplotlib figure) if there is there is more than one selected group, else None.
-        """
-        from matplotlib import colors
-        import seaborn as sns
-        import bokeh.plotting
-        import mendeleev.plotting
-
-        if output == 'notebook':
-            bokeh.plotting.output_notebook()
-        else:
-            raise NotImplementedError(f'Output for {output} not implemented.')
-
-        data_selection = self.select_groups(selected_groups, include_special_elements=False)
-
-        # first make another group with all ungrouped elements, to draw them greyed out
-        # note: can't use complement() for this, in case only subset of elmts selected
-        all_elements = [el.symbol for el in mendeleev.elements.get_all_elements()]
-        selected_elements = [element for group in list(data_selection.values()) for element in group]
-        unselected_elements = self._chemical_element_list_to_dict(set(all_elements) - set(selected_elements))
-        data_selection[unselected_name] = unselected_elements
-
-        # get full periodic table pandas dataframe from mendeleev
         # DEVNOTE: breaking change in mendeleev v0.7.0: replaced get_table with fetch.fetch_table.
+        import mendeleev
         version = mendeleev.__version__
         version_info = tuple(int(num) for num in version.split('.'))
         if version_info < (0, 7, 0):
@@ -858,29 +818,196 @@ class ChemicalElements:
             from mendeleev.fetch import fetch_table
             pte = fetch_table('elements')
 
-        # now make a new attribute(column) and label each element according to group
-        for group_name, group in data_selection.items():
-            for symbol in group.keys():
-                pte.loc[pte['symbol'] == symbol, [selection_name]] = group_name
-        # now make another attribute and map the newly created attribute to a respective color
-        group_names = sorted(list(data_selection.keys()))
+        return pte
 
-        cmap = {g: colors.rgb2hex(c) for g, c in zip(group_names, sns.color_palette(color_palette_name))}
+    def list_of_attributes(self):
+        """Get list of available periodic table attributes from mendeleev."""
+        return self._get_mendeleev_periodic_table().columns
 
-        grey = '#bfbfbf'
-        cmap[unselected_name] = grey
+    def plot(self,
+             selected_groups: list = None,
+             title: str = '',
+             colorby: str = 'group',
+             attribute: str = 'atomic_weight',
+             missing_name: str = 'Missing',
+             missing_color: str = '#bfbfbf',
+             missing_value=None,
+             colormap: str = 'plasma',
+             size: tuple = (1000, 800),
+             output: str = 'notebook',
+             showfblock: bool = True,
+             long_version: bool = False,
+             with_legend: bool = True,
+             legend_title: str = 'Legend'):
+        """Plot a periodic table, elements optionally grouped by group colors.
 
-        colorby_attribute = f'{selection_name}_color'
-        pte[colorby_attribute] = pte[selection_name].map(cmap)
-        # and plot
-        mendeleev.plotting.periodic_plot(pte, colorby=colorby_attribute, title=selection_name)
+        If selected groups is None, will include all of the instance's groups and colorize them in the printed table.
+        If the instance is flat (no groups exist), then will just color in the elements that are present. All
+        non-selected or non-present elements are 'missing' and will be greyed out.
 
-        # if there is more than one group, plot a legend
-        if len(data_selection.keys()) > 1:
-            fig = masci_tools.vis.plot_methods.plot_colortable(colors=cmap, title=selection_name, sort_colors=False)
-            return fig
+        For available periodic table attributes, see :py:meth:`~aiida_jutools.chemical_elements.ChemicalElements.list_of_attributes`.
+
+        If the selected group (names) are numeric, and a numeric missing value is given, then will switch to 'property
+        visualization': ech element's group value will be displayed below it, and the coloring will be scaled to
+        the group values, plus the missing value.
+
+        For available colormap names, see:
+
+        - https://seaborn.pydata.org/tutorial/color_palettes.html
+        - https://matplotlib.org/stable/tutorials/colors/colormaps.html
+
+        :param selected_groups: If flat and not specified, use all elements in flat elmts, else if nested, a group subset.
+        :param title: Title to appear above the periodic table
+        :param colorby: 'group': by selected groups, 'attribute': by mendeleev periodic table attribute.
+        :param attribute: mendeleev periodic table attribute, corresponding value displayed below each element.
+        :param missing_name: Name to be used for missing values in the legend
+        :param missing_color: Hex code of the color to be used for the missing values (#ffffff white, #bfbfbf gray)
+        :param missing_value: Value to be used for missing values. If None and numeric group values, will be NaN.
+        :type missing_value: str or numeric
+        :param colormap: seaborn or matplotlib color palette name
+        :param size: tuple (width, height) of the table figure in pixels
+        :param output: bokeh plotting output. supported: 'notebook', 'my_table.html' for file output.
+        :param showfblock: Show the elements from the f block
+        :param long_version: Show the long version of the periodic table with the f block between the s and d blocks
+        :param with_legend: True: return extra matplotlib figure = legend. plot(...) will render it below the table.
+        :param legend_title: If empty, will replace with table title.
+        :return: legend or None
+        """
+        # validate inputs
+        valid_colorby_values = ['group', 'attribute']
+        valid_attributes = self.list_of_attributes()
+        if colorby not in valid_colorby_values:
+            raise KeyError(f"Specified argument colorby='{colorby}', but must be one of {valid_colorby_values}.")
+        if attribute != title and attribute not in valid_attributes:
+            raise KeyError(
+                f"Specified argument 'attribute'='{attribute}', but must either be one of {valid_attributes}, "
+                f"or equal 'title' argument.")
+
+        # imports
+        from matplotlib import colors
+        import seaborn as sns
+        import bokeh.plotting
+        import mendeleev.plotting
+        import numbers
+
+        if output == 'notebook':
+            bokeh.plotting.output_notebook()
         else:
-            return None
+            bokeh.plotting.output_file(filename=output)
+            print(f'Will write table plot to file {output}.')
+
+        # declare inner variables for calling inner plot method
+        _colorby, _attribute = None, None
+
+        # get instance's elements, nested or flat
+        groups = self.select_groups(selected_groups, include_special_elements=False)
+
+        # get the periodic table dataframe
+        ptable = self._get_mendeleev_periodic_table()
+
+        # check some conditionals
+        is_group_keys_numeric = all(isinstance(gkey, numbers.Number) for gkey in groups.keys())
+        is_missing_value_numeric = isinstance(missing_value, numbers.Number)
+
+        def _create_column_from_groups():
+            for group_key, group in groups.items():
+                for symbol in group.keys():
+                    ptable.loc[ptable['symbol'] == symbol, [title]] = group_key
+
+        def _deal_with_missing_values() -> bool:
+            """Deal with missing values.
+
+            :return: True: filled in missing value, False: not.
+            """
+            _missing_value = missing_value
+            fill_in = False
+
+            is_numeric = all(isinstance(item, numbers.Number) for item in ptable[title].to_list())
+
+            if missing_value is not None:
+                if is_numeric:
+                    fill_in = is_missing_value_numeric
+                else:
+                    fill_in = True
+                    if is_missing_value_numeric:
+                        _missing_value = str(_missing_value)
+
+            if fill_in:
+                ptable[title] = ptable[title].fillna(_missing_value)
+            return fill_in
+
+        legend_figure = None
+
+        # if attribute == title:
+        #     if not is_group_keys_numeric:
+        #         raise ValueError(f"Chose attribute='{title}', but group names are not numeric.")
+        #     else:
+        #         #  make a new attribute (column) and label each element according to group
+        #         _create_column_from_groups()
+        #         filled_in = _deal_with_missing_values()
+        #
+        #         # set internal variables
+        #         _colorby, _attribute = 'attribute', title
+
+        if colorby == 'attribute':
+            # DEV note: don't need to check if numeric, mendeleev will complain on its own
+
+            # copy attribute col to new title col
+            ptable[title] = ptable[attribute]
+
+            # deal with missing values
+            # first, replace values of all items not present in groups
+            missing_elements = self.complement(selected_groups=selected_groups)
+            for symbol in missing_elements:
+                ptable.loc[ptable['symbol'] == symbol, [title]] = numpy.NaN
+
+            filled_in = _deal_with_missing_values()
+
+            # set internal variables
+            _colorby, _attribute = colorby, title
+
+        elif colorby == 'group':
+            _create_column_from_groups()
+            filled_in = _deal_with_missing_values()
+
+            # create custom color map for the title column
+            group_keys = sorted(list(groups.keys()))
+            cmap = {key: colors.rgb2hex(rgb) for key, rgb in zip(group_keys, sns.color_palette(colormap))}
+            if filled_in:
+                # prepend missing value to dict
+                import copy
+                cmap_copy = copy.copy(cmap)
+                cmap = {missing_value: missing_color}
+                for key, hexcolor in cmap_copy.items():
+                    cmap[key] = hexcolor
+                    if hexcolor == missing_color:
+                        print(f'Warning: color map value for group key {key} overrides missing value color {hexcolor}.')
+
+            # set internal variables
+            _colorby, _attribute = f'{title}_color', attribute
+
+            # add custom colormap column
+            ptable[_colorby] = ptable[title].map(cmap)
+
+            if with_legend:
+                _legend_title = legend_title if legend_title else title
+                legend_figure = masci_tools.vis.plot_methods.plot_colortable(colors=cmap,
+                                                                             title=_legend_title,
+                                                                             sort_colors=False)
+
+        # finally, draw the plot(s)
+        mendeleev.plotting.periodic_plot(df=ptable,
+                                         attribute=_attribute,
+                                         title=title,
+                                         width=size[0],
+                                         height=size[1],
+                                         missing=missing_color,
+                                         colorby=_colorby,
+                                         output=None,
+                                         cmap=colormap,
+                                         showfblock=showfblock,
+                                         long_version=long_version)
+        return legend_figure
 
     def _sort(self, a_dict, by_key=False):
         """Sorts chemical element dict by atomic number.
