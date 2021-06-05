@@ -994,6 +994,14 @@ class ChemicalElements:
                                                                              title=_legend_title,
                                                                              sort_colors=False)
 
+                # save legend figure if specified
+                if output != 'notebook':
+                    import os
+                    import matplotlib.pyplot as plt
+                    output_legend = os.path.splitext(output)
+                    output_legend = output_legend[0] + '_legend'
+                    plt.savefig(output_legend)
+
         # finally, draw the plot(s)
         mendeleev.plotting.periodic_plot(df=ptable,
                                          attribute=_attribute,
