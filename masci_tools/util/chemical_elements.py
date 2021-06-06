@@ -834,7 +834,7 @@ class ChemicalElements:
              missing_name: str = 'Missing',
              colormap: str = 'RdBu_r',
              size: tuple = (1000, 800),
-             output: str = 'notebook',
+             output: str = None,
              showfblock: bool = True,
              long_version: bool = False,
              with_legend: bool = True,
@@ -869,7 +869,7 @@ class ChemicalElements:
         :param missing_name: Name to be used for missing values in the legend. If empty, will use missing_value.
         :param colormap: name of seaborn or matplotlib colormap.
         :param size: tuple (width, height) of the table figure in pixels
-        :param output: bokeh plotting output. supported: 'notebook', 'my_table.html' for file output.
+        :param output: Optional output, e.g. 'img/table.html'. If legend, will also save 'img/table_legend.png'.
         :param showfblock: Show the elements from the f block
         :param long_version: Show the long version of the periodic table with the f block between the s and d blocks
         :param with_legend: True: return extra matplotlib figure = legend. plot(...) will render it below the table.
@@ -893,13 +893,18 @@ class ChemicalElements:
         import mendeleev.plotting
         import numbers
 
-        if output == 'notebook':
-            bokeh.plotting.output_notebook()
-        elif output:
-            bokeh.plotting.output_file(filename=output)
-            print(f'Will write table plot to file {output}.')
-        else:
-            raise ValueError("Specified no output argument. Must either be 'notebook' (default), or a file name.")
+        # init output for notebook. if not notebook, this won't have any effect.
+        bokeh.plotting.output_notebook()
+
+        _output = output
+        _output_ext = '.html'
+        if _output:
+            msg_suffix = ''
+            if not _output.endswith(_output_ext):
+                _output = _output + _output_ext
+                msg_suffix = f"Info: filepath did not end in extension '{_output_ext}'. Appended it."
+            print(f'Will write HTML table plot to file {_output}. {msg_suffix}')
+            bokeh.plotting.output_file(filename=_output)
 
         # declare inner variables for calling inner plot method
         _colorby, _attribute = f'{title}_color', None
@@ -945,6 +950,7 @@ class ChemicalElements:
 
         legend_figure = None
 
+        # make a new column for the data to be displayed
         if colorby == 'attribute':
             _attribute = title
 
@@ -964,6 +970,10 @@ class ChemicalElements:
                     ptable.loc[ptable['symbol'] == symbol, [title]] = group_key
 
         filled_in, _missing_value = _deal_with_missing_values()
+
+        # let pandas convert values to most sensible types
+        # example use case: when group names are integer, legend would display them as floats without this.
+        ptable[title] = ptable[title].convert_dtypes()
 
         # create custom color map for the title column
         values = sorted(ptable[title].dropna().unique())
@@ -1003,26 +1013,24 @@ class ChemicalElements:
                                                                          sort_colors=False)
 
             # save legend figure if specified
-            if output and output != 'notebook':
+            if _output:
                 import os
                 import matplotlib.pyplot as plt
-                output_legend = os.path.splitext(output)
-                output_legend = output_legend[0] + '_legend'
-                plt.savefig(output_legend)
+                _output_legend = os.path.splitext(_output)
+                _output_legend = _output_legend[0] + '_legend'
+                plt.savefig(_output_legend)
 
         # finally, draw the plot(s)
-        mendeleev.plotting.periodic_plot(
-            df=ptable,
-            attribute=_attribute,
-            title=title,
-            width=size[0],
-            height=size[1],
-            missing=missing_color,
-            colorby=_colorby,
-            output=None,
-            # cmap=colormap,
-            showfblock=showfblock,
-            long_version=long_version)
+        mendeleev.plotting.periodic_plot(df=ptable,
+                                         attribute=_attribute,
+                                         title=title,
+                                         width=size[0],
+                                         height=size[1],
+                                         missing=missing_color,
+                                         colorby=_colorby,
+                                         output=_output,
+                                         showfblock=showfblock,
+                                         long_version=long_version)
         return legend_figure
 
     def _sort(self, a_dict, by_key=False):
