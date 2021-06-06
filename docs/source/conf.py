@@ -255,7 +255,7 @@ if not on_rtd:  # only import and set the theme if we're building docs locally
         # No sphinx_rtd_theme installed
         pass
 
-
+autodoc_mock_imports = ['bokeh']
 
 # -- Options for manual page output ---------------------------------------
 
