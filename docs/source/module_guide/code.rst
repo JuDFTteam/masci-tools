@@ -28,8 +28,8 @@ General Plotting
 .. automodule:: masci_tools.vis.parameters
    :members:
 
-.. .. automodule:: masci_tools.vis.data
-..   :members:
+.. automodule:: masci_tools.vis.data
+   :members:
 
 Matplotlib
 ^^^^^^^^^^^

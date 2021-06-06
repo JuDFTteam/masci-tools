@@ -58,6 +58,7 @@ class PlotData:
       Usage Example
 
       .. code-block:: python
+
          from masci_tools.vis.plot_data import PlotData
          import numpy as np
 
@@ -84,9 +85,9 @@ class PlotData:
       :param mask: optional list or Tuple of bool, of the same length as the specified data
                    When iterating over it only the objects with the mask set to True are returned
 
-      Kwargs are used to specify the columns according to the :py:class:`PlotColumns` namedtuple
+      Kwargs are used to specify the columns in a namedtuple
       If a list is given for any of the keys the data will be expanded to a list of
-      :py:class:`PlotColumns` with the same length
+      namedtuple with the same length
 
    """
 
@@ -110,9 +111,6 @@ class PlotData:
                     self.data[index] = ColumnDataSource(entry)
             else:
                 self.data = ColumnDataSource(self.data)
-
-        if any(key not in self.column_spec._fields for key in kwargs):
-            raise ValueError(f'Invalid data argument: {kwargs} \n' f'Allowed are: {self.column_spec._fields}')
 
         self._column_spec = namedtuple('Columns', list(kwargs.keys()))
 
@@ -166,7 +164,7 @@ class PlotData:
         return PlotDataIterator(self, mode='items')
 
     def getfirst(self):
-        for data in self:
+        for data in self.items():
             return data
 
     def __len__(self):
@@ -185,62 +183,63 @@ class PlotData:
         raise NotImplementedError
 
 
-def normalize_lists_or_arrays(cls, data, keys=None, mask=None, use_column_source=False, **kwargs):
+def normalize_list_or_array(data, key, out_data, flatten_np=False):
+
+    LIST_TYPES = (list, np.ndarray)
+
+    if isinstance(data, np.ndarray) and flatten_np:
+        data = data.flatten()
+
+    if isinstance(data, LIST_TYPES):
+        if isinstance(data[0], LIST_TYPES):
+            #Split up
+            if isinstance(out_data, list):
+                if len(out_data) != len(data):
+                    raise ValueError(
+                        f"Mismatch of dimensions: Got two different dimensions 'key' {len(data)} 'previous' {len(out_data)}"
+                    )
+                for entry, new_data in zip(out_data, data):
+                    entry[key] = new_data
+            else:
+                new_list = []
+                for new_data in data:
+                    new_list.append(out_data.copy())
+                    new_list[-1][key] = new_data
+                out_data = new_list
+
+            return out_data
+        elif isinstance(out_data, list):
+            if len(out_data) == len(data):
+                for entry, new_data in zip(out_data, data):
+                    entry[key] = new_data
+                return out_data
+
+    if isinstance(out_data, list):
+        for entry in out_data:
+            entry[key] = data
+    else:
+        out_data[key] = data
+
+    return out_data
+
+
+def process_data_arguments(data, mask=None, use_column_source=False, flatten_np=False, **kwargs):
     """
-   Initialize PlotData from np.arrays or lists of np.arrays or lists
+    Initialize PlotData from np.arrays or lists of np.arrays or lists
 
-   The logic is as follows:
+    The logic is as follows:
 
 
-   """
+    """
 
-    def process_list_or_array(data, key, out_data):
-        #Lists are assumed to be split up (except ehen there is only a list of values) up np.arrays not
-        if isinstance(data, list):
-            if isinstance(data[0], (list, np.ndarray)):
-                #Split up
-                if isinstance(out_data, list):
-                    if len(out_data) != len(data):
-                        raise ValueError(
-                            f"Mismatch of dimensions: Got two different dimensions 'key' {len(data)} 'previous' {len(out_data)}"
-                        )
-                    for entry, new_data in zip(out_data, data):
-                        entry[key] = new_data
-                else:
-                    new_list = []
-                    for new_data in data:
-                        new_list.append(out_data.copy())
-                        new_list[-1][key] = new_data
-                    out_data = new_list
+    if data is None:
+        data = {}
+        keys = {}
 
-                return out_data
-            elif isinstance(out_data, list):
-                if len(out_data) == len(data):
-                    for entry, new_data in zip(out_data, data):
-                        entry[key] = new_data
-                return out_data
+        for key, val in kwargs.items():
+            keys[key] = key
+            data = normalize_list_or_array(val, key, data, flatten_np=flatten_np)
+    else:
+        keys = kwargs
 
-        if isinstance(out_data, list):
-            for entry in out_data:
-                entry[key] = data
-        else:
-            out_data[key] = data
-
-        return out_data
-
-    x, y = data
-
-    processed_data = {}
-
-    processed_data = process_list_or_array(x, 'x', processed_data)
-    processed_data = process_list_or_array(y, 'y', processed_data)
-
-    construct_keys = {}
-
-    for key, val in kwargs.items():
-        if val is None:
-            continue
-        construct_keys[key] = key
-        processed_data = process_list_or_array(val, key, processed_data)
-
-    return PlotData(processed_data, mask=mask, use_column_source=use_column_source, **construct_keys)
+    return PlotData(data, mask=mask, use_column_source=use_column_source, **keys)

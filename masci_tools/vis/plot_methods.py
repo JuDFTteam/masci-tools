@@ -32,6 +32,8 @@ For the definition of the defaults refer to :py:class:`~masci_tools.vis.matplotl
 
 from .matplotlib_plotter import MatplotlibPlotter
 from .parameters import ensure_plotter_consistency, NestedPlotParameters
+from .data import process_data_arguments
+
 import warnings
 import copy
 import typing
@@ -96,21 +98,23 @@ def single_scatterplot(xdata,
                        xlabel='',
                        ylabel='',
                        title='',
+                       data=None,
                        saveas='scatterplot',
                        axis=None,
                        xerr=None,
                        yerr=None,
-                       area_curve=None,
+                       area_curve=0,
                        **kwargs):
     """
     Create a standard scatter plot (this should be flexible enough) to do all the
     basic plots.
 
-    :param xdata: arraylike, data for the x coordinate
-    :param ydata: arraylike, data for the y coordinate
+    :param xdata: str or arraylike, data for the x coordinate
+    :param ydata: str or arraylike, data for the y coordinate
     :param xlabel: str, label written on the x axis
     :param ylabel: str, label written on the y axis
     :param title: str, title of the figure
+    :param data: Mapping giving the data for the plot (required if xdata and ydata are str)
     :param saveas: str specifying the filename (without file format)
     :param axis: Axes object, if given the plot will be applied to this object
     :param xerr: optional data for errorbar in x-direction
@@ -149,6 +153,8 @@ def single_scatterplot(xdata,
                 limits_new['y'] = limits[1]
             kwargs['limits'] = limits_new
 
+    plot_data = process_data_arguments(data=data, x=xdata, y=ydata, shift=area_curve, xerr=xerr, yerr=yerr)
+
     plot_params.set_defaults(default_type='function', color='k', plot_label='scatterplot')
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
@@ -163,33 +169,32 @@ def single_scatterplot(xdata,
     # TODO customizable error bars fmt='o', ecolor='g', capthick=2, ...
     # there the if is prob better...
     plot_kwargs = plot_params.plot_kwargs()
-    if area_curve is None:
-        shift = 0
-    else:
-        shift = area_curve
+
+    entry, source = plot_data.getfirst()
 
     if plot_params['area_plot']:
         linecolor = plot_kwargs.pop('area_linecolor', None)
         if plot_params['area_vertical']:
-            result = ax.fill_betweenx(ydata, xdata, x2=shift, **plot_kwargs, **kwargs)
+            result = ax.fill_betweenx(entry.y, entry.x, x2=entry.shift, data=source, **plot_kwargs, **kwargs)
         else:
-            result = ax.fill_between(xdata, ydata, y2=shift, **plot_kwargs, **kwargs)
+            result = ax.fill_between(entry.x, entry.y, y2=entry.shift, data=source, **plot_kwargs, **kwargs)
         plot_kwargs.pop('alpha', None)
         plot_kwargs.pop('label', None)
         plot_kwargs.pop('color', None)
         if plot_params['area_enclosing_line']:
             if linecolor is None:
                 linecolor = result.get_facecolor()[0]
-            ax.errorbar(xdata,
-                        ydata,
-                        yerr=yerr,
-                        xerr=xerr,
+            ax.errorbar(entry.x,
+                        entry.y,
+                        yerr=entry.yerr,
+                        xerr=entry.xerr,
                         alpha=plot_params['plot_alpha'],
                         color=linecolor,
+                        data=source,
                         **plot_kwargs,
                         **kwargs)
     else:
-        ax.errorbar(xdata, ydata, yerr=yerr, xerr=xerr, **plot_kwargs, **kwargs)
+        ax.errorbar(entry.x, entry.y, yerr=entry.yerr, xerr=entry.xerr, data=source, **plot_kwargs, **kwargs)
 
     plot_params.set_scale(ax)
     plot_params.set_limits(ax)
