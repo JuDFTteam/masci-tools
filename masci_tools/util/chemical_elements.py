@@ -832,24 +832,27 @@ class ChemicalElements:
              missing_value=None,
              missing_color: str = '#bfbfbf',
              missing_name: str = 'Missing',
-             colormap: str = 'plasma',
+             colormap: str = 'RdBu_r',
              size: tuple = (1000, 800),
              output: str = 'notebook',
              showfblock: bool = True,
              long_version: bool = False,
              with_legend: bool = True,
              legend_title: str = 'Legend'):
-        """Plot a periodic table, elements optionally grouped by group colors.
+        """Plot elements in a periodic table, missing elements greyed out.
 
-        If selected groups is None, will include all of the instance's groups and colorize them in the printed table.
-        If the instance is flat (no groups exist), then will just color in the elements that are present. All
-        non-selected or non-present elements are 'missing' and will be greyed out.
+        The colormap for the present elements can be chosen via the 'colorby' parameter in either of two ways:
+        A) Colorize them by a physical  attribute. For available periodic table attributes, see
+        :py:meth:`~aiida_jutools.chemical_elements.ChemicalElements.list_of_attributes`. B) Colorize them by their
+        group assignment within this instance. If there are no groups (i.e., flat not nested), then all present elements
+        will have one color. If selected groups is None, will include all of the instance's groups.
 
-        For available periodic table attributes, see :py:meth:`~aiida_jutools.chemical_elements.ChemicalElements.list_of_attributes`.
+        The numeric value to display below each element is controlled via the 'attribute' parameter. Apart from
+        physical attributes, group names can also be chosen to be displayed, if they are numeric (not numeric strings).
+        To do that, set the same value (argument) for the 'attribute' and 'title' parameters.
 
-        If the selected group (names) are numeric, and a numeric missing value is given, then will switch to 'property
-        visualization': ech element's group value will be displayed below it, and the coloring will be scaled to
-        the group values, plus the missing value.
+        If the group names are not numeric, but you want to display them nonetheless, you can still do so by setting
+        the 'with_legend' attribute to True.
 
         For available colormap names, see:
 
@@ -864,7 +867,7 @@ class ChemicalElements:
         :type missing_value: str or numeric. Prefer same type as coloring input (group names or attribute).
         :param missing_color: Hex code of the color to be used for the missing values (#ffffff white, #bfbfbf gray)
         :param missing_name: Name to be used for missing values in the legend. If empty, will use missing_value.
-        :param colormap: seaborn or matplotlib color palette name
+        :param colormap: name of seaborn or matplotlib colormap.
         :param size: tuple (width, height) of the table figure in pixels
         :param output: bokeh plotting output. supported: 'notebook', 'my_table.html' for file output.
         :param showfblock: Show the elements from the f block
@@ -892,12 +895,14 @@ class ChemicalElements:
 
         if output == 'notebook':
             bokeh.plotting.output_notebook()
-        else:
+        elif output:
             bokeh.plotting.output_file(filename=output)
             print(f'Will write table plot to file {output}.')
+        else:
+            raise ValueError("Specified no output argument. Must either be 'notebook' (default), or a file name.")
 
         # declare inner variables for calling inner plot method
-        _colorby, _attribute = None, None
+        _colorby, _attribute = f'{title}_color', None
 
         # get instance's elements, nested or flat
         groups = self.select_groups(selected_groups, include_special_elements=False)
@@ -936,84 +941,88 @@ class ChemicalElements:
 
             if fill_in:
                 ptable[title] = ptable[title].fillna(_missing_value)
-            return fill_in
+            return fill_in, _missing_value
 
         legend_figure = None
 
         if colorby == 'attribute':
-            # DEV note: don't need to check if numeric, mendeleev will complain on its own
+            _attribute = title
 
             # copy attribute col to new title col
             ptable[title] = ptable[attribute]
-
             # deal with missing values
             # first, replace values of all items not present in groups
             missing_elements = self.complement(selected_groups=selected_groups)
             for symbol in missing_elements:
                 ptable.loc[ptable['symbol'] == symbol, [title]] = numpy.NaN
 
-            filled_in = _deal_with_missing_values()
-
-            # set internal variables
-            _colorby, _attribute = colorby, title
-
         elif colorby == 'group':
-            _create_column_from_groups()
-            filled_in = _deal_with_missing_values()
+            _attribute = attribute
 
-            # create custom color map for the title column
-            group_keys = sorted(list(groups.keys()))
-            cmap = {key: colors.rgb2hex(rgb) for key, rgb in zip(group_keys, sns.color_palette(colormap))}
+            for group_key, group in groups.items():
+                for symbol in group.keys():
+                    ptable.loc[ptable['symbol'] == symbol, [title]] = group_key
+
+        filled_in, _missing_value = _deal_with_missing_values()
+
+        # create custom color map for the title column
+        values = sorted(ptable[title].dropna().unique())
+        cmap = {
+            key: colors.rgb2hex(rgb)
+            for key, rgb in zip(values, sns.color_palette(palette=colormap, n_colors=len(values)))
+        }
+
+        if filled_in:
+            if missing_color in cmap.values():
+                print(f"Warning: Specified missing color value '{missing_color}' overwrites existing "
+                      f'color value. Better choose another one.')
+            cmap[_missing_value] = missing_color
+
+        # add custom colormap column
+        ptable[_colorby] = ptable[title].map(cmap)
+
+        if with_legend:
+            # for the legend color map, we want to use the missing_name instead of the missing_value,
+            # and put it first. So, got to repopultate the custom colormap.
             if filled_in:
-                if missing_color in cmap.values():
-                    print(f"Warning: Specified missing color value '{missing_color}' overwrites existing "
-                          f'color value. Better choose another one.')
-                cmap[missing_value] = missing_color
+                _missing_name = missing_name if missing_name else _missing_value
+                # prepend missing name to dict
+                import copy
+                cmap.pop(_missing_value)
+                cmap_copy = copy.copy(cmap)
+                cmap = {_missing_name: missing_color}
+                for key, hexcolor in cmap_copy.items():
+                    cmap[key] = hexcolor
 
-            # set internal variables
-            _colorby, _attribute = f'{title}_color', attribute
+            # _legend_title = legend_title if legend_title else title
+            _legend_title = legend_title
+            if not _legend_title or _legend_title == 'Legend':
+                _legend_title = _legend_title + f' (attribute: {_attribute})'
+            legend_figure = masci_tools.vis.plot_methods.plot_colortable(colors=cmap,
+                                                                         title=_legend_title,
+                                                                         sort_colors=False)
 
-            # add custom colormap column
-            ptable[_colorby] = ptable[title].map(cmap)
-
-            if with_legend:
-                # for the legend color map, we want to use the missing_name instead of the missing_value,
-                # and put it first. So, got to repopultate the custom colormap.
-                if filled_in:
-                    _missing_name = missing_name if missing_name else missing_value
-                    # prepend missing name to dict
-                    import copy
-                    cmap.pop(missing_value)
-                    cmap_copy = copy.copy(cmap)
-                    cmap = {_missing_name: missing_color}
-                    for key, hexcolor in cmap_copy.items():
-                        cmap[key] = hexcolor
-
-                _legend_title = legend_title if legend_title else title
-                legend_figure = masci_tools.vis.plot_methods.plot_colortable(colors=cmap,
-                                                                             title=_legend_title,
-                                                                             sort_colors=False)
-
-                # save legend figure if specified
-                if output != 'notebook':
-                    import os
-                    import matplotlib.pyplot as plt
-                    output_legend = os.path.splitext(output)
-                    output_legend = output_legend[0] + '_legend'
-                    plt.savefig(output_legend)
+            # save legend figure if specified
+            if output and output != 'notebook':
+                import os
+                import matplotlib.pyplot as plt
+                output_legend = os.path.splitext(output)
+                output_legend = output_legend[0] + '_legend'
+                plt.savefig(output_legend)
 
         # finally, draw the plot(s)
-        mendeleev.plotting.periodic_plot(df=ptable,
-                                         attribute=_attribute,
-                                         title=title,
-                                         width=size[0],
-                                         height=size[1],
-                                         missing=missing_color,
-                                         colorby=_colorby,
-                                         output=None,
-                                         cmap=colormap,
-                                         showfblock=showfblock,
-                                         long_version=long_version)
+        mendeleev.plotting.periodic_plot(
+            df=ptable,
+            attribute=_attribute,
+            title=title,
+            width=size[0],
+            height=size[1],
+            missing=missing_color,
+            colorby=_colorby,
+            output=None,
+            # cmap=colormap,
+            showfblock=showfblock,
+            long_version=long_version)
         return legend_figure
 
     def _sort(self, a_dict, by_key=False):
