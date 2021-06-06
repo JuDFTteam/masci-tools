@@ -2,7 +2,7 @@
 """
 Tests of the plotter base class
 """
-from masci_tools.vis import Plotter, ensure_plotter_consistency
+from masci_tools.vis.parameters import Plotter, ensure_plotter_consistency
 import pytest
 
 TEST_DICT = {'A': {'test1': 12, 'test2': 4}, 'B': 3.0, 'C': 'title'}

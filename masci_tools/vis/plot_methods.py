@@ -31,7 +31,7 @@ For the definition of the defaults refer to :py:class:`~masci_tools.vis.matplotl
 # Write/export data to file for all methods
 
 from .matplotlib_plotter import MatplotlibPlotter
-from masci_tools.vis import ensure_plotter_consistency, NestedPlotParameters
+from .parameters import ensure_plotter_consistency, NestedPlotParameters
 import warnings
 import copy
 import typing

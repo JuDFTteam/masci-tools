@@ -14,8 +14,8 @@
 Here are general and special bokeh plots to use
 
 """
-from masci_tools.vis.bokeh_plotter import BokehPlotter
-from masci_tools.vis import ensure_plotter_consistency, NestedPlotParameters
+from .bokeh_plotter import BokehPlotter
+from .parameters import ensure_plotter_consistency, NestedPlotParameters
 
 import pandas as pd
 from pprint import pprint

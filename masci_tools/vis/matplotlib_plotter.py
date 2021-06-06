@@ -11,9 +11,9 @@
 #                                                                             #
 ###############################################################################
 """
-This module contains a subclass of :py:class:`~masci_tools.vis.Plotter` for the matplotlib library
+This module contains a subclass of :py:class:`~masci_tools.vis.parameters.Plotter` for the matplotlib library
 """
-from masci_tools.vis import Plotter, _generate_plot_parameters_table
+from .parameters import Plotter, _generate_plot_parameters_table
 import matplotlib.pyplot as plt
 from matplotlib import cm
 import copy
@@ -27,7 +27,7 @@ class MatplotlibPlotter(Plotter):
     Kwargs in the __init__ method are forwarded to setting default values for the instance
 
     For specific documentation about the parameter/defaults handling refer to
-    :py:class:`~masci_tools.vis.Plotter`.
+    :py:class:`~masci_tools.vis.parameters.Plotter`.
 
     Below the current defined default values are shown:
 
