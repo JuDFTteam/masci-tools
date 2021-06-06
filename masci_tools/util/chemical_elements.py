@@ -832,7 +832,7 @@ class ChemicalElements:
              missing_value=None,
              missing_color: str = '#bfbfbf',
              missing_name: str = 'Missing',
-             colormap: str = 'RdBu_r',
+             colormap='RdBu_r',
              size: tuple = (1000, 800),
              output: str = None,
              showfblock: bool = True,
@@ -867,7 +867,8 @@ class ChemicalElements:
         :type missing_value: str or numeric. Prefer same type as coloring input (group names or attribute).
         :param missing_color: Hex code of the color to be used for the missing values (#ffffff white, #bfbfbf gray)
         :param missing_name: Name to be used for missing values in the legend. If empty, will use missing_value.
-        :param colormap: name of seaborn or matplotlib colormap.
+        :param colormap: name of seaborn or matplotlib colormap, or dictionary {value : hexcolor string}.
+        :param colormap: str or dict.
         :param size: tuple (width, height) of the table figure in pixels
         :param output: Optional output, e.g. 'img/table.html'. If legend, will also save 'img/table_legend.png'.
         :param showfblock: Show the elements from the f block
@@ -879,12 +880,15 @@ class ChemicalElements:
         # validate inputs
         valid_colorby_values = ['group', 'attribute']
         valid_attributes = self.list_of_attributes()
+        valid_colormap_types = (str, dict)
         if colorby not in valid_colorby_values:
-            raise KeyError(f"Specified argument colorby='{colorby}', but must be one of {valid_colorby_values}.")
+            raise KeyError(f"Specified argument 'colorby'='{colorby}', but must be one of {valid_colorby_values}.")
         if attribute != title and attribute not in valid_attributes:
-            raise KeyError(
-                f"Specified argument 'attribute'='{attribute}', but must either be one of {valid_attributes}, "
-                f"or equal 'title' argument.")
+            raise KeyError(f"Specified argument 'attribute'='{attribute}', but must be one of {valid_attributes}, "
+                           f"or equal argument of parameter 'title'.")
+        if not isinstance(colormap, valid_colormap_types):
+            raise TypeError(f"Specified argument 'colormap' of type {type(colormap)}, "
+                            f'but must be one of {valid_colormap_types}.')
 
         # imports
         from matplotlib import colors
@@ -969,27 +973,45 @@ class ChemicalElements:
                 for symbol in group.keys():
                     ptable.loc[ptable['symbol'] == symbol, [title]] = group_key
 
+        values = sorted(ptable[title].dropna().unique())
         filled_in, _missing_value = _deal_with_missing_values()
 
-        # let pandas convert values to most sensible types
-        # example use case: when group names are integer, legend would display them as floats without this.
-        ptable[title] = ptable[title].convert_dtypes()
+        # # let pandas convert values to most sensible types
+        # # Example use case: when group names are integer, legend would display them as floats without this.
+        # ptable[title] = ptable[title].convert_dtypes()
+        # DEVnote: Commented out, cause this also converts NaN into pandas.NA, and mendeleev ploting method
+        # can't deal with the latter. And seems like legend int problem above solved itself without this.
 
         # create custom color map for the title column
-        values = sorted(ptable[title].dropna().unique())
-        cmap = {
-            key: colors.rgb2hex(rgb)
-            for key, rgb in zip(values, sns.color_palette(palette=colormap, n_colors=len(values)))
-        }
+        _colormap_name = colormap
+        _colormap = None
+        if isinstance(colormap, dict):
+            # check if colormap can cover item values. must be a superset or true superset.
+            if all(val in colormap.keys() for val in values):
+                _colormap_name = None
+                import copy
+                _colormap = copy.copy(colormap)
+            else:
+                _colormap_name = 'RdBu_r'
+                print('Warning: Specified colormap does not cover all values to be colorized. '
+                      f"Will fall back to mendeleev standard colormap '{_colormap_name}'."
+                      f'\nSpecified Colormap: {colormap}'
+                      f'\nValues to be colorized: {values}')
+
+        if not _colormap or isinstance(colormap, str):
+            _colormap = {
+                key: colors.rgb2hex(rgb)
+                for key, rgb in zip(values, sns.color_palette(palette=_colormap_name, n_colors=len(values)))
+            }
 
         if filled_in:
-            if missing_color in cmap.values():
+            if missing_color in _colormap.values():
                 print(f"Warning: Specified missing color value '{missing_color}' overwrites existing "
                       f'color value. Better choose another one.')
-            cmap[_missing_value] = missing_color
+            _colormap[_missing_value] = missing_color
 
         # add custom colormap column
-        ptable[_colorby] = ptable[title].map(cmap)
+        ptable[_colorby] = ptable[title].map(_colormap)
 
         if with_legend:
             # for the legend color map, we want to use the missing_name instead of the missing_value,
@@ -998,17 +1020,17 @@ class ChemicalElements:
                 _missing_name = missing_name if missing_name else _missing_value
                 # prepend missing name to dict
                 import copy
-                cmap.pop(_missing_value)
-                cmap_copy = copy.copy(cmap)
-                cmap = {_missing_name: missing_color}
+                _colormap.pop(_missing_value)
+                cmap_copy = copy.copy(_colormap)
+                _colormap = {_missing_name: missing_color}
                 for key, hexcolor in cmap_copy.items():
-                    cmap[key] = hexcolor
+                    _colormap[key] = hexcolor
 
             # _legend_title = legend_title if legend_title else title
             _legend_title = legend_title
             if not _legend_title or _legend_title == 'Legend':
                 _legend_title = _legend_title + f' (attribute: {_attribute})'
-            legend_figure = masci_tools.vis.plot_methods.plot_colortable(colors=cmap,
+            legend_figure = masci_tools.vis.plot_methods.plot_colortable(colors=_colormap,
                                                                          title=_legend_title,
                                                                          sort_colors=False)
 
