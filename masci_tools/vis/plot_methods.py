@@ -349,6 +349,7 @@ def multi_scatter_plot(xdata,
                        xlabel='',
                        ylabel='',
                        title='',
+                       data=None,
                        saveas='mscatterplot',
                        axis=None,
                        **kwargs):
@@ -356,13 +357,14 @@ def multi_scatter_plot(xdata,
     Create a scatter plot with varying marker size
     Info: x, y, size and color data must have the same dimensions.
 
-    :param xdata: arraylike, data for the x coordinate
-    :param ydata: arraylike, data for the y coordinate
-    :param size_data: arraylike, data for the markersizes (optional)
-    :param color_data: arraylike, data for the color values with a colormap (optional)
+    :param xdata: str or arraylike, data for the x coordinate
+    :param ydata: str or arraylike, data for the y coordinate
+    :param size_data: str or arraylike, data for the markersizes (optional)
+    :param color_data: str or arraylike, data for the color values with a colormap (optional)
     :param xlabel: str, label written on the x axis
     :param ylabel: str, label written on the y axis
     :param title: str, title of the figure
+    :param data: Mapping giving the data for the plots (required if data arguments are str)
     :param saveas: str specifying the filename (without file format)
     :param axis: Axes object, if given the plot will be applied to this object
     :param xerr: optional data for errorbar in x-direction
@@ -372,16 +374,10 @@ def multi_scatter_plot(xdata,
     If the arguments are not recognized they are passed on to the matplotlib function `scatter`
     """
 
-    nplots = len(ydata)
-    if nplots != len(xdata):  # todo check dimention not len, without moving to special datatype.
-        print('ydata and xdata must have the same dimension')
-        return
-
-    if not isinstance(ydata[0], (list, np.ndarray, pd.Series)):
-        xdata, ydata, size_data, color_data = [xdata], [ydata], [size_data], [color_data]
+    plot_data = process_data_arguments(data=data, x=xdata, y=ydata, color=color_data, size=size_data)
 
     plot_params.single_plot = False
-    plot_params.num_plots = len(ydata)
+    plot_params.num_plots = len(plot_data)
 
     #DEPRECATION WARNINGS: label/plot_labels, alpha, limits, scale, legend_option, xticks
 
@@ -434,31 +430,29 @@ def multi_scatter_plot(xdata,
 
     legend_elements = []
     legend_labels = []
+    correct_legend = False
 
-    if size_data is None:
-        size_data = [None] * plot_params.num_plots
+    for indx, plot_info in enumerate(zip(plot_data.items(), plot_kwargs)):
 
-    if color_data is None:
-        color_data = [None] * plot_params.num_plots
+        data, plot_kw = plot_info
+        entry, source = data
 
-    for indx, data in enumerate(zip(xdata, ydata, size_data, color_data, plot_kwargs)):
-
-        x, y, size, color, plot_kw = data
-
-        if size is None:
+        if entry.size is None:
             size = plot_params['markersize']
+        else:
+            size = entry.size
 
-        if color is not None:
-            plot_kw.pop('color')
+        if entry.color is not None:
+            correct_legend = True
+            plot_kw.pop('color', None)
 
-        res = ax.scatter(x, y=y, s=size, c=color, **plot_kw, **kwargs)
-        if plot_kw.get('label', None) is not None and color is not None:
-            if isinstance(color, (list, np.ndarray, pd.Series)):
-                if not isinstance(color[0], str):
-                    legend_elements.append(res.legend_elements(num=1)[0][0])
-                    legend_labels.append(plot_kw['label'])
+        res = ax.scatter(entry.x, y=entry.y, s=size, c=entry.color, data=source, **plot_kw, **kwargs)
+        if plot_kw.get('label', None) is not None and entry.color is not None:
+            if not all(isinstance(val, str) for val in source[entry.color]):
+                legend_elements.append(res.legend_elements(num=1)[0][0])
+                legend_labels.append(plot_kw['label'])
 
-    if any(c is not None for c in color_data):
+    if correct_legend:
         legend_elements = (legend_elements, legend_labels)
     else:
         legend_elements = None

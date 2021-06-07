@@ -237,7 +237,10 @@ def process_data_arguments(data, mask=None, use_column_source=False, flatten_np=
         keys = {}
 
         for key, val in kwargs.items():
-            keys[key] = key
+            if val is not None:
+                keys[key] = key
+            else:
+                keys[key] = None
             data = normalize_list_or_array(val, key, data, flatten_np=flatten_np)
     else:
         keys = kwargs
