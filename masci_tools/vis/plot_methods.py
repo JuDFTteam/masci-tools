@@ -153,7 +153,7 @@ def single_scatterplot(xdata,
                 limits_new['y'] = limits[1]
             kwargs['limits'] = limits_new
 
-    plot_data = process_data_arguments(data=data, x=xdata, y=ydata, shift=area_curve, xerr=xerr, yerr=yerr)
+    plot_data = process_data_arguments(single_plot=True,data=data, x=xdata, y=ydata, shift=area_curve, xerr=xerr, yerr=yerr)
 
     plot_params.set_defaults(default_type='function', color='k', plot_label='scatterplot')
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
@@ -468,7 +468,7 @@ def multi_scatter_plot(xdata,
 
 
 @ensure_plotter_consistency(plot_params)
-def colormesh_plot(xdata, ydata, cdata, *, xlabel='', ylabel='', title='', saveas='colormesh', axis=None, **kwargs):
+def colormesh_plot(xdata, ydata, cdata, *, xlabel='', ylabel='', title='', data=None, saveas='colormesh', axis=None, **kwargs):
     """
     Create plot with pcolormesh
 
@@ -493,13 +493,16 @@ def colormesh_plot(xdata, ydata, cdata, *, xlabel='', ylabel='', title='', savea
         limits['y'] = (ydata.min(), ydata.max())
     kwargs['limits'] = limits
 
+    plot_data = process_data_arguments(single_plot=True,data=data, x=xdata, y=ydata, color=cdata, forbid_split_up={'color'})
+
     plot_params.set_defaults(default_type='function', edgecolor='face')
     kwargs = plot_params.set_parameters(continue_on_error=True, area_plot=False, **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
     plot_kwargs = plot_params.plot_kwargs(plot_type='colormesh')
+    entry, source = plot_data.getfirst()
 
-    ax.pcolormesh(xdata, ydata, cdata, **plot_kwargs, **kwargs)
+    ax.pcolormesh(entry.x, entry.y, entry.color, data=source, **plot_kwargs, **kwargs)
 
     plot_params.set_scale(ax)
     plot_params.set_limits(ax)

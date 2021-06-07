@@ -183,7 +183,7 @@ class PlotData:
         raise NotImplementedError
 
 
-def normalize_list_or_array(data, key, out_data, flatten_np=False):
+def normalize_list_or_array(data, key, out_data, flatten_np=False, forbid_split_up=False):
 
     LIST_TYPES = (list, np.ndarray, pd.Series)
 
@@ -191,7 +191,7 @@ def normalize_list_or_array(data, key, out_data, flatten_np=False):
         data = data.flatten()
 
     if isinstance(data, LIST_TYPES):
-        if isinstance(data[0], LIST_TYPES):
+        if isinstance(data[0], LIST_TYPES) and not forbid_split_up:
             #Split up
             if isinstance(out_data, list):
                 if len(out_data) != len(data):
@@ -223,7 +223,7 @@ def normalize_list_or_array(data, key, out_data, flatten_np=False):
     return out_data
 
 
-def process_data_arguments(data, mask=None, use_column_source=False, flatten_np=False, **kwargs):
+def process_data_arguments(data, single_plot=False, mask=None, use_column_source=False, flatten_np=False, forbid_split_up=None, **kwargs):
     """
     Initialize PlotData from np.arrays or lists of np.arrays or lists
 
@@ -231,6 +231,9 @@ def process_data_arguments(data, mask=None, use_column_source=False, flatten_np=
 
 
     """
+
+    if forbid_split_up is None:
+        forbid_split_up = set()
 
     if data is None:
         data = {}
@@ -241,8 +244,14 @@ def process_data_arguments(data, mask=None, use_column_source=False, flatten_np=
                 keys[key] = key
             else:
                 keys[key] = None
-            data = normalize_list_or_array(val, key, data, flatten_np=flatten_np)
+            data = normalize_list_or_array(val, key, data, flatten_np=flatten_np, forbid_split_up=key in forbid_split_up)
     else:
         keys = kwargs
 
-    return PlotData(data, mask=mask, use_column_source=use_column_source, **keys)
+    p_data = PlotData(data, mask=mask, use_column_source=use_column_source, **keys)
+
+    if len(p_data) != 1 and single_plot:
+        raise ValueError(f'Got multiple data sets ({len(p_data)}) but expected 1')
+
+    return p_data
+
