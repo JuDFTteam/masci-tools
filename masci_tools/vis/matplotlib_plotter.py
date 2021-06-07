@@ -129,6 +129,7 @@ class MatplotlibPlotter(Plotter):
         'colorbar_padding': 0.1,
         # legend properties
         'legend': False,
+        'legend_show_data_labels': False,
         'legend_options': {
             'fontsize': 'large',
             'linewidth': 3.0,
@@ -264,6 +265,8 @@ class MatplotlibPlotter(Plotter):
         # legend properties
         'legend':
         'If True a legend for the plot is shown',
+        'legend_show_data_labels':
+        'If True the column names from the data argument are shown if not overwritten',
         'legend_options':
         'Parameters for displaying the legend (Fontsize, location, ...)',
 
@@ -428,6 +431,15 @@ class MatplotlibPlotter(Plotter):
             else:
                 plot_kwargs.pop('area_alpha', None)
                 plot_kwargs.pop('area_linecolor', None)
+
+
+        if not self['legend_show_data_labels']:
+            if not self.single_plot:
+                for index, value in enumerate(plot_kwargs):
+                    if 'label' not in value:
+                        value['label'] = None
+            elif 'label' not in plot_kwargs:
+                plot_kwargs['label'] = None
 
         return plot_kwargs
 

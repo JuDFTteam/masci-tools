@@ -169,7 +169,6 @@ def single_scatterplot(xdata,
     # TODO customizable error bars fmt='o', ecolor='g', capthick=2, ...
     # there the if is prob better...
     plot_kwargs = plot_params.plot_kwargs()
-
     entry, source = plot_data.getfirst()
 
     if plot_params['area_plot']:
@@ -211,21 +210,23 @@ def multiple_scatterplots(xdata,
                           xlabel='',
                           ylabel='',
                           title='',
+                          data=None,
                           saveas='mscatterplot',
                           axis=None,
                           xerr=None,
                           yerr=None,
-                          area_curve=None,
+                          area_curve=0,
                           **kwargs):
     """
     Create a standard scatter plot with multiple sets of data (this should be flexible enough)
     to do all the basic plots.
 
-    :param xdata: arraylike, data for the x coordinate
-    :param ydata: arraylike, data for the y coordinate
+    :param xdata: str or arraylike, data for the x coordinate
+    :param ydata: str or arraylike, data for the y coordinate
     :param xlabel: str, label written on the x axis
     :param ylabel: str, label written on the y axis
     :param title: str, title of the figure
+    :param data: Mapping giving the data for the plots (required if xdata and ydata are str)
     :param saveas: str specifying the filename (without file format)
     :param axis: Axes object, if given the plot will be applied to this object
     :param xerr: optional data for errorbar in x-direction
@@ -238,16 +239,10 @@ def multiple_scatterplots(xdata,
     (`errorbar` or `fill_between`)
     """
 
-    nplots = len(ydata)
-    if nplots != len(xdata):  # todo check dimention not len, without moving to special datatype.
-        print('ydata and xdata must have the same dimension')
-        return
-
-    if not isinstance(ydata[0], (list, np.ndarray, pd.Series)):
-        xdata, ydata = [xdata], [ydata]
+    plot_data = process_data_arguments(data=data, x=xdata, y=ydata, shift=area_curve, xerr=xerr, yerr=yerr)
 
     plot_params.single_plot = False
-    plot_params.num_plots = len(ydata)
+    plot_params.num_plots = len(plot_data)
 
     #DEPRECATION WARNINGS
     if 'plot_labels' in kwargs:
@@ -300,47 +295,21 @@ def multiple_scatterplots(xdata,
     plot_kwargs = plot_params.plot_kwargs()
     colors = []
 
-    for indx, data in enumerate(zip(xdata, ydata, plot_kwargs)):
+    for indx, plot_info in enumerate(zip(plot_data.items(), plot_kwargs)):
 
-        x, y, plot_kw = data
+        data, plot_kw = plot_info
+        entry, source = data
 
         if plot_params['repeat_colors_after'] is not None:
             if indx >= plot_params['repeat_colors_after']:
                 plot_kw['color'] = colors[indx % plot_params['repeat_colors_after']]
 
-        if isinstance(yerr, list):
-            try:
-                yerrt = yerr[indx]
-            except IndexError:
-                yerrt = yerr[0]
-        else:
-            yerrt = yerr
-
-        if isinstance(xerr, list):
-            try:
-                xerrt = xerr[indx]
-            except IndexError:
-                xerrt = xerr[0]
-        else:
-            xerrt = xerr
-
-        if area_curve is not None:
-            if isinstance(area_curve, list):
-                try:
-                    shift = area_curve[indx]
-                except IndexError:
-                    shift = area_curve[0]
-            else:
-                shift = area_curve
-        else:
-            shift = 0
-
         if plot_params[('area_plot', indx)]:
             linecolor = plot_kw.pop('area_linecolor', None)
             if plot_params[('area_vertical', indx)]:
-                result = ax.fill_betweenx(y, x, x2=shift, **plot_kw, **kwargs)
+                result = ax.fill_betweenx(entry.y, entry.x, x2=entry.shift, data=source, **plot_kw, **kwargs)
             else:
-                result = ax.fill_between(x, y, y2=shift, **plot_kw, **kwargs)
+                result = ax.fill_between(entry.x, entry.y, y2=entry.shift, data=source, **plot_kw, **kwargs)
             colors.append(result.get_facecolor()[0])
             plot_kw.pop('alpha', None)
             plot_kw.pop('label', None)
@@ -348,16 +317,18 @@ def multiple_scatterplots(xdata,
             if plot_params[('area_enclosing_line', indx)]:
                 if linecolor is None:
                     linecolor = result.get_facecolor()[0]
-                ax.errorbar(x,
-                            y,
-                            yerr=yerrt,
-                            xerr=xerrt,
+                ax.errorbar(entry.x,
+                            entry.y,
+                            yerr=entry.yerr,
+                            xerr=entry.xerr,
                             alpha=plot_params[('plot_alpha', indx)],
                             color=linecolor,
+                            data=source,
+                            label=None,
                             **plot_kw,
                             **kwargs)
         else:
-            result = ax.errorbar(x, y, yerr=yerrt, xerr=xerrt, **plot_kw, **kwargs)
+            result = ax.errorbar(entry.x, entry.y, yerr=entry.yerr, xerr=entry.xerr, data=source, **plot_kw, **kwargs)
             colors.append(result.lines[0].get_color())
 
     plot_params.set_scale(ax)

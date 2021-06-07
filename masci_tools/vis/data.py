@@ -185,7 +185,7 @@ class PlotData:
 
 def normalize_list_or_array(data, key, out_data, flatten_np=False):
 
-    LIST_TYPES = (list, np.ndarray)
+    LIST_TYPES = (list, np.ndarray, pd.Series)
 
     if isinstance(data, np.ndarray) and flatten_np:
         data = data.flatten()
