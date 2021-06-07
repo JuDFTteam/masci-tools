@@ -25,7 +25,7 @@ class ChemicalElementsPlottingProfile:
     to and loaded from a JSON file for reuse as well.
 
     :param profile_name: name of the profile
-    :param values_range: list of numeric, sorted, unique values. Must contain at least all plotted attribute values.
+    :param values_range: list of sortable, unique values. Must contain at least all plotted attribute values.
     :param missing_value: Value to set for missing elements.
     :param missing_name: Name to set for missing elements in legend.
     :param title_prefix: If set, will be preprended to plot title.
@@ -978,7 +978,7 @@ class ChemicalElements:
              selected_groups: list = None,
              title: str = '',
              colorby: str = 'group',
-             attribute: str = 'atomic_weight',
+             attribute: str = None,
              missing_value=None,
              missing_color: str = '#bfbfbf',
              missing_name: str = 'Missing',
@@ -999,12 +999,12 @@ class ChemicalElements:
         group assignment within this instance. If there are no groups (i.e., flat not nested), then all present elements
         will have one color. If selected groups is None, will include all of the instance's groups.
 
-        The numeric value to display below each element is controlled via the 'attribute' parameter. Apart from
-        physical attributes, group names can also be chosen to be displayed, if they are numeric (not numeric strings).
+        The value to display below each element is controlled via the 'attribute' parameter. Apart from
+        physical attributes, group names can also be chosen to be displayed, if they are numeric.
         To do that, set the same value (argument) for the 'attribute' and 'title' parameters.
 
-        If the group names are not numeric, but you want to display them nonetheless, you can still do so by setting
-        the 'with_legend' attribute to True.
+        If the title and attribute rendering are not enough, an additional matplotlib figure, acting as legend,
+        can be returned.
 
         For available colormap names, see:
 
@@ -1057,11 +1057,17 @@ class ChemicalElements:
                 _output = pp.output_prefix + output if (output and pp.output_prefix) else output
                 _legend_title = pp.legend_title_prefix + legend_title if (legend_title and
                                                                           pp.legend_title_prefix) else legend_title
-                _missing_value = pp.missing_value if pp.missing_value else missing_value
+                _missing_value = pp.missing_value if pp.missing_value is not None else missing_value
                 _missing_name = pp.missing_name if pp.missing_name else missing_name
                 _missing_color = pp.missing_color if pp.missing_color else missing_color
                 _colorby = pp.colorby if pp.colorby else colorby
-                _attribute = pp.attribute if pp.attribute else attribute
+                if pp.attribute:
+                    _attribute = pp.attribute
+                else:
+                    if attribute == title and pp.title_prefix:
+                        _attribute = pp.title_prefix + attribute
+                    else:
+                        _attribute = attribute
                 _colormap_name = pp.colormap_name if pp.colormap_name else colormap_name
                 _colormap = copy.copy(pp.colormap) if pp.colormap else _colormap
                 _size = pp.size if pp.size else size
