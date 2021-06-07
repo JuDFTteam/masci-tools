@@ -20,7 +20,7 @@ from functools import wraps
 from contextlib import contextmanager
 from collections import ChainMap
 import warnings
-
+import json
 
 @contextmanager
 def NestedPlotParameters(plotter_object):
@@ -505,6 +505,36 @@ class Plotter(object):
 
         self._added_parameters.add(name)
         self._function_defaults[name] = default_val
+
+    def save_defaults(self, filename='plot_defaults.json', save_complete=False):
+        """
+        Save the current defaults to a json file.
+
+        :param filename: filename, where the defaults should be stored
+        :param save_complete: bool if True not only the overwritten user defaults
+                              but also the unmodified harcoded defaults are stored
+        """
+        if save_complete:
+            if self._function_defaults != {}:
+                raise ValueError('Function defaults need to be empty before saving defaults')
+            dict_to_save = dict(self._params.parents)
+        else:
+            dict_to_save = self._user_defaults
+
+        with open(filename, 'w') as file:
+            json.dump(dict_to_save, file, indent=4, sort_keys=True)
+
+    def load_defaults(self, filename='plot_defaults.json'):
+        """
+        Load defaults from a json file.
+
+        :param filename: filename,from  where the defaults should be taken
+        """
+        with open(filename, 'r') as file:
+            param_dict = json.load(file)
+
+        self.set_defaults(**param_dict)
+
 
     def remove_added_parameters(self):
         """
