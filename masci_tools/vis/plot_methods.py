@@ -485,15 +485,15 @@ def colormesh_plot(xdata, ydata, cdata, *, xlabel='', ylabel='', title='', data=
     If the arguments are not recognized they are passed on to the matplotlib function `pcolormesh`
     """
 
+    plot_data = process_data_arguments(single_plot=True,data=data, x=xdata, y=ydata, color=cdata, forbid_split_up={'x','y','color'})
+
     #Set default limits (not setting them leaves empty border)
     limits = kwargs.pop('limits', {})
     if 'x' not in limits:
-        limits['x'] = (xdata.min(), xdata.max())
+        limits['x'] = (plot_data.min('x'), plot_data.max('x'))
     if 'y' not in limits:
-        limits['y'] = (ydata.min(), ydata.max())
+        limits['y'] = (plot_data.min('y'), plot_data.max('y'))
     kwargs['limits'] = limits
-
-    plot_data = process_data_arguments(single_plot=True,data=data, x=xdata, y=ydata, color=cdata, forbid_split_up={'color'})
 
     plot_params.set_defaults(default_type='function', edgecolor='face')
     kwargs = plot_params.set_parameters(continue_on_error=True, area_plot=False, **kwargs)
