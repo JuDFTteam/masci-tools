@@ -36,6 +36,7 @@ class ChemicalElementsPlottingProfile:
     :param without_attribute: Do not display the attribute values below the elements.
     :param colormap_name: Name of seaborn or matplotlib colormap.
     :param missing_color: Hex code of the color to be used for the missing values (#ffffff white, #bfbfbf light gray).
+    :param missing_group_value: If colorby 'group' and instance is flat, this correct missing colorisation.
     :param colormap: Dictionary {value : hexcolor string}. If not specified, created from value_range and map name.
     :param size: Tuple (width, height) of the table figure in pixels.
     :param showfblock: Show the elements from the f block
@@ -55,12 +56,13 @@ class ChemicalElementsPlottingProfile:
     attribute: str = 'atomic_weight'
     without_attribute: bool = False
     colormap_name: str = 'PiYG'
-    missing_color: str = '#404040'
+    missing_color: str = '#404040'  # dark gray
+    missing_group_value: object = 1
     colormap: dict = _field({})
     size: tuple = _field(())
     showfblock: bool = True
     long_version: bool = False
-    with_legend: bool = True
+    with_legend: bool = False
     _version: int = 1
     _cls_name: str = ''
 
@@ -240,8 +242,13 @@ class ChemicalElements:
                     self.__data = {group_name: None for group_name in group_names}
 
     def is_flat(self):
-        """True if 'elmts' is dict of chemical elements, False if a dict of groups of such.
+        """True if 'elmts' attribute is flat dict of chemical elements, False if a dict of groups of such ('nested').
         """
+        # DEVnote: CE considers elmts with one group as flat dict, and with more than one as nested. CE's interface
+        # changes accordingly. kyes() on a flat dict will return element names, and group names on a nested dict.
+        # That is, CE 'hides' the group structure if there is only a single group. CE does not care about the name
+        # of the single group. The initial name for the group of a flat CE is the empty string. It can be renamed,
+        # and the instance will remain flat.
         return (not list(self.__elmts.keys())) or (list(self.__elmts.keys()) == ['']) or (len(self.__elmts.keys()) == 1)
 
     @property
@@ -985,13 +992,14 @@ class ChemicalElements:
              missing_value=None,
              missing_color: str = '#bfbfbf',
              missing_name: str = 'Missing',
+             missing_group_value=1,
              colormap_name: str = 'RdBu_r',
              colormap: dict = None,
              size: tuple = (1000, 800),
              output: str = None,
              showfblock: bool = True,
              long_version: bool = False,
-             with_legend: bool = True,
+             with_legend: bool = False,
              legend_title: str = 'Legend',
              use_plotting_profile: bool = True):
         """Plot elements in a periodic table, missing elements greyed out.
@@ -1023,6 +1031,7 @@ class ChemicalElements:
         :type missing_value: str or numeric. Prefer same type as coloring input (group names or attribute).
         :param missing_color: Hex code of the color to be used for the missing values (#ffffff white, #bfbfbf light gray).
         :param missing_name: Name to be used for missing values in the legend. If empty, will use missing_value.
+        :param missing_group_value: If colorby 'group' and instance is flat, this correct missing colorisation.
         :param colormap_name: Name of seaborn or matplotlib colormap.
         :param colormap: Dictionary {value : hexcolor string}. If not specified, created from colormap_name.
         :param size: Tuple (width, height) of the table figure in pixels.
@@ -1042,6 +1051,7 @@ class ChemicalElements:
         _missing_value = missing_value
         _missing_name = missing_name
         _missing_color = missing_color
+        _missing_group_value = missing_group_value
         _colorby = colorby
         _attribute = attribute
         _without_attribute = without_attribute
@@ -1065,6 +1075,7 @@ class ChemicalElements:
                 _missing_value = pp.missing_value if pp.missing_value is not None else missing_value
                 _missing_name = pp.missing_name if pp.missing_name else missing_name
                 _missing_color = pp.missing_color if pp.missing_color else missing_color
+                _missing_group_value = pp.missing_group_value if pp.missing_group_value else missing_group_value
                 _colorby = pp.colorby if pp.colorby else colorby
                 if pp.attribute:
                     _attribute = pp.attribute
@@ -1086,7 +1097,7 @@ class ChemicalElements:
         valid_attributes = self.list_of_attributes()
         if _colorby not in valid_colorby_values:
             raise KeyError(f"Specified argument 'colorby'='{_colorby}', but must be one of {valid_colorby_values}.")
-        if _attribute != _title and _attribute not in valid_attributes and _attribute is not None:
+        if _attribute != _title and _attribute not in valid_attributes:
             raise KeyError(f"Specified argument 'attribute'='{_attribute}', but must be one of {valid_attributes}, "
                            f"or equal argument of parameter 'title'.")
 
@@ -1100,6 +1111,7 @@ class ChemicalElements:
         # init output for notebook. if not notebook, this won't have any effect.
         bokeh.plotting.output_notebook()
 
+        # set up file output
         _output_mendel = _output
         _output_ext = '.html'
         if _output_mendel:
@@ -1116,7 +1128,16 @@ class ChemicalElements:
         # get instance's elements, nested or flat
         groups = self.select_groups(selected_groups, include_special_elements=False)
 
-        # get the periodic table dataframe
+        # correct for a particular ChemicalElements quirk: if the CE instance was created flat and
+        # groups unchanged, it will (at current implementation) have one single group name, the empty string.
+        # If colorby group, this will lead to mendeleev plotting a white table. To prevent that, could either
+        # rename the group in the instance, or better rename it in the extracted dict, leaving the CE instance
+        # invariant.
+        if _colorby == 'group' and (list(self.__elmts.keys()) == ['']):
+            elements = groups.pop('')
+            groups[_missing_group_value] = elements
+
+            # get the periodic table dataframe
         ptable = self._get_mendeleev_periodic_table()
 
         # check some conditionals
