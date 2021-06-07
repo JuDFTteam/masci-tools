@@ -11,11 +11,68 @@
 #                                                                             #
 ###############################################################################
 """This module contains a simple class for set-like chemical elements enumeration."""
-import dataclasses as dc
+import dataclasses as _dc
+import numpy as _np
+import masci_tools.vis.plot_methods as _plot_methods
 
-import numpy
 
-import masci_tools.vis.plot_methods
+@_dc.dataclass(init=True, repr=True, eq=True, order=False, frozen=False)
+class ChemicalElementsPlottingProfile:
+    """"For reusing plotting settings over several plots. Serializable.
+
+    Instances of this class can be used as input to the :py:meth:`~masci_tools.util.chemical_elements.ChemicalElements.plot`
+    method, to simplify reusing non-changing argumments over a series of periodic table plots. The profile can be saved
+    to and loaded from a JSON file for reuse as well.
+
+    :param profile_name: name of the profile
+    :param values_range: list of numeric, sorted, unique values. Must contain at least all plotted attribute values.
+    :param missing_value: Value to set for missing elements.
+    :param missing_name: Name to set for missing elements in legend.
+    :param title_prefix: If set, will be preprended to plot title.
+    :param output_prefix: If set, will be prepended to plot output filepath.
+    :param legend_title_prefix: If set, will be prepended to legend title.
+    :param colorby: 'group': Colormap by selected groups, 'attribute': by mendeleev periodic table attribute.
+    :param attribute: Attribute's value displayed below elements. Either PTE attribute, or group values.
+    :param colormap_name: Name of seaborn or matplotlib colormap.
+    :param missing_color: Hex code of the color to be used for the missing values (#ffffff white, #bfbfbf light gray).
+    :param colormap: Dictionary {value : hexcolor string}. If not specified, created from value_range and map name.
+    :param size: Tuple (width, height) of the table figure in pixels.
+    :param showfblock: Show the elements from the f block
+    :param long_version: Show the long version of the periodic table with the f block between the s and d blocks.
+    :param with_legend: True: return extra matplotlib figure = legend. plot(...) will render it below the table.
+    """
+    from masci_tools.util.python_util import dataclass_default_field as _field
+
+    profile_name: str = ''
+    values_range: list = _field([])
+    missing_value: object = None
+    missing_name: str = 'Missing'
+    title_prefix: str = None
+    output_prefix: str = None
+    legend_title_prefix: str = None
+    colorby: str = 'group'
+    attribute: str = 'atomic_weight'
+    colormap_name: str = 'PiYG'
+    missing_color: str = '#404040'
+    colormap: dict = _field({})
+    size: tuple = _field(())
+    showfblock: bool = True
+    long_version: bool = False
+    with_legend: bool = True
+    _version: int = 1
+
+    def __post_init__(self):
+        """Create colormap from values_range, if the former was not specified."""
+        if not self.colormap and self.values_range:
+            import seaborn as sns
+            import matplotlib.colors
+            self.colormap = {
+                key: matplotlib.colors.rgb2hex(rgb) for key, rgb in zip(
+                    self.values_range, sns.color_palette(palette=self.colormap_name, n_colors=len(self.values_range)))
+            }
+
+    def save(self, filepath):
+        raise NotImplementedError()
 
 
 class ChemicalElements:
@@ -72,6 +129,18 @@ class ChemicalElements:
         >>> assert a.union(b) == ChemicalElements(d.flatten())
         >>> assert e.complement() == c
         """
+        # Define all attributes.
+        # Also see public properties defined below.
+        self.distinct = None
+        self._pte = None
+        self._special_elements = None
+        self._special_elements_inv = None
+        self.__elmts = None
+        self.__data = None
+        self.plotting_profile = None
+
+        # Now initialize them.
+
         # property: distinctness
         self.distinct = distinct
 
@@ -824,6 +893,79 @@ class ChemicalElements:
         """Get list of available periodic table attributes from mendeleev."""
         return self._get_mendeleev_periodic_table().columns
 
+    def save_plotting_profile(self, filepath=None, force_overwrite: bool = False):
+        """Save plotting profile for :py:meth:`~masci_tools.util.chemical_elements.ChemicalElements.plot`.
+
+        This allows to reuse a plotting profile later, to keep consistency between plots.
+
+        Current format of the file is JSON.
+
+        :param filepath: where to save the config files.
+        :type filepath: pathlib.Path
+        :param force_overwrite: True: overwrite existing config files. Default False.
+        """
+
+        if not self.plotting_profile:
+            print('Warning: no plotting profile set. I will do nothing.')
+            return
+
+        from masci_tools.util.python_util import JSONEncoderTailoredIndent, NoIndent
+        from pathlib import Path
+
+        if not filepath:
+            filepath = Path.cwd() / 'imp_host_embedding_batches.json'
+
+        # persist
+        import json
+        if filepath.exists() and filepath.is_file():
+            msg = f"File '{filepath}' exists. Force overwrite = {force_overwrite}."
+            msg = f'WARNING: {msg}' if force_overwrite else f'INFO: {msg}'
+            print(msg)
+            if not force_overwrite:
+                return
+
+        import copy
+        data = copy.deepcopy(self.plotting_profile)
+        # assert isinstance(data, ChemicalElementsPlottingProfile) # for autocompletion
+        # prevent lists, dicts, tuples to be item-indented in output JSON
+        data.values_range = NoIndent(data.values_range)
+        data.colormap = NoIndent(data.colormap)
+        data.size = NoIndent(data.size)
+        data = _dc.asdict(data)
+
+        with open(filepath, 'w') as file:
+            file.write(json.dumps(data, cls=JSONEncoderTailoredIndent, indent=4))
+
+    def load_plotting_profile(self, filepath):
+        """Load plotting profile for :py:meth:`~masci_tools.util.chemical_elements.ChemicalElements.plot`.
+
+        :param filepath:
+        :type filepath:
+        :return:
+        :rtype:
+        """
+        from json import JSONDecodeError
+        import json
+
+        try:
+            with open(filepath, 'r') as file:
+                data = json.load(file)
+        except (FileNotFoundError, JSONDecodeError) as err:
+            print(f'File {filepath} not found or JSON decoding -> dict failed.')
+            raise err
+
+        try:
+            data = ChemicalElementsPlottingProfile(**data)
+            # print(type(data)) # for testing
+            self.plotting_profile = data
+            print(f'Successfully loaded plotting profile from file {filepath}.')
+        except Exception as err:  # errors: Attribute, Assertion, ...
+            dummy = ChemicalElementsPlottingProfile()
+            print(f"Failed loading '{ChemicalElementsPlottingProfile.__name__}' from file "
+                  f'{filepath}. Check if file has required version: {dummy._version}. '
+                  f'If this is satisfied, it is otherwise corrupted.')
+            raise err
+
     def plot(self,
              selected_groups: list = None,
              title: str = '',
@@ -832,18 +974,20 @@ class ChemicalElements:
              missing_value=None,
              missing_color: str = '#bfbfbf',
              missing_name: str = 'Missing',
-             colormap='RdBu_r',
+             colormap_name: str = 'RdBu_r',
+             colormap: dict = None,
              size: tuple = (1000, 800),
              output: str = None,
              showfblock: bool = True,
              long_version: bool = False,
              with_legend: bool = True,
-             legend_title: str = 'Legend'):
+             legend_title: str = 'Legend',
+             use_plotting_profile: bool = True):
         """Plot elements in a periodic table, missing elements greyed out.
 
         The colormap for the present elements can be chosen via the 'colorby' parameter in either of two ways:
         A) Colorize them by a physical  attribute. For available periodic table attributes, see
-        :py:meth:`~aiida_jutools.chemical_elements.ChemicalElements.list_of_attributes`. B) Colorize them by their
+        :py:meth:`~masci_tools.util.chemical_elements.ChemicalElements.list_of_attributes`. B) Colorize them by their
         group assignment within this instance. If there are no groups (i.e., flat not nested), then all present elements
         will have one color. If selected groups is None, will include all of the instance's groups.
 
@@ -860,38 +1004,74 @@ class ChemicalElements:
         - https://matplotlib.org/stable/tutorials/colors/colormaps.html
 
         :param selected_groups: If flat and not specified, use all elements in flat elmts, else if nested, a group subset.
-        :param title: Title to appear above the periodic table
-        :param colorby: 'group': by selected groups, 'attribute': by mendeleev periodic table attribute.
-        :param attribute: mendeleev periodic table attribute, corresponding value displayed below each element.
+        :param title: Title to appear above the periodic table.
+        :param colorby: 'group': Colormap by selected groups, 'attribute': by mendeleev periodic table attribute.
+        :param attribute: Attribute's value displayed below elements. Either PTE attribute, or group values.
         :param missing_value: Replaces NaN values, e.g. for custom coloring.
         :type missing_value: str or numeric. Prefer same type as coloring input (group names or attribute).
-        :param missing_color: Hex code of the color to be used for the missing values (#ffffff white, #bfbfbf gray)
+        :param missing_color: Hex code of the color to be used for the missing values (#ffffff white, #bfbfbf light gray).
         :param missing_name: Name to be used for missing values in the legend. If empty, will use missing_value.
-        :param colormap: name of seaborn or matplotlib colormap, or dictionary {value : hexcolor string}.
-        :param colormap: str or dict.
-        :param size: tuple (width, height) of the table figure in pixels
+        :param colormap_name: Name of seaborn or matplotlib colormap.
+        :param colormap: Dictionary {value : hexcolor string}. If not specified, created from colormap_name.
+        :param size: Tuple (width, height) of the table figure in pixels.
         :param output: Optional output, e.g. 'img/table.html'. If legend, will also save 'img/table_legend.png'.
-        :param showfblock: Show the elements from the f block
-        :param long_version: Show the long version of the periodic table with the f block between the s and d blocks
+        :param showfblock: Show the elements from the f block.
+        :param long_version: Show the long version of the periodic table with the f block between the s and d blocks.
         :param with_legend: True: return extra matplotlib figure = legend. plot(...) will render it below the table.
         :param legend_title: If empty, will replace with table title.
-        :return: legend or None
+        :param use_plotting_profile: If a profile has been set, prefer overlay profile arguments over the ones here.
+        :return: Legend or None.
         """
+        import copy
+
+        _title = title
+        _output = output
+        _legend_title = legend_title
+        _missing_value = missing_value
+        _missing_name = missing_name
+        _missing_color = missing_color
+        _colorby = colorby
+        _attribute = attribute
+        _colormap_name = colormap_name
+        _colormap = copy.copy(colormap)
+        _size = size
+        _showfblock = showfblock
+        _long_version = long_version
+        _with_legend = with_legend
+
+        if use_plotting_profile:
+            if not self.plotting_profile:
+                print('Warning: no plotting profile set. I will fall back to method arguments.')
+            else:
+                pp = self.plotting_profile
+                # assert isinstance(pp, ChemicalElementsPlottingProfile) # for autocompletion
+                _title = pp.title_prefix + title if (pp.title_prefix) else title
+                _output = pp.output_prefix + output if (output and pp.output_prefix) else output
+                _legend_title = pp.legend_title_prefix + legend_title if (legend_title and
+                                                                          pp.legend_title_prefix) else legend_title
+                _missing_value = pp.missing_value if pp.missing_value else missing_value
+                _missing_name = pp.missing_name if pp.missing_name else missing_name
+                _missing_color = pp.missing_color if pp.missing_color else missing_color
+                _colorby = pp.colorby if pp.colorby else colorby
+                _attribute = pp.attribute if pp.attribute else attribute
+                _colormap_name = pp.colormap_name if pp.colormap_name else colormap_name
+                _colormap = copy.copy(pp.colormap) if pp.colormap else _colormap
+                _size = pp.size if pp.size else size
+                _showfblock = pp.showfblock if pp.showfblock is not None else showfblock
+                _long_version = pp.long_version if pp.long_version is not None else long_version
+                _with_legend = pp.with_legend if pp.with_legend is not None else with_legend
+
         # validate inputs
         valid_colorby_values = ['group', 'attribute']
         valid_attributes = self.list_of_attributes()
-        valid_colormap_types = (str, dict)
-        if colorby not in valid_colorby_values:
-            raise KeyError(f"Specified argument 'colorby'='{colorby}', but must be one of {valid_colorby_values}.")
-        if attribute != title and attribute not in valid_attributes:
-            raise KeyError(f"Specified argument 'attribute'='{attribute}', but must be one of {valid_attributes}, "
+        if _colorby not in valid_colorby_values:
+            raise KeyError(f"Specified argument 'colorby'='{_colorby}', but must be one of {valid_colorby_values}.")
+        if _attribute != _title and _attribute not in valid_attributes:
+            raise KeyError(f"Specified argument 'attribute'='{_attribute}', but must be one of {valid_attributes}, "
                            f"or equal argument of parameter 'title'.")
-        if not isinstance(colormap, valid_colormap_types):
-            raise TypeError(f"Specified argument 'colormap' of type {type(colormap)}, "
-                            f'but must be one of {valid_colormap_types}.')
 
         # imports
-        from matplotlib import colors
+        import matplotlib.colors
         import seaborn as sns
         import bokeh.plotting
         import mendeleev.plotting
@@ -900,18 +1080,18 @@ class ChemicalElements:
         # init output for notebook. if not notebook, this won't have any effect.
         bokeh.plotting.output_notebook()
 
-        _output = output
+        _output_mendel = _output
         _output_ext = '.html'
-        if _output:
+        if _output_mendel:
             msg_suffix = ''
-            if not _output.endswith(_output_ext):
-                _output = _output + _output_ext
+            if not _output_mendel.endswith(_output_ext):
+                _output_mendel = _output_mendel + _output_ext
                 msg_suffix = f"Info: filepath did not end in extension '{_output_ext}'. Appended it."
-            print(f'Will write HTML table plot to file {_output}. {msg_suffix}')
-            bokeh.plotting.output_file(filename=_output)
+            print(f'Will write HTML table plot to file {_output_mendel}. {msg_suffix}')
+            bokeh.plotting.output_file(filename=_output_mendel)
 
-        # declare inner variables for calling inner plot method
-        _colorby, _attribute = f'{title}_color', None
+        # declare inner variables as arguments for mendeleev plot parameters
+        _colorby_mendel, _attribute_mendel = f'{_title}_color', None
 
         # get instance's elements, nested or flat
         groups = self.select_groups(selected_groups, include_special_elements=False)
@@ -920,27 +1100,26 @@ class ChemicalElements:
         ptable = self._get_mendeleev_periodic_table()
 
         # check some conditionals
-        is_missing_value_numeric = isinstance(missing_value, numbers.Number)
+        is_missing_value_numeric = isinstance(_missing_value, numbers.Number)
 
         def _create_column_from_groups():
             for group_key, group in groups.items():
                 for symbol in group.keys():
-                    ptable.loc[ptable['symbol'] == symbol, [title]] = group_key
+                    ptable.loc[ptable['symbol'] == symbol, [_title]] = group_key
 
-        def _deal_with_missing_values() -> bool:
+        def _deal_with_missing_values(_missing_value) -> bool:
             """Deal with missing values.
 
             :return: True: filled in missing value, False: not.
             """
-            _missing_value = missing_value
             fill_in = False
 
-            is_numeric = all(isinstance(item, numbers.Number) for item in ptable[title].to_list())
+            is_numeric = all(isinstance(item, numbers.Number) for item in ptable[_title].to_list())
 
-            if missing_value is not None:
-                if _missing_value in ptable[title].to_list():
+            if _missing_value is not None:
+                if _missing_value in ptable[_title].to_list():
                     print(f'Warning: Specified missing value {_missing_value} would overwrite existing value in '
-                          f"column '{title}'. Will not replace NaN values with it.")
+                          f"column '{_title}'. Will not replace NaN values with it.")
                 elif is_numeric:
                     fill_in = is_missing_value_numeric
                 else:
@@ -949,32 +1128,32 @@ class ChemicalElements:
                         _missing_value = str(_missing_value)
 
             if fill_in:
-                ptable[title] = ptable[title].fillna(_missing_value)
+                ptable[_title] = ptable[_title].fillna(_missing_value)
             return fill_in, _missing_value
 
         legend_figure = None
 
         # make a new column for the data to be displayed
-        if colorby == 'attribute':
-            _attribute = title
+        if _colorby == 'attribute':
+            _attribute_mendel = _title
 
             # copy attribute col to new title col
-            ptable[title] = ptable[attribute]
+            ptable[_title] = ptable[_attribute]
             # deal with missing values
             # first, replace values of all items not present in groups
             missing_elements = self.complement(selected_groups=selected_groups)
             for symbol in missing_elements:
-                ptable.loc[ptable['symbol'] == symbol, [title]] = numpy.NaN
+                ptable.loc[ptable['symbol'] == symbol, [_title]] = _np.NaN
 
-        elif colorby == 'group':
-            _attribute = attribute
+        elif _colorby == 'group':
+            _attribute_mendel = _attribute
 
             for group_key, group in groups.items():
                 for symbol in group.keys():
-                    ptable.loc[ptable['symbol'] == symbol, [title]] = group_key
+                    ptable.loc[ptable['symbol'] == symbol, [_title]] = group_key
 
-        values = sorted(ptable[title].dropna().unique())
-        filled_in, _missing_value = _deal_with_missing_values()
+        values = sorted(ptable[_title].dropna().unique())
+        filled_in, _missing_value = _deal_with_missing_values(_missing_value)
 
         # # let pandas convert values to most sensible types
         # # Example use case: when group names are integer, legend would display them as floats without this.
@@ -982,75 +1161,69 @@ class ChemicalElements:
         # DEVnote: Commented out, cause this also converts NaN into pandas.NA, and mendeleev ploting method
         # can't deal with the latter. And seems like legend int problem above solved itself without this.
 
-        # create custom color map for the title column
-        _colormap_name = colormap
-        _colormap = None
-        if isinstance(colormap, dict):
+        # for the title column, either use specified colormap, or create custom one from given name
+        if _colormap:
             # check if colormap can cover item values. must be a superset or true superset.
-            if all(val in colormap.keys() for val in values):
-                _colormap_name = None
-                import copy
-                _colormap = copy.copy(colormap)
-            else:
-                _colormap_name = 'RdBu_r'
+            if not all(val in _colormap.keys() for val in values):
+                _standard_colormap_name = 'RdBu_r'
                 print('Warning: Specified colormap does not cover all values to be colorized. '
-                      f"Will fall back to mendeleev standard colormap '{_colormap_name}'."
-                      f'\nSpecified Colormap: {colormap}'
+                      f"Will fall back to mendeleev standard colormap '{_standard_colormap_name}'."
+                      f'\nSpecified Colormap: {_colormap_name}'
                       f'\nValues to be colorized: {values}')
-
-        if not _colormap or isinstance(colormap, str):
+                _colormap_name = _standard_colormap_name
+        else:
+            # create custom colormpa from gien name
             _colormap = {
-                key: colors.rgb2hex(rgb)
+                key: matplotlib.colors.rgb2hex(rgb)
                 for key, rgb in zip(values, sns.color_palette(palette=_colormap_name, n_colors=len(values)))
             }
 
         if filled_in:
-            if missing_color in _colormap.values():
-                print(f"Warning: Specified missing color value '{missing_color}' overwrites existing "
+            if _missing_color in _colormap.values():
+                print(f"Warning: Specified missing color value '{_missing_color}' overwrites existing "
                       f'color value. Better choose another one.')
-            _colormap[_missing_value] = missing_color
+            _colormap[_missing_value] = _missing_color
 
         # add custom colormap column
-        ptable[_colorby] = ptable[title].map(_colormap)
+        ptable[_colorby_mendel] = ptable[_title].map(_colormap)
 
         if with_legend:
             # for the legend color map, we want to use the missing_name instead of the missing_value,
             # and put it first. So, got to repopultate the custom colormap.
             if filled_in:
-                _missing_name = missing_name if missing_name else _missing_value
+                _missing_name_inner = _missing_name if _missing_name else _missing_value
                 # prepend missing name to dict
-                import copy
                 _colormap.pop(_missing_value)
                 cmap_copy = copy.copy(_colormap)
-                _colormap = {_missing_name: missing_color}
+                _colormap = {_missing_name_inner: _missing_color}
                 for key, hexcolor in cmap_copy.items():
                     _colormap[key] = hexcolor
 
             # _legend_title = legend_title if legend_title else title
-            _legend_title = legend_title
-            if not _legend_title or _legend_title == 'Legend':
-                _legend_title = _legend_title + f' (attribute: {_attribute})'
-            legend_figure = masci_tools.vis.plot_methods.plot_colortable(colors=_colormap,
-                                                                         title=_legend_title,
-                                                                         sort_colors=False)
+            _legend_title_inner = _legend_title
+            if not _legend_title_inner or _legend_title_inner == 'Legend':
+                _legend_title_inner = _legend_title_inner + f' (attribute: {_attribute_mendel})'
+            legend_figure = _plot_methods.plot_colortable(colors=_colormap,
+                                                          title=_legend_title_inner,
+                                                          sort_colors=False)
 
             # save legend figure if specified
-            if _output:
+            if _output_mendel:
                 import os
                 import matplotlib.pyplot as plt
-                _output_legend = os.path.splitext(_output)
+                _output_legend = os.path.splitext(_output_mendel)
                 _output_legend = _output_legend[0] + '_legend'
                 plt.savefig(_output_legend)
 
         # finally, draw the plot(s)
         mendeleev.plotting.periodic_plot(df=ptable,
-                                         attribute=_attribute,
-                                         title=title,
-                                         width=size[0],
-                                         height=size[1],
-                                         missing=missing_color,
-                                         colorby=_colorby,
-                                         output=_output,
+                                         attribute=_attribute_mendel,
+                                         title=_title,
+                                         width=_size[0],
+                                         height=_size[1],
+                                         missing=_missing_color,
+                                         colorby=_colorby_mendel,
+                                         output=_output_mendel,
                                          showfblock=showfblock,
                                          long_version=long_version)
         return legend_figure
@@ -1120,7 +1293,7 @@ class ChemicalElements:
             return a_dict
 
 
-@dc.dataclass
+@_dc.dataclass
 class PeriodicTable:
     """Periodic tables for different properties. Properties may be incomplete.
 
