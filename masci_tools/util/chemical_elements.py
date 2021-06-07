@@ -33,6 +33,7 @@ class ChemicalElementsPlottingProfile:
     :param legend_title_prefix: If set, will be prepended to legend title.
     :param colorby: 'group': Colormap by selected groups, 'attribute': by mendeleev periodic table attribute.
     :param attribute: Attribute's value displayed below elements. Either PTE attribute, or group values.
+    :param without_attribute: Do not display the attribute values below the elements.
     :param colormap_name: Name of seaborn or matplotlib colormap.
     :param missing_color: Hex code of the color to be used for the missing values (#ffffff white, #bfbfbf light gray).
     :param colormap: Dictionary {value : hexcolor string}. If not specified, created from value_range and map name.
@@ -52,6 +53,7 @@ class ChemicalElementsPlottingProfile:
     legend_title_prefix: str = None
     colorby: str = 'group'
     attribute: str = 'atomic_weight'
+    without_attribute: bool = False
     colormap_name: str = 'PiYG'
     missing_color: str = '#404040'
     colormap: dict = _field({})
@@ -979,6 +981,7 @@ class ChemicalElements:
              title: str = '',
              colorby: str = 'group',
              attribute: str = None,
+             without_attribute: bool = False,
              missing_value=None,
              missing_color: str = '#bfbfbf',
              missing_name: str = 'Missing',
@@ -1015,6 +1018,7 @@ class ChemicalElements:
         :param title: Title to appear above the periodic table.
         :param colorby: 'group': Colormap by selected groups, 'attribute': by mendeleev periodic table attribute.
         :param attribute: Attribute's value displayed below elements. Either PTE attribute, or group values.
+        :param without_attribute: Do not display the attribute values below the elements.
         :param missing_value: Replaces NaN values, e.g. for custom coloring.
         :type missing_value: str or numeric. Prefer same type as coloring input (group names or attribute).
         :param missing_color: Hex code of the color to be used for the missing values (#ffffff white, #bfbfbf light gray).
@@ -1040,6 +1044,7 @@ class ChemicalElements:
         _missing_color = missing_color
         _colorby = colorby
         _attribute = attribute
+        _without_attribute = without_attribute
         _colormap_name = colormap_name
         _colormap = copy.copy(colormap)
         _size = size
@@ -1052,7 +1057,7 @@ class ChemicalElements:
                 print('Warning: no plotting profile set. I will fall back to method arguments.')
             else:
                 pp = self.plotting_profile
-                # assert isinstance(pp, ChemicalElementsPlottingProfile) # for autocompletion
+                assert isinstance(pp, ChemicalElementsPlottingProfile)  # for autocompletion
                 _title = pp.title_prefix + title if (pp.title_prefix) else title
                 _output = pp.output_prefix + output if (output and pp.output_prefix) else output
                 _legend_title = pp.legend_title_prefix + legend_title if (legend_title and
@@ -1068,6 +1073,7 @@ class ChemicalElements:
                         _attribute = pp.title_prefix + attribute
                     else:
                         _attribute = attribute
+                _without_attribute = pp.without_attribute if pp.without_attribute is not None else without_attribute
                 _colormap_name = pp.colormap_name if pp.colormap_name else colormap_name
                 _colormap = copy.copy(pp.colormap) if pp.colormap else _colormap
                 _size = pp.size if pp.size else size
@@ -1080,7 +1086,7 @@ class ChemicalElements:
         valid_attributes = self.list_of_attributes()
         if _colorby not in valid_colorby_values:
             raise KeyError(f"Specified argument 'colorby'='{_colorby}', but must be one of {valid_colorby_values}.")
-        if _attribute != _title and _attribute not in valid_attributes:
+        if _attribute != _title and _attribute not in valid_attributes and _attribute is not None:
             raise KeyError(f"Specified argument 'attribute'='{_attribute}', but must be one of {valid_attributes}, "
                            f"or equal argument of parameter 'title'.")
 
@@ -1165,6 +1171,11 @@ class ChemicalElements:
             for group_key, group in groups.items():
                 for symbol in group.keys():
                     ptable.loc[ptable['symbol'] == symbol, [_title]] = group_key
+
+        if _without_attribute:
+            # create a column with empty values and set that as attribute to display for mendeleev.
+            _attribute_mendel = 'empty'
+            ptable['empty'] = ' '
 
         values = sorted(ptable[_title].dropna().unique())
         filled_in, _missing_value = _deal_with_missing_values(_missing_value)
