@@ -637,6 +637,7 @@ def multiplot_moved(xdata,
                     xlabel='',
                     ylabel='',
                     title='',
+                    data=None,
                     scale_move=1.0,
                     min_add=0,
                     saveas='mscatterplot',
@@ -662,17 +663,16 @@ def multiplot_moved(xdata,
     if 'yticklabels' not in kwargs:
         kwargs['yticklabels'] = []
 
-    ydatanew = []
-    shifts = []
+    plot_data = process_data_arguments(data=data, x=xdata, y=ydata)
 
-    ymax = 0
-    for data in ydata:
-        ydatanew.append(np.array(data) + ymax)
-        shifts.append(ymax)
-        ymax = ymax + max(data) * scale_move + min_add
+    shifts = [ymax * scale_move + min_add for ymax in plot_data.max('y', separate=True)]
+    shifts = np.cumsum([0] + shifts)[:-1]
 
-    ax = multiple_scatterplots(xdata,
-                               ydatanew,
+    for (entry, source), shift in zip(plot_data.items(), shifts):
+        source[entry.y] = np.array(source[entry.y]) + shift
+
+    ax = multiple_scatterplots(plot_data.getvalues('x'),
+                               plot_data.getvalues('y'),
                                xlabel=xlabel,
                                ylabel=ylabel,
                                title=title,

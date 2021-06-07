@@ -118,7 +118,8 @@ class PlotData:
             num_sets = max(len(val) for val in kwargs.values() if isinstance(val, list))
 
             if isinstance(self.data, list):
-                raise ValueError('Only one of the data or indices can be lists')
+                if len(self.data) != num_sets:
+                    raise ValueError('Mismatch in lengths between data and indices')
 
             column_args = {}
             for key, val in kwargs.items():
@@ -171,47 +172,68 @@ class PlotData:
         for data in self.values():
             return data
 
-    def min(self, data_key):
+    def getkeys(self, data_key):
 
         if data_key not in self._column_spec._fields:
             raise ValueError(f'Field {data_key} does not exist')
 
-        min_val = None
+        keys = []
+        for entry in self.keys():
+            keys.append(entry._asdict()[data_key])
+
+        return keys
+
+    def getvalues(self, data_key):
+
+        if data_key not in self._column_spec._fields:
+            raise ValueError(f'Field {data_key} does not exist')
+
+        values = []
+        for entry in self.values():
+            values.append(entry._asdict()[data_key])
+
+        return values
+
+
+    def min(self, data_key, separate=False):
+
+        if data_key not in self._column_spec._fields:
+            raise ValueError(f'Field {data_key} does not exist')
+
+        min_val = []
         for entry, source in self.items():
 
             key = entry._asdict()[data_key]
 
             if isinstance(source[key], (np.ndarray,pd.Series)):
-                min_col = source[key].min()
+                min_val.append(source[key].min())
             else:
-                min_col = min(source[key])
+               min_val.append(min(source[key]))
 
-            if min_val is None:
-                min_val = min_col
-            else:
-                min_val = min(min_val, min_col)
-        return min_val
+        if separate:
+            return min_val
+        else:
+            return min(min_val)
 
-    def max(self, data_key):
+    def max(self, data_key, separate=False):
 
         if data_key not in self._column_spec._fields:
             raise ValueError(f'Field {data_key} does not exist')
 
-        max_val = None
+        max_val = []
         for entry, source in self.items():
 
             key = entry._asdict()[data_key]
 
             if isinstance(source[key], (np.ndarray,pd.Series)):
-                max_col = source[key].max()
+                max_val.append(source[key].max())
             else:
-                max_col = max(source[key])
+               max_val.append(max(source[key]))
 
-            if max_val is None:
-                max_val = max_col
-            else:
-                max_val = min(max_val, max_col)
-        return max_val
+        if separate:
+            return max_val
+        else:
+            return max(max_val)
 
     def __len__(self):
         return len(self.masked_columns)
