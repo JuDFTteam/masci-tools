@@ -22,6 +22,7 @@ from collections import ChainMap
 import warnings
 import json
 
+
 @contextmanager
 def NestedPlotParameters(plotter_object):
     """
@@ -534,7 +535,6 @@ class Plotter(object):
             param_dict = json.load(file)
 
         self.set_defaults(**param_dict)
-
 
     def remove_added_parameters(self):
         """

@@ -121,6 +121,7 @@ def test_plotter_add_parameter():
 
     assert dict(p._params) == TEST_DICT
 
+
 def test_plotter_save_defaults(file_regression):
     """
     Test adding of custom parameters
@@ -137,6 +138,7 @@ def test_plotter_save_defaults(file_regression):
         txt = file.read().strip()
         file_regression.check(txt)
 
+
 def test_plotter_save_defaults_complete(file_regression):
     """
     Test adding of custom parameters
@@ -152,6 +154,7 @@ def test_plotter_save_defaults_complete(file_regression):
 
         txt = file.read().strip()
         file_regression.check(txt)
+
 
 def test_plotter_load_defaults(file_regression):
     """
@@ -174,6 +177,7 @@ def test_plotter_load_defaults(file_regression):
 
     assert dict(p._params) == expected_result
     assert dict(p._params.parents) == expected_result
+
 
 def test_plotter_decorator_working():
     """
