@@ -295,25 +295,22 @@ def multiple_scatterplots(xdata,
     plot_kwargs = plot_params.plot_kwargs()
     colors = []
 
-    for indx, plot_info in enumerate(zip(plot_data.items(), plot_kwargs)):
-
-        data, plot_kw = plot_info
-        entry, source = data
+    for indx, ((entry, source), params) in enumerate(zip(plot_data.items(), plot_kwargs)):
 
         if plot_params['repeat_colors_after'] is not None:
             if indx >= plot_params['repeat_colors_after']:
-                plot_kw['color'] = colors[indx % plot_params['repeat_colors_after']]
+                params['color'] = colors[indx % plot_params['repeat_colors_after']]
 
         if plot_params[('area_plot', indx)]:
-            linecolor = plot_kw.pop('area_linecolor', None)
+            linecolor = params.pop('area_linecolor', None)
             if plot_params[('area_vertical', indx)]:
-                result = ax.fill_betweenx(entry.y, entry.x, x2=entry.shift, data=source, **plot_kw, **kwargs)
+                result = ax.fill_betweenx(entry.y, entry.x, x2=entry.shift, data=source, **params, **kwargs)
             else:
-                result = ax.fill_between(entry.x, entry.y, y2=entry.shift, data=source, **plot_kw, **kwargs)
+                result = ax.fill_between(entry.x, entry.y, y2=entry.shift, data=source, **params, **kwargs)
             colors.append(result.get_facecolor()[0])
-            plot_kw.pop('alpha', None)
-            plot_kw.pop('label', None)
-            plot_kw.pop('color', None)
+            params.pop('alpha', None)
+            params.pop('label', None)
+            params.pop('color', None)
             if plot_params[('area_enclosing_line', indx)]:
                 if linecolor is None:
                     linecolor = result.get_facecolor()[0]
@@ -325,10 +322,10 @@ def multiple_scatterplots(xdata,
                             color=linecolor,
                             data=source,
                             label=None,
-                            **plot_kw,
+                            **params,
                             **kwargs)
         else:
-            result = ax.errorbar(entry.x, entry.y, yerr=entry.yerr, xerr=entry.xerr, data=source, **plot_kw, **kwargs)
+            result = ax.errorbar(entry.x, entry.y, yerr=entry.yerr, xerr=entry.xerr, data=source, **params, **kwargs)
             colors.append(result.lines[0].get_color())
 
     plot_params.set_scale(ax)
@@ -523,6 +520,7 @@ def waterfall_plot(xdata,
                    ylabel='',
                    zlabel='',
                    title='',
+                   data=None,
                    saveas='waterfallplot',
                    axis=None,
                    **kwargs):
@@ -543,20 +541,7 @@ def waterfall_plot(xdata,
     If the arguments are not recognized they are passed on to the matplotlib function `scatter3D`
     """
 
-    nplots = len(ydata)
-    if nplots != len(xdata):  # todo check dimention not len, without moving to special datatype.
-        print('ydata and xdata must have the same dimension')
-        return
-    if nplots != len(zdata):  # todo check dimention not len, without moving to special datatype.
-        print('ydata and zdata must have the same dimension')
-        return
-
-    if isinstance(zdata, np.ndarray):
-        zmin = zdata.min()
-        zmax = zdata.max()
-    else:
-        zmin = min(zdata)
-        zmax = max(zdata)
+    plot_data = process_data_arguments(single_plot=True,data=data, x=xdata, y=ydata, z=zdata, forbid_split_up={'x','y','z'})
 
     clim = None
     if 'limits' in kwargs:
@@ -564,25 +549,17 @@ def waterfall_plot(xdata,
     else:
         kwargs['limits'] = {}
     if clim is None:
-        clim = (kwargs.get('vmin', zmin), kwargs.get('vmax', zmax))
+        clim = (kwargs.get('vmin', plot_data.min('z')), kwargs.get('vmax', plot_data.max('z')))
     kwargs['limits']['color'] = clim
-
-    if not isinstance(ydata[0], (list, np.ndarray, pd.Series)):
-        xdata, ydata, zdata = [xdata], [ydata], [zdata]
-
-    plot_params.single_plot = False
-    plot_params.num_plots = len(ydata)
 
     plot_params.set_defaults(default_type='function', markersize=30, linewidth=0, area_plot=False)
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, zlabel=zlabel, axis=axis, projection='3d')
 
-    plot_kwargs = plot_params.plot_kwargs(ignore=['markersize'], extra_keys={'cmap'})
+    plot_kw = plot_params.plot_kwargs(ignore=['markersize'], extra_keys={'cmap'})
+    data = plot_data.getfirstvalue()
 
-    for indx, data in enumerate(zip(xdata, ydata, zdata, plot_kwargs)):
-
-        x, y, z, plot_kw = data
-        ax.scatter3D(x, y, z, c=z, s=plot_params[('markersize', indx)], **plot_kw, **kwargs)
+    ax.scatter(data.x, data.y, data.z, c=data.z, s=plot_params['markersize'], **plot_kw, **kwargs)
 
     plot_params.set_scale(ax)
     plot_params.set_limits(ax)
@@ -602,6 +579,7 @@ def surface_plot(xdata,
                  ylabel='',
                  zlabel='',
                  title='',
+                 data=None,
                  saveas='surface_plot',
                  axis=None,
                  **kwargs):
@@ -622,20 +600,7 @@ def surface_plot(xdata,
     If the arguments are not recognized they are passed on to the matplotlib function `plot_surface`
     """
 
-    nplots = len(ydata)
-    if nplots != len(xdata):  # todo check dimention not len, without moving to special datatype.
-        print('ydata and xdata must have the same dimension')
-        return
-    if nplots != len(zdata):  # todo check dimention not len, without moving to special datatype.
-        print('ydata and zdata must have the same dimension')
-        return
-
-    if isinstance(zdata, np.ndarray):
-        zmin = zdata.min()
-        zmax = zdata.max()
-    else:
-        zmin = min(zdata)
-        zmax = max(zdata)
+    plot_data = process_data_arguments(single_plot=True, data=data, x=xdata, y=ydata, z=zdata, forbid_split_up={'x','y','z'})
 
     clim = None
     if 'limits' in kwargs:
@@ -643,7 +608,7 @@ def surface_plot(xdata,
     else:
         kwargs['limits'] = {}
     if clim is None:
-        clim = (kwargs.get('vmin', zmin), kwargs.get('vmax', zmax))
+        clim = (kwargs.get('vmin', plot_data.min('z')), kwargs.get('vmax', plot_data.max('z')))
     kwargs['limits']['color'] = clim
 
     plot_params.set_defaults(default_type='function', linewidth=0, area_plot=False)
@@ -651,7 +616,10 @@ def surface_plot(xdata,
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, zlabel=zlabel, axis=axis, projection='3d')
 
     plot_kwargs = plot_params.plot_kwargs(ignore=['markersize', 'marker'], extra_keys={'cmap'})
-    ax.plot_surface(xdata, ydata, zdata, **plot_kwargs, **kwargs)
+    data = plot_data.getfirstvalue()
+
+
+    ax.plot_surface(data.x, data.y, data.z, **plot_kwargs, **kwargs)
 
     plot_params.set_scale(ax)
     plot_params.set_limits(ax)

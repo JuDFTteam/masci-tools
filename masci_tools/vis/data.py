@@ -167,6 +167,10 @@ class PlotData:
         for data in self.items():
             return data
 
+    def getfirstvalue(self):
+        for data in self.values():
+            return data
+
     def min(self, data_key):
 
         if data_key not in self._column_spec._fields:
@@ -225,7 +229,7 @@ class PlotData:
         raise NotImplementedError
 
 
-def normalize_list_or_array(data, key, out_data, flatten_np=False, forbid_split_up=False):
+def normalize_list_or_array(data, key, out_data, flatten_np=False, forbid_split_up=False, single_plot=False):
 
     LIST_TYPES = (list, np.ndarray, pd.Series)
 
@@ -286,7 +290,7 @@ def process_data_arguments(data, single_plot=False, mask=None, use_column_source
                 keys[key] = key
             else:
                 keys[key] = None
-            data = normalize_list_or_array(val, key, data, flatten_np=flatten_np, forbid_split_up=key in forbid_split_up)
+            data = normalize_list_or_array(val, key, data, flatten_np=flatten_np, forbid_split_up=key in forbid_split_up, single_plot=single_plot)
     else:
         keys = kwargs
 
