@@ -60,9 +60,15 @@ class ChemicalElementsPlottingProfile:
     long_version: bool = False
     with_legend: bool = True
     _version: int = 1
+    _cls_name: str = ''
 
     def __post_init__(self):
         """Create colormap from values_range, if the former was not specified."""
+        # save class name
+        cls = type(self)
+        self._cls_name = cls.__module__ + '.' + cls.__name__
+
+        # create colormap
         if not self.colormap and self.values_range:
             import seaborn as sns
             import matplotlib.colors
@@ -900,8 +906,8 @@ class ChemicalElements:
 
         Current format of the file is JSON.
 
-        :param filepath: where to save the config files.
-        :type filepath: pathlib.Path
+        :param filepath: where to save the the profile file.
+        :type filepath: str or pathlib.Path
         :param force_overwrite: True: overwrite existing config files. Default False.
         """
 
@@ -913,12 +919,16 @@ class ChemicalElements:
         from pathlib import Path
 
         if not filepath:
-            filepath = Path.cwd() / 'imp_host_embedding_batches.json'
+            _filepath = Path.cwd() / 'imp_host_embedding_batches.json'
+        elif isinstance(filepath, str):
+            _filepath = Path(filepath)
+        else:
+            _filepath = filepath
 
         # persist
         import json
-        if filepath.exists() and filepath.is_file():
-            msg = f"File '{filepath}' exists. Force overwrite = {force_overwrite}."
+        if _filepath.exists() and _filepath.is_file():
+            msg = f"File '{_filepath}' exists. Force overwrite = {force_overwrite}."
             msg = f'WARNING: {msg}' if force_overwrite else f'INFO: {msg}'
             print(msg)
             if not force_overwrite:
@@ -933,16 +943,14 @@ class ChemicalElements:
         data.size = NoIndent(data.size)
         data = _dc.asdict(data)
 
-        with open(filepath, 'w') as file:
+        with open(_filepath, 'w') as file:
             file.write(json.dumps(data, cls=JSONEncoderTailoredIndent, indent=4))
 
     def load_plotting_profile(self, filepath):
         """Load plotting profile for :py:meth:`~masci_tools.util.chemical_elements.ChemicalElements.plot`.
 
-        :param filepath:
-        :type filepath:
-        :return:
-        :rtype:
+        :param filepath: where the profile file is saved.
+        :type filepath: str or pathlib.Path
         """
         from json import JSONDecodeError
         import json
