@@ -433,7 +433,14 @@ class MatplotlibPlotter(Plotter):
                 plot_kwargs.pop('area_linecolor', None)
 
 
-        if not self['legend_show_data_labels']:
+        if self['legend_show_data_labels']:
+            if not self.single_plot:
+                for index, value in enumerate(plot_kwargs):
+                    if value.get('label') is None:
+                        value.pop('label', None)
+            elif plot_kwargs.get('label') is None:
+                plot_kwargs.pop('label', None)
+        else:
             if not self.single_plot:
                 for index, value in enumerate(plot_kwargs):
                     if 'label' not in value:

@@ -167,6 +167,48 @@ class PlotData:
         for data in self.items():
             return data
 
+    def min(self, data_key):
+
+        if data_key not in self._column_spec._fields:
+            raise ValueError(f'Field {data_key} does not exist')
+
+        min_val = None
+        for entry, source in self.items():
+
+            key = entry._asdict()[data_key]
+
+            if isinstance(source[key], (np.ndarray,pd.Series)):
+                min_col = source[key].min()
+            else:
+                min_col = min(source[key])
+
+            if min_val is None:
+                min_val = min_col
+            else:
+                min_val = min(min_val, min_col)
+        return min_val
+
+    def max(self, data_key):
+
+        if data_key not in self._column_spec._fields:
+            raise ValueError(f'Field {data_key} does not exist')
+
+        max_val = None
+        for entry, source in self.items():
+
+            key = entry._asdict()[data_key]
+
+            if isinstance(source[key], (np.ndarray,pd.Series)):
+                max_col = source[key].max()
+            else:
+                max_col = max(source[key])
+
+            if max_val is None:
+                max_val = max_col
+            else:
+                max_val = min(max_val, max_col)
+        return max_val
+
     def __len__(self):
         return len(self.masked_columns)
 
