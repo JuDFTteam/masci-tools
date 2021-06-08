@@ -364,15 +364,27 @@ class ChemicalElements:
         If flat, returns symbol's atomic number, if nested, returns group of elements.
         If flat, also allows inverted input: atomic_number, return symbol.
         """
-        if isinstance(group_name_or_symbol, str):
-            return self.elmts[group_name_or_symbol]
-        elif isinstance(group_name_or_symbol, int):
-            if self.is_flat():
+        if self.is_flat():
+            if isinstance(group_name_or_symbol, int):
                 return self.invert()[group_name_or_symbol]
+            elif isinstance(group_name_or_symbol, str):
+                return self.elmts[group_name_or_symbol]
             else:
-                raise KeyError('Querying [atomic_number] not possible for nested elmts.')
+                raise KeyError(f"Unsupported key/value type '{type(group_name_or_symbol)}'.")
         else:
-            raise KeyError(f"Unsupported key/value type '{type(group_name_or_symbol)}'.")
+            # accept any type as group symbol type
+            return self.elmts[group_name_or_symbol]
+
+        # # old version:
+        # if isinstance(group_name_or_symbol, str):
+        #     return self.elmts[group_name_or_symbol]
+        # elif isinstance(group_name_or_symbol, int):
+        #     if self.is_flat():
+        #         return self.invert()[group_name_or_symbol]
+        #     else:
+        #         raise KeyError('Querying [atomic_number] not possible for nested elmts.')
+        # else:
+        #     raise KeyError(f"Unsupported key/value type '{type(group_name_or_symbol)}'.")
 
     def __validate_distinctness(self, new__elmts):
         import copy
