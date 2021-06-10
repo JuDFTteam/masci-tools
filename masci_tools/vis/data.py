@@ -5,6 +5,7 @@
 from collections import namedtuple
 import numpy as np
 import pandas as pd
+import copy
 from bokeh.models import ColumnDataSource
 
 
@@ -269,14 +270,57 @@ class PlotData:
         if data_key not in self._column_spec._fields:
             raise ValueError(f'Field {data_key} does not exist')
 
-        for entry, source in self.items():
+        for indx, (entry, source) in enumerate(self.items()):
 
             key = entry._asdict()[data_key]
 
-            if isinstance(source[key], (np.ndarray, pd.Series)):
+            if isinstance(source[key], pd.Series):
+                if isinstance(source, pd.DataFrame):
+                    dataframe_func = lambda x: lambda_func(x) if x.name == key else x
+                    new_source = source.apply(dataframe_func)
+                    if isinstance(self.data, list):
+                        self.data[indx] = new_source
+                    else:
+                        self.data = new_source
+                else:
+                    source[key] = source[key].apply(lambda_func)
+            elif isinstance(source[key], np.ndarray):
                 source[key] = lambda_func(source[key])
             else:
                 source[key] = [lambda_func(value) for value in source[key]]
+
+    def copy_data(self, data_key_from, data_key_to, prefix=None, rename_original=False):
+
+        if data_key_from not in self._column_spec._fields:
+            raise ValueError(f'Field {data_key_from} does not exist')
+
+        if data_key_to not in self._column_spec._fields:
+            raise ValueError(f'Field {data_key_to} does not exist')
+
+        for indx, (entry, source) in enumerate(self.items()):
+
+            key = entry._asdict()[data_key_from]
+            if rename_original:
+                new_key = f'{prefix}_{indx}' if prefix is not None else f'{data_key_from}_{indx}'
+                self.columns[indx] = entry._replace(**{data_key_from: new_key, data_key_to: key})
+            else:
+                new_key = f'{prefix}_{indx}' if prefix is not None else f'{data_key_to}_{indx}'
+                self.columns[indx] = entry._replace(**{data_key_to: new_key})
+
+            if new_key in source:
+                raise ValueError(f'Key {new_key} already exists')
+
+            if isinstance(source, pd.DataFrame):
+                new_column = pd.Series(data=source[key], name=new_key, copy=True)
+                new_source = pd.concat([source, new_column], axis=1)
+                if isinstance(self.data, list):
+                    self.data[indx] = new_source
+                else:
+                    self.data = new_source
+            elif isinstance(source, ColumnDataSource):
+                source.add(copy.copy(source[key]), name=new_key)
+            else:
+                source[new_key] = copy.copy(source[key])
 
     def __len__(self):
         return len(self.masked_columns)

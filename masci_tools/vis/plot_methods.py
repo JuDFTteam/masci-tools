@@ -1786,17 +1786,17 @@ def plot_bands(kpath,
     All other Kwargs are passed on to the :py:func:`multi_scatter_plot()` call
     """
 
-    if scale_color and size_data is not None:
-        if color_data is not None:
-            raise ValueError('color_data should not be provided when scale_color is True')
-        color_data = copy.copy(size_data)
-
     plot_data = process_data_arguments(single_plot=True,
                                        data=data,
                                        kpath=kpath,
                                        bands=bands,
                                        size=size_data,
                                        color=color_data)
+
+    if scale_color and size_data is not None:
+        if color_data is not None:
+            raise ValueError('color_data should not be provided when scale_color is True')
+        plot_data.copy_data('size', 'color', rename_original=True)
 
     if special_kpoints is None:
         special_kpoints = []
@@ -1902,16 +1902,16 @@ def plot_spinpol_bands(kpath,
     All other Kwargs are passed on to the :py:func:`multi_scatter_plot()` call
     """
 
-    if scale_color and size_data is not None:
-        if color_data is not None:
-            raise ValueError('color_data should not be provided when scale_color is True')
-        color_data = [copy.copy(data) for data in size_data]
-
     plot_data = process_data_arguments(data=data,
                                        kpath=kpath,
                                        bands=[bands_up, bands_dn],
                                        size=size_data,
                                        color=color_data)
+
+    if scale_color and size_data is not None:
+        if color_data is not None:
+            raise ValueError('color_data should not be provided when scale_color is True')
+        plot_data.copy_data('size', 'color', rename_original=True)
 
     if len(plot_data) != 2:
         raise ValueError('Wrong number of plots specified (Only 2 permitted)')
