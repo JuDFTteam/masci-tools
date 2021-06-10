@@ -1751,7 +1751,9 @@ def plot_spinpol_dos(energy_grid,
 def plot_bands(kpath,
                bands,
                *,
+               data=None,
                size_data=None,
+               color_data=None,
                special_kpoints=None,
                e_fermi=0,
                xlabel='',
@@ -1769,6 +1771,7 @@ def plot_bands(kpath,
     :param kpath: arraylike data for the kpoint data
     :param bands: arraylike data for the eigenvalues
     :param size_data: arraylike data the weights to emphasize (optional)
+    :param color_data: str or arraylike, data for the color values with a colormap (optional)
     :param title: str, Title of the plot
     :param xlabel: str, label for the x-axis
     :param ylabel: str, label for the y-axis
@@ -1783,6 +1786,18 @@ def plot_bands(kpath,
     All other Kwargs are passed on to the :py:func:`multi_scatter_plot()` call
     """
 
+    if scale_color and size_data is not None:
+        if color_data is not None:
+            raise ValueError('color_data should not be provided when scale_color is True')
+        color_data = copy.copy(size_data)
+
+    plot_data = process_data_arguments(single_plot=True,
+                                       data=data,
+                                       kpath=kpath,
+                                       bands=bands,
+                                       size=size_data,
+                                       color=color_data)
+
     if special_kpoints is None:
         special_kpoints = []
 
@@ -1794,28 +1809,32 @@ def plot_bands(kpath,
         xticklabels.append(label)
         xticks.append(pos)
 
-    if size_data is not None:
+    entries = plot_data.getfirstkeys()
+    if entries.size is not None:
         ylimits = (-15, 15)
         if 'limits' in kwargs:
             if 'y' in kwargs['limits']:
                 ylimits = kwargs['limits']['y']
 
-        weight_max = max(size_data[np.logical_and(bands > ylimits[0], bands < ylimits[1])])
+        data = plot_data.getfirstvalue()
+        mask = np.logical_and(data.bands > ylimits[0], data.bands < ylimits[1])
+
+        weight_max = plot_data.max('size', mask=mask)
         if 'vmax' not in kwargs:
             kwargs['vmax'] = weight_max
 
         if scale_color:
-            kwargs['color_data'] = copy.copy(size_data)
             plot_params.set_defaults(default_type='function', cmap='Blues')
             if 'cmap' not in kwargs:
                 #Cut off the white end of the Blues/Reds colormap
                 plot_params.set_defaults(default_type='function', sub_colormap=(0.15, 1.0))
 
-        size_data = (markersize_min + markersize_scaling * size_data / weight_max)**2
+        transform = lambda size: (markersize_min + markersize_scaling * size / weight_max)**2
+        plot_data.apply('size', transform)
 
     lines = {'vertical': xticks, 'horizontal': e_fermi}
 
-    limits = {'x': (min(kpath), max(kpath)), 'y': (-15, 15)}
+    limits = {'x': (plot_data.min('kpath'), plot_data.max('kpath')), 'y': (-15, 15)}
     plot_params.set_defaults(default_type='function',
                              lines=lines,
                              limits=limits,
@@ -1826,9 +1845,11 @@ def plot_bands(kpath,
                              line_options={'zorder': -1},
                              colorbar=False)
 
-    ax = multi_scatter_plot(kpath,
-                            bands,
-                            size_data=size_data,
+    ax = multi_scatter_plot(plot_data.getkeys('kpath'),
+                            plot_data.getkeys('bands'),
+                            size_data=plot_data.getkeys('size'),
+                            color_data=plot_data.getkeys('color'),
+                            data=plot_data.data,
                             xlabel=xlabel,
                             ylabel=ylabel,
                             title=title,
@@ -1844,6 +1865,8 @@ def plot_spinpol_bands(kpath,
                        bands_dn,
                        *,
                        size_data=None,
+                       color_data=None,
+                       data=None,
                        show_spin_pol=True,
                        special_kpoints=None,
                        e_fermi=0,
@@ -1879,32 +1902,39 @@ def plot_spinpol_bands(kpath,
     All other Kwargs are passed on to the :py:func:`multi_scatter_plot()` call
     """
 
+    if scale_color and size_data is not None:
+        if color_data is not None:
+            raise ValueError('color_data should not be provided when scale_color is True')
+        color_data = [copy.copy(data) for data in size_data]
+
+    plot_data = process_data_arguments(data=data,
+                                       kpath=kpath,
+                                       bands=[bands_up, bands_dn],
+                                       size=size_data,
+                                       color=color_data)
+
+    if len(plot_data) != 2:
+        raise ValueError('Wrong number of plots specified (Only 2 permitted)')
+
     if special_kpoints is None:
         special_kpoints = {}
 
-    if size_data is not None:
-
-        if len(size_data) != 2:
-            raise ValueError('size_data has to be a list of length 2')
+    if any(entry.size is not None for entry in plot_data.keys()):
 
         ylimits = (-15, 15)
         if 'limits' in kwargs:
             if 'y' in kwargs['limits']:
                 ylimits = kwargs['limits']['y']
 
-        weight_max = max(size_data[0][np.logical_and(bands_up > ylimits[0], bands_up < ylimits[1])])
-        weight_max = max(weight_max, max(size_data[1][np.logical_and(bands_dn > ylimits[0], bands_dn < ylimits[1])]))
+        data = plot_data.values()
+        mask = [np.logical_and(col.bands > ylimits[0], col.bands < ylimits[1]) for col in data]
+        weight_max = plot_data.max('size', mask=mask)
 
         if 'vmax' not in kwargs:
             kwargs['vmax'] = weight_max
 
-        color_data = []
-        for indx, data in enumerate(size_data):
-            color_data.append(copy.copy(data))
-            size_data[indx] = (markersize_min + markersize_scaling * data / weight_max)**2
-
-        if scale_color:
-            kwargs['color_data'] = color_data
+        transform = lambda size: (markersize_min + markersize_scaling * size / weight_max)**2
+        plot_data.apply('size', transform)
 
     xticks = []
     xticklabels = []
@@ -1926,7 +1956,7 @@ def plot_spinpol_bands(kpath,
         if scale_color:
             cmaps = 'Blues'
 
-    limits = {'x': (min(kpath), max(kpath)), 'y': (-15, 15)}
+    limits = {'x': (plot_data.min('kpath'), plot_data.max('kpath')), 'y': (-15, 15)}
     plot_params.set_defaults(default_type='function',
                              lines=lines,
                              limits=limits,
@@ -1944,8 +1974,11 @@ def plot_spinpol_bands(kpath,
         #Cut off the white end of the Blues/Reds colormap
         plot_params.set_defaults(default_type='function', sub_colormap=(0.15, 1.0))
 
-    ax = multi_scatter_plot([kpath, kpath], [bands_up, bands_dn],
-                            size_data=size_data,
+    ax = multi_scatter_plot(plot_data.getkeys('kpath'),
+                            plot_data.getkeys('bands'),
+                            size_data=plot_data.getkeys('size'),
+                            color_data=plot_data.getkeys('color'),
+                            data=plot_data.data,
                             xlabel=xlabel,
                             ylabel=ylabel,
                             title=title,

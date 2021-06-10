@@ -27,14 +27,14 @@ class PlotDataIterator:
         elif self._iter_mode == 'values':
             if isinstance(self._plot_data.data, list):
                 plot_data = {
-                    key: self._plot_data.data[self._data_indx][val]
+                    key: self._plot_data.data[self._data_indx][val] if val is not None else None
                     for key, val in columns._asdict().items()
-                    if val is not None
                 }
                 self._data_indx += 1
             else:
                 plot_data = {
-                    key: self._plot_data.data[val] for key, val in columns._asdict().items() if val is not None
+                    key: self._plot_data.data[val] if val is not None else None
+                    for key, val in columns._asdict().items()
                 }
             return self._plot_data._column_spec(**plot_data)
         elif self._iter_mode == 'items':
@@ -172,6 +172,10 @@ class PlotData:
         for data in self.values():
             return data
 
+    def getfirstkeys(self):
+        for data in self.keys():
+            return data
+
     def getkeys(self, data_key):
 
         if data_key not in self._column_spec._fields:
@@ -194,40 +198,66 @@ class PlotData:
 
         return values
 
-    def min(self, data_key, separate=False):
+    def min(self, data_key, separate=False, mask=None):
 
         if data_key not in self._column_spec._fields:
             raise ValueError(f'Field {data_key} does not exist')
 
+        if mask is not None:
+            if len(mask) == len(self):
+                mask_gen = (mask_indx for mask_indx in mask)
+            else:
+                mask_gen = (mask for i in self)
+        else:
+            mask_gen = (None for i in self)
+
         min_val = []
-        for entry, source in self.items():
+        for (entry, source), mask in zip(self.items(), mask_gen):
 
             key = entry._asdict()[data_key]
 
-            if isinstance(source[key], (np.ndarray, pd.Series)):
-                min_val.append(source[key].min())
+            if mask is None:
+                data = source[key]
             else:
-                min_val.append(min(source[key]))
+                data = source[key][mask]
+
+            if isinstance(source[key], (np.ndarray, pd.Series)):
+                min_val.append(data.min())
+            else:
+                min_val.append(min(data))
 
         if separate:
             return min_val
         else:
             return min(min_val)
 
-    def max(self, data_key, separate=False):
+    def max(self, data_key, separate=False, mask=None):
 
         if data_key not in self._column_spec._fields:
             raise ValueError(f'Field {data_key} does not exist')
 
+        if mask is not None:
+            if len(mask) == len(self):
+                mask_gen = (mask_indx for mask_indx in mask)
+            else:
+                mask_gen = (mask for i in range(len(self)))
+        else:
+            mask_gen = (None for i in range(len(self)))
+
         max_val = []
-        for entry, source in self.items():
+        for (entry, source), mask in zip(self.items(), mask_gen):
 
             key = entry._asdict()[data_key]
 
-            if isinstance(source[key], (np.ndarray, pd.Series)):
-                max_val.append(source[key].max())
+            if mask is None:
+                data = source[key]
             else:
-                max_val.append(max(source[key]))
+                data = source[key][mask]
+
+            if isinstance(source[key], (np.ndarray, pd.Series)):
+                max_val.append(data.max())
+            else:
+                max_val.append(max(data))
 
         if separate:
             return max_val
