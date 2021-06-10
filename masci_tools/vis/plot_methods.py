@@ -153,7 +153,13 @@ def single_scatterplot(xdata,
                 limits_new['y'] = limits[1]
             kwargs['limits'] = limits_new
 
-    plot_data = process_data_arguments(single_plot=True,data=data, x=xdata, y=ydata, shift=area_curve, xerr=xerr, yerr=yerr)
+    plot_data = process_data_arguments(single_plot=True,
+                                       data=data,
+                                       x=xdata,
+                                       y=ydata,
+                                       shift=area_curve,
+                                       xerr=xerr,
+                                       yerr=yerr)
 
     plot_params.set_defaults(default_type='function', color='k', plot_label='scatterplot')
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
@@ -465,7 +471,17 @@ def multi_scatter_plot(xdata,
 
 
 @ensure_plotter_consistency(plot_params)
-def colormesh_plot(xdata, ydata, cdata, *, xlabel='', ylabel='', title='', data=None, saveas='colormesh', axis=None, **kwargs):
+def colormesh_plot(xdata,
+                   ydata,
+                   cdata,
+                   *,
+                   xlabel='',
+                   ylabel='',
+                   title='',
+                   data=None,
+                   saveas='colormesh',
+                   axis=None,
+                   **kwargs):
     """
     Create plot with pcolormesh
 
@@ -482,7 +498,12 @@ def colormesh_plot(xdata, ydata, cdata, *, xlabel='', ylabel='', title='', data=
     If the arguments are not recognized they are passed on to the matplotlib function `pcolormesh`
     """
 
-    plot_data = process_data_arguments(single_plot=True,data=data, x=xdata, y=ydata, color=cdata, forbid_split_up={'x','y','color'})
+    plot_data = process_data_arguments(single_plot=True,
+                                       data=data,
+                                       x=xdata,
+                                       y=ydata,
+                                       color=cdata,
+                                       forbid_split_up={'x', 'y', 'color'})
 
     #Set default limits (not setting them leaves empty border)
     limits = kwargs.pop('limits', {})
@@ -541,7 +562,12 @@ def waterfall_plot(xdata,
     If the arguments are not recognized they are passed on to the matplotlib function `scatter3D`
     """
 
-    plot_data = process_data_arguments(single_plot=True,data=data, x=xdata, y=ydata, z=zdata, forbid_split_up={'x','y','z'})
+    plot_data = process_data_arguments(single_plot=True,
+                                       data=data,
+                                       x=xdata,
+                                       y=ydata,
+                                       z=zdata,
+                                       forbid_split_up={'x', 'y', 'z'})
 
     clim = None
     if 'limits' in kwargs:
@@ -600,7 +626,12 @@ def surface_plot(xdata,
     If the arguments are not recognized they are passed on to the matplotlib function `plot_surface`
     """
 
-    plot_data = process_data_arguments(single_plot=True, data=data, x=xdata, y=ydata, z=zdata, forbid_split_up={'x','y','z'})
+    plot_data = process_data_arguments(single_plot=True,
+                                       data=data,
+                                       x=xdata,
+                                       y=ydata,
+                                       z=zdata,
+                                       forbid_split_up={'x', 'y', 'z'})
 
     clim = None
     if 'limits' in kwargs:
@@ -617,7 +648,6 @@ def surface_plot(xdata,
 
     plot_kwargs = plot_params.plot_kwargs(ignore=['markersize', 'marker'], extra_keys={'cmap'})
     data = plot_data.getfirstvalue()
-
 
     ax.plot_surface(data.x, data.y, data.z, **plot_kwargs, **kwargs)
 
@@ -1528,6 +1558,7 @@ def plot_relaxation_results():
 def plot_dos(energy_grid,
              dos_data,
              *,
+             data=None,
              saveas='dos_plot',
              energy_label=r'$E-E_F$ [eV]',
              dos_label=r'DOS [1/eV]',
@@ -1552,6 +1583,8 @@ def plot_dos(energy_grid,
     """
     import seaborn as sns
 
+    plot_data = process_data_arguments(data=data, energy=energy_grid, dos=dos_data)
+
     if 'limits' in kwargs:
         limits = kwargs.pop('limits')
         if 'x' not in limits and 'y' not in limits:
@@ -1574,19 +1607,22 @@ def plot_dos(energy_grid,
         figsize = plot_params['figure_kwargs']['figsize']
         plot_params.set_defaults(default_type='function', figure_kwargs={'figsize': figsize[::-1]})
 
-    if isinstance(dos_data[0], (list, np.ndarray)) and \
-       not isinstance(energy_grid[0], (list, np.ndarray)):
-        energy_grid = [energy_grid] * len(dos_data)
-
     if xyswitch:
-        x, y = dos_data, energy_grid
+        x, y = plot_data.getkeys('dos'), plot_data.getkeys('energy')
         xlabel, ylabel = dos_label, energy_label
         plot_params.set_defaults(default_type='function', area_vertical=True)
     else:
         xlabel, ylabel = energy_label, dos_label
-        x, y = energy_grid, dos_data
+        x, y = plot_data.getkeys('energy'), plot_data.getkeys('dos')
 
-    ax = multiple_scatterplots(x, y, xlabel=xlabel, ylabel=ylabel, title=title, saveas=saveas, **kwargs)
+    ax = multiple_scatterplots(x,
+                               y,
+                               xlabel=xlabel,
+                               ylabel=ylabel,
+                               title=title,
+                               saveas=saveas,
+                               data=plot_data.data,
+                               **kwargs)
 
     return ax
 
@@ -1596,6 +1632,7 @@ def plot_spinpol_dos(energy_grid,
                      spin_up_data,
                      spin_dn_data,
                      *,
+                     data=None,
                      saveas='spinpol_dos_plot',
                      energy_label=r'$E-E_F$ [eV]',
                      dos_label=r'DOS [1/eV]',
@@ -1626,6 +1663,8 @@ def plot_spinpol_dos(energy_grid,
     """
     import seaborn as sns
 
+    plot_data = process_data_arguments(data=data, energy=energy_grid, spin_up=spin_up_data, spin_dn=spin_dn_data)
+
     if 'limits' in kwargs:
         limits = kwargs.pop('limits')
         if 'x' not in limits and 'y' not in limits:
@@ -1635,36 +1674,20 @@ def plot_spinpol_dos(energy_grid,
                 limits['x'], limits['y'] = limits.pop('energy', None), limits.pop('dos', None)
         kwargs['limits'] = {k: v for k, v in limits.items() if v is not None}
 
-    if isinstance(spin_up_data[0], (list, np.ndarray)):
-        if len(spin_up_data) != len(spin_dn_data):
-            raise ValueError(f'Dimensions do not match: Spin-up: {len(spin_up_data)} Spin-dn: {len(spin_dn_data)}')
-
-    max_dos = max(data.max() for data in spin_up_data)
-    max_dos = max(max_dos, max(data.max() for data in spin_dn_data))
-    max_dos *= 1.1
-
-    if spin_dn_negative:
-        if isinstance(spin_dn_data, np.ndarray):
-            spin_dn_data *= -1
-        elif isinstance(spin_up_data[0], list):
-            spin_dn_data = [-value for data in spin_dn_data for value in data]
-        else:
-            spin_dn_data = [-value for value in spin_dn_data]
     lines = {'horizontal': 0}
     lines['vertical'] = e_fermi
-
     if xyswitch:
         lines['vertical'], lines['horizontal'] = lines['horizontal'], lines['vertical']
 
+    max_dos = max(plot_data.max('spin_up'), plot_data.max('spin_dn'))
+    max_dos *= 1.1
     if xyswitch:
         limits = {'x': (-max_dos, max_dos)}
     else:
         limits = {'y': (-max_dos, max_dos)}
 
-    if isinstance(spin_up_data[0], (list, np.ndarray)):
-        num_plots = len(spin_up_data)
-    else:
-        num_plots = 1
+    if spin_dn_negative:
+        plot_data.apply('spin_dn', lambda x: -x)
 
     color_cycle = ('black',) + tuple(sns.color_palette('muted'))
     plot_params.set_defaults(default_type='function',
@@ -1672,12 +1695,13 @@ def plot_spinpol_dos(energy_grid,
                              legend=True,
                              lines=lines,
                              limits=limits,
-                             repeat_colors_after=num_plots,
+                             repeat_colors_after=len(plot_data),
                              color_cycle=color_cycle)
 
     if xyswitch:
         figsize = plot_params['figure_kwargs']['figsize']
         plot_params.set_defaults(default_type='function', figure_kwargs={'figsize': figsize[::-1]})
+        plot_params.set_defaults(default_type='function', invert_xaxis=True)
 
     save_keys = {'show', 'save_plots', 'save_format', 'save_options'}
     save_options = {key: val for key, val in kwargs.items() if key in save_keys}
@@ -1685,30 +1709,25 @@ def plot_spinpol_dos(energy_grid,
 
     plot_params.set_parameters(**save_options)
 
-    if xyswitch:
-        plot_params.set_defaults(default_type='function', invert_xaxis=True)
-
-    dos_data = spin_up_data
-    if not isinstance(spin_up_data[0], (list, np.ndarray)):
-        dos_data = [dos_data, spin_dn_data]
-    else:
-        dos_data = np.concatenate((dos_data, spin_dn_data), axis=0)
-
-    if isinstance(dos_data[0], (list, np.ndarray)) and \
-       not isinstance(energy_grid[0], (list, np.ndarray)):
-        energy_grid = [energy_grid] * len(dos_data)
+    #Create the full data for the scatterplot
+    energy_entries = plot_data.getkeys('energy') * 2
+    dos_entries = plot_data.getkeys('spin_up') + plot_data.getkeys('spin_dn')
+    sources = plot_data.data
+    if isinstance(sources, list):
+        sources = sources * 2
 
     if xyswitch:
-        x, y = dos_data, energy_grid
+        x, y = dos_entries, energy_entries
         xlabel, ylabel = dos_label, energy_label
         plot_params.set_defaults(default_type='function', area_vertical=True)
     else:
         xlabel, ylabel = energy_label, dos_label
-        x, y = energy_grid, dos_data
+        x, y = energy_entries, dos_entries
 
     with NestedPlotParameters(plot_params):
         ax = multiple_scatterplots(x,
                                    y,
+                                   data=sources,
                                    xlabel=xlabel,
                                    ylabel=ylabel,
                                    title=title,
