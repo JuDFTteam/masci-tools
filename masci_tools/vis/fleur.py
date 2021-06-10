@@ -343,7 +343,9 @@ def plot_fleur_dos(dosdata,
         for natom in range(1, attributes['n_types'] + 1):
             for key in dosdata.keys():
                 if f'MT:{natom}' in key:
-                    dosdata[key] *= n_equiv[natom]
+                    after = key[len(f'MT:{natom}'):]
+                    if after == '' or not after[0].isdecimal():
+                        dosdata[key] *= n_equiv[natom]
 
     spinpol = attributes['spins'] == 2 and spinpol and any('_down' in key for key in dosdata.keys())
     legend_labels, keys = _generate_dos_labels(dosdata, attributes, spinpol)
