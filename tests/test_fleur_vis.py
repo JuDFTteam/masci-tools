@@ -136,6 +136,24 @@ def test_plot_dos_defaults_mpl():
     return gcf()
 
 
+@pytest.mark.mpl_image_compare(baseline_dir='files/fleur_vis/', filename='dos_param_by_label.png')
+def test_plot_dos_param_change_by_label_mpl():
+    from masci_tools.io.parsers.hdf5 import HDF5Reader
+    from masci_tools.io.parsers.hdf5.recipes import FleurDOS
+    from masci_tools.vis.fleur import plot_fleur_dos
+
+    TEST_BANDDOS_FILE = os.path.join(HDFTEST_DIR, 'banddos_dos.hdf')
+
+    with HDF5Reader(TEST_BANDDOS_FILE) as h5reader:
+        data, attributes = h5reader.read(recipe=FleurDOS)
+
+    gcf().clear()
+
+    plot_fleur_dos(data, attributes, show=False, color={'MT:1_up': 'red'}, linewidth={'Total_up': 6})
+
+    return gcf()
+
+
 @pytest.mark.mpl_image_compare(baseline_dir='files/fleur_vis/', filename='spinpol_dos_defaults.png')
 def test_plot_spinpol_dos_defaults_mpl():
     from masci_tools.io.parsers.hdf5 import HDF5Reader

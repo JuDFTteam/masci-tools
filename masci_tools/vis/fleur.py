@@ -361,6 +361,8 @@ def plot_fleur_dos(dosdata,
     #Select the keys
     legend_labels, keys = np.array(legend_labels)[key_mask].tolist(), np.array(keys)[key_mask].tolist()
 
+    kwargs = _process_dos_kwargs(keys, **kwargs)
+
     if bokeh_plot:
         if spinpol:
             fig = bokeh_spinpol_dos(dosdata, ynames=keys, legend_label=legend_labels, **kwargs)
@@ -379,6 +381,28 @@ def plot_fleur_dos(dosdata,
             fig = plot_dos(dosdata['energy_grid'], dosdata_up, plot_label=legend_labels, **kwargs)
 
     return fig
+
+
+def _process_dos_kwargs(ordered_keys, **kwargs):
+    """
+    Convert any kwarg in dict form with str keys to the correct dict with integer index
+    for the plotting functions.
+
+    :param ordered_keys: ordered (!!!) list of the labels in the dos plot
+
+    :returns: kwargs with the dicts converted to integer indexed dicts
+    """
+
+    for key, value in kwargs.items():
+        if isinstance(value, dict):
+            for plot_label, val in value.items():
+                if not isinstance(plot_label, int):
+                    if plot_label in ordered_keys:
+                        value[ordered_keys.index(plot_label)] = value.pop(plot_label)
+                    else:
+                        raise ValueError(f'The label {plot_label} is not a valid label for the current plot')
+
+    return kwargs
 
 
 def _dos_order(key):
