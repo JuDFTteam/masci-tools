@@ -395,13 +395,14 @@ def _process_dos_kwargs(ordered_keys, **kwargs):
 
     for key, value in kwargs.items():
         if isinstance(value, dict):
+            new_dict = value.copy()
             for plot_label, val in value.items():
                 if not isinstance(plot_label, int):
                     if plot_label in ordered_keys:
-                        value[ordered_keys.index(plot_label)] = value.pop(plot_label)
+                        new_dict[ordered_keys.index(plot_label)] = new_dict.pop(plot_label)
                     else:
                         raise ValueError(f'The label {plot_label} is not a valid label for the current plot')
-
+            kwargs[key] = new_dict
     return kwargs
 
 
