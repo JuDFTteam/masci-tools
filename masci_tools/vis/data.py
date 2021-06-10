@@ -194,7 +194,6 @@ class PlotData:
 
         return values
 
-
     def min(self, data_key, separate=False):
 
         if data_key not in self._column_spec._fields:
@@ -205,10 +204,10 @@ class PlotData:
 
             key = entry._asdict()[data_key]
 
-            if isinstance(source[key], (np.ndarray,pd.Series)):
+            if isinstance(source[key], (np.ndarray, pd.Series)):
                 min_val.append(source[key].min())
             else:
-               min_val.append(min(source[key]))
+                min_val.append(min(source[key]))
 
         if separate:
             return min_val
@@ -225,15 +224,29 @@ class PlotData:
 
             key = entry._asdict()[data_key]
 
-            if isinstance(source[key], (np.ndarray,pd.Series)):
+            if isinstance(source[key], (np.ndarray, pd.Series)):
                 max_val.append(source[key].max())
             else:
-               max_val.append(max(source[key]))
+                max_val.append(max(source[key]))
 
         if separate:
             return max_val
         else:
             return max(max_val)
+
+    def apply(self, data_key, lambda_func):
+
+        if data_key not in self._column_spec._fields:
+            raise ValueError(f'Field {data_key} does not exist')
+
+        for entry, source in self.items():
+
+            key = entry._asdict()[data_key]
+
+            if isinstance(source[key], (np.ndarray, pd.Series)):
+                source[key] = lambda_func(source[key])
+            else:
+                source[key] = [lambda_func(value) for value in source[key]]
 
     def __len__(self):
         return len(self.masked_columns)
@@ -291,7 +304,13 @@ def normalize_list_or_array(data, key, out_data, flatten_np=False, forbid_split_
     return out_data
 
 
-def process_data_arguments(data, single_plot=False, mask=None, use_column_source=False, flatten_np=False, forbid_split_up=None, **kwargs):
+def process_data_arguments(data,
+                           single_plot=False,
+                           mask=None,
+                           use_column_source=False,
+                           flatten_np=False,
+                           forbid_split_up=None,
+                           **kwargs):
     """
     Initialize PlotData from np.arrays or lists of np.arrays or lists
 
@@ -312,7 +331,12 @@ def process_data_arguments(data, single_plot=False, mask=None, use_column_source
                 keys[key] = key
             else:
                 keys[key] = None
-            data = normalize_list_or_array(val, key, data, flatten_np=flatten_np, forbid_split_up=key in forbid_split_up, single_plot=single_plot)
+            data = normalize_list_or_array(val,
+                                           key,
+                                           data,
+                                           flatten_np=flatten_np,
+                                           forbid_split_up=key in forbid_split_up,
+                                           single_plot=single_plot)
     else:
         keys = kwargs
 
@@ -322,4 +346,3 @@ def process_data_arguments(data, single_plot=False, mask=None, use_column_source
         raise ValueError(f'Got multiple data sets ({len(p_data)}) but expected 1')
 
     return p_data
-

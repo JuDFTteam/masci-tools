@@ -432,7 +432,6 @@ class MatplotlibPlotter(Plotter):
                 plot_kwargs.pop('area_alpha', None)
                 plot_kwargs.pop('area_linecolor', None)
 
-
         if self['legend_show_data_labels']:
             if not self.single_plot:
                 for index, value in enumerate(plot_kwargs):
