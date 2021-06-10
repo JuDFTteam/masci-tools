@@ -33,8 +33,10 @@ class ChemicalElementsPlottingProfile:
     :param legend_title_prefix: If set, will be prepended to legend title.
     :param colorby: 'group': Colormap by selected groups, 'attribute': by mendeleev periodic table attribute.
     :param attribute: Attribute's value displayed below elements. Either PTE attribute, or group values.
+    :param without_attribute: Do not display the attribute values below the elements.
     :param colormap_name: Name of seaborn or matplotlib colormap.
     :param missing_color: Hex code of the color to be used for the missing values (#ffffff white, #bfbfbf light gray).
+    :param missing_group_value: If colorby 'group' and instance is flat, this correct missing colorisation.
     :param colormap: Dictionary {value : hexcolor string}. If not specified, created from value_range and map name.
     :param size: Tuple (width, height) of the table figure in pixels.
     :param showfblock: Show the elements from the f block
@@ -52,13 +54,15 @@ class ChemicalElementsPlottingProfile:
     legend_title_prefix: str = None
     colorby: str = 'group'
     attribute: str = 'atomic_weight'
+    without_attribute: bool = False
     colormap_name: str = 'PiYG'
-    missing_color: str = '#404040'
+    missing_color: str = '#404040'  # dark gray
+    missing_group_value: object = 1
     colormap: dict = _field({})
     size: tuple = _field(())
     showfblock: bool = True
     long_version: bool = False
-    with_legend: bool = True
+    with_legend: bool = False
     _version: int = 1
     _cls_name: str = ''
 
@@ -238,8 +242,13 @@ class ChemicalElements:
                     self.__data = {group_name: None for group_name in group_names}
 
     def is_flat(self):
-        """True if 'elmts' is dict of chemical elements, False if a dict of groups of such.
+        """True if 'elmts' attribute is flat dict of chemical elements, False if a dict of groups of such ('nested').
         """
+        # DEVnote: CE considers elmts with one group as flat dict, and with more than one as nested. CE's interface
+        # changes accordingly. kyes() on a flat dict will return element names, and group names on a nested dict.
+        # That is, CE 'hides' the group structure if there is only a single group. CE does not care about the name
+        # of the single group. The initial name for the group of a flat CE is the empty string. It can be renamed,
+        # and the instance will remain flat.
         return (not list(self.__elmts.keys())) or (list(self.__elmts.keys()) == ['']) or (len(self.__elmts.keys()) == 1)
 
     @property
@@ -355,15 +364,27 @@ class ChemicalElements:
         If flat, returns symbol's atomic number, if nested, returns group of elements.
         If flat, also allows inverted input: atomic_number, return symbol.
         """
-        if isinstance(group_name_or_symbol, str):
-            return self.elmts[group_name_or_symbol]
-        elif isinstance(group_name_or_symbol, int):
-            if self.is_flat():
+        if self.is_flat():
+            if isinstance(group_name_or_symbol, int):
                 return self.invert()[group_name_or_symbol]
+            elif isinstance(group_name_or_symbol, str):
+                return self.elmts[group_name_or_symbol]
             else:
-                raise KeyError('Querying [atomic_number] not possible for nested elmts.')
+                raise KeyError(f"Unsupported key/value type '{type(group_name_or_symbol)}'.")
         else:
-            raise KeyError(f"Unsupported key/value type '{type(group_name_or_symbol)}'.")
+            # accept any type as group symbol type
+            return self.elmts[group_name_or_symbol]
+
+        # # old version:
+        # if isinstance(group_name_or_symbol, str):
+        #     return self.elmts[group_name_or_symbol]
+        # elif isinstance(group_name_or_symbol, int):
+        #     if self.is_flat():
+        #         return self.invert()[group_name_or_symbol]
+        #     else:
+        #         raise KeyError('Querying [atomic_number] not possible for nested elmts.')
+        # else:
+        #     raise KeyError(f"Unsupported key/value type '{type(group_name_or_symbol)}'.")
 
     def __validate_distinctness(self, new__elmts):
         import copy
@@ -979,16 +1000,18 @@ class ChemicalElements:
              title: str = '',
              colorby: str = 'group',
              attribute: str = None,
+             without_attribute: bool = False,
              missing_value=None,
              missing_color: str = '#bfbfbf',
              missing_name: str = 'Missing',
+             missing_group_value=1,
              colormap_name: str = 'RdBu_r',
              colormap: dict = None,
              size: tuple = (1000, 800),
              output: str = None,
              showfblock: bool = True,
              long_version: bool = False,
-             with_legend: bool = True,
+             with_legend: bool = False,
              legend_title: str = 'Legend',
              use_plotting_profile: bool = True):
         """Plot elements in a periodic table, missing elements greyed out.
@@ -1015,10 +1038,12 @@ class ChemicalElements:
         :param title: Title to appear above the periodic table.
         :param colorby: 'group': Colormap by selected groups, 'attribute': by mendeleev periodic table attribute.
         :param attribute: Attribute's value displayed below elements. Either PTE attribute, or group values.
+        :param without_attribute: Do not display the attribute values below the elements.
         :param missing_value: Replaces NaN values, e.g. for custom coloring.
         :type missing_value: str or numeric. Prefer same type as coloring input (group names or attribute).
         :param missing_color: Hex code of the color to be used for the missing values (#ffffff white, #bfbfbf light gray).
         :param missing_name: Name to be used for missing values in the legend. If empty, will use missing_value.
+        :param missing_group_value: If colorby 'group' and instance is flat, this correct missing colorisation.
         :param colormap_name: Name of seaborn or matplotlib colormap.
         :param colormap: Dictionary {value : hexcolor string}. If not specified, created from colormap_name.
         :param size: Tuple (width, height) of the table figure in pixels.
@@ -1038,8 +1063,10 @@ class ChemicalElements:
         _missing_value = missing_value
         _missing_name = missing_name
         _missing_color = missing_color
+        _missing_group_value = missing_group_value
         _colorby = colorby
         _attribute = attribute
+        _without_attribute = without_attribute
         _colormap_name = colormap_name
         _colormap = copy.copy(colormap)
         _size = size
@@ -1052,7 +1079,7 @@ class ChemicalElements:
                 print('Warning: no plotting profile set. I will fall back to method arguments.')
             else:
                 pp = self.plotting_profile
-                # assert isinstance(pp, ChemicalElementsPlottingProfile) # for autocompletion
+                assert isinstance(pp, ChemicalElementsPlottingProfile)  # for autocompletion
                 _title = pp.title_prefix + title if (pp.title_prefix) else title
                 _output = pp.output_prefix + output if (output and pp.output_prefix) else output
                 _legend_title = pp.legend_title_prefix + legend_title if (legend_title and
@@ -1060,6 +1087,7 @@ class ChemicalElements:
                 _missing_value = pp.missing_value if pp.missing_value is not None else missing_value
                 _missing_name = pp.missing_name if pp.missing_name else missing_name
                 _missing_color = pp.missing_color if pp.missing_color else missing_color
+                _missing_group_value = pp.missing_group_value if pp.missing_group_value else missing_group_value
                 _colorby = pp.colorby if pp.colorby else colorby
                 if pp.attribute:
                     _attribute = pp.attribute
@@ -1068,6 +1096,7 @@ class ChemicalElements:
                         _attribute = pp.title_prefix + attribute
                     else:
                         _attribute = attribute
+                _without_attribute = pp.without_attribute if pp.without_attribute is not None else without_attribute
                 _colormap_name = pp.colormap_name if pp.colormap_name else colormap_name
                 _colormap = copy.copy(pp.colormap) if pp.colormap else _colormap
                 _size = pp.size if pp.size else size
@@ -1094,6 +1123,7 @@ class ChemicalElements:
         # init output for notebook. if not notebook, this won't have any effect.
         bokeh.plotting.output_notebook()
 
+        # set up file output
         _output_mendel = _output
         _output_ext = '.html'
         if _output_mendel:
@@ -1110,7 +1140,16 @@ class ChemicalElements:
         # get instance's elements, nested or flat
         groups = self.select_groups(selected_groups, include_special_elements=False)
 
-        # get the periodic table dataframe
+        # correct for a particular ChemicalElements quirk: if the CE instance was created flat and
+        # groups unchanged, it will (at current implementation) have one single group name, the empty string.
+        # If colorby group, this will lead to mendeleev plotting a white table. To prevent that, could either
+        # rename the group in the instance, or better rename it in the extracted dict, leaving the CE instance
+        # invariant.
+        if _colorby == 'group' and (list(self.__elmts.keys()) == ['']):
+            elements = groups.pop('')
+            groups[_missing_group_value] = elements
+
+            # get the periodic table dataframe
         ptable = self._get_mendeleev_periodic_table()
 
         # check some conditionals
@@ -1165,6 +1204,11 @@ class ChemicalElements:
             for group_key, group in groups.items():
                 for symbol in group.keys():
                     ptable.loc[ptable['symbol'] == symbol, [_title]] = group_key
+
+        if _without_attribute:
+            # create a column with empty values and set that as attribute to display for mendeleev.
+            _attribute_mendel = 'empty'
+            ptable['empty'] = ' '
 
         values = sorted(ptable[_title].dropna().unique())
         filled_in, _missing_value = _deal_with_missing_values(_missing_value)
