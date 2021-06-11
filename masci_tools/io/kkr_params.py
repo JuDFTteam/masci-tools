@@ -421,6 +421,8 @@ class kkrparams(object):
             ('IPAND', [None, '%i', False, 'Array dimension: number of shapefunction panels']),
             ('NPRINCD',
              [None, '%i', False, 'Array dimension: number of layers in each principle layer (decimation technique).']),
+
+            ('KPOIBZ', [None, '%i', False, 'Array dimension: Max number of k-points in IBZ']),
             # new style run options
             ('<CALC_GF_EFERMI>',
              [None, '%l', False, "Run option: calculation of cluster Green function at E Fermi (former: 'GF-EF')"]),
