@@ -185,6 +185,16 @@ class ChemicalElements:
             import json
             with open(filepath, 'r') as file:
                 self.__elmts = json.load(file)
+                # in case any group keys were numeric, they will now be string. rectify that.
+                # in case user WANTS them to be string, can always use 'rename' method to turn them back.
+                from masci_tools.util import python_util
+                group_keys = list(self.__elmts.keys())
+                for key in group_keys:
+                    if python_util.is_number(key):
+                        group_elmts = self.__elmts.pop(key)
+                        self.__elmts[python_util.to_number(key)] = group_elmts
+
+            # init data as empty since to_file() doesn't save data.
             self.__data = {group_name: None for group_name in self.__elmts.keys()}
         else:
             # init elmts, convert to [optional: container of:] dict[s] sym:num.
@@ -1226,7 +1236,8 @@ class ChemicalElements:
                 _standard_colormap_name = 'RdBu_r'
                 print('Warning: Specified colormap does not cover all values to be colorized. '
                       f"Will fall back to mendeleev standard colormap '{_standard_colormap_name}'."
-                      f'\nSpecified Colormap: {_colormap_name}'
+                      f'\nSpecified Colormap: {_colormap}'
+                      f'\nSpecified Colormap name: {_colormap_name}'
                       f'\nValues to be colorized: {values}')
                 _colormap_name = _standard_colormap_name
         else:
