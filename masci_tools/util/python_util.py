@@ -19,6 +19,39 @@ import json
 import re
 
 
+def is_number(a_string: str) -> bool:
+    """Checks if string represents an int or float. Supports leading/trailing whitespaces, scientific notation.
+
+    Reference: https://stackoverflow.com/a/23639915/8116031
+    :param a_string: a string
+    :return: True if string represents int or float, False otherwise.
+    """
+    # DEVNOTE: the same kind of test can be used for numpy numerical types.
+    try:
+        float(a_string)
+        return True
+    except ValueError:
+        return False
+
+
+def to_number(a_string: str) -> object:
+    """Converts a string representation of a number into a numerical type.
+
+    Numbers with decimals below machine epsilon, usually around 1e-16, get recognized as int.
+
+    :param a_string: a string
+    :return: Float if represents float, int if represents int, string otherwise.
+    :rtype: float, int or str.
+    """
+    num = a_string
+    try:
+        num = float(num)
+        num = int(num) if num.is_integer() else num
+    except ValueError:
+        pass
+    return num
+
+
 def now():
     """Get now time localized to UTC."""
     from datetime import datetime
