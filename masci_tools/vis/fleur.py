@@ -485,8 +485,7 @@ def _generate_dos_labels(dosdata, attributes, spinpol):
 
             tail = after.lstrip('0123456789')
             atom_type = int(after[:-len(tail)])
-
-            atom_label = attributes['atoms_elements'][atom_type - 1]
+            atom_label = types_elements[atom_type - 1]
 
             if types_elements.count(atom_label) != 1:
                 atom_occ = types_elements[:atom_type].count(atom_label)
