@@ -343,7 +343,9 @@ def plot_fleur_dos(dosdata,
         for natom in range(1, attributes['n_types'] + 1):
             for key in dosdata.keys():
                 if f'MT:{natom}' in key:
-                    dosdata[key] *= n_equiv[natom]
+                    after = key[len(f'MT:{natom}'):]
+                    if after == '' or not after[0].isdecimal():
+                        dosdata[key] *= n_equiv[natom]
 
     spinpol = attributes['spins'] == 2 and spinpol and any('_down' in key for key in dosdata.keys())
     legend_labels, keys = _generate_dos_labels(dosdata, attributes, spinpol)
@@ -360,6 +362,8 @@ def plot_fleur_dos(dosdata,
 
     #Select the keys
     legend_labels, keys = np.array(legend_labels)[key_mask].tolist(), np.array(keys)[key_mask].tolist()
+
+    kwargs = _process_dos_kwargs(keys, **kwargs)
 
     if bokeh_plot:
         if spinpol:
@@ -379,6 +383,29 @@ def plot_fleur_dos(dosdata,
             fig = plot_dos(dosdata['energy_grid'], dosdata_up, plot_label=legend_labels, **kwargs)
 
     return fig
+
+
+def _process_dos_kwargs(ordered_keys, **kwargs):
+    """
+    Convert any kwarg in dict form with str keys to the correct dict with integer index
+    for the plotting functions.
+
+    :param ordered_keys: ordered (!!!) list of the labels in the dos plot
+
+    :returns: kwargs with the dicts converted to integer indexed dicts
+    """
+
+    for key, value in kwargs.items():
+        if isinstance(value, dict):
+            new_dict = value.copy()
+            for plot_label, val in value.items():
+                if not isinstance(plot_label, int):
+                    if plot_label in ordered_keys:
+                        new_dict[ordered_keys.index(plot_label)] = new_dict.pop(plot_label)
+                    else:
+                        raise ValueError(f'The label {plot_label} is not a valid label for the current plot')
+            kwargs[key] = new_dict
+    return kwargs
 
 
 def _dos_order(key):
@@ -458,8 +485,7 @@ def _generate_dos_labels(dosdata, attributes, spinpol):
 
             tail = after.lstrip('0123456789')
             atom_type = int(after[:-len(tail)])
-
-            atom_label = attributes['atoms_elements'][atom_type - 1]
+            atom_label = types_elements[atom_type - 1]
 
             if types_elements.count(atom_label) != 1:
                 atom_occ = types_elements[:atom_type].count(atom_label)

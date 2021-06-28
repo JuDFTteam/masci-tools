@@ -519,7 +519,7 @@ def intersite_shells(hdffile, refAtom, return_greensf=True, show=False):
     """
     elements = listElements(hdffile)
 
-    distances = [np.linalg.norm(elem.atomDiff) for elem in elements]
+    distances = [round(np.linalg.norm(elem.atomDiff), 12) for elem in elements]
 
     #sort the elements according to shells
     index_sorted = sorted(range(len(elements)), key=lambda k: distances[k])

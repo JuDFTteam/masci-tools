@@ -2,7 +2,7 @@
 """
 Tests of the plotter base class
 """
-from masci_tools.vis import Plotter, ensure_plotter_consistency
+from masci_tools.vis.parameters import Plotter, ensure_plotter_consistency
 import pytest
 
 TEST_DICT = {'A': {'test1': 12, 'test2': 4}, 'B': 3.0, 'C': 'title'}
@@ -120,6 +120,63 @@ def test_plotter_add_parameter():
     p.reset_parameters()
 
     assert dict(p._params) == TEST_DICT
+
+
+def test_plotter_save_defaults(file_regression):
+    """
+    Test adding of custom parameters
+    """
+    import tempfile
+
+    p = Plotter(TEST_DICT)
+
+    p.set_defaults(continue_on_error=True, **{'B': 0, 'A': {'test3': 'extra'}, 'D': 'not a key'})
+
+    with tempfile.NamedTemporaryFile('r') as file:
+        p.save_defaults(file.name)
+
+        txt = file.read().strip()
+        file_regression.check(txt)
+
+
+def test_plotter_save_defaults_complete(file_regression):
+    """
+    Test adding of custom parameters
+    """
+    import tempfile
+
+    p = Plotter(TEST_DICT)
+
+    p.set_defaults(continue_on_error=True, **{'B': 0, 'A': {'test3': 'extra'}, 'D': 'not a key'})
+
+    with tempfile.NamedTemporaryFile('r') as file:
+        p.save_defaults(file.name, save_complete=True)
+
+        txt = file.read().strip()
+        file_regression.check(txt)
+
+
+def test_plotter_load_defaults(file_regression):
+    """
+    Test adding of custom parameters
+    """
+    import tempfile
+
+    p = Plotter(TEST_DICT)
+
+    p.set_defaults(continue_on_error=True, **{'B': 0, 'A': {'test3': 'extra'}, 'D': 'not a key'})
+
+    with tempfile.NamedTemporaryFile('r') as file:
+        p.save_defaults(file.name)
+
+        p_new = Plotter(TEST_DICT)
+
+        p_new.load_defaults(file.name)
+
+    expected_result = {'A': {'test1': 12, 'test2': 4, 'test3': 'extra'}, 'B': 0, 'C': 'title'}
+
+    assert dict(p._params) == expected_result
+    assert dict(p._params.parents) == expected_result
 
 
 def test_plotter_decorator_working():

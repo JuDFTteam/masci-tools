@@ -17,7 +17,7 @@ with io.open(path.join(this_directory, 'README.md'), encoding='utf8') as f:
 if __name__ == '__main__':
     setup(
         name='masci_tools',
-        version='0.4.8',
+        version='0.4.9',
         description='Tools for Materials science. Vis contains wrappers of matplotlib functionality to visualize common material science data. Plus wrappers of visualisation for aiida-fleur workflow nodes',
         # add long_description from readme.md:
         long_description = long_description, # add contents of README.md
@@ -37,7 +37,7 @@ if __name__ == '__main__':
             'Topic :: Scientific/Engineering :: Physics'
         ],
         keywords='material science plots fitting visualization aiida dft all-electron',
-        packages=find_packages(),
+        packages=find_packages(exclude=['tests*']),
         #['src', 'tests'],
         include_package_data=True,
 

@@ -25,7 +25,7 @@ KKR specific Plotting
 General Plotting
 -----------------
 
-.. automodule:: masci_tools.vis
+.. automodule:: masci_tools.vis.parameters
    :members:
 
 Matplotlib
