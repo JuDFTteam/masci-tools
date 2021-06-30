@@ -1049,6 +1049,57 @@ class TestHistogramPlot(object):  #pylint: disable=missing-class-docstring
         # need to return the figure in order for mpl checks to work
         return gcf()
 
+    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/histogram/', filename='stacked.png')
+    def test_defaults_stacked(self):
+        """
+        Test of histogram plot with default values
+        """
+        import numpy as np
+        from masci_tools.vis.plot_methods import histogram
+
+        np.random.seed(19680801)
+        N_points = 10000
+
+        # Generate a normal distribution, center at x=0 and y=5
+        x = np.random.randn(N_points)
+        x2 = np.random.randn(N_points)
+
+        gcf().clear()
+
+        histogram([x, x2], show=False, histtype='barstacked')
+
+        # need to return the figure in order for mpl checks to work
+        return gcf()
+
+    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/histogram/',
+                                   filename='stacked_param_change.png')
+    def test_param_changed_stacked(self):
+        """
+        Test of histogram plot with default values
+        """
+        import numpy as np
+        from masci_tools.vis.plot_methods import histogram
+
+        np.random.seed(19680801)
+        N_points = 10000
+
+        # Generate a normal distribution, center at x=0 and y=5
+        x = np.random.randn(N_points)
+        x2 = np.random.randn(N_points)
+
+        gcf().clear()
+
+        histogram([x, x2],
+                  color=['darkblue', 'darkred'],
+                  histtype='barstacked',
+                  linewidth=2,
+                  legend=True,
+                  plot_label={1: 'This is on top'},
+                  show=False)
+
+        # need to return the figure in order for mpl checks to work
+        return gcf()
+
 
 class TestBarchartPlot(object):  #pylint: disable=missing-class-docstring
 

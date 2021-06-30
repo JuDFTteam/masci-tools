@@ -777,6 +777,12 @@ def histogram(xdata,
     If the arguments are not recognized they are passed on to the matplotlib function `hist`
     """
 
+    if not isinstance(xdata[0], (list, np.ndarray, pd.Series)):
+        xdata = [xdata]
+
+    plot_params.single_plot = False
+    plot_params.num_plots = len(xdata)
+
     if 'label' in kwargs:
         warnings.warn('Please use plot_label instead of label', DeprecationWarning)
         kwargs['plot_label'] = kwargs.pop('label')
@@ -804,7 +810,7 @@ def histogram(xdata,
 
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis, minor=True)
 
-    plot_kwargs = plot_params.plot_kwargs(plot_type='histogram')
+    plot_kwargs = plot_params.plot_kwargs(plot_type='histogram', list_of_dicts=False)
     n, bins, patches = ax.hist(xdata,
                                density=density,
                                histtype=histtype,
