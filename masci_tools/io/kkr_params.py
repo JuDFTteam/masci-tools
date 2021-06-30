@@ -415,6 +415,8 @@ class kkrparams(object):
             ('<CUSTOM_TESTSTRING>',
              [None, '%s', False, 'Superconductivity: String input for some test options with BdG']),
             # array dimensions
+            ('WFAC_RENORM', [ None, '%f', False,
+                'Renormalization factor for energy integration weights (can be used to shift the Fermi level around).']),
             ('NSHELD', [None, '%i', False, 'Array dimension: number of shells (default: 300)']),
             ('IEMXD', [None, '%i', False, 'Array dimension: number of energy points (default: 101)']),
             ('IRID', [None, '%i', False, 'Array dimension: number of radial points']),
