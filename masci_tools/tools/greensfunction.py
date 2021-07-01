@@ -192,6 +192,7 @@ def _read_element_header(hdffile, index):
     onsite = element.attrs['l_onsite'][0] == 1
     contour = element.attrs['iContour'][0]
     atomDiff = np.array(element.attrs['atomDiff'])
+    atomDiff[abs(atomDiff) < 1e-12] = 0.0
     nLO = element.attrs['numLOs'][0]
 
     return GreensfElement(l, lp, atomType, atomTypep, sphavg, onsite, contour, nLO, atomDiff)
@@ -431,7 +432,7 @@ def printElements(elements, index=None, mark=None):
         atomdiff_str = np.array2string(element.atomDiff,
                                        precision=2,
                                        separator=',',
-                                       suppress_small=False,
+                                       suppress_small=True,
                                        sign=' ',
                                        floatmode='fixed')
         print(
