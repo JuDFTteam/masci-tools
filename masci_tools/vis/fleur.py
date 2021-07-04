@@ -363,7 +363,7 @@ def plot_fleur_dos(dosdata,
     #Select the keys
     legend_labels, keys = np.array(legend_labels)[key_mask].tolist(), np.array(keys)[key_mask].tolist()
 
-    kwargs = _process_dos_kwargs(keys, **kwargs)
+    kwargs = _process_dos_kwargs(keys, bokeh_plot=bokeh_plot, **kwargs)
 
     if bokeh_plot:
         if spinpol:
@@ -385,7 +385,7 @@ def plot_fleur_dos(dosdata,
     return fig
 
 
-def _process_dos_kwargs(ordered_keys, **kwargs):
+def _process_dos_kwargs(ordered_keys, bokeh_plot=False, **kwargs):
     """
     Convert any kwarg in dict form with str keys to the correct dict with integer index
     for the plotting functions.
@@ -394,8 +394,17 @@ def _process_dos_kwargs(ordered_keys, **kwargs):
 
     :returns: kwargs with the dicts converted to integer indexed dicts
     """
+    from .matplotlib_plotter import MatplotlibPlotter
+    from .bokeh_plotter import BokehPlotter
+
+    if bokeh_plot:
+        params = BokehPlotter()
+    else:
+        params = MatplotlibPlotter()
 
     for key, value in kwargs.items():
+        if params.is_general(key):
+            continue
         if isinstance(value, dict):
             new_dict = value.copy()
             for plot_label, val in value.items():

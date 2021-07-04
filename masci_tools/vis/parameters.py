@@ -387,7 +387,7 @@ class Plotter(object):
         if key not in self._params:
             raise KeyError(f'Unknown parameter: {key}')
 
-        if key not in self._GENERAL_KEYS:
+        if not self.is_general(key):
             value = self.convert_to_complete_list(value,
                                                   self.single_plot,
                                                   self.num_plots,
@@ -581,6 +581,17 @@ class Plotter(object):
             print(f'{key}:\n\nNo Description available')
         else:
             warnings.warn(f'{key} is not a known parameter')
+
+    def is_general(self, key):
+        """
+        Return, whether the key is general
+        (meaning only related to the whole plots)
+
+        :param key: str of the key to check
+
+        :returns: bool, whether the key is general
+        """
+        return key in self._GENERAL_KEYS
 
     @property
     def _hardcoded_defaults(self):
