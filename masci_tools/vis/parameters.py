@@ -129,10 +129,21 @@ def _generate_plot_parameters_table(defaults, descriptions):
             value = f'``{value}``'
 
         descr = descriptions.get(key, 'No Description available')
+        descr = descr.replace("{"," ``{")
+        descr = descr.replace("}","}`` ")
 
         table.extend([f'       * - ``{key}``',
-                      f'         - {descr}',
-                      f'         - {value}'])
+                      f'         - {descr}'])
+
+        if not isinstance(value, dict):
+            table.append(f'         - {value}')
+        else:
+            string_value = [f"'{key}': {val}," for key, val in value.items()]
+            string_value[0] = '{' + string_value[0]
+            string_value[-1] = string_value[-1].rstrip(',') + '}'
+
+            table.extend(['         - .. code-block::', ''] + \
+                         [f'                {string}' for string in string_value])
 
     table.append('')
     #yapf: enable
