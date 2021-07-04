@@ -129,8 +129,8 @@ def _generate_plot_parameters_table(defaults, descriptions):
             value = f'``{value}``'
 
         descr = descriptions.get(key, 'No Description available')
-        descr = descr.replace("{"," ``{")
-        descr = descr.replace("}","}`` ")
+        descr = descr.replace('{',' ``{')
+        descr = descr.replace('}','}`` ')
 
         table.extend([f'       * - ``{key}``',
                       f'         - {descr}'])
