@@ -138,7 +138,9 @@ def _generate_plot_parameters_table(defaults, descriptions):
         if not isinstance(value, dict):
             table.append(f'         - {value}')
         else:
-            string_value = [f"'{key}': {val}," for key, val in value.items()]
+            string_value = [f"'{key}': '{val}'," if isinstance(val, str)
+                            else f"'{key}': {val},"
+                            for key, val in value.items()]
             string_value[0] = '{' + string_value[0]
             string_value[-1] = string_value[-1].rstrip(',') + '}'
 
