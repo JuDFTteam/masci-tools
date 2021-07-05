@@ -313,6 +313,9 @@ def plot_fleur_dos(dosdata,
     recipe from :py:mod:`~masci_tools.io.parsers.hdf5.recipes` or something
     producing equivalent data
 
+    The limits for the axes can be specified either with ``x`` and ``y`` or
+    ``energy`` and ``dos``. Mixing the two options is not possible
+
     :param dosdata: dataset dict produced by the `FleurDOS` recipe
     :param attributes: attributes dict produced by the `FleurDOS` recipe
     :param spinpol: bool, if True (default) use the plot for spin-polarized dos if the data is spin-polarized
