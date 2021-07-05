@@ -84,6 +84,19 @@ def get_help(key, backend=None):
     else:
         raise NotImplementedError
 
+def get_plotter(backend=None):
+    import masci_tools.vis.plot_methods as mpl
+    import masci_tools.vis.bokeh_plots as bok
+
+    backend = PlotBackend.from_str(backend)
+
+    if backend == PlotBackend.mpl:
+        return mpl.plot_params
+    elif backend == PlotBackend.bokeh:
+        return bok.plot_params
+    else:
+        raise NotImplementedError
+
 def dos(*args, backend=None, **kwargs):
     """
 
