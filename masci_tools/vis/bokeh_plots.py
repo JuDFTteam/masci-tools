@@ -400,10 +400,11 @@ def bokeh_dos(dosdata,
 
     if 'limits' in kwargs:
         limits = kwargs.pop('limits')
-        if xyswitch:
-            limits['x'], limits['y'] = limits.pop('dos', None), limits.pop('energy', None)
-        else:
-            limits['x'], limits['y'] = limits.pop('energy', None), limits.pop('dos', None)
+        if 'x' not in limits and 'y' not in limits:
+            if xyswitch:
+                limits['x'], limits['y'] = limits.pop('dos', None), limits.pop('energy', None)
+            else:
+                limits['x'], limits['y'] = limits.pop('energy', None), limits.pop('dos', None)
         kwargs['limits'] = {k: v for k, v in limits.items() if v is not None}
 
     lines = {'horizontal': 0}
@@ -475,10 +476,11 @@ def bokeh_spinpol_dos(dosdata,
 
     if 'limits' in kwargs:
         limits = kwargs.pop('limits')
-        if xyswitch:
-            limits['x'], limits['y'] = limits.pop('dos', None), limits.pop('energy', None)
-        else:
-            limits['x'], limits['y'] = limits.pop('energy', None), limits.pop('dos', None)
+        if 'x' not in limits and 'y' not in limits:
+            if xyswitch:
+                limits['x'], limits['y'] = limits.pop('dos', None), limits.pop('energy', None)
+            else:
+                limits['x'], limits['y'] = limits.pop('energy', None), limits.pop('dos', None)
         kwargs['limits'] = {k: v for k, v in limits.items() if v is not None}
 
     lines = {'horizontal': 0}

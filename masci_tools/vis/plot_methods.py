@@ -777,6 +777,12 @@ def histogram(xdata,
     If the arguments are not recognized they are passed on to the matplotlib function `hist`
     """
 
+    if not isinstance(xdata[0], (list, np.ndarray, pd.Series)):
+        xdata = [xdata]
+
+    plot_params.single_plot = False
+    plot_params.num_plots = len(xdata)
+
     if 'label' in kwargs:
         warnings.warn('Please use plot_label instead of label', DeprecationWarning)
         kwargs['plot_label'] = kwargs.pop('label')
@@ -804,7 +810,7 @@ def histogram(xdata,
 
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis, minor=True)
 
-    plot_kwargs = plot_params.plot_kwargs(plot_type='histogram')
+    plot_kwargs = plot_params.plot_kwargs(plot_type='histogram', list_of_dicts=False)
     n, bins, patches = ax.hist(xdata,
                                density=density,
                                histtype=histtype,
@@ -1538,9 +1544,9 @@ def plot_lattice_constant(scaling,
             with NestedPlotParameters(plot_params):
                 ax = single_scatterplot(scaling,
                                         fit_y,
-                                        xlabel,
-                                        ylabel,
-                                        title,
+                                        xlabel=xlabel,
+                                        ylabel=ylabel,
+                                        title=title,
                                         axis=ax,
                                         show=False,
                                         save_plots=False,
@@ -1595,10 +1601,11 @@ def plot_dos(energy_grid,
 
     if 'limits' in kwargs:
         limits = kwargs.pop('limits')
-        if xyswitch:
-            limits['x'], limits['y'] = limits.pop('dos', None), limits.pop('energy', None)
-        else:
-            limits['x'], limits['y'] = limits.pop('energy', None), limits.pop('dos', None)
+        if 'x' not in limits and 'y' not in limits:
+            if xyswitch:
+                limits['x'], limits['y'] = limits.pop('dos', None), limits.pop('energy', None)
+            else:
+                limits['x'], limits['y'] = limits.pop('energy', None), limits.pop('dos', None)
         kwargs['limits'] = {k: v for k, v in limits.items() if v is not None}
 
     lines = {'horizontal': 0}
@@ -1668,10 +1675,11 @@ def plot_spinpol_dos(energy_grid,
 
     if 'limits' in kwargs:
         limits = kwargs.pop('limits')
-        if xyswitch:
-            limits['x'], limits['y'] = limits.pop('dos', None), limits.pop('energy', None)
-        else:
-            limits['x'], limits['y'] = limits.pop('energy', None), limits.pop('dos', None)
+        if 'x' not in limits and 'y' not in limits:
+            if xyswitch:
+                limits['x'], limits['y'] = limits.pop('dos', None), limits.pop('energy', None)
+            else:
+                limits['x'], limits['y'] = limits.pop('energy', None), limits.pop('dos', None)
         kwargs['limits'] = {k: v for k, v in limits.items() if v is not None}
 
     if isinstance(spin_up_data[0], (list, np.ndarray)):

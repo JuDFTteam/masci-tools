@@ -313,7 +313,13 @@ class MatplotlibPlotter(Plotter):
                          key_descriptions=self._MATPLOTLIB_DESCRIPTIONS,
                          **kwargs)
 
-    def plot_kwargs(self, ignore=None, extra_keys=None, plot_type='default', post_process=True, **kwargs):
+    def plot_kwargs(self,
+                    ignore=None,
+                    extra_keys=None,
+                    plot_type='default',
+                    post_process=True,
+                    list_of_dicts=True,
+                    **kwargs):
         """
         Creates a dict or list of dicts (for multiple plots) with the defined parameters
         for the plotting calls fo matplotlib
@@ -394,9 +400,17 @@ class MatplotlibPlotter(Plotter):
 
                 plot_kwargs['cmap'] = self.truncate_colormap(plot_kwargs['cmap'], *self['sub_colormap'])
 
-        plot_kwargs = self.dict_of_lists_to_list_of_dicts(plot_kwargs, self.single_plot, self.num_plots)
+        if list_of_dicts:
+            plot_kwargs = self.dict_of_lists_to_list_of_dicts(plot_kwargs, self.single_plot, self.num_plots)
 
-        if not self.single_plot:
+        if not list_of_dicts and 'label' in plot_kwargs:
+            label = plot_kwargs.pop('label')
+            if isinstance(label, list):
+                plot_kwargs['label'] = [value if value is not None else '' for value in label]
+            else:
+                plot_kwargs['label'] = label if label is not None else ''
+
+        if not self.single_plot and list_of_dicts:
             for index, value in enumerate(plot_kwargs):
                 if self[('area_plot', index)]:
                     value.pop('marker', None)

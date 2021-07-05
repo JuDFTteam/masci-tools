@@ -218,7 +218,13 @@ class BokehPlotter(Plotter):
                          key_descriptions=self._BOKEH_DESCRIPTIONS,
                          **kwargs)
 
-    def plot_kwargs(self, ignore=None, extra_keys=None, plot_type='default', post_process=True, **kwargs):
+    def plot_kwargs(self,
+                    ignore=None,
+                    extra_keys=None,
+                    plot_type='default',
+                    post_process=True,
+                    list_of_dicts=True,
+                    **kwargs):
         """
         Creates a dict or list of dicts (for multiple plots) with the defined parameters
         for the plotting calls fo matplotlib
@@ -269,7 +275,8 @@ class BokehPlotter(Plotter):
         if 'marker_size' in plot_kwargs:
             plot_kwargs['size'] = plot_kwargs.pop('marker_size')
 
-        plot_kwargs = self.dict_of_lists_to_list_of_dicts(plot_kwargs, self.single_plot, self.num_plots)
+        if list_of_dicts:
+            plot_kwargs = self.dict_of_lists_to_list_of_dicts(plot_kwargs, self.single_plot, self.num_plots)
 
         return plot_kwargs
 

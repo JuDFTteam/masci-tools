@@ -129,10 +129,21 @@ def _generate_plot_parameters_table(defaults, descriptions):
             value = f'``{value}``'
 
         descr = descriptions.get(key, 'No Description available')
+        descr = descr.replace('{',' ``{')
+        descr = descr.replace('}','}`` ')
 
         table.extend([f'       * - ``{key}``',
-                      f'         - {descr}',
-                      f'         - {value}'])
+                      f'         - {descr}'])
+
+        if not isinstance(value, dict):
+            table.append(f'         - {value}')
+        else:
+            string_value = [f"'{key}': {val}," for key, val in value.items()]
+            string_value[0] = '{' + string_value[0]
+            string_value[-1] = string_value[-1].rstrip(',') + '}'
+
+            table.extend(['         - .. code-block::', ''] + \
+                         [f'                {string}' for string in string_value])
 
     table.append('')
     #yapf: enable
@@ -387,7 +398,7 @@ class Plotter(object):
         if key not in self._params:
             raise KeyError(f'Unknown parameter: {key}')
 
-        if key not in self._GENERAL_KEYS:
+        if not self.is_general(key):
             value = self.convert_to_complete_list(value,
                                                   self.single_plot,
                                                   self.num_plots,
@@ -581,6 +592,17 @@ class Plotter(object):
             print(f'{key}:\n\nNo Description available')
         else:
             warnings.warn(f'{key} is not a known parameter')
+
+    def is_general(self, key):
+        """
+        Return, whether the key is general
+        (meaning only related to the whole plots)
+
+        :param key: str of the key to check
+
+        :returns: bool, whether the key is general
+        """
+        return key in self._GENERAL_KEYS
 
     @property
     def _hardcoded_defaults(self):
