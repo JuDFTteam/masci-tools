@@ -1,28 +1,47 @@
-
+# -*- coding: utf-8 -*-
+###############################################################################
+# Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
+#                All rights reserved.                                         #
+# This file is part of the Masci-tools package.                               #
+# (Material science tools)                                                    #
+#                                                                             #
+# The code is hosted on GitHub at https://github.com/judftteam/masci-tools.   #
+# For further information on the license, see the LICENSE.txt file.           #
+# For further information please visit http://judft.de/.                      #
+#                                                                             #
+###############################################################################
+"""
+This module contains functionality for writing input files for the input generator of fleur
+"""
 from masci_tools.util.constants import PERIODIC_TABLE_ELEMENTS, BOHR_A
 from masci_tools.util.xml.converters import convert_to_fortran_bool
 from masci_tools.io.common_functions import abs_to_rel_f, abs_to_rel, convert_to_fortran_string
 
 # Inpgen file structure, order is important
 POSSIBLE_NAMELISTS = [
-        'title', 'input', 'lattice', 'gen', 'shift', 'factor', 'qss', 'soc', 'atom', 'comp', 'exco', 'film', 'kpt',
-        'end'
-    ]
+    'title', 'input', 'lattice', 'gen', 'shift', 'factor', 'qss', 'soc', 'atom', 'comp', 'exco', 'film', 'kpt', 'end'
+]
 POSSIBLE_PARAMS = {
-        'input': ['film', 'cartesian', 'cal_symm', 'checkinp', 'symor', 'oldfleur'],
-        'lattice': ['latsys', 'a0', 'a', 'b', 'c', 'alpha', 'beta', 'gamma'],
-        'atom': ['id', 'z', 'rmt', 'dx', 'jri', 'lmax', 'lnonsph', 'ncst', 'econfig', 'bmu', 'lo', 'element', 'name'],
-        'comp': ['jspins', 'frcor', 'ctail', 'kcrel', 'gmax', 'gmaxxc', 'kmax'],
-        'exco': ['xctyp', 'relxc'],
-        'film': ['dvac', 'dtild'],
-        'soc': ['theta', 'phi'],
-        'qss': ['x', 'y', 'z'],
-        'kpt': ['nkpt', 'kpts', 'div1', 'div2', 'div3', 'tkb', 'tria'],
-        'title': {}
-    }
+    'input': ['film', 'cartesian', 'cal_symm', 'checkinp', 'symor', 'oldfleur'],
+    'lattice': ['latsys', 'a0', 'a', 'b', 'c', 'alpha', 'beta', 'gamma'],
+    'atom': ['id', 'z', 'rmt', 'dx', 'jri', 'lmax', 'lnonsph', 'ncst', 'econfig', 'bmu', 'lo', 'element', 'name'],
+    'comp': ['jspins', 'frcor', 'ctail', 'kcrel', 'gmax', 'gmaxxc', 'kmax'],
+    'exco': ['xctyp', 'relxc'],
+    'film': ['dvac', 'dtild'],
+    'soc': ['theta', 'phi'],
+    'qss': ['x', 'y', 'z'],
+    'kpt': ['nkpt', 'kpts', 'div1', 'div2', 'div3', 'tkb', 'tria'],
+    'title': {}
+}
 
 
-def write_inpgen_file(cell, atoms_dict_list, kind_list, path='inpgen.in', pbc=(True, True, True), input_params=None, settings=None):
+def write_inpgen_file(cell,
+                      atoms_dict_list,
+                      kind_list,
+                      path='inpgen.in',
+                      pbc=(True, True, True),
+                      input_params=None,
+                      settings=None):
     """Write an input file for the fleur inputgenerator 'inpgen' from given inputs
 
     Args:
@@ -45,7 +64,7 @@ def write_inpgen_file(cell, atoms_dict_list, kind_list, path='inpgen.in', pbc=(T
     Returns:
         [list]: A report, list of strings, things which where logged within the process
 
-    Comments: This was extracted out of aiida-fleur for more general use, 
+    Comments: This was extracted out of aiida-fleur for more general use,
     the datastructures stayed very close to what aiida provides (to_raw()), it may not
     yet be convenient for all usecases. I.e data so far has to be given in Angstrom and will be converted to fleur units.
     # This could be made optional
@@ -99,11 +118,11 @@ def write_inpgen_file(cell, atoms_dict_list, kind_list, path='inpgen.in', pbc=(T
     if False in pbc:
         bulk = False
         film = True
-    
+
     # check existence of parameters (optional)
     if input_params is None:
         input_params = {}
-    
+
     # we write always out rel coordinates, because thats the way FLEUR uses
     # them best. we have to convert them from abs, because thats how they
     # are stored in a Structure node. cartesian=F is default
@@ -133,14 +152,14 @@ def write_inpgen_file(cell, atoms_dict_list, kind_list, path='inpgen.in', pbc=(T
             namelist = 'atom'
         if namelist not in POSSIBLE_NAMELISTS:
             raise ValueError("The namelist '{0}' is not supported by the fleur"
-                                       " inputgenerator. Check on the fleur website or add '{0}'"
-                                       'to _possible_namelists.'.format(namelist))
+                             " inputgenerator. Check on the fleur website or add '{0}'"
+                             'to _possible_namelists.'.format(namelist))
         for para in paramdic.keys():
             if para not in POSSIBLE_PARAMS[namelist]:
                 raise ValueError("The property '{}' is not supported by the "
-                                           "namelist '{}'. "
-                                           'Check the fleur website, or if it really is,'
-                                           ' update _possible_params. '.format(para, namelist))
+                                 "namelist '{}'. "
+                                 'Check the fleur website, or if it really is,'
+                                 ' update _possible_params. '.format(para, namelist))
             if para in string_replace:
                 # TODO check if its in the parameter dict
                 paramdic[para] = convert_to_fortran_string(paramdic[para])
@@ -173,7 +192,7 @@ def write_inpgen_file(cell, atoms_dict_list, kind_list, path='inpgen.in', pbc=(T
     for key in settings_dict.keys():
         if key not in _settings_keys:
             report.append('Settings dict key %s for Fleur calculation'
-                             'not recognized, only %s are allowed.', key, str(_settings_keys))
+                          'not recognized, only %s are allowed.', key, str(_settings_keys))
 
     ##############################
     # END OF INITIAL INPUT CHECK #
@@ -214,8 +233,8 @@ def write_inpgen_file(cell, atoms_dict_list, kind_list, path='inpgen.in', pbc=(T
                     kind = kin
             if kind.get('has_vacancies', False):
                 # then we do not at atoms with weights smaller one
-                if kind.get('weights', [1])[0] <1.0:                    
-                    natoms = natoms -1
+                if kind.get('weights', [1])[0] < 1.0:
+                    natoms = natoms - 1
                     # Log message?
                     continue
             # We assume atoms therefore I just get the first one... test that only one atom at site?
@@ -242,7 +261,7 @@ def write_inpgen_file(cell, atoms_dict_list, kind_list, path='inpgen.in', pbc=(T
                         'Warning: Kind name {} will be ignored by the FleurinputgenCalculation and not set a charge number.'
                         .format(kind_name))
                 else:
-                    atomic_number_name = '{}.{}'.format(atomic_number, kind_namet)
+                    atomic_number_name = f'{atomic_number}.{kind_namet}'
                 # append a label to the detached atom
                 reg_string = '    {0:7} {1:18.' + sf_p + 'f} {2:18.' + sf_p + 'f} {3:18.' + sf_p + 'f} {4}\n'
                 atomic_positions_card_listtmp.append(
@@ -253,15 +272,13 @@ def write_inpgen_file(cell, atoms_dict_list, kind_list, path='inpgen.in', pbc=(T
                     reg_string.format(atomic_number_name, vector_rel[0], vector_rel[1], vector_rel[2]))
         # TODO check format
         # we write it later, since we do not know what natoms is before the loop...
-        atomic_positions_card_list.append('    {0:3}\n'.format(natoms))
+        atomic_positions_card_list.append(f'    {natoms:3}\n')
         for card in atomic_positions_card_listtmp:
             atomic_positions_card_list.append(card)
     else:
         # TODO with own lattice atomic positions have to come from somewhere
         # else.... User input?
-        raise ValueError('fleur lattice needs also the atom '
-                                   ' position as input,'
-                                   ' not implemented yet, sorry!')
+        raise ValueError('fleur lattice needs also the atom ' ' position as input,' ' not implemented yet, sorry!')
     atomic_positions_card = ''.join(atomic_positions_card_list)
     del atomic_positions_card_list  # Free memory
 
@@ -270,15 +287,14 @@ def write_inpgen_file(cell, atoms_dict_list, kind_list, path='inpgen.in', pbc=(T
     # kpoints_card = ""#.join(kpoints_card_list)
     #del kpoints_card_list
 
-
     #######################################
     #### WRITE ALL CARDS IN INPUT FILE ####
 
     with open(path, 'w') as infile:
         # first write title
-        infile.write('{0}\n'.format(_inp_title))
+        infile.write(f'{_inp_title}\n')
         # then write &input namelist
-        infile.write('&{0}'.format('input'))
+        infile.write('&input')
         # namelist content; set to {} if not present, so that we leave an
         # empty namelist
         namelist = input_params.pop('input', {})
@@ -288,7 +304,7 @@ def write_inpgen_file(cell, atoms_dict_list, kind_list, path='inpgen.in', pbc=(T
 
         # Write lattice information now
         infile.write(cell_parameters_card)
-        infile.write('{0:18.10f}\n'.format(scaling_lat))
+        infile.write(f'{scaling_lat:18.10f}\n')
         infile.write(scaling_factor_card)
         infile.write('\n')
 
@@ -301,7 +317,7 @@ def write_inpgen_file(cell, atoms_dict_list, kind_list, path='inpgen.in', pbc=(T
             if namelist:
                 if 'atom' in namels_name:
                     namels_name = 'atom'
-                infile.write('&{0}\n'.format(namels_name))
+                infile.write(f'&{namels_name}\n')
                 if namels_name in val_only_namelist:
                     make_reversed = False
                     if namels_name == 'soc':
@@ -316,9 +332,9 @@ def write_inpgen_file(cell, atoms_dict_list, kind_list, path='inpgen.in', pbc=(T
 
     if input_params:
         raise ValueError('input_params leftover: The following namelists are specified'
-                                   ' in input_params, but are '
-                                   'not valid namelists for the current type of calculation: '
-                                   '{}'.format(','.join(list(input_params.keys()))))
+                         ' in input_params, but are '
+                         'not valid namelists for the current type of calculation: '
+                         '{}'.format(','.join(list(input_params.keys()))))
 
     return report
 
@@ -346,8 +362,7 @@ def get_input_data_text(key, val, value_only, mapping=None):
     # hasattr(__iter__)
     if isinstance(val, dict):
         if mapping is None:
-            raise ValueError("If 'val' is a dictionary, you must provide also "
-                             "the 'mapping' parameter")
+            raise ValueError("If 'val' is a dictionary, you must provide also " "the 'mapping' parameter")
 
         # At difference with the case of a list, at the beginning
         # list_of_strings
@@ -359,36 +374,30 @@ def get_input_data_text(key, val, value_only, mapping=None):
             try:
                 idx = mapping[elemk]
             except KeyError:
-                raise ValueError("Unable to find the key '{}' in the mapping "
-                                 "dictionary".format(elemk))
+                raise ValueError("Unable to find the key '{}' in the mapping " 'dictionary'.format(elemk))
 
-            list_of_strings.append((
-                idx, "  {0}({2})={1} ".format(key, conv_to_fortran(itemval), idx)))
-                #changed {0}({2}) = {1}\n".format
+            list_of_strings.append((idx, f'  {key}({idx})={conv_to_fortran(itemval)} '))
+            #changed {0}({2}) = {1}\n".format
 
         # I first have to resort, then to remove the index from the first
         # column, finally to join the strings
         list_of_strings = zip(*sorted(list_of_strings))[1]
-        return "".join(list_of_strings)
+        return ''.join(list_of_strings)
     elif not isinstance(val, str) and hasattr(val, '__iter__'):
         if value_only:
-            list_of_strings = [
-                "  ({1}){0} ".format(conv_to_fortran(itemval), idx+1)
-                for idx, itemval in enumerate(val)]
+            list_of_strings = [f'  ({idx + 1}){conv_to_fortran(itemval)} ' for idx, itemval in enumerate(val)]
         else:
             # a list/array/tuple of values
-            list_of_strings = [
-                "  {0}({2})={1} ".format(key, conv_to_fortran(itemval),
-                                         idx+1)
-                for idx, itemval in enumerate(val)]
-        return "".join(list_of_strings)
+            list_of_strings = [f'  {key}({idx + 1})={conv_to_fortran(itemval)} ' for idx, itemval in enumerate(val)]
+        return ''.join(list_of_strings)
     else:
         # single value
         #return "  {0}={1} ".format(key, conv_to_fortran(val))
         if value_only:
-            return " {0} ".format(val)
+            return f' {val} '
         else:
-            return "  {0}={1} ".format(key, val)
+            return f'  {key}={val} '
+
 
 def conv_to_fortran(val, quote_strings=True):
     """
@@ -405,19 +414,20 @@ def conv_to_fortran(val, quote_strings=True):
         else:
             val_str = '.false.'
     elif isinstance(val, numbers.Integral):
-        val_str = '{:d}'.format(val)
+        val_str = f'{val:d}'
     elif isinstance(val, numbers.Real):
-        val_str = ('{:18.10e}'.format(val)).replace('e', 'd')
+        val_str = f'{val:18.10e}'.replace('e', 'd')
     elif isinstance(val, str):
         if quote_strings:
-            val_str = "'{!s}'".format(val)
+            val_str = f"'{val!s}'"
         else:
-            val_str = '{!s}'.format(val)
+            val_str = f'{val!s}'
     else:
         raise ValueError("Invalid value '{}' of type '{}' passed, accepts only booleans, ints, "
                          'floats and strings'.format(val, type(val)))
 
     return val_str
+
 
 '''
 def conv_to_fortran(val, quote_strings=True):
@@ -446,6 +456,7 @@ def conv_to_fortran(val, quote_strings=True):
     return val_str
 '''
 
+
 def read_inpgen_file(filepath):
     """
     Method which reads in an inpgen input file and parses the structure and name lists information.
@@ -463,16 +474,15 @@ def read_inpgen_file(filepath):
 
     with open(filepath, 'r') as inpfile:
         contents = inpfile.read()
-            
+
     content_lines = contents.split('\n')
     # The first line is the title
     if not content_lines[0].startswith('&'):
         input_params['title'] = content_lines[0]
-    
+
     content_lines = content_lines[1:]
     if '&lattice' in contents:
         cell = None
-
 
     # each line starting with a & is a name list, we can not assume the line will end with a \
     # since this is not fully required
@@ -496,7 +506,7 @@ def read_inpgen_file(filepath):
             while namelist_name in namelists_raw.keys():
                 namelist_name = namelist_name + f'{j}'
             namelists_raw[namelist_name] = namelist_raw
-    
+
     print(lattice_information)
     print(namelists_raw)
     # TODO:
@@ -513,7 +523,7 @@ def read_inpgen_file(filepath):
                 continue
             pval = param.rstrip('/')
             pval = pval.strip()
-            pval = pval.split("=")
+            pval = pval.split('=')
             # works for all namelist except gen and sym
             if 'atom' in key:
                 keyt = 'atom'
