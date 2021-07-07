@@ -352,7 +352,7 @@ def get_cell(xmltree, schema_dict, logger=None):
     return cell, pbc
 
 
-def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True, logger=None):
+def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True, extract_econfig=False, logger=None):
     """
     This routine returns an python dictionary produced from the inp.xml
     file, which contains all the parameters needed to setup a new inp.xml from a inpgen
@@ -372,7 +372,7 @@ def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True, 
     from masci_tools.util.schema_dict_util import read_constants, eval_simple_xpath
     from masci_tools.util.schema_dict_util import evaluate_attribute, evaluate_text
     from masci_tools.util.xml.common_functions import clear_xml
-    from masci_tools.util.xml.converters import convert_fleur_lo
+    from masci_tools.util.xml.converters import convert_fleur_lo, convert_fleur_electronconfig
     from masci_tools.io.common_functions import filter_out_empty_dict_entries
 
     # TODO: convert econfig
@@ -446,12 +446,17 @@ def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True, 
 
         atom_dict['element'] = evaluate_attribute(species, schema_dict, 'element', constants=constants, logger=logger)
 
-        #atom_econfig = eval_simple_xpath(species, schema_dict, 'electronConfig')
+        atom_econfig = None
+        if extract_econfig:
+            atom_econfig = eval_simple_xpath(species, schema_dict, 'electronConfig', logger=logger)
+
         atom_lo = eval_simple_xpath(species, schema_dict, 'lo', list_return=True, logger=logger)
-        #atom_econfig = eval_simple_xpath(species, schema_dict, 'electronConfig')
 
         if len(atom_lo) != 0:
             atom_dict['lo'] = convert_fleur_lo(atom_lo)
+
+        if atom_econfig:
+            atom_dict['econfig'] = convert_fleur_electronconfig(atom_econfig)
         parameters[atoms_name] = filter_out_empty_dict_entries(atom_dict)
 
     # &soc
