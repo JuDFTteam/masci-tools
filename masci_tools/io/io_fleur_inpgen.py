@@ -14,10 +14,12 @@
 This module contains functionality for writing input files for the input generator of fleur
 """
 import io
+import numpy as np
 
 from masci_tools.util.constants import PERIODIC_TABLE_ELEMENTS, BOHR_A
-from masci_tools.util.xml.converters import convert_to_fortran_bool
+from masci_tools.util.xml.converters import convert_to_fortran_bool, convert_from_fortran_bool
 from masci_tools.io.common_functions import abs_to_rel_f, abs_to_rel, convert_to_fortran_string
+from masci_tools.io.common_functions import rel_to_abs, rel_to_abs_f
 
 # Inpgen file structure, order is important
 POSSIBLE_NAMELISTS = [
@@ -35,6 +37,11 @@ POSSIBLE_PARAMS = {
     'kpt': ['nkpt', 'kpts', 'div1', 'div2', 'div3', 'tkb', 'tria'],
     'title': {}
 }
+
+VALUE_ONLY_NAMELISTS = ['soc', 'qss']
+
+# convert these 'booleans' to the inpgen format.
+REPLACER_VALUES_BOOL = [True, False, 'True', 'False', 't', 'T', 'F', 'f']
 
 
 def write_inpgen_file(cell,
@@ -102,14 +109,10 @@ def write_inpgen_file(cell,
     film = False
     report = []
 
-    # convert these 'booleans' to the inpgen format.
-    replacer_values_bool = [True, False, 'True', 'False', 't', 'T', 'F', 'f']
-
     # some keywords require a string " around them in the input file.
     string_replace = ['econfig', 'lo', 'element', 'name', 'xctyp']
 
     # of some keys only the values are written to the file, specify them here.
-    val_only_namelist = ['soc', 'qss']
 
     # Scaling comes from the Structure
     # but we have to convert from Angstrom to a.u (bohr radii)
@@ -173,7 +176,7 @@ def write_inpgen_file(cell,
                 paramdic[para] = convert_to_fortran_string(paramdic[para])
             # things that are in string replace can never be a bool
             # Otherwise input where someone given the title 'F' would fail...
-            elif paramdic[para] in replacer_values_bool:
+            elif paramdic[para] in REPLACER_VALUES_BOOL:
                 # because 1/1.0 == True, and 0/0.0 == False
                 # maybe change in convert_to_fortran that no error occurs
                 if isinstance(paramdic[para], (bool, str)):
@@ -307,7 +310,7 @@ def write_inpgen_file(cell,
                 namels_name = 'atom'
             inpgen_file_content.append(f'&{namels_name}\n')
             for k, val in sorted(namelist.items(), reverse=namels_name == 'soc'):
-                inpgen_file_content.append(get_input_data_text(k, val, value_only=namels_name in val_only_namelist))
+                inpgen_file_content.append(get_input_data_text(k, val, value_only=namels_name in VALUE_ONLY_NAMELISTS))
             inpgen_file_content.append('/\n')
     # inpgen_file_content.append(kpoints_card)
 
@@ -396,10 +399,9 @@ def conv_to_fortran(val, quote_strings=True):
     """
     # Note that bool should come before integer, because a boolean matches also
     # isinstance(...,int)
-    import numpy
     import numbers
 
-    if isinstance(val, (bool, numpy.bool_)):
+    if isinstance(val, (bool, np.bool_)):
         if val:
             val_str = '.true.'
         else:
@@ -418,34 +420,6 @@ def conv_to_fortran(val, quote_strings=True):
                          'floats and strings'.format(val, type(val)))
 
     return val_str
-
-
-'''
-def conv_to_fortran(val, quote_strings=True):
-    """
-    :param val: the value to be read and converted to a Fortran-friendly string.
-    """
-    # Note that bool should come before integer, because a boolean matches also
-    # isinstance(...,int)
-    if isinstance(val, (bool, np.bool_)):
-        if val:
-            val_str = '.true.'
-        else:
-            val_str = '.false.'
-    elif isinstance(val, int):
-        val_str = "{:d}".format(val)
-    elif isinstance(val, float):
-        val_str = ("{:18.10e}".format(val)).replace('e', 'd')
-    elif isinstance(val, str):
-        if quote_strings:
-            val_str = "'{!s}'".format(val)
-        else:
-            val_str = "{!s}".format(val)
-    else:
-        raise ValueError("Invalid value '{}' of type '{}' passed, accepts only bools, ints, floats and strings".format(val, type(val)))
-
-    return val_str
-'''
 
 
 def read_inpgen_file(filepath):
@@ -489,7 +463,7 @@ def read_inpgen_file(filepath):
         else:
             if name_list_start:
                 namelist_raw += line
-            else:
+            elif line != '':
                 lattice_information.append(line)
         if line.endswith('/'):
             name_list_start = False
@@ -498,17 +472,10 @@ def read_inpgen_file(filepath):
                 namelist_name = namelist_name + f'{j}'
             namelists_raw[namelist_name] = namelist_raw
 
-    print(lattice_information)
-    print(namelists_raw)
-    # TODO:
-    # parse(namelists_raw)
-    # parse(lattice_information, cell)
-    # if cell is none the first 5 are the lattice, and scalings
-    # everything else it atom information
-
     for key, val in namelists_raw.items():
         parsed_name_dict = {}
-        dict(val)
+        #dict(val)
+        indx = 0
         for param in val.split():
             if param == '/':
                 continue
@@ -520,9 +487,70 @@ def read_inpgen_file(filepath):
                 keyt = 'atom'
             else:
                 keyt = key
-            print(pval)
-            if pval[0] not in POSSIBLE_PARAMS[keyt]:
+            if pval[0] not in POSSIBLE_PARAMS[keyt] and keyt not in VALUE_ONLY_NAMELISTS:
                 raise ValueError(f'Value {pval[0]} is not allowed as inpgen input of namelist {keyt}.')
-            parsed_name_dict[pval[0]] = pval[1]
+            elif keyt in VALUE_ONLY_NAMELISTS:
+                att_name = POSSIBLE_PARAMS[keyt][indx]
+                value = pval[0]
+                indx += 1
+            else:
+                att_name = pval[0]
+                value = pval[1]
+
+            if value.replace('.', '').isnumeric():
+                value = float(value)
+                if value.is_integer():
+                    value = int(value)
+            elif value in REPLACER_VALUES_BOOL:
+                value = convert_from_fortran_bool(value)
+
+            parsed_name_dict[att_name] = value
         input_params[key] = parsed_name_dict
+
+    film = input_params.get('input', {}).get('film', False)
+
+    if cell is not None:
+        if len(lattice_information) <= 6:
+            raise ValueError('Too few lines found for lattice+atom information')
+        cell_information, atom_information = lattice_information[:5], lattice_information[5:]
+        cell = np.array([[float(val) for val in value.split()] for value in cell_information[:3]])
+
+        global_scaling = float(cell_information[3])
+        column_scaling = np.array([float(val) for val in cell_information[4].split()])
+
+        cell *= global_scaling
+        cell = cell * column_scaling
+    else:
+        atom_information = lattice_information
+
+    if len(atom_information) <= 1:
+        raise ValueError('Too few lines found for atom information')
+
+    for atom_string in atom_information[1:]:
+
+        atom_info = atom_string.split()
+
+        nz, _, add_id = atom_info[0].partition('.')
+        element = PERIODIC_TABLE_ELEMENTS[int(nz)]['symbol']
+        pos = np.array([float(val) for val in atom_info[1:4]])
+
+        if film:
+            pos = rel_to_abs_f(pos, cell)
+        else:
+            pos = rel_to_abs(pos, cell)
+
+        kind_name = None
+        if add_id:
+            kind_name = f'{element}-{add_id}'
+        else:
+            kind_name = element
+
+        if len(atom_info) == 5:
+            kind_name = atom_info[4]
+
+        atoms_dict_list.append({'kind_name': kind_name, 'position': pos})
+
+        if all(entry['name'] != kind_name for entry in kind_list):
+            kind_list.append({'symbols': (element,), 'name': kind_name})
+
     return cell, atoms_dict_list, kind_list, pbc, input_params

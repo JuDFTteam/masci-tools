@@ -1,0 +1,46 @@
+atoms:
+- kind_name: Fe
+  position:
+  - 3.133997089
+  - 0.0
+  - 15.5124941569
+- kind_name: Nb
+  position:
+  - 0.0
+  - 0.0
+  - 19.0793868509
+- kind_name: Nb
+  position:
+  - 3.133997089
+  - 0.0
+  - 23.5617139284
+cell:
+- - 6.267994178
+  - 0.0
+  - 0.0
+- - 3.133997089
+  - 4.432141188
+  - 0.0
+- - 0.0
+  - 0.0
+  - 25.226097765
+kinds:
+- name: Fe
+  symbols:
+  - Fe
+- name: Nb
+  symbols:
+  - Nb
+params:
+  comp:
+    gmax: 15
+    gmaxxc: 12.5
+    kmax: 5
+  input:
+    cartesian: false
+    film: true
+  title: A Fleur input generator calculation with aiida
+pbc:
+- true
+- true
+- true

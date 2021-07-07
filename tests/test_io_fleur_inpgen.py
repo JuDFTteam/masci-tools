@@ -4,6 +4,7 @@ Tests of the io_fleur_inpgen module
 """
 import tempfile
 import numpy as np
+from masci_tools.io.common_functions import convert_to_pystd
 
 
 def test_write_inpgen_file_defaults(file_regression):
@@ -160,3 +161,67 @@ def test_write_inpgen_file_film(file_regression):
         content = tmp.read()
 
     file_regression.check(content)
+
+
+def test_read_inpgen_file(data_regression):
+    from masci_tools.io.io_fleur_inpgen import read_inpgen_file
+
+    TESTFILE = 'test_io_fleur_inpgen/test_write_inpgen_file_defaults.txt'
+
+    cell, atoms_dict_list, kind_list, pbc, input_params = read_inpgen_file(TESTFILE)
+
+    data_regression.check({
+        'cell': convert_to_pystd(cell),
+        'atoms': convert_to_pystd(atoms_dict_list),
+        'kinds': kind_list,
+        'pbc': pbc,
+        'params': convert_to_pystd(input_params)
+    })
+
+
+def test_read_inpgen_file_parameters(data_regression):
+    from masci_tools.io.io_fleur_inpgen import read_inpgen_file
+
+    TESTFILE = 'test_io_fleur_inpgen/test_write_inpgen_file_parameters.txt'
+
+    cell, atoms_dict_list, kind_list, pbc, input_params = read_inpgen_file(TESTFILE)
+
+    data_regression.check({
+        'cell': convert_to_pystd(cell),
+        'atoms': convert_to_pystd(atoms_dict_list),
+        'kinds': kind_list,
+        'pbc': pbc,
+        'params': convert_to_pystd(input_params)
+    })
+
+
+def test_read_inpgen_file_soc_qss(data_regression):
+    from masci_tools.io.io_fleur_inpgen import read_inpgen_file
+
+    TESTFILE = 'test_io_fleur_inpgen/test_write_inpgen_file_soc_qss.txt'
+
+    cell, atoms_dict_list, kind_list, pbc, input_params = read_inpgen_file(TESTFILE)
+
+    data_regression.check({
+        'cell': convert_to_pystd(cell),
+        'atoms': convert_to_pystd(atoms_dict_list),
+        'kinds': kind_list,
+        'pbc': pbc,
+        'params': convert_to_pystd(input_params)
+    })
+
+
+def test_read_inpgen_file_film(data_regression):
+    from masci_tools.io.io_fleur_inpgen import read_inpgen_file
+
+    TESTFILE = 'test_io_fleur_inpgen/test_write_inpgen_file_film.txt'
+
+    cell, atoms_dict_list, kind_list, pbc, input_params = read_inpgen_file(TESTFILE)
+
+    data_regression.check({
+        'cell': convert_to_pystd(cell),
+        'atoms': convert_to_pystd(atoms_dict_list),
+        'kinds': kind_list,
+        'pbc': pbc,
+        'params': convert_to_pystd(input_params)
+    })

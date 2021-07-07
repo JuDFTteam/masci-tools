@@ -1,0 +1,33 @@
+atoms:
+- kind_name: Si
+  position:
+  - 0.0
+  - 0.0
+  - 0.0
+- kind_name: Si
+  position:
+  - 2.5653032145
+  - 2.5653032145
+  - 2.5653032145
+cell:
+- - 0.0
+  - 5.130606429
+  - 5.130606429
+- - 5.130606429
+  - 0.0
+  - 5.130606429
+- - 5.130606429
+  - 5.130606429
+  - 0.0
+kinds:
+- name: Si
+  symbols:
+  - Si
+params:
+  input:
+    cartesian: false
+  title: A Fleur input generator calculation with aiida
+pbc:
+- true
+- true
+- true
