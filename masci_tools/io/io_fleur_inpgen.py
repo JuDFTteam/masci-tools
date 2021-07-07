@@ -48,24 +48,33 @@ def write_inpgen_file(cell,
                       convert_from_angstroem=True):
     """Write an input file for the fleur inputgenerator 'inpgen' from given inputs
 
-    Args:
-        cell (tuple length 3): the bravais matrix of the structure, in Angstrom
-        atoms_dict_list (list): list of a dict containing the keys absolute 'position' in Angstrom and 'kind_name', i.e:
-                  [{'position': (0.0, 0.0, -1.0545708047819), 'kind_name': 'Fe123'},
-                   {'position': (1.4026317387183, 1.9836207751336, 0.0), 'kind_name': 'Pt'},
-                   {'position': (0.0, 0.0, 1.4026318234924), 'kind_name': 'Pt'}]
-        kind_list (list): a list of kind information containing the keys symbols, weights, mass, name i.e.
-                  [{'symbols': ('Fe',), 'weights': (1.0,), 'mass': 55.845, 'name': 'Fe123'},
-                   {'symbols': ('Pt',), 'weights': (1.0,), 'mass': 195.084, 'name': 'Pt'}]
-        path (str, optional): Path where the file should be written to. Defaults to 'inpgen.in'.
-        pbc (tuple length 3, optional): Periodic boundary conditions of the structure. Defaults to (True, True, True).
-        input_params (dict, optional): Dict containing further namelist which should be written to the file. Defaults to None.
-        settings (dict, optional): Dict, allowing some settings about how the file is written. Defaults to None.
+    :param cell: 3x3 arraylike. The bravais matrix of the structure, in Angstrom by default
+    :param atoms_dict_list: list of a dict containing the keys absolute 'position' in Angstrom (default) and 'kind_name', i.e
 
-    Raises:
-        ValueError: raised if some input is wrong or inconsistent.
+                            .. code-block::
 
-    Returns:
+                              [{'position': (0.0, 0.0, -1.0545708047819), 'kind_name': 'Fe123'},
+                               {'position': (1.4026317387183, 1.9836207751336, 0.0), 'kind_name': 'Pt'},
+                               {'position': (0.0, 0.0, 1.4026318234924), 'kind_name': 'Pt'}]
+
+    :param kind_list: a list of kind information containing the keys symbols, weights, mass, name i.e.
+
+                      .. code-block::
+
+                        [{'symbols': ('Fe',), 'weights': (1.0,), 'mass': 55.845, 'name': 'Fe123'},
+                         {'symbols': ('Pt',), 'weights': (1.0,), 'mass': 195.084, 'name': 'Pt'}]
+
+    :param file: Path or filehandle where the file should be written to. Defaults to 'inpgen.in' in the current folder.
+    :param pbc: tuple of boolean length 3, optional, Periodic boundary conditions of the structure. Defaults to (True, True, True).
+    :param input_params: Optional dict containing further namelist which should be written to the file. Defaults to None.
+    :param significant_figures_cell: int, how many decimal places should be written for the bravais matrix (default: 9)
+    :param significant_figures_positions: int, how many decimal places should be written for the atom positions (default: 10)
+    :param convert_from_angstroem: optional boolean, if True the positions and elements of the bravais matrix are converted to bohr
+                                   from Angstroem
+
+    :raises ValueError: If some input is wrong or inconsistent.
+
+    :returns:
         [list]: A report, list of strings, things which where logged within the process
 
     Comments: This was extracted out of aiida-fleur for more general use,
@@ -278,7 +287,7 @@ def write_inpgen_file(cell,
     # empty namelist
     namelist = input_params.pop('input', {})
     for k, val in sorted(namelist.items()):
-        inpgen_file_content.append(get_input_data_text(k, val, False))
+        inpgen_file_content.append(get_input_data_text(k, val, value_only=False))
     inpgen_file_content.append('/\n')
 
     # Write lattice information now
@@ -326,15 +335,15 @@ def get_input_data_text(key, val, value_only, mapping=None):
 
     :param key: the flag name
     :param val: the flag value. If it is an array, a line for each element
-            is produced, with variable indexing starting from 1.
-            Each value is formatted using the conv_to_fortran function.
+                is produced, with variable indexing starting from 1.
+                Each value is formatted using the conv_to_fortran function.
     :param mapping: Optional parameter, must be provided if val is a dictionary.
-            It maps each key of the 'val' dictionary to the corresponding
-            list index. For instance, if ``key='magn'``,
-            ``val = {'Fe': 0.1, 'O': 0.2}`` and ``mapping = {'Fe': 2, 'O': 1}``,
-            this function will return the two lines ``magn(1) = 0.2`` and
-            ``magn(2) = 0.1``. This parameter is ignored if 'val'
-            is not a dictionary.
+                    It maps each key of the 'val' dictionary to the corresponding
+                    list index. For instance, if ``key='magn'``,
+                    ``val = {'Fe': 0.1, 'O': 0.2}`` and ``mapping = {'Fe': 2, 'O': 1}``,
+                    this function will return the two lines ``magn(1) = 0.2`` and
+                    ``magn(2) = 0.1``. This parameter is ignored if 'val'
+                    is not a dictionary.
     """
     # I don't try to do iterator=iter(val) and catch TypeError because
     # it would also match strings
@@ -380,7 +389,10 @@ def get_input_data_text(key, val, value_only, mapping=None):
 
 def conv_to_fortran(val, quote_strings=True):
     """
+    Convert values to fortran friendly strings
+
     :param val: the value to be read and converted to a Fortran-friendly string.
+    :param quote_strings: bool, if True single quotes will be added to a string
     """
     # Note that bool should come before integer, because a boolean matches also
     # isinstance(...,int)

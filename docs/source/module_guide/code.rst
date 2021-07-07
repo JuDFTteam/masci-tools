@@ -80,9 +80,15 @@ Fleur related IO
 ------------------
 
 Input/Output Parser
-^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: masci_tools.io.parsers.fleur
+   :members:
+
+Inputgenerator related IO
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: masci_tools.io.io_fleur_inpgen
    :members:
 
 Functions for modifying the input file
