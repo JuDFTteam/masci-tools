@@ -223,12 +223,11 @@ def write_inpgen_file(cell,
             for kin in kind_list:
                 if kin['name'] == kind_name:
                     kind = kin
-            if kind.get('has_vacancies', False):
-                # then we do not at atoms with weights smaller one
-                if kind.get('weights', [1])[0] < 1.0:
-                    natoms = natoms - 1
-                    # Log message?
-                    continue
+            # then we do not at atoms with weights smaller one
+            if kind.get('weights', [1])[0] < 1.0:
+                natoms = natoms - 1
+                # Log message?
+                continue
             # We assume atoms therefore I just get the first one... test that only one atom at site?
             site_symbol = kind['symbols'][0]
             atomic_number = _atomic_numbers[site_symbol]

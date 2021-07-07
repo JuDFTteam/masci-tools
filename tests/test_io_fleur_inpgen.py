@@ -163,6 +163,55 @@ def test_write_inpgen_file_film(file_regression):
     file_regression.check(content)
 
 
+def test_write_inpgen_file_x_and_bunchatom(file_regression):
+
+    from masci_tools.io.io_fleur_inpgen import write_inpgen_file
+
+    cell = [[3.3168796764431, 0.0, 0.0], [1.6584398382215, 2.3453881115923, 0.0], [0.0, 0.0, 13.349076054836]]
+    kinds = [{
+        'symbols': ('Fe',),
+        'weights': (1.0,),
+        'mass': 55.845,
+        'name': 'Fe'
+    }, {
+        'symbols': ('Nb',),
+        'weights': (1.0,),
+        'mass': 92.90638,
+        'name': 'Nb'
+    }, {
+        'symbols': ('X',),
+        'weights': (0.0,),
+        'mass': 1.0,
+        'name': 'X'
+    }]
+    sites = [{
+        'position': (0.0, 0.0, 1.1726940557829),
+        'kind_name': 'X'
+    }, {
+        'position': (1.6584398382215, 0.0, 3.5180821673487),
+        'kind_name': 'X'
+    }, {
+        'position': (0.0, 0.0, 5.8634702789145),
+        'kind_name': 'X'
+    }, {
+        'position': (1.6584398382215, 0.0, 8.2088583904803),
+        'kind_name': 'Fe'
+    }, {
+        'position': (0.0, 0.0, 10.096376717551),
+        'kind_name': 'Nb'
+    }, {
+        'position': (1.6584398382215, 0.0, 12.46832205832),
+        'kind_name': 'Nb'
+    }]
+
+    with tempfile.NamedTemporaryFile('r') as tmp:
+
+        write_inpgen_file(cell, sites, kinds, file=tmp.name, pbc=(True, True, False))
+        content = tmp.read()
+
+    file_regression.check(content)
+
+
 def test_read_inpgen_file(data_regression):
     from masci_tools.io.io_fleur_inpgen import read_inpgen_file
 
