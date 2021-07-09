@@ -252,6 +252,17 @@ def test_parameter_econfig_extraction(load_inpxml, data_regression):
     data_regression.check(para)
 
 
+def test_parameter_econfig_extraction_not_inpgen_ready(load_inpxml, data_regression):
+
+    from masci_tools.util.xml.xml_getters import get_parameter_data
+
+    xmltree, schema_dict = load_inpxml(TEST_FILM_INPXML_PATH)
+
+    para = get_parameter_data(xmltree, schema_dict, extract_econfig=True, inpgen_ready=False)
+
+    data_regression.check(para)
+
+
 def test_kpoints_film(load_inpxml, data_regression):
 
     from masci_tools.util.xml.xml_getters import get_kpoints_data
