@@ -639,6 +639,7 @@ def evaluate_tag(node, schema_dict, name, constants=None, logger=None, subtags=F
 
     if ignore:
         attribs = attribs.difference(ignore)
+        tags = tags.difference(ignore)
 
     parse_text = name in schema_dict['simple_elements'] and text
 
@@ -747,6 +748,8 @@ def evaluate_tag(node, schema_dict, name, constants=None, logger=None, subtags=F
             for sub_dict in out_dict[tag]:
                 if not sub_dict:
                     out_dict[tag].remove(sub_dict)
+                elif len(sub_dict) == 1 and tag in sub_dict:
+                    out_dict[tag] = sub_dict[tag]
 
         for tag in tags:
             if len(out_dict[tag]) == 1:
