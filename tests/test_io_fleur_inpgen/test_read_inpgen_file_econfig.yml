@@ -25,10 +25,12 @@ kinds:
   - Si
 params:
   atom:
+    econfig: '[He] 2s2 2p6 | 3s2 3p2'
     element: Si
     jri: 981
     lmax: 12
     lnonsph: 6
+    lo: ''
     rmt: 2.1
   comp:
     gmax: 15

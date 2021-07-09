@@ -475,12 +475,28 @@ def read_inpgen_file(filepath):
         parsed_name_dict = {}
         #dict(val)
         indx = 0
-        for param in val.split():
-            if param == '/':
+
+        split_string = val.rstrip('/').split()
+
+        if 'atom' in key:
+            keyt = 'atom'
+        else:
+            keyt = key
+
+        if keyt not in VALUE_ONLY_NAMELISTS:
+            for param in split_string.copy():
+                if '=' not in param:
+                    split_string[split_string.index(param) - 1] += f' {param}'
+                    split_string.remove(param)
+
+        for param in split_string:
+            if param in ('/', ''):
                 continue
             pval = param.rstrip('/')
             pval = pval.strip()
             pval = pval.split('=')
+            if keyt not in VALUE_ONLY_NAMELISTS:
+                pval[1] = pval[1].strip('"')
             # works for all namelist except gen and sym
             if 'atom' in key:
                 keyt = 'atom'
