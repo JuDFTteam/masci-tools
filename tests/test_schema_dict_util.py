@@ -756,13 +756,9 @@ def test_evaluate_tag(caplog):
         }],
         'atomicNumber': [26, 78],
         'electronConfig': [{
-            'coreConfig': {
-                'coreConfig': ['[Ne]']
-            }
+            'coreConfig': '[Ne]'
         }, {
-            'coreConfig': {
-                'coreConfig': ['[Kr]', '(5s1/2)', '(4d3/2)', '(4d5/2)', '(4f5/2)', '(4f7/2)']
-            }
+            'coreConfig': ['[Kr]', '(5s1/2)', '(4d3/2)', '(4d5/2)', '(4f5/2)', '(4f7/2)']
         }],
         'mtSphere': [{
             'gridPoints': 787,
