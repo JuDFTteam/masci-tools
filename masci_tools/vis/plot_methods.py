@@ -862,6 +862,7 @@ def barchart(xdata,
              ylabel='y',
              title='',
              bottom=None,
+             alignment = "vertical",
              saveas='barchart',
              axis=None,
              xerr=None,
@@ -975,9 +976,13 @@ def barchart(xdata,
         else:
             xerrt = xerr
 
-        ax.bar(x, y, width, bottom=datab, **plot_kw, **kwargs)
+        if alignment == "horizontal":
+            ax.barh(y, x, width, left=datab, **plot_kw, **kwargs)
+            datab = datab + np.array(x)
+        else:
+            ax.bar(x, y, width, bottom=datab, **plot_kw, **kwargs)
 
-        datab = datab + np.array(y)
+            datab = datab + np.array(y)
 
     plot_params.set_scale(ax)
     plot_params.set_limits(ax)
