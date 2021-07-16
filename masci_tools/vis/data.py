@@ -1,52 +1,26 @@
 # -*- coding: utf-8 -*-
+###############################################################################
+# Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
+#                All rights reserved.                                         #
+# This file is part of the Masci-tools package.                               #
+# (Material science tools)                                                    #
+#                                                                             #
+# The code is hosted on GitHub at https://github.com/judftteam/masci-tools.   #
+# For further information on the license, see the LICENSE.txt file.           #
+# For further information please visit http://judft.de/.                      #
+#                                                                             #
+###############################################################################
 """
-
+This module contains classes and functions to make plotting functions
+more flexible with respect to the used data. This way plotting functions
+can both allow the flexible usage of lists, arrays directly or dataframes
+together with the keys that should be used
 """
 from collections import namedtuple
 import numpy as np
 import pandas as pd
 import copy
 from bokeh.models import ColumnDataSource
-
-
-class PlotDataIterator:
-
-    def __init__(self, plot_data, mode='values'):
-        self._plot_data = plot_data
-        self._column_iter = iter(col for col, msk in zip(self._plot_data.columns, self._plot_data.mask) if msk)
-
-        self._data_indx = 0
-        self._iter_mode = mode
-
-    def __iter__(self):
-        return self
-
-    def __next__(self):
-        columns = next(self._column_iter)
-        if self._iter_mode == 'keys':
-            return columns
-        elif self._iter_mode == 'values':
-            if isinstance(self._plot_data.data, list):
-                plot_data = {
-                    key: self._plot_data.data[self._data_indx][val] if val is not None else None
-                    for key, val in columns._asdict().items()
-                }
-                self._data_indx += 1
-            else:
-                plot_data = {
-                    key: self._plot_data.data[val] if val is not None else None
-                    for key, val in columns._asdict().items()
-                }
-            return self._plot_data._column_spec(**plot_data)
-        elif self._iter_mode == 'items':
-            if isinstance(self._plot_data.data, list):
-                data_source = self._plot_data.data[self._data_indx]
-                self._data_indx += 1
-            else:
-                data_source = self._plot_data.data
-            return columns, data_source
-        raise StopIteration
-
 
 class PlotData:
     """Class for iterating over the data in a dict or dataframe with
@@ -60,7 +34,7 @@ class PlotData:
 
       .. code-block:: python
 
-         from masci_tools.vis.plot_data import PlotData
+         from masci_tools.vis.data import PlotData
          import numpy as np
 
          #Let's say we have one energy grid and a couple of functions
@@ -90,10 +64,12 @@ class PlotData:
       If a list is given for any of the keys the data will be expanded to a list of
       namedtuple with the same length
 
-   """
+    """
 
+    #These we know to be safely working as the data argument
+    #In principle this could be extended to any Mapping
     ALLOWED_DATA_HOLDERS = (dict, pd.DataFrame, ColumnDataSource
-                            )  #These we know to be safely working as the data argument
+                            )
 
     def __init__(self, data, mask=None, use_column_source=False, **kwargs):
 
@@ -151,34 +127,65 @@ class PlotData:
 
     @property
     def masked_columns(self):
+        """
+        Return the columns that are not disabled by the mask argument
+        """
         return [col for col, msk in zip(self.columns, self.mask) if msk]
 
     def __iter__(self):
+        """
+        Iterate over PlotData. Returns the values for the data
+        """
         return PlotDataIterator(self, mode='values')
 
     def keys(self):
+        """
+        Iterate over PlotData keys. Returns the keys for the corresponding sources
+        """
         return PlotDataIterator(self, mode='keys')
 
     def values(self):
+        """
+        Iterate over PlotData values. Returns the values for the data
+        """
         return PlotDataIterator(self, mode='values')
 
     def items(self):
+        """
+        Iterate over PlotData items. Returns the key and corresponding source for the data
+        """
         return PlotDataIterator(self, mode='items')
 
     def getfirst(self):
+        """
+        Get the first item in the data
+        """
         for data in self.items():
             return data
 
     def getfirstvalue(self):
+        """
+        Get the values in the first entry of the data
+        """
         for data in self.values():
             return data
 
     def getfirstkeys(self):
+        """
+        Get the keys in the first entry of the data
+        """
         for data in self.keys():
             return data
 
     def getkeys(self, data_key):
+        """
+        Get the keys for a given data column for all entries
 
+        :param data_key: name of the data key to return the keys
+
+        :returns: list of keys, corresponding to the entries for the
+                  given data in the sources
+        """
         if data_key not in self._column_spec._fields:
             raise ValueError(f'Field {data_key} does not exist')
 
@@ -189,7 +196,14 @@ class PlotData:
         return keys
 
     def getvalues(self, data_key):
+        """
+        Get the values for a given data column for all entries
 
+        :param data_key: name of the data key to return the values
+
+        :returns: list of values, corresponding to the entries for the
+                  given data in the sources
+        """
         if data_key not in self._column_spec._fields:
             raise ValueError(f'Field {data_key} does not exist')
 
@@ -200,7 +214,16 @@ class PlotData:
         return values
 
     def min(self, data_key, separate=False, mask=None):
+        """
+        Get the minimum value for a given data column for all entries
 
+        :param data_key: name of the data key to determine the minimum
+        :param separate: bool if True the minimum will be determined and returned
+                         for all entries separately
+        :param mask: optional mask to select specifc rows from the data entries
+
+        :returns: minimum value for all entries either combined or as a list
+        """
         if data_key not in self._column_spec._fields:
             raise ValueError(f'Field {data_key} does not exist')
 
@@ -233,7 +256,16 @@ class PlotData:
             return min(min_val)
 
     def max(self, data_key, separate=False, mask=None):
+        """
+        Get the maximum value for a given data column for all entries
 
+        :param data_key: name of the data key to determine the maximum
+        :param separate: bool if True the maximum will be determined and returned
+                         for all entries separately
+        :param mask: optional mask to select specifc rows from the data entries
+
+        :returns: maximum value for all entries either combined or as a list
+        """
         if data_key not in self._column_spec._fields:
             raise ValueError(f'Field {data_key} does not exist')
 
@@ -266,7 +298,18 @@ class PlotData:
             return max(max_val)
 
     def apply(self, data_key, lambda_func):
+        """
+        Apply a function to a given data column for all entries
 
+        .. warning::
+            This operation is done in-place. Meaning if there are multiple
+            data entries pointing to the same data set and only one should be
+            modified by this method, the data needs to be copied beforehand
+            using :py:meth:`copy_data()`
+
+        :param data_key: name of the data key to determine the maximum
+        :param lambda_func: function to apply to the data
+        """
         if data_key not in self._column_spec._fields:
             raise ValueError(f'Field {data_key} does not exist')
 
@@ -290,7 +333,16 @@ class PlotData:
                 source[key] = [lambda_func(value) for value in source[key]]
 
     def copy_data(self, data_key_from, data_key_to, prefix=None, rename_original=False):
+        """
+        Copy the data for a given data key to another one
 
+        :param data_key_from: data key to copy from
+        :param data_key_to: data key to copy to
+        :param prefix: optional prefix to use for the renamed data entries. Can be used
+                       to avoid name clashes. If not given the data keys are used
+        :param rename_original: optional bool (default False). If True the original entries are renamed
+                                instead of the ones under ``data_key_to``
+        """
         if data_key_from not in self._column_spec._fields:
             raise ValueError(f'Field {data_key_from} does not exist')
 
@@ -337,9 +389,78 @@ class PlotData:
     def export(self, **kwargs):
         raise NotImplementedError
 
+class PlotDataIterator:
+    """
+    Class containing the iteration behaviour over the
+    :py:class:`PlotData` class. Can be used in three modes:
+
+      - `keys`: Returns the keys to be entered in the corresponding data sources for each entry
+      - `values`: Returns the data for each entry
+      - `items`: Returns the keys and the data sources in a tuple
+
+    The keys and values are always returned in a ``namedtuple`` with fields corresponding
+    to the set data keys
+    """
+    def __init__(self, plot_data, mode='values'):
+        self._plot_data = plot_data
+        self._column_iter = iter(col for col, msk in zip(self._plot_data.columns, self._plot_data.mask) if msk)
+
+        self._data_indx = 0
+        self._iter_mode = mode
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        columns = next(self._column_iter)
+        if self._iter_mode == 'keys':
+            return columns
+        elif self._iter_mode == 'values':
+            if isinstance(self._plot_data.data, list):
+                plot_data = {
+                    key: self._plot_data.data[self._data_indx][val] if val is not None else None
+                    for key, val in columns._asdict().items()
+                }
+                self._data_indx += 1
+            else:
+                plot_data = {
+                    key: self._plot_data.data[val] if val is not None else None
+                    for key, val in columns._asdict().items()
+                }
+            return self._plot_data._column_spec(**plot_data)
+        elif self._iter_mode == 'items':
+            if isinstance(self._plot_data.data, list):
+                data_source = self._plot_data.data[self._data_indx]
+                self._data_indx += 1
+            else:
+                data_source = self._plot_data.data
+            return columns, data_source
+        raise StopIteration
+
 
 def normalize_list_or_array(data, key, out_data, flatten_np=False, forbid_split_up=False, single_plot=False):
+    """
+    Split up a given list/numpy array or pd.Series to be used in the plotting methods
 
+    :param data: The (array-like) data to be normalized
+    :param key: key under which to enter the new data
+    :param out_data: dict containining previously normalized data
+    :param flatten_np: bool, if True multidimensional numpy arrays are flattened
+    :param forbid_split_up: bool, if True multidimensional arrays are not split up
+    :param single_plot: bool, if True only a single dataset is allowed
+
+    The rules are the following:
+        - if ``data`` is a multidimesional array (list of lists, etc.)
+          and it is not forbidden by the given argument the first dimension
+          of the array is iterated over and interpreted as separate entries
+          (if the data was previously split up into multiple sets a length check is performed)
+        - if ``data`` is a one-dimensional array and of a different length than the
+          number of defined data sets it is added to all previously existing entries
+        - if ``data`` is a one-dimensional array and of the same length as the
+          number of defined data sets each entry is added to the corresponding data set
+
+    :returns: list of dicts or dict containing the nomralized data
+    """
     LIST_TYPES = (list, np.ndarray, pd.Series)
 
     if isinstance(data, np.ndarray) and flatten_np:
@@ -378,7 +499,7 @@ def normalize_list_or_array(data, key, out_data, flatten_np=False, forbid_split_
     return out_data
 
 
-def process_data_arguments(data,
+def process_data_arguments(data=None,
                            single_plot=False,
                            mask=None,
                            use_column_source=False,
@@ -386,11 +507,37 @@ def process_data_arguments(data,
                            forbid_split_up=None,
                            **kwargs):
     """
-    Initialize PlotData from np.arrays or lists of np.arrays or lists
+    Initialize PlotData from np.arrays or lists of np.arrays or lists or a already given
+    data argument, i.e. mapping
 
-    The logic is as follows:
+    :param data: either None or Mapping to be used as the data in the PlotData class
+    :param single_plot: bool, if True only a single dataset is allowed
+    :param mask: list of bools deactivating some data sets for plotting
+    :param use_column_source: bool, if True all data arguments are converted to ColumnDataSource of bokeh
+    :param flatten_np: bool, if True multidimensional numpy arrays are flattened (Only if data not given)
+    :param forbid_split_up: bool, if True multidimensional arrays are not split up (Only if data not given)
 
 
+    Kwargs define which keys belong to which data entries if data is given or they contain
+    the data to be normalized
+
+    The following two exmaple calls will both create a PlotData object with the same two
+    plot data setswith the entries ``x`` and ``y``::
+
+        import numpy as np
+
+        x = np.linspace(-10,10,100)
+        y1 = y**2
+        y2 = np.sin(x)
+
+
+        #Use a predefined data argument (a dict in this case)
+        p = process_data_arguments({'x': x, 'y1': y1, 'y2': y2}, x='x', y=['y1','y2'])
+
+        #Let the function normalize the given arrays
+        p = process_data_arguments=(x=x,y=[y1, y2])
+
+    :returns: A :py:class:`PlotData` object corresponding to the given data
     """
 
     if forbid_split_up is None:
