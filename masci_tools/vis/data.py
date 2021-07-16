@@ -438,7 +438,7 @@ class PlotDataIterator:
         raise StopIteration
 
 
-def normalize_list_or_array(data, key, out_data, flatten_np=False, forbid_split_up=False, single_plot=False):
+def normalize_list_or_array(data, key, out_data, flatten_np=False, forbid_split_up=False):
     """
     Split up a given list/numpy array or pd.Series to be used in the plotting methods
 
@@ -447,7 +447,6 @@ def normalize_list_or_array(data, key, out_data, flatten_np=False, forbid_split_
     :param out_data: dict containining previously normalized data
     :param flatten_np: bool, if True multidimensional numpy arrays are flattened
     :param forbid_split_up: bool, if True multidimensional arrays are not split up
-    :param single_plot: bool, if True only a single dataset is allowed
 
     The rules are the following:
         - if ``data`` is a multidimesional array (list of lists, etc.)
@@ -515,14 +514,14 @@ def process_data_arguments(data=None,
     :param mask: list of bools deactivating some data sets for plotting
     :param use_column_source: bool, if True all data arguments are converted to ColumnDataSource of bokeh
     :param flatten_np: bool, if True multidimensional numpy arrays are flattened (Only if data not given)
-    :param forbid_split_up: bool, if True multidimensional arrays are not split up (Only if data not given)
+    :param forbid_split_up: set of keys for which not to split up multidimensional arrays
 
 
     Kwargs define which keys belong to which data entries if data is given or they contain
     the data to be normalized
 
-    The following two exmaple calls will both create a PlotData object with the same two
-    plot data setswith the entries ``x`` and ``y``::
+    The following two example calls will both create a PlotData object with the same two
+    plot data sets with the entries ``x`` and ``y``::
 
         import numpy as np
 
@@ -530,8 +529,7 @@ def process_data_arguments(data=None,
         y1 = y**2
         y2 = np.sin(x)
 
-
-        #Use a predefined data argument (a dict in this case)
+        #Use a predefined data argument (a dict in this case) and the keys in the kwargs
         p = process_data_arguments({'x': x, 'y1': y1, 'y2': y2}, x='x', y=['y1','y2'])
 
         #Let the function normalize the given arrays
@@ -556,8 +554,7 @@ def process_data_arguments(data=None,
                                            key,
                                            data,
                                            flatten_np=flatten_np,
-                                           forbid_split_up=key in forbid_split_up,
-                                           single_plot=single_plot)
+                                           forbid_split_up=key in forbid_split_up)
     else:
         keys = kwargs
 
