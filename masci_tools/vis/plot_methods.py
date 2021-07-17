@@ -697,9 +697,7 @@ def multiplot_moved(xdata,
 
     shifts = [ymax * scale_move + min_add for ymax in plot_data.max('y', separate=True)]
     shifts = np.cumsum([0] + shifts)[:-1]
-
-    for (entry, source), shift in zip(plot_data.items(), shifts):
-        source[entry.y] = np.array(source[entry.y]) + shift
+    plot_data.shift_data('y', shifts)
 
     ax = multiple_scatterplots(plot_data.getvalues('x'),
                                plot_data.getvalues('y'),

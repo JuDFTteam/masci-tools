@@ -22,6 +22,7 @@ import pandas as pd
 import copy
 from bokeh.models import ColumnDataSource
 
+
 class PlotData:
     """Class for iterating over the data in a dict or dataframe with
       automatic filling in of single defined keys to get a list of
@@ -68,8 +69,7 @@ class PlotData:
 
     #These we know to be safely working as the data argument
     #In principle this could be extended to any Mapping
-    ALLOWED_DATA_HOLDERS = (dict, pd.DataFrame, ColumnDataSource
-                            )
+    ALLOWED_DATA_HOLDERS = (dict, pd.DataFrame, ColumnDataSource)
 
     def __init__(self, data, mask=None, use_column_source=False, **kwargs):
 
@@ -332,6 +332,35 @@ class PlotData:
             else:
                 source[key] = [lambda_func(value) for value in source[key]]
 
+    def shift_data(self, data_key, shifts, shifted_data_key=None, negative=False):
+
+        if data_key not in self._column_spec._fields:
+            raise ValueError(f'Field {data_key} does not exist')
+
+        if shifted_data_key is not None:
+            self.copy_data(data_key, shifted_data_key)
+            data_key = shifted_data_key
+
+        if isinstance(shifts, (np.ndarray, list, pd.Series)):
+            if len(shifts) != len(self):
+                raise ValueError(f"Wrong number of shifts: Expected '{len(self)}' got '{len(shifts)}'")
+        else:
+            shifts = [shifts] * len(self)
+
+        for (entry, source), shift in zip(self.items(), shifts):
+
+            key = entry._asdict()[data_key]
+            if isinstance(source[key], (ColumnDataSource, pd.Series, np.ndarray)):
+                if negative:
+                    source[key] -= shift
+                else:
+                    source[key] += shift
+            else:
+                if negative:
+                    source[key] = [value - shift for value in source[key]]
+                else:
+                    source[key] = [value + shift for value in source[key]]
+
     def copy_data(self, data_key_from, data_key_to, prefix=None, rename_original=False):
         """
         Copy the data for a given data key to another one
@@ -389,6 +418,7 @@ class PlotData:
     def export(self, **kwargs):
         raise NotImplementedError
 
+
 class PlotDataIterator:
     """
     Class containing the iteration behaviour over the
@@ -401,6 +431,7 @@ class PlotDataIterator:
     The keys and values are always returned in a ``namedtuple`` with fields corresponding
     to the set data keys
     """
+
     def __init__(self, plot_data, mode='values'):
         self._plot_data = plot_data
         self._column_iter = iter(col for col, msk in zip(self._plot_data.columns, self._plot_data.mask) if msk)
