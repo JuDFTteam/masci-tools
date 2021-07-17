@@ -132,12 +132,6 @@ roots:
         type: UnionRenderers
     type: ColumnDataSource
   - attributes:
-      callback: null
-    type: DataRange1d
-  - attributes:
-      callback: null
-    type: DataRange1d
-  - attributes:
       data_source:
         type: ColumnDataSource
       glyph:
@@ -213,15 +207,24 @@ roots:
         type: Toolbar
       toolbar_location: null
       x_range:
-        type: DataRange1d
+        type: Range1d
       x_scale:
         type: LinearScale
       y_range:
-        type: DataRange1d
+        type: Range1d
       y_scale:
         type: LinearScale
     subtype: Figure
     type: Plot
+  - attributes:
+      callback: null
+      end: 10
+    type: Range1d
+  - attributes:
+      callback: null
+      end: 50
+      start: -50
+    type: Range1d
   - attributes:
       fill_alpha:
         value: 0.1

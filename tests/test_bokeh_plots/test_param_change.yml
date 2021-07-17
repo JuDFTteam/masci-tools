@@ -170,7 +170,7 @@ roots:
   - attributes:
       axis_label: x
       axis_label_text_font_size:
-        value: 18pt
+        value: 24pt
       axis_line_width:
         value: 2
       formatter:
@@ -183,7 +183,7 @@ roots:
   - attributes:
       axis_label: y
       axis_label_text_font_size:
-        value: 18pt
+        value: 24pt
       axis_line_width:
         value: 2
       formatter:
@@ -231,9 +231,11 @@ roots:
         value: 0.1
       line_color:
         value: '#1f77b4'
+      marker:
+        value: square
       size:
         units: screen
-        value: 6
+        value: 12
       x:
         field: x
       y:
@@ -241,12 +243,16 @@ roots:
     type: Scatter
   - attributes:
       fill_color:
-        value: '#1f77b4'
+        value: darkred
+      line_alpha:
+        value: 0.8
       line_color:
-        value: '#1f77b4'
+        value: darkred
+      marker:
+        value: square
       size:
         units: screen
-        value: 6
+        value: 12
       x:
         field: x
       y:

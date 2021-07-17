@@ -16,6 +16,7 @@ Here are general and special bokeh plots to use
 """
 from .bokeh_plotter import BokehPlotter
 from .parameters import ensure_plotter_consistency, NestedPlotParameters
+from .data import process_data_arguments
 
 import pandas as pd
 from pprint import pprint
@@ -67,14 +68,14 @@ def get_bokeh_help(key):
 
 
 @ensure_plotter_consistency(plot_params)
-def bokeh_scatter(source,
+def bokeh_scatter(xdata,
+                  ydata,
                   *,
-                  xdata='x',
-                  ydata='y',
                   xlabel='x',
                   ylabel='y',
                   title='',
                   figure=None,
+                  data=None,
                   outfilename='scatter.html',
                   **kwargs):
     """
@@ -93,11 +94,15 @@ def bokeh_scatter(source,
     If the arguments are not recognized they are passed on to the bokeh function `scatter`
     """
 
+    plot_data = process_data_arguments(data=data, x=xdata, y=ydata, single_plot=True)
+
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
 
     p = plot_params.prepare_figure(title, xlabel, ylabel, figure=figure)
 
-    res = p.scatter(x=xdata, y=ydata, source=source, **kwargs)
+    plot_kwargs = plot_params.plot_kwargs(plot_type='scatter')
+    entry, source = plot_data.getfirstitem()
+    res = p.scatter(x=entry.x, y=entry.y, source=source, **plot_kwargs, **kwargs)
 
     if plot_params['level'] is not None:
         res.level = plot_params['level']

@@ -207,6 +207,10 @@ roots:
       - type: LinearAxis
       renderers:
       - type: GlyphRenderer
+      - type: Span
+      - type: Span
+      - type: Span
+      - type: Span
       title:
         type: Title
       toolbar:
@@ -254,6 +258,27 @@ roots:
     type: Scatter
   - attributes: {}
     type: Selection
+  - attributes:
+      dimension: height
+      line_dash:
+      - 6
+      location: 0
+    type: Span
+  - attributes:
+      line_dash:
+      - 6
+      location: 10
+    type: Span
+  - attributes:
+      line_dash:
+      - 6
+      location: 20
+    type: Span
+  - attributes:
+      line_dash:
+      - 6
+      location: 30
+    type: Span
   - attributes:
       text: ''
     type: Title

@@ -3,6 +3,11 @@
 Configurations for masci_tools tests
 """
 import pytest
+from pprint import pprint
+
+
+def pytest_addoption(parser):
+    parser.addoption('--show-bokeh-plots', action='store_true', help='Show the produced bokeh plots')
 
 
 @pytest.fixture
@@ -116,7 +121,7 @@ def fixture_clean_bokeh_json():
 
 
 @pytest.fixture(scope='function')
-def check_bokeh_plot(data_regression, clean_bokeh_json):
+def check_bokeh_plot(data_regression, clean_bokeh_json, pytestconfig):
     current_bokeh_version = '1.4.0'  #For now we only test bokeh plots if the right version is available
 
     try:
@@ -126,13 +131,18 @@ def check_bokeh_plot(data_regression, clean_bokeh_json):
         test_bokeh = False
 
     def _regression_bokeh_plot(bokeh_fig):
-        if not test_bokeh:
-            pytest.skip(
-                f'Bokeh regression tests are skipped (Only executed if bokeh {current_bokeh_version} is installed')
-        from bokeh.io import curdoc
 
-        curdoc().clear()
-        curdoc().add_root(bokeh_fig)
-        data_regression.check(clean_bokeh_json(curdoc().to_json()))
+        if pytestconfig.getoption('--show-bokeh-plots'):
+            from bokeh.io import show
+            show(bokeh_fig)
+        else:
+            if not test_bokeh:
+                pytest.skip(
+                    f'Bokeh regression tests are skipped (Only executed if bokeh {current_bokeh_version} is installed')
+            from bokeh.io import curdoc
+
+            curdoc().clear()
+            curdoc().add_root(bokeh_fig)
+            data_regression.check(clean_bokeh_json(curdoc().to_json()))
 
     return _regression_bokeh_plot

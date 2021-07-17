@@ -177,6 +177,13 @@ class PlotData:
         for data in self.keys():
             return data
 
+    def getfirstitem(self):
+        """
+        Get the keys in the first entry of the data
+        """
+        for data in self.items():
+            return data
+
     def getkeys(self, data_key):
         """
         Get the keys for a given data column for all entries
