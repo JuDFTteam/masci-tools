@@ -236,14 +236,14 @@ class PlotData:
             mask_gen = (None for i in self)
 
         min_val = []
-        for (entry, source), mask in zip(self.items(), mask_gen):
+        for (entry, source), mask_entry in zip(self.items(), mask_gen):
 
             key = entry._asdict()[data_key]
 
-            if mask is None:
+            if mask_entry is None:
                 data = source[key]
             else:
-                data = source[key][mask]
+                data = source[key][mask_entry]
 
             if isinstance(source[key], (np.ndarray, pd.Series)):
                 min_val.append(data.min())
@@ -278,14 +278,14 @@ class PlotData:
             mask_gen = (None for i in range(len(self)))
 
         max_val = []
-        for (entry, source), mask in zip(self.items(), mask_gen):
+        for (entry, source), mask_entry in zip(self.items(), mask_gen):
 
             key = entry._asdict()[data_key]
 
-            if mask is None:
+            if mask_entry is None:
                 data = source[key]
             else:
-                data = source[key][mask]
+                data = source[key][mask_entry]
 
             if isinstance(source[key], (np.ndarray, pd.Series)):
                 max_val.append(data.max())
@@ -319,7 +319,7 @@ class PlotData:
 
             if isinstance(source[key], pd.Series):
                 if isinstance(source, pd.DataFrame):
-                    dataframe_func = lambda x: lambda_func(x) if x.name == key else x
+                    dataframe_func = lambda x, k=key: lambda_func(x) if x.name == k else x
                     new_source = source.apply(dataframe_func)
                     if isinstance(self.data, list):
                         self.data[indx] = new_source

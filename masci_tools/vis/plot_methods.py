@@ -928,9 +928,7 @@ def barchart(positions,
 
     plot_kwargs = plot_params.plot_kwargs(plot_type='histogram')
 
-    for data, plot_kw in zip(plot_data.items(), plot_kwargs):
-
-        entry, source = data
+    for (entry, source), plot_kw in zip(plot_data.items(), plot_kwargs):
 
         if bottom is None and bar_type == 'stacked':
             bottom = np.zeros(len(source[entry.positions]))
