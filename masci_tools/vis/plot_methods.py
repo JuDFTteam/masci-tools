@@ -724,6 +724,7 @@ def histogram(xdata,
               ylabel='counts',
               saveas='histogram',
               return_hist_output=False,
+              data=None,
               **kwargs):
     """
     Create a standard looking histogram
@@ -746,11 +747,10 @@ def histogram(xdata,
     If the arguments are not recognized they are passed on to the matplotlib function `hist`
     """
 
-    if not isinstance(xdata[0], (list, np.ndarray, pd.Series)):
-        xdata = [xdata]
+    plot_data = process_data_arguments(data=data, x=xdata)
 
     plot_params.single_plot = False
-    plot_params.num_plots = len(xdata)
+    plot_params.num_plots = len(plot_data)
 
     if 'label' in kwargs:
         warnings.warn('Please use plot_label instead of label', DeprecationWarning)
@@ -780,7 +780,9 @@ def histogram(xdata,
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis, minor=True)
 
     plot_kwargs = plot_params.plot_kwargs(plot_type='histogram', list_of_dicts=False)
-    n, bins, patches = ax.hist(xdata,
+
+    data = plot_data.getvalues('x')
+    n, bins, patches = ax.hist(data,
                                density=density,
                                histtype=histtype,
                                align=align,
@@ -790,8 +792,8 @@ def histogram(xdata,
                                **kwargs)
 
     if density:
-        mu = np.mean(xdata)
-        sigma = np.std(xdata)
+        mu = np.mean(data)
+        sigma = np.std(data)
         y = norm.pdf(bins, mu, sigma)
         if orientation == 'horizontal':
             ax.plot(y, bins, '--')
@@ -833,9 +835,11 @@ def barchart(positions,
              bottom=None,
              alignment='vertical',
              saveas='barchart',
+             bar_type='stacked',
              axis=None,
              xerr=None,
              yerr=None,
+             data=None,
              **kwargs):
     """
     Create a standard bar chart plot (this should be flexible enough) to do all the
@@ -859,16 +863,22 @@ def barchart(positions,
     TODO: grouped barchart (meaing not stacked)
     """
 
-    nplots = len(heights)
-    if nplots != len(positions):  # todo check dimention not len, without moving to special datatype.
-        print('ydata and xdata must have the same dimension')
-        return
+    plot_data = process_data_arguments(data=data, position=positions, height=heights, xerr=xerr, yerr=yerr)
 
-    if not isinstance(heights[0], (list, np.ndarray, pd.Series)):
-        positions, heights = [positions], [heights]
+    if bar_type in ('stacked', 'grouped'):
+        if plot_data.distinct_datasets('position') != 1:
+            raise ValueError('Only provide one set of data for the positions of the bars for stacked/grouped bar plots')
+    elif bar_type != 'independent':
+        raise ValueError(f"Invalid barchart type: {bar_type}. Has to be one of 'stacked', 'grouped', 'independent'")
 
     plot_params.single_plot = False
-    plot_params.num_plots = len(heights)
+    plot_params.num_plots = len(plot_data)
+
+    if bar_type == 'grouped':
+        shifts = np.array([(i - len(plot_data) // 2) * width for i in range(len(plot_data))])
+        if len(plot_data) % 2 == 0:
+            shifts += width / 2
+        plot_data.shift_data('position', shifts)
 
     #DEPRECATION WARNINGS
     if 'plot_labels' in kwargs:
@@ -916,41 +926,38 @@ def barchart(positions,
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
-    # TODO good checks for input and setting of internals before plotting
-    # allow all arguments as value then use for all or as lists with the righ length.
-    if bottom:
-        datab = bottom
-    else:
-        datab = np.zeros(len(heights[0]))
-
     plot_kwargs = plot_params.plot_kwargs(plot_type='histogram')
 
-    for indx, data in enumerate(zip(positions, heights, plot_kwargs)):
+    for data, plot_kw in zip(plot_data.items(), plot_kwargs):
 
-        position, height, plot_kw = data
+        entry, source = data
 
-        if isinstance(yerr, list):
-            try:
-                yerrt = yerr[indx]
-            except KeyError:
-                yerrt = yerr[0]
-        else:
-            yerrt = yerr
-
-        if isinstance(xerr, list):
-            try:
-                xerrt = xerr[indx]
-            except KeyError:
-                xerrt = xerr[0]
-        else:
-            xerrt = xerr
+        if bottom is None and bar_type == 'stacked':
+            bottom = np.zeros(len(source[entry.positions]))
 
         if alignment == 'horizontal':
-            ax.barh(position, height, width, left=datab, **plot_kw, **kwargs)
+            ax.barh(entry.position,
+                    entry.height,
+                    width,
+                    left=bottom,
+                    data=source,
+                    xerr=entry.yerr,
+                    yerr=entry.xerr,
+                    **plot_kw,
+                    **kwargs)
         else:
-            ax.bar(position, height, width, bottom=datab, **plot_kw, **kwargs)
+            ax.bar(entry.position,
+                   entry.height,
+                   width,
+                   bottom=bottom,
+                   data=source,
+                   xerr=entry.xerr,
+                   yerr=entry.yerr,
+                   **plot_kw,
+                   **kwargs)
 
-        datab = datab + np.array(height)
+        if bar_type == 'stacked':
+            bottom += np.array(source[entry.height])
 
     plot_params.set_scale(ax)
     plot_params.set_limits(ax)

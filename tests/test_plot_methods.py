@@ -1103,8 +1103,9 @@ class TestHistogramPlot(object):  #pylint: disable=missing-class-docstring
 
 class TestBarchartPlot(object):  #pylint: disable=missing-class-docstring
 
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/barchart/', filename='defaults.png')
-    def test_defaults(self):
+    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/barchart/',
+                                   filename='defaults_stacked.png')
+    def test_stacked_defaults(self):
         """
         Test of barchart plot with default values
         """
@@ -1116,6 +1117,209 @@ class TestBarchartPlot(object):  #pylint: disable=missing-class-docstring
         gcf().clear()
 
         barchart(x, y, show=False)
+
+        # need to return the figure in order for mpl checks to work
+        return gcf()
+
+    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/barchart/',
+                                   filename='param_change_stacked.png')
+    def test_stacked_param_change(self):
+        """
+        Test of barchart plot with default values
+        """
+        import numpy as np
+        from masci_tools.vis.plot_methods import barchart
+
+        x = [np.linspace(0, 10, 11)] * 2
+        y = [x[0]**2, [50] * 11]
+        gcf().clear()
+
+        barchart(x,
+                 y,
+                 show=False,
+                 width=0.7,
+                 align='edge',
+                 limits={'x': (-2, 15)},
+                 color={1: 'darkred'},
+                 plot_label=['Bottom', 'Top'],
+                 legend=True)
+
+        # need to return the figure in order for mpl checks to work
+        return gcf()
+
+    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/barchart/',
+                                   filename='param_change_stacked_horizontal.png')
+    def test_stacked_param_change_horizontal(self):
+        """
+        Test of barchart plot with default values
+        """
+        import numpy as np
+        from masci_tools.vis.plot_methods import barchart
+
+        x = [np.linspace(0, 10, 11)] * 2
+        y = [x[0]**2, [50] * 11]
+        gcf().clear()
+
+        barchart(y,
+                 x,
+                 show=False,
+                 alignment='horizontal',
+                 width=0.7,
+                 align='edge',
+                 limits={'y': (-2, 15)},
+                 color={1: 'darkred'},
+                 plot_label=['Bottom', 'Top'],
+                 legend=True)
+
+        # need to return the figure in order for mpl checks to work
+        return gcf()
+
+    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/barchart/',
+                                   filename='defaults_grouped_even.png')
+    def test_grouped_defaults_even(self):
+        """
+        Test of barchart plot with default values
+        """
+        import numpy as np
+        from masci_tools.vis.plot_methods import barchart
+
+        x = [np.linspace(0, 10, 11)] * 2
+        y = [x[0]**2, [50] * 11]
+        gcf().clear()
+
+        barchart(x, y, show=False, bar_type='grouped')
+
+        # need to return the figure in order for mpl checks to work
+        return gcf()
+
+    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/barchart/',
+                                   filename='defaults_grouped_odd.png')
+    def test_grouped_defaults_odd(self):
+        """
+        Test of barchart plot with default values
+        """
+        import numpy as np
+        from masci_tools.vis.plot_methods import barchart
+
+        x = np.linspace(0, 20, 11)
+        y = [x**2, [50] * 11, 20 * np.abs(np.sin(x))]
+        gcf().clear()
+
+        barchart(x, y, show=False, bar_type='grouped')
+
+        # need to return the figure in order for mpl checks to work
+        return gcf()
+
+    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/barchart/',
+                                   filename='param_change_grouped.png')
+    def test_grouped_param_change(self):
+        """
+        Test of barchart plot with default values
+        """
+        import numpy as np
+        from masci_tools.vis.plot_methods import barchart
+
+        x = np.linspace(0, 20, 11)
+        y = [x**2, [50] * 11, 20 * np.abs(np.sin(x))]
+        gcf().clear()
+
+        barchart(x,
+                 y,
+                 show=False,
+                 bar_type='grouped',
+                 width=0.5,
+                 align='edge',
+                 color={2: 'darkred'},
+                 plot_label=['One Set', 'Another Set', 'And another one'],
+                 legend=True)
+
+        # need to return the figure in order for mpl checks to work
+        return gcf()
+
+    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/barchart/',
+                                   filename='param_change_grouped_horizontal.png')
+    def test_grouped_param_change_horizontal(self):
+        """
+        Test of barchart plot with default values
+        """
+        import numpy as np
+        from masci_tools.vis.plot_methods import barchart
+
+        x = np.linspace(0, 20, 11)
+        y = [x**2, [50] * 11, 20 * np.abs(np.sin(x))]
+        gcf().clear()
+
+        barchart(y,
+                 x,
+                 show=False,
+                 alignment='horizontal',
+                 bar_type='grouped',
+                 width=0.5,
+                 align='edge',
+                 color={2: 'darkred'},
+                 plot_label=['One Set', 'Another Set', 'And another one'],
+                 legend=True)
+
+        # need to return the figure in order for mpl checks to work
+        return gcf()
+
+    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/barchart/',
+                                   filename='defaults_independent.png')
+    def test_defaults_independent(self):
+        """
+        Test of barchart plot with default values
+        """
+        import numpy as np
+        from masci_tools.vis.plot_methods import barchart
+
+        x = [np.linspace(0, 10, 11), np.linspace(0, 10, 11) + 15]
+        y = [x[0]**2, 20 * np.abs(np.sin(x[1]))]
+        gcf().clear()
+
+        barchart(x, y, show=False, bar_type='independent')
+
+        # need to return the figure in order for mpl checks to work
+        return gcf()
+
+    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/barchart/',
+                                   filename='param_change_independent.png')
+    def test_param_change_independent(self):
+        """
+        Test of barchart plot with default values
+        """
+        import numpy as np
+        from masci_tools.vis.plot_methods import barchart
+
+        x = [np.linspace(0, 10, 11), np.linspace(0, 10, 11) + 15]
+        y = [x[0]**2, 20 * np.abs(np.sin(x[1]))]
+        gcf().clear()
+
+        barchart(x,
+                 y,
+                 show=False,
+                 bar_type='independent',
+                 width=0.5,
+                 color={1: 'darkred'},
+                 plot_label=['Left', 'Right'],
+                 legend=True)
+
+        # need to return the figure in order for mpl checks to work
+        return gcf()
+
+    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/barchart/',
+                                   filename='defaults_independent_horizontal.png')
+    def test_defaults_independent_horizontal(self):
+        """
+        Test of barchart plot with default values
+        """
+        import numpy as np
+        from masci_tools.vis.plot_methods import barchart
+
+        x = [np.linspace(0, 10, 11), np.linspace(0, 10, 11) + 15]
+        y = [x[0]**2, 20 * np.abs(np.sin(x[1]))]
+        gcf().clear()
+
+        barchart(y, x, show=False, bar_type='independent', alignment='horizontal')
 
         # need to return the figure in order for mpl checks to work
         return gcf()
