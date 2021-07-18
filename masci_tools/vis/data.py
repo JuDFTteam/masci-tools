@@ -410,7 +410,7 @@ class PlotData:
             else:
                 source[new_key] = copy.copy(source[key])
 
-    def distinct_datasets(self,data_key):
+    def distinct_datasets(self, data_key):
 
         if data_key not in self._column_spec._fields:
             raise ValueError(f'Field {data_key} does not exist')
@@ -427,7 +427,6 @@ class PlotData:
                 data_sets.append(normed_set)
 
         return len(data_sets)
-
 
     def __len__(self):
         return len(self.masked_columns)
@@ -534,9 +533,11 @@ def normalize_list_or_array(data, key, out_data, flatten_np=False, forbid_split_
                     entry[f'{key}_{indx}'] = new_data
             else:
                 new_list = []
-                for indx,new_data in enumerate(data):
+                for indx, new_data in enumerate(data):
                     old_data = out_data.copy()
-                    new_list.append({f'{key}_{indx}': val for key, val in old_data.items()})
+                    new_list.append({
+                        (f'{key}_{indx}' if val is not None else key): val for key, val in old_data.items()
+                    })
                     new_list[-1][f'{key}_{indx}'] = new_data
                 out_data = new_list
 
@@ -604,12 +605,14 @@ def process_data_arguments(data=None,
         keys = {}
 
         for key, val in kwargs.items():
+            if val is None:
+                continue
             data = normalize_list_or_array(val,
                                            key,
                                            data,
                                            flatten_np=flatten_np,
                                            forbid_split_up=key in forbid_split_up)
-        for key in kwargs.keys():
+        for key, val in kwargs.items():
             if val is not None:
                 if isinstance(data, list):
                     keys[key] = [f'{key}_{indx}' for indx in range(len(data))]
