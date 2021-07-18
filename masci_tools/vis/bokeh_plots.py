@@ -284,10 +284,10 @@ def bokeh_line(x,
 
 
 @ensure_plotter_consistency(plot_params)
-def bokeh_dos(dosdata,
+def bokeh_dos(energy_grid,
+              dos_data=None,
               *,
-              energy='energy_grid',
-              ynames=None,
+              data=None,
               energy_label=r'E-E_F [eV]',
               dos_label=r'DOS [1/eV]',
               title=r'Density of states',
@@ -311,6 +311,23 @@ def bokeh_dos(dosdata,
 
     Kwargs will be passed on to :py:func:`bokeh_line()`
     """
+
+    if isinstance(energy_grid, (dict, pd.DataFrame, ColumnDataSource)) or energy_grid is None:
+        warnings.warn(
+            'Passing the dataframe as first argument is deprecated. Please pass in source by the keyword data'
+            'and energy_grid and dos_data as the first arguments', DeprecationWarning)
+        data = energy_grid
+        energy_grid = kwargs.pop('energy', 'energy_grid')
+        dos_data = kwargs.pop('ynames', None)
+
+    if dos_data is None and data is not None:
+        dos_data = set(data.keys()) - set([energy_grid] if isinstance(energy_grid, str) else energy_grid)
+        dos_data = sorted(dos_data)
+
+    plot_data = process_data_arguments(data=data, energy=energy_grid, dos=dos_data, same_length=True)
+
+    plot_params.single_plot = False
+    plot_params.num_plots = len(plot_data)
 
     if 'limits' in kwargs:
         limits = kwargs.pop('limits')
@@ -336,29 +353,26 @@ def bokeh_dos(dosdata,
                                  1000,
                              })
 
-    if ynames is None:
-        ynames = set(dosdata.keys()) - set([energy] if isinstance(energy, str) else energy)
-        ynames = sorted(ynames)
-
     if xyswitch:
-        x, y = ynames, energy
+        x, y = plot_data.get_keys('dos'), plot_data.get_keys('energy')
         xlabel, ylabel = dos_label, energy_label
         plot_params.set_defaults(default_type='function', area_vertical=True)
     else:
         xlabel, ylabel = energy_label, dos_label
-        x, y = energy, ynames
+        x, y = plot_data.get_keys('energy'), plot_data.get_keys('dos')
 
-    p = bokeh_line(dosdata, xdata=x, ydata=y, xlabel=xlabel, ylabel=ylabel, title=title, name=ynames, **kwargs)
+    p = bokeh_line(x, y, data=plot_data.data, xlabel=xlabel, ylabel=ylabel, title=title, name=y, **kwargs)
 
     return p
 
 
 @ensure_plotter_consistency(plot_params)
-def bokeh_spinpol_dos(dosdata,
+def bokeh_spinpol_dos(energy_grid,
+                      spin_up_data=None,
+                      spin_dn_data=None,
                       *,
+                      data=None,
                       spin_dn_negative=True,
-                      energy='energy_grid',
-                      ynames=None,
                       energy_label=r'E-E_F [eV]',
                       dos_label=r'DOS [1/eV]',
                       title=r'Density of states',
@@ -388,6 +402,30 @@ def bokeh_spinpol_dos(dosdata,
     """
     from bokeh.models import NumeralTickFormatter, Arrow, NormalHead
 
+    if isinstance(energy_grid, (dict, pd.DataFrame, ColumnDataSource)) or energy_grid is None:
+        warnings.warn(
+            'Passing the dataframe as first argument is deprecated. Please pass in source by the keyword data'
+            'and energy_grid and dos_data as the first arguments', DeprecationWarning)
+        data = energy_grid
+        energy_grid = kwargs.pop('energy', 'energy_grid')
+        spin_up_data = kwargs.pop('ynames', None)
+        spin_up_data, spin_dn_data = spin_up_data[:len(spin_up_data) // 2], spin_up_data[len(spin_up_data) // 2:]
+
+    if spin_up_data is None and data is not None:
+        spin_up_data = set(key for key in data.keys() if '_up' in key)
+        spin_up_data = sorted(spin_up_data)
+        spin_dn_data = set(key for key in data.keys() if '_dn' in key)
+        spin_dn_data = sorted(spin_dn_data)
+
+    plot_data = process_data_arguments(data=data,
+                                       energy=energy_grid,
+                                       spin_up=spin_up_data,
+                                       spin_dn=spin_dn_data,
+                                       same_length=True)
+
+    plot_params.single_plot = False
+    plot_params.num_plots = len(plot_data)
+
     if 'limits' in kwargs:
         limits = kwargs.pop('limits')
         if 'x' not in limits and 'y' not in limits:
@@ -400,13 +438,8 @@ def bokeh_spinpol_dos(dosdata,
     lines = {'horizontal': 0}
     lines['vertical'] = e_fermi
 
-    if ynames is None:
-        ynames = set(dosdata.keys()) - set([energy] if isinstance(energy, str) else energy)
-        ynames = sorted(ynames)
-        ynames.extend([f'{key} Spin-Down' for key in ynames])
-
     if spin_dn_negative:
-        dosdata[[key for key in ynames if '_down' in key]] = -dosdata[[key for key in ynames if '_down' in key]]
+        plot_data.apply('spin_dn', lambda x: -x)
 
     if xyswitch:
         lines['vertical'], lines['horizontal'] = lines['horizontal'], lines['vertical']
@@ -420,21 +453,26 @@ def bokeh_spinpol_dos(dosdata,
                                  1000
                              })
 
+    #Create the full data for the scatterplot
+    energy_entries = plot_data.get_keys('energy') * 2
+    dos_entries = plot_data.get_keys('spin_up') + plot_data.get_keys('spin_dn')
+    sources = plot_data.data
+    if isinstance(sources, list):
+        sources = sources * 2
+
     if xyswitch:
-        x, y = ynames, energy
+        x, y = dos_entries, energy_entries
         xlabel, ylabel = dos_label, energy_label
         plot_params.set_defaults(default_type='function',
                                  area_vertical=True,
                                  x_axis_formatter=NumeralTickFormatter(format='(0,0)'))
     else:
         xlabel, ylabel = energy_label, dos_label
-        x, y = energy, ynames
+        x, y = energy_entries, dos_entries
         plot_params.set_defaults(default_type='function',
                                  area_vertical=True,
                                  y_axis_formatter=NumeralTickFormatter(format='(0,0)'))
 
-    plot_params.single_plot = False
-    plot_params.num_plots = len(ynames) // 2  #We want the same colors for opposite spin-directions
     plot_params.set_parameters(color=kwargs.pop('color', None), color_palette=kwargs.pop('color_palette', None))
     plot_params.set_color_palette_by_num_plots()
 
@@ -443,23 +481,23 @@ def bokeh_spinpol_dos(dosdata,
     kwargs['color'].extend(kwargs['color'])
 
     if 'legend_label' not in kwargs:
-        kwargs['legend_label'] = list(ynames.copy())
+        kwargs['legend_label'] = dos_entries
     else:
         if isinstance(kwargs['legend_label'], list):
-            if len(kwargs['legend_label']) == len(ynames) // 2:
+            if len(kwargs['legend_label']) == len(plot_data):
                 kwargs['legend_label'].extend(kwargs['legend_label'])
 
     if 'show' in kwargs:
         plot_params.set_parameters(show=kwargs.pop('show'))
 
     with NestedPlotParameters(plot_params):
-        p = bokeh_line(dosdata,
-                       xdata=x,
-                       ydata=y,
+        p = bokeh_line(x,
+                       y,
                        xlabel=xlabel,
                        ylabel=ylabel,
                        title=title,
-                       name=ynames,
+                       data=sources,
+                       name=dos_entries,
                        show=False,
                        **kwargs)
 

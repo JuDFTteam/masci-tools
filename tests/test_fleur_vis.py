@@ -27,6 +27,7 @@ def test_plot_bands_defaults_mpl():
 
     return gcf()
 
+
 def test_plot_bands_defaults_bokeh(check_bokeh_plot):
     from masci_tools.io.parsers.hdf5 import HDF5Reader
     from masci_tools.io.parsers.hdf5.recipes import FleurBands
@@ -58,6 +59,7 @@ def test_plot_bands_weighted_non_spinpol_mpl():
     plot_fleur_bands(data, attributes, show=False, weight='MT:1d')
 
     return gcf()
+
 
 def test_plot_bands_weighted_bokeh(check_bokeh_plot):
     from masci_tools.io.parsers.hdf5 import HDF5Reader
@@ -91,6 +93,7 @@ def test_plot_bands_spinpol_defaults_mpl():
 
     return gcf()
 
+
 def test_plot_bands_spinpol_defaults_bokeh(check_bokeh_plot):
     from masci_tools.io.parsers.hdf5 import HDF5Reader
     from masci_tools.io.parsers.hdf5.recipes import FleurBands
@@ -122,6 +125,7 @@ def test_plot_bands_weighted_spinpol_mpl():
     plot_fleur_bands(data, attributes, show=False, weight='MT:1d')
 
     return gcf()
+
 
 def test_plot_bands_spinpol_weighted_bokeh(check_bokeh_plot):
     from masci_tools.io.parsers.hdf5 import HDF5Reader
@@ -155,6 +159,7 @@ def test_plot_bands_spinpol_no_spinpol_mpl():
 
     return gcf()
 
+
 def test_plot_bands_spinpol_no_spinpol_bokeh(check_bokeh_plot):
     from masci_tools.io.parsers.hdf5 import HDF5Reader
     from masci_tools.io.parsers.hdf5.recipes import FleurBands
@@ -165,9 +170,10 @@ def test_plot_bands_spinpol_no_spinpol_bokeh(check_bokeh_plot):
     with HDF5Reader(TEST_BANDDOS_FILE) as h5reader:
         data, attributes = h5reader.read(recipe=FleurBands)
 
-    fig = plot_fleur_bands(data, attributes, show=False, bokeh_plot=True,  spinpol=False)
+    fig = plot_fleur_bands(data, attributes, show=False, bokeh_plot=True, spinpol=False)
 
     check_bokeh_plot(fig)
+
 
 @pytest.mark.mpl_image_compare(baseline_dir='files/fleur_vis/', filename='bands_only_spin.png')
 def test_plot_bands_spinpol_only_spin_mpl():
@@ -185,6 +191,7 @@ def test_plot_bands_spinpol_only_spin_mpl():
     plot_fleur_bands(data, attributes, show=False, markersize=30, only_spin='up')
 
     return gcf()
+
 
 def test_plot_bands_spinpol_only_spin_bokeh(check_bokeh_plot):
     from masci_tools.io.parsers.hdf5 import HDF5Reader
@@ -217,6 +224,7 @@ def test_plot_dos_defaults_mpl():
     plot_fleur_dos(data, attributes, show=False)
 
     return gcf()
+
 
 def test_plot_dos_defaults_bokeh(check_bokeh_plot):
     from masci_tools.io.parsers.hdf5 import HDF5Reader
@@ -292,6 +300,7 @@ def test_plot_spinpol_dos_defaults_mpl():
 
     return gcf()
 
+
 def test_plot_spinpol_dos_defaults_bokeh(check_bokeh_plot):
     from masci_tools.io.parsers.hdf5 import HDF5Reader
     from masci_tools.io.parsers.hdf5.recipes import FleurDOS
@@ -331,6 +340,7 @@ def test_plot_dos_selection_mpl():
 
     return gcf()
 
+
 def test_plot_dos_selection_bokeh(check_bokeh_plot):
     from masci_tools.io.parsers.hdf5 import HDF5Reader
     from masci_tools.io.parsers.hdf5.recipes import FleurDOS
@@ -341,12 +351,15 @@ def test_plot_dos_selection_bokeh(check_bokeh_plot):
     with HDF5Reader(TEST_BANDDOS_FILE) as h5reader:
         data, attributes = h5reader.read(recipe=FleurDOS)
 
-    fig = plot_fleur_dos(data, attributes, show=False,
-                   show_total=False,
-                   show_interstitial=False,
-                   show_atoms=1,
-                   show_lresolved=2,
-                   plot_keys='MT:1p', bokeh_plot=True)
+    fig = plot_fleur_dos(data,
+                         attributes,
+                         show=False,
+                         show_total=False,
+                         show_interstitial=False,
+                         show_atoms=1,
+                         show_lresolved=2,
+                         plot_keys='MT:1p',
+                         bokeh_plot=True)
 
     check_bokeh_plot(fig)
 
@@ -372,6 +385,7 @@ def test_plot_bands_characterize_mpl():
                                   only_spin='up')
 
     return gcf()
+
 
 @pytest.mark.skip('Not yet working for bokeh')
 def test_plot_bands_characterize_bokeh():
