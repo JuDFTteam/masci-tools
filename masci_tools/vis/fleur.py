@@ -243,13 +243,21 @@ def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, only_spin=None, b
 
     if bokeh_plot:
         if spinpol:
-            fig = bokeh_spinpol_bands(bandsdata,
-                                      weight=weight,
+            fig = bokeh_spinpol_bands('kpath',
+                                      'eigenvalues_up',
+                                      'eigenvalues_down',
+                                      data=bandsdata,
+                                      size_data=weight,
                                       special_kpoints=special_kpoints,
                                       legend_label=plot_label,
                                       **kwargs)
         else:
-            fig = bokeh_bands(bandsdata, weight=weight, special_kpoints=special_kpoints, **kwargs)
+            fig = bokeh_bands('kpath',
+                              'eigenvalues_up',
+                              data=bandsdata,
+                              size_data=weight,
+                              special_kpoints=special_kpoints,
+                              **kwargs)
     else:
         if spinpol:
             fig = plot_spinpol_bands('kpath',
@@ -356,9 +364,14 @@ def plot_fleur_dos(dosdata,
 
     if bokeh_plot:
         if spinpol:
-            fig = bokeh_spinpol_dos('energy_grid', dosdata_up, dosdata_dn,data=dosdata, legend_label=legend_labels, **kwargs)
+            fig = bokeh_spinpol_dos('energy_grid',
+                                    dosdata_up,
+                                    dosdata_dn,
+                                    data=dosdata,
+                                    legend_label=legend_labels,
+                                    **kwargs)
         else:
-            fig = bokeh_dos('energy_grid', keys,data=dosdata, legend_label=legend_labels, **kwargs)
+            fig = bokeh_dos('energy_grid', keys, data=dosdata, legend_label=legend_labels, **kwargs)
     else:
         if spinpol:
             fig = plot_spinpol_dos('energy_grid',
