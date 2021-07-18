@@ -40731,12 +40731,12 @@ roots:
     type: Range1d
   - attributes:
       fill_color:
-        value: '#1f77b4'
+        field: color_up
       line_color:
-        value: '#1f77b4'
+        field: color_up
       size:
+        field: max_weight_up
         units: screen
-        value: 6
       x:
         field: kpath
       y:
@@ -40752,8 +40752,8 @@ roots:
       line_color:
         value: '#1f77b4'
       size:
+        field: max_weight_up
         units: screen
-        value: 6
       x:
         field: kpath
       y:
