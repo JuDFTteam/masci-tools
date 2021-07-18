@@ -62439,7 +62439,7 @@ roots:
         - 4.13414
         - 4.13414
         - 4.13414
-        weight_size_0:
+        size_0:
         - 3.00042
         - 3.0
         - 3.0
@@ -65560,7 +65560,7 @@ roots:
         - 3.0
         - 3.0
         - 3.0
-        weight_size_1:
+        size_1:
         - 3.00048
         - 3.0
         - 3.0
@@ -131109,7 +131109,7 @@ roots:
         - 4.13414
         - 4.13414
         - 4.13414
-        weight_size_0:
+        size_0:
         - 3.00042
         - 3.0
         - 3.0
@@ -134230,7 +134230,7 @@ roots:
         - 3.0
         - 3.0
         - 3.0
-        weight_size_1:
+        size_1:
         - 3.00048
         - 3.0
         - 3.0
@@ -138047,7 +138047,7 @@ roots:
         transform:
           type: LinearColorMapper
       size:
-        field: weight_size_1
+        field: size_1
         units: screen
       x:
         field: kpath
@@ -138064,7 +138064,7 @@ roots:
         transform:
           type: LinearColorMapper
       size:
-        field: weight_size_0
+        field: size_0
         units: screen
       x:
         field: kpath
@@ -138081,7 +138081,7 @@ roots:
       line_color:
         value: '#1f77b4'
       size:
-        field: weight_size_0
+        field: size_0
         units: screen
       x:
         field: kpath
@@ -138098,7 +138098,7 @@ roots:
       line_color:
         value: '#1f77b4'
       size:
-        field: weight_size_1
+        field: size_1
         units: screen
       x:
         field: kpath

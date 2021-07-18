@@ -20,6 +20,7 @@ from .data import process_data_arguments
 
 from bokeh.models import ColumnDataSource
 import pandas as pd
+import numpy as np
 import warnings
 from pprint import pprint
 
@@ -538,11 +539,12 @@ def bokeh_spinpol_dos(energy_grid,
 
 
 @ensure_plotter_consistency(plot_params)
-def bokeh_bands(bandsdata,
+def bokeh_bands(kpath,
+                bands=None,
                 *,
-                k_label='kpath',
-                eigenvalues='eigenvalues_up',
-                weight=None,
+                data=None,
+                size_data=None,
+                color_data=None,
                 xlabel='',
                 ylabel=r'E-E_F [eV]',
                 title='',
@@ -576,20 +578,47 @@ def bokeh_bands(bandsdata,
     """
     from bokeh.transform import linear_cmap
 
-    if weight is not None:
+    if isinstance(kpath, (dict, pd.DataFrame, ColumnDataSource)) or kpath is None:
+        warnings.warn(
+            'Passing the dataframe as first argument is deprecated. Please pass in source by the keyword data'
+            'and kpath and bands as the first arguments', DeprecationWarning)
+        data = kpath
+        kpath = kwargs.pop('k_label', 'kpath')
+        bands = kwargs.pop('eigenvalues', 'eigenvalues_up')
 
+    if 'weight' in kwargs:
+        warnings.warn('The weight argument is deprecated. Use size_data and color_data instead', DeprecationWarning)
+        size_data = kwargs.pop('weight')
+
+    plot_data = process_data_arguments(single_plot=True,
+                                       data=data,
+                                       kpath=kpath,
+                                       bands=bands,
+                                       size=size_data,
+                                       color=color_data)
+
+    if scale_color and size_data is not None:
+        if color_data is not None:
+            raise ValueError('color_data should not be provided when scale_color is True')
+        plot_data.copy_data('size', 'color', rename_original=True)
+
+    entries = plot_data.keys(first=True)
+    if entries.size is not None:
         ylimits = (-15, 15)
         if 'limits' in kwargs:
             if 'y' in kwargs['limits']:
                 ylimits = kwargs['limits']['y']
 
-        weight_max = bandsdata[weight].loc[(bandsdata[eigenvalues] > ylimits[0]) &
-                                           (bandsdata[eigenvalues] < ylimits[1])].max()
+        data = plot_data.values(first=True)
+        mask = np.logical_and(data.bands > ylimits[0], data.bands < ylimits[1])
 
-        bandsdata['weight_size'] = size_min + size_scaling * bandsdata[weight] / weight_max
-        plot_params.set_defaults(default_type='function', marker_size='weight_size')
+        weight_max = plot_data.max('size', mask=mask)
+
         if scale_color:
-            plot_params.set_defaults(default_type='function', color=linear_cmap(weight, 'Blues256', weight_max, -0.05))
+            plot_params.set_defaults(default_type='function', marker_size=entries.size, color=linear_cmap(entries.color, 'Blues256', weight_max, -0.05))
+
+        transform = lambda size: size_min + size_scaling * size / weight_max
+        plot_data.apply('size', transform)
     else:
         plot_params.set_defaults(default_type='function', color='black')
 
@@ -622,9 +651,9 @@ def bokeh_bands(bandsdata,
                              y_range_padding=0.0,
                              limits=limits)
 
-    return bokeh_multi_scatter(bandsdata,
-                               xdata=k_label,
-                               ydata=eigenvalues,
+    return bokeh_multi_scatter(plot_data.get_keys('kpath'),
+                               plot_data.get_keys('bands'),
+                               data=plot_data.data,
                                xlabel='',
                                ylabel=ylabel,
                                title=title,
@@ -632,11 +661,13 @@ def bokeh_bands(bandsdata,
 
 
 @ensure_plotter_consistency(plot_params)
-def bokeh_spinpol_bands(bandsdata,
+def bokeh_spinpol_bands(kpath,
+                        bands_up=None,
+                        bands_dn=None,
                         *,
-                        k_label='kpath',
-                        eigenvalues=None,
-                        weight=None,
+                        size_data=None,
+                        color_data=None,
+                        data=None,
                         xlabel='',
                         ylabel=r'E-E_F [eV]',
                         title='',
@@ -670,33 +701,53 @@ def bokeh_spinpol_bands(bandsdata,
     """
     from bokeh.transform import linear_cmap
 
-    if eigenvalues is None:
-        eigenvalues = ['eigenvalues_up', 'eigenvalues_down']
+    if isinstance(kpath, (dict, pd.DataFrame, ColumnDataSource)) or kpath is None:
+        warnings.warn(
+            'Passing the dataframe as first argument is deprecated. Please pass in source by the keyword data'
+            'and kpath and bands_up and bands_dn as the first arguments', DeprecationWarning)
+        data = kpath
+        kpath = kwargs.pop('k_label', 'kpath')
+        bands_up = kwargs.pop('eigenvalues',['eigenvalues_up', 'eigenvalues_down'])
+        bands_up, bands_dn = bands_up[0], bands_up[1]
+
+    if 'weight' in kwargs:
+        warnings.warn('The weight argument is deprecated. Use size_data and color_data instead', DeprecationWarning)
+        size_data = kwargs.pop('weight')
+
+    plot_data = process_data_arguments(data=data,
+                                       kpath=kpath,
+                                       bands=[bands_up, bands_dn],
+                                       size=size_data,
+                                       color=color_data)
 
     plot_params.single_plot = False
-    plot_params.num_plots = 2
+    plot_params.num_plots = len(plot_data)
 
-    if weight is not None:
-        cmaps = ['Blues256', 'Reds256']
-        color = []
+    if scale_color and size_data is not None:
+        if color_data is not None:
+            raise ValueError('color_data should not be provided when scale_color is True')
+        plot_data.copy_data('size', 'color', rename_original=True)
+
+    if len(plot_data) != 2:
+        raise ValueError('Wrong number of plots specified (Only 2 permitted)')
+
+    if any(entry.size is not None for entry in plot_data.keys()):
 
         ylimits = (-15, 15)
         if 'limits' in kwargs:
             if 'y' in kwargs['limits']:
                 ylimits = kwargs['limits']['y']
 
-        weight_max = bandsdata[weight[0]].loc[(bandsdata[eigenvalues[0]] > ylimits[0]) &
-                                              (bandsdata[eigenvalues[0]] < ylimits[1])].max()
-        weight_max = max(
-            weight_max, bandsdata[weight[1]].loc[(bandsdata[eigenvalues[1]] > ylimits[0]) &
-                                                 (bandsdata[eigenvalues[1]] < ylimits[1])].max())
+        data = plot_data.values()
+        mask = [np.logical_and(col.bands > ylimits[0], col.bands < ylimits[1]) for col in data]
+        weight_max = plot_data.max('size', mask=mask)
 
-        for indx, (w, cmap) in enumerate(zip(weight, cmaps)):
-            color.append(linear_cmap(w, cmap, weight_max, -0.05))
-            bandsdata[f'weight_size_{indx}'] = size_min + size_scaling * bandsdata[w] / weight_max
-        plot_params.set_defaults(default_type='function', marker_size=['weight_size_0', 'weight_size_1'])
+        transform = lambda size: size_min + size_scaling * size / weight_max
+        plot_data.apply('size', transform)
+
+        plot_params.set_defaults(default_type='function', marker_size=plot_data.get_keys('size'))
         if scale_color:
-            plot_params.set_defaults(default_type='function', color=color)
+            plot_params.set_defaults(default_type='function', color=[linear_cmap(name, palette, weight_max, -0.05) for name, palette in zip(plot_data.get_keys('color'),['Blues256', 'Reds256'])])
     else:
         color = ['blue', 'red']
         plot_params.set_defaults(default_type='function', color=color)
@@ -731,9 +782,9 @@ def bokeh_spinpol_bands(bandsdata,
                              limits=limits,
                              level=[None, 'underlay'])
 
-    return bokeh_multi_scatter(bandsdata,
-                               xdata=k_label,
-                               ydata=eigenvalues,
+    return bokeh_multi_scatter(plot_data.get_keys('kpath'),
+                               plot_data.get_keys('bands'),
+                               data=plot_data.data,
                                xlabel='',
                                ylabel=ylabel,
                                title=title,

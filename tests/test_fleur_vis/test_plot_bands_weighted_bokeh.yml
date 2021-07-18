@@ -5791,7 +5791,7 @@ roots:
         - 0.63895
         - 0.63895
         - 0.63895
-        weight_size:
+        size_0:
         - 3.0
         - 10.33832
         - 11.91866
@@ -6549,7 +6549,7 @@ roots:
         transform:
           type: LinearColorMapper
       size:
-        field: weight_size
+        field: size_0
         units: screen
       x:
         field: kpath
@@ -6566,7 +6566,7 @@ roots:
       line_color:
         value: '#1f77b4'
       size:
-        field: weight_size
+        field: size_0
         units: screen
       x:
         field: kpath
