@@ -18,7 +18,9 @@ from .bokeh_plotter import BokehPlotter
 from .parameters import ensure_plotter_consistency, NestedPlotParameters
 from .data import process_data_arguments
 
+from bokeh.models import ColumnDataSource
 import pandas as pd
+import warnings
 from pprint import pprint
 
 ################## Helpers     ################
@@ -68,8 +70,8 @@ def get_bokeh_help(key):
 
 
 @ensure_plotter_consistency(plot_params)
-def bokeh_scatter(xdata,
-                  ydata,
+def bokeh_scatter(x,
+                  y=None,
                   *,
                   xlabel='x',
                   ylabel='y',
@@ -94,7 +96,15 @@ def bokeh_scatter(xdata,
     If the arguments are not recognized they are passed on to the bokeh function `scatter`
     """
 
-    plot_data = process_data_arguments(data=data, x=xdata, y=ydata, single_plot=True)
+    if isinstance(x, (dict, pd.DataFrame, ColumnDataSource)):
+        warnings.warn(
+            'Passing the source as first argument is deprecated. Please pass in source by the keyword data'
+            'and xdata and ydata as the first arguments', DeprecationWarning)
+        data = x
+        x = kwargs.pop('xdata', 'x')
+        y = kwargs.pop('ydata', 'y')
+
+    plot_data = process_data_arguments(data=data, x=x, y=y, single_plot=True)
 
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
 
@@ -115,10 +125,10 @@ def bokeh_scatter(xdata,
 
 
 @ensure_plotter_consistency(plot_params)
-def bokeh_multi_scatter(source,
+def bokeh_multi_scatter(x,
+                        y=None,
                         *,
-                        xdata='x',
-                        ydata='y',
+                        data=None,
                         figure=None,
                         xlabel='x',
                         ylabel='y',
@@ -140,24 +150,22 @@ def bokeh_multi_scatter(source,
     Kwargs will be passed on to :py:class:`masci_tools.vis.bokeh_plotter.BokehPlotter`.
     If the arguments are not recognized they are passed on to the bokeh function `scatter`
     """
-    from bokeh.models import ColumnDataSource
 
-    plot_params.set_defaults(default_type='function', name='scatter plot')
+    if isinstance(x, (dict, pd.DataFrame, ColumnDataSource)):
+        warnings.warn(
+            'Passing the source as first argument is deprecated. Please pass in source by the keyword data'
+            'and xdata and ydata as the first arguments', DeprecationWarning)
+        data = x
+        x = kwargs.pop('xdata', 'x')
+        y = kwargs.pop('ydata', 'y')
 
-    default_legend_label = ydata
-    if source is not None:
-        if not isinstance(ydata, list):
-            if not isinstance(xdata, list):
-                xdata = [xdata]
-            ydata = [ydata] * len(xdata)
-            default_legend_label = xdata
-
-    if isinstance(xdata, list):
-        if len(xdata) != len(ydata):
-            xdata = xdata[0]
+    plot_data = process_data_arguments(data=data, x=x, y=y)
 
     plot_params.single_plot = False
-    plot_params.num_plots = len(ydata)
+    plot_params.num_plots = len(plot_data)
+
+    default_legend_label = plot_data.getkeys('y') if plot_data.distinct_datasets('y') != 1 else plot_data.getkeys('x')
+    plot_params.set_defaults(default_type='function', name='scatter plot', legend_label=default_legend_label)
 
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
     p = plot_params.prepare_figure(title, xlabel, ylabel, figure=figure)
@@ -165,58 +173,11 @@ def bokeh_multi_scatter(source,
     #Process the given color arguments
     plot_params.set_color_palette_by_num_plots()
 
-    # prepare ColumnDataSource for plot
-    if source is None:  # create columndatasources from data given
-        # Columns need to have same length
-        source = []
-        if isinstance(ydata[0], list):
-            ydatad = []
-            xdatad = []
-            for i, ydat in enumerate(ydata):
-                label = f'y{i}'
-                ydatad.append(label)
-                xdatad.append(f'x{i}')
-                if isinstance(xdata[0], list):
-                    xdat = xdata[i]
-                else:
-                    xdat = xdata[0]
-                source.append(ColumnDataSource({'x': xdat, 'y': ydata}))
-        else:
-            raise ValueError('If no source dataframe or ColumnData is given, ydata has to be a list'
-                             ' of lists, not of type: {}'.format(type(ydata[0])))
-    else:
-        xdatad = xdata
-        ydatad = ydata
-
-    # draw line plot
-    # dataframe and column data source expect all entries to be same length...
-    # therefore we parse data to plot routines directly... might make other things harder
-
     plot_kwargs = plot_params.plot_kwargs(plot_type='scatter')
 
-    for indx, data in enumerate(zip(ydatad, plot_kwargs)):
+    for indx, ((entry, source), plot_kw) in enumerate(zip(plot_data.items(), plot_kwargs)):
 
-        yname, plot_kw = data
-
-        if isinstance(xdatad, list):
-            xdat = xdatad[indx]
-        else:
-            xdat = xdatad
-
-        if isinstance(source, list):
-            sourcet = source[indx]
-        else:
-            sourcet = source
-
-        if isinstance(default_legend_label, list):
-            leg_label = default_legend_label[indx]
-        else:
-            leg_label = default_legend_label
-
-        if 'legend_label' not in plot_kw:
-            plot_kw['legend_label'] = leg_label
-
-        res = p.scatter(x=xdat, y=yname, source=sourcet, **plot_kw)
+        res = p.scatter(x=entry.x, y=entry.y, source=source, **plot_kw, **kwargs)
 
         if plot_params[('level', indx)] is not None:
             res.level = plot_params[('level', indx)]

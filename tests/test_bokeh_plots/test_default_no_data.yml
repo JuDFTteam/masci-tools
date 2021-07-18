@@ -1,0 +1,474 @@
+roots:
+  references:
+  - attributes: {}
+    type: BasicTickFormatter
+  - attributes: {}
+    type: BasicTickFormatter
+  - attributes: {}
+    type: BasicTicker
+  - attributes: {}
+    type: BasicTicker
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      callback: null
+      data:
+        x:
+          __ndarray__: AAAAAAAAJMBDYt7OkJgjwIbEvJ0hMSPAyiabbLLJIsANiXk7Q2IiwFDrVwrU+iHAk0022WSTIcDXrxSo9SshwBoS83aGxCDAXXTRRRddIMBArV8pUOsfwMdxHMdxHB/ATjbZZJNNHsDU+pUCtX4dwFq/UqDWrxzA4YMPPvjgG8BoSMzbGRIbwO4MiXk7QxrAdNFFF110GcD7lQK1fqUYwIFav1Kg1hfACB988MEHF8CO4ziO4zgWwBWo9SsFahXAm2yyySabFMAiMW9nSMwTwKj1KwVq/RLAL7rooosuEsC1fqVArV8RwDxDYt7OkBDAhA8++OCDD8CSmLczJOYNwJ4hMW9nSAzAqqqqqqqqCsC4MyTm7QwJwMS8nSExbwfA0kUXXXTRBcDezpCYtzMEwOxXCtT6lQLA+OCDDz74AMAI1PqVArX+vyjm7QyJefu/QPjggw8++L9YCtT6lQL1v3Acx3Ecx/G/IF100UUX7b9QgVq/UqDmv4ClQK1fKeC/YJNNNtlk078Ab2dIzNu5vwBvZ0jM27k/YJNNNtlk0z+ApUCtXyngP1CBWr9SoOY/EF100UUX7T9wHMdxHMfxP1gK1PqVAvU/QPjggw8++D8g5u0MiXn7PwjU+pUCtf4/+OCDDz74AEDsVwrU+pUCQNzOkJi3MwRA0EUXXXTRBUDEvJ0hMW8HQLgzJObtDAlArKqqqqqqCkCcITFvZ0gMQJCYtzMk5g1AhA8++OCDD0A8Q2LezpAQQLR+pUCtXxFALrrooosuEkCo9SsFav0SQCIxb2dIzBNAmmyyySabFEAUqPUrBWoVQI7jOI7jOBZACB988MEHF0CAWr9SoNYXQPyVArV+pRhAdNFFF110GUDsDIl5O0MaQGhIzNsZEhtA4IMPPvjgG0Bcv1Kg1q8cQNT6lQK1fh1ATDbZZJNNHkDIcRzHcRwfQECtXylQ6x9AXHTRRRddIEAaEvN2hsQgQNavFKj1KyFAlE022WSTIUBQ61cK1PohQAyJeTtDYiJAyiabbLLJIkCGxLydITEjQERi3s6QmCNAAAAAAAAAJEA=
+          dtype: float64
+          shape:
+          - 100
+        y:
+          __ndarray__: 8itMYHgzO0C4wGQh3ToyQBKjFgDhCCFAT17yyryq+L8BXMo6dRMnwImYZ/ClEDXAwndfszq8PcBub9XVGJlCwE5bML1tkkXAZowRwCSrR8B4Bx9dac1IwOjcPC9t7UjACawF3OIJSMDTkM6iCyxGwEvJCP9WZ0PAyGnPkjCxP8CYnOwltUk3wAkDXL173yvA8vXZ8qYSEMBIITsaBUEYQHmi4hYTzC9AjH2p10YWOUA42ndSpqBAQIUR0ikHCURAxyhYXsqgRkAg6dmO8ExIQCzSwKgP/EhABptsOwinSECiPaOiT1FHQLKg1QPMCEVASUIulUPlQUDCsaYiyg48QBqt3tLmLjNAFY6VM4oOI0CnB1QNa3LgvzHraYojEiXA3+lGJ90gNMCnDPy1Euc8wHlGpvkqQELAF3lm+8NORcA/Xjqif39HwMLygFaPu0jAfePoIBj2SMCqVGOFuCxIwBXZWk2hZ0bAfhcPP0C5Q8Di7xc6gD1AwBTYLQ5NMTjAc8F1tWTXLcClxY1X7SoUwKXFjVftKhRAc8F1tWTXLUAU2C0OTTE4QOLvFzqAPUBAdxcPP0C5Q0AV2VpNoWdGQKpUY4W4LEhAfePoIBj2SEDE8oBWj7tIQD9eOqJ/f0dAF3lm+8NORUB5Rqb5KkBCQLEM/LUS5zxA6ulGJ90gNEAx62mKIxIlQKcHVA1rcuA/LY6VM4oOI8APrd7S5i4zwLmxpiLKDjzASUIulUPlQcCyoNUDzAhFwJ89o6JPUUfABZtsOwinSMAs0sCoD/xIwCDp2Y7wTEjAyihYXsqgRsCJEdIpBwlEwDjad1KmoEDAjH2p10YWOcCRouIWE8wvwBchOxoFQRjA8vXZ8qYSEEDZAly9e98rQJic7CW1STdAv2nPkjCxP0BTyQj/VmdDQNOQzqILLEZABqwF3OIJSEDp3Dwvbe1IQHgHH11pzUhAaowRwCSrR0BOWzC9bZJFQHZv1dUYmUJArndfszq8PUCJmGfwpRA1QDJcyjp1EydAT17yyryq+D8SoxYA4QghwNDAZCHdOjLA8itMYHgzO8A=
+          dtype: float64
+          shape:
+          - 100
+      selected:
+        type: Selection
+      selection_policy:
+        type: UnionRenderers
+    type: ColumnDataSource
+  - attributes:
+      callback: null
+      data:
+        x:
+          __ndarray__: AAAAAAAAJMBDYt7OkJgjwIbEvJ0hMSPAyiabbLLJIsANiXk7Q2IiwFDrVwrU+iHAk0022WSTIcDXrxSo9SshwBoS83aGxCDAXXTRRRddIMBArV8pUOsfwMdxHMdxHB/ATjbZZJNNHsDU+pUCtX4dwFq/UqDWrxzA4YMPPvjgG8BoSMzbGRIbwO4MiXk7QxrAdNFFF110GcD7lQK1fqUYwIFav1Kg1hfACB988MEHF8CO4ziO4zgWwBWo9SsFahXAm2yyySabFMAiMW9nSMwTwKj1KwVq/RLAL7rooosuEsC1fqVArV8RwDxDYt7OkBDAhA8++OCDD8CSmLczJOYNwJ4hMW9nSAzAqqqqqqqqCsC4MyTm7QwJwMS8nSExbwfA0kUXXXTRBcDezpCYtzMEwOxXCtT6lQLA+OCDDz74AMAI1PqVArX+vyjm7QyJefu/QPjggw8++L9YCtT6lQL1v3Acx3Ecx/G/IF100UUX7b9QgVq/UqDmv4ClQK1fKeC/YJNNNtlk078Ab2dIzNu5vwBvZ0jM27k/YJNNNtlk0z+ApUCtXyngP1CBWr9SoOY/EF100UUX7T9wHMdxHMfxP1gK1PqVAvU/QPjggw8++D8g5u0MiXn7PwjU+pUCtf4/+OCDDz74AEDsVwrU+pUCQNzOkJi3MwRA0EUXXXTRBUDEvJ0hMW8HQLgzJObtDAlArKqqqqqqCkCcITFvZ0gMQJCYtzMk5g1AhA8++OCDD0A8Q2LezpAQQLR+pUCtXxFALrrooosuEkCo9SsFav0SQCIxb2dIzBNAmmyyySabFEAUqPUrBWoVQI7jOI7jOBZACB988MEHF0CAWr9SoNYXQPyVArV+pRhAdNFFF110GUDsDIl5O0MaQGhIzNsZEhtA4IMPPvjgG0Bcv1Kg1q8cQNT6lQK1fh1ATDbZZJNNHkDIcRzHcRwfQECtXylQ6x9AXHTRRRddIEAaEvN2hsQgQNavFKj1KyFAlE022WSTIUBQ61cK1PohQAyJeTtDYiJAyiabbLLJIkCGxLydITEjQERi3s6QmCNAAAAAAAAAJEA=
+          dtype: float64
+          shape:
+          - 100
+        y:
+          __ndarray__: AAAAAAAANMCo9SsFav0ywFDrVwrU+jHA+OCDDz74MMBArV8pUOsvwJCYtzMk5i3A4IMPPvjgK8A0b2dIzNspwIBav1Kg1ifA0EUXXXTRJcAgMW9nSMwjwHAcx3EcxyHAiA8++OCDH8Ag5u0MiXkbwMC8nSExbxfAaJNNNtlkE8AQ1PqVArUOwFCBWr9SoAbAEF100UUX/b9Ab2dIzNvpv4BvZ0jM28k/YJNNNtlk8z9wHMdxHMcBQDBvZ0jM2wlA+OCDDz74EEBYCtT6lQIVQLgzJObtDBlAFF100UUXHUA8Q2LezpAgQOpXCtT6lSJAnGyyySabJEBKgVq/UqAmQPqVArV+pShArKqqqqqqKkBav1Kg1q8sQAvU+pUCtS5AXXTRRRddMEC1fqVArV8xQAyJeTtDYjJAZZNNNtlkM0C+nSExb2c0QBSo9SsFajVAbLLJJptsNkDEvJ0hMW83QB3HcRzHcThAc9FFF110OUDM2xkS83Y6QCTm7QyJeTtAfPDBBx98PEDV+pUCtX49QCsFav1KgT5AhA8++OCDP0DuDIl5O0NAQBoS83aGxEBARRdddNFFQUByHMdxHMdBQJ4hMW9nSEJAyiabbLLJQkD1KwVq/UpDQCExb2dIzENATjbZZJNNREB6O0Ni3s5EQKVArV8pUEVA0UUXXXTRRUD9SoFav1JGQCpQ61cK1EZAVlVVVVVVR0CBWr9SoNZHQK1fKVDrV0hA2WSTTTbZSEAGav1KgVpJQDBvZ0jM20lAXXTRRRddSkCJeTtDYt5KQLV+pUCtX0tA4IMPPvjgS0AMiXk7Q2JMQDmO4ziO40xAZZNNNtlkTUCQmLczJOZNQL6dITFvZ05A6KKLLrroTkAUqPUrBWpPQEGtXylQ609ANtlkk002UEDN2xkS83ZQQGLezpCYt1BA+OCDDz74UECO4ziO4zhRQCTm7QyJeVFAuuiiiy66UUBQ61cK1PpRQObtDIl5O1JAfPDBBx98UkAS83aGxLxSQKj1KwVq/VJAPvjggw8+U0DU+pUCtX5TQGr9SoFav1NAAAAAAAAAVEA=
+          dtype: float64
+          shape:
+          - 100
+      selected:
+        type: Selection
+      selection_policy:
+        type: UnionRenderers
+    type: ColumnDataSource
+  - attributes:
+      callback: null
+      data:
+        x:
+          __ndarray__: AAAAAAAAJMBDYt7OkJgjwIbEvJ0hMSPAyiabbLLJIsANiXk7Q2IiwFDrVwrU+iHAk0022WSTIcDXrxSo9SshwBoS83aGxCDAXXTRRRddIMBArV8pUOsfwMdxHMdxHB/ATjbZZJNNHsDU+pUCtX4dwFq/UqDWrxzA4YMPPvjgG8BoSMzbGRIbwO4MiXk7QxrAdNFFF110GcD7lQK1fqUYwIFav1Kg1hfACB988MEHF8CO4ziO4zgWwBWo9SsFahXAm2yyySabFMAiMW9nSMwTwKj1KwVq/RLAL7rooosuEsC1fqVArV8RwDxDYt7OkBDAhA8++OCDD8CSmLczJOYNwJ4hMW9nSAzAqqqqqqqqCsC4MyTm7QwJwMS8nSExbwfA0kUXXXTRBcDezpCYtzMEwOxXCtT6lQLA+OCDDz74AMAI1PqVArX+vyjm7QyJefu/QPjggw8++L9YCtT6lQL1v3Acx3Ecx/G/IF100UUX7b9QgVq/UqDmv4ClQK1fKeC/YJNNNtlk078Ab2dIzNu5vwBvZ0jM27k/YJNNNtlk0z+ApUCtXyngP1CBWr9SoOY/EF100UUX7T9wHMdxHMfxP1gK1PqVAvU/QPjggw8++D8g5u0MiXn7PwjU+pUCtf4/+OCDDz74AEDsVwrU+pUCQNzOkJi3MwRA0EUXXXTRBUDEvJ0hMW8HQLgzJObtDAlArKqqqqqqCkCcITFvZ0gMQJCYtzMk5g1AhA8++OCDD0A8Q2LezpAQQLR+pUCtXxFALrrooosuEkCo9SsFav0SQCIxb2dIzBNAmmyyySabFEAUqPUrBWoVQI7jOI7jOBZACB988MEHF0CAWr9SoNYXQPyVArV+pRhAdNFFF110GUDsDIl5O0MaQGhIzNsZEhtA4IMPPvjgG0Bcv1Kg1q8cQNT6lQK1fh1ATDbZZJNNHkDIcRzHcRwfQECtXylQ6x9AXHTRRRddIEAaEvN2hsQgQNavFKj1KyFAlE022WSTIUBQ61cK1PohQAyJeTtDYiJAyiabbLLJIkCGxLydITEjQERi3s6QmCNAAAAAAAAAJEA=
+          dtype: float64
+          shape:
+          - 100
+        y:
+          __ndarray__: AAAAAAAAWUDAQMmvBgBYQLAXzbRGBVdA0oQLD8APVkAjiIS+ch9VQKQhOMNeNFRAVVEmHYROU0A5F0/M4m1SQEtzstB6klFAjmVQKky8UEAA3FGyrdZPQEgZeLo1P05A8YITbTCyTED4GCTKnS9LQGDbqdF9t0lAK8qkg9BJSEBW5RTgleZGQOAs+ubNjUVAy6BUmHg/REAXQST0lftCQMMNafolwkFA0gYjqyiTQEB+WKQMPN0+QB387BcMqTxAevgfeMGJOkCbTT0tXH84QHv7RDfciTZAHwI3lkGpNECBYRNKjN0yQKcZ2lK8JjFAGVUWYaMJL0BqKE3GmO8rQDqtWNVY/yhAjeM4juM4JkBmy+3wOJwjQL5kd/1YKSFANl+rZ4fAHUDxVxEo8oEZQLazIDzylhVAe3LZo4f/EUCMKHe+ZHcNQDoyjtzklgdA5AH4oY9dAkAzL2kdypb7P7Pmh0XKwPM/sVSYeD9y6j8G6NcGKv/fPwRXFVcqU9A/Z9mjh/+Btz/6wFjqVOWEP/rAWOpU5YQ/Z9mjh/+Btz8EVxVXKlPQPwbo1wYq/98/lFSYeD9y6j+z5odFysDzPzMvaR3Klvs/5AH4oY9dAkAtMo7c5JYHQIwod75kdw1Ae3LZo4f/EUC2syA88pYVQOxXESjygRlAMV+rZ4fAHUC+ZHf9WCkhQGbL7fA4nCNAkOM4juM4JkA3rVjVWP8oQGcoTcaY7ytAGVUWYaMJL0CnGdpSvCYxQH9hE0qM3TJAHAI3lkGpNEB7+0Q33Ik2QJtNPS1cfzhAd/gfeMGJOkAa/OwXDKk8QH5YpAw83T5A0gYjqyiTQEDCDWn6JcJBQBlBJPSV+0JAy6BUmHg/REDdLPrmzY1FQFblFOCV5kZAKcqkg9BJSEBk26nRfbdJQPgYJMqdL0tA7YITbTCyTEBKGXi6NT9OQADcUbKt1k9AjGVQKky8UEBLc7LQepJRQDcXT8zibVJAWFEmHYROU0CkITjDXjRUQCGIhL5yH1VA0oQLD8APVkCwF820RgVXQMJAya8GAFhAAAAAAAAAWUA=
+          dtype: float64
+          shape:
+          - 100
+      selected:
+        type: Selection
+      selection_policy:
+        type: UnionRenderers
+    type: ColumnDataSource
+  - attributes:
+      callback: null
+      data:
+        x:
+          __ndarray__: AAAAAAAAJMBDYt7OkJgjwIbEvJ0hMSPAyiabbLLJIsANiXk7Q2IiwFDrVwrU+iHAk0022WSTIcDXrxSo9SshwBoS83aGxCDAXXTRRRddIMBArV8pUOsfwMdxHMdxHB/ATjbZZJNNHsDU+pUCtX4dwFq/UqDWrxzA4YMPPvjgG8BoSMzbGRIbwO4MiXk7QxrAdNFFF110GcD7lQK1fqUYwIFav1Kg1hfACB988MEHF8CO4ziO4zgWwBWo9SsFahXAm2yyySabFMAiMW9nSMwTwKj1KwVq/RLAL7rooosuEsC1fqVArV8RwDxDYt7OkBDAhA8++OCDD8CSmLczJOYNwJ4hMW9nSAzAqqqqqqqqCsC4MyTm7QwJwMS8nSExbwfA0kUXXXTRBcDezpCYtzMEwOxXCtT6lQLA+OCDDz74AMAI1PqVArX+vyjm7QyJefu/QPjggw8++L9YCtT6lQL1v3Acx3Ecx/G/IF100UUX7b9QgVq/UqDmv4ClQK1fKeC/YJNNNtlk078Ab2dIzNu5vwBvZ0jM27k/YJNNNtlk0z+ApUCtXyngP1CBWr9SoOY/EF100UUX7T9wHMdxHMfxP1gK1PqVAvU/QPjggw8++D8g5u0MiXn7PwjU+pUCtf4/+OCDDz74AEDsVwrU+pUCQNzOkJi3MwRA0EUXXXTRBUDEvJ0hMW8HQLgzJObtDAlArKqqqqqqCkCcITFvZ0gMQJCYtzMk5g1AhA8++OCDD0A8Q2LezpAQQLR+pUCtXxFALrrooosuEkCo9SsFav0SQCIxb2dIzBNAmmyyySabFEAUqPUrBWoVQI7jOI7jOBZACB988MEHF0CAWr9SoNYXQPyVArV+pRhAdNFFF110GUDsDIl5O0MaQGhIzNsZEhtA4IMPPvjgG0Bcv1Kg1q8cQNT6lQK1fh1ATDbZZJNNHkDIcRzHcRwfQECtXylQ6x9AXHTRRRddIEAaEvN2hsQgQNavFKj1KyFAlE022WSTIUBQ61cK1PohQAyJeTtDYiJAyiabbLLJIkCGxLydITEjQERi3s6QmCNAAAAAAAAAJEA=
+          dtype: float64
+          shape:
+          - 100
+        y:
+          __ndarray__: sLMRyw76RMDejTNNdEdHwEs9WWt1okjAdN4K/fT8SMBghaGzRFNIwCUb/G1LrEbA148VWz0ZRMAFIMbX6LRAwIm7zqE+RTnAEFpGCIsZMMBibYek0BgZwDpR+Im5cw5ANiAM/P92K0C/r57mixk3QEa4Qm4Rhz9AEMN8xSdWQ0CktZmwbx9GQEbm6XtdAkhAp44PsUzrSECBaV7mw9BIQJ19S2XXs0dAX7eb7R2gRUDs+VMKOKtCQPVAu8Hd5z1A9A5QRudBNUDrxRm6Mn0nQF4HyUcXEPw/MfXEYrOdIMBpR/kpMwgywNqd9sjKBTvAz08gsgF1QcCgmcHJWLFEwB0V7qI5FkfAlS93sLaKSMC1W+Nvqf9IwBw8IipQcEjA1qLren/iRsD0WhKbZWZEwCBU7eXhFUHAi7U66O4mOsCSs32ByxExwGW1R7avKx3Af0c5shY/BkBqEU9HenspQP7f5dHsLjZAUoq1GSG5PkAyQqAktwFDQKIEv9L14EVAJEIO6GTcR0C8FQTGYN9IQLwVBMZg30hAJEIO6GTcR0CiBL/S9eBFQDJCoCS3AUNAZ4q1GSG5PkD+3+XR7C42QGoRT0d6eylAf0c5shY/BkACtUe2rysdwJKzfYHLETHAi7U66O4mOsAgVO3l4RVBwPBaEptlZkTA06Lren/iRsAcPCIqUHBIwLVb42+p/0jAlC93sLaKSMAfFe6iORZHwKSZwclYsUTAz08gsgF1QcDanfbIygU7wHVH+SkzCDLASfXEYrOdIMBeB8lHFxD8P+vFGboyfSdA6Q5QRudBNUDqQLvB3ec9QOz5Uwo4q0JAX7eb7R2gRUCbfUtl17NHQIJpXubD0EhAp44PsUzrSEBK5ul7XQJIQKS1mbBvH0ZAFMN8xSdWQ0AzuEJuEYc/QL+vnuaLGTdAZSAM/P92K0DXUPiJuXMOQGJth6TQGBnA+FlGCIsZMMCJu86hPkU5wP0fxtfotEDA3o8VWz0ZRMAlG/xtS6xGwFyFobNEU0jAdN4K/fT8SMBLPVlrdaJIwNqNM010R0fAsLMRyw76RMA=
+          dtype: float64
+          shape:
+          - 100
+      selected:
+        type: Selection
+      selection_policy:
+        type: UnionRenderers
+    type: ColumnDataSource
+  - attributes:
+      callback: null
+      data:
+        x:
+          __ndarray__: AAAAAAAAJMBlk0022WQjwMomm2yyySLALrrooosuIsCTTTbZZJMhwPjggw8++CDAXXTRRRddIMCEDz744IMfwE422WSTTR7AF1100UUXHcDhgw8++OAbwKqqqqqqqhrAdNFFF110GcA++OCDDz4YwAgffPDBBxfA0UUXXXTRFcCbbLLJJpsUwGWTTTbZZBPALrrooosuEsD44IMPPvgQwIQPPvjggw/AFl100UUXDcCqqqqqqqoKwD744IMPPgjA0EUXXXTRBcBkk0022WQDwPjggw8++ADAGF100UUX/b9A+OCDDz74v2CTTTbZZPO/EF100UUX7b9gk0022WTjv2CTTTbZZNO/AAAAAAAAAABgk0022WTTP2CTTTbZZOM/IF100UUX7T9ok0022WTzP0D44IMPPvg/GF100UUX/T/44IMPPvgAQGSTTTbZZANA1EUXXXTRBUBA+OCDDz4IQKyqqqqqqgpAGF100UUXDUCEDz744IMPQPjggw8++BBAMLrooosuEkBmk0022WQTQJxssskmmxRA0kUXXXTRFUAIH3zwwQcXQED44IMPPhhAdNFFF110GUCsqqqqqqoaQOCDDz744BtAGF100UUXHUBQNtlkk00eQIQPPvjggx9AXnTRRRddIED44IMPPvggQJRNNtlkkyFALrrooosuIkDKJptssskiQGaTTTbZZCNAAAAAAAAAJECcbLLJJpskQDbZZJNNNiVA0kUXXXTRJUBssskmm2wmQAgffPDBBydApIsuuuiiJ0A++OCDDz4oQNpkk0022ShAdNFFF110KUAQPvjggw8qQKyqqqqqqipARhdddNFFK0Digw8++OArQHzwwQcffCxAGF100UUXLUCyySabbLItQE422WSTTS5A6qKLLrroLkCEDz744IMvQBA++OCDDzBAXXTRRRddMECrqqqqqqowQPjggw8++DBARhdddNFFMUCUTTbZZJMxQOGDDz744DFAL7rooosuMkB88MEHH3wyQMomm2yyyTJAGF100UUXM0Blk0022WQzQLPJJptssjNAAAAAAAAANEA=
+          dtype: float64
+          shape:
+          - 100
+        y:
+          __ndarray__: AAAAAAAAVEAffPDBB59TQD744IMPPlNAXXTRRRfdUkB88MEHH3xSQJtssskmG1JAuuiiiy66UUDZZJNNNllRQPjggw8++FBAF1100UWXUEA22WSTTTZQQKqqqqqqqk9A6KKLLrroTkAnm2yyySZOQGWTTTbZZE1AoosuuuiiTEDhgw8++OBLQB988MEHH0tAXXTRRRddSkCbbLLJJptJQNlkk0022UhAF1100UUXSEBVVVVVVVVHQJRNNtlkk0ZA0UUXXXTRRUAPPvjggw9FQE422WSTTURAjC666KKLQ0DKJptssslCQAcffPDBB0JARRdddNFFQUCEDz744INAQIQPPvjggz9AAAAAAAAAPkB88MEHH3w8QPnggw8++DpAc9FFF110OUDwwQcffPA3QGyyySabbDZA6KKLLrroNEBlk0022WQzQOKDDz744DFAXHTRRRddMECwySabbLItQKiqqqqqqipAoosuuuiiJ0CcbLLJJpskQJRNNtlkkyFAEF100UUXHUAAH3zwwQcXQPTggw8++BBA0EUXXXTRBUBgk0022WTzPwCUTTbZZNO/EF100UUX/b/AqqqqqqoKwGCTTTbZZBPAeNFFF110GcCQDz744IMfwMgmm2yyySLA2EUXXXTRJcDYZJNNNtkowOSDDz744CvA6KKLLrroLsD44IMPPvgwwIDwwQcffDLAAAAAAAAANMCGDz744IM1wAgffPDBBzfAjC666KKLOMAOPvjggw86wJRNNtlkkzvAGl100UUXPcCcbLLJJps+wBA++OCDD0DA0UUXXXTRQMCUTTbZZJNBwFhVVVVVVULAGF100UUXQ8DaZJNNNtlDwJxssskmm0TAXnTRRRddRcAefPDBBx9GwOKDDz744EbApIsuuuiiR8Bkk0022WRIwCibbLLJJknA6KKLLrroScCsqqqqqqpKwGyyySabbEvAMLrooosuTMDywQcffPBMwLLJJptssk3AdtFFF110TsA22WSTTTZPwPjggw8++E/AXnTRRRddUMA++OCDD75QwCB88MEHH1HAAAAAAACAUcA=
+          dtype: float64
+          shape:
+          - 100
+      selected:
+        type: Selection
+      selection_policy:
+        type: UnionRenderers
+    type: ColumnDataSource
+  - attributes:
+      callback: null
+    type: DataRange1d
+  - attributes:
+      callback: null
+    type: DataRange1d
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Scatter
+      hover_glyph: null
+      muted_glyph: null
+      name: scatter plot
+      nonselection_glyph:
+        type: Scatter
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Scatter
+      hover_glyph: null
+      muted_glyph: null
+      name: scatter plot
+      nonselection_glyph:
+        type: Scatter
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Scatter
+      hover_glyph: null
+      muted_glyph: null
+      name: scatter plot
+      nonselection_glyph:
+        type: Scatter
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Scatter
+      hover_glyph: null
+      muted_glyph: null
+      name: scatter plot
+      nonselection_glyph:
+        type: Scatter
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Scatter
+      hover_glyph: null
+      muted_glyph: null
+      name: scatter plot
+      nonselection_glyph:
+        type: Scatter
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      ticker:
+        type: BasicTicker
+    type: Grid
+  - attributes:
+      dimension: 1
+      ticker:
+        type: BasicTicker
+    type: Grid
+  - attributes:
+      callback: null
+      tooltips:
+      - - X value
+        - '@x'
+      - - Y value
+        - '@y'
+    type: HoverTool
+  - attributes:
+      click_policy: hide
+      items:
+      - type: LegendItem
+      label_text_font_size:
+        value: 14pt
+    type: Legend
+  - attributes:
+      label:
+        value: x
+      renderers:
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+    type: LegendItem
+  - attributes:
+      axis_label: x
+      axis_label_text_font_size:
+        value: 18pt
+      axis_line_width:
+        value: 2
+      formatter:
+        type: BasicTickFormatter
+      major_label_text_font_size:
+        value: 16pt
+      ticker:
+        type: BasicTicker
+    type: LinearAxis
+  - attributes:
+      axis_label: y
+      axis_label_text_font_size:
+        value: 18pt
+      axis_line_width:
+        value: 2
+      formatter:
+        type: BasicTickFormatter
+      major_label_text_font_size:
+        value: 16pt
+      ticker:
+        type: BasicTicker
+    type: LinearAxis
+  - attributes: {}
+    type: LinearScale
+  - attributes: {}
+    type: LinearScale
+  - attributes:
+      below:
+      - type: LinearAxis
+      center:
+      - type: Grid
+      - type: Grid
+      - type: Legend
+      left:
+      - type: LinearAxis
+      renderers:
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      title:
+        type: Title
+      toolbar:
+        type: Toolbar
+      toolbar_location: null
+      x_range:
+        type: DataRange1d
+      x_scale:
+        type: LinearScale
+      y_range:
+        type: DataRange1d
+      y_scale:
+        type: LinearScale
+    subtype: Figure
+    type: Plot
+  - attributes:
+      fill_color:
+        value: '#1f77b4'
+      line_color:
+        value: '#1f77b4'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#2ca02c'
+      line_color:
+        value: '#2ca02c'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#9467bd'
+      line_color:
+        value: '#9467bd'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#d62728'
+      line_color:
+        value: '#d62728'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#ff7f0e'
+      line_color:
+        value: '#ff7f0e'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_alpha:
+        value: 0.1
+      fill_color:
+        value: '#1f77b4'
+      line_alpha:
+        value: 0.1
+      line_color:
+        value: '#1f77b4'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_alpha:
+        value: 0.1
+      fill_color:
+        value: '#1f77b4'
+      line_alpha:
+        value: 0.1
+      line_color:
+        value: '#1f77b4'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_alpha:
+        value: 0.1
+      fill_color:
+        value: '#1f77b4'
+      line_alpha:
+        value: 0.1
+      line_color:
+        value: '#1f77b4'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_alpha:
+        value: 0.1
+      fill_color:
+        value: '#1f77b4'
+      line_alpha:
+        value: 0.1
+      line_color:
+        value: '#1f77b4'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_alpha:
+        value: 0.1
+      fill_color:
+        value: '#1f77b4'
+      line_alpha:
+        value: 0.1
+      line_color:
+        value: '#1f77b4'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes:
+      text: ''
+    type: Title
+  - attributes:
+      active_drag: auto
+      active_inspect: auto
+      active_multi: null
+      active_scroll: auto
+      active_tap: auto
+      tools:
+      - type: HoverTool
+    type: Toolbar
+  - attributes: {}
+    type: UnionRenderers
+  - attributes: {}
+    type: UnionRenderers
+  - attributes: {}
+    type: UnionRenderers
+  - attributes: {}
+    type: UnionRenderers
+  - attributes: {}
+    type: UnionRenderers
+title: Bokeh Application
+version: 1.4.0

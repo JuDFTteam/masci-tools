@@ -134,7 +134,8 @@ def fixture_clean_bokeh_json():
                 contained_keys = contained_keys.union(get_contained_keys(data))
             contained_keys.discard('type')
 
-            return sorted(list_of_dicts, key=lambda x: (x['type'], *tuple(get_normalized_order(x, sorted(contained_keys)))))
+            return sorted(list_of_dicts,
+                          key=lambda x: (x['type'], *tuple(get_normalized_order(x, sorted(contained_keys)))))
 
         for key, val in list(data.items()):
             if key in ('id', 'root_ids'):

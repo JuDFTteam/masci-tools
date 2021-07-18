@@ -410,6 +410,25 @@ class PlotData:
             else:
                 source[new_key] = copy.copy(source[key])
 
+    def distinct_datasets(self,data_key):
+
+        if data_key not in self._column_spec._fields:
+            raise ValueError(f'Field {data_key} does not exist')
+
+        data_sets = []
+        for entry, source in self.items():
+            key = entry._asdict()[data_key]
+
+            normed_set = source[key]
+            if isinstance(source[key], pd.Series):
+                normed_set = source[key].to_numpy()
+
+            if all(not np.array_equal(normed_set, prev) for prev in data_sets):
+                data_sets.append(normed_set)
+
+        return len(data_sets)
+
+
     def __len__(self):
         return len(self.masked_columns)
 
@@ -511,25 +530,26 @@ def normalize_list_or_array(data, key, out_data, flatten_np=False, forbid_split_
                     raise ValueError(
                         f"Mismatch of dimensions: Got two different dimensions 'key' {len(data)} 'previous' {len(out_data)}"
                     )
-                for entry, new_data in zip(out_data, data):
-                    entry[key] = new_data
+                for indx, (entry, new_data) in enumerate(zip(out_data, data)):
+                    entry[f'{key}_{indx}'] = new_data
             else:
                 new_list = []
-                for new_data in data:
-                    new_list.append(out_data.copy())
-                    new_list[-1][key] = new_data
+                for indx,new_data in enumerate(data):
+                    old_data = out_data.copy()
+                    new_list.append({f'{key}_{indx}': val for key, val in old_data.items()})
+                    new_list[-1][f'{key}_{indx}'] = new_data
                 out_data = new_list
 
             return out_data
         elif isinstance(out_data, list):
             if len(out_data) == len(data):
                 for entry, new_data in zip(out_data, data):
-                    entry[key] = new_data
+                    entry[f'{key}_{indx}'] = new_data
                 return out_data
 
     if isinstance(out_data, list):
         for entry in out_data:
-            entry[key] = data
+            entry[f'{key}_{indx}'] = data
     else:
         out_data[key] = data
 
@@ -584,15 +604,19 @@ def process_data_arguments(data=None,
         keys = {}
 
         for key, val in kwargs.items():
-            if val is not None:
-                keys[key] = key
-            else:
-                keys[key] = None
             data = normalize_list_or_array(val,
                                            key,
                                            data,
                                            flatten_np=flatten_np,
                                            forbid_split_up=key in forbid_split_up)
+        for key in kwargs.keys():
+            if val is not None:
+                if isinstance(data, list):
+                    keys[key] = [f'{key}_{indx}' for indx in range(len(data))]
+                else:
+                    keys[key] = key
+            else:
+                keys[key] = None
     else:
         keys = kwargs
 
