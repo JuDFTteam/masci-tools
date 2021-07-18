@@ -111,7 +111,7 @@ def bokeh_scatter(x,
     p = plot_params.prepare_figure(title, xlabel, ylabel, figure=figure)
 
     plot_kwargs = plot_params.plot_kwargs(plot_type='scatter')
-    entry, source = plot_data.getfirstitem()
+    entry, source = plot_data.items(first=True)
     res = p.scatter(x=entry.x, y=entry.y, source=source, **plot_kwargs, **kwargs)
 
     if plot_params['level'] is not None:
@@ -165,9 +165,9 @@ def bokeh_multi_scatter(x,
     plot_params.num_plots = len(plot_data)
 
     if plot_data.distinct_datasets('x') == 1:
-        default_legend_label = plot_data.getkeys('y')
+        default_legend_label = plot_data.get_keys('y')
     else:
-        default_legend_label = plot_data.getkeys('x')
+        default_legend_label = plot_data.get_keys('x')
 
     plot_params.set_defaults(default_type='function', name='scatter plot', legend_label=default_legend_label)
 
@@ -238,9 +238,9 @@ def bokeh_line(x,
     plot_params.num_plots = len(plot_data)
 
     if plot_data.distinct_datasets('x') == 1:
-        default_legend_label = plot_data.getkeys('y')
+        default_legend_label = plot_data.get_keys('y')
     else:
-        default_legend_label = plot_data.getkeys('x')
+        default_legend_label = plot_data.get_keys('x')
 
     plot_params.set_defaults(default_type='function', name='line plot', legend_label=default_legend_label)
 

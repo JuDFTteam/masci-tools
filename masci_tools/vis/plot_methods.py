@@ -175,7 +175,7 @@ def single_scatterplot(xdata,
     # TODO customizable error bars fmt='o', ecolor='g', capthick=2, ...
     # there the if is prob better...
     plot_kwargs = plot_params.plot_kwargs()
-    entry, source = plot_data.getfirst()
+    entry, source = plot_data.items(first=True)
 
     if plot_params['area_plot']:
         linecolor = plot_kwargs.pop('area_linecolor', None)
@@ -518,7 +518,7 @@ def colormesh_plot(xdata,
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
     plot_kwargs = plot_params.plot_kwargs(plot_type='colormesh')
-    entry, source = plot_data.getfirst()
+    entry, source = plot_data.items(first=True)
 
     ax.pcolormesh(entry.x, entry.y, entry.color, data=source, **plot_kwargs, **kwargs)
 
@@ -583,7 +583,7 @@ def waterfall_plot(xdata,
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, zlabel=zlabel, axis=axis, projection='3d')
 
     plot_kw = plot_params.plot_kwargs(ignore=['markersize'], extra_keys={'cmap'})
-    data = plot_data.getfirstvalue()
+    data = plot_data.values(first=True)
 
     ax.scatter(data.x, data.y, data.z, c=data.z, s=plot_params['markersize'], **plot_kw, **kwargs)
 
@@ -647,7 +647,7 @@ def surface_plot(xdata,
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, zlabel=zlabel, axis=axis, projection='3d')
 
     plot_kwargs = plot_params.plot_kwargs(ignore=['markersize', 'marker'], extra_keys={'cmap'})
-    data = plot_data.getfirstvalue()
+    data = plot_data.values(first=True)
 
     ax.plot_surface(data.x, data.y, data.z, **plot_kwargs, **kwargs)
 
@@ -699,8 +699,8 @@ def multiplot_moved(xdata,
     shifts = np.cumsum([0] + shifts)[:-1]
     plot_data.shift_data('y', shifts)
 
-    ax = multiple_scatterplots(plot_data.getvalues('x'),
-                               plot_data.getvalues('y'),
+    ax = multiple_scatterplots(plot_data.get_values('x'),
+                               plot_data.get_values('y'),
                                xlabel=xlabel,
                                ylabel=ylabel,
                                title=title,
@@ -781,7 +781,7 @@ def histogram(xdata,
 
     plot_kwargs = plot_params.plot_kwargs(plot_type='histogram', list_of_dicts=False)
 
-    data = plot_data.getvalues('x')
+    data = plot_data.get_values('x')
     n, bins, patches = ax.hist(data,
                                density=density,
                                histtype=histtype,
@@ -1611,12 +1611,12 @@ def plot_dos(energy_grid,
         plot_params.set_defaults(default_type='function', figure_kwargs={'figsize': figsize[::-1]})
 
     if xyswitch:
-        x, y = plot_data.getkeys('dos'), plot_data.getkeys('energy')
+        x, y = plot_data.get_keys('dos'), plot_data.get_keys('energy')
         xlabel, ylabel = dos_label, energy_label
         plot_params.set_defaults(default_type='function', area_vertical=True)
     else:
         xlabel, ylabel = energy_label, dos_label
-        x, y = plot_data.getkeys('energy'), plot_data.getkeys('dos')
+        x, y = plot_data.get_keys('energy'), plot_data.get_keys('dos')
 
     ax = multiple_scatterplots(x,
                                y,
@@ -1716,8 +1716,8 @@ def plot_spinpol_dos(energy_grid,
     plot_params.set_parameters(**save_options)
 
     #Create the full data for the scatterplot
-    energy_entries = plot_data.getkeys('energy') * 2
-    dos_entries = plot_data.getkeys('spin_up') + plot_data.getkeys('spin_dn')
+    energy_entries = plot_data.get_keys('energy') * 2
+    dos_entries = plot_data.get_keys('spin_up') + plot_data.get_keys('spin_dn')
     sources = plot_data.data
     if isinstance(sources, list):
         sources = sources * 2
@@ -1815,14 +1815,14 @@ def plot_bands(kpath,
         xticklabels.append(label)
         xticks.append(pos)
 
-    entries = plot_data.getfirstkeys()
+    entries = plot_data.keys(first=True)
     if entries.size is not None:
         ylimits = (-15, 15)
         if 'limits' in kwargs:
             if 'y' in kwargs['limits']:
                 ylimits = kwargs['limits']['y']
 
-        data = plot_data.getfirstvalue()
+        data = plot_data.values(first=True)
         mask = np.logical_and(data.bands > ylimits[0], data.bands < ylimits[1])
 
         weight_max = plot_data.max('size', mask=mask)
@@ -1851,10 +1851,10 @@ def plot_bands(kpath,
                              line_options={'zorder': -1},
                              colorbar=False)
 
-    ax = multi_scatter_plot(plot_data.getkeys('kpath'),
-                            plot_data.getkeys('bands'),
-                            size_data=plot_data.getkeys('size'),
-                            color_data=plot_data.getkeys('color'),
+    ax = multi_scatter_plot(plot_data.get_keys('kpath'),
+                            plot_data.get_keys('bands'),
+                            size_data=plot_data.get_keys('size'),
+                            color_data=plot_data.get_keys('color'),
                             data=plot_data.data,
                             xlabel=xlabel,
                             ylabel=ylabel,
@@ -1983,10 +1983,10 @@ def plot_spinpol_bands(kpath,
         #Cut off the white end of the Blues/Reds colormap
         plot_params.set_defaults(default_type='function', sub_colormap=(0.15, 1.0))
 
-    ax = multi_scatter_plot(plot_data.getkeys('kpath'),
-                            plot_data.getkeys('bands'),
-                            size_data=plot_data.getkeys('size'),
-                            color_data=plot_data.getkeys('color'),
+    ax = multi_scatter_plot(plot_data.get_keys('kpath'),
+                            plot_data.get_keys('bands'),
+                            size_data=plot_data.get_keys('size'),
+                            color_data=plot_data.get_keys('color'),
                             data=plot_data.data,
                             xlabel=xlabel,
                             ylabel=ylabel,

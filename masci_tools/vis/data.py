@@ -148,53 +148,40 @@ class PlotData:
         """
         return PlotDataIterator(self, mode='values')
 
-    def keys(self):
+    def keys(self, first=False):
         """
         Iterate over PlotData keys. Returns the keys for the corresponding sources
-        """
-        return PlotDataIterator(self, mode='keys')
 
-    def values(self):
+        :param first: bool, if True only the first entry is returned
+        """
+        if first:
+            return next(PlotDataIterator(self, mode='keys'))
+        else:
+            return PlotDataIterator(self, mode='keys')
+
+    def values(self, first=False):
         """
         Iterate over PlotData values. Returns the values for the data
-        """
-        return PlotDataIterator(self, mode='values')
 
-    def items(self):
+        :param first: bool, if True only the first entry is returned
+        """
+        if first:
+            return next(PlotDataIterator(self, mode='values'))
+        else:
+            return PlotDataIterator(self, mode='values')
+
+    def items(self, first=False):
         """
         Iterate over PlotData items. Returns the key and corresponding source for the data
-        """
-        return PlotDataIterator(self, mode='items')
 
-    def getfirst(self):
+        :param first: bool, if True only the first entry is returned
         """
-        Get the first item in the data
-        """
-        for data in self.items():
-            return data
+        if first:
+            return next(PlotDataIterator(self, mode='items'))
+        else:
+            return PlotDataIterator(self, mode='items')
 
-    def getfirstvalue(self):
-        """
-        Get the values in the first entry of the data
-        """
-        for data in self.values():
-            return data
-
-    def getfirstkeys(self):
-        """
-        Get the keys in the first entry of the data
-        """
-        for data in self.keys():
-            return data
-
-    def getfirstitem(self):
-        """
-        Get the keys in the first entry of the data
-        """
-        for data in self.items():
-            return data
-
-    def getkeys(self, data_key):
+    def get_keys(self, data_key):
         """
         Get the keys for a given data column for all entries
 
@@ -212,7 +199,7 @@ class PlotData:
 
         return keys
 
-    def getvalues(self, data_key):
+    def get_values(self, data_key):
         """
         Get the values for a given data column for all entries
 
