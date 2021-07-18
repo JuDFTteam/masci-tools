@@ -223,7 +223,6 @@ def bokeh_line(x,
     Kwargs will be passed on to :py:class:`masci_tools.vis.bokeh_plotter.BokehPlotter`.
     If the arguments are not recognized they are passed on to the bokeh function `line`
     """
-    from bokeh.models import ColumnDataSource
 
     if isinstance(x, (dict, pd.DataFrame, ColumnDataSource)) or x is None:
         warnings.warn(
@@ -1100,7 +1099,6 @@ def plot_convergence_results_m(iterations,
 
     :returns grid: bokeh grid with figures
     """
-    from bokeh.models import ColumnDataSource
     from bokeh.layouts import gridplot
 
     xlabel = r'Iteration'

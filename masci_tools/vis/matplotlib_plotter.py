@@ -655,7 +655,7 @@ class MatplotlibPlotter(Plotter):
 
         :returns: colormap truncated to only hold colors between minval and maxval from old colormap
         """
-        import matplotlib.colors as colors
+        from matplotlib import colors
         import numpy as np
 
         new_cmap = colors.LinearSegmentedColormap.from_list(f'trunc({cmap.name},{minval:.2f},{maxval:.2f})',
