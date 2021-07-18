@@ -543,12 +543,12 @@ def normalize_list_or_array(data, key, out_data, flatten_np=False, forbid_split_
             return out_data
         elif isinstance(out_data, list):
             if len(out_data) == len(data):
-                for entry, new_data in zip(out_data, data):
+                for indx, (entry, new_data) in enumerate(zip(out_data, data)):
                     entry[f'{key}_{indx}'] = new_data
                 return out_data
 
     if isinstance(out_data, list):
-        for entry in out_data:
+        for indx, entry in enumerate(out_data):
             entry[f'{key}_{indx}'] = data
     else:
         out_data[key] = data

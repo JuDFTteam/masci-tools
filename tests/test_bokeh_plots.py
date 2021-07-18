@@ -5,6 +5,7 @@ to test we check the content of the underlying json for correctness
 """
 import numpy as np
 import pandas as pd
+import pytest
 
 
 class TestBokehScatter:  #pylint: disable=missing-class-docstring
@@ -20,6 +21,21 @@ class TestBokehScatter:  #pylint: disable=missing-class-docstring
         source = pd.DataFrame(data={'x': x, 'y': y})
 
         p = bokeh_scatter('x', 'y', data=source, show=False)
+
+        check_bokeh_plot(p)
+
+    def test_deprecated_signature(self, check_bokeh_plot):
+        """
+        Test with default values and old signature
+        """
+        from masci_tools.vis.bokeh_plots import bokeh_scatter
+        x = np.linspace(-10, 10, 100)
+        y = x**2
+
+        source = pd.DataFrame(data={'x': x, 'y': y})
+
+        with pytest.deprecated_call():
+            p = bokeh_scatter(source, show=False)
 
         check_bokeh_plot(p)
 
@@ -100,5 +116,20 @@ class TestBokehMultiScatter:  #pylint: disable=missing-class-docstring
         y = [x[0]**2, x[1] * 5 + 30, 50 * np.sin(x[2]), 50 * np.cos(x[3]), -5 * x[4] + 30]
 
         p = bokeh_multi_scatter(x, y, show=False)
+
+        check_bokeh_plot(p)
+
+    def test_multi_deprecated_signature(self, check_bokeh_plot):
+        """
+        Test with default values and old signature
+        """
+        from masci_tools.vis.bokeh_plots import bokeh_multi_scatter
+        x = np.linspace(-10, 10, 100)
+        y = x**2
+
+        source = pd.DataFrame(data={'x': x, 'y': y})
+
+        with pytest.deprecated_call():
+            p = bokeh_multi_scatter(source, show=False)
 
         check_bokeh_plot(p)

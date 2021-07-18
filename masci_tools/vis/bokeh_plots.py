@@ -96,7 +96,7 @@ def bokeh_scatter(x,
     If the arguments are not recognized they are passed on to the bokeh function `scatter`
     """
 
-    if isinstance(x, (dict, pd.DataFrame, ColumnDataSource)):
+    if isinstance(x, (dict, pd.DataFrame, ColumnDataSource)) or x is None:
         warnings.warn(
             'Passing the source as first argument is deprecated. Please pass in source by the keyword data'
             'and xdata and ydata as the first arguments', DeprecationWarning)
@@ -151,7 +151,7 @@ def bokeh_multi_scatter(x,
     If the arguments are not recognized they are passed on to the bokeh function `scatter`
     """
 
-    if isinstance(x, (dict, pd.DataFrame, ColumnDataSource)):
+    if isinstance(x, (dict, pd.DataFrame, ColumnDataSource)) or x is None:
         warnings.warn(
             'Passing the source as first argument is deprecated. Please pass in source by the keyword data'
             'and xdata and ydata as the first arguments', DeprecationWarning)
@@ -164,7 +164,11 @@ def bokeh_multi_scatter(x,
     plot_params.single_plot = False
     plot_params.num_plots = len(plot_data)
 
-    default_legend_label = plot_data.getkeys('y') if plot_data.distinct_datasets('y') != 1 else plot_data.getkeys('x')
+    if plot_data.distinct_datasets('x') == 1:
+        default_legend_label = plot_data.getkeys('y')
+    else:
+        default_legend_label = plot_data.getkeys('x')
+
     plot_params.set_defaults(default_type='function', name='scatter plot', legend_label=default_legend_label)
 
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
