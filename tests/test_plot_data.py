@@ -20,19 +20,19 @@ def test_normalize_list_or_array():
 
     y = [np.linspace(-5, 1, 10), [1, 2, 3, 5]]
     data = normalize_list_or_array(y, 'y', data)
-    assert data == [{'x': x, 'y': y[0]}, {'x': x, 'y': y[1]}]
+    assert data == [{'x_0': x, 'y_0': y[0]}, {'x_1': x, 'y_1': y[1]}]
 
     z = 5
     data = normalize_list_or_array(z, 'z', data)
-    assert data == [{'x': x, 'y': y[0], 'z': z}, {'x': x, 'y': y[1], 'z': 5}]
+    assert data == [{'x_0': x, 'y_0': y[0], 'z_0': z}, {'x_1': x, 'y_1': y[1], 'z_1': 5}]
 
     color = ['red', 'blue']
     data = normalize_list_or_array(color, 'color', data)
-    assert data == [{'x': x, 'y': y[0], 'z': z, 'color': 'red'}, {'x': x, 'y': y[1], 'z': z, 'color': 'blue'}]
+    assert data == [{'x_0': x, 'y_0': y[0], 'z_0': z, 'color_0': 'red'}, {'x_1': x, 'y_1': y[1], 'z_1': z, 'color_1': 'blue'}]
 
     color2 = [pd.Series([1, 2, 3]), pd.Series([4, 5, 6])]
     data = normalize_list_or_array(color2, 'color', data)
-    assert data == [{'x': x, 'y': y[0], 'z': z, 'color': color2[0]}, {'x': x, 'y': y[1], 'z': z, 'color': color2[1]}]
+    assert data == [{'x_0': x, 'y_0': y[0], 'z_0': z, 'color_0': color2[0]}, {'x_1': x, 'y_1': y[1], 'z_1': z, 'color_1': color2[1]}]
 
     too_long_data = [np.linspace(0, 1, 2), np.linspace(3, 4, 5), np.linspace(6, 7, 8)]
     with pytest.raises(ValueError):
