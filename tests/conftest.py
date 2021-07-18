@@ -90,7 +90,7 @@ def fixture_clean_bokeh_json():
     :param data: dict with the json data produced for the bokeh figure
     """
 
-    def _clean_bokeh_json(data):
+    def _clean_bokeh_json(data, np_precision=5):
         """
         Make the dict form the produced json data
         suitable for data_regression
@@ -100,6 +100,9 @@ def fixture_clean_bokeh_json():
 
         :param data: dict with the json data produced for the bokeh figure
         """
+        from masci_tools.io.common_functions import convert_to_pystd
+        from bokeh.util.serialization import decode_base64_dict
+        import numpy as np
 
         def get_contained_keys(dict_val):
 
@@ -137,11 +140,16 @@ def fixture_clean_bokeh_json():
             return sorted(list_of_dicts,
                           key=lambda x: (x['type'], *tuple(get_normalized_order(x, sorted(contained_keys)))))
 
+        if '__ndarray__' in data:
+            array = decode_base64_dict(data)
+            array = np.around(array, decimals=np_precision)
+            return convert_to_pystd(array)
+
         for key, val in list(data.items()):
             if key in ('id', 'root_ids'):
                 data.pop(key)
             elif isinstance(val, dict):
-                data[key] = _clean_bokeh_json(val)
+                data[key] = _clean_bokeh_json(val, np_precision=np_precision)
             elif isinstance(val, list):
                 for index, entry in enumerate(val):
                     if isinstance(entry, dict):
