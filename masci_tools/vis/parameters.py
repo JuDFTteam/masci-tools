@@ -264,6 +264,9 @@ class Plotter(object):
 
         try:
             value = self._params[key]
+            if key not in self._given_parameters:
+                if isinstance(self._function_defaults.get(key), list):
+                    value = self._function_defaults[key]
             if isinstance(value, list):
                 if index is None:
                     return value
@@ -374,7 +377,11 @@ class Plotter(object):
 
             if len(ret_value) != num_plots:
                 ret_value = ret_value.copy() + [None] * (num_plots - len(ret_value))
-            ret_value = [val if val is not None else default for val in ret_value]
+
+            if isinstance(default, list):
+                ret_value = [val if val is not None else default[indx] for indx, val in enumerate(ret_value)]
+            else:
+                ret_value = [val if val is not None else default for val in ret_value]
 
         return ret_value
 
@@ -394,6 +401,17 @@ class Plotter(object):
         if default_type == 'global':
             self.__update_map(self._params.parents, key, value)
         elif default_type == 'function':
+            if not self.is_general(key):
+
+                default_val = self._hardcoded_defaults[key]
+                if key in self._user_defaults:
+                    default_val = self._user_defaults[key]
+
+                value = self.convert_to_complete_list(value,
+                                                      self.single_plot,
+                                                      self.num_plots,
+                                                      default=default_val,
+                                                      key=key)
             self.__update_map(self._params.parents.parents, key, value)
 
     def __setitem__(self, key, value):

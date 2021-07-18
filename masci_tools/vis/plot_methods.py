@@ -1668,6 +1668,9 @@ def plot_spinpol_dos(energy_grid,
 
     plot_data = process_data_arguments(data=data, energy=energy_grid, spin_up=spin_up_data, spin_dn=spin_dn_data)
 
+    plot_params.single_plot = False
+    plot_params.num_plots = len(plot_data)
+
     if 'limits' in kwargs:
         limits = kwargs.pop('limits')
         if 'x' not in limits and 'y' not in limits:
@@ -1910,6 +1913,9 @@ def plot_spinpol_bands(kpath,
                                        bands=[bands_up, bands_dn],
                                        size=size_data,
                                        color=color_data)
+
+    plot_params.single_plot = False
+    plot_params.num_plots = len(plot_data)
 
     if scale_color and size_data is not None:
         if color_data is not None:
