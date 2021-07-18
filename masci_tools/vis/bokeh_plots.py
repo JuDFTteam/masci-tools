@@ -614,8 +614,10 @@ def bokeh_bands(kpath,
 
         weight_max = plot_data.max('size', mask=mask)
 
+        plot_params.set_defaults(default_type='function', marker_size=entries.size)
         if scale_color:
-            plot_params.set_defaults(default_type='function', marker_size=entries.size, color=linear_cmap(entries.color, 'Blues256', weight_max, -0.05))
+            plot_params.set_defaults(default_type='function',
+                                     color=linear_cmap(entries.color, 'Blues256', weight_max, -0.05))
 
         transform = lambda size: size_min + size_scaling * size / weight_max
         plot_data.apply('size', transform)
@@ -654,6 +656,7 @@ def bokeh_bands(kpath,
     return bokeh_multi_scatter(plot_data.get_keys('kpath'),
                                plot_data.get_keys('bands'),
                                data=plot_data.data,
+                               color=plot_data.get_keys('color'),
                                xlabel='',
                                ylabel=ylabel,
                                title=title,
@@ -707,7 +710,7 @@ def bokeh_spinpol_bands(kpath,
             'and kpath and bands_up and bands_dn as the first arguments', DeprecationWarning)
         data = kpath
         kpath = kwargs.pop('k_label', 'kpath')
-        bands_up = kwargs.pop('eigenvalues',['eigenvalues_up', 'eigenvalues_down'])
+        bands_up = kwargs.pop('eigenvalues', ['eigenvalues_up', 'eigenvalues_down'])
         bands_up, bands_dn = bands_up[0], bands_up[1]
 
     if 'weight' in kwargs:
@@ -747,7 +750,11 @@ def bokeh_spinpol_bands(kpath,
 
         plot_params.set_defaults(default_type='function', marker_size=plot_data.get_keys('size'))
         if scale_color:
-            plot_params.set_defaults(default_type='function', color=[linear_cmap(name, palette, weight_max, -0.05) for name, palette in zip(plot_data.get_keys('color'),['Blues256', 'Reds256'])])
+            plot_params.set_defaults(default_type='function',
+                                     color=[
+                                         linear_cmap(name, palette, weight_max, -0.05)
+                                         for name, palette in zip(plot_data.get_keys('color'), ['Blues256', 'Reds256'])
+                                     ])
     else:
         color = ['blue', 'red']
         plot_params.set_defaults(default_type='function', color=color)

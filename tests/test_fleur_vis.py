@@ -387,8 +387,7 @@ def test_plot_bands_characterize_mpl():
     return gcf()
 
 
-@pytest.mark.skip('Not yet working for bokeh')
-def test_plot_bands_characterize_bokeh():
+def test_plot_bands_characterize_bokeh(check_bokeh_plot):
     from masci_tools.io.parsers.hdf5 import HDF5Reader
     from masci_tools.io.parsers.hdf5.recipes import FleurBands
     from masci_tools.vis.fleur import plot_fleur_bands_characterize
@@ -398,13 +397,11 @@ def test_plot_bands_characterize_bokeh():
     with HDF5Reader(TEST_BANDDOS_FILE) as h5reader:
         data, attributes = h5reader.read(recipe=FleurBands)
 
-    gcf().clear()
+    fig = plot_fleur_bands_characterize(data,
+                                        attributes, ['MT:1s', 'MT:1p', 'MT:1d', 'MT:1f'],
+                                        ['darkblue', 'darkred', 'darkgreen', 'darkorange'],
+                                        show=False,
+                                        bokeh_plot=True,
+                                        only_spin='up')
 
-    plot_fleur_bands_characterize(data,
-                                  attributes, ['MT:1s', 'MT:1p', 'MT:1d', 'MT:1f'],
-                                  ['darkblue', 'darkred', 'darkgreen', 'darkorange'],
-                                  show=False,
-                                  bokeh_plot=True,
-                                  only_spin='up')
-
-    return gcf()
+    check_bokeh_plot(fig)
