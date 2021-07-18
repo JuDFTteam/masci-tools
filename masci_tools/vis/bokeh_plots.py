@@ -104,7 +104,7 @@ def bokeh_scatter(x,
         x = kwargs.pop('xdata', 'x')
         y = kwargs.pop('ydata', 'y')
 
-    plot_data = process_data_arguments(data=data, x=x, y=y, single_plot=True)
+    plot_data = process_data_arguments(data=data, x=x, y=y, single_plot=True, same_length=True)
 
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
 
@@ -159,7 +159,7 @@ def bokeh_multi_scatter(x,
         x = kwargs.pop('xdata', 'x')
         y = kwargs.pop('ydata', 'y')
 
-    plot_data = process_data_arguments(data=data, x=x, y=y)
+    plot_data = process_data_arguments(data=data, x=x, y=y, same_length=True)
 
     plot_params.single_plot = False
     plot_params.num_plots = len(plot_data)
@@ -195,16 +195,17 @@ def bokeh_multi_scatter(x,
 
 
 @ensure_plotter_consistency(plot_params)
-def bokeh_line(source,
+def bokeh_line(x,
+               y=None,
                *,
-               xdata='x',
-               ydata='y',
+               data=None,
                figure=None,
                xlabel='x',
                ylabel='y',
                title='',
                outfilename='scatter.html',
                plot_points=False,
+               area_curve=0,
                **kwargs):
     """
     Create an interactive multi-line plot with bokeh
@@ -224,22 +225,25 @@ def bokeh_line(source,
     """
     from bokeh.models import ColumnDataSource
 
-    plot_params.set_defaults(default_type='function', name='line plot')
+    if isinstance(x, (dict, pd.DataFrame, ColumnDataSource)) or x is None:
+        warnings.warn(
+            'Passing the source as first argument is deprecated. Please pass in source by the keyword data'
+            'and xdata and ydata as the first arguments', DeprecationWarning)
+        data = x
+        x = kwargs.pop('xdata', 'x')
+        y = kwargs.pop('ydata', 'y')
 
-    default_legend_label = ydata
-    if source is not None:
-        if not isinstance(ydata, list):
-            if not isinstance(xdata, list):
-                xdata = [xdata]
-            ydata = [ydata] * len(xdata)
-            default_legend_label = xdata
-
-    if isinstance(xdata, list):
-        if len(xdata) != len(ydata):
-            xdata = xdata[0]
+    plot_data = process_data_arguments(data=data, x=x, y=y, shift=area_curve, same_length=True)
 
     plot_params.single_plot = False
-    plot_params.num_plots = len(ydata)
+    plot_params.num_plots = len(plot_data)
+
+    if plot_data.distinct_datasets('x') == 1:
+        default_legend_label = plot_data.getkeys('y')
+    else:
+        default_legend_label = plot_data.getkeys('x')
+
+    plot_params.set_defaults(default_type='function', name='line plot', legend_label=default_legend_label)
 
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
     p = plot_params.prepare_figure(title, xlabel, ylabel, figure=figure)
@@ -247,84 +251,25 @@ def bokeh_line(source,
     #Process the given color arguments
     plot_params.set_color_palette_by_num_plots()
 
-    # prepare ColumnDataSource for plot
-    if source is None:  # create columndatasources from data given
-        # Columns need to have same length
-        source = []
-        if isinstance(ydata[0], list):
-            ydatad = []
-            xdatad = []
-            for i, ydat in enumerate(ydata):
-                label = f'y{i}'
-                ydatad.append(label)
-                xdatad.append(f'x{i}')
-                if isinstance(xdata[0], list):
-                    xdat = xdata[i]
-                else:
-                    xdat = xdata[0]
-                source.append(ColumnDataSource({'x': xdat, 'y': ydata}))
-        else:
-            raise ValueError('If no source dataframe or ColumnData is given, ydata has to be a list'
-                             ' of lists, not of type: {}'.format(type(ydata[0])))
-    else:
-        xdatad = xdata
-        ydatad = ydata
-
-    # draw line plot
-    # dataframe and column data source expect all entries to be same length...
-    # therefore we parse data to plot routines directly... might make other things harder
-
     plot_kw_line = plot_params.plot_kwargs(plot_type='line')
     plot_kw_scatter = plot_params.plot_kwargs(plot_type='scatter')
     plot_kw_area = plot_params.plot_kwargs(plot_type='area')
 
     area_curve = kwargs.pop('area_curve', None)
 
-    for indx, data in enumerate(zip(ydatad, plot_kw_line, plot_kw_scatter, plot_kw_area)):
-
-        yname, kw_line, kw_scatter, kw_area = data
-
-        if isinstance(xdatad, list):
-            xdat = xdatad[indx]
-        else:
-            xdat = xdatad
-
-        if isinstance(source, list):
-            sourcet = source[indx]
-        else:
-            sourcet = source
-
-        if isinstance(default_legend_label, list):
-            leg_label = default_legend_label[indx]
-        else:
-            leg_label = default_legend_label
-
-        if 'legend_label' not in kw_line:
-            kw_line['legend_label'] = leg_label
-            kw_scatter['legend_label'] = leg_label
-            kw_area['legend_label'] = leg_label
-
-        if area_curve is not None:
-            if isinstance(area_curve, list):
-                try:
-                    shift = area_curve[indx]
-                except IndexError:
-                    shift = area_curve[0]
-            else:
-                shift = area_curve
-        else:
-            shift = 0
+    for indx, ((entry, source), kw_line, kw_scatter,
+               kw_area) in enumerate(zip(plot_data.items(), plot_kw_line, plot_kw_scatter, plot_kw_area)):
 
         if plot_params[('area_plot', indx)]:
             if plot_params[('area_vertical', indx)]:
-                p.harea(y=yname, x1=xdat, x2=shift, **kw_area, source=sourcet)
+                p.harea(y=entry.y, x1=entry.x, x2=entry.shift, **kw_area, source=source)
             else:
-                p.varea(x=xdat, y1=yname, y2=shift, **kw_area, source=sourcet)
+                p.varea(x=entry.x, y1=entry.y, y2=entry.shift, **kw_area, source=source)
 
-        res = p.line(x=xdat, y=yname, source=sourcet, **kw_line, **kwargs)
+        res = p.line(x=entry.x, y=entry.y, source=source, **kw_line, **kwargs)
         res2 = None
         if plot_points:
-            res2 = p.scatter(x=xdat, y=yname, source=sourcet, **kw_scatter)
+            res2 = p.scatter(x=entry.x, y=entry.y, source=source, **kw_scatter)
 
         if plot_params[('level', indx)] is not None:
             res.level = plot_params[('level', indx)]

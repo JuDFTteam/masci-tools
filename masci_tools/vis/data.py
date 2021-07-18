@@ -60,6 +60,8 @@ class PlotData:
                    e.g. dicts, pandas dataframes, ...
       :param mask: optional list or Tuple of bool, of the same length as the specified data
                    When iterating over it only the objects with the mask set to True are returned
+      :same_length: bool if True and any sources are dicts it will be checked for same dimensions
+                  in (ALL) entries (not only for keys plotted against each other)
 
       Kwargs are used to specify the columns in a namedtuple
       If a list is given for any of the keys the data will be expanded to a list of
@@ -71,7 +73,7 @@ class PlotData:
     #In principle this could be extended to any Mapping
     ALLOWED_DATA_HOLDERS = (dict, pd.DataFrame, ColumnDataSource)
 
-    def __init__(self, data, mask=None, use_column_source=False, **kwargs):
+    def __init__(self, data, mask=None, use_column_source=False, same_length=False, **kwargs):
 
         self.data = data
 
@@ -81,6 +83,14 @@ class PlotData:
         else:
             assert isinstance(self.data, self.ALLOWED_DATA_HOLDERS), f'Wrong type for data argument: Got {self.data}'
             dict_data = isinstance(self.data, dict)
+
+        if same_length and dict_data:
+            if isinstance(self.data, list):
+                for index, entry in enumerate(self.data):
+                    if isinstance(entry, dict):
+                        self.data[index] = _normalize_dict_entries(entry)
+            else:
+                self.data = _normalize_dict_entries(self.data)
 
         if dict_data and use_column_source:
             if isinstance(self.data, list):
@@ -557,12 +567,29 @@ def normalize_list_or_array(data, key, out_data, flatten_np=False, forbid_split_
     return out_data
 
 
+def _normalize_dict_entries(dict_data):
+
+    LIST_TYPES = (list, np.ndarray, pd.Series)
+
+    length = max(len(data) for data in dict_data.values() if isinstance(data, LIST_TYPES))
+
+    for key, val in dict_data.items():
+        if not isinstance(val, LIST_TYPES):
+            dict_data[key] = np.ones(length) * val
+        elif len(val) != length:
+            raise ValueError('Different lengths of data sets are not allowed for this plot'
+                             f"Expected '{length}' got '{len(val)}'")
+
+    return dict_data
+
+
 def process_data_arguments(data=None,
                            single_plot=False,
                            mask=None,
                            use_column_source=False,
                            flatten_np=False,
                            forbid_split_up=None,
+                           same_length=False,
                            **kwargs):
     """
     Initialize PlotData from np.arrays or lists of np.arrays or lists or a already given
@@ -574,7 +601,8 @@ def process_data_arguments(data=None,
     :param use_column_source: bool, if True all data arguments are converted to ColumnDataSource of bokeh
     :param flatten_np: bool, if True multidimensional numpy arrays are flattened (Only if data not given)
     :param forbid_split_up: set of keys for which not to split up multidimensional arrays
-
+    :same_length: bool if True and any sources are dicts it will be checked for same dimensions
+                  in (ALL) entries (not only for keys plotted against each other)
 
     Kwargs define which keys belong to which data entries if data is given or they contain
     the data to be normalized
@@ -623,7 +651,7 @@ def process_data_arguments(data=None,
     else:
         keys = kwargs
 
-    p_data = PlotData(data, mask=mask, use_column_source=use_column_source, **keys)
+    p_data = PlotData(data, mask=mask, use_column_source=use_column_source, same_length=same_length, **keys)
 
     if len(p_data) != 1 and single_plot:
         raise ValueError(f'Got multiple data sets ({len(p_data)}) but expected 1')

@@ -1,0 +1,466 @@
+roots:
+  references:
+  - attributes: {}
+    type: BasicTickFormatter
+  - attributes: {}
+    type: BasicTickFormatter
+  - attributes: {}
+    type: BasicTicker
+  - attributes: {}
+    type: BasicTicker
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      callback: null
+      data:
+        index:
+        - 0
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+        - 7
+        - 8
+        - 9
+        - 10
+        - 11
+        - 12
+        - 13
+        - 14
+        - 15
+        - 16
+        - 17
+        - 18
+        - 19
+        - 20
+        - 21
+        - 22
+        - 23
+        - 24
+        - 25
+        - 26
+        - 27
+        - 28
+        - 29
+        - 30
+        - 31
+        - 32
+        - 33
+        - 34
+        - 35
+        - 36
+        - 37
+        - 38
+        - 39
+        - 40
+        - 41
+        - 42
+        - 43
+        - 44
+        - 45
+        - 46
+        - 47
+        - 48
+        - 49
+        - 50
+        - 51
+        - 52
+        - 53
+        - 54
+        - 55
+        - 56
+        - 57
+        - 58
+        - 59
+        - 60
+        - 61
+        - 62
+        - 63
+        - 64
+        - 65
+        - 66
+        - 67
+        - 68
+        - 69
+        - 70
+        - 71
+        - 72
+        - 73
+        - 74
+        - 75
+        - 76
+        - 77
+        - 78
+        - 79
+        - 80
+        - 81
+        - 82
+        - 83
+        - 84
+        - 85
+        - 86
+        - 87
+        - 88
+        - 89
+        - 90
+        - 91
+        - 92
+        - 93
+        - 94
+        - 95
+        - 96
+        - 97
+        - 98
+        - 99
+        x:
+        - -10.0
+        - -9.79798
+        - -9.59596
+        - -9.39394
+        - -9.19192
+        - -8.9899
+        - -8.78788
+        - -8.58586
+        - -8.38384
+        - -8.18182
+        - -7.9798
+        - -7.77778
+        - -7.57576
+        - -7.37374
+        - -7.17172
+        - -6.9697
+        - -6.76768
+        - -6.56566
+        - -6.36364
+        - -6.16162
+        - -5.9596
+        - -5.75758
+        - -5.55556
+        - -5.35354
+        - -5.15152
+        - -4.94949
+        - -4.74747
+        - -4.54545
+        - -4.34343
+        - -4.14141
+        - -3.93939
+        - -3.73737
+        - -3.53535
+        - -3.33333
+        - -3.13131
+        - -2.92929
+        - -2.72727
+        - -2.52525
+        - -2.32323
+        - -2.12121
+        - -1.91919
+        - -1.71717
+        - -1.51515
+        - -1.31313
+        - -1.11111
+        - -0.90909
+        - -0.70707
+        - -0.50505
+        - -0.30303
+        - -0.10101
+        - 0.10101
+        - 0.30303
+        - 0.50505
+        - 0.70707
+        - 0.90909
+        - 1.11111
+        - 1.31313
+        - 1.51515
+        - 1.71717
+        - 1.91919
+        - 2.12121
+        - 2.32323
+        - 2.52525
+        - 2.72727
+        - 2.92929
+        - 3.13131
+        - 3.33333
+        - 3.53535
+        - 3.73737
+        - 3.93939
+        - 4.14141
+        - 4.34343
+        - 4.54545
+        - 4.74747
+        - 4.94949
+        - 5.15152
+        - 5.35354
+        - 5.55556
+        - 5.75758
+        - 5.9596
+        - 6.16162
+        - 6.36364
+        - 6.56566
+        - 6.76768
+        - 6.9697
+        - 7.17172
+        - 7.37374
+        - 7.57576
+        - 7.77778
+        - 7.9798
+        - 8.18182
+        - 8.38384
+        - 8.58586
+        - 8.78788
+        - 8.9899
+        - 9.19192
+        - 9.39394
+        - 9.59596
+        - 9.79798
+        - 10.0
+        y:
+        - 100.0
+        - 96.00041
+        - 92.08244
+        - 88.2461
+        - 84.49138
+        - 80.81828
+        - 77.22681
+        - 73.71697
+        - 70.28875
+        - 66.94215
+        - 63.67718
+        - 60.49383
+        - 57.3921
+        - 54.372
+        - 51.43353
+        - 48.57668
+        - 45.80145
+        - 43.10785
+        - 40.49587
+        - 37.96551
+        - 35.51678
+        - 33.14968
+        - 30.8642
+        - 28.66034
+        - 26.53811
+        - 24.4975
+        - 22.53852
+        - 20.66116
+        - 18.86542
+        - 17.15131
+        - 15.51882
+        - 13.96796
+        - 12.49872
+        - 11.11111
+        - 9.80512
+        - 8.58076
+        - 7.43802
+        - 6.3769
+        - 5.39741
+        - 4.49954
+        - 3.6833
+        - 2.94868
+        - 2.29568
+        - 1.72431
+        - 1.23457
+        - 0.82645
+        - 0.49995
+        - 0.25508
+        - 0.09183
+        - 0.0102
+        - 0.0102
+        - 0.09183
+        - 0.25508
+        - 0.49995
+        - 0.82645
+        - 1.23457
+        - 1.72431
+        - 2.29568
+        - 2.94868
+        - 3.6833
+        - 4.49954
+        - 5.39741
+        - 6.3769
+        - 7.43802
+        - 8.58076
+        - 9.80512
+        - 11.11111
+        - 12.49872
+        - 13.96796
+        - 15.51882
+        - 17.15131
+        - 18.86542
+        - 20.66116
+        - 22.53852
+        - 24.4975
+        - 26.53811
+        - 28.66034
+        - 30.8642
+        - 33.14968
+        - 35.51678
+        - 37.96551
+        - 40.49587
+        - 43.10785
+        - 45.80145
+        - 48.57668
+        - 51.43353
+        - 54.372
+        - 57.3921
+        - 60.49383
+        - 63.67718
+        - 66.94215
+        - 70.28875
+        - 73.71697
+        - 77.22681
+        - 80.81828
+        - 84.49138
+        - 88.2461
+        - 92.08244
+        - 96.00041
+        - 100.0
+      selected:
+        type: Selection
+      selection_policy:
+        type: UnionRenderers
+    type: ColumnDataSource
+  - attributes:
+      callback: null
+    type: DataRange1d
+  - attributes:
+      callback: null
+    type: DataRange1d
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: line plot
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      ticker:
+        type: BasicTicker
+    type: Grid
+  - attributes:
+      dimension: 1
+      ticker:
+        type: BasicTicker
+    type: Grid
+  - attributes:
+      callback: null
+      tooltips:
+      - - X value
+        - '@x'
+      - - Y value
+        - '@y'
+    type: HoverTool
+  - attributes:
+      click_policy: hide
+      items:
+      - type: LegendItem
+      label_text_font_size:
+        value: 14pt
+    type: Legend
+  - attributes:
+      label:
+        value: y
+      renderers:
+      - type: GlyphRenderer
+    type: LegendItem
+  - attributes:
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      axis_label: x
+      axis_label_text_font_size:
+        value: 18pt
+      axis_line_width:
+        value: 2
+      formatter:
+        type: BasicTickFormatter
+      major_label_text_font_size:
+        value: 16pt
+      ticker:
+        type: BasicTicker
+    type: LinearAxis
+  - attributes:
+      axis_label: y
+      axis_label_text_font_size:
+        value: 18pt
+      axis_line_width:
+        value: 2
+      formatter:
+        type: BasicTickFormatter
+      major_label_text_font_size:
+        value: 16pt
+      ticker:
+        type: BasicTicker
+    type: LinearAxis
+  - attributes: {}
+    type: LinearScale
+  - attributes: {}
+    type: LinearScale
+  - attributes:
+      below:
+      - type: LinearAxis
+      center:
+      - type: Grid
+      - type: Grid
+      - type: Legend
+      left:
+      - type: LinearAxis
+      renderers:
+      - type: GlyphRenderer
+      title:
+        type: Title
+      toolbar:
+        type: Toolbar
+      toolbar_location: null
+      x_range:
+        type: DataRange1d
+      x_scale:
+        type: LinearScale
+      y_range:
+        type: DataRange1d
+      y_scale:
+        type: LinearScale
+    subtype: Figure
+    type: Plot
+  - attributes: {}
+    type: Selection
+  - attributes:
+      text: ''
+    type: Title
+  - attributes:
+      active_drag: auto
+      active_inspect: auto
+      active_multi: null
+      active_scroll: auto
+      active_tap: auto
+      tools:
+      - type: HoverTool
+    type: Toolbar
+  - attributes: {}
+    type: UnionRenderers
+title: Bokeh Application
+version: 1.4.0
