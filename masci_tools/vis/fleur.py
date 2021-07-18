@@ -347,18 +347,20 @@ def plot_fleur_dos(dosdata,
 
     kwargs = _process_dos_kwargs(keys, bokeh_plot=bokeh_plot, **kwargs)
 
-    if bokeh_plot:
-        if spinpol:
-            fig = bokeh_spinpol_dos(dosdata, ynames=keys, legend_label=legend_labels, **kwargs)
-        else:
-            fig = bokeh_dos(dosdata, ynames=keys, legend_label=legend_labels, **kwargs)
-    else:
-        if spinpol:
+    if spinpol:
+        if not bokeh_plot:
             #Remove second half of legend labels
             legend_labels[len(legend_labels) // 2:] = [None] * (len(legend_labels) // 2)
+        dosdata_up = [key for key in keys if '_up' in key]
+        dosdata_dn = [key for key in keys if '_down' in key]
 
-            dosdata_up = [key for key in keys if '_up' in key]
-            dosdata_dn = [key for key in keys if '_down' in key]
+    if bokeh_plot:
+        if spinpol:
+            fig = bokeh_spinpol_dos('energy_grid', dosdata_up, dosdata_dn,data=dosdata, legend_label=legend_labels, **kwargs)
+        else:
+            fig = bokeh_dos('energy_grid', keys,data=dosdata, legend_label=legend_labels, **kwargs)
+    else:
+        if spinpol:
             fig = plot_spinpol_dos('energy_grid',
                                    dosdata_up,
                                    dosdata_dn,
