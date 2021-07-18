@@ -450,7 +450,7 @@ def bokeh_spinpol_dos(dosdata,
                 kwargs['legend_label'].extend(kwargs['legend_label'])
 
     if 'show' in kwargs:
-        plot_params.set_parameters(show=kwargs['show'])
+        plot_params.set_parameters(show=kwargs.pop('show'))
 
     with NestedPlotParameters(plot_params):
         p = bokeh_line(dosdata,
