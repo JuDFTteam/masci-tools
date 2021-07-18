@@ -151,11 +151,11 @@ roots:
         type: CDSView
     type: GlyphRenderer
   - attributes:
-      dimension: 1
       ticker:
         type: BasicTicker
     type: Grid
   - attributes:
+      dimension: 1
       ticker:
         type: BasicTicker
     type: Grid

@@ -101,6 +101,41 @@ def fixture_clean_bokeh_json():
         :param data: dict with the json data produced for the bokeh figure
         """
 
+        def get_contained_keys(dict_val):
+
+            keys = set(dict_val.keys())
+            for key, val in dict_val.items():
+                if isinstance(val, dict):
+                    keys = keys.union(get_contained_keys(val))
+
+            return keys
+
+        def get_normalized_order(dict_val, key_order, normed=None):
+
+            if normed is None:
+                normed = [(key, ()) for key in key_order]
+            for key, val in dict_val.items():
+                if isinstance(val, dict):
+                    normed = get_normalized_order(val, key_order, normed=normed)
+                elif key != 'type':
+                    index = key_order.index(key)
+                    if isinstance(val, list):
+                        normed[index] += (tuple(val),)
+                    elif isinstance(val, float):
+                        normed[index] += (str(val),)
+                    else:
+                        normed[index] += (val,)
+            return normed
+
+        def normalize_list_of_dicts(list_of_dicts):
+
+            contained_keys = set()
+            for data in list_of_dicts:
+                contained_keys = contained_keys.union(get_contained_keys(data))
+            contained_keys.discard('type')
+
+            return sorted(list_of_dicts, key=lambda x: (x['type'], *tuple(get_normalized_order(x, sorted(contained_keys)))))
+
         for key, val in list(data.items()):
             if key in ('id', 'root_ids'):
                 data.pop(key)
@@ -111,7 +146,7 @@ def fixture_clean_bokeh_json():
                     if isinstance(entry, dict):
                         val[index] = _clean_bokeh_json(entry)
                 if all(isinstance(x, dict) for x in val):
-                    data[key] = sorted(val, key=lambda x: (x['type'], *x.get('attributes', {}).items()))
+                    data[key] = normalize_list_of_dicts(val)
                 else:
                     data[key] = val
 

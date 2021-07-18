@@ -151,11 +151,11 @@ roots:
         type: CDSView
     type: GlyphRenderer
   - attributes:
-      dimension: 1
       ticker:
         type: BasicTicker
     type: Grid
   - attributes:
+      dimension: 1
       ticker:
         type: BasicTicker
     type: Grid
@@ -223,12 +223,8 @@ roots:
     subtype: Figure
     type: Plot
   - attributes:
-      fill_alpha:
-        value: 0.1
       fill_color:
         value: '#1f77b4'
-      line_alpha:
-        value: 0.1
       line_color:
         value: '#1f77b4'
       size:
@@ -240,8 +236,12 @@ roots:
         field: y
     type: Scatter
   - attributes:
+      fill_alpha:
+        value: 0.1
       fill_color:
         value: '#1f77b4'
+      line_alpha:
+        value: 0.1
       line_color:
         value: '#1f77b4'
       size:
