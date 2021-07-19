@@ -101,7 +101,7 @@ def fixture_clean_bokeh_json():
         :param data: dict with the json data produced for the bokeh figure
         """
         from masci_tools.io.common_functions import convert_to_pystd
-        from bokeh.util.serialization import decode_base64_dict
+        from bokeh.util.serialization import decode_base64_dict, encode_base64_dict
         import numpy as np
 
         def get_contained_keys(dict_val):
@@ -143,7 +143,7 @@ def fixture_clean_bokeh_json():
         if '__ndarray__' in data:
             array = decode_base64_dict(data)
             array = np.around(array, decimals=np_precision)
-            return convert_to_pystd(array)
+            data = encode_base64_dict(array)
 
         for key, val in list(data.items()):
             if key in ('id', 'root_ids'):
