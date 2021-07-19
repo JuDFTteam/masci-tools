@@ -100,7 +100,6 @@ def fixture_clean_bokeh_json():
 
         :param data: dict with the json data produced for the bokeh figure
         """
-        from masci_tools.io.common_functions import convert_to_pystd
         from bokeh.util.serialization import decode_base64_dict, encode_base64_dict
         import numpy as np
 

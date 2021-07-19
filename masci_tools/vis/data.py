@@ -61,7 +61,9 @@ class PlotData:
       :param mask: optional list or Tuple of bool, of the same length as the specified data
                    When iterating over it only the objects with the mask set to True are returned
       :same_length: bool if True and any sources are dicts it will be checked for same dimensions
-                  in (ALL) entries (not only for keys plotted against each other)
+                    in (ALL) entries (not only for keys plotted against each other)
+      :strict_data_keys: bool if True no new data keys are allowed to be entered via :py:meth:`copy_data()`
+
 
       Kwargs are used to specify the columns in a namedtuple
       If a list is given for any of the keys the data will be expanded to a list of
@@ -73,9 +75,10 @@ class PlotData:
     #In principle this could be extended to any Mapping
     ALLOWED_DATA_HOLDERS = (dict, pd.DataFrame, ColumnDataSource)
 
-    def __init__(self, data, mask=None, use_column_source=False, same_length=False, **kwargs):
+    def __init__(self, data, mask=None, use_column_source=False, same_length=False, strict_data_keys=False, **kwargs):
 
         self.data = data
+        self.strict_data_keys = strict_data_keys
 
         if isinstance(self.data, list):
             assert isinstance(self.data[0], self.ALLOWED_DATA_HOLDERS), f'Wrong type for data argument: Got {self.data}'
@@ -134,6 +137,22 @@ class PlotData:
         if not isinstance(mask, (list, tuple)) or len(mask) != num_sets:
             raise ValueError(f'Wrong Value for mask: {mask}')
         self.mask = mask
+
+    def _add_data_key(self, new_data_key):
+        """
+        Add a new column of data keys initialized with Nones
+
+        :param new_data_key: string of the new data key to add
+        """
+
+        if self.strict_data_keys:
+            raise ValueError('No new data keys allowed after initialization')
+
+        self._column_spec = namedtuple('Columns', self._column_spec._fields+(new_data_key,))
+
+        #Rebuild the columns list
+        for indx, column in enumerate(self.columns):
+            self.columns[indx] = self._column_spec(**{**column._asdict(),**{new_data_key: None}})
 
     @property
     def masked_columns(self):
@@ -311,7 +330,7 @@ class PlotData:
             modified by this method, the data needs to be copied beforehand
             using :py:meth:`copy_data()`
 
-        :param data_key: name of the data key to determine the maximum
+        :param data_key: name of the data key to apply the function
         :param lambda_func: function to apply to the data
         """
         if data_key not in self._column_spec._fields:
@@ -336,14 +355,53 @@ class PlotData:
             else:
                 source[key] = [lambda_func(value) for value in source[key]]
 
-    def shift_data(self, data_key, shifts, shifted_data_key=None, negative=False):
+    def get_function_result(self, data_key, func, list_return=False, **kwargs):
+        """
+        Apply a function to a given data column for all entries and return the results
 
+        :param data_key: name of the data key to apply the function to
+        :param func: function to apply to the data to get the results
+                     if func is a string then it will be used to get the attribute
+                     with the corresponding name from the source and call it
+        """
+        if data_key not in self._column_spec._fields:
+            raise ValueError(f'Field {data_key} does not exist')
+
+        result = []
+        for indx, (entry, source) in enumerate(self.items()):
+
+            key = entry._asdict()[data_key]
+            if isinstance(func, str):
+                result.append(getattr(source[key], func)(**kwargs))
+            else:
+                result.append(func(source[key],**kwargs))
+
+        if len(result) == 1 and not list_return:
+            return result[0]
+        else:
+            return result
+
+
+    def shift_data(self, data_key, shifts, shifted_data_key=None, separate_data=True, negative=False):
+        """
+        Apply shifts to a given data column for all entries
+
+        :param data_key: name of the data key to shift
+        :param shifts: float or array of floats with the shifts to apply
+        :param shifted_data_key: optional string, if given the data will be copied
+                                 to this data key
+        :param separate_data: bool, if True and shifted_data_key is not given the data
+                              will be copied to itself (This separates the data for all columns)
+        :param negative: bool if True the shifts are applied with a minus sign
+        """
         if data_key not in self._column_spec._fields:
             raise ValueError(f'Field {data_key} does not exist')
 
         if shifted_data_key is not None:
             self.copy_data(data_key, shifted_data_key)
             data_key = shifted_data_key
+        elif separate_data:
+            self.copy_data(data_key, data_key, force=True)
 
         if isinstance(shifts, (np.ndarray, list, pd.Series)):
             if len(shifts) != len(self):
@@ -365,7 +423,7 @@ class PlotData:
                 else:
                     source[key] = [value + shift for value in source[key]]
 
-    def copy_data(self, data_key_from, data_key_to, prefix=None, rename_original=False):
+    def copy_data(self, data_key_from, data_key_to, prefix=None, rename_original=False, force=False):
         """
         Copy the data for a given data key to another one
 
@@ -380,7 +438,10 @@ class PlotData:
             raise ValueError(f'Field {data_key_from} does not exist')
 
         if data_key_to not in self._column_spec._fields:
-            raise ValueError(f'Field {data_key_to} does not exist')
+            if self.strict_data_keys:
+                raise ValueError(f'Field {data_key_to} does not exist')
+
+            self._add_data_key(data_key_to)
 
         for indx, (entry, source) in enumerate(self.items()):
 
@@ -392,7 +453,7 @@ class PlotData:
                 new_key = f'{prefix}_{indx}' if prefix is not None else f'{data_key_to}_{indx}'
                 self.columns[indx] = entry._replace(**{data_key_to: new_key})
 
-            if new_key in source:
+            if new_key in source and not force:
                 raise ValueError(f'Key {new_key} already exists')
 
             if isinstance(source, pd.DataFrame):
@@ -408,7 +469,14 @@ class PlotData:
                 source[new_key] = copy.copy(source[key])
 
     def distinct_datasets(self, data_key):
+        """
+        Return how many different data sets are present for the given
+        data key
 
+        :param      data_key:  The data key to analyse
+
+        :returns: int of the number of different datasets
+        """
         if data_key not in self._column_spec._fields:
             raise ValueError(f'Field {data_key} does not exist')
 
