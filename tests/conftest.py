@@ -90,7 +90,7 @@ def fixture_clean_bokeh_json():
     :param data: dict with the json data produced for the bokeh figure
     """
 
-    def _clean_bokeh_json(data, np_precision=5):
+    def _clean_bokeh_json(data, np_precision=5, data_entry=False):
         """
         Make the dict form the produced json data
         suitable for data_regression
@@ -148,13 +148,15 @@ def fixture_clean_bokeh_json():
             if key in ('id', 'root_ids'):
                 data.pop(key)
             elif isinstance(val, dict):
-                data[key] = _clean_bokeh_json(val, np_precision=np_precision)
+                data[key] = _clean_bokeh_json(val, np_precision=np_precision, data_entry= key=='data')
             elif isinstance(val, list):
                 for index, entry in enumerate(val):
                     if isinstance(entry, dict):
                         val[index] = _clean_bokeh_json(entry)
                 if all(isinstance(x, dict) for x in val):
                     data[key] = normalize_list_of_dicts(val)
+                elif all(isinstance(x, int) for x in val) and data_entry:
+                    data[key] = encode_base64_dict(np.array(val))
                 else:
                     data[key] = val
 
