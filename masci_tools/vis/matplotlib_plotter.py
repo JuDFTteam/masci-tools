@@ -130,6 +130,7 @@ class MatplotlibPlotter(Plotter):
         # legend properties
         'legend': False,
         'legend_show_data_labels': False,
+        'legend_remove_duplicates': False,
         'legend_options': {
             'fontsize': 'large',
             'linewidth': 3.0,
@@ -267,6 +268,8 @@ class MatplotlibPlotter(Plotter):
         'If True a legend for the plot is shown',
         'legend_show_data_labels':
         'If True the column names from the data argument are shown if not overwritten',
+        'legend_remove_duplicates':
+        'If True duplicate legend labels are removed',
         'legend_options':
         'Parameters for displaying the legend (Fontsize, location, ...)',
 
@@ -614,7 +617,12 @@ class MatplotlibPlotter(Plotter):
         :param ax: Axes object on which to perform the operation
         """
         if leg_elems is None:
-            leg_elems = ()
+            if self['legend_remove_duplicates']:
+                leg_elems = ax.get_legend_handles_labels()
+                by_label = dict(zip(*reversed(leg_elems)))
+                leg_elems = (by_label.values(), by_label.keys())
+            else:
+                leg_elems = ()
 
         if self['legend']:
             loptions = copy.deepcopy(self['legend_options'])
