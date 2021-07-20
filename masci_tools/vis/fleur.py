@@ -192,7 +192,9 @@ def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, only_spin=None, b
            f'eigenvalues_{only_spin}' not in bandsdata.keys():
             raise ValueError(f'No data for spin {only_spin} available')
 
-        bandsdata = bandsdata[[key for key in bandsdata.keys() if f'_{only_spin}' in key or key in ('kpath', 'band_index')]]
+        bandsdata = bandsdata[[
+            key for key in bandsdata.keys() if f'_{only_spin}' in key or key in ('kpath', 'band_index')
+        ]]
 
         if only_spin == 'down':
             bandsdata = bandsdata.rename(columns={key: key.replace('_down', '_up') for key in bandsdata.columns})
@@ -225,7 +227,7 @@ def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, only_spin=None, b
 
         #Double kpath and extend spin up data
         kpath = kpath.append(kpath, ignore_index=True)
-        band_index = band_index.append(band_index+nbands+1, ignore_index=True)
+        band_index = band_index.append(band_index + nbands + 1, ignore_index=True)
         complete_spin = pd.concat([spin_up, spin_dn], ignore_index=True)
 
         #And now add the new kpath and overwrite bandsdata
@@ -377,20 +379,12 @@ def plot_fleur_dos(dosdata,
 
     if bokeh_plot:
         if spinpol:
-            fig = bokeh_spinpol_dos('energy_grid',
-                                    dosdata_up,
-                                    dosdata_dn,
-                                    data=dosdata,
-                                    **kwargs)
+            fig = bokeh_spinpol_dos('energy_grid', dosdata_up, dosdata_dn, data=dosdata, **kwargs)
         else:
             fig = bokeh_dos('energy_grid', keys, data=dosdata, **kwargs)
     else:
         if spinpol:
-            fig = plot_spinpol_dos('energy_grid',
-                                   dosdata_up,
-                                   dosdata_dn,
-                                   data=dosdata,
-                                   **kwargs)
+            fig = plot_spinpol_dos('energy_grid', dosdata_up, dosdata_dn, data=dosdata, **kwargs)
         else:
             fig = plot_dos('energy_grid', keys, data=dosdata, **kwargs)
 

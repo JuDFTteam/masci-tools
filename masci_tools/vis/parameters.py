@@ -385,6 +385,49 @@ class Plotter(object):
 
         return ret_value
 
+    def expand_parameters(self, original_length, **kwargs):
+        """
+        Expand parameters to a bigger number of plots.
+        New length has to be a multiple of original length.
+        Only lists of length <= orginal_length are expanded.
+        Also expands function defaults
+
+        :param orginal_length: int of the old length
+        :param kwargs: arguments to expand
+
+        :returns: expanded kwargs
+        """
+        if self.num_plots == original_length:
+            return kwargs
+
+        if self.num_plots % original_length != 0:
+            raise ValueError(f"Cannot expand parameters from length '{original_length}' to '{self.num_plots}'")
+
+        length_per_param = self.num_plots // original_length
+
+        for key, val in kwargs.items():
+            if self.is_general(key):
+                continue
+
+            if isinstance(val, list):
+                if len(val) <= original_length:
+                    new_val = []
+                    for val_list in val:
+                        new_val += [val_list] * length_per_param
+                    kwargs[key] = new_val
+
+        for key, val in self._function_defaults.items():
+            if self.is_general(key):
+                continue
+            if isinstance(val, list):
+                if len(val) == original_length:
+                    new_val = []
+                    for val_list in val:
+                        new_val += [val_list] * length_per_param
+                    self.set_single_default(key, new_val, default_type='function')
+
+        return kwargs
+
     def set_single_default(self, key, value, default_type='global'):
         """
         Set default value for a single key/value pair
