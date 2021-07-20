@@ -381,6 +381,104 @@ class PlotData:
         else:
             return result
 
+    def sort_data(self, by_data_keys, **kwargs):
+        """
+        Sort the data by the given data_key(s)
+
+        .. note::
+            This function will convert the data arguments to ``pd.Dataframe``
+            objects
+
+        .. note::
+            If there are multiple plot sets and only one data source. This function
+            will expand the data to be one data source sorted according to the data_keys
+            for each plot
+
+        :param by_data_keys: str or list of str of the data_keys to sort by
+
+        Kwargs are passed on to ``pd.Dataframe.sort_values()``
+        """
+
+        if not isinstance(by_data_keys, list):
+            by_data_keys = [by_data_keys]
+
+        for data_key in by_data_keys:
+            if data_key not in self._column_spec._fields:
+                raise ValueError(f'Field {data_key} does not exist')
+
+        #For sorting data we always go to a pandas DataFrame for simplicity
+
+        expand_data = not isinstance(self.data, list) and len(self) > 1
+
+        if expand_data:
+            data = []
+
+        for indx, (entry, source) in enumerate(self.items()):
+
+            if not isinstance(source, pd.DataFrame):
+                source = pd.DataFrame(data=source)
+
+            sort_keys = [entry._asdict()[data_key] for data_key in by_data_keys]
+            sorted_source = source.sort_values(sort_keys, **kwargs)
+
+            if expand_data:
+                data.append(sorted_source)
+            else:
+                if isinstance(self.data, list):
+                    self.data[indx] = sorted_source
+                else:
+                    self.data = sorted_source
+
+        if expand_data:
+            self.data = data
+
+    def group_data(self, by, **kwargs):
+        """
+        Group the data by the given data_key(s) or other arguments for groupby
+
+        .. note::
+            This function will convert the data arguments to ``pd.Dataframe``
+            objects
+
+        :param by: str or list of str of the data_keys to sort by or other valid
+                   arguments for by in ``pd.Dataframe.groupby()``
+
+        Kwargs are passed on to ``pd.Dataframe.groupby()``
+        """
+
+        by_data_keys = None
+        if isinstance(by, (list, str)):
+            by_data_keys = by
+            if not isinstance(by_data_keys, list):
+                by_data_keys = [by_data_keys]
+
+            for data_key in by_data_keys:
+                if data_key not in self._column_spec._fields:
+                    raise ValueError(f'Field {data_key} does not exist')
+
+        #For grouping data we always go to a pandas Dataframe
+        columns = []
+        sources = []
+        masks = []
+
+        for indx, ((entry, source), mask) in enumerate(zip(self.items(), self.mask)):
+
+            if not isinstance(source, pd.DataFrame):
+                source = pd.DataFrame(data=source)
+
+            if by_data_keys is not None:
+                group_keys = [entry._asdict()[data_key] for data_key in by_data_keys]
+                gb = source.groupby(group_keys, **kwargs)
+            else:
+                gb = source.groupby(by, **kwargs)
+
+            columns.extend([entry] * len(gb))
+            sources.extend([gb.get_group(x) for x in gb.groups])
+            masks.extend([mask] * len(gb))
+
+        self.columns = columns
+        self.data = sources
+        self.mask = masks
 
     def shift_data(self, data_key, shifts, shifted_data_key=None, separate_data=True, negative=False):
         """
