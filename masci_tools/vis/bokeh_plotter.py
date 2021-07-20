@@ -43,6 +43,7 @@ class BokehPlotter(Plotter):
         'additional_tools': None,
         'show_tooltips': True,
         'global_tooltips': False,
+        'format_tooltips': True,
         'tooltips': [('X', '@{x}'), ('Y', '@{y}')],
         'additional_tooltips': None,
         'axis_linewidth': 2,
@@ -107,11 +108,14 @@ class BokehPlotter(Plotter):
         'Switch whether to add hover tooltips',
         'global_tooltips':
         'Switch whether to add individual (for each renderer) or global hover tooltips. ',
+        'format_tooltips':
+        'Switch whether to enable the processing of formatted strings in tooltips. ',
         'tooltips':
         'List of tuples specifying the tooltips. '
         'For more information refer to the bokeh documentation. '
         "Strings can contain format specifiers with the data keys of the function e.g. ``'@{x}'``. "
-        'Here the ``{x}`` will be replaced by the entry for x',
+        'Here the ``{x}`` will be replaced by the entry for x. If there are formatting specifications '
+        'for bokeh they need to be escaped with double curly braces or ``format_tooltips=False``.',
         'additional_tooltips':
         'Tooltips to add to the already defined ``tooltips`` (See above)',
         'axis_linewidth':
@@ -216,6 +220,7 @@ class BokehPlotter(Plotter):
         'additional_tools'
         'show_tooltips',
         'global_tooltips',
+        'format_tooltips',
         'tooltips',
         'additional_tooltips',
         'straight_lines',
@@ -434,25 +439,16 @@ class BokehPlotter(Plotter):
         self['color'] = color
 
     @staticmethod
-    def _format_tooltips(tooltips, additional_tooltips, **kwargs):
+    def _format_tooltips(tooltips, **kwargs):
         """
         Format the strings in tooltips with the given kwargs.
 
-        :param tooltips: The tooltips parameter
-        :param additional_tooltips:  The additional tooltips parameter
+        :param tooltips: The tooltips list to be formatted
         :param kwargs: The keywords arguments used to format the strings
 
         :returns: list of tuples with the tooltips ready to be used for tooltips
         """
         import string
-
-        if tooltips is None:
-            tooltips = []
-
-        if additional_tooltips is None:
-            additional_tooltips = []
-
-        tooltips = tooltips.copy() + additional_tooltips.copy()
 
         for indx, (label, value) in enumerate(tooltips):
             if len([val[0] for val in string.Formatter().parse(label)]) != 0:
@@ -487,7 +483,20 @@ class BokehPlotter(Plotter):
             if not isinstance(renderers, list) and renderers != 'auto':
                 renderers = [renderers]
 
-            final_tooltips = self._format_tooltips(self['tooltips'], self['additional_tooltips'], **kwargs)
+            tooltips = self['tooltips']
+            if tooltips is None:
+                tooltips = []
+
+            additional_tooltips = self['additional_tooltips']
+            if additional_tooltips is None:
+                additional_tooltips = []
+
+            tooltips = tooltips.copy() + additional_tooltips.copy()
+
+            if self['format_tooltips']:
+                final_tooltips = self._format_tooltips(tooltips, **kwargs)
+            else:
+                final_tooltips = tooltips
 
             #We make them not toggleable for now since it would lead to multiple
             #hover icons in the toolbar, which is kind of annoying
