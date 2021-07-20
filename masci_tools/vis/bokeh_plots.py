@@ -84,9 +84,9 @@ def bokeh_scatter(x,
     """
     Create an interactive scatter plot with bokeh
 
-    :param source: source for the data of the plot (pandas Dataframe for example)
-    :param xdata: key from which to pull the data for the x-axis
-    :param ydata: key from which to pull the data for the y-axis
+    :param x: arraylike or key for data for the x-axis
+    :param y: arraylike or key for data for the y-axis
+    :param data: source for the data of the plot (pandas Dataframe for example)
     :param xlabel: label for the x-axis
     :param ylabel: label for the y-axis
     :param title: title of the figure
@@ -141,9 +141,9 @@ def bokeh_multi_scatter(x,
     """
     Create an interactive scatter (muliple data sets possible) plot with bokeh
 
-    :param source: source for the data of the plot (pandas Dataframe for example)
-    :param xdata: key from which to pull the data for the x-axis (or if source is None list with data for x-axis)
-    :param ydata: key from which to pull the data for the y-axis (or if source is None list with data for y-axis)
+    :param x: arraylike or key for data for the x-axis
+    :param y: arraylike or key for data for the y-axis
+    :param data: source for the data of the plot (pandas Dataframe for example)
     :param xlabel: label for the x-axis
     :param ylabel: label for the y-axis
     :param title: title of the figure
@@ -214,9 +214,9 @@ def bokeh_line(x,
     """
     Create an interactive multi-line plot with bokeh
 
-    :param source: source for the data of the plot (pandas Dataframe for example)
-    :param xdata: key from which to pull the data for the x-axis (or if source is None list with data for x-axis)
-    :param ydata: key from which to pull the data for the y-axis (or if source is None list with data for y-axis)
+    :param x: arraylike or key for data for the x-axis
+    :param y: arraylike or key for data for the y-axis
+    :param data: source for the data of the plot (optional) (pandas Dataframe for example)
     :param xlabel: label for the x-axis
     :param ylabel: label for the y-axis
     :param title: title of the figure
@@ -304,9 +304,9 @@ def bokeh_dos(energy_grid,
     Create an interactive dos plot (non-spinpolarized) with bokeh
     Both horizontal or vertical orientation are possible
 
-    :param dosdata: source for the dosdata of the plot (pandas Dataframe for example)
-    :param energy: key from which to pull the data for the energy grid
-    :param ynames: keys from which to pull the data for dos components
+    :param energy_grid: arraylike or key data for the energy grid
+    :param spin_up_data: arraylike or key data for the DOS
+    :param data: source for the DOS data (optional) of the plot (pandas Dataframe for example)
     :param energy_label: label for the energy-axis
     :param dos_label: label for the dos-axis
     :param title: title of the figure
@@ -389,9 +389,10 @@ def bokeh_spinpol_dos(energy_grid,
     Create an interactive dos plot (spinpolarized) with bokeh
     Both horizontal or vertical orientation are possible
 
-    :param dosdata: source for the dosdata of the plot (pandas Dataframe for example)
-    :param energy: key from which to pull the data for the energy grid
-    :param ynames: keys from which to pull the data for dos components
+    :param energy_grid: arraylike or key data for the energy grid
+    :param spin_up_data: arraylike or key data for the DOS spin-up
+    :param spin_dn_data: arraylike or key data for the DOS spin-dn
+    :param data: source for the DOS data (optional) of the plot (pandas Dataframe for example)
     :param spin_dn_negative: bool, if True (default), the spin down components are plotted downwards
     :param energy_label: label for the energy-axis
     :param dos_label: label for the dos-axis
@@ -549,34 +550,50 @@ def bokeh_bands(kpath,
                 ylabel=r'E-E_F [eV]',
                 title='',
                 special_kpoints=None,
-                size_min=3.0,
-                size_scaling=10.0,
+                markersize_min=3.0,
+                markersize_scaling=10.0,
                 outfilename='bands_plot.html',
                 scale_color=True,
+                separate_bands=False,
+                line_plot=False,
+                band_index=None,
                 **kwargs):
     """
     Create an interactive bandstructure plot (non-spinpolarized) with bokeh
     Can make a simple plot or weight the size and color of the points against a given weight
 
-    :param bandsdata: source for the bandsdata of the plot (pandas Dataframe for example)
-    :param k_label: key from which to pull the data for the kpoints
-    :param eigenvalues: key from which to pull the data for eigenvalues
-    :param weight: optional key from the bandsdata. If given the size and color of each point
-                   are adjusted to show the weights
+    :param kpath: arraylike or key data for the kpoint data
+    :param bands: arraylike or key data for the eigenvalues
+    :param size_data: arraylike or key data the weights to emphasize (optional)
+    :param color_data: str or arraylike, data for the color values with a colormap (optional)
+    :param data: source for the bands data (optional) of the plot (pandas Dataframe for example)
     :param xlabel: label for the x-axis (default no label)
     :param ylabel: label for the y-axis
     :param title: title of the figure
     :param special_kpoints: list of tuples (str, float), place vertical lines at the given values
                             and mark them on the x-axis with the given label
     :param e_fermi: float, determines, where to put the line for the fermi energy
-    :param size_min: minimum value used in scaling points for weight
-    :param size_scaling: factor used in scaling points for weight
+    :param markersize_min: minimum value used in scaling points for weight
+    :param markersize_scaling: factor used in scaling points for weight
     :param outfilename: filename of the output file
     :param scale_color: bool, if True (default) the weight will be additionally shown via a colormapping
+    :param line_plot: bool, if True the bandstructure will be plotted with lines
+                      Here no weights are supported
+    :param separate_bands: bool, if True the bandstructure will be separately plotted for each band
+                           allows more specific parametrization
+    :param band_index: data for which eigenvalue belongs to which band (needed for line_plot and separate_bands)
 
-    Kwargs will be passed on to :py:func:`bokeh_multi_scatter()`
+    Kwargs will be passed on to :py:func:`bokeh_multi_scatter()` or :py:func:`bokeh_line()`
     """
     from bokeh.transform import linear_cmap
+
+    if 'size_scaling' in kwargs:
+        warnings.warn('size_scaling is deprecated. Use markersize_scaling instead', DeprecationWarning)
+        markersize_scaling = kwargs.pop('size_scaling')
+
+    if 'size_min' in kwargs:
+        warnings.warn('size_min is deprecated. Use markersize_min instead', DeprecationWarning)
+        markersize_min = kwargs.pop('size_min')
 
     if isinstance(kpath, (dict, pd.DataFrame, ColumnDataSource)) or kpath is None:
         warnings.warn(
@@ -595,12 +612,28 @@ def bokeh_bands(kpath,
                                        kpath=kpath,
                                        bands=bands,
                                        size=size_data,
-                                       color=color_data)
+                                       color=color_data,
+                                       band_index=band_index)
+
+    if line_plot and size_data is not None:
+        raise ValueError('Bandstructure with lines and size scaling not supported')
+
+    if line_plot and color_data is not None:
+        raise ValueError('Bandstructure with lines and color mapping not supported')
+
+    if line_plot or separate_bands:
+        if band_index is None:
+            raise ValueError('The data for band indices are needed for separate_bands and line_plot')
+        plot_data.group_data('band_index')
+        plot_data.sort_data('kpath')
 
     if scale_color and size_data is not None:
         if color_data is not None:
             raise ValueError('color_data should not be provided when scale_color is True')
         plot_data.copy_data('size', 'color', rename_original=True)
+
+    if color_data is not None:
+        kwargs['color'] = plot_data.get_keys('color')
 
     entries = plot_data.keys(first=True)
     if entries.size is not None:
@@ -619,7 +652,7 @@ def bokeh_bands(kpath,
             plot_params.set_defaults(default_type='function',
                                      color=linear_cmap(entries.color, 'Blues256', weight_max, -0.05))
 
-        transform = lambda size: size_min + size_scaling * size / weight_max
+        transform = lambda size: markersize_min + markersize_scaling * size / weight_max
         plot_data.apply('size', transform)
     else:
         plot_params.set_defaults(default_type='function', color='black')
@@ -653,14 +686,22 @@ def bokeh_bands(kpath,
                              y_range_padding=0.0,
                              limits=limits)
 
-    return bokeh_multi_scatter(plot_data.get_keys('kpath'),
-                               plot_data.get_keys('bands'),
-                               data=plot_data.data,
-                               color=plot_data.get_keys('color'),
-                               xlabel='',
-                               ylabel=ylabel,
-                               title=title,
-                               **kwargs)
+    if line_plot:
+        return bokeh_line(plot_data.get_keys('kpath'),
+                                   plot_data.get_keys('bands'),
+                                   data=plot_data.data,
+                                   xlabel='',
+                                   ylabel=ylabel,
+                                   title=title,
+                                   **kwargs)
+    else:
+        return bokeh_multi_scatter(plot_data.get_keys('kpath'),
+                                   plot_data.get_keys('bands'),
+                                   data=plot_data.data,
+                                   xlabel='',
+                                   ylabel=ylabel,
+                                   title=title,
+                                   **kwargs)
 
 
 @ensure_plotter_consistency(plot_params)
@@ -675,34 +716,51 @@ def bokeh_spinpol_bands(kpath,
                         ylabel=r'E-E_F [eV]',
                         title='',
                         special_kpoints=None,
-                        size_min=3.0,
-                        size_scaling=10.0,
+                        markersize_min=3.0,
+                        markersize_scaling=10.0,
                         outfilename='bands_plot.html',
                         scale_color=True,
+                        line_plot=False,
+                        separate_bands=False,
+                        band_index=None,
                         **kwargs):
     """
     Create an interactive bandstructure plot (spinpolarized) with bokeh
     Can make a simple plot or weight the size and color of the points against a given weight
 
-    :param bandsdata: source for the bandsdata of the plot (pandas Dataframe for example)
-    :param k_label: key from which to pull the data for the kpoints
-    :param eigenvalues: keys from which to pull the data for eigenvalues (default ['eigenvalues_up','eigenvalues_down'])
-    :param weight: optional key from the bandsdata. If given the size and color of each point
-                   are adjusted to show the weights
+    :param kpath: arraylike or key data for the kpoint data
+    :param bands_up: arraylike or key data for the eigenvalues spin-up
+    :param bands_dn: arraylike or key data for the eigenvalues spin-dn
+    :param size_data: arraylike or key data the weights to emphasize (optional)
+    :param color_data: str or arraylike, data for the color values with a colormap (optional)
+    :param data: source for the bands data (optional) of the plot (pandas Dataframe for example)
     :param xlabel: label for the x-axis (default no label)
     :param ylabel: label for the y-axis
     :param title: title of the figure
     :param special_kpoints: list of tuples (str, float), place vertical lines at the given values
                             and mark them on the x-axis with the given label
     :param e_fermi: float, determines, where to put the line for the fermi energy
-    :param size_min: minimum value used in scaling points for weight
-    :param size_scaling: factor used in scaling points for weight
+    :param markersize_min: minimum value used in scaling points for weight
+    :param markersize_scaling: factor used in scaling points for weight
     :param outfilename: filename of the output file
     :param scale_color: bool, if True (default) the weight will be additionally shown via a colormapping
+    :param line_plot: bool, if True the bandstructure will be plotted with lines
+                      Here no weights are supported
+    :param separate_bands: bool, if True the bandstructure will be separately plotted for each band
+                           allows more specific parametrization
+    :param band_index: data for which eigenvalue belongs to which band (needed for line_plot and separate_bands)
 
-    Kwargs will be passed on to :py:func:`bokeh_multi_scatter()`
+    Kwargs will be passed on to :py:func:`bokeh_multi_scatter()` or :py:func:`bokeh_line()`
     """
     from bokeh.transform import linear_cmap
+
+    if 'size_scaling' in kwargs:
+        warnings.warn('size_scaling is deprecated. Use markersize_scaling instead', DeprecationWarning)
+        markersize_scaling = kwargs.pop('size_scaling')
+
+    if 'size_min' in kwargs:
+        warnings.warn('size_min is deprecated. Use markersize_min instead', DeprecationWarning)
+        markersize_min = kwargs.pop('size_min')
 
     if isinstance(kpath, (dict, pd.DataFrame, ColumnDataSource)) or kpath is None:
         warnings.warn(
@@ -721,18 +779,35 @@ def bokeh_spinpol_bands(kpath,
                                        kpath=kpath,
                                        bands=[bands_up, bands_dn],
                                        size=size_data,
-                                       color=color_data)
+                                       color=color_data,
+                                       band_index=band_index)
 
     plot_params.single_plot = False
     plot_params.num_plots = len(plot_data)
+
+    if len(plot_data) != 2:
+        raise ValueError('Wrong number of plots specified (Only 2 permitted)')
+
+    if line_plot and size_data is not None:
+        raise ValueError('Bandstructure with lines and size scaling not supported')
+
+    if line_plot and color_data is not None:
+        raise ValueError('Bandstructure with lines and color mapping not supported')
+
+    if line_plot or separate_bands:
+        if band_index is None:
+            raise ValueError('The data for band indices are needed for separate_bands and line_plot')
+
+        plot_data.group_data('band_index')
+        plot_data.sort_data('kpath')
 
     if scale_color and size_data is not None:
         if color_data is not None:
             raise ValueError('color_data should not be provided when scale_color is True')
         plot_data.copy_data('size', 'color', rename_original=True)
 
-    if len(plot_data) != 2:
-        raise ValueError('Wrong number of plots specified (Only 2 permitted)')
+    if color_data is not None:
+        kwargs['color'] = plot_data.get_keys('color')
 
     if any(entry.size is not None for entry in plot_data.keys()):
 
@@ -745,7 +820,7 @@ def bokeh_spinpol_bands(kpath,
         mask = [np.logical_and(col.bands > ylimits[0], col.bands < ylimits[1]) for col in data]
         weight_max = plot_data.max('size', mask=mask)
 
-        transform = lambda size: size_min + size_scaling * size / weight_max
+        transform = lambda size: markersize_min + markersize_scaling * size / weight_max
         plot_data.apply('size', transform)
 
         plot_params.set_defaults(default_type='function', marker_size=plot_data.get_keys('size'))
@@ -789,7 +864,20 @@ def bokeh_spinpol_bands(kpath,
                              limits=limits,
                              level=[None, 'underlay'])
 
-    return bokeh_multi_scatter(plot_data.get_keys('kpath'),
+    if line_plot or separate_bands:
+        plot_params.num_plots = len(plot_data)
+        kwargs = plot_params.expand_parameters(original_length=2, **kwargs)
+
+    if line_plot:
+        return bokeh_line(plot_data.get_keys('kpath'),
+                               plot_data.get_keys('bands'),
+                               data=plot_data.data,
+                               xlabel='',
+                               ylabel=ylabel,
+                               title=title,
+                               **kwargs)
+    else:
+        return bokeh_multi_scatter(plot_data.get_keys('kpath'),
                                plot_data.get_keys('bands'),
                                data=plot_data.data,
                                xlabel='',

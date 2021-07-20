@@ -262,6 +262,7 @@ def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, only_spin=None, b
                                       data=bandsdata,
                                       size_data=weight,
                                       special_kpoints=special_kpoints,
+                                      band_index='band_index',
                                       **kwargs)
         else:
             fig = bokeh_bands('kpath',
@@ -269,6 +270,7 @@ def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, only_spin=None, b
                               data=bandsdata,
                               size_data=weight,
                               special_kpoints=special_kpoints,
+                              band_index='band_index',
                               **kwargs)
     else:
         if spinpol:
@@ -278,6 +280,7 @@ def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, only_spin=None, b
                                      data=bandsdata,
                                      size_data=weight,
                                      special_kpoints=special_kpoints,
+                                     band_index='band_index',
                                      **kwargs)
         else:
             fig = plot_bands('kpath',
@@ -285,6 +288,7 @@ def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, only_spin=None, b
                              data=bandsdata,
                              size_data=weight,
                              special_kpoints=special_kpoints,
+                             band_index='band_index',
                              **kwargs)
 
     return fig

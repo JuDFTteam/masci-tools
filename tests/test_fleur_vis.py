@@ -76,6 +76,39 @@ def test_plot_bands_weighted_bokeh(check_bokeh_plot):
     check_bokeh_plot(fig)
 
 
+@pytest.mark.mpl_image_compare(baseline_dir='files/fleur_vis/', filename='bands_line.png')
+def test_plot_bands_line_mpl():
+    from masci_tools.io.parsers.hdf5 import HDF5Reader
+    from masci_tools.io.parsers.hdf5.recipes import FleurBands
+    from masci_tools.vis.fleur import plot_fleur_bands
+
+    TEST_BANDDOS_FILE = os.path.join(HDFTEST_DIR, 'banddos_bands.hdf')
+
+    with HDF5Reader(TEST_BANDDOS_FILE) as h5reader:
+        data, attributes = h5reader.read(recipe=FleurBands)
+
+    gcf().clear()
+
+    plot_fleur_bands(data, attributes, show=False, line_plot=True)
+
+    return gcf()
+
+
+def test_plot_bands_line_bokeh(check_bokeh_plot):
+    from masci_tools.io.parsers.hdf5 import HDF5Reader
+    from masci_tools.io.parsers.hdf5.recipes import FleurBands
+    from masci_tools.vis.fleur import plot_fleur_bands
+
+    TEST_BANDDOS_FILE = os.path.join(HDFTEST_DIR, 'banddos_bands.hdf')
+
+    with HDF5Reader(TEST_BANDDOS_FILE) as h5reader:
+        data, attributes = h5reader.read(recipe=FleurBands)
+
+    fig = plot_fleur_bands(data, attributes, show=False, bokeh_plot=True, line_plot=True)
+
+    check_bokeh_plot(fig)
+
+
 @pytest.mark.mpl_image_compare(baseline_dir='files/fleur_vis/', filename='bands_defaults_spinpol.png')
 def test_plot_bands_spinpol_defaults_mpl():
     from masci_tools.io.parsers.hdf5 import HDF5Reader
@@ -138,6 +171,39 @@ def test_plot_bands_spinpol_weighted_bokeh(check_bokeh_plot):
         data, attributes = h5reader.read(recipe=FleurBands)
 
     fig = plot_fleur_bands(data, attributes, show=False, bokeh_plot=True, weight='MT:1d')
+
+    check_bokeh_plot(fig)
+
+
+@pytest.mark.mpl_image_compare(baseline_dir='files/fleur_vis/', filename='bands_spinpol_line.png')
+def test_plot_bands_spinpol_line_mpl():
+    from masci_tools.io.parsers.hdf5 import HDF5Reader
+    from masci_tools.io.parsers.hdf5.recipes import FleurBands
+    from masci_tools.vis.fleur import plot_fleur_bands
+
+    TEST_BANDDOS_FILE = os.path.join(HDFTEST_DIR, 'banddos_spinpol_bands.hdf')
+
+    with HDF5Reader(TEST_BANDDOS_FILE) as h5reader:
+        data, attributes = h5reader.read(recipe=FleurBands)
+
+    gcf().clear()
+
+    plot_fleur_bands(data, attributes, show=False, line_plot=True)
+
+    return gcf()
+
+
+def test_plot_bands_spinpol_line_bokeh(check_bokeh_plot):
+    from masci_tools.io.parsers.hdf5 import HDF5Reader
+    from masci_tools.io.parsers.hdf5.recipes import FleurBands
+    from masci_tools.vis.fleur import plot_fleur_bands
+
+    TEST_BANDDOS_FILE = os.path.join(HDFTEST_DIR, 'banddos_spinpol_bands.hdf')
+
+    with HDF5Reader(TEST_BANDDOS_FILE) as h5reader:
+        data, attributes = h5reader.read(recipe=FleurBands)
+
+    fig = plot_fleur_bands(data, attributes, show=False, bokeh_plot=True, line_plot=True)
 
     check_bokeh_plot(fig)
 

@@ -111,6 +111,7 @@ def single_scatterplot(xdata,
 
     :param xdata: str or arraylike, data for the x coordinate
     :param ydata: str or arraylike, data for the y coordinate
+    :param data: source for the data of the plot (optional) (pandas Dataframe for example)
     :param xlabel: str, label written on the x axis
     :param ylabel: str, label written on the y axis
     :param title: str, title of the figure
@@ -231,6 +232,7 @@ def multiple_scatterplots(xdata,
     :param ydata: str or arraylike, data for the y coordinate
     :param xlabel: str, label written on the x axis
     :param ylabel: str, label written on the y axis
+    :param data: source for the data of the plot (optional) (pandas Dataframe for example)
     :param title: str, title of the figure
     :param data: Mapping giving the data for the plots (required if xdata and ydata are str)
     :param saveas: str specifying the filename (without file format)
@@ -364,6 +366,7 @@ def multi_scatter_plot(xdata,
     :param ydata: str or arraylike, data for the y coordinate
     :param size_data: str or arraylike, data for the markersizes (optional)
     :param color_data: str or arraylike, data for the color values with a colormap (optional)
+    :param data: source for the data of the plot (optional) (pandas Dataframe for example)
     :param xlabel: str, label written on the x axis
     :param ylabel: str, label written on the y axis
     :param title: str, title of the figure
@@ -488,6 +491,7 @@ def colormesh_plot(xdata,
     :param xdata: arraylike, data for the x coordinate
     :param ydata: arraylike, data for the y coordinate
     :param cdata: arraylike, data for the color values with a colormap
+    :param data: source for the data of the plot (optional) (pandas Dataframe for example)
     :param xlabel: str, label written on the x axis
     :param ylabel: str, label written on the y axis
     :param title: str, title of the figure
@@ -551,6 +555,7 @@ def waterfall_plot(xdata,
     :param xdata: arraylike, data for the x coordinate
     :param ydata: arraylike, data for the y coordinate
     :param zdata: arraylike, data for the z coordinate
+    :param data: source for the data of the plot (optional) (pandas Dataframe for example)
     :param xlabel: str, label written on the x axis
     :param ylabel: str, label written on the y axis
     :param zlabel: str, label written on the z axis
@@ -615,6 +620,7 @@ def surface_plot(xdata,
     :param xdata: arraylike, data for the x coordinate
     :param ydata: arraylike, data for the y coordinate
     :param zdata: arraylike, data for the z coordinate
+    :param data: source for the data of the plot (optional) (pandas Dataframe for example)
     :param xlabel: str, label written on the x axis
     :param ylabel: str, label written on the y axis
     :param zlabel: str, label written on the z axis
@@ -678,6 +684,7 @@ def multiplot_moved(xdata,
 
     :param xdata: arraylike, data for the x coordinate
     :param ydata: arraylike, data for the y coordinate
+    :param data: source for the data of the plot (optional) (pandas Dataframe for example)
     :param xlabel: str, label written on the x axis
     :param ylabel: str, label written on the y axis
     :param title: str, title of the figure
@@ -730,6 +737,7 @@ def histogram(xdata,
     Create a standard looking histogram
 
     :param xdata: arraylike, Data for the histogram
+    :param data: source for the data of the plot (optional) (pandas Dataframe for example)
     :param density: bool, if True the histogram is normed and a normal distribution is plotted with
                     the same mu and sigma as the data
     :param histtype: str, type of the histogram
@@ -847,6 +855,7 @@ def barchart(positions,
 
     :param positions: arraylike data for the positions of the bars
     :param heights: arraylike data for the heights of the bars
+    :param data: source for the data of the plot (optional) (pandas Dataframe for example)
     :param width: float determines the width of the bars
     :param axis: Axes object where to add the plot
     :param title: str, Title of the plot
@@ -856,6 +865,8 @@ def barchart(positions,
     :param xerr: optional data for errorbar in x-direction
     :param yerr: optional data for errorbar in y-direction
     :param bottom: bottom values for the lowest end of the bars
+    :param bar_type: type of the barchart plot. Either ``stacked``, ``grouped`` or ``independent``
+    :param alignment: which direction the bars should be plotted (``horizontal`` or ``vertical``)
 
     Kwargs will be passed on to :py:class:`masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`.
     If the arguments are not recognized they are passed on to the matplotlib function `bar`
@@ -1575,6 +1586,7 @@ def plot_dos(energy_grid,
 
     :param energy_grid: arraylike data for the energy grid of the DOS
     :param dos_data: arraylike data for all the DOS components to plot
+    :param data: source for the data of the plot (optional) (pandas Dataframe for example)
     :param title: str, Title of the plot
     :param energy_label: str, label for the energy-axis
     :param dos_label: str, label for the DOS-axis
@@ -1652,6 +1664,7 @@ def plot_spinpol_dos(energy_grid,
     :param energy_grid: arraylike data for the energy grid of the DOS
     :param spin_up_data: arraylike data for all the DOS spin-up components to plot
     :param spin_dn_data: arraylike data for all the DOS spin-down components to plot
+    :param data: source for the data of the plot (optional) (pandas Dataframe for example)
     :param title: str, Title of the plot
     :param energy_label: str, label for the energy-axis
     :param dos_label: str, label for the DOS-axis
@@ -1770,6 +1783,9 @@ def plot_bands(kpath,
                markersize_min=0.5,
                markersize_scaling=5.0,
                scale_color=True,
+               separate_bands=False,
+               line_plot=False,
+               band_index=None,
                **kwargs):
     """
     Plot the provided data for a bandstrucuture (non spin-polarized). Can be used
@@ -1789,6 +1805,12 @@ def plot_bands(kpath,
     :param markersize_min: minimum value used in scaling points for weight
     :param markersize_scaling: factor used in scaling points for weight
     :param scale_color: bool, if True (default) the weight will be additionally shown via a colormapping
+    :param line_plot: bool, if True the bandstructure will be plotted with lines
+                      Here no weights are supported
+    :param separate_bands: bool, if True the bandstructure will be separately plotted for each band
+                           allows more specific parametrization
+    :param band_index: data for which eigenvalue belongs to which band (needed for line_plot and separate_bands)
+
 
     All other Kwargs are passed on to the :py:func:`multi_scatter_plot()` call
     """
@@ -1798,7 +1820,20 @@ def plot_bands(kpath,
                                        kpath=kpath,
                                        bands=bands,
                                        size=size_data,
-                                       color=color_data)
+                                       color=color_data,
+                                       band_index=band_index)
+
+    if line_plot and size_data is not None:
+        raise ValueError('Bandstructure with lines and size scaling not supported')
+
+    if line_plot and color_data is not None:
+        raise ValueError('Bandstructure with lines and color mapping not supported')
+
+    if line_plot or separate_bands:
+        if band_index is None:
+            raise ValueError('The data for band indices are needed for separate_bands and line_plot')
+        plot_data.group_data('band_index')
+        plot_data.sort_data('kpath')
 
     if scale_color and size_data is not None:
         if color_data is not None:
@@ -1848,20 +1883,35 @@ def plot_bands(kpath,
                              xticks=xticks,
                              xticklabels=xticklabels,
                              color='k',
-                             linewidth=0,
                              line_options={'zorder': -1},
                              colorbar=False)
 
-    ax = multi_scatter_plot(plot_data.get_keys('kpath'),
-                            plot_data.get_keys('bands'),
-                            size_data=plot_data.get_keys('size'),
-                            color_data=plot_data.get_keys('color'),
-                            data=plot_data.data,
-                            xlabel=xlabel,
-                            ylabel=ylabel,
-                            title=title,
-                            saveas=saveas,
-                            **kwargs)
+    if line_plot:
+        plot_params.set_defaults(default_type='function', marker=None)
+    else:
+        plot_params.set_defaults(default_type='function', linewidth=0)
+
+    if line_plot:
+        ax = multiple_scatterplots(plot_data.get_keys('kpath'),
+                                   plot_data.get_keys('bands'),
+                                   data=plot_data.data,
+                                   xlabel=xlabel,
+                                   ylabel=ylabel,
+                                   title=title,
+                                   saveas=saveas,
+                                   **kwargs)
+
+    else:
+        ax = multi_scatter_plot(plot_data.get_keys('kpath'),
+                                plot_data.get_keys('bands'),
+                                size_data=plot_data.get_keys('size'),
+                                color_data=plot_data.get_keys('color'),
+                                data=plot_data.data,
+                                xlabel=xlabel,
+                                ylabel=ylabel,
+                                title=title,
+                                saveas=saveas,
+                                **kwargs)
 
     return ax
 
@@ -1884,6 +1934,9 @@ def plot_spinpol_bands(kpath,
                        markersize_min=0.5,
                        markersize_scaling=5.0,
                        scale_color=True,
+                       line_plot=False,
+                       separate_bands=False,
+                       band_index=None,
                        **kwargs):
     """
     Plot the provided data for a bandstrucuture (spin-polarized). Can be used
@@ -1905,6 +1958,12 @@ def plot_spinpol_bands(kpath,
     :param show_spin_pol: bool, if True (default) the two different spin channles will be shown in blue
                           and red by default
     :param scale_color: bool, if True (default) the weight will be additionally shown via a colormapping
+    :param line_plot: bool, if True the bandstructure will be plotted with lines
+                      Here no weights are supported
+    :param separate_bands: bool, if True the bandstructure will be separately plotted for each band
+                           allows more specific parametrization
+    :param band_index: data for which eigenvalue belongs to which band (needed for line_plot and separate_bands)
+
 
     All other Kwargs are passed on to the :py:func:`multi_scatter_plot()` call
     """
@@ -1913,18 +1972,32 @@ def plot_spinpol_bands(kpath,
                                        kpath=kpath,
                                        bands=[bands_up, bands_dn],
                                        size=size_data,
-                                       color=color_data)
+                                       color=color_data,
+                                       band_index=band_index)
 
     plot_params.single_plot = False
     plot_params.num_plots = len(plot_data)
+
+    if len(plot_data) != 2:
+        raise ValueError('Wrong number of plots specified (Only 2 permitted)')
+
+    if line_plot and size_data is not None:
+        raise ValueError('Bandstructure with lines and size scaling not supported')
+
+    if line_plot and color_data is not None:
+        raise ValueError('Bandstructure with lines and color mapping not supported')
+
+    if line_plot or separate_bands:
+        if band_index is None:
+            raise ValueError('The data for band indices are needed for separate_bands and line_plot')
+
+        plot_data.group_data('band_index')
+        plot_data.sort_data('kpath')
 
     if scale_color and size_data is not None:
         if color_data is not None:
             raise ValueError('color_data should not be provided when scale_color is True')
         plot_data.copy_data('size', 'color', rename_original=True)
-
-    if len(plot_data) != 2:
-        raise ValueError('Wrong number of plots specified (Only 2 permitted)')
 
     if special_kpoints is None:
         special_kpoints = {}
@@ -1974,28 +2047,47 @@ def plot_spinpol_bands(kpath,
                              xticklabels=xticklabels,
                              color=color,
                              cmap=cmaps,
-                             linewidth=0,
                              legend=True,
                              legend_remove_duplicates=True,
-                             legend_options={'loc':'upper right'},
+                             legend_options={'loc': 'upper right'},
                              line_options={'zorder': -1},
                              zorder=[2, 1],
                              colorbar=False)
+
+    if line_plot:
+        plot_params.set_defaults(default_type='function', marker=None)
+    else:
+        plot_params.set_defaults(default_type='function', linewidth=0)
+
+    if line_plot or separate_bands:
+        plot_params.num_plots = len(plot_data)
+        kwargs = plot_params.expand_parameters(original_length=2, **kwargs)
 
     if 'cmap' not in kwargs:
         #Cut off the white end of the Blues/Reds colormap
         plot_params.set_defaults(default_type='function', sub_colormap=(0.15, 1.0))
 
-    ax = multi_scatter_plot(plot_data.get_keys('kpath'),
-                            plot_data.get_keys('bands'),
-                            size_data=plot_data.get_keys('size'),
-                            color_data=plot_data.get_keys('color'),
-                            data=plot_data.data,
-                            xlabel=xlabel,
-                            ylabel=ylabel,
-                            title=title,
-                            saveas=saveas,
-                            **kwargs)
+    if line_plot:
+        ax = multiple_scatterplots(plot_data.get_keys('kpath'),
+                                   plot_data.get_keys('bands'),
+                                   data=plot_data.data,
+                                   xlabel=xlabel,
+                                   ylabel=ylabel,
+                                   title=title,
+                                   saveas=saveas,
+                                   **kwargs)
+
+    else:
+        ax = multi_scatter_plot(plot_data.get_keys('kpath'),
+                                plot_data.get_keys('bands'),
+                                size_data=plot_data.get_keys('size'),
+                                color_data=plot_data.get_keys('color'),
+                                data=plot_data.data,
+                                xlabel=xlabel,
+                                ylabel=ylabel,
+                                title=title,
+                                saveas=saveas,
+                                **kwargs)
 
     return ax
 
