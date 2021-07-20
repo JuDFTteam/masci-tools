@@ -106,14 +106,16 @@ def bokeh_scatter(x,
         y = kwargs.pop('ydata', 'y')
 
     plot_data = process_data_arguments(data=data, x=x, y=y, single_plot=True, same_length=True)
+    entry, source = plot_data.items(first=True)
 
+    plot_params.set_defaults(default_type='function', name=entry.y)
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
 
     p = plot_params.prepare_figure(title, xlabel, ylabel, figure=figure)
 
     plot_kwargs = plot_params.plot_kwargs(plot_type='scatter')
-    entry, source = plot_data.items(first=True)
     res = p.scatter(x=entry.x, y=entry.y, source=source, **plot_kwargs, **kwargs)
+    plot_params.add_tooltips(p, res, entry)
 
     if plot_params['level'] is not None:
         res.level = plot_params['level']
@@ -170,7 +172,7 @@ def bokeh_multi_scatter(x,
     else:
         default_legend_label = plot_data.get_keys('x')
 
-    plot_params.set_defaults(default_type='function', name='scatter plot', legend_label=default_legend_label)
+    plot_params.set_defaults(default_type='function', name=default_legend_label, legend_label=default_legend_label)
 
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
     p = plot_params.prepare_figure(title, xlabel, ylabel, figure=figure)
@@ -183,6 +185,7 @@ def bokeh_multi_scatter(x,
     for indx, ((entry, source), plot_kw) in enumerate(zip(plot_data.items(), plot_kwargs)):
 
         res = p.scatter(x=entry.x, y=entry.y, source=source, **plot_kw, **kwargs)
+        plot_params.add_tooltips(p, res, entry)
 
         if plot_params[('level', indx)] is not None:
             res.level = plot_params[('level', indx)]
@@ -243,7 +246,7 @@ def bokeh_line(x,
     else:
         default_legend_label = plot_data.get_keys('x')
 
-    plot_params.set_defaults(default_type='function', name='line plot', legend_label=default_legend_label)
+    plot_params.set_defaults(default_type='function', name=default_legend_label, legend_label=default_legend_label)
 
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
     p = plot_params.prepare_figure(title, xlabel, ylabel, figure=figure)
@@ -267,6 +270,7 @@ def bokeh_line(x,
                 p.varea(x=entry.x, y1=entry.y, y2=entry.shift, **kw_area, source=source)
 
         res = p.line(x=entry.x, y=entry.y, source=source, **kw_line, **kwargs)
+        plot_params.add_tooltips(p, res, entry)
         res2 = None
         if plot_points:
             res2 = p.scatter(x=entry.x, y=entry.y, source=source, **kw_scatter)
@@ -347,11 +351,10 @@ def bokeh_dos(energy_grid,
 
     plot_params.set_defaults(default_type='function',
                              straight_lines=lines,
+                             tooltips=[('Name', '$name'), ('Energy', '@{x}{{0.0[00]}}'),
+                                       ('DOS value', '@$name{{0.00}}')],
                              figure_kwargs={
-                                 'tooltips': [('Name', '$name'), ('Energy', '@energy_grid{0.0[00]}'),
-                                              ('DOS value', '@$name{0.00}')],
-                                 'width':
-                                 1000,
+                                 'width': 1000,
                              })
 
     if xyswitch:
@@ -447,12 +450,9 @@ def bokeh_spinpol_dos(energy_grid,
 
     plot_params.set_defaults(default_type='function',
                              straight_lines=lines,
-                             figure_kwargs={
-                                 'tooltips': [('DOS Name', '$name'), ('Energy', '@energy_grid{0.0[00]}'),
-                                              ('Value', '@$name{(0,0.00)}')],
-                                 'width':
-                                 1000
-                             })
+                             tooltips=[('DOS Name', '$name'), ('Energy', '@{x}{{0.0[00]}}'),
+                                       ('Value', '@$name{{(0,0.00)}}')],
+                             figure_kwargs={'width': 1000})
 
     #Create the full data for the scatterplot
     energy_entries = plot_data.get_keys('energy') * 2

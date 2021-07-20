@@ -9,6 +9,31 @@ roots:
   - attributes: {}
     type: BasicTicker
   - attributes:
+      bottom_units: screen
+      fill_alpha:
+        value: 0.5
+      fill_color:
+        value: lightgrey
+      left_units: screen
+      level: overlay
+      line_alpha:
+        value: 1.0
+      line_color:
+        value: black
+      line_dash:
+      - 4
+      - 4
+      line_width:
+        value: 2
+      render_mode: css
+      right_units: screen
+      top_units: screen
+    type: BoxAnnotation
+  - attributes:
+      overlay:
+        type: BoxAnnotation
+    type: BoxZoomTool
+  - attributes:
       source:
         type: ColumnDataSource
     type: CDSView
@@ -131,6 +156,8 @@ roots:
       selection_policy:
         type: UnionRenderers
     type: ColumnDataSource
+  - attributes: {}
+    type: CrosshairTool
   - attributes:
       callback: null
     type: DataRange1d
@@ -144,7 +171,7 @@ roots:
         type: Line
       hover_glyph: null
       muted_glyph: null
-      name: line plot
+      name: y
       nonselection_glyph:
         type: Line
       selection_glyph: null
@@ -162,10 +189,13 @@ roots:
     type: Grid
   - attributes:
       callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
       tooltips:
-      - - X value
+      - - X
         - '@x'
-      - - Y value
+      - - Y
         - '@y'
     type: HoverTool
   - attributes:
@@ -228,6 +258,8 @@ roots:
     type: LinearScale
   - attributes: {}
     type: LinearScale
+  - attributes: {}
+    type: PanTool
   - attributes:
       below:
       - type: LinearAxis
@@ -243,7 +275,6 @@ roots:
         type: Title
       toolbar:
         type: Toolbar
-      toolbar_location: null
       x_range:
         type: DataRange1d
       x_scale:
@@ -254,21 +285,74 @@ roots:
         type: LinearScale
     subtype: Figure
     type: Plot
+  - attributes:
+      fill_alpha:
+        value: 0.5
+      fill_color:
+        value: lightgrey
+      level: overlay
+      line_alpha:
+        value: 1.0
+      line_color:
+        value: black
+      line_dash:
+      - 4
+      - 4
+      line_width:
+        value: 2
+      xs_units: screen
+      ys_units: screen
+    type: PolyAnnotation
+  - attributes:
+      callback: null
+      overlay:
+        type: PolyAnnotation
+    type: PolySelectTool
+  - attributes: {}
+    type: RedoTool
+  - attributes: {}
+    type: ResetTool
+  - attributes: {}
+    type: SaveTool
   - attributes: {}
     type: Selection
+  - attributes:
+      callback: null
+    type: TapTool
   - attributes:
       text: ''
     type: Title
   - attributes:
       active_drag: auto
-      active_inspect: auto
+      active_inspect:
+      - type: HoverTool
       active_multi: null
       active_scroll: auto
       active_tap: auto
       tools:
+      - type: BoxZoomTool
+      - type: CrosshairTool
       - type: HoverTool
+      - type: PanTool
+      - type: PolySelectTool
+      - type: RedoTool
+      - type: ResetTool
+      - type: SaveTool
+      - type: TapTool
+      - type: UndoTool
+      - type: WheelZoomTool
+      - type: ZoomInTool
+      - type: ZoomOutTool
     type: Toolbar
   - attributes: {}
+    type: UndoTool
+  - attributes: {}
     type: UnionRenderers
+  - attributes: {}
+    type: WheelZoomTool
+  - attributes: {}
+    type: ZoomInTool
+  - attributes: {}
+    type: ZoomOutTool
 title: Bokeh Application
 version: 1.4.0
