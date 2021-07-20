@@ -148,11 +148,11 @@ class PlotData:
         if self.strict_data_keys:
             raise ValueError('No new data keys allowed after initialization')
 
-        self._column_spec = namedtuple('Columns', self._column_spec._fields+(new_data_key,))
+        self._column_spec = namedtuple('Columns', self._column_spec._fields + (new_data_key,))
 
         #Rebuild the columns list
         for indx, column in enumerate(self.columns):
-            self.columns[indx] = self._column_spec(**{**column._asdict(),**{new_data_key: None}})
+            self.columns[indx] = self._column_spec(**{**column._asdict(), **{new_data_key: None}})
 
     @property
     def masked_columns(self):
@@ -374,7 +374,7 @@ class PlotData:
             if isinstance(func, str):
                 result.append(getattr(source[key], func)(**kwargs))
             else:
-                result.append(func(source[key],**kwargs))
+                result.append(func(source[key], **kwargs))
 
         if len(result) == 1 and not list_return:
             return result[0]
