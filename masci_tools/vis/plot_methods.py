@@ -862,7 +862,7 @@ def barchart(positions,
              ylabel='y',
              title='',
              bottom=None,
-             alignment = "vertical",
+             alignment='vertical',
              saveas='barchart',
              axis=None,
              xerr=None,
@@ -976,7 +976,7 @@ def barchart(positions,
         else:
             xerrt = xerr
 
-        if alignment == "horizontal":
+        if alignment == 'horizontal':
             ax.barh(position, height, width, left=datab, **plot_kw, **kwargs)
         else:
             ax.bar(position, height, width, bottom=datab, **plot_kw, **kwargs)
@@ -1143,7 +1143,7 @@ def plot_convex_hull2d(hull,
     plot_kw = plot_params.plot_kwargs()
     plot_hull_kw = plot_params.plot_kwargs(marker='marker_hull', markersize='markersize_hull', color='color_hull')
     plot_hull_kw['linestyle'] = ''
-    linestyle = plot_kw.pop('linestyle',None)
+    linestyle = plot_kw.pop('linestyle', None)
 
     ax.plot(points[:, 0], points[:, 1], linestyle='', **plot_kw, **kwargs)
     for simplex in hull.simplices:
@@ -1151,7 +1151,7 @@ def plot_convex_hull2d(hull,
         if not isinstance(simplex, np.ndarray):
             data = np.array(simplex.coords)
         else:
-            data = points[simplex,:]
+            data = points[simplex, :]
 
         ax.plot(data[:, 0], data[:, 1], linestyle=linestyle, **plot_kw, **kwargs)
         ax.plot(data[:, 0], data[:, 1], **plot_hull_kw, **kwargs)
@@ -1526,7 +1526,7 @@ def plot_lattice_constant(scaling,
                                        save_plots=False,
                                        **plot_kw,
                                        **kwargs)
-        if fit_y:
+        if fit_y is not None:
             with NestedPlotParameters(plot_params):
                 ax = multiple_scatterplots(scaling,
                                            fit_y,
@@ -1551,7 +1551,7 @@ def plot_lattice_constant(scaling,
                                     save_plots=False,
                                     **plot_kw,
                                     **kwargs)
-        if fit_y:
+        if fit_y is not None:
             with NestedPlotParameters(plot_params):
                 ax = single_scatterplot(scaling,
                                         fit_y,

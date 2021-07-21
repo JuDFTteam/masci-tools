@@ -1351,18 +1351,18 @@ class TestPlotConvergenceMulti(object):  #pylint: disable=missing-class-docstrin
         # need to return the figure in order for mpl checks to work
         return fig
 
-class TestPlotConvexHull2d: #pylint: disable=missing-class-docstring
 
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/convex_hull/',
-                                   filename='defaults.png')
+class TestPlotConvexHull2d:  #pylint: disable=missing-class-docstring
+
+    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/convex_hull/', filename='defaults.png')
     def test_defaults_scipy(self):
         """
         Test with default parameters
         """
-        from scipy.spatial import ConvexHull
+        from scipy.spatial import ConvexHull  #pylint: disable=no-name-in-module
         from masci_tools.vis.plot_methods import plot_convex_hull2d
 
-        pts = [[-0.5, -0.5], [-0.5, 0.5], [0.5, -0.5], [0.5, 0.5], [0,0]]
+        pts = [[-0.5, -0.5], [-0.5, 0.5], [0.5, -0.5], [0.5, 0.5], [0, 0]]
         hull = ConvexHull(pts)
 
         gcf().clear()
@@ -1371,21 +1371,124 @@ class TestPlotConvexHull2d: #pylint: disable=missing-class-docstring
 
         return gcf()
 
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/convex_hull/',
-                                   filename='defaults.png')
+    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/convex_hull/', filename='defaults.png')
     def test_defaults_pyhull(self):
         """
         Test with default parameters
         """
         pytest.importorskip('pyhull')
-        from pyhull.convex_hull import ConvexHull
+        from pyhull.convex_hull import ConvexHull  #pylint: disable=import-error
         from masci_tools.vis.plot_methods import plot_convex_hull2d
 
-        pts = [[-0.5, -0.5], [-0.5, 0.5], [0.5, -0.5], [0.5, 0.5], [0,0]]
+        pts = [[-0.5, -0.5], [-0.5, 0.5], [0.5, -0.5], [0.5, 0.5], [0, 0]]
         hull = ConvexHull(pts)
 
         gcf().clear()
 
         plot_convex_hull2d(hull, show=False)
+
+        return gcf()
+
+
+class TestPlotLatticeConstant:  #pylint: disable=missing-class-docstring
+
+    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/lattice_constant/',
+                                   filename='defaults_single.png')
+    def test_defaults_single(self):
+        """
+        Test with default parameters
+        """
+        from masci_tools.vis.plot_methods import plot_lattice_constant
+        import numpy as np
+
+        scaling = np.linspace(0.95, 1.04, 10)
+        energy = -1000.0 + 0.5 * (0.99 - scaling)**2
+
+        gcf().clear()
+
+        plot_lattice_constant(scaling, energy, show=False)
+
+        return gcf()
+
+    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/lattice_constant/',
+                                   filename='fit_single.png')
+    def test_defaults_single_fity(self):
+        """
+        Test with default parameters
+        """
+        from masci_tools.vis.plot_methods import plot_lattice_constant
+        import numpy as np
+
+        scaling = np.linspace(0.95, 1.04, 10)
+        energy = -1000.0 + 500 * (0.99 - scaling)**2
+
+        noise = 0.5 * (np.random.rand(10) - 0.5)
+
+        gcf().clear()
+
+        plot_lattice_constant(scaling, energy + noise, fit_y=energy, show=False)
+
+        return gcf()
+
+    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/lattice_constant/',
+                                   filename='defaults_multi.png')
+    def test_defaults_multi(self):
+        """
+        Test with default parameters
+        """
+        from masci_tools.vis.plot_methods import plot_lattice_constant
+        import numpy as np
+
+        np.random.seed(19680801)
+
+        energy_offset = np.random.rand(5)
+        energy_offset = -1000.0 + energy_offset
+
+        energy_scaling = np.random.rand(5) * 50
+        energy_groundstate = np.random.rand(5)
+        energy_groundstate = 1.0 + (energy_groundstate - 0.5) * 0.05
+
+        scaling = np.linspace(0.95, 1.04, 10)
+        energy = [
+            offset + const * (ground - scaling)**2
+            for offset, const, ground in zip(energy_offset, energy_scaling, energy_groundstate)
+        ]
+        scaling = [scaling] * 5
+
+        gcf().clear()
+
+        plot_lattice_constant(scaling, energy, show=False, multi=True)
+
+        return gcf()
+
+    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/lattice_constant/',
+                                   filename='fit_multi.png')
+    def test_defaults_multi_fity(self):
+        """
+        Test with default parameters
+        """
+        from masci_tools.vis.plot_methods import plot_lattice_constant
+        import numpy as np
+
+        np.random.seed(19680801)
+
+        energy_offset = np.random.rand(5)
+        energy_offset = -1000.0 + energy_offset
+
+        energy_scaling = np.random.rand(5) * 50
+        energy_groundstate = np.random.rand(5)
+        energy_groundstate = 1.0 + (energy_groundstate - 0.5) * 0.05
+
+        scaling = np.linspace(0.95, 1.04, 10)
+        energy_fit = [
+            offset + const * (ground - scaling)**2
+            for offset, const, ground in zip(energy_offset, energy_scaling, energy_groundstate)
+        ]
+        energy_noise = [energy + (np.random.rand(10) - 0.5) * 0.05 for energy in energy_fit]
+        scaling = [scaling] * 5
+
+        gcf().clear()
+
+        plot_lattice_constant(scaling, energy_noise, fit_y=energy_fit, show=False, multi=True)
 
         return gcf()
