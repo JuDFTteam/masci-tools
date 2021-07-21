@@ -3769,23 +3769,9 @@ roots:
       - type: LegendItem
       - type: LegendItem
       - type: LegendItem
-      - type: LegendItem
-      - type: LegendItem
       label_text_font_size:
         value: 14pt
     type: Legend
-  - attributes:
-      label:
-        value: Spin Down
-      renderers:
-      - type: GlyphRenderer
-    type: LegendItem
-  - attributes:
-      label:
-        value: Spin Up
-      renderers:
-      - type: GlyphRenderer
-    type: LegendItem
   - attributes:
       label:
         value: Green Bands
@@ -3799,8 +3785,9 @@ roots:
     type: LegendItem
   - attributes:
       label:
-        value: eigenvalues_up
+        value: Spin Up
       renderers:
+      - type: GlyphRenderer
       - type: GlyphRenderer
       - type: GlyphRenderer
       - type: GlyphRenderer
@@ -3810,8 +3797,9 @@ roots:
     type: LegendItem
   - attributes:
       label:
-        value: eigenvalues_down
+        value: Spin Down
       renderers:
+      - type: GlyphRenderer
       - type: GlyphRenderer
       - type: GlyphRenderer
       - type: GlyphRenderer

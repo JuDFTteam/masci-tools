@@ -184,7 +184,7 @@ roots:
     type: Legend
   - attributes:
       label:
-        value: eigenvalues_up
+        value: Eigenvalues
       renderers:
       - type: GlyphRenderer
     type: LegendItem
