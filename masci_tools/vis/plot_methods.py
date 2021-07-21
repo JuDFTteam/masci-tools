@@ -962,7 +962,7 @@ def barchart(positions,
     for (entry, source), plot_kw in zip(plot_data.items(), plot_kwargs):
 
         if bottom is None and bar_type == 'stacked':
-            bottom = np.zeros(len(source[entry.positions]))
+            bottom = np.zeros(len(source[entry.position]))
 
         if alignment == 'horizontal':
             ax.barh(entry.position,

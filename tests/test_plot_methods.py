@@ -1160,8 +1160,8 @@ class TestBarchartPlot(object):  #pylint: disable=missing-class-docstring
         y = [x[0]**2, [50] * 11]
         gcf().clear()
 
-        barchart(y,
-                 x,
+        barchart(x,
+                 y,
                  show=False,
                  alignment='horizontal',
                  width=0.7,
@@ -1249,8 +1249,8 @@ class TestBarchartPlot(object):  #pylint: disable=missing-class-docstring
         y = [x**2, [50] * 11, 20 * np.abs(np.sin(x))]
         gcf().clear()
 
-        barchart(y,
-                 x,
+        barchart(x,
+                 y,
                  show=False,
                  alignment='horizontal',
                  bar_type='grouped',
@@ -1319,7 +1319,7 @@ class TestBarchartPlot(object):  #pylint: disable=missing-class-docstring
         y = [x[0]**2, 20 * np.abs(np.sin(x[1]))]
         gcf().clear()
 
-        barchart(y, x, show=False, bar_type='independent', alignment='horizontal')
+        barchart(x, y, show=False, bar_type='independent', alignment='horizontal')
 
         # need to return the figure in order for mpl checks to work
         return gcf()
