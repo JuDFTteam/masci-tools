@@ -128,6 +128,12 @@ jobs:
         pip install codecov
         codecov
 
+    - uses: actions/upload-artifact@v2
+      with:
+        name: Matplotlib comparison
+        path: tests/mpl-results/fig_comparison.html
+        if-no-files-found: ignore
+
   publish:
     name: Publish to PyPi
     needs: [docs, tests, pre-commit] #pylint-warnings could be added at some later point
