@@ -1402,7 +1402,7 @@ class TestPlotLatticeConstant:  #pylint: disable=missing-class-docstring
         import numpy as np
 
         scaling = np.linspace(0.95, 1.04, 10)
-        energy = -1000.0 + 0.5 * (0.99 - scaling)**2
+        energy = -500.0 + 500.0 * (0.99 - scaling)**2
 
         gcf().clear()
 
@@ -1421,7 +1421,7 @@ class TestPlotLatticeConstant:  #pylint: disable=missing-class-docstring
 
         np.random.seed(19680801)
         scaling = np.linspace(0.95, 1.04, 10)
-        energy = -1000.0 + 500 * (0.99 - scaling)**2
+        energy = -500.0 + 500 * (0.99 - scaling)**2
 
         noise = 0.5 * (np.random.rand(10) - 0.5)
 
@@ -1443,7 +1443,7 @@ class TestPlotLatticeConstant:  #pylint: disable=missing-class-docstring
         np.random.seed(19680801)
 
         energy_offset = np.random.rand(5)
-        energy_offset = -1000.0 + energy_offset
+        energy_offset = -500.0 + energy_offset
 
         energy_scaling = np.random.rand(5) * 50
         energy_groundstate = np.random.rand(5)
@@ -1474,7 +1474,7 @@ class TestPlotLatticeConstant:  #pylint: disable=missing-class-docstring
         np.random.seed(19680801)
 
         energy_offset = np.random.rand(5)
-        energy_offset = -1000.0 + energy_offset
+        energy_offset = -500.0 + energy_offset
 
         energy_scaling = np.random.rand(5) * 50
         energy_groundstate = np.random.rand(5)

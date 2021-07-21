@@ -1490,7 +1490,8 @@ def plot_lattice_constant(scaling,
     plot_params.set_defaults(default_type='function',
                              marker_fit='s',
                              plot_label='simulation data',
-                             plot_label_fit='fit results')
+                             plot_label_fit='fit results',
+                             use_axis_formatter=True)
 
     general_keys = {'figure_kwargs', 'show', 'save_plots'}
     general_info = {key: val for key, val in kwargs.items() if key in general_keys}
