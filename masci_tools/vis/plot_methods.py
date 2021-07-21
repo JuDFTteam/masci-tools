@@ -1952,6 +1952,8 @@ def plot_bands(kpath,
                              xticklabels=xticklabels,
                              color='k',
                              line_options={'zorder': -1},
+                             plot_label='Eigenvalues',
+                             legend_remove_duplicates=True,
                              colorbar=False)
 
     if line_plot:
@@ -2121,6 +2123,7 @@ def plot_spinpol_bands(kpath,
                              legend_remove_duplicates=True,
                              legend_options={'loc': 'upper right'},
                              line_options={'zorder': -1},
+                             plot_label=['Spin Up', 'Spin Down'],
                              zorder=[2, 1],
                              colorbar=False)
 

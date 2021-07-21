@@ -160,6 +160,7 @@ def bokeh_multi_scatter(x,
                         title='',
                         outfilename='scatter.html',
                         copy_data=False,
+                        set_default_legend=True,
                         **kwargs):
     """
     Create an interactive scatter (muliple data sets possible) plot with bokeh
@@ -173,6 +174,7 @@ def bokeh_multi_scatter(x,
     :param figure: bokeh figure (optional), if provided the plot will be added to this figure
     :param outfilename: filename of the output file
     :param copy_data: bool, if True the data argument will be copied
+    :param set_default_legend: bool if True the data names are used to generate default legend labels
 
     Kwargs will be passed on to :py:class:`masci_tools.vis.bokeh_plotter.BokehPlotter`.
     If the arguments are not recognized they are passed on to the bokeh function `scatter`
@@ -195,9 +197,10 @@ def bokeh_multi_scatter(x,
         default_legend_label = plot_data.get_keys('y')
     else:
         default_legend_label = plot_data.get_keys('x')
+    if set_default_legend:
+        plot_params.set_defaults(default_type='function', legend_label=default_legend_label)
 
-    plot_params.set_defaults(default_type='function', name=default_legend_label, legend_label=default_legend_label)
-
+    plot_params.set_defaults(default_type='function', name=default_legend_label)
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
     p = plot_params.prepare_figure(title, xlabel, ylabel, figure=figure)
 
@@ -235,6 +238,7 @@ def bokeh_line(x,
                plot_points=False,
                area_curve=0,
                copy_data=False,
+               set_default_legend=True,
                **kwargs):
     """
     Create an interactive multi-line plot with bokeh
@@ -249,6 +253,7 @@ def bokeh_line(x,
     :param outfilename: filename of the output file
     :param plot_points: bool, if True also plot the points with a scatterplot on top
     :param copy_data: bool, if True the data argument will be copied
+    :param set_default_legend: bool if True the data names are used to generate default legend labels
 
     Kwargs will be passed on to :py:class:`masci_tools.vis.bokeh_plotter.BokehPlotter`.
     If the arguments are not recognized they are passed on to the bokeh function `line`
@@ -271,8 +276,10 @@ def bokeh_line(x,
         default_legend_label = plot_data.get_keys('y')
     else:
         default_legend_label = plot_data.get_keys('x')
+    if set_default_legend:
+        plot_params.set_defaults(default_type='function', legend_label=default_legend_label)
 
-    plot_params.set_defaults(default_type='function', name=default_legend_label, legend_label=default_legend_label)
+    plot_params.set_defaults(default_type='function', name=default_legend_label)
 
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
     p = plot_params.prepare_figure(title, xlabel, ylabel, figure=figure)
@@ -722,6 +729,7 @@ def bokeh_bands(kpath,
                              },
                              x_range_padding=0.0,
                              y_range_padding=0.0,
+                             legend_label='Eigenvalues',
                              limits=limits)
 
     if line_plot:
@@ -731,6 +739,7 @@ def bokeh_bands(kpath,
                           xlabel='',
                           ylabel=ylabel,
                           title=title,
+                          set_default_legend=False,
                           **kwargs)
     else:
         return bokeh_multi_scatter(plot_data.get_keys('kpath'),
@@ -739,6 +748,7 @@ def bokeh_bands(kpath,
                                    xlabel='',
                                    ylabel=ylabel,
                                    title=title,
+                                   set_default_legend=False,
                                    **kwargs)
 
 
@@ -903,6 +913,7 @@ def bokeh_spinpol_bands(kpath,
                              x_range_padding=0.0,
                              y_range_padding=0.0,
                              limits=limits,
+                             legend_label=['Spin Up', 'Spin Down'],
                              level=[None, 'underlay'])
 
     if line_plot or separate_bands:
@@ -916,6 +927,7 @@ def bokeh_spinpol_bands(kpath,
                           xlabel='',
                           ylabel=ylabel,
                           title=title,
+                          set_default_legend=False,
                           **kwargs)
     else:
         return bokeh_multi_scatter(plot_data.get_keys('kpath'),
@@ -924,6 +936,7 @@ def bokeh_spinpol_bands(kpath,
                                    xlabel='',
                                    ylabel=ylabel,
                                    title=title,
+                                   set_default_legend=False,
                                    **kwargs)
 
 

@@ -109,6 +109,48 @@ def test_plot_bands_line_bokeh(check_bokeh_plot):
     check_bokeh_plot(fig)
 
 
+@pytest.mark.mpl_image_compare(baseline_dir='files/fleur_vis/', filename='bands_separate.png')
+def test_plot_bands_separate_bands_mpl():
+    from masci_tools.io.parsers.hdf5 import HDF5Reader
+    from masci_tools.io.parsers.hdf5.recipes import FleurBands
+    from masci_tools.vis.fleur import plot_fleur_bands
+
+    TEST_BANDDOS_FILE = os.path.join(HDFTEST_DIR, 'banddos_bands.hdf')
+
+    with HDF5Reader(TEST_BANDDOS_FILE) as h5reader:
+        data, attributes = h5reader.read(recipe=FleurBands)
+
+    gcf().clear()
+
+    plot_fleur_bands(data, attributes, show=False, separate_bands=True, line_plot=True, color={5: 'red', 3: 'blue'})
+
+    return gcf()
+
+
+def test_plot_bands_separate_bands_bokeh(check_bokeh_plot):
+    from masci_tools.io.parsers.hdf5 import HDF5Reader
+    from masci_tools.io.parsers.hdf5.recipes import FleurBands
+    from masci_tools.vis.fleur import plot_fleur_bands
+
+    TEST_BANDDOS_FILE = os.path.join(HDFTEST_DIR, 'banddos_bands.hdf')
+
+    with HDF5Reader(TEST_BANDDOS_FILE) as h5reader:
+        data, attributes = h5reader.read(recipe=FleurBands)
+
+    p = plot_fleur_bands(data,
+                         attributes,
+                         bokeh_plot=True,
+                         show=False,
+                         separate_bands=True,
+                         line_plot=True,
+                         color={
+                             5: 'red',
+                             3: 'blue'
+                         })
+
+    check_bokeh_plot(p)
+
+
 @pytest.mark.mpl_image_compare(baseline_dir='files/fleur_vis/', filename='bands_defaults_spinpol.png')
 def test_plot_bands_spinpol_defaults_mpl():
     from masci_tools.io.parsers.hdf5 import HDF5Reader
@@ -206,6 +248,64 @@ def test_plot_bands_spinpol_line_bokeh(check_bokeh_plot):
     fig = plot_fleur_bands(data, attributes, show=False, bokeh_plot=True, line_plot=True)
 
     check_bokeh_plot(fig)
+
+
+@pytest.mark.mpl_image_compare(baseline_dir='files/fleur_vis/', filename='bands_spinpol_separate.png')
+def test_plot_bands_spinpol_separate_bands_mpl():
+    from masci_tools.io.parsers.hdf5 import HDF5Reader
+    from masci_tools.io.parsers.hdf5.recipes import FleurBands
+    from masci_tools.vis.fleur import plot_fleur_bands
+
+    TEST_BANDDOS_FILE = os.path.join(HDFTEST_DIR, 'banddos_spinpol_bands.hdf')
+
+    with HDF5Reader(TEST_BANDDOS_FILE) as h5reader:
+        data, attributes = h5reader.read(recipe=FleurBands)
+
+    gcf().clear()
+
+    plot_fleur_bands(data,
+                     attributes,
+                     show=False,
+                     separate_bands=True,
+                     line_plot=True,
+                     color={indx: 'green' for indx in range(4, 10)},
+                     plot_label={
+                         **{
+                             0: 'Spin Up',
+                             18: 'Spin Down'
+                         },
+                         **{indx: 'Green Bands' for indx in range(4, 10)}
+                     })
+
+    return gcf()
+
+
+def test_plot_bands_spinpol_separate_bands_bokeh(check_bokeh_plot):
+    from masci_tools.io.parsers.hdf5 import HDF5Reader
+    from masci_tools.io.parsers.hdf5.recipes import FleurBands
+    from masci_tools.vis.fleur import plot_fleur_bands
+
+    TEST_BANDDOS_FILE = os.path.join(HDFTEST_DIR, 'banddos_spinpol_bands.hdf')
+
+    with HDF5Reader(TEST_BANDDOS_FILE) as h5reader:
+        data, attributes = h5reader.read(recipe=FleurBands)
+
+    p = plot_fleur_bands(data,
+                         attributes,
+                         show=False,
+                         bokeh_plot=True,
+                         separate_bands=True,
+                         line_plot=True,
+                         color={indx: 'green' for indx in range(4, 10)},
+                         legend_label={
+                             **{
+                                 0: 'Spin Up',
+                                 18: 'Spin Down'
+                             },
+                             **{indx: 'Green Bands' for indx in range(4, 10)}
+                         })
+
+    check_bokeh_plot(p)
 
 
 @pytest.mark.mpl_image_compare(baseline_dir='files/fleur_vis/', filename='bands_spinpol_hide.png')
