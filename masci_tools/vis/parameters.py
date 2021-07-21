@@ -446,7 +446,7 @@ class Plotter(object):
         elif default_type == 'function':
             if not self.is_general(key):
 
-                default_val = self._hardcoded_defaults[key]
+                default_val = self._hardcoded_defaults.get(key)
                 if key in self._user_defaults:
                     default_val = self._user_defaults[key]
 
