@@ -1419,6 +1419,7 @@ class TestPlotLatticeConstant:  #pylint: disable=missing-class-docstring
         from masci_tools.vis.plot_methods import plot_lattice_constant
         import numpy as np
 
+        np.random.seed(19680801)
         scaling = np.linspace(0.95, 1.04, 10)
         energy = -1000.0 + 500 * (0.99 - scaling)**2
 
