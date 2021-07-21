@@ -92,6 +92,3 @@ There are a couple of routines for mutating/copyying or getting information abou
 
 .. warning::
    The methods :py:meth:`~masci_tools.vis.data.PlotData.sort_data()` and :py:meth:`~masci_tools.vis.data.PlotData.group_data()` will always convert the data sources to ``pd.DataFrame`` objects if they are not already.
-
-
-
