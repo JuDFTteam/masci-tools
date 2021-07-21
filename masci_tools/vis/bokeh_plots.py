@@ -100,6 +100,7 @@ def bokeh_scatter(x,
                   figure=None,
                   data=None,
                   outfilename='scatter.html',
+                  copy_data=False,
                   **kwargs):
     """
     Create an interactive scatter plot with bokeh
@@ -112,6 +113,7 @@ def bokeh_scatter(x,
     :param title: title of the figure
     :param figure: bokeh figure (optional), if provided the plot will be added to this figure
     :param outfilename: filename of the output file
+    :param copy_data: bool, if True the data argument will be copied
 
     Kwargs will be passed on to :py:class:`masci_tools.vis.bokeh_plotter.BokehPlotter`.
     If the arguments are not recognized they are passed on to the bokeh function `scatter`
@@ -125,7 +127,7 @@ def bokeh_scatter(x,
         x = kwargs.pop('xdata', 'x')
         y = kwargs.pop('ydata', 'y')
 
-    plot_data = process_data_arguments(data=data, x=x, y=y, single_plot=True, same_length=True)
+    plot_data = process_data_arguments(data=data, x=x, y=y, copy_data=copy_data, single_plot=True, same_length=True)
     entry, source = plot_data.items(first=True)
 
     plot_params.set_defaults(default_type='function', name=entry.y)
@@ -157,6 +159,7 @@ def bokeh_multi_scatter(x,
                         ylabel='y',
                         title='',
                         outfilename='scatter.html',
+                        copy_data=False,
                         **kwargs):
     """
     Create an interactive scatter (muliple data sets possible) plot with bokeh
@@ -169,6 +172,7 @@ def bokeh_multi_scatter(x,
     :param title: title of the figure
     :param figure: bokeh figure (optional), if provided the plot will be added to this figure
     :param outfilename: filename of the output file
+    :param copy_data: bool, if True the data argument will be copied
 
     Kwargs will be passed on to :py:class:`masci_tools.vis.bokeh_plotter.BokehPlotter`.
     If the arguments are not recognized they are passed on to the bokeh function `scatter`
@@ -182,7 +186,7 @@ def bokeh_multi_scatter(x,
         x = kwargs.pop('xdata', 'x')
         y = kwargs.pop('ydata', 'y')
 
-    plot_data = process_data_arguments(data=data, x=x, y=y, same_length=True)
+    plot_data = process_data_arguments(data=data, x=x, y=y, same_length=True, copy_data=copy_data)
 
     plot_params.single_plot = False
     plot_params.num_plots = len(plot_data)
@@ -230,6 +234,7 @@ def bokeh_line(x,
                outfilename='scatter.html',
                plot_points=False,
                area_curve=0,
+               copy_data=False,
                **kwargs):
     """
     Create an interactive multi-line plot with bokeh
@@ -243,6 +248,7 @@ def bokeh_line(x,
     :param figure: bokeh figure (optional), if provided the plot will be added to this figure
     :param outfilename: filename of the output file
     :param plot_points: bool, if True also plot the points with a scatterplot on top
+    :param copy_data: bool, if True the data argument will be copied
 
     Kwargs will be passed on to :py:class:`masci_tools.vis.bokeh_plotter.BokehPlotter`.
     If the arguments are not recognized they are passed on to the bokeh function `line`
@@ -256,7 +262,7 @@ def bokeh_line(x,
         x = kwargs.pop('xdata', 'x')
         y = kwargs.pop('ydata', 'y')
 
-    plot_data = process_data_arguments(data=data, x=x, y=y, shift=area_curve, same_length=True)
+    plot_data = process_data_arguments(data=data, x=x, y=y, shift=area_curve, same_length=True, copy_data=copy_data)
 
     plot_params.single_plot = False
     plot_params.num_plots = len(plot_data)
@@ -319,6 +325,7 @@ def bokeh_dos(energy_grid,
               xyswitch=False,
               e_fermi=0,
               outfilename='dos_plot.html',
+              copy_data=False,
               **kwargs):
     """
     Create an interactive dos plot (non-spinpolarized) with bokeh
@@ -333,6 +340,7 @@ def bokeh_dos(energy_grid,
     :param xyswitch: bool if True, the energy will be plotted along the y-direction
     :param e_fermi: float, determines, where to put the line for the fermi energy
     :param outfilename: filename of the output file
+    :param copy_data: bool, if True the data argument will be copied
 
     Kwargs will be passed on to :py:func:`bokeh_line()`
     """
@@ -349,7 +357,11 @@ def bokeh_dos(energy_grid,
         dos_data = set(data.keys()) - set([energy_grid] if isinstance(energy_grid, str) else energy_grid)
         dos_data = sorted(dos_data)
 
-    plot_data = process_data_arguments(data=data, energy=energy_grid, dos=dos_data, same_length=True)
+    plot_data = process_data_arguments(data=data,
+                                       energy=energy_grid,
+                                       dos=dos_data,
+                                       same_length=True,
+                                       copy_data=copy_data)
 
     plot_params.single_plot = False
     plot_params.num_plots = len(plot_data)
@@ -404,6 +416,7 @@ def bokeh_spinpol_dos(energy_grid,
                       e_fermi=0,
                       spin_arrows=True,
                       outfilename='dos_plot.html',
+                      copy_data=False,
                       **kwargs):
     """
     Create an interactive dos plot (spinpolarized) with bokeh
@@ -422,6 +435,7 @@ def bokeh_spinpol_dos(energy_grid,
     :param spin_arrows: bool, if True (default) small arrows will be plotted on the left side of the plot indicating
                         the spin directions (if spin_dn_negative is True)
     :param outfilename: filename of the output file
+    :param copy_data: bool, if True the data argument will be copied
 
     Kwargs will be passed on to :py:func:`bokeh_line()`
     """
@@ -446,7 +460,8 @@ def bokeh_spinpol_dos(energy_grid,
                                        energy=energy_grid,
                                        spin_up=spin_up_data,
                                        spin_dn=spin_dn_data,
-                                       same_length=True)
+                                       same_length=True,
+                                       copy_data=copy_data)
 
     plot_params.single_plot = False
     plot_params.num_plots = len(plot_data)
@@ -577,6 +592,7 @@ def bokeh_bands(kpath,
                 separate_bands=False,
                 line_plot=False,
                 band_index=None,
+                copy_data=False,
                 **kwargs):
     """
     Create an interactive bandstructure plot (non-spinpolarized) with bokeh
@@ -602,6 +618,7 @@ def bokeh_bands(kpath,
     :param separate_bands: bool, if True the bandstructure will be separately plotted for each band
                            allows more specific parametrization
     :param band_index: data for which eigenvalue belongs to which band (needed for line_plot and separate_bands)
+    :param copy_data: bool, if True the data argument will be copied
 
     Kwargs will be passed on to :py:func:`bokeh_multi_scatter()` or :py:func:`bokeh_line()`
     """
@@ -633,7 +650,8 @@ def bokeh_bands(kpath,
                                        bands=bands,
                                        size=size_data,
                                        color=color_data,
-                                       band_index=band_index)
+                                       band_index=band_index,
+                                       copy_data=copy_data)
 
     if line_plot and size_data is not None:
         raise ValueError('Bandstructure with lines and size scaling not supported')
@@ -743,6 +761,7 @@ def bokeh_spinpol_bands(kpath,
                         line_plot=False,
                         separate_bands=False,
                         band_index=None,
+                        copy_data=False,
                         **kwargs):
     """
     Create an interactive bandstructure plot (spinpolarized) with bokeh
@@ -769,6 +788,7 @@ def bokeh_spinpol_bands(kpath,
     :param separate_bands: bool, if True the bandstructure will be separately plotted for each band
                            allows more specific parametrization
     :param band_index: data for which eigenvalue belongs to which band (needed for line_plot and separate_bands)
+    :param copy_data: bool, if True the data argument will be copied
 
     Kwargs will be passed on to :py:func:`bokeh_multi_scatter()` or :py:func:`bokeh_line()`
     """
@@ -800,7 +820,8 @@ def bokeh_spinpol_bands(kpath,
                                        bands=[bands_up, bands_dn],
                                        size=size_data,
                                        color=color_data,
-                                       band_index=band_index)
+                                       band_index=band_index,
+                                       copy_data=copy_data)
 
     plot_params.single_plot = False
     plot_params.num_plots = len(plot_data)

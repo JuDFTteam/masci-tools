@@ -75,7 +75,14 @@ class PlotData:
     #In principle this could be extended to any Mapping
     ALLOWED_DATA_HOLDERS = (dict, pd.DataFrame, ColumnDataSource)
 
-    def __init__(self, data, mask=None, use_column_source=False, same_length=False, strict_data_keys=False, **kwargs):
+    def __init__(self,
+                 data,
+                 mask=None,
+                 use_column_source=False,
+                 same_length=False,
+                 strict_data_keys=False,
+                 copy_data=False,
+                 **kwargs):
 
         self.data = data
         self.strict_data_keys = strict_data_keys
@@ -86,6 +93,12 @@ class PlotData:
         else:
             assert isinstance(self.data, self.ALLOWED_DATA_HOLDERS), f'Wrong type for data argument: Got {self.data}'
             dict_data = isinstance(self.data, dict)
+
+        if copy_data:
+            if isinstance(self.data, list):
+                self.data = [source.copy() for source in self.data]
+            else:
+                self.data = self.data.copy()
 
         if same_length and dict_data:
             if isinstance(self.data, list):
@@ -743,6 +756,7 @@ def process_data_arguments(data=None,
                            flatten_np=False,
                            forbid_split_up=None,
                            same_length=False,
+                           copy_data=False,
                            **kwargs):
     """
     Initialize PlotData from np.arrays or lists of np.arrays or lists or a already given
@@ -754,8 +768,9 @@ def process_data_arguments(data=None,
     :param use_column_source: bool, if True all data arguments are converted to ColumnDataSource of bokeh
     :param flatten_np: bool, if True multidimensional numpy arrays are flattened (Only if data not given)
     :param forbid_split_up: set of keys for which not to split up multidimensional arrays
-    :same_length: bool if True and any sources are dicts it will be checked for same dimensions
-                  in (ALL) entries (not only for keys plotted against each other)
+    :param same_length: bool if True and any sources are dicts it will be checked for same dimensions
+                        in (ALL) entries (not only for keys plotted against each other)
+    :param copy_data: bool, if True the data argument will be copied
 
     Kwargs define which keys belong to which data entries if data is given or they contain
     the data to be normalized
@@ -804,7 +819,12 @@ def process_data_arguments(data=None,
     else:
         keys = kwargs
 
-    p_data = PlotData(data, mask=mask, use_column_source=use_column_source, same_length=same_length, **keys)
+    p_data = PlotData(data,
+                      mask=mask,
+                      use_column_source=use_column_source,
+                      same_length=same_length,
+                      copy_data=copy_data,
+                      **keys)
 
     if len(p_data) != 1 and single_plot:
         raise ValueError(f'Got multiple data sets ({len(p_data)}) but expected 1')

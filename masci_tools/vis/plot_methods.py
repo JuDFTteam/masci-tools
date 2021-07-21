@@ -124,6 +124,7 @@ def single_scatterplot(xdata,
                        xerr=None,
                        yerr=None,
                        area_curve=0,
+                       copy_data=False,
                        **kwargs):
     """
     Create a standard scatter plot (this should be flexible enough) to do all the
@@ -142,6 +143,7 @@ def single_scatterplot(xdata,
     :param yerr: optional data for errorbar in y-direction
     :param area_curve: if an area plot is made this arguments defines the other enclosing line
                        defaults to 0
+    :param copy_data: bool, if True the data argument will be copied
 
     Kwargs will be passed on to :py:class:`masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`.
     If the arguments are not recognized they are passed on to the matplotlib functions
@@ -180,7 +182,8 @@ def single_scatterplot(xdata,
                                        y=ydata,
                                        shift=area_curve,
                                        xerr=xerr,
-                                       yerr=yerr)
+                                       yerr=yerr,
+                                       copy_data=copy_data)
 
     plot_params.set_defaults(default_type='function', color='k', plot_label='scatterplot')
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
@@ -243,6 +246,7 @@ def multiple_scatterplots(xdata,
                           xerr=None,
                           yerr=None,
                           area_curve=0,
+                          copy_data=False,
                           **kwargs):
     """
     Create a standard scatter plot with multiple sets of data (this should be flexible enough)
@@ -261,13 +265,20 @@ def multiple_scatterplots(xdata,
     :param yerr: optional data for errorbar in y-direction
     :param area_curve: if an area plot is made this arguments defines the other enclosing line
                        defaults to 0
+    :param copy_data: bool, if True the data argument will be copied
 
     Kwargs will be passed on to :py:class:`masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`.
     If the arguments are not recognized they are passed on to the matplotlib functions
     (`errorbar` or `fill_between`)
     """
 
-    plot_data = process_data_arguments(data=data, x=xdata, y=ydata, shift=area_curve, xerr=xerr, yerr=yerr)
+    plot_data = process_data_arguments(data=data,
+                                       x=xdata,
+                                       y=ydata,
+                                       shift=area_curve,
+                                       xerr=xerr,
+                                       yerr=yerr,
+                                       copy_data=copy_data)
 
     plot_params.single_plot = False
     plot_params.num_plots = len(plot_data)
@@ -377,6 +388,7 @@ def multi_scatter_plot(xdata,
                        data=None,
                        saveas='mscatterplot',
                        axis=None,
+                       copy_data=False,
                        **kwargs):
     """
     Create a scatter plot with varying marker size
@@ -395,12 +407,18 @@ def multi_scatter_plot(xdata,
     :param axis: Axes object, if given the plot will be applied to this object
     :param xerr: optional data for errorbar in x-direction
     :param yerr: optional data for errorbar in y-direction
+    :param copy_data: bool, if True the data argument will be copied
 
     Kwargs will be passed on to :py:class:`masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`.
     If the arguments are not recognized they are passed on to the matplotlib function `scatter`
     """
 
-    plot_data = process_data_arguments(data=data, x=xdata, y=ydata, color=color_data, size=size_data)
+    plot_data = process_data_arguments(data=data,
+                                       x=xdata,
+                                       y=ydata,
+                                       color=color_data,
+                                       size=size_data,
+                                       copy_data=copy_data)
 
     plot_params.single_plot = False
     plot_params.num_plots = len(plot_data)
@@ -504,6 +522,7 @@ def colormesh_plot(xdata,
                    data=None,
                    saveas='colormesh',
                    axis=None,
+                   copy_data=False,
                    **kwargs):
     """
     Create plot with pcolormesh
@@ -517,6 +536,7 @@ def colormesh_plot(xdata,
     :param title: str, title of the figure
     :param saveas: str specifying the filename (without file format)
     :param axis: Axes object, if given the plot will be applied to this object
+    :param copy_data: bool, if True the data argument will be copied
 
     Kwargs will be passed on to :py:class:`masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`.
     If the arguments are not recognized they are passed on to the matplotlib function `pcolormesh`
@@ -527,6 +547,7 @@ def colormesh_plot(xdata,
                                        x=xdata,
                                        y=ydata,
                                        color=cdata,
+                                       copy_data=copy_data,
                                        forbid_split_up={'x', 'y', 'color'})
 
     #Set default limits (not setting them leaves empty border)
@@ -568,6 +589,7 @@ def waterfall_plot(xdata,
                    data=None,
                    saveas='waterfallplot',
                    axis=None,
+                   copy_data=False,
                    **kwargs):
     """
     Create a standard waterfall plot
@@ -582,6 +604,7 @@ def waterfall_plot(xdata,
     :param title: str, title of the figure
     :param axis: Axes object, if given the plot will be applied to this object
     :param saveas: str specifying the filename (without file format)
+    :param copy_data: bool, if True the data argument will be copied
 
     Kwargs will be passed on to :py:class:`masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`.
     If the arguments are not recognized they are passed on to the matplotlib function `scatter3D`
@@ -592,6 +615,7 @@ def waterfall_plot(xdata,
                                        x=xdata,
                                        y=ydata,
                                        z=zdata,
+                                       copy_data=copy_data,
                                        forbid_split_up={'x', 'y', 'z'})
 
     clim = None
@@ -633,6 +657,7 @@ def surface_plot(xdata,
                  data=None,
                  saveas='surface_plot',
                  axis=None,
+                 copy_data=False,
                  **kwargs):
     """
     Create a standard surface plot
@@ -647,6 +672,7 @@ def surface_plot(xdata,
     :param title: str, title of the figure
     :param axis: Axes object, if given the plot will be applied to this object
     :param saveas: str specifying the filename (without file format)
+    :param copy_data: bool, if True the data argument will be copied
 
     Kwargs will be passed on to :py:class:`masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`.
     If the arguments are not recognized they are passed on to the matplotlib function `plot_surface`
@@ -657,6 +683,7 @@ def surface_plot(xdata,
                                        x=xdata,
                                        y=ydata,
                                        z=zdata,
+                                       copy_data=copy_data,
                                        forbid_split_up={'x', 'y', 'z'})
 
     clim = None
@@ -697,6 +724,7 @@ def multiplot_moved(xdata,
                     scale_move=1.0,
                     min_add=0,
                     saveas='mscatterplot',
+                    copy_data=False,
                     **kwargs):
     """
     Plots all the scatter plots above each other. It adds an arbitrary offset to the ydata to do this and
@@ -711,6 +739,7 @@ def multiplot_moved(xdata,
     :param scale_move: float, max*scale_move determines size of the shift
     :param min_add: float, minimum shift
     :param saveas: str specifying the filename (without file format)
+    :param copy_data: bool, if True the data argument will be copied
 
     Kwargs are passed on to the :py:func:`multiple_scatterplots()` call
     """
@@ -720,7 +749,7 @@ def multiplot_moved(xdata,
     if 'yticklabels' not in kwargs:
         kwargs['yticklabels'] = []
 
-    plot_data = process_data_arguments(data=data, x=xdata, y=ydata)
+    plot_data = process_data_arguments(data=data, x=xdata, y=ydata, copy_data=copy_data)
 
     shifts = [ymax * scale_move + min_add for ymax in plot_data.max('y', separate=True)]
     shifts = np.cumsum([0] + shifts)[:-1]
@@ -752,6 +781,7 @@ def histogram(xdata,
               saveas='histogram',
               return_hist_output=False,
               data=None,
+              copy_data=False,
               **kwargs):
     """
     Create a standard looking histogram
@@ -770,12 +800,13 @@ def histogram(xdata,
     :param ylabel: str, label for the y-axis
     :param saveas: str, filename for the saved plot
     :param return_hist_output: bool, if True the data output from hist will be returned
+    :param copy_data: bool, if True the data argument will be copied
 
     Kwargs will be passed on to :py:class:`masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`.
     If the arguments are not recognized they are passed on to the matplotlib function `hist`
     """
 
-    plot_data = process_data_arguments(data=data, x=xdata)
+    plot_data = process_data_arguments(data=data, x=xdata, copy_data=copy_data)
 
     plot_params.single_plot = False
     plot_params.num_plots = len(plot_data)
@@ -868,6 +899,7 @@ def barchart(positions,
              xerr=None,
              yerr=None,
              data=None,
+             copy_data=False,
              **kwargs):
     """
     Create a standard bar chart plot (this should be flexible enough) to do all the
@@ -887,6 +919,7 @@ def barchart(positions,
     :param bottom: bottom values for the lowest end of the bars
     :param bar_type: type of the barchart plot. Either ``stacked``, ``grouped`` or ``independent``
     :param alignment: which direction the bars should be plotted (``horizontal`` or ``vertical``)
+    :param copy_data: bool, if True the data argument will be copied
 
     Kwargs will be passed on to :py:class:`masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`.
     If the arguments are not recognized they are passed on to the matplotlib function `bar`
@@ -894,7 +927,12 @@ def barchart(positions,
     TODO: grouped barchart (meaing not stacked)
     """
 
-    plot_data = process_data_arguments(data=data, position=positions, height=heights, xerr=xerr, yerr=yerr)
+    plot_data = process_data_arguments(data=data,
+                                       position=positions,
+                                       height=heights,
+                                       xerr=xerr,
+                                       yerr=yerr,
+                                       copy_data=copy_data)
 
     if bar_type in ('stacked', 'grouped'):
         if plot_data.distinct_datasets('position') != 1:
@@ -1599,6 +1637,7 @@ def plot_dos(energy_grid,
              title=r'Density of states',
              xyswitch=False,
              e_fermi=0,
+             copy_data=False,
              **kwargs):
     """
     Plot the provided data for a density of states (not spin-polarized). Can be done
@@ -1613,12 +1652,13 @@ def plot_dos(energy_grid,
     :param saveas: str, filename for the saved plot
     :param e_fermi: float (default 0), place the line for the fermi energy at this value
     :param xyswitch: bool if True, the enrgy axis will be plotted vertically
+    :param copy_data: bool, if True the data argument will be copied
 
     All other Kwargs are passed on to the :py:func:`multiple_scatterplots()` call
     """
     import seaborn as sns
 
-    plot_data = process_data_arguments(data=data, energy=energy_grid, dos=dos_data)
+    plot_data = process_data_arguments(data=data, energy=energy_grid, dos=dos_data, copy_data=copy_data)
 
     if 'limits' in kwargs:
         limits = kwargs.pop('limits')
@@ -1676,6 +1716,7 @@ def plot_spinpol_dos(energy_grid,
                      energy_grid_dn=None,
                      e_fermi=0,
                      spin_dn_negative=True,
+                     copy_data=False,
                      **kwargs):
     """
     Plot the provided data for a density of states (spin-polarized). Can be done
@@ -1694,12 +1735,17 @@ def plot_spinpol_dos(energy_grid,
     :param energy_grid_dn: arraylike data for the energy grid of the DOS of the spin-down component
                            (optional)
     :param spin_dn_negative: bool, if True (default) the spin-down components are plotted downwards
+    :param copy_data: bool, if True the data argument will be copied
 
     All other Kwargs are passed on to the :py:func:`multiple_scatterplots()` call
     """
     import seaborn as sns
 
-    plot_data = process_data_arguments(data=data, energy=energy_grid, spin_up=spin_up_data, spin_dn=spin_dn_data)
+    plot_data = process_data_arguments(data=data,
+                                       energy=energy_grid,
+                                       spin_up=spin_up_data,
+                                       spin_dn=spin_dn_data,
+                                       copy_data=copy_data)
 
     plot_params.single_plot = False
     plot_params.num_plots = len(plot_data)
@@ -1806,6 +1852,7 @@ def plot_bands(kpath,
                separate_bands=False,
                line_plot=False,
                band_index=None,
+               copy_data=False,
                **kwargs):
     """
     Plot the provided data for a bandstrucuture (non spin-polarized). Can be used
@@ -1830,7 +1877,7 @@ def plot_bands(kpath,
     :param separate_bands: bool, if True the bandstructure will be separately plotted for each band
                            allows more specific parametrization
     :param band_index: data for which eigenvalue belongs to which band (needed for line_plot and separate_bands)
-
+    :param copy_data: bool, if True the data argument will be copied
 
     All other Kwargs are passed on to the :py:func:`multi_scatter_plot()` call
     """
@@ -1841,7 +1888,8 @@ def plot_bands(kpath,
                                        bands=bands,
                                        size=size_data,
                                        color=color_data,
-                                       band_index=band_index)
+                                       band_index=band_index,
+                                       copy_data=copy_data)
 
     if line_plot and size_data is not None:
         raise ValueError('Bandstructure with lines and size scaling not supported')
@@ -1957,6 +2005,7 @@ def plot_spinpol_bands(kpath,
                        line_plot=False,
                        separate_bands=False,
                        band_index=None,
+                       copy_data=False,
                        **kwargs):
     """
     Plot the provided data for a bandstrucuture (spin-polarized). Can be used
@@ -1983,7 +2032,7 @@ def plot_spinpol_bands(kpath,
     :param separate_bands: bool, if True the bandstructure will be separately plotted for each band
                            allows more specific parametrization
     :param band_index: data for which eigenvalue belongs to which band (needed for line_plot and separate_bands)
-
+    :param copy_data: bool, if True the data argument will be copied
 
     All other Kwargs are passed on to the :py:func:`multi_scatter_plot()` call
     """
@@ -1993,7 +2042,8 @@ def plot_spinpol_bands(kpath,
                                        bands=[bands_up, bands_dn],
                                        size=size_data,
                                        color=color_data,
-                                       band_index=band_index)
+                                       band_index=band_index,
+                                       copy_data=copy_data)
 
     plot_params.single_plot = False
     plot_params.num_plots = len(plot_data)
