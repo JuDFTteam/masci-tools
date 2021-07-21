@@ -1350,3 +1350,42 @@ class TestPlotConvergenceMulti(object):  #pylint: disable=missing-class-docstrin
 
         # need to return the figure in order for mpl checks to work
         return fig
+
+class TestPlotConvexHull2d: #pylint: disable=missing-class-docstring
+
+    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/convex_hull/',
+                                   filename='defaults.png')
+    def test_defaults_scipy(self):
+        """
+        Test with default parameters
+        """
+        from scipy.spatial import ConvexHull
+        from masci_tools.vis.plot_methods import plot_convex_hull2d
+
+        pts = [[-0.5, -0.5], [-0.5, 0.5], [0.5, -0.5], [0.5, 0.5], [0,0]]
+        hull = ConvexHull(pts)
+
+        gcf().clear()
+
+        plot_convex_hull2d(hull, show=False)
+
+        return gcf()
+
+    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/convex_hull/',
+                                   filename='defaults.png')
+    def test_defaults_pyhull(self):
+        """
+        Test with default parameters
+        """
+        pytest.importorskip('pyhull')
+        from pyhull.convex_hull import ConvexHull
+        from masci_tools.vis.plot_methods import plot_convex_hull2d
+
+        pts = [[-0.5, -0.5], [-0.5, 0.5], [0.5, -0.5], [0.5, 0.5], [0,0]]
+        hull = ConvexHull(pts)
+
+        gcf().clear()
+
+        plot_convex_hull2d(hull, show=False)
+
+        return gcf()

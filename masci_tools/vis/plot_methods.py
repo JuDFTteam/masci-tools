@@ -1098,7 +1098,7 @@ def multiaxis_scatterplot(xdata,
 def plot_convex_hull2d(hull,
                        *,
                        title='Convex Hull',
-                       xlabel='Atomic Procentage',
+                       xlabel='Atomic Percentage',
                        ylabel='Formation energy / atom [eV]',
                        saveas='convex_hull',
                        axis=None,
@@ -1127,6 +1127,7 @@ def plot_convex_hull2d(hull,
         warnings.warn('Please use color instead of color_line', DeprecationWarning)
         kwargs['color'] = kwargs.pop('colors')
 
+    plot_params.set_defaults(default_type='function', color='k')
     #Define function wide custom parameters
     plot_params.add_parameter('marker_hull', default_from='marker')
     plot_params.add_parameter('markersize_hull', default_from='markersize')
@@ -1136,19 +1137,25 @@ def plot_convex_hull2d(hull,
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
     points = hull.points
+    if not isinstance(points, np.ndarray):
+        points = np.array(points)
 
     plot_kw = plot_params.plot_kwargs()
     plot_hull_kw = plot_params.plot_kwargs(marker='marker_hull', markersize='markersize_hull', color='color_hull')
     plot_hull_kw['linestyle'] = ''
-    linestyle = plot_kw['linestyle']
-    plot_kw['linestyle'] = ''
+    linestyle = plot_kw.pop('linestyle',None)
 
-    ax.plot(points[:, 0], points[:, 1], **plot_kw, **kwargs)
+    ax.plot(points[:, 0], points[:, 1], linestyle='', **plot_kw, **kwargs)
     for simplex in hull.simplices:
         # TODO leave out some lines, the ones about [0,0 -1,0]
-        data = simplex.coords
+        if not isinstance(simplex, np.ndarray):
+            data = np.array(simplex.coords)
+        else:
+            data = points[simplex,:]
+
         ax.plot(data[:, 0], data[:, 1], linestyle=linestyle, **plot_kw, **kwargs)
         ax.plot(data[:, 0], data[:, 1], **plot_hull_kw, **kwargs)
+
         # this section is from scipy.spatial.Convexhull interface
         #ax.plot(points[simplex, 0], points[simplex, 1], linestyle=linestyle,
         #        color=color_line, linewidth=linewidth, markersize=markersize, **kwargs)
