@@ -8,3 +8,4 @@ This is the developers guide for masci-tools
 
     fleur_parser
     plotting
+    plot_data
