@@ -854,8 +854,8 @@ def default_histogram(*args, **kwargs):
 
 
 @ensure_plotter_consistency(plot_params)
-def barchart(xdata,
-             ydata,
+def barchart(positions,
+             heights,
              *,
              width=0.35,
              xlabel='x',
@@ -872,8 +872,8 @@ def barchart(xdata,
     Create a standard bar chart plot (this should be flexible enough) to do all the
     basic bar chart plots.
 
-    :param xdata: arraylike data for the x coordinates of the bars
-    :param ydata: arraylike data for the heights of the bars
+    :param positions: arraylike data for the positions of the bars
+    :param heights: arraylike data for the heights of the bars
     :param width: float determines the width of the bars
     :param axis: Axes object where to add the plot
     :param title: str, Title of the plot
@@ -890,16 +890,16 @@ def barchart(xdata,
     TODO: grouped barchart (meaing not stacked)
     """
 
-    nplots = len(ydata)
-    if nplots != len(xdata):  # todo check dimention not len, without moving to special datatype.
+    nplots = len(heights)
+    if nplots != len(positions):  # todo check dimention not len, without moving to special datatype.
         print('ydata and xdata must have the same dimension')
         return
 
-    if not isinstance(ydata[0], (list, np.ndarray, pd.Series)):
-        xdata, ydata = [xdata], [ydata]
+    if not isinstance(heights[0], (list, np.ndarray, pd.Series)):
+        positions, heights = [positions], [heights]
 
     plot_params.single_plot = False
-    plot_params.num_plots = len(ydata)
+    plot_params.num_plots = len(heights)
 
     #DEPRECATION WARNINGS
     if 'plot_labels' in kwargs:
@@ -952,13 +952,13 @@ def barchart(xdata,
     if bottom:
         datab = bottom
     else:
-        datab = np.zeros(len(ydata[0]))
+        datab = np.zeros(len(heights[0]))
 
     plot_kwargs = plot_params.plot_kwargs(plot_type='histogram')
 
-    for indx, data in enumerate(zip(xdata, ydata, plot_kwargs)):
+    for indx, data in enumerate(zip(positions, heights, plot_kwargs)):
 
-        x, y, plot_kw = data
+        position, height, plot_kw = data
 
         if isinstance(yerr, list):
             try:
@@ -977,12 +977,11 @@ def barchart(xdata,
             xerrt = xerr
 
         if alignment == "horizontal":
-            ax.barh(y, x, width, left=datab, **plot_kw, **kwargs)
-            datab = datab + np.array(x)
+            ax.barh(position, height, width, left=datab, **plot_kw, **kwargs)
         else:
-            ax.bar(x, y, width, bottom=datab, **plot_kw, **kwargs)
+            ax.bar(position, height, width, bottom=datab, **plot_kw, **kwargs)
 
-            datab = datab + np.array(y)
+        datab = datab + np.array(height)
 
     plot_params.set_scale(ax)
     plot_params.set_limits(ax)
