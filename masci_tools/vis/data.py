@@ -668,7 +668,7 @@ def normalize_list_or_array(data, key, out_data, flatten_np=False, forbid_split_
     :param forbid_split_up: bool, if True multidimensional arrays are not split up
 
     The rules are the following:
-        - if ``data`` is a multidimesional array (list of lists, etc.)
+        - if ``data`` is a multidimensional array (list of lists, etc.)
           and it is not forbidden by the given argument the first dimension
           of the array is iterated over and interpreted as separate entries
           (if the data was previously split up into multiple sets a length check is performed)

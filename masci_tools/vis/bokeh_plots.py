@@ -67,6 +67,26 @@ def get_bokeh_help(key):
     plot_params.get_description(key)
 
 
+def load_bokeh_defaults(filename='plot_bokeh_defaults.json'):
+    """
+    Load defaults for the bokeh backend from a json file.
+
+    :param filename: filename,from  where the defaults should be taken
+    """
+    plot_params.load_defaults(filename)
+
+
+def save_bokeh_defaults(filename='plot_bokeh_defaults.json', save_complete=False):
+    """
+    Save the current defaults for the matplotlib backend to a json file.
+
+    :param filename: filename, where the defaults should be stored
+    :param save_complete: bool if True not only the overwritten user defaults
+                          but also the unmodified harcoded defaults are stored
+    """
+    plot_params.save_defaults(filename, save_complete=save_complete)
+
+
 ##################################### general plots ##########################
 
 
@@ -688,12 +708,12 @@ def bokeh_bands(kpath,
 
     if line_plot:
         return bokeh_line(plot_data.get_keys('kpath'),
-                                   plot_data.get_keys('bands'),
-                                   data=plot_data.data,
-                                   xlabel='',
-                                   ylabel=ylabel,
-                                   title=title,
-                                   **kwargs)
+                          plot_data.get_keys('bands'),
+                          data=plot_data.data,
+                          xlabel='',
+                          ylabel=ylabel,
+                          title=title,
+                          **kwargs)
     else:
         return bokeh_multi_scatter(plot_data.get_keys('kpath'),
                                    plot_data.get_keys('bands'),
@@ -870,20 +890,20 @@ def bokeh_spinpol_bands(kpath,
 
     if line_plot:
         return bokeh_line(plot_data.get_keys('kpath'),
-                               plot_data.get_keys('bands'),
-                               data=plot_data.data,
-                               xlabel='',
-                               ylabel=ylabel,
-                               title=title,
-                               **kwargs)
+                          plot_data.get_keys('bands'),
+                          data=plot_data.data,
+                          xlabel='',
+                          ylabel=ylabel,
+                          title=title,
+                          **kwargs)
     else:
         return bokeh_multi_scatter(plot_data.get_keys('kpath'),
-                               plot_data.get_keys('bands'),
-                               data=plot_data.data,
-                               xlabel='',
-                               ylabel=ylabel,
-                               title=title,
-                               **kwargs)
+                                   plot_data.get_keys('bands'),
+                                   data=plot_data.data,
+                                   xlabel='',
+                                   ylabel=ylabel,
+                                   title=title,
+                                   **kwargs)
 
 
 ####################################################################################################

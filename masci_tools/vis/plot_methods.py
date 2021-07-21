@@ -86,6 +86,26 @@ def get_mpl_help(key):
     plot_params.get_description(key)
 
 
+def load_mpl_defaults(filename='plot_mpl_defaults.json'):
+    """
+    Load defaults for the matplotlib backend from a json file.
+
+    :param filename: filename,from  where the defaults should be taken
+    """
+    plot_params.load_defaults(filename)
+
+
+def save_mpl_defaults(filename='plot_mpl_defaults.json', save_complete=False):
+    """
+    Save the current defaults for the matplotlib backend to a json file.
+
+    :param filename: filename, where the defaults should be stored
+    :param save_complete: bool if True not only the overwritten user defaults
+                          but also the unmodified harcoded defaults are stored
+    """
+    plot_params.save_defaults(filename, save_complete=save_complete)
+
+
 ###############################################################################
 ########################## general plot routines ##############################
 ###############################################################################
