@@ -17,8 +17,8 @@ def get_econfig(element, full=False):
     """
     returns the econfiguration as a string of an element.
 
-    :params element: element string
-    :params full: a bool (econfig without [He]...)
+    :param element: element string
+    :param full: a bool if True the econfig without [He]... is returned
     :returns: a econfig string
     """
     if isinstance(element, int):
@@ -40,10 +40,9 @@ def get_coreconfig(element, full=False):
     """
     returns the econfiguration as a string of an element.
 
-    :param: element string
-    :param: full, bool (econfig without [He]...)
-    :return: string
-    :note: Be careful with base strings...
+    :param element: element string
+    :param full: a bool if True the econfig without [He]... is returned
+    :return: coreconfig string
     """
     econ = get_econfig(element, full=full)
     return econ.split('|')[0].rstrip()
@@ -53,6 +52,10 @@ def rek_econ(econfigstr):
     """
     recursive routine to return a full econfig
     '[Xe] 4f14 | 5d10 6s2 6p4' -> '1s 2s ... 4f14 | 5d10 6s2 6p4'
+
+    :param econfigstr: electron config string to expand
+
+    :returns: expanded econfig string
     """
     split_econ = econfigstr.strip('[')
     split_econ = split_econ.split(']')
@@ -72,6 +75,11 @@ def convert_fleur_config_to_econfig(fleurconf_str, keep_spin=False):
     '[Kr] (4d3/2) (4d5/2) (4f5/2) (4f7/2)' -> '[Kr] 4d10 4f14', or '[Kr] 4d3/2 4d5/2 4f5/2 4f7/2'
 
     # for now only use for coreconfig, it will fill all orbitals, since it has no information on the filling.
+
+    :param fleurconf_str: string of the electron config like it is read from the inp.xml
+    :param keep_spin: bool if True the spin indices will be kept in the converted string
+
+    :returns: string of the electron config to be used in the inpgen
     """
 
     econfstring = fleurconf_str.replace('(', '').replace(')', '')

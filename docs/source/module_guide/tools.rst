@@ -74,6 +74,8 @@ Fleur parser utility
 .. automodule:: masci_tools.io.parsers.fleur.outxml_conversions
    :members:
 
+.. automodule:: masci_tools.util.econfig
+   :members:
 
 Basic Fleur Schema parser functions
 ++++++++++++++++++++++++++++++++++++
