@@ -260,10 +260,10 @@ class PlotData:
             else:
                 data = source[key][mask_entry]
 
-            if isinstance(source[key], (np.ndarray, pd.Series)):
+            if isinstance(source[key], pd.Series):
                 min_val.append(data.min())
             else:
-                min_val.append(min(data))
+                min_val.append(np.nanmin(data))
 
         if separate:
             return min_val
@@ -302,10 +302,10 @@ class PlotData:
             else:
                 data = source[key][mask_entry]
 
-            if isinstance(source[key], (np.ndarray, pd.Series)):
+            if isinstance(source[key], pd.Series):
                 max_val.append(data.max())
             else:
-                max_val.append(max(data))
+                max_val.append(np.nanmax(data))
 
         if separate:
             return max_val
@@ -594,6 +594,7 @@ class ColumnDataSourceWrapper:
 
     Used in the :py:class:`PlotDataIterator` for easier handling of these types
     """
+
     def __init__(self, wrapped):
         self.wrapped = wrapped
 
