@@ -58,8 +58,6 @@ class PlotData:
 
       :param data: object or list of objects which can be bracket indexed with the given keys
                    e.g. dicts, pandas dataframes, ...
-      :param mask: optional list or Tuple of bool, of the same length as the specified data
-                   When iterating over it only the objects with the mask set to True are returned
       :same_length: bool if True and any sources are dicts it will be checked for same dimensions
                     in (ALL) entries (not only for keys plotted against each other)
       :strict_data_keys: bool if True no new data keys are allowed to be entered via :py:meth:`copy_data()`
@@ -77,7 +75,6 @@ class PlotData:
 
     def __init__(self,
                  data,
-                 mask=None,
                  use_column_source=False,
                  same_length=False,
                  strict_data_keys=False,
@@ -86,6 +83,7 @@ class PlotData:
 
         self.data = data
         self.strict_data_keys = strict_data_keys
+        self.use_column_source = use_column_source
 
         if isinstance(self.data, list):
             assert isinstance(self.data[0], self.ALLOWED_DATA_HOLDERS), f'Wrong type for data argument: Got {self.data}'
@@ -107,13 +105,6 @@ class PlotData:
                         self.data[index] = _normalize_dict_entries(entry)
             else:
                 self.data = _normalize_dict_entries(self.data)
-
-        if dict_data and use_column_source:
-            if isinstance(self.data, list):
-                for index, entry in enumerate(self.data):
-                    self.data[index] = ColumnDataSource(entry)
-            else:
-                self.data = ColumnDataSource(self.data)
 
         self._column_spec = namedtuple('Columns', list(kwargs.keys()))
 
@@ -145,12 +136,6 @@ class PlotData:
                 num_sets = 1
             self.columns = [self._column_spec(**kwargs)] * num_sets
 
-        if mask is None:
-            mask = [True] * num_sets
-        if not isinstance(mask, (list, tuple)) or len(mask) != num_sets:
-            raise ValueError(f'Wrong Value for mask: {mask}')
-        self.mask = mask
-
     def _add_data_key(self, new_data_key):
         """
         Add a new column of data keys initialized with Nones
@@ -167,18 +152,11 @@ class PlotData:
         for indx, column in enumerate(self.columns):
             self.columns[indx] = self._column_spec(**{**column._asdict(), **{new_data_key: None}})
 
-    @property
-    def masked_columns(self):
-        """
-        Return the columns that are not disabled by the mask argument
-        """
-        return [col for col, msk in zip(self.columns, self.mask) if msk]
-
     def __iter__(self):
         """
         Iterate over PlotData. Returns the values for the data
         """
-        return PlotDataIterator(self, mode='values')
+        return PlotDataIterator(self, mode='values', mappable=True)
 
     def keys(self, first=False):
         """
@@ -198,15 +176,16 @@ class PlotData:
         :param first: bool, if True only the first entry is returned
         """
         if first:
-            return next(PlotDataIterator(self, mode='values'))
+            return next(PlotDataIterator(self, mode='values', mappable=True))
         else:
-            return PlotDataIterator(self, mode='values')
+            return PlotDataIterator(self, mode='values', mappable=True)
 
-    def items(self, first=False):
+    def items(self, first=False, mappable=False):
         """
         Iterate over PlotData items. Returns the key and corresponding source for the data
 
         :param first: bool, if True only the first entry is returned
+        :param mappable: bool, if True only the data ColumnDataSources are wrapped to be mappable
         """
         if first:
             return next(PlotDataIterator(self, mode='items'))
@@ -472,9 +451,8 @@ class PlotData:
         #For grouping data we always go to a pandas Dataframe
         columns = []
         sources = []
-        masks = []
 
-        for indx, ((entry, source), mask) in enumerate(zip(self.items(), self.mask)):
+        for indx, (entry, source) in enumerate(self.items(mappable=True)):
 
             if not isinstance(source, pd.DataFrame):
                 source = pd.DataFrame(data=source)
@@ -487,11 +465,9 @@ class PlotData:
 
             columns.extend([entry] * len(gb))
             sources.extend([gb.get_group(x) for x in gb.groups])
-            masks.extend([mask] * len(gb))
 
         self.columns = columns
         self.data = sources
-        self.mask = masks
 
     def shift_data(self, data_key, shifts, shifted_data_key=None, separate_data=True, negative=False):
         """
@@ -520,10 +496,10 @@ class PlotData:
         else:
             shifts = [shifts] * len(self)
 
-        for (entry, source), shift in zip(self.items(), shifts):
+        for (entry, source), shift in zip(self.items(mappable=True), shifts):
 
             key = entry._asdict()[data_key]
-            if isinstance(source[key], (ColumnDataSource, pd.Series, np.ndarray)):
+            if isinstance(source[key], (pd.Series, np.ndarray)):
                 if negative:
                     source[key] -= shift
                 else:
@@ -554,7 +530,7 @@ class PlotData:
 
             self._add_data_key(data_key_to)
 
-        for indx, (entry, source) in enumerate(self.items()):
+        for indx, (entry, source) in enumerate(self.items(mappable=True)):
 
             key = entry._asdict()[data_key_from]
             if rename_original:
@@ -592,7 +568,7 @@ class PlotData:
             raise ValueError(f'Field {data_key} does not exist')
 
         data_sets = []
-        for entry, source in self.items():
+        for entry, source in self.items(mappable=True):
             key = entry._asdict()[data_key]
 
             normed_set = source[key]
@@ -605,19 +581,34 @@ class PlotData:
         return len(data_sets)
 
     def __len__(self):
-        return len(self.masked_columns)
-
-    def __getitem__(self, key):
-        if isinstance(self.data, list):
-            if isinstance(key, tuple):
-                return self.data[key[0]][key[1:]]
-            else:
-                raise KeyError("No index given but data is a list. Provide key as '(index,key)'")
-        else:
-            return self.data[key]
+        return len(self.columns)
 
     def export(self, **kwargs):
         raise NotImplementedError
+
+
+class ColumnDataSourceWrapper:
+    """
+    Wrapper around ``bokeh.models.ColumnDataSource`` to give it a
+    ``__getitem__`` and ``__setitem__`` method
+
+    Used in the :py:class:`PlotDataIterator` for easier handling of these types
+    """
+    def __init__(self, wrapped):
+        self.wrapped = wrapped
+
+    def __getitem__(self, key):
+        return self.wrapped.data[key]
+
+    def __setitem__(self, key, value):
+        self.wrapped.data[key] = value
+
+    def __getattr__(self, attr):
+        return getattr(self.wrapped, attr)
+
+    @property
+    def original(self):
+        return self.wrapped
 
 
 class PlotDataIterator:
@@ -633,40 +624,37 @@ class PlotDataIterator:
     to the set data keys
     """
 
-    def __init__(self, plot_data, mode='values'):
+    def __init__(self, plot_data, mode='values', mappable=False):
         self._plot_data = plot_data
-        self._column_iter = iter(col for col, msk in zip(self._plot_data.columns, self._plot_data.mask) if msk)
-
-        self._data_indx = 0
+        self._wrap_cds = mappable or not self._plot_data.use_column_source
         self._iter_mode = mode
+        self._column_iter = iter(self._plot_data.columns)
+        self._data_iter = None
+        if isinstance(self._plot_data.data, list):
+            self._data_iter = iter(self._plot_data.data)
 
     def __iter__(self):
         return self
 
     def __next__(self):
         columns = next(self._column_iter)
+
         if self._iter_mode == 'keys':
             return columns
-        elif self._iter_mode == 'values':
-            if isinstance(self._plot_data.data, list):
-                plot_data = {
-                    key: self._plot_data.data[self._data_indx][val] if val is not None else None
-                    for key, val in columns._asdict().items()
-                }
-                self._data_indx += 1
-            else:
-                plot_data = {
-                    key: self._plot_data.data[val] if val is not None else None
-                    for key, val in columns._asdict().items()
-                }
+
+        if self._data_iter is not None:
+            data = next(self._data_iter)
+        else:
+            data = self._plot_data.data
+
+        if self._wrap_cds and isinstance(data, ColumnDataSource):
+            data = ColumnDataSourceWrapper(data)
+
+        if self._iter_mode == 'values':
+            plot_data = {key: data[val] if val is not None else None for key, val in columns._asdict().items()}
             return self._plot_data._column_spec(**plot_data)
         elif self._iter_mode == 'items':
-            if isinstance(self._plot_data.data, list):
-                data_source = self._plot_data.data[self._data_indx]
-                self._data_indx += 1
-            else:
-                data_source = self._plot_data.data
-            return columns, data_source
+            return columns, data
         raise StopIteration
 
 
@@ -751,7 +739,6 @@ def _normalize_dict_entries(dict_data):
 
 def process_data_arguments(data=None,
                            single_plot=False,
-                           mask=None,
                            use_column_source=False,
                            flatten_np=False,
                            forbid_split_up=None,
@@ -764,7 +751,6 @@ def process_data_arguments(data=None,
 
     :param data: either None or Mapping to be used as the data in the PlotData class
     :param single_plot: bool, if True only a single dataset is allowed
-    :param mask: list of bools deactivating some data sets for plotting
     :param use_column_source: bool, if True all data arguments are converted to ColumnDataSource of bokeh
     :param flatten_np: bool, if True multidimensional numpy arrays are flattened (Only if data not given)
     :param forbid_split_up: set of keys for which not to split up multidimensional arrays
@@ -819,12 +805,7 @@ def process_data_arguments(data=None,
     else:
         keys = kwargs
 
-    p_data = PlotData(data,
-                      mask=mask,
-                      use_column_source=use_column_source,
-                      same_length=same_length,
-                      copy_data=copy_data,
-                      **keys)
+    p_data = PlotData(data, use_column_source=use_column_source, same_length=same_length, copy_data=copy_data, **keys)
 
     if len(p_data) != 1 and single_plot:
         raise ValueError(f'Got multiple data sets ({len(p_data)}) but expected 1')

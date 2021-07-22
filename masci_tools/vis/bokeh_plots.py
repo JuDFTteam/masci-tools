@@ -127,7 +127,13 @@ def bokeh_scatter(x,
         x = kwargs.pop('xdata', 'x')
         y = kwargs.pop('ydata', 'y')
 
-    plot_data = process_data_arguments(data=data, x=x, y=y, copy_data=copy_data, single_plot=True, same_length=True)
+    plot_data = process_data_arguments(data=data,
+                                       x=x,
+                                       y=y,
+                                       copy_data=copy_data,
+                                       single_plot=True,
+                                       same_length=True,
+                                       use_column_source=True)
     entry, source = plot_data.items(first=True)
 
     plot_params.set_defaults(default_type='function', name=entry.y)
@@ -188,7 +194,12 @@ def bokeh_multi_scatter(x,
         x = kwargs.pop('xdata', 'x')
         y = kwargs.pop('ydata', 'y')
 
-    plot_data = process_data_arguments(data=data, x=x, y=y, same_length=True, copy_data=copy_data)
+    plot_data = process_data_arguments(data=data,
+                                       x=x,
+                                       y=y,
+                                       same_length=True,
+                                       copy_data=copy_data,
+                                       use_column_source=True)
 
     plot_params.single_plot = False
     plot_params.num_plots = len(plot_data)
@@ -267,7 +278,13 @@ def bokeh_line(x,
         x = kwargs.pop('xdata', 'x')
         y = kwargs.pop('ydata', 'y')
 
-    plot_data = process_data_arguments(data=data, x=x, y=y, shift=area_curve, same_length=True, copy_data=copy_data)
+    plot_data = process_data_arguments(data=data,
+                                       x=x,
+                                       y=y,
+                                       shift=area_curve,
+                                       same_length=True,
+                                       copy_data=copy_data,
+                                       use_column_source=True)
 
     plot_params.single_plot = False
     plot_params.num_plots = len(plot_data)
@@ -368,7 +385,8 @@ def bokeh_dos(energy_grid,
                                        energy=energy_grid,
                                        dos=dos_data,
                                        same_length=True,
-                                       copy_data=copy_data)
+                                       copy_data=copy_data,
+                                       use_column_source=True)
 
     plot_params.single_plot = False
     plot_params.num_plots = len(plot_data)
@@ -468,7 +486,8 @@ def bokeh_spinpol_dos(energy_grid,
                                        spin_up=spin_up_data,
                                        spin_dn=spin_dn_data,
                                        same_length=True,
-                                       copy_data=copy_data)
+                                       copy_data=copy_data,
+                                       use_column_source=True)
 
     plot_params.single_plot = False
     plot_params.num_plots = len(plot_data)
@@ -658,7 +677,8 @@ def bokeh_bands(kpath,
                                        size=size_data,
                                        color=color_data,
                                        band_index=band_index,
-                                       copy_data=copy_data)
+                                       copy_data=copy_data,
+                                       use_column_source=True)
 
     if line_plot and size_data is not None:
         raise ValueError('Bandstructure with lines and size scaling not supported')
@@ -831,7 +851,8 @@ def bokeh_spinpol_bands(kpath,
                                        size=size_data,
                                        color=color_data,
                                        band_index=band_index,
-                                       copy_data=copy_data)
+                                       copy_data=copy_data,
+                                       use_column_source=True)
 
     plot_params.single_plot = False
     plot_params.num_plots = len(plot_data)
