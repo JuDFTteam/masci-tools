@@ -20,7 +20,21 @@ from collections import namedtuple
 import numpy as np
 import pandas as pd
 import copy
-from bokeh.models import ColumnDataSource
+
+try:
+    from bokeh.models import ColumnDataSource
+    _BOKEH_INSTALLED = True
+except ImportError:
+    _BOKEH_INSTALLED = False
+
+
+def _is_bokeh_cds(data):
+    """
+    Check if the given argument is a ``ColumnDataSource`` from bokeh
+    """
+    if _BOKEH_INSTALLED:
+        return isinstance(data, ColumnDataSource)
+    return False
 
 
 class PlotData:
@@ -71,7 +85,10 @@ class PlotData:
 
     #These we know to be safely working as the data argument
     #In principle this could be extended to any Mapping
-    ALLOWED_DATA_HOLDERS = (dict, pd.DataFrame, ColumnDataSource)
+    if _BOKEH_INSTALLED:
+        ALLOWED_DATA_HOLDERS = (dict, pd.DataFrame, ColumnDataSource)
+    else:
+        ALLOWED_DATA_HOLDERS = (dict, pd.DataFrame)
 
     def __init__(self,
                  data,
@@ -550,7 +567,7 @@ class PlotData:
                     self.data[indx] = new_source
                 else:
                     self.data = new_source
-            elif isinstance(source, ColumnDataSource):
+            elif _is_bokeh_cds(source):
                 source.add(copy.copy(source[key]), name=new_key)
             else:
                 source[new_key] = copy.copy(source[key])
@@ -648,7 +665,7 @@ class PlotDataIterator:
         else:
             data = self._plot_data.data
 
-        if self._wrap_cds and isinstance(data, ColumnDataSource):
+        if self._wrap_cds and _is_bokeh_cds(data):
             data = ColumnDataSourceWrapper(data)
 
         if self._iter_mode == 'values':
