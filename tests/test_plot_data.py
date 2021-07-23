@@ -129,13 +129,13 @@ SINGLE_COLUMNS = [[{
     'type': 'y2'
 }]]
 
-x_data = np.linspace(-10, 10, 100)
+x_data = np.linspace(-10, 10, 101)
 
 dict_data = {
     'x': x_data,
     'test': x_data * 4,
     'y': x_data**2,
-    'y1': np.sin(x_data),
+    'y1': 5 * x_data - 10,
     'y2': np.cos(x_data),
     'y3': np.exp(x_data)
 }
@@ -204,8 +204,65 @@ def test_plot_data_list_of_sources():
     pass
 
 
-def test_plot_data_min():
-    pass
+EXPECTED_MIN = [{
+    'x': [-10.0],
+    'y': [0.0]
+}, {
+    'x_values': [-40.0, -40.0, -40.0],
+    'y': [-60.0, -0.9996930, 4.53999e-05]
+}, {
+    'color': [-40.0, -10.0],
+    'type': [-60.0, -0.9996930]
+}]
+
+
+@pytest.mark.parametrize('inputs, data', product(zip(SINGLE_ENTRIES, EXPECTED_MIN), SINGLE_SOURCES))
+def test_plot_data_min(inputs, data):
+    """
+    Test of PlotData min function
+    """
+    from masci_tools.vis.data import PlotData
+
+    entries, expected_min = inputs
+
+    p = PlotData(data, **entries, use_column_source=True)
+
+    for key, expected in expected_min.items():
+
+        assert p.min(key) == pytest.approx(min(expected))
+
+
+@pytest.mark.parametrize('inputs, data', product(zip(SINGLE_ENTRIES, EXPECTED_MIN), SINGLE_SOURCES))
+def test_plot_data_min_separate(inputs, data):
+    """
+    Test of PlotData min function
+    """
+    from masci_tools.vis.data import PlotData
+
+    entries, expected_min = inputs
+
+    p = PlotData(data, **entries, use_column_source=True)
+
+    for key, expected in expected_min.items():
+
+        assert p.min(key, separate=True) == pytest.approx(expected)
+
+
+@pytest.mark.parametrize('data', SINGLE_SOURCES)
+def test_plot_data_min_mask(data):
+    """
+    Test of PlotData min function
+    """
+    from masci_tools.vis.data import PlotData
+
+    entries = SINGLE_ENTRIES[0]
+    p = PlotData(data, **entries, use_column_source=True)
+    assert p.min('x', mask=x_data > 5) == pytest.approx(5.2)
+
+    entries = SINGLE_ENTRIES[1]
+    p = PlotData(data, **entries, use_column_source=True)
+    assert p.min('y', mask=[x_data > 5, x_data < 5, x_data >= 9],
+                 separate=True) == pytest.approx([16.0, -0.9996930, 8103.0839275])
 
 
 def test_plot_data_max():
