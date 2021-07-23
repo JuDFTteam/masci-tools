@@ -1926,10 +1926,8 @@ def plot_bands(kpath,
             if 'y' in kwargs['limits']:
                 ylimits = kwargs['limits']['y']
 
-        data = plot_data.values(first=True)
-        mask = np.logical_and(data.bands > ylimits[0], data.bands < ylimits[1])
-
-        weight_max = plot_data.max('size', mask=mask)
+        mask = lambda bands, ylimits=tuple(ylimits): np.logical_and(bands > ylimits[0], bands < ylimits[1])
+        weight_max = plot_data.max('size', mask=mask, mask_data_key='bands')
         if 'vmax' not in kwargs:
             kwargs['vmax'] = weight_max
 
@@ -2081,9 +2079,9 @@ def plot_spinpol_bands(kpath,
             if 'y' in kwargs['limits']:
                 ylimits = kwargs['limits']['y']
 
-        data = plot_data.values()
-        mask = [np.logical_and(col.bands > ylimits[0], col.bands < ylimits[1]) for col in data]
-        weight_max = plot_data.max('size', mask=mask)
+
+        mask = lambda bands, ylimits=tuple(ylimits): np.logical_and(bands > ylimits[0], bands < ylimits[1])
+        weight_max = plot_data.max('size', mask=mask, mask_data_key='bands')
 
         if 'vmax' not in kwargs:
             kwargs['vmax'] = weight_max

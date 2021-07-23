@@ -20,6 +20,7 @@ from collections import namedtuple
 import numpy as np
 import pandas as pd
 import copy
+import warnings
 
 try:
     from bokeh.models import ColumnDataSource
@@ -245,7 +246,7 @@ class PlotData:
 
         return values
 
-    def min(self, data_key, separate=False, mask=None):
+    def min(self, data_key, separate=False, mask=None, mask_data_key=None):
         """
         Get the minimum value for a given data column for all entries
 
@@ -253,6 +254,7 @@ class PlotData:
         :param separate: bool if True the minimum will be determined and returned
                          for all entries separately
         :param mask: optional mask to select specifc rows from the data entries
+        :param mask_data_key: optional data key to be used when ``mask`` is a function
 
         :returns: minimum value for all entries either combined or as a list
         """
@@ -260,15 +262,12 @@ class PlotData:
             raise ValueError(f'Field {data_key} does not exist')
 
         if mask is not None:
-            if len(mask) == len(self):
-                mask_gen = (mask_indx for mask_indx in mask)
-            else:
-                mask_gen = (mask for i in self)
+            mask = self.get_mask(mask, data_key=mask_data_key if mask_data_key is not None else data_key)
         else:
-            mask_gen = (None for i in self)
+            mask = [None] * len(self)
 
         min_val = []
-        for (entry, source), mask_entry in zip(self.items(mappable=True), mask_gen):
+        for (entry, source), mask_entry in zip(self.items(mappable=True), mask):
 
             key = entry._asdict()[data_key]
 
@@ -287,7 +286,7 @@ class PlotData:
         else:
             return min(min_val)
 
-    def max(self, data_key, separate=False, mask=None):
+    def max(self, data_key, separate=False, mask=None, mask_data_key=None):
         """
         Get the maximum value for a given data column for all entries
 
@@ -295,6 +294,7 @@ class PlotData:
         :param separate: bool if True the maximum will be determined and returned
                          for all entries separately
         :param mask: optional mask to select specifc rows from the data entries
+        :param mask_data_key: optional data key to be used when ``mask`` is a function
 
         :returns: maximum value for all entries either combined or as a list
         """
@@ -302,15 +302,12 @@ class PlotData:
             raise ValueError(f'Field {data_key} does not exist')
 
         if mask is not None:
-            if len(mask) == len(self):
-                mask_gen = (mask_indx for mask_indx in mask)
-            else:
-                mask_gen = (mask for i in range(len(self)))
+            mask = self.get_mask(mask, data_key=mask_data_key if mask_data_key is not None else data_key)
         else:
-            mask_gen = (None for i in range(len(self)))
+            mask = [None] * len(self)
 
         max_val = []
-        for (entry, source), mask_entry in zip(self.items(mappable=True), mask_gen):
+        for (entry, source), mask_entry in zip(self.items(mappable=True), mask):
 
             key = entry._asdict()[data_key]
 
@@ -389,6 +386,33 @@ class PlotData:
             return result[0]
         else:
             return result
+
+    def get_mask(self, mask, data_key=None):
+        """
+        Get mask list for use with the Data in this instance
+
+        :param mask: either list of callable, if it is callable it is used in
+                     :py:meth:`get_function_result()` together with the ``data_key``
+                     argument
+        :param data_key: str to be used for the data key if mask is a callable
+
+        :param
+        """
+        from collections.abc import Callable
+
+        if isinstance(mask, Callable):
+            if data_key is None:
+                raise ValueError('If mask is a function the data_key argument has to be given')
+            mask = self.get_function_result(data_key, mask, list_return=True)
+        else:
+            if len(mask) != len(self):
+                mask = [mask for i in range(len(self))]
+
+        for mask_entry in mask:
+            if not all(isinstance(val, bool) for val in mask_entry):
+                warnings.warn('Not all entries in the mask are booleans')
+
+        return mask
 
     def sort_data(self, by_data_keys, **kwargs):
         """
