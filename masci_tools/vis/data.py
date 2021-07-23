@@ -205,9 +205,9 @@ class PlotData:
         :param mappable: bool, if True only the data ColumnDataSources are wrapped to be mappable
         """
         if first:
-            return next(PlotDataIterator(self, mode='items'))
+            return next(PlotDataIterator(self, mode='items', mappable=mappable))
         else:
-            return PlotDataIterator(self, mode='items')
+            return PlotDataIterator(self, mode='items', mappable=mappable)
 
     def get_keys(self, data_key):
         """
@@ -268,7 +268,7 @@ class PlotData:
             mask_gen = (None for i in self)
 
         min_val = []
-        for (entry, source), mask_entry in zip(self.items(), mask_gen):
+        for (entry, source), mask_entry in zip(self.items(mappable=True), mask_gen):
 
             key = entry._asdict()[data_key]
 
@@ -310,7 +310,7 @@ class PlotData:
             mask_gen = (None for i in range(len(self)))
 
         max_val = []
-        for (entry, source), mask_entry in zip(self.items(), mask_gen):
+        for (entry, source), mask_entry in zip(self.items(mappable=True), mask_gen):
 
             key = entry._asdict()[data_key]
 
@@ -345,7 +345,7 @@ class PlotData:
         if data_key not in self._column_spec._fields:
             raise ValueError(f'Field {data_key} does not exist')
 
-        for indx, (entry, source) in enumerate(self.items()):
+        for indx, (entry, source) in enumerate(self.items(mappable=True)):
 
             key = entry._asdict()[data_key]
 
@@ -377,7 +377,7 @@ class PlotData:
             raise ValueError(f'Field {data_key} does not exist')
 
         result = []
-        for indx, (entry, source) in enumerate(self.items()):
+        for indx, (entry, source) in enumerate(self.items(mappable=True)):
 
             key = entry._asdict()[data_key]
             if isinstance(func, str):
@@ -422,7 +422,7 @@ class PlotData:
         if expand_data:
             data = []
 
-        for indx, (entry, source) in enumerate(self.items()):
+        for indx, (entry, source) in enumerate(self.items(mappable=True)):
 
             if not isinstance(source, pd.DataFrame):
                 source = pd.DataFrame(data=source)
