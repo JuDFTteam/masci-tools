@@ -3,6 +3,15 @@
 Tests of the `masci_tools.vis.data` module
 """
 import pytest
+from itertools import product
+import numpy as np
+import pandas as pd
+
+USE_CDS = True
+try:
+    from bokeh.models import ColumnDataSource
+except ImportError:
+    USE_CDS = False
 
 
 def test_normalize_list_or_array():
@@ -10,8 +19,6 @@ def test_normalize_list_or_array():
     Test of the normalize_list_or_array function
     """
     from masci_tools.vis.data import normalize_list_or_array
-    import numpy as np
-    import pandas as pd
 
     #Single array
     x = np.linspace(-1, 1, 10)
@@ -64,7 +71,6 @@ def test_normalize_list_or_array_flatten_np():
     Test of the normalize_list_or_array function with flatten_np=True
     """
     from masci_tools.vis.data import normalize_list_or_array
-    import numpy as np
 
     x = np.linspace(-1, 1, 10)
     y = np.linspace(-1, 1, 10)
@@ -82,7 +88,6 @@ def test_normalize_list_or_array_forbid_split_up():
     Test of the normalize_list_or_array function with forbid_split_up=True
     """
     from masci_tools.vis.data import normalize_list_or_array
-    import numpy as np
 
     x = np.linspace(-1, 1, 10)
     data = normalize_list_or_array(x, 'x', {}, forbid_split_up=True)
@@ -93,8 +98,106 @@ def test_normalize_list_or_array_forbid_split_up():
     assert data == {'x': x, 'y': y}
 
 
-def test_plot_data():
-    pass
+SINGLE_ENTRIES = [{
+    'x': 'x',
+    'y': 'y'
+}, {
+    'x_values': 'test',
+    'y': ['y1', 'y2', 'y3']
+}, {
+    'color': ['test', 'x'],
+    'type': ['y1', 'y2']
+}]
+
+SINGLE_COLUMNS = [[{
+    'x': 'x',
+    'y': 'y'
+}], [{
+    'x_values': 'test',
+    'y': 'y1'
+}, {
+    'x_values': 'test',
+    'y': 'y2'
+}, {
+    'x_values': 'test',
+    'y': 'y3'
+}], [{
+    'color': 'test',
+    'type': 'y1'
+}, {
+    'color': 'x',
+    'type': 'y2'
+}]]
+
+x_data = np.linspace(-10, 10, 100)
+
+dict_data = {
+    'x': x_data,
+    'test': x_data * 4,
+    'y': x_data**2,
+    'y1': np.sin(x_data),
+    'y2': np.cos(x_data),
+    'y3': np.exp(x_data)
+}
+
+SINGLE_SOURCES = [dict_data, pd.DataFrame(data=dict_data)]
+
+if USE_CDS:
+    SINGLE_SOURCES.append(ColumnDataSource(dict_data))
+
+
+@pytest.mark.parametrize('inputs, data', product(zip(SINGLE_ENTRIES, SINGLE_COLUMNS), SINGLE_SOURCES))
+def test_plot_data(inputs, data):
+    """
+    Basic test of PlotData
+    """
+    from masci_tools.vis.data import PlotData
+
+    entries, expected_columns = inputs
+
+    p = PlotData(data, **entries, use_column_source=True)
+
+    assert len(p) == len(expected_columns)
+    assert len(list(p.keys())) == len(expected_columns)
+    assert len(list(p.values())) == len(expected_columns)
+    assert len(list(p.items())) == len(expected_columns)
+
+    for entry, col in zip(p.keys(), expected_columns):
+        assert entry._fields == tuple(entries.keys())
+        assert entry._asdict() == col
+
+    for entry, col in zip(p.values(), expected_columns):
+        assert entry._fields == tuple(entries.keys())
+        assert entry._asdict() == {
+            key: data[val] if getattr(data, 'data', None) is None else data.data[val] for key, val in col.items()
+        }
+
+    for (entry, source), col in zip(p.items(), expected_columns):
+        assert entry._fields == tuple(entries.keys())
+        assert entry._asdict() == col
+        if isinstance(data, pd.DataFrame):
+            assert source.equals(data)
+        else:
+            assert source == data
+
+    entry = p.keys(first=True)
+    assert entry._fields == tuple(entries.keys())
+    assert entry._asdict() == expected_columns[0]
+
+    entry = p.values(first=True)
+    assert entry._fields == tuple(entries.keys())
+    assert entry._asdict() == {
+        key: data[val] if getattr(data, 'data', None) is None else data.data[val]
+        for key, val in expected_columns[0].items()
+    }
+
+    entry, source = p.items(first=True)
+    assert entry._fields == tuple(entries.keys())
+    assert entry._asdict() == expected_columns[0]
+    if isinstance(data, pd.DataFrame):
+        assert source.equals(data)
+    else:
+        assert source == data
 
 
 def test_plot_data_list_of_sources():
