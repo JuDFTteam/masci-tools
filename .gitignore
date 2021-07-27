@@ -9,6 +9,7 @@ publish_to_pypi.sh
 #editors etc
 .pytest_cache
 .vscode
+*.sublime-project
 
 # vim
 *.swp
