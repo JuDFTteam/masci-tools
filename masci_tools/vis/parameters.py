@@ -308,11 +308,24 @@ class Plotter(object):
         elif not single_plot:
             dict_of_lists = {key: [value] for key, value in dict_of_lists.items()}
 
-        list_of_dicts = dict_of_lists  #For single plot these are equivalent
+        list_of_dicts = dict_of_lists  # For single plot these are equivalent
         if not single_plot:
-            list_of_dicts = [{key: value[index]
-                              for key, value in dict_of_lists.items()}
-                             for index in range(max(map(len, dict_of_lists.values())))]
+            list_of_dicts = []
+            # enforce that all lists of the same lengths
+            maxlen = max(map(len, dict_of_lists.values()))
+            for index in range(maxlen):
+                tempdict = {}
+                # don't use comprehension here, otherwise the wrong key is caught
+                for key, value in dict_of_lists.items():
+                    try:
+                        tempdict[key] = value[index]
+                    except IndexError as ex:
+                        raise IndexError(f'List under key: {key} index: {index} out of range, '
+                                     f'should have length: {maxlen}. '
+                                    'It may also be that some other list is just to long.')
+                list_of_dicts.append(tempdict)
+
+
             if len(list_of_dicts) != num_plots:
                 if len(list_of_dicts) == 1:
                     list_of_dicts = [copy.deepcopy(list_of_dicts[0]) for i in range(num_plots)]
