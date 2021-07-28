@@ -334,10 +334,9 @@ class Plotter(object):
                         tempdict[key] = value[index]
                     except IndexError as ex:
                         raise IndexError(f'List under key: {key} index: {index} out of range, '
-                                     f'should have length: {maxlen}. '
-                                    'It may also be that some other list is just to long.')
+                                         f'should have length: {maxlen}. '
+                                         'It may also be that some other list is just to long.')
                 list_of_dicts.append(tempdict)
-
 
             if len(list_of_dicts) != num_plots:
                 if len(list_of_dicts) == 1:
