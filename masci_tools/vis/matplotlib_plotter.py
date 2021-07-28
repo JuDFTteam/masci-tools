@@ -367,8 +367,9 @@ class MatplotlibPlotter(Plotter):
 
         #Rename replaced keys back to standard names
         for key, replace_key in kwargs.items():
-            custom_val = plot_kwargs.pop(replace_key)
-            plot_kwargs[key] = custom_val
+            custom_val = plot_kwargs.pop(replace_key, None)
+            if custom_val is not None:
+                plot_kwargs[key] = custom_val
 
         if not post_process:
             return plot_kwargs
@@ -404,7 +405,11 @@ class MatplotlibPlotter(Plotter):
             plot_kwargs = self.dict_of_lists_to_list_of_dicts(plot_kwargs, self.single_plot, self.num_plots)
 
         if not list_of_dicts and 'label' in plot_kwargs:
-            plot_kwargs['label'] = [value if value is not None else '' for value in plot_kwargs.pop('label')]
+            label = plot_kwargs.pop('label')
+            if isinstance(label, list):
+                plot_kwargs['label'] = [value if value is not None else '' for value in label]
+            else:
+                plot_kwargs['label'] = label if label is not None else ''
 
         if not self.single_plot and list_of_dicts:
             for index, value in enumerate(plot_kwargs):

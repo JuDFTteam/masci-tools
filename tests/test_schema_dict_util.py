@@ -693,11 +693,13 @@ def test_evaluate_tag(caplog):
         evaluate_tag(root, schema_dict, 'mtSphere', FLEUR_DEFINED_CONSTANTS)
 
     with pytest.raises(ValueError, match='Failed to evaluate attributes from tag qss'):
-        evaluate_tag(root, schema_dict, 'qss', FLEUR_DEFINED_CONSTANTS)
+        evaluate_tag(root, schema_dict, 'qss', FLEUR_DEFINED_CONSTANTS, text=False)
 
     with caplog.at_level(logging.WARNING):
-        assert evaluate_tag(root, schema_dict, 'qss', FLEUR_DEFINED_CONSTANTS, logger=LOGGER) == {}
+        assert evaluate_tag(root, schema_dict, 'qss', FLEUR_DEFINED_CONSTANTS, logger=LOGGER, text=False) == {}
     assert 'Failed to evaluate attributes from tag qss' in caplog.text
+
+    assert evaluate_tag(root, schema_dict, 'qss', FLEUR_DEFINED_CONSTANTS) == {'qss': [0.0, 0.0, 0.0]}
 
     expected = {'radius': [2.2, 2.2], 'gridPoints': [787, 787], 'logIncrement': [0.016, 0.017]}
     mtRadii = evaluate_tag(root, schema_dict, 'mtSphere', FLEUR_DEFINED_CONSTANTS, contains='species')
@@ -743,6 +745,35 @@ def test_evaluate_tag(caplog):
                               only_required=True,
                               ignore=['alpha'])
     assert nocoParams == expected
+
+    expected = {
+        'atomicCutoffs': [{
+            'lmax': 10,
+            'lnonsphr': 6
+        }, {
+            'lmax': 10,
+            'lnonsphr': 6
+        }],
+        'atomicNumber': [26, 78],
+        'electronConfig': [{
+            'coreConfig': '[Ne]'
+        }, {
+            'coreConfig': ['[Kr]', '(5s1/2)', '(4d3/2)', '(4d5/2)', '(4f5/2)', '(4f7/2)']
+        }],
+        'mtSphere': [{
+            'gridPoints': 787,
+            'logIncrement': 0.016,
+            'radius': 2.2
+        }, {
+            'gridPoints': 787,
+            'logIncrement': 0.017,
+            'radius': 2.2
+        }],
+        'name': ['Fe-1', 'Pt-1']
+    }
+
+    species = evaluate_tag(root, schema_dict, 'species', FLEUR_DEFINED_CONSTANTS, subtags=True, only_required=True)
+    assert species == expected
 
 
 def test_single_value_tag(caplog):

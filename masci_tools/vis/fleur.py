@@ -296,7 +296,7 @@ def plot_fleur_dos(dosdata,
                    attributes,
                    spinpol=True,
                    bokeh_plot=False,
-                   multiply_by_equiv_atoms=False,
+                   multiply_by_equiv_atoms=True,
                    plot_keys=None,
                    show_total=True,
                    show_interstitial=True,
@@ -312,6 +312,9 @@ def plot_fleur_dos(dosdata,
     This routine expects datasets and attributes read in with the `FleurDOS` (Or related DOS modes)
     recipe from :py:mod:`~masci_tools.io.parsers.hdf5.recipes` or something
     producing equivalent data
+
+    The limits for the axes can be specified either with ``x`` and ``y`` or
+    ``energy`` and ``dos``. Mixing the two options is not possible
 
     :param dosdata: dataset dict produced by the `FleurDOS` recipe
     :param attributes: attributes dict produced by the `FleurDOS` recipe
@@ -363,7 +366,7 @@ def plot_fleur_dos(dosdata,
     #Select the keys
     legend_labels, keys = np.array(legend_labels)[key_mask].tolist(), np.array(keys)[key_mask].tolist()
 
-    kwargs = _process_dos_kwargs(keys, **kwargs)
+    kwargs = _process_dos_kwargs(keys, bokeh_plot=bokeh_plot, **kwargs)
 
     if bokeh_plot:
         if spinpol:
@@ -385,7 +388,7 @@ def plot_fleur_dos(dosdata,
     return fig
 
 
-def _process_dos_kwargs(ordered_keys, **kwargs):
+def _process_dos_kwargs(ordered_keys, bokeh_plot=False, **kwargs):
     """
     Convert any kwarg in dict form with str keys to the correct dict with integer index
     for the plotting functions.
@@ -394,8 +397,17 @@ def _process_dos_kwargs(ordered_keys, **kwargs):
 
     :returns: kwargs with the dicts converted to integer indexed dicts
     """
+    from .matplotlib_plotter import MatplotlibPlotter
+    from .bokeh_plotter import BokehPlotter
+
+    if bokeh_plot:
+        params = BokehPlotter()
+    else:
+        params = MatplotlibPlotter()
 
     for key, value in kwargs.items():
+        if params.is_general(key):
+            continue
         if isinstance(value, dict):
             new_dict = value.copy()
             for plot_label, val in value.items():

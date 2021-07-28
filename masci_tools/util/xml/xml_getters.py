@@ -74,7 +74,12 @@ def get_fleur_modes(xmltree, schema_dict, logger=None):
         relax = False
     fleur_modes['relax'] = relax
 
-    gw = evaluate_attribute(root, schema_dict, 'gw', constants=constants, logger=logger, optional=True)
+    gw = None
+    if tag_exists(root, schema_dict, 'expertModes', logger=logger):
+        gw = evaluate_attribute(root, schema_dict, 'gw', constants=constants, logger=logger, optional=True)
+        if gw is None and schema_dict.inp_version >= (0, 34):
+            gw = evaluate_attribute(root, schema_dict, 'spex', constants=constants, logger=logger, optional=True)
+
     if gw is None:
         gw = False
     else:

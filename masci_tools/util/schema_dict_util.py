@@ -323,7 +323,7 @@ def get_tag_info(schema_dict,
     :returns: str, xpath to the tag if `path_return=True`
     """
     import copy
-    from masci_tools.util.case_insensitive_dict import CaseInsensitiveFrozenSet
+    from masci_tools.util.case_insensitive_dict import CaseInsensitiveFrozenSet, CaseInsensitiveDict
     from masci_tools.util.xml.common_functions import split_off_tag
 
     if multiple_paths:
@@ -336,22 +336,33 @@ def get_tag_info(schema_dict,
     else:
         paths = [get_tag_xpath(schema_dict, name, contains=contains, not_contains=not_contains)]
 
+    EMPTY_TAG_INFO = CaseInsensitiveDict({
+        'attribs': CaseInsensitiveFrozenSet(),
+        'optional_attribs': {},
+        'optional': CaseInsensitiveFrozenSet(),
+        'order': [],
+        'several': CaseInsensitiveFrozenSet(),
+        'simple': CaseInsensitiveFrozenSet(),
+        'complex': CaseInsensitiveFrozenSet(),
+        'text': CaseInsensitiveFrozenSet()
+    })
+    EMPTY_TAG_INFO.freeze()
+
     tag_info = None
     for path in paths:
 
         if parent:
             path, _ = split_off_tag(path)
 
-        err_msg = f'Could not fing tag_info for {path}'
         if path in schema_dict['tag_info']:
             entry = schema_dict['tag_info'][path]
         elif 'iteration_tag_info' in schema_dict:
             if path in schema_dict['iteration_tag_info']:
                 entry = schema_dict['iteration_tag_info'][path]
             else:
-                raise ValueError(err_msg)
+                entry = EMPTY_TAG_INFO
         else:
-            raise ValueError(err_msg)
+            entry = EMPTY_TAG_INFO
 
         if tag_info is not None:
             if entry != tag_info:
@@ -556,7 +567,7 @@ def evaluate_text(node, schema_dict, name, constants, logger=None, **kwargs):
 
 
 @register_parsing_function('allAttribs', all_attribs_keys=True)
-def evaluate_tag(node, schema_dict, name, constants=None, logger=None, **kwargs):
+def evaluate_tag(node, schema_dict, name, constants=None, logger=None, subtags=False, text=True, **kwargs):
     """
     Evaluates all attributes of the tag based on the given name
     and additional further specifications with the available type information
@@ -566,6 +577,8 @@ def evaluate_tag(node, schema_dict, name, constants=None, logger=None, **kwargs)
     :param name: str, name of the tag
     :param constants: dict, contains the defined constants
     :param logger: logger object for logging warnings, errors, if not provided all errors will be raised
+    :param subtags: optional bool, if True the subtags of the given tag are evaluated
+    :param text: optional bool, if True the text of the tag is also parsed
 
     Kwargs:
         :param contains: str, this string has to be in the final path
@@ -577,8 +590,8 @@ def evaluate_tag(node, schema_dict, name, constants=None, logger=None, **kwargs)
 
     :returns: dict, with attribute values converted via convert_xml_attribute
     """
-    from masci_tools.util.xml.common_functions import eval_xpath
-    from masci_tools.util.xml.converters import convert_xml_attribute
+    from masci_tools.util.xml.common_functions import eval_xpath, split_off_tag
+    from masci_tools.util.xml.converters import convert_xml_attribute, convert_xml_text
 
     only_required = kwargs.pop('only_required', False)
     strict_missing_error = kwargs.pop('strict_missing_error', False)
@@ -596,10 +609,15 @@ def evaluate_tag(node, schema_dict, name, constants=None, logger=None, **kwargs)
         tag_xpath = get_tag_xpath(schema_dict, name, **kwargs)
 
     #Which attributes are expected
+    tags = set()
+    optional_tags = set()
     try:
         tag_info = get_tag_info(schema_dict, name, path_return=False, multiple_paths=True, **kwargs)
         attribs = tag_info['attribs']
         optional = tag_info['optional_attribs']
+        if subtags:
+            tags = tag_info['simple'] | tag_info['complex']
+            optional_tags = tag_info['optional']
     except ValueError as err:
         if logger is None:
             raise ValueError(f'Failed to evaluate attributes from tag {name}: '
@@ -612,14 +630,22 @@ def evaluate_tag(node, schema_dict, name, constants=None, logger=None, **kwargs)
                 'exist or it has no attributes', name)
         attribs = set()
         optional = set()
+        tags = set()
+        optional_tags = set()
 
     if only_required:
         attribs = attribs.difference(optional)
+        tags = tags.difference(optional_tags)
 
     if ignore:
         attribs = attribs.difference(ignore)
+        tags = tags.difference(ignore)
 
-    if not attribs:
+    parse_text = name in schema_dict['simple_elements'] and text
+
+    if not attribs and not parse_text and not tags:
+        if subtags:
+            return {}
         if logger is None:
             raise ValueError(f'Failed to evaluate attributes from tag {name}: '
                              'No attributes to parse either the tag does not '
@@ -663,6 +689,73 @@ def evaluate_tag(node, schema_dict, name, constants=None, logger=None, **kwargs)
                 raise ValueError(f'Failed to evaluate attribute {attrib}, Got value: {stringattribute}')
             else:
                 logger.warning('Failed to evaluate attribute %s, Got value: %s', attrib, stringattribute)
+
+    if parse_text:
+
+        _, name = split_off_tag(tag_xpath)
+        stringtext = eval_xpath(node, f'{tag_xpath}/text()', logger=logger, list_return=True)
+
+        for textval in stringtext.copy():
+            if textval.strip() == '':
+                stringtext.remove(text)
+
+        if len(stringtext) == 0:
+            if logger is None:
+                if not optional:
+                    raise ValueError(f'No text found for tag {name}')
+            else:
+                logger.warning('No text found for tag %s', name)
+            if list_return:
+                out_dict[name] = []
+            else:
+                out_dict[name] = None
+
+        possible_definitions = schema_dict['simple_elements'][name]
+
+        out_dict[name], suc = convert_xml_text(stringtext,
+                                               possible_definitions,
+                                               constants=constants,
+                                               logger=logger,
+                                               list_return=list_return)
+
+    if subtags:
+        for tag in tags:
+            if tag in out_dict:
+                if logger is None:
+                    raise ValueError(f'Conflicting key {tag}: ' 'Key is already in the output dictionary')
+                else:
+                    logger.error('Conflicting key %s: ' 'Key is already in the output dictionary', tag)
+            out_dict[tag] = []
+
+        sub_nodes = eval_xpath(node, tag_xpath, logger=logger, list_return=True)
+        for sub_node in sub_nodes:
+            for tag in tags:
+                if tag_exists(sub_node, schema_dict, tag):
+                    out_dict[tag].append(
+                        evaluate_tag(sub_node,
+                                     schema_dict,
+                                     tag,
+                                     constants=constants,
+                                     logger=logger,
+                                     subtags=True,
+                                     ignore=ignore,
+                                     only_required=only_required,
+                                     strict_missing_error=strict_missing_error,
+                                     list_return=list_return,
+                                     text=text))
+
+        for tag in tags:
+            for sub_dict in out_dict[tag]:
+                if not sub_dict:
+                    out_dict[tag].remove(sub_dict)
+                elif len(sub_dict) == 1 and tag in sub_dict:
+                    out_dict[tag] = sub_dict[tag]
+
+        for tag in tags:
+            if len(out_dict[tag]) == 1:
+                out_dict[tag] = out_dict[tag][0]
+            elif len(out_dict[tag]) == 0:
+                out_dict.pop(tag)
 
     return out_dict
 

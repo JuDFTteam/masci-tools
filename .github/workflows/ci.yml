@@ -122,3 +122,9 @@ jobs:
       run: |
         pip install codecov
         codecov
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: Matplotlib comparison
+        path: tests/mpl-results/fig_comparison.html
+        if-no-files-found: ignore
