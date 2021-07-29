@@ -80,7 +80,7 @@ jobs:
 
     - name: Run pre-commit
       run: |
-        SKIP=${{ matrix.skip-hooks }} pre-commit run --all-files || (git status --short; git diff ; exit 1)
+        SKIP=${{ matrix.skip-hooks }} pre-commit run --all-files --config=.pre-commit-config-ci.yaml || (git status --short; git diff ; exit 1)
 
 
   tests:
