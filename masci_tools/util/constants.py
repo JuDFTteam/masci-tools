@@ -16,7 +16,7 @@ that way we ensure consistency
 
 .. note::
     For masci-tools versions after v0.4.6, the constants values used in the KKR functions for conversion between
-    Angstrom and Bohr radius, and electron volt and Rydberg, have been replaced by the NIST values by default.
+    Angstrom and Bohr radius, and electron Volt and Rydberg, have been replaced by the NIST values by default.
     Prior to that, two different versions had been in use. If you need to work with KKR calculations / ``aiida-kkr``
     workchains performed with these constants versions, you can switch to these older KKR constants versions by
     setting the environment variable ``MASCI_TOOLS_USE_OLD_CONSTANTS``. During interpreter runtime, the chosen
