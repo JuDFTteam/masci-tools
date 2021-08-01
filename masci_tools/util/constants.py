@@ -21,9 +21,13 @@ Here we collect physical constants which are used throughout the code. That way 
     setting the environment variable ``MASCI_TOOLS_USE_OLD_CONSTANTS``. During interpreter runtime, the chosen
     version cannot be switched.
 
-    - For KKR constants versions used starting from masci-tools v0.4.7, more specifically starting from commit 66953f8, Apr 28, 2021, do not set ``MASCI_TOOLS_USE_OLD_CONSTANTS``.
-    - For KKR constants versions used in masci-tools v0.4.0-dev7 - v0.4.6, more specifically starting from commit c171563, Feb 16, 2021, to prior to commit 66953f8, Apr 28, 2021, set ``MASCI_TOOLS_USE_OLD_CONSTANTS`` to ``Interim``.
-    - For KKR constants versions used prior to masci-tools v0.4.0-dev7, more specifically prior to commit c171563, Feb 16, 2021, set ``MASCI_TOOLS_USE_OLD_CONSTANTS`` to 'True'.
+    - | For KKR constants versions used starting from masci-tools v0.4.7, more specifically starting from
+      | commit 66953f8, Apr 28, 2021, do not set ``MASCI_TOOLS_USE_OLD_CONSTANTS``.
+    - | For KKR constants versions used in masci-tools v0.4.0-dev7 - v0.4.6, more specifically starting from
+      | commit c171563, Feb 16, 2021, to prior to commit 66953f8, Apr 28, 2021,
+      | set ``MASCI_TOOLS_USE_OLD_CONSTANTS`` to ``Interim``.
+    - | For KKR constants versions used prior to masci-tools v0.4.0-dev7, more specifically prior to
+      | commit c171563, Feb 16, 2021, set ``MASCI_TOOLS_USE_OLD_CONSTANTS`` to 'True'.
 
 .. literalinclude:: ../../../masci_tools/util/constants.py
    :language: python
