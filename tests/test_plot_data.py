@@ -537,14 +537,14 @@ def test_plot_data_distinct_datasets(inputs, data):
         assert p.distinct_datasets(key) == expected
 
 
-@pytest.mark.parametrize('inputs, data', _get_plot_data_test_arguments(EXPECTED_DISTINCT_DATASETS))
+@pytest.mark.parametrize('inputs, data', _get_plot_data_test_arguments())
 def test_plot_data_apply(inputs, data):
     """
     Test of the PlotData apply function
     """
     from masci_tools.vis.data import PlotData
 
-    entries, _ = inputs
+    entries = inputs[0]
 
     p = PlotData(data, **entries, use_column_source=True, copy_data=True)
 
@@ -567,8 +567,152 @@ def test_plot_data_apply(inputs, data):
             assert val_func == pytest.approx(-1 * val)
 
 
-def test_plot_data_copy_data():
-    pass
+EXPECTED_FUNC_RESULTS = [{
+    'x': [0.0],
+    'y': [34.0]
+}, {
+    'x_values': [0.0, 0.0, 0.0],
+    'y': [-10.0, -0.0619914, 1203.093316]
+}, {
+    'color': [0.0, 0.0],
+    'type': [-10.0, -0.0619914]
+}]
+
+
+@pytest.mark.parametrize('inputs, data', _get_plot_data_test_arguments(EXPECTED_FUNC_RESULTS))
+def test_plot_data_get_function_result(inputs, data):
+    """
+    Test of the PlotData apply function
+    """
+    from masci_tools.vis.data import PlotData
+
+    entries, expected_results = inputs
+
+    p = PlotData(data, **entries, use_column_source=True)
+
+    TEST_FUNCTION = np.mean
+
+    for key, expected_res in expected_results.items():
+        expected_res = expected_res if len(expected_res) != 1 else expected_res[0]
+        res = p.get_function_result(key, TEST_FUNCTION)
+        assert res == pytest.approx(expected_res)
+
+
+@pytest.mark.parametrize('inputs, data', _get_plot_data_test_arguments(EXPECTED_FUNC_RESULTS))
+def test_plot_data_get_function_result_list_return(inputs, data):
+    """
+    Test of the PlotData apply function
+    """
+    from masci_tools.vis.data import PlotData
+
+    entries, expected_results = inputs
+
+    p = PlotData(data, **entries, use_column_source=True)
+
+    TEST_FUNCTION = np.mean
+
+    for key, expected_res in expected_results.items():
+        res = p.get_function_result(key, TEST_FUNCTION, list_return=True)
+        assert res == pytest.approx(expected_res)
+
+
+@pytest.mark.parametrize('inputs, data', _get_plot_data_test_arguments())
+def test_plot_data_copy_data(inputs, data):
+    """
+    Test of the PlotData copy_data function
+    """
+
+    from masci_tools.vis.data import PlotData
+
+    entries = inputs[0]
+
+    p = PlotData(data, **entries, use_column_source=True, copy_data=True)
+
+    #Get the values before doing anything to make sure that nothing was addtionally modified
+    values_before = {}
+    for key in entries:
+        values_before[key] = p.get_values(key)
+
+    for key in entries:
+        p.copy_data(key, f'copy_of_{key}')
+        values_after = p.get_values(f'copy_of_{key}')
+        keys_after = p.get_keys(f'copy_of_{key}')
+
+        for val, val_copy in zip(values_before[key], values_after):
+            if isinstance(val_copy, pd.Series):
+                val_copy = val_copy.to_numpy()
+                val = val.to_numpy()
+
+            assert val_copy == pytest.approx(val)
+
+        assert keys_after == [f'copy_of_{key}_{indx}' for indx in range(len(p))]
+
+
+@pytest.mark.parametrize('inputs, data', _get_plot_data_test_arguments())
+def test_plot_data_copy_data_prefix(inputs, data):
+    """
+    Test of the PlotData copy_data function
+    """
+
+    from masci_tools.vis.data import PlotData
+
+    entries = inputs[0]
+
+    p = PlotData(data, **entries, use_column_source=True, copy_data=True)
+
+    #Get the values before doing anything to make sure that nothing was addtionally modified
+    values_before = {}
+    for key in entries:
+        values_before[key] = p.get_values(key)
+
+    for key in entries:
+        p.copy_data(key, f'copy_of_{key}', prefix=f'prefix_copy_{key}')
+        values_after = p.get_values(f'copy_of_{key}')
+        keys_after = p.get_keys(f'copy_of_{key}')
+
+        for val, val_copy in zip(values_before[key], values_after):
+            if isinstance(val_copy, pd.Series):
+                val_copy = val_copy.to_numpy()
+                val = val.to_numpy()
+
+            assert val_copy == pytest.approx(val)
+
+        assert keys_after == [f'prefix_copy_{key}_{indx}' for indx in range(len(p))]
+
+
+@pytest.mark.parametrize('inputs, data', _get_plot_data_test_arguments())
+def test_plot_data_copy_data_rename_original(inputs, data):
+    """
+    Test of the PlotData copy_data function
+    """
+
+    from masci_tools.vis.data import PlotData
+
+    entries = inputs[0]
+
+    p = PlotData(data, **entries, use_column_source=True, copy_data=True)
+
+    #Get the values before doing anything to make sure that nothing was addtionally modified
+    values_before = {}
+    for key in entries:
+        values_before[key] = p.get_values(key)
+
+    for key in entries:
+        keys_before_copy = p.get_keys(key)
+        p.copy_data(key, f'copy_of_{key}', prefix=f'prefix_original_{key}', rename_original=True)
+        values_after = p.get_values(f'copy_of_{key}')
+        keys_after_copy = p.get_keys(f'copy_of_{key}')
+        keys_after = p.get_keys(key)
+
+        for val, val_copy in zip(values_before[key], values_after):
+            if isinstance(val_copy, pd.Series):
+                val_copy = val_copy.to_numpy()
+                val = val.to_numpy()
+
+            assert val_copy == pytest.approx(val)
+
+        assert keys_after == [f'prefix_original_{key}_{indx}' for indx in range(len(p))]
+        assert keys_after_copy == keys_before_copy
 
 
 def test_process_data_arguments():
