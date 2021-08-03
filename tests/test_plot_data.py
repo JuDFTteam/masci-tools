@@ -436,7 +436,85 @@ def test_plot_data_max_mask(data_args):
     entries = ENTRIES[1]
     p = PlotData(data, **entries, use_column_source=True)
     assert p.max('y', mask=[x_data < 5, x_data > 5, x_data <= 9],
-                 separate=True) == pytest.approx([14.000000000000004, 0.9965420, 8103.0839275])
+                 separate=True) == pytest.approx([14.0, 0.9965420, 8103.0839275])
+
+
+SHIFTS = [('x', -10), ('x_values', [-10, 10, -99]), ('color', [-10, 10])]
+
+
+@pytest.mark.parametrize('inputs, data', _get_plot_data_test_arguments(SHIFTS))
+def test_plot_data_shift_data_inplace(inputs, data):
+    """
+    Test of PlotData min function
+    """
+    from masci_tools.vis.data import PlotData
+
+    entries, (key, shifts) = inputs
+
+    p = PlotData(data, **entries, use_column_source=True, copy_data=True)
+    values_before = p.get_values(key)
+    p.shift_data(key, shifts)
+    values_after = p.get_values(key)
+
+    for indx, (val, val_shifted) in enumerate(zip(values_before, values_after)):
+        if isinstance(val_shifted, pd.Series):
+            val_shifted = val_shifted.to_numpy()
+            val = val.to_numpy()
+
+        if isinstance(shifts, list):
+            assert val_shifted == pytest.approx(val + shifts[indx])
+        else:
+            assert val_shifted == pytest.approx(val + shifts)
+
+
+@pytest.mark.parametrize('inputs, data', _get_plot_data_test_arguments(SHIFTS))
+def test_plot_data_shift_data_negative(inputs, data):
+    """
+    Test of PlotData min function
+    """
+    from masci_tools.vis.data import PlotData
+
+    entries, (key, shifts) = inputs
+
+    p = PlotData(data, **entries, use_column_source=True, copy_data=True)
+    values_before = p.get_values(key)
+    p.shift_data(key, shifts, negative=True)
+    values_after = p.get_values(key)
+
+    for indx, (val, val_shifted) in enumerate(zip(values_before, values_after)):
+        if isinstance(val_shifted, pd.Series):
+            val_shifted = val_shifted.to_numpy()
+            val = val.to_numpy()
+
+        if isinstance(shifts, list):
+            assert val_shifted == pytest.approx(val - shifts[indx])
+        else:
+            assert val_shifted == pytest.approx(val - shifts)
+
+
+@pytest.mark.parametrize('inputs, data', _get_plot_data_test_arguments(SHIFTS))
+def test_plot_data_shift_data_copied(inputs, data):
+    """
+    Test of PlotData min function
+    """
+    from masci_tools.vis.data import PlotData
+
+    entries, (key, shifts) = inputs
+
+    p = PlotData(data, **entries, use_column_source=True, copy_data=True)
+    values_before = p.get_values(key)
+    p.shift_data(key, shifts, shifted_data_key='shift')
+    values_after = p.get_values('shift')
+
+    for indx, (val, val_shifted) in enumerate(zip(values_before, values_after)):
+        if isinstance(val_shifted, pd.Series):
+            val_shifted = val_shifted.to_numpy()
+            val = val.to_numpy()
+
+        if isinstance(shifts, list):
+            assert val_shifted == pytest.approx(val + shifts[indx])
+        else:
+            assert val_shifted == pytest.approx(val + shifts)
 
 
 def test_plot_data_apply():

@@ -37,6 +37,7 @@ def _is_bokeh_cds(data):
         return isinstance(data, ColumnDataSource)
     return False
 
+
 def _copy_bokeh_cds(data):
     """
     Copy a ``ColumnDataSource`` from bokeh
@@ -44,6 +45,7 @@ def _copy_bokeh_cds(data):
     if _BOKEH_INSTALLED:
         return ColumnDataSource(data=data.data.copy())
     raise ValueError('Bokeh not installed')
+
 
 class PlotData:
     """Class for iterating over the data in a dict or dataframe with
@@ -119,7 +121,9 @@ class PlotData:
 
         if copy_data:
             if isinstance(self.data, list):
-                self.data = [copy.copy(source) if not _is_bokeh_cds(source) else _copy_bokeh_cds(source) for source in self.data]
+                self.data = [
+                    copy.copy(source) if not _is_bokeh_cds(source) else _copy_bokeh_cds(source) for source in self.data
+                ]
             else:
                 self.data = copy.copy(self.data) if not _is_bokeh_cds(self.data) else _copy_bokeh_cds(self.data)
 
