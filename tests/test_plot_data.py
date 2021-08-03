@@ -164,7 +164,6 @@ dict_data_multiple = [[{
                       }]]
 #yapf: enable
 
-
 SINGLE_SOURCES = [dict_data, pd.DataFrame(data=dict_data)]
 
 if USE_CDS:
@@ -338,8 +337,67 @@ def test_plot_data_min_mask(data_args):
                  separate=True) == pytest.approx([16.0, -0.9996930, 8103.0839275])
 
 
-def test_plot_data_max():
-    pass
+EXPECTED_MAX = [{
+    'x': [10.0],
+    'y': [100.0]
+}, {
+    'x_values': [40.0, 40.0, 40.0],
+    'y': [40.0, 1.0, 22026.4657948]
+}, {
+    'color': [40.0, 10.0],
+    'type': [40.0, 1.0]
+}]
+
+
+@pytest.mark.parametrize('inputs, data', _get_plot_data_test_arguments(EXPECTED_MAX))
+def test_plot_data_max(inputs, data):
+    """
+    Test of PlotData min function
+    """
+    from masci_tools.vis.data import PlotData
+
+    entries, expected_max = inputs
+
+    p = PlotData(data, **entries, use_column_source=True)
+
+    for key, expected in expected_max.items():
+
+        assert p.max(key) == pytest.approx(max(expected))
+
+
+@pytest.mark.parametrize('inputs, data', _get_plot_data_test_arguments(EXPECTED_MAX))
+def test_plot_data_max_separate(inputs, data):
+    """
+    Test of PlotData min function
+    """
+    from masci_tools.vis.data import PlotData
+
+    entries, expected_max = inputs
+
+    p = PlotData(data, **entries, use_column_source=True)
+
+    for key, expected in expected_max.items():
+
+        assert p.max(key, separate=True) == pytest.approx(expected)
+
+
+@pytest.mark.parametrize('data_args', _get_plot_data_test_arguments(only_single=True))
+def test_plot_data_max_mask(data_args):
+    """
+    Test of PlotData min function
+    """
+    from masci_tools.vis.data import PlotData
+
+    _, data = data_args
+
+    entries = ENTRIES[0]
+    p = PlotData(data, **entries, use_column_source=True)
+    assert p.max('x', mask=x_data < 5) == pytest.approx(4.8)
+
+    entries = ENTRIES[1]
+    p = PlotData(data, **entries, use_column_source=True)
+    assert p.max('y', mask=[x_data < 5, x_data > 5, x_data <= 9],
+                 separate=True) == pytest.approx([14.000000000000004, 0.9965420, 8103.0839275])
 
 
 def test_plot_data_apply():
