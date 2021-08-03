@@ -586,11 +586,14 @@ class PlotData:
 
             if isinstance(source, pd.DataFrame):
                 new_column = pd.Series(data=source[key], name=new_key, copy=True)
-                new_source = pd.concat([source, new_column], axis=1)
-                if isinstance(self.data, list):
-                    self.data[indx] = new_source
+                if new_key in source:
+                    source.update(new_column)
                 else:
-                    self.data = new_source
+                    new_source = pd.concat([source, new_column], axis=1)
+                    if isinstance(self.data, list):
+                        self.data[indx] = new_source
+                    else:
+                        self.data = new_source
             elif _is_bokeh_cds(source):
                 source.add(copy.copy(source[key]), name=new_key)
             else:
