@@ -648,6 +648,9 @@ class ColumnDataSourceWrapper:
     def __getattr__(self, attr):
         return getattr(self.wrapped, attr)
 
+    def __contains__(self, key):
+        return key in self.wrapped.data
+
     @property
     def original(self):
         return self.wrapped
