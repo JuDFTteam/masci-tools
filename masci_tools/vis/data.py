@@ -409,7 +409,7 @@ class PlotData:
                 mask = [mask for i in range(len(self))]
 
         for mask_entry in mask:
-            if not all(isinstance(val, bool) for val in mask_entry):
+            if not all(isinstance(val, (bool, np.bool_)) for val in mask_entry):
                 warnings.warn('Not all entries in the mask are booleans')
 
         return mask
