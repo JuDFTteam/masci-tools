@@ -219,6 +219,19 @@ def test_plot_data(inputs, data):
         assert entry._fields == tuple(entries.keys())
         assert entry._asdict() == col
 
+    #Default iteration behaviour
+    for indx, (entry, col) in enumerate(zip(p, expected_columns)):
+        assert entry._fields == tuple(entries.keys())
+        if isinstance(data, list):
+            assert entry._asdict() == {
+                key: data[indx][val] if getattr(data[indx], 'data', None) is None else data[indx].data[val]
+                for key, val in col.items()
+            }
+        else:
+            assert entry._asdict() == {
+                key: data[val] if getattr(data, 'data', None) is None else data.data[val] for key, val in col.items()
+            }
+
     for indx, (entry, col) in enumerate(zip(p.values(), expected_columns)):
         assert entry._fields == tuple(entries.keys())
         if isinstance(data, list):
