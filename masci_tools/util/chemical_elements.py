@@ -11,6 +11,8 @@
 #                                                                             #
 ###############################################################################
 """This module contains a simple class for set-like chemical elements enumeration."""
+from __future__ import annotations
+from typing import Union as _Union
 import dataclasses as _dc
 import numpy as _np
 import masci_tools.vis.plot_methods as _plot_methods
@@ -596,7 +598,10 @@ class ChemicalElements:
         else:
             return list(self.elmts.keys())
 
-    def select_groups(self, selected_groups: list = None, include_special_elements: bool = True, as_dict=True):
+    def select_groups(self,
+                      selected_groups: list = None,
+                      include_special_elements: bool = True,
+                      as_dict=True) -> _Union[dict, ChemicalElements]:
         """Return only selected groups from elmts. Always returns a copy.
 
         :param selected_groups: If flat and not specified, return the empty name group of flat elmts.
@@ -1256,7 +1261,7 @@ class ChemicalElements:
         # add custom colormap column
         ptable[_colorby_mendel] = ptable[_title].map(_colormap)
 
-        if with_legend:
+        if _with_legend:
             # for the legend color map, we want to use the missing_name instead of the missing_value,
             # and put it first. So, got to repopultate the custom colormap.
             if filled_in:
