@@ -6,6 +6,7 @@ import pytest
 from itertools import product
 import numpy as np
 import pandas as pd
+import copy
 
 USE_CDS = True
 try:
@@ -344,7 +345,7 @@ def test_plot_data_min(inputs, data):
 @pytest.mark.parametrize('inputs, data', _get_plot_data_test_arguments(EXPECTED_MIN))
 def test_plot_data_min_separate(inputs, data):
     """
-    Test of PlotData min function
+    Test of PlotData min function with separate=True
     """
     from masci_tools.vis.data import PlotData
 
@@ -360,7 +361,7 @@ def test_plot_data_min_separate(inputs, data):
 @pytest.mark.parametrize('data_args', _get_plot_data_test_arguments(only_single=True))
 def test_plot_data_min_mask(data_args):
     """
-    Test of PlotData min function
+    Test of PlotData min function with a mask argument
     """
     from masci_tools.vis.data import PlotData
 
@@ -391,7 +392,7 @@ EXPECTED_MAX = [{
 @pytest.mark.parametrize('inputs, data', _get_plot_data_test_arguments(EXPECTED_MAX))
 def test_plot_data_max(inputs, data):
     """
-    Test of PlotData min function
+    Test of PlotData max function
     """
     from masci_tools.vis.data import PlotData
 
@@ -407,7 +408,7 @@ def test_plot_data_max(inputs, data):
 @pytest.mark.parametrize('inputs, data', _get_plot_data_test_arguments(EXPECTED_MAX))
 def test_plot_data_max_separate(inputs, data):
     """
-    Test of PlotData min function
+    Test of PlotData max function with separate=True
     """
     from masci_tools.vis.data import PlotData
 
@@ -423,7 +424,7 @@ def test_plot_data_max_separate(inputs, data):
 @pytest.mark.parametrize('data_args', _get_plot_data_test_arguments(only_single=True))
 def test_plot_data_max_mask(data_args):
     """
-    Test of PlotData min function
+    Test of PlotData max function with a mask argument
     """
     from masci_tools.vis.data import PlotData
 
@@ -445,7 +446,7 @@ SHIFTS = [('x', -10), ('x_values', [-10, 10, -99]), ('color', [-10, 10])]
 @pytest.mark.parametrize('inputs, data', _get_plot_data_test_arguments(SHIFTS))
 def test_plot_data_shift_data_inplace(inputs, data):
     """
-    Test of PlotData min function
+    Test of PlotData shift_data function modifying the data inplace
     """
     from masci_tools.vis.data import PlotData
 
@@ -470,7 +471,7 @@ def test_plot_data_shift_data_inplace(inputs, data):
 @pytest.mark.parametrize('inputs, data', _get_plot_data_test_arguments(SHIFTS))
 def test_plot_data_shift_data_negative(inputs, data):
     """
-    Test of PlotData min function
+    Test of PlotData shift_data function with negative shifts
     """
     from masci_tools.vis.data import PlotData
 
@@ -495,7 +496,7 @@ def test_plot_data_shift_data_negative(inputs, data):
 @pytest.mark.parametrize('inputs, data', _get_plot_data_test_arguments(SHIFTS))
 def test_plot_data_shift_data_copied(inputs, data):
     """
-    Test of PlotData min function
+    Test of PlotData shift_data function with copying the data to another key
     """
     from masci_tools.vis.data import PlotData
 
@@ -517,8 +518,53 @@ def test_plot_data_shift_data_copied(inputs, data):
             assert val_shifted == pytest.approx(val + shifts)
 
 
-def test_plot_data_apply():
-    pass
+EXPECTED_DISTINCT_DATASETS = [{'x': 1, 'y': 1}, {'x_values': 1, 'y': 3}, {'color': 2, 'type': 2}]
+
+
+@pytest.mark.parametrize('inputs, data', _get_plot_data_test_arguments(EXPECTED_DISTINCT_DATASETS))
+def test_plot_data_distinct_datasets(inputs, data):
+    """
+    Test of PlotData distinct_datasets function
+    """
+    from masci_tools.vis.data import PlotData
+
+    entries, expected_sets = inputs
+
+    p = PlotData(data, **entries, use_column_source=True)
+
+    for key, expected in expected_sets.items():
+
+        assert p.distinct_datasets(key) == expected
+
+
+@pytest.mark.parametrize('inputs, data', _get_plot_data_test_arguments(EXPECTED_DISTINCT_DATASETS))
+def test_plot_data_apply(inputs, data):
+    """
+    Test of the PlotData apply function
+    """
+    from masci_tools.vis.data import PlotData
+
+    entries, _ = inputs
+
+    p = PlotData(data, **entries, use_column_source=True, copy_data=True)
+
+    TEST_FUNCTION = lambda x: -x
+
+    #Get the values before doing anything to make sure that nothing was addtionally modified
+    values_before = {}
+    for key in entries:
+        values_before[key] = copy.deepcopy(p.get_values(key))
+
+    for key in entries:
+        p.apply(key, TEST_FUNCTION)
+        values_after = p.get_values(key)
+
+        for val, val_func in zip(values_before[key], values_after):
+            if isinstance(val_func, pd.Series):
+                val_func = val_func.to_numpy()
+                val = val.to_numpy()
+
+            assert val_func == pytest.approx(-1 * val)
 
 
 def test_plot_data_copy_data():
