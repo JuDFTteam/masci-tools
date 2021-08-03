@@ -98,7 +98,7 @@ def test_normalize_list_or_array_forbid_split_up():
     assert data == {'x': x, 'y': y}
 
 
-SINGLE_ENTRIES = [{
+ENTRIES = [{
     'x': 'x',
     'y': 'y'
 }, {
@@ -109,7 +109,7 @@ SINGLE_ENTRIES = [{
     'type': ['y1', 'y2']
 }]
 
-SINGLE_COLUMNS = [[{
+COLUMNS = [[{
     'x': 'x',
     'y': 'y'
 }], [{
@@ -140,13 +140,66 @@ dict_data = {
     'y3': np.exp(x_data)
 }
 
+#yapf: disable
+dict_data_multiple = [[{
+                          'x': dict_data['x'],
+                          'y': dict_data['y']
+                      }],
+                      [{
+                          'test': dict_data['test'],
+                          'y1': dict_data['y1']
+                      }, {
+                          'test': dict_data['test'],
+                          'y2': dict_data['y2']
+                      }, {
+                          'test': dict_data['test'],
+                          'y3': dict_data['y3']
+                      }],
+                      [{
+                          'test': dict_data['test'],
+                          'y1': dict_data['y1']
+                      }, {
+                          'x': dict_data['x'],
+                          'y2': dict_data['y2']
+                      }]]
+#yapf: enable
+
+
 SINGLE_SOURCES = [dict_data, pd.DataFrame(data=dict_data)]
 
 if USE_CDS:
     SINGLE_SOURCES.append(ColumnDataSource(dict_data))
 
+MULTIPLE_SOURCES = dict_data_multiple.copy()
 
-@pytest.mark.parametrize('inputs, data', product(zip(SINGLE_ENTRIES, SINGLE_COLUMNS), SINGLE_SOURCES))
+for row in dict_data_multiple:
+    MULTIPLE_SOURCES.append([pd.DataFrame(data=data) for data in row])
+
+if USE_CDS:
+    for row in dict_data_multiple:
+        MULTIPLE_SOURCES.append([ColumnDataSource(data) for data in row])
+
+
+def _get_plot_data_test_arguments(*args, only_single=False):
+    """
+    Returns a list for parametrizing plot_data tests, which will be parametrized
+    for single sources and list sources of all types
+
+    all given arguments should be defined once for all rows in ``ENTRIES`` and will be zipped
+    together with the sources
+    """
+    repeats = 2
+    if USE_CDS:
+        repeats = 3
+
+    res = list(product(zip(ENTRIES, *args), SINGLE_SOURCES))
+    if not only_single:
+        res += list(zip(zip(ENTRIES * repeats, *tuple(arg * repeats for arg in args)), MULTIPLE_SOURCES))
+
+    return res
+
+
+@pytest.mark.parametrize('inputs, data', _get_plot_data_test_arguments(COLUMNS))
 def test_plot_data(inputs, data):
     """
     Basic test of PlotData
@@ -166,17 +219,28 @@ def test_plot_data(inputs, data):
         assert entry._fields == tuple(entries.keys())
         assert entry._asdict() == col
 
-    for entry, col in zip(p.values(), expected_columns):
+    for indx, (entry, col) in enumerate(zip(p.values(), expected_columns)):
         assert entry._fields == tuple(entries.keys())
-        assert entry._asdict() == {
-            key: data[val] if getattr(data, 'data', None) is None else data.data[val] for key, val in col.items()
-        }
+        if isinstance(data, list):
+            assert entry._asdict() == {
+                key: data[indx][val] if getattr(data[indx], 'data', None) is None else data[indx].data[val]
+                for key, val in col.items()
+            }
+        else:
+            assert entry._asdict() == {
+                key: data[val] if getattr(data, 'data', None) is None else data.data[val] for key, val in col.items()
+            }
 
-    for (entry, source), col in zip(p.items(), expected_columns):
+    for indx, ((entry, source), col) in enumerate(zip(p.items(), expected_columns)):
         assert entry._fields == tuple(entries.keys())
         assert entry._asdict() == col
         if isinstance(data, pd.DataFrame):
             assert source.equals(data)
+        elif isinstance(data, list):
+            if isinstance(data[indx], pd.DataFrame):
+                assert source.equals(data[indx])
+            else:
+                assert source == data[indx]
         else:
             assert source == data
 
@@ -186,22 +250,29 @@ def test_plot_data(inputs, data):
 
     entry = p.values(first=True)
     assert entry._fields == tuple(entries.keys())
-    assert entry._asdict() == {
-        key: data[val] if getattr(data, 'data', None) is None else data.data[val]
-        for key, val in expected_columns[0].items()
-    }
+    if isinstance(data, list):
+        assert entry._asdict() == {
+            key: data[0][val] if getattr(data[0], 'data', None) is None else data[0].data[val]
+            for key, val in expected_columns[0].items()
+        }
+    else:
+        assert entry._asdict() == {
+            key: data[val] if getattr(data, 'data', None) is None else data.data[val]
+            for key, val in expected_columns[0].items()
+        }
 
     entry, source = p.items(first=True)
     assert entry._fields == tuple(entries.keys())
     assert entry._asdict() == expected_columns[0]
     if isinstance(data, pd.DataFrame):
         assert source.equals(data)
+    elif isinstance(data, list):
+        if isinstance(data[0], pd.DataFrame):
+            assert source.equals(data[0])
+        else:
+            assert source == data[0]
     else:
         assert source == data
-
-
-def test_plot_data_list_of_sources():
-    pass
 
 
 EXPECTED_MIN = [{
@@ -216,7 +287,7 @@ EXPECTED_MIN = [{
 }]
 
 
-@pytest.mark.parametrize('inputs, data', product(zip(SINGLE_ENTRIES, EXPECTED_MIN), SINGLE_SOURCES))
+@pytest.mark.parametrize('inputs, data', _get_plot_data_test_arguments(EXPECTED_MIN))
 def test_plot_data_min(inputs, data):
     """
     Test of PlotData min function
@@ -232,7 +303,7 @@ def test_plot_data_min(inputs, data):
         assert p.min(key) == pytest.approx(min(expected))
 
 
-@pytest.mark.parametrize('inputs, data', product(zip(SINGLE_ENTRIES, EXPECTED_MIN), SINGLE_SOURCES))
+@pytest.mark.parametrize('inputs, data', _get_plot_data_test_arguments(EXPECTED_MIN))
 def test_plot_data_min_separate(inputs, data):
     """
     Test of PlotData min function
@@ -248,18 +319,20 @@ def test_plot_data_min_separate(inputs, data):
         assert p.min(key, separate=True) == pytest.approx(expected)
 
 
-@pytest.mark.parametrize('data', SINGLE_SOURCES)
-def test_plot_data_min_mask(data):
+@pytest.mark.parametrize('data_args', _get_plot_data_test_arguments(only_single=True))
+def test_plot_data_min_mask(data_args):
     """
     Test of PlotData min function
     """
     from masci_tools.vis.data import PlotData
 
-    entries = SINGLE_ENTRIES[0]
+    _, data = data_args
+
+    entries = ENTRIES[0]
     p = PlotData(data, **entries, use_column_source=True)
     assert p.min('x', mask=x_data > 5) == pytest.approx(5.2)
 
-    entries = SINGLE_ENTRIES[1]
+    entries = ENTRIES[1]
     p = PlotData(data, **entries, use_column_source=True)
     assert p.min('y', mask=[x_data > 5, x_data < 5, x_data >= 9],
                  separate=True) == pytest.approx([16.0, -0.9996930, 8103.0839275])
