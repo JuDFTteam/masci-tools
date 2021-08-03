@@ -274,6 +274,45 @@ def test_plot_data(inputs, data):
         assert source == data
 
 
+@pytest.mark.parametrize('inputs, data', _get_plot_data_test_arguments(COLUMNS))
+def test_plot_data_get_keys(inputs, data):
+    """
+    Basic test of PlotData.get_keys method
+    """
+    from masci_tools.vis.data import PlotData
+    entries, columns = inputs
+
+    p = PlotData(data, **entries, use_column_source=True)
+
+    for data_key in entries:
+        keys = p.get_keys(data_key)
+        assert keys == [col[data_key] for col in columns]
+
+
+@pytest.mark.parametrize('inputs, data', _get_plot_data_test_arguments(COLUMNS))
+def test_plot_data_get_values(inputs, data):
+    """
+    Basic test of PlotData.get_values method
+    """
+    from masci_tools.vis.data import PlotData
+    entries, columns = inputs
+
+    p = PlotData(data, **entries, use_column_source=True)
+
+    for data_key in entries:
+        values = p.get_values(data_key)
+        if isinstance(data, list):
+            assert values == [
+                data_row[col[data_key]] if getattr(data_row, 'data', None) is None else data_row.data[col[data_key]]
+                for data_row, col in zip(data, columns)
+            ]
+        else:
+            assert values == [
+                data[col[data_key]] if getattr(data, 'data', None) is None else data.data[col[data_key]]
+                for col in columns
+            ]
+
+
 EXPECTED_MIN = [{
     'x': [-10.0],
     'y': [0.0]
