@@ -1,727 +1,939 @@
 _basic_types:
   AdditionalCompilerFlagsType:
-    base_types:
-    - string
+  - base_type: string
     length: unbounded
   BZIntegrationModeEnum:
-    base_types:
-    - string
+  - base_type: string
     length: 1
   CoreConfigEnum:
-    base_types:
-    - string
+  - base_type: string
     length: 1
   CoreStateListType:
-    base_types:
-    - string
+  - base_type: string
     length: unbounded
   DensityMatrixForType:
-    base_types:
-    - string
+  - base_type: string
     length: unbounded
   Double3DVecType:
-    base_types:
-    - float
+  - base_type: float
     length: 3
   Double4DVecType:
-    base_types:
-    - float
+  - base_type: float
     length: 4
   DoubleVecType:
-    base_types:
-    - float
+  - base_type: float
     length: unbounded
   EParamSelectionEnum:
-    base_types:
-    - string
+  - base_type: string
     length: 1
   EigenvaluesAtType:
-    base_types:
-    - float
+  - base_type: float
     length: unbounded
   ElectronStateEnum:
-    base_types:
-    - string
+  - base_type: string
     length: 1
   FleurVersionType:
-    base_types:
-    - string
+  - base_type: string
     length: 1
   KPointType:
-    base_types:
-    - float
+  - base_type: float
     length: 3
   LatnamEnum:
-    base_types:
-    - string
+  - base_type: string
     length: 1
   MixingEnum:
-    base_types:
-    - string
+  - base_type: string
     length: 1
   NobleGasConfigEnum:
-    base_types:
-    - string
+  - base_type: string
     length: 1
   NumBandsType:
-    base_types:
-    - int
-    - string
+  - base_type: int
+    length: 1
+  - base_type: string
     length: 1
   PositionType:
-    base_types:
-    - float
+  - base_type: float
     length: 3
   SpecialPointType:
-    base_types:
-    - float
+  - base_type: float
     length: 3
   SpgrpEnum:
-    base_types:
-    - string
+  - base_type: string
     length: 1
   SpinNumberType:
-    base_types:
-    - int
+  - base_type: int
     length: 1
   String2DVecType:
-    base_types:
-    - string
+  - base_type: string
     length: 2
   String3DVecType:
-    base_types:
-    - string
+  - base_type: string
     length: 3
   StringVecType:
-    base_types:
-    - string
+  - base_type: string
     length: unbounded
   TargetStructureClassType:
-    base_types:
-    - string
+  - base_type: string
     length: unbounded
   TripleFleurBool:
-    base_types:
-    - string
+  - base_type: string
     length: 1
   ValenceStateListType:
-    base_types:
-    - string
+  - base_type: string
     length: unbounded
   XCFunctionalEnum:
-    base_types:
-    - string
+  - base_type: string
     length: 1
 _input_basic_types:
   BZIntegrationModeEnum:
-    base_types:
-    - string
+  - base_type: string
     length: 1
   CoreConfigEnum:
-    base_types:
-    - string
+  - base_type: string
     length: 1
   CoreStateListType:
-    base_types:
-    - string
+  - base_type: string
     length: unbounded
   Double3DVecType:
-    base_types:
-    - float
+  - base_type: float
     length: 3
   Double4DVecType:
-    base_types:
-    - float
+  - base_type: float
     length: 4
   DoubleVecType:
-    base_types:
-    - float
+  - base_type: float
     length: unbounded
   EParamSelectionEnum:
-    base_types:
-    - string
+  - base_type: string
     length: 1
   ElectronStateEnum:
-    base_types:
-    - string
+  - base_type: string
     length: 1
   FleurVersionType:
-    base_types:
-    - string
+  - base_type: string
     length: 1
   KPointType:
-    base_types:
-    - float
+  - base_type: float
     length: 3
   LatnamEnum:
-    base_types:
-    - string
+  - base_type: string
     length: 1
   MixingEnum:
-    base_types:
-    - string
+  - base_type: string
     length: 1
   NobleGasConfigEnum:
-    base_types:
-    - string
+  - base_type: string
     length: 1
   NumBandsType:
-    base_types:
-    - int
-    - string
+  - base_type: int
+    length: 1
+  - base_type: string
     length: 1
   PositionType:
-    base_types:
-    - float
+  - base_type: float
     length: 3
   SpecialPointType:
-    base_types:
-    - float
+  - base_type: float
     length: 3
   SpgrpEnum:
-    base_types:
-    - string
+  - base_type: string
     length: 1
   SpinNumberType:
-    base_types:
-    - int
+  - base_type: int
     length: 1
   String2DVecType:
-    base_types:
-    - string
+  - base_type: string
     length: 2
   String3DVecType:
-    base_types:
-    - string
+  - base_type: string
     length: 3
   StringVecType:
-    base_types:
-    - string
+  - base_type: string
     length: unbounded
   TripleFleurBool:
-    base_types:
-    - string
+  - base_type: string
     length: 1
   ValenceStateListType:
-    base_types:
-    - string
+  - base_type: string
     length: unbounded
   XCFunctionalEnum:
-    base_types:
-    - string
+  - base_type: string
     length: 1
 attrib_types:
   alpha:
-  - float_expression
+  - base_type: float_expression
+    length: 1
   angles:
-  - int
+  - base_type: int
+    length: 1
   atomicnumber:
-  - int
+  - base_type: int
+    length: 1
   atomtype:
-  - int
+  - base_type: int
+    length: 1
   autocomp:
-  - switch
+  - base_type: switch
+    length: 1
   b_cons_x:
-  - float_expression
+  - base_type: float_expression
+    length: 1
   b_cons_y:
-  - float_expression
+  - base_type: float_expression
+    length: 1
   band:
-  - switch
+  - base_type: switch
+    length: 1
   beta:
-  - float_expression
+  - base_type: float_expression
+    length: 1
   bmt:
-  - switch
+  - base_type: switch
+    length: 1
   branch:
-  - string
+  - base_type: string
+    length: 1
   branchhighest:
-  - float
+  - base_type: float
+    length: 1
   branchlowest:
-  - float
+  - base_type: float
+    length: 1
   calculate:
-  - switch
+  - base_type: switch
+    length: 1
   cdinf:
-  - switch
+  - base_type: switch
+    length: 1
   chi:
-  - int
+  - base_type: int
+    length: 1
   chng:
-  - float
+  - base_type: float
+    length: 1
   comment:
-  - string
+  - base_type: string
+    length: 1
   configs:
-  - int
+  - base_type: int
+    length: 1
   corestates:
-  - int
+  - base_type: int
+    length: 1
   count:
-  - int
+  - base_type: int
+    length: 1
   ctail:
-  - switch
+  - base_type: switch
+    length: 1
   d:
-  - float
-  - int
+  - base_type: int
+    length: 1
+  - base_type: float
+    length: 1
   d1:
-  - switch
+  - base_type: switch
+    length: 1
   date:
-  - string
+  - base_type: string
+    length: 1
   dirichlet:
-  - switch
+  - base_type: switch
+    length: 1
   disp:
-  - switch
+  - base_type: switch
+    length: 1
   distance:
-  - float
+  - base_type: float
+    length: 1
   dos:
-  - switch
+  - base_type: switch
+    length: 1
   dtilda:
-  - float_expression
+  - base_type: float_expression
+    length: 1
   dvac:
-  - float_expression
+  - base_type: float_expression
+    length: 1
   ederiv:
-  - int
+  - base_type: int
+    length: 1
   eig66:
-  - switch
+  - base_type: switch
+    length: 1
   eigvalsum:
-  - float
+  - base_type: float
+    length: 1
   element:
-  - string
+  - base_type: string
+    length: 1
   ellow:
-  - float_expression
+  - base_type: float_expression
+    length: 1
   elup:
-  - float_expression
+  - base_type: float_expression
+    length: 1
   energy:
-  - float
+  - base_type: float
+    length: 1
   eonly:
-  - switch
+  - base_type: switch
+    length: 1
   epsdisp:
-  - float_expression
+  - base_type: float_expression
+    length: 1
   epsforce:
-  - float_expression
+  - base_type: float_expression
+    length: 1
   ev:
-  - switch
+  - base_type: switch
+    length: 1
   ev-sum:
-  - float
+  - base_type: float
+    length: 1
   f:
-  - float
-  - int
+  - base_type: int
+    length: 1
+  - base_type: float
+    length: 1
   f_x:
-  - float
+  - base_type: float
+    length: 1
   f_y:
-  - float
+  - base_type: float
+    length: 1
   f_z:
-  - float
+  - base_type: float
+    length: 1
   fermismearingenergy:
-  - float_expression
+  - base_type: float_expression
+    length: 1
   fermismearingtemp:
-  - float_expression
+  - base_type: float_expression
+    length: 1
   filename:
-  - string
+  - base_type: string
+    length: 1
   flag:
-  - string
+  - base_type: string
+    length: 1
   fleurinputversion:
-  - string
+  - base_type: string
+    length: 1
   fleuroutputversion:
-  - string
+  - base_type: string
+    length: 1
   flipspin:
-  - switch
+  - base_type: switch
+    length: 1
   form66:
-  - switch
+  - base_type: switch
+    length: 1
   frcor:
-  - switch
+  - base_type: switch
+    length: 1
   gamma:
-  - switch
+  - base_type: switch
+    length: 1
   gmax:
-  - float_expression
+  - base_type: float_expression
+    length: 1
   gmaxxc:
-  - float_expression
+  - base_type: float_expression
+    length: 1
   gridpoints:
-  - int
+  - base_type: int
+    length: 1
   gw:
-  - int
+  - base_type: int
+    length: 1
   host:
-  - string
+  - base_type: string
+    length: 1
   iatom:
-  - int
+  - base_type: int
+    length: 1
   idsprs:
-  - int
+  - base_type: int
+    length: 1
   idsprs0:
-  - int
+  - base_type: int
+    length: 1
   idsprsi:
-  - int
+  - base_type: int
+    length: 1
   idsprsl:
-  - int
+  - base_type: int
+    length: 1
   idsprsv:
-  - float
+  - base_type: float
+    length: 1
   iggachk:
-  - int
+  - base_type: int
+    length: 1
   igrd:
-  - int
+  - base_type: int
+    length: 1
   ikpt:
-  - int
+  - base_type: int
+    length: 1
   imix:
-  - string
+  - base_type: string
+    length: 1
   index:
-  - int
+  - base_type: int
+    length: 1
   integ:
-  - switch
+  - base_type: switch
+    length: 1
   interstitial:
-  - float
+  - base_type: float
+    length: 1
   invs:
-  - switch
+  - base_type: switch
+    length: 1
   invs1:
-  - switch
+  - base_type: switch
+    length: 1
   iplot:
-  - switch
+  - base_type: switch
+    length: 1
   isec1:
-  - int
+  - base_type: int
+    length: 1
   itmax:
-  - int
+  - base_type: int
+    length: 1
   j:
-  - float
-  - float_expression
+  - base_type: float
+    length: 1
+  - base_type: float_expression
+    length: 1
   jatom:
-  - int
+  - base_type: int
+    length: 1
   jmtd:
-  - int
+  - base_type: int
+    length: 1
   jspins:
-  - int
+  - base_type: int
+    length: 1
   k_x:
-  - float
+  - base_type: float
+    length: 1
   k_y:
-  - float
+  - base_type: float
+    length: 1
   k_z:
-  - float
+  - base_type: float
+    length: 1
   kcrel:
-  - int
+  - base_type: int
+    length: 1
   kinenergy:
-  - float
+  - base_type: float
+    length: 1
   kmax:
-  - float_expression
+  - base_type: float_expression
+    length: 1
   kpoint:
-  - int
+  - base_type: int
+    length: 1
   l:
-  - int
+  - base_type: int
+    length: 1
   l_amf:
-  - switch
+  - base_type: switch
+    length: 1
   l_constr:
-  - switch
+  - base_type: switch
+    length: 1
   l_disp:
-  - switch
+  - base_type: switch
+    length: 1
   l_f:
-  - switch
+  - base_type: switch
+    length: 1
   l_j:
-  - switch
+  - base_type: switch
+    length: 1
   l_magn:
-  - switch
+  - base_type: switch
+    length: 1
   l_mperp:
-  - switch
+  - base_type: switch
+    length: 1
   l_noco:
-  - switch
+  - base_type: switch
+    length: 1
   l_relax:
-  - switch
+  - base_type: switch
+    length: 1
   l_soc:
-  - switch
+  - base_type: switch
+    length: 1
   l_ss:
-  - switch
+  - base_type: switch
+    length: 1
   lastcommithash:
-  - string
+  - base_type: string
+    length: 1
   latnam:
-  - string
+  - base_type: string
+    length: 1
   layers:
-  - int
+  - base_type: int
+    length: 1
   lflip:
-  - switch
+  - base_type: switch
+    length: 1
   link:
-  - string
+  - base_type: string
+    length: 1
   lmax:
-  - int
+  - base_type: int
+    length: 1
   lmaxapw:
-  - int
+  - base_type: int
+    length: 1
   lmaxd:
-  - int
+  - base_type: int
+    length: 1
   lnonsphr:
-  - int
+  - base_type: int
+    length: 1
   locx1:
-  - float_expression
+  - base_type: float_expression
+    length: 1
   locx2:
-  - float_expression
+  - base_type: float_expression
+    length: 1
   locy1:
-  - float_expression
+  - base_type: float_expression
+    length: 1
   locy2:
-  - float_expression
+  - base_type: float_expression
+    length: 1
   logderivmt:
-  - float
+  - base_type: float
+    length: 1
   logincrement:
-  - float_expression
+  - base_type: float_expression
+    length: 1
   lostelectrons:
-  - float
+  - base_type: float
+    length: 1
   lpr:
-  - int
+  - base_type: int
+    length: 1
   lwb:
-  - switch
+  - base_type: switch
+    length: 1
   m:
-  - float_expression
+  - base_type: float_expression
+    length: 1
   m_cyl:
-  - int
+  - base_type: int
+    length: 1
   magfield:
-  - float
+  - base_type: float
+    length: 1
   magmom:
-  - float_expression
+  - base_type: float_expression
+    length: 1
   maxeigenval:
-  - float_expression
+  - base_type: float_expression
+    length: 1
   maxenergy:
-  - float_expression
+  - base_type: float_expression
+    length: 1
   maxiterbroyd:
-  - int
+  - base_type: int
+    length: 1
   maxtimetostartiter:
-  - float_expression
+  - base_type: float_expression
+    length: 1
   memorypernode:
-  - string
+  - base_type: string
+    length: 1
   message:
-  - string
+  - base_type: string
+    length: 1
   mindistance:
-  - float_expression
+  - base_type: float_expression
+    length: 1
   mineigenval:
-  - float_expression
+  - base_type: float_expression
+    length: 1
   minenergy:
-  - float_expression
+  - base_type: float_expression
+    length: 1
   mix_b:
-  - float
+  - base_type: float
+    length: 1
   mm:
-  - int
+  - base_type: int
+    length: 1
   mode:
-  - string
+  - base_type: string
+    length: 1
   moment:
-  - float
+  - base_type: float
+    length: 1
   mpiprocesses:
-  - string
+  - base_type: string
+    length: 1
   mtradius:
-  - float
+  - base_type: float
+    length: 1
   mtspheres:
-  - float
+  - base_type: float
+    length: 1
   mtvolume:
-  - float
+  - base_type: float
+    length: 1
   n:
-  - int
+  - base_type: int
+    length: 1
   n_hia:
-  - int
+  - base_type: int
+    length: 1
   n_u:
-  - int
+  - base_type: int
+    length: 1
   name:
-  - string
+  - base_type: string
+    length: 1
   nat:
-  - int
+  - base_type: int
+    length: 1
   ndir:
-  - int
+  - base_type: int
+    length: 1
   ndvgrd:
-  - int
+  - base_type: int
+    length: 1
   ng2:
-  - int
+  - base_type: int
+    length: 1
   ng3:
-  - int
+  - base_type: int
+    length: 1
   nlotot:
-  - int
+  - base_type: int
+    length: 1
   nnne:
-  - int
+  - base_type: int
+    length: 1
   'no':
-  - int
+  - base_type: int
+    length: 1
   nsh:
-  - int
+  - base_type: int
+    length: 1
   nstars:
-  - int
+  - base_type: int
+    length: 1
   nstm:
-  - int
+  - base_type: int
+    length: 1
   ntype:
-  - int
+  - base_type: int
+    length: 1
   numbands:
-  - int
-  - string
+  - base_type: int
+    length: 1
+  - base_type: string
+    length: 1
   numberforcurrentrun:
-  - int
+  - base_type: int
+    length: 1
   numkpt:
-  - int
+  - base_type: int
+    length: 1
   nvd:
-  - int
+  - base_type: int
+    length: 1
   nx:
-  - int
+  - base_type: int
+    length: 1
   ny:
-  - int
+  - base_type: int
+    length: 1
   nz:
-  - int
+  - base_type: int
+    length: 1
   occupation:
-  - float
+  - base_type: float
+    length: 1
   'off':
-  - switch
+  - base_type: switch
+    length: 1
   omegatilda:
-  - float
+  - base_type: float
+    length: 1
   ompthreads:
-  - string
+  - base_type: string
+    length: 1
   orbcomp:
-  - switch
+  - base_type: switch
+    length: 1
   overallnumber:
-  - int
+  - base_type: int
+    length: 1
   p:
-  - float
-  - int
+  - base_type: int
+    length: 1
+  - base_type: float
+    length: 1
   pallst:
-  - switch
+  - base_type: switch
+    length: 1
   phase:
-  - switch
+  - base_type: switch
+    length: 1
   phi:
-  - float
-  - float_expression
+  - base_type: float
+    length: 1
+  - base_type: float_expression
+    length: 1
   plot_charge:
-  - switch
+  - base_type: switch
+    length: 1
   plot_rho:
-  - switch
+  - base_type: switch
+    length: 1
   plplot:
-  - switch
+  - base_type: switch
+    length: 1
   posscale:
-  - float
+  - base_type: float
+    length: 1
   pot8:
-  - switch
+  - base_type: switch
+    length: 1
   q:
-  - int
-  - float
+  - base_type: int
+    length: 1
+  - base_type: float
+    length: 3
   qfix:
-  - switch
+  - base_type: switch
+    length: 1
   qpoints:
-  - int
+  - base_type: int
+    length: 1
   qvectors:
-  - int
+  - base_type: int
+    length: 1
   qx:
-  - int
+  - base_type: int
+    length: 1
   qy:
-  - int
+  - base_type: int
+    length: 1
   qz:
-  - int
+  - base_type: int
+    length: 1
   radius:
-  - float_expression
+  - base_type: float_expression
+    length: 1
   relativisticcorrections:
-  - switch
+  - base_type: switch
+    length: 1
   relaxxyz:
-  - string
+  - base_type: string
+    length: 1
   rot:
-  - int
+  - base_type: int
+    length: 1
   s:
-  - float
-  - int
+  - base_type: int
+    length: 1
+  - base_type: float
+    length: 1
   scale:
-  - float_expression
+  - base_type: float_expression
+    length: 1
   score:
-  - switch
+  - base_type: switch
+    length: 1
   secvar:
-  - switch
+  - base_type: switch
+    length: 1
   sig_b_1:
-  - float_expression
+  - base_type: float_expression
+    length: 1
   sig_b_2:
-  - float_expression
+  - base_type: float_expression
+    length: 1
   sigma:
-  - float_expression
+  - base_type: float_expression
+    length: 1
   slice:
-  - switch
+  - base_type: switch
+    length: 1
   soc66:
-  - switch
+  - base_type: switch
+    length: 1
   spav:
-  - switch
+  - base_type: switch
+    length: 1
   species:
-  - string
+  - base_type: string
+    length: 1
   spgrp:
-  - string
+  - base_type: string
+    length: 1
   spin:
-  - int
+  - base_type: int
+    length: 1
   spindown:
-  - float_expression
+  - base_type: float_expression
+    length: 1
   spindowncharge:
-  - float
+  - base_type: float
+    length: 1
   spinf:
-  - float_expression
+  - base_type: float_expression
+    length: 1
   spinup:
-  - float_expression
+  - base_type: float_expression
+    length: 1
   spinupcharge:
-  - float
+  - base_type: float
+    length: 1
   sso_opt:
-  - string
+  - base_type: string
+    length: 1
   star:
-  - switch
+  - base_type: switch
+    length: 1
   state:
-  - string
+  - base_type: string
+    length: 1
   surfacearea:
-  - float
+  - base_type: float
+    length: 1
   swsp:
-  - switch
+  - base_type: switch
+    length: 1
   theta:
-  - float
-  - float_expression
+  - base_type: float
+    length: 1
+  - base_type: float_expression
+    length: 1
   thetad:
-  - float
+  - base_type: float
+    length: 1
   thetaj:
-  - float_expression
+  - base_type: float_expression
+    length: 1
   time:
-  - string
+  - base_type: string
+    length: 1
   total:
-  - float
+  - base_type: float
+    length: 1
   tworkf:
-  - float_expression
+  - base_type: float_expression
+    length: 1
   type:
-  - string
+  - base_type: string
+    length: 1
   u:
-  - float
-  - float_expression
+  - base_type: float
+    length: 1
+  - base_type: float_expression
+    length: 1
   uindex:
-  - int
+  - base_type: int
+    length: 1
   unitcell:
-  - float
+  - base_type: float
+    length: 1
   units:
-  - string
+  - base_type: string
+    length: 1
   user:
-  - string
+  - base_type: string
+    length: 1
   vacdos:
-  - switch
+  - base_type: switch
+    length: 1
   vacuum:
-  - int
+  - base_type: int
+    length: 1
   vacuum1:
-  - float
+  - base_type: float
+    length: 1
   vacuum2:
-  - float
+  - base_type: float
+    length: 1
   valenceelectrons:
-  - float_expression
+  - base_type: float_expression
+    length: 1
   value:
-  - float
-  - float_expression
-  - string
+  - base_type: float
+    length: 1
+  - base_type: float_expression
+    length: 1
+  - base_type: string
+    length: 1
   vcaaddcharge:
-  - float
+  - base_type: float
+    length: 1
   vchk:
-  - switch
+  - base_type: switch
+    length: 1
   version:
-  - string
+  - base_type: string
+    length: 1
   vm:
-  - int
+  - base_type: int
+    length: 1
   vzinf:
-  - float
+  - base_type: float
+    length: 1
   vzir:
-  - float
+  - base_type: float
+    length: 1
   weight:
-  - float
-  - float_expression
+  - base_type: float
+    length: 1
+  - base_type: float_expression
+    length: 1
   weightscale:
-  - float
+  - base_type: float
+    length: 1
   x:
-  - float
+  - base_type: float
+    length: 1
   xa:
-  - float
+  - base_type: float
+    length: 1
   y:
-  - float
+  - base_type: float
+    length: 1
   z:
-  - float
+  - base_type: float
+    length: 1
   z1:
-  - float
+  - base_type: float
+    length: 1
   zone:
-  - string
+  - base_type: string
+    length: 1
   zrfs:
-  - switch
+  - base_type: switch
+    length: 1
   zrfs1:
-  - switch
+  - base_type: switch
+    length: 1
   zsigma:
-  - float_expression
+  - base_type: float_expression
+    length: 1
 inp_version: '0.27'
 input_tag: inputData
 iteration_other_attribs:
@@ -992,18 +1204,18 @@ iteration_tag_info:
     text: !!set {}
   ./Forcetheorem_DMI:
     attribs: !!set
-      angles: null
+      Angles: null
       qpoints: null
     complex: !!set {}
     optional: !!set
-      entry: null
+      Entry: null
     optional_attribs: {}
     order:
     - Entry
     several: !!set
-      entry: null
+      Entry: null
     simple: !!set
-      entry: null
+      Entry: null
     text: !!set {}
   ./Forcetheorem_DMI/Entry:
     attribs: !!set
@@ -1022,17 +1234,17 @@ iteration_tag_info:
     text: !!set {}
   ./Forcetheorem_JIJ:
     attribs: !!set
-      configs: null
+      Configs: null
     complex: !!set {}
     optional: !!set
-      config: null
+      Config: null
     optional_attribs: {}
     order:
     - Config
     several: !!set
-      config: null
+      Config: null
     simple: !!set
-      config: null
+      Config: null
     text: !!set {}
   ./Forcetheorem_JIJ/Config:
     attribs: !!set
@@ -1051,24 +1263,24 @@ iteration_tag_info:
     text: !!set {}
   ./Forcetheorem_Loop:
     attribs: !!set
-      'no': null
+      'No': null
     complex: !!set
-      allelectroncharges: null
+      FermiEnergy: null
+      allElectronCharges: null
       bandgap: null
-      corestates: null
-      densityconvergence: null
+      coreStates: null
+      densityConvergence: null
       eigenvalues: null
-      energyparameters: null
-      fermienergy: null
-      ldaudensitymatrix: null
-      magneticmomentsinmtspheres: null
-      orbitalmagneticmomentsinmtspheres: null
+      energyParameters: null
+      ldaUDensityMatrix: null
+      magneticMomentsInMTSpheres: null
+      orbitalMagneticMomentsInMTSpheres: null
       rdmft: null
-      sumvalencesingleparticleenergies: null
+      sumValenceSingleParticleEnergies: null
       timing: null
-      totalenergy: null
-      totalforcesonrepresentativeatoms: null
-      valencedensity: null
+      totalEnergy: null
+      totalForcesOnRepresentativeAtoms: null
+      valenceDensity: null
     optional: !!set {}
     optional_attribs: {}
     order:
@@ -1093,17 +1305,17 @@ iteration_tag_info:
     text: !!set {}
   ./Forcetheorem_MAE:
     attribs: !!set
-      angles: null
+      Angles: null
     complex: !!set {}
     optional: !!set
-      angle: null
+      Angle: null
     optional_attribs: {}
     order:
     - Angle
     several: !!set
-      angle: null
+      Angle: null
     simple: !!set
-      angle: null
+      Angle: null
     text: !!set {}
   ./Forcetheorem_MAE/Angle:
     attribs: !!set
@@ -1122,14 +1334,14 @@ iteration_tag_info:
       qvectors: null
     complex: !!set {}
     optional: !!set
-      entry: null
+      Entry: null
     optional_attribs: {}
     order:
     - Entry
     several: !!set
-      entry: null
+      Entry: null
     simple: !!set
-      entry: null
+      Entry: null
     text: !!set {}
   ./Forcetheorem_SSDISP/Entry:
     attribs: !!set
@@ -1145,13 +1357,13 @@ iteration_tag_info:
   ./allElectronCharges:
     attribs: !!set {}
     complex: !!set
-      fixedcharges: null
-      mtcharges: null
+      fixedCharges: null
+      mtCharges: null
     optional: !!set
-      fixedcharges: null
-      mtcharges: null
-      spindependentcharge: null
-      totalcharge: null
+      fixedCharges: null
+      mtCharges: null
+      spinDependentCharge: null
+      totalCharge: null
     optional_attribs: {}
     order:
     - mtCharges
@@ -1159,35 +1371,35 @@ iteration_tag_info:
     - totalCharge
     - fixedCharges
     several: !!set
-      fixedcharges: null
-      mtcharges: null
-      spindependentcharge: null
-      totalcharge: null
+      fixedCharges: null
+      mtCharges: null
+      spinDependentCharge: null
+      totalCharge: null
     simple: !!set
-      spindependentcharge: null
-      totalcharge: null
+      spinDependentCharge: null
+      totalCharge: null
     text: !!set {}
   ./allElectronCharges/fixedCharges:
     attribs: !!set {}
     complex: !!set {}
     optional: !!set
-      spindependentcharge: null
-      totalcharge: null
+      spinDependentCharge: null
+      totalCharge: null
     optional_attribs: {}
     order:
     - spinDependentCharge
     - totalCharge
     several: !!set
-      spindependentcharge: null
-      totalcharge: null
+      spinDependentCharge: null
+      totalCharge: null
     simple: !!set
-      spindependentcharge: null
-      totalcharge: null
+      spinDependentCharge: null
+      totalCharge: null
     text: !!set {}
   ./allElectronCharges/fixedCharges/spinDependentCharge:
     attribs: !!set
       interstitial: null
-      mtspheres: null
+      mtSpheres: null
       spin: null
       total: null
       vacuum1: null
@@ -1219,19 +1431,19 @@ iteration_tag_info:
       spin: null
     complex: !!set {}
     optional: !!set
-      mtcharge: null
+      mtCharge: null
     optional_attribs:
       spin: '1'
     order:
     - mtCharge
     several: !!set
-      mtcharge: null
+      mtCharge: null
     simple: !!set
-      mtcharge: null
+      mtCharge: null
     text: !!set {}
   ./allElectronCharges/mtCharges/mtCharge:
     attribs: !!set
-      atomtype: null
+      atomType: null
       d: null
       f: null
       p: null
@@ -1247,7 +1459,7 @@ iteration_tag_info:
   ./allElectronCharges/spinDependentCharge:
     attribs: !!set
       interstitial: null
-      mtspheres: null
+      mtSpheres: null
       spin: null
       total: null
       vacuum1: null
@@ -1288,11 +1500,11 @@ iteration_tag_info:
     text: !!set {}
   ./coreStates:
     attribs: !!set
-      atomicnumber: null
-      atomtype: null
-      eigvalsum: null
-      kinenergy: null
-      lostelectrons: null
+      atomType: null
+      atomicNumber: null
+      eigValSum: null
+      kinEnergy: null
+      lostElectrons: null
       spin: null
     complex: !!set {}
     optional: !!set
@@ -1325,9 +1537,9 @@ iteration_tag_info:
       units: null
     complex: !!set {}
     optional: !!set
-      chargedensity: null
-      overallchargedensity: null
-      spindensity: null
+      chargeDensity: null
+      overallChargeDensity: null
+      spinDensity: null
     optional_attribs:
       units: null
     order:
@@ -1335,13 +1547,13 @@ iteration_tag_info:
     - overallChargeDensity
     - spinDensity
     several: !!set
-      chargedensity: null
-      overallchargedensity: null
-      spindensity: null
+      chargeDensity: null
+      overallChargeDensity: null
+      spinDensity: null
     simple: !!set
-      chargedensity: null
-      overallchargedensity: null
-      spindensity: null
+      chargeDensity: null
+      overallChargeDensity: null
+      spinDensity: null
     text: !!set {}
   ./densityConvergence/chargeDensity:
     attribs: !!set
@@ -1393,11 +1605,11 @@ iteration_tag_info:
     order:
     - eigenvaluesAt
     several: !!set
-      eigenvaluesat: null
+      eigenvaluesAt: null
     simple: !!set
-      eigenvaluesat: null
+      eigenvaluesAt: null
     text: !!set
-      eigenvaluesat: null
+      eigenvaluesAt: null
   ./eigenvalues/eigenvaluesAt:
     attribs: !!set
       ikpt: null
@@ -1421,11 +1633,11 @@ iteration_tag_info:
       units: null
     complex: !!set {}
     optional: !!set
-      atomicep: null
-      heatomicep: null
-      heloatomicep: null
-      loatomicep: null
-      vacuumep: null
+      atomicEP: null
+      heAtomicEP: null
+      heloAtomicEP: null
+      loAtomicEP: null
+      vacuumEP: null
     optional_attribs: {}
     order:
     - atomicEP
@@ -1434,24 +1646,24 @@ iteration_tag_info:
     - heloAtomicEP
     - vacuumEP
     several: !!set
-      atomicep: null
-      heatomicep: null
-      heloatomicep: null
-      loatomicep: null
-      vacuumep: null
+      atomicEP: null
+      heAtomicEP: null
+      heloAtomicEP: null
+      loAtomicEP: null
+      vacuumEP: null
     simple: !!set
-      atomicep: null
-      heatomicep: null
-      heloatomicep: null
-      loatomicep: null
-      vacuumep: null
+      atomicEP: null
+      heAtomicEP: null
+      heloAtomicEP: null
+      loAtomicEP: null
+      vacuumEP: null
     text: !!set {}
   ./energyParameters/atomicEP:
     attribs: !!set
-      atomtype: null
+      atomType: null
       branch: null
-      branchhighest: null
-      branchlowest: null
+      branchHighest: null
+      branchLowest: null
       spin: null
       value: null
     complex: !!set {}
@@ -1466,10 +1678,10 @@ iteration_tag_info:
     text: !!set {}
   ./energyParameters/heAtomicEP:
     attribs: !!set
-      atomtype: null
+      atomType: null
       branch: null
-      branchhighest: null
-      branchlowest: null
+      branchHighest: null
+      branchLowest: null
       spin: null
       value: null
     complex: !!set {}
@@ -1484,10 +1696,10 @@ iteration_tag_info:
     text: !!set {}
   ./energyParameters/heloAtomicEP:
     attribs: !!set
-      atomtype: null
+      atomType: null
       branch: null
-      branchhighest: null
-      branchlowest: null
+      branchHighest: null
+      branchLowest: null
       spin: null
       value: null
     complex: !!set {}
@@ -1502,10 +1714,10 @@ iteration_tag_info:
     text: !!set {}
   ./energyParameters/loAtomicEP:
     attribs: !!set
-      atomtype: null
+      atomType: null
       branch: null
-      branchhighest: null
-      branchlowest: null
+      branchHighest: null
+      branchLowest: null
       spin: null
       value: null
     complex: !!set {}
@@ -1523,8 +1735,8 @@ iteration_tag_info:
       spin: null
       vacuum: null
       value: null
-      vzinf: null
-      vzir: null
+      vzIR: null
+      vzInf: null
     complex: !!set {}
     optional: !!set {}
     optional_attribs:
@@ -1539,24 +1751,24 @@ iteration_tag_info:
     attribs: !!set {}
     complex: !!set {}
     optional: !!set
-      densitymatrixfor: null
+      densityMatrixFor: null
     optional_attribs: {}
     order:
     - densityMatrixFor
     several: !!set
-      densitymatrixfor: null
+      densityMatrixFor: null
     simple: !!set
-      densitymatrixfor: null
+      densityMatrixFor: null
     text: !!set
-      densitymatrixfor: null
+      densityMatrixFor: null
   ./ldaUDensityMatrix/densityMatrixFor:
     attribs: !!set
-      atomtype: null
-      j: null
+      J: null
+      U: null
+      atomType: null
       l: null
       spin: null
-      u: null
-      uindex: null
+      uIndex: null
     complex: !!set {}
     optional: !!set {}
     optional_attribs: {}
@@ -1569,22 +1781,22 @@ iteration_tag_info:
       units: null
     complex: !!set {}
     optional: !!set
-      magneticmoment: null
+      magneticMoment: null
     optional_attribs:
       units: null
     order:
     - magneticMoment
     several: !!set
-      magneticmoment: null
+      magneticMoment: null
     simple: !!set
-      magneticmoment: null
+      magneticMoment: null
     text: !!set {}
   ./magneticMomentsInMTSpheres/magneticMoment:
     attribs: !!set
-      atomtype: null
+      atomType: null
       moment: null
-      spindowncharge: null
-      spinupcharge: null
+      spinDownCharge: null
+      spinUpCharge: null
     complex: !!set {}
     optional: !!set {}
     optional_attribs: {}
@@ -1597,22 +1809,22 @@ iteration_tag_info:
       units: null
     complex: !!set {}
     optional: !!set
-      orbmagmoment: null
+      orbMagMoment: null
     optional_attribs:
       units: null
     order:
     - orbMagMoment
     several: !!set
-      orbmagmoment: null
+      orbMagMoment: null
     simple: !!set
-      orbmagmoment: null
+      orbMagMoment: null
     text: !!set {}
   ./orbitalMagneticMomentsInMTSpheres/orbMagMoment:
     attribs: !!set
-      atomtype: null
+      atomType: null
       moment: null
-      spindowncharge: null
-      spinupcharge: null
+      spinDownCharge: null
+      spinUpCharge: null
     complex: !!set {}
     optional: !!set {}
     optional_attribs: {}
@@ -1677,9 +1889,9 @@ iteration_tag_info:
     attribs: !!set
       units: null
     complex: !!set
-      compositetimer: null
+      compositeTimer: null
     optional: !!set
-      compositetimer: null
+      compositeTimer: null
       timer: null
     optional_attribs:
       units: null
@@ -1687,7 +1899,7 @@ iteration_tag_info:
     - compositeTimer
     - timer
     several: !!set
-      compositetimer: null
+      compositeTimer: null
       timer: null
     simple: !!set
       timer: null
@@ -1711,20 +1923,20 @@ iteration_tag_info:
       units: null
       value: null
     complex: !!set
-      atomtypedependentcontributions: null
-      sumofeigenvalues: null
+      atomTypeDependentContributions: null
+      sumOfEigenvalues: null
     optional: !!set
-      atomtypedependentcontributions: null
-      chargedenxcdenintegral: null
-      densitycoulombpotentialintegral: null
-      densityeffectivepotentialintegral: null
-      dftucorrection: null
-      extrapolationto0k: null
-      fockexchangeenergycore: null
-      fockexchangeenergyvalence: null
-      freeenergy: null
-      sumofeigenvalues: null
-      tkbtimesentropy: null
+      FockExchangeEnergyCore: null
+      FockExchangeEnergyValence: null
+      atomTypeDependentContributions: null
+      chargeDenXCDenIntegral: null
+      densityCoulombPotentialIntegral: null
+      densityEffectivePotentialIntegral: null
+      dftUCorrection: null
+      extrapolationTo0K: null
+      freeEnergy: null
+      sumOfEigenvalues: null
+      tkbTimesEntropy: null
     optional_attribs:
       comment: null
       units: null
@@ -1741,27 +1953,27 @@ iteration_tag_info:
     - freeEnergy
     - extrapolationTo0K
     several: !!set
-      atomtypedependentcontributions: null
-      chargedenxcdenintegral: null
-      densitycoulombpotentialintegral: null
-      densityeffectivepotentialintegral: null
-      dftucorrection: null
-      extrapolationto0k: null
-      fockexchangeenergycore: null
-      fockexchangeenergyvalence: null
-      freeenergy: null
-      sumofeigenvalues: null
-      tkbtimesentropy: null
+      FockExchangeEnergyCore: null
+      FockExchangeEnergyValence: null
+      atomTypeDependentContributions: null
+      chargeDenXCDenIntegral: null
+      densityCoulombPotentialIntegral: null
+      densityEffectivePotentialIntegral: null
+      dftUCorrection: null
+      extrapolationTo0K: null
+      freeEnergy: null
+      sumOfEigenvalues: null
+      tkbTimesEntropy: null
     simple: !!set
-      chargedenxcdenintegral: null
-      densitycoulombpotentialintegral: null
-      densityeffectivepotentialintegral: null
-      dftucorrection: null
-      extrapolationto0k: null
-      fockexchangeenergycore: null
-      fockexchangeenergyvalence: null
-      freeenergy: null
-      tkbtimesentropy: null
+      FockExchangeEnergyCore: null
+      FockExchangeEnergyValence: null
+      chargeDenXCDenIntegral: null
+      densityCoulombPotentialIntegral: null
+      densityEffectivePotentialIntegral: null
+      dftUCorrection: null
+      extrapolationTo0K: null
+      freeEnergy: null
+      tkbTimesEntropy: null
     text: !!set {}
   ./totalEnergy/FockExchangeEnergyCore:
     attribs: !!set
@@ -1789,17 +2001,17 @@ iteration_tag_info:
     text: !!set {}
   ./totalEnergy/atomTypeDependentContributions:
     attribs: !!set
-      atomtype: null
+      atomType: null
     complex: !!set {}
     optional: !!set
-      electronnucleiinteractiondifferentmts: null
-      madelungterm: null
+      MadelungTerm: null
+      electronNucleiInteractionDifferentMTs: null
     optional_attribs: {}
     order: []
     several: !!set {}
     simple: !!set
-      electronnucleiinteractiondifferentmts: null
-      madelungterm: null
+      MadelungTerm: null
+      electronNucleiInteractionDifferentMTs: null
     text: !!set {}
   ./totalEnergy/atomTypeDependentContributions/MadelungTerm:
     attribs: !!set
@@ -1903,15 +2115,15 @@ iteration_tag_info:
       value: null
     complex: !!set {}
     optional: !!set
-      coreelectrons: null
-      valenceelectrons: null
+      coreElectrons: null
+      valenceElectrons: null
     optional_attribs:
       units: null
     order: []
     several: !!set {}
     simple: !!set
-      coreelectrons: null
-      valenceelectrons: null
+      coreElectrons: null
+      valenceElectrons: null
     text: !!set {}
   ./totalEnergy/sumOfEigenvalues/coreElectrons:
     attribs: !!set
@@ -1954,22 +2166,22 @@ iteration_tag_info:
       units: null
     complex: !!set {}
     optional: !!set
-      forcetotal: null
+      forceTotal: null
     optional_attribs:
       units: null
     order:
     - forceTotal
     several: !!set
-      forcetotal: null
+      forceTotal: null
     simple: !!set
-      forcetotal: null
+      forceTotal: null
     text: !!set {}
   ./totalForcesOnRepresentativeAtoms/forceTotal:
     attribs: !!set
-      atomtype: null
-      f_x: null
-      f_y: null
-      f_z: null
+      F_x: null
+      F_y: null
+      F_z: null
+      atomType: null
       units: null
       x: null
       y: null
@@ -1985,13 +2197,13 @@ iteration_tag_info:
   ./valenceDensity:
     attribs: !!set {}
     complex: !!set
-      fixedcharges: null
-      mtcharges: null
+      fixedCharges: null
+      mtCharges: null
     optional: !!set
-      fixedcharges: null
-      mtcharges: null
-      spindependentcharge: null
-      totalcharge: null
+      fixedCharges: null
+      mtCharges: null
+      spinDependentCharge: null
+      totalCharge: null
     optional_attribs: {}
     order:
     - mtCharges
@@ -1999,35 +2211,35 @@ iteration_tag_info:
     - totalCharge
     - fixedCharges
     several: !!set
-      fixedcharges: null
-      mtcharges: null
-      spindependentcharge: null
-      totalcharge: null
+      fixedCharges: null
+      mtCharges: null
+      spinDependentCharge: null
+      totalCharge: null
     simple: !!set
-      spindependentcharge: null
-      totalcharge: null
+      spinDependentCharge: null
+      totalCharge: null
     text: !!set {}
   ./valenceDensity/fixedCharges:
     attribs: !!set {}
     complex: !!set {}
     optional: !!set
-      spindependentcharge: null
-      totalcharge: null
+      spinDependentCharge: null
+      totalCharge: null
     optional_attribs: {}
     order:
     - spinDependentCharge
     - totalCharge
     several: !!set
-      spindependentcharge: null
-      totalcharge: null
+      spinDependentCharge: null
+      totalCharge: null
     simple: !!set
-      spindependentcharge: null
-      totalcharge: null
+      spinDependentCharge: null
+      totalCharge: null
     text: !!set {}
   ./valenceDensity/fixedCharges/spinDependentCharge:
     attribs: !!set
       interstitial: null
-      mtspheres: null
+      mtSpheres: null
       spin: null
       total: null
       vacuum1: null
@@ -2059,19 +2271,19 @@ iteration_tag_info:
       spin: null
     complex: !!set {}
     optional: !!set
-      mtcharge: null
+      mtCharge: null
     optional_attribs:
       spin: '1'
     order:
     - mtCharge
     several: !!set
-      mtcharge: null
+      mtCharge: null
     simple: !!set
-      mtcharge: null
+      mtCharge: null
     text: !!set {}
   ./valenceDensity/mtCharges/mtCharge:
     attribs: !!set
-      atomtype: null
+      atomType: null
       d: null
       f: null
       p: null
@@ -2087,7 +2299,7 @@ iteration_tag_info:
   ./valenceDensity/spinDependentCharge:
     attribs: !!set
       interstitial: null
-      mtspheres: null
+      mtSpheres: null
       spin: null
       total: null
       vacuum1: null
@@ -2341,134 +2553,30 @@ other_attribs:
   weight: /fleurOutput/inputData/calculationSetup/bzIntegration/kPointList/kPoint/@weight
 out_version: '0.29'
 root_tag: fleurOutput
-simple_elements:
-  a1:
-  - length: 1
-    type:
-    - float
-  a2:
-  - length: 1
-    type:
-    - float
-  abspos:
-  - length: 3
-    type:
-    - float_expression
-  additionalcompilerflags:
-  - length: unbounded
-    type:
-    - string
-  c:
-  - length: 1
-    type:
-    - float
-  comment:
-  - length: 1
-    type:
-    - string
-  coreconfig:
-  - length: unbounded
-    type:
-    - string
-  densitymatrixfor:
-  - length: unbounded
-    type:
-    - string
-  eigenvaluesat:
-  - length: unbounded
-    type:
-    - float
-  filmpos:
-  - length: 3
-    type:
-    - float_expression
-  kpoint:
-  - length: 3
-    type:
-    - float
-  orbcomprot:
-  - length: 3
-    type:
-    - float
-  qsc:
-  - length: 3
-    type:
-    - float
-  qss:
-  - length: 3
-    type:
-    - float
-  relpos:
-  - length: 3
-    type:
-    - float_expression
-  row-1:
-  - length: 2
-    type:
-    - float_expression
-  - length: 3
-    type:
-    - float_expression
-  - length: 4
-    type:
-    - float
-  row-2:
-  - length: 2
-    type:
-    - float_expression
-  - length: 3
-    type:
-    - float_expression
-  - length: 4
-    type:
-    - float
-  row-3:
-  - length: 3
-    type:
-    - float_expression
-  - length: 4
-    type:
-    - float
-  specialpoint:
-  - length: 3
-    type:
-    - float
-  targetcomputerarchitectures:
-  - length: 1
-    type:
-    - string
-  targetstructureclass:
-  - length: unbounded
-    type:
-    - string
-  valenceconfig:
-  - length: unbounded
-    type:
-    - string
 tag_info:
   /fleurOutput:
     attribs: !!set
-      fleuroutputversion: null
+      fleurOutputVersion: null
     complex: !!set
-      inputdata: null
-      numericalparameters: null
-      parallelsetup: null
-      programversion: null
-      scfloop: null
+      inputData: null
+      numericalParameters: null
+      parallelSetup: null
+      programVersion: null
+      scfLoop: null
     optional: !!set
-      enddateandtime: null
-      inputdata: null
-      numericalparameters: null
-      parallelsetup: null
-      programversion: null
-      scfloop: null
-      startdateandtime: null
+      endDateAndTime: null
+      inputData: null
+      numericalParameters: null
+      parallelSetup: null
+      programVersion: null
+      scfLoop: null
+      startDateAndTime: null
     optional_attribs: {}
     order: []
     several: !!set {}
     simple: !!set
-      enddateandtime: null
-      startdateandtime: null
+      endDateAndTime: null
+      startDateAndTime: null
     text: !!set {}
   /fleurOutput/endDateAndTime:
     attribs: !!set
@@ -2484,15 +2592,15 @@ tag_info:
     text: !!set {}
   /fleurOutput/inputData:
     attribs: !!set
-      fleurinputversion: null
+      fleurInputVersion: null
     complex: !!set
-      atomgroups: null
-      atomspecies: null
-      calculationsetup: null
+      atomGroups: null
+      atomSpecies: null
+      calculationSetup: null
       cell: null
       constants: null
       output: null
-      xcfunctional: null
+      xcFunctional: null
     optional: !!set
       comment: null
       constants: null
@@ -2507,30 +2615,30 @@ tag_info:
   /fleurOutput/inputData/atomGroups:
     attribs: !!set {}
     complex: !!set
-      atomgroup: null
+      atomGroup: null
     optional: !!set {}
     optional_attribs: {}
     order:
     - atomGroup
     several: !!set
-      atomgroup: null
+      atomGroup: null
     simple: !!set {}
     text: !!set {}
   /fleurOutput/inputData/atomGroups/atomGroup:
     attribs: !!set
-      magfield: null
+      magField: null
       orbcomp: null
       species: null
-      vcaaddcharge: null
+      vcaAddCharge: null
     complex: !!set {}
     optional: !!set
-      atomiccutoffs: null
-      energyparameters: null
+      atomicCutoffs: null
+      energyParameters: null
       force: null
-      ldau: null
+      ldaU: null
       lo: null
-      mtsphere: null
-      nocoparams: null
+      mtSphere: null
+      nocoParams: null
       orbcomprot: null
     optional_attribs:
       magfield: null
@@ -2549,32 +2657,32 @@ tag_info:
     - lo
     - orbcomprot
     several: !!set
-      abspos: null
-      filmpos: null
-      ldau: null
+      absPos: null
+      filmPos: null
+      ldaU: null
       lo: null
-      relpos: null
+      relPos: null
     simple: !!set
-      abspos: null
-      atomiccutoffs: null
-      energyparameters: null
-      filmpos: null
+      absPos: null
+      atomicCutoffs: null
+      energyParameters: null
+      filmPos: null
       force: null
-      ldau: null
+      ldaU: null
       lo: null
-      mtsphere: null
-      nocoparams: null
+      mtSphere: null
+      nocoParams: null
       orbcomprot: null
-      relpos: null
+      relPos: null
     text: !!set
-      abspos: null
-      filmpos: null
+      absPos: null
+      filmPos: null
       orbcomprot: null
-      relpos: null
+      relPos: null
   /fleurOutput/inputData/atomGroups/atomGroup/atomicCutoffs:
     attribs: !!set
       lmax: null
-      lmaxapw: null
+      lmaxAPW: null
       lnonsphr: null
     complex: !!set {}
     optional: !!set {}
@@ -2600,7 +2708,7 @@ tag_info:
   /fleurOutput/inputData/atomGroups/atomGroup/force:
     attribs: !!set
       calculate: null
-      relaxxyz: null
+      relaxXYZ: null
     complex: !!set {}
     optional: !!set {}
     optional_attribs: {}
@@ -2610,10 +2718,10 @@ tag_info:
     text: !!set {}
   /fleurOutput/inputData/atomGroups/atomGroup/ldaU:
     attribs: !!set
-      j: null
+      J: null
+      U: null
       l: null
       l_amf: null
-      u: null
     complex: !!set {}
     optional: !!set {}
     optional_attribs: {}
@@ -2623,7 +2731,7 @@ tag_info:
     text: !!set {}
   /fleurOutput/inputData/atomGroups/atomGroup/lo:
     attribs: !!set
-      ederiv: null
+      eDeriv: null
       l: null
       n: null
       type: null
@@ -2637,8 +2745,8 @@ tag_info:
     text: !!set {}
   /fleurOutput/inputData/atomGroups/atomGroup/mtSphere:
     attribs: !!set
-      gridpoints: null
-      logincrement: null
+      gridPoints: null
+      logIncrement: null
       radius: null
     complex: !!set {}
     optional: !!set {}
@@ -2649,13 +2757,13 @@ tag_info:
     text: !!set {}
   /fleurOutput/inputData/atomGroups/atomGroup/nocoParams:
     attribs: !!set
+      M: null
       alpha: null
       b_cons_x: null
       b_cons_y: null
       beta: null
       l_magn: null
       l_relax: null
-      m: null
     complex: !!set {}
     optional: !!set {}
     optional_attribs: {}
@@ -2677,23 +2785,23 @@ tag_info:
     text: !!set {}
   /fleurOutput/inputData/atomSpecies/species:
     attribs: !!set
-      atomicnumber: null
-      corestates: null
+      atomicNumber: null
+      coreStates: null
       element: null
-      flipspin: null
-      magfield: null
-      magmom: null
+      flipSpin: null
+      magField: null
+      magMom: null
       name: null
-      vcaaddcharge: null
+      vcaAddCharge: null
     complex: !!set
-      electronconfig: null
+      electronConfig: null
     optional: !!set
-      electronconfig: null
-      energyparameters: null
+      electronConfig: null
+      energyParameters: null
       force: null
-      ldau: null
+      ldaU: null
       lo: null
-      nocoparams: null
+      nocoParams: null
     optional_attribs:
       flipspin: F
       magfield: null
@@ -2709,21 +2817,21 @@ tag_info:
     - ldaU
     - lo
     several: !!set
-      ldau: null
+      ldaU: null
       lo: null
     simple: !!set
-      atomiccutoffs: null
-      energyparameters: null
+      atomicCutoffs: null
+      energyParameters: null
       force: null
-      ldau: null
+      ldaU: null
       lo: null
-      mtsphere: null
-      nocoparams: null
+      mtSphere: null
+      nocoParams: null
     text: !!set {}
   /fleurOutput/inputData/atomSpecies/species/atomicCutoffs:
     attribs: !!set
       lmax: null
-      lmaxapw: null
+      lmaxAPW: null
       lnonsphr: null
     complex: !!set {}
     optional: !!set {}
@@ -2737,26 +2845,26 @@ tag_info:
     attribs: !!set {}
     complex: !!set {}
     optional: !!set
-      stateoccupation: null
-      valenceconfig: null
+      stateOccupation: null
+      valenceConfig: null
     optional_attribs: {}
     order:
     - coreConfig
     - valenceConfig
     - stateOccupation
     several: !!set
-      stateoccupation: null
+      stateOccupation: null
     simple: !!set
-      coreconfig: null
-      stateoccupation: null
-      valenceconfig: null
+      coreConfig: null
+      stateOccupation: null
+      valenceConfig: null
     text: !!set
-      coreconfig: null
-      valenceconfig: null
+      coreConfig: null
+      valenceConfig: null
   /fleurOutput/inputData/atomSpecies/species/electronConfig/stateOccupation:
     attribs: !!set
-      spindown: null
-      spinup: null
+      spinDown: null
+      spinUp: null
       state: null
     complex: !!set {}
     optional: !!set {}
@@ -2781,7 +2889,7 @@ tag_info:
   /fleurOutput/inputData/atomSpecies/species/force:
     attribs: !!set
       calculate: null
-      relaxxyz: null
+      relaxXYZ: null
     complex: !!set {}
     optional: !!set {}
     optional_attribs: {}
@@ -2791,10 +2899,10 @@ tag_info:
     text: !!set {}
   /fleurOutput/inputData/atomSpecies/species/ldaU:
     attribs: !!set
-      j: null
+      J: null
+      U: null
       l: null
       l_amf: null
-      u: null
     complex: !!set {}
     optional: !!set {}
     optional_attribs: {}
@@ -2804,7 +2912,7 @@ tag_info:
     text: !!set {}
   /fleurOutput/inputData/atomSpecies/species/lo:
     attribs: !!set
-      ederiv: null
+      eDeriv: null
       l: null
       n: null
       type: null
@@ -2818,8 +2926,8 @@ tag_info:
     text: !!set {}
   /fleurOutput/inputData/atomSpecies/species/mtSphere:
     attribs: !!set
-      gridpoints: null
-      logincrement: null
+      gridPoints: null
+      logIncrement: null
       radius: null
     complex: !!set {}
     optional: !!set {}
@@ -2830,13 +2938,13 @@ tag_info:
     text: !!set {}
   /fleurOutput/inputData/atomSpecies/species/nocoParams:
     attribs: !!set
+      M: null
       alpha: null
       b_cons_x: null
       b_cons_y: null
       beta: null
       l_magn: null
       l_relax: null
-      m: null
     complex: !!set {}
     optional: !!set {}
     optional_attribs: {}
@@ -2847,42 +2955,42 @@ tag_info:
   /fleurOutput/inputData/calculationSetup:
     attribs: !!set {}
     complex: !!set
-      bzintegration: null
-      nocoparams: null
+      bzIntegration: null
+      nocoParams: null
     optional: !!set
-      efield: null
-      energyparameterlimits: null
-      expertmodes: null
-      geometryoptimization: null
-      nocoparams: null
-      onedparams: null
+      eField: null
+      energyParameterLimits: null
+      expertModes: null
+      geometryOptimization: null
+      nocoParams: null
+      oneDParams: null
       soc: null
-      spinspiralqpointmesh: null
+      spinSpiralQPointMesh: null
     optional_attribs: {}
     order: []
     several: !!set {}
     simple: !!set
-      coreelectrons: null
+      coreElectrons: null
       cutoffs: null
-      efield: null
-      energyparameterlimits: null
-      expertmodes: null
-      geometryoptimization: null
+      eField: null
+      energyParameterLimits: null
+      expertModes: null
+      geometryOptimization: null
       magnetism: null
-      onedparams: null
-      scfloop: null
+      oneDParams: null
+      scfLoop: null
       soc: null
-      spinspiralqpointmesh: null
+      spinSpiralQPointMesh: null
     text: !!set {}
   /fleurOutput/inputData/calculationSetup/bzIntegration:
     attribs: !!set
-      fermismearingenergy: null
-      fermismearingtemp: null
+      fermiSmearingEnergy: null
+      fermiSmearingTemp: null
       mode: null
-      valenceelectrons: null
+      valenceElectrons: null
     complex: !!set
-      kpointcount: null
-      kpointlist: null
+      kPointCount: null
+      kPointList: null
     optional: !!set {}
     optional_attribs:
       fermismearingenergy: null
@@ -2895,7 +3003,7 @@ tag_info:
     - kPointList
     several: !!set {}
     simple: !!set
-      kpointmesh: null
+      kPointMesh: null
     text: !!set {}
   /fleurOutput/inputData/calculationSetup/bzIntegration/kPointCount:
     attribs: !!set
@@ -2903,16 +3011,16 @@ tag_info:
       gamma: null
     complex: !!set {}
     optional: !!set
-      specialpoint: null
+      specialPoint: null
     optional_attribs: {}
     order:
     - specialPoint
     several: !!set
-      specialpoint: null
+      specialPoint: null
     simple: !!set
-      specialpoint: null
+      specialPoint: null
     text: !!set
-      specialpoint: null
+      specialPoint: null
   /fleurOutput/inputData/calculationSetup/bzIntegration/kPointCount/specialPoint:
     attribs: !!set
       name: null
@@ -2926,8 +3034,8 @@ tag_info:
   /fleurOutput/inputData/calculationSetup/bzIntegration/kPointList:
     attribs: !!set
       count: null
-      posscale: null
-      weightscale: null
+      posScale: null
+      weightScale: null
     complex: !!set {}
     optional: !!set {}
     optional_attribs:
@@ -2935,11 +3043,11 @@ tag_info:
     order:
     - kPoint
     several: !!set
-      kpoint: null
+      kPoint: null
     simple: !!set
-      kpoint: null
+      kPoint: null
     text: !!set
-      kpoint: null
+      kPoint: null
   /fleurOutput/inputData/calculationSetup/bzIntegration/kPointList/kPoint:
     attribs: !!set
       weight: null
@@ -2979,9 +3087,9 @@ tag_info:
     text: !!set {}
   /fleurOutput/inputData/calculationSetup/cutoffs:
     attribs: !!set
-      gmax: null
-      gmaxxc: null
-      kmax: null
+      Gmax: null
+      GmaxXC: null
+      Kmax: null
       numbands: null
     complex: !!set {}
     optional: !!set {}
@@ -2996,7 +3104,7 @@ tag_info:
     attribs: !!set
       autocomp: null
       dirichlet: null
-      ev: null
+      eV: null
       plot_charge: null
       plot_rho: null
       sig_b_1: null
@@ -3068,7 +3176,7 @@ tag_info:
   /fleurOutput/inputData/calculationSetup/magnetism:
     attribs: !!set
       jspins: null
-      l_j: null
+      l_J: null
       l_noco: null
       lflip: null
       swsp: null
@@ -3092,7 +3200,7 @@ tag_info:
       mix_b: null
       nsh: null
       sso_opt: null
-      thetaj: null
+      thetaJ: null
     complex: !!set {}
     optional: !!set
       qsc: null
@@ -3109,13 +3217,13 @@ tag_info:
       qss: null
   /fleurOutput/inputData/calculationSetup/oneDParams:
     attribs: !!set
+      MM: null
       chi: null
       d1: null
       invs1: null
       m_cyl: null
-      mm: null
       rot: null
-      vm: null
+      vM: null
       zrfs1: null
     complex: !!set {}
     optional: !!set {}
@@ -3129,9 +3237,9 @@ tag_info:
       alpha: null
       imix: null
       itmax: null
-      maxiterbroyd: null
-      maxtimetostartiter: null
-      mindistance: null
+      maxIterBroyd: null
+      maxTimeToStartIter: null
+      minDistance: null
       spinf: null
     complex: !!set {}
     optional: !!set {}
@@ -3174,9 +3282,9 @@ tag_info:
   /fleurOutput/inputData/cell:
     attribs: !!set {}
     complex: !!set
-      bulklattice: null
-      filmlattice: null
-      symmetryoperations: null
+      bulkLattice: null
+      filmLattice: null
+      symmetryOperations: null
     optional: !!set {}
     optional_attribs: {}
     order:
@@ -3188,14 +3296,14 @@ tag_info:
     several: !!set {}
     simple: !!set
       symmetry: null
-      symmetryfile: null
+      symmetryFile: null
     text: !!set {}
   /fleurOutput/inputData/cell/bulkLattice:
     attribs: !!set
       latnam: null
       scale: null
     complex: !!set
-      bravaismatrix: null
+      bravaisMatrix: null
     optional: !!set
       a2: null
     optional_attribs: {}
@@ -3240,15 +3348,15 @@ tag_info:
       row-3: null
   /fleurOutput/inputData/cell/filmLattice:
     attribs: !!set
-      dtilda: null
-      dvac: null
+      dTilda: null
+      dVac: null
       latnam: null
       scale: null
     complex: !!set
-      bravaismatrix: null
+      bravaisMatrix: null
     optional: !!set
       a2: null
-      vacuumenergyparameters: null
+      vacuumEnergyParameters: null
     optional_attribs: {}
     order:
     - a1
@@ -3258,13 +3366,13 @@ tag_info:
     - bravaisMatrix
     - vacuumEnergyParameters
     several: !!set
-      vacuumenergyparameters: null
+      vacuumEnergyParameters: null
     simple: !!set
       a1: null
       a2: null
       row-1: null
       row-2: null
-      vacuumenergyparameters: null
+      vacuumEnergyParameters: null
     text: !!set
       a1: null
       a2: null
@@ -3290,8 +3398,8 @@ tag_info:
       row-3: null
   /fleurOutput/inputData/cell/filmLattice/vacuumEnergyParameters:
     attribs: !!set
-      spindown: null
-      spinup: null
+      spinDown: null
+      spinUp: null
       vacuum: null
     complex: !!set {}
     optional: !!set {}
@@ -3326,13 +3434,13 @@ tag_info:
   /fleurOutput/inputData/cell/symmetryOperations:
     attribs: !!set {}
     complex: !!set
-      symop: null
+      symOp: null
     optional: !!set {}
     optional_attribs: {}
     order:
     - symOp
     several: !!set
-      symop: null
+      symOp: null
     simple: !!set {}
     text: !!set {}
   /fleurOutput/inputData/cell/symmetryOperations/symOp:
@@ -3385,12 +3493,12 @@ tag_info:
       vacdos: null
     complex: !!set {}
     optional: !!set
-      chargedensityslicing: null
+      chargeDensitySlicing: null
       checks: null
-      densityofstates: null
+      densityOfStates: null
       plotting: null
-      specialoutput: null
-      vacuumdos: null
+      specialOutput: null
+      vacuumDOS: null
     optional_attribs:
       band: F
       dos: F
@@ -3399,17 +3507,17 @@ tag_info:
     order: []
     several: !!set {}
     simple: !!set
-      chargedensityslicing: null
+      chargeDensitySlicing: null
       checks: null
-      densityofstates: null
+      densityOfStates: null
       plotting: null
-      specialoutput: null
-      vacuumdos: null
+      specialOutput: null
+      vacuumDOS: null
     text: !!set {}
   /fleurOutput/inputData/output/chargeDensitySlicing:
     attribs: !!set
-      maxeigenval: null
-      mineigenval: null
+      maxEigenval: null
+      minEigenval: null
       nnne: null
       numkpt: null
       pallst: null
@@ -3437,8 +3545,8 @@ tag_info:
     text: !!set {}
   /fleurOutput/inputData/output/densityOfStates:
     attribs: !!set
-      maxenergy: null
-      minenergy: null
+      maxEnergy: null
+      minEnergy: null
       ndir: null
       sigma: null
     complex: !!set {}
@@ -3500,11 +3608,11 @@ tag_info:
   /fleurOutput/inputData/xcFunctional:
     attribs: !!set
       name: null
-      relativisticcorrections: null
+      relativisticCorrections: null
     complex: !!set {}
     optional: !!set
-      ggaprinting: null
-      xcparams: null
+      ggaPrinting: null
+      xcParams: null
     optional_attribs:
       relativisticcorrections: F
     order:
@@ -3512,8 +3620,8 @@ tag_info:
     - ggaPrinting
     several: !!set {}
     simple: !!set
-      ggaprinting: null
-      xcparams: null
+      ggaPrinting: null
+      xcParams: null
     text: !!set {}
   /fleurOutput/inputData/xcFunctional/ggaPrinting:
     attribs: !!set
@@ -3546,7 +3654,7 @@ tag_info:
   /fleurOutput/numericalParameters:
     attribs: !!set {}
     complex: !!set
-      kpointlist: null
+      kPointList: null
       volumes: null
     optional: !!set {}
     optional_attribs: {}
@@ -3559,7 +3667,7 @@ tag_info:
     - kPointList
     several: !!set {}
     simple: !!set
-      atomsincell: null
+      atomsInCell: null
       bands: null
       basis: null
       density: null
@@ -3614,29 +3722,29 @@ tag_info:
   /fleurOutput/numericalParameters/kPointList:
     attribs: !!set
       count: null
-      weightscale: null
+      weightScale: null
     complex: !!set {}
     optional: !!set
-      kpoint: null
+      kPoint: null
     optional_attribs: {}
     order:
     - kPoint
     several: !!set
-      kpoint: null
+      kPoint: null
     simple: !!set
-      kpoint: null
+      kPoint: null
     text: !!set
-      kpoint: null
+      kPoint: null
   /fleurOutput/numericalParameters/volumes:
     attribs: !!set
       interstitial: null
-      omegatilda: null
-      surfacearea: null
-      unitcell: null
+      omegaTilda: null
+      surfaceArea: null
+      unitCell: null
       z1: null
     complex: !!set {}
     optional: !!set
-      mtvolume: null
+      mtVolume: null
     optional_attribs:
       omegatilda: null
       surfacearea: null
@@ -3644,15 +3752,15 @@ tag_info:
     order:
     - mtVolume
     several: !!set
-      mtvolume: null
+      mtVolume: null
     simple: !!set
-      mtvolume: null
+      mtVolume: null
     text: !!set {}
   /fleurOutput/numericalParameters/volumes/mtVolume:
     attribs: !!set
-      atomtype: null
-      mtradius: null
-      mtvolume: null
+      atomType: null
+      mtRadius: null
+      mtVolume: null
     complex: !!set {}
     optional: !!set {}
     optional_attribs: {}
@@ -3666,7 +3774,7 @@ tag_info:
     optional: !!set
       mem: null
       mpi: null
-      openmp: null
+      openMP: null
     optional_attribs: {}
     order:
     - openMP
@@ -3676,11 +3784,11 @@ tag_info:
     simple: !!set
       mem: null
       mpi: null
-      openmp: null
+      openMP: null
     text: !!set {}
   /fleurOutput/parallelSetup/mem:
     attribs: !!set
-      memorypernode: null
+      memoryPerNode: null
     complex: !!set {}
     optional: !!set {}
     optional_attribs: {}
@@ -3690,7 +3798,7 @@ tag_info:
     text: !!set {}
   /fleurOutput/parallelSetup/mpi:
     attribs: !!set
-      mpiprocesses: null
+      mpiProcesses: null
     complex: !!set {}
     optional: !!set {}
     optional_attribs: {}
@@ -3700,7 +3808,7 @@ tag_info:
     text: !!set {}
   /fleurOutput/parallelSetup/openMP:
     attribs: !!set
-      ompthreads: null
+      ompThreads: null
     complex: !!set {}
     optional: !!set {}
     optional_attribs: {}
@@ -3713,26 +3821,26 @@ tag_info:
       version: null
     complex: !!set {}
     optional: !!set
-      additionalcompilerflags: null
-      compilationinfo: null
-      gitinfo: null
+      additionalCompilerFlags: null
+      compilationInfo: null
+      gitInfo: null
       precision: null
-      targetcomputerarchitectures: null
-      targetstructureclass: null
+      targetComputerArchitectures: null
+      targetStructureClass: null
     optional_attribs: {}
     order: []
     several: !!set {}
     simple: !!set
-      additionalcompilerflags: null
-      compilationinfo: null
-      gitinfo: null
+      additionalCompilerFlags: null
+      compilationInfo: null
+      gitInfo: null
       precision: null
-      targetcomputerarchitectures: null
-      targetstructureclass: null
+      targetComputerArchitectures: null
+      targetStructureClass: null
     text: !!set
-      additionalcompilerflags: null
-      targetcomputerarchitectures: null
-      targetstructureclass: null
+      additionalCompilerFlags: null
+      targetComputerArchitectures: null
+      targetStructureClass: null
   /fleurOutput/programVersion/compilationInfo:
     attribs: !!set
       date: null
@@ -3750,7 +3858,7 @@ tag_info:
   /fleurOutput/programVersion/gitInfo:
     attribs: !!set
       branch: null
-      lastcommithash: null
+      lastCommitHash: null
       version: null
     complex: !!set {}
     optional: !!set {}
@@ -3784,36 +3892,36 @@ tag_info:
     text: !!set {}
   /fleurOutput/scfLoop/iteration:
     attribs: !!set
-      numberforcurrentrun: null
-      overallnumber: null
+      numberForCurrentRun: null
+      overallNumber: null
     complex: !!set
-      allelectroncharges: null
+      FermiEnergy: null
+      Forcetheorem_DMI: null
+      Forcetheorem_JIJ: null
+      Forcetheorem_Loop: null
+      Forcetheorem_MAE: null
+      Forcetheorem_SSDISP: null
+      allElectronCharges: null
       bandgap: null
-      corestates: null
-      densityconvergence: null
+      coreStates: null
+      densityConvergence: null
       eigenvalues: null
-      energyparameters: null
-      fermienergy: null
-      forcetheorem_dmi: null
-      forcetheorem_jij: null
-      forcetheorem_loop: null
-      forcetheorem_mae: null
-      forcetheorem_ssdisp: null
-      ldaudensitymatrix: null
-      magneticmomentsinmtspheres: null
-      orbitalmagneticmomentsinmtspheres: null
+      energyParameters: null
+      ldaUDensityMatrix: null
+      magneticMomentsInMTSpheres: null
+      orbitalMagneticMomentsInMTSpheres: null
       rdmft: null
-      sumvalencesingleparticleenergies: null
+      sumValenceSingleParticleEnergies: null
       timing: null
-      totalenergy: null
-      totalforcesonrepresentativeatoms: null
-      valencedensity: null
+      totalEnergy: null
+      totalForcesOnRepresentativeAtoms: null
+      valenceDensity: null
     optional: !!set
-      forcetheorem_dmi: null
-      forcetheorem_jij: null
-      forcetheorem_loop: null
-      forcetheorem_mae: null
-      forcetheorem_ssdisp: null
+      Forcetheorem_DMI: null
+      Forcetheorem_JIJ: null
+      Forcetheorem_Loop: null
+      Forcetheorem_MAE: null
+      Forcetheorem_SSDISP: null
     optional_attribs:
       overallnumber: null
     order:
@@ -3839,7 +3947,7 @@ tag_info:
     - Forcetheorem_MAE
     - Forcetheorem_JIJ
     several: !!set
-      forcetheorem_loop: null
+      Forcetheorem_Loop: null
     simple: !!set {}
     text: !!set {}
   /fleurOutput/startDateAndTime:
@@ -3985,6 +4093,106 @@ tag_paths:
   volumes: /fleurOutput/numericalParameters/volumes
   xcfunctional: /fleurOutput/inputData/xcFunctional
   xcparams: /fleurOutput/inputData/xcFunctional/xcParams
+text_tags: !!set
+  a1: null
+  a2: null
+  absPos: null
+  additionalCompilerFlags: null
+  c: null
+  comment: null
+  coreConfig: null
+  densityMatrixFor: null
+  eigenvaluesAt: null
+  filmPos: null
+  kPoint: null
+  orbcomprot: null
+  qsc: null
+  qss: null
+  relPos: null
+  row-1: null
+  row-2: null
+  row-3: null
+  specialPoint: null
+  targetComputerArchitectures: null
+  targetStructureClass: null
+  valenceConfig: null
+text_types:
+  a1:
+  - base_type: float
+    length: 1
+  a2:
+  - base_type: float
+    length: 1
+  abspos:
+  - base_type: float_expression
+    length: 3
+  additionalcompilerflags:
+  - base_type: string
+    length: unbounded
+  c:
+  - base_type: float
+    length: 1
+  comment:
+  - base_type: string
+    length: 1
+  coreconfig:
+  - base_type: string
+    length: unbounded
+  densitymatrixfor:
+  - base_type: string
+    length: unbounded
+  eigenvaluesat:
+  - base_type: float
+    length: unbounded
+  filmpos:
+  - base_type: float_expression
+    length: 3
+  kpoint:
+  - base_type: float
+    length: 3
+  orbcomprot:
+  - base_type: float
+    length: 3
+  qsc:
+  - base_type: float
+    length: 3
+  qss:
+  - base_type: float
+    length: 3
+  relpos:
+  - base_type: float_expression
+    length: 3
+  row-1:
+  - base_type: float_expression
+    length: 2
+  - base_type: float_expression
+    length: 3
+  - base_type: float_expression
+    length: 4
+  row-2:
+  - base_type: float_expression
+    length: 2
+  - base_type: float_expression
+    length: 3
+  - base_type: float_expression
+    length: 4
+  row-3:
+  - base_type: float_expression
+    length: 3
+  - base_type: float_expression
+    length: 4
+  specialpoint:
+  - base_type: float
+    length: 3
+  targetcomputerarchitectures:
+  - base_type: string
+    length: 1
+  targetstructureclass:
+  - base_type: string
+    length: unbounded
+  valenceconfig:
+  - base_type: string
+    length: unbounded
 unique_attribs:
   additionalcompilerflags: /fleurOutput/programVersion/additionalCompilerFlags
   alpha: /fleurOutput/inputData/calculationSetup/scfLoop/@alpha

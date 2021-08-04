@@ -38,14 +38,15 @@ def create_inpschema_dict(path, apply_patches=True):
         'tag_paths': get_tag_paths,
         '_basic_types': get_basic_types,
         'attrib_types': extract_attribute_types,
-        'simple_elements': get_basic_elements,
+        'text_types': extract_text_types,
+        'text_tags': get_text_tags,
         'unique_attribs': get_unique_attribs,
         'unique_path_attribs': get_unique_path_attribs,
         'other_attribs': get_other_attribs,
         'omitt_contained_tags': get_omittable_tags,
         'tag_info': get_tag_info,
     }
-    schema_patches = [convert_string_to_float_expr, patch_simple_elements]
+    schema_patches = [convert_string_to_float_expr, patch_text_types]
 
     #print(f'processing: {path}/FleurInputSchema.xsd')
     xmlschema = etree.parse(path)
@@ -62,10 +63,6 @@ def create_inpschema_dict(path, apply_patches=True):
 
         if key == '_basic_types' and apply_patches:
             schema_dict[key] = patch_basic_types(schema_dict[key], inp_version_tuple)
-
-    #We cannot do the conversion to CaseInsensitiveDict before since we need the correct case
-    #For these attributes in the attrib_path functions
-    schema_dict['simple_elements'] = CaseInsensitiveDict(schema_dict['simple_elements'])
 
     if apply_patches:
         for patch_func in schema_patches:
@@ -86,7 +83,7 @@ def convert_string_to_float_expr(schema_dict, inp_version):
     """
 
     TYPES_ENTRY = 'attrib_types'
-    EXPR_NAME = 'float_expression'
+    EXPR_NAME = AttributeType(base_type='float_expression', length=1)
 
     CHANGE_TYPES = {
         (0, 32): {
@@ -134,7 +131,10 @@ def convert_string_to_float_expr(schema_dict, inp_version):
     for name in replace_set:
         if name not in schema_dict[TYPES_ENTRY]:
             raise ValueError(f'convert_string_to_float_expr failed. Attribute {name} does not exist')
-        if 'string' not in schema_dict[TYPES_ENTRY][name] and 'float' not in schema_dict[TYPES_ENTRY][name]:
+        if not any(type_def.base_type in (
+                'string',
+                'float',
+        ) for type_def in schema_dict[TYPES_ENTRY][name]):
             raise ValueError(
                 f'convert_string_to_float_expr failed. Attribute {name} does not have string or float type')
         schema_dict[TYPES_ENTRY][name] = [EXPR_NAME]
@@ -142,7 +142,7 @@ def convert_string_to_float_expr(schema_dict, inp_version):
     for name in add_set:
         if name not in schema_dict[TYPES_ENTRY]:
             raise ValueError(f'convert_string_to_float_expr failed. Attribute {name} does not exist')
-        if 'string' not in schema_dict[TYPES_ENTRY][name]:
+        if not any(type_def.base_type == 'string' for type_def in schema_dict[TYPES_ENTRY][name]):
             raise ValueError(f'convert_string_to_float_expr failed. Attribute {name} does not have string type')
         schema_dict[TYPES_ENTRY][name].insert(0, EXPR_NAME)
 
@@ -162,26 +162,14 @@ def patch_basic_types(basic_types, inp_version):
     CHANGE_TYPES = {
         (0, 32): {
             'add': {
-                'KPointType': {
-                    'base_types': ['float_expression'],
-                    'length': 3
-                },
+                'KPointType': [AttributeType(base_type='float_expression', length=3)]
             }
         },
         (0, 28): {
             'add': {
-                'AtomPosType': {
-                    'base_types': ['float_expression'],
-                    'length': 3
-                },
-                'LatticeParameterType': {
-                    'base_types': ['float_expression'],
-                    'length': 1
-                },
-                'SpecialPointType': {
-                    'base_types': ['float_expression'],
-                    'length': 3
-                }
+                'AtomPosType': [AttributeType(base_type='float_expression', length=3)],
+                'LatticeParameterType': [AttributeType(base_type='float_expression', length=1)],
+                'SpecialPointType': [AttributeType(base_type='float_expression', length=3)]
             }
         },
     }
@@ -206,7 +194,7 @@ def patch_basic_types(basic_types, inp_version):
     return basic_types
 
 
-def patch_simple_elements(schema_dict, inp_version):
+def patch_text_types(schema_dict, inp_version):
     """
     Patch the simple_elememnts entry to correct ambigouities
 
@@ -214,7 +202,7 @@ def patch_simple_elements(schema_dict, inp_version):
     :param inp_version: input version converted to tuple of ints
     """
 
-    ELEMENTS_ENTRY = 'simple_elements'
+    ELEMENTS_ENTRY = 'text_types'
 
     if inp_version >= (0, 35):
         #After this version the issue was solved
@@ -226,62 +214,34 @@ def patch_simple_elements(schema_dict, inp_version):
         },
         (0, 29): {
             'add': {
-                'posforce': [{
-                    'type': ['float_expression'],
-                    'length': 6
-                }],
+                'posforce': [AttributeType(base_type='float_expression', length=6)]
             }
         },
         (0, 28): {
             'add': {
-                'q': [{
-                    'type': ['float_expression'],
-                    'length': 3
-                }],
+                'q': [AttributeType(base_type='float_expression', length=3)]
             },
             'remove': {'abspos', 'relpos', 'filmpos'}
         },
         (0, 27): {
             'add': {
-                'abspos': [{
-                    'type': ['float_expression'],
-                    'length': 3
-                }],
-                'relpos': [{
-                    'type': ['float_expression'],
-                    'length': 3
-                }],
-                'filmpos': [{
-                    'type': ['float_expression'],
-                    'length': 3
-                }],
-                'row-1': [{
-                    'type': ['float_expression'],
-                    'length': 2
-                }, {
-                    'type': ['float_expression'],
-                    'length': 3
-                }, {
-                    'type': ['float'],
-                    'length': 4
-                }],
-                'row-2': [{
-                    'type': ['float_expression'],
-                    'length': 2
-                }, {
-                    'type': ['float_expression'],
-                    'length': 3
-                }, {
-                    'type': ['float'],
-                    'length': 4
-                }],
-                'row-3': [{
-                    'type': ['float_expression'],
-                    'length': 3
-                }, {
-                    'type': ['float'],
-                    'length': 4
-                }],
+                'abspos': [AttributeType(base_type='float_expression', length=3)],
+                'relpos': [AttributeType(base_type='float_expression', length=3)],
+                'filmpos': [AttributeType(base_type='float_expression', length=3)],
+                'row-1': [
+                    AttributeType(base_type='float_expression', length=2),
+                    AttributeType(base_type='float_expression', length=3),
+                    AttributeType(base_type='float_expression', length=4)
+                ],
+                'row-2': [
+                    AttributeType(base_type='float_expression', length=2),
+                    AttributeType(base_type='float_expression', length=3),
+                    AttributeType(base_type='float_expression', length=4)
+                ],
+                'row-3': [
+                    AttributeType(base_type='float_expression', length=3),
+                    AttributeType(base_type='float_expression', length=4)
+                ],
             }
         }
     }
@@ -300,5 +260,5 @@ def patch_simple_elements(schema_dict, inp_version):
 
     for name, new_definition in all_changes.items():
         if name not in schema_dict[ELEMENTS_ENTRY]:
-            raise ValueError(f'patch_simple_elements failed. Type {name} does not exist')
+            raise ValueError(f'patch_text_types failed. Type {name} does not exist')
         schema_dict[ELEMENTS_ENTRY][name] = new_definition
