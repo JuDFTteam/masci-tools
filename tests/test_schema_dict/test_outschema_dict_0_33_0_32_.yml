@@ -1103,6 +1103,8 @@ attrib_types:
     length: 1
   - base_type: float_expression
     length: 1
+  - base_type: float_expression
+    length: unbounded
   plot_charge:
   - base_type: switch
     length: 1
@@ -1270,6 +1272,8 @@ attrib_types:
     length: 1
   - base_type: float_expression
     length: 1
+  - base_type: float_expression
+    length: unbounded
   thetaj:
   - base_type: float_expression
     length: 1

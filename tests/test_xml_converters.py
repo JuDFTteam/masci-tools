@@ -5,6 +5,7 @@ Test of the functions in masci_tools.util.xml.converters
 import pytest
 import os
 from masci_tools.util.constants import FLEUR_DEFINED_CONSTANTS
+from masci_tools.io.parsers.fleur.fleur_schema import AttributeType
 from pprint import pprint
 import logging
 
@@ -58,57 +59,100 @@ def test_convert_to_fortran_bool():
         convert_to_fortran_bool(())
 
 
-TEST_STRINGS = ['1.2314', 'all', ['all', '213', '-12'], ['PI', 'NOT_PI', '1.2'], ['F', 'T'], ['F', 'T']]
+STRINGS = [
+    '1.2314', 'all', ['all', '213', '-12'], ['PI', 'NOT_PI', '1.2'], ['F', 'T'], ['F', 'T'],
+    '0.0 Pi/4.0 6.3121', '0.0 Pi/4.0 6.3121', '0.0 Pi/4.0 6.3121',
+    ['0.0 Pi/4.0 6.3121', 'Bohr Pi/4.0 all', '0.0 Pi/*4.0 0.0'], ['F asd', 'T'],
+    ['12 213 4215 412', '12 213 4215 412 123 14124']
+]
 
-TEST_TYPES = [['float'], ['int', 'string'], ['int', 'string'], ['float', 'float_expression'], ['int'],
-              ['int', 'switch']]
+DEFINITIONS = [[AttributeType(base_type='float', length=1)],
+               [AttributeType(base_type='int', length=1),
+                AttributeType(base_type='string', length=1)],
+               [AttributeType(base_type='int', length=1),
+                AttributeType(base_type='string', length=1)],
+               [AttributeType(base_type='float', length=1),
+                AttributeType(base_type='float_expression', length=1)], [AttributeType(base_type='int', length=1)],
+               [AttributeType(base_type='int', length=1),
+                AttributeType(base_type='switch', length=1)],
+               [AttributeType(base_type='float', length=3),
+                AttributeType(base_type='float_expression', length=3)],
+               [AttributeType(base_type='float', length=4),
+                AttributeType(base_type='float_expression', length=4)],
+               [
+                   AttributeType(base_type='float', length=4),
+                   AttributeType(base_type='float_expression', length=4),
+                   AttributeType(base_type='float', length='unbounded'),
+                   AttributeType(base_type='float_expression', length='unbounded')
+               ], [AttributeType(base_type='float', length=3),
+                   AttributeType(base_type='float_expression', length=3)],
+               [
+                   AttributeType(base_type='switch', length='unbounded'),
+                   AttributeType(base_type='string', length='unbounded')
+               ],
+               [
+                   AttributeType(base_type='switch', length=4),
+                   AttributeType(base_type='int', length=4),
+                   AttributeType(base_type='int', length='unbounded')
+               ]]
 
-TEST_RESULTS = [(pytest.approx(1.2314), True), ('all', True), (['all', 213, -12], True),
-                (['PI', 'NOT_PI', pytest.approx(1.2)], False), (['F', 'T'], False), ([False, True], True)]
+RESULTS = [(pytest.approx(1.2314), True), ('all', True), (['all', 213, -12], True),
+           (['PI', 'NOT_PI', pytest.approx(1.2)], False), (['F', 'T'], False), ([False, True], True),
+           (pytest.approx([0.0, 0.7853981633974483, 6.3121]), True), ('0.0 Pi/4.0 6.3121', False),
+           (pytest.approx([0.0, 0.7853981633974483, 6.3121]), True),
+           ([[0.0, 0.7853981633974483, 6.3121], [1.0, 0.7853981633974483, 'all'], [0.0, 'Pi/*4.0', 0.0]], False),
+           ([[False, 'asd'], [True]], True), ([[12, 213, 4215, 412], [12, 213, 4215, 412, 123, 14124]], True)]
 
-TEST_WARNINGS = [[], [], [], [
+WARNINGS = [[], [], [], [
     "Could not convert 'PI'",
     "Could not convert 'NOT_PI'",
-], ["Could not convert 'F'", "Could not convert 'T'"]]
+], ["Could not convert 'F'", "Could not convert 'T'"], [], [], [
+    "Could not convert '0.0 Pi/4.0 6.3121'",
+], [], [
+    "Could not convert 'all'",
+    "Could not convert 'Pi/*4.0'",
+], [], []]
 
-# @pytest.mark.parametrize('string_attr,types,results', zip(TEST_STRINGS, TEST_TYPES, TEST_RESULTS))
-# def test_convert_xml_attribute(string_attr, types, results):
-#     """
-#     Test of the convert_xml_attribute function
-#     """
-#     from masci_tools.util.xml.converters import convert_xml_attribute
 
-#     expected_val, expected_suc = results
+@pytest.mark.parametrize('string_attr,types,results', zip(STRINGS, DEFINITIONS, RESULTS))
+def test_convert_from_xml_explicit(string_attr, types, results):
+    """
+    Test of the convert_from_xml_explicit function
+    """
+    from masci_tools.util.xml.converters import convert_from_xml_explicit
 
-#     if not expected_suc:
-#         with pytest.raises(ValueError, match='Could not convert'):
-#             ret_val, suc = convert_xml_attribute(string_attr, types, FLEUR_DEFINED_CONSTANTS)
-#     else:
-#         ret_val, suc = convert_xml_attribute(string_attr, types, FLEUR_DEFINED_CONSTANTS)
+    expected_val, expected_suc = results
 
-#         assert ret_val == expected_val
-#         assert suc == expected_suc
+    if not expected_suc:
+        with pytest.raises(ValueError, match='convert'):
+            ret_val, suc = convert_from_xml_explicit(string_attr, types, FLEUR_DEFINED_CONSTANTS)
+    else:
+        ret_val, suc = convert_from_xml_explicit(string_attr, types, FLEUR_DEFINED_CONSTANTS)
 
-# @pytest.mark.parametrize('string_attr,types,results, warnings',
-#                          zip(TEST_STRINGS, TEST_TYPES, TEST_RESULTS, TEST_WARNINGS))
-# def test_convert_xml_attribute_warnings(caplog, string_attr, types, results, warnings):
-#     """
-#     Test of the convert_xml_attribute function
-#     """
-#     from masci_tools.util.xml.converters import convert_xml_attribute
+        assert ret_val == expected_val
+        assert suc == expected_suc
 
-#     expected_val, expected_suc = results
 
-#     with caplog.at_level(logging.WARNING):
-#         ret_val, suc = convert_xml_attribute(string_attr, types, FLEUR_DEFINED_CONSTANTS, logger=LOGGER)
-#     assert ret_val == expected_val
-#     assert suc == expected_suc
+@pytest.mark.parametrize('string_attr,types,results, warnings', zip(STRINGS, DEFINITIONS, RESULTS, WARNINGS))
+def test_convert_from_xml_explicit_warnings(caplog, string_attr, types, results, warnings):
+    """
+    Test of the convert_from_xml_explicit function
+    """
+    from masci_tools.util.xml.converters import convert_from_xml_explicit
 
-#     if len(warnings) == 0:
-#         assert caplog.text == ''
-#     else:
-#         for expected_warning in warnings:
-#             assert expected_warning in caplog.text
+    expected_val, expected_suc = results
+
+    with caplog.at_level(logging.WARNING):
+        ret_val, suc = convert_from_xml_explicit(string_attr, types, FLEUR_DEFINED_CONSTANTS, logger=LOGGER)
+    assert ret_val == expected_val
+    assert suc == expected_suc
+
+    if len(warnings) == 0:
+        assert caplog.text == ''
+    else:
+        for expected_warning in warnings:
+            assert expected_warning in caplog.text
+
 
 # TEST_ATTR_VALUES = [1.2134, 'all', ['all', 213, '-12'], ['3.14', 'NOT_PI', 1.2], [False, 'True']]
 
@@ -150,94 +194,6 @@ TEST_WARNINGS = [[], [], [], [
 #     assert ret_val == expected_val
 #     assert suc == expected_suc
 
-#     if len(warnings) == 0:
-#         assert caplog.text == ''
-#     else:
-#         for expected_warning in warnings:
-#             assert expected_warning in caplog.text
-
-# TEST_TEXT_STRINGS = [
-#     '0.0 Pi/4.0 6.3121', '0.0 Pi/4.0 6.3121', '0.0 Pi/4.0 6.3121', '0.0 Pi/4.0 6.3121',
-#     ['0.0 Pi/4.0 6.3121', 'Bohr Pi/4.0 all', '0.0 Pi/*4.0 0.0'], ['F asd', 'T'],
-#     ['12 213 4215 412', '12 213 4215 412 123 14124']
-# ]
-
-# TEST_DEFINITIONS = [[{
-#     'length': 3,
-#     'type': ['float', 'float_expression']
-# }], [{
-#     'length': 4,
-#     'type': ['float', 'float_expression']
-# }],
-#                     [{
-#                         'length': 4,
-#                         'type': ['float', 'float_expression']
-#                     }, {
-#                         'length': 'unbounded',
-#                         'type': ['float', 'float_expression']
-#                     }], [{
-#                         'length': 1,
-#                         'type': ['float', 'float_expression']
-#                     }], [{
-#                         'length': 3,
-#                         'type': ['float', 'float_expression']
-#                     }], [{
-#                         'length': 'unbounded',
-#                         'type': ['switch', 'string']
-#                     }], [{
-#                         'length': 4,
-#                         'type': ['switch', 'int']
-#                     }, {
-#                         'length': 'unbounded',
-#                         'type': ['int']
-#                     }]]
-
-# TEST_TEXT_RESULTS = [(pytest.approx([0.0, 0.7853981633974483, 6.3121]), True), ('0.0 Pi/4.0 6.3121', False),
-#                      (pytest.approx([0.0, 0.7853981633974483, 6.3121]), True), ('0.0 Pi/4.0 6.3121', False),
-#                      ([[0.0, 0.7853981633974483, 6.3121], [1.0, 0.7853981633974483, 'all'], [0.0, 'Pi/*4.0',
-#                                                                                              0.0]], False),
-#                      ([[False, 'asd'], [True]], True), ([[12, 213, 4215, 412], [12, 213, 4215, 412, 123, 14124]], True)]
-
-# TEST_TEXT_WARNINGS = [[], ["Failed to convert '0.0 Pi/4.0 6.3121', no matching definition found"], [],
-#                       [
-#                           "Could not convert '0.0 Pi/4.0 6.3121'",
-#                       ], [
-#                           "Could not convert 'all'",
-#                           "Could not convert 'Pi/*4.0'",
-#                       ], [], []]
-
-# @pytest.mark.parametrize('string_text,definitions, results', zip(TEST_TEXT_STRINGS, TEST_DEFINITIONS,
-#                                                                  TEST_TEXT_RESULTS))
-# def test_convert_xml_text(string_text, definitions, results):
-#     """
-#     Test of the convert_xml_attribute function
-#     """
-#     from masci_tools.util.xml.converters import convert_xml_text
-
-#     expected_val, expected_suc = results
-
-#     if not expected_suc:
-#         with pytest.raises(ValueError):
-#             ret_val, suc = convert_xml_text(string_text, definitions, FLEUR_DEFINED_CONSTANTS)
-#     else:
-#         ret_val, suc = convert_xml_text(string_text, definitions, FLEUR_DEFINED_CONSTANTS)
-#         assert ret_val == expected_val
-#         assert suc == expected_suc
-
-# @pytest.mark.parametrize('string_text,definitions,results,warnings',
-#                          zip(TEST_TEXT_STRINGS, TEST_DEFINITIONS, TEST_TEXT_RESULTS, TEST_TEXT_WARNINGS))
-# def test_convert_xml_text_warnings(caplog, string_text, definitions, results, warnings):
-#     """
-#     Test of the convert_xml_attribute function
-#     """
-#     from masci_tools.util.xml.converters import convert_xml_text
-
-#     expected_val, expected_suc = results
-
-#     with caplog.at_level(logging.WARNING):
-#         ret_val, suc = convert_xml_text(string_text, definitions, FLEUR_DEFINED_CONSTANTS, logger=LOGGER)
-#     assert ret_val == expected_val
-#     assert suc == expected_suc
 #     if len(warnings) == 0:
 #         assert caplog.text == ''
 #     else:

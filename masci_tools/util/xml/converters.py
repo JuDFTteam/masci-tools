@@ -134,9 +134,9 @@ def convert_from_xml_explicit(xmlstring, definitions, constants=None, logger=Non
 
         if not text_definitions:
             if logger is None:
-                raise ValueError(f"Failed to convert '{text}', no matching definition found")
+                raise ValueError(f"Could not convert '{text}', no matching definition found")
             else:
-                logger.warning("Failed to convert '%s', no matching definition found", text)
+                logger.warning("Could not convert '%s', no matching definition found", text)
             converted_list.append(text)
             all_success = False
             continue
@@ -216,9 +216,9 @@ def convert_to_xml_explicit(value, definitions, logger=None, float_format='.10',
                 continue
 
             if logger is None:
-                raise ValueError(f"Failed to convert '{val}', no matching definition found")
+                raise ValueError(f"Could not convert '{val}', no matching definition found")
             else:
-                logger.warning("Failed to convert '%s', no matching definition found", val)
+                logger.warning("Could not convert '%s', no matching definition found", val)
 
             converted_list.append('')
             all_success = False
