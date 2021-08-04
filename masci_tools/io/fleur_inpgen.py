@@ -23,7 +23,7 @@ from masci_tools.io.common_functions import rel_to_abs, rel_to_abs_f
 
 # Inpgen file structure, order is important
 POSSIBLE_NAMELISTS = [
-    'title', 'input', 'lattice', 'gen', 'shift', 'factor', 'qss', 'soc', 'atom', 'comp', 'exco', 'film', 'kpt', 'end'
+    'title', 'input', 'lattice', 'gen', 'shift', 'factor', 'qss', 'soc', 'atom', 'comp', 'exco', 'expert', 'film', 'kpt', 'end'
 ]
 POSSIBLE_PARAMS = {
     'input': ['film', 'cartesian', 'cal_symm', 'checkinp', 'symor', 'oldfleur'],
@@ -31,6 +31,7 @@ POSSIBLE_PARAMS = {
     'atom': ['id', 'z', 'rmt', 'dx', 'jri', 'lmax', 'lnonsph', 'ncst', 'econfig', 'bmu', 'lo', 'element', 'name'],
     'comp': ['jspins', 'frcor', 'ctail', 'kcrel', 'gmax', 'gmaxxc', 'kmax'],
     'exco': ['xctyp', 'relxc'],
+    'expert': ['spex', 'primCellZ'],
     'film': ['dvac', 'dtild'],
     'soc': ['theta', 'phi'],
     'qss': ['x', 'y', 'z'],
