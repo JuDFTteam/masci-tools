@@ -170,7 +170,7 @@ def xml_set_attrib_value(xmltree,
     """
 
     from masci_tools.util.xml.xml_setters_basic import xml_set_attrib_value_no_create
-    from masci_tools.util.xml.converters import convert_attribute_to_xml
+    from masci_tools.util.xml.converters import convert_to_xml
     from masci_tools.util.xml.common_functions import check_complex_xpath, split_off_tag
 
     check_complex_xpath(xmltree, base_xpath, xpath)
@@ -200,15 +200,7 @@ def xml_set_attrib_value(xmltree,
             f'Allowed attributes are: {attribs.original_case.values()}')
     attributename = attribs.original_case[attributename]
 
-    converted_attribv, suc = convert_attribute_to_xml(attribv, schema_dict['attrib_types'][attributename])
-
-    if '/fleurInput/forceTheorem/' in base_xpath and attributename in ('theta', 'phi', 'ef_shift'):
-        #Special case for theta and phi attributes on forceTheorem tags
-        #In Max5/5.1 They are entered as FleurDouble but can be a list. Since
-        #the attribute setting so far does not support this we convert the values explicitely
-        #here
-        if isinstance(converted_attribv, list):
-            converted_attribv = ' '.join(converted_attribv)
+    converted_attribv, _ = convert_to_xml(attribv, schema_dict, attributename, text=False)
 
     return xml_set_attrib_value_no_create(xmltree, xpath, attributename, converted_attribv, occurrences=occurrences)
 
@@ -269,7 +261,7 @@ def xml_set_text(xmltree, schema_dict, xpath, base_xpath, text, occurrences=None
     :returns: xmltree with set text
     """
     from masci_tools.util.xml.xml_setters_basic import xml_set_text_no_create
-    from masci_tools.util.xml.converters import convert_text_to_xml
+    from masci_tools.util.xml.converters import convert_to_xml
     from masci_tools.util.xml.common_functions import check_complex_xpath, split_off_tag
 
     check_complex_xpath(xmltree, base_xpath, xpath)
@@ -291,9 +283,7 @@ def xml_set_text(xmltree, schema_dict, xpath, base_xpath, text, occurrences=None
 
     _, tag_name = split_off_tag(base_xpath)
 
-    possible_definitions = schema_dict['simple_elements'][tag_name]
-
-    converted_text, suc = convert_text_to_xml(text, possible_definitions)
+    converted_text, _ = convert_to_xml(text, schema_dict, tag_name, text=True)
 
     return xml_set_text_no_create(xmltree, xpath, converted_text, occurrences=occurrences)
 
@@ -352,7 +342,7 @@ def xml_add_number_to_attrib(xmltree,
     :returns: xmltree with shifted attribute
     """
     from masci_tools.util.schema_dict_util import read_constants
-    from masci_tools.util.xml.converters import convert_xml_attribute
+    from masci_tools.util.xml.converters import convert_from_xml
     from masci_tools.io.common_functions import is_sequence
     from masci_tools.util.xml.common_functions import check_complex_xpath, split_off_attrib, split_off_tag
 
@@ -369,9 +359,10 @@ def xml_add_number_to_attrib(xmltree,
     else:
         constants = read_constants(xmltree, schema_dict)
 
-    if 'float' not in possible_types and \
-       'float_expression' not in possible_types and \
-       'int' not in possible_types:
+    types = {definition.base_type for definition in possible_types}
+    if 'float' not in types and \
+       'float_expression' not in types and \
+       'int' not in types:
         raise ValueError(f"Given attribute name '{attributename}' is not float or int")
 
     attribs = schema_dict['tag_info'][base_xpath]['attribs']
@@ -392,7 +383,12 @@ def xml_add_number_to_attrib(xmltree,
     if len(stringattribute) == 0:
         raise ValueError(f"No attribute values found for '{attributename}'. Cannot add number")
 
-    attribvalues, _ = convert_xml_attribute(stringattribute, possible_types, constants=constants, list_return=True)
+    attribvalues, _ = convert_from_xml(stringattribute,
+                                       schema_dict,
+                                       attributename,
+                                       text=False,
+                                       constants=constants,
+                                       list_return=True)
 
     if occurrences is not None:
         if not is_sequence(occurrences):
@@ -407,9 +403,9 @@ def xml_add_number_to_attrib(xmltree,
     elif mode == 'rel':
         attribvalues = [value * float(add_number) for value in attribvalues]
 
-    if 'float' in possible_types or 'float_expression' in possible_types:
+    if 'float' in types or 'float_expression' in types:
         pass
-    elif 'int' in possible_types:
+    elif 'int' in types:
         if any(not value.is_integer() for value in attribvalues):
             raise ValueError('You are trying to write a float to an integer attribute')
         attribvalues = [int(value) for value in attribvalues]

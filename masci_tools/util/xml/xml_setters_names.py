@@ -844,7 +844,7 @@ def set_inpchanges(xmltree, schema_dict, change_dict, path_spec=None):
         if key == 'xcFunctional':
             key = 'name'
 
-        if key not in schema_dict['attrib_types'] and key not in schema_dict['simple_elements']:
+        if key not in schema_dict['attrib_types'] and key not in schema_dict['text_tags']:
             raise ValueError(f"You try to set the key:'{key}' to : '{change_value}', but the key is unknown"
                              ' to the fleur plug-in')
 
@@ -903,7 +903,7 @@ def set_kpointlist(xmltree,
     :returns: an xmltree of the inp.xml file with changes.
     """
     from masci_tools.util.schema_dict_util import evaluate_attribute
-    from masci_tools.util.xml.converters import convert_text_to_xml, convert_attribute_to_xml
+    from masci_tools.util.xml.converters import convert_to_xml
     from masci_tools.util.xml.xml_setters_basic import xml_delete_tag
     from lxml import etree
     import numpy as np
@@ -933,12 +933,12 @@ def set_kpointlist(xmltree,
 
     new_kpo = etree.Element('kPointList', name=name, count=f'{nkpts:d}', type=kpoint_type)
     for indx, (kpoint, weight) in enumerate(zip(kpoints, weights)):
-        weight, _ = convert_attribute_to_xml(weight, ['float', 'float_expression'])
+        weight, _ = convert_to_xml(weight, schema_dict, 'weight')
         if indx in special_labels:
             new_k = etree.Element('kPoint', weight=weight, label=special_labels[indx])
         else:
             new_k = etree.Element('kPoint', weight=weight)
-        text, _ = convert_text_to_xml(kpoint, [{'type': ['float', 'float_expression'], 'length': 3}])
+        text, _ = convert_to_xml(kpoint, schema_dict, 'kpoint', text=True)
         new_k.text = text
         new_kpo.append(new_k)
 
@@ -965,7 +965,7 @@ def set_kpointlist_max4(xmltree, schema_dict, kpoints, weights):
     :returns: an xmltree of the inp.xml file with changes.
     """
     from masci_tools.util.schema_dict_util import eval_simple_xpath
-    from masci_tools.util.xml.converters import convert_text_to_xml, convert_attribute_to_xml
+    from masci_tools.util.xml.converters import convert_to_xml
     from lxml import etree
     import numpy as np
 
@@ -985,9 +985,9 @@ def set_kpointlist_max4(xmltree, schema_dict, kpoints, weights):
 
     new_kpo = etree.Element('kPointList', posScale='1.0', weightScale='1.0', count=f'{nkpts:d}')
     for kpoint, weight in zip(kpoints, weights):
-        weight, _ = convert_attribute_to_xml(weight, ['float', 'float_expression'])
+        weight, _ = convert_to_xml(weight, schema_dict, 'weight')
         new_k = etree.Element('kPoint', weight=weight)
-        text, _ = convert_text_to_xml(kpoint, [{'type': ['float', 'float_expression'], 'length': 3}])
+        text, _ = convert_to_xml(kpoint, schema_dict, 'kpoint', text=True)
         new_k.text = text
         new_kpo.append(new_k)
 
@@ -1127,7 +1127,7 @@ def set_kpath_max4(xmltree, schema_dict, kpath, count, gamma=False):
     :returns: an xmltree of the inp.xml file with changes.
     """
     from masci_tools.util.schema_dict_util import tag_exists
-    from masci_tools.util.xml.converters import convert_to_fortran_bool, convert_text_to_xml
+    from masci_tools.util.xml.converters import convert_to_fortran_bool, convert_to_xml
     from masci_tools.util.xml.xml_setters_basic import xml_replace_tag
     from lxml import etree
 
@@ -1140,7 +1140,7 @@ def set_kpath_max4(xmltree, schema_dict, kpath, count, gamma=False):
     new_kpo = etree.Element('kPointCount', count=f'{count}', gamma=f'{convert_to_fortran_bool(gamma)}')
     for label, coord in kpath.items():
         new_k = etree.Element('specialPoint', name=f'{label}')
-        text, _ = convert_text_to_xml(coord, [{'type': ['float', 'float_expression'], 'length': 3}])
+        text, _ = convert_to_xml(coord, schema_dict, 'kpoint', text=True)
         new_k.text = text
         new_kpo.append(new_k)
 

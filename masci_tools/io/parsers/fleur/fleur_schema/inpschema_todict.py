@@ -46,7 +46,7 @@ def create_inpschema_dict(path, apply_patches=True):
         'omitt_contained_tags': get_omittable_tags,
         'tag_info': get_tag_info,
     }
-    schema_patches = [convert_string_to_float_expr, patch_text_types]
+    schema_patches = [convert_string_to_float_expr, patch_forcetheorem_attributes, patch_text_types]
 
     #print(f'processing: {path}/FleurInputSchema.xsd')
     xmlschema = etree.parse(path)
@@ -145,6 +145,25 @@ def convert_string_to_float_expr(schema_dict, inp_version):
         if not any(type_def.base_type == 'string' for type_def in schema_dict[TYPES_ENTRY][name]):
             raise ValueError(f'convert_string_to_float_expr failed. Attribute {name} does not have string type')
         schema_dict[TYPES_ENTRY][name].insert(0, EXPR_NAME)
+
+
+def patch_forcetheorem_attributes(schema_dict, inp_version):
+    """
+    Special patch for theta, phi and ef_shift attributes on forceTheorem tags
+    In Max5/5.1 They are entered as FleurDouble but can be a list.
+    """
+    if inp_version >= (0, 35):
+        return
+
+    schema_dict['attrib_types']['theta'] = sorted(schema_dict['attrib_types']['theta'] + \
+                                                  [AttributeType(base_type='float_expression', length='unbounded')], key=type_order)
+
+    schema_dict['attrib_types']['phi'] = sorted(schema_dict['attrib_types']['phi'] + \
+                                                  [AttributeType(base_type='float_expression', length='unbounded')], key=type_order)
+
+    if inp_version >= (0, 34):
+        schema_dict['attrib_types']['ef_shift'] = sorted(schema_dict['attrib_types']['ef_shift'] + \
+                                                  [AttributeType(base_type='float_expression', length='unbounded')], key=type_order)
 
 
 def patch_basic_types(basic_types, inp_version):

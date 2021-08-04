@@ -71,236 +71,225 @@ TEST_WARNINGS = [[], [], [], [
     "Could not convert 'NOT_PI'",
 ], ["Could not convert 'F'", "Could not convert 'T'"]]
 
+# @pytest.mark.parametrize('string_attr,types,results', zip(TEST_STRINGS, TEST_TYPES, TEST_RESULTS))
+# def test_convert_xml_attribute(string_attr, types, results):
+#     """
+#     Test of the convert_xml_attribute function
+#     """
+#     from masci_tools.util.xml.converters import convert_xml_attribute
 
-@pytest.mark.parametrize('string_attr,types,results', zip(TEST_STRINGS, TEST_TYPES, TEST_RESULTS))
-def test_convert_xml_attribute(string_attr, types, results):
-    """
-    Test of the convert_xml_attribute function
-    """
-    from masci_tools.util.xml.converters import convert_xml_attribute
+#     expected_val, expected_suc = results
 
-    expected_val, expected_suc = results
+#     if not expected_suc:
+#         with pytest.raises(ValueError, match='Could not convert'):
+#             ret_val, suc = convert_xml_attribute(string_attr, types, FLEUR_DEFINED_CONSTANTS)
+#     else:
+#         ret_val, suc = convert_xml_attribute(string_attr, types, FLEUR_DEFINED_CONSTANTS)
 
-    if not expected_suc:
-        with pytest.raises(ValueError, match='Could not convert'):
-            ret_val, suc = convert_xml_attribute(string_attr, types, FLEUR_DEFINED_CONSTANTS)
-    else:
-        ret_val, suc = convert_xml_attribute(string_attr, types, FLEUR_DEFINED_CONSTANTS)
+#         assert ret_val == expected_val
+#         assert suc == expected_suc
 
-        assert ret_val == expected_val
-        assert suc == expected_suc
+# @pytest.mark.parametrize('string_attr,types,results, warnings',
+#                          zip(TEST_STRINGS, TEST_TYPES, TEST_RESULTS, TEST_WARNINGS))
+# def test_convert_xml_attribute_warnings(caplog, string_attr, types, results, warnings):
+#     """
+#     Test of the convert_xml_attribute function
+#     """
+#     from masci_tools.util.xml.converters import convert_xml_attribute
 
+#     expected_val, expected_suc = results
 
-@pytest.mark.parametrize('string_attr,types,results, warnings',
-                         zip(TEST_STRINGS, TEST_TYPES, TEST_RESULTS, TEST_WARNINGS))
-def test_convert_xml_attribute_warnings(caplog, string_attr, types, results, warnings):
-    """
-    Test of the convert_xml_attribute function
-    """
-    from masci_tools.util.xml.converters import convert_xml_attribute
+#     with caplog.at_level(logging.WARNING):
+#         ret_val, suc = convert_xml_attribute(string_attr, types, FLEUR_DEFINED_CONSTANTS, logger=LOGGER)
+#     assert ret_val == expected_val
+#     assert suc == expected_suc
 
-    expected_val, expected_suc = results
+#     if len(warnings) == 0:
+#         assert caplog.text == ''
+#     else:
+#         for expected_warning in warnings:
+#             assert expected_warning in caplog.text
 
-    with caplog.at_level(logging.WARNING):
-        ret_val, suc = convert_xml_attribute(string_attr, types, FLEUR_DEFINED_CONSTANTS, logger=LOGGER)
-    assert ret_val == expected_val
-    assert suc == expected_suc
+# TEST_ATTR_VALUES = [1.2134, 'all', ['all', 213, '-12'], ['3.14', 'NOT_PI', 1.2], [False, 'True']]
 
-    if len(warnings) == 0:
-        assert caplog.text == ''
-    else:
-        for expected_warning in warnings:
-            assert expected_warning in caplog.text
+# TEST_ATTR_TYPES = [['float'], ['int', 'string'], ['int', 'string'], ['float', 'float_expression'], ['int', 'switch']]
 
+# TEST_ATTR_RESULTS = [('1.2134000000', True), ('all', True), (['all', '213', '-12'], True),
+#                      (['3.14', 'NOT_PI', '1.2000000000'], True), (['F', 'T'], True)]
 
-TEST_ATTR_VALUES = [1.2134, 'all', ['all', 213, '-12'], ['3.14', 'NOT_PI', 1.2], [False, 'True']]
+# TEST_ATTR_WARNINGS = [[], [], [], [], []]
 
-TEST_ATTR_TYPES = [['float'], ['int', 'string'], ['int', 'string'], ['float', 'float_expression'], ['int', 'switch']]
+# @pytest.mark.parametrize('attr_value,types,results', zip(TEST_ATTR_VALUES, TEST_ATTR_TYPES, TEST_ATTR_RESULTS))
+# def test_convert_attribute_to_xml(attr_value, types, results):
+#     """
+#     Test of the convert_xml_attribute function
+#     """
+#     from masci_tools.util.xml.converters import convert_attribute_to_xml
 
-TEST_ATTR_RESULTS = [('1.2134000000', True), ('all', True), (['all', '213', '-12'], True),
-                     (['3.14', 'NOT_PI', '1.2000000000'], True), (['F', 'T'], True)]
+#     expected_val, expected_suc = results
+#     if not expected_suc:
+#         with pytest.raises(ValueError):
+#             ret_val, suc = convert_attribute_to_xml(attr_value, types)
+#     else:
+#         ret_val, suc = convert_attribute_to_xml(attr_value, types)
+#         assert ret_val == expected_val
+#         assert suc == expected_suc
 
-TEST_ATTR_WARNINGS = [[], [], [], [], []]
+# @pytest.mark.parametrize('attr_value,types,results,warnings',
+#                          zip(TEST_ATTR_VALUES, TEST_ATTR_TYPES, TEST_ATTR_RESULTS, TEST_ATTR_WARNINGS))
+# def test_convert_attribute_to_xml_warnings(caplog, attr_value, types, results, warnings):
+#     """
+#     Test of the convert_xml_attribute function
+#     """
+#     from masci_tools.util.xml.converters import convert_attribute_to_xml
 
+#     expected_val, expected_suc = results
 
-@pytest.mark.parametrize('attr_value,types,results', zip(TEST_ATTR_VALUES, TEST_ATTR_TYPES, TEST_ATTR_RESULTS))
-def test_convert_attribute_to_xml(attr_value, types, results):
-    """
-    Test of the convert_xml_attribute function
-    """
-    from masci_tools.util.xml.converters import convert_attribute_to_xml
+#     with caplog.at_level(logging.WARNING):
+#         ret_val, suc = convert_attribute_to_xml(attr_value, types, logger=LOGGER)
+#     assert ret_val == expected_val
+#     assert suc == expected_suc
 
-    expected_val, expected_suc = results
-    if not expected_suc:
-        with pytest.raises(ValueError):
-            ret_val, suc = convert_attribute_to_xml(attr_value, types)
-    else:
-        ret_val, suc = convert_attribute_to_xml(attr_value, types)
-        assert ret_val == expected_val
-        assert suc == expected_suc
+#     if len(warnings) == 0:
+#         assert caplog.text == ''
+#     else:
+#         for expected_warning in warnings:
+#             assert expected_warning in caplog.text
 
+# TEST_TEXT_STRINGS = [
+#     '0.0 Pi/4.0 6.3121', '0.0 Pi/4.0 6.3121', '0.0 Pi/4.0 6.3121', '0.0 Pi/4.0 6.3121',
+#     ['0.0 Pi/4.0 6.3121', 'Bohr Pi/4.0 all', '0.0 Pi/*4.0 0.0'], ['F asd', 'T'],
+#     ['12 213 4215 412', '12 213 4215 412 123 14124']
+# ]
 
-@pytest.mark.parametrize('attr_value,types,results,warnings',
-                         zip(TEST_ATTR_VALUES, TEST_ATTR_TYPES, TEST_ATTR_RESULTS, TEST_ATTR_WARNINGS))
-def test_convert_attribute_to_xml_warnings(caplog, attr_value, types, results, warnings):
-    """
-    Test of the convert_xml_attribute function
-    """
-    from masci_tools.util.xml.converters import convert_attribute_to_xml
+# TEST_DEFINITIONS = [[{
+#     'length': 3,
+#     'type': ['float', 'float_expression']
+# }], [{
+#     'length': 4,
+#     'type': ['float', 'float_expression']
+# }],
+#                     [{
+#                         'length': 4,
+#                         'type': ['float', 'float_expression']
+#                     }, {
+#                         'length': 'unbounded',
+#                         'type': ['float', 'float_expression']
+#                     }], [{
+#                         'length': 1,
+#                         'type': ['float', 'float_expression']
+#                     }], [{
+#                         'length': 3,
+#                         'type': ['float', 'float_expression']
+#                     }], [{
+#                         'length': 'unbounded',
+#                         'type': ['switch', 'string']
+#                     }], [{
+#                         'length': 4,
+#                         'type': ['switch', 'int']
+#                     }, {
+#                         'length': 'unbounded',
+#                         'type': ['int']
+#                     }]]
 
-    expected_val, expected_suc = results
+# TEST_TEXT_RESULTS = [(pytest.approx([0.0, 0.7853981633974483, 6.3121]), True), ('0.0 Pi/4.0 6.3121', False),
+#                      (pytest.approx([0.0, 0.7853981633974483, 6.3121]), True), ('0.0 Pi/4.0 6.3121', False),
+#                      ([[0.0, 0.7853981633974483, 6.3121], [1.0, 0.7853981633974483, 'all'], [0.0, 'Pi/*4.0',
+#                                                                                              0.0]], False),
+#                      ([[False, 'asd'], [True]], True), ([[12, 213, 4215, 412], [12, 213, 4215, 412, 123, 14124]], True)]
 
-    with caplog.at_level(logging.WARNING):
-        ret_val, suc = convert_attribute_to_xml(attr_value, types, logger=LOGGER)
-    assert ret_val == expected_val
-    assert suc == expected_suc
+# TEST_TEXT_WARNINGS = [[], ["Failed to convert '0.0 Pi/4.0 6.3121', no matching definition found"], [],
+#                       [
+#                           "Could not convert '0.0 Pi/4.0 6.3121'",
+#                       ], [
+#                           "Could not convert 'all'",
+#                           "Could not convert 'Pi/*4.0'",
+#                       ], [], []]
 
-    if len(warnings) == 0:
-        assert caplog.text == ''
-    else:
-        for expected_warning in warnings:
-            assert expected_warning in caplog.text
+# @pytest.mark.parametrize('string_text,definitions, results', zip(TEST_TEXT_STRINGS, TEST_DEFINITIONS,
+#                                                                  TEST_TEXT_RESULTS))
+# def test_convert_xml_text(string_text, definitions, results):
+#     """
+#     Test of the convert_xml_attribute function
+#     """
+#     from masci_tools.util.xml.converters import convert_xml_text
 
+#     expected_val, expected_suc = results
 
-TEST_TEXT_STRINGS = [
-    '0.0 Pi/4.0 6.3121', '0.0 Pi/4.0 6.3121', '0.0 Pi/4.0 6.3121', '0.0 Pi/4.0 6.3121',
-    ['0.0 Pi/4.0 6.3121', 'Bohr Pi/4.0 all', '0.0 Pi/*4.0 0.0'], ['F asd', 'T'],
-    ['12 213 4215 412', '12 213 4215 412 123 14124']
-]
+#     if not expected_suc:
+#         with pytest.raises(ValueError):
+#             ret_val, suc = convert_xml_text(string_text, definitions, FLEUR_DEFINED_CONSTANTS)
+#     else:
+#         ret_val, suc = convert_xml_text(string_text, definitions, FLEUR_DEFINED_CONSTANTS)
+#         assert ret_val == expected_val
+#         assert suc == expected_suc
 
-TEST_DEFINITIONS = [[{
-    'length': 3,
-    'type': ['float', 'float_expression']
-}], [{
-    'length': 4,
-    'type': ['float', 'float_expression']
-}],
-                    [{
-                        'length': 4,
-                        'type': ['float', 'float_expression']
-                    }, {
-                        'length': 'unbounded',
-                        'type': ['float', 'float_expression']
-                    }], [{
-                        'length': 1,
-                        'type': ['float', 'float_expression']
-                    }], [{
-                        'length': 3,
-                        'type': ['float', 'float_expression']
-                    }], [{
-                        'length': 'unbounded',
-                        'type': ['switch', 'string']
-                    }], [{
-                        'length': 4,
-                        'type': ['switch', 'int']
-                    }, {
-                        'length': 'unbounded',
-                        'type': ['int']
-                    }]]
+# @pytest.mark.parametrize('string_text,definitions,results,warnings',
+#                          zip(TEST_TEXT_STRINGS, TEST_DEFINITIONS, TEST_TEXT_RESULTS, TEST_TEXT_WARNINGS))
+# def test_convert_xml_text_warnings(caplog, string_text, definitions, results, warnings):
+#     """
+#     Test of the convert_xml_attribute function
+#     """
+#     from masci_tools.util.xml.converters import convert_xml_text
 
-TEST_TEXT_RESULTS = [(pytest.approx([0.0, 0.7853981633974483, 6.3121]), True), ('0.0 Pi/4.0 6.3121', False),
-                     (pytest.approx([0.0, 0.7853981633974483, 6.3121]), True), ('0.0 Pi/4.0 6.3121', False),
-                     ([[0.0, 0.7853981633974483, 6.3121], [1.0, 0.7853981633974483, 'all'], [0.0, 'Pi/*4.0',
-                                                                                             0.0]], False),
-                     ([[False, 'asd'], [True]], True), ([[12, 213, 4215, 412], [12, 213, 4215, 412, 123, 14124]], True)]
+#     expected_val, expected_suc = results
 
-TEST_TEXT_WARNINGS = [[], ["Failed to convert '0.0 Pi/4.0 6.3121', no matching definition found"], [],
-                      [
-                          "Could not convert '0.0 Pi/4.0 6.3121'",
-                      ], [
-                          "Could not convert 'all'",
-                          "Could not convert 'Pi/*4.0'",
-                      ], [], []]
+#     with caplog.at_level(logging.WARNING):
+#         ret_val, suc = convert_xml_text(string_text, definitions, FLEUR_DEFINED_CONSTANTS, logger=LOGGER)
+#     assert ret_val == expected_val
+#     assert suc == expected_suc
+#     if len(warnings) == 0:
+#         assert caplog.text == ''
+#     else:
+#         for expected_warning in warnings:
+#             assert expected_warning in caplog.text
 
+# TEST_TEXT_VALUES = [[0.0, 'Pi/4.0', 6.3121], '0.0 Pi/4.0 6.3121', [0.0, 'Pi/4.0', 6.3121], [0.0, 'Pi/4.0', 6.3121],
+#                     [[0.0, 'Pi/4.0', 6.3121], ['Bohr', 'Pi/4.0', 'all']], [[False, 'asd'], 'T'],
+#                     [[12, '213', 4215, 412], [12, '213', 4215, '412', 123, 14124]]]
 
-@pytest.mark.parametrize('string_text,definitions, results', zip(TEST_TEXT_STRINGS, TEST_DEFINITIONS,
-                                                                 TEST_TEXT_RESULTS))
-def test_convert_xml_text(string_text, definitions, results):
-    """
-    Test of the convert_xml_attribute function
-    """
-    from masci_tools.util.xml.converters import convert_xml_text
+# TEST_TEXT_XML_STRINGS = [(' 0.0000000000000 Pi/4.0  6.3121000000000', True), ('0.0 Pi/4.0 6.3121', True),
+#                          (' 0.0000000000000 Pi/4.0  6.3121000000000', True), ('', False),
+#                          ([' 0.0000000000000 Pi/4.0  6.3121000000000', 'Bohr Pi/4.0 all'], True), (['F asd',
+#                                                                                                     'T'], True),
+#                          (['12 213 4215 412', '12 213 4215 412 123 14124'], True)]
 
-    expected_val, expected_suc = results
+# TEST_TEXT_XML_WARNINGS = [[], [], [], ["Failed to convert '[0.0, 'Pi/4.0', 6.3121]', no matching definition found"], [],
+#                           [], []]
 
-    if not expected_suc:
-        with pytest.raises(ValueError):
-            ret_val, suc = convert_xml_text(string_text, definitions, FLEUR_DEFINED_CONSTANTS)
-    else:
-        ret_val, suc = convert_xml_text(string_text, definitions, FLEUR_DEFINED_CONSTANTS)
-        assert ret_val == expected_val
-        assert suc == expected_suc
+# @pytest.mark.parametrize('text_value,definitions, results',
+#                          zip(TEST_TEXT_VALUES, TEST_DEFINITIONS, TEST_TEXT_XML_STRINGS))
+# def test_convert_text_to_xml(text_value, definitions, results):
+#     """
+#     Test of the convert_xml_attribute function
+#     """
+#     from masci_tools.util.xml.converters import convert_text_to_xml
 
+#     expected_val, expected_suc = results
+#     if not expected_suc:
+#         with pytest.raises(ValueError):
+#             ret_val, suc = convert_text_to_xml(text_value, definitions)
+#     else:
+#         ret_val, suc = convert_text_to_xml(text_value, definitions)
+#         assert ret_val == expected_val
+#         assert suc == expected_suc
 
-@pytest.mark.parametrize('string_text,definitions,results,warnings',
-                         zip(TEST_TEXT_STRINGS, TEST_DEFINITIONS, TEST_TEXT_RESULTS, TEST_TEXT_WARNINGS))
-def test_convert_xml_text_warnings(caplog, string_text, definitions, results, warnings):
-    """
-    Test of the convert_xml_attribute function
-    """
-    from masci_tools.util.xml.converters import convert_xml_text
+# @pytest.mark.parametrize('text_value,definitions, results, warnings',
+#                          zip(TEST_TEXT_VALUES, TEST_DEFINITIONS, TEST_TEXT_XML_STRINGS, TEST_TEXT_XML_WARNINGS))
+# def test_convert_text_to_xml_warnings(caplog, text_value, definitions, results, warnings):
+#     """
+#     Test of the convert_xml_attribute function
+#     """
+#     from masci_tools.util.xml.converters import convert_text_to_xml
 
-    expected_val, expected_suc = results
+#     expected_val, expected_suc = results
 
-    with caplog.at_level(logging.WARNING):
-        ret_val, suc = convert_xml_text(string_text, definitions, FLEUR_DEFINED_CONSTANTS, logger=LOGGER)
-    assert ret_val == expected_val
-    assert suc == expected_suc
-    if len(warnings) == 0:
-        assert caplog.text == ''
-    else:
-        for expected_warning in warnings:
-            assert expected_warning in caplog.text
-
-
-TEST_TEXT_VALUES = [[0.0, 'Pi/4.0', 6.3121], '0.0 Pi/4.0 6.3121', [0.0, 'Pi/4.0', 6.3121], [0.0, 'Pi/4.0', 6.3121],
-                    [[0.0, 'Pi/4.0', 6.3121], ['Bohr', 'Pi/4.0', 'all']], [[False, 'asd'], 'T'],
-                    [[12, '213', 4215, 412], [12, '213', 4215, '412', 123, 14124]]]
-
-TEST_TEXT_XML_STRINGS = [(' 0.0000000000000 Pi/4.0  6.3121000000000', True), ('0.0 Pi/4.0 6.3121', True),
-                         (' 0.0000000000000 Pi/4.0  6.3121000000000', True), ('', False),
-                         ([' 0.0000000000000 Pi/4.0  6.3121000000000', 'Bohr Pi/4.0 all'], True), (['F asd',
-                                                                                                    'T'], True),
-                         (['12 213 4215 412', '12 213 4215 412 123 14124'], True)]
-
-TEST_TEXT_XML_WARNINGS = [[], [], [], ["Failed to convert '[0.0, 'Pi/4.0', 6.3121]', no matching definition found"], [],
-                          [], []]
-
-
-@pytest.mark.parametrize('text_value,definitions, results',
-                         zip(TEST_TEXT_VALUES, TEST_DEFINITIONS, TEST_TEXT_XML_STRINGS))
-def test_convert_text_to_xml(text_value, definitions, results):
-    """
-    Test of the convert_xml_attribute function
-    """
-    from masci_tools.util.xml.converters import convert_text_to_xml
-
-    expected_val, expected_suc = results
-    if not expected_suc:
-        with pytest.raises(ValueError):
-            ret_val, suc = convert_text_to_xml(text_value, definitions)
-    else:
-        ret_val, suc = convert_text_to_xml(text_value, definitions)
-        assert ret_val == expected_val
-        assert suc == expected_suc
-
-
-@pytest.mark.parametrize('text_value,definitions, results, warnings',
-                         zip(TEST_TEXT_VALUES, TEST_DEFINITIONS, TEST_TEXT_XML_STRINGS, TEST_TEXT_XML_WARNINGS))
-def test_convert_text_to_xml_warnings(caplog, text_value, definitions, results, warnings):
-    """
-    Test of the convert_xml_attribute function
-    """
-    from masci_tools.util.xml.converters import convert_text_to_xml
-
-    expected_val, expected_suc = results
-
-    with caplog.at_level(logging.WARNING):
-        ret_val, suc = convert_text_to_xml(text_value, definitions, logger=LOGGER)
-    assert ret_val == expected_val
-    assert suc == expected_suc
-    if len(warnings) == 0:
-        assert caplog.text == ''
-    else:
-        for expected_warning in warnings:
-            assert expected_warning in caplog.text
+#     with caplog.at_level(logging.WARNING):
+#         ret_val, suc = convert_text_to_xml(text_value, definitions, logger=LOGGER)
+#     assert ret_val == expected_val
+#     assert suc == expected_suc
+#     if len(warnings) == 0:
+#         assert caplog.text == ''
+#     else:
+#         for expected_warning in warnings:
+#             assert expected_warning in caplog.text
