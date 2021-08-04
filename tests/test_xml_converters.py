@@ -73,8 +73,8 @@ DEFINITIONS = [[AttributeType(base_type='float', length=1)],
                 AttributeType(base_type='string', length=1)],
                [AttributeType(base_type='float', length=1),
                 AttributeType(base_type='float_expression', length=1)], [AttributeType(base_type='int', length=1)],
-               [AttributeType(base_type='int', length=1),
-                AttributeType(base_type='switch', length=1)],
+               [AttributeType(base_type='switch', length=1),
+                AttributeType(base_type='int', length=1)],
                [AttributeType(base_type='float', length=3),
                 AttributeType(base_type='float_expression', length=3)],
                [AttributeType(base_type='float', length=4),
@@ -154,6 +154,21 @@ def test_convert_from_xml_explicit_warnings(caplog, string_attr, types, results,
             assert expected_warning in caplog.text
 
 
+TO_XML_VALUES = [
+    1.2134, 'all', ['all', 213, '-12'], ['3.14', 'NOT_PI', 1.2], '1', [False, 'True'], [0.0, 'Pi/4.0', 6.3121],
+    [0.0, 'Pi/4.0', 6.3121], [0.0, 'Pi/4.0', 6.3121], [[0.0, 'Pi/4.0', 6.3121], ['Bohr', 'Pi/4.0', 'all']],
+    [[False, 'asd'], 'T'], [[12, '213', 4215, 412], [12, '213', 4215, '412', 123, 14124]]
+]
+
+TO_XML_RESULTS = [('1.2134000000', True), ('all', True), (['all', '213', '-12'], True),
+                  (['3.14', 'NOT_PI', '1.2000000000'], True), ('1', True), (['F', 'T'], True),
+                  ('0.0000000000 Pi/4.0 6.3121000000', True), ('', False), ('0.0000000000 Pi/4.0 6.3121000000', True),
+                  (['0.0000000000 Pi/4.0 6.3121000000', 'Bohr Pi/4.0 all'], True), (['F asd', 'T'], True),
+                  (['12 213 4215 412', '12 213 4215 412 123 14124'], True)]
+
+TO_XML_WARNINGS = [[], [], [], [], [], [], [],
+                   ["Could not convert '[0.0, 'Pi/4.0', 6.3121]', no matching definition found"], [], [], [], []]
+
 # TEST_ATTR_VALUES = [1.2134, 'all', ['all', 213, '-12'], ['3.14', 'NOT_PI', 1.2], [False, 'True']]
 
 # TEST_ATTR_TYPES = [['float'], ['int', 'string'], ['int', 'string'], ['float', 'float_expression'], ['int', 'switch']]
@@ -163,42 +178,45 @@ def test_convert_from_xml_explicit_warnings(caplog, string_attr, types, results,
 
 # TEST_ATTR_WARNINGS = [[], [], [], [], []]
 
-# @pytest.mark.parametrize('attr_value,types,results', zip(TEST_ATTR_VALUES, TEST_ATTR_TYPES, TEST_ATTR_RESULTS))
-# def test_convert_attribute_to_xml(attr_value, types, results):
-#     """
-#     Test of the convert_xml_attribute function
-#     """
-#     from masci_tools.util.xml.converters import convert_attribute_to_xml
 
-#     expected_val, expected_suc = results
-#     if not expected_suc:
-#         with pytest.raises(ValueError):
-#             ret_val, suc = convert_attribute_to_xml(attr_value, types)
-#     else:
-#         ret_val, suc = convert_attribute_to_xml(attr_value, types)
-#         assert ret_val == expected_val
-#         assert suc == expected_suc
+@pytest.mark.parametrize('attr_value,types,results', zip(TO_XML_VALUES, DEFINITIONS, TO_XML_RESULTS))
+def test_convert_to_xml_explicit(attr_value, types, results):
+    """
+    Test of the convert_xml_attribute function
+    """
+    from masci_tools.util.xml.converters import convert_to_xml_explicit
 
-# @pytest.mark.parametrize('attr_value,types,results,warnings',
-#                          zip(TEST_ATTR_VALUES, TEST_ATTR_TYPES, TEST_ATTR_RESULTS, TEST_ATTR_WARNINGS))
-# def test_convert_attribute_to_xml_warnings(caplog, attr_value, types, results, warnings):
-#     """
-#     Test of the convert_xml_attribute function
-#     """
-#     from masci_tools.util.xml.converters import convert_attribute_to_xml
+    expected_val, expected_suc = results
+    if not expected_suc:
+        with pytest.raises(ValueError):
+            ret_val, suc = convert_to_xml_explicit(attr_value, types)
+    else:
+        ret_val, suc = convert_to_xml_explicit(attr_value, types)
+        assert ret_val == expected_val
+        assert suc == expected_suc
 
-#     expected_val, expected_suc = results
 
-#     with caplog.at_level(logging.WARNING):
-#         ret_val, suc = convert_attribute_to_xml(attr_value, types, logger=LOGGER)
-#     assert ret_val == expected_val
-#     assert suc == expected_suc
+@pytest.mark.parametrize('attr_value,types,results,warnings',
+                         zip(TO_XML_VALUES, DEFINITIONS, TO_XML_RESULTS, TO_XML_WARNINGS))
+def test_convert_to_xml_explicit_warnings(caplog, attr_value, types, results, warnings):
+    """
+    Test of the convert_xml_attribute function
+    """
+    from masci_tools.util.xml.converters import convert_to_xml_explicit
 
-#     if len(warnings) == 0:
-#         assert caplog.text == ''
-#     else:
-#         for expected_warning in warnings:
-#             assert expected_warning in caplog.text
+    expected_val, expected_suc = results
+
+    with caplog.at_level(logging.WARNING):
+        ret_val, suc = convert_to_xml_explicit(attr_value, types, logger=LOGGER)
+    assert ret_val == expected_val
+    assert suc == expected_suc
+
+    if len(warnings) == 0:
+        assert caplog.text == ''
+    else:
+        for expected_warning in warnings:
+            assert expected_warning in caplog.text
+
 
 # TEST_TEXT_VALUES = [[0.0, 'Pi/4.0', 6.3121], '0.0 Pi/4.0 6.3121', [0.0, 'Pi/4.0', 6.3121], [0.0, 'Pi/4.0', 6.3121],
 #                     [[0.0, 'Pi/4.0', 6.3121], ['Bohr', 'Pi/4.0', 'all']], [[False, 'asd'], 'T'],
