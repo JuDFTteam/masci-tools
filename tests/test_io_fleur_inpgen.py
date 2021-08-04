@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Tests of the io_fleur_inpgen module
+Tests of the fleur_inpgen module
 """
 import tempfile
 import numpy as np
@@ -9,7 +9,7 @@ from masci_tools.io.common_functions import convert_to_pystd
 
 def test_write_inpgen_file_defaults(file_regression):
 
-    from masci_tools.io.io_fleur_inpgen import write_inpgen_file
+    from masci_tools.io.fleur_inpgen import write_inpgen_file
 
     param = 5.43
     cell = [[0, param / 2., param / 2.], [param / 2., 0, param / 2.], [param / 2., param / 2., 0]]
@@ -32,7 +32,7 @@ def test_write_inpgen_file_defaults(file_regression):
 
 def test_write_inpgen_file_parameters(file_regression):
 
-    from masci_tools.io.io_fleur_inpgen import write_inpgen_file
+    from masci_tools.io.fleur_inpgen import write_inpgen_file
 
     param = 5.43
     cell = [[0, param / 2., param / 2.], [param / 2., 0, param / 2.], [param / 2., param / 2., 0]]
@@ -76,7 +76,7 @@ def test_write_inpgen_file_parameters(file_regression):
 
 def test_write_inpgen_file_econfig(file_regression):
 
-    from masci_tools.io.io_fleur_inpgen import write_inpgen_file
+    from masci_tools.io.fleur_inpgen import write_inpgen_file
 
     param = 5.43
     cell = [[0, param / 2., param / 2.], [param / 2., 0, param / 2.], [param / 2., param / 2., 0]]
@@ -122,7 +122,7 @@ def test_write_inpgen_file_econfig(file_regression):
 
 def test_write_inpgen_file_soc_qss(file_regression):
 
-    from masci_tools.io.io_fleur_inpgen import write_inpgen_file
+    from masci_tools.io.fleur_inpgen import write_inpgen_file
 
     param = 5.43
     cell = [[0, param / 2., param / 2.], [param / 2., 0, param / 2.], [param / 2., param / 2., 0]]
@@ -168,7 +168,7 @@ def test_write_inpgen_file_soc_qss(file_regression):
 
 def test_write_inpgen_file_film(file_regression):
 
-    from masci_tools.io.io_fleur_inpgen import write_inpgen_file
+    from masci_tools.io.fleur_inpgen import write_inpgen_file
 
     cell = [[3.3168796764431, 0.0, 0.0], [1.6584398382215, 2.3453881115923, 0.0], [0.0, 0.0, 13.349076054836]]
     kinds = [{
@@ -211,7 +211,7 @@ def test_write_inpgen_file_film(file_regression):
 
 def test_write_inpgen_file_x_and_bunchatom(file_regression):
 
-    from masci_tools.io.io_fleur_inpgen import write_inpgen_file
+    from masci_tools.io.fleur_inpgen import write_inpgen_file
 
     cell = [[3.3168796764431, 0.0, 0.0], [1.6584398382215, 2.3453881115923, 0.0], [0.0, 0.0, 13.349076054836]]
     kinds = [{
@@ -259,7 +259,7 @@ def test_write_inpgen_file_x_and_bunchatom(file_regression):
 
 
 def test_read_inpgen_file(data_regression):
-    from masci_tools.io.io_fleur_inpgen import read_inpgen_file
+    from masci_tools.io.fleur_inpgen import read_inpgen_file
 
     TESTFILE = 'test_io_fleur_inpgen/test_write_inpgen_file_defaults.txt'
 
@@ -275,7 +275,7 @@ def test_read_inpgen_file(data_regression):
 
 
 def test_read_inpgen_file_parameters(data_regression):
-    from masci_tools.io.io_fleur_inpgen import read_inpgen_file
+    from masci_tools.io.fleur_inpgen import read_inpgen_file
 
     TESTFILE = 'test_io_fleur_inpgen/test_write_inpgen_file_parameters.txt'
 
@@ -291,7 +291,7 @@ def test_read_inpgen_file_parameters(data_regression):
 
 
 def test_read_inpgen_file_econfig(data_regression):
-    from masci_tools.io.io_fleur_inpgen import read_inpgen_file
+    from masci_tools.io.fleur_inpgen import read_inpgen_file
 
     TESTFILE = 'test_io_fleur_inpgen/test_write_inpgen_file_econfig.txt'
 
@@ -307,7 +307,7 @@ def test_read_inpgen_file_econfig(data_regression):
 
 
 def test_read_inpgen_file_soc_qss(data_regression):
-    from masci_tools.io.io_fleur_inpgen import read_inpgen_file
+    from masci_tools.io.fleur_inpgen import read_inpgen_file
 
     TESTFILE = 'test_io_fleur_inpgen/test_write_inpgen_file_soc_qss.txt'
 
@@ -323,7 +323,7 @@ def test_read_inpgen_file_soc_qss(data_regression):
 
 
 def test_read_inpgen_file_film(data_regression):
-    from masci_tools.io.io_fleur_inpgen import read_inpgen_file
+    from masci_tools.io.fleur_inpgen import read_inpgen_file
 
     TESTFILE = 'test_io_fleur_inpgen/test_write_inpgen_file_film.txt'
 
