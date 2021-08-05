@@ -422,12 +422,11 @@ def conv_to_fortran(val, quote_strings=True):
     return val_str
 
 
-def read_inpgen_file(filepath):
+def read_inpgen_file(file):
     """
     Method which reads in an inpgen input file and parses the structure and name lists information.
 
-    TODO: implement me
-    :param filepath (str, path): path to the file to read
+    :param filepath (str, path): path to the file to read or opened file handle
     """
     pbc = (True, True, True)
     input_params = {}
@@ -437,8 +436,11 @@ def read_inpgen_file(filepath):
     cell = []
     lattice_information = []
 
-    with open(filepath, 'r') as inpfile:
-        contents = inpfile.read()
+    if isinstance(file, io.IOBase):
+        contents = file.read()
+    else:
+        with open(file, 'r') as f:
+            contents = f.read()
 
     content_lines = contents.split('\n')
     # The first line is the title
