@@ -16,6 +16,7 @@ for easy versioning and reuse
 """
 from masci_tools.io.parsers.fleur.fleur_schema import schema_dict_version_dispatch
 from lxml import etree
+import warnings
 
 
 def get_fleur_modes(xmltree, schema_dict, logger=None):
@@ -521,7 +522,7 @@ def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True, 
     return parameters
 
 
-def get_structure_data(xmltree, schema_dict, include_relaxations=True, logger=None):
+def get_structure_data(xmltree, schema_dict, include_relaxations=True, site_namedtuple=False, logger=None):
     """
     Get the structure defined in the given fleur xml file.
 
@@ -540,7 +541,7 @@ def get_structure_data(xmltree, schema_dict, include_relaxations=True, logger=No
 
     The tuple contains the following entries:
 
-        1. :atom_data: list of tuples containing the absolute positions and symbols of the atoms
+        1. :atom_data: list of (named)tuples containing the absolute positions and symbols of the atoms
         2. :cell: numpy array, bravais matrix of the given system
         3. :pbc: list of booleans, determines in which directions periodic boundary conditions are applicable
 
@@ -548,8 +549,15 @@ def get_structure_data(xmltree, schema_dict, include_relaxations=True, logger=No
     from masci_tools.util.schema_dict_util import read_constants, eval_simple_xpath, tag_exists
     from masci_tools.util.schema_dict_util import evaluate_text, evaluate_attribute
     from masci_tools.util.xml.common_functions import clear_xml
-    from masci_tools.io.common_functions import rel_to_abs, rel_to_abs_f, abs_to_rel, abs_to_rel_f, find_symmetry_relation
+    from masci_tools.io.common_functions import rel_to_abs, rel_to_abs_f, abs_to_rel, abs_to_rel_f
+    from masci_tools.io.common_functions import find_symmetry_relation, AtomSiteProperties
     import numpy as np
+
+    if not site_namedtuple:
+        warnings.warn(
+            'Output of atom positions in pure tuples of the form (position, symbol) is deprecated.'
+            'Please adjust your code to use the namedtuple with the fields (position, symbol, kind)',
+            DeprecationWarning)
 
     if isinstance(xmltree, etree._ElementTree):
         xmltree, _ = clear_xml(xmltree)
@@ -675,7 +683,12 @@ def get_structure_data(xmltree, schema_dict, include_relaxations=True, logger=No
 
                 atom_positions[pos_indx] = list(np.array(atom_positions[pos_indx]) + np.array(site_displace))
 
-        atom_data.extend((pos, species_dict[group_species]) for pos in atom_positions)
+        if site_namedtuple:
+            atom_data.extend(
+                AtomSiteProperties(position=pos, symbol=species_dict[group_species], kind=group_species)
+                for pos in atom_positions)
+        else:
+            atom_data.extend((pos, species_dict[group_species]) for pos in atom_positions)
 
     return atom_data, cell, pbc
 

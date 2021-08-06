@@ -17,6 +17,7 @@ without a database) are collected.
 import io
 import numpy as np
 import warnings
+from collections import namedtuple
 ####################################################################################
 
 #helper functions used in calculation, parser etc.
@@ -585,6 +586,10 @@ def find_symmetry_relation(from_pos, to_pos, rotations, shifts, cell, relative_p
                 return rot, shift
 
     raise ValueError(f'No symmetry relation found between {from_pos} and {to_pos}')
+
+
+#namedtuple used for input output of atom sites
+AtomSiteProperties = namedtuple('AtomSiteProperties', ('position', 'symbol', 'kind'))
 
 
 def get_wigner_matrix(l, phi, theta):

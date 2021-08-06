@@ -7,7 +7,7 @@ import numpy as np
 from masci_tools.io.common_functions import convert_to_pystd
 
 
-def test_write_inpgen_file_defaults(file_regression):
+def test_write_inpgen_file_defaults_dict(file_regression):
 
     from masci_tools.io.fleur_inpgen import write_inpgen_file
 
@@ -25,6 +25,42 @@ def test_write_inpgen_file_defaults(file_regression):
     with tempfile.NamedTemporaryFile('r') as tmp:
 
         write_inpgen_file(cell, sites, kinds, file=tmp.name)
+        content = tmp.read()
+
+    file_regression.check(content)
+
+
+def test_write_inpgen_file_defaults_tuple(file_regression):
+
+    from masci_tools.io.fleur_inpgen import write_inpgen_file
+
+    param = 5.43
+    cell = [[0, param / 2., param / 2.], [param / 2., 0, param / 2.], [param / 2., param / 2., 0]]
+    sites = [((0.0, 0.0, 0.0), 'Si', 'Si'), ((1.3575, 1.3575, 1.3575), 'Si', 'Si')]
+
+    with tempfile.NamedTemporaryFile('r') as tmp:
+
+        write_inpgen_file(cell, sites, file=tmp.name)
+        content = tmp.read()
+
+    file_regression.check(content)
+
+
+def test_write_inpgen_file_defaults_direct(file_regression):
+
+    from masci_tools.io.fleur_inpgen import write_inpgen_file
+    from masci_tools.io.common_functions import AtomSiteProperties
+
+    param = 5.43
+    cell = [[0, param / 2., param / 2.], [param / 2., 0, param / 2.], [param / 2., param / 2., 0]]
+    sites = [
+        AtomSiteProperties(position=(0.0, 0.0, 0.0), symbol='Si', kind='Si'),
+        AtomSiteProperties(position=(1.3575, 1.3575, 1.3575), symbol='Si', kind='Si')
+    ]
+
+    with tempfile.NamedTemporaryFile('r') as tmp:
+
+        write_inpgen_file(cell, sites, file=tmp.name)
         content = tmp.read()
 
     file_regression.check(content)

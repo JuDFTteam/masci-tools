@@ -19,7 +19,7 @@ import numpy as np
 from masci_tools.util.constants import PERIODIC_TABLE_ELEMENTS, BOHR_A
 from masci_tools.util.xml.converters import convert_to_fortran_bool, convert_from_fortran_bool
 from masci_tools.io.common_functions import abs_to_rel_f, abs_to_rel, convert_to_fortran_string
-from masci_tools.io.common_functions import rel_to_abs, rel_to_abs_f
+from masci_tools.io.common_functions import rel_to_abs, rel_to_abs_f, AtomSiteProperties
 
 # Inpgen file structure, order is important
 POSSIBLE_NAMELISTS = [
@@ -47,8 +47,8 @@ REPLACER_VALUES_BOOL = [True, False, 'True', 'False', 't', 'T', 'F', 'f']
 
 
 def write_inpgen_file(cell,
-                      atoms_dict_list,
-                      kind_list,
+                      atom_sites,
+                      kinds=None,
                       file='inpgen.in',
                       pbc=(True, True, True),
                       input_params=None,
@@ -58,20 +58,25 @@ def write_inpgen_file(cell,
     """Write an input file for the fleur inputgenerator 'inpgen' from given inputs
 
     :param cell: 3x3 arraylike. The bravais matrix of the structure, in Angstrom by default
-    :param atoms_dict_list: list of a dict containing the keys absolute 'position' in Angstrom (default) and 'kind_name', i.e
+    :param atom_sites: either list of a dict containing the keys absolute 'position' in Angstrom (default) and 'kind_name', i.e
 
-                            .. code-block::
+                       .. code-block::
 
-                              [{'position': (0.0, 0.0, -1.0545708047819), 'kind_name': 'Fe123'},
-                               {'position': (1.4026317387183, 1.9836207751336, 0.0), 'kind_name': 'Pt'},
-                               {'position': (0.0, 0.0, 1.4026318234924), 'kind_name': 'Pt'}]
+                          [{'position': (0.0, 0.0, -1.0545708047819), 'kind_name': 'Fe123'},
+                           {'position': (1.4026317387183, 1.9836207751336, 0.0), 'kind_name': 'Pt'},
+                           {'position': (0.0, 0.0, 1.4026318234924), 'kind_name': 'Pt'}]
 
-    :param kind_list: a list of kind information containing the keys symbols, weights, mass, name i.e.
+                       In this case the argument ``kinds`` is required. The other possibility is a list of tuples
+                       of the form of :py:class:`~masci_tools.io.common_functions.AtomSiteProperties`
+
+    :param kinds: a list of kind information containing the keys symbols, weights, mass, name i.e.
 
                       .. code-block::
 
                         [{'symbols': ('Fe',), 'weights': (1.0,), 'mass': 55.845, 'name': 'Fe123'},
                          {'symbols': ('Pt',), 'weights': (1.0,), 'mass': 195.084, 'name': 'Pt'}]
+
+                  Required when atom_sites is a list of dicts
 
     :param file: Path or filehandle where the file should be written to. Defaults to 'inpgen.in' in the current folder.
     :param pbc: tuple of boolean length 3, optional, Periodic boundary conditions of the structure. Defaults to (True, True, True).
@@ -125,6 +130,23 @@ def write_inpgen_file(cell,
     else:
         scaling_pos = 1.0
     own_lattice = False  # not _use_aiida_structure
+
+    if all(isinstance(site, dict) for site in atom_sites):
+        if kinds is None:
+            raise ValueError('The argument kinds is required, when atom_sites is provided as dicts')
+
+        kinds_per_site = [tuple(filter(lambda kind: kind['name'] == site['kind_name'], kinds)) for site in atom_sites]
+        if any(len(kind) == 0 for kind in kinds_per_site):
+            raise ValueError('Failed getting symbols for all kinds. Check that all needed kinds are given')
+        atom_sites = [
+            AtomSiteProperties(position=site['position'], symbol=kind[0]['symbols'][0], kind=site['kind_name'])
+            for site, kind in zip(atom_sites, kinds_per_site)
+        ]
+
+    elif all(not isinstance(site, AtomSiteProperties) for site in atom_sites):
+        if kinds is not None:
+            raise ValueError('The argument kinds is not required, when atom_sites is provided as tuples')
+        atom_sites = [AtomSiteProperties(*site) for site in atom_sites]
 
     ##########################################
     ############# INPUT CHECK ################
@@ -215,28 +237,28 @@ def write_inpgen_file(cell,
     atomic_positions_card_list = ['']
     atomic_positions_card_listtmp = ['']
     if not own_lattice:
-        natoms = len(atoms_dict_list)
+        natoms = len(atom_sites)
         # for FLEUR true, general not, because you could put several
         # atoms on a site
         # TODO this feature might change in Fleur, do different. that in inpgen kind gets a name, which will also be the name in fleur inp.xml.
         # now user has to make kind_name = atom id.
-        for site in atoms_dict_list:
-            kind_name = site['kind_name']
-            for kin in kind_list:
-                if kin['name'] == kind_name:
-                    kind = kin
-            # then we do not at atoms with weights smaller one
-            if kind.get('weights', [1])[0] < 1.0:
-                natoms = natoms - 1
-                # Log message?
-                continue
-            # We assume atoms therefore I just get the first one... test that only one atom at site?
-            site_symbol = kind['symbols'][0]
-            atomic_number = _atomic_numbers[site_symbol]
+        for site in atom_sites:
+
+            if kinds is not None:
+                for kin in kinds:
+                    if kin['name'] == site.kind:
+                        kind = kin
+                # then we do not at atoms with weights smaller one
+                if kind.get('weights', [1])[0] < 1.0:
+                    natoms = natoms - 1
+                    # Log message?
+                    continue
+
+            atomic_number = _atomic_numbers[site.symbol]
             atomic_number_name = atomic_number
             # per default we use relative coordinates in Fleur
             # we have to scale back to atomic units from angstrom
-            pos = site['position']
+            pos = site.position
             if bulk:
                 vector_rel = abs_to_rel(pos, cell)
             elif film:
@@ -244,17 +266,17 @@ def write_inpgen_file(cell,
                 vector_rel[2] = vector_rel[2] * scaling_pos
             position_str = ' '.join([f'{value:18.{significant_figures_positions}f}' for value in vector_rel])
 
-            if site_symbol != kind_name:  # This is an important fact, if user renames it becomes a new atomtype or species!
+            if site.symbol != site.kind:  # This is an important fact, if user renames it becomes a new atomtype or species!
                 try:
                     # Kind names can be more then numbers now, this might need to be reworked
-                    head = kind_name.rstrip('0123456789')
-                    kind_namet = int(kind_name[len(head):])
+                    head = site.kind.rstrip('0123456789')
+                    kind_namet = int(site.kind[len(head):])
                     #if int(kind_name[len(head)]) > 4:
                     #    raise InputValidationError('New specie name/label should start with a digit smaller than 4')
                 except ValueError:
                     report.append(
                         'Warning: Kind name {} will be ignored by the FleurinputgenCalculation and not set a charge number.'
-                        .format(kind_name))
+                        .format(site.kind))
                 else:
                     atomic_number_name = f'{atomic_number}.{kind_namet}'
                 # append a label to the detached atom
