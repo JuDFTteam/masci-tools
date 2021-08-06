@@ -88,7 +88,7 @@ Input/Output Parser
 Inputgenerator related IO
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: masci_tools.io.io_fleur_inpgen
+.. automodule:: masci_tools.io.fleur_inpgen
    :members:
 
 Functions for modifying the input file
