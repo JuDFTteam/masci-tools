@@ -1,19 +1,19 @@
-atoms:
-- kind_name: Fe
-  position:
-  - 3.133997089
-  - 0.0
-  - 15.5124941569
-- kind_name: Nb
-  position:
-  - 0.0
-  - 0.0
-  - 19.0793868509
-- kind_name: Nb
-  position:
-  - 3.133997089
-  - 0.0
-  - 23.5617139284
+atom_sites:
+- - - 3.133997089
+    - 0.0
+    - 15.5124941569
+  - Fe
+  - Fe
+- - - 0.0
+    - 0.0
+    - 19.0793868509
+  - Nb
+  - Nb
+- - - 3.133997089
+    - 0.0
+    - 23.5617139284
+  - Nb
+  - Nb
 cell:
 - - 6.267994178
   - 0.0
@@ -24,13 +24,6 @@ cell:
 - - 0.0
   - 0.0
   - 25.226097765
-kinds:
-- name: Fe
-  symbols:
-  - Fe
-- name: Nb
-  symbols:
-  - Nb
 params:
   comp:
     gmax: 15

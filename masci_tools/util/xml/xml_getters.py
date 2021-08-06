@@ -224,7 +224,6 @@ def get_nkpts_max4(xmltree, schema_dict, logger=None):
     """
     from masci_tools.util.schema_dict_util import evaluate_attribute, eval_simple_xpath
     from masci_tools.util.xml.common_functions import clear_xml
-    import warnings
 
     if isinstance(xmltree, etree._ElementTree):
         xmltree, _ = clear_xml(xmltree)

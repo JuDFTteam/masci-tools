@@ -135,12 +135,12 @@ def write_inpgen_file(cell,
         if kinds is None:
             raise ValueError('The argument kinds is required, when atom_sites is provided as dicts')
 
-        kinds_per_site = [tuple(filter(lambda kind: kind['name'] == site['kind_name'], kinds)) for site in atom_sites]
-        if any(len(kind) == 0 for kind in kinds_per_site):
+        symbols = [[kind['symbols'][0]] for site in atom_sites for kind in kinds if kind['name'] == site['kind_name']]
+        if any(len(symbol) == 0 for symbol in symbols):
             raise ValueError('Failed getting symbols for all kinds. Check that all needed kinds are given')
         atom_sites = [
-            AtomSiteProperties(position=site['position'], symbol=kind[0]['symbols'][0], kind=site['kind_name'])
-            for site, kind in zip(atom_sites, kinds_per_site)
+            AtomSiteProperties(position=site['position'], symbol=kind[0], kind=site['kind_name'])
+            for site, kind in zip(atom_sites, symbols)
         ]
 
     elif all(not isinstance(site, AtomSiteProperties) for site in atom_sites):
@@ -274,6 +274,7 @@ def write_inpgen_file(cell,
                     #if int(kind_name[len(head)]) > 4:
                     #    raise InputValidationError('New specie name/label should start with a digit smaller than 4')
                 except ValueError:
+                    kind_namet = site.kind
                     report.append(
                         'Warning: Kind name {} will be ignored by the FleurinputgenCalculation and not set a charge number.'
                         .format(site.kind))
@@ -454,8 +455,7 @@ def read_inpgen_file(file):
     pbc = (True, True, True)
     input_params = {}
     namelists_raw = {}
-    kind_list = []
-    atoms_dict_list = []
+    atom_sites = []
     cell = []
     lattice_information = []
 
@@ -589,9 +589,6 @@ def read_inpgen_file(file):
         if len(atom_info) == 5:
             kind_name = atom_info[4]
 
-        atoms_dict_list.append({'kind_name': kind_name, 'position': pos})
+        atom_sites.append(AtomSiteProperties(position=pos, symbol=element, kind=kind_name))
 
-        if all(entry['name'] != kind_name for entry in kind_list):
-            kind_list.append({'symbols': (element,), 'name': kind_name})
-
-    return cell, atoms_dict_list, kind_list, pbc, input_params
+    return cell, atom_sites, pbc, input_params

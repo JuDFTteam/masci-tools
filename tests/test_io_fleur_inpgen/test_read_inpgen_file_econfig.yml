@@ -1,14 +1,14 @@
-atoms:
-- kind_name: Si
-  position:
-  - 0.0
-  - 0.0
-  - 0.0
-- kind_name: Si
-  position:
-  - 2.5653032145
-  - 2.5653032145
-  - 2.5653032145
+atom_sites:
+- - - 0.0
+    - 0.0
+    - 0.0
+  - Si
+  - Si
+- - - 2.5653032145
+    - 2.5653032145
+    - 2.5653032145
+  - Si
+  - Si
 cell:
 - - 0.0
   - 5.130606429
@@ -19,10 +19,6 @@ cell:
 - - 5.130606429
   - 5.130606429
   - 0.0
-kinds:
-- name: Si
-  symbols:
-  - Si
 params:
   atom:
     econfig: '[He] 2s2 2p6 | 3s2 3p2'

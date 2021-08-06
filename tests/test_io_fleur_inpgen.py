@@ -299,12 +299,11 @@ def test_read_inpgen_file(data_regression):
 
     TESTFILE = 'test_io_fleur_inpgen/test_write_inpgen_file_defaults_dict.txt'
 
-    cell, atoms_dict_list, kind_list, pbc, input_params = read_inpgen_file(TESTFILE)
+    cell, atom_sites, pbc, input_params = read_inpgen_file(TESTFILE)
 
     data_regression.check({
         'cell': convert_to_pystd(cell),
-        'atoms': convert_to_pystd(atoms_dict_list),
-        'kinds': kind_list,
+        'atom_sites': [tuple(convert_to_pystd(site)) for site in atom_sites],
         'pbc': pbc,
         'params': convert_to_pystd(input_params)
     })
@@ -315,12 +314,11 @@ def test_read_inpgen_file_parameters(data_regression):
 
     TESTFILE = 'test_io_fleur_inpgen/test_write_inpgen_file_parameters.txt'
 
-    cell, atoms_dict_list, kind_list, pbc, input_params = read_inpgen_file(TESTFILE)
+    cell, atom_sites, pbc, input_params = read_inpgen_file(TESTFILE)
 
     data_regression.check({
         'cell': convert_to_pystd(cell),
-        'atoms': convert_to_pystd(atoms_dict_list),
-        'kinds': kind_list,
+        'atom_sites': [tuple(convert_to_pystd(site)) for site in atom_sites],
         'pbc': pbc,
         'params': convert_to_pystd(input_params)
     })
@@ -331,12 +329,11 @@ def test_read_inpgen_file_econfig(data_regression):
 
     TESTFILE = 'test_io_fleur_inpgen/test_write_inpgen_file_econfig.txt'
 
-    cell, atoms_dict_list, kind_list, pbc, input_params = read_inpgen_file(TESTFILE)
+    cell, atom_sites, pbc, input_params = read_inpgen_file(TESTFILE)
 
     data_regression.check({
         'cell': convert_to_pystd(cell),
-        'atoms': convert_to_pystd(atoms_dict_list),
-        'kinds': kind_list,
+        'atom_sites': [tuple(convert_to_pystd(site)) for site in atom_sites],
         'pbc': pbc,
         'params': convert_to_pystd(input_params)
     })
@@ -347,12 +344,11 @@ def test_read_inpgen_file_soc_qss(data_regression):
 
     TESTFILE = 'test_io_fleur_inpgen/test_write_inpgen_file_soc_qss.txt'
 
-    cell, atoms_dict_list, kind_list, pbc, input_params = read_inpgen_file(TESTFILE)
+    cell, atom_sites, pbc, input_params = read_inpgen_file(TESTFILE)
 
     data_regression.check({
         'cell': convert_to_pystd(cell),
-        'atoms': convert_to_pystd(atoms_dict_list),
-        'kinds': kind_list,
+        'atom_sites': [tuple(convert_to_pystd(site)) for site in atom_sites],
         'pbc': pbc,
         'params': convert_to_pystd(input_params)
     })
@@ -363,12 +359,11 @@ def test_read_inpgen_file_film(data_regression):
 
     TESTFILE = 'test_io_fleur_inpgen/test_write_inpgen_file_film.txt'
 
-    cell, atoms_dict_list, kind_list, pbc, input_params = read_inpgen_file(TESTFILE)
+    cell, atom_sites, pbc, input_params = read_inpgen_file(TESTFILE)
 
     data_regression.check({
         'cell': convert_to_pystd(cell),
-        'atoms': convert_to_pystd(atoms_dict_list),
-        'kinds': kind_list,
+        'atom_sites': [tuple(convert_to_pystd(site)) for site in atom_sites],
         'pbc': pbc,
         'params': convert_to_pystd(input_params)
     })
