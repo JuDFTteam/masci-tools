@@ -11,6 +11,8 @@
 #                                                                             #
 ###############################################################################
 """This module contains a simple class for set-like chemical elements enumeration."""
+from __future__ import annotations
+from typing import Union as _Union, List as _List
 import dataclasses as _dc
 import numpy as _np
 import masci_tools.vis.plot_methods as _plot_methods
@@ -396,9 +398,19 @@ class ChemicalElements:
         # else:
         #     raise KeyError(f"Unsupported key/value type '{type(group_name_or_symbol)}'.")
 
-    def __validate_distinctness(self, new__elmts):
+    def __validate_distinctness(self, new__elmts: dict) -> bool:
+        """Checks if new internal ``__elmts`` would violate distinctniss if dictinct=True.
+
+        If no violation (or distinct=False and not nested) , internal ``__elmts`` will be replaced with new one. If
+        (distinct=True and nested) and violation, do not replace.
+
+        :param new__elmts: new internal elements dict to replace current one.
+        :return: True if no violation, False if distinctness violation.
+        """
         import copy
         if not self.is_flat() and self.distinct:
+            # distinctness check of new internal elements dict: assert that sum over element count in all groups
+            # equals distinct sum over element count in all groups
             elmt_count = 0
             for group_name, group in new__elmts.items():
                 elmt_count += len(group.keys())
@@ -472,6 +484,13 @@ class ChemicalElements:
         """
         return self.elmts.keys()
 
+    def hidden_key(self):
+        """If flat, returns name of the hidden group. If nested, returns None.
+
+        Background: see :py:meth:`~masci_tools.util.chemical_elements.ChemicalElements.hidden_group`.
+        """
+        return self.hidden_group()
+
     def values(self):
         """If flat, returns atomic numbers, if nested, returns elements of group.
         """
@@ -515,13 +534,16 @@ class ChemicalElements:
         :return: if not in-place, return flattened dict, else None.
         :rtype: None, dict, or ChemicalElements
         """
-        if self.is_flat() and not in_place:
-            import copy
-            if as_dict:
-                return copy.deepcopy(self.elmts)
+        if self.is_flat():
+            if in_place:
+                pass
             else:
-                return ChemicalElements(self.elmts)
-        elif not self.is_flat():
+                import copy
+                if as_dict:
+                    return copy.deepcopy(self.elmts)
+                else:
+                    return ChemicalElements(self.elmts)
+        else:
             data_selection = self.select_groups(selected_groups)
             flattened = {}
             for group_name, group in data_selection.items():
@@ -596,7 +618,52 @@ class ChemicalElements:
         else:
             return list(self.elmts.keys())
 
-    def select_groups(self, selected_groups: list = None, include_special_elements: bool = True, as_dict=True):
+    def hidden_group(self):
+        """If flat, returns name of the hidden group. If nested, returns None.
+
+        Background: If elmts is flat (no groups, i.e. no nested elements), all elements
+        are held in a single group (key by default the empty string). This single group is hidden, such
+        that for flat elmts, keys() and groups() returns the list of elements instead. As
+        soon as there are two groups or more, the group names are returned instead. Still,
+        the hidden group key can be renamed, and this has consequences down the line when
+        adding or removing elements, or doing set operation with other ``ChemicalElements``
+        instances. So this method shows the name of the hidden group if flat.
+        """
+        if self.is_flat():
+            return list(self.__elmts.keys())[0]
+        else:
+            return None
+
+    def adjust_flat_elements(self, other_elements: _List[ChemicalElements], group_name: str = ''):
+        """For flat instances of ``ChemicalElements`` with different names, make all names equal.
+
+        Background: Flat elements have hidden group names, if renamed from default hidden group name, the empty
+        string (see :py:meth:`~masci_tools.util.chemical_elements.ChemicalElements.hidden_group`). If set operations
+        are applied to them, they behave as if not flat (nested). This function makes all involved hidden group names
+        equal, so that they truly behave as flat instances under set operations.
+
+        :param other_elements: other flat ``ChemicalElement`` isntances.
+        :param group_name: Hidden group name to apply to all. Default hidden group name is empty string.
+        """
+        msg_prefix = f'Warning: {self.__class__.__name__}.adjust_flat_elements():'
+        if not self.is_flat():
+            print(f'{msg_prefix} Main instance is not flat (nested). I will ignore it.')
+            group_name = '' if group_name is None else group_name
+        else:
+            group_name = self.hidden_group() if group_name is None else group_name
+
+        others_flat = [ce for ce in other_elements if ce.is_flat()]
+        if len(others_flat) < len(other_elements):
+            num_not_flat = len([ce for ce in other_elements if not ce.is_flat()])
+            print(f'{msg_prefix} {num_not_flat} instances are not flat (nested). I will ignore them.')
+
+        for ce in others_flat:
+            ce.rename_group(ce.hidden_group(), group_name)
+
+    def select_groups(self,
+                      selected_groups: list = None,
+                      include_special_elements: bool = True,
+                      as_dict=True) -> _Union[dict, ChemicalElements]:
         """Return only selected groups from elmts. Always returns a copy.
 
         :param selected_groups: If flat and not specified, return the empty name group of flat elmts.
@@ -637,6 +704,10 @@ class ChemicalElements:
 
     def rename_group(self, old_group_name, new_group_name):
         """Rename a group.
+
+        Note: If the instance is flat (not nested = no groups), then renaming the hidden group might have
+        unintended consequences in set operations. See
+        Background: see :py:meth:`~masci_tools.util.chemical_elements.ChemicalElements.hidden_group`.
         """
         group = self.__elmts.pop(old_group_name)
         self.add_elements(group, new_group_name)
@@ -736,7 +807,8 @@ class ChemicalElements:
         for sym, num in elmts.items():
             new__elmts[group_name][sym] = num
         if not self.__validate_distinctness(new__elmts):
-            print('Warning: Chose distinctness, added elements would violate. Not added.')
+            print(f'Warning: {self.__class__.__name__}.add_elements(): '
+                  f'Is nested, chose distinct=True, but elements to add would violate this -> not added.')
         else:
             self.__elmts[group_name] = self._sort(self.__elmts[group_name])
             if not group_name in self.__data:
@@ -798,7 +870,10 @@ class ChemicalElements:
         self._sort(self._pte)
         self._sort(self._pte_inv, by_key=True)
 
-    def remove_elements(self, elements, group_name: str = None, delete_empty_groups: bool = True):
+    def remove_elements(self,
+                        elements,
+                        group_name: str = None,
+                        delete_empty_groups: bool = True) -> _Union[None, object]:
         """Remove elements. Elmts get resorted afterwards.
 
         If a now empty group is deleted and corresponding 'data' entry held an object, that object
@@ -809,6 +884,7 @@ class ChemicalElements:
         :param group_name: if flat, ignored, if nested, remove from this group
         :type group_name: str
         :param delete_empty_groups: remove group_name key from elmts if group empty
+        :return: None or data object, if respective group gets deleted.
         """
         if isinstance(elements, dict):
             # just assume it's a element sym:num dict
@@ -825,12 +901,13 @@ class ChemicalElements:
                 self.__elmts[group_name] = self._sort(self.__elmts[group_name])
             if not self.__elmts[group_name] and delete_empty_groups:
                 self.__elmts.pop(group_name, None)
-                self.__data.pop(group_name, None)
+                return self.__data.pop(group_name, None)
             if not self.__elmts.keys():
                 self.__elmts = {'': {}}
                 self.__data = {'': {}}
         else:
-            print(f"Warning: no group '{group_name}' present in elmts. Nothing removed.")
+            print(f'Warning: {self.__class__.__name__}.remove_elements(): '
+                  f"No group '{group_name}' present in elmts. Nothing removed.")
 
     def union(self, other):
         return self.__add__(other)
@@ -1256,7 +1333,7 @@ class ChemicalElements:
         # add custom colormap column
         ptable[_colorby_mendel] = ptable[_title].map(_colormap)
 
-        if with_legend:
+        if _with_legend:
             # for the legend color map, we want to use the missing_name instead of the missing_value,
             # and put it first. So, got to repopultate the custom colormap.
             if filled_in:
