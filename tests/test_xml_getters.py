@@ -31,6 +31,7 @@ TEST_MAX4_INPXML_PATH = os.path.join(inpxmlfilefolder, 'files/fleur/aiida_fleur/
 TEST_RELAX_INPXML_PATH = os.path.join(inpxmlfilefolder, 'files/fleur/Max-R5/GaAsMultiUForceXML/files/inp-3.xml')
 TEST_RELAX_OUTXML_PATH = os.path.join(inpxmlfilefolder, 'files/fleur/Max-R5/GaAsMultiUForceXML/files/out.xml')
 TEST_RELAX_RELAXXML_PATH = os.path.join(inpxmlfilefolder, 'files/fleur/Max-R5/GaAsMultiUForceXML/files/relax.xml')
+TEST_NO_SYMMETRY_PATH = os.path.join(inpxmlfilefolder, 'files/fleur/aiida_fleur/inpxml/Fe_fccXML/files/inp.xml')
 
 inpxmlfilelist = []
 inpxmlfilelist_content = []
@@ -62,6 +63,24 @@ def test_get_cell(load_inpxml, inpxmlfilepath):
     assert cell.shape == (3, 3)
     assert isinstance(pbc, list)
     assert len(pbc) == 3
+
+
+@pytest.mark.parametrize('inpxmlfilepath', inpxmlfilelist)
+def test_get_symmetry_information(load_inpxml, inpxmlfilepath):
+    """
+    Test that get_cell works for all input files
+    """
+    from masci_tools.util.xml.xml_getters import get_symmetry_information
+    import numpy as np
+
+    xmltree, schema_dict = load_inpxml(inpxmlfilepath)
+
+    rotations, shifts = get_symmetry_information(xmltree, schema_dict)
+
+    assert all(isinstance(rot, np.ndarray) for rot in rotations)
+    assert all(isinstance(shift, np.ndarray) for shift in shifts)
+    assert all(rot.shape == (3, 3) for rot in rotations)
+    assert all(shift.shape == (3,) for shift in shifts)
 
 
 @pytest.mark.parametrize('inpxmlfilepath', inpxmlfilelist)
@@ -171,6 +190,28 @@ def test_get_cell_bulk(load_inpxml, data_regression):
     cell, pbc = get_cell(xmltree, schema_dict)
 
     data_regression.check({'cell': convert_to_pystd(cell), 'pbc': pbc})
+
+
+def test_get_symmetry_information_existing(load_inpxml, data_regression):
+
+    from masci_tools.util.xml.xml_getters import get_symmetry_information
+    from masci_tools.io.common_functions import convert_to_pystd
+
+    xmltree, schema_dict = load_inpxml(TEST_BULK_INPXML_PATH)
+
+    rotations, shifts = get_symmetry_information(xmltree, schema_dict)
+
+    data_regression.check({'rotations': convert_to_pystd(rotations), 'shifts': convert_to_pystd(shifts)})
+
+
+def test_get_symmetry_information_nonexisting(load_inpxml):
+
+    from masci_tools.util.xml.xml_getters import get_symmetry_information
+
+    xmltree, schema_dict = load_inpxml(TEST_NO_SYMMETRY_PATH)
+
+    with pytest.raises(ValueError, match='No explicit symmetry information included'):
+        rotations, shifts = get_symmetry_information(xmltree, schema_dict)
 
 
 def test_get_structure_film(load_inpxml, data_regression):

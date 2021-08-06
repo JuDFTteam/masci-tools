@@ -859,3 +859,53 @@ def get_relaxation_information_pre029(xmltree, schema_dict, logger=None):
     """
     raise NotImplementedError(
         f"'get_relaxation_information' is not implemented for inputs of version '{schema_dict['inp_version']}'")
+
+
+def get_symmetry_information(xmltree, schema_dict, logger=None):
+    """
+    Get the symmetry information from the given fleur XML file. This includes the
+    rotation matrices and shifts defined in the ``symmetryOperations`` tag.
+
+    .. note::
+        Only the explicit definition of the used symmetry operations in the xml file
+        is supported.
+
+    :param xmltree: etree representing the fleur xml file
+    :param schema_dict: schema dictionary corresponding to the file version
+                        of the xmltree
+    :param logger: logger object for logging warnings, errors
+
+    :returns: tuple of the rotations and their respective shifts
+
+    :raises ValueError: If no symmetryOperations section is included in the xml tree
+    """
+    from masci_tools.util.schema_dict_util import tag_exists, read_constants, evaluate_text, eval_simple_xpath
+    from masci_tools.util.xml.common_functions import clear_xml
+    import numpy as np
+
+    if isinstance(xmltree, etree._ElementTree):
+        xmltree, _ = clear_xml(xmltree)
+        root = xmltree.getroot()
+    else:
+        root = xmltree
+    constants = read_constants(root, schema_dict, logger=logger)
+
+    if not tag_exists(root, schema_dict, 'symmetryOperations', logger=logger):
+        raise ValueError('No explicit symmetry information included in the given XML file')
+
+    ops = eval_simple_xpath(root, schema_dict, 'symOp', logger=logger, list_return=True)
+
+    rotations = []
+    shifts = []
+    for op in ops:
+        row1 = evaluate_text(op, schema_dict, 'row-1', constants=constants, logger=logger)
+        row2 = evaluate_text(op, schema_dict, 'row-2', constants=constants, logger=logger)
+        row3 = evaluate_text(op, schema_dict, 'row-3', constants=constants, logger=logger)
+
+        rot = np.array([row1[:3], row2[:3], row3[:3]]).astype(int)
+        shift = np.array([row1[3], row2[3], row3[3]])
+
+        rotations.append(rot)
+        shifts.append(shift)
+
+    return rotations, shifts
