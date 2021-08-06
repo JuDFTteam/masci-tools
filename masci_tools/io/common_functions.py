@@ -540,6 +540,53 @@ def rel_to_abs_f(vector, cell):
         return False
 
 
+def find_symmetry_relation(from_pos, to_pos, rotations, shifts, cell, relative_pos=False, film=False):
+    """
+    Find symmetry relation between the given vectors. This functions assumes
+    that a symmetry relation exists otherwise an error is raised
+
+    :param from_pos: vector to rotate
+    :param to_pos: vector to rotate to
+    :param rotations: list of np.arrays with the given symmetry rotations
+    :param shifts: list of np.arrays with the given shifts for the symmetry operations
+    :param cell: Bravais matrix of a crystal 3x3 Array, List of list or np.array
+    :param relative_pos: bool if True the given vectors are assuemd to be in internal coordinates
+    :param film: bool if True the vectors are assumed to be film coordinates
+
+    :returns: tuple of rotation and shift mapping ``from_pos`` to ``to_pos``
+
+    :raises ValueError: If no symmetry relation is found
+    """
+    import numpy as np
+
+    def lattice_shifts():
+        for i in range(-2, 3):
+            for j in range(-2, 3):
+                for k in range(-2, 3):
+                    yield np.array([i, j, k], dtype=int)
+
+    if not relative_pos:
+        if film:
+            from_pos = abs_to_rel_f(from_pos, cell, (True, True, False))
+            to_pos = abs_to_rel_f(to_pos, cell, (True, True, False))
+        else:
+            from_pos = abs_to_rel(from_pos, cell)
+            to_pos = abs_to_rel(to_pos, cell)
+
+    cell = np.array(cell)
+    cell_square = np.matmul(cell.T, cell)
+
+    for rot, shift in zip(rotations, shifts):
+        rot_pos = np.matmul(rot, np.array(from_pos)) + shift
+        diff = rot_pos - np.array(to_pos)
+        for shift in lattice_shifts():
+            length = np.sqrt(np.dot(np.matmul(diff + shift, cell_square), diff + shift))
+            if length < 1e-4:
+                return rot, shift
+
+    raise ValueError(f'No symmetry relation found between {from_pos} and {to_pos}')
+
+
 def get_wigner_matrix(l, phi, theta):
     """Produces the wigner rotation matrix for the density matrix
 

@@ -521,7 +521,7 @@ def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True, 
     return parameters
 
 
-def get_structure_data(xmltree, schema_dict, logger=None):
+def get_structure_data(xmltree, schema_dict, include_relaxations=True, logger=None):
     """
     Get the structure defined in the given fleur xml file.
 
@@ -532,6 +532,8 @@ def get_structure_data(xmltree, schema_dict, logger=None):
     :param xmltree: etree representing the fleur xml file
     :param schema_dict: schema dictionary corresponding to the file version
                         of the xmltree
+    :param include_relaxations: bool if True and a relaxation section is included
+                                the resulting positions correspond to the relaxed structure
     :param logger: logger object for logging warnings, errors
 
     :returns: tuple containing the structure information
@@ -543,10 +545,11 @@ def get_structure_data(xmltree, schema_dict, logger=None):
         3. :pbc: list of booleans, determines in which directions periodic boundary conditions are applicable
 
     """
-    from masci_tools.util.schema_dict_util import read_constants, eval_simple_xpath
+    from masci_tools.util.schema_dict_util import read_constants, eval_simple_xpath, tag_exists
     from masci_tools.util.schema_dict_util import evaluate_text, evaluate_attribute
     from masci_tools.util.xml.common_functions import clear_xml
-    from masci_tools.io.common_functions import rel_to_abs, rel_to_abs_f
+    from masci_tools.io.common_functions import rel_to_abs, rel_to_abs_f, abs_to_rel, abs_to_rel_f, find_symmetry_relation
+    import numpy as np
 
     if isinstance(xmltree, etree._ElementTree):
         xmltree, _ = clear_xml(xmltree)
@@ -583,7 +586,23 @@ def get_structure_data(xmltree, schema_dict, logger=None):
 
     atom_data = []
     atom_groups = eval_simple_xpath(root, schema_dict, 'atomGroup', list_return=True, logger=logger)
-    for group in atom_groups:
+
+    #Read relaxation information if available
+    displacements = None
+    if include_relaxations and schema_dict.inp_version >= (0, 29):
+        if tag_exists(root, schema_dict, 'relaxation', logger=logger):
+            relax_info = get_relaxation_information(root, schema_dict, logger=logger)
+            #We still read in the normal atom positions since the displacements are provided
+            #per atomtype
+            displacements = relax_info['displacements']
+            rotations, shifts = get_symmetry_information(root, schema_dict, logger=logger)
+
+            if len(displacements) != len(species_names):
+                raise ValueError(
+                    f'Did not get the right number of relaxed positions. Expected {len(species_names)} got {len(displacements)}'
+                )
+
+    for indx, group in enumerate(atom_groups):
 
         group_species = evaluate_attribute(group, schema_dict, 'species', constants=constants, logger=logger)
 
@@ -621,6 +640,40 @@ def get_structure_data(xmltree, schema_dict, logger=None):
 
         if len(atom_positions) == 0:
             raise ValueError('Failed to read atom positions for group')
+
+        if displacements:
+            representative_pos = atom_positions[0]
+            if len(film_positions) != 0:
+                rel_displace = abs_to_rel_f(displacements[indx], cell, pbc)
+                rel_representative_pos = abs_to_rel_f(representative_pos, cell, pbc)
+            else:
+                rel_displace = abs_to_rel(displacements[indx], cell)
+                rel_representative_pos = abs_to_rel(representative_pos, cell)
+
+            rel_displace = np.array(rel_displace)
+            rel_representative_pos = np.array(rel_representative_pos)
+
+            for pos_indx, pos in enumerate(atom_positions):
+                rot, shift = find_symmetry_relation(representative_pos,
+                                                    pos,
+                                                    rotations,
+                                                    shifts,
+                                                    cell,
+                                                    relative_pos=False,
+                                                    film=len(film_positions) != 0)
+
+                #More explicit than it needs to be
+                #but analogous to fleur
+                rot_pos = np.matmul(rot, rel_representative_pos) + shift
+                site_displace = np.matmul(rot, rel_representative_pos + rel_displace) + shift
+                site_displace = site_displace - rot_pos
+
+                if len(film_positions) != 0:
+                    site_displace = rel_to_abs_f(site_displace, cell)
+                else:
+                    site_displace = rel_to_abs(site_displace, cell)
+
+                atom_positions[pos_indx] = list(np.array(atom_positions[pos_indx]) + np.array(site_displace))
 
         atom_data.extend((pos, species_dict[group_species]) for pos in atom_positions)
 

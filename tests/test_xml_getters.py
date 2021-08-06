@@ -32,6 +32,7 @@ TEST_RELAX_INPXML_PATH = os.path.join(inpxmlfilefolder, 'files/fleur/Max-R5/GaAs
 TEST_RELAX_OUTXML_PATH = os.path.join(inpxmlfilefolder, 'files/fleur/Max-R5/GaAsMultiUForceXML/files/out.xml')
 TEST_RELAX_RELAXXML_PATH = os.path.join(inpxmlfilefolder, 'files/fleur/Max-R5/GaAsMultiUForceXML/files/relax.xml')
 TEST_NO_SYMMETRY_PATH = os.path.join(inpxmlfilefolder, 'files/fleur/aiida_fleur/inpxml/Fe_fccXML/files/inp.xml')
+TEST_WITH_RELAX_INPXML_PATH = os.path.join(inpxmlfilefolder, 'files/fleur/Max-R5/H2ORelaxBFGS/files/inp.xml')
 
 inpxmlfilelist = []
 inpxmlfilelist_content = []
@@ -232,6 +233,30 @@ def test_get_structure_bulk(load_inpxml, data_regression):
     from masci_tools.io.common_functions import convert_to_pystd
 
     xmltree, schema_dict = load_inpxml(TEST_BULK_INPXML_PATH)
+
+    atoms, cell, pbc = get_structure_data(xmltree, schema_dict)
+
+    data_regression.check({'atoms': convert_to_pystd(atoms), 'cell': convert_to_pystd(cell), 'pbc': pbc})
+
+
+def test_get_structure_no_relaxed(load_inpxml, data_regression):
+
+    from masci_tools.util.xml.xml_getters import get_structure_data
+    from masci_tools.io.common_functions import convert_to_pystd
+
+    xmltree, schema_dict = load_inpxml(TEST_WITH_RELAX_INPXML_PATH)
+
+    atoms, cell, pbc = get_structure_data(xmltree, schema_dict, include_relaxations=False)
+
+    data_regression.check({'atoms': convert_to_pystd(atoms), 'cell': convert_to_pystd(cell), 'pbc': pbc})
+
+
+def test_get_structure_relaxed(load_inpxml, data_regression):
+
+    from masci_tools.util.xml.xml_getters import get_structure_data
+    from masci_tools.io.common_functions import convert_to_pystd
+
+    xmltree, schema_dict = load_inpxml(TEST_WITH_RELAX_INPXML_PATH)
 
     atoms, cell, pbc = get_structure_data(xmltree, schema_dict)
 
