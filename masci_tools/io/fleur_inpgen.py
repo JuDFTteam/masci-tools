@@ -427,7 +427,7 @@ def read_inpgen_file(file):
     """
     Method which reads in an inpgen input file and parses the structure and name lists information.
 
-    :param filepath (str, path): path to the file to read or opened file handle
+    :param file: path to the file to read or opened file handle
     """
     pbc = (True, True, True)
     input_params = {}
