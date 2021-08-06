@@ -297,7 +297,7 @@ def test_write_inpgen_file_x_and_bunchatom(file_regression):
 def test_read_inpgen_file(data_regression):
     from masci_tools.io.fleur_inpgen import read_inpgen_file
 
-    TESTFILE = 'test_io_fleur_inpgen/test_write_inpgen_file_defaults.txt'
+    TESTFILE = 'test_io_fleur_inpgen/test_write_inpgen_file_defaults_dict.txt'
 
     cell, atoms_dict_list, kind_list, pbc, input_params = read_inpgen_file(TESTFILE)
 
