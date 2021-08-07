@@ -15,6 +15,7 @@ This module contains functionality for writing input files for the input generat
 """
 import io
 import numpy as np
+import os
 
 from masci_tools.util.constants import PERIODIC_TABLE_ELEMENTS, BOHR_A
 from masci_tools.util.xml.converters import convert_to_fortran_bool, convert_from_fortran_bool
@@ -462,8 +463,11 @@ def read_inpgen_file(file):
     if isinstance(file, io.IOBase):
         contents = file.read()
     else:
-        with open(file, 'r') as f:
-            contents = f.read()
+        if os.path.exists(file):
+            with open(file, 'r') as f:
+                contents = f.read()
+        else:
+            contents = file
 
     content_lines = contents.split('\n')
     # The first line is the title

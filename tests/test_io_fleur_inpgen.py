@@ -308,6 +308,38 @@ def test_read_inpgen_file(data_regression):
         'params': convert_to_pystd(input_params)
     })
 
+def test_read_inpgen_file_contents(data_regression):
+    from masci_tools.io.fleur_inpgen import read_inpgen_file
+
+    TESTFILE = 'test_io_fleur_inpgen/test_write_inpgen_file_defaults_dict.txt'
+
+    with open(TESTFILE,'r') as f:
+        content = f.read()
+
+    cell, atom_sites, pbc, input_params = read_inpgen_file(content)
+
+    data_regression.check({
+        'cell': convert_to_pystd(cell),
+        'atom_sites': [tuple(convert_to_pystd(site)) for site in atom_sites],
+        'pbc': pbc,
+        'params': convert_to_pystd(input_params)
+    })
+
+def test_read_inpgen_file_handle(data_regression):
+    from masci_tools.io.fleur_inpgen import read_inpgen_file
+
+    TESTFILE = 'test_io_fleur_inpgen/test_write_inpgen_file_defaults_dict.txt'
+
+    with open(TESTFILE,'r') as f:
+        cell, atom_sites, pbc, input_params = read_inpgen_file(f)
+
+    data_regression.check({
+        'cell': convert_to_pystd(cell),
+        'atom_sites': [tuple(convert_to_pystd(site)) for site in atom_sites],
+        'pbc': pbc,
+        'params': convert_to_pystd(input_params)
+    })
+
 
 def test_read_inpgen_file_parameters(data_regression):
     from masci_tools.io.fleur_inpgen import read_inpgen_file
