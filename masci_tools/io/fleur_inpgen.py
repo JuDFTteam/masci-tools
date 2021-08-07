@@ -50,6 +50,7 @@ REPLACER_VALUES_BOOL = [True, False, 'True', 'False', 't', 'T', 'F', 'f']
 def write_inpgen_file(cell,
                       atom_sites,
                       kinds=None,
+                      return_contents=False,
                       file='inpgen.in',
                       pbc=(True, True, True),
                       input_params=None,
@@ -347,13 +348,16 @@ def write_inpgen_file(cell,
 
     inpgen_file_content = ''.join(inpgen_file_content)
 
-    if isinstance(file, io.IOBase):
-        file.write(inpgen_file_content)
-    else:
-        with open(file, 'w') as inpfile:
-            inpfile.write(inpgen_file_content)
+    if not return_contents:
+        if isinstance(file, io.IOBase):
+            file.write(inpgen_file_content)
+        else:
+            with open(file, 'w') as inpfile:
+                inpfile.write(inpgen_file_content)
 
-    return report
+        return report
+    else:
+        return inpgen_file_content
 
 
 def get_input_data_text(key, val, value_only, mapping=None):

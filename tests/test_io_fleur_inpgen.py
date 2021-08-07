@@ -29,6 +29,25 @@ def test_write_inpgen_file_defaults_dict(file_regression):
 
     file_regression.check(content)
 
+def test_write_inpgen_file_defaults_str(file_regression):
+
+    from masci_tools.io.fleur_inpgen import write_inpgen_file
+
+    param = 5.43
+    cell = [[0, param / 2., param / 2.], [param / 2., 0, param / 2.], [param / 2., param / 2., 0]]
+    kinds = [{'symbols': ('Si',), 'weights': (1.0,), 'mass': 28.0855, 'name': 'Si'}]
+    sites = [{
+        'position': (0.0, 0.0, 0.0),
+        'kind_name': 'Si'
+    }, {
+        'position': (1.3575, 1.3575, 1.3575),
+        'kind_name': 'Si'
+    }]
+
+    content = write_inpgen_file(cell, sites, kinds, return_contents=True)
+    file_regression.check(content)
+
+
 
 def test_write_inpgen_file_defaults_tuple(file_regression):
 
