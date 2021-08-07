@@ -29,6 +29,7 @@ def test_write_inpgen_file_defaults_dict(file_regression):
 
     file_regression.check(content)
 
+
 def test_write_inpgen_file_defaults_str(file_regression):
 
     from masci_tools.io.fleur_inpgen import write_inpgen_file
@@ -46,7 +47,6 @@ def test_write_inpgen_file_defaults_str(file_regression):
 
     content = write_inpgen_file(cell, sites, kinds, return_contents=True)
     file_regression.check(content)
-
 
 
 def test_write_inpgen_file_defaults_tuple(file_regression):
@@ -327,12 +327,13 @@ def test_read_inpgen_file(data_regression):
         'params': convert_to_pystd(input_params)
     })
 
+
 def test_read_inpgen_file_contents(data_regression):
     from masci_tools.io.fleur_inpgen import read_inpgen_file
 
     TESTFILE = 'test_io_fleur_inpgen/test_write_inpgen_file_defaults_dict.txt'
 
-    with open(TESTFILE,'r') as f:
+    with open(TESTFILE, 'r') as f:
         content = f.read()
 
     cell, atom_sites, pbc, input_params = read_inpgen_file(content)
@@ -344,12 +345,13 @@ def test_read_inpgen_file_contents(data_regression):
         'params': convert_to_pystd(input_params)
     })
 
+
 def test_read_inpgen_file_handle(data_regression):
     from masci_tools.io.fleur_inpgen import read_inpgen_file
 
     TESTFILE = 'test_io_fleur_inpgen/test_write_inpgen_file_defaults_dict.txt'
 
-    with open(TESTFILE,'r') as f:
+    with open(TESTFILE, 'r') as f:
         cell, atom_sites, pbc, input_params = read_inpgen_file(f)
 
     data_regression.check({

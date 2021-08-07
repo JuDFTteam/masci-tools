@@ -1,6 +1,8 @@
 output_dict: {}
 warnings:
   parser_errors:
+  - Failed to parse output file with recover=False
+  - Failed to parse output file with recover=True
   - Skipping the parsing of the xml file. Repairing was not possible.
   parser_info:
   - Masci-Tools Fleur out.xml Parser v0.5.0

@@ -558,7 +558,6 @@ def find_symmetry_relation(from_pos, to_pos, rotations, shifts, cell, relative_p
 
     :raises ValueError: If no symmetry relation is found
     """
-    import numpy as np
 
     def lattice_shifts():
         for i in range(-2, 3):
@@ -580,8 +579,8 @@ def find_symmetry_relation(from_pos, to_pos, rotations, shifts, cell, relative_p
     for rot, shift in zip(rotations, shifts):
         rot_pos = np.matmul(rot, np.array(from_pos)) + shift
         diff = rot_pos - np.array(to_pos)
-        for shift in lattice_shifts():
-            length = np.sqrt(np.dot(np.matmul(diff + shift, cell_square), diff + shift))
+        for lat_shift in lattice_shifts():
+            length = np.sqrt(np.dot(np.matmul(diff + lat_shift, cell_square), diff + lat_shift))
             if length < 1e-4:
                 return rot, shift
 
