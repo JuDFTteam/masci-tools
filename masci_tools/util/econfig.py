@@ -45,7 +45,7 @@ def get_coreconfig(element, full=False):
     :return: coreconfig string
     """
     econ = get_econfig(element, full=full)
-    return econ.split('|')[0].rstrip() if econ is not None else None
+    return econ.split('|', maxsplit=1)[0].rstrip() if econ is not None else None
 
 
 def rek_econ(econfigstr):

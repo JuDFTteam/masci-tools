@@ -18,7 +18,7 @@ from lxml import etree
 import warnings
 import io
 import os
-import pathlib
+from pathlib import Path
 from functools import partial
 
 
@@ -37,7 +37,7 @@ def load_inpxml(inpxmlfile, logger=None, base_url=None, **kwargs):
 
     if isinstance(inpxmlfile, io.IOBase):
         xml_parse_func = etree.parse
-    elif isinstance(inpxmlfile, (str, bytes, pathlib.Path)):
+    elif isinstance(inpxmlfile, (str, bytes, Path)):
         if os.path.isfile(inpxmlfile):
             xml_parse_func = etree.parse
         else:
@@ -47,6 +47,8 @@ def load_inpxml(inpxmlfile, logger=None, base_url=None, **kwargs):
                               'Setting it to the current working directory.'
                               'If the tree contains xinclude tags these could fail')
                 base_url = os.getcwd()
+            elif isinstance(base_url, Path):
+                base_url = os.fspath(base_url.resolve())
             xml_parse_func = partial(xml_parse_func, base_url=base_url)
 
     if isinstance(inpxmlfile, etree._ElementTree):
@@ -94,7 +96,7 @@ def load_outxml(outxmlfile, logger=None, base_url=None, **kwargs):
 
     if isinstance(outxmlfile, io.IOBase):
         xml_parse_func = etree.parse
-    elif isinstance(outxmlfile, (str, bytes, pathlib.Path)):
+    elif isinstance(outxmlfile, (str, bytes, Path)):
         if os.path.isfile(outxmlfile):
             xml_parse_func = etree.parse
         else:
@@ -104,6 +106,8 @@ def load_outxml(outxmlfile, logger=None, base_url=None, **kwargs):
                               'Setting it to the current working directory.'
                               'If the tree contains xinclude tags these could fail')
                 base_url = os.getcwd()
+            elif isinstance(base_url, Path):
+                base_url = os.fspath(base_url.resolve())
             xml_parse_func = partial(xml_parse_func, base_url=base_url)
 
     outfile_broken = False
