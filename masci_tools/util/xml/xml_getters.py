@@ -278,7 +278,7 @@ def get_nkpts_max4(xmltree, schema_dict, logger=None):
     return nkpts
 
 
-def get_cell(xmltree, schema_dict, logger=None):
+def get_cell(xmltree, schema_dict, logger=None, convert_to_angstroem=True):
     """
     Get the Bravais matrix from the given fleur xml file. In addition a list
     determining in, which directions there are periodic boundary conditions
@@ -292,6 +292,7 @@ def get_cell(xmltree, schema_dict, logger=None):
     :param schema_dict: schema dictionary corresponding to the file version
                         of the xmltree
     :param logger: logger object for logging warnings, errors
+    :param convert_to_angstroem: bool if True the bravais matrix is converted to angstroem
 
     :returns: numpy array of the bravais matrix and list of boolean values for
               periodic boundary conditions
@@ -342,7 +343,9 @@ def get_cell(xmltree, schema_dict, logger=None):
                              optional=True)
 
         if all(x is not None and x != [] for x in [row1, row2, row3]):
-            cell = np.array([row1, row2, row3]) * BOHR_A
+            cell = np.array([row1, row2, row3])
+            if convert_to_angstroem:
+                cell *= BOHR_A
 
     if cell is None:
         raise ValueError('Could not extract Bravais matrix out of inp.xml. Is the '
@@ -521,7 +524,7 @@ def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True, 
     return parameters
 
 
-def get_structure_data(xmltree, schema_dict, include_relaxations=True, site_namedtuple=False, logger=None):
+def get_structure_data(xmltree, schema_dict, include_relaxations=True, site_namedtuple=False, convert_to_angstroem=True, logger=None):
     """
     Get the structure defined in the given fleur xml file.
 
@@ -550,6 +553,7 @@ def get_structure_data(xmltree, schema_dict, include_relaxations=True, site_name
     :param include_relaxations: bool if True and a relaxation section is included
                                 the resulting positions correspond to the relaxed structure
     :param logger: logger object for logging warnings, errors
+    :param convert_to_angstroem: bool if True the bravais matrix is converted to angstroem
 
     :returns: tuple containing the structure information
 
@@ -565,6 +569,7 @@ def get_structure_data(xmltree, schema_dict, include_relaxations=True, site_name
     from masci_tools.util.xml.common_functions import clear_xml
     from masci_tools.io.common_functions import rel_to_abs, rel_to_abs_f, abs_to_rel, abs_to_rel_f
     from masci_tools.io.common_functions import find_symmetry_relation, AtomSiteProperties
+    from masci_tools.util.constants import BOHR_A
     import numpy as np
 
     if not site_namedtuple:
@@ -579,7 +584,7 @@ def get_structure_data(xmltree, schema_dict, include_relaxations=True, site_name
     else:
         root = xmltree
     constants = read_constants(root, schema_dict, logger=logger)
-    cell, pbc = get_cell(root, schema_dict, logger=logger)
+    cell, pbc = get_cell(root, schema_dict, logger=logger, convert_to_angstroem=convert_to_angstroem)
 
     species_names = evaluate_attribute(root,
                                        schema_dict,
@@ -617,6 +622,8 @@ def get_structure_data(xmltree, schema_dict, include_relaxations=True, site_name
             #We still read in the normal atom positions since the displacements are provided
             #per atomtype
             displacements = relax_info['displacements']
+            if convert_to_angstroem:
+                displacements = [np.array(displace)*BOHR_A for displace in displacements]
             rotations, shifts = get_symmetry_information(root, schema_dict, logger=logger)
 
             if len(displacements) != len(species_names):
@@ -652,7 +659,10 @@ def get_structure_data(xmltree, schema_dict, include_relaxations=True, site_name
                                        logger=logger,
                                        optional=True)
 
-        atom_positions = absolute_positions
+        if convert_to_angstroem:
+            atom_positions = [list(np.array(pos) * BOHR_A) for pos in absolute_positions]
+        else:
+            atom_positions = absolute_positions
 
         for rel_pos in relative_positions:
             atom_positions.append(rel_to_abs(rel_pos, cell))
@@ -665,6 +675,7 @@ def get_structure_data(xmltree, schema_dict, include_relaxations=True, site_name
 
         if displacements:
             representative_pos = atom_positions[0]
+
             if len(film_positions) != 0:
                 rel_displace = abs_to_rel_f(displacements[indx], cell, pbc)
                 rel_representative_pos = abs_to_rel_f(representative_pos, cell, pbc)
@@ -672,7 +683,6 @@ def get_structure_data(xmltree, schema_dict, include_relaxations=True, site_name
                 rel_displace = abs_to_rel(displacements[indx], cell)
                 rel_representative_pos = abs_to_rel(representative_pos, cell)
 
-            rel_displace = np.array(rel_displace)
             rel_representative_pos = np.array(rel_representative_pos)
 
             for pos_indx, pos in enumerate(atom_positions):
@@ -708,7 +718,7 @@ def get_structure_data(xmltree, schema_dict, include_relaxations=True, site_name
 
 
 @schema_dict_version_dispatch(output_schema=False)
-def get_kpoints_data(xmltree, schema_dict, name=None, index=None, logger=None):
+def get_kpoints_data(xmltree, schema_dict, name=None, index=None, logger=None, convert_to_angstroem=True):
     """
     Get the kpoint sets defined in the given fleur xml file.
 
@@ -723,6 +733,7 @@ def get_kpoints_data(xmltree, schema_dict, name=None, index=None, logger=None):
     :param index: int, optional, if given only the kpoint set with the given index
                   is returned
     :param logger: logger object for logging warnings, errors
+    :param convert_to_angstroem: bool if True the bravais matrix is converted to angstroem
 
     :returns: tuple containing the kpoint information
 
@@ -751,7 +762,7 @@ def get_kpoints_data(xmltree, schema_dict, name=None, index=None, logger=None):
 
     constants = read_constants(root, schema_dict, logger=logger)
 
-    cell, pbc = get_cell(root, schema_dict, logger=logger)
+    cell, pbc = get_cell(root, schema_dict, logger=logger, convert_to_angstroem=convert_to_angstroem)
 
     kpointlists = eval_simple_xpath(root, schema_dict, 'kPointList', list_return=True, logger=logger)
 
@@ -800,7 +811,7 @@ def get_kpoints_data(xmltree, schema_dict, name=None, index=None, logger=None):
 
 
 @get_kpoints_data.register(max_version='0.31')
-def get_kpoints_data_max4(xmltree, schema_dict, logger=None):
+def get_kpoints_data_max4(xmltree, schema_dict, logger=None, convert_to_angstroem=True):
     """
     Get the kpoint sets defined in the given fleur xml file.
 
@@ -812,6 +823,7 @@ def get_kpoints_data_max4(xmltree, schema_dict, logger=None):
     :param schema_dict: schema dictionary corresponding to the file version
                         of the xmltree
     :param logger: logger object for logging warnings, errors
+    :param convert_to_angstroem: bool if True the bravais matrix is converted to angstroem
 
     :returns: tuple containing the kpoint information
 
@@ -835,7 +847,7 @@ def get_kpoints_data_max4(xmltree, schema_dict, logger=None):
 
     constants = read_constants(root, schema_dict, logger=logger)
 
-    cell, pbc = get_cell(root, schema_dict, logger=logger)
+    cell, pbc = get_cell(root, schema_dict, logger=logger, convert_to_angstroem=convert_to_angstroem)
 
     kpointlist = eval_simple_xpath(root,
                                    schema_dict,
