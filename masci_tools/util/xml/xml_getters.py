@@ -319,14 +319,14 @@ def get_cell(xmltree, schema_dict, logger=None, convert_to_angstroem=True):
         lattice_tag = eval_simple_xpath(root, schema_dict, 'filmLattice', logger=logger)
         pbc = [True, True, False]
 
-    lattice_scale = evaluate_attribute(lattice_tag,
-                                       schema_dict,
-                                       'scale',
-                                       constants=constants,
-                                       logger=logger,
-                                       not_contains={'/a', 'c/'})
-
     if lattice_tag is not None:
+        lattice_scale = evaluate_attribute(lattice_tag,
+                                           schema_dict,
+                                           'scale',
+                                           constants=constants,
+                                           logger=logger,
+                                           not_contains={'/a', 'c/'})
+
         row1 = evaluate_text(lattice_tag,
                              schema_dict,
                              'row-1',
