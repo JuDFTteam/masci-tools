@@ -529,6 +529,21 @@ def get_structure_data(xmltree, schema_dict, include_relaxations=True, site_name
         Only the explicit definition of the Bravais matrix is supported.
         Old inputs containing the `latnam` definitions are not supported
 
+    .. warning::
+        In versions after ``0.4.11`` the output of the atom sites was restructured
+        to be more interoperable with other IO functions (e.g. :py:func:`~masci_tools.io.fleur_ingpen.write_inpgen_file()`)
+        The new format returns a list of :py:class:`~masci_tools.io.common_functions.AtomSiteProperties`
+        instead of the list of tuples (position, symbol)
+
+        For better compatibility this output is not default in ``0.4.11`` but instead
+        is enabled by ``site_namedtuple=True`` and a DeprecationWarning is given when
+        this argument is ``False``.
+
+    .. note::
+        In versions after ``0.4.11`` the returned atom positions correspond to the relaxed
+        structure if a ``relaxation`` section is present in the xmltree
+
+
     :param xmltree: etree representing the fleur xml file
     :param schema_dict: schema dictionary corresponding to the file version
                         of the xmltree
@@ -555,7 +570,8 @@ def get_structure_data(xmltree, schema_dict, include_relaxations=True, site_name
     if not site_namedtuple:
         warnings.warn(
             'Output of atom positions in pure tuples of the form (position, symbol) is deprecated.'
-            'Please adjust your code to use the namedtuple with the fields (position, symbol, kind)',
+            'Please adjust your code to use the namedtuple AtomSiteProperties (see masci_tools.io.common_functions)'
+            ' with the fields (position, symbol, kind)',
             DeprecationWarning)
 
     if isinstance(xmltree, etree._ElementTree):
