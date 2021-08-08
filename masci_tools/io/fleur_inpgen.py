@@ -16,6 +16,7 @@ This module contains functionality for writing input files for the input generat
 import io
 import numpy as np
 import os
+import copy
 import warnings
 
 from masci_tools.util.constants import PERIODIC_TABLE_ELEMENTS, BOHR_A
@@ -179,6 +180,7 @@ def write_inpgen_file(cell,
     if 'title' in list(input_params.keys()):
         _inp_title = input_params.pop('title')
 
+    input_params = copy.deepcopy(input_params)
     # TODO validate type of values of the input parameter keys ?
     # check input_parameters
     for namelist, paramdic in input_params.items():

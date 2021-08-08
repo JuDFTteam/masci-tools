@@ -430,9 +430,13 @@ def convert_to_fortran_string(string):
     """
     converts some parameter strings to the format for the inpgen
     :param string: some string
-    :returns: string in right format (extra "")
+    :returns: string in right format (extra "" if not already present)
     """
-    return f'"{string}"'
+    if not string.strip().startswith("\"") or \
+       not string.strip().endswith("\""):
+        return f'"{string}"'
+    else:
+        return string
 
 
 def is_sequence(arg):
