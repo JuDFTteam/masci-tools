@@ -17,9 +17,6 @@ of fleur in a robust way.
 Essentially a low-level version of the FleurinpModifier in aiida_fleur.
 """
 from collections import namedtuple
-from lxml import etree
-import os
-import io
 
 from masci_tools.util.xml.collect_xml_setters import XPATH_SETTERS, SCHEMA_DICT_SETTERS, NMMPMAT_SETTERS
 from masci_tools.io.io_fleurxml import load_inpxml
