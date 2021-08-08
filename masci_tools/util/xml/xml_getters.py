@@ -298,7 +298,7 @@ def get_cell(xmltree, schema_dict, logger=None, convert_to_angstroem=True):
               periodic boundary conditions
     """
     from masci_tools.util.schema_dict_util import read_constants, eval_simple_xpath
-    from masci_tools.util.schema_dict_util import evaluate_text, tag_exists
+    from masci_tools.util.schema_dict_util import evaluate_text, tag_exists, evaluate_attribute
     from masci_tools.util.xml.common_functions import clear_xml
     from masci_tools.util.constants import BOHR_A
     import numpy as np
@@ -318,6 +318,13 @@ def get_cell(xmltree, schema_dict, logger=None, convert_to_angstroem=True):
     elif tag_exists(root, schema_dict, 'filmLattice', logger=logger):
         lattice_tag = eval_simple_xpath(root, schema_dict, 'filmLattice', logger=logger)
         pbc = [True, True, False]
+
+    lattice_scale = evaluate_attribute(lattice_tag,
+                                       schema_dict,
+                                       'scale',
+                                       constants=constants,
+                                       logger=logger,
+                                       not_contains={'/a', 'c/'})
 
     if lattice_tag is not None:
         row1 = evaluate_text(lattice_tag,
@@ -343,7 +350,7 @@ def get_cell(xmltree, schema_dict, logger=None, convert_to_angstroem=True):
                              optional=True)
 
         if all(x is not None and x != [] for x in [row1, row2, row3]):
-            cell = np.array([row1, row2, row3])
+            cell = np.array([row1, row2, row3]) * lattice_scale
             if convert_to_angstroem:
                 cell *= BOHR_A
 
