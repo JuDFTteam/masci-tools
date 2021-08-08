@@ -16,6 +16,7 @@ This module contains functionality for writing input files for the input generat
 import io
 import numpy as np
 import os
+import warnings
 
 from masci_tools.util.constants import PERIODIC_TABLE_ELEMENTS, BOHR_A
 from masci_tools.util.xml.converters import convert_to_fortran_bool, convert_from_fortran_bool
@@ -451,11 +452,14 @@ def conv_to_fortran(val, quote_strings=True):
     return val_str
 
 
-def read_inpgen_file(file):
+def read_inpgen_file(file, convert_to_angstroem=True):
     """
     Method which reads in an inpgen input file and parses the structure and name lists information.
 
     :param file: path to the file to read or opened file handle
+    :param convert_to_angstroem: bool if True the bravais matrix (and atom positions) are converted to angstroem
+
+    :returns: tuple of bravais matrix, atom sites, periodic boundary conditions and parameters
     """
     pbc = (True, True, True)
     input_params = {}
@@ -569,8 +573,12 @@ def read_inpgen_file(file):
 
         cell *= global_scaling
         cell = cell * column_scaling
+        if convert_to_angstroem:
+            cell *= BOHR_A
     else:
         atom_information = lattice_information
+        warnings.warn('Lattice was specified via the &lattice namelist',
+                      'Atom positions will be returned as relative positions')
 
     if len(atom_information) <= 1:
         raise ValueError('Too few lines found for atom information')
@@ -583,10 +591,11 @@ def read_inpgen_file(file):
         element = PERIODIC_TABLE_ELEMENTS[int(nz)]['symbol']
         pos = np.array([float(val) for val in atom_info[1:4]])
 
-        if film:
-            pos = rel_to_abs_f(pos, cell)
-        else:
-            pos = rel_to_abs(pos, cell)
+        if cell is not None:
+            if film:
+                pos = rel_to_abs_f(pos, cell)
+            else:
+                pos = rel_to_abs(pos, cell)
 
         kind_name = None
         if add_id:
