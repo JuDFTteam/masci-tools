@@ -524,7 +524,12 @@ def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True, 
     return parameters
 
 
-def get_structure_data(xmltree, schema_dict, include_relaxations=True, site_namedtuple=False, convert_to_angstroem=True, logger=None):
+def get_structure_data(xmltree,
+                       schema_dict,
+                       include_relaxations=True,
+                       site_namedtuple=False,
+                       convert_to_angstroem=True,
+                       logger=None):
     """
     Get the structure defined in the given fleur xml file.
 
@@ -623,7 +628,7 @@ def get_structure_data(xmltree, schema_dict, include_relaxations=True, site_name
             #per atomtype
             displacements = relax_info['displacements']
             if convert_to_angstroem:
-                displacements = [np.array(displace)*BOHR_A for displace in displacements]
+                displacements = [np.array(displace) * BOHR_A for displace in displacements]
             rotations, shifts = get_symmetry_information(root, schema_dict, logger=logger)
 
             if len(displacements) != len(species_names):
