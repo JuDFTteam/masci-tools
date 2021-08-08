@@ -27,9 +27,9 @@ params:
     lnonsph: 6
     rmt: 2.1
   comp:
-    gmax: 15
+    gmax: 15.0
     gmaxxc: 12.5
-    kmax: 5
+    kmax: 5.0
   input:
     cartesian: false
   kpt:

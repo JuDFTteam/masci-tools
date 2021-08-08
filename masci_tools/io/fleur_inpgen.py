@@ -553,8 +553,9 @@ def read_inpgen_file(file, convert_to_angstroem=True):
                 value = pval[1]
 
             if value.replace('.', '').isnumeric():
-                value = float(value)
-                if value.is_integer():
+                if '.' in value:
+                    value = float(value)
+                else:
                     value = int(value)
             elif value in REPLACER_VALUES_BOOL:
                 value = convert_from_fortran_bool(value)

@@ -26,9 +26,9 @@ cell:
   - 13.349076054650814
 params:
   comp:
-    gmax: 15
+    gmax: 15.0
     gmaxxc: 12.5
-    kmax: 5
+    kmax: 5.0
   input:
     cartesian: false
     film: true
