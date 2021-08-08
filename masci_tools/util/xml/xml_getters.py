@@ -531,7 +531,7 @@ def get_structure_data(xmltree, schema_dict, include_relaxations=True, site_name
 
     .. warning::
         In versions after ``0.4.11`` the output of the atom sites was restructured
-        to be more interoperable with other IO functions (e.g. :py:func:`~masci_tools.io.fleur_ingpen.write_inpgen_file()`)
+        to be more interoperable with other IO functions (e.g. :py:func:`~masci_tools.io.fleur_inpgen.write_inpgen_file()`)
         The new format returns a list of :py:class:`~masci_tools.io.common_functions.AtomSiteProperties`
         instead of the list of tuples (position, symbol)
 
@@ -571,8 +571,7 @@ def get_structure_data(xmltree, schema_dict, include_relaxations=True, site_name
         warnings.warn(
             'Output of atom positions in pure tuples of the form (position, symbol) is deprecated.'
             'Please adjust your code to use the namedtuple AtomSiteProperties (see masci_tools.io.common_functions)'
-            ' with the fields (position, symbol, kind)',
-            DeprecationWarning)
+            ' with the fields (position, symbol, kind)', DeprecationWarning)
 
     if isinstance(xmltree, etree._ElementTree):
         xmltree, _ = clear_xml(xmltree)
