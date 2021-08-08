@@ -11,6 +11,7 @@ all_econfig = [
 states_spin = {'s': ['1/2'], 'p': ['1/2', '3/2'], 'd': ['3/2', '5/2'], 'f': ['5/2', '7/2']}
 max_state_occ = {'s': 2., 'p': 6., 'd': 10., 'f': 14.}
 max_state_occ_spin = {'1/2': 2., '3/2': 4., '5/2': 6., '7/2': 8.}
+ATOMIC_NAMES = {data['symbol']: num for num, data in PERIODIC_TABLE_ELEMENTS.items()}
 
 
 def get_econfig(element, full=False):
@@ -24,13 +25,12 @@ def get_econfig(element, full=False):
     if isinstance(element, int):
         econ = PERIODIC_TABLE_ELEMENTS.get(element, {}).get('econfig')
     elif isinstance(element, str):
-        atomic_names = {data['symbol']: num for num, data in PERIODIC_TABLE_ELEMENTS.items()}
-        element_num = atomic_names.get(element, None)
+        element_num = ATOMIC_NAMES.get(element, None)
         econ = PERIODIC_TABLE_ELEMENTS.get(element_num, {}).get('econfig')
     else:
         raise ValueError('element has to be and int or string')
 
-    if full:
+    if full and econ is not None:
         econ = rek_econ(econ)
 
     return econ
@@ -45,7 +45,7 @@ def get_coreconfig(element, full=False):
     :return: coreconfig string
     """
     econ = get_econfig(element, full=full)
-    return econ.split('|')[0].rstrip()
+    return econ.split('|')[0].rstrip() if econ is not None else None
 
 
 def rek_econ(econfigstr):
