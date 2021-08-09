@@ -150,7 +150,7 @@ def xml_set_attrib_value(xmltree,
     on all nodes returned for the specified xpath.
     If there are no nodes under the specified xpath a tag can be created with `create=True`.
     The attribute values are converted automatically according to the types of the attribute
-    with :py:func:`~masci_tools.util.xml.converters.convert_attribute_to_xml()` if they
+    with :py:func:`~masci_tools.util.xml.converters.convert_to_xml()` if they
     are not `str` already.
 
     :param xmltree: an xmltree that represents inp.xml
@@ -210,7 +210,7 @@ def xml_set_first_attrib_value(xmltree, schema_dict, xpath, base_xpath, attribut
     Sets the first occurrence attribute in a xmltree to a given value.
     If there are no nodes under the specified xpath a tag can be created with `create=True`.
     The attribute values are converted automatically according to the types of the attribute
-    with :py:func:`~masci_tools.util.xml.converters.convert_attribute_to_xml()` if they
+    with :py:func:`~masci_tools.util.xml.converters.convert_to_xml()` if they
     are not `str` already.
 
     :param xmltree: an xmltree that represents inp.xml
@@ -244,7 +244,7 @@ def xml_set_text(xmltree, schema_dict, xpath, base_xpath, text, occurrences=None
     on all nodes returned for the specified xpath.
     If there are no nodes under the specified xpath a tag can be created with `create=True`.
     The text values are converted automatically according to the types
-    with :py:func:`~masci_tools.util.xml.converters.convert_text_to_xml()` if they
+    with :py:func:`~masci_tools.util.xml.converters.convert_to_xml()` if they
     are not `str` already.
 
     :param xmltree: an xmltree that represents inp.xml
@@ -293,7 +293,7 @@ def xml_set_first_text(xmltree, schema_dict, xpath, base_xpath, text, create=Fal
     Sets the text on the first occurrence of a tag in a xmltree to a given value.
     If there are no nodes under the specified xpath a tag can be created with `create=True`.
     The text values are converted automatically according to the types
-    with :py:func:`~masci_tools.util.xml.converters.convert_text_to_xml()` if they
+    with :py:func:`~masci_tools.util.xml.converters.convert_to_xml()` if they
     are not `str` already.
 
     :param xmltree: an xmltree that represents inp.xml
