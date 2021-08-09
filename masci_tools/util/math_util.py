@@ -12,20 +12,20 @@
 ###############################################################################
 """Convenience tools only for mathematical operations (numpy etc.)."""
 
-from typing import Union as _Union
+import typing as _typing
 
 import numpy as _np
 
 
 def set_zero_below_threshold(array: _np.ndarray,
                              threshold: float = None,
-                             inplace: bool = True) -> _Union[None, _np.ndarray]:
+                             inplace: bool = True) -> _typing.Optional[_np.ndarray]:
     """Set array elements below threshold to zero.
     :param array: numpy array
     :param threshold: if None, use machine epsilon
     :param inplace: True: return None, False: return copy.
     """
-    threshold = threshold if threshold else _np.finfo(float).eps
+    threshold = threshold or _np.finfo(float).eps
     if inplace:
         array[_np.abs(array) < threshold] = 0
     else:
@@ -89,10 +89,9 @@ def drop_values(array: _np.ndarray, *args, **kwargs) -> _np.ndarray:
     if 'le' in kwargs:
         masks.append(array > kwargs['le'])
 
-    if masks:
-        if len(masks) == 1:
-            return array[tuple(masks)]
-        else:  # > 1
-            return array[_np.logical_and(*masks)]
-    else:
+    if not masks:
         return array
+    if len(masks) == 1:
+        return array[tuple(masks)]
+    else:  # > 1
+        return array[_np.logical_and(*masks)]
