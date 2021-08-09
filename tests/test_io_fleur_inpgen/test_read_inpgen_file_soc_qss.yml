@@ -1,0 +1,45 @@
+atom_sites:
+- - - 0.0
+    - 0.0
+    - 0.0
+  - Si
+  - Si
+- - - 1.3574999999053843
+    - 1.3574999999053843
+    - 1.3574999999053843
+  - Si
+  - Si
+cell:
+- - 0.0
+  - 2.7149999998107686
+  - 2.7149999998107686
+- - 2.7149999998107686
+  - 0.0
+  - 2.7149999998107686
+- - 2.7149999998107686
+  - 2.7149999998107686
+  - 0.0
+params:
+  comp:
+    gmax: 15.0
+    gmaxxc: 12.5
+    kmax: 5.0
+  input:
+    cartesian: false
+  kpt:
+    div1: 17
+    div2: 17
+    div3: 17
+    tkb: 0.0005
+  qss:
+    x: 1.0
+    y: 2.0
+    z: 3.0
+  soc:
+    phi: 1.5707963267948966
+    theta: 3.141592653589793
+  title: A Fleur input generator calculation with aiida
+pbc:
+- true
+- true
+- true

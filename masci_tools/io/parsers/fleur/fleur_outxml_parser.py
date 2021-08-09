@@ -16,8 +16,8 @@ and convert its content to a dict, based on the tasks given
 """
 from masci_tools.util.parse_tasks import ParseTasks
 from masci_tools.util.schema_dict_util import tag_exists, read_constants, eval_simple_xpath, evaluate_attribute
-from masci_tools.util.xml.common_functions import eval_xpath, clear_xml, validate_xml
-from masci_tools.io.parsers.fleur.fleur_schema.schema_dict import OutputSchemaDict
+from masci_tools.util.xml.common_functions import clear_xml, validate_xml
+from masci_tools.io.io_fleurxml import load_outxml
 from masci_tools.util.logging_util import DictHandler, OutParserLogAdapter
 from lxml import etree
 import copy
@@ -31,6 +31,7 @@ def outxml_parser(outxmlfile,
                   iteration_to_parse=None,
                   strict=False,
                   debug=False,
+                  base_url=None,
                   **kwargs):
     """
     Parses the out.xml file to a dictionary based on the version and the given tasks
@@ -97,105 +98,50 @@ def outxml_parser(outxmlfile,
         logger.info('Masci-Tools Fleur out.xml Parser v%s', __parser_version__)
 
     outfile_broken = False
-
-    if isinstance(outxmlfile, etree._ElementTree):
-        xmltree = outxmlfile
-    else:
-        parser = etree.XMLParser(attribute_defaults=True, recover=False, encoding='utf-8')
-
-        try:
-            xmltree = etree.parse(outxmlfile, parser)
-        except etree.XMLSyntaxError:
+    try:
+        xmltree, outschema_dict = load_outxml(outxmlfile, logger=logger, base_url=base_url, recover=False)
+    except ValueError as err:
+        if 'Failed to parse output file' in str(err):
             outfile_broken = True
             if logger is None:
                 warnings.warn('The out.xml file is broken I try to repair it.')
             else:
                 logger.warning('The out.xml file is broken I try to repair it.')
+        else:
+            if logger is not None:
+                logger.error(str(err))
+            raise
 
-        if outfile_broken:
-            # repair xmlfile and try to parse what is possible.
-            parser = etree.XMLParser(attribute_defaults=True, recover=True, encoding='utf-8')
-            try:
-                xmltree = etree.parse(outxmlfile, parser)
-            except etree.XMLSyntaxError:
+    if outfile_broken:
+        try:
+            xmltree, outschema_dict = load_outxml(outxmlfile, logger=logger, base_url=base_url, recover=True)
+        except ValueError as err:
+            if 'Failed to parse output file' in str(err):
                 if logger is None:
-                    raise
+                    raise ValueError('Skipping the parsing of the xml file. Repairing was not possible.') from err
                 else:
                     logger.exception('Skipping the parsing of the xml file. ' 'Repairing was not possible.')
                     return {}
+            if logger is not None:
+                logger.error(str(err))
+            raise
 
-    if version is None:
-        out_version = eval_xpath(xmltree, '//@fleurOutputVersion', logger=logger)
-        out_version = str(out_version)
-        if out_version is None:
-            logger.error('Failed to extract outputVersion')
-            raise ValueError('Failed to extract outputVersion')
+    actual_out_version = evaluate_attribute(xmltree, outschema_dict, 'fleurOutputVersion', logger=logger)
+    if actual_out_version == '0.27':
+        actual_inp_version = actual_out_version
     else:
-        out_version = version
+        actual_inp_version = evaluate_attribute(xmltree, outschema_dict, 'fleurInputVersion', logger=logger)
 
-    if out_version == '0.27':
-        program_version = eval_xpath(xmltree, '//programVersion/@version', logger=logger)
-        if program_version == 'fleur 32':
-            #Max5 release (before bugfix)
-            out_version = '0.33'
-            inp_version = '0.33'
-            ignore_validation = True
-            if logger is not None:
-                logger.warning("Ignoring '0.27' outputVersion for MaX5.0 release")
-            else:
-                warnings.warn("Ignoring '0.27' outputVersion for MaX5.0 release")
-        elif program_version == 'fleur 31':
-            #Max4 release
-            out_version = '0.31'
-            inp_version = '0.31'
-            ignore_validation = True
-            if logger is not None:
-                logger.warning("Ignoring '0.27' outputVersion for MaX4.0 release")
-            else:
-                warnings.warn("Ignoring '0.27' outputVersion for MaX4.0 release")
-        elif program_version == 'fleur 30':
-            #Max3.1 release
-            out_version = '0.30'
-            inp_version = '0.30'
-            ignore_validation = True
-            if logger is not None:
-                logger.warning("Ignoring '0.27' outputVersion for MaX3.1 release")
-            else:
-                warnings.warn("Ignoring '0.27' outputVersion for MaX3.1 release")
-        elif program_version == 'fleur 27':
-            #Max3.1 release
-            out_version = '0.29'
-            inp_version = '0.29'
-            ignore_validation = True
-            if logger is not None:
-                logger.warning("Found version before MaX3.1 release falling back to file version '0.29'")
-            warnings.warn(
-                'out.xml files before the MaX3.1 release are not explicitely supported.'
-                ' No guarantee is given that the parser will work without error', UserWarning)
-        else:
-            if logger is not None:
-                logger.error("Unknown fleur version: File-version '%s' Program-version '%s'", out_version,
-                             program_version)
-            raise ValueError(f"Unknown fleur version: File-version '{out_version}' Program-version '{program_version}'")
-    else:
-        ignore_validation = False
-        inp_version = eval_xpath(xmltree, '//@fleurInputVersion', logger=logger)
-        inp_version = str(inp_version)
-        if inp_version is None:
-            if logger is not None:
-                logger.error('Failed to extract inputVersion')
-            raise ValueError('Failed to extract inputVersion')
-
-    ignore_validation = kwargs.get('ignore_validation', ignore_validation)
-
-    #Load schema_dict (inp and out)
-    outschema_dict = OutputSchemaDict.fromVersion(out_version, inp_version=inp_version, logger=logger)
-
-    if outschema_dict['out_version'] != out_version or \
-       outschema_dict['inp_version'] != inp_version:
+    ignore_validation = False
+    out_version = actual_out_version
+    inp_version = actual_inp_version
+    if outschema_dict['out_version'] != actual_out_version or \
+       outschema_dict['inp_version'] != actual_inp_version:
         ignore_validation = True
         out_version = outschema_dict['out_version']
         inp_version = outschema_dict['inp_version']
+
+    ignore_validation = kwargs.get('ignore_validation', ignore_validation)
 
     if logger is not None:
         logger.info('Found fleur out file with the versions out: %s; inp: %s', out_version, inp_version)
