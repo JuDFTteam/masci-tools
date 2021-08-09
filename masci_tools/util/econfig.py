@@ -99,7 +99,7 @@ def convert_fleur_config_to_econfig(fleurconf_str, keep_spin=False):
                     econfstring_new = f'{econfstring_new}{base}{int(occ)} '
                 else:
                     max_occ = max_state_occ.get(base[1])
-                    econfstring_new = econfstring_new.split(base)[0] + f'{base}{int(max_occ)} '
+                    econfstring_new = econfstring_new.split(base, maxsplit=1)[0] + f'{base}{int(max_occ)} '
                     # we assume here that the two states come behind each other, ... rather bad
                     #econfstring_new.replace('{}'.format(base)
             else:
