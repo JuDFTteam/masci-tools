@@ -638,9 +638,9 @@ def get_structure_data(xmltree,
                 displacements = [np.array(displace) * BOHR_A for displace in displacements]
             rotations, shifts = get_symmetry_information(root, schema_dict, logger=logger)
 
-            if len(displacements) != len(species_names):
+            if len(displacements) != len(atom_groups):
                 raise ValueError(
-                    f'Did not get the right number of relaxed positions. Expected {len(species_names)} got {len(displacements)}'
+                    f'Did not get the right number of relaxed positions. Expected {len(atom_groups)} got {len(displacements)}'
                 )
 
     for indx, group in enumerate(atom_groups):
