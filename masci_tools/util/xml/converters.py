@@ -398,6 +398,28 @@ def convert_fleur_lo(loelements):
     return lo_string.strip()
 
 
+def convert_fleur_electronconfig(econfig_element):
+    """
+    Convert electronConfig tag to eConfig string
+    """
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.econfig import convert_fleur_config_to_econfig
+
+    core_config = eval_xpath(econfig_element, 'coreConfig/text()')
+    valence_config = eval_xpath(econfig_element, 'valenceConfig/text()')
+
+    if not core_config:
+        core_config = ''
+
+    if not valence_config:
+        valence_config = ''
+
+    core_config = convert_fleur_config_to_econfig(core_config)
+    valence_config = convert_fleur_config_to_econfig(valence_config)
+
+    return f'{core_config} | {valence_config}'
+
+
 def convert_str_version_number(version_str):
     """
     Convert the version number as a integer for easy comparisons

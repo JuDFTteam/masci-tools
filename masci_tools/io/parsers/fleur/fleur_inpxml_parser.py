@@ -16,21 +16,21 @@ and convert its content to a dict
 """
 from lxml import etree
 from pprint import pprint
-from masci_tools.io.parsers.fleur.fleur_schema.schema_dict import InputSchemaDict
-from masci_tools.util.xml.common_functions import clear_xml, validate_xml, eval_xpath
+
+from masci_tools.io.io_fleurxml import load_inpxml
+from masci_tools.util.xml.common_functions import clear_xml, validate_xml
 from masci_tools.util.xml.converters import convert_xml_attribute, convert_xml_text
-from masci_tools.util.schema_dict_util import read_constants
+from masci_tools.util.schema_dict_util import read_constants, evaluate_attribute
 from masci_tools.util.logging_util import DictHandler
 import logging
 
 
-def inpxml_parser(inpxmlfile, version=None, parser_info_out=None, strict=False, debug=False):
+def inpxml_parser(inpxmlfile, parser_info_out=None, strict=False, debug=False, base_url=None):
     """
     Parses the given inp.xml file to a python dictionary utilizing the schema
     defined by the version number to validate and corretly convert to the dictionary
 
     :param inpxmlfile: either path to the inp.xml file, opened file handle or a xml etree to be parsed
-    :param version: version string to enforce that a given schema is used
     :param parser_info_out: dict, with warnings, info, errors, ...
     :param strict: bool if True  and no parser_info_out is provided any encountered error will immediately be raised
 
@@ -72,30 +72,9 @@ def inpxml_parser(inpxmlfile, version=None, parser_info_out=None, strict=False, 
     if logger is not None:
         logger.info('Masci-Tools Fleur inp.xml Parser v%s', __parser_version__)
 
-    if isinstance(inpxmlfile, etree._ElementTree):
-        xmltree = inpxmlfile
-    else:
-        parser = etree.XMLParser(attribute_defaults=True, encoding='utf-8')
-        try:
-            xmltree = etree.parse(inpxmlfile, parser)
-        except etree.XMLSyntaxError as msg:
-            if logger is not None:
-                logger.exception('Failed to parse input file')
-            raise ValueError(f'Failed to parse input file: {msg}') from msg
-
-    if version is None:
-        version = eval_xpath(xmltree, '//@fleurInputVersion', logger=logger)
-        version = str(version)
-        if version is None:
-            if logger is not None:
-                logger.error('Failed to extract inputVersion')
-            raise ValueError('Failed to extract inputVersion')
-
-    if logger is not None:
-        logger.info('Got Fleur input file with file version %s', version)
-    schema_dict = InputSchemaDict.fromVersion(version, logger=logger)
-
-    ignore_validation = schema_dict['inp_version'] != version
+    xmltree, schema_dict = load_inpxml(inpxmlfile, logger=logger, base_url=base_url)
+    actual_inp_version = evaluate_attribute(xmltree, schema_dict, 'fleurInputVersion', logger=logger)
+    ignore_validation = schema_dict['inp_version'] != actual_inp_version
 
     xmltree, _ = clear_xml(xmltree)
     root = xmltree.getroot()

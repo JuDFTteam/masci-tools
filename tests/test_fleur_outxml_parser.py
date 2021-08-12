@@ -53,6 +53,16 @@ def test_outxml_valid_outxml(outxmlfilepath):
     assert isinstance(out_dict, dict)
     assert out_dict != {}
 
+    #Pass file content
+    with open(outxmlfilepath, 'rb') as outfile:
+        out_content = outfile.read()
+
+    out_dict = outxml_parser(out_content, base_url=outxmlfilepath)
+
+    assert out_dict is not None
+    assert isinstance(out_dict, dict)
+    assert out_dict != {}
+
 
 def test_outxml_validation_errors(data_regression, clean_parser_log):
     """

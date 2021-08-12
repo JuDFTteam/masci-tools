@@ -499,7 +499,7 @@ def evaluate_attribute(node, schema_dict, name, constants=None, logger=None, **k
 
 
 @register_parsing_function('text')
-def evaluate_text(node, schema_dict, name, constants, logger=None, **kwargs):
+def evaluate_text(node, schema_dict, name, constants=None, logger=None, **kwargs):
     """
     Evaluates the text of the tag based on the given name
     and additional further specifications with the available type information
