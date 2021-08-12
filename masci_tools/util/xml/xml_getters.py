@@ -680,7 +680,10 @@ def get_structure_data(xmltree,
             atom_positions.append(rel_to_abs(rel_pos, cell))
 
         for film_pos in film_positions:
-            atom_positions.append(rel_to_abs_f(film_pos, cell))
+            film_pos = rel_to_abs_f(film_pos, cell)
+            if convert_to_angstroem:
+                film_pos[2] *= BOHR_A
+            atom_positions.append(film_pos)
 
         if len(atom_positions) == 0:
             raise ValueError('Failed to read atom positions for group')
@@ -691,6 +694,8 @@ def get_structure_data(xmltree,
             if len(film_positions) != 0:
                 rel_displace = abs_to_rel_f(displacements[indx], cell, pbc)
                 rel_representative_pos = abs_to_rel_f(representative_pos, cell, pbc)
+                rel_displace[2] = rel_displace[2] / cell[2, 2]
+                rel_representative_pos[2] = rel_representative_pos[2] / cell[2, 2]
             else:
                 rel_displace = abs_to_rel(displacements[indx], cell)
                 rel_representative_pos = abs_to_rel(representative_pos, cell)
@@ -714,6 +719,7 @@ def get_structure_data(xmltree,
 
                 if len(film_positions) != 0:
                     site_displace = rel_to_abs_f(site_displace, cell)
+                    site_displace[2] *= cell[2, 2]
                 else:
                     site_displace = rel_to_abs(site_displace, cell)
 
