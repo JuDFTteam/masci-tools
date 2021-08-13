@@ -15,7 +15,8 @@ class Test_modify_potential(object):
         atom2shapes = [1]
         shapefun_new = '../tests/files/mod_pot/test2/shapefun_new'
         modify_potential().shapefun_from_scoef(scoefpath, shapefun_path, atom2shapes, shapefun_new)
-        txt = open(shapefun_new).read().strip()
+        with open(shapefun_new, 'r') as f:
+            txt = f.read().strip()
         file_regression.check(txt)
 
     def test_neworder_potential_no_replace(self, file_regression):
@@ -25,7 +26,8 @@ class Test_modify_potential(object):
         neworder = [0, 1, 2]
         # test 1: neworder_potential standard
         modify_potential().neworder_potential(pot, out_pot, neworder)
-        txt = open(out_pot).read().strip()
+        with open(out_pot, 'r') as f:
+            txt = f.read().strip()
         file_regression.check(txt)
 
     def test_neworder_potential_with_replace(self, file_regression):
@@ -37,7 +39,8 @@ class Test_modify_potential(object):
         # test 2: neworder_potential with replace from second potential
         replace_newpos = [[0, 0], [2, 0]]
         modify_potential().neworder_potential(pot1, out_pot, neworder, potfile_2=pot2, replace_from_pot2=replace_newpos)
-        txt = open(out_pot).read().strip()
+        with open(out_pot, 'r') as f:
+            txt = f.read().strip()
         file_regression.check(txt)
 
 
@@ -70,17 +73,24 @@ class Test_KkrimpParserFunctions(object):
     def test_parse_outfiles_full_filehandle(self, data_regression):
         path = 'files/kkrimp_parser/test1/'
         files = {}
-        files['outfile'] = open(path + 'out_kkrimp')
-        files['out_log'] = open(path + 'out_log.000.txt')
-        files['out_pot'] = open(path + 'out_potential')
-        files['out_enersp_at'] = open(path + 'out_energysp_per_atom_eV')
-        files['out_enertot_at'] = open(path + 'out_energytotal_per_atom_eV')
-        files['out_timing'] = open(path + 'out_timing.000.txt')
-        files['kkrflex_llyfac'] = open(path + 'out_timing.000.txt')  # file not there yet and not parsed
-        files['kkrflex_angles'] = open(path + 'out_timing.000.txt')  # file not there yet and not parsed
-        files['out_spinmoms'] = open(path + 'out_timing.000.txt')  # file not there yet and not parsed
-        files['out_orbmoms'] = open(path + 'out_timing.000.txt')  # file not there yet and not parsed
-        s, m, o = KkrimpParserFunctions().parse_kkrimp_outputfile({}, files)
+
+        with open(path + 'out_kkrimp') as out_kkrimp:
+            with open(path + 'out_log.000.txt') as out_log:
+                with open(path + 'out_potential') as out_potential:
+                    with open(path + 'out_energysp_per_atom_eV') as out_energysp_per_atom_eV:
+                        with open(path + 'out_energytotal_per_atom_eV') as out_energytotal_per_atom_eV:
+                            with open(path + 'out_timing.000.txt') as out_timing:
+                                files['outfile'] = out_kkrimp
+                                files['out_log'] = out_log
+                                files['out_pot'] = out_potential
+                                files['out_enersp_at'] = out_energysp_per_atom_eV
+                                files['out_enertot_at'] = out_energytotal_per_atom_eV
+                                files['out_timing'] = out_timing
+                                files['kkrflex_llyfac'] = out_timing  # file not there yet and not parsed
+                                files['kkrflex_angles'] = out_timing  # file not there yet and not parsed
+                                files['out_spinmoms'] = out_timing  # file not there yet and not parsed
+                                files['out_orbmoms'] = out_timing  # file not there yet and not parsed
+                                s, m, o = KkrimpParserFunctions().parse_kkrimp_outputfile({}, files)
         print('files:', files)
         print(f'\nsuccess?\n{s}\n')
         print(f'\nmessages?\n{m}\n')
