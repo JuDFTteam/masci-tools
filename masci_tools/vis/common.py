@@ -71,6 +71,32 @@ def show_defaults(backend=None):
     else:
         raise NotImplementedError
 
+def save_defaults(backend=None, **kwargs):
+    from .plot_methods import save_mpl_defaults
+    from .bokeh_plots import save_bokeh_defaults
+
+    backend = PlotBackend.from_str(backend)
+
+    if backend == PlotBackend.mpl:
+        save_mpl_defaults(**kwargs)
+    elif backend == PlotBackend.bokeh:
+        save_bokeh_defaults(**kwargs)
+    else:
+        raise NotImplementedError
+
+def load_defaults(backend=None, **kwargs):
+    from .plot_methods import load_mpl_defaults
+    from .bokeh_plots import load_bokeh_defaults
+
+    backend = PlotBackend.from_str(backend)
+
+    if backend == PlotBackend.mpl:
+        load_mpl_defaults(**kwargs)
+    elif backend == PlotBackend.bokeh:
+        load_bokeh_defaults(**kwargs)
+    else:
+        raise NotImplementedError
+
 def get_help(key, backend=None):
     from .plot_methods import get_mpl_help
     from .bokeh_plots import get_bokeh_help
@@ -153,19 +179,32 @@ def spinpol_bands(*args, backend=None, **kwargs):
 
     return plot_funcs[backend](*args, **kwargs)
 
-def single_scatter(*args, backend=None, **kwargs):
+def scatter(*args, backend=None, **kwargs):
     """
 
     """
-    from .plot_methods import single_scatterplot
-    from .bokeh_plots import bokeh_scatter
+    from .plot_methods import multi_scatter_plot
+    from .bokeh_plots import bokeh_multi_scatter
 
-    plot_funcs = {PlotBackend.mpl: single_scatterplot
-                  PlotBackend.bokeh: bokeh_scatter}
+    plot_funcs = {PlotBackend.mpl: multi_scatter_plot
+                  PlotBackend.bokeh: bokeh_multi_scatter}
 
     backend = PlotBackend.from_str(backend)
 
     return plot_funcs[backend](*args, **kwargs)
 
+def line(*args, backend=None, **kwargs):
+    """
+
+    """
+    from .plot_methods import multiple_scatterplots
+    from .bokeh_plots import bokeh_line
+
+    plot_funcs = {PlotBackend.mpl: multiple_scatterplots
+                  PlotBackend.bokeh: bokeh_line}
+
+    backend = PlotBackend.from_str(backend)
+
+    return plot_funcs[backend](*args, **kwargs)
 
 
