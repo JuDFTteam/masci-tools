@@ -99,7 +99,7 @@ def bokeh_scatter(x,
                   title='',
                   figure=None,
                   data=None,
-                  outfilename='scatter.html',
+                  saveas='scatter',
                   copy_data=False,
                   **kwargs):
     """
@@ -150,7 +150,7 @@ def bokeh_scatter(x,
 
     plot_params.draw_straight_lines(p)
     plot_params.set_limits(p)
-    plot_params.save_plot(p)
+    plot_params.save_plot(p, saveas)
 
     return p
 
@@ -164,7 +164,7 @@ def bokeh_multi_scatter(x,
                         xlabel='x',
                         ylabel='y',
                         title='',
-                        outfilename='scatter.html',
+                        saveas='scatter',
                         copy_data=False,
                         set_default_legend=True,
                         **kwargs):
@@ -231,7 +231,7 @@ def bokeh_multi_scatter(x,
     plot_params.draw_straight_lines(p)
     plot_params.set_limits(p)
     plot_params.set_legend(p)
-    plot_params.save_plot(p)
+    plot_params.save_plot(p, saveas)
 
     return p
 
@@ -245,7 +245,7 @@ def bokeh_line(x,
                xlabel='x',
                ylabel='y',
                title='',
-               outfilename='scatter.html',
+               saveas='line',
                plot_points=False,
                area_curve=0,
                copy_data=False,
@@ -333,7 +333,7 @@ def bokeh_line(x,
     plot_params.draw_straight_lines(p)
     plot_params.set_limits(p)
     plot_params.set_legend(p)
-    plot_params.save_plot(p)
+    plot_params.save_plot(p, saveas)
 
     return p
 
@@ -348,7 +348,7 @@ def bokeh_dos(energy_grid,
               title=r'Density of states',
               xyswitch=False,
               e_fermi=0,
-              outfilename='dos_plot.html',
+              saveas='dos_plot',
               copy_data=False,
               **kwargs):
     """
@@ -422,7 +422,15 @@ def bokeh_dos(energy_grid,
         xlabel, ylabel = energy_label, dos_label
         x, y = plot_data.get_keys('energy'), plot_data.get_keys('dos')
 
-    p = bokeh_line(x, y, data=plot_data.data, xlabel=xlabel, ylabel=ylabel, title=title, name=y, **kwargs)
+    p = bokeh_line(x,
+                   y,
+                   data=plot_data.data,
+                   xlabel=xlabel,
+                   ylabel=ylabel,
+                   title=title,
+                   name=y,
+                   saveas=saveas,
+                   **kwargs)
 
     return p
 
@@ -440,7 +448,7 @@ def bokeh_spinpol_dos(energy_grid,
                       xyswitch=False,
                       e_fermi=0,
                       spin_arrows=True,
-                      outfilename='dos_plot.html',
+                      saveas='dos_plot',
                       copy_data=False,
                       **kwargs):
     """
@@ -552,6 +560,8 @@ def bokeh_spinpol_dos(energy_grid,
 
     if 'show' in kwargs:
         plot_params.set_parameters(show=kwargs.pop('show'))
+    if 'save_plots' in kwargs:
+        plot_params.set_parameters(show=kwargs.pop('save_plots'))
 
     with NestedPlotParameters(plot_params):
         p = bokeh_line(x,
@@ -562,6 +572,7 @@ def bokeh_spinpol_dos(energy_grid,
                        data=sources,
                        name=dos_entries,
                        show=False,
+                       save_plots=False,
                        **kwargs)
 
     if spin_arrows and spin_dn_negative:
@@ -595,7 +606,7 @@ def bokeh_spinpol_dos(energy_grid,
                   line_alpha=alpha,
                   end=NormalHead(line_width=2, size=10, fill_alpha=alpha, line_alpha=alpha)))
 
-    plot_params.save_plot(p)
+    plot_params.save_plot(p, saveas)
 
     return p
 
@@ -613,7 +624,7 @@ def bokeh_bands(kpath,
                 special_kpoints=None,
                 markersize_min=3.0,
                 markersize_scaling=10.0,
-                outfilename='bands_plot.html',
+                saveas='bands_plot',
                 scale_color=True,
                 separate_bands=False,
                 line_plot=False,
@@ -760,6 +771,7 @@ def bokeh_bands(kpath,
                           ylabel=ylabel,
                           title=title,
                           set_default_legend=False,
+                          saveas=saveas,
                           **kwargs)
     else:
         return bokeh_multi_scatter(plot_data.get_keys('kpath'),
@@ -769,6 +781,7 @@ def bokeh_bands(kpath,
                                    ylabel=ylabel,
                                    title=title,
                                    set_default_legend=False,
+                                   saveas=saveas,
                                    **kwargs)
 
 
@@ -786,7 +799,7 @@ def bokeh_spinpol_bands(kpath,
                         special_kpoints=None,
                         markersize_min=3.0,
                         markersize_scaling=10.0,
-                        outfilename='bands_plot.html',
+                        saveas='bands_plot',
                         scale_color=True,
                         line_plot=False,
                         separate_bands=False,
@@ -949,6 +962,7 @@ def bokeh_spinpol_bands(kpath,
                           ylabel=ylabel,
                           title=title,
                           set_default_legend=False,
+                          saveas=saveas,
                           **kwargs)
     else:
         return bokeh_multi_scatter(plot_data.get_keys('kpath'),
@@ -958,6 +972,7 @@ def bokeh_spinpol_bands(kpath,
                                    ylabel=ylabel,
                                    title=title,
                                    set_default_legend=False,
+                                   saveas=saveas,
                                    **kwargs)
 
 
@@ -1251,7 +1266,7 @@ def periodic_table_plot(source,
 
 
 @ensure_plotter_consistency(plot_params)
-def plot_convergence_results(iteration, distance, total_energy, *, show=True, **kwargs):
+def plot_convergence_results(iteration, distance, total_energy, *, saveas='convergence', **kwargs):
     """
     Plot the total energy versus the scf iteration
     and plot the distance of the density versus iterations. Uses bokeh_line and bokeh_scatter
@@ -1292,7 +1307,10 @@ def plot_convergence_results(iteration, distance, total_energy, *, show=True, **
                                  'x_axis_type': 'linear',
                              })
 
-    plot_params.set_parameters(show=show)
+    if 'show' in kwargs:
+        plot_params.set_parameters(show=kwargs.pop('show'))
+    if 'save_plots' in kwargs:
+        plot_params.set_parameters(show=kwargs.pop('save_plots'))
 
     with NestedPlotParameters(plot_params):
         p1 = bokeh_line(source=source1,
@@ -1304,6 +1322,7 @@ def plot_convergence_results(iteration, distance, total_energy, *, show=True, **
                         name='delta total energy',
                         plot_points=True,
                         show=False,
+                        save_plots=False,
                         **kwargs)
 
     plot_params.set_defaults(default_type='function',
@@ -1319,11 +1338,12 @@ def plot_convergence_results(iteration, distance, total_energy, *, show=True, **
                         name='distance',
                         plot_points=True,
                         show=False,
+                        save_plots=False,
                         **kwargs)
 
     grid = gridplot([p1, p2], ncols=2)
 
-    plot_params.save_plot(grid)
+    plot_params.save_plot(grid, saveas)
 
     return grid
 
@@ -1337,9 +1357,7 @@ def plot_convergence_results_m(iterations,
                                nodes=None,
                                modes=None,
                                plot_label=None,
-                               saveas1='t_energy_convergence',
-                               saveas2='distance_convergence',
-                               show=True,
+                               saveas='convergence',
                                **kwargs):
     """
     Plot the total energy versus the scf iteration
@@ -1438,7 +1456,10 @@ def plot_convergence_results_m(iterations,
                                  'x_axis_type': 'linear',
                              },
                              legend_outside_plot_area=True)
-    plot_params.set_parameters(show=show)
+    if 'show' in kwargs:
+        plot_params.set_parameters(show=kwargs.pop('show'))
+    if 'save_plots' in kwargs:
+        plot_params.set_parameters(show=kwargs.pop('save_plots'))
 
     # plot
     with NestedPlotParameters(plot_params):
@@ -1452,6 +1473,7 @@ def plot_convergence_results_m(iterations,
                         legend_label=plot_labels1,
                         plot_points=True,
                         show=False,
+                        save_plots=False,
                         **kwargs)
 
     plot_params.set_defaults(default_type='function', figure_kwargs={
@@ -1469,11 +1491,12 @@ def plot_convergence_results_m(iterations,
                         legend_label=plot_labels2,
                         plot_points=True,
                         show=False,
+                        save_plots=False,
                         **kwargs)
 
     grid = gridplot([p1, p2], ncols=2)
 
-    plot_params.save_plot(grid)
+    plot_params.save_plot(grid, saveas)
 
     return grid
 

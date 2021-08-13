@@ -93,6 +93,7 @@ class BokehPlotter(Plotter):
 
         #output control
         'save_plots': False,
+        'save_format': 'html',
         'show': True,
     }
 
@@ -199,13 +200,17 @@ class BokehPlotter(Plotter):
 
         #output control
         'save_plots':
-        'If True plots will be saved to file (NOT IMPLEMENTED)',
+        'If True plots will be saved to file (Configuration beforehand is needed)',
+        'save_format':
+        'Formats to save the plots to, can be single or list of formats (html, png or svg)',
         'show':
         'If True bokeh.io.show will be called after the plotting routine',
     }
 
     _BOKEH_GENERAL_ARGS = {
         'show',
+        'save_plots',
+        'save_format',
         'color_palette',
         'legend_location',
         'legend_click_policy',
@@ -593,12 +598,27 @@ class BokehPlotter(Plotter):
         if self['legend_outside_plot_area']:
             fig.add_layout(fig.legend[0], 'right')
 
-    def save_plot(self, figure):
+    def save_plot(self, figure, saveas):
         """
-        Show/save the bokeh figure (atm only show)
+        Show/save the bokeh figure
 
         :param figure: bokeh figure on which to perform the operation
         """
-        from bokeh.io import show as bokeh_show
+        from bokeh.io import show, save, export_png, export_svgs
         if self['show']:
-            bokeh_show(figure)
+            show(figure)
+        if self['save_plots']:
+            if isinstance(self['save_format'], list):
+                formats = self['save_format']
+            else:
+                formats = [self['save_format']]
+
+            for fmt in formats:
+                savefilename = f'{saveas}.{fmt}'
+                print(f'Save plot to: {savefilename}')
+                if fmt == 'html':
+                    save(figure, filename=savefilename)
+                elif fmt == 'png':
+                    export_png(figure, filename=savefilename)
+                elif fmt == 'svg':
+                    export_svgs(figure, filename=savefilename)
