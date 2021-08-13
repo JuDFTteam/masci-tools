@@ -18,12 +18,12 @@ Here we collect physical constants which are used throughout the code. That way 
     Angstrom and Bohr radius, and electron Volt and Rydberg, have been replaced by the NIST values by default.
     Prior to that, two different versions had been in use. If you need to work with KKR calculations / ``aiida-kkr``
     workchains performed with these constants versions, you can switch to these older KKR constants versions by
-    setting the environment variable ``MASCI_TOOLS_USE_OLD_CONSTANTS``. During interpreter runtime, the chosen
-    version cannot be switched.
+    setting the environment variable ``MASCI_TOOLS_USE_OLD_CONSTANTS`` prior to loading masci-tools. During interpreter
+    runtime, the chosen version cannot be switched.
 
     - For KKR constants versions used starting from masci-tools v0.4.7, more specifically starting from commit 66953f8, Apr 28, 2021, do not set ``MASCI_TOOLS_USE_OLD_CONSTANTS``.
-    - For KKR constants versions used in masci-tools v0.4.0-dev7 - v0.4.6, more specifically starting from commit c171563, Feb 16, 2021, to prior to commit 66953f8, Apr 28, 2021, set ``MASCI_TOOLS_USE_OLD_CONSTANTS`` to ``Interim``.
-    - For KKR constants versions used prior to masci-tools v0.4.0-dev7, more specifically prior to commit c171563, Feb 16, 2021, set ``MASCI_TOOLS_USE_OLD_CONSTANTS`` to 'True'.
+    - For KKR constants versions used in masci-tools v0.4.0-dev7 - v0.4.6, more specifically starting from commit c171563, Feb 16, 2021, to prior to commit 66953f8, Apr 28, 2021, set ``MASCI_TOOLS_USE_OLD_CONSTANTS`` to ``'interim'``.
+    - For KKR constants versions used prior to masci-tools v0.4.0-dev7, more specifically prior to commit c171563, Feb 16, 2021, set ``MASCI_TOOLS_USE_OLD_CONSTANTS`` to ``'old'`` or ``'True'``.
 
 .. literalinclude:: ../../../masci_tools/util/constants.py
    :language: python
@@ -45,10 +45,11 @@ HTR_TO_KELVIN = 315_775.02480407
 #https://physics.nist.gov/cgi-bin/cuu/Value?bohrrada0
 
 #KKR constants versions. See module docstring for details.
-if os.environ.get('MASCI_TOOLS_USE_OLD_CONSTANTS', None) == 'True':
+_MASCI_TOOLS_USE_OLD_CONSTANTS = os.environ.get('MASCI_TOOLS_USE_OLD_CONSTANTS', None)
+if _MASCI_TOOLS_USE_OLD_CONSTANTS and _MASCI_TOOLS_USE_OLD_CONSTANTS.lower() in ['old', 'true']:
     ANG_BOHR_KKR = 1.8897261254578281
     RY_TO_EV_KKR = 13.605693009
-elif os.environ.get('MASCI_TOOLS_USE_OLD_CONSTANTS', None) == 'Interim':
+elif _MASCI_TOOLS_USE_OLD_CONSTANTS and _MASCI_TOOLS_USE_OLD_CONSTANTS.lower() in ['interim']:
     ANG_BOHR_KKR = 1.8897261249935897
     RY_TO_EV_KKR = RY_TO_EV
 else:
