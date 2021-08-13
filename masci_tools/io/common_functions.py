@@ -278,8 +278,7 @@ def interpolate_dos(
     :note: output units are in Ry!
     """
 
-    f = open_general(dosfile)
-    with f:
+    with open_general(dosfile) as f:
         text = f.readline()  # dummy readin of header, may be replaced later
         npot = int(f.readline().split()[0])
         iemax = int(f.readline().split()[0])

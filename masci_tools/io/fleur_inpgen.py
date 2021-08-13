@@ -597,6 +597,8 @@ def read_inpgen_file(file, convert_to_angstroem=True):
         if cell is not None:
             if film:
                 pos = rel_to_abs_f(pos, cell)
+                if convert_to_angstroem:
+                    pos[2] *= BOHR_A
             else:
                 pos = rel_to_abs(pos, cell)
 

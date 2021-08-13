@@ -229,7 +229,8 @@ class Test_fill_inputfile(object):
         with tempfile.TemporaryDirectory() as td:
             os.chdir(td)
             p.fill_keywords_to_inputfile(is_voro_calc=True)
-            file_content = open('inputcard').read()
+            with open('inputcard', 'r') as f:
+                file_content = f.read()
             os.chdir(cwd)
 
         file_regression.check(file_content)
@@ -249,7 +250,8 @@ class Test_fill_inputfile(object):
         with tempfile.TemporaryDirectory() as td:
             os.chdir(td)
             p.fill_keywords_to_inputfile()
-            file_content = open('inputcard').read().strip()
+            with open('inputcard', 'r') as f:
+                file_content = f.read().strip()
             os.chdir(cwd)
 
         file_regression.check(file_content)
@@ -460,7 +462,8 @@ class Test_read_inputfile(object):  # pylint: disable=missing-class-docstring
         with tempfile.TemporaryDirectory() as td:
             os.chdir(td)
             p.fill_keywords_to_inputfile(output='input.temp.txt')
-            txt = open('input.temp.txt', 'r').readlines()
+            with open('input.temp.txt', 'r') as f:
+                txt = f.readlines()
             # exchange some lines
             tmp = txt[0]
             txt[0] = txt[5]
@@ -508,7 +511,7 @@ class Test_read_inputfile(object):  # pylint: disable=missing-class-docstring
         # check all values, replace arrays by lists to make data-regression work
         d_check = p.get_dict()
         for k, v in d_check.items():
-            if type(v) == ndarray:
+            if isinstance(v, ndarray):
                 d_check[k] = v.tolist()
         data_regression.check(d_check)
 

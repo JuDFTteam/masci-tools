@@ -97,8 +97,11 @@ class modify_potential(object):
 
         order = list(range(len(index1)))
 
-        natomtemp = int(open(scoefpath).readlines()[0])
-        filedata = open(scoefpath).readlines()[1:natomtemp + 1]
+        with open(scoefpath, 'r') as f:
+            lines = f.readlines()
+            natomtemp = int(lines[0])
+            filedata = lines[1:natomtemp + 1]
+
         listnew = []
         for line in filedata:
             if len(line.split()) > 1:
