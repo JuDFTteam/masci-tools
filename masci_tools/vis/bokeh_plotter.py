@@ -267,7 +267,7 @@ class BokehPlotter(Plotter):
         #Rename replaced keys back to standard names
         for key, replace_key in kwargs.items():
             custom_val = plot_kwargs.pop(replace_key, None)
-            if custom_val is None:
+            if custom_val is not None:
                 plot_kwargs[key] = custom_val
 
         if not post_process:
