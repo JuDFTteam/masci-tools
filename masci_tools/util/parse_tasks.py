@@ -17,6 +17,7 @@ and provides fuctionality for adding custom tasks easily
 
 from pprint import pprint
 import importlib.util
+from importlib import import_module
 import copy
 import os
 
@@ -124,23 +125,10 @@ class ParseTasks(object):
         else:
             self.tasks = tasks_dict
 
-        #Catch initializations, where decorators have not been triggered
-        #(if we do this at import we produce circular imports)
-        #The alternative is moving concrete definitions for the output parser away from the parser which
-        #I do not like at all
-        if getattr(self, '_migrations', None) is None:
-            import masci_tools.io.parsers.fleur.task_migrations  # pylint: disable=cyclic-import
-
-        if getattr(self, '_conversion_functions', None) is None:
-            import masci_tools.io.parsers.fleur.outxml_conversions  # pylint: disable=cyclic-import
-
-        if getattr(self, '_parse_functions', None) is None:
-            import masci_tools.util.schema_dict_util  # pylint: disable=cyclic-import
-
         #Look if the base version is compatible if not look for a migration
         if version not in tasks.__working_out_versions__:
 
-            migration_list = find_migration(tasks.__base_version__, version, self._migrations)
+            migration_list = find_migration(tasks.__base_version__, version, self.migrations)
 
             if migration_list is None:
                 raise ValueError(f'Unsupported output version: {version}')
@@ -175,6 +163,42 @@ class ParseTasks(object):
         Setter for general_tasks
         """
         self._general_tasks = task_list
+
+    @property
+    def migrations(self):
+        """
+        Return the registered migrations
+        """
+        if getattr(self, '_migrations', None) is None:
+            import_module('masci_tools.io.parsers.fleur.task_migrations')
+        return self._migrations
+
+    @property
+    def conversion_functions(self):
+        """
+        Return the registered conversion functions
+        """
+        if getattr(self, '_conversion_functions', None) is None:
+            import_module('masci_tools.io.parsers.fleur.outxml_conversion')
+        return self._conversion_functions
+
+    @property
+    def parse_functions(self):
+        """
+        Return the registered parse functions
+        """
+        if getattr(self, '_parse_functions', None) is None:
+            import_module('masci_tools.util.schema_dict_util')
+        return self._parse_functions
+
+    @property
+    def all_attribs_function(self):
+        """
+        Return the registered parse functions for parsing multipl attributes
+        """
+        if getattr(self, '_all_attribs_function', None) is None:
+            import_module('masci_tools.util.schema_dict_util')
+        return self._all_attribs_function
 
     def add_task(self, task_name, task_definition, **kwargs):
         """
@@ -234,10 +258,10 @@ class ParseTasks(object):
             if missing_required:
                 raise ValueError(f'Reqired Keys missing: {missing_required}')
 
-            if not definition['parse_type'] in self._parse_functions.keys():
+            if not definition['parse_type'] in self.parse_functions.keys():
                 raise ValueError(f"Unknown parse_type: {definition['parse_type']}")
 
-            if definition['parse_type'] in self._all_attribs_function:
+            if definition['parse_type'] in self.all_attribs_function:
                 extra_keys = task_keys.difference(self.ALLOWED_KEYS_ALLATTRIBS)
             else:
                 extra_keys = task_keys.difference(self.ALLOWED_KEYS)
@@ -317,7 +341,7 @@ class ParseTasks(object):
             if task_key.startswith('_'):
                 continue
 
-            action = self._parse_functions[spec['parse_type']]
+            action = self.parse_functions[spec['parse_type']]
 
             args = spec['path_spec'].copy()
 
@@ -393,7 +417,7 @@ class ParseTasks(object):
 
         conversions = tasks_definition.get('_conversions', [])
         for conversion in conversions:
-            action = self._conversion_functions[conversion]
+            action = self.conversion_functions[conversion]
             out_dict = action(out_dict, logger=logger)
 
         return out_dict
