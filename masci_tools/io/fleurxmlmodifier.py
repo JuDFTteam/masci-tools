@@ -20,6 +20,7 @@ from collections import namedtuple
 
 from masci_tools.util.xml.collect_xml_setters import XPATH_SETTERS, SCHEMA_DICT_SETTERS, NMMPMAT_SETTERS
 from masci_tools.io.io_fleurxml import load_inpxml
+from pathlib import Path
 #Enable warnings for missing docstrings
 #pylint: enable=missing-function-docstring
 
@@ -279,7 +280,7 @@ class FleurXMLModifier:
         original_xmltree, _ = load_inpxml(original_inpxmlfile)
 
         if original_nmmp_file is not None:
-            if isinstance(original_nmmp_file, str):
+            if isinstance(original_nmmp_file, (str, Path)):
                 with open(original_nmmp_file, mode='r') as n_mmp_file:
                     original_nmmp_lines = n_mmp_file.read().split('\n')
             else:

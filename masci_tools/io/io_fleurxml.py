@@ -51,6 +51,9 @@ def load_inpxml(inpxmlfile, logger=None, base_url=None, **kwargs):
                 base_url = os.fspath(base_url.resolve())
             xml_parse_func = partial(xml_parse_func, base_url=base_url)
 
+    if isinstance(inpxmlfile, Path):
+        inpxmlfile = os.fspath(inpxmlfile)
+
     if isinstance(inpxmlfile, etree._ElementTree):
         xmltree = inpxmlfile
     else:
@@ -65,6 +68,11 @@ def load_inpxml(inpxmlfile, logger=None, base_url=None, **kwargs):
 
     if etree.iselement(xmltree):
         xmltree = xmltree.getroottree()
+
+    if xmltree is None:
+        if logger is not None:
+            logger.error('No XML tree generated. Check that the given file exists')
+        raise ValueError('No XML tree generated. Check that the given file exists')
 
     version = eval_xpath(xmltree, '//@fleurInputVersion')
     version = str(version)
@@ -110,6 +118,9 @@ def load_outxml(outxmlfile, logger=None, base_url=None, **kwargs):
                 base_url = os.fspath(base_url.resolve())
             xml_parse_func = partial(xml_parse_func, base_url=base_url)
 
+    if isinstance(outxmlfile, Path):
+        outxmlfile = os.fspath(outxmlfile)
+
     outfile_broken = False
 
     if isinstance(outxmlfile, etree._ElementTree):
@@ -146,6 +157,11 @@ def load_outxml(outxmlfile, logger=None, base_url=None, **kwargs):
 
     if etree.iselement(xmltree):
         xmltree = xmltree.getroottree()
+
+    if xmltree is None:
+        if logger is not None:
+            logger.error('No XML tree generated. Check that the given file exists')
+        raise ValueError('No XML tree generated. Check that the given file exists')
 
     out_version = eval_xpath(xmltree, '//@fleurOutputVersion')
     out_version = str(out_version)

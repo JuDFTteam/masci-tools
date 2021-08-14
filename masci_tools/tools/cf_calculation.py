@@ -24,6 +24,7 @@ from collections import namedtuple, defaultdict
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
+from pathlib import Path
 from scipy.interpolate import interp1d
 from scipy.special import sph_harm  #pylint: disable=no-name-in-module
 from masci_tools.util.constants import HTR_TO_KELVIN
@@ -136,7 +137,7 @@ class CFCalculation:
 
         #Reads in the filenames given in args as potentials
         for index, file in enumerate(args):
-            if isinstance(file, str):
+            if isinstance(file, (str, Path)):
                 basename, extension = os.path.splitext(file)
                 if extension == '.hdf':
                     with h5py.File(file, 'r') as hdffile:
@@ -166,7 +167,7 @@ class CFCalculation:
         atomType = kwargs.get('atomType')
         header = kwargs.get('header', 0)
 
-        if isinstance(file, str):
+        if isinstance(file, (str, Path)):
             basename, extension = os.path.splitext(file)
             if extension == '.hdf':
                 with h5py.File(file, 'r') as hdffile:
