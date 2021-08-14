@@ -609,17 +609,17 @@ def get_structure_data(xmltree,
         Old inputs containing the `latnam` definitions are not supported
 
     .. warning::
-        In versions after ``0.4.11`` the output of the atom sites was restructured
+        In versions ``0.5.0`` or later the output of the atom sites was restructured
         to be more interoperable with other IO functions (e.g. :py:func:`~masci_tools.io.fleur_inpgen.write_inpgen_file()`)
         The new format returns a list of :py:class:`~masci_tools.io.common_functions.AtomSiteProperties`
         instead of the list of tuples (position, symbol)
 
-        For better compatibility this output is not default in ``0.4.11`` but instead
+        For better compatibility this output is not default in ``0.5.0`` but instead
         is enabled by ``site_namedtuple=True`` and a DeprecationWarning is given when
         this argument is ``False``.
 
     .. note::
-        In versions after ``0.4.11`` the returned atom positions correspond to the relaxed
+        In versions ``0.5.0`` or later the returned atom positions correspond to the relaxed
         structure if a ``relaxation`` section is present in the xmltree
 
 
