@@ -239,67 +239,62 @@ def write_inpgen_file(cell,
         scaling_factor_card += ' '.join([f'{value:18.{significant_figures_cell}f}' for value in scaling_factors]) + '\n'
 
     #### ATOMIC_POSITIONS ####
-    atomic_positions_card_list = ['']
-    atomic_positions_card_listtmp = ['']
-    if not own_lattice:
-        natoms = len(atom_sites)
-        # for FLEUR true, general not, because you could put several
-        # atoms on a site
-        # TODO this feature might change in Fleur, do different. that in inpgen kind gets a name, which will also be the name in fleur inp.xml.
-        # now user has to make kind_name = atom id.
-        for site in atom_sites:
-
-            if kinds is not None:
-                for kin in kinds:
-                    if kin['name'] == site.kind:
-                        kind = kin
-                # then we do not at atoms with weights smaller one
-                if kind.get('weights', [1])[0] < 1.0:
-                    natoms = natoms - 1
-                    # Log message?
-                    continue
-
-            atomic_number = _atomic_numbers[site.symbol]
-            atomic_number_name = atomic_number
-            # per default we use relative coordinates in Fleur
-            # we have to scale back to atomic units from angstrom
-            pos = site.position
-            if bulk:
-                vector_rel = abs_to_rel(pos, cell)
-            elif film:
-                vector_rel = abs_to_rel_f(pos, cell, pbc)
-                vector_rel[2] = vector_rel[2] * scaling_pos
-            position_str = ' '.join([f'{value:18.{significant_figures_positions}f}' for value in vector_rel])
-
-            if site.symbol != site.kind:  # This is an important fact, if user renames it becomes a new atomtype or species!
-                try:
-                    # Kind names can be more then numbers now, this might need to be reworked
-                    head = site.kind.rstrip('0123456789')
-                    kind_namet = int(site.kind[len(head):])
-                    #if int(kind_name[len(head)]) > 4:
-                    #    raise InputValidationError('New specie name/label should start with a digit smaller than 4')
-                except ValueError:
-                    kind_namet = site.kind
-                    report.append(
-                        'Warning: Kind name {} will be ignored by the FleurinputgenCalculation and not set a charge number.'
-                        .format(site.kind))
-                else:
-                    atomic_number_name = f'{atomic_number}.{kind_namet}'
-                # append a label to the detached atom
-                atomic_positions_card_listtmp.append(f'    {atomic_number_name:7} {position_str} {kind_namet}\n')
-            else:
-                atomic_positions_card_listtmp.append(f'    {atomic_number_name:7} {position_str}\n')
-        # TODO check format
-        # we write it later, since we do not know what natoms is before the loop...
-        atomic_positions_card_list.append(f'    {natoms:3}\n')
-        for card in atomic_positions_card_listtmp:
-            atomic_positions_card_list.append(card)
-    else:
+    if own_lattice:
         # TODO with own lattice atomic positions have to come from somewhere
         # else.... User input?
         raise ValueError('fleur lattice needs also the atom ' ' position as input,' ' not implemented yet, sorry!')
-    atomic_positions_card = ''.join(atomic_positions_card_list)
-    del atomic_positions_card_list  # Free memory
+
+    atom_positions_text = []
+    natoms = len(atom_sites)
+    # for FLEUR true, general not, because you could put several
+    # atoms on a site
+    # TODO this feature might change in Fleur, do different. that in inpgen kind gets a name, which will also be the name in fleur inp.xml.
+    # now user has to make kind_name = atom id.
+    for site in atom_sites:
+
+        if kinds is not None:
+            for kin in kinds:
+                if kin['name'] == site.kind:
+                    kind = kin
+            # then we do not at atoms with weights smaller one
+            if kind.get('weights', [1])[0] < 1.0:
+                natoms = natoms - 1
+                # Log message?
+                continue
+
+        atomic_number = _atomic_numbers[site.symbol]
+        atomic_number_name = atomic_number
+        # per default we use relative coordinates in Fleur
+        # we have to scale back to atomic units from angstrom
+        pos = site.position
+        if bulk:
+            vector_rel = abs_to_rel(pos, cell)
+        elif film:
+            vector_rel = abs_to_rel_f(pos, cell, pbc)
+            vector_rel[2] = vector_rel[2] * scaling_pos
+        position_str = ' '.join([f'{value:18.{significant_figures_positions}f}' for value in vector_rel])
+
+        if site.symbol != site.kind:  # This is an important fact, if user renames it becomes a new atomtype or species!
+            try:
+                # Kind names can be more then numbers now, this might need to be reworked
+                head = site.kind.rstrip('0123456789')
+                kind_namet = int(site.kind[len(head):])
+                #if int(kind_name[len(head)]) > 4:
+                #    raise InputValidationError('New specie name/label should start with a digit smaller than 4')
+            except ValueError:
+                kind_namet = site.kind
+                report.append(
+                    'Warning: Kind name {} will be ignored by the FleurinputgenCalculation and not set a charge number.'
+                    .format(site.kind))
+            else:
+                atomic_number_name = f'{atomic_number}.{kind_namet}'
+            # append a label to the detached atom
+            atom_positions_text.append(f'    {atomic_number_name:7} {position_str} {kind_namet}\n')
+        else:
+            atom_positions_text.append(f'    {atomic_number_name:7} {position_str}\n')
+    # TODO check format
+    # we write it later, since we do not know what natoms is before the loop...
+    atom_positions_text = f'    {natoms:3}\n' + ''.join(atom_positions_text)
 
     #### Kpts ####
     # TODO: kpts
@@ -329,7 +324,7 @@ def write_inpgen_file(cell,
     inpgen_file_content.append('\n')
 
     # Write Atomic positons
-    inpgen_file_content.append(atomic_positions_card)
+    inpgen_file_content.append(atom_positions_text)
 
     # Write namelists after atomic positions
     for namels_name in namelists_toprint:
