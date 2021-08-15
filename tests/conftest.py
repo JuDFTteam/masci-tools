@@ -98,7 +98,7 @@ def fixture_clean_bokeh_json():
 
         for key, val in list(data.items()):
             if key in ('id', 'root_ids'):
-                del data[key]
+                data.pop(key)
             elif isinstance(val, dict):
                 data[key] = _clean_bokeh_json(val)
             elif isinstance(val, list):
