@@ -13,13 +13,7 @@
 """
 Load all fleur schema related functions
 """
+from .add_fleur_schema import add_fleur_schema
+from .schema_dict import InputSchemaDict, OutputSchemaDict, schema_dict_version_dispatch
 
-from .inpschema_todict import *
-from .outschema_todict import *
-from .add_fleur_schema import *
-from .schema_dict import *
-
-__all__ = [
-    'create_inpschema_dict', 'create_outschema_dict', 'add_fleur_schema', 'InputSchemaDict', 'OutputSchemaDict',
-    'schema_dict_version_dispatch'
-]
+__all__ = ['add_fleur_schema', 'InputSchemaDict', 'OutputSchemaDict', 'schema_dict_version_dispatch']
