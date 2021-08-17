@@ -286,10 +286,11 @@ def write_inpgen_file(cell,
                 report.append(
                     'Warning: Kind name {} will be ignored by the FleurinputgenCalculation and not set a charge number.'
                     .format(site.kind))
+                # append a label to the detached atom
+                atom_positions_text.append(f'    {atomic_number_name:7} {position_str} {kind_namet}\n')
             else:
                 atomic_number_name = f'{atomic_number}.{kind_namet}'
-            # append a label to the detached atom
-            atom_positions_text.append(f'    {atomic_number_name:7} {position_str} {kind_namet}\n')
+                atom_positions_text.append(f'    {atomic_number_name:7} {position_str}\n')
         else:
             atom_positions_text.append(f'    {atomic_number_name:7} {position_str}\n')
     # TODO check format

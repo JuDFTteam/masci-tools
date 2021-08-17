@@ -420,3 +420,25 @@ def test_read_inpgen_file_film(data_regression):
         'pbc': pbc,
         'params': convert_to_pystd(input_params)
     })
+
+
+def test_get_parameter_write_inpgen_roundtrip(file_regression, load_inpxml):
+    """
+    Test that the get_parameter_data and get_structure_data methods produces the right inpgen input
+    to produce the right roundtrip
+    """
+    from masci_tools.io.fleur_inpgen import write_inpgen_file
+    from masci_tools.util.xml.xml_getters import get_parameter_data, get_structure_data
+
+    TESTFILE = 'files/fleur/Max-R5/SiLOXML/files/inp.xml'
+
+    xmltree, schema_dict = load_inpxml(TESTFILE)
+
+    params = get_parameter_data(xmltree, schema_dict)
+    atoms, cell, pbc = get_structure_data(xmltree, schema_dict, site_namedtuple=True)
+
+    with tempfile.NamedTemporaryFile('r') as tmp:
+        write_inpgen_file(cell, atoms, input_params=params, file=tmp.name)
+        content = tmp.read()
+
+    file_regression.check(content)

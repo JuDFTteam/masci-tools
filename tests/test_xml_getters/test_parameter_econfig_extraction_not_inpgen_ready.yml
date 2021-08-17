@@ -20,6 +20,7 @@ atom0:
     - (3d3/2)
     - (3d5/2)
   element: Fe
+  id: '26.1'
   jri: 787
   lmax: 10
   lnonsph: 6
@@ -53,6 +54,7 @@ atom1:
     - (5d3/2)
     - (5d5/2)
   element: Pt
+  id: '78.1'
   jri: 787
   lmax: 10
   lnonsph: 6

@@ -426,11 +426,9 @@ def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True, 
 
     # &atoms
     species_list = eval_simple_xpath(root, schema_dict, 'species', list_return=True, logger=logger)
-    species_several = {}
     # first we see if there are several species with the same atomic number
     for species in species_list:
         atom_z = evaluate_attribute(species, schema_dict, 'atomicNumber', constants, logger=logger)
-        species_several[atom_z] = species_several.get(atom_z, 0) + 1
 
     species_count = {}
     for indx, species in enumerate(species_list):
@@ -442,8 +440,7 @@ def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True, 
         species_count[atom_z] = species_count.get(atom_z, 0) + 1
         atom_id = f'{atom_z}.{species_count[atom_z]}'
         if write_ids:
-            if species_several[atom_z] > 1:
-                atom_dict['id'] = atom_id
+            atom_dict['id'] = atom_id
 
         if schema_dict.inp_version <= (0, 31):
             atom_dict['ncst'] = evaluate_attribute(species, schema_dict, 'coreStates', constants, logger=logger)

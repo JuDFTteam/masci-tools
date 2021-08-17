@@ -1,6 +1,7 @@
 atom0:
   dx: 0.016
   element: Fe
+  id: '26.1'
   jri: 787
   lmax: 10
   lnonsph: 6
@@ -9,6 +10,7 @@ atom0:
 atom1:
   dx: 0.017
   element: Pt
+  id: '78.1'
   jri: 787
   lmax: 10
   lnonsph: 6

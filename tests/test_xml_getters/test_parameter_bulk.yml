@@ -1,6 +1,7 @@
 atom0:
   dx: 0.016
   element: Si
+  id: '14.1'
   jri: 717
   lmax: 8
   lnonsph: 6
