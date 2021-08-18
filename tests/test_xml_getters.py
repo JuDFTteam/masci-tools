@@ -33,6 +33,8 @@ TEST_RELAX_OUTXML_PATH = os.path.join(inpxmlfilefolder, 'files/fleur/Max-R5/GaAs
 TEST_RELAX_RELAXXML_PATH = os.path.join(inpxmlfilefolder, 'files/fleur/Max-R5/GaAsMultiUForceXML/files/relax.xml')
 TEST_NO_SYMMETRY_PATH = os.path.join(inpxmlfilefolder, 'files/fleur/aiida_fleur/inpxml/Fe_fccXML/files/inp.xml')
 TEST_WITH_RELAX_INPXML_PATH = os.path.join(inpxmlfilefolder, 'files/fleur/Max-R5/H2ORelaxBFGS/files/inp.xml')
+TEST_NON_STANDARD_KIND_INPXML_PATH = os.path.join(inpxmlfilefolder,
+                                                  'files/fleur/Max-R5/CrystalFieldOutput/files/inp.xml')
 
 inpxmlfilelist = []
 inpxmlfilelist_content = []
@@ -90,14 +92,16 @@ def test_get_structure_data(load_inpxml, inpxmlfilepath):
     Test that get_cell works for all input files
     """
     from masci_tools.util.xml.xml_getters import get_structure_data
+    from masci_tools.io.common_functions import AtomSiteProperties
     import numpy as np
 
     xmltree, schema_dict = load_inpxml(inpxmlfilepath)
 
-    atoms, cell, pbc = get_structure_data(xmltree, schema_dict)
+    atoms, cell, pbc = get_structure_data(xmltree, schema_dict, site_namedtuple=True)
 
     assert isinstance(atoms, list)
     assert len(atoms) != 0
+    assert all(isinstance(atom, AtomSiteProperties) for atom in atoms)
     assert isinstance(cell, np.ndarray)
     assert cell.shape == (3, 3)
     assert isinstance(pbc, list)
@@ -222,7 +226,24 @@ def test_get_structure_film(load_inpxml, data_regression):
 
     xmltree, schema_dict = load_inpxml(TEST_FILM_INPXML_PATH)
 
-    atoms, cell, pbc = get_structure_data(xmltree, schema_dict)
+    atoms, cell, pbc = get_structure_data(xmltree, schema_dict, site_namedtuple=True)
+
+    data_regression.check({
+        'atoms': convert_to_pystd([dict(atom._asdict()) for atom in atoms]),
+        'cell': convert_to_pystd(cell),
+        'pbc': pbc
+    })
+
+
+def test_get_structure_film_old_sites(load_inpxml, data_regression):
+
+    from masci_tools.util.xml.xml_getters import get_structure_data
+    from masci_tools.io.common_functions import convert_to_pystd
+
+    xmltree, schema_dict = load_inpxml(TEST_FILM_INPXML_PATH)
+
+    with pytest.deprecated_call():
+        atoms, cell, pbc = get_structure_data(xmltree, schema_dict)
 
     data_regression.check({'atoms': convert_to_pystd(atoms), 'cell': convert_to_pystd(cell), 'pbc': pbc})
 
@@ -234,9 +255,13 @@ def test_get_structure_bulk(load_inpxml, data_regression):
 
     xmltree, schema_dict = load_inpxml(TEST_BULK_INPXML_PATH)
 
-    atoms, cell, pbc = get_structure_data(xmltree, schema_dict)
+    atoms, cell, pbc = get_structure_data(xmltree, schema_dict, site_namedtuple=True)
 
-    data_regression.check({'atoms': convert_to_pystd(atoms), 'cell': convert_to_pystd(cell), 'pbc': pbc})
+    data_regression.check({
+        'atoms': convert_to_pystd([dict(atom._asdict()) for atom in atoms]),
+        'cell': convert_to_pystd(cell),
+        'pbc': pbc
+    })
 
 
 def test_get_structure_no_relaxed(load_inpxml, data_regression):
@@ -246,9 +271,13 @@ def test_get_structure_no_relaxed(load_inpxml, data_regression):
 
     xmltree, schema_dict = load_inpxml(TEST_WITH_RELAX_INPXML_PATH)
 
-    atoms, cell, pbc = get_structure_data(xmltree, schema_dict, include_relaxations=False)
+    atoms, cell, pbc = get_structure_data(xmltree, schema_dict, include_relaxations=False, site_namedtuple=True)
 
-    data_regression.check({'atoms': convert_to_pystd(atoms), 'cell': convert_to_pystd(cell), 'pbc': pbc})
+    data_regression.check({
+        'atoms': convert_to_pystd([dict(atom._asdict()) for atom in atoms]),
+        'cell': convert_to_pystd(cell),
+        'pbc': pbc
+    })
 
 
 def test_get_structure_relaxed(load_inpxml, data_regression):
@@ -258,9 +287,29 @@ def test_get_structure_relaxed(load_inpxml, data_regression):
 
     xmltree, schema_dict = load_inpxml(TEST_WITH_RELAX_INPXML_PATH)
 
-    atoms, cell, pbc = get_structure_data(xmltree, schema_dict)
+    atoms, cell, pbc = get_structure_data(xmltree, schema_dict, site_namedtuple=True)
 
-    data_regression.check({'atoms': convert_to_pystd(atoms), 'cell': convert_to_pystd(cell), 'pbc': pbc})
+    data_regression.check({
+        'atoms': convert_to_pystd([dict(atom._asdict()) for atom in atoms]),
+        'cell': convert_to_pystd(cell),
+        'pbc': pbc
+    })
+
+
+def test_get_structure_norm_kinds(load_inpxml, data_regression):
+
+    from masci_tools.util.xml.xml_getters import get_structure_data
+    from masci_tools.io.common_functions import convert_to_pystd
+
+    xmltree, schema_dict = load_inpxml(TEST_NON_STANDARD_KIND_INPXML_PATH)
+
+    atoms, cell, pbc = get_structure_data(xmltree, schema_dict, site_namedtuple=True)
+
+    data_regression.check({
+        'atoms': convert_to_pystd([dict(atom._asdict()) for atom in atoms]),
+        'cell': convert_to_pystd(cell),
+        'pbc': pbc
+    })
 
 
 def test_fleur_modes_film(load_inpxml, data_regression):
@@ -325,6 +374,17 @@ def test_parameter_econfig_extraction_not_inpgen_ready(load_inpxml, data_regress
     xmltree, schema_dict = load_inpxml(TEST_FILM_INPXML_PATH)
 
     para = get_parameter_data(xmltree, schema_dict, extract_econfig=True, inpgen_ready=False)
+
+    data_regression.check(para)
+
+
+def test_parameter_norm_kinds(load_inpxml, data_regression):
+
+    from masci_tools.util.xml.xml_getters import get_parameter_data
+
+    xmltree, schema_dict = load_inpxml(TEST_NON_STANDARD_KIND_INPXML_PATH)
+
+    para = get_parameter_data(xmltree, schema_dict)
 
     data_regression.check(para)
 
@@ -442,9 +502,13 @@ def test_get_structure_max4(load_inpxml, data_regression):
 
     xmltree, schema_dict = load_inpxml(TEST_MAX4_INPXML_PATH)
 
-    atoms, cell, pbc = get_structure_data(xmltree, schema_dict)
+    atoms, cell, pbc = get_structure_data(xmltree, schema_dict, site_namedtuple=True)
 
-    data_regression.check({'atoms': convert_to_pystd(atoms), 'cell': convert_to_pystd(cell), 'pbc': pbc})
+    data_regression.check({
+        'atoms': convert_to_pystd([dict(atom._asdict()) for atom in atoms]),
+        'cell': convert_to_pystd(cell),
+        'pbc': pbc
+    })
 
 
 def test_get_cell_max4(load_inpxml, data_regression):

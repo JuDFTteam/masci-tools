@@ -362,6 +362,74 @@ def get_cell(xmltree, schema_dict, logger=None, convert_to_angstroem=True):
     return cell, pbc
 
 
+def _get_species_info(xmltree, schema_dict, logger=None):
+    """
+    Gets the species identifiers and information.
+    Used to keep species information consistent between
+    :py:func:`get_parameter_data` and :py:func:`get_structure_data`
+
+    :param xmltree: etree representing the fleur xml file
+    :param schema_dict: schema dictionary corresponding to the file version
+                        of the xmltree
+    :param logger: logger object for logging warnings, errors
+
+    :returns: Tuple of dicts, containing the normalized species ids
+              and the elements for each species
+    """
+    from masci_tools.util.xml.common_functions import clear_xml
+    from masci_tools.util.schema_dict_util import read_constants, evaluate_attribute
+    import re
+
+    if isinstance(xmltree, etree._ElementTree):
+        xmltree, _ = clear_xml(xmltree)
+        root = xmltree.getroot()
+    else:
+        root = xmltree
+    constants = read_constants(root, schema_dict, logger=logger)
+
+    names = evaluate_attribute(root,
+                               schema_dict,
+                               'name',
+                               constants=constants,
+                               contains='species',
+                               logger=logger,
+                               list_return=True)
+    elements = evaluate_attribute(root,
+                                  schema_dict,
+                                  'element',
+                                  constants=constants,
+                                  contains='species',
+                                  logger=logger,
+                                  list_return=True)
+
+    if len(names) != len(elements):
+        raise ValueError(
+            f'Failed to read in species names and elements. Got {len(names)} names and {len(elements)} elements')
+
+    species_info = {}
+    for name, element in zip(names, elements):
+        #Check if the species name has a numerical id at the end (separated by - or .)
+        #And add all of them first
+        species_info[name] = {}
+        species_info[name]['element'] = element
+        species_info[name]['normed_name'] = name
+        match = re.fullmatch(r'(.+[\-\.])([1-9]+)', name)
+        if match:
+            species_info[name]['id'] = int(match.group(2))
+
+    for name, info in species_info.items():
+        if 'id' not in info:
+            element = info['element']
+            #Find the smallest id which is free
+            used_ids = {val['id'] for name, val in species_info.items() if 'id' in val and val['element'] == element}
+            possible_ids = range(1, max(used_ids, default=0) + 2)
+            info['id'] = min(set(possible_ids) - set(used_ids))
+            #Just append the id to the normed name
+            info['normed_name'] += f"-{info['id']}"
+
+    return species_info
+
+
 def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True, extract_econfig=False, logger=None):
     """
     This routine returns an python dictionary produced from the inp.xml
@@ -426,19 +494,17 @@ def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True, 
 
     # &atoms
     species_list = eval_simple_xpath(root, schema_dict, 'species', list_return=True, logger=logger)
-    # first we see if there are several species with the same atomic number
-    for species in species_list:
-        atom_z = evaluate_attribute(species, schema_dict, 'atomicNumber', constants, logger=logger)
 
-    species_count = {}
+    species_info = _get_species_info(xmltree, schema_dict, logger=logger)
+
     for indx, species in enumerate(species_list):
         atom_dict = {}
         atoms_name = f'atom{indx}'
         atom_z = evaluate_attribute(species, schema_dict, 'atomicNumber', constants=constants, logger=logger)
+        atom_name = evaluate_attribute(species, schema_dict, 'name', constants=constants, logger=logger)
         if not inpgen_ready:
             atom_dict['z'] = atom_z
-        species_count[atom_z] = species_count.get(atom_z, 0) + 1
-        atom_id = f'{atom_z}.{species_count[atom_z]}'
+        atom_id = f"{atom_z}.{species_info[atom_name]['id']}"
         if write_ids:
             atom_dict['id'] = atom_id
 
@@ -533,6 +599,7 @@ def get_structure_data(xmltree,
                        include_relaxations=True,
                        site_namedtuple=False,
                        convert_to_angstroem=True,
+                       normalize_kind_name=True,
                        logger=None):
     """
     Get the structure defined in the given fleur xml file.
@@ -595,30 +662,7 @@ def get_structure_data(xmltree,
     constants = read_constants(root, schema_dict, logger=logger)
     cell, pbc = get_cell(root, schema_dict, logger=logger, convert_to_angstroem=convert_to_angstroem)
 
-    species_names = evaluate_attribute(root,
-                                       schema_dict,
-                                       'name',
-                                       constants=constants,
-                                       contains='species',
-                                       logger=logger)
-    species_elements = evaluate_attribute(root,
-                                          schema_dict,
-                                          'element',
-                                          constants=constants,
-                                          contains='species',
-                                          logger=logger)
-
-    if not isinstance(species_names, list):
-        species_names = [species_names]
-    if not isinstance(species_elements, list):
-        species_elements = [species_elements]
-
-    if len(species_names) != len(species_elements):
-        raise ValueError(
-            f'Failed to read in species names and elements. Got {len(species_names)} names and {len(species_elements)} elements'
-        )
-
-    species_dict = dict(zip(species_names, species_elements))
+    species_info = _get_species_info(xmltree, schema_dict, logger=None)
 
     atom_data = []
     atom_groups = eval_simple_xpath(root, schema_dict, 'atomGroup', list_return=True, logger=logger)
@@ -641,8 +685,6 @@ def get_structure_data(xmltree,
                 )
 
     for indx, group in enumerate(atom_groups):
-
-        group_species = evaluate_attribute(group, schema_dict, 'species', constants=constants, logger=logger)
 
         atom_positions = []
 
@@ -722,12 +764,25 @@ def get_structure_data(xmltree,
 
                 atom_positions[pos_indx] = list(np.array(atom_positions[pos_indx]) + np.array(site_displace))
 
+        group_species = evaluate_attribute(group, schema_dict, 'species', constants=constants, logger=logger)
+        element = species_info[group_species]['element']
+        if normalize_kind_name and site_namedtuple:
+            normed_name = species_info[group_species]['normed_name']
+            if normed_name != group_species:
+                if logger is None:
+                    warnings.warn(
+                        f'Normalized species name {group_species} to {normed_name}. '
+                        "Use the option 'normed_kind_name=False' to preserve the original species name", UserWarning)
+                else:
+                    logger.warning(f'Normalized species name {group_species} to {normed_name}. '
+                                   "Use the option 'normed_kind_name=False' to preserve the original species name")
+                group_species = normed_name
+
         if site_namedtuple:
             atom_data.extend(
-                AtomSiteProperties(position=pos, symbol=species_dict[group_species], kind=group_species)
-                for pos in atom_positions)
+                AtomSiteProperties(position=pos, symbol=element, kind=group_species) for pos in atom_positions)
         else:
-            atom_data.extend((pos, species_dict[group_species]) for pos in atom_positions)
+            atom_data.extend((pos, element) for pos in atom_positions)
 
     return atom_data, cell, pbc
 

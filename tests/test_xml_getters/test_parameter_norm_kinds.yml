@@ -1,0 +1,29 @@
+atom0:
+  dx: 0.014
+  element: Nd
+  id: '60.1'
+  jri: 925
+  lmax: 8
+  lnonsph: 6
+  lo: 5p 5s
+  rmt: 3.2
+atom1:
+  dx: 0.016
+  element: Co
+  id: '27.1'
+  jri: 745
+  lmax: 8
+  lnonsph: 6
+  lo: 3p
+  rmt: 2.25
+comp:
+  ctail: true
+  frcor: false
+  gmax: 8.0
+  gmaxxc: 8.0
+  jspins: 2
+  kcrel: 0
+  kmax: 3.0
+exco:
+  xctyp: vwn
+title: Nd1Co5
