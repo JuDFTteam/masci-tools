@@ -4,6 +4,7 @@
 - `get_structure_data` now returns the relaxed structure if a `relaxation` section is present
 - `get_parameter_data` can read in the electron configuration if requested
 - `get_symmetry_information` xml getter to get all defined symmetry operations
+- `get_structure_data` and `get_parameter_data` now norm the species names to get consistent ids for usage in the inpgen files (#70)
 ### Improvements
 - Added another possible value to environment variable `MASCI_TOOLS_USE_OLD_CONSTANTS` to get the values of constants in between commits c171563 and 66953f8 (#66)
 - `spex` attribute is now used in addition to old `gw` attribute to determine whether a fleur input file is from a SPEX calculation
