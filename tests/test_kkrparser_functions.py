@@ -45,9 +45,15 @@ class Test_kkr_parser_functions(object):
         Parse complete output of kkr calculation but using file handles as done in aiida-kkr
         """
         out_dict = {}
-        success, msg_list, out_dict = parse_kkr_outputfile(out_dict, open(self.outfile), open(self.outfile_0init),
-                                                           open(self.outfile_000), open(self.timing_file),
-                                                           open(self.potfile_out), open(self.nonco_out_file))
+        with open(self.outfile) as outfile:
+            with open(self.outfile_0init) as outfile_0init:
+                with open(self.outfile_000) as outfile_000:
+                    with open(self.timing_file) as timing_file:
+                        with open(self.potfile_out) as potfile_out:
+                            with open(self.nonco_out_file) as nonco_out_file:
+                                success, msg_list, out_dict = parse_kkr_outputfile(out_dict, outfile, outfile_0init,
+                                                                                   outfile_000, timing_file,
+                                                                                   potfile_out, nonco_out_file)
         out_dict['parser_warnings'] = msg_list
         assert success
         assert msg_list == []

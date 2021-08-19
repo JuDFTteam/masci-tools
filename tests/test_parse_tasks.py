@@ -30,7 +30,9 @@ def test_find_migration():
     """
     from masci_tools.util.parse_tasks import ParseTasks, find_migration
 
-    assert len(find_migration('0.34', '0.34', ParseTasks._migrations)) == 0
-    assert len(find_migration('0.34', '0.33', ParseTasks._migrations)) == 1
-    assert len(find_migration('0.34', '0.31', ParseTasks._migrations)) == 2
-    assert find_migration('0.34', '0.01', ParseTasks._migrations) is None
+    migrations = ParseTasks('0.33').migrations
+
+    assert len(find_migration('0.34', '0.34', migrations)) == 0
+    assert len(find_migration('0.34', '0.33', migrations)) == 1
+    assert len(find_migration('0.34', '0.31', migrations)) == 2
+    assert find_migration('0.34', '0.01', migrations) is None

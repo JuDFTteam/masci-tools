@@ -17,9 +17,10 @@ of fleur in a robust way.
 Essentially a low-level version of the FleurinpModifier in aiida_fleur.
 """
 from collections import namedtuple
-from lxml import etree
 
 from masci_tools.util.xml.collect_xml_setters import XPATH_SETTERS, SCHEMA_DICT_SETTERS, NMMPMAT_SETTERS
+from masci_tools.io.io_fleurxml import load_inpxml
+from pathlib import Path
 #Enable warnings for missing docstrings
 #pylint: enable=missing-function-docstring
 
@@ -276,17 +277,10 @@ class FleurXMLModifier:
 
         :returns: a modified xmltree and if existent a modified density matrix file
         """
-        if isinstance(original_inpxmlfile, etree._ElementTree):
-            original_xmltree = original_inpxmlfile
-        else:
-            parser = etree.XMLParser(attribute_defaults=True, encoding='utf-8')
-            try:
-                original_xmltree = etree.parse(original_inpxmlfile, parser)
-            except etree.XMLSyntaxError as msg:
-                raise ValueError(f'Failed to parse input file: {msg}') from msg
+        original_xmltree, _ = load_inpxml(original_inpxmlfile)
 
         if original_nmmp_file is not None:
-            if isinstance(original_nmmp_file, str):
+            if isinstance(original_nmmp_file, (str, Path)):
                 with open(original_nmmp_file, mode='r') as n_mmp_file:
                     original_nmmp_lines = n_mmp_file.read().split('\n')
             else:

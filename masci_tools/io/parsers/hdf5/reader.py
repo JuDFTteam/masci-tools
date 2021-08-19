@@ -18,6 +18,7 @@ import h5py
 from collections import namedtuple
 import warnings
 import logging
+from pathlib import Path
 
 Transformation = namedtuple('Transformation', ['name', 'args', 'kwargs'])
 AttribTransformation = namedtuple('AttribTransformation', ['name', 'attrib_name', 'args', 'kwargs'])
@@ -59,7 +60,7 @@ class HDF5Reader:
 
         self._file = file
 
-        if isinstance(self._file, io.IOBase):
+        if isinstance(self._file, (io.IOBase, Path)):
             self._filename = self._file.name
         else:
             self._filename = self._file

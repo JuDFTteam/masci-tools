@@ -25,7 +25,7 @@ for the following 3 cases:
 import h5py
 import numpy as np
 from functools import wraps
-from masci_tools.io.parsers.hdf5 import HDF5Reader
+from .reader import HDF5Reader
 
 
 def hdf5_transformation(*, attribute_needed):

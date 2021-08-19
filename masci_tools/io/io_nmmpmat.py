@@ -16,7 +16,7 @@ Simple IO routines for creating text for nmmp_mat files
 import numpy as np
 
 
-def format_nmmpmat(denmat, orbital=None, phi=None, theta=None):
+def format_nmmpmat(denmat):
     """
     Format a given 7x7 complex numpy array into the format for the n_mmp_mat file
 
@@ -93,7 +93,7 @@ def write_nmmpmat(orbital, denmat, phi=None, theta=None):
     if theta is not None or phi is not None:
         denmat_padded = rotate_nmmpmat_block(denmat_padded, orbital, phi=phi, theta=theta)
 
-    return format_nmmpmat(denmat_padded, orbital=orbital, phi=phi, theta=theta)
+    return format_nmmpmat(denmat_padded)
 
 
 def write_nmmpmat_from_states(orbital, state_occupations, phi=None, theta=None):

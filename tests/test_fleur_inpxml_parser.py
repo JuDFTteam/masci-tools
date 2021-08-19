@@ -83,6 +83,16 @@ def test_inpxml_valid_inpxml(inpxmlfilepath):
     assert isinstance(inp_dict, dict)
     assert inp_dict != {}
 
+    #Pass file content
+    with open(inpxmlfilepath, 'rb') as inpfile:
+        inp_content = inpfile.read()
+
+    inp_dict = inpxml_parser(inp_content, base_url=inpxmlfilepath)
+
+    assert inp_dict is not None
+    assert isinstance(inp_dict, dict)
+    assert inp_dict != {}
+
 
 @pytest.mark.parametrize('inpxmlfilepath', inpxmlfilelist2)
 def test_inpxml_non_valid_inpxml(inpxmlfilepath):

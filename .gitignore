@@ -9,6 +9,7 @@ publish_to_pypi.sh
 #editors etc
 .pytest_cache
 .vscode
+*.sublime-project
 
 # vim
 *.swp
@@ -69,6 +70,7 @@ coverage.xml
 *,cover
 .hypothesis/
 masci_tools/tests/{config.cfg,input*}
+tests/mpl-results/
 
 # Translations
 *.mo

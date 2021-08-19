@@ -17,10 +17,10 @@ class Test_common_functions(object):
 
     def test_open_general(self):
         path = '../tests/files/kkr/kkr_run_slab_nosoc/out_kkr'
-        f = open_general(path)
-        l1 = len(f.readlines())
-        f = open_general(f)
-        l2 = len(f.readlines())
+        with open_general(path) as f:
+            l1 = len(f.readlines())
+            with open_general(f) as f2:
+                l2 = len(f2.readlines())
         assert l1 == l2
         assert l2 > 0
 
@@ -33,7 +33,8 @@ class Test_common_functions(object):
         assert (dos == np.load('../tests/files/interpol/ref_dos.npy')).all()
 
     def test_interpolate_dos_filehandle(self):
-        d0 = open('../tests/files/interpol/complex.dos')
+        with open('../tests/files/interpol/complex.dos'):
+            pass
         d0 = '../tests/files/interpol/complex.dos'
         ef, dos, dos_int = interpolate_dos(d0, return_original=True)
         assert ef == 0.5256
@@ -47,7 +48,8 @@ class Test_common_functions(object):
         assert abs(alat - np.sqrt(2) / 2) < 10**-10
 
     def test_search_string(self):
-        txt = open('files/kkr/kkr_run_dos_output/output.0.txt', 'r').readlines()
+        with open('files/kkr/kkr_run_dos_output/output.0.txt', 'r') as f:
+            txt = f.readlines()
         alatline = search_string('ALAT', txt)
         noline = search_string('ALT', txt)
         assert alatline == 23

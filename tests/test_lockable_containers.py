@@ -22,11 +22,11 @@ def test_lockable_dict():
 
     l.freeze()
 
-    assert l._locked
+    assert l.locked
     assert isinstance(l['B'], LockableDict)
-    assert l['B']._locked
+    assert l['B'].locked
     assert isinstance(l['B']['Test'], LockableList)
-    assert l['B']['Test']._locked
+    assert l['B']['Test'].locked
 
     with pytest.raises(RuntimeError, match='Modification not allowed'):
         l['test_set'] = 'notanymore'
@@ -50,11 +50,11 @@ def test_lockable_list():
 
     l.freeze()
 
-    assert l._locked
+    assert l.locked
     assert isinstance(l[1], LockableDict)
-    assert l[1]._locked
+    assert l[1].locked
     assert isinstance(l[1]['Test'], LockableList)
-    assert l[1]['Test']._locked
+    assert l[1]['Test'].locked
 
     with pytest.raises(RuntimeError, match='Modification not allowed'):
         l[2] = 'notanymore'

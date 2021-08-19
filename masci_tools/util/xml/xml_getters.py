@@ -16,6 +16,7 @@ for easy versioning and reuse
 """
 from masci_tools.io.parsers.fleur.fleur_schema import schema_dict_version_dispatch
 from lxml import etree
+import warnings
 
 
 def get_fleur_modes(xmltree, schema_dict, logger=None):
@@ -74,7 +75,12 @@ def get_fleur_modes(xmltree, schema_dict, logger=None):
         relax = False
     fleur_modes['relax'] = relax
 
-    gw = evaluate_attribute(root, schema_dict, 'gw', constants=constants, logger=logger, optional=True)
+    gw = None
+    if tag_exists(root, schema_dict, 'expertModes', logger=logger):
+        gw = evaluate_attribute(root, schema_dict, 'gw', constants=constants, logger=logger, optional=True)
+        if gw is None and schema_dict.inp_version >= (0, 34):
+            gw = evaluate_attribute(root, schema_dict, 'spex', constants=constants, logger=logger, optional=True)
+
     if gw is None:
         gw = False
     else:
@@ -218,7 +224,6 @@ def get_nkpts_max4(xmltree, schema_dict, logger=None):
     """
     from masci_tools.util.schema_dict_util import evaluate_attribute, eval_simple_xpath
     from masci_tools.util.xml.common_functions import clear_xml
-    import warnings
 
     if isinstance(xmltree, etree._ElementTree):
         xmltree, _ = clear_xml(xmltree)
@@ -273,7 +278,7 @@ def get_nkpts_max4(xmltree, schema_dict, logger=None):
     return nkpts
 
 
-def get_cell(xmltree, schema_dict, logger=None):
+def get_cell(xmltree, schema_dict, logger=None, convert_to_angstroem=True):
     """
     Get the Bravais matrix from the given fleur xml file. In addition a list
     determining in, which directions there are periodic boundary conditions
@@ -287,12 +292,13 @@ def get_cell(xmltree, schema_dict, logger=None):
     :param schema_dict: schema dictionary corresponding to the file version
                         of the xmltree
     :param logger: logger object for logging warnings, errors
+    :param convert_to_angstroem: bool if True the bravais matrix is converted to angstroem
 
     :returns: numpy array of the bravais matrix and list of boolean values for
               periodic boundary conditions
     """
     from masci_tools.util.schema_dict_util import read_constants, eval_simple_xpath
-    from masci_tools.util.schema_dict_util import evaluate_text, tag_exists
+    from masci_tools.util.schema_dict_util import evaluate_text, tag_exists, evaluate_attribute
     from masci_tools.util.xml.common_functions import clear_xml
     from masci_tools.util.constants import BOHR_A
     import numpy as np
@@ -314,6 +320,13 @@ def get_cell(xmltree, schema_dict, logger=None):
         pbc = [True, True, False]
 
     if lattice_tag is not None:
+        lattice_scale = evaluate_attribute(lattice_tag,
+                                           schema_dict,
+                                           'scale',
+                                           constants=constants,
+                                           logger=logger,
+                                           not_contains={'/a', 'c/'})
+
         row1 = evaluate_text(lattice_tag,
                              schema_dict,
                              'row-1',
@@ -337,7 +350,9 @@ def get_cell(xmltree, schema_dict, logger=None):
                              optional=True)
 
         if all(x is not None and x != [] for x in [row1, row2, row3]):
-            cell = np.array([row1, row2, row3]) * BOHR_A
+            cell = np.array([row1, row2, row3]) * lattice_scale
+            if convert_to_angstroem:
+                cell *= BOHR_A
 
     if cell is None:
         raise ValueError('Could not extract Bravais matrix out of inp.xml. Is the '
@@ -347,7 +362,75 @@ def get_cell(xmltree, schema_dict, logger=None):
     return cell, pbc
 
 
-def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True, logger=None):
+def _get_species_info(xmltree, schema_dict, logger=None):
+    """
+    Gets the species identifiers and information.
+    Used to keep species information consistent between
+    :py:func:`get_parameter_data` and :py:func:`get_structure_data`
+
+    :param xmltree: etree representing the fleur xml file
+    :param schema_dict: schema dictionary corresponding to the file version
+                        of the xmltree
+    :param logger: logger object for logging warnings, errors
+
+    :returns: Tuple of dicts, containing the normalized species ids
+              and the elements for each species
+    """
+    from masci_tools.util.xml.common_functions import clear_xml
+    from masci_tools.util.schema_dict_util import read_constants, evaluate_attribute
+    import re
+
+    if isinstance(xmltree, etree._ElementTree):
+        xmltree, _ = clear_xml(xmltree)
+        root = xmltree.getroot()
+    else:
+        root = xmltree
+    constants = read_constants(root, schema_dict, logger=logger)
+
+    names = evaluate_attribute(root,
+                               schema_dict,
+                               'name',
+                               constants=constants,
+                               contains='species',
+                               logger=logger,
+                               list_return=True)
+    elements = evaluate_attribute(root,
+                                  schema_dict,
+                                  'element',
+                                  constants=constants,
+                                  contains='species',
+                                  logger=logger,
+                                  list_return=True)
+
+    if len(names) != len(elements):
+        raise ValueError(
+            f'Failed to read in species names and elements. Got {len(names)} names and {len(elements)} elements')
+
+    species_info = {}
+    for name, element in zip(names, elements):
+        #Check if the species name has a numerical id at the end (separated by - or .)
+        #And add all of them first
+        species_info[name] = {}
+        species_info[name]['element'] = element
+        species_info[name]['normed_name'] = name
+        match = re.fullmatch(r'(.+[\-\.])([1-9]+)', name)
+        if match:
+            species_info[name]['id'] = int(match.group(2))
+
+    for name, info in species_info.items():
+        if 'id' not in info:
+            element = info['element']
+            #Find the smallest id which is free
+            used_ids = {val['id'] for name, val in species_info.items() if 'id' in val and val['element'] == element}
+            possible_ids = range(1, max(used_ids, default=0) + 2)
+            info['id'] = min(set(possible_ids) - set(used_ids))
+            #Just append the id to the normed name
+            info['normed_name'] += f"-{info['id']}"
+
+    return species_info
+
+
+def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True, extract_econfig=False, logger=None):
     """
     This routine returns an python dictionary produced from the inp.xml
     file, which contains all the parameters needed to setup a new inp.xml from a inpgen
@@ -365,9 +448,9 @@ def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True, 
 
     """
     from masci_tools.util.schema_dict_util import read_constants, eval_simple_xpath
-    from masci_tools.util.schema_dict_util import evaluate_attribute, evaluate_text
+    from masci_tools.util.schema_dict_util import evaluate_attribute, evaluate_text, evaluate_tag
     from masci_tools.util.xml.common_functions import clear_xml
-    from masci_tools.util.xml.converters import convert_fleur_lo
+    from masci_tools.util.xml.converters import convert_fleur_lo, convert_fleur_electronconfig
     from masci_tools.io.common_functions import filter_out_empty_dict_entries
 
     # TODO: convert econfig
@@ -411,24 +494,19 @@ def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True, 
 
     # &atoms
     species_list = eval_simple_xpath(root, schema_dict, 'species', list_return=True, logger=logger)
-    species_several = {}
-    # first we see if there are several species with the same atomic number
-    for species in species_list:
-        atom_z = evaluate_attribute(species, schema_dict, 'atomicNumber', constants, logger=logger)
-        species_several[atom_z] = species_several.get(atom_z, 0) + 1
 
-    species_count = {}
+    species_info = _get_species_info(xmltree, schema_dict, logger=logger)
+
     for indx, species in enumerate(species_list):
         atom_dict = {}
         atoms_name = f'atom{indx}'
         atom_z = evaluate_attribute(species, schema_dict, 'atomicNumber', constants=constants, logger=logger)
+        atom_name = evaluate_attribute(species, schema_dict, 'name', constants=constants, logger=logger)
         if not inpgen_ready:
             atom_dict['z'] = atom_z
-        species_count[atom_z] = species_count.get(atom_z, 0) + 1
-        atom_id = f'{atom_z}.{species_count[atom_z]}'
+        atom_id = f"{atom_z}.{species_info[atom_name]['id']}"
         if write_ids:
-            if species_several[atom_z] > 1:
-                atom_dict['id'] = atom_id
+            atom_dict['id'] = atom_id
 
         if schema_dict.inp_version <= (0, 31):
             atom_dict['ncst'] = evaluate_attribute(species, schema_dict, 'coreStates', constants, logger=logger)
@@ -441,12 +519,25 @@ def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True, 
 
         atom_dict['element'] = evaluate_attribute(species, schema_dict, 'element', constants=constants, logger=logger)
 
-        #atom_econfig = eval_simple_xpath(species, schema_dict, 'electronConfig')
+        if extract_econfig:
+            if inpgen_ready:
+                atom_econfig = eval_simple_xpath(species, schema_dict, 'electronConfig', logger=logger)
+                if len(atom_econfig) != 0:
+                    atom_dict['econfig'] = convert_fleur_electronconfig(atom_econfig)
+            else:
+                atom_dict['econfig'] = evaluate_tag(species,
+                                                    schema_dict,
+                                                    'electronConfig',
+                                                    constants=constants,
+                                                    logger=logger,
+                                                    subtags=True,
+                                                    ignore={'flipSpins'})
+
         atom_lo = eval_simple_xpath(species, schema_dict, 'lo', list_return=True, logger=logger)
-        #atom_econfig = eval_simple_xpath(species, schema_dict, 'electronConfig')
 
         if len(atom_lo) != 0:
             atom_dict['lo'] = convert_fleur_lo(atom_lo)
+
         parameters[atoms_name] = filter_out_empty_dict_entries(atom_dict)
 
     # &soc
@@ -503,7 +594,13 @@ def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True, 
     return parameters
 
 
-def get_structure_data(xmltree, schema_dict, logger=None):
+def get_structure_data(xmltree,
+                       schema_dict,
+                       include_relaxations=True,
+                       site_namedtuple=False,
+                       convert_to_angstroem=True,
+                       normalize_kind_name=True,
+                       logger=None):
     """
     Get the structure defined in the given fleur xml file.
 
@@ -511,24 +608,51 @@ def get_structure_data(xmltree, schema_dict, logger=None):
         Only the explicit definition of the Bravais matrix is supported.
         Old inputs containing the `latnam` definitions are not supported
 
+    .. warning::
+        In versions ``0.5.0`` or later the output of the atom sites was restructured
+        to be more interoperable with other IO functions (e.g. :py:func:`~masci_tools.io.fleur_inpgen.write_inpgen_file()`)
+        The new format returns a list of :py:class:`~masci_tools.io.common_functions.AtomSiteProperties`
+        instead of the list of tuples (position, symbol)
+
+        For better compatibility this output is not default in ``0.5.0`` but instead
+        is enabled by ``site_namedtuple=True`` and a DeprecationWarning is given when
+        this argument is ``False``.
+
+    .. note::
+        In versions ``0.5.0`` or later the returned atom positions correspond to the relaxed
+        structure if a ``relaxation`` section is present in the xmltree
+
+
     :param xmltree: etree representing the fleur xml file
     :param schema_dict: schema dictionary corresponding to the file version
                         of the xmltree
+    :param include_relaxations: bool if True and a relaxation section is included
+                                the resulting positions correspond to the relaxed structure
     :param logger: logger object for logging warnings, errors
+    :param convert_to_angstroem: bool if True the bravais matrix is converted to angstroem
 
     :returns: tuple containing the structure information
 
     The tuple contains the following entries:
 
-        1. :atom_data: list of tuples containing the absolute positions and symbols of the atoms
+        1. :atom_data: list of (named)tuples containing the absolute positions and symbols of the atoms
         2. :cell: numpy array, bravais matrix of the given system
         3. :pbc: list of booleans, determines in which directions periodic boundary conditions are applicable
 
     """
-    from masci_tools.util.schema_dict_util import read_constants, eval_simple_xpath
+    from masci_tools.util.schema_dict_util import read_constants, eval_simple_xpath, tag_exists
     from masci_tools.util.schema_dict_util import evaluate_text, evaluate_attribute
     from masci_tools.util.xml.common_functions import clear_xml
-    from masci_tools.io.common_functions import rel_to_abs, rel_to_abs_f
+    from masci_tools.io.common_functions import rel_to_abs, rel_to_abs_f, abs_to_rel, abs_to_rel_f
+    from masci_tools.io.common_functions import find_symmetry_relation, AtomSiteProperties
+    from masci_tools.util.constants import BOHR_A
+    import numpy as np
+
+    if not site_namedtuple:
+        warnings.warn(
+            'Output of atom positions in pure tuples of the form (position, symbol) is deprecated.'
+            'Please adjust your code to use the namedtuple AtomSiteProperties (see masci_tools.io.common_functions)'
+            ' with the fields (position, symbol, kind)', DeprecationWarning)
 
     if isinstance(xmltree, etree._ElementTree):
         xmltree, _ = clear_xml(xmltree)
@@ -536,38 +660,31 @@ def get_structure_data(xmltree, schema_dict, logger=None):
     else:
         root = xmltree
     constants = read_constants(root, schema_dict, logger=logger)
-    cell, pbc = get_cell(root, schema_dict, logger=logger)
+    cell, pbc = get_cell(root, schema_dict, logger=logger, convert_to_angstroem=convert_to_angstroem)
 
-    species_names = evaluate_attribute(root,
-                                       schema_dict,
-                                       'name',
-                                       constants=constants,
-                                       contains='species',
-                                       logger=logger)
-    species_elements = evaluate_attribute(root,
-                                          schema_dict,
-                                          'element',
-                                          constants=constants,
-                                          contains='species',
-                                          logger=logger)
-
-    if not isinstance(species_names, list):
-        species_names = [species_names]
-    if not isinstance(species_elements, list):
-        species_elements = [species_elements]
-
-    if len(species_names) != len(species_elements):
-        raise ValueError(
-            f'Failed to read in species names and elements. Got {len(species_names)} names and {len(species_elements)} elements'
-        )
-
-    species_dict = dict(zip(species_names, species_elements))
+    species_info = _get_species_info(xmltree, schema_dict, logger=None)
 
     atom_data = []
     atom_groups = eval_simple_xpath(root, schema_dict, 'atomGroup', list_return=True, logger=logger)
-    for group in atom_groups:
 
-        group_species = evaluate_attribute(group, schema_dict, 'species', constants=constants, logger=logger)
+    #Read relaxation information if available
+    displacements = None
+    if include_relaxations and schema_dict.inp_version >= (0, 29):
+        if tag_exists(root, schema_dict, 'relaxation', logger=logger):
+            relax_info = get_relaxation_information(root, schema_dict, logger=logger)
+            #We still read in the normal atom positions since the displacements are provided
+            #per atomtype
+            displacements = relax_info['displacements']
+            if convert_to_angstroem:
+                displacements = [np.array(displace) * BOHR_A for displace in displacements]
+            rotations, shifts = get_symmetry_information(root, schema_dict, logger=logger)
+
+            if len(displacements) != len(atom_groups):
+                raise ValueError(
+                    f'Did not get the right number of relaxed positions. Expected {len(atom_groups)} got {len(displacements)}'
+                )
+
+    for indx, group in enumerate(atom_groups):
 
         atom_positions = []
 
@@ -593,24 +710,85 @@ def get_structure_data(xmltree, schema_dict, logger=None):
                                        logger=logger,
                                        optional=True)
 
-        atom_positions = absolute_positions
+        if convert_to_angstroem:
+            atom_positions = [list(np.array(pos) * BOHR_A) for pos in absolute_positions]
+        else:
+            atom_positions = absolute_positions
 
         for rel_pos in relative_positions:
             atom_positions.append(rel_to_abs(rel_pos, cell))
 
         for film_pos in film_positions:
-            atom_positions.append(rel_to_abs_f(film_pos, cell))
+            film_pos = rel_to_abs_f(film_pos, cell)
+            if convert_to_angstroem:
+                film_pos[2] *= BOHR_A
+            atom_positions.append(film_pos)
 
         if len(atom_positions) == 0:
             raise ValueError('Failed to read atom positions for group')
 
-        atom_data.extend((pos, species_dict[group_species]) for pos in atom_positions)
+        if displacements:
+            representative_pos = atom_positions[0]
+
+            if len(film_positions) != 0:
+                rel_displace = abs_to_rel_f(displacements[indx], cell, pbc)
+                rel_representative_pos = abs_to_rel_f(representative_pos, cell, pbc)
+                rel_displace[2] = rel_displace[2] / cell[2, 2]
+                rel_representative_pos[2] = rel_representative_pos[2] / cell[2, 2]
+            else:
+                rel_displace = abs_to_rel(displacements[indx], cell)
+                rel_representative_pos = abs_to_rel(representative_pos, cell)
+
+            rel_representative_pos = np.array(rel_representative_pos)
+
+            for pos_indx, pos in enumerate(atom_positions):
+                rot, shift = find_symmetry_relation(representative_pos,
+                                                    pos,
+                                                    rotations,
+                                                    shifts,
+                                                    cell,
+                                                    relative_pos=False,
+                                                    film=len(film_positions) != 0)
+
+                #More explicit than it needs to be
+                #but analogous to fleur
+                rot_pos = np.matmul(rot, rel_representative_pos) + shift
+                site_displace = np.matmul(rot, rel_representative_pos + rel_displace) + shift
+                site_displace = site_displace - rot_pos
+
+                if len(film_positions) != 0:
+                    site_displace = rel_to_abs_f(site_displace, cell)
+                    site_displace[2] *= cell[2, 2]
+                else:
+                    site_displace = rel_to_abs(site_displace, cell)
+
+                atom_positions[pos_indx] = list(np.array(atom_positions[pos_indx]) + np.array(site_displace))
+
+        group_species = evaluate_attribute(group, schema_dict, 'species', constants=constants, logger=logger)
+        element = species_info[group_species]['element']
+        if normalize_kind_name and site_namedtuple:
+            normed_name = species_info[group_species]['normed_name']
+            if normed_name != group_species:
+                if logger is None:
+                    warnings.warn(
+                        f'Normalized species name {group_species} to {normed_name}. '
+                        "Use the option 'normed_kind_name=False' to preserve the original species name", UserWarning)
+                else:
+                    logger.warning(f'Normalized species name {group_species} to {normed_name}. '
+                                   "Use the option 'normed_kind_name=False' to preserve the original species name")
+                group_species = normed_name
+
+        if site_namedtuple:
+            atom_data.extend(
+                AtomSiteProperties(position=pos, symbol=element, kind=group_species) for pos in atom_positions)
+        else:
+            atom_data.extend((pos, element) for pos in atom_positions)
 
     return atom_data, cell, pbc
 
 
 @schema_dict_version_dispatch(output_schema=False)
-def get_kpoints_data(xmltree, schema_dict, name=None, index=None, logger=None):
+def get_kpoints_data(xmltree, schema_dict, name=None, index=None, logger=None, convert_to_angstroem=True):
     """
     Get the kpoint sets defined in the given fleur xml file.
 
@@ -625,6 +803,7 @@ def get_kpoints_data(xmltree, schema_dict, name=None, index=None, logger=None):
     :param index: int, optional, if given only the kpoint set with the given index
                   is returned
     :param logger: logger object for logging warnings, errors
+    :param convert_to_angstroem: bool if True the bravais matrix is converted to angstroem
 
     :returns: tuple containing the kpoint information
 
@@ -653,7 +832,7 @@ def get_kpoints_data(xmltree, schema_dict, name=None, index=None, logger=None):
 
     constants = read_constants(root, schema_dict, logger=logger)
 
-    cell, pbc = get_cell(root, schema_dict, logger=logger)
+    cell, pbc = get_cell(root, schema_dict, logger=logger, convert_to_angstroem=convert_to_angstroem)
 
     kpointlists = eval_simple_xpath(root, schema_dict, 'kPointList', list_return=True, logger=logger)
 
@@ -702,7 +881,7 @@ def get_kpoints_data(xmltree, schema_dict, name=None, index=None, logger=None):
 
 
 @get_kpoints_data.register(max_version='0.31')
-def get_kpoints_data_max4(xmltree, schema_dict, logger=None):
+def get_kpoints_data_max4(xmltree, schema_dict, logger=None, convert_to_angstroem=True):
     """
     Get the kpoint sets defined in the given fleur xml file.
 
@@ -714,6 +893,7 @@ def get_kpoints_data_max4(xmltree, schema_dict, logger=None):
     :param schema_dict: schema dictionary corresponding to the file version
                         of the xmltree
     :param logger: logger object for logging warnings, errors
+    :param convert_to_angstroem: bool if True the bravais matrix is converted to angstroem
 
     :returns: tuple containing the kpoint information
 
@@ -737,7 +917,7 @@ def get_kpoints_data_max4(xmltree, schema_dict, logger=None):
 
     constants = read_constants(root, schema_dict, logger=logger)
 
-    cell, pbc = get_cell(root, schema_dict, logger=logger)
+    cell, pbc = get_cell(root, schema_dict, logger=logger, convert_to_angstroem=convert_to_angstroem)
 
     kpointlist = eval_simple_xpath(root,
                                    schema_dict,
@@ -841,3 +1021,53 @@ def get_relaxation_information_pre029(xmltree, schema_dict, logger=None):
     """
     raise NotImplementedError(
         f"'get_relaxation_information' is not implemented for inputs of version '{schema_dict['inp_version']}'")
+
+
+def get_symmetry_information(xmltree, schema_dict, logger=None):
+    """
+    Get the symmetry information from the given fleur XML file. This includes the
+    rotation matrices and shifts defined in the ``symmetryOperations`` tag.
+
+    .. note::
+        Only the explicit definition of the used symmetry operations in the xml file
+        is supported.
+
+    :param xmltree: etree representing the fleur xml file
+    :param schema_dict: schema dictionary corresponding to the file version
+                        of the xmltree
+    :param logger: logger object for logging warnings, errors
+
+    :returns: tuple of the rotations and their respective shifts
+
+    :raises ValueError: If no symmetryOperations section is included in the xml tree
+    """
+    from masci_tools.util.schema_dict_util import tag_exists, read_constants, evaluate_text, eval_simple_xpath
+    from masci_tools.util.xml.common_functions import clear_xml
+    import numpy as np
+
+    if isinstance(xmltree, etree._ElementTree):
+        xmltree, _ = clear_xml(xmltree)
+        root = xmltree.getroot()
+    else:
+        root = xmltree
+    constants = read_constants(root, schema_dict, logger=logger)
+
+    if not tag_exists(root, schema_dict, 'symmetryOperations', logger=logger):
+        raise ValueError('No explicit symmetry information included in the given XML file')
+
+    ops = eval_simple_xpath(root, schema_dict, 'symOp', logger=logger, list_return=True)
+
+    rotations = []
+    shifts = []
+    for op in ops:
+        row1 = evaluate_text(op, schema_dict, 'row-1', constants=constants, logger=logger)
+        row2 = evaluate_text(op, schema_dict, 'row-2', constants=constants, logger=logger)
+        row3 = evaluate_text(op, schema_dict, 'row-3', constants=constants, logger=logger)
+
+        rot = np.array([row1[:3], row2[:3], row3[:3]]).astype(int)
+        shift = np.array([row1[3], row2[3], row3[3]])
+
+        rotations.append(rot)
+        shifts.append(shift)
+
+    return rotations, shifts

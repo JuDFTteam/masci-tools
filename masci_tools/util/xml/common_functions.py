@@ -78,14 +78,10 @@ def clear_xml(tree):
 
         all_included_tags = all_included_tags.union(included_tag_names)
         for tag_name in included_tag_names:
-            for elem in parent:
-                if elem.tag == tag_name:
-                    for attribute in elem.keys():
-                        if 'base' in attribute:
-                            try:
-                                del elem.attrib[attribute]
-                            except BaseException:
-                                pass
+            for elem in parent.iterchildren(tag=tag_name):
+                for attribute in elem.keys():
+                    if 'base' in attribute:
+                        elem.attrib.pop(attribute, None)
 
     # remove comments from inp.xml
     comments = cleared_tree.xpath('//comment()')

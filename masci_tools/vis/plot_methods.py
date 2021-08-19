@@ -854,14 +854,15 @@ def default_histogram(*args, **kwargs):
 
 
 @ensure_plotter_consistency(plot_params)
-def barchart(xdata,
-             ydata,
+def barchart(positions,
+             heights,
              *,
              width=0.35,
              xlabel='x',
              ylabel='y',
              title='',
              bottom=None,
+             alignment='vertical',
              saveas='barchart',
              axis=None,
              xerr=None,
@@ -871,8 +872,8 @@ def barchart(xdata,
     Create a standard bar chart plot (this should be flexible enough) to do all the
     basic bar chart plots.
 
-    :param xdata: arraylike data for the x coordinates of the bars
-    :param ydata: arraylike data for the heights of the bars
+    :param positions: arraylike data for the positions of the bars
+    :param heights: arraylike data for the heights of the bars
     :param width: float determines the width of the bars
     :param axis: Axes object where to add the plot
     :param title: str, Title of the plot
@@ -889,16 +890,16 @@ def barchart(xdata,
     TODO: grouped barchart (meaing not stacked)
     """
 
-    nplots = len(ydata)
-    if nplots != len(xdata):  # todo check dimention not len, without moving to special datatype.
+    nplots = len(heights)
+    if nplots != len(positions):  # todo check dimention not len, without moving to special datatype.
         print('ydata and xdata must have the same dimension')
         return
 
-    if not isinstance(ydata[0], (list, np.ndarray, pd.Series)):
-        xdata, ydata = [xdata], [ydata]
+    if not isinstance(heights[0], (list, np.ndarray, pd.Series)):
+        positions, heights = [positions], [heights]
 
     plot_params.single_plot = False
-    plot_params.num_plots = len(ydata)
+    plot_params.num_plots = len(heights)
 
     #DEPRECATION WARNINGS
     if 'plot_labels' in kwargs:
@@ -951,13 +952,13 @@ def barchart(xdata,
     if bottom:
         datab = bottom
     else:
-        datab = np.zeros(len(ydata[0]))
+        datab = np.zeros(len(heights[0]))
 
     plot_kwargs = plot_params.plot_kwargs(plot_type='histogram')
 
-    for indx, data in enumerate(zip(xdata, ydata, plot_kwargs)):
+    for indx, data in enumerate(zip(positions, heights, plot_kwargs)):
 
-        x, y, plot_kw = data
+        position, height, plot_kw = data
 
         if isinstance(yerr, list):
             try:
@@ -975,9 +976,12 @@ def barchart(xdata,
         else:
             xerrt = xerr
 
-        ax.bar(x, y, width, bottom=datab, **plot_kw, **kwargs)
+        if alignment == 'horizontal':
+            ax.barh(position, height, width, left=datab, **plot_kw, **kwargs)
+        else:
+            ax.bar(position, height, width, bottom=datab, **plot_kw, **kwargs)
 
-        datab = datab + np.array(y)
+        datab = datab + np.array(height)
 
     plot_params.set_scale(ax)
     plot_params.set_limits(ax)
@@ -1094,7 +1098,7 @@ def multiaxis_scatterplot(xdata,
 def plot_convex_hull2d(hull,
                        *,
                        title='Convex Hull',
-                       xlabel='Atomic Procentage',
+                       xlabel='Atomic Percentage',
                        ylabel='Formation energy / atom [eV]',
                        saveas='convex_hull',
                        axis=None,
@@ -1123,6 +1127,7 @@ def plot_convex_hull2d(hull,
         warnings.warn('Please use color instead of color_line', DeprecationWarning)
         kwargs['color'] = kwargs.pop('colors')
 
+    plot_params.set_defaults(default_type='function', color='k')
     #Define function wide custom parameters
     plot_params.add_parameter('marker_hull', default_from='marker')
     plot_params.add_parameter('markersize_hull', default_from='markersize')
@@ -1132,19 +1137,25 @@ def plot_convex_hull2d(hull,
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
     points = hull.points
+    if not isinstance(points, np.ndarray):
+        points = np.array(points)
 
     plot_kw = plot_params.plot_kwargs()
     plot_hull_kw = plot_params.plot_kwargs(marker='marker_hull', markersize='markersize_hull', color='color_hull')
     plot_hull_kw['linestyle'] = ''
-    linestyle = plot_kw['linestyle']
-    plot_kw['linestyle'] = ''
+    linestyle = plot_kw.pop('linestyle', None)
 
-    ax.plot(points[:, 0], points[:, 1], **plot_kw, **kwargs)
+    ax.plot(points[:, 0], points[:, 1], linestyle='', **plot_kw, **kwargs)
     for simplex in hull.simplices:
         # TODO leave out some lines, the ones about [0,0 -1,0]
-        data = simplex.coords
+        if not isinstance(simplex, np.ndarray):
+            data = np.array(simplex.coords)
+        else:
+            data = points[simplex, :]
+
         ax.plot(data[:, 0], data[:, 1], linestyle=linestyle, **plot_kw, **kwargs)
         ax.plot(data[:, 0], data[:, 1], **plot_hull_kw, **kwargs)
+
         # this section is from scipy.spatial.Convexhull interface
         #ax.plot(points[simplex, 0], points[simplex, 1], linestyle=linestyle,
         #        color=color_line, linewidth=linewidth, markersize=markersize, **kwargs)
@@ -1479,7 +1490,8 @@ def plot_lattice_constant(scaling,
     plot_params.set_defaults(default_type='function',
                              marker_fit='s',
                              plot_label='simulation data',
-                             plot_label_fit='fit results')
+                             plot_label_fit='fit results',
+                             use_axis_formatter=True)
 
     general_keys = {'figure_kwargs', 'show', 'save_plots'}
     general_info = {key: val for key, val in kwargs.items() if key in general_keys}
@@ -1515,7 +1527,7 @@ def plot_lattice_constant(scaling,
                                        save_plots=False,
                                        **plot_kw,
                                        **kwargs)
-        if fit_y:
+        if fit_y is not None:
             with NestedPlotParameters(plot_params):
                 ax = multiple_scatterplots(scaling,
                                            fit_y,
@@ -1540,7 +1552,7 @@ def plot_lattice_constant(scaling,
                                     save_plots=False,
                                     **plot_kw,
                                     **kwargs)
-        if fit_y:
+        if fit_y is not None:
             with NestedPlotParameters(plot_params):
                 ax = single_scatterplot(scaling,
                                         fit_y,

@@ -60,7 +60,7 @@ for the `datasets`. These correpsond to the transforms created with the :py:clas
 namedtuple instead of :py:class:`~masci_tools.io.parsers.hdf5.reader.Transformation`.
 """
 from masci_tools.util.constants import HTR_TO_EV, BOHR_A
-from masci_tools.io.parsers.hdf5.reader import Transformation, AttribTransformation
+from .reader import Transformation, AttribTransformation
 
 
 def dos_recipe_format(group):
