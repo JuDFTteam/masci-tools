@@ -18,7 +18,6 @@ from .bokeh_plotter import BokehPlotter
 from .parameters import ensure_plotter_consistency, NestedPlotParameters
 from .data import process_data_arguments
 
-from bokeh.models import ColumnDataSource
 import pandas as pd
 import numpy as np
 import warnings
@@ -118,6 +117,7 @@ def bokeh_scatter(x,
     Kwargs will be passed on to :py:class:`masci_tools.vis.bokeh_plotter.BokehPlotter`.
     If the arguments are not recognized they are passed on to the bokeh function `scatter`
     """
+    from bokeh.models import ColumnDataSource
 
     if isinstance(x, (dict, pd.DataFrame, ColumnDataSource)) or x is None:
         warnings.warn(
@@ -185,6 +185,7 @@ def bokeh_multi_scatter(x,
     Kwargs will be passed on to :py:class:`masci_tools.vis.bokeh_plotter.BokehPlotter`.
     If the arguments are not recognized they are passed on to the bokeh function `scatter`
     """
+    from bokeh.models import ColumnDataSource
 
     if isinstance(x, (dict, pd.DataFrame, ColumnDataSource)) or x is None:
         warnings.warn(
@@ -269,6 +270,7 @@ def bokeh_line(x,
     Kwargs will be passed on to :py:class:`masci_tools.vis.bokeh_plotter.BokehPlotter`.
     If the arguments are not recognized they are passed on to the bokeh function `line`
     """
+    from bokeh.models import ColumnDataSource
 
     if isinstance(x, (dict, pd.DataFrame, ColumnDataSource)) or x is None:
         warnings.warn(
@@ -368,6 +370,7 @@ def bokeh_dos(energy_grid,
 
     Kwargs will be passed on to :py:func:`bokeh_line()`
     """
+    from bokeh.models import ColumnDataSource
 
     if isinstance(energy_grid, (dict, pd.DataFrame, ColumnDataSource)) or energy_grid is None:
         warnings.warn(
@@ -473,6 +476,7 @@ def bokeh_spinpol_dos(energy_grid,
     Kwargs will be passed on to :py:func:`bokeh_line()`
     """
     from bokeh.models import NumeralTickFormatter, Arrow, NormalHead
+    from bokeh.models import ColumnDataSource
 
     if isinstance(energy_grid, (dict, pd.DataFrame, ColumnDataSource)) or energy_grid is None:
         warnings.warn(
@@ -660,6 +664,8 @@ def bokeh_bands(kpath,
     Kwargs will be passed on to :py:func:`bokeh_multi_scatter()` or :py:func:`bokeh_line()`
     """
     from bokeh.transform import linear_cmap
+    from bokeh.models import ColumnDataSource
+
 
     if 'size_scaling' in kwargs:
         warnings.warn('size_scaling is deprecated. Use markersize_scaling instead', DeprecationWarning)
@@ -836,6 +842,8 @@ def bokeh_spinpol_bands(kpath,
     Kwargs will be passed on to :py:func:`bokeh_multi_scatter()` or :py:func:`bokeh_line()`
     """
     from bokeh.transform import linear_cmap
+    from bokeh.models import ColumnDataSource
+
 
     if 'size_scaling' in kwargs:
         warnings.warn('size_scaling is deprecated. Use markersize_scaling instead', DeprecationWarning)
@@ -1377,6 +1385,7 @@ def plot_convergence_results_m(iterations,
     :returns grid: bokeh grid with figures
     """
     from bokeh.layouts import gridplot
+    from bokeh.models import ColumnDataSource
 
     xlabel = r'Iteration'
     ylabel1 = r'Total energy difference [Htr]'
