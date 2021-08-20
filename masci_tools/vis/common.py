@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Common interface for plotting functions in different backends
 """
@@ -5,11 +6,13 @@ from enum import Enum
 
 _DEFAULT_BACKEND = 'mpl'
 
+
 def set_default_backend(backend):
 
     global _DEFAULT_BACKEND
     backend = PlotBackend.from_str(backend)
     _DEFAULT_BACKEND = backend.value
+
 
 class PlotBackend(Enum):
     mpl = 'matplotlib'
@@ -22,7 +25,7 @@ class PlotBackend(Enum):
             return PlotBackend.default()
         elif label.lower() in ('mpl', 'matplotlib'):
             return PlotBackend.mpl
-        elif label.lower() in ('bokeh', ):
+        elif label.lower() in ('bokeh',):
             return PlotBackend.bokeh
         else:
             raise NotImplementedError
@@ -45,6 +48,7 @@ def set_defaults(backend=None, **kwargs):
     else:
         raise NotImplementedError
 
+
 def reset_defaults(backend=None):
     from .plot_methods import reset_mpl_plot_defaults
     from .bokeh_plots import reset_bokeh_plot_defaults
@@ -57,6 +61,7 @@ def reset_defaults(backend=None):
         reset_bokeh_plot_defaults()
     else:
         raise NotImplementedError
+
 
 def show_defaults(backend=None):
     from .plot_methods import show_mpl_plot_defaults
@@ -71,6 +76,7 @@ def show_defaults(backend=None):
     else:
         raise NotImplementedError
 
+
 def save_defaults(backend=None, **kwargs):
     from .plot_methods import save_mpl_defaults
     from .bokeh_plots import save_bokeh_defaults
@@ -83,6 +89,7 @@ def save_defaults(backend=None, **kwargs):
         save_bokeh_defaults(**kwargs)
     else:
         raise NotImplementedError
+
 
 def load_defaults(backend=None, **kwargs):
     from .plot_methods import load_mpl_defaults
@@ -97,6 +104,7 @@ def load_defaults(backend=None, **kwargs):
     else:
         raise NotImplementedError
 
+
 def get_help(key, backend=None):
     from .plot_methods import get_mpl_help
     from .bokeh_plots import get_bokeh_help
@@ -109,6 +117,7 @@ def get_help(key, backend=None):
         get_bokeh_help(key)
     else:
         raise NotImplementedError
+
 
 def get_plotter(backend=None):
     import masci_tools.vis.plot_methods as mpl
@@ -123,88 +132,86 @@ def get_plotter(backend=None):
     else:
         raise NotImplementedError
 
-def dos(*args, backend=None, **kwargs):
+
+def dos(energy_grid, dos_data, backend=None, data=None, **kwargs):
     """
 
     """
     from .plot_methods import plot_dos
     from .bokeh_plots import bokeh_dos
 
-    plot_funcs = {PlotBackend.mpl: plot_dos,
-                  PlotBackend.bokeh: bokeh_dos}
+    plot_funcs = {PlotBackend.mpl: plot_dos, PlotBackend.bokeh: bokeh_dos}
 
     backend = PlotBackend.from_str(backend)
 
-    return plot_funcs[backend](*args, **kwargs)
+    return plot_funcs[backend](energy_grid, dos_data, data=data, **kwargs)
 
-def spinpol_dos(*args, backend=None, **kwargs):
+
+def spinpol_dos(energy_grid, dos_data_up, dos_data_dn, backend=None, data=None, **kwargs):
     """
 
     """
     from .plot_methods import plot_spinpol_dos
     from .bokeh_plots import bokeh_spinpol_dos
 
-    plot_funcs = {PlotBackend.mpl: plot_spinpol_dos,
-                  PlotBackend.bokeh: bokeh_spinpol_dos}
+    plot_funcs = {PlotBackend.mpl: plot_spinpol_dos, PlotBackend.bokeh: bokeh_spinpol_dos}
 
     backend = PlotBackend.from_str(backend)
 
-    return plot_funcs[backend](*args, **kwargs)
+    return plot_funcs[backend](energy_grid, dos_data_up, dos_data_dn, data=data, **kwargs)
 
-def bands(*args, backend=None, **kwargs):
+
+def bands(kpath, eigenvalues, backend=None, data=None, **kwargs):
     """
 
     """
     from .plot_methods import plot_bands
     from .bokeh_plots import bokeh_bands
 
-    plot_funcs = {PlotBackend.mpl: plot_bands,
-                  PlotBackend.bokeh: bokeh_bands}
+    plot_funcs = {PlotBackend.mpl: plot_bands, PlotBackend.bokeh: bokeh_bands}
 
     backend = PlotBackend.from_str(backend)
 
-    return plot_funcs[backend](*args, **kwargs)
+    return plot_funcs[backend](kpath, eigenvalues, data=data, **kwargs)
 
-def spinpol_bands(*args, backend=None, **kwargs):
+
+def spinpol_bands(kpath, eigenvalues_up, eigenvalues_dn, backend=None, data=None, **kwargs):
     """
 
     """
     from .plot_methods import plot_spinpol_bands
     from .bokeh_plots import bokeh_spinpol_bands
 
-    plot_funcs = {PlotBackend.mpl: plot_spinpol_bands,
-                  PlotBackend.bokeh: bokeh_spinpol_bands}
+    plot_funcs = {PlotBackend.mpl: plot_spinpol_bands, PlotBackend.bokeh: bokeh_spinpol_bands}
 
     backend = PlotBackend.from_str(backend)
 
-    return plot_funcs[backend](*args, **kwargs)
+    return plot_funcs[backend](kpath, eigenvalues_up, eigenvalues_dn, data=data, **kwargs)
 
-def scatter(*args, backend=None, **kwargs):
+
+def scatter(xdata, ydata, backend=None, data=None, **kwargs):
     """
 
     """
     from .plot_methods import multi_scatter_plot
     from .bokeh_plots import bokeh_multi_scatter
 
-    plot_funcs = {PlotBackend.mpl: multi_scatter_plot
-                  PlotBackend.bokeh: bokeh_multi_scatter}
+    plot_funcs = {PlotBackend.mpl: multi_scatter_plot, PlotBackend.bokeh: bokeh_multi_scatter}
 
     backend = PlotBackend.from_str(backend)
 
-    return plot_funcs[backend](*args, **kwargs)
+    return plot_funcs[backend](xdata, ydata, data=data, **kwargs)
 
-def line(*args, backend=None, **kwargs):
+
+def line(xdata, ydata, backend=None, data=None, **kwargs):
     """
 
     """
     from .plot_methods import multiple_scatterplots
     from .bokeh_plots import bokeh_line
 
-    plot_funcs = {PlotBackend.mpl: multiple_scatterplots
-                  PlotBackend.bokeh: bokeh_line}
+    plot_funcs = {PlotBackend.mpl: multiple_scatterplots, PlotBackend.bokeh: bokeh_line}
 
     backend = PlotBackend.from_str(backend)
 
-    return plot_funcs[backend](*args, **kwargs)
-
-
+    return plot_funcs[backend](xdata, ydata, data=data, **kwargs)
