@@ -666,7 +666,6 @@ def bokeh_bands(kpath,
     from bokeh.transform import linear_cmap
     from bokeh.models import ColumnDataSource
 
-
     if 'size_scaling' in kwargs:
         warnings.warn('size_scaling is deprecated. Use markersize_scaling instead', DeprecationWarning)
         markersize_scaling = kwargs.pop('size_scaling')
@@ -843,7 +842,6 @@ def bokeh_spinpol_bands(kpath,
     """
     from bokeh.transform import linear_cmap
     from bokeh.models import ColumnDataSource
-
 
     if 'size_scaling' in kwargs:
         warnings.warn('size_scaling is deprecated. Use markersize_scaling instead', DeprecationWarning)
