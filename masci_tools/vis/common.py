@@ -36,6 +36,8 @@ __all__ = (
     'spinpol_dos',
     'bands',
     'spinpol_bands',
+    'scatter',
+    'line',
 )
 
 _DEFAULT_BACKEND = 'mpl'
@@ -60,7 +62,7 @@ class PlotBackend(Enum):
     At the moment the following are supported (case-insensitive)
 
     * ``matplotlib``: either `'mpl'` or `'matplotlib'`
-    * ``bokeh: `'bokeh'`
+    * ``bokeh``: `'bokeh'`
     """
     mpl = 'matplotlib'
     bokeh = 'bokeh'

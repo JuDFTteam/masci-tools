@@ -18,6 +18,13 @@ Available Routines
 
 For both of these there are a lot of plotting routines available (both general or specific to a problem). All of these routines will return the used ``Axes`` object in the case of matplotlib or the ``figure`` produced by bokeh for custom modifications.
 
+   - `common` (Can be used for both backends):
+      - :py:func:`~masci_tools.vis.common.scatter()`: Make a scatterplot with varying size and color of the points for multiple sets of data
+      - :py:func:`~masci_tools.vis.common.line()`: Make a lineplot with multiple sets of data
+      - :py:func:`~masci_tools.vis.common.dos()`: Plot a general density of states (non-spinpolarized)
+      - :py:func:`~masci_tools.vis.common.spinpol_dos()`: Plot a general density of states (spinpolarized)
+      - :py:func:`~masci_tools.vis.common.bands()`: Plot a general bandstructure (non-spinpolarized)
+      - :py:func:`~masci_tools.vis.common.spinpol_bands()`: Plot a general bandstructure (spinpolarized)
    - `matplotlib`:
       - :py:func:`~masci_tools.vis.plot_methods.single_scatterplot()`: Make a scatterplot with lines for a single set of data
       - :py:func:`~masci_tools.vis.plot_methods.multiple_scatterplots()`: Make a scatterplot with lines for multiple sets of data
