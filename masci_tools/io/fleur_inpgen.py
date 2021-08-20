@@ -264,6 +264,9 @@ def write_inpgen_file(cell,
 
         atomic_number = _atomic_numbers[site.symbol]
         atomic_number_name = atomic_number
+        if atomic_number == 0:  # 'X' element for vacancies
+            natoms = natoms - 1
+            continue
         # per default we use relative coordinates in Fleur
         # we have to scale back to atomic units from angstrom
         pos = site.position

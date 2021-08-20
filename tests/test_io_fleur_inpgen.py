@@ -281,7 +281,7 @@ def test_write_inpgen_file_x_and_bunchatom(file_regression):
         'name': 'Nb'
     }, {
         'symbols': ('X',),
-        'weights': (0.0,),
+        'weights': (1.0,),
         'mass': 1.0,
         'name': 'X'
     }]
