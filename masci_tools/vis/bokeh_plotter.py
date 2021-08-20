@@ -33,12 +33,19 @@ class BokehPlotter(Plotter):
     """
     _BOKEH_DEFAULTS = {
         'figure_kwargs': {
-            'tools': 'hover',
+            'tools': 'pan,poly_select,tap,wheel_zoom,'
+            'box_zoom,redo,undo,reset,save,crosshair,zoom_out,zoom_in',
             'y_axis_type': 'linear',
             'x_axis_type': 'linear',
-            'toolbar_location': None,
-            'tooltips': [('X value', '@x'), ('Y value', '@y')]
+            'active_inspect': None,
+            'toolbar_location': 'right',
         },
+        'additional_tools': None,
+        'show_tooltips': True,
+        'global_tooltips': False,
+        'format_tooltips': True,
+        'tooltips': [('X', '@{x}'), ('Y', '@{y}')],
+        'additional_tooltips': None,
         'axis_linewidth': 2,
         'label_fontsize': '18pt',
         'tick_label_fontsize': '16pt',
@@ -86,14 +93,32 @@ class BokehPlotter(Plotter):
 
         #output control
         'save_plots': False,
+        'save_format': 'html',
         'show': True,
     }
 
     _BOKEH_DESCRIPTIONS = {
         'figure_kwargs':
         'Parameters for creating the bokeh figure. '
-        'Includes things like axis type (x and y), tools, tooltips, '
+        'Includes things like axis type (x and y), tools '
         'plot width/height',
+        'additional_tools':
+        'tools to add to the tools already '
+        'specified in ``figure_kwargs`` (Has to be in the same format)',
+        'show_tooltips':
+        'Switch whether to add hover tooltips',
+        'global_tooltips':
+        'Switch whether to add individual (for each renderer) or global hover tooltips. ',
+        'format_tooltips':
+        'Switch whether to enable the processing of formatted strings in tooltips. ',
+        'tooltips':
+        'List of tuples specifying the tooltips. '
+        'For more information refer to the bokeh documentation. '
+        "Strings can contain format specifiers with the data keys of the function e.g. ``'@{x}'``. "
+        'Here the ``{x}`` will be replaced by the entry for x. If there are formatting specifications '
+        'for bokeh they need to be escaped with double curly braces or ``format_tooltips=False``.',
+        'additional_tooltips':
+        'Tooltips to add to the already defined ``tooltips`` (See above)',
         'axis_linewidth':
         'Linewidth for the lines of the axis',
         'label_fontsize':
@@ -175,13 +200,17 @@ class BokehPlotter(Plotter):
 
         #output control
         'save_plots':
-        'If True plots will be saved to file (NOT IMPLEMENTED)',
+        'If True plots will be saved to file (Configuration beforehand is needed)',
+        'save_format':
+        'Formats to save the plots to, can be single or list of formats (html, png or svg)',
         'show':
         'If True bokeh.io.show will be called after the plotting routine',
     }
 
     _BOKEH_GENERAL_ARGS = {
         'show',
+        'save_plots',
+        'save_format',
         'color_palette',
         'legend_location',
         'legend_click_policy',
@@ -193,6 +222,12 @@ class BokehPlotter(Plotter):
         'label_fontsize',
         'axis_linewidth',
         'figure_kwargs',
+        'additional_tools'
+        'show_tooltips',
+        'global_tooltips',
+        'format_tooltips',
+        'tooltips',
+        'additional_tooltips',
         'straight_lines',
         'x_axis_formatter',
         'y_axis_formatter',
@@ -296,12 +331,36 @@ class BokehPlotter(Plotter):
         from bokeh.plotting import figure as bokeh_fig
         from bokeh.models import Title
 
+        if self['additional_tools'] is not None:
+            if isinstance(self['additional_tools'], str):
+                default = ''
+            else:
+                default = []
+            tools = self['figure_kwargs'].get('tools', default)
+            if isinstance(tools, list):
+                if not isinstance(self['additional_tools'], list):
+                    raise ValueError('Got tools and additional_tools in different formats.'
+                                     'Expected list for additional_tools')
+                tools = tools + self['additional_tools']
+            else:
+                if not isinstance(self['additional_tools'], str):
+                    raise ValueError('Got tools and additional_tools in different formats.'
+                                     'Expected string for additional_tools')
+                tools = f"{tools},{self['additional_tools']}"
+
+            figure_kwargs = {**self['figure_kwargs'], **{'tools': tools}}
+        else:
+            figure_kwargs = self['figure_kwargs']
+
         if figure is None:
-            p = bokeh_fig(**self['figure_kwargs'])
+            p = bokeh_fig(**figure_kwargs)
         else:
             p = figure
             if self['background_fill_color'] is not None:
                 p.background_fill_color = self['background_fill_color']
+
+        if self['global_tooltips']:
+            self.add_tooltips(p, 'auto', toggleable=True)
 
         if title is not None:
             p.title = Title(text=title)
@@ -383,6 +442,77 @@ class BokehPlotter(Plotter):
                 color = color[:self.num_plots]
 
         self['color'] = color
+
+    @staticmethod
+    def _format_tooltips(tooltips, **kwargs):
+        """
+        Format the strings in tooltips with the given kwargs.
+
+        :param tooltips: The tooltips list to be formatted
+        :param kwargs: The keywords arguments used to format the strings
+
+        :returns: list of tuples with the tooltips ready to be used for tooltips
+        """
+        import string
+
+        for indx, (label, value) in enumerate(tooltips):
+            if len([val[0] for val in string.Formatter().parse(label)]) != 0:
+                label = label.format(**kwargs)
+            if len([val[0] for val in string.Formatter().parse(value)]) != 0:
+                value = value.format(**kwargs)
+            tooltips[indx] = (label, value)
+
+        return tooltips
+
+    def add_tooltips(self, fig, renderers, columns=None, toggleable=False):
+        """
+        Add Hover tooltips to the given renderers and figure
+
+        :param fig: bokeh figure to apply changes to
+        :param renderers: bokeh renderers to activate the tooltips for
+        :param columns: namedtuple containing the data keys used for evtl. formatting
+        :param toggleable: bool, if True these tooltips will be toggleable in the toolbar
+        """
+        from bokeh.models import HoverTool
+
+        if self['show_tooltips']:
+
+            if self['global_tooltips'] and renderers != 'auto':
+                return
+
+            if columns is not None:
+                kwargs = columns._asdict()
+            else:
+                kwargs = {}
+
+            if not isinstance(renderers, list) and renderers != 'auto':
+                renderers = [renderers]
+
+            tooltips = self['tooltips']
+            if tooltips is None:
+                tooltips = []
+
+            additional_tooltips = self['additional_tooltips']
+            if additional_tooltips is None:
+                additional_tooltips = []
+
+            tooltips = tooltips.copy() + additional_tooltips.copy()
+
+            if self['format_tooltips']:
+                final_tooltips = self._format_tooltips(tooltips, **kwargs)
+            else:
+                final_tooltips = tooltips
+
+            #We make them not toggleable for now since it would lead to multiple
+            #hover icons in the toolbar, which is kind of annoying
+            hover = HoverTool(tooltips=final_tooltips, toggleable=toggleable, renderers=renderers)
+            fig.add_tools(hover)
+
+            active_inspect = fig.toolbar.active_inspect
+            if active_inspect is None:
+                active_inspect = []
+            active_inspect.append(hover)
+            fig.toolbar.active_inspect = active_inspect
 
     def draw_straight_lines(self, fig):
         """
@@ -468,12 +598,27 @@ class BokehPlotter(Plotter):
         if self['legend_outside_plot_area']:
             fig.add_layout(fig.legend[0], 'right')
 
-    def save_plot(self, figure):
+    def save_plot(self, figure, saveas):
         """
-        Show/save the bokeh figure (atm only show)
+        Show/save the bokeh figure
 
         :param figure: bokeh figure on which to perform the operation
         """
-        from bokeh.io import show as bokeh_show
+        from bokeh.io import show, save, export_png, export_svgs
         if self['show']:
-            bokeh_show(figure)
+            show(figure)
+        if self['save_plots']:
+            if isinstance(self['save_format'], list):
+                formats = self['save_format']
+            else:
+                formats = [self['save_format']]
+
+            for fmt in formats:
+                savefilename = f'{saveas}.{fmt}'
+                print(f'Save plot to: {savefilename}')
+                if fmt == 'html':
+                    save(figure, filename=savefilename)
+                elif fmt == 'png':
+                    export_png(figure, filename=savefilename)
+                elif fmt == 'svg':
+                    export_svgs(figure, filename=savefilename)

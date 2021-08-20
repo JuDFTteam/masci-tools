@@ -37,7 +37,7 @@ class MatplotlibPlotter(Plotter):
         'title_fontsize': 16,
         'figure_kwargs': {
             'figsize': (8, 6),
-            'dpi': 600,
+            'dpi': 100,
             'facecolor': 'w',
             'edgecolor': 'k',
             'constrained_layout': False,
@@ -129,6 +129,8 @@ class MatplotlibPlotter(Plotter):
         'colorbar_padding': 0.1,
         # legend properties
         'legend': False,
+        'legend_show_data_labels': False,
+        'legend_remove_duplicates': False,
         'legend_options': {
             'fontsize': 'large',
             'linewidth': 3.0,
@@ -264,6 +266,10 @@ class MatplotlibPlotter(Plotter):
         # legend properties
         'legend':
         'If True a legend for the plot is shown',
+        'legend_show_data_labels':
+        'If True the column names from the data argument are shown if not overwritten',
+        'legend_remove_duplicates':
+        'If True duplicate legend labels are removed',
         'legend_options':
         'Parameters for displaying the legend (Fontsize, location, ...)',
 
@@ -428,6 +434,21 @@ class MatplotlibPlotter(Plotter):
             else:
                 plot_kwargs.pop('area_alpha', None)
                 plot_kwargs.pop('area_linecolor', None)
+
+        if self['legend_show_data_labels']:
+            if not self.single_plot and list_of_dicts:
+                for index, value in enumerate(plot_kwargs):
+                    if value.get('label') is None:
+                        value.pop('label', None)
+            elif plot_kwargs.get('label') is None:
+                plot_kwargs.pop('label', None)
+        else:
+            if not self.single_plot and list_of_dicts:
+                for index, value in enumerate(plot_kwargs):
+                    if 'label' not in value:
+                        value['label'] = None
+            elif 'label' not in plot_kwargs:
+                plot_kwargs['label'] = None
 
         return plot_kwargs
 
@@ -596,7 +617,12 @@ class MatplotlibPlotter(Plotter):
         :param ax: Axes object on which to perform the operation
         """
         if leg_elems is None:
-            leg_elems = ()
+            if self['legend_remove_duplicates']:
+                leg_elems = ax.get_legend_handles_labels()
+                by_label = dict(zip(*reversed(leg_elems)))
+                leg_elems = (by_label.values(), by_label.keys())
+            else:
+                leg_elems = ()
 
         if self['legend']:
             loptions = copy.deepcopy(self['legend_options'])
@@ -637,7 +663,7 @@ class MatplotlibPlotter(Plotter):
 
         :returns: colormap truncated to only hold colors between minval and maxval from old colormap
         """
-        import matplotlib.colors as colors
+        from matplotlib import colors
         import numpy as np
 
         new_cmap = colors.LinearSegmentedColormap.from_list(f'trunc({cmap.name},{minval:.2f},{maxval:.2f})',

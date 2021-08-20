@@ -48,7 +48,42 @@ For both of these there are a lot of plotting routines available (both general o
       - :py:func:`~masci_tools.vis.bokeh_plots.bokeh_spinpol_bands()`: Plot a general bandstructure (spinpolarized)
       - :py:func:`~masci_tools.vis.bokeh_plots.periodic_table_plot()`: Make a interactive plot of data for the periodic table
 
-If you have ideas for new useful and beatiful plotting routines you are welcome to contribute. Refer to the section :ref:`devguideplotting` for a guide on how to get started.
+If you have ideas for new useful and beatiful plotting routines you are welcome to contribute. Refer to the sections :ref:`devguideplotting` and :ref:`devguideplotdata` for a guide on how to get started.
+
+Providing Data
+--------------
+
+Data can be provided to plotting functions in two main ways:
+
+   1. The first arguments and data arguments are given the keys in a mapping, which should be used. The correspinding mapping is provided via the ``data`` keyword argument
+   2. The first arguments and data arguments are given the data that should be plotted against each other.
+
+The following two code blocks are equivalent in terms of the provided data.
+
+.. code-block::
+
+   from masci_tools.vis.plot_methods import multiple_scatterplots
+   import numpy as np
+
+   x = np.linspace(-10,10,100)
+   y1 = x**2
+   y2 = 20*np.sin(x)
+
+   #The data is split up according to fixed rules that the plot function defines.
+   #The default behaviour is that a list of lists is interpreted as multiple separate plots
+   ax = multiple_scatterplots(x, [y1, y2])
+
+.. code-block::
+
+   from masci_tools.vis.plot_methods import multiple_scatterplots
+   import numpy as np
+
+   x = np.linspace(-10,10,100)
+   y1 = x**2
+   y2 = 20*np.sin(x)
+   data = {'x': x, 'y1': y1, 'y2': y2}
+
+   ax = multiple_scatterplots('x', ['y1', 'y2'], data=data)
 
 Customizing Plots
 ------------------

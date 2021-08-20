@@ -72,12 +72,12 @@ roots:
       data_source:
         type: ColumnDataSource
       glyph:
-        type: Scatter
+        type: Line
       hover_glyph: null
       muted_glyph: null
       name: y
       nonselection_glyph:
-        type: Scatter
+        type: Line
       selection_glyph: null
       view:
         type: CDSView
@@ -102,6 +102,36 @@ roots:
       - - Y
         - '@y'
     type: HoverTool
+  - attributes:
+      click_policy: hide
+      items:
+      - type: LegendItem
+      label_text_font_size:
+        value: 14pt
+    type: Legend
+  - attributes:
+      label:
+        value: y
+      renderers:
+      - type: GlyphRenderer
+    type: LegendItem
+  - attributes:
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
   - attributes:
       axis_label: x
       axis_label_text_font_size:
@@ -140,6 +170,7 @@ roots:
       center:
       - type: Grid
       - type: Grid
+      - type: Legend
       left:
       - type: LinearAxis
       renderers:
@@ -187,36 +218,6 @@ roots:
     type: ResetTool
   - attributes: {}
     type: SaveTool
-  - attributes:
-      fill_color:
-        value: '#1f77b4'
-      line_color:
-        value: '#1f77b4'
-      size:
-        units: screen
-        value: 6
-      x:
-        field: x
-      y:
-        field: y
-    type: Scatter
-  - attributes:
-      fill_alpha:
-        value: 0.1
-      fill_color:
-        value: '#1f77b4'
-      line_alpha:
-        value: 0.1
-      line_color:
-        value: '#1f77b4'
-      size:
-        units: screen
-        value: 6
-      x:
-        field: x
-      y:
-        field: y
-    type: Scatter
   - attributes: {}
     type: Selection
   - attributes:

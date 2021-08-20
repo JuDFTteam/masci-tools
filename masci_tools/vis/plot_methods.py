@@ -32,6 +32,8 @@ For the definition of the defaults refer to :py:class:`~masci_tools.vis.matplotl
 
 from .matplotlib_plotter import MatplotlibPlotter
 from .parameters import ensure_plotter_consistency, NestedPlotParameters
+from .data import process_data_arguments
+
 import warnings
 import copy
 import typing
@@ -84,6 +86,26 @@ def get_mpl_help(key):
     plot_params.get_description(key)
 
 
+def load_mpl_defaults(filename='plot_mpl_defaults.json'):
+    """
+    Load defaults for the matplotlib backend from a json file.
+
+    :param filename: filename,from  where the defaults should be taken
+    """
+    plot_params.load_defaults(filename)
+
+
+def save_mpl_defaults(filename='plot_mpl_defaults.json', save_complete=False):
+    """
+    Save the current defaults for the matplotlib backend to a json file.
+
+    :param filename: filename, where the defaults should be stored
+    :param save_complete: bool if True not only the overwritten user defaults
+                          but also the unmodified harcoded defaults are stored
+    """
+    plot_params.save_defaults(filename, save_complete=save_complete)
+
+
 ###############################################################################
 ########################## general plot routines ##############################
 ###############################################################################
@@ -96,27 +118,32 @@ def single_scatterplot(xdata,
                        xlabel='',
                        ylabel='',
                        title='',
+                       data=None,
                        saveas='scatterplot',
                        axis=None,
                        xerr=None,
                        yerr=None,
-                       area_curve=None,
+                       area_curve=0,
+                       copy_data=False,
                        **kwargs):
     """
     Create a standard scatter plot (this should be flexible enough) to do all the
     basic plots.
 
-    :param xdata: arraylike, data for the x coordinate
-    :param ydata: arraylike, data for the y coordinate
+    :param xdata: str or arraylike, data for the x coordinate
+    :param ydata: str or arraylike, data for the y coordinate
+    :param data: source for the data of the plot (optional) (pandas Dataframe for example)
     :param xlabel: str, label written on the x axis
     :param ylabel: str, label written on the y axis
     :param title: str, title of the figure
+    :param data: Mapping giving the data for the plot (required if xdata and ydata are str)
     :param saveas: str specifying the filename (without file format)
     :param axis: Axes object, if given the plot will be applied to this object
     :param xerr: optional data for errorbar in x-direction
     :param yerr: optional data for errorbar in y-direction
     :param area_curve: if an area plot is made this arguments defines the other enclosing line
                        defaults to 0
+    :param copy_data: bool, if True the data argument will be copied
 
     Kwargs will be passed on to :py:class:`masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`.
     If the arguments are not recognized they are passed on to the matplotlib functions
@@ -149,6 +176,15 @@ def single_scatterplot(xdata,
                 limits_new['y'] = limits[1]
             kwargs['limits'] = limits_new
 
+    plot_data = process_data_arguments(single_plot=True,
+                                       data=data,
+                                       x=xdata,
+                                       y=ydata,
+                                       shift=area_curve,
+                                       xerr=xerr,
+                                       yerr=yerr,
+                                       copy_data=copy_data)
+
     plot_params.set_defaults(default_type='function', color='k', plot_label='scatterplot')
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
@@ -163,33 +199,31 @@ def single_scatterplot(xdata,
     # TODO customizable error bars fmt='o', ecolor='g', capthick=2, ...
     # there the if is prob better...
     plot_kwargs = plot_params.plot_kwargs()
-    if area_curve is None:
-        shift = 0
-    else:
-        shift = area_curve
+    entry, source = plot_data.items(first=True)
 
     if plot_params['area_plot']:
         linecolor = plot_kwargs.pop('area_linecolor', None)
         if plot_params['area_vertical']:
-            result = ax.fill_betweenx(ydata, xdata, x2=shift, **plot_kwargs, **kwargs)
+            result = ax.fill_betweenx(entry.y, entry.x, x2=entry.shift, data=source, **plot_kwargs, **kwargs)
         else:
-            result = ax.fill_between(xdata, ydata, y2=shift, **plot_kwargs, **kwargs)
+            result = ax.fill_between(entry.x, entry.y, y2=entry.shift, data=source, **plot_kwargs, **kwargs)
         plot_kwargs.pop('alpha', None)
         plot_kwargs.pop('label', None)
         plot_kwargs.pop('color', None)
         if plot_params['area_enclosing_line']:
             if linecolor is None:
                 linecolor = result.get_facecolor()[0]
-            ax.errorbar(xdata,
-                        ydata,
-                        yerr=yerr,
-                        xerr=xerr,
+            ax.errorbar(entry.x,
+                        entry.y,
+                        yerr=entry.yerr,
+                        xerr=entry.xerr,
                         alpha=plot_params['plot_alpha'],
                         color=linecolor,
+                        data=source,
                         **plot_kwargs,
                         **kwargs)
     else:
-        ax.errorbar(xdata, ydata, yerr=yerr, xerr=xerr, **plot_kwargs, **kwargs)
+        ax.errorbar(entry.x, entry.y, yerr=entry.yerr, xerr=entry.xerr, data=source, **plot_kwargs, **kwargs)
 
     plot_params.set_scale(ax)
     plot_params.set_limits(ax)
@@ -206,43 +240,48 @@ def multiple_scatterplots(xdata,
                           xlabel='',
                           ylabel='',
                           title='',
+                          data=None,
                           saveas='mscatterplot',
                           axis=None,
                           xerr=None,
                           yerr=None,
-                          area_curve=None,
+                          area_curve=0,
+                          copy_data=False,
                           **kwargs):
     """
     Create a standard scatter plot with multiple sets of data (this should be flexible enough)
     to do all the basic plots.
 
-    :param xdata: arraylike, data for the x coordinate
-    :param ydata: arraylike, data for the y coordinate
+    :param xdata: str or arraylike, data for the x coordinate
+    :param ydata: str or arraylike, data for the y coordinate
     :param xlabel: str, label written on the x axis
     :param ylabel: str, label written on the y axis
+    :param data: source for the data of the plot (optional) (pandas Dataframe for example)
     :param title: str, title of the figure
+    :param data: Mapping giving the data for the plots (required if xdata and ydata are str)
     :param saveas: str specifying the filename (without file format)
     :param axis: Axes object, if given the plot will be applied to this object
     :param xerr: optional data for errorbar in x-direction
     :param yerr: optional data for errorbar in y-direction
     :param area_curve: if an area plot is made this arguments defines the other enclosing line
                        defaults to 0
+    :param copy_data: bool, if True the data argument will be copied
 
     Kwargs will be passed on to :py:class:`masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`.
     If the arguments are not recognized they are passed on to the matplotlib functions
     (`errorbar` or `fill_between`)
     """
 
-    nplots = len(ydata)
-    if nplots != len(xdata):  # todo check dimention not len, without moving to special datatype.
-        print('ydata and xdata must have the same dimension')
-        return
-
-    if not isinstance(ydata[0], (list, np.ndarray, pd.Series)):
-        xdata, ydata = [xdata], [ydata]
+    plot_data = process_data_arguments(data=data,
+                                       x=xdata,
+                                       y=ydata,
+                                       shift=area_curve,
+                                       xerr=xerr,
+                                       yerr=yerr,
+                                       copy_data=copy_data)
 
     plot_params.single_plot = False
-    plot_params.num_plots = len(ydata)
+    plot_params.num_plots = len(plot_data)
 
     #DEPRECATION WARNINGS
     if 'plot_labels' in kwargs:
@@ -295,64 +334,37 @@ def multiple_scatterplots(xdata,
     plot_kwargs = plot_params.plot_kwargs()
     colors = []
 
-    for indx, data in enumerate(zip(xdata, ydata, plot_kwargs)):
-
-        x, y, plot_kw = data
+    for indx, ((entry, source), params) in enumerate(zip(plot_data.items(), plot_kwargs)):
 
         if plot_params['repeat_colors_after'] is not None:
             if indx >= plot_params['repeat_colors_after']:
-                plot_kw['color'] = colors[indx % plot_params['repeat_colors_after']]
-
-        if isinstance(yerr, list):
-            try:
-                yerrt = yerr[indx]
-            except IndexError:
-                yerrt = yerr[0]
-        else:
-            yerrt = yerr
-
-        if isinstance(xerr, list):
-            try:
-                xerrt = xerr[indx]
-            except IndexError:
-                xerrt = xerr[0]
-        else:
-            xerrt = xerr
-
-        if area_curve is not None:
-            if isinstance(area_curve, list):
-                try:
-                    shift = area_curve[indx]
-                except IndexError:
-                    shift = area_curve[0]
-            else:
-                shift = area_curve
-        else:
-            shift = 0
+                params['color'] = colors[indx % plot_params['repeat_colors_after']]
 
         if plot_params[('area_plot', indx)]:
-            linecolor = plot_kw.pop('area_linecolor', None)
+            linecolor = params.pop('area_linecolor', None)
             if plot_params[('area_vertical', indx)]:
-                result = ax.fill_betweenx(y, x, x2=shift, **plot_kw, **kwargs)
+                result = ax.fill_betweenx(entry.y, entry.x, x2=entry.shift, data=source, **params, **kwargs)
             else:
-                result = ax.fill_between(x, y, y2=shift, **plot_kw, **kwargs)
+                result = ax.fill_between(entry.x, entry.y, y2=entry.shift, data=source, **params, **kwargs)
             colors.append(result.get_facecolor()[0])
-            plot_kw.pop('alpha', None)
-            plot_kw.pop('label', None)
-            plot_kw.pop('color', None)
+            params.pop('alpha', None)
+            params.pop('label', None)
+            params.pop('color', None)
             if plot_params[('area_enclosing_line', indx)]:
                 if linecolor is None:
                     linecolor = result.get_facecolor()[0]
-                ax.errorbar(x,
-                            y,
-                            yerr=yerrt,
-                            xerr=xerrt,
+                ax.errorbar(entry.x,
+                            entry.y,
+                            yerr=entry.yerr,
+                            xerr=entry.xerr,
                             alpha=plot_params[('plot_alpha', indx)],
                             color=linecolor,
-                            **plot_kw,
+                            data=source,
+                            label=None,
+                            **params,
                             **kwargs)
         else:
-            result = ax.errorbar(x, y, yerr=yerrt, xerr=xerrt, **plot_kw, **kwargs)
+            result = ax.errorbar(entry.x, entry.y, yerr=entry.yerr, xerr=entry.xerr, data=source, **params, **kwargs)
             colors.append(result.lines[0].get_color())
 
     plot_params.set_scale(ax)
@@ -373,39 +385,43 @@ def multi_scatter_plot(xdata,
                        xlabel='',
                        ylabel='',
                        title='',
+                       data=None,
                        saveas='mscatterplot',
                        axis=None,
+                       copy_data=False,
                        **kwargs):
     """
     Create a scatter plot with varying marker size
     Info: x, y, size and color data must have the same dimensions.
 
-    :param xdata: arraylike, data for the x coordinate
-    :param ydata: arraylike, data for the y coordinate
-    :param size_data: arraylike, data for the markersizes (optional)
-    :param color_data: arraylike, data for the color values with a colormap (optional)
+    :param xdata: str or arraylike, data for the x coordinate
+    :param ydata: str or arraylike, data for the y coordinate
+    :param size_data: str or arraylike, data for the markersizes (optional)
+    :param color_data: str or arraylike, data for the color values with a colormap (optional)
+    :param data: source for the data of the plot (optional) (pandas Dataframe for example)
     :param xlabel: str, label written on the x axis
     :param ylabel: str, label written on the y axis
     :param title: str, title of the figure
+    :param data: Mapping giving the data for the plots (required if data arguments are str)
     :param saveas: str specifying the filename (without file format)
     :param axis: Axes object, if given the plot will be applied to this object
     :param xerr: optional data for errorbar in x-direction
     :param yerr: optional data for errorbar in y-direction
+    :param copy_data: bool, if True the data argument will be copied
 
     Kwargs will be passed on to :py:class:`masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`.
     If the arguments are not recognized they are passed on to the matplotlib function `scatter`
     """
 
-    nplots = len(ydata)
-    if nplots != len(xdata):  # todo check dimention not len, without moving to special datatype.
-        print('ydata and xdata must have the same dimension')
-        return
-
-    if not isinstance(ydata[0], (list, np.ndarray, pd.Series)):
-        xdata, ydata, size_data, color_data = [xdata], [ydata], [size_data], [color_data]
+    plot_data = process_data_arguments(data=data,
+                                       x=xdata,
+                                       y=ydata,
+                                       color=color_data,
+                                       size=size_data,
+                                       copy_data=copy_data)
 
     plot_params.single_plot = False
-    plot_params.num_plots = len(ydata)
+    plot_params.num_plots = len(plot_data)
 
     #DEPRECATION WARNINGS: label/plot_labels, alpha, limits, scale, legend_option, xticks
 
@@ -458,31 +474,29 @@ def multi_scatter_plot(xdata,
 
     legend_elements = []
     legend_labels = []
+    correct_legend = False
 
-    if size_data is None:
-        size_data = [None] * plot_params.num_plots
+    for indx, plot_info in enumerate(zip(plot_data.items(), plot_kwargs)):
 
-    if color_data is None:
-        color_data = [None] * plot_params.num_plots
+        data, plot_kw = plot_info
+        entry, source = data
 
-    for indx, data in enumerate(zip(xdata, ydata, size_data, color_data, plot_kwargs)):
-
-        x, y, size, color, plot_kw = data
-
-        if size is None:
+        if entry.size is None:
             size = plot_params['markersize']
+        else:
+            size = entry.size
 
-        if color is not None:
-            plot_kw.pop('color')
+        if entry.color is not None:
+            correct_legend = True
+            plot_kw.pop('color', None)
 
-        res = ax.scatter(x, y=y, s=size, c=color, **plot_kw, **kwargs)
-        if plot_kw.get('label', None) is not None and color is not None:
-            if isinstance(color, (list, np.ndarray, pd.Series)):
-                if not isinstance(color[0], str):
-                    legend_elements.append(res.legend_elements(num=1)[0][0])
-                    legend_labels.append(plot_kw['label'])
+        res = ax.scatter(entry.x, y=entry.y, s=size, c=entry.color, data=source, **plot_kw, **kwargs)
+        if plot_kw.get('label', None) is not None and entry.color is not None:
+            if not all(isinstance(val, str) for val in source[entry.color]):
+                legend_elements.append(res.legend_elements(num=1)[0][0])
+                legend_labels.append(plot_kw['label'])
 
-    if any(c is not None for c in color_data):
+    if correct_legend:
         legend_elements = (legend_elements, legend_labels)
     else:
         legend_elements = None
@@ -498,29 +512,50 @@ def multi_scatter_plot(xdata,
 
 
 @ensure_plotter_consistency(plot_params)
-def colormesh_plot(xdata, ydata, cdata, *, xlabel='', ylabel='', title='', saveas='colormesh', axis=None, **kwargs):
+def colormesh_plot(xdata,
+                   ydata,
+                   cdata,
+                   *,
+                   xlabel='',
+                   ylabel='',
+                   title='',
+                   data=None,
+                   saveas='colormesh',
+                   axis=None,
+                   copy_data=False,
+                   **kwargs):
     """
     Create plot with pcolormesh
 
     :param xdata: arraylike, data for the x coordinate
     :param ydata: arraylike, data for the y coordinate
     :param cdata: arraylike, data for the color values with a colormap
+    :param data: source for the data of the plot (optional) (pandas Dataframe for example)
     :param xlabel: str, label written on the x axis
     :param ylabel: str, label written on the y axis
     :param title: str, title of the figure
     :param saveas: str specifying the filename (without file format)
     :param axis: Axes object, if given the plot will be applied to this object
+    :param copy_data: bool, if True the data argument will be copied
 
     Kwargs will be passed on to :py:class:`masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`.
     If the arguments are not recognized they are passed on to the matplotlib function `pcolormesh`
     """
 
+    plot_data = process_data_arguments(single_plot=True,
+                                       data=data,
+                                       x=xdata,
+                                       y=ydata,
+                                       color=cdata,
+                                       copy_data=copy_data,
+                                       forbid_split_up={'x', 'y', 'color'})
+
     #Set default limits (not setting them leaves empty border)
     limits = kwargs.pop('limits', {})
     if 'x' not in limits:
-        limits['x'] = (xdata.min(), xdata.max())
+        limits['x'] = (plot_data.min('x'), plot_data.max('x'))
     if 'y' not in limits:
-        limits['y'] = (ydata.min(), ydata.max())
+        limits['y'] = (plot_data.min('y'), plot_data.max('y'))
     kwargs['limits'] = limits
 
     plot_params.set_defaults(default_type='function', edgecolor='face')
@@ -528,8 +563,9 @@ def colormesh_plot(xdata, ydata, cdata, *, xlabel='', ylabel='', title='', savea
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
     plot_kwargs = plot_params.plot_kwargs(plot_type='colormesh')
+    entry, source = plot_data.items(first=True)
 
-    ax.pcolormesh(xdata, ydata, cdata, **plot_kwargs, **kwargs)
+    ax.pcolormesh(entry.x, entry.y, entry.color, data=source, **plot_kwargs, **kwargs)
 
     plot_params.set_scale(ax)
     plot_params.set_limits(ax)
@@ -550,8 +586,10 @@ def waterfall_plot(xdata,
                    ylabel='',
                    zlabel='',
                    title='',
+                   data=None,
                    saveas='waterfallplot',
                    axis=None,
+                   copy_data=False,
                    **kwargs):
     """
     Create a standard waterfall plot
@@ -559,31 +597,26 @@ def waterfall_plot(xdata,
     :param xdata: arraylike, data for the x coordinate
     :param ydata: arraylike, data for the y coordinate
     :param zdata: arraylike, data for the z coordinate
+    :param data: source for the data of the plot (optional) (pandas Dataframe for example)
     :param xlabel: str, label written on the x axis
     :param ylabel: str, label written on the y axis
     :param zlabel: str, label written on the z axis
     :param title: str, title of the figure
     :param axis: Axes object, if given the plot will be applied to this object
     :param saveas: str specifying the filename (without file format)
+    :param copy_data: bool, if True the data argument will be copied
 
     Kwargs will be passed on to :py:class:`masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`.
     If the arguments are not recognized they are passed on to the matplotlib function `scatter3D`
     """
 
-    nplots = len(ydata)
-    if nplots != len(xdata):  # todo check dimention not len, without moving to special datatype.
-        print('ydata and xdata must have the same dimension')
-        return
-    if nplots != len(zdata):  # todo check dimention not len, without moving to special datatype.
-        print('ydata and zdata must have the same dimension')
-        return
-
-    if isinstance(zdata, np.ndarray):
-        zmin = zdata.min()
-        zmax = zdata.max()
-    else:
-        zmin = min(zdata)
-        zmax = max(zdata)
+    plot_data = process_data_arguments(single_plot=True,
+                                       data=data,
+                                       x=xdata,
+                                       y=ydata,
+                                       z=zdata,
+                                       copy_data=copy_data,
+                                       forbid_split_up={'x', 'y', 'z'})
 
     clim = None
     if 'limits' in kwargs:
@@ -591,25 +624,17 @@ def waterfall_plot(xdata,
     else:
         kwargs['limits'] = {}
     if clim is None:
-        clim = (kwargs.get('vmin', zmin), kwargs.get('vmax', zmax))
+        clim = (kwargs.get('vmin', plot_data.min('z')), kwargs.get('vmax', plot_data.max('z')))
     kwargs['limits']['color'] = clim
-
-    if not isinstance(ydata[0], (list, np.ndarray, pd.Series)):
-        xdata, ydata, zdata = [xdata], [ydata], [zdata]
-
-    plot_params.single_plot = False
-    plot_params.num_plots = len(ydata)
 
     plot_params.set_defaults(default_type='function', markersize=30, linewidth=0, area_plot=False)
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, zlabel=zlabel, axis=axis, projection='3d')
 
-    plot_kwargs = plot_params.plot_kwargs(ignore=['markersize'], extra_keys={'cmap'})
+    plot_kw = plot_params.plot_kwargs(ignore=['markersize'], extra_keys={'cmap'})
+    data = plot_data.values(first=True)
 
-    for indx, data in enumerate(zip(xdata, ydata, zdata, plot_kwargs)):
-
-        x, y, z, plot_kw = data
-        ax.scatter3D(x, y, z, c=z, s=plot_params[('markersize', indx)], **plot_kw, **kwargs)
+    ax.scatter(data.x, data.y, data.z, c=data.z, s=plot_params['markersize'], **plot_kw, **kwargs)
 
     plot_params.set_scale(ax)
     plot_params.set_limits(ax)
@@ -629,8 +654,10 @@ def surface_plot(xdata,
                  ylabel='',
                  zlabel='',
                  title='',
+                 data=None,
                  saveas='surface_plot',
                  axis=None,
+                 copy_data=False,
                  **kwargs):
     """
     Create a standard surface plot
@@ -638,31 +665,26 @@ def surface_plot(xdata,
     :param xdata: arraylike, data for the x coordinate
     :param ydata: arraylike, data for the y coordinate
     :param zdata: arraylike, data for the z coordinate
+    :param data: source for the data of the plot (optional) (pandas Dataframe for example)
     :param xlabel: str, label written on the x axis
     :param ylabel: str, label written on the y axis
     :param zlabel: str, label written on the z axis
     :param title: str, title of the figure
     :param axis: Axes object, if given the plot will be applied to this object
     :param saveas: str specifying the filename (without file format)
+    :param copy_data: bool, if True the data argument will be copied
 
     Kwargs will be passed on to :py:class:`masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`.
     If the arguments are not recognized they are passed on to the matplotlib function `plot_surface`
     """
 
-    nplots = len(ydata)
-    if nplots != len(xdata):  # todo check dimention not len, without moving to special datatype.
-        print('ydata and xdata must have the same dimension')
-        return
-    if nplots != len(zdata):  # todo check dimention not len, without moving to special datatype.
-        print('ydata and zdata must have the same dimension')
-        return
-
-    if isinstance(zdata, np.ndarray):
-        zmin = zdata.min()
-        zmax = zdata.max()
-    else:
-        zmin = min(zdata)
-        zmax = max(zdata)
+    plot_data = process_data_arguments(single_plot=True,
+                                       data=data,
+                                       x=xdata,
+                                       y=ydata,
+                                       z=zdata,
+                                       copy_data=copy_data,
+                                       forbid_split_up={'x', 'y', 'z'})
 
     clim = None
     if 'limits' in kwargs:
@@ -670,7 +692,7 @@ def surface_plot(xdata,
     else:
         kwargs['limits'] = {}
     if clim is None:
-        clim = (kwargs.get('vmin', zmin), kwargs.get('vmax', zmax))
+        clim = (kwargs.get('vmin', plot_data.min('z')), kwargs.get('vmax', plot_data.max('z')))
     kwargs['limits']['color'] = clim
 
     plot_params.set_defaults(default_type='function', linewidth=0, area_plot=False)
@@ -678,7 +700,9 @@ def surface_plot(xdata,
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, zlabel=zlabel, axis=axis, projection='3d')
 
     plot_kwargs = plot_params.plot_kwargs(ignore=['markersize', 'marker'], extra_keys={'cmap'})
-    ax.plot_surface(xdata, ydata, zdata, **plot_kwargs, **kwargs)
+    data = plot_data.values(first=True)
+
+    ax.plot_surface(data.x, data.y, data.z, **plot_kwargs, **kwargs)
 
     plot_params.set_scale(ax)
     plot_params.set_limits(ax)
@@ -696,9 +720,11 @@ def multiplot_moved(xdata,
                     xlabel='',
                     ylabel='',
                     title='',
+                    data=None,
                     scale_move=1.0,
                     min_add=0,
                     saveas='mscatterplot',
+                    copy_data=False,
                     **kwargs):
     """
     Plots all the scatter plots above each other. It adds an arbitrary offset to the ydata to do this and
@@ -706,12 +732,14 @@ def multiplot_moved(xdata,
 
     :param xdata: arraylike, data for the x coordinate
     :param ydata: arraylike, data for the y coordinate
+    :param data: source for the data of the plot (optional) (pandas Dataframe for example)
     :param xlabel: str, label written on the x axis
     :param ylabel: str, label written on the y axis
     :param title: str, title of the figure
     :param scale_move: float, max*scale_move determines size of the shift
     :param min_add: float, minimum shift
     :param saveas: str specifying the filename (without file format)
+    :param copy_data: bool, if True the data argument will be copied
 
     Kwargs are passed on to the :py:func:`multiple_scatterplots()` call
     """
@@ -721,17 +749,14 @@ def multiplot_moved(xdata,
     if 'yticklabels' not in kwargs:
         kwargs['yticklabels'] = []
 
-    ydatanew = []
-    shifts = []
+    plot_data = process_data_arguments(data=data, x=xdata, y=ydata, copy_data=copy_data)
 
-    ymax = 0
-    for data in ydata:
-        ydatanew.append(np.array(data) + ymax)
-        shifts.append(ymax)
-        ymax = ymax + max(data) * scale_move + min_add
+    shifts = [ymax * scale_move + min_add for ymax in plot_data.max('y', separate=True)]
+    shifts = np.cumsum([0] + shifts)[:-1]
+    plot_data.shift_data('y', shifts)
 
-    ax = multiple_scatterplots(xdata,
-                               ydatanew,
+    ax = multiple_scatterplots(plot_data.get_values('x'),
+                               plot_data.get_values('y'),
                                xlabel=xlabel,
                                ylabel=ylabel,
                                title=title,
@@ -755,11 +780,14 @@ def histogram(xdata,
               ylabel='counts',
               saveas='histogram',
               return_hist_output=False,
+              data=None,
+              copy_data=False,
               **kwargs):
     """
     Create a standard looking histogram
 
     :param xdata: arraylike, Data for the histogram
+    :param data: source for the data of the plot (optional) (pandas Dataframe for example)
     :param density: bool, if True the histogram is normed and a normal distribution is plotted with
                     the same mu and sigma as the data
     :param histtype: str, type of the histogram
@@ -772,16 +800,16 @@ def histogram(xdata,
     :param ylabel: str, label for the y-axis
     :param saveas: str, filename for the saved plot
     :param return_hist_output: bool, if True the data output from hist will be returned
+    :param copy_data: bool, if True the data argument will be copied
 
     Kwargs will be passed on to :py:class:`masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`.
     If the arguments are not recognized they are passed on to the matplotlib function `hist`
     """
 
-    if not isinstance(xdata[0], (list, np.ndarray, pd.Series)):
-        xdata = [xdata]
+    plot_data = process_data_arguments(data=data, x=xdata, copy_data=copy_data)
 
     plot_params.single_plot = False
-    plot_params.num_plots = len(xdata)
+    plot_params.num_plots = len(plot_data)
 
     if 'label' in kwargs:
         warnings.warn('Please use plot_label instead of label', DeprecationWarning)
@@ -811,7 +839,9 @@ def histogram(xdata,
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis, minor=True)
 
     plot_kwargs = plot_params.plot_kwargs(plot_type='histogram', list_of_dicts=False)
-    n, bins, patches = ax.hist(xdata,
+
+    data = plot_data.get_values('x')
+    n, bins, patches = ax.hist(data,
                                density=density,
                                histtype=histtype,
                                align=align,
@@ -821,8 +851,8 @@ def histogram(xdata,
                                **kwargs)
 
     if density:
-        mu = np.mean(xdata)
-        sigma = np.std(xdata)
+        mu = np.mean(data)
+        sigma = np.std(data)
         y = norm.pdf(bins, mu, sigma)
         if orientation == 'horizontal':
             ax.plot(y, bins, '--')
@@ -864,9 +894,12 @@ def barchart(positions,
              bottom=None,
              alignment='vertical',
              saveas='barchart',
+             bar_type='stacked',
              axis=None,
              xerr=None,
              yerr=None,
+             data=None,
+             copy_data=False,
              **kwargs):
     """
     Create a standard bar chart plot (this should be flexible enough) to do all the
@@ -874,6 +907,7 @@ def barchart(positions,
 
     :param positions: arraylike data for the positions of the bars
     :param heights: arraylike data for the heights of the bars
+    :param data: source for the data of the plot (optional) (pandas Dataframe for example)
     :param width: float determines the width of the bars
     :param axis: Axes object where to add the plot
     :param title: str, Title of the plot
@@ -883,6 +917,9 @@ def barchart(positions,
     :param xerr: optional data for errorbar in x-direction
     :param yerr: optional data for errorbar in y-direction
     :param bottom: bottom values for the lowest end of the bars
+    :param bar_type: type of the barchart plot. Either ``stacked``, ``grouped`` or ``independent``
+    :param alignment: which direction the bars should be plotted (``horizontal`` or ``vertical``)
+    :param copy_data: bool, if True the data argument will be copied
 
     Kwargs will be passed on to :py:class:`masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`.
     If the arguments are not recognized they are passed on to the matplotlib function `bar`
@@ -890,16 +927,27 @@ def barchart(positions,
     TODO: grouped barchart (meaing not stacked)
     """
 
-    nplots = len(heights)
-    if nplots != len(positions):  # todo check dimention not len, without moving to special datatype.
-        print('ydata and xdata must have the same dimension')
-        return
+    plot_data = process_data_arguments(data=data,
+                                       position=positions,
+                                       height=heights,
+                                       xerr=xerr,
+                                       yerr=yerr,
+                                       copy_data=copy_data)
 
-    if not isinstance(heights[0], (list, np.ndarray, pd.Series)):
-        positions, heights = [positions], [heights]
+    if bar_type in ('stacked', 'grouped'):
+        if plot_data.distinct_datasets('position') != 1:
+            raise ValueError('Only provide one set of data for the positions of the bars for stacked/grouped bar plots')
+    elif bar_type != 'independent':
+        raise ValueError(f"Invalid barchart type: {bar_type}. Has to be one of 'stacked', 'grouped', 'independent'")
 
     plot_params.single_plot = False
-    plot_params.num_plots = len(heights)
+    plot_params.num_plots = len(plot_data)
+
+    if bar_type == 'grouped':
+        shifts = np.array([(i - len(plot_data) // 2) * width for i in range(len(plot_data))])
+        if len(plot_data) % 2 == 0:
+            shifts += width / 2
+        plot_data.shift_data('position', shifts)
 
     #DEPRECATION WARNINGS
     if 'plot_labels' in kwargs:
@@ -947,41 +995,36 @@ def barchart(positions,
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
-    # TODO good checks for input and setting of internals before plotting
-    # allow all arguments as value then use for all or as lists with the righ length.
-    if bottom:
-        datab = bottom
-    else:
-        datab = np.zeros(len(heights[0]))
-
     plot_kwargs = plot_params.plot_kwargs(plot_type='histogram')
 
-    for indx, data in enumerate(zip(positions, heights, plot_kwargs)):
+    for (entry, source), plot_kw in zip(plot_data.items(), plot_kwargs):
 
-        position, height, plot_kw = data
-
-        if isinstance(yerr, list):
-            try:
-                yerrt = yerr[indx]
-            except KeyError:
-                yerrt = yerr[0]
-        else:
-            yerrt = yerr
-
-        if isinstance(xerr, list):
-            try:
-                xerrt = xerr[indx]
-            except KeyError:
-                xerrt = xerr[0]
-        else:
-            xerrt = xerr
+        if bottom is None and bar_type == 'stacked':
+            bottom = np.zeros(len(source[entry.position]))
 
         if alignment == 'horizontal':
-            ax.barh(position, height, width, left=datab, **plot_kw, **kwargs)
+            ax.barh(entry.position,
+                    entry.height,
+                    width,
+                    left=bottom,
+                    data=source,
+                    xerr=entry.yerr,
+                    yerr=entry.xerr,
+                    **plot_kw,
+                    **kwargs)
         else:
-            ax.bar(position, height, width, bottom=datab, **plot_kw, **kwargs)
+            ax.bar(entry.position,
+                   entry.height,
+                   width,
+                   bottom=bottom,
+                   data=source,
+                   xerr=entry.xerr,
+                   yerr=entry.yerr,
+                   **plot_kw,
+                   **kwargs)
 
-        datab = datab + np.array(height)
+        if bar_type == 'stacked':
+            bottom += np.array(source[entry.height])
 
     plot_params.set_scale(ax)
     plot_params.set_limits(ax)
@@ -1587,12 +1630,14 @@ def plot_relaxation_results():
 def plot_dos(energy_grid,
              dos_data,
              *,
+             data=None,
              saveas='dos_plot',
              energy_label=r'$E-E_F$ [eV]',
              dos_label=r'DOS [1/eV]',
              title=r'Density of states',
              xyswitch=False,
              e_fermi=0,
+             copy_data=False,
              **kwargs):
     """
     Plot the provided data for a density of states (not spin-polarized). Can be done
@@ -1600,16 +1645,20 @@ def plot_dos(energy_grid,
 
     :param energy_grid: arraylike data for the energy grid of the DOS
     :param dos_data: arraylike data for all the DOS components to plot
+    :param data: source for the data of the plot (optional) (pandas Dataframe for example)
     :param title: str, Title of the plot
     :param energy_label: str, label for the energy-axis
     :param dos_label: str, label for the DOS-axis
     :param saveas: str, filename for the saved plot
     :param e_fermi: float (default 0), place the line for the fermi energy at this value
     :param xyswitch: bool if True, the enrgy axis will be plotted vertically
+    :param copy_data: bool, if True the data argument will be copied
 
     All other Kwargs are passed on to the :py:func:`multiple_scatterplots()` call
     """
     import seaborn as sns
+
+    plot_data = process_data_arguments(data=data, energy=energy_grid, dos=dos_data, copy_data=copy_data)
 
     if 'limits' in kwargs:
         limits = kwargs.pop('limits')
@@ -1633,19 +1682,22 @@ def plot_dos(energy_grid,
         figsize = plot_params['figure_kwargs']['figsize']
         plot_params.set_defaults(default_type='function', figure_kwargs={'figsize': figsize[::-1]})
 
-    if isinstance(dos_data[0], (list, np.ndarray)) and \
-       not isinstance(energy_grid[0], (list, np.ndarray)):
-        energy_grid = [energy_grid] * len(dos_data)
-
     if xyswitch:
-        x, y = dos_data, energy_grid
+        x, y = plot_data.get_keys('dos'), plot_data.get_keys('energy')
         xlabel, ylabel = dos_label, energy_label
         plot_params.set_defaults(default_type='function', area_vertical=True)
     else:
         xlabel, ylabel = energy_label, dos_label
-        x, y = energy_grid, dos_data
+        x, y = plot_data.get_keys('energy'), plot_data.get_keys('dos')
 
-    ax = multiple_scatterplots(x, y, xlabel=xlabel, ylabel=ylabel, title=title, saveas=saveas, **kwargs)
+    ax = multiple_scatterplots(x,
+                               y,
+                               xlabel=xlabel,
+                               ylabel=ylabel,
+                               title=title,
+                               saveas=saveas,
+                               data=plot_data.data,
+                               **kwargs)
 
     return ax
 
@@ -1655,6 +1707,7 @@ def plot_spinpol_dos(energy_grid,
                      spin_up_data,
                      spin_dn_data,
                      *,
+                     data=None,
                      saveas='spinpol_dos_plot',
                      energy_label=r'$E-E_F$ [eV]',
                      dos_label=r'DOS [1/eV]',
@@ -1663,6 +1716,7 @@ def plot_spinpol_dos(energy_grid,
                      energy_grid_dn=None,
                      e_fermi=0,
                      spin_dn_negative=True,
+                     copy_data=False,
                      **kwargs):
     """
     Plot the provided data for a density of states (spin-polarized). Can be done
@@ -1671,6 +1725,7 @@ def plot_spinpol_dos(energy_grid,
     :param energy_grid: arraylike data for the energy grid of the DOS
     :param spin_up_data: arraylike data for all the DOS spin-up components to plot
     :param spin_dn_data: arraylike data for all the DOS spin-down components to plot
+    :param data: source for the data of the plot (optional) (pandas Dataframe for example)
     :param title: str, Title of the plot
     :param energy_label: str, label for the energy-axis
     :param dos_label: str, label for the DOS-axis
@@ -1680,10 +1735,20 @@ def plot_spinpol_dos(energy_grid,
     :param energy_grid_dn: arraylike data for the energy grid of the DOS of the spin-down component
                            (optional)
     :param spin_dn_negative: bool, if True (default) the spin-down components are plotted downwards
+    :param copy_data: bool, if True the data argument will be copied
 
     All other Kwargs are passed on to the :py:func:`multiple_scatterplots()` call
     """
     import seaborn as sns
+
+    plot_data = process_data_arguments(data=data,
+                                       energy=energy_grid,
+                                       spin_up=spin_up_data,
+                                       spin_dn=spin_dn_data,
+                                       copy_data=copy_data)
+
+    plot_params.single_plot = False
+    plot_params.num_plots = len(plot_data)
 
     if 'limits' in kwargs:
         limits = kwargs.pop('limits')
@@ -1694,49 +1759,35 @@ def plot_spinpol_dos(energy_grid,
                 limits['x'], limits['y'] = limits.pop('energy', None), limits.pop('dos', None)
         kwargs['limits'] = {k: v for k, v in limits.items() if v is not None}
 
-    if isinstance(spin_up_data[0], (list, np.ndarray)):
-        if len(spin_up_data) != len(spin_dn_data):
-            raise ValueError(f'Dimensions do not match: Spin-up: {len(spin_up_data)} Spin-dn: {len(spin_dn_data)}')
-
-    max_dos = max(data.max() for data in spin_up_data)
-    max_dos = max(max_dos, max(data.max() for data in spin_dn_data))
-    max_dos *= 1.1
-
-    if spin_dn_negative:
-        if isinstance(spin_dn_data, np.ndarray):
-            spin_dn_data *= -1
-        elif isinstance(spin_up_data[0], list):
-            spin_dn_data = [-value for data in spin_dn_data for value in data]
-        else:
-            spin_dn_data = [-value for value in spin_dn_data]
     lines = {'horizontal': 0}
     lines['vertical'] = e_fermi
-
     if xyswitch:
         lines['vertical'], lines['horizontal'] = lines['horizontal'], lines['vertical']
 
+    max_dos = max(plot_data.max('spin_up'), plot_data.max('spin_dn'))
+    max_dos *= 1.1
     if xyswitch:
         limits = {'x': (-max_dos, max_dos)}
     else:
         limits = {'y': (-max_dos, max_dos)}
 
-    if isinstance(spin_up_data[0], (list, np.ndarray)):
-        num_plots = len(spin_up_data)
-    else:
-        num_plots = 1
+    if spin_dn_negative:
+        plot_data.apply('spin_dn', lambda x: -x)
 
     color_cycle = ('black',) + tuple(sns.color_palette('muted'))
     plot_params.set_defaults(default_type='function',
                              marker=None,
                              legend=True,
+                             legend_remove_duplicates=True,
                              lines=lines,
                              limits=limits,
-                             repeat_colors_after=num_plots,
+                             repeat_colors_after=len(plot_data),
                              color_cycle=color_cycle)
 
     if xyswitch:
         figsize = plot_params['figure_kwargs']['figsize']
         plot_params.set_defaults(default_type='function', figure_kwargs={'figsize': figsize[::-1]})
+        plot_params.set_defaults(default_type='function', invert_xaxis=True)
 
     save_keys = {'show', 'save_plots', 'save_format', 'save_options'}
     save_options = {key: val for key, val in kwargs.items() if key in save_keys}
@@ -1744,30 +1795,25 @@ def plot_spinpol_dos(energy_grid,
 
     plot_params.set_parameters(**save_options)
 
-    if xyswitch:
-        plot_params.set_defaults(default_type='function', invert_xaxis=True)
-
-    dos_data = spin_up_data
-    if not isinstance(spin_up_data[0], (list, np.ndarray)):
-        dos_data = [dos_data, spin_dn_data]
-    else:
-        dos_data = np.concatenate((dos_data, spin_dn_data), axis=0)
-
-    if isinstance(dos_data[0], (list, np.ndarray)) and \
-       not isinstance(energy_grid[0], (list, np.ndarray)):
-        energy_grid = [energy_grid] * len(dos_data)
+    #Create the full data for the scatterplot
+    energy_entries = plot_data.get_keys('energy') * 2
+    dos_entries = plot_data.get_keys('spin_up') + plot_data.get_keys('spin_dn')
+    sources = plot_data.data
+    if isinstance(sources, list):
+        sources = sources * 2
 
     if xyswitch:
-        x, y = dos_data, energy_grid
+        x, y = dos_entries, energy_entries
         xlabel, ylabel = dos_label, energy_label
         plot_params.set_defaults(default_type='function', area_vertical=True)
     else:
         xlabel, ylabel = energy_label, dos_label
-        x, y = energy_grid, dos_data
+        x, y = energy_entries, dos_entries
 
     with NestedPlotParameters(plot_params):
         ax = multiple_scatterplots(x,
                                    y,
+                                   data=sources,
                                    xlabel=xlabel,
                                    ylabel=ylabel,
                                    title=title,
@@ -1791,7 +1837,9 @@ def plot_spinpol_dos(energy_grid,
 def plot_bands(kpath,
                bands,
                *,
+               data=None,
                size_data=None,
+               color_data=None,
                special_kpoints=None,
                e_fermi=0,
                xlabel='',
@@ -1801,6 +1849,10 @@ def plot_bands(kpath,
                markersize_min=0.5,
                markersize_scaling=5.0,
                scale_color=True,
+               separate_bands=False,
+               line_plot=False,
+               band_index=None,
+               copy_data=False,
                **kwargs):
     """
     Plot the provided data for a bandstrucuture (non spin-polarized). Can be used
@@ -1809,6 +1861,7 @@ def plot_bands(kpath,
     :param kpath: arraylike data for the kpoint data
     :param bands: arraylike data for the eigenvalues
     :param size_data: arraylike data the weights to emphasize (optional)
+    :param color_data: str or arraylike, data for the color values with a colormap (optional)
     :param title: str, Title of the plot
     :param xlabel: str, label for the x-axis
     :param ylabel: str, label for the y-axis
@@ -1819,9 +1872,41 @@ def plot_bands(kpath,
     :param markersize_min: minimum value used in scaling points for weight
     :param markersize_scaling: factor used in scaling points for weight
     :param scale_color: bool, if True (default) the weight will be additionally shown via a colormapping
+    :param line_plot: bool, if True the bandstructure will be plotted with lines
+                      Here no weights are supported
+    :param separate_bands: bool, if True the bandstructure will be separately plotted for each band
+                           allows more specific parametrization
+    :param band_index: data for which eigenvalue belongs to which band (needed for line_plot and separate_bands)
+    :param copy_data: bool, if True the data argument will be copied
 
     All other Kwargs are passed on to the :py:func:`multi_scatter_plot()` call
     """
+
+    plot_data = process_data_arguments(single_plot=True,
+                                       data=data,
+                                       kpath=kpath,
+                                       bands=bands,
+                                       size=size_data,
+                                       color=color_data,
+                                       band_index=band_index,
+                                       copy_data=copy_data)
+
+    if line_plot and size_data is not None:
+        raise ValueError('Bandstructure with lines and size scaling not supported')
+
+    if line_plot and color_data is not None:
+        raise ValueError('Bandstructure with lines and color mapping not supported')
+
+    if line_plot or separate_bands:
+        if band_index is None:
+            raise ValueError('The data for band indices are needed for separate_bands and line_plot')
+        plot_data.group_data('band_index')
+        plot_data.sort_data('kpath')
+
+    if scale_color and size_data is not None:
+        if color_data is not None:
+            raise ValueError('color_data should not be provided when scale_color is True')
+        plot_data.copy_data('size', 'color', rename_original=True)
 
     if special_kpoints is None:
         special_kpoints = []
@@ -1834,46 +1919,67 @@ def plot_bands(kpath,
         xticklabels.append(label)
         xticks.append(pos)
 
-    if size_data is not None:
+    entries = plot_data.keys(first=True)
+    if entries.size is not None:
         ylimits = (-15, 15)
         if 'limits' in kwargs:
             if 'y' in kwargs['limits']:
                 ylimits = kwargs['limits']['y']
 
-        weight_max = max(size_data[np.logical_and(bands > ylimits[0], bands < ylimits[1])])
+        mask = lambda bands, ylimits=tuple(ylimits): np.logical_and(bands > ylimits[0], bands < ylimits[1])
+        weight_max = plot_data.max('size', mask=mask, mask_data_key='bands')
         if 'vmax' not in kwargs:
             kwargs['vmax'] = weight_max
 
         if scale_color:
-            kwargs['color_data'] = copy.copy(size_data)
             plot_params.set_defaults(default_type='function', cmap='Blues')
             if 'cmap' not in kwargs:
                 #Cut off the white end of the Blues/Reds colormap
                 plot_params.set_defaults(default_type='function', sub_colormap=(0.15, 1.0))
 
-        size_data = (markersize_min + markersize_scaling * size_data / weight_max)**2
+        transform = lambda size: (markersize_min + markersize_scaling * size / weight_max)**2
+        plot_data.apply('size', transform)
 
     lines = {'vertical': xticks, 'horizontal': e_fermi}
 
-    limits = {'x': (min(kpath), max(kpath)), 'y': (-15, 15)}
+    limits = {'x': (plot_data.min('kpath'), plot_data.max('kpath')), 'y': (-15, 15)}
     plot_params.set_defaults(default_type='function',
                              lines=lines,
                              limits=limits,
                              xticks=xticks,
                              xticklabels=xticklabels,
                              color='k',
-                             linewidth=0,
                              line_options={'zorder': -1},
+                             plot_label='Eigenvalues',
+                             legend_remove_duplicates=True,
                              colorbar=False)
 
-    ax = multi_scatter_plot(kpath,
-                            bands,
-                            size_data=size_data,
-                            xlabel=xlabel,
-                            ylabel=ylabel,
-                            title=title,
-                            saveas=saveas,
-                            **kwargs)
+    if line_plot:
+        plot_params.set_defaults(default_type='function', marker=None)
+    else:
+        plot_params.set_defaults(default_type='function', linewidth=0)
+
+    if line_plot:
+        ax = multiple_scatterplots(plot_data.get_keys('kpath'),
+                                   plot_data.get_keys('bands'),
+                                   data=plot_data.data,
+                                   xlabel=xlabel,
+                                   ylabel=ylabel,
+                                   title=title,
+                                   saveas=saveas,
+                                   **kwargs)
+
+    else:
+        ax = multi_scatter_plot(plot_data.get_keys('kpath'),
+                                plot_data.get_keys('bands'),
+                                size_data=plot_data.get_keys('size'),
+                                color_data=plot_data.get_keys('color'),
+                                data=plot_data.data,
+                                xlabel=xlabel,
+                                ylabel=ylabel,
+                                title=title,
+                                saveas=saveas,
+                                **kwargs)
 
     return ax
 
@@ -1884,6 +1990,8 @@ def plot_spinpol_bands(kpath,
                        bands_dn,
                        *,
                        size_data=None,
+                       color_data=None,
+                       data=None,
                        show_spin_pol=True,
                        special_kpoints=None,
                        e_fermi=0,
@@ -1894,6 +2002,10 @@ def plot_spinpol_bands(kpath,
                        markersize_min=0.5,
                        markersize_scaling=5.0,
                        scale_color=True,
+                       line_plot=False,
+                       separate_bands=False,
+                       band_index=None,
+                       copy_data=False,
                        **kwargs):
     """
     Plot the provided data for a bandstrucuture (spin-polarized). Can be used
@@ -1915,36 +2027,66 @@ def plot_spinpol_bands(kpath,
     :param show_spin_pol: bool, if True (default) the two different spin channles will be shown in blue
                           and red by default
     :param scale_color: bool, if True (default) the weight will be additionally shown via a colormapping
+    :param line_plot: bool, if True the bandstructure will be plotted with lines
+                      Here no weights are supported
+    :param separate_bands: bool, if True the bandstructure will be separately plotted for each band
+                           allows more specific parametrization
+    :param band_index: data for which eigenvalue belongs to which band (needed for line_plot and separate_bands)
+    :param copy_data: bool, if True the data argument will be copied
 
     All other Kwargs are passed on to the :py:func:`multi_scatter_plot()` call
     """
 
+    plot_data = process_data_arguments(data=data,
+                                       kpath=kpath,
+                                       bands=[bands_up, bands_dn],
+                                       size=size_data,
+                                       color=color_data,
+                                       band_index=band_index,
+                                       copy_data=copy_data)
+
+    plot_params.single_plot = False
+    plot_params.num_plots = len(plot_data)
+
+    if len(plot_data) != 2:
+        raise ValueError('Wrong number of plots specified (Only 2 permitted)')
+
+    if line_plot and size_data is not None:
+        raise ValueError('Bandstructure with lines and size scaling not supported')
+
+    if line_plot and color_data is not None:
+        raise ValueError('Bandstructure with lines and color mapping not supported')
+
+    if line_plot or separate_bands:
+        if band_index is None:
+            raise ValueError('The data for band indices are needed for separate_bands and line_plot')
+
+        plot_data.group_data('band_index')
+        plot_data.sort_data('kpath')
+
+    if scale_color and size_data is not None:
+        if color_data is not None:
+            raise ValueError('color_data should not be provided when scale_color is True')
+        plot_data.copy_data('size', 'color', rename_original=True)
+
     if special_kpoints is None:
         special_kpoints = {}
 
-    if size_data is not None:
-
-        if len(size_data) != 2:
-            raise ValueError('size_data has to be a list of length 2')
+    if any(entry.size is not None for entry in plot_data.keys()):
 
         ylimits = (-15, 15)
         if 'limits' in kwargs:
             if 'y' in kwargs['limits']:
                 ylimits = kwargs['limits']['y']
 
-        weight_max = max(size_data[0][np.logical_and(bands_up > ylimits[0], bands_up < ylimits[1])])
-        weight_max = max(weight_max, max(size_data[1][np.logical_and(bands_dn > ylimits[0], bands_dn < ylimits[1])]))
+        mask = lambda bands, ylimits=tuple(ylimits): np.logical_and(bands > ylimits[0], bands < ylimits[1])
+        weight_max = plot_data.max('size', mask=mask, mask_data_key='bands')
 
         if 'vmax' not in kwargs:
             kwargs['vmax'] = weight_max
 
-        color_data = []
-        for indx, data in enumerate(size_data):
-            color_data.append(copy.copy(data))
-            size_data[indx] = (markersize_min + markersize_scaling * data / weight_max)**2
-
-        if scale_color:
-            kwargs['color_data'] = color_data
+        transform = lambda size: (markersize_min + markersize_scaling * size / weight_max)**2
+        plot_data.apply('size', transform)
 
     xticks = []
     xticklabels = []
@@ -1966,7 +2108,7 @@ def plot_spinpol_bands(kpath,
         if scale_color:
             cmaps = 'Blues'
 
-    limits = {'x': (min(kpath), max(kpath)), 'y': (-15, 15)}
+    limits = {'x': (plot_data.min('kpath'), plot_data.max('kpath')), 'y': (-15, 15)}
     plot_params.set_defaults(default_type='function',
                              lines=lines,
                              limits=limits,
@@ -1974,23 +2116,48 @@ def plot_spinpol_bands(kpath,
                              xticklabels=xticklabels,
                              color=color,
                              cmap=cmaps,
-                             linewidth=0,
                              legend=True,
+                             legend_remove_duplicates=True,
+                             legend_options={'loc': 'upper right'},
                              line_options={'zorder': -1},
+                             plot_label=['Spin Up', 'Spin Down'],
                              zorder=[2, 1],
                              colorbar=False)
+
+    if line_plot:
+        plot_params.set_defaults(default_type='function', marker=None)
+    else:
+        plot_params.set_defaults(default_type='function', linewidth=0)
+
+    if line_plot or separate_bands:
+        plot_params.num_plots = len(plot_data)
+        kwargs = plot_params.expand_parameters(original_length=2, **kwargs)
 
     if 'cmap' not in kwargs:
         #Cut off the white end of the Blues/Reds colormap
         plot_params.set_defaults(default_type='function', sub_colormap=(0.15, 1.0))
 
-    ax = multi_scatter_plot([kpath, kpath], [bands_up, bands_dn],
-                            size_data=size_data,
-                            xlabel=xlabel,
-                            ylabel=ylabel,
-                            title=title,
-                            saveas=saveas,
-                            **kwargs)
+    if line_plot:
+        ax = multiple_scatterplots(plot_data.get_keys('kpath'),
+                                   plot_data.get_keys('bands'),
+                                   data=plot_data.data,
+                                   xlabel=xlabel,
+                                   ylabel=ylabel,
+                                   title=title,
+                                   saveas=saveas,
+                                   **kwargs)
+
+    else:
+        ax = multi_scatter_plot(plot_data.get_keys('kpath'),
+                                plot_data.get_keys('bands'),
+                                size_data=plot_data.get_keys('size'),
+                                color_data=plot_data.get_keys('color'),
+                                data=plot_data.data,
+                                xlabel=xlabel,
+                                ylabel=ylabel,
+                                title=title,
+                                saveas=saveas,
+                                **kwargs)
 
     return ax
 

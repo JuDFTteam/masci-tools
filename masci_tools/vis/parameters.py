@@ -264,6 +264,9 @@ class Plotter(object):
 
         try:
             value = self._params[key]
+            if key not in self._given_parameters:
+                if isinstance(self._function_defaults.get(key), list):
+                    value = self._function_defaults[key]
             if isinstance(value, list):
                 if index is None:
                     return value
@@ -335,7 +338,7 @@ class Plotter(object):
                     except IndexError as ex:
                         raise IndexError(f'List under key: {key} index: {index} out of range, '
                                          f'should have length: {maxlen}. '
-                                         'It may also be that some other list is just to long.')
+                                         'It may also be that some other list is just to long.') from ex
                 list_of_dicts.append(tempdict)
 
             if len(list_of_dicts) != num_plots:
@@ -374,9 +377,56 @@ class Plotter(object):
 
             if len(ret_value) != num_plots:
                 ret_value = ret_value.copy() + [None] * (num_plots - len(ret_value))
-            ret_value = [val if val is not None else default for val in ret_value]
+
+            if isinstance(default, list):
+                ret_value = [val if val is not None else default[indx] for indx, val in enumerate(ret_value)]
+            else:
+                ret_value = [val if val is not None else default for val in ret_value]
 
         return ret_value
+
+    def expand_parameters(self, original_length, **kwargs):
+        """
+        Expand parameters to a bigger number of plots.
+        New length has to be a multiple of original length.
+        Only lists of length <= orginal_length are expanded.
+        Also expands function defaults
+
+        :param orginal_length: int of the old length
+        :param kwargs: arguments to expand
+
+        :returns: expanded kwargs
+        """
+        if self.num_plots == original_length:
+            return kwargs
+
+        if self.num_plots % original_length != 0:
+            raise ValueError(f"Cannot expand parameters from length '{original_length}' to '{self.num_plots}'")
+
+        length_per_param = self.num_plots // original_length
+
+        for key, val in kwargs.items():
+            if self.is_general(key):
+                continue
+
+            if isinstance(val, list):
+                if len(val) <= original_length:
+                    new_val = []
+                    for val_list in val:
+                        new_val += [val_list] * length_per_param
+                    kwargs[key] = new_val
+
+        for key, val in self._function_defaults.items():
+            if self.is_general(key):
+                continue
+            if isinstance(val, list):
+                if len(val) == original_length:
+                    new_val = []
+                    for val_list in val:
+                        new_val += [val_list] * length_per_param
+                    self.set_single_default(key, new_val, default_type='function')
+
+        return kwargs
 
     def set_single_default(self, key, value, default_type='global'):
         """
@@ -394,6 +444,17 @@ class Plotter(object):
         if default_type == 'global':
             self.__update_map(self._params.parents, key, value)
         elif default_type == 'function':
+            if not self.is_general(key):
+
+                default_val = self._hardcoded_defaults.get(key)
+                if key in self._user_defaults:
+                    default_val = self._user_defaults[key]
+
+                value = self.convert_to_complete_list(value,
+                                                      self.single_plot,
+                                                      self.num_plots,
+                                                      default=default_val,
+                                                      key=key)
             self.__update_map(self._params.parents.parents, key, value)
 
     def __setitem__(self, key, value):

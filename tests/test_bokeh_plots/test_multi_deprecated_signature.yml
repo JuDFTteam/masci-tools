@@ -103,6 +103,19 @@ roots:
         - '@y'
     type: HoverTool
   - attributes:
+      click_policy: hide
+      items:
+      - type: LegendItem
+      label_text_font_size:
+        value: 14pt
+    type: Legend
+  - attributes:
+      label:
+        value: y
+      renderers:
+      - type: GlyphRenderer
+    type: LegendItem
+  - attributes:
       axis_label: x
       axis_label_text_font_size:
         value: 18pt
@@ -140,6 +153,7 @@ roots:
       center:
       - type: Grid
       - type: Grid
+      - type: Legend
       left:
       - type: LinearAxis
       renderers:

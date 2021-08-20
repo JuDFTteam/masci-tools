@@ -3,6 +3,11 @@
 Configurations for masci_tools tests
 """
 import pytest
+from pprint import pprint
+
+
+def pytest_addoption(parser):
+    parser.addoption('--show-bokeh-plots', action='store_true', help='Show the produced bokeh plots')
 
 
 @pytest.fixture
@@ -85,7 +90,7 @@ def fixture_clean_bokeh_json():
     :param data: dict with the json data produced for the bokeh figure
     """
 
-    def _clean_bokeh_json(data):
+    def _clean_bokeh_json(data, np_precision=5, data_entry=False):
         """
         Make the dict form the produced json data
         suitable for data_regression
@@ -95,18 +100,63 @@ def fixture_clean_bokeh_json():
 
         :param data: dict with the json data produced for the bokeh figure
         """
+        from bokeh.util.serialization import decode_base64_dict, encode_base64_dict
+        import numpy as np
+
+        def get_contained_keys(dict_val):
+
+            keys = set(dict_val.keys())
+            for key, val in dict_val.items():
+                if isinstance(val, dict):
+                    keys = keys.union(get_contained_keys(val))
+
+            return keys
+
+        def get_normalized_order(dict_val, key_order, normed=None):
+
+            if normed is None:
+                normed = [(key, ()) for key in key_order]
+            for key, val in dict_val.items():
+                if isinstance(val, dict):
+                    normed = get_normalized_order(val, key_order, normed=normed)
+                elif key != 'type':
+                    index = key_order.index(key)
+                    if isinstance(val, list):
+                        normed[index] += (tuple(val),)
+                    elif isinstance(val, float):
+                        normed[index] += (str(val),)
+                    else:
+                        normed[index] += (val,)
+            return normed
+
+        def normalize_list_of_dicts(list_of_dicts):
+
+            contained_keys = set()
+            for data in list_of_dicts:
+                contained_keys = contained_keys.union(get_contained_keys(data))
+            contained_keys.discard('type')
+
+            return sorted(list_of_dicts,
+                          key=lambda x: (x['type'], *tuple(get_normalized_order(x, sorted(contained_keys)))))
+
+        if '__ndarray__' in data:
+            array = decode_base64_dict(data)
+            array = np.around(array, decimals=np_precision)
+            data = encode_base64_dict(array)
 
         for key, val in list(data.items()):
             if key in ('id', 'root_ids'):
                 data.pop(key)
             elif isinstance(val, dict):
-                data[key] = _clean_bokeh_json(val)
+                data[key] = _clean_bokeh_json(val, np_precision=np_precision, data_entry=key == 'data')
             elif isinstance(val, list):
                 for index, entry in enumerate(val):
                     if isinstance(entry, dict):
                         val[index] = _clean_bokeh_json(entry)
                 if all(isinstance(x, dict) for x in val):
-                    data[key] = sorted(val, key=lambda x: (x['type'], *x.get('attributes', {}).items()))
+                    data[key] = normalize_list_of_dicts(val)
+                elif all(isinstance(x, int) for x in val) and data_entry:
+                    data[key] = encode_base64_dict(np.array(val))
                 else:
                     data[key] = val
 
@@ -116,7 +166,7 @@ def fixture_clean_bokeh_json():
 
 
 @pytest.fixture(scope='function')
-def check_bokeh_plot(data_regression, clean_bokeh_json):
+def check_bokeh_plot(data_regression, clean_bokeh_json, pytestconfig):
     current_bokeh_version = '1.4.0'  #For now we only test bokeh plots if the right version is available
 
     try:
@@ -126,13 +176,18 @@ def check_bokeh_plot(data_regression, clean_bokeh_json):
         test_bokeh = False
 
     def _regression_bokeh_plot(bokeh_fig):
-        if not test_bokeh:
-            pytest.skip(
-                f'Bokeh regression tests are skipped (Only executed if bokeh {current_bokeh_version} is installed')
-        from bokeh.io import curdoc
 
-        curdoc().clear()
-        curdoc().add_root(bokeh_fig)
-        data_regression.check(clean_bokeh_json(curdoc().to_json()))
+        if pytestconfig.getoption('--show-bokeh-plots'):
+            from bokeh.io import show
+            show(bokeh_fig)
+        else:
+            if not test_bokeh:
+                pytest.skip(
+                    f'Bokeh regression tests are skipped (Only executed if bokeh {current_bokeh_version} is installed')
+            from bokeh.io import curdoc
+
+            curdoc().clear()
+            curdoc().add_root(bokeh_fig)
+            data_regression.check(clean_bokeh_json(curdoc().to_json()))
 
     return _regression_bokeh_plot
