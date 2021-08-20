@@ -24,6 +24,7 @@ from enum import Enum
 
 __all__ = (
     'set_default_backend',
+    'PlotBackend',
     'set_defaults',
     'reset_defaults',
     'show_defaults',
@@ -77,6 +78,8 @@ class PlotBackend(Enum):
         if label is None:
             #Default backend
             return PlotBackend.default()
+        elif isinstance(label, PlotBackend):
+            return label
         elif label.lower() in ('mpl', 'matplotlib'):
             return PlotBackend.mpl
         elif label.lower() in ('bokeh',):
