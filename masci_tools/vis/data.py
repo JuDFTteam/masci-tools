@@ -165,21 +165,38 @@ class PlotData:
                 num_sets = 1
             self.columns = [self._column_spec(**kwargs)] * num_sets
 
-    def _add_data_key(self, new_data_key):
+    @property
+    def data_keys(self):
         """
-        Add a new column of data keys initialized with Nones
-
-        :param new_data_key: string of the new data key to add
+        Return the registered data keys for this instance
         """
+        return self._column_spec._fields
 
+    def add_data_key(self, data_key, keys=None):
+        """
+        Add a new column of data keys
+
+        :param data_key: string of the new data key to add
+        :param keys: None, Index into data or list of index into the data
+                     to initialize the values to
+        """
         if self.strict_data_keys:
             raise ValueError('No new data keys allowed after initialization')
 
-        self._column_spec = namedtuple('Columns', self._column_spec._fields + (new_data_key,))
+        if data_key in self.data_keys:
+            raise ValueError(f"Data key {data_key} already exists")
+
+        self._column_spec = namedtuple('Columns', self.data_keys + (data_key,))
+
+        if isinstance(keys, list):
+            if len(keys) != len(self):
+                raise ValueError(f'Expected {len(self)} for new data_key {data_key}. Got {len(keys)}')
+        else:
+            keys = [keys] * len(self)
 
         #Rebuild the columns list
-        for indx, column in enumerate(self.columns):
-            self.columns[indx] = self._column_spec(**{**column._asdict(), **{new_data_key: None}})
+        for indx, (column, entry) in enumerate(zip(self.columns, keys)):
+            self.columns[indx] = self._column_spec(**{**column._asdict(), **{data_key: entry}})
 
     def __iter__(self):
         """
@@ -230,7 +247,7 @@ class PlotData:
         :returns: list of keys, corresponding to the entries for the
                   given data in the sources
         """
-        if data_key not in self._column_spec._fields:
+        if data_key not in self.data_keys:
             raise ValueError(f'Field {data_key} does not exist')
 
         keys = []
@@ -248,7 +265,7 @@ class PlotData:
         :returns: list of values, corresponding to the entries for the
                   given data in the sources
         """
-        if data_key not in self._column_spec._fields:
+        if data_key not in self.data_keys:
             raise ValueError(f'Field {data_key} does not exist')
 
         values = []
@@ -269,7 +286,7 @@ class PlotData:
 
         :returns: minimum value for all entries either combined or as a list
         """
-        if data_key not in self._column_spec._fields:
+        if data_key not in self.data_keys:
             raise ValueError(f'Field {data_key} does not exist')
 
         if mask is not None:
@@ -309,7 +326,7 @@ class PlotData:
 
         :returns: maximum value for all entries either combined or as a list
         """
-        if data_key not in self._column_spec._fields:
+        if data_key not in self.data_keys:
             raise ValueError(f'Field {data_key} does not exist')
 
         if mask is not None:
@@ -350,7 +367,7 @@ class PlotData:
         :param data_key: name of the data key to apply the function
         :param lambda_func: function to apply to the data
         """
-        if data_key not in self._column_spec._fields:
+        if data_key not in self.data_keys:
             raise ValueError(f'Field {data_key} does not exist')
 
         for indx, (entry, source) in enumerate(self.items(mappable=True)):
@@ -381,11 +398,11 @@ class PlotData:
                      if func is a string then it will be used to get the attribute
                      with the corresponding name from the source and call it
         """
-        if data_key not in self._column_spec._fields:
+        if data_key not in self.data_keys:
             raise ValueError(f'Field {data_key} does not exist')
 
         result = []
-        for indx, (entry, source) in enumerate(self.items(mappable=True)):
+        for entry, source in self.items(mappable=True):
 
             key = entry._asdict()[data_key]
             if isinstance(func, str):
@@ -447,7 +464,7 @@ class PlotData:
             by_data_keys = [by_data_keys]
 
         for data_key in by_data_keys:
-            if data_key not in self._column_spec._fields:
+            if data_key not in self.data_keys:
                 raise ValueError(f'Field {data_key} does not exist')
 
         #For sorting data we always go to a pandas DataFrame for simplicity
@@ -497,14 +514,14 @@ class PlotData:
                 by_data_keys = [by_data_keys]
 
             for data_key in by_data_keys:
-                if data_key not in self._column_spec._fields:
+                if data_key not in self.data_keys:
                     raise ValueError(f'Field {data_key} does not exist')
 
         #For grouping data we always go to a pandas Dataframe
         columns = []
         sources = []
 
-        for indx, (entry, source) in enumerate(self.items(mappable=True)):
+        for entry, source in self.items(mappable=True):
 
             if not isinstance(source, pd.DataFrame):
                 source = pd.DataFrame(data=source)
@@ -533,7 +550,7 @@ class PlotData:
                               will be copied to itself (This separates the data for all columns)
         :param negative: bool if True the shifts are applied with a minus sign
         """
-        if data_key not in self._column_spec._fields:
+        if data_key not in self.data_keys:
             raise ValueError(f'Field {data_key} does not exist')
 
         if shifted_data_key is not None:
@@ -573,14 +590,14 @@ class PlotData:
         :param rename_original: optional bool (default False). If True the original entries are renamed
                                 instead of the ones under ``data_key_to``
         """
-        if data_key_from not in self._column_spec._fields:
+        if data_key_from not in self.data_keys:
             raise ValueError(f'Field {data_key_from} does not exist')
 
-        if data_key_to not in self._column_spec._fields:
+        if data_key_to not in self.data_keys:
             if self.strict_data_keys:
                 raise ValueError(f'Field {data_key_to} does not exist')
 
-            self._add_data_key(data_key_to)
+            self.add_data_key(data_key_to)
 
         for indx, (entry, source) in enumerate(self.items(mappable=True)):
 
@@ -619,7 +636,7 @@ class PlotData:
 
         :returns: int of the number of different datasets
         """
-        if data_key not in self._column_spec._fields:
+        if data_key not in self.data_keys:
             raise ValueError(f'Field {data_key} does not exist')
 
         data_sets = []
