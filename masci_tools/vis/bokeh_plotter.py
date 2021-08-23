@@ -222,7 +222,7 @@ class BokehPlotter(Plotter):
         'label_fontsize',
         'axis_linewidth',
         'figure_kwargs',
-        'additional_tools'
+        'additional_tools',
         'show_tooltips',
         'global_tooltips',
         'format_tooltips',
