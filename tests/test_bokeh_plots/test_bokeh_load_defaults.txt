@@ -1,0 +1,11 @@
+{
+    "figure_kwargs": {
+        "active_inspect": "hover",
+        "toolbar_location": "right",
+        "tools": "pan,poly_select,tap,wheel_zoom,box_zoom,redo,undo,reset,save,crosshair,zoom_out,zoom_in",
+        "x_axis_type": "log",
+        "y_axis_type": "linear"
+    },
+    "line_alpha": 0.5,
+    "marker_size": 50
+}

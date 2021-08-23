@@ -13,11 +13,6 @@ import matplotlib
 matplotlib.use('Agg')
 from matplotlib.pyplot import gcf
 import matplotlib.pyplot as plt
-#from masci_tools.io.kkr_read_shapefun_info import read_shapefun
-#from masci_tools.vis.kkr_plot_shapefun import plot_shapefun
-#from masci_tools.vis.kkr_plot_dos import dosplot
-#from masci_tools.vis.kkr_plot_bandstruc_qdos import dispersionplot
-#from masci_tools.vis.kkr_plot_FS_qdos import FSqdos2D
 
 
 def test_plot_methods_imports():
@@ -27,6 +22,8 @@ def test_plot_methods_imports():
     from masci_tools.vis.plot_methods import set_mpl_plot_defaults
     from masci_tools.vis.plot_methods import reset_mpl_plot_defaults
     from masci_tools.vis.plot_methods import show_mpl_plot_defaults
+    from masci_tools.vis.plot_methods import save_mpl_defaults
+    from masci_tools.vis.plot_methods import load_mpl_defaults
     from masci_tools.vis.plot_methods import single_scatterplot
     from masci_tools.vis.plot_methods import multiple_scatterplots
     from masci_tools.vis.plot_methods import multi_scatter_plot
@@ -92,6 +89,67 @@ def test_set_defaults(change_dict, result):
 
     for key, val in value_before.items():
         assert plot_params[key] == val
+
+
+def test_mpl_save_defaults(file_regression):
+    """
+    Test saving of custom parameters
+    """
+    import tempfile
+    from masci_tools.vis.plot_methods import set_mpl_plot_defaults
+    from masci_tools.vis.plot_methods import save_mpl_defaults
+    from masci_tools.vis.plot_methods import reset_mpl_plot_defaults
+
+    set_mpl_plot_defaults(markersize=50,
+                          show=False,
+                          tick_paramsx={
+                              'size': 4.0,
+                              'width': 1.0,
+                              'labelsize': 100,
+                              'length': 5,
+                              'labelrotation': 0
+                          })
+
+    with tempfile.NamedTemporaryFile('r') as file:
+        save_mpl_defaults(file.name)
+
+        txt = file.read().strip()
+        file_regression.check(txt)
+    reset_mpl_plot_defaults()
+
+
+def test_mpl_load_defaults(file_regression):
+    """
+    Test loading of custom parameters
+    """
+    import tempfile
+    from masci_tools.vis.plot_methods import set_mpl_plot_defaults
+    from masci_tools.vis.plot_methods import reset_mpl_plot_defaults
+    from masci_tools.vis.plot_methods import save_mpl_defaults
+    from masci_tools.vis.plot_methods import load_mpl_defaults
+
+    set_mpl_plot_defaults(markersize=50,
+                          show=False,
+                          tick_paramsx={
+                              'size': 4.0,
+                              'width': 1.0,
+                              'labelsize': 100,
+                              'length': 5,
+                              'labelrotation': 0
+                          })
+
+    with tempfile.NamedTemporaryFile('r') as file:
+        save_mpl_defaults(file.name)
+        reset_mpl_plot_defaults()
+        load_mpl_defaults(file.name)
+
+    with tempfile.NamedTemporaryFile('r') as file:
+        save_mpl_defaults(file.name)
+
+        txt = file.read().strip()
+        file_regression.check(txt)
+
+    reset_mpl_plot_defaults()
 
 
 class TestSingleScatterPlot(object):

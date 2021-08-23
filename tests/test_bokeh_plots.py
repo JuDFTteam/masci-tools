@@ -8,6 +8,124 @@ import pandas as pd
 import pytest
 
 
+def test_bokeh_methods_imports():
+    """
+    Test that all expected functions are still there
+    """
+    from masci_tools.vis.bokeh_plots import set_bokeh_plot_defaults
+    from masci_tools.vis.bokeh_plots import reset_bokeh_plot_defaults
+    from masci_tools.vis.bokeh_plots import show_bokeh_plot_defaults
+    from masci_tools.vis.bokeh_plots import save_bokeh_defaults
+    from masci_tools.vis.bokeh_plots import load_bokeh_defaults
+    from masci_tools.vis.bokeh_plots import bokeh_scatter
+    from masci_tools.vis.bokeh_plots import bokeh_multi_scatter
+    from masci_tools.vis.bokeh_plots import bokeh_line
+    from masci_tools.vis.bokeh_plots import bokeh_dos
+    from masci_tools.vis.bokeh_plots import bokeh_spinpol_dos
+    from masci_tools.vis.bokeh_plots import bokeh_bands
+    from masci_tools.vis.bokeh_plots import bokeh_spinpol_bands
+    from masci_tools.vis.bokeh_plots import periodic_table_plot
+    from masci_tools.vis.bokeh_plots import plot_convergence_results
+    from masci_tools.vis.bokeh_plots import plot_convergence_results_m
+
+
+TEST_CHANGES = [{'marker_size': 50}, {'show': False}, {'straight_line_options': {'line_color': 'red'}}]
+
+EXPECTED_RESULT = [{
+    'marker_size': 50
+}, {
+    'show': False
+}, {
+    'straight_line_options': {
+        'line_color': 'red',
+        'line_width': 1.0,
+        'line_dash': 'dashed'
+    },
+}]
+
+
+@pytest.mark.parametrize('change_dict, result', zip(TEST_CHANGES, EXPECTED_RESULT))
+def test_set_defaults(change_dict, result):
+    """
+    Test the setting of default values
+    """
+    from masci_tools.vis.bokeh_plots import plot_params
+    from masci_tools.vis.bokeh_plots import set_bokeh_plot_defaults
+    from masci_tools.vis.bokeh_plots import reset_bokeh_plot_defaults
+
+    value_before = {}
+    for key in change_dict:
+        value_before[key] = plot_params[key]
+
+    set_bokeh_plot_defaults(**change_dict)
+
+    for key, val in result.items():
+        assert plot_params[key] == val
+
+    reset_bokeh_plot_defaults()
+
+    for key, val in value_before.items():
+        assert plot_params[key] == val
+
+
+def test_bokeh_save_defaults(file_regression):
+    """
+    Test adding of custom parameters
+    """
+    import tempfile
+    from masci_tools.vis.bokeh_plots import set_bokeh_plot_defaults
+    from masci_tools.vis.bokeh_plots import reset_bokeh_plot_defaults
+    from masci_tools.vis.bokeh_plots import save_bokeh_defaults
+
+    set_bokeh_plot_defaults(marker_size=50,
+                            line_alpha=0.5,
+                            figure_kwargs={
+                                'x_axis_type': 'log',
+                                'active_inspect': 'hover'
+                            })
+
+    with tempfile.NamedTemporaryFile('r') as file:
+        save_bokeh_defaults(file.name)
+
+        txt = file.read().strip()
+        file_regression.check(txt)
+
+    reset_bokeh_plot_defaults()
+
+
+def test_bokeh_load_defaults(file_regression):
+    """
+    Test adding of custom parameters
+    """
+    import tempfile
+    from masci_tools.vis.bokeh_plots import set_bokeh_plot_defaults
+    from masci_tools.vis.bokeh_plots import reset_bokeh_plot_defaults
+    from masci_tools.vis.bokeh_plots import save_bokeh_defaults
+    from masci_tools.vis.bokeh_plots import load_bokeh_defaults
+
+    set_bokeh_plot_defaults(marker_size=50,
+                            line_alpha=0.5,
+                            figure_kwargs={
+                                'x_axis_type': 'log',
+                                'active_inspect': 'hover'
+                            })
+
+    with tempfile.NamedTemporaryFile('r') as file:
+        save_bokeh_defaults(file.name)
+
+        reset_bokeh_plot_defaults()
+
+        load_bokeh_defaults(file.name)
+
+    with tempfile.NamedTemporaryFile('r') as file:
+        save_bokeh_defaults(file.name)
+
+        txt = file.read().strip()
+        file_regression.check(txt)
+
+    reset_bokeh_plot_defaults()
+
+
 class TestBokehScatter:  #pylint: disable=missing-class-docstring
 
     def test_default(self, check_bokeh_plot):
