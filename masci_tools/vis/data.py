@@ -184,7 +184,7 @@ class PlotData:
             raise ValueError('No new data keys allowed after initialization')
 
         if data_key in self.data_keys:
-            raise ValueError(f"Data key {data_key} already exists")
+            raise ValueError(f'Data key {data_key} already exists')
 
         self._column_spec = namedtuple('Columns', self.data_keys + (data_key,))
 
