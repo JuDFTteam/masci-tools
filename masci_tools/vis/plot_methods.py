@@ -1713,9 +1713,9 @@ def plot_spinpol_dos(energy_grid,
                      dos_label=r'DOS [1/eV]',
                      title=r'Density of states',
                      xyswitch=False,
-                     energy_grid_dn=None,
                      e_fermi=0,
                      spin_dn_negative=True,
+                     spin_arrows=True,
                      copy_data=False,
                      **kwargs):
     """
@@ -1735,6 +1735,8 @@ def plot_spinpol_dos(energy_grid,
     :param energy_grid_dn: arraylike data for the energy grid of the DOS of the spin-down component
                            (optional)
     :param spin_dn_negative: bool, if True (default) the spin-down components are plotted downwards
+    :param spin_arrows: bool, if True (default) small arrows will be plotted on the left side of the plot indicating
+                        the spin directions (if spin_dn_negative is True)
     :param copy_data: bool, if True the data argument will be copied
 
     All other Kwargs are passed on to the :py:func:`multiple_scatterplots()` call
@@ -1821,12 +1823,13 @@ def plot_spinpol_dos(energy_grid,
                                    show=False,
                                    **kwargs)
 
-    if xyswitch:
-        ax.annotate(r'$\uparrow$', xy=(0.125, 0.9), xycoords='axes fraction', ha='center', va='center', size=40)
-        ax.annotate(r'$\downarrow$', xy=(0.875, 0.9), xycoords='axes fraction', ha='center', va='center', size=40)
-    else:
-        ax.annotate(r'$\uparrow$', xy=(0.05, 0.875), xycoords='axes fraction', ha='center', va='center', size=40)
-        ax.annotate(r'$\downarrow$', xy=(0.05, 0.125), xycoords='axes fraction', ha='center', va='center', size=40)
+    if spin_dn_negative and spin_arrows:
+        if xyswitch:
+            ax.annotate(r'$\uparrow$', xy=(0.125, 0.9), xycoords='axes fraction', ha='center', va='center', size=40)
+            ax.annotate(r'$\downarrow$', xy=(0.875, 0.9), xycoords='axes fraction', ha='center', va='center', size=40)
+        else:
+            ax.annotate(r'$\uparrow$', xy=(0.05, 0.875), xycoords='axes fraction', ha='center', va='center', size=40)
+            ax.annotate(r'$\downarrow$', xy=(0.05, 0.125), xycoords='axes fraction', ha='center', va='center', size=40)
 
     plot_params.save_plot(saveas)
 
