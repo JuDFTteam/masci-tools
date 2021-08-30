@@ -5,6 +5,8 @@
 [![Build status](https://github.com/JuDFTteam/masci-tools/workflows/masci-tools/badge.svg?branch=develop&event=push)](https://github.com/JuDFTteam/masci-tools/actions)
 [![Coverage Status](https://codecov.io/gh/JuDFTteam/masci-tools/branch/develop/graph/badge.svg)](https://codecov.io/gh/JuDFTteam/masci-tools)
 [![Documentation Status](https://readthedocs.org/projects/masci-tools/badge/?version=latest)](https://masci-tools.readthedocs.io/en/latest/?badge=latest)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5223353.svg)](https://doi.org/10.5281/zenodo.5223354)
+
 
 
 
