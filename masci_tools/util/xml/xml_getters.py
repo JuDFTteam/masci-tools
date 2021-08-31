@@ -447,7 +447,7 @@ def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True, 
               which can not be controlled by input for inpgen, were changed)
 
     """
-    from masci_tools.util.schema_dict_util import read_constants, eval_simple_xpath
+    from masci_tools.util.schema_dict_util import read_constants, eval_simple_xpath, attrib_exists
     from masci_tools.util.schema_dict_util import evaluate_attribute, evaluate_text, evaluate_tag
     from masci_tools.util.xml.common_functions import clear_xml
     from masci_tools.util.xml.converters import convert_fleur_lo, convert_fleur_electronconfig
@@ -559,13 +559,30 @@ def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True, 
     if soc is not None and soc:
         parameters['soc'] = {'theta': theta, 'phi': phi}
 
-    # &kpt
-    #attrib = convert_from_fortran_bool(eval_xpath(root, l_soc_xpath))
-    #theta = eval_xpath(root, theta_xpath)
-    #phi = eval_xpath(root, phi_xpath)
-    # if kpt:
-    #    new_parameters['kpt'] = {'theta' : theta, 'phi' : phi}
-    #    # ['nkpt', 'kpts', 'div1', 'div2', 'div3',                         'tkb', 'tria'],
+    # kpt
+    if schema_dict.inp_version > (0, 31):
+        list_name = evaluate_attribute(root, schema_dict, 'listName', logger=logger)
+        kpointlists = eval_simple_xpath(root, schema_dict, 'kPointList', list_return=True, logger=logger)
+
+        if len(kpointlists) == 0:
+            raise ValueError('No Kpoint lists found in the given inp.xml')
+        labels = [kpoint_set.attrib.get('name') for kpoint_set in kpointlists]
+        if list_name not in labels:
+            raise ValueError(f'Selected Kpoint list with the name: {list_name} does not exist'
+                             f'Available list names: {labels}')
+
+        kpoint_index = labels.index(list_name)
+        kpoint_set = kpointlists[kpoint_index]
+
+        if attrib_exists(kpoint_set, schema_dict, 'type', logger=logger):
+            kpoint_type = evaluate_attribute(kpoint_set, schema_dict, 'type', logger=logger)
+
+            if kpoint_type == 'mesh':
+                nx = evaluate_attribute(kpoint_set, schema_dict, 'nx', logger=logger, optional=True)
+                ny = evaluate_attribute(kpoint_set, schema_dict, 'ny', logger=logger, optional=True)
+                nz = evaluate_attribute(kpoint_set, schema_dict, 'nz', logger=logger, optional=True)
+                if all(n is not None for n in (nx, ny, nz)):
+                    parameters['kpt'] = {'div1': nx, 'div2': ny, 'div3': nz}
 
     # title
     title = evaluate_text(root, schema_dict, 'comment', constants=constants, logger=logger, optional=True)

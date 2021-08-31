@@ -35,6 +35,7 @@ TEST_NO_SYMMETRY_PATH = os.path.join(inpxmlfilefolder, 'files/fleur/aiida_fleur/
 TEST_WITH_RELAX_INPXML_PATH = os.path.join(inpxmlfilefolder, 'files/fleur/Max-R5/H2ORelaxBFGS/files/inp.xml')
 TEST_NON_STANDARD_KIND_INPXML_PATH = os.path.join(inpxmlfilefolder,
                                                   'files/fleur/Max-R5/CrystalFieldOutput/files/inp.xml')
+TEST_KPT_MESH_SPECIFICATION_INPXML_PATH = os.path.join(inpxmlfilefolder, 'files/fleur/Max-R5/Gd_Hubbard1/files/inp.xml')
 
 inpxmlfilelist = []
 inpxmlfilelist_content = []
@@ -383,6 +384,17 @@ def test_parameter_norm_kinds(load_inpxml, data_regression):
     from masci_tools.util.xml.xml_getters import get_parameter_data
 
     xmltree, schema_dict = load_inpxml(TEST_NON_STANDARD_KIND_INPXML_PATH)
+
+    para = get_parameter_data(xmltree, schema_dict)
+
+    data_regression.check(para)
+
+
+def test_parameter_mesh_specification(load_inpxml, data_regression):
+
+    from masci_tools.util.xml.xml_getters import get_parameter_data
+
+    xmltree, schema_dict = load_inpxml(TEST_KPT_MESH_SPECIFICATION_INPXML_PATH)
 
     para = get_parameter_data(xmltree, schema_dict)
 

@@ -1,0 +1,27 @@
+atom0:
+  dx: 0.014
+  element: Gd
+  id: '64.1'
+  jri: 925
+  lmax: 8
+  lnonsph: 6
+  lo: 5s 5p
+  rmt: 2.8
+comp:
+  ctail: true
+  frcor: false
+  gmax: 10.0
+  gmaxxc: 10.0
+  jspins: 2
+  kcrel: 0
+  kmax: 3.0
+exco:
+  xctyp: pbe
+kpt:
+  div1: 5
+  div2: 5
+  div3: 3
+soc:
+  phi: 0.0
+  theta: 0.0
+title: hcp Gadolinium

@@ -26,4 +26,8 @@ comp:
   kmax: 3.0
 exco:
   xctyp: vwn
+kpt:
+  div1: 1
+  div2: 1
+  div3: 1
 title: Nd1Co5
