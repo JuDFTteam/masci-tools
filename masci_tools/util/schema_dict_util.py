@@ -455,7 +455,7 @@ def evaluate_attribute(node, schema_dict, name, constants=None, logger=None, **k
     :returns: list or single value, converted in convert_xml_attribute
     """
     from masci_tools.util.xml.common_functions import eval_xpath
-    from masci_tools.util.xml.converters import convert_xml_attribute
+    from masci_tools.util.xml.converters import convert_from_xml
 
     list_return = kwargs.pop('list_return', False)
     optional = kwargs.pop('optional', False)
@@ -481,13 +481,13 @@ def evaluate_attribute(node, schema_dict, name, constants=None, logger=None, **k
         else:
             return None
 
-    possible_types = schema_dict['attrib_types'][name]
-
-    converted_value, suc = convert_xml_attribute(stringattribute,
-                                                 possible_types,
-                                                 constants=constants,
-                                                 logger=logger,
-                                                 list_return=list_return)
+    converted_value, suc = convert_from_xml(stringattribute,
+                                            schema_dict,
+                                            name,
+                                            text=False,
+                                            constants=constants,
+                                            logger=logger,
+                                            list_return=list_return)
 
     if not suc:
         if logger is None:
@@ -519,7 +519,7 @@ def evaluate_text(node, schema_dict, name, constants=None, logger=None, **kwargs
     :returns: list or single value, converted in convert_xml_text
     """
     from masci_tools.util.xml.common_functions import eval_xpath
-    from masci_tools.util.xml.converters import convert_xml_text
+    from masci_tools.util.xml.converters import convert_from_xml
 
     list_return = kwargs.pop('list_return', False)
     optional = kwargs.pop('optional', False)
@@ -549,10 +549,10 @@ def evaluate_text(node, schema_dict, name, constants=None, logger=None, **kwargs
         else:
             return None
 
-    possible_definitions = schema_dict['simple_elements'][name]
-
-    converted_value, suc = convert_xml_text(stringtext,
-                                            possible_definitions,
+    converted_value, suc = convert_from_xml(stringtext,
+                                            schema_dict,
+                                            name,
+                                            text=True,
                                             constants=constants,
                                             logger=logger,
                                             list_return=list_return)
@@ -591,7 +591,7 @@ def evaluate_tag(node, schema_dict, name, constants=None, logger=None, subtags=F
     :returns: dict, with attribute values converted via convert_xml_attribute
     """
     from masci_tools.util.xml.common_functions import eval_xpath, split_off_tag
-    from masci_tools.util.xml.converters import convert_xml_attribute, convert_xml_text
+    from masci_tools.util.xml.converters import convert_from_xml
 
     only_required = kwargs.pop('only_required', False)
     strict_missing_error = kwargs.pop('strict_missing_error', False)
@@ -641,7 +641,7 @@ def evaluate_tag(node, schema_dict, name, constants=None, logger=None, subtags=F
         attribs = attribs.difference(ignore)
         tags = tags.difference(ignore)
 
-    parse_text = name in schema_dict['simple_elements'] and text
+    parse_text = name in schema_dict['text_tags'] and text
 
     if not attribs and not parse_text and not tags:
         if subtags:
@@ -676,14 +676,13 @@ def evaluate_tag(node, schema_dict, name, constants=None, logger=None, subtags=F
                 out_dict[attrib] = None
             continue
 
-        possible_types = schema_dict['attrib_types'][attrib]
-
-        out_dict[attrib], suc = convert_xml_attribute(stringattribute,
-                                                      possible_types,
-                                                      constants=constants,
-                                                      logger=logger,
-                                                      list_return=list_return)
-
+        out_dict[attrib], suc = convert_from_xml(stringattribute,
+                                                 schema_dict,
+                                                 attrib,
+                                                 text=False,
+                                                 constants=constants,
+                                                 logger=logger,
+                                                 list_return=list_return)
         if not suc:
             if logger is None:
                 raise ValueError(f'Failed to evaluate attribute {attrib}, Got value: {stringattribute}')
@@ -710,10 +709,10 @@ def evaluate_tag(node, schema_dict, name, constants=None, logger=None, subtags=F
             else:
                 out_dict[name] = None
 
-        possible_definitions = schema_dict['simple_elements'][name]
-
-        out_dict[name], suc = convert_xml_text(stringtext,
-                                               possible_definitions,
+        out_dict[name], suc = convert_from_xml(stringtext,
+                                               schema_dict,
+                                               name,
+                                               text=True,
                                                constants=constants,
                                                logger=logger,
                                                list_return=list_return)
@@ -826,7 +825,7 @@ def evaluate_parent_tag(node, schema_dict, name, constants=None, logger=None, **
     :returns: dict, with attribute values converted via convert_xml_attribute
     """
     from masci_tools.util.xml.common_functions import eval_xpath, get_xml_attribute
-    from masci_tools.util.xml.converters import convert_xml_attribute
+    from masci_tools.util.xml.converters import convert_from_xml
 
     strict_missing_error = kwargs.pop('strict_missing_error', False)
     list_return = kwargs.pop('list_return', False)
@@ -901,9 +900,13 @@ def evaluate_parent_tag(node, schema_dict, name, constants=None, logger=None, **
                 out_dict[attrib].append(None)
                 continue
 
-            possible_types = schema_dict['attrib_types'][attrib]
-
-            value, suc = convert_xml_attribute(stringattribute, possible_types, constants=constants, logger=logger)
+            value, suc = convert_from_xml(stringattribute,
+                                          schema_dict,
+                                          attrib,
+                                          text=attrib in tag_info['text'],
+                                          constants=constants,
+                                          logger=logger,
+                                          list_return=list_return)
 
             out_dict[attrib].append(value)
 

@@ -19,7 +19,7 @@ from pprint import pprint
 
 from masci_tools.io.io_fleurxml import load_inpxml
 from masci_tools.util.xml.common_functions import clear_xml, validate_xml
-from masci_tools.util.xml.converters import convert_xml_attribute, convert_xml_text
+from masci_tools.util.xml.converters import convert_from_xml
 from masci_tools.util.schema_dict_util import read_constants, evaluate_attribute
 from masci_tools.util.logging_util import DictHandler
 import logging
@@ -137,27 +137,32 @@ def inpxml_todict(parent, schema_dict, constants, omitted_tags=False, base_xpath
         # Now we have to convert lazy fortan style into pretty things for the Database
         for key in return_dict:
             if key in schema_dict['attrib_types']:
-                return_dict[key], suc = convert_xml_attribute(return_dict[key],
-                                                              schema_dict['attrib_types'][key],
-                                                              constants,
-                                                              logger=logger)
+                return_dict[key], suc = convert_from_xml(return_dict[key],
+                                                         schema_dict,
+                                                         key,
+                                                         text=False,
+                                                         constants=constants,
+                                                         logger=logger)
                 if not suc and logger is not None:
                     logger.warning("Failed to convert attribute '%s' Got: '%s'", key, return_dict[key])
 
     if parent.text:
         # has text, but we don't want all the '\n' s and empty stings in the database
         if parent.text.strip() != '':  # might not be the best solutions
-            if parent.tag not in schema_dict['simple_elements']:
+            if parent.tag not in schema_dict['text_tags']:
                 if logger is not None:
-                    logger.error('Something is wrong in the schema_dict: %s is not in simple_elements, but it has text',
+                    logger.error('Something is wrong in the schema_dict: %s is not in text_tags, but it has text',
                                  parent.tag)
                 raise ValueError(
-                    f'Something is wrong in the schema_dict: {parent.tag} is not in simple_elements, but it has text')
+                    f'Something is wrong in the schema_dict: {parent.tag} is not in text_tags, but it has text')
 
-            converted_text, suc = convert_xml_text(parent.text,
-                                                   schema_dict['simple_elements'][parent.tag],
-                                                   constants,
+            converted_text, suc = convert_from_xml(parent.text,
+                                                   schema_dict,
+                                                   parent.tag,
+                                                   text=True,
+                                                   constants=constants,
                                                    logger=logger)
+
             if not suc and logger is not None:
                 logger.warning("Failed to text of '%s' Got: '%s'", parent.tag, parent.text)
 
