@@ -17,6 +17,7 @@ can both allow the flexible usage of lists, arrays directly or dataframes
 together with the keys that should be used
 """
 from collections import namedtuple
+from functools import partial
 import numpy as np
 import pandas as pd
 import copy
@@ -389,7 +390,7 @@ class PlotData:
             else:
                 source[key] = [lambda_func(value) for value in source[key]]
 
-    def get_function_result(self, data_key, func, list_return=False, **kwargs):
+    def get_function_result(self, data_key, func, list_return=False, as_numpy_array=False, **kwargs):
         """
         Apply a function to a given data column for all entries and return the results
 
@@ -405,10 +406,16 @@ class PlotData:
         for entry, source in self.items(mappable=True):
 
             key = entry._asdict()[data_key]
+
             if isinstance(func, str):
-                result.append(getattr(source[key], func)(**kwargs))
+                source_func = getattr(source[key], func)
             else:
-                result.append(func(source[key], **kwargs))
+                source_func = partial(func, source[key])
+
+            if as_numpy_array:
+                result.append(np.array(source_func(**kwargs)))
+            else:
+                result.append(source_func(**kwargs))
 
         if len(result) == 1 and not list_return:
             return result[0]
@@ -431,13 +438,13 @@ class PlotData:
         if isinstance(mask, Callable):
             if data_key is None:
                 raise ValueError('If mask is a function the data_key argument has to be given')
-            mask = self.get_function_result(data_key, mask, list_return=True)
+            mask = self.get_function_result(data_key, mask, list_return=True, as_numpy_array=True)
         else:
             if len(mask) != len(self):
-                mask = [mask for i in range(len(self))]
+                mask = [np.array(mask) for i in range(len(self))]
 
         for mask_entry in mask:
-            if not all(isinstance(val, (bool, np.bool_)) for val in mask_entry):
+            if mask_entry.dtype != np.dtype('bool'):
                 warnings.warn('Not all entries in the mask are booleans')
 
         return mask
