@@ -545,6 +545,39 @@ class PlotData:
         self.columns = columns
         self.data = sources
 
+    def mask_data(self, mask, data_key=None):
+        """
+        Apply a given mask to the data inplace.
+
+        .. note::
+            This function will convert the data arguments to ``pd.Dataframe``
+            objects
+
+        :param mask: mask rgument passed to :py:meth:`get_mask()`
+        :param data_key: data_key argument used by :py:meth:`get_mask()`
+        """
+
+        mask = self.get_mask(mask, data_key=data_key)
+        expand_data = not isinstance(self.data, list) and len(self) > 1
+
+        data = []
+        for indx, ((entry, source), mask_indx) in enumerate(zip(self.items(mappable=True), mask)):
+
+            if not isinstance(source, pd.DataFrame):
+                source = pd.DataFrame(data=source)
+
+            masked_source = source[mask_indx]
+            if expand_data:
+                data.append(masked_source)
+            else:
+                if isinstance(self.data, list):
+                    self.data[indx] = masked_source
+                else:
+                    self.data = masked_source
+
+        if expand_data:
+            self.data = data
+
     def shift_data(self, data_key, shifts, shifted_data_key=None, separate_data=True, negative=False):
         """
         Apply shifts to a given data column for all entries

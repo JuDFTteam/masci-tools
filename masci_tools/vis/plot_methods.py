@@ -247,6 +247,7 @@ def multiple_scatterplots(xdata,
                           yerr=None,
                           area_curve=0,
                           copy_data=False,
+                          exclude_points_outside_plot_area=False,
                           **kwargs):
     """
     Create a standard scatter plot with multiple sets of data (this should be flexible enough)
@@ -328,6 +329,27 @@ def multiple_scatterplots(xdata,
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
+    if exclude_points_outside_plot_area and plot_params['limits'] is not None:
+        #Mask the values to exclude the ones outside the plotting area
+        mask = None
+        if 'y' in plot_params['limits']:
+            ylimits = plot_params['limits']['y']
+            ylimits = ylimits[0]-0.1*(1+abs(ylimits[0])), ylimits[1]+0.1*(1+abs(ylimits[1]))
+            y_mask = lambda y, ylimits=tuple(ylimits): np.logical_and(y > ylimits[0], y < ylimits[1])
+            mask = plot_data.get_mask(y_mask, data_key='y')
+        if 'x' in plot_params['limits']:
+            xlimits = plot_params['limits']['y']
+            xlimits = xlimits[0]-0.1*(1+abs(xlimits[0])), xlimits[1]+0.1*(1+abs(xlimits[1]))
+            x_mask = lambda x, xlimits=tuple(xlimits): np.logical_and(x > xlimits[0], x < xlimits[1])
+            x_mask = plot_data.get_mask(x_mask, data_key='x')
+            if mask is None:
+                mask = x_mask
+            else:
+                mask = [x & y for x, y, in zip(x_mask, mask)]
+
+        if mask is not None:
+            plot_data.mask_data(mask)
+
     # TODO good checks for input and setting of internals before plotting
     # allow all arguments as value then use for all or as lists with the righ length.
 
@@ -389,6 +411,7 @@ def multi_scatter_plot(xdata,
                        saveas='mscatterplot',
                        axis=None,
                        copy_data=False,
+                       exclude_points_outside_plot_area=False,
                        **kwargs):
     """
     Create a scatter plot with varying marker size
@@ -470,16 +493,35 @@ def multi_scatter_plot(xdata,
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
+    if exclude_points_outside_plot_area and plot_params['limits'] is not None:
+        #Mask the values to exclude the ones outside the plotting area
+        mask = None
+        if 'y' in plot_params['limits']:
+            ylimits = plot_params['limits']['y']
+            ylimits = plot_params['limits']['y']
+            ylimits = ylimits[0]-0.1*(1+abs(ylimits[0])), ylimits[1]+0.1*(1+abs(ylimits[1]))
+            y_mask = lambda y, ylimits=tuple(ylimits): np.logical_and(y > ylimits[0], y < ylimits[1])
+            mask = plot_data.get_mask(y_mask, data_key='y')
+        if 'x' in plot_params['limits']:
+            xlimits = plot_params['limits']['y']
+            xlimits = xlimits[0]-0.1*(1+abs(xlimits[0])), xlimits[1]+0.1*(1+abs(xlimits[1]))
+            x_mask = lambda x, xlimits=tuple(xlimits): np.logical_and(x > xlimits[0], x < xlimits[1])
+            x_mask = plot_data.get_mask(x_mask, data_key='x')
+            if mask is None:
+                mask = x_mask
+            else:
+                mask = [x & y for x, y, in zip(x_mask, mask)]
+
+        if mask is not None:
+            plot_data.mask_data(mask)
+
     plot_kwargs = plot_params.plot_kwargs(ignore='markersize', extra_keys={'cmap'})
 
     legend_elements = []
     legend_labels = []
     correct_legend = False
 
-    for indx, plot_info in enumerate(zip(plot_data.items(), plot_kwargs)):
-
-        data, plot_kw = plot_info
-        entry, source = data
+    for (entry, source), plot_kw in zip(plot_data.items(), plot_kwargs):
 
         if entry.size is None:
             size = plot_params['markersize']
@@ -1970,6 +2012,7 @@ def plot_bands(kpath,
                                    ylabel=ylabel,
                                    title=title,
                                    saveas=saveas,
+                                   exclude_points_outside_plot_area=True,
                                    **kwargs)
 
     else:
@@ -1982,6 +2025,7 @@ def plot_bands(kpath,
                                 ylabel=ylabel,
                                 title=title,
                                 saveas=saveas,
+                                exclude_points_outside_plot_area=True,
                                 **kwargs)
 
     return ax
@@ -2148,6 +2192,7 @@ def plot_spinpol_bands(kpath,
                                    ylabel=ylabel,
                                    title=title,
                                    saveas=saveas,
+                                   exclude_points_outside_plot_area=True,
                                    **kwargs)
 
     else:
@@ -2160,6 +2205,7 @@ def plot_spinpol_bands(kpath,
                                 ylabel=ylabel,
                                 title=title,
                                 saveas=saveas,
+                                exclude_points_outside_plot_area=True,
                                 **kwargs)
 
     return ax
