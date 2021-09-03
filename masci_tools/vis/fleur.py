@@ -14,6 +14,7 @@
 Plotting routine for fleur density of states and bandstructures
 """
 import pandas as pd
+import warnings
 
 __all__ = (
     'plot_fleur_bands',
@@ -360,14 +361,15 @@ def plot_fleur_dos(dosdata,
     legend_labels, keys = _generate_dos_labels(dosdata, attributes, spinpol)
 
     if key_mask is None:
-        key_mask = _select_from_Local(keys,
-                                      plot_keys,
-                                      spinpol,
-                                      show_total=show_total,
-                                      show_interstitial=show_interstitial,
-                                      show_sym=show_sym,
-                                      show_atoms=show_atoms,
-                                      show_lresolved=show_lresolved)
+        key_mask = _select_entries(keys,
+                                   attributes['group_name'],
+                                   plot_keys,
+                                   spinpol,
+                                   show_total=show_total,
+                                   show_interstitial=show_interstitial,
+                                   show_sym=show_sym,
+                                   show_atoms=show_atoms,
+                                   show_lresolved=show_lresolved)
 
     #Select the keys
     legend_labels, keys = np.array(legend_labels)[key_mask].tolist(), np.array(keys)[key_mask].tolist()
@@ -447,15 +449,19 @@ def _dos_order(key):
     if key in general:
         return (spin, general.index(key))
     elif ':' in key:
-        before, after = key.split(':')
-
+        before, after = key.split(':', maxsplit=1)
         tail = after.lstrip('0123456789')
-        atom_type = int(after[:-len(tail)]) if len(tail) > 0 else int(after[0])
+        index = int(after[:-len(tail)]) if len(tail) > 0 else int(after)
 
+        tail = tail.lstrip(',')
+        if tail.startswith('ind:'):
+            tail = int(tail[4:])
         if tail in orbital_order:
-            return (spin, len(general) + atom_type, str(orbital_order.index(tail)))
+            return (spin, len(general) + index, orbital_order.index(tail), '')
+        elif isinstance(tail, int):
+            return (spin, len(general) + index, tail, '')
         else:
-            return (spin, len(general) + atom_type, tail)
+            return (spin, len(general) + index, float('inf'), tail)
 
     return None
 
@@ -496,17 +502,23 @@ def _generate_dos_labels(dosdata, attributes, spinpol):
             labels.append(key)
         elif ':' in key:  #Atom specific DOS
 
-            before, after = key.split(':')
-
+            before, after = key.split(':', maxsplit=1)
             tail = after.lstrip('0123456789')
-            atom_type = int(after[:-len(tail)])
-            atom_label = types_elements[atom_type - 1]
+            index = int(after[:-len(tail)]) if len(tail) > 0 else int(after)
 
-            if types_elements.count(atom_label) != 1:
-                atom_occ = types_elements[:atom_type].count(atom_label)
+            if before == 'MT':
+                label = types_elements[index - 1]
 
-                atom_label = f'{atom_label}-{atom_occ}'
+                if types_elements.count(label) != 1:
+                    atom_occ = types_elements[:index].count(label)
 
+                    label = f'{label}-{atom_occ}'
+            elif before in ('jDOS', 'ORB'):
+                label = attributes['atoms_elements'][index - 1]
+                atom_occ = list(attributes['atoms_elements'][:index]).count(label)
+                label = f'{before} {label}-{atom_occ}'
+
+            tail = tail.lstrip(',')
             if '_up' in tail:
                 tail = tail.split('_up')[0]
                 if spinpol:
@@ -515,8 +527,9 @@ def _generate_dos_labels(dosdata, attributes, spinpol):
                 tail = tail.split('_down')[0]
                 if spinpol:
                     tail = f'{tail} up/down'
+            label += ' ' + tail
 
-            labels.append(f'{atom_label} {tail}')
+            labels.append(label)
 
         else:
             if '_up' in key:
@@ -532,7 +545,8 @@ def _generate_dos_labels(dosdata, attributes, spinpol):
     return labels, plot_order
 
 
-def _select_from_Local(keys, plot_keys, spinpol, show_total, show_interstitial, show_sym, show_atoms, show_lresolved):
+def _select_entries(keys, group_name, plot_keys, spinpol, show_total, show_interstitial, show_sym, show_atoms,
+                    show_lresolved):
 
     #TODO: How do we do other dos modes
 
@@ -550,20 +564,30 @@ def _select_from_Local(keys, plot_keys, spinpol, show_total, show_interstitial, 
     else:
         mask = [False] * len(keys)
 
-    mask[0] = show_total
-    mask[1] = show_interstitial
-    mask[2] = show_sym
+    if group_name == 'Local':
+        mask[0] = show_total
+        mask[1] = show_interstitial
+        mask[2] = show_sym
 
-    natoms = (len(mask) - 3) // 5
+        general_keys = 3
+        entries_per_atom = 5
+    elif group_name == 'Orbcomp':
+        general_keys = 0
+        entries_per_atom = 24
+    else:
+        warnings.warn(f'Selection for group {group_name} not yet implemented. Plotting all DOS components')
+
+    natoms = (len(mask) - general_keys) // entries_per_atom
 
     if show_atoms is not None:
         for iatom in range(1, natoms + 1):
-            mask[3 + (iatom - 1) * 5] = show_atoms == 'all' or iatom in show_atoms
+            mask[general_keys + (iatom - 1) * entries_per_atom] = show_atoms == 'all' or iatom in show_atoms
 
     if show_lresolved is not None:
         for iatom in range(1, natoms + 1):
             if show_lresolved == 'all' or iatom in show_lresolved:
-                mask[3 + (iatom - 1) * 5 + 1:3 + iatom * 5] = [True, True, True, True]
+                mask[general_keys + (iatom - 1) * entries_per_atom + 1:general_keys +
+                     iatom * entries_per_atom] = [True] * (entries_per_atom - 1)
 
     if plot_keys is not None:
         if not isinstance(plot_keys, list):

@@ -334,12 +334,12 @@ def multiple_scatterplots(xdata,
         mask = None
         if 'y' in plot_params['limits']:
             ylimits = plot_params['limits']['y']
-            ylimits = ylimits[0]-0.1*(1+abs(ylimits[0])), ylimits[1]+0.1*(1+abs(ylimits[1]))
+            ylimits = ylimits[0] - 0.1 * (1 + abs(ylimits[0])), ylimits[1] + 0.1 * (1 + abs(ylimits[1]))
             y_mask = lambda y, ylimits=tuple(ylimits): np.logical_and(y > ylimits[0], y < ylimits[1])
             mask = plot_data.get_mask(y_mask, data_key='y')
         if 'x' in plot_params['limits']:
             xlimits = plot_params['limits']['y']
-            xlimits = xlimits[0]-0.1*(1+abs(xlimits[0])), xlimits[1]+0.1*(1+abs(xlimits[1]))
+            xlimits = xlimits[0] - 0.1 * (1 + abs(xlimits[0])), xlimits[1] + 0.1 * (1 + abs(xlimits[1]))
             x_mask = lambda x, xlimits=tuple(xlimits): np.logical_and(x > xlimits[0], x < xlimits[1])
             x_mask = plot_data.get_mask(x_mask, data_key='x')
             if mask is None:
@@ -499,12 +499,12 @@ def multi_scatter_plot(xdata,
         if 'y' in plot_params['limits']:
             ylimits = plot_params['limits']['y']
             ylimits = plot_params['limits']['y']
-            ylimits = ylimits[0]-0.1*(1+abs(ylimits[0])), ylimits[1]+0.1*(1+abs(ylimits[1]))
+            ylimits = ylimits[0] - 0.1 * (1 + abs(ylimits[0])), ylimits[1] + 0.1 * (1 + abs(ylimits[1]))
             y_mask = lambda y, ylimits=tuple(ylimits): np.logical_and(y > ylimits[0], y < ylimits[1])
             mask = plot_data.get_mask(y_mask, data_key='y')
         if 'x' in plot_params['limits']:
             xlimits = plot_params['limits']['y']
-            xlimits = xlimits[0]-0.1*(1+abs(xlimits[0])), xlimits[1]+0.1*(1+abs(xlimits[1]))
+            xlimits = xlimits[0] - 0.1 * (1 + abs(xlimits[0])), xlimits[1] + 0.1 * (1 + abs(xlimits[1]))
             x_mask = lambda x, xlimits=tuple(xlimits): np.logical_and(x > xlimits[0], x < xlimits[1])
             x_mask = plot_data.get_mask(x_mask, data_key='x')
             if mask is None:
