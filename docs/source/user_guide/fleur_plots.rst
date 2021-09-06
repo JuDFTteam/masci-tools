@@ -22,7 +22,7 @@ All Fleur specific plotting routines are found in :py:mod:`~masci_tools.vis.fleu
 Bandstructures
 ---------------
 
-Compatible Recipes for the :py:class:`~masci_tools.io.parsers.hdf5.HDF5Reader`:
+Compatible Recipes for the :py:class:`~masci_tools.io.parsers.hdf5.reader.HDF5Reader`:
 
    * ``FleurBands``: Default recipe reading in the kpoints, eignevalues and weights for atom and orbital contributions
    * ``FleurSimpleBands``: Reads in only the kpoints and eigenvalues and now weights
@@ -115,7 +115,7 @@ Spinpolarized bandstructure (weights for d-orbital)
 Density of States
 ------------------
 
-Compatible Recipes for the :py:class:`~masci_tools.io.parsers.hdf5.HDF5Reader`:
+Compatible Recipes for the :py:class:`~masci_tools.io.parsers.hdf5.reader.HDF5Reader`:
 
    * ``FleurDOS``: Default recipe reading in the total, interstitial, vacuum, atom and l-channle resolved DOS
    * ``FleurORBCOMP``: Read in the DOS from an orbital decomposition calculation
