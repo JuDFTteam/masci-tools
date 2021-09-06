@@ -259,7 +259,7 @@ def convert_from_xml_single_values(xmlstring, possible_types, constants=None, lo
 
     :return: The converted value of the first successful conversion
     """
-    from masci_tools.util.fleur_calculate_expression import calculate_expression
+    from masci_tools.util.fleur_calculate_expression import calculate_expression, MissingConstant
 
     if not isinstance(xmlstring, list):
         xmlstring = [xmlstring]
@@ -278,13 +278,17 @@ def convert_from_xml_single_values(xmlstring, possible_types, constants=None, lo
                     continue
 
             elif value_type == 'float_expression':
-                if constants is None:
-                    raise ValueError(
-                        "For calculating attributes of the type 'float_expression' constants have to be given")
                 try:
-                    converted_value = calculate_expression(text, constants)
+                    converted_value = calculate_expression(text, constants=constants)
                 except ValueError as exc:
                     exceptions.append(exc)
+                    continue
+                except MissingConstant as exc:
+                    new_exc = MissingConstant(f'No value available for expression {exc}\n'
+                                              'Please provide the value for this constant'
+                                              ' by using the read_constants function for example')
+
+                    exceptions.append(new_exc)
                     continue
 
             elif value_type == 'int':
