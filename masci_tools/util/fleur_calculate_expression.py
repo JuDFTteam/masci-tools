@@ -81,7 +81,7 @@ def calculate_expression(expression, constants=None, prevCommand=None, exp_retur
         elif firstchar.isalpha():
             string, expression = get_first_string(expression)
             if string in functions_dict:
-                if expression[0] != '(':
+                if not expression.startswith('('):
                     raise ValueError('Invalid expression: Expected Bracket after function name')
                 function = functions_dict[string]
                 function_value, expression = evaluate_bracket(expression, constants)
@@ -95,6 +95,8 @@ def calculate_expression(expression, constants=None, prevCommand=None, exp_retur
                 elif string == 'acos' and abs(function_value) > 1.0:
                     raise ValueError('Invalid expression: acos(x), |x|>1')
                 value = function(function_value)
+            elif expression.startswith('('):
+                raise ValueError(f'Unknown function: {string}')
             elif string in constants:
                 value = constants[string]
             else:
