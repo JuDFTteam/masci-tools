@@ -18,6 +18,9 @@ from collections import namedtuple
 from itertools import groupby
 import numpy as np
 import h5py
+from typing import List, Tuple, Iterator, Dict, Any, TYPE_CHECKING
+if TYPE_CHECKING:
+    from numpy.typing import ArrayLike
 
 from masci_tools.io.parsers.hdf5 import HDF5Reader
 from masci_tools.io.parsers.hdf5.reader import Transformation, AttribTransformation
@@ -27,7 +30,7 @@ GreensfElement = namedtuple('GreensfElement',
                             ['l', 'lp', 'atomType', 'atomTypep', 'sphavg', 'onsite', 'contour', 'nLO', 'atomDiff'])
 
 
-def _get_sphavg_recipe(group_name, index, contour):
+def _get_sphavg_recipe(group_name: str, index: int, contour: int) -> Dict[str, Any]:
     """
     Get the HDF5Reader recipe for reading in a spherically averaged Green's function element
 
@@ -116,7 +119,7 @@ def _get_sphavg_recipe(group_name, index, contour):
     }
 
 
-def _get_radial_recipe(group_name, index, contour):
+def _get_radial_recipe(group_name: str, index: int, contour: int) -> Dict[str, Any]:
     """
     Get the HDF5Reader recipe for reading in a radial Green's function element
 
@@ -157,7 +160,7 @@ def _get_radial_recipe(group_name, index, contour):
     return recipe
 
 
-def _get_greensf_group_name(hdffile):
+def _get_greensf_group_name(hdffile: h5py.File) -> str:
     """
     Return the name of the group containing the Green's function elements
 
@@ -171,7 +174,7 @@ def _get_greensf_group_name(hdffile):
         return 'Hubbard1Elements'
 
 
-def _read_element_header(hdffile, index):
+def _read_element_header(hdffile: h5py.File, index: int) -> GreensfElement:
     """
     Read the attributes of the given green's function elements
 
@@ -198,7 +201,7 @@ def _read_element_header(hdffile, index):
     return GreensfElement(l, lp, atomType, atomTypep, sphavg, onsite, contour, nLO, atomDiff)
 
 
-def _read_gf_element(file, index):
+def _read_gf_element(file: Any, index: int) -> Tuple[GreensfElement, Dict[str, Any], Dict[str, Any]]:
     """
     Read the information needed for a given Green's function element form a ``greensf.hdf``
     file
@@ -233,7 +236,7 @@ class GreensFunction:
     :param attributes: attributes dict produced by one of the hdf recipes for reading Green's functions
     """
 
-    def __init__(self, element, data, attributes):
+    def __init__(self, element: GreensfElement, data: Dict[str, Any], attributes: Dict[str, Any]) -> None:
         self.element = element
 
         self.points = data.pop('energy_points')
@@ -251,7 +254,7 @@ class GreensFunction:
         self.lmax = attributes['lmax']
 
     @classmethod
-    def fromFile(cls, file, index):
+    def fromFile(cls, file: Any, index: int) -> 'GreensFunction':
         """
         Classmethod for creating a :py:class:`GreensFunction` instance directly from a hdf file
 
@@ -261,7 +264,7 @@ class GreensFunction:
         element, data, attributes = _read_gf_element(file, index)
         return cls(element, data, attributes)
 
-    def __getattr__(self, attr):
+    def __getattr__(self, attr: str) -> Any:
         """
         This __getattr__ method redirects lookups of field names of the stored :py:class:`GreensfElement`
         to return the value from the namedtuple
@@ -275,7 +278,7 @@ class GreensFunction:
         raise AttributeError(f'{self.__class__.__name__!r} object has no attribute {attr!r}')
 
     @staticmethod
-    def to_m_index(m):
+    def to_m_index(m: int) -> int:
         """
         Convert between magnetic quantum numbers between -l and l
         to 0 and 2l+1 for easier indexing
@@ -289,7 +292,7 @@ class GreensFunction:
         return m + 3
 
     @staticmethod
-    def to_spin_indices(spin):
+    def to_spin_indices(spin: int) -> Tuple[int, int]:
         """
         Convert between spin index (0 to 3) to the corresponding
         two spin indices (0 or 1)
@@ -312,7 +315,7 @@ class GreensFunction:
         return spin1, spin2
 
     @property
-    def nspins(self):
+    def nspins(self) -> int:
         """
         Return the number of spins of the current element.
         If mperp is True for the element it is 4 otherwise it
@@ -323,18 +326,24 @@ class GreensFunction:
         else:
             return self.spins
 
-    def get_scalar_product_by_key(self, key, spin):
+    def get_scalar_product_by_key(self, key: str, spin: int) -> float:
         spin1, spin2 = self.to_spin_indices(spin)
         return self.scalar_products[f'{key}n'][spin1, spin2]
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         String representation of the :py:class:`GreensFunction`. Chosen to be the
         str representation of the stored :py:class:`GreensfElement` instance.
         """
         return str(self.element)
 
-    def energy_dependence(self, *, m=None, mp=None, spin, imag=True, both_contours=False):
+    def energy_dependence(self,
+                          *,
+                          m: int = None,
+                          mp: int = None,
+                          spin: int,
+                          imag: bool = True,
+                          both_contours: bool = False) -> 'ArrayLike':
         """
         Select data with energy dependence
 
@@ -375,7 +384,7 @@ class GreensFunction:
 
         return data.real
 
-    def trace_energy_dependence(self, spin, imag=True):
+    def trace_energy_dependence(self, spin: int, imag: bool = True) -> 'ArrayLike':
         """
         Select trace of data with energy dependence
 
@@ -406,7 +415,7 @@ class colors:
     green = '\033[32m'
 
 
-def printElements(elements, index=None, mark=None):
+def printElements(elements: List[GreensfElement], index: List[int] = None, mark: List[int] = None) -> None:
     """
     Print the given list of :py:class:`GreensfElement` in a nice table
 
@@ -441,7 +450,7 @@ def printElements(elements, index=None, mark=None):
             + colors.endc)
 
 
-def listElements(hdffile, show=False):
+def listElements(hdffile: Any, show: bool = False) -> List[GreensfElement]:
     """
     Find the green's function elements contained in the given ``greens.hdf`` file
 
@@ -467,7 +476,7 @@ def listElements(hdffile, show=False):
     return elements
 
 
-def selectOnsite(hdffile, l, atomType, lp=None, show=True):
+def selectOnsite(hdffile: Any, l: int, atomType: int, lp: int = None, show: bool = True) -> List[int]:
     """
     Find the specified onsite element in the ``greensf.hdf`` file
 
@@ -503,43 +512,95 @@ def selectOnsite(hdffile, l, atomType, lp=None, show=True):
     return foundIndices
 
 
-def intersite_shells(hdffile, refAtom, return_greensf=True, show=False):
+def intersite_shells_from_file(hdffile: Any,
+                               reference_atom: int,
+                               show: bool = False) -> Iterator[Tuple[float, GreensFunction, GreensFunction]]:
     """
     Construct the green's function pairs to calculate the Jij exchange constants
     for a given reference atom from a given ``greensf.hdf`` file
 
     :param hdffile: filepath or file handle to a greensf.hdf file
-    :param refAtom: integer of the atom to calculate the Jij's for (correspinds to the i)
-    :param return_greensf: bool, if True instead of the indices aiterator yielding the
-                           green's functions directly for calculations
+    :param reference_atom: integer of the atom to calculate the Jij's for (correspinds to the i)
     :param show: if True the elements belonging to a shell are printed in a shell
 
-    :returns: either list of tuples with distance and all indices of pairs in the shell
-              or flat iterator with distance and the two corresponding :py:class:`GreensFunction`
-              instances
+    :returns: flat iterator with distance and the two corresponding :py:class:`GreensFunction`
+              instances for each Jij calculation
     """
+
     elements = listElements(hdffile)
+    jij_pairs = intersite_shell_indices(elements, reference_atom, show=show)
+
+    def shell_iterator(shells):
+        for distance, pairs in shells:
+            for g1, g2 in pairs:
+                #Plus 1 because the indexing starts at 1 in the hdf file
+                yield (distance,
+                       GreensFunction.fromFile(hdffile, g1+1),\
+                       GreensFunction.fromFile(hdffile, g2+1))
+
+    return shell_iterator(jij_pairs)
+
+
+def intersite_shells(greensfunctions: List[GreensFunction],
+                     reference_atom: int,
+                     show: bool = False) -> Iterator[Tuple[float, GreensFunction, GreensFunction]]:
+    """
+    Construct the green's function pairs to calculate the Jij exchange constants
+    for a given reference atom from a list of given :py:class:`GreensFunction`
+
+    :param greensfunctions: List of Greens Function to use
+    :param reference_atom: integer of the atom to calculate the Jij's for (correspinds to the i)
+    :param show: if True the elements belonging to a shell are printed in a shell
+
+    :returns: flat iterator with distance and the two corresponding :py:class:`GreensFunction`
+              instances for each Jij calculation
+    """
+
+    elements = [gf.element for gf in greensfunctions]
+    jij_pairs = intersite_shell_indices(elements, reference_atom, show=show)
+
+    def shell_iterator(shells):
+        for distance, pairs in shells:
+            for g1, g2 in pairs:
+                yield (distance, greensfunctions[g1], greensfunctions[g2])
+
+    return shell_iterator(jij_pairs)
+
+
+def intersite_shell_indices(elements: List[GreensfElement],
+                            reference_atom: int,
+                            show: bool = False) -> List[Tuple[float, List[Tuple[int, int]]]]:
+    """
+    Construct the green's function pairs to calculate the Jij exchange constants
+    for a given reference atom from a list of :py:class:`GreensfElement`
+
+    :param elements: list of GreenfElements to use
+    :param reference_atom: integer of the atom to calculate the Jij's for (correspinds to the i)
+    :param show: if True the elements belonging to a shell are printed in a shell
+
+    :returns: list of tuples with distance and all indices of pairs in the shell
+    """
 
     distances = [round(np.linalg.norm(elem.atomDiff), 12) for elem in elements]
 
     #sort the elements according to shells
     index_sorted = sorted(range(len(elements)), key=lambda k: distances[k])
     elements_sorted = [elements[index] for index in index_sorted]
-    jijPairs = []
+    jij_pairs = []
     for dist, shell in groupby(zip(index_sorted, elements_sorted), key=lambda k: distances[k[0]]):
         if dist > 1e-12:
             if show:
                 print(f'\nFound shell at distance: {dist}')
                 print('The following elements are present:')
             shell_list = list(shell)
-            jijPairsShell = []
+            jij_pairs_shell = []
 
             #Try to find gij gji pairs for Jij calculations
             for indexij, elemij in shell_list:
                 for indexji, elemji in shell_list:
                     if elemij.contour != elemji.contour:
                         continue
-                    if elemij.atomType != refAtom:
+                    if elemij.atomType != reference_atom:
                         continue
                     if elemij.atomType != elemji.atomTypep:
                         continue
@@ -552,12 +613,11 @@ def intersite_shells(hdffile, refAtom, return_greensf=True, show=False):
                     if np.linalg.norm(elemij.atomDiff + elemji.atomDiff) > 1e-12:
                         continue
                     #here we have found a pair
-                    #Plus 1 because the indexing starts at 1 in the hdf file
-                    if (indexji + 1, indexij + 1) not in jijPairsShell or \
+                    if (indexji, indexij) not in jij_pairs_shell or \
                        elemij.atomType == elemij.atomTypep:
-                        jijPairsShell.append((indexij + 1, indexji + 1))
-            if len(jijPairsShell) > 0:
-                jijPairs.append((dist, jijPairsShell))
+                        jij_pairs_shell.append((indexij, indexji))
+            if len(jij_pairs_shell) > 0:
+                jij_pairs.append((dist, jij_pairs_shell))
 
             if show:
                 #print the elements in the shell
@@ -565,14 +625,4 @@ def intersite_shells(hdffile, refAtom, return_greensf=True, show=False):
                 index = [x[0] for x in shell_list]
                 printElements(elem, index=index)
 
-    def shell_iterator(shells):
-        for distance, pairs in shells:
-            for g1, g2 in pairs:
-                yield (distance,
-                       GreensFunction.fromFile(hdffile, g1),\
-                       GreensFunction.fromFile(hdffile, g2))
-
-    if return_greensf:
-        return shell_iterator(jijPairs)
-    else:
-        return jijPairs
+    return jij_pairs
