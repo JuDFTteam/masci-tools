@@ -18,9 +18,12 @@ from collections import namedtuple
 from itertools import groupby
 import numpy as np
 import h5py
-from typing import List, Tuple, Iterator, Dict, Any, TYPE_CHECKING
-if TYPE_CHECKING:
+from typing import List, Tuple, Iterator, Dict, Any, Sequence, Union
+try:
     from numpy.typing import ArrayLike
+except ImportError:
+    ArrayLike = Union[Sequence[float], Sequence[Sequence[float]], Sequence[np.ndarray], np.ndarray]  # type: ignore
+
 
 from masci_tools.io.parsers.hdf5 import HDF5Reader
 from masci_tools.io.parsers.hdf5.reader import Transformation, AttribTransformation
