@@ -82,7 +82,7 @@ def fixture_previous_bokeh_results(datadir):
             if f.is_dir() and f.name.startswith('bokeh-'):
                 _, _, version = f.name.partition('-')
                 version = tuple(int(x) for x in version.split('.'))
-                if version > latest_version and version <= current_version:
+                if latest_version < version <= current_version:
                     latest_version = version
         if latest_version > (0, 0, 0):
             return '.'.join(map(str, latest_version))

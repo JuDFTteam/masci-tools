@@ -177,7 +177,6 @@ def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, only_spin=None, b
         - Bokeh: :py:func:`~masci_tools.vis.bokeh_plots.bokeh_bands()`, :py:func:`~masci_tools.vis.bokeh_plots.bokeh_spinpol_bands()`
     """
     from .common import bands, spinpol_bands, PlotBackend
-    import warnings
 
     if 'bokeh_plot' in kwargs:
         warnings.warn(
@@ -337,7 +336,6 @@ def plot_fleur_dos(dosdata,
     """
     from .common import dos, spinpol_dos, PlotBackend
     import numpy as np
-    import warnings
     from collections import Counter
 
     if 'bokeh_plot' in kwargs:
