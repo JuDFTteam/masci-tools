@@ -18,12 +18,7 @@ from collections import namedtuple
 from itertools import groupby
 import numpy as np
 import h5py
-from typing import List, Tuple, Iterator, Dict, Any, Sequence, Union
-try:
-    from numpy.typing import ArrayLike
-except ImportError:
-    ArrayLike = Union[Sequence[float], Sequence[Sequence[float]], Sequence[np.ndarray], np.ndarray]  # type: ignore
-
+from typing import List, Tuple, Iterator, Dict, Any
 
 from masci_tools.io.parsers.hdf5 import HDF5Reader
 from masci_tools.io.parsers.hdf5.reader import Transformation, AttribTransformation
@@ -346,7 +341,7 @@ class GreensFunction:
                           mp: int = None,
                           spin: int,
                           imag: bool = True,
-                          both_contours: bool = False) -> 'ArrayLike':
+                          both_contours: bool = False) -> np.ndarray:
         """
         Select data with energy dependence
 
@@ -387,7 +382,7 @@ class GreensFunction:
 
         return data.real
 
-    def trace_energy_dependence(self, spin: int, imag: bool = True) -> 'ArrayLike':
+    def trace_energy_dependence(self, spin: int, imag: bool = True) -> np.ndarray:
         """
         Select trace of data with energy dependence
 
