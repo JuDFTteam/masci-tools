@@ -43,19 +43,19 @@ These python packages are needed:
 
 It should not depend on `aiida-core`!
 
-## Layout of`masci-tools`
+## Layout of `masci-tools`
 
 * `io`
     * Contains methods to write certain files
     * `io.parsers`: Contains parsers of certain code output or input files
-* `tests`
-    * auto tests of `masci-tools` functions
+* `testing`
+    * Contains utilities/fixtures for testing that can be useful outside the package
 * `util`
-    * Contains rather low level utility
+    * Contains rather low-level utility
 * `tools`
-    * Contains rather highlevel utility which is rather complete
+    * Contains rather high-level utility which is rather complete
 * `vis`
-    * Contain a collection of matplotlib, pyplot, gnuplot methods used for ploting common results from material science simulations, e.g. bandsstructures, DOS, ... 
+    * Contain a collection of matplotlib/bokeh methods used for plotting common results from material science simulations, e.g. bandstructures, DOS, ... 
 
 ## License
 
