@@ -422,6 +422,21 @@ def test_read_inpgen_file_film(data_regression):
     })
 
 
+def test_read_inpgen_file_comments(data_regression):
+    from masci_tools.io.fleur_inpgen import read_inpgen_file
+
+    TESTFILE = 'test_io_fleur_inpgen/inpgen_file_with_comments.txt'
+
+    cell, atom_sites, pbc, input_params = read_inpgen_file(TESTFILE)
+
+    data_regression.check({
+        'cell': convert_to_pystd(cell),
+        'atom_sites': [tuple(convert_to_pystd(site)) for site in atom_sites],
+        'pbc': pbc,
+        'params': convert_to_pystd(input_params)
+    })
+
+
 def test_get_parameter_write_inpgen_roundtrip(file_regression, load_inpxml):
     """
     Test that the get_parameter_data and get_structure_data methods produces the right inpgen input

@@ -479,6 +479,8 @@ def read_inpgen_file(file, convert_to_angstroem=True):
             contents = file
 
     content_lines = contents.split('\n')
+    # Strip out comments from the inpgen file
+    content_lines = [line.partition('!')[0].strip() for line in content_lines if line.partition('!')[0].strip() != '']
     # The first line is the title
     if not content_lines[0].startswith('&'):
         input_params['title'] = content_lines[0]
@@ -490,7 +492,7 @@ def read_inpgen_file(file, convert_to_angstroem=True):
     # each line starting with a & is a name list, we can not assume the line will end with a \
     # since this is not fully required
     name_list_start = False
-    for i, line in enumerate(content_lines):
+    for line in content_lines:
         if line.startswith('&'):
             if not name_list_start:
                 name_list_start = True
@@ -501,7 +503,7 @@ def read_inpgen_file(file, convert_to_angstroem=True):
         else:
             if name_list_start:
                 namelist_raw += line
-            elif line != '':
+            else:
                 lattice_information.append(line)
         if line.endswith('/'):
             name_list_start = False
