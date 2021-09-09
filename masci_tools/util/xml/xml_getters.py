@@ -805,7 +805,13 @@ def get_structure_data(xmltree,
 
 
 @schema_dict_version_dispatch(output_schema=False)
-def get_kpoints_data(xmltree, schema_dict, name=None, index=None, logger=None, convert_to_angstroem=True):
+def get_kpoints_data(xmltree,
+                     schema_dict,
+                     name=None,
+                     index=None,
+                     only_used=False,
+                     logger=None,
+                     convert_to_angstroem=True):
     """
     Get the kpoint sets defined in the given fleur xml file.
 
@@ -819,6 +825,7 @@ def get_kpoints_data(xmltree, schema_dict, name=None, index=None, logger=None, c
                  is returned
     :param index: int, optional, if given only the kpoint set with the given index
                   is returned
+    :param only_used: bool if True only the kpoint list used in the calculation is returned
     :param logger: logger object for logging warnings, errors
     :param convert_to_angstroem: bool if True the bravais matrix is converted to angstroem
 
@@ -841,6 +848,9 @@ def get_kpoints_data(xmltree, schema_dict, name=None, index=None, logger=None, c
     if name is not None and index is not None:
         raise ValueError('Only provide one of index or name to select kpoint lists')
 
+    if only_used and (name is not None or index is not None):
+        raise ValueError('Either use only_used=False and provide the name/index or use only_used=True. Not both')
+
     if isinstance(xmltree, etree._ElementTree):
         xmltree, _ = clear_xml(xmltree)
         root = xmltree.getroot()
@@ -848,6 +858,9 @@ def get_kpoints_data(xmltree, schema_dict, name=None, index=None, logger=None, c
         root = xmltree
 
     constants = read_constants(root, schema_dict, logger=logger)
+
+    if only_used:
+        name = evaluate_attribute(root, schema_dict, 'listName', logger=logger)
 
     cell, pbc = get_cell(root, schema_dict, logger=logger, convert_to_angstroem=convert_to_angstroem)
 
@@ -858,7 +871,12 @@ def get_kpoints_data(xmltree, schema_dict, name=None, index=None, logger=None, c
 
     labels = [kpoint_set.attrib.get('name') for kpoint_set in kpointlists]
     if name is not None and name not in labels:
-        raise ValueError(f'Found no Kpoint list with the name: {name}' f'Available list names: {labels}')
+        if only_used:
+            raise ValueError(f'Found no Kpoint list with the name: {name}'
+                             f'Available list names: {labels}'
+                             'The listName attribute is not consistent with the rest of the input')
+        else:
+            raise ValueError(f'Found no Kpoint list with the name: {name}' f'Available list names: {labels}')
 
     if index is not None:
         try:
@@ -898,7 +916,7 @@ def get_kpoints_data(xmltree, schema_dict, name=None, index=None, logger=None, c
 
 
 @get_kpoints_data.register(max_version='0.31')
-def get_kpoints_data_max4(xmltree, schema_dict, logger=None, convert_to_angstroem=True):
+def get_kpoints_data_max4(xmltree, schema_dict, logger=None, convert_to_angstroem=True, only_used=False):
     """
     Get the kpoint sets defined in the given fleur xml file.
 
@@ -911,6 +929,7 @@ def get_kpoints_data_max4(xmltree, schema_dict, logger=None, convert_to_angstroe
                         of the xmltree
     :param logger: logger object for logging warnings, errors
     :param convert_to_angstroem: bool if True the bravais matrix is converted to angstroem
+    :param only_used: (Has no effect for Max4) bool if True only the kpoint list used in the calculation is returned
 
     :returns: tuple containing the kpoint information
 
