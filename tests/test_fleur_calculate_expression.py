@@ -3,7 +3,7 @@
 Tests of the calculator of mathematical expressions in the inp.xml files
 """
 import pytest
-from masci_tools.util.fleur_calculate_expression import calculate_expression
+from masci_tools.util.fleur_calculate_expression import calculate_expression, MissingConstant
 from masci_tools.util.constants import FLEUR_DEFINED_CONSTANTS
 import numpy as np
 
@@ -30,7 +30,7 @@ def test_calculate_expression_errors():
         calculate_expression('asin(2.0)', FLEUR_DEFINED_CONSTANTS)
     with pytest.raises(ValueError, match=r'Invalid expression: acos\(x\), \|x\|\>1'):
         calculate_expression('acos(2.0)', FLEUR_DEFINED_CONSTANTS)
-    with pytest.raises(ValueError, match=r'Unknown string expression: A'):
+    with pytest.raises(MissingConstant, match=r'A'):
         calculate_expression('(3.0 + A)*5', FLEUR_DEFINED_CONSTANTS)
     with pytest.raises(ValueError, match=r'Invalid Expression: Found operator / in the beginning of expression'):
         calculate_expression('/1.0', FLEUR_DEFINED_CONSTANTS)

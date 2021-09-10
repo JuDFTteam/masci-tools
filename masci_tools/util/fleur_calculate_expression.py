@@ -16,9 +16,14 @@ with predefined constants given in the inp.xml file of Fleur
 """
 from __future__ import absolute_import
 import numpy as np
+from masci_tools.util.constants import FLEUR_DEFINED_CONSTANTS
 
 
-def calculate_expression(expression, constants, prevCommand=None, exp_return=False):
+class MissingConstant(Exception):
+    pass
+
+
+def calculate_expression(expression, constants=None, prevCommand=None, exp_return=False):
     """
     Recursively evaluates the given expression string with the given defined constants
 
@@ -49,6 +54,9 @@ def calculate_expression(expression, constants, prevCommand=None, exp_return=Fal
         'tanh': np.tanh,
     }
 
+    if constants is None:
+        constants = FLEUR_DEFINED_CONSTANTS
+
     #Define order of operations
     order_dict = {'+': 10, '-': 10, '*': 100, '/': 100, '%': 100, '**': 1000, '^': 1000}
 
@@ -73,7 +81,7 @@ def calculate_expression(expression, constants, prevCommand=None, exp_return=Fal
         elif firstchar.isalpha():
             string, expression = get_first_string(expression)
             if string in functions_dict:
-                if expression[0] != '(':
+                if not expression.startswith('('):
                     raise ValueError('Invalid expression: Expected Bracket after function name')
                 function = functions_dict[string]
                 function_value, expression = evaluate_bracket(expression, constants)
@@ -87,10 +95,12 @@ def calculate_expression(expression, constants, prevCommand=None, exp_return=Fal
                 elif string == 'acos' and abs(function_value) > 1.0:
                     raise ValueError('Invalid expression: acos(x), |x|>1')
                 value = function(function_value)
+            elif expression.startswith('('):
+                raise ValueError(f'Unknown function: {string}')
             elif string in constants:
                 value = constants[string]
             else:
-                raise ValueError(f'Unknown string expression: {string}')
+                raise MissingConstant(string)
             stop_loop = False
         elif firstchar in ['+', '-', '*', '/', '%', '^']:
             if loop_count == 1:
@@ -219,6 +229,6 @@ def evaluate_bracket(expression, constants):
     if opened_brackets != 0:
         raise ValueError('Invalid Expression: Unbalanced parentheses')
 
-    value = calculate_expression(expression[1:closing_pos], constants)
+    value = calculate_expression(expression[1:closing_pos], constants=constants)
 
     return value, expression[closing_pos + 1:]

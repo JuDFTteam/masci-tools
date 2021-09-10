@@ -1,0 +1,11 @@
+{
+    "markersize": 50,
+    "show": false,
+    "tick_paramsx": {
+        "labelrotation": 0,
+        "labelsize": 100,
+        "length": 5,
+        "size": 4.0,
+        "width": 1.0
+    }
+}

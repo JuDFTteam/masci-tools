@@ -22,7 +22,14 @@ All Fleur specific plotting routines are found in :py:mod:`~masci_tools.vis.fleu
 Bandstructures
 ---------------
 
-Compatible Recipes: ``FleurBands``
+Compatible Recipes for the :py:class:`~masci_tools.io.parsers.hdf5.reader.HDF5Reader`:
+
+   * ``FleurBands``: Default recipe reading in the kpoints, eignevalues and weights for atom and orbital contributions
+   * ``FleurSimpleBands``: Reads in only the kpoints and eigenvalues and now weights
+   * ``FleurOrbcompBands``: In addition to the eigenvalues the weights from an orbital decomposition calculation are read in
+   * ``FleurjDOSBands``: In addition to the eigenvalues the weights from a jDOS calculation are read in
+   * ``FleurMCDBands``: In addition to the eigenvalues the weights from a MCD calculation are read in
+   * :py:func:`~masci_tools.io.parsers.hdf5.recipes.get_fleur_bands_specific_weights()`: Function to generate a recipe for reading in the eigenvalues+a provided list of weights
 
 The bandstructure visualization :py:func:`~masci_tools.vis.fleur.plot_fleur_bands()` can be used to plot
 
@@ -108,7 +115,12 @@ Spinpolarized bandstructure (weights for d-orbital)
 Density of States
 ------------------
 
-Compatible Recipes: ``FleurDOS``, ``FleurJDOS``, ``FleurORBCOMP``, ``FleurMCD``
+Compatible Recipes for the :py:class:`~masci_tools.io.parsers.hdf5.reader.HDF5Reader`:
+
+   * ``FleurDOS``: Default recipe reading in the total, interstitial, vacuum, atom and l-channle resolved DOS
+   * ``FleurORBCOMP``: Read in the DOS from an orbital decomposition calculation
+   * ``FleurJDOS``: Read in the DOS from a jDOS calculation
+   * ``FleurMCD``: Read in the DOS from a MCD calculation
 
 The dos visualization :py:func:`~masci_tools.vis.fleur.plot_fleur_dos()` can be used to plot
 non spinpolarized and spinpolarized DOS, with selection of which components to plot.

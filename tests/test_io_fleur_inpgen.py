@@ -281,7 +281,7 @@ def test_write_inpgen_file_x_and_bunchatom(file_regression):
         'name': 'Nb'
     }, {
         'symbols': ('X',),
-        'weights': (0.0,),
+        'weights': (1.0,),
         'mass': 1.0,
         'name': 'X'
     }]
@@ -411,6 +411,21 @@ def test_read_inpgen_file_film(data_regression):
     from masci_tools.io.fleur_inpgen import read_inpgen_file
 
     TESTFILE = 'test_io_fleur_inpgen/test_write_inpgen_file_film.txt'
+
+    cell, atom_sites, pbc, input_params = read_inpgen_file(TESTFILE)
+
+    data_regression.check({
+        'cell': convert_to_pystd(cell),
+        'atom_sites': [tuple(convert_to_pystd(site)) for site in atom_sites],
+        'pbc': pbc,
+        'params': convert_to_pystd(input_params)
+    })
+
+
+def test_read_inpgen_file_comments(data_regression):
+    from masci_tools.io.fleur_inpgen import read_inpgen_file
+
+    TESTFILE = 'test_io_fleur_inpgen/inpgen_file_with_comments.txt'
 
     cell, atom_sites, pbc, input_params = read_inpgen_file(TESTFILE)
 

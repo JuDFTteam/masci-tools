@@ -16,8 +16,11 @@ Here are general and special bokeh plots to use
 """
 from .bokeh_plotter import BokehPlotter
 from .parameters import ensure_plotter_consistency, NestedPlotParameters
+from .data import process_data_arguments
 
 import pandas as pd
+import numpy as np
+import warnings
 from pprint import pprint
 
 ################## Helpers     ################
@@ -63,155 +66,165 @@ def get_bokeh_help(key):
     plot_params.get_description(key)
 
 
+def load_bokeh_defaults(filename='plot_bokeh_defaults.json'):
+    """
+    Load defaults for the bokeh backend from a json file.
+
+    :param filename: filename,from  where the defaults should be taken
+    """
+    plot_params.load_defaults(filename)
+
+
+def save_bokeh_defaults(filename='plot_bokeh_defaults.json', save_complete=False):
+    """
+    Save the current defaults for the matplotlib backend to a json file.
+
+    :param filename: filename, where the defaults should be stored
+    :param save_complete: bool if True not only the overwritten user defaults
+                          but also the unmodified harcoded defaults are stored
+    """
+    plot_params.save_defaults(filename, save_complete=save_complete)
+
+
 ##################################### general plots ##########################
 
 
 @ensure_plotter_consistency(plot_params)
-def bokeh_scatter(source,
+def bokeh_scatter(x,
+                  y=None,
                   *,
-                  xdata='x',
-                  ydata='y',
                   xlabel='x',
                   ylabel='y',
                   title='',
                   figure=None,
-                  outfilename='scatter.html',
+                  data=None,
+                  saveas='scatter',
+                  copy_data=False,
                   **kwargs):
     """
     Create an interactive scatter plot with bokeh
 
-    :param source: source for the data of the plot (pandas Dataframe for example)
-    :param xdata: key from which to pull the data for the x-axis
-    :param ydata: key from which to pull the data for the y-axis
+    :param x: arraylike or key for data for the x-axis
+    :param y: arraylike or key for data for the y-axis
+    :param data: source for the data of the plot (pandas Dataframe for example)
     :param xlabel: label for the x-axis
     :param ylabel: label for the y-axis
     :param title: title of the figure
     :param figure: bokeh figure (optional), if provided the plot will be added to this figure
     :param outfilename: filename of the output file
-
-    Kwargs will be passed on to :py:class:`masci_tools.vis.bokeh_plotter.BokehPlotter`.
-    If the arguments are not recognized they are passed on to the bokeh function `scatter`
-    """
-
-    kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
-
-    p = plot_params.prepare_figure(title, xlabel, ylabel, figure=figure)
-
-    res = p.scatter(x=xdata, y=ydata, source=source, **kwargs)
-
-    if plot_params['level'] is not None:
-        res.level = plot_params['level']
-
-    plot_params.draw_straight_lines(p)
-    plot_params.set_limits(p)
-    plot_params.save_plot(p)
-
-    return p
-
-
-@ensure_plotter_consistency(plot_params)
-def bokeh_multi_scatter(source,
-                        *,
-                        xdata='x',
-                        ydata='y',
-                        figure=None,
-                        xlabel='x',
-                        ylabel='y',
-                        title='',
-                        outfilename='scatter.html',
-                        **kwargs):
-    """
-    Create an interactive scatter (muliple data sets possible) plot with bokeh
-
-    :param source: source for the data of the plot (pandas Dataframe for example)
-    :param xdata: key from which to pull the data for the x-axis (or if source is None list with data for x-axis)
-    :param ydata: key from which to pull the data for the y-axis (or if source is None list with data for y-axis)
-    :param xlabel: label for the x-axis
-    :param ylabel: label for the y-axis
-    :param title: title of the figure
-    :param figure: bokeh figure (optional), if provided the plot will be added to this figure
-    :param outfilename: filename of the output file
+    :param copy_data: bool, if True the data argument will be copied
 
     Kwargs will be passed on to :py:class:`masci_tools.vis.bokeh_plotter.BokehPlotter`.
     If the arguments are not recognized they are passed on to the bokeh function `scatter`
     """
     from bokeh.models import ColumnDataSource
 
-    plot_params.set_defaults(default_type='function', name='scatter plot')
+    if isinstance(x, (dict, pd.DataFrame, ColumnDataSource)) or x is None:
+        warnings.warn(
+            'Passing the source as first argument is deprecated. Please pass in source by the keyword data'
+            'and xdata and ydata as the first arguments', DeprecationWarning)
+        data = x
+        x = kwargs.pop('xdata', 'x')
+        y = kwargs.pop('ydata', 'y')
 
-    default_legend_label = ydata
-    if source is not None:
-        if not isinstance(ydata, list):
-            if not isinstance(xdata, list):
-                xdata = [xdata]
-            ydata = [ydata] * len(xdata)
-            default_legend_label = xdata
+    plot_data = process_data_arguments(data=data,
+                                       x=x,
+                                       y=y,
+                                       copy_data=copy_data,
+                                       single_plot=True,
+                                       same_length=True,
+                                       use_column_source=True)
+    entry, source = plot_data.items(first=True)
 
-    if isinstance(xdata, list):
-        if len(xdata) != len(ydata):
-            xdata = xdata[0]
+    plot_params.set_defaults(default_type='function', name=entry.y)
+    kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
+
+    p = plot_params.prepare_figure(title, xlabel, ylabel, figure=figure)
+
+    plot_kwargs = plot_params.plot_kwargs(plot_type='scatter')
+    res = p.scatter(x=entry.x, y=entry.y, source=source, **plot_kwargs, **kwargs)
+    plot_params.add_tooltips(p, res, entry)
+
+    if plot_params['level'] is not None:
+        res.level = plot_params['level']
+
+    plot_params.draw_straight_lines(p)
+    plot_params.set_limits(p)
+    plot_params.save_plot(p, saveas)
+
+    return p
+
+
+@ensure_plotter_consistency(plot_params)
+def bokeh_multi_scatter(x,
+                        y=None,
+                        *,
+                        data=None,
+                        figure=None,
+                        xlabel='x',
+                        ylabel='y',
+                        title='',
+                        saveas='scatter',
+                        copy_data=False,
+                        set_default_legend=True,
+                        **kwargs):
+    """
+    Create an interactive scatter (muliple data sets possible) plot with bokeh
+
+    :param x: arraylike or key for data for the x-axis
+    :param y: arraylike or key for data for the y-axis
+    :param data: source for the data of the plot (pandas Dataframe for example)
+    :param xlabel: label for the x-axis
+    :param ylabel: label for the y-axis
+    :param title: title of the figure
+    :param figure: bokeh figure (optional), if provided the plot will be added to this figure
+    :param outfilename: filename of the output file
+    :param copy_data: bool, if True the data argument will be copied
+    :param set_default_legend: bool if True the data names are used to generate default legend labels
+
+    Kwargs will be passed on to :py:class:`masci_tools.vis.bokeh_plotter.BokehPlotter`.
+    If the arguments are not recognized they are passed on to the bokeh function `scatter`
+    """
+    from bokeh.models import ColumnDataSource
+
+    if isinstance(x, (dict, pd.DataFrame, ColumnDataSource)) or x is None:
+        warnings.warn(
+            'Passing the source as first argument is deprecated. Please pass in source by the keyword data'
+            'and xdata and ydata as the first arguments', DeprecationWarning)
+        data = x
+        x = kwargs.pop('xdata', 'x')
+        y = kwargs.pop('ydata', 'y')
+
+    plot_data = process_data_arguments(data=data,
+                                       x=x,
+                                       y=y,
+                                       same_length=True,
+                                       copy_data=copy_data,
+                                       use_column_source=True)
 
     plot_params.single_plot = False
-    plot_params.num_plots = len(ydata)
+    plot_params.num_plots = len(plot_data)
 
+    if plot_data.distinct_datasets('x') == 1:
+        default_legend_label = plot_data.get_keys('y')
+    else:
+        default_legend_label = plot_data.get_keys('x')
+    if set_default_legend:
+        plot_params.set_defaults(default_type='function', legend_label=default_legend_label)
+
+    plot_params.set_defaults(default_type='function', name=default_legend_label)
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
     p = plot_params.prepare_figure(title, xlabel, ylabel, figure=figure)
 
     #Process the given color arguments
     plot_params.set_color_palette_by_num_plots()
 
-    # prepare ColumnDataSource for plot
-    if source is None:  # create columndatasources from data given
-        # Columns need to have same length
-        source = []
-        if isinstance(ydata[0], list):
-            ydatad = []
-            xdatad = []
-            for i, ydat in enumerate(ydata):
-                label = f'y{i}'
-                ydatad.append(label)
-                xdatad.append(f'x{i}')
-                if isinstance(xdata[0], list):
-                    xdat = xdata[i]
-                else:
-                    xdat = xdata[0]
-                source.append(ColumnDataSource({'x': xdat, 'y': ydata}))
-        else:
-            raise ValueError('If no source dataframe or ColumnData is given, ydata has to be a list'
-                             ' of lists, not of type: {}'.format(type(ydata[0])))
-    else:
-        xdatad = xdata
-        ydatad = ydata
-
-    # draw line plot
-    # dataframe and column data source expect all entries to be same length...
-    # therefore we parse data to plot routines directly... might make other things harder
-
     plot_kwargs = plot_params.plot_kwargs(plot_type='scatter')
 
-    for indx, data in enumerate(zip(ydatad, plot_kwargs)):
+    for indx, ((entry, source), plot_kw) in enumerate(zip(plot_data.items(), plot_kwargs)):
 
-        yname, plot_kw = data
-
-        if isinstance(xdatad, list):
-            xdat = xdatad[indx]
-        else:
-            xdat = xdatad
-
-        if isinstance(source, list):
-            sourcet = source[indx]
-        else:
-            sourcet = source
-
-        if isinstance(default_legend_label, list):
-            leg_label = default_legend_label[indx]
-        else:
-            leg_label = default_legend_label
-
-        if 'legend_label' not in plot_kw:
-            plot_kw['legend_label'] = leg_label
-
-        res = p.scatter(x=xdat, y=yname, source=sourcet, **plot_kw)
+        res = p.scatter(x=entry.x, y=entry.y, source=source, **plot_kw, **kwargs)
+        plot_params.add_tooltips(p, res, entry)
 
         if plot_params[('level', indx)] is not None:
             res.level = plot_params[('level', indx)]
@@ -219,57 +232,73 @@ def bokeh_multi_scatter(source,
     plot_params.draw_straight_lines(p)
     plot_params.set_limits(p)
     plot_params.set_legend(p)
-    plot_params.save_plot(p)
+    plot_params.save_plot(p, saveas)
 
     return p
 
 
 @ensure_plotter_consistency(plot_params)
-def bokeh_line(source,
+def bokeh_line(x,
+               y=None,
                *,
-               xdata='x',
-               ydata='y',
+               data=None,
                figure=None,
                xlabel='x',
                ylabel='y',
                title='',
-               outfilename='scatter.html',
+               saveas='line',
                plot_points=False,
+               area_curve=0,
+               copy_data=False,
+               set_default_legend=True,
                **kwargs):
     """
     Create an interactive multi-line plot with bokeh
 
-    :param source: source for the data of the plot (pandas Dataframe for example)
-    :param xdata: key from which to pull the data for the x-axis (or if source is None list with data for x-axis)
-    :param ydata: key from which to pull the data for the y-axis (or if source is None list with data for y-axis)
+    :param x: arraylike or key for data for the x-axis
+    :param y: arraylike or key for data for the y-axis
+    :param data: source for the data of the plot (optional) (pandas Dataframe for example)
     :param xlabel: label for the x-axis
     :param ylabel: label for the y-axis
     :param title: title of the figure
     :param figure: bokeh figure (optional), if provided the plot will be added to this figure
     :param outfilename: filename of the output file
     :param plot_points: bool, if True also plot the points with a scatterplot on top
+    :param copy_data: bool, if True the data argument will be copied
+    :param set_default_legend: bool if True the data names are used to generate default legend labels
 
     Kwargs will be passed on to :py:class:`masci_tools.vis.bokeh_plotter.BokehPlotter`.
     If the arguments are not recognized they are passed on to the bokeh function `line`
     """
     from bokeh.models import ColumnDataSource
 
-    plot_params.set_defaults(default_type='function', name='line plot')
+    if isinstance(x, (dict, pd.DataFrame, ColumnDataSource)) or x is None:
+        warnings.warn(
+            'Passing the source as first argument is deprecated. Please pass in source by the keyword data'
+            'and xdata and ydata as the first arguments', DeprecationWarning)
+        data = x
+        x = kwargs.pop('xdata', 'x')
+        y = kwargs.pop('ydata', 'y')
 
-    default_legend_label = ydata
-    if source is not None:
-        if not isinstance(ydata, list):
-            if not isinstance(xdata, list):
-                xdata = [xdata]
-            ydata = [ydata] * len(xdata)
-            default_legend_label = xdata
-
-    if isinstance(xdata, list):
-        if len(xdata) != len(ydata):
-            xdata = xdata[0]
+    plot_data = process_data_arguments(data=data,
+                                       x=x,
+                                       y=y,
+                                       shift=area_curve,
+                                       same_length=True,
+                                       copy_data=copy_data,
+                                       use_column_source=True)
 
     plot_params.single_plot = False
-    plot_params.num_plots = len(ydata)
+    plot_params.num_plots = len(plot_data)
+
+    if plot_data.distinct_datasets('x') == 1:
+        default_legend_label = plot_data.get_keys('y')
+    else:
+        default_legend_label = plot_data.get_keys('x')
+    if set_default_legend:
+        plot_params.set_defaults(default_type='function', legend_label=default_legend_label)
+
+    plot_params.set_defaults(default_type='function', name=default_legend_label)
 
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
     p = plot_params.prepare_figure(title, xlabel, ylabel, figure=figure)
@@ -277,84 +306,26 @@ def bokeh_line(source,
     #Process the given color arguments
     plot_params.set_color_palette_by_num_plots()
 
-    # prepare ColumnDataSource for plot
-    if source is None:  # create columndatasources from data given
-        # Columns need to have same length
-        source = []
-        if isinstance(ydata[0], list):
-            ydatad = []
-            xdatad = []
-            for i, ydat in enumerate(ydata):
-                label = f'y{i}'
-                ydatad.append(label)
-                xdatad.append(f'x{i}')
-                if isinstance(xdata[0], list):
-                    xdat = xdata[i]
-                else:
-                    xdat = xdata[0]
-                source.append(ColumnDataSource({'x': xdat, 'y': ydata}))
-        else:
-            raise ValueError('If no source dataframe or ColumnData is given, ydata has to be a list'
-                             ' of lists, not of type: {}'.format(type(ydata[0])))
-    else:
-        xdatad = xdata
-        ydatad = ydata
-
-    # draw line plot
-    # dataframe and column data source expect all entries to be same length...
-    # therefore we parse data to plot routines directly... might make other things harder
-
     plot_kw_line = plot_params.plot_kwargs(plot_type='line')
     plot_kw_scatter = plot_params.plot_kwargs(plot_type='scatter')
     plot_kw_area = plot_params.plot_kwargs(plot_type='area')
 
     area_curve = kwargs.pop('area_curve', None)
 
-    for indx, data in enumerate(zip(ydatad, plot_kw_line, plot_kw_scatter, plot_kw_area)):
-
-        yname, kw_line, kw_scatter, kw_area = data
-
-        if isinstance(xdatad, list):
-            xdat = xdatad[indx]
-        else:
-            xdat = xdatad
-
-        if isinstance(source, list):
-            sourcet = source[indx]
-        else:
-            sourcet = source
-
-        if isinstance(default_legend_label, list):
-            leg_label = default_legend_label[indx]
-        else:
-            leg_label = default_legend_label
-
-        if 'legend_label' not in kw_line:
-            kw_line['legend_label'] = leg_label
-            kw_scatter['legend_label'] = leg_label
-            kw_area['legend_label'] = leg_label
-
-        if area_curve is not None:
-            if isinstance(area_curve, list):
-                try:
-                    shift = area_curve[indx]
-                except IndexError:
-                    shift = area_curve[0]
-            else:
-                shift = area_curve
-        else:
-            shift = 0
+    for indx, ((entry, source), kw_line, kw_scatter,
+               kw_area) in enumerate(zip(plot_data.items(), plot_kw_line, plot_kw_scatter, plot_kw_area)):
 
         if plot_params[('area_plot', indx)]:
             if plot_params[('area_vertical', indx)]:
-                p.harea(y=yname, x1=xdat, x2=shift, **kw_area, source=sourcet)
+                p.harea(y=entry.y, x1=entry.x, x2=entry.shift, **kw_area, source=source)
             else:
-                p.varea(x=xdat, y1=yname, y2=shift, **kw_area, source=sourcet)
+                p.varea(x=entry.x, y1=entry.y, y2=entry.shift, **kw_area, source=source)
 
-        res = p.line(x=xdat, y=yname, source=sourcet, **kw_line, **kwargs)
+        res = p.line(x=entry.x, y=entry.y, source=source, **kw_line, **kwargs)
+        plot_params.add_tooltips(p, res, entry)
         res2 = None
         if plot_points:
-            res2 = p.scatter(x=xdat, y=yname, source=sourcet, **kw_scatter)
+            res2 = p.scatter(x=entry.x, y=entry.y, source=source, **kw_scatter)
 
         if plot_params[('level', indx)] is not None:
             res.level = plot_params[('level', indx)]
@@ -364,39 +335,64 @@ def bokeh_line(source,
     plot_params.draw_straight_lines(p)
     plot_params.set_limits(p)
     plot_params.set_legend(p)
-    plot_params.save_plot(p)
+    plot_params.save_plot(p, saveas)
 
     return p
 
 
 @ensure_plotter_consistency(plot_params)
-def bokeh_dos(dosdata,
+def bokeh_dos(energy_grid,
+              dos_data=None,
               *,
-              energy='energy_grid',
-              ynames=None,
+              data=None,
               energy_label=r'E-E_F [eV]',
               dos_label=r'DOS [1/eV]',
               title=r'Density of states',
               xyswitch=False,
               e_fermi=0,
-              outfilename='dos_plot.html',
+              saveas='dos_plot',
+              copy_data=False,
               **kwargs):
     """
     Create an interactive dos plot (non-spinpolarized) with bokeh
     Both horizontal or vertical orientation are possible
 
-    :param dosdata: source for the dosdata of the plot (pandas Dataframe for example)
-    :param energy: key from which to pull the data for the energy grid
-    :param ynames: keys from which to pull the data for dos components
+    :param energy_grid: arraylike or key data for the energy grid
+    :param spin_up_data: arraylike or key data for the DOS
+    :param data: source for the DOS data (optional) of the plot (pandas Dataframe for example)
     :param energy_label: label for the energy-axis
     :param dos_label: label for the dos-axis
     :param title: title of the figure
     :param xyswitch: bool if True, the energy will be plotted along the y-direction
     :param e_fermi: float, determines, where to put the line for the fermi energy
     :param outfilename: filename of the output file
+    :param copy_data: bool, if True the data argument will be copied
 
     Kwargs will be passed on to :py:func:`bokeh_line()`
     """
+    from bokeh.models import ColumnDataSource
+
+    if isinstance(energy_grid, (dict, pd.DataFrame, ColumnDataSource)) or energy_grid is None:
+        warnings.warn(
+            'Passing the dataframe as first argument is deprecated. Please pass in source by the keyword data'
+            'and energy_grid and dos_data as the first arguments', DeprecationWarning)
+        data = energy_grid
+        energy_grid = kwargs.pop('energy', 'energy_grid')
+        dos_data = kwargs.pop('ynames', None)
+
+    if dos_data is None and data is not None:
+        dos_data = set(data.keys()) - set([energy_grid] if isinstance(energy_grid, str) else energy_grid)
+        dos_data = sorted(dos_data)
+
+    plot_data = process_data_arguments(data=data,
+                                       energy=energy_grid,
+                                       dos=dos_data,
+                                       same_length=True,
+                                       copy_data=copy_data,
+                                       use_column_source=True)
+
+    plot_params.single_plot = False
+    plot_params.num_plots = len(plot_data)
 
     if 'limits' in kwargs:
         limits = kwargs.pop('limits')
@@ -415,51 +411,57 @@ def bokeh_dos(dosdata,
 
     plot_params.set_defaults(default_type='function',
                              straight_lines=lines,
+                             tooltips=[('Name', '$name'), ('Energy', '@{x}{{0.0[00]}}'),
+                                       ('DOS value', '@$name{{0.00}}')],
                              figure_kwargs={
-                                 'tooltips': [('Name', '$name'), ('Energy', '@energy_grid{0.0[00]}'),
-                                              ('DOS value', '@$name{0.00}')],
-                                 'width':
-                                 1000,
+                                 'width': 1000,
                              })
 
-    if ynames is None:
-        ynames = set(dosdata.keys()) - set([energy] if isinstance(energy, str) else energy)
-        ynames = sorted(ynames)
-
     if xyswitch:
-        x, y = ynames, energy
+        x, y = plot_data.get_keys('dos'), plot_data.get_keys('energy')
         xlabel, ylabel = dos_label, energy_label
         plot_params.set_defaults(default_type='function', area_vertical=True)
     else:
         xlabel, ylabel = energy_label, dos_label
-        x, y = energy, ynames
+        x, y = plot_data.get_keys('energy'), plot_data.get_keys('dos')
 
-    p = bokeh_line(dosdata, xdata=x, ydata=y, xlabel=xlabel, ylabel=ylabel, title=title, name=ynames, **kwargs)
+    p = bokeh_line(x,
+                   y,
+                   data=plot_data.data,
+                   xlabel=xlabel,
+                   ylabel=ylabel,
+                   title=title,
+                   name=y,
+                   saveas=saveas,
+                   **kwargs)
 
     return p
 
 
 @ensure_plotter_consistency(plot_params)
-def bokeh_spinpol_dos(dosdata,
+def bokeh_spinpol_dos(energy_grid,
+                      spin_up_data=None,
+                      spin_dn_data=None,
                       *,
+                      data=None,
                       spin_dn_negative=True,
-                      energy='energy_grid',
-                      ynames=None,
                       energy_label=r'E-E_F [eV]',
                       dos_label=r'DOS [1/eV]',
                       title=r'Density of states',
                       xyswitch=False,
                       e_fermi=0,
                       spin_arrows=True,
-                      outfilename='dos_plot.html',
+                      saveas='dos_plot',
+                      copy_data=False,
                       **kwargs):
     """
     Create an interactive dos plot (spinpolarized) with bokeh
     Both horizontal or vertical orientation are possible
 
-    :param dosdata: source for the dosdata of the plot (pandas Dataframe for example)
-    :param energy: key from which to pull the data for the energy grid
-    :param ynames: keys from which to pull the data for dos components
+    :param energy_grid: arraylike or key data for the energy grid
+    :param spin_up_data: arraylike or key data for the DOS spin-up
+    :param spin_dn_data: arraylike or key data for the DOS spin-dn
+    :param data: source for the DOS data (optional) of the plot (pandas Dataframe for example)
     :param spin_dn_negative: bool, if True (default), the spin down components are plotted downwards
     :param energy_label: label for the energy-axis
     :param dos_label: label for the dos-axis
@@ -469,10 +471,38 @@ def bokeh_spinpol_dos(dosdata,
     :param spin_arrows: bool, if True (default) small arrows will be plotted on the left side of the plot indicating
                         the spin directions (if spin_dn_negative is True)
     :param outfilename: filename of the output file
+    :param copy_data: bool, if True the data argument will be copied
 
     Kwargs will be passed on to :py:func:`bokeh_line()`
     """
     from bokeh.models import NumeralTickFormatter, Arrow, NormalHead
+    from bokeh.models import ColumnDataSource
+
+    if isinstance(energy_grid, (dict, pd.DataFrame, ColumnDataSource)) or energy_grid is None:
+        warnings.warn(
+            'Passing the dataframe as first argument is deprecated. Please pass in source by the keyword data'
+            'and energy_grid and dos_data as the first arguments', DeprecationWarning)
+        data = energy_grid
+        energy_grid = kwargs.pop('energy', 'energy_grid')
+        spin_up_data = kwargs.pop('ynames', None)
+        spin_up_data, spin_dn_data = spin_up_data[:len(spin_up_data) // 2], spin_up_data[len(spin_up_data) // 2:]
+
+    if spin_up_data is None and data is not None:
+        spin_up_data = set(key for key in data.keys() if '_up' in key)
+        spin_up_data = sorted(spin_up_data)
+        spin_dn_data = set(key for key in data.keys() if '_dn' in key)
+        spin_dn_data = sorted(spin_dn_data)
+
+    plot_data = process_data_arguments(data=data,
+                                       energy=energy_grid,
+                                       spin_up=spin_up_data,
+                                       spin_dn=spin_dn_data,
+                                       same_length=True,
+                                       copy_data=copy_data,
+                                       use_column_source=True)
+
+    plot_params.single_plot = False
+    plot_params.num_plots = len(plot_data)
 
     if 'limits' in kwargs:
         limits = kwargs.pop('limits')
@@ -486,41 +516,38 @@ def bokeh_spinpol_dos(dosdata,
     lines = {'horizontal': 0}
     lines['vertical'] = e_fermi
 
-    if ynames is None:
-        ynames = set(dosdata.keys()) - set([energy] if isinstance(energy, str) else energy)
-        ynames = sorted(ynames)
-        ynames.extend([f'{key} Spin-Down' for key in ynames])
-
     if spin_dn_negative:
-        dosdata[[key for key in ynames if '_down' in key]] = -dosdata[[key for key in ynames if '_down' in key]]
+        plot_data.apply('spin_dn', lambda x: -x)
 
     if xyswitch:
         lines['vertical'], lines['horizontal'] = lines['horizontal'], lines['vertical']
 
     plot_params.set_defaults(default_type='function',
                              straight_lines=lines,
-                             figure_kwargs={
-                                 'tooltips': [('DOS Name', '$name'), ('Energy', '@energy_grid{0.0[00]}'),
-                                              ('Value', '@$name{(0,0.00)}')],
-                                 'width':
-                                 1000
-                             })
+                             tooltips=[('DOS Name', '$name'), ('Energy', '@{x}{{0.0[00]}}'),
+                                       ('Value', '@$name{{(0,0.00)}}')],
+                             figure_kwargs={'width': 1000})
+
+    #Create the full data for the scatterplot
+    energy_entries = plot_data.get_keys('energy') * 2
+    dos_entries = plot_data.get_keys('spin_up') + plot_data.get_keys('spin_dn')
+    sources = plot_data.data
+    if isinstance(sources, list):
+        sources = sources * 2
 
     if xyswitch:
-        x, y = ynames, energy
+        x, y = dos_entries, energy_entries
         xlabel, ylabel = dos_label, energy_label
         plot_params.set_defaults(default_type='function',
                                  area_vertical=True,
                                  x_axis_formatter=NumeralTickFormatter(format='(0,0)'))
     else:
         xlabel, ylabel = energy_label, dos_label
-        x, y = energy, ynames
+        x, y = energy_entries, dos_entries
         plot_params.set_defaults(default_type='function',
                                  area_vertical=True,
                                  y_axis_formatter=NumeralTickFormatter(format='(0,0)'))
 
-    plot_params.single_plot = False
-    plot_params.num_plots = len(ynames) // 2  #We want the same colors for opposite spin-directions
     plot_params.set_parameters(color=kwargs.pop('color', None), color_palette=kwargs.pop('color_palette', None))
     plot_params.set_color_palette_by_num_plots()
 
@@ -529,24 +556,27 @@ def bokeh_spinpol_dos(dosdata,
     kwargs['color'].extend(kwargs['color'])
 
     if 'legend_label' not in kwargs:
-        kwargs['legend_label'] = list(ynames.copy())
+        kwargs['legend_label'] = dos_entries
     else:
         if isinstance(kwargs['legend_label'], list):
-            if len(kwargs['legend_label']) == len(ynames) // 2:
+            if len(kwargs['legend_label']) == len(plot_data):
                 kwargs['legend_label'].extend(kwargs['legend_label'])
 
     if 'show' in kwargs:
-        plot_params.set_parameters(show=kwargs['show'])
+        plot_params.set_parameters(show=kwargs.pop('show'))
+    if 'save_plots' in kwargs:
+        plot_params.set_parameters(show=kwargs.pop('save_plots'))
 
     with NestedPlotParameters(plot_params):
-        p = bokeh_line(dosdata,
-                       xdata=x,
-                       ydata=y,
+        p = bokeh_line(x,
+                       y,
                        xlabel=xlabel,
                        ylabel=ylabel,
                        title=title,
-                       name=ynames,
+                       data=sources,
+                       name=dos_entries,
                        show=False,
+                       save_plots=False,
                        **kwargs)
 
     if spin_arrows and spin_dn_negative:
@@ -580,64 +610,131 @@ def bokeh_spinpol_dos(dosdata,
                   line_alpha=alpha,
                   end=NormalHead(line_width=2, size=10, fill_alpha=alpha, line_alpha=alpha)))
 
-    plot_params.save_plot(p)
+    plot_params.save_plot(p, saveas)
 
     return p
 
 
 @ensure_plotter_consistency(plot_params)
-def bokeh_bands(bandsdata,
+def bokeh_bands(kpath,
+                bands=None,
                 *,
-                k_label='kpath',
-                eigenvalues='eigenvalues_up',
-                weight=None,
+                data=None,
+                size_data=None,
+                color_data=None,
                 xlabel='',
                 ylabel=r'E-E_F [eV]',
                 title='',
                 special_kpoints=None,
-                size_min=3.0,
-                size_scaling=10.0,
-                outfilename='bands_plot.html',
+                markersize_min=3.0,
+                markersize_scaling=10.0,
+                saveas='bands_plot',
                 scale_color=True,
+                separate_bands=False,
+                line_plot=False,
+                band_index=None,
+                copy_data=False,
                 **kwargs):
     """
     Create an interactive bandstructure plot (non-spinpolarized) with bokeh
     Can make a simple plot or weight the size and color of the points against a given weight
 
-    :param bandsdata: source for the bandsdata of the plot (pandas Dataframe for example)
-    :param k_label: key from which to pull the data for the kpoints
-    :param eigenvalues: key from which to pull the data for eigenvalues
-    :param weight: optional key from the bandsdata. If given the size and color of each point
-                   are adjusted to show the weights
+    :param kpath: arraylike or key data for the kpoint data
+    :param bands: arraylike or key data for the eigenvalues
+    :param size_data: arraylike or key data the weights to emphasize (optional)
+    :param color_data: str or arraylike, data for the color values with a colormap (optional)
+    :param data: source for the bands data (optional) of the plot (pandas Dataframe for example)
     :param xlabel: label for the x-axis (default no label)
     :param ylabel: label for the y-axis
     :param title: title of the figure
     :param special_kpoints: list of tuples (str, float), place vertical lines at the given values
                             and mark them on the x-axis with the given label
     :param e_fermi: float, determines, where to put the line for the fermi energy
-    :param size_min: minimum value used in scaling points for weight
-    :param size_scaling: factor used in scaling points for weight
+    :param markersize_min: minimum value used in scaling points for weight
+    :param markersize_scaling: factor used in scaling points for weight
     :param outfilename: filename of the output file
     :param scale_color: bool, if True (default) the weight will be additionally shown via a colormapping
+    :param line_plot: bool, if True the bandstructure will be plotted with lines
+                      Here no weights are supported
+    :param separate_bands: bool, if True the bandstructure will be separately plotted for each band
+                           allows more specific parametrization
+    :param band_index: data for which eigenvalue belongs to which band (needed for line_plot and separate_bands)
+    :param copy_data: bool, if True the data argument will be copied
 
-    Kwargs will be passed on to :py:func:`bokeh_multi_scatter()`
+    Kwargs will be passed on to :py:func:`bokeh_multi_scatter()` or :py:func:`bokeh_line()`
     """
     from bokeh.transform import linear_cmap
+    from bokeh.models import ColumnDataSource
 
-    if weight is not None:
+    if 'size_scaling' in kwargs:
+        warnings.warn('size_scaling is deprecated. Use markersize_scaling instead', DeprecationWarning)
+        markersize_scaling = kwargs.pop('size_scaling')
 
+    if 'size_min' in kwargs:
+        warnings.warn('size_min is deprecated. Use markersize_min instead', DeprecationWarning)
+        markersize_min = kwargs.pop('size_min')
+
+    if isinstance(kpath, (dict, pd.DataFrame, ColumnDataSource)) or kpath is None:
+        warnings.warn(
+            'Passing the dataframe as first argument is deprecated. Please pass in source by the keyword data'
+            'and kpath and bands as the first arguments', DeprecationWarning)
+        data = kpath
+        kpath = kwargs.pop('k_label', 'kpath')
+        bands = kwargs.pop('eigenvalues', 'eigenvalues_up')
+
+    if 'weight' in kwargs:
+        warnings.warn('The weight argument is deprecated. Use size_data and color_data instead', DeprecationWarning)
+        size_data = kwargs.pop('weight')
+
+    plot_data = process_data_arguments(single_plot=True,
+                                       data=data,
+                                       kpath=kpath,
+                                       bands=bands,
+                                       size=size_data,
+                                       color=color_data,
+                                       band_index=band_index,
+                                       copy_data=copy_data,
+                                       use_column_source=True)
+
+    if line_plot and size_data is not None:
+        raise ValueError('Bandstructure with lines and size scaling not supported')
+
+    if line_plot and color_data is not None:
+        raise ValueError('Bandstructure with lines and color mapping not supported')
+
+    if line_plot or separate_bands:
+        if band_index is None:
+            raise ValueError('The data for band indices are needed for separate_bands and line_plot')
+        plot_data.group_data('band_index')
+        plot_data.sort_data('kpath')
+
+    if scale_color and size_data is not None:
+        if color_data is not None:
+            raise ValueError('color_data should not be provided when scale_color is True')
+        plot_data.copy_data('size', 'color', rename_original=True)
+
+    if color_data is not None:
+        kwargs['color'] = plot_data.get_keys('color')
+
+    entries = plot_data.keys(first=True)
+    if entries.size is not None:
         ylimits = (-15, 15)
         if 'limits' in kwargs:
             if 'y' in kwargs['limits']:
                 ylimits = kwargs['limits']['y']
 
-        weight_max = bandsdata[weight].loc[(bandsdata[eigenvalues] > ylimits[0]) &
-                                           (bandsdata[eigenvalues] < ylimits[1])].max()
+        data = plot_data.values(first=True)
+        mask = np.logical_and(data.bands > ylimits[0], data.bands < ylimits[1])
 
-        bandsdata['weight_size'] = size_min + size_scaling * bandsdata[weight] / weight_max
-        plot_params.set_defaults(default_type='function', marker_size='weight_size')
+        weight_max = plot_data.max('size', mask=mask)
+
+        plot_params.set_defaults(default_type='function', marker_size=entries.size)
         if scale_color:
-            plot_params.set_defaults(default_type='function', color=linear_cmap(weight, 'Blues256', weight_max, -0.05))
+            plot_params.set_defaults(default_type='function',
+                                     color=linear_cmap(entries.color, 'Blues256', weight_max, -0.05))
+
+        transform = lambda size: markersize_min + markersize_scaling * size / weight_max
+        plot_data.apply('size', transform)
     else:
         plot_params.set_defaults(default_type='function', color='black')
 
@@ -668,83 +765,162 @@ def bokeh_bands(bandsdata,
                              },
                              x_range_padding=0.0,
                              y_range_padding=0.0,
+                             legend_label='Eigenvalues',
                              limits=limits)
 
-    return bokeh_multi_scatter(bandsdata,
-                               xdata=k_label,
-                               ydata=eigenvalues,
-                               xlabel='',
-                               ylabel=ylabel,
-                               title=title,
-                               **kwargs)
+    if line_plot:
+        return bokeh_line(plot_data.get_keys('kpath'),
+                          plot_data.get_keys('bands'),
+                          data=plot_data.data,
+                          xlabel='',
+                          ylabel=ylabel,
+                          title=title,
+                          set_default_legend=False,
+                          saveas=saveas,
+                          **kwargs)
+    else:
+        return bokeh_multi_scatter(plot_data.get_keys('kpath'),
+                                   plot_data.get_keys('bands'),
+                                   data=plot_data.data,
+                                   xlabel='',
+                                   ylabel=ylabel,
+                                   title=title,
+                                   set_default_legend=False,
+                                   saveas=saveas,
+                                   **kwargs)
 
 
 @ensure_plotter_consistency(plot_params)
-def bokeh_spinpol_bands(bandsdata,
+def bokeh_spinpol_bands(kpath,
+                        bands_up=None,
+                        bands_dn=None,
                         *,
-                        k_label='kpath',
-                        eigenvalues=None,
-                        weight=None,
+                        size_data=None,
+                        color_data=None,
+                        data=None,
                         xlabel='',
                         ylabel=r'E-E_F [eV]',
                         title='',
                         special_kpoints=None,
-                        size_min=3.0,
-                        size_scaling=10.0,
-                        outfilename='bands_plot.html',
+                        markersize_min=3.0,
+                        markersize_scaling=10.0,
+                        saveas='bands_plot',
                         scale_color=True,
+                        line_plot=False,
+                        separate_bands=False,
+                        band_index=None,
+                        copy_data=False,
                         **kwargs):
     """
     Create an interactive bandstructure plot (spinpolarized) with bokeh
     Can make a simple plot or weight the size and color of the points against a given weight
 
-    :param bandsdata: source for the bandsdata of the plot (pandas Dataframe for example)
-    :param k_label: key from which to pull the data for the kpoints
-    :param eigenvalues: keys from which to pull the data for eigenvalues (default ['eigenvalues_up','eigenvalues_down'])
-    :param weight: optional key from the bandsdata. If given the size and color of each point
-                   are adjusted to show the weights
+    :param kpath: arraylike or key data for the kpoint data
+    :param bands_up: arraylike or key data for the eigenvalues spin-up
+    :param bands_dn: arraylike or key data for the eigenvalues spin-dn
+    :param size_data: arraylike or key data the weights to emphasize (optional)
+    :param color_data: str or arraylike, data for the color values with a colormap (optional)
+    :param data: source for the bands data (optional) of the plot (pandas Dataframe for example)
     :param xlabel: label for the x-axis (default no label)
     :param ylabel: label for the y-axis
     :param title: title of the figure
     :param special_kpoints: list of tuples (str, float), place vertical lines at the given values
                             and mark them on the x-axis with the given label
     :param e_fermi: float, determines, where to put the line for the fermi energy
-    :param size_min: minimum value used in scaling points for weight
-    :param size_scaling: factor used in scaling points for weight
+    :param markersize_min: minimum value used in scaling points for weight
+    :param markersize_scaling: factor used in scaling points for weight
     :param outfilename: filename of the output file
     :param scale_color: bool, if True (default) the weight will be additionally shown via a colormapping
+    :param line_plot: bool, if True the bandstructure will be plotted with lines
+                      Here no weights are supported
+    :param separate_bands: bool, if True the bandstructure will be separately plotted for each band
+                           allows more specific parametrization
+    :param band_index: data for which eigenvalue belongs to which band (needed for line_plot and separate_bands)
+    :param copy_data: bool, if True the data argument will be copied
 
-    Kwargs will be passed on to :py:func:`bokeh_multi_scatter()`
+    Kwargs will be passed on to :py:func:`bokeh_multi_scatter()` or :py:func:`bokeh_line()`
     """
     from bokeh.transform import linear_cmap
+    from bokeh.models import ColumnDataSource
 
-    if eigenvalues is None:
-        eigenvalues = ['eigenvalues_up', 'eigenvalues_down']
+    if 'size_scaling' in kwargs:
+        warnings.warn('size_scaling is deprecated. Use markersize_scaling instead', DeprecationWarning)
+        markersize_scaling = kwargs.pop('size_scaling')
+
+    if 'size_min' in kwargs:
+        warnings.warn('size_min is deprecated. Use markersize_min instead', DeprecationWarning)
+        markersize_min = kwargs.pop('size_min')
+
+    if isinstance(kpath, (dict, pd.DataFrame, ColumnDataSource)) or kpath is None:
+        warnings.warn(
+            'Passing the dataframe as first argument is deprecated. Please pass in source by the keyword data'
+            'and kpath and bands_up and bands_dn as the first arguments', DeprecationWarning)
+        data = kpath
+        kpath = kwargs.pop('k_label', 'kpath')
+        bands_up = kwargs.pop('eigenvalues', ['eigenvalues_up', 'eigenvalues_down'])
+        bands_up, bands_dn = bands_up[0], bands_up[1]
+
+    if 'weight' in kwargs:
+        warnings.warn('The weight argument is deprecated. Use size_data and color_data instead', DeprecationWarning)
+        size_data = kwargs.pop('weight')
+
+    plot_data = process_data_arguments(data=data,
+                                       kpath=kpath,
+                                       bands=[bands_up, bands_dn],
+                                       size=size_data,
+                                       color=color_data,
+                                       band_index=band_index,
+                                       copy_data=copy_data,
+                                       use_column_source=True)
 
     plot_params.single_plot = False
-    plot_params.num_plots = 2
+    plot_params.num_plots = len(plot_data)
 
-    if weight is not None:
-        cmaps = ['Blues256', 'Reds256']
-        color = []
+    if len(plot_data) != 2:
+        raise ValueError('Wrong number of plots specified (Only 2 permitted)')
+
+    if line_plot and size_data is not None:
+        raise ValueError('Bandstructure with lines and size scaling not supported')
+
+    if line_plot and color_data is not None:
+        raise ValueError('Bandstructure with lines and color mapping not supported')
+
+    if line_plot or separate_bands:
+        if band_index is None:
+            raise ValueError('The data for band indices are needed for separate_bands and line_plot')
+
+        plot_data.group_data('band_index')
+        plot_data.sort_data('kpath')
+
+    if scale_color and size_data is not None:
+        if color_data is not None:
+            raise ValueError('color_data should not be provided when scale_color is True')
+        plot_data.copy_data('size', 'color', rename_original=True)
+
+    if color_data is not None:
+        kwargs['color'] = plot_data.get_keys('color')
+
+    if any(entry.size is not None for entry in plot_data.keys()):
 
         ylimits = (-15, 15)
         if 'limits' in kwargs:
             if 'y' in kwargs['limits']:
                 ylimits = kwargs['limits']['y']
 
-        weight_max = bandsdata[weight[0]].loc[(bandsdata[eigenvalues[0]] > ylimits[0]) &
-                                              (bandsdata[eigenvalues[0]] < ylimits[1])].max()
-        weight_max = max(
-            weight_max, bandsdata[weight[1]].loc[(bandsdata[eigenvalues[1]] > ylimits[0]) &
-                                                 (bandsdata[eigenvalues[1]] < ylimits[1])].max())
+        data = plot_data.values()
+        mask = [np.logical_and(col.bands > ylimits[0], col.bands < ylimits[1]) for col in data]
+        weight_max = plot_data.max('size', mask=mask)
 
-        for indx, (w, cmap) in enumerate(zip(weight, cmaps)):
-            color.append(linear_cmap(w, cmap, weight_max, -0.05))
-            bandsdata[f'weight_size_{indx}'] = size_min + size_scaling * bandsdata[w] / weight_max
-        plot_params.set_defaults(default_type='function', marker_size=['weight_size_0', 'weight_size_1'])
+        transform = lambda size: markersize_min + markersize_scaling * size / weight_max
+        plot_data.apply('size', transform)
+
+        plot_params.set_defaults(default_type='function', marker_size=plot_data.get_keys('size'))
         if scale_color:
-            plot_params.set_defaults(default_type='function', color=color)
+            plot_params.set_defaults(default_type='function',
+                                     color=[
+                                         linear_cmap(name, palette, weight_max, -0.05)
+                                         for name, palette in zip(plot_data.get_keys('color'), ['Blues256', 'Reds256'])
+                                     ])
     else:
         color = ['blue', 'red']
         plot_params.set_defaults(default_type='function', color=color)
@@ -777,15 +953,33 @@ def bokeh_spinpol_bands(bandsdata,
                              x_range_padding=0.0,
                              y_range_padding=0.0,
                              limits=limits,
+                             legend_label=['Spin Up', 'Spin Down'],
                              level=[None, 'underlay'])
 
-    return bokeh_multi_scatter(bandsdata,
-                               xdata=k_label,
-                               ydata=eigenvalues,
-                               xlabel='',
-                               ylabel=ylabel,
-                               title=title,
-                               **kwargs)
+    if line_plot or separate_bands:
+        plot_params.num_plots = len(plot_data)
+        kwargs = plot_params.expand_parameters(original_length=2, **kwargs)
+
+    if line_plot:
+        return bokeh_line(plot_data.get_keys('kpath'),
+                          plot_data.get_keys('bands'),
+                          data=plot_data.data,
+                          xlabel='',
+                          ylabel=ylabel,
+                          title=title,
+                          set_default_legend=False,
+                          saveas=saveas,
+                          **kwargs)
+    else:
+        return bokeh_multi_scatter(plot_data.get_keys('kpath'),
+                                   plot_data.get_keys('bands'),
+                                   data=plot_data.data,
+                                   xlabel='',
+                                   ylabel=ylabel,
+                                   title=title,
+                                   set_default_legend=False,
+                                   saveas=saveas,
+                                   **kwargs)
 
 
 ####################################################################################################
@@ -1078,7 +1272,7 @@ def periodic_table_plot(source,
 
 
 @ensure_plotter_consistency(plot_params)
-def plot_convergence_results(iteration, distance, total_energy, *, show=True, **kwargs):
+def plot_convergence_results(iteration, distance, total_energy, *, saveas='convergence', **kwargs):
     """
     Plot the total energy versus the scf iteration
     and plot the distance of the density versus iterations. Uses bokeh_line and bokeh_scatter
@@ -1119,7 +1313,10 @@ def plot_convergence_results(iteration, distance, total_energy, *, show=True, **
                                  'x_axis_type': 'linear',
                              })
 
-    plot_params.set_parameters(show=show)
+    if 'show' in kwargs:
+        plot_params.set_parameters(show=kwargs.pop('show'))
+    if 'save_plots' in kwargs:
+        plot_params.set_parameters(show=kwargs.pop('save_plots'))
 
     with NestedPlotParameters(plot_params):
         p1 = bokeh_line(source=source1,
@@ -1131,6 +1328,7 @@ def plot_convergence_results(iteration, distance, total_energy, *, show=True, **
                         name='delta total energy',
                         plot_points=True,
                         show=False,
+                        save_plots=False,
                         **kwargs)
 
     plot_params.set_defaults(default_type='function',
@@ -1146,11 +1344,12 @@ def plot_convergence_results(iteration, distance, total_energy, *, show=True, **
                         name='distance',
                         plot_points=True,
                         show=False,
+                        save_plots=False,
                         **kwargs)
 
     grid = gridplot([p1, p2], ncols=2)
 
-    plot_params.save_plot(grid)
+    plot_params.save_plot(grid, saveas)
 
     return grid
 
@@ -1164,9 +1363,7 @@ def plot_convergence_results_m(iterations,
                                nodes=None,
                                modes=None,
                                plot_label=None,
-                               saveas1='t_energy_convergence',
-                               saveas2='distance_convergence',
-                               show=True,
+                               saveas='convergence',
                                **kwargs):
     """
     Plot the total energy versus the scf iteration
@@ -1185,8 +1382,8 @@ def plot_convergence_results_m(iterations,
 
     :returns grid: bokeh grid with figures
     """
-    from bokeh.models import ColumnDataSource
     from bokeh.layouts import gridplot
+    from bokeh.models import ColumnDataSource
 
     xlabel = r'Iteration'
     ylabel1 = r'Total energy difference [Htr]'
@@ -1266,7 +1463,10 @@ def plot_convergence_results_m(iterations,
                                  'x_axis_type': 'linear',
                              },
                              legend_outside_plot_area=True)
-    plot_params.set_parameters(show=show)
+    if 'show' in kwargs:
+        plot_params.set_parameters(show=kwargs.pop('show'))
+    if 'save_plots' in kwargs:
+        plot_params.set_parameters(show=kwargs.pop('save_plots'))
 
     # plot
     with NestedPlotParameters(plot_params):
@@ -1280,6 +1480,7 @@ def plot_convergence_results_m(iterations,
                         legend_label=plot_labels1,
                         plot_points=True,
                         show=False,
+                        save_plots=False,
                         **kwargs)
 
     plot_params.set_defaults(default_type='function', figure_kwargs={
@@ -1297,11 +1498,12 @@ def plot_convergence_results_m(iterations,
                         legend_label=plot_labels2,
                         plot_points=True,
                         show=False,
+                        save_plots=False,
                         **kwargs)
 
     grid = gridplot([p1, p2], ncols=2)
 
-    plot_params.save_plot(grid)
+    plot_params.save_plot(grid, saveas)
 
     return grid
 

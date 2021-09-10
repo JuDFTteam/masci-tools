@@ -31,7 +31,7 @@ def LockContainer(lock_object: Union['LockableList', 'LockableDict']) -> Generat
 
     assert isinstance(lock_object, (LockableDict, LockableList)), f'Wrong type Got: {lock_object.__class__}'
 
-    assert not lock_object._locked, f'{lock_object.__class__.__name__} was already locked before entering the contextmanager'
+    assert not lock_object.locked, f'{lock_object.__class__.__name__} was already locked before entering the contextmanager'
 
     lock_object.freeze()
 

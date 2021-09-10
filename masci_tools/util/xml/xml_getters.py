@@ -447,7 +447,7 @@ def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True, 
               which can not be controlled by input for inpgen, were changed)
 
     """
-    from masci_tools.util.schema_dict_util import read_constants, eval_simple_xpath
+    from masci_tools.util.schema_dict_util import read_constants, eval_simple_xpath, attrib_exists
     from masci_tools.util.schema_dict_util import evaluate_attribute, evaluate_text, evaluate_tag
     from masci_tools.util.xml.common_functions import clear_xml
     from masci_tools.util.xml.converters import convert_fleur_lo, convert_fleur_electronconfig
@@ -559,13 +559,30 @@ def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True, 
     if soc is not None and soc:
         parameters['soc'] = {'theta': theta, 'phi': phi}
 
-    # &kpt
-    #attrib = convert_from_fortran_bool(eval_xpath(root, l_soc_xpath))
-    #theta = eval_xpath(root, theta_xpath)
-    #phi = eval_xpath(root, phi_xpath)
-    # if kpt:
-    #    new_parameters['kpt'] = {'theta' : theta, 'phi' : phi}
-    #    # ['nkpt', 'kpts', 'div1', 'div2', 'div3',                         'tkb', 'tria'],
+    # kpt
+    if schema_dict.inp_version > (0, 31):
+        list_name = evaluate_attribute(root, schema_dict, 'listName', logger=logger)
+        kpointlists = eval_simple_xpath(root, schema_dict, 'kPointList', list_return=True, logger=logger)
+
+        if len(kpointlists) == 0:
+            raise ValueError('No Kpoint lists found in the given inp.xml')
+        labels = [kpoint_set.attrib.get('name') for kpoint_set in kpointlists]
+        if list_name not in labels:
+            raise ValueError(f'Selected Kpoint list with the name: {list_name} does not exist'
+                             f'Available list names: {labels}')
+
+        kpoint_index = labels.index(list_name)
+        kpoint_set = kpointlists[kpoint_index]
+
+        if attrib_exists(kpoint_set, schema_dict, 'type', logger=logger):
+            kpoint_type = evaluate_attribute(kpoint_set, schema_dict, 'type', logger=logger)
+
+            if kpoint_type == 'mesh':
+                nx = evaluate_attribute(kpoint_set, schema_dict, 'nx', logger=logger, optional=True)
+                ny = evaluate_attribute(kpoint_set, schema_dict, 'ny', logger=logger, optional=True)
+                nz = evaluate_attribute(kpoint_set, schema_dict, 'nz', logger=logger, optional=True)
+                if all(n is not None for n in (nx, ny, nz)):
+                    parameters['kpt'] = {'div1': nx, 'div2': ny, 'div3': nz}
 
     # title
     title = evaluate_text(root, schema_dict, 'comment', constants=constants, logger=logger, optional=True)
@@ -788,7 +805,13 @@ def get_structure_data(xmltree,
 
 
 @schema_dict_version_dispatch(output_schema=False)
-def get_kpoints_data(xmltree, schema_dict, name=None, index=None, logger=None, convert_to_angstroem=True):
+def get_kpoints_data(xmltree,
+                     schema_dict,
+                     name=None,
+                     index=None,
+                     only_used=False,
+                     logger=None,
+                     convert_to_angstroem=True):
     """
     Get the kpoint sets defined in the given fleur xml file.
 
@@ -802,6 +825,7 @@ def get_kpoints_data(xmltree, schema_dict, name=None, index=None, logger=None, c
                  is returned
     :param index: int, optional, if given only the kpoint set with the given index
                   is returned
+    :param only_used: bool if True only the kpoint list used in the calculation is returned
     :param logger: logger object for logging warnings, errors
     :param convert_to_angstroem: bool if True the bravais matrix is converted to angstroem
 
@@ -824,6 +848,9 @@ def get_kpoints_data(xmltree, schema_dict, name=None, index=None, logger=None, c
     if name is not None and index is not None:
         raise ValueError('Only provide one of index or name to select kpoint lists')
 
+    if only_used and (name is not None or index is not None):
+        raise ValueError('Either use only_used=False and provide the name/index or use only_used=True. Not both')
+
     if isinstance(xmltree, etree._ElementTree):
         xmltree, _ = clear_xml(xmltree)
         root = xmltree.getroot()
@@ -831,6 +858,9 @@ def get_kpoints_data(xmltree, schema_dict, name=None, index=None, logger=None, c
         root = xmltree
 
     constants = read_constants(root, schema_dict, logger=logger)
+
+    if only_used:
+        name = evaluate_attribute(root, schema_dict, 'listName', logger=logger)
 
     cell, pbc = get_cell(root, schema_dict, logger=logger, convert_to_angstroem=convert_to_angstroem)
 
@@ -841,7 +871,12 @@ def get_kpoints_data(xmltree, schema_dict, name=None, index=None, logger=None, c
 
     labels = [kpoint_set.attrib.get('name') for kpoint_set in kpointlists]
     if name is not None and name not in labels:
-        raise ValueError(f'Found no Kpoint list with the name: {name}' f'Available list names: {labels}')
+        if only_used:
+            raise ValueError(f'Found no Kpoint list with the name: {name}'
+                             f'Available list names: {labels}'
+                             'The listName attribute is not consistent with the rest of the input')
+        else:
+            raise ValueError(f'Found no Kpoint list with the name: {name}' f'Available list names: {labels}')
 
     if index is not None:
         try:
@@ -881,7 +916,7 @@ def get_kpoints_data(xmltree, schema_dict, name=None, index=None, logger=None, c
 
 
 @get_kpoints_data.register(max_version='0.31')
-def get_kpoints_data_max4(xmltree, schema_dict, logger=None, convert_to_angstroem=True):
+def get_kpoints_data_max4(xmltree, schema_dict, logger=None, convert_to_angstroem=True, only_used=False):
     """
     Get the kpoint sets defined in the given fleur xml file.
 
@@ -894,6 +929,7 @@ def get_kpoints_data_max4(xmltree, schema_dict, logger=None, convert_to_angstroe
                         of the xmltree
     :param logger: logger object for logging warnings, errors
     :param convert_to_angstroem: bool if True the bravais matrix is converted to angstroem
+    :param only_used: (Has no effect for Max4) bool if True only the kpoint list used in the calculation is returned
 
     :returns: tuple containing the kpoint information
 

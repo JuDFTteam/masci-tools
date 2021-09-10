@@ -35,6 +35,7 @@ TEST_NO_SYMMETRY_PATH = os.path.join(inpxmlfilefolder, 'files/fleur/aiida_fleur/
 TEST_WITH_RELAX_INPXML_PATH = os.path.join(inpxmlfilefolder, 'files/fleur/Max-R5/H2ORelaxBFGS/files/inp.xml')
 TEST_NON_STANDARD_KIND_INPXML_PATH = os.path.join(inpxmlfilefolder,
                                                   'files/fleur/Max-R5/CrystalFieldOutput/files/inp.xml')
+TEST_KPT_MESH_SPECIFICATION_INPXML_PATH = os.path.join(inpxmlfilefolder, 'files/fleur/Max-R5/Gd_Hubbard1/files/inp.xml')
 
 inpxmlfilelist = []
 inpxmlfilelist_content = []
@@ -389,6 +390,17 @@ def test_parameter_norm_kinds(load_inpxml, data_regression):
     data_regression.check(para)
 
 
+def test_parameter_mesh_specification(load_inpxml, data_regression):
+
+    from masci_tools.util.xml.xml_getters import get_parameter_data
+
+    xmltree, schema_dict = load_inpxml(TEST_KPT_MESH_SPECIFICATION_INPXML_PATH)
+
+    para = get_parameter_data(xmltree, schema_dict)
+
+    data_regression.check(para)
+
+
 def test_kpoints_film(load_inpxml, data_regression):
 
     from masci_tools.util.xml.xml_getters import get_kpoints_data
@@ -457,6 +469,24 @@ def test_kpoints_multiple_sets_selection_index(load_inpxml, data_regression):
     xmltree, schema_dict = load_inpxml(TEST_MULTIPLE_KPOINT_SETS_PATH)
 
     kpoints, weights, cell, pbc = get_kpoints_data(xmltree, schema_dict, index=0)
+
+    data_regression.check({'kpoints': kpoints, 'weights': weights, 'cell': convert_to_pystd(cell), 'pbc': pbc})
+
+
+def test_kpoints_multiple_sets_selection_used(load_inpxml, data_regression):
+
+    from masci_tools.util.xml.xml_getters import get_kpoints_data
+    from masci_tools.io.common_functions import convert_to_pystd
+
+    xmltree, schema_dict = load_inpxml(TEST_MULTIPLE_KPOINT_SETS_PATH)
+
+    #Conflicting arguments
+    with pytest.raises(ValueError):
+        kpoints, weights, cell, pbc = get_kpoints_data(xmltree, schema_dict, index=0, only_used=True)
+    with pytest.raises(ValueError):
+        kpoints, weights, cell, pbc = get_kpoints_data(xmltree, schema_dict, name='default', only_used=True)
+
+    kpoints, weights, cell, pbc = get_kpoints_data(xmltree, schema_dict, only_used=True)
 
     data_regression.check({'kpoints': kpoints, 'weights': weights, 'cell': convert_to_pystd(cell), 'pbc': pbc})
 

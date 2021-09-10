@@ -14,6 +14,14 @@
 Plotting routine for fleur density of states and bandstructures
 """
 import pandas as pd
+import warnings
+
+__all__ = (
+    'plot_fleur_bands',
+    'plot_fleur_dos',
+    'plot_fleur_bands_characterize',
+    'sum_weights_over_atoms',
+)
 
 
 def sum_weights_over_atoms(data, attributes, atoms_to_sum, entry_name):
@@ -65,7 +73,7 @@ def plot_fleur_bands_characterize(bandsdata,
                                   weight_colors,
                                   spinpol=True,
                                   only_spin=None,
-                                  bokeh_plot=False,
+                                  backend=None,
                                   **kwargs):
     """
     Plot the bandstructure previously extracted from a `banddos.hdf` via the
@@ -85,7 +93,7 @@ def plot_fleur_bands_characterize(bandsdata,
                          should be shown with different colors the list should be twice as long as the weights
     :param spinpol: bool, if True (default) use the plot for spin-polarized bands if the data is spin-polarized
     :param only_spin: optional str, if given only the speicified spin components are plotted
-    :param bokeh_plot: bool (default False), if True use the bokeh routines for plotting
+    :param backend: specify which plotting library to use ('matplotlib' or 'bokeh')
 
     All other Kwargs are passed on to :py:func:`~masci_tools.vis.fleur.plot_fleur_bands()`
     """
@@ -131,33 +139,24 @@ def plot_fleur_bands_characterize(bandsdata,
     if only_spin is not None:
         if only_spin not in ('up', 'down'):
             raise ValueError(f'Invalid value for only spin {only_spin} (Valid are up or down)')
-
-        if bokeh_plot:
-            color_data = f'color_{only_spin}'
-        else:
-            color_data = bandsdata[f'color_{only_spin}']
+        color_data = f'color_{only_spin}'
     else:
-        if bokeh_plot:
-            color_data = 'color_up'
-            if spinpol_data:
-                color_data = ['color_up', 'color_down']
-        else:
-            color_data = bandsdata['color_up']
-            if spinpol_data:
-                color_data = [bandsdata['color_up'], bandsdata['color_down']]
+        color_data = 'color_up'
+        if spinpol_data:
+            color_data = ['color_up', 'color_down']
 
     return plot_fleur_bands(bandsdata,
                             bandsattributes,
                             spinpol=spinpol,
                             only_spin=only_spin,
-                            bokeh_plot=bokeh_plot,
+                            backend=backend,
                             weight='max_weight',
                             scale_color=False,
                             color_data=color_data,
                             **kwargs)
 
 
-def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, only_spin=None, bokeh_plot=False, weight=None, **kwargs):
+def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, only_spin=None, backend=None, weight=None, **kwargs):
     """
     Plot the bandstructure previously extracted from a `banddos.hdf` via the
     :py:class:`~masci_tools.io.parsers.hdf5.reader.HDF5Reader`
@@ -170,15 +169,20 @@ def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, only_spin=None, b
     :param attributes: attributes dict produced by the `FleurBands` recipe
     :param spinpol: bool, if True (default) use the plot for spin-polarized bands if the data is spin-polarized
     :param only_spin: optional str, if given only the speicified spin components are plotted
-    :param bokeh_plot: bool (default False), if True use the bokeh routines for plotting
+    :param backend: specify which plotting library to use ('matplotlib' or 'bokeh')
     :param weight: str, name of the weight (without spin suffix `_up` or `_dn`) you want to emphasize
 
     All other Kwargs are passed on to the underlying plot routines
         - Matplotlib: :py:func:`~masci_tools.vis.plot_methods.plot_bands()`, :py:func:`~masci_tools.vis.plot_methods.plot_spinpol_bands()`
         - Bokeh: :py:func:`~masci_tools.vis.bokeh_plots.bokeh_bands()`, :py:func:`~masci_tools.vis.bokeh_plots.bokeh_spinpol_bands()`
     """
-    from masci_tools.vis.plot_methods import plot_bands, plot_spinpol_bands
-    from masci_tools.vis.bokeh_plots import bokeh_bands, bokeh_spinpol_bands
+    from .common import bands, spinpol_bands, PlotBackend
+
+    if 'bokeh_plot' in kwargs:
+        warnings.warn(
+            'The argument bokeh_plot is deprecated. Use the argument backend to specify'
+            'the plotting library to use', DeprecationWarning)
+        backend = 'bokeh' if kwargs.pop('bokeh_plot') else 'matplotlib'
 
     nbands = bandsattributes['nbands']
 
@@ -189,9 +193,9 @@ def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, only_spin=None, b
     for k_index, label in zip(bandsattributes['special_kpoint_indices'], bandsattributes['special_kpoint_labels']):
         special_kpoints.append((label, bandsdata['kpath'][(k_index * nbands) + 1]))
 
-    plot_label = None
-    if spinpol:
-        plot_label = ['Spin-Up', 'Spin-Down']
+    band_index = pd.Series(data=[index % nbands for index in range(len(bandsdata['kpath']))], name='band_index')
+    new_bandsdata = pd.concat([bandsdata, band_index], axis=1)
+    bandsdata = new_bandsdata
 
     if only_spin is not None:
         if only_spin not in ('up', 'down'):
@@ -201,7 +205,9 @@ def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, only_spin=None, b
            f'eigenvalues_{only_spin}' not in bandsdata.keys():
             raise ValueError(f'No data for spin {only_spin} available')
 
-        bandsdata = bandsdata[[key for key in bandsdata.keys() if f'_{only_spin}' in key or key == 'kpath']]
+        bandsdata = bandsdata[[
+            key for key in bandsdata.keys() if f'_{only_spin}' in key or key in ('kpath', 'band_index')
+        ]]
 
         if only_spin == 'down':
             bandsdata = bandsdata.rename(columns={key: key.replace('_down', '_up') for key in bandsdata.columns})
@@ -212,82 +218,76 @@ def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, only_spin=None, b
         if isinstance(weight, list):
             if len(weight) != 2:
                 raise ValueError(f'Expected 2 weight names. Got: {len(weight)}')
-            if all(w in bandsdata for w in weight):
-                if not bokeh_plot:
-                    weight = [bandsdata[w] for w in weight]
-            else:
+            if not all(w in bandsdata for w in weight):
                 raise ValueError(f'List of weights provided but not all weights are present in bandsdata: {weight}')
         elif weight in bandsdata:
             if spinpol_data:
                 raise ValueError('For spin-polarized bandstructure two weights have to be given for spin-up and down')
-            if not bokeh_plot:
-                weight = bandsdata[weight]
         else:
-            if not bokeh_plot:
-                if spinpol_data:
-                    weight = [bandsdata[f'{weight}_up'], bandsdata[f'{weight}_down']]
-                else:
-                    weight = bandsdata[f'{weight}_up']
+            if spinpol_data:
+                weight = [f'{weight}_up', f'{weight}_down']
             else:
-                if spinpol_data:
-                    weight = [f'{weight}_up', f'{weight}_down']
-                else:
-                    weight = f'{weight}_up'
+                weight = f'{weight}_up'
 
     if spinpol_data and not spinpol:
         #Concatenate the _up and _down columns
         spin_up = bandsdata[[label for label in bandsdata.columns if label.endswith('_up')]]
         spin_dn = bandsdata[[label for label in bandsdata.columns if label.endswith('_down')]]
         kpath = bandsdata['kpath']
+        band_index = bandsdata['band_index']
 
         spin_dn = spin_dn.rename(columns={key: key.replace('_down', '_up') for key in spin_dn.columns})
 
         #Double kpath and extend spin up data
         kpath = kpath.append(kpath, ignore_index=True)
+        band_index = band_index.append(band_index + nbands + 1, ignore_index=True)
         complete_spin = pd.concat([spin_up, spin_dn], ignore_index=True)
 
         #And now add the new kpath and overwrite bandsdata
-        new_bandsdata = pd.concat([complete_spin, kpath], axis=1)
+        new_bandsdata = pd.concat([complete_spin, kpath, band_index], axis=1)
         bandsdata = new_bandsdata
 
         if isinstance(weight, list):
-            if isinstance(weight[0], pd.Series):
-                weight = weight[0].append(weight[1], ignore_index=True)
+            weight = weight[0]
 
         if 'color_data' in kwargs:
             color_data = kwargs.pop('color_data')
             if isinstance(color_data[0], str):
                 color_data = color_data[0]
-            elif isinstance(color_data[0], pd.Series):
-                color_data = color_data[0].append(color_data[1], ignore_index=True)
             kwargs['color_data'] = color_data
 
     spinpol = spinpol_data and spinpol
 
-    if bokeh_plot:
-        if spinpol:
-            fig = bokeh_spinpol_bands(bandsdata,
-                                      weight=weight,
-                                      special_kpoints=special_kpoints,
-                                      legend_label=plot_label,
-                                      **kwargs)
+    backend = PlotBackend.from_str(backend)
+
+    if spinpol:
+        plot_label = ['Spin-Up', 'Spin-Down']
+        if backend == PlotBackend.bokeh:
+            if 'legend_label' not in kwargs:
+                kwargs['legend_label'] = plot_label
         else:
-            fig = bokeh_bands(bandsdata, weight=weight, special_kpoints=special_kpoints, **kwargs)
+            if 'plot_label' not in kwargs:
+                kwargs['plot_label'] = plot_label
+
+    if spinpol:
+        fig = spinpol_bands('kpath',
+                            'eigenvalues_up',
+                            'eigenvalues_down',
+                            data=bandsdata,
+                            size_data=weight,
+                            special_kpoints=special_kpoints,
+                            band_index='band_index',
+                            backend=backend,
+                            **kwargs)
     else:
-        if spinpol:
-            fig = plot_spinpol_bands(bandsdata['kpath'],
-                                     bandsdata['eigenvalues_up'],
-                                     bandsdata['eigenvalues_down'],
-                                     size_data=weight,
-                                     special_kpoints=special_kpoints,
-                                     plot_label=plot_label,
-                                     **kwargs)
-        else:
-            fig = plot_bands(bandsdata['kpath'],
-                             bandsdata['eigenvalues_up'],
-                             size_data=weight,
-                             special_kpoints=special_kpoints,
-                             **kwargs)
+        fig = bands('kpath',
+                    'eigenvalues_up',
+                    data=bandsdata,
+                    size_data=weight,
+                    special_kpoints=special_kpoints,
+                    band_index='band_index',
+                    backend=backend,
+                    **kwargs)
 
     return fig
 
@@ -295,7 +295,6 @@ def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, only_spin=None, b
 def plot_fleur_dos(dosdata,
                    attributes,
                    spinpol=True,
-                   bokeh_plot=False,
                    multiply_by_equiv_atoms=True,
                    plot_keys=None,
                    show_total=True,
@@ -304,6 +303,7 @@ def plot_fleur_dos(dosdata,
                    show_atoms='all',
                    show_lresolved=None,
                    key_mask=None,
+                   backend=None,
                    **kwargs):
     """
     Plot the density of states previously extracted from a `banddos.hdf` via the
@@ -319,7 +319,7 @@ def plot_fleur_dos(dosdata,
     :param dosdata: dataset dict produced by the `FleurDOS` recipe
     :param attributes: attributes dict produced by the `FleurDOS` recipe
     :param spinpol: bool, if True (default) use the plot for spin-polarized dos if the data is spin-polarized
-    :param bokeh_plot: bool (default False), if True use the bokeh routines for plotting
+    :param backend: specify which plotting library to use ('matplotlib' or 'bokeh')
 
     Arguments for selecting the DOS components to plot:
         :param plot_keys: optional str list of str, defines the labels you want to plot
@@ -334,10 +334,15 @@ def plot_fleur_dos(dosdata,
         - Matplotlib: :py:func:`~masci_tools.vis.plot_methods.plot_dos()`, :py:func:`~masci_tools.vis.plot_methods.plot_spinpol_dos()`
         - Bokeh: :py:func:`~masci_tools.vis.bokeh_plots.bokeh_dos()`, :py:func:`~masci_tools.vis.bokeh_plots.bokeh_spinpol_dos()`
     """
-    from masci_tools.vis.plot_methods import plot_dos, plot_spinpol_dos
-    from masci_tools.vis.bokeh_plots import bokeh_dos, bokeh_spinpol_dos
+    from .common import dos, spinpol_dos, PlotBackend
     import numpy as np
     from collections import Counter
+
+    if 'bokeh_plot' in kwargs:
+        warnings.warn(
+            'The argument bokeh_plot is deprecated. Use the argument backend to specify'
+            'the plotting library to use', DeprecationWarning)
+        backend = 'bokeh' if kwargs.pop('bokeh_plot') else 'matplotlib'
 
     dosdata = pd.DataFrame(data=dosdata)
 
@@ -354,41 +359,43 @@ def plot_fleur_dos(dosdata,
     legend_labels, keys = _generate_dos_labels(dosdata, attributes, spinpol)
 
     if key_mask is None:
-        key_mask = _select_from_Local(keys,
-                                      plot_keys,
-                                      spinpol,
-                                      show_total=show_total,
-                                      show_interstitial=show_interstitial,
-                                      show_sym=show_sym,
-                                      show_atoms=show_atoms,
-                                      show_lresolved=show_lresolved)
+        key_mask = _select_entries(keys,
+                                   attributes['group_name'],
+                                   plot_keys,
+                                   spinpol,
+                                   show_total=show_total,
+                                   show_interstitial=show_interstitial,
+                                   show_sym=show_sym,
+                                   show_atoms=show_atoms,
+                                   show_lresolved=show_lresolved)
 
     #Select the keys
     legend_labels, keys = np.array(legend_labels)[key_mask].tolist(), np.array(keys)[key_mask].tolist()
 
-    kwargs = _process_dos_kwargs(keys, bokeh_plot=bokeh_plot, **kwargs)
+    kwargs = _process_dos_kwargs(keys, backend=backend, **kwargs)
 
-    if bokeh_plot:
-        if spinpol:
-            fig = bokeh_spinpol_dos(dosdata, ynames=keys, legend_label=legend_labels, **kwargs)
-        else:
-            fig = bokeh_dos(dosdata, ynames=keys, legend_label=legend_labels, **kwargs)
+    if spinpol:
+        dosdata_up = [key for key in keys if '_up' in key]
+        dosdata_dn = [key for key in keys if '_down' in key]
+
+    backend = PlotBackend.from_str(backend)
+
+    if backend == PlotBackend.bokeh:
+        if 'legend_label' not in kwargs:
+            kwargs['legend_label'] = legend_labels
     else:
-        if spinpol:
-            #Remove second half of legend labels
-            legend_labels[len(legend_labels) // 2:] = [None] * (len(legend_labels) // 2)
+        if 'plot_label' not in kwargs:
+            kwargs['plot_label'] = legend_labels
 
-            dosdata_up = [dosdata[key].to_numpy() for key in keys if '_up' in key]
-            dosdata_dn = [dosdata[key].to_numpy() for key in keys if '_down' in key]
-            fig = plot_spinpol_dos(dosdata['energy_grid'], dosdata_up, dosdata_dn, plot_label=legend_labels, **kwargs)
-        else:
-            dosdata_up = [dosdata[key].to_numpy() for key in keys if '_up' in key]
-            fig = plot_dos(dosdata['energy_grid'], dosdata_up, plot_label=legend_labels, **kwargs)
+    if spinpol:
+        fig = spinpol_dos('energy_grid', dosdata_up, dosdata_dn, data=dosdata, backend=backend, **kwargs)
+    else:
+        fig = dos('energy_grid', keys, data=dosdata, backend=backend, **kwargs)
 
     return fig
 
 
-def _process_dos_kwargs(ordered_keys, bokeh_plot=False, **kwargs):
+def _process_dos_kwargs(ordered_keys, backend=None, **kwargs):
     """
     Convert any kwarg in dict form with str keys to the correct dict with integer index
     for the plotting functions.
@@ -397,13 +404,9 @@ def _process_dos_kwargs(ordered_keys, bokeh_plot=False, **kwargs):
 
     :returns: kwargs with the dicts converted to integer indexed dicts
     """
-    from .matplotlib_plotter import MatplotlibPlotter
-    from .bokeh_plotter import BokehPlotter
+    from .common import get_plotter
 
-    if bokeh_plot:
-        params = BokehPlotter()
-    else:
-        params = MatplotlibPlotter()
+    params = get_plotter(backend)
 
     for key, value in kwargs.items():
         if params.is_general(key):
@@ -444,15 +447,19 @@ def _dos_order(key):
     if key in general:
         return (spin, general.index(key))
     elif ':' in key:
-        before, after = key.split(':')
-
+        before, after = key.split(':', maxsplit=1)
         tail = after.lstrip('0123456789')
-        atom_type = int(after[:-len(tail)]) if len(tail) > 0 else int(after[0])
+        index = int(after[:-len(tail)]) if len(tail) > 0 else int(after)
 
+        tail = tail.lstrip(',')
+        if tail.startswith('ind:'):
+            tail = int(tail[4:])
         if tail in orbital_order:
-            return (spin, len(general) + atom_type, str(orbital_order.index(tail)))
+            return (spin, len(general) + index, orbital_order.index(tail), '')
+        elif isinstance(tail, int):
+            return (spin, len(general) + index, tail, '')
         else:
-            return (spin, len(general) + atom_type, tail)
+            return (spin, len(general) + index, float('inf'), tail)
 
     return None
 
@@ -493,17 +500,23 @@ def _generate_dos_labels(dosdata, attributes, spinpol):
             labels.append(key)
         elif ':' in key:  #Atom specific DOS
 
-            before, after = key.split(':')
-
+            before, after = key.split(':', maxsplit=1)
             tail = after.lstrip('0123456789')
-            atom_type = int(after[:-len(tail)])
-            atom_label = types_elements[atom_type - 1]
+            index = int(after[:-len(tail)]) if len(tail) > 0 else int(after)
 
-            if types_elements.count(atom_label) != 1:
-                atom_occ = types_elements[:atom_type].count(atom_label)
+            if before == 'MT':
+                label = types_elements[index - 1]
 
-                atom_label = f'{atom_label}-{atom_occ}'
+                if types_elements.count(label) != 1:
+                    atom_occ = types_elements[:index].count(label)
 
+                    label = f'{label}-{atom_occ}'
+            elif before in ('jDOS', 'ORB'):
+                label = attributes['atoms_elements'][index - 1]
+                atom_occ = list(attributes['atoms_elements'][:index]).count(label)
+                label = f'{before} {label}-{atom_occ}'
+
+            tail = tail.lstrip(',')
             if '_up' in tail:
                 tail = tail.split('_up')[0]
                 if spinpol:
@@ -512,8 +525,9 @@ def _generate_dos_labels(dosdata, attributes, spinpol):
                 tail = tail.split('_down')[0]
                 if spinpol:
                     tail = f'{tail} up/down'
+            label += ' ' + tail
 
-            labels.append(f'{atom_label} {tail}')
+            labels.append(label)
 
         else:
             if '_up' in key:
@@ -529,7 +543,8 @@ def _generate_dos_labels(dosdata, attributes, spinpol):
     return labels, plot_order
 
 
-def _select_from_Local(keys, plot_keys, spinpol, show_total, show_interstitial, show_sym, show_atoms, show_lresolved):
+def _select_entries(keys, group_name, plot_keys, spinpol, show_total, show_interstitial, show_sym, show_atoms,
+                    show_lresolved):
 
     #TODO: How do we do other dos modes
 
@@ -547,20 +562,30 @@ def _select_from_Local(keys, plot_keys, spinpol, show_total, show_interstitial, 
     else:
         mask = [False] * len(keys)
 
-    mask[0] = show_total
-    mask[1] = show_interstitial
-    mask[2] = show_sym
+    if group_name == 'Local':
+        mask[0] = show_total
+        mask[1] = show_interstitial
+        mask[2] = show_sym
 
-    natoms = (len(mask) - 3) // 5
+        general_keys = 3
+        entries_per_atom = 5
+    elif group_name == 'Orbcomp':
+        general_keys = 0
+        entries_per_atom = 24
+    else:
+        warnings.warn(f'Selection for group {group_name} not yet implemented. Plotting all DOS components')
+
+    natoms = (len(mask) - general_keys) // entries_per_atom
 
     if show_atoms is not None:
         for iatom in range(1, natoms + 1):
-            mask[3 + (iatom - 1) * 5] = show_atoms == 'all' or iatom in show_atoms
+            mask[general_keys + (iatom - 1) * entries_per_atom] = show_atoms == 'all' or iatom in show_atoms
 
     if show_lresolved is not None:
         for iatom in range(1, natoms + 1):
             if show_lresolved == 'all' or iatom in show_lresolved:
-                mask[3 + (iatom - 1) * 5 + 1:3 + iatom * 5] = [True, True, True, True]
+                mask[general_keys + (iatom - 1) * entries_per_atom + 1:general_keys +
+                     iatom * entries_per_atom] = [True] * (entries_per_atom - 1)
 
     if plot_keys is not None:
         if not isinstance(plot_keys, list):

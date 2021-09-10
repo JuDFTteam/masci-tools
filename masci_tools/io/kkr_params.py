@@ -18,7 +18,7 @@ Also some defaults for the parameters are defined.
 
 __copyright__ = ('Copyright (c), 2017, Forschungszentrum Jülich GmbH,' 'IAS-1/PGI-1, Germany. All rights reserved.')
 __license__ = 'MIT license, see LICENSE.txt file'
-__version__ = '1.8.6'
+__version__ = '1.8.7'
 __contributors__ = 'Philipp Rüßmann'
 
 # This defines the default parameters for KKR used in the aiida plugin:
@@ -320,6 +320,30 @@ class kkrparams(object):
             ('POT_NS_CUTOFF', [
                 None, '%f', False,
                 'Accuracy: non-spherical cutoff for potential at the end of the iteration (defaults to 0.1*qbound if not set).'
+            ]),
+            ('<MTWAL>', [
+                None, '%f', False,
+                'Accuracy: Muffin tin weight in alat units for each site. Overwritten by the findsize run option!'
+            ]),
+            ('<LFMTWAL>', [
+                None, '%f', False,
+                'Accuracy: Muffin tin weight in alat units for each site in the left continuation region (INTERFACE=T).'
+            ]),
+            ('<RTMTWAL>', [
+                None, '%f', False,
+                'Accuracy: Muffin tin weight in alat units for each site in the right continuation region (INTERFACE=T).'
+            ]),
+            ('<MTWAU>', [
+                None, '%f', False,
+                'Accuracy: Muffin tin weight in atomic units for each site. Overwritten by the findsize run option!'
+            ]),
+            ('<LFMTWAU>', [
+                None, '%f', False,
+                'Accuracy: Muffin tin weight in alat units for each site in the left continuation region (INTERFACE=T).'
+            ]),
+            ('<RTMTWAU>', [
+                None, '%f', False,
+                'Accuracy: Muffin tin weight in alat units for each site in the right continuation region (INTERFACE=T).'
             ]),
             # scf cycle
             ('NSTEPS', [
@@ -1234,13 +1258,20 @@ class kkrparams(object):
                 nrbasis = 1
             lmax = keywords['LMAX']
 
-            listargs = dict([['<RBASIS>', naez], ['<RBLEFT>', nlbasis], ['<RBRIGHT>', nrbasis], ['<SHAPE>', natyp],
-                             ['<ZATOM>', natyp], ['<SOCSCL>', natyp], ['<SITE>', natyp], ['<CPA-CONC>', natyp],
-                             ['<KAOEZL>', nlbasis], ['<KAOEZR>', nrbasis], ['XINIPOL', natyp], ['<RMTREF>', natyp],
-                             ['<RMTREFL>', nlbasis], ['<RMTREFR>', nrbasis], ['<FPRADIUS>', natyp], ['BZDIVIDE', 3],
-                             ['<RBLEFT>', nrbasis], ['ZPERIODL', 3], ['<RBRIGHT>', nrbasis], ['ZPERIODR', 3],
-                             ['LDAU_PARA', 5], ['CPAINFO', 2], ['<DELTAE>', 2], ['FILES', 2], ['DECIFILES', 2],
-                             ['<RMTCORE>', naez], ['<AT_SCALE_BDG>', natyp], ['<LM_SCALE_BDG>', (lmax + 1)**2]])
+            #yapf: disable
+            listargs = dict([
+                ['<RBASIS>', naez], ['<RBLEFT>', nlbasis], ['<RBRIGHT>', nrbasis], ['<SHAPE>', natyp],
+                ['<ZATOM>', natyp], ['<SOCSCL>', natyp], ['<SITE>', natyp], ['<CPA-CONC>', natyp],
+                ['<KAOEZL>', nlbasis], ['<KAOEZR>', nrbasis], ['XINIPOL', natyp], ['<RMTREF>', natyp],
+                ['<RMTREFL>', nlbasis], ['<RMTREFR>', nrbasis], ['<FPRADIUS>', natyp], ['BZDIVIDE', 3],
+                ['<RBLEFT>', nrbasis], ['ZPERIODL', 3], ['<RBRIGHT>', nrbasis], ['ZPERIODR', 3],
+                ['LDAU_PARA', 5], ['CPAINFO', 2], ['<DELTAE>', 2], ['FILES', 2], ['DECIFILES', 2],
+                ['<RMTCORE>', naez], ['<MTWAU>', naez], ['<RTMTWAU>',nrbasis ], ['<LFMTWAU>', nlbasis],
+                ['<MTWAL>', naez], ['<RTMTWAL>',nrbasis ], ['<LFMTWAL>', nlbasis],
+                ['<AT_SCALE_BDG>', natyp], ['<LM_SCALE_BDG>', (lmax + 1)**2],
+            ])
+            #yapf: enable
+
             # deal with special stuff for voronoi:
             if self.__params_type == 'voronoi':
                 listargs['<RMTCORE>'] = naez

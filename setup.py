@@ -17,7 +17,7 @@ with io.open(path.join(this_directory, 'README.md'), encoding='utf8') as f:
 if __name__ == '__main__':
     setup(
         name='masci_tools',
-        version='0.5.0',
+        version='0.6.0',
         description='Tools for Materials science. Vis contains wrappers of matplotlib functionality to visualize common material science data. Plus wrappers of visualisation for aiida-fleur workflow nodes',
         # add long_description from readme.md:
         long_description = long_description, # add contents of README.md
@@ -55,7 +55,7 @@ if __name__ == '__main__':
             'seaborn',
             'deepdiff',
             'humanfriendly',
-            'mendeleev',
+            'mendeleev<0.8.0',
         ],
         extras_require={
             'pre-commit': [

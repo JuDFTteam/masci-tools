@@ -88,6 +88,7 @@ There are a number of functions for extracting specific parts of the XML files i
    * :py:func:`~masci_tools.util.xml.xml_getters.get_structure_data()`: Get the structure from the xml file (atom positions + unit cell)
    * :py:func:`~masci_tools.util.xml.xml_getters.get_kpoints_data()`: Get the defined kpoint sets (single/multiple) from the xml file (kpoints + weights + unit cell)
    * :py:func:`~masci_tools.util.xml.xml_getters.get_relaxation_information()`: Get the relaxation history and current displacements
+   * :py:func:`~masci_tools.util.xml.xml_getters.get_symmetry_information()`: Get the symmetry operations used in the calculation
 
 All of these are used in the same way::
 
@@ -107,28 +108,24 @@ If only a small amount of information is required from the input or output files
 .. code-block:: python
 
    from masci_tools.io.io_fleurxml import load_inpxml
-   from masci_tools.util.schema_dict_util import read_constants #Read in predefined constants
    from masci_tools.util.schema_dict_util import evaluate_attribute, eval_simple_xpath
 
    #First we create a xml-tree from the input file and load the desired input schema dictionary
    xmltree, schema_dict = load_inpxml('/path/to/inp.xml')
    root = xmltree.getroot()
 
-   #For the input file there can be predefined contants
-   constants = read_constants(root, schema_dict)
-
    #Here an example of extracting some attributes. The interface to all functions in
    #schema_dict_util is the same
 
    #Number of spins
-   spins = evaluate_attribute(root, schema_dict, 'jspins', constants)
+   spins = evaluate_attribute(root, schema_dict, 'jspins')
 
    #Planewave cutoff (notice the names are case-insensitive, 'KMAX' would work as well)
-   kmax = evaluate_attribute(root, schema_dict, 'kmax', constants)
+   kmax = evaluate_attribute(root, schema_dict, 'kmax')
 
    #Some attributes need to be specified further for a distinct path
    #`radius` exists both for atom species and atom groups so we give a phrase to distinguish them
-   mt_radii = evaluate_attribute(root, schema_dict, 'radius', constants, contains='species')
+   mt_radii = evaluate_attribute(root, schema_dict, 'radius', contains='species')
 
    #But we can also make implicit constraints
    # 1. Get some element in the xml tree, where the path is more specified. In the example lets
@@ -138,4 +135,4 @@ If only a small amount of information is required from the input or output files
    #    for the `radius` attribute
 
    species = eval_simple_xpath(root, schema_dict, 'atomSpecies')
-   mt_radii = evaluate_attribute(species, schema_dict, 'radius', constants)
+   mt_radii = evaluate_attribute(species, schema_dict, 'radius')

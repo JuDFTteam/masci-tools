@@ -38,7 +38,8 @@ def create_outschema_dict(path, inpschema_dict):
         'root_tag': get_root_tag,
         '_basic_types': get_basic_types,
         'attrib_types': extract_attribute_types,
-        'simple_elements': get_basic_elements,
+        'text_types': extract_text_types,
+        'text_tags': get_text_tags,
         'tag_paths': get_tag_paths,
         'iteration_tag_paths': get_tag_paths,
         'unique_attribs': get_unique_attribs,
@@ -76,10 +77,6 @@ def create_outschema_dict(path, inpschema_dict):
         schema_dict[key] = action(xmlschema, namespaces, **schema_dict, **addargs)
 
     schema_dict['_input_basic_types'] = input_basic_types
-
-    #We cannot do the conversion to CaseInsensitiveDict before since we need the correct case
-    #For these attributes in the attrib_path functions
-    schema_dict['simple_elements'] = CaseInsensitiveDict(schema_dict['simple_elements'])
 
     return schema_dict
 
@@ -147,32 +144,21 @@ def merge_schema_dicts(inputschema_dict, outputschema_dict):
     for attrib, types in inputschema_dict['attrib_types'].items():
         out_types = set(merged_outschema_dict['attrib_types'].get(attrib, []))
 
-        new_types = sorted(out_types.union(set(types)))
-        if 'string' in new_types:
-            new_types.remove('string')
-            new_types.append('string')
+        new_types = sorted(out_types.union(set(types)), key=type_order)
 
         merged_outschema_dict['attrib_types'][attrib] = new_types
 
     #
     # 4. Merge the definition information for text tags
     #
-    for name, definition in inputschema_dict['simple_elements'].items():
-        if name in merged_outschema_dict['simple_elements']:
-            new_types = merged_outschema_dict['simple_elements'].get(name)
-            for new_definition in definition:
-                for index, old_dict in enumerate(new_types):
-                    equal_dicts = True
-                    for key, value in old_dict.items():
-                        if new_definition[key] != value:
-                            equal_dicts = False
-                    if equal_dicts:
-                        break
-                    if index == len(new_types) - 1:
-                        new_types.append(new_definition)
-            merged_outschema_dict['simple_elements'][name] = new_types
-        else:
-            merged_outschema_dict['simple_elements'][name] = definition
+    for tag, types in inputschema_dict['text_types'].items():
+        out_types = set(merged_outschema_dict['text_types'].get(tag, []))
+
+        new_types = sorted(out_types.union(set(types)), key=type_order)
+
+        merged_outschema_dict['text_types'][tag] = new_types
+
+    merged_outschema_dict['text_tags'] = merged_outschema_dict['text_tags'] | inputschema_dict['text_tags']
 
     #
     # 5. Merge the omittable tags

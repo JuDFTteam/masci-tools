@@ -43,6 +43,8 @@
 - 9
 - 10
 <LAMBDA_BDG>: null
+<LFMTWAL>: null
+<LFMTWAU>: null
 <LLOYD>: null
 <LM_SCALE_BDG>: null
 <MEMLEN_BROYDEN_BDG>: null
@@ -50,6 +52,8 @@
 <MIXFAC_BDG_BRY>: null
 <MODIFY_SOC_DIRAC>: null
 <MPI_SCHEME>: null
+<MTWAL>: null
+<MTWAU>: null
 <NINIT_BROYDEN_BDG>: null
 <NLBASIS>: 10
 <NO_MADELUNG>: null
@@ -472,6 +476,8 @@
 - 2.2671
 - 2.2671
 - 2.574
+<RTMTWAL>: null
+<RTMTWAU>: null
 <SEARCH_EFERMI>: null
 <SET_CHEBY_NOSOC>: null
 <SET_CHEBY_NOSPEEDUP>: null

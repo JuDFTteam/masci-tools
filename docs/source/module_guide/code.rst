@@ -28,6 +28,12 @@ General Plotting
 .. automodule:: masci_tools.vis.parameters
    :members:
 
+.. automodule:: masci_tools.vis.data
+   :members:
+
+.. automodule:: masci_tools.vis.common
+   :members:
+
 Matplotlib
 ^^^^^^^^^^^
 
@@ -53,6 +59,9 @@ Calculation tools
    :members:
 
 .. automodule:: masci_tools.tools.greensfunction
+   :members:
+
+.. automodule:: masci_tools.tools.greensf_calculations
    :members:
 
 IO helper functions and file parsers

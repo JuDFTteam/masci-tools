@@ -35,7 +35,10 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.coverage',
               'sphinx.ext.imgmath',
               'sphinx.ext.ifconfig',
-              'sphinx.ext.viewcode']
+              'sphinx.ext.viewcode',
+              'sphinx.ext.intersphinx']
+
+intersphinx_mapping = {'numpy': ('https://numpy.org/doc/stable/', None)}
 
 todo_include_todos = True
 
