@@ -1,4 +1,35 @@
 # Changelog
+
+## v.0.6.0
+
+[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.5.0...v0.6.0)
+
+This release contains major improvements to plotting methods and new tools. Also the fleur parsing functions were improved
+
+### Added
+- `PlotData` class for handling data passed to plotting methods very flexibly [[#54]](https://github.com/JuDFTteam/masci-tools/pull/54) (For more information see the relevant [users guide](https://masci-tools.readthedocs.io/en/latest/user_guide/plotting.html#providing-data) or [developers guide](https://masci-tools.readthedocs.io/en/latest/devel_guide/plot_data.html) sections in the documentation)
+- `masci_tools.vis.common` module for plotting methods with common interfaces for bokeh/matplotlib [[#71]](https://github.com/JuDFTteam/masci-tools/pull/71)
+- `get_parameter_data` also extracts kpt mesh specifications for the input generator
+- Exposed and improved bokeh testing fixtures in `masci_tools.testing.bokeh` for use in higher level packages
+- `greensf_calculations` module in `tools` with sample functions for calculating properties with green's functions from fleur
+- Added two options `line_plot` and `separate_bands` to bandstructure plots. While `line_plot` is obvious (no weighted bandstructures possible), `separate_bands` allows to set parameters for single selected bands. These options can also be combined
+
+### Improvements
+- Added option `only_used` to `get_kpoints_data` to get only the `kPointList` referenced in the `kPointListSelection` tag
+- Made `constants` argument to `schema_dict_util` functions completely optional. Will raise an exception if a undefined constant is encountered
+- Bandstructure plots now exclude points outside the plotting area to speed up these plots significantly for systems with a large number of bands
+- Refactored attribute/text type definitions in `SchemaDict` objects. Now unified under one structure. Both attributes and texts can now be recognized to contain multiple values [[#64]](https://github.com/JuDFTteam/masci-tools/pull/64)
+- Added `spin_arrows` option to toggle spin arrows in `plot_spinpol_dos` for matplotlib. Previously this was only possible for bokeh
+- Added options to create different types of bar plots to `barchart`: Available are `'stacked'` (default), `'grouped'`, `'independent'` (positions can be defined for each data set)
+- Exceptions occuring in `transforms` for `HDF5Reader` are now bundled into `HDF5TransformationError` to allow easier error handling
+- Added MT keys to `kkrparams`
+
+### Bugfixes
+- Fix for `write_inpgen_file`, which was incorrectly inserting the `'X'` (empty sphere) element into inpgen files
+- Fix for `read_inpgen_file`, which could not handle inpgen files with comments on certain lines in the inpgen file
+- Several fixes for `plot_fleur_dos` not using the standard DOS calculation but orbital decompositions and so on
+- Adjusted default `dpi` for matplotlib to `100` to avoid problems with size when using `plt.show()` instead of saving
+
 ## v.0.5.0
 
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.4.10...v0.5.0)
