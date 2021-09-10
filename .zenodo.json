@@ -1,14 +1,14 @@
 {
     "upload_type": "software",
     "language": "eng", 
-    "title": "JuDFTteam/masci-tools: materials science tools release v0.5.0", 
+    "title": "JuDFTteam/masci-tools: Material science tools", 
     "license": {
       "id": "MIT"
     }, 
     "access_right": "open", 
     "communities": [
       {
-        "id": "compmatsci"
+        "identifier": "compmatsci"
       }
     ], 
     "grants": [
@@ -100,5 +100,5 @@
       "type": "software", 
       "title": "Software"
     }, 
-    "description": "<p><strong>This is a collection of tools, common things used by packages of materials science.</strong></p>\n\n<p>Feel free to contribute.</p>\n\n<p>Masci-tools release v0.5.0, see <a href=\"../develop/CHANGELOG.md\">CHANGELOG.md</a></p>\n\n<p>The code is hosted on GitHub at: https://github.com/JuDFTteam/masci-tools</p>\n\n<p>The documentation is hosted on https://masci-tools.readthedocs.io.</p>\n\n<p>Most functionality was developed for the use with the DFT codes developed at the Forschungszentrum J&uuml;lich (see http://judft.de, https://flapw.de and https://jukkr.fz-juelich.de for further information on the codes) and in the context of the AiiDA plugins for the Fleur program (https://github.com/JuDFTteam/aiida-fleur) and the KKR program (https://github.com/JuDFTteam/aiida-kkr).</p>\n\n<p><strong>Installation</strong></p>\n\n<blockquote>\n<p><br>\npip install masci-tools<br>\n&nbsp;</p>\n</blockquote>\n\n<p><strong>Dependencies</strong></p>\n\n<p>These python packages are needed:</p>\n\n<ul>\n\t<li>`lxml`</li>\n\t<li>`h5py`</li>\n\t<li>`deepdiff`</li>\n\t<li>`humanfriendly` &nbsp;</li>\n\t<li>`matplotlib`</li>\n\t<li>`seaborn`</li>\n\t<li>`ase`</li>\n\t<li>`pymatgen`</li>\n\t<li>`mendeleev`</li>\n</ul>\n\n<p>It should not depend on `aiida-core`!</p>\n\n<p><strong>Layout of masci-tools</strong></p>\n\n<ul>\n\t<li>&nbsp;`io`: Contains methods to write certain files\n\t<ul>\n\t\t<li>`io.parsers`: Contains parsers of certain code output or input files</li>\n\t</ul>\n\t</li>\n\t<li>`tests`: auto tests of `masci-tools` functions</li>\n\t<li>`util`: Contains rather low level utility</li>\n\t<li>`tools`: Contains rather highlevel utility which is rather complete</li>\n\t<li>`vis`: Contain a collection of matplotlib, pyplot, gnuplot methods used for ploting common results from material science simulations, e.g. bandsstructures, DOS, ...</li>\n</ul>\n\n<p><strong>License</strong>:<br>\nmasci-tools is distributed under the terms and conditions of the MIT license which is specified in the `LICENSE.txt` file.</p>"
+    "description": "<p><strong>This is a collection of tools, common things used by packages of materials science.</strong></p>\n\n<p>Feel free to contribute.</p>\n\n<p>Masci-tools, see <a href=\"https://github.com/JuDFTteam/masci-tools/blob/master/CHANGELOG.md\">CHANGELOG.md</a></p>\n\n<p>The code is hosted on GitHub at: https://github.com/JuDFTteam/masci-tools</p>\n\n<p>The documentation is hosted on https://masci-tools.readthedocs.io.</p>\n\n<p>Most functionality was developed for the use with the DFT codes developed at the Forschungszentrum J&uuml;lich (see http://judft.de, https://flapw.de and https://jukkr.fz-juelich.de for further information on the codes) and in the context of the AiiDA plugins for the Fleur program (https://github.com/JuDFTteam/aiida-fleur) and the KKR program (https://github.com/JuDFTteam/aiida-kkr).</p>\n\n<p><strong>Installation</strong></p>\n\n<blockquote>\n<p><br>\npip install masci-tools<br>\n&nbsp;</p>\n</blockquote>\n\n<p><strong>Dependencies</strong></p>\n\n<p>These python packages are needed:</p>\n\n<ul>\n\t<li>`lxml`</li>\n\t<li>`h5py`</li>\n\t<li>`deepdiff`</li>\n\t<li>`humanfriendly` &nbsp;</li>\n\t<li>`matplotlib`</li>\n\t<li>`seaborn`</li>\n\t<li>`ase`</li>\n\t<li>`pymatgen`</li>\n\t<li>`mendeleev`</li>\n</ul>\n\n<p>It should not depend on `aiida-core`!</p>\n\n<p><strong>Layout of masci-tools</strong></p>\n\n<ul>\n\t<li>&nbsp;`io`: Contains methods to write certain files\n\t<ul>\n\t\t<li>`io.parsers`: Contains parsers of certain code output or input files</li>\n\t</ul>\n\t</li>\n\t<li>`testing`: Contains utilities/fixtures for testing that can be useful outside the package</li>\n\t<li>`util`: Contains rather low-level utility</li>\n\t<li>`tools`: Contains rather high-level utility which is rather complete</li>\n\t<li>`vis`: Contain a collection of matplotlib/bokeh methods used for plotting common results from material science simulations, e.g. bandstructures, DOS, ...</li>\n</ul>\n\n<p><strong>License</strong>:<br>\nmasci-tools is distributed under the terms and conditions of the MIT license which is specified in the `LICENSE.txt` file.</p>"
 }
