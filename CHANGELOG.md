@@ -1,5 +1,7 @@
 # Changelog
 
+## v.0.6.1
+Release fixing a small issue with publishing version `0.6.0` to zenodo
 ## v.0.6.0
 
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.5.0...v0.6.0)
