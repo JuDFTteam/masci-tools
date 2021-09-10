@@ -55,7 +55,7 @@ if __name__ == '__main__':
             'seaborn',
             'deepdiff',
             'humanfriendly',
-            'mendeleev',
+            'mendeleev<0.8.0',
         ],
         extras_require={
             'pre-commit': [
