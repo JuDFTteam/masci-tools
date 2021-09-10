@@ -1258,6 +1258,7 @@ class kkrparams(object):
                 nrbasis = 1
             lmax = keywords['LMAX']
 
+            #yapf: disable
             listargs = dict([
                 ['<RBASIS>', naez], ['<RBLEFT>', nlbasis], ['<RBRIGHT>', nrbasis], ['<SHAPE>', natyp],
                 ['<ZATOM>', natyp], ['<SOCSCL>', natyp], ['<SITE>', natyp], ['<CPA-CONC>', natyp],
@@ -1269,6 +1270,8 @@ class kkrparams(object):
                 ['<MTWAL>', naez], ['<RTMTWAL>',nrbasis ], ['<LFMTWAL>', nlbasis],
                 ['<AT_SCALE_BDG>', natyp], ['<LM_SCALE_BDG>', (lmax + 1)**2],
             ])
+            #yapf: enable
+
             # deal with special stuff for voronoi:
             if self.__params_type == 'voronoi':
                 listargs['<RMTCORE>'] = naez
