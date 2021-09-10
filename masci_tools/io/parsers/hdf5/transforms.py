@@ -28,6 +28,10 @@ from functools import wraps
 from .reader import HDF5Reader
 
 
+class HDF5TransformationError(Exception):
+    pass
+
+
 def hdf5_transformation(*, attribute_needed):
     """
     Decorator for registering a function as a transformation functions
@@ -47,7 +51,10 @@ def hdf5_transformation(*, attribute_needed):
         @wraps(func)
         def transform_func(*args, **kwargs):
             """Decorator for transformation function"""
-            return func(*args, **kwargs)
+            try:
+                return func(*args, **kwargs)
+            except Exception as exc:
+                raise HDF5TransformationError(f'The HDF5 transformation {func.__name__} failed with {exc}') from exc
 
         if getattr(HDF5Reader, '_transforms', None) is None:
             HDF5Reader._transforms = {}  # pylint: disable=protected-access

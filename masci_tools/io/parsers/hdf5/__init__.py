@@ -5,6 +5,6 @@ This is needed to make the HDF5Reader aware of their existence
 """
 
 from .reader import HDF5Reader
-from . import transforms  #pylint: disable=unused-import
+from .transforms import HDF5TransformationError
 
-__all__ = ['HDF5Reader']
+__all__ = ['HDF5Reader', 'HDF5TransformationError']
