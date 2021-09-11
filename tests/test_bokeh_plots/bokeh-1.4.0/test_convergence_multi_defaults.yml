@@ -1,0 +1,4704 @@
+roots:
+  references:
+  - attributes: {}
+    type: BasicTickFormatter
+  - attributes: {}
+    type: BasicTickFormatter
+  - attributes:
+      axis_label: Iteration
+      axis_label_text_font_size:
+        value: 18pt
+      axis_line_width:
+        value: 2
+      formatter:
+        type: BasicTickFormatter
+      major_label_text_font_size:
+        value: 16pt
+      ticker:
+        type: BasicTicker
+    type: LinearAxis
+  - attributes:
+      axis_label: Iteration
+      axis_label_text_font_size:
+        value: 18pt
+      axis_line_width:
+        value: 2
+      formatter:
+        type: BasicTickFormatter
+      major_label_text_font_size:
+        value: 16pt
+      ticker:
+        type: BasicTicker
+    type: LinearAxis
+  - attributes: {}
+    type: BasicTicker
+  - attributes: {}
+    type: BasicTicker
+  - attributes:
+      ticker:
+        type: BasicTicker
+    type: Grid
+  - attributes:
+      ticker:
+        type: BasicTicker
+    type: Grid
+  - attributes:
+      bottom_units: screen
+      fill_alpha:
+        value: 0.5
+      fill_color:
+        value: lightgrey
+      left_units: screen
+      level: overlay
+      line_alpha:
+        value: 1.0
+      line_color:
+        value: black
+      line_dash:
+      - 4
+      - 4
+      line_width:
+        value: 2
+      render_mode: css
+      right_units: screen
+      top_units: screen
+    type: BoxAnnotation
+  - attributes:
+      bottom_units: screen
+      fill_alpha:
+        value: 0.5
+      fill_color:
+        value: lightgrey
+      left_units: screen
+      level: overlay
+      line_alpha:
+        value: 1.0
+      line_color:
+        value: black
+      line_dash:
+      - 4
+      - 4
+      line_width:
+        value: 2
+      render_mode: css
+      right_units: screen
+      top_units: screen
+    type: BoxAnnotation
+  - attributes:
+      overlay:
+        type: BoxAnnotation
+    type: BoxZoomTool
+  - attributes:
+      overlay:
+        type: BoxAnnotation
+    type: BoxZoomTool
+  - attributes:
+      children:
+      - type: GridBox
+      - type: ToolbarBox
+    type: Column
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: '0'
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: '0'
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: '1'
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: '1'
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: '10'
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: '10'
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: '11'
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: '11'
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: '12'
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: '12'
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: '13'
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: '13'
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: '14'
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: '14'
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: '2'
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: '2'
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: '3'
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: '3'
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: '4'
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: '4'
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: '5'
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: '5'
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: '6'
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: '6'
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: '7'
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: '7'
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: '8'
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: '8'
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: '9'
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: '9'
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Scatter
+      hover_glyph: null
+      muted_glyph: null
+      name: '0'
+      nonselection_glyph:
+        type: Scatter
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Scatter
+      hover_glyph: null
+      muted_glyph: null
+      name: '0'
+      nonselection_glyph:
+        type: Scatter
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Scatter
+      hover_glyph: null
+      muted_glyph: null
+      name: '1'
+      nonselection_glyph:
+        type: Scatter
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Scatter
+      hover_glyph: null
+      muted_glyph: null
+      name: '1'
+      nonselection_glyph:
+        type: Scatter
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Scatter
+      hover_glyph: null
+      muted_glyph: null
+      name: '10'
+      nonselection_glyph:
+        type: Scatter
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Scatter
+      hover_glyph: null
+      muted_glyph: null
+      name: '10'
+      nonselection_glyph:
+        type: Scatter
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Scatter
+      hover_glyph: null
+      muted_glyph: null
+      name: '11'
+      nonselection_glyph:
+        type: Scatter
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Scatter
+      hover_glyph: null
+      muted_glyph: null
+      name: '11'
+      nonselection_glyph:
+        type: Scatter
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Scatter
+      hover_glyph: null
+      muted_glyph: null
+      name: '12'
+      nonselection_glyph:
+        type: Scatter
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Scatter
+      hover_glyph: null
+      muted_glyph: null
+      name: '12'
+      nonselection_glyph:
+        type: Scatter
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Scatter
+      hover_glyph: null
+      muted_glyph: null
+      name: '13'
+      nonselection_glyph:
+        type: Scatter
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Scatter
+      hover_glyph: null
+      muted_glyph: null
+      name: '13'
+      nonselection_glyph:
+        type: Scatter
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Scatter
+      hover_glyph: null
+      muted_glyph: null
+      name: '14'
+      nonselection_glyph:
+        type: Scatter
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Scatter
+      hover_glyph: null
+      muted_glyph: null
+      name: '14'
+      nonselection_glyph:
+        type: Scatter
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Scatter
+      hover_glyph: null
+      muted_glyph: null
+      name: '2'
+      nonselection_glyph:
+        type: Scatter
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Scatter
+      hover_glyph: null
+      muted_glyph: null
+      name: '2'
+      nonselection_glyph:
+        type: Scatter
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Scatter
+      hover_glyph: null
+      muted_glyph: null
+      name: '3'
+      nonselection_glyph:
+        type: Scatter
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Scatter
+      hover_glyph: null
+      muted_glyph: null
+      name: '3'
+      nonselection_glyph:
+        type: Scatter
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Scatter
+      hover_glyph: null
+      muted_glyph: null
+      name: '4'
+      nonselection_glyph:
+        type: Scatter
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Scatter
+      hover_glyph: null
+      muted_glyph: null
+      name: '4'
+      nonselection_glyph:
+        type: Scatter
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Scatter
+      hover_glyph: null
+      muted_glyph: null
+      name: '5'
+      nonselection_glyph:
+        type: Scatter
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Scatter
+      hover_glyph: null
+      muted_glyph: null
+      name: '5'
+      nonselection_glyph:
+        type: Scatter
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Scatter
+      hover_glyph: null
+      muted_glyph: null
+      name: '6'
+      nonselection_glyph:
+        type: Scatter
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Scatter
+      hover_glyph: null
+      muted_glyph: null
+      name: '6'
+      nonselection_glyph:
+        type: Scatter
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Scatter
+      hover_glyph: null
+      muted_glyph: null
+      name: '7'
+      nonselection_glyph:
+        type: Scatter
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Scatter
+      hover_glyph: null
+      muted_glyph: null
+      name: '7'
+      nonselection_glyph:
+        type: Scatter
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Scatter
+      hover_glyph: null
+      muted_glyph: null
+      name: '8'
+      nonselection_glyph:
+        type: Scatter
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Scatter
+      hover_glyph: null
+      muted_glyph: null
+      name: '8'
+      nonselection_glyph:
+        type: Scatter
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Scatter
+      hover_glyph: null
+      muted_glyph: null
+      name: '9'
+      nonselection_glyph:
+        type: Scatter
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Scatter
+      hover_glyph: null
+      muted_glyph: null
+      name: '9'
+      nonselection_glyph:
+        type: Scatter
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes: {}
+    type: CrosshairTool
+  - attributes: {}
+    type: CrosshairTool
+  - attributes:
+      callback: null
+    type: DataRange1d
+  - attributes:
+      callback: null
+    type: DataRange1d
+  - attributes:
+      callback: null
+    type: DataRange1d
+  - attributes:
+      callback: null
+    type: DataRange1d
+  - attributes:
+      children:
+      - - subtype: Figure
+          type: Plot
+        - 0
+        - 0
+      - - subtype: Figure
+          type: Plot
+        - 1
+        - 0
+    type: GridBox
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - Calculation id
+        - '@id'
+      - - Iteration
+        - '@x'
+      - - Charge distance
+        - '@y'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - Calculation id
+        - '@id'
+      - - Iteration
+        - '@x'
+      - - Charge distance
+        - '@y'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - Calculation id
+        - '@id'
+      - - Iteration
+        - '@x'
+      - - Charge distance
+        - '@y'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - Calculation id
+        - '@id'
+      - - Iteration
+        - '@x'
+      - - Charge distance
+        - '@y'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - Calculation id
+        - '@id'
+      - - Iteration
+        - '@x'
+      - - Charge distance
+        - '@y'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - Calculation id
+        - '@id'
+      - - Iteration
+        - '@x'
+      - - Charge distance
+        - '@y'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - Calculation id
+        - '@id'
+      - - Iteration
+        - '@x'
+      - - Charge distance
+        - '@y'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - Calculation id
+        - '@id'
+      - - Iteration
+        - '@x'
+      - - Charge distance
+        - '@y'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - Calculation id
+        - '@id'
+      - - Iteration
+        - '@x'
+      - - Charge distance
+        - '@y'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - Calculation id
+        - '@id'
+      - - Iteration
+        - '@x'
+      - - Charge distance
+        - '@y'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - Calculation id
+        - '@id'
+      - - Iteration
+        - '@x'
+      - - Charge distance
+        - '@y'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - Calculation id
+        - '@id'
+      - - Iteration
+        - '@x'
+      - - Charge distance
+        - '@y'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - Calculation id
+        - '@id'
+      - - Iteration
+        - '@x'
+      - - Charge distance
+        - '@y'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - Calculation id
+        - '@id'
+      - - Iteration
+        - '@x'
+      - - Charge distance
+        - '@y'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - Calculation id
+        - '@id'
+      - - Iteration
+        - '@x'
+      - - Charge distance
+        - '@y'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - Calculation id
+        - '@id'
+      - - Iteration
+        - '@x'
+      - - Total energy difference
+        - '@y'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - Calculation id
+        - '@id'
+      - - Iteration
+        - '@x'
+      - - Total energy difference
+        - '@y'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - Calculation id
+        - '@id'
+      - - Iteration
+        - '@x'
+      - - Total energy difference
+        - '@y'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - Calculation id
+        - '@id'
+      - - Iteration
+        - '@x'
+      - - Total energy difference
+        - '@y'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - Calculation id
+        - '@id'
+      - - Iteration
+        - '@x'
+      - - Total energy difference
+        - '@y'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - Calculation id
+        - '@id'
+      - - Iteration
+        - '@x'
+      - - Total energy difference
+        - '@y'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - Calculation id
+        - '@id'
+      - - Iteration
+        - '@x'
+      - - Total energy difference
+        - '@y'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - Calculation id
+        - '@id'
+      - - Iteration
+        - '@x'
+      - - Total energy difference
+        - '@y'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - Calculation id
+        - '@id'
+      - - Iteration
+        - '@x'
+      - - Total energy difference
+        - '@y'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - Calculation id
+        - '@id'
+      - - Iteration
+        - '@x'
+      - - Total energy difference
+        - '@y'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - Calculation id
+        - '@id'
+      - - Iteration
+        - '@x'
+      - - Total energy difference
+        - '@y'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - Calculation id
+        - '@id'
+      - - Iteration
+        - '@x'
+      - - Total energy difference
+        - '@y'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - Calculation id
+        - '@id'
+      - - Iteration
+        - '@x'
+      - - Total energy difference
+        - '@y'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - Calculation id
+        - '@id'
+      - - Iteration
+        - '@x'
+      - - Total energy difference
+        - '@y'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - Calculation id
+        - '@id'
+      - - Iteration
+        - '@x'
+      - - Total energy difference
+        - '@y'
+    type: HoverTool
+  - attributes:
+      click_policy: hide
+      items:
+      - type: LegendItem
+      - type: LegendItem
+      - type: LegendItem
+      - type: LegendItem
+      - type: LegendItem
+      - type: LegendItem
+      - type: LegendItem
+      - type: LegendItem
+      - type: LegendItem
+      - type: LegendItem
+      - type: LegendItem
+      - type: LegendItem
+      - type: LegendItem
+      - type: LegendItem
+      - type: LegendItem
+      label_text_font_size:
+        value: 14pt
+    type: Legend
+  - attributes:
+      click_policy: hide
+      items:
+      - type: LegendItem
+      - type: LegendItem
+      - type: LegendItem
+      - type: LegendItem
+      - type: LegendItem
+      - type: LegendItem
+      - type: LegendItem
+      - type: LegendItem
+      - type: LegendItem
+      - type: LegendItem
+      - type: LegendItem
+      - type: LegendItem
+      - type: LegendItem
+      - type: LegendItem
+      - type: LegendItem
+      label_text_font_size:
+        value: 14pt
+    type: Legend
+  - attributes:
+      label:
+        value: '0'
+      renderers:
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+    type: LegendItem
+  - attributes:
+      label:
+        value: '0'
+      renderers:
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+    type: LegendItem
+  - attributes:
+      label:
+        value: '1'
+      renderers:
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+    type: LegendItem
+  - attributes:
+      label:
+        value: '1'
+      renderers:
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+    type: LegendItem
+  - attributes:
+      label:
+        value: '10'
+      renderers:
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+    type: LegendItem
+  - attributes:
+      label:
+        value: '10'
+      renderers:
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+    type: LegendItem
+  - attributes:
+      label:
+        value: '11'
+      renderers:
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+    type: LegendItem
+  - attributes:
+      label:
+        value: '11'
+      renderers:
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+    type: LegendItem
+  - attributes:
+      label:
+        value: '12'
+      renderers:
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+    type: LegendItem
+  - attributes:
+      label:
+        value: '12'
+      renderers:
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+    type: LegendItem
+  - attributes:
+      label:
+        value: '13'
+      renderers:
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+    type: LegendItem
+  - attributes:
+      label:
+        value: '13'
+      renderers:
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+    type: LegendItem
+  - attributes:
+      label:
+        value: '14'
+      renderers:
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+    type: LegendItem
+  - attributes:
+      label:
+        value: '14'
+      renderers:
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+    type: LegendItem
+  - attributes:
+      label:
+        value: '2'
+      renderers:
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+    type: LegendItem
+  - attributes:
+      label:
+        value: '2'
+      renderers:
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+    type: LegendItem
+  - attributes:
+      label:
+        value: '3'
+      renderers:
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+    type: LegendItem
+  - attributes:
+      label:
+        value: '3'
+      renderers:
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+    type: LegendItem
+  - attributes:
+      label:
+        value: '4'
+      renderers:
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+    type: LegendItem
+  - attributes:
+      label:
+        value: '4'
+      renderers:
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+    type: LegendItem
+  - attributes:
+      label:
+        value: '5'
+      renderers:
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+    type: LegendItem
+  - attributes:
+      label:
+        value: '5'
+      renderers:
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+    type: LegendItem
+  - attributes:
+      label:
+        value: '6'
+      renderers:
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+    type: LegendItem
+  - attributes:
+      label:
+        value: '6'
+      renderers:
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+    type: LegendItem
+  - attributes:
+      label:
+        value: '7'
+      renderers:
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+    type: LegendItem
+  - attributes:
+      label:
+        value: '7'
+      renderers:
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+    type: LegendItem
+  - attributes:
+      label:
+        value: '8'
+      renderers:
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+    type: LegendItem
+  - attributes:
+      label:
+        value: '8'
+      renderers:
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+    type: LegendItem
+  - attributes:
+      label:
+        value: '9'
+      renderers:
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+    type: LegendItem
+  - attributes:
+      label:
+        value: '9'
+      renderers:
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+    type: LegendItem
+  - attributes:
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_color: '#2ca02c'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_color: '#2ca02c'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_color: '#7f7f7f'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_color: '#7f7f7f'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_color: '#8c564b'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_color: '#8c564b'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_color: '#9467bd'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_color: '#9467bd'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_color: '#98df8a'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_color: '#98df8a'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_color: '#aec7e8'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_color: '#aec7e8'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_color: '#c49c94'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_color: '#c49c94'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_color: '#c5b0d5'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_color: '#c5b0d5'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_color: '#d62728'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_color: '#d62728'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_color: '#e377c2'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_color: '#e377c2'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_color: '#f7b6d2'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_color: '#f7b6d2'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_color: '#ff7f0e'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_color: '#ff7f0e'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_color: '#ff9896'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_color: '#ff9896'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_color: '#ffbb78'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_color: '#ffbb78'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes: {}
+    type: LinearScale
+  - attributes: {}
+    type: LinearScale
+  - attributes: {}
+    type: LogScale
+  - attributes: {}
+    type: LogScale
+  - attributes:
+      ticker: null
+    type: LogTickFormatter
+  - attributes:
+      ticker: null
+    type: LogTickFormatter
+  - attributes:
+      axis_label: Distance [me/bohr^3]
+      axis_label_text_font_size:
+        value: 18pt
+      axis_line_width:
+        value: 2
+      formatter:
+        type: LogTickFormatter
+      major_label_text_font_size:
+        value: 16pt
+      ticker:
+        type: LogTicker
+    type: LogAxis
+  - attributes:
+      axis_label: Total energy difference [Htr]
+      axis_label_text_font_size:
+        value: 18pt
+      axis_line_width:
+        value: 2
+      formatter:
+        type: LogTickFormatter
+      major_label_text_font_size:
+        value: 16pt
+      ticker:
+        type: LogTicker
+    type: LogAxis
+  - attributes:
+      num_minor_ticks: 10
+    type: LogTicker
+  - attributes:
+      num_minor_ticks: 10
+    type: LogTicker
+  - attributes:
+      dimension: 1
+      ticker:
+        type: LogTicker
+    type: Grid
+  - attributes:
+      dimension: 1
+      ticker:
+        type: LogTicker
+    type: Grid
+  - attributes: {}
+    type: PanTool
+  - attributes: {}
+    type: PanTool
+  - attributes:
+      fill_alpha:
+        value: 0.5
+      fill_color:
+        value: lightgrey
+      level: overlay
+      line_alpha:
+        value: 1.0
+      line_color:
+        value: black
+      line_dash:
+      - 4
+      - 4
+      line_width:
+        value: 2
+      xs_units: screen
+      ys_units: screen
+    type: PolyAnnotation
+  - attributes:
+      fill_alpha:
+        value: 0.5
+      fill_color:
+        value: lightgrey
+      level: overlay
+      line_alpha:
+        value: 1.0
+      line_color:
+        value: black
+      line_dash:
+      - 4
+      - 4
+      line_width:
+        value: 2
+      xs_units: screen
+      ys_units: screen
+    type: PolyAnnotation
+  - attributes:
+      callback: null
+      overlay:
+        type: PolyAnnotation
+    type: PolySelectTool
+  - attributes:
+      callback: null
+      overlay:
+        type: PolyAnnotation
+    type: PolySelectTool
+  - attributes:
+      tools:
+      - type: BoxZoomTool
+      - type: BoxZoomTool
+      - type: CrosshairTool
+      - type: CrosshairTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: PanTool
+      - type: PanTool
+      - type: PolySelectTool
+      - type: PolySelectTool
+      - type: RedoTool
+      - type: RedoTool
+      - type: ResetTool
+      - type: ResetTool
+      - type: SaveTool
+      - type: SaveTool
+      - type: TapTool
+      - type: TapTool
+      - type: UndoTool
+      - type: UndoTool
+      - type: WheelZoomTool
+      - type: WheelZoomTool
+      - type: ZoomInTool
+      - type: ZoomInTool
+      - type: ZoomOutTool
+      - type: ZoomOutTool
+    type: ProxyToolbar
+  - attributes:
+      toolbar:
+        type: ProxyToolbar
+      toolbar_location: above
+    type: ToolbarBox
+  - attributes: {}
+    type: RedoTool
+  - attributes: {}
+    type: RedoTool
+  - attributes: {}
+    type: ResetTool
+  - attributes: {}
+    type: ResetTool
+  - attributes: {}
+    type: SaveTool
+  - attributes: {}
+    type: SaveTool
+  - attributes:
+      fill_color:
+        value: '#1f77b4'
+      line_color:
+        value: '#1f77b4'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#1f77b4'
+      line_color:
+        value: '#1f77b4'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#2ca02c'
+      line_color:
+        value: '#2ca02c'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#2ca02c'
+      line_color:
+        value: '#2ca02c'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#7f7f7f'
+      line_color:
+        value: '#7f7f7f'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#7f7f7f'
+      line_color:
+        value: '#7f7f7f'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#8c564b'
+      line_color:
+        value: '#8c564b'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#8c564b'
+      line_color:
+        value: '#8c564b'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#9467bd'
+      line_color:
+        value: '#9467bd'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#9467bd'
+      line_color:
+        value: '#9467bd'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#98df8a'
+      line_color:
+        value: '#98df8a'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#98df8a'
+      line_color:
+        value: '#98df8a'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#aec7e8'
+      line_color:
+        value: '#aec7e8'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#aec7e8'
+      line_color:
+        value: '#aec7e8'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#c49c94'
+      line_color:
+        value: '#c49c94'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#c49c94'
+      line_color:
+        value: '#c49c94'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#c5b0d5'
+      line_color:
+        value: '#c5b0d5'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#c5b0d5'
+      line_color:
+        value: '#c5b0d5'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#d62728'
+      line_color:
+        value: '#d62728'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#d62728'
+      line_color:
+        value: '#d62728'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#e377c2'
+      line_color:
+        value: '#e377c2'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#e377c2'
+      line_color:
+        value: '#e377c2'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#f7b6d2'
+      line_color:
+        value: '#f7b6d2'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#f7b6d2'
+      line_color:
+        value: '#f7b6d2'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#ff7f0e'
+      line_color:
+        value: '#ff7f0e'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#ff7f0e'
+      line_color:
+        value: '#ff7f0e'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#ff9896'
+      line_color:
+        value: '#ff9896'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#ff9896'
+      line_color:
+        value: '#ff9896'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#ffbb78'
+      line_color:
+        value: '#ffbb78'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#ffbb78'
+      line_color:
+        value: '#ffbb78'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_alpha:
+        value: 0.1
+      fill_color:
+        value: '#1f77b4'
+      line_alpha:
+        value: 0.1
+      line_color:
+        value: '#1f77b4'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_alpha:
+        value: 0.1
+      fill_color:
+        value: '#1f77b4'
+      line_alpha:
+        value: 0.1
+      line_color:
+        value: '#1f77b4'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_alpha:
+        value: 0.1
+      fill_color:
+        value: '#1f77b4'
+      line_alpha:
+        value: 0.1
+      line_color:
+        value: '#1f77b4'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_alpha:
+        value: 0.1
+      fill_color:
+        value: '#1f77b4'
+      line_alpha:
+        value: 0.1
+      line_color:
+        value: '#1f77b4'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_alpha:
+        value: 0.1
+      fill_color:
+        value: '#1f77b4'
+      line_alpha:
+        value: 0.1
+      line_color:
+        value: '#1f77b4'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_alpha:
+        value: 0.1
+      fill_color:
+        value: '#1f77b4'
+      line_alpha:
+        value: 0.1
+      line_color:
+        value: '#1f77b4'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_alpha:
+        value: 0.1
+      fill_color:
+        value: '#1f77b4'
+      line_alpha:
+        value: 0.1
+      line_color:
+        value: '#1f77b4'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_alpha:
+        value: 0.1
+      fill_color:
+        value: '#1f77b4'
+      line_alpha:
+        value: 0.1
+      line_color:
+        value: '#1f77b4'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_alpha:
+        value: 0.1
+      fill_color:
+        value: '#1f77b4'
+      line_alpha:
+        value: 0.1
+      line_color:
+        value: '#1f77b4'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_alpha:
+        value: 0.1
+      fill_color:
+        value: '#1f77b4'
+      line_alpha:
+        value: 0.1
+      line_color:
+        value: '#1f77b4'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_alpha:
+        value: 0.1
+      fill_color:
+        value: '#1f77b4'
+      line_alpha:
+        value: 0.1
+      line_color:
+        value: '#1f77b4'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_alpha:
+        value: 0.1
+      fill_color:
+        value: '#1f77b4'
+      line_alpha:
+        value: 0.1
+      line_color:
+        value: '#1f77b4'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_alpha:
+        value: 0.1
+      fill_color:
+        value: '#1f77b4'
+      line_alpha:
+        value: 0.1
+      line_color:
+        value: '#1f77b4'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_alpha:
+        value: 0.1
+      fill_color:
+        value: '#1f77b4'
+      line_alpha:
+        value: 0.1
+      line_color:
+        value: '#1f77b4'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_alpha:
+        value: 0.1
+      fill_color:
+        value: '#1f77b4'
+      line_alpha:
+        value: 0.1
+      line_color:
+        value: '#1f77b4'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_alpha:
+        value: 0.1
+      fill_color:
+        value: '#1f77b4'
+      line_alpha:
+        value: 0.1
+      line_color:
+        value: '#1f77b4'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_alpha:
+        value: 0.1
+      fill_color:
+        value: '#1f77b4'
+      line_alpha:
+        value: 0.1
+      line_color:
+        value: '#1f77b4'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_alpha:
+        value: 0.1
+      fill_color:
+        value: '#1f77b4'
+      line_alpha:
+        value: 0.1
+      line_color:
+        value: '#1f77b4'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_alpha:
+        value: 0.1
+      fill_color:
+        value: '#1f77b4'
+      line_alpha:
+        value: 0.1
+      line_color:
+        value: '#1f77b4'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_alpha:
+        value: 0.1
+      fill_color:
+        value: '#1f77b4'
+      line_alpha:
+        value: 0.1
+      line_color:
+        value: '#1f77b4'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_alpha:
+        value: 0.1
+      fill_color:
+        value: '#1f77b4'
+      line_alpha:
+        value: 0.1
+      line_color:
+        value: '#1f77b4'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_alpha:
+        value: 0.1
+      fill_color:
+        value: '#1f77b4'
+      line_alpha:
+        value: 0.1
+      line_color:
+        value: '#1f77b4'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_alpha:
+        value: 0.1
+      fill_color:
+        value: '#1f77b4'
+      line_alpha:
+        value: 0.1
+      line_color:
+        value: '#1f77b4'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_alpha:
+        value: 0.1
+      fill_color:
+        value: '#1f77b4'
+      line_alpha:
+        value: 0.1
+      line_color:
+        value: '#1f77b4'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_alpha:
+        value: 0.1
+      fill_color:
+        value: '#1f77b4'
+      line_alpha:
+        value: 0.1
+      line_color:
+        value: '#1f77b4'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_alpha:
+        value: 0.1
+      fill_color:
+        value: '#1f77b4'
+      line_alpha:
+        value: 0.1
+      line_color:
+        value: '#1f77b4'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_alpha:
+        value: 0.1
+      fill_color:
+        value: '#1f77b4'
+      line_alpha:
+        value: 0.1
+      line_color:
+        value: '#1f77b4'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_alpha:
+        value: 0.1
+      fill_color:
+        value: '#1f77b4'
+      line_alpha:
+        value: 0.1
+      line_color:
+        value: '#1f77b4'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_alpha:
+        value: 0.1
+      fill_color:
+        value: '#1f77b4'
+      line_alpha:
+        value: 0.1
+      line_color:
+        value: '#1f77b4'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_alpha:
+        value: 0.1
+      fill_color:
+        value: '#1f77b4'
+      line_alpha:
+        value: 0.1
+      line_color:
+        value: '#1f77b4'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes:
+      callback: null
+      data:
+        x:
+          __ndarray__: AAAAAAAAAAABAAAAAAAAAAIAAAAAAAAAAwAAAAAAAAAEAAAAAAAAAAUAAAAAAAAABgAAAAAAAAAHAAAAAAAAAAgAAAAAAAAACQAAAAAAAAAKAAAAAAAAAAsAAAAAAAAADAAAAAAAAAANAAAAAAAAAA4AAAAAAAAADwAAAAAAAAAQAAAAAAAAABEAAAAAAAAA
+          dtype: int64
+          shape:
+          - 18
+        y:
+          __ndarray__: EoPAyqFlVUB9rrZifylBQDwx68VQRjNArrZif9n9GUALKT+p9ikIQKNAn8iTpPU/Birj32dc5z+dS3FV2XfTP3trYKsEi7s/MdP2r6w0qT+1/SsrTUqhP9laXyS05Yw/oE/kSdI1cz+L4H8r2bFhP9L7xteeWVI/IQIOoUrNPj9LsDic+dUsPw/W/znMlxc/
+          dtype: float64
+          shape:
+          - 18
+      selected:
+        type: Selection
+      selection_policy:
+        type: UnionRenderers
+    type: ColumnDataSource
+  - attributes:
+      callback: null
+      data:
+        x:
+          __ndarray__: AAAAAAAAAAABAAAAAAAAAAIAAAAAAAAAAwAAAAAAAAAEAAAAAAAAAAUAAAAAAAAABgAAAAAAAAAHAAAAAAAAAAgAAAAAAAAACQAAAAAAAAAKAAAAAAAAAAsAAAAAAAAADAAAAAAAAAANAAAAAAAAAA4AAAAAAAAADwAAAAAAAAAQAAAAAAAAABEAAAAAAAAA
+          dtype: int64
+          shape:
+          - 18
+        y:
+          __ndarray__: RKM7iJ0VQEDm6PF7m440QJn1Yignei5A0sYRa/E5J0BJY7SOqpYhQKiMf59xwRlA1LfM6bLYDkBW1GAahg8LQCe9b3ztWQBAER5tHLEW+T+Rm+EGfH7wP7bWFwltOe0/HvmDgefe5T96pSxDHOvYP3Gsi9toANM/LWACt+7mxT+ze/KwUGvCP76fGi/dJL4/
+          dtype: float64
+          shape:
+          - 18
+      selected:
+        type: Selection
+      selection_policy:
+        type: UnionRenderers
+    type: ColumnDataSource
+  - attributes:
+      callback: null
+      data:
+        x:
+          __ndarray__: AAAAAAAAAAABAAAAAAAAAAIAAAAAAAAAAwAAAAAAAAAEAAAAAAAAAAUAAAAAAAAABgAAAAAAAAAHAAAAAAAAAAgAAAAAAAAACQAAAAAAAAAKAAAAAAAAAAsAAAAAAAAADAAAAAAAAAANAAAAAAAAAA4AAAAAAAAADwAAAAAAAAAQAAAAAAAAABEAAAAAAAAA
+          dtype: int64
+          shape:
+          - 18
+        y:
+          __ndarray__: yF7v/njnUEB+NQcI5gxCQL0A++jU7TRAvJF55A9GKEBPXfksz8MWQPJBz2bVpxNAtkqwOJw5CEBsskY9RCP5P6zFpwAYz/A/vAUSFD/G4j/6RJ4kXTPXP5/Ik6RrJsc/y9sRTgtewD+D+pY5XRazP+gTeZJ0zaQ/5nlwd9Zumz/mV3OAYI6OP/lOzHoxlIM/
+          dtype: float64
+          shape:
+          - 18
+      selected:
+        type: Selection
+      selection_policy:
+        type: UnionRenderers
+    type: ColumnDataSource
+  - attributes:
+      callback: null
+      data:
+        x:
+          __ndarray__: AAAAAAAAAAABAAAAAAAAAAIAAAAAAAAAAwAAAAAAAAAEAAAAAAAAAAUAAAAAAAAABgAAAAAAAAAHAAAAAAAAAAgAAAAAAAAACQAAAAAAAAAKAAAAAAAAAAsAAAAAAAAADAAAAAAAAAANAAAAAAAAAA4AAAAAAAAADwAAAAAAAAAQAAAAAAAAABEAAAAAAAAAEgAAAAAAAAATAAAAAAAAAA==
+          dtype: int64
+          shape:
+          - 20
+        y:
+          __ndarray__: BaipZWtRUUA1mIbhI+JCQFNcVfZd6TZA+mGE8GizL0D6YYTwaMMcQDeJQWDlcBFAIQIOoUpNAEAkKH6MuWv1P0Otad5xiuI/dy0hH/Rs3D83iUFg5dDKPyUjZ2FPO8A/NV66SQwCsz93EDtT6LymPxppqbwd4ZQ/U5YhjnVxiz+oqWVrfZGAP2JKJNHLKHY/fm/Tn/1IYT/Xhopx/iZUPw==
+          dtype: float64
+          shape:
+          - 20
+      selected:
+        type: Selection
+      selection_policy:
+        type: UnionRenderers
+    type: ColumnDataSource
+  - attributes:
+      callback: null
+      data:
+        x:
+          __ndarray__: AAAAAAAAAAABAAAAAAAAAAIAAAAAAAAAAwAAAAAAAAAEAAAAAAAAAAUAAAAAAAAABgAAAAAAAAAHAAAAAAAAAAgAAAAAAAAACQAAAAAAAAAKAAAAAAAAAAsAAAAAAAAADAAAAAAAAAANAAAAAAAAAA4AAAAAAAAADwAAAAAAAAAQAAAAAAAAABEAAAAAAAAAEgAAAAAAAAATAAAAAAAAABQAAAAAAAAA
+          dtype: int64
+          shape:
+          - 21
+        y:
+          __ndarray__: ZcIv9fPKTUAx68VQTjxDQE5iEFg5NDVA0PI8uDt7J0D7eVORCmMSQJyiI7n8RwRA3/3xXrWy+T90DMhe7/7mP03WqIdodNk/gosVNZiGxT8ychb2tMO/P3NjesISD7A/DAdCsoAJnD+ob5nTZTGRPxKlvcEXJoM/mFEst7Qacj/S+8bXnlliP7fu5qkOuVk/+n5qvHSTSD+eDI6SV+c4Py1DHOviNio/
+          dtype: float64
+          shape:
+          - 21
+      selected:
+        type: Selection
+      selection_policy:
+        type: UnionRenderers
+    type: ColumnDataSource
+  - attributes:
+      callback: null
+      data:
+        x:
+          __ndarray__: AAAAAAAAAAABAAAAAAAAAAIAAAAAAAAAAwAAAAAAAAAEAAAAAAAAAAUAAAAAAAAABgAAAAAAAAAHAAAAAAAAAAgAAAAAAAAACQAAAAAAAAAKAAAAAAAAAAsAAAAAAAAADAAAAAAAAAANAAAAAAAAAA4AAAAAAAAADwAAAAAAAAAQAAAAAAAAABEAAAAAAAAAEgAAAAAAAAATAAAAAAAAABQAAAAAAAAAFQAAAAAAAAAWAAAAAAAAAA==
+          dtype: int64
+          shape:
+          - 23
+        y:
+          __ndarray__: nDOitDfmWEArpPyk2qtPQFa8kXnkD0ZAT3XIzXArQkBFniRdM/k9QFu21hcJTTVA3xXB/1aiL0BlARO4dbcmQESoUrMHmiNAg/qWOV2GIECCrRIsDkcYQExsPq4NNRNAIo51cRtNDUDI7236sx8FQLjM6bKY2Po/JTs2AvE6+j88oGzKFV7yP2LboswGmeg/GTkLe9rh4T9FZFjFG5ndP6bQeY1doto/OC140VeQ0D+OQLyuX7DHPw==
+          dtype: float64
+          shape:
+          - 23
+      selected:
+        type: Selection
+      selection_policy:
+        type: UnionRenderers
+    type: ColumnDataSource
+  - attributes:
+      callback: null
+      data:
+        x:
+          __ndarray__: AAAAAAAAAAABAAAAAAAAAAIAAAAAAAAAAwAAAAAAAAAEAAAAAAAAAAUAAAAAAAAABgAAAAAAAAAHAAAAAAAAAAgAAAAAAAAACQAAAAAAAAAKAAAAAAAAAAsAAAAAAAAADAAAAAAAAAANAAAAAAAAAA4AAAAAAAAADwAAAAAAAAAQAAAAAAAAABEAAAAAAAAAEgAAAAAAAAATAAAAAAAAABQAAAAAAAAAFQAAAAAAAAAWAAAAAAAAABcAAAAAAAAA
+          dtype: int64
+          shape:
+          - 24
+        y:
+          __ndarray__: eekmMQg0QECTqYJRSf02QIcW2c73ky1A2jhiLT71IUAwDcNHxNQUQPNUh9wMdw1AzLT9KytNAkCV8e8zLpz8Pz8djxmoDPE/XYqryr4r5T9N845TdCTdPyXpmsk328w/2gOtwJDVxT/2C3bDtkXBP9F0djI4SrY/ea9amfBLrT87cM6I0t6gPwoRcAhVapY/+5Y5XRYTiz/wUBToE3mCP5mByvj3GXc/2ubG9IQlbj+Sy39Iv31dP2/Tn/1IEVk/
+          dtype: float64
+          shape:
+          - 24
+      selected:
+        type: Selection
+      selection_policy:
+        type: UnionRenderers
+    type: ColumnDataSource
+  - attributes:
+      callback: null
+      data:
+        x:
+          __ndarray__: AAAAAAAAAAABAAAAAAAAAAIAAAAAAAAAAwAAAAAAAAAEAAAAAAAAAAUAAAAAAAAABgAAAAAAAAAHAAAAAAAAAAgAAAAAAAAACQAAAAAAAAAKAAAAAAAAAAsAAAAAAAAADAAAAAAAAAANAAAAAAAAAA4AAAAAAAAADwAAAAAAAAAQAAAAAAAAABEAAAAAAAAAEgAAAAAAAAATAAAAAAAAABQAAAAAAAAAFQAAAAAAAAAWAAAAAAAAABcAAAAAAAAAGAAAAAAAAAAZAAAAAAAAAA==
+          dtype: int64
+          shape:
+          - 26
+        y:
+          __ndarray__: kZvhBnxGRUDtnjws1DpDQLNeDOVEU0hAowG8BRKEREAcQpWaPVBBQGAfnbryuUNA12mkpfLiQ0AkfzDw3FtDQFG9NbBVxkJA7iWN0ToGQUCuga0SLMJBQIqw4emVqkFAnRGlvcE3P0BA2ZQrvPdBQKG5TiMt/T9AVd6OcFpYPEB9s82N6XE/QL7BFyZTvT1AN4lBYOXwPkABTYQNT3c3QGX8+4wLZzpAUmFsIchBP0BeukkMAls7QE5FKowthDhA6LzGLlGdOUBYqDXNO245QA==
+          dtype: float64
+          shape:
+          - 26
+      selected:
+        type: Selection
+      selection_policy:
+        type: UnionRenderers
+    type: ColumnDataSource
+  - attributes:
+      callback: null
+      data:
+        x:
+          __ndarray__: AAAAAAAAAAABAAAAAAAAAAIAAAAAAAAAAwAAAAAAAAAEAAAAAAAAAAUAAAAAAAAABgAAAAAAAAAHAAAAAAAAAAgAAAAAAAAACQAAAAAAAAAKAAAAAAAAAAsAAAAAAAAADAAAAAAAAAANAAAAAAAAAA4AAAAAAAAADwAAAAAAAAAQAAAAAAAAABEAAAAAAAAAEgAAAAAAAAATAAAAAAAAABQAAAAAAAAAFQAAAAAAAAAWAAAAAAAAABcAAAAAAAAAGAAAAAAAAAAZAAAAAAAAAA==
+          dtype: int64
+          shape:
+          - 26
+        y:
+          __ndarray__: pyIVxhZiRED+JhQi4DAwQMAEbt3N0xlA2sngKHl1BEAB++jUlc/qP1MiiV5Gsd4/wTkjSnuDwz9fDOVEuwqxPz6zJEBNLZs/9Wc/UkSGhT/S+8bXnllyPyECDqFKzV4/QZqxaDo7ST/HuriNBvA2P2kdVU0QdR8/LUMc6+I2Cj/xaOOItfj0PvFo44i1+OQ+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+          dtype: float64
+          shape:
+          - 26
+      selected:
+        type: Selection
+      selection_policy:
+        type: UnionRenderers
+    type: ColumnDataSource
+  - attributes:
+      callback: null
+      data:
+        x:
+          __ndarray__: AAAAAAAAAAABAAAAAAAAAAIAAAAAAAAAAwAAAAAAAAAEAAAAAAAAAAUAAAAAAAAABgAAAAAAAAAHAAAAAAAAAAgAAAAAAAAACQAAAAAAAAAKAAAAAAAAAAsAAAAAAAAADAAAAAAAAAANAAAAAAAAAA4AAAAAAAAADwAAAAAAAAAQAAAAAAAAABEAAAAAAAAAEgAAAAAAAAATAAAAAAAAABQAAAAAAAAAFQAAAAAAAAAWAAAAAAAAABcAAAAAAAAAGAAAAAAAAAAZAAAAAAAAABoAAAAAAAAAGwAAAAAAAAAcAAAAAAAAAB0AAAAAAAAAHgAAAAAAAAAfAAAAAAAAACAAAAAAAAAA
+          dtype: int64
+          shape:
+          - 33
+        y:
+          __ndarray__: EK/rF+xGH0DOqs/VVowQQICaWrbW1wBARUdy+Q/p9D8AV7JjIxDiPzxO0ZFc/tE/WaMeotEdxD9Ty9b6IqG9P7KACdy6m6c/MlpHVRNEnT9rSNxj6UOHPx2PGaiMf38/O+RmuAGfbz9QNuUK73JhP5BrQ8U4f1M/YTJVMCqpQz9hMlUwKqkzP9L7xteeWSI/D9b/OcyXFz8tQxzr4jYKP2kdVU0Qdf8+8WjjiLX45D7xaOOItfjkPgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+          dtype: float64
+          shape:
+          - 33
+      selected:
+        type: Selection
+      selection_policy:
+        type: UnionRenderers
+    type: ColumnDataSource
+  - attributes:
+      callback: null
+      data:
+        x:
+          __ndarray__: AAAAAAAAAAABAAAAAAAAAAIAAAAAAAAAAwAAAAAAAAAEAAAAAAAAAAUAAAAAAAAABgAAAAAAAAAHAAAAAAAAAAgAAAAAAAAACQAAAAAAAAAKAAAAAAAAAAsAAAAAAAAADAAAAAAAAAANAAAAAAAAAA4AAAAAAAAADwAAAAAAAAAQAAAAAAAAABEAAAAAAAAAEgAAAAAAAAATAAAAAAAAABQAAAAAAAAAFQAAAAAAAAAWAAAAAAAAABcAAAAAAAAAGAAAAAAAAAAZAAAAAAAAABoAAAAAAAAAGwAAAAAAAAAcAAAAAAAAAB0AAAAAAAAAHgAAAAAAAAAfAAAAAAAAACAAAAAAAAAAIQAAAAAAAAAiAAAAAAAAAA==
+          dtype: int64
+          shape:
+          - 35
+        y:
+          __ndarray__: VMa/z7gIUkBKtU/HY0Y5QDgteNFXkCJAxSCwcmgRDkBVTRB1HwD3P0Ruhhvw+d0/Z/LNNjemwz9sBOJ1/YKtP+317o/3qpU/xhaCHJQwgz8XvOgrSDNmP03bv7LSpFQ/2ubG9IQlPj8P1v85zJcnP2kdVU0QdQ8/aR1VTRB1/z7xaOOItfjkPgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+          dtype: float64
+          shape:
+          - 35
+      selected:
+        type: Selection
+      selection_policy:
+        type: UnionRenderers
+    type: ColumnDataSource
+  - attributes:
+      callback: null
+      data:
+        x:
+          __ndarray__: AAAAAAAAAAABAAAAAAAAAAIAAAAAAAAAAwAAAAAAAAAEAAAAAAAAAAUAAAAAAAAABgAAAAAAAAAHAAAAAAAAAAgAAAAAAAAACQAAAAAAAAAKAAAAAAAAAAsAAAAAAAAADAAAAAAAAAANAAAAAAAAAA4AAAAAAAAADwAAAAAAAAAQAAAAAAAAABEAAAAAAAAAEgAAAAAAAAATAAAAAAAAABQAAAAAAAAAFQAAAAAAAAAWAAAAAAAAABcAAAAAAAAAGAAAAAAAAAAZAAAAAAAAABoAAAAAAAAAGwAAAAAAAAAcAAAAAAAAAB0AAAAAAAAAHgAAAAAAAAAfAAAAAAAAACAAAAAAAAAAIQAAAAAAAAAiAAAAAAAAAA==
+          dtype: int64
+          shape:
+          - 35
+        y:
+          __ndarray__: m6xRD9EYL0CQSUbOwl4tQIM0Y9F0liJAvAUSFD/GHEBqh78ma7QaQPK1Z5YECBdA42vPLAlQDUAKEXAIVaoIQMpPqn06XgFA9KYiFcYW+j9SuB6F61H3P2O0jqomCPA/twvNdRpp4z/0T3CxogbjP9PB+j+H+dw/FNBE2PD01j8TZtr+lZXYP3r83qY/+80/klz+Q/rtxz+BJsKGp1fCP4JWYMjqVr8/wa27eapDtj8+syRATS2zPxh47j1ccqw/CW05l+Kqoj/lszwP7s6aP/oK0oxF05k/gJ9x4UBIlj82zTtO0ZGMP8NHxJRIooc/g24vaYzWgT8UeZJ0zeR7P/XzpiIVxnY/nNzvUBTocz8VjErqBDRxPw==
+          dtype: float64
+          shape:
+          - 35
+      selected:
+        type: Selection
+      selection_policy:
+        type: UnionRenderers
+    type: ColumnDataSource
+  - attributes:
+      callback: null
+      data:
+        x:
+          __ndarray__: AAAAAAAAAAABAAAAAAAAAAIAAAAAAAAAAwAAAAAAAAAEAAAAAAAAAAUAAAAAAAAABgAAAAAAAAAHAAAAAAAAAAgAAAAAAAAACQAAAAAAAAAKAAAAAAAAAAsAAAAAAAAADAAAAAAAAAANAAAAAAAAAA4AAAAAAAAADwAAAAAAAAAQAAAAAAAAABEAAAAAAAAAEgAAAAAAAAATAAAAAAAAABQAAAAAAAAAFQAAAAAAAAAWAAAAAAAAABcAAAAAAAAAGAAAAAAAAAAZAAAAAAAAABoAAAAAAAAAGwAAAAAAAAAcAAAAAAAAAB0AAAAAAAAAHgAAAAAAAAAfAAAAAAAAACAAAAAAAAAAIQAAAAAAAAAiAAAAAAAAACMAAAAAAAAAJAAAAAAAAAAlAAAAAAAAAA==
+          dtype: int64
+          shape:
+          - 38
+        y:
+          __ndarray__: KlJhbCHI8j+9APvo1BXwP5UO1v85zOQ/ZQETuHU35z/QDyOERxvjPzaTb7a5Md8/gEi/fR042z+0HykiwyrcP1yPwvUoXNc/PgXAeAYN1T8F3V7SGK3RP1nd6jnpfcs/flLt0/GYxT9ZNJ2dDI7KPxNm2v6Vlb4/ARO4dTdPwT9y+Q/pt6+7P4pZL4ZyorU/NZiG4SNiuj8SMSWS6GW0P9bFbTSAt7A/u37Bbti2qD8LtaZ5xymqPz0s1JrmHac/9dvXgXNGpD/iBnx+GCGcP70d4bTgRZ8/3BFOC170lT+PpQ9dUN+SP4czv5oDBJM/2VpfJLTljD9wd9Zuu9CMPzvfT42XboI/Km9HOC14gT/X+iKhLeeCP6ipZWt9kYA/QZqxaDo7eT/xaOOItfh0Pw==
+          dtype: float64
+          shape:
+          - 38
+      selected:
+        type: Selection
+      selection_policy:
+        type: UnionRenderers
+    type: ColumnDataSource
+  - attributes:
+      callback: null
+      data:
+        x:
+          __ndarray__: AAAAAAAAAAABAAAAAAAAAAIAAAAAAAAAAwAAAAAAAAAEAAAAAAAAAAUAAAAAAAAABgAAAAAAAAAHAAAAAAAAAAgAAAAAAAAACQAAAAAAAAAKAAAAAAAAAAsAAAAAAAAADAAAAAAAAAANAAAAAAAAAA4AAAAAAAAADwAAAAAAAAAQAAAAAAAAABEAAAAAAAAAEgAAAAAAAAATAAAAAAAAABQAAAAAAAAAFQAAAAAAAAAWAAAAAAAAABcAAAAAAAAAGAAAAAAAAAAZAAAAAAAAABoAAAAAAAAAGwAAAAAAAAAcAAAAAAAAAB0AAAAAAAAAHgAAAAAAAAAfAAAAAAAAACAAAAAAAAAAIQAAAAAAAAAiAAAAAAAAACMAAAAAAAAAJAAAAAAAAAAlAAAAAAAAACYAAAAAAAAAJwAAAAAAAAAoAAAAAAAAACkAAAAAAAAAKgAAAAAAAAArAAAAAAAAACwAAAAAAAAALQAAAAAAAAAuAAAAAAAAAC8AAAAAAAAAMAAAAAAAAAA=
+          dtype: int64
+          shape:
+          - 49
+        y:
+          __ndarray__: Ieo+AKm1PUDGihpMw+A0QMAJhQg49CpAud+hKNC3IEBcIEHxYwwTQHdKB+v/3AtAozuInSm0AUD6sx8pIsP0P3B31m670Ow/4bTgRV9B4D94f7xXrUzSP2Qe+YOB58Y/SWO0jqomwD8tW+uLhLa0Pxmto6oJoq4/PgXAeAYNnT+QMXctIR+UP9laXyS05Yw/mFEst7Qagj81KQXdXtJ4Py1DHOviNmo/Q8U4fxMKYT8z+WabG9NTP3ReY5eo3ko/2ubG9IQlPj9hMlUwKqkzPy1DHOviNio/aR1VTRB1Hz/xaOOItfgUP/Fo44i1+AQ/aR1VTRB1/z7xaOOItfj0PvFo44i1+OQ+8WjjiLX45D4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
+          dtype: float64
+          shape:
+          - 49
+      selected:
+        type: Selection
+      selection_policy:
+        type: UnionRenderers
+    type: ColumnDataSource
+  - attributes:
+      callback: null
+      data:
+        x:
+          __ndarray__: AAAAAAAAAAABAAAAAAAAAAIAAAAAAAAAAwAAAAAAAAAEAAAAAAAAAAUAAAAAAAAABgAAAAAAAAAHAAAAAAAAAAgAAAAAAAAACQAAAAAAAAAKAAAAAAAAAAsAAAAAAAAADAAAAAAAAAANAAAAAAAAAA4AAAAAAAAADwAAAAAAAAAQAAAAAAAAABEAAAAAAAAAEgAAAAAAAAATAAAAAAAAABQAAAAAAAAAFQAAAAAAAAAWAAAAAAAAABcAAAAAAAAAGAAAAAAAAAAZAAAAAAAAABoAAAAAAAAAGwAAAAAAAAAcAAAAAAAAAB0AAAAAAAAAHgAAAAAAAAAfAAAAAAAAACAAAAAAAAAAIQAAAAAAAAAiAAAAAAAAACMAAAAAAAAAJAAAAAAAAAAlAAAAAAAAACYAAAAAAAAAJwAAAAAAAAAoAAAAAAAAACkAAAAAAAAAKgAAAAAAAAArAAAAAAAAACwAAAAAAAAALQAAAAAAAAAuAAAAAAAAAC8AAAAAAAAAMAAAAAAAAAA=
+          dtype: int64
+          shape:
+          - 49
+        y:
+          __ndarray__: mnyzzY1DUUCGG/D5YZhCQMzR4/c2ZTJAIqZEEr0sHUAJUFPL1roOQGpq2VpfpPo/TDeJQWDl5z9I/mDguffQP8LAc+/hksM/q8/VVuwvsz+jO4idKXSeP197ZkmAmoo/zEV8J2a9eD8KSzygbMplPxoXDoRkAVM/qU2c3O9QRD9pHVVNEHUvP0uwOJz51Rw/0vvG155ZEj9pHVVNEHX/PvFo44i1+OQ+8WjjiLX45D4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
+          dtype: float64
+          shape:
+          - 49
+      selected:
+        type: Selection
+      selection_policy:
+        type: UnionRenderers
+    type: ColumnDataSource
+  - attributes:
+      callback: null
+      data:
+        x:
+          __ndarray__: AQAAAAAAAAACAAAAAAAAAAMAAAAAAAAABAAAAAAAAAAFAAAAAAAAAAYAAAAAAAAABwAAAAAAAAAIAAAAAAAAAAkAAAAAAAAACgAAAAAAAAALAAAAAAAAAAwAAAAAAAAADQAAAAAAAAAOAAAAAAAAAA8AAAAAAAAAEAAAAAAAAAARAAAAAAAAAA==
+          dtype: int64
+          shape:
+          - 17
+        y:
+        - 131.08337609910814
+        - 56.97695226020733
+        - 33.496777049385855
+        - 21.429585305279033
+        - 14.232533148355287
+        - 11.097760611497506
+        - 2.9804209617941524
+        - 3.984328490914777
+        - 1.4563035305109224
+        - 1.1607470132075832
+        - 0.36890787901938893
+        - 0.38865315078146523
+        - 0.33621064648468746
+        - 0.1107071457481652
+        - 0.09966097749565961
+        - 0.02759271803734009
+        - 0.020473661108553642
+      selected:
+        type: Selection
+      selection_policy:
+        type: UnionRenderers
+    type: ColumnDataSource
+  - attributes:
+      callback: null
+      data:
+        x:
+          __ndarray__: AQAAAAAAAAACAAAAAAAAAAMAAAAAAAAABAAAAAAAAAAFAAAAAAAAAAYAAAAAAAAABwAAAAAAAAAIAAAAAAAAAAkAAAAAAAAACgAAAAAAAAALAAAAAAAAAAwAAAAAAAAADQAAAAAAAAAOAAAAAAAAAA8AAAAAAAAAEAAAAAAAAAARAAAAAAAAAA==
+          dtype: int64
+          shape:
+          - 17
+        y:
+        - 181.61235063366985
+        - 72.47429444543741
+        - 253.80575913594294
+        - 42.32978741150873
+        - 54.14406249188323
+        - 25.552382387500984
+        - 77.20674393661102
+        - 107.22399224718538
+        - 24.31533691689765
+        - 77.92865523946966
+        - 53.135498399344215
+        - 85.23699926102563
+        - 15.121413845663483
+        - 3.2985249834418937
+        - 24.70044387001326
+        - 12.361499475577148
+        - 16.573456609894492
+      selected:
+        type: Selection
+      selection_policy:
+        type: UnionRenderers
+    type: ColumnDataSource
+  - attributes:
+      callback: null
+      data:
+        x:
+          __ndarray__: AQAAAAAAAAACAAAAAAAAAAMAAAAAAAAABAAAAAAAAAAFAAAAAAAAAAYAAAAAAAAABwAAAAAAAAAIAAAAAAAAAAkAAAAAAAAACgAAAAAAAAALAAAAAAAAAAwAAAAAAAAADQAAAAAAAAAOAAAAAAAAAA8AAAAAAAAAEAAAAAAAAAARAAAAAAAAAA==
+          dtype: int64
+          shape:
+          - 17
+        y:
+        - 599.2094653023669
+        - 209.20260333190163
+        - 83.4568288266455
+        - 37.54333219230102
+        - 7.259093651708099
+        - 6.122258024610346
+        - 2.898863790946052
+        - 0.8691059488664905
+        - 0.456180277014937
+        - 0.16369376339935116
+        - 0.07952655764165684
+        - 0.021351955667341826
+        - 0.012114772594941314
+        - 0.0050759039040713105
+        - 0.001663540919253137
+        - 0.0008525002522219438
+        - 0.0002961071004392579
+      selected:
+        type: Selection
+      selection_policy:
+        type: UnionRenderers
+    type: ColumnDataSource
+  - attributes:
+      callback: null
+      data:
+        x:
+          __ndarray__: AQAAAAAAAAACAAAAAAAAAAMAAAAAAAAABAAAAAAAAAAFAAAAAAAAAAYAAAAAAAAABwAAAAAAAAAIAAAAAAAAAAkAAAAAAAAACgAAAAAAAAALAAAAAAAAAAwAAAAAAAAADQAAAAAAAAAOAAAAAAAAAA8AAAAAAAAAEAAAAAAAAAARAAAAAAAAABIAAAAAAAAAEwAAAAAAAAA=
+          dtype: int64
+          shape:
+          - 19
+        y:
+        - 0.4765213061509712
+        - 0.17476997471385403
+        - 0.12268907966063125
+        - 0.7108353610055929
+        - 0.11909557669059723
+        - 0.42471394166568643
+        - 0.0030800511085544713
+        - 0.35982938623419614
+        - 0.11919956380006624
+        - 0.22946814020178863
+        - 0.04485044903776725
+        - 0.05796228175313445
+        - 0.04240468683565268
+        - 0.13312627677078126
+        - 0.000951880487264134
+        - 0.024383745592786
+        - 0.006155169248813763
+        - 0.11906021650429466
+        - 0.01973840338541777
+      selected:
+        type: Selection
+      selection_policy:
+        type: UnionRenderers
+    type: ColumnDataSource
+  - attributes:
+      callback: null
+      data:
+        x:
+          __ndarray__: AQAAAAAAAAACAAAAAAAAAAMAAAAAAAAABAAAAAAAAAAFAAAAAAAAAAYAAAAAAAAABwAAAAAAAAAIAAAAAAAAAAkAAAAAAAAACgAAAAAAAAALAAAAAAAAAAwAAAAAAAAADQAAAAAAAAAOAAAAAAAAAA8AAAAAAAAAEAAAAAAAAAARAAAAAAAAABIAAAAAAAAAEwAAAAAAAAAUAAAAAAAAAA==
+          dtype: int64
+          shape:
+          - 20
+        y:
+        - 41.01385288520396
+        - 28.348073427565396
+        - 13.886797847080743
+        - 8.830077646482096
+        - 2.4086653071135515
+        - 1.0148619273786608
+        - 0.7935811531751824
+        - 0.26701881481858436
+        - 0.1623501788417343
+        - 0.033603055042476626
+        - 0.03557586614624597
+        - 0.017864725243271096
+        - 0.005162284804100636
+        - 0.003140352768241428
+        - 0.0017924989297171123
+        - 0.0007178986124927178
+        - 0.00022119927598396316
+        - 0.00021326019486878067
+        - 8.782939039519988e-05
+        - 3.673539686133154e-05
+      selected:
+        type: Selection
+      selection_policy:
+        type: UnionRenderers
+    type: ColumnDataSource
+  - attributes:
+      callback: null
+      data:
+        x:
+          __ndarray__: AQAAAAAAAAACAAAAAAAAAAMAAAAAAAAABAAAAAAAAAAFAAAAAAAAAAYAAAAAAAAABwAAAAAAAAAIAAAAAAAAAAkAAAAAAAAACgAAAAAAAAALAAAAAAAAAAwAAAAAAAAADQAAAAAAAAAOAAAAAAAAAA8AAAAAAAAAEAAAAAAAAAARAAAAAAAAABIAAAAAAAAAEwAAAAAAAAAUAAAAAAAAABUAAAAAAAAAFgAAAAAAAAA=
+          dtype: int64
+          shape:
+          - 22
+        y:
+        - 28.63925002635733
+        - 11.623215288735082
+        - 4.641955572973529
+        - 2.6304804628452985
+        - 1.7688238646878744
+        - 0.8292894660808088
+        - 0.4392164884484373
+        - 0.17446582033517188
+        - 0.107296263166063
+        - 0.07349843532938394
+        - 0.03428137983428314
+        - 0.019504158950439887
+        - 0.010881001646339428
+        - 0.006041890341293765
+        - 0.0015374647700809874
+        - 0.0016412982586189173
+        - 0.0008247623227362055
+        - 0.00035276670314488
+        - 0.00015222374713630415
+        - 7.677777830394916e-05
+        - 7.167962758103386e-05
+        - 2.727727041929029e-05
+      selected:
+        type: Selection
+      selection_policy:
+        type: UnionRenderers
+    type: ColumnDataSource
+  - attributes:
+      callback: null
+      data:
+        x:
+          __ndarray__: AQAAAAAAAAACAAAAAAAAAAMAAAAAAAAABAAAAAAAAAAFAAAAAAAAAAYAAAAAAAAABwAAAAAAAAAIAAAAAAAAAAkAAAAAAAAACgAAAAAAAAALAAAAAAAAAAwAAAAAAAAADQAAAAAAAAAOAAAAAAAAAA8AAAAAAAAAEAAAAAAAAAARAAAAAAAAABIAAAAAAAAAEwAAAAAAAAAUAAAAAAAAABUAAAAAAAAAFgAAAAAAAAAXAAAAAAAAAA==
+          dtype: int64
+          shape:
+          - 23
+        y:
+        - 59.686768454190315
+        - 8.15073638991089
+        - 47.65391579777497
+        - 72.20410018043549
+        - 51.53929038314163
+        - 29.237566492822225
+        - 123.79696672461068
+        - 62.14227531749566
+        - 30.978927837357332
+        - 37.31762007533689
+        - 163.27618832978624
+        - 84.65449387164699
+        - 130.41783611097344
+        - 6.119754078194092
+        - 7.356050100876018
+        - 84.66522933274246
+        - 13.705150518897426
+        - 47.93929785461296
+        - 30.021954820196697
+        - 24.80346914348047
+        - 0.7939968500650139
+        - 154.41671656225662
+        - 142.86898541560004
+      selected:
+        type: Selection
+      selection_policy:
+        type: UnionRenderers
+    type: ColumnDataSource
+  - attributes:
+      callback: null
+      data:
+        x:
+          __ndarray__: AQAAAAAAAAACAAAAAAAAAAMAAAAAAAAABAAAAAAAAAAFAAAAAAAAAAYAAAAAAAAABwAAAAAAAAAIAAAAAAAAAAkAAAAAAAAACgAAAAAAAAALAAAAAAAAAAwAAAAAAAAADQAAAAAAAAAOAAAAAAAAAA8AAAAAAAAAEAAAAAAAAAARAAAAAAAAABIAAAAAAAAAEwAAAAAAAAAUAAAAAAAAABUAAAAAAAAAFgAAAAAAAAAXAAAAAAAAABgAAAAAAAAAGQAAAAAAAAA=
+          dtype: int64
+          shape:
+          - 25
+        y:
+        - 166.02658297491507
+        - 29.2191964158701
+        - 108.58807943052307
+        - 65.34047007723348
+        - 18.46848494592632
+        - 22.58302904653101
+        - 17.693836978542095
+        - 12.404781898552756
+        - 9.849354764111922
+        - 4.6158502944490465
+        - 3.9033336928223434
+        - 3.533755834450858
+        - 1.0752208158519352
+        - 1.8092073804982647
+        - 1.159292187938263
+        - 0.41508062969660386
+        - 0.5136885439205798
+        - 0.2747097506398859
+        - 0.36398264258968993
+        - 0.08451446736580692
+        - 0.05341496431719861
+        - 0.10954282926104497
+        - 0.0657194555424212
+        - 0.029663713547051884
+        - 0.025366999350808328
+      selected:
+        type: Selection
+      selection_policy:
+        type: UnionRenderers
+    type: ColumnDataSource
+  - attributes:
+      callback: null
+      data:
+        x:
+          __ndarray__: AQAAAAAAAAACAAAAAAAAAAMAAAAAAAAABAAAAAAAAAAFAAAAAAAAAAYAAAAAAAAABwAAAAAAAAAIAAAAAAAAAAkAAAAAAAAACgAAAAAAAAALAAAAAAAAAAwAAAAAAAAADQAAAAAAAAAOAAAAAAAAAA8AAAAAAAAAEAAAAAAAAAARAAAAAAAAABIAAAAAAAAAEwAAAAAAAAAUAAAAAAAAABUAAAAAAAAAFgAAAAAAAAAXAAAAAAAAABgAAAAAAAAAGQAAAAAAAAA=
+          dtype: int64
+          shape:
+          - 25
+        y:
+        - 348.3489840036491
+        - 154.71398790514286
+        - 69.60707763928076
+        - 35.20706710297236
+        - 7.321702410481521
+        - 8.45442202175036
+        - 2.3909237670741277
+        - 1.2689097915608727
+        - 0.5709148516361893
+        - 0.2380555568015552
+        - 0.11572617790807271
+        - 0.05535937496097176
+        - 0.023205469024105696
+        - 0.014899197631166317
+        - 0.0051146266487194225
+        - 0.0019460646508377977
+        - 0.0011200201406609267
+        - 0.0005913876047998201
+        - 0.00016311084254994057
+        - 0.00010606801515677944
+        - 4.070007707923651e-05
+        - 2.566542025306262e-05
+        - 7.527807611040771e-06
+        - 3.935914719477296e-06
+        - 2.1102241589687765e-06
+      selected:
+        type: Selection
+      selection_policy:
+        type: UnionRenderers
+    type: ColumnDataSource
+  - attributes:
+      callback: null
+      data:
+        x:
+          __ndarray__: AQAAAAAAAAACAAAAAAAAAAMAAAAAAAAABAAAAAAAAAAFAAAAAAAAAAYAAAAAAAAABwAAAAAAAAAIAAAAAAAAAAkAAAAAAAAACgAAAAAAAAALAAAAAAAAAAwAAAAAAAAADQAAAAAAAAAOAAAAAAAAAA8AAAAAAAAAEAAAAAAAAAARAAAAAAAAABIAAAAAAAAAEwAAAAAAAAAUAAAAAAAAABUAAAAAAAAAFgAAAAAAAAAXAAAAAAAAABgAAAAAAAAAGQAAAAAAAAAaAAAAAAAAABsAAAAAAAAAHAAAAAAAAAAdAAAAAAAAAB4AAAAAAAAAHwAAAAAAAAAgAAAAAAAAAA==
+          dtype: int64
+          shape:
+          - 32
+        y:
+        - 35.194938182066835
+        - 25.109939048630622
+        - 9.813083550907322
+        - 15.80696496258679
+        - 7.012586133187142
+        - 3.4887893484374217
+        - 0.6249605638804496
+        - 3.7806560563658422
+        - 0.8411503463285044
+        - 1.471420558711543
+        - 0.22179152775424882
+        - 0.4600169310178899
+        - 0.2416206337911717
+        - 0.16111802253726637
+        - 0.13843959953373997
+        - 0.09071106735427747
+        - 0.060041429722332396
+        - 0.02091689248845796
+        - 0.021319030689483043
+        - 0.009729886369314045
+        - 0.015426681187818758
+        - 0.011919617463718168
+        - 0.0005168045463506132
+        - 0.0038051540577725973
+        - 0.0018825840888894163
+        - 0.0015697573871875647
+        - 0.0006773057175450958
+        - 0.0007653690299775917
+        - 0.0002791366168821696
+        - 0.0003613015578594059
+        - 0.00015857033940847032
+        - 9.027338455780409e-05
+      selected:
+        type: Selection
+      selection_policy:
+        type: UnionRenderers
+    type: ColumnDataSource
+  - attributes:
+      callback: null
+      data:
+        x:
+          __ndarray__: AQAAAAAAAAACAAAAAAAAAAMAAAAAAAAABAAAAAAAAAAFAAAAAAAAAAYAAAAAAAAABwAAAAAAAAAIAAAAAAAAAAkAAAAAAAAACgAAAAAAAAALAAAAAAAAAAwAAAAAAAAADQAAAAAAAAAOAAAAAAAAAA8AAAAAAAAAEAAAAAAAAAARAAAAAAAAABIAAAAAAAAAEwAAAAAAAAAUAAAAAAAAABUAAAAAAAAAFgAAAAAAAAAXAAAAAAAAABgAAAAAAAAAGQAAAAAAAAAaAAAAAAAAABsAAAAAAAAAHAAAAAAAAAAdAAAAAAAAAB4AAAAAAAAAHwAAAAAAAAAgAAAAAAAAACEAAAAAAAAAIgAAAAAAAAA=
+          dtype: int64
+          shape:
+          - 34
+        y:
+        - 10.981752315616177
+        - 85.65263587443042
+        - 33.060118502417026
+        - 7.25300071025049
+        - 14.275281954702223
+        - 34.89938678591352
+        - 9.367535395864252
+        - 15.454186810842657
+        - 9.193856109992339
+        - 2.7765657646305044
+        - 8.020169361294393
+        - 7.105100248274539
+        - 0.08880654101812979
+        - 2.5572980115794053
+        - 1.7025314948587038
+        - 0.5782978415372781
+        - 2.8602084391859535
+        - 0.8858976610717946
+        - 0.8350704143595067
+        - 0.39126143600879004
+        - 0.7020285575417802
+        - 0.23021877501378185
+        - 0.390670900567784
+        - 0.3947384332313959
+        - 0.2134464747396123
+        - 0.014194687144481577
+        - 0.07017488480414613
+        - 0.16961884306874708
+        - 0.05100956315800431
+        - 0.062063607951131416
+        - 0.04178842108740355
+        - 0.027773814708780264
+        - 0.015067534739500843
+        - 0.014569679140549852
+      selected:
+        type: Selection
+      selection_policy:
+        type: UnionRenderers
+    type: ColumnDataSource
+  - attributes:
+      callback: null
+      data:
+        x:
+          __ndarray__: AQAAAAAAAAACAAAAAAAAAAMAAAAAAAAABAAAAAAAAAAFAAAAAAAAAAYAAAAAAAAABwAAAAAAAAAIAAAAAAAAAAkAAAAAAAAACgAAAAAAAAALAAAAAAAAAAwAAAAAAAAADQAAAAAAAAAOAAAAAAAAAA8AAAAAAAAAEAAAAAAAAAARAAAAAAAAABIAAAAAAAAAEwAAAAAAAAAUAAAAAAAAABUAAAAAAAAAFgAAAAAAAAAXAAAAAAAAABgAAAAAAAAAGQAAAAAAAAAaAAAAAAAAABsAAAAAAAAAHAAAAAAAAAAdAAAAAAAAAB4AAAAAAAAAHwAAAAAAAAAgAAAAAAAAACEAAAAAAAAAIgAAAAAAAAA=
+          dtype: int64
+          shape:
+          - 34
+        y:
+        - 372.90021439452903
+        - 219.5586636662374
+        - 116.64855086352327
+        - 101.13394349134614
+        - 96.37744958930853
+        - 57.31925507479173
+        - 26.921175017811038
+        - 19.560156835104863
+        - 7.510392687137937
+        - 15.54254898885847
+        - 2.5436333915567957
+        - 4.906493165715801
+        - 2.92382388875194
+        - 2.5873011002004205
+        - 0.7719526774926635
+        - 2.002895285917475
+        - 0.5129510869264777
+        - 0.4405473009173875
+        - 0.2062732606937061
+        - 0.30248005433168146
+        - 0.1657074013419333
+        - 0.13078120773570845
+        - 0.06348881721351063
+        - 0.09259990873397328
+        - 0.01563081968924962
+        - 0.02229641612211708
+        - 0.01666151035169605
+        - 0.010714636420743773
+        - 0.003213799664081307
+        - 0.009526167606964009
+        - 0.0015016543620731682
+        - 0.00171953038443462
+        - 0.0032312158364220522
+        - 0.0002531166574044619
+      selected:
+        type: Selection
+      selection_policy:
+        type: UnionRenderers
+    type: ColumnDataSource
+  - attributes:
+      callback: null
+      data:
+        x:
+          __ndarray__: AQAAAAAAAAACAAAAAAAAAAMAAAAAAAAABAAAAAAAAAAFAAAAAAAAAAYAAAAAAAAABwAAAAAAAAAIAAAAAAAAAAkAAAAAAAAACgAAAAAAAAALAAAAAAAAAAwAAAAAAAAADQAAAAAAAAAOAAAAAAAAAA8AAAAAAAAAEAAAAAAAAAARAAAAAAAAABIAAAAAAAAAEwAAAAAAAAAUAAAAAAAAABUAAAAAAAAAFgAAAAAAAAAXAAAAAAAAABgAAAAAAAAAGQAAAAAAAAAaAAAAAAAAABsAAAAAAAAAHAAAAAAAAAAdAAAAAAAAAB4AAAAAAAAAHwAAAAAAAAAgAAAAAAAAACEAAAAAAAAAIgAAAAAAAAAjAAAAAAAAACQAAAAAAAAAJQAAAAAAAAA=
+          dtype: int64
+          shape:
+          - 37
+        y:
+        - 271.71746809294564
+        - 122.47242124959303
+        - 25.116225378995296
+        - 16.219512521711295
+        - 6.1035116976745485
+        - 2.174890368096385
+        - 0.7578410435889964
+        - 0.4199327166497824
+        - 0.15016368716896977
+        - 0.06449369845358888
+        - 0.02576970268637524
+        - 0.009068604147614678
+        - 0.0022222931038413662
+        - 0.002083246985421283
+        - 0.0003587054889067076
+        - 0.0002423617843305692
+        - 8.936497761169448e-05
+        - 2.1943771571386606e-05
+        - 1.7736852896632627e-05
+        - 6.036254490027204e-06
+        - 2.3827415134292096e-06
+        - 6.258087523747236e-07
+        - 3.4784170566126704e-07
+        - 1.405642251484096e-07
+        - 6.387926987372339e-08
+        - 1.4559191185981035e-08
+        - 1.0146322892978787e-08
+        - 2.8994691092520952e-09
+        - 1.0077201295644045e-09
+        - 5.602487362921238e-10
+        - 1.6007106751203537e-10
+        - 9.458744898438454e-11
+        - 2.1827872842550278e-11
+        - 1.0913936421275139e-11
+        - 3.637978807091713e-12
+        - 3.637978807091713e-12
+        - 0.0
+      selected:
+        type: Selection
+      selection_policy:
+        type: UnionRenderers
+    type: ColumnDataSource
+  - attributes:
+      callback: null
+      data:
+        x:
+          __ndarray__: AQAAAAAAAAACAAAAAAAAAAMAAAAAAAAABAAAAAAAAAAFAAAAAAAAAAYAAAAAAAAABwAAAAAAAAAIAAAAAAAAAAkAAAAAAAAACgAAAAAAAAALAAAAAAAAAAwAAAAAAAAADQAAAAAAAAAOAAAAAAAAAA8AAAAAAAAAEAAAAAAAAAARAAAAAAAAABIAAAAAAAAAEwAAAAAAAAAUAAAAAAAAABUAAAAAAAAAFgAAAAAAAAAXAAAAAAAAABgAAAAAAAAAGQAAAAAAAAAaAAAAAAAAABsAAAAAAAAAHAAAAAAAAAAdAAAAAAAAAB4AAAAAAAAAHwAAAAAAAAAgAAAAAAAAACEAAAAAAAAAIgAAAAAAAAAjAAAAAAAAACQAAAAAAAAAJQAAAAAAAAAmAAAAAAAAACcAAAAAAAAAKAAAAAAAAAApAAAAAAAAACoAAAAAAAAAKwAAAAAAAAAsAAAAAAAAAC0AAAAAAAAALgAAAAAAAAAvAAAAAAAAADAAAAAAAAAA
+          dtype: int64
+          shape:
+          - 48
+        y:
+        - 0.5767951720372366
+        - 0.38535921357834013
+        - 0.2617147898999974
+        - 0.08537824271115824
+        - 0.06209858390138834
+        - 0.028853512474597665
+        - 0.01726969708397519
+        - 0.00404209802945843
+        - 0.003266714691562811
+        - 0.0021729993422923144
+        - 0.0008790337706159335
+        - 0.00039934945380082354
+        - 0.00021721420489484444
+        - 0.0001068599995051045
+        - 4.0790633647702634e-05
+        - 3.354087675688788e-05
+        - 1.2462078302633017e-05
+        - 4.873916623182595e-06
+        - 4.714467650046572e-06
+        - 1.5896475815679878e-06
+        - 1.144788257079199e-06
+        - 4.998946678824723e-07
+        - 2.841079549398273e-07
+        - 1.234911906067282e-07
+        - 5.934271030128002e-08
+        - 3.6627170629799366e-08
+        - 1.4384568203240633e-08
+        - 7.1922841016203165e-09
+        - 3.983586793765426e-09
+        - 1.913576852530241e-09
+        - 1.2332748156040907e-09
+        - 5.347828846424818e-10
+        - 2.1827872842550278e-10
+        - 1.2005330063402653e-10
+        - 8.731149137020111e-11
+        - 2.1827872842550278e-11
+        - 1.0913936421275139e-11
+        - 1.0913936421275139e-11
+        - 3.637978807091713e-12
+        - 0.0
+        - 3.637978807091713e-12
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+      selected:
+        type: Selection
+      selection_policy:
+        type: UnionRenderers
+    type: ColumnDataSource
+  - attributes:
+      callback: null
+      data:
+        x:
+          __ndarray__: AQAAAAAAAAACAAAAAAAAAAMAAAAAAAAABAAAAAAAAAAFAAAAAAAAAAYAAAAAAAAABwAAAAAAAAAIAAAAAAAAAAkAAAAAAAAACgAAAAAAAAALAAAAAAAAAAwAAAAAAAAADQAAAAAAAAAOAAAAAAAAAA8AAAAAAAAAEAAAAAAAAAARAAAAAAAAABIAAAAAAAAAEwAAAAAAAAAUAAAAAAAAABUAAAAAAAAAFgAAAAAAAAAXAAAAAAAAABgAAAAAAAAAGQAAAAAAAAAaAAAAAAAAABsAAAAAAAAAHAAAAAAAAAAdAAAAAAAAAB4AAAAAAAAAHwAAAAAAAAAgAAAAAAAAACEAAAAAAAAAIgAAAAAAAAAjAAAAAAAAACQAAAAAAAAAJQAAAAAAAAAmAAAAAAAAACcAAAAAAAAAKAAAAAAAAAApAAAAAAAAACoAAAAAAAAAKwAAAAAAAAAsAAAAAAAAAC0AAAAAAAAALgAAAAAAAAAvAAAAAAAAADAAAAAAAAAA
+          dtype: int64
+          shape:
+          - 48
+        y:
+        - 92.38677435465434
+        - 59.49517166770238
+        - 33.0560312294765
+        - 18.335211338679073
+        - 6.44600304677806
+        - 4.658672512527119
+        - 2.645988733162085
+        - 1.059288626340276
+        - 0.7571154550169013
+        - 0.3526320475830289
+        - 0.1477446962016984
+        - 0.06590764557768125
+        - 0.04311592646627105
+        - 0.018868109837058
+        - 0.017936618605745025
+        - 0.004935167540679686
+        - 0.002681548139662482
+        - 0.0018805601393978577
+        - 0.0008726457308512181
+        - 0.0006393492622009944
+        - 0.0002287901188537944
+        - 0.00013790348384645768
+        - 5.598739517154172e-05
+        - 3.757162266992964e-05
+        - 1.5498048014706e-05
+        - 7.593978807562962e-06
+        - 4.952580638928339e-06
+        - 2.0214974938426167e-06
+        - 1.6633457562420517e-06
+        - 4.4003172661177814e-07
+        - 3.2123352866619825e-07
+        - 1.311236701440066e-07
+        - 1.0000803740695119e-07
+        - 3.342574927955866e-08
+        - 2.2224412532523274e-08
+        - 1.3300450518727303e-08
+        - 6.733898771926761e-09
+        - 2.317392500117421e-09
+        - 2.026354195550084e-09
+        - 1.0113581083714962e-09
+        - 4.6202330850064754e-10
+        - 2.255546860396862e-10
+        - 1.2369127944111824e-10
+        - 6.548361852765083e-11
+        - 2.9103830456733704e-11
+        - 1.4551915228366852e-11
+        - 7.275957614183426e-12
+        - 7.275957614183426e-12
+      selected:
+        type: Selection
+      selection_policy:
+        type: UnionRenderers
+    type: ColumnDataSource
+  - attributes:
+      callback: null
+    type: TapTool
+  - attributes:
+      callback: null
+    type: TapTool
+  - attributes:
+      text: Convergence (log)
+    type: Title
+  - attributes:
+      text: Total energy difference over scf-Iterations
+    type: Title
+  - attributes:
+      below:
+      - type: LinearAxis
+      center:
+      - type: Grid
+      - type: Grid
+      - type: Legend
+      left:
+      - type: LogAxis
+      plot_height: 450
+      plot_width: 800
+      renderers:
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      right:
+      - type: Legend
+      title:
+        type: Title
+      toolbar:
+        type: Toolbar
+      toolbar_location: null
+      x_range:
+        type: DataRange1d
+      x_scale:
+        type: LinearScale
+      y_range:
+        type: DataRange1d
+      y_scale:
+        type: LogScale
+    subtype: Figure
+    type: Plot
+  - attributes:
+      below:
+      - type: LinearAxis
+      center:
+      - type: Grid
+      - type: Grid
+      - type: Legend
+      left:
+      - type: LogAxis
+      plot_height: 450
+      plot_width: 800
+      renderers:
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      right:
+      - type: Legend
+      title:
+        type: Title
+      toolbar:
+        type: Toolbar
+      toolbar_location: null
+      x_range:
+        type: DataRange1d
+      x_scale:
+        type: LinearScale
+      y_range:
+        type: DataRange1d
+      y_scale:
+        type: LogScale
+    subtype: Figure
+    type: Plot
+  - attributes:
+      active_drag: auto
+      active_inspect:
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      active_multi: null
+      active_scroll: auto
+      active_tap: auto
+      tools:
+      - type: BoxZoomTool
+      - type: CrosshairTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: PanTool
+      - type: PolySelectTool
+      - type: RedoTool
+      - type: ResetTool
+      - type: SaveTool
+      - type: TapTool
+      - type: UndoTool
+      - type: WheelZoomTool
+      - type: ZoomInTool
+      - type: ZoomOutTool
+    type: Toolbar
+  - attributes:
+      active_drag: auto
+      active_inspect:
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      active_multi: null
+      active_scroll: auto
+      active_tap: auto
+      tools:
+      - type: BoxZoomTool
+      - type: CrosshairTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: PanTool
+      - type: PolySelectTool
+      - type: RedoTool
+      - type: ResetTool
+      - type: SaveTool
+      - type: TapTool
+      - type: UndoTool
+      - type: WheelZoomTool
+      - type: ZoomInTool
+      - type: ZoomOutTool
+    type: Toolbar
+  - attributes: {}
+    type: UndoTool
+  - attributes: {}
+    type: UndoTool
+  - attributes: {}
+    type: UnionRenderers
+  - attributes: {}
+    type: UnionRenderers
+  - attributes: {}
+    type: UnionRenderers
+  - attributes: {}
+    type: UnionRenderers
+  - attributes: {}
+    type: UnionRenderers
+  - attributes: {}
+    type: UnionRenderers
+  - attributes: {}
+    type: UnionRenderers
+  - attributes: {}
+    type: UnionRenderers
+  - attributes: {}
+    type: UnionRenderers
+  - attributes: {}
+    type: UnionRenderers
+  - attributes: {}
+    type: UnionRenderers
+  - attributes: {}
+    type: UnionRenderers
+  - attributes: {}
+    type: UnionRenderers
+  - attributes: {}
+    type: UnionRenderers
+  - attributes: {}
+    type: UnionRenderers
+  - attributes: {}
+    type: UnionRenderers
+  - attributes: {}
+    type: UnionRenderers
+  - attributes: {}
+    type: UnionRenderers
+  - attributes: {}
+    type: UnionRenderers
+  - attributes: {}
+    type: UnionRenderers
+  - attributes: {}
+    type: UnionRenderers
+  - attributes: {}
+    type: UnionRenderers
+  - attributes: {}
+    type: UnionRenderers
+  - attributes: {}
+    type: UnionRenderers
+  - attributes: {}
+    type: UnionRenderers
+  - attributes: {}
+    type: UnionRenderers
+  - attributes: {}
+    type: UnionRenderers
+  - attributes: {}
+    type: UnionRenderers
+  - attributes: {}
+    type: UnionRenderers
+  - attributes: {}
+    type: UnionRenderers
+  - attributes: {}
+    type: WheelZoomTool
+  - attributes: {}
+    type: WheelZoomTool
+  - attributes: {}
+    type: ZoomInTool
+  - attributes: {}
+    type: ZoomInTool
+  - attributes: {}
+    type: ZoomOutTool
+  - attributes: {}
+    type: ZoomOutTool
+title: Bokeh Application
+version: 1.4.0

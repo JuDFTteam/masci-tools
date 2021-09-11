@@ -1,0 +1,756 @@
+roots:
+  references:
+  - attributes: {}
+    type: BasicTickFormatter
+  - attributes: {}
+    type: BasicTickFormatter
+  - attributes:
+      axis_label: Iteration
+      axis_label_text_font_size:
+        value: 24pt
+      axis_line_width:
+        value: 2
+      formatter:
+        type: BasicTickFormatter
+      major_label_text_font_size:
+        value: 16pt
+      ticker:
+        type: BasicTicker
+    type: LinearAxis
+  - attributes:
+      axis_label: Iteration
+      axis_label_text_font_size:
+        value: 24pt
+      axis_line_width:
+        value: 2
+      formatter:
+        type: BasicTickFormatter
+      major_label_text_font_size:
+        value: 16pt
+      ticker:
+        type: BasicTicker
+    type: LinearAxis
+  - attributes: {}
+    type: BasicTicker
+  - attributes: {}
+    type: BasicTicker
+  - attributes:
+      ticker:
+        type: BasicTicker
+    type: Grid
+  - attributes:
+      ticker:
+        type: BasicTicker
+    type: Grid
+  - attributes:
+      bottom_units: screen
+      fill_alpha:
+        value: 0.5
+      fill_color:
+        value: lightgrey
+      left_units: screen
+      level: overlay
+      line_alpha:
+        value: 1.0
+      line_color:
+        value: black
+      line_dash:
+      - 4
+      - 4
+      line_width:
+        value: 2
+      render_mode: css
+      right_units: screen
+      top_units: screen
+    type: BoxAnnotation
+  - attributes:
+      bottom_units: screen
+      fill_alpha:
+        value: 0.5
+      fill_color:
+        value: lightgrey
+      left_units: screen
+      level: overlay
+      line_alpha:
+        value: 1.0
+      line_color:
+        value: black
+      line_dash:
+      - 4
+      - 4
+      line_width:
+        value: 2
+      render_mode: css
+      right_units: screen
+      top_units: screen
+    type: BoxAnnotation
+  - attributes:
+      overlay:
+        type: BoxAnnotation
+    type: BoxZoomTool
+  - attributes:
+      overlay:
+        type: BoxAnnotation
+    type: BoxZoomTool
+  - attributes:
+      children:
+      - type: GridBox
+      - type: ToolbarBox
+    type: Column
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: delta total energy
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: distance
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Scatter
+      hover_glyph: null
+      muted_glyph: null
+      name: delta total energy
+      nonselection_glyph:
+        type: Scatter
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Scatter
+      hover_glyph: null
+      muted_glyph: null
+      name: distance
+      nonselection_glyph:
+        type: Scatter
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes: {}
+    type: CrosshairTool
+  - attributes: {}
+    type: CrosshairTool
+  - attributes:
+      callback: null
+    type: DataRange1d
+  - attributes:
+      callback: null
+    type: DataRange1d
+  - attributes:
+      callback: null
+    type: DataRange1d
+  - attributes:
+      callback: null
+    type: DataRange1d
+  - attributes:
+      children:
+      - - subtype: Figure
+          type: Plot
+        - 0
+        - 0
+      - - subtype: Figure
+          type: Plot
+        - 1
+        - 0
+    type: GridBox
+  - attributes:
+      callback: null
+      tooltips:
+      - - Iteration
+        - '@{x}'
+      - - Charge distance
+        - '@{y}'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - Iteration
+        - '@iterations'
+      - - Total energy distance
+        - '@distance'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - Iteration
+        - '@iterations'
+      - - Total energy distance
+        - '@total_energy_delta'
+    type: HoverTool
+  - attributes:
+      click_policy: hide
+      items:
+      - type: LegendItem
+      label_text_font_size:
+        value: 14pt
+    type: Legend
+  - attributes:
+      click_policy: hide
+      items:
+      - type: LegendItem
+      label_text_font_size:
+        value: 14pt
+    type: Legend
+  - attributes:
+      label:
+        value: distance
+      renderers:
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+    type: LegendItem
+  - attributes:
+      label:
+        value: total_energy_delta
+      renderers:
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+    type: LegendItem
+  - attributes:
+      line_color: darkred
+      line_width: 2.0
+      x:
+        field: iterations
+      y:
+        field: distance
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: iterations
+      y:
+        field: distance
+    type: Line
+  - attributes:
+      line_color: darkred
+      line_width: 2.0
+      x:
+        field: iterations
+      y:
+        field: total_energy_delta
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: iterations
+      y:
+        field: total_energy_delta
+    type: Line
+  - attributes: {}
+    type: LinearScale
+  - attributes: {}
+    type: LinearScale
+  - attributes: {}
+    type: LogScale
+  - attributes: {}
+    type: LogScale
+  - attributes:
+      ticker: null
+    type: LogTickFormatter
+  - attributes:
+      ticker: null
+    type: LogTickFormatter
+  - attributes:
+      axis_label: Distance [me/bohr^3]
+      axis_label_text_font_size:
+        value: 24pt
+      axis_line_width:
+        value: 2
+      formatter:
+        type: LogTickFormatter
+      major_label_text_font_size:
+        value: 16pt
+      ticker:
+        type: LogTicker
+    type: LogAxis
+  - attributes:
+      axis_label: Total energy difference [Htr]
+      axis_label_text_font_size:
+        value: 24pt
+      axis_line_width:
+        value: 2
+      formatter:
+        type: LogTickFormatter
+      major_label_text_font_size:
+        value: 16pt
+      ticker:
+        type: LogTicker
+    type: LogAxis
+  - attributes:
+      num_minor_ticks: 10
+    type: LogTicker
+  - attributes:
+      num_minor_ticks: 10
+    type: LogTicker
+  - attributes:
+      dimension: 1
+      ticker:
+        type: LogTicker
+    type: Grid
+  - attributes:
+      dimension: 1
+      ticker:
+        type: LogTicker
+    type: Grid
+  - attributes: {}
+    type: PanTool
+  - attributes: {}
+    type: PanTool
+  - attributes:
+      fill_alpha:
+        value: 0.5
+      fill_color:
+        value: lightgrey
+      level: overlay
+      line_alpha:
+        value: 1.0
+      line_color:
+        value: black
+      line_dash:
+      - 4
+      - 4
+      line_width:
+        value: 2
+      xs_units: screen
+      ys_units: screen
+    type: PolyAnnotation
+  - attributes:
+      fill_alpha:
+        value: 0.5
+      fill_color:
+        value: lightgrey
+      level: overlay
+      line_alpha:
+        value: 1.0
+      line_color:
+        value: black
+      line_dash:
+      - 4
+      - 4
+      line_width:
+        value: 2
+      xs_units: screen
+      ys_units: screen
+    type: PolyAnnotation
+  - attributes:
+      callback: null
+      overlay:
+        type: PolyAnnotation
+    type: PolySelectTool
+  - attributes:
+      callback: null
+      overlay:
+        type: PolyAnnotation
+    type: PolySelectTool
+  - attributes:
+      tools:
+      - type: BoxZoomTool
+      - type: BoxZoomTool
+      - type: CrosshairTool
+      - type: CrosshairTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: PanTool
+      - type: PanTool
+      - type: PolySelectTool
+      - type: PolySelectTool
+      - type: RedoTool
+      - type: RedoTool
+      - type: ResetTool
+      - type: ResetTool
+      - type: SaveTool
+      - type: SaveTool
+      - type: TapTool
+      - type: TapTool
+      - type: UndoTool
+      - type: UndoTool
+      - type: WheelZoomTool
+      - type: WheelZoomTool
+      - type: ZoomInTool
+      - type: ZoomInTool
+      - type: ZoomOutTool
+      - type: ZoomOutTool
+    type: ProxyToolbar
+  - attributes:
+      toolbar:
+        type: ProxyToolbar
+      toolbar_location: above
+    type: ToolbarBox
+  - attributes: {}
+    type: RedoTool
+  - attributes: {}
+    type: RedoTool
+  - attributes: {}
+    type: ResetTool
+  - attributes: {}
+    type: ResetTool
+  - attributes: {}
+    type: SaveTool
+  - attributes: {}
+    type: SaveTool
+  - attributes:
+      fill_alpha:
+        value: 0.1
+      fill_color:
+        value: '#1f77b4'
+      line_alpha:
+        value: 0.1
+      line_color:
+        value: '#1f77b4'
+      marker:
+        value: square
+      size:
+        units: screen
+        value: 12
+      x:
+        field: iterations
+      y:
+        field: distance
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: darkred
+      line_alpha:
+        value: 0.8
+      line_color:
+        value: darkred
+      marker:
+        value: square
+      size:
+        units: screen
+        value: 12
+      x:
+        field: iterations
+      y:
+        field: distance
+    type: Scatter
+  - attributes:
+      fill_alpha:
+        value: 0.1
+      fill_color:
+        value: '#1f77b4'
+      line_alpha:
+        value: 0.1
+      line_color:
+        value: '#1f77b4'
+      marker:
+        value: square
+      size:
+        units: screen
+        value: 12
+      x:
+        field: iterations
+      y:
+        field: total_energy_delta
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: darkred
+      line_alpha:
+        value: 0.8
+      line_color:
+        value: darkred
+      marker:
+        value: square
+      size:
+        units: screen
+        value: 12
+      x:
+        field: iterations
+      y:
+        field: total_energy_delta
+    type: Scatter
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes:
+      callback: null
+      data:
+        index:
+          __ndarray__: AAAAAAAAAAABAAAAAAAAAAIAAAAAAAAAAwAAAAAAAAAEAAAAAAAAAAUAAAAAAAAABgAAAAAAAAAHAAAAAAAAAAgAAAAAAAAACQAAAAAAAAAKAAAAAAAAAAsAAAAAAAAADAAAAAAAAAANAAAAAAAAAA4AAAAAAAAADwAAAAAAAAAQAAAAAAAAABEAAAAAAAAAEgAAAAAAAAA=
+          dtype: int64
+          shape:
+          - 19
+        iterations:
+          __ndarray__: AQAAAAAAAAACAAAAAAAAAAMAAAAAAAAABAAAAAAAAAAFAAAAAAAAAAYAAAAAAAAABwAAAAAAAAAIAAAAAAAAAAkAAAAAAAAACgAAAAAAAAALAAAAAAAAAAwAAAAAAAAADQAAAAAAAAAOAAAAAAAAAA8AAAAAAAAAEAAAAAAAAAARAAAAAAAAABIAAAAAAAAAEwAAAAAAAAA=
+          dtype: int64
+          shape:
+          - 19
+        total_energy_delta:
+          __ndarray__: BYasbvWcpD8w8Nx7uOSwP2tI3GPpQ9E/FAX6RJ4kvT/HuriNBvCWP2kdVU0QdR8/Q8U4fxMKcT8CZVOu8C6HP+Un1T4dj0k/8WjjiLX4BD+wG7YtymxwP4wQHm0csWY/D9b/OcyXFz9hMlUwKqkzP9L7xteeWRI/D9b/OcyXFz8tQxzr4jYaP2EyVTAqqSM/aR1VTRB1/z4=
+          dtype: float64
+          shape:
+          - 19
+      selected:
+        type: Selection
+      selection_policy:
+        type: UnionRenderers
+    type: ColumnDataSource
+  - attributes:
+      callback: null
+      data:
+        index:
+          __ndarray__: AAAAAAAAAAABAAAAAAAAAAIAAAAAAAAAAwAAAAAAAAAEAAAAAAAAAAUAAAAAAAAABgAAAAAAAAAHAAAAAAAAAAgAAAAAAAAACQAAAAAAAAAKAAAAAAAAAAsAAAAAAAAADAAAAAAAAAANAAAAAAAAAA4AAAAAAAAADwAAAAAAAAAQAAAAAAAAABEAAAAAAAAAEgAAAAAAAAA=
+          dtype: int64
+          shape:
+          - 19
+        iterations:
+          __ndarray__: AQAAAAAAAAACAAAAAAAAAAMAAAAAAAAABAAAAAAAAAAFAAAAAAAAAAYAAAAAAAAABwAAAAAAAAAIAAAAAAAAAAkAAAAAAAAACgAAAAAAAAALAAAAAAAAAAwAAAAAAAAADQAAAAAAAAAOAAAAAAAAAA8AAAAAAAAAEAAAAAAAAAARAAAAAAAAABIAAAAAAAAAEwAAAAAAAAA=
+          dtype: int64
+          shape:
+          - 19
+        total_energy_delta:
+          __ndarray__: BYasbvWcpD8w8Nx7uOSwP2tI3GPpQ9E/FAX6RJ4kvT/HuriNBvCWP2kdVU0QdR8/Q8U4fxMKcT8CZVOu8C6HP+Un1T4dj0k/8WjjiLX4BD+wG7YtymxwP4wQHm0csWY/D9b/OcyXFz9hMlUwKqkzP9L7xteeWRI/D9b/OcyXFz8tQxzr4jYaP2EyVTAqqSM/aR1VTRB1/z4=
+          dtype: float64
+          shape:
+          - 19
+      selected:
+        type: Selection
+      selection_policy:
+        type: UnionRenderers
+    type: ColumnDataSource
+  - attributes:
+      callback: null
+      data:
+        distance:
+          __ndarray__: d9uF5jpNJ0BxPQrXoyAlQGagMv59xhxAacai6ezkBEAnZr0YyskDQI16iEZ3kAdA/cHAc+9h/T/Zd0Xwv5X3P5eo3hrYqv0/Sx+6oL5l7T+u9UVCW87sPyGwcmiR7eA/OUVHcvkPuT8+XHLcKR28P/8JLlbUYLI/1QloImx4mj8hAg6hSs2eP6uVCb/Uz3s/dv2C3bBtgT9xAz4/jBB+Pw==
+          dtype: float64
+          shape:
+          - 20
+        index:
+          __ndarray__: AAAAAAAAAAABAAAAAAAAAAIAAAAAAAAAAwAAAAAAAAAEAAAAAAAAAAUAAAAAAAAABgAAAAAAAAAHAAAAAAAAAAgAAAAAAAAACQAAAAAAAAAKAAAAAAAAAAsAAAAAAAAADAAAAAAAAAANAAAAAAAAAA4AAAAAAAAADwAAAAAAAAAQAAAAAAAAABEAAAAAAAAAEgAAAAAAAAATAAAAAAAAAA==
+          dtype: int64
+          shape:
+          - 20
+        iterations:
+          __ndarray__: AAAAAAAAAAABAAAAAAAAAAIAAAAAAAAAAwAAAAAAAAAEAAAAAAAAAAUAAAAAAAAABgAAAAAAAAAHAAAAAAAAAAgAAAAAAAAACQAAAAAAAAAKAAAAAAAAAAsAAAAAAAAADAAAAAAAAAANAAAAAAAAAA4AAAAAAAAADwAAAAAAAAAQAAAAAAAAABEAAAAAAAAAEgAAAAAAAAATAAAAAAAAAA==
+          dtype: int64
+          shape:
+          - 20
+      selected:
+        type: Selection
+      selection_policy:
+        type: UnionRenderers
+    type: ColumnDataSource
+  - attributes:
+      callback: null
+      data:
+        distance:
+          __ndarray__: d9uF5jpNJ0BxPQrXoyAlQGagMv59xhxAacai6ezkBEAnZr0YyskDQI16iEZ3kAdA/cHAc+9h/T/Zd0Xwv5X3P5eo3hrYqv0/Sx+6oL5l7T+u9UVCW87sPyGwcmiR7eA/OUVHcvkPuT8+XHLcKR28P/8JLlbUYLI/1QloImx4mj8hAg6hSs2eP6uVCb/Uz3s/dv2C3bBtgT9xAz4/jBB+Pw==
+          dtype: float64
+          shape:
+          - 20
+        index:
+          __ndarray__: AAAAAAAAAAABAAAAAAAAAAIAAAAAAAAAAwAAAAAAAAAEAAAAAAAAAAUAAAAAAAAABgAAAAAAAAAHAAAAAAAAAAgAAAAAAAAACQAAAAAAAAAKAAAAAAAAAAsAAAAAAAAADAAAAAAAAAANAAAAAAAAAA4AAAAAAAAADwAAAAAAAAAQAAAAAAAAABEAAAAAAAAAEgAAAAAAAAATAAAAAAAAAA==
+          dtype: int64
+          shape:
+          - 20
+        iterations:
+          __ndarray__: AAAAAAAAAAABAAAAAAAAAAIAAAAAAAAAAwAAAAAAAAAEAAAAAAAAAAUAAAAAAAAABgAAAAAAAAAHAAAAAAAAAAgAAAAAAAAACQAAAAAAAAAKAAAAAAAAAAsAAAAAAAAADAAAAAAAAAANAAAAAAAAAA4AAAAAAAAADwAAAAAAAAAQAAAAAAAAABEAAAAAAAAAEgAAAAAAAAATAAAAAAAAAA==
+          dtype: int64
+          shape:
+          - 20
+      selected:
+        type: Selection
+      selection_policy:
+        type: UnionRenderers
+    type: ColumnDataSource
+  - attributes:
+      callback: null
+    type: TapTool
+  - attributes:
+      callback: null
+    type: TapTool
+  - attributes:
+      text: Convergence (log)
+    type: Title
+  - attributes:
+      text: Total energy difference over scf-Iterations
+    type: Title
+  - attributes:
+      below:
+      - type: LinearAxis
+      center:
+      - type: Grid
+      - type: Grid
+      - type: Legend
+      left:
+      - type: LogAxis
+      plot_height: 450
+      plot_width: 800
+      renderers:
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      title:
+        type: Title
+      toolbar:
+        type: Toolbar
+      toolbar_location: null
+      x_range:
+        type: DataRange1d
+      x_scale:
+        type: LinearScale
+      y_range:
+        type: DataRange1d
+      y_scale:
+        type: LogScale
+    subtype: Figure
+    type: Plot
+  - attributes:
+      below:
+      - type: LinearAxis
+      center:
+      - type: Grid
+      - type: Grid
+      - type: Legend
+      left:
+      - type: LogAxis
+      plot_height: 450
+      plot_width: 800
+      renderers:
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      title:
+        type: Title
+      toolbar:
+        type: Toolbar
+      toolbar_location: null
+      x_range:
+        type: DataRange1d
+      x_scale:
+        type: LinearScale
+      y_range:
+        type: DataRange1d
+      y_scale:
+        type: LogScale
+    subtype: Figure
+    type: Plot
+  - attributes:
+      active_drag: auto
+      active_inspect:
+      - type: HoverTool
+      active_multi: null
+      active_scroll: auto
+      active_tap: auto
+      tools:
+      - type: BoxZoomTool
+      - type: CrosshairTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: PanTool
+      - type: PolySelectTool
+      - type: RedoTool
+      - type: ResetTool
+      - type: SaveTool
+      - type: TapTool
+      - type: UndoTool
+      - type: WheelZoomTool
+      - type: ZoomInTool
+      - type: ZoomOutTool
+    type: Toolbar
+  - attributes:
+      active_drag: auto
+      active_inspect:
+      - type: HoverTool
+      active_multi: null
+      active_scroll: auto
+      active_tap: auto
+      tools:
+      - type: BoxZoomTool
+      - type: CrosshairTool
+      - type: HoverTool
+      - type: PanTool
+      - type: PolySelectTool
+      - type: RedoTool
+      - type: ResetTool
+      - type: SaveTool
+      - type: TapTool
+      - type: UndoTool
+      - type: WheelZoomTool
+      - type: ZoomInTool
+      - type: ZoomOutTool
+    type: Toolbar
+  - attributes: {}
+    type: UndoTool
+  - attributes: {}
+    type: UndoTool
+  - attributes: {}
+    type: UnionRenderers
+  - attributes: {}
+    type: UnionRenderers
+  - attributes: {}
+    type: UnionRenderers
+  - attributes: {}
+    type: UnionRenderers
+  - attributes: {}
+    type: WheelZoomTool
+  - attributes: {}
+    type: WheelZoomTool
+  - attributes: {}
+    type: ZoomInTool
+  - attributes: {}
+    type: ZoomInTool
+  - attributes: {}
+    type: ZoomOutTool
+  - attributes: {}
+    type: ZoomOutTool
+title: Bokeh Application
+version: 1.4.0

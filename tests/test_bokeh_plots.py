@@ -301,7 +301,7 @@ class TestPlotConvergenceResults(object):  #pylint: disable=missing-class-docstr
 
     iteration = range(len(distances))
 
-    def test_defaults(self, check_bokeh_plot):
+    def test_convergence_defaults(self, check_bokeh_plot):
         """
         Test of convergence plot with default values
         """
@@ -312,9 +312,7 @@ class TestPlotConvergenceResults(object):  #pylint: disable=missing-class-docstr
         # need to return the figure in order for mpl checks to work
         check_bokeh_plot(p)
 
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/convergence/',
-                                   filename='param_change.png')
-    def test_param_change(self, check_bokeh_plot):
+    def test_convergence_param_change(self, check_bokeh_plot):
         """
         Test of convergence plot with changed parameters
         """
@@ -335,7 +333,7 @@ class TestPlotConvergenceResults(object):  #pylint: disable=missing-class-docstr
 
 class TestPlotConvergenceMulti(object):  #pylint: disable=missing-class-docstring
 
-    def test_defaults(self, check_bokeh_plot):
+    def test_convergence_multi_defaults(self, check_bokeh_plot):
         """
         Test of multiple convergence plot with default values
         """
