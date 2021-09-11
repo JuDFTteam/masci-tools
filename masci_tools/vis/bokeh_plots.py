@@ -1303,10 +1303,8 @@ def plot_convergence_results(iteration, distance, total_energy, *, saveas='conve
     source2 = pd.DataFrame({'distance': distance, 'iterations': iteration})
 
     plot_params.set_defaults(default_type='function',
+                             tooltips=[('Iteration', '@{x}'), ('Total energy distance', '@{y}')],
                              figure_kwargs={
-                                 'tools': 'hover,tap,box_zoom,zoom_out,crosshair,reset,save',
-                                 'tooltips': [('Iteration', '@x'), ('Total energy distance', '@y')],
-                                 'active_inspect': 'hover',
                                  'plot_width': 800,
                                  'plot_height': 450,
                                  'y_axis_type': 'log',
@@ -1332,14 +1330,12 @@ def plot_convergence_results(iteration, distance, total_energy, *, saveas='conve
                         **kwargs)
 
     plot_params.set_defaults(default_type='function',
-                             figure_kwargs={'tooltips': [('Iteration', '@x'), ('Charge distance', '@y')]})
+                             figure_kwargs={'tooltips': [('Iteration', '@{x}'), ('Charge distance', '@{y}')]})
 
     with NestedPlotParameters(plot_params):
         p2 = bokeh_line('iterations',
                         'distance',
                         data=source2,
-                        ydata='distance',
-                        xdata='iterations',
                         xlabel=xlabel,
                         ylabel=ylabel2,
                         title=title2,
@@ -1349,7 +1345,7 @@ def plot_convergence_results(iteration, distance, total_energy, *, saveas='conve
                         save_plots=False,
                         **kwargs)
 
-    grid = gridplot([p1, p2], ncols=2)
+    grid = gridplot([p1, p2], ncols=1)
 
     plot_params.save_plot(grid, saveas)
 
@@ -1407,8 +1403,8 @@ def plot_convergence_results_m(iterations,
     data_sources = []
     data_sources2 = []
 
-    tooltips_scatter1 = [('Calculation id', '@id'), ('Iteration', '@x'), ('Total energy difference', '@y')]
-    tooltips_scatter2 = [('Calculation id', '@id'), ('Iteration', '@x'), ('Charge distance', '@y')]
+    tooltips_scatter1 = [('Calculation id', '@id'), ('Iteration', '@{x}'), ('Total energy difference', '@{y}')]
+    tooltips_scatter2 = [('Calculation id', '@id'), ('Iteration', '@{x}'), ('Charge distance', '@{y}')]
 
     xdata = ['x'] * len(total_energies)
     ydata = ['y'] * len(total_energies)
@@ -1455,10 +1451,8 @@ def plot_convergence_results_m(iterations,
         tooltips_scatter2.append(('outpara pk', '@nodes_pk'))
 
     plot_params.set_defaults(default_type='function',
+                             tooltips=tooltips_scatter1,
                              figure_kwargs={
-                                 'tools': 'hover,tap,box_zoom,zoom_out,crosshair,reset,save,pan',
-                                 'tooltips': tooltips_scatter1,
-                                 'active_inspect': 'hover',
                                  'plot_width': 800,
                                  'plot_height': 450,
                                  'y_axis_type': 'log',
@@ -1485,9 +1479,7 @@ def plot_convergence_results_m(iterations,
                         save_plots=False,
                         **kwargs)
 
-    plot_params.set_defaults(default_type='function', figure_kwargs={
-        'tooltips': tooltips_scatter2,
-    })
+    plot_params.set_defaults(default_type='function', tooltips=tooltips_scatter2)
 
     with NestedPlotParameters(plot_params):
         p2 = bokeh_line(xdata,
@@ -1503,7 +1495,7 @@ def plot_convergence_results_m(iterations,
                         save_plots=False,
                         **kwargs)
 
-    grid = gridplot([p1, p2], ncols=2)
+    grid = gridplot([p1, p2], ncols=1)
 
     plot_params.save_plot(grid, saveas)
 
