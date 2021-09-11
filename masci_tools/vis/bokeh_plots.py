@@ -1319,9 +1319,9 @@ def plot_convergence_results(iteration, distance, total_energy, *, saveas='conve
         plot_params.set_parameters(show=kwargs.pop('save_plots'))
 
     with NestedPlotParameters(plot_params):
-        p1 = bokeh_line(source=source1,
-                        ydata='total_energy_delta',
-                        xdata='iterations',
+        p1 = bokeh_line('iterations',
+                        'total_energy_delta',
+                        data=source1,
                         xlabel=xlabel,
                         ylabel=ylabel1,
                         title=title1,
@@ -1335,7 +1335,9 @@ def plot_convergence_results(iteration, distance, total_energy, *, saveas='conve
                              figure_kwargs={'tooltips': [('Iteration', '@x'), ('Charge distance', '@y')]})
 
     with NestedPlotParameters(plot_params):
-        p2 = bokeh_line(source=source2,
+        p2 = bokeh_line('iterations',
+                        'distance',
+                        data=source2,
                         ydata='distance',
                         xdata='iterations',
                         xlabel=xlabel,
@@ -1470,9 +1472,9 @@ def plot_convergence_results_m(iterations,
 
     # plot
     with NestedPlotParameters(plot_params):
-        p1 = bokeh_line(source=data_sources,
-                        ydata=ydata,
-                        xdata=xdata,
+        p1 = bokeh_line(xdata,
+                        ydata,
+                        data=data_sources,
                         xlabel=xlabel,
                         ylabel=ylabel1,
                         title=title1,
@@ -1488,9 +1490,9 @@ def plot_convergence_results_m(iterations,
     })
 
     with NestedPlotParameters(plot_params):
-        p2 = bokeh_line(source=data_sources2,
-                        ydata=ydata,
-                        xdata=xdata,
+        p2 = bokeh_line(xdata,
+                        ydata,
+                        data=data_sources2,
                         xlabel=xlabel,
                         ylabel=ylabel2,
                         title=title2,
