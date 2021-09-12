@@ -4,10 +4,52 @@ roots:
     type: BasicTickFormatter
   - attributes: {}
     type: BasicTickFormatter
+  - attributes:
+      axis_label: E-E_F [eV]
+      axis_label_text_font_size:
+        value: 18pt
+      axis_line_width:
+        value: 2
+      formatter:
+        type: BasicTickFormatter
+      major_label_text_font_size:
+        value: 16pt
+      ticker:
+        type: BasicTicker
+    type: LinearAxis
+  - attributes:
+      axis_label_text_font_size:
+        value: 18pt
+      axis_line_width:
+        value: 2
+      formatter:
+        type: BasicTickFormatter
+      major_label_overrides:
+        '0': X
+        '0.325724555583458': K
+        '1.302898222333832': g
+        '2.1007571802081184': L
+        '2.7522062913750363': W
+        '3.2128503754791113': X
+        '4.134138543687261': g
+      major_label_text_font_size:
+        value: 16pt
+      ticker:
+        type: FixedTicker
+    type: LinearAxis
   - attributes: {}
     type: BasicTicker
   - attributes: {}
     type: BasicTicker
+  - attributes:
+      ticker:
+        type: BasicTicker
+    type: Grid
+  - attributes:
+      dimension: 1
+      ticker:
+        type: BasicTicker
+    type: Grid
   - attributes:
       bottom_units: screen
       fill_alpha:
@@ -37,6 +79,132 @@ roots:
       source:
         type: ColumnDataSource
     type: CDSView
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Scatter
+      hover_glyph: null
+      muted_glyph: null
+      name: eigenvalues_up
+      nonselection_glyph:
+        type: Scatter
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes: {}
+    type: CrosshairTool
+  - attributes:
+      callback: null
+      range_padding: 0.0
+    type: DataRange1d
+  - attributes:
+      ticks:
+      - 0.0
+      - 0.325724555583458
+      - 1.302898222333832
+      - 2.1007571802081184
+      - 2.7522062913750363
+      - 3.2128503754791113
+      - 4.134138543687261
+    type: FixedTicker
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - X
+        - '@kpath'
+      - - Y
+        - '@eigenvalues_up'
+    type: HoverTool
+  - attributes:
+      click_policy: hide
+      items:
+      - type: LegendItem
+      label_text_font_size:
+        value: 14pt
+    type: Legend
+  - attributes:
+      label:
+        value: Eigenvalues
+      renderers:
+      - type: GlyphRenderer
+    type: LegendItem
+  - attributes: {}
+    type: LinearScale
+  - attributes: {}
+    type: LinearScale
+  - attributes: {}
+    type: PanTool
+  - attributes:
+      fill_alpha:
+        value: 0.5
+      fill_color:
+        value: lightgrey
+      level: overlay
+      line_alpha:
+        value: 1.0
+      line_color:
+        value: black
+      line_dash:
+      - 4
+      - 4
+      line_width:
+        value: 2
+      xs_units: screen
+      ys_units: screen
+    type: PolyAnnotation
+  - attributes:
+      callback: null
+      overlay:
+        type: PolyAnnotation
+    type: PolySelectTool
+  - attributes:
+      callback: null
+      end: 15
+      start: -15
+    type: Range1d
+  - attributes: {}
+    type: RedoTool
+  - attributes: {}
+    type: ResetTool
+  - attributes: {}
+    type: SaveTool
+  - attributes:
+      fill_color:
+        field: color_up
+      line_color:
+        field: color_up
+      size:
+        field: max_weight_up
+        units: screen
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Scatter
+  - attributes:
+      fill_alpha:
+        value: 0.1
+      fill_color:
+        value: '#1f77b4'
+      line_alpha:
+        value: 0.1
+      line_color:
+        value: '#1f77b4'
+      size:
+        field: max_weight_up
+        units: screen
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Scatter
+  - attributes: {}
+    type: Selection
   - attributes:
       callback: null
       data:
@@ -3231,209 +3399,6 @@ roots:
       selection_policy:
         type: UnionRenderers
     type: ColumnDataSource
-  - attributes: {}
-    type: CrosshairTool
-  - attributes:
-      callback: null
-      range_padding: 0.0
-    type: DataRange1d
-  - attributes:
-      ticks:
-      - 0.0
-      - 0.325724555583458
-      - 1.302898222333832
-      - 2.1007571802081184
-      - 2.7522062913750363
-      - 3.2128503754791113
-      - 4.134138543687261
-    type: FixedTicker
-  - attributes:
-      data_source:
-        type: ColumnDataSource
-      glyph:
-        type: Scatter
-      hover_glyph: null
-      muted_glyph: null
-      name: eigenvalues_up
-      nonselection_glyph:
-        type: Scatter
-      selection_glyph: null
-      view:
-        type: CDSView
-    type: GlyphRenderer
-  - attributes:
-      ticker:
-        type: BasicTicker
-    type: Grid
-  - attributes:
-      dimension: 1
-      ticker:
-        type: BasicTicker
-    type: Grid
-  - attributes:
-      callback: null
-      renderers:
-      - type: GlyphRenderer
-      toggleable: false
-      tooltips:
-      - - X
-        - '@kpath'
-      - - Y
-        - '@eigenvalues_up'
-    type: HoverTool
-  - attributes:
-      click_policy: hide
-      items:
-      - type: LegendItem
-      label_text_font_size:
-        value: 14pt
-    type: Legend
-  - attributes:
-      label:
-        value: Eigenvalues
-      renderers:
-      - type: GlyphRenderer
-    type: LegendItem
-  - attributes:
-      axis_label: E-E_F [eV]
-      axis_label_text_font_size:
-        value: 18pt
-      axis_line_width:
-        value: 2
-      formatter:
-        type: BasicTickFormatter
-      major_label_text_font_size:
-        value: 16pt
-      ticker:
-        type: BasicTicker
-    type: LinearAxis
-  - attributes:
-      axis_label_text_font_size:
-        value: 18pt
-      axis_line_width:
-        value: 2
-      formatter:
-        type: BasicTickFormatter
-      major_label_overrides:
-        '0': X
-        '0.325724555583458': K
-        '1.302898222333832': g
-        '2.1007571802081184': L
-        '2.7522062913750363': W
-        '3.2128503754791113': X
-        '4.134138543687261': g
-      major_label_text_font_size:
-        value: 16pt
-      ticker:
-        type: FixedTicker
-    type: LinearAxis
-  - attributes: {}
-    type: LinearScale
-  - attributes: {}
-    type: LinearScale
-  - attributes: {}
-    type: PanTool
-  - attributes:
-      below:
-      - type: LinearAxis
-      center:
-      - type: Grid
-      - type: Grid
-      - type: Legend
-      left:
-      - type: LinearAxis
-      plot_height: 720
-      plot_width: 1280
-      renderers:
-      - type: GlyphRenderer
-      - type: Span
-      - type: Span
-      - type: Span
-      - type: Span
-      - type: Span
-      - type: Span
-      - type: Span
-      - type: Span
-      title:
-        type: Title
-      toolbar:
-        type: Toolbar
-      x_range:
-        type: DataRange1d
-      x_scale:
-        type: LinearScale
-      y_range:
-        type: Range1d
-      y_scale:
-        type: LinearScale
-    subtype: Figure
-    type: Plot
-  - attributes:
-      fill_alpha:
-        value: 0.5
-      fill_color:
-        value: lightgrey
-      level: overlay
-      line_alpha:
-        value: 1.0
-      line_color:
-        value: black
-      line_dash:
-      - 4
-      - 4
-      line_width:
-        value: 2
-      xs_units: screen
-      ys_units: screen
-    type: PolyAnnotation
-  - attributes:
-      callback: null
-      overlay:
-        type: PolyAnnotation
-    type: PolySelectTool
-  - attributes:
-      callback: null
-      end: 15
-      start: -15
-    type: Range1d
-  - attributes: {}
-    type: RedoTool
-  - attributes: {}
-    type: ResetTool
-  - attributes: {}
-    type: SaveTool
-  - attributes:
-      fill_color:
-        field: color_up
-      line_color:
-        field: color_up
-      size:
-        field: max_weight_up
-        units: screen
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Scatter
-  - attributes:
-      fill_alpha:
-        value: 0.1
-      fill_color:
-        value: '#1f77b4'
-      line_alpha:
-        value: 0.1
-      line_color:
-        value: '#1f77b4'
-      size:
-        field: max_weight_up
-        units: screen
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Scatter
-  - attributes: {}
-    type: Selection
   - attributes:
       line_dash:
       - 6
@@ -3487,6 +3452,41 @@ roots:
   - attributes:
       text: ''
     type: Title
+  - attributes:
+      below:
+      - type: LinearAxis
+      center:
+      - type: Grid
+      - type: Grid
+      - type: Legend
+      left:
+      - type: LinearAxis
+      plot_height: 720
+      plot_width: 1280
+      renderers:
+      - type: GlyphRenderer
+      - type: Span
+      - type: Span
+      - type: Span
+      - type: Span
+      - type: Span
+      - type: Span
+      - type: Span
+      - type: Span
+      title:
+        type: Title
+      toolbar:
+        type: Toolbar
+      x_range:
+        type: DataRange1d
+      x_scale:
+        type: LinearScale
+      y_range:
+        type: Range1d
+      y_scale:
+        type: LinearScale
+    subtype: Figure
+    type: Plot
   - attributes:
       active_drag: auto
       active_inspect:

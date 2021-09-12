@@ -129,29 +129,36 @@ def fixture_clean_bokeh_json():
         def get_normalized_order(dict_val, key_order, normed=None):
 
             if normed is None:
-                normed = [(key, ()) for key in key_order]
+                normed = [(key, []) for key in key_order]
             for key, val in dict_val.items():
+
                 if isinstance(val, dict):
                     normed = get_normalized_order(val, key_order, normed=normed)
-                elif key != 'type':
+                else:
                     index = key_order.index(key)
-                    if isinstance(val, list):
-                        normed[index] += (tuple(val),)
-                    elif isinstance(val, float):
-                        normed[index] += (str(val),)
-                    else:
-                        normed[index] += (val,)
+                    if not isinstance(val, list):
+                        val = [val]
+
+                    for v in val:
+                        if isinstance(v, dict):
+                            normed[index][1].extend(sorted(v.items()))
+                        elif isinstance(v, (float, int)):
+                            normed[index][1].append(str(v))
+                        else:
+                            normed[index][1].append(v)
+
             return normed
 
         def normalize_list_of_dicts(list_of_dicts):
 
+            list_of_dicts = [_clean_bokeh_json(entry) for entry in list_of_dicts]
             contained_keys = set()
             for data in list_of_dicts:
                 contained_keys = contained_keys.union(get_contained_keys(data))
             contained_keys.discard('type')
+            key_order = ['type'] + sorted(contained_keys)
 
-            return sorted(list_of_dicts,
-                          key=lambda x: (x['type'], *tuple(get_normalized_order(x, sorted(contained_keys)))))
+            return sorted(list_of_dicts, key=lambda x: tuple(get_normalized_order(x, key_order)))
 
         if '__ndarray__' in data:
             array = decode_base64_dict(data)
@@ -164,9 +171,13 @@ def fixture_clean_bokeh_json():
             elif isinstance(val, dict):
                 data[key] = _clean_bokeh_json(val, np_precision=np_precision, data_entry=key == 'data')
             elif isinstance(val, list):
+
                 for index, entry in enumerate(val):
                     if isinstance(entry, dict):
                         val[index] = _clean_bokeh_json(entry)
+                    elif isinstance(entry, list):
+                        val[index] = [_clean_bokeh_json(x) if isinstance(x, dict) else x for x in entry]
+
                 if all(isinstance(x, dict) for x in val):
                     data[key] = normalize_list_of_dicts(val)
                 elif all(isinstance(x, int) for x in val) and data_entry:

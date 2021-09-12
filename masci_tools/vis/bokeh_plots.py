@@ -1266,9 +1266,246 @@ def periodic_table_plot(source,
     return p
 
 
+@ensure_plotter_consistency(plot_params)
+def plot_lattice_constant(scaling,
+                          total_energy,
+                          *,
+                          fit_data=None,
+                          data=None,
+                          figure=None,
+                          relative=True,
+                          ref_const=None,
+                          title='Equation of states',
+                          saveas='lattice_constant',
+                          copy_data=False,
+                          **kwargs):
+    """
+    Plot a lattice constant versus Total energy
+    Plot also the fit.
+    On the x axis is the scaling, it
+
+    :param scaling: arraylike, data for the scaling factor
+    :param total_energy: arraylike, data for the total energy
+    :param fit_data: arraylike, optional data of fitted data
+    :param relative: bool, scaling factor given (True), or lattice constants given?
+    :param ref_const: float (optional), or list of floats, lattice constant for scaling 1.0
+    :param data: source for the data of the plot (optional) (pandas Dataframe for example)
+    :param copy_data: bool if True the data argument will be copied
+    :param figure: bokeh figure (optional), if provided the plot will be added to this figure
+
+    Function specific parameters:
+        :param marker_fit: defaults to `marker`, marker type for the fit data
+        :param marker_size_fit: defaults to `marker_size`, markersize for the fit data
+        :param line_width_fit: defaults to `line_width`, linewidth for the fit data
+        :param legend_label_fit: str label for the fit data
+
+    Other Kwargs will be passed on to :py:func:`bokeh_line()`
+    """
+    # TODO: make box which shows fit results. (fit resuls have to be past)
+
+    plot_data = process_data_arguments(data=data,
+                                       scaling=scaling,
+                                       energy=total_energy,
+                                       fit=fit_data,
+                                       copy_data=copy_data,
+                                       use_column_source=True)
+
+    plot_params.single_plot = False
+    plot_params.num_plots = len(plot_data)
+
+    if relative:
+        if ref_const:
+            xlabel = rf'Relative Volume [a/{ref_const}$\AA$]'
+        else:
+            xlabel = r'Relative Volume'
+    else:
+        xlabel = r'Volume [$\AA$]'
+
+    if len(plot_data) > 1:
+        ylabel = r'Total energy norm[0] [eV]'
+    else:
+        ylabel = r'Total energy [eV]'
+
+    #Add custom parameters for fit
+    plot_params.add_parameter('marker_fit', default_from='marker')
+    plot_params.add_parameter('marker_size_fit', default_from='marker_size')
+    plot_params.add_parameter('line_width_fit', default_from='line_width')
+    plot_params.add_parameter('legend_label_fit')
+
+    plot_params.set_defaults(default_type='function',
+                             marker_fit='square',
+                             legend_label='simulation data',
+                             legend_label_fit='fit results',
+                             color='black' if len(plot_data) == 1 else None)
+
+    kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
+    p = plot_params.prepare_figure(title=title, xlabel=xlabel, ylabel=ylabel, figure=figure)
+
+    plot_kw = plot_params.plot_kwargs(post_process=False)
+    plot_fit_kw_line = plot_params.plot_kwargs(post_process=False,
+                                               plot_type='line',
+                                               line_width='line_width_fit',
+                                               legend_label='legend_label_fit')
+    plot_fit_kw_scatter = plot_params.plot_kwargs(post_process=False,
+                                                  plot_type='scatter',
+                                                  marker='marker_fit',
+                                                  marker_size='marker_size_fit',
+                                                  legend_label='legend_label_fit')
+    plot_fit_kw = {**plot_fit_kw_line, **plot_fit_kw_scatter}
+
+    with NestedPlotParameters(plot_params):
+        p = bokeh_line(plot_data.get_keys('scaling'),
+                       plot_data.get_keys('energy'),
+                       data=plot_data.data,
+                       xlabel=xlabel,
+                       ylabel=ylabel,
+                       title=title,
+                       figure=p,
+                       show=False,
+                       save_plots=False,
+                       plot_points=True,
+                       **plot_kw,
+                       **kwargs)
+    if any(entry.fit is not None for entry in plot_data.keys()):
+        with NestedPlotParameters(plot_params):
+            p = bokeh_line(plot_data.get_keys('scaling'),
+                           plot_data.get_keys('fit'),
+                           data=plot_data.data,
+                           xlabel=xlabel,
+                           ylabel=ylabel,
+                           title=title,
+                           figure=p,
+                           show=False,
+                           save_plots=False,
+                           plot_points=True,
+                           **plot_fit_kw,
+                           **kwargs)
+
+    plot_params.draw_straight_lines(p)
+    plot_params.save_plot(p, saveas)
+
+    return p
+
+
 ######## a 2d matrix plot ##########
 
 ######### plot convergence results plot ########
+
+
+@ensure_plotter_consistency(plot_params)
+def plot_convergence(iteration,
+                     distance,
+                     total_energy,
+                     *,
+                     data=None,
+                     saveas_energy='energy_convergence',
+                     saveas_distance='distance_convergence',
+                     figure_energy=None,
+                     figure_distance=None,
+                     xlabel='Iteration',
+                     ylabel_energy='Total energy difference [Htr]',
+                     ylabel_distance='Distance [me/bohr^3]',
+                     title_energy='Total energy difference over scf-Iterations',
+                     title_distance='Convergence (log)',
+                     copy_data=False,
+                     drop_last_iteration=False,
+                     **kwargs):
+    """
+    Plot the total energy differences versus the scf iteration
+    and plot the distance of the density versus iterations.
+
+    :param iteration: data for the number of iterations
+    :param distance: data of distances
+    :param total_energy: data of total energies
+    :param data: source for the data of the plot (optional) (pandas Dataframe for example)
+    :param xlabel: str, label for the x-axis of both plots
+    :param saveas_energy: str, filename for the energy convergence plot
+    :param figure_energy: Axes object for the energy convergence plot
+    :param title_energy: str, title for the energy convergence plot
+    :param ylabel_energy: str, label for the y-axis for the energy convergence plot
+    :param saveas_distance: str, filename for the distance plot
+    :param figure_distance: Axes object for the distance plot
+    :param title_distance: str, title for the distance plot
+    :param ylabel_distance: str, label for the y-axis for the distance plot
+    :param copy_data: bool if  True the data argument is copied
+    :param drop_last_iteration: bool if True the last iteration is dropped for the distance plot
+
+    Other Kwargs will be passed on to all :py:func:`bokeh_line()` calls
+    """
+
+    plot_data = process_data_arguments(data=data,
+                                       iteration=iteration,
+                                       distance=distance,
+                                       energy=total_energy,
+                                       copy_data=copy_data,
+                                       use_column_source=True)
+
+    plot_params.single_plot = False
+    plot_params.num_plots = len(plot_data)
+
+    #Calculate energy differences and corresponding
+    plot_data.copy_data('energy', 'energy_diff')
+    plot_data.copy_data('iteration', 'iteration_energy')
+    plot_data.apply('energy_diff', np.diff)
+    plot_data.apply('energy_diff', np.abs)
+    plot_data.apply('iteration_energy', np.delete, obj=0)
+    plot_data.apply('iteration_energy', np.append, values=np.nan)
+    plot_data.apply('energy_diff', np.append, values=np.nan)
+
+    if drop_last_iteration:
+        plot_data.apply('iteration', np.delete, obj=-1)
+
+    if len(plot_data) == 1:
+        default_energy_label = 'delta total energy'
+        default_distance_label = 'distance'
+    else:
+        default_energy_label = [f'delta total energy {i}' for i in range(len(plot_data))]
+        default_distance_label = [f'distance {i}' for i in range(len(plot_data))]
+
+    plot_params.set_defaults(default_type='function',
+                             legend_label=default_energy_label,
+                             color='black' if len(plot_data) == 1 else None,
+                             tooltips=[('Calculation id', '$name'), ('Iteration', '@{x}'),
+                                       ('Total energy difference', '@{y}')],
+                             figure_kwargs={
+                                 'plot_width': 800,
+                                 'plot_height': 450,
+                                 'y_axis_type': 'log',
+                                 'x_axis_type': 'linear',
+                             },
+                             legend_outside_plot_area=True)
+
+    with NestedPlotParameters(plot_params):
+        p1 = bokeh_line(plot_data.get_keys('iteration_energy'),
+                        plot_data.get_keys('energy_diff'),
+                        data=plot_data.data,
+                        xlabel=xlabel,
+                        ylabel=ylabel_energy,
+                        title=title_energy,
+                        saveas=saveas_energy,
+                        figure=figure_energy,
+                        plot_points=True,
+                        set_default_legend=False,
+                        **kwargs)
+
+    plot_params.set_defaults(default_type='function',
+                             legend_label=default_distance_label,
+                             tooltips=[('Calculation id', '$name'), ('Iteration', '@{x}'), ('Charge distance', '@{y}')])
+
+    with NestedPlotParameters(plot_params):
+        p2 = bokeh_line(plot_data.get_keys('iteration'),
+                        plot_data.get_keys('distance'),
+                        data=plot_data.data,
+                        xlabel=xlabel,
+                        ylabel=ylabel_distance,
+                        title=title_distance,
+                        saveas=saveas_distance,
+                        figure=figure_distance,
+                        plot_points=True,
+                        set_default_legend=False,
+                        **kwargs)
+
+    return p1, p2
 
 
 @ensure_plotter_consistency(plot_params)
@@ -1288,30 +1525,9 @@ def plot_convergence_results(iteration, distance, total_energy, *, saveas='conve
     """
     from bokeh.layouts import gridplot
 
-    xlabel = r'Iteration'
-    ylabel1 = r'Total energy difference [Htr]'
-    ylabel2 = r'Distance [me/bohr^3]'
-    title1 = r'Total energy difference over scf-Iterations'
-    title2 = r'Convergence (log)'
-
-    # since we make a log plot of the total_energy make sure to plot the absolute total energy
-    total_energy_abs_diff = []
-    for en0, en1 in zip(total_energy[:-1], total_energy[1:]):
-        total_energy_abs_diff.append(abs(en1 - en0))
-
-    source1 = pd.DataFrame({'total_energy_delta': total_energy_abs_diff, 'iterations': iteration[1:]})
-    source2 = pd.DataFrame({'distance': distance, 'iterations': iteration})
-
-    plot_params.set_defaults(default_type='function',
-                             figure_kwargs={
-                                 'tools': 'hover,tap,box_zoom,zoom_out,crosshair,reset,save',
-                                 'tooltips': [('Iteration', '@x'), ('Total energy distance', '@y')],
-                                 'active_inspect': 'hover',
-                                 'plot_width': 800,
-                                 'plot_height': 450,
-                                 'y_axis_type': 'log',
-                                 'x_axis_type': 'linear',
-                             })
+    warnings.warn(
+        'plot_convergence_results is deprecated. Use the more general plot_convergence instead.'
+        'It can do both single and multiple calculations natively', DeprecationWarning)
 
     if 'show' in kwargs:
         plot_params.set_parameters(show=kwargs.pop('show'))
@@ -1319,35 +1535,9 @@ def plot_convergence_results(iteration, distance, total_energy, *, saveas='conve
         plot_params.set_parameters(show=kwargs.pop('save_plots'))
 
     with NestedPlotParameters(plot_params):
-        p1 = bokeh_line(source=source1,
-                        ydata='total_energy_delta',
-                        xdata='iterations',
-                        xlabel=xlabel,
-                        ylabel=ylabel1,
-                        title=title1,
-                        name='delta total energy',
-                        plot_points=True,
-                        show=False,
-                        save_plots=False,
-                        **kwargs)
+        p1, p2 = plot_convergence(iteration, distance, total_energy, save_plots=False, show=False, **kwargs)
 
-    plot_params.set_defaults(default_type='function',
-                             figure_kwargs={'tooltips': [('Iteration', '@x'), ('Charge distance', '@y')]})
-
-    with NestedPlotParameters(plot_params):
-        p2 = bokeh_line(source=source2,
-                        ydata='distance',
-                        xdata='iterations',
-                        xlabel=xlabel,
-                        ylabel=ylabel2,
-                        title=title2,
-                        name='distance',
-                        plot_points=True,
-                        show=False,
-                        save_plots=False,
-                        **kwargs)
-
-    grid = gridplot([p1, p2], ncols=2)
+    grid = gridplot([p1, p2], ncols=1)
 
     plot_params.save_plot(grid, saveas)
 
@@ -1383,125 +1573,31 @@ def plot_convergence_results_m(iterations,
     :returns grid: bokeh grid with figures
     """
     from bokeh.layouts import gridplot
-    from bokeh.models import ColumnDataSource
 
-    xlabel = r'Iteration'
-    ylabel1 = r'Total energy difference [Htr]'
-    ylabel2 = r'Distance [me/bohr^3]'
-    title1 = r'Total energy difference over scf-Iterations'
-    title2 = r'Convergence (log)'
+    warnings.warn(
+        'plot_convergence_results_m is deprecated. Use the more general plot_convergence instead.'
+        'It can do both single and multiple calculations natively', DeprecationWarning)
 
-    if nodes is not None:
-        if not isinstance(nodes, list):
-            nodes = [nodes]
-
-    if plot_label is not None:
-        if not isinstance(plot_label, list):
-            plot_label = [plot_label]
-
-    plot_labels1 = []
-    plot_labels2 = []
-
-    data_sources = []
-    data_sources2 = []
-
-    tooltips_scatter1 = [('Calculation id', '@id'), ('Iteration', '@x'), ('Total energy difference', '@y')]
-    tooltips_scatter2 = [('Calculation id', '@id'), ('Iteration', '@x'), ('Charge distance', '@y')]
-
-    xdata = ['x'] * len(total_energies)
-    ydata = ['y'] * len(total_energies)
-
-    # since we make a log plot of the total_energy make sure to plot the absolute total energy
-    for i, (iters, total_energy, distance) in enumerate(zip(iterations, total_energies, distances)):
-        if nodes is not None:
-            node_id = nodes[i]
-        else:
-            node_id = i
-
-        total_energy_abs_diff = []
-        for en0, en1 in zip(total_energy[:-1], total_energy[1:]):
-            total_energy_abs_diff.append(abs(en1 - en0))
-
-        plot_labels1.append(f'{node_id}')
-        plot_labels2.append(f'{node_id}')
-        data = {'y': total_energy_abs_diff, 'x': iters[1:], 'id': [node_id] * len(total_energy_abs_diff)}
-        if nodes is not None:
-            data['nodes_pk'] = [str(nodes[i])] * len(total_energy_abs_diff)
-        if plot_label is not None:
-            data['process_label'] = [plot_label[i]] * len(total_energy_abs_diff)
-
-        datasrc = ColumnDataSource(data)
-        data_sources.append(datasrc)
-        data = {'y': distance, 'x': iters, 'id': [node_id] * len(distance)}
-        if nodes is not None:
-            data['nodes_pk'] = [str(nodes[i])] * len(distance)
-        if plot_label is not None:
-            data['process_label'] = [plot_label[i]] * len(distance)
-
-        datasrc = ColumnDataSource(data)
-        data_sources2.append(datasrc)
-
-    if plot_label is not None:
-        if nodes is None:
-            plot_labels1 = plot_label
-            plot_labels2 = plot_label
-        tooltips_scatter1.append(('process label', '@process_label'))
-        tooltips_scatter2.append(('process label', '@process_label'))
-
-    if nodes is not None:
-        tooltips_scatter1.append(('outpara pk', '@nodes_pk'))
-        tooltips_scatter2.append(('outpara pk', '@nodes_pk'))
-
-    plot_params.set_defaults(default_type='function',
-                             figure_kwargs={
-                                 'tools': 'hover,tap,box_zoom,zoom_out,crosshair,reset,save,pan',
-                                 'tooltips': tooltips_scatter1,
-                                 'active_inspect': 'hover',
-                                 'plot_width': 800,
-                                 'plot_height': 450,
-                                 'y_axis_type': 'log',
-                                 'x_axis_type': 'linear',
-                             },
-                             legend_outside_plot_area=True)
     if 'show' in kwargs:
         plot_params.set_parameters(show=kwargs.pop('show'))
     if 'save_plots' in kwargs:
         plot_params.set_parameters(show=kwargs.pop('save_plots'))
+    if plot_label is not None:
+        kwargs['legend_label'] = plot_label
 
-    # plot
-    with NestedPlotParameters(plot_params):
-        p1 = bokeh_line(source=data_sources,
-                        ydata=ydata,
-                        xdata=xdata,
-                        xlabel=xlabel,
-                        ylabel=ylabel1,
-                        title=title1,
-                        name=plot_labels1,
-                        legend_label=plot_labels1,
-                        plot_points=True,
-                        show=False,
-                        save_plots=False,
-                        **kwargs)
-
-    plot_params.set_defaults(default_type='function', figure_kwargs={
-        'tooltips': tooltips_scatter2,
-    })
+    if modes is None:
+        modes = []
 
     with NestedPlotParameters(plot_params):
-        p2 = bokeh_line(source=data_sources2,
-                        ydata=ydata,
-                        xdata=xdata,
-                        xlabel=xlabel,
-                        ylabel=ylabel2,
-                        title=title2,
-                        name=plot_labels2,
-                        legend_label=plot_labels2,
-                        plot_points=True,
-                        show=False,
-                        save_plots=False,
-                        **kwargs)
+        p1, p2 = plot_convergence(iterations,
+                                  distances,
+                                  total_energies,
+                                  save_plots=False,
+                                  show=False,
+                                  drop_last_iteration=any(mode == 'force' for mode in modes),
+                                  **kwargs)
 
-    grid = gridplot([p1, p2], ncols=2)
+    grid = gridplot([p1, p2], ncols=1)
 
     plot_params.save_plot(grid, saveas)
 

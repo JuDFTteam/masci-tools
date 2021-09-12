@@ -37,12 +37,16 @@ def NestedPlotParameters(plotter_object):
 
     function_defaults_before = copy.deepcopy(plotter_object._function_defaults)
     parameters_before = copy.deepcopy(plotter_object._given_parameters)
+    single_plot_before = plotter_object.single_plot
+    num_plots_before = plotter_object.num_plots
 
     try:
         yield
     finally:  #Also performed if exception is thrown??
         plotter_object._function_defaults = function_defaults_before
         plotter_object._given_parameters = parameters_before
+        plotter_object.single_plot = single_plot_before
+        plotter_object.num_plots = num_plots_before
 
 
 def ensure_plotter_consistency(plotter_object):

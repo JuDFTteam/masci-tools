@@ -355,7 +355,7 @@ class PlotData:
         else:
             return max(max_val)
 
-    def apply(self, data_key, lambda_func):
+    def apply(self, data_key, lambda_func, apply_to_whole_array=True, **kwargs):
         """
         Apply a function to a given data column for all entries
 
@@ -378,17 +378,17 @@ class PlotData:
             if isinstance(source[key], pd.Series):
                 if isinstance(source, pd.DataFrame):
                     dataframe_func = lambda x, k=key: lambda_func(x) if x.name == k else x
-                    new_source = source.apply(dataframe_func)
+                    new_source = source.apply(dataframe_func, **kwargs)
                     if isinstance(self.data, list):
                         self.data[indx] = new_source
                     else:
                         self.data = new_source
                 else:
                     source[key] = source[key].apply(lambda_func)
-            elif isinstance(source[key], np.ndarray):
-                source[key] = lambda_func(source[key])
+            elif isinstance(source[key], np.ndarray) or apply_to_whole_array:
+                source[key] = lambda_func(source[key], **kwargs)
             else:
-                source[key] = [lambda_func(value) for value in source[key]]
+                source[key] = [lambda_func(value, **kwargs) for value in source[key]]
 
     def get_function_result(self, data_key, func, list_return=False, as_numpy_array=False, **kwargs):
         """

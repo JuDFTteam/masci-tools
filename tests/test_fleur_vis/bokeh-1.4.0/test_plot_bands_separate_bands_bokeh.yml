@@ -4,10 +4,47 @@ roots:
     type: BasicTickFormatter
   - attributes: {}
     type: BasicTickFormatter
+  - attributes:
+      axis_label: E-E_F [eV]
+      axis_label_text_font_size:
+        value: 18pt
+      axis_line_width:
+        value: 2
+      formatter:
+        type: BasicTickFormatter
+      major_label_text_font_size:
+        value: 16pt
+      ticker:
+        type: BasicTicker
+    type: LinearAxis
+  - attributes:
+      axis_label_text_font_size:
+        value: 18pt
+      axis_line_width:
+        value: 2
+      formatter:
+        type: BasicTickFormatter
+      major_label_overrides:
+        '0': great
+        '0.63895407737518': path
+      major_label_text_font_size:
+        value: 16pt
+      ticker:
+        type: FixedTicker
+    type: LinearAxis
   - attributes: {}
     type: BasicTicker
   - attributes: {}
     type: BasicTicker
+  - attributes:
+      ticker:
+        type: BasicTicker
+    type: Grid
+  - attributes:
+      dimension: 1
+      ticker:
+        type: BasicTicker
+    type: Grid
   - attributes:
       bottom_units: screen
       fill_alpha:
@@ -105,6 +142,863 @@ roots:
       source:
         type: ColumnDataSource
     type: CDSView
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: eigenvalues_up
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: eigenvalues_up
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: eigenvalues_up
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: eigenvalues_up
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: eigenvalues_up
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: eigenvalues_up
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: eigenvalues_up
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: eigenvalues_up
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: eigenvalues_up
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: eigenvalues_up
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: eigenvalues_up
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: eigenvalues_up
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: eigenvalues_up
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: eigenvalues_up
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: eigenvalues_up
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: eigenvalues_up
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: eigenvalues_up
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: eigenvalues_up
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes: {}
+    type: CrosshairTool
+  - attributes:
+      callback: null
+      range_padding: 0.0
+    type: DataRange1d
+  - attributes:
+      ticks:
+      - 0.0
+      - 0.63895407737518
+    type: FixedTicker
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - X
+        - '@kpath'
+      - - Y
+        - '@eigenvalues_up'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - X
+        - '@kpath'
+      - - Y
+        - '@eigenvalues_up'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - X
+        - '@kpath'
+      - - Y
+        - '@eigenvalues_up'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - X
+        - '@kpath'
+      - - Y
+        - '@eigenvalues_up'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - X
+        - '@kpath'
+      - - Y
+        - '@eigenvalues_up'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - X
+        - '@kpath'
+      - - Y
+        - '@eigenvalues_up'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - X
+        - '@kpath'
+      - - Y
+        - '@eigenvalues_up'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - X
+        - '@kpath'
+      - - Y
+        - '@eigenvalues_up'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - X
+        - '@kpath'
+      - - Y
+        - '@eigenvalues_up'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - X
+        - '@kpath'
+      - - Y
+        - '@eigenvalues_up'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - X
+        - '@kpath'
+      - - Y
+        - '@eigenvalues_up'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - X
+        - '@kpath'
+      - - Y
+        - '@eigenvalues_up'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - X
+        - '@kpath'
+      - - Y
+        - '@eigenvalues_up'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - X
+        - '@kpath'
+      - - Y
+        - '@eigenvalues_up'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - X
+        - '@kpath'
+      - - Y
+        - '@eigenvalues_up'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - X
+        - '@kpath'
+      - - Y
+        - '@eigenvalues_up'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - X
+        - '@kpath'
+      - - Y
+        - '@eigenvalues_up'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - X
+        - '@kpath'
+      - - Y
+        - '@eigenvalues_up'
+    type: HoverTool
+  - attributes:
+      click_policy: hide
+      items:
+      - type: LegendItem
+      label_text_font_size:
+        value: 14pt
+    type: Legend
+  - attributes:
+      label:
+        value: Eigenvalues
+      renderers:
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+    type: LegendItem
+  - attributes:
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_color: blue
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_color: red
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes: {}
+    type: LinearScale
+  - attributes: {}
+    type: LinearScale
+  - attributes: {}
+    type: PanTool
+  - attributes:
+      fill_alpha:
+        value: 0.5
+      fill_color:
+        value: lightgrey
+      level: overlay
+      line_alpha:
+        value: 1.0
+      line_color:
+        value: black
+      line_dash:
+      - 4
+      - 4
+      line_width:
+        value: 2
+      xs_units: screen
+      ys_units: screen
+    type: PolyAnnotation
+  - attributes:
+      callback: null
+      overlay:
+        type: PolyAnnotation
+    type: PolySelectTool
+  - attributes:
+      callback: null
+      end: 15
+      start: -15
+    type: Range1d
+  - attributes: {}
+    type: RedoTool
+  - attributes: {}
+    type: ResetTool
+  - attributes: {}
+    type: SaveTool
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
   - attributes:
       callback: null
       data:
@@ -1779,830 +2673,29 @@ roots:
       selection_policy:
         type: UnionRenderers
     type: ColumnDataSource
-  - attributes: {}
-    type: CrosshairTool
+  - attributes:
+      line_dash:
+      - 6
+      location: 0
+    type: Span
+  - attributes:
+      dimension: height
+      line_dash:
+      - 6
+      location: 0.0
+    type: Span
+  - attributes:
+      dimension: height
+      line_dash:
+      - 6
+      location: 0.63895407737518
+    type: Span
   - attributes:
       callback: null
-      range_padding: 0.0
-    type: DataRange1d
+    type: TapTool
   - attributes:
-      ticks:
-      - 0.0
-      - 0.63895407737518
-    type: FixedTicker
-  - attributes:
-      data_source:
-        type: ColumnDataSource
-      glyph:
-        type: Line
-      hover_glyph: null
-      muted_glyph: null
-      name: eigenvalues_up
-      nonselection_glyph:
-        type: Line
-      selection_glyph: null
-      view:
-        type: CDSView
-    type: GlyphRenderer
-  - attributes:
-      data_source:
-        type: ColumnDataSource
-      glyph:
-        type: Line
-      hover_glyph: null
-      muted_glyph: null
-      name: eigenvalues_up
-      nonselection_glyph:
-        type: Line
-      selection_glyph: null
-      view:
-        type: CDSView
-    type: GlyphRenderer
-  - attributes:
-      data_source:
-        type: ColumnDataSource
-      glyph:
-        type: Line
-      hover_glyph: null
-      muted_glyph: null
-      name: eigenvalues_up
-      nonselection_glyph:
-        type: Line
-      selection_glyph: null
-      view:
-        type: CDSView
-    type: GlyphRenderer
-  - attributes:
-      data_source:
-        type: ColumnDataSource
-      glyph:
-        type: Line
-      hover_glyph: null
-      muted_glyph: null
-      name: eigenvalues_up
-      nonselection_glyph:
-        type: Line
-      selection_glyph: null
-      view:
-        type: CDSView
-    type: GlyphRenderer
-  - attributes:
-      data_source:
-        type: ColumnDataSource
-      glyph:
-        type: Line
-      hover_glyph: null
-      muted_glyph: null
-      name: eigenvalues_up
-      nonselection_glyph:
-        type: Line
-      selection_glyph: null
-      view:
-        type: CDSView
-    type: GlyphRenderer
-  - attributes:
-      data_source:
-        type: ColumnDataSource
-      glyph:
-        type: Line
-      hover_glyph: null
-      muted_glyph: null
-      name: eigenvalues_up
-      nonselection_glyph:
-        type: Line
-      selection_glyph: null
-      view:
-        type: CDSView
-    type: GlyphRenderer
-  - attributes:
-      data_source:
-        type: ColumnDataSource
-      glyph:
-        type: Line
-      hover_glyph: null
-      muted_glyph: null
-      name: eigenvalues_up
-      nonselection_glyph:
-        type: Line
-      selection_glyph: null
-      view:
-        type: CDSView
-    type: GlyphRenderer
-  - attributes:
-      data_source:
-        type: ColumnDataSource
-      glyph:
-        type: Line
-      hover_glyph: null
-      muted_glyph: null
-      name: eigenvalues_up
-      nonselection_glyph:
-        type: Line
-      selection_glyph: null
-      view:
-        type: CDSView
-    type: GlyphRenderer
-  - attributes:
-      data_source:
-        type: ColumnDataSource
-      glyph:
-        type: Line
-      hover_glyph: null
-      muted_glyph: null
-      name: eigenvalues_up
-      nonselection_glyph:
-        type: Line
-      selection_glyph: null
-      view:
-        type: CDSView
-    type: GlyphRenderer
-  - attributes:
-      data_source:
-        type: ColumnDataSource
-      glyph:
-        type: Line
-      hover_glyph: null
-      muted_glyph: null
-      name: eigenvalues_up
-      nonselection_glyph:
-        type: Line
-      selection_glyph: null
-      view:
-        type: CDSView
-    type: GlyphRenderer
-  - attributes:
-      data_source:
-        type: ColumnDataSource
-      glyph:
-        type: Line
-      hover_glyph: null
-      muted_glyph: null
-      name: eigenvalues_up
-      nonselection_glyph:
-        type: Line
-      selection_glyph: null
-      view:
-        type: CDSView
-    type: GlyphRenderer
-  - attributes:
-      data_source:
-        type: ColumnDataSource
-      glyph:
-        type: Line
-      hover_glyph: null
-      muted_glyph: null
-      name: eigenvalues_up
-      nonselection_glyph:
-        type: Line
-      selection_glyph: null
-      view:
-        type: CDSView
-    type: GlyphRenderer
-  - attributes:
-      data_source:
-        type: ColumnDataSource
-      glyph:
-        type: Line
-      hover_glyph: null
-      muted_glyph: null
-      name: eigenvalues_up
-      nonselection_glyph:
-        type: Line
-      selection_glyph: null
-      view:
-        type: CDSView
-    type: GlyphRenderer
-  - attributes:
-      data_source:
-        type: ColumnDataSource
-      glyph:
-        type: Line
-      hover_glyph: null
-      muted_glyph: null
-      name: eigenvalues_up
-      nonselection_glyph:
-        type: Line
-      selection_glyph: null
-      view:
-        type: CDSView
-    type: GlyphRenderer
-  - attributes:
-      data_source:
-        type: ColumnDataSource
-      glyph:
-        type: Line
-      hover_glyph: null
-      muted_glyph: null
-      name: eigenvalues_up
-      nonselection_glyph:
-        type: Line
-      selection_glyph: null
-      view:
-        type: CDSView
-    type: GlyphRenderer
-  - attributes:
-      data_source:
-        type: ColumnDataSource
-      glyph:
-        type: Line
-      hover_glyph: null
-      muted_glyph: null
-      name: eigenvalues_up
-      nonselection_glyph:
-        type: Line
-      selection_glyph: null
-      view:
-        type: CDSView
-    type: GlyphRenderer
-  - attributes:
-      data_source:
-        type: ColumnDataSource
-      glyph:
-        type: Line
-      hover_glyph: null
-      muted_glyph: null
-      name: eigenvalues_up
-      nonselection_glyph:
-        type: Line
-      selection_glyph: null
-      view:
-        type: CDSView
-    type: GlyphRenderer
-  - attributes:
-      data_source:
-        type: ColumnDataSource
-      glyph:
-        type: Line
-      hover_glyph: null
-      muted_glyph: null
-      name: eigenvalues_up
-      nonselection_glyph:
-        type: Line
-      selection_glyph: null
-      view:
-        type: CDSView
-    type: GlyphRenderer
-  - attributes:
-      ticker:
-        type: BasicTicker
-    type: Grid
-  - attributes:
-      dimension: 1
-      ticker:
-        type: BasicTicker
-    type: Grid
-  - attributes:
-      callback: null
-      renderers:
-      - type: GlyphRenderer
-      toggleable: false
-      tooltips:
-      - - X
-        - '@kpath'
-      - - Y
-        - '@eigenvalues_up'
-    type: HoverTool
-  - attributes:
-      callback: null
-      renderers:
-      - type: GlyphRenderer
-      toggleable: false
-      tooltips:
-      - - X
-        - '@kpath'
-      - - Y
-        - '@eigenvalues_up'
-    type: HoverTool
-  - attributes:
-      callback: null
-      renderers:
-      - type: GlyphRenderer
-      toggleable: false
-      tooltips:
-      - - X
-        - '@kpath'
-      - - Y
-        - '@eigenvalues_up'
-    type: HoverTool
-  - attributes:
-      callback: null
-      renderers:
-      - type: GlyphRenderer
-      toggleable: false
-      tooltips:
-      - - X
-        - '@kpath'
-      - - Y
-        - '@eigenvalues_up'
-    type: HoverTool
-  - attributes:
-      callback: null
-      renderers:
-      - type: GlyphRenderer
-      toggleable: false
-      tooltips:
-      - - X
-        - '@kpath'
-      - - Y
-        - '@eigenvalues_up'
-    type: HoverTool
-  - attributes:
-      callback: null
-      renderers:
-      - type: GlyphRenderer
-      toggleable: false
-      tooltips:
-      - - X
-        - '@kpath'
-      - - Y
-        - '@eigenvalues_up'
-    type: HoverTool
-  - attributes:
-      callback: null
-      renderers:
-      - type: GlyphRenderer
-      toggleable: false
-      tooltips:
-      - - X
-        - '@kpath'
-      - - Y
-        - '@eigenvalues_up'
-    type: HoverTool
-  - attributes:
-      callback: null
-      renderers:
-      - type: GlyphRenderer
-      toggleable: false
-      tooltips:
-      - - X
-        - '@kpath'
-      - - Y
-        - '@eigenvalues_up'
-    type: HoverTool
-  - attributes:
-      callback: null
-      renderers:
-      - type: GlyphRenderer
-      toggleable: false
-      tooltips:
-      - - X
-        - '@kpath'
-      - - Y
-        - '@eigenvalues_up'
-    type: HoverTool
-  - attributes:
-      callback: null
-      renderers:
-      - type: GlyphRenderer
-      toggleable: false
-      tooltips:
-      - - X
-        - '@kpath'
-      - - Y
-        - '@eigenvalues_up'
-    type: HoverTool
-  - attributes:
-      callback: null
-      renderers:
-      - type: GlyphRenderer
-      toggleable: false
-      tooltips:
-      - - X
-        - '@kpath'
-      - - Y
-        - '@eigenvalues_up'
-    type: HoverTool
-  - attributes:
-      callback: null
-      renderers:
-      - type: GlyphRenderer
-      toggleable: false
-      tooltips:
-      - - X
-        - '@kpath'
-      - - Y
-        - '@eigenvalues_up'
-    type: HoverTool
-  - attributes:
-      callback: null
-      renderers:
-      - type: GlyphRenderer
-      toggleable: false
-      tooltips:
-      - - X
-        - '@kpath'
-      - - Y
-        - '@eigenvalues_up'
-    type: HoverTool
-  - attributes:
-      callback: null
-      renderers:
-      - type: GlyphRenderer
-      toggleable: false
-      tooltips:
-      - - X
-        - '@kpath'
-      - - Y
-        - '@eigenvalues_up'
-    type: HoverTool
-  - attributes:
-      callback: null
-      renderers:
-      - type: GlyphRenderer
-      toggleable: false
-      tooltips:
-      - - X
-        - '@kpath'
-      - - Y
-        - '@eigenvalues_up'
-    type: HoverTool
-  - attributes:
-      callback: null
-      renderers:
-      - type: GlyphRenderer
-      toggleable: false
-      tooltips:
-      - - X
-        - '@kpath'
-      - - Y
-        - '@eigenvalues_up'
-    type: HoverTool
-  - attributes:
-      callback: null
-      renderers:
-      - type: GlyphRenderer
-      toggleable: false
-      tooltips:
-      - - X
-        - '@kpath'
-      - - Y
-        - '@eigenvalues_up'
-    type: HoverTool
-  - attributes:
-      callback: null
-      renderers:
-      - type: GlyphRenderer
-      toggleable: false
-      tooltips:
-      - - X
-        - '@kpath'
-      - - Y
-        - '@eigenvalues_up'
-    type: HoverTool
-  - attributes:
-      click_policy: hide
-      items:
-      - type: LegendItem
-      label_text_font_size:
-        value: 14pt
-    type: Legend
-  - attributes:
-      label:
-        value: Eigenvalues
-      renderers:
-      - type: GlyphRenderer
-      - type: GlyphRenderer
-      - type: GlyphRenderer
-      - type: GlyphRenderer
-      - type: GlyphRenderer
-      - type: GlyphRenderer
-      - type: GlyphRenderer
-      - type: GlyphRenderer
-      - type: GlyphRenderer
-      - type: GlyphRenderer
-      - type: GlyphRenderer
-      - type: GlyphRenderer
-      - type: GlyphRenderer
-      - type: GlyphRenderer
-      - type: GlyphRenderer
-      - type: GlyphRenderer
-      - type: GlyphRenderer
-      - type: GlyphRenderer
-    type: LegendItem
-  - attributes:
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_color: blue
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_color: red
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_alpha: 0.1
-      line_color: '#1f77b4'
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_alpha: 0.1
-      line_color: '#1f77b4'
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_alpha: 0.1
-      line_color: '#1f77b4'
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_alpha: 0.1
-      line_color: '#1f77b4'
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_alpha: 0.1
-      line_color: '#1f77b4'
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_alpha: 0.1
-      line_color: '#1f77b4'
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_alpha: 0.1
-      line_color: '#1f77b4'
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_alpha: 0.1
-      line_color: '#1f77b4'
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_alpha: 0.1
-      line_color: '#1f77b4'
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_alpha: 0.1
-      line_color: '#1f77b4'
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_alpha: 0.1
-      line_color: '#1f77b4'
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_alpha: 0.1
-      line_color: '#1f77b4'
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_alpha: 0.1
-      line_color: '#1f77b4'
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_alpha: 0.1
-      line_color: '#1f77b4'
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_alpha: 0.1
-      line_color: '#1f77b4'
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_alpha: 0.1
-      line_color: '#1f77b4'
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_alpha: 0.1
-      line_color: '#1f77b4'
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_alpha: 0.1
-      line_color: '#1f77b4'
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      axis_label: E-E_F [eV]
-      axis_label_text_font_size:
-        value: 18pt
-      axis_line_width:
-        value: 2
-      formatter:
-        type: BasicTickFormatter
-      major_label_text_font_size:
-        value: 16pt
-      ticker:
-        type: BasicTicker
-    type: LinearAxis
-  - attributes:
-      axis_label_text_font_size:
-        value: 18pt
-      axis_line_width:
-        value: 2
-      formatter:
-        type: BasicTickFormatter
-      major_label_overrides:
-        '0': great
-        '0.63895407737518': path
-      major_label_text_font_size:
-        value: 16pt
-      ticker:
-        type: FixedTicker
-    type: LinearAxis
-  - attributes: {}
-    type: LinearScale
-  - attributes: {}
-    type: LinearScale
-  - attributes: {}
-    type: PanTool
+      text: ''
+    type: Title
   - attributes:
       below:
       - type: LinearAxis
@@ -2650,99 +2743,6 @@ roots:
         type: LinearScale
     subtype: Figure
     type: Plot
-  - attributes:
-      fill_alpha:
-        value: 0.5
-      fill_color:
-        value: lightgrey
-      level: overlay
-      line_alpha:
-        value: 1.0
-      line_color:
-        value: black
-      line_dash:
-      - 4
-      - 4
-      line_width:
-        value: 2
-      xs_units: screen
-      ys_units: screen
-    type: PolyAnnotation
-  - attributes:
-      callback: null
-      overlay:
-        type: PolyAnnotation
-    type: PolySelectTool
-  - attributes:
-      callback: null
-      end: 15
-      start: -15
-    type: Range1d
-  - attributes: {}
-    type: RedoTool
-  - attributes: {}
-    type: ResetTool
-  - attributes: {}
-    type: SaveTool
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes:
-      line_dash:
-      - 6
-      location: 0
-    type: Span
-  - attributes:
-      dimension: height
-      line_dash:
-      - 6
-      location: 0.0
-    type: Span
-  - attributes:
-      dimension: height
-      line_dash:
-      - 6
-      location: 0.63895407737518
-    type: Span
-  - attributes:
-      callback: null
-    type: TapTool
-  - attributes:
-      text: ''
-    type: Title
   - attributes:
       active_drag: auto
       active_inspect:
