@@ -120,20 +120,6 @@ roots:
         type: Line
       hover_glyph: null
       muted_glyph: null
-      name: delta total energy
-      nonselection_glyph:
-        type: Line
-      selection_glyph: null
-      view:
-        type: CDSView
-    type: GlyphRenderer
-  - attributes:
-      data_source:
-        type: ColumnDataSource
-      glyph:
-        type: Line
-      hover_glyph: null
-      muted_glyph: null
       name: distance
       nonselection_glyph:
         type: Line
@@ -145,12 +131,12 @@ roots:
       data_source:
         type: ColumnDataSource
       glyph:
-        type: Scatter
+        type: Line
       hover_glyph: null
       muted_glyph: null
-      name: delta total energy
+      name: energy_diff_0
       nonselection_glyph:
-        type: Scatter
+        type: Line
       selection_glyph: null
       view:
         type: CDSView
@@ -163,6 +149,20 @@ roots:
       hover_glyph: null
       muted_glyph: null
       name: distance
+      nonselection_glyph:
+        type: Scatter
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Scatter
+      hover_glyph: null
+      muted_glyph: null
+      name: energy_diff_0
       nonselection_glyph:
         type: Scatter
       selection_glyph: null
@@ -198,21 +198,15 @@ roots:
     type: GridBox
   - attributes:
       callback: null
-      tooltips:
-      - - Iteration
-        - '@{x}'
-      - - Charge distance
-        - '@{y}'
-    type: HoverTool
-  - attributes:
-      callback: null
       renderers:
       - type: GlyphRenderer
       toggleable: false
       tooltips:
+      - - Calculation id
+        - $name
       - - Iteration
-        - '@iterations'
-      - - Total energy distance
+        - '@iteration'
+      - - Charge distance
         - '@distance'
     type: HoverTool
   - attributes:
@@ -221,10 +215,12 @@ roots:
       - type: GlyphRenderer
       toggleable: false
       tooltips:
+      - - Calculation id
+        - $name
       - - Iteration
-        - '@iterations'
-      - - Total energy distance
-        - '@total_energy_delta'
+        - '@iteration_energy_0'
+      - - Total energy difference
+        - '@energy_diff_0'
     type: HoverTool
   - attributes:
       click_policy: hide
@@ -242,14 +238,14 @@ roots:
     type: Legend
   - attributes:
       label:
-        value: distance
+        value: delta total energy
       renderers:
       - type: GlyphRenderer
       - type: GlyphRenderer
     type: LegendItem
   - attributes:
       label:
-        value: total_energy_delta
+        value: distance
       renderers:
       - type: GlyphRenderer
       - type: GlyphRenderer
@@ -258,7 +254,7 @@ roots:
       line_color: darkred
       line_width: 2.0
       x:
-        field: iterations
+        field: iteration
       y:
         field: distance
     type: Line
@@ -267,7 +263,7 @@ roots:
       line_color: '#1f77b4'
       line_width: 2.0
       x:
-        field: iterations
+        field: iteration
       y:
         field: distance
     type: Line
@@ -275,18 +271,18 @@ roots:
       line_color: darkred
       line_width: 2.0
       x:
-        field: iterations
+        field: iteration_energy_0
       y:
-        field: total_energy_delta
+        field: energy_diff_0
     type: Line
   - attributes:
       line_alpha: 0.1
       line_color: '#1f77b4'
       line_width: 2.0
       x:
-        field: iterations
+        field: iteration_energy_0
       y:
-        field: total_energy_delta
+        field: energy_diff_0
     type: Line
   - attributes: {}
     type: LinearScale
@@ -402,7 +398,6 @@ roots:
       - type: CrosshairTool
       - type: HoverTool
       - type: HoverTool
-      - type: HoverTool
       - type: PanTool
       - type: PanTool
       - type: PolySelectTool
@@ -456,7 +451,7 @@ roots:
         units: screen
         value: 12
       x:
-        field: iterations
+        field: iteration
       y:
         field: distance
     type: Scatter
@@ -473,7 +468,7 @@ roots:
         units: screen
         value: 12
       x:
-        field: iterations
+        field: iteration
       y:
         field: distance
     type: Scatter
@@ -492,9 +487,9 @@ roots:
         units: screen
         value: 12
       x:
-        field: iterations
+        field: iteration_energy_0
       y:
-        field: total_energy_delta
+        field: energy_diff_0
     type: Scatter
   - attributes:
       fill_color:
@@ -509,9 +504,9 @@ roots:
         units: screen
         value: 12
       x:
-        field: iterations
+        field: iteration_energy_0
       y:
-        field: total_energy_delta
+        field: energy_diff_0
     type: Scatter
   - attributes: {}
     type: Selection
@@ -524,65 +519,61 @@ roots:
   - attributes:
       callback: null
       data:
-        index:
-          __ndarray__: AAAAAAAAAAABAAAAAAAAAAIAAAAAAAAAAwAAAAAAAAAEAAAAAAAAAAUAAAAAAAAABgAAAAAAAAAHAAAAAAAAAAgAAAAAAAAACQAAAAAAAAAKAAAAAAAAAAsAAAAAAAAADAAAAAAAAAANAAAAAAAAAA4AAAAAAAAADwAAAAAAAAAQAAAAAAAAABEAAAAAAAAAEgAAAAAAAAA=
-          dtype: int64
-          shape:
-          - 19
-        iterations:
-          __ndarray__: AQAAAAAAAAACAAAAAAAAAAMAAAAAAAAABAAAAAAAAAAFAAAAAAAAAAYAAAAAAAAABwAAAAAAAAAIAAAAAAAAAAkAAAAAAAAACgAAAAAAAAALAAAAAAAAAAwAAAAAAAAADQAAAAAAAAAOAAAAAAAAAA8AAAAAAAAAEAAAAAAAAAARAAAAAAAAABIAAAAAAAAAEwAAAAAAAAA=
-          dtype: int64
-          shape:
-          - 19
-        total_energy_delta:
-          __ndarray__: BYasbvWcpD8w8Nx7uOSwP2tI3GPpQ9E/FAX6RJ4kvT/HuriNBvCWP2kdVU0QdR8/Q8U4fxMKcT8CZVOu8C6HP+Un1T4dj0k/8WjjiLX4BD+wG7YtymxwP4wQHm0csWY/D9b/OcyXFz9hMlUwKqkzP9L7xteeWRI/D9b/OcyXFz8tQxzr4jYaP2EyVTAqqSM/aR1VTRB1/z4=
-          dtype: float64
-          shape:
-          - 19
-      selected:
-        type: Selection
-      selection_policy:
-        type: UnionRenderers
-    type: ColumnDataSource
-  - attributes:
-      callback: null
-      data:
-        index:
-          __ndarray__: AAAAAAAAAAABAAAAAAAAAAIAAAAAAAAAAwAAAAAAAAAEAAAAAAAAAAUAAAAAAAAABgAAAAAAAAAHAAAAAAAAAAgAAAAAAAAACQAAAAAAAAAKAAAAAAAAAAsAAAAAAAAADAAAAAAAAAANAAAAAAAAAA4AAAAAAAAADwAAAAAAAAAQAAAAAAAAABEAAAAAAAAAEgAAAAAAAAA=
-          dtype: int64
-          shape:
-          - 19
-        iterations:
-          __ndarray__: AQAAAAAAAAACAAAAAAAAAAMAAAAAAAAABAAAAAAAAAAFAAAAAAAAAAYAAAAAAAAABwAAAAAAAAAIAAAAAAAAAAkAAAAAAAAACgAAAAAAAAALAAAAAAAAAAwAAAAAAAAADQAAAAAAAAAOAAAAAAAAAA8AAAAAAAAAEAAAAAAAAAARAAAAAAAAABIAAAAAAAAAEwAAAAAAAAA=
-          dtype: int64
-          shape:
-          - 19
-        total_energy_delta:
-          __ndarray__: BYasbvWcpD8w8Nx7uOSwP2tI3GPpQ9E/FAX6RJ4kvT/HuriNBvCWP2kdVU0QdR8/Q8U4fxMKcT8CZVOu8C6HP+Un1T4dj0k/8WjjiLX4BD+wG7YtymxwP4wQHm0csWY/D9b/OcyXFz9hMlUwKqkzP9L7xteeWRI/D9b/OcyXFz8tQxzr4jYaP2EyVTAqqSM/aR1VTRB1/z4=
-          dtype: float64
-          shape:
-          - 19
-      selected:
-        type: Selection
-      selection_policy:
-        type: UnionRenderers
-    type: ColumnDataSource
-  - attributes:
-      callback: null
-      data:
         distance:
-          __ndarray__: d9uF5jpNJ0BxPQrXoyAlQGagMv59xhxAacai6ezkBEAnZr0YyskDQI16iEZ3kAdA/cHAc+9h/T/Zd0Xwv5X3P5eo3hrYqv0/Sx+6oL5l7T+u9UVCW87sPyGwcmiR7eA/OUVHcvkPuT8+XHLcKR28P/8JLlbUYLI/1QloImx4mj8hAg6hSs2eP6uVCb/Uz3s/dv2C3bBtgT9xAz4/jBB+Pw==
+        - 11.6508412231
+        - 10.5637525546
+        - 7.1938351319
+        - 2.6117836621
+        - 2.4735288205
+        - 2.9455389405
+        - 1.8364080301
+        - 1.4740568937
+        - 1.8542068593
+        - 0.9186745766
+        - 0.900191025
+        - 0.5290019787
+        - 0.0979035892
+        - 0.1098240811
+        - 0.0717916768
+        - 0.0258508395
+        - 0.0300810883
+        - 0.0067904499
+        - 0.0085097364
+        - 0.0073435947
+        energy:
+        - -69269.46134019217
+        - -69269.42108466873
+        - -69269.35509388152
+        - -69269.62486438647
+        - -69269.51102655893
+        - -69269.48862754989
+        - -69269.48874847183
+        - -69269.48459145911
+        - -69269.47327003669
+        - -69269.47248623992
+        - -69269.47244891679
+        - -69269.47645687914
+        - -69269.47922946361
+        - -69269.4793222245
+        - -69269.47901836311
+        - -69269.47895198638
+        - -69269.47886053707
+        - -69269.47875692157
+        - -69269.47890881824
+        - -69269.47887586526
+        energy_diff_0:
+          __ndarray__: BYasbvWcpD8w8Nx7uOSwP2tI3GPpQ9E/FAX6RJ4kvT/HuriNBvCWP2kdVU0QdR8/Q8U4fxMKcT8CZVOu8C6HP+Un1T4dj0k/8WjjiLX4BD+wG7YtymxwP4wQHm0csWY/D9b/OcyXFz9hMlUwKqkzP9L7xteeWRI/D9b/OcyXFz8tQxzr4jYaP2EyVTAqqSM/aR1VTRB1/z4AAAAAAAD4fw==
           dtype: float64
           shape:
           - 20
-        index:
-          __ndarray__: AAAAAAAAAAABAAAAAAAAAAIAAAAAAAAAAwAAAAAAAAAEAAAAAAAAAAUAAAAAAAAABgAAAAAAAAAHAAAAAAAAAAgAAAAAAAAACQAAAAAAAAAKAAAAAAAAAAsAAAAAAAAADAAAAAAAAAANAAAAAAAAAA4AAAAAAAAADwAAAAAAAAAQAAAAAAAAABEAAAAAAAAAEgAAAAAAAAATAAAAAAAAAA==
-          dtype: int64
+        iteration:
+          __ndarray__: AAAAAAAAAAAAAAAAAADwPwAAAAAAAABAAAAAAAAACEAAAAAAAAAQQAAAAAAAABRAAAAAAAAAGEAAAAAAAAAcQAAAAAAAACBAAAAAAAAAIkAAAAAAAAAkQAAAAAAAACZAAAAAAAAAKEAAAAAAAAAqQAAAAAAAACxAAAAAAAAALkAAAAAAAAAwQAAAAAAAADFAAAAAAAAAMkAAAAAAAAAzQA==
+          dtype: float64
           shape:
           - 20
-        iterations:
-          __ndarray__: AAAAAAAAAAABAAAAAAAAAAIAAAAAAAAAAwAAAAAAAAAEAAAAAAAAAAUAAAAAAAAABgAAAAAAAAAHAAAAAAAAAAgAAAAAAAAACQAAAAAAAAAKAAAAAAAAAAsAAAAAAAAADAAAAAAAAAANAAAAAAAAAA4AAAAAAAAADwAAAAAAAAAQAAAAAAAAABEAAAAAAAAAEgAAAAAAAAATAAAAAAAAAA==
-          dtype: int64
+        iteration_energy_0:
+          __ndarray__: AAAAAAAA8D8AAAAAAAAAQAAAAAAAAAhAAAAAAAAAEEAAAAAAAAAUQAAAAAAAABhAAAAAAAAAHEAAAAAAAAAgQAAAAAAAACJAAAAAAAAAJEAAAAAAAAAmQAAAAAAAAChAAAAAAAAAKkAAAAAAAAAsQAAAAAAAAC5AAAAAAAAAMEAAAAAAAAAxQAAAAAAAADJAAAAAAAAAM0AAAAAAAAD4fw==
+          dtype: float64
           shape:
           - 20
       selected:
@@ -594,18 +585,190 @@ roots:
       callback: null
       data:
         distance:
-          __ndarray__: d9uF5jpNJ0BxPQrXoyAlQGagMv59xhxAacai6ezkBEAnZr0YyskDQI16iEZ3kAdA/cHAc+9h/T/Zd0Xwv5X3P5eo3hrYqv0/Sx+6oL5l7T+u9UVCW87sPyGwcmiR7eA/OUVHcvkPuT8+XHLcKR28P/8JLlbUYLI/1QloImx4mj8hAg6hSs2eP6uVCb/Uz3s/dv2C3bBtgT9xAz4/jBB+Pw==
+        - 11.6508412231
+        - 10.5637525546
+        - 7.1938351319
+        - 2.6117836621
+        - 2.4735288205
+        - 2.9455389405
+        - 1.8364080301
+        - 1.4740568937
+        - 1.8542068593
+        - 0.9186745766
+        - 0.900191025
+        - 0.5290019787
+        - 0.0979035892
+        - 0.1098240811
+        - 0.0717916768
+        - 0.0258508395
+        - 0.0300810883
+        - 0.0067904499
+        - 0.0085097364
+        - 0.0073435947
+        energy:
+        - -69269.46134019217
+        - -69269.42108466873
+        - -69269.35509388152
+        - -69269.62486438647
+        - -69269.51102655893
+        - -69269.48862754989
+        - -69269.48874847183
+        - -69269.48459145911
+        - -69269.47327003669
+        - -69269.47248623992
+        - -69269.47244891679
+        - -69269.47645687914
+        - -69269.47922946361
+        - -69269.4793222245
+        - -69269.47901836311
+        - -69269.47895198638
+        - -69269.47886053707
+        - -69269.47875692157
+        - -69269.47890881824
+        - -69269.47887586526
+        energy_diff_0:
+          __ndarray__: BYasbvWcpD8w8Nx7uOSwP2tI3GPpQ9E/FAX6RJ4kvT/HuriNBvCWP2kdVU0QdR8/Q8U4fxMKcT8CZVOu8C6HP+Un1T4dj0k/8WjjiLX4BD+wG7YtymxwP4wQHm0csWY/D9b/OcyXFz9hMlUwKqkzP9L7xteeWRI/D9b/OcyXFz8tQxzr4jYaP2EyVTAqqSM/aR1VTRB1/z4AAAAAAAD4fw==
           dtype: float64
           shape:
           - 20
-        index:
-          __ndarray__: AAAAAAAAAAABAAAAAAAAAAIAAAAAAAAAAwAAAAAAAAAEAAAAAAAAAAUAAAAAAAAABgAAAAAAAAAHAAAAAAAAAAgAAAAAAAAACQAAAAAAAAAKAAAAAAAAAAsAAAAAAAAADAAAAAAAAAANAAAAAAAAAA4AAAAAAAAADwAAAAAAAAAQAAAAAAAAABEAAAAAAAAAEgAAAAAAAAATAAAAAAAAAA==
-          dtype: int64
+        iteration:
+          __ndarray__: AAAAAAAAAAAAAAAAAADwPwAAAAAAAABAAAAAAAAACEAAAAAAAAAQQAAAAAAAABRAAAAAAAAAGEAAAAAAAAAcQAAAAAAAACBAAAAAAAAAIkAAAAAAAAAkQAAAAAAAACZAAAAAAAAAKEAAAAAAAAAqQAAAAAAAACxAAAAAAAAALkAAAAAAAAAwQAAAAAAAADFAAAAAAAAAMkAAAAAAAAAzQA==
+          dtype: float64
           shape:
           - 20
-        iterations:
-          __ndarray__: AAAAAAAAAAABAAAAAAAAAAIAAAAAAAAAAwAAAAAAAAAEAAAAAAAAAAUAAAAAAAAABgAAAAAAAAAHAAAAAAAAAAgAAAAAAAAACQAAAAAAAAAKAAAAAAAAAAsAAAAAAAAADAAAAAAAAAANAAAAAAAAAA4AAAAAAAAADwAAAAAAAAAQAAAAAAAAABEAAAAAAAAAEgAAAAAAAAATAAAAAAAAAA==
-          dtype: int64
+        iteration_energy_0:
+          __ndarray__: AAAAAAAA8D8AAAAAAAAAQAAAAAAAAAhAAAAAAAAAEEAAAAAAAAAUQAAAAAAAABhAAAAAAAAAHEAAAAAAAAAgQAAAAAAAACJAAAAAAAAAJEAAAAAAAAAmQAAAAAAAAChAAAAAAAAAKkAAAAAAAAAsQAAAAAAAAC5AAAAAAAAAMEAAAAAAAAAxQAAAAAAAADJAAAAAAAAAM0AAAAAAAAD4fw==
+          dtype: float64
+          shape:
+          - 20
+      selected:
+        type: Selection
+      selection_policy:
+        type: UnionRenderers
+    type: ColumnDataSource
+  - attributes:
+      callback: null
+      data:
+        distance:
+        - 11.6508412231
+        - 10.5637525546
+        - 7.1938351319
+        - 2.6117836621
+        - 2.4735288205
+        - 2.9455389405
+        - 1.8364080301
+        - 1.4740568937
+        - 1.8542068593
+        - 0.9186745766
+        - 0.900191025
+        - 0.5290019787
+        - 0.0979035892
+        - 0.1098240811
+        - 0.0717916768
+        - 0.0258508395
+        - 0.0300810883
+        - 0.0067904499
+        - 0.0085097364
+        - 0.0073435947
+        energy:
+        - -69269.46134019217
+        - -69269.42108466873
+        - -69269.35509388152
+        - -69269.62486438647
+        - -69269.51102655893
+        - -69269.48862754989
+        - -69269.48874847183
+        - -69269.48459145911
+        - -69269.47327003669
+        - -69269.47248623992
+        - -69269.47244891679
+        - -69269.47645687914
+        - -69269.47922946361
+        - -69269.4793222245
+        - -69269.47901836311
+        - -69269.47895198638
+        - -69269.47886053707
+        - -69269.47875692157
+        - -69269.47890881824
+        - -69269.47887586526
+        energy_diff_0:
+          __ndarray__: BYasbvWcpD8w8Nx7uOSwP2tI3GPpQ9E/FAX6RJ4kvT/HuriNBvCWP2kdVU0QdR8/Q8U4fxMKcT8CZVOu8C6HP+Un1T4dj0k/8WjjiLX4BD+wG7YtymxwP4wQHm0csWY/D9b/OcyXFz9hMlUwKqkzP9L7xteeWRI/D9b/OcyXFz8tQxzr4jYaP2EyVTAqqSM/aR1VTRB1/z4AAAAAAAD4fw==
+          dtype: float64
+          shape:
+          - 20
+        iteration:
+          __ndarray__: AAAAAAAAAAAAAAAAAADwPwAAAAAAAABAAAAAAAAACEAAAAAAAAAQQAAAAAAAABRAAAAAAAAAGEAAAAAAAAAcQAAAAAAAACBAAAAAAAAAIkAAAAAAAAAkQAAAAAAAACZAAAAAAAAAKEAAAAAAAAAqQAAAAAAAACxAAAAAAAAALkAAAAAAAAAwQAAAAAAAADFAAAAAAAAAMkAAAAAAAAAzQA==
+          dtype: float64
+          shape:
+          - 20
+        iteration_energy_0:
+          __ndarray__: AAAAAAAA8D8AAAAAAAAAQAAAAAAAAAhAAAAAAAAAEEAAAAAAAAAUQAAAAAAAABhAAAAAAAAAHEAAAAAAAAAgQAAAAAAAACJAAAAAAAAAJEAAAAAAAAAmQAAAAAAAAChAAAAAAAAAKkAAAAAAAAAsQAAAAAAAAC5AAAAAAAAAMEAAAAAAAAAxQAAAAAAAADJAAAAAAAAAM0AAAAAAAAD4fw==
+          dtype: float64
+          shape:
+          - 20
+      selected:
+        type: Selection
+      selection_policy:
+        type: UnionRenderers
+    type: ColumnDataSource
+  - attributes:
+      callback: null
+      data:
+        distance:
+        - 11.6508412231
+        - 10.5637525546
+        - 7.1938351319
+        - 2.6117836621
+        - 2.4735288205
+        - 2.9455389405
+        - 1.8364080301
+        - 1.4740568937
+        - 1.8542068593
+        - 0.9186745766
+        - 0.900191025
+        - 0.5290019787
+        - 0.0979035892
+        - 0.1098240811
+        - 0.0717916768
+        - 0.0258508395
+        - 0.0300810883
+        - 0.0067904499
+        - 0.0085097364
+        - 0.0073435947
+        energy:
+        - -69269.46134019217
+        - -69269.42108466873
+        - -69269.35509388152
+        - -69269.62486438647
+        - -69269.51102655893
+        - -69269.48862754989
+        - -69269.48874847183
+        - -69269.48459145911
+        - -69269.47327003669
+        - -69269.47248623992
+        - -69269.47244891679
+        - -69269.47645687914
+        - -69269.47922946361
+        - -69269.4793222245
+        - -69269.47901836311
+        - -69269.47895198638
+        - -69269.47886053707
+        - -69269.47875692157
+        - -69269.47890881824
+        - -69269.47887586526
+        energy_diff_0:
+          __ndarray__: BYasbvWcpD8w8Nx7uOSwP2tI3GPpQ9E/FAX6RJ4kvT/HuriNBvCWP2kdVU0QdR8/Q8U4fxMKcT8CZVOu8C6HP+Un1T4dj0k/8WjjiLX4BD+wG7YtymxwP4wQHm0csWY/D9b/OcyXFz9hMlUwKqkzP9L7xteeWRI/D9b/OcyXFz8tQxzr4jYaP2EyVTAqqSM/aR1VTRB1/z4AAAAAAAD4fw==
+          dtype: float64
+          shape:
+          - 20
+        iteration:
+          __ndarray__: AAAAAAAAAAAAAAAAAADwPwAAAAAAAABAAAAAAAAACEAAAAAAAAAQQAAAAAAAABRAAAAAAAAAGEAAAAAAAAAcQAAAAAAAACBAAAAAAAAAIkAAAAAAAAAkQAAAAAAAACZAAAAAAAAAKEAAAAAAAAAqQAAAAAAAACxAAAAAAAAALkAAAAAAAAAwQAAAAAAAADFAAAAAAAAAMkAAAAAAAAAzQA==
+          dtype: float64
+          shape:
+          - 20
+        iteration_energy_0:
+          __ndarray__: AAAAAAAA8D8AAAAAAAAAQAAAAAAAAAhAAAAAAAAAEEAAAAAAAAAUQAAAAAAAABhAAAAAAAAAHEAAAAAAAAAgQAAAAAAAACJAAAAAAAAAJEAAAAAAAAAmQAAAAAAAAChAAAAAAAAAKkAAAAAAAAAsQAAAAAAAAC5AAAAAAAAAMEAAAAAAAAAxQAAAAAAAADJAAAAAAAAAM0AAAAAAAAD4fw==
+          dtype: float64
           shape:
           - 20
       selected:
@@ -639,6 +802,8 @@ roots:
       renderers:
       - type: GlyphRenderer
       - type: GlyphRenderer
+      right:
+      - type: Legend
       title:
         type: Title
       toolbar:
@@ -668,6 +833,8 @@ roots:
       renderers:
       - type: GlyphRenderer
       - type: GlyphRenderer
+      right:
+      - type: Legend
       title:
         type: Title
       toolbar:
@@ -693,7 +860,6 @@ roots:
       tools:
       - type: BoxZoomTool
       - type: CrosshairTool
-      - type: HoverTool
       - type: HoverTool
       - type: PanTool
       - type: PolySelectTool

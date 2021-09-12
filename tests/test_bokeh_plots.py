@@ -307,9 +307,9 @@ class TestPlotConvergenceResults(object):  #pylint: disable=missing-class-docstr
         """
         from masci_tools.vis.bokeh_plots import plot_convergence_results
 
-        p = plot_convergence_results(self.iteration, self.distances, self.energies, show=False)
+        with pytest.deprecated_call():
+            p = plot_convergence_results(self.iteration, self.distances, self.energies, show=False)
 
-        # need to return the figure in order for mpl checks to work
         check_bokeh_plot(p)
 
     def test_convergence_param_change(self, check_bokeh_plot):
@@ -318,15 +318,16 @@ class TestPlotConvergenceResults(object):  #pylint: disable=missing-class-docstr
         """
         from masci_tools.vis.bokeh_plots import plot_convergence_results
 
-        p = plot_convergence_results(self.iteration,
-                                     self.distances,
-                                     self.energies,
-                                     show=False,
-                                     color='darkred',
-                                     label_fontsize='24pt',
-                                     marker='square',
-                                     marker_size=12,
-                                     alpha=0.8)
+        with pytest.deprecated_call():
+            p = plot_convergence_results(self.iteration,
+                                        self.distances,
+                                        self.energies,
+                                        show=False,
+                                        color='darkred',
+                                        label_fontsize='24pt',
+                                        marker='square',
+                                        marker_size=12,
+                                        alpha=0.8)
 
         check_bokeh_plot(p)
 
@@ -361,7 +362,8 @@ class TestPlotConvergenceMulti(object):  #pylint: disable=missing-class-docstrin
                 iteration, noise_arr, energy_decay, energy_offset, energy_offset2)
         ]
 
-        p = plot_convergence_results_m(iteration, distances, energies, show=False)
+        with pytest.deprecated_call():
+            p = plot_convergence_results_m(iteration, distances, energies, show=False)
 
         # need to return the figure in order for mpl checks to work
         check_bokeh_plot(p)
