@@ -124,3 +124,34 @@ def test_line_bokeh(check_bokeh_plot):
     p = line(x, y, color='red', marker_size=6, backend='bokeh', show=False)
 
     check_bokeh_plot(p)
+
+
+@pytest.mark.mpl_image_compare(baseline_dir='test_common_plots/', filename='eos_mpl.png')
+def test_eos_mpl():
+    """
+    Test of the eos_plot function with mpl backend
+    """
+    from masci_tools.vis.common import eos_plot
+
+    scaling = np.linspace(0.95, 1.04, 10)
+    energy = -500.0 + 500.0 * (0.99 - scaling)**2
+
+    gcf().clear()
+
+    eos_plot(scaling, total_energy=energy, show=False)
+
+    return gcf()
+
+
+def test_eos_bokeh(check_bokeh_plot):
+    """
+    Test of the eos_plot function with bokeh backend
+    """
+    from masci_tools.vis.common import eos_plot
+
+    scaling = np.linspace(0.95, 1.04, 10)
+    energy = -500.0 + 500.0 * (0.99 - scaling)**2
+
+    p = eos_plot(scaling, total_energy=energy, backend='bokeh', show=False)
+
+    check_bokeh_plot(p)

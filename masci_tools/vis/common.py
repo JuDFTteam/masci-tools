@@ -401,3 +401,29 @@ def line(xdata, ydata, backend=None, data=None, **kwargs):
     backend = PlotBackend.from_str(backend)
 
     return plot_funcs[backend](xdata, ydata, data=data, **kwargs)
+
+
+def eos_plot(scaling, total_energy, backend=None, data=None, **kwargs):
+    """
+    Plot the provided data as a volume/scaling vs. ernergy plot. Multiple data sets are possible
+
+    :param scaling: data for the scaling on the x-axis
+    :param total_energy: data for the energy
+    :param data: source for the data of the plot (optional) (pandas Dataframe for example)
+    :param backend: name of the backend to use (uses a default if None is given)
+
+    Kwargs are passed on to the backend plotting functions:
+
+        - ``matplotlib``: :py:func:`~masci_tools.vis.plot_methods.plot_lattice_constant()`
+        - ``bokeh``: :py:func:`~masci_tools.vis.bokeh_plots.plot_lattice_constant()`
+
+    :returns: Figure object for the used plotting backend
+    """
+    from .plot_methods import plot_lattice_constant as mpl_lattice_constant
+    from .bokeh_plots import plot_lattice_constant as bokeh_lattice_constant
+
+    plot_funcs = {PlotBackend.mpl: mpl_lattice_constant, PlotBackend.bokeh: bokeh_lattice_constant}
+
+    backend = PlotBackend.from_str(backend)
+
+    return plot_funcs[backend](scaling, total_energy, data=data, **kwargs)
