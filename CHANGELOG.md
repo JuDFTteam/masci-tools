@@ -1,5 +1,18 @@
 # Changelog
 
+## v.0.6.2
+[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.6.2...v0.6.1)
+
+Small bugfixes and refactoring for plotting routines
+### Added
+- Common plot routines for equation of states `eos_plot` and plotting scf convergence `convergence_plot`
+- Replaced old convergence plot routines with single routines for bokeh/matplotlib named `plot_convergence`
+### Improvements
+- Moved eos and convergence plots to use `PlotData` class
+- Fixed some edge cases of bokeh testing fixtures. Previously some plots would crash the code for normalizing the json
+### Bugfixes
+- Fixed bugs in convergence routines for using them in aiida-fleur
+
 ## v.0.6.1
 Release fixing a small issue with publishing version `0.6.0` to zenodo
 ## v.0.6.0
