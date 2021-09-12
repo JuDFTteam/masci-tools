@@ -405,7 +405,7 @@ def line(xdata, ydata, backend=None, data=None, **kwargs):
 
 def eos_plot(scaling, total_energy, backend=None, data=None, **kwargs):
     """
-    Plot the provided data as a volume/scaling vs. ernergy plot. Multiple data sets are possible
+    Plot the provided data as a volume/scaling vs. energy plot. Multiple data sets are possible
 
     :param scaling: data for the scaling on the x-axis
     :param total_energy: data for the energy
@@ -427,3 +427,31 @@ def eos_plot(scaling, total_energy, backend=None, data=None, **kwargs):
     backend = PlotBackend.from_str(backend)
 
     return plot_funcs[backend](scaling, total_energy, data=data, **kwargs)
+
+
+def convergence_plot(iterations, distances, total_energies, backend=None, data=None, **kwargs):
+    """
+    Plot the provided data as a iteration vs energy difference and iteration vs. distance plots.
+    Multiple data sets are possible
+
+    :param iterations: data for the number of iterations on the x-axis
+    :param distances: data for the charge density distances
+    :param total_energies: data for the energy
+    :param data: source for the data of the plot (optional) (pandas Dataframe for example)
+    :param backend: name of the backend to use (uses a default if None is given)
+
+    Kwargs are passed on to the backend plotting functions:
+
+        - ``matplotlib``: :py:func:`~masci_tools.vis.plot_methods.plot_convergence()`
+        - ``bokeh``: :py:func:`~masci_tools.vis.bokeh_plots.plot_convergence()`
+
+    :returns: Figure object for the used plotting backend
+    """
+    from .plot_methods import plot_convergence as mpl_convergence
+    from .bokeh_plots import plot_convergence as bokeh_convergence
+
+    plot_funcs = {PlotBackend.mpl: mpl_convergence, PlotBackend.bokeh: bokeh_convergence}
+
+    backend = PlotBackend.from_str(backend)
+
+    return plot_funcs[backend](iterations, distances, total_energies, data=data, **kwargs)
