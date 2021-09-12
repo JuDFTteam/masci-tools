@@ -143,3 +143,12 @@ Definition of default parsing tasks for fleur out.xml
 
 .. automodule:: masci_tools.io.parsers.fleur.task_migrations
    :members:
+
+
+Commandline interface (CLI)
++++++++++++++++++++++++++++
+.. _masci_tools_cmdline:
+
+.. click:: masci_tools.cmdline:cmd_root
+    :prog: masci_tools
+    :show-nested:

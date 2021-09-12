@@ -52,7 +52,7 @@ if __name__ == '__main__':
                 'pylint>=2.5.2',
                 'pytest>=4.3.1',
             ],
-            'docs': ['Sphinx', 'docutils', 'sphinx_rtd_theme'],
+            'docs': ['Sphinx', 'docutils', 'sphinx_rtd_theme', 'sphinx-click'],
             'testing': ['pytest>=4.3.1', 'pytest-cov', 'pytest-mpl>=0.12', 'pytest-regressions>=1.0'],
             'bokeh-plots': [
                 'bokeh<=1.4.0'  # versions beyond 1.4.0 require a tornardo version not compatible with aiida-core /circus
