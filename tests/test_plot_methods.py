@@ -1689,7 +1689,7 @@ class TestPlotLatticeConstant:  #pylint: disable=missing-class-docstring
 
         gcf().clear()
 
-        plot_lattice_constant(scaling, energy + noise, fit_y=energy, show=False)
+        plot_lattice_constant(scaling, energy + noise, fit_data=energy, show=False)
 
         return gcf()
 
@@ -1720,7 +1720,7 @@ class TestPlotLatticeConstant:  #pylint: disable=missing-class-docstring
 
         gcf().clear()
 
-        plot_lattice_constant(scaling, energy, show=False, multi=True)
+        plot_lattice_constant(scaling, energy, show=False)
 
         return gcf()
 
@@ -1752,6 +1752,6 @@ class TestPlotLatticeConstant:  #pylint: disable=missing-class-docstring
 
         gcf().clear()
 
-        plot_lattice_constant(scaling, energy_noise, fit_y=energy_fit, show=False, multi=True)
+        plot_lattice_constant(scaling, energy_noise, fit_data=energy_fit, show=False)
 
         return gcf()

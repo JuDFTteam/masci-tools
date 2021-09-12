@@ -1503,17 +1503,17 @@ def plot_convergence_results_m(iterations,
     return p1, p2
 
 
-@ensure_plotter_consistency(plot_params)
 def plot_lattice_constant(scaling,
                           total_energy,
                           *,
-                          fit_y=None,
+                          fit_data=None,
+                          data=None,
                           relative=True,
                           ref_const=None,
-                          multi=False,
-                          title=r'Equation of states',
+                          title='Equation of states',
                           saveas='lattice_constant',
                           axis=None,
+                          copy_data=False,
                           **kwargs):
     """
     Plot a lattice constant versus Total energy
@@ -1522,10 +1522,11 @@ def plot_lattice_constant(scaling,
 
     :param scaling: arraylike, data for the scaling factor
     :param total_energy: arraylike, data for the total energy
-    :param fit_y: arraylike, optional data of fitted data
+    :param fit_data: arraylike, optional data of fitted data
     :param relative: bool, scaling factor given (True), or lattice constants given?
     :param ref_const: float (optional), or list of floats, lattice constant for scaling 1.0
-    :param multi: bool default False are they multiple plots?
+    :param data: source for the data of the plot (optional) (pandas Dataframe for example)
+    :param copy_data: bool if True the data argument will be copied
 
     Function specific parameters:
         :param marker_fit: defaults to `marker`, marker type for the fit data
@@ -1536,11 +1537,31 @@ def plot_lattice_constant(scaling,
     Other Kwargs will be passed on to all :py:func:`single_scatterplot()` or :py:func:`multiple_scatterplots()` calls
     """
     # TODO: make box which shows fit results. (fit resuls have to be past)
-    # TODO: multiple plots in one use multi_scatter_plot for this...
+
+    if 'multi' in kwargs:
+        warnings.warn('multi is deprecated. The existence of multiple plots is automatically inferred',
+                      DeprecationWarning)
+        kwargs.pop('multi')
+
+    if 'fit_y' in kwargs:
+        warnings.warn('fit_y is deprecated. Use fit_data instead', DeprecationWarning)
+        fit_data = kwargs.pop('fit_y')
+
+    plot_data = process_data_arguments(data=data,
+                                       scaling=scaling,
+                                       energy=total_energy,
+                                       fit=fit_data,
+                                       copy_data=copy_data)
+
+    plot_params.single_plot = False
+    plot_params.num_plots = len(plot_data)
 
     if 'plotlables' in kwargs:
         warnings.warn('plotlables is deprecated. Use plot_label and plot_label_fit instead', DeprecationWarning)
-        if multi:
+        if len(plot_data) == 1:
+            kwargs['plot_label'] = kwargs['plotlables'][0]
+            kwargs['plot_label_fit'] = kwargs['plotlables'][1]
+        else:
             plot_label = []
             plot_label_fit = []
             for indx in range(len(scaling)):
@@ -1548,11 +1569,7 @@ def plot_lattice_constant(scaling,
                 plot_label_fit.append(kwargs['plotlables'][2 * indx + 1])
             kwargs['plot_label'] = plot_label
             kwargs['plot_label_fit'] = plot_label_fit
-        else:
-            kwargs['plot_label'] = kwargs['plotlables'][0]
-            kwargs['plot_label_fit'] = kwargs['plotlables'][1]
 
-    #print markersize_g
     if relative:
         if ref_const:
             xlabel = rf'Relative Volume [a/{ref_const}$\AA$]'
@@ -1561,7 +1578,7 @@ def plot_lattice_constant(scaling,
     else:
         xlabel = r'Volume [$\AA$]'
 
-    if multi:
+    if len(plot_data) > 1:
         ylabel = r'Total energy norm[0] [eV]'
     else:
         ylabel = r'Total energy [eV]'
@@ -1576,19 +1593,11 @@ def plot_lattice_constant(scaling,
                              marker_fit='s',
                              plot_label='simulation data',
                              plot_label_fit='fit results',
+                             color='black' if len(plot_data) == 1 else None,
                              use_axis_formatter=True)
 
-    general_keys = {'figure_kwargs', 'show', 'save_plots'}
-    general_info = {key: val for key, val in kwargs.items() if key in general_keys}
-    kwargs = {key: val for key, val in kwargs.items() if key not in general_keys}
-
-    plot_params.set_parameters(**general_info)
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
-
-    if multi:
-        plot_params.single_plot = False
-        plot_params.num_plots = len(scaling)
 
     plot_kw = plot_params.plot_kwargs(post_process=False)
     plot_fit_kw = plot_params.plot_kwargs(post_process=False,
@@ -1597,58 +1606,31 @@ def plot_lattice_constant(scaling,
                                           linewidth='linewidth_fit',
                                           plot_label='plot_label_fit')
 
-    if multi:
-        # TODO test if dim of total_e = dim of scaling, dim plot lables...
-        # or parse on scaling?
-
+    with NestedPlotParameters(plot_params):
+        ax = multiple_scatterplots(plot_data.get_keys('scaling'),
+                                   plot_data.get_keys('energy'),
+                                   data=plot_data.data,
+                                   xlabel=xlabel,
+                                   ylabel=ylabel,
+                                   title=title,
+                                   axis=ax,
+                                   show=False,
+                                   save_plots=False,
+                                   **plot_kw,
+                                   **kwargs)
+    if any(entry.fit is not None for entry in plot_data.keys()):
         with NestedPlotParameters(plot_params):
-            ax = multiple_scatterplots(scaling,
-                                       total_energy,
+            ax = multiple_scatterplots(plot_data.get_keys('scaling'),
+                                       plot_data.get_keys('fit'),
+                                       data=plot_data.data,
                                        xlabel=xlabel,
                                        ylabel=ylabel,
                                        title=title,
                                        axis=ax,
                                        show=False,
                                        save_plots=False,
-                                       **plot_kw,
+                                       **plot_fit_kw,
                                        **kwargs)
-        if fit_y is not None:
-            with NestedPlotParameters(plot_params):
-                ax = multiple_scatterplots(scaling,
-                                           fit_y,
-                                           xlabel=xlabel,
-                                           ylabel=ylabel,
-                                           title=title,
-                                           axis=ax,
-                                           show=False,
-                                           save_plots=False,
-                                           **plot_fit_kw,
-                                           **kwargs)
-
-    else:
-        with NestedPlotParameters(plot_params):
-            ax = single_scatterplot(scaling,
-                                    total_energy,
-                                    xlabel=xlabel,
-                                    ylabel=ylabel,
-                                    title=title,
-                                    axis=ax,
-                                    show=False,
-                                    save_plots=False,
-                                    **plot_kw,
-                                    **kwargs)
-        if fit_y is not None:
-            with NestedPlotParameters(plot_params):
-                ax = single_scatterplot(scaling,
-                                        fit_y,
-                                        xlabel=xlabel,
-                                        ylabel=ylabel,
-                                        title=title,
-                                        axis=ax,
-                                        show=False,
-                                        save_plots=False,
-                                        **plot_fit_kw,
-                                        **kwargs)
 
     plot_params.draw_lines(ax)
     plot_params.save_plot(saveas)
