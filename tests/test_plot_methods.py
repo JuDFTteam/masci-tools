@@ -1536,7 +1536,8 @@ class TestPlotConvergenceResults(object):  #pylint: disable=missing-class-docstr
         #plot_convergence produces two figures, for testing we merge them into one
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 6))
 
-        plot_convergence_results(self.iteration, self.distances, self.energies, show=False, axis1=ax1, axis2=ax2)
+        with pytest.deprecated_call():
+            plot_convergence_results(self.iteration, self.distances, self.energies, show=False, axis1=ax1, axis2=ax2)
 
         # need to return the figure in order for mpl checks to work
         return fig
@@ -1554,17 +1555,18 @@ class TestPlotConvergenceResults(object):  #pylint: disable=missing-class-docstr
         #plot_convergence produces two figures, for testing we merge them into one
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 6))
 
-        plot_convergence_results(self.iteration,
-                                 self.distances,
-                                 self.energies,
-                                 show=False,
-                                 axis1=ax1,
-                                 axis2=ax2,
-                                 linestyle='--',
-                                 color='darkred',
-                                 marker='s',
-                                 linewidth=10,
-                                 title_fontsize=20)
+        with pytest.deprecated_call():
+            plot_convergence_results(self.iteration,
+                                     self.distances,
+                                     self.energies,
+                                     show=False,
+                                     axis1=ax1,
+                                     axis2=ax2,
+                                     linestyle='--',
+                                     color='darkred',
+                                     marker='s',
+                                     linewidth=10,
+                                     title_fontsize=20)
 
         # need to return the figure in order for mpl checks to work
         return fig
@@ -1608,7 +1610,8 @@ class TestPlotConvergenceMulti(object):  #pylint: disable=missing-class-docstrin
         #plot_convergence produces two figures, for testing we merge them into one
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 6))
 
-        plot_convergence_results_m(iteration, distances, energies, show=False, axis1=ax1, axis2=ax2, modes=[])
+        with pytest.deprecated_call():
+            plot_convergence_results_m(iteration, distances, energies, show=False, axis1=ax1, axis2=ax2, modes=[])
 
         # need to return the figure in order for mpl checks to work
         return fig
