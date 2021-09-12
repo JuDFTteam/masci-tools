@@ -1502,7 +1502,7 @@ def plot_convergence_results_m(iterations,
 
     return p1, p2
 
-
+@ensure_plotter_consistency(plot_params)
 def plot_lattice_constant(scaling,
                           total_energy,
                           *,
