@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
-
+"""
+Main module defining the CLI for parts of the masci-tools repository
+"""
 import click
-import click_completion
 
 #from .parse import cmd_parse
-#from .fleur_schema import cmd_fleur_schema
+from .fleur_schema import cmd_fleur_schema
 from .plot import cmd_plot
 
 # Activate the completion of parameter types provided by the click_completion package
 # for bash: eval "$(_MASCI_TOOLS_COMPLETE=source masci-tools)"
-click_completion.init()
 
 
 def print_version(ctx, param, value):
@@ -33,5 +33,5 @@ def cmd_root():
 
 
 #cmd_root.add_command(cmd_parse)
-#cmd_root.add_command(cmd_fleur_schema)
+cmd_root.add_command(cmd_fleur_schema)
 cmd_root.add_command(cmd_plot)
