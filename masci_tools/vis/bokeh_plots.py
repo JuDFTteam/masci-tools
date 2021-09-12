@@ -1391,6 +1391,7 @@ def plot_lattice_constant(scaling,
 
 ######### plot convergence results plot ########
 
+
 @ensure_plotter_consistency(plot_params)
 def plot_convergence(iteration,
                      distance,
@@ -1464,7 +1465,8 @@ def plot_convergence(iteration,
     plot_params.set_defaults(default_type='function',
                              legend_label=default_energy_label,
                              color='black' if len(plot_data) == 1 else None,
-                             tooltips=[('Calculation id', '$name'), ('Iteration', '@{x}'), ('Total energy difference', '@{y}')],
+                             tooltips=[('Calculation id', '$name'), ('Iteration', '@{x}'),
+                                       ('Total energy difference', '@{y}')],
                              figure_kwargs={
                                  'plot_width': 800,
                                  'plot_height': 450,
@@ -1475,35 +1477,35 @@ def plot_convergence(iteration,
 
     with NestedPlotParameters(plot_params):
         p1 = bokeh_line(plot_data.get_keys('iteration_energy'),
-                                   plot_data.get_keys('energy_diff'),
-                                   data=plot_data.data,
-                                   xlabel=xlabel,
-                                   ylabel=ylabel_energy,
-                                   title=title_energy,
-                                   saveas=saveas_energy,
-                                   figure=figure_energy,
-                                   plot_points=True,
-                                   set_default_legend=False,
-                                   **kwargs)
+                        plot_data.get_keys('energy_diff'),
+                        data=plot_data.data,
+                        xlabel=xlabel,
+                        ylabel=ylabel_energy,
+                        title=title_energy,
+                        saveas=saveas_energy,
+                        figure=figure_energy,
+                        plot_points=True,
+                        set_default_legend=False,
+                        **kwargs)
 
-    plot_params.set_defaults(default_type='function', legend_label=default_distance_label,tooltips=[('Calculation id', '$name'), ('Iteration', '@{x}'), ('Charge distance', '@{y}')])
+    plot_params.set_defaults(default_type='function',
+                             legend_label=default_distance_label,
+                             tooltips=[('Calculation id', '$name'), ('Iteration', '@{x}'), ('Charge distance', '@{y}')])
 
     with NestedPlotParameters(plot_params):
         p2 = bokeh_line(plot_data.get_keys('iteration'),
-                                   plot_data.get_keys('distance'),
-                                   data=plot_data.data,
-                                   xlabel=xlabel,
-                                   ylabel=ylabel_distance,
-                                   title=title_distance,
-                                   saveas=saveas_distance,
-                                   figure=figure_distance,
-                                   plot_points=True,
-                                   set_default_legend=False,
-                                   **kwargs)
-
+                        plot_data.get_keys('distance'),
+                        data=plot_data.data,
+                        xlabel=xlabel,
+                        ylabel=ylabel_distance,
+                        title=title_distance,
+                        saveas=saveas_distance,
+                        figure=figure_distance,
+                        plot_points=True,
+                        set_default_legend=False,
+                        **kwargs)
 
     return p1, p2
-
 
 
 @ensure_plotter_consistency(plot_params)
@@ -1533,12 +1535,7 @@ def plot_convergence_results(iteration, distance, total_energy, *, saveas='conve
         plot_params.set_parameters(show=kwargs.pop('save_plots'))
 
     with NestedPlotParameters(plot_params):
-        p1,p2 =  plot_convergence(iteration,
-                                distance,
-                                total_energy,
-                                save_plots=False,
-                                show=False,
-                                **kwargs)
+        p1, p2 = plot_convergence(iteration, distance, total_energy, save_plots=False, show=False, **kwargs)
 
     grid = gridplot([p1, p2], ncols=1)
 
@@ -1588,18 +1585,17 @@ def plot_convergence_results_m(iterations,
     if plot_label is not None:
         kwargs['legend_label'] = plot_label
 
-
     if modes is None:
         modes = []
 
     with NestedPlotParameters(plot_params):
-        p1,p2 =  plot_convergence(iterations,
-                                distances,
-                                total_energies,
-                                save_plots=False,
-                                show=False,
-                                drop_last_iteration=any(mode=='force' for mode in modes),
-                                **kwargs)
+        p1, p2 = plot_convergence(iterations,
+                                  distances,
+                                  total_energies,
+                                  save_plots=False,
+                                  show=False,
+                                  drop_last_iteration=any(mode == 'force' for mode in modes),
+                                  **kwargs)
 
     grid = gridplot([p1, p2], ncols=1)
 

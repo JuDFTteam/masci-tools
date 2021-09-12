@@ -320,14 +320,14 @@ class TestPlotConvergenceResults(object):  #pylint: disable=missing-class-docstr
 
         with pytest.deprecated_call():
             p = plot_convergence_results(self.iteration,
-                                        self.distances,
-                                        self.energies,
-                                        show=False,
-                                        color='darkred',
-                                        label_fontsize='24pt',
-                                        marker='square',
-                                        marker_size=12,
-                                        alpha=0.8)
+                                         self.distances,
+                                         self.energies,
+                                         show=False,
+                                         color='darkred',
+                                         label_fontsize='24pt',
+                                         marker='square',
+                                         marker_size=12,
+                                         alpha=0.8)
 
         check_bokeh_plot(p)
 
