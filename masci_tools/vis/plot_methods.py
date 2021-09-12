@@ -1534,7 +1534,7 @@ def plot_lattice_constant(scaling,
         :param linewidth_fit: defaults to `linewidth`, linewidth for the fit data
         :param plotlabel_fit: str label for the fit data
 
-    Other Kwargs will be passed on to all :py:func:`single_scatterplot()` or :py:func:`multiple_scatterplots()` calls
+    Other Kwargs will be passed on to :py:func:`multiple_scatterplots()`
     """
     # TODO: make box which shows fit results. (fit resuls have to be past)
 

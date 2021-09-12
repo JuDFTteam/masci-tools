@@ -1266,6 +1266,127 @@ def periodic_table_plot(source,
     return p
 
 
+@ensure_plotter_consistency(plot_params)
+def plot_lattice_constant(scaling,
+                          total_energy,
+                          *,
+                          fit_data=None,
+                          data=None,
+                          figure=None,
+                          relative=True,
+                          ref_const=None,
+                          title='Equation of states',
+                          saveas='lattice_constant',
+                          copy_data=False,
+                          **kwargs):
+    """
+    Plot a lattice constant versus Total energy
+    Plot also the fit.
+    On the x axis is the scaling, it
+
+    :param scaling: arraylike, data for the scaling factor
+    :param total_energy: arraylike, data for the total energy
+    :param fit_data: arraylike, optional data of fitted data
+    :param relative: bool, scaling factor given (True), or lattice constants given?
+    :param ref_const: float (optional), or list of floats, lattice constant for scaling 1.0
+    :param data: source for the data of the plot (optional) (pandas Dataframe for example)
+    :param copy_data: bool if True the data argument will be copied
+    :param figure: bokeh figure (optional), if provided the plot will be added to this figure
+
+    Function specific parameters:
+        :param marker_fit: defaults to `marker`, marker type for the fit data
+        :param marker_size_fit: defaults to `marker_size`, markersize for the fit data
+        :param line_width_fit: defaults to `line_width`, linewidth for the fit data
+        :param legend_label_fit: str label for the fit data
+
+    Other Kwargs will be passed on to :py:func:`bokeh_line()`
+    """
+    # TODO: make box which shows fit results. (fit resuls have to be past)
+
+    plot_data = process_data_arguments(data=data,
+                                       scaling=scaling,
+                                       energy=total_energy,
+                                       fit=fit_data,
+                                       copy_data=copy_data,
+                                       use_column_source=True)
+
+    plot_params.single_plot = False
+    plot_params.num_plots = len(plot_data)
+
+    if relative:
+        if ref_const:
+            xlabel = rf'Relative Volume [a/{ref_const}$\AA$]'
+        else:
+            xlabel = r'Relative Volume'
+    else:
+        xlabel = r'Volume [$\AA$]'
+
+    if len(plot_data) > 1:
+        ylabel = r'Total energy norm[0] [eV]'
+    else:
+        ylabel = r'Total energy [eV]'
+
+    #Add custom parameters for fit
+    plot_params.add_parameter('marker_fit', default_from='marker')
+    plot_params.add_parameter('marker_size_fit', default_from='marker_size')
+    plot_params.add_parameter('line_width_fit', default_from='line_width')
+    plot_params.add_parameter('legend_label_fit')
+
+    plot_params.set_defaults(default_type='function',
+                             marker_fit='square',
+                             legend_label='simulation data',
+                             legend_label_fit='fit results',
+                             color='black' if len(plot_data) == 1 else None)
+
+    kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
+    p = plot_params.prepare_figure(title=title, xlabel=xlabel, ylabel=ylabel, figure=figure)
+
+    plot_kw = plot_params.plot_kwargs(post_process=False)
+    plot_fit_kw_line = plot_params.plot_kwargs(post_process=False,
+                                               plot_type='line',
+                                               line_width='line_width_fit',
+                                               legend_label='legend_label_fit')
+    plot_fit_kw_scatter = plot_params.plot_kwargs(post_process=False,
+                                                  plot_type='scatter',
+                                                  marker='marker_fit',
+                                                  marker_size='marker_size_fit',
+                                                  legend_label='legend_label_fit')
+    plot_fit_kw = {**plot_fit_kw_line, **plot_fit_kw_scatter}
+
+    with NestedPlotParameters(plot_params):
+        p = bokeh_line(plot_data.get_keys('scaling'),
+                       plot_data.get_keys('energy'),
+                       data=plot_data.data,
+                       xlabel=xlabel,
+                       ylabel=ylabel,
+                       title=title,
+                       figure=p,
+                       show=False,
+                       save_plots=False,
+                       plot_points=True,
+                       **plot_kw,
+                       **kwargs)
+    if any(entry.fit is not None for entry in plot_data.keys()):
+        with NestedPlotParameters(plot_params):
+            p = bokeh_line(plot_data.get_keys('scaling'),
+                           plot_data.get_keys('fit'),
+                           data=plot_data.data,
+                           xlabel=xlabel,
+                           ylabel=ylabel,
+                           title=title,
+                           figure=p,
+                           show=False,
+                           save_plots=False,
+                           plot_points=True,
+                           **plot_fit_kw,
+                           **kwargs)
+
+    plot_params.draw_straight_lines(p)
+    plot_params.save_plot(p, saveas)
+
+    return p
+
+
 ######## a 2d matrix plot ##########
 
 ######### plot convergence results plot ########

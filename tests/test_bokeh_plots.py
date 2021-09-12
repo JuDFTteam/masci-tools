@@ -365,3 +365,88 @@ class TestPlotConvergenceMulti(object):  #pylint: disable=missing-class-docstrin
 
         # need to return the figure in order for mpl checks to work
         check_bokeh_plot(p)
+
+
+class TestPlotLatticeConstant:  #pylint: disable=missing-class-docstring
+
+    def test_lattice_defaults_single(self, check_bokeh_plot):
+        """
+        Test with default parameters
+        """
+        from masci_tools.vis.bokeh_plots import plot_lattice_constant
+
+        scaling = np.linspace(0.95, 1.04, 10)
+        energy = -500.0 + 500.0 * (0.99 - scaling)**2
+
+        p = plot_lattice_constant(scaling, energy, show=False)
+
+        check_bokeh_plot(p)
+
+    def test_defaults_single_fity(self, check_bokeh_plot):
+        """
+        Test with default parameters
+        """
+        from masci_tools.vis.bokeh_plots import plot_lattice_constant
+
+        np.random.seed(19680801)
+        scaling = np.linspace(0.95, 1.04, 10)
+        energy = -500.0 + 500 * (0.99 - scaling)**2
+
+        noise = 0.5 * (np.random.rand(10) - 0.5)
+
+        p = plot_lattice_constant(scaling, energy + noise, fit_data=energy, show=False)
+
+        check_bokeh_plot(p)
+
+    def test_defaults_multi(self, check_bokeh_plot):
+        """
+        Test with default parameters
+        """
+        from masci_tools.vis.bokeh_plots import plot_lattice_constant
+
+        np.random.seed(19680801)
+
+        energy_offset = np.random.rand(5)
+        energy_offset = -500.0 + energy_offset
+
+        energy_scaling = np.random.rand(5) * 50
+        energy_groundstate = np.random.rand(5)
+        energy_groundstate = 1.0 + (energy_groundstate - 0.5) * 0.05
+
+        scaling = np.linspace(0.95, 1.04, 10)
+        energy = [
+            offset + const * (ground - scaling)**2
+            for offset, const, ground in zip(energy_offset, energy_scaling, energy_groundstate)
+        ]
+        scaling = [scaling] * 5
+
+        p = plot_lattice_constant(scaling, energy, show=False)
+
+        check_bokeh_plot(p)
+
+    def test_defaults_multi_fity(self, check_bokeh_plot):
+        """
+        Test with default parameters
+        """
+        from masci_tools.vis.bokeh_plots import plot_lattice_constant
+
+        np.random.seed(19680801)
+
+        energy_offset = np.random.rand(5)
+        energy_offset = -500.0 + energy_offset
+
+        energy_scaling = np.random.rand(5) * 50
+        energy_groundstate = np.random.rand(5)
+        energy_groundstate = 1.0 + (energy_groundstate - 0.5) * 0.05
+
+        scaling = np.linspace(0.95, 1.04, 10)
+        energy_fit = [
+            offset + const * (ground - scaling)**2
+            for offset, const, ground in zip(energy_offset, energy_scaling, energy_groundstate)
+        ]
+        energy_noise = [energy + (np.random.rand(10) - 0.5) * 0.05 for energy in energy_fit]
+        scaling = [scaling] * 5
+
+        p = plot_lattice_constant(scaling, energy_noise, fit_data=energy_fit, show=False)
+
+        check_bokeh_plot(p)

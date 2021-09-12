@@ -1,0 +1,497 @@
+roots:
+  references:
+  - attributes: {}
+    type: BasicTickFormatter
+  - attributes: {}
+    type: BasicTickFormatter
+  - attributes:
+      axis_label: Relative Volume
+      axis_label_text_font_size:
+        value: 18pt
+      axis_line_width:
+        value: 2
+      formatter:
+        type: BasicTickFormatter
+      major_label_text_font_size:
+        value: 16pt
+      ticker:
+        type: BasicTicker
+    type: LinearAxis
+  - attributes:
+      axis_label: Total energy [eV]
+      axis_label_text_font_size:
+        value: 18pt
+      axis_line_width:
+        value: 2
+      formatter:
+        type: BasicTickFormatter
+      major_label_text_font_size:
+        value: 16pt
+      ticker:
+        type: BasicTicker
+    type: LinearAxis
+  - attributes: {}
+    type: BasicTicker
+  - attributes: {}
+    type: BasicTicker
+  - attributes:
+      ticker:
+        type: BasicTicker
+    type: Grid
+  - attributes:
+      dimension: 1
+      ticker:
+        type: BasicTicker
+    type: Grid
+  - attributes:
+      bottom_units: screen
+      fill_alpha:
+        value: 0.5
+      fill_color:
+        value: lightgrey
+      left_units: screen
+      level: overlay
+      line_alpha:
+        value: 1.0
+      line_color:
+        value: black
+      line_dash:
+      - 4
+      - 4
+      line_width:
+        value: 2
+      render_mode: css
+      right_units: screen
+      top_units: screen
+    type: BoxAnnotation
+  - attributes:
+      overlay:
+        type: BoxAnnotation
+    type: BoxZoomTool
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      source:
+        type: ColumnDataSource
+    type: CDSView
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: energy
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Line
+      hover_glyph: null
+      muted_glyph: null
+      name: fit
+      nonselection_glyph:
+        type: Line
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Scatter
+      hover_glyph: null
+      muted_glyph: null
+      name: energy
+      nonselection_glyph:
+        type: Scatter
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes:
+      data_source:
+        type: ColumnDataSource
+      glyph:
+        type: Scatter
+      hover_glyph: null
+      muted_glyph: null
+      name: fit
+      nonselection_glyph:
+        type: Scatter
+      selection_glyph: null
+      view:
+        type: CDSView
+    type: GlyphRenderer
+  - attributes: {}
+    type: CrosshairTool
+  - attributes:
+      callback: null
+    type: DataRange1d
+  - attributes:
+      callback: null
+    type: DataRange1d
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - X
+        - '@scaling'
+      - - Y
+        - '@energy'
+    type: HoverTool
+  - attributes:
+      callback: null
+      renderers:
+      - type: GlyphRenderer
+      toggleable: false
+      tooltips:
+      - - X
+        - '@scaling'
+      - - Y
+        - '@fit'
+    type: HoverTool
+  - attributes:
+      click_policy: hide
+      items:
+      - type: LegendItem
+      - type: LegendItem
+      label_text_font_size:
+        value: 14pt
+    type: Legend
+  - attributes:
+      label:
+        value: fit results
+      renderers:
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+    type: LegendItem
+  - attributes:
+      label:
+        value: simulation data
+      renderers:
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+    type: LegendItem
+  - attributes:
+      line_width: 2.0
+      x:
+        field: scaling
+      y:
+        field: energy
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: scaling
+      y:
+        field: energy
+    type: Line
+  - attributes:
+      line_width: 2.0
+      x:
+        field: scaling
+      y:
+        field: fit
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: scaling
+      y:
+        field: fit
+    type: Line
+  - attributes: {}
+    type: LinearScale
+  - attributes: {}
+    type: LinearScale
+  - attributes: {}
+    type: PanTool
+  - attributes:
+      fill_alpha:
+        value: 0.5
+      fill_color:
+        value: lightgrey
+      level: overlay
+      line_alpha:
+        value: 1.0
+      line_color:
+        value: black
+      line_dash:
+      - 4
+      - 4
+      line_width:
+        value: 2
+      xs_units: screen
+      ys_units: screen
+    type: PolyAnnotation
+  - attributes:
+      callback: null
+      overlay:
+        type: PolyAnnotation
+    type: PolySelectTool
+  - attributes: {}
+    type: RedoTool
+  - attributes: {}
+    type: ResetTool
+  - attributes: {}
+    type: SaveTool
+  - attributes:
+      fill_alpha:
+        value: 0.1
+      fill_color:
+        value: '#1f77b4'
+      line_alpha:
+        value: 0.1
+      line_color:
+        value: '#1f77b4'
+      size:
+        units: screen
+        value: 6
+      x:
+        field: scaling
+      y:
+        field: energy
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: black
+      size:
+        units: screen
+        value: 6
+      x:
+        field: scaling
+      y:
+        field: energy
+    type: Scatter
+  - attributes:
+      fill_alpha:
+        value: 0.1
+      fill_color:
+        value: '#1f77b4'
+      line_alpha:
+        value: 0.1
+      line_color:
+        value: '#1f77b4'
+      marker:
+        value: square
+      size:
+        units: screen
+        value: 6
+      x:
+        field: scaling
+      y:
+        field: fit
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: black
+      marker:
+        value: square
+      size:
+        units: screen
+        value: 6
+      x:
+        field: scaling
+      y:
+        field: fit
+    type: Scatter
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes: {}
+    type: Selection
+  - attributes:
+      callback: null
+      data:
+        energy:
+          __ndarray__: yjfb3Jgxf8CWJqWg2zZ/wCWvzjEgO3/AhQg4hKo+f8CJ6q2BLTx/wFk0nZ2MPX/Am6xRD9E+f8BD5zV2iTt/wNlfdk+eMX/Ak4ychT0qf8A=
+          dtype: float64
+          shape:
+          - 10
+        fit:
+          __ndarray__: MzMzMzMzf8DNzMzMzDh/wM3MzMzMPH/AMzMzMzM/f8AAAAAAAEB/wDMzMzMzP3/AzczMzMw8f8DNzMzMzDh/wDMzMzMzM3/AAAAAAAAsf8A=
+          dtype: float64
+          shape:
+          - 10
+        scaling:
+          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
+          dtype: float64
+          shape:
+          - 10
+      selected:
+        type: Selection
+      selection_policy:
+        type: UnionRenderers
+    type: ColumnDataSource
+  - attributes:
+      callback: null
+      data:
+        energy:
+          __ndarray__: yjfb3Jgxf8CWJqWg2zZ/wCWvzjEgO3/AhQg4hKo+f8CJ6q2BLTx/wFk0nZ2MPX/Am6xRD9E+f8BD5zV2iTt/wNlfdk+eMX/Ak4ychT0qf8A=
+          dtype: float64
+          shape:
+          - 10
+        fit:
+          __ndarray__: MzMzMzMzf8DNzMzMzDh/wM3MzMzMPH/AMzMzMzM/f8AAAAAAAEB/wDMzMzMzP3/AzczMzMw8f8DNzMzMzDh/wDMzMzMzM3/AAAAAAAAsf8A=
+          dtype: float64
+          shape:
+          - 10
+        scaling:
+          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
+          dtype: float64
+          shape:
+          - 10
+      selected:
+        type: Selection
+      selection_policy:
+        type: UnionRenderers
+    type: ColumnDataSource
+  - attributes:
+      callback: null
+      data:
+        energy:
+          __ndarray__: yjfb3Jgxf8CWJqWg2zZ/wCWvzjEgO3/AhQg4hKo+f8CJ6q2BLTx/wFk0nZ2MPX/Am6xRD9E+f8BD5zV2iTt/wNlfdk+eMX/Ak4ychT0qf8A=
+          dtype: float64
+          shape:
+          - 10
+        fit:
+          __ndarray__: MzMzMzMzf8DNzMzMzDh/wM3MzMzMPH/AMzMzMzM/f8AAAAAAAEB/wDMzMzMzP3/AzczMzMw8f8DNzMzMzDh/wDMzMzMzM3/AAAAAAAAsf8A=
+          dtype: float64
+          shape:
+          - 10
+        scaling:
+          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
+          dtype: float64
+          shape:
+          - 10
+      selected:
+        type: Selection
+      selection_policy:
+        type: UnionRenderers
+    type: ColumnDataSource
+  - attributes:
+      callback: null
+      data:
+        energy:
+          __ndarray__: yjfb3Jgxf8CWJqWg2zZ/wCWvzjEgO3/AhQg4hKo+f8CJ6q2BLTx/wFk0nZ2MPX/Am6xRD9E+f8BD5zV2iTt/wNlfdk+eMX/Ak4ychT0qf8A=
+          dtype: float64
+          shape:
+          - 10
+        fit:
+          __ndarray__: MzMzMzMzf8DNzMzMzDh/wM3MzMzMPH/AMzMzMzM/f8AAAAAAAEB/wDMzMzMzP3/AzczMzMw8f8DNzMzMzDh/wDMzMzMzM3/AAAAAAAAsf8A=
+          dtype: float64
+          shape:
+          - 10
+        scaling:
+          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
+          dtype: float64
+          shape:
+          - 10
+      selected:
+        type: Selection
+      selection_policy:
+        type: UnionRenderers
+    type: ColumnDataSource
+  - attributes:
+      callback: null
+    type: TapTool
+  - attributes:
+      text: Equation of states
+    type: Title
+  - attributes:
+      below:
+      - type: LinearAxis
+      center:
+      - type: Grid
+      - type: Grid
+      - type: Legend
+      left:
+      - type: LinearAxis
+      renderers:
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      - type: GlyphRenderer
+      title:
+        type: Title
+      toolbar:
+        type: Toolbar
+      x_range:
+        type: DataRange1d
+      x_scale:
+        type: LinearScale
+      y_range:
+        type: DataRange1d
+      y_scale:
+        type: LinearScale
+    subtype: Figure
+    type: Plot
+  - attributes:
+      active_drag: auto
+      active_inspect:
+      - type: HoverTool
+      - type: HoverTool
+      active_multi: null
+      active_scroll: auto
+      active_tap: auto
+      tools:
+      - type: BoxZoomTool
+      - type: CrosshairTool
+      - type: HoverTool
+      - type: HoverTool
+      - type: PanTool
+      - type: PolySelectTool
+      - type: RedoTool
+      - type: ResetTool
+      - type: SaveTool
+      - type: TapTool
+      - type: UndoTool
+      - type: WheelZoomTool
+      - type: ZoomInTool
+      - type: ZoomOutTool
+    type: Toolbar
+  - attributes: {}
+    type: UndoTool
+  - attributes: {}
+    type: UnionRenderers
+  - attributes: {}
+    type: UnionRenderers
+  - attributes: {}
+    type: UnionRenderers
+  - attributes: {}
+    type: UnionRenderers
+  - attributes: {}
+    type: WheelZoomTool
+  - attributes: {}
+    type: ZoomInTool
+  - attributes: {}
+    type: ZoomOutTool
+title: Bokeh Application
+version: 1.4.0
