@@ -79,4 +79,4 @@ if __name__ == '__main__':
                 'bokeh<=1.4.0' # versions beyond 1.4.0 require a tornardo version not compatible with aiida-core /circus
             ]
         },
-    )
+        entry_points={'console_scripts': ['masci-tools = masci_tools.cmdline:cmd_root']})
