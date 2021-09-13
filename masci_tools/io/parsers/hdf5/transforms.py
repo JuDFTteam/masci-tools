@@ -25,6 +25,7 @@ for the following 3 cases:
 import h5py
 import numpy as np
 from functools import wraps
+from collections import defaultdict
 from .reader import HDF5Reader
 
 
@@ -206,6 +207,8 @@ def get_all_child_datasets(group, ignore=None, contains=None):
     :param group: h5py object to extract from
     :param ignore: str or iterable of str (optional). These
                    keys will be ignored
+    :param contains: str or iterable of str (optional). This phrase has to be in the key
+
 
     :returns: a dict with the contained dataset entered with their names as keys
     """
@@ -224,6 +227,51 @@ def get_all_child_datasets(group, ignore=None, contains=None):
                 continue
         if isinstance(val, h5py.Dataset):
             transformed[key] = val
+
+    return transformed
+
+
+@hdf5_transformation(attribute_needed=False)
+def merge_subgroup_datasets(group,
+                            ignore=None,
+                            contains=None,
+                            ignore_group=None,
+                            contains_group=None,
+                            stack_results=True):
+    """
+    Get all datasets contained in the given group
+
+    :param group: h5py object to extract from
+    :param ignore_group: str or iterable of str (optional). These
+                   keys will be ignored
+    :param contains_group: str or iterable of str (optional). This phrase has to be in the key
+    :param ignore: str or iterable of str (optional). These
+                   keys of the datasets in the subgroup will be ignored
+    :param contains: str or iterable of str (optional). This phrase has to be in the key of the datasets in the subgroup
+    :param stack_results: bool if True the resulting list of datasets will be used to construct one numpy array
+
+    :returns: a dict with the contained dataset of the subgroups of the given group entered with their names as keys
+    """
+    if ignore_group is None:
+        ignore_group = set()
+
+    if isinstance(ignore_group, str):
+        ignore_group = set([ignore_group])
+
+    transformed = defaultdict(list)
+    for key, val in group.items():
+        if key in ignore_group:
+            continue
+        if contains_group is not None:
+            if contains_group not in key:
+                continue
+        if isinstance(val, h5py.Group):
+            subgroup_dsets = get_all_child_datasets(val, ignore=ignore, contains=contains)
+            for k, v in subgroup_dsets.items():
+                transformed[k].append(v)
+
+    if stack_results:
+        transformed = {key: np.stack(val) for key, val in transformed.items()}
 
     return transformed
 
