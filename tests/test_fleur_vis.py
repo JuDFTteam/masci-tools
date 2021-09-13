@@ -38,7 +38,7 @@ def test_plot_bands_defaults_bokeh(check_bokeh_plot):
     with HDF5Reader(TEST_BANDDOS_FILE) as h5reader:
         data, attributes = h5reader.read(recipe=FleurBands)
 
-    fig = plot_fleur_bands(data, attributes, show=False, bokeh_plot=True)
+    fig = plot_fleur_bands(data, attributes, show=False, backend='bokeh')
 
     check_bokeh_plot(fig)
 
@@ -71,7 +71,7 @@ def test_plot_bands_weighted_bokeh(check_bokeh_plot):
     with HDF5Reader(TEST_BANDDOS_FILE) as h5reader:
         data, attributes = h5reader.read(recipe=FleurBands)
 
-    fig = plot_fleur_bands(data, attributes, weight='MT:1d', show=False, bokeh_plot=True)
+    fig = plot_fleur_bands(data, attributes, weight='MT:1d', show=False, backend='bokeh')
 
     check_bokeh_plot(fig)
 
@@ -104,7 +104,7 @@ def test_plot_bands_line_bokeh(check_bokeh_plot):
     with HDF5Reader(TEST_BANDDOS_FILE) as h5reader:
         data, attributes = h5reader.read(recipe=FleurBands)
 
-    fig = plot_fleur_bands(data, attributes, show=False, bokeh_plot=True, line_plot=True)
+    fig = plot_fleur_bands(data, attributes, show=False, backend='bokeh', line_plot=True)
 
     check_bokeh_plot(fig)
 
@@ -139,7 +139,7 @@ def test_plot_bands_separate_bands_bokeh(check_bokeh_plot):
 
     p = plot_fleur_bands(data,
                          attributes,
-                         bokeh_plot=True,
+                         backend='bokeh',
                          show=False,
                          separate_bands=True,
                          line_plot=True,
@@ -179,7 +179,7 @@ def test_plot_bands_spinpol_defaults_bokeh(check_bokeh_plot):
     with HDF5Reader(TEST_BANDDOS_FILE) as h5reader:
         data, attributes = h5reader.read(recipe=FleurBands)
 
-    fig = plot_fleur_bands(data, attributes, show=False, bokeh_plot=True)
+    fig = plot_fleur_bands(data, attributes, show=False, backend='bokeh')
 
     check_bokeh_plot(fig)
 
@@ -212,7 +212,7 @@ def test_plot_bands_spinpol_weighted_bokeh(check_bokeh_plot):
     with HDF5Reader(TEST_BANDDOS_FILE) as h5reader:
         data, attributes = h5reader.read(recipe=FleurBands)
 
-    fig = plot_fleur_bands(data, attributes, show=False, bokeh_plot=True, weight='MT:1d')
+    fig = plot_fleur_bands(data, attributes, show=False, backend='bokeh', weight='MT:1d')
 
     check_bokeh_plot(fig)
 
@@ -245,7 +245,7 @@ def test_plot_bands_spinpol_line_bokeh(check_bokeh_plot):
     with HDF5Reader(TEST_BANDDOS_FILE) as h5reader:
         data, attributes = h5reader.read(recipe=FleurBands)
 
-    fig = plot_fleur_bands(data, attributes, show=False, bokeh_plot=True, line_plot=True)
+    fig = plot_fleur_bands(data, attributes, show=False, backend='bokeh', line_plot=True)
 
     check_bokeh_plot(fig)
 
@@ -293,7 +293,7 @@ def test_plot_bands_spinpol_separate_bands_bokeh(check_bokeh_plot):
     p = plot_fleur_bands(data,
                          attributes,
                          show=False,
-                         bokeh_plot=True,
+                         backend='bokeh',
                          separate_bands=True,
                          line_plot=True,
                          color={indx: 'green' for indx in range(4, 10)},
@@ -336,7 +336,7 @@ def test_plot_bands_spinpol_no_spinpol_bokeh(check_bokeh_plot):
     with HDF5Reader(TEST_BANDDOS_FILE) as h5reader:
         data, attributes = h5reader.read(recipe=FleurBands)
 
-    fig = plot_fleur_bands(data, attributes, show=False, bokeh_plot=True, spinpol=False)
+    fig = plot_fleur_bands(data, attributes, show=False, backend='bokeh', spinpol=False)
 
     check_bokeh_plot(fig)
 
@@ -369,7 +369,7 @@ def test_plot_bands_spinpol_only_spin_bokeh(check_bokeh_plot):
     with HDF5Reader(TEST_BANDDOS_FILE) as h5reader:
         data, attributes = h5reader.read(recipe=FleurBands)
 
-    fig = plot_fleur_bands(data, attributes, show=False, bokeh_plot=True, only_spin='up')
+    fig = plot_fleur_bands(data, attributes, show=False, backend='bokeh', only_spin='up')
 
     check_bokeh_plot(fig)
 
@@ -402,7 +402,7 @@ def test_plot_dos_defaults_bokeh(check_bokeh_plot):
     with HDF5Reader(TEST_BANDDOS_FILE) as h5reader:
         data, attributes = h5reader.read(recipe=FleurDOS)
 
-    fig = plot_fleur_dos(data, attributes, show=False, bokeh_plot=True)
+    fig = plot_fleur_dos(data, attributes, show=False, backend='bokeh')
 
     check_bokeh_plot(fig)
 
@@ -477,7 +477,7 @@ def test_plot_spinpol_dos_defaults_bokeh(check_bokeh_plot):
     with HDF5Reader(TEST_BANDDOS_FILE) as h5reader:
         data, attributes = h5reader.read(recipe=FleurDOS)
 
-    fig = plot_fleur_dos(data, attributes, show=False, bokeh_plot=True)
+    fig = plot_fleur_dos(data, attributes, show=False, backend='bokeh')
 
     check_bokeh_plot(fig)
 
@@ -525,7 +525,7 @@ def test_plot_dos_selection_bokeh(check_bokeh_plot):
                          show_atoms=1,
                          show_lresolved=2,
                          plot_keys='MT:1p',
-                         bokeh_plot=True)
+                         backend='bokeh')
 
     check_bokeh_plot(fig)
 
@@ -567,7 +567,7 @@ def test_plot_bands_characterize_bokeh(check_bokeh_plot):
                                         attributes, ['MT:1s', 'MT:1p', 'MT:1d', 'MT:1f'],
                                         ['darkblue', 'darkred', 'darkgreen', 'darkorange'],
                                         show=False,
-                                        bokeh_plot=True,
+                                        backend='bokeh',
                                         only_spin='up')
 
     check_bokeh_plot(fig)
