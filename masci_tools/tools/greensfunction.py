@@ -119,7 +119,7 @@ def _get_sphavg_recipe(group_name: str, index: int, contour: int) -> Dict[str, A
     }
 
 
-def _get_radial_recipe(group_name: str, index: int, contour: int) -> Dict[str, Any]:
+def _get_radial_recipe(group_name: str, index: int, contour: int, nLO: int = 0) -> Dict[str, Any]:
     """
     Get the HDF5Reader recipe for reading in a radial Green's function element
 
@@ -139,13 +139,26 @@ def _get_radial_recipe(group_name: str, index: int, contour: int) -> Dict[str, A
         'transforms': [
             Transformation(name='get_all_child_datasets',
                            args=(),
-                           kwargs={'ignore': ['scalarProducts', 'LOContribution']}),
+                           kwargs={'ignore': ['scalarProducts', 'LOContribution', 'mmpmat']}),
             Transformation(name='convert_to_complex_array', args=(), kwargs={}),
             Transformation(name='multiply_scalar', args=(1.0 / HTR_TO_EV,), kwargs={})
         ],
         'unpack_dict':
         True
     }
+
+    if nLO > 0:
+        recipe['datasets']['lo_coefficients'] = {
+            'h5path':
+            f'/{group_name}/element-{index}/LOContribution',
+            'transforms': [
+                Transformation(name='get_all_child_datasets', args=(), kwargs={}),
+                Transformation(name='convert_to_complex_array', args=(), kwargs={}),
+                Transformation(name='multiply_scalar', args=(1.0 / HTR_TO_EV,), kwargs={})
+            ],
+            'unpack_dict':
+            True
+        }
 
     recipe['attributes']['scalarProducts'] = {
         'h5path': f'/{group_name}/element-{index}/scalarProducts',
@@ -220,7 +233,7 @@ def _read_gf_element(file: Any, index: int) -> Tuple[GreensfElement, Dict[str, A
         if gf_element.sphavg:
             recipe = _get_sphavg_recipe(group_name, index, gf_element.contour)
         else:
-            recipe = _get_radial_recipe(group_name, index, gf_element.contour)
+            recipe = _get_radial_recipe(group_name, index, gf_element.contour, nLO=gf_element.nLO)
 
         data, attributes = h5reader.read(recipe=recipe)
 
