@@ -243,9 +243,11 @@ class GreensFunction:
         self.data = data
 
         if not self.sphavg:
-            self.scalar_products = attributes['scalarProducts']
+            #Remove trailing n
+            self.scalar_products = {key.strip('n'): val for key, val in attributes['scalarProducts'].items()}
             self.radial_functions = attributes['radialFunctions']
-            raise NotImplementedError("Radial Green's functions not yet implemented")
+            if self.nLO > 0:
+                raise NotImplementedError("Radial Green's functions+LO not yet implemented")
 
         self.spins = attributes['spins']
         self.mperp = attributes['mperp']
@@ -274,6 +276,34 @@ class GreensFunction:
         if attr in GreensfElement._fields:
             return self.element._asdict()[attr]
         raise AttributeError(f'{self.__class__.__name__!r} object has no attribute {attr!r}')
+
+    def get_coefficient(self, name, spin, radial=False):
+        """
+        Get the coefficient with the given name from the data attribute
+
+        :param name: name of the coefficient
+        :param radial: if the Green's function is stored by coefficient and radial is True
+                       it is multiplied by the corresponding radial function
+                       otherwise the scalar product is multiplied
+        :param spin: integer index of the spin to retrieve
+
+        :retue
+        """
+        if radial and self.sphavg:
+            raise ValueError("No radial dependence possible. Green's function is spherically averaged")
+
+        spin1, spin2 = self.to_spin_indices(spin)
+
+        coeff = 1
+        if name != 'sphavg':
+            if radial:
+                raise NotImplementedError()
+            else:
+                coeff = self.scalar_products[name][spin1, spin2]
+        elif not self.sphavg:
+            raise ValueError("No entry sphavg available. Green's function is stored radially resolved")
+
+        return self.data[name][:, spin, ...] * coeff
 
     @staticmethod
     def to_m_index(m: int) -> int:
@@ -324,10 +354,6 @@ class GreensFunction:
         else:
             return self.spins
 
-    def get_scalar_product_by_key(self, key: str, spin: int) -> float:
-        spin1, spin2 = self.to_spin_indices(spin)
-        return self.scalar_products[f'{key}n'][spin1, spin2]
-
     def __str__(self) -> str:
         """
         String representation of the :py:class:`GreensFunction`. Chosen to be the
@@ -370,7 +396,13 @@ class GreensFunction:
         else:
             mp_index = slice(self.lmax - self.l, self.lmax + self.lp + 1, 1)
 
-        gf = self.data['sphavg'][:, spin_index, mp_index, m_index, :].T
+        if self.sphavg:
+            gf = self.get_coefficient('sphavg', spin_index)[:, m_index, mp_index, :].T
+        else:
+            gf =  self.get_coefficient('uu', spin_index)[:,m_index,mp_index,:].T \
+                + self.get_coefficient('ud', spin_index)[:,m_index,mp_index,:].T \
+                + self.get_coefficient('du', spin_index)[:,m_index,mp_index,:].T \
+                + self.get_coefficient('dd', spin_index)[:,m_index,mp_index,:].T
 
         if both_contours:
             return gf
