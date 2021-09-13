@@ -159,7 +159,7 @@ def _get_radial_recipe(group_name: str, index: int, contour: int, nLO: int = 0) 
             'unpack_dict':
             True
         }
-        recipe['datasets']['uloulop'] = {
+        recipe['datasets']['uloulo'] = {
             'h5path':
             f'/{group_name}/element-{index}/LOcontribution',
             'transforms': [
@@ -272,7 +272,22 @@ class GreensFunction:
             self.scalar_products = {key.strip('pn'): val for key, val in attributes['scalarProducts'].items()}
             self.radial_functions = attributes['radialFunctions']
             if self.nLO > 0:
-                raise NotImplementedError("Radial Green's functions+LO not yet implemented")
+                all_local_orbitals = self.radial_functions['llo']
+
+                lo_list_atomtype = [indx for indx, l in enumerate(all_local_orbitals[self.atomtype - 1]) if l == self.l]
+                lo_list_atomtypep = [
+                    indx for indx, l in enumerate(all_local_orbitals[self.atomtypep - 1]) if l == self.lp
+                ]
+
+                for key, val in self.scalar_products.items():
+                    if key == 'uloulo':
+                        self.scalar_products[key] = val[lo_list_atomtype, lo_list_atomtypep, ...]
+                    elif key.startswith('ulo'):
+                        self.scalar_products[key] = val[lo_list_atomtype, ...]
+                    elif key.endswith('ulo'):
+                        self.scalar_products[key] = val[lo_list_atomtypep, ...]
+
+            #TODO: Same selections for radial_functions
 
         self.spins = attributes['spins']
         self.mperp = attributes['mperp']
@@ -324,11 +339,16 @@ class GreensFunction:
             if radial:
                 raise NotImplementedError()
             else:
-                coeff = self.scalar_products[name][spin1, spin2]
+                coeff = self.scalar_products[name][..., spin1, spin2]
         elif not self.sphavg:
             raise ValueError("No entry sphavg available. Green's function is stored radially resolved")
 
-        return self.data[name][:, spin, ...] * coeff
+        if name == 'uloulo':
+            return np.einsum('ij...,ij...->ij...', self.data[name][:, :, :, spin, ...], coeff)
+        elif 'lo' in name:
+            return np.einsum('i...,i...->i...', self.data[name][:, :, spin, ...], coeff)
+        else:
+            return self.data[name][:, spin, ...] * coeff
 
     @staticmethod
     def to_m_index(m: int) -> int:
@@ -427,7 +447,11 @@ class GreensFunction:
             gf =  self.get_coefficient('uu', spin_index)[:,m_index,mp_index,:].T \
                 + self.get_coefficient('ud', spin_index)[:,m_index,mp_index,:].T \
                 + self.get_coefficient('du', spin_index)[:,m_index,mp_index,:].T \
-                + self.get_coefficient('dd', spin_index)[:,m_index,mp_index,:].T
+                + self.get_coefficient('dd', spin_index)[:,m_index,mp_index,:].T \
+                + np.sum(self.get_coefficient('uulo', spin_index)[:,:,m_index,mp_index,:].T, axis=-1) \
+                + np.sum(self.get_coefficient('ulou', spin_index)[:,:,m_index,mp_index,:].T, axis=-1) \
+                + np.sum(self.get_coefficient('dulo', spin_index)[:,:,m_index,mp_index,:].T, axis=-1) \
+                + np.sum(self.get_coefficient('uloulo', spin_index)[:,:,:,m_index,mp_index,:].T, axis=(-1,-2))
 
         if both_contours:
             return gf
