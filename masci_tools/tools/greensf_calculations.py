@@ -47,7 +47,7 @@ def calculate_heisenberg_jij(hdffileORgreensfunctions, reference_atom, onsite_de
 
         for weight, gijz, gjiz in zip(g1.weights, gij, gji):
 
-            jij += 1/(8.0*np.pi*1j) * onsite_delta[g1.atomType-1,g1.l] * onsite_delta[g1.atomTypep-1,g1.l]\
+            jij += 0.5 * 1/(8.0*np.pi*1j) * onsite_delta[g1.atomType-1,g1.l] * onsite_delta[g1.atomTypep-1,g1.l]\
                   * (weight * np.trace(gijz[...,0] @ gjiz[...,0]) \
                      - weight.conj() * np.trace(gijz[...,1] @ gjiz[...,1]))
 
@@ -61,13 +61,25 @@ def calculate_heisenberg_jij(hdffileORgreensfunctions, reference_atom, onsite_de
     return dict(jij_constants)
 
 
-def calculate_heisenberg_j0(g, onsite_delta, show=False):
+def calculate_heisenberg_j0(greensfunction, onsite_delta, show=False):
+    r"""
+    Calculate spin stiffness J_0 for the given green's function using the formula
 
-    g_up = g.energy_dependence(spin=1, both_contours=True)
-    g_dn = g.energy_dependence(spin=2, both_contours=True)
+    .. math::
+        J_{0} = \frac{1}{4\pi} \mathrm{Im}\ \mathrm{Tr_L} \int_{-\infty}^{E_F}\!\mathrm{dz} \Delta\left(G^\uparrow(z)-G^\downarrow(z)\right) + \Delta^2G^\uparrow(z)G^\downarrow(z)
+
+    :param greensfunction: :py:class:`~masci_tools.tools.greensfunction.GreensFunction` to use for the calculation
+    :param onsite_delta: onsite exchange splitting to use for the calculation
+    :param show: bool if True additional information about the used Greens functions is printed out
+
+    :returns: the value of the spin stiffness in meV
+    """
+
+    g_up = greensfunction.energy_dependence(spin=1, both_contours=True)
+    g_dn = greensfunction.energy_dependence(spin=2, both_contours=True)
 
     j0 = 0.0
-    for weight, g_upz, g_dnz in zip(g.weights, g_up, g_dn):
+    for weight, g_upz, g_dnz in zip(greensfunction.weights, g_up, g_dn):
 
         j0 += 1/(8.0*np.pi*1j) * (\
               weight *        (onsite_delta * (np.trace(g_upz[...,0])-np.trace(g_dnz[...,0])) \
@@ -84,8 +96,15 @@ def calculate_heisenberg_j0(g, onsite_delta, show=False):
     return j0
 
 
-def calculate_hybridization(g):
+def calculate_hybridization(greensfunction):
+    r"""
+    Calculate the hybridization function as
 
-    gz = g.trace_energy_dependence()
-    delta = 1 / (2 * g.l + 1) * np.linalg.inv(gz)
+    .. math::
+        \Delta(z) = \frac{1}{2*l+1} \mathrm{Tr} G^{-1}(z)
+
+    :returns: numpy array of the hybridization function
+    """
+    gz = greensfunction.trace_energy_dependence()
+    delta = 1 / (2 * greensfunction.l + 1) * np.linalg.inv(gz)
     return delta.real
