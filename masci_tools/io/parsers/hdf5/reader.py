@@ -58,30 +58,30 @@ class HDF5Reader:
 
     def __init__(self, file, move_to_memory=True):
 
-        self._file = file
+        self._original_file = file
+        self.file: h5py.File = None
 
-        if isinstance(self._file, (io.IOBase, Path)):
-            self._filename = self._file.name
+        if isinstance(self._original_file, (io.IOBase, Path)):
+            self.filename = self._original_file.name
         else:
-            self._filename = self._file
+            self.filename = self._original_file
 
-        if not self._filename.endswith('.hdf'):
-            logger.exception('Wrong File Type for %s: Got %s', self.__class__.__name__, self._filename)
-            raise ValueError(f'Wrong File Type for {self.__class__.__name__}: Got {self._filename}')
+        if not self.filename.endswith('.hdf'):
+            logger.exception('Wrong File Type for %s: Got %s', self.__class__.__name__, self.filename)
+            raise ValueError(f'Wrong File Type for {self.__class__.__name__}: Got {self.filename}')
 
-        logger.info('Instantiated %s with file %s', self.__class__.__name__, self._filename)
+        logger.info('Instantiated %s with file %s', self.__class__.__name__, self.filename)
 
         self._move_to_memory = move_to_memory
-        self._h5_file = None
 
     def __enter__(self):
-        self._h5_file = h5py.File(self._file, 'r')
-        logger.debug('Opened h5py.File with id %s', self._h5_file.id)
+        self.file = h5py.File(self._original_file, 'r')
+        logger.debug('Opened h5py.File with id %s', self.file.id)
         return self
 
     def __exit__(self, exc_type, exc_value, exc_traceback):
-        self._h5_file.close()
-        logger.debug('Closed h5py.File with id %s', self._h5_file.id)
+        self.file.close()
+        logger.debug('Closed h5py.File with id %s', self.file.id)
 
     def _read_dataset(self, h5path, strict=True):
         """Return in the dataset specified by the given h5path
@@ -102,12 +102,12 @@ class HDF5Reader:
 
         logger.debug('Reading dataset from path %s', h5path)
 
-        dset = self._h5_file.get(h5path)
+        dset = self.file.get(h5path)
         if dset is not None:
             return dset
         elif strict:
-            logger.exception('HDF5 input file %s has no Dataset at %s.', self._file, h5path)
-            raise ValueError(f'HDF5 input file {self._file} has no Dataset at {h5path}.')
+            logger.exception('HDF5 input file %s has no Dataset at %s.', self.filename, h5path)
+            raise ValueError(f'HDF5 input file {self.filename} has no Dataset at {h5path}.')
         return None
 
     def _transform_dataset(self, transforms, dataset, attributes=None, dataset_name=None):
@@ -179,13 +179,13 @@ class HDF5Reader:
         from itertools import chain
         from masci_tools.io.hdf5_util import read_hdf_simple
 
-        logger.info('Started reading HDF file: %s', self._filename)
+        logger.info('Started reading HDF file: %s', self.filename)
 
         if recipe is None:
             msg = 'Using the HDF5Reader without a recipe falling back to simple HDF reader'
             logging.warning(msg)
             warnings.warn(msg)
-            res = read_hdf_simple(self._file)
+            res = read_hdf_simple(self._original_file)
             logger.info('Finished reading .hdf file')
             return res
 
@@ -230,6 +230,6 @@ class HDF5Reader:
                 logger.exception(str(err))
                 raise
 
-        logger.info('Finished reading HDF file: %s', self._filename)
+        logger.info('Finished reading HDF file: %s', self.filename)
 
         return output_data, output_attrs

@@ -237,8 +237,8 @@ def _read_gf_element(file: Any, index: int) -> Tuple[GreensfElement, Dict[str, A
               :py:class:`~masci_tools.io.parsers.hdf5.HDF5Reader`
     """
     with HDF5Reader(file) as h5reader:
-        gf_element = _read_element_header(h5reader._h5_file, index)
-        group_name = _get_greensf_group_name(h5reader._h5_file)
+        gf_element = _read_element_header(h5reader.file, index)
+        group_name = _get_greensf_group_name(h5reader.file)
 
         if gf_element.sphavg:
             recipe = _get_sphavg_recipe(group_name, index, gf_element.contour)
