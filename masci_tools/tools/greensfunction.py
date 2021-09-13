@@ -218,7 +218,7 @@ def _read_gf_element(file: Any, index: int) -> Tuple[GreensfElement, Dict[str, A
         if gf_element.sphavg:
             recipe = _get_sphavg_recipe(group_name, index, gf_element.contour)
         else:
-            recipe = _get_radial_recipe(group_name, index, gf_element.contour, nlo=gf_element.nLO)
+            recipe = _get_radial_recipe(group_name, index, gf_element.contour)
 
         data, attributes = h5reader.read(recipe=recipe)
 
