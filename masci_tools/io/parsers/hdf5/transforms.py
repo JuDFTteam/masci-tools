@@ -275,6 +275,21 @@ def merge_subgroup_datasets(group,
 
     return transformed
 
+@hdf5_transformation(attribute_needed=False)
+def stack_datasets(dataset, axis=0):
+    """
+    Stack the entries in the given dict dataset along the given axis
+
+    :param dataset: dict dataset to transform
+    :param axis: int along which axis should be stacked
+
+    :returns: the array resulting from stacking all entries in the dictionary
+    """
+
+    if not isinstance(dataset, dict):
+        raise NotImplementedError
+
+    return np.stack((val for val in dataset.values()), axis=axis)
 
 @hdf5_transformation(attribute_needed=False)
 def shift_dataset(dataset, scalar_value, negative=False):

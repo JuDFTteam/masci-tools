@@ -152,12 +152,22 @@ def _get_radial_recipe(group_name: str, index: int, contour: int, nLO: int = 0) 
             'h5path':
             f'/{group_name}/element-{index}/LOcontribution',
             'transforms': [
-                Transformation(name='merge_subgroup_datasets', args=(), kwargs={}),
+                Transformation(name='merge_subgroup_datasets', args=(), kwargs={'ignore': 'uloulop-'}),
                 Transformation(name='convert_to_complex_array', args=(), kwargs={}),
                 Transformation(name='multiply_scalar', args=(1.0 / HTR_TO_EV,), kwargs={})
             ],
             'unpack_dict':
             True
+        }
+        recipe['datasets']['uloulop'] = {
+            'h5path':
+            f'/{group_name}/element-{index}/LOcontribution',
+            'transforms': [
+                Transformation(name='merge_subgroup_datasets', args=(), kwargs={'contains': 'uloulop-'}),
+                Transformation(name='convert_to_complex_array', args=(), kwargs={}),
+                Transformation(name='stack_datasets', args=(), kwargs={'axis': 1}),
+                Transformation(name='multiply_scalar', args=(1.0 / HTR_TO_EV,), kwargs={})
+            ],
         }
 
     recipe['attributes']['scalarProducts'] = {
