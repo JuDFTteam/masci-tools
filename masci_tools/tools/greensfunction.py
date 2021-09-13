@@ -139,7 +139,7 @@ def _get_radial_recipe(group_name: str, index: int, contour: int, nLO: int = 0) 
         'transforms': [
             Transformation(name='get_all_child_datasets',
                            args=(),
-                           kwargs={'ignore': ['scalarProducts', 'LOContribution', 'mmpmat']}),
+                           kwargs={'ignore': ['scalarProducts', 'LOcontribution', 'mmpmat']}),
             Transformation(name='convert_to_complex_array', args=(), kwargs={}),
             Transformation(name='multiply_scalar', args=(1.0 / HTR_TO_EV,), kwargs={})
         ],
@@ -150,7 +150,7 @@ def _get_radial_recipe(group_name: str, index: int, contour: int, nLO: int = 0) 
     if nLO > 0:
         recipe['datasets']['lo_coefficients'] = {
             'h5path':
-            f'/{group_name}/element-{index}/LOContribution',
+            f'/{group_name}/element-{index}/LOcontribution',
             'transforms': [
                 Transformation(name='get_all_child_datasets', args=(), kwargs={}),
                 Transformation(name='convert_to_complex_array', args=(), kwargs={}),
