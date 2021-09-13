@@ -18,7 +18,7 @@ from collections import namedtuple
 from itertools import groupby
 import numpy as np
 import h5py
-from typing import List, Tuple, Iterator, Dict, Any
+from typing import List, Tuple, Iterator, Dict, Any, Literal
 
 from masci_tools.io.parsers.hdf5 import HDF5Reader
 from masci_tools.io.parsers.hdf5.reader import Transformation, AttribTransformation
@@ -26,6 +26,8 @@ from masci_tools.util.constants import HTR_TO_EV
 
 GreensfElement = namedtuple('GreensfElement',
                             ['l', 'lp', 'atomType', 'atomTypep', 'sphavg', 'onsite', 'contour', 'nLO', 'atomDiff'])
+
+CoefficientName = Literal['sphavg', 'uu', 'ud', 'du', 'dd', 'ulou', 'uulo', 'ulod', 'dulo', 'uloulo']
 
 
 def _get_sphavg_recipe(group_name: str, index: int, contour: int) -> Dict[str, Any]:
@@ -243,8 +245,8 @@ class GreensFunction:
         self.data = data
 
         if not self.sphavg:
-            #Remove trailing n
-            self.scalar_products = {key.strip('n'): val for key, val in attributes['scalarProducts'].items()}
+            #Remove trailing n or p
+            self.scalar_products = {key.strip('pn'): val for key, val in attributes['scalarProducts'].items()}
             self.radial_functions = attributes['radialFunctions']
             if self.nLO > 0:
                 raise NotImplementedError("Radial Green's functions+LO not yet implemented")
@@ -277,7 +279,7 @@ class GreensFunction:
             return self.element._asdict()[attr]
         raise AttributeError(f'{self.__class__.__name__!r} object has no attribute {attr!r}')
 
-    def get_coefficient(self, name, spin, radial=False):
+    def get_coefficient(self, name: CoefficientName, spin: int, radial: bool = False) -> np.ndarray:
         """
         Get the coefficient with the given name from the data attribute
 
