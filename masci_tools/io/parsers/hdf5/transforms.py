@@ -220,10 +220,10 @@ def get_all_child_datasets(group, ignore=None, contains=None):
 
     transformed = {}
     for key, val in group.items():
-        if key in ignore:
+        if any(phrase in key for phrase in ignore):
             continue
         if contains is not None:
-            if contains not in key:
+            if any(phrase not in key for phrase in contains):
                 continue
         if isinstance(val, h5py.Dataset):
             transformed[key] = val
@@ -260,10 +260,10 @@ def merge_subgroup_datasets(group,
 
     transformed = defaultdict(list)
     for key, val in group.items():
-        if key in ignore_group:
+        if any(phrase in key for phrase in ignore_group):
             continue
         if contains_group is not None:
-            if contains_group not in key:
+            if any(phrase not in key for phrase in contains_group):
                 continue
         if isinstance(val, h5py.Group):
             subgroup_dsets = get_all_child_datasets(val, ignore=ignore, contains=contains)
