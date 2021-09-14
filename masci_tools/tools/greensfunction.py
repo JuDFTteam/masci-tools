@@ -18,7 +18,11 @@ from collections import namedtuple
 from itertools import groupby
 import numpy as np
 import h5py
-from typing import List, Tuple, Iterator, Dict, Any, Literal
+from typing import List, Tuple, Iterator, Dict, Any
+try:
+    from typing import Literal
+except ImportError:
+    from typing_extensions import Literal
 
 from masci_tools.io.parsers.hdf5 import HDF5Reader
 from masci_tools.io.parsers.hdf5.reader import Transformation, AttribTransformation
@@ -274,9 +278,9 @@ class GreensFunction:
             if self.nLO > 0:
                 all_local_orbitals = self.radial_functions['llo']
 
-                lo_list_atomtype = [indx for indx, l in enumerate(all_local_orbitals[self.atomtype - 1]) if l == self.l]
+                lo_list_atomtype = [indx for indx, l in enumerate(all_local_orbitals[self.atomType - 1]) if l == self.l]
                 lo_list_atomtypep = [
-                    indx for indx, l in enumerate(all_local_orbitals[self.atomtypep - 1]) if l == self.lp
+                    indx for indx, l in enumerate(all_local_orbitals[self.atomTypep - 1]) if l == self.lp
                 ]
 
                 for key, val in self.scalar_products.items():
@@ -317,7 +321,7 @@ class GreensFunction:
             return self.element._asdict()[attr]
         raise AttributeError(f'{self.__class__.__name__!r} object has no attribute {attr!r}')
 
-    def get_coefficient(self, name: CoefficientName, spin: int, radial: bool = False) -> np.ndarray:
+    def get_coefficient(self, name: CoefficientName, spin: int = None, radial: bool = False) -> np.ndarray:
         """
         Get the coefficient with the given name from the data attribute
 
@@ -329,26 +333,63 @@ class GreensFunction:
 
         :retue
         """
+        from itertools import chain
+        if spin is not None:
+            spin -= 1
+            spin_index = min(spin, 2 if self.mperp else self.nspins - 1)
+        else:
+            spin_index = slice(0, min(3, self.nspins))
+
         if radial and self.sphavg:
             raise ValueError("No radial dependence possible. Green's function is spherically averaged")
-
-        spin1, spin2 = self.to_spin_indices(spin)
 
         coeff = 1
         if name != 'sphavg':
             if radial:
                 raise NotImplementedError()
             else:
-                coeff = self.scalar_products[name][..., spin1, spin2]
+                if spin is not None:
+                    spin1, spin2 = self.to_spin_indices(spin)
+                    coeff = self.scalar_products[name][..., spin1, spin2].T
+                else:
+                    coeff = self.scalar_products[name].T
         elif not self.sphavg:
             raise ValueError("No entry sphavg available. Green's function is stored radially resolved")
 
-        if name == 'uloulo':
-            return np.einsum('ij...,ij...->ij...', self.data[name][:, :, :, spin, ...], coeff)
-        elif 'lo' in name:
-            return np.einsum('i...,i...->i...', self.data[name][:, :, spin, ...], coeff)
+        data = self.data[name].T  #Converting from fortran index order
+        if spin is not None:
+            data = data[:, :, :, spin_index, ...]
         else:
-            return self.data[name][:, spin, ...] * coeff
+            if self.mperp:
+                #Build up the full 2x2 spin matrix for the coefficient
+                axes = list(range(len(data.shape)))
+                axes[2] = 1
+                axes[1] = 2
+                spin_offd = np.transpose(data[:, :, :, [2], ...].conj(), axes=axes)
+                data = np.concatenate((data, spin_offd), axis=3)
+            else:
+                data = np.concatenate((data, np.empty_like(data[:, :, :, [0, 1], ...])), axis=3)
+            #Reorder spin entries so that the spin-diagonal contributions also
+            #end up on the diagonal of the 2x2 matrix
+            spin_order = [0, 2, 3, 1]
+            data = data[:, :, :, spin_order, ...]
+            shape = tuple(chain(data.shape[:3], (2, 2), data.shape[4:]))
+            data = np.reshape(data, shape)
+
+        if spin is not None:
+            if name == 'uloulo':
+                return np.einsum('...ij,...ij->...ij', data, coeff)
+            elif 'lo' in name:
+                return np.einsum('...i,...i->...i', data, coeff)
+            else:
+                return data * coeff
+        else:
+            if name == 'uloulo':
+                return np.einsum('...ijkl,...ijkl->...ijkl', data, coeff)
+            elif 'lo' in name:
+                return np.einsum('...ijk,...ijk->...ijk', data, coeff)
+            else:
+                return np.einsum('...ij,...ij->...ij', data, coeff)
 
     @staticmethod
     def to_m_index(m: int) -> int:
@@ -410,7 +451,7 @@ class GreensFunction:
                           *,
                           m: int = None,
                           mp: int = None,
-                          spin: int,
+                          spin: int = None,
                           imag: bool = True,
                           both_contours: bool = False) -> np.ndarray:
         """
@@ -425,12 +466,6 @@ class GreensFunction:
 
         :returns: numpy array with the selected data
         """
-        if spin is not None:
-            spin -= 1
-            spin_index = min(spin, 2 if self.mperp else self.nspins - 1)
-        else:
-            spin_index = slice(0, min(3, self.nspins))
-
         if m is not None:
             m_index = self.to_m_index(m)
         else:
@@ -442,16 +477,16 @@ class GreensFunction:
             mp_index = slice(self.lmax - self.l, self.lmax + self.lp + 1, 1)
 
         if self.sphavg:
-            gf = self.get_coefficient('sphavg', spin_index)[:, m_index, mp_index, :].T
+            gf = self.get_coefficient('sphavg', spin=spin)[:, m_index, mp_index, ...]
         else:
-            gf =  self.get_coefficient('uu', spin_index)[:,m_index,mp_index,:].T \
-                + self.get_coefficient('ud', spin_index)[:,m_index,mp_index,:].T \
-                + self.get_coefficient('du', spin_index)[:,m_index,mp_index,:].T \
-                + self.get_coefficient('dd', spin_index)[:,m_index,mp_index,:].T \
-                + np.sum(self.get_coefficient('uulo', spin_index)[:,:,m_index,mp_index,:].T, axis=-1) \
-                + np.sum(self.get_coefficient('ulou', spin_index)[:,:,m_index,mp_index,:].T, axis=-1) \
-                + np.sum(self.get_coefficient('dulo', spin_index)[:,:,m_index,mp_index,:].T, axis=-1) \
-                + np.sum(self.get_coefficient('uloulo', spin_index)[:,:,:,m_index,mp_index,:].T, axis=(-1,-2))
+            gf =  self.get_coefficient('uu', spin=spin)[:,m_index,mp_index,...] \
+                + self.get_coefficient('ud', spin=spin)[:,m_index,mp_index,...] \
+                + self.get_coefficient('du', spin=spin)[:,m_index,mp_index,...] \
+                + self.get_coefficient('dd', spin=spin)[:,m_index,mp_index,...] \
+                + np.sum(self.get_coefficient('uulo', spin=spin)[:,m_index,mp_index,...], axis=-1) \
+                + np.sum(self.get_coefficient('ulou', spin=spin)[:,m_index,mp_index,...], axis=-1) \
+                + np.sum(self.get_coefficient('dulo', spin=spin)[:,:,m_index,mp_index,...], axis=-1) \
+                + np.sum(self.get_coefficient('uloulo', spin=spin)[:,m_index,mp_index,...], axis=(-1,-2))
 
         if both_contours:
             return gf
