@@ -28,8 +28,9 @@ from masci_tools.io.parsers.hdf5 import HDF5Reader
 from masci_tools.io.parsers.hdf5.reader import Transformation, AttribTransformation
 from masci_tools.util.constants import HTR_TO_EV
 
-GreensfElement = namedtuple('GreensfElement',
-                            ['l', 'lp', 'atomType', 'atomTypep', 'sphavg', 'onsite', 'contour', 'nLO', 'atomDiff'])
+GreensfElement = namedtuple(
+    'GreensfElement',
+    ['l', 'lp', 'atomType', 'atomTypep', 'sphavg', 'onsite', 'kresolved', 'contour', 'nLO', 'atomDiff'])
 
 CoefficientName = Literal['sphavg', 'uu', 'ud', 'du', 'dd', 'ulou', 'uulo', 'ulod', 'dulo', 'uloulo']
 
@@ -156,7 +157,12 @@ def _get_radial_recipe(group_name: str, index: int, contour: int, nLO: int = 0) 
             'h5path':
             f'/{group_name}/element-{index}/LOcontribution',
             'transforms': [
-                Transformation(name='merge_subgroup_datasets', args=(), kwargs={'ignore': 'uloulop-'}),
+                Transformation(name='merge_subgroup_datasets',
+                               args=(),
+                               kwargs={
+                                   'ignore': 'uloulop-',
+                                   'sort_key': lambda x: int(x.split('-', maxsplit=1)[1])
+                               }),
                 Transformation(name='convert_to_complex_array', args=(), kwargs={}),
                 Transformation(name='multiply_scalar', args=(1.0 / HTR_TO_EV,), kwargs={})
             ],
@@ -167,7 +173,12 @@ def _get_radial_recipe(group_name: str, index: int, contour: int, nLO: int = 0) 
             'h5path':
             f'/{group_name}/element-{index}/LOcontribution',
             'transforms': [
-                Transformation(name='merge_subgroup_datasets', args=(), kwargs={'contains': 'uloulop-'}),
+                Transformation(name='merge_subgroup_datasets',
+                               args=(),
+                               kwargs={
+                                   'contains': 'uloulop-',
+                                   'sort_key': lambda x: int(x.split('-', maxsplit=1)[1])
+                               }),
                 Transformation(name='convert_to_complex_array', args=(), kwargs={}),
                 Transformation(name='stack_datasets', args=(), kwargs={'axis': 1}),
                 Transformation(name='multiply_scalar', args=(1.0 / HTR_TO_EV,), kwargs={})
@@ -184,6 +195,40 @@ def _get_radial_recipe(group_name: str, index: int, contour: int, nLO: int = 0) 
         'transforms': [Transformation(name='get_all_child_datasets', args=(), kwargs={})]
     }
 
+    return recipe
+
+
+def _get_kresolved_recipe(group_name: str, index: int, contour: int):
+    """
+    Get the HDF5Reader recipe for reading in a k-resolved Green's function element
+
+    :param group_name: str of the group containing the Green's function elements
+    :param index: integer index of the element to read in (indexing starts at 1)
+    :param contour: integer index of the energy contour to read in (indexing starts at 1)
+
+    :returns: dict with the recipe reading all the necessary information from the ``greensf.hdf`` file
+    """
+    recipe = _get_sphavg_recipe(group_name, index, contour)
+
+    recipe['datasets'].pop('sphavg')
+
+    recipe['datasets']['kresolved'] = {
+        'h5path':
+        f'/{group_name}/element-{index}',
+        'transforms': [
+            Transformation(name='get_all_child_datasets', args=(), kwargs={'contains': ['kresolved-']}),
+            Transformation(name='convert_to_complex_array', args=(), kwargs={}),
+            Transformation(name='stack_datasets',
+                           args=(),
+                           kwargs={
+                               'axis': 0,
+                               'sort_key': lambda x: int(x.split('-', maxsplit=1)[1])
+                           }),
+            Transformation(name='multiply_scalar', args=(1.0 / HTR_TO_EV,), kwargs={})
+        ],
+        'unpack_dict':
+        True
+    }
     return recipe
 
 
@@ -221,11 +266,12 @@ def _read_element_header(hdffile: h5py.File, index: int) -> GreensfElement:
     sphavg = element.attrs['l_sphavg'][0] == 1
     onsite = element.attrs['l_onsite'][0] == 1
     contour = element.attrs['iContour'][0]
+    kresolved = element.attrs.get('l_kresolved', 0) == 1
     atomDiff = np.array(element.attrs['atomDiff'])
     atomDiff[abs(atomDiff) < 1e-12] = 0.0
     nLO = element.attrs['numLOs'][0]
 
-    return GreensfElement(l, lp, atomType, atomTypep, sphavg, onsite, contour, nLO, atomDiff)
+    return GreensfElement(l, lp, atomType, atomTypep, sphavg, onsite, kresolved, contour, nLO, atomDiff)
 
 
 def _read_gf_element(file: Any, index: int) -> Tuple[GreensfElement, Dict[str, Any], Dict[str, Any]]:
@@ -244,7 +290,9 @@ def _read_gf_element(file: Any, index: int) -> Tuple[GreensfElement, Dict[str, A
         gf_element = _read_element_header(h5reader.file, index)
         group_name = _get_greensf_group_name(h5reader.file)
 
-        if gf_element.sphavg:
+        if gf_element.kresolved:
+            recipe = _get_kresolved_recipe(group_name, index, gf_element.contour)
+        elif gf_element.sphavg:
             recipe = _get_sphavg_recipe(group_name, index, gf_element.contour)
         else:
             recipe = _get_radial_recipe(group_name, index, gf_element.contour, nLO=gf_element.nLO)

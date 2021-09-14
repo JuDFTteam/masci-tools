@@ -237,7 +237,8 @@ def merge_subgroup_datasets(group,
                             contains=None,
                             ignore_group=None,
                             contains_group=None,
-                            stack_results=True):
+                            stack_results=True,
+                            sort_key=None):
     """
     Get all datasets contained in the given group
 
@@ -259,7 +260,9 @@ def merge_subgroup_datasets(group,
         ignore_group = set([ignore_group])
 
     transformed = defaultdict(list)
-    for key, val in group.items():
+
+    for key in sorted(group.keys(), key=sort_key):
+        val = group[key]
         if any(phrase in key for phrase in ignore_group):
             continue
         if contains_group is not None:
@@ -277,7 +280,7 @@ def merge_subgroup_datasets(group,
 
 
 @hdf5_transformation(attribute_needed=False)
-def stack_datasets(dataset, axis=0):
+def stack_datasets(dataset, axis=0, sort_key=None):
     """
     Stack the entries in the given dict dataset along the given axis
 
@@ -290,7 +293,7 @@ def stack_datasets(dataset, axis=0):
     if not isinstance(dataset, dict):
         raise NotImplementedError
 
-    return np.stack(list(dataset.values()), axis=axis)
+    return np.stack(sorted(dataset.values(), key=sort_key), axis=axis)
 
 
 @hdf5_transformation(attribute_needed=False)
