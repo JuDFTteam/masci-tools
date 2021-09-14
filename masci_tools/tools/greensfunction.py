@@ -346,13 +346,32 @@ class GreensFunction:
         self.lmax = attributes['lmax']
 
     @classmethod
-    def fromFile(cls, file: Any, index: int) -> 'GreensFunction':
+    def fromFile(cls, file: Any, index: int = None, **selection_params: Any) -> 'GreensFunction':
         """
         Classmethod for creating a :py:class:`GreensFunction` instance directly from a hdf file
 
         :param file: path or opened file handle to a greensf.hdf file
-        :param index: int index of the element to read in
+        :param index: optional int index of the element to read in
+
+        If index is not given Keyword arguments with the keys being the names of the fields of
+        :py:class:`GreensfElement` can be given to select the right Green's function. The specification
+        has to match only one element in the file
         """
+
+        if index is None:
+            if not selection_params:
+                raise ValueError('If index is not given, parameters for selection need to be provided')
+            elements = listElements(file)
+            index = select_element_indices(elements, **selection_params)
+            if len(index) == 1:
+                index = index[0] + 1
+            else:
+                raise ValueError(
+                    f'Found multiple possible matches for the given criteria. Indices {index} are possible')
+        else:
+            if selection_params:
+                raise ValueError('If index is given no further selection parameters are allowed')
+
         element, data, attributes = _read_gf_element(file, index)
         return cls(element, data, attributes)
 
@@ -385,8 +404,6 @@ class GreensFunction:
         if spin is not None:
             spin -= 1
             spin_index = min(spin, 2 if self.mperp else self.nspins - 1)
-        else:
-            spin_index = slice(0, min(3, self.nspins))
 
         if radial and self.sphavg:
             raise ValueError("No radial dependence possible. Green's function is spherically averaged")
@@ -638,40 +655,79 @@ def listElements(hdffile: Any, show: bool = False) -> List[GreensfElement]:
     return elements
 
 
-def selectOnsite(hdffile: Any, l: int, atomType: int, lp: int = None, show: bool = True) -> List[int]:
+def select_elements_from_file(hdffile: Any, show: bool = False, **selection_params) -> Iterator[GreensFunction]:
     """
-    Find the specified onsite element in the ``greensf.hdf`` file
+    Construct the green's function mathcing specified criteria from a given ``greensf.hdf`` file
 
-    :param hdffile: filepath or file handle to a greensf.hdf file
-    :param l: integer of the orbital quantum number
-    :param atomType: integer of the atom type
-    :param lp: optional integer of the second orbital quantum number (default equal to l)
-    :param show: bool if True the found elements are printed in a table and the selected ones are marked
+    :param hdffile: file or file path to the ``greensf.hdf`` file
+    :param show: bool if True the found elements will be printed
 
-    :returns: list of indexes in the ``greensf.hdf`` file corresponding to the selected criteria
+    The Keyword arguments correspond to the names of the fields and their desired value
+
+    :returns: iterator over the matching :py:class:`GreensFunction`
     """
-    if lp is None:
-        lp = l
 
-    elements = listElements(hdffile)
+    elements = listElements(hdffile, show=show)
+    found_elements = select_element_indices(elements, show=show, **selection_params)
 
-    foundIndices = []
+    def gf_iterator(found_elements):
+        for index in found_elements:
+            yield GreensFunction.from_file(hdffile, index=index + 1)
+
+    return gf_iterator(found_elements)
+
+
+def select_elements(greensfunctions: List[GreensFunction],
+                    show: bool = False,
+                    **selection_params) -> Iterator[GreensFunction]:
+    """
+    Select :py:class:`GreensFunction` objects from a list based on constraints on the
+    values of their underlying :py:class:`GreensfElement`
+
+    :param greensfunctions: list of :py:class:`GreensFunction` to choose from
+    :param show: bool if True the found elements will be printed
+
+    The Keyword arguments correspond to the names of the fields and their desired value
+
+    :returns: iterator over the matching :py:class:`GreensFunction`
+    """
+    elements = [gf.element for gf in greensfunctions]
+    found_elements = select_element_indices(elements, show=show, **selection_params)
+
+    def gf_iterator(found_elements):
+        for index in found_elements:
+            yield greensfunctions[index]
+
+    return gf_iterator(found_elements)
+
+
+def select_element_indices(elements: List[GreensfElement], show: bool = False, **selection_params) -> List[int]:
+    """
+    Select :py:class:`GreensfElement` objects from a list based on constraints on their
+    values
+
+    :param elements: list of :py:class:`GreensfElement` to choose from
+    :param show: bool if True the found elements will be printed
+
+    The Keyword arguments correspond to the names of the fields and their desired value
+
+    :returns: list of the indices matching the criteria
+    """
+
+    for key in selection_params:
+        if key not in GreensfElement._fields:
+            raise KeyError(f"Key {key} is not allowed for selecting Green's function elements")
+
+    found_elements = []
     for index, elem in enumerate(elements):
-        if elem.l != l:
-            continue
-        if elem.lp != lp:
-            continue
-        if elem.atomType != atomType:
-            continue
-        if elem.atomTypep != atomType:
-            continue
-        if np.linalg.norm(elem.atomDiff) > 1e-12:
-            continue
-        foundIndices.append(index + 1)
+        if all(elem._asdict()[key] ==
+               val if not isinstance(elem._asdict()[key], np.ndarray) else np.allclose(elem._asdict()[key], val)
+               for key, val in selection_params.items()):
+            found_elements.append(index)
 
     if show:
-        printElements(elements, mark=foundIndices)
-    return foundIndices
+        printElements(elements, index=found_elements)
+    return found_elements
 
 
 def intersite_shells_from_file(hdffile: Any,
