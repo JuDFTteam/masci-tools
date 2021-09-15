@@ -293,7 +293,8 @@ def stack_datasets(dataset, axis=0, sort_key=None):
     if not isinstance(dataset, dict):
         raise NotImplementedError
 
-    return np.stack(sorted(dataset.values(), key=sort_key), axis=axis)
+    keys = sorted(dataset.keys(), key=sort_key)
+    return np.stack([dataset[key] for key in keys], axis=axis)
 
 
 @hdf5_transformation(attribute_needed=False)
