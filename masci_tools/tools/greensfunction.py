@@ -361,6 +361,7 @@ class GreensFunction:
                 #Project kpoints onto 1D path
                 self.kpath = self.kpoints @ attributes['reciprocal_cell'].T
                 self.kpath = np.array([np.linalg.norm(ki - kj) for ki, kj in zip(self.kpath[1:], self.kpath[:-1])])
+                np.insert(self.kpath, 0, 0.0)
                 self.kpath = np.cumsum(self.kpath)
 
         elif not self.sphavg:
