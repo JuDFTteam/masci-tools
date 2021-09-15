@@ -623,7 +623,10 @@ class GreensFunction:
         if self.l != self.lp:
             raise ValueError('Trace only supported for l==lp')
 
-        data = np.zeros(self.points.shape)
+        if self.kresolved:
+            data = np.zeros((self.points.shape, self.extras['nkpts']))
+        else:
+            data = np.zeros(self.points.shape)
         for m in range(-self.l, self.l + 1):
             data += self.energy_dependence(m=m, mp=m, spin=spin, imag=imag)
 
