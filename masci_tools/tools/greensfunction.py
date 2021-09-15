@@ -243,7 +243,7 @@ def _get_kresolved_recipe(group_name: str, index: int, contour: int):
         'h5path':
         '/general/kpts',
         'transforms': [
-            Transformation(name='get_attribute', args=('kind'), kwargs={}),
+            Transformation(name='get_attribute', args=('kind',), kwargs={}),
             Transformation(name='convert_to_str', args=(), kwargs={}),
         ],
     }
