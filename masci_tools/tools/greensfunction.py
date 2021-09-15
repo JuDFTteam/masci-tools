@@ -624,7 +624,7 @@ class GreensFunction:
             raise ValueError('Trace only supported for l==lp')
 
         if self.kresolved:
-            data = np.zeros((self.points.shape, self.extras['nkpts']))
+            data = np.zeros((*self.points.shape, self.extras['nkpts']))
         else:
             data = np.zeros(self.points.shape)
         for m in range(-self.l, self.l + 1):
