@@ -600,15 +600,18 @@ def split_array(dataset, suffixes=None, name=None):
 
 
 @hdf5_transformation(attribute_needed=False)
-def convert_to_str(dataset):
+def convert_to_str(dataset, join=False):
     """Converts the given dataset to a numpy array of type string
 
     :param dataset: dataset to transform
+    :param join: bool if True the result will be joined together
 
     :returns: numpy array of dtype str
     """
 
     transformed = np.array(dataset).astype(str)
+    if join:
+        transformed = ''.join(transformed)
 
     return transformed
 

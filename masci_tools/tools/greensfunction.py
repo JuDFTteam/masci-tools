@@ -242,7 +242,7 @@ def _get_kresolved_recipe(group_name: str, index: int, contour: int):
         '/general/kpts',
         'transforms': [
             Transformation(name='get_attribute', args=('kind',), kwargs={}),
-            Transformation(name='convert_to_str', args=(), kwargs={}),
+            Transformation(name='convert_to_str', args=(), kwargs={'join': True}),
         ],
     }
 
@@ -299,7 +299,7 @@ def _read_element_header(hdffile: h5py.File, index: int) -> GreensfElement:
     sphavg = element.attrs['l_sphavg'][0] == 1
     onsite = element.attrs['l_onsite'][0] == 1
     contour = element.attrs['iContour'][0]
-    kresolved = element.attrs.get('l_kresolved', 0) == 1
+    kresolved = element.attrs.get('l_kresolved', [0])[0] == 1
     atomDiff = np.array(element.attrs['atomDiff'])
     atomDiff[abs(atomDiff) < 1e-12] = 0.0
     nLO = element.attrs['numLOs'][0]
