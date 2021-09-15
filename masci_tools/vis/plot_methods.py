@@ -1926,6 +1926,7 @@ def plot_bands(kpath,
     :param bands: arraylike data for the eigenvalues
     :param size_data: arraylike data the weights to emphasize (optional)
     :param color_data: str or arraylike, data for the color values with a colormap (optional)
+    :param data: source for the data of the plot (optional) (pandas Dataframe for example)
     :param title: str, Title of the plot
     :param xlabel: str, label for the x-axis
     :param ylabel: str, label for the y-axis
@@ -2081,6 +2082,7 @@ def plot_spinpol_bands(kpath,
     :param bands_up: arraylike data for the eigenvalues (spin-up)
     :param bands_dn: arraylike data for the eigenvalues (spin-dn)
     :param size_data: arraylike data the weights to emphasize BOTH SPINS (optional)
+    :param data: source for the data of the plot (optional) (pandas Dataframe for example)
     :param title: str, Title of the plot
     :param xlabel: str, label for the x-axis
     :param ylabel: str, label for the y-axis
@@ -2226,6 +2228,86 @@ def plot_spinpol_bands(kpath,
                                 saveas=saveas,
                                 exclude_points_outside_plot_area=True,
                                 **kwargs)
+
+    return ax
+
+
+@ensure_plotter_consistency(plot_params)
+def plot_spectral_function(kpath,
+                           energy_grid,
+                           spectral_function,
+                           *,
+                           data=None,
+                           special_kpoints=None,
+                           e_fermi=0,
+                           xlabel='',
+                           ylabel=r'$E-E_F$ [eV]',
+                           title='',
+                           saveas='spectral_function',
+                           copy_data=False,
+                           **kwargs):
+    """
+    Create a colormesh plot of a spectral function
+
+    :param kpath: data for the kpoint coordinates
+    :param energy_grid: data for the energy grid
+    :param spectral_function: 2D data for the spectral function
+    :param data: source for the data of the plot (optional) (pandas Dataframe for example)
+    :param title: str, Title of the plot
+    :param xlabel: str, label for the x-axis
+    :param ylabel: str, label for the y-axis
+    :param saveas: str, filename for the saved plot
+    :param e_fermi: float (default 0), place the line for the fermi energy at this value
+    :param special_kpoints: list of tuples (str, float), place vertical lines at the given values
+                            and mark them on the x-axis with the given label
+    :param copy_data: bool, if True the data argument will be copied
+
+    All other Kwargs are passed on to the :py:func:`colormesh_plot()` call
+    """
+
+    plot_data = process_data_arguments(single_plot=True,
+                                       data=data,
+                                       kpath=kpath,
+                                       energy=energy_grid,
+                                       spectral_function=spectral_function,
+                                       forbid_split_up={
+                                           'spectral_function',
+                                       },
+                                       copy_data=copy_data)
+
+    if special_kpoints is None:
+        special_kpoints = []
+
+    xticks = []
+    xticklabels = []
+    for label, pos in special_kpoints:
+        if label in ('Gamma', 'g'):
+            label = r'$\Gamma$'
+        xticklabels.append(label)
+        xticks.append(pos)
+
+    lines = {'vertical': xticks, 'horizontal': e_fermi}
+
+    limits = {'x': (plot_data.min('kpath'), plot_data.max('kpath')), 'y': (-15, 15)}
+    plot_params.set_defaults(default_type='function',
+                             lines=lines,
+                             limits=limits,
+                             xticks=xticks,
+                             xticklabels=xticklabels,
+                             cmap='inferno',
+                             plot_label='Spectral function',
+                             line_options={'color': 'white'},
+                             colorbar=True)
+    entry, source = plot_data.items(first=True)
+    ax = colormesh_plot(entry.kpath,
+                        entry.energy,
+                        entry.spectral_function,
+                        xlabel=xlabel,
+                        ylabel=ylabel,
+                        title=title,
+                        data=source,
+                        saveas=saveas,
+                        **kwargs)
 
     return ax
 
