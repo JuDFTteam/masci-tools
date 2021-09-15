@@ -237,7 +237,7 @@ def _get_kresolved_recipe(group_name: str, index: int, contour: int):
         ],
     }
 
-    recipe['attributes']['kpoint_kind'] = {
+    recipe['attributes']['kpoints_kind'] = {
         'h5path':
         '/general/kpts',
         'transforms': [
