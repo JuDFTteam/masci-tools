@@ -484,6 +484,10 @@ class GreensFunction:
             shape = tuple(chain(data.shape[:3], (2, 2), data.shape[4:]))
             data = np.reshape(data, shape)
 
+        if self.kresolved:
+            #Move upper/lower contour index to last one
+            return np.swapaxes(data, -2, -1)
+
         if spin is not None:
             if name == 'uloulo':
                 return np.einsum('...ij,...ij->...ij', data, coeff)
