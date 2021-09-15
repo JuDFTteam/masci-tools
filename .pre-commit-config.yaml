@@ -5,7 +5,7 @@ ci:
 
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.5.0
+    rev: v4.0.1
     hooks:
     - id: double-quote-string-fixer
       types: [python]
@@ -32,7 +32,7 @@ repos:
     args: ['-i']
 
 - repo: https://github.com/ikamensh/flynt/
-  rev: '0.55'
+  rev: '0.69'
   hooks:
   -   id: flynt
       args: [
