@@ -15,7 +15,7 @@ This module contains utility and functions to work with Green's functions calcul
 and written to ``greensf.hdf`` files by fleur
 """
 from collections import namedtuple
-from itertools import groupby
+from itertools import groupby, chain
 import numpy as np
 import h5py
 from typing import List, Tuple, Iterator, Dict, Any
@@ -229,6 +229,41 @@ def _get_kresolved_recipe(group_name: str, index: int, contour: int):
         'unpack_dict':
         True
     }
+
+    recipe['attributes']['nkpts'] = {
+        'h5path':
+        '/general/kpts',
+        'transforms': [
+            Transformation(name='get_attribute', args=('nkpt',), kwargs={}),
+            Transformation(name='get_first_element', args=(), kwargs={}),
+        ],
+    }
+
+    recipe['attributes']['kpoint_kind'] = {
+        'h5path':
+        '/general/kpts',
+        'transforms': [
+            Transformation(name='get_attribute', args=('kind'), kwargs={}),
+            Transformation(name='convert_to_str', args=(), kwargs={}),
+        ],
+    }
+
+    recipe['attributes']['kpoints'] = {
+        'h5path': '/general/kpts/coordinates',
+    }
+
+    recipe['attributes']['reciprocal_cell'] = {'h5path': '/general/reciprocalCell'}
+
+    recipe['attributes']['special_kpoint_indices'] = {
+        'h5path': '/general/kpts/specialPointIndices',
+        'transforms': [Transformation(name='shift_dataset', args=(-1,), kwargs={})]
+    }
+
+    recipe['attributes']['special_kpoint_labels'] = {
+        'h5path': '/general/kpts/specialPointLabels',
+        'transforms': [Transformation(name='convert_to_str', args=(), kwargs={})]
+    }
+
     return recipe
 
 
@@ -318,8 +353,19 @@ class GreensFunction:
         self.weights = data.pop('energy_weights')
 
         self.data = data
+        self.extras = attributes
 
-        if not self.sphavg:
+        self.kpoints = None
+        self.kpath = None
+        if self.kresolved:
+            self.kpoints = attributes['kpoints']
+            if attributes['kpoints_kind'] == 'path':
+                #Project kpoints onto 1D path
+                self.kpath = self.kpoints @ attributes['reciprocal_cell'].T
+                self.kpath = np.array([np.linalg.norm(ki - kj) for ki, kj in zip(self.kpath[1:], self.kpath[:-1])])
+                self.kpath = np.cumsum(self.kpath)
+
+        elif not self.sphavg:
             #Remove trailing n or p
             self.scalar_products = {key.strip('pn'): val for key, val in attributes['scalarProducts'].items()}
             self.radial_functions = attributes['radialFunctions']
@@ -339,7 +385,7 @@ class GreensFunction:
                     elif key.endswith('ulo'):
                         self.scalar_products[key] = val[lo_list_atomtypep, ...]
 
-            #TODO: Same selections for radial_functions
+                #TODO: Same selections for radial_functions
 
         self.spins = attributes['spins']
         self.mperp = attributes['mperp']
@@ -400,7 +446,6 @@ class GreensFunction:
 
         :retue
         """
-        from itertools import chain
         if spin is not None:
             spin -= 1
             spin_index = min(spin, 2 if self.mperp else self.nspins - 1)
