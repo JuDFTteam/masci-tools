@@ -1013,7 +1013,7 @@ def bokeh_spectral_function(kpath,
                             and mark them on the x-axis with the given label
     :param copy_data: bool, if True the data argument will be copied
 
-    All other Kwargs are passed on to the :py:func:`colormesh_plot()` call
+    All other Kwargs are passed on to the image call of bokeh
     """
 
     plot_data = process_data_arguments(single_plot=True,
