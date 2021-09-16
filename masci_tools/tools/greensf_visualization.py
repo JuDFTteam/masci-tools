@@ -5,7 +5,7 @@ Modules with functions for visualizing things related to greensfunctions from fl
 from masci_tools.vis.common import spectral_function
 
 
-def plot_kresolved_greensfunction(greensfunction, spin, backend=None, **kwargs):
+def plot_kresolved_greensfunction(greensfunction, spin=None, backend=None, **kwargs):
     """
     Plot a k-resolved :py:class:`~masci_tools.tools.greensfunction.GreensFunction` calculated
     on a kpoint path as a colormesh plot. The energy contour should be chosen to be a equidistant
@@ -28,7 +28,12 @@ def plot_kresolved_greensfunction(greensfunction, spin, backend=None, **kwargs):
                               greensfunction.extras['special_kpoint_labels']):
         special_kpoints.append((label, greensfunction.kpath[k_index]))
 
-    spectral_func = greensfunction.trace_energy_dependence(spin=spin)
+    if spin is not None:
+        spectral_func = greensfunction.trace_energy_dependence(spin=spin)
+    else:
+        spectral_func = greensfunction.trace_energy_dependence(spin=1)
+        if greensfunction.nspins == 2:
+            spectral_func += greensfunction.trace_energy_dependence(spin=2)
 
     return spectral_function(greensfunction.kpath,
                              greensfunction.points.real,
