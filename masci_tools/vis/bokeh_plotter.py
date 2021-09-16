@@ -243,6 +243,7 @@ class BokehPlotter(Plotter):
     _PLOT_KWARGS_LINE = {'line_color', 'line_alpha', 'line_dash', 'line_width'}
     _PLOT_KWARGS_SCATTER = {'marker', 'marker_size', 'fill_alpha', 'fill_color'}
     _PLOT_KWARGS_AREA = {'fill_alpha', 'fill_color'}
+    _PLOT_KWARGS_IMAGE = {'color', 'alpha', 'color_palette'}
 
     __doc__ = __doc__ + _generate_plot_parameters_table(_BOKEH_DEFAULTS, _BOKEH_DESCRIPTIONS)
 
@@ -287,6 +288,8 @@ class BokehPlotter(Plotter):
             kwargs_keys = self._PLOT_KWARGS | self._PLOT_KWARGS_SCATTER
         elif plot_type == 'area':
             kwargs_keys = self._PLOT_KWARGS | self._PLOT_KWARGS_AREA
+        elif plot_type == 'image':
+            kwargs_keys = self._PLOT_KWARGS | self._PLOT_KWARGS_IMAGE
 
         if extra_keys is not None:
             kwargs_keys = kwargs_keys | extra_keys
@@ -310,6 +313,9 @@ class BokehPlotter(Plotter):
 
         if 'marker_size' in plot_kwargs:
             plot_kwargs['size'] = plot_kwargs.pop('marker_size')
+
+        if 'color_palette' in plot_kwargs:
+            plot_kwargs['palette'] = plot_kwargs.pop('color_palette')
 
         if list_of_dicts:
             plot_kwargs = self.dict_of_lists_to_list_of_dicts(plot_kwargs, self.single_plot, self.num_plots)

@@ -982,6 +982,107 @@ def bokeh_spinpol_bands(kpath,
                                    **kwargs)
 
 
+@ensure_plotter_consistency(plot_params)
+def bokeh_spectral_function(kpath,
+                            energy_grid,
+                            spectral_function,
+                            *,
+                            data=None,
+                            special_kpoints=None,
+                            e_fermi=0,
+                            xlabel='',
+                            ylabel=r'$E-E_F$ [eV]',
+                            title='',
+                            saveas='spectral_function',
+                            copy_data=False,
+                            figure=None,
+                            **kwargs):
+    """
+    Create a colormesh plot of a spectral function
+
+    :param kpath: data for the kpoint coordinates
+    :param energy_grid: data for the energy grid
+    :param spectral_function: 2D data for the spectral function
+    :param data: source for the data of the plot (optional) (pandas Dataframe for example)
+    :param title: str, Title of the plot
+    :param xlabel: str, label for the x-axis
+    :param ylabel: str, label for the y-axis
+    :param saveas: str, filename for the saved plot
+    :param e_fermi: float (default 0), place the line for the fermi energy at this value
+    :param special_kpoints: list of tuples (str, float), place vertical lines at the given values
+                            and mark them on the x-axis with the given label
+    :param copy_data: bool, if True the data argument will be copied
+
+    All other Kwargs are passed on to the :py:func:`colormesh_plot()` call
+    """
+
+    plot_data = process_data_arguments(single_plot=True,
+                                       data=data,
+                                       kpath=kpath,
+                                       energy=energy_grid,
+                                       spectral_function=spectral_function,
+                                       forbid_split_up={
+                                           'spectral_function',
+                                       },
+                                       copy_data=copy_data)
+
+    if special_kpoints is None:
+        special_kpoints = []
+
+    xticks = []
+    xticklabels = {}
+    for label, pos in special_kpoints:
+        #if label in ('Gamma', 'g'): Latex label missing for bokeh
+        #    label = r'$\Gamma$'
+        if pos.is_integer():
+            xticklabels[int(pos)] = label
+        xticklabels[pos] = label
+        xticks.append(pos)
+
+    lines = {'horizontal': 0}
+    lines['vertical'] = xticks
+
+    limits = {'y': (plot_data.min('energy'), plot_data.max('energy'))}
+    plot_params.set_defaults(default_type='function',
+                             straight_lines=lines,
+                             x_ticks=xticks,
+                             x_ticklabels_overwrite=xticklabels,
+                             figure_kwargs={
+                                 'width': 1280,
+                                 'height': 720
+                             },
+                             x_range_padding=0.0,
+                             y_range_padding=0.0,
+                             limits=limits,
+                             color_palette='Plasma256',
+                             legend_label='Spectral function',
+                             straight_line_options={'line_color': 'white'})
+
+    kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
+    p = plot_params.prepare_figure(title, xlabel, ylabel, figure=figure)
+
+    entry = plot_data.values(first=True)
+
+    plot_kw = plot_params.plot_kwargs(plot_type='image')
+
+    min_energy = plot_data.min('energy')
+    dh = plot_data.max('energy') - min_energy
+    p.image([entry.spectral_function],
+            x=0,
+            y=plot_data.min('energy'),
+            dh=dh,
+            dw=plot_data.max('kpath'),
+            **plot_kw,
+            **kwargs)
+
+    plot_params.draw_straight_lines(p)
+    plot_params.set_limits(p)
+    plot_params.set_legend(p)
+    plot_params.save_plot(p, saveas)
+
+    return p
+
+
 ####################################################################################################
 ##################################### special plots ################################################
 ####################################################################################################

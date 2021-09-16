@@ -403,6 +403,33 @@ def line(xdata, ydata, backend=None, data=None, **kwargs):
     return plot_funcs[backend](xdata, ydata, data=data, **kwargs)
 
 
+def spectral_function(kpath, energy_grid, spectral_func, backend=None, data=None, **kwargs):
+    """
+    Plot the provided data as a spectral function over the given kpath using a colormesh plot
+
+    :param kpath: data for the kpoint path
+    :param energy_grid: data for the energy_grid
+    :param spectral_func: data for the spectrla function resolved on the given grid
+    :param data: source for the data of the plot (optional) (pandas Dataframe for example)
+    :param backend: name of the backend to use (uses a default if None is given)
+
+    Kwargs are passed on to the backend plotting functions:
+
+        - ``matplotlib``: :py:func:`~masci_tools.vis.plot_methods.plot_spectral_function()`
+        - ``bokeh``: :py:func:`~masci_tools.vis.bokeh_plots.bokeh_spectral_function()`
+
+    :returns: Figure object for the used plotting backend
+    """
+    from .plot_methods import plot_spectral_function
+    from .bokeh_plots import bokeh_spectral_function
+
+    plot_funcs = {PlotBackend.mpl: plot_spectral_function, PlotBackend.bokeh: bokeh_spectral_function}
+
+    backend = PlotBackend.from_str(backend)
+
+    return plot_funcs[backend](kpath, energy_grid, spectral_func, data=data, **kwargs)
+
+
 def eos_plot(scaling, total_energy, backend=None, data=None, **kwargs):
     """
     Plot the provided data as a volume/scaling vs. energy plot. Multiple data sets are possible
