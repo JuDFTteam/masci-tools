@@ -43,7 +43,7 @@ if __name__ == '__main__':
         include_package_data=True,
         install_requires=[
             'numpy', 'scipy', 'matplotlib', 'h5py', 'pandas', 'ase', 'bump2version', 'future', 'lxml>=4.5',
-            'more_itertools', 'seaborn', 'deepdiff', 'humanfriendly', 'mendeleev<0.8.0', 'click>=8.0', 'yaml'
+            'more_itertools', 'seaborn', 'deepdiff', 'humanfriendly', 'mendeleev<0.8.0', 'click>=8.0', 'PyYAML'
         ],
         extras_require={
             'pre-commit': [
