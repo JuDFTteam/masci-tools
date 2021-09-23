@@ -7,12 +7,15 @@
 # For further information on the license, see the LICENSE.txt file        #
 # For further information please visit http://www.aiida.net               #
 ###########################################################################
-""" Convenience functions for printing output from verdi commands """
-
+""" Convenience functions for echoing data/messages to the stdout
+    This file was copied and adapted from the aiida-core package
+    aiida/cmdline/utils.py (license of aiida-core is included open_source_licenses.txt)
+"""
 from enum import IntEnum
 from collections import OrderedDict
 import sys
 import yaml
+import json
 
 import click
 
@@ -38,7 +41,6 @@ COLORS = {
     'deprecated': 'red',
 }
 BOLD = True  # whether colors are used together with 'bold'
-
 
 # pylint: disable=invalid-name
 def echo(message, bold=False, nl=True, err=False):
@@ -187,15 +189,13 @@ def echo_formatted_list(collection, attributes, sort=None, highlight=None, hide=
 
 def _format_dictionary_json_date(dictionary, sort_keys=True):
     """Return a dictionary formatted as a string using the json format and converting dates to strings."""
-    from aiida.common import json
 
     def default_jsondump(data):
         """Function needed to decode datetimes, that would otherwise not be JSON-decodable."""
         import datetime
-        from aiida.common import timezone
 
         if isinstance(data, datetime.datetime):
-            return timezone.localtime(data).strftime('%Y-%m-%dT%H:%M:%S.%f%z')
+            return data.strftime('%Y-%m-%dT%H:%M:%S.%f%z')
 
         raise TypeError(f'{repr(data)} is not JSON serializable')
 
