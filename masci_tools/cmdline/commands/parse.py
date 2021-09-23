@@ -1,9 +1,11 @@
+# -*- coding: utf-8 -*-
 
 from .root import cli
 
 import click
 from masci_tools.cmdline.utils import echo
 import numpy as np
+
 
 @cli.group('parse')
 def parse():
@@ -48,6 +50,7 @@ def parse_inp_file(xml_file):
     echo.echo_info('Parser warnings/information:')
     echo.echo_dictionary(parser_info)
 
+
 @parse.command('out-file')
 @click.argument('xml-file', type=click.Path(exists=True))
 def parse_out_file(xml_file):
@@ -64,6 +67,7 @@ def parse_out_file(xml_file):
     echo.echo_info('Parser warnings/information:')
     echo.echo_dictionary(parser_info)
 
+
 @parse.command('fleur-modes')
 @click.argument('xml-file', type=click.Path(exists=True))
 def parse_fleur_modes(xml_file):
@@ -76,6 +80,7 @@ def parse_fleur_modes(xml_file):
 
     fleur_modes = get_fleur_modes(xmltree, schema_dict)
     echo.echo_dictionary(fleur_modes)
+
 
 @parse.command('structure')
 @click.argument('xml-file', type=click.Path(exists=True))
@@ -90,7 +95,7 @@ def parse_structure_data(xml_file):
     atoms, cell, pbc = get_structure_data(xmltree, schema_dict, site_namedtuple=True)
 
     echo.echo_info('Atoms found:')
-    echo.echo_formatted_list(atoms,['symbol', 'kind', 'position'])
+    echo.echo_formatted_list(atoms, ['symbol', 'kind', 'position'])
     echo.echo_info('Bravais matrix:')
     echo.echo(str(cell))
     echo.echo_info(f'Periodic boundary conditions {pbc}:')
@@ -125,6 +130,7 @@ def parse_parameter_data(xml_file):
 
     echo.echo_dictionary(params)
 
+
 @parse.command('nkpts')
 @click.argument('xml-file', type=click.Path(exists=True))
 def parse_nkpts(xml_file):
@@ -133,6 +139,7 @@ def parse_nkpts(xml_file):
     """
     pass
 
+
 @parse.command('kpoints')
 @click.argument('xml-file', type=click.Path(exists=True))
 def parse_kpoints_data(xml_file):
@@ -140,6 +147,7 @@ def parse_kpoints_data(xml_file):
     Parse the Fleur inp.xml into a python dictionary
     """
     pass
+
 
 @parse.command('relaxation')
 @click.argument('xml-file', type=click.Path(exists=True))
@@ -156,11 +164,13 @@ def parse_relaxation_data(xml_file):
 def parse_attrib(xml_file, parse_type, name):
     pass
 
+
 @parse.command('text')
 @click.option('--xml-file', '--file', '-f', type=click.Path(exists=True), help='XML file to parse')
 @click.option('--name', '-n', type=str)
 def parse_text(xml_file, parse_type, name):
     pass
+
 
 @parse.command('all-attribs')
 @click.option('--xml-file', '--file', '-f', type=click.Path(exists=True), help='XML file to parse')
@@ -168,11 +178,13 @@ def parse_text(xml_file, parse_type, name):
 def parse_all_attribs(xml_file, parse_type, name):
     pass
 
+
 @parse.command('single-value')
 @click.option('--xml-file', '--file', '-f', type=click.Path(exists=True), help='XML file to parse')
 @click.option('--name', '-n', type=str)
 def parse_single_value(xml_file, parse_type, name):
     pass
+
 
 @parse.command('parent-attribs')
 @click.option('--xml-file', '--file', '-f', type=click.Path(exists=True), help='XML file to parse')
@@ -180,11 +192,13 @@ def parse_single_value(xml_file, parse_type, name):
 def parse_parent_attribs(xml_file, parse_type, name):
     pass
 
+
 @parse.command('tag-exists')
 @click.option('--xml-file', '--file', '-f', type=click.Path(exists=True), help='XML file to parse')
 @click.option('--name', '-n', type=str)
 def parse_tag_exists(xml_file, parse_type, name):
     pass
+
 
 @parse.command('number-nodes')
 @click.option('--xml-file', '--file', '-f', type=click.Path(exists=True), help='XML file to parse')

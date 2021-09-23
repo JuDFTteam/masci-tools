@@ -18,6 +18,7 @@ import shutil
 
 from lxml import etree
 
+
 @cli.group('fleur-schema')
 def fleur_schema():
     """Commands related to the Fleur XML Schemas"""
