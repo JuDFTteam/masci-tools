@@ -153,6 +153,14 @@ class SchemaDict(LockableDict):
     All other arguments are passed on to :py:class:`~masci_tools.util.lockable_containers.LockableDict`
 
     """
+    _schema_dict_cache = {}
+
+    @classmethod
+    def clear_cache(cls):
+        """
+        Remove all stored entries in the schema dictionary cache
+        """
+        cls._schema_dict_cache.clear()
 
     def __init__(self, *args, xmlschema=None, **kwargs):
         self.xmlschema = xmlschema
@@ -247,8 +255,6 @@ class InputSchemaDict(SchemaDict):
         :tag_info: For each tag (path), the valid attributes and tags (optional, several,
                    order, simple, text)
     """
-    __schema_dict_cache = {}
-
     __version__ = '0.1.0'
 
     @classmethod
@@ -283,12 +289,12 @@ class InputSchemaDict(SchemaDict):
                 fleur_schema_path = f'./{latest_version}/FleurInputSchema.xsd'
                 schema_file_path = os.path.abspath(os.path.join(PACKAGE_DIRECTORY, fleur_schema_path))
 
-        if version in cls.__schema_dict_cache and not no_cache:
-            return cls.__schema_dict_cache[version]
+        if version in cls._schema_dict_cache and not no_cache:
+            return cls._schema_dict_cache[version]
 
-        cls.__schema_dict_cache[version] = cls.fromPath(schema_file_path)
+        cls._schema_dict_cache[version] = cls.fromPath(schema_file_path)
 
-        return cls.__schema_dict_cache[version]
+        return cls._schema_dict_cache[version]
 
     @classmethod
     def fromPath(cls, path):
@@ -361,7 +367,6 @@ class OutputSchemaDict(SchemaDict):
                              the valid attributes and tags (optional, several,
                              order, simple, text)
     """
-    __schema_dict_cache = {}
 
     __version__ = '0.1.0'
 
@@ -425,15 +430,15 @@ class OutputSchemaDict(SchemaDict):
             logger.info('Creating OutputSchemaDict object for differing versions (out: %s; inp: %s)', version,
                         inp_version)
 
-        if (version, inp_version) in cls.__schema_dict_cache and not no_cache:
-            return cls.__schema_dict_cache[(version, inp_version)]
+        if (version, inp_version) in cls._schema_dict_cache and not no_cache:
+            return cls._schema_dict_cache[(version, inp_version)]
 
         inpschema_dict = InputSchemaDict.fromVersion(inp_version, no_cache=no_cache)
-        cls.__schema_dict_cache[(version, inp_version)] = cls.fromPath(schema_file_path,
-                                                                       inp_path=inpschema_file_path,
-                                                                       inpschema_dict=inpschema_dict)
+        cls._schema_dict_cache[(version, inp_version)] = cls.fromPath(schema_file_path,
+                                                                      inp_path=inpschema_file_path,
+                                                                      inpschema_dict=inpschema_dict)
 
-        return cls.__schema_dict_cache[(version, inp_version)]
+        return cls._schema_dict_cache[(version, inp_version)]
 
     @classmethod
     def fromPath(cls, path, inp_path=None, inpschema_dict=None):
