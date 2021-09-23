@@ -59,5 +59,5 @@ if __name__ == '__main__':
             ]
         },
         entry_points={'console_scripts': [
-            'masci-tools = masci_tools.cmdline:cmd_root',
+            'masci-tools = masci_tools.cmdline.commands.root:cli',
         ]})

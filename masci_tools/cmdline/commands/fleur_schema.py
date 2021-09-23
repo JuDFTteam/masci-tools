@@ -2,6 +2,8 @@
 """
 CLI commands for interacting with the fleur schemas in the masci-tools repository
 """
+from .root import cli
+import click
 
 import masci_tools
 from masci_tools.cmdline.utils import echo
@@ -14,11 +16,14 @@ import os
 import sys
 import shutil
 
-import click
 from lxml import etree
 
+@cli.group('fleur-schema')
+def fleur_schema():
+    """Commands related to the Fleur XML Schemas"""
 
-@click.command('add')
+
+@fleur_schema.command('add')
 @click.argument('schema-file', type=click.Path(exists=True, path_type=Path, resolve_path=True))
 @click.option('--overwrite', is_flag=True, help='Overwrite any exisiting schema-file')
 @click.option('--test-xml-file',
@@ -111,7 +116,7 @@ def add_fleur_schema(schema_file, test_xml_file, overwrite):
         echo.echo_success(f'Parser finished for: {test_xml_file}')
 
 
-@click.command('validate-input')
+@fleur_schema.command('validate-input')
 @click.argument('xml-file', type=click.Path(exists=True))
 def validate_inpxmlfile(xml_file):
     """
@@ -130,7 +135,7 @@ def validate_inpxmlfile(xml_file):
         echo.echo_success(f"{xml_file} validates against the schema for version {schema_dict['inp_version']}")
 
 
-@click.command('validate-output')
+@fleur_schema.command('validate-output')
 @click.argument('xml-file', type=click.Path(exists=True))
 def validate_outxmlfile(xml_file):
     """

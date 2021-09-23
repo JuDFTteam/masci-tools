@@ -2,12 +2,17 @@
 """
 Commands for plotting
 """
+from .root import cli
 import click
 
 from masci_tools.cmdline.utils import echo
 
+@cli.group('plot')
+def plot():
+    """Commands for visulaizing data"""
 
-@click.command('fleur-bands')
+
+@plot.command('fleur-bands')
 @click.argument('banddos-file', type=click.Path(exists=True))
 @click.option('--weight', '-w', type=str, default=None)
 @click.option('--backend', type=click.Choice(['matplotlib', 'mpl', 'bokeh']), default='matplotlib')
@@ -41,7 +46,7 @@ def plot_fleur_banddos_bands(banddos_file, weight, recipe, backend, save, show):
     plot_fleur_bands(data, attributes, weight=weight, backend=backend, show=show, save_plots=save)
 
 
-@click.command('fleur-dos')
+@plot.command('fleur-dos')
 @click.argument('banddos-file', type=click.Path(exists=True))
 @click.option('--total', type=bool, default=True)
 @click.option('--interstitial', type=bool, default=True)
