@@ -42,6 +42,7 @@ COLORS = {
 }
 BOLD = True  # whether colors are used together with 'bold'
 
+
 # pylint: disable=invalid-name
 def echo(message, bold=False, nl=True, err=False):
     """
