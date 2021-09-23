@@ -279,6 +279,7 @@ class InputSchemaDict(SchemaDict):
                     warnings.warn(
                         f"No Input Schema available for version '{version}'; falling back to '{latest_version}'")
 
+                version = latest_version
                 fleur_schema_path = f'./{latest_version}/FleurInputSchema.xsd'
                 schema_file_path = os.path.abspath(os.path.join(PACKAGE_DIRECTORY, fleur_schema_path))
 
