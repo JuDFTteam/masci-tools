@@ -443,7 +443,7 @@ class GreensFunction:
                        otherwise the scalar product is multiplied
         :param spin: integer index of the spin to retrieve
 
-        :retue
+        :returns: numpy.ndarray for the given coefficient and spin
         """
         if spin is not None:
             spin -= 1
