@@ -76,7 +76,7 @@ def load_inpxml(inpxmlfile, logger=None, base_url=None, **kwargs):
 
     version = eval_xpath(xmltree, '//@fleurInputVersion')
     version = str(version)
-    if version is None:
+    if not version:
         if logger is not None:
             logger.error('Failed to extract inputVersion')
         raise ValueError('Failed to extract inputVersion')
@@ -165,7 +165,7 @@ def load_outxml(outxmlfile, logger=None, base_url=None, **kwargs):
 
     out_version = eval_xpath(xmltree, '//@fleurOutputVersion')
     out_version = str(out_version)
-    if out_version is None:
+    if not out_version:
         if logger is not None:
             logger.error('Failed to extract outputVersion')
         raise ValueError('Failed to extract outputVersion')
@@ -213,7 +213,7 @@ def load_outxml(outxmlfile, logger=None, base_url=None, **kwargs):
     else:
         inp_version = eval_xpath(xmltree, '//@fleurInputVersion')
         inp_version = str(inp_version)
-        if inp_version is None:
+        if not inp_version:
             raise ValueError('Failed to extract inputVersion')
 
     schema_dict = OutputSchemaDict.fromVersion(out_version, inp_version=inp_version, logger=logger)
