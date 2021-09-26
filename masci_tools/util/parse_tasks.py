@@ -85,7 +85,7 @@ class ParseTasks:
         totE_definition = p.tasks['total_energy']
     """
 
-    CONTROL_KEYS = {'_general', '_modes', '_minimal', '_special', '_conversions' , '_optional', '_minimum_version'}
+    CONTROL_KEYS = {'_general', '_modes', '_minimal', '_special', '_conversions', '_optional', '_minimum_version'}
     REQUIRED_KEYS = {'parse_type', 'path_spec'}
     ALLOWED_KEYS = {'parse_type', 'path_spec', 'subdict', 'overwrite_last'}
     ALLOWED_KEYS_ALLATTRIBS = {
@@ -210,7 +210,7 @@ class ParseTasks:
         """
         return {key for key, val in self.tasks.items() if val.get('_optional', False)}
 
-    def add_task(self, task_name, task_definition, append =False, overwrite=False):
+    def add_task(self, task_name, task_definition, append=False, overwrite=False):
         """
         Add a new task definition to the tasks dictionary
 
@@ -243,7 +243,6 @@ class ParseTasks:
                                format {task_key}_{attribute_name}
 
         """
-
 
         if task_name in self.tasks and not (append or overwrite):
             raise ValueError(f"Task '{task_name}' is already defined."
@@ -298,7 +297,7 @@ class ParseTasks:
 
         if optional_tasks is None:
             optional_tasks = set()
-        
+
         unknown = {name not in self.optional_tasks for name in optional_tasks}
         if unknown:
             raise ValueError(f"Unknown optional task(s): '{unknown}'\n"
@@ -310,7 +309,7 @@ class ParseTasks:
                 min_version = convert_str_version_number(definition['_minimum_version'])
                 if self.version < min_version:
                     continue
-     
+
             optional = definition.get('_optional', False)
             if optional and task_name not in optional_tasks:
                 continue

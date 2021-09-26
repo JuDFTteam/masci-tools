@@ -244,7 +244,13 @@ def outxml_parser(outxmlfile,
         if iteration_number is not None:
             logger_info['iteration'] = iteration_number
 
-        out_dict = parse_iteration(node, parser, outschema_dict, out_dict, constants, logger=iteration_logger, minimal_mode=minimal_mode)
+        out_dict = parse_iteration(node,
+                                   parser,
+                                   outschema_dict,
+                                   out_dict,
+                                   constants,
+                                   logger=iteration_logger,
+                                   minimal_mode=minimal_mode)
 
         logger_info['iteration'] = 'unknown'
 
@@ -267,7 +273,7 @@ def outxml_parser(outxmlfile,
     return out_dict
 
 
-def parse_general_information(root, parser, outschema_dict, logger, iteration_to_parse,minimal_mode, optional_tasks):
+def parse_general_information(root, parser, outschema_dict, logger, iteration_to_parse, minimal_mode, optional_tasks):
     """
     Parses the information from the out.xml outside scf iterations
 
@@ -291,7 +297,7 @@ def parse_general_information(root, parser, outschema_dict, logger, iteration_to
     if logger is not None:
         logger.info('The following Fleur modes were found: %s', fleurmode)
 
-    parser.determine_tasks(fleurmode, minimal=minimal_mode,optional_tasks=optional_tasks)
+    parser.determine_tasks(fleurmode, minimal=minimal_mode, optional_tasks=optional_tasks)
 
     #For certain fleur modes we need to overwrite the tasks
     if fleurmode['dos'] or fleurmode['band'] or fleurmode['cf_coeff']:
