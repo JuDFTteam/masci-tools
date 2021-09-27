@@ -3,7 +3,10 @@
 Main module defining the CLI for parts of the masci-tools repository
 """
 import click
+import click_completion
 from masci_tools import __version__
+
+click_completion.init()
 
 # Activate the completion of parameter types provided by the click_completion package
 # for bash: eval "$(_MASCI_TOOLS_COMPLETE=source masci-tools)"
