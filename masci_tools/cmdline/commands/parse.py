@@ -201,49 +201,122 @@ def parse_symmetry_information(xml_file):
 
 
 @parse.command('attrib')
-@click.option('--xml-file', '--file', '-f', type=click.Path(exists=True), help='XML file to parse')
+@click.argument('xml-file', type=click.Path(exists=True))
 @click.option('--name', '-n', type=str)
-def parse_attrib(xml_file, parse_type, name):
-    pass
+@click.option('--contains', '-c', type=str, multiple=True)
+@click.option('--not-contains', '-nc', type=str, multiple=True)
+@click.option('--tag', '-t', type=str)
+def parse_attrib(xml_file, name, contains, not_contains, tag):
+    """
+    Parse the specified attribute from the given xml file
+    """
+    from masci_tools.util.schema_dict_util import evaluate_attribute
 
+    xmltree, schema_dict = _load_xml_file(xml_file)
+    attribv = evaluate_attribute(xmltree, schema_dict, name, contains=contains, not_contains=not_contains, tag_name=tag)
+
+    echo.echo(f'Value for attribute {name}: {attribv}')
 
 @parse.command('text')
-@click.option('--xml-file', '--file', '-f', type=click.Path(exists=True), help='XML file to parse')
+@click.argument('xml-file', type=click.Path(exists=True))
 @click.option('--name', '-n', type=str)
-def parse_text(xml_file, parse_type, name):
-    pass
+@click.option('--contains', '-c', type=str, multiple=True)
+@click.option('--not-contains', '-nc', type=str, multiple=True)
+def parse_attrib(xml_file, name, contains, not_contains):
+    """
+    Parse the text of the specified tag from the given xml file
+    """
+    from masci_tools.util.schema_dict_util import evaluate_text
+
+    xmltree, schema_dict = _load_xml_file(xml_file)
+    textv = evaluate_text(xmltree, schema_dict, name, contains=contains, not_contains=not_contains)
+
+    echo.echo(f'Text for tag {name}: {textv}')
 
 
 @parse.command('all-attribs')
-@click.option('--xml-file', '--file', '-f', type=click.Path(exists=True), help='XML file to parse')
+@click.argument('xml-file', type=click.Path(exists=True))
 @click.option('--name', '-n', type=str)
-def parse_all_attribs(xml_file, parse_type, name):
-    pass
+@click.option('--contains', '-c', type=str, multiple=True)
+@click.option('--not-contains', '-nc', type=str, multiple=True)
+@click.option('--subtags', is_flag=True)
+@click.option('--text', is_flag=True)
+def parse_all_attribs(xml_file, name, contains, not_contains, subtags, text):
+    """
+    Parse all attributes of the specified tag from the given xml file
+    """
+    from masci_tools.util.schema_dict_util import evaluate_tag
+
+    xmltree, schema_dict = _load_xml_file(xml_file)
+    res = evaluate_tag(xmltree, schema_dict, name, contains=contains, not_contains=not_contains, subtags=subtags, text=text)
+
+    echo.echo(f'Tag {name}:')
+    echo.echo_dictionary(res)
 
 
 @parse.command('single-value')
-@click.option('--xml-file', '--file', '-f', type=click.Path(exists=True), help='XML file to parse')
+@click.argument('xml-file', type=click.Path(exists=True))
 @click.option('--name', '-n', type=str)
-def parse_single_value(xml_file, parse_type, name):
-    pass
+@click.option('--contains', '-c', type=str, multiple=True)
+@click.option('--not-contains', '-nc', type=str, multiple=True)
+def parse_single_value(xml_file, name, contains, not_contains):
+    """
+    Parse the value and units attribute of the specified tag from the given xml file
+    """
+    from masci_tools.util.schema_dict_util import evaluate_single_value_tag
+
+    xmltree, schema_dict = _load_xml_file(xml_file)
+    res = evaluate_single_value_tag(xmltree, schema_dict, name, contains=contains, not_contains=not_contains)
+
+    echo.echo(f'Tag {name}: {res}')
 
 
 @parse.command('parent-attribs')
-@click.option('--xml-file', '--file', '-f', type=click.Path(exists=True), help='XML file to parse')
+@click.argument('xml-file', type=click.Path(exists=True))
 @click.option('--name', '-n', type=str)
-def parse_parent_attribs(xml_file, parse_type, name):
-    pass
+@click.option('--contains', '-c', type=str, multiple=True)
+@click.option('--not-contains', '-nc', type=str, multiple=True)
+def parse_parent_attribs(xml_file, name, contains, not_contains):
+    """
+    Parse all attributes of the parent of the specified tag from the given xml file
+    """
+    from masci_tools.util.schema_dict_util import evaluate_parent_tag
+
+    xmltree, schema_dict = _load_xml_file(xml_file)
+    res = evaluate_parent_tag(xmltree, schema_dict, name, contains=contains, not_contains=not_contains)
+
+    echo.echo(f'Tag {name}:')
+    echo.echo_dictionary(res)
 
 
 @parse.command('tag-exists')
-@click.option('--xml-file', '--file', '-f', type=click.Path(exists=True), help='XML file to parse')
+@click.argument('xml-file', type=click.Path(exists=True))
 @click.option('--name', '-n', type=str)
-def parse_tag_exists(xml_file, parse_type, name):
-    pass
+@click.option('--contains', '-c', type=str, multiple=True)
+@click.option('--not-contains', '-nc', type=str, multiple=True)
+def parse_tag_exists(xml_file, name, contains, not_contains):
+    """
+    Return whether the specified tag exists in the given xml file
+    """
+    from masci_tools.util.schema_dict_util import tag_exists
 
+    xmltree, schema_dict = _load_xml_file(xml_file)
+    res = tag_exists(xmltree, schema_dict, name, contains=contains, not_contains=not_contains)
+
+    echo.echo(f"Tag {name}: {'exists' if res else 'does not exist'}")
 
 @parse.command('number-nodes')
-@click.option('--xml-file', '--file', '-f', type=click.Path(exists=True), help='XML file to parse')
+@click.argument('xml-file', type=click.Path(exists=True))
 @click.option('--name', '-n', type=str)
-def parse_number_nodes(xml_file, parse_type, name):
-    pass
+@click.option('--contains', '-c', type=str, multiple=True)
+@click.option('--not-contains', '-nc', type=str, multiple=True)
+def parse_number_nodes(xml_file, name, contains, not_contains):
+    """
+    Return how often the specified tag occurs in the given xml file
+    """
+    from masci_tools.util.schema_dict_util import get_number_of_nodes
+
+    xmltree, schema_dict = _load_xml_file(xml_file)
+    res = get_number_of_nodes(xmltree, schema_dict, name, contains=contains, not_contains=not_contains)
+
+    echo.echo(f"Tag {name}: {res} times")
