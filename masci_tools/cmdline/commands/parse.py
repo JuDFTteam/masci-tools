@@ -4,7 +4,7 @@ from .root import cli
 
 import click
 from masci_tools.cmdline.utils import echo
-
+import numpy as np
 
 @cli.group('parse')
 def parse():
@@ -207,10 +207,11 @@ def parse_symmetry_information(xml_file):
     rotations, shifts = get_symmetry_information(xmltree, schema_dict)
 
     echo.echo_info('Symmetry information:')
-    echo.echo('Rotation  Translation')
     for rotation, shift in zip(rotations, shifts):
-        for i in range(3):
-            echo.echo(f'{rotation[i]}   {shift[i]}')
+        echo.echo('Rotation:')
+        echo.echo(rotation)
+        echo.echo('Translation:')
+        echo.echo(shift)
         echo.echo('')
 
 
