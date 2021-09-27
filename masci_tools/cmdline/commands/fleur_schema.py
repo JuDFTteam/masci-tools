@@ -124,6 +124,7 @@ def validate_inpxmlfile(xml_file):
     Validate the given inp.xml file against the Fleur schema stored for the
     version of the input
     """
+
     xml_file = os.path.abspath(xml_file)
 
     xmltree, schema_dict = load_inpxml(xml_file)
