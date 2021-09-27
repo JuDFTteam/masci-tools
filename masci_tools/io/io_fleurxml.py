@@ -75,11 +75,11 @@ def load_inpxml(inpxmlfile, logger=None, base_url=None, **kwargs):
         raise ValueError('No XML tree generated. Check that the given file exists')
 
     version = eval_xpath(xmltree, '//@fleurInputVersion')
-    version = str(version)
     if not version:
         if logger is not None:
             logger.error('Failed to extract inputVersion')
         raise ValueError('Failed to extract inputVersion')
+    version = str(version)
 
     if logger is not None:
         logger.info('Got Fleur input file with file version %s', version)
@@ -164,11 +164,11 @@ def load_outxml(outxmlfile, logger=None, base_url=None, **kwargs):
         raise ValueError('No XML tree generated. Check that the given file exists')
 
     out_version = eval_xpath(xmltree, '//@fleurOutputVersion')
-    out_version = str(out_version)
     if not out_version:
         if logger is not None:
             logger.error('Failed to extract outputVersion')
         raise ValueError('Failed to extract outputVersion')
+    out_version = str(out_version)
 
     if out_version == '0.27':
         program_version = eval_xpath(xmltree, '//programVersion/@version')
@@ -212,9 +212,9 @@ def load_outxml(outxmlfile, logger=None, base_url=None, **kwargs):
             raise ValueError(f"Unknown fleur version: File-version '{out_version}' Program-version '{program_version}'")
     else:
         inp_version = eval_xpath(xmltree, '//@fleurInputVersion')
-        inp_version = str(inp_version)
         if not inp_version:
             raise ValueError('Failed to extract inputVersion')
+        inp_version = str(inp_version)
 
     schema_dict = OutputSchemaDict.fromVersion(out_version, inp_version=inp_version, logger=logger)
 
