@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Fixtures used for testing the cli commands
 """
@@ -6,6 +7,7 @@ import pytest
 from lxml import etree
 import os
 import shutil
+
 
 @pytest.fixture
 def fake_schemas_and_test_files(tmp_path):
@@ -25,7 +27,8 @@ def fake_schemas_and_test_files(tmp_path):
     namespaces = {'xsd': 'http://www.w3.org/2001/XMLSchema'}
     root = inputschema.xpath('/xsd:schema', namespaces=namespaces)[0]
     root.attrib['version'] = '0.01'
-    root = inputschema.xpath("//xsd:simpleType[@name='FleurVersionType']/xsd:restriction/xsd:enumeration", namespaces=namespaces)[0]
+    root = inputschema.xpath("//xsd:simpleType[@name='FleurVersionType']/xsd:restriction/xsd:enumeration",
+                             namespaces=namespaces)[0]
     root.attrib['value'] = '0.01'
 
     inputschema.write(os.fspath(tmp_path / 'FleurInputSchema.xsd'), encoding='utf-8', pretty_print=True)
@@ -36,7 +39,8 @@ def fake_schemas_and_test_files(tmp_path):
     namespaces = {'xsd': 'http://www.w3.org/2001/XMLSchema'}
     root = outputschema.xpath('/xsd:schema', namespaces=namespaces)[0]
     root.attrib['version'] = '0.01'
-    root = outputschema.xpath("//xsd:simpleType[@name='FleurOutputVersionType']/xsd:restriction/xsd:enumeration", namespaces=namespaces)[0]
+    root = outputschema.xpath("//xsd:simpleType[@name='FleurOutputVersionType']/xsd:restriction/xsd:enumeration",
+                              namespaces=namespaces)[0]
     root.attrib['value'] = '0.01'
 
     outputschema.write(os.fspath(tmp_path / 'FleurOutputSchema.xsd'), encoding='utf-8', pretty_print=True)
