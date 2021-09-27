@@ -519,3 +519,55 @@ def test_outxml_plot(data_regression):
     data_regression.check({
         'output_dict': out_dict,
     })
+
+def test_outxml_optional_task_corelevels(data_regression, clean_parser_log):
+    """
+    Test the parsing with an additional optional task (corelevels in this example)
+    """
+
+    OUTXML_FILEPATH = os.path.join(outxmlfilefolder_valid[0], 'SiLOXML/files/out.xml')
+
+    warnings = {}
+    out_dict = outxml_parser(OUTXML_FILEPATH, optional_tasks=['corelevels'], parser_info_out=warnings)
+    data_regression.check({
+        'output_dict': out_dict,
+        'warnings': clean_parser_log(warnings),
+    })
+
+def test_outxml_optional_task_noco_angles(data_regression, clean_parser_log):
+    """
+    Test the parsing with an additional optional task (noco_angles in this example)
+    """
+
+    OUTXML_FILEPATH = os.path.join(outxmlfilefolder_valid[0], 'Fe_bct_LOXML/files/out.xml')
+
+    warnings = {}
+    out_dict = outxml_parser(OUTXML_FILEPATH, optional_tasks=['noco_angles'], parser_info_out=warnings)
+    data_regression.check({
+        'output_dict': out_dict,
+        'warnings': clean_parser_log(warnings),
+    })
+
+def test_outxml_optional_task_multiple(data_regression, clean_parser_log):
+    """
+    Test the parsing with an additional optional task (corelevels and noco_angles in this example)
+    """
+
+    OUTXML_FILEPATH = os.path.join(outxmlfilefolder_valid[0], 'Fe_bct_LOXML/files/out.xml')
+
+    warnings = {}
+    out_dict = outxml_parser(OUTXML_FILEPATH, optional_tasks=['corelevels','noco_angles'], parser_info_out=warnings)
+    data_regression.check({
+        'output_dict': out_dict,
+        'warnings': clean_parser_log(warnings),
+    })
+
+def test_outxml_optional_task_unknown(data_regression, clean_parser_log):
+    """
+    Test the parsing with an additional optional task (corelevels and noco_angles in this example)
+    """
+
+    OUTXML_FILEPATH = os.path.join(outxmlfilefolder_valid[0], 'Fe_bct_LOXML/files/out.xml')
+
+    with pytest.raises(ValueError,match=r"Unknown optional task"):
+        outxml_parser(OUTXML_FILEPATH, optional_tasks=['non_existent'])
