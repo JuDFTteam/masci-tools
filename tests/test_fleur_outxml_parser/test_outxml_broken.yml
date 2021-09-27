@@ -81,7 +81,7 @@ warnings:
   parser_errors:
   - Failed to parse output file with recover=False
   parser_info:
-  - Masci-Tools Fleur out.xml Parser v0.5.0
+  - Masci-Tools Fleur out.xml Parser v0.6.0
   - 'Found fleur out file with the versions out: 0.34; inp: 0.34'
   - 'The following defined constants were found: {''Pi'': 3.141592653589793, ''Deg'':
     0.017453292519943295, ''Ang'': 1.889726124772898, ''nm'': 18.89726124772898, ''pm'':
