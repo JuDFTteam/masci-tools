@@ -573,6 +573,8 @@ def _select_entries(keys, group_name, plot_keys, spinpol, show_total, show_inter
         general_keys = 0
         entries_per_atom = 24
     else:
+        general_keys = 0
+        entries_per_atom = 5
         warnings.warn(f'Selection for group {group_name} not yet implemented. Plotting all DOS components')
 
     natoms = (len(mask) - general_keys) // entries_per_atom
