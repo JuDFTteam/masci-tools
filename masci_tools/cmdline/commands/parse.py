@@ -66,6 +66,18 @@ def parse_out_file(xml_file):
     echo.echo_info('Parser warnings/information:')
     echo.echo_dictionary(parser_info)
 
+@parse.command('constants')
+@click.argument('xml-file', type=click.Path(exists=True))
+def parse_constants(xml_file):
+    """
+    Parse the mathematical constants used in the given xml-file
+    """
+    from masci_tools.util.schema_dict_util import read_constants
+
+    xmltree, schema_dict = _load_xml_file(xml_file)
+
+    constants = read_constants(xmltree, schema_dict)
+    echo.echo_dictionary(constants)
 
 @parse.command('fleur-modes')
 @click.argument('xml-file', type=click.Path(exists=True))
