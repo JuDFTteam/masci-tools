@@ -42,6 +42,9 @@ These python packages are needed:
 * `ase`
 * `pymatgen`
 * `mendeleev`
+* `click`
+* `click-completion`
+* `PyYAML`
 
 It should not depend on `aiida-core`!
 
@@ -57,7 +60,9 @@ It should not depend on `aiida-core`!
 * `tools`
     * Contains rather high-level utility which is rather complete
 * `vis`
-    * Contain a collection of matplotlib/bokeh methods used for plotting common results from material science simulations, e.g. bandstructures, DOS, ... 
+    * Contains a collection of matplotlib/bokeh methods used for plotting common results from material science simulations, e.g. bandstructures, DOS, ... 
+* `cmdline`
+    * Contains a small click command line interface exposing some parts of the library
 
 ## License
 

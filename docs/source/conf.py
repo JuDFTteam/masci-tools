@@ -36,7 +36,8 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.imgmath',
               'sphinx.ext.ifconfig',
               'sphinx.ext.viewcode',
-              'sphinx.ext.intersphinx']
+              'sphinx.ext.intersphinx',
+              'sphinx_click']
 
 intersphinx_mapping = {'numpy': ('https://numpy.org/doc/stable/', None)}
 

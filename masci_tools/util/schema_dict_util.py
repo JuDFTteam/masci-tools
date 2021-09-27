@@ -36,14 +36,18 @@ def _find_paths(schema_dict, name, entries, contains=None, not_contains=None):
     """
 
     if contains is None:
-        contains = []
-    elif not isinstance(contains, (list, set)):
-        contains = [contains]
+        contains = set()
+    elif isinstance(contains, str):
+        contains = set([contains])
+    else:
+        contains = set(contains)
 
     if not_contains is None:
-        not_contains = []
-    elif not isinstance(not_contains, (list, set)):
-        not_contains = [not_contains]
+        not_contains = set()
+    elif isinstance(not_contains, str):
+        not_contains = set([not_contains])
+    else:
+        not_contains = set(not_contains)
 
     path_list = []
     for entry in entries:
@@ -889,7 +893,10 @@ def evaluate_parent_tag(node, schema_dict, name, constants=None, logger=None, **
         parent = elem.getparent()
         for attrib in attribs:
 
-            stringattribute = get_xml_attribute(parent, attrib, logger=logger)
+            try:
+                stringattribute = get_xml_attribute(parent, attrib, logger=logger)
+            except ValueError:
+                stringattribute = None
 
             if stringattribute is None:
                 if logger is None:
