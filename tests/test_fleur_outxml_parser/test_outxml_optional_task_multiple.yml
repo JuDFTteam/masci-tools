@@ -2,6 +2,158 @@ output_dict:
   bandgap: 0.0572228408
   bandgap_units: eV
   charge_den_xc_den_integral: -111.8088374177
+  corestates:
+    atom_type:
+    - 1
+    - 2
+    - 1
+    - 2
+    atomic_number:
+    - 26
+    - 26
+    - 26
+    - 26
+    eig_val_sum:
+    - -364.2841452316
+    - -364.2893201381
+    - -364.0854181858
+    - -364.0905873077
+    kin_energy:
+    - 588.019190875
+    - 588.0202695858
+    - 588.3103473732
+    - 588.3114043227
+    lost_electrons:
+    - 0.00051
+    - 0.00051
+    - 0.000549
+    - 0.000549
+    spin:
+    - 1
+    - 1
+    - 2
+    - 2
+    state:
+    - energy:
+      - -256.565427707
+      - -29.5490592293
+      - -25.3954017389
+      - -24.9371004974
+      - -2.9000555615
+      j:
+      - 0.5
+      - 0.5
+      - 0.5
+      - 1.5
+      - 0.5
+      l:
+      - 0
+      - 0
+      - 1
+      - 1
+      - 0
+      n:
+      - 1
+      - 2
+      - 2
+      - 2
+      - 3
+      weight:
+      - 2.0
+      - 2.0
+      - 2.0
+      - 4.0
+      - 2.0
+    - energy:
+      - -256.5663556738
+      - -29.5499538992
+      - -25.3963052336
+      - -24.9380031716
+      - -2.9006989883
+      j:
+      - 0.5
+      - 0.5
+      - 0.5
+      - 1.5
+      - 0.5
+      l:
+      - 0
+      - 0
+      - 1
+      - 1
+      - 0
+      n:
+      - 1
+      - 2
+      - 2
+      - 2
+      - 3
+      weight:
+      - 2.0
+      - 2.0
+      - 2.0
+      - 4.0
+      - 2.0
+    - energy:
+      - -256.565489439
+      - -29.5131871972
+      - -25.3687110075
+      - -24.9096268459
+      - -2.8187768504
+      j:
+      - 0.5
+      - 0.5
+      - 0.5
+      - 1.5
+      - 0.5
+      l:
+      - 0
+      - 0
+      - 1
+      - 1
+      - 0
+      n:
+      - 1
+      - 2
+      - 2
+      - 2
+      - 3
+      weight:
+      - 2.0
+      - 2.0
+      - 2.0
+      - 4.0
+      - 2.0
+    - energy:
+      - -256.566414681
+      - -29.5140837551
+      - -25.3696142603
+      - -24.9105293948
+      - -2.8194158216
+      j:
+      - 0.5
+      - 0.5
+      - 0.5
+      - 1.5
+      - 0.5
+      l:
+      - 0
+      - 0
+      - 1
+      - 1
+      - 0
+      n:
+      - 1
+      - 2
+      - 2
+      - 2
+      - 3
+      weight:
+      - 2.0
+      - 2.0
+      - 2.0
+      - 4.0
+      - 2.0
   creator_name: fleur 32
   creator_target_architecture: GEN
   density_convergence:
@@ -48,6 +200,12 @@ output_dict:
   magnetic_moments_spin_up_charge:
   - 7.4784455566
   - 7.4838622476
+  noco_alpha:
+  - 0.0
+  - 0.0
+  noco_beta:
+  - 0.0
+  - 3.14159265
   number_of_atom_types: 2
   number_of_atoms: 2
   number_of_iterations: 4
@@ -56,7 +214,7 @@ output_dict:
   number_of_species: 1
   number_of_spin_components: 2
   number_of_symmetries: 16
-  output_file_version: '0.36'
+  output_file_version: '0.34'
   overall_density_convergence: 1.5936155801
   spin_density_convergence: 4.9036481595
   spin_dependent_charge_interstitial:
@@ -90,11 +248,4 @@ warnings:
     False, ''relax'': False, ''gw'': False, ''force_theorem'': False, ''cf_coeff'':
     False, ''plot'': False, ''film'': False, ''ldau'': False, ''dos'': False, ''band'':
     False, ''bz_integration'': ''hist'', ''greensf'': False, ''ldahia'': False}'
-  parser_warnings:
-  - No Output Schema available for version '0.36'; falling back to '0.34'
-  - No Input Schema available for version '0.36'; falling back to '0.34'
-  - "Output file does not validate against the schema: \nLine 2: Element 'fleurOutput',\
-    \ attribute 'fleurOutputVersion': [facet 'enumeration'] The value '0.36' is not\
-    \ an element of the set {'0.34'}. \nLine 16: Element 'fleurInput', attribute 'fleurInputVersion':\
-    \ [facet 'enumeration'] The value '0.36' is not an element of the set {'0.34'}.\
-    \ \n"
+  parser_warnings: []

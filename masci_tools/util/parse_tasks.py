@@ -21,6 +21,8 @@ from importlib import import_module
 import copy
 import os
 
+from masci_tools.util.xml.converters import convert_str_version_number
+
 PACKAGE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_TASK_FILE = os.path.abspath(os.path.join(PACKAGE_DIRECTORY, '../io/parsers/fleur/default_parse_tasks.py'))
 
@@ -66,7 +68,7 @@ def find_migration(start, target, migrations):
         return call_list
 
 
-class ParseTasks(object):
+class ParseTasks:
     """
     Representation of all known parsing tasks for the out.xml file
 
@@ -83,7 +85,7 @@ class ParseTasks(object):
         totE_definition = p.tasks['total_energy']
     """
 
-    CONTROL_KEYS = {'_general', '_modes', '_minimal', '_special', '_conversions'}
+    CONTROL_KEYS = {'_general', '_modes', '_minimal', '_special', '_conversions', '_optional', '_minimum_version'}
     REQUIRED_KEYS = {'parse_type', 'path_spec'}
     ALLOWED_KEYS = {'parse_type', 'path_spec', 'subdict', 'overwrite_last'}
     ALLOWED_KEYS_ALLATTRIBS = {
@@ -115,6 +117,7 @@ class ParseTasks(object):
 
         self._iteration_tasks = []
         self._general_tasks = []
+        self.version = convert_str_version_number(version)
 
         tasks_dict = copy.deepcopy(tasks.TASKS_DEFINITION)
         if validate_defaults:
@@ -200,7 +203,14 @@ class ParseTasks(object):
             import_module('masci_tools.util.schema_dict_util')
         return self._all_attribs_function
 
-    def add_task(self, task_name, task_definition, **kwargs):
+    @property
+    def optional_tasks(self):
+        """
+        Return a set of the available optional defined tasks
+        """
+        return {key for key, val in self.tasks.items() if val.get('_optional', False)}
+
+    def add_task(self, task_name, task_definition, append=False, overwrite=False):
         """
         Add a new task definition to the tasks dictionary
 
@@ -233,9 +243,6 @@ class ParseTasks(object):
                                format {task_key}_{attribute_name}
 
         """
-
-        append = kwargs.get('append', False)
-        overwrite = kwargs.get('overwrite', False)
 
         if task_name in self.tasks and not (append or overwrite):
             raise ValueError(f"Task '{task_name}' is already defined."
@@ -280,7 +287,7 @@ class ParseTasks(object):
         else:
             self.tasks[task_name] = task_definition
 
-    def determine_tasks(self, fleurmodes, minimal=False):
+    def determine_tasks(self, fleurmodes, optional_tasks=None, minimal=False):
         """
         Determine, which tasks to perform based on the fleur_modes
 
@@ -288,7 +295,24 @@ class ParseTasks(object):
         :param minimal: bool, whether to only perform minimal tasks
         """
 
+        if optional_tasks is None:
+            optional_tasks = set()
+
+        unknown = {name for name in optional_tasks if name not in self.optional_tasks}
+        if unknown:
+            raise ValueError(f"Unknown optional task(s): '{unknown}'\n"
+                             f'The following are available: {self.optional_tasks}')
+
         for task_name, definition in self.tasks.items():
+
+            if '_minimum_version' in definition:
+                min_version = convert_str_version_number(definition['_minimum_version'])
+                if self.version < min_version:
+                    continue
+
+            optional = definition.get('_optional', False)
+            if optional and task_name not in optional_tasks:
+                continue
 
             if minimal:
                 task_minimal = definition.get('_minimal', False)
@@ -350,6 +374,9 @@ class ParseTasks(object):
 
             if 'only_required' in spec:
                 args['only_required'] = spec['only_required']
+
+            if 'subtags' in spec:
+                args['subtags'] = spec['subtags']
 
             if spec['parse_type'] == 'singleValue':
                 args['ignore'] = ['comment']

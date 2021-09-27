@@ -48,6 +48,12 @@ output_dict:
   magnetic_moments_spin_up_charge:
   - 7.4784455566
   - 7.4838622476
+  noco_alpha:
+  - 0.0
+  - 0.0
+  noco_beta:
+  - 0.0
+  - 3.14159265
   number_of_atom_types: 2
   number_of_atoms: 2
   number_of_iterations: 4
@@ -56,7 +62,7 @@ output_dict:
   number_of_species: 1
   number_of_spin_components: 2
   number_of_symmetries: 16
-  output_file_version: '0.36'
+  output_file_version: '0.34'
   overall_density_convergence: 1.5936155801
   spin_density_convergence: 4.9036481595
   spin_dependent_charge_interstitial:
@@ -90,11 +96,4 @@ warnings:
     False, ''relax'': False, ''gw'': False, ''force_theorem'': False, ''cf_coeff'':
     False, ''plot'': False, ''film'': False, ''ldau'': False, ''dos'': False, ''band'':
     False, ''bz_integration'': ''hist'', ''greensf'': False, ''ldahia'': False}'
-  parser_warnings:
-  - No Output Schema available for version '0.36'; falling back to '0.34'
-  - No Input Schema available for version '0.36'; falling back to '0.34'
-  - "Output file does not validate against the schema: \nLine 2: Element 'fleurOutput',\
-    \ attribute 'fleurOutputVersion': [facet 'enumeration'] The value '0.36' is not\
-    \ an element of the set {'0.34'}. \nLine 16: Element 'fleurInput', attribute 'fleurInputVersion':\
-    \ [facet 'enumeration'] The value '0.36' is not an element of the set {'0.34'}.\
-    \ \n"
+  parser_warnings: []

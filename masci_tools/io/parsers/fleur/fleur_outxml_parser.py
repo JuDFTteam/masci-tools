@@ -26,36 +26,40 @@ import logging
 
 
 def outxml_parser(outxmlfile,
-                  version=None,
                   parser_info_out=None,
-                  iteration_to_parse=None,
+                  iteration_to_parse='last',
+                  minimal_mode=False,
+                  additional_tasks=None,
+                  optional_tasks=None,
+                  overwrite=False,
+                  append=False,
+                  list_return=False,
                   strict=False,
                   debug=False,
-                  base_url=None,
-                  **kwargs):
+                  ignore_validation=False,
+                  base_url=None):
     """
     Parses the out.xml file to a dictionary based on the version and the given tasks
 
     :param outxmlfile: either path to the out.xml file, opened file handle or a xml etree to be parsed
-    :param version: version string to enforce that a given schema is used
     :param parser_info_out: dict, with warnings, info, errors, ...
     :param iteration_to_parse: either str or int, (optional, default 'last')
                                determines which iteration should be parsed.
                                Accepted are 'all', 'first', 'last' or an index for the iteration
+    :param minimal_mode: bool, if True only total Energy, iteration number and distances are parsed
+    :param additional_tasks: dict to define custom parsing tasks. For detailed explanation
+                             See :py:mod:`~masci_tools.io.parsers.fleur.default_parse_tasks`.
+    :param overwrite: bool, if True and keys in additional_tasks collide with defaults
+                      The defaults will be overwritten
+    :param append: bool, if True and keys in additional_tasks collide with defaults
+                   The inner tasks will be written into the dict. If inner keys collide
+                   they are overwritten
+    :param optional_tasks: Iterable of strings, defines additional tasks to perform.
+                           See :py:mod:`~masci_tools.io.parsers.fleur.default_parse_tasks` for examples.
+    :param list_return: bool, if True one-item lists in the output dict are not converted to simple values
     :param strict: bool if True  and no parser_info_out is provided any encountered error will immediately be raised
     :param debug: bool if True additional information is printed out in the logs
-
-    Kwargs:
-        :param ignore_validation: bool, if True schema validation errors are only logged
-        :param minimal_mode: bool, if True only total Energy, iteration number and distances are parsed
-        :param list_return: bool, if True one-item lists in the output dict are not converted to simple values
-        :param additional_tasks: dict to define custom parsing tasks. For detailed explanation
-                                 See :py:mod:`~masci_tools.io.parsers.fleur.default_parse_tasks`.
-        :param overwrite: bool, if True and keys in additional_tasks collide with defaults
-                          The defaults will be overwritten
-        :param append: bool, if True and keys in additional_tasks collide with defaults
-                       The inner tasks will be written into the dict. If inner keys collide
-                       they are overwritten
+    :param ignore_validation: bool, if True schema validation errors are only logged
 
     :return: python dictionary with the information parsed from the out.xml
 
@@ -63,10 +67,9 @@ def outxml_parser(outxmlfile,
                         occured during parsing
     :raises FileNotFoundError: If no Schema file for the given version was found
     :raises KeyError: If an unknown task is encountered
-
     """
 
-    __parser_version__ = '0.5.0'
+    __parser_version__ = '0.6.0'
 
     logger = logging.getLogger(__name__)
 
@@ -132,7 +135,6 @@ def outxml_parser(outxmlfile,
     else:
         actual_inp_version = evaluate_attribute(xmltree, outschema_dict, 'fleurInputVersion', logger=logger)
 
-    ignore_validation = False
     out_version = actual_out_version
     inp_version = actual_inp_version
     if outschema_dict['out_version'] != actual_out_version or \
@@ -140,8 +142,6 @@ def outxml_parser(outxmlfile,
         ignore_validation = True
         out_version = outschema_dict['out_version']
         inp_version = outschema_dict['inp_version']
-
-    ignore_validation = kwargs.get('ignore_validation', ignore_validation)
 
     if logger is not None:
         logger.info('Found fleur out file with the versions out: %s; inp: %s', out_version, inp_version)
@@ -171,16 +171,18 @@ def outxml_parser(outxmlfile,
             raise ValueError(msg)
 
     parser = ParseTasks(out_version)
-    additional_tasks = kwargs.pop('additional_tasks', {})
+    if additional_tasks is None:
+        additional_tasks = {}
     for task_name, task_definition in additional_tasks.items():
-        parser.add_task(task_name, task_definition, **kwargs)
+        parser.add_task(task_name, task_definition, overwrite=overwrite, append=append)
 
     out_dict, constants = parse_general_information(root,
                                                     parser,
                                                     outschema_dict,
                                                     logger=logger,
                                                     iteration_to_parse=iteration_to_parse,
-                                                    **kwargs)
+                                                    minimal_mode=minimal_mode,
+                                                    optional_tasks=optional_tasks)
 
     out_dict['input_file_version'] = outschema_dict['inp_version']
     # get all iterations in out.xml file
@@ -207,9 +209,6 @@ def outxml_parser(outxmlfile,
             raise ValueError(msg)
         else:
             logger.error(msg)
-
-    if iteration_to_parse is None:
-        iteration_to_parse = 'last'  #This is the default from the aiida_fleur parser
 
     if iteration_to_parse == 'last':
         iteration_nodes = iteration_nodes[-1]
@@ -245,11 +244,17 @@ def outxml_parser(outxmlfile,
         if iteration_number is not None:
             logger_info['iteration'] = iteration_number
 
-        out_dict = parse_iteration(node, parser, outschema_dict, out_dict, constants, logger=iteration_logger, **kwargs)
+        out_dict = parse_iteration(node,
+                                   parser,
+                                   outschema_dict,
+                                   out_dict,
+                                   constants,
+                                   logger=iteration_logger,
+                                   minimal_mode=minimal_mode)
 
         logger_info['iteration'] = 'unknown'
 
-    if not kwargs.get('list_return', False):
+    if not list_return:
         #Convert one item lists to simple values
         for key, value in out_dict.items():
             if isinstance(value, list):
@@ -268,27 +273,21 @@ def outxml_parser(outxmlfile,
     return out_dict
 
 
-def parse_general_information(root, parser, outschema_dict, logger, iteration_to_parse=None, **kwargs):
+def parse_general_information(root, parser, outschema_dict, logger, iteration_to_parse, minimal_mode, optional_tasks):
     """
     Parses the information from the out.xml outside scf iterations
 
     Also defined constants and fleur calculation modes are read in
 
-    Args:
-        :param root: etree Element for the root of the out.xml
-        :param parser: ParseTasks object with all defined tasks
-        :param outschema_dict: dict with the information parsed from the OutputSchema
-        :param parser_info_out: dict, with warnings, info, errors, ...
-
-    Kwargs:
-        :param minimal_mode: bool, if True only total Energy, iteration number and distances are parsed
-
+    :param root: etree Element for the root of the out.xml
+    :param parser: ParseTasks object with all defined tasks
+    :param outschema_dict: dict with the information parsed from the OutputSchema
+    :param parser_info_out: dict, with warnings, info, errors, ...
+    :param minimal_mode: bool, if True only total Energy, iteration number and distances are parsed
+    :param optional_tasks: Iterable of strings, defines additional tasks to perform.
+                           See :py:mod:`~masci_tools.io.parsers.fleur.default_parse_tasks` for examples.
     """
     from masci_tools.util.xml.xml_getters import get_fleur_modes
-
-    minimal_mode = kwargs.get('minimal_mode', False)
-    if iteration_to_parse is None:
-        iteration_to_parse = 'last'
 
     constants = read_constants(root, outschema_dict, logger=logger)
     if logger is not None:
@@ -298,7 +297,7 @@ def parse_general_information(root, parser, outschema_dict, logger, iteration_to
     if logger is not None:
         logger.info('The following Fleur modes were found: %s', fleurmode)
 
-    parser.determine_tasks(fleurmode, minimal=minimal_mode)
+    parser.determine_tasks(fleurmode, minimal=minimal_mode, optional_tasks=optional_tasks)
 
     #For certain fleur modes we need to overwrite the tasks
     if fleurmode['dos'] or fleurmode['band'] or fleurmode['cf_coeff']:
@@ -332,25 +331,18 @@ def parse_general_information(root, parser, outschema_dict, logger, iteration_to
     return out_dict, constants
 
 
-def parse_iteration(iteration_node, parser, outschema_dict, out_dict, constants, logger, **kwargs):
+def parse_iteration(iteration_node, parser, outschema_dict, out_dict, constants, logger, minimal_mode):
     """
     Parses an scf iteration node. Which tasks to perform is stored in parser.iteration_tasks
 
-    Args:
-        :param iteration_node: etree Element for a scf iteration
-        :param parser: ParseTasks object with all defined tasks
-        :param outschema_dict: dict with the information parsed form the OutputSchema
-        :param out_dict: dict with the parsed results
-        :param constants: dict with all the defined mathematical constants
-        :param parser_info_out: dict, with warnings, info, errors, ...
-
-    Kwargs:
-        :param strict: bool, if True an error will be raised if an unknown task is encountered
-                       otherwise a warning is written to parser_info_out
-        :param minimal_mode: bool, if True only total Energy, iteration number and distances are parsed
+    :param iteration_node: etree Element for a scf iteration
+    :param parser: ParseTasks object with all defined tasks
+    :param outschema_dict: dict with the information parsed form the OutputSchema
+    :param out_dict: dict with the parsed results
+    :param constants: dict with all the defined mathematical constants
+    :param parser_info_out: dict, with warnings, info, errors, ...
+    :param minimal_mode: bool, if True only total Energy, iteration number and distances are parsed
     """
-
-    minimal_mode = kwargs.get('minimal_mode', False)
 
     iteration_tasks = copy.deepcopy(parser.iteration_tasks)
     #If the iteration is a forcetheorem calculation

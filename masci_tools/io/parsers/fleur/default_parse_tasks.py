@@ -594,5 +594,54 @@ TASKS_DEFINITION = {
                 'contains': 'Forcetheorem_JIJ'
             }
         }
+    },
+    'torques': {
+        '_minimum_version': '0.35',  #Typo torgue/torque before
+        '_optional': True,
+        'torque_x': {
+            'parse_type': 'attrib',
+            'path_spec': {
+                'name': 'sigma_x',
+                'contains': 'noncollinearTorque'
+            }
+        },
+        'torque_y': {
+            'parse_type': 'attrib',
+            'path_spec': {
+                'name': 'sigma_y',
+                'contains': 'noncollinearTorque'
+            }
+        }
+    },
+    'noco_angles': {
+        '_general': True,
+        '_optional': True,
+        'noco_alpha': {
+            'parse_type': 'attrib',
+            'path_spec': {
+                'name': 'alpha',
+                'tag_name': 'nocoParams',
+                'contains': 'Group'
+            }
+        },
+        'noco_beta': {
+            'parse_type': 'attrib',
+            'path_spec': {
+                'name': 'beta',
+                'tag_name': 'nocoParams',
+                'contains': 'Group'
+            }
+        }
+    },
+    'corelevels': {
+        '_optional': True,
+        'corestates': {
+            'parse_type': 'allAttribs',
+            'path_spec': {
+                'name': 'coreStates'
+            },
+            'subtags': True,
+            'flat': False
+        }
     }
 }
