@@ -166,7 +166,6 @@ def parse_kpoints_data(xml_file):
         echo.echo(f'{kpoint}    w={weight}')
 
 
-
 @parse.command('relaxation')
 @click.argument('xml-file', type=click.Path(exists=True))
 def parse_relaxation_data(xml_file):
@@ -180,6 +179,7 @@ def parse_relaxation_data(xml_file):
 
     echo.echo_info('Relaxation Information:')
     echo.echo_dictionary(relax_info)
+
 
 @parse.command('symmetry')
 @click.argument('xml-file', type=click.Path(exists=True))
