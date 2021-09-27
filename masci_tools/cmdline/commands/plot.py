@@ -36,7 +36,7 @@ def plot_fleur_banddos_bands(banddos_file, weight, recipe, backend, save, show):
     try:
         recipe = getattr(recipes, recipe)
     except AttributeError:
-        echo.echo_critical(f'The recipe {recipe} culd not be retrieved')
+        echo.echo_critical(f'The recipe {recipe} does not exist')
 
     if not show and not save:
         show = True
@@ -72,7 +72,7 @@ def plot_fleur_banddos_dos(banddos_file, total, interstitial, atoms, l_resolved,
     try:
         recipe = getattr(recipes, recipe)
     except AttributeError:
-        echo.echo_critical(f'The recipe {recipe} culd not be retrieved')
+        echo.echo_critical(f'The recipe {recipe} does not exist')
     if not show and not save:
         show = True
 

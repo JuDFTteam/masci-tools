@@ -9,7 +9,7 @@ To be able to parse such files efficiently and without hardcoding their structur
 Adding/modifying a Fleur Schema:
 ---------------------------------
 
-The command ``masci-tools fleur-schema add <path-to-schema-file>`` can be used to add the schema to the repository. If the schema for thespecified version already exists an error is raised. To ignore this error the option ``--overwrite`` can be used.
+The command ``masci-tools fleur-schema add <path-to-schema-file>`` can be used to add the schema to the repository. If the schema for the specified version already exists an error is raised. To ignore this error the option ``--overwrite`` can be used.
 
 Adapting the outxml_parser:
 ----------------------------
