@@ -374,7 +374,7 @@ class ParseTasks:
 
             if 'only_required' in spec:
                 args['only_required'] = spec['only_required']
-           
+
             if 'subtags' in spec:
                 args['subtags'] = spec['subtags']
 
