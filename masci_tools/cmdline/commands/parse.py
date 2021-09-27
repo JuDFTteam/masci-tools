@@ -66,6 +66,7 @@ def parse_out_file(xml_file):
     echo.echo_info('Parser warnings/information:')
     echo.echo_dictionary(parser_info)
 
+
 @parse.command('constants')
 @click.argument('xml-file', type=click.Path(exists=True))
 def parse_constants(xml_file):
@@ -78,6 +79,7 @@ def parse_constants(xml_file):
 
     constants = read_constants(xmltree, schema_dict)
     echo.echo_dictionary(constants)
+
 
 @parse.command('fleur-modes')
 @click.argument('xml-file', type=click.Path(exists=True))
@@ -229,6 +231,7 @@ def parse_attrib(xml_file, name, contains, not_contains, tag):
 
     echo.echo(f'Value for attribute {name}: {attribv}')
 
+
 @parse.command('text')
 @click.argument('xml-file', type=click.Path(exists=True))
 @click.option('--name', '-n', type=str)
@@ -260,7 +263,13 @@ def parse_all_attribs(xml_file, name, contains, not_contains, subtags, text):
     from masci_tools.util.schema_dict_util import evaluate_tag
 
     xmltree, schema_dict = _load_xml_file(xml_file)
-    res = evaluate_tag(xmltree, schema_dict, name, contains=contains, not_contains=not_contains, subtags=subtags, text=text)
+    res = evaluate_tag(xmltree,
+                       schema_dict,
+                       name,
+                       contains=contains,
+                       not_contains=not_contains,
+                       subtags=subtags,
+                       text=text)
 
     echo.echo(f'Tag {name}:')
     echo.echo_dictionary(res)
@@ -317,6 +326,7 @@ def parse_tag_exists(xml_file, name, contains, not_contains):
 
     echo.echo(f"Tag {name}: {'exists' if res else 'does not exist'}")
 
+
 @parse.command('number-nodes')
 @click.argument('xml-file', type=click.Path(exists=True))
 @click.option('--name', '-n', type=str)
@@ -331,4 +341,4 @@ def parse_number_nodes(xml_file, name, contains, not_contains):
     xmltree, schema_dict = _load_xml_file(xml_file)
     res = get_number_of_nodes(xmltree, schema_dict, name, contains=contains, not_contains=not_contains)
 
-    echo.echo(f"Tag {name}: {res} times")
+    echo.echo(f'Tag {name}: {res} times')

@@ -37,14 +37,14 @@ def _find_paths(schema_dict, name, entries, contains=None, not_contains=None):
 
     if contains is None:
         contains = set()
-    elif isinstance(contains,str):
+    elif isinstance(contains, str):
         contains = set([contains])
     else:
         contains = set(contains)
 
     if not_contains is None:
         not_contains = set()
-    elif isinstance(not_contains,str):
+    elif isinstance(not_contains, str):
         not_contains = set([not_contains])
     else:
         not_contains = set(not_contains)
