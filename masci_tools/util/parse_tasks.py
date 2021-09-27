@@ -298,7 +298,7 @@ class ParseTasks:
         if optional_tasks is None:
             optional_tasks = set()
 
-        unknown = {name not in self.optional_tasks for name in optional_tasks}
+        unknown = {name for name in optional_tasks if name not in self.optional_tasks}
         if unknown:
             raise ValueError(f"Unknown optional task(s): '{unknown}'\n"
                              f'The following are available: {self.optional_tasks}')
@@ -374,6 +374,9 @@ class ParseTasks:
 
             if 'only_required' in spec:
                 args['only_required'] = spec['only_required']
+           
+            if 'subtags' in spec:
+                args['subtags'] = spec['subtags']
 
             if spec['parse_type'] == 'singleValue':
                 args['ignore'] = ['comment']
