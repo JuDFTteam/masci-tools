@@ -18,8 +18,10 @@ def fake_schemas_and_test_files(tmp_path):
     0.01
     removes the corresponding folder after the tests
     """
+    import masci_tools
     schema_folder = Path('../masci_tools/io/parsers/fleur/fleur_schema/0.34/').resolve()
-    created_schema_folder = Path('../masci_tools/io/parsers/fleur/fleur_schema/0.01/').resolve()
+    #We need to use the __file__ attirbute, since we do not know, whether the package was installed with -e
+    created_schema_folder = Path(masci_tools.__file__) / Path('io/parsers/fleur/fleur_schema/0.01/').resolve()
 
     schema_file = schema_folder / 'FleurInputSchema.xsd'
 
