@@ -2,7 +2,6 @@
 """
 Tests of the parse commands in the cli
 """
-from masci_tools.cmdline.commands.parse import parse
 from pathlib import Path
 import os
 import pytest
