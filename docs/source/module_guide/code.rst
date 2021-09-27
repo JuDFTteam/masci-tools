@@ -149,6 +149,6 @@ Commandline interface (CLI)
 +++++++++++++++++++++++++++
 .. _masci_tools_cmdline:
 
-.. click:: masci_tools.cmdline:cmd_root
+.. click:: masci_tools.cmdline.root:cli
     :prog: masci_tools
     :show-nested:

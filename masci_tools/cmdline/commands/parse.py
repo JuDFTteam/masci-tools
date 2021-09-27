@@ -4,7 +4,6 @@ from .root import cli
 
 import click
 from masci_tools.cmdline.utils import echo
-import numpy as np
 
 
 @cli.group('parse')
@@ -27,9 +26,9 @@ def _load_xml_file(xml_file):
             xmltree, schema_dict = load_inpxml(xml_file)
         except ValueError:
             schema_dict = InputSchemaDict.fromVersion(FALLBACK_VERSION)
-            xmltree = etree.parse(xml_file, attribute_defaults=True)
-
-            xmltree = clear_xml(xmltree)
+            parser = etree.XMLParser(attribute_defaults=True, encoding='utf-8')
+            xmltree = etree.parse(xml_file, parser)
+            xmltree, _ = clear_xml(xmltree)
 
     return xmltree, schema_dict
 
@@ -86,7 +85,7 @@ def parse_fleur_modes(xml_file):
 @click.argument('xml-file', type=click.Path(exists=True))
 def parse_structure_data(xml_file):
     """
-    Parse the Fleur inp.xml into a python dictionary
+    Parse the structure information in the given Fleur xml file
     """
     from masci_tools.util.xml.xml_getters import get_structure_data
 
@@ -113,7 +112,9 @@ def parse_cell_data(xml_file):
 
     cell, pbc = get_cell(xmltree, schema_dict)
 
-    echo.echo_formatted_list
+    echo.echo_info('Bravais matrix:')
+    echo.echo(str(cell))
+    echo.echo_info(f'Periodic boundary conditions {pbc}:')
 
 
 @parse.command('parameters')
@@ -128,6 +129,7 @@ def parse_parameter_data(xml_file):
 
     params = get_parameter_data(xmltree, schema_dict)
 
+    echo.echo_info('LAPW parameters:')
     echo.echo_dictionary(params)
 
 
@@ -135,27 +137,67 @@ def parse_parameter_data(xml_file):
 @click.argument('xml-file', type=click.Path(exists=True))
 def parse_nkpts(xml_file):
     """
-    Parse the Fleur inp.xml into a python dictionary
+    Extract the number of kpoints used in the given xml file
     """
-    pass
+    from masci_tools.util.xml.xml_getters import get_nkpts
+
+    xmltree, schema_dict = _load_xml_file(xml_file)
+    nkpts = get_nkpts(xmltree, schema_dict)
+
+    echo.echo_info(f'Number of k-points: {nkpts}')
 
 
 @parse.command('kpoints')
 @click.argument('xml-file', type=click.Path(exists=True))
 def parse_kpoints_data(xml_file):
     """
-    Parse the Fleur inp.xml into a python dictionary
+    Parse the used kpoints from the given xml-file
     """
-    pass
+    from masci_tools.util.xml.xml_getters import get_kpoints_data
+
+    xmltree, schema_dict = _load_xml_file(xml_file)
+    kpoints, weights, cell, pbc = get_kpoints_data(xmltree, schema_dict, only_used=True)
+
+    echo.echo_info('Bravais matrix:')
+    echo.echo(str(cell))
+    echo.echo_info(f'Periodic boundary conditions {pbc}:')
+    echo.echo_info('Kpoint coordinates (relative) and weights:')
+    for kpoint, weight in zip(kpoints, weights):
+        echo.echo(f'{kpoint}    w={weight}')
+
 
 
 @parse.command('relaxation')
 @click.argument('xml-file', type=click.Path(exists=True))
 def parse_relaxation_data(xml_file):
     """
-    Parse the Fleur inp.xml into a python dictionary
+    Parse the relaxation information for the given xml file
     """
-    pass
+    from masci_tools.util.xml.xml_getters import get_relaxation_information
+
+    xmltree, schema_dict = _load_xml_file(xml_file)
+    relax_info = get_relaxation_information(xmltree, schema_dict)
+
+    echo.echo_info('Relaxation Information:')
+    echo.echo_dictionary(relax_info)
+
+@parse.command('symmetry')
+@click.argument('xml-file', type=click.Path(exists=True))
+def parse_symmetry_information(xml_file):
+    """
+    Parse the symmetry information for the given xml file
+    """
+    from masci_tools.util.xml.xml_getters import get_symmetry_information
+
+    xmltree, schema_dict = _load_xml_file(xml_file)
+    rotations, shifts = get_symmetry_information(xmltree, schema_dict)
+
+    echo.echo_info('Symmetry information:')
+    echo.echo('Rotation  Translation')
+    for rotation, shift in zip(rotations, shifts):
+        for i in range(3):
+            echo.echo(f'{rotation[i]}   {shift[i]}')
+        echo.echo('')
 
 
 @parse.command('attrib')
