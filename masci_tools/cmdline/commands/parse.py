@@ -234,7 +234,7 @@ def parse_attrib(xml_file, name, contains, not_contains, tag):
 @click.option('--name', '-n', type=str)
 @click.option('--contains', '-c', type=str, multiple=True)
 @click.option('--not-contains', '-nc', type=str, multiple=True)
-def parse_attrib(xml_file, name, contains, not_contains):
+def parse_text(xml_file, name, contains, not_contains):
     """
     Parse the text of the specified tag from the given xml file
     """
