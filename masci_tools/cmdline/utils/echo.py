@@ -229,7 +229,7 @@ def echo_dictionary(dictionary, fmt='json+date', sort_keys=True):
         format_function = VALID_DICT_FORMATS_MAPPING[fmt]
     except KeyError:
         formats = ', '.join(VALID_DICT_FORMATS_MAPPING.keys())
-        raise ValueError(f'Unrecognised printing format. Valid formats are: {formats}')
+        raise ValueError(f'Unrecognised printing format. Valid formats are: {formats}')  #pylint: disable=raise-missing-from
 
     echo(format_function(dictionary, sort_keys=sort_keys))
 

@@ -10,7 +10,7 @@ from masci_tools.cmdline.utils import echo
 
 @cli.group('plot')
 def plot():
-    """Commands for visulaizing data"""
+    """Commands for visualizing data"""
 
 
 @plot.command('fleur-bands')
