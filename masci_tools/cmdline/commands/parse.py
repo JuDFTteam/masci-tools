@@ -6,6 +6,7 @@ import click
 from masci_tools.cmdline.utils import echo
 import numpy as np
 
+
 @cli.group('parse')
 def parse():
     """Commands for parsing information from KKR/Fleur files"""
