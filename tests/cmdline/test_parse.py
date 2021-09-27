@@ -1,6 +1,7 @@
 """
 Tests of the parse commands in the cli
 """
+from masci_tools.cmdline.commands.parse import parse
 from pathlib import Path
 import os
 import pytest
@@ -191,3 +192,142 @@ def test_relax_info():
     assert result.exception is None, 'An unexpected exception occured: {result.exception}'
     assert '"displacements": [' in result.output
     assert '0.0179807237' in result.output
+
+def test_attrib():
+    """
+    Test of the parse attrib command
+    """
+    from masci_tools.cmdline.commands.parse import parse_attrib
+    from click.testing import CliRunner
+
+    TEST_FILE = Path('files/fleur/Max-R5/SiLOXML/files/inp.xml').resolve()
+    runner = CliRunner()
+    args = [os.fspath(TEST_FILE),'--name', 'kmax']
+    result = runner.invoke(parse_attrib, args)
+
+    print(result.output)
+    assert result.exception is None, 'An unexpected exception occured: {result.exception}'
+    assert 'Value for attribute kmax: 3.5' in result.output
+
+    args = [os.fspath(TEST_FILE),'--name', 'radius', '--contains' , 'species', '-nc', 'Group']
+    result = runner.invoke(parse_attrib, args)
+
+    print(result.output)
+    assert result.exception is None, 'An unexpected exception occured: {result.exception}'
+    assert 'Value for attribute radius: 2.17' in result.output
+
+def test_text():
+    """
+    Test of the parse text command
+    """
+    from masci_tools.cmdline.commands.parse import parse_text
+    from click.testing import CliRunner
+
+    TEST_FILE = Path('files/fleur/Max-R5/SiLOXML/files/inp.xml').resolve()
+    runner = CliRunner()
+    args = [os.fspath(TEST_FILE),'--name', 'kpoint']
+    result = runner.invoke(parse_text, args)
+
+    print(result.output)
+    assert result.exception is None, 'An unexpected exception occured: {result.exception}'
+    assert 'Text for tag kpoint: [[0.25, 0.25, 0.25], [0.25, 0.5, 0.5]]' in result.output
+
+    args = [os.fspath(TEST_FILE),'--name', 'relPos', '--contains' , 'Group', '--not-contains', 'species']
+    result = runner.invoke(parse_text, args)
+
+    print(result.output)
+    assert result.exception is None, 'An unexpected exception occured: {result.exception}'
+    assert 'Text for tag relPos: [[0.125, 0.125, 0.125], [-0.125, -0.125, -0.125]]' in result.output
+
+def test_all_attribs():
+    """
+    Test of the parse all-attribs command
+    """
+    from masci_tools.cmdline.commands.parse import parse_all_attribs
+    from click.testing import CliRunner
+
+    TEST_FILE = Path('files/fleur/Max-R5/SiLOXML/files/inp.xml').resolve()
+    runner = CliRunner()
+    args = [os.fspath(TEST_FILE),'--name', 'cutoffs']
+    result = runner.invoke(parse_all_attribs, args)
+
+    print(result.output)
+    assert result.exception is None, 'An unexpected exception occured: {result.exception}'
+    assert '"Gmax": 11.1,' in result.output
+
+    args = [os.fspath(TEST_FILE),'--name', 'lo', '--contains' , 'species', '-nc', 'Group','--subtags']
+    result = runner.invoke(parse_all_attribs, args)
+
+    print(result.output)
+    assert result.exception is None, 'An unexpected exception occured: {result.exception}'
+    assert '"SCLO"' in result.output
+
+
+def test_parent_attribs():
+    """
+    Test of the parse parent-attribs command
+    """
+    from masci_tools.cmdline.commands.parse import parse_parent_attribs
+    from click.testing import CliRunner
+
+    TEST_FILE = Path('files/fleur/Max-R5/SiLOXML/files/inp.xml').resolve()
+    runner = CliRunner()
+    args = [os.fspath(TEST_FILE),'--name', 'kpoint']
+    result = runner.invoke(parse_parent_attribs, args)
+
+    print(result.output)
+    assert result.exception is None, 'An unexpected exception occured: {result.exception}'
+    assert '"default"' in result.output
+
+    args = [os.fspath(TEST_FILE),'--name', 'lo', '--contains' , 'species', '-nc', 'Group']
+    result = runner.invoke(parse_parent_attribs, args)
+
+    print(result.output)
+    assert result.exception is None, 'An unexpected exception occured: {result.exception}'
+    assert '"Si-1",' in result.output
+
+def test_tag_exists():
+    """
+    Test of the parse tag-exists command
+    """
+    from masci_tools.cmdline.commands.parse import parse_tag_exists
+    from click.testing import CliRunner
+
+    TEST_FILE = Path('files/fleur/Max-R5/SiLOXML/files/inp.xml').resolve()
+    runner = CliRunner()
+    args = [os.fspath(TEST_FILE),'--name', 'kpoint']
+    result = runner.invoke(parse_tag_exists, args)
+
+    print(result.output)
+    assert result.exception is None, 'An unexpected exception occured: {result.exception}'
+    assert 'Tag kpoint: exists' in result.output
+
+    args = [os.fspath(TEST_FILE),'--name', 'ldau', '--contains' , 'species', '-nc', 'Group']
+    result = runner.invoke(parse_tag_exists, args)
+
+    print(result.output)
+    assert result.exception is None, 'An unexpected exception occured: {result.exception}'
+    assert 'Tag ldau: does not exist' in result.output
+
+def test_number_nodes():
+    """
+    Test of the parse number-nodes command
+    """
+    from masci_tools.cmdline.commands.parse import parse_number_nodes
+    from click.testing import CliRunner
+
+    TEST_FILE = Path('files/fleur/Max-R5/SiLOXML/files/inp.xml').resolve()
+    runner = CliRunner()
+    args = [os.fspath(TEST_FILE),'--name', 'kpoint']
+    result = runner.invoke(parse_number_nodes, args)
+
+    print(result.output)
+    assert result.exception is None, 'An unexpected exception occured: {result.exception}'
+    assert 'Tag kpoint: 2 times' in result.output
+
+    args = [os.fspath(TEST_FILE),'--name', 'ldau', '--contains' , 'species', '-nc', 'Group']
+    result = runner.invoke(parse_number_nodes, args)
+
+    print(result.output)
+    assert result.exception is None, 'An unexpected exception occured: {result.exception}'
+    assert 'Tag ldau: 0 times' in result.output

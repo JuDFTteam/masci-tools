@@ -276,23 +276,6 @@ def parse_all_attribs(xml_file, name, contains, not_contains, subtags, text):
     echo.echo_dictionary(res)
 
 
-@parse.command('single-value')
-@click.argument('xml-file', type=click.Path(exists=True))
-@click.option('--name', '-n', type=str)
-@click.option('--contains', '-c', type=str, multiple=True)
-@click.option('--not-contains', '-nc', type=str, multiple=True)
-def parse_single_value(xml_file, name, contains, not_contains):
-    """
-    Parse the value and units attribute of the specified tag from the given xml file
-    """
-    from masci_tools.util.schema_dict_util import evaluate_single_value_tag
-
-    xmltree, schema_dict = _load_xml_file(xml_file)
-    res = evaluate_single_value_tag(xmltree, schema_dict, name, contains=contains, not_contains=not_contains)
-
-    echo.echo(f'Tag {name}: {res}')
-
-
 @parse.command('parent-attribs')
 @click.argument('xml-file', type=click.Path(exists=True))
 @click.option('--name', '-n', type=str)

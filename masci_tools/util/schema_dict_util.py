@@ -893,7 +893,10 @@ def evaluate_parent_tag(node, schema_dict, name, constants=None, logger=None, **
         parent = elem.getparent()
         for attrib in attribs:
 
-            stringattribute = get_xml_attribute(parent, attrib, logger=logger)
+            try:
+                stringattribute = get_xml_attribute(parent, attrib, logger=logger)
+            except ValueError:
+                stringattribute = None
 
             if stringattribute is None:
                 if logger is None:
