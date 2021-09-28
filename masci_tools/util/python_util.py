@@ -60,10 +60,14 @@ def to_number(a_string: str) -> _typing.Union[int, float, str]:
 
 
 def now() -> _datetime.datetime:
-    """Get now time localized to UTC."""
+    """Get now time localized to UTC.
+
+    This is the same format which AiiDA uses for attributes `ctime`, `mtime`.
+    """
     return _datetime.datetime.now(tz=_pytz.UTC)
     # same as: pytz.UTC.localize(datetime.now())
-    # not same as: datetime.now(tz=timezone.utc)
+    # NOT same as: datetime.now(tz=timezone.utc)
+    # NOT same as: datetime.utcnow()
 
 
 def random_string(length: int,
@@ -160,7 +164,7 @@ class NoIndent(object):
 
 
 class JSONEncoderTailoredIndent(_json.JSONEncoder):
-    """JSONEncoder which allows to not indent items wrapped in 'NoIndent()'.
+    """JSONEncoder which allows to not indent items wrapped in :py:class:`~.NoIndent`.
 
     Reference: https://stackoverflow.com/a/13252112/8116031
 
@@ -219,6 +223,39 @@ class JSONEncoderTailoredIndent(_json.JSONEncoder):
             json_repr = json_repr.replace(f'"{format_spec.format(id_obj)}"', json_obj_repr)
 
         return json_repr
+
+
+class JSONEncoderDatetime2Isoformat(_json.JSONEncoder):
+    """JSONEncoder which serializes datetime values into dateime isoformat strings.
+
+    To deserialize back from isoformat string to datetime object, write a method which
+    when meeting such a value, turns it into a datetime object, and pass it to the used JSON
+    load function as `object_hook` arguemnt.
+
+    >>> import datetime
+    >>> import json
+    >>> from masci_tools.util.python_util import JSONEncoderDatetime2Isoformat
+    >>>
+    >>> # define decoder isoformat -> datetime
+    >>> def json_decode_isoformat_2_datetime(a_dict):
+    >>>     date_keys = ['ctime', 'mtime']
+    >>>     if any(key in a_dict for key in date_keys):
+    >>>         for key in date_keys:
+    >>>             value = a_dict.get(key, None)
+    >>>             if value:
+    >>>                 a_dict[key] = _datetime.datetime.fromisoformat(value)
+    >>>         return a_dict
+    >>>
+    >>> # de/serialization roundtrip
+    >>> foo = {'ctime': now(), 'bar': 42, 'mtime': datetime.datetime(2021, 9, 28)}
+    >>> foo_enc = json.dumps(foo, indent=4, cls=JSONEncoderDatetime2Isoformat)
+    >>> foo_dec = json.loads(foo_enc, object_hook=json_decode_isoformat_2_datetime)
+    >>> assert foo_dec == foo
+    """
+
+    def default(self, o: _typing.Any) -> _typing.Any:
+        if isinstance(o, (_datetime.date, _datetime.datetime)):
+            return o.isoformat()
 
 
 def dataclass_default_field(obj: _typing.Any, deepcopy=True) -> _typing.Any:
