@@ -466,7 +466,7 @@ def evaluate_attribute(node, schema_dict, name, constants=None, logger=None, **k
 
     attrib_xpath = None
     if isinstance(node, etree._Element):
-        if node.tag != schema_dict['root_tag'] and node.tag != 'iteration':
+        if node.tag not in (schema_dict['root_tag'], 'iteration'):
             attrib_xpath = get_relative_attrib_xpath(schema_dict, name, node.tag, **kwargs)
 
     if attrib_xpath is None:
@@ -530,7 +530,7 @@ def evaluate_text(node, schema_dict, name, constants=None, logger=None, **kwargs
 
     tag_xpath = None
     if isinstance(node, etree._Element):
-        if node.tag != schema_dict['root_tag'] and node.tag != 'iteration':
+        if node.tag not in (schema_dict['root_tag'], 'iteration'):
             tag_xpath = get_relative_tag_xpath(schema_dict, name, node.tag, **kwargs)
 
     if tag_xpath is None:
@@ -604,7 +604,7 @@ def evaluate_tag(node, schema_dict, name, constants=None, logger=None, subtags=F
 
     tag_xpath = None
     if isinstance(node, etree._Element):
-        if node.tag != schema_dict['root_tag'] and node.tag != 'iteration':
+        if node.tag not in (schema_dict['root_tag'], 'iteration'):
             kwargs['contains'] = set(kwargs.get('contains', []))
             kwargs['contains'].add(node.tag)
             tag_xpath = get_relative_tag_xpath(schema_dict, name, node.tag, **kwargs)
@@ -838,7 +838,7 @@ def evaluate_parent_tag(node, schema_dict, name, constants=None, logger=None, **
 
     tag_xpath = None
     if isinstance(node, etree._Element):
-        if node.tag != schema_dict['root_tag'] and node.tag != 'iteration':
+        if node.tag not in (schema_dict['root_tag'], 'iteration'):
             kwargs['contains'] = set(kwargs.get('contains', []))
             kwargs['contains'].add(node.tag)
             tag_xpath = get_relative_tag_xpath(schema_dict, name, node.tag, **kwargs)
@@ -953,7 +953,7 @@ def attrib_exists(node, schema_dict, name, logger=None, **kwargs):
 
     attrib_xpath = None
     if isinstance(node, etree._Element):
-        if node.tag != schema_dict['root_tag'] and node.tag != 'iteration':
+        if node.tag not in (schema_dict['root_tag'], 'iteration'):
             attrib_xpath = get_relative_attrib_xpath(schema_dict, name, node.tag, **kwargs)
 
     if attrib_xpath is None:
@@ -1029,7 +1029,7 @@ def eval_simple_xpath(node, schema_dict, name, logger=None, **kwargs):
 
     tag_xpath = None
     if isinstance(node, etree._Element):
-        if node.tag != schema_dict['root_tag'] and node.tag != 'iteration':
+        if node.tag not in (schema_dict['root_tag'], 'iteration'):
             tag_xpath = get_relative_tag_xpath(schema_dict, name, node.tag, **kwargs)
 
     if tag_xpath is None:

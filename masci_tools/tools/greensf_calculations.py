@@ -90,8 +90,8 @@ def calculate_heisenberg_j0(greensfunction, onsite_delta, show=False):
     j0 = j0.real * 1000.0
     if show:
         print(f'Effective exchange Interaction: {j0:.4f} meV')
-        print('Curie Temperature: {:.4f} K'.format(2.0/3.0*j0 * \
-              1/constants.value('Boltzmann constant in eV/K')*1/1000.0)) #1/1000 to convert to meV
+        print(f"Curie Temperature: {2.0/3.0*j0*1.0/constants.value('Boltzmann constant in eV/K')*1/1000.0:.4f} K"
+              )  #1/1000 to convert to meV
 
     return j0
 

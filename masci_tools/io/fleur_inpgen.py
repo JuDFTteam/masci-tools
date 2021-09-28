@@ -287,8 +287,8 @@ def write_inpgen_file(cell,
             except ValueError:
                 kind_namet = site.kind
                 report.append(
-                    'Warning: Kind name {} will be ignored by the FleurinputgenCalculation and not set a charge number.'
-                    .format(site.kind))
+                    f'Warning: Kind name {site.kind} will be ignored by the FleurinputgenCalculation and not set a charge number.'
+                )
                 # append a label to the detached atom
                 atom_positions_text.append(f'    {atomic_number_name:7} {position_str} {kind_namet}\n')
             else:
@@ -447,8 +447,8 @@ def conv_to_fortran(val, quote_strings=True):
         else:
             val_str = f'{val!s}'
     else:
-        raise ValueError("Invalid value '{}' of type '{}' passed, accepts only booleans, ints, "
-                         'floats and strings'.format(val, type(val)))
+        raise ValueError(f"Invalid value '{val}' of type '{type(val)}' passed, accepts only booleans, ints, "
+                         'floats and strings')
 
     return val_str
 
@@ -508,7 +508,7 @@ def read_inpgen_file(file, convert_to_angstroem=True):
         if line.endswith('/'):
             name_list_start = False
             j = 0
-            while namelist_name in namelists_raw.keys():
+            while namelist_name in namelists_raw:
                 namelist_name = namelist_name + f'{j}'
             namelists_raw[namelist_name] = namelist_raw
 

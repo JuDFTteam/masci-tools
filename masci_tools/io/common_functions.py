@@ -41,7 +41,7 @@ def open_general(filename_or_handle, iomode=None):
 
     if reopen_file:
         if iomode is None:
-            iomode = u'r'
+            iomode = 'r'
         f = open(filename_or_handle, iomode)
     else:
         f = filename_or_handle
@@ -246,7 +246,7 @@ def get_highest_core_state(nstates, energies, lmoments):
     idx = energies.argmax()
     lval = lmoments[idx]
     nquant = sum(lmoments == lval) + lval
-    level_descr = '%i%s' % (nquant, 'spdfgh'[lval])
+    level_descr = f"{nquant}{'spdfgh'[lval]}"
 
     return lval, energies[idx], level_descr
 

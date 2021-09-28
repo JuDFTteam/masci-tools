@@ -619,7 +619,7 @@ def plot_crystal_field_potential(cfcoeffs,
     cbar = plt.colorbar(shrink=0.8)
     cbar.set_label(r'$V_{{CF}}$ [K]', fontsize=labelFontsize)
     cbar.ax.tick_params(labelsize=14)
-    ax.set_title(r'Crystal Field potential for $\phi={{{:.2f}}}\pi$'.format(phi_fract), fontsize=labelFontsize)
+    ax.set_title(rf'Crystal Field potential for $\phi={{{phi_fract:.2f}}}\pi$', fontsize=labelFontsize)
     ax.set_xlabel(r'x [Bohr]', fontsize=labelFontsize)
     ax.set_xticks([0, nx / 4.0, nx / 2.0, 3.0 * nx / 4.0, nx - 1])
     ax.set_xticklabels([r'-1.0', r'-0.5', r'0.0', r'0.5', r'1.0'], fontsize=tickFontsize)

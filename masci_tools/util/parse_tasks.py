@@ -265,7 +265,7 @@ class ParseTasks:
             if missing_required:
                 raise ValueError(f'Reqired Keys missing: {missing_required}')
 
-            if not definition['parse_type'] in self.parse_functions.keys():
+            if not definition['parse_type'] in self.parse_functions:
                 raise ValueError(f"Unknown parse_type: {definition['parse_type']}")
 
             if definition['parse_type'] in self.all_attribs_function:

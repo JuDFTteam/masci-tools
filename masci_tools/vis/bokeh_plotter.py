@@ -435,9 +435,9 @@ class BokehPlotter(Plotter):
                     color = color[:self.num_plots]
             else:
                 raise ValueError(
-                    'Could not find <colormap> with name %s. The following predefined colormaps are '
-                    'supported (see also https://bokeh.pydata.org/en/latest/docs/reference/palettes.html ): %s' %
-                    (self['color_palette'], list(all_palettes.keys())))
+                    f"Could not find <colormap> with name {self['color_palette']}. The following predefined colormaps are "
+                    f'supported (see also https://bokeh.pydata.org/en/latest/docs/reference/palettes.html ): {list(all_palettes.keys())}'
+                )
         else:
             if self.num_plots <= 10:
                 color = all_palettes['Category10'][10][:self.num_plots]

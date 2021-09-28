@@ -2398,8 +2398,7 @@ def plot_one_element_corelv(corelevel_dict, element, compound='', axis=None, sav
                        xmax=xmaxline,
                        linewidth=plot_params['linewidth'],
                        color=plot_params['color'])
-            text = r'{}'.format(y)
-            ax.text(x - 0.25, y + 0.3, text, fontdict=plot_params['font_options'])
+            ax.text(x - 0.25, y + 0.3, str(y), fontdict=plot_params['font_options'])
 
     plot_params.set_scale(ax)
     plot_params.set_limits(ax)
@@ -3148,10 +3147,10 @@ class PDF(object):
         self.size = size
 
     def _repr_html_(self):
-        return '<iframe src={0} width={1[0]} height={1[1]}></iframe>'.format(self.pdf, self.size)
+        return f'<iframe src={self.pdf} width={self.size[0]} height={self.size[1]}></iframe>'
 
     def _repr_latex_(self):
-        return r'\includegraphics[width=1.0\textwidth]{{{0}}}'.format(self.pdf)
+        return rf'\includegraphics[width=1.0\textwidth]{{{self.pdf}}}'
 
 
 def plot_colortable(colors: typing.Dict, title: str, sort_colors: bool = False, emptycols: int = 0):
