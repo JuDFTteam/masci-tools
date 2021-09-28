@@ -486,8 +486,9 @@ def xml_set_simple_tag(xmltree, schema_dict, xpath, base_xpath, tag_name, change
         if isinstance(changes, dict):
             changes = [changes]
 
-        # policy: we DELETE all existing tags, and create new ones from the given parameters.
-        xml_delete_tag(xmltree, tag_xpath)
+        if len(eval_xpath(xmltree, tag_xpath, list_return=True)) > 0:
+            # policy: we DELETE all existing tags, and create new ones from the given parameters.
+            xml_delete_tag(xmltree, tag_xpath)
 
         for indx in range(0, len(changes)):
             xml_create_tag_schema_dict(xmltree, schema_dict, xpath, base_xpath, tag_name, create_parents=create_parents)
@@ -584,8 +585,9 @@ def xml_set_complex_tag(xmltree, schema_dict, xpath, base_xpath, attributedict, 
             xmltree = xml_set_complex_tag(xmltree, schema_dict, sub_xpath, sub_base_xpath, val, create=create)
 
         else:
-            # policy: we DELETE all existing tags, and create new ones from the given parameters.
-            xml_delete_tag(xmltree, sub_xpath)
+            if len(eval_xpath(xmltree, sub_xpath, list_return=True)) > 0:
+                # policy: we DELETE all existing tags, and create new ones from the given parameters.
+                xml_delete_tag(xmltree, sub_xpath)
 
             if isinstance(val, dict):
                 val = [val]

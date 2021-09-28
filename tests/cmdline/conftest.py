@@ -21,7 +21,7 @@ def fake_schemas_and_test_files(tmp_path):
     import masci_tools
     #We need to use the __file__ attribute, since we do not know, whether the package was installed with -e
     package_root = Path(masci_tools.__file__).parent.resolve()
-    schema_folder = package_root / Path('io/parsers/fleur/fleur_schema/0.34/') 
+    schema_folder = package_root / Path('io/parsers/fleur/fleur_schema/0.34/')
     created_schema_folder = package_root / Path('io/parsers/fleur/fleur_schema/0.01/')
 
     schema_file = schema_folder / 'FleurInputSchema.xsd'
