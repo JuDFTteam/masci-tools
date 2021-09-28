@@ -36,9 +36,15 @@ def xml_replace_tag(xmltree, xpath, newelement, occurrences=None):
     import copy
     from masci_tools.io.common_functions import is_sequence
 
-    root = xmltree.getroot()
+    if not etree.iselement(xmltree):
+        root = xmltree.getroot()
+    else:
+        root = xmltree
 
     nodes = eval_xpath(root, xpath, list_return=True)
+
+    if len(nodes) == 0:
+        warnings.warn(f'No nodes to replace found on xpath: {xpath}')
 
     if occurrences is not None:
         if not is_sequence(occurrences):
@@ -72,8 +78,15 @@ def xml_delete_att(xmltree, xpath, attrib, occurrences=None):
     """
     from masci_tools.io.common_functions import is_sequence
 
-    root = xmltree.getroot()
+    if not etree.iselement(xmltree):
+        root = xmltree.getroot()
+    else:
+        root = xmltree
+
     nodes = eval_xpath(root, xpath, list_return=True)
+
+    if len(nodes) == 0:
+        warnings.warn(f'No nodes to delete attributes on found on xpath: {xpath}')
 
     if occurrences is not None:
         if not is_sequence(occurrences):
@@ -102,8 +115,15 @@ def xml_delete_tag(xmltree, xpath, occurrences=None):
     """
     from masci_tools.io.common_functions import is_sequence
 
-    root = xmltree.getroot()
+    if not etree.iselement(xmltree):
+        root = xmltree.getroot()
+    else:
+        root = xmltree
+
     nodes = eval_xpath(root, xpath, list_return=True)
+
+    if len(nodes) == 0:
+        warnings.warn(f'No nodes to delete found on xpath: {xpath}')
 
     if occurrences is not None:
         if not is_sequence(occurrences):
@@ -288,10 +308,15 @@ def xml_set_attrib_value_no_create(xmltree, xpath, attributename, attribv, occur
     """
     from masci_tools.io.common_functions import is_sequence
 
-    root = xmltree.getroot()
+    if not etree.iselement(xmltree):
+        root = xmltree.getroot()
+    else:
+        root = xmltree
+
     nodes = eval_xpath(root, xpath, list_return=True)
 
     if len(nodes) == 0:
+        warnings.warn(f'No nodes to set attribute {attributename} on found on xpath: {xpath}')
         return xmltree
 
     if occurrences is not None:
@@ -332,10 +357,15 @@ def xml_set_text_no_create(xmltree, xpath, text, occurrences=None):
     """
     from masci_tools.io.common_functions import is_sequence
 
-    root = xmltree.getroot()
+    if not etree.iselement(xmltree):
+        root = xmltree.getroot()
+    else:
+        root = xmltree
+
     nodes = eval_xpath(root, xpath, list_return=True)
 
     if len(nodes) == 0:
+        warnings.warn(f'No nodes to set text on found on xpath: {xpath}')
         return xmltree
 
     if occurrences is not None:
