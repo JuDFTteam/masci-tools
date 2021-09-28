@@ -244,7 +244,7 @@ class JSONEncoderDatetime2Isoformat(_json.JSONEncoder):
     >>>             value = a_dict.get(key, None)
     >>>             if value:
     >>>                 a_dict[key] = _datetime.datetime.fromisoformat(value)
-    >>>         return a_dict
+    >>>     return a_dict
     >>>
     >>> # de/serialization roundtrip
     >>> foo = {'ctime': now(), 'bar': 42, 'mtime': datetime.datetime(2021, 9, 28)}
