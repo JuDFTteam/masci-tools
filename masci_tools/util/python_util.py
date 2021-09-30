@@ -70,6 +70,23 @@ def now() -> _datetime.datetime:
     # NOT same as: datetime.utcnow()
 
 
+def validate_datetime_isoformat(datetime_str: str) -> bool:
+    """Validate whether a datetime object string is isoformat.
+
+    :param datetime_str: A datetime string.
+    :return: True if isoformat, else False.
+
+    >>> import datetime
+    >>> from masci_tools.util.python_util import validate_datetime_isoformat
+    >>>
+    >>> assert validate_datetime_isoformat(datetime.datetime.now().isoformat())
+    >>> assert validate_datetime_isoformat(datetime.datetime.now().isoformat('T','seconds'))
+    """
+    regex = r'^(-?(?:[1-9][0-9]*)?[0-9]{4})-(1[0-2]|0[1-9])-(3[01]|0[1-9]|[12][0-9])T(2[0-3]|[01][0-9]):([0-5][0-9]):([0-5][0-9])(\.[0-9]+)?(Z|[+-](?:2[0-3]|[01][0-9]):[0-5][0-9])?$'
+    match = _re.compile(regex).match
+    return match(datetime_str) is not None
+
+
 def random_string(length: int,
                   ascii_uppercase: bool = True,
                   ascii_lowercase: bool = True,
