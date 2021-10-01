@@ -20,6 +20,7 @@ import importlib.util
 from importlib import import_module
 import copy
 import os
+import warnings
 
 from masci_tools.util.xml.converters import convert_str_version_number
 
@@ -131,13 +132,23 @@ class ParseTasks:
         #Look if the base version is compatible if not look for a migration
         if version not in tasks.__working_out_versions__:
 
-            migration_list = find_migration(tasks.__base_version__, version, self.migrations)
+            working_version_tuples = {convert_str_version_number(v) for v in tasks.__working_out_versions__}
+            version_tuple = convert_str_version_number(version)
 
-            if migration_list is None:
-                raise ValueError(f'Unsupported output version: {version}')
+            if all(working_version < version_tuple for working_version in working_version_tuples):
+                warnings.warn(
+                    f"Output version '{version}' is not explicitely stated as 'working'\n"
+                    'with the current version of the outxml_parser.\n'
+                    'Since the given version is newer than the latest working version\n'
+                    'I will continue. Errors and warnings can occur!', UserWarning)
+            else:
+                migration_list = find_migration(tasks.__base_version__, version, self.migrations)
 
-            for migration in migration_list:
-                self.tasks = migration(self.tasks)
+                if migration_list is None:
+                    raise ValueError(f'Unsupported output version: {version}')
+
+                for migration in migration_list:
+                    self.tasks = migration(self.tasks)
 
     @property
     def iteration_tasks(self):
