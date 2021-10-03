@@ -19,6 +19,14 @@ def fake_schemas_and_test_files(tmp_path):
     removes the corresponding folder after the tests
     """
     import masci_tools
+    from masci_tools.util.parse_tasks_decorators import register_migration
+    from masci_tools.util.parse_tasks import ParseTasks
+
+    #Create migration to be able to use the outxml_parser
+    @register_migration(base_version='0.34', target_version='0.01')
+    def dummy_migration(definitions):
+        return definitions
+
     #We need to use the __file__ attribute, since we do not know, whether the package was installed with -e
     package_root = Path(masci_tools.__file__).parent.resolve()
     schema_folder = package_root / Path('io/parsers/fleur/fleur_schema/0.34/')
@@ -69,3 +77,4 @@ def fake_schemas_and_test_files(tmp_path):
     finally:
         #Cleanup the folder created in the masci-tools repository
         shutil.rmtree(created_schema_folder)
+        ParseTasks._migrations['0.34'].pop('0.01')

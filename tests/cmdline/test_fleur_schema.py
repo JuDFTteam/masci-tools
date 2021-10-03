@@ -25,7 +25,7 @@ def test_validate_input_valid():
 
 def test_validate_input_invalid():
     """
-    Test of the validat-input command with an invalid input file
+    Test of the validate-input command with an invalid input file
     """
     from masci_tools.cmdline.commands.fleur_schema import validate_inpxmlfile
     from click.testing import CliRunner
@@ -42,7 +42,7 @@ def test_validate_input_invalid():
 
 def test_validate_output_valid():
     """
-    Test of the validat-output command with a valid output file
+    Test of the validate-output command with a valid output file
     """
     from masci_tools.cmdline.commands.fleur_schema import validate_outxmlfile
     from click.testing import CliRunner
@@ -59,7 +59,7 @@ def test_validate_output_valid():
 
 def test_validate_output_invalid():
     """
-    Test of the validat-output command with an invalid output file
+    Test of the validate-output command with an invalid output file
     """
     from masci_tools.cmdline.commands.fleur_schema import validate_outxmlfile
     from click.testing import CliRunner
@@ -109,7 +109,10 @@ def test_add_fleur_schema_output(fake_schemas_and_test_files):
     ]
     result = runner.invoke(add_fleur_schema, args)
     assert result.exception is None, 'An unexpected exception occured: {result.exception}'
-    args = [os.fspath(fake_schemas_and_test_files / 'FleurOutputSchema.xsd')]
+    args = [
+        os.fspath(fake_schemas_and_test_files / 'FleurOutputSchema.xsd'), '--test-xml-file',
+        os.fspath(fake_schemas_and_test_files / 'out.xml')
+    ]
     result = runner.invoke(add_fleur_schema, args)
 
     print(result.output)
