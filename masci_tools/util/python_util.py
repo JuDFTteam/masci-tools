@@ -173,6 +173,59 @@ def sort_lists_by_list(lists: _typing.List[_typing.List],
     return zip(*sorted(zip(*lists), reverse=desc, key=lambda x: x[key_list_index]))
 
 
+def sort_dict(a_dict: dict, key: _typing.Callable = None, reverse: bool = False) -> dict:
+    """Return a copy of a dictionary, sorted by its keys. Nested / recursive.
+
+    :param a_dict: dictionary
+    :param key: optional function to use for sorting, default `None`. Example: `len` for string keys.
+    :param reverse: False: sort ascending, True: descending.
+    :return: sorted copy of dictionary
+    """
+    return {k: sort_dict(v) if isinstance(v, dict) else v for k, v in sorted(a_dict.items(), key=key, reverse=reverse)}
+
+
+def modify_dict(a_dict: dict, transform_value: _typing.Callable = lambda v: v, to_level: int = 99) -> dict:
+    """Return a copy of a dictionary with modified values. Nested / recursive.
+
+    Example:
+
+    >>> from masci_tools.util.python_util import modify_dict, sort_dict
+    >>>
+    >>> d = {'b': [2, 3],
+    >>>      'a': 1,
+    >>>      'c': {'ca': 4, 'cb': [5, 6], 'cc': {'ccb': [8, 9], 'cca': 7}}}
+    >>>
+    >>> d2 = {'a': 1,
+    >>>       'b': {2: None, 3: None},
+    >>>       'c': {'ca': 4, 'cb': {5: None, 6: None}, 'cc': {'cca': 7, 'ccb': [8, 9]}}}
+    >>>
+    >>> d3 = sort_dict(modify_dict(a_dict=d,
+    >>>                            transform_value=lambda v: {k:None for k in v} if isinstance(v,list) else v,
+    >>>                            to_level=2)
+    >>>               )
+    >>> d3 == d2
+    True
+
+    :param a_dict: dictionary
+    :param transform_value: function to transform (each non-dict) value. Default returns value unchanged.
+    :param to_level: Stop modifications below this level. The values on uppermost level have level 1.
+    :return: modified copy of dictionary
+    """
+    to_level = to_level if to_level else int(1e9)
+
+    def inner_modify_dict(sub_dict: dict, level: int = 1):
+        if level <= to_level:
+            for k, v in sub_dict.copy().items():
+                if isinstance(v, dict):
+                    sub_dict[k] = inner_modify_dict(v, level + 1)
+                else:
+                    sub_dict[k] = transform_value(v)
+        return sub_dict
+
+    copy_dict = _copy.deepcopy(a_dict)
+    return inner_modify_dict(copy_dict)
+
+
 class NoIndent(object):
     """ Value wrapper. """
 
