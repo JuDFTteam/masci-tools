@@ -19,6 +19,15 @@ Transformers let you transform properties while they get tabulated.
 
 import abc as _abc
 import typing as _typing
+import dataclasses as _dc
+
+
+@_dc.dataclass(init=True, repr=True, eq=True, order=False, frozen=False)
+class TransformedValue:
+    """Return type of the :py:class:`~.Transformer`."""
+    is_transformed: bool = False
+    value: object = None
+    error: Exception = None
 
 
 class Transformer(_abc.ABC):
@@ -32,7 +41,7 @@ class Transformer(_abc.ABC):
                   keypath: _typing.Union[str, _typing.List[str]],
                   value: _typing.Any,
                   obj: _typing.Any = None,
-                  **kwargs) -> _typing.Tuple[_typing.Union[None, _typing.Any, dict], bool]:
+                  **kwargs) -> TransformedValue:
         """Specify how to transform properties, based on their keypath and type.
 
         Extends :py:meth:`~.Transformer.transform`. See also its docstring.
@@ -50,14 +59,19 @@ class Transformer(_abc.ABC):
 
            if keypath == ['outputs', 'last_calc_output_parameters', 'total_charge_per_atom']:
                # assert isinstance(value, list) # optional
-               return {'total_charge_per_atom': value,
-                       'maximum_total_charge': max(value)}, True
+               return TransformedValue(True,
+                                       {'total_charge_per_atom': value,
+                                       'maximum_total_charge': max(value)},
+                                       None)
 
-           return value, False
+           return TransformedValue(False, value, None)
 
         All kinds of transformation rules for all kinds of properties can be tailored in this way
         to the specific use-case. Keep in mind that if a include list is used, the property (path) has
         to be included in the include list.
+
+        The keyword arguments `**kwargs` can be used to pass additional arguments, such as external functions, say,
+        like `func = external_transform_func`.
 
         If used in `aiida-jutools`: For accessing process node inputs and outputs Dict nodes properties:
         first key in keypath is 'inputs' or 'outputs', the second is the input or output name that `node.outputs.`
@@ -92,4 +106,4 @@ class DefaultTransformer(Transformer):
                   value: _typing.Any,
                   obj: _typing.Any = None,
                   **kwargs) -> _typing.Tuple[_typing.Union[None, _typing.Any, dict], bool]:
-        return value, False
+        return TransformedValue(is_transformed=False, value=value, error=None)

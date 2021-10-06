@@ -22,6 +22,7 @@ from . import tabulator
 # import most important user classes to this level
 from .transformers import \
     Transformer, \
+    TransformedValue, \
     DefaultTransformer
 
 from .recipes import \
