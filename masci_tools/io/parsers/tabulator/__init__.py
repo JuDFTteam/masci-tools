@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=unused-import
 ###############################################################################
 # Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
 #                All rights reserved.                                         #
@@ -17,3 +18,14 @@ say, a pandas DataFrame, from any collections of similar objects, and reused fre
 from . import transformers
 from . import recipes
 from . import tabulator
+
+# import most important user classes to this level
+from .transformers import \
+    Transformer, \
+    DefaultTransformer
+
+from .recipes import \
+    Recipe
+
+from .tabulator import \
+    Tabulator
