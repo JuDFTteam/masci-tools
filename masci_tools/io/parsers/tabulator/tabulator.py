@@ -20,7 +20,7 @@ import typing as _typing
 
 import pandas as _pd
 
-import masci_tools as _masci
+from .recipes import Recipe
 
 
 class Tabulator(_abc.ABC):
@@ -31,7 +31,7 @@ class Tabulator(_abc.ABC):
     - aiida-jutools/io `NodeTabulator` for nodes -> pandas DataFrame.
     """
 
-    def __init__(self, recipe: _masci.io.parsers.tabulator.Recipe = None, **kwargs):
+    def __init__(self, recipe: Recipe = None, **kwargs):
         """Initialize a tabulator object.
 
         The attribute :py:attr:`~.recipe` defines *what* to extract from a set of objects and put them in a table (
@@ -48,7 +48,7 @@ class Tabulator(_abc.ABC):
         :param kwargs: Additional keyword arguments for subclasses.
         """
         if not recipe:
-            recipe = _masci.io.parsers.tabulator.Recipe()
+            recipe = Recipe()
         self.recipe = recipe
         self._table_types = []
         self._table = None

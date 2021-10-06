@@ -20,8 +20,8 @@ Recipes let you reuse tabulator settings for different use cases.
 import abc as _abc
 import typing as _typing
 
-import masci_tools as _masci
-from masci_tools.util import python_util as _masci_python_util
+import masci_tools.util.python_util as _masci_python_util
+from .transformers import Transformer
 
 
 class Recipe(_abc.ABC):
@@ -33,11 +33,7 @@ class Recipe(_abc.ABC):
     be defined by specifying a transformer in the recipe.
     """
 
-    def __init__(self,
-                 exclude_list: dict = None,
-                 include_list: dict = None,
-                 transformer: _masci.io.parsers.tabulator.Transformer = None,
-                 **kwargs):
+    def __init__(self, exclude_list: dict = None, include_list: dict = None, transformer: Transformer = None, **kwargs):
         """Initialize a recipe for a :py:class:`~.tabulator.Tabulator`.
 
         The attributes :py:attr:`~.include_list` and :py:attr:`~.exclude_list` control which properties
