@@ -78,16 +78,18 @@ class Tabulator(_abc.ABC):
     def tabulate(self,
                  collection: _typing.Any,
                  table_type: _typing.Type = _pd.DataFrame,
-                 pandas_column_policy: str = 'flat',
+                 append: bool = True,
+                 column_policy: str = 'flat',
                  **kwargs) -> _typing.Optional[_typing.Any]:
         """Tabulate the common properties of a collection of objects.
 
         :param collection: collection of objects with same set of properties.
         :param table_type: Type of the tabulated data. Usually a pandas DataFrame or a dict.
-        :param pandas_column_policy: Only if table type is `pandas.DataFrame`. 'flat': Flat dataframe, name conflicts
-                                     produce warnings. 'flat_full_path': Flat dataframe, column names are full
-                                     keypaths, 'multiindex': dataframe with MultiIndex columns, reflecting the full
-                                     properties' path hierarchies.
+        :param append: True: append to table if not empty. False: Overwrite table.
+        :param column_policy: 'flat': Flat table, column names are last keys per keypath, name conflicts produce
+                              warnings. 'flat_full_path': Flat table, column names are full keypaths,
+                              'multiindex': table with MultiIndex columns (if pandas: `MultiIndex` columns), reflecting
+                              the full properties' keypath hierarchies.
         :param kwargs: Additional keyword arguments for subclasses.
         :return: Tabulated objects' properties.
         """
