@@ -14,7 +14,6 @@
 Common functions for converting types to and from XML files
 """
 
-
 from typing import Tuple
 
 
@@ -498,7 +497,7 @@ def convert_fleur_electronconfig(econfig_element):
     return f'{core_config} | {valence_config}'
 
 
-def convert_str_version_number(version_str: str) -> Tuple[int,int]:
+def convert_str_version_number(version_str: str) -> Tuple[int, int]:
     """
     Convert the version number as a integer for easy comparisons
 
