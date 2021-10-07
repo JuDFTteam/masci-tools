@@ -338,7 +338,7 @@ def test_single_value_tag(caplog):
     Test of the evaluate_single_value_tag function
     """
     from lxml import etree
-    from masci_tools.util.schema_dict_util import evaluate_single_value_tag, get_tag_xpath
+    from masci_tools.util.schema_dict_util import evaluate_single_value_tag
     from masci_tools.util.xml.common_functions import eval_xpath
 
     schema_dict = outschema_dict_34
@@ -347,7 +347,7 @@ def test_single_value_tag(caplog):
     xmltree = etree.parse(TEST_OUTXML_PATH, parser)
     root = xmltree.getroot()
 
-    iteration_xpath = get_tag_xpath(schema_dict, 'iteration')
+    iteration_xpath = schema_dict.tag_xpath('iteration')
     iteration = eval_xpath(root, iteration_xpath, list_return=True)[0]
 
     expected = {'comment': None, 'units': 'Htr', 'value': -4204.714048254}

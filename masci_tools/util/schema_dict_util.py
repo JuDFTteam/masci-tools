@@ -17,6 +17,7 @@ schema_dicts defined for the Fleur input/output
 Also provides convienient functions to use just a attribute name for extracting the
 attribute from the right place in the given etree
 """
+from masci_tools.io.parsers.fleur.fleur_schema import NoPathFound
 from masci_tools.util.parse_tasks_decorators import register_parsing_function
 from lxml import etree
 import warnings
@@ -161,7 +162,6 @@ def read_constants(root, schema_dict, logger=None):
     :return: a python dictionary with all defined constants
     """
     from masci_tools.util.constants import FLEUR_DEFINED_CONSTANTS
-    from masci_tools.io.parsers.fleur.fleur_schema import NoPathFound
     import copy
 
     defined_constants = copy.deepcopy(FLEUR_DEFINED_CONSTANTS)
@@ -223,10 +223,10 @@ def evaluate_attribute(node, schema_dict, name, constants=None, logger=None, **k
     attrib_xpath = None
     if isinstance(node, etree._Element):
         if node.tag not in (schema_dict['root_tag'], 'iteration'):
-            attrib_xpath = get_relative_attrib_xpath(schema_dict, name, node.tag, **kwargs)
+            attrib_xpath = schema_dict.relative_attrib_xpath(name, node.tag, **kwargs)
 
     if attrib_xpath is None:
-        attrib_xpath = get_attrib_xpath(schema_dict, name, **kwargs)
+        attrib_xpath = schema_dict.attrib_xpath(name, **kwargs)
 
     stringattribute = eval_xpath(node, attrib_xpath, logger=logger, list_return=True)
 
@@ -287,10 +287,10 @@ def evaluate_text(node, schema_dict, name, constants=None, logger=None, **kwargs
     tag_xpath = None
     if isinstance(node, etree._Element):
         if node.tag not in (schema_dict['root_tag'], 'iteration'):
-            tag_xpath = get_relative_tag_xpath(schema_dict, name, node.tag, **kwargs)
+            tag_xpath = schema_dict.relative_tag_xpath(name, node.tag, **kwargs)
 
     if tag_xpath is None:
-        tag_xpath = get_tag_xpath(schema_dict, name, **kwargs)
+        tag_xpath = schema_dict.tag_xpath(name, **kwargs)
 
     stringtext = eval_xpath(node, f'{tag_xpath}/text()', logger=logger, list_return=True)
 
@@ -363,16 +363,16 @@ def evaluate_tag(node, schema_dict, name, constants=None, logger=None, subtags=F
         if node.tag not in (schema_dict['root_tag'], 'iteration'):
             kwargs['contains'] = set(kwargs.get('contains', []))
             kwargs['contains'].add(node.tag)
-            tag_xpath = get_relative_tag_xpath(schema_dict, name, node.tag, **kwargs)
+            tag_xpath = schema_dict.relative_tag_xpath(name, node.tag, **kwargs)
 
     if tag_xpath is None:
-        tag_xpath = get_tag_xpath(schema_dict, name, **kwargs)
+        tag_xpath = schema_dict.tag_xpath(name, **kwargs)
 
     #Which attributes are expected
     tags = set()
     optional_tags = set()
     try:
-        tag_info = get_tag_info(schema_dict, name, path_return=False, multiple_paths=True, **kwargs)
+        tag_info = schema_dict.tag_info(name, path_return=False, multiple_paths=True, **kwargs)
         attribs = tag_info['attribs']
         optional = tag_info['optional_attribs']
         if subtags:
@@ -597,14 +597,14 @@ def evaluate_parent_tag(node, schema_dict, name, constants=None, logger=None, **
         if node.tag not in (schema_dict['root_tag'], 'iteration'):
             kwargs['contains'] = set(kwargs.get('contains', []))
             kwargs['contains'].add(node.tag)
-            tag_xpath = get_relative_tag_xpath(schema_dict, name, node.tag, **kwargs)
+            tag_xpath = schema_dict.relative_tag_xpath(name, node.tag, **kwargs)
 
     if tag_xpath is None:
-        tag_xpath = get_tag_xpath(schema_dict, name, **kwargs)
+        tag_xpath = schema_dict.tag_xpath(name, **kwargs)
 
     #Which attributes are expected
     try:
-        tag_info = get_tag_info(schema_dict, name, path_return=False, multiple_paths=True, parent=True, **kwargs)
+        tag_info = schema_dict.tag_info(name, path_return=False, multiple_paths=True, parent=True, **kwargs)
         attribs = tag_info['attribs']
         optional = tag_info['optional_attribs']
     except ValueError as err:
@@ -710,10 +710,10 @@ def attrib_exists(node, schema_dict, name, logger=None, **kwargs):
     attrib_xpath = None
     if isinstance(node, etree._Element):
         if node.tag not in (schema_dict['root_tag'], 'iteration'):
-            attrib_xpath = get_relative_attrib_xpath(schema_dict, name, node.tag, **kwargs)
+            attrib_xpath = schema_dict.relative_attrib_xpath(name, node.tag, **kwargs)
 
     if attrib_xpath is None:
-        attrib_xpath = get_attrib_xpath(schema_dict, name, **kwargs)
+        attrib_xpath = schema_dict.attrib_xpath(name, **kwargs)
 
     tag_xpath, attrib_name = split_off_attrib(attrib_xpath)
 
@@ -786,9 +786,9 @@ def eval_simple_xpath(node, schema_dict, name, logger=None, **kwargs):
     tag_xpath = None
     if isinstance(node, etree._Element):
         if node.tag not in (schema_dict['root_tag'], 'iteration'):
-            tag_xpath = get_relative_tag_xpath(schema_dict, name, node.tag, **kwargs)
+            tag_xpath = schema_dict.relative_tag_xpath(name, node.tag, **kwargs)
 
     if tag_xpath is None:
-        tag_xpath = get_tag_xpath(schema_dict, name, **kwargs)
+        tag_xpath = schema_dict.tag_xpath(name, **kwargs)
 
     return eval_xpath(node, tag_xpath, logger=logger, list_return=list_return)

@@ -172,7 +172,6 @@ def test_tag_xpath_output():
     Test the path finding for tags for the output schema without additional options
     And verify with different version of the schema
     """
-    from masci_tools.util.schema_dict_util import get_tag_xpath
 
     schema_dict = OutputSchemaDict.fromVersion('0.34')
 
@@ -208,7 +207,7 @@ def test_relative_tag_xpath_output():
     assert schema_dict.relative_tag_xpath('densityMatrixFor', 'ldaUDensityMatrix') == './densityMatrixFor'
 
 
-def test_get_tag_xpath_contains():
+def test_tag_xpath_contains():
     """
     Test the selection of paths based on a contained keyword
     """
@@ -228,7 +227,7 @@ def test_get_tag_xpath_contains():
         schema_dict.tag_xpath('ldaU', contains='group')
 
 
-def test_get_tag_xpath_notcontains():
+def test_tag_xpath_notcontains():
     """
     Test the selection of paths based on a not contained keyword
     """
@@ -248,7 +247,7 @@ def test_get_tag_xpath_notcontains():
                          not_contains='species') == '/fleurInput/atomGroups/atomGroup/ldaU'
 
 
-def test_get_tagattrib_xpath_case_insensitivity():
+def test_tagattrib_xpath_case_insensitivity():
     """
     Test that the selection works with case insensitivity
     """
@@ -265,7 +264,7 @@ def test_get_tagattrib_xpath_case_insensitivity():
     assert schema_dict.attrib_xpath('jSpInS') == '/fleurInput/calculationSetup/magnetism/@jspins'
 
 
-def test_get_attrib_xpath_input():
+def test_attrib_xpath_input():
     """
     Test the path finding for tags for the input schema without additional options
     And verify with different version of the schema
@@ -292,7 +291,7 @@ def test_get_attrib_xpath_input():
         schema_dict.attrib_xpath('l_amf')
 
 
-def test_get_relative_attrib_xpath_input():
+def test_relative_attrib_xpath_input():
     """
     Test the path finding for tags for the input schema without additional options
     And verify with different version of the schema
@@ -326,7 +325,7 @@ def test_get_relative_attrib_xpath_input():
     assert schema_dict.relative_attrib_xpath('l_amf', 'ldaU') == './@l_amf'
 
 
-def test_get_attrib_xpath_output():
+def test_attrib_xpath_output():
     """
     Test the path finding for tags for the input schema without additional options
     And verify with different version of the schema
@@ -341,7 +340,7 @@ def test_get_attrib_xpath_output():
     assert schema_dict.attrib_xpath('qvectors') == './Forcetheorem_SSDISP/@qvectors'
 
 
-def test_get_relative_attrib_xpath_output():
+def test_relative_attrib_xpath_output():
     """
     Test the path finding for tags for the input schema without additional options
     And verify with different version of the schema
@@ -355,7 +354,7 @@ def test_get_relative_attrib_xpath_output():
     assert schema_dict.relative_attrib_xpath('qvectors', 'Forcetheorem_SSDISP') == './@qvectors'
 
 
-def test_get_attrib_xpath_contains():
+def test_attrib_xpath_contains():
     """
     Test the selection of paths based on a contained keyword
     """
@@ -374,7 +373,7 @@ def test_get_attrib_xpath_contains():
         schema_dict.attrib_xpath('l_mperp', contains='atom')
 
 
-def test_get_attrib_xpath_notcontains():
+def test_attrib_xpath_notcontains():
     """
     Test the selection of paths based on a contained keyword
     """
@@ -396,7 +395,7 @@ def test_get_attrib_xpath_notcontains():
          schema_dict.attrib_xpath('l_mperp', not_contains='calculationSetup')
 
 
-def test_get_attrib_xpath_exclude():
+def test_attrib_xpath_exclude():
     """
     Test the selection of paths based on a contained keyword
     """
@@ -416,7 +415,7 @@ def test_get_attrib_xpath_exclude():
                                      ]) == '/fleurInput/calculationSetup/greensFunction/contourSemicircle/@alpha'
 
 
-def test_get_attrib_xpath_exclude_output():
+def test_attrib_xpath_exclude_output():
     """
     Test the selection of paths based on a contained keyword
     """
@@ -433,7 +432,7 @@ def test_get_attrib_xpath_exclude_output():
         schema_dict.attrib_xpath('units', exclude=['unique_path'], contains='DMI')
 
 
-def test_get_tag_info():
+def test_tag_info():
     """
     Basic test of the `get_tag_info()` function
     """

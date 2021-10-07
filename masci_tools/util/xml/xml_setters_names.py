@@ -14,8 +14,6 @@
 Functions for modifying the xml input file of Fleur utilizing the schema dict
 and as little knowledge of the concrete xpaths as possible
 """
-from masci_tools.util.schema_dict_util import get_tag_xpath
-from masci_tools.util.schema_dict_util import get_attrib_xpath
 from masci_tools.io.parsers.fleur.fleur_schema import schema_dict_version_dispatch
 
 
@@ -50,7 +48,7 @@ def create_tag(xmltree, schema_dict, tag, complex_xpath=None, create_parents=Fal
     else:
         tag_name = tag
 
-    base_xpath = get_tag_xpath(schema_dict, tag_name, **kwargs)
+    base_xpath = schema_dict.tag_xpath(tag_name, **kwargs)
 
     parent_xpath, tag_name = split_off_tag(base_xpath)
 
@@ -88,7 +86,7 @@ def delete_tag(xmltree, schema_dict, tag_name, complex_xpath=None, occurrences=N
     from masci_tools.util.xml.xml_setters_basic import xml_delete_tag
     from masci_tools.util.xml.common_functions import check_complex_xpath
 
-    base_xpath = get_tag_xpath(schema_dict, tag_name, **kwargs)
+    base_xpath = schema_dict.tag_xpath(tag_name, **kwargs)
 
     if complex_xpath is None:
         complex_xpath = base_xpath
@@ -123,7 +121,7 @@ def delete_att(xmltree, schema_dict, attrib_name, complex_xpath=None, occurrence
     from masci_tools.util.xml.xml_setters_basic import xml_delete_att
     from masci_tools.util.xml.common_functions import check_complex_xpath, split_off_attrib
 
-    base_xpath = get_attrib_xpath(schema_dict, attrib_name, **kwargs)
+    base_xpath = schema_dict.attrib_xpath(attrib_name, **kwargs)
 
     tag_xpath, attrib_name = split_off_attrib(base_xpath)
 
@@ -158,7 +156,7 @@ def replace_tag(xmltree, schema_dict, tag_name, newelement, complex_xpath=None, 
     from masci_tools.util.xml.xml_setters_basic import xml_replace_tag
     from masci_tools.util.xml.common_functions import check_complex_xpath
 
-    base_xpath = get_tag_xpath(schema_dict, tag_name, **kwargs)
+    base_xpath = schema_dict.tag_xpath(tag_name, **kwargs)
 
     if complex_xpath is None:
         complex_xpath = base_xpath
@@ -205,7 +203,7 @@ def add_number_to_attrib(xmltree,
     from masci_tools.util.xml.xml_setters_xpaths import xml_add_number_to_attrib
     from masci_tools.util.xml.common_functions import split_off_attrib
 
-    attrib_xpath = get_attrib_xpath(schema_dict, attributename, **kwargs)
+    attrib_xpath = schema_dict.attrib_xpath(attributename, **kwargs)
 
     base_xpath, attributename = split_off_attrib(attrib_xpath)
 
@@ -309,7 +307,7 @@ def set_attrib_value(xmltree,
         elif 'other' not in kwargs['exclude']:
             kwargs['exclude'].append('other')
 
-    base_xpath = get_attrib_xpath(schema_dict, attributename, **kwargs)
+    base_xpath = schema_dict.attrib_xpath(attributename, **kwargs)
 
     base_xpath, attributename = split_off_attrib(base_xpath)
 
@@ -388,7 +386,7 @@ def set_text(xmltree, schema_dict, tag_name, text, complex_xpath=None, occurrenc
     """
     from masci_tools.util.xml.xml_setters_xpaths import xml_set_text
 
-    base_xpath = get_tag_xpath(schema_dict, tag_name, **kwargs)
+    base_xpath = schema_dict.tag_xpath(tag_name, **kwargs)
 
     if complex_xpath is None:
         complex_xpath = base_xpath
@@ -461,7 +459,7 @@ def set_simple_tag(xmltree, schema_dict, tag_name, changes, complex_xpath=None, 
     from masci_tools.util.xml.xml_setters_xpaths import xml_set_simple_tag
     from masci_tools.util.xml.common_functions import split_off_tag
 
-    base_xpath = get_tag_xpath(schema_dict, tag_name, **kwargs)
+    base_xpath = schema_dict.tag_xpath(tag_name, **kwargs)
 
     #Since we can set multiple simple tags we need to provide the path for the parent
     parent_xpath, tag_name = split_off_tag(base_xpath)
@@ -513,7 +511,7 @@ def set_complex_tag(xmltree, schema_dict, tag_name, changes, complex_xpath=None,
     """
     from masci_tools.util.xml.xml_setters_xpaths import xml_set_complex_tag
 
-    base_xpath = get_tag_xpath(schema_dict, tag_name, **kwargs)
+    base_xpath = schema_dict.tag_xpath(tag_name, **kwargs)
 
     if complex_xpath is None:
         complex_xpath = base_xpath
@@ -595,7 +593,7 @@ def set_species(xmltree, schema_dict, species_name, attributedict, create=False)
     """
     from masci_tools.util.xml.xml_setters_xpaths import xml_set_complex_tag
 
-    base_xpath_species = get_tag_xpath(schema_dict, 'species')
+    base_xpath_species = schema_dict.tag_xpath('species')
 
     # TODO lowercase everything
     # TODO make a general specifier for species, not only the name i.e. also
@@ -642,8 +640,8 @@ def shift_value_species_label(xmltree, schema_dict, atom_label, attributename, v
     else:
         kwargs['contains'] = 'species'
 
-    species_base_path = get_tag_xpath(schema_dict, 'species')
-    attr_base_path = get_attrib_xpath(schema_dict, attributename, **kwargs)
+    species_base_path = schema_dict.tag_xpath('species')
+    attr_base_path = schema_dict.attrib_xpath( attributename, **kwargs)
     tag_base_xpath, attributename = split_off_attrib(attr_base_path)
 
     if atom_label != 'all':
@@ -749,7 +747,7 @@ def set_atomgroup(xmltree, schema_dict, attributedict, position=None, species=No
     """
     from masci_tools.util.xml.xml_setters_xpaths import xml_set_complex_tag
 
-    atomgroup_base_path = get_tag_xpath(schema_dict, 'atomGroup')
+    atomgroup_base_path = schema_dict.tag_xpath('atomGroup')
     atomgroup_xpath = atomgroup_base_path
 
     if not position and not species:  # not specfied what to change
@@ -857,7 +855,7 @@ def set_inpchanges(xmltree, schema_dict, change_dict, path_spec=None):
         elif 'other' not in key_spec['exclude']:
             key_spec['exclude'].append('other')
 
-        key_xpath = get_attrib_xpath(schema_dict, key, **key_spec)
+        key_xpath = schema_dict.attrib_xpath(key, **key_spec)
 
         if not text_attrib:
             #Split up path into tag path and attribute name (original name of key could have different cases)
@@ -914,7 +912,7 @@ def set_kpointlist(xmltree,
     if len(kpoints) != len(weights):
         raise ValueError('kPoints and weights do not have the same length')
 
-    kpointlist_xpath = get_tag_xpath(schema_dict, 'kPointList')
+    kpointlist_xpath = schema_dict.tag_xpath('kPointList')
     nkpts = len(kpoints)
 
     if special_labels is None:
@@ -1131,7 +1129,7 @@ def set_kpath_max4(xmltree, schema_dict, kpath, count, gamma=False):
     from masci_tools.util.xml.xml_setters_basic import xml_replace_tag
     from lxml import etree
 
-    alt_kpt_set_xpath = get_tag_xpath(schema_dict, 'altKPointSet')
+    alt_kpt_set_xpath = schema_dict.tag_xpath('altKPointSet')
 
     if not tag_exists(xmltree, schema_dict, 'kPointCount', contains='altKPoint'):
         xmltree = create_tag(xmltree, schema_dict, 'kPointCount', contains='altKPoint', create_parents=True)

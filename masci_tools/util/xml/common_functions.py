@@ -16,7 +16,6 @@ Common functions for parsing input/output files or XMLschemas from FLEUR
 from lxml import etree
 import warnings
 
-
 def clear_xml(tree):
     """
     Removes comments and executes xinclude tags of an
@@ -121,7 +120,6 @@ def reverse_xinclude(xmltree, schema_dict, included_tags, **kwargs):
 
     :raises ValueError: if the tag can not be found in teh given xmltree
     """
-    from masci_tools.util.schema_dict_util import get_tag_xpath
     import copy
 
     INCLUDE_NSMAP = {'xi': 'http://www.w3.org/2001/XInclude'}
@@ -155,11 +153,7 @@ def reverse_xinclude(xmltree, schema_dict, included_tags, **kwargs):
             unknown_file_names += 1
             file_name = f'unknown-{unknown_file_names}.xml'
 
-        try:
-            tag_xpath = get_tag_xpath(schema_dict, tag)
-        except ValueError as exc:
-            raise ValueError(f'Cannot determine place of included tag {tag}') from exc
-
+        tag_xpath = schema_dict.tag_xpath(tag)
         included_tag = eval_xpath(root, tag_xpath, list_return=True)
 
         if len(included_tag) != 1:

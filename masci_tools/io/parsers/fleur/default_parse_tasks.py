@@ -22,8 +22,8 @@ correspond to the keys in the output dictionary
 
 The following keys are expected in each entry:
     :param parse_type: str, defines which methods to use when extracting the information
-    :param path_spec: dict with all the arguments that should be passed to get_tag_xpath
-                      or get_attrib_xpath to get the correct path
+    :param path_spec: dict with all the arguments that should be passed to tag_xpath
+                      or attrib_xpath to get the correct path
     :param subdict: str, if present the parsed values are put into this key in the output dictionary
     :param overwrite_last: bool, if True no list is inserted and each entry overwrites the last
 
