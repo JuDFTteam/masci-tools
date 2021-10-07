@@ -153,7 +153,10 @@ def reverse_xinclude(xmltree, schema_dict, included_tags, **kwargs):
             unknown_file_names += 1
             file_name = f'unknown-{unknown_file_names}.xml'
 
-        tag_xpath = schema_dict.tag_xpath(tag)
+        try:
+            tag_xpath = schema_dict.tag_xpath(tag)
+        except Exception as err:
+            raise ValueError(f'Cannot determine place of included tag {tag}') from err
         included_tag = eval_xpath(root, tag_xpath, list_return=True)
 
         if len(included_tag) != 1:
