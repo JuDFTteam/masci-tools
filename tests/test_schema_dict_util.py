@@ -6,7 +6,7 @@ both path finding and easy information extraction
 import pytest
 import os
 import numpy as np
-from masci_tools.io.parsers.fleur.fleur_schema import InputSchemaDict, OutputSchemaDict
+from masci_tools.io.parsers.fleur.fleur_schema import InputSchemaDict, OutputSchemaDict, NoUniquePathFound, NoPathFound
 from masci_tools.util.constants import FLEUR_DEFINED_CONSTANTS
 from pprint import pprint
 import logging
@@ -24,447 +24,6 @@ FILE_PATH = os.path.dirname(os.path.abspath(__file__))
 TEST_INPXML_PATH = os.path.join(FILE_PATH, 'files/fleur/Max-R5/FePt_film_SSFT_LO/files/inp2.xml')
 TEST_OUTXML_PATH = os.path.join(FILE_PATH, 'files/fleur/Max-R5/GaAsMultiUForceXML/files/out.xml')
 TEST_OUTXML_PATH2 = os.path.join(FILE_PATH, 'files/fleur/Max-R5/FePt_film_SSFT_LO/files/out.xml')
-
-
-def test_get_tag_xpath_input():
-    """
-    Test the path finding for tags for the input schema without additional options
-    And verify with different version of the schema
-    """
-    from masci_tools.util.schema_dict_util import get_tag_xpath
-
-    #First example easy (magnetism tag is unique and should not differ between the versions)
-    assert get_tag_xpath(schema_dict_27, 'magnetism') == '/fleurInput/calculationSetup/magnetism'
-    assert get_tag_xpath(schema_dict_34, 'magnetism') == '/fleurInput/calculationSetup/magnetism'
-
-    #Differing paths between the version
-    assert get_tag_xpath(schema_dict_27, 'bzIntegration') == '/fleurInput/calculationSetup/bzIntegration'
-    assert get_tag_xpath(schema_dict_34, 'bzIntegration') == '/fleurInput/cell/bzIntegration'
-
-    #Non existent tag in old version
-    assert get_tag_xpath(schema_dict_34, 'DMI') == '/fleurInput/forceTheorem/DMI'
-    with pytest.raises(ValueError, match='The tag DMI has no possible paths with the current specification.'):
-        get_tag_xpath(schema_dict_27, 'DMI')
-
-    #Multiple possible paths
-    with pytest.raises(ValueError, match='The tag ldaU has multiple possible paths with the current specification.'):
-        get_tag_xpath(schema_dict_27, 'ldaU')
-    with pytest.raises(ValueError, match='The tag ldaU has multiple possible paths with the current specification.'):
-        get_tag_xpath(schema_dict_34, 'ldaU')
-
-
-def test_get_relative_tag_xpath_input():
-    """
-    Test the path finding for tags for the input schema without additional options
-    And verify with different version of the schema
-    """
-    from masci_tools.util.schema_dict_util import get_relative_tag_xpath
-
-    assert get_relative_tag_xpath(schema_dict_34, 'magnetism', 'calculationSetup') == './magnetism'
-    assert get_relative_tag_xpath(schema_dict_34, 'magnetism', 'magnetism') == '.'
-
-    assert get_relative_tag_xpath(schema_dict_34, 'DMI', 'forceTheorem') == './DMI'
-    with pytest.raises(ValueError, match='The tag DMI has no possible relative paths with the current specification.'):
-        get_relative_tag_xpath(schema_dict_27, 'DMI', 'forceTheorem')
-
-    with pytest.raises(ValueError,
-                       match='The tag ldaU has multiple possible relative paths with the current specification.'):
-        get_relative_tag_xpath(schema_dict_34, 'ldaU', 'fleurInput')
-
-    assert get_relative_tag_xpath(schema_dict_34, 'ldaU', 'fleurInput',
-                                  contains='species') == './atomSpecies/species/ldaU'
-    assert get_relative_tag_xpath(schema_dict_34, 'ldaU', 'species') == './ldaU'
-
-
-def test_get_relative_tag_xpath_output():
-    """
-    Test the path finding for tags for the input schema without additional options
-    And verify with different version of the schema
-    """
-    from masci_tools.util.schema_dict_util import get_relative_tag_xpath
-
-    assert get_relative_tag_xpath(outschema_dict_34, 'iteration', 'scfLoop') == './iteration'
-    assert get_relative_tag_xpath(outschema_dict_34, 'iteration', 'iteration') == '.'
-
-    assert get_relative_tag_xpath(outschema_dict_34, 'densityMatrixFor', 'ldaUDensityMatrix') == './densityMatrixFor'
-
-
-def test_get_tag_xpath_output():
-    """
-    Test the path finding for tags for the output schema without additional options
-    And verify with different version of the schema
-    """
-    from masci_tools.util.schema_dict_util import get_tag_xpath
-
-    #absolute
-    assert get_tag_xpath(outschema_dict_34, 'iteration') == '/fleurOutput/scfLoop/iteration'
-    assert get_tag_xpath(outschema_dict_31, 'iteration') == '/fleurOutput/scfLoop/iteration'
-
-    #relative paths
-    assert get_tag_xpath(outschema_dict_34, 'totalEnergy') == './totalEnergy'
-    assert get_tag_xpath(outschema_dict_31, 'totalEnergy') == './totalEnergy'
-
-    #Non existent tag
-    assert get_tag_xpath(outschema_dict_34, 'fleurInput') == '/fleurOutput/fleurInput'
-    with pytest.raises(ValueError, match='The tag fleurInput has no possible paths with the current specification.'):
-        get_tag_xpath(outschema_dict_31, 'fleurInput')
-
-    assert get_tag_xpath(outschema_dict_31, 'inputData') == '/fleurOutput/inputData'
-    with pytest.raises(ValueError, match='The tag inputData has no possible paths with the current specification.'):
-        get_tag_xpath(outschema_dict_34, 'inputData')
-
-    #Multiple possible paths
-    with pytest.raises(ValueError,
-                       match='The tag spinDependentCharge has multiple possible paths with the current specification.'):
-        get_tag_xpath(outschema_dict_31, 'spinDependentCharge')
-    with pytest.raises(ValueError,
-                       match='The tag spinDependentCharge has multiple possible paths with the current specification.'):
-        get_tag_xpath(outschema_dict_34, 'spinDependentCharge')
-
-
-def test_get_tag_xpath_contains():
-    """
-    Test the selection of paths based on a contained keyword
-    """
-    from masci_tools.util.schema_dict_util import get_tag_xpath
-
-    schema_dict = schema_dict_34
-
-    with pytest.raises(ValueError, match='The tag ldaU has multiple possible paths with the current specification.'):
-        get_tag_xpath(schema_dict, 'ldaU')
-    with pytest.raises(ValueError, match='The tag ldaU has multiple possible paths with the current specification.'):
-        get_tag_xpath(schema_dict, 'ldaU', contains='atom')
-
-    assert get_tag_xpath(schema_dict, 'ldaU', contains='calculationSetup') == '/fleurInput/calculationSetup/ldaU'
-    assert get_tag_xpath(schema_dict, 'ldaU', contains='species') == '/fleurInput/atomSpecies/species/ldaU'
-    assert get_tag_xpath(schema_dict, 'ldaU', contains='Group') == '/fleurInput/atomGroups/atomGroup/ldaU'
-
-    with pytest.raises(ValueError, match='The tag ldaU has no possible paths with the current specification.'):
-        get_tag_xpath(schema_dict, 'ldaU', contains='group')
-
-
-def test_get_tag_xpath_notcontains():
-    """
-    Test the selection of paths based on a not contained keyword
-    """
-    from masci_tools.util.schema_dict_util import get_tag_xpath
-
-    schema_dict = schema_dict_34
-
-    with pytest.raises(ValueError, match='The tag ldaU has multiple possible paths with the current specification.'):
-        get_tag_xpath(schema_dict, 'ldaU')
-    with pytest.raises(ValueError, match='The tag ldaU has multiple possible paths with the current specification.'):
-        get_tag_xpath(schema_dict, 'ldaU', not_contains='calculationSetup')
-
-    assert get_tag_xpath(schema_dict, 'ldaU', not_contains='atom') == '/fleurInput/calculationSetup/ldaU'
-    with pytest.raises(ValueError, match='The tag ldaU has multiple possible paths with the current specification.'):
-        assert get_tag_xpath(schema_dict, 'ldaU', not_contains='Group') == '/fleurInput/atomSpecies/species/ldaU'
-
-    assert get_tag_xpath(schema_dict, 'ldaU', contains='atom',
-                         not_contains='species') == '/fleurInput/atomGroups/atomGroup/ldaU'
-
-
-def test_get_tagattrib_xpath_case_insensitivity():
-    """
-    Test that the selection works with case insensitivity
-    """
-    from masci_tools.util.schema_dict_util import get_tag_xpath, get_attrib_xpath
-
-    schema_dict = schema_dict_34
-
-    assert get_tag_xpath(schema_dict, 'bzIntegration') == '/fleurInput/cell/bzIntegration'
-    assert get_tag_xpath(schema_dict, 'BZINTEGRATION') == '/fleurInput/cell/bzIntegration'
-    assert get_tag_xpath(schema_dict, 'bzintegration') == '/fleurInput/cell/bzIntegration'
-    assert get_tag_xpath(schema_dict, 'bZInTegrAtIon') == '/fleurInput/cell/bzIntegration'
-
-    assert get_attrib_xpath(schema_dict, 'jspins') == '/fleurInput/calculationSetup/magnetism/@jspins'
-    assert get_attrib_xpath(schema_dict, 'JSPINS') == '/fleurInput/calculationSetup/magnetism/@jspins'
-    assert get_attrib_xpath(schema_dict, 'jSpInS') == '/fleurInput/calculationSetup/magnetism/@jspins'
-
-
-def test_get_attrib_xpath_input():
-    """
-    Test the path finding for tags for the input schema without additional options
-    And verify with different version of the schema
-    """
-    from masci_tools.util.schema_dict_util import get_attrib_xpath
-
-    #First example easy (magnetism tag is unique and should not differ between the versions)
-    assert get_attrib_xpath(schema_dict_27, 'jspins') == '/fleurInput/calculationSetup/magnetism/@jspins'
-    assert get_attrib_xpath(schema_dict_34, 'jspins') == '/fleurInput/calculationSetup/magnetism/@jspins'
-
-    #Differing paths between the version
-    assert get_attrib_xpath(schema_dict_27, 'mode') == '/fleurInput/calculationSetup/bzIntegration/@mode'
-    assert get_attrib_xpath(schema_dict_34, 'mode') == '/fleurInput/cell/bzIntegration/@mode'
-
-    #Non existent tag in old version
-    assert get_attrib_xpath(schema_dict_34, 'l_mtNocoPot',
-                            exclude=['other']) == '/fleurInput/calculationSetup/magnetism/mtNocoParams/@l_mtNocoPot'
-    with pytest.raises(ValueError,
-                       match='The attrib l_mtNocoPot has no possible paths with the current specification.'):
-        get_attrib_xpath(schema_dict_27, 'l_mtNocoPot')
-
-    #Multiple possible paths
-    with pytest.raises(ValueError,
-                       match='The attrib l_amf has multiple possible paths with the current specification.'):
-        get_attrib_xpath(schema_dict_27, 'l_amf')
-    with pytest.raises(ValueError,
-                       match='The attrib l_amf has multiple possible paths with the current specification.'):
-        get_attrib_xpath(schema_dict_34, 'l_amf')
-
-
-def test_get_relative_attrib_xpath_input():
-    """
-    Test the path finding for tags for the input schema without additional options
-    And verify with different version of the schema
-    """
-    from masci_tools.util.schema_dict_util import get_relative_attrib_xpath
-
-    #First example easy (magnetism tag is unique and should not differ between the versions)
-    assert get_relative_attrib_xpath(schema_dict_34, 'jspins', 'calculationSetup') == './magnetism/@jspins'
-    assert get_relative_attrib_xpath(schema_dict_34, 'jspins', 'magnetism') == './@jspins'
-
-    assert get_relative_attrib_xpath(schema_dict_34, 'jspins', 'magnetism', tag_name='magnetism') == './@jspins'
-
-    with pytest.raises(ValueError, match='No attribute jspins found at tag calculationSetup'):
-        get_relative_attrib_xpath(schema_dict_34, 'jspins', 'calculationSetup', tag_name='calculationSetup')
-
-    #Non existent tag in old version
-    assert get_relative_attrib_xpath(schema_dict_34, 'l_mtNocoPot', 'magnetism') == './mtNocoParams/@l_mtNocoPot'
-    with pytest.raises(
-            ValueError,
-            match='The attrib l_mtNocoPot has multiple possible relative paths with the current specification.'):
-        get_relative_attrib_xpath(schema_dict_34, 'l_mtNocoPot', 'fleurInput')
-
-    with pytest.raises(ValueError,
-                       match='The attrib l_mtNocoPot has no possible relative paths with the current specification.'):
-        get_relative_attrib_xpath(schema_dict_34, 'l_mtNocoPot', 'output')
-
-    #Multiple possible paths
-    with pytest.raises(ValueError,
-                       match='The attrib l_amf has multiple possible relative paths with the current specification.'):
-        get_relative_attrib_xpath(schema_dict_34, 'l_amf', 'fleurInput')
-
-    assert get_relative_attrib_xpath(schema_dict_34, 'l_amf', 'fleurInput', contains='species',
-                                     not_contains='ldaHIA') == './atomSpecies/species/ldaU/@l_amf'
-    assert get_relative_attrib_xpath(schema_dict_34, 'l_amf', 'ldaU') == './@l_amf'
-
-
-def test_get_attrib_xpath_output():
-    """
-    Test the path finding for tags for the input schema without additional options
-    And verify with different version of the schema
-    """
-    from masci_tools.util.schema_dict_util import get_attrib_xpath
-
-    #absolute
-    assert get_attrib_xpath(outschema_dict_31, 'nat') == '/fleurOutput/numericalParameters/atomsInCell/@nat'
-    assert get_attrib_xpath(outschema_dict_34, 'nat') == '/fleurOutput/numericalParameters/atomsInCell/@nat'
-
-    #relative
-    assert get_attrib_xpath(outschema_dict_31, 'qvectors') == './Forcetheorem_SSDISP/@qvectors'
-    assert get_attrib_xpath(outschema_dict_34, 'qvectors') == './Forcetheorem_SSDISP/@qvectors'
-
-
-def test_get_relative_attrib_xpath_output():
-    """
-    Test the path finding for tags for the input schema without additional options
-    And verify with different version of the schema
-    """
-    from masci_tools.util.schema_dict_util import get_relative_attrib_xpath
-
-    assert get_relative_attrib_xpath(outschema_dict_34, 'nat', 'numericalParameters') == './atomsInCell/@nat'
-    assert get_relative_attrib_xpath(outschema_dict_34, 'nat', 'atomsInCell') == './@nat'
-
-    assert get_relative_attrib_xpath(outschema_dict_34, 'qvectors', '.') == './Forcetheorem_SSDISP/@qvectors'
-    assert get_relative_attrib_xpath(outschema_dict_34, 'qvectors', 'Forcetheorem_SSDISP') == './@qvectors'
-
-
-def test_get_attrib_xpath_contains():
-    """
-    Test the selection of paths based on a contained keyword
-    """
-    from masci_tools.util.schema_dict_util import get_attrib_xpath
-
-    schema_dict = schema_dict_34
-
-    with pytest.raises(ValueError,
-                       match='The attrib l_mperp has multiple possible paths with the current specification.'):
-        get_attrib_xpath(schema_dict, 'l_mperp')
-
-    assert get_attrib_xpath(schema_dict, 'l_mperp',
-                            contains='magnetism') == '/fleurInput/calculationSetup/magnetism/mtNocoParams/@l_mperp'
-    assert get_attrib_xpath(schema_dict, 'l_mperp',
-                            contains='greensFunction') == '/fleurInput/calculationSetup/greensFunction/@l_mperp'
-
-    with pytest.raises(ValueError, match='The attrib l_mperp has no possible paths with the current specification.'):
-        get_attrib_xpath(schema_dict, 'l_mperp', contains='atom')
-
-
-def test_get_attrib_xpath_notcontains():
-    """
-    Test the selection of paths based on a contained keyword
-    """
-    from masci_tools.util.schema_dict_util import get_attrib_xpath
-
-    schema_dict = schema_dict_34
-
-    with pytest.raises(ValueError,
-                       match='The attrib l_mperp has multiple possible paths with the current specification.'):
-        get_attrib_xpath(schema_dict, 'l_mperp')
-
-    assert get_attrib_xpath(
-        schema_dict, 'l_mperp',
-        not_contains='greensFunction') == '/fleurInput/calculationSetup/magnetism/mtNocoParams/@l_mperp'
-    assert get_attrib_xpath(schema_dict, 'l_mperp',
-                            not_contains='magnetism') == '/fleurInput/calculationSetup/greensFunction/@l_mperp'
-
-    assert get_attrib_xpath(schema_dict, 'l_mperp', contains='greensFunction',
-                            not_contains='magnetism') == '/fleurInput/calculationSetup/greensFunction/@l_mperp'
-
-    with pytest.raises(ValueError, match='The attrib l_mperp has no possible paths with the current specification.'):
-        get_attrib_xpath(schema_dict, 'l_mperp', not_contains='calculationSetup')
-
-
-def test_get_attrib_xpath_exclude():
-    """
-    Test the selection of paths based on a contained keyword
-    """
-    from masci_tools.util.schema_dict_util import get_attrib_xpath
-
-    schema_dict = schema_dict_34
-
-    with pytest.raises(ValueError,
-                       match='The attrib alpha has multiple possible paths with the current specification.'):
-        get_attrib_xpath(schema_dict, 'alpha')
-
-    assert get_attrib_xpath(schema_dict, 'alpha', exclude=['unique_path',
-                                                           'other']) == '/fleurInput/calculationSetup/scfLoop/@alpha'
-    with pytest.raises(ValueError,
-                       match='The attrib alpha has multiple possible paths with the current specification.'):
-        get_attrib_xpath(schema_dict, 'alpha', exclude=['unique'])
-
-    assert get_attrib_xpath(schema_dict, 'alpha', not_contains='atom',
-                            exclude=['unique'
-                                     ]) == '/fleurInput/calculationSetup/greensFunction/contourSemicircle/@alpha'
-
-
-def test_get_attrib_xpath_exclude_output():
-    """
-    Test the selection of paths based on a contained keyword
-    """
-    from masci_tools.util.schema_dict_util import get_attrib_xpath
-
-    schema_dict = outschema_dict_34
-
-    with pytest.raises(ValueError,
-                       match='The attrib units has multiple possible paths with the current specification.'):
-        get_attrib_xpath(schema_dict, 'units')
-
-    assert get_attrib_xpath(schema_dict, 'units', contains='DMI') == './Forcetheorem_DMI/@units'
-    assert get_attrib_xpath(schema_dict, 'units', exclude=['other'], contains='DMI') == './Forcetheorem_DMI/@units'
-
-    with pytest.raises(ValueError, match='The attrib units has no possible paths with the current specification.'):
-        get_attrib_xpath(schema_dict, 'units', exclude=['unique_path'], contains='DMI')
-
-
-def test_get_tag_info():
-    """
-    Basic test of the `get_tag_info()` function
-    """
-    from masci_tools.util.schema_dict_util import get_tag_info
-
-    schema_dict = schema_dict_34
-
-    EXPECTED_RESULT = {
-        'attribs': {'name', 'element', 'atomicNumber'},
-        'optional': {
-            'energyParameters', 'prodBasis', 'special', 'force', 'nocoParams', 'modInitDen', 'ldaU', 'ldaHIA',
-            'greensfCalculation', 'torgueCalculation', 'lo'
-        },
-        'optional_attribs': {
-            'element': None
-        },
-        'order': [
-            'mtSphere', 'atomicCutoffs', 'electronConfig', 'energyParameters', 'prodBasis', 'special', 'force',
-            'nocoParams', 'modInitDen', 'ldaU', 'ldaHIA', 'greensfCalculation', 'torgueCalculation', 'lo'
-        ],
-        'several': {'ldaU', 'ldaHIA', 'greensfCalculation', 'lo'},
-        'simple': {
-            'mtSphere', 'atomicCutoffs', 'energyParameters', 'prodBasis', 'special', 'force', 'nocoParams',
-            'modInitDen', 'ldaU', 'lo'
-        },
-        'text':
-        set(),
-        'complex': {'electronConfig', 'ldaHIA', 'greensfCalculation', 'torgueCalculation'}
-    }
-
-    res, path = get_tag_info(schema_dict, 'species')
-
-    assert res == EXPECTED_RESULT
-    assert path == '/fleurInput/atomSpecies/species'
-
-    res = get_tag_info(schema_dict, 'species', path_return=False)
-
-    assert res == EXPECTED_RESULT
-
-    with pytest.raises(ValueError, match='The tag ldaHIA has multiple possible paths with the current specification.'):
-        res = get_tag_info(schema_dict, 'ldaHIA')
-
-    EXPECTED_RESULT = {
-        'attribs': {'l', 'U', 'J', 'phi', 'theta', 'l_amf', 'init_occ', 'kkintgrCutoff', 'label'},
-        'optional': {'exc', 'cFCoeff', 'addArg'},
-        'optional_attribs': {
-            'phi': '0.0',
-            'theta': '0.0',
-            'init_occ': 'calc',
-            'kkintgrcutoff': 'calc',
-            'label': 'default'
-        },
-        'order': ['exc', 'cFCoeff', 'addArg'],
-        'several': {'exc', 'cFCoeff', 'addArg'},
-        'simple': {'exc', 'cFCoeff', 'addArg'},
-        'text': set(),
-        'complex': set()
-    }
-
-    res, path = get_tag_info(schema_dict, 'ldaHIA', contains='species')
-
-    assert res == EXPECTED_RESULT
-    assert path == '/fleurInput/atomSpecies/species/ldaHIA'
-
-    EXPECTED_RESULT = {
-        'attribs': {
-            'itmaxHubbard1', 'beta', 'minoccDistance', 'minmatDistance', 'n_occpm', 'dftspinpol', 'fullMatch',
-            'l_nonsphDC', 'l_correctEtot', 'l_forceHIAiteration'
-        },
-        'optional': set(),
-        'optional_attribs': {
-            'beta': '100.0',
-            'minoccdistance': '0.01',
-            'minmatdistance': '0.001',
-            'n_occpm': '2',
-            'dftspinpol': 'F',
-            'fullmatch': 'T',
-            'l_nonsphdc': 'T',
-            'l_correctetot': 'T',
-            'l_forcehiaiteration': 'F',
-        },
-        'order': [],
-        'several': set(),
-        'simple': set(),
-        'text': set(),
-        'complex': set()
-    }
-
-    res, path = get_tag_info(schema_dict, 'ldaHIA', not_contains='atom')
-
-    assert res == EXPECTED_RESULT
-    assert path == '/fleurInput/calculationSetup/ldaHIA'
-
-    with pytest.raises(ValueError, match='The tag ldaHIA has no possible paths with the current specification.'):
-        res = get_tag_info(schema_dict, 'ldaHIA', not_contains='atom', contains='species')
-
 
 def test_read_constants():
     """
@@ -531,7 +90,7 @@ def test_evaluate_attribute(caplog):
     assert pytest.approx(evaluate_attribute(root, schema_dict, 'radius', FLEUR_DEFINED_CONSTANTS,
                                             contains='species')) == [2.2, 2.2]
 
-    with pytest.raises(ValueError, match='The attrib beta has multiple possible paths with the current specification.'):
+    with pytest.raises(NoUniquePathFound):
         evaluate_attribute(root, schema_dict, 'beta', FLEUR_DEFINED_CONSTANTS, exclude=['unique'])
 
     assert pytest.approx(
@@ -551,7 +110,7 @@ def test_evaluate_attribute(caplog):
                            tag_name='nocoParams',
                            not_contains='species')) == [np.pi / 2.0, np.pi / 2.0]
 
-    with pytest.raises(ValueError, match='No attribute TEST found at tag nocoParams'):
+    with pytest.raises(NoPathFound):
         evaluate_attribute(
             root,
             schema_dict,
@@ -578,15 +137,14 @@ def test_evaluate_attribute(caplog):
                               FLEUR_DEFINED_CONSTANTS,
                               tag_name='Forcetheorem_SSDISP') == 'Htr'
 
-    with pytest.raises(ValueError, match='No attribute TEST found at tag Forcetheorem_SSDISP'):
+    with pytest.raises(NoPathFound):
         evaluate_attribute(iteration,
                            outschema_dict_34,
                            'TEST',
                            FLEUR_DEFINED_CONSTANTS,
                            tag_name='Forcetheorem_SSDISP')
 
-    with pytest.raises(ValueError,
-                       match='The attrib spinf has multiple possible paths with the current specification.'):
+    with pytest.raises(NoUniquePathFound):
         evaluate_attribute(root, schema_dict, 'spinf', FLEUR_DEFINED_CONSTANTS)
 
     with pytest.raises(ValueError, match='No values found for attribute radius'):
@@ -629,7 +187,7 @@ def test_evaluate_text(caplog):
     for val, result in zip(positions_out, expected):
         assert pytest.approx(val) == result
 
-    with pytest.raises(ValueError, match='The tag row-1 has multiple possible paths with the current specification.'):
+    with pytest.raises(NoUniquePathFound):
         evaluate_text(root, schema_dict, 'row-1', FLEUR_DEFINED_CONSTANTS)
     #Test the correct passing of contains parameters
 
@@ -645,7 +203,7 @@ def test_evaluate_text(caplog):
                       not_contains='symOp',
                       contains='filmLattice/bravaisMatrix')) == [5.3011797029, 0.0, 0.0]
 
-    with pytest.raises(ValueError, match='The tag TEST has no possible paths with the current specification.'):
+    with pytest.raises(NoPathFound):
         evaluate_text(root, schema_dict, 'TEST', FLEUR_DEFINED_CONSTANTS)
 
     with pytest.raises(ValueError, match='No text found for tag magnetism'):
@@ -686,10 +244,9 @@ def test_evaluate_tag(caplog):
     scfloop = evaluate_tag(root, schema_dict, 'scfLoop', FLEUR_DEFINED_CONSTANTS)
     assert scfloop == expected
 
-    with pytest.raises(ValueError, match='The tag TEST has no possible paths with the current specification.'):
+    with pytest.raises(NoPathFound):
         evaluate_tag(root, schema_dict, 'TEST', FLEUR_DEFINED_CONSTANTS)
-    with pytest.raises(ValueError,
-                       match='The tag mtSphere has multiple possible paths with the current specification.'):
+    with pytest.raises(NoUniquePathFound):
         evaluate_tag(root, schema_dict, 'mtSphere', FLEUR_DEFINED_CONSTANTS)
 
     with pytest.raises(ValueError, match='Failed to evaluate attributes from tag qss'):
@@ -805,10 +362,9 @@ def test_single_value_tag(caplog):
                                             only_required=True)
     assert totalEnergy == expected
 
-    with pytest.raises(ValueError, match='The tag total_energy has no possible paths with the current specification.'):
+    with pytest.raises(NoPathFound):
         evaluate_single_value_tag(root, schema_dict, 'total_energy', FLEUR_DEFINED_CONSTANTS)
-    with pytest.raises(ValueError,
-                       match='The tag totalCharge has multiple possible paths with the current specification.'):
+    with pytest.raises(NoUniquePathFound):
         evaluate_single_value_tag(root, schema_dict, 'totalCharge', FLEUR_DEFINED_CONSTANTS)
 
     expected = {'units': None, 'value': 63.9999999893}
@@ -910,9 +466,9 @@ def test_tag_exists():
     assert not tag_exists(outroot, outschema_dict_34, 'ldaU', contains='species')
     assert tag_exists(outroot, outschema_dict_34, 'ldaU', not_contains='atom')
 
-    with pytest.raises(ValueError, match='The tag ldaU has multiple possible paths with the current specification.'):
+    with pytest.raises(NoUniquePathFound):
         tag_exists(root, schema_dict, 'ldaU')
-    with pytest.raises(ValueError, match='The tag ldaU has no possible paths with the current specification.'):
+    with pytest.raises(NoPathFound):
         tag_exists(root, schema_dict, 'ldaU', contains='group')
 
 
@@ -938,10 +494,9 @@ def test_attrib_exists():
     assert not attrib_exists(root, schema_dict, 'radius', contains='atomGroup')
     assert not attrib_exists(outroot, outschema_dict_34, 'radius', contains='atomGroup')
 
-    with pytest.raises(ValueError,
-                       match='The attrib spinf has multiple possible paths with the current specification.'):
+    with pytest.raises(NoUniquePathFound):
         attrib_exists(root, schema_dict, 'spinf')
-    with pytest.raises(ValueError, match='The attrib spinf has no possible paths with the current specification.'):
+    with pytest.raises(NoPathFound):
         attrib_exists(root, schema_dict, 'spinf', contains='group')
 
 
@@ -969,9 +524,9 @@ def test_get_number_of_nodes():
     assert get_number_of_nodes(outroot, outschema_dict_34, 'filmPos') == 2
     assert get_number_of_nodes(outroot, outschema_dict_34, 'calculationSetup') == 1
 
-    with pytest.raises(ValueError, match='The tag ldaU has multiple possible paths with the current specification.'):
+    with pytest.raises(NoUniquePathFound):
         get_number_of_nodes(root, schema_dict, 'ldaU')
-    with pytest.raises(ValueError, match='The tag ldaU has no possible paths with the current specification.'):
+    with pytest.raises(NoPathFound):
         get_number_of_nodes(root, schema_dict, 'ldaU', contains='group')
 
 

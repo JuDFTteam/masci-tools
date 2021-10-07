@@ -14,19 +14,28 @@
 This module provides the classes for easy acces to information
 from the fleur input and output xsd schema files
 """
-from masci_tools.util.lockable_containers import LockableDict
-from masci_tools.util.schema_dict_util import get_tag_xpath, get_attrib_xpath, get_tag_info
-from .inpschema_todict import create_inpschema_dict
-from .outschema_todict import create_outschema_dict, merge_schema_dicts
 import os
 import warnings
 import tempfile
 import shutil
-from lxml import etree
 from functools import update_wrapper, wraps
+from typing import Iterable, Union, List, Dict, Tuple, Any
+
+from lxml import etree
+
+from masci_tools.util.lockable_containers import LockableDict, LockableList
+from masci_tools.util.case_insensitive_dict import CaseInsensitiveFrozenSet, CaseInsensitiveDict
+from masci_tools.util.xml.common_functions import abs_to_rel_xpath, split_off_tag
+from .inpschema_todict import create_inpschema_dict
+from .outschema_todict import create_outschema_dict, merge_schema_dicts
 
 PACKAGE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 
+class NoPathFound(Exception):
+    pass
+
+class NoUniquePathFound(Exception):
+    pass
 
 def schema_dict_version_dispatch(output_schema=False):
     """
@@ -153,7 +162,10 @@ class SchemaDict(LockableDict):
     All other arguments are passed on to :py:class:`~masci_tools.util.lockable_containers.LockableDict`
 
     """
-    _schema_dict_cache = {}
+    _schema_dict_cache: Dict[Union[str, Tuple[str,str]], 'SchemaDict'] = {}
+    _tag_entries: Tuple[str,...] = ()
+    _attrib_entries: Tuple[str,...] = ()
+    _info_entries: Tuple[str,...] = ()
 
     @classmethod
     def clear_cache(cls):
@@ -167,7 +179,62 @@ class SchemaDict(LockableDict):
         super().__init__(*args, **kwargs)
         super().freeze()
 
-    def get_tag_xpath(self, name, contains=None, not_contains=None):
+    def _find_paths(self, name: str, entries: Iterable[str], contains: Union[str, Iterable[str]]=None, not_contains: Union[str, Iterable[str]]=None) -> List[str]:
+        """
+        Find all paths in the schema_dict in the given entries for the given name
+        and matching the contains/not_contains criteria
+
+        :param name: str, name of the tag
+        :param contains: str or list of str, this string has to be in the final path
+        :param not_contains: str or list of str, this string has to NOT be in the final path
+
+        :returns: list of str, found xpaths matching the criteria
+        """
+
+        if contains is None:
+            contains = set()
+        elif isinstance(contains, str):
+            contains = set([contains])
+        else:
+            contains = set(contains)
+
+        if not_contains is None:
+            not_contains = set()
+        elif isinstance(not_contains, str):
+            not_contains = set([not_contains])
+        else:
+            not_contains = set(not_contains)
+
+        path_list = []
+        for entry in entries:
+            if name in self[entry]:
+                entry_paths = self[entry][name]
+
+                if not isinstance(entry_paths, LockableList):
+                    entry_paths = [entry_paths]
+                else:
+                    entry_paths = entry_paths.get_unlocked()
+
+                invalid_paths = set()
+                for phrase in contains:
+                    for xpath in entry_paths:
+                        if phrase not in xpath:
+                            invalid_paths.add(xpath)
+
+                for phrase in not_contains:
+                    for xpath in entry_paths:
+                        if phrase in xpath:
+                            invalid_paths.add(xpath)
+
+                for invalid in invalid_paths:
+                    entry_paths.remove(invalid)
+
+                path_list += entry_paths
+
+        return path_list
+
+
+    def tag_xpath(self, name: str, contains:Union[str, Iterable[str]]=None, not_contains: Union[str, Iterable[str]]=None) -> str:
         """
         Tries to find a unique path from the schema_dict based on the given name of the tag
         and additional further specifications
@@ -176,57 +243,275 @@ class SchemaDict(LockableDict):
         :param contains: str or list of str, this string has to be in the final path
         :param not_contains: str or list of str, this string has to NOT be in the final path
 
-        :returns: str, xpath to the given tag
+        :returns: str, xpath for the given tag
+
+        :raises NoPathFound: If no path matching the criteria could be found
+        :raises NoUniquePathFound: If multiple paths matching the criteria are found
+        """
+
+        if not self._tag_entries:
+            raise NotImplementedError(f"The method 'tag_xpath' cannot be executed for {self.__class__.__name__}"
+                                       " since no tag entries are defined")
+
+        paths = self._find_paths(name, self._tag_entries, contains=contains, not_contains=not_contains)
+
+        if len(paths) == 1:
+            return paths[0]
+        elif len(paths) == 0:
+            raise NoPathFound(f'The tag {name} has no possible paths with the current specification.\n'
+                            f'contains: {contains}, not_contains: {not_contains}')
+        else:
+            raise NoUniquePathFound(f'The tag {name} has multiple possible paths with the current specification.\n'
+                            f'contains: {contains}, not_contains: {not_contains} \n'
+                            f'These are possible: {paths}')
+
+    def relative_tag_xpath(self, name: str, root_tag: str, contains:Union[str, Iterable[str]]=None, not_contains: Union[str, Iterable[str]]=None) -> str:
+        """
+        Tries to find a unique relative path from the schema_dict based on the given name of the tag
+        name of the root, from which the path should be relative and additional further specifications
+
+        :param name: str, name of the tag
+        :param root_tag: str, name of the tag from which the path should be relative
+        :param contains: str or list of str, this string has to be in the final path
+        :param not_contains: str or list of str, this string has to NOT be in the final path
+
+        :returns: str, xpath for the given tag
 
         :raises ValueError: If no unique path could be found
         """
-        return get_tag_xpath(self, name, contains=contains, not_contains=not_contains)
 
-    def get_attrib_xpath(self, name, contains=None, not_contains=None, exclude=None, tag_name=None):
+        if not self._tag_entries:
+            raise NotImplementedError(f"The method 'relative_tag_xpath' cannot be executed for {self.__class__.__name__}"
+                                       " since no tag entries are defined")
+
+        #The paths have to include the root_tag
+        if contains is None:
+            contains = [root_tag]
+        else:
+            contains = set(contains)
+            contains.add(root_tag)
+
+        paths = self._find_paths(name, self._tag_entries, contains=contains, not_contains=not_contains)
+        relative_paths = {abs_to_rel_xpath(xpath, root_tag) for xpath in paths}
+
+        if len(relative_paths) == 1:
+            return relative_paths.pop()
+        elif len(relative_paths) == 0:
+            raise NoPathFound(f'The tag {name} has no possible relative paths with the current specification.\n'
+                            f'contains: {contains}, not_contains: {not_contains}, root_tag {root_tag}')
+        else:
+            raise NoUniquePathFound(f'The tag {name} has multiple possible relative paths with the current specification.\n'
+                            f'contains: {contains}, not_contains: {not_contains}, root_tag {root_tag} \n'
+                            f'These are possible: {relative_paths}')
+
+    def attrib_xpath(self, name: str, contains: Union[str, Iterable[str]]=None, not_contains: Union[str, Iterable[str]]=None, exclude: Iterable[str]=None, tag_name: str=None) -> str:
         """
         Tries to find a unique path from the schema_dict based on the given name of the attribute
         and additional further specifications
 
+        :param name: str, name of the attribute
+        :param root_tag: str, name of the tag from which the path should be relative
+        :param contains: str or list of str, this string has to be in the final path
+        :param not_contains: str or list of str, this string has to NOT be in the final path
+        :param exclude: list of str, here specific types of attributes can be excluded
+                        valid values are: settable, settable_contains, other
+        :param tag_name: str, if given this name will be used to find a path to a tag with the
+                        same name in :py:meth:`tag_xpath()`
+
+        :returns: str, xpath to the tag with the given attribute
+
+        :raises NoPathFound: If no path matching the criteria could be found
+        :raises NoUniquePathFound: If multiple paths matching the criteria are found
+        """
+        if not self._attrib_entries or not self._info_entries:
+            raise NotImplementedError(f"The method 'attrib_xpath' cannot be executed for {self.__class__.__name__}"
+                                       " since no attrib entries are defined")
+
+        if tag_name is not None:
+            tag_xpath = self.tag_xpath(tag_name, contains=contains, not_contains=not_contains)
+
+            tag_info = self.tag_info(tag_name, contains=contains, not_contains=not_contains,path_return=False,
+                                     multiple_paths=True,)
+
+            if name not in tag_info['attribs']:
+                raise NoPathFound(f'No attribute {name} found at tag {tag_name}')
+            original_case = tag_info['attribs'].original_case[name]
+            return f'{tag_xpath}/@{original_case}'
+
+        entries = list(self._attrib_entries)
+        if exclude is not None:
+            for list_name in exclude:
+                for entry in entries.copy():
+                    if f'{list_name}_attribs' in entry:
+                        entries.remove(entry)
+
+        paths = self._find_paths(name, entries, contains=contains, not_contains=not_contains)
+
+        if len(paths) == 1:
+            return paths[0]
+        elif len(paths) == 0:
+            raise NoPathFound(f'The attrib {name} has no possible paths with the current specification.\n'
+                            f'contains: {contains}, not_contains: {not_contains}, exclude {exclude}')
+        else:
+            raise NoUniquePathFound(f'The attrib {name} has multiple possible paths with the current specification.\n'
+                            f'contains: {contains}, not_contains: {not_contains}, exclude {exclude}\n'
+                            f'These are possible: {paths}')
+
+    def relative_attrib_xpath(self, name: str, root_tag: str, contains: Union[str, Iterable[str]]=None, not_contains: Union[str, Iterable[str]]=None, exclude: Iterable[str]=None, tag_name: str=None) -> str:
+        """
+        Tries to find a unique relative path from the schema_dict based on the given name of the attribute
+        name of the root, from which the path should be relative and additional further specifications
+
+        :param schema_dict: dict, containing all the path information and more
         :param name: str, name of the attribute
         :param contains: str or list of str, this string has to be in the final path
         :param not_contains: str or list of str, this string has to NOT be in the final path
         :param exclude: list of str, here specific types of attributes can be excluded
                         valid values are: settable, settable_contains, other
         :param tag_name: str, if given this name will be used to find a path to a tag with the
-                         same name in :py:func:`get_tag_xpath()`
+                        same name in :py:meth:`relative_tag_xpath()`
 
-        :returns: str, xpath to the tag with the given attribute
+        :returns: str, xpath for the given tag
 
-        :raises ValueError: If no unique path could be found
+        :raises NoPathFound: If no path matching the criteria could be found
+        :raises NoUniquePathFound: If multiple paths matching the criteria are found
         """
-        return get_attrib_xpath(self,
-                                name,
-                                contains=contains,
-                                not_contains=not_contains,
-                                exclude=exclude,
-                                tag_name=tag_name)
 
-    def get_tag_info(self, name, contains=None, not_contains=None, path_return=True, convert_to_builtin=False):
+        if not self._attrib_entries or not self._info_entries:
+            raise NotImplementedError(f"The method 'relative_attrib_xpath' cannot be executed for {self.__class__.__name__}"
+                                       " since no attrib entries are defined")
+
+
+        if tag_name is not None:
+            tag_xpath = self.relative_tag_xpath(
+                                            tag_name,
+                                            root_tag,
+                                            contains=contains,
+                                            not_contains=not_contains)
+
+            tag_info = self.tag_info(
+                                    tag_name,
+                                    path_return=False,
+                                    multiple_paths=True,
+                                    contains=contains,
+                                    not_contains=not_contains)
+
+            if name not in tag_info['attribs']:
+                raise NoPathFound(f'No attribute {name} found at tag {tag_name}')
+
+            original_case = tag_info['attribs'].original_case[name]
+
+            if tag_xpath.endswith('/'):
+                return f'{tag_xpath}@{original_case}'
+            else:
+                return f'{tag_xpath}/@{original_case}'
+
+
+        entries = list(self._attrib_entries)
+        if exclude is not None:
+            for list_name in exclude:
+                for entry in entries.copy():
+                    if f'{list_name}_attribs' in entry:
+                        entries.remove(entry)
+
+        #The paths have to include the root_tag
+        if contains is None:
+            contains = [root_tag]
+        else:
+            contains = set(contains)
+            contains.add(root_tag)
+
+        paths = self._find_paths(name, entries, contains=contains, not_contains=not_contains)
+        relative_paths = {abs_to_rel_xpath(xpath, root_tag) for xpath in paths}
+
+        if len(relative_paths) == 1:
+            return relative_paths.pop()
+        elif len(relative_paths) == 0:
+            raise NoPathFound(f'The attrib {name} has no possible relative paths with the current specification.\n'
+                            f'contains: {contains}, not_contains: {not_contains}, root_tag {root_tag}')
+        else:
+            raise NoUniquePathFound(f'The attrib {name} has multiple possible relative paths with the current specification.\n'
+                            f'contains: {contains}, not_contains: {not_contains}, root_tag {root_tag} \n'
+                            f'These are possible: {relative_paths}')
+
+    def tag_info(self, name: str,
+                 contains: Union[str, Iterable[str]]=None,
+                 not_contains: Union[str, Iterable[str]]=None,
+                 path_return: bool=True,
+                 convert_to_builtin: bool=False,
+                 multiple_paths: bool=False,
+                 parent: bool=False) -> Union[Tuple[Dict[str,Any], Union[str,List[str]]],Dict[str,Any]]:
         """
         Tries to find a unique path from the schema_dict based on the given name of the tag
         and additional further specifications and returns the tag_info entry for this tag
 
+        :param schema_dict: dict, containing all the path information and more
         :param name: str, name of the tag
         :param contains: str or list of str, this string has to be in the final path
         :param not_contains: str or list of str, this string has to NOT be in the final path
         :param path_return: bool, if True the found path will be returned alongside the tag_info
         :param convert_to_builtin: bool, if True the CaseInsensitiveFrozenSets are converetd to normal sets
-                                   with the rigth case of the attributes
+                                with the rigth case of the attributes
+        :param multiple_paths: bool, if True mulitple paths are allowed to match as long as they have the same tag_info
+        :param parent: bool, if True the tag_info for the parent of the tag is returned
 
         :returns: dict, tag_info for the found xpath
         :returns: str, xpath to the tag if `path_return=True`
         """
-        return get_tag_info(self,
-                            name,
-                            contains=contains,
-                            not_contains=not_contains,
-                            path_return=path_return,
-                            convert_to_builtin=convert_to_builtin)
+
+        if not self._tag_entries or not self._info_entries:
+            raise NotImplementedError(f"The method 'tag_info' cannot be executed for {self.__class__.__name__}"
+                                       " since no tag or info entries are defined")
+
+        if multiple_paths:
+            paths = self._find_paths(name, self._tag_entries, contains=contains, not_contains=not_contains)
+        else:
+            paths = [self.tag_xpath(name, contains=contains, not_contains=not_contains)]
+
+        EMPTY_TAG_INFO = CaseInsensitiveDict({
+            'attribs': CaseInsensitiveFrozenSet(),
+            'optional_attribs': {},
+            'optional': CaseInsensitiveFrozenSet(),
+            'order': [],
+            'several': CaseInsensitiveFrozenSet(),
+            'simple': CaseInsensitiveFrozenSet(),
+            'complex': CaseInsensitiveFrozenSet(),
+            'text': CaseInsensitiveFrozenSet()
+        })
+        EMPTY_TAG_INFO.freeze()
+
+        tag_info = None
+        for path in paths:
+
+            if parent:
+                path, _ = split_off_tag(path)
+
+            entry = None
+            for info_entry in self._info_entries:
+                if path in self[info_entry]:
+                    entry = self[info_entry][path]
+            if entry is None:
+                entry = EMPTY_TAG_INFO
+
+            if tag_info is not None:
+                if entry != tag_info:
+                    raise ValueError(f'Differing tag_info for the found paths {paths}')
+            else:
+                tag_info = entry
+
+        if not multiple_paths:
+            paths = paths[0]
+
+        if convert_to_builtin:
+            tag_info = {
+                key: set(val.original_case.values()) if isinstance(val, CaseInsensitiveFrozenSet) else val
+                for key, val in tag_info.items()
+            }
+
+        if path_return:
+            return tag_info, paths
+        else:
+            return tag_info
 
 
 class InputSchemaDict(SchemaDict):
@@ -255,7 +540,11 @@ class InputSchemaDict(SchemaDict):
         :tag_info: For each tag (path), the valid attributes and tags (optional, several,
                    order, simple, text)
     """
-    __version__ = '0.1.0'
+    __version__ = '0.2.0'
+
+    _tag_entries = ('tag_paths',)
+    _attrib_entries = ('unique_attribs','unique_path_attribs', 'other_attribs',)
+    _info_entries = ('tag_info',)
 
     @classmethod
     def fromVersion(cls, version, logger=None, no_cache=False):
@@ -368,7 +657,11 @@ class OutputSchemaDict(SchemaDict):
                              order, simple, text)
     """
 
-    __version__ = '0.1.0'
+    __version__ = '0.2.0'
+
+    _tag_entries = ('tag_paths', 'iteration_tag_paths',)
+    _attrib_entries = ('unique_attribs','unique_path_attribs', 'other_attribs','iteration_unique_attribs', 'iteration_unique_path_attribs', 'iteration_other_attribs')
+    _info_entries = ('tag_info','iteration_tag_info')
 
     @classmethod
     def fromVersion(cls, version, inp_version=None, logger=None, no_cache=False):

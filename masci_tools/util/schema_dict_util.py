@@ -18,68 +18,13 @@ Also provides convienient functions to use just a attribute name for extracting 
 attribute from the right place in the given etree
 """
 from masci_tools.util.parse_tasks_decorators import register_parsing_function
-from masci_tools.util.lockable_containers import LockableList
 from lxml import etree
-
-
-def _find_paths(schema_dict, name, entries, contains=None, not_contains=None):
-    """
-    Find all paths in the schema_dict in the given entries for the given name
-    and matching the contains/not_contains criteria
-
-    :param schema_dict: dict, containing all the path information and more
-    :param name: str, name of the tag
-    :param contains: str or list of str, this string has to be in the final path
-    :param not_contains: str or list of str, this string has to NOT be in the final path
-
-    :returns: list of str, found xpaths matching the criteria
-    """
-
-    if contains is None:
-        contains = set()
-    elif isinstance(contains, str):
-        contains = set([contains])
-    else:
-        contains = set(contains)
-
-    if not_contains is None:
-        not_contains = set()
-    elif isinstance(not_contains, str):
-        not_contains = set([not_contains])
-    else:
-        not_contains = set(not_contains)
-
-    path_list = []
-    for entry in entries:
-        if name in schema_dict[entry]:
-            entry_paths = schema_dict[entry][name]
-
-            if not isinstance(entry_paths, LockableList):
-                entry_paths = [entry_paths]
-            else:
-                entry_paths = entry_paths.get_unlocked()
-
-            invalid_paths = set()
-            for phrase in contains:
-                for xpath in entry_paths:
-                    if phrase not in xpath:
-                        invalid_paths.add(xpath)
-
-            for phrase in not_contains:
-                for xpath in entry_paths:
-                    if phrase in xpath:
-                        invalid_paths.add(xpath)
-
-            for invalid in invalid_paths:
-                entry_paths.remove(invalid)
-
-            path_list += entry_paths
-
-    return path_list
-
+import warnings
 
 def get_tag_xpath(schema_dict, name, contains=None, not_contains=None):
     """
+    DEPRECATED
+
     Tries to find a unique path from the schema_dict based on the given name of the tag
     and additional further specifications
 
@@ -92,27 +37,14 @@ def get_tag_xpath(schema_dict, name, contains=None, not_contains=None):
 
     :raises ValueError: If no unique path could be found
     """
-
-    possible_lists = ['tag_paths']
-
-    if 'iteration_tag_paths' in schema_dict:
-        possible_lists += ['iteration_tag_paths']
-
-    paths = _find_paths(schema_dict, name, possible_lists, contains=contains, not_contains=not_contains)
-
-    if len(paths) == 1:
-        return paths[0]
-    elif len(paths) == 0:
-        raise ValueError(f'The tag {name} has no possible paths with the current specification.\n'
-                         f'contains: {contains}, not_contains: {not_contains}')
-    else:
-        raise ValueError(f'The tag {name} has multiple possible paths with the current specification.\n'
-                         f'contains: {contains}, not_contains: {not_contains} \n'
-                         f'These are possible: {paths}')
+    warnings.warn("get_tag_xpath is deprecated. Use the tag_xpath method on the schema dictionary instead", DeprecationWarning)
+    return schema_dict.tag_xpath(name, contains=contains, not_contains=not_contains)
 
 
 def get_relative_tag_xpath(schema_dict, name, root_tag, contains=None, not_contains=None):
     """
+    DEPRECATED
+
     Tries to find a unique relative path from the schema_dict based on the given name of the tag
     name of the root, from which the path should be relative and additional further specifications
 
@@ -126,39 +58,15 @@ def get_relative_tag_xpath(schema_dict, name, root_tag, contains=None, not_conta
 
     :raises ValueError: If no unique path could be found
     """
-    from masci_tools.util.xml.common_functions import abs_to_rel_xpath
+    warnings.warn("get_relative_tag_xpath is deprecated. Use the relative_tag_xpath method on the schema dictionary instead", DeprecationWarning)
+    return schema_dict.relative_tag_xpath(name, root_tag, contains=contains, not_contains=not_contains)
 
-    possible_lists = ['tag_paths']
-
-    if 'iteration_tag_paths' in schema_dict:
-        possible_lists += ['iteration_tag_paths']
-
-    #The paths have to include the root_tag
-    if contains is None:
-        contains = [root_tag]
-    else:
-        contains = set(contains)
-        contains.add(root_tag)
-
-    paths = _find_paths(schema_dict, name, possible_lists, contains=contains, not_contains=not_contains)
-
-    rel_paths = set()
-    for xpath in paths:
-        rel_paths.add(abs_to_rel_xpath(xpath, root_tag))
-
-    if len(rel_paths) == 1:
-        return rel_paths.pop()
-    elif len(rel_paths) == 0:
-        raise ValueError(f'The tag {name} has no possible relative paths with the current specification.\n'
-                         f'contains: {contains}, not_contains: {not_contains}, root_tag {root_tag}')
-    else:
-        raise ValueError(f'The tag {name} has multiple possible relative paths with the current specification.\n'
-                         f'contains: {contains}, not_contains: {not_contains}, root_tag {root_tag} \n'
-                         f'These are possible: {rel_paths}')
 
 
 def get_attrib_xpath(schema_dict, name, contains=None, not_contains=None, exclude=None, tag_name=None):
     """
+    DEPRECATED
+
     Tries to find a unique path from the schema_dict based on the given name of the attribute
     and additional further specifications
 
@@ -176,44 +84,8 @@ def get_attrib_xpath(schema_dict, name, contains=None, not_contains=None, exclud
 
     :raises ValueError: If no unique path could be found
     """
-
-    if tag_name is not None:
-        tag_xpath = get_tag_xpath(schema_dict, tag_name, contains=contains, not_contains=not_contains)
-
-        err_msg = f'No attribute {name} found at tag {tag_name}'
-        if tag_xpath in schema_dict['tag_info']:
-            if name not in schema_dict['tag_info'][tag_xpath]['attribs']:
-                raise ValueError(err_msg)
-        else:
-            if name not in schema_dict['iteration_tag_info'][tag_xpath]['attribs']:
-                raise ValueError(err_msg)
-        return f'{tag_xpath}/@{name}'
-
-    possible_lists = ['unique_attribs', 'unique_path_attribs', 'other_attribs']
-    output = False
-    if 'iteration_unique_attribs' in schema_dict:
-        #outputschema
-        output = True
-        possible_lists += ['iteration_unique_attribs', 'iteration_unique_path_attribs', 'iteration_other_attribs']
-
-    if exclude is not None:
-        for list_name in exclude:
-            possible_lists.remove(f'{list_name}_attribs')
-            if output:
-                possible_lists.remove(f'iteration_{list_name}_attribs')
-
-    paths = _find_paths(schema_dict, name, possible_lists, contains=contains, not_contains=not_contains)
-
-    if len(paths) == 1:
-        return paths[0]
-    elif len(paths) == 0:
-        raise ValueError(f'The attrib {name} has no possible paths with the current specification.\n'
-                         f'contains: {contains}, not_contains: {not_contains}, exclude {exclude}')
-    else:
-        raise ValueError(f'The attrib {name} has multiple possible paths with the current specification.\n'
-                         f'contains: {contains}, not_contains: {not_contains}, exclude {exclude}\n'
-                         f'These are possible: {paths}')
-
+    warnings.warn("get_attrib_xpath is deprecated. Use the attrib_xpath method on the schema dictionary instead", DeprecationWarning)
+    return schema_dict.attrib_xpath(name, contains=contains, not_contains=not_contains, exclude=exclude, tag_name=tag_name)
 
 def get_relative_attrib_xpath(schema_dict,
                               name,
@@ -223,6 +95,8 @@ def get_relative_attrib_xpath(schema_dict,
                               exclude=None,
                               tag_name=None):
     """
+    DEPRECATED
+
     Tries to find a unique relative path from the schema_dict based on the given name of the attribute
     name of the root, from which the path should be relative and additional further specifications
 
@@ -239,67 +113,8 @@ def get_relative_attrib_xpath(schema_dict,
 
     :raises ValueError: If no unique path could be found
     """
-    from masci_tools.util.xml.common_functions import abs_to_rel_xpath
-
-    if tag_name is not None:
-        tag_xpath = get_relative_tag_xpath(schema_dict,
-                                           tag_name,
-                                           root_tag,
-                                           contains=contains,
-                                           not_contains=not_contains)
-
-        tag_info = get_tag_info(schema_dict,
-                                tag_name,
-                                path_return=False,
-                                multiple_paths=True,
-                                contains=contains,
-                                not_contains=not_contains)
-
-        err_msg = f'No attribute {name} found at tag {tag_name}'
-        if name not in tag_info['attribs']:
-            raise ValueError(err_msg)
-
-        if tag_xpath.endswith('/'):
-            return f'{tag_xpath}@{name}'
-        else:
-            return f'{tag_xpath}/@{name}'
-
-    possible_lists = ['unique_attribs', 'unique_path_attribs', 'other_attribs']
-    output = False
-    if 'iteration_unique_attribs' in schema_dict:
-        #outputschema
-        output = True
-        possible_lists += ['iteration_unique_attribs', 'iteration_unique_path_attribs', 'iteration_other_attribs']
-
-    if exclude is not None:
-        for list_name in exclude:
-            possible_lists.remove(f'{list_name}_attribs')
-            if output:
-                possible_lists.remove(f'iteration_{list_name}_attribs')
-
-    #The paths have to include the root_tag
-    if contains is None:
-        contains = [root_tag]
-    else:
-        contains = set(contains)
-        contains.add(root_tag)
-
-    paths = _find_paths(schema_dict, name, possible_lists, contains=contains, not_contains=not_contains)
-
-    rel_paths = set()
-    for xpath in paths:
-        rel_paths.add(abs_to_rel_xpath(xpath, root_tag))
-
-    if len(rel_paths) == 1:
-        return rel_paths.pop()
-    elif len(rel_paths) == 0:
-        raise ValueError(f'The attrib {name} has no possible relative paths with the current specification.\n'
-                         f'contains: {contains}, not_contains: {not_contains}, root_tag {root_tag}')
-    else:
-        raise ValueError(f'The attrib {name} has multiple possible relative paths with the current specification.\n'
-                         f'contains: {contains}, not_contains: {not_contains}, root_tag {root_tag} \n'
-                         f'These are possible: {rel_paths}')
-
+    warnings.warn("get_relative_attrib_xpath is deprecated. Use the relative_attrib_xpath method on the schema dictionary instead", DeprecationWarning)
+    return schema_dict.relative_attrib_xpath(name, root_tag, contains=contains, not_contains=not_contains, exclude=exclude, tag_name=tag_name)
 
 def get_tag_info(schema_dict,
                  name,
@@ -310,6 +125,8 @@ def get_tag_info(schema_dict,
                  multiple_paths=False,
                  parent=False):
     """
+    DEPRECATED
+
     Tries to find a unique path from the schema_dict based on the given name of the tag
     and additional further specifications and returns the tag_info entry for this tag
 
@@ -326,67 +143,9 @@ def get_tag_info(schema_dict,
     :returns: dict, tag_info for the found xpath
     :returns: str, xpath to the tag if `path_return=True`
     """
-    import copy
-    from masci_tools.util.case_insensitive_dict import CaseInsensitiveFrozenSet, CaseInsensitiveDict
-    from masci_tools.util.xml.common_functions import split_off_tag
+    warnings.warn("get_tag_info is deprecated. Use the tag_info method on the schema dictionary instead", DeprecationWarning)
+    return schema_dict.tag_info(name, contains=contains, not_contains=not_contains, path_return=path_return, convert_to_builtin=convert_to_builtin, multiple_paths=multiple_paths, parent=parent)
 
-    if multiple_paths:
-        possible_lists = ['tag_paths']
-
-        if 'iteration_tag_paths' in schema_dict:
-            possible_lists += ['iteration_tag_paths']
-
-        paths = _find_paths(schema_dict, name, possible_lists, contains=contains, not_contains=not_contains)
-    else:
-        paths = [get_tag_xpath(schema_dict, name, contains=contains, not_contains=not_contains)]
-
-    EMPTY_TAG_INFO = CaseInsensitiveDict({
-        'attribs': CaseInsensitiveFrozenSet(),
-        'optional_attribs': {},
-        'optional': CaseInsensitiveFrozenSet(),
-        'order': [],
-        'several': CaseInsensitiveFrozenSet(),
-        'simple': CaseInsensitiveFrozenSet(),
-        'complex': CaseInsensitiveFrozenSet(),
-        'text': CaseInsensitiveFrozenSet()
-    })
-    EMPTY_TAG_INFO.freeze()
-
-    tag_info = None
-    for path in paths:
-
-        if parent:
-            path, _ = split_off_tag(path)
-
-        if path in schema_dict['tag_info']:
-            entry = schema_dict['tag_info'][path]
-        elif 'iteration_tag_info' in schema_dict:
-            if path in schema_dict['iteration_tag_info']:
-                entry = schema_dict['iteration_tag_info'][path]
-            else:
-                entry = EMPTY_TAG_INFO
-        else:
-            entry = EMPTY_TAG_INFO
-
-        if tag_info is not None:
-            if entry != tag_info:
-                raise ValueError(f'Differing tag_info for the found paths {paths}')
-        else:
-            tag_info = entry
-
-    if not multiple_paths:
-        paths = paths[0]
-
-    if convert_to_builtin:
-        tag_info = {
-            key: set(val.original_case.values()) if isinstance(val, CaseInsensitiveFrozenSet) else val
-            for key, val in tag_info.items()
-        }
-
-    if path_return:
-        return tag_info, paths
-    else:
-        return tag_info
 
 
 def read_constants(root, schema_dict, logger=None):
@@ -402,19 +161,16 @@ def read_constants(root, schema_dict, logger=None):
     :return: a python dictionary with all defined constants
     """
     from masci_tools.util.constants import FLEUR_DEFINED_CONSTANTS
+    from masci_tools.io.parsers.fleur.fleur_schema import NoPathFound
     import copy
-    import warnings
 
     defined_constants = copy.deepcopy(FLEUR_DEFINED_CONSTANTS)
 
     try:
         tag_exists(root, schema_dict, 'constant')
-    except ValueError as err:
-        if 'no possible' in str(err):
-            warnings.warn('Cannot extract custom constants for the given root. Assuming defaults')
-            return defined_constants
-        else:
-            raise
+    except NoPathFound:
+        warnings.warn('Cannot extract custom constants for the given root. Assuming defaults')
+        return defined_constants
 
     if not tag_exists(root, schema_dict, 'constant', logger=logger):  #Avoid warnings for empty constants
         return defined_constants
