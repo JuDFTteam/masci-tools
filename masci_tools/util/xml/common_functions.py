@@ -16,6 +16,7 @@ Common functions for parsing input/output files or XMLschemas from FLEUR
 from lxml import etree
 import warnings
 
+
 def clear_xml(tree):
     """
     Removes comments and executes xinclude tags of an

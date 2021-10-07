@@ -15,6 +15,9 @@ Common functions for converting types to and from XML files
 """
 
 
+from typing import Tuple
+
+
 def convert_to_xml(value, schema_dict, name, text=False, logger=None, list_return=False):
     """
     Tries to converts a given string to the types specified in the schema_dict.
@@ -495,7 +498,7 @@ def convert_fleur_electronconfig(econfig_element):
     return f'{core_config} | {valence_config}'
 
 
-def convert_str_version_number(version_str):
+def convert_str_version_number(version_str: str) -> Tuple[int,int]:
     """
     Convert the version number as a integer for easy comparisons
 

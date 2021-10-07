@@ -115,6 +115,7 @@ def test_outschema_dict(data_regression, inp_version, out_version):
 
     data_regression.check(clean_for_reg_dump(outputschema.get_unlocked()))
 
+
 def test_tag_xpath_input():
     """
     Test the path finding for tags for the input schema without additional options
@@ -122,7 +123,6 @@ def test_tag_xpath_input():
     """
 
     schema_dict = InputSchemaDict.fromVersion('0.27')
-
 
     #First example easy (magnetism tag is unique and should not differ between the versions)
     assert schema_dict.tag_xpath('magnetism') == '/fleurInput/calculationSetup/magnetism'
@@ -144,6 +144,7 @@ def test_tag_xpath_input():
     with pytest.raises(NoUniquePathFound):
         schema_dict.tag_xpath('ldaU')
 
+
 def test_relative_tag_xpath_input():
     """
     Test the path finding for tags for the input schema without additional options
@@ -159,13 +160,13 @@ def test_relative_tag_xpath_input():
     with pytest.raises(NoUniquePathFound):
         schema_dict.relative_tag_xpath('ldaU', 'fleurInput')
 
-    assert schema_dict.relative_tag_xpath('ldaU', 'fleurInput',
-                                  contains='species') == './atomSpecies/species/ldaU'
+    assert schema_dict.relative_tag_xpath('ldaU', 'fleurInput', contains='species') == './atomSpecies/species/ldaU'
     assert schema_dict.relative_tag_xpath('ldaU', 'species') == './ldaU'
 
     schema_dict = InputSchemaDict.fromVersion('0.27')
     with pytest.raises(NoPathFound):
         schema_dict.relative_tag_xpath('DMI', 'forceTheorem')
+
 
 def test_tag_xpath_output():
     """
@@ -182,17 +183,17 @@ def test_tag_xpath_output():
         schema_dict.tag_xpath('inputData')
     with pytest.raises(NoUniquePathFound):
         schema_dict.tag_xpath('spinDependentCharge')
-   
+
     schema_dict = OutputSchemaDict.fromVersion('0.31')
 
     assert schema_dict.tag_xpath('iteration') == '/fleurOutput/scfLoop/iteration'
-    assert schema_dict.tag_xpath('totalEnergy') == './totalEnergy' 
+    assert schema_dict.tag_xpath('totalEnergy') == './totalEnergy'
     with pytest.raises(NoPathFound):
         schema_dict.tag_xpath('fleurInput')
     assert schema_dict.tag_xpath('inputData') == '/fleurOutput/inputData'
     with pytest.raises(NoUniquePathFound):
         schema_dict.tag_xpath('spinDependentCharge')
-   
+
 
 def test_relative_tag_xpath_output():
     """
@@ -244,7 +245,7 @@ def test_tag_xpath_notcontains():
         schema_dict.tag_xpath('ldaU', not_contains='Group')
 
     assert schema_dict.tag_xpath('ldaU', contains='atom',
-                         not_contains='species') == '/fleurInput/atomGroups/atomGroup/ldaU'
+                                 not_contains='species') == '/fleurInput/atomGroups/atomGroup/ldaU'
 
 
 def test_tagattrib_xpath_case_insensitivity():
@@ -255,7 +256,7 @@ def test_tagattrib_xpath_case_insensitivity():
     schema_dict = InputSchemaDict.fromVersion('0.34')
 
     assert schema_dict.tag_xpath('bzIntegration') == '/fleurInput/cell/bzIntegration'
-    assert schema_dict.tag_xpath( 'BZINTEGRATION') == '/fleurInput/cell/bzIntegration'
+    assert schema_dict.tag_xpath('BZINTEGRATION') == '/fleurInput/cell/bzIntegration'
     assert schema_dict.tag_xpath('bzintegration') == '/fleurInput/cell/bzIntegration'
     assert schema_dict.tag_xpath('bZInTegrAtIon') == '/fleurInput/cell/bzIntegration'
 
@@ -271,11 +272,12 @@ def test_attrib_xpath_input():
     """
 
     schema_dict = InputSchemaDict.fromVersion('0.34')
-    
+
     assert schema_dict.attrib_xpath('jspins') == '/fleurInput/calculationSetup/magnetism/@jspins'
-    assert schema_dict.attrib_xpath( 'mode') == '/fleurInput/cell/bzIntegration/@mode'
+    assert schema_dict.attrib_xpath('mode') == '/fleurInput/cell/bzIntegration/@mode'
     assert schema_dict.attrib_xpath('l_mtNocoPot',
-                            exclude=['other']) == '/fleurInput/calculationSetup/magnetism/mtNocoParams/@l_mtNocoPot'
+                                    exclude=['other'
+                                             ]) == '/fleurInput/calculationSetup/magnetism/mtNocoParams/@l_mtNocoPot'
     with pytest.raises(NoUniquePathFound):
         schema_dict.attrib_xpath('l_amf')
 
@@ -296,7 +298,7 @@ def test_relative_attrib_xpath_input():
     Test the path finding for tags for the input schema without additional options
     And verify with different version of the schema
     """
-    
+
     schema_dict = InputSchemaDict.fromVersion('0.34')
 
     #First example easy (magnetism tag is unique and should not differ between the versions)
@@ -321,7 +323,7 @@ def test_relative_attrib_xpath_input():
         schema_dict.relative_attrib_xpath('l_amf', 'fleurInput')
 
     assert schema_dict.relative_attrib_xpath('l_amf', 'fleurInput', contains='species',
-                                     not_contains='ldaHIA') == './atomSpecies/species/ldaU/@l_amf'
+                                             not_contains='ldaHIA') == './atomSpecies/species/ldaU/@l_amf'
     assert schema_dict.relative_attrib_xpath('l_amf', 'ldaU') == './@l_amf'
 
 
@@ -364,10 +366,10 @@ def test_attrib_xpath_contains():
     with pytest.raises(NoUniquePathFound):
         schema_dict.attrib_xpath('l_mperp')
 
+    assert schema_dict.attrib_xpath(
+        'l_mperp', contains='magnetism') == '/fleurInput/calculationSetup/magnetism/mtNocoParams/@l_mperp'
     assert schema_dict.attrib_xpath('l_mperp',
-                            contains='magnetism') == '/fleurInput/calculationSetup/magnetism/mtNocoParams/@l_mperp'
-    assert schema_dict.attrib_xpath('l_mperp',
-                            contains='greensFunction') == '/fleurInput/calculationSetup/greensFunction/@l_mperp'
+                                    contains='greensFunction') == '/fleurInput/calculationSetup/greensFunction/@l_mperp'
 
     with pytest.raises(NoPathFound):
         schema_dict.attrib_xpath('l_mperp', contains='atom')
@@ -383,16 +385,16 @@ def test_attrib_xpath_notcontains():
     with pytest.raises(NoUniquePathFound):
         schema_dict.attrib_xpath('l_mperp')
 
-    assert  schema_dict.attrib_xpath('l_mperp',
-        not_contains='greensFunction') == '/fleurInput/calculationSetup/magnetism/mtNocoParams/@l_mperp'
-    assert  schema_dict.attrib_xpath('l_mperp',
-                            not_contains='magnetism') == '/fleurInput/calculationSetup/greensFunction/@l_mperp'
+    assert schema_dict.attrib_xpath(
+        'l_mperp', not_contains='greensFunction') == '/fleurInput/calculationSetup/magnetism/mtNocoParams/@l_mperp'
+    assert schema_dict.attrib_xpath('l_mperp',
+                                    not_contains='magnetism') == '/fleurInput/calculationSetup/greensFunction/@l_mperp'
 
-    assert  schema_dict.attrib_xpath('l_mperp', contains='greensFunction',
-                            not_contains='magnetism') == '/fleurInput/calculationSetup/greensFunction/@l_mperp'
+    assert schema_dict.attrib_xpath('l_mperp', contains='greensFunction',
+                                    not_contains='magnetism') == '/fleurInput/calculationSetup/greensFunction/@l_mperp'
 
     with pytest.raises(NoPathFound):
-         schema_dict.attrib_xpath('l_mperp', not_contains='calculationSetup')
+        schema_dict.attrib_xpath('l_mperp', not_contains='calculationSetup')
 
 
 def test_attrib_xpath_exclude():
@@ -403,16 +405,16 @@ def test_attrib_xpath_exclude():
     schema_dict = InputSchemaDict.fromVersion('0.34')
 
     with pytest.raises(NoUniquePathFound):
-         schema_dict.attrib_xpath('alpha')
+        schema_dict.attrib_xpath('alpha')
 
-    assert  schema_dict.attrib_xpath('alpha', exclude=['unique_path',
-                                                           'other']) == '/fleurInput/calculationSetup/scfLoop/@alpha'
+    assert schema_dict.attrib_xpath('alpha', exclude=['unique_path',
+                                                      'other']) == '/fleurInput/calculationSetup/scfLoop/@alpha'
     with pytest.raises(NoUniquePathFound):
-         schema_dict.attrib_xpath('alpha', exclude=['unique'])
+        schema_dict.attrib_xpath('alpha', exclude=['unique'])
 
-    assert  schema_dict.attrib_xpath('alpha', not_contains='atom',
-                            exclude=['unique'
-                                     ]) == '/fleurInput/calculationSetup/greensFunction/contourSemicircle/@alpha'
+    assert schema_dict.attrib_xpath(
+        'alpha', not_contains='atom',
+        exclude=['unique']) == '/fleurInput/calculationSetup/greensFunction/contourSemicircle/@alpha'
 
 
 def test_attrib_xpath_exclude_output():
@@ -425,7 +427,7 @@ def test_attrib_xpath_exclude_output():
     with pytest.raises(NoUniquePathFound):
         schema_dict.attrib_xpath('units')
 
-    assert  schema_dict.attrib_xpath('units', contains='DMI') == './Forcetheorem_DMI/@units'
+    assert schema_dict.attrib_xpath('units', contains='DMI') == './Forcetheorem_DMI/@units'
     assert schema_dict.attrib_xpath('units', exclude=['other'], contains='DMI') == './Forcetheorem_DMI/@units'
 
     with pytest.raises(NoPathFound):
@@ -527,7 +529,6 @@ def test_tag_info():
 
     with pytest.raises(NoPathFound):
         schema_dict.tag_info('ldaHIA', not_contains='atom', contains='species')
-
 
 
 def clean_for_reg_dump(value_to_clean):

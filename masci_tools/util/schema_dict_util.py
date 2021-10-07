@@ -22,6 +22,7 @@ from masci_tools.util.parse_tasks_decorators import register_parsing_function
 from lxml import etree
 import warnings
 
+
 def get_tag_xpath(schema_dict, name, contains=None, not_contains=None):
     """
     DEPRECATED
@@ -38,7 +39,8 @@ def get_tag_xpath(schema_dict, name, contains=None, not_contains=None):
 
     :raises ValueError: If no unique path could be found
     """
-    warnings.warn("get_tag_xpath is deprecated. Use the tag_xpath method on the schema dictionary instead", DeprecationWarning)
+    warnings.warn('get_tag_xpath is deprecated. Use the tag_xpath method on the schema dictionary instead',
+                  DeprecationWarning)
     return schema_dict.tag_xpath(name, contains=contains, not_contains=not_contains)
 
 
@@ -59,9 +61,10 @@ def get_relative_tag_xpath(schema_dict, name, root_tag, contains=None, not_conta
 
     :raises ValueError: If no unique path could be found
     """
-    warnings.warn("get_relative_tag_xpath is deprecated. Use the relative_tag_xpath method on the schema dictionary instead", DeprecationWarning)
+    warnings.warn(
+        'get_relative_tag_xpath is deprecated. Use the relative_tag_xpath method on the schema dictionary instead',
+        DeprecationWarning)
     return schema_dict.relative_tag_xpath(name, root_tag, contains=contains, not_contains=not_contains)
-
 
 
 def get_attrib_xpath(schema_dict, name, contains=None, not_contains=None, exclude=None, tag_name=None):
@@ -85,8 +88,14 @@ def get_attrib_xpath(schema_dict, name, contains=None, not_contains=None, exclud
 
     :raises ValueError: If no unique path could be found
     """
-    warnings.warn("get_attrib_xpath is deprecated. Use the attrib_xpath method on the schema dictionary instead", DeprecationWarning)
-    return schema_dict.attrib_xpath(name, contains=contains, not_contains=not_contains, exclude=exclude, tag_name=tag_name)
+    warnings.warn('get_attrib_xpath is deprecated. Use the attrib_xpath method on the schema dictionary instead',
+                  DeprecationWarning)
+    return schema_dict.attrib_xpath(name,
+                                    contains=contains,
+                                    not_contains=not_contains,
+                                    exclude=exclude,
+                                    tag_name=tag_name)
+
 
 def get_relative_attrib_xpath(schema_dict,
                               name,
@@ -114,8 +123,16 @@ def get_relative_attrib_xpath(schema_dict,
 
     :raises ValueError: If no unique path could be found
     """
-    warnings.warn("get_relative_attrib_xpath is deprecated. Use the relative_attrib_xpath method on the schema dictionary instead", DeprecationWarning)
-    return schema_dict.relative_attrib_xpath(name, root_tag, contains=contains, not_contains=not_contains, exclude=exclude, tag_name=tag_name)
+    warnings.warn(
+        'get_relative_attrib_xpath is deprecated. Use the relative_attrib_xpath method on the schema dictionary instead',
+        DeprecationWarning)
+    return schema_dict.relative_attrib_xpath(name,
+                                             root_tag,
+                                             contains=contains,
+                                             not_contains=not_contains,
+                                             exclude=exclude,
+                                             tag_name=tag_name)
+
 
 def get_tag_info(schema_dict,
                  name,
@@ -144,9 +161,15 @@ def get_tag_info(schema_dict,
     :returns: dict, tag_info for the found xpath
     :returns: str, xpath to the tag if `path_return=True`
     """
-    warnings.warn("get_tag_info is deprecated. Use the tag_info method on the schema dictionary instead", DeprecationWarning)
-    return schema_dict.tag_info(name, contains=contains, not_contains=not_contains, path_return=path_return, convert_to_builtin=convert_to_builtin, multiple_paths=multiple_paths, parent=parent)
-
+    warnings.warn('get_tag_info is deprecated. Use the tag_info method on the schema dictionary instead',
+                  DeprecationWarning)
+    return schema_dict.tag_info(name,
+                                contains=contains,
+                                not_contains=not_contains,
+                                path_return=path_return,
+                                convert_to_builtin=convert_to_builtin,
+                                multiple_paths=multiple_paths,
+                                parent=parent)
 
 
 def read_constants(root, schema_dict, logger=None):

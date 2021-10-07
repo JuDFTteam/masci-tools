@@ -641,7 +641,7 @@ def shift_value_species_label(xmltree, schema_dict, atom_label, attributename, v
         kwargs['contains'] = 'species'
 
     species_base_path = schema_dict.tag_xpath('species')
-    attr_base_path = schema_dict.attrib_xpath( attributename, **kwargs)
+    attr_base_path = schema_dict.attrib_xpath(attributename, **kwargs)
     tag_base_xpath, attributename = split_off_attrib(attr_base_path)
 
     if atom_label != 'all':

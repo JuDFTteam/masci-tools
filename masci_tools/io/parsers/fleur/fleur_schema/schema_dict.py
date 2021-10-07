@@ -19,25 +19,31 @@ import warnings
 import tempfile
 import shutil
 from functools import update_wrapper, wraps
-from typing import Iterable, Union, List, Dict, Tuple, Any
+from pathlib import Path
+from typing import Callable, Iterable, Union, List, Dict, Tuple, Any
+from logging import Logger
 
 from lxml import etree
 
 from masci_tools.util.lockable_containers import LockableDict, LockableList
 from masci_tools.util.case_insensitive_dict import CaseInsensitiveFrozenSet, CaseInsensitiveDict
 from masci_tools.util.xml.common_functions import abs_to_rel_xpath, split_off_tag
+from masci_tools.util.xml.converters import convert_str_version_number
 from .inpschema_todict import create_inpschema_dict
 from .outschema_todict import create_outschema_dict, merge_schema_dicts
 
-PACKAGE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
+PACKAGE_DIRECTORY = Path(__file__).parent.resolve()
+
 
 class NoPathFound(Exception):
     pass
 
+
 class NoUniquePathFound(Exception):
     pass
 
-def schema_dict_version_dispatch(output_schema=False):
+
+def schema_dict_version_dispatch(output_schema: bool = False) -> Callable:
     """
     Decorator for creating variations of functions based on the inp/out
     version of the schema_dict. All functions here need to have the signature::
@@ -50,11 +56,11 @@ def schema_dict_version_dispatch(output_schema=False):
     Inspired by singledispatch in the functools module
     """
 
-    def schema_dict_version_dispatch_dec(func):
+    def schema_dict_version_dispatch_dec(func: Callable) -> Callable:
 
-        registry = {}
+        registry: Dict[Callable[[Tuple[int,int]], bool], Callable] = {}
 
-        def dispatch(version):
+        def dispatch(version: str) -> Callable:
 
             default_match = None
             matches = []
@@ -72,8 +78,7 @@ def schema_dict_version_dispatch(output_schema=False):
 
             return matches[0]
 
-        def register(min_version=None, max_version=None):
-            from masci_tools.util.xml.converters import convert_str_version_number
+        def register(min_version: str = None, max_version: str = None):
 
             if min_version is not None:
                 min_version = convert_str_version_number(min_version)
@@ -81,7 +86,7 @@ def schema_dict_version_dispatch(output_schema=False):
             if max_version is not None:
                 max_version = convert_str_version_number(max_version)
 
-            def register_dec(func):
+            def register_dec(func: Callable) -> Callable:
 
                 if min_version is None and max_version is None:
                     raise ValueError('Either a minimum or maximum version has to be given')
@@ -100,7 +105,7 @@ def schema_dict_version_dispatch(output_schema=False):
             return register_dec
 
         @wraps(func)
-        def wrapper(node, schema_dict, *args, **kwargs):
+        def wrapper(node: Any, schema_dict: 'SchemaDict', *args: Any, **kwargs: Any) -> Any:
 
             if not isinstance(schema_dict, SchemaDict):
                 raise ValueError('Second positional argument is not a SchemaDict')
@@ -125,7 +130,7 @@ def schema_dict_version_dispatch(output_schema=False):
     return schema_dict_version_dispatch_dec
 
 
-def _get_latest_available_version(output_schema):
+def _get_latest_available_version(output_schema: bool) -> Tuple[int, int]:
     """
     Determine the newest available version for the schema
 
@@ -133,19 +138,17 @@ def _get_latest_available_version(output_schema):
 
     :returns: version string of the latest version
     """
-    from masci_tools.util.xml.converters import convert_str_version_number
 
     latest_version = (0, 0)
     #Get latest version available
-    for root, dirs, files in os.walk(PACKAGE_DIRECTORY):
-        for folder in dirs:
-            if '.' in folder:
-                if output_schema and not os.path.isfile(os.path.join(root, folder, 'FleurOutputSchema.xsd')):
-                    continue
-                if not output_schema and not os.path.isfile(os.path.join(root, folder, 'FleurInputSchema.xsd')):
-                    continue
+    for f in os.scandir(PACKAGE_DIRECTORY):
+        if f.is_dir() and '.' in f.name:
+            if output_schema and not (Path(f) / 'FleurOutputSchema.xsd').is_file():
+                continue
+            if not output_schema and not (Path(f) / 'FleurOutputSchema.xsd').is_file():
+                continue
 
-                latest_version = max(latest_version, convert_str_version_number(folder))
+            latest_version = max(latest_version, convert_str_version_number(f.name))
 
     return '.'.join(map(str, latest_version))
 
@@ -162,13 +165,13 @@ class SchemaDict(LockableDict):
     All other arguments are passed on to :py:class:`~masci_tools.util.lockable_containers.LockableDict`
 
     """
-    _schema_dict_cache: Dict[Union[str, Tuple[str,str]], 'SchemaDict'] = {}
-    _tag_entries: Tuple[str,...] = ()
-    _attrib_entries: Tuple[str,...] = ()
-    _info_entries: Tuple[str,...] = ()
+    _schema_dict_cache: Dict[Union[str, Tuple[str, str]], 'SchemaDict'] = {}
+    _tag_entries: Tuple[str, ...] = ()
+    _attrib_entries: Tuple[str, ...] = ()
+    _info_entries: Tuple[str, ...] = ()
 
     @classmethod
-    def clear_cache(cls):
+    def clear_cache(cls) -> None:
         """
         Remove all stored entries in the schema dictionary cache
         """
@@ -179,7 +182,11 @@ class SchemaDict(LockableDict):
         super().__init__(*args, **kwargs)
         super().freeze()
 
-    def _find_paths(self, name: str, entries: Iterable[str], contains: Union[str, Iterable[str]]=None, not_contains: Union[str, Iterable[str]]=None) -> List[str]:
+    def _find_paths(self,
+                    name: str,
+                    entries: Iterable[str],
+                    contains: Union[str, Iterable[str]] = None,
+                    not_contains: Union[str, Iterable[str]] = None) -> List[str]:
         """
         Find all paths in the schema_dict in the given entries for the given name
         and matching the contains/not_contains criteria
@@ -233,8 +240,10 @@ class SchemaDict(LockableDict):
 
         return path_list
 
-
-    def tag_xpath(self, name: str, contains:Union[str, Iterable[str]]=None, not_contains: Union[str, Iterable[str]]=None) -> str:
+    def tag_xpath(self,
+                  name: str,
+                  contains: Union[str, Iterable[str]] = None,
+                  not_contains: Union[str, Iterable[str]] = None) -> str:
         """
         Tries to find a unique path from the schema_dict based on the given name of the tag
         and additional further specifications
@@ -251,7 +260,7 @@ class SchemaDict(LockableDict):
 
         if not self._tag_entries:
             raise NotImplementedError(f"The method 'tag_xpath' cannot be executed for {self.__class__.__name__}"
-                                       " since no tag entries are defined")
+                                      ' since no tag entries are defined')
 
         paths = self._find_paths(name, self._tag_entries, contains=contains, not_contains=not_contains)
 
@@ -259,13 +268,17 @@ class SchemaDict(LockableDict):
             return paths[0]
         elif len(paths) == 0:
             raise NoPathFound(f'The tag {name} has no possible paths with the current specification.\n'
-                            f'contains: {contains}, not_contains: {not_contains}')
+                              f'contains: {contains}, not_contains: {not_contains}')
         else:
             raise NoUniquePathFound(f'The tag {name} has multiple possible paths with the current specification.\n'
-                            f'contains: {contains}, not_contains: {not_contains} \n'
-                            f'These are possible: {paths}')
+                                    f'contains: {contains}, not_contains: {not_contains} \n'
+                                    f'These are possible: {paths}')
 
-    def relative_tag_xpath(self, name: str, root_tag: str, contains:Union[str, Iterable[str]]=None, not_contains: Union[str, Iterable[str]]=None) -> str:
+    def relative_tag_xpath(self,
+                           name: str,
+                           root_tag: str,
+                           contains: Union[str, Iterable[str]] = None,
+                           not_contains: Union[str, Iterable[str]] = None) -> str:
         """
         Tries to find a unique relative path from the schema_dict based on the given name of the tag
         name of the root, from which the path should be relative and additional further specifications
@@ -281,8 +294,9 @@ class SchemaDict(LockableDict):
         """
 
         if not self._tag_entries:
-            raise NotImplementedError(f"The method 'relative_tag_xpath' cannot be executed for {self.__class__.__name__}"
-                                       " since no tag entries are defined")
+            raise NotImplementedError(
+                f"The method 'relative_tag_xpath' cannot be executed for {self.__class__.__name__}"
+                ' since no tag entries are defined')
 
         #The paths have to include the root_tag
         if contains is None:
@@ -298,13 +312,19 @@ class SchemaDict(LockableDict):
             return relative_paths.pop()
         elif len(relative_paths) == 0:
             raise NoPathFound(f'The tag {name} has no possible relative paths with the current specification.\n'
-                            f'contains: {contains}, not_contains: {not_contains}, root_tag {root_tag}')
+                              f'contains: {contains}, not_contains: {not_contains}, root_tag {root_tag}')
         else:
-            raise NoUniquePathFound(f'The tag {name} has multiple possible relative paths with the current specification.\n'
-                            f'contains: {contains}, not_contains: {not_contains}, root_tag {root_tag} \n'
-                            f'These are possible: {relative_paths}')
+            raise NoUniquePathFound(
+                f'The tag {name} has multiple possible relative paths with the current specification.\n'
+                f'contains: {contains}, not_contains: {not_contains}, root_tag {root_tag} \n'
+                f'These are possible: {relative_paths}')
 
-    def attrib_xpath(self, name: str, contains: Union[str, Iterable[str]]=None, not_contains: Union[str, Iterable[str]]=None, exclude: Iterable[str]=None, tag_name: str=None) -> str:
+    def attrib_xpath(self,
+                     name: str,
+                     contains: Union[str, Iterable[str]] = None,
+                     not_contains: Union[str, Iterable[str]] = None,
+                     exclude: Iterable[str] = None,
+                     tag_name: str = None) -> str:
         """
         Tries to find a unique path from the schema_dict based on the given name of the attribute
         and additional further specifications
@@ -325,13 +345,18 @@ class SchemaDict(LockableDict):
         """
         if not self._attrib_entries or not self._info_entries:
             raise NotImplementedError(f"The method 'attrib_xpath' cannot be executed for {self.__class__.__name__}"
-                                       " since no attrib entries are defined")
+                                      ' since no attrib entries are defined')
 
         if tag_name is not None:
             tag_xpath = self.tag_xpath(tag_name, contains=contains, not_contains=not_contains)
 
-            tag_info = self.tag_info(tag_name, contains=contains, not_contains=not_contains,path_return=False,
-                                     multiple_paths=True,)
+            tag_info = self.tag_info(
+                tag_name,
+                contains=contains,
+                not_contains=not_contains,
+                path_return=False,
+                multiple_paths=True,
+            )
 
             if name not in tag_info['attribs']:
                 raise NoPathFound(f'No attribute {name} found at tag {tag_name}')
@@ -351,13 +376,19 @@ class SchemaDict(LockableDict):
             return paths[0]
         elif len(paths) == 0:
             raise NoPathFound(f'The attrib {name} has no possible paths with the current specification.\n'
-                            f'contains: {contains}, not_contains: {not_contains}, exclude {exclude}')
+                              f'contains: {contains}, not_contains: {not_contains}, exclude {exclude}')
         else:
             raise NoUniquePathFound(f'The attrib {name} has multiple possible paths with the current specification.\n'
-                            f'contains: {contains}, not_contains: {not_contains}, exclude {exclude}\n'
-                            f'These are possible: {paths}')
+                                    f'contains: {contains}, not_contains: {not_contains}, exclude {exclude}\n'
+                                    f'These are possible: {paths}')
 
-    def relative_attrib_xpath(self, name: str, root_tag: str, contains: Union[str, Iterable[str]]=None, not_contains: Union[str, Iterable[str]]=None, exclude: Iterable[str]=None, tag_name: str=None) -> str:
+    def relative_attrib_xpath(self,
+                              name: str,
+                              root_tag: str,
+                              contains: Union[str, Iterable[str]] = None,
+                              not_contains: Union[str, Iterable[str]] = None,
+                              exclude: Iterable[str] = None,
+                              tag_name: str = None) -> str:
         """
         Tries to find a unique relative path from the schema_dict based on the given name of the attribute
         name of the root, from which the path should be relative and additional further specifications
@@ -378,23 +409,18 @@ class SchemaDict(LockableDict):
         """
 
         if not self._attrib_entries or not self._info_entries:
-            raise NotImplementedError(f"The method 'relative_attrib_xpath' cannot be executed for {self.__class__.__name__}"
-                                       " since no attrib entries are defined")
-
+            raise NotImplementedError(
+                f"The method 'relative_attrib_xpath' cannot be executed for {self.__class__.__name__}"
+                ' since no attrib entries are defined')
 
         if tag_name is not None:
-            tag_xpath = self.relative_tag_xpath(
-                                            tag_name,
-                                            root_tag,
-                                            contains=contains,
-                                            not_contains=not_contains)
+            tag_xpath = self.relative_tag_xpath(tag_name, root_tag, contains=contains, not_contains=not_contains)
 
-            tag_info = self.tag_info(
-                                    tag_name,
-                                    path_return=False,
-                                    multiple_paths=True,
-                                    contains=contains,
-                                    not_contains=not_contains)
+            tag_info = self.tag_info(tag_name,
+                                     path_return=False,
+                                     multiple_paths=True,
+                                     contains=contains,
+                                     not_contains=not_contains)
 
             if name not in tag_info['attribs']:
                 raise NoPathFound(f'No attribute {name} found at tag {tag_name}')
@@ -405,7 +431,6 @@ class SchemaDict(LockableDict):
                 return f'{tag_xpath}@{original_case}'
             else:
                 return f'{tag_xpath}/@{original_case}'
-
 
         entries = list(self._attrib_entries)
         if exclude is not None:
@@ -428,19 +453,21 @@ class SchemaDict(LockableDict):
             return relative_paths.pop()
         elif len(relative_paths) == 0:
             raise NoPathFound(f'The attrib {name} has no possible relative paths with the current specification.\n'
-                            f'contains: {contains}, not_contains: {not_contains}, root_tag {root_tag}')
+                              f'contains: {contains}, not_contains: {not_contains}, root_tag {root_tag}')
         else:
-            raise NoUniquePathFound(f'The attrib {name} has multiple possible relative paths with the current specification.\n'
-                            f'contains: {contains}, not_contains: {not_contains}, root_tag {root_tag} \n'
-                            f'These are possible: {relative_paths}')
+            raise NoUniquePathFound(
+                f'The attrib {name} has multiple possible relative paths with the current specification.\n'
+                f'contains: {contains}, not_contains: {not_contains}, root_tag {root_tag} \n'
+                f'These are possible: {relative_paths}')
 
-    def tag_info(self, name: str,
-                 contains: Union[str, Iterable[str]]=None,
-                 not_contains: Union[str, Iterable[str]]=None,
-                 path_return: bool=True,
-                 convert_to_builtin: bool=False,
-                 multiple_paths: bool=False,
-                 parent: bool=False) -> Union[Tuple[Dict[str,Any], Union[str,List[str]]],Dict[str,Any]]:
+    def tag_info(self,
+                 name: str,
+                 contains: Union[str, Iterable[str]] = None,
+                 not_contains: Union[str, Iterable[str]] = None,
+                 path_return: bool = True,
+                 convert_to_builtin: bool = False,
+                 multiple_paths: bool = False,
+                 parent: bool = False) -> Union[Tuple[Dict[str, Any], Union[str, List[str]]], Dict[str, Any]]:
         """
         Tries to find a unique path from the schema_dict based on the given name of the tag
         and additional further specifications and returns the tag_info entry for this tag
@@ -461,7 +488,7 @@ class SchemaDict(LockableDict):
 
         if not self._tag_entries or not self._info_entries:
             raise NotImplementedError(f"The method 'tag_info' cannot be executed for {self.__class__.__name__}"
-                                       " since no tag or info entries are defined")
+                                      ' since no tag or info entries are defined')
 
         if multiple_paths:
             paths = self._find_paths(name, self._tag_entries, contains=contains, not_contains=not_contains)
@@ -543,11 +570,15 @@ class InputSchemaDict(SchemaDict):
     __version__ = '0.2.0'
 
     _tag_entries = ('tag_paths',)
-    _attrib_entries = ('unique_attribs','unique_path_attribs', 'other_attribs',)
+    _attrib_entries = (
+        'unique_attribs',
+        'unique_path_attribs',
+        'other_attribs',
+    )
     _info_entries = ('tag_info',)
 
     @classmethod
-    def fromVersion(cls, version, logger=None, no_cache=False):
+    def fromVersion(cls, version: str, logger: Logger = None, no_cache: bool = False) -> 'InputSchemaDict':
         """
         load the FleurInputSchema dict for the specified version
 
@@ -556,10 +587,9 @@ class InputSchemaDict(SchemaDict):
 
         :return: InputSchemaDict object with the information for the provided version
         """
-        fleur_schema_path = f'./{version}/FleurInputSchema.xsd'
-        schema_file_path = os.path.abspath(os.path.join(PACKAGE_DIRECTORY, fleur_schema_path))
+        schema_file_path = PACKAGE_DIRECTORY / version / 'FleurInputSchema.xsd'
 
-        if not os.path.isfile(schema_file_path):
+        if not schema_file_path.is_file():
 
             latest_version = _get_latest_available_version(output_schema=False)
 
@@ -575,8 +605,7 @@ class InputSchemaDict(SchemaDict):
                         f"No Input Schema available for version '{version}'; falling back to '{latest_version}'")
 
                 version = latest_version
-                fleur_schema_path = f'./{latest_version}/FleurInputSchema.xsd'
-                schema_file_path = os.path.abspath(os.path.join(PACKAGE_DIRECTORY, fleur_schema_path))
+                schema_file_path = schema_file_path = PACKAGE_DIRECTORY / version / 'FleurInputSchema.xsd'
 
         if version in cls._schema_dict_cache and not no_cache:
             return cls._schema_dict_cache[version]
@@ -586,7 +615,7 @@ class InputSchemaDict(SchemaDict):
         return cls._schema_dict_cache[version]
 
     @classmethod
-    def fromPath(cls, path):
+    def fromPath(cls, path: Path) -> 'InputSchemaDict':
         """
         load the FleurInputSchema dict for the specified FleurInputSchema file
 
@@ -594,6 +623,7 @@ class InputSchemaDict(SchemaDict):
 
         :return: InputSchemaDict object with the information for the provided file
         """
+        path = os.fspath(path)
         schema_dict = create_inpschema_dict(path)
 
         xmlschema_doc = etree.parse(path)
@@ -602,12 +632,10 @@ class InputSchemaDict(SchemaDict):
         return cls(schema_dict, xmlschema=xmlschema)
 
     @property
-    def inp_version(self):
+    def inp_version(self) -> Tuple[int, int]:
         """
         Returns the input version as an integer for comparisons (`>` or `<`)
         """
-        from masci_tools.util.xml.converters import convert_str_version_number
-
         return convert_str_version_number(self.get('inp_version', ''))
 
 
@@ -659,12 +687,20 @@ class OutputSchemaDict(SchemaDict):
 
     __version__ = '0.2.0'
 
-    _tag_entries = ('tag_paths', 'iteration_tag_paths',)
-    _attrib_entries = ('unique_attribs','unique_path_attribs', 'other_attribs','iteration_unique_attribs', 'iteration_unique_path_attribs', 'iteration_other_attribs')
-    _info_entries = ('tag_info','iteration_tag_info')
+    _tag_entries = (
+        'tag_paths',
+        'iteration_tag_paths',
+    )
+    _attrib_entries = ('unique_attribs', 'unique_path_attribs', 'other_attribs', 'iteration_unique_attribs',
+                       'iteration_unique_path_attribs', 'iteration_other_attribs')
+    _info_entries = ('tag_info', 'iteration_tag_info')
 
     @classmethod
-    def fromVersion(cls, version, inp_version=None, logger=None, no_cache=False):
+    def fromVersion(cls,
+                    version: str,
+                    inp_version: str = None,
+                    logger: Logger = None,
+                    no_cache: bool = False) -> 'OutputSchemaDict':
         """
         load the FleurOutputSchema dict for the specified version
 
@@ -674,16 +710,13 @@ class OutputSchemaDict(SchemaDict):
 
         :return: OutputSchemaDict object with the information for the provided versions
         """
-        fleur_schema_path = f'./{version}/FleurOutputSchema.xsd'
-        schema_file_path = os.path.abspath(os.path.join(PACKAGE_DIRECTORY, fleur_schema_path))
-
         if inp_version is None:
             inp_version = version
 
-        fleur_inpschema_path = f'./{inp_version}/FleurInputSchema.xsd'
-        inpschema_file_path = os.path.abspath(os.path.join(PACKAGE_DIRECTORY, fleur_inpschema_path))
+        schema_file_path = PACKAGE_DIRECTORY / version / 'FleurOutputSchema.xsd'
+        inpschema_file_path = PACKAGE_DIRECTORY / inp_version / 'FleurInputSchema.xsd'
 
-        if not os.path.isfile(schema_file_path):
+        if not schema_file_path.is_file():
             latest_version = _get_latest_available_version(output_schema=True)
 
             if int(version.split('.')[1]) < int(latest_version.split('.')[1]):
@@ -697,11 +730,10 @@ class OutputSchemaDict(SchemaDict):
                     warnings.warn(
                         f"No Output Schema available for version '{version}'; falling back to '{latest_version}'")
 
-                fleur_schema_path = f'./{latest_version}/FleurOutputSchema.xsd'
-                schema_file_path = os.path.abspath(os.path.join(PACKAGE_DIRECTORY, fleur_schema_path))
                 version = latest_version
+                schema_file_path = PACKAGE_DIRECTORY / version / 'FleurOutputSchema.xsd'
 
-        if not os.path.isfile(inpschema_file_path):
+        if not inpschema_file_path.is_file():
             latest_inpversion = _get_latest_available_version(output_schema=False)
 
             if int(inp_version.split('.')[1]) < int(latest_inpversion.split('.')[1]):
@@ -715,9 +747,8 @@ class OutputSchemaDict(SchemaDict):
                     warnings.warn(
                         f"No Input Schema available for version '{inp_version}'; falling back to '{latest_inpversion}'")
 
-                fleur_inpschema_path = f'./{latest_inpversion}/FleurInputSchema.xsd'
-                inpschema_file_path = os.path.abspath(os.path.join(PACKAGE_DIRECTORY, fleur_inpschema_path))
                 inp_version = latest_inpversion
+                inpschema_file_path = PACKAGE_DIRECTORY / version / 'FleurInputSchema.xsd'
 
         if inp_version != version and logger is not None:
             logger.info('Creating OutputSchemaDict object for differing versions (out: %s; inp: %s)', version,
@@ -734,18 +765,21 @@ class OutputSchemaDict(SchemaDict):
         return cls._schema_dict_cache[(version, inp_version)]
 
     @classmethod
-    def fromPath(cls, path, inp_path=None, inpschema_dict=None):
+    def fromPath(cls, path: Path, inp_path: Path = None, inpschema_dict: InputSchemaDict = None) -> 'OutputSchemaDict':
         """
         load the FleurOutputSchema dict for the specified paths
 
-        :param path: str path to the FleurOutputSchema file
-        :param inp_path: str path to the FleurInputSchema file (defaults to same folder as path)
+        :param path: path to the FleurOutputSchema file
+        :param inp_path: path to the FleurInputSchema file (defaults to same folder as path)
 
         :return: OutputSchemaDict object with the information for the provided files
         """
 
         if inp_path is None:
-            inp_path = path.replace('FleurOutputSchema', 'FleurInputSchema')
+            inp_path = Path(path).parent / 'FleurInputSchema.xsd'
+
+        path = os.fspath(path)
+        inp_path = os.fspath(inp_path)
 
         if inpschema_dict is None:
             inpschema_dict = create_inpschema_dict(inp_path)
@@ -754,30 +788,27 @@ class OutputSchemaDict(SchemaDict):
         schema_dict = merge_schema_dicts(inpschema_dict, schema_dict)
 
         with tempfile.TemporaryDirectory() as td:
-            temp_input_schema_path = os.path.join(td, 'FleurInputSchema.xsd')
+            td = Path(td)
+            temp_input_schema_path = td / 'FleurInputSchema.xsd'
             shutil.copy(inp_path, temp_input_schema_path)
 
-            temp_output_schema_path = os.path.join(td, 'FleurOutputSchema.xsd')
+            temp_output_schema_path = td / 'FleurOutputSchema.xsd'
             shutil.copy(path, temp_output_schema_path)
-            xmlschema_doc = etree.parse(temp_output_schema_path)
+            xmlschema_doc = etree.parse(os.fspath(temp_output_schema_path))
             xmlschema = etree.XMLSchema(xmlschema_doc)
 
         return cls(schema_dict, xmlschema=xmlschema)
 
     @property
-    def inp_version(self):
+    def inp_version(self) -> Tuple[int, int]:
         """
         Returns the input version as an integer for comparisons (`>` or `<`)
         """
-        from masci_tools.util.xml.converters import convert_str_version_number
-
         return convert_str_version_number(self.get('inp_version', ''))
 
     @property
-    def out_version(self):
+    def out_version(self) -> Tuple[int, int]:
         """
         Returns the output version as an integer for comparisons (`>` or `<`)
         """
-        from masci_tools.util.xml.converters import convert_str_version_number
-
         return convert_str_version_number(self.get('out_version', ''))
