@@ -21,6 +21,11 @@ import shutil
 from functools import update_wrapper, wraps
 from pathlib import Path
 from typing import Callable, Iterable, Union, List, Dict, Tuple, Any
+try:
+    from typing import Literal
+except ImportError:
+    from typing_extensions import Literal
+
 from logging import Logger
 
 from lxml import etree
@@ -58,9 +63,9 @@ def schema_dict_version_dispatch(output_schema: bool = False) -> Callable:
 
     def schema_dict_version_dispatch_dec(func: Callable) -> Callable:
 
-        registry: Dict[Callable[[Tuple[int,int]], bool], Callable] = {}
+        registry: Dict[Union[Callable[[Tuple[int, int]], bool], Literal['default']], Callable] = {}
 
-        def dispatch(version: str) -> Callable:
+        def dispatch(version: Tuple[int, int]) -> Callable:
 
             default_match = None
             matches = []
@@ -115,14 +120,16 @@ def schema_dict_version_dispatch(output_schema: bool = False) -> Callable:
                     raise ValueError('Second positional argument is not a OutputSchemaDict')
                 version = schema_dict.out_version
             else:
+                if not isinstance(schema_dict, InputSchemaDict):
+                    raise ValueError('Second positional argument is not a InputSchemaDict')
                 version = schema_dict.inp_version
 
             return dispatch(version)(node, schema_dict, *args, **kwargs)
 
         registry['default'] = func
-        wrapper.register = register
-        wrapper.dispatch = dispatch
-        wrapper.registry = registry
+        wrapper.register = register  #type:  ignore
+        wrapper.dispatch = dispatch  #type:  ignore
+        wrapper.registry = registry  #type:  ignore
         update_wrapper(wrapper, func)
 
         return wrapper
@@ -130,7 +137,7 @@ def schema_dict_version_dispatch(output_schema: bool = False) -> Callable:
     return schema_dict_version_dispatch_dec
 
 
-def _get_latest_available_version(output_schema: bool) -> Tuple[int, int]:
+def _get_latest_available_version(output_schema: bool) -> str:
     """
     Determine the newest available version for the schema
 
@@ -165,7 +172,7 @@ class SchemaDict(LockableDict):
     All other arguments are passed on to :py:class:`~masci_tools.util.lockable_containers.LockableDict`
 
     """
-    _schema_dict_cache: Dict[Union[str, Tuple[str, str]], 'SchemaDict'] = {}
+    _schema_dict_cache: Dict[Any,'SchemaDict'] = {}
     _tag_entries: Tuple[str, ...] = ()
     _attrib_entries: Tuple[str, ...] = ()
     _info_entries: Tuple[str, ...] = ()
@@ -350,11 +357,10 @@ class SchemaDict(LockableDict):
         if tag_name is not None:
             tag_xpath = self.tag_xpath(tag_name, contains=contains, not_contains=not_contains)
 
-            tag_info = self.tag_info(
+            tag_info, _ = self.tag_info(
                 tag_name,
                 contains=contains,
                 not_contains=not_contains,
-                path_return=False,
                 multiple_paths=True,
             )
 
@@ -416,8 +422,7 @@ class SchemaDict(LockableDict):
         if tag_name is not None:
             tag_xpath = self.relative_tag_xpath(tag_name, root_tag, contains=contains, not_contains=not_contains)
 
-            tag_info = self.tag_info(tag_name,
-                                     path_return=False,
+            tag_info, _ = self.tag_info(tag_name,
                                      multiple_paths=True,
                                      contains=contains,
                                      not_contains=not_contains)
@@ -467,7 +472,7 @@ class SchemaDict(LockableDict):
                  path_return: bool = True,
                  convert_to_builtin: bool = False,
                  multiple_paths: bool = False,
-                 parent: bool = False) -> Union[Tuple[Dict[str, Any], Union[str, List[str]]], Dict[str, Any]]:
+                 parent: bool = False) -> Tuple[Dict[str, Any], Union[str, List[str]]]:
         """
         Tries to find a unique path from the schema_dict based on the given name of the tag
         and additional further specifications and returns the tag_info entry for this tag
@@ -526,9 +531,6 @@ class SchemaDict(LockableDict):
             else:
                 tag_info = entry
 
-        if not multiple_paths:
-            paths = paths[0]
-
         if convert_to_builtin:
             tag_info = {
                 key: set(val.original_case.values()) if isinstance(val, CaseInsensitiveFrozenSet) else val
@@ -536,7 +538,10 @@ class SchemaDict(LockableDict):
             }
 
         if path_return:
-            return tag_info, paths
+            if not multiple_paths:
+                return tag_info, paths[0]
+            else:
+                return tag_info, paths
         else:
             return tag_info
 
@@ -569,6 +574,7 @@ class InputSchemaDict(SchemaDict):
     """
     __version__ = '0.2.0'
 
+    _schema_dict_cache: Dict[str, 'InputSchemaDict'] = {}  #type:ignore
     _tag_entries = ('tag_paths',)
     _attrib_entries = (
         'unique_attribs',
@@ -687,6 +693,7 @@ class OutputSchemaDict(SchemaDict):
 
     __version__ = '0.2.0'
 
+    _schema_dict_cache: Dict[Tuple[str,str], 'OutputSchemaDict'] = {}  #type:ignore
     _tag_entries = (
         'tag_paths',
         'iteration_tag_paths',

@@ -20,6 +20,7 @@ import importlib.util
 from importlib import import_module
 import copy
 import os
+from typing import Callable, Dict, Literal, List
 import warnings
 
 from masci_tools.util.xml.converters import convert_str_version_number
@@ -28,7 +29,7 @@ PACKAGE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_TASK_FILE = os.path.abspath(os.path.join(PACKAGE_DIRECTORY, '../io/parsers/fleur/default_parse_tasks.py'))
 
 
-def find_migration(start, target, migrations):
+def find_migration(start: str, target: str, migrations: Dict[str,Dict[str,Union[Literal['compatible'],Callable]]]) -> List[Callable]:
     """
     Tries to find a migration path from the start to the target version
     via the defined migration functions
