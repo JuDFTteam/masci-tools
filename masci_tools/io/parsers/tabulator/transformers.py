@@ -26,8 +26,8 @@ import dataclasses as _dc
 class TransformedValue:
     """Return type of the :py:class:`~.Transformer`."""
     is_transformed: bool = False
-    value: object = None
-    error: Exception = None
+    value: _typing.Union[object, dict] = None
+    error: _typing.Optional[Exception] = None
 
 
 class Transformer(_abc.ABC):
