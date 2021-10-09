@@ -20,7 +20,7 @@ import importlib.util
 from importlib import import_module
 import copy
 import os
-from typing import Callable, Dict, Literal, List
+from typing import Callable, Dict, Literal, List, Union
 import warnings
 
 from masci_tools.util.xml.converters import convert_str_version_number

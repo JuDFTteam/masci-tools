@@ -86,10 +86,10 @@ def schema_dict_version_dispatch(output_schema: bool = False) -> Callable:
         def register(min_version: str = None, max_version: str = None):
 
             if min_version is not None:
-                min_version = convert_str_version_number(min_version)
+                min_version_tuple = convert_str_version_number(min_version)
 
             if max_version is not None:
-                max_version = convert_str_version_number(max_version)
+                max_version_tuple = convert_str_version_number(max_version)
 
             def register_dec(func: Callable) -> Callable:
 
@@ -97,11 +97,11 @@ def schema_dict_version_dispatch(output_schema: bool = False) -> Callable:
                     raise ValueError('Either a minimum or maximum version has to be given')
 
                 if min_version is not None and max_version is not None:
-                    cond_func = lambda version: min_version <= version <= max_version
+                    cond_func = lambda version: min_version_tuple <= version <= max_version_tuple
                 elif min_version is not None:
-                    cond_func = lambda version: version >= min_version
+                    cond_func = lambda version: version >= min_version_tuple
                 else:
-                    cond_func = lambda version: version <= max_version
+                    cond_func = lambda version: version <= max_version_tuple
 
                 registry[cond_func] = func
 
@@ -110,7 +110,7 @@ def schema_dict_version_dispatch(output_schema: bool = False) -> Callable:
             return register_dec
 
         @wraps(func)
-        def wrapper(node: Any, schema_dict: 'SchemaDict', *args: Any, **kwargs: Any) -> Any:
+        def wrapper(node: Any, schema_dict: Union['InputSchemaDict', 'OutputSchemaDict'], *args: Any, **kwargs: Any) -> Any:
 
             if not isinstance(schema_dict, SchemaDict):
                 raise ValueError('Second positional argument is not a SchemaDict')
@@ -120,8 +120,6 @@ def schema_dict_version_dispatch(output_schema: bool = False) -> Callable:
                     raise ValueError('Second positional argument is not a OutputSchemaDict')
                 version = schema_dict.out_version
             else:
-                if not isinstance(schema_dict, InputSchemaDict):
-                    raise ValueError('Second positional argument is not a InputSchemaDict')
                 version = schema_dict.inp_version
 
             return dispatch(version)(node, schema_dict, *args, **kwargs)
@@ -172,7 +170,7 @@ class SchemaDict(LockableDict):
     All other arguments are passed on to :py:class:`~masci_tools.util.lockable_containers.LockableDict`
 
     """
-    _schema_dict_cache: Dict[Any,'SchemaDict'] = {}
+    _schema_dict_cache: Dict[Any, 'SchemaDict'] = {}
     _tag_entries: Tuple[str, ...] = ()
     _attrib_entries: Tuple[str, ...] = ()
     _info_entries: Tuple[str, ...] = ()
@@ -422,10 +420,7 @@ class SchemaDict(LockableDict):
         if tag_name is not None:
             tag_xpath = self.relative_tag_xpath(tag_name, root_tag, contains=contains, not_contains=not_contains)
 
-            tag_info, _ = self.tag_info(tag_name,
-                                     multiple_paths=True,
-                                     contains=contains,
-                                     not_contains=not_contains)
+            tag_info, _ = self.tag_info(tag_name, multiple_paths=True, contains=contains, not_contains=not_contains)
 
             if name not in tag_info['attribs']:
                 raise NoPathFound(f'No attribute {name} found at tag {tag_name}')
@@ -621,7 +616,7 @@ class InputSchemaDict(SchemaDict):
         return cls._schema_dict_cache[version]
 
     @classmethod
-    def fromPath(cls, path: Path) -> 'InputSchemaDict':
+    def fromPath(cls, path: os.PathLike) -> 'InputSchemaDict':
         """
         load the FleurInputSchema dict for the specified FleurInputSchema file
 
@@ -693,7 +688,7 @@ class OutputSchemaDict(SchemaDict):
 
     __version__ = '0.2.0'
 
-    _schema_dict_cache: Dict[Tuple[str,str], 'OutputSchemaDict'] = {}  #type:ignore
+    _schema_dict_cache: Dict[Tuple[str, str], 'OutputSchemaDict'] = {}  #type:ignore
     _tag_entries = (
         'tag_paths',
         'iteration_tag_paths',
@@ -772,7 +767,10 @@ class OutputSchemaDict(SchemaDict):
         return cls._schema_dict_cache[(version, inp_version)]
 
     @classmethod
-    def fromPath(cls, path: Path, inp_path: Path = None, inpschema_dict: InputSchemaDict = None) -> 'OutputSchemaDict':
+    def fromPath(cls,
+                 path: os.PathLike,
+                 inp_path: os.PathLike = None,
+                 inpschema_dict: InputSchemaDict = None) -> 'OutputSchemaDict':
         """
         load the FleurOutputSchema dict for the specified paths
 
