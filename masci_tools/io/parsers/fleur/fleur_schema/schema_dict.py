@@ -110,7 +110,8 @@ def schema_dict_version_dispatch(output_schema: bool = False) -> Callable:
             return register_dec
 
         @wraps(func)
-        def wrapper(node: Any, schema_dict: Union['InputSchemaDict', 'OutputSchemaDict'], *args: Any, **kwargs: Any) -> Any:
+        def wrapper(node: Any, schema_dict: Union['InputSchemaDict', 'OutputSchemaDict'], *args: Any,
+                    **kwargs: Any) -> Any:
 
             if not isinstance(schema_dict, SchemaDict):
                 raise ValueError('Second positional argument is not a SchemaDict')
