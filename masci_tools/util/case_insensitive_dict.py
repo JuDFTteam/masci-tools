@@ -17,10 +17,13 @@ lookups available naturally
 from masci_tools.util.lockable_containers import LockableDict
 import pprint
 
-from typing import Mapping, Any, Union, Iterable, Generator
+from typing import Mapping, Any, Union, Iterable, Generator, TypeVar, FrozenSet
+
+S = TypeVar('S')
+T = TypeVar('T')
 
 
-class CaseInsensitiveDict(LockableDict):
+class CaseInsensitiveDict(LockableDict[S, T]):
     """
     Dict with case insensitive lookup. Used in Schema dicts to make finding
     paths for tags and attributes easier.
@@ -40,11 +43,11 @@ class CaseInsensitiveDict(LockableDict):
 
     """
 
-    def __init__(self, *args: Mapping[Any, Any], upper: bool = False, **kwargs: Union[bool, object]):
+    def __init__(self, *args: Any, upper: bool = False, **kwargs: Union[bool, object]):
         self._upper = upper
         super().__init__(*args, **kwargs)  #type: ignore
 
-    def _norm_key(self, key: object) -> object:
+    def _norm_key(self, key: S) -> S:
         if isinstance(key, str):
             if self._upper:
                 return key.upper()
@@ -55,23 +58,23 @@ class CaseInsensitiveDict(LockableDict):
 
     #Here we modify the methods needed to make the lookups case insensitive
     #Since we use UserDict these methods should be enough to modify all behaviour
-    def __delitem__(self, key: object) -> None:
+    def __delitem__(self, key: S) -> None:
         super().__delitem__(self._norm_key(key))
 
-    def __setitem__(self, key: object, value: object) -> None:
+    def __setitem__(self, key: S, value: T) -> None:
         super().__setitem__(self._norm_key(key), value)
 
-    def __getitem__(self, key: object) -> None:
+    def __getitem__(self, key: S) -> T:
         return super().__getitem__(self._norm_key(key))
 
-    def __contains__(self, key: object) -> bool:
+    def __contains__(self, key: S) -> bool:
         return super().__contains__(self._norm_key(key))
 
     def __repr__(self) -> str:
         return f'{self.__class__.__name__}({super().__repr__()})'
 
 
-class CaseInsensitiveFrozenSet(frozenset):
+class CaseInsensitiveFrozenSet(FrozenSet[T]):
     """
     Frozenset (i.e. immutable set) with case insensitive membership tests. Used in Schema dicts in `tag_info`
     entries to make flexible classification easy
@@ -148,7 +151,7 @@ class CaseInsensitiveFrozenSet(frozenset):
     def __ne__(self, other):
         return super().__ne__({key.lower() for key in other})
 
-    def __iter__(self) -> Generator[Any,None,None]:
+    def __iter__(self) -> Generator[Any, None, None]:
         for item in super().__iter__():
             yield self.original_case[item]
 
