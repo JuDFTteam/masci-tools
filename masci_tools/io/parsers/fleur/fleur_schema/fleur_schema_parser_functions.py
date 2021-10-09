@@ -553,7 +553,7 @@ def _get_optional_tags(xmlschema: etree._ElementTree, namespaces: Dict[str, str]
         if child_type == 'element':
             if 'minOccurs' in child.attrib:
                 if child.attrib['minOccurs'] == '0':
-                    optional_list.append(child.attrib['name'])
+                    optional_list.append(str(child.attrib['name']))
         elif child_type in ['sequence', 'all', 'choice']:
             new_optionals = _get_optional_tags(xmlschema, namespaces, child)
             for opt in new_optionals:
@@ -664,7 +664,7 @@ def _get_several_tags(xmlschema: etree._ElementTree, namespaces: Dict[str, str],
         if child_type == 'element':
             if 'maxOccurs' in child.attrib:
                 if child.attrib['maxOccurs'] != '1':
-                    several_list.append(child.attrib['name'])
+                    several_list.append(str(child.attrib['name']))
         elif child_type in ['sequence', 'all', 'choice']:
             if 'maxOccurs' in child.attrib:
                 if child.attrib['maxOccurs'] != '1':
