@@ -70,9 +70,7 @@ repos:
     pass_filenames: true
     files: >-
         (?x)^(
-            masci_tools/io/parsers/fleur/fleur_schema/*.py|
-            masci_tools/util/lockable_containers.py|
-            masci_tools/util/case_insensitive_dict.py|
+            masci_tools/io/parsers/fleur/fleur_schema/.*py|
         )$
 
 
