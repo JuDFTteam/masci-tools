@@ -31,6 +31,13 @@ class Recipe(_abc.ABC):
     them from a set of objects, one row per object. In other words, the recipe specifies the column of the table.
     Transformations of properties for the table (say, a property is a list, and we only want the maximum), can
     be defined by specifying a transformer in the recipe.
+
+    TODO: improve memory performance for tabulation:
+
+    - let include exclude lists values optionally hold pandas dtype strings (numpy 'uint8' etc plus pandas types like
+      'categorical'; the latter internally in tabulator replaced by numpy correspondence where needed). tabulator
+      will use those when building table. otherwise, e.g. when returning pandas dataframe, all columns will
+      have dtype 'object' or 'float64' and the table won't fit into memory anymore very quickly.
     """
 
     def __init__(self, exclude_list: dict = None, include_list: dict = None, transformer: Transformer = None, **kwargs):

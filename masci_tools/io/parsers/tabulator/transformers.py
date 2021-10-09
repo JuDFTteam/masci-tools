@@ -27,6 +27,7 @@ class TransformedValue:
     """Return type of the :py:class:`~.Transformer`."""
     is_transformed: bool = False
     value: _typing.Union[object, dict] = None
+    dtypes: _typing.Union[object, dict] = None
     error: _typing.Optional[Exception] = None
 
 
@@ -34,6 +35,15 @@ class Transformer(_abc.ABC):
     """Specify how to transformer an object's properties for use in :py:class:`Tabulator`.
 
     To subclass, you have to implement the :py:meth:`~transformer` method.
+
+    TODO: increase memory performance:
+
+    The following points are meant for transformers using the aiida-jutools `NodeTabulator` implementation of
+    Tabulator, but may be of interest  for other implementations. See also TODO in Tabulator docstring.
+
+    - Add documentation for the as yet unmentioned TransformedValue member 'dtypes': a dict of same shape as
+      'value' ({new_name: transformed_value}), but with its dict values being the desired dtypes string. This
+      is optional, otherwise Tabulator will use standard dtypes or try to guess best dtypes for data on its own.
     """
 
     @_abc.abstractmethod
