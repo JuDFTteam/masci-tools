@@ -17,10 +17,32 @@ FleurInputSchema.xsd
 from .fleur_schema_parser_functions import *  #pylint: disable=unused-wildcard-import
 from masci_tools.util.xml.common_functions import clear_xml
 from masci_tools.util.xml.converters import convert_str_version_number
+from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict, CaseInsensitiveFrozenSet
+from masci_tools.util.lockable_containers import LockableDict, LockableList
+from typing import Tuple, TypedDict, List, cast
 from lxml import etree
 
 
-def create_inpschema_dict(path, apply_patches=True):
+class InputSchemaData(TypedDict, total=False):
+    root_tag: str
+    inp_version: str
+    tag_paths: CaseInsensitiveDict[str, Union[List[str], str]]
+    attrib_types: CaseInsensitiveDict[str, List[AttributeType]]
+    text_types: CaseInsensitiveDict[str, List[AttributeType]]
+    text_tags: CaseInsensitiveFrozenSet[str]
+    unique_attribs: CaseInsensitiveDict[str, str]
+    unique_path_attribs: CaseInsensitiveDict[str, List[str]]
+    other_attribs: CaseInsensitiveDict[str, List[str]]
+    omitt_contained_tags: LockableList[str]
+    tag_info: LockableDict[str, TagInfo]
+    _basic_types: LockableDict[str, List[AttributeType]]
+
+
+KEYS = Literal['root_tag', 'tag_paths', '_basic_types', 'attrib_types', 'text_types', 'text_tags', 'unique_attribs',
+               'unique_path_attribs', 'other_attribs', 'omitt_contained_tags', 'tag_info']
+
+
+def create_inpschema_dict(path: str, apply_patches: bool = True) -> InputSchemaData:
     """
     Creates dictionary with information about the FleurInputSchema.xsd.
     The functions, whose results are added to the schema_dict and the corresponding keys
@@ -32,7 +54,7 @@ def create_inpschema_dict(path, apply_patches=True):
     """
 
     #Add new functionality to this dictionary here
-    schema_actions = {
+    schema_actions: Dict[KEYS, Callable] = {
         'root_tag': get_root_tag,
         'tag_paths': get_tag_paths,
         '_basic_types': get_basic_types,
@@ -52,10 +74,10 @@ def create_inpschema_dict(path, apply_patches=True):
     xmlschema, _ = clear_xml(xmlschema)
 
     namespaces = {'xsd': 'http://www.w3.org/2001/XMLSchema'}
-    inp_version = str(xmlschema.xpath('/xsd:schema/@version', namespaces=namespaces)[0])
+    inp_version = str(xmlschema.xpath('/xsd:schema/@version', namespaces=namespaces)[0])  #type:ignore
     inp_version_tuple = convert_str_version_number(inp_version)
 
-    schema_dict = {}
+    schema_dict: InputSchemaData = {}
     schema_dict['inp_version'] = inp_version
     for key, action in schema_actions.items():
         schema_dict[key] = action(xmlschema, namespaces, **schema_dict)
@@ -70,7 +92,7 @@ def create_inpschema_dict(path, apply_patches=True):
     return schema_dict
 
 
-def convert_string_to_float_expr(schema_dict, inp_version):
+def convert_string_to_float_expr(schema_dict: InputSchemaData, inp_version: Tuple[int, int]) -> None:
     """
     Converts specified string attributes to float_expression for schema_dicts of versions
     0.32 and before.
@@ -81,7 +103,7 @@ def convert_string_to_float_expr(schema_dict, inp_version):
     :param inp_version: input version converted to tuple of ints
     """
 
-    TYPES_ENTRY = 'attrib_types'
+    TYPES_ENTRY: Literal['attrib_types'] = 'attrib_types'
     EXPR_NAME = AttributeType(base_type='float_expression', length=1)
 
     CHANGE_TYPES = {
@@ -112,8 +134,8 @@ def convert_string_to_float_expr(schema_dict, inp_version):
         #After this version the issue was solved
         return
 
-    replace_set = set()
-    add_set = set()
+    replace_set: Set[str] = set()
+    add_set: Set[str] = set()
 
     for version, changes in sorted(CHANGE_TYPES.items(), key=lambda x: x[0]):
 
@@ -146,7 +168,7 @@ def convert_string_to_float_expr(schema_dict, inp_version):
         schema_dict[TYPES_ENTRY][name].insert(0, EXPR_NAME)
 
 
-def patch_forcetheorem_attributes(schema_dict, inp_version):
+def patch_forcetheorem_attributes(schema_dict: InputSchemaData, inp_version: Tuple[int, int]) -> None:
     """
     Special patch for theta, phi and ef_shift attributes on forceTheorem tags
     In Max5/5.1 They are entered as FleurDouble but can be a list.
@@ -165,7 +187,8 @@ def patch_forcetheorem_attributes(schema_dict, inp_version):
                                                   [AttributeType(base_type='float_expression', length='unbounded')], key=type_order)
 
 
-def patch_basic_types(basic_types, inp_version):
+def patch_basic_types(basic_types: LockableDict[str, List[AttributeType]],
+                      inp_version: Tuple[int, int]) -> LockableDict[str, List[AttributeType]]:
     """
     Patch the _basic_types entry to correct ambigouities
 
@@ -192,7 +215,7 @@ def patch_basic_types(basic_types, inp_version):
         },
     }
 
-    all_changes = {}
+    all_changes: Dict[str, List[AttributeType]] = {}
 
     for version, changes in sorted(CHANGE_TYPES.items(), key=lambda x: x[0]):
 
@@ -200,7 +223,7 @@ def patch_basic_types(basic_types, inp_version):
             continue
 
         version_add = changes.get('add', {})
-        version_remove = changes.get('remove', set())
+        version_remove: Set[str] = changes.get('remove', set())  #type: ignore
 
         all_changes = {key: val for key, val in {**all_changes, **version_add}.items() if key not in version_remove}
 
@@ -212,7 +235,7 @@ def patch_basic_types(basic_types, inp_version):
     return basic_types
 
 
-def patch_text_types(schema_dict, inp_version):
+def patch_text_types(schema_dict: InputSchemaData, inp_version: Tuple[int, int]) -> None:
     """
     Patch the simple_elememnts entry to correct ambigouities
 
@@ -220,7 +243,7 @@ def patch_text_types(schema_dict, inp_version):
     :param inp_version: input version converted to tuple of ints
     """
 
-    ELEMENTS_ENTRY = 'text_types'
+    ELEMENTS_ENTRY: Literal['text_types'] = 'text_types'
 
     if inp_version >= (0, 35):
         #After this version the issue was solved
@@ -264,15 +287,15 @@ def patch_text_types(schema_dict, inp_version):
         }
     }
 
-    all_changes = {}
+    all_changes: Dict[str, List[AttributeType]] = {}
 
     for version, changes in sorted(CHANGE_TYPES.items(), key=lambda x: x[0]):
 
         if inp_version < version:
             continue
 
-        version_add = changes.get('add', {})
-        version_remove = changes.get('remove', set())
+        version_add = changes.get('add', {})  #type: ignore
+        version_remove = changes.get('remove', set())  #type:ignore
 
         all_changes = {key: val for key, val in {**all_changes, **version_add}.items() if key not in version_remove}
 

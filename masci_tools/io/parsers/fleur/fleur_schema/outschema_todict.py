@@ -16,13 +16,46 @@ FleurInputSchema.xsd
 """
 from .fleur_schema_parser_functions import *  #pylint: disable=unused-wildcard-import
 from masci_tools.util.xml.common_functions import clear_xml
-from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict
+from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict, CaseInsensitiveFrozenSet
+from masci_tools.util.lockable_containers import LockableDict, LockableList
 from lxml import etree
 import copy
 from collections import UserList
+from typing import Tuple, TypedDict, List, TYPE_CHECKING
+if TYPE_CHECKING:
+    from .inpschema_todict import InputSchemaData
 
 
-def create_outschema_dict(path, inpschema_dict):
+class OutputSchemaData(TypedDict, total=False):
+    root_tag: str
+    input_tag: str
+    inp_version: str
+    out_version: str
+    tag_paths: CaseInsensitiveDict[str, Union[List[str], str]]
+    iteration_tag_paths: CaseInsensitiveDict[str, Union[List[str], str]]
+    attrib_types: CaseInsensitiveDict[str, List[AttributeType]]
+    text_types: CaseInsensitiveDict[str, List[AttributeType]]
+    text_tags: CaseInsensitiveFrozenSet[str]
+    unique_attribs: CaseInsensitiveDict[str, str]
+    unique_path_attribs: CaseInsensitiveDict[str, List[str]]
+    other_attribs: CaseInsensitiveDict[str, List[str]]
+    iteration_unique_attribs: CaseInsensitiveDict[str, str]
+    iteration_unique_path_attribs: CaseInsensitiveDict[str, List[str]]
+    iteration_other_attribs: CaseInsensitiveDict[str, List[str]]
+    omitt_contained_tags: LockableList[str]
+    tag_info: LockableDict[str, TagInfo]
+    iteration_tag_info: LockableDict[str, TagInfo]
+    _basic_types: LockableDict[str, List[AttributeType]]
+    _input_basic_types: LockableDict[str, List[AttributeType]]
+
+
+KEYS = Literal['root_tag', 'input_tag', 'tag_paths', 'iteration_tag_paths', '_basic_types', 'attrib_types',
+               'text_types', 'text_tags', 'unique_attribs', 'unique_path_attribs', 'other_attribs',
+               'iteration_unique_attribs', 'iteration_unique_path_attribs', 'iteration_other_attribs',
+               'omitt_contained_tags', 'tag_info', 'iteration_tag_info']
+
+
+def create_outschema_dict(path: str, inpschema_dict: 'InputSchemaData') -> OutputSchemaData:
     """
     Creates dictionary with information about the FleurOutputSchema.xsd.
     The functions, whose results are added to the schema_dict and the corresponding keys
@@ -33,7 +66,7 @@ def create_outschema_dict(path, inpschema_dict):
     """
 
     #Add new functionality to this dictionary here
-    schema_actions = {
+    schema_actions: Dict[KEYS, Callable] = {
         'input_tag': get_input_tag,
         'root_tag': get_root_tag,
         '_basic_types': get_basic_types,
@@ -58,14 +91,14 @@ def create_outschema_dict(path, inpschema_dict):
     xmlschema, _ = clear_xml(xmlschema)
 
     namespaces = {'xsd': 'http://www.w3.org/2001/XMLSchema'}
-    out_version = str(xmlschema.xpath('/xsd:schema/@version', namespaces=namespaces)[0])
+    out_version = str(xmlschema.xpath('/xsd:schema/@version', namespaces=namespaces)[0])  #type:ignore
 
-    input_basic_types = inpschema_dict.get('_basic_types').get_unlocked()
+    input_basic_types = inpschema_dict['_basic_types'].get_unlocked()
 
-    schema_dict = {}
+    schema_dict: OutputSchemaData = {}
     schema_dict['out_version'] = out_version
     for key, action in schema_actions.items():
-        addargs = {'input_basic_types': input_basic_types}
+        addargs: Dict[str, Union[Dict[str, List[AttributeType]], bool]] = {'input_basic_types': input_basic_types}
         if key in ['unique_attribs', 'unique_path_attribs', 'other_attribs', 'tag_paths', 'tag_info']:
             addargs['stop_iteration'] = True
         elif key in [
@@ -76,12 +109,12 @@ def create_outschema_dict(path, inpschema_dict):
             addargs['iteration'] = True
         schema_dict[key] = action(xmlschema, namespaces, **schema_dict, **addargs)
 
-    schema_dict['_input_basic_types'] = input_basic_types
+    schema_dict['_input_basic_types'] = LockableDict(input_basic_types)
 
     return schema_dict
 
 
-def merge_schema_dicts(inputschema_dict, outputschema_dict):
+def merge_schema_dicts(inputschema_dict: 'InputSchemaData', outputschema_dict: OutputSchemaData) -> OutputSchemaData:
     """
     Merge the information from the input schema into the outputschema
     This combines the type information and adjusts the paths from the inputschema
@@ -105,25 +138,27 @@ def merge_schema_dicts(inputschema_dict, outputschema_dict):
     #
     # 1. Merge path entries and modify the input paths
     #
-    path_entries = {'tag_paths', 'unique_attribs', 'unique_path_attribs', 'other_attribs'}
+    path_entries: Set[Literal['tag_paths', 'unique_attribs', 'unique_path_attribs', 'other_attribs']] = {
+        'tag_paths', 'unique_attribs', 'unique_path_attribs', 'other_attribs'
+    }
     for entry in path_entries:
         for key, val in inputschema_dict[entry].items():
 
-            paths = merged_outschema_dict[entry].get(key, UserList())
+            paths: Union[List[str], str] = merged_outschema_dict[entry].get(key, UserList())  #type:ignore
 
-            if not isinstance(paths, UserList):
+            if not isinstance(paths, (UserList, list)):
                 paths = [paths]
-            paths = set(paths)
+            paths_set = set(paths)
 
-            if not isinstance(val, UserList):
+            if not isinstance(val, (UserList, list)):
                 val = [val]
-            new_paths = {f"{input_tag_path}{inp_path.replace(f'/{input_root_tag}','')}" for inp_path in val}
+            new_paths_set = {f"{input_tag_path}{inp_path.replace(f'/{input_root_tag}','')}" for inp_path in val}
 
-            new_paths = sorted(paths.union(new_paths))
+            new_paths = sorted(paths_set.union(new_paths_set))
             if len(new_paths) == 1:
-                merged_outschema_dict[entry][key] = new_paths[0]
+                merged_outschema_dict[entry][key] = new_paths[0]  #type:ignore
             else:
-                merged_outschema_dict[entry][key] = new_paths
+                merged_outschema_dict[entry][key] = new_paths  #type:ignore
 
     #Remove the root_tag of the input if it is different from the input tag in the out.xml
     if input_root_tag != outputschema_dict['input_tag']:
@@ -163,7 +198,7 @@ def merge_schema_dicts(inputschema_dict, outputschema_dict):
     #
     # 5. Merge the omittable tags
     #
-    merged_outschema_dict['omitt_contained_tags'] = sorted(
-        set(merged_outschema_dict.get('omitt_contained_tags')).union(inputschema_dict.get('omitt_contained_tags')))
+    merged_outschema_dict['omitt_contained_tags'] = LockableList(
+        sorted(set(merged_outschema_dict['omitt_contained_tags']).union(inputschema_dict['omitt_contained_tags'])))
 
     return merged_outschema_dict
