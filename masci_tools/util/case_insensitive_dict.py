@@ -17,7 +17,7 @@ lookups available naturally
 from masci_tools.util.lockable_containers import LockableDict
 import pprint
 
-from typing import Mapping, Any, Union, Iterable, Iterator
+from typing import Mapping, Any, Union, Iterable, Generator
 
 
 class CaseInsensitiveDict(LockableDict):
@@ -97,7 +97,6 @@ class CaseInsensitiveFrozenSet(frozenset):
             self.original_case = self._get_new_original_case(iterable)
         else:
             self.original_case = CaseInsensitiveDict(upper=self._upper)
-        self._frozenset_iter: Iterator[Any] = None  #Used for customizing the iteration behaviour
         super().__init__()
 
     def _get_new_original_case(self, *iterables: Iterable[Any]) -> 'CaseInsensitiveDict':
@@ -149,16 +148,9 @@ class CaseInsensitiveFrozenSet(frozenset):
     def __ne__(self, other):
         return super().__ne__({key.lower() for key in other})
 
-    def __iter__(self) -> Iterator[Any]:
-        self._frozenset_iter = super().__iter__()
-        return self
-
-    def __next__(self) -> object:
-        try:
-            return self.original_case[next(self._frozenset_iter)]
-        except StopIteration:
-            self._frozenset_iter = None
-            raise
+    def __iter__(self) -> Generator[Any,None,None]:
+        for item in super().__iter__():
+            yield self.original_case[item]
 
     def difference(self, *others: Iterable[Any]) -> 'CaseInsensitiveFrozenSet':
         new_frozenset = super().difference(*[{self._norm_key(key) for key in other} for other in others])

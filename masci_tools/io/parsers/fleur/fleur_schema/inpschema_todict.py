@@ -17,7 +17,6 @@ FleurInputSchema.xsd
 from .fleur_schema_parser_functions import *  #pylint: disable=unused-wildcard-import
 from masci_tools.util.xml.common_functions import clear_xml
 from masci_tools.util.xml.converters import convert_str_version_number
-from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict
 from lxml import etree
 
 
