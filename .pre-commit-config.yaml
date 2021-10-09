@@ -60,6 +60,22 @@ repos:
     language: system
     exclude: '^(docs/)|(examples/)'
 
+  - id: mypy
+    name: mypy
+    entry: mypy
+    args: [--config-file=pyproject.toml]
+    language: python
+    types: [python]
+    require_serial: true
+    pass_filenames: true
+    files: >-
+        (?x)^(
+            masci_tools/io/parsers/fleur/fleur_schema/*.py|
+            masci_tools/util/lockable_containers.py|
+            masci_tools/util/case_insensitive_dict.py|
+        )$
+
+
   - id: version-number
     name: Check version numbers
     entry: python ./utils/validate_version_consistency.py
