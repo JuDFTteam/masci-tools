@@ -20,7 +20,11 @@ attribute from the right place in the given etree
 from masci_tools.io.parsers.fleur.fleur_schema import NoPathFound
 from masci_tools.util.parse_tasks_decorators import register_parsing_function
 from lxml import etree
+from logging import Logger
 import warnings
+from typing import TYPE_CHECKING, Dict, Union, Any
+if TYPE_CHECKING:
+    from masci_tools.io.parsers.fleur.fleur_schema.schema_dict import SchemaDict
 
 
 def get_tag_xpath(schema_dict, name, contains=None, not_contains=None):
@@ -172,7 +176,7 @@ def get_tag_info(schema_dict,
                                 parent=parent)
 
 
-def read_constants(root, schema_dict, logger=None):
+def read_constants(root: Union[etree._Element,etree._ElementTree], schema_dict: 'SchemaDict', logger: Logger=None) -> Dict[str, float]:
     """
     Reads in the constants defined in the inp.xml
     and returns them combined with the predefined constants from
@@ -215,7 +219,7 @@ def read_constants(root, schema_dict, logger=None):
 
 
 @register_parsing_function('attrib')
-def evaluate_attribute(node, schema_dict, name, constants=None, logger=None, **kwargs):
+def evaluate_attribute(node: Union[etree._Element,etree._ElementTree], schema_dict: 'SchemaDict', name: str, constants: Dict[str, float]=None, logger: Logger=None, **kwargs: Any) -> Any:
     """
     Evaluates the value of the attribute based on the given name
     and additional further specifications with the available type information
@@ -282,7 +286,7 @@ def evaluate_attribute(node, schema_dict, name, constants=None, logger=None, **k
 
 
 @register_parsing_function('text')
-def evaluate_text(node, schema_dict, name, constants=None, logger=None, **kwargs):
+def evaluate_text(node: Union[etree._Element,etree._ElementTree], schema_dict: 'SchemaDict', name: str, constants: Dict[str,float]=None, logger: Logger=None, **kwargs: Any) -> Any:
     """
     Evaluates the text of the tag based on the given name
     and additional further specifications with the available type information
@@ -350,7 +354,7 @@ def evaluate_text(node, schema_dict, name, constants=None, logger=None, **kwargs
 
 
 @register_parsing_function('allAttribs', all_attribs_keys=True)
-def evaluate_tag(node, schema_dict, name, constants=None, logger=None, subtags=False, text=True, **kwargs):
+def evaluate_tag(node:Union[etree._Element,etree._ElementTree], schema_dict: 'SchemaDict', name: str, constants: Dict[str, float]=None, logger: Logger=None, subtags: bool=False, text: bool=True, **kwargs: Any) -> Any:
     """
     Evaluates all attributes of the tag based on the given name
     and additional further specifications with the available type information
@@ -441,7 +445,7 @@ def evaluate_tag(node, schema_dict, name, constants=None, logger=None, subtags=F
     else:
         attribs = sorted(list(attribs.original_case.values()))
 
-    out_dict = {}
+    out_dict: Dict[str, Any] = {}
 
     for attrib in attribs:
 
@@ -543,7 +547,7 @@ def evaluate_tag(node, schema_dict, name, constants=None, logger=None, subtags=F
 
 
 @register_parsing_function('singleValue', all_attribs_keys=True)
-def evaluate_single_value_tag(node, schema_dict, name, constants=None, logger=None, **kwargs):
+def evaluate_single_value_tag(node:Union[etree._Element,etree._ElementTree], schema_dict: 'SchemaDict', name: str, constants: Dict[str, float]=None, logger: Logger=None, **kwargs: Any) -> Any:
     """
     Evaluates the value and unit attribute of the tag based on the given name
     and additional further specifications with the available type information
@@ -586,7 +590,7 @@ def evaluate_single_value_tag(node, schema_dict, name, constants=None, logger=No
 
 
 @register_parsing_function('parentAttribs', all_attribs_keys=True)
-def evaluate_parent_tag(node, schema_dict, name, constants=None, logger=None, **kwargs):
+def evaluate_parent_tag(node:Union[etree._Element,etree._ElementTree], schema_dict: 'SchemaDict', name: str, constants: Dict[str, float]=None, logger: Logger=None, **kwargs: Any) -> Any:
     """
     Evaluates all attributes of the parent tag based on the given name
     and additional further specifications with the available type information
@@ -664,7 +668,7 @@ def evaluate_parent_tag(node, schema_dict, name, constants=None, logger=None, **
 
     elems = eval_xpath(node, tag_xpath, logger=logger, list_return=True)
 
-    out_dict = {}
+    out_dict: Dict[str, Any] = {}
     for attrib in attribs:
         out_dict[attrib] = []
 
@@ -709,7 +713,7 @@ def evaluate_parent_tag(node, schema_dict, name, constants=None, logger=None, **
 
 
 @register_parsing_function('attrib_exists')
-def attrib_exists(node, schema_dict, name, logger=None, **kwargs):
+def attrib_exists(node:Union[etree._Element,etree._ElementTree], schema_dict: 'SchemaDict', name: str, logger: Logger=None, **kwargs: Any) -> bool:
     """
     Evaluates whether the attribute exists in the xmltree based on the given name
     and additional further specifications with the available type information
@@ -746,7 +750,7 @@ def attrib_exists(node, schema_dict, name, logger=None, **kwargs):
 
 
 @register_parsing_function('exists')
-def tag_exists(node, schema_dict, name, logger=None, **kwargs):
+def tag_exists(node:Union[etree._Element,etree._ElementTree], schema_dict: 'SchemaDict', name: str, logger: Logger=None, **kwargs: Any) -> bool:
     """
     Evaluates whether the tag exists in the xmltree based on the given name
     and additional further specifications with the available type information
@@ -766,7 +770,7 @@ def tag_exists(node, schema_dict, name, logger=None, **kwargs):
 
 
 @register_parsing_function('numberNodes')
-def get_number_of_nodes(node, schema_dict, name, logger=None, **kwargs):
+def get_number_of_nodes(node:Union[etree._Element,etree._ElementTree], schema_dict: 'SchemaDict', name: str, logger: Logger=None, **kwargs: Any) -> int:
     """
     Evaluates the number of occurences of the tag in the xmltree based on the given name
     and additional further specifications with the available type information
@@ -782,10 +786,13 @@ def get_number_of_nodes(node, schema_dict, name, logger=None, **kwargs):
 
     :returns: bool, True if any nodes with the path exist
     """
-    return len(eval_simple_xpath(node, schema_dict, name, logger=logger, list_return=True, **kwargs))
+    result = eval_simple_xpath(node, schema_dict, name, logger=logger, list_return=True, **kwargs)
+    if not isinstance(result, list):
+        raise ValueError(f'Invalid result for length determination: {str(result)}')
+    return len(result)
 
 
-def eval_simple_xpath(node, schema_dict, name, logger=None, **kwargs):
+def eval_simple_xpath(node: Union[etree._Element,etree._ElementTree], schema_dict: 'SchemaDict', name: str, logger: Logger=None, **kwargs: Any) -> etree._XPathObject:
     """
     Evaluates a simple xpath expression of the tag in the xmltree based on the given name
     and additional further specifications with the available type information
