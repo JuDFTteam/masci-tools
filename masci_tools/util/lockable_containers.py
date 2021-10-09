@@ -17,7 +17,7 @@ unintended modifications
 from collections import UserDict, UserList
 from contextlib import contextmanager
 
-from typing import Union, Any, Generator, Iterable, cast, TypeVar
+from typing import Dict, Union, Any, Generator, Iterable, cast, TypeVar, List
 
 S = TypeVar('S')
 T = TypeVar('T')
@@ -63,7 +63,7 @@ class LockableDict(UserDict[S, T]):
 
     """
 
-    def __init__(self, *args: dict, recursive: bool = True, **kwargs: object) -> None:
+    def __init__(self, *args: Dict, recursive: bool = True, **kwargs: T) -> None:
         self._locked = False
         self._recursive = recursive
         super().__init__(*args, **kwargs)
@@ -79,16 +79,16 @@ class LockableDict(UserDict[S, T]):
         """
         return self._locked
 
-    def __delitem__(self, key: object) -> None:
+    def __delitem__(self, key: S) -> None:
         self.__check_lock()
         super().__delitem__(key)
 
-    def __setitem__(self, key: object, value: object):
+    def __setitem__(self, key: S, value: T):
         self.__check_lock()
         if isinstance(value, list):
-            super().__setitem__(key, LockableList(value, recursive=self._recursive))
+            super().__setitem__(key, LockableList(value, recursive=self._recursive))  #type:ignore
         elif isinstance(value, dict):
-            super().__setitem__(key, LockableDict(value, recursive=self._recursive))
+            super().__setitem__(key, LockableDict(value, recursive=self._recursive))  #type:ignore
         else:
             super().__setitem__(key, value)
 
@@ -112,17 +112,17 @@ class LockableDict(UserDict[S, T]):
 
         self._locked = False
 
-    def get_unlocked(self) -> dict:
+    def get_unlocked(self) -> Dict[S,T]:
         """
         Get copy of object with builtin lists and dicts
         """
         if self._recursive:
-            ret_dict = {}
+            ret_dict: Dict[S,T] = {}
             for key, value in self.items():
                 if isinstance(value, LockableDict):
-                    ret_dict[key] = value.get_unlocked()
+                    ret_dict[key] = value.get_unlocked()  #type:ignore
                 elif isinstance(value, LockableList):
-                    ret_dict[key] = cast(Any, value.get_unlocked())
+                    ret_dict[key] = cast(Any, value.get_unlocked())  #type:ignore
                 else:
                     ret_dict[key] = value
         else:
@@ -150,7 +150,7 @@ class LockableList(UserList[T]):
 
     """
 
-    def __init__(self, *args: Iterable[Any], recursive: bool = True, **kwargs: Iterable[Any]) -> None:
+    def __init__(self, *args: Iterable[T], recursive: bool = True, **kwargs: Iterable[Any]) -> None:
         self._locked = False
         self._recursive = recursive
         super().__init__(*args, **kwargs)
@@ -158,9 +158,9 @@ class LockableList(UserList[T]):
             #Convert sublists and subdicts into Lockable counterparts (super__init__ just copies the values)
             for indx, item in enumerate(self):
                 if isinstance(item, list):
-                    super().__setitem__(indx, LockableList(item, recursive=self._recursive))
+                    super().__setitem__(indx, LockableList(item, recursive=self._recursive))   #type:ignore
                 elif isinstance(item, dict):
-                    super().__setitem__(indx, LockableDict(item, recursive=self._recursive))
+                    super().__setitem__(indx, LockableDict(item, recursive=self._recursive))   #type:ignore
 
     def __check_lock(self) -> None:
         if self.locked:
@@ -177,16 +177,16 @@ class LockableList(UserList[T]):
         self.__check_lock()
         super().__delitem__(i)
 
-    def __setitem__(self, i: Union[int, slice], item: object) -> None:
+    def __setitem__(self, i: Union[int, slice], item: T) -> None:   # type: ignore
         self.__check_lock()
         if isinstance(item, list):
-            super().__setitem__(i, LockableList(item, recursive=self._recursive))
+            super().__setitem__(i, LockableList(item, recursive=self._recursive)) # type: ignore
         elif isinstance(item, dict):
-            super().__setitem__(i, LockableDict(item, recursive=self._recursive))
+            super().__setitem__(i, LockableDict(item, recursive=self._recursive)) # type: ignore
         else:
             super().__setitem__(i, item)  # type: ignore
 
-    def __iadd__(self, other: Iterable[Any]) -> 'LockableList':
+    def __iadd__(self, other: Iterable[T]) -> 'LockableList':
         self.__check_lock()
         return super().__iadd__(other)
 
@@ -194,22 +194,22 @@ class LockableList(UserList[T]):
         self.__check_lock()
         return super().__imul__(n)
 
-    def append(self, item: object) -> None:
+    def append(self, item: T) -> None:
         self.__check_lock()
         super().append(item)
 
-    def insert(self, i: int, item: object) -> None:
+    def insert(self, i: int, item: T) -> None:
         self.__check_lock()
         super().insert(i, item)
 
-    def pop(self, i: int = -1) -> object:
+    def pop(self, i: int = -1) -> T:
         """
         return the value at index i (default last) and remove it from list
         """
         self.__check_lock()
         return super().pop(i=i)
 
-    def remove(self, item: object) -> None:
+    def remove(self, item: T) -> None:
         self.__check_lock()
         super().remove(item)
 
@@ -228,7 +228,7 @@ class LockableList(UserList[T]):
         self.__check_lock()
         super().sort(*args, **kwargs)
 
-    def extend(self, other: Iterable[object]) -> None:
+    def extend(self, other: Iterable[T]) -> None:
         self.__check_lock()
         super().extend(other)
 
@@ -252,7 +252,7 @@ class LockableList(UserList[T]):
 
         self._locked = False
 
-    def get_unlocked(self) -> Iterable[Any]:
+    def get_unlocked(self) -> List[T]:
         """
         Get copy of object with builtin lists and dicts
         """
