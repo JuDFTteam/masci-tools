@@ -21,7 +21,7 @@ from masci_tools.util.lockable_containers import LockableDict, LockableList
 from lxml import etree
 import copy
 from collections import UserList
-from typing import Tuple, TypedDict, List, TYPE_CHECKING
+from typing import AnyStr, TypedDict, List, TYPE_CHECKING
 if TYPE_CHECKING:
     from .inpschema_todict import InputSchemaData
 
@@ -55,7 +55,7 @@ KEYS = Literal['root_tag', 'input_tag', 'tag_paths', 'iteration_tag_paths', '_ba
                'omitt_contained_tags', 'tag_info', 'iteration_tag_info']
 
 
-def create_outschema_dict(path: str, inpschema_dict: 'InputSchemaData') -> OutputSchemaData:
+def create_outschema_dict(path: AnyStr, inpschema_dict: 'InputSchemaData') -> OutputSchemaData:
     """
     Creates dictionary with information about the FleurOutputSchema.xsd.
     The functions, whose results are added to the schema_dict and the corresponding keys

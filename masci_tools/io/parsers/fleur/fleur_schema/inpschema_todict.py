@@ -19,7 +19,7 @@ from masci_tools.util.xml.common_functions import clear_xml
 from masci_tools.util.xml.converters import convert_str_version_number
 from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict, CaseInsensitiveFrozenSet
 from masci_tools.util.lockable_containers import LockableDict, LockableList
-from typing import Tuple, TypedDict, List, cast
+from typing import Tuple, TypedDict, List, AnyStr
 from lxml import etree
 
 
@@ -42,7 +42,7 @@ KEYS = Literal['root_tag', 'tag_paths', '_basic_types', 'attrib_types', 'text_ty
                'unique_path_attribs', 'other_attribs', 'omitt_contained_tags', 'tag_info']
 
 
-def create_inpschema_dict(path: str, apply_patches: bool = True) -> InputSchemaData:
+def create_inpschema_dict(path: AnyStr, apply_patches: bool = True) -> InputSchemaData:
     """
     Creates dictionary with information about the FleurInputSchema.xsd.
     The functions, whose results are added to the schema_dict and the corresponding keys
