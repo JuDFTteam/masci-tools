@@ -491,7 +491,9 @@ def _get_contained_optional_attribs(xmlschema: etree._ElementTree, namespaces: D
         if child_type == 'attribute':
             if child.attrib.get('use', 'required') == 'optional':
                 name = str(child.attrib['name'])
-                default = str(child.attrib.get('default'))
+                default = child.attrib.get('default')
+                if default is not None:
+                    default = str(default)
                 attrib_list.append((name, default))
         elif child_type in ['simpleContent', 'extension']:
             new_attribs = _get_contained_optional_attribs(xmlschema, namespaces, child)
