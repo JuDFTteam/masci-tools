@@ -112,12 +112,12 @@ class LockableDict(UserDict[S, T]):
 
         self._locked = False
 
-    def get_unlocked(self) -> Dict[S,T]:
+    def get_unlocked(self) -> Dict[S, T]:
         """
         Get copy of object with builtin lists and dicts
         """
         if self._recursive:
-            ret_dict: Dict[S,T] = {}
+            ret_dict: Dict[S, T] = {}
             for key, value in self.items():
                 if isinstance(value, LockableDict):
                     ret_dict[key] = value.get_unlocked()  #type:ignore
@@ -158,9 +158,9 @@ class LockableList(UserList[T]):
             #Convert sublists and subdicts into Lockable counterparts (super__init__ just copies the values)
             for indx, item in enumerate(self):
                 if isinstance(item, list):
-                    super().__setitem__(indx, LockableList(item, recursive=self._recursive))   #type:ignore
+                    super().__setitem__(indx, LockableList(item, recursive=self._recursive))  #type:ignore
                 elif isinstance(item, dict):
-                    super().__setitem__(indx, LockableDict(item, recursive=self._recursive))   #type:ignore
+                    super().__setitem__(indx, LockableDict(item, recursive=self._recursive))  #type:ignore
 
     def __check_lock(self) -> None:
         if self.locked:
@@ -177,12 +177,12 @@ class LockableList(UserList[T]):
         self.__check_lock()
         super().__delitem__(i)
 
-    def __setitem__(self, i: Union[int, slice], item: T) -> None:   # type: ignore
+    def __setitem__(self, i: Union[int, slice], item: T) -> None:  # type: ignore
         self.__check_lock()
         if isinstance(item, list):
-            super().__setitem__(i, LockableList(item, recursive=self._recursive)) # type: ignore
+            super().__setitem__(i, LockableList(item, recursive=self._recursive))  # type: ignore
         elif isinstance(item, dict):
-            super().__setitem__(i, LockableDict(item, recursive=self._recursive)) # type: ignore
+            super().__setitem__(i, LockableDict(item, recursive=self._recursive))  # type: ignore
         else:
             super().__setitem__(i, item)  # type: ignore
 
