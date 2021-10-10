@@ -603,16 +603,14 @@ def set_species_label(xmltree: Union[etree._Element, etree._ElementTree],
         return set_species(xmltree, schema_dict, 'all', attributedict, create=create)
 
     atom_label = f'{atom_label: >20}'
-    all_groups: List[etree._Element] = eval_simple_xpath(xmltree, schema_dict, 'atomGroup',
-                                                         list_return=True)
+    all_groups: List[etree._Element] = eval_simple_xpath(xmltree, schema_dict, 'atomGroup', list_return=True)
 
     species_to_set: Set[str] = set()
 
     # set all species, where given label is present
     for group in all_groups:
         if tag_exists(group, schema_dict, 'filmPos'):
-            atoms: List[etree._Element] = eval_simple_xpath(group, schema_dict, 'filmPos',
-                                                            list_return=True)
+            atoms: List[etree._Element] = eval_simple_xpath(group, schema_dict, 'filmPos', list_return=True)
         else:
             atoms = eval_simple_xpath(group, schema_dict, 'relPos', list_return=True)
         for atom in atoms:
@@ -722,15 +720,13 @@ def shift_value_species_label(xmltree: Union[etree._Element, etree._ElementTree]
 
     if atom_label != 'all':
         atom_label = f'{atom_label: >20}'
-    all_groups: List[etree._Element] = eval_simple_xpath(xmltree, schema_dict, 'atomGroup',
-                                                         list_return=True)
+    all_groups: List[etree._Element] = eval_simple_xpath(xmltree, schema_dict, 'atomGroup', list_return=True)
 
     species_to_set = set()
 
     for group in all_groups:
         if tag_exists(group, schema_dict, 'filmPos'):
-            atoms: List[etree._Element] = eval_simple_xpath(group, schema_dict, 'filmPos',
-                                                            list_return=True)
+            atoms: List[etree._Element] = eval_simple_xpath(group, schema_dict, 'filmPos', list_return=True)
         else:
             atoms = eval_simple_xpath(group, schema_dict, 'relPos', list_return=True)
         for atom in atoms:
@@ -786,16 +782,14 @@ def set_atomgroup_label(xmltree: Union[etree._Element, etree._ElementTree],
         return xmltree
 
     atom_label = f'{atom_label: >20}'
-    all_groups: List[etree._Element] = eval_simple_xpath(xmltree, schema_dict, 'atomGroup',
-                                                         list_return=True)
+    all_groups: List[etree._Element] = eval_simple_xpath(xmltree, schema_dict, 'atomGroup', list_return=True)
 
     species_to_set = set()
 
     # set all species, where given label is present
     for group in all_groups:
         if tag_exists(group, schema_dict, 'filmPos'):
-            atoms: List[etree._Element] = eval_simple_xpath(group, schema_dict, 'filmPos',
-                                                            list_return=True)
+            atoms: List[etree._Element] = eval_simple_xpath(group, schema_dict, 'filmPos', list_return=True)
         else:
             atoms = eval_simple_xpath(group, schema_dict, 'relPos', list_return=True)
         for atom in atoms:

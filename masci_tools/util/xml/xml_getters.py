@@ -264,11 +264,9 @@ def get_nkpts_max4(xmltree: Union[etree._Element, etree._ElementTree],
 
     kpt_tag: List[etree._Element] = []
     if alt_kpt_set is not None:
-        kpt_tag = eval_simple_xpath(alt_kpt_set, schema_dict, 'kPointList', list_return=True,
-                                    logger=logger)
+        kpt_tag = eval_simple_xpath(alt_kpt_set, schema_dict, 'kPointList', list_return=True, logger=logger)
         if len(kpt_tag) == 0:
-            kpt_tag = eval_simple_xpath(alt_kpt_set, schema_dict, 'kPointCount', list_return=True,
-                                        logger=logger)
+            kpt_tag = eval_simple_xpath(alt_kpt_set, schema_dict, 'kPointCount', list_return=True, logger=logger)
             if len(kpt_tag) != 0:
                 warnings.warn('kPointCount is not guaranteed to result in the given number of kpoints')
 
@@ -570,8 +568,7 @@ def get_parameter_data(xmltree: Union[etree._Element, etree._ElementTree],
                                                     subtags=True,
                                                     ignore={'flipSpins'})
 
-        atom_lo: List[etree._Element] = eval_simple_xpath(species, schema_dict, 'lo', list_return=True,
-                                                          logger=logger)
+        atom_lo: List[etree._Element] = eval_simple_xpath(species, schema_dict, 'lo', list_return=True, logger=logger)
 
         if len(atom_lo) != 0:
             atom_dict['lo'] = convert_fleur_lo(atom_lo)
@@ -1155,8 +1152,7 @@ def get_symmetry_information(xmltree: Union[etree._Element, etree._ElementTree],
     if not tag_exists(root, schema_dict, 'symmetryOperations', logger=logger):
         raise ValueError('No explicit symmetry information included in the given XML file')
 
-    ops: List[etree._Element] = eval_simple_xpath(root, schema_dict, 'symOp', logger=logger,
-                                                  list_return=True)
+    ops: List[etree._Element] = eval_simple_xpath(root, schema_dict, 'symOp', logger=logger, list_return=True)
 
     rotations = []
     shifts = []

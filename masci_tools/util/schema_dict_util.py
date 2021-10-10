@@ -468,8 +468,7 @@ def evaluate_tag(node: Union[etree._Element, etree._ElementTree],
 
     for attrib in attribs:
 
-        stringattribute: List[str] = eval_xpath(node, f'{tag_xpath}/@{attrib}', logger=logger,
-                                                list_return=True)
+        stringattribute: List[str] = eval_xpath(node, f'{tag_xpath}/@{attrib}', logger=logger, list_return=True)
 
         if len(stringattribute) == 0:
             if logger is None:
