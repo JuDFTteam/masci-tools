@@ -23,7 +23,7 @@ class MissingConstant(Exception):
     pass
 
 
-def calculate_expression(expression: Union[str, float, int], constants: Dict[str, float] = None) -> Union[float, int]:
+def calculate_expression(expression: Union[str, float, int], constants: Dict[str, float] = None) -> float:
     """
     Recursively evaluates the given expression string with the given defined constants
 
