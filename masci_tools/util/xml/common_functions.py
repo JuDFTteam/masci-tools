@@ -13,13 +13,12 @@
 """
 Common functions for parsing input/output files or XMLschemas from FLEUR
 """
-from typing import Dict, Iterable, Optional, Tuple, TYPE_CHECKING, Union, List, Set
+from typing import Dict, Iterable, Optional, Tuple, Union, List, Set
 from lxml import etree
 import warnings
 import os
 from logging import Logger
-if TYPE_CHECKING:
-    from masci_tools.io.parsers.fleur.fleur_schema.schema_dict import SchemaDict
+from masci_tools.io.parsers.fleur import fleur_schema
 
 
 def clear_xml(tree: etree._ElementTree) -> Tuple[etree._ElementTree, Set[str]]:
@@ -104,7 +103,7 @@ def clear_xml(tree: etree._ElementTree) -> Tuple[etree._ElementTree, Set[str]]:
 
 
 def reverse_xinclude(
-        xmltree: etree._ElementTree, schema_dict: 'SchemaDict', included_tags: Iterable[str],
+        xmltree: etree._ElementTree, schema_dict: 'fleur_schema.SchemaDict', included_tags: Iterable[str],
         **kwargs: os.PathLike) -> Tuple[etree._ElementTree, Dict[Union[os.PathLike, str], etree._ElementTree]]:
     """
     Split the xmltree back up according to the given included tags.

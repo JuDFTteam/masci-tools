@@ -19,12 +19,12 @@ attribute from the right place in the given etree
 """
 from masci_tools.io.parsers.fleur.fleur_schema import NoPathFound
 from masci_tools.util.parse_tasks_decorators import register_parsing_function
+from masci_tools.io.parsers.fleur import fleur_schema
 from lxml import etree
 from logging import Logger
 import warnings
-from typing import TYPE_CHECKING, Dict, Union, Any, List
-if TYPE_CHECKING:
-    from masci_tools.io.parsers.fleur.fleur_schema.schema_dict import SchemaDict
+from typing import Dict, Union, Any, List
+
 
 
 def get_tag_xpath(schema_dict, name, contains=None, not_contains=None):
@@ -177,7 +177,7 @@ def get_tag_info(schema_dict,
 
 
 def read_constants(root: Union[etree._Element, etree._ElementTree],
-                   schema_dict: 'SchemaDict',
+                   schema_dict: 'fleur_schema.SchemaDict',
                    logger: Logger = None) -> Dict[str, float]:
     """
     Reads in the constants defined in the inp.xml
@@ -222,7 +222,7 @@ def read_constants(root: Union[etree._Element, etree._ElementTree],
 
 @register_parsing_function('attrib')
 def evaluate_attribute(node: Union[etree._Element, etree._ElementTree],
-                       schema_dict: 'SchemaDict',
+                       schema_dict: 'fleur_schema.SchemaDict',
                        name: str,
                        constants: Dict[str, float] = None,
                        logger: Logger = None,
@@ -294,7 +294,7 @@ def evaluate_attribute(node: Union[etree._Element, etree._ElementTree],
 
 @register_parsing_function('text')
 def evaluate_text(node: Union[etree._Element, etree._ElementTree],
-                  schema_dict: 'SchemaDict',
+                  schema_dict: 'fleur_schema.SchemaDict',
                   name: str,
                   constants: Dict[str, float] = None,
                   logger: Logger = None,
@@ -367,7 +367,7 @@ def evaluate_text(node: Union[etree._Element, etree._ElementTree],
 
 @register_parsing_function('allAttribs', all_attribs_keys=True)
 def evaluate_tag(node: Union[etree._Element, etree._ElementTree],
-                 schema_dict: 'SchemaDict',
+                 schema_dict: 'fleur_schema.SchemaDict',
                  name: str,
                  constants: Dict[str, float] = None,
                  logger: Logger = None,
@@ -567,7 +567,7 @@ def evaluate_tag(node: Union[etree._Element, etree._ElementTree],
 
 @register_parsing_function('singleValue', all_attribs_keys=True)
 def evaluate_single_value_tag(node: Union[etree._Element, etree._ElementTree],
-                              schema_dict: 'SchemaDict',
+                              schema_dict: 'fleur_schema.SchemaDict',
                               name: str,
                               constants: Dict[str, float] = None,
                               logger: Logger = None,
@@ -615,7 +615,7 @@ def evaluate_single_value_tag(node: Union[etree._Element, etree._ElementTree],
 
 @register_parsing_function('parentAttribs', all_attribs_keys=True)
 def evaluate_parent_tag(node: Union[etree._Element, etree._ElementTree],
-                        schema_dict: 'SchemaDict',
+                        schema_dict: 'fleur_schema.SchemaDict',
                         name: str,
                         constants: Dict[str, float] = None,
                         logger: Logger = None,
@@ -749,7 +749,7 @@ def evaluate_parent_tag(node: Union[etree._Element, etree._ElementTree],
 
 @register_parsing_function('attrib_exists')
 def attrib_exists(node: Union[etree._Element, etree._ElementTree],
-                  schema_dict: 'SchemaDict',
+                  schema_dict: 'fleur_schema.SchemaDict',
                   name: str,
                   logger: Logger = None,
                   **kwargs: Any) -> bool:
@@ -790,7 +790,7 @@ def attrib_exists(node: Union[etree._Element, etree._ElementTree],
 
 @register_parsing_function('exists')
 def tag_exists(node: Union[etree._Element, etree._ElementTree],
-               schema_dict: 'SchemaDict',
+               schema_dict: 'fleur_schema.SchemaDict',
                name: str,
                logger: Logger = None,
                **kwargs: Any) -> bool:
@@ -814,7 +814,7 @@ def tag_exists(node: Union[etree._Element, etree._ElementTree],
 
 @register_parsing_function('numberNodes')
 def get_number_of_nodes(node: Union[etree._Element, etree._ElementTree],
-                        schema_dict: 'SchemaDict',
+                        schema_dict: 'fleur_schema.SchemaDict',
                         name: str,
                         logger: Logger = None,
                         **kwargs: Any) -> int:
@@ -840,7 +840,7 @@ def get_number_of_nodes(node: Union[etree._Element, etree._ElementTree],
 
 
 def eval_simple_xpath(node: Union[etree._Element, etree._ElementTree],
-                      schema_dict: 'SchemaDict',
+                      schema_dict: 'fleur_schema.SchemaDict',
                       name: str,
                       logger: Logger = None,
                       **kwargs: Any) -> 'etree._XpathObject':

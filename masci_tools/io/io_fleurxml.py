@@ -21,9 +21,8 @@ import os
 from pathlib import Path
 from functools import partial
 from logging import Logger
-from typing import Callable, Tuple, Union, TYPE_CHECKING, Any, IO
-if TYPE_CHECKING:
-    from masci_tools.io.parsers.fleur.fleur_schema import InputSchemaDict, OutputSchemaDict
+from typing import Callable, Tuple, Union, Any, IO
+from masci_tools.io.parsers.fleur import fleur_schema
 
 XMLInput = Union[etree._ElementTree, str, Path, bytes, os.PathLike, IO]
 
@@ -31,7 +30,7 @@ XMLInput = Union[etree._ElementTree, str, Path, bytes, os.PathLike, IO]
 def load_inpxml(inpxmlfile: XMLInput,
                 logger: Logger = None,
                 base_url: str = None,
-                **kwargs: Any) -> Tuple[etree._ElementTree, 'InputSchemaDict']:
+                **kwargs: Any) -> Tuple[etree._ElementTree, 'fleur_schema.InputSchemaDict']:
     """
     Loads a inp.xml file for fleur together with its corresponding schema dictionary
 
@@ -101,7 +100,7 @@ def load_inpxml(inpxmlfile: XMLInput,
 def load_outxml(outxmlfile: XMLInput,
                 logger: Logger = None,
                 base_url: str = None,
-                **kwargs: Any) -> Tuple[etree._ElementTree, 'OutputSchemaDict']:
+                **kwargs: Any) -> Tuple[etree._ElementTree, 'fleur_schema.OutputSchemaDict']:
     """
     Loads a out.xml file for fleur together with its corresponding schema dictionary
 

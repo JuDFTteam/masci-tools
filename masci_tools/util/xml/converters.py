@@ -14,23 +14,22 @@
 Common functions for converting types to and from XML files
 """
 
-from typing import Iterable, List, Tuple, Union, TYPE_CHECKING, Dict, Any, cast
+from typing import Iterable, List, Tuple, Union, Dict, Any, cast
 try:
     from typing import Literal
 except ImportError:
     from typing_extensions import Literal  #type:ignore
 from lxml import etree
 from logging import Logger
-if TYPE_CHECKING:
-    from masci_tools.io.parsers.fleur.fleur_schema import AttributeType
-    from masci_tools.io.parsers.fleur.fleur_schema.schema_dict import SchemaDict
+
+from masci_tools.io.parsers.fleur import fleur_schema
 
 BASE_TYPES = Union[Literal['int'], Literal['switch'], Literal['string'], Literal['float'], Literal['float_expression']]
 CONVERTED_TYPES = Union[int, float, bool, str]
 
 
 def convert_to_xml(value: Union[Any, List[Any]],
-                   schema_dict: 'SchemaDict',
+                   schema_dict: 'fleur_schema.SchemaDict',
                    name: str,
                    text: bool = False,
                    logger: Logger = None,
@@ -74,7 +73,7 @@ def convert_to_xml(value: Union[Any, List[Any]],
 
 def convert_from_xml(
     xmlstring: Union[str, List[str]],
-    schema_dict: 'SchemaDict',
+    schema_dict: 'fleur_schema.SchemaDict',
     name: str,
     text: bool = False,
     constants: Dict[str, float] = None,
@@ -122,7 +121,7 @@ def convert_from_xml(
 
 def convert_from_xml_explicit(
     xmlstring: Union[str, List[str]],
-    definitions: List['AttributeType'],
+    definitions: List['fleur_schema.AttributeType'],
     constants: Dict[str, float] = None,
     logger: Logger = None,
     list_return: bool = False
@@ -200,7 +199,7 @@ def convert_from_xml_explicit(
 
 
 def convert_to_xml_explicit(value: Union[Any, Iterable[Any]],
-                            definitions: List['AttributeType'],
+                            definitions: List['fleur_schema.AttributeType'],
                             logger: Logger = None,
                             float_format: str = '.10',
                             list_return: bool = False) -> Tuple[Union[str, List[str]], bool]:

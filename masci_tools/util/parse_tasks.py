@@ -21,18 +21,15 @@ from importlib import import_module
 import copy
 import os
 from pathlib import Path
-from typing import Callable, Dict, Iterable, List, Set, Any, Union, TYPE_CHECKING
+from typing import Callable, Dict, Iterable, List, Set, Any, Union
 try:
     from typing import Literal
 except ImportError:
     from typing_extensions import Literal  #type:ignore
-from collections import abc
 import warnings
 from lxml import etree
 from logging import Logger, LoggerAdapter
-
-if TYPE_CHECKING:
-    from masci_tools.io.parsers.fleur.fleur_schema import InputSchemaDict, OutputSchemaDict
+from masci_tools.io.parsers.fleur import fleur_schema
 
 from masci_tools.util.xml.converters import convert_str_version_number
 import masci_tools
@@ -384,7 +381,7 @@ class ParseTasks:
                      task_name: str,
                      node: Union[etree._Element, etree._ElementTree],
                      out_dict: Dict,
-                     schema_dict: Union['InputSchemaDict', 'OutputSchemaDict'],
+                     schema_dict: Union['fleur_schema.InputSchemaDict', 'fleur_schema.OutputSchemaDict'],
                      constants: Dict[str, float],
                      logger: Union[Logger, LoggerAdapter] = None,
                      use_lists: bool = True) -> Dict:

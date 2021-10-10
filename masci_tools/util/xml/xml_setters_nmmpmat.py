@@ -14,16 +14,15 @@
 This module contains useful methods for initializing or modifying a n_mmp_mat file
 for LDA+U
 """
-from typing import Union, List, TYPE_CHECKING
+from typing import Union, List
 import numpy as np
 from lxml import etree
-if TYPE_CHECKING:
-    from masci_tools.io.parsers.fleur.fleur_schema.schema_dict import SchemaDict
+from masci_tools.io.parsers.fleur import fleur_schema
 
 
 def set_nmmpmat(xmltree: Union[etree._Element, etree._ElementTree],
                 nmmplines: List[str],
-                schema_dict: 'SchemaDict',
+                schema_dict: 'fleur_schema.SchemaDict',
                 species_name: str,
                 orbital: int,
                 spin: int,
@@ -138,7 +137,8 @@ def set_nmmpmat(xmltree: Union[etree._Element, etree._ElementTree],
     return nmmplines
 
 
-def rotate_nmmpmat(xmltree: Union[etree._Element, etree._ElementTree], nmmplines: List[str], schema_dict: 'SchemaDict',
+def rotate_nmmpmat(xmltree: Union[etree._Element,
+                                  etree._ElementTree], nmmplines: List[str], schema_dict: 'fleur_schema.SchemaDict',
                    species_name: str, orbital: int, phi: float, theta: float) -> List[str]:
     """
     Rotate the density matrix with the given angles phi and theta
@@ -228,7 +228,7 @@ def rotate_nmmpmat(xmltree: Union[etree._Element, etree._ElementTree], nmmplines
 
 
 def validate_nmmpmat(xmltree: Union[etree._Element, etree._ElementTree], nmmplines: List[str],
-                     schema_dict: 'SchemaDict') -> None:
+                     schema_dict: 'fleur_schema.SchemaDict') -> None:
     """
     Checks that the given nmmp_lines is valid with the given xmltree
 
