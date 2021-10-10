@@ -91,11 +91,8 @@ jobs:
 
     strategy:
       matrix:
-        python-version: ['3.9', '3.8', '3.7', '3.6']
+        python-version: ['3.10','3.9', '3.8', '3.7', '3.6']
         experimental: [false]
-#         include:
-#            - python-version: 3.10.0-rc.2
-#              experimental: true
     
     name: tests-python-${{ matrix.python-version }}
     continue-on-error: ${{ matrix.experimental }}
