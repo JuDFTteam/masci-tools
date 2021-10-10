@@ -17,7 +17,7 @@ unintended modifications
 from collections import UserDict, UserList
 from contextlib import contextmanager
 
-from typing import Dict, Union, Any, Generator, Iterable, cast, TypeVar, List
+from typing import Dict, Union, Any, Generator, Iterable, cast, TypeVar, List, Generic
 
 S = TypeVar('S')
 T = TypeVar('T')
@@ -44,7 +44,7 @@ def LockContainer(lock_object: Union['LockableList', 'LockableDict']) -> Generat
         lock_object._unfreeze()
 
 
-class LockableDict(UserDict[S, T]):
+class LockableDict(UserDict, Generic[S, T]):
     """
     Subclass of UserDict, which can prevent modifications to itself.
     Raises `RuntimeError` if modification is attempted.
@@ -131,7 +131,7 @@ class LockableDict(UserDict[S, T]):
         return ret_dict
 
 
-class LockableList(UserList[T]):
+class LockableList(UserList, Generic[T]):
     """
     Subclass of UserList, which can prevent modifications to itself.
     Raises `RuntimeError` if modification is attempted.
@@ -189,6 +189,10 @@ class LockableList(UserList[T]):
     def __iadd__(self, other: Iterable[T]) -> 'LockableList':
         self.__check_lock()
         return super().__iadd__(other)
+
+    def __add__(self, other: Iterable[T]) -> 'LockableList':
+        self.__check_lock()
+        return super().__add__(other)
 
     def __imul__(self, n: int) -> 'LockableList':
         self.__check_lock()
