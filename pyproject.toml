@@ -27,18 +27,6 @@ classifiers = ["Development Status :: 4 - Beta",
                "Programming Language :: Python :: 3.9",
                "Topic :: Scientific/Engineering :: Physics"]
 
-[tool.mypy]
-warn_unused_ignores=true
-warn_redundant_casts=true
-
-[tool.yapf]
-based_on_style = "google"
-column_limit = 120
-coalesce_brackets = true
-align_closing_bracket_with_visual_indent = true
-split_arguments_when_comma_terminated = true
-indent_dictionary_value = false
-
 [tool.poetry.dependencies]
 python = "^3.7"
 numpy = "*"
@@ -57,3 +45,78 @@ seaborn = "*"
 deepdiff = "*"
 humanfriendly = "*"
 mendeleev = "*"
+
+[tool.mypy]
+warn_unused_ignores=true
+warn_redundant_casts=true
+
+[tool.yapf]
+based_on_style = "google"
+column_limit = 120
+coalesce_brackets = true
+align_closing_bracket_with_visual_indent = true
+split_arguments_when_comma_terminated = true
+indent_dictionary_value = false
+
+[tool.pylint.format]
+max-line-length = 120
+
+[tool.pylint.messages_control]
+disable = [
+    "too-few-public-methods",
+    "too-many-public-methods",
+    "bad-continuation",
+    "wrong-import-position",
+    "line-too-long",
+    "locally-disabled",
+    "wildcard-import",
+    "locally-enabled",
+    "too-many-instance-attributes",
+    "fixme",
+    "len-as-condition",
+    "useless-object-inheritance",
+    "wrong-import-order",
+    "import-outside-toplevel", 
+    "duplicate-code",
+    "unnecessary-pass", 
+    "no-else-raise",
+    "no-else-return",
+    "unexpected-keyword-arg",
+    "protected-access",
+    "no-member",
+    "invalid-name",
+    "unused-variable",
+    "unused-argument",
+    "unused-import",
+    "missing-function-docstring",
+    "too-many-locals",
+    "too-many-branches",
+    "inconsistent-return-statements",
+    "no-self-use",
+    "c-extension-no-member",
+    "too-many-statements",
+    "too-many-nested-blocks",
+    "too-many-lines",
+    "too-many-return-statements",
+    "too-many-arguments",
+    "pointless-string-statement",
+]
+
+[tool.pylint.basic]
+good-names = [
+    "_",
+    "x",
+    "y",
+    "z",
+    "i",
+    "j",
+    "k",
+]
+no-docstring-rgx = "^_"
+docstring-min-length = 5
+
+[tool.pylint.design]
+max-locals = 20
+
+[tool.pylint.classes]
+exclude-protected= ["_asdict","_fields","_replace","_source","_make"]
