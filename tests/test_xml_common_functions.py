@@ -190,9 +190,9 @@ def test_split_off_attrib():
 
     assert split_off_attrib('/fleurInput/calculationSetup/cutoffs/@Kmax') == ('/fleurInput/calculationSetup/cutoffs',
                                                                               'Kmax')
-    with pytest.raises(AssertionError):
+    with pytest.raises(ValueError):
         split_off_attrib('/fleurInput/calculationSetup/cutoffs')
-    with pytest.raises(AssertionError):
+    with pytest.raises(ValueError):
         split_off_attrib("/fleurInput/atomSpecies/species[@name='TEST']")
     assert split_off_attrib('./calculationSetup/cutoffs/@Kmax') == ('./calculationSetup/cutoffs', 'Kmax')
 

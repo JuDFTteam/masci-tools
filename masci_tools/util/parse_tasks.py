@@ -38,7 +38,7 @@ from masci_tools.util.xml.converters import convert_str_version_number
 import masci_tools
 
 PACKAGE_DIRECTORY = Path(masci_tools.__file__).parent.resolve()
-DEFAULT_TASK_FILE = PACKAGE_DIRECTORY / Path('/io/parsers/fleur/default_parse_tasks.py')
+DEFAULT_TASK_FILE = PACKAGE_DIRECTORY / Path('io/parsers/fleur/default_parse_tasks.py')
 
 MIGRATION_DICT = Dict[str, Dict[str, Union[Literal['compatible'], Callable]]]
 
