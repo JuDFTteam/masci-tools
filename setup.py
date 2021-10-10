@@ -47,14 +47,8 @@ if __name__ == '__main__':
             'PyYAML'
         ],
         extras_require={
-            'pre-commit': [
-                'mypy==0.910',
-                'pre-commit>=2.6.0',
-                'yapf>=0.30.0',
-                'pylint>=2.5.2',
-                'pytest>=4.3.1',
-                'lxml-stubs'
-            ],
+            'pre-commit':
+            ['mypy==0.910', 'pre-commit>=2.6.0', 'yapf>=0.30.0', 'pylint>=2.5.2', 'pytest>=4.3.1', 'lxml-stubs'],
             'docs': ['Sphinx', 'docutils', 'sphinx_rtd_theme', 'sphinx-click'],
             'testing': ['pytest>=4.3.1', 'pytest-cov', 'pytest-mpl>=0.12', 'pytest-regressions>=1.0'],
             'bokeh-plots': [
