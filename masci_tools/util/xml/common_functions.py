@@ -337,12 +337,13 @@ def split_off_attrib(xpath: str) -> Tuple[str, str]:
     return tuple(split_xpath)  #type:ignore
 
 
-def check_complex_xpath(node: etree._Element, base_xpath: etree._xpath, complex_xpath: etree._xpath) -> None:
+def check_complex_xpath(node: Union[etree._Element, etree._ElementTree], base_xpath: etree._xpath,
+                        complex_xpath: etree._xpath) -> None:
     """
     Check that the given complex xpath produces a subset of the results
     for the simple xpath
 
-    :param node: root node of an etree
+    :param node: root node of an etree or an etree
     :param base_xpath: str of the xpath without complex syntax
     :param complex_xpath: str of the xpath to check
 
