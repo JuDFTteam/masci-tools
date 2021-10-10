@@ -22,7 +22,7 @@ from masci_tools.util.parse_tasks_decorators import register_parsing_function
 from lxml import etree
 from logging import Logger
 import warnings
-from typing import TYPE_CHECKING, Dict, Union, Any
+from typing import TYPE_CHECKING, Dict, Union, Any, List
 if TYPE_CHECKING:
     from masci_tools.io.parsers.fleur.fleur_schema.schema_dict import SchemaDict
 
@@ -262,7 +262,7 @@ def evaluate_attribute(node: Union[etree._Element, etree._ElementTree],
     if attrib_xpath is None:
         attrib_xpath = schema_dict.attrib_xpath(name, **kwargs)
 
-    stringattribute = eval_xpath(node, attrib_xpath, logger=logger, list_return=True)
+    stringattribute: List[str] = eval_xpath(node, attrib_xpath, logger=logger, list_return=True)  #type:ignore
 
     if len(stringattribute) == 0:
         if logger is None:
@@ -331,7 +331,7 @@ def evaluate_text(node: Union[etree._Element, etree._ElementTree],
     if tag_xpath is None:
         tag_xpath = schema_dict.tag_xpath(name, **kwargs)
 
-    stringtext = eval_xpath(node, f'{tag_xpath}/text()', logger=logger, list_return=True)
+    stringtext: List[str] = eval_xpath(node, f'{tag_xpath}/text()', logger=logger, list_return=True)  #type:ignore
 
     for text in stringtext.copy():
         if text.strip() == '':
@@ -468,7 +468,8 @@ def evaluate_tag(node: Union[etree._Element, etree._ElementTree],
 
     for attrib in attribs:
 
-        stringattribute = eval_xpath(node, f'{tag_xpath}/@{attrib}', logger=logger, list_return=True)
+        stringattribute: List[str] = eval_xpath(node, f'{tag_xpath}/@{attrib}', logger=logger,
+                                                list_return=True)  #type:ignore
 
         if len(stringattribute) == 0:
             if logger is None:
@@ -498,11 +499,11 @@ def evaluate_tag(node: Union[etree._Element, etree._ElementTree],
     if parse_text:
 
         _, name = split_off_tag(tag_xpath)
-        stringtext = eval_xpath(node, f'{tag_xpath}/text()', logger=logger, list_return=True)
+        stringtext: List[str] = eval_xpath(node, f'{tag_xpath}/text()', logger=logger, list_return=True)  #type:ignore
 
         for textval in stringtext.copy():
             if textval.strip() == '':
-                stringtext.remove(text)
+                stringtext.remove(textval)
 
         if len(stringtext) == 0:
             if logger is None:
@@ -532,7 +533,7 @@ def evaluate_tag(node: Union[etree._Element, etree._ElementTree],
                     logger.error('Conflicting key %s: ' 'Key is already in the output dictionary', tag)
             out_dict[tag] = []
 
-        sub_nodes = eval_xpath(node, tag_xpath, logger=logger, list_return=True)
+        sub_nodes: List[etree._Element] = eval_xpath(node, tag_xpath, logger=logger, list_return=True)  #type:ignore
         for sub_node in sub_nodes:
             for tag in tags:
                 if tag_exists(sub_node, schema_dict, tag):
@@ -695,7 +696,7 @@ def evaluate_parent_tag(node: Union[etree._Element, etree._ElementTree],
     else:
         attribs = sorted(list(attribs.original_case.values()))
 
-    elems = eval_xpath(node, tag_xpath, logger=logger, list_return=True)
+    elems: List[etree._Element] = eval_xpath(node, tag_xpath, logger=logger, list_return=True)  #type:ignore
 
     out_dict: Dict[str, Any] = {}
     for attrib in attribs:
@@ -703,6 +704,12 @@ def evaluate_parent_tag(node: Union[etree._Element, etree._ElementTree],
 
     for elem in elems:
         parent = elem.getparent()
+        if parent is None:
+            if logger is None:
+                raise ValueError(f'No parent found tag {name}')
+            else:
+                logger.warning('No parent found tag %s', name)
+                continue
         for attrib in attribs:
 
             try:
@@ -777,7 +784,7 @@ def attrib_exists(node: Union[etree._Element, etree._ElementTree],
 
     tag_xpath, attrib_name = split_off_attrib(attrib_xpath)
 
-    tags = eval_xpath(node, tag_xpath, logger=logger, list_return=True)
+    tags: List[etree._Element] = eval_xpath(node, tag_xpath, logger=logger, list_return=True)  #type:ignore
 
     return any(attrib_name in tag.attrib for tag in tags)
 
