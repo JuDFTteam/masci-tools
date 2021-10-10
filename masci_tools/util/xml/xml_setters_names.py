@@ -28,7 +28,7 @@ if TYPE_CHECKING:
 def create_tag(xmltree: Union[etree._Element, etree._ElementTree],
                schema_dict: 'SchemaDict',
                tag: Union[str, etree._Element],
-               complex_xpath: etree._xpath = None,
+               complex_xpath: 'etree._xpath' = None,
                create_parents: bool = False,
                occurrences: Union[int, Iterable[int]] = None,
                **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
@@ -82,7 +82,7 @@ def create_tag(xmltree: Union[etree._Element, etree._ElementTree],
 def delete_tag(xmltree: Union[etree._Element, etree._ElementTree],
                schema_dict: 'SchemaDict',
                tag_name: str,
-               complex_xpath: etree._xpath = None,
+               complex_xpath: 'etree._xpath' = None,
                occurrences: Union[int, Iterable[int]] = None,
                **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
     """
@@ -119,7 +119,7 @@ def delete_tag(xmltree: Union[etree._Element, etree._ElementTree],
 def delete_att(xmltree: Union[etree._Element, etree._ElementTree],
                schema_dict: 'SchemaDict',
                attrib_name: str,
-               complex_xpath: etree._xpath = None,
+               complex_xpath: 'etree._xpath' = None,
                occurrences: Union[int, Iterable[int]] = None,
                **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
     """
@@ -162,7 +162,7 @@ def replace_tag(xmltree: Union[etree._Element, etree._ElementTree],
                 schema_dict: 'SchemaDict',
                 tag_name: str,
                 newelement: etree._Element,
-                complex_xpath: etree._xpath = None,
+                complex_xpath: 'etree._xpath' = None,
                 occurrences: Union[int, Iterable[int]] = None,
                 **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
     """
@@ -201,7 +201,7 @@ def add_number_to_attrib(xmltree: Union[etree._Element, etree._ElementTree],
                          schema_dict: 'SchemaDict',
                          attributename: str,
                          add_number: Any,
-                         complex_xpath: etree._xpath = None,
+                         complex_xpath: 'etree._xpath' = None,
                          mode: Literal['abs', 'rel'] = 'abs',
                          occurrences: Union[int, Iterable[int]] = None,
                          **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
@@ -255,7 +255,7 @@ def add_number_to_first_attrib(xmltree: Union[etree._Element, etree._ElementTree
                                schema_dict: 'SchemaDict',
                                attributename: str,
                                add_number: Any,
-                               complex_xpath: etree._xpath = None,
+                               complex_xpath: 'etree._xpath' = None,
                                mode: Literal['abs', 'rel'] = 'abs',
                                **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
     """
@@ -295,7 +295,7 @@ def set_attrib_value(xmltree: Union[etree._Element, etree._ElementTree],
                      schema_dict: 'SchemaDict',
                      attributename: str,
                      attribv: Any,
-                     complex_xpath: etree._xpath = None,
+                     complex_xpath: 'etree._xpath' = None,
                      occurrences: Union[int, Iterable[int]] = None,
                      create: bool = False,
                      **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
@@ -359,7 +359,7 @@ def set_first_attrib_value(xmltree: Union[etree._Element, etree._ElementTree],
                            schema_dict: 'SchemaDict',
                            attributename: str,
                            attribv: Any,
-                           complex_xpath: etree._xpath = None,
+                           complex_xpath: 'etree._xpath' = None,
                            create: bool = False,
                            **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
     """
@@ -400,7 +400,7 @@ def set_text(xmltree: Union[etree._Element, etree._ElementTree],
              schema_dict: 'SchemaDict',
              tag_name: str,
              text: Any,
-             complex_xpath: etree._xpath = None,
+             complex_xpath: 'etree._xpath' = None,
              occurrences: Union[int, Iterable[int]] = None,
              create: bool = False,
              **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
@@ -448,7 +448,7 @@ def set_first_text(xmltree: Union[etree._Element, etree._ElementTree],
                    schema_dict: 'SchemaDict',
                    attributename: str,
                    attribv: Any,
-                   complex_xpath: etree._xpath = None,
+                   complex_xpath: 'etree._xpath' = None,
                    create: bool = False,
                    **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
     """
@@ -486,7 +486,7 @@ def set_simple_tag(xmltree: Union[etree._Element, etree._ElementTree],
                    schema_dict: 'SchemaDict',
                    tag_name: str,
                    changes: Union[List[Dict[str, Any]], Dict[str, Any]],
-                   complex_xpath: etree._xpath = None,
+                   complex_xpath: 'etree._xpath' = None,
                    create_parents: bool = False,
                    **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
     """
@@ -538,7 +538,7 @@ def set_complex_tag(xmltree: Union[etree._Element, etree._ElementTree],
                     schema_dict: 'SchemaDict',
                     tag_name: str,
                     changes: Dict[str, Any],
-                    complex_xpath: etree._xpath = None,
+                    complex_xpath: 'etree._xpath' = None,
                     create: bool = False,
                     **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
     """

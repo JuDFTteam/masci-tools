@@ -844,7 +844,7 @@ def eval_simple_xpath(node: Union[etree._Element, etree._ElementTree],
                       schema_dict: 'SchemaDict',
                       name: str,
                       logger: Logger = None,
-                      **kwargs: Any) -> etree._XPathObject:
+                      **kwargs: Any) -> 'etree._XpathObject':
     """
     Evaluates a simple xpath expression of the tag in the xmltree based on the given name
     and additional further specifications with the available type information

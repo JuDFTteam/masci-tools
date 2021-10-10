@@ -236,10 +236,10 @@ def validate_xml(xmltree: etree._ElementTree,
 
 
 def eval_xpath(node: Union[etree._Element, etree._ElementTree],
-               xpath: etree._xpath,
+               xpath: 'etree._xpath',
                logger: Logger = None,
                list_return: bool = False,
-               namespaces: Dict[str, str] = None) -> etree._XPathObject:
+               namespaces: Dict[str, str] = None) -> 'etree._XpathObject':
     """
     Tries to evaluate an xpath expression. If it fails it logs it.
     If a absolute path is given (starting with '/') and the tag of the node
@@ -337,8 +337,8 @@ def split_off_attrib(xpath: str) -> Tuple[str, str]:
     return tuple(split_xpath)  #type:ignore
 
 
-def check_complex_xpath(node: Union[etree._Element, etree._ElementTree], base_xpath: etree._xpath,
-                        complex_xpath: etree._xpath) -> None:
+def check_complex_xpath(node: Union[etree._Element, etree._ElementTree], base_xpath: 'etree._xpath',
+                        complex_xpath: 'etree._xpath') -> None:
     """
     Check that the given complex xpath produces a subset of the results
     for the simple xpath

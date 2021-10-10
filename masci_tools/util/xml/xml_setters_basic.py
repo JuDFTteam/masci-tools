@@ -23,7 +23,7 @@ import warnings
 
 
 def xml_replace_tag(xmltree: Union[etree._Element, etree._ElementTree],
-                    xpath: etree._xpath,
+                    xpath: 'etree._xpath',
                     newelement: etree._Element,
                     occurrences: Union[int, Iterable[int]] = None) -> Union[etree._Element, etree._ElementTree]:
     """
@@ -71,7 +71,7 @@ def xml_replace_tag(xmltree: Union[etree._Element, etree._ElementTree],
 
 
 def xml_delete_att(xmltree: Union[etree._Element, etree._ElementTree],
-                   xpath: etree._xpath,
+                   xpath: 'etree._xpath',
                    attrib: str,
                    occurrences: Union[int, Iterable[int]] = None) -> Union[etree._Element, etree._ElementTree]:
     """
@@ -112,7 +112,7 @@ def xml_delete_att(xmltree: Union[etree._Element, etree._ElementTree],
 
 
 def xml_delete_tag(xmltree: Union[etree._Element, etree._ElementTree],
-                   xpath: etree._xpath,
+                   xpath: 'etree._xpath',
                    occurrences: Union[int, Iterable[int]] = None) -> Union[etree._Element, etree._ElementTree]:
     """
     Deletes a xml tag in an xmletree.
@@ -155,7 +155,7 @@ def xml_delete_tag(xmltree: Union[etree._Element, etree._ElementTree],
 
 
 def xml_create_tag(xmltree: Union[etree._Element, etree._ElementTree],
-                   xpath: etree._xpath,
+                   xpath: 'etree._xpath',
                    element: Union[str, etree._Element],
                    place_index: int = None,
                    tag_order: List[str] = None,
@@ -308,7 +308,7 @@ def xml_create_tag(xmltree: Union[etree._Element, etree._ElementTree],
 
 def xml_set_attrib_value_no_create(
         xmltree: Union[etree._Element, etree._ElementTree],
-        xpath: etree._xpath,
+        xpath: 'etree._xpath',
         attributename: str,
         attribv: Any,
         occurrences: Union[int, Iterable[int]] = None) -> Union[etree._Element, etree._ElementTree]:
@@ -362,7 +362,7 @@ def xml_set_attrib_value_no_create(
 
 
 def xml_set_text_no_create(xmltree: Union[etree._Element, etree._ElementTree],
-                           xpath: etree._xpath,
+                           xpath: 'etree._xpath',
                            text: Any,
                            occurrences: Union[int, Iterable[int]] = None) -> Union[etree._Element, etree._ElementTree]:
     """
