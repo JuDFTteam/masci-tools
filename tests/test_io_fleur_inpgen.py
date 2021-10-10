@@ -333,7 +333,7 @@ def test_read_inpgen_file_contents(data_regression):
 
     TESTFILE = 'test_io_fleur_inpgen/test_write_inpgen_file_defaults_dict.txt'
 
-    with open(TESTFILE, 'r') as f:
+    with open(TESTFILE, 'r', encoding='utf-8') as f:
         content = f.read()
 
     cell, atom_sites, pbc, input_params = read_inpgen_file(content)
@@ -351,7 +351,7 @@ def test_read_inpgen_file_handle(data_regression):
 
     TESTFILE = 'test_io_fleur_inpgen/test_write_inpgen_file_defaults_dict.txt'
 
-    with open(TESTFILE, 'r') as f:
+    with open(TESTFILE, 'r', encoding='utf-8') as f:
         cell, atom_sites, pbc, input_params = read_inpgen_file(f)
 
     data_regression.check({

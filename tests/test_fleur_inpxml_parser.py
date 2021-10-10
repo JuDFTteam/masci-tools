@@ -76,7 +76,7 @@ def test_inpxml_valid_inpxml(inpxmlfilepath):
     assert inp_dict != {}
 
     #Pass file handle
-    with open(inpxmlfilepath, 'r') as inpfile:
+    with open(inpxmlfilepath, 'r', encoding='utf-8') as inpfile:
         inp_dict = inpxml_parser(inpfile)
 
     assert inp_dict is not None

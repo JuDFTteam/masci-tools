@@ -354,7 +354,7 @@ def write_inpgen_file(cell,
         if isinstance(file, io.IOBase):
             file.write(inpgen_file_content)
         else:
-            with open(file, 'w') as inpfile:
+            with open(file, 'w', encoding='utf-8') as inpfile:
                 inpfile.write(inpgen_file_content)
 
         return report
@@ -473,7 +473,7 @@ def read_inpgen_file(file, convert_to_angstroem=True):
         contents = file.read()
     else:
         if os.path.exists(file):
-            with open(file, 'r') as f:
+            with open(file, 'r', encoding='utf-8') as f:
                 contents = f.read()
         else:
             contents = file

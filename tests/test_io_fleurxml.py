@@ -28,7 +28,7 @@ def test_load_inpxml():
     assert schema_dict['inp_version'] == '0.34'
 
     #Pass file handle
-    with open(TEST_INPXML_PATH, 'r') as inpfile:
+    with open(TEST_INPXML_PATH, 'r', encoding='utf-8') as inpfile:
         xmltree, schema_dict = load_inpxml(inpfile)
 
     assert xmltree is not None
@@ -56,7 +56,7 @@ def test_load_outxml():
     assert schema_dict['inp_version'] == '0.34'
 
     #Pass file handle
-    with open(TEST_OUTXML_PATH, 'r') as inpfile:
+    with open(TEST_OUTXML_PATH, 'r', encoding='utf-8') as inpfile:
         xmltree, schema_dict = load_outxml(inpfile)
 
     assert xmltree is not None

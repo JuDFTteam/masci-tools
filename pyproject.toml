@@ -81,7 +81,6 @@ disable = [
     "unnecessary-pass", 
     "no-else-raise",
     "no-else-return",
-    "unexpected-keyword-arg",
     "protected-access",
     "no-member",
     "invalid-name",

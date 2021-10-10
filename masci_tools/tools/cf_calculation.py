@@ -231,7 +231,7 @@ class CFCalculation:
         The muffin-tin radius is infered from the biggest argument in the rmesh
         """
 
-        with open(file, newline='') as csvfile:
+        with open(file, newline='', encoding='utf-8') as csvfile:
             reader = csv.reader(csvfile, delimiter=' ', quotechar='|')
 
             if index not in self.vlm:
@@ -301,7 +301,7 @@ class CFCalculation:
         The muffin-tin radius is infered from the biggest argument in the rmesh
         """
 
-        with open(file, newline='') as csvfile:
+        with open(file, newline='', encoding='utf-8') as csvfile:
             reader = csv.reader(csvfile, delimiter=' ', quotechar='|')
 
             if 'data' not in self.cdn:

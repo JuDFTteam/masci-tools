@@ -14,7 +14,7 @@ def load_inpxml():
 
     def _load_inpxml(path):
         import masci_tools.io.io_fleurxml as fleur_io
-        with open(path, 'r') as inpxmlfile:
+        with open(path, 'r', encoding='utf-8') as inpxmlfile:
             return fleur_io.load_inpxml(inpxmlfile)
 
     return _load_inpxml
@@ -26,7 +26,7 @@ def load_outxml():
 
     def _load_outxml(path):
         import masci_tools.io.io_fleurxml as fleur_io
-        with open(path, 'r') as outxmlfile:
+        with open(path, 'r', encoding='utf-8') as outxmlfile:
             return fleur_io.load_outxml(outxmlfile)
 
     return _load_outxml

@@ -41,7 +41,7 @@ def test_set_nmmpmat_file(load_inpxml, file_regression):
 
     xmltree, schema_dict = load_inpxml(TEST_INPXML_LDAU_PATH)
 
-    with open(TEST_NMMPMAT_PATH, mode='r') as nmmpfile:
+    with open(TEST_NMMPMAT_PATH, mode='r', encoding='utf-8') as nmmpfile:
         nmmp_lines = nmmpfile.read().split('\n')
 
     nmmp_lines = set_nmmpmat(xmltree,
@@ -124,7 +124,7 @@ def test_validate_nmmpmat(load_inpxml):
 
     xmltree, schema_dict = load_inpxml(TEST_INPXML_LDAU_PATH)
 
-    with open(TEST_NMMPMAT_PATH, mode='r') as nmmpfile:
+    with open(TEST_NMMPMAT_PATH, mode='r', encoding='utf-8') as nmmpfile:
         nmmp_lines_orig = nmmpfile.read().split('\n')
 
     validate_nmmpmat(xmltree, nmmp_lines_orig, schema_dict)  #should not raise

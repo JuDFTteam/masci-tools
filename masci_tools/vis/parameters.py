@@ -612,7 +612,7 @@ class Plotter(object):
         else:
             dict_to_save = self._user_defaults
 
-        with open(filename, 'w') as file:
+        with open(filename, 'w', encoding='utf-8') as file:
             json.dump(dict_to_save, file, indent=4, sort_keys=True)
 
     def load_defaults(self, filename='plot_defaults.json'):
@@ -621,7 +621,7 @@ class Plotter(object):
 
         :param filename: filename,from  where the defaults should be taken
         """
-        with open(filename, 'r') as file:
+        with open(filename, 'r', encoding='utf-8') as file:
             param_dict = json.load(file)
 
         self.set_defaults(**param_dict)
