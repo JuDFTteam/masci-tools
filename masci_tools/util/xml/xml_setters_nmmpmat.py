@@ -14,8 +14,6 @@
 This module contains useful methods for initializing or modifying a n_mmp_mat file
 for LDA+U
 """
-
-from masci_tools.util.schema_dict_util import get_tag_xpath
 import numpy as np
 
 
@@ -55,7 +53,7 @@ def set_nmmpmat(xmltree,
     from masci_tools.io.io_nmmpmat import write_nmmpmat, write_nmmpmat_from_states, write_nmmpmat_from_orbitals
 
     #All lda+U procedures have to be considered since we need to keep the order
-    species_base_path = get_tag_xpath(schema_dict, 'species')
+    species_base_path = schema_dict.tag_xpath('species')
 
     if species_name == 'all':
         species_xpath = species_base_path
@@ -150,7 +148,7 @@ def rotate_nmmpmat(xmltree, nmmplines, schema_dict, species_name, orbital, phi, 
     from masci_tools.util.schema_dict_util import evaluate_attribute, eval_simple_xpath, attrib_exists
     from masci_tools.io.io_nmmpmat import read_nmmpmat_block, rotate_nmmpmat_block, format_nmmpmat
 
-    species_base_path = get_tag_xpath(schema_dict, 'species')
+    species_base_path = schema_dict.tag_xpath('species')
 
     if species_name == 'all':
         species_xpath = species_base_path

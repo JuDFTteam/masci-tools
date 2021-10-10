@@ -20,6 +20,11 @@ import importlib.util
 from importlib import import_module
 import copy
 import os
+from typing import Callable, Dict, List, Union
+try:
+    from typing import Literal
+except ImportError:
+    from typing_extensions import Literal  #type:ignore
 import warnings
 
 from masci_tools.util.xml.converters import convert_str_version_number
@@ -28,7 +33,8 @@ PACKAGE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_TASK_FILE = os.path.abspath(os.path.join(PACKAGE_DIRECTORY, '../io/parsers/fleur/default_parse_tasks.py'))
 
 
-def find_migration(start, target, migrations):
+def find_migration(start: str, target: str, migrations: Dict[str, Dict[str, Union[Literal['compatible'],
+                                                                                  Callable]]]) -> List[Callable]:
     """
     Tries to find a migration path from the start to the target version
     via the defined migration functions
@@ -237,8 +243,8 @@ class ParseTasks:
 
         The following keys are expected in each entry of the task_definition dictionary:
             :param parse_type: str, defines which methods to use when extracting the information
-            :param path_spec: dict with all the arguments that should be passed to get_tag_xpath
-                              or get_attrib_xpath to get the correct path
+            :param path_spec: dict with all the arguments that should be passed to tag_xpath
+                              or attrib_xpath to get the correct path
             :param subdict: str, if present the parsed values are put into this key in the output dictionary
             :param overwrite_last: bool, if True no list is inserted and each entry overwrites the last
 

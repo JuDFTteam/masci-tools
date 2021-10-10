@@ -121,7 +121,6 @@ def reverse_xinclude(xmltree, schema_dict, included_tags, **kwargs):
 
     :raises ValueError: if the tag can not be found in teh given xmltree
     """
-    from masci_tools.util.schema_dict_util import get_tag_xpath
     import copy
 
     INCLUDE_NSMAP = {'xi': 'http://www.w3.org/2001/XInclude'}
@@ -156,10 +155,9 @@ def reverse_xinclude(xmltree, schema_dict, included_tags, **kwargs):
             file_name = f'unknown-{unknown_file_names}.xml'
 
         try:
-            tag_xpath = get_tag_xpath(schema_dict, tag)
-        except ValueError as exc:
-            raise ValueError(f'Cannot determine place of included tag {tag}') from exc
-
+            tag_xpath = schema_dict.tag_xpath(tag)
+        except Exception as err:
+            raise ValueError(f'Cannot determine place of included tag {tag}') from err
         included_tag = eval_xpath(root, tag_xpath, list_return=True)
 
         if len(included_tag) != 1:

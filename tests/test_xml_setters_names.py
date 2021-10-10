@@ -8,6 +8,7 @@ tests for the underlying functions in xml_setters_xpaths and xml_setters_basic
 import os
 from lxml import etree
 import pytest
+from masci_tools.io.parsers.fleur.fleur_schema import NoUniquePathFound, NoPathFound
 
 FILE_PATH = os.path.dirname(os.path.abspath(__file__))
 TEST_INPXML_PATH = os.path.join(FILE_PATH, 'files/fleur/Max-R5/FePt_film_SSFT_LO/files/inp2.xml')
@@ -63,7 +64,7 @@ def test_create_tag_specification(load_inpxml):
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
     root = xmltree.getroot()
 
-    with pytest.raises(ValueError, match='The tag lo has multiple possible paths with the current specification.'):
+    with pytest.raises(NoUniquePathFound):
         create_tag(xmltree, schema_dict, 'lo')
 
     create_tag(xmltree, schema_dict, 'lo', contains='species')
@@ -168,7 +169,7 @@ def test_delete_tag_specification(load_inpxml):
 
     assert len(eval_xpath(root, '/fleurInput/atomSpecies/species/lo', list_return=True)) == 3
 
-    with pytest.raises(ValueError, match='The tag lo has multiple possible paths with the current specification.'):
+    with pytest.raises(NoUniquePathFound):
         delete_tag(xmltree, schema_dict, 'lo')
 
     delete_tag(xmltree, schema_dict, 'lo', contains='species')
@@ -242,8 +243,7 @@ def test_delete_att_specification(load_inpxml):
     assert eval_xpath(root, '/fleurInput/atomSpecies/species/mtSphere/@radius',
                       list_return=True) == ['2.20000000', '2.20000000']
 
-    with pytest.raises(ValueError,
-                       match='The attrib radius has multiple possible paths with the current specification.'):
+    with pytest.raises(NoUniquePathFound):
         delete_att(xmltree, schema_dict, 'radius')
 
     delete_att(xmltree, schema_dict, 'radius', contains='species')
@@ -319,7 +319,7 @@ def test_replace_tag_specification(load_inpxml):
 
     assert len(eval_xpath(root, '/fleurInput/atomSpecies/species/lo', list_return=True)) == 3
 
-    with pytest.raises(ValueError, match='The tag lo has multiple possible paths with the current specification.'):
+    with pytest.raises(NoUniquePathFound):
         replace_tag(xmltree, schema_dict, 'lo', new_elem)
 
     replace_tag(xmltree, schema_dict, 'lo', new_elem, contains='species')
@@ -429,8 +429,7 @@ def test_set_attrib_value_specification(load_inpxml):
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
     root = xmltree.getroot()
 
-    with pytest.raises(ValueError,
-                       match='The attrib radius has multiple possible paths with the current specification.'):
+    with pytest.raises(NoUniquePathFound):
         set_attrib_value(xmltree, schema_dict, 'radius', [40, 42])
 
     set_attrib_value(xmltree, schema_dict, 'radius', [40, 42], contains='species')
@@ -574,7 +573,7 @@ def test_set_text_specification_create(load_inpxml):
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
     root = xmltree.getroot()
 
-    with pytest.raises(ValueError, match='The tag s has multiple possible paths with the current specification'):
+    with pytest.raises(NoUniquePathFound):
         set_text(xmltree, schema_dict, 's', [False, False, False, True])
 
     with pytest.raises(
@@ -665,7 +664,7 @@ def test_set_first_text_create(load_inpxml):
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
     root = xmltree.getroot()
 
-    with pytest.raises(ValueError, match='The tag s has multiple possible paths with the current specification'):
+    with pytest.raises(NoUniquePathFound):
         set_first_text(xmltree, schema_dict, 's', [False, False, False, True])
 
     with pytest.raises(
@@ -720,8 +719,7 @@ def test_add_number_to_attrib_specification(load_inpxml):
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
     root = xmltree.getroot()
 
-    with pytest.raises(ValueError,
-                       match='The attrib radius has multiple possible paths with the current specification.'):
+    with pytest.raises(NoUniquePathFound):
         add_number_to_attrib(xmltree, schema_dict, 'radius', 0.5)
 
     add_number_to_attrib(xmltree, schema_dict, 'radius', 0.5, not_contains='Group')
@@ -804,8 +802,7 @@ def test_add_number_to_first_attrib_specification(load_inpxml):
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
     root = xmltree.getroot()
 
-    with pytest.raises(ValueError,
-                       match='The attrib radius has multiple possible paths with the current specification.'):
+    with pytest.raises(NoUniquePathFound):
         add_number_to_first_attrib(xmltree, schema_dict, 'radius', 0.5)
 
     add_number_to_first_attrib(xmltree, schema_dict, 'radius', 0.5, not_contains='Group')
@@ -867,7 +864,7 @@ def test_set_simple_tag_specification(load_inpxml):
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
     root = xmltree.getroot()
 
-    with pytest.raises(ValueError, match='The tag lo has multiple possible paths with the current specification.'):
+    with pytest.raises(NoUniquePathFound):
         set_simple_tag(xmltree, schema_dict, 'lo', [{'type': 'TEST', 'n': 12}, {'type': 'TEST', 'n': 15}])
 
     set_simple_tag(xmltree,
@@ -1004,8 +1001,7 @@ def test_set_complex_tag_create_specification(load_inpxml):
 
     changes = {'kkintgrcutoff': 'd', 'greensfElements': {'s': [False, True, False, True]}}
 
-    with pytest.raises(ValueError,
-                       match='The tag torgueCalculation has multiple possible paths with the current specification.'):
+    with pytest.raises(NoUniquePathFound):
         set_complex_tag(
             xmltree,
             schema_dict,
@@ -1439,7 +1435,7 @@ def test_shift_value_species_label_specification(load_inpxml):
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
     root = xmltree.getroot()
 
-    with pytest.raises(ValueError, match='The attrib s has multiple possible paths with the current specification.'):
+    with pytest.raises(NoUniquePathFound):
         shift_value_species_label(xmltree, schema_dict, '222', 's', 3)
 
     shift_value_species_label(xmltree, schema_dict, '222', 's', 3, contains='energyParameters')
@@ -1492,8 +1488,7 @@ def test_shift_value_specification(load_inpxml):
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
     root = xmltree.getroot()
 
-    with pytest.raises(ValueError,
-                       match='The attrib spinf has multiple possible paths with the current specification.'):
+    with pytest.raises(NoUniquePathFound):
         shift_value(xmltree, schema_dict, {'itmax': 2, 'kmax': 5.0, 'spinf': 0.5}, mode='rel')
 
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
@@ -1570,8 +1565,7 @@ def test_set_inpchanges_specification(load_inpxml):
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
     root = xmltree.getroot()
 
-    with pytest.raises(ValueError,
-                       match='The attrib spinf has multiple possible paths with the current specification.'):
+    with pytest.raises(NoUniquePathFound):
         set_inpchanges(xmltree, schema_dict, {
             'itmax': 20,
             'qss': [10, 10, 10],
