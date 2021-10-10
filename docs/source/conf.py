@@ -39,7 +39,8 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.intersphinx',
               'sphinx_click']
 
-intersphinx_mapping = {'numpy': ('https://numpy.org/doc/stable/', None)}
+intersphinx_mapping = {'numpy': ('https://numpy.org/doc/stable/', None),
+                       'python': ('https://docs.python.org/3', None)}
 
 todo_include_todos = True
 
