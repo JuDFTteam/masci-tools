@@ -52,6 +52,8 @@ class AttributeType(NamedTuple):
 
 
 class TagInfo(TypedDict):
+    """Dict representing the entries for the tag information.
+    """
     attribs: CaseInsensitiveFrozenSet[str]
     optional_attribs: CaseInsensitiveDict[str, str]
     optional: CaseInsensitiveFrozenSet[str]

@@ -23,11 +23,14 @@ from typing import Tuple, List, AnyStr
 try:
     from typing import TypedDict
 except ImportError:
-    from typing_extensions import TypedDict #type:ignore
+    from typing_extensions import TypedDict  #type:ignore
 from lxml import etree
 
 
 class InputSchemaData(TypedDict, total=False):
+    """Dict representing the entries in the InputSchemaDict.
+       Eventually this should be integrated into the SchemaDict classes
+    """
     root_tag: str
     inp_version: str
     tag_paths: CaseInsensitiveDict[str, Union[List[str], str]]

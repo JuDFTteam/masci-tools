@@ -25,12 +25,15 @@ from typing import AnyStr, List, TYPE_CHECKING
 try:
     from typing import TypedDict
 except ImportError:
-    from typing_extensions import TypedDict #type:ignore
+    from typing_extensions import TypedDict  #type:ignore
 if TYPE_CHECKING:
     from .inpschema_todict import InputSchemaData
 
 
 class OutputSchemaData(TypedDict, total=False):
+    """Dict representing the entries in the OutputSchemaDict.
+       Eventually this should be integrated into the SchemaDict classes
+    """
     root_tag: str
     input_tag: str
     inp_version: str
