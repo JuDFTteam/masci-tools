@@ -25,7 +25,7 @@ from typing import AnyStr, List, TYPE_CHECKING
 try:
     from typing import TypedDict
 except ImportError:
-    from typing_extensions import TypedDict  #type:ignore
+    from typing_extensions import TypedDict
 if TYPE_CHECKING:
     from .inpschema_todict import InputSchemaData
 
@@ -151,7 +151,7 @@ def merge_schema_dicts(inputschema_dict: 'InputSchemaData', outputschema_dict: O
     for entry in path_entries:
         for key, val in inputschema_dict[entry].items():
 
-            paths: Union[List[str], str] = merged_outschema_dict[entry].get(key, UserList())  #type:ignore
+            paths: Union[List[str], str] = merged_outschema_dict[entry].get(key, UserList())
 
             if not isinstance(paths, (UserList, list)):
                 paths = [paths]

@@ -55,7 +55,7 @@ def clear_xml(tree: etree._ElementTree) -> Tuple[etree._ElementTree, Set[str]]:
     include_tags: List[etree._Element] = eval_xpath(cleared_tree,
                                                     '//xi:include',
                                                     namespaces={'xi': 'http://www.w3.org/2001/XInclude'},
-                                                    list_return=True)  #type: ignore
+                                                    list_return=True)
 
     parents = []
     known_tags = []
@@ -169,7 +169,7 @@ def reverse_xinclude(
             tag_xpath = schema_dict.tag_xpath(tag)
         except Exception as err:
             raise ValueError(f'Cannot determine place of included tag {tag}') from err
-        included_tag_res: List[etree._Element] = eval_xpath(root, tag_xpath, list_return=True)  #type:ignore
+        included_tag_res: List[etree._Element] = eval_xpath(root, tag_xpath, list_return=True)
 
         if len(included_tag_res) != 1:
             raise ValueError(f'Cannot determine place of included tag {tag}')
@@ -271,7 +271,7 @@ def eval_xpath(node: Union[etree._Element, etree._ElementTree],
                          'Either it does not exist, or something is wrong with the expression.') from err
     if isinstance(return_value, list):
         if len(return_value) == 1 and not list_return:
-            return return_value[0]  #type:ignore
+            return return_value[0]
         else:
             return return_value
     else:
@@ -351,8 +351,8 @@ def check_complex_xpath(node: Union[etree._Element, etree._ElementTree], base_xp
                         of the base_xpath
     """
 
-    results_base = set(eval_xpath(node, base_xpath, list_return=True))  #type:ignore
-    results_complex = set(eval_xpath(node, complex_xpath, list_return=True))  #type:ignore
+    results_base = set(eval_xpath(node, base_xpath, list_return=True))
+    results_complex = set(eval_xpath(node, complex_xpath, list_return=True))
 
     if not results_base.issuperset(results_complex):
         raise ValueError(

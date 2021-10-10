@@ -553,7 +553,7 @@ class SchemaDict(LockableDict):
             tag_info = {
                 key: set(val.original_case.values()) if isinstance(val, CaseInsensitiveFrozenSet) else val
                 for key, val in tag_info.items()
-            }  #type:ignore
+            }
 
         if path_return:
             if not multiple_paths:

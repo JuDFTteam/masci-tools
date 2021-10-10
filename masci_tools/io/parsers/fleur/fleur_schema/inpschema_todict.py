@@ -23,7 +23,7 @@ from typing import Tuple, List, AnyStr
 try:
     from typing import TypedDict
 except ImportError:
-    from typing_extensions import TypedDict  #type:ignore
+    from typing_extensions import TypedDict
 from lxml import etree
 
 

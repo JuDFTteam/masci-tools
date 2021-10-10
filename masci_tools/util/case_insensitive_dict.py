@@ -14,7 +14,7 @@
 This module defines a small helper class to make case insensitive dictionary
 lookups available naturally
 """
-from masci_tools.util.lockable_containers import LockableDict
+from masci_tools.util.lockable_containers import LockableDict, LockableList
 import pprint
 
 from typing import Mapping, Any, Union, Iterable, Generator, TypeVar, FrozenSet, cast
@@ -61,7 +61,7 @@ class CaseInsensitiveDict(LockableDict[S, T]):
     def __delitem__(self, key: S) -> None:
         super().__delitem__(cast(S, self._norm_key(key)))
 
-    def __setitem__(self, key: S, value: T) -> None:
+    def __setitem__(self, key: S, value: Union[T, LockableDict[S, T], LockableList[T]]) -> None:
         super().__setitem__(cast(S, self._norm_key(key)), value)
 
     def __getitem__(self, key: S) -> T:
