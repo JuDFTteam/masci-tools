@@ -16,12 +16,13 @@ have the ability to create missing tags on the fly. This functionality is added 
 in :py:mod:`~masci_tools.util.xml.xml_setters_xpaths` since we need the schema dictionary
 to do these operations robustly
 """
+from typing import Iterable, Union, List, Any
 from lxml import etree
 from masci_tools.util.xml.common_functions import eval_xpath
 import warnings
 
 
-def xml_replace_tag(xmltree, xpath, newelement, occurrences=None):
+def xml_replace_tag(xmltree: Union[etree._Element, etree._ElementTree], xpath: etree._xpath, newelement: etree._Element, occurrences: Union[int, Iterable[int]]=None) -> etree._ElementTree:
     """
     replaces xml tags by another tag on an xmletree in place
 
@@ -37,14 +38,14 @@ def xml_replace_tag(xmltree, xpath, newelement, occurrences=None):
     from masci_tools.io.common_functions import is_sequence
 
     if not etree.iselement(xmltree):
-        root = xmltree.getroot()
+        root = xmltree.getroot() #type:ignore
     else:
         root = xmltree
 
     nodes = eval_xpath(root, xpath, list_return=True)
 
     if len(nodes) == 0:
-        warnings.warn(f'No nodes to replace found on xpath: {xpath}')
+        warnings.warn(f'No nodes to replace found on xpath: {str(xpath)}')
 
     if occurrences is not None:
         if not is_sequence(occurrences):
@@ -64,7 +65,7 @@ def xml_replace_tag(xmltree, xpath, newelement, occurrences=None):
     return xmltree
 
 
-def xml_delete_att(xmltree, xpath, attrib, occurrences=None):
+def xml_delete_att(xmltree: Union[etree._Element, etree._ElementTree], xpath: etree._xpath, attrib: str, occurrences: Union[int, Iterable[int]]=None) -> etree._ElementTree:
     """
     Deletes an xml attribute in an xmletree.
 
@@ -79,7 +80,7 @@ def xml_delete_att(xmltree, xpath, attrib, occurrences=None):
     from masci_tools.io.common_functions import is_sequence
 
     if not etree.iselement(xmltree):
-        root = xmltree.getroot()
+        root = xmltree.getroot()#type:ignore
     else:
         root = xmltree
 
@@ -102,7 +103,7 @@ def xml_delete_att(xmltree, xpath, attrib, occurrences=None):
     return xmltree
 
 
-def xml_delete_tag(xmltree, xpath, occurrences=None):
+def xml_delete_tag(xmltree:Union[etree._Element, etree._ElementTree], xpath: etree._xpath, occurrences: Union[int,Iterable[int]]=None) -> etree._ElementTree:
     """
     Deletes a xml tag in an xmletree.
 
@@ -116,7 +117,7 @@ def xml_delete_tag(xmltree, xpath, occurrences=None):
     from masci_tools.io.common_functions import is_sequence
 
     if not etree.iselement(xmltree):
-        root = xmltree.getroot()
+        root = xmltree.getroot()#type:ignore
     else:
         root = xmltree
 
@@ -141,14 +142,14 @@ def xml_delete_tag(xmltree, xpath, occurrences=None):
     return xmltree
 
 
-def xml_create_tag(xmltree,
-                   xpath,
-                   element,
-                   place_index=None,
-                   tag_order=None,
-                   occurrences=None,
-                   correct_order=True,
-                   several=True):
+def xml_create_tag(xmltree: Union[etree._Element, etree._ElementTree],
+                   xpath: etree._xpath,
+                   element: Union[str, etree._Element],
+                   place_index: int=None,
+                   tag_order: List[str]=None,
+                   occurrences: Union[int,Iterable[int]]=None,
+                   correct_order: bool=True,
+                   several:bool=True) -> etree._ElementTree:
     """
     This method evaluates an xpath expression and creates a tag in a xmltree under the
     returned nodes.
@@ -291,7 +292,7 @@ def xml_create_tag(xmltree,
     return xmltree
 
 
-def xml_set_attrib_value_no_create(xmltree, xpath, attributename, attribv, occurrences=None):
+def xml_set_attrib_value_no_create(xmltree: Union[etree._Element, etree._ElementTree], xpath: etree._xpath, attributename: str, attribv: Any, occurrences: Union[int, Iterable[int]]=None)-> etree._ElementTree:
     """
     Sets an attribute in a xmltree to a given value. By default the attribute will be set
     on all nodes returned for the specified xpath.
@@ -309,7 +310,7 @@ def xml_set_attrib_value_no_create(xmltree, xpath, attributename, attribv, occur
     from masci_tools.io.common_functions import is_sequence
 
     if not etree.iselement(xmltree):
-        root = xmltree.getroot()
+        root = xmltree.getroot()#type:ignore
     else:
         root = xmltree
 
@@ -341,7 +342,7 @@ def xml_set_attrib_value_no_create(xmltree, xpath, attributename, attribv, occur
     return xmltree
 
 
-def xml_set_text_no_create(xmltree, xpath, text, occurrences=None):
+def xml_set_text_no_create(xmltree: Union[etree._Element, etree._ElementTree], xpath: etree._xpath, text: Any, occurrences: Union[int,Iterable[int]]=None) -> etree._ElementTree:
     """
     Sets the text of a tag in a xmltree to a given value.
     By default the text will be set on all nodes returned for the specified xpath.
@@ -358,7 +359,7 @@ def xml_set_text_no_create(xmltree, xpath, text, occurrences=None):
     from masci_tools.io.common_functions import is_sequence
 
     if not etree.iselement(xmltree):
-        root = xmltree.getroot()
+        root = xmltree.getroot()#type:ignore
     else:
         root = xmltree
 

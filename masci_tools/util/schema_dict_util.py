@@ -176,7 +176,9 @@ def get_tag_info(schema_dict,
                                 parent=parent)
 
 
-def read_constants(root: Union[etree._Element,etree._ElementTree], schema_dict: 'SchemaDict', logger: Logger=None) -> Dict[str, float]:
+def read_constants(root: Union[etree._Element, etree._ElementTree],
+                   schema_dict: 'SchemaDict',
+                   logger: Logger = None) -> Dict[str, float]:
     """
     Reads in the constants defined in the inp.xml
     and returns them combined with the predefined constants from
@@ -219,7 +221,12 @@ def read_constants(root: Union[etree._Element,etree._ElementTree], schema_dict: 
 
 
 @register_parsing_function('attrib')
-def evaluate_attribute(node: Union[etree._Element,etree._ElementTree], schema_dict: 'SchemaDict', name: str, constants: Dict[str, float]=None, logger: Logger=None, **kwargs: Any) -> Any:
+def evaluate_attribute(node: Union[etree._Element, etree._ElementTree],
+                       schema_dict: 'SchemaDict',
+                       name: str,
+                       constants: Dict[str, float] = None,
+                       logger: Logger = None,
+                       **kwargs: Any) -> Any:
     """
     Evaluates the value of the attribute based on the given name
     and additional further specifications with the available type information
@@ -286,7 +293,12 @@ def evaluate_attribute(node: Union[etree._Element,etree._ElementTree], schema_di
 
 
 @register_parsing_function('text')
-def evaluate_text(node: Union[etree._Element,etree._ElementTree], schema_dict: 'SchemaDict', name: str, constants: Dict[str,float]=None, logger: Logger=None, **kwargs: Any) -> Any:
+def evaluate_text(node: Union[etree._Element, etree._ElementTree],
+                  schema_dict: 'SchemaDict',
+                  name: str,
+                  constants: Dict[str, float] = None,
+                  logger: Logger = None,
+                  **kwargs: Any) -> Any:
     """
     Evaluates the text of the tag based on the given name
     and additional further specifications with the available type information
@@ -354,7 +366,14 @@ def evaluate_text(node: Union[etree._Element,etree._ElementTree], schema_dict: '
 
 
 @register_parsing_function('allAttribs', all_attribs_keys=True)
-def evaluate_tag(node:Union[etree._Element,etree._ElementTree], schema_dict: 'SchemaDict', name: str, constants: Dict[str, float]=None, logger: Logger=None, subtags: bool=False, text: bool=True, **kwargs: Any) -> Any:
+def evaluate_tag(node: Union[etree._Element, etree._ElementTree],
+                 schema_dict: 'SchemaDict',
+                 name: str,
+                 constants: Dict[str, float] = None,
+                 logger: Logger = None,
+                 subtags: bool = False,
+                 text: bool = True,
+                 **kwargs: Any) -> Any:
     """
     Evaluates all attributes of the tag based on the given name
     and additional further specifications with the available type information
@@ -547,7 +566,12 @@ def evaluate_tag(node:Union[etree._Element,etree._ElementTree], schema_dict: 'Sc
 
 
 @register_parsing_function('singleValue', all_attribs_keys=True)
-def evaluate_single_value_tag(node:Union[etree._Element,etree._ElementTree], schema_dict: 'SchemaDict', name: str, constants: Dict[str, float]=None, logger: Logger=None, **kwargs: Any) -> Any:
+def evaluate_single_value_tag(node: Union[etree._Element, etree._ElementTree],
+                              schema_dict: 'SchemaDict',
+                              name: str,
+                              constants: Dict[str, float] = None,
+                              logger: Logger = None,
+                              **kwargs: Any) -> Any:
     """
     Evaluates the value and unit attribute of the tag based on the given name
     and additional further specifications with the available type information
@@ -590,7 +614,12 @@ def evaluate_single_value_tag(node:Union[etree._Element,etree._ElementTree], sch
 
 
 @register_parsing_function('parentAttribs', all_attribs_keys=True)
-def evaluate_parent_tag(node:Union[etree._Element,etree._ElementTree], schema_dict: 'SchemaDict', name: str, constants: Dict[str, float]=None, logger: Logger=None, **kwargs: Any) -> Any:
+def evaluate_parent_tag(node: Union[etree._Element, etree._ElementTree],
+                        schema_dict: 'SchemaDict',
+                        name: str,
+                        constants: Dict[str, float] = None,
+                        logger: Logger = None,
+                        **kwargs: Any) -> Any:
     """
     Evaluates all attributes of the parent tag based on the given name
     and additional further specifications with the available type information
@@ -713,7 +742,11 @@ def evaluate_parent_tag(node:Union[etree._Element,etree._ElementTree], schema_di
 
 
 @register_parsing_function('attrib_exists')
-def attrib_exists(node:Union[etree._Element,etree._ElementTree], schema_dict: 'SchemaDict', name: str, logger: Logger=None, **kwargs: Any) -> bool:
+def attrib_exists(node: Union[etree._Element, etree._ElementTree],
+                  schema_dict: 'SchemaDict',
+                  name: str,
+                  logger: Logger = None,
+                  **kwargs: Any) -> bool:
     """
     Evaluates whether the attribute exists in the xmltree based on the given name
     and additional further specifications with the available type information
@@ -750,7 +783,11 @@ def attrib_exists(node:Union[etree._Element,etree._ElementTree], schema_dict: 'S
 
 
 @register_parsing_function('exists')
-def tag_exists(node:Union[etree._Element,etree._ElementTree], schema_dict: 'SchemaDict', name: str, logger: Logger=None, **kwargs: Any) -> bool:
+def tag_exists(node: Union[etree._Element, etree._ElementTree],
+               schema_dict: 'SchemaDict',
+               name: str,
+               logger: Logger = None,
+               **kwargs: Any) -> bool:
     """
     Evaluates whether the tag exists in the xmltree based on the given name
     and additional further specifications with the available type information
@@ -770,7 +807,11 @@ def tag_exists(node:Union[etree._Element,etree._ElementTree], schema_dict: 'Sche
 
 
 @register_parsing_function('numberNodes')
-def get_number_of_nodes(node:Union[etree._Element,etree._ElementTree], schema_dict: 'SchemaDict', name: str, logger: Logger=None, **kwargs: Any) -> int:
+def get_number_of_nodes(node: Union[etree._Element, etree._ElementTree],
+                        schema_dict: 'SchemaDict',
+                        name: str,
+                        logger: Logger = None,
+                        **kwargs: Any) -> int:
     """
     Evaluates the number of occurences of the tag in the xmltree based on the given name
     and additional further specifications with the available type information
@@ -792,7 +833,11 @@ def get_number_of_nodes(node:Union[etree._Element,etree._ElementTree], schema_di
     return len(result)
 
 
-def eval_simple_xpath(node: Union[etree._Element,etree._ElementTree], schema_dict: 'SchemaDict', name: str, logger: Logger=None, **kwargs: Any) -> etree._XPathObject:
+def eval_simple_xpath(node: Union[etree._Element, etree._ElementTree],
+                      schema_dict: 'SchemaDict',
+                      name: str,
+                      logger: Logger = None,
+                      **kwargs: Any) -> etree._XPathObject:
     """
     Evaluates a simple xpath expression of the tag in the xmltree based on the given name
     and additional further specifications with the available type information
