@@ -119,3 +119,12 @@ max-locals = 20
 
 [tool.pylint.classes]
 exclude-protected= ["_asdict","_fields","_replace","_source","_make"]
+
+[tool.pytest.ini_options]
+testpaths = [
+    "tests",
+]
+cov-report="xml"
+mpl-generate-summary="html"
+mpl-results-path="tests/mpl-results"
+mpl=true
