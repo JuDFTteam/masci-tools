@@ -14,8 +14,14 @@
 functions to extract information about the fleur schema input or output
 """
 from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict, CaseInsensitiveFrozenSet
+from masci_tools.util.lockable_containers import LockableList
 from functools import wraps
-from collections import namedtuple
+from typing import Callable, List, NamedTuple, Set, Union, Dict, Any, Tuple, Optional
+from lxml import etree
+try:
+    from typing import Literal, TypedDict
+except ImportError:
+    from typing_extensions import Literal, TypedDict  #type: ignore
 import warnings
 import math
 
@@ -39,18 +45,35 @@ BASE_TYPES = {
     'string': {'xsd:string'}
 }
 
-AttributeType = namedtuple('AttributeType', ('base_type', 'length'))
+
+class AttributeType(NamedTuple):
+    base_type: str
+    length: Union[int, Literal['unbounded'], None]
+
+
+class TagInfo(TypedDict):
+    """Dict representing the entries for the tag information.
+    """
+    attribs: CaseInsensitiveFrozenSet[str]
+    optional_attribs: CaseInsensitiveDict[str, str]
+    optional: CaseInsensitiveFrozenSet[str]
+    several: CaseInsensitiveFrozenSet[str]
+    order: List[str]
+    simple: CaseInsensitiveFrozenSet[str]
+    complex: CaseInsensitiveFrozenSet[str]
+    text: CaseInsensitiveFrozenSet[str]
+
 
 #We define some decorators to cache results to not repeat too many similar xpath calls or recursive function calls
 
 
-def _cache_xpath_construction(func):
+def _cache_xpath_construction(func: Callable) -> Callable:
     """
     Decorator for the `_get_xpath` and `_get_attrib_xpath` functions to speed up the parsing of
     xml schemas by caching results
     """
 
-    results = {}
+    results: Dict[Tuple[Any, ...], Set[str]] = {}
 
     @wraps(func)
     def wrapper(xmlschema, namespaces, name, **kwargs):
@@ -91,15 +114,15 @@ def _cache_xpath_eval(func):
     results = {}
 
     @wraps(func)
-    def wrapper(xmlschema, xpath, namespaces):
+    def wrapper(xmlschema: 'etree._ElementTree', xpath: str, namespaces: Dict[str, str]) -> 'etree.XPathResult':
         """
         This function produces a hash from all the arguments modifying the behaviour of the wrapped function
         and looks up results in dict based on this hash. If the version of the schema
         is different than before or the dict contains more than 1024 entries the cache is cleared
         """
 
-        version = str(xmlschema.xpath('/xsd:schema/@version', namespaces=namespaces)[0])
-        root_tag = str(xmlschema.xpath('/xsd:schema/xsd:element/@name', namespaces=namespaces)[0])
+        version = str(xmlschema.xpath('/xsd:schema/@version', namespaces=namespaces)[0])  #type:ignore
+        root_tag = str(xmlschema.xpath('/xsd:schema/xsd:element/@name', namespaces=namespaces)[0])  #type:ignore
 
         arg_tuple = (version, root_tag, xpath, *namespaces.values())
 
@@ -133,7 +156,7 @@ def _xpath_eval(xmlschema, xpath, namespaces):
     return xmlschema.xpath(xpath, namespaces=namespaces)
 
 
-def _remove_xsd_namespace(tag, namespaces):
+def _remove_xsd_namespace(tag: str, namespaces: Dict[str, str]) -> str:
     """
     Strips the xsd namespace prefix from tags to make the functions more understandable
 
@@ -145,14 +168,16 @@ def _remove_xsd_namespace(tag, namespaces):
     return tag.replace(f"{'{'}{namespaces['xsd']}{'}'}", '')
 
 
-def _is_base_type(type_name):
+def _is_base_type(type_name: str) -> bool:
     """
     Return whether the given type_name appears in the sets in the BASE_TYPES dict
     """
     return any(type_name in types for types in BASE_TYPES.values())
 
 
-def _get_parent_fleur_type(elem, namespaces, stop_non_unique=False):
+def _get_parent_fleur_type(elem: etree._Element,
+                           namespaces: Dict[str, str],
+                           stop_non_unique: bool = False) -> Tuple[Optional[etree._Element], Optional[str]]:
     """
     Returns the parent simple or complexType to the given element
     If stop_sequence is given and True None is returned when a sequence is encountered
@@ -166,6 +191,8 @@ def _get_parent_fleur_type(elem, namespaces, stop_non_unique=False):
     """
     valid_end_types = ['simpleType', 'complexType', 'group']
     parent = elem.getparent()
+    if parent is None:
+        raise ValueError('Element has no parent')
     parent_type = _remove_xsd_namespace(parent.tag, namespaces)
     if stop_non_unique:
         if 'maxOccurs' in parent.attrib:
@@ -173,6 +200,8 @@ def _get_parent_fleur_type(elem, namespaces, stop_non_unique=False):
                 return None, None
     while parent_type not in valid_end_types:
         parent = parent.getparent()
+        if parent is None:
+            raise ValueError('Element has no parent')
         parent_type = _remove_xsd_namespace(parent.tag, namespaces)
         if stop_non_unique:
             if 'maxOccurs' in parent.attrib:
@@ -181,7 +210,11 @@ def _get_parent_fleur_type(elem, namespaces, stop_non_unique=False):
     return parent, parent_type
 
 
-def _get_base_types(xmlschema, namespaces, type_elem, convert_to_base=True, basic_types_mapping=None):
+def _get_base_types(xmlschema: etree._ElementTree,
+                    namespaces: Dict[str, str],
+                    type_elem: etree._Element,
+                    convert_to_base: bool = True,
+                    basic_types_mapping: Dict[str, List[AttributeType]] = None) -> List[AttributeType]:
     """
     Analyses the given type element to deduce its base_types and length restrictions
 
@@ -207,11 +240,11 @@ def _get_base_types(xmlschema, namespaces, type_elem, convert_to_base=True, basi
 
         types = None
         if child_type in ('restriction', 'extension'):
-            types = [child.attrib['base']]
+            types = [str(child.attrib['base'])]
         elif child_type == 'list':
-            types = [child.attrib['itemType']]
+            types = [str(child.attrib['itemType'])]
         elif child_type == 'union' and 'memberTypes' in child.attrib:
-            types = child.attrib['memberTypes'].split(' ')
+            types = str(child.attrib['memberTypes']).split(' ')
         elif child_type in ('union', 'simpleType'):
             new_types = _get_base_types(xmlschema,
                                         namespaces,
@@ -226,9 +259,9 @@ def _get_base_types(xmlschema, namespaces, type_elem, convert_to_base=True, basi
             for found_type in types:
 
                 if _is_base_type(found_type):
-                    possible_types.add((found_type, length))
+                    possible_types.add(AttributeType(base_type=found_type, length=length))
                 elif found_type in basic_types_mapping:
-                    possible_types.add((found_type, length))
+                    possible_types.add(AttributeType(base_type=found_type, length=length))
                 else:
                     sub_types = _xpath_eval(xmlschema, f"//xsd:simpleType[@name='{found_type}']", namespaces=namespaces)
                     if len(sub_types) == 0:
@@ -249,7 +282,8 @@ def _get_base_types(xmlschema, namespaces, type_elem, convert_to_base=True, basi
                                                 basic_types_mapping=basic_types_mapping)
 
                     if length != 1:
-                        possible_types.update((base_type, length) for base_type, _ in new_types)
+                        possible_types.update(
+                            AttributeType(base_type=base_type, length=length) for base_type, _ in new_types)
                     else:
                         possible_types.update(new_types)
 
@@ -262,15 +296,17 @@ def _get_base_types(xmlschema, namespaces, type_elem, convert_to_base=True, basi
                 for base_type, possible_base_types in BASE_TYPES.items():
                     if found_type in possible_base_types:
                         converted_types.add(AttributeType(base_type=base_type, length=length))
-        possible_types = sorted(converted_types, key=type_order)
 
-        if any(type_def.length is None for type_def in possible_types):
+        if any(type_def.length is None for type_def in converted_types):
             raise ValueError(f'Length determination failed {type_elem}: {possible_types}')
 
-    return possible_types
+        return sorted(converted_types, key=type_order)
+
+    return list(possible_types)
 
 
-def _get_length(xmlschema, namespaces, type_elem):
+def _get_length(xmlschema: etree._ElementTree, namespaces: Dict[str, str],
+                type_elem: etree._Element) -> Union[int, Literal['unbounded'], None]:
     """
     Analyse the given type to determine, whether there is a length restriction
 
@@ -287,7 +323,7 @@ def _get_length(xmlschema, namespaces, type_elem):
 
     if type_tag == 'simpleType':
 
-        child = type_elem.getchildren()
+        child = type_elem.getchildren()  #type:ignore
         if len(child) != 1:
             return 1
         child = child[0]
@@ -307,10 +343,13 @@ def _get_length(xmlschema, namespaces, type_elem):
         if 'name' in type_elem.attrib:
             type_name = type_elem.attrib['name']
         else:
-            type_name = type_elem.getparent().attrib['name']
+            parent = type_elem.getparent()
+            if parent is None:
+                raise ValueError('Element has no parent')
+            type_name = parent.attrib['name']
 
         base_type = _xpath_eval(xmlschema,
-                                f"//xsd:complexType[@name='{type_name}']/xsd:simpleContent/xsd:extension/@base",
+                                f"//xsd:complexType[@name='{str(type_name)}']/xsd:simpleContent/xsd:extension/@base",
                                 namespaces=namespaces)
         if len(base_type) == 0:
             return 1
@@ -327,14 +366,14 @@ def _get_length(xmlschema, namespaces, type_elem):
 
 
 @_cache_xpath_construction
-def _get_xpath(xmlschema,
-               namespaces,
-               tag_name,
-               enforce_end_type=None,
-               ref=None,
-               stop_non_unique=False,
-               stop_iteration=False,
-               iteration_root=False):
+def _get_xpath(xmlschema: etree._ElementTree,
+               namespaces: Dict[str, str],
+               tag_name: str,
+               enforce_end_type: str = None,
+               ref: str = None,
+               stop_non_unique: bool = False,
+               stop_iteration: bool = False,
+               iteration_root: bool = False) -> Set[str]:
     """
     construct all possible simple xpaths to a given tag
 
@@ -351,7 +390,7 @@ def _get_xpath(xmlschema,
              otherwise a list with all possible paths is returned
     """
 
-    possible_paths = set()
+    possible_paths: Set[str] = set()
     if enforce_end_type in _RECURSIVE_TYPES:
         return possible_paths
     root_tag = get_root_tag(xmlschema, namespaces)
@@ -382,7 +421,7 @@ def _get_xpath(xmlschema,
         parent_type, parent_tag = _get_parent_fleur_type(currentelem, namespaces, stop_non_unique=stop_non_unique)
         if parent_type is None:
             continue
-        next_type = parent_type.attrib['name']
+        next_type = str(parent_type.attrib['name'])
 
         if next_type == _ITERATION_TYPE:
             if stop_iteration:
@@ -434,52 +473,69 @@ def _get_xpath(xmlschema,
     return possible_paths
 
 
-def _get_contained_attribs(xmlschema, namespaces, elem, optional=False):
+def _get_contained_optional_attribs(xmlschema: etree._ElementTree, namespaces: Dict[str, str],
+                                    elem: etree._Element) -> CaseInsensitiveDict[str, str]:
     """
     Get all defined attributes contained in the given etree Element of the schema
 
     :param xmlschema: xmltree representing the schema
     :param namespaces: dictionary with the defined namespaces
     :param elem: etree Element to analyse
-    :param optional: bool, if True only the attributes which have use='optional'
-                     are added and their default value (defaults to None) is returned in a
-                     :py:class:`masci_tools.util.case_insensitive_dict.CaseInsensitiveDict`
 
     :raises: AssertionError if case insensitivity lead to lost information
 
-    :returns: CaseInsensitiveDict (optional=True) or CaseInsensitiveFrozenSet with
-              the attribute names
+    :returns: CaseInsensitiveDict with the attribute names and defaults
     """
     attrib_list = []
     for child in elem:
         child_type = _remove_xsd_namespace(child.tag, namespaces)
 
         if child_type == 'attribute':
-            if optional and child.attrib.get('use', 'required') == 'optional':
-                name = child.attrib['name']
-                default = child.attrib.get('default', None)
+            if child.attrib.get('use', 'required') == 'optional':
+                name = str(child.attrib['name'])
+                default = child.attrib.get('default')
+                if default is not None:
+                    default = str(default)
                 attrib_list.append((name, default))
-            elif not optional:
-                attrib_list.append(child.attrib['name'])
         elif child_type in ['simpleContent', 'extension']:
-            new_attribs = _get_contained_attribs(xmlschema, namespaces, child, optional=optional)
-            if optional:
-                for entry in new_attribs.items():
-                    attrib_list.append(entry)
-            else:
-                for attrib in new_attribs:
-                    attrib_list.append(new_attribs.original_case[attrib])
+            new_attribs = _get_contained_optional_attribs(xmlschema, namespaces, child)
+            for entry in new_attribs.items():
+                attrib_list.append(entry)
 
-    if not optional:
-        attrib_res = CaseInsensitiveFrozenSet(attrib_list)
-        assert len(set(attrib_list)) == len(attrib_res), f'Lost Information: {attrib_list}'
-    else:
-        attrib_res = CaseInsensitiveDict(attrib_list)
+    return CaseInsensitiveDict(attrib_list)
 
+
+def _get_contained_attribs(xmlschema: etree._ElementTree, namespaces: Dict[str, str],
+                           elem: etree._Element) -> CaseInsensitiveFrozenSet[str]:
+    """
+    Get all defined attributes contained in the given etree Element of the schema
+
+    :param xmlschema: xmltree representing the schema
+    :param namespaces: dictionary with the defined namespaces
+    :param elem: etree Element to analyse
+
+    :raises: AssertionError if case insensitivity lead to lost information
+
+    :returns: CaseInsensitiveFrozenSet with the attribute names
+    """
+    attrib_list = []
+    for child in elem:
+        child_type = _remove_xsd_namespace(child.tag, namespaces)
+
+        if child_type == 'attribute':
+            attrib_list.append(str(child.attrib['name']))
+        elif child_type in ['simpleContent', 'extension']:
+            new_attribs = _get_contained_attribs(xmlschema, namespaces, child)
+            for attrib in new_attribs:
+                attrib_list.append(new_attribs.original_case[attrib])
+
+    attrib_res: CaseInsensitiveFrozenSet[str] = CaseInsensitiveFrozenSet(attrib_list)
+    assert len(set(attrib_list)) == len(attrib_res), f'Lost Information: {attrib_list}'
     return attrib_res
 
 
-def _get_optional_tags(xmlschema, namespaces, elem):
+def _get_optional_tags(xmlschema: etree._ElementTree, namespaces: Dict[str, str],
+                       elem: etree._Element) -> CaseInsensitiveFrozenSet[str]:
     """
     Get all defined tags contained in the given etree Element of the schema
     with minOccurs=0
@@ -499,19 +555,19 @@ def _get_optional_tags(xmlschema, namespaces, elem):
         if child_type == 'element':
             if 'minOccurs' in child.attrib:
                 if child.attrib['minOccurs'] == '0':
-                    optional_list.append(child.attrib['name'])
+                    optional_list.append(str(child.attrib['name']))
         elif child_type in ['sequence', 'all', 'choice']:
             new_optionals = _get_optional_tags(xmlschema, namespaces, child)
             for opt in new_optionals:
                 optional_list.append(new_optionals.original_case[opt])
 
-    optional_set = CaseInsensitiveFrozenSet(optional_list)
+    optional_set: CaseInsensitiveFrozenSet[str] = CaseInsensitiveFrozenSet(optional_list)
     assert len(set(optional_list)) == len(optional_set), f'Lost Information: {optional_list}'
 
     return optional_set
 
 
-def _is_simple(namespaces, elem):
+def _is_simple(namespaces: Dict[str, str], elem: etree._Element) -> bool:
     """
     Determine if a given etree element is simple (only contains attributes or text (no sub elements))
 
@@ -536,7 +592,10 @@ def _is_simple(namespaces, elem):
     return simple
 
 
-def _get_simple_tags(xmlschema, namespaces, elem, input_mapping=None):
+def _get_simple_tags(xmlschema: etree._ElementTree,
+                     namespaces: Dict[str, str],
+                     elem: etree._Element,
+                     input_mapping: Dict[str, List[AttributeType]] = None) -> CaseInsensitiveFrozenSet[str]:
     """
     Get all defined tags contained in the given etree Element of the schema
     which can only contain attributes or text (no sub elements)
@@ -562,34 +621,32 @@ def _get_simple_tags(xmlschema, namespaces, elem, input_mapping=None):
             if child.attrib['type'] == _INPUT_TYPE:
                 continue
             if child.attrib['type'] in input_mapping:
-                simple_list.append(child.attrib['name'])
+                simple_list.append(str(child.attrib['name']))
                 continue
 
-            type_elem = _xpath_eval(xmlschema,
-                                    f"//xsd:simpleType[@name='{child.attrib['type']}']",
-                                    namespaces=namespaces)
+            type_name = str(child.attrib['type'])
+            type_elem = _xpath_eval(xmlschema, f"//xsd:simpleType[@name='{type_name}']", namespaces=namespaces)
             if len(type_elem) != 0:
-                simple_list.append(child.attrib['name'])
+                simple_list.append(str(child.attrib['name']))
             else:
-                type_elem = _xpath_eval(xmlschema,
-                                        f"//xsd:complexType[@name='{child.attrib['type']}']",
-                                        namespaces=namespaces)
+                type_elem = _xpath_eval(xmlschema, f"//xsd:complexType[@name='{type_name}']", namespaces=namespaces)
                 if len(type_elem) == 0:
-                    simple_list.append(child.attrib['name'])
+                    simple_list.append(str(child.attrib['name']))
                 elif _is_simple(namespaces, type_elem[0]):
-                    simple_list.append(child.attrib['name'])
+                    simple_list.append(str(child.attrib['name']))
         elif child_type in ['sequence', 'all', 'choice']:
             new_simple = _get_simple_tags(xmlschema, namespaces, child, input_mapping=input_mapping)
             for simple in new_simple:
                 simple_list.append(new_simple.original_case[simple])
 
-    simple_set = CaseInsensitiveFrozenSet(simple_list)
+    simple_set: CaseInsensitiveFrozenSet[str] = CaseInsensitiveFrozenSet(simple_list)
     assert len(set(simple_list)) == len(simple_set), f'Lost Information: {simple_list}'
 
     return simple_set
 
 
-def _get_several_tags(xmlschema, namespaces, elem):
+def _get_several_tags(xmlschema: etree._ElementTree, namespaces: Dict[str, str],
+                      elem: etree._Element) -> CaseInsensitiveFrozenSet[str]:
     """
     Get all defined tags contained in the given etree Element of the schema
     which can occur multiple times (maxOccurs!=1)
@@ -609,7 +666,7 @@ def _get_several_tags(xmlschema, namespaces, elem):
         if child_type == 'element':
             if 'maxOccurs' in child.attrib:
                 if child.attrib['maxOccurs'] != '1':
-                    several_list.append(child.attrib['name'])
+                    several_list.append(str(child.attrib['name']))
         elif child_type in ['sequence', 'all', 'choice']:
             if 'maxOccurs' in child.attrib:
                 if child.attrib['maxOccurs'] != '1':
@@ -617,17 +674,18 @@ def _get_several_tags(xmlschema, namespaces, elem):
                     for tag in new_several:
                         several_list.append(tag)
             else:
-                new_several = _get_several_tags(xmlschema, namespaces, child)
-                for tag in new_several:
-                    several_list.append(new_several.original_case[tag])
+                new_several_set = _get_several_tags(xmlschema, namespaces, child)
+                for tag in new_several_set:
+                    several_list.append(new_several_set.original_case[tag])
 
-    several_set = CaseInsensitiveFrozenSet(several_list)
+    several_set: CaseInsensitiveFrozenSet[str] = CaseInsensitiveFrozenSet(several_list)
     assert len(set(several_list)) == len(several_set), f'Lost Information: {several_list}'
 
     return several_set
 
 
-def _get_contained_text_tags(xmlschema, namespaces, elem, text_tags):
+def _get_contained_text_tags(xmlschema: etree._ElementTree, namespaces: Dict[str, str], elem: etree._Element,
+                             text_tags: Set[str]) -> CaseInsensitiveFrozenSet[str]:
     """
     Get all defined tags contained in the given etree Element of the schema
     which can contain text
@@ -647,25 +705,25 @@ def _get_contained_text_tags(xmlschema, namespaces, elem, text_tags):
 
         if child_type == 'element':
             if child.attrib['name'] in text_tags:
-                text_list.append(child.attrib['name'])
+                text_list.append(str(child.attrib['name']))
         elif child_type in ['sequence', 'all', 'choice']:
-            new_tags = _get_contained_text_tags(xmlschema, namespaces, child, text_tags)
-            for tag in new_tags:
-                text_list.append(new_tags.original_case[tag])
+            new_tags_set = _get_contained_text_tags(xmlschema, namespaces, child, text_tags)
+            for tag in new_tags_set:
+                text_list.append(new_tags_set.original_case[tag])
 
-    text_set = CaseInsensitiveFrozenSet(text_list)
+    text_set: CaseInsensitiveFrozenSet[str] = CaseInsensitiveFrozenSet(text_list)
     assert len(set(text_list)) == len(text_set), f'Lost Information: {text_list}'
 
     return text_set
 
 
 @_cache_xpath_construction
-def _get_attrib_xpath(xmlschema,
-                      namespaces,
-                      attrib_name,
-                      stop_non_unique=False,
-                      stop_iteration=False,
-                      iteration_root=False):
+def _get_attrib_xpath(xmlschema: etree._ElementTree,
+                      namespaces: Dict[str, str],
+                      attrib_name: str,
+                      stop_non_unique: bool = False,
+                      stop_iteration: bool = False,
+                      iteration_root: bool = False) -> Set[str]:
     """
     construct all possible simple xpaths to a given attribute
 
@@ -686,7 +744,7 @@ def _get_attrib_xpath(xmlschema,
         if parent_type is None:
             continue
 
-        start_type = parent_type.attrib['name']
+        start_type = str(parent_type.attrib['name'])
         if start_type == _ITERATION_TYPE:
             if stop_iteration:
                 continue
@@ -716,7 +774,8 @@ def _get_attrib_xpath(xmlschema,
     return possible_paths
 
 
-def _get_sequence_order(xmlschema, namespaces, sequence_elem):
+def _get_sequence_order(xmlschema: etree._ElementTree, namespaces: Dict[str, str],
+                        sequence_elem: etree._Element) -> List[str]:
     """
     Extract the enforced order of elements in the given sequence element
 
@@ -731,14 +790,14 @@ def _get_sequence_order(xmlschema, namespaces, sequence_elem):
         child_type = _remove_xsd_namespace(child.tag, namespaces)
 
         if child_type == 'element':
-            elem_order.append(child.attrib['name'])
+            elem_order.append(str(child.attrib['name']))
         elif child_type in ['choice', 'sequence']:
             new_order = _get_sequence_order(xmlschema, namespaces, child)
             for elem in new_order:
                 elem_order.append(elem)
         elif child_type == 'group':
             group = _xpath_eval(xmlschema,
-                                f"//xsd:group[@name='{child.attrib['ref']}']/xsd:sequence",
+                                f"//xsd:group[@name='{str(child.attrib['ref'])}']/xsd:sequence",
                                 namespaces=namespaces)
             new_order = _get_sequence_order(xmlschema, namespaces, group[0])
             for elem in new_order:
@@ -751,7 +810,8 @@ def _get_sequence_order(xmlschema, namespaces, sequence_elem):
     return elem_order
 
 
-def _get_valid_tags(xmlschema, namespaces, sequence_elem):
+def _get_valid_tags(xmlschema: etree._ElementTree, namespaces: Dict[str, str],
+                    sequence_elem: etree._Element) -> List[str]:
     """
     Extract all allowed elements in the given sequence element
 
@@ -766,14 +826,14 @@ def _get_valid_tags(xmlschema, namespaces, sequence_elem):
         child_type = _remove_xsd_namespace(child.tag, namespaces)
 
         if child_type == 'element':
-            elems.append(child.attrib['name'])
+            elems.append(str(child.attrib['name']))
         elif child_type in ['choice', 'sequence', 'all']:
             new_elems = _get_valid_tags(xmlschema, namespaces, child)
             for elem in new_elems:
                 elems.append(elem)
         elif child_type == 'group':
             group = _xpath_eval(xmlschema,
-                                f"//xsd:group[@name='{child.attrib['ref']}']/xsd:sequence",
+                                f"//xsd:group[@name='{str(child.attrib['ref'])}']/xsd:sequence",
                                 namespaces=namespaces)
             new_elems = _get_valid_tags(xmlschema, namespaces, group[0])
             for elem in new_elems:
@@ -786,7 +846,11 @@ def _get_valid_tags(xmlschema, namespaces, sequence_elem):
     return elems
 
 
-def _extract_all_types(xmlschema, namespaces, elems, ignore_unknown=False, **kwargs):
+def _extract_all_types(xmlschema: etree._ElementTree,
+                       namespaces: Dict[str, str],
+                       elems: List[etree._Element],
+                       ignore_unknown: bool = False,
+                       **kwargs: Any) -> CaseInsensitiveDict[str, Set[AttributeType]]:
     """
     Determine the required type of all given attributes/elements
 
@@ -799,10 +863,10 @@ def _extract_all_types(xmlschema, namespaces, elems, ignore_unknown=False, **kwa
              types are possible a list is inserted for the tag
     """
 
-    types_dict = CaseInsensitiveDict()
+    types_dict: CaseInsensitiveDict[str, Set[AttributeType]] = CaseInsensitiveDict()
     for elem in elems:
-        name = elem.attrib['name']
-        type_name = elem.attrib['type']
+        name = str(elem.attrib['name'])
+        type_name = str(elem.attrib['type'])
 
         possible_types = set()
 
@@ -826,7 +890,7 @@ def _extract_all_types(xmlschema, namespaces, elems, ignore_unknown=False, **kwa
     return types_dict
 
 
-def type_order(type_def):
+def type_order(type_def: AttributeType) -> Tuple[int, float]:
     """
     Key function for sorting the type definitions to avoid conflicts
 
@@ -842,12 +906,18 @@ def type_order(type_def):
     BASE_TYPE_ORDER = ('switch', 'int', 'float', 'float_expression', 'string')
 
     type_index = BASE_TYPE_ORDER.index(type_def.base_type)
-    length = type_def.length if type_def.length != 'unbounded' else math.inf
+    if type_def.length is None:
+        length = 0.0
+    elif type_def.length != 'unbounded':
+        length = float(type_def.length)
+    else:
+        length = math.inf
 
     return type_index, length
 
 
-def extract_attribute_types(xmlschema, namespaces, **kwargs):
+def extract_attribute_types(xmlschema: etree._ElementTree, namespaces: Dict[str, str],
+                            **kwargs: Any) -> CaseInsensitiveDict[str, List[AttributeType]]:
     """
     Determine the required type of all attributes
 
@@ -861,13 +931,15 @@ def extract_attribute_types(xmlschema, namespaces, **kwargs):
 
     types_dict = _extract_all_types(xmlschema, namespaces, possible_attrib, **kwargs)
 
+    types_dict_sorted: CaseInsensitiveDict[str, List[AttributeType]] = CaseInsensitiveDict()
     for name, types in types_dict.items():
-        types_dict[name] = sorted(types, key=type_order)
+        types_dict_sorted[name] = sorted(types, key=type_order)
 
-    return types_dict
+    return types_dict_sorted
 
 
-def extract_text_types(xmlschema, namespaces, **kwargs):
+def extract_text_types(xmlschema: etree._ElementTree, namespaces: Dict[str, str],
+                       **kwargs: Any) -> CaseInsensitiveDict[str, List[AttributeType]]:
     """
     Determine the required type of all elements with text
 
@@ -881,13 +953,15 @@ def extract_text_types(xmlschema, namespaces, **kwargs):
 
     types_dict = _extract_all_types(xmlschema, namespaces, possible_elems, ignore_unknown=True, **kwargs)
 
+    types_dict_sorted: CaseInsensitiveDict[str, List[AttributeType]] = CaseInsensitiveDict()
     for name, types in types_dict.items():
-        types_dict[name] = sorted(types, key=type_order)
+        types_dict_sorted[name] = sorted(types, key=type_order)
 
-    return types_dict
+    return types_dict_sorted
 
 
-def get_tag_paths(xmlschema, namespaces, **kwargs):
+def get_tag_paths(xmlschema: etree._ElementTree, namespaces: Dict[str, str],
+                  **kwargs: Any) -> CaseInsensitiveDict[str, Union[List[str], str]]:
     """
     Determine simple xpaths to all possible tags
 
@@ -902,7 +976,7 @@ def get_tag_paths(xmlschema, namespaces, **kwargs):
     iteration_root = kwargs.get('iteration_root', False)
 
     possible_tags = set(_xpath_eval(xmlschema, '//xsd:element/@name', namespaces=namespaces))
-    tag_paths = CaseInsensitiveDict()
+    tag_paths: CaseInsensitiveDict[str, Union[List[str], str]] = CaseInsensitiveDict()
     for tag in sorted(possible_tags):
         paths = _get_xpath(xmlschema, namespaces, tag, stop_iteration=stop_iteration, iteration_root=iteration_root)
         if len(paths) == 1:
@@ -912,7 +986,8 @@ def get_tag_paths(xmlschema, namespaces, **kwargs):
     return tag_paths
 
 
-def get_unique_attribs(xmlschema, namespaces, **kwargs):
+def get_unique_attribs(xmlschema: etree._ElementTree, namespaces: Dict[str, str],
+                       **kwargs: Any) -> CaseInsensitiveDict[str, str]:
     """
     Determine all attributes, which can be set through set_inpchanges in aiida_fleur
     Meaning ONE possible path and no tags in the path with maxOccurs!=1
@@ -926,7 +1001,7 @@ def get_unique_attribs(xmlschema, namespaces, **kwargs):
     stop_iteration = kwargs.get('stop_iteration', False)
     iteration_root = kwargs.get('iteration_root', False)
 
-    settable = CaseInsensitiveDict()
+    settable: CaseInsensitiveDict[str, str] = CaseInsensitiveDict()
     possible_attrib = set(_xpath_eval(xmlschema, '//xsd:attribute/@name', namespaces=namespaces))
     for attrib in sorted(possible_attrib):
         path = _get_attrib_xpath(xmlschema,
@@ -958,7 +1033,8 @@ def get_unique_attribs(xmlschema, namespaces, **kwargs):
     return settable
 
 
-def get_unique_path_attribs(xmlschema, namespaces, **kwargs):
+def get_unique_path_attribs(xmlschema: etree._ElementTree, namespaces: Dict[str, str],
+                            **kwargs: Any) -> CaseInsensitiveDict[str, List[str]]:
     """
     Determine all attributes, with multiple possible path that do have at
     least one path with all contained tags maxOccurs!=1
@@ -980,7 +1056,7 @@ def get_unique_path_attribs(xmlschema, namespaces, **kwargs):
         settable_key = 'unique_attribs'
         settable_contains_key = 'unique_path_attribs'
 
-    settable = CaseInsensitiveDict()
+    settable: CaseInsensitiveDict[str, List[str]] = CaseInsensitiveDict()
     possible_attrib = set(_xpath_eval(xmlschema, '//xsd:attribute/@name', namespaces=namespaces))
     for attrib in sorted(possible_attrib):
         if attrib in kwargs[settable_key]:
@@ -1009,7 +1085,8 @@ def get_unique_path_attribs(xmlschema, namespaces, **kwargs):
     return settable
 
 
-def get_other_attribs(xmlschema, namespaces, **kwargs):
+def get_other_attribs(xmlschema: etree._ElementTree, namespaces: Dict[str, str],
+                      **kwargs: Any) -> CaseInsensitiveDict[str, List[str]]:
     """
     Determine all other attributes not contained in settable or settable_contains
 
@@ -1030,7 +1107,7 @@ def get_other_attribs(xmlschema, namespaces, **kwargs):
         settable_key = 'unique_attribs'
         settable_contains_key = 'unique_path_attribs'
 
-    other = CaseInsensitiveDict()
+    other: CaseInsensitiveDict[str, List[str]] = CaseInsensitiveDict()
     possible_attrib = set(_xpath_eval(xmlschema, '//xsd:attribute/@name', namespaces=namespaces))
     for attrib in sorted(possible_attrib):
         path = _get_attrib_xpath(xmlschema,
@@ -1064,7 +1141,7 @@ def get_other_attribs(xmlschema, namespaces, **kwargs):
     return other
 
 
-def get_omittable_tags(xmlschema, namespaces, **kwargs):
+def get_omittable_tags(xmlschema: etree._ElementTree, namespaces: Dict[str, str], **kwargs: Any) -> List[str]:
     """
     find tags with no attributes and, which are only used to mask a list of one other possible tag (e.g. atomSpecies)
 
@@ -1110,7 +1187,8 @@ def get_omittable_tags(xmlschema, namespaces, **kwargs):
     return omittable_tags
 
 
-def get_text_tags(xmlschema, namespaces, **kwargs):
+def get_text_tags(xmlschema: etree._ElementTree, namespaces: Dict[str, str],
+                  **kwargs: Any) -> CaseInsensitiveFrozenSet[str]:
     """
     find all elements, who can contain text
 
@@ -1133,13 +1211,14 @@ def get_text_tags(xmlschema, namespaces, **kwargs):
         else:
             continue  #This type cannot be traced back to a basic type
 
-    text_tags = CaseInsensitiveFrozenSet(text_tag_list)
+    text_tags: CaseInsensitiveFrozenSet[str] = CaseInsensitiveFrozenSet(text_tag_list)
     assert len(set(text_tag_list)) == len(text_tags), f'Lost Information: {text_tag_list}'
 
     return text_tags
 
 
-def get_basic_types(xmlschema, namespaces, **kwargs):
+def get_basic_types(xmlschema: etree._ElementTree, namespaces: Dict[str, str],
+                    **kwargs: Any) -> Dict[str, List[AttributeType]]:
     """
     find all types, which can be traced back directly to a base_type
 
@@ -1178,7 +1257,7 @@ def get_basic_types(xmlschema, namespaces, **kwargs):
     return basic_types
 
 
-def get_tag_info(xmlschema, namespaces, **kwargs):
+def get_tag_info(xmlschema: etree._ElementTree, namespaces: Dict[str, str], **kwargs: Any) -> Dict[str, TagInfo]:
     """
     Get all important information about the tags
         - allowed attributes
@@ -1217,28 +1296,28 @@ def get_tag_info(xmlschema, namespaces, **kwargs):
             continue
         type_elem = type_elem[0]
 
-        info_dict = {}
-        info_dict['attribs'] = _get_contained_attribs(xmlschema, namespaces, type_elem)
-        info_dict['optional_attribs'] = _get_contained_attribs(xmlschema, namespaces, type_elem, optional=True)
-        info_dict['optional'] = _get_optional_tags(xmlschema, namespaces, type_elem)
-        info_dict['several'] = _get_several_tags(xmlschema, namespaces, type_elem)
-        info_dict['order'] = _get_sequence_order(xmlschema, namespaces, type_elem)
-        info_dict['simple'] = _get_simple_tags(xmlschema,
-                                               namespaces,
-                                               type_elem,
-                                               input_mapping=kwargs.get('_input_basic_types'))
         valid_tags = _get_valid_tags(xmlschema, namespaces, type_elem)
-        info_dict['complex'] = CaseInsensitiveFrozenSet(valid_tags).difference(info_dict['simple'])
-        info_dict['text'] = _get_contained_text_tags(xmlschema, namespaces, type_elem, kwargs['text_tags'])
+        simple_tags = _get_simple_tags(xmlschema, namespaces, type_elem, input_mapping=kwargs.get('_input_basic_types'))
 
-        if any(len(elem) != 0 for elem in info_dict.values()):
+        info_dict: TagInfo = {
+            'attribs': _get_contained_attribs(xmlschema, namespaces, type_elem),
+            'optional_attribs': _get_contained_optional_attribs(xmlschema, namespaces, type_elem),
+            'optional': _get_optional_tags(xmlschema, namespaces, type_elem),
+            'several': _get_several_tags(xmlschema, namespaces, type_elem),
+            'order': _get_sequence_order(xmlschema, namespaces, type_elem),
+            'simple': simple_tags,
+            'complex': CaseInsensitiveFrozenSet(valid_tags).difference(simple_tags),
+            'text': _get_contained_text_tags(xmlschema, namespaces, type_elem, kwargs['text_tags'])
+        }
+
+        if any(len(elem) != 0 for elem in info_dict.values()):  #type: ignore
             for path in tag_path:
                 tag_info[path] = info_dict
 
     return tag_info
 
 
-def get_root_tag(xmlschema, namespaces, **kwargs):
+def get_root_tag(xmlschema: etree._ElementTree, namespaces: Dict[str, str], **kwargs: Any) -> str:
     """
     Returns the tag for the root element of the xmlschema
 
@@ -1250,7 +1329,7 @@ def get_root_tag(xmlschema, namespaces, **kwargs):
     return str(_xpath_eval(xmlschema, '/xsd:schema/xsd:element/@name', namespaces=namespaces)[0])
 
 
-def get_input_tag(xmlschema, namespaces, **kwargs):
+def get_input_tag(xmlschema: etree._ElementTree, namespaces: Dict[str, str], **kwargs: Any) -> str:
     """
     Returns the tag for the input type element of the outxmlschema
 

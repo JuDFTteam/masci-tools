@@ -3,6 +3,7 @@
 Functions for expanding/splitting or converting electron configuration strings
 """
 from masci_tools.util.constants import PERIODIC_TABLE_ELEMENTS
+from typing import Union, Optional
 
 all_econfig = [
     '1s2', '2s2', '2p6', '3s2', '3p6', '4s2', '3d10', '4p6', '5s2', '4d10', '5p6', '6s2', '4f14', '5d10', '6p6', '7s2',
@@ -14,7 +15,7 @@ max_state_occ_spin = {'1/2': 2., '3/2': 4., '5/2': 6., '7/2': 8.}
 ATOMIC_NAMES = {data['symbol']: num for num, data in PERIODIC_TABLE_ELEMENTS.items()}
 
 
-def get_econfig(element, full=False):
+def get_econfig(element: Union[str, int], full: bool = False) -> Optional[str]:
     """
     returns the econfiguration as a string of an element.
 
@@ -23,10 +24,12 @@ def get_econfig(element, full=False):
     :returns: a econfig string
     """
     if isinstance(element, int):
-        econ = PERIODIC_TABLE_ELEMENTS.get(element, {}).get('econfig')
+        econ: Optional[str] = PERIODIC_TABLE_ELEMENTS.get(element, {}).get('econfig')  #type:ignore
     elif isinstance(element, str):
         element_num = ATOMIC_NAMES.get(element, None)
-        econ = PERIODIC_TABLE_ELEMENTS.get(element_num, {}).get('econfig')
+        if element_num is None:
+            raise ValueError(f'No element available called {element}')
+        econ: str = PERIODIC_TABLE_ELEMENTS.get(element_num, {}).get('econfig')  #type:ignore
     else:
         raise ValueError('element has to be and int or string')
 
@@ -36,7 +39,7 @@ def get_econfig(element, full=False):
     return econ
 
 
-def get_coreconfig(element, full=False):
+def get_coreconfig(element: Union[str, int], full: bool = False) -> Optional[str]:
     """
     returns the econfiguration as a string of an element.
 
@@ -48,7 +51,7 @@ def get_coreconfig(element, full=False):
     return econ.split('|', maxsplit=1)[0].rstrip() if econ is not None else None
 
 
-def rek_econ(econfigstr):
+def rek_econ(econfigstr: str) -> Optional[str]:
     """
     recursive routine to return a full econfig
     '[Xe] 4f14 | 5d10 6s2 6p4' -> '1s 2s ... 4f14 | 5d10 6s2 6p4'
@@ -57,20 +60,21 @@ def rek_econ(econfigstr):
 
     :returns: expanded econfig string
     """
-    split_econ = econfigstr.strip('[')
-    split_econ = split_econ.split(']')
+    split_econ = econfigstr.strip('[').split(']')
     if len(split_econ) == 1:
         return econfigstr
     else:
         rest = split_econ[1]
         elem = split_econ[0]
         econfig = get_econfig(elem)
-        econ = econfig.replace(' |', '')
-        econfigstr = rek_econ(econ + rest)
-        return econfigstr  # for now
+        if econfig is not None:
+            econ = econfig.replace(' |', '')
+            return rek_econ(econ + rest)  # for now
+        else:
+            return None
 
 
-def convert_fleur_config_to_econfig(fleurconf_str, keep_spin=False):
+def convert_fleur_config_to_econfig(fleurconf_str: str, keep_spin: bool = False) -> str:
     """
     '[Kr] (4d3/2) (4d5/2) (4f5/2) (4f7/2)' -> '[Kr] 4d10 4f14', or '[Kr] 4d3/2 4d5/2 4f5/2 4f7/2'
 
@@ -95,10 +99,14 @@ def convert_fleur_config_to_econfig(fleurconf_str, keep_spin=False):
                 base = state[:2]
                 spin = state[2:]
                 occ = max_state_occ_spin.get(spin)
+                if occ is None:
+                    raise ValueError(f'Failed to get maximum occupation for spin {spin}')
                 if base not in econfstring_new:
                     econfstring_new = f'{econfstring_new}{base}{int(occ)} '
                 else:
                     max_occ = max_state_occ.get(base[1])
+                    if max_occ is None:
+                        raise ValueError(f'Failed to get maximum occupation for orbital {base[1]}')
                     econfstring_new = econfstring_new.split(base, maxsplit=1)[0] + f'{base}{int(max_occ)} '
                     # we assume here that the two states come behind each other, ... rather bad
                     #econfstring_new.replace('{}'.format(base)

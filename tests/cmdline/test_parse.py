@@ -92,7 +92,7 @@ def test_structure_data():
     assert 'Info: Atoms found:' in result.output
     assert 'Si Si-1 [0.6787502783660522, 0.6787502783660522, 0.6787502783660522]' in result.output
     assert 'Info: Bravais matrix:' in result.output
-    assert 'Info: Periodic boundary conditions [True, True, True]' in result.output
+    assert 'Info: Periodic boundary conditions (True, True, True)' in result.output
 
 
 def test_cell():
@@ -110,7 +110,7 @@ def test_cell():
     print(result.output)
     assert result.exception is None, 'An unexpected exception occured: {result.exception}'
     assert '[[0.         2.71500111 2.71500111]' in result.output
-    assert 'Info: Periodic boundary conditions [True, True, True]' in result.output
+    assert 'Info: Periodic boundary conditions (True, True, True)' in result.output
 
 
 def test_parameter_data():
@@ -163,7 +163,7 @@ def test_kpoints():
     print(result.output)
     assert result.exception is None, 'An unexpected exception occured: {result.exception}'
     assert 'Info: Bravais matrix:' in result.output
-    assert 'Info: Periodic boundary conditions [True, True, True]' in result.output
+    assert 'Info: Periodic boundary conditions (True, True, True)' in result.output
     assert '[0.25, 0.25, 0.25]    w=2.0' in result.output
 
 

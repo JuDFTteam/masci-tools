@@ -14,20 +14,23 @@
 This module contains useful methods for initializing or modifying a n_mmp_mat file
 for LDA+U
 """
+from typing import Union, List
 import numpy as np
+from lxml import etree
+from masci_tools.io.parsers.fleur import fleur_schema
 
 
-def set_nmmpmat(xmltree,
-                nmmplines,
-                schema_dict,
-                species_name,
-                orbital,
-                spin,
-                state_occupations=None,
-                orbital_occupations=None,
-                denmat=None,
-                phi=None,
-                theta=None):
+def set_nmmpmat(xmltree: Union[etree._Element, etree._ElementTree],
+                nmmplines: List[str],
+                schema_dict: 'fleur_schema.SchemaDict',
+                species_name: str,
+                orbital: int,
+                spin: int,
+                state_occupations: List[float] = None,
+                orbital_occupations: List[float] = None,
+                denmat: np.ndarray = None,
+                phi: float = None,
+                theta: float = None) -> List[str]:
     """Routine sets the block in the n_mmp_mat file specified by species_name, orbital and spin
     to the desired density matrix
 
@@ -62,7 +65,7 @@ def set_nmmpmat(xmltree,
     else:
         species_xpath = f'{species_base_path}[@name = "{species_name}"]'
 
-    all_species = eval_xpath(xmltree, species_xpath, list_return=True)
+    all_species: List[etree._Element] = eval_xpath(xmltree, species_xpath, list_return=True)
 
     nspins = evaluate_attribute(xmltree, schema_dict, 'jspins')
     if 'l_mtnocoPot' in schema_dict['attrib_types']:
@@ -73,7 +76,11 @@ def set_nmmpmat(xmltree,
     if spin > nspins:
         raise ValueError(f'Invalid input: spin {spin} requested, but input has only {nspins} spins')
 
-    all_ldau = eval_simple_xpath(xmltree, schema_dict, 'ldaU', contains='species', list_return=True)
+    all_ldau: List[etree._Element] = eval_simple_xpath(xmltree,
+                                                       schema_dict,
+                                                       'ldaU',
+                                                       contains='species',
+                                                       list_return=True)
     numRows = nspins * 14 * len(all_ldau)
 
     if state_occupations is not None:
@@ -105,7 +112,10 @@ def set_nmmpmat(xmltree,
         #Determine the place at which the given U procedure occurs
         ldau_index = None
         for index, ldau in enumerate(all_ldau):
-            ldau_species = get_xml_attribute(ldau.getparent(), 'name')
+            parent = ldau.getparent()
+            if parent is None:
+                raise ValueError('Could not find parent of tag')
+            ldau_species = get_xml_attribute(parent, 'name')
             ldau_orbital = evaluate_attribute(ldau, schema_dict, 'l', contains='species')
             if current_name == ldau_species and ldau_orbital == orbital:
                 ldau_index = index
@@ -127,7 +137,9 @@ def set_nmmpmat(xmltree,
     return nmmplines
 
 
-def rotate_nmmpmat(xmltree, nmmplines, schema_dict, species_name, orbital, phi, theta):
+def rotate_nmmpmat(xmltree: Union[etree._Element,
+                                  etree._ElementTree], nmmplines: List[str], schema_dict: 'fleur_schema.SchemaDict',
+                   species_name: str, orbital: int, phi: float, theta: float) -> List[str]:
     """
     Rotate the density matrix with the given angles phi and theta
 
@@ -157,7 +169,7 @@ def rotate_nmmpmat(xmltree, nmmplines, schema_dict, species_name, orbital, phi, 
     else:
         species_xpath = f'{species_base_path}[@name = "{species_name}"]'
 
-    all_species = eval_xpath(xmltree, species_xpath, list_return=True)
+    all_species: List[etree._Element] = eval_xpath(xmltree, species_xpath, list_return=True)
 
     nspins = evaluate_attribute(xmltree, schema_dict, 'jspins')
     if 'l_mtnocoPot' in schema_dict['attrib_types']:
@@ -165,7 +177,11 @@ def rotate_nmmpmat(xmltree, nmmplines, schema_dict, species_name, orbital, phi, 
             if evaluate_attribute(xmltree, schema_dict, 'l_mtnocoPot', contains='Setup'):
                 nspins = 3
 
-    all_ldau = eval_simple_xpath(xmltree, schema_dict, 'ldaU', contains='species', list_return=True)
+    all_ldau: List[etree._Element] = eval_simple_xpath(xmltree,
+                                                       schema_dict,
+                                                       'ldaU',
+                                                       contains='species',
+                                                       list_return=True)
     numRows = nspins * 14 * len(all_ldau)
 
     #Check that numRows matches the number of lines in nmmp_lines_copy
@@ -189,7 +205,10 @@ def rotate_nmmpmat(xmltree, nmmplines, schema_dict, species_name, orbital, phi, 
         #Determine the place at which the given U procedure occurs
         ldau_index = None
         for index, ldau in enumerate(all_ldau):
-            ldau_species = get_xml_attribute(ldau.getparent(), 'name')
+            parent = ldau.getparent()
+            if parent is None:
+                raise ValueError('Could not find parent of tag')
+            ldau_species = get_xml_attribute(parent, 'name')
             ldau_orbital = evaluate_attribute(ldau, schema_dict, 'l', contains='species')
             if current_name == ldau_species and ldau_orbital == orbital:
                 ldau_index = index
@@ -197,13 +216,10 @@ def rotate_nmmpmat(xmltree, nmmplines, schema_dict, species_name, orbital, phi, 
         if ldau_index is None:
             raise KeyError(f'No LDA+U procedure found on species {current_name} with l={orbital}')
 
-        denmat = []
-
         for spin in range(nspins):
 
             startRow = (spin * len(all_ldau) + ldau_index) * 14
             denmat = read_nmmpmat_block(nmmplines, spin * len(all_ldau) + ldau_index)
-
             denmat = rotate_nmmpmat_block(denmat, orbital, phi=phi, theta=theta)
 
             nmmplines[startRow:startRow + 14] = format_nmmpmat(denmat)
@@ -211,7 +227,8 @@ def rotate_nmmpmat(xmltree, nmmplines, schema_dict, species_name, orbital, phi, 
     return nmmplines
 
 
-def validate_nmmpmat(xmltree, nmmplines, schema_dict):
+def validate_nmmpmat(xmltree: Union[etree._Element, etree._ElementTree], nmmplines: List[str],
+                     schema_dict: 'fleur_schema.SchemaDict') -> None:
     """
     Checks that the given nmmp_lines is valid with the given xmltree
 
@@ -235,7 +252,11 @@ def validate_nmmpmat(xmltree, nmmplines, schema_dict):
             if evaluate_attribute(xmltree, schema_dict, 'l_mtnocoPot', contains='Setup'):
                 nspins = 3
 
-    all_ldau = eval_simple_xpath(xmltree, schema_dict, 'ldaU', contains='species', list_return=True)
+    all_ldau: List[etree._Element] = eval_simple_xpath(xmltree,
+                                                       schema_dict,
+                                                       'ldaU',
+                                                       contains='species',
+                                                       list_return=True)
     numRows = nspins * 14 * len(all_ldau)
 
     tol = 0.01
@@ -260,7 +281,10 @@ def validate_nmmpmat(xmltree, nmmplines, schema_dict):
     for ldau_index, ldau in enumerate(all_ldau):
 
         orbital = evaluate_attribute(ldau, schema_dict, 'l', contains='species')
-        species_name = get_xml_attribute(ldau.getparent(), 'name')
+        parent = ldau.getparent()
+        if parent is None:
+            raise ValueError('Could not find parent of tag')
+        species_name = get_xml_attribute(parent, 'name')
 
         for spin in range(nspins):
             startRow = (spin * len(all_ldau) + ldau_index) * 14

@@ -15,11 +15,18 @@ This module provides functions to extract distinct parts of the fleur xml files
 for easy versioning and reuse
 """
 from masci_tools.io.parsers.fleur.fleur_schema import schema_dict_version_dispatch
+from masci_tools.io.common_functions import AtomSiteProperties
+from masci_tools.io.parsers.fleur import fleur_schema
 from lxml import etree
 import warnings
+import numpy as np
+from logging import Logger
+from typing import List, Tuple, Union, Dict, Any, Optional
 
 
-def get_fleur_modes(xmltree, schema_dict, logger=None):
+def get_fleur_modes(xmltree: Union[etree._Element, etree._ElementTree],
+                    schema_dict: Union['fleur_schema.InputSchemaDict', 'fleur_schema.OutputSchemaDict'],
+                    logger: Logger = None) -> Dict[str, Any]:
     """
     Determine the calculation modes of fleur for the given xml file. Calculation modes
     are things that change the produced files or output in the out.xml files
@@ -155,7 +162,9 @@ def get_fleur_modes(xmltree, schema_dict, logger=None):
 
 
 @schema_dict_version_dispatch(output_schema=False)
-def get_nkpts(xmltree, schema_dict, logger=None):
+def get_nkpts(xmltree: Union[etree._Element, etree._ElementTree],
+              schema_dict: Union['fleur_schema.InputSchemaDict', 'fleur_schema.OutputSchemaDict'],
+              logger: Logger = None) -> int:
     """
     Get the number of kpoints that will be used in the calculation specified in the given
     fleur XMl file.
@@ -185,7 +194,11 @@ def get_nkpts(xmltree, schema_dict, logger=None):
     #Get the name of the current selected kPointSet
     list_name = evaluate_attribute(root, schema_dict, 'listName', logger=logger)
 
-    kpointlists = eval_simple_xpath(root, schema_dict, 'kPointList', list_return=True, logger=logger)
+    kpointlists: List[etree._Element] = eval_simple_xpath(root,
+                                                          schema_dict,
+                                                          'kPointList',
+                                                          list_return=True,
+                                                          logger=logger)
 
     if len(kpointlists) == 0:
         raise ValueError('No Kpoint lists found in the given inp.xml')
@@ -205,7 +218,9 @@ def get_nkpts(xmltree, schema_dict, logger=None):
 
 
 @get_nkpts.register(max_version='0.31')
-def get_nkpts_max4(xmltree, schema_dict, logger=None):
+def get_nkpts_max4(xmltree: Union[etree._Element, etree._ElementTree],
+                   schema_dict: Union['fleur_schema.InputSchemaDict', 'fleur_schema.OutputSchemaDict'],
+                   logger: Logger = None) -> int:
     """
     Get the number of kpoints that will be used in the calculation specified in the given
     fleur XMl file. Version specific for Max4 versions or older
@@ -236,23 +251,25 @@ def get_nkpts_max4(xmltree, schema_dict, logger=None):
     alt_kpt_set = None
     if modes['band'] or modes['gw']:
         expected_mode = 'bands' if modes['band'] else 'gw'
-        alt_kpts = eval_simple_xpath(root, schema_dict, 'altKPointSet', list_return=True, logger=logger)
+        alt_kpts: List[etree._Element] = eval_simple_xpath(root,
+                                                           schema_dict,
+                                                           'altKPointSet',
+                                                           list_return=True,
+                                                           logger=logger)
         for kpt_set in alt_kpts:
             if evaluate_attribute(kpt_set, schema_dict, 'purpose', logger=logger) == expected_mode:
                 alt_kpt_set = kpt_set
                 break
 
-    kpt_tag = None
+    kpt_tag: List[etree._Element] = []
     if alt_kpt_set is not None:
         kpt_tag = eval_simple_xpath(alt_kpt_set, schema_dict, 'kPointList', list_return=True, logger=logger)
         if len(kpt_tag) == 0:
             kpt_tag = eval_simple_xpath(alt_kpt_set, schema_dict, 'kPointCount', list_return=True, logger=logger)
-            if len(kpt_tag) == 0:
-                kpt_tag = None
-            else:
+            if len(kpt_tag) != 0:
                 warnings.warn('kPointCount is not guaranteed to result in the given number of kpoints')
 
-    if kpt_tag is None:
+    if not kpt_tag:
         kpt_tag = eval_simple_xpath(root,
                                     schema_dict,
                                     'kPointList',
@@ -271,14 +288,15 @@ def get_nkpts_max4(xmltree, schema_dict, logger=None):
             else:
                 warnings.warn('kPointCount is not guaranteed to result in the given number of kpoints')
 
-    kpt_tag = kpt_tag[0]
-
-    nkpts = evaluate_attribute(kpt_tag, schema_dict, 'count', logger=logger)
+    nkpts = evaluate_attribute(kpt_tag[0], schema_dict, 'count', logger=logger)
 
     return nkpts
 
 
-def get_cell(xmltree, schema_dict, logger=None, convert_to_angstroem=True):
+def get_cell(xmltree: Union[etree._Element, etree._ElementTree],
+             schema_dict: Union['fleur_schema.InputSchemaDict', 'fleur_schema.OutputSchemaDict'],
+             logger: Logger = None,
+             convert_to_angstroem: bool = True) -> Tuple[np.ndarray, Tuple[bool, bool, bool]]:
     """
     Get the Bravais matrix from the given fleur xml file. In addition a list
     determining in, which directions there are periodic boundary conditions
@@ -301,7 +319,6 @@ def get_cell(xmltree, schema_dict, logger=None, convert_to_angstroem=True):
     from masci_tools.util.schema_dict_util import evaluate_text, tag_exists, evaluate_attribute
     from masci_tools.util.xml.common_functions import clear_xml
     from masci_tools.util.constants import BOHR_A
-    import numpy as np
 
     if isinstance(xmltree, etree._ElementTree):
         xmltree, _ = clear_xml(xmltree)
@@ -310,14 +327,14 @@ def get_cell(xmltree, schema_dict, logger=None, convert_to_angstroem=True):
         root = xmltree
     constants = read_constants(root, schema_dict, logger=logger)
 
-    cell = None
+    cell: Optional[np.ndarray] = None
     lattice_tag = None
     if tag_exists(root, schema_dict, 'bulkLattice', logger=logger):
         lattice_tag = eval_simple_xpath(root, schema_dict, 'bulkLattice', logger=logger)
-        pbc = [True, True, True]
+        pbc = (True, True, True)
     elif tag_exists(root, schema_dict, 'filmLattice', logger=logger):
         lattice_tag = eval_simple_xpath(root, schema_dict, 'filmLattice', logger=logger)
-        pbc = [True, True, False]
+        pbc = (True, True, False)
 
     if lattice_tag is not None:
         lattice_scale = evaluate_attribute(lattice_tag,
@@ -351,7 +368,7 @@ def get_cell(xmltree, schema_dict, logger=None, convert_to_angstroem=True):
 
         if all(x is not None and x != [] for x in [row1, row2, row3]):
             cell = np.array([row1, row2, row3]) * lattice_scale
-            if convert_to_angstroem:
+            if convert_to_angstroem and cell is not None:
                 cell *= BOHR_A
 
     if cell is None:
@@ -362,7 +379,9 @@ def get_cell(xmltree, schema_dict, logger=None, convert_to_angstroem=True):
     return cell, pbc
 
 
-def _get_species_info(xmltree, schema_dict, logger=None):
+def _get_species_info(xmltree: Union[etree._Element, etree._ElementTree],
+                      schema_dict: Union['fleur_schema.InputSchemaDict', 'fleur_schema.OutputSchemaDict'],
+                      logger: Logger = None) -> Dict[str, Dict[str, str]]:
     """
     Gets the species identifiers and information.
     Used to keep species information consistent between
@@ -406,7 +425,7 @@ def _get_species_info(xmltree, schema_dict, logger=None):
         raise ValueError(
             f'Failed to read in species names and elements. Got {len(names)} names and {len(elements)} elements')
 
-    species_info = {}
+    species_info: Dict[str, Dict[str, str]] = {}
     for name, element in zip(names, elements):
         #Check if the species name has a numerical id at the end (separated by - or .)
         #And add all of them first
@@ -415,22 +434,29 @@ def _get_species_info(xmltree, schema_dict, logger=None):
         species_info[name]['normed_name'] = name
         match = re.fullmatch(r'(.+[\-\.])([1-9]+)', name)
         if match:
-            species_info[name]['id'] = int(match.group(2))
+            species_info[name]['id'] = match.group(2)
 
     for name, info in species_info.items():
         if 'id' not in info:
             element = info['element']
             #Find the smallest id which is free
-            used_ids = {val['id'] for name, val in species_info.items() if 'id' in val and val['element'] == element}
+            used_ids = {
+                int(val['id']) for name, val in species_info.items() if 'id' in val and val['element'] == element
+            }
             possible_ids = range(1, max(used_ids, default=0) + 2)
-            info['id'] = min(set(possible_ids) - set(used_ids))
+            info['id'] = str(min(set(possible_ids) - set(used_ids)))
             #Just append the id to the normed name
             info['normed_name'] += f"-{info['id']}"
 
     return species_info
 
 
-def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True, extract_econfig=False, logger=None):
+def get_parameter_data(xmltree: Union[etree._Element, etree._ElementTree],
+                       schema_dict: Union['fleur_schema.InputSchemaDict', 'fleur_schema.OutputSchemaDict'],
+                       inpgen_ready: bool = True,
+                       write_ids: bool = True,
+                       extract_econfig: bool = False,
+                       logger: Logger = None) -> Dict[str, Any]:
     """
     This routine returns an python dictionary produced from the inp.xml
     file, which contains all the parameters needed to setup a new inp.xml from a inpgen
@@ -493,7 +519,11 @@ def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True, 
     parameters['comp'] = filter_out_empty_dict_entries(comp_dict)
 
     # &atoms
-    species_list = eval_simple_xpath(root, schema_dict, 'species', list_return=True, logger=logger)
+    species_list: List[etree._Element] = eval_simple_xpath(root,
+                                                           schema_dict,
+                                                           'species',
+                                                           list_return=True,
+                                                           logger=logger)
 
     species_info = _get_species_info(xmltree, schema_dict, logger=logger)
 
@@ -521,9 +551,13 @@ def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True, 
 
         if extract_econfig:
             if inpgen_ready:
-                atom_econfig = eval_simple_xpath(species, schema_dict, 'electronConfig', logger=logger)
+                atom_econfig: List[etree._Element] = eval_simple_xpath(species,
+                                                                       schema_dict,
+                                                                       'electronConfig',
+                                                                       list_return=True,
+                                                                       logger=logger)
                 if len(atom_econfig) != 0:
-                    atom_dict['econfig'] = convert_fleur_electronconfig(atom_econfig)
+                    atom_dict['econfig'] = convert_fleur_electronconfig(atom_econfig[0])
             else:
                 atom_dict['econfig'] = evaluate_tag(species,
                                                     schema_dict,
@@ -533,7 +567,7 @@ def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True, 
                                                     subtags=True,
                                                     ignore={'flipSpins'})
 
-        atom_lo = eval_simple_xpath(species, schema_dict, 'lo', list_return=True, logger=logger)
+        atom_lo: List[etree._Element] = eval_simple_xpath(species, schema_dict, 'lo', list_return=True, logger=logger)
 
         if len(atom_lo) != 0:
             atom_dict['lo'] = convert_fleur_lo(atom_lo)
@@ -562,7 +596,11 @@ def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True, 
     # kpt
     if schema_dict.inp_version > (0, 31):
         list_name = evaluate_attribute(root, schema_dict, 'listName', logger=logger)
-        kpointlists = eval_simple_xpath(root, schema_dict, 'kPointList', list_return=True, logger=logger)
+        kpointlists: List[etree._Element] = eval_simple_xpath(root,
+                                                              schema_dict,
+                                                              'kPointList',
+                                                              list_return=True,
+                                                              logger=logger)
 
         if len(kpointlists) == 0:
             raise ValueError('No Kpoint lists found in the given inp.xml')
@@ -611,13 +649,13 @@ def get_parameter_data(xmltree, schema_dict, inpgen_ready=True, write_ids=True, 
     return parameters
 
 
-def get_structure_data(xmltree,
-                       schema_dict,
-                       include_relaxations=True,
-                       site_namedtuple=False,
-                       convert_to_angstroem=True,
-                       normalize_kind_name=True,
-                       logger=None):
+def get_structure_data(xmltree: Union[etree._Element, etree._ElementTree],
+                       schema_dict: Union['fleur_schema.InputSchemaDict', 'fleur_schema.OutputSchemaDict'],
+                       include_relaxations: bool = True,
+                       site_namedtuple: bool = False,
+                       convert_to_angstroem: bool = True,
+                       normalize_kind_name: bool = True,
+                       logger: Logger = None) -> Tuple[List[AtomSiteProperties], np.ndarray, Tuple[bool, bool, bool]]:
     """
     Get the structure defined in the given fleur xml file.
 
@@ -661,9 +699,8 @@ def get_structure_data(xmltree,
     from masci_tools.util.schema_dict_util import evaluate_text, evaluate_attribute
     from masci_tools.util.xml.common_functions import clear_xml
     from masci_tools.io.common_functions import rel_to_abs, rel_to_abs_f, abs_to_rel, abs_to_rel_f
-    from masci_tools.io.common_functions import find_symmetry_relation, AtomSiteProperties
+    from masci_tools.io.common_functions import find_symmetry_relation
     from masci_tools.util.constants import BOHR_A
-    import numpy as np
 
     if not site_namedtuple:
         warnings.warn(
@@ -681,8 +718,12 @@ def get_structure_data(xmltree,
 
     species_info = _get_species_info(xmltree, schema_dict, logger=None)
 
-    atom_data = []
-    atom_groups = eval_simple_xpath(root, schema_dict, 'atomGroup', list_return=True, logger=logger)
+    atom_data: List[AtomSiteProperties] = []
+    atom_groups: List[etree._Element] = eval_simple_xpath(root,
+                                                          schema_dict,
+                                                          'atomGroup',
+                                                          list_return=True,
+                                                          logger=logger)
 
     #Read relaxation information if available
     displacements = None
@@ -799,19 +840,22 @@ def get_structure_data(xmltree,
             atom_data.extend(
                 AtomSiteProperties(position=pos, symbol=element, kind=group_species) for pos in atom_positions)
         else:
-            atom_data.extend((pos, element) for pos in atom_positions)
+            atom_data.extend((pos, element) for pos in atom_positions)  #type:ignore
 
     return atom_data, cell, pbc
 
 
 @schema_dict_version_dispatch(output_schema=False)
-def get_kpoints_data(xmltree,
-                     schema_dict,
-                     name=None,
-                     index=None,
-                     only_used=False,
-                     logger=None,
-                     convert_to_angstroem=True):
+def get_kpoints_data(
+    xmltree: Union[etree._Element, etree._ElementTree],
+    schema_dict: Union['fleur_schema.InputSchemaDict', 'fleur_schema.OutputSchemaDict'],
+    name: str = None,
+    index: int = None,
+    only_used: bool = False,
+    logger: Logger = None,
+    convert_to_angstroem: bool = True
+) -> Tuple[Union[List[List[float]], Dict[str, List[List[float]]]], Union[List[float], Dict[str, List[float]]],
+           np.ndarray, Tuple[bool, bool, bool]]:
     """
     Get the kpoint sets defined in the given fleur xml file.
 
@@ -864,7 +908,11 @@ def get_kpoints_data(xmltree,
 
     cell, pbc = get_cell(root, schema_dict, logger=logger, convert_to_angstroem=convert_to_angstroem)
 
-    kpointlists = eval_simple_xpath(root, schema_dict, 'kPointList', list_return=True, logger=logger)
+    kpointlists: List[etree._Element] = eval_simple_xpath(root,
+                                                          schema_dict,
+                                                          'kPointList',
+                                                          list_return=True,
+                                                          logger=logger)
 
     if len(kpointlists) == 0:
         raise ValueError('No Kpoint lists found in the given inp.xml')
@@ -916,7 +964,12 @@ def get_kpoints_data(xmltree,
 
 
 @get_kpoints_data.register(max_version='0.31')
-def get_kpoints_data_max4(xmltree, schema_dict, logger=None, convert_to_angstroem=True, only_used=False):
+def get_kpoints_data_max4(
+        xmltree: Union[etree._Element, etree._ElementTree],
+        schema_dict: Union['fleur_schema.InputSchemaDict', 'fleur_schema.OutputSchemaDict'],
+        logger: Logger = None,
+        convert_to_angstroem: bool = True,
+        only_used: bool = False) -> Tuple[List[List[float]], List[float], np.ndarray, Tuple[bool, bool, bool]]:
     """
     Get the kpoint sets defined in the given fleur xml file.
 
@@ -955,26 +1008,24 @@ def get_kpoints_data_max4(xmltree, schema_dict, logger=None, convert_to_angstroe
 
     cell, pbc = get_cell(root, schema_dict, logger=logger, convert_to_angstroem=convert_to_angstroem)
 
-    kpointlist = eval_simple_xpath(root,
-                                   schema_dict,
-                                   'kPointList',
-                                   list_return=True,
-                                   not_contains='altKPoint',
-                                   logger=logger)
+    kpointlist: List[etree._Element] = eval_simple_xpath(root,
+                                                         schema_dict,
+                                                         'kPointList',
+                                                         list_return=True,
+                                                         not_contains='altKPoint',
+                                                         logger=logger)
 
     if len(kpointlist) == 0:
         raise ValueError('No Kpoint lists found in the given inp.xml')
 
-    kpointlist = kpointlist[0]
-
-    kpoints = evaluate_text(kpointlist,
+    kpoints = evaluate_text(kpointlist[0],
                             schema_dict,
                             'kPoint',
                             constants=constants,
                             not_contains='altKPoint',
                             list_return=True,
                             logger=logger)
-    weights = evaluate_attribute(kpointlist,
+    weights = evaluate_attribute(kpointlist[0],
                                  schema_dict,
                                  'weight',
                                  constants=constants,
@@ -986,7 +1037,9 @@ def get_kpoints_data_max4(xmltree, schema_dict, logger=None, convert_to_angstroe
 
 
 @schema_dict_version_dispatch(output_schema=False)
-def get_relaxation_information(xmltree, schema_dict, logger=None):
+def get_relaxation_information(xmltree: Union[etree._Element, etree._ElementTree],
+                               schema_dict: Union['fleur_schema.InputSchemaDict', 'fleur_schema.OutputSchemaDict'],
+                               logger: Logger = None) -> Dict[str, Any]:
     """
     Get the relaxation information from the given fleur XML file. This includes the current
     displacements, energy and posforce evolution
@@ -1014,7 +1067,7 @@ def get_relaxation_information(xmltree, schema_dict, logger=None):
     if not tag_exists(root, schema_dict, 'relaxation', logger=logger):
         raise ValueError('No relaxation information included in the given XML file')
 
-    relax_tag = eval_simple_xpath(root, schema_dict, 'relaxation', logger=logger)
+    relax_tag: etree._Element = eval_simple_xpath(root, schema_dict, 'relaxation', logger=logger)
 
     out_dict = {}
     out_dict['displacements'] = evaluate_text(relax_tag,
@@ -1032,7 +1085,11 @@ def get_relaxation_information(xmltree, schema_dict, logger=None):
                                               logger=logger)
 
     out_dict['posforces'] = []
-    relax_iters = eval_simple_xpath(relax_tag, schema_dict, 'step', list_return=True, logger=logger)
+    relax_iters: List[etree._Element] = eval_simple_xpath(relax_tag,
+                                                          schema_dict,
+                                                          'step',
+                                                          list_return=True,
+                                                          logger=logger)
     for step in relax_iters:
         posforces = evaluate_text(step, schema_dict, 'posforce', list_return=True, constants=constants, logger=logger)
         out_dict['posforces'].append(posforces)
@@ -1041,7 +1098,10 @@ def get_relaxation_information(xmltree, schema_dict, logger=None):
 
 
 @get_relaxation_information.register(max_version='0.28')
-def get_relaxation_information_pre029(xmltree, schema_dict, logger=None):
+def get_relaxation_information_pre029(xmltree: Union[etree._Element, etree._ElementTree],
+                                      schema_dict: Union['fleur_schema.InputSchemaDict',
+                                                         'fleur_schema.OutputSchemaDict'],
+                                      logger: Logger = None) -> None:
     """
     Get the relaxation information from the given fleur XML file. This includes the current
     displacements, energy and posforce evolution
@@ -1059,7 +1119,9 @@ def get_relaxation_information_pre029(xmltree, schema_dict, logger=None):
         f"'get_relaxation_information' is not implemented for inputs of version '{schema_dict['inp_version']}'")
 
 
-def get_symmetry_information(xmltree, schema_dict, logger=None):
+def get_symmetry_information(xmltree: Union[etree._Element, etree._ElementTree],
+                             schema_dict: Union['fleur_schema.InputSchemaDict', 'fleur_schema.OutputSchemaDict'],
+                             logger: Logger = None) -> Tuple[List[np.ndarray], List[np.ndarray]]:
     """
     Get the symmetry information from the given fleur XML file. This includes the
     rotation matrices and shifts defined in the ``symmetryOperations`` tag.
@@ -1079,7 +1141,6 @@ def get_symmetry_information(xmltree, schema_dict, logger=None):
     """
     from masci_tools.util.schema_dict_util import tag_exists, read_constants, evaluate_text, eval_simple_xpath
     from masci_tools.util.xml.common_functions import clear_xml
-    import numpy as np
 
     if isinstance(xmltree, etree._ElementTree):
         xmltree, _ = clear_xml(xmltree)
@@ -1091,7 +1152,7 @@ def get_symmetry_information(xmltree, schema_dict, logger=None):
     if not tag_exists(root, schema_dict, 'symmetryOperations', logger=logger):
         raise ValueError('No explicit symmetry information included in the given XML file')
 
-    ops = eval_simple_xpath(root, schema_dict, 'symOp', logger=logger, list_return=True)
+    ops: List[etree._Element] = eval_simple_xpath(root, schema_dict, 'symOp', logger=logger, list_return=True)
 
     rotations = []
     shifts = []

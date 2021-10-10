@@ -17,15 +17,22 @@ and convert its content to a dict
 from lxml import etree
 from pprint import pprint
 
-from masci_tools.io.io_fleurxml import load_inpxml
+from masci_tools.io.io_fleurxml import load_inpxml, XMLInput
 from masci_tools.util.xml.common_functions import clear_xml, validate_xml
 from masci_tools.util.xml.converters import convert_from_xml
 from masci_tools.util.schema_dict_util import read_constants, evaluate_attribute
 from masci_tools.util.logging_util import DictHandler
 import logging
+from typing import TYPE_CHECKING, Dict, Any, Optional
+if TYPE_CHECKING:
+    from masci_tools.io.parsers.fleur.fleur_schema import InputSchemaDict
 
 
-def inpxml_parser(inpxmlfile, parser_info_out=None, strict=False, debug=False, base_url=None):
+def inpxml_parser(inpxmlfile: XMLInput,
+                  parser_info_out: Dict[str, Any] = None,
+                  strict: bool = False,
+                  debug: bool = False,
+                  base_url: str = None) -> Dict[str, Any]:
     """
     Parses the given inp.xml file to a python dictionary utilizing the schema
     defined by the version number to validate and corretly convert to the dictionary
@@ -43,10 +50,13 @@ def inpxml_parser(inpxmlfile, parser_info_out=None, strict=False, debug=False, b
     """
 
     __parser_version__ = '0.3.0'
-    logger = logging.getLogger(__name__)
+    logger: Optional[logging.Logger] = logging.getLogger(__name__)
+
+    if strict:
+        logger = None
 
     parser_log_handler = None
-    if parser_info_out is not None or not strict:
+    if logger is not None:
         if parser_info_out is None:
             parser_info_out = {}
 
@@ -66,9 +76,6 @@ def inpxml_parser(inpxmlfile, parser_info_out=None, strict=False, debug=False, b
 
         logger.addHandler(parser_log_handler)
 
-    if strict:
-        logger = None
-
     if logger is not None:
         logger.info('Masci-Tools Fleur inp.xml Parser v%s', __parser_version__)
 
@@ -85,13 +92,14 @@ def inpxml_parser(inpxmlfile, parser_info_out=None, strict=False, debug=False, b
         validate_xml(xmltree, schema_dict.xmlschema, error_header='Input file does not validate against the schema')
     except etree.DocumentInvalid as err:
         errmsg = str(err)
-        logger.warning(errmsg)
+        if logger is not None:
+            logger.warning(errmsg)
         if not ignore_validation:
             if logger is not None:
                 logger.exception(errmsg)
             raise ValueError(errmsg) from err
 
-    if schema_dict.xmlschema.validate(xmltree) or ignore_validation:
+    if schema_dict.xmlschema.validate(xmltree) or ignore_validation:  #type:ignore
         inp_dict = inpxml_todict(root, schema_dict, constants, logger=logger)
     else:
         msg = 'Input file does not validate against the schema: Reason is unknown'
@@ -109,7 +117,12 @@ def inpxml_parser(inpxmlfile, parser_info_out=None, strict=False, debug=False, b
     return inp_dict
 
 
-def inpxml_todict(parent, schema_dict, constants, omitted_tags=False, base_xpath=None, logger=None):
+def inpxml_todict(parent: etree._Element,
+                  schema_dict: 'InputSchemaDict',
+                  constants: Dict[str, float],
+                  omitted_tags: bool = False,
+                  base_xpath: str = None,
+                  logger: logging.Logger = None) -> Dict[str, Any]:
     """
     Recursive operation which transforms an xml etree to
     python nested dictionaries and lists.
@@ -131,9 +144,9 @@ def inpxml_todict(parent, schema_dict, constants, omitted_tags=False, base_xpath
     if base_xpath is None:
         base_xpath = f'/{parent.tag}'
 
-    return_dict = {}
+    return_dict: Dict[str, Any] = {}
     if list(parent.items()):
-        return_dict = dict(list(parent.items()))
+        return_dict = {str(key): val for key, val in parent.items()}
         # Now we have to convert lazy fortan style into pretty things for the Database
         for key in return_dict:
             if key in schema_dict['attrib_types']:
@@ -156,7 +169,7 @@ def inpxml_todict(parent, schema_dict, constants, omitted_tags=False, base_xpath
                 raise ValueError(
                     f'Something is wrong in the schema_dict: {parent.tag} is not in text_tags, but it has text')
 
-            converted_text, suc = convert_from_xml(parent.text,
+            converted_text, suc = convert_from_xml(str(parent.text),
                                                    schema_dict,
                                                    parent.tag,
                                                    text=True,
@@ -167,7 +180,7 @@ def inpxml_todict(parent, schema_dict, constants, omitted_tags=False, base_xpath
                 logger.warning("Failed to text of '%s' Got: '%s'", parent.tag, parent.text)
 
             if not return_dict:
-                return_dict = converted_text
+                return_dict = converted_text  #type:ignore
             else:
                 return_dict['text_value'] = converted_text
                 if 'label' in return_dict:
@@ -195,11 +208,11 @@ def inpxml_todict(parent, schema_dict, constants, omitted_tags=False, base_xpath
             if element.tag not in return_dict:  # is this the first occurence?
                 if omitted_tags:
                     if len(return_dict) == 0:
-                        return_dict = []
+                        return_dict = []  #type:ignore
                 else:
                     return_dict[element.tag] = []
             if omitted_tags:
-                return_dict.append(new_return_dict)
+                return_dict.append(new_return_dict)  #type:ignore
             elif 'text_value' in new_return_dict:
                 for key, value in new_return_dict.items():
                     if key == 'text_value':

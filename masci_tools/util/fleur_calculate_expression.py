@@ -14,7 +14,7 @@
 This module contains the functions necessary to parse mathematical expressions
 with predefined constants given in the inp.xml file of Fleur
 """
-from __future__ import absolute_import
+from typing import Callable, Dict, Union, Tuple
 import numpy as np
 from masci_tools.util.constants import FLEUR_DEFINED_CONSTANTS
 
@@ -23,22 +23,37 @@ class MissingConstant(Exception):
     pass
 
 
-def calculate_expression(expression, constants=None, prevCommand=None, exp_return=False):
+def calculate_expression(expression: Union[str, float, int], constants: Dict[str, float] = None) -> float:
     """
     Recursively evaluates the given expression string with the given defined constants
+
+    :param expression: str containing the expression to be parsed
+    :param constants: dict with all defined constants (predefined in the Fleur code or defined in the inp.xml)
+
+    :return: float value of the given expression string
+    """
+    value, _ = calculate_expression_partial(expression, constants=constants)
+    return value
+
+
+def calculate_expression_partial(expression: Union[str, float, int],
+                                 constants: Dict[str, float] = None,
+                                 prevCommand: str = None) -> Tuple[float, str]:
+    """
+    Recursively evaluates the given expression string with the given defined constants
+    and returns the unevaluated part of the expression
 
     :param expression: str containing the expression to be parsed
     :param constants: dict with all defined constants (predefined in the Fleur code or defined in the inp.xml)
     :param prevCommand: str, which gives the command before the beginning of the current block
                         if it is given the calculation is stopped, when a command is encountered, which should
                         be exectuted after prevCommand (order of operations)
-    :param exp_return: bool, determines whether to return the remaining string of the expression
 
     :return: float value of the given expression string
     """
 
     #Map the keywords recognized by fleur to the corresponding numpy function
-    functions_dict = {
+    functions_dict: Dict[str, Callable] = {
         'sin': np.sin,
         'cos': np.cos,
         'tan': np.tan,
@@ -67,7 +82,7 @@ def calculate_expression(expression, constants=None, prevCommand=None, exp_retur
         raise ValueError('Invalid expression: Got None for expression')
 
     if isinstance(expression, (float, int)):
-        return expression
+        return expression, ''
 
     expression = expression.replace(' ', '')
     value = None
@@ -117,11 +132,12 @@ def calculate_expression(expression, constants=None, prevCommand=None, exp_retur
                 prevOrder = 0
             operatorOrder = order_dict[operator]
             if operatorOrder > prevOrder:
+                if value is None:
+                    raise ValueError('No left value available for operation')
                 #Evaluate the next block
-                block_value, expression = calculate_expression(expression[len(operator):],
-                                                               constants,
-                                                               prevCommand=operator,
-                                                               exp_return=True)
+                block_value, expression = calculate_expression_partial(expression[len(operator):],
+                                                                       constants,
+                                                                       prevCommand=operator)
                 #Perform the operation
                 if operator == '+':
                     value += block_value
@@ -151,13 +167,13 @@ def calculate_expression(expression, constants=None, prevCommand=None, exp_retur
         else:
             raise ValueError(f'Invalid expression: Found unexpected character {firstchar}')
 
-    if exp_return:
-        return value, expression
-    else:
-        return value
+    if value is None:
+        raise ValueError('Failed to evaluate expression')
+
+    return value, expression
 
 
-def get_first_number(expression):
+def get_first_number(expression: str) -> Tuple[float, str]:
     """
     Reads the number in the beginning of the expression string.
     This number can begin with a sign +-, a number or the decimal point
@@ -187,7 +203,7 @@ def get_first_number(expression):
     return float(numberstring), expression[len(numberstring):]
 
 
-def get_first_string(expression):
+def get_first_string(expression: str) -> Tuple[str, str]:
     """
     Reads the letter string in the beginning of the expression string.
 
@@ -206,7 +222,7 @@ def get_first_string(expression):
     return found_string, expression[len(found_string):]
 
 
-def evaluate_bracket(expression, constants):
+def evaluate_bracket(expression: str, constants: Dict[str, float]) -> Tuple[Union[float, int], str]:
     """
     Evaluates the bracket opened at the start of the expression
 

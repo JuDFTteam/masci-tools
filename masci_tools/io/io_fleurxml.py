@@ -20,9 +20,17 @@ import io
 import os
 from pathlib import Path
 from functools import partial
+from logging import Logger
+from typing import Callable, Tuple, Union, Any, IO
+from masci_tools.io.parsers.fleur import fleur_schema
+
+XMLInput = Union[etree._ElementTree, str, Path, bytes, os.PathLike, IO]
 
 
-def load_inpxml(inpxmlfile, logger=None, base_url=None, **kwargs):
+def load_inpxml(inpxmlfile: XMLInput,
+                logger: Logger = None,
+                base_url: str = None,
+                **kwargs: Any) -> Tuple[etree._ElementTree, 'fleur_schema.InputSchemaDict']:
     """
     Loads a inp.xml file for fleur together with its corresponding schema dictionary
 
@@ -36,7 +44,7 @@ def load_inpxml(inpxmlfile, logger=None, base_url=None, **kwargs):
     from masci_tools.io.parsers.fleur.fleur_schema import InputSchemaDict
 
     if isinstance(inpxmlfile, io.IOBase):
-        xml_parse_func = etree.parse
+        xml_parse_func: Callable = etree.parse
     elif isinstance(inpxmlfile, (str, bytes, Path)):
         if os.path.isfile(inpxmlfile):
             xml_parse_func = etree.parse
@@ -67,7 +75,7 @@ def load_inpxml(inpxmlfile, logger=None, base_url=None, **kwargs):
             raise ValueError(f'Failed to parse input file: {msg}') from msg
 
     if etree.iselement(xmltree):
-        xmltree = xmltree.getroottree()
+        xmltree = xmltree.getroottree()  #type:ignore
 
     if xmltree is None:
         if logger is not None:
@@ -89,7 +97,10 @@ def load_inpxml(inpxmlfile, logger=None, base_url=None, **kwargs):
     return xmltree, schema_dict
 
 
-def load_outxml(outxmlfile, logger=None, base_url=None, **kwargs):
+def load_outxml(outxmlfile: XMLInput,
+                logger: Logger = None,
+                base_url: str = None,
+                **kwargs: Any) -> Tuple[etree._ElementTree, 'fleur_schema.OutputSchemaDict']:
     """
     Loads a out.xml file for fleur together with its corresponding schema dictionary
 
@@ -103,7 +114,7 @@ def load_outxml(outxmlfile, logger=None, base_url=None, **kwargs):
     from masci_tools.io.parsers.fleur.fleur_schema import OutputSchemaDict
 
     if isinstance(outxmlfile, io.IOBase):
-        xml_parse_func = etree.parse
+        xml_parse_func: Callable = etree.parse
     elif isinstance(outxmlfile, (str, bytes, Path)):
         if os.path.isfile(outxmlfile):
             xml_parse_func = etree.parse
@@ -156,7 +167,7 @@ def load_outxml(outxmlfile, logger=None, base_url=None, **kwargs):
                 raise ValueError('Skipping the parsing of the xml file. Repairing was not possible.') from err
 
     if etree.iselement(xmltree):
-        xmltree = xmltree.getroottree()
+        xmltree = xmltree.getroottree()  #type:ignore
 
     if xmltree is None:
         if logger is not None:
@@ -171,7 +182,7 @@ def load_outxml(outxmlfile, logger=None, base_url=None, **kwargs):
     out_version = str(out_version)
 
     if out_version == '0.27':
-        program_version = eval_xpath(xmltree, '//programVersion/@version')
+        program_version = str(eval_xpath(xmltree, '//programVersion/@version'))
         if program_version == 'fleur 32':
             #Max5 release (before bugfix)
             out_version = '0.33'
@@ -211,7 +222,7 @@ def load_outxml(outxmlfile, logger=None, base_url=None, **kwargs):
                              program_version)
             raise ValueError(f"Unknown fleur version: File-version '{out_version}' Program-version '{program_version}'")
     else:
-        inp_version = eval_xpath(xmltree, '//@fleurInputVersion')
+        inp_version: str = eval_xpath(xmltree, '//@fleurInputVersion')  #type:ignore
         if not inp_version:
             raise ValueError('Failed to extract inputVersion')
         inp_version = str(inp_version)

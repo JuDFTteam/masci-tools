@@ -1,7 +1,7 @@
 ci:
     autoupdate_schedule: monthly
     autofix_prs: true
-    skip: [pylint-errors, pylint-warnings,version-number]
+    skip: [pylint-errors, pylint-warnings,version-number,mypy]
 
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
@@ -59,6 +59,32 @@ repos:
     types: [python]
     language: system
     exclude: '^(docs/)|(examples/)'
+
+  - id: mypy
+    name: mypy
+    entry: mypy
+    args: [--config-file=pyproject.toml]
+    language: python
+    types: [python]
+    require_serial: true
+    pass_filenames: true
+    files: >-
+        (?x)^(
+            masci_tools/io/parsers/fleur/.*py|
+            masci_tools/io/io_nmmpmat.py|
+            masci_tools/io/io_fleurxml.py|
+            masci_tools/util/xml/.*py|
+            masci_tools/util/lockable_containers.py|
+            masci_tools/util/case_insensitive_dict.py|
+            masci_tools/util/schema_dict_util.py|
+            masci_tools/util/parse_task_decorators.py|
+            masci_tools/io/common_functions.py|
+            masci_tools/util/parse_tasks.py|
+            masci_tools/util/econfig.py|
+            masci_tools/util/fleur_calculate_expression.py|
+
+        )$
+
 
   - id: version-number
     name: Check version numbers

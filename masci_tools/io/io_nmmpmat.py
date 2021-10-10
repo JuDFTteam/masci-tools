@@ -13,10 +13,11 @@
 """
 Simple IO routines for creating text for nmmp_mat files
 """
+from typing import List
 import numpy as np
 
 
-def format_nmmpmat(denmat):
+def format_nmmpmat(denmat: np.ndarray) -> List[str]:
     """
     Format a given 7x7 complex numpy array into the format for the n_mmp_mat file
 
@@ -46,7 +47,7 @@ def format_nmmpmat(denmat):
     return nmmp_lines
 
 
-def rotate_nmmpmat_block(denmat, orbital, phi=None, theta=None):
+def rotate_nmmpmat_block(denmat: np.ndarray, orbital: int, phi: float = None, theta: float = None) -> np.ndarray:
     """
     Rotate the given 7x7 complex numpy array with the d-wigner matrix
     corresponding to the given orbital and angles
@@ -75,7 +76,7 @@ def rotate_nmmpmat_block(denmat, orbital, phi=None, theta=None):
     return denmat
 
 
-def write_nmmpmat(orbital, denmat, phi=None, theta=None):
+def write_nmmpmat(orbital: int, denmat: np.ndarray, phi: float = None, theta: float = None) -> List[str]:
     """
     Generate list of str for n_mmp_mat file from given numpy array
 
@@ -96,7 +97,10 @@ def write_nmmpmat(orbital, denmat, phi=None, theta=None):
     return format_nmmpmat(denmat_padded)
 
 
-def write_nmmpmat_from_states(orbital, state_occupations, phi=None, theta=None):
+def write_nmmpmat_from_states(orbital: int,
+                              state_occupations: List[float],
+                              phi: float = None,
+                              theta: float = None) -> List[str]:
     """
     Generate list of str for n_mmp_mat file from diagonal occupations
 
@@ -117,7 +121,10 @@ def write_nmmpmat_from_states(orbital, state_occupations, phi=None, theta=None):
     return write_nmmpmat(orbital, denmat, phi=phi, theta=theta)
 
 
-def write_nmmpmat_from_orbitals(orbital, orbital_occupations, phi=None, theta=None):
+def write_nmmpmat_from_orbitals(orbital: int,
+                                orbital_occupations: List[float],
+                                phi: float = None,
+                                theta: float = None) -> List[str]:
     """
     Generate list of str for n_mmp_mat file from orbital occupations
 
@@ -161,7 +168,7 @@ def write_nmmpmat_from_orbitals(orbital, orbital_occupations, phi=None, theta=No
     return write_nmmpmat(orbital, denmat, phi=phi, theta=theta)
 
 
-def read_nmmpmat_block(nmmp_lines, block_index):
+def read_nmmpmat_block(nmmp_lines: List[str], block_index: int) -> np.ndarray:
     """
     Convert 14 line block of given nmmp_lines into 7x7 complex numpy array
 
@@ -180,7 +187,9 @@ def read_nmmpmat_block(nmmp_lines, block_index):
             rowData = [float(x) for x in line.split()]
         else:
             rowData.extend([float(x) for x in line.split()])
-            rowData = [num[0] + 1j * num[1] for indx, num in enumerate(zip(rowData[:-1], rowData[1:])) if indx % 2 == 0]
-            denmat[currentRow, :] += np.array(rowData)
+            rowData_cmplx = [
+                num[0] + 1j * num[1] for indx, num in enumerate(zip(rowData[:-1], rowData[1:])) if indx % 2 == 0
+            ]
+            denmat[currentRow, :] += np.array(rowData_cmplx)
 
     return denmat

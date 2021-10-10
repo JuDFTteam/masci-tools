@@ -15,6 +15,7 @@ Here commonly used functions that do not need aiida-stuff (i.e. can be tested
 without a database) are collected.
 """
 import io
+from typing import Any
 import numpy as np
 import warnings
 from collections import namedtuple
@@ -438,18 +439,12 @@ def convert_to_fortran_string(string):
         return string
 
 
-def is_sequence(arg):
+def is_sequence(arg: Any) -> bool:
     """
     Checks if arg is a sequence
     """
-    if isinstance(arg, str):
-        return False
-    elif hasattr(arg, '__iter__'):
-        return True
-    elif not hasattr(arg, 'strip') and hasattr(arg, '__getitem__'):
-        return True
-    else:
-        return False
+    from collections.abc import Sequence
+    return isinstance(arg, Sequence) and not isinstance(arg, str)
 
 
 def abs_to_rel(vector, cell):

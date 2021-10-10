@@ -20,11 +20,13 @@ import tempfile
 import shutil
 from functools import update_wrapper, wraps
 from pathlib import Path
-from typing import Callable, Iterable, Union, List, Dict, Tuple, Any
+from typing import Callable, Iterable, Union, List, Dict, Tuple, Any, cast
+
+from .fleur_schema_parser_functions import TagInfo
 try:
     from typing import Literal
 except ImportError:
-    from typing_extensions import Literal
+    from typing_extensions import Literal  #type: ignore
 
 from logging import Logger
 
@@ -34,7 +36,7 @@ from masci_tools.util.lockable_containers import LockableDict, LockableList
 from masci_tools.util.case_insensitive_dict import CaseInsensitiveFrozenSet, CaseInsensitiveDict
 from masci_tools.util.xml.common_functions import abs_to_rel_xpath, split_off_tag
 from masci_tools.util.xml.converters import convert_str_version_number
-from .inpschema_todict import create_inpschema_dict
+from .inpschema_todict import create_inpschema_dict, InputSchemaData
 from .outschema_todict import create_outschema_dict, merge_schema_dicts
 
 PACKAGE_DIRECTORY = Path(__file__).parent.resolve()
@@ -75,6 +77,9 @@ def schema_dict_version_dispatch(output_schema: bool = False) -> Callable:
                     default_match = func
                 elif condition(version):
                     matches.append(func)
+
+            if default_match is None:
+                raise ValueError('No default function registered for schema_dict_version dispatch')
 
             matches.append(default_match)
 
@@ -183,7 +188,9 @@ class SchemaDict(LockableDict):
         """
         cls._schema_dict_cache.clear()
 
-    def __init__(self, *args, xmlschema=None, **kwargs):
+    def __init__(self, *args: Any, xmlschema: etree.XMLSchema = None, **kwargs: Any):
+        if xmlschema is None:
+            raise ValueError('xmlschema has to be supplied')
         self.xmlschema = xmlschema
         super().__init__(*args, **kwargs)
         super().freeze()
@@ -507,9 +514,9 @@ class SchemaDict(LockableDict):
             raise NoPathFound(f'The tag {name} has no possible paths with the current specification.\n'
                               f'contains: {contains}, not_contains: {not_contains}')
 
-        EMPTY_TAG_INFO = {
+        EMPTY_TAG_INFO: TagInfo = {
             'attribs': CaseInsensitiveFrozenSet(),
-            'optional_attribs': {},
+            'optional_attribs': CaseInsensitiveDict(),
             'optional': CaseInsensitiveFrozenSet(),
             'order': [],
             'several': CaseInsensitiveFrozenSet(),
@@ -539,11 +546,14 @@ class SchemaDict(LockableDict):
             else:
                 tag_info = entry
 
+        if tag_info is None:
+            raise ValueError(f'No tag info found for paths: {paths}')
+
         if convert_to_builtin:
             tag_info = {
                 key: set(val.original_case.values()) if isinstance(val, CaseInsensitiveFrozenSet) else val
                 for key, val in tag_info.items()
-            }  #type:ignore
+            }
 
         if path_return:
             if not multiple_paths:
@@ -551,7 +561,7 @@ class SchemaDict(LockableDict):
             else:
                 return tag_info, paths  #type:ignore
         else:
-            return tag_info
+            return tag_info  #type:ignore
 
 
 class InputSchemaDict(SchemaDict):
@@ -637,10 +647,10 @@ class InputSchemaDict(SchemaDict):
 
         :return: InputSchemaDict object with the information for the provided file
         """
-        path = os.fspath(path)
-        schema_dict = create_inpschema_dict(path)
+        fspath = os.fspath(path)
+        schema_dict = create_inpschema_dict(fspath)
 
-        xmlschema_doc = etree.parse(path)
+        xmlschema_doc = etree.parse(fspath)
         xmlschema = etree.XMLSchema(xmlschema_doc)
 
         return cls(schema_dict, xmlschema=xmlschema)
@@ -796,22 +806,23 @@ class OutputSchemaDict(SchemaDict):
         if inp_path is None:
             inp_path = Path(path).parent / 'FleurInputSchema.xsd'
 
-        path = os.fspath(path)
-        inp_path = os.fspath(inp_path)
+        fspath = os.fspath(path)
+        fsinp_path = os.fspath(inp_path)
 
         if inpschema_dict is None:
-            inpschema_dict = create_inpschema_dict(inp_path)
+            inpschema_dict = create_inpschema_dict(fsinp_path)  #type:ignore
+        inpschema_data = cast('InputSchemaData', inpschema_dict)
 
-        schema_dict = create_outschema_dict(path, inpschema_dict=inpschema_dict)
-        schema_dict = merge_schema_dicts(inpschema_dict, schema_dict)
+        schema_dict = create_outschema_dict(fspath, inpschema_dict=inpschema_data)
+        schema_dict = merge_schema_dicts(inpschema_data, schema_dict)
 
         with tempfile.TemporaryDirectory() as td:
-            td = Path(td)
-            temp_input_schema_path = td / 'FleurInputSchema.xsd'
-            shutil.copy(inp_path, temp_input_schema_path)
+            td_path = Path(td)
+            temp_input_schema_path = td_path / 'FleurInputSchema.xsd'
+            shutil.copy(fsinp_path, temp_input_schema_path)
 
-            temp_output_schema_path = td / 'FleurOutputSchema.xsd'
-            shutil.copy(path, temp_output_schema_path)
+            temp_output_schema_path = td_path / 'FleurOutputSchema.xsd'
+            shutil.copy(fspath, temp_output_schema_path)
             xmlschema_doc = etree.parse(os.fspath(temp_output_schema_path))
             xmlschema = etree.XMLSchema(xmlschema_doc)
 

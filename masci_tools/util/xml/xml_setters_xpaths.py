@@ -14,19 +14,25 @@
 Functions for modifying the xml input file of Fleur with explicit xpath arguments
 These can still use the schema dict for finding information about the xpath
 """
+from typing import Any, Iterable, List, Union, Dict, cast, Tuple
+try:
+    from typing import Literal
+except ImportError:
+    from typing_extensions import Literal  #type:ignore
 from lxml import etree
 from masci_tools.util.xml.common_functions import eval_xpath
-
+from masci_tools.io.parsers.fleur import fleur_schema
 ######################CREATING/DELETING TAGS###############################################
 
 
-def xml_create_tag_schema_dict(xmltree,
-                               schema_dict,
-                               xpath,
-                               base_xpath,
-                               element,
-                               create_parents=False,
-                               occurrences=None):
+def xml_create_tag_schema_dict(
+        xmltree: Union[etree._Element, etree._ElementTree],
+        schema_dict: 'fleur_schema.SchemaDict',
+        xpath: 'etree._xpath',
+        base_xpath: str,
+        element: Union[str, etree._Element],
+        create_parents: bool = False,
+        occurrences: Union[int, Iterable[int]] = None) -> Union[etree._Element, etree._ElementTree]:
     """
     This method evaluates an xpath expression and creates a tag in a xmltree under the
     returned nodes.
@@ -63,7 +69,7 @@ def xml_create_tag_schema_dict(xmltree,
         except ValueError as exc:
             raise ValueError(f"Failed to construct etree Element from '{element_name}'") from exc
     else:
-        element_name = element.tag
+        element_name = element.tag  #type:ignore
 
     if len(tag_info['order']) == 0:
         tag_order = None
@@ -72,12 +78,12 @@ def xml_create_tag_schema_dict(xmltree,
 
     several_tags = element_name in tag_info['several']
 
-    parent_nodes = eval_xpath(xmltree, xpath, list_return=True)
+    parent_nodes: List[etree._Element] = eval_xpath(xmltree, xpath, list_return=True)
 
     if len(parent_nodes) == 0:
         if create_parents:
             parent_xpath, parent_name = split_off_tag(base_xpath)
-            complex_parent_xpath, _ = split_off_tag(xpath)
+            complex_parent_xpath, _ = split_off_tag(str(xpath))
             xmltree = xml_create_tag_schema_dict(xmltree,
                                                  schema_dict,
                                                  complex_parent_xpath,
@@ -91,13 +97,13 @@ def xml_create_tag_schema_dict(xmltree,
     return xml_create_tag(xmltree, xpath, element, tag_order=tag_order, occurrences=occurrences, several=several_tags)
 
 
-def eval_xpath_create(xmltree,
-                      schema_dict,
-                      xpath,
-                      base_xpath,
-                      create_parents=False,
-                      occurrences=None,
-                      list_return=False):
+def eval_xpath_create(xmltree: Union[etree._Element, etree._ElementTree],
+                      schema_dict: 'fleur_schema.SchemaDict',
+                      xpath: 'etree._xpath',
+                      base_xpath: str,
+                      create_parents: bool = False,
+                      occurrences: Union[int, Iterable[int]] = None,
+                      list_return: bool = False) -> List[etree._Element]:
     """
     Evaluates and xpath and creates tag if the result is empty
 
@@ -117,11 +123,11 @@ def eval_xpath_create(xmltree,
 
     check_complex_xpath(xmltree, base_xpath, xpath)
 
-    nodes = eval_xpath(xmltree, xpath, list_return=True)
+    nodes: List[etree._Element] = eval_xpath(xmltree, xpath, list_return=True)
 
     if len(nodes) == 0:
         parent_xpath, tag_name = split_off_tag(base_xpath)
-        complex_parent_xpath, _ = split_off_tag(xpath)
+        complex_parent_xpath, _ = split_off_tag(str(xpath))
         xmltree = xml_create_tag_schema_dict(xmltree,
                                              schema_dict,
                                              complex_parent_xpath,
@@ -132,19 +138,19 @@ def eval_xpath_create(xmltree,
         nodes = eval_xpath(xmltree, xpath, list_return=True)
 
     if len(nodes) == 1 and not list_return:
-        nodes = nodes[0]
+        nodes = nodes[0]  #type:ignore
 
     return nodes
 
 
-def xml_set_attrib_value(xmltree,
-                         schema_dict,
-                         xpath,
-                         base_xpath,
-                         attributename,
-                         attribv,
-                         occurrences=None,
-                         create=False):
+def xml_set_attrib_value(xmltree: Union[etree._Element, etree._ElementTree],
+                         schema_dict: 'fleur_schema.SchemaDict',
+                         xpath: 'etree._xpath',
+                         base_xpath: str,
+                         attributename: str,
+                         attribv: Any,
+                         occurrences: Union[int, Iterable[int]] = None,
+                         create: bool = False) -> Union[etree._Element, etree._ElementTree]:
     """
     Sets an attribute in a xmltree to a given value. By default the attribute will be set
     on all nodes returned for the specified xpath.
@@ -176,18 +182,18 @@ def xml_set_attrib_value(xmltree,
     check_complex_xpath(xmltree, base_xpath, xpath)
 
     if create:
-        nodes = eval_xpath_create(xmltree,
-                                  schema_dict,
-                                  xpath,
-                                  base_xpath,
-                                  create_parents=True,
-                                  occurrences=occurrences,
-                                  list_return=True)
+        nodes: List[etree._Element] = eval_xpath_create(xmltree,
+                                                        schema_dict,
+                                                        xpath,
+                                                        base_xpath,
+                                                        create_parents=True,
+                                                        occurrences=occurrences,
+                                                        list_return=True)
     else:
         nodes = eval_xpath(xmltree, xpath, list_return=True)
 
     if len(nodes) == 0:
-        raise ValueError(f"Could not set attribute '{attributename}' on path '{xpath}' "
+        raise ValueError(f"Could not set attribute '{attributename}' on path '{str(xpath)}' "
                          'because atleast one subtag is missing. '
                          'Use create=True to create the subtags')
 
@@ -205,7 +211,13 @@ def xml_set_attrib_value(xmltree,
     return xml_set_attrib_value_no_create(xmltree, xpath, attributename, converted_attribv, occurrences=occurrences)
 
 
-def xml_set_first_attrib_value(xmltree, schema_dict, xpath, base_xpath, attributename, attribv, create=False):
+def xml_set_first_attrib_value(xmltree: Union[etree._Element, etree._ElementTree],
+                               schema_dict: 'fleur_schema.SchemaDict',
+                               xpath: 'etree._xpath',
+                               base_xpath: str,
+                               attributename: str,
+                               attribv: Any,
+                               create: bool = False) -> Union[etree._Element, etree._ElementTree]:
     """
     Sets the first occurrence attribute in a xmltree to a given value.
     If there are no nodes under the specified xpath a tag can be created with `create=True`.
@@ -238,7 +250,13 @@ def xml_set_first_attrib_value(xmltree, schema_dict, xpath, base_xpath, attribut
                                 occurrences=0)
 
 
-def xml_set_text(xmltree, schema_dict, xpath, base_xpath, text, occurrences=None, create=False):
+def xml_set_text(xmltree: Union[etree._Element, etree._ElementTree],
+                 schema_dict: 'fleur_schema.SchemaDict',
+                 xpath: 'etree._xpath',
+                 base_xpath: str,
+                 text: Any,
+                 occurrences: Union[int, Iterable[int]] = None,
+                 create: bool = False) -> Union[etree._Element, etree._ElementTree]:
     """
     Sets the text on tags in a xmltree to a given value. By default the text will be set
     on all nodes returned for the specified xpath.
@@ -267,18 +285,18 @@ def xml_set_text(xmltree, schema_dict, xpath, base_xpath, text, occurrences=None
     check_complex_xpath(xmltree, base_xpath, xpath)
 
     if create:
-        nodes = eval_xpath_create(xmltree,
-                                  schema_dict,
-                                  xpath,
-                                  base_xpath,
-                                  create_parents=True,
-                                  occurrences=occurrences,
-                                  list_return=True)
+        nodes: List[etree._Element] = eval_xpath_create(xmltree,
+                                                        schema_dict,
+                                                        xpath,
+                                                        base_xpath,
+                                                        create_parents=True,
+                                                        occurrences=occurrences,
+                                                        list_return=True)
     else:
         nodes = eval_xpath(xmltree, xpath, list_return=True)
 
     if len(nodes) == 0:
-        raise ValueError(f"Could not set text on path '{xpath}' because atleast one subtag is missing. "
+        raise ValueError(f"Could not set text on path '{str(xpath)}' because atleast one subtag is missing. "
                          'Use create=True to create the subtags')
 
     _, tag_name = split_off_tag(base_xpath)
@@ -288,7 +306,12 @@ def xml_set_text(xmltree, schema_dict, xpath, base_xpath, text, occurrences=None
     return xml_set_text_no_create(xmltree, xpath, converted_text, occurrences=occurrences)
 
 
-def xml_set_first_text(xmltree, schema_dict, xpath, base_xpath, text, create=False):
+def xml_set_first_text(xmltree: Union[etree._Element, etree._ElementTree],
+                       schema_dict: 'fleur_schema.SchemaDict',
+                       xpath: 'etree._xpath',
+                       base_xpath: str,
+                       text: Any,
+                       create: bool = False) -> Union[etree._Element, etree._ElementTree]:
     """
     Sets the text on the first occurrence of a tag in a xmltree to a given value.
     If there are no nodes under the specified xpath a tag can be created with `create=True`.
@@ -311,14 +334,15 @@ def xml_set_first_text(xmltree, schema_dict, xpath, base_xpath, text, create=Fal
     return xml_set_text(xmltree, schema_dict, xpath, base_xpath, text, create=create, occurrences=0)
 
 
-def xml_add_number_to_attrib(xmltree,
-                             schema_dict,
-                             xpath,
-                             base_xpath,
-                             attributename,
-                             add_number,
-                             mode='abs',
-                             occurrences=None):
+def xml_add_number_to_attrib(
+        xmltree: Union[etree._Element, etree._ElementTree],
+        schema_dict: 'fleur_schema.SchemaDict',
+        xpath: 'etree._xpath',
+        base_xpath: str,
+        attributename: str,
+        add_number: Any,
+        mode: Literal['abs', 'rel'] = 'abs',
+        occurrences: Union[int, Iterable[int]] = None) -> Union[etree._Element, etree._ElementTree]:
     """
     Adds a given number to the attribute value in a xmltree. By default the attribute will be shifted
     on all nodes returned for the specified xpath.
@@ -355,7 +379,7 @@ def xml_add_number_to_attrib(xmltree,
     possible_types = schema_dict['attrib_types'][attributename]
 
     if not etree.iselement(xmltree):
-        constants = read_constants(xmltree.getroot(), schema_dict)
+        constants = read_constants(xmltree.getroot(), schema_dict)  #type:ignore
     else:
         constants = read_constants(xmltree, schema_dict)
 
@@ -373,28 +397,29 @@ def xml_add_number_to_attrib(xmltree,
             f'Allowed attributes are: {attribs.original_case.values()}')
     attributename = attribs.original_case[attributename]
 
-    if not xpath.endswith(f'/@{attributename}'):
-        xpath = '/@'.join([xpath, attributename])
+    if not str(xpath).endswith(f'/@{attributename}'):
+        xpath = '/@'.join([str(xpath), attributename])
 
-    stringattribute = eval_xpath(xmltree, xpath, list_return=True)
+    stringattribute: List[str] = eval_xpath(xmltree, xpath, list_return=True)
 
-    tag_xpath, attributename = split_off_attrib(xpath)
+    tag_xpath, attributename = split_off_attrib(str(xpath))
 
     if len(stringattribute) == 0:
         raise ValueError(f"No attribute values found for '{attributename}'. Cannot add number")
 
-    attribvalues, _ = convert_from_xml(stringattribute,
-                                       schema_dict,
-                                       attributename,
-                                       text=False,
-                                       constants=constants,
-                                       list_return=True)
+    res: Tuple[List[Union[int, float]], bool] = convert_from_xml(stringattribute,
+                                                                 schema_dict,
+                                                                 attributename,
+                                                                 text=False,
+                                                                 constants=constants,
+                                                                 list_return=True)  #type:ignore
+    attribvalues, _ = res
 
     if occurrences is not None:
         if not is_sequence(occurrences):
-            occurrences = [occurrences]
+            occurrences = [occurrences]  #type:ignore
         try:
-            attribvalues = [attribvalues[occ] for occ in occurrences]
+            attribvalues = [attribvalues[occ] for occ in cast(Iterable[int], occurrences)]
         except IndexError as exc:
             raise ValueError('Wrong value for occurrences') from exc
 
@@ -421,7 +446,13 @@ def xml_add_number_to_attrib(xmltree,
     return xmltree
 
 
-def xml_add_number_to_first_attrib(xmltree, schema_dict, xpath, base_xpath, attributename, add_number, mode='abs'):
+def xml_add_number_to_first_attrib(xmltree: Union[etree._Element, etree._ElementTree],
+                                   schema_dict: 'fleur_schema.SchemaDict',
+                                   xpath: 'etree._xpath',
+                                   base_xpath: str,
+                                   attributename: str,
+                                   add_number: Any,
+                                   mode: Literal['abs', 'rel'] = 'abs') -> Union[etree._Element, etree._ElementTree]:
     """
     Adds a given number to the first occurrence of a attribute value in a xmltree.
     If there are no nodes under the specified xpath an error is raised
@@ -452,7 +483,13 @@ def xml_add_number_to_first_attrib(xmltree, schema_dict, xpath, base_xpath, attr
                                     occurrences=0)
 
 
-def xml_set_simple_tag(xmltree, schema_dict, xpath, base_xpath, tag_name, changes, create_parents=False):
+def xml_set_simple_tag(xmltree: Union[etree._Element, etree._ElementTree],
+                       schema_dict: 'fleur_schema.SchemaDict',
+                       xpath: 'etree._xpath',
+                       base_xpath: str,
+                       tag_name: str,
+                       changes: Union[List[Dict[str, Any]], Dict[str, Any]],
+                       create_parents: bool = False) -> Union[etree._Element, etree._ElementTree]:
     """
     Sets one or multiple `simple` tag(s) in an xmltree. A simple tag can only hold attributes and has no
     subtags.
@@ -478,7 +515,7 @@ def xml_set_simple_tag(xmltree, schema_dict, xpath, base_xpath, tag_name, change
 
     tag_info = schema_dict['tag_info'][base_xpath]
 
-    tag_xpath = f'{xpath}/{tag_name}'
+    tag_xpath = f'{str(xpath)}/{tag_name}'
     tag_base_xpath = f'{base_xpath}/{tag_name}'
 
     if tag_name in tag_info['several']:
@@ -519,7 +556,12 @@ def xml_set_simple_tag(xmltree, schema_dict, xpath, base_xpath, tag_name, change
     return xmltree
 
 
-def xml_set_complex_tag(xmltree, schema_dict, xpath, base_xpath, attributedict, create=False):
+def xml_set_complex_tag(xmltree: Union[etree._Element, etree._ElementTree],
+                        schema_dict: 'fleur_schema.SchemaDict',
+                        xpath: 'etree._xpath',
+                        base_xpath: str,
+                        attributedict: Dict[str, Any],
+                        create=False) -> Union[etree._Element, etree._ElementTree]:
     """
     Recursive Function to correctly set tags/attributes for a given tag.
     Goes through the attributedict and decides based on the schema_dict, how the corresponding
@@ -566,7 +608,7 @@ def xml_set_complex_tag(xmltree, schema_dict, xpath, base_xpath, attributedict, 
 
         key = (tag_info['complex'] | tag_info['simple'] | tag_info['attribs']).original_case[key]
 
-        sub_xpath = f'{xpath}/{key}'
+        sub_xpath = f'{str(xpath)}/{key}'
         sub_base_xpath = f'{base_xpath}/{key}'
         if key in tag_info['attribs']:
             xml_set_attrib_value(xmltree, schema_dict, xpath, base_xpath, key, val, create=create)

@@ -20,21 +20,27 @@ import importlib.util
 from importlib import import_module
 import copy
 import os
-from typing import Callable, Dict, List, Union
+from pathlib import Path
+from typing import Callable, Dict, Iterable, List, Set, Any, Union
 try:
     from typing import Literal
 except ImportError:
     from typing_extensions import Literal  #type:ignore
 import warnings
+from lxml import etree
+from logging import Logger, LoggerAdapter
+from masci_tools.io.parsers.fleur import fleur_schema
 
 from masci_tools.util.xml.converters import convert_str_version_number
+import masci_tools
 
-PACKAGE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
-DEFAULT_TASK_FILE = os.path.abspath(os.path.join(PACKAGE_DIRECTORY, '../io/parsers/fleur/default_parse_tasks.py'))
+PACKAGE_DIRECTORY = Path(masci_tools.__file__).parent.resolve()
+DEFAULT_TASK_FILE = PACKAGE_DIRECTORY / Path('io/parsers/fleur/default_parse_tasks.py')
+
+MIGRATION_DICT = Dict[str, Dict[str, Union[Literal['compatible'], Callable]]]
 
 
-def find_migration(start: str, target: str, migrations: Dict[str, Dict[str, Union[Literal['compatible'],
-                                                                                  Callable]]]) -> List[Callable]:
+def find_migration(start: str, target: str, migrations: MIGRATION_DICT) -> Union[List[Callable], None]:
     """
     Tries to find a migration path from the start to the target version
     via the defined migration functions
@@ -58,7 +64,7 @@ def find_migration(start: str, target: str, migrations: Dict[str, Dict[str, Unio
                 return []
             return None
         else:
-            return [migrations[start][target]]
+            return [migrations[start][target]]  #type:ignore
 
     for possible_stop in migrations[start].keys():
         new_call_list = find_migration(possible_stop, target, migrations)
@@ -72,7 +78,8 @@ def find_migration(start: str, target: str, migrations: Dict[str, Dict[str, Unio
         else:
             call_list = [migrations[start][possible_stop]]
         call_list += new_call_list
-        return call_list
+        return call_list  #type:ignore
+    return None
 
 
 class ParseTasks:
@@ -101,8 +108,12 @@ class ParseTasks:
     }
 
     _version = '0.2.0'
+    _migrations: MIGRATION_DICT = {}
+    _all_attribs_function: Set[str] = set()
+    _conversion_functions: Dict[str, Callable] = {}
+    _parse_functions: Dict[str, Callable] = {}
 
-    def __init__(self, version, task_file=None, validate_defaults=False):
+    def __init__(self, version: str, task_file: os.PathLike = None, validate_defaults: bool = False) -> None:
         """
         Initialize the default parse tasks
         Terminates if the version is not marked as working with the default tasks
@@ -119,14 +130,16 @@ class ParseTasks:
 
         #import task definitions
         spec = importlib.util.spec_from_file_location('tasks', task_file)
+        if spec is None:
+            raise ValueError(f'Module not found {task_file}')
         tasks = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(tasks)
+        spec.loader.exec_module(tasks)  #type:ignore
 
-        self._iteration_tasks = []
-        self._general_tasks = []
+        self._iteration_tasks: List[str] = []
+        self._general_tasks: List[str] = []
         self.version = convert_str_version_number(version)
 
-        tasks_dict = copy.deepcopy(tasks.TASKS_DEFINITION)
+        tasks_dict: Dict[str, Dict[str, Any]] = copy.deepcopy(tasks.TASKS_DEFINITION)  #type:ignore
         if validate_defaults:
             #Manually add each task to make sure that there are no typos/inconsitencies in the keys
             self.tasks = {}
@@ -135,10 +148,11 @@ class ParseTasks:
         else:
             self.tasks = tasks_dict
 
+        working: Set[str] = tasks.__working_out_versions__  #type:ignore
         #Look if the base version is compatible if not look for a migration
-        if version not in tasks.__working_out_versions__:
+        if version not in working:
 
-            working_version_tuples = {convert_str_version_number(v) for v in tasks.__working_out_versions__}
+            working_version_tuples = {convert_str_version_number(v) for v in working}
             version_tuple = convert_str_version_number(version)
 
             if all(working_version < version_tuple for working_version in working_version_tuples):
@@ -148,7 +162,8 @@ class ParseTasks:
                     'Since the given version is newer than the latest working version\n'
                     'I will continue. Errors and warnings can occur!', UserWarning)
             else:
-                migration_list = find_migration(tasks.__base_version__, version, self.migrations)
+                base: str = tasks.__base_version__  #type:ignore
+                migration_list = find_migration(base, version, self.migrations)
 
                 if migration_list is None:
                     raise ValueError(f'Unsupported output version: {version}')
@@ -157,35 +172,35 @@ class ParseTasks:
                     self.tasks = migration(self.tasks)
 
     @property
-    def iteration_tasks(self):
+    def iteration_tasks(self) -> List[str]:
         """
         Tasks to perform for each iteration
         """
         return self._iteration_tasks
 
+    @iteration_tasks.setter
+    def iteration_tasks(self, val: List[str]) -> None:
+        """
+        Setter for iteration_tasks
+        """
+        self._iteration_tasks = val
+
     @property
-    def general_tasks(self):
+    def general_tasks(self) -> List[str]:
         """
         Tasks to perform for the root node
         """
         return self._general_tasks
 
-    @iteration_tasks.setter
-    def iteration_tasks(self, task_list):
-        """
-        Setter for iteration_tasks
-        """
-        self._iteration_tasks = task_list
-
     @general_tasks.setter
-    def general_tasks(self, task_list):
+    def general_tasks(self, val: List[str]) -> None:
         """
         Setter for general_tasks
         """
-        self._general_tasks = task_list
+        self._general_tasks = val
 
     @property
-    def migrations(self):
+    def migrations(self) -> MIGRATION_DICT:
         """
         Return the registered migrations
         """
@@ -194,7 +209,7 @@ class ParseTasks:
         return self._migrations
 
     @property
-    def conversion_functions(self):
+    def conversion_functions(self) -> Dict[str, Callable]:
         """
         Return the registered conversion functions
         """
@@ -203,7 +218,7 @@ class ParseTasks:
         return self._conversion_functions
 
     @property
-    def parse_functions(self):
+    def parse_functions(self) -> Dict[str, Callable]:
         """
         Return the registered parse functions
         """
@@ -212,7 +227,7 @@ class ParseTasks:
         return self._parse_functions
 
     @property
-    def all_attribs_function(self):
+    def all_attribs_function(self) -> Set[str]:
         """
         Return the registered parse functions for parsing multipl attributes
         """
@@ -221,13 +236,17 @@ class ParseTasks:
         return self._all_attribs_function
 
     @property
-    def optional_tasks(self):
+    def optional_tasks(self) -> Set[str]:
         """
         Return a set of the available optional defined tasks
         """
         return {key for key, val in self.tasks.items() if val.get('_optional', False)}
 
-    def add_task(self, task_name, task_definition, append=False, overwrite=False):
+    def add_task(self,
+                 task_name: str,
+                 task_definition: Dict[str, Any],
+                 append: bool = False,
+                 overwrite: bool = False) -> None:
         """
         Add a new task definition to the tasks dictionary
 
@@ -304,7 +323,10 @@ class ParseTasks:
         else:
             self.tasks[task_name] = task_definition
 
-    def determine_tasks(self, fleurmodes, optional_tasks=None, minimal=False):
+    def determine_tasks(self,
+                        fleurmodes: Dict[str, Any],
+                        optional_tasks: Iterable[str] = None,
+                        minimal: bool = False) -> None:
         """
         Determine, which tasks to perform based on the fleur_modes
 
@@ -355,7 +377,14 @@ class ParseTasks:
             else:
                 self._iteration_tasks.append(task_name)
 
-    def perform_task(self, task_name, node, out_dict, schema_dict, constants, logger=None, use_lists=True):
+    def perform_task(self,
+                     task_name: str,
+                     node: Union[etree._Element, etree._ElementTree],
+                     out_dict: Dict,
+                     schema_dict: Union['fleur_schema.InputSchemaDict', 'fleur_schema.OutputSchemaDict'],
+                     constants: Dict[str, float],
+                     logger: Union[Logger, LoggerAdapter] = None,
+                     use_lists: bool = True) -> Dict:
         """
         Evaluates the task given in the tasks_definition dict
 
@@ -466,7 +495,7 @@ class ParseTasks:
 
         return out_dict
 
-    def show_available_tasks(self, show_definitions=False):
+    def show_available_tasks(self, show_definitions: bool = False) -> None:
         """
         Print all currently available task keys.
         If show_definitions is True also the corresponding defintions will be printed

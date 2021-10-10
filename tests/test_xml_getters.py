@@ -65,7 +65,7 @@ def test_get_cell(load_inpxml, inpxmlfilepath):
 
     assert isinstance(cell, np.ndarray)
     assert cell.shape == (3, 3)
-    assert isinstance(pbc, list)
+    assert isinstance(pbc, tuple)
     assert len(pbc) == 3
 
 
@@ -105,7 +105,7 @@ def test_get_structure_data(load_inpxml, inpxmlfilepath):
     assert all(isinstance(atom, AtomSiteProperties) for atom in atoms)
     assert isinstance(cell, np.ndarray)
     assert cell.shape == (3, 3)
-    assert isinstance(pbc, list)
+    assert isinstance(pbc, tuple)
     assert len(pbc) == 3
 
 
@@ -155,7 +155,7 @@ def test_get_kpoints_data(load_inpxml, inpxmlfilepath):
     assert weights is not None
     assert isinstance(cell, np.ndarray)
     assert cell.shape == (3, 3)
-    assert isinstance(pbc, list)
+    assert isinstance(pbc, tuple)
     assert len(pbc) == 3
 
 

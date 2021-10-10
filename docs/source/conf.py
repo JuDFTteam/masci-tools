@@ -37,10 +37,12 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.ifconfig',
               'sphinx.ext.viewcode',
               'sphinx.ext.intersphinx',
+              'sphinx_autodoc_typehints',
               'sphinx_click']
 
 intersphinx_mapping = {'numpy': ('https://numpy.org/doc/stable/', None),
-                       'python': ('https://docs.python.org/3', None)}
+                       'python': ('https://docs.python.org/3', None),
+                       'lxml': ('https://lxml.de/apidoc/',None)}
 
 todo_include_todos = True
 
@@ -399,6 +401,8 @@ nitpick_ignore = [
     ('py:obj', 'bool'),
     ('py:obj', 'Mapping'),
     ('py:obj', 'plum'),
+    ('py:class', 'T'),
+    ('py:class', 'S')
 ]
 
 
