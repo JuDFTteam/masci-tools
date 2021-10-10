@@ -70,7 +70,7 @@ repos:
     pass_filenames: true
     files: >-
         (?x)^(
-            masci_tools/io/parsers/fleur/fleur_schema/.*py|
+            masci_tools/io/parsers/fleur/.*py|
             masci_tools/io/io_nmmpmat.py|
             masci_tools/io/io_fleurxml.py|
             masci_tools/util/xml/.*py|

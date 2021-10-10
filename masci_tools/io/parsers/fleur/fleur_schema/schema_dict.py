@@ -189,6 +189,8 @@ class SchemaDict(LockableDict):
         cls._schema_dict_cache.clear()
 
     def __init__(self, *args: Any, xmlschema: etree.XMLSchema = None, **kwargs: Any):
+        if xmlschema is None:
+            raise ValueError('xmlschema has to be supplied')
         self.xmlschema = xmlschema
         super().__init__(*args, **kwargs)
         super().freeze()
