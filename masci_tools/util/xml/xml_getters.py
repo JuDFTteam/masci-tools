@@ -24,7 +24,6 @@ from logging import Logger
 from typing import List, Tuple, Union, Dict, Any, Optional
 
 
-
 def get_fleur_modes(xmltree: Union[etree._Element, etree._ElementTree],
                     schema_dict: Union['fleur_schema.InputSchemaDict', 'fleur_schema.OutputSchemaDict'],
                     logger: Logger = None) -> Dict[str, Any]:

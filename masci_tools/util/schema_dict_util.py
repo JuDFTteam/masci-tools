@@ -26,7 +26,6 @@ import warnings
 from typing import Dict, Union, Any, List
 
 
-
 def get_tag_xpath(schema_dict, name, contains=None, not_contains=None):
     """
     DEPRECATED
