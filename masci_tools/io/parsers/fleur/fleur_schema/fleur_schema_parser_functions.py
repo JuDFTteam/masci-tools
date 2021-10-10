@@ -16,12 +16,12 @@ functions to extract information about the fleur schema input or output
 from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict, CaseInsensitiveFrozenSet
 from masci_tools.util.lockable_containers import LockableList
 from functools import wraps
-from typing import Callable, List, NamedTuple, Set, Union, TypedDict, Dict, Any, Tuple, Optional
+from typing import Callable, List, NamedTuple, Set, Union, Dict, Any, Tuple, Optional
 from lxml import etree
 try:
-    from typing import Literal
+    from typing import Literal, TypedDict
 except ImportError:
-    from typing_extensions import Literal  #type: ignore
+    from typing_extensions import Literal, TypedDict  #type: ignore
 import warnings
 import math
 

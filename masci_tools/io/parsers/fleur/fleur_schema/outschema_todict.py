@@ -21,7 +21,11 @@ from masci_tools.util.lockable_containers import LockableDict, LockableList
 from lxml import etree
 import copy
 from collections import UserList
-from typing import AnyStr, TypedDict, List, TYPE_CHECKING
+from typing import AnyStr, List, TYPE_CHECKING
+try:
+    from typing import TypedDict
+except ImportError:
+    from typing_extensions import TypedDict #type:ignore
 if TYPE_CHECKING:
     from .inpschema_todict import InputSchemaData
 
