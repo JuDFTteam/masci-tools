@@ -71,6 +71,13 @@ repos:
     files: >-
         (?x)^(
             masci_tools/io/parsers/fleur/fleur_schema/.*py|
+            masci_tools/util/lockable_containers.py|
+            masci_tools/util/case_insensitive_dict.py|
+            masci_tools/util/schema_dict_util.py|
+            masci_tools/util/parse_task_decorators.py|
+            masci_tools/util/xml/xml_setters_basic.py|
+            masci_tools/io/common_functions.py|
+            masci_tools/util/parse_tasks.py|
         )$
 
 

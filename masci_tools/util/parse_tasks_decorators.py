@@ -49,8 +49,6 @@ def register_migration(base_version: str, target_version: Union[str, List[str]])
             """Decorator for migration function"""
             return func(*args)
 
-        if not hasattr(ParseTasks, '_migrations'):
-            ParseTasks._migrations = {}  # pylint: disable=protected-access
         if not base_version in ParseTasks._migrations:
             ParseTasks._migrations[base_version] = {}
 
@@ -106,10 +104,6 @@ def register_parsing_function(parse_type_name: str, all_attribs_keys: bool = Fal
             """Decorator for parse_type function"""
             return func(*args, **kwargs)
 
-        if not hasattr(ParseTasks, '_parse_functions'):
-            ParseTasks._parse_functions = {}  # pylint: disable=protected-access
-            ParseTasks._all_attribs_function = set()
-
         ParseTasks._parse_functions[parse_type_name] = parse_type  # pylint: disable=protected-access
         if all_attribs_keys:
             ParseTasks._all_attribs_function.add(parse_type_name)
@@ -136,9 +130,6 @@ def conversion_function(func: Callable) -> Callable:
     def convert_func(*args, **kwargs):
         """Decorator for parse_type function"""
         return func(*args, **kwargs)
-
-    if not hasattr(ParseTasks, '_conversion_functions'):
-        ParseTasks._conversion_functions = {}  # pylint: disable=protected-access
 
     ParseTasks._conversion_functions[func.__name__] = convert_func  # pylint: disable=protected-access
 
