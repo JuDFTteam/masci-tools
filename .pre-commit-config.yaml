@@ -80,6 +80,7 @@ repos:
             masci_tools/io/common_functions.py|
             masci_tools/util/parse_tasks.py|
             masci_tools/util/econfig.py|
+            masci_tools/util/fleur_calculate_expression.py|
 
         )$
 
