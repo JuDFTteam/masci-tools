@@ -83,12 +83,12 @@ class LockableDict(UserDict, Generic[S, T]):
         self.__check_lock()
         super().__delitem__(key)
 
-    def __setitem__(self, key: S, value: T):
+    def __setitem__(self, key: S, value: Union[T, 'LockableDict[S,T]', 'LockableList[T]']) -> None:
         self.__check_lock()
         if isinstance(value, list):
-            super().__setitem__(key, LockableList(value, recursive=self._recursive))  #type:ignore
+            super().__setitem__(key, LockableList(value, recursive=self._recursive))
         elif isinstance(value, dict):
-            super().__setitem__(key, LockableDict(value, recursive=self._recursive))  #type:ignore
+            super().__setitem__(key, LockableDict(value, recursive=self._recursive))
         else:
             super().__setitem__(key, value)
 
@@ -120,9 +120,9 @@ class LockableDict(UserDict, Generic[S, T]):
             ret_dict: Dict[S, T] = {}
             for key, value in self.items():
                 if isinstance(value, LockableDict):
-                    ret_dict[key] = value.get_unlocked()  #type:ignore
+                    ret_dict[key] = cast(T, value.get_unlocked())
                 elif isinstance(value, LockableList):
-                    ret_dict[key] = cast(Any, value.get_unlocked())  #type:ignore
+                    ret_dict[key] = cast(T, value.get_unlocked())
                 else:
                     ret_dict[key] = value
         else:
@@ -157,10 +157,7 @@ class LockableList(UserList, Generic[T]):
         if self._recursive:
             #Convert sublists and subdicts into Lockable counterparts (super__init__ just copies the values)
             for indx, item in enumerate(self):
-                if isinstance(item, list):
-                    super().__setitem__(indx, LockableList(item, recursive=self._recursive))  #type:ignore
-                elif isinstance(item, dict):
-                    super().__setitem__(indx, LockableDict(item, recursive=self._recursive))  #type:ignore
+                self[indx] = item
 
     def __check_lock(self) -> None:
         if self.locked:
@@ -177,12 +174,12 @@ class LockableList(UserList, Generic[T]):
         self.__check_lock()
         super().__delitem__(i)
 
-    def __setitem__(self, i: Union[int, slice], item: T) -> None:  # type: ignore
+    def __setitem__(self, i: Union[int, slice], item: T) -> None:  #type:ignore
         self.__check_lock()
         if isinstance(item, list):
-            super().__setitem__(i, LockableList(item, recursive=self._recursive))  # type: ignore
+            super().__setitem__(i, LockableList(item, recursive=self._recursive))
         elif isinstance(item, dict):
-            super().__setitem__(i, LockableDict(item, recursive=self._recursive))  # type: ignore
+            super().__setitem__(i, LockableDict(item, recursive=self._recursive))
         else:
             super().__setitem__(i, item)  # type: ignore
 
