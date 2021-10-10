@@ -29,7 +29,7 @@ except ImportError:
 from collections import abc
 import warnings
 from lxml import etree
-from logging import Logger
+from logging import Logger, LoggerAdapter
 
 if TYPE_CHECKING:
     from masci_tools.io.parsers.fleur.fleur_schema import InputSchemaDict, OutputSchemaDict
@@ -181,6 +181,13 @@ class ParseTasks:
         """
         return self._iteration_tasks
 
+    @iteration_tasks.setter
+    def iteration_tasks(self, val: List[str]) -> None:
+        """
+        Setter for iteration_tasks
+        """
+        self._iteration_tasks = val
+
     @property
     def general_tasks(self) -> List[str]:
         """
@@ -188,19 +195,12 @@ class ParseTasks:
         """
         return self._general_tasks
 
-    @iteration_tasks.setter  #type:ignore
-    def iteration_tasks_setter(self, task_list: List[str]) -> None:
-        """
-        Setter for iteration_tasks
-        """
-        self._iteration_tasks = task_list
-
-    @general_tasks.setter  #type:ignore
-    def general_tasks_setter(self, task_list: List[str]) -> None:
+    @general_tasks.setter
+    def general_tasks(self, val: List[str]) -> None:
         """
         Setter for general_tasks
         """
-        self._general_tasks = task_list
+        self._general_tasks = val
 
     @property
     def migrations(self) -> MIGRATION_DICT:
@@ -386,7 +386,7 @@ class ParseTasks:
                      out_dict: Dict,
                      schema_dict: Union['InputSchemaDict', 'OutputSchemaDict'],
                      constants: Dict[str, float],
-                     logger: Logger = None,
+                     logger: Union[Logger, LoggerAdapter] = None,
                      use_lists: bool = True) -> Dict:
         """
         Evaluates the task given in the tasks_definition dict
