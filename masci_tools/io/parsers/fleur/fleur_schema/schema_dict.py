@@ -356,11 +356,10 @@ class SchemaDict(LockableDict):
         if tag_name is not None:
             tag_xpath = self.tag_xpath(tag_name, contains=contains, not_contains=not_contains)
 
-            tag_info, _ = self.tag_info(
+            tag_info = self.tag_info(
                 tag_name,
                 contains=contains,
                 not_contains=not_contains,
-                multiple_paths=True,
             )
 
             if name not in tag_info['attribs']:
@@ -421,7 +420,7 @@ class SchemaDict(LockableDict):
         if tag_name is not None:
             tag_xpath = self.relative_tag_xpath(tag_name, root_tag, contains=contains, not_contains=not_contains)
 
-            tag_info, _ = self.tag_info(tag_name, multiple_paths=True, contains=contains, not_contains=not_contains)
+            tag_info = self.tag_info(tag_name, contains=contains, not_contains=not_contains)
 
             if name not in tag_info['attribs']:
                 raise NoPathFound(f'No attribute {name} found at tag {tag_name}')
@@ -465,10 +464,8 @@ class SchemaDict(LockableDict):
                  name: str,
                  contains: Union[str, Iterable[str]] = None,
                  not_contains: Union[str, Iterable[str]] = None,
-                 path_return: bool = True,
-                 convert_to_builtin: bool = False,
-                 multiple_paths: bool = False,
-                 parent: bool = False) -> Tuple[Dict[str, Any], Union[str, List[str]]]:
+                 parent: bool = False,
+                 **kwargs) -> Dict[str, Any]:
         """
         Tries to find a unique path from the schema_dict based on the given name of the tag
         and additional further specifications and returns the tag_info entry for this tag
@@ -477,15 +474,25 @@ class SchemaDict(LockableDict):
         :param name: str, name of the tag
         :param contains: str or list of str, this string has to be in the final path
         :param not_contains: str or list of str, this string has to NOT be in the final path
-        :param path_return: bool, if True the found path will be returned alongside the tag_info
-        :param convert_to_builtin: bool, if True the CaseInsensitiveFrozenSets are converetd to normal sets
-                                with the rigth case of the attributes
-        :param multiple_paths: bool, if True mulitple paths are allowed to match as long as they have the same tag_info
         :param parent: bool, if True the tag_info for the parent of the tag is returned
 
         :returns: dict, tag_info for the found xpath
-        :returns: str, xpath to the tag if `path_return=True`
         """
+
+        multiple_paths = True
+        if 'multiple_paths' in kwargs:
+            warnings.warn('multiple_paths argument is deprecated. It is used by default', DeprecationWarning)
+            multiple_paths = kwargs['multiple_paths']
+
+        path_return = False
+        if 'path_return' in kwargs:
+            warnings.warn('path_return argument is deprecated. It is not used by default', DeprecationWarning)
+            path_return = kwargs['path_return']
+
+        convert_to_builtin = False
+        if 'convert_to_builtin' in kwargs:
+            warnings.warn('convert_to_builtin argument is deprecated. It is not used by default', DeprecationWarning)
+            convert_to_builtin = kwargs['convert_to_builtin']
 
         if not self._tag_entries or not self._info_entries:
             raise NotImplementedError(f"The method 'tag_info' cannot be executed for {self.__class__.__name__}"
@@ -496,7 +503,11 @@ class SchemaDict(LockableDict):
         else:
             paths = [self.tag_xpath(name, contains=contains, not_contains=not_contains)]
 
-        EMPTY_TAG_INFO = CaseInsensitiveDict({
+        if len(paths) == 0:
+            raise NoPathFound(f'The tag {name} has no possible paths with the current specification.\n'
+                              f'contains: {contains}, not_contains: {not_contains}')
+
+        EMPTY_TAG_INFO = {
             'attribs': CaseInsensitiveFrozenSet(),
             'optional_attribs': {},
             'optional': CaseInsensitiveFrozenSet(),
@@ -505,8 +516,7 @@ class SchemaDict(LockableDict):
             'simple': CaseInsensitiveFrozenSet(),
             'complex': CaseInsensitiveFrozenSet(),
             'text': CaseInsensitiveFrozenSet()
-        })
-        EMPTY_TAG_INFO.freeze()
+        }
 
         tag_info = None
         for path in paths:
@@ -523,7 +533,9 @@ class SchemaDict(LockableDict):
 
             if tag_info is not None:
                 if entry != tag_info:
-                    raise ValueError(f'Differing tag_info for the found paths {paths}')
+                    raise NoUniquePathFound(f'Differing tag_info for the found with the current specification\n'
+                                            f'contains: {contains}, not_contains: {not_contains}\n'
+                                            f'These are possible:  {paths}')
             else:
                 tag_info = entry
 
@@ -531,13 +543,13 @@ class SchemaDict(LockableDict):
             tag_info = {
                 key: set(val.original_case.values()) if isinstance(val, CaseInsensitiveFrozenSet) else val
                 for key, val in tag_info.items()
-            }
+            }  #type:ignore
 
         if path_return:
             if not multiple_paths:
-                return tag_info, paths[0]
+                return tag_info, paths[0]  #type:ignore
             else:
-                return tag_info, paths
+                return tag_info, paths  #type:ignore
         else:
             return tag_info
 

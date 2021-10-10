@@ -395,7 +395,7 @@ def evaluate_tag(node, schema_dict, name, constants=None, logger=None, subtags=F
     tags = set()
     optional_tags = set()
     try:
-        tag_info = schema_dict.tag_info(name, path_return=False, multiple_paths=True, **kwargs)
+        tag_info = schema_dict.tag_info(name, **kwargs)
         attribs = tag_info['attribs']
         optional = tag_info['optional_attribs']
         if subtags:
@@ -627,7 +627,7 @@ def evaluate_parent_tag(node, schema_dict, name, constants=None, logger=None, **
 
     #Which attributes are expected
     try:
-        tag_info = schema_dict.tag_info(name, path_return=False, multiple_paths=True, parent=True, **kwargs)
+        tag_info = schema_dict.tag_info(name, parent=True, **kwargs)
         attribs = tag_info['attribs']
         optional = tag_info['optional_attribs']
     except ValueError as err:

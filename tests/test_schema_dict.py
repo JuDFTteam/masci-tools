@@ -464,17 +464,9 @@ def test_tag_info():
         'complex': {'electronConfig', 'ldaHIA', 'greensfCalculation', 'torgueCalculation'}
     }
 
-    res, path = schema_dict.tag_info('species')
+    res = schema_dict.tag_info('species')
 
     assert res == EXPECTED_RESULT
-    assert path == '/fleurInput/atomSpecies/species'
-
-    res = schema_dict.tag_info('species', path_return=False)
-
-    assert res == EXPECTED_RESULT
-
-    with pytest.raises(NoUniquePathFound):
-        schema_dict.tag_info('ldaHIA')
 
     EXPECTED_RESULT = {
         'attribs': {'l', 'U', 'J', 'phi', 'theta', 'l_amf', 'init_occ', 'kkintgrCutoff', 'label'},
@@ -493,10 +485,12 @@ def test_tag_info():
         'complex': set()
     }
 
-    res, path = schema_dict.tag_info('ldaHIA', contains='species')
+    with pytest.raises(NoUniquePathFound):
+        schema_dict.tag_info('ldaHIA')
+
+    res = schema_dict.tag_info('ldaHIA', contains='species')
 
     assert res == EXPECTED_RESULT
-    assert path == '/fleurInput/atomSpecies/species/ldaHIA'
 
     EXPECTED_RESULT = {
         'attribs': {
@@ -522,10 +516,9 @@ def test_tag_info():
         'complex': set()
     }
 
-    res, path = schema_dict.tag_info('ldaHIA', not_contains='atom')
+    res = schema_dict.tag_info('ldaHIA', not_contains='atom')
 
     assert res == EXPECTED_RESULT
-    assert path == '/fleurInput/calculationSetup/ldaHIA'
 
     with pytest.raises(NoPathFound):
         schema_dict.tag_info('ldaHIA', not_contains='atom', contains='species')
