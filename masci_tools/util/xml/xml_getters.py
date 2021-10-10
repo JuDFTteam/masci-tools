@@ -199,7 +199,7 @@ def get_nkpts(xmltree: Union[etree._Element, etree._ElementTree],
                                                           schema_dict,
                                                           'kPointList',
                                                           list_return=True,
-                                                          logger=logger)  #type:ignore
+                                                          logger=logger)
 
     if len(kpointlists) == 0:
         raise ValueError('No Kpoint lists found in the given inp.xml')
@@ -256,7 +256,7 @@ def get_nkpts_max4(xmltree: Union[etree._Element, etree._ElementTree],
                                                            schema_dict,
                                                            'altKPointSet',
                                                            list_return=True,
-                                                           logger=logger)  #type:ignore
+                                                           logger=logger)
         for kpt_set in alt_kpts:
             if evaluate_attribute(kpt_set, schema_dict, 'purpose', logger=logger) == expected_mode:
                 alt_kpt_set = kpt_set
@@ -265,10 +265,10 @@ def get_nkpts_max4(xmltree: Union[etree._Element, etree._ElementTree],
     kpt_tag: List[etree._Element] = []
     if alt_kpt_set is not None:
         kpt_tag = eval_simple_xpath(alt_kpt_set, schema_dict, 'kPointList', list_return=True,
-                                    logger=logger)  #type:ignore
+                                    logger=logger)
         if len(kpt_tag) == 0:
             kpt_tag = eval_simple_xpath(alt_kpt_set, schema_dict, 'kPointCount', list_return=True,
-                                        logger=logger)  #type:ignore
+                                        logger=logger)
             if len(kpt_tag) != 0:
                 warnings.warn('kPointCount is not guaranteed to result in the given number of kpoints')
 
@@ -278,14 +278,14 @@ def get_nkpts_max4(xmltree: Union[etree._Element, etree._ElementTree],
                                     'kPointList',
                                     not_contains='altKPointSet',
                                     list_return=True,
-                                    logger=logger)  #type:ignore
+                                    logger=logger)
         if len(kpt_tag) == 0:
             kpt_tag = eval_simple_xpath(root,
                                         schema_dict,
                                         'kPointCount',
                                         not_contains='altKPointSet',
                                         list_return=True,
-                                        logger=logger)  #type:ignore
+                                        logger=logger)
             if len(kpt_tag) == 0:
                 raise ValueError('No kPointList or kPointCount found')
             else:
@@ -526,7 +526,7 @@ def get_parameter_data(xmltree: Union[etree._Element, etree._ElementTree],
                                                            schema_dict,
                                                            'species',
                                                            list_return=True,
-                                                           logger=logger)  #type:ignore
+                                                           logger=logger)
 
     species_info = _get_species_info(xmltree, schema_dict, logger=logger)
 
@@ -558,7 +558,7 @@ def get_parameter_data(xmltree: Union[etree._Element, etree._ElementTree],
                                                                        schema_dict,
                                                                        'electronConfig',
                                                                        list_return=True,
-                                                                       logger=logger)  #type:ignore
+                                                                       logger=logger)
                 if len(atom_econfig) != 0:
                     atom_dict['econfig'] = convert_fleur_electronconfig(atom_econfig[0])
             else:
@@ -571,7 +571,7 @@ def get_parameter_data(xmltree: Union[etree._Element, etree._ElementTree],
                                                     ignore={'flipSpins'})
 
         atom_lo: List[etree._Element] = eval_simple_xpath(species, schema_dict, 'lo', list_return=True,
-                                                          logger=logger)  #type:ignore
+                                                          logger=logger)
 
         if len(atom_lo) != 0:
             atom_dict['lo'] = convert_fleur_lo(atom_lo)
@@ -604,7 +604,7 @@ def get_parameter_data(xmltree: Union[etree._Element, etree._ElementTree],
                                                               schema_dict,
                                                               'kPointList',
                                                               list_return=True,
-                                                              logger=logger)  #type:ignore
+                                                              logger=logger)
 
         if len(kpointlists) == 0:
             raise ValueError('No Kpoint lists found in the given inp.xml')
@@ -727,7 +727,7 @@ def get_structure_data(xmltree: Union[etree._Element, etree._ElementTree],
                                                           schema_dict,
                                                           'atomGroup',
                                                           list_return=True,
-                                                          logger=logger)  #type:ignore
+                                                          logger=logger)
 
     #Read relaxation information if available
     displacements = None
@@ -916,7 +916,7 @@ def get_kpoints_data(
                                                           schema_dict,
                                                           'kPointList',
                                                           list_return=True,
-                                                          logger=logger)  #type:ignore
+                                                          logger=logger)
 
     if len(kpointlists) == 0:
         raise ValueError('No Kpoint lists found in the given inp.xml')
@@ -1017,7 +1017,7 @@ def get_kpoints_data_max4(
                                                          'kPointList',
                                                          list_return=True,
                                                          not_contains='altKPoint',
-                                                         logger=logger)  #type:ignore
+                                                         logger=logger)
 
     if len(kpointlist) == 0:
         raise ValueError('No Kpoint lists found in the given inp.xml')
@@ -1071,7 +1071,7 @@ def get_relaxation_information(xmltree: Union[etree._Element, etree._ElementTree
     if not tag_exists(root, schema_dict, 'relaxation', logger=logger):
         raise ValueError('No relaxation information included in the given XML file')
 
-    relax_tag: etree._Element = eval_simple_xpath(root, schema_dict, 'relaxation', logger=logger)  #type:ignore
+    relax_tag: etree._Element = eval_simple_xpath(root, schema_dict, 'relaxation', logger=logger)
 
     out_dict = {}
     out_dict['displacements'] = evaluate_text(relax_tag,
@@ -1093,7 +1093,7 @@ def get_relaxation_information(xmltree: Union[etree._Element, etree._ElementTree
                                                           schema_dict,
                                                           'step',
                                                           list_return=True,
-                                                          logger=logger)  #type:ignore
+                                                          logger=logger)
     for step in relax_iters:
         posforces = evaluate_text(step, schema_dict, 'posforce', list_return=True, constants=constants, logger=logger)
         out_dict['posforces'].append(posforces)
@@ -1156,7 +1156,7 @@ def get_symmetry_information(xmltree: Union[etree._Element, etree._ElementTree],
         raise ValueError('No explicit symmetry information included in the given XML file')
 
     ops: List[etree._Element] = eval_simple_xpath(root, schema_dict, 'symOp', logger=logger,
-                                                  list_return=True)  #type:ignore
+                                                  list_return=True)
 
     rotations = []
     shifts = []

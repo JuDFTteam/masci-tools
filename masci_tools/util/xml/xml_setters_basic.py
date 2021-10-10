@@ -45,7 +45,7 @@ def xml_replace_tag(xmltree: Union[etree._Element, etree._ElementTree],
     else:
         root = xmltree
 
-    nodes: List[etree._Element] = eval_xpath(root, xpath, list_return=True)  #type:ignore
+    nodes: List[etree._Element] = eval_xpath(root, xpath, list_return=True)
 
     if len(nodes) == 0:
         warnings.warn(f'No nodes to replace found on xpath: {str(xpath)}')
@@ -92,7 +92,7 @@ def xml_delete_att(xmltree: Union[etree._Element, etree._ElementTree],
     else:
         root = xmltree
 
-    nodes: List[etree._Element] = eval_xpath(root, xpath, list_return=True)  #type:ignore
+    nodes: List[etree._Element] = eval_xpath(root, xpath, list_return=True)
 
     if len(nodes) == 0:
         warnings.warn(f'No nodes to delete attributes on found on xpath: {str(xpath)}')
@@ -131,7 +131,7 @@ def xml_delete_tag(xmltree: Union[etree._Element, etree._ElementTree],
     else:
         root = xmltree
 
-    nodes: List[etree._Element] = eval_xpath(root, xpath, list_return=True)  #type:ignore
+    nodes: List[etree._Element] = eval_xpath(root, xpath, list_return=True)
 
     if len(nodes) == 0:
         warnings.warn(f'No nodes to delete found on xpath: {str(xpath)}')
@@ -193,13 +193,13 @@ def xml_create_tag(xmltree: Union[etree._Element, etree._ElementTree],
     if not etree.iselement(element):
         element_name: str = element  #type:ignore
         try:
-            element = etree.Element(element_name)  #type:ignore
+            element = etree.Element(element_name)
         except ValueError as exc:
             raise ValueError(f"Failed to construct etree Element from '{element_name}'") from exc
     else:
         element_name = element.tag  #type:ignore
 
-    parent_nodes: List[etree._Element] = eval_xpath(xmltree, xpath, list_return=True)  #type:ignore
+    parent_nodes: List[etree._Element] = eval_xpath(xmltree, xpath, list_return=True)
 
     if len(parent_nodes) == 0:
         raise ValueError(f"Could not create tag '{element_name}' because atleast one subtag is missing. "
@@ -333,7 +333,7 @@ def xml_set_attrib_value_no_create(
     else:
         root = xmltree
 
-    nodes: List[etree._Element] = eval_xpath(root, xpath, list_return=True)  #type:ignore
+    nodes: List[etree._Element] = eval_xpath(root, xpath, list_return=True)
 
     if len(nodes) == 0:
         warnings.warn(f'No nodes to set attribute {attributename} on found on xpath: {str(xpath)}')
@@ -385,7 +385,7 @@ def xml_set_text_no_create(xmltree: Union[etree._Element, etree._ElementTree],
     else:
         root = xmltree
 
-    nodes: List[etree._Element] = eval_xpath(root, xpath, list_return=True)  #type:ignore
+    nodes: List[etree._Element] = eval_xpath(root, xpath, list_return=True)
 
     if len(nodes) == 0:
         warnings.warn(f'No nodes to set text on found on xpath: {str(xpath)}')

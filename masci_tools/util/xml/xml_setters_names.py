@@ -604,7 +604,7 @@ def set_species_label(xmltree: Union[etree._Element, etree._ElementTree],
 
     atom_label = f'{atom_label: >20}'
     all_groups: List[etree._Element] = eval_simple_xpath(xmltree, schema_dict, 'atomGroup',
-                                                         list_return=True)  #type:ignore
+                                                         list_return=True)
 
     species_to_set: Set[str] = set()
 
@@ -612,9 +612,9 @@ def set_species_label(xmltree: Union[etree._Element, etree._ElementTree],
     for group in all_groups:
         if tag_exists(group, schema_dict, 'filmPos'):
             atoms: List[etree._Element] = eval_simple_xpath(group, schema_dict, 'filmPos',
-                                                            list_return=True)  #type:ignore
+                                                            list_return=True)
         else:
-            atoms = eval_simple_xpath(group, schema_dict, 'relPos', list_return=True)  #type:ignore
+            atoms = eval_simple_xpath(group, schema_dict, 'relPos', list_return=True)
         for atom in atoms:
             label = get_xml_attribute(atom, 'label')
             if label == atom_label:
@@ -723,16 +723,16 @@ def shift_value_species_label(xmltree: Union[etree._Element, etree._ElementTree]
     if atom_label != 'all':
         atom_label = f'{atom_label: >20}'
     all_groups: List[etree._Element] = eval_simple_xpath(xmltree, schema_dict, 'atomGroup',
-                                                         list_return=True)  #type:ignore
+                                                         list_return=True)
 
     species_to_set = set()
 
     for group in all_groups:
         if tag_exists(group, schema_dict, 'filmPos'):
             atoms: List[etree._Element] = eval_simple_xpath(group, schema_dict, 'filmPos',
-                                                            list_return=True)  #type:ignore
+                                                            list_return=True)
         else:
-            atoms = eval_simple_xpath(group, schema_dict, 'relPos', list_return=True)  #type:ignore
+            atoms = eval_simple_xpath(group, schema_dict, 'relPos', list_return=True)
         for atom in atoms:
             label = get_xml_attribute(atom, 'label')
             if atom_label in ('all', label):
@@ -787,7 +787,7 @@ def set_atomgroup_label(xmltree: Union[etree._Element, etree._ElementTree],
 
     atom_label = f'{atom_label: >20}'
     all_groups: List[etree._Element] = eval_simple_xpath(xmltree, schema_dict, 'atomGroup',
-                                                         list_return=True)  #type:ignore
+                                                         list_return=True)
 
     species_to_set = set()
 
@@ -795,9 +795,9 @@ def set_atomgroup_label(xmltree: Union[etree._Element, etree._ElementTree],
     for group in all_groups:
         if tag_exists(group, schema_dict, 'filmPos'):
             atoms: List[etree._Element] = eval_simple_xpath(group, schema_dict, 'filmPos',
-                                                            list_return=True)  #type:ignore
+                                                            list_return=True)
         else:
-            atoms = eval_simple_xpath(group, schema_dict, 'relPos', list_return=True)  #type:ignore
+            atoms = eval_simple_xpath(group, schema_dict, 'relPos', list_return=True)
         for atom in atoms:
             label = get_xml_attribute(atom, 'label')
             if label == atom_label:
@@ -1072,7 +1072,7 @@ def set_kpointlist_max4(xmltree: Union[etree._Element, etree._ElementTree], sche
 
     nkpts = len(kpoints)
 
-    bzintegration_tag: etree._Element = eval_simple_xpath(xmltree, schema_dict, 'bzIntegration')  #type:ignore
+    bzintegration_tag: etree._Element = eval_simple_xpath(xmltree, schema_dict, 'bzIntegration')
 
     for child in bzintegration_tag.iterchildren():
         if 'kPoint' in child.tag:
@@ -1179,7 +1179,7 @@ def set_nkpts_max4(xmltree: Union[etree._Element, etree._ElementTree],
     from masci_tools.util.schema_dict_util import eval_simple_xpath, tag_exists
 
     if not tag_exists(xmltree, schema_dict, 'kPointCount', not_contains='altKPoint'):
-        bzintegration_tag: etree._Element = eval_simple_xpath(xmltree, schema_dict, 'bzIntegration')  #type:ignore
+        bzintegration_tag: etree._Element = eval_simple_xpath(xmltree, schema_dict, 'bzIntegration')
 
         for child in bzintegration_tag.iterchildren():
             if 'kPoint' in child.tag:

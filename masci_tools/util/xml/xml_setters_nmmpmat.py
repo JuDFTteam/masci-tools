@@ -66,7 +66,7 @@ def set_nmmpmat(xmltree: Union[etree._Element, etree._ElementTree],
     else:
         species_xpath = f'{species_base_path}[@name = "{species_name}"]'
 
-    all_species: List[etree._Element] = eval_xpath(xmltree, species_xpath, list_return=True)  #type:ignore
+    all_species: List[etree._Element] = eval_xpath(xmltree, species_xpath, list_return=True)
 
     nspins = evaluate_attribute(xmltree, schema_dict, 'jspins')
     if 'l_mtnocoPot' in schema_dict['attrib_types']:
@@ -81,7 +81,7 @@ def set_nmmpmat(xmltree: Union[etree._Element, etree._ElementTree],
                                                        schema_dict,
                                                        'ldaU',
                                                        contains='species',
-                                                       list_return=True)  #type:ignore
+                                                       list_return=True)
     numRows = nspins * 14 * len(all_ldau)
 
     if state_occupations is not None:
@@ -169,7 +169,7 @@ def rotate_nmmpmat(xmltree: Union[etree._Element, etree._ElementTree], nmmplines
     else:
         species_xpath = f'{species_base_path}[@name = "{species_name}"]'
 
-    all_species: List[etree._Element] = eval_xpath(xmltree, species_xpath, list_return=True)  #type:ignore
+    all_species: List[etree._Element] = eval_xpath(xmltree, species_xpath, list_return=True)
 
     nspins = evaluate_attribute(xmltree, schema_dict, 'jspins')
     if 'l_mtnocoPot' in schema_dict['attrib_types']:
@@ -181,7 +181,7 @@ def rotate_nmmpmat(xmltree: Union[etree._Element, etree._ElementTree], nmmplines
                                                        schema_dict,
                                                        'ldaU',
                                                        contains='species',
-                                                       list_return=True)  #type:ignore
+                                                       list_return=True)
     numRows = nspins * 14 * len(all_ldau)
 
     #Check that numRows matches the number of lines in nmmp_lines_copy
@@ -256,7 +256,7 @@ def validate_nmmpmat(xmltree: Union[etree._Element, etree._ElementTree], nmmplin
                                                        schema_dict,
                                                        'ldaU',
                                                        contains='species',
-                                                       list_return=True)  #type:ignore
+                                                       list_return=True)
     numRows = nspins * 14 * len(all_ldau)
 
     tol = 0.01
