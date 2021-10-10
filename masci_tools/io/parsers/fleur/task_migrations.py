@@ -15,10 +15,11 @@ In this module migration functions for the task definitions are collected
 """
 import copy
 from masci_tools.util.parse_tasks_decorators import register_migration
+from typing import Dict, Any
 
 
 @register_migration(base_version='0.33', target_version=['0.31', '0.30', '0.29'])
-def migrate_033_to_031(definition_dict):
+def migrate_033_to_031(definition_dict: Dict[str, Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
     """
     Migrate definitions for MaX5 release to MaX4 release
 
@@ -33,7 +34,7 @@ def migrate_033_to_031(definition_dict):
 
 
 @register_migration(base_version='0.34', target_version='0.33')
-def migrate_034_to_033(definition_dict):
+def migrate_034_to_033(definition_dict: Dict[str, Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
     """
     Migrate definitions for MaX5 bugfix release to MaX5 release
 
