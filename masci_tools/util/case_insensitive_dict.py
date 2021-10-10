@@ -20,8 +20,9 @@ import pprint
 from typing import Mapping, Any, Union, Iterable, Generator, TypeVar, FrozenSet, cast
 
 S = TypeVar('S')
+"""Generic Type"""
 T = TypeVar('T')
-
+"""Generic Type"""
 
 class CaseInsensitiveDict(LockableDict[S, T]):
     """

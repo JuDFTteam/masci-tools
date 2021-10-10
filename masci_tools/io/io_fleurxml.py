@@ -21,8 +21,9 @@ import os
 from pathlib import Path
 from functools import partial
 from logging import Logger
-from typing import Callable, Tuple, Union, Any, IO
-from masci_tools.io.parsers.fleur import fleur_schema
+from typing import Callable, Tuple, Union, Any, IO, TYPE_CHECKING
+if TYPE_CHECKING:
+    from masci_tools.io.parsers.fleur import fleur_schema
 
 XMLInput = Union[etree._ElementTree, str, Path, bytes, os.PathLike, IO]
 

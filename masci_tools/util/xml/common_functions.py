@@ -13,12 +13,13 @@
 """
 Common functions for parsing input/output files or XMLschemas from FLEUR
 """
-from typing import Dict, Iterable, Optional, Tuple, Union, List, Set
+from typing import TYPE_CHECKING, Dict, Iterable, Optional, Tuple, Union, List, Set
 from lxml import etree
 import warnings
 import os
 from logging import Logger
-from masci_tools.io.parsers.fleur import fleur_schema
+if TYPE_CHECKING:
+    from masci_tools.io.parsers.fleur import fleur_schema
 
 
 def clear_xml(tree: etree._ElementTree) -> Tuple[etree._ElementTree, Set[str]]:

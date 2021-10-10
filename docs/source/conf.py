@@ -37,7 +37,6 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.ifconfig',
               'sphinx.ext.viewcode',
               'sphinx.ext.intersphinx',
-              'sphinx_autodoc_typehints',
               'sphinx_click']
 
 intersphinx_mapping = {'numpy': ('https://numpy.org/doc/stable/', None),
@@ -402,7 +401,13 @@ nitpick_ignore = [
     ('py:obj', 'Mapping'),
     ('py:obj', 'plum'),
     ('py:class', 'T'),
-    ('py:class', 'S')
+    ('py:class', 'S'),
+    ('py:class', 'etree._xpath'),
+    ('py:class', 'etree._XpathObject'),
+    ('py:class', 'fleur_schema.SchemaDict'),
+    ('py:class', 'fleur_schema.InputSchemaDict'),
+    ('py:class', 'fleur_schema.OutputSchemaDict'),
+    ('py:class', 'fleur_schema.AttributeType'),
 ]
 
 

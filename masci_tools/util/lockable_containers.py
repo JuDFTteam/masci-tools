@@ -20,7 +20,9 @@ from contextlib import contextmanager
 from typing import Dict, Union, Any, Generator, Iterable, cast, TypeVar, List, Generic
 
 S = TypeVar('S')
+"""Generic Type"""
 T = TypeVar('T')
+"""Generic Type"""
 
 
 @contextmanager

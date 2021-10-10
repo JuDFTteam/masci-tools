@@ -16,13 +16,13 @@ for easy versioning and reuse
 """
 from masci_tools.io.parsers.fleur.fleur_schema import schema_dict_version_dispatch
 from masci_tools.io.common_functions import AtomSiteProperties
-from masci_tools.io.parsers.fleur import fleur_schema
 from lxml import etree
 import warnings
 import numpy as np
 from logging import Logger
-from typing import List, Tuple, Union, Dict, Any, Optional
-
+from typing import TYPE_CHECKING, List, Tuple, Union, Dict, Any, Optional
+if TYPE_CHECKING:
+    from masci_tools.io.parsers.fleur import fleur_schema
 
 def get_fleur_modes(xmltree: Union[etree._Element, etree._ElementTree],
                     schema_dict: Union['fleur_schema.InputSchemaDict', 'fleur_schema.OutputSchemaDict'],

@@ -19,11 +19,12 @@ attribute from the right place in the given etree
 """
 from masci_tools.io.parsers.fleur.fleur_schema import NoPathFound
 from masci_tools.util.parse_tasks_decorators import register_parsing_function
-from masci_tools.io.parsers.fleur import fleur_schema
 from lxml import etree
 from logging import Logger
 import warnings
-from typing import Dict, Union, Any, List
+from typing import TYPE_CHECKING, Dict, Union, Any, List
+if TYPE_CHECKING:
+    from masci_tools.io.parsers.fleur import fleur_schema
 
 
 def get_tag_xpath(schema_dict, name, contains=None, not_contains=None):

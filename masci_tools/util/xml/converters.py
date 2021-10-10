@@ -14,15 +14,15 @@
 Common functions for converting types to and from XML files
 """
 
-from typing import Iterable, List, Tuple, Union, Dict, Any, cast
+from typing import TYPE_CHECKING, Iterable, List, Tuple, Union, Dict, Any, cast
 try:
     from typing import Literal
 except ImportError:
     from typing_extensions import Literal  #type:ignore
 from lxml import etree
 from logging import Logger
-
-from masci_tools.io.parsers.fleur import fleur_schema
+if TYPE_CHECKING:
+    from masci_tools.io.parsers.fleur import fleur_schema
 
 BASE_TYPES = Union[Literal['int'], Literal['switch'], Literal['string'], Literal['float'], Literal['float_expression']]
 CONVERTED_TYPES = Union[int, float, bool, str]
