@@ -16,7 +16,7 @@ have the ability to create missing tags on the fly. This functionality is added 
 in :py:mod:`~masci_tools.util.xml.xml_setters_xpaths` since we need the schema dictionary
 to do these operations robustly
 """
-from typing import Iterable, Union, List, Any
+from typing import Iterable, Union, List, Any, cast
 from lxml import etree
 from masci_tools.util.xml.common_functions import eval_xpath
 import warnings
@@ -25,7 +25,7 @@ import warnings
 def xml_replace_tag(xmltree: Union[etree._Element, etree._ElementTree],
                     xpath: etree._xpath,
                     newelement: etree._Element,
-                    occurrences: Union[int, Iterable[int]] = None) -> etree._ElementTree:
+                    occurrences: Union[int, Iterable[int]] = None) -> Union[etree._Element, etree._ElementTree]:
     """
     replaces xml tags by another tag on an xmletree in place
 
@@ -45,22 +45,24 @@ def xml_replace_tag(xmltree: Union[etree._Element, etree._ElementTree],
     else:
         root = xmltree
 
-    nodes = eval_xpath(root, xpath, list_return=True)
+    nodes: List[etree._Element] = eval_xpath(root, xpath, list_return=True)  #type:ignore
 
     if len(nodes) == 0:
         warnings.warn(f'No nodes to replace found on xpath: {str(xpath)}')
 
     if occurrences is not None:
         if not is_sequence(occurrences):
-            occurrences = [occurrences]
+            occurrences = [occurrences]  #type:ignore
         try:
-            nodes = [nodes[occ] for occ in occurrences]
+            nodes = [nodes[occ] for occ in cast(Iterable[int], occurrences)]
         except IndexError as exc:
             raise ValueError('Wrong value for occurrences') from exc
 
     for node in nodes:
         parent = node.getparent()
-        index = parent.index(node)
+        if parent is None:
+            raise ValueError('Could not find parent of node')
+        index = parent.index(node)  #type:ignore
         parent.remove(node)
         parent.insert(index, copy.deepcopy(newelement))
 
@@ -71,7 +73,7 @@ def xml_replace_tag(xmltree: Union[etree._Element, etree._ElementTree],
 def xml_delete_att(xmltree: Union[etree._Element, etree._ElementTree],
                    xpath: etree._xpath,
                    attrib: str,
-                   occurrences: Union[int, Iterable[int]] = None) -> etree._ElementTree:
+                   occurrences: Union[int, Iterable[int]] = None) -> Union[etree._Element, etree._ElementTree]:
     """
     Deletes an xml attribute in an xmletree.
 
@@ -90,28 +92,28 @@ def xml_delete_att(xmltree: Union[etree._Element, etree._ElementTree],
     else:
         root = xmltree
 
-    nodes = eval_xpath(root, xpath, list_return=True)
+    nodes: List[etree._Element] = eval_xpath(root, xpath, list_return=True)  #type:ignore
 
     if len(nodes) == 0:
-        warnings.warn(f'No nodes to delete attributes on found on xpath: {xpath}')
+        warnings.warn(f'No nodes to delete attributes on found on xpath: {str(xpath)}')
 
     if occurrences is not None:
         if not is_sequence(occurrences):
-            occurrences = [occurrences]
+            occurrences = [occurrences]  #type:ignore
         try:
-            nodes = [nodes[occ] for occ in occurrences]
+            nodes = [nodes[occ] for occ in cast(Iterable[int], occurrences)]
         except IndexError as exc:
             raise ValueError('Wrong value for occurrences') from exc
 
     for node in nodes:
-        node.attrib.pop(attrib, None)
+        node.attrib.pop(attrib, None)  #type:ignore
 
     return xmltree
 
 
 def xml_delete_tag(xmltree: Union[etree._Element, etree._ElementTree],
                    xpath: etree._xpath,
-                   occurrences: Union[int, Iterable[int]] = None) -> etree._ElementTree:
+                   occurrences: Union[int, Iterable[int]] = None) -> Union[etree._Element, etree._ElementTree]:
     """
     Deletes a xml tag in an xmletree.
 
@@ -129,21 +131,23 @@ def xml_delete_tag(xmltree: Union[etree._Element, etree._ElementTree],
     else:
         root = xmltree
 
-    nodes = eval_xpath(root, xpath, list_return=True)
+    nodes: List[etree._Element] = eval_xpath(root, xpath, list_return=True)  #type:ignore
 
     if len(nodes) == 0:
-        warnings.warn(f'No nodes to delete found on xpath: {xpath}')
+        warnings.warn(f'No nodes to delete found on xpath: {str(xpath)}')
 
     if occurrences is not None:
         if not is_sequence(occurrences):
-            occurrences = [occurrences]
+            occurrences = [occurrences]  #type:ignore
         try:
-            nodes = [nodes[occ] for occ in occurrences]
+            nodes = [nodes[occ] for occ in cast(Iterable[int], occurrences)]
         except IndexError as exc:
             raise ValueError('Wrong value for occurrences') from exc
 
     for node in nodes:
         parent = node.getparent()
+        if parent is None:
+            raise ValueError('Could not find parent of node')
         parent.remove(node)
 
     etree.indent(xmltree)
@@ -157,7 +161,7 @@ def xml_create_tag(xmltree: Union[etree._Element, etree._ElementTree],
                    tag_order: List[str] = None,
                    occurrences: Union[int, Iterable[int]] = None,
                    correct_order: bool = True,
-                   several: bool = True) -> etree._ElementTree:
+                   several: bool = True) -> Union[etree._Element, etree._ElementTree]:
     """
     This method evaluates an xpath expression and creates a tag in a xmltree under the
     returned nodes.
@@ -187,15 +191,15 @@ def xml_create_tag(xmltree: Union[etree._Element, etree._ElementTree],
     from masci_tools.io.common_functions import is_sequence
 
     if not etree.iselement(element):
-        element_name = element
+        element_name: str = element  #type:ignore
         try:
-            element = etree.Element(element)
+            element = etree.Element(element_name)  #type:ignore
         except ValueError as exc:
             raise ValueError(f"Failed to construct etree Element from '{element_name}'") from exc
     else:
-        element_name = element.tag
+        element_name = element.tag  #type:ignore
 
-    parent_nodes = eval_xpath(xmltree, xpath, list_return=True)
+    parent_nodes: List[etree._Element] = eval_xpath(xmltree, xpath, list_return=True)  #type:ignore
 
     if len(parent_nodes) == 0:
         raise ValueError(f"Could not create tag '{element_name}' because atleast one subtag is missing. "
@@ -203,14 +207,14 @@ def xml_create_tag(xmltree: Union[etree._Element, etree._ElementTree],
 
     if occurrences is not None:
         if not is_sequence(occurrences):
-            occurrences = [occurrences]
+            occurrences = [occurrences]  #type:ignore
         try:
-            parent_nodes = [parent_nodes[occ] for occ in occurrences]
+            parent_nodes = [parent_nodes[occ] for occ in cast(Iterable[int], occurrences)]
         except IndexError as exc:
             raise ValueError('Wrong value for occurrences') from exc
 
     for parent in parent_nodes:
-        element_to_write = copy.deepcopy(element)
+        element_to_write: etree._Element = copy.deepcopy(element)  #type:ignore
         if tag_order is not None:
             try:
                 tag_index = tag_order.index(element_name)
@@ -259,7 +263,9 @@ def xml_create_tag(xmltree: Union[etree._Element, etree._ElementTree],
 
                     #Now replace the parent node with the reordered node
                     parent_of_parent = parent.getparent()
-                    index = parent_of_parent.index(parent)
+                    if parent_of_parent is None:
+                        raise ValueError('Could not find parent of node')
+                    index = parent_of_parent.index(parent)  #type:ignore
                     parent_of_parent.remove(parent)
                     parent_of_parent.insert(index, new_tag)
                     parent = new_tag
@@ -268,7 +274,7 @@ def xml_create_tag(xmltree: Union[etree._Element, etree._ElementTree],
                 existing_tags = list(parent.iterchildren(tag=tag))
 
                 if len(existing_tags) != 0:
-                    insert_index = parent.index(existing_tags[-1]) + 1
+                    insert_index = parent.index(existing_tags[-1]) + 1  #type:ignore
                     try:
                         parent.insert(insert_index, element_to_write)
                     except ValueError as exc:
@@ -300,11 +306,12 @@ def xml_create_tag(xmltree: Union[etree._Element, etree._ElementTree],
     return xmltree
 
 
-def xml_set_attrib_value_no_create(xmltree: Union[etree._Element, etree._ElementTree],
-                                   xpath: etree._xpath,
-                                   attributename: str,
-                                   attribv: Any,
-                                   occurrences: Union[int, Iterable[int]] = None) -> etree._ElementTree:
+def xml_set_attrib_value_no_create(
+        xmltree: Union[etree._Element, etree._ElementTree],
+        xpath: etree._xpath,
+        attributename: str,
+        attribv: Any,
+        occurrences: Union[int, Iterable[int]] = None) -> Union[etree._Element, etree._ElementTree]:
     """
     Sets an attribute in a xmltree to a given value. By default the attribute will be set
     on all nodes returned for the specified xpath.
@@ -326,17 +333,17 @@ def xml_set_attrib_value_no_create(xmltree: Union[etree._Element, etree._Element
     else:
         root = xmltree
 
-    nodes = eval_xpath(root, xpath, list_return=True)
+    nodes: List[etree._Element] = eval_xpath(root, xpath, list_return=True)  #type:ignore
 
     if len(nodes) == 0:
-        warnings.warn(f'No nodes to set attribute {attributename} on found on xpath: {xpath}')
+        warnings.warn(f'No nodes to set attribute {attributename} on found on xpath: {str(xpath)}')
         return xmltree
 
     if occurrences is not None:
         if not is_sequence(occurrences):
-            occurrences = [occurrences]
+            occurrences = [occurrences]  #type:ignore
         try:
-            nodes = [nodes[occ] for occ in occurrences]
+            nodes = [nodes[occ] for occ in cast(Iterable[int], occurrences)]
         except IndexError as exc:
             raise ValueError('Wrong value for occurrences') from exc
 
@@ -357,7 +364,7 @@ def xml_set_attrib_value_no_create(xmltree: Union[etree._Element, etree._Element
 def xml_set_text_no_create(xmltree: Union[etree._Element, etree._ElementTree],
                            xpath: etree._xpath,
                            text: Any,
-                           occurrences: Union[int, Iterable[int]] = None) -> etree._ElementTree:
+                           occurrences: Union[int, Iterable[int]] = None) -> Union[etree._Element, etree._ElementTree]:
     """
     Sets the text of a tag in a xmltree to a given value.
     By default the text will be set on all nodes returned for the specified xpath.
@@ -378,17 +385,17 @@ def xml_set_text_no_create(xmltree: Union[etree._Element, etree._ElementTree],
     else:
         root = xmltree
 
-    nodes = eval_xpath(root, xpath, list_return=True)
+    nodes: List[etree._Element] = eval_xpath(root, xpath, list_return=True)  #type:ignore
 
     if len(nodes) == 0:
-        warnings.warn(f'No nodes to set text on found on xpath: {xpath}')
+        warnings.warn(f'No nodes to set text on found on xpath: {str(xpath)}')
         return xmltree
 
     if occurrences is not None:
         if not is_sequence(occurrences):
-            occurrences = [occurrences]
+            occurrences = [occurrences]  #type:ignore
         try:
-            nodes = [nodes[occ] for occ in occurrences]
+            nodes = [nodes[occ] for occ in cast(Iterable[int], occurrences)]
         except IndexError as exc:
             raise ValueError('Wrong value for occurrences') from exc
 
