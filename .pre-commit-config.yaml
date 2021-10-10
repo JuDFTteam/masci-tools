@@ -30,6 +30,7 @@ repos:
             docs/.*|
         )$
     args: ['-i']
+    additional_dependencies: ['toml']
 
 - repo: https://github.com/ikamensh/flynt/
   rev: '0.69'

@@ -31,6 +31,14 @@ classifiers = ["Development Status :: 4 - Beta",
 warn_unused_ignores=true
 warn_redundant_casts=true
 
+[tool.yapf]
+based_on_style = "google"
+column_limit = 120
+coalesce_brackets = true
+align_closing_bracket_with_visual_indent = true
+split_arguments_when_comma_terminated = true
+indent_dictionary_value = false
+
 [tool.poetry.dependencies]
 python = "^3.7"
 numpy = "*"
