@@ -2,12 +2,9 @@
 """
 Tests for the basic xml setter functions
 """
-import os
 import pytest
 
-FILE_PATH = os.path.dirname(os.path.abspath(__file__))
-TEST_INPXML_PATH = os.path.join(FILE_PATH, 'files/fleur/Max-R5/FePt_film_SSFT_LO/files/inp2.xml')
-
+TEST_INPXML_PATH = 'fleur/Max-R5/FePt_film_SSFT_LO/files/inp2.xml'
 
 def test_xml_set_attrib_value_no_create(load_inpxml):
     """
@@ -16,7 +13,7 @@ def test_xml_set_attrib_value_no_create(load_inpxml):
     from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_set_attrib_value_no_create
 
-    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
     root = xmltree.getroot()
 
     assert len(eval_xpath(root, '/fleurInput/@TEST_ATT', list_return=True)) == 0
@@ -33,7 +30,7 @@ def test_xml_set_attrib_value_no_create_not_str(load_inpxml):
     from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_set_attrib_value_no_create
 
-    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
     root = xmltree.getroot()
 
     assert len(eval_xpath(root, '/fleurInput/@TEST_ATT', list_return=True)) == 0
@@ -50,7 +47,7 @@ def test_xml_set_attrib_value_no_create_errors(load_inpxml):
     from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_set_attrib_value_no_create
 
-    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
     root = xmltree.getroot()
 
     with pytest.raises(ValueError, match='Wrong value for occurrences'):
@@ -85,7 +82,7 @@ def test_xml_set_attrib_value_no_create_all(load_inpxml, attribv, expected_resul
     from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_set_attrib_value_no_create
 
-    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
     root = xmltree.getroot()
 
     assert eval_xpath(root, '/fleurInput/atomSpecies/species/mtSphere/@radius') == ['2.20000000', '2.20000000']
@@ -104,7 +101,7 @@ def test_xml_set_text_no_create(load_inpxml):
     from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_set_text_no_create
 
-    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
     root = xmltree.getroot()
 
     assert eval_xpath(root, '/fleurInput').text.strip() == ''
@@ -119,7 +116,7 @@ def test_xml_set_text_no_create_errors(load_inpxml):
     from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_set_text_no_create
 
-    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
     root = xmltree.getroot()
 
     kpoints_xpath = '/fleurInput/cell/bzIntegration/kPointLists/kPointList/kPoint'
@@ -147,7 +144,7 @@ def test_xml_set_text_no_create_all(load_inpxml, text, expected_result, occurren
     from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_set_text_no_create
 
-    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
     root = xmltree.getroot()
 
     kpoints_xpath = '/fleurInput/cell/bzIntegration/kPointLists/kPointList/kPoint'
@@ -166,7 +163,7 @@ def test_xml_delete_tag_single(load_inpxml):
     from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_delete_tag
 
-    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
     root = xmltree.getroot()
 
     assert len(eval_xpath(root, '/fleurInput/calculationSetup', list_return=True)) == 1
@@ -181,7 +178,7 @@ def test_xml_delete_tag_multiple(load_inpxml):
     from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_delete_tag
 
-    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
     root = xmltree.getroot()
 
     assert len(eval_xpath(root, '/fleurInput/atomSpecies/species', list_return=True)) == 2
@@ -196,7 +193,7 @@ def test_xml_delete_tag_occurrences_single(load_inpxml):
     from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_delete_tag
 
-    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
     root = xmltree.getroot()
 
     assert len(eval_xpath(root, '/fleurInput/atomSpecies/species', list_return=True)) == 2
@@ -211,7 +208,7 @@ def test_xml_delete_tag_occurrences_multiple(load_inpxml):
     from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_delete_tag
 
-    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
     root = xmltree.getroot()
 
     assert len(eval_xpath(root, '/fleurInput/atomSpecies/species', list_return=True)) == 2
@@ -226,7 +223,7 @@ def test_xml_delete_att_single(load_inpxml):
     from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_delete_att
 
-    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
     root = xmltree.getroot()
 
     keys = set([('Kmax', '4.00000000'), ('Gmax', '10.00000000'), ('GmaxXC', '8.70000000'), ('numbands', '0')])
@@ -248,7 +245,7 @@ def test_xml_delete_att_multiple(load_inpxml):
     from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_delete_att
 
-    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
     root = xmltree.getroot()
 
     assert eval_xpath(root, '/fleurInput/atomSpecies/species/mtSphere/@radius') == ['2.20000000', '2.20000000']
@@ -263,7 +260,7 @@ def test_xml_delete_att_occurrences_single(load_inpxml):
     from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_delete_att
 
-    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
     root = xmltree.getroot()
 
     assert eval_xpath(root, '/fleurInput/atomSpecies/species/mtSphere/@radius') == ['2.20000000', '2.20000000']
@@ -279,7 +276,7 @@ def test_xml_delete_att_occurrences_multiple(load_inpxml):
     from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_delete_att
 
-    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
     root = xmltree.getroot()
 
     assert eval_xpath(root, '/fleurInput/atomSpecies/species/mtSphere/@radius') == ['2.20000000', '2.20000000']
@@ -299,7 +296,7 @@ def test_xml_replace_tag_single(load_inpxml):
     replace_element = etree.Element('test_tag')
     replace_element.attrib['test_attrib'] = 'test'
 
-    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
     root = xmltree.getroot()
 
     assert len(eval_xpath(root, '/fleurInput/calculationSetup/cutoffs', list_return=True)) == 1
@@ -323,7 +320,7 @@ def test_xml_replace_tag_multiple(load_inpxml):
     replace_element = etree.Element('test_tag')
     replace_element.attrib['test_attrib'] = 'test'
 
-    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
     root = xmltree.getroot()
 
     assert len(eval_xpath(root, '/fleurInput/atomSpecies/species/mtSphere', list_return=True)) == 2
@@ -348,7 +345,7 @@ def test_xml_replace_tag_occurrences_single(load_inpxml):
     replace_element = etree.Element('test_tag')
     replace_element.attrib['test_attrib'] = 'test'
 
-    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
     root = xmltree.getroot()
 
     assert len(eval_xpath(root, '/fleurInput/atomSpecies/species/mtSphere', list_return=True)) == 2
@@ -371,7 +368,7 @@ def test_xml_replace_tag_occurrences_multiple(load_inpxml):
     replace_element = etree.Element('test_tag')
     replace_element.attrib['test_attrib'] = 'test'
 
-    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
     root = xmltree.getroot()
 
     assert len(eval_xpath(root, '/fleurInput/atomSpecies/species/mtSphere', list_return=True)) == 2
@@ -390,7 +387,7 @@ def test_xml_create_tag_string_append(load_inpxml):
     from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_create_tag
 
-    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
     root = xmltree.getroot()
 
     tags = [
@@ -419,7 +416,7 @@ def test_xml_create_tag_element_append(load_inpxml):
     new_element = etree.Element('test_tag')
     new_element.attrib['test_attrib'] = 'test'
 
-    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
     root = xmltree.getroot()
 
     tags = [
@@ -445,7 +442,7 @@ def test_xml_create_tag_insert_first(load_inpxml):
     from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_create_tag
 
-    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
     root = xmltree.getroot()
 
     tags = [
@@ -472,7 +469,7 @@ def test_xml_create_tag_insert_middle(load_inpxml):
     from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_create_tag
 
-    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
     root = xmltree.getroot()
 
     tags = [
@@ -499,7 +496,7 @@ def test_xml_create_tag_tag_order_all_single(load_inpxml):
     from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_create_tag
 
-    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
     root = xmltree.getroot()
 
     tags = [
@@ -527,7 +524,7 @@ def test_xml_create_tag_tag_order_multiple(load_inpxml):
     from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_create_tag
 
-    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
     root = xmltree.getroot()
 
     tags = [[
@@ -566,7 +563,7 @@ def test_xml_create_tag_tag_order_multiple_selection(load_inpxml):
     from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_create_tag
 
-    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
     root = xmltree.getroot()
 
     tags = [[
@@ -605,7 +602,7 @@ def test_xml_create_tag_tag_order_multiple_beginning(load_inpxml):
     from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_create_tag
 
-    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
     root = xmltree.getroot()
 
     tags = [[
@@ -644,7 +641,7 @@ def test_xml_create_tag_tag_order_multiple_occurrences_single(load_inpxml):
     from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_create_tag
 
-    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
     root = xmltree.getroot()
 
     tags = [[
@@ -683,7 +680,7 @@ def test_xml_create_tag_tag_order_multiple_occurrences_list(load_inpxml):
     from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_basic import xml_create_tag
 
-    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
     root = xmltree.getroot()
 
     tags = [[
@@ -720,7 +717,7 @@ def test_xml_create_tag_errors(load_inpxml):
 
     from masci_tools.util.xml.xml_setters_basic import xml_create_tag
 
-    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
 
     with pytest.raises(ValueError, match=r"Could not create tag 'test_tag' because atleast one subtag is missing."):
         xml_create_tag(xmltree, '/fleurInput/calculationSetup/not_existent', 'test_tag')
@@ -742,7 +739,7 @@ def test_xml_create_tag_misaligned_order(load_inpxml):
     from masci_tools.util.xml.xml_setters_basic import xml_create_tag
     from masci_tools.util.xml.common_functions import eval_xpath
 
-    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH)
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
     root = xmltree.getroot()
 
     xml_create_tag(xmltree, '/fleurInput/atomSpecies/species', 'ldaU')  #This creates an invalid order
