@@ -12,18 +12,20 @@ pytest_plugins = ('masci_tools.testing.bokeh',)
 CONFTEST_LOCATION = Path(__file__).parent.resolve()
 
 
-@pytest.fixture
-def test_file(relative_path):
-    """
-    Return path to file in the tests/files folder
-    Returns filesystem path
-    """
-    return os.fspath(CONFTEST_LOCATION / Path(relative_path))
+@pytest.fixture(name='test_file')
+def test_file_fixture():
+    """Test file fixture"""
+    def _test_file(relative_path):
+        """
+        Return path to file in the tests/files folder
+        Returns filesystem path
+        """
+        return os.fspath(CONFTEST_LOCATION / 'files' / Path(relative_path))
+    return _test_file
 
 
-@pytest.mark.usefixtures('test_file')
 @pytest.fixture
-def load_inpxml():
+def load_inpxml(test_file):
     """Returns the etree and schema_dict generator"""
 
     def _load_inpxml(path, absolute=True):
@@ -36,9 +38,8 @@ def load_inpxml():
     return _load_inpxml
 
 
-@pytest.mark.usefixtures('test_file')
 @pytest.fixture
-def load_outxml():
+def load_outxml(test_file):
     """Returns the etree and schema_dict generator"""
 
     def _load_outxml(path, absolute=True):
