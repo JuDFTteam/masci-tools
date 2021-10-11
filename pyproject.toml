@@ -123,9 +123,7 @@ exclude-protected= ["_asdict","_fields","_replace","_source","_make"]
 [tool.pytest.ini_options]
 minversion="6.0"
 addopts = "--mpl --cov=masci_tools --cov=tests --cov-report xml --mpl-generate-summary=html"
-mpl-results-path= "tests/mpl-results"
+mpl-results-path= "mpl-results"
 testpaths = [
     "tests",
 ]
-
-

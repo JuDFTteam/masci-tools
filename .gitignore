@@ -72,6 +72,7 @@ coverage.xml
 .hypothesis/
 masci_tools/tests/{config.cfg,input*}
 tests/mpl-results
+mpl-results/
 
 # Translations
 *.mo
