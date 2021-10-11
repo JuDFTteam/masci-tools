@@ -5,6 +5,7 @@ Tests for the load functions in io_fleurxml
 from lxml import etree
 import pytest
 
+
 def test_load_inpxml(test_file):
     from masci_tools.io.io_fleurxml import load_inpxml
 

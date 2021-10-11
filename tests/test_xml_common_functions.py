@@ -9,7 +9,8 @@ from lxml import etree
 
 LOGGER = logging.getLogger(__name__)
 
-def test_eval_xpath(caplog,load_inpxml):
+
+def test_eval_xpath(caplog, load_inpxml):
     """
     Test of the eval_xpath function
     """
@@ -53,10 +54,10 @@ def test_clear_xml(load_inpxml):
     Test of the clear_xml function
     """
     from masci_tools.util.xml.common_functions import eval_xpath, clear_xml
-    
+
     xmltree, _ = load_inpxml('fleur/test_clear.xml', absolute=False)
     root = xmltree.getroot()
-    
+
     #Check that the file contains comments and includes
     comments = eval_xpath(root, '//comment()', list_return=True)
     assert len(comments) == 3

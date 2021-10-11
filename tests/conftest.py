@@ -15,12 +15,14 @@ CONFTEST_LOCATION = Path(__file__).parent.resolve()
 @pytest.fixture(name='test_file')
 def test_file_fixture():
     """Test file fixture"""
+
     def _test_file(relative_path):
         """
         Return path to file in the tests/files folder
         Returns filesystem path
         """
         return os.fspath(CONFTEST_LOCATION / 'files' / Path(relative_path))
+
     return _test_file
 
 

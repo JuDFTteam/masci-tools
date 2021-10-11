@@ -6,6 +6,7 @@ import pytest
 
 TEST_INPXML_PATH = 'fleur/Max-R5/FePt_film_SSFT_LO/files/inp2.xml'
 
+
 def test_xml_set_attrib_value_no_create(load_inpxml):
     """
     Basic test of the functionality of xml_set_attrib_value_no_create

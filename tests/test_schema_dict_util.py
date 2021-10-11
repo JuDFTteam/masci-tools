@@ -124,11 +124,7 @@ def test_evaluate_attribute(caplog, load_inpxml, load_outxml):
                               tag_name='Forcetheorem_SSDISP') == 'Htr'
 
     with pytest.raises(NoPathFound):
-        evaluate_attribute(iteration,
-                           outschema_dict,
-                           'TEST',
-                           FLEUR_DEFINED_CONSTANTS,
-                           tag_name='Forcetheorem_SSDISP')
+        evaluate_attribute(iteration, outschema_dict, 'TEST', FLEUR_DEFINED_CONSTANTS, tag_name='Forcetheorem_SSDISP')
 
     with pytest.raises(NoUniquePathFound):
         evaluate_attribute(root, schema_dict, 'spinf', FLEUR_DEFINED_CONSTANTS)
@@ -419,7 +415,6 @@ def test_tag_exists(load_inpxml, load_outxml):
     Test of the tag_exists function
     """
     from masci_tools.util.schema_dict_util import tag_exists
-
 
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
     outxmltree, outschema_dict = load_outxml(TEST_OUTXML_PATH2, absolute=False)
