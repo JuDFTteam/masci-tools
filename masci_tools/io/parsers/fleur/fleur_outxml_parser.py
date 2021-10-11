@@ -128,9 +128,8 @@ def outxml_parser(outxmlfile: XMLInput,
             if 'Failed to parse output file' in str(err):
                 if logger is None:
                     raise ValueError('Skipping the parsing of the xml file. Repairing was not possible.') from err
-                else:
-                    logger.exception('Skipping the parsing of the xml file. ' 'Repairing was not possible.')
-                    return {}
+                logger.exception('Skipping the parsing of the xml file. ' 'Repairing was not possible.')
+                return {}
             if logger is not None:
                 logger.error(str(err))
             raise
@@ -217,8 +216,7 @@ def outxml_parser(outxmlfile: XMLInput,
               'starting density was generated or something went wrong.'
         if logger is None:
             raise ValueError(msg)
-        else:
-            logger.error(msg)
+        logger.error(msg)
 
     if iteration_to_parse == 'last':
         iteration_nodes = [iteration_nodes[-1]]

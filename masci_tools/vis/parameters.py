@@ -276,10 +276,8 @@ class Plotter(object):
                     return value
                 if index < len(value):
                     return value[index]
-                else:
-                    return value[0]
-            else:
-                return value
+                return value[0]
+            return value
         except KeyError:
             return None
 

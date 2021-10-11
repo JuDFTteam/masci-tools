@@ -358,8 +358,7 @@ def write_inpgen_file(cell,
                 inpfile.write(inpgen_file_content)
 
         return report
-    else:
-        return inpgen_file_content
+    return inpgen_file_content
 
 
 def get_input_data_text(key, val, value_only, mapping=None):
@@ -405,20 +404,19 @@ def get_input_data_text(key, val, value_only, mapping=None):
         #Sort according to the mapping then rejoin the string
         list_of_strings = sorted(list_of_strings, key=lambda key: mapping[key])
         return ''.join(list_of_strings)
-    elif not isinstance(val, str) and hasattr(val, '__iter__'):
+    if not isinstance(val, str) and hasattr(val, '__iter__'):
         if value_only:
             list_of_strings = [f'  ({idx + 1}){conv_to_fortran(itemval)} ' for idx, itemval in enumerate(val)]
         else:
             # a list/array/tuple of values
             list_of_strings = [f'  {key}({idx + 1})={conv_to_fortran(itemval)} ' for idx, itemval in enumerate(val)]
         return ''.join(list_of_strings)
-    else:
-        # single value
-        #return "  {0}={1} ".format(key, conv_to_fortran(val))
-        if value_only:
-            return f' {val} '
-        else:
-            return f'  {key}={val} '
+
+    # single value
+    #return "  {0}={1} ".format(key, conv_to_fortran(val))
+    if value_only:
+        return f' {val} '
+    return f'  {key}={val} '
 
 
 def conv_to_fortran(val, quote_strings=True):
@@ -545,7 +543,7 @@ def read_inpgen_file(file, convert_to_angstroem=True):
                 keyt = key
             if pval[0] not in POSSIBLE_PARAMS[keyt] and keyt not in VALUE_ONLY_NAMELISTS:
                 raise ValueError(f'Value {pval[0]} is not allowed as inpgen input of namelist {keyt}.')
-            elif keyt in VALUE_ONLY_NAMELISTS:
+            if keyt in VALUE_ONLY_NAMELISTS:
                 att_name = POSSIBLE_PARAMS[keyt][indx]
                 value = pval[0]
                 indx += 1

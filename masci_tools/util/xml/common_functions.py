@@ -272,10 +272,7 @@ def eval_xpath(node: Union[etree._Element, etree._ElementTree],
     if isinstance(return_value, list):
         if len(return_value) == 1 and not list_return:
             return return_value[0]
-        else:
-            return return_value
-    else:
-        return return_value
+    return return_value
 
 
 def get_xml_attribute(node: etree._Element, attributename: str, logger: Logger = None) -> Optional[str]:
@@ -292,22 +289,20 @@ def get_xml_attribute(node: etree._Element, attributename: str, logger: Logger =
         attrib_value = node.get(attributename)
         if attrib_value:
             return attrib_value
-        else:
-            if logger is not None:
-                logger.warning(
-                    'Tried to get attribute: "%s" from element %s.\n '
-                    'I received "%s", maybe the attribute does not exist', attributename, node.tag, attrib_value)
-            else:
-                raise ValueError(f'Tried to get attribute: "{attributename}" from element {node.tag}.\n '
-                                 f'I received "{attrib_value}", maybe the attribute does not exist')
+        if logger is None:
+            raise ValueError(f'Tried to get attribute: "{attributename}" from element {node.tag}.\n '
+                             f'I received "{attrib_value}", maybe the attribute does not exist')
+        logger.warning(
+            'Tried to get attribute: "%s" from element %s.\n '
+            'I received "%s", maybe the attribute does not exist', attributename, node.tag, attrib_value)
+
     else:  # something doesn't work here, some nodes get through here
-        if logger is not None:
-            logger.error(
-                'Can not get attributename: "%s" from node of type %s, '
-                'because node is not an element of etree.', attributename, type(node))
-        else:
+        if logger is None:
             raise TypeError(f'Can not get attributename: "{attributename}" from node of type {type(node)}, '
                             f'because node is not an element of etree.')
+        logger.error(
+            'Can not get attributename: "%s" from node of type %s, '
+            'because node is not an element of etree.', attributename, type(node))
 
     return None
 
@@ -321,8 +316,7 @@ def split_off_tag(xpath: str) -> Tuple[str, str]:
     split_xpath = xpath.split('/')
     if split_xpath[-1] == '':
         return '/'.join(split_xpath[:-2]), split_xpath[-2]
-    else:
-        return '/'.join(split_xpath[:-1]), split_xpath[-1]
+    return '/'.join(split_xpath[:-1]), split_xpath[-1]
 
 
 def split_off_attrib(xpath: str) -> Tuple[str, str]:

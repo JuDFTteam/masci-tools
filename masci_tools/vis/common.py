@@ -80,14 +80,13 @@ class PlotBackend(Enum):
         if label is None:
             #Default backend
             return PlotBackend.default()
-        elif isinstance(label, PlotBackend):
+        if isinstance(label, PlotBackend):
             return label
-        elif label.lower() in ('mpl', 'matplotlib'):
+        if label.lower() in ('mpl', 'matplotlib'):
             return PlotBackend.mpl
-        elif label.lower() in ('bokeh',):
+        if label.lower() in ('bokeh',):
             return PlotBackend.bokeh
-        else:
-            raise NotImplementedError
+        raise NotImplementedError()
 
     @staticmethod
     def default():
@@ -232,10 +231,9 @@ def get_plotter(backend=None):
 
     if backend == PlotBackend.mpl:
         return mpl.plot_params
-    elif backend == PlotBackend.bokeh:
+    if backend == PlotBackend.bokeh:
         return bok.plot_params
-    else:
-        raise NotImplementedError
+    raise NotImplementedError()
 
 
 def dos(energy_grid, dos_data, backend=None, data=None, **kwargs):

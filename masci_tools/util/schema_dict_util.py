@@ -272,8 +272,7 @@ def evaluate_attribute(node: Union[etree._Element, etree._ElementTree],
             logger.warning('No values found for attribute %s', name)
         if list_return:
             return []
-        else:
-            return None
+        return None
 
     converted_value, suc = convert_from_xml(stringattribute,
                                             schema_dict,
@@ -286,8 +285,7 @@ def evaluate_attribute(node: Union[etree._Element, etree._ElementTree],
     if not suc:
         if logger is None:
             raise ValueError(f'Failed to evaluate attribute {name}, Got value: {stringattribute}')
-        else:
-            logger.warning('Failed to evaluate attribute %s, Got value: %s', name, stringattribute)
+        logger.warning('Failed to evaluate attribute %s, Got value: %s', name, stringattribute)
 
     return converted_value
 
@@ -345,8 +343,7 @@ def evaluate_text(node: Union[etree._Element, etree._ElementTree],
             logger.warning('No text found for tag %s', name)
         if list_return:
             return []
-        else:
-            return None
+        return None
 
     converted_value, suc = convert_from_xml(stringtext,
                                             schema_dict,
@@ -359,8 +356,7 @@ def evaluate_text(node: Union[etree._Element, etree._ElementTree],
     if not suc:
         if logger is None:
             raise ValueError(f'Failed to evaluate text for tag {name}, Got text: {stringtext}')
-        else:
-            logger.warning('Failed to evaluate text for tag %s, Got text: %s', name, stringtext)
+        logger.warning('Failed to evaluate text for tag %s, Got text: %s', name, stringtext)
 
     return converted_value
 
@@ -429,11 +425,10 @@ def evaluate_tag(node: Union[etree._Element, etree._ElementTree],
             raise ValueError(f'Failed to evaluate attributes from tag {name}: '
                              'No attributes to parse either the tag does not '
                              'exist or it has no attributes') from err
-        else:
-            logger.exception(
-                'Failed to evaluate attributes from tag %s: '
-                'No attributes to parse either the tag does not '
-                'exist or it has no attributes', name)
+        logger.exception(
+            'Failed to evaluate attributes from tag %s: '
+            'No attributes to parse either the tag does not '
+            'exist or it has no attributes', name)
         attribs = set()
         optional = set()
         tags = set()
@@ -456,11 +451,10 @@ def evaluate_tag(node: Union[etree._Element, etree._ElementTree],
             raise ValueError(f'Failed to evaluate attributes from tag {name}: '
                              'No attributes to parse either the tag does not '
                              'exist or it has no attributes')
-        else:
-            logger.error(
-                'Failed to evaluate attributes from tag %s: '
-                'No attributes to parse either the tag does not '
-                'exist or it has no attributes', name)
+        logger.error(
+            'Failed to evaluate attributes from tag %s: '
+            'No attributes to parse either the tag does not '
+            'exist or it has no attributes', name)
     else:
         attribs = sorted(list(attribs.original_case.values()))
 
@@ -492,8 +486,7 @@ def evaluate_tag(node: Union[etree._Element, etree._ElementTree],
         if not suc:
             if logger is None:
                 raise ValueError(f'Failed to evaluate attribute {attrib}, Got value: {stringattribute}')
-            else:
-                logger.warning('Failed to evaluate attribute %s, Got value: %s', attrib, stringattribute)
+            logger.warning('Failed to evaluate attribute %s, Got value: %s', attrib, stringattribute)
 
     if parse_text:
 
@@ -528,8 +521,7 @@ def evaluate_tag(node: Union[etree._Element, etree._ElementTree],
             if tag in out_dict:
                 if logger is None:
                     raise ValueError(f'Conflicting key {tag}: ' 'Key is already in the output dictionary')
-                else:
-                    logger.error('Conflicting key %s: ' 'Key is already in the output dictionary', tag)
+                logger.error('Conflicting key %s: ' 'Key is already in the output dictionary', tag)
             out_dict[tag] = []
 
         sub_nodes: List[etree._Element] = eval_xpath(node, tag_xpath, logger=logger, list_return=True)
@@ -601,14 +593,12 @@ def evaluate_single_value_tag(node: Union[etree._Element, etree._ElementTree],
     if value_dict.get('value') is None:
         if logger is None:
             raise ValueError(f'Failed to evaluate singleValue from tag {name}: ' "Has no 'value' attribute")
-        else:
-            logger.warning('Failed to evaluate singleValue from tag %s: ' "Has no 'value' attribute", name)
+        logger.warning('Failed to evaluate singleValue from tag %s: ' "Has no 'value' attribute", name)
 
     if value_dict.get('units') is None and not only_required and 'units' not in ignore:
         if logger is None:
             raise ValueError(f'Failed to evaluate singleValue from tag {name}: ' "Has no 'units' attribute")
-        else:
-            logger.warning('Failed to evaluate singleValue from tag %s: ' "Has no 'units' attribute", name)
+        logger.warning('Failed to evaluate singleValue from tag %s: ' "Has no 'units' attribute", name)
 
     return value_dict
 
@@ -668,11 +658,10 @@ def evaluate_parent_tag(node: Union[etree._Element, etree._ElementTree],
             raise ValueError(f'Failed to evaluate attributes from parent tag of {name}: '
                              'No attributes to parse either the tag does not '
                              'exist or it has no attributes') from err
-        else:
-            logger.exception(
-                'Failed to evaluate attributes from parent tag of %s: '
-                'No attributes to parse either the tag does not '
-                'exist or it has no attributes', name)
+        logger.exception(
+            'Failed to evaluate attributes from parent tag of %s: '
+            'No attributes to parse either the tag does not '
+            'exist or it has no attributes', name)
         attribs = set()
         optional = set()
 
@@ -687,11 +676,10 @@ def evaluate_parent_tag(node: Union[etree._Element, etree._ElementTree],
             raise ValueError(f'Failed to evaluate attributes from parent tag of {name}: '
                              'No attributes to parse either the tag does not '
                              'exist or it has no attributes')
-        else:
-            logger.error(
-                'Failed to evaluate attributes from parent tag of %s: '
-                'No attributes to parse either the tag does not '
-                'exist or it has no attributes', name)
+        logger.error(
+            'Failed to evaluate attributes from parent tag of %s: '
+            'No attributes to parse either the tag does not '
+            'exist or it has no attributes', name)
     else:
         attribs = sorted(list(attribs.original_case.values()))
 
@@ -706,9 +694,8 @@ def evaluate_parent_tag(node: Union[etree._Element, etree._ElementTree],
         if parent is None:
             if logger is None:
                 raise ValueError(f'No parent found tag {name}')
-            else:
-                logger.warning('No parent found tag %s', name)
-                continue
+            logger.warning('No parent found tag %s', name)
+            continue
         for attrib in attribs:
 
             try:
@@ -738,8 +725,7 @@ def evaluate_parent_tag(node: Union[etree._Element, etree._ElementTree],
             if not suc:
                 if logger is None:
                     raise ValueError(f'Failed to evaluate attribute {attrib}, Got value: {stringattribute}')
-                else:
-                    logger.warning('Failed to evaluate attribute %s, Got value: %s', attrib, stringattribute)
+                logger.warning('Failed to evaluate attribute %s, Got value: %s', attrib, stringattribute)
 
     if all(len(x) == 1 for x in out_dict.values()) and not list_return:
         out_dict = {key: val[0] for key, val in out_dict.items()}

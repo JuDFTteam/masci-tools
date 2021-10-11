@@ -53,10 +53,8 @@ class CaseInsensitiveDict(LockableDict[S, T]):
         if isinstance(key, str):
             if self._upper:
                 return key.upper()
-            else:
-                return key.lower()
-        else:
-            return key
+            return key.lower()
+        return key
 
     #Here we modify the methods needed to make the lookups case insensitive
     #Since we use UserDict these methods should be enough to modify all behaviour
@@ -93,8 +91,7 @@ class CaseInsensitiveFrozenSet(FrozenSet[T]):
     def __new__(cls, iterable: Iterable[T] = None, upper: bool = False) -> 'CaseInsensitiveFrozenSet':
         if iterable is not None:
             return super().__new__(cls, [key.lower() for key in iterable])  #type: ignore
-        else:
-            return super().__new__(cls, [])  #type: ignore
+        return super().__new__(cls, [])  #type: ignore
 
     def __init__(self, iterable: Iterable[T] = None, upper: bool = False) -> None:
         self._upper = upper
@@ -120,10 +117,8 @@ class CaseInsensitiveFrozenSet(FrozenSet[T]):
         if isinstance(key, str):
             if self._upper:
                 return key.upper()
-            else:
-                return key.lower()
-        else:
-            return key
+            return key.lower()
+        return key
 
     def __contains__(self, key: object) -> bool:
         return super().__contains__(self._norm_key(key))
@@ -132,8 +127,7 @@ class CaseInsensitiveFrozenSet(FrozenSet[T]):
         """Returns the repr with the orinal case of the entered keys (first encounter)"""
         if self.original_case:
             return f'{self.__class__.__name__}({set(self.original_case.values())})'
-        else:
-            return f'{self.__class__.__name__}()'
+        return f'{self.__class__.__name__}()'
 
     def __sub__(self, other):
         return self.difference(other)

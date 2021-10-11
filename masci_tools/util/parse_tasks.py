@@ -64,8 +64,7 @@ def find_migration(start: str, target: str, migrations: MIGRATION_DICT) -> Union
             if migrations[start][target] == 'compatible':
                 return []
             return None
-        else:
-            return [migrations[start][target]]  #type:ignore
+        return [migrations[start][target]]  #type:ignore
 
     for possible_stop in migrations[start].keys():
         new_call_list = find_migration(possible_stop, target, migrations)

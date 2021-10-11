@@ -97,15 +97,13 @@ class HDF5Reader:
         if h5path in ('/', ''):
             if strict:
                 return None
-            else:
-                pass
 
         logger.debug('Reading dataset from path %s', h5path)
 
         dset = self.file.get(h5path)
         if dset is not None:
             return dset
-        elif strict:
+        if strict:
             logger.exception('HDF5 input file %s has no Dataset at %s.', self.filename, h5path)
             raise ValueError(f'HDF5 input file {self.filename} has no Dataset at {h5path}.')
         return None

@@ -584,8 +584,7 @@ def plot_crystal_field_potential(cfcoeffs,
 
     if np.abs(phi_grid - phi).min() > 1e-5:
         raise ValueError(f'Angle {phi} not found in grid')
-    else:
-        phi_ind = np.abs(phi_grid - phi).argmin()
+    phi_ind = np.abs(phi_grid - phi).argmin()
 
     theta_grid_pm = list(-1.0 * theta_grid)
     theta_cf = list(cf_grid[:, phi_ind])

@@ -167,8 +167,7 @@ def convert_from_xml_explicit(
         if not text_definitions:
             if logger is None:
                 raise ValueError(f"Could not convert '{text}', no matching definition found")
-            else:
-                logger.warning("Could not convert '%s', no matching definition found", text)
+            logger.warning("Could not convert '%s', no matching definition found", text)
             converted_list.append(text)
             all_success = False
             continue
@@ -249,8 +248,7 @@ def convert_to_xml_explicit(value: Union[Any, Iterable[Any]],
 
             if logger is None:
                 raise ValueError(f"Could not convert '{val}', no matching definition found")
-            else:
-                logger.warning("Could not convert '%s', no matching definition found", val)
+            logger.warning("Could not convert '%s', no matching definition found", val)
 
             converted_list.append('')
             all_success = False
@@ -347,12 +345,11 @@ def convert_from_xml_single_values(xmlstring: Union[str, List[str]],
                 raise ValueError(f"Could not convert '{text}'. Tried: {possible_types}.\n"
                                  'The following errors occurred:\n   ' +
                                  '\n   '.join([str(error) for error in exceptions]))
-            else:
-                logger.warning("Could not convert '%s'. The following errors occurred:", text)
+            logger.warning("Could not convert '%s'. The following errors occurred:", text)
 
-                for error in exceptions:
-                    logger.warning('   %s', str(error))
-                    logger.debug(error, exc_info=error)
+            for error in exceptions:
+                logger.warning('   %s', str(error))
+                logger.debug(error, exc_info=error)
 
             converted_list.append(text)
             all_success = False
@@ -417,12 +414,11 @@ def convert_to_xml_single_values(value: Union[Any, Iterable[Any]],
                 raise ValueError(f"Could not convert '{val}' to text. Tried: {possible_types}.\n"
                                  'The following errors occurred:\n   ' +
                                  '\n   '.join([str(error) for error in exceptions]))
-            else:
-                logger.warning("Could not convert '%s' to text. The following errors occurred:", val)
+            logger.warning("Could not convert '%s' to text. The following errors occurred:", val)
 
-                for error in exceptions:
-                    logger.warning('   %s', str(error))
-                    logger.debug(error, exc_info=error)
+            for error in exceptions:
+                logger.warning('   %s', str(error))
+                logger.debug(error, exc_info=error)
 
             converted_list.append(val)
             all_success = False
@@ -444,18 +440,17 @@ def convert_from_fortran_bool(stringbool: Union[str, bool]) -> bool:
     if isinstance(stringbool, str):
         if stringbool in false_items:
             return False
-        elif stringbool in true_items:
+        if stringbool in true_items:
             return True
-        else:
-            raise ValueError(f"Could not convert: '{stringbool}' to boolean, "
-                             "which is not 'True', 'False', 't', 'T', 'F' or 'f'")
-    elif isinstance(stringbool, bool):
+        raise ValueError(f"Could not convert: '{stringbool}' to boolean, "
+                         "which is not 'True', 'False', 't', 'T', 'F' or 'f'")
+    if isinstance(stringbool, bool):
         return stringbool  # no conversion needed...
 
     raise TypeError(f"Could not convert: '{stringbool}' to boolean, " 'only accepts str or boolean')
 
 
-def convert_to_fortran_bool(boolean: Union[bool, str]) -> Union[Literal['T'], Literal['F']]:
+def convert_to_fortran_bool(boolean: Union[bool, str]) -> Literal['T', 'F']:
     """
     Converts a Boolean as string to the format defined in the input
 
@@ -467,16 +462,14 @@ def convert_to_fortran_bool(boolean: Union[bool, str]) -> Union[Literal['T'], Li
     if isinstance(boolean, bool):
         if boolean:
             return 'T'
-        else:
-            return 'F'
-    elif isinstance(boolean, str):  # basestring):
+        return 'F'
+    if isinstance(boolean, str):  # basestring):
         if boolean in ('True', 't', 'T'):
             return 'T'
-        elif boolean in ('False', 'f', 'F'):
+        if boolean in ('False', 'f', 'F'):
             return 'F'
-        else:
-            raise ValueError(f"A string: {boolean} for a boolean was given, which is not 'True',"
-                             "'False', 't', 'T', 'F' or 'f'")
+        raise ValueError(f"A string: {boolean} for a boolean was given, which is not 'True',"
+                         "'False', 't', 'T', 'F' or 'f'")
 
     raise TypeError('convert_to_fortran_bool accepts only a string or ' f'bool as argument, given {boolean} ')
 

@@ -279,13 +279,12 @@ class SchemaDict(LockableDict):
 
         if len(paths) == 1:
             return paths[0]
-        elif len(paths) == 0:
+        if len(paths) == 0:
             raise NoPathFound(f'The tag {name} has no possible paths with the current specification.\n'
                               f'contains: {contains}, not_contains: {not_contains}')
-        else:
-            raise NoUniquePathFound(f'The tag {name} has multiple possible paths with the current specification.\n'
-                                    f'contains: {contains}, not_contains: {not_contains} \n'
-                                    f'These are possible: {paths}')
+        raise NoUniquePathFound(f'The tag {name} has multiple possible paths with the current specification.\n'
+                                f'contains: {contains}, not_contains: {not_contains} \n'
+                                f'These are possible: {paths}')
 
     def relative_tag_xpath(self,
                            name: str,
@@ -323,14 +322,12 @@ class SchemaDict(LockableDict):
 
         if len(relative_paths) == 1:
             return relative_paths.pop()
-        elif len(relative_paths) == 0:
+        if len(relative_paths) == 0:
             raise NoPathFound(f'The tag {name} has no possible relative paths with the current specification.\n'
                               f'contains: {contains}, not_contains: {not_contains}, root_tag {root_tag}')
-        else:
-            raise NoUniquePathFound(
-                f'The tag {name} has multiple possible relative paths with the current specification.\n'
-                f'contains: {contains}, not_contains: {not_contains}, root_tag {root_tag} \n'
-                f'These are possible: {relative_paths}')
+        raise NoUniquePathFound(f'The tag {name} has multiple possible relative paths with the current specification.\n'
+                                f'contains: {contains}, not_contains: {not_contains}, root_tag {root_tag} \n'
+                                f'These are possible: {relative_paths}')
 
     def attrib_xpath(self,
                      name: str,
@@ -385,13 +382,12 @@ class SchemaDict(LockableDict):
 
         if len(paths) == 1:
             return paths[0]
-        elif len(paths) == 0:
+        if len(paths) == 0:
             raise NoPathFound(f'The attrib {name} has no possible paths with the current specification.\n'
                               f'contains: {contains}, not_contains: {not_contains}, exclude {exclude}')
-        else:
-            raise NoUniquePathFound(f'The attrib {name} has multiple possible paths with the current specification.\n'
-                                    f'contains: {contains}, not_contains: {not_contains}, exclude {exclude}\n'
-                                    f'These are possible: {paths}')
+        raise NoUniquePathFound(f'The attrib {name} has multiple possible paths with the current specification.\n'
+                                f'contains: {contains}, not_contains: {not_contains}, exclude {exclude}\n'
+                                f'These are possible: {paths}')
 
     def relative_attrib_xpath(self,
                               name: str,
@@ -436,8 +432,7 @@ class SchemaDict(LockableDict):
 
             if tag_xpath.endswith('/'):
                 return f'{tag_xpath}@{original_case}'
-            else:
-                return f'{tag_xpath}/@{original_case}'
+            return f'{tag_xpath}/@{original_case}'
 
         entries = list(self._attrib_entries)
         if exclude is not None:
@@ -458,14 +453,13 @@ class SchemaDict(LockableDict):
 
         if len(relative_paths) == 1:
             return relative_paths.pop()
-        elif len(relative_paths) == 0:
+        if len(relative_paths) == 0:
             raise NoPathFound(f'The attrib {name} has no possible relative paths with the current specification.\n'
                               f'contains: {contains}, not_contains: {not_contains}, root_tag {root_tag}')
-        else:
-            raise NoUniquePathFound(
-                f'The attrib {name} has multiple possible relative paths with the current specification.\n'
-                f'contains: {contains}, not_contains: {not_contains}, root_tag {root_tag} \n'
-                f'These are possible: {relative_paths}')
+        raise NoUniquePathFound(
+            f'The attrib {name} has multiple possible relative paths with the current specification.\n'
+            f'contains: {contains}, not_contains: {not_contains}, root_tag {root_tag} \n'
+            f'These are possible: {relative_paths}')
 
     def tag_info(self,
                  name: str,
@@ -558,10 +552,8 @@ class SchemaDict(LockableDict):
         if path_return:
             if not multiple_paths:
                 return tag_info, paths[0]  #type:ignore
-            else:
-                return tag_info, paths  #type:ignore
-        else:
-            return tag_info  #type:ignore
+            return tag_info, paths  #type:ignore
+        return tag_info  #type:ignore
 
 
 class InputSchemaDict(SchemaDict):
@@ -620,16 +612,15 @@ class InputSchemaDict(SchemaDict):
             if int(version.split('.')[1]) < int(latest_version.split('.')[1]):
                 message = f'No FleurInputSchema.xsd found at {schema_file_path}'
                 raise FileNotFoundError(message)
-            else:
-                if logger is not None:
-                    logger.warning("No Input Schema available for version '%s'; falling back to '%s'", version,
-                                   latest_version)
-                else:
-                    warnings.warn(
-                        f"No Input Schema available for version '{version}'; falling back to '{latest_version}'")
 
-                version = latest_version
-                schema_file_path = schema_file_path = PACKAGE_DIRECTORY / version / 'FleurInputSchema.xsd'
+            if logger is not None:
+                logger.warning("No Input Schema available for version '%s'; falling back to '%s'", version,
+                               latest_version)
+            else:
+                warnings.warn(f"No Input Schema available for version '{version}'; falling back to '{latest_version}'")
+
+            version = latest_version
+            schema_file_path = schema_file_path = PACKAGE_DIRECTORY / version / 'FleurInputSchema.xsd'
 
         if version in cls._schema_dict_cache and not no_cache:
             return cls._schema_dict_cache[version]
@@ -747,16 +738,15 @@ class OutputSchemaDict(SchemaDict):
             if int(version.split('.')[1]) < int(latest_version.split('.')[1]):
                 message = f'No FleurOutputSchema.xsd found at {schema_file_path}'
                 raise FileNotFoundError(message)
-            else:
-                if logger is not None:
-                    logger.warning("No Output Schema available for version '%s'; falling back to '%s'", version,
-                                   latest_version)
-                else:
-                    warnings.warn(
-                        f"No Output Schema available for version '{version}'; falling back to '{latest_version}'")
 
-                version = latest_version
-                schema_file_path = PACKAGE_DIRECTORY / version / 'FleurOutputSchema.xsd'
+            if logger is not None:
+                logger.warning("No Output Schema available for version '%s'; falling back to '%s'", version,
+                               latest_version)
+            else:
+                warnings.warn(f"No Output Schema available for version '{version}'; falling back to '{latest_version}'")
+
+            version = latest_version
+            schema_file_path = PACKAGE_DIRECTORY / version / 'FleurOutputSchema.xsd'
 
         if not inpschema_file_path.is_file():
             latest_inpversion = _get_latest_available_version(output_schema=False)
@@ -764,16 +754,16 @@ class OutputSchemaDict(SchemaDict):
             if int(inp_version.split('.')[1]) < int(latest_inpversion.split('.')[1]):
                 message = f'No FleurInputSchema.xsd found at {inpschema_file_path}'
                 raise FileNotFoundError(message)
-            else:
-                if logger is not None:
-                    logger.warning("No Input Schema available for version '%s'; falling back to '%s'", inp_version,
-                                   latest_inpversion)
-                else:
-                    warnings.warn(
-                        f"No Input Schema available for version '{inp_version}'; falling back to '{latest_inpversion}'")
 
-                inp_version = latest_inpversion
-                inpschema_file_path = PACKAGE_DIRECTORY / version / 'FleurInputSchema.xsd'
+            if logger is not None:
+                logger.warning("No Input Schema available for version '%s'; falling back to '%s'", inp_version,
+                               latest_inpversion)
+            else:
+                warnings.warn(
+                    f"No Input Schema available for version '{inp_version}'; falling back to '{latest_inpversion}'")
+
+            inp_version = latest_inpversion
+            inpschema_file_path = PACKAGE_DIRECTORY / version / 'FleurInputSchema.xsd'
 
         if inp_version != version and logger is not None:
             logger.info('Creating OutputSchemaDict object for differing versions (out: %s; inp: %s)', version,

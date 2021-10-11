@@ -103,11 +103,11 @@ def calculate_expression_partial(expression: Union[str, float, int],
                 #Check conditions for functions
                 if string == 'log' and function_value <= 0.0:
                     raise ValueError('Invalid expression: log(x), x<=0')
-                elif string == 'sqrt' and function_value < 0.0:
+                if string == 'sqrt' and function_value < 0.0:
                     raise ValueError('Invalid expression: sqrt(x), x<0')
-                elif string == 'asin' and abs(function_value) > 1.0:
+                if string == 'asin' and abs(function_value) > 1.0:
                     raise ValueError('Invalid expression: asin(x), |x|>1')
-                elif string == 'acos' and abs(function_value) > 1.0:
+                if string == 'acos' and abs(function_value) > 1.0:
                     raise ValueError('Invalid expression: acos(x), |x|>1')
                 value = function(function_value)
             elif expression.startswith('('):
@@ -156,7 +156,7 @@ def calculate_expression_partial(expression: Union[str, float, int],
                         raise ValueError('Undefined Expression: 0^0')
                     if value < 0.0 and abs(int(block_value) - block_value) > 1e-12:
                         raise ValueError('Undefined Expression: x^y, x<0 and y not integer')
-                    elif value < 0.0:
+                    if value < 0.0:
                         block_value = int(block_value)
                     value = value**block_value
             else:

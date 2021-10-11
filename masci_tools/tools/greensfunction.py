@@ -275,8 +275,9 @@ def _get_greensf_group_name(hdffile: h5py.File) -> str:
     """
     if '/GreensFunctionElements' in hdffile:
         return 'GreensFunctionElements'
-    elif '/Hubbard1Elements' in hdffile:
+    if '/Hubbard1Elements' in hdffile:
         return 'Hubbard1Elements'
+    raise ValueError("No Green's function group found")
 
 
 def _read_element_header(hdffile: h5py.File, index: int) -> GreensfElement:
@@ -492,17 +493,15 @@ class GreensFunction:
         if spin is not None:
             if name == 'uloulo':
                 return np.einsum('...ij,...ij->...ij', data, coeff)
-            elif 'lo' in name:
+            if 'lo' in name:
                 return np.einsum('...i,...i->...i', data, coeff)
-            else:
-                return data * coeff
-        else:
-            if name == 'uloulo':
-                return np.einsum('...ijkl,...ijkl->...ijkl', data, coeff)
-            elif 'lo' in name:
-                return np.einsum('...ijk,...ijk->...ijk', data, coeff)
-            else:
-                return np.einsum('...ij,...ij->...ij', data, coeff)
+            return data * coeff
+
+        if name == 'uloulo':
+            return np.einsum('...ijkl,...ijkl->...ijkl', data, coeff)
+        if 'lo' in name:
+            return np.einsum('...ijk,...ijk->...ijk', data, coeff)
+        return np.einsum('...ij,...ij->...ij', data, coeff)
 
     @staticmethod
     def to_m_index(m: int) -> int:
@@ -550,8 +549,7 @@ class GreensFunction:
         """
         if self.mperp:
             return 4
-        else:
-            return self.spins
+        return self.spins
 
     def __str__(self) -> str:
         """
@@ -603,11 +601,10 @@ class GreensFunction:
 
         if both_contours:
             return gf
+        if imag:
+            data = -1 / (2 * np.pi * 1j) * (gf[..., 0] - gf[..., 1])
         else:
-            if imag:
-                data = -1 / (2 * np.pi * 1j) * (gf[..., 0] - gf[..., 1])
-            else:
-                data = -1 / (2 * np.pi) * (gf[..., 0] + gf[..., 1])
+            data = -1 / (2 * np.pi) * (gf[..., 0] + gf[..., 1])
 
         return data.real
 

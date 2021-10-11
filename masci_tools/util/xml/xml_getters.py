@@ -286,8 +286,7 @@ def get_nkpts_max4(xmltree: Union[etree._Element, etree._ElementTree],
                                         logger=logger)
             if len(kpt_tag) == 0:
                 raise ValueError('No kPointList or kPointCount found')
-            else:
-                warnings.warn('kPointCount is not guaranteed to result in the given number of kpoints')
+            warnings.warn('kPointCount is not guaranteed to result in the given number of kpoints')
 
     nkpts = evaluate_attribute(kpt_tag[0], schema_dict, 'count', logger=logger)
 
@@ -924,8 +923,7 @@ def get_kpoints_data(
             raise ValueError(f'Found no Kpoint list with the name: {name}'
                              f'Available list names: {labels}'
                              'The listName attribute is not consistent with the rest of the input')
-        else:
-            raise ValueError(f'Found no Kpoint list with the name: {name}' f'Available list names: {labels}')
+        raise ValueError(f'Found no Kpoint list with the name: {name}' f'Available list names: {labels}')
 
     if index is not None:
         try:

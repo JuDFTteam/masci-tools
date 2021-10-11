@@ -86,8 +86,7 @@ def fixture_previous_bokeh_results(datadir):
                     latest_version = version
         if latest_version > (0, 0, 0):
             return '.'.join(map(str, latest_version))
-        else:
-            return None
+        return None
 
     return _get_previous_test_results
 

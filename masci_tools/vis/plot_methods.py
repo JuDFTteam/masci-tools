@@ -908,8 +908,7 @@ def histogram(xdata,
 
     if return_hist_output:
         return ax, n, bins, patches
-    else:
-        return ax
+    return ax
 
 
 # todo remove default histogramm, replace it in all code by histogramm
@@ -1348,8 +1347,7 @@ def plot_residuen(xdata,
 
     if return_residuen_data:
         return axes, ydata
-    else:
-        return axes
+    return axes
 
 
 @ensure_plotter_consistency(plot_params)

@@ -295,8 +295,7 @@ class FleurXMLModifier:
 
         if new_nmmp_lines is None:
             return new_xmltree
-        else:
-            return new_xmltree, new_nmmp_lines
+        return new_xmltree, new_nmmp_lines
 
     def set_inpchanges(self, *args, **kwargs):
         """

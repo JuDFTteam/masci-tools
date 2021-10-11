@@ -778,16 +778,15 @@ def bokeh_bands(kpath,
                           set_default_legend=False,
                           saveas=saveas,
                           **kwargs)
-    else:
-        return bokeh_multi_scatter(plot_data.get_keys('kpath'),
-                                   plot_data.get_keys('bands'),
-                                   data=plot_data.data,
-                                   xlabel='',
-                                   ylabel=ylabel,
-                                   title=title,
-                                   set_default_legend=False,
-                                   saveas=saveas,
-                                   **kwargs)
+    return bokeh_multi_scatter(plot_data.get_keys('kpath'),
+                               plot_data.get_keys('bands'),
+                               data=plot_data.data,
+                               xlabel='',
+                               ylabel=ylabel,
+                               title=title,
+                               set_default_legend=False,
+                               saveas=saveas,
+                               **kwargs)
 
 
 @ensure_plotter_consistency(plot_params)
@@ -970,16 +969,15 @@ def bokeh_spinpol_bands(kpath,
                           set_default_legend=False,
                           saveas=saveas,
                           **kwargs)
-    else:
-        return bokeh_multi_scatter(plot_data.get_keys('kpath'),
-                                   plot_data.get_keys('bands'),
-                                   data=plot_data.data,
-                                   xlabel='',
-                                   ylabel=ylabel,
-                                   title=title,
-                                   set_default_legend=False,
-                                   saveas=saveas,
-                                   **kwargs)
+    return bokeh_multi_scatter(plot_data.get_keys('kpath'),
+                               plot_data.get_keys('bands'),
+                               data=plot_data.data,
+                               xlabel='',
+                               ylabel=ylabel,
+                               title=title,
+                               set_default_legend=False,
+                               saveas=saveas,
+                               **kwargs)
 
 
 @ensure_plotter_consistency(plot_params)

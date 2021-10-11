@@ -79,8 +79,6 @@ disable = [
     "import-outside-toplevel", 
     "duplicate-code",
     "unnecessary-pass", 
-    "no-else-raise",
-    "no-else-return",
     "protected-access",
     "no-member",
     "invalid-name",

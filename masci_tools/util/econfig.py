@@ -63,15 +63,13 @@ def rek_econ(econfigstr: str) -> Optional[str]:
     split_econ = econfigstr.strip('[').split(']')
     if len(split_econ) == 1:
         return econfigstr
-    else:
-        rest = split_econ[1]
-        elem = split_econ[0]
-        econfig = get_econfig(elem)
-        if econfig is not None:
-            econ = econfig.replace(' |', '')
-            return rek_econ(econ + rest)  # for now
-        else:
-            return None
+    rest = split_econ[1]
+    elem = split_econ[0]
+    econfig = get_econfig(elem)
+    if econfig is not None:
+        econ = econfig.replace(' |', '')
+        return rek_econ(econ + rest)  # for now
+    return None
 
 
 def convert_fleur_config_to_econfig(fleurconf_str: str, keep_spin: bool = False) -> str:

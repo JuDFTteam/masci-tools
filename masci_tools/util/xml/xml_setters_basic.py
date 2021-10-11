@@ -244,31 +244,30 @@ def xml_create_tag(xmltree: Union[etree._Element, etree._ElementTree],
                     raise ValueError('Existing order does not correspond to tag_order list\n'
                                      f'Expected order: {tag_order}\n'
                                      f'Actual order: {existing_order}')
-                else:
-                    #Here we know that there are no unexpected tags in the order, so we can 'repair' the order
-                    warnings.warn('Existing order does not correspond to tag_order list. Correcting it\n'
-                                  f'Expected order: {tag_order}\n'
-                                  f'Actual order: {existing_order}')
+                #Here we know that there are no unexpected tags in the order, so we can 'repair' the order
+                warnings.warn('Existing order does not correspond to tag_order list. Correcting it\n'
+                              f'Expected order: {tag_order}\n'
+                              f'Actual order: {existing_order}')
 
-                    new_tag = copy.deepcopy(parent)
+                new_tag = copy.deepcopy(parent)
 
-                    #Remove all child nodes from new_tag (deepcopied so they are still on parent)
-                    for node in new_tag.iterchildren():
-                        new_tag.remove(node)
+                #Remove all child nodes from new_tag (deepcopied so they are still on parent)
+                for node in new_tag.iterchildren():
+                    new_tag.remove(node)
 
-                    for tag in tag_order:
-                        #Iterate over all children with the given tag on the parent and append to the new_tag
-                        for node in parent.iterchildren(tag=tag):
-                            new_tag.append(node)
+                for tag in tag_order:
+                    #Iterate over all children with the given tag on the parent and append to the new_tag
+                    for node in parent.iterchildren(tag=tag):
+                        new_tag.append(node)
 
-                    #Now replace the parent node with the reordered node
-                    parent_of_parent = parent.getparent()
-                    if parent_of_parent is None:
-                        raise ValueError('Could not find parent of node')
-                    index = parent_of_parent.index(parent)  #type:ignore
-                    parent_of_parent.remove(parent)
-                    parent_of_parent.insert(index, new_tag)
-                    parent = new_tag
+                #Now replace the parent node with the reordered node
+                parent_of_parent = parent.getparent()
+                if parent_of_parent is None:
+                    raise ValueError('Could not find parent of node')
+                index = parent_of_parent.index(parent)  #type:ignore
+                parent_of_parent.remove(parent)
+                parent_of_parent.insert(index, new_tag)
+                parent = new_tag
 
             for tag in reversed(behind_tags):
                 existing_tags = list(parent.iterchildren(tag=tag))
