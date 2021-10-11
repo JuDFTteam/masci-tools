@@ -10,6 +10,9 @@ from masci_tools.io.kkr_params import kkrparams
 from masci_tools.io.common_functions import open_general
 import tempfile
 import os
+from pathlib import Path
+
+DIR = Path(__file__).parent.resolve()
 
 # helper functions
 
@@ -492,7 +495,7 @@ class Test_read_inputfile(object):  # pylint: disable=missing-class-docstring
         p = kkrparams(params_type='kkr')
 
         # automatically read keywords from inpucard
-        p.read_keywords_from_inputcard(inputcard='../tests/files/kkr/import_calc_old_style/inputcard')
+        p.read_keywords_from_inputcard(inputcard=os.fspath(DIR / Path('files/kkr/import_calc_old_style/inputcard')))
         # convert some read-in stuff back from Ang. units to alat units
         rbl = p.get_value('<RBLEFT>')
         rbr = p.get_value('<RBRIGHT>')

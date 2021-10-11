@@ -104,7 +104,7 @@ def test_reverse_xinclude(load_inpxml):
     """
     Test of the reverse_xinclude function
     """
-    from masci_tools.util.xml.common_functions import eval_xpath, reverse_xinclude, clear_xml
+    from masci_tools.util.xml.common_functions import eval_xpath, clear_xml, reverse_xinclude
 
     xmltree, schema_dict = load_inpxml(CLEAR_XML_TEST_FILE)
 

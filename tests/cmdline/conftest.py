@@ -56,14 +56,14 @@ def fake_schemas_and_test_files(tmp_path):
 
     outputschema.write(os.fspath(tmp_path / 'FleurOutputSchema.xsd'), encoding='utf-8', pretty_print=True)
 
-    xml_file = Path('files/fleur/Max-R5/SiLOXML/files/inp.xml').resolve()
+    xml_file = Path(__file__).parent.resolve() / Path('../files/fleur/Max-R5/SiLOXML/files/inp.xml')
 
     xmltree = etree.parse(os.fspath(xml_file))
     root = xmltree.xpath('/fleurInput')[0]
     root.attrib['fleurInputVersion'] = '0.01'
     xmltree.write(os.fspath(tmp_path / 'inp.xml'), encoding='utf-8', pretty_print=True)
 
-    xml_file = Path('files/fleur/Max-R5/SiLOXML/files/out.xml').resolve()
+    xml_file = Path(__file__).parent.resolve() / Path('../files/fleur/Max-R5/SiLOXML/files/out.xml')
 
     xmltree = etree.parse(os.fspath(xml_file))
     root = xmltree.xpath('/fleurOutput')[0]

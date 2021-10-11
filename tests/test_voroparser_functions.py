@@ -5,6 +5,10 @@
 
 import pytest
 from masci_tools.io.parsers.voroparser_functions import parse_voronoi_output
+from pathlib import Path
+import os
+
+DIR = Path(__file__).parent.resolve()
 
 
 class Test_voronoi_parser_functions(object):
@@ -14,12 +18,12 @@ class Test_voronoi_parser_functions(object):
 
     grouping_ref = ['volumes_group', 'radii_atoms_group', 'code_info_group', 'core_states_group', 'cluster_info_group']
 
-    path0 = '../tests/files/voronoi/'
-    outfile = path0 + 'out_voronoi'
-    potfile = path0 + 'output.pot'
-    atominfo = path0 + 'atominfo.txt'
-    radii = path0 + 'radii.dat'
-    inputfile = path0 + 'inputcard'
+    path0 = DIR / Path('files/voronoi/')
+    outfile = os.fspath(path0 / 'out_voronoi')
+    potfile = os.fspath(path0 / 'output.pot')
+    atominfo = os.fspath(path0 / 'atominfo.txt')
+    radii = os.fspath(path0 / 'radii.dat')
+    inputfile = os.fspath(path0 / 'inputcard')
 
     def test_complete_voro_output(self, data_regression):
         """

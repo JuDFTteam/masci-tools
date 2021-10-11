@@ -127,4 +127,4 @@ testpaths = [
 cov-report="xml"
 mpl-generate-summary="html"
 mpl-results-path="tests/mpl-results"
-mpl=true
+addopts = '--mpl'

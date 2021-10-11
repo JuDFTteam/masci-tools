@@ -17,7 +17,7 @@ def test_fleur_dos():
     from masci_tools.cmdline.commands.plot import plot_fleur_banddos_dos
     from click.testing import CliRunner
 
-    TEST_FILE = Path('files/hdf5_reader/banddos_dos.hdf').resolve()
+    TEST_FILE = Path(__file__).parent.resolve() / Path('../files/hdf5_reader/banddos_dos.hdf')
     runner = CliRunner()
     args = [os.fspath(TEST_FILE), '--save']
     with runner.isolated_filesystem():
@@ -35,7 +35,7 @@ def test_fleur_dos_recipe():
     from masci_tools.cmdline.commands.plot import plot_fleur_banddos_dos
     from click.testing import CliRunner
 
-    TEST_FILE = Path('files/hdf5_reader/banddos_spinpol_dos.hdf').resolve()
+    TEST_FILE = Path(__file__).parent.resolve() / Path('../files/hdf5_reader/banddos_spinpol_dos.hdf')
     runner = CliRunner()
     args = [os.fspath(TEST_FILE), '--save', '--recipe', 'FleurJDOS', '--l_resolved', 'all', '--interstitial', 'False']
     with runner.isolated_filesystem():
@@ -54,7 +54,7 @@ def test_fleur_bands():
     from masci_tools.cmdline.commands.plot import plot_fleur_banddos_bands
     from click.testing import CliRunner
 
-    TEST_FILE = Path('files/hdf5_reader/banddos_bands.hdf').resolve()
+    TEST_FILE = Path(__file__).parent.resolve() / Path('../files/hdf5_reader/banddos_bands.hdf')
     runner = CliRunner()
     args = [os.fspath(TEST_FILE), '--save']
     with runner.isolated_filesystem():
@@ -72,7 +72,7 @@ def test_fleur_bands_recipe():
     from masci_tools.cmdline.commands.plot import plot_fleur_banddos_bands
     from click.testing import CliRunner
 
-    TEST_FILE = Path('files/hdf5_reader/banddos_bands.hdf').resolve()
+    TEST_FILE = Path(__file__).parent.resolve() / Path('../files/hdf5_reader/banddos_bands.hdf')
     runner = CliRunner()
     args = [os.fspath(TEST_FILE), '--save', '--weight', 'MT:1s']
     with runner.isolated_filesystem():

@@ -24,6 +24,7 @@ from typing import TYPE_CHECKING, List, Tuple, Union, Dict, Any, Optional
 if TYPE_CHECKING:
     from masci_tools.io.parsers.fleur import fleur_schema
 
+
 def get_fleur_modes(xmltree: Union[etree._Element, etree._ElementTree],
                     schema_dict: Union['fleur_schema.InputSchemaDict', 'fleur_schema.OutputSchemaDict'],
                     logger: Logger = None) -> Dict[str, Any]:

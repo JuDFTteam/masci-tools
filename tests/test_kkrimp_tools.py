@@ -4,25 +4,29 @@
 #import pytest
 from masci_tools.io.modify_potential import modify_potential
 from masci_tools.io.parsers.kkrimp_parser_functions import KkrimpParserFunctions
+from pathlib import Path
+import os
+
+DIR = Path(__file__).parent.resolve()
 
 
 class Test_modify_potential(object):
     """ Tests for the modify_potential class functions. """
 
     def test_shapefun_from_scoef(self, file_regression):
-        shapefun_path = '../tests/files/mod_pot/test2/shapefun'
-        scoefpath = '../tests/files/mod_pot/test2/scoef'
+        shapefun_path = os.fspath(DIR / Path('files/mod_pot/test2/shapefun'))
+        scoefpath = os.fspath(DIR / Path('files/mod_pot/test2/scoef'))
         atom2shapes = [1]
-        shapefun_new = '../tests/files/mod_pot/test2/shapefun_new'
+        shapefun_new = os.fspath(DIR / Path('files/mod_pot/test2/shapefun_new'))
         modify_potential().shapefun_from_scoef(scoefpath, shapefun_path, atom2shapes, shapefun_new)
         with open(shapefun_new, 'r') as f:
             txt = f.read().strip()
         file_regression.check(txt)
 
     def test_neworder_potential_no_replace(self, file_regression):
-        path = '../tests/files/mod_pot/test1/'
-        pot = path + 'pot'
-        out_pot = path + 'pot_new'
+        path = DIR / Path('files/mod_pot/test1/')
+        pot = os.fspath(path / 'pot')
+        out_pot = os.fspath(path / 'pot_new')
         neworder = [0, 1, 2]
         # test 1: neworder_potential standard
         modify_potential().neworder_potential(pot, out_pot, neworder)
@@ -31,10 +35,10 @@ class Test_modify_potential(object):
         file_regression.check(txt)
 
     def test_neworder_potential_with_replace(self, file_regression):
-        path = '../tests/files/mod_pot/test1/'
-        pot1 = path + 'out_potential'
-        pot2 = path + 'pot'
-        out_pot = path + 'pot_new'
+        path = DIR / Path('files/mod_pot/test1/')
+        pot1 = os.fspath(path / 'out_potential')
+        pot2 = os.fspath(path / 'pot')
+        out_pot = os.fspath(path / 'pot_new')
         neworder = [0, 1, 2]
         # test 2: neworder_potential with replace from second potential
         replace_newpos = [[0, 0], [2, 0]]
@@ -48,18 +52,18 @@ class Test_KkrimpParserFunctions(object):
     """ Tests for the KKRimp parser functions. """
 
     def test_parse_outfiles_full(self, data_regression):
-        path = 'files/kkrimp_parser/test1/'
+        path = DIR / Path('files/kkrimp_parser/test1/')
         files = {}
-        files['outfile'] = path + 'out_kkrimp'
-        files['out_log'] = path + 'out_log.000.txt'
-        files['out_pot'] = path + 'out_potential'
-        files['out_enersp_at'] = path + 'out_energysp_per_atom_eV'
-        files['out_enertot_at'] = path + 'out_energytotal_per_atom_eV'
-        files['out_timing'] = path + 'out_timing.000.txt'
-        files['kkrflex_llyfac'] = path + 'out_timing.000.txt'
-        files['kkrflex_angles'] = path + 'out_timing.000.txt'
-        files['out_spinmoms'] = path + 'out_magneticmoments.txt'
-        files['out_orbmoms'] = path + 'out_magneticmoments.txt'
+        files['outfile'] = os.fspath(path / 'out_kkrimp')
+        files['out_log'] = os.fspath(path / 'out_log.000.txt')
+        files['out_pot'] = os.fspath(path / 'out_potential')
+        files['out_enersp_at'] = os.fspath(path / 'out_energysp_per_atom_eV')
+        files['out_enertot_at'] = os.fspath(path / 'out_energytotal_per_atom_eV')
+        files['out_timing'] = os.fspath(path / 'out_timing.000.txt')
+        files['kkrflex_llyfac'] = os.fspath(path / 'out_timing.000.txt')
+        files['kkrflex_angles'] = os.fspath(path / 'out_timing.000.txt')
+        files['out_spinmoms'] = os.fspath(path / 'out_magneticmoments.txt')
+        files['out_orbmoms'] = os.fspath(path / 'out_magneticmoments.txt')
         s, m, o = KkrimpParserFunctions().parse_kkrimp_outputfile({}, files, debug=True)
         print('files:', files)
         print(f'\nsuccess?\n{s}\n')
@@ -71,15 +75,15 @@ class Test_KkrimpParserFunctions(object):
         data_regression.check(o)
 
     def test_parse_outfiles_full_filehandle(self, data_regression):
-        path = 'files/kkrimp_parser/test1/'
+        path = DIR / Path('files/kkrimp_parser/test1/')
         files = {}
 
-        with open(path + 'out_kkrimp') as out_kkrimp:
-            with open(path + 'out_log.000.txt') as out_log:
-                with open(path + 'out_potential') as out_potential:
-                    with open(path + 'out_energysp_per_atom_eV') as out_energysp_per_atom_eV:
-                        with open(path + 'out_energytotal_per_atom_eV') as out_energytotal_per_atom_eV:
-                            with open(path + 'out_timing.000.txt') as out_timing:
+        with open(path / 'out_kkrimp') as out_kkrimp:
+            with open(path / 'out_log.000.txt') as out_log:
+                with open(path / 'out_potential') as out_potential:
+                    with open(path / 'out_energysp_per_atom_eV') as out_energysp_per_atom_eV:
+                        with open(path / 'out_energytotal_per_atom_eV') as out_energytotal_per_atom_eV:
+                            with open(path / 'out_timing.000.txt') as out_timing:
                                 files['outfile'] = out_kkrimp
                                 files['out_log'] = out_log
                                 files['out_pot'] = out_potential

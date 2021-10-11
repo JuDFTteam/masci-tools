@@ -14,7 +14,7 @@ def test_fleur_inp_file():
     from masci_tools.cmdline.commands.parse import parse_inp_file
     from click.testing import CliRunner
 
-    TEST_FILE = Path('files/fleur/Max-R5/SiLOXML/files/inp.xml').resolve()
+    TEST_FILE = Path(__file__).parent.resolve() / Path('../files/fleur/Max-R5/SiLOXML/files/inp.xml')
     runner = CliRunner()
     args = [os.fspath(TEST_FILE)]
     result = runner.invoke(parse_inp_file, args)
@@ -31,7 +31,7 @@ def test_fleur_out_file():
     from masci_tools.cmdline.commands.parse import parse_out_file
     from click.testing import CliRunner
 
-    TEST_FILE = Path('files/fleur/Max-R5/SiLOXML/files/out.xml').resolve()
+    TEST_FILE = Path(__file__).parent.resolve() / Path('../files/fleur/Max-R5/SiLOXML/files/out.xml')
     runner = CliRunner()
     args = [os.fspath(TEST_FILE)]
     result = runner.invoke(parse_out_file, args)
@@ -48,7 +48,7 @@ def test_constants():
     from masci_tools.cmdline.commands.parse import parse_constants
     from click.testing import CliRunner
 
-    TEST_FILE = Path('files/fleur/Max-R5/SiLOXML/files/inp.xml').resolve()
+    TEST_FILE = Path(__file__).parent.resolve() / Path('../files/fleur/Max-R5/SiLOXML/files/inp.xml')
     runner = CliRunner()
     args = [os.fspath(TEST_FILE)]
     result = runner.invoke(parse_constants, args)
@@ -65,7 +65,7 @@ def test_fleur_modes():
     from masci_tools.cmdline.commands.parse import parse_fleur_modes
     from click.testing import CliRunner
 
-    TEST_FILE = Path('files/fleur/Max-R5/SiLOXML/files/inp.xml').resolve()
+    TEST_FILE = Path(__file__).parent.resolve() / Path('../files/fleur/Max-R5/SiLOXML/files/inp.xml')
     runner = CliRunner()
     args = [os.fspath(TEST_FILE)]
     result = runner.invoke(parse_fleur_modes, args)
@@ -82,7 +82,7 @@ def test_structure_data():
     from masci_tools.cmdline.commands.parse import parse_structure_data
     from click.testing import CliRunner
 
-    TEST_FILE = Path('files/fleur/Max-R5/SiLOXML/files/inp.xml').resolve()
+    TEST_FILE = Path(__file__).parent.resolve() / Path('../files/fleur/Max-R5/SiLOXML/files/inp.xml')
     runner = CliRunner()
     args = [os.fspath(TEST_FILE)]
     result = runner.invoke(parse_structure_data, args)
@@ -102,7 +102,7 @@ def test_cell():
     from masci_tools.cmdline.commands.parse import parse_cell_data
     from click.testing import CliRunner
 
-    TEST_FILE = Path('files/fleur/Max-R5/SiLOXML/files/inp.xml').resolve()
+    TEST_FILE = Path(__file__).parent.resolve() / Path('../files/fleur/Max-R5/SiLOXML/files/inp.xml')
     runner = CliRunner()
     args = [os.fspath(TEST_FILE)]
     result = runner.invoke(parse_cell_data, args)
@@ -120,7 +120,7 @@ def test_parameter_data():
     from masci_tools.cmdline.commands.parse import parse_parameter_data
     from click.testing import CliRunner
 
-    TEST_FILE = Path('files/fleur/Max-R5/SiLOXML/files/inp.xml').resolve()
+    TEST_FILE = Path(__file__).parent.resolve() / Path('../files/fleur/Max-R5/SiLOXML/files/inp.xml')
     runner = CliRunner()
     args = [os.fspath(TEST_FILE)]
     result = runner.invoke(parse_parameter_data, args)
@@ -138,7 +138,7 @@ def test_nkpts():
     from masci_tools.cmdline.commands.parse import parse_nkpts
     from click.testing import CliRunner
 
-    TEST_FILE = Path('files/fleur/Max-R5/SiLOXML/files/inp.xml').resolve()
+    TEST_FILE = Path(__file__).parent.resolve() / Path('../files/fleur/Max-R5/SiLOXML/files/inp.xml')
     runner = CliRunner()
     args = [os.fspath(TEST_FILE)]
     result = runner.invoke(parse_nkpts, args)
@@ -155,7 +155,7 @@ def test_kpoints():
     from masci_tools.cmdline.commands.parse import parse_kpoints_data
     from click.testing import CliRunner
 
-    TEST_FILE = Path('files/fleur/Max-R5/SiLOXML/files/inp.xml').resolve()
+    TEST_FILE = Path(__file__).parent.resolve() / Path('../files/fleur/Max-R5/SiLOXML/files/inp.xml')
     runner = CliRunner()
     args = [os.fspath(TEST_FILE)]
     result = runner.invoke(parse_kpoints_data, args)
@@ -174,7 +174,7 @@ def test_symmetry():
     from masci_tools.cmdline.commands.parse import parse_symmetry_information
     from click.testing import CliRunner
 
-    TEST_FILE = Path('files/fleur/Max-R5/SiLOXML/files/inp.xml').resolve()
+    TEST_FILE = Path(__file__).parent.resolve() / Path('../files/fleur/Max-R5/SiLOXML/files/inp.xml')
     runner = CliRunner()
     args = [os.fspath(TEST_FILE)]
     result = runner.invoke(parse_symmetry_information, args)
@@ -193,7 +193,7 @@ def test_relax_info():
     from masci_tools.cmdline.commands.parse import parse_relaxation_data
     from click.testing import CliRunner
 
-    TEST_FILE = Path('files/fleur/Max-R5/GaAsMultiUForceXML/files/relax.xml').resolve()
+    TEST_FILE = Path(__file__).parent.resolve() / Path('../files/fleur/Max-R5/GaAsMultiUForceXML/files/relax.xml')
     runner = CliRunner()
     args = [os.fspath(TEST_FILE)]
     with pytest.warns(UserWarning):
@@ -212,7 +212,7 @@ def test_attrib():
     from masci_tools.cmdline.commands.parse import parse_attrib
     from click.testing import CliRunner
 
-    TEST_FILE = Path('files/fleur/Max-R5/SiLOXML/files/inp.xml').resolve()
+    TEST_FILE = Path(__file__).parent.resolve() / Path('../files/fleur/Max-R5/SiLOXML/files/inp.xml')
     runner = CliRunner()
     args = [os.fspath(TEST_FILE), '--name', 'kmax']
     result = runner.invoke(parse_attrib, args)
@@ -236,7 +236,7 @@ def test_text():
     from masci_tools.cmdline.commands.parse import parse_text
     from click.testing import CliRunner
 
-    TEST_FILE = Path('files/fleur/Max-R5/SiLOXML/files/inp.xml').resolve()
+    TEST_FILE = Path(__file__).parent.resolve() / Path('../files/fleur/Max-R5/SiLOXML/files/inp.xml')
     runner = CliRunner()
     args = [os.fspath(TEST_FILE), '--name', 'kpoint']
     result = runner.invoke(parse_text, args)
@@ -260,7 +260,7 @@ def test_all_attribs():
     from masci_tools.cmdline.commands.parse import parse_all_attribs
     from click.testing import CliRunner
 
-    TEST_FILE = Path('files/fleur/Max-R5/SiLOXML/files/inp.xml').resolve()
+    TEST_FILE = Path(__file__).parent.resolve() / Path('../files/fleur/Max-R5/SiLOXML/files/inp.xml')
     runner = CliRunner()
     args = [os.fspath(TEST_FILE), '--name', 'cutoffs']
     result = runner.invoke(parse_all_attribs, args)
@@ -284,7 +284,7 @@ def test_parent_attribs():
     from masci_tools.cmdline.commands.parse import parse_parent_attribs
     from click.testing import CliRunner
 
-    TEST_FILE = Path('files/fleur/Max-R5/SiLOXML/files/inp.xml').resolve()
+    TEST_FILE = Path(__file__).parent.resolve() / Path('../files/fleur/Max-R5/SiLOXML/files/inp.xml')
     runner = CliRunner()
     args = [os.fspath(TEST_FILE), '--name', 'kpoint']
     result = runner.invoke(parse_parent_attribs, args)
@@ -308,7 +308,7 @@ def test_tag_exists():
     from masci_tools.cmdline.commands.parse import parse_tag_exists
     from click.testing import CliRunner
 
-    TEST_FILE = Path('files/fleur/Max-R5/SiLOXML/files/inp.xml').resolve()
+    TEST_FILE = Path(__file__).parent.resolve() / Path('../files/fleur/Max-R5/SiLOXML/files/inp.xml')
     runner = CliRunner()
     args = [os.fspath(TEST_FILE), '--name', 'kpoint']
     result = runner.invoke(parse_tag_exists, args)
@@ -332,7 +332,7 @@ def test_number_nodes():
     from masci_tools.cmdline.commands.parse import parse_number_nodes
     from click.testing import CliRunner
 
-    TEST_FILE = Path('files/fleur/Max-R5/SiLOXML/files/inp.xml').resolve()
+    TEST_FILE = Path(__file__).parent.resolve() / Path('../files/fleur/Max-R5/SiLOXML/files/inp.xml')
     runner = CliRunner()
     args = [os.fspath(TEST_FILE), '--name', 'kpoint']
     result = runner.invoke(parse_number_nodes, args)

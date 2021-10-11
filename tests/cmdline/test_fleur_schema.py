@@ -13,7 +13,7 @@ def test_validate_input_valid():
     from masci_tools.cmdline.commands.fleur_schema import validate_inpxmlfile
     from click.testing import CliRunner
 
-    TEST_FILE = Path('files/fleur/Max-R5/SiLOXML/files/inp.xml').resolve()
+    TEST_FILE = Path(__file__).parent.resolve() / Path('../files/fleur/Max-R5/SiLOXML/files/inp.xml')
     runner = CliRunner()
     args = [os.fspath(TEST_FILE)]
     result = runner.invoke(validate_inpxmlfile, args)
@@ -30,7 +30,7 @@ def test_validate_input_invalid():
     from masci_tools.cmdline.commands.fleur_schema import validate_inpxmlfile
     from click.testing import CliRunner
 
-    TEST_FILE = Path('files/fleur/aiida_fleur/nonvalid_inpxml/crab/inp.xml').resolve()
+    TEST_FILE = Path(__file__).parent.resolve() / Path('../files/fleur/aiida_fleur/nonvalid_inpxml/crab/inp.xml')
     runner = CliRunner()
     args = [os.fspath(TEST_FILE)]
     result = runner.invoke(validate_inpxmlfile, args)
@@ -47,7 +47,7 @@ def test_validate_output_valid():
     from masci_tools.cmdline.commands.fleur_schema import validate_outxmlfile
     from click.testing import CliRunner
 
-    TEST_FILE = Path('files/fleur/Max-R5/SiLOXML/files/out.xml').resolve()
+    TEST_FILE = Path(__file__).parent.resolve() / Path('../files/fleur/Max-R5/SiLOXML/files/out.xml')
     runner = CliRunner()
     args = [os.fspath(TEST_FILE)]
     result = runner.invoke(validate_outxmlfile, args)
@@ -64,7 +64,7 @@ def test_validate_output_invalid():
     from masci_tools.cmdline.commands.fleur_schema import validate_outxmlfile
     from click.testing import CliRunner
 
-    TEST_FILE = Path('files/fleur/broken_out_xml/simple_validation_error.xml').resolve()
+    TEST_FILE = Path(__file__).parent.resolve() / Path('../files/fleur/broken_out_xml/simple_validation_error.xml')
     runner = CliRunner()
     args = [os.fspath(TEST_FILE)]
     result = runner.invoke(validate_outxmlfile, args)

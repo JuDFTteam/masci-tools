@@ -8,6 +8,9 @@ from masci_tools.io.common_functions import (interpolate_dos, get_alat_from_brav
                                              vec_to_angles, get_version_info, get_corestates_from_potential,
                                              get_highest_core_state, get_ef_from_potfile, open_general,
                                              convert_to_pystd)
+from pathlib import Path
+
+DIR = Path(__file__).parent.resolve()
 
 
 class Test_common_functions(object):
@@ -16,7 +19,7 @@ class Test_common_functions(object):
     """
 
     def test_open_general(self):
-        path = '../tests/files/kkr/kkr_run_slab_nosoc/out_kkr'
+        path = DIR / Path('files/kkr/kkr_run_slab_nosoc/out_kkr')
         with open_general(path) as f:
             l1 = len(f.readlines())
             with open_general(f) as f2:
@@ -25,22 +28,22 @@ class Test_common_functions(object):
         assert l2 > 0
 
     def test_interpolate_dos(self):
-        d0 = '../tests/files/interpol/complex.dos'
+        d0 = DIR / Path('files/interpol/complex.dos')
         ef, dos, dos_int = interpolate_dos(d0, return_original=True)
         assert ef == 0.5256
-        dos_ref = np.loadtxt('../tests/files/interpol/new3.dos')
+        dos_ref = np.loadtxt(DIR / Path('files/interpol/new3.dos'))
         assert (dos_int.reshape(np.shape(dos_ref)) - dos_ref).max() < 10**-4
-        assert (dos == np.load('../tests/files/interpol/ref_dos.npy')).all()
+        assert (dos == np.load(DIR / Path('files/interpol/ref_dos.npy'))).all()
 
     def test_interpolate_dos_filehandle(self):
-        with open('../tests/files/interpol/complex.dos'):
+        with open(DIR / Path('files/interpol/complex.dos')):
             pass
-        d0 = '../tests/files/interpol/complex.dos'
+        d0 = DIR / Path('files/interpol/complex.dos')
         ef, dos, dos_int = interpolate_dos(d0, return_original=True)
         assert ef == 0.5256
-        dos_ref = np.loadtxt('../tests/files/interpol/new3.dos')
+        dos_ref = np.loadtxt(DIR / Path('files/interpol/new3.dos'))
         assert (dos_int.reshape(np.shape(dos_ref)) - dos_ref).max() < 10**-4
-        assert (dos == np.load('../tests/files/interpol/ref_dos.npy')).all()
+        assert (dos == np.load(DIR / Path('files/interpol/ref_dos.npy'))).all()
 
     def test_get_alat_from_bravais(self):
         bravais = np.array([[0.0, 0.5, 0.5], [0.5, 0.0, 0.5], [0.5, 0.5, 0.0]])
@@ -48,7 +51,7 @@ class Test_common_functions(object):
         assert abs(alat - np.sqrt(2) / 2) < 10**-10
 
     def test_search_string(self):
-        with open('files/kkr/kkr_run_dos_output/output.0.txt', 'r') as f:
+        with open(DIR / Path('files/kkr/kkr_run_dos_output/output.0.txt'), 'r') as f:
             txt = f.readlines()
         alatline = search_string('ALAT', txt)
         noline = search_string('ALT', txt)
@@ -73,11 +76,11 @@ class Test_common_functions(object):
         assert (m, t, p) == (2, np.pi / 4., np.pi / 4.)
 
     def test_get_version_info(self):
-        version = get_version_info('files/kkr/kkr_run_dos_output/output.0.txt')
+        version = get_version_info(DIR / Path('files/kkr/kkr_run_dos_output/output.0.txt'))
         assert version == ('v2.2-22-g4f8f5ff', 'openmp-mac', 'kkrjm_v2.2-22-g4f8f5ff_openmp-mac_20171214102522')
 
     def test_get_corestates_from_potential(self):
-        corestates = get_corestates_from_potential('files/kkr/kkr_run_dos_output/out_potential')
+        corestates = get_corestates_from_potential(DIR / Path('files/kkr/kkr_run_dos_output/out_potential'))
         ref = ([8, 8, 8, 8], [
             np.array([
                 -1866.96096949, -275.8348967, -50.32089052, -6.5316706, -248.12312965, -41.13200278, -3.832432,
@@ -115,7 +118,7 @@ class Test_common_functions(object):
         assert out == (1, -3.832432, '4p')
 
     def test_get_ef_from_potfile(self):
-        ef = get_ef_from_potfile('files/kkr/kkr_run_dos_output/out_potential')
+        ef = get_ef_from_potfile(DIR / Path('files/kkr/kkr_run_dos_output/out_potential'))
         assert ef == 1.05
 
     def test_convert_to_pystd(self):

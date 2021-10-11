@@ -24,6 +24,7 @@ S = TypeVar('S')
 T = TypeVar('T')
 """Generic Type"""
 
+
 class CaseInsensitiveDict(LockableDict[S, T]):
     """
     Dict with case insensitive lookup. Used in Schema dicts to make finding
