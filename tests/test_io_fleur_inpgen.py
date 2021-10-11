@@ -451,7 +451,7 @@ def test_get_parameter_write_inpgen_roundtrip(file_regression, load_inpxml):
     xmltree, schema_dict = load_inpxml(TESTFILE)
 
     params = get_parameter_data(xmltree, schema_dict)
-    atoms, cell, pbc = get_structure_data(xmltree, schema_dict, site_namedtuple=True)
+    atoms, cell, pbc = get_structure_data(xmltree, schema_dict)
 
     with tempfile.NamedTemporaryFile('r') as tmp:
         write_inpgen_file(cell, atoms, input_params=params, file=tmp.name)

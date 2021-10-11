@@ -98,7 +98,7 @@ def test_get_structure_data(load_inpxml, inpxmlfilepath):
 
     xmltree, schema_dict = load_inpxml(inpxmlfilepath)
 
-    atoms, cell, pbc = get_structure_data(xmltree, schema_dict, site_namedtuple=True)
+    atoms, cell, pbc = get_structure_data(xmltree, schema_dict)
 
     assert isinstance(atoms, list)
     assert len(atoms) != 0
@@ -227,7 +227,7 @@ def test_get_structure_film(load_inpxml, data_regression):
 
     xmltree, schema_dict = load_inpxml(TEST_FILM_INPXML_PATH)
 
-    atoms, cell, pbc = get_structure_data(xmltree, schema_dict, site_namedtuple=True)
+    atoms, cell, pbc = get_structure_data(xmltree, schema_dict)
 
     data_regression.check({
         'atoms': convert_to_pystd([dict(atom._asdict()) for atom in atoms]),
@@ -244,7 +244,7 @@ def test_get_structure_film_old_sites(load_inpxml, data_regression):
     xmltree, schema_dict = load_inpxml(TEST_FILM_INPXML_PATH)
 
     with pytest.deprecated_call():
-        atoms, cell, pbc = get_structure_data(xmltree, schema_dict)
+        atoms, cell, pbc = get_structure_data(xmltree, schema_dict, site_namedtuple=False)
 
     data_regression.check({'atoms': convert_to_pystd(atoms), 'cell': convert_to_pystd(cell), 'pbc': pbc})
 
@@ -256,7 +256,7 @@ def test_get_structure_bulk(load_inpxml, data_regression):
 
     xmltree, schema_dict = load_inpxml(TEST_BULK_INPXML_PATH)
 
-    atoms, cell, pbc = get_structure_data(xmltree, schema_dict, site_namedtuple=True)
+    atoms, cell, pbc = get_structure_data(xmltree, schema_dict)
 
     data_regression.check({
         'atoms': convert_to_pystd([dict(atom._asdict()) for atom in atoms]),
@@ -272,7 +272,7 @@ def test_get_structure_no_relaxed(load_inpxml, data_regression):
 
     xmltree, schema_dict = load_inpxml(TEST_WITH_RELAX_INPXML_PATH)
 
-    atoms, cell, pbc = get_structure_data(xmltree, schema_dict, include_relaxations=False, site_namedtuple=True)
+    atoms, cell, pbc = get_structure_data(xmltree, schema_dict, include_relaxations=False)
 
     data_regression.check({
         'atoms': convert_to_pystd([dict(atom._asdict()) for atom in atoms]),
@@ -288,7 +288,7 @@ def test_get_structure_relaxed(load_inpxml, data_regression):
 
     xmltree, schema_dict = load_inpxml(TEST_WITH_RELAX_INPXML_PATH)
 
-    atoms, cell, pbc = get_structure_data(xmltree, schema_dict, site_namedtuple=True)
+    atoms, cell, pbc = get_structure_data(xmltree, schema_dict)
 
     data_regression.check({
         'atoms': convert_to_pystd([dict(atom._asdict()) for atom in atoms]),
@@ -304,7 +304,7 @@ def test_get_structure_norm_kinds(load_inpxml, data_regression):
 
     xmltree, schema_dict = load_inpxml(TEST_NON_STANDARD_KIND_INPXML_PATH)
 
-    atoms, cell, pbc = get_structure_data(xmltree, schema_dict, site_namedtuple=True)
+    atoms, cell, pbc = get_structure_data(xmltree, schema_dict)
 
     data_regression.check({
         'atoms': convert_to_pystd([dict(atom._asdict()) for atom in atoms]),
@@ -532,7 +532,7 @@ def test_get_structure_max4(load_inpxml, data_regression):
 
     xmltree, schema_dict = load_inpxml(TEST_MAX4_INPXML_PATH)
 
-    atoms, cell, pbc = get_structure_data(xmltree, schema_dict, site_namedtuple=True)
+    atoms, cell, pbc = get_structure_data(xmltree, schema_dict)
 
     data_regression.check({
         'atoms': convert_to_pystd([dict(atom._asdict()) for atom in atoms]),

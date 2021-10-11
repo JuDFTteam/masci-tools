@@ -653,7 +653,7 @@ def get_parameter_data(xmltree: Union[etree._Element, etree._ElementTree],
 def get_structure_data(xmltree: Union[etree._Element, etree._ElementTree],
                        schema_dict: Union['fleur_schema.InputSchemaDict', 'fleur_schema.OutputSchemaDict'],
                        include_relaxations: bool = True,
-                       site_namedtuple: bool = False,
+                       site_namedtuple: bool = True,
                        convert_to_angstroem: bool = True,
                        normalize_kind_name: bool = True,
                        logger: Logger = None) -> Tuple[List[AtomSiteProperties], np.ndarray, Tuple[bool, bool, bool]]:

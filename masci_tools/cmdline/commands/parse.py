@@ -108,7 +108,7 @@ def parse_structure_data(xml_file):
 
     xmltree, schema_dict = _load_xml_file(xml_file)
 
-    atoms, cell, pbc = get_structure_data(xmltree, schema_dict, site_namedtuple=True)
+    atoms, cell, pbc = get_structure_data(xmltree, schema_dict)
 
     echo.echo_info('Atoms found:')
     echo.echo_formatted_list(atoms, ['symbol', 'kind', 'position'])
