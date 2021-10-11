@@ -2,7 +2,6 @@
 """
 Tests of the fleur_inpgen module
 """
-from pathlib import Path
 import tempfile
 import numpy as np
 from masci_tools.io.common_functions import convert_to_pystd
@@ -446,9 +445,7 @@ def test_get_parameter_write_inpgen_roundtrip(file_regression, load_inpxml):
     from masci_tools.io.fleur_inpgen import write_inpgen_file
     from masci_tools.util.xml.xml_getters import get_parameter_data, get_structure_data
 
-    TESTFILE = Path(__file__).parent.resolve() / Path('files/fleur/Max-R5/SiLOXML/files/inp.xml')
-
-    xmltree, schema_dict = load_inpxml(TESTFILE)
+    xmltree, schema_dict = load_inpxml('fleur/Max-R5/SiLOXML/files/inp.xml', absolute=False)
 
     params = get_parameter_data(xmltree, schema_dict)
     atoms, cell, pbc = get_structure_data(xmltree, schema_dict)
