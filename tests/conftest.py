@@ -4,28 +4,47 @@ Configurations for masci_tools tests
 """
 import pytest
 from pprint import pprint
+from pathlib import Path
+import os
 
 pytest_plugins = ('masci_tools.testing.bokeh',)
 
+CONFTEST_LOCATION = Path(__file__).parent.resolve()
 
+
+@pytest.fixture
+def test_file(relative_path):
+    """
+    Return path to file in the tests/files folder
+    Returns filesystem path
+    """
+    return os.fspath(CONFTEST_LOCATION / Path(relative_path))
+
+
+@pytest.mark.usefixtures('test_file')
 @pytest.fixture
 def load_inpxml():
     """Returns the etree and schema_dict generator"""
 
-    def _load_inpxml(path):
+    def _load_inpxml(path, absolute=True):
         import masci_tools.io.io_fleurxml as fleur_io
+        if not absolute:
+            path = test_file(path)
         with open(path, 'r', encoding='utf-8') as inpxmlfile:
             return fleur_io.load_inpxml(inpxmlfile)
 
     return _load_inpxml
 
 
+@pytest.mark.usefixtures('test_file')
 @pytest.fixture
 def load_outxml():
     """Returns the etree and schema_dict generator"""
 
-    def _load_outxml(path):
+    def _load_outxml(path, absolute=True):
         import masci_tools.io.io_fleurxml as fleur_io
+        if not absolute:
+            path = test_file(path)
         with open(path, 'r', encoding='utf-8') as outxmlfile:
             return fleur_io.load_outxml(outxmlfile)
 
