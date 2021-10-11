@@ -4,7 +4,6 @@ Test of the utility functions for the schema dictionaries
 both path finding and easy information extraction
 """
 import pytest
-import os
 import numpy as np
 from masci_tools.io.parsers.fleur.fleur_schema import InputSchemaDict, OutputSchemaDict, NoUniquePathFound, NoPathFound
 from masci_tools.util.constants import FLEUR_DEFINED_CONSTANTS
@@ -13,34 +12,24 @@ import logging
 
 LOGGER = logging.getLogger(__name__)
 
-#Load different schema versions (for now only input schemas)
-schema_dict_34 = InputSchemaDict.fromVersion('0.34')
-schema_dict_27 = InputSchemaDict.fromVersion('0.27')
-schema_dict_31 = InputSchemaDict.fromVersion('0.31')
-outschema_dict_34 = OutputSchemaDict.fromVersion('0.34')
-outschema_dict_31 = OutputSchemaDict.fromVersion('0.31')
-
-FILE_PATH = os.path.dirname(os.path.abspath(__file__))
-TEST_INPXML_PATH = os.path.join(FILE_PATH, 'files/fleur/Max-R5/FePt_film_SSFT_LO/files/inp2.xml')
-TEST_OUTXML_PATH = os.path.join(FILE_PATH, 'files/fleur/Max-R5/GaAsMultiUForceXML/files/out.xml')
-TEST_OUTXML_PATH2 = os.path.join(FILE_PATH, 'files/fleur/Max-R5/FePt_film_SSFT_LO/files/out.xml')
+TEST_INPXML_PATH = 'fleur/Max-R5/FePt_film_SSFT_LO/files/inp2.xml'
+TEST_OUTXML_PATH = 'fleur/Max-R5/GaAsMultiUForceXML/files/out.xml'
+TEST_OUTXML_PATH2 = 'fleur/Max-R5/FePt_film_SSFT_LO/files/out.xml'
 
 
-def test_read_constants():
+def test_read_constants(load_inpxml, load_outxml):
     """
     Test of the read_constants function
     """
-    from lxml import etree
     from masci_tools.util.schema_dict_util import read_constants
 
-    VALID_INP_CONSTANTS_PATH = os.path.join(FILE_PATH, 'files/fleur/inp_with_constants.xml')
-    INVALID_INP_CONSTANTS_PATH = os.path.join(FILE_PATH, 'files/fleur/inp_invalid_constants.xml')
-    VALID_OUT_CONSTANTS_PATH = os.path.join(FILE_PATH, 'files/fleur/out_with_constants.xml')
+    VALID_INP_CONSTANTS_PATH = 'fleur/inp_with_constants.xml'
+    INVALID_INP_CONSTANTS_PATH = 'fleur/inp_invalid_constants.xml'
+    VALID_OUT_CONSTANTS_PATH = 'fleur/out_with_constants.xml'
 
-    parser = etree.XMLParser(attribute_defaults=True, recover=False, encoding='utf-8')
-    xmltree = etree.parse(VALID_INP_CONSTANTS_PATH, parser)
-    outxmltree = etree.parse(VALID_OUT_CONSTANTS_PATH, parser)
-    invalidxmltree = etree.parse(INVALID_INP_CONSTANTS_PATH, parser)
+    xmltree, schema_dict = load_inpxml(VALID_INP_CONSTANTS_PATH, absolute=False)
+    invalidxmltree, _ = load_inpxml(INVALID_INP_CONSTANTS_PATH, absolute=False)
+    outxmltree, outschema_dict = load_outxml(VALID_OUT_CONSTANTS_PATH, absolute=False)
 
     root1 = xmltree.getroot()
     root2 = outxmltree.getroot()
@@ -59,28 +48,24 @@ def test_read_constants():
         'Ry': 0.5,
         'eV': 0.03674932217565499
     }
-    result = read_constants(root1, schema_dict_34)
+    result = read_constants(root1, schema_dict)
     assert result == expected_constants
 
-    result = read_constants(root2, outschema_dict_34)
+    result = read_constants(root2, outschema_dict)
     assert result == expected_constants
 
     with pytest.raises(KeyError, match='Ambiguous definition of constant Pi'):
-        result = read_constants(root3, schema_dict_34)
+        result = read_constants(root3, schema_dict)
 
 
-def test_evaluate_attribute(caplog):
+def test_evaluate_attribute(caplog, load_inpxml, load_outxml):
     """
     Test of the evaluate_attribute function
     """
-    from lxml import etree
     from masci_tools.util.schema_dict_util import evaluate_attribute
 
-    schema_dict = schema_dict_34
-
-    parser = etree.XMLParser(attribute_defaults=True, recover=False, encoding='utf-8')
-    xmltree = etree.parse(TEST_INPXML_PATH, parser)
-    outxmltree = etree.parse(TEST_OUTXML_PATH2, parser)
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    outxmltree, outschema_dict = load_outxml(TEST_OUTXML_PATH2, absolute=False)
 
     outroot = outxmltree.getroot()
     root = xmltree.getroot()
@@ -123,7 +108,7 @@ def test_evaluate_attribute(caplog):
 
     assert pytest.approx(
         evaluate_attribute(outroot,
-                           outschema_dict_34,
+                           outschema_dict,
                            'beta',
                            FLEUR_DEFINED_CONSTANTS,
                            exclude=['unique'],
@@ -133,14 +118,14 @@ def test_evaluate_attribute(caplog):
     iteration = outroot.xpath('//iteration')[0]
 
     assert evaluate_attribute(iteration,
-                              outschema_dict_34,
+                              outschema_dict,
                               'units',
                               FLEUR_DEFINED_CONSTANTS,
                               tag_name='Forcetheorem_SSDISP') == 'Htr'
 
     with pytest.raises(NoPathFound):
         evaluate_attribute(iteration,
-                           outschema_dict_34,
+                           outschema_dict,
                            'TEST',
                            FLEUR_DEFINED_CONSTANTS,
                            tag_name='Forcetheorem_SSDISP')
@@ -157,18 +142,14 @@ def test_evaluate_attribute(caplog):
     assert 'No values found for attribute radius' in caplog.text
 
 
-def test_evaluate_text(caplog):
+def test_evaluate_text(caplog, load_inpxml, load_outxml):
     """
     Test of the evaluate_text function
     """
-    from lxml import etree
     from masci_tools.util.schema_dict_util import evaluate_text
 
-    schema_dict = schema_dict_34
-
-    parser = etree.XMLParser(attribute_defaults=True, recover=False, encoding='utf-8')
-    xmltree = etree.parse(TEST_INPXML_PATH, parser)
-    outxmltree = etree.parse(TEST_OUTXML_PATH2, parser)
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    outxmltree, outschema_dict = load_outxml(TEST_OUTXML_PATH2, absolute=False)
 
     outroot = outxmltree.getroot()
     root = xmltree.getroot()
@@ -180,7 +161,7 @@ def test_evaluate_text(caplog):
         assert pytest.approx(val) == result
 
     positions = evaluate_text(root, schema_dict, 'filmPos', FLEUR_DEFINED_CONSTANTS)
-    positions_out = evaluate_text(outroot, outschema_dict_34, 'filmPos', FLEUR_DEFINED_CONSTANTS)
+    positions_out = evaluate_text(outroot, outschema_dict, 'filmPos', FLEUR_DEFINED_CONSTANTS)
 
     expected = [[0.0, 0.0, -0.9964250044], [0.5, 0.5, 0.9964250044]]
     for val, result in zip(positions, expected):
@@ -216,18 +197,14 @@ def test_evaluate_text(caplog):
     assert 'No text found for tag magnetism' in caplog.text
 
 
-def test_evaluate_tag(caplog):
+def test_evaluate_tag(caplog, load_inpxml, load_outxml):
     """
     Test of the evaluate_tag function
     """
-    from lxml import etree
     from masci_tools.util.schema_dict_util import evaluate_tag
 
-    schema_dict = schema_dict_34
-
-    parser = etree.XMLParser(attribute_defaults=True, recover=False, encoding='utf-8')
-    xmltree = etree.parse(TEST_INPXML_PATH, parser)
-    outxmltree = etree.parse(TEST_OUTXML_PATH2, parser)
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    outxmltree, outschema_dict = load_outxml(TEST_OUTXML_PATH2, absolute=False)
 
     outroot = outxmltree.getroot()
     root = xmltree.getroot()
@@ -263,7 +240,7 @@ def test_evaluate_tag(caplog):
     mtRadii = evaluate_tag(root, schema_dict, 'mtSphere', FLEUR_DEFINED_CONSTANTS, contains='species')
     assert mtRadii == expected
 
-    mtRadii = evaluate_tag(outroot, outschema_dict_34, 'mtSphere', FLEUR_DEFINED_CONSTANTS, contains='species')
+    mtRadii = evaluate_tag(outroot, outschema_dict, 'mtSphere', FLEUR_DEFINED_CONSTANTS, contains='species')
     assert mtRadii == expected
 
     expected = {
@@ -334,7 +311,7 @@ def test_evaluate_tag(caplog):
     assert species == expected
 
 
-def test_single_value_tag(caplog):
+def test_single_value_tag(caplog, load_outxml):
     """
     Test of the evaluate_single_value_tag function
     """
@@ -342,10 +319,7 @@ def test_single_value_tag(caplog):
     from masci_tools.util.schema_dict_util import evaluate_single_value_tag
     from masci_tools.util.xml.common_functions import eval_xpath
 
-    schema_dict = outschema_dict_34
-
-    parser = etree.XMLParser(attribute_defaults=True, recover=False, encoding='utf-8')
-    xmltree = etree.parse(TEST_OUTXML_PATH, parser)
+    xmltree, schema_dict = load_outxml(TEST_OUTXML_PATH, absolute=False)
     root = xmltree.getroot()
 
     iteration_xpath = schema_dict.tag_xpath('iteration')
@@ -400,15 +374,13 @@ def test_single_value_tag(caplog):
     assert totalCharge == expected
 
 
-def test_evaluate_parent_tag():
+def test_evaluate_parent_tag(load_outxml):
     """
     Test of the evaluate_parent_tag function
     """
-    from lxml import etree
     from masci_tools.util.schema_dict_util import evaluate_parent_tag
 
-    parser = etree.XMLParser(attribute_defaults=True, recover=False, encoding='utf-8')
-    xmltree = etree.parse(TEST_OUTXML_PATH, parser)
+    xmltree, schema_dict = load_outxml(TEST_OUTXML_PATH, absolute=False)
     root = xmltree.getroot()
 
     expected = {
@@ -416,13 +388,13 @@ def test_evaluate_parent_tag():
         'element': ['Ga', 'Ga', 'As', 'As'],
         'name': ['Ga-1', 'Ga-1', 'As-2', 'As-2']
     }
-    ldaU_species = evaluate_parent_tag(root, outschema_dict_34, 'ldaU', FLEUR_DEFINED_CONSTANTS, contains='species')
+    ldaU_species = evaluate_parent_tag(root, schema_dict, 'ldaU', FLEUR_DEFINED_CONSTANTS, contains='species')
     pprint(ldaU_species)
     assert ldaU_species == expected
 
     expected = {'atomicNumber': [31, 31, 33, 33], 'name': ['Ga-1', 'Ga-1', 'As-2', 'As-2']}
     ldaU_species = evaluate_parent_tag(root,
-                                       outschema_dict_34,
+                                       schema_dict,
                                        'ldaU',
                                        FLEUR_DEFINED_CONSTANTS,
                                        contains='species',
@@ -432,7 +404,7 @@ def test_evaluate_parent_tag():
 
     expected = {'name': ['Ga-1', 'Ga-1', 'As-2', 'As-2']}
     ldaU_species = evaluate_parent_tag(root,
-                                       outschema_dict_34,
+                                       schema_dict,
                                        'ldaU',
                                        FLEUR_DEFINED_CONSTANTS,
                                        contains='species',
@@ -442,18 +414,15 @@ def test_evaluate_parent_tag():
     assert ldaU_species == expected
 
 
-def test_tag_exists():
+def test_tag_exists(load_inpxml, load_outxml):
     """
     Test of the tag_exists function
     """
-    from lxml import etree
     from masci_tools.util.schema_dict_util import tag_exists
 
-    schema_dict = schema_dict_34
 
-    parser = etree.XMLParser(attribute_defaults=True, recover=False, encoding='utf-8')
-    xmltree = etree.parse(TEST_INPXML_PATH, parser)
-    outxmltree = etree.parse(TEST_OUTXML_PATH2, parser)
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    outxmltree, outschema_dict = load_outxml(TEST_OUTXML_PATH2, absolute=False)
 
     outroot = outxmltree.getroot()
     root = xmltree.getroot()
@@ -464,8 +433,8 @@ def test_tag_exists():
     assert not tag_exists(root, schema_dict, 'ldaU', contains='species')
     assert tag_exists(root, schema_dict, 'ldaU', not_contains='atom')
 
-    assert not tag_exists(outroot, outschema_dict_34, 'ldaU', contains='species')
-    assert tag_exists(outroot, outschema_dict_34, 'ldaU', not_contains='atom')
+    assert not tag_exists(outroot, outschema_dict, 'ldaU', contains='species')
+    assert tag_exists(outroot, outschema_dict, 'ldaU', not_contains='atom')
 
     with pytest.raises(NoUniquePathFound):
         tag_exists(root, schema_dict, 'ldaU')
@@ -473,18 +442,14 @@ def test_tag_exists():
         tag_exists(root, schema_dict, 'ldaU', contains='group')
 
 
-def test_attrib_exists():
+def test_attrib_exists(load_inpxml, load_outxml):
     """
     Test of the tag_exists function
     """
-    from lxml import etree
     from masci_tools.util.schema_dict_util import attrib_exists
 
-    schema_dict = schema_dict_34
-
-    parser = etree.XMLParser(attribute_defaults=True, recover=False, encoding='utf-8')
-    xmltree = etree.parse(TEST_INPXML_PATH, parser)
-    outxmltree = etree.parse(TEST_OUTXML_PATH2, parser)
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    outxmltree, outschema_dict = load_outxml(TEST_OUTXML_PATH2, absolute=False)
 
     outroot = outxmltree.getroot()
     root = xmltree.getroot()
@@ -493,7 +458,7 @@ def test_attrib_exists():
     assert attrib_exists(root, schema_dict, 'jspins')
 
     assert not attrib_exists(root, schema_dict, 'radius', contains='atomGroup')
-    assert not attrib_exists(outroot, outschema_dict_34, 'radius', contains='atomGroup')
+    assert not attrib_exists(outroot, outschema_dict, 'radius', contains='atomGroup')
 
     with pytest.raises(NoUniquePathFound):
         attrib_exists(root, schema_dict, 'spinf')
@@ -501,18 +466,14 @@ def test_attrib_exists():
         attrib_exists(root, schema_dict, 'spinf', contains='group')
 
 
-def test_get_number_of_nodes():
+def test_get_number_of_nodes(load_inpxml, load_outxml):
     """
     Test of the get_number_of_nodes function
     """
-    from lxml import etree
     from masci_tools.util.schema_dict_util import get_number_of_nodes
 
-    schema_dict = schema_dict_34
-
-    parser = etree.XMLParser(attribute_defaults=True, recover=False, encoding='utf-8')
-    xmltree = etree.parse(TEST_INPXML_PATH, parser)
-    outxmltree = etree.parse(TEST_OUTXML_PATH2, parser)
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    outxmltree, outschema_dict = load_outxml(TEST_OUTXML_PATH2, absolute=False)
 
     outroot = outxmltree.getroot()
     root = xmltree.getroot()
@@ -522,8 +483,8 @@ def test_get_number_of_nodes():
     assert get_number_of_nodes(root, schema_dict, 'ldaU', contains='species') == 0
     assert get_number_of_nodes(root, schema_dict, 'ldaU', not_contains='atom') == 1
 
-    assert get_number_of_nodes(outroot, outschema_dict_34, 'filmPos') == 2
-    assert get_number_of_nodes(outroot, outschema_dict_34, 'calculationSetup') == 1
+    assert get_number_of_nodes(outroot, outschema_dict, 'filmPos') == 2
+    assert get_number_of_nodes(outroot, outschema_dict, 'calculationSetup') == 1
 
     with pytest.raises(NoUniquePathFound):
         get_number_of_nodes(root, schema_dict, 'ldaU')
@@ -531,7 +492,7 @@ def test_get_number_of_nodes():
         get_number_of_nodes(root, schema_dict, 'ldaU', contains='group')
 
 
-def test_schema_dict_util_abs_to_rel_path():
+def test_schema_dict_util_abs_to_rel_path(load_inpxml):
     """
     Test of the absolute to relative xpath conversion in schema_dict_util functions
     """
@@ -540,10 +501,8 @@ def test_schema_dict_util_abs_to_rel_path():
                                                   evaluate_attribute, evaluate_tag, evaluate_parent_tag, \
                                                   evaluate_text
 
-    schema_dict = schema_dict_34
-
-    parser = etree.XMLParser(attribute_defaults=True, recover=False, encoding='utf-8')
-    root = etree.parse(TEST_INPXML_PATH, parser).getroot()
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    root = xmltree.getroot()
 
     species = eval_simple_xpath(root, schema_dict, 'species')
 
