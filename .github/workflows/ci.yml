@@ -120,7 +120,7 @@ jobs:
 
     - name: Install python dependencies
       run: |
-        pip install .[testing,bokeh-plots]
+        pip install -e .[testing,bokeh-plots]
 
     - name: Run pytest
       run: pytest
