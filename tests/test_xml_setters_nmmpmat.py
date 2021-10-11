@@ -5,16 +5,15 @@ import os
 import pytest
 import numpy as np
 
-FILE_PATH = os.path.dirname(os.path.abspath(__file__))
-TEST_INPXML_LDAU_PATH = os.path.join(FILE_PATH, 'files/fleur/Max-R5/GaAsMultiUForceXML/files/inp.xml')
-TEST_NMMPMAT_PATH = os.path.join(FILE_PATH, 'files/fleur/input_nmmpmat.txt')
+TEST_INPXML_LDAU_PATH = 'fleur/Max-R5/GaAsMultiUForceXML/files/inp.xml'
+TEST_NMMPMAT_PATH = 'fleur/input_nmmpmat.txt'
 
 
 def test_set_nmmpmat_nofile(load_inpxml, file_regression):
     """Test setting of nmmpmat with no initial nmmpmat file given"""
     from masci_tools.util.xml.xml_setters_nmmpmat import set_nmmpmat
 
-    xmltree, schema_dict = load_inpxml(TEST_INPXML_LDAU_PATH)
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_LDAU_PATH, absolute=False)
 
     nmmp_lines = None
     nmmp_lines = set_nmmpmat(xmltree,
@@ -35,13 +34,13 @@ def test_set_nmmpmat_nofile(load_inpxml, file_regression):
     file_regression.check(prepare_for_file_dump(nmmp_lines))
 
 
-def test_set_nmmpmat_file(load_inpxml, file_regression):
+def test_set_nmmpmat_file(load_inpxml, file_regression, test_file):
     """Test setting of nmmpmat with initial nmmpmat file given"""
     from masci_tools.util.xml.xml_setters_nmmpmat import set_nmmpmat
 
-    xmltree, schema_dict = load_inpxml(TEST_INPXML_LDAU_PATH)
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_LDAU_PATH, absolute=False)
 
-    with open(TEST_NMMPMAT_PATH, mode='r', encoding='utf-8') as nmmpfile:
+    with open(test_file(TEST_NMMPMAT_PATH), mode='r', encoding='utf-8') as nmmpfile:
         nmmp_lines = nmmpfile.read().split('\n')
 
     nmmp_lines = set_nmmpmat(xmltree,
@@ -66,7 +65,7 @@ def test_set_nmmpmat_file_get_wigner_matrix(load_inpxml, file_regression):
     """Test get_wigner_matrix by calling set_nmmpmat_file with theta, or phi != None"""
     from masci_tools.util.xml.xml_setters_nmmpmat import set_nmmpmat
 
-    xmltree, schema_dict = load_inpxml(TEST_INPXML_LDAU_PATH)
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_LDAU_PATH, absolute=False)
 
     nmmp_lines = None
     nmmp_lines = set_nmmpmat(xmltree,
@@ -94,7 +93,7 @@ def test_rotate_nmmpmat(load_inpxml, file_regression):
     """Test get_wigner_matrix by calling set_nmmpmat_file with theta, or phi != None"""
     from masci_tools.util.xml.xml_setters_nmmpmat import set_nmmpmat, rotate_nmmpmat
 
-    xmltree, schema_dict = load_inpxml(TEST_INPXML_LDAU_PATH)
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_LDAU_PATH, absolute=False)
 
     nmmp_lines = None
     nmmp_lines = set_nmmpmat(xmltree,
@@ -118,13 +117,13 @@ def test_rotate_nmmpmat(load_inpxml, file_regression):
     file_regression.check(prepare_for_file_dump(nmmp_lines))
 
 
-def test_validate_nmmpmat(load_inpxml):
+def test_validate_nmmpmat(load_inpxml, test_file):
     """Test validation method of nmmpmat file together with inp.xml file"""
     from masci_tools.util.xml.xml_setters_nmmpmat import set_nmmpmat, validate_nmmpmat
 
-    xmltree, schema_dict = load_inpxml(TEST_INPXML_LDAU_PATH)
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_LDAU_PATH, absolute=False)
 
-    with open(TEST_NMMPMAT_PATH, mode='r', encoding='utf-8') as nmmpfile:
+    with open(test_file(TEST_NMMPMAT_PATH), mode='r', encoding='utf-8') as nmmpfile:
         nmmp_lines_orig = nmmpfile.read().split('\n')
 
     validate_nmmpmat(xmltree, nmmp_lines_orig, schema_dict)  #should not raise
