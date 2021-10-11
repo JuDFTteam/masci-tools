@@ -3,14 +3,9 @@
 Test of the functions in masci_tools.util.xml.converters
 """
 import pytest
-import os
 from masci_tools.util.constants import FLEUR_DEFINED_CONSTANTS
 from masci_tools.io.parsers.fleur.fleur_schema import AttributeType
-from pprint import pprint
 import logging
-
-TEST_FOLDER = os.path.dirname(os.path.abspath(__file__))
-CLEAR_XML_TEST_FILE = os.path.abspath(os.path.join(TEST_FOLDER, 'files/fleur/test_clear.xml'))
 
 LOGGER = logging.getLogger(__name__)
 
