@@ -195,7 +195,7 @@ def outxml_parser(outxmlfile: XMLInput,
                                                               outschema_dict,
                                                               'iteration',
                                                               logger=logger,
-                                                              list_return=True)
+                                                              list_return=True)  #type:ignore
     n_iters = len(iteration_nodes)
 
     # parse only last stable interation

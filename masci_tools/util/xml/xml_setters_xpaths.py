@@ -78,7 +78,7 @@ def xml_create_tag_schema_dict(
 
     several_tags = element_name in tag_info['several']
 
-    parent_nodes: List[etree._Element] = eval_xpath(xmltree, xpath, list_return=True)
+    parent_nodes: List[etree._Element] = eval_xpath(xmltree, xpath, list_return=True)  #type:ignore
 
     if len(parent_nodes) == 0:
         if create_parents:
@@ -123,7 +123,7 @@ def eval_xpath_create(xmltree: Union[etree._Element, etree._ElementTree],
 
     check_complex_xpath(xmltree, base_xpath, xpath)
 
-    nodes: List[etree._Element] = eval_xpath(xmltree, xpath, list_return=True)
+    nodes: List[etree._Element] = eval_xpath(xmltree, xpath, list_return=True)  #type:ignore
 
     if len(nodes) == 0:
         parent_xpath, tag_name = split_off_tag(base_xpath)
@@ -135,7 +135,7 @@ def eval_xpath_create(xmltree: Union[etree._Element, etree._ElementTree],
                                              tag_name,
                                              create_parents=create_parents,
                                              occurrences=occurrences)
-        nodes = eval_xpath(xmltree, xpath, list_return=True)
+        nodes = eval_xpath(xmltree, xpath, list_return=True)  #type:ignore
 
     if len(nodes) == 1 and not list_return:
         nodes = nodes[0]  #type:ignore
@@ -190,7 +190,7 @@ def xml_set_attrib_value(xmltree: Union[etree._Element, etree._ElementTree],
                                                         occurrences=occurrences,
                                                         list_return=True)
     else:
-        nodes = eval_xpath(xmltree, xpath, list_return=True)
+        nodes = eval_xpath(xmltree, xpath, list_return=True)  #type:ignore
 
     if len(nodes) == 0:
         raise ValueError(f"Could not set attribute '{attributename}' on path '{str(xpath)}' "
@@ -293,7 +293,7 @@ def xml_set_text(xmltree: Union[etree._Element, etree._ElementTree],
                                                         occurrences=occurrences,
                                                         list_return=True)
     else:
-        nodes = eval_xpath(xmltree, xpath, list_return=True)
+        nodes = eval_xpath(xmltree, xpath, list_return=True)  #type:ignore
 
     if len(nodes) == 0:
         raise ValueError(f"Could not set text on path '{str(xpath)}' because atleast one subtag is missing. "
@@ -400,7 +400,7 @@ def xml_add_number_to_attrib(
     if not str(xpath).endswith(f'/@{attributename}'):
         xpath = '/@'.join([str(xpath), attributename])
 
-    stringattribute: List[str] = eval_xpath(xmltree, xpath, list_return=True)
+    stringattribute: List[str] = eval_xpath(xmltree, xpath, list_return=True)  #type:ignore
 
     tag_xpath, attributename = split_off_attrib(str(xpath))
 
@@ -523,7 +523,7 @@ def xml_set_simple_tag(xmltree: Union[etree._Element, etree._ElementTree],
         if isinstance(changes, dict):
             changes = [changes]
 
-        if len(eval_xpath(xmltree, tag_xpath, list_return=True)) > 0:
+        if len(eval_xpath(xmltree, tag_xpath, list_return=True)) > 0:  #type:ignore
             # policy: we DELETE all existing tags, and create new ones from the given parameters.
             xml_delete_tag(xmltree, tag_xpath)
 
@@ -534,7 +534,7 @@ def xml_set_simple_tag(xmltree: Union[etree._Element, etree._ElementTree],
             for attrib, value in change.items():
                 occurrences = [
                     k * len(changes) + indx
-                    for k in range(len(eval_xpath(xmltree, tag_xpath, list_return=True)) // len(changes))
+                    for k in range(len(eval_xpath(xmltree, tag_xpath, list_return=True)) // len(changes))  #type:ignore
                 ]
                 xml_set_attrib_value(xmltree,
                                      schema_dict,
@@ -627,7 +627,7 @@ def xml_set_complex_tag(xmltree: Union[etree._Element, etree._ElementTree],
             xmltree = xml_set_complex_tag(xmltree, schema_dict, sub_xpath, sub_base_xpath, val, create=create)
 
         else:
-            if len(eval_xpath(xmltree, sub_xpath, list_return=True)) > 0:
+            if len(eval_xpath(xmltree, sub_xpath, list_return=True)) > 0:  #type:ignore
                 # policy: we DELETE all existing tags, and create new ones from the given parameters.
                 xml_delete_tag(xmltree, sub_xpath)
 
@@ -638,7 +638,7 @@ def xml_set_complex_tag(xmltree: Union[etree._Element, etree._ElementTree],
                 xml_create_tag_schema_dict(xmltree, schema_dict, xpath, base_xpath, key, create_parents=create)
 
             for indx, tagdict in enumerate(val):
-                for k in range(len(eval_xpath(xmltree, sub_xpath, list_return=True)) // len(val)):
+                for k in range(len(eval_xpath(xmltree, sub_xpath, list_return=True)) // len(val)):  #type:ignore
                     current_elem_xpath = f'{sub_xpath}[{k*len(val)+indx+1}]'
                     xmltree = xml_set_complex_tag(xmltree,
                                                   schema_dict,
