@@ -84,7 +84,8 @@ class Test_KkrimpParserFunctions(object):
             with open(path / 'out_log.000.txt', encoding='utf-8') as out_log:
                 with open(path / 'out_potential', encoding='utf-8') as out_potential:
                     with open(path / 'out_energysp_per_atom_eV', encoding='utf-8') as out_energysp_per_atom_eV:
-                        with open(path / 'out_energytotal_per_atom_eV', encoding='utf-8') as out_energytotal_per_atom_eV:
+                        with open(path / 'out_energytotal_per_atom_eV',
+                                  encoding='utf-8') as out_energytotal_per_atom_eV:
                             with open(path / 'out_timing.000.txt', encoding='utf-8') as out_timing:
                                 files['outfile'] = out_kkrimp
                                 files['out_log'] = out_log
