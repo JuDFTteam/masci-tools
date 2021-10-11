@@ -157,7 +157,7 @@ def _generate_plot_parameters_table(defaults, descriptions):
     return '\n'.join(table)
 
 
-class Plotter(object):
+class Plotter:
     """
     Base class for handling parameters for plotting methods. For different plotting backends
     a subclass can be created to represent the specific parameters of the backend.

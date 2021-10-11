@@ -446,7 +446,7 @@ def _dos_order(key):
 
     if key in general:
         return (spin, general.index(key))
-    elif ':' in key:
+    if ':' in key:
         before, after = key.split(':', maxsplit=1)
         tail = after.lstrip('0123456789')
         index = int(after[:-len(tail)]) if len(tail) > 0 else int(after)
@@ -456,10 +456,9 @@ def _dos_order(key):
             tail = int(tail[4:])
         if tail in orbital_order:
             return (spin, len(general) + index, orbital_order.index(tail), '')
-        elif isinstance(tail, int):
+        if isinstance(tail, int):
             return (spin, len(general) + index, tail, '')
-        else:
-            return (spin, len(general) + index, float('inf'), tail)
+        return (spin, len(general) + index, float('inf'), tail)
 
     return None
 

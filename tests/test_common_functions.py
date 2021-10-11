@@ -13,7 +13,7 @@ from pathlib import Path
 DIR = Path(__file__).parent.resolve()
 
 
-class Test_common_functions(object):
+class Test_common_functions:
     """
     Tests for the common functions from tools.common_functions
     """

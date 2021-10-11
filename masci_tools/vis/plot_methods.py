@@ -3121,7 +3121,7 @@ def pseudo_voigt_profile(x, fwhm_g, fwhm_l, mu, mix=0.5):
     return mix * gaus + (1 - mix) * lorentz
 
 
-class PDF(object):
+class PDF:
     """Display a PDF file inside a Jupyter notebook."""
 
     def __init__(self, pdf: str, size: tuple = (200, 200)):

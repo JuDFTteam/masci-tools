@@ -339,7 +339,7 @@ def _get_length(xmlschema: etree._ElementTree, namespaces: Dict[str, str],
 
         return 1
 
-    elif type_tag in ('complexType', 'simpleContent'):
+    if type_tag in ('complexType', 'simpleContent'):
         if 'name' in type_elem.attrib:
             type_name = type_elem.attrib['name']
         else:
@@ -360,9 +360,7 @@ def _get_length(xmlschema: etree._ElementTree, namespaces: Dict[str, str],
             return 1
 
         return _get_length(xmlschema, namespaces, base_type_elem[0])
-
-    else:
-        return None
+    return None
 
 
 @_cache_xpath_construction
