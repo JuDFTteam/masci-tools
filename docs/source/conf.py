@@ -404,7 +404,7 @@ nitpick_ignore = [
     ('py:class', 'S'),
     ('py:class', 'etree._xpath'),
     ('py:class', 'etree._DictAnyStr'),
-    ('py:class', 'etree._XpathObject'),
+    ('py:class', 'etree._XPathObject'),
     ('py:class', 'fleur_schema.SchemaDict'),
     ('py:class', 'fleur_schema.InputSchemaDict'),
     ('py:class', 'fleur_schema.OutputSchemaDict'),
