@@ -46,11 +46,11 @@ class Test_voronoi_parser_functions(object):
         Parse complete output of voronoi calculation from open file handles as done in aiida-kkr and compare out_dict, grouping, warnings
         """
         out_dict = {'parser_version': 'some_version_number'}
-        with open(self.outfile) as outfile:
-            with open(self.potfile) as potfile:
-                with open(self.atominfo) as atominfo:
-                    with open(self.radii) as radii:
-                        with open(self.inputfile) as inputfile:
+        with open(self.outfile, encoding='utf-8') as outfile:
+            with open(self.potfile, encoding='utf-8') as potfile:
+                with open(self.atominfo, encoding='utf-8') as atominfo:
+                    with open(self.radii, encoding='utf-8') as radii:
+                        with open(self.inputfile, encoding='utf-8') as inputfile:
                             success, msg_list, out_dict = parse_voronoi_output(out_dict, outfile, potfile, atominfo,
                                                                                radii, inputfile)
         out_dict['parser_warnings'] = msg_list

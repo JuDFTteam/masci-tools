@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
+"""
+Test of kkrimp tools
+"""
 #import pytest
 from masci_tools.io.modify_potential import modify_potential
 from masci_tools.io.parsers.kkrimp_parser_functions import KkrimpParserFunctions
@@ -19,7 +21,7 @@ class Test_modify_potential(object):
         atom2shapes = [1]
         shapefun_new = os.fspath(DIR / Path('files/mod_pot/test2/shapefun_new'))
         modify_potential().shapefun_from_scoef(scoefpath, shapefun_path, atom2shapes, shapefun_new)
-        with open(shapefun_new, 'r') as f:
+        with open(shapefun_new, 'r', encoding='utf-8') as f:
             txt = f.read().strip()
         file_regression.check(txt)
 
@@ -30,7 +32,7 @@ class Test_modify_potential(object):
         neworder = [0, 1, 2]
         # test 1: neworder_potential standard
         modify_potential().neworder_potential(pot, out_pot, neworder)
-        with open(out_pot, 'r') as f:
+        with open(out_pot, 'r', encoding='utf-8') as f:
             txt = f.read().strip()
         file_regression.check(txt)
 
@@ -43,7 +45,7 @@ class Test_modify_potential(object):
         # test 2: neworder_potential with replace from second potential
         replace_newpos = [[0, 0], [2, 0]]
         modify_potential().neworder_potential(pot1, out_pot, neworder, potfile_2=pot2, replace_from_pot2=replace_newpos)
-        with open(out_pot, 'r') as f:
+        with open(out_pot, 'r', encoding='utf-8') as f:
             txt = f.read().strip()
         file_regression.check(txt)
 
@@ -78,12 +80,12 @@ class Test_KkrimpParserFunctions(object):
         path = DIR / Path('files/kkrimp_parser/test1/')
         files = {}
 
-        with open(path / 'out_kkrimp') as out_kkrimp:
-            with open(path / 'out_log.000.txt') as out_log:
-                with open(path / 'out_potential') as out_potential:
-                    with open(path / 'out_energysp_per_atom_eV') as out_energysp_per_atom_eV:
-                        with open(path / 'out_energytotal_per_atom_eV') as out_energytotal_per_atom_eV:
-                            with open(path / 'out_timing.000.txt') as out_timing:
+        with open(path / 'out_kkrimp', encoding='utf-8') as out_kkrimp:
+            with open(path / 'out_log.000.txt', encoding='utf-8') as out_log:
+                with open(path / 'out_potential', encoding='utf-8') as out_potential:
+                    with open(path / 'out_energysp_per_atom_eV', encoding='utf-8') as out_energysp_per_atom_eV:
+                        with open(path / 'out_energytotal_per_atom_eV', encoding='utf-8') as out_energytotal_per_atom_eV:
+                            with open(path / 'out_timing.000.txt', encoding='utf-8') as out_timing:
                                 files['outfile'] = out_kkrimp
                                 files['out_log'] = out_log
                                 files['out_pot'] = out_potential

@@ -36,7 +36,7 @@ class Test_common_functions(object):
         assert (dos == np.load(DIR / Path('files/interpol/ref_dos.npy'))).all()
 
     def test_interpolate_dos_filehandle(self):
-        with open(DIR / Path('files/interpol/complex.dos')):
+        with open(DIR / Path('files/interpol/complex.dos'), encoding='utf-8'):
             pass
         d0 = DIR / Path('files/interpol/complex.dos')
         ef, dos, dos_int = interpolate_dos(d0, return_original=True)
@@ -51,7 +51,7 @@ class Test_common_functions(object):
         assert abs(alat - np.sqrt(2) / 2) < 10**-10
 
     def test_search_string(self):
-        with open(DIR / Path('files/kkr/kkr_run_dos_output/output.0.txt'), 'r') as f:
+        with open(DIR / Path('files/kkr/kkr_run_dos_output/output.0.txt'), 'r', encoding='utf-8') as f:
             txt = f.readlines()
         alatline = search_string('ALAT', txt)
         noline = search_string('ALT', txt)
