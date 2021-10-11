@@ -408,6 +408,7 @@ nitpick_ignore = [
     ('py:class', 'fleur_schema.InputSchemaDict'),
     ('py:class', 'fleur_schema.OutputSchemaDict'),
     ('py:class', 'fleur_schema.AttributeType'),
+    ('py:class', 'IO'),
 ]
 
 
