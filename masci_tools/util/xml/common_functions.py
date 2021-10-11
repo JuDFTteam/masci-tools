@@ -239,7 +239,8 @@ def eval_xpath(node: Union[etree._Element, etree._ElementTree],
                xpath: 'etree._xpath',
                logger: Logger = None,
                list_return: bool = False,
-               namespaces: Dict[str, str] = None) -> 'etree._XpathObject':
+               namespaces: 'etree._DictAnyStr' = None,
+               **variables: 'etree._XPathObject') -> 'etree._XPathObject':
     """
     Tries to evaluate an xpath expression. If it fails it logs it.
     If a absolute path is given (starting with '/') and the tag of the node
@@ -260,8 +261,20 @@ def eval_xpath(node: Union[etree._Element, etree._ElementTree],
             logger.error('Wrong Type for xpath eval; Got: %s', type(node))
         raise TypeError(f'Wrong Type for xpath eval; Got: {type(node)}')
 
+    if namespaces is not None and isinstance(xpath, etree.XPath):
+        if logger is not None:
+            logger.exception(
+                'Passing namespaces is only supported for string xpaths. for eree.XPath use namespaces in the init function'
+            )
+        raise ValueError(
+            'Passing namespaces is only supported for string xpaths. for eree.XPath use namespaces in the init function'
+        )
+
     try:
-        return_value = node.xpath(xpath, namespaces=namespaces)  #type:ignore
+        if isinstance(xpath, etree.XPath):
+            return_value = xpath(node, **variables)
+        else:
+            return_value = node.xpath(xpath, namespaces=namespaces, **variables)  #type:ignore
     except etree.XPathEvalError as err:
         if logger is not None:
             logger.exception(

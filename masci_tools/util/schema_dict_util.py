@@ -829,7 +829,7 @@ def eval_simple_xpath(node: Union[etree._Element, etree._ElementTree],
                       schema_dict: 'fleur_schema.SchemaDict',
                       name: str,
                       logger: Logger = None,
-                      **kwargs: Any) -> 'etree._XpathObject':
+                      **kwargs: Any) -> 'etree._XPathObject':
     """
     Evaluates a simple xpath expression of the tag in the xmltree based on the given name
     and additional further specifications with the available type information
