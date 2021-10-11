@@ -4,24 +4,18 @@ Test of the functions in masci_tools.util.xml.common_functions
 """
 import pytest
 import os
-from pprint import pprint
 import logging
-
-TEST_FOLDER = os.path.dirname(os.path.abspath(__file__))
-CLEAR_XML_TEST_FILE = os.path.abspath(os.path.join(TEST_FOLDER, 'files/fleur/test_clear.xml'))
+from lxml import etree
 
 LOGGER = logging.getLogger(__name__)
 
-
-def test_eval_xpath(caplog):
+def test_eval_xpath(caplog,load_inpxml):
     """
     Test of the eval_xpath function
     """
-    from lxml import etree
     from masci_tools.util.xml.common_functions import eval_xpath
 
-    parser = etree.XMLParser(attribute_defaults=True, encoding='utf-8')
-    xmltree = etree.parse(CLEAR_XML_TEST_FILE, parser)
+    xmltree, _ = load_inpxml('fleur/test_clear.xml', absolute=False)
     root = xmltree.getroot()
 
     scfLoop = eval_xpath(root, '//scfLoop')
@@ -54,17 +48,16 @@ def test_eval_xpath(caplog):
     assert 'There was a XpathEvalError on the xpath:' in caplog.text
 
 
-def test_clear_xml():
+def test_clear_xml(load_inpxml):
     """
     Test of the clear_xml function
     """
-    from lxml import etree
     from masci_tools.util.xml.common_functions import eval_xpath, clear_xml
-    parser = etree.XMLParser(attribute_defaults=True, encoding='utf-8')
-    xmltree = etree.parse(CLEAR_XML_TEST_FILE, parser)
-
-    #Check that the file contains comments and includes
+    
+    xmltree, _ = load_inpxml('fleur/test_clear.xml', absolute=False)
     root = xmltree.getroot()
+    
+    #Check that the file contains comments and includes
     comments = eval_xpath(root, '//comment()', list_return=True)
     assert len(comments) == 3
 
@@ -106,7 +99,7 @@ def test_reverse_xinclude(load_inpxml):
     """
     from masci_tools.util.xml.common_functions import eval_xpath, clear_xml, reverse_xinclude
 
-    xmltree, schema_dict = load_inpxml(CLEAR_XML_TEST_FILE)
+    xmltree, schema_dict = load_inpxml('fleur/test_clear.xml', absolute=False)
 
     cleared_tree, all_include_tags = clear_xml(xmltree)
     cleared_root = cleared_tree.getroot()
@@ -140,14 +133,12 @@ def test_reverse_xinclude(load_inpxml):
     assert len(symmetry_tags) == 16
 
 
-def test_get_xml_attribute(caplog):
+def test_get_xml_attribute(load_inpxml, caplog):
     """
     Test of the clear_xml function
     """
-    from lxml import etree
     from masci_tools.util.xml.common_functions import get_xml_attribute, eval_xpath
-    parser = etree.XMLParser(attribute_defaults=True, encoding='utf-8')
-    xmltree = etree.parse(CLEAR_XML_TEST_FILE, parser)
+    xmltree, _ = load_inpxml('fleur/test_clear.xml', absolute=False)
     root = xmltree.getroot()
 
     scfLoop = eval_xpath(root, '//scfLoop')
@@ -203,10 +194,7 @@ def test_check_complex_xpath(load_inpxml):
     """
     from masci_tools.util.xml.common_functions import check_complex_xpath
 
-    FILE_PATH = os.path.dirname(os.path.abspath(__file__))
-    TEST_INPXML_PATH = os.path.join(FILE_PATH, 'files/fleur/Max-R5/FePt_film_SSFT_LO/files/inp2.xml')
-
-    xmltree, _ = load_inpxml(TEST_INPXML_PATH)
+    xmltree, _ = load_inpxml('fleur/Max-R5/FePt_film_SSFT_LO/files/inp2.xml', absolute=False)
 
     check_complex_xpath(xmltree, '/fleurInput/atomSpecies/species', "/fleurInput/atomSpecies/species[@name='Fe-1']")
 
