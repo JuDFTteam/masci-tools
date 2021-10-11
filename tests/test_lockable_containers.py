@@ -81,7 +81,7 @@ def test_lock_container_contextmanager():
         with pytest.raises(RuntimeError, match='Modification not allowed'):
             l_dict['Test2'] = {'subdict': 4}
 
-    assert not l_dict._locked
+    assert not l_dict._locked  #pylint: disable=protected-access
     assert l_dict['B'].pop('Test2') == 'A'
 
     with LockContainer(l_list):
@@ -89,7 +89,7 @@ def test_lock_container_contextmanager():
             l_list.append('test')
         l_dict['Test2'] = {'subdict': 4}
 
-    assert not l_list._locked
+    assert not l_list._locked  #pylint: disable=protected-access
     l_list[1]['A2'] = 'A3'
 
     l_dict.freeze()

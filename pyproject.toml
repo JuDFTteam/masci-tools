@@ -78,8 +78,6 @@ disable = [
     "import-outside-toplevel", 
     "duplicate-code",
     "unnecessary-pass", 
-    "protected-access",
-    "no-member",
     "invalid-name",
     "unused-variable",
     "unused-argument",
@@ -114,7 +112,7 @@ docstring-min-length = 5
 max-locals = 20
 
 [tool.pylint.classes]
-exclude-protected= ["_asdict","_fields","_replace","_source","_make"]
+exclude-protected= ["_asdict","_fields","_replace","_source","_make", "_Element", "_ElementTree", "_pprint_dict","_pprint_set", "_dispatch"]
 
 [tool.pytest.ini_options]
 minversion="6.0"

@@ -32,6 +32,7 @@ def NestedPlotParameters(plotter_object):
 
     :param plotter_object: Plotter instance
     """
+    #pylint: disable=protected-access
     assert isinstance(plotter_object, Plotter), \
            'The NestedPlotParameters contextmanager should only be used for Plotter objects'
 
@@ -76,6 +77,7 @@ def ensure_plotter_consistency(plotter_object):
             Also after execution the defaults and parameters are checked to make sure
             they are consistent
             """
+            #pylint: disable=protected-access
 
             global_defaults_before = copy.deepcopy(plotter_object._user_defaults)
 

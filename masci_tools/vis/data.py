@@ -762,7 +762,7 @@ class PlotDataIterator:
 
         if self._iter_mode == 'values':
             plot_data = {key: data[val] if val is not None else None for key, val in columns._asdict().items()}
-            return self._plot_data._column_spec(**plot_data)
+            return self._plot_data._column_spec(**plot_data)  #pylint: disable=protected-access
         if self._iter_mode == 'items':
             return columns, data
         raise StopIteration

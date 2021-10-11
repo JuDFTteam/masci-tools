@@ -48,6 +48,7 @@ def hdf5_transformation(*, attribute_needed):
         _attribute_transforms set attribute
         Here all registered transforms are inserted
         """
+        #pylint: disable=protected-access
 
         @wraps(func)
         def transform_func(*args, **kwargs):
@@ -58,13 +59,13 @@ def hdf5_transformation(*, attribute_needed):
                 raise HDF5TransformationError(f'The HDF5 transformation {func.__name__} failed with {exc}') from exc
 
         if getattr(HDF5Reader, '_transforms', None) is None:
-            HDF5Reader._transforms = {}  # pylint: disable=protected-access
-            HDF5Reader._attribute_transforms = set()  # pylint: disable=protected-access
+            HDF5Reader._transforms = {}
+            HDF5Reader._attribute_transforms = set()
 
-        HDF5Reader._transforms[func.__name__] = transform_func  # pylint: disable=protected-access
+        HDF5Reader._transforms[func.__name__] = transform_func
 
         if attribute_needed:
-            HDF5Reader._attribute_transforms.add(func.__name__)  # pylint: disable=protected-access
+            HDF5Reader._attribute_transforms.add(func.__name__)
 
         return transform_func
 

@@ -14,6 +14,7 @@
 This module contains a generic HDF5 reader
 """
 import io
+from typing import Callable, Dict, Set
 import h5py
 from collections import namedtuple
 import warnings
@@ -55,6 +56,9 @@ class HDF5Reader:
         print(data, attributes)
 
     """
+
+    _transforms: Dict[str, Callable] = {}
+    _attribute_transforms: Set[str] = set()
 
     def __init__(self, file, move_to_memory=True):
 

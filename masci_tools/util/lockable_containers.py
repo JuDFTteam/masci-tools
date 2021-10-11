@@ -43,7 +43,7 @@ def LockContainer(lock_object: Union['LockableList', 'LockableDict']) -> Generat
     try:
         yield
     finally:
-        lock_object._unfreeze()
+        lock_object._unfreeze()  #pylint: disable=protected-access
 
 
 class LockableDict(UserDict, Generic[S, T]):
@@ -110,7 +110,7 @@ class LockableDict(UserDict, Generic[S, T]):
         if self._recursive:
             for key, val in self.items():
                 if isinstance(val, (LockableList, LockableDict)):
-                    val._unfreeze()
+                    val._unfreeze()  #pylint: disable=protected-access
 
         self._locked = False
 
@@ -251,7 +251,7 @@ class LockableList(UserList, Generic[T]):
         if self._recursive:
             for val in self:
                 if isinstance(val, (LockableList, LockableDict)):
-                    val._unfreeze()
+                    val._unfreeze()  #pylint: disable=protected-access
 
         self._locked = False
 

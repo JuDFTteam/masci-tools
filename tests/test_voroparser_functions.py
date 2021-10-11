@@ -11,7 +11,7 @@ import os
 DIR = Path(__file__).parent.resolve()
 
 
-class Test_voronoi_parser_functions(object):
+class Test_voronoi_parser_functions:
     """
     Tests for the voronoi parser functions
     """

@@ -22,15 +22,15 @@ def test_fleurxmlmodifier_facade_methods():
 
     actions = fm.get_avail_actions()
 
-    assert fm._tasks == []
+    assert fm._tasks == []  #pylint: disable=protected-access
 
     for action in actions.values():
         action('TEST_ARG', random_kwarg='TEST2')
 
-    assert len(actions) == len(fm._tasks)
+    assert len(actions) == len(fm._tasks)  #pylint: disable=protected-access
     assert set(actions.keys()) == XPATH_SETTERS.keys() | SCHEMA_DICT_SETTERS.keys() | NMMPMAT_SETTERS.keys()
 
-    for task, action in zip(fm._tasks, actions.values()):
+    for task, action in zip(fm._tasks, actions.values()):  #pylint: disable=protected-access
         assert isinstance(task, ModifierTask)
         assert task.name == action.__name__
         assert task.args == ('TEST_ARG',)

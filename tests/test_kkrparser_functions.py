@@ -13,7 +13,7 @@ import os
 DIR = Path(__file__).parent.resolve()
 
 
-class Test_kkr_parser_functions(object):
+class Test_kkr_parser_functions:
     """
     Tests for the kkr parser functions
     """

@@ -47,7 +47,7 @@ def test_inpschema_dict_structure():
         assert isinstance(val, EXPECTED_TYPES[key])
         if EXPECTED_TYPES[key] != str:
             if not isinstance(val, CaseInsensitiveFrozenSet):
-                assert val._locked
+                assert val._locked  #pylint: disable=protected-access
             if EXPECTED_TYPES[key] != CaseInsensitiveDict:
                 assert not isinstance(val,
                                       CaseInsensitiveDict)  #since CaseInsensitiveDict is a subclass of LockableDict
@@ -87,7 +87,7 @@ def test_outschema_dict_structure():
         assert isinstance(val, EXPECTED_TYPES[key])
         if EXPECTED_TYPES[key] != str:
             if not isinstance(val, CaseInsensitiveFrozenSet):
-                assert val._locked
+                assert val._locked  #pylint: disable=protected-access
             if EXPECTED_TYPES[key] != CaseInsensitiveDict:
                 assert not isinstance(val,
                                       CaseInsensitiveDict)  #since CaseInsensitiveDict is a subclass of LockableDict
