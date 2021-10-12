@@ -4,7 +4,7 @@ Test of the functions in masci_tools.util.xml.converters
 """
 import pytest
 from masci_tools.util.constants import FLEUR_DEFINED_CONSTANTS
-from masci_tools.io.parsers.fleur.fleur_schema import AttributeType
+from masci_tools.io.parsers.fleur_schema import AttributeType
 import logging
 
 LOGGER = logging.getLogger(__name__)

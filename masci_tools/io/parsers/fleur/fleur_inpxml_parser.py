@@ -23,9 +23,8 @@ from masci_tools.util.xml.converters import convert_from_xml
 from masci_tools.util.schema_dict_util import read_constants, evaluate_attribute
 from masci_tools.util.logging_util import DictHandler
 import logging
-from typing import TYPE_CHECKING, Dict, Any, Optional
-if TYPE_CHECKING:
-    from masci_tools.io.parsers.fleur.fleur_schema import InputSchemaDict
+from typing import Dict, Any, Optional
+from masci_tools.io.parsers.fleur_schema import InputSchemaDict
 
 
 def inpxml_parser(inpxmlfile: XMLInput,

@@ -14,7 +14,7 @@
 This module provides functions to extract distinct parts of the fleur xml files
 for easy versioning and reuse
 """
-from masci_tools.io.parsers.fleur.fleur_schema import schema_dict_version_dispatch
+from masci_tools.io.parsers.fleur_schema import schema_dict_version_dispatch
 from masci_tools.io.common_functions import AtomSiteProperties
 from lxml import etree
 import warnings

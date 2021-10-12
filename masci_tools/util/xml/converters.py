@@ -133,7 +133,7 @@ def convert_from_xml_explicit(
     If no logger is given and a attribute cannot be converted an error is raised
 
     :param stringattribute: str, Attribute to convert.
-    :param definitions: list of :py:class:`~masci_tools.io.parsers.fleur.fleur_schema.AttributeType` definitions
+    :param definitions: list of :py:class:`~masci_tools.io.parsers.fleur_schema.AttributeType` definitions
     :param constants: dict, of constants defined in fleur input
     :param logger: logger object for logging warnings
                    if given the errors are logged and the list is returned with the unconverted values
@@ -207,7 +207,7 @@ def convert_to_xml_explicit(value: Union[Any, Iterable[Any]],
     First succeeded conversion will be returned
 
     :param textvalue: value to convert
-    :param definitions: list of :py:class:`~masci_tools.io.parsers.fleur.fleur_schema.AttributeType` definitions
+    :param definitions: list of :py:class:`~masci_tools.io.parsers.fleur_schema.AttributeType` definitions
     :param logger: logger object for logging warnings
                    if given the errors are logged and the list is returned with the unconverted values
                    otherwise a error is raised, when the first conversion fails

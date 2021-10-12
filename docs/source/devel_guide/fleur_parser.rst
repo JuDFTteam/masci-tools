@@ -4,7 +4,7 @@ Updating or adapting the Fleur Parsers
 Each input and output file for Fleur has a correspong XML-Schema, where the structure
 of these files are defined.
 
-To be able to parse such files efficiently and without hardcoding their structure we extract all necessary information about the schemas in the modules under :py:mod:`~masci_tools.io.parsers.fleur.fleur_schema`. The resulting python dictionaries can be accessed via the classes :py:class:`~masci_tools.io.parsers.fleur.fleur_schema.InputSchemaDict` and :py:class:`~masci_tools.io.parsers.fleur.fleur_schema.OutputSchemaDict`. The easiest way to instantiate one of these objects is to use the :py:meth:`~masci_tools.io.parsers.fleur.fleur_schema.InputSchemaDict.fromVersion()` or :py:meth:`~masci_tools.io.parsers.fleur.fleur_schema.OutputSchemaDict.fromVersion()` methods by providing the desired version string.
+To be able to parse such files efficiently and without hardcoding their structure we extract all necessary information about the schemas in the modules under :py:mod:`~masci_tools.io.parsers.fleur_schema`. The resulting python dictionaries can be accessed via the classes :py:class:`~masci_tools.io.parsers.fleur_schema.InputSchemaDict` and :py:class:`~masci_tools.io.parsers.fleur_schema.OutputSchemaDict`. The easiest way to instantiate one of these objects is to use the :py:meth:`~masci_tools.io.parsers.fleur_schema.InputSchemaDict.fromVersion()` or :py:meth:`~masci_tools.io.parsers.fleur_schema.OutputSchemaDict.fromVersion()` methods by providing the desired version string.
 
 Adding/modifying a Fleur Schema:
 ---------------------------------

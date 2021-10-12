@@ -17,7 +17,7 @@ def parse():
 def _load_xml_file(xml_file):
     from masci_tools.io.io_fleurxml import load_inpxml, load_outxml
     from masci_tools.util.xml.common_functions import clear_xml
-    from masci_tools.io.parsers.fleur.fleur_schema import InputSchemaDict
+    from masci_tools.io.parsers.fleur_schema import InputSchemaDict
     from lxml import etree
 
     FALLBACK_VERSION = '0.34'

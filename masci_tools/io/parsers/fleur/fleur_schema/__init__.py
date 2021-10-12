@@ -1,22 +1,10 @@
 # -*- coding: utf-8 -*-
-###############################################################################
-# Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
-#                All rights reserved.                                         #
-# This file is part of the Masci-tools package.                               #
-# (Material science tools)                                                    #
-#                                                                             #
-# The code is hosted on GitHub at https://github.com/judftteam/masci-tools.   #
-# For further information on the license, see the LICENSE.txt file.           #
-# For further information please visit http://judft.de/.                      #
-#                                                                             #
-###############################################################################
 """
-Load all fleur schema related functions
+This module is only here for backwards compatibility
 """
-from .schema_dict import InputSchemaDict, OutputSchemaDict, SchemaDict, schema_dict_version_dispatch, NoPathFound, NoUniquePathFound
-from .fleur_schema_parser_functions import AttributeType
+import warnings
 
-__all__ = [
-    'InputSchemaDict', 'OutputSchemaDict', 'schema_dict_version_dispatch', 'AttributeType', 'NoPathFound',
-    'NoUniquePathFound', 'SchemaDict'
-]
+warnings.warn('The fleur_schema module was moved from masci_tools.io.parsers.fleur'
+              'to masci_tools.io.parsers', DeprecationWarning)
+
+from masci_tools.io.parsers.fleur_schema import *

@@ -19,7 +19,7 @@ import warnings
 import os
 from logging import Logger
 if TYPE_CHECKING:
-    from masci_tools.io.parsers.fleur import fleur_schema
+    from masci_tools.io.parsers import fleur_schema
 
 
 def clear_xml(tree: etree._ElementTree) -> Tuple[etree._ElementTree, Set[str]]:

@@ -34,10 +34,10 @@ def fleur_schema():
 def add_fleur_schema(schema_file, test_xml_file, overwrite):
     """
     Adds a new xml schema file to the folder in
-    `masci_tools/io/parsers/fleur/fleur_schema`
+    `masci_tools/io/parsers/fleur_schema`
     corresponding to its version number
     """
-    from masci_tools.io.parsers.fleur.fleur_schema import InputSchemaDict, OutputSchemaDict
+    from masci_tools.io.parsers.fleur_schema import InputSchemaDict, OutputSchemaDict
 
     PACKAGE_ROOT = Path(masci_tools.__file__).parent.resolve()
 
@@ -47,7 +47,7 @@ def add_fleur_schema(schema_file, test_xml_file, overwrite):
     namespaces = {'xsd': 'http://www.w3.org/2001/XMLSchema'}
     schema_version = xmlschema.xpath('/xsd:schema/@version', namespaces=namespaces)[0]
 
-    schema_folder = Path(PACKAGE_ROOT) / Path(f'io/parsers/fleur/fleur_schema/{schema_version}')
+    schema_folder = Path(PACKAGE_ROOT) / Path(f'io/parsers/fleur_schema/{schema_version}')
 
     if schema_file.name == 'FleurInputSchema.xsd':
 

@@ -166,7 +166,7 @@ class FleurXMLModifier:
         """
         from masci_tools.util.xml.common_functions import validate_xml, eval_xpath
         from masci_tools.util.xml.xml_setters_nmmpmat import validate_nmmpmat
-        from masci_tools.io.parsers.fleur.fleur_schema import InputSchemaDict
+        from masci_tools.io.parsers.fleur_schema import InputSchemaDict
 
         version = eval_xpath(xmltree, '//@fleurInputVersion')
         version = str(version)

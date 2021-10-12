@@ -4,12 +4,12 @@ Test of the consistency the input schema dictionaries with the SchemaFiles in th
 """
 import pytest
 import os
-from masci_tools.io.parsers.fleur.fleur_schema import InputSchemaDict, OutputSchemaDict, NoPathFound, NoUniquePathFound
+from masci_tools.io.parsers.fleur_schema import InputSchemaDict, OutputSchemaDict, NoPathFound, NoUniquePathFound
 from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict, CaseInsensitiveFrozenSet
 from masci_tools.util.lockable_containers import LockableDict, LockableList
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-SCHEMA_DIR = '../masci_tools/io/parsers/fleur/fleur_schema'
+SCHEMA_DIR = '../masci_tools/io/parsers/fleur_schema'
 
 #Collect all schemas from the folder
 schema_versions = {'inp': [], 'out': []}
@@ -529,7 +529,7 @@ def clean_for_reg_dump(value_to_clean):
     Clean for data regression converts CaseInsensitiveFrozenSet to set
     Lockable containers are to be converted berfore via `get_unlocked()`
     """
-    from masci_tools.io.parsers.fleur.fleur_schema import AttributeType
+    from masci_tools.io.parsers.fleur_schema import AttributeType
 
     if isinstance(value_to_clean, dict):
         for key, val in value_to_clean.items():
