@@ -529,7 +529,7 @@ def clean_for_reg_dump(value_to_clean):
     Clean for data regression converts CaseInsensitiveFrozenSet to set
     Lockable containers are to be converted berfore via `get_unlocked()`
     """
-    from masci_tools.io.parsers.fleur.fleur_schema import AttributeType
+    from masci_tools.io.parsers.fleur_schema import AttributeType
 
     if isinstance(value_to_clean, dict):
         for key, val in value_to_clean.items():

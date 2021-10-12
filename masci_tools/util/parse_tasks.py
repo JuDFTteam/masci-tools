@@ -21,7 +21,7 @@ from importlib import import_module
 import copy
 import os
 from pathlib import Path
-from typing import TYPE_CHECKING, Callable, Dict, Iterable, List, Set, Any, Union
+from typing import Callable, Dict, Iterable, List, Set, Any, Union
 try:
     from typing import Literal
 except ImportError:
@@ -29,8 +29,7 @@ except ImportError:
 import warnings
 from lxml import etree
 from logging import Logger, LoggerAdapter
-if TYPE_CHECKING:
-    from masci_tools.io.parsers.fleur import fleur_schema
+from masci_tools.io.parsers import fleur_schema
 
 from masci_tools.util.xml.converters import convert_str_version_number
 import masci_tools

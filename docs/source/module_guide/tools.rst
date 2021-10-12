@@ -80,10 +80,10 @@ Fleur parser utility
 Basic Fleur Schema parser functions
 ++++++++++++++++++++++++++++++++++++
 
-.. automodule:: masci_tools.io.parsers.fleur.fleur_schema
+.. automodule:: masci_tools.io.parsers.fleur_schema
    :members:
 
-.. automodule:: masci_tools.io.parsers.fleur.fleur_schema.fleur_schema_parser_functions
+.. automodule:: masci_tools.io.parsers.fleur_schema.fleur_schema_parser_functions
    :members:
 
 

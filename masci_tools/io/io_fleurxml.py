@@ -21,9 +21,8 @@ import os
 from pathlib import Path
 from functools import partial
 from logging import Logger
-from typing import Callable, Tuple, Union, Any, IO, TYPE_CHECKING
-if TYPE_CHECKING:
-    from masci_tools.io.parsers.fleur import fleur_schema
+from typing import Callable, Tuple, Union, Any, IO
+from masci_tools.io.parsers import fleur_schema
 
 XMLInput = Union[etree._ElementTree, str, Path, bytes, os.PathLike, IO]
 
@@ -42,7 +41,7 @@ def load_inpxml(inpxmlfile: XMLInput,
               for the corresponding input version
     """
     from masci_tools.util.xml.common_functions import eval_xpath
-    from masci_tools.io.parsers.fleur.fleur_schema import InputSchemaDict
+    from masci_tools.io.parsers.fleur_schema import InputSchemaDict
 
     if isinstance(inpxmlfile, io.IOBase):
         xml_parse_func: Callable = etree.parse
@@ -112,7 +111,7 @@ def load_outxml(outxmlfile: XMLInput,
               for the corresponding output version
     """
     from masci_tools.util.xml.common_functions import eval_xpath
-    from masci_tools.io.parsers.fleur.fleur_schema import OutputSchemaDict
+    from masci_tools.io.parsers.fleur_schema import OutputSchemaDict
 
     if isinstance(outxmlfile, io.IOBase):
         xml_parse_func: Callable = etree.parse

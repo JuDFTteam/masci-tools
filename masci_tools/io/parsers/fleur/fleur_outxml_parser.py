@@ -19,17 +19,16 @@ from masci_tools.util.schema_dict_util import tag_exists, read_constants, eval_s
 from masci_tools.util.xml.common_functions import clear_xml, validate_xml
 from masci_tools.io.io_fleurxml import load_outxml, XMLInput
 from masci_tools.util.logging_util import DictHandler, OutParserLogAdapter
+from masci_tools.io.parsers.fleur_schema import OutputSchemaDict
 from lxml import etree
 import copy
 import warnings
 import logging
-from typing import TYPE_CHECKING, Dict, Any, Iterable, Optional, Tuple, Union, List
+from typing import Dict, Any, Iterable, Optional, Tuple, Union, List
 try:
     from typing import Literal
 except ImportError:
     from typing_extensions import Literal  #type:ignore
-if TYPE_CHECKING:
-    from masci_tools.io.parsers.fleur.fleur_schema import OutputSchemaDict
 
 
 def outxml_parser(outxmlfile: XMLInput,
