@@ -4,12 +4,12 @@ Test of the consistency the input schema dictionaries with the SchemaFiles in th
 """
 import pytest
 import os
-from masci_tools.io.parsers.fleur.fleur_schema import InputSchemaDict, OutputSchemaDict, NoPathFound, NoUniquePathFound
+from masci_tools.io.parsers.fleur_schema import InputSchemaDict, OutputSchemaDict, NoPathFound, NoUniquePathFound
 from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict, CaseInsensitiveFrozenSet
 from masci_tools.util.lockable_containers import LockableDict, LockableList
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-SCHEMA_DIR = '../masci_tools/io/parsers/fleur/fleur_schema'
+SCHEMA_DIR = '../masci_tools/io/parsers/fleur_schema'
 
 #Collect all schemas from the folder
 schema_versions = {'inp': [], 'out': []}
