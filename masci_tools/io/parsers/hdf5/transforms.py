@@ -22,6 +22,7 @@ for the following 3 cases:
        are known. Two options can be chosen apply the transformation to all keys in the dict
        or throw an error
 """
+from typing import Callable
 import h5py
 import numpy as np
 from functools import wraps
@@ -33,7 +34,7 @@ class HDF5TransformationError(Exception):
     pass
 
 
-def hdf5_transformation(*, attribute_needed):
+def hdf5_transformation(*, attribute_needed: bool) -> Callable:
     """
     Decorator for registering a function as a transformation functions
     on the :py:class:`~masci_tools.io.parsers.hdf5.reader.HDF5Reader` class
@@ -42,7 +43,7 @@ def hdf5_transformation(*, attribute_needed):
                              attribute value and is therefore only available for the entries in datasets
     """
 
-    def hdf5_transformation_decorator(func):
+    def hdf5_transformation_decorator(func: Callable) -> Callable:
         """
         Return decorated HDF5Reader object with _transforms dict and
         _attribute_transforms set attribute
@@ -57,10 +58,6 @@ def hdf5_transformation(*, attribute_needed):
                 return func(*args, **kwargs)
             except Exception as exc:
                 raise HDF5TransformationError(f'The HDF5 transformation {func.__name__} failed with {exc}') from exc
-
-        if getattr(HDF5Reader, '_transforms', None) is None:
-            HDF5Reader._transforms = {}
-            HDF5Reader._attribute_transforms = set()
 
         HDF5Reader._transforms[func.__name__] = transform_func
 
