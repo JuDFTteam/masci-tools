@@ -22,7 +22,7 @@ except ImportError:
 from lxml import etree
 from logging import Logger
 if TYPE_CHECKING:
-    from masci_tools.io.parsers.fleur import fleur_schema
+    from masci_tools.io.parsers import fleur_schema
 
 BASE_TYPES = Union[Literal['int'], Literal['switch'], Literal['string'], Literal['float'], Literal['float_expression']]
 CONVERTED_TYPES = Union[int, float, bool, str]

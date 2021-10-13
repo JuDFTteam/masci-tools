@@ -22,7 +22,7 @@ import numpy as np
 from logging import Logger
 from typing import TYPE_CHECKING, List, Tuple, Union, Dict, Any, Optional
 if TYPE_CHECKING:
-    from masci_tools.io.parsers.fleur import fleur_schema
+    from masci_tools.io.parsers import fleur_schema
 
 
 def get_fleur_modes(xmltree: Union[etree._Element, etree._ElementTree],

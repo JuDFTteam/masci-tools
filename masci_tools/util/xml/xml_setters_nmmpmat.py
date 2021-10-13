@@ -17,7 +17,7 @@ for LDA+U
 from typing import Union, List
 import numpy as np
 from lxml import etree
-from masci_tools.io.parsers.fleur import fleur_schema
+from masci_tools.io.parsers import fleur_schema
 
 
 def set_nmmpmat(xmltree: Union[etree._Element, etree._ElementTree],

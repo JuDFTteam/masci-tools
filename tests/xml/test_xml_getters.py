@@ -7,8 +7,7 @@ Tests of the xml_getters
 import pytest
 import os
 
-#file_path1 = 'files/fleur/aiida_fleur/inpxml'
-file_path2 = 'files/fleur/Max-R5'
+file_path2 = '../files/fleur/Max-R5'
 
 inpxmlfilefolder = os.path.dirname(os.path.abspath(__file__))
 
@@ -589,7 +588,7 @@ def test_get_nkpts_max4(load_inpxml, data_regression):
     assert nkpts == 1
 
 
-def test_get_nkpts_max4_altkpoint(load_inpxml, data_regression):
+def test_get_nkpts_max4_altkpoint(load_inpxml):
 
     from masci_tools.util.xml.xml_getters import get_nkpts
     from masci_tools.util.xml.xml_setters_names import set_inpchanges

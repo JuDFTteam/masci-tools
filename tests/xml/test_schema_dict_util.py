@@ -5,7 +5,7 @@ both path finding and easy information extraction
 """
 import pytest
 import numpy as np
-from masci_tools.io.parsers.fleur_schema import InputSchemaDict, OutputSchemaDict, NoUniquePathFound, NoPathFound
+from masci_tools.io.parsers.fleur_schema import NoUniquePathFound, NoPathFound
 from masci_tools.util.constants import FLEUR_DEFINED_CONSTANTS
 from pprint import pprint
 import logging

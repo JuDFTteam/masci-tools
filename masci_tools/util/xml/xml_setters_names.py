@@ -21,7 +21,7 @@ except ImportError:
     from typing_extensions import Literal  #type:ignore
 from lxml import etree
 from masci_tools.io.parsers.fleur_schema import schema_dict_version_dispatch
-from masci_tools.io.parsers.fleur import fleur_schema
+from masci_tools.io.parsers import fleur_schema
 
 
 def create_tag(xmltree: Union[etree._Element, etree._ElementTree],

@@ -21,7 +21,7 @@ except ImportError:
     from typing_extensions import Literal  #type:ignore
 from lxml import etree
 from masci_tools.util.xml.common_functions import eval_xpath
-from masci_tools.io.parsers.fleur import fleur_schema
+from masci_tools.io.parsers import fleur_schema
 ######################CREATING/DELETING TAGS###############################################
 
 
