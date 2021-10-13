@@ -91,12 +91,19 @@ def test_get_structure_data(load_inpxml, inpxmlfilepath):
     Test that get_cell works for all input files
     """
     from masci_tools.util.xml.xml_getters import get_structure_data
+    from masci_tools.util.schema_dict_util import evaluate_attribute
     from masci_tools.io.common_functions import AtomSiteProperties
     import numpy as np
 
     xmltree, schema_dict = load_inpxml(inpxmlfilepath)
 
-    atoms, cell, pbc = get_structure_data(xmltree, schema_dict)
+    #Detect the input files which should raise a UserWarning for adjusting the species names
+    species_names = evaluate_attribute(xmltree, schema_dict, 'name', contains='species')
+    if any('(' in name for name in species_names):
+        with pytest.warns(UserWarning):
+            atoms, cell, pbc = get_structure_data(xmltree, schema_dict)
+    else:
+        atoms, cell, pbc = get_structure_data(xmltree, schema_dict)
 
     assert isinstance(atoms, list)
     assert len(atoms) != 0
