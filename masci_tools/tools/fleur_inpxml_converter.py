@@ -3,10 +3,10 @@
 from masci_tools.io.parsers.fleur_schema import InputSchemaDict
 from masci_tools.io.io_fleurxml import load_inpxml
 from masci_tools.util.schema_dict_util import evaluate_attribute
-from masci_tools.util.xml.xml_setters_basic import xml_delete_tag, xml_delete_att
+from masci_tools.util.xml.xml_setters_basic import xml_delete_tag, xml_delete_att, xml_create_tag
 from masci_tools.util.xml.xml_setters_xpaths import xml_create_tag_schema_dict
 from masci_tools.util.xml.xml_setters_names import set_attrib_value
-from masci_tools.util.xml.common_functions import split_off_attrib, split_off_tag, eval_xpath
+from masci_tools.util.xml.common_functions import split_off_attrib, split_off_tag, eval_xpath, validate_xml
 from masci_tools.cmdline.parameters.slice import IntegerSlice
 from masci_tools.cmdline.utils import echo
 from collections import UserList
@@ -27,6 +27,15 @@ class MoveAction(NamedTuple):
     new_name: str
     old_path: str
     new_path: str
+    attrib: bool = False
+
+
+class NormalizedMoveAction(NamedTuple):
+    old_name: str
+    new_name: str
+    old_path: str
+    new_path: str
+    actual_path: str
     attrib: bool = False
 
 
@@ -243,7 +252,7 @@ def resolve_ambiguouities(ambiguous,
             continue
 
         different_paths = old_paths.symmetric_difference(new_paths)
-        print(different_paths)
+
         if len(different_paths) == 1:
             path = different_paths.pop()
             if path in old_paths:
@@ -339,8 +348,9 @@ def trim_move_paths(paths):
             if action == action2:
                 continue
             if action.old_path in action2.old_path:
-                if action2 in paths:
-                    paths.remove(action2)
+                if action2.old_path.replace(action.old_path, '') == action2.new_path.replace(action.new_path, ''):
+                    if action2 in paths:
+                        paths.remove(action2)
 
     return paths
 
@@ -351,9 +361,9 @@ def trim_attrib_move_paths(paths, tag_paths):
     for action in tag_paths:
         for action2 in path_copy:
             if action.old_path in action2.old_path:
-                print(action.old_path)
-                if action2 in paths:
-                    paths.remove(action2)
+                if action2.old_path.replace(action.old_path, '') == action2.new_path.replace(action.new_path, ''):
+                    if action2 in paths:
+                        paths.remove(action2)
 
     return paths
 
@@ -422,15 +432,51 @@ def convert_inpxml(ctx, xml_file, to_version):
         xml_delete_att(xmltree, action.path, action.name)
 
     for action in conversion['tag']['move']:
-        action = MoveAction(*action)
+        if len(action) == 6:
+            action = NormalizedMoveAction(*action)
+        else:
+            action = MoveAction(*action)
 
-        nodes = eval_xpath(xmltree, action.old_path, list_return=True)
-        print(action)
+        if isinstance(action, NormalizedMoveAction):
+            print(action.actual_path)
+            nodes = eval_xpath(xmltree, action.actual_path, list_return=True)
+            xml_delete_tag(xmltree, action.actual_path)
+        else:
+            nodes = eval_xpath(xmltree, action.old_path, list_return=True)
+            xml_delete_tag(xmltree, action.old_path)
         for node in nodes:
             path, _ = split_off_tag(action.new_path)
-            print(path)
-            print(etree.tostring(xmltree, encoding='unicode', pretty_print=True))
-            xml_create_tag_schema_dict(xmltree, schema_dict_target, path, path, node, create_parents=True)
+            old_path, _ = split_off_tag(action.old_path)
+
+            order = schema_dict['tag_info'][old_path]['order'].get_unlocked()
+            order += schema_dict_target['tag_info'][path]['order'].get_unlocked()
+
+            if not order:
+                order = None
+
+            #xml_create_tag cannot create subtags, but since we know that we have simple xpaths
+            #we can do it here
+            parent_nodes = eval_xpath(xmltree, path, list_return=True)
+            to_create = []
+            while not parent_nodes:
+                parent_path, parent_name = split_off_tag(path)
+                to_create.append((parent_path, parent_name))
+                parent_nodes = eval_xpath(xmltree, parent_path, list_return=True)
+
+            for parent_path, name in reversed(to_create):
+                xml_create_tag(xmltree, parent_path, name)
+
+            xml_create_tag(xmltree, path, node, tag_order=order)
+
+    print(etree.tostring(xmltree, encoding='unicode', pretty_print=True))
+
+    try:
+        validate_xml(xmltree,
+                     schema_dict_target.xmlschema,
+                     error_header='Input file does not validate against the schema')
+    except etree.DocumentInvalid as err:
+        echo.echo_critical(
+            f'inp.xml conversion did not finish successfully. The resulting file violates the XML schema with:\n {err}')
 
 
 @inpxml.command('generate-conversion')
@@ -476,6 +522,13 @@ def generate_inp_conversion(from_version, to_version):
 
     #Check again if we can now resolve ambiguouities
     resolve_ambiguouities(ambiguous_tags, remove_tags, create_tags, move_tags)
+    remove_tags = trim_paths(remove_tags)
+    create_tags = trim_paths(create_tags)
+    move_tags = trim_move_paths(move_tags)
+
+    remove_tags = sorted(remove_tags, key=lambda x: x.name)
+    create_tags = sorted(create_tags, key=lambda x: x.name)
+    move_tags = sorted(move_tags, key=lambda x: x.new_name)
 
     click.echo('The following tags will be moved:')
     click.echo(tabulate.tabulate(move_tags, showindex=True))
@@ -485,6 +538,25 @@ def generate_inp_conversion(from_version, to_version):
         click.echo(tabulate.tabulate(ambiguous_tags, showindex=True))
 
         row = click.prompt('Enter the row you want to clarify')
+
+    #Make move_tags consistent
+    for indx, action in enumerate(move_tags):
+        #When the tag has been moved all paths afterward have to be adjusted
+        if indx == len(move_tags) - 1:
+            continue
+        for indx_after, action_after in enumerate(move_tags[indx + 1:]):
+            if action.old_path in action_after.old_path:
+                action_after_new = NormalizedMoveAction(
+                    old_name=action_after.old_name,
+                    new_name=action_after.new_name,
+                    old_path=action_after.old_path,
+                    actual_path=action_after.old_path.replace(action.old_path, action.new_path),
+                    new_path=action_after.new_path,
+                )
+                move_tags[indx_after + indx + 1] = action_after_new
+
+    click.echo('The following tags will be moved (Paths normalized):')
+    click.echo(tabulate.tabulate(move_tags, showindex=True))
 
     remove_attrib, create_attrib, move_attrib, ambiguous_attrib = analyse_paths(from_schema, to_schema, ATTRIB_ENTRIES)
 
