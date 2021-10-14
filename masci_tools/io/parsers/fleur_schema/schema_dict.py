@@ -620,7 +620,7 @@ class InputSchemaDict(SchemaDict):
                 warnings.warn(f"No Input Schema available for version '{version}'; falling back to '{latest_version}'")
 
             version = latest_version
-            schema_file_path = schema_file_path = PACKAGE_DIRECTORY / version / 'FleurInputSchema.xsd'
+            schema_file_path = PACKAGE_DIRECTORY / version / 'FleurInputSchema.xsd'
 
         if version in cls._schema_dict_cache and not no_cache:
             return cls._schema_dict_cache[version]
