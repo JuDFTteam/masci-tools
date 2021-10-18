@@ -35,7 +35,7 @@ GreensfElement = namedtuple(
 CoefficientName = Literal['sphavg', 'uu', 'ud', 'du', 'dd', 'ulou', 'uulo', 'ulod', 'dulo', 'uloulo']
 
 
-def _get_sphavg_recipe(group_name: str, index: int, contour: int) -> Dict[str, Any]:
+def _get_sphavg_recipe(group_name: str, index: int, contour: int, version: int = None) -> Dict[str, Any]:
     """
     Get the HDF5Reader recipe for reading in a spherically averaged Green's function element
 
@@ -45,7 +45,7 @@ def _get_sphavg_recipe(group_name: str, index: int, contour: int) -> Dict[str, A
 
     :returns: dict with the recipe reading all the necessary information from the ``greensf.hdf`` file
     """
-    return {
+    recipe = {
         'datasets': {
             'sphavg': {
                 'h5path':
@@ -123,8 +123,78 @@ def _get_sphavg_recipe(group_name: str, index: int, contour: int) -> Dict[str, A
         }
     }
 
+    if version >= 7:
+        recipe['attributes']['local_spin_frame'] = {
+            'h5path':
+            f'/{group_name}/element-{index}/',
+            'description':
+            'Switch whether the element is in the global spin frame',
+            'transforms': [
+                Transformation(name='get_attribute', args=('local_spin_frame',), kwargs={}),
+                Transformation(name='get_first_element', args=(), kwargs={}),
+                Transformation(name='apply_lambda', args=(lambda x: x == 1,), kwargs={})
+            ]
+        }
 
-def _get_radial_recipe(group_name: str, index: int, contour: int, nLO: int = 0) -> Dict[str, Any]:
+        recipe['attributes']['local_real_frame'] = {
+            'h5path':
+            f'/{group_name}/element-{index}/',
+            'description':
+            'Switch whether the element is in the global real space frame',
+            'transforms': [
+                Transformation(name='get_attribute', args=('local_real_frame',), kwargs={}),
+                Transformation(name='get_first_element', args=(), kwargs={}),
+                Transformation(name='apply_lambda', args=(lambda x: x == 1,), kwargs={})
+            ]
+        }
+
+        recipe['attributes']['alpha'] = {
+            'h5path':
+            f'/{group_name}/element-{index}/',
+            'description':
+            'Noco angle alpha for the first atom',
+            'transforms': [
+                Transformation(name='get_attribute', args=('alpha',), kwargs={}),
+                Transformation(name='get_first_element', args=(), kwargs={})
+            ]
+        }
+
+        recipe['attributes']['alphap'] = {
+            'h5path':
+            f'/{group_name}/element-{index}/',
+            'description':
+            'Noco angle alpha for the second atom',
+            'transforms': [
+                Transformation(name='get_attribute', args=('alphap',), kwargs={}),
+                Transformation(name='get_first_element', args=(), kwargs={})
+            ]
+        }
+
+        recipe['attributes']['beta'] = {
+            'h5path':
+            f'/{group_name}/element-{index}/',
+            'description':
+            'Noco angle beta for the first atom',
+            'transforms': [
+                Transformation(name='get_attribute', args=('beta',), kwargs={}),
+                Transformation(name='get_first_element', args=(), kwargs={})
+            ]
+        }
+
+        recipe['attributes']['betap'] = {
+            'h5path':
+            f'/{group_name}/element-{index}/',
+            'description':
+            'Noco angle beta for the second atom',
+            'transforms': [
+                Transformation(name='get_attribute', args=('betap',), kwargs={}),
+                Transformation(name='get_first_element', args=(), kwargs={})
+            ]
+        }
+    return recipe
+
+
+def _get_radial_recipe(group_name: str, index: int, contour: int, nLO: int = 0, version: int = None) -> Dict[str, Any]:
     """
     Get the HDF5Reader recipe for reading in a radial Green's function element
 
@@ -134,7 +204,7 @@ def _get_radial_recipe(group_name: str, index: int, contour: int, nLO: int = 0) 
 
     :returns: dict with the recipe reading all the necessary information from the ``greensf.hdf`` file
     """
-    recipe = _get_sphavg_recipe(group_name, index, contour)
+    recipe = _get_sphavg_recipe(group_name, index, contour, version=version)
 
     recipe['datasets'].pop('sphavg')
 
@@ -198,7 +268,7 @@ def _get_radial_recipe(group_name: str, index: int, contour: int, nLO: int = 0) 
     return recipe
 
 
-def _get_kresolved_recipe(group_name: str, index: int, contour: int):
+def _get_kresolved_recipe(group_name: str, index: int, contour: int, version: int = None):
     """
     Get the HDF5Reader recipe for reading in a k-resolved Green's function element
 
@@ -208,7 +278,7 @@ def _get_kresolved_recipe(group_name: str, index: int, contour: int):
 
     :returns: dict with the recipe reading all the necessary information from the ``greensf.hdf`` file
     """
-    recipe = _get_sphavg_recipe(group_name, index, contour)
+    recipe = _get_sphavg_recipe(group_name, index, contour, version=version)
 
     recipe['datasets'].pop('sphavg')
 
@@ -308,6 +378,23 @@ def _read_element_header(hdffile: h5py.File, index: int) -> GreensfElement:
     return GreensfElement(l, lp, atomType, atomTypep, sphavg, onsite, kresolved, contour, nLO, atomDiff)
 
 
+def _get_version(hdffile: h5py.File):
+    """
+    Get the file version of the given greensf.hdf file
+
+    :param hdffile: h5py.File of the greensf.hdf file
+    """
+    meta = hdffile.get('/meta')
+    version = None
+    if meta is not None:
+        version = meta.attrs['version'][0]
+
+    if version is None:
+        raise ValueError('Failed to extract file version of greensf.hdf file')
+
+    return version
+
+
 def _read_gf_element(file: Any, index: int) -> Tuple[GreensfElement, Dict[str, Any], Dict[str, Any]]:
     """
     Read the information needed for a given Green's function element form a ``greensf.hdf``
@@ -321,15 +408,16 @@ def _read_gf_element(file: Any, index: int) -> Tuple[GreensfElement, Dict[str, A
               :py:class:`~masci_tools.io.parsers.hdf5.HDF5Reader`
     """
     with HDF5Reader(file) as h5reader:
+        version = _get_version(h5reader.file)
         gf_element = _read_element_header(h5reader.file, index)
         group_name = _get_greensf_group_name(h5reader.file)
 
         if gf_element.kresolved:
-            recipe = _get_kresolved_recipe(group_name, index, gf_element.contour)
+            recipe = _get_kresolved_recipe(group_name, index, gf_element.contour, version=version)
         elif gf_element.sphavg:
-            recipe = _get_sphavg_recipe(group_name, index, gf_element.contour)
+            recipe = _get_sphavg_recipe(group_name, index, gf_element.contour, version=version)
         else:
-            recipe = _get_radial_recipe(group_name, index, gf_element.contour, nLO=gf_element.nLO)
+            recipe = _get_radial_recipe(group_name, index, gf_element.contour, nLO=gf_element.nLO, version=version)
 
         data, attributes = h5reader.read(recipe=recipe)
 
