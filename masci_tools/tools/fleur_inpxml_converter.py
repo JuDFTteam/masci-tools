@@ -7,6 +7,7 @@ from collections import defaultdict
 from typing import Iterable, List, NamedTuple, Tuple, Union
 import json
 from pathlib import Path
+import os
 
 from lxml import etree
 import click
@@ -457,7 +458,7 @@ def load_conversion(from_version, to_version):
 
     :returns: a dict with the actions to perform
     """
-    filepath = FILE_DIRECTORY / f"conversion_{from_version.replace('.','')}_to_{to_version.replace('.','')}.json"
+    filepath = FILE_DIRECTORY / 'conversions' / f"conversion_{from_version.replace('.','')}_to_{to_version.replace('.','')}.json"
 
     with open(filepath, 'r', encoding='utf-8') as f:
         conversion = json.load(f)
@@ -484,6 +485,24 @@ def load_conversion(from_version, to_version):
     conversion['attrib']['move'] = move
 
     return conversion
+
+
+def dump_conversion(conversion):
+    """
+    Save the given conversion as a json file in the conversions subfolder
+
+    :param conversion: dict representing the conversion
+    """
+
+    filepath = FILE_DIRECTORY / 'conversions' / f"conversion_{conversion['from'].replace('.','')}_to_{conversion['to'].replace('.','')}.json"
+    os.makedirs(filepath.parent, exist_ok=True)
+
+    #Drop all create actions, which have no element set
+    conversion['tag']['create'] = [action for action in conversion['tag']['create'] if action.element is not None]
+    conversion['attrib']['create'] = [action for action in conversion['attrib']['create'] if action.element is not None]
+
+    with open(filepath, 'w', encoding='utf-8') as f:
+        json.dump(conversion, f, indent=2, sort_keys=False)
 
 
 def _rename_elements(remove: List[RemoveAction], create: List[CreateAction], move: List[MoveAction], from_version: str,
@@ -520,6 +539,7 @@ def _rename_elements(remove: List[RemoveAction], create: List[CreateAction], mov
             move.extend(
                 MoveAction.from_remove_and_create(remove, create) for remove, create in zip(remove_list, create_list))
             move = trim_move_paths(move)
+    return remove, create, move
 
 
 def _create_tag_elements(create, to_schema):
@@ -647,6 +667,7 @@ def _manual_resolution(ambiguous: List[AmbiguousAction], remove: List[RemoveActi
                 move.append(MoveAction.from_path(old=old_path, new=new_path))
 
         echo.echo_success('Ambiguouity successfully resolved')
+    return remove, create, move
 
 
 def _xml_create_tag_with_parents(xmltree, xpath, node):
@@ -813,7 +834,8 @@ def generate_inp_conversion(ctx, from_version, to_version, show):
     create_tags = trim_paths(create_tags)
     move_tags = trim_move_paths(move_tags)
 
-    _rename_elements(remove_tags, create_tags, move_tags, from_version, to_version, 'tags')
+    remove_tags, create_tags, move_tags = _rename_elements(remove_tags, create_tags, move_tags, from_version,
+                                                           to_version, 'tags')
 
     #Check again if we can now resolve ambiguouities
     resolve_ambiguouities(ambiguous_tags, remove_tags, create_tags, move_tags)
@@ -825,7 +847,8 @@ def generate_inp_conversion(ctx, from_version, to_version, show):
     create_tags = sorted(create_tags, key=lambda x: x.name)
     move_tags = sorted(move_tags, key=lambda x: x.new_name)
 
-    _manual_resolution(ambiguous_tags, remove_tags, create_tags, move_tags, 'tags')
+    remove_tags, create_tags, move_tags = _manual_resolution(ambiguous_tags, remove_tags, create_tags, move_tags,
+                                                             'tags')
 
     #Make move_tags consistent
     for indx, action in enumerate(move_tags):
@@ -846,7 +869,8 @@ def generate_inp_conversion(ctx, from_version, to_version, show):
     create_attrib = trim_attrib_paths(create_attrib, create_tags)
     move_attrib = trim_attrib_move_paths(move_attrib, move_tags)
 
-    _rename_elements(remove_attrib, create_attrib, move_attrib, from_version, to_version, 'attributes')
+    remove_attrib, create_attrib, move_attrib = _rename_elements(remove_attrib, create_attrib, move_attrib,
+                                                                 from_version, to_version, 'attributes')
 
     #Check again if we can now resolve ambiguouities
     resolve_ambiguouities(ambiguous_attrib,
@@ -857,7 +881,8 @@ def generate_inp_conversion(ctx, from_version, to_version, show):
                           tag_remove=remove_tags,
                           tag_move=move_tags)
 
-    _manual_resolution(ambiguous_attrib, remove_attrib, create_attrib, move_attrib, 'attributes')
+    remove_attrib, create_attrib, move_attrib = _manual_resolution(ambiguous_attrib, remove_attrib, create_attrib,
+                                                                   move_attrib, 'attributes')
 
     create_attrib = _create_attrib_elements(create_attrib, to_schema)
 
@@ -876,10 +901,7 @@ def generate_inp_conversion(ctx, from_version, to_version, show):
         }
     }
 
-    filepath = FILE_DIRECTORY / f"conversion_{from_version.replace('.','')}_to_{to_version.replace('.','')}.json"
-
-    with open(filepath, 'w', encoding='utf-8') as f:
-        json.dump(conversion, f, indent=2, sort_keys=False)
+    dump_conversion(conversion)
 
     if show:
         ctx.invoke(show_inp_conversion, from_version=from_version, to_version=to_version)
