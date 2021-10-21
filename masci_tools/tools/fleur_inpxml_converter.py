@@ -3,22 +3,23 @@
 This module implements a commandline tool available with ``masci-tools inpxml`` to
 convert inp.xml files between different file versions
 """
+from collections import defaultdict
+from typing import Iterable, List, NamedTuple, Tuple, Union
+import json
+from pathlib import Path
+
+from lxml import etree
+import click
+import tabulate
+
 from masci_tools.io.parsers.fleur_schema import InputSchemaDict
 from masci_tools.io.io_fleurxml import load_inpxml
 from masci_tools.util.schema_dict_util import evaluate_attribute
-from masci_tools.util.xml.xml_setters_basic import xml_delete_tag, xml_delete_att, xml_create_tag, _reorder_tags
+from masci_tools.util.xml.xml_setters_basic import xml_delete_tag, xml_delete_att, xml_create_tag, _reorder_tags, xml_set_attrib_value_no_create
 from masci_tools.util.xml.xml_setters_names import set_attrib_value
 from masci_tools.util.xml.common_functions import split_off_attrib, split_off_tag, eval_xpath, validate_xml
-from masci_tools.cmdline.parameters.slice import IntegerSlice, ListElement
+from masci_tools.cmdline.parameters.slice import ListElement
 from masci_tools.cmdline.utils import echo
-from collections import defaultdict
-from typing import Iterable, List, NamedTuple, Tuple, Union
-import tabulate
-import json
-from lxml import etree
-
-import click
-from pathlib import Path
 
 FILE_DIRECTORY = Path(__file__).parent.resolve()
 
@@ -47,7 +48,7 @@ class MoveAction(NamedTuple):
         attrib = '@' in old
         if attrib:
             old_path, old_name = split_off_attrib(old)
-            new_path, new_name = split_off_attrib(old)
+            new_path, new_name = split_off_attrib(new)
         else:
             old_path, new_path = old, new
             _, old_name = split_off_tag(old_path)
@@ -555,6 +556,35 @@ def _create_tag_elements(create, to_schema):
         create = sorted(create, key=lambda x: x.name)
     return create
 
+def _create_attrib_elements(create, to_schema):
+    """
+    Get user input on attributes to create
+    """
+    create_prompt = True
+    while create and create_prompt:
+        echo_actions(create, header='The following attributes will be created:')
+
+        create_prompt = click.confirm('Do you want to set a value for a given attribute?')
+
+        if create_prompt:
+            name = click.prompt('Name of the attribute',
+                                type=click.Choice([action.name for action in create], case_sensitive=False),
+                                show_choices=False)
+            create_action = remove_action(create, name)
+
+            if len(create_action) != 1:
+                raise ValueError('Not implemented')
+            create_action = create_action[0]
+            default = to_schema['tag_info'][create_action.path]['optional_attribs'].get(create_action.name)
+            if default is not None:
+                default = str(default)
+
+            value = click.prompt(f'Value for {create_action.name}', default=default)
+            if value is not None:
+                create.append(create_action._replace(element=value))
+        create = sorted(create, key=lambda x: x.name)
+    return create
+
 
 def _manual_resolution(ambiguous: List[AmbiguousAction], remove: List[RemoveAction], create: List[CreateAction],
                        move: List[MoveAction], name: str):
@@ -725,15 +755,33 @@ def convert_inpxml(ctx, xml_file, to_version):
             path, _ = split_off_tag(action.path)
             node = etree.fromstring(action.element)
             _xml_create_tag_with_parents(xmltree, path, node)
+    
+    for action in conversion['attrib']['move']:
+        if isinstance(action, NormalizedMoveAction):
+            path = action.actual_path
+        else:
+            path = action.old_path
+        values = eval_xpath(xmltree, f'{path}/@{action.old_name}', list_return=True)
+        xml_delete_att(xmltree, path, action.old_name)
+        if values:
+            xml_set_attrib_value_no_create(xmltree, action.new_path, action.new_name, values)
+
+    for action in conversion['attrib']['create']:
+        if action.element is not None:
+            xml_set_attrib_value_no_create(xmltree, action.path, action.name, action.element)
 
     _reorder_tree(xmltree.getroot(), schema_dict_target)
 
+    etree.indent(xmltree)
     print(etree.tostring(xmltree, encoding='unicode', pretty_print=True))
 
     try:
         validate_xml(xmltree,
                      schema_dict_target.xmlschema,
                      error_header='Input file does not validate against the schema')
+        echo.echo_success('The conversion was successful')
+        echo.echo_info('It is not guaranteed that a FLEUR calculation will behave in the exact same way as the old input file\n'
+                       'Please check the file for correctness beforehand')
     except etree.DocumentInvalid as err:
         echo.echo_critical(
             f'inp.xml conversion did not finish successfully. The resulting file violates the XML schema with:\n {err}')
@@ -808,6 +856,8 @@ def generate_inp_conversion(ctx, from_version, to_version, show):
                           tag_move=move_tags)
 
     _manual_resolution(ambiguous_attrib, remove_attrib, create_attrib, move_attrib, 'attributes')
+
+    create_attrib = _create_attrib_elements(create_attrib, to_schema)
 
     conversion = {
         'from': from_version,
