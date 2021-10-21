@@ -817,6 +817,7 @@ def convert_inpxml(ctx, xml_file, to_version, output_file, overwrite):
     xmltree.write(output_file, encoding='utf-8', pretty_print=True)
     echo.echo_success(f'Converted file written to {output_file}')
 
+
 @inpxml.command('generate-conversion')
 @click.argument('from_version', type=str)
 @click.argument('to_version', type=str)
@@ -902,8 +903,6 @@ def generate_inp_conversion(ctx, from_version, to_version, show):
 
     remove_attrib, create_attrib, move_attrib = _manual_resolution(ambiguous_attrib, remove_attrib, create_attrib,
                                                                    move_attrib, 'attributes')
-
-
 
     create_attrib = _create_attrib_elements(create_attrib, to_schema)
 
