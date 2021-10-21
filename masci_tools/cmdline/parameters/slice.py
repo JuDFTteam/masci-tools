@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
-
-from typing import SupportsIndex, Type
+"""
+Click parameters for easily selecting multiple elements from a list via indices
+"""
+from typing import SupportsIndex
 import click
 
 
@@ -18,8 +20,7 @@ class IntegerSlice(click.ParamType):
             if '-' in value:
                 start, stop = value.split('-')
                 return slice(int(start), int(stop) + 1)
-            else:
-                return int(value)
+            return int(value)
         except TypeError as exc:
             raise click.BadParameter(
                 'Please provide either an integer number or two integer numbers separated by -') from exc

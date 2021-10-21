@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-
+"""
+This module implements a commandline tool available with ``masci-tools inpxml`` to
+convert inp.xml files between different file versions
+"""
 from masci_tools.io.parsers.fleur_schema import InputSchemaDict
 from masci_tools.io.io_fleurxml import load_inpxml
 from masci_tools.util.schema_dict_util import evaluate_attribute
@@ -259,6 +262,9 @@ def analyse_paths(
 
 
 def resolve_ambiguouities(ambiguous, remove, create, move, remove_move=False, tag_remove=None, tag_move=None):
+    """
+    Try to resolve ambuouities by using additional inforamtion from moved/created removed tags/attributes
+    """
 
     for action in ambiguous.copy():
 
@@ -380,13 +386,19 @@ def trim_attrib_move_paths(paths, tag_paths):
     return paths
 
 
-def remove_action(paths, name):
+def remove_action(actions, name):
+    """
+    Find all the occurrences of actions with a given name and return them and remove them from the list
 
-    matching = []
-    for action in paths.copy():
-        if action.name == name:
-            paths.remove(action)
-            matching.append(action)
+    :param actions: List of actions
+    :param name: str name to find
+
+    :returns: List of actions matching the given name
+    """
+
+    matching = [action for action in actions if action.name == name]
+    for action in matching:
+        actions.remove(action)
 
     if not matching:
         raise ValueError(f'Action {name} not found')
@@ -394,13 +406,81 @@ def remove_action(paths, name):
     return matching
 
 
+def echo_actions(actions, ignore=None, header='') -> None:
+    """
+    Echo a list of actions in a nicely formatted list
+
+    :param actions: list of actions to show
+    :param ignore: Iterable of str with attributes to ignore in the table
+    :param header: str optional Title for the table
+    """
+
+    if ignore is None:
+        ignore = {'attrib'}
+
+    actions_dict = [action._asdict() for action in actions]
+
+    if ignore:
+        for action in actions_dict:
+            for key in ignore:
+                action.pop(key, None)
+
+    click.echo(header)
+    if any(isinstance(action, AmbiguousAction) for action in actions):
+        first = True
+        for action in actions_dict:
+            old_length = len(action['old_paths'])
+            new_length = len(action['new_paths'])
+            if old_length < new_length:
+                action['old_paths'] += (None,) * (new_length - old_length)
+            elif new_length < old_length:
+                action['new_paths'] += (None,) * (old_length - new_length)
+            if 'name' in action:
+                action['name'] = [action['name']] + [None] * max(new_length, old_length)
+            if first:
+                click.echo(tabulate.tabulate(action, headers=['Name', 'Old paths', 'New paths']))
+                first = False
+            else:
+                click.echo(tabulate.tabulate(action))
+    else:
+        click.echo(tabulate.tabulate(actions_dict, showindex=True, headers='keys'))
+    click.echo()
+
+
 def load_conversion(from_version, to_version):
     """
+    Load the conversion between the given versions from a stored json file
+
+    :param from_version: str of the intitial version
+    :param to_version: str of the final version
+
+    :returns: a dict with the actions to perform
     """
     filepath = FILE_DIRECTORY / f"conversion_{from_version.replace('.','')}_to_{to_version.replace('.','')}.json"
 
     with open(filepath, 'r', encoding='utf-8') as f:
         conversion = json.load(f)
+
+    #convert back to the namedtuples
+    conversion['tag']['create'] = [CreateAction(*action) for action in conversion['tag']['create']]
+    conversion['tag']['remove'] = [RemoveAction(*action) for action in conversion['tag']['remove']]
+    move = []
+    for action in conversion['tag']['move']:
+        if len(action) == 6:
+            move.append(NormalizedMoveAction(*action))
+        else:
+            move.append(MoveAction(*action))
+    conversion['tag']['move'] = move
+
+    conversion['attrib']['create'] = [CreateAction(*action) for action in conversion['attrib']['create']]
+    conversion['attrib']['remove'] = [RemoveAction(*action) for action in conversion['attrib']['remove']]
+    move = []
+    for action in conversion['attrib']['move']:
+        if len(action) == 6:
+            move.append(NormalizedMoveAction(*action))
+        else:
+            move.append(MoveAction(*action))
+    conversion['attrib']['move'] = move
 
     return conversion
 
@@ -416,10 +496,10 @@ def _rename_elements(remove: List[RemoveAction], create: List[CreateAction], mov
 
     rename = True
     while remove and create and rename:
-        click.echo(f'The following {name} are not found in the target version:')
-        click.echo(tabulate.tabulate(remove, showindex=True))
-        click.echo(f'The following {name} are not found in the start version:')
-        click.echo(tabulate.tabulate(create, showindex=True))
+        echo_actions(remove, header=f'The following {name} are not found in the target version:')
+        echo_actions(create,
+                     header=f'The following {name} are not found in the start version:',
+                     ignore={'attrib', 'element'})
 
         rename = click.confirm(f'Are there {name} that were renamed?')
 
@@ -447,8 +527,7 @@ def _create_tag_elements(create, to_schema):
     """
     create_prompt = True
     while create and create_prompt:
-        click.echo('The following tags will be created:')
-        click.echo(tabulate.tabulate(create, showindex=True))
+        echo_actions(create, header='The following tags will be created:')
 
         create_prompt = click.confirm('Do you want to set an element to create?')
 
@@ -486,8 +565,7 @@ def _manual_resolution(ambiguous: List[AmbiguousAction], remove: List[RemoveActi
     ambiguous = sorted(ambiguous, key=lambda x: x.name)
 
     while ambiguous:
-        click.echo(f'The following {name} could not be resolved automatically:')
-        click.echo(tabulate.tabulate(ambiguous, showindex=True))
+        echo_actions(ambiguous, header=f'The following {name} could not be resolved automatically:')
 
         if len(ambiguous) > 1:
             name = click.prompt('Enter the name you want to clarify',
@@ -591,6 +669,7 @@ def _reorder_tree(parent: etree._Element, schema_dict: InputSchemaDict, base_xpa
 @click.group('inpxml')
 def inpxml():
     """
+    Tool for converting inp.xml files to different versions
     """
     pass
 
@@ -601,8 +680,11 @@ def inpxml():
 @click.pass_context
 def convert_inpxml(ctx, xml_file, to_version):
     """
-    """
+    Convert the given XML_FILE file to version TO_VERSION
 
+    XML_FILE is the file to convert
+    TO_VERSION is the file version of the finale input file
+    """
     xmltree, schema_dict = load_inpxml(xml_file)
     schema_dict_target = InputSchemaDict.fromVersion(to_version)
 
@@ -619,25 +701,18 @@ def convert_inpxml(ctx, xml_file, to_version):
 
     set_attrib_value(xmltree, schema_dict_target, 'fleurInputVersion', to_version)
     for action in conversion['tag']['remove']:
-        action = RemoveAction(*action)
         xml_delete_tag(xmltree, action.path)
 
     for action in conversion['attrib']['remove']:
-        action = RemoveAction(*action)
         xml_delete_att(xmltree, action.path, action.name)
 
     for action in conversion['tag']['move']:
-        if len(action) == 6:
-            action = NormalizedMoveAction(*action)
-        else:
-            action = MoveAction(*action)
-
         if isinstance(action, NormalizedMoveAction):
-            nodes = eval_xpath(xmltree, action.actual_path, list_return=True)
-            xml_delete_tag(xmltree, action.actual_path)
+            path = action.actual_path
         else:
-            nodes = eval_xpath(xmltree, action.old_path, list_return=True)
-            xml_delete_tag(xmltree, action.old_path)
+            path = action.old_path
+        nodes = eval_xpath(xmltree, path, list_return=True)
+        xml_delete_tag(xmltree, path)
 
         for node in nodes:
             path, _ = split_off_tag(action.new_path)
@@ -646,7 +721,6 @@ def convert_inpxml(ctx, xml_file, to_version):
             _xml_create_tag_with_parents(xmltree, path, node)
 
     for action in conversion['tag']['create']:
-        action = CreateAction(*action)
         if action.element is not None:
             path, _ = split_off_tag(action.path)
             node = etree.fromstring(action.element)
@@ -668,8 +742,14 @@ def convert_inpxml(ctx, xml_file, to_version):
 @inpxml.command('generate-conversion')
 @click.argument('from_version', type=str)
 @click.argument('to_version', type=str)
-def generate_inp_conversion(from_version, to_version):
+@click.option('--show/--no-show', default=True, help='Show a summary of the conversion at the end')
+@click.pass_context
+def generate_inp_conversion(ctx, from_version, to_version, show):
     """
+    Generate the conversions from FROM_VERSION to TO_VERSION
+
+    FROM_VERSION is the file version of the initial input file
+    TO_VERSION is the file version of the finale input file
     """
     TAG_ENTRY = 'tag_paths'
     ATTRIB_ENTRIES = ['unique_attribs', 'unique_path_attribs', 'other_attribs']
@@ -695,9 +775,6 @@ def generate_inp_conversion(from_version, to_version):
     create_tags = sorted(create_tags, key=lambda x: x.name)
     move_tags = sorted(move_tags, key=lambda x: x.new_name)
 
-    click.echo('The following tags will be moved:')
-    click.echo(tabulate.tabulate(move_tags, showindex=True))
-
     _manual_resolution(ambiguous_tags, remove_tags, create_tags, move_tags, 'tags')
 
     #Make move_tags consistent
@@ -710,9 +787,6 @@ def generate_inp_conversion(from_version, to_version):
                 intermediate_path = action_after.old_path.replace(action.old_path, action.new_path)
                 move_tags[indx_after + indx + 1] = NormalizedMoveAction.from_move(action_after,
                                                                                   actual_path=intermediate_path)
-
-    click.echo('The following tags will be moved (Paths normalized):')
-    click.echo(tabulate.tabulate(move_tags, showindex=True))
 
     create_tags = _create_tag_elements(create_tags, to_schema)
 
@@ -733,17 +807,7 @@ def generate_inp_conversion(from_version, to_version):
                           tag_remove=remove_tags,
                           tag_move=move_tags)
 
-    click.echo('The following attribs will be moved:')
-    click.echo(tabulate.tabulate(move_attrib, showindex=True))
-
     _manual_resolution(ambiguous_attrib, remove_attrib, create_attrib, move_attrib, 'attributes')
-
-    click.echo('The following attribs are removed:')
-    click.echo(tabulate.tabulate(remove_attrib, showindex=True))
-    click.echo('The following attribs are created:')
-    click.echo(tabulate.tabulate(create_attrib, showindex=True))
-    click.echo('The following attribs are moved:')
-    click.echo(tabulate.tabulate(move_attrib, showindex=True))
 
     conversion = {
         'from': from_version,
@@ -764,6 +828,10 @@ def generate_inp_conversion(from_version, to_version):
 
     with open(filepath, 'w', encoding='utf-8') as f:
         json.dump(conversion, f, indent=2, sort_keys=False)
+
+    if show:
+        ctx.invoke(show_inp_conversion, from_version=from_version, to_version=to_version)
+
     return conversion
 
 
@@ -772,10 +840,22 @@ def generate_inp_conversion(from_version, to_version):
 @click.argument('to_version', type=str)
 def show_inp_conversion(from_version, to_version):
     """
+    Show the actions for an already created conversion from FROM_VERSION to TO_VERSION
+
+    FROM_VERSION is the file version of the initial input file
+    TO_VERSION is the file version of the finale input file
     """
     try:
         conversion = load_conversion(from_version, to_version)
     except FileNotFoundError:
         echo.echo_critical(f'No conversion available between versions {from_version} to {to_version}')
 
-    echo.echo_dictionary(conversion)
+    echo.echo_info(f'Actions performed for transforming from version {from_version} to {to_version}')
+    echo_actions(conversion['tag']['remove'], header='The following tags are removed:')
+    echo_actions(conversion['tag']['create'], header='The following tags are created:')
+    echo_actions(conversion['tag']['move'], header='The following tags are moved:', ignore={'attrib', 'actual_path'})
+    echo_actions(conversion['attrib']['remove'], header='The following attributes are removed:')
+    echo_actions(conversion['attrib']['create'], header='The following attributes are created:')
+    echo_actions(conversion['attrib']['move'],
+                 header='The following attributes are moved:',
+                 ignore={'attrib', 'actual_path'})
