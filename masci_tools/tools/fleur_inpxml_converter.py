@@ -729,8 +729,10 @@ def inpxml():
 @inpxml.command('convert')
 @click.argument('xml-file', type=click.Path(exists=True))
 @click.argument('to_version', type=str)
+@click.option('--output-file', '-o', type=str, default='inp.xml', help='Name of the output file')
+@click.option('--overwrite', is_flag=True, help='If the flag is given and the file already exists it is overwritten')
 @click.pass_context
-def convert_inpxml(ctx, xml_file, to_version):
+def convert_inpxml(ctx, xml_file, to_version, output_file, overwrite):
     """
     Convert the given XML_FILE file to version TO_VERSION
 
@@ -750,6 +752,11 @@ def convert_inpxml(ctx, xml_file, to_version):
             conversion = ctx.invoke(generate_inp_conversion, from_version=from_version, to_version=to_version)
         else:
             echo.echo_critical('Cannot convert')
+
+    if Path(output_file).is_file():
+        if not overwrite:
+            echo.echo_critical(f'The output file {output_file} already exists. Use the overwrite flag to ignore')
+        echo.echo_warning(f'The output file {output_file} already exists. Will be overwritten')
 
     set_attrib_value(xmltree, schema_dict_target, 'fleurInputVersion', to_version)
     for action in conversion['tag']['remove']:
@@ -795,8 +802,6 @@ def convert_inpxml(ctx, xml_file, to_version):
     _reorder_tree(xmltree.getroot(), schema_dict_target)
 
     etree.indent(xmltree)
-    print(etree.tostring(xmltree, encoding='unicode', pretty_print=True))
-
     try:
         validate_xml(xmltree,
                      schema_dict_target.xmlschema,
@@ -809,6 +814,8 @@ def convert_inpxml(ctx, xml_file, to_version):
         echo.echo_critical(
             f'inp.xml conversion did not finish successfully. The resulting file violates the XML schema with:\n {err}')
 
+    xmltree.write(output_file, encoding='utf-8', pretty_print=True)
+    echo.echo_success(f'Converted file written to {output_file}')
 
 @inpxml.command('generate-conversion')
 @click.argument('from_version', type=str)
@@ -850,6 +857,10 @@ def generate_inp_conversion(ctx, from_version, to_version, show):
     remove_tags, create_tags, move_tags = _manual_resolution(ambiguous_tags, remove_tags, create_tags, move_tags,
                                                              'tags')
 
+    remove_tags = sorted(remove_tags, key=lambda x: x.name)
+    create_tags = sorted(create_tags, key=lambda x: x.name)
+    move_tags = sorted(move_tags, key=lambda x: x.new_name)
+
     #Make move_tags consistent
     for indx, action in enumerate(move_tags):
         #When the tag has been moved all paths afterward have to be adjusted
@@ -869,8 +880,16 @@ def generate_inp_conversion(ctx, from_version, to_version, show):
     create_attrib = trim_attrib_paths(create_attrib, create_tags)
     move_attrib = trim_attrib_move_paths(move_attrib, move_tags)
 
+    remove_attrib = sorted(remove_attrib, key=lambda x: x.name)
+    create_attrib = sorted(create_attrib, key=lambda x: x.name)
+    move_attrib = sorted(move_attrib, key=lambda x: x.new_name)
+
     remove_attrib, create_attrib, move_attrib = _rename_elements(remove_attrib, create_attrib, move_attrib,
                                                                  from_version, to_version, 'attributes')
+
+    remove_attrib = sorted(remove_attrib, key=lambda x: x.name)
+    create_attrib = sorted(create_attrib, key=lambda x: x.name)
+    move_attrib = sorted(move_attrib, key=lambda x: x.new_name)
 
     #Check again if we can now resolve ambiguouities
     resolve_ambiguouities(ambiguous_attrib,
@@ -883,6 +902,8 @@ def generate_inp_conversion(ctx, from_version, to_version, show):
 
     remove_attrib, create_attrib, move_attrib = _manual_resolution(ambiguous_attrib, remove_attrib, create_attrib,
                                                                    move_attrib, 'attributes')
+
+
 
     create_attrib = _create_attrib_elements(create_attrib, to_schema)
 

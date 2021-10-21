@@ -186,17 +186,17 @@
     ],
     "move": [
       [
-        "mcd",
-        "mcd",
-        "/fleurInput/output",
-        "/fleurInput/output/magneticCircularDichroism",
-        true
-      ],
-      [
         "vacdos",
         "vacdos",
         "/fleurInput/output",
         "/fleurInput/output/vacuumDOS",
+        true
+      ],
+      [
+        "mcd",
+        "mcd",
+        "/fleurInput/output",
+        "/fleurInput/output/magneticCircularDichroism",
         true
       ],
       [
