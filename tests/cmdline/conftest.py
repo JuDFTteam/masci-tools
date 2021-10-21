@@ -78,3 +78,25 @@ def fake_schemas_and_test_files(tmp_path):
         #Cleanup the folder created in the masci-tools repository
         shutil.rmtree(created_schema_folder)
         ParseTasks._migrations['0.34'].pop('0.01')  #pylint: disable=protected-access
+
+
+@pytest.fixture
+def remove_conversion(tmp_path):
+    """
+    Helper fixture for fleur inpxml converter tests
+
+    Moves conversion to a temporary directory and back afterwards
+    """
+    import masci_tools
+
+    #We need to use the __file__ attribute, since we do not know, whether the package was installed with -e
+    package_root = Path(masci_tools.__file__).parent.resolve()
+    conversion_folder = package_root / Path('tools/conversions')
+
+    shutil.move(conversion_folder / 'conversion_031_to_034.json', tmp_path)
+
+    try:
+        yield conversion_folder / 'conversion_031_to_034.json'
+    finally:
+        #Move the conversion back
+        shutil.copy(tmp_path / 'conversion_031_to_034.json', conversion_folder)
