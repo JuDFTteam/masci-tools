@@ -2,7 +2,10 @@
 """
 Click parameters for easily selecting multiple elements from a list via indices
 """
-from typing import SupportsIndex
+try:
+    from typing import SupportsIndex
+except ImportError:
+    from typing_extensions import SupportsIndex
 import click
 
 
