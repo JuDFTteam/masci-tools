@@ -93,10 +93,10 @@ def remove_conversion(tmp_path):
     package_root = Path(masci_tools.__file__).parent.resolve()
     conversion_folder = package_root / Path('tools/conversions')
 
-    shutil.move(conversion_folder / 'conversion_031_to_034.json', tmp_path)
+    shutil.move(os.fspath(conversion_folder / 'conversion_031_to_034.json'), os.fspath(tmp_path))
 
     try:
         yield conversion_folder / 'conversion_031_to_034.json'
     finally:
         #Move the conversion back
-        shutil.copy(tmp_path / 'conversion_031_to_034.json', conversion_folder)
+        shutil.copy(os.fspath(tmp_path / 'conversion_031_to_034.json'), os.fspath(conversion_folder))
