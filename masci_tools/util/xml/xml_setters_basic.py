@@ -186,7 +186,7 @@ def _reorder_tags(node: etree._Element, tag_order: List[str]) -> etree._Element:
     index = parent.index(node)  #type:ignore
     parent.remove(node)
     parent.insert(index, ordered_node)
-    return node
+    return ordered_node
 
 
 def xml_create_tag(xmltree: Union[etree._Element, etree._ElementTree],
