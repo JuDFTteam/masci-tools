@@ -6,10 +6,10 @@ from masci_tools.util.schema_dict_util import evaluate_attribute
 from masci_tools.util.xml.xml_setters_basic import xml_delete_tag, xml_delete_att, xml_create_tag
 from masci_tools.util.xml.xml_setters_names import set_attrib_value
 from masci_tools.util.xml.common_functions import split_off_attrib, split_off_tag, eval_xpath, validate_xml
-from masci_tools.cmdline.parameters.slice import IntegerSlice
+from masci_tools.cmdline.parameters.slice import IntegerSlice, ListElement
 from masci_tools.cmdline.utils import echo
-from collections import UserList, defaultdict
-from typing import NamedTuple, Tuple
+from collections import defaultdict
+from typing import Iterable, List, NamedTuple, Tuple, Union
 import tabulate
 import json
 from lxml import etree
@@ -22,14 +22,63 @@ FILE_DIRECTORY = Path(__file__).parent.resolve()
 
 #These are the possible conversions that we can do
 class MoveAction(NamedTuple):
+    """
+    NamedTuple representing the action of moving a tag/attribute to a different place.
+    The name of this tag/attribute can also be changed
+    """
     old_name: str
     new_name: str
     old_path: str
     new_path: str
     attrib: bool = False
 
+    @classmethod
+    def from_path(cls, old: str, new: str) -> 'MoveAction':
+        """
+        Construct a MoveAction from two given xpaths
+
+        :param old: old str of the xpath
+        :param new: new str of the xpath
+        """
+
+        attrib = '@' in old
+        if attrib:
+            old_path, old_name = split_off_attrib(old)
+            new_path, new_name = split_off_attrib(old)
+        else:
+            old_path, new_path = old, new
+            _, old_name = split_off_tag(old_path)
+            _, new_name = split_off_tag(new_path)
+
+        return cls(old_name=old_name, new_name=new_name, old_path=old_path, new_path=new_path, attrib=attrib)
+
+    @classmethod
+    def from_remove_and_create(cls, remove: 'RemoveAction', create: 'CreateAction') -> 'MoveAction':
+        """
+        Construct a MoveAction from a remove and create action, merging them together
+
+        :param remove: RemoveAction to merge
+        :param create: CreateAction to merge
+        """
+
+        if remove.attrib != create.attrib:
+            raise ValueError('Inconsistent Remove/Create Actions')
+
+        return cls(old_name=remove.name,
+                   new_name=create.name,
+                   old_path=remove.path,
+                   new_path=create.path,
+                   attrib=remove.attrib)
+
 
 class NormalizedMoveAction(NamedTuple):
+    """
+    NamedTuple representing the action of moving a tag/attribute to a different place.
+    The name of this tag/attribute can also be changed
+
+    This MoveAction holds an additional attribute of an intermediate xpath to use, since the
+    tag could not be in the expected starting position if other tags are moved beforehand
+    """
     old_name: str
     new_name: str
     old_path: str
@@ -37,28 +86,111 @@ class NormalizedMoveAction(NamedTuple):
     actual_path: str
     attrib: bool = False
 
+    @classmethod
+    def from_move(cls, move_action: MoveAction, actual_path: str) -> 'NormalizedMoveAction':
+        """
+        Construct a NormalizedMoveAction from a given move and the additional actual xpath to use
+
+        :param move_action: MoveAction to construct the object from
+        :param actual_path: str of the intermediate xpath to use as a starting point
+        """
+
+        return cls(**move_action._asdict(), actual_path=actual_path)
+
 
 class AmbiguousAction(NamedTuple):
+    """
+    NamedTuple representing a change in paths that cannot be resolved automatically
+    """
     name: str
     old_paths: Tuple[str]
     new_paths: Tuple[str]
     attrib: bool
 
+    @classmethod
+    def from_paths(cls, old: Iterable[str], new: Iterable[str]) -> 'AmbiguousAction':
+        """
+        Construct AmbiguousAction from given paths
+
+        :param old: Iterable of the paths in the old version
+        :param new: Iterable of paths in the new version
+        """
+        path = list(old)[0]
+        attrib = '@' in path
+        if attrib:
+            _, name = split_off_attrib(path)
+        else:
+            _, name = split_off_tag(path)
+
+        return cls(name=name, old_paths=tuple(old), new_paths=tuple(new), attrib=attrib)
+
 
 class RemoveAction(NamedTuple):
+    """
+    NamedTuple representing the action of removing a tag/attribute from the xml tree
+    """
     name: str
     path: str
     attrib: bool = False
 
+    @classmethod
+    def from_path(cls, xpath: str) -> 'RemoveAction':
+        """
+        Construct a RemoveAction from a given xpath
+
+        :param xpath: str of the xpath
+        """
+
+        attrib = '@' in xpath
+        if attrib:
+            path, name = split_off_attrib(xpath)
+        else:
+            path = xpath
+            _, name = split_off_tag(xpath)
+
+        return cls(name=name, path=path, attrib=attrib)
+
 
 class CreateAction(NamedTuple):
+    """
+    NamedTuple representing the action of creating a tag/attribute in the xml tree
+    """
     name: str
     path: str
     attrib: bool = False
     element: str = None
 
+    @classmethod
+    def from_path(cls, xpath: str, element: str = None) -> 'RemoveAction':
+        """
+        Construct a CreateAction from a given xpath
 
-def analyse_paths(schema_start, schema_target, path_entries):
+        :param xpath: str of the xpath
+        """
+
+        attrib = '@' in xpath
+        if attrib:
+            path, name = split_off_attrib(xpath)
+        else:
+            path = xpath
+            _, name = split_off_tag(xpath)
+
+        return cls(name=name, path=path, attrib=attrib, element=element)
+
+
+def analyse_paths(
+    schema_start: 'InputSchemaDict', schema_target: 'InputSchemaDict', path_entries: Union[str, List[str]]
+) -> Tuple[List[RemoveAction], List[CreateAction], List[MoveAction], List[AmbiguousAction]]:
+    """
+    Gather the initial path differences between the two given input schema dictionaries
+    fro the given entries. If multiple enetries are given they are first merged together
+
+    :param schema_start: InputSchemaDict to start from
+    :param schema_start: InputSchemaDict to end up at
+    :param path_entries: which entries of the schema dictionary should be analysed
+
+    :returns: Tuple of List of Actions put into four categories (remove, create, move, ambiguous)
+    """
 
     if not isinstance(path_entries, list):
         path_entries = [path_entries]
@@ -80,30 +212,12 @@ def analyse_paths(schema_start, schema_target, path_entries):
     removed_keys = paths_start.keys() - paths_target.keys()
     remove = []
     for key in removed_keys:
-        paths = paths_start[key]
-        if not isinstance(paths, (list, UserList)):
-            paths = [paths]
-        for path in paths:
-            attrib = '@' in path
-            if attrib:
-                path, name = split_off_attrib(path)
-            else:
-                _, name = split_off_tag(path)
-            remove.append(RemoveAction(name=name, path=path, attrib=attrib))
+        remove.extend(RemoveAction.from_path(path) for path in paths_start[key])
 
     new_keys = paths_target.keys() - paths_start.keys()
     create = []
     for key in new_keys:
-        paths = paths_target[key]
-        if not isinstance(paths, (list, UserList)):
-            paths = [paths]
-        for path in paths:
-            attrib = '@' in path
-            if attrib:
-                path, name = split_off_attrib(path)
-            else:
-                _, name = split_off_tag(path)
-            create.append(CreateAction(name=name, path=path, attrib=attrib))
+        create.extend(CreateAction.from_path(path) for path in paths_target[key])
 
     move = []
     ambiguous = []
@@ -115,12 +229,6 @@ def analyse_paths(schema_start, schema_target, path_entries):
         if old_paths == new_paths:
             continue
 
-        if not isinstance(old_paths, (list, UserList)):
-            old_paths = [old_paths]
-
-        if not isinstance(new_paths, (list, UserList)):
-            new_paths = [new_paths]
-
         old_paths = set(old_paths)
         new_paths = set(new_paths)
 
@@ -128,77 +236,29 @@ def analyse_paths(schema_start, schema_target, path_entries):
         if len(different_paths) == 1:
             path = different_paths.pop()
             if path in old_paths:
-                attrib = '@' in path
-                if attrib:
-                    path, name = split_off_attrib(path)
-                else:
-                    _, name = split_off_tag(path)
-                remove.append(RemoveAction(name=name, path=path, attrib=attrib))
+                remove.append(RemoveAction.from_path(path))
             else:
-                attrib = '@' in path
-                if attrib:
-                    path, name = split_off_attrib(path)
-                else:
-                    _, name = split_off_tag(path)
-                create.append(CreateAction(name=name, path=path, attrib=attrib))
+                create.append(CreateAction.from_path(path))
         elif len(different_paths) == 2:
             if all(path in old_paths for path in different_paths):
-                for path in different_paths:
-                    attrib = '@' in path
-                    if attrib:
-                        path, name = split_off_attrib(path)
-                    else:
-                        _, name = split_off_tag(path)
-                    remove.append(RemoveAction(name=name, path=path, attrib=attrib))
+                remove.extend(RemoveAction.from_path(path) for path in different_paths)
                 continue
             if all(path in new_paths for path in different_paths):
-                for path in different_paths:
-                    attrib = '@' in path
-                    if attrib:
-                        path, name = split_off_attrib(path)
-                    else:
-                        _, name = split_off_tag(path)
-                    create.append(CreateAction(name=name, path=path, attrib=attrib))
+                create.extend(CreateAction.from_path(path) for path in different_paths)
                 continue
             first_path = different_paths.pop()
-            attrib = '@' in first_path
-            if attrib:
-                first_path, first_name = split_off_attrib(first_path)
-            else:
-                _, first_name = split_off_tag(first_path)
-
             second_path = different_paths.pop()
-            if attrib:
-                second_path, second_name = split_off_attrib(second_path)
-            else:
-                _, second_name = split_off_tag(second_path)
-
             if first_path in old_paths:
-                move.append(
-                    MoveAction(old_name=first_name, old_path=first_path, new_name=second_name, new_path=second_path))
+                move.append(MoveAction.from_path(old=first_path, new=second_path))
             else:
-                move.append(
-                    MoveAction(old_name=second_name, old_path=second_path, new_name=first_name, new_path=first_path))
+                move.append(MoveAction.from_path(old=second_path, new=first_path))
         else:
-            path = list(old_paths)[0]
-            attrib = '@' in path
-            if attrib:
-                path, name = split_off_attrib(path)
-            else:
-                _, name = split_off_tag(path)
-            ambiguous.append(
-                AmbiguousAction(name=name, old_paths=tuple(old_paths), new_paths=tuple(new_paths), attrib=attrib))
+            ambiguous.append(AmbiguousAction.from_paths(old=old_paths, new=new_paths))
 
     return remove, create, move, ambiguous
 
 
-def resolve_ambiguouities(ambiguous,
-                          remove,
-                          create,
-                          move,
-                          remove_move=False,
-                          tag_remove=None,
-                          tag_move=None):
+def resolve_ambiguouities(ambiguous, remove, create, move, remove_move=False, tag_remove=None, tag_move=None):
 
     for action in ambiguous.copy():
 
@@ -222,7 +282,7 @@ def resolve_ambiguouities(ambiguous,
                     for action_move in tag_move:
                         if old_path == new_path:
                             continue
-                        if old_path.replace(action_move.old_path,'') == new_path.replace(action_move.new_path,''):
+                        if old_path.replace(action_move.old_path, '') == new_path.replace(action_move.new_path, ''):
                             old_paths.discard(old_path)
                             new_paths.discard(new_path)
 
@@ -232,84 +292,38 @@ def resolve_ambiguouities(ambiguous,
         different_paths = old_paths.symmetric_difference(new_paths)
 
         if all(path in new_paths for path in different_paths):
-            for path in new_paths:
-                attrib = '@' in path
-                if attrib:
-                    path, name = split_off_attrib(path)
-                else:
-                    _, name = split_off_tag(path)
-                create.append(CreateAction(name=name, path=path, attrib=attrib))
+            create.extend(CreateAction.from_path(path) for path in different_paths)
             continue
 
         if all(path in old_paths for path in different_paths):
-            for path in new_paths:
-                attrib = '@' in path
-                if attrib:
-                    path, name = split_off_attrib(path)
-                else:
-                    _, name = split_off_tag(path)
-                remove.append(RemoveAction(name=name, path=path, attrib=attrib))
+            remove.extend(RemoveAction.from_path(path) for path in different_paths)
             continue
 
         if len(different_paths) == 1:
             path = different_paths.pop()
             if path in old_paths:
-                attrib = '@' in path
-                if attrib:
-                    path, name = split_off_attrib(path)
-                else:
-                    _, name = split_off_tag(path)
-                remove.append(RemoveAction(name=name, path=path, attrib=attrib))
+                remove.append(RemoveAction.from_path(path))
             else:
-                attrib = '@' in path
-                if attrib:
-                    path, name = split_off_attrib(path)
-                else:
-                    _, name = split_off_tag(path)
-                create.append(CreateAction(name=name, path=path, attrib=attrib))
+                create.append(CreateAction.from_path(path))
         elif len(different_paths) == 2:
             if all(path in old_paths for path in different_paths):
-                for path in different_paths:
-                    attrib = '@' in path
-                    if attrib:
-                        path, name = split_off_attrib(path)
-                    else:
-                        _, name = split_off_tag(path)
-                    remove.append(RemoveAction(name=name, path=path, attrib=attrib))
+                remove.extend(RemoveAction.from_path(path) for path in different_paths)
                 continue
             if all(path in new_paths for path in different_paths):
-                for path in different_paths:
-                    attrib = '@' in path
-                    if attrib:
-                        path, name = split_off_attrib(path)
-                    else:
-                        _, name = split_off_tag(path)
-                    create.append(CreateAction(name=name, path=path, attrib=attrib))
+                create.extend(CreateAction.from_path(path) for path in different_paths)
                 continue
             first_path = different_paths.pop()
-            attrib = '@' in first_path
-            if attrib:
-                first_path, first_name = split_off_attrib(first_path)
-            else:
-                _, first_name = split_off_tag(first_path)
-
             second_path = different_paths.pop()
-            if attrib:
-                second_path, second_name = split_off_attrib(second_path)
-            else:
-                _, second_name = split_off_tag(second_path)
             if first_path in old_paths:
-                move.append(
-                    MoveAction(old_name=first_name, old_path=first_path, new_name=second_name, new_path=second_path))
+                move.append(MoveAction.from_path(old=first_path, new=second_path))
             else:
-                move.append(
-                    MoveAction(old_name=second_name, old_path=second_path, new_name=first_name, new_path=first_path))
+                move.append(MoveAction.from_path(old=second_path, new=first_path))
         else:
-            ambiguous.append(
-                AmbiguousAction(name=action.name,
-                                old_paths=tuple(old_paths),
-                                new_paths=tuple(new_paths),
-                                attrib=action.attrib))
+            ambiguous.append(AmbiguousAction.from_paths(old=old_paths, new=new_paths))
+
+
+def trim_path_actions(actions):
+    pass
 
 
 def trim_paths(paths):
@@ -389,6 +403,141 @@ def load_conversion(from_version, to_version):
         conversion = json.load(f)
 
     return conversion
+
+
+def _rename_elements(remove: List[RemoveAction], create: List[CreateAction], move: List[MoveAction], from_version: str,
+                     to_version: str, name: str) -> None:
+    """
+    Get user input on tags that were renamed
+    """
+
+    remove = sorted(remove, key=lambda x: x.name)
+    create = sorted(create, key=lambda x: x.name)
+
+    rename = True
+    while remove and create and rename:
+        click.echo(f'The following {name} are not found in the target version:')
+        click.echo(tabulate.tabulate(remove, showindex=True))
+        click.echo(f'The following {name} are not found in the start version:')
+        click.echo(tabulate.tabulate(create, showindex=True))
+
+        rename = click.confirm(f'Are there {name} that were renamed?')
+
+        if rename:
+            old_name = click.prompt(f'Name in version {from_version}',
+                                    type=click.Choice([action.name for action in remove], case_sensitive=False),
+                                    show_choices=False)
+            new_name = click.prompt(f'Name in version {to_version}',
+                                    type=click.Choice([action.name for action in create], case_sensitive=False),
+                                    show_choices=False)
+
+            remove_list = remove_action(remove, old_name)
+            create_list = remove_action(create, new_name)
+
+            if len(remove_list) != len(create_list):
+                raise ValueError('Not supported')
+            move.extend(
+                MoveAction.from_remove_and_create(remove, create) for remove, create in zip(remove_list, create_list))
+            move = trim_move_paths(move)
+
+
+def _create_tag_elements(create, to_schema):
+    """
+    Get user input on tags to create
+    """
+    create_prompt = True
+    while create and create_prompt:
+        click.echo('The following tags will be created:')
+        click.echo(tabulate.tabulate(create, showindex=True))
+
+        create_prompt = click.confirm('Do you want to set an element to create?')
+
+        if create_prompt:
+            name = click.prompt('Name of the element',
+                                type=click.Choice([action.name for action in create], case_sensitive=False),
+                                show_choices=False)
+            create_action = remove_action(create, name)
+
+            if len(create_action) != 1:
+                raise ValueError('Not implemented')
+            create_action = create_action[0]
+            allowed_attribs = to_schema['tag_info'][create_action.path]['attribs']
+
+            attribs = {}
+            for attrib in allowed_attribs:
+                value = click.prompt(f'Value for {attrib}', default=None)
+                if value is not None:
+                    attribs[attrib] = value
+
+            elem = etree.tostring(etree.Element(create_action.name, **attribs), encoding='unicode', pretty_print=True)
+            echo.echo_info(f'The following element will be created: {elem}')
+
+            create.append(create_action._replace(element=elem))
+        create = sorted(create, key=lambda x: x.name)
+    return create
+
+
+def _manual_resolution(ambiguous: List[AmbiguousAction], remove: List[RemoveAction], create: List[CreateAction],
+                       move: List[MoveAction], name: str):
+    """
+    Prompt the user for input on actions that cannot be determined automagically
+    """
+
+    ambiguous = sorted(ambiguous, key=lambda x: x.name)
+
+    while ambiguous:
+        click.echo(f'The following {name} could not be resolved automatically:')
+        click.echo(tabulate.tabulate(ambiguous, showindex=True))
+
+        if len(ambiguous) > 1:
+            name = click.prompt('Enter the name you want to clarify',
+                                type=click.Choice([action.name for action in ambiguous], case_sensitive=False),
+                                show_choices=False)
+
+            entry = remove_action(ambiguous, name)
+
+            if len(entry) != 1:
+                raise NotImplementedError("It's broken :-(")
+            entry = entry[0]
+        else:
+            entry = ambiguous.pop(0)
+
+        click.echo(f'Entry {entry.name}:')
+
+        old_paths = sorted(entry.old_paths)
+        new_paths = sorted(entry.new_paths)
+
+        while (new_paths or old_paths) and new_paths != old_paths:
+            old_paths_display, new_paths_display = old_paths.copy(), new_paths.copy()
+            if len(old_paths) < len(new_paths):
+                old_paths_display += [None] * (len(new_paths) - len(old_paths))
+            elif len(new_paths) < len(old_paths):
+                new_paths_display += [None] * (len(old_paths) - len(new_paths))
+
+            click.echo(tabulate.tabulate(list(zip(old_paths_display, new_paths_display)), showindex=True))
+
+            action = click.prompt('Which action should be performed',
+                                  type=click.Choice(['create', 'remove', 'move'], case_sensitive=False))
+            if action == 'remove':
+                paths = click.prompt('Enter the row you want to remove from the old paths',
+                                     type=ListElement(old_paths, return_list=True))
+                for path in paths:
+                    remove.append(RemoveAction.from_path(path))
+                    old_paths.remove(path)
+            elif action == 'create':
+                paths = click.prompt('Enter the row you want to create from the new paths',
+                                     type=ListElement(new_paths, return_list=True))
+                for path in paths:
+                    create.append(CreateAction.from_path(path))
+                    new_paths.remove(path)
+            elif action == 'move':
+                old_path_row = click.prompt('Enter the row you want to remove from the old paths', type=int)
+                new_path_row = click.prompt('Enter the row you want to remove from the new paths', type=int)
+                old_path = old_paths.pop(old_path_row)
+                new_path = new_paths.pop(new_path_row)
+                move.append(MoveAction.from_path(old=old_path, new=new_path))
+
+        echo.echo_success('Ambiguouity successfully resolved')
 
 
 @click.group('inpxml')
@@ -489,8 +638,7 @@ def convert_inpxml(ctx, xml_file, to_version):
                 xml_create_tag(xmltree, parent_path, name)
 
             node = etree.fromstring(action.element)
-            xml_create_tag(xmltree, path, node, tag_order=order)        
-
+            xml_create_tag(xmltree, path, node, tag_order=order)
 
     print(etree.tostring(xmltree, encoding='unicode', pretty_print=True))
 
@@ -521,28 +669,7 @@ def generate_inp_conversion(from_version, to_version):
     create_tags = trim_paths(create_tags)
     move_tags = trim_move_paths(move_tags)
 
-    rename = True
-    while remove_tags and create_tags and rename:
-        click.echo('The following tags are not found in the target version:')
-        click.echo(tabulate.tabulate(remove_tags, showindex=True))
-        click.echo('The following tags are not found in the start version:')
-        click.echo(tabulate.tabulate(create_tags, showindex=True))
-
-        rename = click.confirm('Are there tags that were renamed?')
-
-        if rename:
-            old_name = click.prompt(f'Name in version {from_version}')
-            new_name = click.prompt(f'Name in version {to_version}')
-
-            remove = remove_action(remove_tags, old_name)
-            create = remove_action(create_tags, new_name)
-
-            if len(remove) != len(create):
-                raise ValueError('Not supported')
-
-            for old, new in zip(remove, create):
-                move_tags.append(MoveAction(old_name=old.name, old_path=old.path, new_name=new.name, new_path=new.path))
-            move_tags = trim_move_paths(move_tags)
+    _rename_elements(remove_tags, create_tags, move_tags, from_version, to_version, 'tags')
 
     #Check again if we can now resolve ambiguouities
     resolve_ambiguouities(ambiguous_tags, remove_tags, create_tags, move_tags)
@@ -557,11 +684,7 @@ def generate_inp_conversion(from_version, to_version):
     click.echo('The following tags will be moved:')
     click.echo(tabulate.tabulate(move_tags, showindex=True))
 
-    while ambiguous_tags:
-        click.echo('The following tags could not be resolved automatically:')
-        click.echo(tabulate.tabulate(ambiguous_tags, showindex=True))
-
-        row = click.prompt('Enter the row you want to clarify')
+    _manual_resolution(ambiguous_tags, remove_tags, create_tags, move_tags, 'tags')
 
     #Make move_tags consistent
     for indx, action in enumerate(move_tags):
@@ -570,48 +693,14 @@ def generate_inp_conversion(from_version, to_version):
             continue
         for indx_after, action_after in enumerate(move_tags[indx + 1:]):
             if action.old_path in action_after.old_path:
-                action_after_new = NormalizedMoveAction(
-                    old_name=action_after.old_name,
-                    new_name=action_after.new_name,
-                    old_path=action_after.old_path,
-                    actual_path=action_after.old_path.replace(action.old_path, action.new_path),
-                    new_path=action_after.new_path,
-                )
-                move_tags[indx_after + indx + 1] = action_after_new
+                intermediate_path = action_after.old_path.replace(action.old_path, action.new_path)
+                move_tags[indx_after + indx + 1] = NormalizedMoveAction.from_move(action_after,
+                                                                                  actual_path=intermediate_path)
 
     click.echo('The following tags will be moved (Paths normalized):')
     click.echo(tabulate.tabulate(move_tags, showindex=True))
 
-    create = True
-    while create_tags and create:
-        click.echo('The following tags will be created:')
-        click.echo(tabulate.tabulate(create_tags, showindex=True))
-
-        create = click.confirm('Do you want to set a element to create?')
-
-        if create:
-            name = click.prompt('Enter the name of the tag to specify')
-            create_action = remove_action(create_tags, name)
-
-            if len(create_action) != 1:
-                raise ValueError('Not implemented')
-            create_action = create_action[0]
-
-            _, name = split_off_tag(create_action.path)
-
-            allowed_attribs = to_schema['tag_info'][create_action.path]['attribs']
-
-            attribs = {}
-            for attrib in allowed_attribs:
-                if click.confirm(f'Do you want to set a value for attribute {attrib}?'):
-                    attribs[attrib] = click.prompt(f'Value for {attrib}')
-            
-            elem = etree.tostring(etree.Element(name, **attribs), encoding='unicode', pretty_print=True)
-            echo.echo_info(f"The following element will be created: {elem}")
-
-            create_tags.append(create_action._replace(element=elem))
-
-    create_tags = sorted(create_tags, key=lambda x: x.name)
+    create_tags = _create_tag_elements(create_tags, to_schema)
 
     remove_attrib, create_attrib, move_attrib, ambiguous_attrib = analyse_paths(from_schema, to_schema, ATTRIB_ENTRIES)
 
@@ -619,28 +708,7 @@ def generate_inp_conversion(from_version, to_version):
     create_attrib = trim_attrib_paths(create_attrib, create_tags)
     move_attrib = trim_attrib_move_paths(move_attrib, move_tags)
 
-    rename = True
-    while remove_attrib and create_attrib and rename:
-        click.echo('The following attribs are not found in the target version:')
-        click.echo(tabulate.tabulate(remove_attrib, showindex=True))
-        click.echo('The following attribs are not found in the start version:')
-        click.echo(tabulate.tabulate(create_attrib, showindex=True))
-
-        rename = click.confirm('Are there attribs that were renamed?')
-
-        if rename:
-            old_name = click.prompt(f'Name in version {from_version}')
-            new_name = click.prompt(f'Name in version {to_version}')
-
-            remove = remove_action(remove_attrib, old_name)
-            create = remove_action(create_attrib, new_name)
-
-            if len(remove) != len(create):
-                raise ValueError('Not supported')
-
-            for old, new in zip(remove, create):
-                move_attrib.append(MoveAction(old_name=old.name, old_path=old.path, new_name=new.name, new_path=new.path))
-            move_attrib = trim_move_paths(move_attrib)
+    _rename_elements(remove_attrib, create_attrib, move_attrib, from_version, to_version, 'attributes')
 
     #Check again if we can now resolve ambiguouities
     resolve_ambiguouities(ambiguous_attrib,
@@ -654,61 +722,8 @@ def generate_inp_conversion(from_version, to_version):
     click.echo('The following attribs will be moved:')
     click.echo(tabulate.tabulate(move_attrib, showindex=True))
 
-    while ambiguous_attrib:
-        click.echo('The following attribs could not be resolved automatically:')
-        click.echo(tabulate.tabulate(ambiguous_attrib, showindex=True))
+    _manual_resolution(ambiguous_attrib, remove_attrib, create_attrib, move_attrib, 'attributes')
 
-        row = click.prompt('Enter the row you want to clarify', type=int)
-
-        entry = ambiguous_attrib[row]
-
-        click.echo(f'Entry {entry.name}:')
-
-        old_paths = sorted(entry.old_paths)
-        new_paths = sorted(entry.new_paths)
-
-        while (new_paths or old_paths) and new_paths != old_paths:
-            old_paths_display, new_paths_display = old_paths.copy(), new_paths.copy()
-            if len(old_paths) < len(new_paths):
-                old_paths_display += [None] * (len(new_paths) - len(old_paths))
-            elif len(new_paths) < len(old_paths):
-                new_paths_display += [None] * (len(old_paths) - len(new_paths))
-
-            click.echo(tabulate.tabulate(list(zip(old_paths_display, new_paths_display)), showindex=True))
-
-            action = click.prompt('Which action should be performed', type=click.Choice(['create', 'remove', 'move']))
-
-            if action == 'remove':
-                path_row = click.prompt('Enter the row you want to remove from the old paths', type=IntegerSlice())
-                paths = old_paths[path_row]
-                if not isinstance(paths, list):
-                    paths = [paths]
-                for path in paths:
-                    old_paths.remove(path)
-                    remove_attrib.append(RemoveAction(name=entry.name, path=path, attrib=entry.attrib))
-            elif action == 'create':
-                path_row = click.prompt('Enter the row you want to create from the new paths', type=IntegerSlice())
-                paths = new_paths[path_row]
-                if not isinstance(paths, list):
-                    paths = [paths]
-                for path in paths:
-                    new_paths.remove(path)
-                    create_attrib.append(CreateAction(name=entry.name, path=path, attrib=entry.attrib))
-            elif action == 'move':
-                old_path_row = click.prompt('Enter the row you want to remove from the old paths', type=int)
-                new_path_row = click.prompt('Enter the row you want to remove from the new paths', type=int)
-                old_path = old_paths.pop(old_path_row)
-                new_path = new_paths.pop(new_path_row)
-                move_attrib.append(
-                    MoveAction(old_name=entry.name,
-                               old_path=old_path,
-                               new_name=entry.name,
-                               new_path=new_path,
-                               attrib=entry.attrib))
-
-        click.echo('Ambiguouity successfully resolved')
-        ambiguous_attrib.remove(entry)
-    
     click.echo('The following attribs are removed:')
     click.echo(tabulate.tabulate(remove_attrib, showindex=True))
     click.echo('The following attribs are created:')
@@ -734,7 +749,7 @@ def generate_inp_conversion(from_version, to_version):
     filepath = FILE_DIRECTORY / f"conversion_{from_version.replace('.','')}_to_{to_version.replace('.','')}.json"
 
     with open(filepath, 'w', encoding='utf-8') as f:
-        json.dump(conversion, f, indent=2)
+        json.dump(conversion, f, indent=2, sort_keys=False)
     return conversion
 
 
