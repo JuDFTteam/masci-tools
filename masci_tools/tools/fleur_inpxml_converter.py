@@ -3,7 +3,7 @@
 from masci_tools.io.parsers.fleur_schema import InputSchemaDict
 from masci_tools.io.io_fleurxml import load_inpxml
 from masci_tools.util.schema_dict_util import evaluate_attribute
-from masci_tools.util.xml.xml_setters_basic import xml_delete_tag, xml_delete_att, xml_create_tag
+from masci_tools.util.xml.xml_setters_basic import xml_delete_tag, xml_delete_att, xml_create_tag, _reorder_tags
 from masci_tools.util.xml.xml_setters_names import set_attrib_value
 from masci_tools.util.xml.common_functions import split_off_attrib, split_off_tag, eval_xpath, validate_xml
 from masci_tools.cmdline.parameters.slice import IntegerSlice, ListElement
@@ -540,6 +540,54 @@ def _manual_resolution(ambiguous: List[AmbiguousAction], remove: List[RemoveActi
         echo.echo_success('Ambiguouity successfully resolved')
 
 
+def _xml_create_tag_with_parents(xmltree, xpath, node):
+    """
+    Create a tag at the given xpath together with it's parents if they are missing
+    xml_create_tag cannot create subtags, but since we know that we have simple xpaths
+    we can do it here
+
+    No tag order is enforced here, since we are in intermediate steps
+
+    :param xmltree: etree ElementTree to operate on
+    :param xpath: xpath of the parent node
+    :param node: node to create
+    """
+
+    parent_nodes = eval_xpath(xmltree, xpath, list_return=True)
+    to_create = []
+    while not parent_nodes:
+        parent_path, parent_name = split_off_tag(xpath)
+        to_create.append((parent_path, parent_name))
+        parent_nodes = eval_xpath(xmltree, parent_path, list_return=True)
+
+    for parent_path, name in reversed(to_create):
+        xml_create_tag(xmltree, parent_path, name)
+
+    xml_create_tag(xmltree, xpath, node)
+
+
+def _reorder_tree(parent: etree._Element, schema_dict: InputSchemaDict, base_xpath: str = None) -> None:
+    """
+    Order the elements to be in the correct order for the given schema_dict
+    """
+
+    #Check if this is the first call to this routine
+    if base_xpath is None:
+        base_xpath = f'/{parent.tag}'
+
+    for element in parent:
+        new_base_xpath = f'{base_xpath}/{element.tag}'
+        _reorder_tree(element, schema_dict, base_xpath=new_base_xpath)
+
+    if base_xpath in schema_dict['tag_info']:
+        order = schema_dict['tag_info'][base_xpath]['order']
+    else:
+        order = []
+
+    if order:
+        parent = _reorder_tags(parent, order)
+
+
 @click.group('inpxml')
 def inpxml():
     """
@@ -585,60 +633,26 @@ def convert_inpxml(ctx, xml_file, to_version):
             action = MoveAction(*action)
 
         if isinstance(action, NormalizedMoveAction):
-            print(action.actual_path)
             nodes = eval_xpath(xmltree, action.actual_path, list_return=True)
             xml_delete_tag(xmltree, action.actual_path)
         else:
             nodes = eval_xpath(xmltree, action.old_path, list_return=True)
             xml_delete_tag(xmltree, action.old_path)
+
         for node in nodes:
             path, _ = split_off_tag(action.new_path)
-            old_path, _ = split_off_tag(action.old_path)
             node.tag = action.new_name
-
-            order = schema_dict['tag_info'][old_path]['order'].get_unlocked()
-            order += schema_dict_target['tag_info'][path]['order'].get_unlocked()
-
-            if not order:
-                order = None
-
-            #xml_create_tag cannot create subtags, but since we know that we have simple xpaths
-            #we can do it here
-            parent_nodes = eval_xpath(xmltree, path, list_return=True)
-            to_create = []
-            while not parent_nodes:
-                parent_path, parent_name = split_off_tag(path)
-                to_create.append((parent_path, parent_name))
-                parent_nodes = eval_xpath(xmltree, parent_path, list_return=True)
-
-            for parent_path, name in reversed(to_create):
-                xml_create_tag(xmltree, parent_path, name)
-
-            xml_create_tag(xmltree, path, node, tag_order=order)
+            #Order is not kept here (it is corrected at the end)
+            _xml_create_tag_with_parents(xmltree, path, node)
 
     for action in conversion['tag']['create']:
         action = CreateAction(*action)
         if action.element is not None:
             path, _ = split_off_tag(action.path)
-            order = schema_dict_target['tag_info'][path]['order'].get_unlocked()
-
-            if not order:
-                order = None
-
-            #xml_create_tag cannot create subtags, but since we know that we have simple xpaths
-            #we can do it here
-            parent_nodes = eval_xpath(xmltree, path, list_return=True)
-            to_create = []
-            while not parent_nodes:
-                parent_path, parent_name = split_off_tag(path)
-                to_create.append((parent_path, parent_name))
-                parent_nodes = eval_xpath(xmltree, parent_path, list_return=True)
-
-            for parent_path, name in reversed(to_create):
-                xml_create_tag(xmltree, parent_path, name)
-
             node = etree.fromstring(action.element)
-            xml_create_tag(xmltree, path, node, tag_order=order)
+            _xml_create_tag_with_parents(xmltree, path, node)
+
+    _reorder_tree(xmltree.getroot(), schema_dict_target)
 
     print(etree.tostring(xmltree, encoding='unicode', pretty_print=True))
 
