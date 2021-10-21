@@ -556,6 +556,7 @@ def _create_tag_elements(create, to_schema):
         create = sorted(create, key=lambda x: x.name)
     return create
 
+
 def _create_attrib_elements(create, to_schema):
     """
     Get user input on attributes to create
@@ -755,7 +756,7 @@ def convert_inpxml(ctx, xml_file, to_version):
             path, _ = split_off_tag(action.path)
             node = etree.fromstring(action.element)
             _xml_create_tag_with_parents(xmltree, path, node)
-    
+
     for action in conversion['attrib']['move']:
         if isinstance(action, NormalizedMoveAction):
             path = action.actual_path
@@ -780,8 +781,9 @@ def convert_inpxml(ctx, xml_file, to_version):
                      schema_dict_target.xmlschema,
                      error_header='Input file does not validate against the schema')
         echo.echo_success('The conversion was successful')
-        echo.echo_info('It is not guaranteed that a FLEUR calculation will behave in the exact same way as the old input file\n'
-                       'Please check the file for correctness beforehand')
+        echo.echo_info(
+            'It is not guaranteed that a FLEUR calculation will behave in the exact same way as the old input file\n'
+            'Please check the file for correctness beforehand')
     except etree.DocumentInvalid as err:
         echo.echo_critical(
             f'inp.xml conversion did not finish successfully. The resulting file violates the XML schema with:\n {err}')
