@@ -133,7 +133,7 @@ def _cache_xpath_eval(func):
             results[version] = {}
 
         if hash_args not in results[version]:
-            res = func(xmlschema_evaluator, xpath)
+            res = func(xmlschema_evaluator, xpath, **variables)
             if len(results[version]) >= 1024:
                 results[version].clear()
                 return res
@@ -258,10 +258,11 @@ def _get_base_types(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
                 elif found_type in basic_types_mapping:
                     possible_types.add(AttributeType(base_type=found_type, length=length))
                 else:
-                    sub_types = _xpath_eval(xmlschema_evaluator, f"//xsd:simpleType[@name='{found_type}']")
+                    sub_types = _xpath_eval(xmlschema_evaluator, '//xsd:simpleType[@name=$name]', name=found_type)
                     if len(sub_types) == 0:
                         sub_types = _xpath_eval(xmlschema_evaluator,
-                                                f"//xsd:complexType[@name='{found_type}']/xsd:simpleContent")
+                                                '//xsd:complexType[@name=$name]/xsd:simpleContent',
+                                                name=found_type)
 
                     if len(sub_types) == 0:
                         raise ValueError(f"No such type '{found_type}'")
@@ -341,11 +342,12 @@ def _get_length(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
             type_name = parent.attrib['name']
 
         base_type = _xpath_eval(xmlschema_evaluator,
-                                f"//xsd:complexType[@name='{str(type_name)}']/xsd:simpleContent/xsd:extension/@base")
+                                '//xsd:complexType[@name=$name]/xsd:simpleContent/xsd:extension/@base',
+                                name=type_name)
         if len(base_type) == 0:
             return 1
 
-        base_type_elem = _xpath_eval(xmlschema_evaluator, f"//xsd:simpleType[@name='{base_type[0]}']")
+        base_type_elem = _xpath_eval(xmlschema_evaluator, '//xsd:simpleType[@name=$name]', name=base_type[0])
 
         if len(base_type_elem) == 0:
             return 1
@@ -388,13 +390,15 @@ def _get_xpath(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
 
     #Get all possible starting points
     if ref is not None:
-        startPoints = _xpath_eval(xmlschema_evaluator, f"//xsd:group[@ref='{ref}']")
+        startPoints = _xpath_eval(xmlschema_evaluator, '//xsd:group[@ref=$ref]', ref=ref)
     else:
         if enforce_end_type is None:
-            startPoints = _xpath_eval(xmlschema_evaluator, f"//xsd:element[@name='{tag_name}']")
+            startPoints = _xpath_eval(xmlschema_evaluator, '//xsd:element[@name=$name]', name=tag_name)
         else:
             startPoints = _xpath_eval(xmlschema_evaluator,
-                                      f"//xsd:element[@name='{tag_name}' and @type='{enforce_end_type}']")
+                                      '//xsd:element[@name=$name and @type=$type]',
+                                      name=tag_name,
+                                      type=enforce_end_type)
     if stop_non_unique:
         startPoints_copy = startPoints.copy()
         for point in startPoints_copy:
@@ -423,16 +427,15 @@ def _get_xpath(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
                                               stop_non_unique=stop_non_unique,
                                               stop_iteration=stop_iteration,
                                               iteration_root=iteration_root)
-            for grouppath in possible_paths_group:
-                possible_paths.add(grouppath)
+            possible_paths.update(possible_paths_group)
         else:
             if stop_non_unique:
                 currentelem = _xpath_eval(
                     xmlschema_evaluator,
-                    f"//xsd:element[@type='{next_type}' and @maxOccurs=1] | //xsd:element[@type='{next_type}' and not(@maxOccurs)]"
-                )
+                    '//xsd:element[@type=$type and @maxOccurs=1] | //xsd:element[@type=$type and not(@maxOccurs)]',
+                    type=next_type)
             else:
-                currentelem = _xpath_eval(xmlschema_evaluator, f"//xsd:element[@type='{next_type}']")
+                currentelem = _xpath_eval(xmlschema_evaluator, '//xsd:element[@type=$type]', type=next_type)
 
             if len(currentelem) == 0:
                 continue
@@ -444,15 +447,11 @@ def _get_xpath(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
                                                 stop_non_unique=stop_non_unique,
                                                 stop_iteration=stop_iteration,
                                                 iteration_root=iteration_root)
-                for tagpath in possible_paths_tag:
-                    possible_paths.add(f'{tagpath}/{tag_name}')
+                possible_paths.update(f'{tagpath}/{tag_name}' for tagpath in possible_paths_tag)
 
     if iteration_root:
         #Remove any path that slipped through and contains the root tag of the out file
-        possible_paths_copy = possible_paths.copy()
-        for path in possible_paths_copy:
-            if root_tag in path:
-                possible_paths.discard(path)
+        possible_paths = {path for path in possible_paths if root_tag not in path}
 
     return possible_paths
 
@@ -603,11 +602,11 @@ def _get_simple_tags(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
                 continue
 
             type_name = str(child.attrib['type'])
-            type_elem = _xpath_eval(xmlschema_evaluator, f"//xsd:simpleType[@name='{type_name}']")
+            type_elem = _xpath_eval(xmlschema_evaluator, '//xsd:simpleType[@name=$name]', name=type_name)
             if len(type_elem) != 0:
                 simple_list.append(str(child.attrib['name']))
             else:
-                type_elem = _xpath_eval(xmlschema_evaluator, f"//xsd:complexType[@name='{type_name}']")
+                type_elem = _xpath_eval(xmlschema_evaluator, '//xsd:complexType[@name=$name]', name=type_name)
                 if len(type_elem) == 0:
                     simple_list.append(str(child.attrib['name']))
                 elif _is_simple(type_elem[0]):
@@ -712,7 +711,7 @@ def _get_attrib_xpath(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
              otherwise a list with all possible paths is returned
     """
     possible_paths = set()
-    attribute_tags = _xpath_eval(xmlschema_evaluator, f"//xsd:attribute[@name='{attrib_name}']")
+    attribute_tags = _xpath_eval(xmlschema_evaluator, '//xsd:attribute[@name=$name]', name=attrib_name)
     for attrib in attribute_tags:
         parent_type, _ = _get_parent_fleur_type(attrib, stop_non_unique=stop_non_unique)
         if parent_type is None:
@@ -729,10 +728,10 @@ def _get_attrib_xpath(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
         if stop_non_unique:
             element_tags = _xpath_eval(
                 xmlschema_evaluator,
-                f"//xsd:element[@type='{start_type}' and @maxOccurs=1]/@name | //xsd:element[@type='{start_type}' and not(@maxOccurs)]/@name"
-            )
+                '//xsd:element[@type=$type and @maxOccurs=1]/@name | //xsd:element[@type=$type and not(@maxOccurs)]/@name',
+                type=start_type)
         else:
-            element_tags = _xpath_eval(xmlschema_evaluator, f"//xsd:element[@type='{start_type}']/@name")
+            element_tags = _xpath_eval(xmlschema_evaluator, '//xsd:element[@type=$type]/@name', type=start_type)
 
         for tag in element_tags:
             tag_paths = _get_xpath(xmlschema_evaluator,
@@ -741,8 +740,7 @@ def _get_attrib_xpath(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
                                    stop_non_unique=stop_non_unique,
                                    stop_iteration=stop_iteration,
                                    iteration_root=iteration_root)
-            for path in tag_paths:
-                possible_paths.add(f'{path}/@{attrib_name}')
+            possible_paths.update(f'{path}/@{attrib_name}' for path in tag_paths)
 
     return possible_paths
 
@@ -768,7 +766,7 @@ def _get_sequence_order(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
             for elem in new_order:
                 elem_order.append(elem)
         elif child_type == 'group':
-            group = _xpath_eval(xmlschema_evaluator, f"//xsd:group[@name='{str(child.attrib['ref'])}']/xsd:sequence")
+            group = _xpath_eval(xmlschema_evaluator, '//xsd:group[@name=$name]/xsd:sequence', name=child.attrib['ref'])
             new_order = _get_sequence_order(xmlschema_evaluator, group[0])
             for elem in new_order:
                 elem_order.append(elem)
@@ -800,7 +798,7 @@ def _get_valid_tags(xmlschema_evaluator: 'etree.XPathDocumentEvaluator', sequenc
             for elem in new_elems:
                 elems.append(elem)
         elif child_type == 'group':
-            group = _xpath_eval(xmlschema_evaluator, f"//xsd:group[@name='{str(child.attrib['ref'])}']/xsd:sequence")
+            group = _xpath_eval(xmlschema_evaluator, '//xsd:group[@name=$name]/xsd:sequence', name=child.attrib['ref'])
             new_elems = _get_valid_tags(xmlschema_evaluator, group[0])
             for elem in new_elems:
                 elems.append(elem)
@@ -1110,7 +1108,7 @@ def get_omittable_tags(xmlschema_evaluator: 'etree.XPathDocumentEvaluator', **kw
         tag_name = tag.attrib['name']
 
         if tag_name not in omittable_tags:
-            type_elem = _xpath_eval(xmlschema_evaluator, f"//xsd:complexType[@name='{tag_type}']")
+            type_elem = _xpath_eval(xmlschema_evaluator, '//xsd:complexType[@name=$name]', name=tag_type)
             if len(type_elem) == 0:
                 continue
             type_elem = type_elem[0]
@@ -1237,7 +1235,7 @@ def get_tag_info(xmlschema_evaluator: 'etree.XPathDocumentEvaluator', **kwargs: 
 
         tag_path = list(tag_path)
 
-        type_elem = _xpath_eval(xmlschema_evaluator, f"//xsd:complexType[@name='{type_tag}']")
+        type_elem = _xpath_eval(xmlschema_evaluator, '//xsd:complexType[@name=$name]', name=type_tag)
         if len(type_elem) == 0:
             continue
         type_elem = type_elem[0]
@@ -1282,4 +1280,4 @@ def get_input_tag(xmlschema_evaluator: 'etree.XPathDocumentEvaluator', **kwargs:
 
     :return: name of the element with the type 'FleurInputType'
     """
-    return str(_xpath_eval(xmlschema_evaluator, f"//xsd:element[@type='{_INPUT_TYPE}']/@name")[0])
+    return str(_xpath_eval(xmlschema_evaluator, '//xsd:element[@type=$type]/@name', type=_INPUT_TYPE)[0])
