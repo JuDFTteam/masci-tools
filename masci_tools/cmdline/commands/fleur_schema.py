@@ -22,9 +22,8 @@ from lxml import etree
 GITLAB_URL = 'https://iffgit.fz-juelich.de'
 try:
     import gitlab
-    gl = gitlab.Gitlab(GITLAB_URL, private_token=os.getenv('IFFGIT_APIKEY', ''))
 except ImportError:
-    gl = None
+    gitlab = None
 
 
 @cli.group('fleur-schema')
@@ -39,11 +38,12 @@ def fleur_schema():
               type=str,
               help='If the file does not exist the branch can be specified in the fleur git',
               default='develop')
+@click.option('--api-key', type=str, help='API key for access to the Iff Gitlab instance', default='')
 @click.option('--test-xml-file',
               type=click.Path(exists=True, path_type=Path, resolve_path=True),
               default=None,
               help='Example xmlfile for this schema version to test the file parser against')
-def add_fleur_schema(schema_file, test_xml_file, overwrite, branch):
+def add_fleur_schema(schema_file, test_xml_file, overwrite, branch, api_key):
     """
     Adds a new xml schema file to the folder in
     `masci_tools/io/parsers/fleur_schema`
@@ -53,18 +53,22 @@ def add_fleur_schema(schema_file, test_xml_file, overwrite, branch):
 
     PACKAGE_ROOT = Path(masci_tools.__file__).parent.resolve()
 
+    file_name = schema_file.name
+    if file_name not in ('FleurInputSchema.xsd', 'FleurOutputSchema.xsd'):
+        echo.echo_critical(
+            "The Fleur file schema has to be named either 'FleurInputSchema.xsd' or 'FleurOutputSchema.xsd'")
+
     tmp_dir = None
     if not schema_file.is_file():
         echo.echo_warning(f'{schema_file} does not exist')
         if not click.confirm(f'Do you want to download from the fleur git ({branch})'):
             echo.echo_critical('Cannot add Schema file')
-        if gl is None:
+        if gitlab is None:
             echo.echo_critical(
                 'Cannot download Schema file. Please install python-gitlab or the cmdline-extras requirements')
 
-        file_name = schema_file.name
-        if file_name not in ('FleurInputSchema.xsd', 'FleurOutputSchema.xsd'):
-            echo.echo_critical(f"{file_name} has to be either 'FleurInputSchema.xsd' or 'FleurOutputSchema.xsd'")
+        api_key = api_key or os.getenv('IFFGIT_APIKEY', '')
+        gl = gitlab.Gitlab(GITLAB_URL, private_token=api_key)
 
         try:
             gl.auth()
