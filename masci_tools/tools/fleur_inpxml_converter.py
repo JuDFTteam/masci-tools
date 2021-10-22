@@ -15,7 +15,7 @@ import tabulate
 
 from masci_tools.io.parsers.fleur_schema import InputSchemaDict
 from masci_tools.io.io_fleurxml import load_inpxml
-from masci_tools.util.schema_dict_util import evaluate_attribute
+from masci_tools.util.schema_dict_util import evaluate_attribute, tag_exists
 from masci_tools.util.xml.xml_setters_basic import xml_delete_tag, xml_delete_att, xml_create_tag, _reorder_tags, xml_set_attrib_value_no_create
 from masci_tools.util.xml.xml_setters_names import set_attrib_value
 from masci_tools.util.xml.common_functions import split_off_attrib, split_off_tag, eval_xpath, validate_xml
@@ -800,8 +800,16 @@ def convert_inpxml(ctx, xml_file, to_version, output_file, overwrite):
     XML_FILE is the file to convert
     TO_VERSION is the file version of the finale input file
     """
+    INCLUDE_NSMAP = {'xi': 'http://www.w3.org/2001/XInclude'}
+    INCLUDE_TAG = etree.QName(INCLUDE_NSMAP['xi'], 'include')
+    FALLBACK_TAG = etree.QName(INCLUDE_NSMAP['xi'], 'fallback')
+
     xmltree, schema_dict = load_inpxml(xml_file)
     schema_dict_target = InputSchemaDict.fromVersion(to_version)
+
+    #We want to leave comments in so we cannot use clear_xml for the xinclude feature
+    #Here we just include and write out the complete xml file
+    xmltree.xinclude() #type:ignore
 
     from_version = evaluate_attribute(xmltree, schema_dict, 'fleurInputVersion')
 
@@ -867,7 +875,6 @@ def convert_inpxml(ctx, xml_file, to_version, output_file, overwrite):
 
     _reorder_tree(xmltree.getroot(), schema_dict_target)
 
-    etree.indent(xmltree)
     try:
         validate_xml(xmltree,
                      schema_dict_target.xmlschema,
@@ -880,6 +887,13 @@ def convert_inpxml(ctx, xml_file, to_version, output_file, overwrite):
         echo.echo_critical(
             f'inp.xml conversion did not finish successfully. The resulting file violates the XML schema with:\n {err}')
 
+    #If there was no relax.xml included we need to rewrite the xinclude tag for it
+    if not tag_exists(xmltree,schema_dict_target,'relaxation'):
+        xinclude_elem = etree.Element(INCLUDE_TAG, href='relax.xml', nsmap=INCLUDE_NSMAP)  #type:ignore
+        xinclude_elem.append(etree.Element(FALLBACK_TAG))  #type:ignore
+        xmltree.getroot().append(xinclude_elem)
+
+    etree.indent(xmltree)
     xmltree.write(output_file, encoding='utf-8', pretty_print=True)
     echo.echo_success(f'Converted file written to {output_file}')
 
