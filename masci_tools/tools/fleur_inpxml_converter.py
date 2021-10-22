@@ -849,11 +849,11 @@ def convert_inpxml(ctx, xml_file, to_version, output_file, overwrite):
         _xml_delete_attribute_with_warnings(xmltree, action.path, action.name, warning=action.warning)
 
     for action, nodes in zip(conversion['tag']['move'], move_tags):
-        if isinstance(action,NormalizedMoveAction):
+        if isinstance(action, NormalizedMoveAction):
             path = action.actual_path
         else:
             path = action.old_path
-        
+
         if eval_xpath(xmltree, path, list_return=True):
             xml_delete_tag(xmltree, path)
 
@@ -870,12 +870,12 @@ def convert_inpxml(ctx, xml_file, to_version, output_file, overwrite):
             _xml_create_tag_with_parents(xmltree, path, node)
 
     for action, values in zip(conversion['attrib']['move'], move_attribs):
-        if isinstance(action,NormalizedMoveAction):
+        if isinstance(action, NormalizedMoveAction):
             path = action.actual_path
         else:
             path = action.old_path
 
-        if eval_xpath(xmltree, f"{path}/@{action.old_name}", list_return=True):
+        if eval_xpath(xmltree, f'{path}/@{action.old_name}', list_return=True):
             xml_delete_att(xmltree, path, action.old_name)
         if values:
             nodes = eval_xpath(xmltree, action.new_path, list_return=True)
