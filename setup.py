@@ -53,7 +53,8 @@ if __name__ == '__main__':
             'testing': ['pytest~=6.0', 'pytest-cov', 'pytest-mpl>=0.12', 'pytest-regressions>=1.0'],
             'bokeh-plots': [
                 'bokeh<=1.4.0'  # versions beyond 1.4.0 require a tornardo version not compatible with aiida-core /circus
-            ]
+            ],
+            'cmdline-extras': ['python-gitlab']
         },
         entry_points={'console_scripts': [
             'masci-tools = masci_tools.cmdline.commands.root:cli',

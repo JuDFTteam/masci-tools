@@ -15,8 +15,16 @@ from pathlib import Path
 import os
 import sys
 import shutil
+import tempfile
 
 from lxml import etree
+
+GITLAB_URL = 'https://iffgit.fz-juelich.de'
+try:
+    import gitlab
+    gl = gitlab.Gitlab(GITLAB_URL, private_token=os.getenv('IFFGIT_APIKEY', ''))
+except ImportError:
+    gl = None
 
 
 @cli.group('fleur-schema')
@@ -25,13 +33,17 @@ def fleur_schema():
 
 
 @fleur_schema.command('add')
-@click.argument('schema-file', type=click.Path(exists=True, path_type=Path, resolve_path=True))
+@click.argument('schema-file', type=click.Path(path_type=Path, resolve_path=True))
 @click.option('--overwrite', is_flag=True, help='Overwrite any exisiting schema-file')
+@click.option('--branch',
+              type=str,
+              help='If the file does not exist the branch can be specified in the fleur git',
+              default='develop')
 @click.option('--test-xml-file',
               type=click.Path(exists=True, path_type=Path, resolve_path=True),
               default=None,
               help='Example xmlfile for this schema version to test the file parser against')
-def add_fleur_schema(schema_file, test_xml_file, overwrite):
+def add_fleur_schema(schema_file, test_xml_file, overwrite, branch):
     """
     Adds a new xml schema file to the folder in
     `masci_tools/io/parsers/fleur_schema`
@@ -40,6 +52,38 @@ def add_fleur_schema(schema_file, test_xml_file, overwrite):
     from masci_tools.io.parsers.fleur_schema import InputSchemaDict, OutputSchemaDict
 
     PACKAGE_ROOT = Path(masci_tools.__file__).parent.resolve()
+
+    tmp_dir = None
+    if not schema_file.is_file():
+        echo.echo_warning(f'{schema_file} does not exist')
+        if not click.confirm(f'Do you want to download from the fleur git ({branch})'):
+            echo.echo_critical('Cannot add Schema file')
+        if gl is None:
+            echo.echo_critical(
+                'Cannot download Schema file. Please install python-gitlab or the cmdline-extras requirements')
+
+        file_name = schema_file.name
+        if file_name not in ('FleurInputSchema.xsd', 'FleurOutputSchema.xsd'):
+            echo.echo_critical(f"{file_name} has to be either 'FleurInputSchema.xsd' or 'FleurOutputSchema.xsd'")
+
+        try:
+            gl.auth()
+        except gitlab.exceptions.GitlabAuthenticationError:
+            echo.echo_critical('I am not authorized to access the fleur repository.\n'
+                               'Please set the environment variable IFFGIT_APIKEY to access the gitlab instance')
+
+        groups = gl.groups.list(search='fleur')
+        for g in groups:
+            if g.name == 'fleur':
+                repo_id = [repo.id for repo in g.projects.list(all=True) if repo.name == 'fleur'][0]
+                project = gl.projects.get(repo_id)
+                break
+        echo.echo_info(f'Downloading {file_name} from branch {branch} to {schema_file}')
+        tmp_dir = tempfile.mkdtemp()
+        schema_file = Path(tmp_dir) / file_name
+        with open(schema_file, 'wb') as f:
+            project.files.raw(file_path=f'io/xml/{file_name}', ref=branch, streamed=True, action=f.write)
+        echo.echo_success('Download successful')
 
     xmlschema = etree.parse(os.fspath(schema_file))
     xmlschema, _ = clear_xml(xmlschema)
@@ -76,6 +120,8 @@ def add_fleur_schema(schema_file, test_xml_file, overwrite):
     shutil.copy(schema_file, destination)
 
     echo.echo_success('Copied Schema file to masci-tools repository')
+    if tmp_dir is not None:
+        shutil.rmtree(tmp_dir)
 
     #Make sure that construction of SchemaDicts works for this schema
     if input_schema:
