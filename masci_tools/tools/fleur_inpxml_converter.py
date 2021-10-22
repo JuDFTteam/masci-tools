@@ -673,7 +673,10 @@ def _manual_resolution(ambiguous: List[AmbiguousAction], remove: List[RemoveActi
             elif len(new_paths) < len(old_paths):
                 new_paths_display += [None] * (len(old_paths) - len(new_paths))
 
-            click.echo(tabulate.tabulate(list(zip(old_paths_display, new_paths_display)), showindex=True))
+            click.echo(
+                tabulate.tabulate(list(zip(old_paths_display, new_paths_display)),
+                                  showindex=True,
+                                  headers=['Old Paths', 'New Paths']))
 
             action = click.prompt('Which action should be performed',
                                   type=click.Choice(['create', 'remove', 'move'], case_sensitive=False))
