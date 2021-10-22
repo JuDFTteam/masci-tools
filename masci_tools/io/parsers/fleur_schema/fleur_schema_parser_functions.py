@@ -72,7 +72,7 @@ def _cache_xpath_construction(func: Callable) -> Callable:
     xml schemas by caching results
     """
 
-    results: Dict[Tuple[Any, ...], Set[str]] = {}
+    results: Dict[str, Dict[int, Set[str]]] = {}
 
     @wraps(func)
     def wrapper(xmlschema_evaluator: 'etree._BaseXPathEvaluator', namespaces: Dict[str, str], name: str,
@@ -111,7 +111,7 @@ def _cache_xpath_eval(func):
     Decorator for the `_xpath_eval` function to speed up concrete xpath calls on the schema
     by caching the results
     """
-    results = {}
+    results: Dict[str, Dict[int, 'etree.XPathResult']] = {}
 
     @wraps(func)
     def wrapper(xmlschema_evaluator: 'etree._BaseXPathEvaluator', xpath: str) -> 'etree.XPathResult':
@@ -121,8 +121,8 @@ def _cache_xpath_eval(func):
         is different than before or the dict contains more than 1024 entries the cache is cleared
         """
 
-        version = str(xmlschema_evaluator('/xsd:schema/@version')[0])  #type:ignore
-        root_tag = str(xmlschema_evaluator('/xsd:schema/xsd:element/@name')[0])  #type:ignore
+        version = str(xmlschema_evaluator('/xsd:schema/@version')[0])
+        root_tag = str(xmlschema_evaluator('/xsd:schema/xsd:element/@name')[0])
 
         arg_tuple = (version, root_tag, xpath)
 
@@ -144,7 +144,7 @@ def _cache_xpath_eval(func):
 
 
 @_cache_xpath_eval
-def _xpath_eval(xmlschema_evaluator: 'etree._BaseXPathEvaluator', xpath):
+def _xpath_eval(xmlschema_evaluator: 'etree._BaseXPathEvaluator', xpath: str) -> 'etree.XPathResult':
     """
     Wrapper around the xpath calls in this module. Used for caching the
     results

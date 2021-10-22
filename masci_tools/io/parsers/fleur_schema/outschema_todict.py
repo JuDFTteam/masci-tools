@@ -99,7 +99,7 @@ def create_outschema_dict(path: AnyStr, inpschema_dict: 'InputSchemaData') -> Ou
 
     namespaces = {'xsd': 'http://www.w3.org/2001/XMLSchema'}
     xmlschema_evaluator = etree.XPathEvaluator(xmlschema, namespaces=namespaces)
-    out_version = str(xmlschema_evaluator('/xsd:schema/@version')[0])  #type:ignore
+    out_version = str(xmlschema_evaluator('/xsd:schema/@version')[0])
 
     input_basic_types = inpschema_dict['_basic_types'].get_unlocked()
 
