@@ -46,6 +46,7 @@ These python packages are needed:
 * `click`
 * `click-completion`
 * `PyYAML`
+* `tabulate`
 
 It should not depend on `aiida-core`!
 

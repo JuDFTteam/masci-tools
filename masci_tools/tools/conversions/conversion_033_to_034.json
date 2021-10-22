@@ -1,0 +1,21 @@
+{
+  "from": "0.33",
+  "to": "0.34",
+  "tag": {
+    "remove": [],
+    "create": [],
+    "move": []
+  },
+  "attrib": {
+    "remove": [],
+    "create": [
+      [
+        "flipSpins",
+        "/fleurInput/atomSpecies/species/electronConfig",
+        true,
+        "F"
+      ]
+    ],
+    "move": []
+  }
+}
