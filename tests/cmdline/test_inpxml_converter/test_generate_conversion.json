@@ -6,41 +6,49 @@
       [
         "altKPointSet",
         "/fleurInput/calculationSetup/bzIntegration/altKPointSet",
+        "",
         false
       ],
       [
         "energyParameterLimits",
         "/fleurInput/calculationSetup/energyParameterLimits",
+        "",
         false
       ],
       [
         "kPointCount",
         "/fleurInput/calculationSetup/bzIntegration/kPointCount",
+        "Test Warning",
         false
       ],
       [
         "kPointDensity",
         "/fleurInput/calculationSetup/bzIntegration/kPointDensity",
+        "",
         false
       ],
       [
         "kPointListFile",
         "/fleurInput/calculationSetup/bzIntegration/kPointListFile",
+        "",
         false
       ],
       [
         "kPointMesh",
         "/fleurInput/calculationSetup/bzIntegration/kPointMesh",
+        "Test Warning",
         false
       ],
       [
         "nocoParams",
         "/fleurInput/calculationSetup/nocoParams",
+        "",
         false
       ],
       [
         "symmetry",
         "/fleurInput/cell/symmetry",
+        "",
         false
       ]
     ],
@@ -103,76 +111,91 @@
       [
         "coreStates",
         "/fleurInput/atomSpecies/species",
+        "",
         true
       ],
       [
         "flipSpin",
         "/fleurInput/atomSpecies/species",
+        "",
         true
       ],
       [
         "latnam",
         "/fleurInput/cell/bulkLattice",
+        "Test Warning 2",
         true
       ],
       [
         "latnam",
         "/fleurInput/cell/filmLattice",
+        "Test Warning 2",
         true
       ],
       [
         "layers",
         "/fleurInput/output/vacuumDOS",
+        "",
         true
       ],
       [
         "magField",
         "/fleurInput/atomSpecies/species",
+        "",
         true
       ],
       [
         "ndir",
         "/fleurInput/output/densityOfStates",
-        true
-      ],
-      [
-        "plplot",
-        "/fleurInput/output/plotting",
-        true
-      ],
-      [
-        "posScale",
-        "/fleurInput/calculationSetup/bzIntegration/kPointList",
-        true
-      ],
-      [
-        "score",
-        "/fleurInput/output/plotting",
-        true
-      ],
-      [
-        "vcaAddCharge",
-        "/fleurInput/atomSpecies/species",
-        true
-      ],
-      [
-        "weightScale",
-        "/fleurInput/calculationSetup/bzIntegration/kPointList",
+        "",
         true
       ],
       [
         "orbcomp",
         "/fleurInput/atomGroups/atomGroup/absPos",
+        "",
         true
       ],
       [
         "orbcomp",
         "/fleurInput/atomGroups/atomGroup/filmPos",
+        "",
         true
       ],
       [
         "orbcomp",
         "/fleurInput/atomGroups/atomGroup/relPos",
+        "",
+        true
+      ],
+      [
+        "plplot",
+        "/fleurInput/output/plotting",
+        "",
+        true
+      ],
+      [
+        "posScale",
+        "/fleurInput/calculationSetup/bzIntegration/kPointList",
+        "",
+        true
+      ],
+      [
+        "score",
+        "/fleurInput/output/plotting",
+        "",
+        true
+      ],
+      [
+        "vcaAddCharge",
+        "/fleurInput/atomSpecies/species",
+        "",
+        true
+      ],
+      [
+        "weightScale",
+        "/fleurInput/calculationSetup/bzIntegration/kPointList",
+        "",
         true
       ]
     ],

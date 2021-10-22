@@ -6,41 +6,49 @@
       [
         "altKPointSet",
         "/fleurInput/calculationSetup/bzIntegration/altKPointSet",
+        "An old kPoint input was removed. From versions after Max5 only the kPointList input with explicit kPoints is accepted. You can generate new kPointSets by using the kpoint generator in the input generator",
         false
       ],
       [
         "energyParameterLimits",
         "/fleurInput/calculationSetup/energyParameterLimits",
+        "",
         false
       ],
       [
         "kPointCount",
         "/fleurInput/calculationSetup/bzIntegration/kPointCount",
+        "An old kPoint input was removed. From versions after Max5 only the kPointList input with explicit kPoints is accepted. You can generate new kPointSets by using the kpoint generator in the input generator",
         false
       ],
       [
         "kPointDensity",
         "/fleurInput/calculationSetup/bzIntegration/kPointDensity",
+        "An old kPoint input was removed. From versions after Max5 only the kPointList input with explicit kPoints is accepted. You can generate new kPointSets by using the kpoint generator in the input generator",
         false
       ],
       [
         "kPointListFile",
         "/fleurInput/calculationSetup/bzIntegration/kPointListFile",
+        "An old kPoint input was removed. From versions after Max5 only the kPointList input with explicit kPoints is accepted. You can generate new kPointSets by using the kpoint generator in the input generator",
         false
       ],
       [
         "kPointMesh",
         "/fleurInput/calculationSetup/bzIntegration/kPointMesh",
+        "An old kPoint input was removed. From versions after Max5 only the kPointList input with explicit kPoints is accepted. You can generate new kPointSets by using the kpoint generator in the input generator",
         false
       ],
       [
         "nocoParams",
         "/fleurInput/calculationSetup/nocoParams",
+        "",
         false
       ],
       [
         "symmetry",
         "/fleurInput/cell/symmetry",
+        "",
         false
       ]
     ],
@@ -103,76 +111,91 @@
       [
         "coreStates",
         "/fleurInput/atomSpecies/species",
+        "The electronic configuration of species has to be given explicitly in versions Max5 and later in the electronConfig tag",
         true
       ],
       [
         "flipSpin",
         "/fleurInput/atomSpecies/species",
+        "",
         true
       ],
       [
         "latnam",
         "/fleurInput/cell/bulkLattice",
+        "The bravais matrix is expected to be given explicitly in versions after Max5. This means the latnam input could not be transferred to the new input file",
         true
       ],
       [
         "latnam",
         "/fleurInput/cell/filmLattice",
+        "The bravais matrix is expected to be given explicitly in versions after Max5. This means the latnam input could not be transferred to the new input file",
         true
       ],
       [
         "layers",
         "/fleurInput/output/vacuumDOS",
+        "",
         true
       ],
       [
         "magField",
         "/fleurInput/atomSpecies/species",
+        "",
         true
       ],
       [
         "ndir",
         "/fleurInput/output/densityOfStates",
-        true
-      ],
-      [
-        "plplot",
-        "/fleurInput/output/plotting",
-        true
-      ],
-      [
-        "posScale",
-        "/fleurInput/calculationSetup/bzIntegration/kPointList",
-        true
-      ],
-      [
-        "score",
-        "/fleurInput/output/plotting",
-        true
-      ],
-      [
-        "vcaAddCharge",
-        "/fleurInput/atomSpecies/species",
-        true
-      ],
-      [
-        "weightScale",
-        "/fleurInput/calculationSetup/bzIntegration/kPointList",
+        "",
         true
       ],
       [
         "orbcomp",
         "/fleurInput/atomGroups/atomGroup/absPos",
+        "",
         true
       ],
       [
         "orbcomp",
         "/fleurInput/atomGroups/atomGroup/filmPos",
+        "",
         true
       ],
       [
         "orbcomp",
         "/fleurInput/atomGroups/atomGroup/relPos",
+        "",
+        true
+      ],
+      [
+        "plplot",
+        "/fleurInput/output/plotting",
+        "",
+        true
+      ],
+      [
+        "posScale",
+        "/fleurInput/calculationSetup/bzIntegration/kPointList",
+        "The posscale and weightscale attributes were removed. If they were not 1 in the original input file this will change the coordinates and weights of the kpoints",
+        true
+      ],
+      [
+        "score",
+        "/fleurInput/output/plotting",
+        "",
+        true
+      ],
+      [
+        "vcaAddCharge",
+        "/fleurInput/atomSpecies/species",
+        "",
+        true
+      ],
+      [
+        "weightScale",
+        "/fleurInput/calculationSetup/bzIntegration/kPointList",
+        "The posscale and weightscale attributes were removed. If they were not 1 in the original input file this will change the coordinates and weights of the kpoints",
         true
       ]
     ],
@@ -186,17 +209,17 @@
     ],
     "move": [
       [
-        "vacdos",
-        "vacdos",
-        "/fleurInput/output",
-        "/fleurInput/output/vacuumDOS",
+        "l_relax",
+        "l_relaxSQA",
+        "/fleurInput/atomGroups/atomGroup/nocoParams",
+        "/fleurInput/atomGroups/atomGroup/nocoParams",
         true
       ],
       [
-        "mcd",
-        "mcd",
-        "/fleurInput/output",
-        "/fleurInput/output/magneticCircularDichroism",
+        "l_relax",
+        "l_relaxSQA",
+        "/fleurInput/atomSpecies/species/nocoParams",
+        "/fleurInput/atomSpecies/species/nocoParams",
         true
       ],
       [
@@ -207,17 +230,17 @@
         true
       ],
       [
-        "l_relax",
-        "l_relaxSQA",
-        "/fleurInput/atomGroups/atomGroup/nocoParams",
-        "/fleurInput/atomGroups/atomGroup/nocoParams",
+        "mcd",
+        "mcd",
+        "/fleurInput/output",
+        "/fleurInput/output/magneticCircularDichroism",
         true
       ],
       [
-        "l_relax",
-        "l_relaxSQA",
-        "/fleurInput/atomSpecies/species/nocoParams",
-        "/fleurInput/atomSpecies/species/nocoParams",
+        "vacdos",
+        "vacdos",
+        "/fleurInput/output",
+        "/fleurInput/output/vacuumDOS",
         true
       ],
       [

@@ -16,8 +16,8 @@ def test_generate_conversion(file_regression, remove_conversion):
     file_path = remove_conversion
 
     runner = CliRunner()
-    input_string = 'y\ndensityofstates\nbanddos\nN\ny\nkpointlistselection\ndefault\nn\ny\nl_relax\n' + \
-                   'l_relaxSQA\nn\nmagmom\nmove\n0\n1\ncreate\n0\nremove\n0-2\ncreate\n0\nY\nNAME\ndefault\nN'
+    input_string = 'y\ndensityofstates\nbanddos\nN\ny\nkpointlistselection\ndefault\nn\ny\nkpointcount\ny\nkpointmesh\nn\nTest Warning\nn\ny\nl_relax\n' + \
+                   'l_relaxSQA\nn\nmagmom\nmove\n0\n1\ncreate\n0\nremove\n0-2\ncreate\n0\nY\nNAME\ndefault\nN\ny\nlatnam\nn\nTest Warning 2\nn'
 
     result = runner.invoke(generate_inp_conversion, ['0.31', '0.34'], input=input_string)
     print(result.output)

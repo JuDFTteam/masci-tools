@@ -136,6 +136,7 @@ class RemoveAction(NamedTuple):
     """
     name: str
     path: str
+    warning: str = ''
     attrib: bool = False
 
     @classmethod
@@ -516,7 +517,9 @@ def _rename_elements(remove: List[RemoveAction], create: List[CreateAction], mov
 
     rename = True
     while remove and create and rename:
-        echo_actions(remove, header=f'The following {name} are not found in the target version:')
+        echo_actions(remove,
+                     header=f'The following {name} are not found in the target version:',
+                     ignore={'attrib', 'warning'})
         echo_actions(create,
                      header=f'The following {name} are not found in the start version:',
                      ignore={'attrib', 'element'})
@@ -575,6 +578,33 @@ def _create_tag_elements(create, to_schema):
             create.append(create_action._replace(element=elem))
         create = sorted(create, key=lambda x: x.name)
     return create
+
+
+def _add_warnings_on_remove(remove, name):
+    """
+    Get user input on warnings to show
+    """
+    warning_prompt = True
+    while remove and warning_prompt:
+        echo_actions(remove, header=f'The following {name} will be removed:')
+
+        warning_prompt = click.confirm(f'Do you want to add a warning if a {name} is removed?')
+
+        if warning_prompt:
+            elem_name = click.prompt('Name of the element',
+                                     type=click.Choice([action.name for action in remove], case_sensitive=False),
+                                     show_choices=False)
+            remove_list = remove_action(remove, elem_name)
+            while click.confirm('Do you want to enter another element?', default=False):
+                elem_name = click.prompt('Name of the element',
+                                         type=click.Choice([action.name for action in remove], case_sensitive=False),
+                                         show_choices=False)
+                remove_list += remove_action(remove, elem_name)
+
+            warning = click.prompt('Enter the warning message', type=str)
+            remove.extend(action._replace(warning=warning) for action in remove_list)
+        remove = sorted(remove, key=lambda x: x.name)
+    return remove
 
 
 def _create_attrib_elements(create, to_schema):
@@ -696,6 +726,37 @@ def _xml_create_tag_with_parents(xmltree, xpath, node):
     xml_create_tag(xmltree, xpath, node)
 
 
+def _xml_delete_attribute_with_warnings(xmltree, xpath, name, warning=''):
+    """
+    Delete the attribute at the given xpath with the given name and show a warning if one is given
+
+    :param xmltree: etree ElementTree to operate on
+    :param xpath: xpath of the parent node
+    :param name: name of the attribute
+    :param warning: str of the warning to show in case there are nodes that are removed
+    """
+    values = eval_xpath(xmltree, f'{xpath}/@{name}', list_return=True)
+    if values:
+        if warning:
+            echo.echo_warning(warning)
+        xml_delete_att(xmltree, xpath, name)
+
+
+def _xml_delete_tag_with_warnings(xmltree, xpath, warning=''):
+    """
+    Delete the tag at the given xpath and show a warning if one is given
+
+    :param xmltree: etree ElementTree to operate on
+    :param xpath: xpath of the node
+    :param warning: str of the warning to show in case there are nodes that are removed
+    """
+    nodes = eval_xpath(xmltree, xpath, list_return=True)
+    if nodes:
+        if warning:
+            echo.echo_warning(warning)
+        xml_delete_tag(xmltree, xpath)
+
+
 def _reorder_tree(parent: etree._Element, schema_dict: InputSchemaDict, base_xpath: str = None) -> None:
     """
     Order the elements to be in the correct order for the given schema_dict
@@ -760,10 +821,10 @@ def convert_inpxml(ctx, xml_file, to_version, output_file, overwrite):
 
     set_attrib_value(xmltree, schema_dict_target, 'fleurInputVersion', to_version)
     for action in conversion['tag']['remove']:
-        xml_delete_tag(xmltree, action.path)
+        _xml_delete_tag_with_warnings(xmltree, action.path, warning=action.warning)
 
     for action in conversion['attrib']['remove']:
-        xml_delete_att(xmltree, action.path, action.name)
+        _xml_delete_attribute_with_warnings(xmltree, action.path, action.name, warning=action.warning)
 
     for action in conversion['tag']['move']:
         if isinstance(action, NormalizedMoveAction):
@@ -771,7 +832,8 @@ def convert_inpxml(ctx, xml_file, to_version, output_file, overwrite):
         else:
             path = action.old_path
         nodes = eval_xpath(xmltree, path, list_return=True)
-        xml_delete_tag(xmltree, path)
+        if nodes:
+            xml_delete_tag(xmltree, path)
 
         for node in nodes:
             path, _ = split_off_tag(action.new_path)
@@ -791,13 +853,17 @@ def convert_inpxml(ctx, xml_file, to_version, output_file, overwrite):
         else:
             path = action.old_path
         values = eval_xpath(xmltree, f'{path}/@{action.old_name}', list_return=True)
-        xml_delete_att(xmltree, path, action.old_name)
         if values:
-            xml_set_attrib_value_no_create(xmltree, action.new_path, action.new_name, values)
+            xml_delete_att(xmltree, path, action.old_name)
+            nodes = eval_xpath(xmltree, action.new_path, list_return=True)
+            if nodes:
+                xml_set_attrib_value_no_create(xmltree, action.new_path, action.new_name, values)
 
     for action in conversion['attrib']['create']:
         if action.element is not None:
-            xml_set_attrib_value_no_create(xmltree, action.path, action.name, action.element)
+            nodes = eval_xpath(xmltree, action.path, list_return=True)
+            if nodes:
+                xml_set_attrib_value_no_create(xmltree, action.path, action.name, action.element)
 
     _reorder_tree(xmltree.getroot(), schema_dict_target)
 
@@ -874,6 +940,7 @@ def generate_inp_conversion(ctx, from_version, to_version, show):
                                                                                   actual_path=intermediate_path)
 
     create_tags = _create_tag_elements(create_tags, to_schema)
+    remove_tags = _add_warnings_on_remove(remove_tags, 'tags')
 
     remove_attrib, create_attrib, move_attrib, ambiguous_attrib = analyse_paths(from_schema, to_schema, ATTRIB_ENTRIES)
 
@@ -905,6 +972,7 @@ def generate_inp_conversion(ctx, from_version, to_version, show):
                                                                    move_attrib, 'attributes')
 
     create_attrib = _create_attrib_elements(create_attrib, to_schema)
+    remove_attrib = _add_warnings_on_remove(remove_attrib, 'attributes')
 
     conversion = {
         'from': from_version,
