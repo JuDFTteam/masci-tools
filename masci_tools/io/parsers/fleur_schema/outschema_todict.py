@@ -97,8 +97,8 @@ def create_outschema_dict(path: AnyStr, inpschema_dict: 'InputSchemaData') -> Ou
     xmlschema = etree.parse(path)
     xmlschema, _ = clear_xml(xmlschema)
 
-    namespaces = {'xsd': 'http://www.w3.org/2001/XMLSchema'}
-    out_version = str(xmlschema.xpath('/xsd:schema/@version', namespaces=namespaces)[0])  #type:ignore
+    xmlschema_evaluator = etree.XPathEvaluator(xmlschema, namespaces=NAMESPACES)
+    out_version = str(xmlschema_evaluator('/xsd:schema/@version')[0])
 
     input_basic_types = inpschema_dict['_basic_types'].get_unlocked()
 
@@ -114,7 +114,7 @@ def create_outschema_dict(path: AnyStr, inpschema_dict: 'InputSchemaData') -> Ou
         ]:
             addargs['iteration_root'] = True
             addargs['iteration'] = True
-        schema_dict[key] = action(xmlschema, namespaces, **schema_dict, **addargs)
+        schema_dict[key] = action(xmlschema_evaluator, **schema_dict, **addargs)
 
     schema_dict['_input_basic_types'] = LockableDict(input_basic_types)
 
