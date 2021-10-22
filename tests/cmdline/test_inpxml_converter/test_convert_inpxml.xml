@@ -6,7 +6,9 @@
     <cutoffs Kmax="4.40000000" Gmax="10.90000000" GmaxXC="9.10000000" numbands="0"/>
     <scfLoop itmax="60" minDistance="0.0000200000" maxIterBroyd="99" imix="Anderson" alpha=".05000000" precondParam="0.0" spinf="2.00000000"/>
     <coreElectrons ctail="F" frcor="F" kcrel="0" coretail_lmax="0"/>
-    <magnetism jspins="2" l_noco="T" swsp="F" lflip="F"/>
+    <magnetism jspins="2" l_noco="T" swsp="F" lflip="F" l_ss="T">
+      <qss>0.0 0.0 0.0</qss>
+    </magnetism>
     <soc theta=".00000000" phi=".00000000" l_soc="F" spav="F"/>
     <prodBasis gcutm="2.90000000" tolerance=".00010000" ewaldlambda="3" lexp="16" bands="0"/>
     <expertModes gw="0" pot8="F" eig66="F" lpr="0" isec1="99" secvar="F"/>

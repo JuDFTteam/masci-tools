@@ -831,19 +831,30 @@ def convert_inpxml(ctx, xml_file, to_version, output_file, overwrite):
         echo.echo_warning(f'The output file {output_file} already exists. Will be overwritten')
 
     set_attrib_value(xmltree, schema_dict_target, 'fleurInputVersion', to_version)
+
+    #Collect the nodes to be moved
+    move_tags = []
+    for action in conversion['tag']['move']:
+        move_tags.append(eval_xpath(xmltree, action.old_path, list_return=True))
+
+    #Collect the attributes to be moved
+    move_attribs = []
+    for action in conversion['attrib']['move']:
+        move_attribs.append(eval_xpath(xmltree, f'{action.old_path}/@{action.old_name}', list_return=True))
+
     for action in conversion['tag']['remove']:
         _xml_delete_tag_with_warnings(xmltree, action.path, warning=action.warning)
 
     for action in conversion['attrib']['remove']:
         _xml_delete_attribute_with_warnings(xmltree, action.path, action.name, warning=action.warning)
 
-    for action in conversion['tag']['move']:
-        if isinstance(action, NormalizedMoveAction):
+    for action, nodes in zip(conversion['tag']['move'], move_tags):
+        if isinstance(action,NormalizedMoveAction):
             path = action.actual_path
         else:
             path = action.old_path
-        nodes = eval_xpath(xmltree, path, list_return=True)
-        if nodes:
+        
+        if eval_xpath(xmltree, path, list_return=True):
             xml_delete_tag(xmltree, path)
 
         for node in nodes:
@@ -858,14 +869,15 @@ def convert_inpxml(ctx, xml_file, to_version, output_file, overwrite):
             node = etree.fromstring(action.element)
             _xml_create_tag_with_parents(xmltree, path, node)
 
-    for action in conversion['attrib']['move']:
-        if isinstance(action, NormalizedMoveAction):
+    for action, values in zip(conversion['attrib']['move'], move_attribs):
+        if isinstance(action,NormalizedMoveAction):
             path = action.actual_path
         else:
             path = action.old_path
-        values = eval_xpath(xmltree, f'{path}/@{action.old_name}', list_return=True)
-        if values:
+
+        if eval_xpath(xmltree, f"{path}/@{action.old_name}", list_return=True):
             xml_delete_att(xmltree, path, action.old_name)
+        if values:
             nodes = eval_xpath(xmltree, action.new_path, list_return=True)
             if nodes:
                 xml_set_attrib_value_no_create(xmltree, action.new_path, action.new_name, values)
