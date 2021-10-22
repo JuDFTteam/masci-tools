@@ -809,7 +809,7 @@ def convert_inpxml(ctx, xml_file, to_version, output_file, overwrite):
 
     #We want to leave comments in so we cannot use clear_xml for the xinclude feature
     #Here we just include and write out the complete xml file
-    xmltree.xinclude() #type:ignore
+    xmltree.xinclude()  #type:ignore
 
     from_version = evaluate_attribute(xmltree, schema_dict, 'fleurInputVersion')
 
@@ -888,7 +888,7 @@ def convert_inpxml(ctx, xml_file, to_version, output_file, overwrite):
             f'inp.xml conversion did not finish successfully. The resulting file violates the XML schema with:\n {err}')
 
     #If there was no relax.xml included we need to rewrite the xinclude tag for it
-    if not tag_exists(xmltree,schema_dict_target,'relaxation'):
+    if not tag_exists(xmltree, schema_dict_target, 'relaxation'):
         xinclude_elem = etree.Element(INCLUDE_TAG, href='relax.xml', nsmap=INCLUDE_NSMAP)  #type:ignore
         xinclude_elem.append(etree.Element(FALLBACK_TAG))  #type:ignore
         xmltree.getroot().append(xinclude_elem)
