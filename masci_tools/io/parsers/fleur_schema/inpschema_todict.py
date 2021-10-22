@@ -81,13 +81,15 @@ def create_inpschema_dict(path: AnyStr, apply_patches: bool = True) -> InputSche
     xmlschema, _ = clear_xml(xmlschema)
 
     namespaces = {'xsd': 'http://www.w3.org/2001/XMLSchema'}
-    inp_version = str(xmlschema.xpath('/xsd:schema/@version', namespaces=namespaces)[0])  #type:ignore
+    xmlschema_evaluator = etree.XPathEvaluator(xmlschema, namespaces=namespaces)
+
+    inp_version = str(xmlschema_evaluator('/xsd:schema/@version')[0])  #type:ignore
     inp_version_tuple = convert_str_version_number(inp_version)
 
     schema_dict: InputSchemaData = {}
     schema_dict['inp_version'] = inp_version
     for key, action in schema_actions.items():
-        schema_dict[key] = action(xmlschema, namespaces, **schema_dict)
+        schema_dict[key] = action(xmlschema_evaluator, namespaces=namespaces, **schema_dict)
 
         if key == '_basic_types' and apply_patches:
             schema_dict[key] = patch_basic_types(schema_dict[key], inp_version_tuple)
