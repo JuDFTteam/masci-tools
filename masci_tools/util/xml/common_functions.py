@@ -235,7 +235,7 @@ def validate_xml(xmltree: etree._ElementTree,
         raise etree.DocumentInvalid(errmsg) from exc
 
 
-def eval_xpath(node: Union[etree._Element, etree._ElementTree],
+def eval_xpath(node: Union[etree._Element, etree._ElementTree, 'etree._XPathEvaluatorBase'],
                xpath: 'etree._xpath',
                logger: Logger = None,
                list_return: bool = False,
@@ -256,23 +256,30 @@ def eval_xpath(node: Union[etree._Element, etree._ElementTree],
     :returns: text, attribute or a node list
     """
 
-    if not isinstance(node, (etree._Element, etree._ElementTree)):
+    if not isinstance(node, (etree._Element, etree._ElementTree, etree._XPathEvaluatorBase)):  #pylint: disable=protected-access
         if logger is not None:
             logger.error('Wrong Type for xpath eval; Got: %s', type(node))
         raise TypeError(f'Wrong Type for xpath eval; Got: {type(node)}')
 
-    if namespaces is not None and isinstance(xpath, etree.XPath):
+    if isinstance(xpath, etree.XPath) and isinstance(node, etree._XPathEvaluatorBase):  #pylint: disable=protected-access
+        if logger is not None:
+            logger.error('Got an XPath object and an XPathEvaluator in eval_xpath')
+        raise TypeError('Got an XPath object and an XPathEvaluator in eval_xpath')
+
+    if namespaces is not None and (isinstance(xpath, etree.XPath) or isinstance(node, etree._XPathEvaluatorBase)):  #pylint: disable=protected-access
         if logger is not None:
             logger.exception(
-                'Passing namespaces is only supported for string xpaths. for eree.XPath use namespaces in the init function'
+                'Passing namespaces is only supported for string xpaths and nodes. for etree.XPath or XPathEvaluatore use namespaces in the init function'
             )
         raise ValueError(
-            'Passing namespaces is only supported for string xpaths. for eree.XPath use namespaces in the init function'
+            'Passing namespaces is only supported for string xpaths and nodes. for etree.XPath or XPathEvaluatore use namespaces in the init function'
         )
 
     try:
         if isinstance(xpath, etree.XPath):
             return_value = xpath(node, **variables)
+        elif isinstance(node, etree._XPathEvaluatorBase):  #pylint: disable=protected-access
+            return_value = node(xpath, **variables)
         else:
             return_value = node.xpath(xpath, namespaces=namespaces, **variables)  #type:ignore
     except etree.XPathEvalError as err:
