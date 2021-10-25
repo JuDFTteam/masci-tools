@@ -53,6 +53,9 @@ def add_fleur_schema(schema_file, test_xml_file, overwrite, branch, api_key):
 
     PACKAGE_ROOT = Path(masci_tools.__file__).parent.resolve()
 
+    if not isinstance(schema_file, Path):
+        schema_file = Path(schema_file)
+
     file_name = schema_file.name
     if file_name not in ('FleurInputSchema.xsd', 'FleurOutputSchema.xsd'):
         echo.echo_critical(
