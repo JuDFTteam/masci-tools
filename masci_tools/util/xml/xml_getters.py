@@ -151,7 +151,10 @@ def get_fleur_modes(xmltree: Union[etree._Element, etree._ElementTree],
         #We make the assumption that the existence of a greensfCalculation
         #tag implies the existence of a greens function calculation
         greensf = tag_exists(root, schema_dict, 'greensfCalculation', contains='species', logger=logger)
-        greensf = greensf or tag_exists(root, schema_dict, 'torgueCalculation', contains='species', logger=logger)
+        if schema_dict.inp_version >= (0, 35):
+            greensf = greensf or tag_exists(root, schema_dict, 'torqueCalculation', contains='species', logger=logger)
+        else:
+            greensf = greensf or tag_exists(root, schema_dict, 'torgueCalculation', contains='species', logger=logger)
     fleur_modes['greensf'] = greensf
 
     ldahia = False
