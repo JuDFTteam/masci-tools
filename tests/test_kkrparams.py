@@ -232,7 +232,7 @@ class Test_fill_inputfile:
         with tempfile.TemporaryDirectory() as td:
             os.chdir(td)
             p.fill_keywords_to_inputfile(is_voro_calc=True)
-            with open('inputcard', 'r') as f:
+            with open('inputcard', 'r', encoding='utf-8') as f:
                 file_content = f.read()
             os.chdir(cwd)
 
@@ -253,7 +253,7 @@ class Test_fill_inputfile:
         with tempfile.TemporaryDirectory() as td:
             os.chdir(td)
             p.fill_keywords_to_inputfile()
-            with open('inputcard', 'r') as f:
+            with open('inputcard', 'r', encoding='utf-8') as f:
                 file_content = f.read().strip()
             os.chdir(cwd)
 
@@ -465,7 +465,7 @@ class Test_read_inputfile:  # pylint: disable=missing-class-docstring
         with tempfile.TemporaryDirectory() as td:
             os.chdir(td)
             p.fill_keywords_to_inputfile(output='input.temp.txt')
-            with open('input.temp.txt', 'r') as f:
+            with open('input.temp.txt', 'r', encoding='utf-8') as f:
                 txt = f.readlines()
             # exchange some lines
             tmp = txt[0]
@@ -480,7 +480,7 @@ class Test_read_inputfile:  # pylint: disable=missing-class-docstring
             tmp = txt[-3]
             txt[-3] = txt[-1]
             txt[-1] = tmp
-            with open('input.temp_unsorted.txt', 'w') as f:
+            with open('input.temp_unsorted.txt', 'w', encoding='utf-8') as f:
                 f.writelines(txt)
             p2 = kkrparams()
             p2.read_keywords_from_inputcard(inputcard='input.temp_unsorted.txt')

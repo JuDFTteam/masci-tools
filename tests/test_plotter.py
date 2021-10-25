@@ -2,6 +2,7 @@
 """
 Tests of the plotter base class
 """
+#pylint: disable=protected-access
 from masci_tools.vis.parameters import Plotter, ensure_plotter_consistency
 import pytest
 
