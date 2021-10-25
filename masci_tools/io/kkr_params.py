@@ -1587,7 +1587,7 @@ class kkrparams:
                     tmpl += '\n'
 
         # finally write to file
-        with open_general(output, u'w') as f:
+        with open_general(output, 'w') as f:
             f.write(tmpl)
 
     def read_keywords_from_inputcard(self, inputcard='inputcard', verbose=False):

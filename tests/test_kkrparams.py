@@ -372,9 +372,9 @@ class Test_fill_inputfile:
         from numpy import array
         from masci_tools.io.common_functions import search_string
 
-        para_dict = dict([(u'INS', 0), (u'RCLUSTZ', 1.69), (u'LMAX', 2), (u'GMAX', 65.0),
-                          (u'<RMTCORE>', [0.3535533906, 0.3535533906, 0.3535533906, 0.3535533906]), (u'RMAX', 7.0),
-                          (u'NSPIN', 1)])
+        para_dict = dict([('INS', 0), ('RCLUSTZ', 1.69), ('LMAX', 2), ('GMAX', 65.0),
+                          ('<RMTCORE>', [0.3535533906, 0.3535533906, 0.3535533906, 0.3535533906]), ('RMAX', 7.0),
+                          ('NSPIN', 1)])
         zatom = array([47., 47., 47., 47.])
         alat = 7.8692316414074615
         natom = 4
