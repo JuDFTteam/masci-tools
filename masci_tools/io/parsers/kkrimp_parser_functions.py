@@ -27,7 +27,7 @@ __contributors__ = (u'Philipp Rüßmann', u'Fabian Bertoldo')
 ####################################################################################
 
 
-class KkrimpParserFunctions(object):
+class KkrimpParserFunctions:
     """
     Class of parser functions for KKRimp calculation
 

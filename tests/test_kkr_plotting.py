@@ -22,7 +22,7 @@ import os
 DIR = Path(__file__).parent.resolve()
 
 
-class Test_kkr_plotting(object):
+class Test_kkr_plotting:
     """
     Test for KKR plotting functions
     """

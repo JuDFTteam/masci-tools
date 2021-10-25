@@ -26,7 +26,7 @@ __version__ = '0.3'
 __contributors__ = u'Philipp Rüßmann'
 
 
-class modify_potential(object):
+class modify_potential:
     """
     Class for old modify potential script, ported from modify_potential script, initially by D. Bauer
     """

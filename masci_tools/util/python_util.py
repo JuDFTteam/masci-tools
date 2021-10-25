@@ -226,7 +226,7 @@ def modify_dict(a_dict: dict, transform_value: _typing.Callable = lambda v: v, t
     return inner_modify_dict(copy_dict)
 
 
-class NoIndent(object):
+class NoIndent:
     """ Value wrapper. """
 
     def __init__(self, value: _typing.Any):
@@ -389,7 +389,7 @@ class SizeEstimator:
         from gc import get_referents
 
         if isinstance(obj, self.BLACKLIST):
-            raise TypeError('getsize() does not take argument of type: ' + str(type(object)))
+            raise TypeError('getsize() does not take argument of type: ' + str(type(obj)))
         seen_ids = set()
         size = 0
         objects = [obj]

@@ -36,7 +36,7 @@ __kkr_default_params__ = {
 __forbid_brackets__ = ['use_input_alat']
 
 
-class kkrparams(object):
+class kkrparams:
     """
     Class for creating and handling the parameter input for a KKR calculation
     Optional keyword arguments are passed to init and stored in values dictionary.

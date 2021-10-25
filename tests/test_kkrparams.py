@@ -42,7 +42,7 @@ def check_full_dict(p, p0):
 # tests
 
 
-class Test_create_and_set_keys(object):  # pylint: disable=missing-class-docstring
+class Test_create_and_set_keys:  # pylint: disable=missing-class-docstring
 
     def test_create_params_with_inital_values(self):
         p = kkrparams(RBASIS=[0, 0, 0], params_type='voronoi')
@@ -66,7 +66,7 @@ class Test_create_and_set_keys(object):  # pylint: disable=missing-class-docstri
         assert p.values['EMAX'] == 2.
 
 
-class Test_capture_wrong_input(object):  # pylint: disable=missing-class-docstring
+class Test_capture_wrong_input:  # pylint: disable=missing-class-docstring
 
     def test_wrong_input_type(self):
         p = kkrparams()
@@ -122,7 +122,7 @@ class Test_capture_wrong_input(object):  # pylint: disable=missing-class-docstri
             p.fill_keywords_to_inputfile()
 
 
-class Test_get_info(object):  # pylint: disable=missing-class-docstring
+class Test_get_info:  # pylint: disable=missing-class-docstring
 
     def test_get_mandatory(self):
         p = kkrparams()
@@ -181,7 +181,7 @@ class Test_get_info(object):  # pylint: disable=missing-class-docstring
         assert set(testopt) == set(['test1', 'test2'])
 
 
-class Test_fill_inputfile(object):
+class Test_fill_inputfile:
     """
     Tests checking writing an input file
     """
@@ -429,7 +429,7 @@ class Test_fill_inputfile(object):
         file_regression.check(file_content)
 
 
-class Test_read_inputfile(object):  # pylint: disable=missing-class-docstring
+class Test_read_inputfile:  # pylint: disable=missing-class-docstring
 
     def test_read_minimal_inputfile(self):
         p = kkrparams(ZATOM=26.,
@@ -519,7 +519,7 @@ class Test_read_inputfile(object):  # pylint: disable=missing-class-docstring
         data_regression.check(d_check)
 
 
-class Test_other(object):  # pylint: disable=missing-class-docstring
+class Test_other:  # pylint: disable=missing-class-docstring
 
     def test_get_missing_keys(self):
         p = kkrparams()

@@ -12,7 +12,7 @@ import os
 DIR = Path(__file__).parent.resolve()
 
 
-class Test_modify_potential(object):
+class Test_modify_potential:
     """ Tests for the modify_potential class functions. """
 
     def test_shapefun_from_scoef(self, file_regression):
@@ -50,7 +50,7 @@ class Test_modify_potential(object):
         file_regression.check(txt)
 
 
-class Test_KkrimpParserFunctions(object):
+class Test_KkrimpParserFunctions:
     """ Tests for the KKRimp parser functions. """
 
     def test_parse_outfiles_full(self, data_regression):
