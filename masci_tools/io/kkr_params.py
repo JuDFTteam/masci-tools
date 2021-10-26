@@ -1264,7 +1264,7 @@ class kkrparams:
                 ['<ZATOM>', natyp], ['<SOCSCL>', natyp], ['<SITE>', natyp], ['<CPA-CONC>', natyp],
                 ['<KAOEZL>', nlbasis], ['<KAOEZR>', nrbasis], ['XINIPOL', natyp], ['<RMTREF>', natyp],
                 ['<RMTREFL>', nlbasis], ['<RMTREFR>', nrbasis], ['<FPRADIUS>', natyp], ['BZDIVIDE', 3],
-                ['<RBLEFT>', nrbasis], ['ZPERIODL', 3], ['<RBRIGHT>', nrbasis], ['ZPERIODR', 3],
+                ['<RBLEFT>', nlbasis], ['ZPERIODL', 3], ['<RBRIGHT>', nrbasis], ['ZPERIODR', 3],
                 ['LDAU_PARA', 5], ['CPAINFO', 2], ['<DELTAE>', 2], ['FILES', 2], ['DECIFILES', 2],
                 ['<RMTCORE>', naez], ['<MTWAU>', naez], ['<RTMTWAU>',nrbasis ], ['<LFMTWAU>', nlbasis],
                 ['<MTWAL>', naez], ['<RTMTWAL>',nrbasis ], ['<LFMTWAL>', nlbasis],
