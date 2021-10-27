@@ -542,11 +542,11 @@ def evaluate_tag(node: Union[etree._Element, etree._ElementTree],
                                      text=text))
 
         for tag in tags:
-            for sub_dict in out_dict[tag]:
+            for indx, sub_dict in enumerate(out_dict[tag]):
                 if not sub_dict:
                     out_dict[tag].remove(sub_dict)
                 elif len(sub_dict) == 1 and tag in sub_dict:
-                    out_dict[tag] = sub_dict[tag]
+                    out_dict[tag][indx] = sub_dict[tag]
 
         for tag in tags:
             if len(out_dict[tag]) == 1:

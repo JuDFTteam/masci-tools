@@ -287,7 +287,7 @@ def test_evaluate_tag(caplog, load_inpxml, load_outxml):
         }],
         'atomicNumber': [26, 78],
         'electronConfig': [{
-            'coreConfig': '[Ne]'
+            'coreConfig': ['[Ne]']
         }, {
             'coreConfig': ['[Kr]', '(5s1/2)', '(4d3/2)', '(4d5/2)', '(4f5/2)', '(4f7/2)']
         }],
@@ -305,6 +305,16 @@ def test_evaluate_tag(caplog, load_inpxml, load_outxml):
 
     species = evaluate_tag(root, schema_dict, 'species', FLEUR_DEFINED_CONSTANTS, subtags=True, only_required=True)
     assert species == expected
+
+    expected = {'coreConfig': [['[Ne]'], ['[Kr]', '(5s1/2)', '(4d3/2)', '(4d5/2)', '(4f5/2)', '(4f7/2)']]}
+
+    electronconfig = evaluate_tag(root,
+                                  schema_dict,
+                                  'electronconfig',
+                                  FLEUR_DEFINED_CONSTANTS,
+                                  subtags=True,
+                                  only_required=True)
+    assert electronconfig == expected
 
 
 def test_single_value_tag(caplog, load_outxml):
