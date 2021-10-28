@@ -285,15 +285,12 @@ def write_inpgen_file(cell,
                 #if int(kind_name[len(head)]) > 4:
                 #    raise InputValidationError('New specie name/label should start with a digit smaller than 4')
             except ValueError:
-                kind_namet = site.kind
                 report.append(
                     f'Warning: Kind name {site.kind} will be ignored by the FleurinputgenCalculation and not set a charge number.'
                 )
-                # append a label to the detached atom
-                atom_positions_text.append(f'    {atomic_number_name:7} {position_str} {kind_namet}\n')
             else:
                 atomic_number_name = f'{atomic_number}.{kind_namet}'
-                atom_positions_text.append(f'    {atomic_number_name:7} {position_str}\n')
+            atom_positions_text.append(f'    {atomic_number_name:7} {position_str} {site.kind}\n')
         else:
             atom_positions_text.append(f'    {atomic_number_name:7} {position_str}\n')
     # TODO check format
