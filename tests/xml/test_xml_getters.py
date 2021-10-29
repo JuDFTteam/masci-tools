@@ -406,6 +406,7 @@ def test_parameter_mesh_specification(load_inpxml, data_regression):
 
     data_regression.check(para)
 
+
 def test_parameter_special_los(load_inpxml, data_regression):
 
     from masci_tools.util.xml.xml_getters import get_parameter_data
