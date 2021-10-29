@@ -406,6 +406,16 @@ def test_parameter_mesh_specification(load_inpxml, data_regression):
 
     data_regression.check(para)
 
+def test_parameter_special_los(load_inpxml, data_regression):
+
+    from masci_tools.util.xml.xml_getters import get_parameter_data
+
+    xmltree, schema_dict = load_inpxml('fleur/inp_special_los.xml', absolute=False)
+
+    para = get_parameter_data(xmltree, schema_dict)
+
+    data_regression.check(para)
+
 
 def test_kpoints_film(load_inpxml, data_regression):
 

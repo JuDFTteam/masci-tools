@@ -489,6 +489,9 @@ def convert_fleur_lo(loelements: List[etree._Element]) -> str:
         lo_type = get_xml_attribute(element, 'type')
         if lo_type != 'SCLO':  # non standard los not supported for now
             continue
+        eDeriv = get_xml_attribute(element, 'eDeriv')
+        if eDeriv != '0':  # LOs with higher derivatives are also dropped
+            continue
         l_num = get_xml_attribute(element, 'l')
         n_num = get_xml_attribute(element, 'n')
         if l_num is None or n_num is None:
