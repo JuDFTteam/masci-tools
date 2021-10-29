@@ -96,7 +96,8 @@ disable = [
     "too-many-return-statements",
     "too-many-arguments",
     "pointless-string-statement",
-    "no-member"
+    "no-member",
+    "consider-using-f-string"
 ]
 
 [tool.pylint.basic]
