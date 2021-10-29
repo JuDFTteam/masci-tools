@@ -55,14 +55,15 @@ def parse_inp_file(xml_file):
 
 @parse.command('out-file')
 @click.argument('xml-file', type=click.Path(exists=True))
-def parse_out_file(xml_file):
+@click.option('--ignore-validation', is_flag=True)
+def parse_out_file(xml_file, ignore_validation):
     """
     Parse the Fleur out.xml into a python dictionary
     """
     from masci_tools.io.parsers.fleur import outxml_parser
 
     parser_info = {}
-    parser_dict = outxml_parser(xml_file, parser_info_out=parser_info)
+    parser_dict = outxml_parser(xml_file, parser_info_out=parser_info, ignore_validation=ignore_validation)
 
     echo.echo_info('Parser output:')
     echo.echo_dictionary(parser_dict)
