@@ -278,6 +278,7 @@ def write_inpgen_file(cell,
         position_str = ' '.join([f'{value:18.{significant_figures_positions}f}' for value in vector_rel])
 
         if site.symbol != site.kind:  # This is an important fact, if user renames it becomes a new atomtype or species!
+            label = ''
             try:
                 # Kind names can be more then numbers now, this might need to be reworked
                 head = site.kind.rstrip('0123456789')
@@ -290,7 +291,8 @@ def write_inpgen_file(cell,
                 )
             else:
                 atomic_number_name = f'{atomic_number}.{kind_namet}'
-            atom_positions_text.append(f'    {atomic_number_name:7} {position_str} {site.kind}\n')
+                label = kind_namet
+            atom_positions_text.append(f'    {atomic_number_name:7} {position_str} {label}\n')
         else:
             atom_positions_text.append(f'    {atomic_number_name:7} {position_str}\n')
     # TODO check format
