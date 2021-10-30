@@ -149,3 +149,18 @@ def test_add_fleur_schema_overwrite(fake_schemas_and_test_files):
     assert result.exception is None, 'An unexpected exception occured: {result.exception}'
     assert 'Copied Schema file to masci-tools repository' in result.output
     assert 'Created Schema dictionary for the given schema file' in result.output
+
+
+def test_list_versions():
+    """
+    Test of the list command for fleur-schema
+    """
+    from masci_tools.cmdline.commands.fleur_schema import list_available_schemas
+    from click.testing import CliRunner
+
+    runner = CliRunner()
+    result = runner.invoke(list_available_schemas)
+
+    assert result.exception is None, 'An unexpected exception occured: {result.exception}'
+    assert 'Version  Input Schema available    Output Schema available' in result.output
+    assert '0.33  True                      True' in result.output

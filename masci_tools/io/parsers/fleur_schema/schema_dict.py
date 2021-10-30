@@ -141,6 +141,25 @@ def schema_dict_version_dispatch(output_schema: bool = False) -> Callable:
     return schema_dict_version_dispatch_dec
 
 
+def list_available_versions(output_schema: bool) -> List[str]:
+    """
+    List the available versions for the schema
+
+    :param output_schema: bool, if True search for FleurOutputSchema.xsd otherwise FleurInputSchema.xsd
+
+    :returns: list version string of the available versions
+    """
+    versions: List[str] = []
+    for f in os.scandir(PACKAGE_DIRECTORY):
+        if f.is_dir() and '.' in f.name:
+            if output_schema and not (Path(f) / 'FleurOutputSchema.xsd').is_file():
+                continue
+            if not output_schema and not (Path(f) / 'FleurInputSchema.xsd').is_file():
+                continue
+            versions.append(f.name)
+    return versions
+
+
 def _get_latest_available_version(output_schema: bool) -> str:
     """
     Determine the newest available version for the schema
@@ -149,19 +168,8 @@ def _get_latest_available_version(output_schema: bool) -> str:
 
     :returns: version string of the latest version
     """
-
-    latest_version = (0, 0)
-    #Get latest version available
-    for f in os.scandir(PACKAGE_DIRECTORY):
-        if f.is_dir() and '.' in f.name:
-            if output_schema and not (Path(f) / 'FleurOutputSchema.xsd').is_file():
-                continue
-            if not output_schema and not (Path(f) / 'FleurOutputSchema.xsd').is_file():
-                continue
-
-            latest_version = max(latest_version, convert_str_version_number(f.name))
-
-    return '.'.join(map(str, latest_version))
+    versions = list_available_versions(output_schema=output_schema)
+    return max(versions, key=convert_str_version_number)
 
 
 class SchemaDict(LockableDict):

@@ -2,20 +2,25 @@
 """
 CLI commands for interacting with the fleur schemas in the masci-tools repository
 """
+from masci_tools.io.parsers import fleur
 from .root import cli
 import click
 
 import masci_tools
 from masci_tools.cmdline.utils import echo
 from masci_tools.util.xml.common_functions import clear_xml, validate_xml
+from masci_tools.util.xml.converters import convert_str_version_number
 from masci_tools.io.io_fleurxml import load_inpxml, load_outxml
 from masci_tools.io.parsers.fleur import inpxml_parser, outxml_parser
+from masci_tools.io.parsers.fleur_schema import InputSchemaDict, OutputSchemaDict, list_available_versions
 
 from pathlib import Path
+from itertools import chain
 import os
 import sys
 import shutil
 import tempfile
+import tabulate
 
 from lxml import etree
 
@@ -49,7 +54,6 @@ def add_fleur_schema(schema_file, test_xml_file, overwrite, branch, api_key):
     `masci_tools/io/parsers/fleur_schema`
     corresponding to its version number
     """
-    from masci_tools.io.parsers.fleur_schema import InputSchemaDict, OutputSchemaDict
 
     PACKAGE_ROOT = Path(masci_tools.__file__).parent.resolve()
 
@@ -209,3 +213,23 @@ def validate_outxmlfile(xml_file):
         echo.echo_error(str(err))
     else:
         echo.echo_success(f"{xml_file} validates against the schema for version {schema_dict['out_version']}")
+
+
+@fleur_schema.command('list')
+def list_available_schemas():
+    """
+    Show the available fleur schemas
+    """
+    input_versions = list_available_versions(output_schema=False)
+    output_versions = list_available_versions(output_schema=True)
+
+    all_versions = set(input_versions) | set(output_versions)
+    all_versions = sorted(all_versions, key=convert_str_version_number)
+
+    input_versions = [version in input_versions for version in all_versions]
+    output_versions = [version in output_versions for version in all_versions]
+
+    echo.echo_info('The following Schemas were found')
+    echo.echo(
+        tabulate.tabulate(list(zip(all_versions, input_versions, output_versions)),
+                          headers=['Version', 'Input Schema available', 'Output Schema available']))
