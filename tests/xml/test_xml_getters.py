@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-
-# -*- coding: utf-8 -*-
 """
 Tests of the xml_getters
 """
@@ -203,12 +201,36 @@ def test_get_cell_bulk(load_inpxml, data_regression):
     data_regression.check({'cell': convert_to_pystd(cell), 'pbc': pbc})
 
 
+def test_get_cell_output(load_outxml, data_regression):
+
+    from masci_tools.util.xml.xml_getters import get_cell
+    from masci_tools.io.common_functions import convert_to_pystd
+
+    xmltree, schema_dict = load_outxml('fleur/Max-R5/SiLOXML/files/out.xml', absolute=False)
+
+    cell, pbc = get_cell(xmltree, schema_dict)
+
+    data_regression.check({'cell': convert_to_pystd(cell), 'pbc': pbc})
+
+
 def test_get_symmetry_information_existing(load_inpxml, data_regression):
 
     from masci_tools.util.xml.xml_getters import get_symmetry_information
     from masci_tools.io.common_functions import convert_to_pystd
 
     xmltree, schema_dict = load_inpxml(TEST_BULK_INPXML_PATH, absolute=False)
+
+    rotations, shifts = get_symmetry_information(xmltree, schema_dict)
+
+    data_regression.check({'rotations': convert_to_pystd(rotations), 'shifts': convert_to_pystd(shifts)})
+
+
+def test_get_symmetry_output(load_outxml, data_regression):
+
+    from masci_tools.util.xml.xml_getters import get_symmetry_information
+    from masci_tools.io.common_functions import convert_to_pystd
+
+    xmltree, schema_dict = load_outxml('fleur/Max-R5/SiLOXML/files/out.xml', absolute=False)
 
     rotations, shifts = get_symmetry_information(xmltree, schema_dict)
 
@@ -302,6 +324,22 @@ def test_get_structure_relaxed(load_inpxml, data_regression):
     })
 
 
+def test_get_structure_output(load_outxml, data_regression):
+
+    from masci_tools.util.xml.xml_getters import get_structure_data
+    from masci_tools.io.common_functions import convert_to_pystd
+
+    xmltree, schema_dict = load_outxml('fleur/Max-R5/SiLOXML/files/out.xml', absolute=False)
+
+    atoms, cell, pbc = get_structure_data(xmltree, schema_dict)
+
+    data_regression.check({
+        'atoms': convert_to_pystd([dict(atom._asdict()) for atom in atoms]),
+        'cell': convert_to_pystd(cell),
+        'pbc': pbc
+    })
+
+
 def test_get_structure_norm_kinds(load_inpxml, data_regression):
 
     from masci_tools.util.xml.xml_getters import get_structure_data
@@ -335,6 +373,17 @@ def test_fleur_modes_bulk(load_inpxml, data_regression):
     from masci_tools.util.xml.xml_getters import get_fleur_modes
 
     xmltree, schema_dict = load_inpxml(TEST_BULK_INPXML_PATH, absolute=False)
+
+    modes = get_fleur_modes(xmltree, schema_dict)
+
+    data_regression.check(modes)
+
+
+def test_fleur_modes_output(load_outxml, data_regression):
+
+    from masci_tools.util.xml.xml_getters import get_fleur_modes
+
+    xmltree, schema_dict = load_outxml('fleur/Max-R5/SiLOXML/files/out.xml', absolute=False)
 
     modes = get_fleur_modes(xmltree, schema_dict)
 
@@ -412,6 +461,17 @@ def test_parameter_special_los(load_inpxml, data_regression):
     from masci_tools.util.xml.xml_getters import get_parameter_data
 
     xmltree, schema_dict = load_inpxml('fleur/inp_special_los.xml', absolute=False)
+
+    para = get_parameter_data(xmltree, schema_dict)
+
+    data_regression.check(para)
+
+
+def test_parameter_output(load_outxml, data_regression):
+
+    from masci_tools.util.xml.xml_getters import get_parameter_data
+
+    xmltree, schema_dict = load_outxml('fleur/Max-R5/SiLOXML/files/out.xml', absolute=False)
 
     para = get_parameter_data(xmltree, schema_dict)
 
@@ -617,6 +677,18 @@ def test_get_nkpts_multiple(load_inpxml, data_regression):
 
     assert isinstance(nkpts, int)
     assert nkpts == 20
+
+
+def test_nkpts_output(load_outxml):
+
+    from masci_tools.util.xml.xml_getters import get_nkpts
+
+    xmltree, schema_dict = load_outxml('fleur/Max-R5/SiLOXML/files/out.xml', absolute=False)
+
+    nkpts = get_nkpts(xmltree, schema_dict)
+
+    assert isinstance(nkpts, int)
+    assert nkpts == 2
 
 
 def test_get_nkpts_max4(load_inpxml, data_regression):

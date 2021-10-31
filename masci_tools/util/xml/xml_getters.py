@@ -202,6 +202,7 @@ def get_nkpts(xmltree: Union[etree._Element, etree._ElementTree],
     kpointlists: List[etree._Element] = eval_simple_xpath(root,
                                                           schema_dict,
                                                           'kPointList',
+                                                          contains='kPointLists',
                                                           list_return=True,
                                                           logger=logger)  #type:ignore
 
@@ -276,11 +277,11 @@ def get_nkpts_max4(xmltree: Union[etree._Element, etree._ElementTree],
             if len(kpt_tag) != 0:
                 warnings.warn('kPointCount is not guaranteed to result in the given number of kpoints')
 
-    if not kpt_tag:
+    if not kpt_tag and getattr(schema_dict, 'out_version', None) is None:
         kpt_tag = eval_simple_xpath(root,
                                     schema_dict,
                                     'kPointList',
-                                    not_contains='altKPointSet',
+                                    not_contains=['altKPointSet', 'numericalParameters'],
                                     list_return=True,
                                     logger=logger)  #type:ignore
         if len(kpt_tag) == 0:
@@ -293,6 +294,13 @@ def get_nkpts_max4(xmltree: Union[etree._Element, etree._ElementTree],
             if len(kpt_tag) == 0:
                 raise ValueError('No kPointList or kPointCount found')
             warnings.warn('kPointCount is not guaranteed to result in the given number of kpoints')
+    elif not kpt_tag and getattr(schema_dict, 'out_version', None) is not None:
+        kpt_tag = eval_simple_xpath(root,
+                                    schema_dict,
+                                    'kPointList',
+                                    contains='numericalParameters',
+                                    list_return=True,
+                                    logger=logger)  #type:ignore
 
     nkpts = evaluate_attribute(kpt_tag[0], schema_dict, 'count', logger=logger)
 
@@ -606,6 +614,7 @@ def get_parameter_data(xmltree: Union[etree._Element, etree._ElementTree],
         kpointlists: List[etree._Element] = eval_simple_xpath(root,
                                                               schema_dict,
                                                               'kPointList',
+                                                              contains='kPointLists',
                                                               list_return=True,
                                                               logger=logger)  #type:ignore
 
