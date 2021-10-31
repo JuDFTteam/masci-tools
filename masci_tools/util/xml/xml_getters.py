@@ -21,6 +21,7 @@ import warnings
 import numpy as np
 from logging import Logger
 from typing import TYPE_CHECKING, List, Tuple, Union, Dict, Any, Optional
+
 if TYPE_CHECKING:
     from masci_tools.io.parsers import fleur_schema
 
@@ -917,6 +918,7 @@ def get_kpoints_data(
     kpointlists: List[etree._Element] = eval_simple_xpath(root,
                                                           schema_dict,
                                                           'kPointList',
+                                                          contains='kPointLists',
                                                           list_return=True,
                                                           logger=logger)  #type:ignore
 
@@ -1017,11 +1019,19 @@ def get_kpoints_data_max4(
                                                          schema_dict,
                                                          'kPointList',
                                                          list_return=True,
-                                                         not_contains='altKPoint',
+                                                         not_contains=['altKPoint', 'numericalParameters'],
                                                          logger=logger)  #type:ignore
 
     if len(kpointlist) == 0:
-        raise ValueError('No Kpoint lists found in the given inp.xml')
+        if getattr(schema_dict, 'out_version', None) is not None:
+            kpointlist = eval_simple_xpath(root,
+                                           schema_dict,
+                                           'kPointList',
+                                           list_return=True,
+                                           contains='numericalParameters',
+                                           logger=logger)  #type:ignore
+        else:
+            raise ValueError('No Kpoint lists found in the given inp.xml')
 
     kpoints = evaluate_text(kpointlist[0],
                             schema_dict,
