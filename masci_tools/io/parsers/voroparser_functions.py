@@ -229,10 +229,7 @@ def parse_voronoi_output(out_dict, outfile, potfile, atominfo, radii, inputfile,
     out_dict = convert_to_pystd(out_dict)
 
     # return output with error messages if there are any
-    if len(msg_list) > 0:
-        return False, msg_list, out_dict
-    else:
-        return True, [], out_dict
+    return len(msg_list) == 0, msg_list, out_dict
 
 
 def startpot_jellium(outfile):
@@ -240,10 +237,7 @@ def startpot_jellium(outfile):
     with f:  # make sure the file is properly closed
         tmptxt = f.readlines()
     itmp = search_string('JELLSTART POTENTIALS', tmptxt)
-    if itmp == -1:
-        return False
-    else:
-        return True
+    return itmp != -1
 
 
 def get_volumes(outfile):

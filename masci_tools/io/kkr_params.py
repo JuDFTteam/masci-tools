@@ -10,11 +10,11 @@
 # For further information please visit http://judft.de/.                      #
 #                                                                             #
 ###############################################################################
-from masci_tools.io.common_functions import open_general
 """
 In this module you find the kkrparams class that helps defining the KKR input parameters
 Also some defaults for the parameters are defined.
 """
+from masci_tools.io.common_functions import open_general
 
 __copyright__ = ('Copyright (c), 2017, Forschungszentrum Jülich GmbH,' 'IAS-1/PGI-1, Germany. All rights reserved.')
 __license__ = 'MIT license, see LICENSE.txt file'
@@ -854,22 +854,22 @@ class kkrparams:
         # description of each key
         self.__description = {}
 
-        for key in keyw:
-            self.values[key] = keyw[key][0]
-            self.__format[key] = keyw[key][1]
-            self._mandatory[key] = keyw[key][2]
-            self.__description[key] = keyw[key][3]
+        for key, val in keyw.items():
+            self.values[key] = val[0]
+            self.__format[key] = val[1]
+            self._mandatory[key] = val[2]
+            self.__description[key] = val[3]
 
         # update mandatory set for voronoi, kkrimp cases
         self._update_mandatory()
 
     @classmethod
-    def get_KKRcalc_parameter_defaults(self, silent=False):
+    def get_KKRcalc_parameter_defaults(cls, silent=False):
         """
         set defaults (defined in header of this file) and returns dict, kkrparams_version
         """
-        p = kkrparams()
-        for key, val in list(__kkr_default_params__.items()):
+        p = cls()
+        for key, val in __kkr_default_params__.items():
             p.set_value(key, val, silent=silent)
         return dict(p.get_set_values()), __version__
 
@@ -978,8 +978,7 @@ class kkrparams:
                 for fmtstr in fmtlist:
                     keytype.append(self._get_type_from_string(fmtstr))
             return keytype
-        else:
-            return None
+        return None
 
     def _check_valuetype(self, key):
         """Consistency check if type of value matches expected type from format info"""
@@ -1016,7 +1015,7 @@ class kkrparams:
             if valtype == int and cmptypes == float:
                 changed_type_automatically = True
                 self.values[key] = float(self.values[key])
-            elif type(valtype) == list:
+            elif isinstance(valtype, list):
                 for ival in range(len(valtype)):
                     if valtype[ival] == int and cmptypes == float:
                         changed_type_automatically = True
@@ -1038,15 +1037,14 @@ class kkrparams:
 
     def get_value(self, key):
         """Gets value of keyword 'key'"""
-        if key not in list(self.values.keys()):
+        if key not in self.values:
             print(f'Error key ({key}) not found in values dict! {self.values}')
             raise KeyError
-        else:
-            # deal with special cases of runopt and testopt (lists of codewords)
-            if key in ['RUNOPT', 'TESTOPT'] and self.values[key] is None:
-                return []
-            else:
-                return self.values[key]
+
+        # deal with special cases of runopt and testopt (lists of codewords)
+        if key in ['RUNOPT', 'TESTOPT'] and self.values[key] is None:
+            return []
+        return self.values[key]
 
     def set_value(self, key, value, silent=False):
         """Sets value of keyword 'key'"""
@@ -1067,10 +1065,10 @@ class kkrparams:
 
     def set_multiple_values(self, **kwargs):
         """Set multiple values (in example value1 and value2 of keywords 'key1' and 'key2') given as key1=value1, key2=value2"""
-        for key in kwargs:
+        for key, val in kwargs.items():
             key2 = self._add_brackets_to_key(key, self.values)
             #print('setting', key2, kwargs[key])
-            self.set_value(key2, kwargs[key])
+            self.set_value(key2, val)
 
     def get_set_values(self):
         """Return a list of all keys/values that are set (i.e. not None)"""
@@ -1105,7 +1103,7 @@ class kkrparams:
         """
         if key is not None:
             return self.__description[key]
-        for key in self.values.keys():
+        for key in self.values:
             if search is None or search.lower() in key.lower() or search.lower() in self.__description[key].lower():
                 print(f'{key:25}', self.__description[key])
 
@@ -1125,9 +1123,8 @@ class kkrparams:
 
         default_keywords = self._DEFAULT_KEYWORDS_KKR
 
-        for key in kwargs:
+        for key, val in kwargs.items():
             key2 = self._add_brackets_to_key(key, default_keywords)
-            val = kwargs[key]
             if self.__params_type == 'kkrimp':
                 if key == 'KEXCORE':
                     key2 = 'XC'
@@ -1143,8 +1140,7 @@ class kkrparams:
                     key2 = 'SCFSTEPS'
             # workaround to fix inconsistency of XC input between host and impurity code
             if self.__params_type == 'kkrimp' and key2 == 'XC':
-                val = self.change_XC_val_kkrimp(val)
-                kwargs[key] = val
+                kwargs[key] = self.change_XC_val_kkrimp(val)
             default_keywords[key2][0] = val
 
         return default_keywords
@@ -1196,7 +1192,7 @@ class kkrparams:
             if self._mandatory[key] and self.values[key] is None:
                 print('Error not all mandatory keys are set!')
                 set_of_mandatory = set(self.get_all_mandatory())
-                set_of_keys = set([key[0] for key in self.get_set_values()])
+                set_of_keys = {key[0] for key in self.get_set_values()}
                 print(set_of_mandatory - set_of_keys, 'missing')
                 raise ValueError(f'Missing mandatory key(s): {set_of_mandatory - set_of_keys}')
 
@@ -1675,10 +1671,10 @@ class kkrparams:
                     valtxt = self._find_value(key, txt, iline, item, num, debug=debug)
                     if valtxt is not None:
                         # first deal with run and testopts (needs to spearate keys)
-                        if key == 'RUNOPT' or key == 'TESTOPT':
+                        if key in ('RUNOPT', 'TESTOPT'):
                             valtxt = self.split_kkr_options(valtxt)
                         # then continue with valtxt
-                        if type(valtxt) == list:
+                        if isinstance(valtxt, list):
                             tmp = []
                             for itmp in range(len(valtxt)):
                                 tmptype = self.get_type(key)[itmp]
@@ -1700,7 +1696,7 @@ class kkrparams:
                     values = values[0]
 
                 if key == 'TESTOPT':  # flatten list
-                    if shape(values)[0] == 2 and type(values[0]) == list:
+                    if shape(values)[0] == 2 and isinstance(values[0], list):
                         tmp = []
                         for itmp in values:
                             for ii in itmp:
@@ -1849,10 +1845,8 @@ class kkrparams:
                 print(f'find_value found {valtxt}')
             if num == 1:
                 return valtxt[0]
-            else:
-                return valtxt
-        else:
-            return None
+            return valtxt
+        return None
 
     # redefine _update_mandatory for voronoi code
     def _update_mandatory_voronoi(self):
@@ -1937,20 +1931,20 @@ class kkrparams:
 
         default_keywords = self._DEFAULT_KEYS_KKRIMP
 
-        for key in kwargs:
+        for key, val in kwargs.items():
             key2 = self._add_brackets_to_key(key, default_keywords)
-            default_keywords[key2][0] = kwargs[key]
+            default_keywords[key2][0] = val
 
         return default_keywords
 
-    @classmethod
-    def split_kkr_options(self, valtxt):
+    @staticmethod
+    def split_kkr_options(valtxt):
         """
         Split keywords after fixed length of 8
         :param valtxt: list of strings or single string
         :returns: List of keywords of maximal length 8
         """
-        if type(valtxt) != list:
+        if not isinstance(valtxt, list):
             valtxt = [valtxt]
         valtxt_tmp = []
         for itmp in valtxt:
@@ -1972,7 +1966,7 @@ class kkrparams:
 
     def change_XC_val_kkrimp(self, val):
         """Convert integer value of KKRhost KEXCOR input to KKRimp XC string input."""
-        if type(val) == int:
+        if isinstance(val, int):
             if val == 0:
                 val = 'LDA-MJW'
             if val == 1:

@@ -126,10 +126,7 @@ class KkrimpParserFunctions:
         f.close()
         itmp = search_string('Spin orbit coupling used?', tmptxt)
         itmp = int(tmptxt.pop(itmp).split()[-1])
-        if itmp == 1:
-            newsosol = True
-        else:
-            newsosol = False
+        newsosol = itmp == 1
         return newsosol
 
     def _get_natom(self, file):
@@ -241,7 +238,7 @@ class KkrimpParserFunctions:
                   spinmom_at_tot (total spinmoment for the last iteration)
         """
         import numpy as np
-        from math import sqrt
+        from math import sqrt  #pylint: disable=no-name-in-module
 
         f = open_general(file)
         lines = f.readlines()
@@ -584,7 +581,4 @@ class KkrimpParserFunctions:
         out_dict = convert_to_pystd(out_dict)
 
         # return output with error messages if there are any
-        if len(msg_list) > 0:
-            return False, msg_list, out_dict
-        else:
-            return True, [], out_dict
+        return len(msg_list) == 0, msg_list, out_dict
