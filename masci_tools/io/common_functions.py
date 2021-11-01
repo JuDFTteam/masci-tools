@@ -30,8 +30,7 @@ def open_general(filename_or_handle, iomode=None):
     Also take care of closed files by reopenning them.
     This is intended to be used like this::
 
-        f = open_general(outfile)
-        with f: # make sure the file is properly closed
+        with open_general(outfile) as f:
             txt = f.readlines()
     """
     reopen_file = False
@@ -194,8 +193,7 @@ def vec_to_angles(vec):
 
 
 def get_version_info(outfile):
-    f = open_general(outfile)
-    with f:
+    with open_general(outfile) as f:
         tmptxt = f.readlines()
     itmp = search_string('Code version:', tmptxt)
     if itmp == -1:  # try to find serial number from header of file
@@ -214,8 +212,7 @@ def get_version_info(outfile):
 
 def get_corestates_from_potential(potfile='potential'):
     """Read core states from potential file"""
-    f = open_general(potfile)
-    with f:
+    with open_general(potfile) as f:
         txt = f.readlines()
 
     #get start of each potential part

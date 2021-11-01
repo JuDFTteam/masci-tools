@@ -7,7 +7,6 @@ Created on Wed Nov 15 16:43:31 2017
 """
 import pytest
 from masci_tools.io.kkr_params import kkrparams
-from masci_tools.io.common_functions import open_general
 import tempfile
 import os
 from pathlib import Path

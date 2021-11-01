@@ -1525,7 +1525,10 @@ class kkrparams:
                 elif self.__params_type == 'kkrimp' and key == 'RUNFLAG' or key == 'TESTFLAG':
                     # for kkrimp
                     ops = keywords[key]
-                    tmpl += f"{key}={' '.join(map(str, ops))}\n"
+                    tmpl += f'{key}='
+                    if ops:
+                        tmpl += ' ' + ' '.join(map(str, ops))
+                    tmpl += '\n'
                 elif key in self.__listargs:
                     # keys that have array values
                     if key in ['<RBASIS>', '<RBLEFT>',
@@ -1587,7 +1590,8 @@ class kkrparams:
             print(f'start reading {inputcard}')
             debug = True
 
-        txt = open_general(inputcard, 'r').readlines()
+        with open_general(inputcard, 'r') as f:
+            txt = f.readlines()
         keywords = self.values
         keyfmts = self.__format
 
