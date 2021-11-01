@@ -915,7 +915,7 @@ class kkrparams:
         if group in ['lattice', 'chemistry', 'accuracy', 'external fields', 'scf cycle', 'other']:
             print(f'Returning only values belonging to group {group}')
             tmp_dict = {}
-            for key in list(out_dict.keys()):
+            for key in out_dict:
                 desc = self.__description[key]
                 key_in_group = False
                 if group_searchstrings[group] != 'other':
@@ -932,7 +932,7 @@ class kkrparams:
                 if subgroup in subgroups_all[group]:
                     print(f'Restrict keys additionally to subgroup {subgroup}')
                     tmp_dict2 = {}
-                    for key in list(tmp_dict.keys()):
+                    for key in tmp_dict:
                         desc = self.__description[key]
                         key_in_group = False
                         if subgroup in desc:
@@ -1074,24 +1074,15 @@ class kkrparams:
 
     def get_set_values(self):
         """Return a list of all keys/values that are set (i.e. not None)"""
-        set_values = []
-        added = 0
-        for key in list(self.values.keys()):
-            if self.values[key] is not None:
-                set_values.append([key, self.values[key]])
-                added += 1
-        if added == 0:
+        set_values = [[key, val] for key, val in self.values.items() if val is not None]
+        if not set_values:
             print('No values set')
         return set_values
 
     def get_all_mandatory(self):
         """Return a list of mandatory keys"""
         self._update_mandatory()
-        mandatory_list = []
-        for key in list(self.values.keys()):
-            if self.is_mandatory(key):
-                mandatory_list.append(key)
-        return mandatory_list
+        return [key for key in self.values if self.is_mandatory(key)]
 
     def is_mandatory(self, key):
         """Returns mandatory flag (True/False) for keyword 'key'"""
@@ -1105,9 +1096,9 @@ class kkrparams:
         """
         if key is not None:
             return self.__description[key]
-        for key in self.values:
-            if search is None or search.lower() in key.lower() or search.lower() in self.__description[key].lower():
-                print(f'{key:25}', self.__description[key])
+        for key2 in self.values:
+            if search is None or search.lower() in key2.lower() or search.lower() in self.__description[key2].lower():
+                print(f'{key2:25}', self.__description[key2])
 
     def _create_keywords_dict(self, **kwargs):
         """
@@ -1150,7 +1141,7 @@ class kkrparams:
     def _update_mandatory(self):
         """Check if mandatory flags need to be updated if certain keywords are set"""
         # initialize all mandatory flags to False and update list afterwards
-        for key in list(self.values.keys()):
+        for key in self.values:
             self._mandatory[key] = False
 
         runopts = []
@@ -1167,13 +1158,13 @@ class kkrparams:
         if self.values.get('INTERFACE', None):
             mandatory_list += ['<NLBASIS>', '<RBLEFT>', 'ZPERIODL', '<NRBASIS>', '<RBRIGHT>', 'ZPERIODR']
         #Mandatory in LDA+U
-        if 'NAT_LDAU' in list(self.values.keys()) and 'LDAU' in runopts:
+        if 'NAT_LDAU' in self.values and 'LDAU' in runopts:
             mandatory_list += ['NAT_LDAU', 'LDAU_PARA']
         #Mandatory in CPA
         if self.values.get('NATYP', None) is not None and self.values['NATYP'] > self.values['NAEZ']:
             mandatory_list += ['NATYP', '<SITE>', '<CPA-CONC>']
         #Mandatory in SEMICORE
-        if 'EBOTSEMI' in list(self.values.keys()) and 'SEMICORE' in runopts:
+        if 'EBOTSEMI' in self.values and 'SEMICORE' in runopts:
             mandatory_list += ['EBOTSEMI', 'EMUSEMI', 'TKSEMI', 'NPOLSEMI', 'N1SEMI', 'N2SEMI', 'N3SEMI', 'FSEMICORE']
         if self.values['INS'] == 1 and 'WRITEALL' not in runopts:
             mandatory_list += ['<SHAPE>']
@@ -1190,8 +1181,8 @@ class kkrparams:
     def _check_mandatory(self):
         """Check if all mandatory keywords are set"""
         self._update_mandatory()
-        for key in list(self.values.keys()):
-            if self._mandatory[key] and self.values[key] is None:
+        for key, value in self.values.items():
+            if self.is_mandatory(key) and value is None:
                 print('Error not all mandatory keys are set!')
                 set_of_mandatory = set(self.get_all_mandatory())
                 set_of_keys = {key[0] for key in self.get_set_values()}
@@ -1205,18 +1196,17 @@ class kkrparams:
         vec3_entries = ['<RBASIS>', '<RBLEFT>', '<RBRIGHT>', 'ZPERIODL', 'ZPERIODR']
 
         #success = [True]
-        for key in list(self.__listargs.keys()):
+        for key, listarg in self.__listargs.items():
             if self.values[key] is not None:
                 tmpsuccess = True
                 #print('checking', key, self.values[key], self.__listargs[key])
-                if type(self.values[key]) not in [list, ndarray]:
+                if not isinstance(self.values[key], (list, ndarray)):
                     self.values[key] = array([self.values[key]])
-                cmpdims = (self.__listargs[key],)
+                cmpdims = (listarg,)
                 if key in vec3_entries:
-                    cmpdims = (self.__listargs[key], 3)
+                    cmpdims = (listarg, 3)
                     # automatically convert if naez==1 and only 1D array is given
-                    if self.__listargs[key] == 1 and len(array(
-                            self.values[key]).shape) == 1 and key not in ['ZPERIODL', 'ZPERIODR']:
+                    if listarg == 1 and len(array(self.values[key]).shape) == 1 and key not in ['ZPERIODL', 'ZPERIODR']:
                         print(f'Warning: expected 2D array for {key} but got 1D array, converting automatically')
                         self.values[key] = array([self.values[key]])
                 tmpdims = array(self.values[key]).shape
@@ -1450,8 +1440,8 @@ class kkrparams:
                 if verbose:
                     print('writing', key, keywords[key])
                 # go through different formatting options (first normal case then special cases)
-                if (not key in list(self.__listargs.keys())) and (not key in self.__special_formatting):
-                    tmpfmt = (keyfmts[key]).replace('%l', '%s')
+                if key not in self.__listargs and key not in self.__special_formatting:
+                    tmpfmt = keyfmts[key].replace('%l', '%s')
                     try:
                         if self.__params_type == 'kkrimp' and key == 'XC':
                             # workaround to fix inconsistency of XC input between host and impurity code
@@ -1536,7 +1526,7 @@ class kkrparams:
                     # for kkrimp
                     ops = keywords[key]
                     tmpl += f"{key}={' '.join(map(str, ops))}\n"
-                elif key in list(self.__listargs.keys()):
+                elif key in self.__listargs:
                     # keys that have array values
                     if key in ['<RBASIS>', '<RBLEFT>',
                                '<RBRIGHT>']:  # RBASIS needs special formatting since three numbers are filled per line
@@ -1981,7 +1971,7 @@ class kkrparams:
         """Put '<' and '>' around the key expect for special keys defined in `__forbid_brackets__` list."""
 
         key2 = key
-        if key not in list(key_dict.keys()) and key not in __forbid_brackets__:
+        if key not in key_dict and key not in __forbid_brackets__:
             key2 = '<' + key + '>'
 
         return key2
