@@ -853,6 +853,8 @@ class kkrparams:
         self._mandatory = {}
         # description of each key
         self.__description = {}
+        self.__listargs = None
+        self.__special_formatting = None
 
         for key, val in keyw.items():
             self.values[key] = val[0]
@@ -996,10 +998,10 @@ class kkrparams:
         # get type of value
         if tmptype == list:
             valtype = []
-            for val in range(len(tmpval)):
+            for index, val in enumerate(tmpval):
                 if cmptypes == str:
-                    tmpval[val] = str(tmpval[val])  # for pytho2/3 compatibility
-                valtype.append(type(tmpval[val]))
+                    tmpval[index] = str(val)  # for pytho2/3 compatibility
+                valtype.append(type(val))
         else:
             if cmptypes == str:
                 tmpval = str(tmpval)  # for pytho2/3 compatibility
@@ -1016,10 +1018,10 @@ class kkrparams:
                 changed_type_automatically = True
                 self.values[key] = float(self.values[key])
             elif isinstance(valtype, list):
-                for ival in range(len(valtype)):
-                    if valtype[ival] == int and cmptypes == float:
+                for index, current_type in enumerate(valtype):
+                    if current_type == int and cmptypes == float:
                         changed_type_automatically = True
-                        self.values[key][ival] = float(self.values[key][ival])
+                        self.values[key][index] = float(self.values[key][index])
             elif valtype != cmptypes and tmpval is not None:
                 success = False
                 print('Error: type of value does not match expected type for ', key, self.values[key], cmptypes,
@@ -1458,8 +1460,8 @@ class kkrparams:
                     except:
                         #print(key, tmpfmt, keywords[key])
                         repltxt = ''
-                        for i in range(len(tmpfmt)):
-                            repltxt += ' ' + tmpfmt[i] % (keywords[key][i])
+                        for index, fmt in enumerate(tmpfmt):
+                            repltxt += ' ' + fmt % (keywords[key][index])
                     tmpl += f'{key}= {repltxt}\n'
                 elif key == 'BRAVAIS':
                     self.values[key] = array(self.values[key])
@@ -1470,29 +1472,27 @@ class kkrparams:
                 elif key == 'RUNOPT':
                     runops = keywords[key]
                     tmpl += 'RUNOPT\n'
-                    for iop in range(len(runops)):
-                        repltxt = runops[iop]
-                        nblanks = 8 - len(repltxt)
+                    for op in runops:
+                        nblanks = 8 - len(op)
                         if nblanks < 0:
-                            print(f'WARNING for replacement of RUNOPTION {repltxt}: too long?')
-                            print(f'RUNOPT {repltxt} is ignored and was not set!')
+                            print(f'WARNING for replacement of RUNOPTION {op}: too long?')
+                            print(f'RUNOPT {op} is ignored and was not set!')
                         else:
-                            repltxt = repltxt + ' ' * nblanks
-                        tmpl += repltxt
+                            op = op + ' ' * nblanks
+                        tmpl += op
                     tmpl += '\n'
                 elif key == 'TESTOPT':
                     testops = keywords[key]
                     tmpl += 'TESTOPT\n'
-                    for iop in range(len(testops)):
-                        repltxt = testops[iop]
-                        nblanks = 8 - len(repltxt)
+                    for index, op in enumerate(testops):
+                        nblanks = 8 - len(op)
                         if nblanks < 0:
-                            print(f'WARNING for replacement of TESTOPTION {repltxt}: too long?')
-                            print(f'TESTOPT {repltxt} is ignored and was not set!')
+                            print(f'WARNING for replacement of TESTOPTION {op}: too long?')
+                            print(f'TESTOPT {op} is ignored and was not set!')
                         else:
-                            repltxt = repltxt + ' ' * nblanks
-                        tmpl += repltxt
-                        if iop == 8:
+                            op = op + ' ' * nblanks
+                        tmpl += op
+                        if index == 8:
                             tmpl += '\n'
                     tmpl += '\n'
                 elif key == 'XINIPOL':
@@ -1535,11 +1535,7 @@ class kkrparams:
                 elif self.__params_type == 'kkrimp' and key == 'RUNFLAG' or key == 'TESTFLAG':
                     # for kkrimp
                     ops = keywords[key]
-                    tmpl += key + '='
-                    for iop in range(len(ops)):
-                        repltxt = ops[iop]
-                        tmpl += ' ' + repltxt
-                    tmpl += '\n'
+                    tmpl += f"{key}={' '.join(map(str, ops))}\n"
                 elif key in list(self.__listargs.keys()):
                     # keys that have array values
                     if key in ['<RBASIS>', '<RBLEFT>',
@@ -1676,11 +1672,11 @@ class kkrparams:
                         # then continue with valtxt
                         if isinstance(valtxt, list):
                             tmp = []
-                            for itmp in range(len(valtxt)):
-                                tmptype = self.get_type(key)[itmp]
-                                if tmptype == float and ('d' in valtxt[itmp] or 'D' in valtxt[itmp]):
-                                    valtxt[itmp] = valtxt[itmp].replace('d', 'e').replace('D', 'e')
-                                tmp.append(tmptype(valtxt[itmp]))
+                            for index, value in enumerate(valtxt):
+                                tmptype = self.get_type(key)[index]
+                                if tmptype == float and ('d' in value or 'D' in value):
+                                    valtxt[index] = value.replace('d', 'e').replace('D', 'e')
+                                tmp.append(tmptype(value))
                         else:
                             tmptype = self.get_type(key)
                             if tmptype == float and ('d' in valtxt or 'D' in valtxt):
