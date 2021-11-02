@@ -42,11 +42,11 @@ from .outschema_todict import create_outschema_dict, merge_schema_dicts
 PACKAGE_DIRECTORY = Path(__file__).parent.resolve()
 
 
-class NoPathFound(Exception):
+class NoPathFound(ValueError):
     pass
 
 
-class NoUniquePathFound(Exception):
+class NoUniquePathFound(ValueError):
     pass
 
 
