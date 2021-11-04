@@ -20,6 +20,7 @@ attribute from the right place in the given etree
 from masci_tools.io.parsers.fleur_schema import NoPathFound
 from masci_tools.util.parse_tasks_decorators import register_parsing_function
 from masci_tools.io.parsers import fleur_schema
+from masci_tools.util.xml.common_functions import check_complex_xpath
 from lxml import etree
 from logging import Logger
 import warnings
@@ -225,6 +226,7 @@ def evaluate_attribute(node: Union[etree._Element, etree._ElementTree],
                        name: str,
                        constants: Dict[str, float] = None,
                        logger: Logger = None,
+                       complex_xpath: 'etree._xpath' = None,
                        **kwargs: Any) -> Any:
     """
     Evaluates the value of the attribute based on the given name
@@ -235,6 +237,7 @@ def evaluate_attribute(node: Union[etree._Element, etree._ElementTree],
     :param name: str, name of the attribute
     :param constants: dict, contains the defined constants
     :param logger: logger object for logging warnings, errors, if not provided all errors will be raised
+    :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
 
     Kwargs:
         :param tag_name: str, name of the tag where the attribute should be parsed
@@ -261,7 +264,12 @@ def evaluate_attribute(node: Union[etree._Element, etree._ElementTree],
     if attrib_xpath is None:
         attrib_xpath = schema_dict.attrib_xpath(name, **kwargs)
 
-    stringattribute: List[str] = eval_xpath(node, attrib_xpath, logger=logger, list_return=True)  #type:ignore
+    if complex_xpath is None:
+        complex_xpath = attrib_xpath
+
+    check_complex_xpath(node, attrib_xpath, complex_xpath)
+
+    stringattribute: List[str] = eval_xpath(node, complex_xpath, logger=logger, list_return=True)  #type:ignore
 
     if len(stringattribute) == 0:
         if logger is None:
@@ -295,6 +303,7 @@ def evaluate_text(node: Union[etree._Element, etree._ElementTree],
                   name: str,
                   constants: Dict[str, float] = None,
                   logger: Logger = None,
+                  complex_xpath: 'etree._xpath' = None,
                   **kwargs: Any) -> Any:
     """
     Evaluates the text of the tag based on the given name
@@ -305,6 +314,7 @@ def evaluate_text(node: Union[etree._Element, etree._ElementTree],
     :param name: str, name of the tag
     :param constants: dict, contains the defined constants
     :param logger: logger object for logging warnings, errors, if not provided all errors will be raised
+    :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
 
     Kwargs:
         :param contains: str, this string has to be in the final path
@@ -328,7 +338,13 @@ def evaluate_text(node: Union[etree._Element, etree._ElementTree],
     if tag_xpath is None:
         tag_xpath = schema_dict.tag_xpath(name, **kwargs)
 
-    stringtext: List[str] = eval_xpath(node, f'{tag_xpath}/text()', logger=logger, list_return=True)  #type:ignore
+    if complex_xpath is None:
+        complex_xpath = tag_xpath
+
+    check_complex_xpath(node, tag_xpath, complex_xpath)
+
+    stringtext: List[str] = eval_xpath(node, f'{str(complex_xpath)}/text()', logger=logger,
+                                       list_return=True)  #type:ignore
 
     for text in stringtext.copy():
         if text.strip() == '':
@@ -368,6 +384,7 @@ def evaluate_tag(node: Union[etree._Element, etree._ElementTree],
                  logger: Logger = None,
                  subtags: bool = False,
                  text: bool = True,
+                 complex_xpath: 'etree._xpath' = None,
                  **kwargs: Any) -> Any:
     """
     Evaluates all attributes of the tag based on the given name
@@ -380,6 +397,7 @@ def evaluate_tag(node: Union[etree._Element, etree._ElementTree],
     :param logger: logger object for logging warnings, errors, if not provided all errors will be raised
     :param subtags: optional bool, if True the subtags of the given tag are evaluated
     :param text: optional bool, if True the text of the tag is also parsed
+    :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
 
     Kwargs:
         :param contains: str, this string has to be in the final path
@@ -408,6 +426,11 @@ def evaluate_tag(node: Union[etree._Element, etree._ElementTree],
 
     if tag_xpath is None:
         tag_xpath = schema_dict.tag_xpath(name, **kwargs)
+
+    if complex_xpath is None:
+        complex_xpath = tag_xpath
+
+    check_complex_xpath(node, tag_xpath, complex_xpath)
 
     #Which attributes are expected
     tags = set()
@@ -461,7 +484,9 @@ def evaluate_tag(node: Union[etree._Element, etree._ElementTree],
 
     for attrib in attribs:
 
-        stringattribute: List[str] = eval_xpath(node, f'{tag_xpath}/@{attrib}', logger=logger,
+        stringattribute: List[str] = eval_xpath(node,
+                                                f'{str(complex_xpath)}/@{attrib}',
+                                                logger=logger,
                                                 list_return=True)  #type:ignore
 
         if len(stringattribute) == 0:
@@ -491,7 +516,8 @@ def evaluate_tag(node: Union[etree._Element, etree._ElementTree],
     if parse_text:
 
         _, name = split_off_tag(tag_xpath)
-        stringtext: List[str] = eval_xpath(node, f'{tag_xpath}/text()', logger=logger, list_return=True)  #type:ignore
+        stringtext: List[str] = eval_xpath(node, f'{str(complex_xpath)}/text()', logger=logger,
+                                           list_return=True)  #type:ignore
 
         for textval in stringtext.copy():
             if textval.strip() == '':
@@ -524,7 +550,7 @@ def evaluate_tag(node: Union[etree._Element, etree._ElementTree],
                 logger.error('Conflicting key %s: ' 'Key is already in the output dictionary', tag)
             out_dict[tag] = []
 
-        sub_nodes: List[etree._Element] = eval_xpath(node, tag_xpath, logger=logger, list_return=True)  #type:ignore
+        sub_nodes: List[etree._Element] = eval_xpath(node, complex_xpath, logger=logger, list_return=True)  #type:ignore
         for sub_node in sub_nodes:
             for tag in tags:
                 if tag_exists(sub_node, schema_dict, tag):
@@ -563,6 +589,7 @@ def evaluate_single_value_tag(node: Union[etree._Element, etree._ElementTree],
                               name: str,
                               constants: Dict[str, float] = None,
                               logger: Logger = None,
+                              complex_xpath: 'etree._xpath' = None,
                               **kwargs: Any) -> Any:
     """
     Evaluates the value and unit attribute of the tag based on the given name
@@ -573,6 +600,7 @@ def evaluate_single_value_tag(node: Union[etree._Element, etree._ElementTree],
     :param name: str, name of the tag
     :param constants: dict, contains the defined constants
     :param logger: logger object for logging warnings, errors, if not provided all errors will be raised
+    :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
 
     Kwargs:
         :param contains: str, this string has to be in the final path
@@ -588,7 +616,13 @@ def evaluate_single_value_tag(node: Union[etree._Element, etree._ElementTree],
     only_required = kwargs.get('only_required', False)
     ignore = kwargs.get('ignore', [])
 
-    value_dict = evaluate_tag(node, schema_dict, name, constants=constants, logger=logger, **kwargs)
+    value_dict = evaluate_tag(node,
+                              schema_dict,
+                              name,
+                              constants=constants,
+                              logger=logger,
+                              complex_xpath=complex_xpath,
+                              **kwargs)
 
     if value_dict.get('value') is None:
         if logger is None:
@@ -609,6 +643,7 @@ def evaluate_parent_tag(node: Union[etree._Element, etree._ElementTree],
                         name: str,
                         constants: Dict[str, float] = None,
                         logger: Logger = None,
+                        complex_xpath: 'etree._xpath' = None,
                         **kwargs: Any) -> Any:
     """
     Evaluates all attributes of the parent tag based on the given name
@@ -619,6 +654,7 @@ def evaluate_parent_tag(node: Union[etree._Element, etree._ElementTree],
     :param name: str, name of the tag
     :param constants: dict, contains the defined constants
     :param logger: logger object for logging warnings, errors, if not provided all errors will be raised
+    :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
 
     Kwargs:
         :param contains: str, this string has to be in the final path
@@ -647,6 +683,11 @@ def evaluate_parent_tag(node: Union[etree._Element, etree._ElementTree],
 
     if tag_xpath is None:
         tag_xpath = schema_dict.tag_xpath(name, **kwargs)
+
+    if complex_xpath is None:
+        complex_xpath = tag_xpath
+
+    check_complex_xpath(node, tag_xpath, complex_xpath)
 
     #Which attributes are expected
     try:
@@ -683,7 +724,7 @@ def evaluate_parent_tag(node: Union[etree._Element, etree._ElementTree],
     else:
         attribs = sorted(list(attribs.original_case.values()))
 
-    elems: List[etree._Element] = eval_xpath(node, tag_xpath, logger=logger, list_return=True)  #type:ignore
+    elems: List[etree._Element] = eval_xpath(node, complex_xpath, logger=logger, list_return=True)  #type:ignore
 
     out_dict: Dict[str, Any] = {}
     for attrib in attribs:
