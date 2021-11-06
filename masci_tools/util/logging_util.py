@@ -13,7 +13,7 @@
 This module defines useful utility for logging related functionality
 """
 from logging import Handler, LoggerAdapter, LogRecord
-from typing import Dict, Tuple, Any, Union
+from typing import Dict, Tuple, Any, Union, cast, List
 
 
 class DictHandler(Handler):
@@ -25,7 +25,7 @@ class DictHandler(Handler):
     Keyword arguments can be used to modify the keys for the different levels
     """
 
-    def __init__(self, log_dict: Dict[str, str], ignore_unknown_levels: bool = False, **kwargs: Union[int, str]):
+    def __init__(self, log_dict: Dict[str, List[str]], ignore_unknown_levels: bool = False, **kwargs: Union[int, str]):
         from logging import _levelToName
         import copy
 
@@ -34,7 +34,7 @@ class DictHandler(Handler):
         levels = copy.copy(list(_levelToName.values()))
         levels.remove('NOTSET')
 
-        self.level_names = {name: kwargs[name] for name in levels if name in kwargs}
+        self.level_names: Dict[str, str] = {name: cast(str, kwargs[name]) for name in levels if name in kwargs}
 
         if not ignore_unknown_levels:
             for name in levels:

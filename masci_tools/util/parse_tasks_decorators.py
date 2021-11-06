@@ -48,11 +48,6 @@ def register_migration(base_version: str, target_version: Union[str, List[str]])
         """
         #pylint: disable=protected-access
 
-        @wraps(func)
-        def migration(*args):
-            """Decorator for migration function"""
-            return func(*args)
-
         if not base_version in ParseTasks._migrations:
             ParseTasks._migrations[base_version] = {}
 
@@ -60,7 +55,7 @@ def register_migration(base_version: str, target_version: Union[str, List[str]])
         if not isinstance(target_version_list, list):
             target_version_list = [target_version_list]
         for valid_version in target_version_list:
-            ParseTasks._migrations[base_version][valid_version] = migration
+            ParseTasks._migrations[base_version][valid_version] = func
 
             for valid_version_2 in target_version_list:
                 if valid_version == valid_version_2:
@@ -74,7 +69,7 @@ def register_migration(base_version: str, target_version: Union[str, List[str]])
                         ParseTasks._migrations[valid_version_2] = {}
                     ParseTasks._migrations[valid_version_2][valid_version] = 'compatible'
 
-        return migration
+        return func
 
     return migration_decorator
 
@@ -103,16 +98,11 @@ def register_parsing_function(parse_type_name: str, all_attribs_keys: bool = Fal
         Here all registered migrations are inserted
         """
 
-        @wraps(func)
-        def parse_type(*args, **kwargs):
-            """Decorator for parse_type function"""
-            return func(*args, **kwargs)
-
-        ParseTasks._parse_functions[parse_type_name] = parse_type  # pylint: disable=protected-access
+        ParseTasks._parse_functions[parse_type_name] = func  # pylint: disable=protected-access
         if all_attribs_keys:
             ParseTasks._all_attribs_function.add(parse_type_name)  #pylint: disable=protected-access
 
-        return parse_type
+        return func
 
     return parse_type_decorator
 
@@ -129,12 +119,6 @@ def conversion_function(func: F) -> F:
 
     and return only the modified output dict
     """
+    ParseTasks._conversion_functions[func.__name__] = func  # pylint: disable=protected-access
 
-    @wraps(func)
-    def convert_func(*args, **kwargs):
-        """Decorator for parse_type function"""
-        return func(*args, **kwargs)
-
-    ParseTasks._conversion_functions[func.__name__] = convert_func  # pylint: disable=protected-access
-
-    return convert_func
+    return func
