@@ -402,7 +402,7 @@ nitpick_ignore = [
     ('py:obj', 'plum'),
     ('py:class', 'T'),
     ('py:class', 'S'),
-    ('py:class', 'F'),
+    ('py:class', 'masci_tools.io.parsers.fleur_schema.schema_dict.F'),
     ('py:class', '_S'),
     ('py:class', 'etree._xpath'),
     ('py:class', 'etree._DictAnyStr'),
