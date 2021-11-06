@@ -20,13 +20,13 @@ import tempfile
 import shutil
 from functools import update_wrapper, wraps
 from pathlib import Path
-from typing import Callable, Iterable, Protocol, TypeVar, Union, List, Dict, Tuple, Any, cast
+from typing import Callable, Iterable, TypeVar, Union, List, Dict, Tuple, Any, cast
 
 from .fleur_schema_parser_functions import TagInfo
 try:
-    from typing import Literal
+    from typing import Literal, Protocol
 except ImportError:
-    from typing_extensions import Literal  #type: ignore
+    from typing_extensions import Literal, Protocol  #type: ignore
 
 from logging import Logger
 
@@ -54,6 +54,7 @@ F = TypeVar('F', bound=Callable[..., Any])
 
 
 class SchemaDictDispatch(Protocol[F]):
+    """Protocol representing function decorated by the schema_dict_version_dispatch decorator"""
     registry: Dict[Union[Callable[[Tuple[int, int]], bool], Literal['default']], F]
 
     def register(self, min_version: str = None, max_version: str = None) -> Callable[[F], F]:
