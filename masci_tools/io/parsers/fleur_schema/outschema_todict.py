@@ -21,11 +21,11 @@ from masci_tools.util.lockable_containers import LockableDict, LockableList
 from lxml import etree
 import copy
 from collections import UserList
-from typing import AnyStr, List, TYPE_CHECKING
+from typing import AnyStr, List, TYPE_CHECKING, Union, Dict, Set, Callable
 try:
-    from typing import TypedDict
+    from typing import TypedDict, Literal
 except ImportError:
-    from typing_extensions import TypedDict
+    from typing_extensions import TypedDict, Literal  #type:ignore
 if TYPE_CHECKING:
     from .inpschema_todict import InputSchemaData
 
@@ -163,9 +163,9 @@ def merge_schema_dicts(inputschema_dict: 'InputSchemaData', outputschema_dict: O
 
             new_paths = sorted(paths_set.union(new_paths_set))
             if len(new_paths) == 1:
-                merged_outschema_dict[entry][key] = new_paths[0]  #type:ignore
+                merged_outschema_dict[entry][key] = new_paths[0]
             else:
-                merged_outschema_dict[entry][key] = new_paths  #type:ignore
+                merged_outschema_dict[entry][key] = new_paths
 
     #Remove the root_tag of the input if it is different from the input tag in the out.xml
     if input_root_tag != outputschema_dict['input_tag']:

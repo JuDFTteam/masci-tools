@@ -17,7 +17,7 @@ unintended modifications
 from collections import UserDict, UserList
 from contextlib import contextmanager
 
-from typing import Dict, Union, Any, Generator, Iterable, cast, TypeVar, List, Generic
+from typing import Dict, Union, Any, Iterator, Iterable, cast, TypeVar, List, Generic
 
 S = TypeVar('S')
 """Generic Type"""
@@ -26,7 +26,7 @@ T = TypeVar('T')
 
 
 @contextmanager
-def LockContainer(lock_object: Union['LockableList', 'LockableDict']) -> Generator:
+def LockContainer(lock_object: Union['LockableList[Any]', 'LockableDict[Any,Any]']) -> Iterator[None]:
     """
     Contextmanager for temporarily locking a lockable object. Object is unfrozen
     when exiting with block
@@ -65,7 +65,7 @@ class LockableDict(UserDict, Generic[S, T]):
 
     """
 
-    def __init__(self, *args: Dict, recursive: bool = True, **kwargs: T) -> None:
+    def __init__(self, *args: Dict[S, T], recursive: bool = True, **kwargs: T) -> None:
         self._locked = False
         self._recursive = recursive
         super().__init__(*args, **kwargs)
@@ -185,15 +185,15 @@ class LockableList(UserList, Generic[T]):
         else:
             super().__setitem__(i, item)  # type: ignore
 
-    def __iadd__(self, other: Iterable[T]) -> 'LockableList':
+    def __iadd__(self, other: Iterable[T]) -> 'LockableList[T]':
         self.__check_lock()
         return super().__iadd__(other)
 
-    def __add__(self, other: Iterable[T]) -> 'LockableList':
+    def __add__(self, other: Iterable[T]) -> 'LockableList[T]':
         self.__check_lock()
         return super().__add__(other)
 
-    def __imul__(self, n: int) -> 'LockableList':
+    def __imul__(self, n: int) -> 'LockableList[T]':
         self.__check_lock()
         return super().__imul__(n)
 

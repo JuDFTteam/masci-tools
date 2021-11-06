@@ -12,7 +12,8 @@
 """
 This module defines useful utility for logging related functionality
 """
-from logging import Handler, LoggerAdapter
+from logging import Handler, LoggerAdapter, LogRecord
+from typing import Dict, Tuple, Any, Union
 
 
 class DictHandler(Handler):
@@ -24,7 +25,7 @@ class DictHandler(Handler):
     Keyword arguments can be used to modify the keys for the different levels
     """
 
-    def __init__(self, log_dict, ignore_unknown_levels=False, **kwargs):
+    def __init__(self, log_dict: Dict[str, str], ignore_unknown_levels: bool = False, **kwargs: Union[int, str]):
         from logging import _levelToName
         import copy
 
@@ -45,7 +46,7 @@ class DictHandler(Handler):
 
         super().__init__()
 
-    def emit(self, record):
+    def emit(self, record: LogRecord) -> None:
         """
         Emit a record.
         """
@@ -59,7 +60,7 @@ class DictHandler(Handler):
         except Exception:  #pylint: disable=broad-except
             self.handleError(record)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         from logging import getLevelName
         level = getLevelName(self.level)
         return f'<{self.__class__.__name__} ({level})>'
@@ -71,5 +72,5 @@ class OutParserLogAdapter(LoggerAdapter):
     'iteration' key, whose value is prepended as [Iteration i] to the message
     """
 
-    def process(self, msg, kwargs):
+    def process(self, msg: str, kwargs: Any) -> Tuple[str, Dict]:
         return f"[Iteration {self.extra['iteration']}] {msg}", kwargs

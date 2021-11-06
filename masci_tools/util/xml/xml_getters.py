@@ -20,7 +20,7 @@ from lxml import etree
 import warnings
 import numpy as np
 from logging import Logger
-from typing import TYPE_CHECKING, List, Tuple, Union, Dict, Any, Optional
+from typing import TYPE_CHECKING, Iterable, List, Tuple, Union, Dict, Any, Optional
 
 if TYPE_CHECKING:
     from masci_tools.io.parsers import fleur_schema
@@ -342,12 +342,12 @@ def get_cell(xmltree: Union[etree._Element, etree._ElementTree],
     constants = read_constants(root, schema_dict, logger=logger)
 
     cell: Optional[np.ndarray] = None
-    lattice_tag = None
+    lattice_tag: Optional[etree._Element] = None
     if tag_exists(root, schema_dict, 'bulkLattice', logger=logger):
-        lattice_tag = eval_simple_xpath(root, schema_dict, 'bulkLattice', logger=logger)
+        lattice_tag = eval_simple_xpath(root, schema_dict, 'bulkLattice', logger=logger)  #type: ignore
         pbc = (True, True, True)
     elif tag_exists(root, schema_dict, 'filmLattice', logger=logger):
-        lattice_tag = eval_simple_xpath(root, schema_dict, 'filmLattice', logger=logger)
+        lattice_tag = eval_simple_xpath(root, schema_dict, 'filmLattice', logger=logger)  #type: ignore
         pbc = (True, True, False)
 
     if lattice_tag is not None:
@@ -760,7 +760,7 @@ def get_structure_data(xmltree: Union[etree._Element, etree._ElementTree],
 
     for indx, group in enumerate(atom_groups):
 
-        atom_positions = []
+        atom_positions: List[List[float]] = []
 
         absolute_positions = evaluate_text(group,
                                            schema_dict,

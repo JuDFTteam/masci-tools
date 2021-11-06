@@ -15,7 +15,7 @@ Here commonly used functions that do not need aiida-stuff (i.e. can be tested
 without a database) are collected.
 """
 import io
-from typing import Any
+from typing import Any, Dict, Generator, Tuple, List
 import numpy as np
 import warnings
 from collections import namedtuple
@@ -70,7 +70,7 @@ def skipHeader(seq, n):
             yield item
 
 
-def filter_out_empty_dict_entries(dict_to_filter):
+def filter_out_empty_dict_entries(dict_to_filter: Dict) -> Dict:
     """
     Filter out entries in a given dict that correspond to empty values.
     At the moment this is empty lists, dicts and None
@@ -80,7 +80,7 @@ def filter_out_empty_dict_entries(dict_to_filter):
     :returns: dict without empty entries
     """
 
-    EMPTY_VALUES = (None, [], {})
+    EMPTY_VALUES: Tuple[None, List, Dict] = (None, [], {})
 
     return {key: val for key, val in dict_to_filter.items() if val not in EMPTY_VALUES}
 
@@ -385,7 +385,7 @@ def convert_to_pystd(value):
     return value
 
 
-def camel_to_snake(name):
+def camel_to_snake(name: str) -> str:
     """
     Converts camelCase to snake_case variable names
     Used in the Fleur parser to convert attribute names from the xml files
@@ -554,7 +554,7 @@ def find_symmetry_relation(from_pos, to_pos, rotations, shifts, cell, relative_p
     :raises ValueError: If no symmetry relation is found
     """
 
-    def lattice_shifts():
+    def lattice_shifts() -> Generator[np.ndarray, None, None]:
         for i in range(-2, 3):
             for j in range(-2, 3):
                 for k in range(-2, 3):
@@ -586,7 +586,7 @@ def find_symmetry_relation(from_pos, to_pos, rotations, shifts, cell, relative_p
 AtomSiteProperties = namedtuple('AtomSiteProperties', ('position', 'symbol', 'kind'))
 
 
-def get_wigner_matrix(l, phi, theta):
+def get_wigner_matrix(l: int, phi: float, theta: float) -> np.ndarray:
     """Produces the wigner rotation matrix for the density matrix
 
     :param l: int, orbital quantum number
@@ -608,9 +608,8 @@ def get_wigner_matrix(l, phi, theta):
     return d_wigner
 
 
-def fac(n):
+def fac(n: int) -> int:
     """Returns the factorial of n"""
     if n < 2:
         return 1
-    else:
-        return n * fac(n - 1)
+    return n * fac(n - 1)

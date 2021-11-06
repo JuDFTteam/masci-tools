@@ -561,7 +561,7 @@ def xml_set_complex_tag(xmltree: Union[etree._Element, etree._ElementTree],
                         xpath: 'etree._xpath',
                         base_xpath: str,
                         attributedict: Dict[str, Any],
-                        create=False) -> Union[etree._Element, etree._ElementTree]:
+                        create: bool = False) -> Union[etree._Element, etree._ElementTree]:
     """
     Recursive Function to correctly set tags/attributes for a given tag.
     Goes through the attributedict and decides based on the schema_dict, how the corresponding

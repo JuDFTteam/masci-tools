@@ -20,7 +20,7 @@ import tempfile
 import shutil
 from functools import update_wrapper, wraps
 from pathlib import Path
-from typing import Callable, Iterable, Union, List, Dict, Tuple, Any, cast
+from typing import Callable, Iterable, Protocol, TypeVar, Union, List, Dict, Tuple, Any, cast
 
 from .fleur_schema_parser_functions import TagInfo
 try:
@@ -50,7 +50,20 @@ class NoUniquePathFound(ValueError):
     pass
 
 
-def schema_dict_version_dispatch(output_schema: bool = False) -> Callable:
+F = TypeVar('F', bound=Callable[..., Any])
+
+
+class SchemaDictDispatch(Protocol[F]):
+    registry: Dict[Union[Callable[[Tuple[int, int]], bool], Literal['default']], F]
+
+    def register(self, min_version: str = None, max_version: str = None) -> Callable[[F], F]:
+        ...
+
+    dispatch: Callable[[Tuple[int, int]], F]
+    __call__: F
+
+
+def schema_dict_version_dispatch(output_schema: bool = False) -> Callable[[F], SchemaDictDispatch]:
     """
     Decorator for creating variations of functions based on the inp/out
     version of the schema_dict. All functions here need to have the signature::
@@ -63,11 +76,11 @@ def schema_dict_version_dispatch(output_schema: bool = False) -> Callable:
     Inspired by singledispatch in the functools module
     """
 
-    def schema_dict_version_dispatch_dec(func: Callable) -> Callable:
+    def schema_dict_version_dispatch_dec(func: F) -> SchemaDictDispatch:
 
-        registry: Dict[Union[Callable[[Tuple[int, int]], bool], Literal['default']], Callable] = {}
+        registry: Dict[Union[Callable[[Tuple[int, int]], bool], Literal['default']], F] = {}
 
-        def dispatch(version: Tuple[int, int]) -> Callable:
+        def dispatch(version: Tuple[int, int]) -> F:
 
             default_match = None
             matches = []
@@ -88,7 +101,7 @@ def schema_dict_version_dispatch(output_schema: bool = False) -> Callable:
 
             return matches[0]
 
-        def register(min_version: str = None, max_version: str = None):
+        def register(min_version: str = None, max_version: str = None) -> Callable[[F], F]:
 
             if min_version is not None:
                 min_version_tuple = convert_str_version_number(min_version)
@@ -96,7 +109,7 @@ def schema_dict_version_dispatch(output_schema: bool = False) -> Callable:
             if max_version is not None:
                 max_version_tuple = convert_str_version_number(max_version)
 
-            def register_dec(func: Callable) -> Callable:
+            def register_dec(func: F) -> F:
 
                 if min_version is None and max_version is None:
                     raise ValueError('Either a minimum or maximum version has to be given')
@@ -131,12 +144,12 @@ def schema_dict_version_dispatch(output_schema: bool = False) -> Callable:
             return dispatch(version)(node, schema_dict, *args, **kwargs)
 
         registry['default'] = func
-        wrapper.register = register  #type:  ignore
-        wrapper.dispatch = dispatch  #type:  ignore
-        wrapper.registry = registry  #type:  ignore
+        wrapper.register = register  #type:ignore
+        wrapper.dispatch = dispatch  #type:ignore
+        wrapper.registry = registry  #type:ignore
         update_wrapper(wrapper, func)
 
-        return wrapper
+        return cast(SchemaDictDispatch, wrapper)
 
     return schema_dict_version_dispatch_dec
 
@@ -474,7 +487,7 @@ class SchemaDict(LockableDict):
                  contains: Union[str, Iterable[str]] = None,
                  not_contains: Union[str, Iterable[str]] = None,
                  parent: bool = False,
-                 **kwargs) -> Dict[str, Any]:
+                 **kwargs: Any) -> Dict[str, Any]:
         """
         Tries to find a unique path from the schema_dict based on the given name of the tag
         and additional further specifications and returns the tag_info entry for this tag

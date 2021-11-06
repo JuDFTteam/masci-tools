@@ -50,8 +50,10 @@ click-completion = "*"
 PyYAML = "*"
 
 [tool.mypy]
+python_version="3.8"
 warn_unused_ignores=true
 warn_redundant_casts=true
+show_error_codes = true
 
 [tool.yapf]
 based_on_style = "google"

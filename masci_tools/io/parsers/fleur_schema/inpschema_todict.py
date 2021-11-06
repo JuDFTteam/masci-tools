@@ -19,11 +19,11 @@ from masci_tools.util.xml.common_functions import clear_xml
 from masci_tools.util.xml.converters import convert_str_version_number
 from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict, CaseInsensitiveFrozenSet
 from masci_tools.util.lockable_containers import LockableDict, LockableList
-from typing import Tuple, List, AnyStr
+from typing import Tuple, List, AnyStr, Union, Callable, Dict, Set
 try:
-    from typing import TypedDict
+    from typing import TypedDict, Literal
 except ImportError:
-    from typing_extensions import TypedDict
+    from typing_extensions import TypedDict, Literal  #type: ignore
 from lxml import etree
 
 

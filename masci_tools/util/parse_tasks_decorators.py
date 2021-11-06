@@ -22,12 +22,14 @@ Up till now 3 decorators are defined:
     - ```conversion_function``` makes the decorated function available to be called easily
       after a certain parsing task has occured
 """
-from typing import Callable, List, Union
+from typing import Callable, List, Union, TypeVar, Any
 from masci_tools.util.parse_tasks import ParseTasks
 from functools import wraps
 
+F = TypeVar('F', bound=Callable[..., Any])
 
-def register_migration(base_version: str, target_version: Union[str, List[str]]) -> Callable:
+
+def register_migration(base_version: str, target_version: Union[str, List[str]]) -> Callable[[F], F]:
     """
     Decorator to add migration for task definition dictionary to the ParseTasks class
     The function should only take the dict of task definitions as an argument
@@ -38,7 +40,7 @@ def register_migration(base_version: str, target_version: Union[str, List[str]])
 
     """
 
-    def migration_decorator(func: Callable) -> Callable:
+    def migration_decorator(func: F) -> F:
         """
         Return decorated ParseTasks object with _migrations dict attribute
         Here all registered migrations are inserted
@@ -76,7 +78,7 @@ def register_migration(base_version: str, target_version: Union[str, List[str]])
     return migration_decorator
 
 
-def register_parsing_function(parse_type_name: str, all_attribs_keys: bool = False) -> Callable:
+def register_parsing_function(parse_type_name: str, all_attribs_keys: bool = False) -> Callable[[F], F]:
     """
     Decorator to add parse type for task definition dictionary.
 
@@ -94,7 +96,7 @@ def register_parsing_function(parse_type_name: str, all_attribs_keys: bool = Fal
 
     """
 
-    def parse_type_decorator(func: Callable) -> Callable:
+    def parse_type_decorator(func: F) -> F:
         """
         Return decorated ParseTasks object with _parse_functions dict attribute
         Here all registered migrations are inserted
@@ -114,7 +116,7 @@ def register_parsing_function(parse_type_name: str, all_attribs_keys: bool = Fal
     return parse_type_decorator
 
 
-def conversion_function(func: Callable) -> Callable:
+def conversion_function(func: F) -> F:
     """
     Marks a function as a conversion function, which can be called after
     performing a parsing task. The function can be specified via the _conversions

@@ -106,7 +106,7 @@ def _cache_xpath_construction(func: Callable) -> Callable:
     return wrapper
 
 
-def _cache_xpath_eval(func):
+def _cache_xpath_eval(func: Callable) -> Callable:
     """
     Decorator for the `_xpath_eval` function to speed up concrete xpath calls on the schema
     by caching the results
