@@ -402,6 +402,8 @@ nitpick_ignore = [
     ('py:obj', 'plum'),
     ('py:class', 'T'),
     ('py:class', 'S'),
+    ('py:class', 'F'),
+    ('py:class', '_S'),
     ('py:class', 'etree._xpath'),
     ('py:class', 'etree._DictAnyStr'),
     ('py:class', 'etree._XPathObject'),

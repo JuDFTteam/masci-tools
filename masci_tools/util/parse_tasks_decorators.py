@@ -27,6 +27,7 @@ from masci_tools.util.parse_tasks import ParseTasks
 from functools import wraps
 
 F = TypeVar('F', bound=Callable[..., Any])
+"""Generic Type variable for callable"""
 
 
 def register_migration(base_version: str, target_version: Union[str, List[str]]) -> Callable[[F], F]:

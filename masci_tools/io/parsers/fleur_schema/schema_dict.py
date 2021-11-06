@@ -51,6 +51,7 @@ class NoUniquePathFound(ValueError):
 
 
 F = TypeVar('F', bound=Callable[..., Any])
+"""Generic Type variable for callable"""
 
 
 class SchemaDictDispatch(Protocol[F]):
