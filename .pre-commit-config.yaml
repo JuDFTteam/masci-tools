@@ -75,6 +75,7 @@ repos:
             masci_tools/io/parsers/fleur_schema/.*py|
             masci_tools/io/io_nmmpmat.py|
             masci_tools/io/io_fleurxml.py|
+            masci_tools/io/fleurxmlmodifier.py|
             masci_tools/util/xml/.*py|
             masci_tools/util/lockable_containers.py|
             masci_tools/util/case_insensitive_dict.py|
