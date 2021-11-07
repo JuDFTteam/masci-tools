@@ -15,7 +15,7 @@ Here commonly used functions that do not need aiida-stuff (i.e. can be tested
 without a database) are collected.
 """
 import io
-from typing import Any, Dict, Generator, Tuple, List
+from typing import Any, Dict, Generator, Iterable, Tuple, List
 import numpy as np
 import warnings
 from collections import namedtuple
@@ -55,7 +55,7 @@ def open_general(filename_or_handle, iomode=None):
     return f
 
 
-def skipHeader(seq, n):
+def skipHeader(seq: Iterable[Any], n: int) -> Generator[Any, None, None]:
     """Iterate over a sequence skipping the first n elements
 
     Args:
@@ -357,7 +357,7 @@ def get_ef_from_potfile(potfile):
     return ef
 
 
-def convert_to_pystd(value):
+def convert_to_pystd(value: Any) -> Any:
     """Recursively convert numpy datatypes to standard python, needed by aiida-core.
 
     Usage:
@@ -394,7 +394,7 @@ def camel_to_snake(name: str) -> str:
     return ''.join(['_' + c.lower() if c.isupper() else c for c in name]).lstrip('_')
 
 
-def convert_to_fortran(val, quote_strings=True):
+def convert_to_fortran(val: Any, quote_strings: bool = True) -> str:
     """
     :param val: the value to be read and converted to a Fortran-friendly string.
     """
@@ -423,7 +423,7 @@ def convert_to_fortran(val, quote_strings=True):
     return val_str
 
 
-def convert_to_fortran_string(string):
+def convert_to_fortran_string(string: str) -> str:
     """
     converts some parameter strings to the format for the inpgen
     :param string: some string
@@ -432,8 +432,7 @@ def convert_to_fortran_string(string):
     if not string.strip().startswith("\"") or \
        not string.strip().endswith("\""):
         return f'"{string}"'
-    else:
-        return string
+    return string
 
 
 def is_sequence(arg: Any) -> bool:
