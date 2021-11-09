@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=protected-access
 ###############################################################################
 # Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
 #                All rights reserved.                                         #
@@ -26,8 +27,6 @@ import deepdiff as _deepdiff
 import matplotlib as _mpl
 import matplotlib.pyplot as plt
 import mendeleev as _mendeleev
-import mendeleev.fetch as _mendeleev_fetch
-import mendeleev.plotting as _mendeleev_plotting
 import numpy as _np
 import seaborn as _sns
 
@@ -305,17 +304,17 @@ class ChemicalElements:
             # key = list(self.__elmts.keys())[0]
             # return self.__data[key]
             # return copy.deepcopy(self.__data[key])
-        else:
-            # return self.__data
-            return _copy.deepcopy(self.__data)
+
+        # return self.__data
+        return _copy.deepcopy(self.__data)
 
     def get_data(self, group_name: str) -> _typing.Any:
         """Returns 'data' object storage for given group.
         """
         if self.is_flat():
             return self.data
-        else:
-            return self.__data[group_name]
+
+        return self.__data[group_name]
 
     def set_data(self, group_name: str, an_object: _typing.Any) -> _typing.Optional[_typing.Any]:
         """Set a data item in the 'data' object storage.
@@ -399,10 +398,10 @@ class ChemicalElements:
 
         if isinstance(group_name_or_symbol, int):
             return self.invert()[group_name_or_symbol]
-        elif isinstance(group_name_or_symbol, str):
+        if isinstance(group_name_or_symbol, str):
             return self.elmts[group_name_or_symbol]
-        else:
-            raise KeyError(f"Unsupported key/value type '{type(group_name_or_symbol)}'.")
+
+        raise KeyError(f"Unsupported key/value type '{type(group_name_or_symbol)}'.")
 
     def __validate_distinctness(self, new__elmts: _typing.Dict[str, int]) -> bool:
         """Checks if new internal ``__elmts`` would violate distinctniss if dictinct=True.
@@ -450,7 +449,7 @@ class ChemicalElements:
         _item = item
         if isinstance(_item, (str, int)):
             return self.count(_item)
-        elif isinstance(item, (list, dict)):
+        if isinstance(item, (list, dict)):
             _item = ChemicalElements(elements=_item)
         if isinstance(_item, ChemicalElements):
             return _item <= self
@@ -536,21 +535,22 @@ class ChemicalElements:
             if not in_place:
                 if as_dict:
                     return _copy.deepcopy(self.elmts)
-                else:
-                    return ChemicalElements(self.elmts)
-        else:
-            data_selection = self.select_groups(selected_groups)
-            flattened = {}
-            for group_name, group in data_selection.items():
-                for sym, num in group.items():
-                    flattened[sym] = num
-            if in_place:
-                self.__elmts = {'': flattened}
-                self.__data = {'': None}
-            elif as_dict:
-                return flattened
-            else:
-                return ChemicalElements(flattened)
+                return ChemicalElements(self.elmts)
+            return None
+
+        data_selection = self.select_groups(selected_groups)
+        flattened = {}
+        for group_name, group in data_selection.items():
+            for sym, num in group.items():
+                flattened[sym] = num
+        if in_place:
+            self.__elmts = {'': flattened}
+            self.__data = {'': None}
+            return None
+        if as_dict:
+            return flattened
+
+        return ChemicalElements(flattened)
 
     def count_groups(self, selected_groups: list = None):
         """If flat, return element count. If nested, return dict with element count per group.
@@ -560,8 +560,8 @@ class ChemicalElements:
         """
         if self.is_flat():
             return len(self.elmts.keys())
-        else:
-            return {k: len(v.keys()) for k, v in self.select_groups(selected_groups).items()}
+
+        return {k: len(v.keys()) for k, v in self.select_groups(selected_groups).items()}
 
     def count(self, item=None, group_name: str = None) -> int:
         """Count occurrences of symbol or atomic_number in elmts.
@@ -580,37 +580,36 @@ class ChemicalElements:
         if item is None:
             if group_name in self.__elmts:
                 return len(self.__elmts[group_name].keys())
-            elif group_name is None:
+            if group_name is None:
                 return len(self.flatten().keys())
-            else:  # group_name but not in self.__elmts
-                raise KeyError(f"Group '{group_name}' is not in elmts.")
+            # else # group_name but not in self.__elmts
+            raise KeyError(f"Group '{group_name}' is not in elmts.")
 
         def contains_item(a_dict):
             if isinstance(item, str):
                 return int(item in a_dict)
-            elif isinstance(item, int):
+            if isinstance(item, int):
                 return int(item in a_dict.values())
-            else:
-                return int(False)
+            return int(False)
 
         if self.is_flat():
             return contains_item(self.elmts)
-        elif group_name is None:  # and nested
+        if group_name is None:  # and nested
             # check all groups
             count = 0
             for group in self.elmts.values():
                 count += contains_item(group)
             return count
-        else:  # nested and group_name
-            return contains_item(self.elmts[group_name])
+        # else: # nested and group_name
+        return contains_item(self.elmts[group_name])
 
     def groups(self):
         """Returns list of group names. If elmts is flat (only one group), will return empty list.
         """
         if self.is_flat():
             return []
-        else:
-            return list(self.elmts.keys())
+
+        return list(self.elmts.keys())
 
     def hidden_group(self):
         """If flat, returns name of the hidden group. If nested, returns None.
@@ -625,8 +624,8 @@ class ChemicalElements:
         """
         if self.is_flat():
             return list(self.__elmts.keys())[0]
-        else:
-            return None
+
+        return None
 
     def adjust_flat_elements(self, other_elements: _typing.List[ChemicalElements], group_name: str = ''):
         """For flat instances of ``ChemicalElements`` with different names, make all names equal.
@@ -678,20 +677,19 @@ class ChemicalElements:
             # always return non-flat view, ie if flat, dict with one group
             if as_dict:
                 return elements
-            else:
-                return self
-        else:
-            a_dict = {
-                data_group: elmts for data_group, elmts in elements.items()
-                for selection_group in selected_groups
-                if data_group == selection_group
-            }
-            if as_dict:
-                return a_dict
-            elmts = ChemicalElements(empty=True)
-            for group_name, group in a_dict.items():
-                elmts.add_elements(elements=group, group_name=group_name)
-            return elmts
+            return self
+
+        a_dict = {
+            data_group: elmts for data_group, elmts in elements.items()
+            for selection_group in selected_groups
+            if data_group == selection_group
+        }
+        if as_dict:
+            return a_dict
+        elmts = ChemicalElements(empty=True)
+        for group_name, group in a_dict.items():
+            elmts.add_elements(elements=group, group_name=group_name)
+        return elmts
 
     def rename_group(self, old_group_name, new_group_name):
         """Rename a group.
@@ -723,15 +721,15 @@ class ChemicalElements:
         if elmts_group1 == elmts_group2:
             print(f"'{group_name1}' equal to '{group_name2}'")
             return ChemicalElements(empty=True, distinct=distinct)
-        elif elmts_group1 > elmts_group2:
+        if elmts_group1 > elmts_group2:
             print(f"'{group_name1}' true superset of '{group_name2}'")
             return elmts_group1 - elmts_group2
-        elif elmts_group1 < elmts_group2:
+        if elmts_group1 < elmts_group2:
             print(f"'{group_name1}' true subset of '{group_name2}'")
             return elmts_group2 - elmts_group1
-        else:
-            print(f"'{group_name1}', '{group_name2}' not subsets of each other, return symmetrical difference")
-            return elmts_group1.symmetrical_difference(elmts_group2)
+
+        print(f"'{group_name1}', '{group_name2}' not subsets of each other, return symmetrical difference")
+        return elmts_group1.symmetrical_difference(elmts_group2)
 
     def compare_groups(self, group_name1, group_name2):
         if self.is_flat():
@@ -767,8 +765,8 @@ class ChemicalElements:
         group_names = [group_name for group_name in self.elmts if symbol in self.elmts[group_name]]
         if group_names:
             return group_names
-        else:
-            return []
+
+        return []
 
     def add_elements(self, elements, group_name: str = ''):
         """Add elements. Elmts get resorted afterwards.
@@ -827,14 +825,14 @@ class ChemicalElements:
                 print(info_msg_prefix + 'Symbol is a standard element of the periodic table. '
                       'I will not expand definition by this element.')
                 return
-            else:
-                # now need to check if the stored special element with the same symbol has a different atomic number
-                # if so, remove it
-                stored_atomic_number = self._special_elements[symbol]
-                if atomic_number != stored_atomic_number:
-                    print(info_msg_prefix + f"Found stored special element '{stored_atomic_number}' with same symbol. "
-                          f'I will replace the latter with the former.')
-                    _remove_special_element_from_definition(symbol=symbol, atomic_number=stored_atomic_number)
+
+            # now need to check if the stored special element with the same symbol has a different atomic number
+            # if so, remove it
+            stored_atomic_number = self._special_elements[symbol]
+            if atomic_number != stored_atomic_number:
+                print(info_msg_prefix + f"Found stored special element '{stored_atomic_number}' with same symbol. "
+                      f'I will replace the latter with the former.')
+                _remove_special_element_from_definition(symbol=symbol, atomic_number=stored_atomic_number)
 
         # check atomic number
         if atomic_number in self._pte_inv:
@@ -842,14 +840,14 @@ class ChemicalElements:
                 print(info_msg_prefix + 'Atomic number is that of a standard element of the periodic table. '
                       'I will not expand definition by this element.')
                 return
-            else:
-                # now need to check if the stored special element with the same atomic number has a different symbol
-                # if so, remove it
-                stored_symbol = self._special_elements_inv[atomic_number]
-                if symbol != stored_symbol:
-                    print(info_msg_prefix + f"Found stored special element '{stored_symbol}' with same atomic number. "
-                          f'I will replace the latter with the former.')
-                    _remove_special_element_from_definition(symbol=stored_symbol, atomic_number=atomic_number)
+
+            # now need to check if the stored special element with the same atomic number has a different symbol
+            # if so, remove it
+            stored_symbol = self._special_elements_inv[atomic_number]
+            if symbol != stored_symbol:
+                print(info_msg_prefix + f"Found stored special element '{stored_symbol}' with same atomic number. "
+                      f'I will replace the latter with the former.')
+                _remove_special_element_from_definition(symbol=stored_symbol, atomic_number=atomic_number)
 
         # okay, now finally clear to expand allowed element definition
         self._special_elements[symbol] = atomic_number
@@ -897,6 +895,7 @@ class ChemicalElements:
         else:
             print(f'Warning: {self.__class__.__name__}.remove_elements(): '
                   f"No group '{group_name}' present in elmts. Nothing removed.")
+        return None
 
     def union(self, other):
         return self.__add__(other)
@@ -921,8 +920,8 @@ class ChemicalElements:
         if not complement:
             # neeed this since supplying 'nothing' to constructor fills whole table by default
             return ChemicalElements(empty=True, distinct=self.distinct)
-        else:
-            return ChemicalElements(list(complement.keys()), distinct=self.distinct)
+
+        return ChemicalElements(list(complement.keys()), distinct=self.distinct)
 
     def intersection(self, other):
         """Create intersection of two ChemicalElements objects as a new one.
@@ -983,6 +982,7 @@ class ChemicalElements:
         version_info = tuple(int(num) for num in version.split('.'))
         if version_info < (0, 7, 0):
             return _mendeleev.get_table('elements')
+        import mendeleev.fetch as _mendeleev_fetch
         return _mendeleev_fetch.fetch_table('elements')
 
     def list_of_attributes(self):
@@ -1327,16 +1327,24 @@ class ChemicalElements:
                 plt.savefig(_output_legend)
 
         # finally, draw the plot(s)
-        _mendeleev_plotting.periodic_plot(df=ptable,
-                                          attribute=_attribute_mendel,
-                                          title=_title,
-                                          width=_size[0],
-                                          height=_size[1],
-                                          missing=_missing_color,
-                                          colorby=_colorby_mendel,
-                                          output=_output_mendel,
-                                          showfblock=showfblock,
-                                          long_version=long_version)
+        # DEVNOTE: breaking change in mendeleev v0.8.0: replaced plotting with vis, signature change.
+        version = _mendeleev.__version__
+        version_info = tuple(int(num) for num in version.split('.'))
+        if version_info < (0, 8, 0):
+            import mendeleev.plotting as _mendeleev_plotting
+            _mendeleev_plotting.periodic_plot(df=ptable,
+                                              attribute=_attribute_mendel,
+                                              title=_title,
+                                              width=_size[0],
+                                              height=_size[1],
+                                              missing=_missing_color,
+                                              colorby=_colorby_mendel,
+                                              output=_output_mendel,
+                                              showfblock=showfblock,
+                                              long_version=long_version)
+        else:
+            raise NotImplementedError(f'mendeleev version {version}: TODO: implement plotting API change '
+                                      f'"plotting" -> "vis".')
         return legend_figure
 
     def _sort(self, a_dict: _typing.Dict[str, int], by_key=False):
@@ -1368,7 +1376,7 @@ class ChemicalElements:
             else:
                 raise TypeError('received a list, but need list of all atom names or numbers')
             return elements, key_is_symbol
-        elif isinstance(elements, dict):
+        if isinstance(elements, dict):
             # just assume it is a flat dict
             # i know this is not the most efficient way to test this
 
@@ -1383,10 +1391,10 @@ class ChemicalElements:
                 assert all(isinstance(v, int) for v in elements.values())
                 key_is_symbol = True
                 return elements, key_is_symbol
-            else:
-                raise TypeError('received a dict, but need chem.elmt. dict sym:num or num:sym')
-        else:
-            raise TypeError('Elements list is not any of list,tuple,set,dict.')
+
+            raise TypeError('received a dict, but need chem.elmt. dict sym:num or num:sym')
+
+        raise TypeError('Elements list is not any of list,tuple,set,dict.')
 
     def _chemical_element_list_to_dict(self, elements: T_FLAT_ELEMENTS_CONTAINER, sort=True) -> _typing.Dict[str, int]:
         """Converts list/set/tuple of chemical elements into dict symbol : atomic_number.
@@ -1402,8 +1410,8 @@ class ChemicalElements:
 
         if sort:
             return self._sort(a_dict)
-        else:
-            return a_dict
+
+        return a_dict
 
 
 @_dc.dataclass
