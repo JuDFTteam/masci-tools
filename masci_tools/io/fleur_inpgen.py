@@ -39,7 +39,7 @@ POSSIBLE_PARAMS = {
     'film': ['dvac', 'dtild'],
     'soc': ['theta', 'phi'],
     'qss': ['x', 'y', 'z'],
-    'kpt': ['nkpt', 'kpts', 'div1', 'div2', 'div3', 'tkb', 'tria'],
+    'kpt': ['nkpt', 'kpts', 'div1', 'div2', 'div3', 'tkb', 'tria', 'gamma'],
     'title': {}
 }
 
