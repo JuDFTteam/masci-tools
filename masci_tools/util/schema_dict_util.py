@@ -24,7 +24,7 @@ from masci_tools.util.xml.common_functions import check_complex_xpath
 from lxml import etree
 from logging import Logger
 import warnings
-from typing import Dict, Tuple, Union, Any, List
+from typing import Dict, Iterable, Tuple, Union, Any, List
 
 
 def get_tag_xpath(schema_dict, name, contains=None, not_contains=None):
@@ -419,26 +419,8 @@ def evaluate_tag(node: Union[etree._Element, etree._ElementTree],
 
     check_complex_xpath(node, tag_xpath, complex_xpath)
 
-    #Which attributes are expected
-    tags = set()
-    optional_tags = set()
     try:
-        if isinstance(node, etree._Element):
-            if node.tag not in (schema_dict['root_tag'], *schema_dict.get('iteration_tags', [])):
-                if iteration_path:
-                    iteration_xpath = schema_dict.tag_xpath(kwargs.get('iteration_tag', 'iteration'))
-                    if node.tag not in iteration_xpath:
-                        kwargs['contains'] = set(kwargs.get('contains', []))
-                        kwargs['contains'].add(node.tag)
-                else:
-                    kwargs['contains'] = set(kwargs.get('contains', []))
-                    kwargs['contains'].add(node.tag)
-        tag_info = schema_dict.tag_info(name, **kwargs)
-        attribs = tag_info['attribs']
-        optional = tag_info['optional_attribs']
-        if subtags:
-            tags = tag_info['simple'] | tag_info['complex']
-            optional_tags = tag_info['optional']
+        tag_info = _select_tag_info(node, schema_dict, name, iteration_path=iteration_path, **kwargs)
     except ValueError as err:
         if logger is None:
             raise ValueError(f'Failed to evaluate attributes from tag {name}: '
@@ -448,10 +430,12 @@ def evaluate_tag(node: Union[etree._Element, etree._ElementTree],
             'Failed to evaluate attributes from tag %s: '
             'No attributes to parse either the tag does not '
             'exist or it has no attributes', name)
-        attribs = set()
-        optional = set()
-        tags = set()
-        optional_tags = set()
+        return {}
+
+    attribs = tag_info['attribs']
+    optional = tag_info['optional_attribs']
+    tags = tag_info['simple'] | tag_info['complex']
+    optional_tags = tag_info['optional']
 
     if only_required:
         attribs = attribs.difference(optional)
@@ -474,12 +458,11 @@ def evaluate_tag(node: Union[etree._Element, etree._ElementTree],
             'Failed to evaluate attributes from tag %s: '
             'No attributes to parse either the tag does not '
             'exist or it has no attributes', name)
-    else:
-        attribs = sorted(list(attribs.original_case.values()))
+    attrib_list = sorted(list(attribs.original_case.values()))
 
     out_dict: Dict[str, Any] = {}
 
-    for attrib in attribs:
+    for attrib in attrib_list:
 
         stringattribute: List[str] = eval_xpath(node,
                                                 f'{str(complex_xpath)}/@{attrib}',
@@ -684,19 +667,7 @@ def evaluate_parent_tag(node: Union[etree._Element, etree._ElementTree],
 
     #Which attributes are expected
     try:
-        if isinstance(node, etree._Element):
-            if node.tag not in (schema_dict['root_tag'], *schema_dict.get('iteration_tags', [])):
-                if iteration_path:
-                    iteration_xpath = schema_dict.tag_xpath(kwargs.get('iteration_tag', 'iteration'))
-                    if node.tag not in iteration_xpath:
-                        kwargs['contains'] = set(kwargs.get('contains', []))
-                        kwargs['contains'].add(node.tag)
-                else:
-                    kwargs['contains'] = set(kwargs.get('contains', []))
-                    kwargs['contains'].add(node.tag)
-        tag_info = schema_dict.tag_info(name, parent=True, **kwargs)
-        attribs = tag_info['attribs']
-        optional = tag_info['optional_attribs']
+        tag_info = _select_tag_info(node, schema_dict, name, parent=True, iteration_path=iteration_path, **kwargs)
     except ValueError as err:
         if logger is None:
             raise ValueError(f'Failed to evaluate attributes from parent tag of {name}: '
@@ -706,8 +677,10 @@ def evaluate_parent_tag(node: Union[etree._Element, etree._ElementTree],
             'Failed to evaluate attributes from parent tag of %s: '
             'No attributes to parse either the tag does not '
             'exist or it has no attributes', name)
-        attribs = set()
-        optional = set()
+        return {}
+
+    attribs = tag_info['attribs']
+    optional = tag_info['optional_attribs']
 
     if only_required:
         attribs = attribs.difference(optional)
@@ -724,13 +697,12 @@ def evaluate_parent_tag(node: Union[etree._Element, etree._ElementTree],
             'Failed to evaluate attributes from parent tag of %s: '
             'No attributes to parse either the tag does not '
             'exist or it has no attributes', name)
-    else:
-        attribs = sorted(list(attribs.original_case.values()))
+    attrib_list = sorted(list(attribs.original_case.values()))
 
     elems: List[etree._Element] = eval_xpath(node, complex_xpath, logger=logger, list_return=True)  #type:ignore
 
     out_dict: Dict[str, Any] = {}
-    for attrib in attribs:
+    for attrib in attrib_list:
         out_dict[attrib] = []
 
     for elem in elems:
@@ -740,7 +712,7 @@ def evaluate_parent_tag(node: Union[etree._Element, etree._ElementTree],
                 raise ValueError(f'No parent found tag {name}')
             logger.warning('No parent found tag %s', name)
             continue
-        for attrib in attribs:
+        for attrib in attrib_list:
 
             try:
                 stringattribute = get_xml_attribute(parent, attrib, logger=logger)
@@ -1009,3 +981,57 @@ def _select_attrib_xpath(node: Union[etree._Element, etree._ElementTree],
             xpath = schema_dict.attrib_xpath(name, **kwargs)
 
     return xpath
+
+
+def _select_tag_info(node: Union[etree._Element, etree._ElementTree],
+                     schema_dict: 'fleur_schema.SchemaDict',
+                     name: str,
+                     iteration_path: bool = False,
+                     iteration_tag: str = 'iteration',
+                     contains: Union[str, Iterable[str]] = None,
+                     **kwargs: Any) -> fleur_schema.schema_dict.TagInfo:
+    """
+    Get the tag information used for the evaluation function in this module
+    based on the given node and the specifications
+
+    :param node: etree Element, on which to execute the xpath evaluations
+    :param schema_dict: dict, containing all the path information and more
+    :param name: str, name of the tag
+    :param iteration_path: bool if True and the SchemaDict is of an output schema an absolute path into
+                           the iteration element is constructed
+    :param iteration_tag: name of the iteration tag. Onlt used for iteration_path=True
+
+    Kwargs:
+        :param contains: str, this string has to be in the final path
+        :param not_contains: str, this string has to NOT be in the final path
+
+    All other Kwargs are passed on to the tag_info method
+
+    :returns: dict with the tag information
+    """
+
+    if contains is None:
+        contains = set()
+    elif isinstance(contains, str):
+        contains = {contains}
+    else:
+        contains = set(contains)
+
+    if iteration_path:
+        if not isinstance(schema_dict, fleur_schema.OutputSchemaDict):
+            raise ValueError('iteration_path=True can only be used with OutputSchemaDict')
+
+    root_tags: Tuple[str, ...] = (schema_dict['root_tag'],)
+    if isinstance(schema_dict, fleur_schema.OutputSchemaDict):
+        root_tags += tuple(schema_dict['iteration_tags'])
+
+    if isinstance(node, etree._Element):
+        if node.tag not in root_tags:
+            if iteration_path:
+                iteration_xpath = schema_dict.tag_xpath(iteration_tag)
+                if f'/{node.tag}' not in iteration_xpath:
+                    contains.add(node.tag)
+            else:
+                contains.add(node.tag)
+
+    return schema_dict.tag_info(name, contains=contains, **kwargs)

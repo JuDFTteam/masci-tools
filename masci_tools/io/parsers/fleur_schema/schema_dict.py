@@ -492,7 +492,7 @@ class SchemaDict(LockableDict):
                  contains: Union[str, Iterable[str]] = None,
                  not_contains: Union[str, Iterable[str]] = None,
                  parent: bool = False,
-                 **kwargs: Any) -> Dict[str, Any]:
+                 **kwargs: Any) -> TagInfo:
         """
         Tries to find a unique path from the schema_dict based on the given name of the tag
         and additional further specifications and returns the tag_info entry for this tag
