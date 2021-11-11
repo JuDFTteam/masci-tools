@@ -19,7 +19,7 @@ class XPathBuilder:
         elif isinstance(simple_path, etree.XPath):
             self.components = simple_path.path.split('/')
         else:
-            raise TypeError(f'Wrong type for simple path. Expected str or etree.Xpath. Got {type(simple_path)}')
+            raise TypeError(f'Wrong type for simple path. Expected str or etree.XPath. Got {type(simple_path)}')
 
         if len(set(self.components)) != len(self.components):
             raise NotImplementedError('The given xpath has multiple tags with the same name')
