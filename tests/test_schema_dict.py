@@ -209,6 +209,92 @@ def test_relative_tag_xpath_output():
     assert schema_dict.relative_tag_xpath('densityMatrixFor', 'ldaUDensityMatrix') == './densityMatrixFor'
 
 
+def test_iteration_tag_xpath():
+    """
+    Test the iteration_tag_xpath method for constructing absolute xpaths into
+    iteration elements
+    """
+    schema_dict = OutputSchemaDict.fromVersion('0.34')
+
+    assert schema_dict.iteration_tag_xpath('fermienergy') == '/fleurOutput/scfLoop/iteration/FermiEnergy'
+
+    with pytest.raises(NoPathFound):
+        schema_dict.iteration_tag_xpath('iteration')
+    with pytest.raises(NoUniquePathFound):
+        schema_dict.iteration_tag_xpath('mtcharge')
+
+    assert schema_dict.iteration_tag_xpath(
+        'mtcharge', contains='valence') == '/fleurOutput/scfLoop/iteration/valenceDensity/mtCharges/mtCharge'
+    assert schema_dict.iteration_tag_xpath(
+        'mtcharge', not_contains='valence') == '/fleurOutput/scfLoop/iteration/allElectronCharges/mtCharges/mtCharge'
+
+
+def test_relative_iteration_tag_xpath():
+    """
+    Test the relative_iteration_tag_xpath method for constructing relative xpaths from absolute xpaths into
+    iteration elements
+    """
+    schema_dict = OutputSchemaDict.fromVersion('0.34')
+
+    assert schema_dict.relative_iteration_tag_xpath('fermienergy', 'scfLoop') == './iteration/FermiEnergy'
+    assert schema_dict.relative_iteration_tag_xpath('fermienergy', 'FermiEnergy') == '.'
+
+    with pytest.raises(NoPathFound):
+        schema_dict.relative_iteration_tag_xpath('iteration', 'scfLoop')
+    with pytest.raises(NoUniquePathFound):
+        schema_dict.relative_iteration_tag_xpath('mtcharge', 'scfLoop')
+
+    assert schema_dict.relative_iteration_tag_xpath(
+        'mtcharge', 'scfLoop', contains='valence') == './iteration/valenceDensity/mtCharges/mtCharge'
+    assert schema_dict.relative_iteration_tag_xpath(
+        'mtcharge', 'scfLoop', not_contains='valence') == './iteration/allElectronCharges/mtCharges/mtCharge'
+
+
+def test_iteration_attrib_xpath():
+    """
+    Test the iteration_attrib_xpath method for constructing absolute xpaths into
+    iteration elements to attributes
+    """
+    schema_dict = OutputSchemaDict.fromVersion('0.34')
+
+    assert schema_dict.iteration_attrib_xpath(
+        'numberforcurrentrun') == '/fleurOutput/scfLoop/iteration/@numberForCurrentRun'
+
+    with pytest.raises(NoPathFound):
+        schema_dict.iteration_attrib_xpath('non_existent')
+    with pytest.raises(NoUniquePathFound):
+        schema_dict.iteration_attrib_xpath('value')
+
+    assert schema_dict.iteration_attrib_xpath('value',
+                                              contains='Fermi') == '/fleurOutput/scfLoop/iteration/FermiEnergy/@value'
+    assert schema_dict.iteration_attrib_xpath(
+        'value', tag_name='fermienergy') == '/fleurOutput/scfLoop/iteration/FermiEnergy/@value'
+    assert schema_dict.iteration_attrib_xpath('total', not_contains={
+        'spin', 'valence'
+    }) == '/fleurOutput/scfLoop/iteration/allElectronCharges/mtCharges/mtCharge/@total'
+
+
+def test_relative_iteration_attrib_xpath():
+    """
+    Test the relative_iteration_attrib_xpath method for constructing relative paths from absolute xpaths into
+    iteration elements to attributes
+    """
+    schema_dict = OutputSchemaDict.fromVersion('0.34')
+
+    assert schema_dict.relative_iteration_attrib_xpath('numberforcurrentrun',
+                                                       'scfLoop') == './iteration/@numberForCurrentRun'
+    assert schema_dict.relative_iteration_attrib_xpath('value', 'FermiEnergy', tag_name='fermienergy') == './@value'
+
+    with pytest.raises(NoPathFound):
+        schema_dict.relative_iteration_attrib_xpath('non_existent', 'root')
+    with pytest.raises(NoUniquePathFound):
+        schema_dict.relative_iteration_attrib_xpath('value', 'iteration')
+
+    assert schema_dict.relative_iteration_attrib_xpath('value', 'iteration', contains='Fermi') == './FermiEnergy/@value'
+    assert schema_dict.relative_iteration_attrib_xpath('total', 'valenceDensity',
+                                                       not_contains={'mt', 'fixed'}) == './spinDependentCharge/@total'
+
+
 def test_tag_xpath_contains():
     """
     Test the selection of paths based on a contained keyword

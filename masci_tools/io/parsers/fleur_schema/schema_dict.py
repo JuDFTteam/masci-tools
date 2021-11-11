@@ -337,7 +337,10 @@ class SchemaDict(LockableDict):
         if contains is None:
             contains = [root_tag]
         else:
-            contains = set(contains)
+            if isinstance(contains, str):
+                contains = {contains}
+            else:
+                contains = set(contains)
             contains.add(root_tag)
 
         paths = self._find_paths(name, self._tag_entries, contains=contains, not_contains=not_contains)
@@ -363,7 +366,6 @@ class SchemaDict(LockableDict):
         and additional further specifications
 
         :param name: str, name of the attribute
-        :param root_tag: str, name of the tag from which the path should be relative
         :param contains: str or list of str, this string has to be in the final path
         :param not_contains: str or list of str, this string has to NOT be in the final path
         :param exclude: list of str, here specific types of attributes can be excluded
@@ -425,6 +427,7 @@ class SchemaDict(LockableDict):
 
         :param schema_dict: dict, containing all the path information and more
         :param name: str, name of the attribute
+        :param root_tag: str, name of the tag from which the path should be relative
         :param contains: str or list of str, this string has to be in the final path
         :param not_contains: str or list of str, this string has to NOT be in the final path
         :param exclude: list of str, here specific types of attributes can be excluded
@@ -468,7 +471,10 @@ class SchemaDict(LockableDict):
         if contains is None:
             contains = [root_tag]
         else:
-            contains = set(contains)
+            if isinstance(contains, str):
+                contains = {contains}
+            else:
+                contains = set(contains)
             contains.add(root_tag)
 
         paths = self._find_paths(name, entries, contains=contains, not_contains=not_contains)
@@ -685,6 +691,7 @@ class OutputSchemaDict(SchemaDict):
 
         :out_version: Version string of the output schema represented in this class
         :input_tag: Name of the element containing the fleur input
+        :iteration_tags: Names of the elements that can contain all iteration tags
         :tag_paths: simple xpath expressions to all valid tag names not in an iteration
                     Multiple paths or ambiguous tag names are parsed as a list
         :iteration_tag_paths: simple relative xpath expressions to all valid tag names
@@ -854,3 +861,257 @@ class OutputSchemaDict(SchemaDict):
         Returns the output version as an integer for comparisons (`>` or `<`)
         """
         return convert_str_version_number(self.get('out_version', ''))
+
+    def iteration_tag_xpath(self,
+                            name: str,
+                            contains: Union[str, Iterable[str]] = None,
+                            not_contains: Union[str, Iterable[str]] = None,
+                            iteration_tag: str = 'iteration') -> str:
+        """
+        Tries to find a unique path from the schema_dict based on the given name of the tag
+        and additional further specifications in the iteration section of the out.xml and returns
+        the absolute path to it
+
+        :param name: str, name of the tag
+        :param contains: str or list of str, this string has to be in the final path
+        :param not_contains: str or list of str, this string has to NOT be in the final path
+        :param iteration_tag: name of the tag containing the iteration information
+
+        :returns: str, xpath for the given tag
+
+        :raises NoPathFound: If no path matching the criteria could be found
+        :raises NoUniquePathFound: If multiple paths matching the criteria are found
+        """
+
+        if iteration_tag not in self['iteration_tags']:
+            raise ValueError(f"{iteration_tag} is not a valid iteration tag valid are: {list(self['iteration_tags'])}")
+        iteration_path = self.tag_xpath(iteration_tag)
+
+        paths = self._find_paths(name, ('iteration_tag_paths',), contains=contains, not_contains=not_contains)
+        paths = [f"{iteration_path}{path.lstrip('.')}" for path in paths]
+
+        if len(paths) == 1:
+            return paths[0]
+        if len(paths) == 0:
+            raise NoPathFound(f'The tag {name} has no possible iteration paths with the current specification.\n'
+                              f'contains: {contains}, not_contains: {not_contains}')
+        raise NoUniquePathFound(
+            f'The tag {name} has multiple possible iteration paths with the current specification.\n'
+            f'contains: {contains}, not_contains: {not_contains} \n'
+            f'These are possible: {paths}')
+
+    def relative_iteration_tag_xpath(self,
+                                     name: str,
+                                     root_tag: str,
+                                     contains: Union[str, Iterable[str]] = None,
+                                     not_contains: Union[str, Iterable[str]] = None,
+                                     iteration_tag: str = 'iteration') -> str:
+        """
+        Tries to find a unique path from the schema_dict based on the given name of the tag
+        and additional further specifications in the iteration section of the out.xml and returns
+        the absolute path to it
+
+        :param name: str, name of the tag
+        :param contains: str or list of str, this string has to be in the final path
+        :param not_contains: str or list of str, this string has to NOT be in the final path
+        :param iteration_tag: name of the tag containing the iteration information
+
+        :returns: str, xpath for the given tag
+
+        :raises NoPathFound: If no path matching the criteria could be found
+        :raises NoUniquePathFound: If multiple paths matching the criteria are found
+        """
+
+        if iteration_tag not in self['iteration_tags']:
+            raise ValueError(f"{iteration_tag} is not a valid iteration tag valid are: {list(self['iteration_tags'])}")
+        iteration_path = self.tag_xpath(iteration_tag)
+
+        if f'/{root_tag}' not in iteration_path:
+            #The paths have to include the root_tag
+            if contains is None:
+                contains = [root_tag]
+            else:
+                if isinstance(contains, str):
+                    contains = {contains}
+                else:
+                    contains = set(contains)
+                contains.add(root_tag)
+
+        paths = self._find_paths(name, ('iteration_tag_paths',), contains=contains, not_contains=not_contains)
+        paths = [f"{iteration_path}{path.lstrip('.')}" for path in paths]
+        relative_paths = {abs_to_rel_xpath(xpath, root_tag) for xpath in paths}
+
+        if len(paths) == 1:
+            return relative_paths.pop()
+        if len(paths) == 0:
+            raise NoPathFound(
+                f'The tag {name} has no possible relative iteration paths with the current specification.\n'
+                f'contains: {contains}, not_contains: {not_contains}, root_tag {root_tag}')
+        raise NoUniquePathFound(
+            f'The tag {name} has multiple possible relative iteration paths with the current specification.\n'
+            f'contains: {contains}, not_contains: {not_contains}, root_tag {root_tag} \n'
+            f'These are possible: {relative_paths}')
+
+    def iteration_attrib_xpath(self,
+                               name: str,
+                               contains: Union[str, Iterable[str]] = None,
+                               not_contains: Union[str, Iterable[str]] = None,
+                               exclude: Iterable[str] = None,
+                               tag_name: str = None,
+                               iteration_tag: str = 'iteration') -> str:
+        """
+        Tries to find a unique path from the schema_dict based on the given name of the attribute
+        and additional further specifications in the iteration section of the out.xml and returns
+        the absolute path to it
+
+        :param name: str, name of the attribute
+        :param contains: str or list of str, this string has to be in the final path
+        :param not_contains: str or list of str, this string has to NOT be in the final path
+        :param exclude: list of str, here specific types of attributes can be excluded
+                        valid values are: settable, settable_contains, other
+        :param tag_name: str, if given this name will be used to find a path to a tag with the
+                        same name in :py:meth:`iteration_tag_xpath()`
+        :param iteration_tag: name of the tag containing the iteration information
+
+        :returns: str, xpath to the tag with the given attribute
+
+        :raises NoPathFound: If no path matching the criteria could be found
+        :raises NoUniquePathFound: If multiple paths matching the criteria are found
+        """
+
+        if not self._attrib_entries or not self._info_entries:
+            raise NotImplementedError(
+                f"The method 'iteration_attrib_xpath' cannot be executed for {self.__class__.__name__}"
+                ' since no attrib entries are defined')
+
+        if iteration_tag not in self['iteration_tags']:
+            raise ValueError(f"{iteration_tag} is not a valid iteration tag valid are: {list(self['iteration_tags'])}")
+        iteration_path = self.tag_xpath(iteration_tag)
+
+        if tag_name is not None:
+            tag_xpath = self.iteration_tag_xpath(tag_name, contains=contains, not_contains=not_contains)
+
+            tag_info = self.tag_info(
+                tag_name,
+                contains=contains,
+                not_contains=not_contains,
+            )
+
+            if name not in tag_info['attribs']:
+                raise NoPathFound(f'No attribute {name} found at tag {tag_name}')
+            original_case = tag_info['attribs'].original_case[name]
+            return f'{tag_xpath}/@{original_case}'
+
+        entries = list(self._attrib_entries)
+        for entry in entries.copy():
+            if 'iteration' not in entry:
+                entries.remove(entry)
+        if exclude is not None:
+            for list_name in exclude:
+                for entry in entries.copy():
+                    if f'iteration_{list_name}_attribs' in entry:
+                        entries.remove(entry)
+
+        paths = self._find_paths(name, entries, contains=contains, not_contains=not_contains)
+        paths = [f"{iteration_path}{path.lstrip('.')}" for path in paths]
+
+        if len(paths) == 1:
+            return paths[0]
+        if len(paths) == 0:
+            raise NoPathFound(f'The attrib {name} has no possible iteration paths with the current specification.\n'
+                              f'contains: {contains}, not_contains: {not_contains}, exclude {exclude}')
+        raise NoUniquePathFound(
+            f'The attrib {name} has multiple possible iteration paths with the current specification.\n'
+            f'contains: {contains}, not_contains: {not_contains}, exclude {exclude}\n'
+            f'These are possible: {paths}')
+
+    def relative_iteration_attrib_xpath(self,
+                                        name: str,
+                                        root_tag: str,
+                                        contains: Union[str, Iterable[str]] = None,
+                                        not_contains: Union[str, Iterable[str]] = None,
+                                        exclude: Iterable[str] = None,
+                                        tag_name: str = None,
+                                        iteration_tag: str = 'iteration') -> str:
+        """
+        Tries to find a unique relative path from the schema_dict based on the given name of the attribute
+        name of the root, from which the path should be relative and additional further specifications
+
+        :param schema_dict: dict, containing all the path information and more
+        :param name: str, name of the attribute
+        :param root_tag: str, name of the tag from which the path should be relative
+        :param contains: str or list of str, this string has to be in the final path
+        :param not_contains: str or list of str, this string has to NOT be in the final path
+        :param exclude: list of str, here specific types of attributes can be excluded
+                        valid values are: settable, settable_contains, other
+        :param tag_name: str, if given this name will be used to find a path to a tag with the
+                        same name in :py:meth:`relative_iteration_tag_xpath()`
+        :param iteration_tag: name of the tag containing the iteration information
+
+        :returns: str, xpath for the given tag
+
+        :raises NoPathFound: If no path matching the criteria could be found
+        :raises NoUniquePathFound: If multiple paths matching the criteria are found
+        """
+
+        if not self._attrib_entries or not self._info_entries:
+            raise NotImplementedError(
+                f"The method 'iteration_relative_attrib_xpath' cannot be executed for {self.__class__.__name__}"
+                ' since no attrib entries are defined')
+
+        if iteration_tag not in self['iteration_tags']:
+            raise ValueError(f"{iteration_tag} is not a valid iteration tag valid are: {list(self['iteration_tags'])}")
+        iteration_path = self.tag_xpath(iteration_tag)
+
+        if tag_name is not None:
+            tag_xpath = self.relative_iteration_tag_xpath(tag_name,
+                                                          root_tag,
+                                                          contains=contains,
+                                                          not_contains=not_contains)
+
+            tag_info = self.tag_info(tag_name, contains=contains, not_contains=not_contains)
+
+            if name not in tag_info['attribs']:
+                raise NoPathFound(f'No attribute {name} found at tag {tag_name}')
+
+            original_case = tag_info['attribs'].original_case[name]
+
+            if tag_xpath.endswith('/'):
+                return f'{tag_xpath}@{original_case}'
+            return f'{tag_xpath}/@{original_case}'
+
+        entries = list(self._attrib_entries)
+        for entry in entries.copy():
+            if 'iteration' not in entry:
+                entries.remove(entry)
+        if exclude is not None:
+            for list_name in exclude:
+                for entry in entries.copy():
+                    if f'iteration_{list_name}_attribs' in entry:
+                        entries.remove(entry)
+
+        if f'/{root_tag}' not in iteration_path:
+            #The paths have to include the root_tag
+            if contains is None:
+                contains = [root_tag]
+            else:
+                if isinstance(contains, str):
+                    contains = {contains}
+                else:
+                    contains = set(contains)
+                contains.add(root_tag)
+
+        paths = self._find_paths(name, entries, contains=contains, not_contains=not_contains)
+        paths = [f"{iteration_path}{path.lstrip('.')}" for path in paths]
+        relative_paths = {abs_to_rel_xpath(xpath, root_tag) for xpath in paths}
+
+        if len(relative_paths) == 1:
+            return relative_paths.pop()
+        if len(relative_paths) == 0:
+            raise NoPathFound(
+                f'The attrib {name} has no possible relative iteration paths with the current specification.\n'
+                f'contains: {contains}, not_contains: {not_contains}, root_tag {root_tag}')
+        raise NoUniquePathFound(
+            f'The attrib {name} has multiple possible relative iteration paths with the current specification.\n'
+            f'contains: {contains}, not_contains: {not_contains}, root_tag {root_tag} \n'
+            f'These are possible: {relative_paths}')
