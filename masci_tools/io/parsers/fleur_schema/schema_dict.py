@@ -20,7 +20,7 @@ import tempfile
 import shutil
 from functools import update_wrapper, wraps
 from pathlib import Path
-from typing import Callable, Iterable, TypeVar, Union, List, Dict, Tuple, Any, cast
+from typing import Callable, Iterable, Set, TypeVar, Union, List, Dict, Tuple, Any, cast, Optional
 
 from .fleur_schema_parser_functions import TagInfo
 try:
@@ -187,6 +187,21 @@ def _get_latest_available_version(output_schema: bool) -> str:
     return max(versions, key=convert_str_version_number)
 
 
+def _add_condition(specification: Optional[Union[str, Iterable[str]]], condition: str) -> Set[str]:
+    """Add element to specification making it into a set if necessary"""
+
+    if specification is None:
+        specification = set()
+    elif isinstance(specification, str):
+        specification = {specification}
+    else:
+        specification = set(specification)
+
+    specification.add(condition)
+
+    return specification
+
+
 class SchemaDict(LockableDict):
     """
     Base class for schema dictionaries. Is  locked on initialization with :py:meth:`~masci_tools.util.lockable_containers.LockableDict.freeze()`.
@@ -334,14 +349,7 @@ class SchemaDict(LockableDict):
                 ' since no tag entries are defined')
 
         #The paths have to include the root_tag
-        if contains is None:
-            contains = [root_tag]
-        else:
-            if isinstance(contains, str):
-                contains = {contains}
-            else:
-                contains = set(contains)
-            contains.add(root_tag)
+        contains = _add_condition(contains, root_tag)
 
         paths = self._find_paths(name, self._tag_entries, contains=contains, not_contains=not_contains)
         relative_paths = {abs_to_rel_xpath(xpath, root_tag) for xpath in paths}
@@ -382,6 +390,9 @@ class SchemaDict(LockableDict):
             raise NotImplementedError(f"The method 'attrib_xpath' cannot be executed for {self.__class__.__name__}"
                                       ' since no attrib entries are defined')
 
+        if exclude is None:
+            exclude = []
+
         if tag_name is not None:
             tag_xpath = self.tag_xpath(tag_name, contains=contains, not_contains=not_contains)
 
@@ -396,12 +407,7 @@ class SchemaDict(LockableDict):
             original_case = tag_info['attribs'].original_case[name]
             return f'{tag_xpath}/@{original_case}'
 
-        entries = list(self._attrib_entries)
-        if exclude is not None:
-            for list_name in exclude:
-                for entry in entries.copy():
-                    if f'{list_name}_attribs' in entry:
-                        entries.remove(entry)
+        entries = [entry for entry in self._attrib_entries if all(f'{excl}_attribs' not in entry for excl in exclude)]
 
         paths = self._find_paths(name, entries, contains=contains, not_contains=not_contains)
 
@@ -446,6 +452,9 @@ class SchemaDict(LockableDict):
                 f"The method 'relative_attrib_xpath' cannot be executed for {self.__class__.__name__}"
                 ' since no attrib entries are defined')
 
+        if exclude is None:
+            exclude = []
+
         if tag_name is not None:
             tag_xpath = self.relative_tag_xpath(tag_name, root_tag, contains=contains, not_contains=not_contains)
 
@@ -460,22 +469,10 @@ class SchemaDict(LockableDict):
                 return f'{tag_xpath}@{original_case}'
             return f'{tag_xpath}/@{original_case}'
 
-        entries = list(self._attrib_entries)
-        if exclude is not None:
-            for list_name in exclude:
-                for entry in entries.copy():
-                    if f'{list_name}_attribs' in entry:
-                        entries.remove(entry)
+        entries = [entry for entry in self._attrib_entries if all(f'{excl}_attribs' not in entry for excl in exclude)]
 
         #The paths have to include the root_tag
-        if contains is None:
-            contains = [root_tag]
-        else:
-            if isinstance(contains, str):
-                contains = {contains}
-            else:
-                contains = set(contains)
-            contains.add(root_tag)
+        contains = _add_condition(contains, root_tag)
 
         paths = self._find_paths(name, entries, contains=contains, not_contains=not_contains)
         relative_paths = {abs_to_rel_xpath(xpath, root_tag) for xpath in paths}
@@ -928,14 +925,7 @@ class OutputSchemaDict(SchemaDict):
 
         if f'/{root_tag}' not in iteration_path:
             #The paths have to include the root_tag
-            if contains is None:
-                contains = [root_tag]
-            else:
-                if isinstance(contains, str):
-                    contains = {contains}
-                else:
-                    contains = set(contains)
-                contains.add(root_tag)
+            contains = _add_condition(contains, root_tag)
 
         paths = self._find_paths(name, ('iteration_tag_paths',), contains=contains, not_contains=not_contains)
         paths = [f"{iteration_path}{path.lstrip('.')}" for path in paths]
@@ -988,6 +978,9 @@ class OutputSchemaDict(SchemaDict):
             raise ValueError(f"{iteration_tag} is not a valid iteration tag valid are: {list(self['iteration_tags'])}")
         iteration_path = self.tag_xpath(iteration_tag)
 
+        if exclude is None:
+            exclude = []
+
         if tag_name is not None:
             tag_xpath = self.iteration_tag_xpath(tag_name, contains=contains, not_contains=not_contains)
 
@@ -1002,15 +995,10 @@ class OutputSchemaDict(SchemaDict):
             original_case = tag_info['attribs'].original_case[name]
             return f'{tag_xpath}/@{original_case}'
 
-        entries = list(self._attrib_entries)
-        for entry in entries.copy():
-            if 'iteration' not in entry:
-                entries.remove(entry)
-        if exclude is not None:
-            for list_name in exclude:
-                for entry in entries.copy():
-                    if f'iteration_{list_name}_attribs' in entry:
-                        entries.remove(entry)
+        entries = [
+            entry for entry in self._attrib_entries
+            if 'iteration' in entry and all(f'{excl}_attribs' not in entry for excl in exclude)
+        ]
 
         paths = self._find_paths(name, entries, contains=contains, not_contains=not_contains)
         paths = [f"{iteration_path}{path.lstrip('.')}" for path in paths]
@@ -1063,6 +1051,9 @@ class OutputSchemaDict(SchemaDict):
             raise ValueError(f"{iteration_tag} is not a valid iteration tag valid are: {list(self['iteration_tags'])}")
         iteration_path = self.tag_xpath(iteration_tag)
 
+        if exclude is None:
+            exclude = []
+
         if tag_name is not None:
             tag_xpath = self.relative_iteration_tag_xpath(tag_name,
                                                           root_tag,
@@ -1080,26 +1071,13 @@ class OutputSchemaDict(SchemaDict):
                 return f'{tag_xpath}@{original_case}'
             return f'{tag_xpath}/@{original_case}'
 
-        entries = list(self._attrib_entries)
-        for entry in entries.copy():
-            if 'iteration' not in entry:
-                entries.remove(entry)
-        if exclude is not None:
-            for list_name in exclude:
-                for entry in entries.copy():
-                    if f'iteration_{list_name}_attribs' in entry:
-                        entries.remove(entry)
+        entries = [
+            entry for entry in self._attrib_entries
+            if 'iteration' in entry and all(f'{excl}_attribs' not in entry for excl in exclude)
+        ]
 
         if f'/{root_tag}' not in iteration_path:
-            #The paths have to include the root_tag
-            if contains is None:
-                contains = [root_tag]
-            else:
-                if isinstance(contains, str):
-                    contains = {contains}
-                else:
-                    contains = set(contains)
-                contains.add(root_tag)
+            contains = _add_condition(contains, root_tag)
 
         paths = self._find_paths(name, entries, contains=contains, not_contains=not_contains)
         paths = [f"{iteration_path}{path.lstrip('.')}" for path in paths]
