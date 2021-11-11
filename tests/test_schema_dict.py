@@ -76,6 +76,7 @@ def test_outschema_dict_structure():
         '_input_basic_types': LockableDict,
         'root_tag': str,
         'input_tag': str,
+        'iteration_tags': CaseInsensitiveFrozenSet,
         'out_version': str,
         'inp_version': str,
         'omitt_contained_tags': LockableList,

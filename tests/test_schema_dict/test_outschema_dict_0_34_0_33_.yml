@@ -3225,6 +3225,9 @@ iteration_tag_paths:
   vacuumep: ./energyParameters/vacuumEP
   valencedensity: ./valenceDensity
   valenceelectrons: ./totalEnergy/sumOfEigenvalues/valenceElectrons
+iteration_tags: !!set
+  Forcetheorem_Loop: null
+  iteration: null
 iteration_unique_attribs:
   configs: ./Forcetheorem_JIJ/@Configs
   ef: ./Forcetheorem_DMI/@ef

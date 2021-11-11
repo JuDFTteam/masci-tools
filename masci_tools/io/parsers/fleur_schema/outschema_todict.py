@@ -36,6 +36,7 @@ class OutputSchemaData(TypedDict, total=False):
     """
     root_tag: str
     input_tag: str
+    iteration_tags: CaseInsensitiveFrozenSet[str]
     inp_version: str
     out_version: str
     tag_paths: CaseInsensitiveDict[str, Union[List[str], str]]
@@ -56,8 +57,8 @@ class OutputSchemaData(TypedDict, total=False):
     _input_basic_types: LockableDict[str, List[AttributeType]]
 
 
-KEYS = Literal['root_tag', 'input_tag', 'tag_paths', 'iteration_tag_paths', '_basic_types', 'attrib_types',
-               'text_types', 'text_tags', 'unique_attribs', 'unique_path_attribs', 'other_attribs',
+KEYS = Literal['root_tag', 'input_tag', 'iteration_tags', 'tag_paths', 'iteration_tag_paths', '_basic_types',
+               'attrib_types', 'text_types', 'text_tags', 'unique_attribs', 'unique_path_attribs', 'other_attribs',
                'iteration_unique_attribs', 'iteration_unique_path_attribs', 'iteration_other_attribs',
                'omitt_contained_tags', 'tag_info', 'iteration_tag_info']
 
@@ -76,6 +77,7 @@ def create_outschema_dict(path: AnyStr, inpschema_dict: 'InputSchemaData') -> Ou
     schema_actions: Dict[KEYS, Callable] = {
         'input_tag': get_input_tag,
         'root_tag': get_root_tag,
+        'iteration_tags': get_iteration_tags,
         '_basic_types': get_basic_types,
         'attrib_types': extract_attribute_types,
         'text_types': extract_text_types,

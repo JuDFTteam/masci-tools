@@ -28,6 +28,7 @@ import math
 _RECURSIVE_TYPES = ['CompositeTimerType']
 #Name of the type of an scf iteration in the out schema (At this point the paths are split up)
 _ITERATION_TYPE = 'IterationType'
+_ITERATION_GROUP_TYPE = 'GeneralIterationType'
 _INPUT_TYPE = 'FleurInputType'
 
 # The types defined here should not be reduced further and are associated with one clear base type
@@ -1281,3 +1282,29 @@ def get_input_tag(xmlschema_evaluator: 'etree.XPathDocumentEvaluator', **kwargs:
     :return: name of the element with the type 'FleurInputType'
     """
     return str(_xpath_eval(xmlschema_evaluator, '//xsd:element[@type=$type]/@name', type=_INPUT_TYPE)[0])
+
+
+def get_iteration_tags(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
+                       **kwargs: Any) -> CaseInsensitiveFrozenSet[str]:
+    """
+    Returns the tags that can contain the information from a SCF iteration
+
+    :param xmlschema_evaluator: etree.XPathEvaluator for the schema
+
+    :return: set of tag names that contain elements from the group 'GeneralIterationType'
+    """
+    tag_names: Set[str] = set()
+    group_nodes = _xpath_eval(xmlschema_evaluator, '//xsd:group[@ref=$ref]', ref=_ITERATION_GROUP_TYPE)
+
+    for node in group_nodes:
+        parent, _ = _get_parent_fleur_type(node)
+        if parent is None:
+            continue
+        tag_names.update(
+            str(name) for name in _xpath_eval(
+                xmlschema_evaluator, '//xsd:element[@type=$type]/@name', type=parent.attrib['name']))
+
+    tag_names_frozen: CaseInsensitiveFrozenSet[str] = CaseInsensitiveFrozenSet(tag_names)
+    assert len(set(tag_names)) == len(tag_names_frozen), f'Lost Information: {tag_names}'
+
+    return tag_names_frozen
