@@ -21,6 +21,8 @@ from logging import Logger
 if TYPE_CHECKING:
     from masci_tools.io.parsers import fleur_schema
 
+from .xpathbuilder import XPathBuilder
+
 
 def clear_xml(tree: etree._ElementTree) -> Tuple[etree._ElementTree, Set[str]]:
     """
@@ -255,6 +257,9 @@ def eval_xpath(node: Union[etree._Element, etree._ElementTree, 'etree._XPathEval
 
     :returns: text, attribute or a node list
     """
+    if isinstance(xpath, XPathBuilder):
+        xpath = xpath.path
+        variables = {**variables, **xpath.path_variables}
 
     if not isinstance(node, (etree._Element, etree._ElementTree, etree._XPathEvaluatorBase)):  #pylint: disable=protected-access
         if logger is not None:
