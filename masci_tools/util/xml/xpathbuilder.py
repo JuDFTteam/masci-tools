@@ -54,9 +54,15 @@ class XPathBuilder:
                 
                 if condition_name == 'has':
                     if predicate:
-                        predicate = f'{predicate} or ${tag}_has'
+                        predicate = f'{predicate} and ${tag}_has'
                     else:
                         predicate = f'${tag}_has'
+                    self.path_variables[f'{tag}_has'] = condition
+                if condition_name == 'has-not':
+                    if predicate:
+                        predicate = f'{predicate} and ${tag}_has_not'
+                    else:
+                        predicate = f'${tag}_has_not'
                     self.path_variables[f'{tag}_has'] = condition
                 elif condition_name == 'index':
                     if isinstance(condition, int):
@@ -76,7 +82,7 @@ class XPathBuilder:
                         self.path_variables[f'{tag}_index'] = index
 
                     if predicate:
-                        predicate = f'{predicate} or {index_condition}'
+                        predicate = f'{predicate} and {index_condition}'
                     else:
                         predicate = index_condition
                 else:
@@ -90,7 +96,7 @@ class XPathBuilder:
                     value_conditions += 1
 
                     if predicate:
-                        predicate = f'{predicate} or {value_condition}'
+                        predicate = f'{predicate} and {value_condition}'
                     else:
                         predicate = value_condition
 
