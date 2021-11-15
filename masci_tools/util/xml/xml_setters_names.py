@@ -20,6 +20,8 @@ try:
     from typing import Literal
 except ImportError:
     from typing_extensions import Literal  #type:ignore
+from masci_tools.util.typing import XPathLike
+from masci_tools.util.xml.xpathbuilder import XPathBuilder
 from lxml import etree
 from masci_tools.io.parsers.fleur_schema import schema_dict_version_dispatch
 from masci_tools.io.parsers import fleur_schema
@@ -28,7 +30,7 @@ from masci_tools.io.parsers import fleur_schema
 def create_tag(xmltree: Union[etree._Element, etree._ElementTree],
                schema_dict: 'fleur_schema.SchemaDict',
                tag: Union[str, etree._Element],
-               complex_xpath: 'etree._xpath' = None,
+               complex_xpath: XPathLike = None,
                create_parents: bool = False,
                occurrences: Union[int, Iterable[int]] = None,
                **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
@@ -82,7 +84,7 @@ def create_tag(xmltree: Union[etree._Element, etree._ElementTree],
 def delete_tag(xmltree: Union[etree._Element, etree._ElementTree],
                schema_dict: 'fleur_schema.SchemaDict',
                tag_name: str,
-               complex_xpath: 'etree._xpath' = None,
+               complex_xpath: XPathLike = None,
                occurrences: Union[int, Iterable[int]] = None,
                **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
     """
@@ -119,7 +121,7 @@ def delete_tag(xmltree: Union[etree._Element, etree._ElementTree],
 def delete_att(xmltree: Union[etree._Element, etree._ElementTree],
                schema_dict: 'fleur_schema.SchemaDict',
                attrib_name: str,
-               complex_xpath: 'etree._xpath' = None,
+               complex_xpath: XPathLike = None,
                occurrences: Union[int, Iterable[int]] = None,
                **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
     """
@@ -162,7 +164,7 @@ def replace_tag(xmltree: Union[etree._Element, etree._ElementTree],
                 schema_dict: 'fleur_schema.SchemaDict',
                 tag_name: str,
                 newelement: etree._Element,
-                complex_xpath: 'etree._xpath' = None,
+                complex_xpath: XPathLike = None,
                 occurrences: Union[int, Iterable[int]] = None,
                 **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
     """
@@ -201,7 +203,7 @@ def add_number_to_attrib(xmltree: Union[etree._Element, etree._ElementTree],
                          schema_dict: 'fleur_schema.SchemaDict',
                          attributename: str,
                          add_number: Any,
-                         complex_xpath: 'etree._xpath' = None,
+                         complex_xpath: XPathLike = None,
                          mode: Literal['abs', 'rel'] = 'abs',
                          occurrences: Union[int, Iterable[int]] = None,
                          **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
@@ -255,7 +257,7 @@ def add_number_to_first_attrib(xmltree: Union[etree._Element, etree._ElementTree
                                schema_dict: 'fleur_schema.SchemaDict',
                                attributename: str,
                                add_number: Any,
-                               complex_xpath: 'etree._xpath' = None,
+                               complex_xpath: XPathLike = None,
                                mode: Literal['abs', 'rel'] = 'abs',
                                **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
     """
@@ -295,7 +297,7 @@ def set_attrib_value(xmltree: Union[etree._Element, etree._ElementTree],
                      schema_dict: 'fleur_schema.SchemaDict',
                      attributename: str,
                      attribv: Any,
-                     complex_xpath: 'etree._xpath' = None,
+                     complex_xpath: XPathLike = None,
                      occurrences: Union[int, Iterable[int]] = None,
                      create: bool = False,
                      **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
@@ -359,7 +361,7 @@ def set_first_attrib_value(xmltree: Union[etree._Element, etree._ElementTree],
                            schema_dict: 'fleur_schema.SchemaDict',
                            attributename: str,
                            attribv: Any,
-                           complex_xpath: 'etree._xpath' = None,
+                           complex_xpath: XPathLike = None,
                            create: bool = False,
                            **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
     """
@@ -400,7 +402,7 @@ def set_text(xmltree: Union[etree._Element, etree._ElementTree],
              schema_dict: 'fleur_schema.SchemaDict',
              tag_name: str,
              text: Any,
-             complex_xpath: 'etree._xpath' = None,
+             complex_xpath: XPathLike = None,
              occurrences: Union[int, Iterable[int]] = None,
              create: bool = False,
              **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
@@ -448,7 +450,7 @@ def set_first_text(xmltree: Union[etree._Element, etree._ElementTree],
                    schema_dict: 'fleur_schema.SchemaDict',
                    attributename: str,
                    attribv: Any,
-                   complex_xpath: 'etree._xpath' = None,
+                   complex_xpath: XPathLike = None,
                    create: bool = False,
                    **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
     """
@@ -486,7 +488,7 @@ def set_simple_tag(xmltree: Union[etree._Element, etree._ElementTree],
                    schema_dict: 'fleur_schema.SchemaDict',
                    tag_name: str,
                    changes: Union[List[Dict[str, Any]], Dict[str, Any]],
-                   complex_xpath: 'etree._xpath' = None,
+                   complex_xpath: XPathLike = None,
                    create_parents: bool = False,
                    **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
     """
@@ -538,7 +540,7 @@ def set_complex_tag(xmltree: Union[etree._Element, etree._ElementTree],
                     schema_dict: 'fleur_schema.SchemaDict',
                     tag_name: str,
                     changes: Dict[str, Any],
-                    complex_xpath: 'etree._xpath' = None,
+                    complex_xpath: XPathLike = None,
                     create: bool = False,
                     **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
     """
@@ -665,15 +667,14 @@ def set_species(xmltree: Union[etree._Element, etree._ElementTree],
 
     base_xpath_species = schema_dict.tag_xpath('species')
 
+    xpath_species = XPathBuilder(base_xpath_species)
     # TODO lowercase everything
     # TODO make a general specifier for species, not only the name i.e. also
     # number, other parameters
-    if species_name == 'all':
-        xpath_species = base_xpath_species
+    if not species_name.startswith('all'):
+        xpath_species.add_filter('species', {'name': {'=': species_name}})
     elif species_name[:4] == 'all-':  #format all-<string>
-        xpath_species = f'{base_xpath_species}[contains(@name,"{species_name[4:]}")]'
-    else:
-        xpath_species = f'{base_xpath_species}[@name = "{species_name}"]'
+        xpath_species.add_filter('species', {'name': {'contains': species_name[4:]}})
 
     return xml_set_complex_tag(xmltree, schema_dict, xpath_species, base_xpath_species, attributedict, create=create)
 

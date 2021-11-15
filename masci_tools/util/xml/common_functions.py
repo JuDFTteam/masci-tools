@@ -13,10 +13,12 @@
 """
 Common functions for parsing input/output files or XMLschemas from FLEUR
 """
-from typing import TYPE_CHECKING, Dict, Iterable, Optional, Tuple, Union, List, Set
+from typing import TYPE_CHECKING, Dict, Iterable, Optional, Tuple, TypeVar, Union, List, Set, cast
+from masci_tools.util.typing import XPathLike
 from lxml import etree
 import warnings
 import os
+import copy
 from logging import Logger
 if TYPE_CHECKING:
     from masci_tools.io.parsers import fleur_schema
@@ -238,7 +240,7 @@ def validate_xml(xmltree: etree._ElementTree,
 
 
 def eval_xpath(node: Union[etree._Element, etree._ElementTree, 'etree._XPathEvaluatorBase'],
-               xpath: 'etree._xpath',
+               xpath: XPathLike,
                logger: Logger = None,
                list_return: bool = False,
                namespaces: 'etree._DictAnyStr' = None,
@@ -258,8 +260,9 @@ def eval_xpath(node: Union[etree._Element, etree._ElementTree, 'etree._XPathEval
     :returns: text, attribute or a node list
     """
     if isinstance(xpath, XPathBuilder):
-        xpath = xpath.path
+        xpath_str = xpath.path
         variables = {**variables, **xpath.path_variables}
+        xpath = xpath_str
 
     if not isinstance(node, (etree._Element, etree._ElementTree, etree._XPathEvaluatorBase)):  #pylint: disable=protected-access
         if logger is not None:
@@ -332,32 +335,103 @@ def get_xml_attribute(node: etree._Element, attributename: str, logger: Logger =
     return None
 
 
-def split_off_tag(xpath: str) -> Tuple[str, str]:
+TXPathLike = TypeVar('TXPathLike', bound=XPathLike)
+
+
+def split_off_tag(xpath: TXPathLike) -> Tuple[TXPathLike, str]:
     """
     Splits off the last part of the given xpath
 
-    :param xpath: str of the xpath to split up
+    .. note::
+        etree.XPath objects could lose context in here, i.e.
+        non-default options passed at init
+
+    :param xpath:  xpath to split up
     """
-    split_xpath = xpath.split('/')
+    if isinstance(xpath, XPathBuilder):
+        xpath = cast(TXPathLike, copy.deepcopy(xpath))
+        tag = xpath.strip_off_tag()
+        return xpath, tag
+
+    if isinstance(xpath, etree.XPath):
+        xpath_str = xpath.path  #type:ignore
+    else:
+        xpath_str = xpath
+
+    split_xpath = xpath_str.split('/')
     if split_xpath[-1] == '':
-        return '/'.join(split_xpath[:-2]), split_xpath[-2]
-    return '/'.join(split_xpath[:-1]), split_xpath[-1]
+        xpath_str, tag = '/'.join(split_xpath[:-2]), split_xpath[-2]
+    else:
+        xpath_str, tag = '/'.join(split_xpath[:-1]), split_xpath[-1]
+
+    if isinstance(xpath, etree.XPath):
+        xpath = cast(TXPathLike, etree.XPath(xpath_str))
+    else:
+        xpath = xpath_str
+
+    return xpath, tag
 
 
-def split_off_attrib(xpath: str) -> Tuple[str, str]:
+def add_tag(xpath: TXPathLike, tag: str) -> TXPathLike:
+    """
+    Add tag to xpath
+
+    .. note::
+        etree.XPath objects could lose context in here, i.e.
+        non-default options passed at init
+
+    :param xpath: xpath to change
+    :param tag: str of the tag to add
+
+    :returns: xpath with the form {old_xpath}/tag
+    """
+    if isinstance(xpath, XPathBuilder):
+        xpath = cast(TXPathLike, copy.deepcopy(xpath))
+        xpath.append_tag(tag)
+    elif isinstance(xpath, etree.XPath):
+        xpath = cast(TXPathLike, etree.XPath(f'{str(xpath.path)}/{tag}'))  #type:ignore [attr-defined]
+    else:
+        xpath = cast(TXPathLike, f'{str(xpath)}/{tag}')
+    return xpath
+
+
+def split_off_attrib(xpath: TXPathLike) -> Tuple[TXPathLike, str]:
     """
     Splits off attribute of the given xpath (part after @)
 
-    :param xpath: str of the xpath to split up
+    .. note::
+        etree.XPath objects could lose context in here, i.e.
+        non-default options passed at init
+
+    :param xpath: xpath to split up
     """
-    split_xpath = xpath.split('/@')
+    if isinstance(xpath, XPathBuilder):
+        xpath = cast(TXPathLike, copy.deepcopy(xpath))
+        attrib = xpath.strip_off_tag()
+        if '@' not in attrib:
+            raise ValueError('Path does not end with an attribute')
+        return xpath, attrib.lstrip('@')
+
+    if isinstance(xpath, etree.XPath):
+        xpath_str = xpath.path  #type: ignore
+    else:
+        xpath_str = xpath
+
+    split_xpath = xpath_str.split('/@')
     if len(split_xpath) != 2:
         raise ValueError(f"Splitting off attribute failed for: '{split_xpath}'")
-    return tuple(split_xpath)  #type:ignore
+    xpath_str, attrib = tuple(split_xpath)
+
+    if isinstance(xpath, etree.XPath):
+        xpath = cast(TXPathLike, etree.XPath(xpath_str))
+    else:
+        xpath = cast(TXPathLike, xpath_str)
+
+    return xpath, attrib
 
 
-def check_complex_xpath(node: Union[etree._Element, etree._ElementTree], base_xpath: 'etree._xpath',
-                        complex_xpath: 'etree._xpath') -> None:
+def check_complex_xpath(node: Union[etree._Element, etree._ElementTree], base_xpath: XPathLike,
+                        complex_xpath: XPathLike) -> None:
     """
     Check that the given complex xpath produces a subset of the results
     for the simple xpath
