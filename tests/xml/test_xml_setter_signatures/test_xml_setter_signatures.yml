@@ -70,6 +70,17 @@ schema_dict:
     - abs
   - - kwargs
     - null
+  clone_species:
+  - - xmltree
+    - null
+  - - schema_dict
+    - null
+  - - species_name
+    - null
+  - - new_name
+    - null
+  - - changes
+    - null
   create_tag:
   - - xmltree
     - null
@@ -346,6 +357,26 @@ schema_dict:
   - - schema_dict
     - null
   - - list_name
+    - null
+  switch_species:
+  - - xmltree
+    - null
+  - - schema_dict
+    - null
+  - - new_species_name
+    - null
+  - - position
+    - null
+  - - species
+    - null
+  switch_species_label:
+  - - xmltree
+    - null
+  - - schema_dict
+    - null
+  - - atom_label
+    - null
+  - - new_species_name
     - null
 xpath:
   xml_create_tag:
