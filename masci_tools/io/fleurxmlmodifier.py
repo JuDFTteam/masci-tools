@@ -142,6 +142,10 @@ class FleurXMLModifier:
                 func = self.nmmpmat_functions[name]
                 prefix = ('xmltree', 'schema_dict', 'n_mmp_mat')
 
+            if func is None:
+                raise ValueError(f'Failed to validate setter {name}. Maybe the function was'
+                                 'not registered in masci_tools.util.xml.collect_xml_setters')
+
             #For functions decorated with the schema_dict_version_dispatch
             #We check only the default (This function should have a compatible signature for all registered functions)
             if getattr(func, 'registry', None) is not None:
