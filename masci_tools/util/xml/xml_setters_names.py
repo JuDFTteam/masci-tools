@@ -989,7 +989,7 @@ def switch_species(xmltree: Union[etree._Element, etree._ElementTree],
         if not species == 'all':
             atomgroup_xpath = f'{atomgroup_base_path}[@species = "{species}"]'
 
-    existing_names = set(evaluate_attribute(xmltree, schema_dict, 'name', contains='species'))
+    existing_names = set(evaluate_attribute(xmltree, schema_dict, 'name', contains='species', list_return=True))
     if new_species_name not in existing_names:
         raise ValueError(f'The species {new_species_name} does not exist')
 
