@@ -1331,7 +1331,7 @@ class ChemicalElements:
         version = _mendeleev.__version__
         version_info = tuple(int(num) for num in version.split('.'))
         if version_info < (0, 8, 0):
-            import mendeleev.plotting as _mendeleev_plotting
+            import mendeleev.plotting as _mendeleev_plotting  #pylint: disable=no-name-in-module, import-error
             _mendeleev_plotting.periodic_plot(df=ptable,
                                               attribute=_attribute_mendel,
                                               title=_title,

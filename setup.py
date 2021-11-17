@@ -43,7 +43,7 @@ if __name__ == '__main__':
         include_package_data=True,
         install_requires=[
             'numpy', 'scipy', 'matplotlib', 'h5py', 'pandas', 'ase', 'bump2version', 'future', 'lxml>=4.5',
-            'more_itertools', 'seaborn', 'deepdiff', 'humanfriendly', 'mendeleev<0.8.0', 'click', 'click-completion',
+            'more_itertools', 'seaborn', 'deepdiff', 'humanfriendly', 'mendeleev', 'click', 'click-completion',
             'PyYAML', 'typing-extensions', 'tabulate'
         ],
         extras_require={
