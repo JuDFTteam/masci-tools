@@ -221,6 +221,9 @@ class FleurXMLModifier:
             'shift_value': self.shift_value,
             'set_species': self.set_species,
             'set_species_label': self.set_species_label,
+            'clone_species': self.clone_species,
+            'switch_species': self.switch_species,
+            'switch_species_label': self.switch_species_label,
             'shift_value_species_label': self.shift_value_species_label,
             'set_atomgroup': self.set_atomgroup,
             'set_atomgroup_label': self.set_atomgroup_label,
@@ -383,6 +386,42 @@ class FleurXMLModifier:
         """
         self._validate_signature('set_species_label', *args, **kwargs)
         self._tasks.append(ModifierTask('set_species_label', args, kwargs))
+
+    def clone_species(self, *args: Any, **kwargs: Any) -> None:
+        """
+        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.clone_species()` to
+        the list of tasks that will be done on the xmltree.
+
+        :param species_name: string, name of the specie you want to clone
+                            Has to correspond to one single species (no 'all'/'all-<search_string>')
+        :param new_name: new name of the cloned species
+        :param changes: a optional python dict specifying what you want to change.
+        """
+        self._validate_signature('clone_species', *args, **kwargs)
+        self._tasks.append(ModifierTask('clone_species', args, kwargs))
+
+    def switch_species(self, *args: Any, **kwargs: Any) -> None:
+        """
+        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.switch_species()` to
+        the list of tasks that will be done on the xmltree.
+
+        :param new_species_name: name of the species to switch to
+        :param position: position of an atom group to be changed. If equals to 'all', all species will be changed
+        :param species: atom groups, corresponding to the given species will be changed
+        """
+        self._validate_signature('switch_species', *args, **kwargs)
+        self._tasks.append(ModifierTask('switch_species', args, kwargs))
+
+    def switch_species_label(self, *args: Any, **kwargs: Any) -> None:
+        """
+        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.switch_species_label()` to
+        the list of tasks that will be done on the xmltree.
+
+        :param atom_label: string, a label of the atom which group will be changed. 'all' to change all the groups
+        :param new_species_name: name of the species to switch to
+        """
+        self._validate_signature('switch_species_label', *args, **kwargs)
+        self._tasks.append(ModifierTask('switch_species_label', args, kwargs))
 
     def shift_value_species_label(self, *args: Any, **kwargs: Any) -> None:
         """

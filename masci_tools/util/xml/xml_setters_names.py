@@ -677,6 +677,57 @@ def set_species(xmltree: Union[etree._Element, etree._ElementTree],
     return xml_set_complex_tag(xmltree, schema_dict, xpath_species, base_xpath_species, attributedict, create=create)
 
 
+def clone_species(xmltree: Union[etree._Element, etree._ElementTree],
+                  schema_dict: 'fleur_schema.SchemaDict',
+                  species_name: str,
+                  new_name: str,
+                  changes: Dict[str, Any] = None) -> Union[etree._Element, etree._ElementTree]:
+    """
+    Method to create a new species from an existing one with evtl. modifications
+
+    For reference of the changes dictionary look at :py:func:`set_species()`
+
+    :param xmltree: xml etree of the inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
+    :param species_name: string, name of the specie you want to clone
+                         Has to correspond to one single species (no 'all'/'all-<search_string>')
+    :param new_name: new name of the cloned species
+    :param changes: a optional python dict specifying what you want to change.
+
+    :return xmltree: xml etree of the new inp.xml
+    """
+    from masci_tools.util.schema_dict_util import evaluate_attribute
+    from masci_tools.util.xml.common_functions import eval_xpath
+    import copy
+
+    existing_names = set(evaluate_attribute(xmltree, schema_dict, 'name', contains='species'))
+    if species_name not in existing_names:
+        raise ValueError(f'Species {species_name} does not exist')
+    if new_name in existing_names:
+        raise ValueError(f'Species {new_name} already exists. Choose another name for the cloned species')
+
+    xpath_species = schema_dict.tag_xpath('species')
+    xpath_species = f'{xpath_species}[@name = "{species_name}"]'
+
+    old_species: etree._Element = eval_xpath(xmltree, xpath_species, list_return=True)  #type:ignore
+    if len(old_species) != 1:
+        raise ValueError('Failed to retrieve speices to clone')
+    old_species = old_species[0]
+
+    parent = old_species.getparent()
+    if parent is None:
+        raise ValueError('Falied to get species parent tag')
+
+    new_species = copy.deepcopy(old_species)
+    new_species.set('name', new_name)
+    parent.append(new_species)
+
+    if changes is not None:
+        xmltree = set_species(xmltree, schema_dict, new_name, changes)
+
+    return xmltree
+
+
 def shift_value_species_label(xmltree: Union[etree._Element, etree._ElementTree],
                               schema_dict: 'fleur_schema.SchemaDict',
                               atom_label: str,
@@ -848,6 +899,11 @@ def set_atomgroup(xmltree: Union[etree._Element, etree._ElementTree],
         if not species == 'all':
             atomgroup_xpath = f'{atomgroup_base_path}[@species = "{species}"]'
 
+    species_change = dict(attributedict).pop('species', None)  #dict to avoid mutating attributedict
+    if species_change is not None:
+        attributedict = {k: v for k, v in attributedict.items() if k != 'species'}
+        xmltree = switch_species(xmltree, schema_dict, species_change, position=position, species=species)
+
     xmltree = xml_set_complex_tag(xmltree,
                                   schema_dict,
                                   atomgroup_xpath,
@@ -856,6 +912,88 @@ def set_atomgroup(xmltree: Union[etree._Element, etree._ElementTree],
                                   create=create)
 
     return xmltree
+
+
+def switch_species_label(xmltree: Union[etree._Element, etree._ElementTree], schema_dict: 'fleur_schema.SchemaDict',
+                         atom_label: str, new_species_name: str) -> Union[etree._Element, etree._ElementTree]:
+    """
+    Method to switch the species of an atom group of the fleur inp.xml file based on a label
+    of a contained atom
+
+    :param xmltree: xml etree of the inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
+    :param atom_label: string, a label of the atom which group will be changed. 'all' to change all the groups
+    :param new_species_name: name of the species to switch to
+
+    :returns: xml etree of the new inp.xml
+    """
+    from masci_tools.util.schema_dict_util import tag_exists, eval_simple_xpath
+    from masci_tools.util.xml.common_functions import get_xml_attribute
+
+    if atom_label == 'all':
+        return switch_species(xmltree, schema_dict, new_species_name, species='all')
+
+    atom_label = f'{atom_label: >20}'
+    all_groups: List[etree._Element] = eval_simple_xpath(xmltree, schema_dict, 'atomGroup',
+                                                         list_return=True)  #type:ignore
+
+    species_to_set = set()
+
+    # set all species, where given label is present
+    for group in all_groups:
+        if tag_exists(group, schema_dict, 'filmPos'):
+            atoms: List[etree._Element] = eval_simple_xpath(group, schema_dict, 'filmPos',
+                                                            list_return=True)  #type:ignore
+        else:
+            atoms = eval_simple_xpath(group, schema_dict, 'relPos', list_return=True)  #type:ignore
+        for atom in atoms:
+            label = get_xml_attribute(atom, 'label')
+            if label == atom_label:
+                species_to_set.add(get_xml_attribute(group, 'species'))
+
+    for species_name in species_to_set:
+        xmltree = switch_species(xmltree, schema_dict, new_species_name, species=species_name)
+
+    return xmltree
+
+
+def switch_species(xmltree: Union[etree._Element, etree._ElementTree],
+                   schema_dict: 'fleur_schema.SchemaDict',
+                   new_species_name: str,
+                   position: Union[int, Literal['all']] = None,
+                   species: str = None) -> Union[etree._Element, etree._ElementTree]:
+    """
+    Method to switch the species of an atom group of the fleur inp.xml file.
+
+    :param xmltree: xml etree of the inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
+    :param new_species_name: name of the species to switch to
+    :param position: position of an atom group to be changed. If equals to 'all', all species will be changed
+    :param species: atom groups, corresponding to the given species will be changed
+
+    :returns: xml etree of the new inp.xml
+    """
+    from masci_tools.util.schema_dict_util import evaluate_attribute
+    from masci_tools.util.xml.xml_setters_xpaths import xml_set_attrib_value
+
+    atomgroup_base_path = schema_dict.tag_xpath('atomGroup')
+    atomgroup_xpath = atomgroup_base_path
+
+    if not position and not species:  # not specfied what to change
+        return xmltree
+
+    if position:
+        if not position == 'all':
+            atomgroup_xpath = f'{atomgroup_base_path}[{position}]'
+    if species:
+        if not species == 'all':
+            atomgroup_xpath = f'{atomgroup_base_path}[@species = "{species}"]'
+
+    existing_names = set(evaluate_attribute(xmltree, schema_dict, 'name', contains='species'))
+    if new_species_name not in existing_names:
+        raise ValueError(f'The species {new_species_name} does not exist')
+
+    return xml_set_attrib_value(xmltree, schema_dict, atomgroup_xpath, atomgroup_base_path, 'species', new_species_name)
 
 
 def shift_value(xmltree: Union[etree._Element, etree._ElementTree],

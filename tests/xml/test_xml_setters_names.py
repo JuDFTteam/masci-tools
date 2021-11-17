@@ -1353,6 +1353,20 @@ def test_set_atomgroup_all_position(load_inpxml):
     assert eval_xpath(root, '/fleurInput/atomGroups/atomGroup/cFCoeffs/@potential') == ['T', 'T']
 
 
+def test_set_atomgroup_species_change(load_inpxml):
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_atomgroup
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    root = xmltree.getroot()
+
+    changes = {'species': 'Pt-1'}
+
+    set_atomgroup(xmltree, schema_dict, changes, species='Fe-1')
+
+    assert eval_xpath(root, '/fleurInput/atomGroups/atomGroup/@species') == ['Pt-1', 'Pt-1']
+
+
 def test_set_atomgroup_label(load_inpxml):
     from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_names import set_atomgroup_label
@@ -1440,6 +1454,121 @@ def test_shift_value_species_label_specification(load_inpxml):
     shift_value_species_label(xmltree, schema_dict, '222', 's', 3, contains='energyParameters')
 
     assert eval_xpath(root, '/fleurInput/atomSpecies/species/energyParameters/@s') == ['7', '6']
+
+
+def test_clone_species(load_inpxml):
+    """
+    Test of the clone_species function
+    """
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import clone_species
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    root = xmltree.getroot()
+
+    clone_species(xmltree, schema_dict, 'Fe-1', 'Fe-clone-2')
+
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/@name') == ['Fe-1', 'Pt-1', 'Fe-clone-2']
+    assert eval_xpath(root,
+                      '/fleurInput/atomSpecies/species/mtSphere/@radius') == ['2.20000000', '2.20000000', '2.20000000']
+
+    changes = {
+        'mtSphere': {
+            'radius': 10.0
+        },
+        'lo': {
+            'type': 'TEST',
+            'n': 5,
+            'l': 12
+        },
+        'electronConfig': {
+            'stateOccupation': [{
+                'state': 'state'
+            }, {
+                'state': 'state2'
+            }]
+        }
+    }
+
+    #Reload original file
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    root = xmltree.getroot()
+
+    clone_species(xmltree, schema_dict, 'Fe-1', 'Fe-clone-3', changes)
+
+    los = eval_xpath(root, '/fleurInput/atomSpecies/species/lo')
+
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/@name') == ['Fe-1', 'Pt-1', 'Fe-clone-3']
+    assert eval_xpath(
+        root, '/fleurInput/atomSpecies/species/mtSphere/@radius') == ['2.20000000', '2.20000000', '10.0000000000']
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/electronConfig/stateOccupation/@state') == [
+        '(3d3/2)', '(3d5/2)', '(6s1/2)', '(5d5/2)', 'state', 'state2'
+    ]
+
+    assert [lo.attrib for lo in los] == [{
+        'type': 'SCLO',
+        'l': '0',
+        'n': '3',
+        'eDeriv': '0'
+    }, {
+        'type': 'SCLO',
+        'l': '1',
+        'n': '3',
+        'eDeriv': '0'
+    }, {
+        'type': 'SCLO',
+        'l': '1',
+        'n': '5',
+        'eDeriv': '0'
+    }, {
+        'type': 'TEST',
+        'n': '5',
+        'l': '12'
+    }]
+
+    with pytest.raises(ValueError):
+        clone_species(xmltree, schema_dict, 'not-existent', 'Fe-clone-3', changes)
+
+    with pytest.raises(ValueError):
+        clone_species(xmltree, schema_dict, 'Pt-1', 'Fe-1', changes)
+
+
+def test_switch_species(load_inpxml):
+    """
+    Test of the switch_species function
+    """
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import switch_species
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+
+    switch_species(xmltree, schema_dict, 'Pt-1', species='Fe-1')
+    assert eval_xpath(xmltree, '/fleurInput/atomGroups/atomGroup/@species') == ['Pt-1', 'Pt-1']
+
+    switch_species(xmltree, schema_dict, 'Fe-1', position=1)
+    assert eval_xpath(xmltree, '/fleurInput/atomGroups/atomGroup/@species') == ['Fe-1', 'Pt-1']
+
+    switch_species(xmltree, schema_dict, 'Fe-1', position='all')
+    assert eval_xpath(xmltree, '/fleurInput/atomGroups/atomGroup/@species') == ['Fe-1', 'Fe-1']
+
+    with pytest.raises(ValueError):
+        switch_species(xmltree, schema_dict, 'not-existing', species='Fe-1')
+
+
+def test_switch_species_label(load_inpxml):
+    """
+    Test of the switch_species function
+    """
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import switch_species_label
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+
+    switch_species_label(xmltree, schema_dict, '222', 'Pt-1')
+    assert eval_xpath(xmltree, '/fleurInput/atomGroups/atomGroup/@species') == ['Pt-1', 'Pt-1']
+
+    switch_species_label(xmltree, schema_dict, 'all', 'Fe-1')
+    assert eval_xpath(xmltree, '/fleurInput/atomGroups/atomGroup/@species') == ['Fe-1', 'Fe-1']
 
 
 def test_shift_value_single(load_inpxml):
