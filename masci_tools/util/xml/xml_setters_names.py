@@ -700,7 +700,7 @@ def clone_species(xmltree: Union[etree._Element, etree._ElementTree],
     from masci_tools.util.xml.common_functions import eval_xpath
     import copy
 
-    existing_names = set(evaluate_attribute(xmltree, schema_dict, 'name', contains='species'))
+    existing_names = set(evaluate_attribute(xmltree, schema_dict, 'name', contains='species', list_return=True))
     if species_name not in existing_names:
         raise ValueError(f'Species {species_name} does not exist')
     if new_name in existing_names:
@@ -711,7 +711,7 @@ def clone_species(xmltree: Union[etree._Element, etree._ElementTree],
 
     old_species: etree._Element = eval_xpath(xmltree, xpath_species, list_return=True)  #type:ignore
     if len(old_species) != 1:
-        raise ValueError('Failed to retrieve speices to clone')
+        raise ValueError('Failed to retrieve species to clone')
     old_species = old_species[0]
 
     parent = old_species.getparent()
