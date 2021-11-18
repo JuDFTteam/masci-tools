@@ -14,6 +14,7 @@
 Functions for modifying the xml input file of Fleur utilizing the schema dict
 and as little knowledge of the concrete xpaths as possible
 """
+import warnings
 from typing import Any, Iterable, List, Set, Union, Dict, Tuple
 try:
     from typing import Literal
@@ -914,8 +915,12 @@ def set_atomgroup(xmltree: Union[etree._Element, etree._ElementTree],
     return xmltree
 
 
-def switch_species_label(xmltree: Union[etree._Element, etree._ElementTree], schema_dict: 'fleur_schema.SchemaDict',
-                         atom_label: str, new_species_name: str) -> Union[etree._Element, etree._ElementTree]:
+def switch_species_label(xmltree: Union[etree._Element, etree._ElementTree],
+                         schema_dict: 'fleur_schema.SchemaDict',
+                         atom_label: str,
+                         new_species_name: str,
+                         clone: bool = False,
+                         changes: Dict[str, Any] = None) -> Union[etree._Element, etree._ElementTree]:
     """
     Method to switch the species of an atom group of the fleur inp.xml file based on a label
     of a contained atom
@@ -924,6 +929,9 @@ def switch_species_label(xmltree: Union[etree._Element, etree._ElementTree], sch
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
     :param atom_label: string, a label of the atom which group will be changed. 'all' to change all the groups
     :param new_species_name: name of the species to switch to
+    :param clone: if True and the new species name does not exist and it corresponds to changing
+                  from one species the species will be cloned with :py:func:`clone_species()`
+    :param changes: changes to do if the species is cloned
 
     :returns: xml etree of the new inp.xml
     """
@@ -931,7 +939,7 @@ def switch_species_label(xmltree: Union[etree._Element, etree._ElementTree], sch
     from masci_tools.util.xml.common_functions import get_xml_attribute
 
     if atom_label == 'all':
-        return switch_species(xmltree, schema_dict, new_species_name, species='all')
+        return switch_species(xmltree, schema_dict, new_species_name, species='all', clone=clone, changes=changes)
 
     atom_label = f'{atom_label: >20}'
     all_groups: List[etree._Element] = eval_simple_xpath(xmltree, schema_dict, 'atomGroup',
@@ -952,7 +960,12 @@ def switch_species_label(xmltree: Union[etree._Element, etree._ElementTree], sch
                 species_to_set.add(get_xml_attribute(group, 'species'))
 
     for species_name in species_to_set:
-        xmltree = switch_species(xmltree, schema_dict, new_species_name, species=species_name)
+        xmltree = switch_species(xmltree,
+                                 schema_dict,
+                                 new_species_name,
+                                 species=species_name,
+                                 clone=clone,
+                                 changes=changes)
 
     return xmltree
 
@@ -961,7 +974,9 @@ def switch_species(xmltree: Union[etree._Element, etree._ElementTree],
                    schema_dict: 'fleur_schema.SchemaDict',
                    new_species_name: str,
                    position: Union[int, Literal['all']] = None,
-                   species: str = None) -> Union[etree._Element, etree._ElementTree]:
+                   species: str = None,
+                   clone: bool = False,
+                   changes: Dict[str, Any] = None) -> Union[etree._Element, etree._ElementTree]:
     """
     Method to switch the species of an atom group of the fleur inp.xml file.
 
@@ -970,6 +985,9 @@ def switch_species(xmltree: Union[etree._Element, etree._ElementTree],
     :param new_species_name: name of the species to switch to
     :param position: position of an atom group to be changed. If equals to 'all', all species will be changed
     :param species: atom groups, corresponding to the given species will be changed
+    :param clone: if True and the new species name does not exist and it corresponds to changing
+                  from one species the species will be cloned with :py:func:`clone_species()`
+    :param changes: changes to do if the species is cloned
 
     :returns: xml etree of the new inp.xml
     """
@@ -978,6 +996,9 @@ def switch_species(xmltree: Union[etree._Element, etree._ElementTree],
 
     atomgroup_base_path = schema_dict.tag_xpath('atomGroup')
     atomgroup_xpath = atomgroup_base_path
+
+    if not clone and changes is not None:
+        raise ValueError('changes should only be passed with clone=True')
 
     if not position and not species:  # not specfied what to change
         return xmltree
@@ -991,7 +1012,22 @@ def switch_species(xmltree: Union[etree._Element, etree._ElementTree],
 
     existing_names = set(evaluate_attribute(xmltree, schema_dict, 'name', contains='species', list_return=True))
     if new_species_name not in existing_names:
-        raise ValueError(f'The species {new_species_name} does not exist')
+        if not clone:
+            raise ValueError(f'The species {new_species_name} does not exist')
+
+        changed_names = set(
+            evaluate_attribute(xmltree,
+                               schema_dict,
+                               'name',
+                               contains='species',
+                               complex_xpath=f'{atomgroup_xpath}/@species',
+                               list_return=True))
+        if len(changed_names) > 1:
+            raise ValueError('Cannot clone species, since name change does not correspond to one species')
+        old_species = changed_names.pop()
+        xmltree = clone_species(xmltree, schema_dict, old_species, new_species_name, changes=changes)
+    elif clone:
+        warnings.warn(f'clone set to True but species {new_species_name} already exists. Ignoring argument')
 
     return xml_set_attrib_value(xmltree, schema_dict, atomgroup_xpath, atomgroup_base_path, 'species', new_species_name)
 

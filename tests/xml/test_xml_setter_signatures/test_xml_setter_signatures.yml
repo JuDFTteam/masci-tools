@@ -369,6 +369,10 @@ schema_dict:
     - null
   - - species
     - null
+  - - clone
+    - false
+  - - changes
+    - null
   switch_species_label:
   - - xmltree
     - null
@@ -377,6 +381,10 @@ schema_dict:
   - - atom_label
     - null
   - - new_species_name
+    - null
+  - - clone
+    - false
+  - - changes
     - null
 xpath:
   xml_create_tag:

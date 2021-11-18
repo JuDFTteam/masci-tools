@@ -1555,6 +1555,26 @@ def test_switch_species(load_inpxml):
         switch_species(xmltree, schema_dict, 'not-existing', species='Fe-1')
 
 
+def test_switch_species_clone(load_inpxml):
+    """
+    Test of the switch_species function with cloning species
+    """
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import switch_species
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+
+    switch_species(xmltree, schema_dict, 'Fe-clone', species='Fe-1', clone=True, changes={'mtsphere': {'radius': 5.0}})
+    assert eval_xpath(xmltree, '/fleurInput/atomGroups/atomGroup/@species') == ['Fe-clone', 'Pt-1']
+
+    assert eval_xpath(xmltree, '/fleurInput/atomSpecies/species/@name') == ['Fe-1', 'Pt-1', 'Fe-clone']
+    assert eval_xpath(
+        xmltree, '/fleurInput/atomSpecies/species/mtSphere/@radius') == ['2.20000000', '2.20000000', '5.0000000000']
+
+    with pytest.raises(ValueError):
+        switch_species(xmltree, schema_dict, 'clone-all', species='all', clone=True)
+
+
 def test_switch_species_label(load_inpxml):
     """
     Test of the switch_species function
