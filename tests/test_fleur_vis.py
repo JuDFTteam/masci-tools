@@ -467,6 +467,24 @@ def test_plot_spinpol_dos_defaults_mpl():
     return gcf()
 
 
+@pytest.mark.mpl_image_compare(baseline_dir='files/fleur_vis/', filename='spinpol_dos_param_changes.png')
+def test_plot_spinpol_dos_param_changes_mpl():
+    from masci_tools.io.parsers.hdf5 import HDF5Reader
+    from masci_tools.io.parsers.hdf5.recipes import FleurDOS
+    from masci_tools.vis.fleur import plot_fleur_dos
+
+    TEST_BANDDOS_FILE = os.path.join(HDFTEST_DIR, 'banddos_spinpol_dos.hdf')
+
+    with HDF5Reader(TEST_BANDDOS_FILE) as h5reader:
+        data, attributes = h5reader.read(recipe=FleurDOS)
+
+    gcf().clear()
+
+    plot_fleur_dos(data, attributes, show=False, linestyle=['-', ':', '--'])
+
+    return gcf()
+
+
 def test_plot_spinpol_dos_defaults_bokeh(check_bokeh_plot):
     from masci_tools.io.parsers.hdf5 import HDF5Reader
     from masci_tools.io.parsers.hdf5.recipes import FleurDOS

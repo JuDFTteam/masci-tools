@@ -358,10 +358,6 @@ def multiple_scatterplots(xdata,
 
     for indx, ((entry, source), params) in enumerate(zip(plot_data.items(), plot_kwargs)):
 
-        if plot_params['repeat_colors_after'] is not None:
-            if indx >= plot_params['repeat_colors_after']:
-                params['color'] = colors[indx % plot_params['repeat_colors_after']]
-
         if plot_params[('area_plot', indx)]:
             linecolor = params.pop('area_linecolor', None)
             if plot_params[('area_vertical', indx)]:
@@ -1836,13 +1832,14 @@ def plot_spinpol_dos(energy_grid,
         plot_data.apply('spin_dn', lambda x: -x)
 
     color_cycle = ('black',) + tuple(sns.color_palette('muted'))
+    color_cycle = color_cycle[:len(plot_data)]
     plot_params.set_defaults(default_type='function',
                              marker=None,
                              legend=True,
                              legend_remove_duplicates=True,
                              lines=lines,
                              limits=limits,
-                             repeat_colors_after=len(plot_data),
+                             repeat_parameters=len(plot_data),
                              color_cycle=color_cycle)
 
     if xyswitch:

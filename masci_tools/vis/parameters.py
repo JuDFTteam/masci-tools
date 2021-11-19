@@ -307,7 +307,7 @@ class Plotter:
         return ret_dict
 
     @staticmethod
-    def dict_of_lists_to_list_of_dicts(dict_of_lists, single_plot, num_plots):
+    def dict_of_lists_to_list_of_dicts(dict_of_lists, single_plot, num_plots, repeat_after=None, ignore_repeat=None):
         """
         Converts dict of lists and single values to list of length num_plots
         or single dict for single_plot=True
@@ -318,6 +318,10 @@ class Plotter:
 
         :returns: list of dicts
         """
+
+        if ignore_repeat is None:
+            ignore_repeat = set()
+
         any_list = any(isinstance(val, (list, tuple)) for val in dict_of_lists.values())
 
         #Make sure that every entry is actually a list
@@ -333,12 +337,17 @@ class Plotter:
             list_of_dicts = []
             # enforce that all lists of the same lengths
             maxlen = max(map(len, dict_of_lists.values()))
+            if repeat_after is not None:
+                maxlen = max(repeat_after, maxlen)
             for index in range(maxlen):
                 tempdict = {}
                 # don't use comprehension here, otherwise the wrong key is caught
                 for key, value in dict_of_lists.items():
                     try:
-                        tempdict[key] = value[index]
+                        if repeat_after is not None and index >= repeat_after and key not in ignore_repeat:
+                            tempdict[key] = value[index % repeat_after]
+                        else:
+                            tempdict[key] = value[index]
                     except IndexError as ex:
                         raise IndexError(f'List under key: {key} index: {index} out of range, '
                                          f'should have length: {maxlen}. '
