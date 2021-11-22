@@ -83,12 +83,8 @@ warnings:
   - No values found for attribute time at tag endDateAndTime
   - Endtime was unparsed, inp.xml prob not complete, do not believe the walltime!
   - Enddate was unparsed, inp.xml prob not complete, do not believe the walltime!
-  - '[Iteration 1] No values found for attribute units at tag totalEnergy'
-  - '[Iteration 1] No values found for attribute value at tag totalEnergy'
-  - '[Iteration 1] Failed to evaluate singleValue from tag totalEnergy: Has no ''value''
-    attribute'
-  - '[Iteration 1] Failed to evaluate singleValue from tag totalEnergy: Has no ''units''
-    attribute'
+  - '[Iteration 1] No values found for attribute value'
+  - '[Iteration 1] No values found for attribute units'
   - '[Iteration 1] convert_total_energy cannot convert None to eV'
   - '[Iteration 1] No values found for attribute distance'
   - '[Iteration 1] No values found for attribute units'

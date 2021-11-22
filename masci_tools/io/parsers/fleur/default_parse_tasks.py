@@ -327,10 +327,19 @@ TASKS_DEFINITION = {
         '_minimal': True,
         '_conversions': ['convert_total_energy'],
         'energy_hartree': {
-            'parse_type': 'singleValue',
+            'parse_type': 'attrib',
             'path_spec': {
-                'name': 'totalEnergy'
+                'name': 'value',
+                'tag_name': 'freeEnergy'
             }
+        },
+        'energy_hartree_units': {
+            'parse_type': 'attrib',
+            'path_spec': {
+                'name': 'units',
+                'tag_name': 'totalEnergy'
+            },
+            'overwrite_last': True,
         },
     },
     'distances': {

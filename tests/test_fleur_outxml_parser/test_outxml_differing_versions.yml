@@ -11,9 +11,9 @@ output_dict:
   end_date:
     date: 2021/01/22
     time: '12:05:24'
-  energy: -69269.47887586526
+  energy: -69269.485168433
   energy_core_electrons: -1476.8200550749
-  energy_hartree: -2545.6063961489
+  energy_hartree: -2545.6066273965
   energy_hartree_units: Htr
   energy_units: eV
   energy_valence_electrons: 3.7137334341
