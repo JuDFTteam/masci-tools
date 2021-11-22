@@ -20,11 +20,13 @@ try:
     from typing import Literal
 except ImportError:
     from typing_extensions import Literal  #type:ignore
+
 from masci_tools.util.typing import XPathLike
 from masci_tools.util.xml.xpathbuilder import XPathBuilder
-from lxml import etree
 from masci_tools.io.parsers.fleur_schema import schema_dict_version_dispatch
 from masci_tools.io.parsers import fleur_schema
+
+from lxml import etree
 
 
 def create_tag(xmltree: Union[etree._Element, etree._ElementTree],
@@ -667,7 +669,7 @@ def set_species(xmltree: Union[etree._Element, etree._ElementTree],
 
     base_xpath_species = schema_dict.tag_xpath('species')
 
-    xpath_species = XPathBuilder(base_xpath_species)
+    xpath_species = XPathBuilder(base_xpath_species, strict=True)
     # TODO lowercase everything
     # TODO make a general specifier for species, not only the name i.e. also
     # number, other parameters

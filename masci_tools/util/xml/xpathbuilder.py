@@ -24,8 +24,10 @@ class XPathBuilder:
                  simple_path: 'etree._xpath',
                  filters: Dict[str, FilterType] = None,
                  compile_path: bool = False,
+                 strict: bool = False,
                  **kwargs) -> None:
         self.compile_path = compile_path
+        self.strict = strict
         if not self.compile_path and kwargs:
             raise ValueError('Keyword arguments only available for compiled Xpaths')
         if isinstance(simple_path, str):
@@ -77,7 +79,7 @@ class XPathBuilder:
             condition = {'=': condition}
 
         if len(condition) > 1:
-            raise ValueError('Only one condition allowed in dict')
+            raise ValueError('Only one key allowed in condition')
 
         operator, content = dict(condition).popitem()
         if operator == '==':
@@ -122,15 +124,15 @@ class XPathBuilder:
         elif '/' not in tag:
             cond, value = dict(content).popitem()
 
-            variable_name = f'${tag}_cond_{self.value_conditions}_name'
-            value_variable_name = f'${tag}_cond_{self.value_conditions}'
+            variable_name = f'{tag}_cond_{self.value_conditions}_name'
+            value_variable_name = f'{tag}_cond_{self.value_conditions}'
 
             if cond == 'contains':
-                predicate = f'contains(@*[local-name()={variable_name}],{value_variable_name})'
+                predicate = f'contains(@*[local-name()=${variable_name}],${value_variable_name})'
             elif cond == 'not-contains':
-                predicate = f'not contains(@*[local-name()={variable_name}],{value_variable_name})'
+                predicate = f'not contains(@*[local-name()=${variable_name}],${value_variable_name})'
             else:
-                predicate = f'@*[local-name()={variable_name}] {cond} {value_variable_name}'
+                predicate = f'@*[local-name()=${variable_name}] {cond} ${value_variable_name}'
 
             self.path_variables[variable_name] = operator
             self.path_variables[value_variable_name] = value
@@ -158,9 +160,11 @@ class XPathBuilder:
         return path
 
     def __repr__(self):
-        return f"{self.__class__.__qualname__}({'/'.join(self.components)!r}, {self.filters!r}, compile_path={self.compile_path!r})"
+        return f"{self.__class__.__qualname__}({'/'.join(self.components)!r}, {self.filters!r}, compile_path={self.compile_path!r}, strict={self.strict!r})"
 
     def __str__(self) -> str:
+        if self.strict:
+            raise ValueError(f'Implicit string conversion for {self.__class__.__qualname__}.')
         path = self.path
         if isinstance(path, etree.XPath):
             path = path.path  #type: ignore

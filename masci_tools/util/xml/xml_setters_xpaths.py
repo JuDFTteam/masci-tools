@@ -19,11 +19,12 @@ try:
     from typing import Literal
 except ImportError:
     from typing_extensions import Literal  #type:ignore
+
 from masci_tools.util.typing import XPathLike
-from lxml import etree
 from masci_tools.util.xml.common_functions import eval_xpath, add_tag
 from masci_tools.io.parsers import fleur_schema
-######################CREATING/DELETING TAGS###############################################
+
+from lxml import etree
 
 
 def xml_create_tag_schema_dict(
@@ -61,8 +62,6 @@ def xml_create_tag_schema_dict(
     from masci_tools.util.xml.common_functions import check_complex_xpath, split_off_tag
 
     check_complex_xpath(xmltree, base_xpath, xpath)
-
-    print(repr(xpath), xpath)
 
     tag_info = schema_dict['tag_info'][base_xpath]
 
