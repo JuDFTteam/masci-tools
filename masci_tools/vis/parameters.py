@@ -338,7 +338,7 @@ class Plotter:
             # enforce that all lists of the same lengths
             maxlen = max(map(len, dict_of_lists.values()))
             if repeat_after is not None:
-                maxlen = max(repeat_after, maxlen)
+                maxlen = max(num_plots, maxlen)
             for index in range(maxlen):
                 tempdict = {}
                 # don't use comprehension here, otherwise the wrong key is caught
