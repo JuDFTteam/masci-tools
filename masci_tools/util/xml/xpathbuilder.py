@@ -100,7 +100,7 @@ class XPathBuilder:
         if not self.components:
             raise ValueError('Cannot strip off tag. Path is empty')
 
-        #TODO: Check if the filters contains filters fot the last tag
+        #TODO: Check if the filters contains filters for the last tag
 
         return self.components.pop(-1)
 
