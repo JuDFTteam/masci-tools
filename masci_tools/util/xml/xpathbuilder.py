@@ -1,8 +1,20 @@
 # -*- coding: utf-8 -*-
+###############################################################################
+# Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
+#                All rights reserved.                                         #
+# This file is part of the Masci-tools package.                               #
+# (Material science tools)                                                    #
+#                                                                             #
+# The code is hosted on GitHub at https://github.com/judftteam/masci-tools.   #
+# For further information on the license, see the LICENSE.txt file.           #
+# For further information please visit http://judft.de/.                      #
+#                                                                             #
+###############################################################################
 """
-
+This module contains Classes for building complex XPath expressions based on
+general attribute conditions from simple XPath expressions
 """
-from typing import Dict, Any, Set, cast
+from typing import Dict, Any, cast
 from lxml import etree
 
 FilterType = Dict[str, Any]
@@ -18,6 +30,15 @@ class XPathBuilder:
         passed into it. Only the kwargs in __init__ are used to compile
         the path if compile_path=True
 
+    .. note::
+        Filters dictionary syntax (TODO)
+
+    :param simple_path: basic simple XPath expression to start from
+    :param filters: dictionary with filters
+    :param compile_path: bool if True the path property will be compiled as etree.XPath
+    :param strict: bool if True the __str__ conversion will raise an error
+
+    Other Kwargs will be passed on to the etree.XPath compilation if ``compile_path=True``
     """
 
     def __init__(self,
@@ -50,6 +71,10 @@ class XPathBuilder:
 
     def add_filter(self, tag: str, conditions: FilterType) -> None:
         """
+        Add a filter to the filters dictionary
+
+        :param tag: str name of the tag name to add a filter to
+        :param conditions: dictionary specifying the filter
         """
         if tag not in self.components:
             raise ValueError(f"The tag {tag} is not part of the given xpath expression: {'/'.join(self.components)}")
@@ -58,6 +83,9 @@ class XPathBuilder:
 
     def append_tag(self, tag: str) -> None:
         """
+        Append another tag to the end of the simple xpath expression
+
+        :param tag: str name of the tag to append
         """
         if tag in self.components:
             raise NotImplementedError(
@@ -67,13 +95,22 @@ class XPathBuilder:
 
     def strip_off_tag(self) -> str:
         """
+        Strip off the last tag of the simple xpath expression
         """
         if not self.components:
             raise ValueError('Cannot strip off tag. Path is empty')
 
+        #TODO: Check if the filters contains filters fot the last tag
+
         return self.components.pop(-1)
 
     def get_predicate(self, tag, condition):
+        """
+        Construct the predicate for the given tag and condition
+
+        :param tag: str name of the tag
+        :param condition: condition specified, either dict or single value
+        """
 
         if not isinstance(condition, dict):
             condition = {'=': condition}
@@ -88,6 +125,13 @@ class XPathBuilder:
         return self.process_condition(tag, operator, content)
 
     def process_condition(self, tag, operator, content):
+        """
+        Process the condition for the given tag and condition
+
+        :param tag: str name of the tag
+        :param operator: operator for condition
+        :param content: content of condition
+        """
 
         if operator == 'and':
             if not isinstance(content, (list, tuple)):
@@ -168,6 +212,9 @@ class XPathBuilder:
 
     @property
     def path(self) -> 'etree._xpath':
+        """
+        Property for constructing the complex Xpath
+        """
 
         predicates = [''] * len(self.components)
         self.path_variables = {}
