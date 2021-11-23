@@ -673,10 +673,10 @@ def set_species(xmltree: Union[etree._Element, etree._ElementTree],
     # TODO lowercase everything
     # TODO make a general specifier for species, not only the name i.e. also
     # number, other parameters
-    if not species_name.startswith('all'):
-        xpath_species.add_filter('species', {'name': {'=': species_name}})
-    elif species_name[:4] == 'all-':  #format all-<string>
+    if species_name[:4] == 'all-':  #format all-<string>
         xpath_species.add_filter('species', {'name': {'contains': species_name[4:]}})
+    elif species_name != 'all':
+        xpath_species.add_filter('species', {'name': {'=': species_name}})
 
     return xml_set_complex_tag(xmltree, schema_dict, xpath_species, base_xpath_species, attributedict, create=create)
 

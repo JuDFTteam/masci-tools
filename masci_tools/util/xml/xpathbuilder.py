@@ -121,7 +121,9 @@ class XPathBuilder:
                 cond, index = dict(content).popitem()
                 predicate = f'position() {cond} ${tag}_index'
                 self.path_variables[f'{tag}_index'] = index
-        elif '/' not in tag:
+        elif '/' not in operator:
+            if not isinstance(content, dict):
+                content = {'=': content}
             cond, value = dict(content).popitem()
 
             variable_name = f'{tag}_cond_{self.value_conditions}_name'
@@ -138,7 +140,29 @@ class XPathBuilder:
             self.path_variables[value_variable_name] = value
             self.value_conditions += 1
         else:
-            raise NotImplementedError('Conditions based on subtags not implemented')
+            if not isinstance(content, dict):
+                content = {'=': content}
+            cond, value = dict(content).popitem()
+            parts = operator.strip('/').split('/')
+            variable_name = f'{tag}_cond_{self.value_conditions}_name'
+            value_variable_name = f'{tag}_cond_{self.value_conditions}'
+
+            path_variable = []
+            for indx, part in enumerate(parts):
+                path_variable.append(f"{'@' if '@' in part else ''}*[local-name()=${variable_name}_{indx}]")
+                self.path_variables[f'{variable_name}_{indx}'] = part.lstrip('@')
+            path_variable = '/'.join(path_variable)
+
+            if cond == 'contains':
+                predicate = f'contains({path_variable},${value_variable_name})'
+            elif cond == 'not-contains':
+                predicate = f'not contains({path_variable},${value_variable_name})'
+            else:
+                predicate = f'{path_variable} {cond} ${value_variable_name}'
+
+            self.path_variables[variable_name] = operator
+            self.path_variables[value_variable_name] = value
+            self.value_conditions += 1
 
         return predicate
 
