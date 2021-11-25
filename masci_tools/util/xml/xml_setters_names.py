@@ -898,7 +898,10 @@ def set_atomgroup(xmltree: Union[etree._Element, etree._ElementTree],
             atomgroup_xpath = f'{atomgroup_base_path}[{position}]'
     if species:
         if not species == 'all':
-            atomgroup_xpath = f'{atomgroup_base_path}[@species = "{species}"]'
+            if species[:4] == 'all-':  #format all-<string>
+                atomgroup_xpath = f'{atomgroup_base_path}[contains(@species,"{species[4:]}")]'
+            else:
+                atomgroup_xpath = f'{atomgroup_base_path}[@species = "{species}"]'
 
     species_change = dict(attributedict).pop('species', None)  #dict to avoid mutating attributedict
     if species_change is not None:
@@ -1008,7 +1011,10 @@ def switch_species(xmltree: Union[etree._Element, etree._ElementTree],
             atomgroup_xpath = f'{atomgroup_base_path}[{position}]'
     if species:
         if not species == 'all':
-            atomgroup_xpath = f'{atomgroup_base_path}[@species = "{species}"]'
+            if species[:4] == 'all-':  #format all-<string>
+                atomgroup_xpath = f'{atomgroup_base_path}[contains(@species,"{species[4:]}")]'
+            else:
+                atomgroup_xpath = f'{atomgroup_base_path}[@species = "{species}"]'
 
     existing_names = set(evaluate_attribute(xmltree, schema_dict, 'name', contains='species', list_return=True))
     if new_species_name not in existing_names:

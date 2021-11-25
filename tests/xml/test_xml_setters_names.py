@@ -1337,6 +1337,22 @@ def test_set_atomgroup_all(load_inpxml):
     assert eval_xpath(root, '/fleurInput/atomGroups/atomGroup/cFCoeffs/@potential') == ['T', 'T']
 
 
+def test_set_atomgroup_all_search_string(load_inpxml):
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_atomgroup
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    root = xmltree.getroot()
+
+    changes = {'force': {'relaxXYZ': 'FFF'}, 'nocoParams': {'beta': 7.0}, 'cFCoeffs': {'potential': True}}
+
+    set_atomgroup(xmltree, schema_dict, changes, species='all-Fe')
+
+    assert eval_xpath(root, '/fleurInput/atomGroups/atomGroup/force/@relaxXYZ') == ['FFF', 'TTT']
+    assert eval_xpath(root, '/fleurInput/atomGroups/atomGroup/nocoParams/@beta') == ['7.0000000000', '1.570796326']
+    assert eval_xpath(root, '/fleurInput/atomGroups/atomGroup/cFCoeffs/@potential') == 'T'
+
+
 def test_set_atomgroup_all_position(load_inpxml):
     from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.xml_setters_names import set_atomgroup
@@ -1547,6 +1563,9 @@ def test_switch_species(load_inpxml):
 
     switch_species(xmltree, schema_dict, 'Fe-1', position=1)
     assert eval_xpath(xmltree, '/fleurInput/atomGroups/atomGroup/@species') == ['Fe-1', 'Pt-1']
+
+    switch_species(xmltree, schema_dict, 'Pt-1', species='all-Fe')
+    assert eval_xpath(xmltree, '/fleurInput/atomGroups/atomGroup/@species') == ['Pt-1', 'Pt-1']
 
     switch_species(xmltree, schema_dict, 'Fe-1', position='all')
     assert eval_xpath(xmltree, '/fleurInput/atomGroups/atomGroup/@species') == ['Fe-1', 'Fe-1']
