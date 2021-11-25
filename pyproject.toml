@@ -55,6 +55,11 @@ warn_unused_ignores=true
 warn_redundant_casts=true
 show_error_codes = true
 
+[[tool.mypy.overrides]]
+module = 'h5py'
+follow_imports='skip'
+ignore_missing_imports=true
+
 [tool.yapf]
 based_on_style = "google"
 column_limit = 120

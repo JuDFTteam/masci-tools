@@ -15,11 +15,14 @@ Small utility functions for inspecting hdf files and converting the
 complete file structure into a python dictionary
 """
 
+from typing import IO, Tuple, Union, Dict, Any
 import h5py
 import numpy as np
+from pathlib import Path
+import os
 
 
-def hdfList(name, obj):
+def hdfList(name: str, obj: h5py.HLObject) -> None:
     """
     Print the name of the current object (indented to create a nice tree structure)
 
@@ -42,7 +45,7 @@ def hdfList(name, obj):
         print('')
 
 
-def h5dump(file, group='/'):
+def h5dump(file: Union[str, bytes, Path, os.PathLike, IO], group: str = '/') -> None:
     """
     Shows the overall filestructure of an hdf file
     Goes through all groups and subgroups and prints the attributes
@@ -58,7 +61,8 @@ def h5dump(file, group='/'):
         file_hdf[group].visititems(hdfList)
 
 
-def read_hdf_simple(file, flatten=False):
+def read_hdf_simple(file: Union[str, bytes, Path, os.PathLike, IO],
+                    flatten: bool = False) -> Tuple[Dict[str, Any], Dict[str, Any]]:
     """
     Reads in an hdf file and returns its context in a nested dictionary
 
@@ -71,16 +75,13 @@ def read_hdf_simple(file, flatten=False):
     **Non unique group attribute or dataset names will be overwritten in the return dict**
     """
 
-    datasets = {}
-    group_attrs = {}
-
     with h5py.File(file, 'r') as file_hdf:
         datasets, group_attrs = read_groups(file_hdf, flatten=flatten)
 
     return datasets, group_attrs
 
 
-def read_groups(hdfdata, flatten=False):
+def read_groups(hdfdata: h5py.Group, flatten: bool = False) -> Tuple[Dict[str, Any], Dict[str, Any]]:
     """
     Recursive function to read a hdf datastructure and extract the datasets
     and attributes
@@ -91,8 +92,8 @@ def read_groups(hdfdata, flatten=False):
     :returns: two dictionaries, one with the datasets the other
               with the attributes in the file
     """
-    datasets = {}
-    attrs = {}
+    datasets: Dict[str, Any] = {}
+    attrs: Dict[str, Any] = {}
 
     for name, attr_val in hdfdata.attrs.items():
         if len(attr_val) == 1:
