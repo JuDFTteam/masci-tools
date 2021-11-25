@@ -59,7 +59,11 @@ Entries in the `attributes` section are read and transformed first and can subse
 for the `datasets`. These correpsond to the transforms created with the :py:class:`~masci_tools.io.parsers.hdf5.reader.AttribTransformation`
 namedtuple instead of :py:class:`~masci_tools.io.parsers.hdf5.reader.Transformation`.
 """
-from typing import Literal, Union, List
+from typing import Union, List
+try:
+    from typing import Literal
+except ImportError:
+    from typing_extensions import Literal  #type:ignore
 from masci_tools.util.constants import HTR_TO_EV, BOHR_A
 from .reader import HDF5Recipe, Transformation, AttribTransformation
 

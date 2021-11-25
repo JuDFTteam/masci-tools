@@ -41,7 +41,8 @@ extensions = ['sphinx.ext.autodoc',
 
 intersphinx_mapping = {'numpy': ('https://numpy.org/doc/stable/', None),
                        'python': ('https://docs.python.org/3', None),
-                       'lxml': ('https://lxml.de/apidoc/',None)}
+                       'lxml': ('https://lxml.de/apidoc/',None),
+                       'h5py': ('https://docs.h5py.org/en/latest/', None)}
 
 todo_include_todos = True
 
@@ -414,6 +415,8 @@ nitpick_ignore = [
     ('py:class', 'fleur_schema.OutputSchemaDict'),
     ('py:class', 'fleur_schema.AttributeType'),
     ('py:class', 'IO'),
+    ('py:class', 'h5py._hl.base.HLObject'),
+    ('py:class', 'h5py._hl.group.Group')
 ]
 
 
