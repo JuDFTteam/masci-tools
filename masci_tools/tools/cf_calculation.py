@@ -188,7 +188,7 @@ class CFCalculation:
             self.bravaisMat['pot'] = np.array(info.get('bravaisMatrix'))
 
         if numPOT == 0:
-            raise IOError(f'No potentials found in {hdffile}')
+            raise ValueError(f'No potentials found in {hdffile}')
 
         potential_groups = {key for key in hdffile if 'pot-' in key}
 
@@ -221,7 +221,7 @@ class CFCalculation:
                         self.vlm[(l, m)] = _data
 
         else:
-            raise IOError(f'No potential for atomType {atomType} found in {hdffile}')
+            raise ValueError(f'No potential for atomType {atomType} found in {hdffile}')
 
         if not self.quiet:
             print(f'readPOTHDF: Generated the following information: {self.vlm.keys()}')
@@ -269,7 +269,7 @@ class CFCalculation:
             self.bravaisMat['cdn'] = np.array(info.get('bravaisMatrix'))
 
         if numCDN == 0:
-            raise IOError(f'No charge densities found in {hdffile}')
+            raise ValueError(f'No charge densities found in {hdffile}')
 
         cdn_groups = {key for key in hdffile if 'cdn-' in key}
 
@@ -291,7 +291,7 @@ class CFCalculation:
             self.cdn['data'] = np.array(_data)
 
         else:
-            raise IOError(f'No charge density for atomType {atomType} found in {hdffile}')
+            raise ValueError(f'No charge density for atomType {atomType} found in {hdffile}')
 
         if not self.quiet:
             print(f'readcdnHDF: Generated the following information: {self.cdn.keys()}')
