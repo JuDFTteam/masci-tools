@@ -269,7 +269,7 @@ def write_inpgen_file(cell,
             continue
         # per default we use relative coordinates in Fleur
         # we have to scale back to atomic units from angstrom
-        pos = site.position
+        pos = list(site.position)
         if bulk:
             vector_rel = abs_to_rel(pos, cell)
         elif film:

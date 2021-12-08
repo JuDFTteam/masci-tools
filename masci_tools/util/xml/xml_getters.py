@@ -743,6 +743,7 @@ def get_structure_data(xmltree: Union[etree._Element, etree._ElementTree],
 
     #Read relaxation information if available
     displacements = None
+    rotations, shifts = None, None
     if include_relaxations and schema_dict.inp_version >= (0, 29):
         if tag_exists(root, schema_dict, 'relaxation', logger=logger):
             relax_info = get_relaxation_information(root, schema_dict, logger=logger)
@@ -802,7 +803,10 @@ def get_structure_data(xmltree: Union[etree._Element, etree._ElementTree],
             raise ValueError('Failed to read atom positions for group')
 
         if displacements:
-            representative_pos = atom_positions[0]
+            representative_pos = np.array(atom_positions[0])
+
+            if rotations is None or shifts is None:
+                raise ValueError('Symmetry information is required but not available')
 
             if len(film_positions) != 0:
                 rel_displace = abs_to_rel_f(displacements[indx], cell, pbc)
@@ -812,8 +816,6 @@ def get_structure_data(xmltree: Union[etree._Element, etree._ElementTree],
             else:
                 rel_displace = abs_to_rel(displacements[indx], cell)
                 rel_representative_pos = abs_to_rel(representative_pos, cell)
-
-            rel_representative_pos = np.array(rel_representative_pos)
 
             for pos_indx, pos in enumerate(atom_positions):
                 rot, shift = find_symmetry_relation(representative_pos,
