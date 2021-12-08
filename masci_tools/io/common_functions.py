@@ -442,11 +442,12 @@ def is_sequence(arg: Any) -> bool:
     return isinstance(arg, Sequence) and not isinstance(arg, str)
 
 
-VectorType = TypeVar('VectorType', Tuple[float, float, float], List[float], np.ndarray)
-VectorTypeP = TypeVar('VectorTypeP', Tuple[float, float, float], List[float], np.ndarray)
+_TVectorType = TypeVar('_TVectorType', Tuple[float, float, float], List[float], np.ndarray)
+"""Generic type variable for atom position types"""
+VectorType = Union[Tuple[float, float, float], List[float], np.ndarray]
 
 
-def abs_to_rel(vector: VectorType, cell: Union[List[List[float]], np.ndarray]) -> VectorType:
+def abs_to_rel(vector: _TVectorType, cell: Union[List[List[float]], np.ndarray]) -> _TVectorType:
     """
     Converts a position vector in absolute coordinates to relative coordinates.
 
@@ -474,8 +475,8 @@ def abs_to_rel(vector: VectorType, cell: Union[List[List[float]], np.ndarray]) -
     return relative_vector
 
 
-def abs_to_rel_f(vector: VectorType, cell: Union[List[List[float]], np.ndarray], pbc: Tuple[bool, bool,
-                                                                                            bool]) -> VectorType:
+def abs_to_rel_f(vector: _TVectorType, cell: Union[List[List[float]], np.ndarray], pbc: Tuple[bool, bool,
+                                                                                              bool]) -> _TVectorType:
     """
     Converts a position vector in absolute coordinates to relative coordinates
     for a film system.
@@ -512,7 +513,7 @@ def abs_to_rel_f(vector: VectorType, cell: Union[List[List[float]], np.ndarray],
     return relative_vector
 
 
-def rel_to_abs(vector: VectorType, cell: Union[List[List[float]], np.ndarray]) -> VectorType:
+def rel_to_abs(vector: _TVectorType, cell: Union[List[List[float]], np.ndarray]) -> _TVectorType:
     """
     Converts a position vector in internal coordinates to absolute coordinates
     in Angstrom.
@@ -541,7 +542,7 @@ def rel_to_abs(vector: VectorType, cell: Union[List[List[float]], np.ndarray]) -
     return absolute_vector
 
 
-def rel_to_abs_f(vector: VectorType, cell: Union[List[List[float]], np.ndarray]) -> VectorType:
+def rel_to_abs_f(vector: _TVectorType, cell: Union[List[List[float]], np.ndarray]) -> _TVectorType:
     """
     Converts a position vector in internal coordinates to absolute coordinates
     in Angstrom for a film structure (2D).
@@ -571,7 +572,7 @@ def rel_to_abs_f(vector: VectorType, cell: Union[List[List[float]], np.ndarray])
 
 
 def find_symmetry_relation(from_pos: VectorType,
-                           to_pos: VectorTypeP,
+                           to_pos: VectorType,
                            rotations: List[np.ndarray],
                            shifts: List[np.ndarray],
                            cell: Union[List[List[float]], np.ndarray],

@@ -416,7 +416,8 @@ nitpick_ignore = [
     ('py:class', 'fleur_schema.AttributeType'),
     ('py:class', 'IO'),
     ('py:class', 'h5py._hl.base.HLObject'),
-    ('py:class', 'h5py._hl.group.Group')
+    ('py:class', 'h5py._hl.group.Group'),
+    ('py:class', 'masci_tools.io.common_functions._TVectorType'),
 ]
 
 

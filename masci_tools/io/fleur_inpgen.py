@@ -30,7 +30,7 @@ from masci_tools.util.xml.converters import convert_to_fortran_bool, convert_fro
 from masci_tools.io.common_functions import abs_to_rel_f, abs_to_rel, convert_to_fortran_string
 from masci_tools.io.common_functions import rel_to_abs, rel_to_abs_f, AtomSiteProperties
 
-__all__ = ('write_inpgen_file', 'read_inpgen_file',)
+__all__ = ('write_inpgen_file', 'read_inpgen_file', 'AtomDictProperties', 'Kinds')
 
 # Inpgen file structure, order is important
 POSSIBLE_NAMELISTS = [
