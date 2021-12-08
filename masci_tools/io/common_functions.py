@@ -16,6 +16,10 @@ without a database) are collected.
 """
 import io
 from typing import Any, Dict, Generator, Iterable, NamedTuple, Tuple, List, TypeVar, Union
+try:
+    from typing import TypeAlias  #type:ignore
+except ImportError:
+    from typing_extensions import TypeAlias
 import numpy as np
 import warnings
 ####################################################################################
@@ -444,7 +448,7 @@ def is_sequence(arg: Any) -> bool:
 
 _TVectorType = TypeVar('_TVectorType', Tuple[float, float, float], List[float], np.ndarray)
 """Generic type variable for atom position types"""
-VectorType = Union[Tuple[float, float, float], List[float], np.ndarray]
+VectorType: TypeAlias = Union[Tuple[float, float, float], List[float], np.ndarray]
 
 
 def abs_to_rel(vector: _TVectorType, cell: Union[List[List[float]], np.ndarray]) -> _TVectorType:
