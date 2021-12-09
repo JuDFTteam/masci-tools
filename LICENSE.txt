@@ -1,7 +1,6 @@
 The MIT License (MIT)
 
-Copyright (c), 2016-2018, FORSCHUNGSZENTRUM JUELICH GMBH
-(Quanten-Theorie der Materialien (PGI-1 / IAS-1), Institute for Advanced Simulation (IAS) and Peter Gruenberg Insitut (PGI)), Juelich, Germany. All rights reserved.
+Copyright (c), 2016-2018, FORSCHUNGSZENTRUM JUELICH GMBH (Quanten-Theorie der Materialien (PGI-1 / IAS-1), Institute for Advanced Simulation (IAS) and Peter Gruenberg Insitut (PGI)), Juelich, Germany. All rights reserved.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
