@@ -335,7 +335,9 @@ def get_xml_attribute(node: etree._Element, attributename: str, logger: Logger =
 
 
 TXPathLike = TypeVar('TXPathLike', bound=XPathLike)
-
+"""
+Type for xpath expressions
+"""
 
 def split_off_tag(xpath: TXPathLike) -> Tuple[TXPathLike, str]:
     """
