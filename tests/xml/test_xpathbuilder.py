@@ -20,6 +20,8 @@ def test_xpathbuilder():
     assert xpath.path == simple_xpath
 
     xpath.add_filter('xpath', {'index': -2})
+    with pytest.raises(ValueError):
+        xpath.add_filter('not-existing', {'index': -3})
     assert xpath.path == '/test/xpath[last() - $xpath_index]/simple'
     assert str(xpath) == '/test/xpath[last() - 1]/simple'
     assert xpath.path_variables == {'xpath_index': 1}
@@ -28,10 +30,13 @@ def test_xpathbuilder():
     with pytest.raises(ValueError):
         str(xpath)
 
-    xpath = XPathBuilder(simple_xpath, compile_path=True)
+    xpath = XPathBuilder(etree.XPath(simple_xpath), compile_path=True, smart_strings=True)
     xpath.add_filter('xpath', {'index': -2})
     assert isinstance(xpath.path, etree.XPath)
     assert str(xpath) == '/test/xpath[last() - 1]/simple'
+
+    with pytest.raises(ValueError):
+        xpath = XPathBuilder(etree.XPath(simple_xpath), smart_strings=True)
 
 
 @pytest.mark.parametrize('simple_xpath,filters,expected', [
@@ -43,14 +48,42 @@ def test_xpathbuilder():
     ('/fleurInput/atomGroups/atomGroup/@species', {
         'atomGroup': {
             'index': {
+                '==': -1
+            }
+        }
+    }, 'Pt-1'),
+    ('/fleurInput/atomGroups/atomGroup/@species', {
+        'atomGroup': {
+            'index': {
                 '<': -1
             }
         }
     }, 'Fe-1'),
+    ('/fleurInput/atomGroups/atomGroup/@species', {
+        'atomGroup': {
+            'index': {
+                '>=': 2
+            }
+        }
+    }, 'Pt-1'),
     ('/fleurInput/atomSpecies/species/@name', {
         'species': {
             '/mtSphere/@radius': {
                 '>=': 2.0
+            }
+        }
+    }, ['Fe-1', 'Pt-1']),
+    ('/fleurInput/atomSpecies/species/mtSphere/@radius', {
+        'species': {
+            'name': {
+                '==': 'Fe-1'
+            }
+        }
+    }, '2.20000000'),
+    ('/fleurInput/atomSpecies/species/@name', {
+        'species': {
+            '/mtSphere/@radius': {
+                '==': '2.20000000'
             }
         }
     }, ['Fe-1', 'Pt-1']),
