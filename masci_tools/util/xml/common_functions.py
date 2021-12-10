@@ -294,8 +294,10 @@ def eval_xpath(node: Union[etree._Element, etree._ElementTree, 'etree._XPathEval
         if logger is not None:
             logger.exception(
                 'There was a XpathEvalError on the xpath: %s \n'
-                'Either it does not exist, or something is wrong with the expression.', xpath)
+                'The following variables were passed: %s \n'
+                'Either it does not exist, or something is wrong with the expression.', xpath, variables)
         raise ValueError(f'There was a XpathEvalError on the xpath: {str(xpath)} \n'
+                         f'The following variables were passed: {variables} \n'
                          'Either it does not exist, or something is wrong with the expression.') from err
     if isinstance(return_value, list):
         if len(return_value) == 1 and not list_return:

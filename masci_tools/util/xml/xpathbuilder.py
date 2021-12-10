@@ -128,7 +128,7 @@ class XPathBuilder:
 
         return self.components.pop(-1)
 
-    def get_predicate(self, tag, condition):
+    def get_predicate(self, tag: str, condition: Any) -> str:
         """
         Construct the predicate for the given tag and condition
 
@@ -148,7 +148,7 @@ class XPathBuilder:
 
         return self.process_condition(tag, operator, content)
 
-    def process_condition(self, tag, operator, content):
+    def process_condition(self, tag: str, operator: str, content: Any) -> str:
         """
         Process the condition for the given tag and condition
 
@@ -227,14 +227,14 @@ class XPathBuilder:
             for indx, part in enumerate(parts):
                 path_variable.append(f"{'@' if '@' in part else ''}*[local-name()=${variable_name}_{indx}]")
                 self.path_variables[f'{variable_name}_{indx}'] = part.lstrip('@')
-            path_variable = '/'.join(path_variable)
+            path_variable_str = '/'.join(path_variable)
 
             if cond == 'contains':
-                predicate = f'contains({path_variable},${value_variable_name})'
+                predicate = f'contains({path_variable_str},${value_variable_name})'
             elif cond == 'not-contains':
-                predicate = f'not(contains({path_variable},${value_variable_name}))'
+                predicate = f'not(contains({path_variable_str},${value_variable_name}))'
             else:
-                predicate = f'{path_variable} {cond} ${value_variable_name}'
+                predicate = f'{path_variable_str} {cond} ${value_variable_name}'
 
             self.path_variables[variable_name] = operator
             self.path_variables[value_variable_name] = value
@@ -262,7 +262,7 @@ class XPathBuilder:
             return etree.XPath(path, **self.path_kwargs)
         return path
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"{self.__class__.__qualname__}({'/'.join(self.components)!r}, {self.filters!r}, compile_path={self.compile_path!r}, strict={self.strict!r})"
 
     def __str__(self) -> str:
