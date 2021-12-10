@@ -108,6 +108,39 @@ def test_xml_create_tag_schema_dict_create_parents(load_inpxml):
     assert len(eval_xpath(root, '/fleurInput/atomSpecies/species/ldaHIA/addArg', list_return=True)) == 1
 
 
+def test_xml_create_tag_schema_dict_multiple(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_xpaths import xml_create_tag_schema_dict
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    root = xmltree.getroot()
+
+    los_before = eval_xpath(root, '/fleurInput/atomSpecies/species/lo')
+
+    assert [node.getparent().attrib['name'] for node in los_before] == ['Fe-1', 'Fe-1', 'Pt-1']
+    assert [node.attrib.items() for node in los_before] == [[('type', 'SCLO'), ('l', '0'), ('n', '3'), ('eDeriv', '0')],
+                                                            [('type', 'SCLO'), ('l', '1'), ('n', '3'), ('eDeriv', '0')],
+                                                            [('type', 'SCLO'), ('l', '1'), ('n', '5'), ('eDeriv', '0')]]
+
+    xml_create_tag_schema_dict(xmltree,
+                               schema_dict,
+                               '/fleurInput/atomSpecies/species',
+                               '/fleurInput/atomSpecies/species',
+                               'lo',
+                               number_nodes=3)
+
+    los_after = eval_xpath(root, '/fleurInput/atomSpecies/species/lo')
+
+    assert [node.getparent().attrib['name'] for node in los_after
+            ] == ['Fe-1', 'Fe-1', 'Fe-1', 'Fe-1', 'Fe-1', 'Pt-1', 'Pt-1', 'Pt-1', 'Pt-1']
+    assert [node.attrib.items() for node in los_after] == [[], [], [],
+                                                           [('type', 'SCLO'), ('l', '0'), ('n', '3'), ('eDeriv', '0')],
+                                                           [('type', 'SCLO'), ('l', '1'), ('n', '3'), ('eDeriv', '0')],
+                                                           [], [], [],
+                                                           [('type', 'SCLO'), ('l', '1'), ('n', '5'), ('eDeriv', '0')]]
+
+
 def test_eval_xpath_create_existing(load_inpxml):
 
     from masci_tools.util.xml.common_functions import eval_xpath
@@ -139,6 +172,26 @@ def test_eval_xpath_create_non_existing(load_inpxml):
 
     assert len(nodes) == 2
     assert [node.getparent().attrib['name'] for node in nodes] == ['Fe-1', 'Pt-1']
+
+
+def test_eval_xpath_create_non_existing_multiple(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_xpaths import eval_xpath_create
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    root = xmltree.getroot()
+
+    assert len(eval_xpath(root, '/fleurInput/atomSpecies/species/ldaU')) == 0
+
+    nodes = eval_xpath_create(xmltree,
+                              schema_dict,
+                              '/fleurInput/atomSpecies/species/ldaU',
+                              '/fleurInput/atomSpecies/species/ldaU',
+                              number_nodes=2)
+
+    assert len(nodes) == 4
+    assert [node.getparent().attrib['name'] for node in nodes] == ['Fe-1', 'Fe-1', 'Pt-1', 'Pt-1']
 
 
 def test_eval_xpath_create_differing_xpaths(load_inpxml):
@@ -275,6 +328,32 @@ def test_xml_set_attrib_value_create(load_inpxml):
     assert eval_xpath(root, '/fleurInput/atomSpecies/species/ldaHIA/addArg/@key') == 'TEST'
 
 
+def test_xml_set_attrib_value_create_multiple(load_inpxml):
+    """
+    Test of the functionality of xml_set_attrib_value_no_create with multiple occurrences
+    of the attribute and different values for occurrences
+    """
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_xpaths import xml_set_attrib_value
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    root = xmltree.getroot()
+
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/ldaU/@l') == []
+    with pytest.raises(ValueError, match="Could not set attribute 'l' on path"):
+        xmltree = xml_set_attrib_value(xmltree, schema_dict, "/fleurInput/atomSpecies/species[@name='Fe-1']/ldaU",
+                                       '/fleurInput/atomSpecies/species/ldaU', 'l', [1, 2])
+
+    xmltree = xml_set_attrib_value(xmltree,
+                                   schema_dict,
+                                   "/fleurInput/atomSpecies/species[@name='Fe-1']/ldaU",
+                                   '/fleurInput/atomSpecies/species/ldaU',
+                                   'l', [1, 2],
+                                   create=True)
+
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/ldaU/@l') == ['1', '2']
+
+
 def test_xml_set_first_attrib_value(load_inpxml):
     """
     Test of the functionality of xml_set_attrib_value_no_create with multiple occurrences
@@ -398,6 +477,34 @@ def test_xml_set_text_create(load_inpxml):
                  create=True)
 
     assert eval_xpath(root, '/fleurInput/atomSpecies/species/torgueCalculation/greensfElements/s/text()') == 'F F T F'
+
+
+def test_xml_set_text_create_multiple(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_xpaths import xml_set_text
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    root = xmltree.getroot()
+
+    with pytest.raises(ValueError, match='Could not set text on path'):
+        xml_set_text(xmltree, schema_dict, '/fleurInput/forceTheorem/DMI/qVectors/q',
+                     '/fleurInput/forceTheorem/DMI/qVectors/q',
+                     [[0.0, 0.0, 0.0], [0.125, 0.0, 0.0], [0.250, 0.0, 0.0], [0.375, 0.0, 0.0]])
+
+    xml_set_text(xmltree,
+                 schema_dict,
+                 '/fleurInput/forceTheorem/DMI/qVectors/q',
+                 '/fleurInput/forceTheorem/DMI/qVectors/q',
+                 [[0.0, 0.0, 0.0], [0.125, 0.0, 0.0], [0.250, 0.0, 0.0], [0.375, 0.0, 0.0]],
+                 create=True)
+
+    assert eval_xpath(root, '/fleurInput/forceTheorem/DMI/qVectors/q/text()') == [
+        ' 0.0000000000000  0.0000000000000  0.0000000000000',
+        ' 0.1250000000000  0.0000000000000  0.0000000000000',
+        ' 0.2500000000000  0.0000000000000  0.0000000000000',
+        ' 0.3750000000000  0.0000000000000  0.0000000000000',
+    ]
 
 
 def test_xml_set_first_text(load_inpxml):

@@ -32,6 +32,7 @@ def xml_create_tag_schema_dict(
         base_xpath: str,
         element: Union[str, etree._Element],
         create_parents: bool = False,
+        number_nodes: int = 1,
         occurrences: Union[int, Iterable[int]] = None) -> Union[etree._Element, etree._ElementTree]:
     """
     This method evaluates an xpath expression and creates a tag in a xmltree under the
@@ -49,6 +50,7 @@ def xml_create_tag_schema_dict(
                            the parent tags are created recursively
     :param occurrences: int or list of int. Which occurence of the parent nodes to create a tag.
                         By default all nodes are used.
+    :param number_nodes: how many identical nodes to create
 
     :raises ValueError: If the nodes are missing and `create_parents=False`
 
@@ -78,6 +80,9 @@ def xml_create_tag_schema_dict(
 
     several_tags = element_name in tag_info['several']
 
+    if not several_tags and number_nodes > 1:
+        raise ValueError(f'Can not create {number_nodes} nodes of tag {element_name}: Tag only allowed once')
+
     parent_nodes: List[etree._Element] = eval_xpath(xmltree, xpath, list_return=True)  #type:ignore
 
     if len(parent_nodes) == 0:
@@ -94,7 +99,9 @@ def xml_create_tag_schema_dict(
             raise ValueError(f"Could not create tag '{element_name}' because atleast one subtag is missing. "
                              'Use create=True to create the subtags')
 
-    return xml_create_tag(xmltree, xpath, element, tag_order=tag_order, occurrences=occurrences, several=several_tags)
+    for _ in range(number_nodes):
+        xml_create_tag(xmltree, xpath, element, tag_order=tag_order, occurrences=occurrences, several=several_tags)
+    return xmltree
 
 
 def eval_xpath_create(xmltree: Union[etree._Element, etree._ElementTree],
@@ -103,6 +110,7 @@ def eval_xpath_create(xmltree: Union[etree._Element, etree._ElementTree],
                       base_xpath: str,
                       create_parents: bool = False,
                       occurrences: Union[int, Iterable[int]] = None,
+                      number_nodes: int = 1,
                       list_return: bool = False) -> List[etree._Element]:
     """
     Evaluates and xpath and creates tag if the result is empty
@@ -116,6 +124,7 @@ def eval_xpath_create(xmltree: Union[etree._Element, etree._ElementTree],
     :param occurrences: int or list of int. Which occurence of the parent nodes to create a tag if the tag is missing.
                         By default all nodes are used.
     :param list_return: if True, the returned quantity is always a list even if only one element is in it
+    :param number_nodes: how many identical nodes to create
 
     :returns: list of nodes from the result of the xpath expression
     """
@@ -134,6 +143,7 @@ def eval_xpath_create(xmltree: Union[etree._Element, etree._ElementTree],
                                              parent_xpath,
                                              tag_name,
                                              create_parents=create_parents,
+                                             number_nodes=number_nodes,
                                              occurrences=occurrences)
         nodes = eval_xpath(xmltree, xpath, list_return=True)  #type:ignore
 
@@ -178,24 +188,9 @@ def xml_set_attrib_value(xmltree: Union[etree._Element, etree._ElementTree],
     from masci_tools.util.xml.xml_setters_basic import xml_set_attrib_value_no_create
     from masci_tools.util.xml.converters import convert_to_xml
     from masci_tools.util.xml.common_functions import check_complex_xpath, split_off_tag
+    from masci_tools.io.common_functions import is_sequence
 
     check_complex_xpath(xmltree, base_xpath, xpath)
-
-    if create:
-        nodes: List[etree._Element] = eval_xpath_create(xmltree,
-                                                        schema_dict,
-                                                        xpath,
-                                                        base_xpath,
-                                                        create_parents=True,
-                                                        occurrences=occurrences,
-                                                        list_return=True)
-    else:
-        nodes = eval_xpath(xmltree, xpath, list_return=True)  #type:ignore
-
-    if len(nodes) == 0:
-        raise ValueError(f"Could not set attribute '{attributename}' on path '{str(xpath)}' "
-                         'because atleast one subtag is missing. '
-                         'Use create=True to create the subtags')
 
     _, tag_name = split_off_tag(base_xpath)
 
@@ -207,6 +202,24 @@ def xml_set_attrib_value(xmltree: Union[etree._Element, etree._ElementTree],
     attributename = attribs.original_case[attributename]
 
     converted_attribv, _ = convert_to_xml(attribv, schema_dict, attributename, text=False)
+    n_nodes = len(converted_attribv) if is_sequence(converted_attribv) else 1
+
+    if create:
+        nodes: List[etree._Element] = eval_xpath_create(xmltree,
+                                                        schema_dict,
+                                                        xpath,
+                                                        base_xpath,
+                                                        create_parents=True,
+                                                        occurrences=occurrences,
+                                                        number_nodes=n_nodes,
+                                                        list_return=True)
+    else:
+        nodes = eval_xpath(xmltree, xpath, list_return=True)  #type:ignore
+
+    if len(nodes) == 0:
+        raise ValueError(f"Could not set attribute '{attributename}' on path '{str(xpath)}' "
+                         'because atleast one subtag is missing. '
+                         'Use create=True to create the subtags')
 
     return xml_set_attrib_value_no_create(xmltree, xpath, attributename, converted_attribv, occurrences=occurrences)
 
@@ -281,8 +294,14 @@ def xml_set_text(xmltree: Union[etree._Element, etree._ElementTree],
     from masci_tools.util.xml.xml_setters_basic import xml_set_text_no_create
     from masci_tools.util.xml.converters import convert_to_xml
     from masci_tools.util.xml.common_functions import check_complex_xpath, split_off_tag
+    from masci_tools.io.common_functions import is_sequence
 
     check_complex_xpath(xmltree, base_xpath, xpath)
+
+    _, tag_name = split_off_tag(base_xpath)
+
+    converted_text, _ = convert_to_xml(text, schema_dict, tag_name, text=True)
+    n_nodes = len(converted_text) if is_sequence(converted_text) else 1
 
     if create:
         nodes: List[etree._Element] = eval_xpath_create(xmltree,
@@ -291,6 +310,7 @@ def xml_set_text(xmltree: Union[etree._Element, etree._ElementTree],
                                                         base_xpath,
                                                         create_parents=True,
                                                         occurrences=occurrences,
+                                                        number_nodes=n_nodes,
                                                         list_return=True)
     else:
         nodes = eval_xpath(xmltree, xpath, list_return=True)  #type:ignore
@@ -298,10 +318,6 @@ def xml_set_text(xmltree: Union[etree._Element, etree._ElementTree],
     if len(nodes) == 0:
         raise ValueError(f"Could not set text on path '{str(xpath)}' because atleast one subtag is missing. "
                          'Use create=True to create the subtags')
-
-    _, tag_name = split_off_tag(base_xpath)
-
-    converted_text, _ = convert_to_xml(text, schema_dict, tag_name, text=True)
 
     return xml_set_text_no_create(xmltree, xpath, converted_text, occurrences=occurrences)
 
@@ -527,8 +543,13 @@ def xml_set_simple_tag(xmltree: Union[etree._Element, etree._ElementTree],
             # policy: we DELETE all existing tags, and create new ones from the given parameters.
             xml_delete_tag(xmltree, tag_xpath)
 
-        for indx in range(0, len(changes)):
-            xml_create_tag_schema_dict(xmltree, schema_dict, xpath, base_xpath, tag_name, create_parents=create_parents)
+        xml_create_tag_schema_dict(xmltree,
+                                   schema_dict,
+                                   xpath,
+                                   base_xpath,
+                                   tag_name,
+                                   create_parents=create_parents,
+                                   number_nodes=len(changes))
 
         for indx, change in enumerate(changes):
             for attrib, value in change.items():
