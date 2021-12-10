@@ -21,6 +21,7 @@ from masci_tools.io.parsers.fleur_schema import NoPathFound
 from masci_tools.util.parse_tasks_decorators import register_parsing_function
 from masci_tools.io.parsers import fleur_schema
 from masci_tools.util.xml.common_functions import check_complex_xpath
+from masci_tools.util.xml.xpathbuilder import XPathBuilder, FilterType
 from lxml import etree
 from logging import Logger
 import warnings
@@ -227,6 +228,7 @@ def evaluate_attribute(node: Union[etree._Element, etree._ElementTree],
                        constants: Dict[str, float] = None,
                        logger: Logger = None,
                        complex_xpath: 'etree._xpath' = None,
+                       filters: FilterType = None,
                        iteration_path: bool = False,
                        **kwargs: Any) -> Any:
     """
@@ -263,6 +265,10 @@ def evaluate_attribute(node: Union[etree._Element, etree._ElementTree],
 
     if complex_xpath is None:
         complex_xpath = attrib_xpath
+        if filters is not None:
+            complex_xpath = XPathBuilder(complex_xpath,strict=True, filters=filters)
+    elif filters is not None:
+        raise ValueError('Only provide one of the arguments filters or complex_xpath')
 
     check_complex_xpath(node, attrib_xpath, complex_xpath)
 
@@ -302,6 +308,7 @@ def evaluate_text(node: Union[etree._Element, etree._ElementTree],
                   logger: Logger = None,
                   complex_xpath: 'etree._xpath' = None,
                   iteration_path: bool = False,
+                  filters: FilterType = None,
                   **kwargs: Any) -> Any:
     """
     Evaluates the text of the tag based on the given name
@@ -333,6 +340,10 @@ def evaluate_text(node: Union[etree._Element, etree._ElementTree],
     tag_xpath = _select_tag_xpath(node, schema_dict, name, iteration_path=iteration_path, **kwargs)
     if complex_xpath is None:
         complex_xpath = tag_xpath
+        if filters is not None:
+            complex_xpath = XPathBuilder(complex_xpath, strict=True, filters=filters)
+    elif filters is not None:
+        raise ValueError('Only provide one of the arguments filters or complex_xpath')
 
     check_complex_xpath(node, tag_xpath, complex_xpath)
 
@@ -379,6 +390,7 @@ def evaluate_tag(node: Union[etree._Element, etree._ElementTree],
                  text: bool = True,
                  complex_xpath: 'etree._xpath' = None,
                  iteration_path: bool = False,
+                 filters: FilterType = None,
                  **kwargs: Any) -> Any:
     """
     Evaluates all attributes of the tag based on the given name
@@ -416,6 +428,10 @@ def evaluate_tag(node: Union[etree._Element, etree._ElementTree],
     tag_xpath = _select_tag_xpath(node, schema_dict, name, iteration_path=iteration_path, **kwargs)
     if complex_xpath is None:
         complex_xpath = tag_xpath
+        if filters is not None:
+            complex_xpath = XPathBuilder(complex_xpath, strict=True, filters=filters)
+    elif filters is not None:
+        raise ValueError('Only provide one of the arguments filters or complex_xpath')
 
     check_complex_xpath(node, tag_xpath, complex_xpath)
 
@@ -627,6 +643,7 @@ def evaluate_parent_tag(node: Union[etree._Element, etree._ElementTree],
                         logger: Logger = None,
                         complex_xpath: 'etree._xpath' = None,
                         iteration_path: bool = False,
+                        filters: FilterType = None,
                         **kwargs: Any) -> Any:
     """
     Evaluates all attributes of the parent tag based on the given name
@@ -662,6 +679,10 @@ def evaluate_parent_tag(node: Union[etree._Element, etree._ElementTree],
     tag_xpath = _select_tag_xpath(node, schema_dict, name, iteration_path=iteration_path, **kwargs)
     if complex_xpath is None:
         complex_xpath = tag_xpath
+        if filters is not None:
+            complex_xpath = XPathBuilder(complex_xpath, strict=True, filters=filters)
+    elif filters is not None:
+        raise ValueError('Only provide one of the arguments filters or complex_xpath')
 
     check_complex_xpath(node, tag_xpath, complex_xpath)
 
@@ -846,6 +867,7 @@ def eval_simple_xpath(node: Union[etree._Element, etree._ElementTree],
                       name: str,
                       logger: Logger = None,
                       iteration_path: bool = False,
+                      filters: FilterType = None,
                       **kwargs: Any) -> 'etree._XPathObject':
     """
     Evaluates a simple xpath expression of the tag in the xmltree based on the given name
@@ -869,6 +891,9 @@ def eval_simple_xpath(node: Union[etree._Element, etree._ElementTree],
 
     list_return = kwargs.pop('list_return', False)
     tag_xpath = _select_tag_xpath(node, schema_dict, name, iteration_path=iteration_path, **kwargs)
+    if filters is not None:
+        tag_xpath = XPathBuilder(tag_xpath, strict=True, filters=filters)
+    
     return eval_xpath(node, tag_xpath, logger=logger, list_return=list_return)
 
 

@@ -15,6 +15,8 @@ Functions for modifying the xml input file of Fleur with explicit xpath argument
 These can still use the schema dict for finding information about the xpath
 """
 from typing import Any, Iterable, List, Union, Dict, cast, Tuple
+
+from masci_tools.util.xml.xpathbuilder import XPathBuilder
 try:
     from typing import Literal
 except ImportError:
@@ -415,12 +417,15 @@ def xml_add_number_to_attrib(
             f'Allowed attributes are: {attribs.original_case.values()}')
     attributename = attribs.original_case[attributename]
 
-    if not str(xpath).endswith(f'/@{attributename}'):
+    if isinstance(xpath, XPathBuilder):
+        if '@' not in xpath.components[-1]:
+            xpath.append_tag(f'@{attributename}')
+    elif not str(xpath).endswith(f'/@{attributename}'):
         xpath = '/@'.join([str(xpath), attributename])
 
     stringattribute: List[str] = eval_xpath(xmltree, xpath, list_return=True)  #type:ignore
 
-    tag_xpath, attributename = split_off_attrib(str(xpath))
+    tag_xpath, attributename = split_off_attrib(xpath)
 
     if len(stringattribute) == 0:
         raise ValueError(f"No attribute values found for '{attributename}'. Cannot add number")
