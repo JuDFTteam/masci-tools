@@ -15,13 +15,12 @@ Functions for modifying the xml input file of Fleur with explicit xpath argument
 These can still use the schema dict for finding information about the xpath
 """
 from typing import Any, Iterable, List, Union, Dict, cast, Tuple
-
-from masci_tools.util.xml.xpathbuilder import XPathBuilder
 try:
     from typing import Literal
 except ImportError:
     from typing_extensions import Literal  #type:ignore
 
+from masci_tools.util.xml.xpathbuilder import XPathBuilder
 from masci_tools.util.typing import XPathLike
 from masci_tools.util.xml.common_functions import eval_xpath, add_tag
 from masci_tools.io.parsers import fleur_schema

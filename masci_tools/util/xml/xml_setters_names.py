@@ -15,8 +15,7 @@ Functions for modifying the xml input file of Fleur utilizing the schema dict
 and as little knowledge of the concrete xpaths as possible
 """
 import warnings
-from typing import Any, Iterable, List, Set, Union, Dict, Tuple
-from masci_tools.util.schema_dict_util import evaluate_attribute
+from typing import Any, Iterable, List, Union, Dict, Tuple
 try:
     from typing import Literal
 except ImportError:
@@ -115,7 +114,7 @@ def delete_tag(xmltree: Union[etree._Element, etree._ElementTree],
         complex_xpath = base_xpath
     check_complex_xpath(xmltree, base_xpath, complex_xpath)
 
-    return  xml_delete_tag(xmltree, complex_xpath, occurrences=occurrences)
+    return xml_delete_tag(xmltree, complex_xpath, occurrences=occurrences)
 
 
 def delete_att(xmltree: Union[etree._Element, etree._ElementTree],
@@ -156,7 +155,6 @@ def delete_att(xmltree: Union[etree._Element, etree._ElementTree],
     return xml_delete_att(xmltree, complex_xpath, attrib_name, occurrences=occurrences)
 
 
-
 def replace_tag(xmltree: Union[etree._Element, etree._ElementTree],
                 schema_dict: 'fleur_schema.SchemaDict',
                 tag_name: str,
@@ -191,7 +189,6 @@ def replace_tag(xmltree: Union[etree._Element, etree._ElementTree],
     check_complex_xpath(xmltree, base_xpath, complex_xpath)
 
     return xml_replace_tag(xmltree, complex_xpath, newelement, occurrences=occurrences)
-
 
 
 def add_number_to_attrib(xmltree: Union[etree._Element, etree._ElementTree],
@@ -236,13 +233,13 @@ def add_number_to_attrib(xmltree: Union[etree._Element, etree._ElementTree],
         complex_xpath = base_xpath
 
     return xml_add_number_to_attrib(xmltree,
-                                       schema_dict,
-                                       complex_xpath,
-                                       base_xpath,
-                                       attributename,
-                                       add_number,
-                                       mode=mode,
-                                       occurrences=occurrences)
+                                    schema_dict,
+                                    complex_xpath,
+                                    base_xpath,
+                                    attributename,
+                                    add_number,
+                                    mode=mode,
+                                    occurrences=occurrences)
 
 
 def add_number_to_first_attrib(xmltree: Union[etree._Element, etree._ElementTree],
@@ -334,13 +331,13 @@ def set_attrib_value(xmltree: Union[etree._Element, etree._ElementTree],
         complex_xpath = base_xpath
 
     return xml_set_attrib_value(xmltree,
-                                   schema_dict,
-                                   complex_xpath,
-                                   base_xpath,
-                                   attributename,
-                                   attribv,
-                                   occurrences=occurrences,
-                                   create=create)
+                                schema_dict,
+                                complex_xpath,
+                                base_xpath,
+                                attributename,
+                                attribv,
+                                occurrences=occurrences,
+                                create=create)
 
 
 def set_first_attrib_value(xmltree: Union[etree._Element, etree._ElementTree],
@@ -421,13 +418,7 @@ def set_text(xmltree: Union[etree._Element, etree._ElementTree],
     if complex_xpath is None:
         complex_xpath = base_xpath
 
-    return xml_set_text(xmltree,
-                           schema_dict,
-                           complex_xpath,
-                           base_xpath,
-                           text,
-                           occurrences=occurrences,
-                           create=create)
+    return xml_set_text(xmltree, schema_dict, complex_xpath, base_xpath, text, occurrences=occurrences, create=create)
 
 
 def set_first_text(xmltree: Union[etree._Element, etree._ElementTree],
@@ -588,12 +579,18 @@ def set_species_label(xmltree: Union[etree._Element, etree._ElementTree],
         return set_species(xmltree, schema_dict, 'all', attributedict, create=create)
 
     film = tag_exists(xmltree, schema_dict, 'filmPos')
-    label_path = f"/{'filmPos' if film else 'relPos'}/@label"        
-    
-    species_to_set = set(evaluate_attribute(xmltree, schema_dict, 'species', filters = {
-            'atomGroup': {label_path: {'=': f'{atom_label: >20}'}}
-        }, list_return=True))
+    label_path = f"/{'filmPos' if film else 'relPos'}/@label"
 
+    species_to_set = set(
+        evaluate_attribute(xmltree,
+                           schema_dict,
+                           'species',
+                           filters={'atomGroup': {
+                               label_path: {
+                                   '=': f'{atom_label: >20}'
+                               }
+                           }},
+                           list_return=True))
 
     for species_name in species_to_set:
         xmltree = set_species(xmltree, schema_dict, species_name, attributedict, create=create)
@@ -605,7 +602,7 @@ def set_species(xmltree: Union[etree._Element, etree._ElementTree],
                 schema_dict: 'fleur_schema.SchemaDict',
                 species_name: str,
                 attributedict: Dict[str, Any],
-                filters: FilterType=None,
+                filters: FilterType = None,
                 create: bool = False) -> Union[etree._Element, etree._ElementTree]:
     """
     Method to set parameters of a species tag of the fleur inp.xml file.
@@ -748,10 +745,8 @@ def shift_value_species_label(xmltree: Union[etree._Element, etree._ElementTree]
     label_path = f"/{'filmPos' if film else 'relPos'}/@label"
     filters = None
     if atom_label != 'all':
-        filters = {
-            'atomGroup': {label_path: {'=': f'{atom_label: >20}'}}
-        }
-    
+        filters = {'atomGroup': {label_path: {'=': f'{atom_label: >20}'}}}
+
     species_to_set = set(evaluate_attribute(xmltree, schema_dict, 'species', filters=filters, list_return=True))
 
     for species_name in species_to_set:
@@ -1050,7 +1045,7 @@ def set_inpchanges(xmltree: Union[etree._Element, etree._ElementTree],
 
         key_spec = path_spec_case.get(key, {})
         #This method only support unique and unique_path attributes
-        key_spec.setdefault('exclude',[]).append('other')
+        key_spec.setdefault('exclude', []).append('other')
 
         key_xpath = schema_dict.attrib_xpath(key, **key_spec)
         if key not in schema_dict['attrib_types']:
