@@ -1042,11 +1042,7 @@ def shift_value(xmltree: Union[etree._Element, etree._ElementTree],
 
         key_spec = path_spec_case.get(key, {})
         #This method only support unique and unique_path attributes
-        if 'exclude' not in key_spec:
-            key_spec['exclude'] = ['other']
-        elif 'other' not in key_spec['exclude']:
-            key_spec['exclude'].append('other')
-
+        key_spec.setdefault('exclude', []).append('other')
         xmltree = add_number_to_first_attrib(xmltree, schema_dict, key, value_given, mode=mode, **key_spec)
 
     return xmltree
@@ -1097,10 +1093,7 @@ def set_inpchanges(xmltree: Union[etree._Element, etree._ElementTree],
 
         key_spec = path_spec_case.get(key, {})
         #This method only support unique and unique_path attributes
-        if 'exclude' not in key_spec:
-            key_spec['exclude'] = ['other']
-        elif 'other' not in key_spec['exclude']:
-            key_spec['exclude'].append('other')
+        key_spec.setdefault('exclude',[]).append('other')
 
         key_xpath = schema_dict.attrib_xpath(key, **key_spec)
 
