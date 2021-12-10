@@ -168,10 +168,37 @@ def test_split_off_tag():
     Test of the split_off_tag function
     """
     from masci_tools.util.xml.common_functions import split_off_tag
+    from masci_tools.util.xml.xpathbuilder import XPathBuilder
 
     assert split_off_tag('/fleurInput/calculationSetup/cutoffs') == ('/fleurInput/calculationSetup', 'cutoffs')
     assert split_off_tag('/fleurInput/calculationSetup/cutoffs/') == ('/fleurInput/calculationSetup', 'cutoffs')
     assert split_off_tag('./calculationSetup/cutoffs') == ('./calculationSetup', 'cutoffs')
+
+    path, tag = split_off_tag(XPathBuilder('/fleurInput/calculationSetup/cutoffs'))
+    assert str(path) == '/fleurInput/calculationSetup'
+    assert tag == 'cutoffs'
+
+    path, tag = split_off_tag(etree.XPath('/fleurInput/calculationSetup/cutoffs'))
+    assert str(path) == '/fleurInput/calculationSetup'
+    assert tag == 'cutoffs'
+
+
+def test_add_tag():
+    """
+    Test of the add_tag function
+    """
+    from masci_tools.util.xml.common_functions import add_tag
+    from masci_tools.util.xml.xpathbuilder import XPathBuilder
+
+    assert add_tag('/fleurInput/calculationSetup', 'cutoffs') == '/fleurInput/calculationSetup/cutoffs'
+    assert add_tag('/fleurInput/calculationSetup/', 'cutoffs') == '/fleurInput/calculationSetup/cutoffs'
+    assert add_tag('./calculationSetup', 'cutoffs') == './calculationSetup/cutoffs'
+
+    path = add_tag(XPathBuilder('/fleurInput/calculationSetup/'), 'cutoffs')
+    assert str(path) == '/fleurInput/calculationSetup/cutoffs'
+
+    path = add_tag(etree.XPath('/fleurInput/calculationSetup'), 'cutoffs')
+    assert str(path) == '/fleurInput/calculationSetup/cutoffs'
 
 
 def test_split_off_attrib():
@@ -179,11 +206,24 @@ def test_split_off_attrib():
     Test of the split_off_tag function
     """
     from masci_tools.util.xml.common_functions import split_off_attrib
+    from masci_tools.util.xml.xpathbuilder import XPathBuilder
 
     assert split_off_attrib('/fleurInput/calculationSetup/cutoffs/@Kmax') == ('/fleurInput/calculationSetup/cutoffs',
                                                                               'Kmax')
+    path, attrib = split_off_attrib(XPathBuilder('/fleurInput/calculationSetup/cutoffs/@Kmax'))
+
+    assert str(path) == '/fleurInput/calculationSetup/cutoffs'
+    assert attrib == 'Kmax'
+
+    path, attrib = split_off_attrib(etree.XPath('/fleurInput/calculationSetup/cutoffs/@Kmax'))
+
+    assert str(path) == '/fleurInput/calculationSetup/cutoffs'
+    assert attrib == 'Kmax'
+
     with pytest.raises(ValueError):
         split_off_attrib('/fleurInput/calculationSetup/cutoffs')
+    with pytest.raises(ValueError):
+        split_off_attrib(XPathBuilder('/fleurInput/calculationSetup/cutoffs'))
     with pytest.raises(ValueError):
         split_off_attrib("/fleurInput/atomSpecies/species[@name='TEST']")
     assert split_off_attrib('./calculationSetup/cutoffs/@Kmax') == ('./calculationSetup/cutoffs', 'Kmax')

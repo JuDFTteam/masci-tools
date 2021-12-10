@@ -15,20 +15,25 @@ Functions for modifying the xml input file of Fleur utilizing the schema dict
 and as little knowledge of the concrete xpaths as possible
 """
 import warnings
-from typing import Any, Iterable, List, Set, Union, Dict, Tuple
+from typing import Any, Iterable, List, Union, Dict, Tuple
 try:
     from typing import Literal
 except ImportError:
     from typing_extensions import Literal  #type:ignore
-from lxml import etree
+
+from masci_tools.util.typing import XPathLike
+from masci_tools.util.xml.xpathbuilder import XPathBuilder, FilterType
 from masci_tools.io.parsers.fleur_schema import schema_dict_version_dispatch
 from masci_tools.io.parsers import fleur_schema
+
+from lxml import etree
 
 
 def create_tag(xmltree: Union[etree._Element, etree._ElementTree],
                schema_dict: 'fleur_schema.SchemaDict',
                tag: Union[str, etree._Element],
-               complex_xpath: 'etree._xpath' = None,
+               complex_xpath: XPathLike = None,
+               filters: FilterType = None,
                create_parents: bool = False,
                occurrences: Union[int, Iterable[int]] = None,
                **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
@@ -42,6 +47,8 @@ def create_tag(xmltree: Union[etree._Element, etree._ElementTree],
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
     :param tag: str of the tag to create or etree Element with the same name to insert
     :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+    :param filters: Dict specifying constraints to apply on the xpath.
+                    See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
     :param create_parents: bool optional (default False), if True and the given xpath has no results the
                            the parent tags are created recursively
     :param occurrences: int or list of int. Which occurence of the parent nodes to create a tag.
@@ -66,7 +73,13 @@ def create_tag(xmltree: Union[etree._Element, etree._ElementTree],
     parent_xpath, tag_name = split_off_tag(base_xpath)
 
     if complex_xpath is None:
-        complex_xpath = parent_xpath
+        complex_xpath = XPathBuilder(parent_xpath, filters=filters)
+    elif filters is not None:
+        if not isinstance(complex_xpath, XPathBuilder):
+            raise ValueError(
+                'Provide only one of filters or complex_xpath (Except when complx_xpath is given as a XPathBuilder)')
+        for key, val in filters.items():
+            complex_xpath.add_filter(key, val)
 
     xmltree = xml_create_tag_schema_dict(xmltree,
                                          schema_dict,
@@ -82,7 +95,8 @@ def create_tag(xmltree: Union[etree._Element, etree._ElementTree],
 def delete_tag(xmltree: Union[etree._Element, etree._ElementTree],
                schema_dict: 'fleur_schema.SchemaDict',
                tag_name: str,
-               complex_xpath: 'etree._xpath' = None,
+               complex_xpath: XPathLike = None,
+               filters: FilterType = None,
                occurrences: Union[int, Iterable[int]] = None,
                **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
     """
@@ -92,6 +106,8 @@ def delete_tag(xmltree: Union[etree._Element, etree._ElementTree],
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
     :param tag: str of the tag to delete
     :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+    :param filters: Dict specifying constraints to apply on the xpath.
+                    See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
     :param occurrences: int or list of int. Which occurence of the parent nodes to delete a tag.
                         By default all nodes are used.
 
@@ -107,19 +123,23 @@ def delete_tag(xmltree: Union[etree._Element, etree._ElementTree],
     base_xpath = schema_dict.tag_xpath(tag_name, **kwargs)
 
     if complex_xpath is None:
-        complex_xpath = base_xpath
-
+        complex_xpath = XPathBuilder(base_xpath, filters=filters)
+    elif filters is not None:
+        if not isinstance(complex_xpath, XPathBuilder):
+            raise ValueError(
+                'Provide only one of filters or complex_xpath (Except when complx_xpath is given as a XPathBuilder)')
+        for key, val in filters.items():
+            complex_xpath.add_filter(key, val)
     check_complex_xpath(xmltree, base_xpath, complex_xpath)
 
-    xmltree = xml_delete_tag(xmltree, complex_xpath, occurrences=occurrences)
-
-    return xmltree
+    return xml_delete_tag(xmltree, complex_xpath, occurrences=occurrences)
 
 
 def delete_att(xmltree: Union[etree._Element, etree._ElementTree],
                schema_dict: 'fleur_schema.SchemaDict',
                attrib_name: str,
-               complex_xpath: 'etree._xpath' = None,
+               complex_xpath: XPathLike = None,
+               filters: FilterType = None,
                occurrences: Union[int, Iterable[int]] = None,
                **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
     """
@@ -129,6 +149,8 @@ def delete_att(xmltree: Union[etree._Element, etree._ElementTree],
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
     :param tag: str of the attribute to delete
     :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+    :param filters: Dict specifying constraints to apply on the xpath.
+                    See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
     :param occurrences: int or list of int. Which occurence of the parent nodes to delete a attribute.
                         By default all nodes are used.
 
@@ -145,24 +167,27 @@ def delete_att(xmltree: Union[etree._Element, etree._ElementTree],
     from masci_tools.util.xml.common_functions import check_complex_xpath, split_off_attrib
 
     base_xpath = schema_dict.attrib_xpath(attrib_name, **kwargs)
-
     tag_xpath, attrib_name = split_off_attrib(base_xpath)
 
     if complex_xpath is None:
-        complex_xpath = tag_xpath
-
+        complex_xpath = XPathBuilder(tag_xpath, filters=filters)
+    elif filters is not None:
+        if not isinstance(complex_xpath, XPathBuilder):
+            raise ValueError(
+                'Provide only one of filters or complex_xpath (Except when complx_xpath is given as a XPathBuilder)')
+        for key, val in filters.items():
+            complex_xpath.add_filter(key, val)
     check_complex_xpath(xmltree, tag_xpath, complex_xpath)
 
-    xmltree = xml_delete_att(xmltree, complex_xpath, attrib_name, occurrences=occurrences)
-
-    return xmltree
+    return xml_delete_att(xmltree, complex_xpath, attrib_name, occurrences=occurrences)
 
 
 def replace_tag(xmltree: Union[etree._Element, etree._ElementTree],
                 schema_dict: 'fleur_schema.SchemaDict',
                 tag_name: str,
                 newelement: etree._Element,
-                complex_xpath: 'etree._xpath' = None,
+                complex_xpath: XPathLike = None,
+                filters: FilterType = None,
                 occurrences: Union[int, Iterable[int]] = None,
                 **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
     """
@@ -173,6 +198,8 @@ def replace_tag(xmltree: Union[etree._Element, etree._ElementTree],
     :param tag: str of the tag to replace
     :param newelement: etree Element to replace the tag
     :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+    :param filters: Dict specifying constraints to apply on the xpath.
+                    See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
     :param occurrences: int or list of int. Which occurence of the parent nodes to replace a tag.
                         By default all nodes are used.
 
@@ -188,20 +215,24 @@ def replace_tag(xmltree: Union[etree._Element, etree._ElementTree],
     base_xpath = schema_dict.tag_xpath(tag_name, **kwargs)
 
     if complex_xpath is None:
-        complex_xpath = base_xpath
-
+        complex_xpath = XPathBuilder(base_xpath, filters=filters)
+    elif filters is not None:
+        if not isinstance(complex_xpath, XPathBuilder):
+            raise ValueError(
+                'Provide only one of filters or complex_xpath (Except when complx_xpath is given as a XPathBuilder)')
+        for key, val in filters.items():
+            complex_xpath.add_filter(key, val)
     check_complex_xpath(xmltree, base_xpath, complex_xpath)
 
-    xmltree = xml_replace_tag(xmltree, complex_xpath, newelement, occurrences=occurrences)
-
-    return xmltree
+    return xml_replace_tag(xmltree, complex_xpath, newelement, occurrences=occurrences)
 
 
 def add_number_to_attrib(xmltree: Union[etree._Element, etree._ElementTree],
                          schema_dict: 'fleur_schema.SchemaDict',
                          attributename: str,
                          add_number: Any,
-                         complex_xpath: 'etree._xpath' = None,
+                         complex_xpath: XPathLike = None,
+                         filters: FilterType = None,
                          mode: Literal['abs', 'rel'] = 'abs',
                          occurrences: Union[int, Iterable[int]] = None,
                          **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
@@ -215,6 +246,8 @@ def add_number_to_attrib(xmltree: Union[etree._Element, etree._ElementTree],
     :param attributename: the attribute name to change
     :param add_number: number to add/multiply with the old attribute value
     :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+    :param filters: Dict specifying constraints to apply on the xpath.
+                    See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
     :param mode: str (either `rel` or `abs`).
                  `rel` multiplies the old value with `add_number`
                  `abs` adds the old value and `add_number`
@@ -233,29 +266,33 @@ def add_number_to_attrib(xmltree: Union[etree._Element, etree._ElementTree],
     from masci_tools.util.xml.common_functions import split_off_attrib
 
     attrib_xpath = schema_dict.attrib_xpath(attributename, **kwargs)
-
     base_xpath, attributename = split_off_attrib(attrib_xpath)
 
     if complex_xpath is None:
-        complex_xpath = base_xpath
+        complex_xpath = XPathBuilder(base_xpath, filters=filters)
+    elif filters is not None:
+        if not isinstance(complex_xpath, XPathBuilder):
+            raise ValueError(
+                'Provide only one of filters or complex_xpath (Except when complx_xpath is given as a XPathBuilder)')
+        for key, val in filters.items():
+            complex_xpath.add_filter(key, val)
 
-    xmltree = xml_add_number_to_attrib(xmltree,
-                                       schema_dict,
-                                       complex_xpath,
-                                       base_xpath,
-                                       attributename,
-                                       add_number,
-                                       mode=mode,
-                                       occurrences=occurrences)
-
-    return xmltree
+    return xml_add_number_to_attrib(xmltree,
+                                    schema_dict,
+                                    complex_xpath,
+                                    base_xpath,
+                                    attributename,
+                                    add_number,
+                                    mode=mode,
+                                    occurrences=occurrences)
 
 
 def add_number_to_first_attrib(xmltree: Union[etree._Element, etree._ElementTree],
                                schema_dict: 'fleur_schema.SchemaDict',
                                attributename: str,
                                add_number: Any,
-                               complex_xpath: 'etree._xpath' = None,
+                               complex_xpath: XPathLike = None,
+                               filters: FilterType = None,
                                mode: Literal['abs', 'rel'] = 'abs',
                                **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
     """
@@ -288,6 +325,7 @@ def add_number_to_first_attrib(xmltree: Union[etree._Element, etree._ElementTree
                                 complex_xpath=complex_xpath,
                                 mode=mode,
                                 occurrences=0,
+                                filters=filters,
                                 **kwargs)
 
 
@@ -295,7 +333,8 @@ def set_attrib_value(xmltree: Union[etree._Element, etree._ElementTree],
                      schema_dict: 'fleur_schema.SchemaDict',
                      attributename: str,
                      attribv: Any,
-                     complex_xpath: 'etree._xpath' = None,
+                     complex_xpath: XPathLike = None,
+                     filters: FilterType = None,
                      occurrences: Union[int, Iterable[int]] = None,
                      create: bool = False,
                      **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
@@ -312,6 +351,8 @@ def set_attrib_value(xmltree: Union[etree._Element, etree._ElementTree],
     :param attributename: the attribute name to set
     :param attribv: value or list of values to set
     :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+    :param filters: Dict specifying constraints to apply on the xpath.
+                    See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
     :param occurrences: int or list of int. Which occurence of the node to set. By default all are set.
     :param create: bool optional (default False), if True the tag is created if is missing
 
@@ -331,35 +372,36 @@ def set_attrib_value(xmltree: Union[etree._Element, etree._ElementTree],
     #(Also implemented here to not confuse users since it would only work in set_inpchanges otherwise)
     if attributename == 'xcFunctional':
         attributename = 'name'
-        if 'exclude' not in kwargs:
-            kwargs['exclude'] = ['other']
-        elif 'other' not in kwargs['exclude']:
-            kwargs['exclude'].append('other')
+        kwargs.setdefault('exclude', []).append('other')
 
     base_xpath = schema_dict.attrib_xpath(attributename, **kwargs)
-
     base_xpath, attributename = split_off_attrib(base_xpath)
 
     if complex_xpath is None:
-        complex_xpath = base_xpath
+        complex_xpath = XPathBuilder(base_xpath, filters=filters)
+    elif filters is not None:
+        if not isinstance(complex_xpath, XPathBuilder):
+            raise ValueError(
+                'Provide only one of filters or complex_xpath (Except when complx_xpath is given as a XPathBuilder)')
+        for key, val in filters.items():
+            complex_xpath.add_filter(key, val)
 
-    xmltree = xml_set_attrib_value(xmltree,
-                                   schema_dict,
-                                   complex_xpath,
-                                   base_xpath,
-                                   attributename,
-                                   attribv,
-                                   occurrences=occurrences,
-                                   create=create)
-
-    return xmltree
+    return xml_set_attrib_value(xmltree,
+                                schema_dict,
+                                complex_xpath,
+                                base_xpath,
+                                attributename,
+                                attribv,
+                                occurrences=occurrences,
+                                create=create)
 
 
 def set_first_attrib_value(xmltree: Union[etree._Element, etree._ElementTree],
                            schema_dict: 'fleur_schema.SchemaDict',
                            attributename: str,
                            attribv: Any,
-                           complex_xpath: 'etree._xpath' = None,
+                           complex_xpath: XPathLike = None,
+                           filters: FilterType = None,
                            create: bool = False,
                            **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
     """
@@ -375,6 +417,8 @@ def set_first_attrib_value(xmltree: Union[etree._Element, etree._ElementTree],
     :param attributename: the attribute name to set
     :param attribv: value or list of values to set
     :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+    :param filters: Dict specifying constraints to apply on the xpath.
+                    See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
     :param create: bool optional (default False), if True the tag is created if is missing
 
     Kwargs:
@@ -393,6 +437,7 @@ def set_first_attrib_value(xmltree: Union[etree._Element, etree._ElementTree],
                             complex_xpath=complex_xpath,
                             create=create,
                             occurrences=0,
+                            filters=filters,
                             **kwargs)
 
 
@@ -400,7 +445,8 @@ def set_text(xmltree: Union[etree._Element, etree._ElementTree],
              schema_dict: 'fleur_schema.SchemaDict',
              tag_name: str,
              text: Any,
-             complex_xpath: 'etree._xpath' = None,
+             complex_xpath: XPathLike = None,
+             filters: FilterType = None,
              occurrences: Union[int, Iterable[int]] = None,
              create: bool = False,
              **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
@@ -417,6 +463,8 @@ def set_text(xmltree: Union[etree._Element, etree._ElementTree],
     :param tag_name: str name of the tag, where the text should be set
     :param text: value or list of values to set
     :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+    :param filters: Dict specifying constraints to apply on the xpath.
+                    See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
     :param occurrences: int or list of int. Which occurence of the node to set. By default all are set.
     :param create: bool optional (default False), if True the tag is created if is missing
 
@@ -431,24 +479,23 @@ def set_text(xmltree: Union[etree._Element, etree._ElementTree],
     base_xpath = schema_dict.tag_xpath(tag_name, **kwargs)
 
     if complex_xpath is None:
-        complex_xpath = base_xpath
+        complex_xpath = XPathBuilder(base_xpath, filters=filters)
+    elif filters is not None:
+        if not isinstance(complex_xpath, XPathBuilder):
+            raise ValueError(
+                'Provide only one of filters or complex_xpath (Except when complx_xpath is given as a XPathBuilder)')
+        for key, val in filters.items():
+            complex_xpath.add_filter(key, val)
 
-    xmltree = xml_set_text(xmltree,
-                           schema_dict,
-                           complex_xpath,
-                           base_xpath,
-                           text,
-                           occurrences=occurrences,
-                           create=create)
-
-    return xmltree
+    return xml_set_text(xmltree, schema_dict, complex_xpath, base_xpath, text, occurrences=occurrences, create=create)
 
 
 def set_first_text(xmltree: Union[etree._Element, etree._ElementTree],
                    schema_dict: 'fleur_schema.SchemaDict',
                    attributename: str,
                    attribv: Any,
-                   complex_xpath: 'etree._xpath' = None,
+                   complex_xpath: XPathLike = None,
+                   filters: FilterType = None,
                    create: bool = False,
                    **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
     """
@@ -464,6 +511,8 @@ def set_first_text(xmltree: Union[etree._Element, etree._ElementTree],
     :param tag_name: str name of the tag, where the text should be set
     :param text: value or list of values to set
     :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+    :param filters: Dict specifying constraints to apply on the xpath.
+                    See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
     :param create: bool optional (default False), if True the tag is created if is missing
 
     Kwargs:
@@ -479,6 +528,7 @@ def set_first_text(xmltree: Union[etree._Element, etree._ElementTree],
                     complex_xpath=complex_xpath,
                     create=create,
                     occurrences=0,
+                    filters=filters,
                     **kwargs)
 
 
@@ -486,7 +536,8 @@ def set_simple_tag(xmltree: Union[etree._Element, etree._ElementTree],
                    schema_dict: 'fleur_schema.SchemaDict',
                    tag_name: str,
                    changes: Union[List[Dict[str, Any]], Dict[str, Any]],
-                   complex_xpath: 'etree._xpath' = None,
+                   complex_xpath: XPathLike = None,
+                   filters: FilterType = None,
                    create_parents: bool = False,
                    **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
     """
@@ -501,6 +552,8 @@ def set_simple_tag(xmltree: Union[etree._Element, etree._ElementTree],
     :param changes: list of dicts or dict with the changes. Elements in list describe multiple tags.
                     Keys in the dictionary correspond to {'attributename': attributevalue}
     :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+    :param filters: Dict specifying constraints to apply on the xpath.
+                    See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
     :param create_parents: bool optional (default False), if True and the path, where the simple tags are
                            set does not exist it is created
 
@@ -523,7 +576,13 @@ def set_simple_tag(xmltree: Union[etree._Element, etree._ElementTree],
     assert len(tag_info['simple'] | tag_info['complex']) == 0, f"Given tag '{tag_name}' is not simple"
 
     if complex_xpath is None:
-        complex_xpath = parent_xpath
+        complex_xpath = XPathBuilder(parent_xpath, filters=filters)
+    elif filters is not None:
+        if not isinstance(complex_xpath, XPathBuilder):
+            raise ValueError(
+                'Provide only one of filters or complex_xpath (Except when complx_xpath is given as a XPathBuilder)')
+        for key, val in filters.items():
+            complex_xpath.add_filter(key, val)
 
     return xml_set_simple_tag(xmltree,
                               schema_dict,
@@ -538,7 +597,8 @@ def set_complex_tag(xmltree: Union[etree._Element, etree._ElementTree],
                     schema_dict: 'fleur_schema.SchemaDict',
                     tag_name: str,
                     changes: Dict[str, Any],
-                    complex_xpath: 'etree._xpath' = None,
+                    complex_xpath: XPathLike = None,
+                    filters: FilterType = None,
                     create: bool = False,
                     **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
     """
@@ -560,6 +620,8 @@ def set_complex_tag(xmltree: Union[etree._Element, etree._ElementTree],
     :param attributedict: Keys in the dictionary correspond to names of tags and the values are the modifications
                           to do on this tag (attributename, subdict with changes to the subtag, ...)
     :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+    :param filters: Dict specifying constraints to apply on the xpath.
+                    See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
     :param create: bool optional (default False), if True and the path, where the complex tag is
                    set does not exist it is created
 
@@ -574,7 +636,13 @@ def set_complex_tag(xmltree: Union[etree._Element, etree._ElementTree],
     base_xpath = schema_dict.tag_xpath(tag_name, **kwargs)
 
     if complex_xpath is None:
-        complex_xpath = base_xpath
+        complex_xpath = XPathBuilder(base_xpath, filters=filters)
+    elif filters is not None:
+        if not isinstance(complex_xpath, XPathBuilder):
+            raise ValueError(
+                'Provide only one of filters or complex_xpath (Except when complx_xpath is given as a XPathBuilder)')
+        for key, val in filters.items():
+            complex_xpath.add_filter(key, val)
 
     return xml_set_complex_tag(xmltree, schema_dict, complex_xpath, base_xpath, changes, create=create)
 
@@ -596,29 +664,24 @@ def set_species_label(xmltree: Union[etree._Element, etree._ElementTree],
 
     :returns: xml etree of the new inp.xml
     """
-    from masci_tools.util.schema_dict_util import tag_exists, eval_simple_xpath
-    from masci_tools.util.xml.common_functions import get_xml_attribute
+    from masci_tools.util.schema_dict_util import tag_exists, evaluate_attribute
 
     if atom_label == 'all':
         return set_species(xmltree, schema_dict, 'all', attributedict, create=create)
 
-    atom_label = f'{atom_label: >20}'
-    all_groups: List[etree._Element] = eval_simple_xpath(xmltree, schema_dict, 'atomGroup',
-                                                         list_return=True)  #type:ignore
+    film = tag_exists(xmltree, schema_dict, 'filmPos')
+    label_path = f"/{'filmPos' if film else 'relPos'}/@label"
 
-    species_to_set: Set[str] = set()
-
-    # set all species, where given label is present
-    for group in all_groups:
-        if tag_exists(group, schema_dict, 'filmPos'):
-            atoms: List[etree._Element] = eval_simple_xpath(group, schema_dict, 'filmPos',
-                                                            list_return=True)  #type:ignore
-        else:
-            atoms = eval_simple_xpath(group, schema_dict, 'relPos', list_return=True)  #type:ignore
-        for atom in atoms:
-            label = get_xml_attribute(atom, 'label')
-            if label == atom_label:
-                species_to_set.add(get_xml_attribute(group, 'species'))  #type:ignore
+    species_to_set = set(
+        evaluate_attribute(xmltree,
+                           schema_dict,
+                           'species',
+                           filters={'atomGroup': {
+                               label_path: {
+                                   '=': f'{atom_label: >20}'
+                               }
+                           }},
+                           list_return=True))
 
     for species_name in species_to_set:
         xmltree = set_species(xmltree, schema_dict, species_name, attributedict, create=create)
@@ -630,6 +693,7 @@ def set_species(xmltree: Union[etree._Element, etree._ElementTree],
                 schema_dict: 'fleur_schema.SchemaDict',
                 species_name: str,
                 attributedict: Dict[str, Any],
+                filters: FilterType = None,
                 create: bool = False) -> Union[etree._Element, etree._ElementTree]:
     """
     Method to set parameters of a species tag of the fleur inp.xml file.
@@ -640,6 +704,8 @@ def set_species(xmltree: Union[etree._Element, etree._ElementTree],
                          Can be name of the species, 'all' or 'all-<string>' (sets species with the string in the species name)
     :param attributedict: a python dict specifying what you want to change.
     :param create: bool, if species does not exist create it and all subtags?
+    :param filters: Dict specifying constraints to apply on the xpath.
+                    See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
 
     :raises ValueError: if species name is non existent in inp.xml and should not be created.
                         also if other given tags are garbage. (errors from eval_xpath() methods)
@@ -665,15 +731,14 @@ def set_species(xmltree: Union[etree._Element, etree._ElementTree],
 
     base_xpath_species = schema_dict.tag_xpath('species')
 
+    xpath_species = XPathBuilder(base_xpath_species, strict=True, filters=filters)
     # TODO lowercase everything
     # TODO make a general specifier for species, not only the name i.e. also
     # number, other parameters
-    if species_name == 'all':
-        xpath_species = base_xpath_species
-    elif species_name[:4] == 'all-':  #format all-<string>
-        xpath_species = f'{base_xpath_species}[contains(@name,"{species_name[4:]}")]'
-    else:
-        xpath_species = f'{base_xpath_species}[@name = "{species_name}"]'
+    if species_name[:4] == 'all-':  #format all-<string>
+        xpath_species.add_filter('species', {'name': {'contains': species_name[4:]}})
+    elif species_name != 'all':
+        xpath_species.add_filter('species', {'name': {'=': species_name}})
 
     return xml_set_complex_tag(xmltree, schema_dict, xpath_species, base_xpath_species, attributedict, create=create)
 
@@ -753,8 +818,7 @@ def shift_value_species_label(xmltree: Union[etree._Element, etree._ElementTree]
 
     :returns: xml etree of the new inp.xml
     """
-    from masci_tools.util.schema_dict_util import tag_exists, eval_simple_xpath
-    from masci_tools.util.xml.common_functions import get_xml_attribute
+    from masci_tools.util.schema_dict_util import tag_exists, evaluate_attribute
     from masci_tools.util.xml.xml_setters_xpaths import xml_add_number_to_first_attrib
     from masci_tools.util.xml.common_functions import split_off_attrib
 
@@ -767,33 +831,20 @@ def shift_value_species_label(xmltree: Union[etree._Element, etree._ElementTree]
     else:
         kwargs['contains'] = 'species'
 
-    species_base_path = schema_dict.tag_xpath('species')
     attr_base_path = schema_dict.attrib_xpath(attributename, **kwargs)
     tag_base_xpath, attributename = split_off_attrib(attr_base_path)
 
+    film = tag_exists(xmltree, schema_dict, 'filmPos')
+    label_path = f"/{'filmPos' if film else 'relPos'}/@label"
+    filters = None
     if atom_label != 'all':
-        atom_label = f'{atom_label: >20}'
-    all_groups: List[etree._Element] = eval_simple_xpath(xmltree, schema_dict, 'atomGroup',
-                                                         list_return=True)  #type:ignore
+        filters = {'atomGroup': {label_path: {'=': f'{atom_label: >20}'}}}
 
-    species_to_set = set()
-
-    for group in all_groups:
-        if tag_exists(group, schema_dict, 'filmPos'):
-            atoms: List[etree._Element] = eval_simple_xpath(group, schema_dict, 'filmPos',
-                                                            list_return=True)  #type:ignore
-        else:
-            atoms = eval_simple_xpath(group, schema_dict, 'relPos', list_return=True)  #type:ignore
-        for atom in atoms:
-            label = get_xml_attribute(atom, 'label')
-            if atom_label in ('all', label):
-                species_to_set.add(get_xml_attribute(group, 'species'))
+    species_to_set = set(evaluate_attribute(xmltree, schema_dict, 'species', filters=filters, list_return=True))
 
     for species_name in species_to_set:
 
-        xpath_species = f'{species_base_path}[@name="{species_name}"]'
-        tag_xpath = tag_base_xpath.replace(species_base_path, xpath_species)
-
+        tag_xpath = XPathBuilder(tag_base_xpath, strict=True, filters={'species': {'name': {'=': species_name}}})
         xmltree = xml_add_number_to_first_attrib(xmltree,
                                                  schema_dict,
                                                  tag_xpath,
@@ -829,35 +880,20 @@ def set_atomgroup_label(xmltree: Union[etree._Element, etree._ElementTree],
         'attributedict': {'nocoParams': {'beta': val}}
 
     """
-    from masci_tools.util.schema_dict_util import tag_exists, eval_simple_xpath
-    from masci_tools.util.xml.common_functions import get_xml_attribute
-
+    from masci_tools.util.schema_dict_util import tag_exists
     if atom_label == 'all':
-        xmltree = set_atomgroup(xmltree, schema_dict, attributedict, position=None, species='all')
-        return xmltree
+        return set_atomgroup(xmltree, schema_dict, attributedict, position=None, species='all')
+    film = tag_exists(xmltree, schema_dict, 'filmPos')
+    label_path = f"/{'filmPos' if film else 'relPos'}/@label"
 
-    atom_label = f'{atom_label: >20}'
-    all_groups: List[etree._Element] = eval_simple_xpath(xmltree, schema_dict, 'atomGroup',
-                                                         list_return=True)  #type:ignore
-
-    species_to_set = set()
-
-    # set all species, where given label is present
-    for group in all_groups:
-        if tag_exists(group, schema_dict, 'filmPos'):
-            atoms: List[etree._Element] = eval_simple_xpath(group, schema_dict, 'filmPos',
-                                                            list_return=True)  #type:ignore
-        else:
-            atoms = eval_simple_xpath(group, schema_dict, 'relPos', list_return=True)  #type:ignore
-        for atom in atoms:
-            label = get_xml_attribute(atom, 'label')
-            if label == atom_label:
-                species_to_set.add(get_xml_attribute(group, 'species'))
-
-    for species_name in species_to_set:
-        xmltree = set_atomgroup(xmltree, schema_dict, attributedict, position=None, species=species_name)
-
-    return xmltree
+    return set_atomgroup(xmltree,
+                         schema_dict,
+                         attributedict,
+                         filters={'atomGroup': {
+                             label_path: {
+                                 '=': f'{atom_label: >20}'
+                             }
+                         }})
 
 
 def set_atomgroup(xmltree: Union[etree._Element, etree._ElementTree],
@@ -865,6 +901,7 @@ def set_atomgroup(xmltree: Union[etree._Element, etree._ElementTree],
                   attributedict: Dict[str, Any],
                   position: Union[int, Literal['all']] = None,
                   species: str = None,
+                  filters: FilterType = None,
                   create: bool = False) -> Union[etree._Element, etree._ElementTree]:
     """
     Method to set parameters of an atom group of the fleur inp.xml file.
@@ -875,6 +912,8 @@ def set_atomgroup(xmltree: Union[etree._Element, etree._ElementTree],
     :param position: position of an atom group to be changed. If equals to 'all', all species will be changed
     :param species: atom groups, corresponding to the given species will be changed
     :param create: bool, if species does not exist create it and all subtags?
+    :param filters: Dict specifying constraints to apply on the xpath.
+                    See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
 
     :returns: xml etree of the new inp.xml
 
@@ -888,20 +927,18 @@ def set_atomgroup(xmltree: Union[etree._Element, etree._ElementTree],
     from masci_tools.util.xml.xml_setters_xpaths import xml_set_complex_tag
 
     atomgroup_base_path = schema_dict.tag_xpath('atomGroup')
-    atomgroup_xpath = atomgroup_base_path
+    atomgroup_xpath = XPathBuilder(atomgroup_base_path, strict=True, filters=filters)
 
-    if not position and not species:  # not specfied what to change
+    if not position and not species and not filters:  # not specfied what to change
         return xmltree
 
-    if position:
-        if not position == 'all':
-            atomgroup_xpath = f'{atomgroup_base_path}[{position}]'
-    if species:
-        if not species == 'all':
-            if species[:4] == 'all-':  #format all-<string>
-                atomgroup_xpath = f'{atomgroup_base_path}[contains(@species,"{species[4:]}")]'
-            else:
-                atomgroup_xpath = f'{atomgroup_base_path}[@species = "{species}"]'
+    if position and position != 'all':
+        atomgroup_xpath.add_filter('atomGroup', {'index': position})
+    if species and species != 'all':
+        if species[:4] == 'all-':  #format all-<string>
+            atomgroup_xpath.add_filter('atomGroup', {'species': {'contains': species[4:]}})
+        else:
+            atomgroup_xpath.add_filter('atomGroup', {'species': {'=': species}})
 
     species_change = dict(attributedict).pop('species', None)  #dict to avoid mutating attributedict
     if species_change is not None:
@@ -938,39 +975,24 @@ def switch_species_label(xmltree: Union[etree._Element, etree._ElementTree],
 
     :returns: xml etree of the new inp.xml
     """
-    from masci_tools.util.schema_dict_util import tag_exists, eval_simple_xpath
-    from masci_tools.util.xml.common_functions import get_xml_attribute
+    from masci_tools.util.schema_dict_util import tag_exists
 
     if atom_label == 'all':
         return switch_species(xmltree, schema_dict, new_species_name, species='all', clone=clone, changes=changes)
 
-    atom_label = f'{atom_label: >20}'
-    all_groups: List[etree._Element] = eval_simple_xpath(xmltree, schema_dict, 'atomGroup',
-                                                         list_return=True)  #type:ignore
+    film = tag_exists(xmltree, schema_dict, 'filmPos')
+    label_path = f"/{'filmPos' if film else 'relPos'}/@label"
 
-    species_to_set = set()
-
-    # set all species, where given label is present
-    for group in all_groups:
-        if tag_exists(group, schema_dict, 'filmPos'):
-            atoms: List[etree._Element] = eval_simple_xpath(group, schema_dict, 'filmPos',
-                                                            list_return=True)  #type:ignore
-        else:
-            atoms = eval_simple_xpath(group, schema_dict, 'relPos', list_return=True)  #type:ignore
-        for atom in atoms:
-            label = get_xml_attribute(atom, 'label')
-            if label == atom_label:
-                species_to_set.add(get_xml_attribute(group, 'species'))
-
-    for species_name in species_to_set:
-        xmltree = switch_species(xmltree,
-                                 schema_dict,
-                                 new_species_name,
-                                 species=species_name,
-                                 clone=clone,
-                                 changes=changes)
-
-    return xmltree
+    return switch_species(xmltree,
+                          schema_dict,
+                          new_species_name,
+                          clone=clone,
+                          changes=changes,
+                          filters={'atomGroup': {
+                              label_path: {
+                                  '=': f'{atom_label: >20}'
+                              }
+                          }})
 
 
 def switch_species(xmltree: Union[etree._Element, etree._ElementTree],
@@ -978,6 +1000,7 @@ def switch_species(xmltree: Union[etree._Element, etree._ElementTree],
                    new_species_name: str,
                    position: Union[int, Literal['all']] = None,
                    species: str = None,
+                   filters: FilterType = None,
                    clone: bool = False,
                    changes: Dict[str, Any] = None) -> Union[etree._Element, etree._ElementTree]:
     """
@@ -991,30 +1014,31 @@ def switch_species(xmltree: Union[etree._Element, etree._ElementTree],
     :param clone: if True and the new species name does not exist and it corresponds to changing
                   from one species the species will be cloned with :py:func:`clone_species()`
     :param changes: changes to do if the species is cloned
+    :param filters: Dict specifying constraints to apply on the xpath.
+                    See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
 
     :returns: xml etree of the new inp.xml
     """
     from masci_tools.util.schema_dict_util import evaluate_attribute
     from masci_tools.util.xml.xml_setters_xpaths import xml_set_attrib_value
+    from masci_tools.util.xml.common_functions import add_tag
 
     atomgroup_base_path = schema_dict.tag_xpath('atomGroup')
-    atomgroup_xpath = atomgroup_base_path
+    atomgroup_xpath = XPathBuilder(atomgroup_base_path, strict=False, filters=filters)
 
     if not clone and changes is not None:
         raise ValueError('changes should only be passed with clone=True')
 
-    if not position and not species:  # not specfied what to change
+    if not position and not species and not filters:  # not specfied what to change
         return xmltree
 
-    if position:
-        if not position == 'all':
-            atomgroup_xpath = f'{atomgroup_base_path}[{position}]'
-    if species:
-        if not species == 'all':
-            if species[:4] == 'all-':  #format all-<string>
-                atomgroup_xpath = f'{atomgroup_base_path}[contains(@species,"{species[4:]}")]'
-            else:
-                atomgroup_xpath = f'{atomgroup_base_path}[@species = "{species}"]'
+    if position and position != 'all':
+        atomgroup_xpath.add_filter('atomGroup', {'index': position})
+    if species and species != 'all':
+        if species[:4] == 'all-':  #format all-<string>
+            atomgroup_xpath.add_filter('atomGroup', {'species': {'contains': species[4:]}})
+        else:
+            atomgroup_xpath.add_filter('atomGroup', {'species': {'=': species}})
 
     existing_names = set(evaluate_attribute(xmltree, schema_dict, 'name', contains='species', list_return=True))
     if new_species_name not in existing_names:
@@ -1024,9 +1048,8 @@ def switch_species(xmltree: Union[etree._Element, etree._ElementTree],
         changed_names = set(
             evaluate_attribute(xmltree,
                                schema_dict,
-                               'name',
-                               contains='species',
-                               complex_xpath=f'{atomgroup_xpath}/@species',
+                               'species',
+                               complex_xpath=add_tag(atomgroup_xpath, '@species'),
                                list_return=True))
         if len(changed_names) > 1:
             raise ValueError('Cannot clone species, since name change does not correspond to one species')
@@ -1070,11 +1093,7 @@ def shift_value(xmltree: Union[etree._Element, etree._ElementTree],
 
         key_spec = path_spec_case.get(key, {})
         #This method only support unique and unique_path attributes
-        if 'exclude' not in key_spec:
-            key_spec['exclude'] = ['other']
-        elif 'other' not in key_spec['exclude']:
-            key_spec['exclude'].append('other')
-
+        key_spec.setdefault('exclude', []).append('other')
         xmltree = add_number_to_first_attrib(xmltree, schema_dict, key, value_given, mode=mode, **key_spec)
 
     return xmltree
@@ -1121,24 +1140,16 @@ def set_inpchanges(xmltree: Union[etree._Element, etree._ElementTree],
             raise ValueError(f"You try to set the key:'{key}' to : '{change_value}', but the key is unknown"
                              ' to the fleur plug-in')
 
-        text_attrib = key not in schema_dict['attrib_types']
-
         key_spec = path_spec_case.get(key, {})
         #This method only support unique and unique_path attributes
-        if 'exclude' not in key_spec:
-            key_spec['exclude'] = ['other']
-        elif 'other' not in key_spec['exclude']:
-            key_spec['exclude'].append('other')
+        key_spec.setdefault('exclude', []).append('other')
 
         key_xpath = schema_dict.attrib_xpath(key, **key_spec)
-
-        if not text_attrib:
-            #Split up path into tag path and attribute name (original name of key could have different cases)
-            key_xpath, key = split_off_attrib(key_xpath)
-
-        if text_attrib:
+        if key not in schema_dict['attrib_types']:
             xml_set_first_text(xmltree, schema_dict, key_xpath, key_xpath, change_value)
         else:
+            #Split up path into tag path and attribute name (original name of key could have different cases)
+            key_xpath, key = split_off_attrib(key_xpath)
             xml_set_first_attrib_value(xmltree, schema_dict, key_xpath, key_xpath, key, change_value)
 
     return xmltree

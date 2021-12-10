@@ -124,7 +124,7 @@ def test_get_parameter_data(load_inpxml, inpxmlfilepath):
     para = get_parameter_data(xmltree, schema_dict)
 
     assert isinstance(para, dict)
-    assert para != {}
+    assert len(para) != 0
 
 
 @pytest.mark.parametrize('inpxmlfilepath', inpxmlfilelist)
@@ -139,7 +139,7 @@ def test_get_fleur_modes(load_inpxml, inpxmlfilepath):
     modes = get_fleur_modes(xmltree, schema_dict)
 
     assert isinstance(modes, dict)
-    assert modes != {}
+    assert len(modes) != 0
 
 
 @pytest.mark.parametrize('inpxmlfilepath', inpxmlfilelist)

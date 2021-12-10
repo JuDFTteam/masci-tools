@@ -19,16 +19,19 @@ try:
     from typing import Literal
 except ImportError:
     from typing_extensions import Literal  #type:ignore
-from lxml import etree
-from masci_tools.util.xml.common_functions import eval_xpath
+
+from masci_tools.util.xml.xpathbuilder import XPathBuilder
+from masci_tools.util.typing import XPathLike
+from masci_tools.util.xml.common_functions import eval_xpath, add_tag
 from masci_tools.io.parsers import fleur_schema
-######################CREATING/DELETING TAGS###############################################
+
+from lxml import etree
 
 
 def xml_create_tag_schema_dict(
         xmltree: Union[etree._Element, etree._ElementTree],
         schema_dict: 'fleur_schema.SchemaDict',
-        xpath: 'etree._xpath',
+        xpath: XPathLike,
         base_xpath: str,
         element: Union[str, etree._Element],
         create_parents: bool = False,
@@ -88,7 +91,7 @@ def xml_create_tag_schema_dict(
     if len(parent_nodes) == 0:
         if create_parents:
             parent_xpath, parent_name = split_off_tag(base_xpath)
-            complex_parent_xpath, _ = split_off_tag(str(xpath))
+            complex_parent_xpath, _ = split_off_tag(xpath)
             xmltree = xml_create_tag_schema_dict(xmltree,
                                                  schema_dict,
                                                  complex_parent_xpath,
@@ -106,7 +109,7 @@ def xml_create_tag_schema_dict(
 
 def eval_xpath_create(xmltree: Union[etree._Element, etree._ElementTree],
                       schema_dict: 'fleur_schema.SchemaDict',
-                      xpath: 'etree._xpath',
+                      xpath: XPathLike,
                       base_xpath: str,
                       create_parents: bool = False,
                       occurrences: Union[int, Iterable[int]] = None,
@@ -136,7 +139,7 @@ def eval_xpath_create(xmltree: Union[etree._Element, etree._ElementTree],
 
     if len(nodes) == 0:
         parent_xpath, tag_name = split_off_tag(base_xpath)
-        complex_parent_xpath, _ = split_off_tag(str(xpath))
+        complex_parent_xpath, _ = split_off_tag(xpath)
         xmltree = xml_create_tag_schema_dict(xmltree,
                                              schema_dict,
                                              complex_parent_xpath,
@@ -155,7 +158,7 @@ def eval_xpath_create(xmltree: Union[etree._Element, etree._ElementTree],
 
 def xml_set_attrib_value(xmltree: Union[etree._Element, etree._ElementTree],
                          schema_dict: 'fleur_schema.SchemaDict',
-                         xpath: 'etree._xpath',
+                         xpath: XPathLike,
                          base_xpath: str,
                          attributename: str,
                          attribv: Any,
@@ -226,7 +229,7 @@ def xml_set_attrib_value(xmltree: Union[etree._Element, etree._ElementTree],
 
 def xml_set_first_attrib_value(xmltree: Union[etree._Element, etree._ElementTree],
                                schema_dict: 'fleur_schema.SchemaDict',
-                               xpath: 'etree._xpath',
+                               xpath: XPathLike,
                                base_xpath: str,
                                attributename: str,
                                attribv: Any,
@@ -265,7 +268,7 @@ def xml_set_first_attrib_value(xmltree: Union[etree._Element, etree._ElementTree
 
 def xml_set_text(xmltree: Union[etree._Element, etree._ElementTree],
                  schema_dict: 'fleur_schema.SchemaDict',
-                 xpath: 'etree._xpath',
+                 xpath: XPathLike,
                  base_xpath: str,
                  text: Any,
                  occurrences: Union[int, Iterable[int]] = None,
@@ -324,7 +327,7 @@ def xml_set_text(xmltree: Union[etree._Element, etree._ElementTree],
 
 def xml_set_first_text(xmltree: Union[etree._Element, etree._ElementTree],
                        schema_dict: 'fleur_schema.SchemaDict',
-                       xpath: 'etree._xpath',
+                       xpath: XPathLike,
                        base_xpath: str,
                        text: Any,
                        create: bool = False) -> Union[etree._Element, etree._ElementTree]:
@@ -353,7 +356,7 @@ def xml_set_first_text(xmltree: Union[etree._Element, etree._ElementTree],
 def xml_add_number_to_attrib(
         xmltree: Union[etree._Element, etree._ElementTree],
         schema_dict: 'fleur_schema.SchemaDict',
-        xpath: 'etree._xpath',
+        xpath: XPathLike,
         base_xpath: str,
         attributename: str,
         add_number: Any,
@@ -413,12 +416,15 @@ def xml_add_number_to_attrib(
             f'Allowed attributes are: {attribs.original_case.values()}')
     attributename = attribs.original_case[attributename]
 
-    if not str(xpath).endswith(f'/@{attributename}'):
+    if isinstance(xpath, XPathBuilder):
+        if '@' not in xpath.components[-1]:
+            xpath.append_tag(f'@{attributename}')
+    elif not str(xpath).endswith(f'/@{attributename}'):
         xpath = '/@'.join([str(xpath), attributename])
 
     stringattribute: List[str] = eval_xpath(xmltree, xpath, list_return=True)  #type:ignore
 
-    tag_xpath, attributename = split_off_attrib(str(xpath))
+    tag_xpath, attributename = split_off_attrib(xpath)
 
     if len(stringattribute) == 0:
         raise ValueError(f"No attribute values found for '{attributename}'. Cannot add number")
@@ -464,7 +470,7 @@ def xml_add_number_to_attrib(
 
 def xml_add_number_to_first_attrib(xmltree: Union[etree._Element, etree._ElementTree],
                                    schema_dict: 'fleur_schema.SchemaDict',
-                                   xpath: 'etree._xpath',
+                                   xpath: XPathLike,
                                    base_xpath: str,
                                    attributename: str,
                                    add_number: Any,
@@ -501,7 +507,7 @@ def xml_add_number_to_first_attrib(xmltree: Union[etree._Element, etree._Element
 
 def xml_set_simple_tag(xmltree: Union[etree._Element, etree._ElementTree],
                        schema_dict: 'fleur_schema.SchemaDict',
-                       xpath: 'etree._xpath',
+                       xpath: XPathLike,
                        base_xpath: str,
                        tag_name: str,
                        changes: Union[List[Dict[str, Any]], Dict[str, Any]],
@@ -531,7 +537,7 @@ def xml_set_simple_tag(xmltree: Union[etree._Element, etree._ElementTree],
 
     tag_info = schema_dict['tag_info'][base_xpath]
 
-    tag_xpath = f'{str(xpath)}/{tag_name}'
+    tag_xpath = add_tag(xpath, tag_name)
     tag_base_xpath = f'{base_xpath}/{tag_name}'
 
     if tag_name in tag_info['several']:
@@ -579,7 +585,7 @@ def xml_set_simple_tag(xmltree: Union[etree._Element, etree._ElementTree],
 
 def xml_set_complex_tag(xmltree: Union[etree._Element, etree._ElementTree],
                         schema_dict: 'fleur_schema.SchemaDict',
-                        xpath: 'etree._xpath',
+                        xpath: XPathLike,
                         base_xpath: str,
                         attributedict: Dict[str, Any],
                         create: bool = False) -> Union[etree._Element, etree._ElementTree]:
@@ -629,7 +635,7 @@ def xml_set_complex_tag(xmltree: Union[etree._Element, etree._ElementTree],
 
         key = (tag_info['complex'] | tag_info['simple'] | tag_info['attribs']).original_case[key]
 
-        sub_xpath = f'{str(xpath)}/{key}'
+        sub_xpath = add_tag(xpath, key)
         sub_base_xpath = f'{base_xpath}/{key}'
         if key in tag_info['attribs']:
             xml_set_attrib_value(xmltree, schema_dict, xpath, base_xpath, key, val, create=create)
@@ -660,7 +666,7 @@ def xml_set_complex_tag(xmltree: Union[etree._Element, etree._ElementTree],
 
             for indx, tagdict in enumerate(val):
                 for k in range(len(eval_xpath(xmltree, sub_xpath, list_return=True)) // len(val)):  #type:ignore
-                    current_elem_xpath = f'{sub_xpath}[{k*len(val)+indx+1}]'
+                    current_elem_xpath = f'{str(sub_xpath)}[{k*len(val)+indx+1}]'
                     xmltree = xml_set_complex_tag(xmltree,
                                                   schema_dict,
                                                   current_elem_xpath,

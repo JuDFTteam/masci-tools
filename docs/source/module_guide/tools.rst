@@ -20,6 +20,9 @@ Common XML utility
 .. automodule:: masci_tools.util.xml.converters
    :members:
 
+.. automodule:: masci_tools.util.xml.xpathbuilder
+   :members:
+
 XML Setter functions
 ---------------------
 

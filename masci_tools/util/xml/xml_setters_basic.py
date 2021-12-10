@@ -18,12 +18,14 @@ to do these operations robustly
 """
 from typing import Iterable, Union, List, Any, cast
 from lxml import etree
-from masci_tools.util.xml.common_functions import eval_xpath
 import warnings
+
+from masci_tools.util.typing import XPathLike
+from masci_tools.util.xml.common_functions import eval_xpath
 
 
 def xml_replace_tag(xmltree: Union[etree._Element, etree._ElementTree],
-                    xpath: 'etree._xpath',
+                    xpath: XPathLike,
                     newelement: etree._Element,
                     occurrences: Union[int, Iterable[int]] = None) -> Union[etree._Element, etree._ElementTree]:
     """
@@ -71,7 +73,7 @@ def xml_replace_tag(xmltree: Union[etree._Element, etree._ElementTree],
 
 
 def xml_delete_att(xmltree: Union[etree._Element, etree._ElementTree],
-                   xpath: 'etree._xpath',
+                   xpath: XPathLike,
                    attrib: str,
                    occurrences: Union[int, Iterable[int]] = None) -> Union[etree._Element, etree._ElementTree]:
     """
@@ -112,7 +114,7 @@ def xml_delete_att(xmltree: Union[etree._Element, etree._ElementTree],
 
 
 def xml_delete_tag(xmltree: Union[etree._Element, etree._ElementTree],
-                   xpath: 'etree._xpath',
+                   xpath: XPathLike,
                    occurrences: Union[int, Iterable[int]] = None) -> Union[etree._Element, etree._ElementTree]:
     """
     Deletes a xml tag in an xmletree.
@@ -190,7 +192,7 @@ def _reorder_tags(node: etree._Element, tag_order: List[str]) -> etree._Element:
 
 
 def xml_create_tag(xmltree: Union[etree._Element, etree._ElementTree],
-                   xpath: 'etree._xpath',
+                   xpath: XPathLike,
                    element: Union[str, etree._Element],
                    place_index: int = None,
                    tag_order: List[str] = None,
@@ -323,7 +325,7 @@ def xml_create_tag(xmltree: Union[etree._Element, etree._ElementTree],
 
 def xml_set_attrib_value_no_create(
         xmltree: Union[etree._Element, etree._ElementTree],
-        xpath: 'etree._xpath',
+        xpath: XPathLike,
         attributename: str,
         attribv: Any,
         occurrences: Union[int, Iterable[int]] = None) -> Union[etree._Element, etree._ElementTree]:
@@ -377,7 +379,7 @@ def xml_set_attrib_value_no_create(
 
 
 def xml_set_text_no_create(xmltree: Union[etree._Element, etree._ElementTree],
-                           xpath: 'etree._xpath',
+                           xpath: XPathLike,
                            text: Any,
                            occurrences: Union[int, Iterable[int]] = None) -> Union[etree._Element, etree._ElementTree]:
     """

@@ -22,7 +22,7 @@ def test_fleurxmlmodifier_facade_methods():
 
     actions = fm.get_avail_actions()
 
-    assert fm._tasks == []  #pylint: disable=protected-access
+    assert len(fm._tasks) == 0  #pylint: disable=protected-access
 
     for action in actions.values():
         action('TEST_ARG', random_kwarg='TEST2')
@@ -226,7 +226,7 @@ def test_fleurxml_modifier_modify_xmlfile_undo_revert_all():
 
     fm.undo(revert_all=True)
 
-    assert fm.changes() == []
+    assert len(fm.changes()) == 0
 
     #The underlying methods are tested in the specific tests for the setters
     #We only want to ensure that the procedure finishes without error
