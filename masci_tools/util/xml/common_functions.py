@@ -393,7 +393,7 @@ def add_tag(xpath: TXPathLike, tag: str) -> TXPathLike:
     elif isinstance(xpath, etree.XPath):
         xpath = cast(TXPathLike, etree.XPath(f'{str(xpath.path)}/{tag}'))  #type:ignore [attr-defined]
     else:
-        xpath = cast(TXPathLike, f"{str(xpath.rstrip('/'))}/{tag}")
+        xpath = cast(TXPathLike, f"{str(xpath).rstrip('/')}/{tag}")
     return xpath
 
 
