@@ -265,12 +265,13 @@ def evaluate_attribute(node: Union[etree._Element, etree._ElementTree],
     attrib_xpath = _select_attrib_xpath(node, schema_dict, name, iteration_path=iteration_path, **kwargs)
 
     if complex_xpath is None:
-        complex_xpath = attrib_xpath
-        if filters is not None:
-            complex_xpath = XPathBuilder(complex_xpath, strict=True, filters=filters)
+        complex_xpath = XPathBuilder(attrib_xpath, filters=filters)
     elif filters is not None:
-        raise ValueError('Only provide one of the arguments filters or complex_xpath')
-
+        if not isinstance(complex_xpath, XPathBuilder):
+            raise ValueError(
+                'Provide only one of filters or complex_xpath (Except when complx_xpath is given as a XPathBuilder)')
+        for key, val in filters.items():
+            complex_xpath.add_filter(key, val)
     check_complex_xpath(node, attrib_xpath, complex_xpath)
 
     stringattribute: List[str] = eval_xpath(node, complex_xpath, logger=logger, list_return=True)  #type:ignore
@@ -340,11 +341,13 @@ def evaluate_text(node: Union[etree._Element, etree._ElementTree],
 
     tag_xpath = _select_tag_xpath(node, schema_dict, name, iteration_path=iteration_path, **kwargs)
     if complex_xpath is None:
-        complex_xpath = tag_xpath
-        if filters is not None:
-            complex_xpath = XPathBuilder(complex_xpath, strict=True, filters=filters)
+        complex_xpath = XPathBuilder(tag_xpath, filters=filters)
     elif filters is not None:
-        raise ValueError('Only provide one of the arguments filters or complex_xpath')
+        if not isinstance(complex_xpath, XPathBuilder):
+            raise ValueError(
+                'Provide only one of filters or complex_xpath (Except when complx_xpath is given as a XPathBuilder)')
+        for key, val in filters.items():
+            complex_xpath.add_filter(key, val)
 
     check_complex_xpath(node, tag_xpath, complex_xpath)
 
@@ -428,11 +431,13 @@ def evaluate_tag(node: Union[etree._Element, etree._ElementTree],
 
     tag_xpath = _select_tag_xpath(node, schema_dict, name, iteration_path=iteration_path, **kwargs)
     if complex_xpath is None:
-        complex_xpath = tag_xpath
-        if filters is not None:
-            complex_xpath = XPathBuilder(complex_xpath, strict=True, filters=filters)
+        complex_xpath = XPathBuilder(tag_xpath, filters=filters)
     elif filters is not None:
-        raise ValueError('Only provide one of the arguments filters or complex_xpath')
+        if not isinstance(complex_xpath, XPathBuilder):
+            raise ValueError(
+                'Provide only one of filters or complex_xpath (Except when complx_xpath is given as a XPathBuilder)')
+        for key, val in filters.items():
+            complex_xpath.add_filter(key, val)
 
     check_complex_xpath(node, tag_xpath, complex_xpath)
 
@@ -679,11 +684,13 @@ def evaluate_parent_tag(node: Union[etree._Element, etree._ElementTree],
 
     tag_xpath = _select_tag_xpath(node, schema_dict, name, iteration_path=iteration_path, **kwargs)
     if complex_xpath is None:
-        complex_xpath = tag_xpath
-        if filters is not None:
-            complex_xpath = XPathBuilder(complex_xpath, strict=True, filters=filters)
+        complex_xpath = XPathBuilder(tag_xpath, filters=filters)
     elif filters is not None:
-        raise ValueError('Only provide one of the arguments filters or complex_xpath')
+        if not isinstance(complex_xpath, XPathBuilder):
+            raise ValueError(
+                'Provide only one of filters or complex_xpath (Except when complx_xpath is given as a XPathBuilder)')
+        for key, val in filters.items():
+            complex_xpath.add_filter(key, val)
 
     check_complex_xpath(node, tag_xpath, complex_xpath)
 
@@ -892,10 +899,9 @@ def eval_simple_xpath(node: Union[etree._Element, etree._ElementTree],
 
     list_return = kwargs.pop('list_return', False)
     tag_xpath = _select_tag_xpath(node, schema_dict, name, iteration_path=iteration_path, **kwargs)
-    if filters is not None:
-        tag_xpath = XPathBuilder(tag_xpath, strict=True, filters=filters)  #type:ignore
+    tag_xpath_builder = XPathBuilder(tag_xpath, strict=True, filters=filters)
 
-    return eval_xpath(node, tag_xpath, logger=logger, list_return=list_return)
+    return eval_xpath(node, tag_xpath_builder, logger=logger, list_return=list_return)
 
 
 def _select_tag_xpath(node: Union[etree._Element, etree._ElementTree],

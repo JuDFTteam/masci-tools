@@ -33,6 +33,7 @@ def create_tag(xmltree: Union[etree._Element, etree._ElementTree],
                schema_dict: 'fleur_schema.SchemaDict',
                tag: Union[str, etree._Element],
                complex_xpath: XPathLike = None,
+               filters: FilterType = None,
                create_parents: bool = False,
                occurrences: Union[int, Iterable[int]] = None,
                **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
@@ -70,7 +71,13 @@ def create_tag(xmltree: Union[etree._Element, etree._ElementTree],
     parent_xpath, tag_name = split_off_tag(base_xpath)
 
     if complex_xpath is None:
-        complex_xpath = parent_xpath
+        complex_xpath = XPathBuilder(parent_xpath, filters=filters)
+    elif filters is not None:
+        if not isinstance(complex_xpath, XPathBuilder):
+            raise ValueError(
+                'Provide only one of filters or complex_xpath (Except when complx_xpath is given as a XPathBuilder)')
+        for key, val in filters.items():
+            complex_xpath.add_filter(key, val)
 
     xmltree = xml_create_tag_schema_dict(xmltree,
                                          schema_dict,
@@ -87,6 +94,7 @@ def delete_tag(xmltree: Union[etree._Element, etree._ElementTree],
                schema_dict: 'fleur_schema.SchemaDict',
                tag_name: str,
                complex_xpath: XPathLike = None,
+               filters: FilterType = None,
                occurrences: Union[int, Iterable[int]] = None,
                **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
     """
@@ -111,7 +119,13 @@ def delete_tag(xmltree: Union[etree._Element, etree._ElementTree],
     base_xpath = schema_dict.tag_xpath(tag_name, **kwargs)
 
     if complex_xpath is None:
-        complex_xpath = base_xpath
+        complex_xpath = XPathBuilder(base_xpath, filters=filters)
+    elif filters is not None:
+        if not isinstance(complex_xpath, XPathBuilder):
+            raise ValueError(
+                'Provide only one of filters or complex_xpath (Except when complx_xpath is given as a XPathBuilder)')
+        for key, val in filters.items():
+            complex_xpath.add_filter(key, val)
     check_complex_xpath(xmltree, base_xpath, complex_xpath)
 
     return xml_delete_tag(xmltree, complex_xpath, occurrences=occurrences)
@@ -121,6 +135,7 @@ def delete_att(xmltree: Union[etree._Element, etree._ElementTree],
                schema_dict: 'fleur_schema.SchemaDict',
                attrib_name: str,
                complex_xpath: XPathLike = None,
+               filters: FilterType = None,
                occurrences: Union[int, Iterable[int]] = None,
                **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
     """
@@ -149,7 +164,13 @@ def delete_att(xmltree: Union[etree._Element, etree._ElementTree],
     tag_xpath, attrib_name = split_off_attrib(base_xpath)
 
     if complex_xpath is None:
-        complex_xpath = tag_xpath
+        complex_xpath = XPathBuilder(tag_xpath, filters=filters)
+    elif filters is not None:
+        if not isinstance(complex_xpath, XPathBuilder):
+            raise ValueError(
+                'Provide only one of filters or complex_xpath (Except when complx_xpath is given as a XPathBuilder)')
+        for key, val in filters.items():
+            complex_xpath.add_filter(key, val)
     check_complex_xpath(xmltree, tag_xpath, complex_xpath)
 
     return xml_delete_att(xmltree, complex_xpath, attrib_name, occurrences=occurrences)
@@ -160,6 +181,7 @@ def replace_tag(xmltree: Union[etree._Element, etree._ElementTree],
                 tag_name: str,
                 newelement: etree._Element,
                 complex_xpath: XPathLike = None,
+                filters: FilterType = None,
                 occurrences: Union[int, Iterable[int]] = None,
                 **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
     """
@@ -185,7 +207,13 @@ def replace_tag(xmltree: Union[etree._Element, etree._ElementTree],
     base_xpath = schema_dict.tag_xpath(tag_name, **kwargs)
 
     if complex_xpath is None:
-        complex_xpath = base_xpath
+        complex_xpath = XPathBuilder(base_xpath, filters=filters)
+    elif filters is not None:
+        if not isinstance(complex_xpath, XPathBuilder):
+            raise ValueError(
+                'Provide only one of filters or complex_xpath (Except when complx_xpath is given as a XPathBuilder)')
+        for key, val in filters.items():
+            complex_xpath.add_filter(key, val)
     check_complex_xpath(xmltree, base_xpath, complex_xpath)
 
     return xml_replace_tag(xmltree, complex_xpath, newelement, occurrences=occurrences)
@@ -196,6 +224,7 @@ def add_number_to_attrib(xmltree: Union[etree._Element, etree._ElementTree],
                          attributename: str,
                          add_number: Any,
                          complex_xpath: XPathLike = None,
+                         filters: FilterType = None,
                          mode: Literal['abs', 'rel'] = 'abs',
                          occurrences: Union[int, Iterable[int]] = None,
                          **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
@@ -230,7 +259,13 @@ def add_number_to_attrib(xmltree: Union[etree._Element, etree._ElementTree],
     base_xpath, attributename = split_off_attrib(attrib_xpath)
 
     if complex_xpath is None:
-        complex_xpath = base_xpath
+        complex_xpath = XPathBuilder(base_xpath, filters=filters)
+    elif filters is not None:
+        if not isinstance(complex_xpath, XPathBuilder):
+            raise ValueError(
+                'Provide only one of filters or complex_xpath (Except when complx_xpath is given as a XPathBuilder)')
+        for key, val in filters.items():
+            complex_xpath.add_filter(key, val)
 
     return xml_add_number_to_attrib(xmltree,
                                     schema_dict,
@@ -247,6 +282,7 @@ def add_number_to_first_attrib(xmltree: Union[etree._Element, etree._ElementTree
                                attributename: str,
                                add_number: Any,
                                complex_xpath: XPathLike = None,
+                               filters: FilterType = None,
                                mode: Literal['abs', 'rel'] = 'abs',
                                **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
     """
@@ -279,6 +315,7 @@ def add_number_to_first_attrib(xmltree: Union[etree._Element, etree._ElementTree
                                 complex_xpath=complex_xpath,
                                 mode=mode,
                                 occurrences=0,
+                                filters=filters,
                                 **kwargs)
 
 
@@ -287,6 +324,7 @@ def set_attrib_value(xmltree: Union[etree._Element, etree._ElementTree],
                      attributename: str,
                      attribv: Any,
                      complex_xpath: XPathLike = None,
+                     filters: FilterType = None,
                      occurrences: Union[int, Iterable[int]] = None,
                      create: bool = False,
                      **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
@@ -328,7 +366,13 @@ def set_attrib_value(xmltree: Union[etree._Element, etree._ElementTree],
     base_xpath, attributename = split_off_attrib(base_xpath)
 
     if complex_xpath is None:
-        complex_xpath = base_xpath
+        complex_xpath = XPathBuilder(base_xpath, filters=filters)
+    elif filters is not None:
+        if not isinstance(complex_xpath, XPathBuilder):
+            raise ValueError(
+                'Provide only one of filters or complex_xpath (Except when complx_xpath is given as a XPathBuilder)')
+        for key, val in filters.items():
+            complex_xpath.add_filter(key, val)
 
     return xml_set_attrib_value(xmltree,
                                 schema_dict,
@@ -345,6 +389,7 @@ def set_first_attrib_value(xmltree: Union[etree._Element, etree._ElementTree],
                            attributename: str,
                            attribv: Any,
                            complex_xpath: XPathLike = None,
+                           filters: FilterType = None,
                            create: bool = False,
                            **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
     """
@@ -378,6 +423,7 @@ def set_first_attrib_value(xmltree: Union[etree._Element, etree._ElementTree],
                             complex_xpath=complex_xpath,
                             create=create,
                             occurrences=0,
+                            filters=filters,
                             **kwargs)
 
 
@@ -386,6 +432,7 @@ def set_text(xmltree: Union[etree._Element, etree._ElementTree],
              tag_name: str,
              text: Any,
              complex_xpath: XPathLike = None,
+             filters: FilterType = None,
              occurrences: Union[int, Iterable[int]] = None,
              create: bool = False,
              **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
@@ -416,7 +463,13 @@ def set_text(xmltree: Union[etree._Element, etree._ElementTree],
     base_xpath = schema_dict.tag_xpath(tag_name, **kwargs)
 
     if complex_xpath is None:
-        complex_xpath = base_xpath
+        complex_xpath = XPathBuilder(base_xpath, filters=filters)
+    elif filters is not None:
+        if not isinstance(complex_xpath, XPathBuilder):
+            raise ValueError(
+                'Provide only one of filters or complex_xpath (Except when complx_xpath is given as a XPathBuilder)')
+        for key, val in filters.items():
+            complex_xpath.add_filter(key, val)
 
     return xml_set_text(xmltree, schema_dict, complex_xpath, base_xpath, text, occurrences=occurrences, create=create)
 
@@ -426,6 +479,7 @@ def set_first_text(xmltree: Union[etree._Element, etree._ElementTree],
                    attributename: str,
                    attribv: Any,
                    complex_xpath: XPathLike = None,
+                   filters: FilterType = None,
                    create: bool = False,
                    **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
     """
@@ -456,6 +510,7 @@ def set_first_text(xmltree: Union[etree._Element, etree._ElementTree],
                     complex_xpath=complex_xpath,
                     create=create,
                     occurrences=0,
+                    filters=filters,
                     **kwargs)
 
 
@@ -464,6 +519,7 @@ def set_simple_tag(xmltree: Union[etree._Element, etree._ElementTree],
                    tag_name: str,
                    changes: Union[List[Dict[str, Any]], Dict[str, Any]],
                    complex_xpath: XPathLike = None,
+                   filters: FilterType = None,
                    create_parents: bool = False,
                    **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
     """
@@ -500,7 +556,13 @@ def set_simple_tag(xmltree: Union[etree._Element, etree._ElementTree],
     assert len(tag_info['simple'] | tag_info['complex']) == 0, f"Given tag '{tag_name}' is not simple"
 
     if complex_xpath is None:
-        complex_xpath = parent_xpath
+        complex_xpath = XPathBuilder(parent_xpath, filters=filters)
+    elif filters is not None:
+        if not isinstance(complex_xpath, XPathBuilder):
+            raise ValueError(
+                'Provide only one of filters or complex_xpath (Except when complx_xpath is given as a XPathBuilder)')
+        for key, val in filters.items():
+            complex_xpath.add_filter(key, val)
 
     return xml_set_simple_tag(xmltree,
                               schema_dict,
@@ -516,6 +578,7 @@ def set_complex_tag(xmltree: Union[etree._Element, etree._ElementTree],
                     tag_name: str,
                     changes: Dict[str, Any],
                     complex_xpath: XPathLike = None,
+                    filters: FilterType = None,
                     create: bool = False,
                     **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
     """
@@ -551,7 +614,13 @@ def set_complex_tag(xmltree: Union[etree._Element, etree._ElementTree],
     base_xpath = schema_dict.tag_xpath(tag_name, **kwargs)
 
     if complex_xpath is None:
-        complex_xpath = base_xpath
+        complex_xpath = XPathBuilder(base_xpath, filters=filters)
+    elif filters is not None:
+        if not isinstance(complex_xpath, XPathBuilder):
+            raise ValueError(
+                'Provide only one of filters or complex_xpath (Except when complx_xpath is given as a XPathBuilder)')
+        for key, val in filters.items():
+            complex_xpath.add_filter(key, val)
 
     return xml_set_complex_tag(xmltree, schema_dict, complex_xpath, base_xpath, changes, create=create)
 
